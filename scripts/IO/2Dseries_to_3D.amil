@@ -1,0 +1,70 @@
+#!/usr/bin/amilab
+
+#printn $#
+
+if (($1=="-help")||($1=="--help")||(argc!=4)) {
+  printn ""
+  printn "Program 2Dseries_to_3D.amil"
+  printn ""
+  printn "Description:"
+  printn "	Converts a series of 2D images to a 3D image."
+  printn ""
+  printn "Parameters:"
+  printn "	1. string: filename format with the same syntax as C printf()"
+  printn "	2. number: first image number"
+  printn "	3. number: last image number"
+  printn "	4. string: name of the resulting image"
+  printn "      5. format: possible values {floatscalar,original}"
+  printn
+  quit
+}
+#printn "0:"+ $0 + " 1:"+ $1 + " 2:"+ $2 + " 3:"+ $3+ " 4:"+ $4
+
+filename=$1
+firstimage=atof($2)
+lastimage=atof($3)
+if (argc>4) {
+  format=$5
+} else {
+  format="original"
+}
+
+
+name = sprint(filename,firstimage)
+#printn firstimage
+#printn "filename = "+filename
+#printn "name = "+ name
+
+i0 = Image(name)
+if (format=="floatscalar") {
+  i0 <<= (FLOAT)Image(name)
+}
+
+if (i0.vdim>1)&&(format=="floatscalar") { 
+  i1 = i0[0]
+} else {
+  i1=i0
+}
+
+i=Image(i1.GetFormat,i0.tx,i0.ty,lastimage-firstimage+1)
+i.putimage(i1,0,0,0)
+
+for n=firstimage+1 to lastimage {
+  print sprint("reading image %03.0f\n",n)
+  i0 = Image(sprint(filename,n))
+
+  if (format=="floatscalar") {
+    i0 <<= (FLOAT)i0
+  }
+  
+  if (i0.vdim>1)&&(format=="floatscalar") { 
+    i1 = i0[0]
+  } else {
+    i1=i0
+  }
+
+  i.putimage(i1,0,0,n-firstimage)
+}
+
+i.save $4
+quit

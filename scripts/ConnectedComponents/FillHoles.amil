@@ -1,0 +1,45 @@
+#!/home/karl/projects/bin/OS/improcess
+
+#
+# fill the holes within the main connected component
+# of positive values by setting their intensities to 0.1
+#
+
+proc FillHoles( IMAGE input, IMAGE res) {
+  print "Entering FillHoles \n"
+  _icc = CC(input)
+  _icc_inclusion = (FLOAT)reorder(inclusion(_icc))
+  res = (FLOAT) input*(_icc_inclusion!=0) + (_icc_inclusion==0)*0.1
+  print "Leaving FillHoles \n"
+}
+
+
+// Fill the holes of the component number _comp after reordering by size
+proc FillHolesComp( IMAGE input, IMAGE res, NUM _comp) {
+  print "Entering FillHoles \n"
+  _icc = CC(input)
+  _icc_inclusion = (FLOAT)reorder(inclusion(_icc))
+  res = (FLOAT) input*(_icc_inclusion!=_comp) + (_icc_inclusion==_comp)*0.1
+  print "Leaving FillHoles \n"
+}
+
+// Fill the holes for all components with number lower or equal to _comp
+// after reordering by size
+proc FillHolesLComp( IMAGE input, IMAGE res, NUM _comp) {
+  print "Entering FillHoles \n"
+  _icc = CC(input)
+  _icc_inclusion = (FLOAT)reorder(inclusion(_icc))
+  res = (FLOAT) input*(_icc_inclusion>_comp) + (_icc_inclusion<=_comp)*0.1
+  print "Leaving FillHoles \n"
+}
+
+
+// Fill the holes for all components with positive sign
+proc FillHolesPositive( IMAGE input, IMAGE res) {
+  print "Entering FillHolesPositive \n"
+  _icc = CC(input)
+  _icc_inclusion_sign = (FLOAT)cc_sign(inclusion(_icc))
+  res = (FLOAT) input*(_icc_inclusion_sign<1) + (_icc_inclusion_sign>=1)*0.1
+  print "Leaving FillHolesPositive \n"
+}
+

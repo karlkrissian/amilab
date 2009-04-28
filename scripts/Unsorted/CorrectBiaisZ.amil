@@ -1,0 +1,40 @@
+#!/home/karl/projects/bin/solaris/improcess
+
+//i         = Image $1
+//threshold = atof($2)
+
+//--------------------------------------------------
+proc CorrectBiaisZ( IMAGE i, IMAGE res, NUM minthreshold, NUM maxthreshold ) {
+//   -------------
+
+  ir = Image(FLOAT,i.tx,i.ty,i.tz)
+
+  i_means = Image(FLOAT,1,1,i.tz)
+
+  for z=0 to i.tz-1 {
+
+     sub  = i[0:i.tx-1,0:i.ty-1,z:z]
+     mask = (sub>minthreshold)*(sub<maxthreshold)
+     m = mean(sub,mask)
+     i_means.setpos(0,0,z)
+     i_means.set(m)
+
+  }
+  print "\n"
+
+  mean_total = mean(i_means)
+
+  del sub
+
+  for z=0 to i.tz-1 {
+   sub  = (FLOAT) i[0:i.tx-1,0:i.ty-1,z:z]
+   subr = sub*mean_total/i_means(0,0,z)
+   ir.putimage(subr,0,0,z)
+   del sub
+  }
+
+  print "\n"
+
+  res = ir
+
+}

@@ -1,0 +1,210 @@
+#!/usr/bin/amilab
+
+proc MSD_ReadGT(NUM id) {
+  global_new
+
+printn "Start ReadGT"
+  D1u = ReadRawImages(300,300,1,FLOAT,0,sprint("GT%0.0fuf.raw",id))
+  D1v = ReadRawImages(300,300,1,FLOAT,0,sprint("GT%0.0fvf.raw",id))
+
+printn "1"
+  D1u_r = Resize(D1u,i1_uchar.tx,i1_uchar.ty,i1_uchar.tz,1)
+  D1v_r = Resize(D1v,i1_uchar.tx,i1_uchar.ty,i1_uchar.tz,1)
+
+printn "2"
+  D1 = Image(FLOAT,i1_uchar.tx,i1_uchar.ty,i1_uchar.tz,3)
+  imsizeX=0.1
+  imsizeY=0.1
+  D1.setvoxelsize(imsizeX/D1.tx,imsizeX/D1.ty,1)
+  D1u_r = Flip(D1u_r,1)
+  D1v_r = Flip(D1v_r,1)
+  D1[0] = D1u_r
+  D1[1] = D1v_r
+  D1[2]  = D1u_r*0
+  del D1u
+  del D1v
+
+  MSD_GT = D1
+
+  MSD_GT[0] =  MSD_GT[0]/MSD_GT.vx
+  MSD_GT[1] =  MSD_GT[1]/MSD_GT.vy
+
+//  MSD_GT = Resize(D1,i1_uchar.tx,i1_uchar.ty,i1_uchar.tz,1)
+
+//  MSD_GT[0] =  MSD_GT[0]/MSD_GT.vx
+//  MSD_GT[1] =  MSD_GT[1]/MSD_GT.vy
+
+printn "End"
+  local_new
+}
+
+proc MSD_Init( IMAGE i1, IMAGE i2, STRING _resname) {
+  global_new
+
+printn "Start MSD_Init"
+  DemonBin="/home/dario/MSD/builds/linux/MLDemons"
+  image1_name = "image1.vtk" 
+  image2_name = "image2.vtk"
+  res_name = _resname
+
+printn "1"
+  result_X_name = "defx"
+  result_Y_name = "defy"
+
+#  i1 = Image $1
+#  i2 = Image $2
+
+  i1_uchar = (UCHAR) (i1[0])
+  i2_uchar = (UCHAR) (i2[0])
+
+  i1_uchar.save image1_name
+  i2_uchar.save image2_name
+
+
+printn "2"
+#  MSD_ReadGT()
+
+printn "End"
+
+  local_new
+}
+
+
+proc MSD_run() {
+  global_new
+
+  InitTime
+  // Run the algorithm
+
+  demon_cmd = DemonBin + " " + image1_name + " " + image2_name + " " + "demon_res.vtk"
+  demon_cmd = demon_cmd + sprint(" %0.0f", MSD_NLevels)
+  demon_cmd = demon_cmd + sprint(" %0.0f", MSD_NSteps)
+  demon_cmd = demon_cmd + " 1 0"
+  demon_cmd = demon_cmd + sprint(" %f",MSD_sigmaE)
+
+  printn demon_cmd
+  sh demon_cmd
+
+  // Read the result
+  resx = ReadRawImages(i1.tx,i1.ty,i1.tz,FLOAT,0,result_X_name)
+  resy = ReadRawImages(i1.tx,i1.ty,i1.tz,FLOAT,0,result_Y_name)
+  resx.save res_name+"_X.raw"
+  resy.save res_name+"_Y.raw"
+
+  res = Image(FLOAT,i1.tx,i1.ty,i1.tz,3)
+  res[0] = resx
+  res[1] = resy
+  res[2] = resx*0
+  res.save res_name+".ami.gz"
+
+  EndTime
+
+  local_new
+}
+
+
+#--------------------------------------------------
+proc angular_error(IMAGE _d1, IMAGE _d0, IMAGE _err){
+  _err = (_d1*_d0+1)/sqrt(_d1*_d1+1)/sqrt(_d0*_d0+1)
+  # limit to [-1, 1]
+  _err = _err*(_err<1) +(_err>=1)
+  _err = _err*(_err>-1)-(_err<=-1)
+  # convert to degrees
+  _err = acos(_err)/Pi*180
+
+}
+
+proc Stats( IMAGE _u, IMAGE _gt, IMAGE _mask, IMAGE eucl_error, IMAGE norm_error, IMAGE ang_error) {
+
+#	u
+#	u_o
+#	mask
+#
+
+
+    statsfile.print sprint("Average displacement %3.4f \n\n",mean(norm(_gt)))
+
+    eucl_error = norm(_u-_gt);
+    _mean = mean(eucl_error,_mask)
+    statsfile.print sprint("Euclidean Error %3.4f ",_mean)
+    _mean2 = (eucl_error-_mean)*(eucl_error-_mean)
+    statsfile.print sprint(" +/- %3.4f \n\n",sqrt(mean(_mean2,_mask)))
+
+    norm_error = abs(norm(_u)-norm(_gt));
+    _mean = mean(norm_error,_mask)
+    statsfile.print sprint("Norm Error %3.4f ",_mean)
+    _mean2 = (norm_error-_mean)*(norm_error-_mean)
+    statsfile.print sprint(" +/- %3.4f \n\n",sqrt(mean(_mean2,_mask)))
+
+    angular_error(_u,_gt,&ang_error)
+    _mean_ang = mean(ang_error,_mask)
+    statsfile.print sprint("Angular Error %3.4f ",_mean_ang)
+    _mean2_ang = (ang_error-_mean_ang)*(ang_error-_mean_ang)
+    statsfile.print sprint(" +/- %3.4f \n\n",sqrt(mean(_mean2_ang,_mask)))
+
+}
+
+
+proc MSD_stats() {
+  global_new
+
+  MSD_mask = (Xpos(res)>40)*(Xpos(res)<res.tx-40)
+
+  MSD_EE = MSD_mask*0
+  MSD_AE = MSD_mask*0
+  MSD_NE = MSD_mask*0
+
+  Stats(&res, &MSD_GT, &MSD_mask, &MSD_EE, &MSD_NE, &MSD_AE)
+
+  local_new
+}
+
+func "Elastography/leastsquare.amil" 
+MSD_NLevels = INT(5)
+MSD_NSteps  = INT(10)
+MSD_sigmaE  = 35
+MSD_RunLSE = UCHAR(0)
+
+i1 = Image "0.bmp"
+statsfile = open("statsfile.txt","w")
+SNRfile = open("SNRfile.txt","w") 
+
+for i=1 to 40 {
+  statsfile.print "\n"
+  statsfile.print "--- Results for image number "
+  statsfile.print i
+  statsfile.print " ------\n"
+  statsfile.print "\n"
+  i2 = Image (sprint("%0.0f.bmp",i))
+  resname = sprint("demon_result_%0.0f",i)
+  MSD_Init(&i1,&i2,resname)
+  MSD_ReadGT(i)
+  MSD_run()
+  MSD_stats()
+
+  if (MSD_RunLSE) {
+    res_lse = (FLOAT) i1[0]
+    in_lse = res[1]
+    in_lse.info
+    res_lse.info
+    printn "calling LSE \n"
+    RunLeastSquares2D_Yslope(in_lse,&res_lse,47,47,0.6)
+    res_lse.save sprint("LeastSquares_%0.0f.raw",i)
+    res_lse.save sprint("LeastSquares_%0.0f.ami.gz",i)
+
+    margin_SNR=86
+    res_lse_1 = res_lse[margin_SNR:res_lse.tx-1-margin_SNR,margin_SNR:res_lse.ty-1-margin_SNR,0:0]
+    sigmadiff=res_lse_1-mean(res_lse_1)
+    sigma_SNR=sqrt(mean(sigmadiff*sigmadiff))
+    _SNR=mean(res_lse_1)/sigma_SNR
+    SNRfile.print _SNR
+    SNRfile.print "\n"
+  }
+
+}
+
+statsfile.close
+SNRfile.close
+
+#MSD_Init()
+#MSD_gui()

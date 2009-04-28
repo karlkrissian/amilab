@@ -1,0 +1,26 @@
+#!/usr/bin/amilab 
+
+SetVerboseOn
+
+import_filters
+
+i = Image "Images/initial_crop_FastNLmeans.vtk"
+recons = Image "Images/recons_crop.vtk"
+
+mask = (UCHAR) (recons>0.3)*255
+
+recons_sth = StructureTensorH(&recons,1,1,&mask)
+recons_eig = EigenDecomp(&recons_sth,0,4,&mask)
+del recons_sth
+//recons_eig[5].save "recons_sth1_orientation.ami.gz"
+
+i_sth = StructureTensorH(&i,1,1,&mask)
+i_eig = EigenDecomp(&i_sth,0,4,&mask)
+del i_sth
+
+sp = abs(recons_eig[5] * i_eig[5])
+
+show i
+i_draw.setvector(1,recons_eig[5])
+i_draw.setvector(2,i_eig[5])
+i_draw.compare(sp)

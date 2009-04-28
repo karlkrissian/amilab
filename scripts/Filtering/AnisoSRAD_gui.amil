@@ -1,0 +1,95 @@
+
+
+
+proc SRAD_Init( IMAGE input, STRING resname ) {
+  global_new
+  SRAD_input = (FLOAT) input
+  show SRAD_input
+  SRAD_dt   = 0.1
+  SRAD_T    = 10
+  # 0: Lee, 1: Kuan, 2: Additive
+  SRAD_mode = INT(0) 
+  SRAD_neighborhood = INT(3)
+  # Scheme, 0: explicit 1: semi-implicit
+  SRAD_scheme = INT(1)
+  # SRAD_ROI 
+  SRAD_CreateGui()
+}
+
+
+proc CB_ROI() {
+  global
+  if (exists(SRAD_ROI)) {
+    del SRAD_ROI
+  }
+  if (exists(SRAD_input_draw)) {
+    SRAD_ROI = SRAD_input[SRAD_input_draw]
+  }
+  local
+}
+
+proc CB_Filter() {
+  global
+  numit = SRAD_T/SRAD_dt
+  res = AnisoLeeAdd2(SRAD_input,SRAD_dt,numit,SRAD_ROI)
+  local
+}
+
+proc CB_Display() {
+  global
+  if (!exists(SRAD_input_draw)) {
+    show SRAD_input
+  }
+  if exists(res) {
+    SRAD_input_draw.compare(res)
+  }
+  local
+}
+
+proc CB_Save() {
+  res.save resultname
+}
+
+proc SRAD_CreateGui() {
+  global_new 
+
+  # parameters window
+  SRAD_win = ParamWin("Speckle Reducing Anisotropic Diffusion Parameters")
+  SRAD_dt_id         = SRAD_win.AddFloat(SRAD_dt,0.01,10)
+  SRAD_T_id          = SRAD_win.AddFloat(SRAD_T,0,100)
+  
+  SRAD_mode_id       = SRAD_win.AddEnum(SRAD_mode,3)
+  SRAD_mode_Lee_id   = SRAD_win.AddEnumChoice(SRAD_mode_id,"Lee")
+  SRAD_mode_Kuan_id  = SRAD_win.AddEnumChoice(SRAD_mode_id,"Kuan")
+  SRAD_mode_Add_id   = SRAD_win.AddEnumChoice(SRAD_mode_id,"Additive")
+  
+  SRAD_neighborhood_id = SRAD_win.AddInt(SRAD_neighborhood,0,4)
+  SRAD_scheme_id       = SRAD_win.AddEnum(SRAD_scheme,2)
+  SRAD_scheme_expl_id  = SRAD_win.AddEnumChoice(SRAD_scheme_id,"Explicit")
+  SRAD_scheme_impl_id  = SRAD_win.AddEnumChoice(SRAD_scheme_id,"Semi-implicit")
+  
+  SRAD_win.BeginBox("Controls")
+  SRAD_win.BeginHorizontal
+  ROI_id     = SRAD_win.AddButton("Select ROI", CB_ROI)
+  iterate_id = SRAD_win.AddButton("Filter",     CB_Filter)
+  display_id = SRAD_win.AddButton("Display",    CB_Display)
+  display_id = SRAD_win.AddButton("Save",       CB_Save)
+  SRAD_win.EndHorizontal
+  SRAD_win.EndBox
+  
+  SRAD_win.CreateWin
+  SRAD_win.Display
+}
+
+
+
+if (argc==2) {
+  // start with an image and an initialization
+  imagename  = $1
+  resultname = $2
+  input0 = Image(imagename)
+  input = (FLOAT) input0
+  del input0
+  SRAD_init(imagename,resultname)
+}
+

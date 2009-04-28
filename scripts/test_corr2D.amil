@@ -1,0 +1,93 @@
+#!../optimized/src/amilab
+
+print $#
+
+if ($# < 2) {
+i = Image(FLOAT,100,100,1)
+func "/home/karl/projects/Scripts/AddSphere.amil"
+i = i*0-10
+AddBrightSphere(&i,50,50,0,10)
+i2 = i*0-10
+AddBrightSphere(&i2,55,57,0,10)
+} else {
+ I  = Image($1)
+ i = I[0]
+ i = Flip(i,1)
+ I2 = Image($2) 
+ i2 = I2[0] 
+ i2 = Flip(i2,1)
+ del I 
+ del I2
+}
+
+#--------------------------------------------------
+step_x = INT(2)
+step_y = INT(2)
+
+winsize_x = INT(5)
+winsize_y = INT(5)
+
+#--------------------------------------------------
+  proc amicorr2D(IMAGE _im1, IMAGE _im2, IMAGE _res, IMAGE _corr, IMAGE _cx, IMAGE _cy) {
+  _u = _res[0];
+  _v = _res[1];
+  wsx = exp(ln(2)*winsize_x)
+  wsy = exp(ln(2)*winsize_y)
+  print sprint("window size (%0.0f",wsx)+","+sprint("%0.0f)\n",wsy)
+  amiOFCorr2D(_im1,_im2,_u,_v,_corr,_cx,_cy,0,0,step_x,step_y,wsx,wsy,1);
+  _res[0]=_u;
+  _res[1]=_v;
+}
+
+
+corr=i*0
+cx = i*0
+cy = i*0
+d = Image(FLOAT_VECTOR,i.tx,i.ty,1)
+d.initvalue(0,0,0);
+//amicorr2D(i,i2,&d,&corr,&cx,&cy);
+
+#--------------------------------------------------
+#--------------------------------------------------
+
+# BUG??,  needed to create this function to avoid a segmentation fault ...
+proc UpdateDisplay() {
+  global; show i; local  
+}
+
+proc CB_Restart() {
+  d.initvalue(0,0,0);
+  amicorr2D(i,i2,&d,&corr,&cx,&cy);
+  UpdateDisplay()
+}
+
+proc CB_Iterate() {
+  amicorr2D(i,i2,&d,&corr,&cx,&cy);
+  UpdateDisplay()
+}
+
+#--------------------------------------------------
+w1 = ParamWin("Test Corr 2D")
+
+step_x_id = w1.AddInt(step_x,1,20)
+step_y_id = w1.AddInt(step_y,1,20)
+
+winsize_x_id =  w1.AddInt(winsize_x,2,8)
+winsize_y_id =  w1.AddInt(winsize_y,2,8)
+
+restart_id=w1.AddButton("Restart", CB_Restart)
+iterate_id=w1.AddButton("Iterate", CB_Iterate)
+
+w1.CreateWin
+w1.Display
+
+
+show i;
+#i_draw.compare(i2);
+#i_draw.compare(corr);
+#i_draw.compare(cx);
+#i_draw.compare(cy);
+i_draw.setvector(1,d);
+i_draw.DrawVector(1,1);
+i_draw.DisplayVectors;
+

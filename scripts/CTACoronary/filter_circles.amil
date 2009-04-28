@@ -1,0 +1,32 @@
+#!/usr/bin/amilab
+
+func "Centerlines/trying_circles.amil"
+
+
+input = Image "Images/initial_crop_FastNLmeans.vtk"
+th = 800
+
+TC_init(&input,th)
+#TC_CreateWindow()
+
+# now set the parameters
+TC_usezoom        = 0
+TC_split_number   = 1
+TC_radmin         = 0.2
+TC_radmax         = 4.5
+TC_radstep        = 0.4
+TC_sigma          = 1.0
+TC_sigma_gradient = 0.7
+TC_beta           = 1.0
+TC_int_mode       = 1
+
+TC_save_orientation_filename = "Images/initial_crop_FastNLmeans_orientation.vtk"
+
+// Create mask ???
+//TC_CreateMask()
+TC_Run()
+
+TC_result_filename = "Images/initial_crop_FastNLmeans_centerrep"
+TC_result_extension = "vtk"
+
+TC_Save()

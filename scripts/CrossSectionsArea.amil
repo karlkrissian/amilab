@@ -1,0 +1,36 @@
+
+
+proc CrossSectionsArea( IMAGE _sec, STRING st, NUM center_cc ) {
+
+  file_area   = open(st+"_area.dat","w")
+  file_radius = open(st+"_radius.dat","w")
+  voxarea = _sec.vx*_sec.vy
+
+  for _n = 0 to sec.tz-1 {
+    print _n; print "\n"
+    sec1 = _sec[:,:,_n:_n]
+    _center_val = sec1(sec1.tx/2,sec1.ty/2,0)
+    if (center_cc==1) {
+      # select connected component containing the center
+      sec1_cc = CC(sec1)
+      _val = sec1_cc(_sec.tx/2,_sec.ty/2,0)
+      sec1_cc1 = (sec1_cc==_val)
+      #    sec1_cc1 = (sec1_cc==(sec1_cc(_sec.tx/2,_sec.ty/2,0))
+      # small dilation
+      sec1_cc1d = EDPdilate(sec1_cc1,1.5,0.3)
+      _sec2 = sec1*(sec1_cc1d>0.5)
+
+      # Compute the area and save it to file7
+      area = posarea(_sec2)*voxarea
+    } else {
+      area = posarea(sec1)*voxarea
+    }
+    file_area.print   sprint("%0.0f\t",_n)
+    file_area.print   sprint("%0.2f\n",area)
+    file_radius.print sprint("%0.0f\t",_n)
+    file_radius.print sprint("%0.2f\n",sqrt(area/Pi))
+  }
+
+  file_area.  close  
+  file_radius.close  
+}

@@ -1,0 +1,178 @@
+# command line: ./amilab 
+
+import_ami
+
+#--------------------------------------------------
+beta            = 0.25
+alfa            = 0.50
+Conv_GS_exp     = INT(-5)
+Nscales         = INT(1)
+Conv_Scales_exp = INT(-2)
+gradtype        = INT(7)
+smoothfunction  = INT(0)
+zoomdown        = INT(0)
+
+
+#
+proc LoadDisks() {
+#    -----------
+
+print "LoadDisks\n"
+  global
+
+  vx=1
+  vy=1.5
+
+  i1 = Image(FLOAT,64,64,1)
+  func "/home/karl/projects/Scripts/AddSphere.amil"
+  i1 = i1*0-10
+  AddBrightSphere(&i1,32,32,0,10)
+  global
+  i2 = i1*0-10
+  AddBrightSphere(&i2,32+vx,32+vy,0,10)
+  global
+
+  im = Image(FLOAT,64,64,2)
+  im.putimage(i1,0,0,0)
+  im.putimage(i2,0,0,1)
+
+  d = Image(FLOAT_VECTOR,im.tx,im.ty,im.tz-1)
+  d.initvalue(0,0,0);
+  d1 = d
+  d1.initvalue(vx,vy,0);
+
+  local
+
+}
+
+print "*1\n"
+
+print "*1\n"
+
+proc LoadImages() {
+#    ----------
+  global
+print "*??\n"
+
+  I = Image($1)
+  i = (FLOAT) I[0]
+  i = Flip(i,1)
+
+  
+
+  d = Image(FLOAT_VECTOR,i.tx,i.ty,i.tz)
+  d.initvalue(0,0,0);
+  d1 = d
+
+  local
+
+}
+
+print "*1.1\n"
+
+proc ZoomImages() {
+  global
+  
+      zi =im
+      zd=d
+      zd1=d1
+      for k=1 to zoomdown {
+	zi  = amiZoomDown3D(zi)
+	zd  = Resize(zd,zd.tx/2,zd.ty/2,zd.tz,1)
+	zd=zd/2
+	zd1  = Resize(zd1,zd1.tx/2,zd.ty/2,zd1.tz,1)
+	zd1=zd1/2
+      }
+
+print "ZoomImages() end \n"
+  local
+}
+
+
+#--------------------------------------------------
+proc call_amiOF_2D_T(IMAGE _im, IMAGE _res) {
+
+print "call_amiOF_2D_T begin\n"
+  Conv_GS     = exp(ln(10)*Conv_GS_exp    )  
+  Conv_Scales = exp(ln(10)*Conv_Scales_exp)  
+  amiOF_2D_T(_im,&_res,beta,beta,2,2,alfa,alfa,Conv_GS,Nscales,Conv_Scales,gradtype,smoothfunction)
+  
+  // invert flux
+  _res = amiInverseFlow(_res)
+  
+print "call_amiOF_2D_T end\n"
+
+}
+
+
+#--------------------------------------------------
+#--------------------------------------------------
+
+# BUG??,  needed to create this function to avoid a segmentation fault ...
+proc UpdateDisplay() {
+  global;  
+  zi1 = zi[:,:,0:zi.tz-2]
+  show zi1
+  local  
+}
+
+proc CB_Restart() {
+  ZoomImages()
+  zd.initvalue(0,0,0);
+  call_amiOF_2D_T(zi,&zd);
+  UpdateDisplay()
+}
+
+proc CB_Iterate() {
+  call_amiOF_2D_T(zi,&zd);
+  UpdateDisplay()
+}
+
+
+proc CB_Display() {
+  global
+  zi1 = zi[:,:,0:zi.tz-2]
+  show zi1;
+  zi1_draw.setvector(1,zd);
+  zi1_draw.DrawVector(1,1);
+  zi1_draw.setvector(2,zd1);
+  zi1_draw.DrawVector(2,1);
+  local
+}
+
+#--------------------------------------------------�print "*2\n"
+w1 = ParamWin("libamiFluid: PDE Optical Flow")
+
+beta_id            = w1.AddFloat(beta,0.01,5)
+alfa_id            = w1.AddFloat(alfa,0.01,20)
+Nscales_id         = w1.AddInt(Nscales,1,5)
+
+gradtype_id        = w1.AddInt(gradtype,0,7)
+smoothfunction_id  = w1.AddInt(smoothfunction,0,1)
+zoomdown_id        = w1.AddInt(zoomdown,0,5)
+
+Conv_GS_exp_id     = w1.AddInt(Conv_GS_exp,-10,0)
+Conv_Scales_exp_id = w1.AddInt(Conv_Scales_exp,-5,0)
+
+
+restart_id=w1.AddButton("Restart", CB_Restart)
+iterate_id=w1.AddButton("Iterate", CB_Iterate)
+display_id=w1.AddButton("Display", CB_Display)
+
+w1.CreateWin
+w1.Display
+
+print "*3\n"
+
+print $#; print "\n"
+
+if ($#>1) {
+ LoadImages()
+} else {
+ LoadDisks()
+}
+
+
+
+
+

@@ -1,0 +1,25 @@
+
+***** VAR_IMAGE.T_initvalue *****
+
+token(s):
+T_initvalue  initvalue
+
+rule(s):
+1. commande -> VAR_IMAGE '.' T_initvalue '(' expr ')'
+2. commande -> VAR_IMAGE '.' T_initvalue '(' expr ',' expr ',' expr ')'
+
+rule 1 parameters:
+  #1 expr:  value to init the image
+
+rule 2 parameters:
+  #1 expr:  X coord of the init vector
+  #2 expr:  Y coord of the init vector
+  #3 expr:  Z coord of the init vector
+
+description:
+Set all the image to the same value,
+either scalar or vector according to the image type.
+
+
+
+******************************

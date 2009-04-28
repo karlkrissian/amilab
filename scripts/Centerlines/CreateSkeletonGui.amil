@@ -1,0 +1,767 @@
+#!/usr/local/bin/amilab_bin
+
+#SetDebugOn
+
+import_vtk
+
+Skel_useargs = UCHAR(0)
+if (argc>=2) {
+  im = Image $1
+  th = atof($2)
+  dataid = 0
+  Skel_useargs = 1
+}
+
+if (argc>=3) {
+  dataid = atof($3)
+}
+
+if (argc>=4) {
+  Skel_maxrepfilename = $4
+}
+
+if (argc>=5) {
+  Skel_firstvessel = $5
+  Skel_lastvessel  = $5
+}
+
+emptyargs
+
+func "ConnectedComponents/FillHoles"
+func "Centerlines/Prune"
+func "SyntheticImages/AddSphere"
+
+#-----------------------------------------------------------
+proc ReadPoint( STRING st, NUM x, NUM y, NUM z) {
+  printn "opening "+st
+  f = open(st,"r")
+  f.read(x)
+  f.read(y)
+  f.read(z)
+  printn "Point read:"+sprint("%3.2f",x)+\
+        sprint(", %3.2f",y)+sprint(", %3.2f",z);
+}
+
+#-----------------------------------------------------------
+proc Skel_Init( IMAGE input, NUM _th, NUM datasetid) {
+  global_new
+
+    Skel_datasetdir   = "./"
+    Skel_input        = (FLOAT) input
+    Skel_UseZoom      = UCHAR(1)
+    Skel_datasetid    = datasetid
+
+    Skel_UseInitPoint = UCHAR(0)
+    Skel_VesselNumber = INT(0)  # 0,1,2,3
+    Skel_PointId      = INT(0)  # 0:A, 1:B
+
+    Skel_Threshold    = _th
+    Skel_FillHoles    = UCHAR(0)
+    Skel_mask_with_gt = UCHAR(0)
+
+    Skel_endpoint_type = INT(0)
+  
+    # choose the Euclidean distance transform algorithm:
+    #
+    Skel_InputIntensity = UCHAR(0)
+    # 0: vtkPropDaniel2
+    # 1: Andre Robatino
+    Skel_Ordering     = INT(0)
+    Skel_linemethod   = INT(0)
+
+    #Skel_prune        = UCHAR(0)
+    Skel_prunesize    = 2
+
+    Skel_UseFlux      = UCHAR(0)
+
+    Skel_SP_start    = INT(2)  # 0:A, 1:B 2:S 3:E
+    Skel_SP_end      = INT(3)  # 0:A, 1:B 2:S 3:E
+    Skel_show_starting_point = UCHAR(0)
+    Skel_show_ending_point   = UCHAR(1)
+
+    Skel_path_mode = INT(1) # 0: use centerlines
+                            # 1: use maximal response
+    Skel_fm_mode = INT(1) # 0: dijkstra
+                          # 1: Sethian FM
+    Skel_smooth_paths = UCHAR(1)
+    Skel_smooth_coeff = 0.1
+    Skel_smooth_data  = 0.01
+    Skel_smooth_it    = INT(10)
+
+    Skel_3D_display = UCHAR(1)
+
+    Skel_estimated_start = UCHAR(0)
+
+  if (!exists(Skel_firstvessel)) {
+    Skel_firstvessel=0
+    Skel_lastvessel=3
+  }
+
+}
+
+
+#--------------------------------------------------
+proc Skel_SetMaxRep(STRING imname) {
+  Skel_maxrep = Image(imname)
+  printn "**** MAXREP loaded ******"
+}
+
+#--------------------------------------------------
+proc Skel_Execute() {
+  global_new
+
+  print "Entering Skel_Execute\n"
+  if ((Skel_UseZoom)&&(exists(Skel_input_draw))) {
+    _i <<= Skel_input[Skel_input_draw]
+  } else {
+    _i = Skel_input
+  }
+  if (Skel_mask_with_gt) {
+    local::gtimage = Image  Skel_datasetdir+\
+                            "Images/vessels_recons.ami.gz"
+    #printn " ** "
+    #show vars
+    gtimage <<= gtimage[_i]
+    _i = _i*(gtimage>155)
+    #printn " ** "
+  }
+  _i   = _i-Skel_Threshold
+
+  # select connected component to initial point
+  if (Skel_UseInitPoint) {
+    vesseldir = sprint(Skel_datasetdir+\
+                        "vessel%0.0f",Skel_VesselNumber)
+    local::Px = 0;
+    local::Py = 0;
+    local::Pz = 0
+    if (Skel_PointId == 0) {
+      ReadPoint(vesseldir+"/pointA.txt",&Px,&Py,&Pz)
+    }
+    if (Skel_PointId == 1) {
+      ReadPoint(vesseldir+"/pointB.txt",&Px,&Py,&Pz)
+    }
+    Px = (Px-_i.trx)/_i.vx
+    Py = (Py-_i.try)/_i.vy
+    Pz = (Pz-_i.trz)/_i.vz
+    # Create connected components
+    local::_i_cc = CC(_i)
+    # Select the one
+    local::_i =  (_i_cc==_i_cc(Px,Py,Pz))
+    # do some smoothing and threshold to 0.5
+    _i = filter(_i,_i.vx*0.8,0,0,0)
+    _i = _i-0.5
+  }
+
+  if (Skel_FillHoles) {
+    _res = _i
+    FillHolesPositive(_i,&_res)
+    _i = _res
+    del _res
+  }
+
+  _j <<= (UCHAR) (_i>0)*255
+
+  if (Skel_InputIntensity) {
+    local::_idist = _i
+  } else {
+    if (Skel_Ordering==0) {
+      if (_i.tz==1) {
+        printn "vtkPropDanielsson2 not working well in 2D, canceled"
+        _idist <<= _i
+      } else {
+        # compute distance inside the structure
+        print "Compute Danielsson distance\n"
+        _idist <<= vtkPropDaniel2(_i,0,-10,10)
+      }
+    } 
+  
+    if (Skel_Ordering==1) {
+      _j1  = (_j<127)*255
+      print "Running the distance transform from Andre\n"
+      _idist  = AndreDist(_j1)
+    } 
+    #_idist = vtkPropDanielsson(_res,-1,50)
+  }
+
+#  show _idist
+  print "Compute Skeleton\n"
+  Skel_output <<= Skeleton(_j,_idist,0,1000, Skel_endpoint_type+1)
+  
+  print "Leaving CreateSkeleton\n"
+
+  Skel_Lines()
+}
+
+
+#---------------------------------------------------
+proc Skel_Lines() \
+{
+  if (exists(Skel_lines))       { del Skel_lines; }
+  if (exists(Skel_res_draw))    { del Skel_res_draw; }
+  if (exists(Skel_res))         { del Skel_res; }
+
+  if (Skel_linemethod==0) {
+    global::Skel_lines = Skeleton2lines(Skel_output)
+  } else {
+    global::Skel_lines = vtkSkeleton2Lines(Skel_output)
+  }
+
+  global::Skel_res = Skel_lines
+  Skel_res.SetColor(0,0,0)
+  #if (Skel_prune) {
+  #  global::Skel_slines_prune = \
+  #    PruneLines(Skel_slines,Skel_prunesize)
+  #}
+}
+
+
+#---------------------------------------------------
+proc Skel_SmoothLines() {
+  if (exists(Skel_res)) {
+    global::Skel_slines  = SmoothLines(Skel_res)
+    if (exists(Skel_res_draw)) {
+      Skel_res_draw -= Skel_res
+    }
+    del Skel_res
+    global::Skel_res = Skel_slines
+    if (exists(Skel_res_draw)) {
+      Skel_res_draw += Skel_res
+    }
+  }
+}
+
+
+#---------------------------------------------------
+proc Skel_SelectPrune() {
+  if (exists(Skel_res)) {
+    SelectPrune(&Skel_res,Skel_prunesize)
+    if (exists(Skel_res_draw)) {
+      Skel_res_draw.Paint
+    }
+  }
+}
+
+#---------------------------------------------------
+proc Skel_RemovePrune() {
+  if (exists(Skel_res)) {
+    Skel_res.RemoveSelection
+    if (exists(Skel_res_draw)) {
+      Skel_res_draw.Paint
+    }
+  }
+}
+
+#---------------------------------------------------
+proc Skel_Display() {
+  global_new
+    show Skel_input
+    if (exists(Skel_output)) {
+      Skel_input_draw.compare(Skel_output)
+    }
+    #Skel_res.save "skeleton_result.vtk"
+    if exists(Skel_res) {
+      if (!exists(Skel_res_draw)) {
+        show Skel_res
+      }
+      Skel_input_draw.setGLwin(Skel_res_draw)
+    }
+}
+
+
+#---------------------------------------------------
+proc Skel_AddVessels() {
+  global_new
+    if (exists(Skel_res_draw)) {
+      #s = isosurf(vrecons,max(vrecons)/2+0.01)
+      #if (exists(sd)) { del sd; }
+      #sd = vtkDecimate(s)
+      #del s
+      #sd.SetOpacity(0.7)
+      if (!exists(Skel_gt)) { 
+        Skel_gt = Surface(Skel_datasetdir+\
+                          "PolyData/vessels_recons.vtk")
+        Skel_gt.SetOpacity(0.7)
+        Skel_res_draw += Skel_gt
+      }
+
+      if (!exists(Skel_gt_v)) { 
+        Skel_gt_v = Surface[4]
+        for n=0 to 3 {
+          name = sprint(  Skel_datasetdir+\
+                          "PolyData/vessel%0.0f.vtk",n)
+          printn "reading "+name
+          Skel_gt_v[n] = Surface(name)
+          Skel_gt_v[n].SetColor(128,0,255)
+          Skel_res_draw += Skel_gt_v[n]
+        }
+      }
+    }
+}
+
+
+#---------------------------------------------------
+proc Skel_ViewCTA() {
+  global_new
+    cta <<= Image(Skel_datasetdir+"Images/initial_crop.vtk")
+    show cta
+    if (exists(Skel_res_draw)) {
+      cta_draw.setGLwin(Skel_res_draw)
+    }
+    if (exists(Skel_input_draw)) {
+      Skel_input_draw.compare(cta)
+    }
+}
+
+
+#---------------------------------------------------
+proc Skel_ReadPoint(NUM vid, NUM ptid, \
+                    NUM x, NUM y, NUM z) {
+  if (ptid == 0) { ptname="A";}
+  if (ptid == 1) { ptname="B";}
+  if (ptid == 2) { ptname="S";}
+  if (ptid == 3) { ptname="E";}
+
+  vesseldir = sprint( Skel_datasetdir+\
+                      "vessel%0.0f",vid)
+
+  if (ptid == 4) {
+    vesseldir = Skel_datasetdir
+    ptname="1"
+  }
+  if (ptid == 5)  {
+    vesseldir = Skel_datasetdir
+    ptname="2"
+  }
+
+  ReadPoint(vesseldir+"/point"+ptname+".txt",\
+            &x,&y,&z)
+}
+
+
+#---------------------------------------------------
+proc Skel_ShortestPaths() {
+  global_new
+
+  sum1 = 0
+  sum2 = 0
+
+   InitTime
+  if (!exists(Skel_res)) {
+    Skel_res = Surface()
+    if (Skel_3D_display) { show Skel_res; }
+  }
+
+  if (exists(Skel_res)) {
+    Skel_path       <<= Surface[4]
+    Skel_startpoint <<= Surface[4]
+    Skel_endpoint   <<= Surface[4]
+
+    # only check 1st vessel to find problem
+    for vessel_number=Skel_firstvessel to Skel_lastvessel {
+      printn "******"
+      printn sprint(" processing vessel %0.0f",vessel_number)
+      printn "******"
+      # for each vessel create path between point A and B
+      local::Px1_1=0; local::Py1_1=0; local::Pz1_1=0;
+      local::Px1_2=0; local::Py1_2=0; local::Pz1_2=0;
+      local::Px1=0; local::Py1=0; local::Pz1=0;
+      local::Px2=0; local::Py2=0; local::Pz2=0;
+
+      Skel_ReadPoint(vessel_number,Skel_SP_end,\
+                      &Px2,&Py2,&Pz2)
+
+      if (Skel_estimated_start) {
+        # read the 2 points
+        Skel_ReadPoint(vessel_number,4, &Px1_1,&Py1_1,&Pz1_1)
+        Skel_ReadPoint(vessel_number,5, &Px1_2,&Py1_2,&Pz1_2)
+        if (vessel_number==0) {
+          // estimated point 1
+          Px1 = Px1_1
+          Py1 = Py1_1
+          Pz1 = Pz1_1
+        } else {
+          // estimated point 2
+          Px1 = Px1_2
+          Py1 = Py1_2
+          Pz1 = Pz1_2
+        }
+      } else {
+        Skel_ReadPoint(vessel_number,Skel_SP_start,\
+                         &Px1_1,&Py1_1,&Pz1_1)
+        Px1 = Px1_1
+        Py1 = Py1_1
+        Pz1 = Pz1_1
+        Px1_2 = Px1_1
+        Py1_2 = Py1_1
+        Pz1_2 = Pz1_1
+      }
+
+
+      if ((Skel_3D_display)&&\
+          (Skel_show_starting_point)) {
+        tmp = vtkSphere(1,10,10,Px1,Py1,Pz1)
+        Skel_startpoint[vessel_number] = tmp
+        del tmp
+        Skel_startpoint[vessel_number].SetColor(0,255,0)
+        Skel_res_draw += Skel_startpoint[vessel_number]
+      }
+
+      if ((Skel_3D_display)&&\
+          (Skel_show_ending_point)) {
+        tmp = vtkSphere(1,10,10,Px2,Py2,Pz2)
+        Skel_endpoint[vessel_number] = tmp
+        del tmp
+        Skel_endpoint[vessel_number].SetColor(0,0,255)
+        Skel_res_draw += Skel_endpoint[vessel_number]
+      }
+
+      if (exists(path)) { del path; }
+      # Set Path from end point to start point because the
+      # path is tracked starting from the end point
+      if ((Skel_path_mode==1) && exists(Skel_maxrep)) {
+
+        local::px1_1 = (Px1_1-Skel_input.trx)/Skel_input.vx
+        local::py1_1 = (Py1_1-Skel_input.try)/Skel_input.vy
+        local::pz1_1 = (Pz1_1-Skel_input.trz)/Skel_input.vz
+        local::px1_2 = (Px1_2-Skel_input.trx)/Skel_input.vx
+        local::py1_2 = (Py1_2-Skel_input.try)/Skel_input.vy
+        local::pz1_2 = (Pz1_2-Skel_input.trz)/Skel_input.vz
+
+        local::px1 = (Px1-Skel_input.trx)/Skel_input.vx
+        local::py1 = (Py1-Skel_input.try)/Skel_input.vy
+        local::pz1 = (Pz1-Skel_input.trz)/Skel_input.vz
+
+        local::px2 = (Px2-Skel_input.trx)/Skel_input.vx
+        local::py2 = (Py2-Skel_input.try)/Skel_input.vy
+        local::pz2 = (Pz2-Skel_input.trz)/Skel_input.vz
+        print "Px2 = "; printn Px2
+        print "Py2 = "; printn Py2
+        print "Pz2 = "; printn Pz2
+        print "px2 = "; printn px2
+        print "py2 = "; printn py2
+        print "pz2 = "; printn pz2
+        Skel_input.info
+
+        Skel_input.info
+        printn sprint(" point 1 coord %0.0f",px1)+\
+                sprint(" %0.0f",py1)+\
+                sprint(" %0.0f",pz1)
+        printn sprint(" point 2 coord %0.0f",px2)+\
+                sprint(" %0.0f",py2)+\
+                sprint(" %0.0f",pz2)
+        # add a small positive response to values inside prob. threshold
+        vox_diag_size = sqrt( Skel_input.vx*Skel_input.vx+\
+                              Skel_input.vy*Skel_input.vy+\
+                              Skel_input.vz*Skel_input.vz)
+
+        #if (Skel_input_type="")
+        tmp = filter(Skel_input,vox_diag_size/2,0,0,0)
+        #tmp = filter(Skel_maxrep,vox_diag_size*2,0,0,0)
+        // force a minimal value of 0.02
+        # not such good idea to add tmp from original image if not using PDF image from Barcelona
+        #maxrepim_crop = Skel_maxrep*2 + tmp + 0.02
+        maxrepim_crop = Skel_maxrep*3 + tmp/4 + 0.02
+        #maxrepim_crop =  tmp*3 + 0.02
+        #maxrepim_crop = max(Skel_maxrep*10,tmp)
+        # *10
+        del tmp
+
+        # Add Spheres around initial point to facilitate
+        # their connections
+        AddBrightSphereGlobal_mm( &maxrepim_crop,\
+                                  Px1,Py1,Pz1,\
+                                  3,0.01,0.5)
+        AddBrightSphereGlobal_mm( &maxrepim_crop,\
+                                  Px2,Py2,Pz2,\
+                                  3,0.01,0.5)
+
+        maxrep = max(maxrepim_crop)
+
+        #maxrepim_crop.save sprint("v%0.0f_maxrepim_crop.ami.gz",\
+        #                          vessel_number)
+
+        # Run a Fast Marching start from Point 2 up to distance 1000
+        #maxrepim_crop = maxrepim_crop/maxrep
+        local::fm_max = 1000
+        local::fminit <<= (FLOAT) maxrepim_crop*0+fm_max
+        printn sprint(" Skel_fm_mode = %0.0f",Skel_fm_mode)
+        if (Skel_fm_mode==0) {
+          AddSphere(&fminit,px2,py2,pz2,2)
+          local::track = Image(INT,1,maxrepim_crop)
+          track = 0
+          local::res = vtkFastMarching(maxrepim_crop,fminit,track,fm_max,1)
+          maxrepim_crop.save sprint("v%0.0f_maxrepim_crop.ami.gz",\
+                                  vessel_number)
+          local::res.save sprint("v%0.0f_fm_result.ami.gz",\
+                                  vessel_number)
+  
+          path = PathFromDispl(track,px1,py1,pz1)
+        }
+        if (Skel_fm_mode==1) {
+          if (px2<2) { px2=2; }
+          if (py2<2) { py2=2; }
+          if (pz2<2) { pz2=2; }
+          fminit.setpos(px2,py2,pz2)
+          fminit.set(-fm_max)
+          #maxrepim_crop = maxrepim_crop/10
+          # running fast marching until the point 1 is reached
+          printn "FMT"
+          local::res_1 = vtkFastMarchingTarget(maxrepim_crop,fminit,fm_max,\
+                                        px1+0.5,py1+0.5,pz1+0.5)
+          local::res_2 = vtkFastMarchingTarget(maxrepim_crop,fminit,fm_max,\
+                                        px2+0.5,py2+0.5,pz2+0.5)
+          local::res = res_1
+          maxrepim_crop.save sprint("v%0.0f_maxrepim_crop.ami.gz",\
+                                  vessel_number)
+          local::res_1.save sprint("v%0.0f_fm_result1.ami.gz",\
+                                  vessel_number)
+
+          printn "FMT done"
+          path = PathFromVectField( res,\
+                                    0.1,500,\
+                                    Px1,Py1,Pz1,\
+                                    Px2,Py2,Pz2)
+        }
+        printn "***********************************"
+        printn "Distance to 1st point"
+        res1_1 = res_1(px1_1,py1_1,pz1_1)
+        res1_2 = res_2(px1_1,py1_1,pz1_1)
+        if (res1_1<res1_2) {
+          res1 = res1_1
+        } else {
+          res1 = res1_2
+        }
+        printn res1
+        printn "Distance to 2nd point"
+        res2_1 = res_1(px1_2,py1_2,pz1_2)
+        res2_2 = res_2(px1_2,py1_2,pz1_2)
+        if (res2_1<res2_2) {
+          res2 = res2_1
+        } else {
+          res2 = res2_2
+        }
+        printn res2
+        ok =  ((vessel_number==0)&&(res1<res2))||\
+              ((vessel_number>0) &&(res2<res1))
+        if (vessel_number>0)  {
+          sum1 = sum1+res1
+          sum2 = sum2+res2
+        }
+        if (ok) { 
+          printn "Success"
+        } else {
+          printn "Failure" 
+        }
+        printn "***********************************"
+        printn "first point"
+        printn "first point"
+        printn px1; printn py1; printn pz1;
+        printn "going to point"
+        printn px2; printn py2; printn pz2;
+        printn "path info "; path.info
+
+        #path = ShortestPathImage(maxrepim_crop,maxrep-0.01,\
+        #            Px2,Py2,Pz2,\
+        #            Px1,Py1,Pz1)
+        if ((Skel_3D_display)&&\
+            (!exists(path))) {
+          Skel_recons = Image "Images/recons_crop.vtk"
+          recons1 = Skel_recons[maxrepim_crop]
+          maxrepim_crop = -maxrepim_crop+maxrep
+          maxrepim_crop = maxrepim_crop*(recons1>155)
+          del recons1
+          del Skel_recons
+          Skel_path[vessel_number] = isosurf(maxrepim_crop,0.01)
+          Skel_res_draw += Skel_path[vessel_number]
+        }
+        del maxrepim_crop
+      } else {
+        path = ShortestPath(Skel_res,Px2,Py2,Pz2,Px1,Py1,Pz1)
+      }
+      if (exists(path)) {
+        if (Skel_smooth_paths) {
+          Skel_path[vessel_number] = \
+            SmoothLines(path,\
+                        Skel_smooth_coeff,\
+                        Skel_smooth_data,\
+                        Skel_smooth_it)
+        } else {
+          Skel_path[vessel_number] = path
+        }
+
+        if (Skel_3D_display) {
+          if (!exists(Skel_res_draw)) {
+            show Skel_res
+          }
+          Skel_res_draw += Skel_path[vessel_number]
+          Skel_path[vessel_number].SetColor(255,0,0)
+          Skel_path[vessel_number].SetLineWidth(3)
+        }
+      } # if
+      printn TimeSpent
+    } # for
+
+  } # if
+
+  printn TimeSpent
+  EndTime
+
+  printn "------------------"
+  print "sum1 ="; printn sum1;
+  print "sum2 ="; printn sum2;
+  printn "------------------"
+}
+
+
+#---------------------------------------------------
+proc Skel_SavePaths() {
+  for local::n=0 to 3 {
+    Skel_path[n].WriteCTALine Skel_datasetdir+\
+                              sprint("vessel%0.0f/result.txt",n)
+    Skel_path[n].save Skel_datasetdir+\
+                              sprint("vessel%0.0f/result.vtk",n)
+  }
+}
+
+#---------------------------------------------------
+proc Skel_PrintScores() {
+
+  Skel_evalsoft  = Skel_datasetdir+\
+                    "../../EvaluationSoft/cat2008"
+  Skel_evalobs   = Skel_datasetdir+\
+                    "../../EvaluationSoft/observerscores.txt"
+  #Skel_datasetid = 0
+
+  local::filename = sprint("dataset%0.0f_results.txt",Skel_datasetid)
+  sh " echo > "+filename
+  for v=0 to 3 {
+    cmd = Skel_evalsoft + \
+          sprint(" %0.0f ",Skel_datasetid) + \
+          sprint(" %0.0f ",v) + \
+          sprint(Skel_datasetdir+\
+                  "vessel%0.0f/reference.txt ",v) + \
+          sprint(Skel_datasetdir+\
+                  "vessel%0.0f/result.txt ",v) + \
+          Skel_evalobs
+    #printn cmd
+    sh cmd
+    cmd = cmd + " >> "+filename
+    sh cmd
+  }
+}
+
+#---------------------------------------------------
+proc Skel_Gui( ) {
+  global_new
+
+  Skel_win = ParamWin("Skeletonization parameters")
+  Skel_win.BeginBook
+  Skel_win.AddPage("Init")
+
+    fh_id = Skel_win.AddBoolean(Skel_UseZoom)
+
+    Skel_win.BeginBox("Connected to point")
+      uip_id = Skel_win.AddBoolean(Skel_UseInitPoint)
+      vn_id  = Skel_win.AddInt    (Skel_VesselNumber,0,3)
+      pi_id  = Skel_win.AddEnum   (Skel_PointId,2)
+        Skel_win.AddEnumChoice(pi_id,"A")
+        Skel_win.AddEnumChoice(pi_id,"B")
+    Skel_win.EndBox
+
+    th_id  = Skel_win.AddFloat(Skel_Threshold, min(Skel_input),max(Skel_input))
+    fh_id  = Skel_win.AddBoolean(Skel_FillHoles)
+    mgt_id = Skel_win.AddBoolean(Skel_mask_with_gt)
+
+    ept_id = Skel_win.AddEnum(Skel_endpoint_type,3)
+      Skel_win.AddEnumChoice(ept_id,"line")
+      Skel_win.AddEnumChoice(ept_id,"surface")
+      Skel_win.AddEnumChoice(ept_id,"line \& surface")
+  
+  Skel_win.AddPage("Ordering")
+
+    flux_id = Skel_win.AddBoolean(Skel_InputIntensity)
+
+    Skel_win.BeginBox("Create sorting weights")
+      dt_id = Skel_win.AddEnum(Skel_Ordering,2)
+      Skel_win.AddEnumChoice(dt_id,"vtkPropDaniel2")
+      Skel_win.AddEnumChoice(dt_id,"Andre Robatino's")
+      flux_id = Skel_win.AddBoolean(Skel_UseFlux)
+    Skel_win.EndBox
+  
+  Skel_win.AddPage("Lines")
+    skel_id = Skel_win.AddEnum(Skel_linemethod,2)
+    Skel_win.AddEnumChoice(skel_id,"Skeleton2lines")
+    Skel_win.AddEnumChoice(skel_id,"vtkSkeleton2Lines")
+    Skel_win.BeginBox("Pruning selection")
+      prunesize_id = Skel_win.AddFloat(  Skel_prunesize,0.1,20)
+      Skel_win.BeginHorizontal
+        prunesel_id  = Skel_win.AddButton( "Select", Skel_SelectPrune)
+        prunerem_id  = Skel_win.AddButton( "Remove", Skel_RemovePrune)
+      Skel_win.EndHorizontal
+    Skel_win.EndBox
+    Skel_win.AddButton("Smooth Lines",  Skel_SmoothLines)
+
+  Skel_win.AddPage("Cor CTA")
+    Skel_win.AddButton("Compare with GT vessels", Skel_AddVessels)
+    Skel_win.AddButton("View CTA",                Skel_ViewCTA)
+
+  Skel_win.AddPage("Shortest paths")
+    Skel_win.BeginHorizontal
+      SP_start_id  = Skel_win.AddEnum   (Skel_SP_start,4)
+          Skel_win.AddEnumChoice(SP_start_id,"A")
+          Skel_win.AddEnumChoice(SP_start_id,"B")
+          Skel_win.AddEnumChoice(SP_start_id,"S")
+          Skel_win.AddEnumChoice(SP_start_id,"E")
+      SP_end_id  = Skel_win.AddEnum   (Skel_SP_end,4)
+          Skel_win.AddEnumChoice(SP_end_id,"A")
+          Skel_win.AddEnumChoice(SP_end_id,"B")
+          Skel_win.AddEnumChoice(SP_end_id,"S")
+          Skel_win.AddEnumChoice(SP_end_id,"E")
+    Skel_win.EndHorizontal
+    Skel_win.BeginHorizontal
+      show_sp_id = Skel_win.AddBoolean(Skel_show_starting_point)
+      show_ep_id = Skel_win.AddBoolean(Skel_show_ending_point)
+    Skel_win.EndHorizontal
+
+    pathmode_id  = Skel_win.AddEnum   (Skel_path_mode,2)
+      Skel_win.AddEnumChoice(pathmode_id,"Centerlines")
+      Skel_win.AddEnumChoice(pathmode_id,"Max. response")
+
+    FMmode_id  = Skel_win.AddEnum   (Skel_fm_mode,2)
+      Skel_win.AddEnumChoice(FMmode_id,"Dijkstra")
+      Skel_win.AddEnumChoice(FMmode_id,"Sethian's FM")
+
+    Skel_win.BeginBox("Smoothing")
+      Skel_win.AddBoolean(Skel_smooth_paths)
+      Skel_win.AddFloat (Skel_smooth_coeff,0.01,1)
+      Skel_win.AddFloat (Skel_smooth_data,0.01,1)
+      Skel_win.AddInt   (Skel_smooth_it,1,100)
+    Skel_win.EndBox
+
+    Skel_win.BeginHorizontal
+      Skel_win.AddButton("Create paths",  Skel_ShortestPaths)
+      Skel_win.AddButton("Save paths",    Skel_SavePaths)
+      Skel_win.AddButton("Print scores",  Skel_PrintScores)
+    Skel_win.EndHorizontal
+
+  Skel_win.EndBook
+
+  Skel_win.BeginHorizontal
+    flux_id = Skel_win.AddButton("Run",         Skel_Execute)
+    #flux_id = Skel_win.AddButton("CreateLines", Skel_Lines)
+    flux_id = Skel_win.AddButton("Display",     Skel_Display)
+  Skel_win.EndHorizontal
+
+  Skel_win.update
+  Skel_win.Display
+
+}
+
+
+if (Skel_useargs) {
+  Skel_Init(&im,th,dataid)
+  if (exists(Skel_maxrepfilename)) {
+    Skel_SetMaxRep(Skel_maxrepfilename)
+  }
+  Skel_Gui()
+}

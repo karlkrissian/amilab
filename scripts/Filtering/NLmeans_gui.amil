@@ -1,0 +1,509 @@
+#!/usr/bin/amilab
+
+#
+# Non Local Means GUI
+#
+# Based on the work of Buades et al.
+#
+
+# call 
+# NLM_init( IMAGE)
+#
+# result in NLM_res
+#
+
+# NLM_resultname = $2
+
+import_filters
+
+proc NLM_init( IMAGE _input) {
+    global_new
+    print "NLM_CreateParams\n"
+    NLM_input =  _input
+    NLM_noisetype = INT(1)
+    NLM_threads   = INT(2)
+    show NLM_input
+    # Patch window size
+    NLM_f = INT(4) 
+    # Match window area
+    NLM_t = INT(8)
+    # Threshold for distance 
+    NLM_h = 10
+    # Sigma: standard deviation of the Gaussian smoothing for fast version
+    NLM_sigma = 1
+    # use the norm of the gradient as a feature
+    NLM_usegrad = UCHAR(0)
+
+    # 0: standard 1: probability variant
+    NLM_filter_type = INT(0) 
+    # standard deviation of Gaussian pre-smoothing 
+    NLM_presmooth_SD = 0
+
+    # Number of iterations
+    NLM_iterations = INT(1)
+    NLM_Stop=0
+    NLM_ShowImages = UCHAR(1)
+    NLM_CreateWindow()
+    NLM_MSE = 0
+  print "NLM_CreateParams End\n"
+}
+
+proc NLM_SetGroundTruth( IMAGE gt, NUM sigma) {
+  global_new
+
+  NLM_groundtruth = gt
+  NLM_noisesigma  = sigma
+}
+
+proc ComputeMSE( IMAGE res) {
+  if exists(NLM_groundtruth) {
+    if (NLM_noisetype==1) {
+      res1=res*res-2*NLM_noisesigma*NLM_noisesigma
+      res1 = sqrt(res1*(res1>0))
+      mask = res1*0
+      if (exists(NLM_ROI)) {
+        smask = NLM_ROI*0+1
+        mask.putimage(smask)
+      } else {
+        mask = 1
+      }
+      NLM_MSE = mean[mask]((res1-NLM_groundtruth)*(res1-NLM_groundtruth))
+      printn sprint("MSE %3.5f \n",NLM_MSE)
+    } else {
+      mask = res*0
+      if (exists(NLM_ROI)) {
+        smask = NLM_ROI*0+1
+        mask.putimage(smask)
+      } else {
+        mask = 1
+      }
+      NLM_MSE = mean[mask]((res-NLM_groundtruth)*(res-NLM_groundtruth))
+      printn sprint("MSE %3.5f \n",NLM_MSE)
+    }
+  }
+}
+
+
+proc NLM_setinput( IMAGE _input) {
+  global_new
+
+    if (exists(NLM_input_draw)) {
+      del NLM_input_draw
+    }
+    if (exists(NLM_input)) {
+      del NLM_input
+    }
+    if (exists(NLM_res_draw)) {
+      del NLM_res_draw
+    }
+    if (exists(NLM_res)) {
+      del NLM_res
+    }
+    if (exists(imbox)) {
+      del imbox
+    }
+    NLM_input =  _input
+    show NLM_input
+}
+
+proc CB_NLM_ROI() {
+  global_new
+  if (exists(NLM_ROI)) {
+    del NLM_ROI
+  }
+  if (exists(NLM_input_draw)) {
+    NLM_ROI = NLM_input[NLM_input_draw]
+  }
+  CB_NLM_Display()
+}
+
+proc CB_NLM_Noise_ROI() {
+  global_new
+  if (exists(NLM_Noise_ROI)) {
+    del NLM_Noise_ROI
+  }
+  if (exists(NLM_input_draw)) {
+    NLM_Noise_ROI = NLM_input[NLM_input_draw]
+  }
+  CB_NLM_Display()
+}
+
+
+
+
+proc CB_NLM_Filter() {
+  global_new
+
+  NLM_Stop = 0
+  if (!exists(NLM_res)) {
+    NLM_res =  NLM_input
+  }
+  for k=1 to NLM_iterations {
+    if (!NLM_Stop) {
+    print sprint("Iteration %0.0f \n",k)
+    #InitTime
+    if (exists(NLM_ROI)) {
+      NLM_res0 = NLM_res[NLM_ROI]
+
+      if (NLM_res0.GetFormat != RGB) {
+        InitTime
+        NLM_res_roi = NLmeans((FLOAT)NLM_res0,\
+                              NLM_t,NLM_f,NLM_h,\
+                              NLM_noisetype,NLM_threads,\
+                              NLM_filter_type,\
+                              NLM_presmooth_SD)
+        EndTime
+        printn "processing time: "+TimeSpent
+      } else {
+        NLM_res_roi = NLM_res0
+        NLM_res_roi.info
+        NLM_res_roi[0] = NLmeans( (FLOAT)NLM_res0[0],\
+                                  NLM_t,NLM_f,NLM_h,\
+                                  NLM_noisetype,NLM_threads,\
+                                  NLM_filter_type,\
+                              NLM_presmooth_SD)
+        NLM_res_roi[1] = NLmeans( (FLOAT)NLM_res0[1],\
+                                  NLM_t,NLM_f,NLM_h,\
+                                  NLM_noisetype,NLM_threads,\
+                                  NLM_filter_type,\
+                              NLM_presmooth_SD)
+        NLM_res_roi[2] = NLmeans( (FLOAT)NLM_res0[2],\
+                                  NLM_t,NLM_f,NLM_h,\
+                                  NLM_noisetype,NLM_threads,\
+                                  NLM_filter_type,\
+                              NLM_presmooth_SD)
+      }
+
+      NLM_res0.info
+      NLM_res_roi.info
+      diff = sqrt(mean((NLM_res0-NLM_res_roi)*\
+                       (NLM_res0-NLM_res_roi)))
+      print sprint("Diff = %f \n",diff)
+      NLM_res.putimage(NLM_res_roi)
+    } else {
+      NLM_res0 = NLM_res
+
+      if (NLM_res0.GetFormat != RGB) {
+        NLM_res = NLmeans(NLM_res0,\
+                          NLM_t,NLM_f,NLM_h,\
+                          NLM_noisetype,NLM_threads,\
+                          NLM_filter_type,\
+                              NLM_presmooth_SD)
+      } else {
+        NLM_res[0] = NLmeans((FLOAT)NLM_res0[0],NLM_t,NLM_f,NLM_h,NLM_noisetype,NLM_threads,\
+                                  NLM_filter_type,\
+                              NLM_presmooth_SD)
+        NLM_res[1] = NLmeans((FLOAT)NLM_res0[1],NLM_t,NLM_f,NLM_h,NLM_noisetype,NLM_threads,\
+                                  NLM_filter_type,\
+                              NLM_presmooth_SD)
+        NLM_res[2] = NLmeans((FLOAT)NLM_res0[2],NLM_t,NLM_f,NLM_h,NLM_noisetype,NLM_threads,\
+                                  NLM_filter_type,\
+                              NLM_presmooth_SD)
+      }
+
+      diff = sqrt(mean((NLM_res0-NLM_res)*(NLM_res0-NLM_res)))
+      print sprint("Diff = %f \n",diff)
+    }
+    #EndTime
+    #printn "processing time: "+TimeSpent
+    if (NLM_ShowImages) {
+      show NLM_res
+      ProcessXEvents(50)
+    }
+    }
+    ComputeMSE(NLM_res)
+  }
+  if (exists(NLM_res0)) {
+    del NLM_res0
+  }
+  if (exists(NLM_res_roi)) {
+    del NLM_res_roi
+  }
+}
+
+proc ComputeMatchField() {
+  global_new
+
+  printn "ComputeMatchField()"
+
+  // Precomputes matching field
+  if (NLM_res.GetFormat != RGB) {
+    num_features = 1
+    if (NLM_usegrad) { num_features++; }
+    NLM_matchfield <<= Image( FLOAT,\
+                              num_features,\
+                              NLM_res);
+    current_feature = 0
+    NLM_matchfield[current_feature] = filter((FLOAT)NLM_res,NLM_sigma,0,0,0)
+    if (NLM_usegrad) {
+      current_feature++
+      NLM_matchfield[current_feature] = normgrad((FLOAT)NLM_res,NLM_sigma)*NLM_sigma
+    }
+    #NLM_matchfield[1] = secdergrad((FLOAT)NLM_res,NLM_sigma) 
+    #normgrad((FLOAT)NLM_res,NLM_sigma)
+  } else {
+    NLM_matchfield <<=  Image(FLOAT,6,NLM_res)
+    tmp <<= (FLOAT)NLM_res[0]
+    NLM_matchfield[0] = filter(  tmp,NLM_sigma,0,0,0)
+    NLM_matchfield[1] = normgrad(tmp,NLM_sigma)
+    tmp <<= (FLOAT)NLM_res[1]
+    NLM_matchfield[2] = filter(  tmp,NLM_sigma,0,0,0)
+    NLM_matchfield[3] = normgrad(tmp,NLM_sigma)
+    tmp <<= (FLOAT)NLM_res[2]
+    NLM_matchfield[4] = filter(  tmp,NLM_sigma,0,0,0)
+    NLM_matchfield[5] = normgrad(tmp,NLM_sigma)
+  }
+
+}
+
+proc CB_NLM_FastFilter() {
+  global_new
+
+  NLM_Stop = 0
+  NLM_res =  NLM_input
+  ComputeMatchField()
+
+  for k=1 to NLM_iterations {
+    if (!NLM_Stop) {
+    print sprint("Iteration %0.0f \n",k)
+    #InitTime
+    if (exists(NLM_ROI)) {
+      NLM_res0 = NLM_res[NLM_ROI]
+      NLM_mf0  = NLM_matchfield[NLM_ROI]
+      NLM_matchfield.info
+      NLM_mf0.info
+      NLM_ROI.info
+      if (NLM_res0.vdim != 3) {
+        InitTime
+        NLM_res_roi = NLmeans_fast((FLOAT)NLM_res0,NLM_mf0,NLM_t,NLM_h,NLM_noisetype,NLM_threads)
+        EndTime
+        printn "processing time: "+TimeSpent
+      } else {
+        NLM_res_roi = NLM_res0
+        NLM_res_roi[0] = NLmeans_fast((FLOAT) NLM_res0[0],NLM_mf0,NLM_t,NLM_h,NLM_noisetype,NLM_threads)
+        NLM_res_roi[1] = NLmeans_fast((FLOAT) NLM_res0[1],NLM_mf0,NLM_t,NLM_h,NLM_noisetype,NLM_threads)
+        NLM_res_roi[2] = NLmeans_fast((FLOAT) NLM_res0[2],NLM_mf0,NLM_t,NLM_h,NLM_noisetype,NLM_threads)
+      }
+      NLM_res0.info
+      NLM_res_roi.info
+      diff = sqrt(mean((NLM_res0-NLM_res_roi)*(NLM_res0-NLM_res_roi)))
+      print sprint("Diff = %f \n",diff)
+      NLM_res.putimage(NLM_res_roi)
+      printn "--- OK --- "
+    } else {
+      NLM_res0 <<= (FLOAT) NLM_res
+      printn "starting !"
+      if (NLM_res0.vdim != 3) {
+        printn  sprint(" t=%f ",NLM_t)+\
+                sprint(" h=%f ",NLM_h)+\
+                sprint(" noisetype=%f ",NLM_noisetype)+\
+                sprint(" threads=%f ",NLM_threads)
+        NLM_res0.info
+        printn  sprint(" min=%f ",min(NLM_res0))+\
+                sprint(" max=%f ",max(NLM_res0))
+        NLM_matchfield.info
+        printn  sprint(" min=%f ",min(NLM_matchfield))+\
+                sprint(" max=%f ",max(NLM_matchfield))
+
+        NLM_res = NLmeans_fast( NLM_res0,\
+                                NLM_matchfield,\
+                                NLM_t,\
+                                NLM_h,\
+                                NLM_noisetype,\
+                                NLM_threads)
+      } else {
+        NLM_res = NLM_res0
+        NLM_res[0] = NLmeans_fast((FLOAT)NLM_res0[0],NLM_matchfield,NLM_t,NLM_h,NLM_noisetype,NLM_threads)
+        NLM_res[1] = NLmeans_fast((FLOAT)NLM_res0[1],NLM_matchfield,NLM_t,NLM_h,NLM_noisetype,NLM_threads)
+        NLM_res[2] = NLmeans_fast((FLOAT)NLM_res0[2],NLM_matchfield,NLM_t,NLM_h,NLM_noisetype,NLM_threads)
+      }
+
+      diff = sqrt(mean((NLM_res0-NLM_res)*(NLM_res0-NLM_res)))
+      print sprint("Diff = %f \n",diff)
+    }
+    if (NLM_ShowImages) {
+      show NLM_res
+      ProcessXEvents(50)
+    }
+    }
+    ComputeMSE(NLM_res)
+  }
+
+  #  printn "freeing memory 1"
+  if (exists(NLM_res0)) {
+    del NLM_res0
+  }
+  #  printn "freeing memory 2"
+  if (exists(NLM_mf0)) {
+    del NLM_mf0
+  }
+  #  printn "freeing memory 3"
+  if (exists(NLM_res_roi)) {
+    del NLM_res_roi
+  }
+  #printn "end fast NLM"
+}
+
+
+proc CB_NLM_MRIFilter() {
+
+  if (!exists(NLM_res)) {
+    global::NLM_res =  NLM_input
+  }
+
+  InitTime
+  if (exists(NLM_Noise_ROI)) {
+
+      NLM_res = NLmeans_MRI(NLM_res,NLM_Noise_ROI,\
+                    NLM_t,NLM_h,NLM_sigma,\
+                    NLM_iterations,NLM_threads)
+
+    printn "--- OK --- "
+  } else {
+    print  "Please refine a ROI for "
+    printn "noise estimation ..."
+  }
+  EndTime
+  printn "processing time: "+TimeSpent
+  if (NLM_ShowImages) {
+    show NLM_res
+    ProcessXEvents(50)
+  }
+  ComputeMSE(NLM_res)
+
+}
+
+
+proc CB_NLM_Display() {
+
+  if (!exists(NLM_input_draw)) {
+    show NLM_input
+  }
+  // draw limits of ROI
+  if exists(NLM_ROI) {
+    roibox = (FLOAT)NLM_ROI*0+1
+    global::imbox  = (FLOAT)NLM_input*0
+    imbox.putimage(roibox)
+    del roibox
+    NLM_input_draw.SetIsoContour(0,imbox,0.5)
+    NLM_input_draw.DrawIsoContour(0,1)
+    show NLM_input
+  }
+  // draw limits of Noise ROI
+  if exists(NLM_Noise_ROI) {
+    roibox = (FLOAT)NLM_Noise_ROI*0+1
+    global::noise_imbox  = (FLOAT)NLM_input*0
+    noise_imbox.putimage(roibox)
+    del roibox
+    NLM_input_draw.SetIsoContour(1,noise_imbox,0.5)
+    NLM_input_draw.DrawIsoContour(1,1)
+    show NLM_input
+  }
+  if exists(NLM_res) {
+    show NLM_res
+    NLM_input_draw.compare(NLM_res_draw)
+  }
+}
+
+proc CB_NLM_DisplaySurfaces() {
+  global_new
+  if (NLM_input.tz==1)&&(NLM_input.GetFormat != RGB) {
+    if (exists(NLM_input_surf)) { del NLM_input_surf; }
+    if (exists(NLM_res_surf))   { del NLM_res_surf; }
+    if (exists(NLM_input)) { del NLM_input; }
+    if (exists(NLM_res))   { del NLM_res; }
+
+    NLM_input_surf = CreateFlatMesh(NLM_input,0)
+    NLM_res_surf   = CreateFlatMesh(NLM_res,0)
+    NLM_input_surf.ElevateMesh(NLM_input/10)
+    NLM_res_surf.ElevateMesh(NLM_res/10)
+    NLM_input_surf.Normals
+    NLM_res_surf.Normals
+    show NLM_input_surf
+    show NLM_res_surf
+    NLM_input_surf_draw.compare(NLM_res_surf_draw)
+  }
+}
+
+
+proc CB_NLM_Restart() {
+  global::NLM_res = NLM_input
+  show NLM_res
+}
+
+proc CB_NLM_Save() {
+  NLM_res.save "NLM_result.ami.gz"
+}
+
+proc CB_NLM_Stop() {
+  NLM_Stop = 1
+}
+
+
+proc NLM_CreateWindow() {
+  global_new
+  printn "NLM_CreateWindow() begin"
+
+  # parameters window
+  NLM_win = ParamWin("NL-means")
+  
+  NLM_win.BeginBook
+
+    NLM_win.AddPage("Params")
+      NLM_t_id = NLM_win.AddInt(NLM_t,1,30)
+      NLM_f_id = NLM_win.AddInt(NLM_f,1,10)
+  
+      NLM_h_id   = NLM_win.AddFloat(NLM_h,0.01,200)
+
+  
+    NLM_win.AddPage("Noise")
+        NLM_noisetype_id = NLM_win.AddEnum(NLM_noisetype,2)
+        NLM_Gauss_id  = NLM_win.AddEnumChoice(NLM_noisetype_id,"Add. Gaussian")
+        NLM_Rice_id   = NLM_win.AddEnumChoice(NLM_noisetype_id,"Rician (MRI)")
+        NoiseROI_id= NLM_win.AddButton("Select noise ROI", CB_NLM_Noise_ROI)
+
+    NLM_win.AddPage("Fast filter")
+      NLM_sig_id     = NLM_win.AddFloat(  NLM_sigma,0.5,10)
+      NLM_usegrad_id = NLM_win.AddBoolean(NLM_usegrad)
+
+    NLM_win.AddPage("Controls")
+    NLM_win.BeginBox("Controls")
+        NLM_it_id      = NLM_win.AddInt(NLM_iterations,1,50)
+        NLM_threads_id = NLM_win.AddInt(NLM_threads,1,10)
+        ROI_id     = NLM_win.AddButton("Select ROI", CB_NLM_ROI)
+        NLM_win.BeginHorizontal
+            restart_id = NLM_win.AddButton("Restart",     CB_NLM_Restart)
+            display_id = NLM_win.AddButton("Stop",    CB_NLM_Stop)
+        NLM_win.EndHorizontal
+
+        NLM_filtertype_id = NLM_win.AddEnum(NLM_filter_type)
+          NLM_win.AddEnumChoice(NLM_filtertype_id,"Standard")
+          NLM_win.AddEnumChoice(NLM_filtertype_id,"Probability")
+          NLM_win.AddEnumChoice(NLM_filtertype_id,"Probability with Smoothing")
+        NLM_presmooth_id     = NLM_win.AddFloat(  NLM_presmooth_SD,0,3)
+
+        NLM_win.BeginHorizontal
+            iterate_id = NLM_win.AddButton("Filter",     CB_NLM_Filter)
+            iterate_id = NLM_win.AddButton("Fast Filter",     CB_NLM_FastFilter)
+            iterate_id = NLM_win.AddButton("MRI Filter",     CB_NLM_MRIFilter)
+        NLM_win.EndHorizontal
+        NLM_win.BeginHorizontal
+            display_id = NLM_win.AddButton("Save",       CB_NLM_Save)
+            display_id = NLM_win.AddButton("Display",    CB_NLM_Display)
+        display_surf_id = NLM_win.AddButton("Display Surfaces",    CB_NLM_DisplaySurfaces)
+        NLM_win.EndHorizontal
+    NLM_win.EndBox
+  NLM_win.EndBook
+  
+  NLM_win.CreateWin
+  NLM_win.Display
+  NLM_win.update
+  printn "NLM_CreateWindow() end"
+}
+
+
+if (argc>=1) {
+  printn "reading image"
+  input = Image($1)
+  NLM_init( input)
+}

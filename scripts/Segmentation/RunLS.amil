@@ -1,0 +1,593 @@
+//--------------------------------------------------
+proc RunLS( IMAGE im, IMAGE initial, NUM lowth, NUM Imean, NUM Isd, NUM it, NUM graphics) {
+//   ------------
+
+  // number of threads (not used right now)
+  th = 10
+  
+  // every how many iterations call the graphic events
+  freq = 8
+
+
+  // 0:liana's, 1: fast marching 2: fast chamfer
+  method     = 2
+
+  v_x = im.vx
+  v_y = im.vy
+  v_z = im.vz
+
+
+  setvoxelsize(im,     1,1,1)
+  setvoxelsize(initial,1,1,1)
+
+  // Parameters:
+  //   1. grad threshold
+  //   2. iterations
+  //   3. attach coeff
+  //   4. curvcoeff
+  //   5. dt
+  //   6. reinitfreq
+
+  LevelSetsCURV.SetParam(0.7,it,0.5,0.2,0.6,6)
+  LevelSetsCURV.SetDistMethod(method)
+  LevelSetsCURV.SetThreads(th)
+  LevelSetsCURV.SetMeanCurv(0)
+
+  print "Compute Expansion Image \n"
+
+  print "Mean = "; print Imean;
+  print " SD = ";  print Isd;
+  print "\n"
+
+  LevelSetsCURV.SetILowTh(lowth)
+  LevelSetsCURV.SetNumGaussians(1)
+  LevelSetsCURV.SetGaussian(0,Imean,Isd)
+  LevelSetsCURV.SetProbThreshold(0.3)
+#  LevelSetsCURV.SetProbHighTh(Imean+Isd)
+  LevelSetsCURV.SetExpansion(0.5)
+  
+  print "Compute Expansion Image OK \n"
+
+  LevelSetsCURV.SetBandTube(3,2)
+
+  lres = LevelSetsCURV.init(im,initial)
+
+  if (graphics) {
+    show im
+    // sets the isocontour number 0 to the image 'initial' with threshold 0
+    im_draw.SetIsoContour(0,initial,0)
+    // sets the isocontour number 0 to be active
+    im_draw.DrawIsoContour(0,1)
+    im_draw.SetIsoContour(1,lres,0)
+    im_draw.DrawIsoContour(1,1)
+  }
+ 
+  LevelSetsCURV.iterate;
+
+  k = 0
+  for n=1 to it-1 { 
+    print n
+    LevelSetsCURV.iterate;
+    k = k+1
+    if (graphics)&&(k==freq) {
+      k = 0;
+      show im;
+      ProcessXEvents(500);
+    }
+
+  }
+
+  setvoxelsize( im, v_x, v_y, v_z)
+  setvoxelsize( initial, v_x, v_y, v_z)
+  setvoxelsize( lres, v_x, v_y, v_z)
+
+
+  if (graphics) {
+    print "del im_draw \n"
+    del im_draw
+  }
+
+  LevelSetsCURV.end
+
+  initial = lres/100;
+
+//  del lres
+//  del im
+
+}
+# RunLS()
+
+
+//--------------------------------------------------
+// 2 Gaussian for the intensity probability
+proc RunLS2Gauss( IMAGE im, IMAGE initial, NUM lowth, NUM Imean1, NUM Isd1, NUM Imean2, NUM Isd2, NUM it, NUM graphics) {
+//   ------------
+
+  // number of threads (not used right now)
+  th = 10
+  
+  // every how many iterations call the graphic events
+  freq = 8
+
+
+  // 0:liana's, 1: fast marching 2: fast chamfer
+  method     = 2
+
+  v_x = im.vx
+  v_y = im.vy
+  v_z = im.vz
+
+
+  setvoxelsize(im,     1,1,1)
+  setvoxelsize(initial,1,1,1)
+
+  // Parameters:
+  //   1. grad threshold
+  //   2. iterations
+  //   3. attach coeff
+  //   4. curvcoeff
+  //   5. dt
+  //   6. reinitfreq
+
+  LevelSetsCURV.SetParam(0.7,it,0.5,0.2,0.6,6)
+  LevelSetsCURV.SetDistMethod(method)
+  LevelSetsCURV.SetThreads(th)
+  LevelSetsCURV.SetMeanCurv(0)
+
+  print "Compute Expansion Image \n"
+
+  print "Mean1 = "; print Imean1;
+  print " SD1 = ";  print Isd1;
+  print "Mean2 = "; print Imean2;
+  print " SD2 = ";  print Isd2;
+  print "\n"
+
+  LevelSetsCURV.SetILowTh(lowth)
+  LevelSetsCURV.SetNumGaussians(2)
+  LevelSetsCURV.SetGaussian(0,Imean1,Isd1)
+  LevelSetsCURV.SetGaussian(1,Imean2,Isd2)
+  LevelSetsCURV.SetProbThreshold(0.3)
+#  LevelSetsCURV.SetProbHighTh(Imean+Isd)
+  LevelSetsCURV.SetExpansion(0.5)
+  
+  print "Compute Expansion Image OK \n"
+
+  LevelSetsCURV.SetBandTube(3,2)
+
+  lres = LevelSetsCURV.init(im,initial)
+
+  if (graphics) {
+    show im
+    // sets the isocontour number 0 to the image 'initial' with threshold 0
+    im_draw.SetIsoContour(0,initial,0)
+    // sets the isocontour number 0 to be active
+    im_draw.DrawIsoContour(0,1)
+    im_draw.SetIsoContour(1,lres,0)
+    im_draw.DrawIsoContour(1,1)
+  }
+ 
+  LevelSetsCURV.iterate;
+
+  k = 0
+  for n=1 to it-1 { 
+    print n
+    LevelSetsCURV.iterate;
+    k = k+1
+    if (graphics)&&(k==freq) {
+      k = 0;
+      show im;
+      ProcessXEvents(500);
+    }
+
+  }
+
+  setvoxelsize( im, v_x, v_y, v_z)
+  setvoxelsize( initial, v_x, v_y, v_z)
+  setvoxelsize( lres, v_x, v_y, v_z)
+
+
+  if (graphics) {
+    print "del im_draw \n"
+    del im_draw
+  }
+
+  LevelSetsCURV.end
+
+  initial = lres/100;
+
+//  del lres
+//  del im
+
+}
+# RunLS()
+
+
+//--------------------------------------------------
+// added balloon scheme
+//
+proc RunLS1( IMAGE im, IMAGE initial, NUM lowth, NUM Imean, NUM Isd, NUM it, NUM scheme, NUM graphics) {
+//   ------------
+
+  // number of threads (not used right now)
+  th = 10
+  
+  // every how many iterations call the graphic events
+  freq = 8
+
+
+  // 0:liana's, 1: fast marching 2: fast chamfer
+  method     = 2
+
+  v_x = im.vx
+  v_y = im.vy
+  v_z = im.vz
+
+
+  setvoxelsize(im,     1,1,1)
+  setvoxelsize(initial,1,1,1)
+
+  // Parameters:
+  //   1. grad threshold
+  //   2. iterations
+  //   3. attach coeff
+  //   4. curvcoeff
+  //   5. dt
+  //   6. reinitfreq
+
+//  LevelSetsCURV.SetParam(0.7,it,0.3,0.1,0.3,6)
+  LevelSetsCURV.SetParam(0.7,it,0.2,0.05,1,20)
+  LevelSetsCURV.SetDistMethod(method)
+  LevelSetsCURV.SetThreads(th)
+  LevelSetsCURV.SetMeanCurv(0)
+  LevelSetsCURV.SetBalloonScheme(scheme)
+
+  print "Compute Expansion Image \n"
+
+  print "Mean = "; print Imean;
+  print " SD = ";  print Isd;
+  print "\n"
+
+  LevelSetsCURV.SetILowTh(lowth)
+  LevelSetsCURV.SetNumGaussians(1)
+  LevelSetsCURV.SetGaussian(0,Imean,Isd)
+  LevelSetsCURV.SetProbThreshold(0.3)
+#  LevelSetsCURV.SetProbHighTh(Imean+Isd)
+  LevelSetsCURV.SetExpansion(0.7)
+  
+  print "Compute Expansion Image OK \n"
+
+  LevelSetsCURV.SetBandTube(3,2)
+
+  lres = LevelSetsCURV.init(im,initial)
+
+  if (graphics) {
+    show im
+    // sets the isocontour number 0 to the image 'initial' with threshold 0
+    im_draw.SetIsoContour(0,initial,0)
+    // sets the isocontour number 0 to be active
+    im_draw.DrawIsoContour(0,1)
+    im_draw.SetIsoContour(1,lres,0)
+    im_draw.DrawIsoContour(1,1)
+  }
+ 
+  LevelSetsCURV.iterate;
+
+  k = 0
+  for n=1 to it-1 { 
+    print n
+    LevelSetsCURV.iterate;
+    k = k+1
+    if (graphics)&&(k==freq) {
+      k = 0;
+      show im;
+      ProcessXEvents(500);
+    }
+
+  }
+
+  setvoxelsize( im, v_x, v_y, v_z)
+  setvoxelsize( initial, v_x, v_y, v_z)
+  setvoxelsize( lres, v_x, v_y, v_z)
+
+
+  if (graphics) {
+    print "del im_draw \n"
+    del im_draw
+  }
+
+  LevelSetsCURV.end
+
+  initial = lres/100;
+
+//  del lres
+//  del im
+
+}
+# RunLS1()
+
+
+//--------------------------------------------------
+// added gradient norm histogram threshold
+proc RunLS2( IMAGE im, IMAGE initial, NUM lowth, NUM Imean, NUM Isd, NUM grad_th, NUM it, NUM graphics) {
+//   ------------
+
+  // number of threads (not used right now)
+  th = 10
+  
+  // every how many iterations call the graphic events
+  freq = 8
+
+
+  // 0:liana's, 1: fast marching 2: fast chamfer
+  method     = 2
+
+  v_x = im.vx
+  v_y = im.vy
+  v_z = im.vz
+
+
+  setvoxelsize(im,     1,1,1)
+  setvoxelsize(initial,1,1,1)
+
+  // Parameters:
+  //   1. grad threshold
+  //   2. iterations
+  //   3. attach coeff
+  //   4. curvcoeff
+  //   5. dt
+  //   6. reinitfreq
+
+  LevelSetsCURV.SetParam(grad_th,it,0.5,0.2,0.6,6)
+  LevelSetsCURV.SetDistMethod(method)
+  LevelSetsCURV.SetThreads(th)
+  LevelSetsCURV.SetMeanCurv(0)
+
+  print "Compute Expansion Image \n"
+
+  print "Mean = "; print Imean;
+  print " SD = ";  print Isd;
+  print "\n"
+
+  LevelSetsCURV.SetILowTh(lowth)
+  LevelSetsCURV.SetNumGaussians(1)
+  LevelSetsCURV.SetGaussian(0,Imean,Isd)
+  LevelSetsCURV.SetProbThreshold(0.3)
+#  LevelSetsCURV.SetProbHighTh(Imean+Isd)
+  LevelSetsCURV.SetExpansion(0.5)
+  
+  print "Compute Expansion Image OK \n"
+
+  LevelSetsCURV.SetBandTube(3,2)
+
+  lres = LevelSetsCURV.init(im,initial)
+
+  if (graphics) {
+    show im
+    // sets the isocontour number 0 to the image 'initial' with threshold 0
+    im_draw.SetIsoContour(0,initial,0)
+    // sets the isocontour number 0 to be active
+    im_draw.DrawIsoContour(0,1)
+    im_draw.SetIsoContour(1,lres,0)
+    im_draw.DrawIsoContour(1,1)
+  }
+ 
+  LevelSetsCURV.iterate;
+
+  k = 0
+  for n=1 to it-1 { 
+    print n
+    LevelSetsCURV.iterate;
+    k = k+1
+    if (graphics)&&(k==freq) {
+      k = 0;
+      show im;
+      ProcessXEvents(500);
+    }
+
+  }
+
+  setvoxelsize( im, v_x, v_y, v_z)
+  setvoxelsize( initial, v_x, v_y, v_z)
+  setvoxelsize( lres, v_x, v_y, v_z)
+
+
+  if (graphics) {
+    print "del im_draw \n"
+    del im_draw
+  }
+
+  LevelSetsCURV.end
+
+  initial = lres/100;
+
+//  del lres
+//  del im
+
+}
+# RunLS2()
+
+
+//--------------------------------------------------
+proc ExpandLS( IMAGE im, IMAGE initial, NUM lowth, NUM Imean, NUM Isd, NUM it, NUM scheme, NUM graphics) {
+//   ------------
+
+  // number of threads (not used right now)
+  th = 10
+  
+  // every how many iterations call the graphic events
+  freq = 8
+
+
+  // 0:liana's, 1: fast marching 2: fast chamfer
+  method     = 2
+
+  v_x = im.vx
+  v_y = im.vy
+  v_z = im.vz
+
+
+  setvoxelsize(im,     1,1,1)
+  setvoxelsize(initial,1,1,1)
+
+  // Parameters:
+  //   1. grad threshold
+  //   2. iterations
+  //   3. attach coeff
+  //   4. curvcoeff
+  //   5. dt
+  //   6. reinitfreq
+
+  LevelSetsCURV.SetParam(0.7,it,0.0,0.0,0.3,6)
+  LevelSetsCURV.SetDistMethod(method)
+  LevelSetsCURV.SetThreads(th)
+  LevelSetsCURV.SetMeanCurv(0)
+
+  LevelSetsCURV.SetBalloonScheme(scheme)
+
+  print "Compute Expansion Image \n"
+
+
+  LevelSetsCURV.SetILowTh(lowth)
+  LevelSetsCURV.SetNumGaussians(1)
+  LevelSetsCURV.SetGaussian(0,Imean,Isd)
+  LevelSetsCURV.SetProbThreshold(0.3)
+#  LevelSetsCURV.SetProbHighTh(Imean+Isd)
+  LevelSetsCURV.SetExpansion(0.5)
+  
+  print "Compute Expansion Image OK \n"
+
+  LevelSetsCURV.SetBandTube(4,2)
+
+  lres = LevelSetsCURV.init(im,initial)
+
+  if (graphics) {
+    show im
+    // sets the isocontour number 0 to the image 'initial' with threshold 0
+    im_draw.SetIsoContour(0,initial,0)
+    // sets the isocontour number 0 to be active
+    im_draw.DrawIsoContour(0,1)
+    im_draw.SetIsoContour(1,lres,0)
+    im_draw.DrawIsoContour(1,1)
+  }
+ 
+  LevelSetsCURV.iterate;
+
+  k = 0
+  for n=1 to it-1 { 
+    print n
+    LevelSetsCURV.iterate;
+    k = k+1
+    if (graphics)&&(k==freq) {
+      k = 0;
+      show im;
+      ProcessXEvents(500);
+    }
+
+  }
+
+  setvoxelsize( im, v_x, v_y, v_z)
+  setvoxelsize( initial, v_x, v_y, v_z)
+  setvoxelsize( lres, v_x, v_y, v_z)
+
+
+  if (graphics) {
+    print "del im_draw \n"
+    del im_draw
+  }
+
+  LevelSetsCURV.end
+
+  initial = lres/100;
+
+//  del lres
+//  del im
+
+}
+# ExpandLS()
+
+
+//--------------------------------------------------
+proc SmoothLS( IMAGE im, IMAGE initial, NUM it, NUM graphics, NUM mean_curv) {
+//   ------------
+
+  // number of threads (not used right now)
+  th = 10
+  
+  // every how many iterations call the graphic events
+  freq = 8
+
+
+  // 0:liana's, 1: fast marching 2: fast chamfer
+  method     = 2
+
+  v_x = im.vx
+  v_y = im.vy
+  v_z = im.vz
+
+
+  setvoxelsize(im,     1,1,1)
+  setvoxelsize(initial,1,1,1)
+
+  // Parameters:
+  //   1. grad threshold
+  //   2. iterations
+  //   3. attach coeff
+  //   4. curvcoeff
+  //   5. dt
+  //   6. reinitfreq
+
+  LevelSetsCURV.SetParam(0.7,it,0,0.3,0.5,6)
+  LevelSetsCURV.SetDistMethod(method)
+  LevelSetsCURV.SetThreads(th)
+  LevelSetsCURV.SetMeanCurv(mean_curv)
+
+  LevelSetsCURV.SetExpansion(0)
+  LevelSetsCURV.SetBandTube(3,2)
+  lres = LevelSetsCURV.init(im,initial)
+
+  if (graphics) {
+    show im
+    // sets the isocontour number 0 to the image 'initial' with threshold 0
+    im_draw.SetIsoContour(0,initial,0)
+    // sets the isocontour number 0 to be active
+    im_draw.DrawIsoContour(0,1)
+    im_draw.SetIsoContour(1,lres,0)
+    im_draw.DrawIsoContour(1,1)
+  }
+ 
+  LevelSetsCURV.iterate;
+
+  k = 0
+  for n=1 to it-1 { 
+    print n
+    LevelSetsCURV.iterate;
+    k = k+1
+    if (graphics)&&(k==freq) {
+      k = 0;
+      show im;
+      ProcessXEvents(500);
+    }
+
+  }
+
+  setvoxelsize( im, v_x, v_y, v_z)
+  setvoxelsize( initial, v_x, v_y, v_z)
+  setvoxelsize( lres, v_x, v_y, v_z)
+
+
+  if (graphics) {
+    print "del im_draw \n"
+    del im_draw
+  }
+
+  LevelSetsCURV.end
+
+  initial = lres/100;
+
+//  del lres
+//  del im
+
+}
+# SmoothLS()
+
+

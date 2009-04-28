@@ -1,0 +1,46 @@
+#!/usr/bin/amilab
+
+
+func "Centerlines/MultiLines.amil"
+
+#--------------------------------------------------
+# MAIN
+#
+
+printn argc
+
+if (argc<5) {
+  printn "needs at least 5 arguments"
+  quit
+}
+
+input_name=$1
+input_image=Image(input_name)
+output_name=$2
+radmin=atof($3)
+radmax=atof($4)
+numrad=atof($5)
+printn numrad
+if (argc==6) {
+  GB_mask=Image($6)
+} else {
+  GB_mask = input_image
+}
+GB_mask <<= (UCHAR) (GB_mask>0.1)*255
+
+result=Image(FLOAT,1,input_image)
+result.initvalue(0)
+result.SetName(output_name)
+
+maxres = result
+radim = result
+
+#MultiLines(input_image,&result,&maxres,&radim,radmin,radmax,numrad,GB_mask,1)
+MultiLines_new(&input_image,&result,radmin,radmax,numrad,&GB_mask,1)
+
+#name=output_name-".gz"-".inr"-".ami"-".vtk"+"-maxresponse.ami.gz"
+result.save output_name
+
+#show input_image
+#show result
+quit

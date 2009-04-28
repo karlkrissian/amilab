@@ -1,0 +1,311 @@
+#!/home/karl/projects/bin/linux/improcess
+#
+#
+# Parameters
+
+#
+# Image type: Atlantic or Africa
+#
+
+type_string=$1
+
+# type_string="NAtl"
+# type_string="AfGG"
+
+filtering = atof($2)
+
+if (type_string=="NAtl") {
+  type_image=0
+}
+if (type_string=="AfGG") {
+  type_image=1
+}
+
+
+# rescaling of the altitudes
+alt_factor = 4
+
+# number of images to display the classification
+total_class = 20*2
+
+# number of images of the change of view
+#num_views (1,4,5,6,7,8,9,10,11)
+total_view = 20*2
+total = total_view*5
+
+#
+total_rotate=50*2
+
+
+# number of images for the vectors opacity
+total_vectors = 20*2
+
+#
+total_vectors_trans=20*2
+total_final = 10
+
+#
+#
+#
+nb_images= total_class + total + total_rotate + total_vectors + total_final
+
+
+j0 = Image("/home/karl/projects/Tests/Fluid/WP01/package_02_LMD/images/"+type_string+"_c0.81.ami")
+j1 = j0[:,:,1:1]
+
+# Without filtering
+if (filtering != 1) {
+  i0  = Image("/home/karl/projects/Tests/Fluid/Cloud/"+type_string+"_CLA_scene_analysis.48.ami")
+  t = Image("/home/karl/projects/Tests/Fluid/WP01/package_02_LMD/images/"+type_string+"_c10.8.ami")
+  t48 = t[:,:,1:1]
+  i1 = i0[:,:,0:0]
+} else {
+  # with filtering
+  t48 = Image "AfGG_c10.8.48_filtered.ami.gz"
+  i1  = Image "AfGG_CLA_scene_analysis.48_filtered.ami.gz"
+}
+
+j1min=min(j1)
+j1max=max(j1)
+
+coeff=Image "alt_coeff.ami.gz"
+alt48 = ComputeAltitudes(t48,coeff)
+alt48 = alt48*alt_factor
+
+pos=Altitude2Position(alt48,type_image)
+
+proc ProcessMesh(SURFACE _s,IMAGE _j1, NUM _j1min, NUM _j1max, IMAGE _pos) {
+  _s.SetColors(_j1,_j1min,_j1max)
+  _s.ElevateMesh(_pos)
+  _s.Normals
+  _s.Recompute
+}
+
+
+earth  = CreateFlatMesh(i1>=0)
+
+epsilon=0.5-0.2
+
+cloudg = CreateFlatMesh(i1,100-epsilon,100+epsilon)
+cloudl = CreateFlatMesh(i1,101-epsilon,103+epsilon)
+cloudm = CreateFlatMesh(i1,104-epsilon,106+epsilon)
+cloudh = CreateFlatMesh(i1,107-epsilon,109+epsilon)
+cloudu = CreateFlatMesh(i1,110-epsilon,200)
+
+#cloudg = CreateFlatMesh((i1>=100-epsilon)*(i1<=100+epsilon))
+#cloudl = CreateFlatMesh((i1>=101-epsilon)*(i1<=103+epsilon))
+#cloudm = CreateFlatMesh((i1>=104-epsilon)*(i1<=106+epsilon))
+#cloudh = CreateFlatMesh((i1>=107-epsilon)*(i1<=109+epsilon))
+#cloudu = CreateFlatMesh((i1>=110-epsilon))
+
+j2 = j1*(i1<100)
+
+// substract 10m to avoid collision with clouds (OpenGL problem) ...
+pos1=Altitude2Position(alt48*(i1<100)-10,type_image) 
+
+
+ProcessMesh(&earth ,j2,j1min,j1max,pos1)
+
+
+ProcessMesh(&cloudg,j1,j1min,j1max,pos)
+ProcessMesh(&cloudl,j1,j1min,j1max,pos)
+ProcessMesh(&cloudm,j1,j1min,j1max,pos)
+ProcessMesh(&cloudh,j1,j1min,j1max,pos)
+ProcessMesh(&cloudu,j1,j1min,j1max,pos)
+
+
+
+show earth
+earth_draw += cloudg
+earth_draw += cloudl
+earth_draw += cloudm
+earth_draw += cloudh
+earth_draw += cloudu
+
+earth_draw.SetLightDiffuse(0,180,180,180)
+
+// Set colormaterial ON
+earth. SetColorMaterial(1)
+cloudg.SetColorMaterial(1)
+cloudl.SetColorMaterial(1)
+cloudm.SetColorMaterial(1)
+cloudh.SetColorMaterial(1)
+cloudu.SetColorMaterial(1)
+
+earth_draw.rotate(0,-90,0)
+earth_draw.rotate(0,0,-90)
+
+// Set the view
+view1 = TRANSFORM("view1.txt")
+earth_draw.SetTransform(view1)
+
+earth_draw.Paint
+earth_draw.SetBackground(5,5,40)
+earth_draw.SetWindowSize(600,670)
+
+im1 = earth_draw.getimage
+
+
+
+
+
+// Set Colors
+cloudg.SetAmbient( 195, 195, 195 )
+cloudl.SetAmbient( 224,   0,   0 ) 
+cloudm.SetAmbient( 222, 222,   0 )
+cloudh.SetAmbient( 0,   254, 252 )
+cloudu.SetAmbient( 195, 195, 195 )
+
+cloudg.SetColorMaterial(0)
+cloudl.SetColorMaterial(0)
+cloudm.SetColorMaterial(0)
+cloudh.SetColorMaterial(0)
+cloudu.SetColorMaterial(0)
+
+// Update ???
+earth_draw.Paint
+im2 = earth_draw.getimage
+
+anim = Image(RGB,im1.tx,im1.ty,nb_images)
+anim_current=0
+
+for k=0 to total_class-1 {
+  tmp = k/(total_class-1)
+  im = im1*(1-tmp) + im2*tmp
+  anim.putimage(im,0,0,anim_current)
+  anim_current = anim_current + 1
+}
+del tmp
+
+// set the display limits ...
+// enable cullface
+
+// Go to the second view 1-->4
+
+//-------------------------------------------------------------------------------
+proc GenerateViews(STRING _st1, STRING _st2, IMAGE _anim, NUM _total) {
+//   -------------
+  _viewinit = TRANSFORM(_st1)
+  _viewend  = TRANSFORM(_st2)
+
+  for _n=0 to _total-1 {
+    _vtmp = Interpolate(_viewinit,_viewend,_n/(_total-1))
+    earth_draw.SetTransform(_vtmp)
+    del _vtmp
+    _im1 =  earth_draw.getimage
+    anim.putimage(_im1,0,0,anim_current)
+    anim_current = anim_current + 1
+  }
+  del _viewinit
+  del _viewend
+}
+//-------------------------------------------------------------------------------
+
+
+// Rotate
+GenerateViews("view1.txt","view4.txt",      &anim,total_view)
+// Get Closer
+GenerateViews("view4.txt",  "view5.txt",    &anim,total_view)
+GenerateViews("view5.txt",  "view5_1.txt",  &anim,total_view)
+GenerateViews("view5_1.txt","view5_1_1.txt",&anim,total_view)
+
+// Rotate 360 degrees
+for n=1 to total_rotate {
+  earth_draw.rotate(0,360/total_rotate,0)
+  im1 =  earth_draw.getimage
+  anim.putimage(im1,0,0,anim_current)
+  anim_current = anim_current + 1
+}
+
+GenerateViews("view5_1_1.txt","view12.txt",&anim,total_view)
+
+#GenerateViews("view6.txt","view7.txt",&anim,total_view)
+#GenerateViews("view7.txt","view8.txt",&anim,total_view)
+#GenerateViews("view8.txt","view9.txt",&anim,total_view)
+#GenerateViews("view9.txt","view10.txt",&anim,total_view)
+#GenerateViews("view10.txt","view11.txt",&anim,total_view)
+#GenerateViews("view11.txt","view6.txt",&anim,total_view)
+
+
+
+
+// save models ???
+
+
+// Set the colors
+
+if (filtering != 1) {
+  # without filtering
+  t49 = t[:,:,2:2]
+} else {
+  # with filtering
+  t49 = Image "AfGG_c10.8.49_filtered.ami.gz"
+}
+
+alt49 = ComputeAltitudes(t49,coeff)*alt_factor
+
+
+# Calculo de vectores
+if (type_string=="NAtl") {
+  displ   = ReadFlow("test_arrows/01test_NAtl_SF_3_0.3_0.0_0.0_0.3_.uv_v2.txt")
+} else {
+  displ   = ReadFlow("test_arrows/01test_AfGG_SF_4_0.3_0.0_0.0_0.3_.uv_v2.txt")
+}
+
+displ1  =  displ*(i1>=107-epsilon)*(i1<=109+epsilon)
+alt48_2 =  alt48*(i1>=107-epsilon)*(i1<=109+epsilon)
+alt49_2 =  alt49*(i1>=107-epsilon)*(i1<=109+epsilon)
+
+vect1      = CreateVectors(alt48_2,displ1,alt49_2,6,6,3,type_image)
+vect1.SetColor(0,0,255)
+
+vect1. SetColorMaterial(0)
+vect1.SetAmbient(10,10,200)
+vect1.SetOpacity(0)
+
+earth_draw += vect1
+
+for n=1 to total_vectors {
+  vect1.SetOpacity(n/total_vectors)
+  earth_draw.Paint
+  im1 =  earth_draw.getimage
+  anim.putimage(im1,0,0,anim_current)
+  anim_current = anim_current + 1
+}
+
+for n=1 to total_final {
+  anim.putimage(im1,0,0,anim_current)
+  anim_current = anim_current + 1  
+}
+
+
+#for n=1 to total_vectors_trans {
+#  cloudl.SetOpacity(1-n/total_vectors_trans*0.7)
+#  cloudm.SetOpacity(1-n/total_vectors_trans*0.7)
+#  cloudh.SetOpacity(1-n/total_vectors_trans*0.7)
+#  earth_draw.Paint
+#  im1 =  earth_draw.getimage
+#  anim.putimage(im1,0,0,anim_current)
+#  anim_current = anim_current + 1
+#}
+
+
+
+#GenerateViews("view5_1.txt","view5_2.txt",&anim,total_view)
+#GenerateViews("view5_2.txt","view1.txt",&anim,total_view)
+
+
+ssanim = anim[:,:,0:anim_current-1]
+
+show ssanim
+
+
+#
+# view5   = TRANSFORM("view5.txt")
+# view5_1 = TRANSFORM("view5_1.txt")
+# view5_2 = TRANSFORM("view5_2.txt")
+#
+# earth_draw.SetTransform(view5)
+# earth_draw.SetTransform(view5_1)
+# earth_draw.SetTransform(view5_2)
+#

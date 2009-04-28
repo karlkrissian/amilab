@@ -1,0 +1,26 @@
+
+***** GetImageFromX: snapshot of a surface drawing window *******
+
+token(s):
+T_GetImageFromX		GetImageFromX
+
+rule(s):
+image <-- VAR_SURFDRAW  '.' T_GetImageFromX
+
+
+parameters
+  # VAR_SURFDRAW
+
+description:
+Save the snapshot as a 2D image of format RGB.
+In the case of an image, the snapshot is taken from X11
+as opposed to getimage, which takes the image using 
+OpenGL.
+
+
+
+See Also:
+	getimage
+
+
+******************************

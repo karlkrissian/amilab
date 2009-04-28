@@ -1,0 +1,74 @@
+
+dimx=20
+dimy=20
+dimz=20
+radius = 3
+
+
+proc CreateTorusTensor( IMAGE t, NUM vx, NUM vy, NUM vz, NUM rad1, NUM rad2) {
+  i = Image(FLOAT,dimx,dimy,dimz)
+  ix = (FLOAT) Xpos(i)
+  iy = (FLOAT) Ypos(i)
+  iz = (FLOAT) Zpos(i)
+
+  ix = ix-i.tx/2
+  iy = iy-i.ty/2
+  iz = iz-i.tz/2
+
+  nv = sqrt(vx*vx+vy*vy+vz*vz)
+
+
+  orth_proj = (ix*vx+iy*vy+iz*vz)/nv
+  base_proj = sqrt(ix*ix+iy*iy+iz*iz-orth_proj)
+
+  smallbase_proj = base_proj -rad1
+
+  smallrad = sqrt(smallbase_proj*smallbase_proj+orth_proj*orth_proj)
+
+  torus = (smallrad<rad2)
+
+  // eigenvectors
+  dir = Image(FLOAT,dimx,dimy,dimz,3)
+  dir.initvalue(vx,vy,vz)
+
+  pos = dir
+  pos[0]=ix
+  pos[1]=iy
+  pos[2]=iz
+
+  // create vector tangent to the torus
+  tangent = pos^dir
+  tangent = tangent/norm(tangent)
+
+  liso = 0.05
+  ldir = 0.2
+
+  n=0
+  for k=0 to 2 {
+  for l=0 to 2 {
+    temp = tangent[k]*tangent[l]*ldir
+    temp = temp*torus
+    t[n] = temp
+    n=n+1
+  }
+  }
+printn "iso"
+  // add isotropic component
+  t[0] = t[0]+torus*liso
+  t[4] = t[4]+torus*liso
+  t[8] = t[8]+torus*liso
+}
+
+
+t1 = Image(FLOAT,dimx,dimy,dimz,9)
+CreateTorusTensor(&t1,0,0,1,7,2)
+
+t2 = Image(FLOAT,dimx,dimy,dimz,9)
+CreateTorusTensor(&t2,0,1,0,7,2)
+
+t3 = t1+t2
+
+t1.save "torus_tensor.vtk"
+t3.save "torus_tensor2.vtk"
+
+quit

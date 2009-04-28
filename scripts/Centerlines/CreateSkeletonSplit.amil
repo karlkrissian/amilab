@@ -1,0 +1,62 @@
+
+func "CreateSkeleton"
+
+proc CreateSkeletonSplit( IMAGE _in, NUM _th, IMAGE _res1) {
+
+// split the image in 8 parts
+dx2 = (INT) (_in.tx/2)
+dy2 = (INT) (_in.ty/2)
+dz2 = (INT) (_in.tz/2)
+
+
+for _x=0 to 1 {
+for _y=0 to 1 {
+for _z=0 to 1 {
+
+   margin=15
+
+   roi_minx=_x*dx2
+   roi_maxx=_x*dx2+dx2-1
+   roi_miny=_y*dy2
+   roi_maxy=_y*dy2+dy2-1
+   roi_minz=_z*dz2
+   roi_maxz=_z*dz2+dz2-1
+
+   margin_xmin=0
+   margin_xmax=0
+   margin_ymin=0
+   margin_ymax=0
+   margin_zmin=0
+   margin_zmax=0
+
+   if (roi_minx-margin>=0)     { margin_xmin=-margin; }
+   if (roi_maxx+margin<_in.tx) { margin_xmax= margin; }
+
+   if (roi_miny-margin>=0)     { margin_ymin=-margin; }
+   if (roi_maxy+margin<_in.ty) { margin_ymax= margin; }
+
+   if (roi_minz-margin>=0)     { margin_zmin=-margin; }
+   if (roi_maxz+margin<_in.tz) { margin_zmax= margin; }
+
+
+
+  _si = _in[roi_minx+margin_xmin:roi_maxx+margin_xmax,roi_miny+margin_ymin:roi_maxy+margin_ymax,roi_minz+margin_zmin:roi_maxz+margin_zmax]
+
+  sres = (FLOAT) _si
+  CreateSkeleton(_si,_th,&sres)
+
+  sres.settranslation(_si.trx,_si.try,_si.trz)  
+  
+  sres1=sres[-margin_xmin:sres.tx-1-margin_xmax,-margin_ymin:sres.ty-1-margin_ymax,-margin_zmin:sres.tz-1-margin_zmax]
+
+  sres1.settranslation(sres.trx-margin_xmin,sres.try-margin_ymin,sres.trz-margin_zmin)
+
+  _res1.putimage(sres1)
+  del _si
+  del sres
+  del sres1
+}
+}
+}
+
+}

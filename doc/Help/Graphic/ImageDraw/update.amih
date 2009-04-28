@@ -1,0 +1,17 @@
+
+***** VAR_IMAGEDRAW.UPDATE *****
+
+token(s):
+UPDATE  update
+
+rule(s):
+commande -> VAR_IMAGEDRAW '.' UPDATE
+
+
+
+description:
+updates the image that is drawn in the specified window.
+
+
+
+******************************

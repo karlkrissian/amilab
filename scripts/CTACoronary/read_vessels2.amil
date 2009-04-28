@@ -1,0 +1,75 @@
+#!/usr/bin/amilab 
+
+v0 = ReadCTALine("vessel0/reference.txt")
+v1 = ReadCTALine("vessel1/reference.txt")
+v2 = ReadCTALine("vessel2/reference.txt")
+v3 = ReadCTALine("vessel3/reference.txt")
+
+v0.save "vessel0.vtk"
+v1.save "vessel1.vtk"
+v2.save "vessel2.vtk"
+v3.save "vessel3.vtk"
+
+show v0
+v0_draw += v1
+v0_draw += v2
+v0_draw += v3
+
+i = Image "maximal_response.vtk"
+
+s = isosurf(i,7.5)
+
+s.SetOpacity(0.5)
+v0_draw += s
+
+
+proc UpdateMinMax( SURFACE _s ) {
+
+  imx = _s.GetIntensities(ix)
+  tmp = min(imx)
+  min_x = (tmp<min_x)?tmp:min_x
+  tmp = max(imx)
+  max_x = (tmp>max_x)?tmp:max_x
+  print sprint(" x in [ %0.0f, ",min_x)
+  print sprint(" %0.0f]",        max_x)
+
+  imy = _s.GetIntensities(iy)
+  tmp = min(imy)
+  min_y = (tmp<min_y)?tmp:min_y
+  tmp = max(imy)
+  max_y = (tmp>max_y)?tmp:max_y
+  print sprint(" y in [ %0.0f, ",min_y)
+  print sprint(" %0.0f]",        max_y)
+
+  imz = _s.GetIntensities(iz)
+  tmp = min(imz)
+  min_z = (tmp<min_z)?tmp:min_z
+  tmp = max(imz)
+  max_z = (tmp>max_z)?tmp:max_z
+  print sprint(" z in [ %0.0f, ",min_z)
+  print sprint(" %0.0f]\n",      max_z)
+
+}
+
+
+// Get Limits in voxel coordinates for image i
+ix = Xpos(i)
+iy = Ypos(i)
+iz = Zpos(i)
+min_x = i.tx
+max_x = 0
+min_y = i.ty
+max_y = 0
+min_z = i.tz
+max_z = 0
+UpdateMinMax(&v0)
+UpdateMinMax(&v1)
+UpdateMinMax(&v2)
+UpdateMinMax(&v3)
+
+// Get a subvolume 
+margin = 10
+
+subi = i[min_x-margin:max_x+margin,\
+         min_y-margin:max_y+margin,\
+         min_z-margin:max_z+margin]

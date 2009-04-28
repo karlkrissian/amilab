@@ -1,0 +1,27 @@
+
+***** SetAmbient: set the ambient color *******
+
+token(s):
+T_SetAmbient	SetAmbient
+
+rule(s):
+image <-- VAR_SURFACE '.' T_SetAmbient '(' expr ',' expr ',' expr ')'
+
+
+parameters
+  # VAR_SURFACE
+  # expr: red   (0-255)
+  # expr: green (0-255)
+  # expr: blue  (0-255)
+
+description:
+Sets the ambient color of a surface.
+
+
+
+See Also:
+	SetDiffuse, SetSpecular, SetShininess, OwnMaterial, SetOpacity,
+	SetVisible, SetColorMaterial, SetColor, SetColors, SetPointsColors
+
+
+******************************

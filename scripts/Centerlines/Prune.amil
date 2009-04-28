@@ -1,0 +1,18 @@
+
+#
+# Select the lines to prune
+#
+proc SelectPrune(SURFACE _s, NUM threshold) {
+#    -----------
+  local::_i = _s.GetLinesLength()
+  show vars
+  _i.info
+  local::_con = _s.GetConnections()
+  local::_ext = _s.GetLinesExtremities()
+  local::_ext1=_ext[0:_ext.tx-1,0:0,0:0]
+  local::_ext2=_ext[0:_ext.tx-1,1:1,0:0]
+  local::_ext1c=_con(_ext1)
+  local::_ext2c=_con(_ext2)
+  _s.SelectLines((_i<threshold)*((_ext1c==1)+(_ext2c==1)))
+#
+}

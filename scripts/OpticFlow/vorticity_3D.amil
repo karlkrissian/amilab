@@ -1,0 +1,114 @@
+
+proc Vorticity(IMAGE _i, IMAGE _res) {	
+	// vector components:	
+	_u = _i[0]
+	_v = _i[1]
+	_w = _i[2]	
+
+	// coordinates image:
+	p = _i;
+
+	// X direction:
+	p[0] = Xpos(p)+1;
+	p[1] = Ypos(p);
+	p[2] = Zpos(p);
+	vxp = _v(p);
+	wxp = _w(p);
+	p[0] = Xpos(p)-1;
+	vxm = _v(p);
+	wxm = _w(p);
+	Eyx = (vxp-vxm)/(2*_i.vx)
+	Ezx = (wxp-wxm)/(2*_i.vx)
+	del vxp; del vxm; del wxp; del wxm;	
+	
+	// Y direction:
+	p[0] = Xpos(p);
+	p[1] = Ypos(p)+1;    
+	uyp = _u(p)
+	wyp = _w(p)
+	p[1] = Ypos(p)-1;
+	uym = _u(p)
+	wym = _w(p)
+	Exy = (uyp-uym)/(2*_i.vy);
+	Ezy = (wyp-wym)/(2*_i.vy);
+	del uyp; del uym; del wyp; del wym;
+	
+	// Z direction:
+	p[1] = Ypos(p);
+	p[2] = Zpos(p)+1;
+	uzp = _u(p);
+	vzp = _v(p);
+	p[2] = Zpos(p)-1;
+	uzm = _u(p);
+	vzm = _v(p);
+	Exz = (uzp-uzm)/(2*_i.vz);
+	Eyz = (vzp-vzm)/(2*_i.vz);	
+	del uzp; del vzp; del uzm; del vzm;	
+
+	// Result:
+	_res[0] = (Ezy-Eyz);
+	_res[1] = (Exz-Ezx);
+	_res[2] = (Eyx-Exy);
+}
+
+
+proc VorticityGauss(IMAGE _i, IMAGE _res, NUM _sigma) {
+    // vector components:   
+    _u = _i[0]
+    _v = _i[1]
+    _w = _i[2]  
+
+    // X direction:
+    Eyx = filter(_v,_sigma,1,0,0)
+    Ezx = filter(_w,_sigma,1,0,0)
+    
+    // Y direction:
+    Exy = filter(_u,_sigma,0,1,0)
+    Ezy = filter(_w,_sigma,0,1,0)
+    
+    // Z direction:
+    Exz = filter(_u,_sigma,0,0,1)
+    Eyz = filter(_v,_sigma,0,0,1)
+
+    // Result:
+    _res[0] = (Ezy-Eyz);
+    _res[1] = (Exz-Ezx);
+    _res[2] = (Eyx-Exy);
+}
+
+proc CreateRGB( IMAGE _w , IMAGE _color) {
+  cyan = Image(RGB,_w.tx,_w.ty,_w.tz)
+  cyan.initvalue(0,255,255)
+  green = cyan
+  green.initvalue(0,255,0)
+  red = cyan
+  red.initvalue(255,0,0)
+  blue = cyan
+  blue.initvalue(0,0,255)
+  wh = sqrt(_w[0]*_w[0]+_w[2]*_w[2])
+  wz = _w[1]
+  wx = _w[0]
+  color1 = cyan*(wz<0)+green*(wz>=0)
+  color2 = blue*(wx<0)+red*(wx>=0)
+  _color = color1*(abs(wz)>wh)+color2*(abs(wz)<=wh)
+}
+
+proc DrawVorticity( IMAGE _w, NUM _th) {
+  global_new
+  vortmagn = norm(_w)
+  if (exists(vortsurf_draw)) {
+    del vortsurf_draw
+  }
+  if (exists(vortsurf)) {
+    del vortsurf
+  }
+  vortsurf = isosurf(vortmagn,_th)
+  colors = (RGB) vortmagn
+  CreateRGB(_w,&colors)
+  vortsurf.SetColors(colors,0,255)
+  show vortsurf
+  vortsurf.SetColorMaterial(1)
+  vortsurf.Recompute
+
+  local_new
+}

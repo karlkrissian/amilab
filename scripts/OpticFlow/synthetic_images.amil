@@ -1,0 +1,193 @@
+
+func "/home/karl/projects/Fluid/fluid/Karl/scripts/OpticFlow/amiPDEOpticalFlowGui.amil"
+
+
+# 0: line
+# 1: rectangle
+#
+image_type=INT(0)
+
+# image size
+imsize=256
+
+# initial image
+I = Image(FLOAT,imsize,imsize,2)
+displ = Image(FLOAT_VECTOR,imsize,imsize,1)
+displ.initvalue(0,0,0)
+
+i0 = I[:,:,0:0]
+# get coordinates
+i0posx = ((FLOAT) Xpos(i0))-imsize/2+0.5
+i0posy = ((FLOAT) Ypos(i0))-imsize/2+0.5
+
+
+# rotation
+rcx = imsize/2
+rcy = imsize/2
+rangle = INT(0)
+
+# translation
+transx=0
+transy=0
+ 
+# scaling
+scalx = 1
+scaly = 1
+
+#
+linethickness=1
+linelength = 30
+
+#
+rectanglewidth = 50
+rectangleheight = 30
+
+proc Draw2DLine(IMAGE _i, NUM _x1, NUM _y1, NUM _x2, NUM _y2, NUM _intensity) {
+  dx = abs(_x2-_x1)
+  dy = abs(_y2-_y1)
+  dmax = dx>dy?dx:dy
+  npoints = floor(dmax)+1
+  for n=0 to npoints {
+    xpos = _x1 + (_x2-_x1)/npoints*n
+    ypos = _y1 + (_y2-_y1)/npoints*n    
+    _i.setpos(xpos,ypos,0)
+    _i.set(_intensity)
+  }
+}
+
+# draw an horizontal line for the coordinate system
+proc Draw2DThickLine(IMAGE _i, IMAGE _posx, IMAGE _posy, NUM _length, NUM _thickness, NUM _intensity) {
+  print "Draw2DThickLine() \n"
+
+  _i = (abs(_posx)<=(_length/2))*(abs(_posy)<=(_thickness/2))*_intensity
+}
+
+proc Draw2DRectangle(IMAGE _i, IMAGE _posx, IMAGE _posy, NUM _width, NUM _height, NUM _intensity) {
+  print "Draw2DThickLine() \n"
+
+  _i = (abs(_posx)<=(_width/2))*(abs(_posy)<=(_height/2))*_intensity
+  // add some texture
+  _j = (abs(_posx)<=(_width/3))*(abs(_posy)<=2)
+  _i = _i*(_j<0.5)+(_j>=0.5)*0.5*_intensity
+}
+
+proc TransformCoordinates(IMAGE _posx, IMAGE _posy) {
+  // apply translation
+  _pos1x = _posx-transx
+  _pos1y = _posy-transy
+  // apply rotation
+  // angle in radius
+  _angle = rangle/180*Pi
+  _posx = _pos1x*cos(_angle)-_pos1y*sin(_angle)
+  _posy = _pos1x*sin(_angle)+_pos1y*cos(_angle)
+  // apply scaling
+  _posx = _posx/scalx
+  _posy = _posy/scaly
+}
+
+proc TransformInvCoordinates(IMAGE _posx, IMAGE _posy) {
+  // apply scaling
+  _pos1x = _posx*scalx
+  _pos1y = _posy*scaly
+  // apply rotation
+  // angle in radius
+  _angle = -rangle/180*Pi
+  _posx = _pos1x*cos(_angle)-_pos1y*sin(_angle)
+  _posy = _pos1x*sin(_angle)+_pos1y*cos(_angle)
+  // apply translation
+  _posx = _posx+transx
+  _posy = _posy+transy
+}
+
+proc CreateLine() {
+print "CreateLine() 1\n"
+  // apply transformations
+  posx = i0posx
+  posy = i0posy
+  // save displacement vector field
+  TransformInvCoordinates(&posx,&posy)
+  displ[0] = posx-i0posx
+  displ[1] = posy-i0posy
+
+print "CreateLine() 2\n"
+  posx = i0posx
+  posy = i0posy
+  global
+  i0 = I[:,:,0:0]
+  local
+  i0.info
+  posx.info
+  posy.info
+  if (image_type==0) {
+    Draw2DThickLine(&i0,posx,posy,linelength,linethickness,100)
+  }
+  if (image_type==1) {
+    Draw2DRectangle(&i0,posx,posy,rectanglewidth,rectangleheight,100)
+  }
+  I.putimage(i0)
+
+print "CreateLine() 3\n"
+  posx = i0posx
+  posy = i0posy
+  TransformCoordinates(&posx,&posy)
+  global
+  i1 = I[:,:,1:1]
+  local
+  if (image_type==0) {
+    Draw2DThickLine(&i1,posx,posy,linelength,linethickness,100)
+  }
+  if (image_type==1) {
+    Draw2DRectangle(&i1,posx,posy,rectanglewidth,rectangleheight,100)
+  }
+  I.putimage(i1)
+
+print "CreateLine() 4\n"
+  global
+  show i0
+  i0_draw.compare(i1)
+  i0_draw.setvector(1,displ)
+
+#  global
+#    i1 = MeanHalfSize(i0)
+#    i2 = MeanHalfSize(i1)
+#    del i1
+#    show i2
+  local
+
+}
+
+proc CB_CreateImage() {
+  CreateLine()
+}
+
+
+proc CB_InitOF() {
+  amiOFPDE_SetInput(i0,i1)
+  amiOFPDE_SetGroundTruth(displ)
+}
+
+
+w1 = ParamWin("Synthetic Images for registration")
+image_type_id=w1.AddEnum(image_type,2)
+w1.AddEnumChoice(image_type_id,"Line")
+w1.AddEnumChoice(image_type_id,"Rectangle")
+w1.AddInt(rangle,-180,180)
+w1.AddFloat(transx,-200,200)
+w1.AddFloat(transy,-200,200)
+
+w1.BeginBox("line parameters")
+w1.AddFloat(linethickness,0.01,10)
+w1.AddFloat(linelength,0,100)
+w1.EndBox
+
+w1.BeginBox("rectangle parameters")
+w1.AddFloat(rectanglewidth,0,100)
+w1.AddFloat(rectangleheight,0,100)
+w1.EndBox
+
+w1.AddButton("Create Image",CB_CreateImage)
+w1.AddButton("Init OF",CB_InitOF)
+w1.CreateWin
+w1.Display
+
+

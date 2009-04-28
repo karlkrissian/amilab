@@ -1,0 +1,31 @@
+proc CumulHisto( IMAGE im , IMAGE ch) {
+  ch = im
+  prev=0
+  for x=0 to im.tx-1 {
+    ch.setpos(x,0,0)
+    im.setpos(x,0,0)
+    ch.set(prev+im.val)
+    prev = ch.val
+  }
+}
+
+proc GradHistoThreshold(IMAGE i , NUM percent, IMAGE res) {
+//   ------------------
+  ing = normgrad(i,1)
+  imin = min(ing)
+  imax = max(ing)
+  h = histo(ing,imin, imax, 256)
+  ch = h
+  CumulHisto(h,&ch)
+  maxval = ch(255,0,0)
+  val = maxval*percent
+  gval=0
+  for k=0 to 255 {
+    if (gval==0) {
+	if (ch(k,0,0)>val) {
+	  gval = imin+(imax-imin)/256*k
+	}
+    }
+  }
+  res = ing>gval
+}

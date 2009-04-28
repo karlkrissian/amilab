@@ -1,0 +1,785 @@
+
+# cette commande ne marche pas ...
+#SetFluidNavFile("/home/karl/projects/Tests/Fluid/nav_MSG_02_05_2003c0_63.dat") 
+
+#dir = "WP01/package_05_LMD/"
+#image_series="NAtl"
+#image_number="48"
+#visualimageformat="WP01/package_02_LMD/images/NAtl_c0.81.%0.0f"
+
+dir="./"
+image_series="AfGG"
+image_number="55"
+visualimageformat="AfGG_c0.81.%0.0f.pgm"
+
+
+alt_factor   = INT(5)
+cloud_alt_image_factor = alt_factor
+
+# 1 closed surfaces that covers the corresponding class
+# 2 interpolated surface on the whole image
+# 3 interpolated altitudes on the whole ROI, and creation of 2 closed 
+#   surfaces par class of clouds, one inside the other
+cloud_type = INT(3)
+
+cloud_visible  = UCHAR(1)
+cloud2_visible = UCHAR(1)
+Hvect_visible  = UCHAR(1)
+Vvect_visible  = UCHAR(1)
+class0_visible = UCHAR(1)
+class1_visible = UCHAR(1)
+class2_visible = UCHAR(1)
+
+cloud_opacity   = 1
+cloud_material_opacity = 0.5
+cloud2_opacity  = 1
+HORvect_opacity = 1
+VERvect_opacity = 1
+
+display_earth  = UCHAR(1)
+display_visual = UCHAR(1)
+
+densevectors=UCHAR(1)
+vector_scale = INT(5)
+vector_spacing_x = INT(6)
+vector_spacing_y = INT(6)
+
+# arrow parameters
+arrow_style     = INT(2)
+arrow_basesize = 0.05
+arrow_headsize = 0.12
+arrow_headpos  = 0.75
+
+# subimage definition
+xmin=0
+ymin=110
+xmax=511
+ymax=110+511
+ 
+#dir = $1
+#image_series= $2
+#image_number= $3
+#visualimageformat=$4
+
+# 1 africa
+# 0 atlantic
+if (image_series=="NAtl") {
+  image_type=0
+} 
+if (image_series=="AfGG") {
+  image_type=1
+} 
+print sprint("image_type = %0.0f\n",image_type)
+
+image_series=image_series+"_CLA_"
+
+
+print "*\n"
+
+# for raw data
+#i48_0 = ReadRawImages(1024,1024,USHORT,0, \
+#                      sprint(visualimageformat,image_number),\
+##                      "WP01/package_02_LMD/images/NAtl_c0.81."+image_number,\
+#                      0,0)
+
+# for pgm format
+print sprint(visualimageformat,55)+"\n"
+i48_0 = Image(sprint(visualimageformat,55))
+i48_0 = Flip(i48_0,1)
+
+print "*\n"
+
+# get a region of interest
+i48=i48_0[xmin:xmax,ymin:ymax]
+#i48=i48_0
+
+# define a global region of interest as a mask for the display
+global_mask = (UCHAR) i48*0
+sgm = global_mask [ 100:450, 210:350] 
+sgm = 1
+global_mask.putimage(sgm)
+del sgm
+
+#i48 = ReadRawImages(1024,1024,USHORT,0,dir+,0,0)
+c48_0 = ReadRawImages(1024,1024,UCHAR, 0, \
+                      dir+image_series+"scene_analysis."+image_number,0,0)
+c48=c48_0[i48]
+t48_0 = ReadRawImages(1024,1024,SHORT,0, \
+                      dir+ image_series+"cloud_top_temp."+image_number,0,0)
+t48=t48_0[i48]
+
+
+epsilon=0.5-0.2
+#earth  = CreateFlatMesh(c48,1,100-epsilon)
+earth0  = CreateFlatMesh(c48,1,200)
+earth=earth0
+#earth=vtkDecimate(earth0)
+
+# Compute altitudes
+alt48 = Temp2Altitudes(t48+170)
+alt48=alt48*(t48!=-99)
+alt48 = alt48*alt_factor
+pos=Altitude2Position(alt48,image_type)
+
+#earth.SetColors(i48*(c48<100),min(i48),max(i48))
+earth.SetColors(i48,min(i48),max(i48))
+earthpos = Altitude2Position(alt48*0,image_type)
+earth.ElevateMesh(earthpos)
+earth.Normals
+earth.SetColorMaterial(1)
+
+
+proc SetClassInfo(NUM classnum, NUM minval, NUM maxval, NUM r, NUM g, NUM b) {
+  # color of the class 0
+  colors.setpos(classnum,0,0)
+  colors.set(r,g,b) 
+  minclass.setpos(classnum,0,0)
+  minclass.set(minval)
+  maxclass.setpos(classnum,0,0)
+  maxclass.set(maxval)
+}
+
+numclasses=3
+
+colors=Image(RGB,numclasses,1,1)
+minclass=Image(UCHAR,numclasses,1,1)
+maxclass=Image(UCHAR,numclasses,1,1)
+
+n=0
+#SetClassInfo(0,100,100,195,195,195) 
+SetClassInfo(n,101,103,224,  0,  0) 
+n=n+1
+SetClassInfo(n,104,106,222, 222, 0) 
+n=n+1
+SetClassInfo(n,107,109,0,   254,222) 
+del n
+#SetClassInfo(4,110,200,195, 195,195) 
+
+
+#------------------------------------------------------------------
+proc CreateCloudsType1( NUM classnum) {
+  global_new
+  print sprint("Creating clouds for class %3.0f \n",classnum)
+  c48m = c48*global_mask
+  mask=(c48m>minclass(classnum)-epsilon)*(c48m<maxclass(classnum)+epsilon)
+  lowvalue = min[mask](alt48)
+  if (exists(alt)) { del alt; }
+  alt = alt48*0+lowvalue
+  lowalt  = Altitude2Position(alt,image_type) 
+  alt = alt48*mask+(mask<0.5)*lowvalue
+  highalt  = Altitude2Position(alt,image_type) 
+  clouds[classnum] = CreateVolume(c48m,\
+                                  minclass(classnum)-epsilon,\
+                                  maxclass(classnum)+epsilon,\
+                                  lowalt,highalt)
+ print "Created \n"
+}
+
+
+#------------------------------------------------------------------
+proc ComputeColors( NUM classnum) {
+  global_new
+    print "Begin ComputeColors() \n"
+    # set the colors of the surface
+    filename=dir+image_series+"cloud_top_press."+image_number+\
+                              sprint("_Layer%0.0f",minclass(classnum+1))+\
+                              sprint("-%0.0f",maxclass(classnum+1))+".P_Mask.pgm.motionUp";
+    print " ComputeColors()  read image \n"
+    verticaldispl  = ReadRawImages(512,512,1,FLOAT,0,filename)
+    print " ComputeColors()  compute color image \n"
+    absd = abs(verticaldispl)
+    maxv = max(absd)
+    col0 = (FLOAT_VECTOR)col; col0.initvalue(127,127,127)
+    # positive color of classnum+1
+    colp = (FLOAT_VECTOR)col; 
+    colp.initvalue(colors(classnum+1;0),colors(classnum+1;1),colors(classnum+1;2))
+    # negativve color of classnum-1
+    coln = (FLOAT_VECTOR)col;
+    coln.initvalue(colors(classnum;0),colors(classnum;1),colors(classnum;2))
+    tmp = verticaldispl/maxv
+    print " ComputeColors()  compute color image 2 \n"
+    col = (RGB) (col0*(-tmp+1)+colp*tmp   )*(verticaldispl>=0)+\
+                (col0*( tmp+1)+coln*(-tmp))*(verticaldispl<0)
+    col.settranslation(alt.trx,alt.try,alt.trz)
+    del verticaldispl
+    del absd
+    del maxv
+    del col0
+    del colp
+    del coln
+    del tmp
+    print "End ComputeColors() \n"
+}
+
+#------------------------------------------------------------------
+proc CreateCloudsType2( NUM classnum) {
+  global_new
+  print sprint("Creating clouds for class %3.0f \n",classnum)
+  c48m = c48*global_mask
+  mask=(c48m>minclass(classnum)-epsilon)*(c48m<maxclass(classnum)+epsilon)
+  lowvalue = min[mask](alt48)
+  if (exists(alt)) { del alt; }
+  alt = cloud_alt_image[:,:,classnum:classnum]
+  #IterateSmoothing(50,1)
+  clouds[classnum] = CreateFlatMesh(alt*global_mask)
+  if (classnum<numclasses-1) {
+    col = Image(RGB,t48.tx,t48.ty,1)
+    ComputeColors(classnum)
+    # set the colors of the surface
+    clouds[classnum].SetColors(col)    
+    del col
+  }
+  cpos=Altitude2Position(alt,image_type)
+  print "Created \n"
+  clouds[classnum].ElevateMesh(cpos)
+  clouds[classnum].Normals
+}
+
+
+#------------------------------------------------------------------
+proc CreateCloudsType3( NUM classnum) {
+  global_new
+  print sprint("CreateCloudsType3 \t Creating clouds for class %3.0f \n",classnum)
+  c48m = c48*global_mask
+  mask=(c48m>minclass(classnum)-epsilon)*(c48m<maxclass(classnum)+epsilon)
+  lowvalue = min[mask](alt48)
+  if (exists(alt)) { del alt; }
+  alt = cloud_alt_image[:,:,classnum:classnum]
+  highalt=Altitude2Position(alt,image_type)
+  if (classnum>0) {
+    alt = cloud_alt_image[:,:,classnum-1:classnum-1]
+  } else {
+    alt = alt*0
+  }
+  lowalt  = Altitude2Position(alt,image_type) 
+  if (classnum<numclasses-1) {
+    col = Image(RGB,t48.tx,t48.ty,1)
+    ComputeColors(classnum)
+    # set the colors of the surface
+    clouds[classnum]  = CreateVolume(global_mask, 0.5, 1.5, lowalt,highalt,\
+                                     col,cloud_material_opacity)
+    clouds2[classnum] = CreateVolume(c48m,  minclass(classnum)-epsilon,\
+                                     maxclass(classnum)+epsilon, lowalt,highalt,\
+                                     col,cloud_material_opacity)
+    del col
+  } else {
+    clouds[classnum]  = CreateVolume(global_mask, 0.5, 1.5, lowalt,highalt)
+    clouds2[classnum] = CreateVolume(c48m,  minclass(classnum)-epsilon,\
+                                     maxclass(classnum)+epsilon, lowalt,highalt)
+  }
+
+  print "Created \n"
+  #clouds[classnum].ElevateMesh(cpos)
+  clouds[classnum].Normals
+  clouds2[classnum].Normals
+}
+
+
+#------------------------------------------------------------------
+proc CreateClouds( NUM classnum) {
+  print "CreateClouds\n"
+  if (cloud_type==1) {
+    CreateCloudsType1(classnum)
+  } 
+  if (cloud_type==2) {
+    PrecomputeAltitudes()
+    CreateCloudsType2(classnum)
+  }
+  if (cloud_type==3) {
+    PrecomputeAltitudes()
+    CreateCloudsType3(classnum)
+  }
+}
+
+#------------------------------------------------------------------
+proc IterateSmoothing(NUM nbiter, NUM sigma, IMAGE _i, IMAGE _alt, IMAGE _mask) {
+  for k=1 to nbiter {  
+    _i = _i*(_mask<0.5)+_alt*(_mask>0.5); 
+    _i  = filter(_i,sigma,0,0,-1);
+  }
+}
+
+#------------------------------------------------------------------
+proc PrecomputeAltitudes() {
+  global_new
+  
+  if (!exists(cloud_alt_image)) {
+    cloud_alt_image = Image(FLOAT,alt48.tx,alt48.ty,numclasses)
+    cloud_alt_image.settranslation(alt48.trx,alt48.try,0)
+    cloud_alt_image = 0
+    for _n=0 to numclasses-1 {
+      c48m = c48*global_mask
+      mask=(c48m>minclass(_n)-epsilon)*(c48m<maxclass(_n)+epsilon)
+      lowvalue = min[mask](alt48)
+      if (exists(alt)) { del alt; }
+      alt = alt48*mask+(mask<0.5)*lowvalue
+      IterateSmoothing(20,10,&alt,alt48,mask)
+      IterateSmoothing(20,5, &alt,alt48,mask)
+      IterateSmoothing(20,2, &alt,alt48,mask)
+      # save the result for 3D vertical vectors display
+      cloud_alt_image.putimage(alt,0,0,_n)
+      cloud_alt_image_factor=alt_factor
+    }
+  } else {
+    if (cloud_alt_image_factor!=alt_factor) {
+      # just rescale instead of computing everything again
+      cloud_alt_image = cloud_alt_image/cloud_alt_image_factor*alt_factor;
+      cloud_alt_image_factor=alt_factor
+    }
+  }
+}
+
+
+print " Creating clouds \n"
+
+
+clouds  = Surface[numclasses]
+# needed if cloud_type==3
+clouds2 = Surface[numclasses] 
+
+lowalt=pos
+for n=0 to numclasses-1 {
+  CreateClouds(n)
+}
+
+
+show earth
+earth_draw.SetLightDiffuse(0,180,180,180)
+earth_draw.rotate(0,-90,0)
+earth_draw.rotate(0,0,-90)
+
+#---------------------------------------------
+# add a semi-sphere
+proc CreateHalfEarth() {
+  global_new
+    e = Image(FLOAT,100,100,1)
+    e.setvoxelsize(100,100,100)
+    e.settranslation(-e.tx*e.vx/2,-e.ty*e.vy/2,0)
+    e1pos = Altitude2Position(e*0,1)
+    e1posx = e1pos[0]
+    e1_crop = autocrop((FLOAT)e1posx-0.01,1)
+    e_crop = e[e1_crop]
+    e_crop2 = Resize(e_crop,100,100,1,1)
+    e_crop2_pos = Altitude2Position(e_crop2*0,1)
+    e_mask = (abs(e_crop2_pos[0])>0.01)&&(abs(e_crop2_pos[1])>0.01)\
+             &&(abs(e_crop2_pos[2])>0.01)
+    e1 = CreateFlatMesh(e_mask)
+    e1.ElevateMesh(e_crop2_pos)
+    e1.Normals
+    earth_draw += e1
+    del e
+    del e1pos
+    del e_crop
+    del e1_crop
+    del e_crop2
+    del e_crop2_pos
+}
+
+CreateHalfEarth()
+
+print "Drawing clouds\n"
+
+for n=0 to numclasses-1 { 
+  if (cloud_type==3) { 
+    clouds2[n].SetAmbient( colors(n;0), colors(n;1), colors(n;2) )
+    clouds2[n].Normals
+    earth_draw += clouds2[n]; 
+  }
+  clouds[n].SetAmbient( colors(n;0), colors(n;1), colors(n;2) )
+  clouds[n].Normals
+  earth_draw += clouds[n]
+}
+
+print "Creating and drawing horizontal vectors\n"
+
+# create and draw vectors
+displvect = Surface[numclasses]
+
+#----------------------------------------------------------------------------------
+proc GenerateVectors( ) {
+
+#    ---------------
+  # we need the global option to add the vectors to the scene
+  # then, the parameters cannot be used ...
+  global_new
+    #displ.info
+    minc = minclass(classnum)
+    maxc = maxclass(classnum)
+    # check min/max altitude of each class
+    print sprint("class %0.0f\n",classnum)
+    c48m = c48*global_mask
+    mask=(c48m>(minc-epsilon))*(c48m<(maxc+epsilon))
+    if (!densevectors) {
+      mask1 = (c48m>(minc-epsilon))
+    } else {
+      mask1 = (c48m>0)
+    }
+    if count(mask)>0  {
+      print sprint(" min = %3.3f \t",   min[mask]   (alt48))
+      print sprint(" max = %3.3f \n",   max[mask]   (alt48))
+      print sprint(" mean = %3.3f \t",  mean[mask]  (alt48))
+      print sprint(" median = %3.3f \n",median[mask](alt48))
+      #displ.info
+      #print "displ image is ok?\n"
+      if (cloud_type!=3) {
+        alt = (FLOAT)alt48*0+mean[mask](alt48)
+      } else {
+        # if cloud_type is 3, draw the vectors at half heigh
+        # between 2 classes of clouds
+        alth = cloud_alt_image[:,:,classnum:classnum]
+        if (classnum>0) {
+          altl = cloud_alt_image[:,:,classnum-1:classnum-1]
+        } else {
+          altl = alth*0
+        }
+        altm = (alth+altl)/2.0
+        alt = (FLOAT)alt48*0+mean[global_mask](altm)
+        del alth
+        del altl
+        del altm
+      }
+      Set3DArrowParam(arrow_basesize,arrow_headsize,arrow_headpos)
+      displvect[classnum] = CreateVectors(alt,displ*mask1,alt,\
+                                          vector_spacing_x,vector_spacing_y,vector_scale,\
+                                          image_type,arrow_style)
+      if (arrow_style!=0) {
+        displvect[classnum].SetAmbient(colors(classnum;0), colors(classnum;1), colors(classnum;2))
+      } else {
+        displvect[classnum].SetColor(  colors(classnum;0), colors(classnum;1), colors(classnum;2))
+      }
+      earth_draw += displvect[classnum]
+      del alt
+      }
+}
+
+#----------------------------------------------------------------------------------
+#  c1: lower class
+#  c2: higher class
+#
+proc CreateVerticalVectors(NUM c1, NUM c2) {
+#    -----------------------
+  global_new
+    # vecteurs verticaux entre les couches 1 et 2
+    c48m = c48*global_mask
+    if (!densevectors) {
+      mask1 = (c48m>(minclass(c2)-epsilon))
+    } else {
+      mask1 = (c48m>0)
+    }
+    
+    if (cloud_type==1) {
+      mask_1=(c48m>(minclass(c1)-epsilon))*(c48m<maxclass(c1)+epsilon)
+      alt1 = mean[mask_1](alt48)
+      mask_2 = (c48m>minclass(c2)-epsilon)*(c48m<maxclass(c2)+epsilon)
+      alt2 = mean[mask_2](alt48)
+      alt = (FLOAT)alt48*0+(alt1+alt2)/2.0
+    } else {
+      # get the computed altitude for the cloud surface
+      alt = cloud_alt_image[:,:,c1:c1]
+    }
+    
+    filename=dir+image_series+"cloud_top_press."+image_number+\
+                               sprint("_Layer%0.0f",minclass(c2))+\
+                               sprint("-%0.0f",maxclass(c2))+".P_Mask.pgm.motionUp";
+    print "Reading file "+filename+"\n"
+    verticaldispl  = ReadRawImages(512,512,1,FLOAT,0,filename)
+    # get rid of small displacement (smaller than 0.01 the largest displacement)
+    vd1 = abs(verticaldispl)
+    verticaldispl = verticaldispl*(vd1>max(vd1)/100)
+    del vd1
+    # displacement in 15 minutes
+    alt_2 = alt+verticaldispl*alt_factor*15*60 
+    displ = earthpos
+    displ.initvalue(0,0,0)
+    Set3DArrowParam(arrow_basesize,arrow_headsize,arrow_headpos)
+    vv[c1] = CreateVectors(alt*mask1,displ*mask1,alt_2*mask1,\
+                           vector_spacing_x, vector_spacing_y, vector_scale, \
+                           image_type,arrow_style)
+    if (arrow_style!=0) {
+      vv[c1].SetAmbient( (colors(c1;0)+colors(c2;0))/2, \
+                         (colors(c1;1)+colors(c2;1))/2, \
+                         (colors(c1;2)+colors(c2;2))/2)
+    } else {
+      vv[c1].SetColor( (colors(c1;0)+colors(c2;0))/2, \
+                       (colors(c1;1)+colors(c2;1))/2, \
+                       (colors(c1;2)+colors(c2;2))/2)
+    }
+    earth_draw += vv[c1]
+    #print "deleting variables \n"
+    if (exists(mask1))  { del mask1;  }
+    if (exists(mask_1)) { del mask_1; }
+    if (exists(alt1))   { del alt1;   }
+    if (exists(mask_2)) { del mask_2; }
+    if (exists(alt2))   { del alt2;   }
+    if (exists(alt_2))  { del alt_2;  }
+    if (exists(displ))  { del displ;  }
+    #print "deleting variables ok\n"
+}
+
+#----------------------------------------------------------------------------------
+proc CB_DrawVectors() {
+#    --------------
+  global_new
+  
+  # horizontal vectors
+  for i=0 to numclasses-1 {
+    if (!first_apply) {
+      earth_draw -= displvect[i]
+    }
+    del displvect[i]
+    classnum=i
+    filename=image_series+"cloud_top_press."+image_number+"_Layer"+\
+                     sprint("%03.0f-",minclass(classnum))+\
+                     sprint("%03.0f",maxclass(classnum))+".P_Mask.pgm.motion";
+    print "reading "+filename+" ...\n"
+    displ = ReadFlow(filename)
+    displ.settranslation(i48.trx,i48.try,i48.trz)
+    #displ.info
+    GenerateVectors( )
+    # go back to global ... not too esthetic
+    del displ
+  }
+  
+  #  CB_HORvect_opacity()
+  
+  # vertical vectors
+  if (first_apply) {
+    vv = Surface[numclasses-1]
+  } else {
+    earth_draw -= vv[0]
+    earth_draw -= vv[1]
+    del vv[0]
+    del vv[1]
+  }
+  CreateVerticalVectors(0,1)
+  CreateVerticalVectors(1,2)
+
+  first_apply=0
+  
+  #  CB_VERvect_opacity()
+}
+
+
+#-----------------------------------------------
+proc CB_DrawAll() {
+#    ----------
+  global_new
+
+    print sprint("CB_DrawAll() \t alt_factor = %3.0f \n",alt_factor)
+    # Compute altitudes
+    alt48 = Temp2Altitudes(t48+170)
+    alt48=alt48*(t48!=-99)
+    alt48 = alt48*alt_factor
+    pos=Altitude2Position(alt48,image_type)
+    
+    lowalt=pos
+    for n=0 to numclasses-1 {
+      earth_draw -= clouds[n]
+      del clouds[n]
+      #if (exists(clouds2[n])) { 
+        earth_draw -= clouds2[n]
+        del clouds2[n]; 
+      #}
+      CreateClouds(n)
+      if (cloud_type==3) { 
+        clouds2[n].SetAmbient( colors(n;0), colors(n;1), colors(n;2) )
+        clouds2[n].Normals
+        earth_draw += clouds2[n]; 
+      }
+      clouds[n].SetAmbient( colors(n;0), colors(n;1), colors(n;2) )
+      clouds[n].Normals
+      earth_draw += clouds[n]
+    }
+    
+    CB_DrawVectors()
+    
+    CB_update_visible()
+    CB_cloud_opacity()
+    CB_cloud2_opacity()
+    CB_HORvect_opacity()
+    CB_VERvect_opacity()
+}
+# CB_DrawAll()
+
+// generate the horizontal vectors
+print "generate the vectors\n"
+first_apply=1
+CB_DrawVectors()
+
+
+#---------------------------------------------
+proc CB_update_visible() {
+  visclass=Image(UCHAR,numclasses,1,1)
+  visclass.setpos(0,0,0); visclass.set(class0_visible)
+  visclass.setpos(1,0,0); visclass.set(class1_visible)
+  visclass.setpos(2,0,0); visclass.set(class2_visible)
+
+  for n=0 to numclasses-1 {
+    clouds[n].SetVisible(   cloud_visible *visclass(n))
+    clouds2[n].SetVisible(  cloud2_visible*visclass(n))
+    displvect[n].SetVisible(Hvect_visible  *visclass(n))
+  }
+  for n=0 to numclasses-2 {
+    vv[n].SetVisible(Vvect_visible)
+  }
+  earth_draw.Paint
+}
+
+#---------------------------------------------
+proc CB_cloud_opacity() {
+    for n=0 to numclasses-1 {
+      clouds[n].SetOpacity(cloud_opacity)
+    }
+    earth_draw.Paint
+}
+
+#---------------------------------------------
+proc CB_cloud2_opacity() {
+    for n=0 to numclasses-1 {
+      clouds2[n].SetOpacity(cloud2_opacity)
+    }
+    earth_draw.Paint
+}
+
+#---------------------------------------------
+proc CB_HORvect_opacity() {
+    for n=0 to numclasses-1 {
+      displvect[n].SetOpacity(HORvect_opacity)
+    }
+    earth_draw.Paint
+}
+
+#---------------------------------------------
+proc CB_VERvect_opacity() {
+    for n=0 to numclasses-2 {
+      vv[n].SetOpacity(VERvect_opacity)
+    }
+    earth_draw.Paint
+}
+
+#---------------------------------------------
+proc CB_display_visual() {
+  global_new
+    if (display_earth) {
+      earth.SetColorMaterial(1)
+      earth.SetOpacity(1)
+    } else {
+      earth.SetColorMaterial(0)
+      earth.SetOpacity(0)
+    }
+    earth_draw.Paint
+}
+
+#---------------------------------------------
+proc CB_display_earth() {
+  global_new
+    if (display_visual) {
+      e1.SetColorMaterial(1)
+      e1.SetOpacity(1)
+    } else {
+      e1.SetColorMaterial(0)
+      e1.SetOpacity(0)
+    }
+    earth_draw.Paint
+}
+
+
+#---------------------------------------------
+proc CB_mask() {
+  global
+  
+  if (!exists(i48_draw)) {
+    show i48
+    print "Select the region of interest by zooming and press the button again\n"
+  } else {
+    global_mask=0
+    sgm = global_mask[i48_draw.GetXmin:i48_draw.GetXmax,\
+                      i48_draw.GetYmin:i48_draw.GetYmax,\
+                      0:0]
+    sgm=1
+    global_mask.putimage(sgm)
+    del sgm
+  }
+}
+
+# Arrow Parameters
+win_arrow = ParamWin("Arrow Parameters")
+arrowstyle_id     = win_arrow.AddInt(arrow_style,0,2)
+arrowbasesize_id  = win_arrow.AddFloat(arrow_basesize,0.01,0.4)
+arrowheadsize_id  = win_arrow.AddFloat(arrow_headsize,0.01,0.4)
+arrowheadpos_id   = win_arrow.AddFloat(arrow_headpos, 0.1, 0.95)
+apdraw_id         = win_arrow.AddButton("Draw Vectors", CB_DrawVectors)
+win_arrow.CreateWin
+proc CB_ArrowParam() {  win_arrow.Display; }
+
+# Vector Parameters
+win_vectors = ParamWin("Vector Parameters")
+dense_id           =  win_vectors.AddBoolean(densevectors)
+vector_scale_id    =  win_vectors.AddInt(vector_scale,1,20)
+vectorspacingx_id  =  win_vectors.AddInt(vector_spacing_x,1,20)
+vectorspacingy_id  =  win_vectors.AddInt(vector_spacing_y,1,20)
+vpdraw_id          =  win_vectors.AddButton("Draw Vectors", CB_DrawVectors)
+win_vectors.CreateWin
+proc CB_VectorParam() { win_vectors.Display; }
+
+# Visualization Parameters
+w1 = ParamWin("Visualization Parameters")
+
+w1.BeginHorizontal
+  displayearth_id    = w1.AddBoolean(display_earth)
+  w1.SetCallback(CB_display_earth)
+  displavisual_id    = w1.AddBoolean(display_visual)
+  w1.SetCallback(CB_display_visual)
+w1.EndHorizontal
+
+altfactor_id       =  w1.AddInt(alt_factor,1,40)
+cloudtype_id       =  w1.AddInt(cloud_type,1,3)
+
+mask_id            =  w1.AddButton("Mask from image zoom", CB_mask)
+
+w1.BeginBox("Display:")
+  w1.BeginHorizontal
+    cloud_visible_id  = w1.AddBoolean(cloud_visible)
+    w1.SetCallback(CB_update_visible)
+    cloud2_visible_id = w1.AddBoolean(cloud2_visible)
+    w1.SetCallback(CB_update_visible)
+  w1.EndHorizontal
+  w1.BeginHorizontal
+    Hvect_visible_id  = w1.AddBoolean(Hvect_visible)
+    w1.SetCallback(CB_update_visible)
+    Vvect_visible_id  = w1.AddBoolean(Vvect_visible)
+    w1.SetCallback(CB_update_visible)
+  w1.EndHorizontal
+  w1.BeginHorizontal
+    c0_visible_id = w1.AddBoolean(class0_visible)
+    w1.SetCallback(CB_update_visible)
+    c1_visible_id = w1.AddBoolean(class1_visible)
+    w1.SetCallback(CB_update_visible)
+    c2_visible_id = w1.AddBoolean(class2_visible)
+    w1.SetCallback(CB_update_visible)
+  w1.EndHorizontal
+w1.EndBox
+
+w1.BeginBox("Opacities:")
+  cloud_opacity_id = w1.AddFloat(cloud_opacity,0,1)
+  w1.SetCallback(CB_cloud_opacity)
+  cloud_material_opacity_id = w1.AddFloat(cloud_material_opacity,0,1)
+  cloud2_opacity_id = w1.AddFloat(cloud2_opacity,0,1)
+  w1.SetCallback(CB_cloud2_opacity)
+  HORvect_opacity_id   =  w1.AddFloat(HORvect_opacity,0,1)
+  w1.SetCallback(CB_HORvect_opacity)
+  VERvect_opacity_id   =  w1.AddFloat(VERvect_opacity,0,1)
+  w1.SetCallback(CB_VERvect_opacity)
+w1.EndBox
+
+
+vectorparambutton_id = w1.AddButton("Vector Parameters", CB_VectorParam)
+arrowparambutton_id  = w1.AddButton("Arrow Parameters",  CB_ArrowParam)
+
+w1.BeginHorizontal
+  apply_id    = w1.AddButton("Draw Vectors", CB_DrawVectors)
+  applyall_id = w1.AddButton("Draw All",     CB_DrawAll)
+w1.EndHorizontal
+
+w1.CreateWin
+w1.Display

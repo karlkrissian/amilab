@@ -1,0 +1,129 @@
+
+func "SyntheticImages/superquadric.amil"
+
+proc SQ_Init() {
+  global_new
+  sq_imdimx = INT(110)
+  sq_imdimy = INT(110)
+  sq_imdimz = INT(110)
+  sq_s1 = INT(50)
+  sq_s2 = INT(50)
+  sq_s3 = INT(50)
+  sq_r = 1
+  sq_s = 1
+  sq_t = 1
+  sq_torus_radius = 30
+  sq_type = INT(0) # 0:Spherical 1:Cylindrical 2:Toroidal
+  sq_image = Image(FLOAT,sq_imdimx,sq_imdimy,sq_imdimz)
+  SQ_Update()
+  sq_isosurf = Surface()
+  SQ_Gui()
+}
+
+# print parameters 
+# to do
+proc SQ_Print() {
+  
+}
+
+# save parameters 
+# to do
+proc SQ_SaveParam() {
+  
+}
+
+proc SQ_Update() {
+  global_new
+  if (sq_image.tx!=sq_imdimx) || (sq_image.ty!=sq_imdimy) || (sq_image.tz!=sq_imdimz) {
+    sq_image <<= Image(FLOAT,sq_imdimx,sq_imdimy,sq_imdimz)
+  }
+  if (sq_type == 0) {
+    SuperQuadric(sq_s1,sq_s2,sq_s3,sq_r,sq_s,sq_t,&sq_image)
+  }
+  if (sq_type == 1) {
+    CylindricalSuperQuadric(sq_s1,sq_s2,sq_r,sq_s,&sq_image)
+  }
+  if (sq_type == 2) {
+    ToroidalSuperQuadric(sq_torus_radius,sq_s1,sq_s2,sq_r,sq_s,&sq_image)
+  }
+}
+
+proc SQ_CreateImage() {
+  global_new
+  SQ_Update()
+  show sq_image
+}
+
+proc SQ_ShowIsoSurface() {
+  global_new
+  SQ_Update()
+  if (exists(sq_isosurf_draw)) {
+    sq_isosurf_draw -= sq_isosurf
+  }
+  sq_isosurf <<= isosurf(-sq_image,0.0001)
+  if (exists(sq_isosurf_draw)) {
+    sq_isosurf_draw += sq_isosurf
+  } else {
+    show sq_isosurf
+  }
+}
+
+proc SQ_CreateParamSurface() {
+}
+
+proc SQ_UpdateType() {
+
+  # to do: show/hide a parameter !!!
+
+  #SQ_win.ShowSlider(sq_torus_radius_id,sq_type==2)
+  #SQ_win.update
+  #SQ_win.Display
+}
+
+proc SQ_Gui( ) {
+  global_new
+
+  SQ_win = ParamWin("SuperQuadrics")
+  SQ_win.BeginBook
+  SQ_win.AddPage("Resolution")
+
+ SQ_win.BeginBox("Image dimensions")
+      sq_imx_i  = SQ_win.AddInt    (sq_imdimx,0,1024)
+      sq_imy_i  = SQ_win.AddInt    (sq_imdimy,0,1024)
+      sq_imz_i  = SQ_win.AddInt    (sq_imdimz,0,1024)
+ SQ_win.EndBox
+
+  SQ_win.AddPage("Sup.Quad.")
+ SQ_win.BeginBox("SQ dimensions")
+      sq_s1_i  = SQ_win.AddInt    (sq_s1,0,1024)
+      sq_s2_i  = SQ_win.AddInt    (sq_s2,0,1024)
+      sq_s3_i  = SQ_win.AddInt    (sq_s3,0,1024)
+ SQ_win.EndBox
+
+ SQ_win.BeginBox("Coefficients")
+      sq_r_i  = SQ_win.AddFloat    (sq_r,0,5)
+      sq_s_i  = SQ_win.AddFloat    (sq_s,0,5)
+      sq_t_i  = SQ_win.AddFloat    (sq_t,0,5)
+  SQ_win.EndBox
+
+  sq_type_id  = SQ_win.AddEnum   (sq_type,3)
+    SQ_win.AddEnumChoice(sq_type_id,"SPHERICAL")
+    SQ_win.AddEnumChoice(sq_type_id,"CYLINDRICAL")
+    SQ_win.AddEnumChoice(sq_type_id,"TOROIDAL")
+  SQ_win.SetCallback(SQ_UpdateType)
+
+  sq_torus_radius_id =  SQ_win.AddFloat(sq_torus_radius,0,200)
+  #SQ_win.ShowSlider(sq_torus_radius_id,sq_type==2)
+
+  SQ_win.BeginHorizontal
+    SQ_win.AddButton("Create Image",              SQ_CreateImage)
+    SQ_win.AddButton("Show IsoSurface",           SQ_ShowIsoSurface)
+    SQ_win.AddButton("Create Parametric Surface", SQ_CreateParamSurface)
+  SQ_win.EndHorizontal
+
+  SQ_win.update
+  SQ_win.Display
+  
+}
+
+SQ_Init()

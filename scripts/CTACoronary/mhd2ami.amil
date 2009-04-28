@@ -1,0 +1,10 @@
+#!/usr/bin/amilab
+
+import_itk
+
+i = itkRead_3D_US($1)
+
+// Don't compress with gzip since it doesn't gain much
+// and it is much slower
+i.save $1 - ".mhd" + ".ami"
+quit

@@ -1,0 +1,19 @@
+
+# Running the Non Local Means filter
+#
+#
+
+func "Filtering/NLmeans_gui.amil"
+
+i = Image($1)
+NLM_init(i)
+
+NLM_t = atof($2)
+NLM_f = atof($3)
+NLM_h = atof($4)
+NLM_iterations = 1
+
+CB_NLM_Filter()
+
+NLM_res.save $5
+quit

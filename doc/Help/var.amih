@@ -1,0 +1,17 @@
+
+***** Variables *****
+
+The language uses variables of different types:
+
+  void image float int string imagedraw surface surfacedraw 
+
+Specific commands or functions allow creating these variables.
+
+For removing a variable, use 
+  del variable_name
+
+For showing the current variables in memory use
+  Show vars
+
+
+******************************

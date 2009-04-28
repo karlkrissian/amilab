@@ -1,0 +1,43 @@
+
+***** Operators on images *****
+
+rule(s):
+1. image        -> VAR_IMAGE [ expr ]
+2. postfix_expr -> VAR_IMAGE ( expr1, expr2) 
+3. postfix_expr -> VAR_IMAGE ( expr1, expr2, expr3) 
+4. postfix_expr -> VAR_IMAGE ( expr1, expr2, expr3, expr4)
+
+description:
+rule 1: 
+Applied on RGB or FLOAT_VECTOR images,
+returns one component of the image:
+expr=0 returns Red   if RGB or the X coordinate if FLOAT_VECTOR 
+expr=1 returns Green if RGB or the Y coordinate if FLOAT_VECTOR 
+expr=2 returns Blue  if RGB or the Z coordinate if FLOAT_VECTOR 
+
+rule 2:
+returns the value of the image at the point (x=expr1, y=expr2, z=0),
+usefull in case of a 2D image because the z component is not 
+specified.
+
+rule 3:
+returns the value of the image at the point (x=expr1, y=expr2, z=expr3).
+
+rule 4:
+For a RGB or FLOAT_VECTOR image, return the component given by
+expr4 (0,1 or 2), at the voxel position (x=expr1, y=expr2, z=expr3).
+
+
+Example(s):
+
+i = Image "test.jpg"
+ired   = i[0]
+igreen = i[1]
+iblue  = i[2]
+
+print ired(i.tx/2,i.ty/2); print "\n"
+print i(i.tx/2,i.ty/2,0,0); print "\n"
+
+
+
+******************************

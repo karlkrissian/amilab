@@ -1,0 +1,253 @@
+#
+# Experiments on filtering MRI data taken from the BrainWeb
+# at http://www.bic.mni.mcgill.ca/brainweb/
+#
+
+# Parameters are
+# 1. non-noisy reference image
+# 2. noisy generated image name 
+#
+
+# reads input image
+refimage = vtkMINCRead($1)
+input    = vtkMINCRead($2)
+roi = Image "roi.ami.gz"
+
+# read phantom image
+phantom=Image "phantom.ami.gz"
+
+# Predefined intensity values of the phantom image
+// Background=0
+// CSF=1 
+// Grey_Matter=2 
+// White_Matter=3
+// Fat=4 
+// Muscle_Skin=5 
+// Skin=6 
+// Skull=7 
+// Glial Matter=8 
+// Connective=9
+
+# function to compute the statistics
+func "Filtering/AnisoNRAD_gui.amil"
+
+
+proc InitBessel2( NUM _steps) {
+  global_new
+  GB_Bessel2_steps = _steps
+  GB_t = Image(FLOAT,_steps,1,1)
+  local_new
+}
+
+# computes Bessel function of of a given order
+proc Bessel2(NUM order, NUM x, NUM _res) {
+  dt = Pi/GB_Bessel2_steps
+  sum=0
+  GB_t = ((FLOAT)Xpos(GB_t) + 0.5)*dt
+  GB_t = exp(cos(GB_t)*x)*cos(GB_t*order)
+  _res = mean(GB_t)
+}
+
+proc L(NUM _x, NUM _res) {
+  res1=0
+  res2=0
+  Bessel2(0,-_x/2,&res1)
+  Bessel2(1,-_x/2,&res2)
+  _res = exp(_x/2)*((1-_x)*res1-_x*res2)
+}
+
+proc MeanRician(NUM _A, NUM _sigma, NUM _res ) {
+  res1=0
+  L(-_A*_A/_sigma/_sigma/2.0,&res1)
+  _res = _sigma*sqrt(Pi/2)*res1
+}
+
+# add Bias to all points of the reference image
+proc ReferenceAddBias( NUM _sigma, IMAGE _refbias) {
+  # precompute mean Rician value for a all integer values from 0 to 20000
+  _maxval=15000
+  _imval = Image(FLOAT,_maxval,1,1)
+  _imval = Xpos(_imval)
+  _k=0
+  InitBessel2(200)
+  for _i=0 to _maxval-1 {
+    if (_k==1000) { print "."; _k=0; } 
+    _meanrician=0
+    MeanRician(_i,_sigma,&_meanrician)
+    _imval.setpos(_i,0,0)
+    if (_meanrician>=0)&&(_meanrician<=_maxval) {
+      _imval.set(_meanrician)
+    }
+    _k=_k+1
+  }
+
+  # change image intensity values
+  _refbias = _imval(_refbias)
+}
+
+# computes statistics on a given mask
+# _mask: mask for computing the statistics
+# _ref: reference image without noise
+#
+proc CB_BW_Stats_mask( IMAGE _mask, IMAGE _ref, NUM _useref) {
+    // Get reference statistics
+    tmp = _ref
+    ref_mean = mean[_mask](tmp)
+    tmp = _ref-ref_mean
+    ref_sd = sqrt(mean[_mask](tmp*tmp))
+    // Get input statistics
+    tmp = NRAD_input
+    input_mean = mean[_mask](tmp)
+    tmp = NRAD_input-input_mean
+    input_sd = sqrt(mean[_mask](tmp*tmp))
+    // Get output statistics
+    tmp = NRAD_res
+    output_mean = mean[_mask](tmp)
+    tmp = NRAD_res-output_mean
+    output_sd = sqrt(mean[_mask](tmp*tmp))
+    print sprint("Mean intensity %03.0f, ",mean[_mask](_ref))
+    print sprint("class size %02.1f %, ",count(_mask)/(_mask.tx*_mask.ty*_mask.tz)*100)
+
+    print sprint("ref: %03.3f $\\pm$ ",ref_mean)   +sprint(" %03.3f\t",ref_sd)
+    print sprint("in:  %03.3f $\\pm$ ",input_mean) +sprint(" %03.3f\t",input_sd)
+    print sprint("out: %03.3f $\\pm$ ",output_mean)+sprint(" %03.3f\t",output_sd)
+
+  if (_useref) {
+    // Get input statistics
+    tmp = NRAD_input-_ref
+    input_mean = mean[_mask](tmp)
+    input_RMS = sqrt(mean[_mask](tmp*tmp))
+    // Get output statistics
+    tmp = NRAD_res-_ref
+    output_mean = mean[_mask](tmp)
+    output_RMS = sqrt(mean[_mask](tmp*tmp))
+
+    print sprint("Mean: %03.3f ",input_mean)+sprint(" %03.3f\t",output_mean)
+    print sprint("RMSE: %03.3f ",input_RMS) +sprint(" %03.3f\t",output_RMS)
+  }
+  print "\n"
+}
+
+proc CB_BW_Stats() {
+  // compute estimation of sigma
+  mask = phantom*0
+  submask=mask[NRAD_ROI]
+  submask=1
+  mask.putimage(submask)
+  sigma2 = 0.5*mean[refimage<1](NRAD_input*NRAD_input)
+  print sprint("bias = %03.3f\n",sqrt(sigma2))
+  del submask
+  // add bias to refimage
+  refimage_bias = refimage //sqrt(refimage*refimage+2*sigma2)
+  for c=0 to 9 {
+    print sprint(" Class %0.0f \t",c)
+    mask = (phantom==c)
+    CB_BW_Stats_mask(&mask, &refimage)
+  }
+}
+
+# load fuzzy models
+proc CB_BW_Load_Fuzzy() {
+  global
+  BW_csf = vtkMINCRead("phantom_1.0mm_normal_csf.mnc")
+  BW_bck = vtkMINCRead("phantom_1.0mm_normal_bck.mnc")
+  BW_gry = vtkMINCRead("phantom_1.0mm_normal_gry.mnc")
+  BW_wht = vtkMINCRead("phantom_1.0mm_normal_wht.mnc")
+  local
+}
+
+# Compute statistics using fuzzy models
+proc CB_BW_Stats_Fuzzy() {
+  global
+
+  if (!exists(BW_csf)) {
+    CB_BW_Load_Fuzzy()
+  }
+  print "class BCK \t"
+  mask = (BW_bck==1)
+  CB_BW_Stats_mask(&mask,&refimage,0)
+  print "class CSF \t"
+  mask = (BW_csf==1)
+  CB_BW_Stats_mask(&mask,&refimage,0)
+  print "class GRY \t"
+  mask = (BW_gry==1)
+  CB_BW_Stats_mask(&mask,&refimage,0)
+  print "class WHT \t"
+  mask = (BW_wht==1)
+  CB_BW_Stats_mask(&mask,&refimage,0)
+  local
+}
+
+# Compute statistics using fuzzy models and biased reference image
+proc CB_BW_Stats_Fuzzy_Ref() {
+  global
+
+  if (!exists(BW_csf)) {
+    CB_BW_Load_Fuzzy()
+  }
+  // compute estimation of sigma
+  mask = phantom*0
+  submask=mask[NRAD_ROI]
+  submask=1
+  mask.putimage(submask)
+  sigma2 = 0.5*mean[refimage<1](NRAD_input*NRAD_input)
+  sigma=sqrt(sigma2)
+  print sprint("sigma = %03.3f\n",sigma)
+  del submask
+  // add bias to refimage
+  refimage_bias = refimage 
+  ReferenceAddBias(sigma,&refimage_bias)
+  global
+
+  print "class BCK \t"
+  mask = (BW_bck==1)
+  CB_BW_Stats_mask(&mask,&refimage_bias,1)
+  global
+  print "class CSF \t"
+  mask = (BW_csf==1)
+  CB_BW_Stats_mask(&mask,&refimage_bias,1)
+  global
+  print "class GRY \t"
+  mask = (BW_gry==1)
+  CB_BW_Stats_mask(&mask,&refimage_bias,1)
+  global
+  print "class WHT \t"
+  mask = (BW_wht==1)
+  CB_BW_Stats_mask(&mask,&refimage_bias,1)
+  global
+  local
+}
+
+# Add a Gui to compute statistics of the results
+
+proc CB_BW_FilterGui() {
+  NRAD_win.Display
+}
+
+proc BrainWeb_CreateWindow() {
+    global
+print "1\n"
+    # parameters window
+    BW_win = ParamWin("Computing Statistics for Filtering MRI BrainWeb Simulation")
+    
+    BW_win.BeginBox("Controls")
+        #BW_win.BeginHorizontal
+            BW_stats_id     = BW_win.AddButton("Compute Statistics", CB_BW_Stats)
+            BW_stats_fuzzy_id = BW_win.AddButton("Compute Statistics on Fuzzy Models", CB_BW_Stats_Fuzzy)
+            BW_stats_fuzzy_id = BW_win.AddButton("Compute Statistics on Fuzzy Models & Ref", CB_BW_Stats_Fuzzy_Ref)
+            BW_filter_id    = BW_win.AddButton("Filter Gui", CB_BW_FilterGui)
+        #BW_win.EndHorizontal
+    BW_win.EndBox
+    
+    BW_win.CreateWin
+    BW_win.Display
+  local
+print "2\n"
+}
+
+
+# starts the gui
+NRAD_CreateParams(input)
+NRAD_ROI=roi
+NRAD_CreateWindow()
+BrainWeb_CreateWindow()

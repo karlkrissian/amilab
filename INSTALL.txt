@@ -1,0 +1,167 @@
+
+
+
+===============================
+  COMPILING
+===============================
+
+
+
+--------
+WINDOWS
+--------
+
+with CodeBlocks and MinGW
+-------------------------
+
+  - install codeblocks with mingw i
+  - install cmake
+  - download VTK and ITK from codeblocks
+  - To allow cmake to work, add the path to CodeBlocks/MinGW/bin to the windows path
+  - generate the build on a path that doesn't contain any space
+  - tell cmake to use mingw-make.exe
+  - choose the type of build Debug, Release, ... and use the same type for all compiled libraries
+
+  - download wxwidgets
+  - compile wxwidgets with mingw:
+    in the directory build/mws
+    edit config.gcc:
+        - setup the compilers mingw32-gcc and mingw32-g++
+        - MONOLITHIC to 0
+        - BUILD to Release
+        - USE_OPENGL to 1
+    "mingw32-make.exe -f makefile.gcc" in the msdos commands window.
+    To compile faster if you have several processors, you can add the option "-j n"
+    where n is the number of files to compile in parallel.
+
+  //also edit the file include\wx\msw\setup.h to set wsUSE_GLCANVAS to 1
+  //and delete the file lib/gcc_lib/mswd/wx/setup.h if it exists
+
+  more explanations can be found at
+  http://wiki.wxwidgets.org/CodeBlocks_Setup_Guide
+
+- install boost
+-  compile pthreads for windows
+- compile libAMIFluid
+- compile AMILab
+
+
+with VC++
+-----------
+
+download cmake at www.cmake.org
+download wxWidgets
+download ITK
+download VTK
+download TurtoiseSVN
+download libpthreads
+
+compile ITK (you can desactivated testing)
+compile VTK (without testing, without examples)
+compile wxWidgets with OpenGL enabled:
+
+Edit wxWidgets-x.x.x\include\wx\msw\setup0.h
+and  wxWidgets-x.x.x\include\wx\univ\setup.h to change from
+#define wxUSE_GLCANVAS 0 to #define wxUSE_GLCANVAS 1.
+
+
+compile pthreads for windows
+compile libAMIFluid
+compile AMILab
+
+-----
+UNIX
+-----
+
+note:
+- I had problems using the vtk and vtk-devel packages
+  from the fedora distribution because it was linking
+  with the wrong GL libraries and GLX was crashing:
+  it is better to recompile VTK from scratch
+
+1. instal gcc gcc-g++ bison compat-flex
+
+2. install cmake and if you want cmake-gui
+
+3. install vtk:
+  to avoid problems, it is better to recompile it than to use the distribution packages
+  download lastest stable release from www.vtk.org and compile with cmake
+
+4. install itk:
+  to avoid problems, it is better to recompile it than to use the distribution packages
+  download lastest stable release from www.itk.org and compile with cmake
+
+
+  install ITK development packages from your distribution
+
+  - for kubuntu:
+    - package libinsightoolkit-dev
+  After installing the package from kubuntu,
+  you need to create a symbolic link for the program
+  to find the includes files, for this you must execute as root:
+
+  cd /usr/local/include/
+  ln -s ../../include/InsightToolkit
+
+  - for fedora install
+
+
+  or download and install from
+  www.itk.org
+
+5. install wxGTK with OpenGL feature
+  if you compile it from the source, you can use the following compilation line:
+  ./configure  --with-opengl --enable-intl --enable-threads --enable-xpm
+
+  on cygwin
+
+  ./configure --with-opengl --enable-intl --enable-threads --enable-xpm  --with-msw --enable-debug --enable-debug_gdb --disable-shared
+
+  make
+  su
+  make install
+
+
+6. install libAMIFluid
+
+  create a build directory, if AMILABCODE_PATH is the directory
+  where you checked out the source code, you can use for example:
+
+  > mkdir ${AMILABCODE_PATH}/build
+  > cd build
+  > mkdir libAMIFluid
+  > cd libAMIFluid
+  > ccmake ${AMILABCODE_PATH}/amilab/libAMIFluid/src/
+    #  press c until you can generate the makefiles with g
+  > make or make -j n, where n is the number of processors you have
+  > sudo make install
+
+
+7. install libOpticFlow
+
+  > cd ${AMILABCODE_PATH}/amilab/
+  > sudo cp -R libAMIOpticalFlow/include/OpticalFlow /usr/local/include/
+
+8. install AMILab
+
+  > mkdir ${AMILABCODE_PATH}/build
+  > cd build
+  > mkdir amilab
+  > cd amilab
+  > ccmake ../../amilab/src/
+   # press c
+   # configure the missing variables:
+   # AMIFLUID_INCLUDE as /usr/local/include/
+   # VTK_DIR
+   # press c until you can generate the makefiles with g
+  > make -j n # where n is the number of process in parallel that you want to use
+  > make install
+
+
+------------------------------------------------------------------------------
+Then if you want to run the different scripts in fluid/karl/scripts
+you should define the environment variable AMI_SCRIPTS as
+${SVNCHECKOUTDIR}/fluid/Karl/scripts, for example, in bash:
+export AMI_SCRIPTS=${SVNCHECKOUTDIR}/fluid/Karl/scripts
+
+

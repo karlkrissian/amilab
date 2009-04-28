@@ -1,0 +1,80 @@
+#!/home/karl/projects/bin/OS/improcess
+
+#
+# in development ...
+#
+
+//----------------------------------------------------------------------
+proc CreateCylinder( IMAGE _i, NUM _x1, NUM _y1, NUM _z1, NUM _x2, NUM _y2, NUM _z2, NUM _r) {
+//   --------------
+
+
+  _dist = sqrt((_x2-_x1)*(_x2-_x1)+(_y2-_y1)*(_y2-_y1)+(_z2-_z1)*(_z2-_z1))
+  _vx = (x2-x1)/_dist
+  _vy = (y2-y1)/_dist
+  _vz = (z2-z1)/_dist
+
+  _sub  = 5
+  _nsub = 2*_sub+1
+
+  for _t=0  to 2*_dist   {
+
+    _cx = _x1+_t/2*_vx
+    _cy = _y1+_t/2*_vy
+    _cz = _z1+_t/2*_vz
+
+    for _x=_cx-_r to _cx+_r {
+    for _y=_cy-_r to _cy+_r {
+    for _z=_cz-_r to _cz+_r {
+
+      _np = 0
+
+      x1 = _x-_sub/_nsub
+      y1 = _y-_sub/_nsub
+      _d00 = (x1-_cx)*(x1-_cx)+(y1-_cy)*(y1-_cy)
+      if (_d00<_r*_r) { _np=_np+1; }
+
+      x1 = _x-_sub/_nsub
+      y1 = _y+_sub/_nsub
+      _d01 = (x1-_cx)*(x1-_cx)+(y1-_cy)*(y1-_cy)
+      if (_d01<_r*_r) { _np=_np+1; }
+
+      x1 = _x+_sub/_nsub
+      y1 = _y-_sub/_nsub
+      _d10 = (x1-_cx)*(x1-_cx)+(y1-_cy)*(y1-_cy)
+      if (_d10<_r*_r) { _np=_np+1; }
+
+      x1 = _x+_sub/_nsub
+      y1 = _y+_sub/_nsub
+      _d11 = (x1-_cx)*(x1-_cx)+(y1-_cy)*(y1-_cy)
+      if (_d11<_r*_r) { _np=_np+1; }
+
+      if (_np==4) {
+        _i.setpos(_x,_y,_z)
+        _i.set(100)
+      }
+
+      if (_np<4)&&(_np>0) {
+
+        n = 0
+        for xn=-sub to sub {
+          for yn=-sub to sub {
+            x1 = x+xn/nsub
+            y1 = y+yn/nsub
+            d =(x1-cx)*(x1-cx)+(y1-cy)*(y1-cy)
+            if (d<r*r) {  n=n+1; }
+          }
+        }
+        i.setpos(x,y,z)
+        i.set(100*n/nsub/nsub)
+      }
+    }
+    }
+    print t; print " "
+  }
+
+}
+
+
+
+

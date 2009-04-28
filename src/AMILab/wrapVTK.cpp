@@ -1,0 +1,235 @@
+//
+// C++ Implementation: wrapAMIFluid
+//
+// Description: 
+//
+//
+// Author: Karl Krissian,,, <karl@UBUNTU-KARL>, (C) 2006
+//
+// Copyright: See COPYING file that comes with this distribution
+//
+//
+
+#include "surface.hpp"
+#include "VarContexts.hpp"
+#include "wrapfunctions.hpp" 
+#include "wrapVTK.h"
+#include "vtk_common.h"
+
+extern VarContexts  Vars;
+
+#ifndef _WITHOUT_VTK_
+
+// all the needed vtk files
+
+// standard VTK
+#include "vtkPolyData.h"
+#include "vtkPoints.h"
+#include "vtkCellArray.h"
+#include "vtkDecimate.h"
+#include "vtkTriangleFilter.h"
+#include "vtkImageMarchingCubes.h"
+#include "vtkSmoothPolyDataFilter.h"
+#include "vtkWindowedSincPolyDataFilter.h"
+#include "vtkPolyDataWriter.h"
+#include "vtkImageCityBlockDistance.h"
+#include "vtkImageMedian3D.h"
+#include "vtkDICOMImageReader.h"
+#include "vtkSphereSource.h"
+
+// files from myVTK library
+#include "vtkMINCImageReader.h"
+#include "vtkImageIsoContourDist.h"
+#include "vtkImageFastSignedChamfer.h"
+#include "vtkLevelSetFastMarching.h"
+#include "vtkImagePropagateDist.h"
+#include "vtkImagePropagateDist2.h"
+#include "vtkConvexHull.h"
+#include "vtkAnisoGaussSeidel.h"
+#include "vtkSkeleton2Lines.h"
+
+#endif // _WITHOUT_VTK_
+
+
+
+//---------------------------------------------------------
+void AddWrapVTK(){
+ Vars.AddVar(type_c_image_function,"vtkAnisoGaussSeidel", (void*) vtkAnisoGS);
+ Vars.AddVar(type_c_function,      "vtkSkeleton2Lines",   (void*) Wrap_vtkSkeleton2Lines);
+ Vars.AddVar(type_c_function,      "vtkSphere",           (void*) Wrap_vtkSphere);
+}
+
+
+/** Read a 3D Flow from an ASCII file **/
+InrImage* vtkAnisoGS(ParamList* p)
+{
+
+#ifndef _WITHOUT_VTK_
+	char functionname[] = "vtkAnisoGaussSeidel";
+	char description[]=" \n\
+		Runs Anisotropic Diffusion Filter based on the \n\
+		Flux Diffusion and using the Gauss-Seidel\n\
+		numerical scheme\n\
+			";
+	char parameters[] =" \n\
+          Parameters:\n\
+              input image\n\
+              standard deviation for Gaussian smoothing sigma\n\
+              threshold on the gradient magnitude\n\
+              data attachment coefficient\n\
+              number of iterations\n\
+              number of threads (def: 1)\n\
+			";
+    
+    InrImage* input;
+    float sd;
+    float threshold;
+    float data_coeff;
+    int iterations;
+    int threads = 1;
+    int n=0;
+
+  if (!get_image_param(  input,      p, n)) HelpAndReturnNULL;
+  if (!get_float_param(  sd,         p, n)) HelpAndReturnNULL;
+  if (!get_float_param(  threshold,  p, n)) HelpAndReturnNULL;
+  if (!get_float_param(  data_coeff, p, n)) HelpAndReturnNULL;
+  if (!get_int_param(    iterations, p, n)) HelpAndReturnNULL;
+  if (!get_int_param(    threads   , p, n)) HelpAndReturnNULL;
+
+
+  vtkImageData_ptr                vtk_image;
+  InrImage*                       res;
+  shared_ptr<vtkAnisoGaussSeidel> vtk_aniso;
+  //  printf("1 \n");
+  vtk_image = vtk_new<vtkImageData>()((vtkImageData*) (*input));
+  //	  printf("2 \n");
+
+  vtk_aniso = vtk_new<vtkAnisoGaussSeidel>()();
+  vtk_aniso->SetInput(              vtk_image.get());
+  vtk_aniso->Setmode(               3);
+  vtk_aniso->Setsigma(              sd);
+  vtk_aniso->Setk(                  threshold);
+  vtk_aniso->Setbeta(               data_coeff);
+  vtk_aniso->SetIsoCoeff(           0.2);
+  vtk_aniso->SetNumberOfIterations( iterations);
+  vtk_aniso->SetNumberOfThreads(    threads);
+
+  vtk_aniso->Update();
+
+  //	  printf("3 \n");
+  res = new InrImage( vtk_aniso->GetOutput());
+  //	  printf("4 \n");
+  return res;
+
+#else
+  fprintf(stderr," VTK not available, you need to compile with VTK ...\n");
+  return NULL;
+#endif // _WITHOUT_VTK_
+
+} // vtkAnisoGS()
+
+
+/** Read a 3D Flow from an ASCII file **/
+Variable::ptr Wrap_vtkSkeleton2Lines(ParamList* p)
+{
+
+#ifndef _WITHOUT_VTK_
+
+  char functionname[] = "vtkSkeleton2Lines";
+  char description[]=" \n\
+      Creates lines from a skeleton\n\
+      ";
+  char parameters[] =" \n\
+          Parameters:\n\
+              input image\n\
+          Return:\n\
+              Resulting polydata as set of lines\n\
+      ";
+    
+    InrImage* input;
+    int n=0;
+
+  if (!get_image_param(  input,      p, n)) HelpAndReturnVarPtr;
+
+
+  vtkImageData_ptr                vtk_image;
+  shared_ptr<vtkSkeleton2Lines>   vtk_skel2lines;
+  //  printf("1 \n");
+  vtk_image = (vtkImageData_ptr) (*input);
+  //    printf("2 \n");
+
+  vtk_skel2lines = vtk_new<vtkSkeleton2Lines>()();
+  vtk_skel2lines->SetInput( vtk_image.get());
+  vtk_skel2lines->GetOutput();
+
+  SurfacePoly* surf_result = new SurfacePoly(vtk_skel2lines->GetOutput());
+
+  Variable::ptr varres(new Variable());
+  varres->Init(type_surface,"vtkSkeleton2lines_result",surf_result);
+
+  return varres;
+
+#else
+  fprintf(stderr," VTK not available, you need to compile with VTK ...\n");
+  return NULL;
+#endif // _WITHOUT_VTK_
+
+} // Wrap_vtkSkeleton2Lines()
+
+
+//---------------------------------------------------------------------------
+Variable::ptr Wrap_vtkSphere( ParamList* p)
+//            --------------
+{
+#ifndef _WITHOUT_VTK_
+
+  char functionname[] = "vtkSphere";
+  char description[]=" \n\
+      Create a sphere as a polydata\n\
+      ";
+  char parameters[] =" \n\
+          Parameters:\n\
+              - radius           (def 0.5)\n\
+              - Theta resolution (def 8)\n\
+              - Phi resolution   (def 8)\n\
+              - Sphere center : 3 float values (def 0,0,0) \n\
+          Return:\n\
+              A sphere polydata\n\
+      ";
+
+    float radius    = 0.5;
+    int thetares    = 8;
+    int phires      = 8;
+    float center[3] = {0,0,0};
+    int n=0;
+
+  if (!get_float_param(         radius,      p, n)) HelpAndReturnVarPtr;
+  if (!get_int_param(           thetares,    p, n)) HelpAndReturnVarPtr;
+  if (!get_int_param(           phires,      p, n)) HelpAndReturnVarPtr;
+  if (!get_vect3d_float_param(  center,      p, n)) HelpAndReturnVarPtr;
+
+  shared_ptr<vtkSphereSource>   vtk_sphere;
+
+  vtk_sphere = vtk_new<vtkSphereSource>()();
+
+  vtk_sphere->SetRadius           (radius);
+  vtk_sphere->SetThetaResolution  (thetares);
+  vtk_sphere->SetPhiResolution    (phires);
+  vtk_sphere->SetCenter           (center[0],center[1],center[2]);
+
+  vtk_sphere->Update();
+
+  SurfacePoly* surf_result = new SurfacePoly(vtk_sphere->GetOutput());
+
+  Variable::ptr varres(new Variable());
+  varres->Init(type_surface,"vtkSphere_result",surf_result);
+
+  return varres;
+
+#else
+  fprintf(stderr," VTK not available, you need to compile with VTK ...\n");
+  return NULL;
+#endif // _WITHOUT_VTK_
+
+} // Wrap_vtkSphere()
+

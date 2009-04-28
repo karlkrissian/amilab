@@ -1,0 +1,32 @@
+
+***** VAR_IMAGE.T_save *****
+
+token(s):
+T_save  save
+
+rule(s):
+commande -> VAR_IMAGE '.' T_save ASTRING
+
+parameters
+  #1 ASTRING:  image name
+
+description:
+Save the image to the disk, using the specified
+image name.
+The output format depends on the image type
+and on the filename extension.
+For saving images with standard 2D image format
+(jpeg, gif, etc...) you need to have a RGB image.
+
+
+Example:
+
+  rgb_im = (RGB) im
+  im.save "image.jpg"
+
+
+See also:
+	Conversion
+
+
+******************************

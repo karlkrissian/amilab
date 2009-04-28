@@ -1,0 +1,32 @@
+
+.token {
+  font-style: italic;
+  /*font-weight: bold;*/
+}
+
+.Extern, .Extern:visited{
+    color: #BE0606;
+    text-align: left;
+}
+.Extern:before{
+    content:url(../img/link_extern.gif);
+}
+.Intern, .Intern:visited{
+    color: #000;
+    text-align: left;
+/*    font-weight: bold;
+    font-size: 11px;*/
+}
+.Intern:before{
+    content:url(../img/link_intern.gif);
+}
+A, A:visited {
+    /* color: #000;*/
+    text-decoration: none;
+}
+A:hover, .Intern:hover {
+    color: #BE0606;
+    text-decoration: underline;
+    /*font-weight: bold;
+    font-size: smaller; */
+}

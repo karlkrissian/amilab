@@ -1,0 +1,29 @@
+
+***** VAR_IMAGE.SET *****
+
+token(s):
+SET  set
+
+rule(s):
+1. commande -> VAR_IMAGE '.' SET '(' expr ')'
+2. commande -> VAR_IMAGE '.' SET '(' expr ',' expr ',' expr ')'
+
+rule 1 parameters:
+  #1 expr:  scalar value 
+
+rule 2 parameters:
+  #1 expr:  X coord of the vector value
+  #2 expr:  Y coord of the vector value
+  #3 expr:  Z coord of the vector value
+
+description:
+Set the current voxel (or pixel) 
+to the specified value.
+The position of the current voxel can be set 
+using 'setpos'.
+
+
+See also:
+	setpos
+
+******************************

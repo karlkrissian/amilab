@@ -1,0 +1,129 @@
+#!/usr/bin/amilab
+# command line: amilab
+#
+# creates local weights that are used in the NLmeans algorithm
+#
+# To do: create interface to play with the parameters ...
+#
+
+import_filters
+
+func "Noise/AddRiceNoise.amil"
+
+NLMw_input   = (FLOAT) Image $1
+#pos_x = atof($2)
+#pos_y = atof($3)
+NLMw_smoothing = 0.9
+NLMw_winsize = INT(5)
+NLMw_patsize = INT(2)
+NLMw_thres   = 0.2
+NLMw_noise   = INT(0)
+
+proc CreateWeights(IMAGE i_1,IMAGE cont, NUM px, NUM py, NUM wsize, NUM w2size, NUM th) {
+  i_w = i_1
+  if (wsize==1) {
+    i1s = filter(i_1,NLMw_smoothing*8,0,0,0)
+    i_w = NSim(i1s,px,py,0,wsize)
+  } else {
+    i_w = NSim(i_1,px,py,0,wsize)
+  }
+  // get a smaller window around
+  xmin = px-w2size
+  if (xmin<wsize) { xmin = wsize}
+  ymin = py-w2size
+  if (ymin<wsize) { ymin = wsize}
+  xmax = px+w2size
+  if (xmax>i_1.tx-1-wsize) { xmax = i_1.tx-1-wsize}
+  ymax = py+w2size
+  if (ymax>i_1.ty-1-wsize) { ymax = i_1.ty-1-wsize}
+  i_2 = i_w[xmin:xmax,ymin:ymax,0:0]
+  i_2 = exp(-i_2/(th*th))
+  i_2.setpos(px-xmin,py-ymin,0)
+  i_2.set(0)
+  v = max(i_2)
+  i_2.setpos(px-xmin,py-ymin,0)
+  i_2.set(v)
+  i_2 = i_2 / v 
+#  i_2 = i_2/(mean(i_2)*i_2.tx*i_2.ty*i_2.tz)
+  i_1.putimage(i_2)
+  i_2.initvalue(1)
+  cont.putimage(i_2)
+}
+
+
+proc CB_Reset() {
+  global_new
+  NLMw_weights =  NLMw_input
+  NLMw_cont    =  NLMw_input*0
+  show NLMw_input
+}
+
+proc ShowWeights() {
+
+    show NLMw_weights;
+    NLMw_weights_draw.SetIsoContour(0,NLMw_cont,0.5)
+    NLMw_weights_draw.DrawIsoContour(0,1)
+    NLMw_input_draw.compare(NLMw_weights_draw)
+}
+
+proc CB_DrawWeights() {
+
+  if (exists(NLMw_input)) {
+    pos_x = NLMw_input_draw.GetXPos
+    pos_y = NLMw_input_draw.GetYPos
+    CreateWeights(&NLMw_weights,&NLMw_cont,pos_x,pos_y,NLMw_patsize,NLMw_winsize,NLMw_thres)
+    ShowWeights()
+  }
+}
+
+proc CB_Preset1() {
+
+  if (exists(NLMw_input)) {
+    CreateWeights(&NLMw_weights,&NLMw_cont,35,14,1,NLMw_winsize,0.5)
+    CreateWeights(&NLMw_weights,&NLMw_cont,35,35,2,NLMw_winsize,0.5)
+    CreateWeights(&NLMw_weights,&NLMw_cont,14,35,3,NLMw_winsize,0.5)
+    CreateWeights(&NLMw_weights,&NLMw_cont,14,14,4,NLMw_winsize,0.5)
+    ShowWeights()
+  }
+}
+
+proc CB_Preset2() {
+
+  if (exists(NLMw_input)) {
+    CreateWeights(&NLMw_weights,&NLMw_cont,37,12,1,NLMw_winsize,0.5)
+    CreateWeights(&NLMw_weights,&NLMw_cont,37,37,2,NLMw_winsize,0.5)
+    CreateWeights(&NLMw_weights,&NLMw_cont,12,37,3,NLMw_winsize,0.5)
+    CreateWeights(&NLMw_weights,&NLMw_cont,12,12,4,NLMw_winsize,0.5)
+    ShowWeights()
+  }
+}
+
+proc CB_AddRicianNoise() {
+  AddRiceNoise(&NLMw_weights, NLMw_noise/100);
+}
+
+proc CreateParams() {
+  global_new
+
+  NLMw_win        = ParamWin("Weights for NLM")
+  NLMw_smooth_id  = NLMw_win.AddFloat(NLMw_smoothing,0.01,2)
+  NLMw_patsize_id = NLMw_win.AddInt(NLMw_patsize,1,10)
+  NLMw_winsize_id = NLMw_win.AddInt(NLMw_winsize,1,20)
+  NLMw_thres_id   = NLMw_win.AddFloat(NLMw_thres,0.01,1)
+  NLMw_noise_id   = NLMw_win.AddInt(NLMw_noise,0,70)
+
+  NLMw_win.BeginBox("Controls")
+    AddNoise_id    = NLMw_win.AddButton("Add Rician Noise", CB_AddRicianNoise)
+    Reset_id       = NLMw_win.AddButton("Reset",            CB_Reset)
+    DrawWeights_id = NLMw_win.AddButton("Draw Weights",     CB_DrawWeights)
+    DrawPreset_id  = NLMw_win.AddButton("Apply Preset 1",   CB_Preset1)
+    DrawPreset_id  = NLMw_win.AddButton("Apply Preset 2",   CB_Preset2)
+  NLMw_win.EndBox
+
+  NLMw_win.CreateWin
+  NLMw_win.Display
+
+}
+
+
+CreateParams()

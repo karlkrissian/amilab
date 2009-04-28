@@ -1,0 +1,102 @@
+
+proc AGS_init( IMAGE input) {
+  global_new
+
+  AGS_input = input
+  AGS_sigma=1
+  AGS_threshold=10
+  AGS_datacoeff=0.05
+  AGS_niter=INT(5)
+  AGS_use_zoom=UCHAR(0)
+  AGS_started=0
+
+  AGS_gui()
+}
+
+proc CB_Restart() {
+  global_new
+  if (AGS_started) {
+    AnisoGS.end
+    if exists(res_draw) {
+      del res_draw
+    }
+    if exists(res) {
+      del res
+    }
+    if exists(input) {
+      del input
+    }
+  }
+  if (AGS_use_zoom)&&(exists(AGS_input_draw)) {
+    input = (FLOAT) AGS_input[AGS_input_draw.GetXmin:AGS_input_draw.GetXmax,\
+                           AGS_input_draw.GetYmin:AGS_input_draw.GetYmax,\
+                           AGS_input_draw.GetZmin:AGS_input_draw.GetZmax ]
+  } else {
+    input = (FLOAT) AGS_input
+  }
+  AnisoGS.init(input,AGS_sigma,AGS_threshold,AGS_datacoeff)
+  AGS_started=1
+  res = AnisoGS.GetOutput
+  local
+}
+
+proc CB_Filter() {
+  global
+  if (!AGS_started) {
+    CB_Restart()
+  }
+  for k=1 to AGS_niter {
+    AnisoGS.iterate
+    if exists(res_draw) {
+      show res
+    }
+  }
+  res = AnisoGS.GetOutput
+  local
+}
+
+proc CB_Display() {
+  global_new
+  show AGS_input
+  if exists(res) {
+    AGS_input_draw.compare(res)
+  }
+  local
+}
+
+proc CB_Save() {
+  res.save resultname
+}
+
+proc AGS_gui() {
+  global_new
+  # parameters window
+  AGS_win = ParamWin("AnisoGS")
+  AGS_sigma_id           = AGS_win.AddFloat(AGS_sigma,0.01,10)
+  AGS_threshold_id       = AGS_win.AddFloat(AGS_threshold,0,100)
+  AGS_datacoeff_id       = AGS_win.AddFloat(AGS_datacoeff,0.01,10)
+  AGS_niter_id           = AGS_win.AddInt(AGS_niter,0,100)
+  AGS_use_zoom_id        = AGS_win.AddBoolean(AGS_use_zoom)
+  
+  AGS_win.BeginBox("Controls")
+  AGS_win.BeginHorizontal
+  restart_id = AGS_win.AddButton("Restart",    CB_Restart)
+  iterate_id = AGS_win.AddButton("Filter",     CB_Filter)
+  display_id = AGS_win.AddButton("Display",    CB_Display)
+  display_id = AGS_win.AddButton("Save",       CB_Save)
+  AGS_win.EndHorizontal
+  AGS_win.EndBox
+  
+  AGS_win.CreateWin
+  AGS_win.Display
+  AGS_win.update
+}
+
+
+if (argc>=2) {
+  imagename  = $1
+  resultname = $2
+  input0 = Image(imagename)
+  AGS_init(&input0)
+  AGS_gui()
+}

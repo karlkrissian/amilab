@@ -1,0 +1,91 @@
+
+proc Read() {
+  global_new
+
+  printn "Read"
+  if (typePix == 0) {
+   i = ReadRawImages(dimx,dimy,dimz,UCHAR,dimv,endianess,file_name)
+  }
+  if (typePix == 1) {
+   i = ReadRawImages(dimx,dimy,dimz,UINT,dimv,endianess,file_name)
+  }
+  if (typePix == 2) {
+   i = ReadRawImages(dimx,dimy,dimz,INT,dimv,endianess,file_name)
+  }
+  if (typePix == 3) {
+   i = ReadRawImages(dimx,dimy,dimz,FLOAT,dimv,endianess,file_name)
+  }
+  if (typePix == 4) {
+   i = ReadRawImages(dimx,dimy,dimz,DOUBLE,dimv,endianess,file_name)
+  }
+
+  i.setvoxelsize(voxSizeX, voxSizeY, voxSizeZ)
+
+}
+
+proc Save() {
+  i.save file_name-".raw"+".ami.gz"
+}
+
+proc ShowImage() {
+  global_new
+
+  show i
+}
+
+proc RawImage2ami_Gui( ) {
+  global_new
+
+  imLoad_win = ParamWin("Read Raw")
+  imLoad_win.BeginBook
+  imLoad_win.AddPage("Init")
+
+ imLoad_win.BeginBox("Image dimensions and type")
+      pi_dimx  = imLoad_win.AddInt    (dimx,0,1024)
+      pi_dimy  = imLoad_win.AddInt    (dimy,0,1024)
+      pi_dimz  = imLoad_win.AddInt    (dimz,0,1024)
+
+      imLoad_win.BeginHorizontal
+        pi_typePix  = imLoad_win.AddEnum   (typePix,2)
+          imLoad_win.AddEnumChoice(pi_typePix,"UCHAR")
+          imLoad_win.AddEnumChoice(pi_typePix,"UINT")
+          imLoad_win.AddEnumChoice(pi_typePix,"INT")
+          imLoad_win.AddEnumChoice(pi_typePix,"FLOAT")
+          imLoad_win.AddEnumChoice(pi_typePix,"DOUBLE")
+        pi_endianess  = imLoad_win.AddEnum   (endianess,2)
+          imLoad_win.AddEnumChoice(pi_endianess,"Little")
+          imLoad_win.AddEnumChoice(pi_endianess,"Big")
+      imLoad_win.EndHorizontal
+  imLoad_win.EndBox
+ imLoad_win.BeginBox("Voxel size")
+      pi_voxSizeX  = imLoad_win.AddFloat    (voxSizeX,0,10)
+      pi_voxSizeY  = imLoad_win.AddFloat    (voxSizeY,0,10)
+      pi_voxSizeZ  = imLoad_win.AddFloat    (voxSizeZ,0,10)
+  imLoad_win.EndBox
+
+  imLoad_win.AddFilename(file_name, "Read raw image", ".", "*")
+
+  imLoad_win.BeginHorizontal
+    imLoad_win.AddButton("Read image",  Read)
+    imLoad_win.AddButton("Show image",  ShowImage)
+    imLoad_win.AddButton("Save as ami.gz",  Save)
+  imLoad_win.EndHorizontal
+
+  imLoad_win.update
+  imLoad_win.Display
+  
+}
+
+dimx = INT(512)
+dimy = INT(512)
+dimz = INT(100)
+dimv = INT(1)
+typePix = INT(0)  # 0:UCHAR, 1:UINT, 2:INT, 3:FLOAT, 4:DOUBLE
+endianess = INT(0)  # 0:Little, 1:Big
+voxSizeX = 1
+voxSizeY = 1
+voxSizeZ = 1
+file_name = ""
+
+RawImage2ami_Gui()
+

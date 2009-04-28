@@ -1,0 +1,25 @@
+#!/home/karl/projects/bin/OS/improcess
+#
+#
+# command line: improcess 
+#
+#
+
+i = Image($1)
+minr = atof($2)
+maxr = atof($3)
+m = (UCHAR) ((i>5)*255)
+
+func "MultiLines.amil"
+
+result0 = (FLOAT) i*0
+maxres0 = result0
+result1 = result0
+maxres1 = result0
+
+MultiLines(i,&result0,&maxres0,minr,maxr,10,m,0)
+MultiLines(i,&result1,&maxres1,minr,maxr,10,m,1)
+
+show i;
+i_draw.compare(maxres0)
+i_draw.compare(maxres1)

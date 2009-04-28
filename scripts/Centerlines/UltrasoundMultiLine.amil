@@ -1,0 +1,158 @@
+#
+#
+# variables
+
+//----------------------------------------------------------------------
+proc USML_init(IMAGE input, NUM threshold, NUM ExtremaTh) {
+  global_new
+
+  USML_input = input
+  USML_sigma = 1
+  USML_th    = threshold
+  USML_extth = ExtremaTh
+  USML_rmin  = 1
+  USML_rmax  = 4
+  USML_rstep = 1
+  USML_localstruct = INT(0); // 0: Hessian 1: StructTensor 2: StructTensorH
+}
+
+//----------------------------------------------------------------------
+proc USML_Process( ) {
+//   -----------
+  global_new
+printn "start USML_Process"
+  m = (UCHAR) ((USML_input>USML_th)*255)
+
+  if (USML_localstruct==0) {
+printn "Hessian"
+    // Compute eigenvalues and eigenvectors of the Hessian Matrix
+    HessianMatrix(USML_input,USML_sigma,m)
+    del USML_input_Hvap1
+    del USML_input_Hvap3
+    del USML_input_Hvep1
+    
+    g = gradient(USML_input,USML_sigma)
+    
+    m = (UCHAR) ((USML_input>USML_th)*(USML_input_Hvap2<0)*255)
+    del USML_input_Hvap2
+    vep2 = USML_input_Hvep2
+    del USML_input_Hvep2
+    vep3 = USML_input_Hvep3
+    del USML_input_Hvep3
+  }
+
+  if (USML_localstruct==1) {
+printn "StructTensor"
+    // Compute eigenvalues and eigenvectors of the Hessian Matrix
+    StructTensor(USML_input,0.6,USML_sigma,m)
+    del USML_input_STvap1
+    del USML_input_STvap2
+    del USML_input_STvap3
+    del USML_input_STvep1
+    
+    g = gradient(USML_input,USML_sigma)
+    
+    m = (UCHAR) ((USML_input>USML_th)*255)
+    vep2 = USML_input_STvep2
+    del USML_input_STvep2
+    vep3 = USML_input_STvep3
+    del USML_input_STvep3
+  }
+
+  USML_repm  =(FLOAT)USML_input*0
+  USML_rep1m = USML_repm
+  rad = USML_repm
+  ng = norm(g)
+  printn max(ng)
+  vep2.info
+  vep3.info
+
+  for r=USML_rmin to USML_rmax step USML_rstep {
+
+    print "Compute for radius = "; print r; print "\n"
+    USML_rep   = CircleInt(   g,vep2,vep3,r,m)
+
+    USML_rep1  = CircleIntSdExc(g,vep2,vep3,r,m,1,1.5)
+
+    USML_rep1m = USML_rep1*(USML_rep>USML_repm) + USML_rep1m*(USML_repm>=USML_rep)
+    rad   = (USML_rep>USML_repm)*r    + (USML_repm>=USML_rep)*rad
+    USML_repm  = USML_rep *(USML_rep>USML_repm) + USML_repm *(USML_repm>=USML_rep)
+  }
+
+
+//  del g
+
+  print "Compute local extrema \n"
+  USML_e  = LocalExtrema(USML_repm,vep2,vep3,m)
+
+  USML_e2 = USML_e*((USML_e*1.5)>USML_rep1m)
+
+//  print "Thresholds and creates lines \n"
+//  b   = (UCHAR) ((USML_e2>USML_extth)*255)
+//  bsk = Skeleton(b,USML_e2,0,1000)
+//  l   = Skeleton2lines(bsk)
+//  USML_l1  = SmoothLines(l)
+
+//  l1.save "multiscale-lines.vtk"
+
+}
+
+proc USML_DisplayResponse() {
+  global_new
+
+  show USML_input
+  show USML_rep
+  show USML_rep1
+  USML_input_draw.compare(USML_rep_draw)
+  USML_input_draw.compare(USML_rep1_draw)
+}
+
+proc USML_DisplayExtrema() {
+  global_new
+
+  show USML_e
+}
+
+proc USML_DisplayLines() {
+  global_new
+}
+
+proc USML_CreateWindow() {
+  global
+    # parameters window
+    USML_win = ParamWin("Multiscale response filter for centerlines")
+    
+    USML_sigma_id = USML_win.AddFloat(USML_sigma,0.6,3)
+    USML_th_id    = USML_win.AddFloat(USML_th,1,500)
+
+    USML_rmin_id   = USML_win.AddFloat(USML_rmin, 0.5,20)
+    USML_rmax_id   = USML_win.AddFloat(USML_rmax, 0.5,20)
+    USML_rstep_id  = USML_win.AddFloat(USML_rstep,0.5,20)
+
+    USML_localstruct_id = USML_win.AddEnum(USML_localstruct,2)
+    USML_H_id    = USML_win.AddEnumChoice(USML_localstruct_id,"Hessian")
+    USML_ST_id   = USML_win.AddEnumChoice(USML_localstruct_id,"Struct Tensor")
+
+    USML_win.BeginBox("Controls")
+        USML_win.BeginHorizontal
+            process_id     = USML_win.AddButton("Process", USML_Process)
+        USML_win.EndHorizontal
+        USML_win.BeginHorizontal
+            display_id     = USML_win.AddButton("Display Response", USML_DisplayResponse)
+            displayext_id  = USML_win.AddButton("Display Extrema",  USML_DisplayExtrema)
+            displayline_id = USML_win.AddButton("Display Lines",    USML_DisplayLines)
+        USML_win.EndHorizontal
+    USML_win.EndBox
+    
+    USML_win.CreateWin
+    USML_win.Display
+  local
+}
+
+if ($#>=3) {
+  input = Image($1)
+  threshold = atof($2)
+  th_ext = atof($3)
+  USML_init(input,threshold,th_ext)
+  USML_CreateWindow()
+}

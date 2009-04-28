@@ -1,0 +1,31 @@
+
+i = Image $1
+
+StructTensor(i,0.7,0.8)
+
+del i_STvap1
+del i_STvap2
+del i_STvap3
+del i_STvep3
+
+g = gradient(i,0.8)
+
+m = (UCHAR) ((i>25)*255)
+
+rep   = CircleInt(g,i_STvep1,i_STvep2,0.5,m)
+repm = rep
+
+rep  = CircleInt(g,i_STvep1,i_STvep2,1,m)
+repm = rep*(rep>repm)+repm*(repm>=rep)
+
+rep  = CircleInt(g,i_STvep1,i_STvep2,1.5,m)
+repm = rep*(rep>repm)+repm*(repm>=rep)
+
+rep  = CircleInt(g,i_STvep1,i_STvep2,2,m)
+repm = rep*(rep>repm)+repm*(repm>=rep)
+
+rep  = CircleInt(g,i_STvep1,i_STvep2,2.5,m)
+repm = rep*(rep>repm)+repm*(repm>=rep)
+
+e = LocalExtrema(repm,i_STvep1,i_STvep2,m)
+

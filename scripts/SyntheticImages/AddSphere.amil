@@ -1,0 +1,165 @@
+
+//
+// Add a sphere to an image
+//
+proc AddSphere( IMAGE im, NUM x, NUM y, NUM z, NUM rad ) {
+//   ---------
+  rad2=2*rad
+  if (im.tz>1) {
+    sph = im[x-rad2:x+rad2,y-rad2:y+rad2,z-rad2:z+rad2]
+    px = (FLOAT) Xpos(sph)-rad2
+    py = (FLOAT) Ypos(sph)-rad2
+    pz = (FLOAT) Zpos(sph)-rad2
+    sph = sqrt(px*px+py*py+pz*pz)-rad
+    sph = (sph<rad)*sph+(sph>=rad)*rad
+    im.putimage(sph)
+  } else {
+   sph = im[x-rad2:x+rad2,y-rad2:y+rad2,0:0]
+    px = (FLOAT) Xpos(sph)-rad2
+    py = (FLOAT) Ypos(sph)-rad2
+    sph = sqrt(px*px+py*py)-rad
+    sph = (sph<rad)*sph+(sph>=rad)*rad
+    im.putimage(sph)
+  }
+}
+
+//
+// take into account the voxel size and create a sphere
+// with the radius in mm
+//
+proc AddBrightSphere_mm( IMAGE im, NUM x, NUM y, NUM z, NUM rad, NUM _I1, NUM _I2 ) {
+//   ---------------
+  local::_vx = im.vx
+  local::_vy = im.vy
+  local::_vz = im.vz
+  local::_dx = x-(INT)x
+  local::_dy = y-(INT)y
+  local::_dz = z-(INT)z
+  local::radx=(INT) (2*(rad+0.99)/_vx)
+  local::rady=(INT) (2*(rad+0.99)/_vy)
+  local::radz=(INT) (2*(rad+0.99)/_vz)
+  if (im.tz>1) {
+    local::sph = im[x-radx:x+radx,y-rady:y+rady,z-radz:z+radz]
+    local::px = (FLOAT) Xpos(sph)-(radx+_dx)
+    local::py = (FLOAT) Ypos(sph)-(rady+_dy)
+    local::pz = (FLOAT) Zpos(sph)-(radz+_dz)
+    px = px*_vx
+    py = py*_vy
+    pz = pz*_vz
+    local::_r2 = px*px+py*py+pz*pz;
+    sph = _r2/(2*rad*rad)
+    sph =  exp(-sph*sph)*(_I2-_I1) + _I1
+    // set as max
+    local::sim = im[sph]
+    sim = max(sim,sph)
+    im.putimage(sim)
+  } else {
+   local::sph = im[x-radx:x+radx,y-rady:y+rady,0:0]
+    local::px = (FLOAT) Xpos(sph)-radx-_dx
+    local::py = (FLOAT) Ypos(sph)-rady-_dy
+    local::px = px*_vx
+    py = py*_vy
+    local::_r2 = px*px+py*py;
+    sph = _r2/(2*rad*rad)
+    sph =  exp(-sph)*(_I2-_I1) + _I1
+    sim = im[sph]
+    sim = max(sim,sph)
+    im.putimage(sim)
+  }
+}
+
+
+# add sphere using the global coordinate system for the points
+proc AddBrightSphereGlobal_mm( \
+            IMAGE im,\
+            NUM x, NUM y, NUM z,\
+            NUM rad, NUM _I1, NUM _I2 ) \
+{
+  AddBrightSphere_mm(&im,\
+    (x-im.trx)/im.vx,\
+    (y-im.try)/im.vy,\
+    (z-im.trz)/im.vz,\
+    rad, _I1, _I2)
+}
+
+
+//
+proc AddBrightSphere( IMAGE im, NUM x, NUM y, NUM z, NUM rad ) {
+//   ---------------
+  local_new
+  _dx = x-(INT)x
+  _dy = y-(INT)y
+  _dz = z-(INT)z
+  rad2=2*rad
+  if (im.tz>1) {
+    sph = im[x-rad2:x+rad2,y-rad2:y+rad2,z-rad2:z+rad2]
+    px = ((FLOAT) Xpos(sph))-(rad2+_dx)
+    py = ((FLOAT) Ypos(sph))-(rad2+_dy)
+    pz = ((FLOAT) Zpos(sph))-(rad2+_dz)
+    sph = sqrt(px*px+py*py+pz*pz)-rad
+    sph = (sph<rad)*sph+(sph>=rad)*rad
+    sph=-sph
+    im.putimage(sph)
+  } else {
+   sph = im[x-rad2:x+rad2,y-rad2:y+rad2,0:0]
+    px = ((FLOAT) Xpos(sph))-(rad2+_dx)
+    py = ((FLOAT) Ypos(sph))-(rad2+_dy)
+    sph = sqrt(px*px+py*py)-rad
+    sph = (sph<rad)*sph+(sph>=rad)*rad
+    sph=-sph
+    im.putimage(sph)
+  }
+}
+
+
+proc AddSphereCursor( IMAGE im, IMAGEDRAW imdraw, NUM rad ) {
+//   ---------------
+  print "*\n"
+  x=imdraw.GetXPos
+  y=imdraw.GetYPos
+  z=imdraw.GetZPos
+  rad2=2*rad
+  if (im.tz>1) {
+    sph = im[x-rad2:x+rad2,y-rad2:y+rad2,z-rad2:z+rad2]
+    px = (FLOAT) Xpos(sph)-rad2
+    py = (FLOAT) Ypos(sph)-rad2
+    pz = (FLOAT) Zpos(sph)-rad2
+    sph = sqrt(px*px+py*py+pz*pz)-rad
+    sph = (sph<rad)*sph+(sph>=rad)*rad
+    sph=-sph
+    im.putimage(sph)
+  } else {
+   sph = im[x-rad2:x+rad2,y-rad2:y+rad2,0:0]
+    px = (FLOAT) Xpos(sph)-rad2
+    py = (FLOAT) Ypos(sph)-rad2
+    sph = sqrt(px*px+py*py)-rad
+    sph = (sph<rad)*sph+(sph>=rad)*rad
+    sph=-sph
+    im.putimage(sph)
+  }
+}
+
+
+//
+// Add a black sphere to an image
+//
+proc AddBlackSphere( IMAGE im, NUM x, NUM y, NUM z, NUM rad ) {
+//   --------------
+  rad2=2*rad
+  if (im.tz>1) {
+    im0 = im[x-rad2:x+rad2,y-rad2:y+rad2,z-rad2:z+rad2]
+    px = (FLOAT) Xpos(im0)-rad2
+    py = (FLOAT) Ypos(im0)-rad2
+    pz = (FLOAT) Zpos(im0)-rad2
+    sph = sqrt(px*px+py*py+pz*pz)-rad
+    im0 = im0*(sph>0)
+    im.putimage(im0)
+  } else {
+    im0 = im[x-rad2:x+rad2,y-rad2:y+rad2,0:0]
+    px = (FLOAT) Xpos(im0)-rad2
+    py = (FLOAT) Ypos(im0)-rad2
+    sph = sqrt(px*px+py*py)-rad
+    im0 = im0*(sph>0)
+    im.putimage(im0)
+  }
+}
