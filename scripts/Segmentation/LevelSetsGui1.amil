@@ -332,7 +332,12 @@ proc CB_Surface() {
 
 //---------------------------------------------------
 proc CB_SaveResult() {
-  filename=$1-".gz"-".ami"+sprint("_ls_%0.0f_",Imean)+sprint("%0.2f.ami.gz",Isd)
+  if (argc=>1) {
+    imname = $1
+  } else {
+    imname = "LevelSetResult"
+  }
+  filename=imname-".gz"-".ami"+sprint("_ls_%0.0f_",Imean)+sprint("%0.2f.ami.gz",Isd)
   print "saving file "+filename+"\n"
   LS_inls.save filename
 }
@@ -391,7 +396,7 @@ proc LS_CreateWin() {
         LS_velcoeff_id = LS_w1.AddFloat(LS_velcoeff,0,1)
       LS_w1.EndBox
 
-    LS_w1.AddPage("Evolution")
+    LS_w1.AddPage("Evol")
 
       LS_w1.BeginBox("Time")
         dt_id =       LS_w1.AddFloat(dt,0.01,1)
@@ -410,12 +415,12 @@ proc LS_CreateWin() {
       LS_w1.EndHorizontal
       LS_w1.EndBox
 
-    LS_w1.AddPage("Distance Transform")
+    LS_w1.AddPage("Dist")
       dtmin_id =  LS_w1.AddFloat(DTmin,-100,0)
       dtmax_id =  LS_w1.AddFloat(DTmax,0,100)
       LS_w1.AddButton("Apply",  CB_ApplyDT)
 
-    LS_w1.AddPage("Result")
+    LS_w1.AddPage("Res")
       LS_w1.BeginBox("Save")
       LS_w1.BeginHorizontal
       LS_w1.AddButton("Result",   CB_SaveResult)
