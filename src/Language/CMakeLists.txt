@@ -49,6 +49,7 @@ IF (WIN32)
 
   SET(Language_SRCS
     ${BISON_improcessbison_OUTPUTS}
+    driver.cc
     improcess_flex.cpp
     VarContexts.cpp
     Variable.cpp
@@ -66,6 +67,7 @@ ELSE (WIN32)
   SET(Language_SRCS
     ${BISON_improcessbison_OUTPUTS}
     ${FLEX_improcessflex_OUTPUTS}
+    driver.cc
     VarContexts.cpp
     Variable.cpp
     Variables.cpp

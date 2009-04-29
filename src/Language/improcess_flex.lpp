@@ -81,6 +81,9 @@ extern int       GB_num_arg_parsed;
 
 %}
 
+/* enable c++ scanner class generation */
+%option c++
+
 %option prefix="yyip"
 %option noyywrap
 %option verbose
@@ -385,7 +388,6 @@ NULL              return(T_NULL); /*{NULL,T_NULL}*/
 
 
 ProcessXEvents    return(T_ProcessXEvents); /*{ProcessXEvents,T_ProcessXEvents}*/
-ProcessEvents    return(T_ProcessEvents); /*{ProcessEvents,T_ProcessEvents}*/
 
 count             return(T_COUNT); /*{count,T_COUNT}*/
 max               return(T_MAX); /*{max,T_MAX}*/
@@ -701,7 +703,7 @@ emptyargs         return(T_emptyargs);    /*{emptyargs,T_emptyargs}*/
 //
 //  setlocale(LC_NUMERIC,"C");
   setlocale(LC_NUMERIC, "C");
- yyiplval.adouble=atof(yyiptext);
+ yyiplval.adouble=atof(YYText());
   return(NUMBER);
 }
 
@@ -712,7 +714,7 @@ emptyargs         return(T_emptyargs);    /*{emptyargs,T_emptyargs}*/
 //
 //  setlocale(LC_NUMERIC,"C");
   setlocale(LC_NUMERIC, "C");
-  yyiplval.adouble=atof(yyiptext);
+  yyiplval.adouble=atof(YYText());
   return(NUMBER);
 }
 
@@ -754,13 +756,13 @@ emptyargs         return(T_emptyargs);    /*{emptyargs,T_emptyargs}*/
 <str>\\b cpp_string->append(1,'\b');
 <str>\\f cpp_string->append(1,'\f');
 
-<str>\\(.|\n) cpp_string->append(1,yyiptext[1]);
-#<str>\\(\n) cpp_string->append(1,yyiptext[1]);
+<str>\\(.|\n) cpp_string->append(1,YYText()[1]);
+#<str>\\(\n) cpp_string->append(1,YYText()[1]);
 
 <str>[^\\\n\"]+ {
-  cpp_string->append(yyiptext);
+  cpp_string->append(YYText());
 /*
-  char *yptr = yyiptext;
+  char *yptr = YYText();
 
   while (*yptr)
     *string_buf_ptr++ = *yptr++;
@@ -776,7 +778,7 @@ emptyargs         return(T_emptyargs);    /*{emptyargs,T_emptyargs}*/
 \$[0-9]   {
   // TODO allow more than 10 arguments!!
   int n,pos;
-  n = yyiptext[1]-'0';
+  n = YYText()[1]-'0';
   // TODO: check the position, improve the code here
   pos = n+GB_num_arg_parsed-1;
 
@@ -822,7 +824,7 @@ emptyargs         return(T_emptyargs);    /*{emptyargs,T_emptyargs}*/
 
 <block>\n {
   yyiplineno++;
-  ami_block->GetBody().append(yyiptext);
+  ami_block->GetBody().append(YYText());
 }
 
 
@@ -867,10 +869,10 @@ emptyargs         return(T_emptyargs);    /*{emptyargs,T_emptyargs}*/
 
 
 <block>[^\{\}] {
-//  char *yptr = yyiptext;
+//  char *yptr = YYText();
 //  while (*yptr)
 //    *block_buf_ptr++ = *yptr++;
-  ami_block->GetBody().append(yyiptext);
+  ami_block->GetBody().append(YYText());
 }
 
 
@@ -906,7 +908,7 @@ local::([A-Za-z0-9_])*   {
 //============================ Parse variable ====================
 //
   int context = Vars.GetCurrentContextNumber();
-  string text(yyiptext);
+  string text(YYText());
   string varname = text.substr(7);
   int result = checkvar(varname.c_str(),context);
   // force next variable to be global
@@ -919,7 +921,7 @@ global::([A-Za-z0-9_])*   {
 //
 //============================ Parse variable ====================
 //
-  string text(yyiptext);
+  string text(YYText());
   string varname = text.substr(8);
   int result = checkvar(varname.c_str(),0);
   // force next variable to be global
@@ -933,7 +935,7 @@ global::([A-Za-z0-9_])*   {
 //
 //============================ Parse variable ====================
 //
-   return checkvar(yyiptext);
+   return checkvar(YYText());
 }
 
 
@@ -970,10 +972,10 @@ int checkvar(const char* varname, int context)
 
   Variable* var;
 
-//  sprintf(tmp_string,"checkvar()  %s \n",yyiptext);
+//  sprintf(tmp_string,"checkvar()  %s \n",YYText());
 //  err_print(tmp_string);
 
-//fprintf(stderr,"%s procdecl %d \n",yyiptext,procedure_declaration);
+//fprintf(stderr,"%s procdecl %d \n",YYText(),procedure_declaration);
 
   // the first identifier is the procedure name and must be checked
   if (procedure_declaration==1)

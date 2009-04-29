@@ -8,7 +8,7 @@
  */
 
 
-%{
+%{ /*** C/C++ Declarations ***/
   //#include <stdlib.h>
   //#include <stdio.h>
 
@@ -28,7 +28,7 @@
 #include "wrapFilters.h"
 #include <cstdlib>
 
-#include "myscan.h"
+//#include "myscan.h"
 #include "ImageDraw.hpp"
 #include "Func_ReadCTALine.h"
 #include "LineRecons.h"
@@ -36,10 +36,25 @@
 
   //#define IDENT_MAX_SIZE 15
 
+#include "driver.h"
+
+#ifndef __FLEX_LEXER_H
+#define yyFlexLexer yyipFlexLexer
+#include "FlexLexer.h"
+#undef yyFlexLexer
+#endif
+
+
+/*
+struct yy_buffer_state;
+#define YY_BUFFER_STATE yy_buffer_state
+#define YY_MAX_BUF 100
+
+extern int yyiplineno;
 int               yy_num_buf = 0;
 YY_BUFFER_STATE   yy_buf_stack[YY_MAX_BUF];
 int               yyERROR;
-
+*/
 
 #include "Viewer3D.hpp"
 
@@ -182,95 +197,21 @@ static wxString GetwxStr(const string& str) {
 }
 */
 
-class wxWaitTimer : public wxTimer
-{
-  public:
-    bool finished;
-
-    wxWaitTimer() : finished(false) {}
-    //Called each time the timer's timeout expires
-    void Notify()     { finished = true; }
-};
+static void CB_TimeOut( void* cd, long unsigned int *) {
+  GB_TimeOut[*(int*)cd] = 1;
+}
 
 static void CB_ParamWin( void* cd );
 
-
-class wxScheduleTimer : public wxTimer
-{
-  DEFINE_CLASS(wxScheduleTimer)
-
-  public:
-
-    wxScheduleTimer( AMIFunction_ptr& callback) 
-    { 
-      f = callback; 
-    }
-
-    ~wxScheduleTimer() 
-    { 
-       cout << "~wxScheduleTimer()" << endl;
-    }
-
-    //Called each time the timer's timeout expires
-    void Notify();
-
-  private:
-    AMIFunction_ptr f;
-};
-
-// create a array of shared pointers
-// to delete the wxScheduleTimer when necessary
-static std::list<wxScheduleTimer::ptr> schedule_timers;
-
-
-void wxScheduleTimer::Notify()
-{
-  cout << "Notify()" << endl;
-  CB_ParamWin(&f);
-
-  std::list<wxScheduleTimer::ptr>::iterator Iter;
-  for (Iter  = schedule_timers.begin(); 
-       Iter != schedule_timers.end()  ; Iter++ )
-  {
-    if ((*Iter).use_count()) {
-      if (Iter->get() == this) {
-        Iter = schedule_timers.erase(Iter);
-     }
-    }
-  }
+static void CB_CallAMIFunction( void* cd, long unsigned int *) {
+  CB_ParamWin(cd);
 }
 
-
-
-static void CB_Button(  void* cd) {
+ static void CB_Button(  void* cd) {
   CB_ParamWin(cd);
 }
 
 
-void yyip_switch_to_block( const AmiInstructionBlock_ptr& b )
-{
-  yyiplineno = b->GetStartingLine();
-  yyip_switch_to_string(b->GetBody().c_str());
-}
-
-void yyip_call_function( const AMIFunction_ptr& f)
-{
-  int    previous_lineno   = yyiplineno;
-  string previous_filename = GB_current_file;
-
-  // Call the function
-  GB_current_file = f->GetFileName();
-  yyip_switch_to_block(f->GetBody());
-  yyip_parse();
-  yyip_popup_buffer();
-
-  // Restore position
-  yyiplineno = previous_lineno;
-  GB_current_file = previous_filename;
-
-  // Continue parsing
-  //continue_parse();
-}
 
 
 static void CB_ParamWin( void* cd ) {
@@ -279,7 +220,7 @@ static void CB_ParamWin( void* cd ) {
   f = *(AMIFunction_ptr*) (cd);
 
   Vars.NewContext(f->GetName().c_str());
-  yyip_call_function(f);
+  driver.yyip_call_function(f);
   Vars.DeleteLastContext();
   // need to continue parse here ??
   //continue_parse(); // --> segmentation fault
@@ -443,6 +384,36 @@ void CB_delete_surfdraw( void* varid)
 
 
 %}
+
+/* write out a header file containing the token defines */
+%defines
+
+/* use newer C++ skeleton file */
+%skeleton "lalr1.cc"
+
+/* namespace to enclose parser in */
+%name-prefix="example"
+
+/* set the parser's class identifier */
+%define "parser_class_name" "Parser"
+
+/* keep track of the current position within the input */
+%locations
+%initial-action
+{
+    // initialize the initial location object
+    @$.begin.filename = @$.end.filename = &driver.streamname;
+};
+
+/* The driver is passed by reference to the parser and to the scanner. This
+ * provides a simple but effective pure interface, not relying on global
+ * variables. */
+%parse-param { class Driver& driver }
+
+/* verbose error messages */
+%error-verbose
+
+
 %union {
   char                  ident[IDENT_MAX_SIZE];
   Variable*             variable;
@@ -705,7 +676,6 @@ void CB_delete_surfdraw( void* varid)
 %token T_CC
 
 %token T_ProcessXEvents
-%token T_ProcessEvents
 
 %token T_isoarea2D T_posarea
 
@@ -965,7 +935,7 @@ loop_inst :
       gr_print("expr TO expr instr_block\n ");
 
       //          printf(" block = %s \n",$7);
-      yyip_switch_to_block(block);
+      driver.yyip_switch_to_block(block);
       for(*varint = (int) $4; *varint <= (int) $6; (*varint)++)
         {
 
@@ -991,7 +961,7 @@ loop_inst :
       var = new float;
       Vars.AddVar(type_float,$2,(void*)var);
 
-      yyip_switch_to_block(block);
+      driver.yyip_switch_to_block(block);
       for(*var = $4; *var <= $6; (*var)+=$8)
         {
 
@@ -1016,7 +986,7 @@ loop_inst :
       //          printf(" block = %s \n",$7);
           int res;
       //yyiplineno = $2->GetStartingLine();
-      yyip_switch_to_block(block);
+      driver.yyip_switch_to_block(block);
       do {
 
           //yyiplineno=previous_lineno;
@@ -1045,7 +1015,7 @@ cond_inst :
         if ($2>0.5)
         {
           //yyiplineno=previous_lineno;
-          yyip_switch_to_block(block);
+          driver.yyip_switch_to_block(block);
           yyip_parse();
           yyip_popup_buffer();
           yyiplineno = previous_lineno;
@@ -1066,13 +1036,13 @@ cond_inst :
 
         if ($2>0.5)
         {
-          yyip_switch_to_block(block_if);
+          driver.yyip_switch_to_block(block_if);
           yyip_parse();
           yyip_popup_buffer();
         }
       else
         {
-          yyip_switch_to_block(block_else);
+          driver.yyip_switch_to_block(block_else);
           yyip_parse();
           yyip_popup_buffer();
         }
@@ -1202,7 +1172,7 @@ func_inst :
             }
           }
 
-        yyip_call_function(f);
+        driver.yyip_call_function(f);
         // destroy the context and its variables
         // removing each parameter is not necessary
         // cause it will be done by DeleteLastContext()
@@ -1225,7 +1195,7 @@ func_inst :
 
           // Call the function
           Vars.NewContext(f->GetName().c_str());
-          yyip_call_function(f);
+          driver.yyip_call_function(f);
           Vars.DeleteLastContext();
           continue_parse();
         }
@@ -1294,38 +1264,51 @@ command:
          **/
        Vars.SetLastContext();
        Vars.SetGlobalNew(0);
-    }
-    |
-    T_wait '(' expr ')'
-    {
-      int ms = (int) $3;
-      wxWaitTimer w;
-      w.Start(ms,wxTIMER_ONE_SHOT);
-      while (!w.finished) {
-        if (GB_wxApp->Pending()) {
-          GB_wxApp->Dispatch();
-        }
-      } // end while
-    }
-    |
-    T_schedule '(' expr ',' VAR_AMI_FUNCTION ')'
-    {
-      /**
-      Parameters:
-          (3) time in ms
-          (5) function to schedule
-      **/
-      // TODO To avoid pbs, make sure that the variable does not disappears
-      // by making a copy of it
+         }
+         |
+     T_wait '(' expr ')'
+         {
+/* TODO
+       int ms = (int) $3;
 
-      int ms = (int) $3;
-      Variable*    var   = $5;
+       GB_TimeOut[0] = 0;
+       XtAppAddTimeOut( GB_contexte,
+                ms,
+                CB_TimeOut,
+                0);
+       TantQue (!GB_TimeOut[0]) Faire
+         Si XtAppPending( GB_contexte) Alors
+           XtAppProcessEvent( GB_contexte, XtIMAll);
+         FinSi
+       FinTantQue
 
-      wxScheduleTimer::ptr w = wxScheduleTimer::ptr(new wxScheduleTimer(  *(AMIFunction_ptr*) (var->Pointer()) ));
-      // add to the list of schedule timers
-      schedule_timers.push_back(w);
-      w->Start(ms,wxTIMER_ONE_SHOT);
-   }
+*/
+         }
+         |
+         T_schedule '(' expr ',' VAR_AMI_FUNCTION ')'
+         {
+          /**
+          Parameters:
+              (3) time in ms
+              (5) function to schedule
+          **/
+          // TODO To avoid pbs, make sure that the variable does not disappears
+          // by making a copy of it
+/* TODO
+          int ms = (int) $3;
+          Variable*    var   = $5;
+          AMIFunction_ptr* f;
+
+          f = new AMIFunction_ptr();
+          f = (AMIFunction_ptr*) (var->Pointer());
+
+          GB_TimeOut[0] = 0;
+              XtAppAddTimeOut( GB_contexte,
+              ms,
+              CB_CallAMIFunction,
+              (void*) f);
+*/
+         }
           |
           identifier ASSIGN_OP T_Surface '[' expr ']'
           {
@@ -4449,43 +4432,21 @@ command:
                 ((InrImage::ptr*) $5->Pointer())->get(),
                 ((InrImage::ptr*) $7->Pointer())->get());
     }
-    | expr  
-    { 
-    /** ??? **/
-      $$=1;
-    }
+    | expr  { $$=1;}
     |
     T_ProcessXEvents '(' expr ')'
     {
-      /**
-        Description: dispatches the given number of events
-      **/
       int nb_event;
 
+/* TODO
       nb_event = 0;
-      while (nb_event<500) {
-        if (GB_wxApp->Pending()) {
-          GB_wxApp->Dispatch();
-        }
+      TantQue (nb_event<500)  Faire
+        Si XtAppPending( GB_contexte) Alors
+          XtAppProcessEvent( GB_contexte, XtIMAll);
+        FinSi
         nb_event++;
-      } // end while
-
-    }
-    |
-    T_ProcessEvents '(' expr ')'
-    {
-      /**
-        Description: dispatch the given number of events
-      **/
-      int nb_event;
-
-      nb_event = 0;
-      while (nb_event<500) {
-        if (GB_wxApp->Pending()) {
-          GB_wxApp->Dispatch();
-        }
-        nb_event++;
-      } // end while
+      FinTantQue
+*/
 
     }
     | T_gnuplot '(' expr_image ',' expr_string ',' expr ')'
@@ -11199,6 +11160,11 @@ void close_cmdhistory()
 }
 
 
+void example::Parser::error(const Parser::location_type& l,
+          const std::string& m)
+{
+    driver.error(l, m);
+}
 
 
 
