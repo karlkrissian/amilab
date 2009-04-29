@@ -56,6 +56,15 @@ proc LS_init(IMAGE _input, IMAGE _init) {
     DTmin = -50
     DTmax = 50
 
+    if (argc >= 1) {
+      LS_result_filename = $1
+    } else {
+      LS_result_filename = "LevelSetResult"
+    }
+    LS_result_filename_ext = ".ami.gz"
+    LS_resname_addtime = UCHAR(1)
+    LS_resname_addprob = UCHAR(1)
+
     printn "*"
     LS_CreateWin()
 }
@@ -332,12 +341,16 @@ proc CB_Surface() {
 
 //---------------------------------------------------
 proc CB_SaveResult() {
-  if (argc=>1) {
-    imname = $1
-  } else {
-    imname = "LevelSetResult"
+
+  filename=LS_result_filename-".gz"-".ami";
+  if (LS_resname_addprob) {
+    filename = filename + sprint("_mean%0.0f",Imean) \
+                        + sprint("_SD%0.2f",Isd)
   }
-  filename=imname-".gz"-".ami"+sprint("_ls_%0.0f_",Imean)+sprint("%0.2f.ami.gz",Isd)
+  if (LS_resname_addtime) {
+    filename = filename + sprint("_T%0.0f",T) 
+  }
+  filename = filename + LS_result_filename_ext
   print "saving file "+filename+"\n"
   LS_inls.save filename
 }
@@ -362,9 +375,8 @@ proc LS_CreateWin() {
     LS_w1.AddPage("Init")
       LS_w1.AddButton("Reset",CB_Reset)
       LS_w1.AddButton("Add Sphere", CB_AddSphere)
-      sphere_radius_id =LS_w1.AddFloat(sphere_radius,0.1,5.0)
+      sphere_radius_id =LS_w1.AddFloat(sphere_radius,0.1,10.0)
       LS_w1.BeginHorizontal
-        LS_w1.AddButton("Add Sphere", CB_AddSphere)
         LS_w1.AddButton("Backup",     CB_Backup)
         LS_w1.AddButton("Undo",       CB_Undo)
       LS_w1.EndHorizontal
@@ -421,13 +433,23 @@ proc LS_CreateWin() {
       LS_w1.AddButton("Apply",  CB_ApplyDT)
 
     LS_w1.AddPage("Res")
+
+      LS_w1.AddString(LS_result_filename,"base name:")
+      LS_w1.AddString(LS_result_filename_ext,"extension:")
+      LS_w1.AddBoolean(LS_resname_addtime)
+      LS_w1.AddBoolean(LS_resname_addprob)
+
       LS_w1.BeginBox("Save")
       LS_w1.BeginHorizontal
-      LS_w1.AddButton("Result",   CB_SaveResult)
-      LS_w1.AddButton("Inside model",   CB_SaveInsideModel)
-      LS_w1.AddButton("Outside model",  CB_SaveOutsideModel)
+        LS_w1.AddButton("Result",   CB_SaveResult)
+      LS_w1.EndHorizontal
+
+      LS_w1.BeginHorizontal
+        LS_w1.AddButton("Inside model",   CB_SaveInsideModel)
+        LS_w1.AddButton("Outside model",  CB_SaveOutsideModel)
       LS_w1.EndHorizontal
       LS_w1.EndBox
+
 
   LS_w1.EndBook
     
