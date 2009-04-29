@@ -392,18 +392,20 @@ void CB_delete_surfdraw( void* varid)
 %skeleton "lalr1.cc"
 
 /* namespace to enclose parser in */
-%name-prefix="example"
+%name-prefix="yyip"
 
 /* set the parser's class identifier */
 %define "parser_class_name" "Parser"
 
 /* keep track of the current position within the input */
 %locations
+/*
 %initial-action
 {
     // initialize the initial location object
     @$.begin.filename = @$.end.filename = &driver.streamname;
 };
+*/
 
 /* The driver is passed by reference to the parser and to the scanner. This
  * provides a simple but effective pure interface, not relying on global
