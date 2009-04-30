@@ -1,9 +1,9 @@
 
 
 
-proc SRAD_Init( IMAGE input, STRING resname ) {
+proc SRAD_Init( IMAGE _input, STRING resname ) {
   global_new
-  SRAD_input = (FLOAT) input
+  SRAD_input = (FLOAT) _input
   show SRAD_input
   SRAD_dt   = 0.1
   SRAD_T    = 10
@@ -88,8 +88,8 @@ if (argc==2) {
   imagename  = $1
   resultname = $2
   input0 = Image(imagename)
-  input = (FLOAT) input0
+  in = (FLOAT) input0
   del input0
-  SRAD_init(imagename,resultname)
+  SRAD_Init(&in,resultname)
 }
 

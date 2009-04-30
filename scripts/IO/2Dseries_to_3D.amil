@@ -14,8 +14,8 @@ if (($1=="-help")||($1=="--help")||(argc!=4)) {
   printn "	2. number: first image number"
   printn "	3. number: last image number"
   printn "	4. string: name of the resulting image"
-  printn "      5. format: possible values {floatscalar,original}"
-  printn
+  printn "      5. format: possible values {floatscalar,ucharscalar,original}"
+  printn ""
   quit
 }
 #printn "0:"+ $0 + " 1:"+ $1 + " 2:"+ $2 + " 3:"+ $3+ " 4:"+ $4
@@ -39,8 +39,11 @@ i0 = Image(name)
 if (format=="floatscalar") {
   i0 <<= (FLOAT)Image(name)
 }
+if (format=="ucharscalar") {
+  i0 <<= (UCHAR)Image(name)
+}
 
-if (i0.vdim>1)&&(format=="floatscalar") { 
+if (i0.vdim>1)&&((format=="floatscalar")||(format=="ucharscalar")) { 
   i1 = i0[0]
 } else {
   i1=i0
@@ -56,8 +59,11 @@ for n=firstimage+1 to lastimage {
   if (format=="floatscalar") {
     i0 <<= (FLOAT)i0
   }
+  if (format=="ucharscalar") {
+    i0 <<= (UCHAR)i0
+  }
   
-  if (i0.vdim>1)&&(format=="floatscalar") { 
+  if (i0.vdim>1)&&((format=="floatscalar")||(format=="ucharscalar")) { 
     i1 = i0[0]
   } else {
     i1=i0
@@ -67,4 +73,5 @@ for n=firstimage+1 to lastimage {
 }
 
 i.save $4
-quit
+
+#quit

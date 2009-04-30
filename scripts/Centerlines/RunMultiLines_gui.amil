@@ -1,5 +1,12 @@
 #!/usr/bin/amilab
 
+if (argc==1) {
+  inputname=$1
+  emptyargs
+} else {
+  inputname = ""
+}
+
 func "Centerlines/MultiLines.amil"
 
 proc RML_init( IMAGE input) {
@@ -22,20 +29,45 @@ proc RML_SetMask( IMAGE mask) {
 
 proc RML_filter() {
   global_new
-  RML_result=Image(FLOAT,1,RML_input)
+
+  if (!exists(RML_result)) {
+    RML_result=Image(FLOAT,1,RML_input)
+  }
   RML_result.initvalue(0)
-  
-  RML_maxres = RML_result
-  RML_radim  = RML_result
-  
-  #MultiLines(input_image,&result,&maxres,&radim,radmin,radmax,numrad,GB_mask,1)
-  MultiLines_new(&RML_input,&RML_result,\
-      RML_radmin,RML_radmax,RML_numrad,&RML_mask,1)
+
+  if (exists(RML_ROI)) {
+    RML_input1 <<= RML_input[RML_ROI]
+    RML_mask1  <<= RML_mask[RML_ROI]
+    RML_result1 <<=Image(FLOAT,1,RML_input1)
+    RML_result1.initvalue(0)
+    
+    #MultiLines(input_image,&result,&maxres,&radim,radmin,radmax,numrad,GB_mask,1)
+    MultiLines_new(&RML_input1,&RML_result1,\
+        RML_radmin,RML_radmax,RML_numrad,&RML_mask1,1)
+
+    RML_result.putimage(RML_result1)
+  } else {
+    
+    RML_maxres = RML_result
+    RML_radim  = RML_result
+    
+    #MultiLines(input_image,&result,&maxres,&radim,radmin,radmax,numrad,GB_mask,1)
+    MultiLines_new(&RML_input,&RML_result,\
+        RML_radmin,RML_radmax,RML_numrad,&RML_mask,1)
+  }
 }
 
 
 
 proc CB_RML_ROI() {
+  global
+  if (exists(RML_input_draw)) {
+    RML_ROI <<= RML_input[RML_input_draw]
+    RML_ROI_contour = (UCHAR) RML_input*0
+    RML_ROI = 1
+    RML_ROI_contour.putimage(RML_ROI)
+    CB_RML_Display()
+  }
 }
 
 proc CB_RML_Filter() {
@@ -45,7 +77,13 @@ proc CB_RML_Filter() {
 proc CB_RML_Display() {
   global_new
   show RML_input
-  RML_input_draw.compare(RML_result)
+  if (exists(RML_result)) {
+    RML_input_draw.compare(RML_result)
+  }
+  if (exists(RML_ROI_contour)) {
+    RML_input_draw.SetIsoContour(0,RML_ROI_contour,0.5)
+    RML_input_draw.DrawIsoContour(0,1)
+  }
 }
 
 proc CB_RML_Save() {
@@ -78,3 +116,8 @@ proc RML_gui() {
   RML_win.update
 }
 
+
+if (inputname != "") {
+  in = Image(inputname)
+  RML_init(&in)
+}
