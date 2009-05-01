@@ -5305,8 +5305,10 @@ YY_RULE_SETUP
   // add the \0 character, why ???...
   cpp_string->append(1,'\0');
 
-  if((yyiplval.astring = new char[cpp_string->length()+1])==NULL)
-  yyiperror(E_MEM);
+  if((yyiplval.astring = new char[cpp_string->length()+1])==NULL) {
+    yyiperror(E_MEM);
+    return LEX_ERROR;
+  }
   // first conversion, we keep char* for astring for now
   strcpy(yyiplval.astring, cpp_string->c_str());
   delete cpp_string;
@@ -5316,49 +5318,49 @@ YY_RULE_SETUP
 	YY_BREAK
 case 476:
 YY_RULE_SETUP
-#line 747 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 749 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
   yyiperror(E_UNTERM_STRING);
 }
 	YY_BREAK
 case 477:
 YY_RULE_SETUP
-#line 751 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 753 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 cpp_string->append(1,'\n');
 	YY_BREAK
 case 478:
 YY_RULE_SETUP
-#line 752 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 754 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 cpp_string->append(1,'\t');
 	YY_BREAK
 case 479:
 YY_RULE_SETUP
-#line 753 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 755 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 cpp_string->append(1,'\r');
 	YY_BREAK
 case 480:
 YY_RULE_SETUP
-#line 754 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 756 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 cpp_string->append(1,'\b');
 	YY_BREAK
 case 481:
 YY_RULE_SETUP
-#line 755 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 757 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 cpp_string->append(1,'\f');
 	YY_BREAK
 case 482:
 YY_RULE_SETUP
-#line 757 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 759 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 cpp_string->append(1,yyiptext[1]);
 	YY_BREAK
 case 483:
 YY_RULE_SETUP
-#line 758 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 760 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 cpp_string->append(1,yyiptext[1]);
 	YY_BREAK
 case 484:
 YY_RULE_SETUP
-#line 760 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 762 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
   cpp_string->append(yyiptext);
 /*
@@ -5371,7 +5373,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 485:
 YY_RULE_SETUP
-#line 771 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 773 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
   yyiplval.adouble=GB_argc-GB_num_arg_parsed;
   return(NUMBER);
@@ -5379,7 +5381,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 486:
 YY_RULE_SETUP
-#line 776 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 778 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
   // TODO allow more than 10 arguments!!
   int n,pos;
@@ -5397,11 +5399,15 @@ YY_RULE_SETUP
 #else
       yyiperror( str(fmt % n % (GB_argc-GB_num_arg_parsed)).c_str() );
 #endif
+    return LEX_ERROR;
 //myss1.c_str() );
   }
 
   // we use GB_argv[n+1] because the first two arguments are the program and the script file
-  if((yyiplval.astring = new char[strlen(GB_argv[pos])+1])==NULL)  yyiperror(E_MEM);
+  if((yyiplval.astring = new char[strlen(GB_argv[pos])+1])==NULL) {
+    yyiperror(E_MEM);
+    return LEX_ERROR;
+  }
 
   strcpy(yyiplval.astring,GB_argv[pos]);
 
@@ -5411,7 +5417,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 487:
 YY_RULE_SETUP
-#line 805 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 811 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
 //============================ Parse block ====================
 //
@@ -5426,7 +5432,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 488:
 YY_RULE_SETUP
-#line 817 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 823 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
 //============================ Parse comment ====================
 //
@@ -5437,7 +5443,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 489:
 YY_RULE_SETUP
-#line 825 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 831 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
     comment_caller = block;
     BEGIN(comment);
@@ -5446,7 +5452,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 490:
 YY_RULE_SETUP
-#line 831 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 837 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
   yyiplineno++;
   ami_block->GetBody().append(yyiptext);
@@ -5454,7 +5460,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 491:
 YY_RULE_SETUP
-#line 837 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 843 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
   block_level++;
   ami_block->GetBody().append(1,'{');
@@ -5462,7 +5468,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 492:
 YY_RULE_SETUP
-#line 842 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 848 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
 
   block_level--;
@@ -5499,7 +5505,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 493:
 YY_RULE_SETUP
-#line 877 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 883 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
 //  char *yptr = yyiptext;
 //  while (*yptr)
@@ -5509,7 +5515,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 494:
 YY_RULE_SETUP
-#line 885 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 891 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
 //============================ Parse comment ====================
 //
@@ -5520,7 +5526,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 495:
 YY_RULE_SETUP
-#line 893 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 899 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
     comment_caller = INITIAL;
     BEGIN(comment);
@@ -5529,7 +5535,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 496:
 YY_RULE_SETUP
-#line 900 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 906 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
   //yyiplineno++;
 //  printf("end comment from %d \n",comment_caller);
@@ -5540,14 +5546,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 497:
 YY_RULE_SETUP
-#line 908 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 914 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
   // on ecrit ce qu'on veut dans un commentaire ...
 }
 	YY_BREAK
 case 498:
 YY_RULE_SETUP
-#line 912 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 918 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
 //
 //============================ Parse variable ====================
@@ -5564,7 +5570,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 499:
 YY_RULE_SETUP
-#line 926 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 932 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
 //
 //============================ Parse variable ====================
@@ -5580,7 +5586,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 500:
 YY_RULE_SETUP
-#line 940 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 946 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
 //
 //============================ Parse variable ====================
@@ -5590,24 +5596,24 @@ YY_RULE_SETUP
 	YY_BREAK
 case 501:
 YY_RULE_SETUP
-#line 948 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 954 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {}
 	YY_BREAK
 case 502:
 YY_RULE_SETUP
-#line 950 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 956 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {}
 	YY_BREAK
 case 503:
 YY_RULE_SETUP
-#line 952 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 958 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
                       return(END_INSTRUCTION);
                   } /* \n,END_INSTRUCTION */
 	YY_BREAK
 case 504:
 YY_RULE_SETUP
-#line 956 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 962 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
 
     std::string error_string =" lex error \t invalid characters ";
@@ -5617,10 +5623,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 505:
 YY_RULE_SETUP
-#line 966 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 972 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 ECHO;
 	YY_BREAK
-#line 5624 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.cpp"
+#line 5630 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.cpp"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(str):
 case YY_STATE_EOF(block):
@@ -6505,7 +6511,7 @@ int main()
 	return 0;
 	}
 #endif
-#line 966 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 972 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 
 
 //class Variables;

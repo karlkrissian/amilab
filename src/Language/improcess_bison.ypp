@@ -457,6 +457,8 @@ void CB_delete_surfdraw( void* varid)
   ImageExtent*          imageextent;
 }
 
+%token LEX_ERROR
+
 %token T_SetDebugOn
 %token T_SetDebugOff
 %token T_SetVerboseOn

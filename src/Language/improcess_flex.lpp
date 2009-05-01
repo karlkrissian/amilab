@@ -735,8 +735,10 @@ emptyargs         return(T_emptyargs);    /*{emptyargs,T_emptyargs}*/
   // add the \0 character, why ???...
   cpp_string->append(1,'\0');
 
-  if((yyiplval.astring = new char[cpp_string->length()+1])==NULL)
-  yyiperror(E_MEM);
+  if((yyiplval.astring = new char[cpp_string->length()+1])==NULL) {
+    yyiperror(E_MEM);
+    return LEX_ERROR;
+  }
   // first conversion, we keep char* for astring for now
   strcpy(yyiplval.astring, cpp_string->c_str());
   delete cpp_string;
@@ -790,11 +792,15 @@ emptyargs         return(T_emptyargs);    /*{emptyargs,T_emptyargs}*/
 #else
       yyiperror( str(fmt % n % (GB_argc-GB_num_arg_parsed)).c_str() );
 #endif
+    return LEX_ERROR;
 //myss1.c_str() );
   }
 
   // we use GB_argv[n+1] because the first two arguments are the program and the script file
-  if((yyiplval.astring = new char[strlen(GB_argv[pos])+1])==NULL)  yyiperror(E_MEM);
+  if((yyiplval.astring = new char[strlen(GB_argv[pos])+1])==NULL) {
+    yyiperror(E_MEM);
+    return LEX_ERROR;
+  }
 
   strcpy(yyiplval.astring,GB_argv[pos]);
 
