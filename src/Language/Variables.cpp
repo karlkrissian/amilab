@@ -28,9 +28,11 @@
 
 #include "Variables.hpp"
 #include <wx/arrstr.h>
+#include "driver.h"
 
+extern yyip::Driver GB_driver;
 extern unsigned char       GB_debug;
-extern void err_print(const char* st);
+extern yyip::Driver GB_driver;
 
 //======================================================================
 // PRIVATE METHODS
@@ -63,7 +65,7 @@ int Variables::SearchFreePosition()
     if ((pos=GetFreePosition())!=-1) return pos;
     if (_num>=MAX_VARS-1) 
     {
-      err_print("Variables::SearchFreePosition() too many variables.\n");
+      GB_driver.err_print("Variables::SearchFreePosition() too many variables.\n");
       return -1;
     }
     else 

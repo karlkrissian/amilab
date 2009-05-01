@@ -1,14 +1,23 @@
 %{
-// Projet de Conception des systemes a base de connaissances
-// binome :     Galindo Diana
-//              Krissian Karl
-//
-// Realisation d'un moteur d'inference
-// fichier :    "analyse.l"
-//
-// analyse lexicale de la base de regles et
-// commandes de l'utilisateur.
-//
+
+#include <string>
+#include "scanner.h"
+
+extern yyip::Driver GB_driver;
+
+/* import the parser's token type into a local typedef */
+typedef yyip::Parser::token token;
+typedef yyip::Parser::token_type token_type;
+
+/* By default yylex returns int, we use token_type. Unfortunately yyterminate
+ * by default returns 0, which is not of token_type. */
+#define yyterminate() return token::END
+
+/* This disables inclusion of unistd.h, which is not available under Visual C++
+ * on Win32. The C++ scanner uses STL streams instead. */
+#define YY_NO_UNISTD_H
+
+
 
 #include "fonctions.h"
 #include <stdio.h>
@@ -26,16 +35,18 @@
 #define LEX_DEBUG(expr) if (GB_debug) {expr}
 
 
-int          yyiplineno = 0;
-std::string  GB_current_file;
+//int          yyiplineno = 0;
+//std::string  GB_current_file;
 
 int yycharno = 0;
 bool LexError = 0;
 
-extern  void yyiperror(const char*);
+//extern  void yyiperror(const char*);
 extern  VarContexts  Vars;
 
-int checkvar( const char* varname, int context=-1);
+yyip::Parser::token::yytokentype checkvar( 
+      yyip::Parser::semantic_type* yylval,
+      const char* varname, int context=-1);
 using namespace std;
 
 
@@ -57,22 +68,6 @@ int comment_caller;
 // when declaring the parameters of a function
 int  procedure_declaration = 0;
 
-extern char  tmp_string[255];
-extern FILE_ptr gr_output; // grammar
-extern FILE_ptr err_output; // errors
-extern FILE_ptr res_output; // result
-
-extern void init_gr_output();
-extern void gr_print(char* st);
-//extern void close_gr_output();
-
-extern void init_err_output();
-extern void err_print(const char* st);
-//extern void close_err_output();
-
-extern void init_res_output();
-extern void res_print(const char* st);
-//extern void close_res_output();
 
 extern int       GB_argc;
 extern char**    GB_argv;
@@ -93,123 +88,136 @@ WS      [ \t]
 %x str
 %x block
 %x comment
+
+/* The following paragraph suffices to track locations accurately. Each time
+ * yylex is invoked, the begin position is moved onto the end position. */
+%{
+#define YY_USER_ACTION  yylloc->columns(yyleng);
+%}
+
 %%
 
+ /* code to place at the beginning of yylex() */
+%{
+    // reset location
+    yylloc->step();
+%}
 
-">>="                   return(RIGHT_ASSIGN);   /*  >>=,RIGHT_ASSIGN  got rid of all tokens with special characters because of windows installer*/
-"<<="                   return(LEFT_ASSIGN);    /*  <<=,LEFT_ASSIGN  */
-"+="                    return(ADD_ASSIGN);     /*  +=,ADD_ASSIGN  */
-"-="                    return(SUB_ASSIGN);     /*  -=,SUB_ASSIGN  */
-"*="                    return(MUL_ASSIGN);     /*  *=,MUL_ASSIGN}*/
-"/="                    {  return(DIV_ASSIGN); } /*  /=,DIV_ASSIGN}*/
-"%="                    {  return(MOD_ASSIGN); } /*  %=,MOD_ASSIGN}*/
-"&="                    {  return(AND_ASSIGN); } /*  &=,AND_ASSIGN}*/
-"^="                    {  return(XOR_ASSIGN); } /*   ^=,XOR_ASSIGN}*/
-"|="                    {  return(OR_ASSIGN); } /*  |=,OR_ASSIGN}*/
-">>"                    {  return(RIGHT_OP); } /*  >>,RIGHT_OP}*/
-"++"                    {  return(INC_OP); } /*  ++,INC_OP}*/
-"--"                    {  return(DEC_OP); } /*  --,DEC_OP}*/
-"->"                    {  return(PTR_OP); } /*  ->,PTR_OP}*/
-"&&"                    {  return(AND_OP); } /*  &&,AND_OP}*/
-"||"                    {  return(OR_OP); } /*  ||,OR_OP}*/
-"<="                    {  return(LE_OP); } /*  <=,LE_OP}*/
-">="                    {  return(GE_OP); } /*  >=,GE_OP}*/
-"=="                    {  return(EQ_OP); } /*  ==,EQ_OP}*/
-"!="                    {  return(NE_OP); } /*  !=,NE_OP}*/
-
-
-"'"  return(TRANSPOSE_OP); /*  ',TRANSPOSE_OP}*/
-"^"  return('^'); /*  ^,'^'}*/
-">"  return('>'); /*  >,'>'}*/
-"<"  return('<'); /*  <,'<'}*/
-"*"  return('*'); /*  *,'*'}*/
-".*"  return(POINTWISE_MULT);
-"/"  return('/'); /*  /,'/'}*/
-"!"  return('!'); /*  !,'!'}*/
-"+"  return('+'); /*  +,'+'}*/
-"-"  return('-'); /*  -,'-'}*/
-"="  return(ASSIGN_OP); /*{=,ASSIGN_OP}*/
-"("  return('('); /*  (,'('}*/
-")"  return(')'); /*  ),')'}*/
-"["  return('['); /*  [,'['}*/
-"]"  return(']'); /*  ],']'}*/
-"&"  return('&'); /*  &,'&'}*/
-"|"  return('|'); /*  |,'|'}*/
-
-"."  return('.'); /*  .,'.'}*/
-","  return(',');
-"?"  return('?'); /*  ?,'?'}*/
-":"  return(':'); /*  :,':'}*/
+">>="                   return(token::RIGHT_ASSIGN);   /*  >>=,RIGHT_ASSIGN  got rid of all tokens with special characters because of windows installer*/
+"<<="                   return(token::LEFT_ASSIGN);    /*  <<=,LEFT_ASSIGN  */
+"+="                    return(token::ADD_ASSIGN);     /*  +=,ADD_ASSIGN  */
+"-="                    return(token::SUB_ASSIGN);     /*  -=,SUB_ASSIGN  */
+"*="                    return(token::MUL_ASSIGN);     /*  *=,MUL_ASSIGN}*/
+"/="                    {  return(token::DIV_ASSIGN); } /*  /=,DIV_ASSIGN}*/
+"%="                    {  return(token::MOD_ASSIGN); } /*  %=,MOD_ASSIGN}*/
+"&="                    {  return(token::AND_ASSIGN); } /*  &=,AND_ASSIGN}*/
+"^="                    {  return(token::XOR_ASSIGN); } /*   ^=,XOR_ASSIGN}*/
+"|="                    {  return(token::OR_ASSIGN); } /*  |=,OR_ASSIGN}*/
+">>"                    {  return(token::RIGHT_OP); } /*  >>,RIGHT_OP}*/
+"++"                    {  return(token::INC_OP); } /*  ++,INC_OP}*/
+"--"                    {  return(token::DEC_OP); } /*  --,DEC_OP}*/
+"->"                    {  return(token::PTR_OP); } /*  ->,PTR_OP}*/
+"&&"                    {  return(token::AND_OP); } /*  &&,AND_OP}*/
+"||"                    {  return(token::OR_OP); } /*  ||,OR_OP}*/
+"<="                    {  return(token::LE_OP); } /*  <=,LE_OP}*/
+">="                    {  return(token::GE_OP); } /*  >=,GE_OP}*/
+"=="                    {  return(token::EQ_OP); } /*  ==,EQ_OP}*/
+"!="                    {  return(token::NE_OP); } /*  !=,NE_OP}*/
 
 
-";"           return(';');      /*  ;,';'}*/
+"'"  return(token::TRANSPOSE_OP); /*  ',TRANSPOSE_OP}*/
+"^"  return(token::T_EXP);  /*  ^,T_EXP}*/
+">"  return(token::T_GT);   /*  >,T_GT}*/
+"<"  return(token::T_LT);   /*  <,T_LT}*/
+"*"  return(token::T_MULT); /*  *,T_MULT}*/
+".*"  return(token::POINTWISE_MULT); 
+"/"  return(token::T_DIV);  /*  /,T_DIV}*/
+"!"  return(token::T_FACT); /*  !,T_FACT}*/
+"+"  return(token::T_ADD); /*  +, T_ADD}*/
+"-"  return(token::T_SUB); /*  -, T_SUB}*/
+
+"="  return(token::ASSIGN_OP); /*{=,ASSIGN_OP}*/
+"("  return(token::T_OP_PAR); /*  (,T_OP_PAR}*/
+")"  return(token::T_CL_PAR); /*  ),T_CL_PAR}*/
+"["  return(token::T_OP_BR);  /*  [,T_OP_BR}*/
+"]"  return(token::T_CL_BR);  /*  ],T_CL_BR}*/
+"&"  return(token::T_AND);    /*  &,T_AND}*/
+"|"  return(token::T_OR);     /*  |,T_OR}*/
+
+"."  return(token::T_POINT); /*  .,T_POINT}*/
+","  return(token::T_COMMA); /*  ,,T_COMMA}*/
+"?"  return(token::T_QUEST);  /*  ?,T_QUEST}*/
+":"  return(token::T_COLON); /*  :,T_COLON}*/
 
 
-LineNumber      return(T_LineNumber); /*{LineNumber,T_LineNumber}*/
-
-update           return(UPDATE);            /*{update,UPDATE}*/
-set              return(SET);               /*{set,SET}*/
-setpos           return(SETPOS);            /*{setpos,SETPOS}*/
-initvalue        return(T_initvalue);       /*{initvalue,T_initvalue}*/
-showcursor       return(SHOWCURSOR);        /*{showcursor,SHOWCURSOR}*/
-compare          return(COMPARE);           /*{compare,COMPARE}*/
-SetCompareDisplacement return(T_SetCompareDisplacement); /*{SetCompareDisplacement,T_SetCompareDisplacement}*/
-setvector        return(SETVECTOR);         /*{setvector,SETVECTOR}*/
-DrawVector       return(T_DrawVector);      /*{DrawVector,T_DrawVector}*/
-DisplayVectors   return(T_DisplayVectors);  /*{DisplayVectors,T_DisplayVectors}*/
-SetVectParam     return(T_SetVectParam);    /*{SetVectParam,T_SetVectParam}*/
-SetVectColor     return(T_SetVectColor);    /*{SetVectColor,T_SetVectColor}*/
-SetVectStyle     return(T_SetVectStyle);    /*{SetVectStyle,T_SetVectStyle}*/
-SetLineThickness return(T_SetLineThickness); /*{SetLineThickness,T_SetLineThickness}*/
-normalize        return(T_normalize); /*{normalize,T_normalize}*/
-setGLwin         return(T_setGLwin); /*{setGLwin,T_setGLwin}*/
-drawcircle       return(T_drawcircle); /*{drawcircle,T_drawcircle}*/
-ShowSection      return(T_ShowSection); /*{ShowSection,T_ShowSection}*/
-HideSection      return(T_HideSection); /*{HideSection,T_HideSection}*/
-SetColormap      return(T_SetColormap); /*{SetColormap,T_SetColormap}*/
-
-itk               return(T_itk); /*{itk,T_itk}*/
-CannyEdgeDetector return(T_CannyEdgeDetector); /*{CannyEdgeDetector,T_CannyEdgeDetector}*/
-
-GetOutput      return(T_GetOutput); /*{GetOutput,T_GetOutput}*/
-GetDiffCoeff   return(T_GetDiffCoeff); /*{GetDiffCoeff,T_GetDiffCoeff}*/
-GetName        return(T_GetName); /*{GetName,T_GetName}*/
-SetName        return(T_SetName); /*{SetName,T_SetName}*/
+";"  return(token::T_SEMICOLON);  /*  ;,T_SEMICOLON}*/
 
 
-CHAR          return(T_CHAR); /*{CHAR,T_CHAR}*/
-UCHAR         return(T_UCHAR); /*{UCHAR,T_UCHAR}*/
-SHORT         return(T_SHORT); /*{SHORT,T_SHORT}*/
-USHORT        return(T_USHORT); /*{USHORT,T_USHORT}*/
-INT           return(T_INT); /*{INT,T_INT}*/
-UINT          return(T_UINT); /*{UINT,T_UINT}*/
-FLOAT         return(T_FLOAT); /*{FLOAT,T_FLOAT}*/
-DOUBLE        return(T_DOUBLE); /*{DOUBLE,T_DOUBLE}*/
-RGB           return(T_RGB); /*{RGB,T_RGB}*/
-FLOAT_VECTOR  return(T_FLOAT_VECTOR); /*{FLOAT_VECTOR,T_FLOAT_VECTOR}*/
-GetFormat     return(T_GetFormat); /*{GetFormat,T_GetFormat}*/
+LineNumber      return(token::T_LineNumber); /*{LineNumber,T_LineNumber}*/
 
-SURFACE       return(T_SURFACE); /*{SURFACE,T_SURFACE}*/
-IMAGE         return(T_IMAGE); /*{IMAGE,T_IMAGE}*/
-IMAGEDRAW     return(T_IMAGEDRAW); /*{IMAGEDRAW,T_IMAGEDRAW}*/
-NUM           return(T_NUM); /*{NUM,T_NUM}*/
-STRING        return(T_STRING); /*{STRING,T_STRING}*/
-TRANSFORM     return(T_TRANSFORM); /*{TRANSFORM,T_TRANSFORM}*/
+update           return(token::UPDATE);            /*{update,UPDATE}*/
+set              return(token::SET);               /*{set,SET}*/
+setpos           return(token::SETPOS);            /*{setpos,SETPOS}*/
+initvalue        return(token::T_initvalue);       /*{initvalue,T_initvalue}*/
+showcursor       return(token::SHOWCURSOR);        /*{showcursor,SHOWCURSOR}*/
+compare          return(token::COMPARE);           /*{compare,COMPARE}*/
+SetCompareDisplacement return(token::T_SetCompareDisplacement); /*{SetCompareDisplacement,T_SetCompareDisplacement}*/
+setvector        return(token::SETVECTOR);         /*{setvector,SETVECTOR}*/
+DrawVector       return(token::T_DrawVector);      /*{DrawVector,T_DrawVector}*/
+DisplayVectors   return(token::T_DisplayVectors);  /*{DisplayVectors,T_DisplayVectors}*/
+SetVectParam     return(token::T_SetVectParam);    /*{SetVectParam,T_SetVectParam}*/
+SetVectColor     return(token::T_SetVectColor);    /*{SetVectColor,T_SetVectColor}*/
+SetVectStyle     return(token::T_SetVectStyle);    /*{SetVectStyle,T_SetVectStyle}*/
+SetLineThickness return(token::T_SetLineThickness); /*{SetLineThickness,T_SetLineThickness}*/
+normalize        return(token::T_normalize); /*{normalize,T_normalize}*/
+setGLwin         return(token::T_setGLwin); /*{setGLwin,T_setGLwin}*/
+drawcircle       return(token::T_drawcircle); /*{drawcircle,T_drawcircle}*/
+ShowSection      return(token::T_ShowSection); /*{ShowSection,T_ShowSection}*/
+HideSection      return(token::T_HideSection); /*{HideSection,T_HideSection}*/
+SetColormap      return(token::T_SetColormap); /*{SetColormap,T_SetColormap}*/
 
-atof          return(T_atof); /*{atof,T_atof}*/
+itk               return(token::T_itk); /*{itk,T_itk}*/
+CannyEdgeDetector return(token::T_CannyEdgeDetector); /*{CannyEdgeDetector,T_CannyEdgeDetector}*/
 
-global        return(T_global);     /*{global,T_global}*/
-global_new    return(T_global_new); /*{global_new,T_global_new}*/
-local_new     return(T_local_new); /*{local_new,T_local_new}*/
-local         return(T_local);      /*{local,T_local}*/
-wait          return(T_wait);       /*{wait,T_wait}*/
-schedule      return(T_schedule);   /*{schedule,T_schedule}*/
+GetOutput      return(token::T_GetOutput); /*{GetOutput,T_GetOutput}*/
+GetDiffCoeff   return(token::T_GetDiffCoeff); /*{GetDiffCoeff,T_GetDiffCoeff}*/
+GetName        return(token::T_GetName); /*{GetName,T_GetName}*/
+SetName        return(token::T_SetName); /*{SetName,T_SetName}*/
+
+
+CHAR          return(token::T_CHAR); /*{CHAR,T_CHAR}*/
+UCHAR         return(token::T_UCHAR); /*{UCHAR,T_UCHAR}*/
+SHORT         return(token::T_SHORT); /*{SHORT,T_SHORT}*/
+USHORT        return(token::T_USHORT); /*{USHORT,T_USHORT}*/
+INT           return(token::T_INT); /*{INT,T_INT}*/
+UINT          return(token::T_UINT); /*{UINT,T_UINT}*/
+FLOAT         return(token::T_FLOAT); /*{FLOAT,T_FLOAT}*/
+DOUBLE        return(token::T_DOUBLE); /*{DOUBLE,T_DOUBLE}*/
+RGB           return(token::T_RGB); /*{RGB,T_RGB}*/
+FLOAT_VECTOR  return(token::T_FLOAT_VECTOR); /*{FLOAT_VECTOR,T_FLOAT_VECTOR}*/
+GetFormat     return(token::T_GetFormat); /*{GetFormat,T_GetFormat}*/
+
+SURFACE       return(token::T_SURFACE); /*{SURFACE,T_SURFACE}*/
+IMAGE         return(token::T_IMAGE); /*{IMAGE,T_IMAGE}*/
+IMAGEDRAW     return(token::T_IMAGEDRAW); /*{IMAGEDRAW,T_IMAGEDRAW}*/
+NUM           return(token::T_NUM); /*{NUM,T_NUM}*/
+STRING        return(token::T_STRING); /*{STRING,T_STRING}*/
+TRANSFORM     return(token::T_TRANSFORM); /*{TRANSFORM,T_TRANSFORM}*/
+
+atof          return(token::T_atof); /*{atof,T_atof}*/
+
+global        return(token::T_global);     /*{global,T_global}*/
+global_new    return(token::T_global_new); /*{global_new,T_global_new}*/
+local_new     return(token::T_local_new); /*{local_new,T_local_new}*/
+local         return(token::T_local);      /*{local,T_local}*/
+wait          return(token::T_wait);       /*{wait,T_wait}*/
+schedule      return(token::T_schedule);   /*{schedule,T_schedule}*/
 
 Pi    {
 //
 //============================ Parse constants ====================
 //
- return(CONST_PI);
+ return(token::CONST_PI);
 } /*{Pi,CONST_P}*/
 
 
@@ -217,35 +225,35 @@ sin    {
 //
 //============================ Parse Math functions ====================
 //
-return(SIN);
+return(token::SIN);
 } /*{sin,SIN}*/
-cos    return(COS); /*{cos,COS}*/
-tan    return(TAN); /*{tan,TAN}*/
-asin   return(ASIN); /*{asin,ASIN}*/
-acos   return(ACOS); /*{acos,ACOS}*/
-atan   return(ATAN); /*{atan,ATAN}*/
-exp    return(EXP); /*{exp,EXP}*/
-ln     return(LN); /*{ln,LN}*/
-log    return(LOG); /*{log,LOG}*/
-cosh   return(COSH); /*{cosh,COSH}*/
-sinh   return(SINH); /*{sinh,SINH}*/
-sqrt   return(SQRT); /*{sqrt,SQRT}*/
-abs    return(ABS); /*{abs,ABS}*/
-norm   return(NORM); /*{norm,NORM}*/
-round  return(ROUND); /*{round,ROUND}*/
-floor  return(FLOOR); /*{floor,FLOOR}*/
+cos    return(token::COS); /*{cos,COS}*/
+tan    return(token::TAN); /*{tan,TAN}*/
+asin   return(token::ASIN); /*{asin,ASIN}*/
+acos   return(token::ACOS); /*{acos,ACOS}*/
+atan   return(token::ATAN); /*{atan,ATAN}*/
+exp    return(token::EXP); /*{exp,EXP}*/
+ln     return(token::LN); /*{ln,LN}*/
+log    return(token::LOG); /*{log,LOG}*/
+cosh   return(token::COSH); /*{cosh,COSH}*/
+sinh   return(token::SINH); /*{sinh,SINH}*/
+sqrt   return(token::SQRT); /*{sqrt,SQRT}*/
+abs    return(token::ABS); /*{abs,ABS}*/
+norm   return(token::NORM); /*{norm,NORM}*/
+round  return(token::ROUND); /*{round,ROUND}*/
+floor  return(token::FLOOR); /*{floor,FLOOR}*/
 
-open       return(T_OPEN); /*{open,T_OPEN}*/
-close      return(T_CLOSE); /*{close,T_CLOSE}*/
-scan_float return(T_scan_float); /*{scan_float,T_scan_float}*/
-read       return(T_read); /*{read,T_read}*/
-rewind     return(T_rewind); /*{rewind,T_rewind}*/
+open       return(token::T_OPEN); /*{open,T_OPEN}*/
+close      return(token::T_CLOSE); /*{close,T_CLOSE}*/
+scan_float return(token::T_scan_float); /*{scan_float,T_scan_float}*/
+read       return(token::T_read); /*{read,T_read}*/
+rewind     return(token::T_rewind); /*{rewind,T_rewind}*/
 
 proc {
 //============================ Parse Procedure ===============
 //
   procedure_declaration = 1;
-  return(T_PROC);
+  return(token::T_PROC);
 
 }  /*{proc,T_PROC}*/
 
@@ -253,449 +261,449 @@ for    {
 //
 //============================ Parse Loops and Conditions ===============
 //
-return(FOR);
+return(token::FOR);
 } /*{for,FOR}*/
-to     return(TO); /*{to,TO}*/
-step     return(STEP); /*{step,STEP}*/
-endfor return(ENDFOR); /*{endfor,ENDFOR}*/
+to     return(token::TO); /*{to,TO}*/
+step     return(token::STEP); /*{step,STEP}*/
+endfor return(token::ENDFOR); /*{endfor,ENDFOR}*/
 
-repeat return(T_REPEAT); /*{repeat,T_REPEAT}*/
-until  return(T_UNTIL); /*{until,T_UNTIL}*/
-break  return(T_BREAK); /*{break,T_BREAK}*/
+repeat return(token::T_REPEAT); /*{repeat,T_REPEAT}*/
+until  return(token::T_UNTIL); /*{until,T_UNTIL}*/
+break  return(token::T_BREAK); /*{break,T_BREAK}*/
 
-if      return(IF); /*{if,IF}*/
-else    return(ELSE); /*{else,ELSE}*/
+if      return(token::IF); /*{if,IF}*/
+else    return(token::ELSE); /*{else,ELSE}*/
 
 sh                {
 //
 //============================ Parse Commands ===============
 //
-return(ASHELL);
+return(token::ASHELL);
 } /*{sh,ASHELL}*/
-SetDebugOn         return(T_SetDebugOn); /*{SetDebugOn,T_SetDebugOn}*/
-SetDebugOff        return(T_SetDebugOff); /*{SetDebugOff,T_SetDebugOff}*/
-SetVerboseOn       return(T_SetVerboseOn); /*{SetVerboseOn,T_SetVerboseOn}*/
-SetVerboseOff      return(T_SetVerboseOff); /*{SetVerboseOff,T_SetVerboseOff}*/
-SetProgress        return(T_SetProgress); /*{SetProgress,T_SetProgress}*/
-Quit               return(QUIT); /*{Quit,QUIT}*/
-quit               return(QUIT);
-Image              return(T_Image); /*{Image,T_Image}*/
-ReadRawImages      return(T_ReadRawImages); /*{ReadRawImages,T_ReadRawImages}*/
-Transform          return(T_Transform); /*{Transform,T_Transform}*/
-Show               return(SHOW); /*{Show,SHOW}*/
-show               return(SHOW);
-Remove             return(T_Remove); /*{Remove,T_Remove}*/
-SwapBuffers        return(T_SwapBuffers); /*{SwapBuffers, T_SwapBuffers}*/
-Hide               return(T_HIDE); /*{Hide,T_HIDE}*/
-hide               return(T_HIDE);
-Help               return(HELP); /*{Help,HELP}*/
-help               return(HELP);
-ls                 return(LS); /*{ls,LS}*/
-print              return(PRINT); /*{print,PRINT}*/
-printn             return(PRINTN); /*{printn,PRINTN}*/
-sprint             return(T_SPRINT); /*{sprint,T_SPRINT}*/
-vars               return(VARIABLES); /*{vars,VARIABLES}*/
-func               return(FUNCTION); /*{func,FUNCTION}*/
-filter             return(FILTER); /*{filter,FILTER}*/
-vtkMedian3D        return(T_vtkMedian3D); /*{vtkMedian3D,T_vtkMedian3D}*/
-normgrad           return(NormGrad); /*{normgrad,NormGrad}*/
-discnormgrad       return(T_DiscNormGrad); /*{discnormgrad,T_DiscNormGrad}*/
-gradient           return(T_gradient); /*{gradient,T_gradient}*/
-secdergrad         return(SecDerGrad); /*{secdergrad,SecDerGrad}*/
-secdergrad2        return(SecDerGrad2); /*{secdergrad2,SecDerGrad2}*/
-discsecdergrad     return(T_DiscSecDerGrad); /*{discsecdergrad,T_DiscSecDerGrad}*/
-OpImage            return(OpImage); /*{OpImage,OpImage}*/
-subimage           return(SubImage); /*{subimage,SubImage}*/
-autocrop           return(T_AutoCrop); /*{autocrop,T_AutoCrop}*/
-putimage           return(PutImage); /*{putimage,PutImage}*/
-rot2D              return(T_rot2D); /*{rot2D,T_rot2D}*/
-rotate             return(T_rotate); /*{rotate,T_rotate}*/
-mean               return(T_mean); /*{mean,T_mean}*/
-localmean          return(T_localmean); /*{localmean,T_localmean}*/
-localmean2         return(T_localmean2); /*{localmean2,T_localmean2}*/
-localSD            return(T_localSD); /*{localSD,T_localSD}*/
-localSD2           return(T_localSD2); /*{localSD2,T_localSD2}*/
-StructTensor       return(T_struct_tensor); /*{StructTensor,T_struct_tensor}*/
-StructTensorH      return(T_StructTensorH); /*{StructTensorH,T_StructTensorH}*/
-HessianMatrix      return(T_HessianMatrix); /*{HessianMatrix,T_HessianMatrix}*/
-HessianEVal        return(T_HessianEVal); /*{HessianEVal,T_HessianEVal}*/
-Derivatives        return(T_Derivatives); /*{Derivatives,T_Derivatives}*/
-Curvatures         return(T_curvatures); /*{Curvatures,T_curvatures}*/
-DiscMeanCurvature  return(T_DiscMeanCurvature); /*{DiscMeanCurvature,T_DiscMeanCurvature}*/
-Laplacian          return(T_Laplacian); /*{Laplacian,T_Laplacian}*/
-setvoxelsize       return(T_setvoxelsize); /*{setvoxelsize,T_setvoxelsize}*/
-settranslation     return(T_settranslation); /*{settranslation,T_settranslation}*/
-setendianness      return(T_setendianness);  /*{setendianness,T_setendianness}*/
-
-threscross         return(T_threscross); /*{threscross,T_threscross}*/
-IsocontourPoints   return(T_IsocontourPoints); /*{IsocontourPoints,T_IsocontourPoints}*/
-IsosurfDist        return(T_IsosurfDist); /*{IsosurfDist,T_IsosurfDist}*/
-vtkIsoContourDist  return(T_vtkIsoContourDist); /*{vtkIsoContourDist,T_vtkIsoContourDist}*/
-
-SetIsoContour      return(T_SetIsoContour); /*{SetIsoContour,T_SetIsoContour}*/
-SetIsoContourParam return(T_SetIsoContourParam); /*{SetIsoContourParam,T_SetIsoContourParam}*/
-DrawIsoContour     return(T_DrawIsoContour); /*{DrawIsoContour,T_DrawIsoContour}*/
-SetIsoContourColor return(T_SetIsoContourColor);  /*{SetIsoContourColor,T_SetIsoContourColor}*/
-DrawAllContours    return(T_DrawAllContours);     /*{DrawAllContours,T_DrawAllContours}*/
-AllContoursParam   return(T_AllContoursParam);    /*{AllContoursParam,T_AllContoursParam}*/
-
-GetZmin            return(T_GetZmin); /*{GetZmin,T_GetZmin}*/
-GetZmax            return(T_GetZmax); /*{GetZmax,T_GetZmax}*/
-GetYmin            return(T_GetYmin); /*{GetYmin,T_GetYmin}*/
-GetYmax            return(T_GetYmax); /*{GetYmax,T_GetYmax}*/
-GetXmin            return(T_GetXmin); /*{GetXmin,T_GetXmin}*/
-GetXmax            return(T_GetXmax); /*{GetXmax,T_GetXmax}*/
-
-GetXPos            return(T_GetXPos); /*{GetXPos,T_GetXPos}*/
-GetYPos            return(T_GetYPos); /*{GetYPos,T_GetYPos}*/
-GetZPos            return(T_GetZPos); /*{GetZPos,T_GetZPos}*/
-
-SetZoom            return(T_SetZoom); /*{SetZoom,T_SetZoom}*/
-SetWindowSize      return(T_SetWindowSize); /*{SetWindowSize,T_SetWindowSize}*/
-
-Convolve           return(T_Convolve); /*{Convolve,T_Convolve}*/
-ConvolveMask       return(T_ConvolveMask); /*{ConvolveMask,T_ConvolveMask}*/
-Pad                return(T_Pad); /*{Pad,T_Pad}*/
-Eigen2D            return(T_Eigen2D); /*{Eigen2D,T_Eigen2D}*/
-Eigen3D            return(T_Eigen3D); /*{Eigen3D,T_Eigen3D}*/
-ChamferDT          return(T_ChamferDT); /*{ChamferDT,T_ChamferDT}*/
-Chamfer2DT         return(T_Chamfer2DT); /*{Chamfer2DT,T_Chamfer2DT}*/
-BorgeforsDT        return(T_BorgeforsDT); /*{BorgeforsDT,T_BorgeforsDT}*/
-BorgeforsSDT       return(T_BorgeforsSDT); /*{BorgeforsSDT,T_BorgeforsSDT}*/
-vtkSignedBorgefors return(T_vtkSignedBorgefors); /*{vtkSignedBorgefors,T_vtkSignedBorgefors}*/
-vtkSignedFMDist    return(T_vtkSignedFMDist); /*{vtkSignedFMDist,T_vtkSignedFMDist}*/
-PropagationDist    return(T_PropagationDist); /*{PropagationDist,T_PropagationDist}*/
-PropagationDist2   return(T_PropagationDist2); /*{PropagationDist2,T_PropagationDist2}*/
-PropDanielsson     return(T_PropDanielsson); /*{PropDanielsson,T_PropDanielsson}*/
-vtkPropDanielsson  return(T_vtkPropDanielsson); /*{vtkPropDanielsson,T_vtkPropDanielsson}*/
-vtkPropDaniel2     return(T_vtkPropDaniel2); /*{vtkPropDaniel2,T_vtkPropDaniel2}*/
-CC                 return(T_CC); /*{CC,T_CC}*/
-
-ConvexHull        return(T_ConvexHull); /*{ConvexHull,T_ConvexHull}*/
-
-MeanHalfSize      return(T_MeanHalfSize); /*{MeanHalfSize,T_MeanHalfSize}*/
-Resize            return(T_Resize); /*{Resize,T_Resize}*/
-ReSlice           return(T_ReSlice); /*{ReSlice,T_ReSlice}*/
-Flip              return(T_Flip);  /*{Flip,T_Flip}*/// flips image in one of the main axis direction
-
-SetCompTransf     return(T_SetCompTransf); /*{SetCompTransf,T_SetCompTransf}*/
-
-InitTime          return(T_InitTime); /*{InitTime,T_InitTime}*/
-TimeSpent         return(T_TimeSpent); /*{TimeSpent,T_TimeSpent}*/
-EndTime           return(T_EndTime); /*{EndTime,T_EndTime}*/
-
-NULL              return(T_NULL); /*{NULL,T_NULL}*/
-
-
-ProcessXEvents    return(T_ProcessXEvents); /*{ProcessXEvents,T_ProcessXEvents}*/
-
-count             return(T_COUNT); /*{count,T_COUNT}*/
-max               return(T_MAX); /*{max,T_MAX}*/
-argmax            return(T_argmax); /*{argmax,T_argmax}*/
-min               return(T_MIN); /*{min,T_MIN}*/
-median            return(T_MEDIAN); /*{median,T_MEDIAN}*/
-sum               return(T_SUM); /*{sum,T_SUM}*/
-
-info              return(T_info); /*{info,T_info}*/
-NbPoints          return(T_NbPoints); /*{NbPoints,T_NbPoints}*/
-NbPolys           return(T_NbPolys); /*{NbPolys,T_NbPolys}*/
-
-
-Xpos              return(T_Xpos); /*{Xpos,T_Xpos}*/
-Ypos              return(T_Ypos); /*{Ypos,T_Ypos}*/
-Zpos              return(T_Zpos); /*{Zpos,T_Zpos}*/
-SpacePos          return(T_SpacePos); /*{SpacePos,T_SpacePos}*/
-
-del               return(T_del); /*{del,T_del}*/
-
-EDPdilate         return(T_EDPdilate); /*{EDPdilate,T_EDPdilate}*/
-EDPerode          return(T_EDPerode); /*{EDPerode,T_EDPerode}*/
-EDPopen           return(T_EDPopen); /*{EDPopen,T_EDPopen}*/
-EDPclose          return(T_EDPclose); /*{EDPclose,T_EDPclose}*/
-
-AnisoGS           return(AnisoGS); /*{AnisoGS,AnisoGS}*/
-
-
-LevelSetsCURV     return(T_LevelSetsCURV); /*{LevelSetsCURV,T_LevelSetsCURV}*/
-UpdateResult      return(T_UpdateResult); /*{UpdateResult,T_UpdateResult}*/
-SetMeanCurv       return(T_SetMeanCurv); /*{SetMeanCurv,T_SetMeanCurv}*/
-SetAffineCurv     return(T_SetAffineCurv); /*{SetAffineCurv,T_SetAffineCurv}*/
-SetDistMethod     return(T_SetDistMethod); /*{SetDistMethod,T_SetDistMethod}*/
-SetAdvectionField return(T_SetAdvectionField); /*{SetAdvectionField,T_SetAdvectionField}*/
-SetCurvWeights    return(T_SetCurvWeights); /*{SetCurvWeights,T_SetCurvWeights}*/
-GetAttachVect     return(T_GetAttachVect); /*{GetAttachVect,T_GetAttachVect}*/
-SetVelocity       return(T_SetVelocity); /*{SetVelocity,T_SetVelocity}*/
-SetExpansion      return(T_SetExpansion); /*{SetExpansion,T_SetExpansion}*/
-SetExpansionImage return(T_SetExpansionImage); /*{SetExpansionImage,T_SetExpansionImage}*/
-SetParam          return(T_SetParam); /*{SetParam,T_SetParam}*/
-SetIsoContourBin  return(T_SetIsoContourBin); /*{SetIsoContourBin,T_SetIsoContourBin}*/
-SetBandTube       return(T_SetBandTube); /*{SetBandTube,T_SetBandTube}*/
-SetThreads        return(T_SetThreads); /*{SetThreads,T_SetThreads}*/
-SetDistMap        return(T_SetDistMap); /*{SetDistMap,T_SetDistMap}*/
-SetBalloonScheme  return(T_SetBalloonScheme); /*{SetBalloonScheme,T_SetBalloonScheme}*/
-
-
-vtkFastMarching   return(T_vtkFastMarching); /*{vtkFastMarching,T_vtkFastMarching}*/
-vtkFastMarchingTarget   return(T_vtkFastMarchingTarget); /*{vtkFastMarchingTarget,T_vtkFastMarchingTarget}*/
-
-SetNumGaussians   return(T_SetNumGaussians); /*{SetNumGaussians,T_SetNumGaussians}*/
-SetGaussian       return(T_SetGaussian); /*{SetGaussian,T_SetGaussian}*/
-SetProbThreshold  return(T_SetProbThreshold); /*{SetProbThreshold,T_SetProbThreshold}*/
-
-SetILowTh         return(T_SetILowTh); /*{SetILowTh,T_SetILowTh}*/
-SetIHighTh        return(T_SetIHighTh); /*{SetIHighTh,T_SetIHighTh}*/
-SetProbHighTh     return(T_SetProbHighTh); /*{SetProbHighTh,T_SetProbHighTh}*/
-
-SetNumInitPoints   return(T_SetNumInitPoints); /*{SetNumInitPoints,T_SetNumInitPoints}*/
-SetInitPoint       return(T_SetInitPoint); /*{SetInitPoint,T_SetInitPoint}*/
-
-GetCurvature      return(T_GetCurvature); /*{GetCurvature,T_GetCurvature}*/
-GetAdvection      return(T_GetAdvection); /*{GetAdvection,T_GetAdvection}*/
-GetVelocity       return(T_GetVelocity); /*{GetVelocity,T_GetVelocity}*/
-GetExpansion      return(T_GetExpansion); /*{GetExpansion,T_GetExpansion}*/
-GetSkeleton       return(T_GetSkeleton); /*{GetSkeleton,T_GetSkeleton}*/
-GetDistMap        return(T_GetDistMap); /*{GetDistMap,T_GetDistMap}*/
-
-SaveDistMap       return(T_SaveDistMap); /*{SaveDistMap,T_SaveDistMap}*/
-SaveSecDerGrad    return(T_SaveSecDerGrad); /*{SaveSecDerGrad,T_SaveSecDerGrad}*/
-
-FluxDiffusion     return(T_FluxDiffusion); /*{FluxDiffusion,T_FluxDiffusion}*/
-vtkAnisoGS        return(T_vtkAnisoGS); /*{vtkAnisoGS,T_vtkAnisoGS}*/
-AnisoSmoothGS     return(AnisoSmoothGS); /*{AnisoSmoothGS,AnisoSmoothGS}*/
-init              return(TInit); /*{init,TInit}*/
-setcoeff          return(TSetCoeff); /*{setcoeff,TSetCoeff}*/
-iterate           return(TIterate); /*{iterate,TIterate}*/
-SetNoiseType      return(T_SetNoiseType); /*{SetNoiseType,T_SetNoiseType}*/
-SetNoiseSD        return(T_SetNoiseSD); /*{SetNoiseSD,T_SetNoiseSD}*/
-GetNoiseSD        return(T_GetNoiseSD); /*{GetNoiseSD,T_GetNoiseSD}*/
-GetDAcoeff        return(T_GetDAcoeff); /*{GetDAcoeff,T_GetDAcoeff}*/
-SetMask           return(T_SetMask); /*{SetMask,T_SetMask}*/
-SetSRADROI        return(T_SetSRADROI); /*{SetSRADROI,T_SetSRADROI}*/
-SetRNRADROI       return(T_SetRNRADROI); /*{SetRNRADROI,T_SetRNRADROI}*/
-SetRNRADROI_NEW   return(T_SetRNRADROI_NEW); /*{SetRNRADROI_NEW,T_SetRNRADROI_NEW}*/
-SetLocalStruct    return(T_SetLocalStruct); /*{SetLocalStruct,T_SetLocalStruct}*/
-SetEigenMode      return(T_SetEigenMode); /*{SetEigenMode,T_SetEigenMode}*/
-Setdt             return(T_Setdt); /*{Setdt,T_Setdt}*/
-Setneighborhood   return(T_Setneighborhood); /*{Setneighborhood,T_Setneighborhood}*/
-end               return(TEnd); /*{end,TEnd}*/
-
-AnisoWeickert     return(T_AnisoWeickert); /*{AnisoWeickert,T_AnisoWeickert}*/
-AnisoCW           return(T_AnisoCW); /*{AnisoCW,T_AnisoCW}*/
-
-SRAD_qcoeff       return(T_SRAD_qcoeff); /*{SRAD_qcoeff,T_SRAD_qcoeff}*/
-AnisoSRAD         return(T_AnisoSRAD); /*{AnisoSRAD,T_AnisoSRAD}*/
-AnisoSRAD2        return(T_AnisoSRAD2); /*{AnisoSRAD2,T_AnisoSRAD2}*/
-AnisoDPAD         return(T_AnisoDPAD); /*{AnisoDPAD,T_AnisoDPAD}*/
-AnisoDPAD2        return(T_AnisoDPAD2); /*{AnisoDPAD2,T_AnisoDPAD2}*/
-AnisoNRAD         return(T_AnisoNRAD); /*{AnisoNRAD,T_AnisoNRAD}*/
-AnisoLeeAdd2      return(T_AnisoLeeAdd2); /*{AnisoLeeAdd2,T_AnisoLeeAdd2}*/
-
-AnisoRudinMult    return(T_AnisoRudinMult); /*{AnisoRudinMult,T_AnisoRudinMult}*/
-
-AddGaussNoise     return(TAddGaussNoise); /*{AddGaussNoise,TAddGaussNoise}*/
-
-SNR               return(T_SNR); /*{SNR,T_SNR}*/
-
-save              return(T_save); /*{save,T_save}*/
-
-eccentricity      return(T_eccentricity); /*{eccentricity,T_eccentricity}*/
-
-getimage          return(T_getimage); /*{getimage,T_getimage}*/
-GetImageFromX     return(T_GetImageFromX); /*{GetImageFromX,T_GetImageFromX}*/
-
-isoarea2D         return(T_isoarea2D); /*{isoarea2D,T_isoarea2D}*/
-posarea           return(T_posarea); /*{posarea,T_posarea}*/
-
-ReadCTALine      return(T_ReadCTALine); /*{ReadCTALine,T_ReadCTALine}*/
-ReadCTALineRadii return(T_ReadCTALineRadii); /*{ReadCTALineRadii,T_ReadCTALineRadii}*/
-WriteCTALine     return(T_WriteCTALine); /*{WriteCTALine,T_WriteCTALine}*/
-
-isosurf           return(T_isosurf); /*{isosurf,T_isosurf}*/
-isosurf_inv       return(T_isosurf_inv); /*{isosurf_inv,T_isosurf_inv}*/
-isosurf_ijk       return(T_isosurf_ijk); /*{isosurf_ijk,T_isosurf_ijk}*/
-isosurf_ras       return(T_isosurf_ras); /*{isosurf_ras,T_isosurf_ras}*/
-Surface           return(T_Surface); /*{Surface,T_Surface}*/
-vtkDecimate       return(T_vtkDecimate); /*{vtkDecimate,T_vtkDecimate}*/
-vtkMarchingCubes  return(T_vtkMarchingCubes); /*{vtkMarchingCubes,T_vtkMarchingCubes}*/
-vtkSmooth         return(T_vtkSmooth); /*{vtkSmooth,T_vtkSmooth}*/
-vtkWindowedSinc   return(T_vtkWindowedSinc); /*{vtkWindowedSinc,T_vtkWindowedSinc}*/
-
-isoline           return(T_isoline); /*{isoline,T_isoline}*/
-
-AddPoint           return(T_AddPoint); /*{AddPoint,T_AddPoint}*/
-NewLine            return(T_NewLine); /*{NewLine,T_NewLine}*/
-EndLine            return(T_EndLine); /*{EndLine,T_EndLine}*/
-LineAddPointNumber return(T_LineAddPointNumber); /*{LineAddPointNumber,T_LineAddPointNumber}*/
-
-vtkDist           return(T_vtkDist); /*{vtkDist,T_vtkDist}*/
-AndreDist         return(T_AndreDist); /*{AndreDist,T_AndreDist}*/
-
-OutFlux           return(T_OutFlux); /*{OutFlux,T_OutFlux}*/
-OutFluxScalar     return(T_OutFluxScalar); /*{OutFluxScalar,T_OutFluxScalar}*/
-2DFlux            return(T_2DFlux); /*{2DFlux,T_2DFlux}*/
-OrientationRatio  return(T_OrientationRatio); /*{OrientationRatio,T_OrientationRatio}*/
-
-computeCC         return(T_computeCC); /*{computeCC,T_computeCC}*/
-drawCC            return(T_drawCC); /*{drawCC,T_drawCC}*/
-setminCC          return(T_setminCC); /*{setminCC,T_setminCC}*/
-Paint             return(T_Paint); /*{Paint,T_Paint}*/
-SetLight          return(T_SetLight); /*{SetLight,T_SetLight}*/
-SetLightPos       return(T_SetLightPos); /*{SetLightPos,T_SetLightPos}*/
-SetLightAmbient   return(T_SetLightAmbient); /*{SetLightAmbient,T_SetLightAmbient}*/
-SetLightDiffuse   return(T_SetLightDiffuse); /*{SetLightDiffuse,T_SetLightDiffuse}*/
-SetLightSpecular  return(T_SetLightSpecular); /*{SetLightSpecular,T_SetLightSpecular}*/
-SetBackground     return(T_SetBackground); /*{SetBackground,T_SetBackground}*/
-
-OwnMaterial         return(T_OwnMaterial); /*{OwnMaterial,T_OwnMaterial}*/
-SetColor            return(T_SetColor); /*{SetColor,T_SetColor}*/
-SetColorOpacity     return(T_SetColorOpacity); /*{SetColorOpacity,T_SetColorOpacity}*/
-SetColors           return(T_SetColors); /*{SetColors,T_SetColors}*/
-SetPointsColors     return(T_SetPointsColors); /*{SetPointsColors,T_SetPointsColors}*/
-GetLinesLength      return(T_GetLinesLength); /*{GetLinesLength,T_GetLinesLength}*/
-GetLinesExtremities return(T_GetLinesExtremities); /*{GetLinesExtremities,T_GetLinesExtremities}*/
-GetConnections      return(T_GetConnections); /*{GetConnections,T_GetConnections}*/
-SelectLines         return(T_SelectLines); /*{SelectLines,T_SelectLines}*/
-RemoveSelection     return(T_RemoveSelection); /*{RemoveSelection,T_RemoveSelection}*/
-GetIntensities      return(T_GetIntensities); /*{GetIntensities,T_GetIntensities}*/
-Statistics          return(T_Statistics); /*{Statistics,T_Statistics}*/
-
-SetAmbient          return(T_SetAmbient); /*{SetAmbient,T_SetAmbient}*/
-SetDiffuse          return(T_SetDiffuse); /*{SetDiffuse,T_SetDiffuse}*/
-SetSpecular         return(T_SetSpecular); /*{SetSpecular,T_SetSpecular}*/
-SetShininess        return(T_SetShininess); /*{SetShininess,T_SetShininess}*/
-SetOpacity          return(T_SetOpacity); /*{SetOpacity,T_SetOpacity}*/
-SetOpacityImage     return(T_SetOpacityImage); /*{SetOpacityImage,T_SetOpacityImage}*/
-SetColorMaterial    return(T_SetColorMaterial); /*{SetColorMaterial,T_SetColorMaterial}*/
-SetVisible          return(T_SetVisible); /*{SetVisible,T_SetVisible}*/
-
-penguin           return(T_penguin); /*{penguin,T_penguin}*/
-
-PrintMatrices     return(T_PrintMatrices); /*{PrintMatrices,T_PrintMatrices}*/ // print the matrices of Viewer3D class
-
-AddObject         return(T_addobj); /*{AddObject,T_addobj}*/
-SetCurrentObj     return(T_setcurrentobj); /*{SetCurrentObj,T_setcurrentobj}*/
-
-SetLineWidth      return(T_SetLineWidth); /*{SetLineWidth,T_SetLineWidth}*/
-
-MergePoints       return(T_mergepoints); /*{MergePoints,T_mergepoints}*/
-Triangulate       return(T_Triangulate); /*{Triangulate,T_Triangulate}*/
-Displace          return(T_Displace); /*{Displace,T_Displace}*/
-Translate         return(T_Translate); /*{Translate,T_Translate}*/
-Scale             return(T_Scale); /*{Scale,T_Scale}*/
-Normals           return(T_Normals); /*{Normals,T_Normals}*/
-InvertNormals     return(T_InvertNormals); /*{InvertNormals,T_InvertNormals}*/
-Recompute         return(T_Recompute); /*{Recompute,T_Recompute}*/
-GetTransform      return(T_GetTransform); /*{GetTransform,T_GetTransform}*/
-SetTransform      return(T_SetTransform); /*{SetTransform,T_SetTransform}*/
-
-Interpolate       return(T_Interpolate); /*{Interpolate,T_Interpolate}*/
-
-Skeleton          return(T_Skeleton); /*{Skeleton,T_Skeleton}*/
-SimplePoints      return(T_SimplePoints); /*{SimplePoints,T_SimplePoints}*/
-
-NormalField       return(T_NormalField); /*{NormalField,T_NormalField}*/
-DirConnectivity   return(T_DirConnectivity); /*{DirConnectivity,T_DirConnectivity}*/
-OrientField       return(T_OrientField); /*{OrientField,T_OrientField}*/
-OrientPositive    return(T_OrientPositive); /*{OrientPositive,T_OrientPositive}*/
-
-Skeleton2lines    return(T_Skeleton2lines); /*{Skeleton2lines,T_Skeleton2lines}*/
-SmoothLines       return(T_SmoothLines);  /*{SmoothLines,T_SmoothLines}*/
-RemoveLine        return(T_RemoveLine);   /*{RemoveLine,T_RemoveLine}*/
-ConnectLines      return(T_ConnectLines); /*{ConnectLines,T_ConnectLines}*/
-ResampleLines     return(T_ResampleLines); /*{ResampleLines,T_ResampleLines}*/
-ShortestPath      return(T_ShortestPath); /*{ShortestPath,T_ShortestPath}*/
-ShortestPathImage return(T_ShortestPathImage); /*{ShortestPathImage,T_ShortestPathImage}*/
-PathFromDispl     return(T_PathFromDispl); /*{PathFromDispl, T_PathFromDispl}*/
-PathFromVectField return(T_PathFromVectField); /*{PathFromVectField, T_PathFromVectField}*/
-LineRecons        return(T_LineRecons); /*{LineRecons,T_LineRecons}*/
-
-CircleInt         return(T_CircleIntegral); /*{CircleInt,T_CircleIntegral}*/
-CircleIntExc      return(T_CircleIntegralExc); /*{CircleIntExc,T_CircleIntegralExc}*/
-CircleIntSdExc    return(T_CircleIntSdExc); /*{CircleIntSdExc,T_CircleIntSdExc}*/
-CircleMinIntSdExc    return(T_CircleMinIntSdExc); /*{CircleMinIntSdExc,T_CircleMinIntSdExc}*/
-LocalExtrema      return(T_LocalExtrema); /*{LocalExtrema,T_LocalExtrema}*/
-
-
-gnuplot           return(T_gnuplot); /*{gnuplot,T_gnuplot}*/
-histo             return(T_histo); /*{histo,T_histo}*/
-cumhisto          return(T_cumhisto); /*{cumhisto,T_cumhisto}*/
-DisplayHisto      return(T_DisplayHisto); /*{DisplayHisto,T_DisplayHisto}*/
-
-GenRead           return(T_GenRead); /*{GenRead,T_GenRead}*/
-
-
-Matrix            return(T_Matrix); /*{Matrix,T_Matrix}*/
-Invert            return(T_Invert); /*{Invert,T_Invert}*/
-
-SaveStructuredGrid return(T_SaveStructuredGrid); /*{SaveStructuredGrid,T_SaveStructuredGrid}*/
+SetDebugOn         return(token::T_SetDebugOn); /*{SetDebugOn,T_SetDebugOn}*/
+SetDebugOff        return(token::T_SetDebugOff); /*{SetDebugOff,T_SetDebugOff}*/
+SetVerboseOn       return(token::T_SetVerboseOn); /*{SetVerboseOn,T_SetVerboseOn}*/
+SetVerboseOff      return(token::T_SetVerboseOff); /*{SetVerboseOff,T_SetVerboseOff}*/
+SetProgress        return(token::T_SetProgress); /*{SetProgress,T_SetProgress}*/
+Quit               return(token::QUIT); /*{Quit,QUIT}*/
+quit               return(token::QUIT);
+Image              return(token::T_Image); /*{Image,T_Image}*/
+ReadRawImages      return(token::T_ReadRawImages); /*{ReadRawImages,T_ReadRawImages}*/
+Transform          return(token::T_Transform); /*{Transform,T_Transform}*/
+Show               return(token::SHOW); /*{Show,SHOW}*/
+show               return(token::SHOW);
+Remove             return(token::T_Remove); /*{Remove,T_Remove}*/
+SwapBuffers        return(token::T_SwapBuffers); /*{SwapBuffers, T_SwapBuffers}*/
+Hide               return(token::T_HIDE); /*{Hide,T_HIDE}*/
+hide               return(token::T_HIDE);
+Help               return(token::HELP); /*{Help,HELP}*/
+help               return(token::HELP);
+ls                 return(token::LS); /*{ls,LS}*/
+print              return(token::PRINT); /*{print,PRINT}*/
+printn             return(token::PRINTN); /*{printn,PRINTN}*/
+sprint             return(token::T_SPRINT); /*{sprint,T_SPRINT}*/
+vars               return(token::VARIABLES); /*{vars,VARIABLES}*/
+func               return(token::FUNCTION); /*{func,FUNCTION}*/
+filter             return(token::FILTER); /*{filter,FILTER}*/
+vtkMedian3D        return(token::T_vtkMedian3D); /*{vtkMedian3D,T_vtkMedian3D}*/
+normgrad           return(token::NormGrad); /*{normgrad,NormGrad}*/
+discnormgrad       return(token::T_DiscNormGrad); /*{discnormgrad,T_DiscNormGrad}*/
+gradient           return(token::T_gradient); /*{gradient,T_gradient}*/
+secdergrad         return(token::SecDerGrad); /*{secdergrad,SecDerGrad}*/
+secdergrad2        return(token::SecDerGrad2); /*{secdergrad2,SecDerGrad2}*/
+discsecdergrad     return(token::T_DiscSecDerGrad); /*{discsecdergrad,T_DiscSecDerGrad}*/
+OpImage            return(token::OpImage); /*{OpImage,OpImage}*/
+subimage           return(token::SubImage); /*{subimage,SubImage}*/
+autocrop           return(token::T_AutoCrop); /*{autocrop,T_AutoCrop}*/
+putimage           return(token::PutImage); /*{putimage,PutImage}*/
+rot2D              return(token::T_rot2D); /*{rot2D,T_rot2D}*/
+rotate             return(token::T_rotate); /*{rotate,T_rotate}*/
+mean               return(token::T_mean); /*{mean,T_mean}*/
+localmean          return(token::T_localmean); /*{localmean,T_localmean}*/
+localmean2         return(token::T_localmean2); /*{localmean2,T_localmean2}*/
+localSD            return(token::T_localSD); /*{localSD,T_localSD}*/
+localSD2           return(token::T_localSD2); /*{localSD2,T_localSD2}*/
+StructTensor       return(token::T_struct_tensor); /*{StructTensor,T_struct_tensor}*/
+StructTensorH      return(token::T_StructTensorH); /*{StructTensorH,T_StructTensorH}*/
+HessianMatrix      return(token::T_HessianMatrix); /*{HessianMatrix,T_HessianMatrix}*/
+HessianEVal        return(token::T_HessianEVal); /*{HessianEVal,T_HessianEVal}*/
+Derivatives        return(token::T_Derivatives); /*{Derivatives,T_Derivatives}*/
+Curvatures         return(token::T_curvatures); /*{Curvatures,T_curvatures}*/
+DiscMeanCurvature  return(token::T_DiscMeanCurvature); /*{DiscMeanCurvature,T_DiscMeanCurvature}*/
+Laplacian          return(token::T_Laplacian); /*{Laplacian,T_Laplacian}*/
+setvoxelsize       return(token::T_setvoxelsize); /*{setvoxelsize,T_setvoxelsize}*/
+settranslation     return(token::T_settranslation); /*{settranslation,T_settranslation}*/
+setendianness      return(token::T_setendianness);  /*{setendianness,T_setendianness}*/
+
+threscross         return(token::T_threscross); /*{threscross,T_threscross}*/
+IsocontourPoints   return(token::T_IsocontourPoints); /*{IsocontourPoints,T_IsocontourPoints}*/
+IsosurfDist        return(token::T_IsosurfDist); /*{IsosurfDist,T_IsosurfDist}*/
+vtkIsoContourDist  return(token::T_vtkIsoContourDist); /*{vtkIsoContourDist,T_vtkIsoContourDist}*/
+
+SetIsoContour      return(token::T_SetIsoContour); /*{SetIsoContour,T_SetIsoContour}*/
+SetIsoContourParam return(token::T_SetIsoContourParam); /*{SetIsoContourParam,T_SetIsoContourParam}*/
+DrawIsoContour     return(token::T_DrawIsoContour); /*{DrawIsoContour,T_DrawIsoContour}*/
+SetIsoContourColor return(token::T_SetIsoContourColor);  /*{SetIsoContourColor,T_SetIsoContourColor}*/
+DrawAllContours    return(token::T_DrawAllContours);     /*{DrawAllContours,T_DrawAllContours}*/
+AllContoursParam   return(token::T_AllContoursParam);    /*{AllContoursParam,T_AllContoursParam}*/
+
+GetZmin            return(token::T_GetZmin); /*{GetZmin,T_GetZmin}*/
+GetZmax            return(token::T_GetZmax); /*{GetZmax,T_GetZmax}*/
+GetYmin            return(token::T_GetYmin); /*{GetYmin,T_GetYmin}*/
+GetYmax            return(token::T_GetYmax); /*{GetYmax,T_GetYmax}*/
+GetXmin            return(token::T_GetXmin); /*{GetXmin,T_GetXmin}*/
+GetXmax            return(token::T_GetXmax); /*{GetXmax,T_GetXmax}*/
+
+GetXPos            return(token::T_GetXPos); /*{GetXPos,T_GetXPos}*/
+GetYPos            return(token::T_GetYPos); /*{GetYPos,T_GetYPos}*/
+GetZPos            return(token::T_GetZPos); /*{GetZPos,T_GetZPos}*/
+
+SetZoom            return(token::T_SetZoom); /*{SetZoom,T_SetZoom}*/
+SetWindowSize      return(token::T_SetWindowSize); /*{SetWindowSize,T_SetWindowSize}*/
+
+Convolve           return(token::T_Convolve); /*{Convolve,T_Convolve}*/
+ConvolveMask       return(token::T_ConvolveMask); /*{ConvolveMask,T_ConvolveMask}*/
+Pad                return(token::T_Pad); /*{Pad,T_Pad}*/
+Eigen2D            return(token::T_Eigen2D); /*{Eigen2D,T_Eigen2D}*/
+Eigen3D            return(token::T_Eigen3D); /*{Eigen3D,T_Eigen3D}*/
+ChamferDT          return(token::T_ChamferDT); /*{ChamferDT,T_ChamferDT}*/
+Chamfer2DT         return(token::T_Chamfer2DT); /*{Chamfer2DT,T_Chamfer2DT}*/
+BorgeforsDT        return(token::T_BorgeforsDT); /*{BorgeforsDT,T_BorgeforsDT}*/
+BorgeforsSDT       return(token::T_BorgeforsSDT); /*{BorgeforsSDT,T_BorgeforsSDT}*/
+vtkSignedBorgefors return(token::T_vtkSignedBorgefors); /*{vtkSignedBorgefors,T_vtkSignedBorgefors}*/
+vtkSignedFMDist    return(token::T_vtkSignedFMDist); /*{vtkSignedFMDist,T_vtkSignedFMDist}*/
+PropagationDist    return(token::T_PropagationDist); /*{PropagationDist,T_PropagationDist}*/
+PropagationDist2   return(token::T_PropagationDist2); /*{PropagationDist2,T_PropagationDist2}*/
+PropDanielsson     return(token::T_PropDanielsson); /*{PropDanielsson,T_PropDanielsson}*/
+vtkPropDanielsson  return(token::T_vtkPropDanielsson); /*{vtkPropDanielsson,T_vtkPropDanielsson}*/
+vtkPropDaniel2     return(token::T_vtkPropDaniel2); /*{vtkPropDaniel2,T_vtkPropDaniel2}*/
+CC                 return(token::T_CC); /*{CC,T_CC}*/
+
+ConvexHull        return(token::T_ConvexHull); /*{ConvexHull,T_ConvexHull}*/
+
+MeanHalfSize      return(token::T_MeanHalfSize); /*{MeanHalfSize,T_MeanHalfSize}*/
+Resize            return(token::T_Resize); /*{Resize,T_Resize}*/
+ReSlice           return(token::T_ReSlice); /*{ReSlice,T_ReSlice}*/
+Flip              return(token::T_Flip);  /*{Flip,T_Flip}*/// flips image in one of the main axis direction
+
+SetCompTransf     return(token::T_SetCompTransf); /*{SetCompTransf,T_SetCompTransf}*/
+
+InitTime          return(token::T_InitTime); /*{InitTime,T_InitTime}*/
+TimeSpent         return(token::T_TimeSpent); /*{TimeSpent,T_TimeSpent}*/
+EndTime           return(token::T_EndTime); /*{EndTime,T_EndTime}*/
+
+NULL              return(token::T_NULL); /*{NULL,T_NULL}*/
+
+
+ProcessXEvents    return(token::T_ProcessXEvents); /*{ProcessXEvents,T_ProcessXEvents}*/
+
+count             return(token::T_COUNT); /*{count,T_COUNT}*/
+max               return(token::T_MAX); /*{max,T_MAX}*/
+argmax            return(token::T_argmax); /*{argmax,T_argmax}*/
+min               return(token::T_MIN); /*{min,T_MIN}*/
+median            return(token::T_MEDIAN); /*{median,T_MEDIAN}*/
+sum               return(token::T_SUM); /*{sum,T_SUM}*/
+
+info              return(token::T_info); /*{info,T_info}*/
+NbPoints          return(token::T_NbPoints); /*{NbPoints,T_NbPoints}*/
+NbPolys           return(token::T_NbPolys); /*{NbPolys,T_NbPolys}*/
+
+
+Xpos              return(token::T_Xpos); /*{Xpos,T_Xpos}*/
+Ypos              return(token::T_Ypos); /*{Ypos,T_Ypos}*/
+Zpos              return(token::T_Zpos); /*{Zpos,T_Zpos}*/
+SpacePos          return(token::T_SpacePos); /*{SpacePos,T_SpacePos}*/
+
+del               return(token::T_del); /*{del,T_del}*/
+
+EDPdilate         return(token::T_EDPdilate); /*{EDPdilate,T_EDPdilate}*/
+EDPerode          return(token::T_EDPerode); /*{EDPerode,T_EDPerode}*/
+EDPopen           return(token::T_EDPopen); /*{EDPopen,T_EDPopen}*/
+EDPclose          return(token::T_EDPclose); /*{EDPclose,T_EDPclose}*/
+
+AnisoGS           return(token::AnisoGS); /*{AnisoGS,AnisoGS}*/
+
+
+LevelSetsCURV     return(token::T_LevelSetsCURV); /*{LevelSetsCURV,T_LevelSetsCURV}*/
+UpdateResult      return(token::T_UpdateResult); /*{UpdateResult,T_UpdateResult}*/
+SetMeanCurv       return(token::T_SetMeanCurv); /*{SetMeanCurv,T_SetMeanCurv}*/
+SetAffineCurv     return(token::T_SetAffineCurv); /*{SetAffineCurv,T_SetAffineCurv}*/
+SetDistMethod     return(token::T_SetDistMethod); /*{SetDistMethod,T_SetDistMethod}*/
+SetAdvectionField return(token::T_SetAdvectionField); /*{SetAdvectionField,T_SetAdvectionField}*/
+SetCurvWeights    return(token::T_SetCurvWeights); /*{SetCurvWeights,T_SetCurvWeights}*/
+GetAttachVect     return(token::T_GetAttachVect); /*{GetAttachVect,T_GetAttachVect}*/
+SetVelocity       return(token::T_SetVelocity); /*{SetVelocity,T_SetVelocity}*/
+SetExpansion      return(token::T_SetExpansion); /*{SetExpansion,T_SetExpansion}*/
+SetExpansionImage return(token::T_SetExpansionImage); /*{SetExpansionImage,T_SetExpansionImage}*/
+SetParam          return(token::T_SetParam); /*{SetParam,T_SetParam}*/
+SetIsoContourBin  return(token::T_SetIsoContourBin); /*{SetIsoContourBin,T_SetIsoContourBin}*/
+SetBandTube       return(token::T_SetBandTube); /*{SetBandTube,T_SetBandTube}*/
+SetThreads        return(token::T_SetThreads); /*{SetThreads,T_SetThreads}*/
+SetDistMap        return(token::T_SetDistMap); /*{SetDistMap,T_SetDistMap}*/
+SetBalloonScheme  return(token::T_SetBalloonScheme); /*{SetBalloonScheme,T_SetBalloonScheme}*/
+
+
+vtkFastMarching   return(token::T_vtkFastMarching); /*{vtkFastMarching,T_vtkFastMarching}*/
+vtkFastMarchingTarget   return(token::T_vtkFastMarchingTarget); /*{vtkFastMarchingTarget,T_vtkFastMarchingTarget}*/
+
+SetNumGaussians   return(token::T_SetNumGaussians); /*{SetNumGaussians,T_SetNumGaussians}*/
+SetGaussian       return(token::T_SetGaussian); /*{SetGaussian,T_SetGaussian}*/
+SetProbThreshold  return(token::T_SetProbThreshold); /*{SetProbThreshold,T_SetProbThreshold}*/
+
+SetILowTh         return(token::T_SetILowTh); /*{SetILowTh,T_SetILowTh}*/
+SetIHighTh        return(token::T_SetIHighTh); /*{SetIHighTh,T_SetIHighTh}*/
+SetProbHighTh     return(token::T_SetProbHighTh); /*{SetProbHighTh,T_SetProbHighTh}*/
+
+SetNumInitPoints   return(token::T_SetNumInitPoints); /*{SetNumInitPoints,T_SetNumInitPoints}*/
+SetInitPoint       return(token::T_SetInitPoint); /*{SetInitPoint,T_SetInitPoint}*/
+
+GetCurvature      return(token::T_GetCurvature); /*{GetCurvature,T_GetCurvature}*/
+GetAdvection      return(token::T_GetAdvection); /*{GetAdvection,T_GetAdvection}*/
+GetVelocity       return(token::T_GetVelocity); /*{GetVelocity,T_GetVelocity}*/
+GetExpansion      return(token::T_GetExpansion); /*{GetExpansion,T_GetExpansion}*/
+GetSkeleton       return(token::T_GetSkeleton); /*{GetSkeleton,T_GetSkeleton}*/
+GetDistMap        return(token::T_GetDistMap); /*{GetDistMap,T_GetDistMap}*/
+
+SaveDistMap       return(token::T_SaveDistMap); /*{SaveDistMap,T_SaveDistMap}*/
+SaveSecDerGrad    return(token::T_SaveSecDerGrad); /*{SaveSecDerGrad,T_SaveSecDerGrad}*/
+
+FluxDiffusion     return(token::T_FluxDiffusion); /*{FluxDiffusion,T_FluxDiffusion}*/
+vtkAnisoGS        return(token::T_vtkAnisoGS); /*{vtkAnisoGS,T_vtkAnisoGS}*/
+AnisoSmoothGS     return(token::AnisoSmoothGS); /*{AnisoSmoothGS,AnisoSmoothGS}*/
+init              return(token::TInit); /*{init,TInit}*/
+setcoeff          return(token::TSetCoeff); /*{setcoeff,TSetCoeff}*/
+iterate           return(token::TIterate); /*{iterate,TIterate}*/
+SetNoiseType      return(token::T_SetNoiseType); /*{SetNoiseType,T_SetNoiseType}*/
+SetNoiseSD        return(token::T_SetNoiseSD); /*{SetNoiseSD,T_SetNoiseSD}*/
+GetNoiseSD        return(token::T_GetNoiseSD); /*{GetNoiseSD,T_GetNoiseSD}*/
+GetDAcoeff        return(token::T_GetDAcoeff); /*{GetDAcoeff,T_GetDAcoeff}*/
+SetMask           return(token::T_SetMask); /*{SetMask,T_SetMask}*/
+SetSRADROI        return(token::T_SetSRADROI); /*{SetSRADROI,T_SetSRADROI}*/
+SetRNRADROI       return(token::T_SetRNRADROI); /*{SetRNRADROI,T_SetRNRADROI}*/
+SetRNRADROI_NEW   return(token::T_SetRNRADROI_NEW); /*{SetRNRADROI_NEW,T_SetRNRADROI_NEW}*/
+SetLocalStruct    return(token::T_SetLocalStruct); /*{SetLocalStruct,T_SetLocalStruct}*/
+SetEigenMode      return(token::T_SetEigenMode); /*{SetEigenMode,T_SetEigenMode}*/
+Setdt             return(token::T_Setdt); /*{Setdt,T_Setdt}*/
+Setneighborhood   return(token::T_Setneighborhood); /*{Setneighborhood,T_Setneighborhood}*/
+end               return(token::TEnd); /*{end,TEnd}*/
+
+AnisoWeickert     return(token::T_AnisoWeickert); /*{AnisoWeickert,T_AnisoWeickert}*/
+AnisoCW           return(token::T_AnisoCW); /*{AnisoCW,T_AnisoCW}*/
+
+SRAD_qcoeff       return(token::T_SRAD_qcoeff); /*{SRAD_qcoeff,T_SRAD_qcoeff}*/
+AnisoSRAD         return(token::T_AnisoSRAD); /*{AnisoSRAD,T_AnisoSRAD}*/
+AnisoSRAD2        return(token::T_AnisoSRAD2); /*{AnisoSRAD2,T_AnisoSRAD2}*/
+AnisoDPAD         return(token::T_AnisoDPAD); /*{AnisoDPAD,T_AnisoDPAD}*/
+AnisoDPAD2        return(token::T_AnisoDPAD2); /*{AnisoDPAD2,T_AnisoDPAD2}*/
+AnisoNRAD         return(token::T_AnisoNRAD); /*{AnisoNRAD,T_AnisoNRAD}*/
+AnisoLeeAdd2      return(token::T_AnisoLeeAdd2); /*{AnisoLeeAdd2,T_AnisoLeeAdd2}*/
+
+AnisoRudinMult    return(token::T_AnisoRudinMult); /*{AnisoRudinMult,T_AnisoRudinMult}*/
+
+AddGaussNoise     return(token::TAddGaussNoise); /*{AddGaussNoise,TAddGaussNoise}*/
+
+SNR               return(token::T_SNR); /*{SNR,T_SNR}*/
+
+save              return(token::T_save); /*{save,T_save}*/
+
+eccentricity      return(token::T_eccentricity); /*{eccentricity,T_eccentricity}*/
+
+getimage          return(token::T_getimage); /*{getimage,T_getimage}*/
+GetImageFromX     return(token::T_GetImageFromX); /*{GetImageFromX,T_GetImageFromX}*/
+
+isoarea2D         return(token::T_isoarea2D); /*{isoarea2D,T_isoarea2D}*/
+posarea           return(token::T_posarea); /*{posarea,T_posarea}*/
+
+ReadCTALine      return(token::T_ReadCTALine); /*{ReadCTALine,T_ReadCTALine}*/
+ReadCTALineRadii return(token::T_ReadCTALineRadii); /*{ReadCTALineRadii,T_ReadCTALineRadii}*/
+WriteCTALine     return(token::T_WriteCTALine); /*{WriteCTALine,T_WriteCTALine}*/
+
+isosurf           return(token::T_isosurf); /*{isosurf,T_isosurf}*/
+isosurf_inv       return(token::T_isosurf_inv); /*{isosurf_inv,T_isosurf_inv}*/
+isosurf_ijk       return(token::T_isosurf_ijk); /*{isosurf_ijk,T_isosurf_ijk}*/
+isosurf_ras       return(token::T_isosurf_ras); /*{isosurf_ras,T_isosurf_ras}*/
+Surface           return(token::T_Surface); /*{Surface,T_Surface}*/
+vtkDecimate       return(token::T_vtkDecimate); /*{vtkDecimate,T_vtkDecimate}*/
+vtkMarchingCubes  return(token::T_vtkMarchingCubes); /*{vtkMarchingCubes,T_vtkMarchingCubes}*/
+vtkSmooth         return(token::T_vtkSmooth); /*{vtkSmooth,T_vtkSmooth}*/
+vtkWindowedSinc   return(token::T_vtkWindowedSinc); /*{vtkWindowedSinc,T_vtkWindowedSinc}*/
+
+isoline           return(token::T_isoline); /*{isoline,T_isoline}*/
+
+AddPoint           return(token::T_AddPoint); /*{AddPoint,T_AddPoint}*/
+NewLine            return(token::T_NewLine); /*{NewLine,T_NewLine}*/
+EndLine            return(token::T_EndLine); /*{EndLine,T_EndLine}*/
+LineAddPointNumber return(token::T_LineAddPointNumber); /*{LineAddPointNumber,T_LineAddPointNumber}*/
+
+vtkDist           return(token::T_vtkDist); /*{vtkDist,T_vtkDist}*/
+AndreDist         return(token::T_AndreDist); /*{AndreDist,T_AndreDist}*/
+
+OutFlux           return(token::T_OutFlux); /*{OutFlux,T_OutFlux}*/
+OutFluxScalar     return(token::T_OutFluxScalar); /*{OutFluxScalar,T_OutFluxScalar}*/
+2DFlux            return(token::T_2DFlux); /*{2DFlux,T_2DFlux}*/
+OrientationRatio  return(token::T_OrientationRatio); /*{OrientationRatio,T_OrientationRatio}*/
+
+computeCC         return(token::T_computeCC); /*{computeCC,T_computeCC}*/
+drawCC            return(token::T_drawCC); /*{drawCC,T_drawCC}*/
+setminCC          return(token::T_setminCC); /*{setminCC,T_setminCC}*/
+Paint             return(token::T_Paint); /*{Paint,T_Paint}*/
+SetLight          return(token::T_SetLight); /*{SetLight,T_SetLight}*/
+SetLightPos       return(token::T_SetLightPos); /*{SetLightPos,T_SetLightPos}*/
+SetLightAmbient   return(token::T_SetLightAmbient); /*{SetLightAmbient,T_SetLightAmbient}*/
+SetLightDiffuse   return(token::T_SetLightDiffuse); /*{SetLightDiffuse,T_SetLightDiffuse}*/
+SetLightSpecular  return(token::T_SetLightSpecular); /*{SetLightSpecular,T_SetLightSpecular}*/
+SetBackground     return(token::T_SetBackground); /*{SetBackground,T_SetBackground}*/
+
+OwnMaterial         return(token::T_OwnMaterial); /*{OwnMaterial,T_OwnMaterial}*/
+SetColor            return(token::T_SetColor); /*{SetColor,T_SetColor}*/
+SetColorOpacity     return(token::T_SetColorOpacity); /*{SetColorOpacity,T_SetColorOpacity}*/
+SetColors           return(token::T_SetColors); /*{SetColors,T_SetColors}*/
+SetPointsColors     return(token::T_SetPointsColors); /*{SetPointsColors,T_SetPointsColors}*/
+GetLinesLength      return(token::T_GetLinesLength); /*{GetLinesLength,T_GetLinesLength}*/
+GetLinesExtremities return(token::T_GetLinesExtremities); /*{GetLinesExtremities,T_GetLinesExtremities}*/
+GetConnections      return(token::T_GetConnections); /*{GetConnections,T_GetConnections}*/
+SelectLines         return(token::T_SelectLines); /*{SelectLines,T_SelectLines}*/
+RemoveSelection     return(token::T_RemoveSelection); /*{RemoveSelection,T_RemoveSelection}*/
+GetIntensities      return(token::T_GetIntensities); /*{GetIntensities,T_GetIntensities}*/
+Statistics          return(token::T_Statistics); /*{Statistics,T_Statistics}*/
+
+SetAmbient          return(token::T_SetAmbient); /*{SetAmbient,T_SetAmbient}*/
+SetDiffuse          return(token::T_SetDiffuse); /*{SetDiffuse,T_SetDiffuse}*/
+SetSpecular         return(token::T_SetSpecular); /*{SetSpecular,T_SetSpecular}*/
+SetShininess        return(token::T_SetShininess); /*{SetShininess,T_SetShininess}*/
+SetOpacity          return(token::T_SetOpacity); /*{SetOpacity,T_SetOpacity}*/
+SetOpacityImage     return(token::T_SetOpacityImage); /*{SetOpacityImage,T_SetOpacityImage}*/
+SetColorMaterial    return(token::T_SetColorMaterial); /*{SetColorMaterial,T_SetColorMaterial}*/
+SetVisible          return(token::T_SetVisible); /*{SetVisible,T_SetVisible}*/
+
+penguin           return(token::T_penguin); /*{penguin,T_penguin}*/
+
+PrintMatrices     return(token::T_PrintMatrices); /*{PrintMatrices,T_PrintMatrices}*/ // print the matrices of Viewer3D class
+
+AddObject         return(token::T_addobj); /*{AddObject,T_addobj}*/
+SetCurrentObj     return(token::T_setcurrentobj); /*{SetCurrentObj,T_setcurrentobj}*/
+
+SetLineWidth      return(token::T_SetLineWidth); /*{SetLineWidth,T_SetLineWidth}*/
+
+MergePoints       return(token::T_mergepoints); /*{MergePoints,T_mergepoints}*/
+Triangulate       return(token::T_Triangulate); /*{Triangulate,T_Triangulate}*/
+Displace          return(token::T_Displace); /*{Displace,T_Displace}*/
+Translate         return(token::T_Translate); /*{Translate,T_Translate}*/
+Scale             return(token::T_Scale); /*{Scale,T_Scale}*/
+Normals           return(token::T_Normals); /*{Normals,T_Normals}*/
+InvertNormals     return(token::T_InvertNormals); /*{InvertNormals,T_InvertNormals}*/
+Recompute         return(token::T_Recompute); /*{Recompute,T_Recompute}*/
+GetTransform      return(token::T_GetTransform); /*{GetTransform,T_GetTransform}*/
+SetTransform      return(token::T_SetTransform); /*{SetTransform,T_SetTransform}*/
+
+Interpolate       return(token::T_Interpolate); /*{Interpolate,T_Interpolate}*/
+
+Skeleton          return(token::T_Skeleton); /*{Skeleton,T_Skeleton}*/
+SimplePoints      return(token::T_SimplePoints); /*{SimplePoints,T_SimplePoints}*/
+
+NormalField       return(token::T_NormalField); /*{NormalField,T_NormalField}*/
+DirConnectivity   return(token::T_DirConnectivity); /*{DirConnectivity,T_DirConnectivity}*/
+OrientField       return(token::T_OrientField); /*{OrientField,T_OrientField}*/
+OrientPositive    return(token::T_OrientPositive); /*{OrientPositive,T_OrientPositive}*/
+
+Skeleton2lines    return(token::T_Skeleton2lines); /*{Skeleton2lines,T_Skeleton2lines}*/
+SmoothLines       return(token::T_SmoothLines);  /*{SmoothLines,T_SmoothLines}*/
+RemoveLine        return(token::T_RemoveLine);   /*{RemoveLine,T_RemoveLine}*/
+ConnectLines      return(token::T_ConnectLines); /*{ConnectLines,T_ConnectLines}*/
+ResampleLines     return(token::T_ResampleLines); /*{ResampleLines,T_ResampleLines}*/
+ShortestPath      return(token::T_ShortestPath); /*{ShortestPath,T_ShortestPath}*/
+ShortestPathImage return(token::T_ShortestPathImage); /*{ShortestPathImage,T_ShortestPathImage}*/
+PathFromDispl     return(token::T_PathFromDispl); /*{PathFromDispl, T_PathFromDispl}*/
+PathFromVectField return(token::T_PathFromVectField); /*{PathFromVectField, T_PathFromVectField}*/
+LineRecons        return(token::T_LineRecons); /*{LineRecons,T_LineRecons}*/
+
+CircleInt         return(token::T_CircleIntegral); /*{CircleInt,T_CircleIntegral}*/
+CircleIntExc      return(token::T_CircleIntegralExc); /*{CircleIntExc,T_CircleIntegralExc}*/
+CircleIntSdExc    return(token::T_CircleIntSdExc); /*{CircleIntSdExc,T_CircleIntSdExc}*/
+CircleMinIntSdExc    return(token::T_CircleMinIntSdExc); /*{CircleMinIntSdExc,T_CircleMinIntSdExc}*/
+LocalExtrema      return(token::T_LocalExtrema); /*{LocalExtrema,T_LocalExtrema}*/
+
+
+gnuplot           return(token::T_gnuplot); /*{gnuplot,T_gnuplot}*/
+histo             return(token::T_histo); /*{histo,T_histo}*/
+cumhisto          return(token::T_cumhisto); /*{cumhisto,T_cumhisto}*/
+DisplayHisto      return(token::T_DisplayHisto); /*{DisplayHisto,T_DisplayHisto}*/
+
+GenRead           return(token::T_GenRead); /*{GenRead,T_GenRead}*/
+
+
+Matrix            return(token::T_Matrix); /*{Matrix,T_Matrix}*/
+Invert            return(token::T_Invert); /*{Invert,T_Invert}*/
+
+SaveStructuredGrid return(token::T_SaveStructuredGrid); /*{SaveStructuredGrid,T_SaveStructuredGrid}*/
 
 ParamWin          {
 //
 //============================== PARAMWIN options ====================
 //
-                  return(T_ParamWin);
+                  return(token::T_ParamWin);
 } /*{ParamWin,T_ParamWin}*/
-BeginBook         return(T_BeginBook); /*{BeginBook,T_BeginBook}*/
-EndBook           return(T_EndBook);   /*{EndBook,T_EndBook}*/
-AddPage           return(T_AddPage); /*{AddPage,T_AddPage}*/
-BeginPanel          return(T_BeginPanel); /*{BeginPanel,T_BeginPanel}*/
-EndPanel          return(T_EndPanel); /*{EndPanel,T_EndPanel}*/
-AddFloat          return(T_AddFloat); /*{AddFloat,T_AddFloat}*/
-AddInt            return(T_AddInt); /*{AddInt,T_AddInt}*/
-AddButton         return(T_AddButton); /*{AddButton,T_AddButton}*/
-AddBoolean        return(T_AddBoolean); /*{AddBoolean,T_AddBoolean}*/
-AddEnum           return(T_AddEnum); /*{AddEnum,T_AddEnum}*/
-AddEnumChoice     return(T_AddEnumChoice); /*{AddEnumChoice,T_AddEnumChoice}*/
-AddString         return(T_AddString); /*{AddString,T_AddString}*/
-AddFilename       return(T_AddFilename); /*{AddFilename,T_AddFilename}*/
-SetCallback       return(T_SetCallback); /*{SetCallback,T_SetCallback}*/
-SetDragCallback   return(T_SetDragCallback); /*{SetDragCallback,T_SetDragCallback}*/
-ShowSlider        return(T_ShowSlider); /*{ShowSlider,T_ShowSlider}*/
-CreateWin         return(T_CreateWin); /*{CreateWin,T_CreateWin}*/
-Display           return(T_Display); /*{Display,T_Display}*/
-BeginBox          return(T_BeginBox); /*{BeginBox,T_BeginBox}*/
-EndBox            return(T_EndBox); /*{EndBox,T_EndBox}*/
-BeginHorizontal   return(T_BeginHorizontal); /*{BeginHorizontal,T_BeginHorizontal}*/
-EndHorizontal     return(T_EndHorizontal); /*{EndHorizontal,T_EndHorizontal}*/
-redraw            return(T_redraw); /*{redraw,T_redraw}*/
+BeginBook         return(token::T_BeginBook); /*{BeginBook,T_BeginBook}*/
+EndBook           return(token::T_EndBook);   /*{EndBook,T_EndBook}*/
+AddPage           return(token::T_AddPage); /*{AddPage,T_AddPage}*/
+BeginPanel          return(token::T_BeginPanel); /*{BeginPanel,T_BeginPanel}*/
+EndPanel          return(token::T_EndPanel); /*{EndPanel,T_EndPanel}*/
+AddFloat          return(token::T_AddFloat); /*{AddFloat,T_AddFloat}*/
+AddInt            return(token::T_AddInt); /*{AddInt,T_AddInt}*/
+AddButton         return(token::T_AddButton); /*{AddButton,T_AddButton}*/
+AddBoolean        return(token::T_AddBoolean); /*{AddBoolean,T_AddBoolean}*/
+AddEnum           return(token::T_AddEnum); /*{AddEnum,T_AddEnum}*/
+AddEnumChoice     return(token::T_AddEnumChoice); /*{AddEnumChoice,T_AddEnumChoice}*/
+AddString         return(token::T_AddString); /*{AddString,T_AddString}*/
+AddFilename       return(token::T_AddFilename); /*{AddFilename,T_AddFilename}*/
+SetCallback       return(token::T_SetCallback); /*{SetCallback,T_SetCallback}*/
+SetDragCallback   return(token::T_SetDragCallback); /*{SetDragCallback,T_SetDragCallback}*/
+ShowSlider        return(token::T_ShowSlider); /*{ShowSlider,T_ShowSlider}*/
+CreateWin         return(token::T_CreateWin); /*{CreateWin,T_CreateWin}*/
+Display           return(token::T_Display); /*{Display,T_Display}*/
+BeginBox          return(token::T_BeginBox); /*{BeginBox,T_BeginBox}*/
+EndBox            return(token::T_EndBox); /*{EndBox,T_EndBox}*/
+BeginHorizontal   return(token::T_BeginHorizontal); /*{BeginHorizontal,T_BeginHorizontal}*/
+EndHorizontal     return(token::T_EndHorizontal); /*{EndHorizontal,T_EndHorizontal}*/
+redraw            return(token::T_redraw); /*{redraw,T_redraw}*/
 
-CreateFlatMesh    return(T_CreateFlatMesh);    /*{CreateFlatMesh,T_CreateFlatMesh}*/
-CreateVolume      return(T_CreateVolume);      /*{CreateVolume,T_CreateVolume}*/
-vtkCreateFlatMesh return(T_vtkCreateFlatMesh); /*{vtkCreateFlatMesh,T_vtkCreateFlatMesh}*/
-Altitude2Position return(T_Altitude2Position); /*{Altitude2Position,T_Altitude2Position}*/
-Temp2Altitudes    return(T_Temp2Altitudes);    /*{Temp2Altitudes,T_Temp2Altitudes}*/
-GeoCoordinates    return(T_GeoCoordinates);    /*{GeoCoordinates,T_GeoCoordinates}*/
-ElevateMesh       return(T_ElevateMesh);       /*{ElevateMesh,T_ElevateMesh}*/
-Set3DArrowParam   return(T_Set3DArrowParam); /*{Set3DArrowParam,T_Set3DArrowParam}*/
-CreateVectors     return(T_CreateVectors); /*{CreateVectors,T_CreateVectors}*/
-ComputeAltitudes  return(T_ComputeAltitudes); /*{ComputeAltitudes,T_ComputeAltitudes}*/
-ReadFlow          return(T_ReadFlow); /*{ReadFlow,T_ReadFlow}*/
-SetFluidNavFile   return(T_SetFluidNavFile); /*{SetFluidNavFile,T_SetFluidNavFile}*/
-DrawEarthCoord    return(T_DrawEarthCoord); /*{DrawEarthCoord,T_DrawEarthCoord}*/
+CreateFlatMesh    return(token::T_CreateFlatMesh);    /*{CreateFlatMesh,T_CreateFlatMesh}*/
+CreateVolume      return(token::T_CreateVolume);      /*{CreateVolume,T_CreateVolume}*/
+vtkCreateFlatMesh return(token::T_vtkCreateFlatMesh); /*{vtkCreateFlatMesh,T_vtkCreateFlatMesh}*/
+Altitude2Position return(token::T_Altitude2Position); /*{Altitude2Position,T_Altitude2Position}*/
+Temp2Altitudes    return(token::T_Temp2Altitudes);    /*{Temp2Altitudes,T_Temp2Altitudes}*/
+GeoCoordinates    return(token::T_GeoCoordinates);    /*{GeoCoordinates,T_GeoCoordinates}*/
+ElevateMesh       return(token::T_ElevateMesh);       /*{ElevateMesh,T_ElevateMesh}*/
+Set3DArrowParam   return(token::T_Set3DArrowParam); /*{Set3DArrowParam,T_Set3DArrowParam}*/
+CreateVectors     return(token::T_CreateVectors); /*{CreateVectors,T_CreateVectors}*/
+ComputeAltitudes  return(token::T_ComputeAltitudes); /*{ComputeAltitudes,T_ComputeAltitudes}*/
+ReadFlow          return(token::T_ReadFlow); /*{ReadFlow,T_ReadFlow}*/
+SetFluidNavFile   return(token::T_SetFluidNavFile); /*{SetFluidNavFile,T_SetFluidNavFile}*/
+DrawEarthCoord    return(token::T_DrawEarthCoord); /*{DrawEarthCoord,T_DrawEarthCoord}*/
 
-PaintCallback     return(T_PaintCallback); /*{PaintCallback,T_PaintCallback}*/
+PaintCallback     return(token::T_PaintCallback); /*{PaintCallback,T_PaintCallback}*/
 
-CreateEllipsoids  return(T_CreateEllipsoids); /*{CreateEllipsoids,T_CreateEllipsoids}*/
+CreateEllipsoids  return(token::T_CreateEllipsoids); /*{CreateEllipsoids,T_CreateEllipsoids}*/
 
-import_ami        return(T_import_ami);     /*{import_ami,T_import_ami}*/
+import_ami        return(token::T_import_ami);     /*{import_ami,T_import_ami}*/
 
-import_vtk        return(T_import_vtk);     /*{import_vtk,T_import_vtk}*/
-import_itk        return(T_import_itk);     /*{import_itk,T_import_itk}*/
-import_wii        return(T_import_wii);     /*{import_wii,T_import_wii}*/
-import_filters    return(T_import_filters); /*{import_filters,T_import_filters}*/
+import_vtk        return(token::T_import_vtk);     /*{import_vtk,T_import_vtk}*/
+import_itk        return(token::T_import_itk);     /*{import_itk,T_import_itk}*/
+import_wii        return(token::T_import_wii);     /*{import_wii,T_import_wii}*/
+import_filters    return(token::T_import_filters); /*{import_filters,T_import_filters}*/
 
-amiOFCorr2D       return(T_amiOFCorr2D);  /*{amiOFCorr2D,T_amiOFCorr2D}*/
-amiOFVar2D        return(T_amiOFVar2D);   /*{amiOFVar2D,T_amiOFVar2D}*/
+amiOFCorr2D       return(token::T_amiOFCorr2D);  /*{amiOFCorr2D,T_amiOFCorr2D}*/
+amiOFVar2D        return(token::T_amiOFVar2D);   /*{amiOFVar2D,T_amiOFVar2D}*/
 
-vtkDicomRead      return(T_vtkDicomRead); /*{vtkDicomRead,T_vtkDicomRead}*/
-vtkMINCRead       return(T_vtkMINCRead);  /*{vtkMINCRead,T_vtkMINCRead}*/
+vtkDicomRead      return(token::T_vtkDicomRead); /*{vtkDicomRead,T_vtkDicomRead}*/
+vtkMINCRead       return(token::T_vtkMINCRead);  /*{vtkMINCRead,T_vtkMINCRead}*/
 
-exists            return(T_exists);       /*{exists,T_exists}*/
+exists            return(token::T_exists);       /*{exists,T_exists}*/
 
-slice             return(T_slice);        /*{slice,T_slice}*/
+slice             return(token::T_slice);        /*{slice,T_slice}*/
 
-argc              return(T_argc);         /*{argc,T_argc}*/
-emptyargs         return(T_emptyargs);    /*{emptyargs,T_emptyargs}*/
+argc              return(token::T_argc);         /*{argc,T_argc}*/
+emptyargs         return(token::T_emptyargs);    /*{emptyargs,T_emptyargs}*/
 
 [0-9]+"."[0-9]+   {
 //
@@ -703,8 +711,8 @@ emptyargs         return(T_emptyargs);    /*{emptyargs,T_emptyargs}*/
 //
 //  setlocale(LC_NUMERIC,"C");
   setlocale(LC_NUMERIC, "C");
- yyiplval.adouble=atof(YYText());
-  return(NUMBER);
+  yylval->adouble=atof(YYText());
+  return(token::NUMBER);
 }
 
 
@@ -714,8 +722,8 @@ emptyargs         return(T_emptyargs);    /*{emptyargs,T_emptyargs}*/
 //
 //  setlocale(LC_NUMERIC,"C");
   setlocale(LC_NUMERIC, "C");
-  yyiplval.adouble=atof(YYText());
-  return(NUMBER);
+  yylval->adouble=atof(YYText());
+  return(token::NUMBER);
 }
 
 
@@ -737,17 +745,17 @@ emptyargs         return(T_emptyargs);    /*{emptyargs,T_emptyargs}*/
   // add the \0 character, why ???...
   cpp_string->append(1,'\0');
 
-  if((yyiplval.astring = new char[cpp_string->length()+1])==NULL)
-  yyiperror(E_MEM);
+  if((yylval->astring = new char[cpp_string->length()+1])==NULL)
+  LexerError(E_MEM);
   // first conversion, we keep char* for astring for now
-  strcpy(yyiplval.astring, cpp_string->c_str());
+  strcpy(yylval->astring, cpp_string->c_str());
   delete cpp_string;
   cpp_string = NULL;
-  return(ASTRING);
+  return(token::ASTRING);
 }
 
 <str>\n  {
-  yyiperror(E_UNTERM_STRING);
+  LexerError(E_UNTERM_STRING);
 }
 
 <str>\\n cpp_string->append(1,'\n');
@@ -771,8 +779,8 @@ emptyargs         return(T_emptyargs);    /*{emptyargs,T_emptyargs}*/
 
 
 "$#"  {
-  yyiplval.adouble=GB_argc-GB_num_arg_parsed;
-  return(NUMBER);
+  yylval->adouble=GB_argc-GB_num_arg_parsed;
+  return(token::NUMBER);
 }
 
 \$[0-9]   {
@@ -788,11 +796,11 @@ emptyargs         return(T_emptyargs);    /*{emptyargs,T_emptyargs}*/
   }
 
   // we use GB_argv[n+1] because the first two arguments are the program and the script file
-  if((yyiplval.astring = new char[strlen(GB_argv[pos])+1])==NULL)  yyiperror(E_MEM);
+  if((yylval->astring = new char[strlen(GB_argv[pos])+1])==NULL)  LexerError(E_MEM);
 
-  strcpy(yyiplval.astring,GB_argv[pos]);
+  strcpy(yylval->astring,GB_argv[pos]);
 
-  return(ASTRING);
+  return(token::ASTRING);
 
 }
 
@@ -801,8 +809,9 @@ emptyargs         return(T_emptyargs);    /*{emptyargs,T_emptyargs}*/
 //
   if (block_level==0) {
     ami_block = new AmiInstructionBlock();
-    ami_block->SetStartingLine(yyiplineno);
-    if (GB_debug )cerr << "Starting block at " << yyiplineno << endl;
+    ami_block->SetStartingLine(GB_driver.yyiplineno);
+    if (GB_debug )cerr << "Starting block at " <<  GB_driver.yyiplineno << endl;
+    if (GB_debug )cerr << "Starting block at " << *yylloc << endl;
     block_level++;
     BEGIN(block);
   }
@@ -823,7 +832,8 @@ emptyargs         return(T_emptyargs);    /*{emptyargs,T_emptyargs}*/
 }
 
 <block>\n {
-  yyiplineno++;
+  yylloc->lines(yyleng); yylloc->step();
+  GB_driver.yyiplineno++;
   ami_block->GetBody().append(YYText());
 }
 
@@ -858,12 +868,12 @@ emptyargs         return(T_emptyargs);    /*{emptyargs,T_emptyargs}*/
     yyiplval.astring[length+1]=YY_END_OF_BUFFER_CHAR;
     yyiplval.astring[length+2]=YY_END_OF_BUFFER_CHAR;
 */
-    yyiplval.ablock = ami_block;
+    yylval->ablock = ami_block;
     // cannot use smart pointers in union ...
     // needs to be freed after use ...
 
     //ami_block = AmiInstructionBlock_ptr();
-    return(ABLOCK);
+    return(token::ABLOCK);
   }
 }
 
@@ -892,7 +902,7 @@ emptyargs         return(T_emptyargs);    /*{emptyargs,T_emptyargs}*/
 
 
 <comment>\n {
-  //yyiplineno++;
+  //GB_driver.yyiplineno++;
 //  printf("end comment from %d \n",comment_caller);
   // use unput to accept the end of the command if any
   unput('\n');
@@ -910,9 +920,9 @@ local::([A-Za-z0-9_])*   {
   int context = Vars.GetCurrentContextNumber();
   string text(YYText());
   string varname = text.substr(7);
-  int result = checkvar(varname.c_str(),context);
+  yyip::Parser::token::yytokentype result = checkvar(yylval,varname.c_str(),context);
   // force next variable to be global
-  if (result==IDENTIFIER)
+  if (result==token::IDENTIFIER)
     Vars.SetNextVarContext(context);
   return result;
 }
@@ -923,9 +933,9 @@ global::([A-Za-z0-9_])*   {
 //
   string text(YYText());
   string varname = text.substr(8);
-  int result = checkvar(varname.c_str(),0);
+  yyip::Parser::token::yytokentype result = checkvar(yylval,varname.c_str(),0);
   // force next variable to be global
-  if (result==IDENTIFIER)
+  if (result==token::IDENTIFIER)
     Vars.SetNextVarContext(0);
   return result;
 }
@@ -935,22 +945,26 @@ global::([A-Za-z0-9_])*   {
 //
 //============================ Parse variable ====================
 //
-   return checkvar(YYText());
+   return checkvar(yylval,YYText());
 }
 
 
-[[:blank:]]       {}
+[[:blank:]]       {
+                    yylloc->step();
+                  }
 
 \\\n              {}
 
 \n                {
-                      return(END_INSTRUCTION);
+                     yylloc->lines(yyleng); yylloc->step();
+                     GB_driver.yyiplineno++;
+                     return(token::END_INSTRUCTION);
                   } /* \n,END_INSTRUCTION */
 
 .                 {
 
     std::string error_string =" lex error \t invalid characters ";
-    yyiperror(error_string.c_str());
+    LexerError(error_string.c_str());
 
   }
 
@@ -966,7 +980,11 @@ global::([A-Za-z0-9_])*   {
 //       checkvar()
 //--------------------------------------------------
 //
-int checkvar(const char* varname, int context)
+yyip::Parser::token::yytokentype checkvar(
+  yyip::Parser::semantic_type* yylval,
+  const char* varname, 
+  int context
+)
 //
 {
 
@@ -984,54 +1002,54 @@ int checkvar(const char* varname, int context)
   if  ((procedure_declaration!=2)&&
       (Vars.GetVar(varname,&var,context)))   {
 
-    yyiplval.variable = var;
-    switch(yyiplval.variable->Type()) {
-      case type_image:            return VAR_IMAGE;
+    yylval->variable = var;
+    switch(yylval->variable->Type()) {
+      case type_image:            return token::VAR_IMAGE;
         /*{$variable_image,VAR_IMAGE}*/
-      case type_imagedraw:        return VAR_IMAGEDRAW;
+      case type_imagedraw:        return token::VAR_IMAGEDRAW;
         /*{$variable_imagedraw,VAR_IMAGEDRAW}*/
-      case type_float:            return VAR_FLOAT;
+      case type_float:            return token::VAR_FLOAT;
         /*{$variable_float,VAR_FLOAT}*/
-      case type_int:              return VAR_INT;
+      case type_int:              return token::VAR_INT;
         /*{$variable_int,VAR_INT}*/
-      case type_uchar:            return VAR_UCHAR;
+      case type_uchar:            return token::VAR_UCHAR;
         /*{$variable_uchar,VAR_UCHAR}*/
-      case type_surface:          return VAR_SURFACE;
+      case type_surface:          return token::VAR_SURFACE;
         /*{$variable_surface,VAR_SURFACE}*/
-      case type_surfdraw:         return VAR_SURFDRAW;
+      case type_surfdraw:         return token::VAR_SURFDRAW;
         /*{$variable_surfdraw,VAR_SURFDRAW}*/
-      case type_file:             return VAR_FILE;
+      case type_file:             return token::VAR_FILE;
         /*{$variable_file,VAR_FILE}*/
-      case type_c_procedure:      return VAR_C_PROCEDURE;
+      case type_c_procedure:      return token::VAR_C_PROCEDURE;
         /*{$variable_c_procedure,VAR_C_PROCEDURE}*/
-      case type_c_image_function: return VAR_C_IMAGE_FUNCTION;
+      case type_c_image_function: return token::VAR_C_IMAGE_FUNCTION;
         /*{$variable_c_image_function,VAR_C_IMAGE_FUNCTION}*/
-      case type_c_function: return VAR_C_FUNCTION;
+      case type_c_function: return token::VAR_C_FUNCTION;
         /*{$variable_c_function,VAR_C_FUNCTION}*/
-      case type_ami_function:     return VAR_AMI_FUNCTION;
+      case type_ami_function:     return token::VAR_AMI_FUNCTION;
         /*{$variable_ami_function,VAR_AMI_FUNCTION}*/
-      case type_string:           return VAR_STRING;
+      case type_string:           return token::VAR_STRING;
         /*{$variable_string,VAR_STRING}*/
-      case type_paramwin:         return VAR_PARAMWIN;
+      case type_paramwin:         return token::VAR_PARAMWIN;
         /*{$variable_paramwin,VAR_PARAMWIN}*/
-      case type_matrix:           return VAR_MATRIX;
+      case type_matrix:           return token::VAR_MATRIX;
         /*{$variable_matrix,VAR_MATRIX}*/
-      case type_gltransform:      return VAR_GLTRANSFORM;
+      case type_gltransform:      return token::VAR_GLTRANSFORM;
         /*{$variable_gltransform,VAR_GLTRANSFORM}*/
       case type_array:       {
-         VarArray::ptr array =  *(VarArray::ptr*)yyiplval.variable->Pointer();
+         VarArray::ptr array =  *(VarArray::ptr*)yylval->variable->Pointer();
          switch(array->Type()) {
-            case type_surface:    return VAR_ARRAY_SURFACE;
+            case type_surface:    return token::VAR_ARRAY_SURFACE;
             /*{$variable_surface_array,VAR_ARRAY_SURFACE}*/
-            case type_image:      return VAR_ARRAY_IMAGE;
+            case type_image:      return token::VAR_ARRAY_IMAGE;
             /*{$variable_image_array,VAR_ARRAY_IMAGE}*/
            default:
-              err_print("Array type not available \n");
+              GB_driver.err_print("Array type not available \n");
          }
          break;
       }
       default:
-        err_print("Variable type still not available \n");
+        GB_driver.err_print("Variable type still not available \n");
     }
 
   }
@@ -1039,12 +1057,58 @@ int checkvar(const char* varname, int context)
   if (strlen(varname)+1>IDENT_MAX_SIZE)   {
     fprintf(stderr,"checkvar() identifier too long %s \n",varname);
   }
-  strcpy(yyiplval.ident,varname);
-  return(IDENTIFIER);
+  strcpy(yylval->ident,varname);
+  return(token::IDENTIFIER);
+}
+
+/*** Additional Code ***/
+
+namespace yyip {
+
+Scanner::Scanner(std::istream* in,
+     std::ostream* out)
+    : yyipFlexLexer(in, out)
+{
+}
+
+Scanner::~Scanner()
+{
+}
+
+void Scanner::set_debug(bool b)
+{
+    yy_flex_debug = b;
+}
+
 }
 
 
+/* This implementation of ExampleFlexLexer::yylex() is required to fill the
+ * vtable of the class ExampleFlexLexer. We define the scanner's main yylex
+ * function via YY_DECL to reside in the Scanner class instead. */
 
+#ifdef yylex
+#undef yylex
+#endif
+
+int yyipFlexLexer::yylex()
+{
+    std::cerr << "in yyipFlexLexer::yylex() !" << std::endl;
+    return 0;
+}
+
+/* When the scanner receives an end-of-file indication from YY_INPUT, it then
+ * checks the yywrap() function. If yywrap() returns false (zero), then it is
+ * assumed that the function has gone ahead and set up `yyin' to point to
+ * another input file, and scanning continues. If it returns true (non-zero),
+ * then the scanner terminates, returning 0 to its caller. */
+
+/*
+int yyFlexLexer::yywrap()
+{
+    return 1;
+}
+*/
 
 
 

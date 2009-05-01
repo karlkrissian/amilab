@@ -13,7 +13,7 @@
 #include "DessinImage.hpp"
 #include "fonctions.h"
 #include "math1.hpp"
-#include "myscan.h"
+//#include "myscan.h"
 #include "Erreurs.hpp"
 #include <iostream>
 
@@ -40,6 +40,9 @@
 #include "guicon.h"
 #endif
 
+#include "driver.h"
+
+
 Pile<NomMethode*> GB_pile_nom_methode((NomMethode*)NULL);
 unsigned char GB_AfficheWarning = false;
 unsigned char GB_AfficheErreur  = false;
@@ -49,6 +52,9 @@ unsigned char       GB_debug;
 unsigned char       GB_verbose;
 unsigned char       GB_nofile;
 
+
+yyip::Driver  GB_driver;
+VarContexts   Vars;
 
 MainFrame*    GB_main_wxFrame;
 wxApp*        GB_wxApp;
@@ -69,23 +75,6 @@ int        GB_num_arg_parsed;
 
 char program[80];
 unsigned char verbose;
-
- void init_gr_output();
- void gr_print(const char* st);
-// void close_gr_output();
-
- void init_err_output();
- void err_print(char* st);
-// void close_err_output();
-
- void init_res_output();
- void res_print(char* st);
-// void close_res_output();
-
- void init_cmdhistory();
- void ws_print(const char* st);
-// void close_cmdhistory();
-
 
 #include "xmtext.hpp"
 
@@ -254,12 +243,8 @@ bool MyApp::OnInit()
   cout << "GB_help_dir = " << GB_help_dir << endl;
   cout << "GB_scripts_dir = " << GB_scripts_dir << endl;
 
-  init_gr_output();
-  init_err_output();
-  init_res_output();
-  init_cmdhistory();
 
-  ws_print(cmd_line);
+  GB_driver.ws_print(cmd_line);
 
 
 //  printf("MyApp::OnInit()\n");
@@ -286,19 +271,29 @@ bool MyApp::OnInit()
 //  frame->Show(true);
 //  frame->Update();
 
+  //GB_driver.trace_parsing=true;
+  //GB_driver.trace_scanning=true;
+
   if (GB_main_wxFrame->GetConsole()!=NULL) {
     GB_main_wxFrame->GetConsole()->AddPrompt(false);
-    yyiplineno=1;
-    GB_current_file="Command line prompt";
+    GB_driver.yyiplineno=1;
+    GB_driver.current_file="Command line prompt";
 
     Si argc>GB_num_arg_parsed  Alors
       try {
-        // run the file
-        yyip_switch_to_file(wxString(argv[GB_num_arg_parsed]).mb_str(wxConvUTF8));
+        wxString input_file(argv[GB_num_arg_parsed]);
         GB_num_arg_parsed++;
-        yyip_parse();
-        yyip_popup_buffer();
+
+        // run the file
+        /*
+        GB_driver.yyip_switch_to_file(input_file.mb_str(wxConvUTF8));
+        GB_driver.yyip_parse();
+        GB_driver.yyip_popup_buffer();
+        */
+        GB_driver.parse_file(input_file.mb_str(wxConvUTF8));
+
         GB_main_wxFrame->GetConsole()->ProcessReturn();
+
       } catch (char * str ) {
         cerr << "Error catched ! " << str << endl;
       }

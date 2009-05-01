@@ -17,10 +17,10 @@
 #ifndef YY_DECL
 
 #define	YY_DECL						\
-    example::Parser::token_type				\
-    example::Scanner::lex(				\
-	example::Parser::semantic_type* yylval,		\
-	example::Parser::location_type* yylloc		\
+    yyip::Parser::token_type				\
+    yyip::Scanner::lex(				\
+	yyip::Parser::semantic_type* yylval,		\
+	yyip::Parser::location_type* yylloc		\
     )
 #endif
 
@@ -32,7 +32,10 @@
 
 #include "improcess_bison.tab.hpp"
 
-namespace example {
+//#include "parser.h"
+
+
+namespace yyip {
 
 /** Scanner is a derived class to add some extra function to the scanner
  * class. Flex itself creates a class named yyFlexLexer, which is renamed using
@@ -63,6 +66,6 @@ public:
     void set_debug(bool b);
 };
 
-} // namespace example
+} // namespace yyip
 
 #endif // EXAMPLE_SCANNER_H

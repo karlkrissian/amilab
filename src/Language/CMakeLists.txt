@@ -38,7 +38,7 @@ include_directories (
 INCLUDE( ${VTK_USE_FILE} )
 INCLUDE(${wxWidgets_USE_FILE})
 
-BISON_TARGET_option_extraopts("-t -p yyip -dv")
+BISON_TARGET_option_extraopts("-t  -dv")
 
 BISON_TARGET(improcessbison
   ${AMILAB_SOURCE_DIR}/Language/improcess_bison.ypp

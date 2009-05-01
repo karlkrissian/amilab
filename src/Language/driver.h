@@ -6,7 +6,7 @@
   and http://ioctl.org/jan/bison/
 */
 // $Id: driver.h 17 2007-08-19 18:51:39Z tb $ 	
-/** \file driver.h Declaration of the example::Driver class. */
+/** \file driver.h Declaration of the yyip::Driver class. */
 
 #ifndef EXAMPLE_DRIVER_H
 #define EXAMPLE_DRIVER_H
@@ -15,13 +15,17 @@
 #include <vector>
 
 #include "ami_function.h"
+#include "Duree.hpp"
+#include "fonctions.h"
+
+struct yy_buffer_state;
 
 // forward declaration
 //class CalcContext;
 
 /** The example namespace is used to encapsulate the three parser classes
  * example::Parser, example::Scanner and example::Driver */
-namespace example {
+namespace yyip {
 
 /** The Driver class brings together all components. It creates an instance of
  * the Parser and Scanner classes and connects them. Then the input stream is
@@ -32,6 +36,47 @@ namespace example {
 class Driver
 {
 public:
+
+    ImageStack        im_stack;
+    SurfStack         surf_stack;
+    MatrixStack       matrix_stack;
+    GLTransformStack  gltransf_stack;
+    Duree             IP_time;
+
+    // Dealing with output files
+    FILE_ptr gr_output; // grammar
+    std::ostream* err_output; // errors
+    std::ostream* res_output; // result
+
+    FILE_ptr       cmdhistory;
+    std::string cmdhistory_filename;
+
+    void init_gr_output();
+    void gr_print(const char* st);
+
+    void init_err_output();
+    void err_print(const char* st);
+    void close_err_output(void);
+
+    void init_res_output();
+    void res_print(const char* st);
+    void close_res_output();
+
+    void init_cmdhistory();
+    void ws_print(const char* st);
+    void close_cmdhistory();
+
+    /// kept for transition from C flex-bison code
+    /// should be removed later
+    int yyiplineno;
+    std::string current_file;
+
+    /// kept for transition from C flex-bison code
+    /// should be removed later
+    int yy_num_buf;
+
+public:
+
     /// construct a new parser driver context
     Driver();
 
@@ -70,14 +115,23 @@ public:
     /** Switch the parser to an instruction block
     * @param b instruction block
     */
-    void yyip_switch_to_block( const AmiInstructionBlock_ptr& b );
+    bool parse_block( const AmiInstructionBlock_ptr& b );
 
     /** call to a language function
     * @param f smart pointer to the function
     */
     void yyip_call_function( const AMIFunction_ptr& f);
 
-    // To demonstrate pure handling of parse errors, instead of
+    /** switching to a script file
+    * @param filename 
+    */
+    bool parse_script(  const char* filename);
+
+    void print_buf_info(yy_buffer_state* b);
+
+    void yyiperror(const char *s);
+
+   // To demonstrate pure handling of parse errors, instead of
     // simply dumping them on the standard error output, we will pass
     // them to the driver using the following two member functions.
 
@@ -98,6 +152,6 @@ public:
     //class CalcContext& calc;
 };
 
-} // namespace example
+} // namespace yyip
 
 #endif // EXAMPLE_DRIVER_H
