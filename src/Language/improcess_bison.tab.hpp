@@ -998,7 +998,7 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 446 "/home/karl/projects/Sourceforge/amilab/src/Language/improcess_bison.ypp"
+#line 446 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
 {
   char                  ident[IDENT_MAX_SIZE];
   Variable*             variable;
@@ -1013,7 +1013,7 @@ typedef union YYSTYPE
   ImageExtent*          imageextent;
 }
 /* Line 1489 of yacc.c.  */
-#line 1017 "/home/karl/projects/Sourceforge/amilab/src/Language/improcess_bison.tab.hpp"
+#line 1017 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.hpp"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

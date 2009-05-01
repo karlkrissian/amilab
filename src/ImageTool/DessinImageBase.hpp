@@ -1095,7 +1095,7 @@ EnLigne unsigned char DessinImageBase::IntensiteBuffer( float valeur)
         Si Param._I._type_courbe == TYPE_COURBE_PLATEAU AlorsFait return 255;
         return  (unsigned char) ( _rapport_intensite * ( valeur   - _intensite_entier_min ) );
 
-      default: fprintf(stderr,"Erreur \t dans switch, valeur non g�� \n");
+      default: fprintf(stderr,"Error \t in switch, type not available \n");
 
     FinSelonQue
 
@@ -1143,7 +1143,7 @@ EnLigne unsigned char DessinImageBase::LookUpTable( const float& valeur,
         Si Param._I._type_courbe == TYPE_COURBE_PLATEAU AlorsFait return 255;
         return  (unsigned char) ( _rapport_intensite * ( valeur   - _intensite_entier_min ) );
 
-      default: fprintf(stderr,"Erreur \t dans switch, valeur non g�� \n");
+      default: fprintf(stderr,"Error \t in switch, type not available \n");
 
     FinSelonQue
 

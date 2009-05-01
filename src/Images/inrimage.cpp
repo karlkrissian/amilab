@@ -577,7 +577,11 @@ unsigned char InrImage :: ReadVTKImage( ) throw (ErreurLecture)
      switch (_vdim) {
        case 1: _format = WT_UNSIGNED_CHAR; break;
        case 3: _format = WT_RGB; break;
-       case 4: _format = WT_RGB; break;
+       case 4: 
+         _format = WT_RGBA; 
+         //_format = WT_RGB; 
+         //_vdim = 3; 
+       break;
        default: fprintf(stderr,"InrImage::ReadVTKImage non-scalar uchar vdim!=3 non available %d \n", _vdim);
      }
     FinValeur
@@ -733,14 +737,15 @@ unsigned char InrImage :: Lit( ) throw (ErreurLecture)
   }
 #endif // USE_MAGICK
 
+  // try with the vtk image reader factory
+  if (!res) {
+    cout << "Trying reading with VTK image factory" << endl;  
+    res = ReadVTKImage();
+  }
+
   if (!res) {
     printf("Trying reading with ReadVTK");  
     res = ReadVTK();
-  }
-  // try with the vtk image reader factory
-  if (!res) {
-    printf("Trying reading with VTK image factory");  
-    res = ReadVTKImage();
   }
 
   Si !res Alors
@@ -1156,6 +1161,7 @@ unsigned char InrImage :: InitPositions( )
 
   SelonQue (WORDTYPE) _format Vaut
 
+    Valeur WT_RGBA   : 
     Valeur WT_UNSIGNED_CHAR   : 
       _positions_UNSIGNED_CHAR = new FORMAT_UNSIGNED_CHAR**[_tz];
       Pour( z, 0, _tz-1)
@@ -1282,6 +1288,7 @@ unsigned char InrImage :: EffacePositions( )
 
   SelonQue (WORDTYPE) _format Vaut
 
+    Valeur WT_RGBA: 
     Valeur WT_UNSIGNED_CHAR: 
        Pour(z,0,_tz-1) delete [] _positions_UNSIGNED_CHAR[z];FinPour
        delete [] _positions_UNSIGNED_CHAR;
@@ -1871,7 +1878,11 @@ unsigned char InrImage ::  AMIFromWT(int vdim, WORDTYPE type, amimage* amim)
 //                                   ---------
 {
 
-    amim->SetType(AMI_SCALAR); 
+    if (vdim==1) 
+      amim->SetType(AMI_SCALAR); 
+    else
+      amim->SetType(AMI_VECTOR); 
+
     switch (type) {
       case WT_UNSIGNED_CHAR :   amim->SetRepres(AMI_UNSIGNED_CHAR);     return 1;
       case WT_UNSIGNED_SHORT:   amim->SetRepres(AMI_UNSIGNED_SHORT);    return 1;
@@ -1886,11 +1897,16 @@ unsigned char InrImage ::  AMIFromWT(int vdim, WORDTYPE type, amimage* amim)
       amim->SetType(AMI_VECTOR); 
       amim->SetVDim(vdim);
     return 1;
+      case WT_RGBA          : 
+        amim->SetRepres(AMI_UNSIGNED_CHAR);   
+        amim->SetType(AMI_VECTOR); 
+        amim->SetVDim(vdim);
+        return 1;
       case WT_RGB           : 
-    amim->SetRepres(AMI_UNSIGNED_CHAR);   
-    amim->SetType(AMI_VECTOR); 
-    amim->SetVDim(3);
-    return 1;
+        amim->SetRepres(AMI_UNSIGNED_CHAR);   
+        amim->SetType(AMI_VECTOR); 
+        amim->SetVDim(3);
+        return 1;
       default: 
       fprintf(stderr,"repres=%d Format not available \n",
           amim->GetRepres());
@@ -2095,7 +2111,7 @@ void InrImage::InitImage( double* val, int size)
 
 
 //----------------------------------------------------------------
-char* InrImage :: FormatName()
+const string InrImage :: FormatName()
 //
 {
 
@@ -2107,7 +2123,8 @@ char* InrImage :: FormatName()
     Valeur WT_UNSIGNED_SHORT: return "UNSIGNED SHORT";
     Valeur WT_SIGNED_SHORT  : return "SIGNED SHORT";  
     Valeur WT_SIGNED_INT    : return "SIGNED INT";    
-    Valeur WT_RGB           : return "RGB";           
+    Valeur WT_RGB           : return "RGB";       
+    Valeur WT_RGBA          : return "RGBA";
     Valeur WT_FLOAT_VECTOR  : return "FLOAT_VECTOR";  
 
     Defaut: return "UNKNOWN";
@@ -2130,35 +2147,36 @@ void InrImage :: InitBuffer( int pos )
   SelonQue (WORDTYPE) _format Vaut
 
     Valeur WT_DOUBLE:
-      _buffer_DOUBLE          = (FORMAT_DOUBLE*)         this->GetData() + pos;  
+      _buffer_DOUBLE          = (FORMAT_DOUBLE*)         this->GetData() + _vdim*pos;  
     FinValeur
 
     Valeur WT_FLOAT:
-      _buffer_FLOAT           = (FORMAT_FLOAT*)          this->GetData() + pos;  
+      _buffer_FLOAT           = (FORMAT_FLOAT*)          this->GetData() + _vdim*pos;  
     FinValeur
 
+    Valeur WT_RGBA:
     Valeur WT_UNSIGNED_CHAR:
-      _buffer_UNSIGNED_CHAR   = (FORMAT_UNSIGNED_CHAR*)  this->GetData() + pos;  
+      _buffer_UNSIGNED_CHAR   = (FORMAT_UNSIGNED_CHAR*)  this->GetData() + _vdim*pos;  
     FinValeur
 
     Valeur WT_UNSIGNED_SHORT:
-      _buffer_UNSIGNED_SHORT  = (FORMAT_UNSIGNED_SHORT*) this->GetData() + pos;  
+      _buffer_UNSIGNED_SHORT  = (FORMAT_UNSIGNED_SHORT*) this->GetData() + _vdim*pos;  
     FinValeur
 
     Valeur WT_SIGNED_SHORT:
-      _buffer_SIGNED_SHORT    = (FORMAT_SIGNED_SHORT*)  this->GetData() + pos;  
+      _buffer_SIGNED_SHORT    = (FORMAT_SIGNED_SHORT*)  this->GetData() + _vdim*pos;  
     FinValeur
 
     Valeur WT_UNSIGNED_INT:
-      _buffer_UNSIGNED_INT      = (FORMAT_UNSIGNED_INT*)    this->GetData() + pos;  
+      _buffer_UNSIGNED_INT      = (FORMAT_UNSIGNED_INT*)    this->GetData() + _vdim*pos;  
     FinValeur
 
     Valeur WT_SIGNED_INT:
-      _buffer_SIGNED_INT      = (FORMAT_SIGNED_INT*)    this->GetData() + pos;  
+      _buffer_SIGNED_INT      = (FORMAT_SIGNED_INT*)    this->GetData() + _vdim*pos;  
     FinValeur
 
     Valeur WT_RGB:
-      _buffer_RGB             = (FORMAT_UNSIGNED_CHAR*) this->GetData() + 3*pos;  
+      _buffer_RGB             = (FORMAT_UNSIGNED_CHAR*) this->GetData() + _vdim*pos;  
     FinValeur
 
     Valeur WT_FLOAT_VECTOR:

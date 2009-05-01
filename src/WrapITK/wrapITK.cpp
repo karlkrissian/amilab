@@ -274,7 +274,7 @@ InrImage* itkIsoContourDist(ParamList* p)
           far value (def:10)\n\
       ";
     
-  std::string*  filename_param = NULL;
+  //std::string*  filename_param = NULL;
   InrImage* input = NULL;
   float     threshold = 0;
   float     farvalue = 10;

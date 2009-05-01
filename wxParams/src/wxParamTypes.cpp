@@ -1122,7 +1122,7 @@ void wxBitmapButtonParameter :: FixeCouleurCaracteres( Pixel couleur)
 
 wxLabelParameter::wxLabelParameter( wxWindow* parent,
                                     const char* label,
-                                    char* value,
+                                    const char* value,
                                     type_label type): wxBoxSizer(wxHORIZONTAL)
 {
   
@@ -1171,7 +1171,7 @@ wxLabelParameter::~wxLabelParameter()
   */
   }
 
-void wxLabelParameter::SetValue( char* value) {
+void wxLabelParameter::SetValue( const char* value) {
   _label_value = value;
   switch ( _type ) {
     case LabelLabel: {

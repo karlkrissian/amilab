@@ -638,8 +638,8 @@ public:
     //            -------
 
     ///
-    char*    FormatName();
-    //            ----------
+    const string    FormatName();
+    //               ----------
 
     //
     const WORDTYPE& GetFormat() const { return _format;}
@@ -653,7 +653,9 @@ public:
         Valeur WT_FLOAT_VECTOR:   return false;
         Valeur WT_DOUBLE:         return (_vdim==1);
         Valeur WT_FLOAT:          return (_vdim==1);
-        Valeur WT_UNSIGNED_CHAR:  return (_vdim==1);
+        Valeur WT_RGBA:  
+        Valeur WT_UNSIGNED_CHAR:  
+          return (_vdim==1);
         Valeur WT_UNSIGNED_SHORT: return (_vdim==1);
         Valeur WT_SIGNED_SHORT:   return (_vdim==1);
         Valeur WT_UNSIGNED_INT:   return (_vdim==1);
@@ -670,6 +672,7 @@ public:
       SelonQue (WORDTYPE) _format Vaut
 
         Valeur WT_RGB:
+        Valeur WT_RGBA:
         Valeur WT_FLOAT_VECTOR:   return true;
 
         Valeur WT_DOUBLE:
@@ -836,6 +839,7 @@ public:
         _buffer_FLOAT           = (_positions_FLOAT[z][y]          + _vdim*x); 
       FinValeur
 
+      Valeur WT_RGBA:   
       Valeur WT_UNSIGNED_CHAR:   
         _buffer_UNSIGNED_CHAR   = (_positions_UNSIGNED_CHAR[z][y]  + _vdim*x); 
       FinValeur
@@ -878,7 +882,10 @@ public:
         Valeur WT_FLOAT_VECTOR:   return (void*) _buffer_FLOAT_VECTOR;  
         Valeur WT_DOUBLE:         return (void*) _buffer_DOUBLE;    
         Valeur WT_FLOAT:          return (void*) _buffer_FLOAT;    
+
+        Valeur WT_RGBA:
         Valeur WT_UNSIGNED_CHAR:  return (void*) _buffer_UNSIGNED_CHAR;
+
         Valeur WT_UNSIGNED_SHORT: return (void*) _buffer_UNSIGNED_SHORT;
         Valeur WT_SIGNED_SHORT:   return (void*) _buffer_SIGNED_SHORT;
         Valeur WT_UNSIGNED_INT:     return (void*) _buffer_UNSIGNED_INT;
@@ -908,7 +915,10 @@ public:
         Valeur WT_FLOAT_VECTOR:   _buffer_FLOAT_VECTOR   += _vdim*inc;  FinValeur
         Valeur WT_DOUBLE:         _buffer_DOUBLE         += _vdim*inc;    FinValeur
         Valeur WT_FLOAT:          _buffer_FLOAT          += _vdim*inc;    FinValeur
+
+        Valeur WT_RGBA:
         Valeur WT_UNSIGNED_CHAR:  _buffer_UNSIGNED_CHAR  += _vdim*inc;    FinValeur
+
         Valeur WT_UNSIGNED_SHORT: _buffer_UNSIGNED_SHORT += _vdim*inc;    FinValeur
         Valeur WT_SIGNED_SHORT:   _buffer_SIGNED_SHORT   += _vdim*inc;    FinValeur
         Valeur WT_UNSIGNED_INT:     _buffer_UNSIGNED_INT     += _vdim*inc;    FinValeur
@@ -933,7 +943,9 @@ public:
         Valeur WT_FLOAT_VECTOR:   _buffer_FLOAT_VECTOR   += _vdim;  FinValeur
         Valeur WT_DOUBLE:         _buffer_DOUBLE         += _vdim;    FinValeur
         Valeur WT_FLOAT:          _buffer_FLOAT          += _vdim;    FinValeur
-        Valeur WT_UNSIGNED_CHAR:  _buffer_UNSIGNED_CHAR  += _vdim;    FinValeur
+        Valeur WT_RGBA:
+        Valeur WT_UNSIGNED_CHAR:
+          _buffer_UNSIGNED_CHAR  += _vdim;    FinValeur
         Valeur WT_UNSIGNED_SHORT: _buffer_UNSIGNED_SHORT += _vdim;    FinValeur
         Valeur WT_SIGNED_SHORT:   _buffer_SIGNED_SHORT   += _vdim;    FinValeur
         Valeur WT_UNSIGNED_INT:     _buffer_UNSIGNED_INT += _vdim;    FinValeur
@@ -979,7 +991,9 @@ public:
       SelonQue (WORDTYPE) _format Vaut
         Valeur WT_DOUBLE:         return (double) *_buffer_DOUBLE;
         Valeur WT_FLOAT:          return (double) *_buffer_FLOAT;
-        Valeur WT_UNSIGNED_CHAR:  return (double) *_buffer_UNSIGNED_CHAR;
+        Valeur WT_RGBA:  
+        Valeur WT_UNSIGNED_CHAR:  
+          return (double) *_buffer_UNSIGNED_CHAR;
         Valeur WT_UNSIGNED_SHORT: return (double) *_buffer_UNSIGNED_SHORT;
         Valeur WT_SIGNED_SHORT:   return (double) *_buffer_SIGNED_SHORT;
         Valeur WT_UNSIGNED_INT:   return (double) *_buffer_UNSIGNED_INT;
@@ -1035,7 +1049,11 @@ public:
         Valeur WT_FLOAT_VECTOR:   return (double) _buffer_FLOAT_VECTOR[i];
         Valeur WT_FLOAT:          return  _buffer_FLOAT[i];
         Valeur WT_DOUBLE:         return  _buffer_DOUBLE[i];
-        Valeur WT_UNSIGNED_CHAR:  return  _buffer_UNSIGNED_CHAR[i];
+
+        Valeur WT_RGBA:  
+        Valeur WT_UNSIGNED_CHAR:  
+          return  _buffer_UNSIGNED_CHAR[i];
+
         Valeur WT_SIGNED_SHORT:   return  _buffer_SIGNED_SHORT[i];
         Valeur WT_SIGNED_INT:     return  _buffer_SIGNED_INT[i];
         Valeur WT_UNSIGNED_SHORT: return  _buffer_UNSIGNED_SHORT[i];
@@ -1093,6 +1111,7 @@ public:
           *_buffer_FLOAT          = (FORMAT_FLOAT)          val;
         FinValeur
 
+        Valeur WT_RGBA:
         Valeur WT_UNSIGNED_CHAR:
           *_buffer_UNSIGNED_CHAR  = (FORMAT_UNSIGNED_CHAR)  (val+0.05);
         FinValeur
@@ -1190,6 +1209,7 @@ public:
           _buffer_FLOAT[coord]   = (FORMAT_FLOAT)    val;
        FinValeur
 
+       Valeur WT_RGBA: 
        Valeur WT_UNSIGNED_CHAR: 
           _buffer_UNSIGNED_CHAR[coord]   = (FORMAT_UNSIGNED_CHAR)    (val+0.05);
        FinValeur
@@ -1400,6 +1420,7 @@ public:
         Valeur WT_FLOAT_VECTOR:
           return (double)(_positions_FLOAT_VECTOR [z][y][_vdim*x+coord]);
 
+        Valeur WT_RGBA:
         Valeur WT_UNSIGNED_CHAR:
           return (double)(_positions_UNSIGNED_CHAR [z][y][_vdim*x+coord]);
 
@@ -1985,6 +2006,7 @@ inline void InrImage :: MinMax( float* min, float* max)
     FinValeur
 
     Valeur WT_RGB:
+    Valeur WT_RGBA:
 
       *min = 0;
       *max = 255;

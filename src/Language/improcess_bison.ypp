@@ -5390,7 +5390,7 @@ postfix_expr
         im=*(InrImage::ptr*) $1->Pointer();
         sprintf(tmp_string," format=%s  dim=(%d,%d,%d)x%d  vox=(%f,%f,%f) \
   translation =(%f,%f,%f) \n",
-            im->FormatName(),
+            im->FormatName().c_str(),
             im->_tx,
             im->_ty,
             im->_tz,
@@ -6462,7 +6462,7 @@ image:
      else
        amim->endianness = LITTLE_END;
 
-         im->AMIFromWT(1,inr_format,amim);
+     im->AMIFromWT(1,inr_format,amim);
      amim->datafile    = AMI_DATAEXT;
      amim->file_format = file_format;
      delete [] file_format;
@@ -6520,7 +6520,7 @@ image:
      else
        amim->endianness = LITTLE_END;
 
-         im->AMIFromWT(1,inr_format,amim);
+     im->AMIFromWT(vdim,inr_format,amim);
      amim->datafile    = AMI_DATAEXT;
      amim->file_format = file_format;
      delete [] file_format;
@@ -6727,9 +6727,7 @@ image:
 
          SelonQue im1->_format Vaut
           Valeur WT_RGB:
-             im = new InrImage(WT_UNSIGNED_CHAR,1,imname,im1.get());
-          FinValeur
-
+          Valeur WT_RGBA:
           Valeur WT_UNSIGNED_CHAR:
              im = new InrImage(WT_UNSIGNED_CHAR,1,imname,im1.get());
           FinValeur

@@ -21,12 +21,15 @@
 
 using namespace boost;
 
+extern unsigned char GB_debug;
+
 template<class T>
 class vtk_deleter
 {
   public: 
     void operator()(T * p) 
     { 
+      if (GB_debug) cerr << "vtk_deleter::()" << endl;
       p->Delete(); 
     }  
 };
@@ -38,6 +41,7 @@ class vtk_new
   public: 
     shared_ptr<T> operator() ()
     { 
+      if (GB_debug) cerr << "vtk_new::()" << endl;
       shared_ptr<T> res =  shared_ptr<T>(
         (T*)T::New(),
         vtk_deleter<T>() ); 

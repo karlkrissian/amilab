@@ -60,10 +60,10 @@ Chaine RemovePath(const Chaine& ch)
 
 
 
-unsigned char CheckEndString( char* st1, char* end)
+unsigned char CheckEndString( char* st1, const std::string end)
 {
   int l1 = strlen(st1);
-  int l2 = strlen(end);
+  int l2 = end.length();
   int i,j;
 
   if (l2>l1) return false;

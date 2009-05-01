@@ -2169,7 +2169,8 @@ void DessinImage::CreeParametresInfo()
 
   //----- Nom du fichier
   _param_image_info->AddLabel( &_id_info_format, "Format",
-                    _image->FormatName(), LabelTexte); 
+                    _image->FormatName().c_str(),
+                    LabelTexte); 
 
   //----- Dimensions
   sprintf(texte," (%4d, %4d, %4d) ",

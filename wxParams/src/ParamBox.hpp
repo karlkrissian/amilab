@@ -383,7 +383,7 @@ public:
 /** @name Type Label */
 //@{
   ///
-  unsigned char AddLabel( int* id, const char* libelle, char* contenu, 
+  unsigned char AddLabel( int* id, const char* libelle, const char* contenu, 
   //      -----------
                type_label type=LabelLabel);
 //@}

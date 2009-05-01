@@ -30,7 +30,7 @@ extern unsigned char      GB_verbose;
 extern wxApp*    GB_wxApp;
 
 
-static char* glErrorString( GLenum err)
+static const std::string glErrorString( GLenum err)
 {
   switch(err) {
   case GL_NO_ERROR: return "GL_NO_ERROR";
@@ -1114,7 +1114,7 @@ void ami_wxGLCanvas::InitProprietes( )
         GLenum error;
         while((error = glGetError()) != GL_NO_ERROR) {
             fprintf(stderr, "GL error: %s\n",
-            glErrorString(error));
+            glErrorString(error).c_str());
             if (GB_debug) out << "!!! GL error " << glErrorString(error) << endl;
         }
     }
@@ -1129,7 +1129,7 @@ void ami_wxGLCanvas::InitProprietes( )
         GLenum error;
         while((error = glGetError()) != GL_NO_ERROR) {
             fprintf(stderr, "GL error: %s\n",
-            glErrorString(error));
+            glErrorString(error).c_str());
             if (GB_debug) out << "!!! GL error " << glErrorString(error) << endl;
         }
     }
@@ -1149,7 +1149,7 @@ void ami_wxGLCanvas::InitProprietes( )
         GLenum error;
         while((error = glGetError()) != GL_NO_ERROR) {
             fprintf(stderr, "GL error: %s\n",
-            glErrorString(error));
+            glErrorString(error).c_str());
             if (GB_debug) out << "!!! GL error " << glErrorString(error) << endl;
         }
     }
@@ -1302,7 +1302,7 @@ void ami_wxGLCanvas::DisplayObject(GLObject::ptr& obj)
       { // for help debugging, report any OpenGL errors that occur per frame
         GLenum error;
         while((error = glGetError()) != GL_NO_ERROR) {
-           fprintf(stderr, "GL error: %s\n",glErrorString(error));
+           fprintf(stderr, "GL error: %s\n",glErrorString(error).c_str());
            if (GB_debug) out << "!!! GL error " << glErrorString(error) << endl;
 
         }
@@ -1650,7 +1650,7 @@ if (!_initialized) return;
        GLenum error;
        while((error = glGetError()) != GL_NO_ERROR)
            fprintf(stderr, "GL error: %s\n",
-           glErrorString(error));
+           glErrorString(error).c_str());
   }
 
   Si GB_debug AlorsFait fprintf(stderr,"ami_wxGLCanvas::Paint() Draw comparison surf \n");
@@ -1867,7 +1867,7 @@ void ami_wxGLCanvas::InitGL()
         GLenum error;
         while((error = glGetError()) != GL_NO_ERROR) {
             fprintf(stderr, "Constructeur GL error: %s\n",
-            glErrorString(error));
+            glErrorString(error).c_str());
             if (GB_debug) out << "!!! GL error " << glErrorString(error) << endl;
         }
     }

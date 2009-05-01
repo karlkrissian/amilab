@@ -732,12 +732,12 @@ class wxLabelParameter: public wxBoxSizer, public wxGenericWidget
 
   public:
   
-  wxLabelParameter( wxWindow* parent, const char* label, char* value, type_label type=LabelLabel );
+  wxLabelParameter( wxWindow* parent, const char* label, const char* value, type_label type=LabelLabel );
   
   ~wxLabelParameter();
   
   ///
-  void SetValue( char* value);
+  void SetValue( const char* value);
 
 }; // wxLabelParameter
 

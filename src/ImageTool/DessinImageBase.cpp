@@ -481,7 +481,8 @@ void DessinImageBase::UpdateStatusIntensity( int x, int y, int z)
 
   string intensity_string;
 
-  if (_image->_format == WT_RGB) {
+  if ((_image->_format == WT_RGB)||
+      (_image->_format == WT_RGBA)) {
     intensity_string = str(format("%1% %2% %3%")
            % (int)(*_image)(x,y,z,0)
            % (int)(*_image)(x,y,z,1)
@@ -1918,7 +1919,10 @@ void DessinImageBase :: DrawColorBar( )
 //                      ------------
 {
   Si Non(Param._show_colorbar) AlorsFait return;
+
   Si _image->_format == WT_RGB AlorsFait return;
+  Si _image->_format == WT_RGBA AlorsFait return;
+
   if (Param._type_coupe == TYPE_COUPES) return;
 
     int i;
@@ -2180,7 +2184,9 @@ void DessinImageBase::DrawSlice( int slice_id )
     {
       px1=px+vsx; // add epsilon ??
 
-      Si image_format != WT_RGB Alors
+      Si (image_format != WT_RGB)&&
+         (image_format != WT_RGBA)
+      Alors
         couleur = colors[ LookUpTable(image->ValeurBuffer(),
                           image_format) ];
       Sinon
@@ -2292,7 +2298,9 @@ void DessinImageBase::DessinePlanZ( )
       {
       px1=px+_size_x; // add epsilon ??
 
-      Si image_format != WT_RGB Alors
+      Si (image_format != WT_RGB)&&
+         (image_format != WT_RGBA)
+      Alors
         couleur = colors[ LookUpTable(image->ValeurBuffer(),
                           image_format) ];
       Sinon
@@ -2373,7 +2381,9 @@ void DessinImageBase :: DessinePlanY( )
 
       px1 = px+_size_x;
 
-      Si _image->_format != WT_RGB Alors
+      Si (_image->GetFormat() != WT_RGB)&&
+         (_image->GetFormat() != WT_RGBA)
+      Alors
         couleur = _tab_intensite_couleur[ IntensiteBuffer() ];
       Sinon
         couleur.Set( 
@@ -2449,7 +2459,9 @@ void DessinImageBase :: DessinePlanX( )
 
       py1 = py+_size_y;
 
-      Si _image->_format != WT_RGB Alors
+      Si (_image->_format != WT_RGB)&&
+          (_image->_format != WT_RGBA)
+     Alors
         couleur = _tab_intensite_couleur[ IntensiteBuffer() ];
       Sinon
         couleur = ClasseCouleur( 
@@ -2549,7 +2561,8 @@ void DessinImageBase :: DessineCoupes( )
       px = 0;
 
       Pour( x, Param._Zoom._xmin, Param._Zoom._xmax)
-        Si _image->_format != WT_RGB Alors
+        Si (_image->_format != WT_RGB)&&(_image->_format != WT_RGBA)
+        Alors
           couleur = _tab_intensite_couleur[ IntensiteBuffer() ];
         Sinon
           couleur.Set( 
@@ -2631,7 +2644,9 @@ void DessinImageBase :: DessinePlanMasqueZ( )
 
       px1 = px + _size_x;
 
-      Si _image->_format != WT_RGB Alors
+      Si  (_image->_format != WT_RGB)&&
+          (_image->_format != WT_RGBA)
+      Alors
         couleur = _tab_intensite_couleur[ IntensiteBuffer() ];
       Sinon
         couleur = ClasseCouleur( 
@@ -2705,7 +2720,9 @@ void DessinImageBase :: DessinePlanMasqueY( )
 
       px1 = px + _size_x;
 
-      Si _image->_format != WT_RGB Alors
+      Si (_image->_format != WT_RGB)&&
+          (_image->_format != WT_RGBA) 
+      Alors
         couleur = _tab_intensite_couleur[ IntensiteBuffer() ];
       Sinon
         couleur.Set( 
@@ -2775,7 +2792,9 @@ void DessinImageBase :: DessinePlanMasqueX( )
 
       py1 = py + _size_y;
 
-      Si _image->_format != WT_RGB Alors
+      Si  (_image->_format != WT_RGB) && 
+          (_image->_format != WT_RGBA)
+      Alors
         couleur = _tab_intensite_couleur[ IntensiteBuffer() ];
       Sinon
         couleur.Set( 
@@ -2874,7 +2893,9 @@ void DessinImageBase :: DessineMasqueCoupes( )
       px = 0;
 
       Pour( x, Param._Zoom._xmin, Param._Zoom._xmax)
-        Si _image->_format != WT_RGB Alors
+        Si  (_image->_format != WT_RGB)&&
+            (_image->_format != WT_RGBA)
+        Alors
           couleur = _tab_intensite_couleur[ IntensiteBuffer() ];
         Sinon
           couleur.Set( 
@@ -3270,7 +3291,9 @@ void DessinImageBase::DessinePlanInterpZ( )
       
       Pour(i, -n2, n-1-n2)
 
-        Si _image->_format != WT_RGB Alors
+        Si  (_image->_format != WT_RGB)&&
+            (_image->_format != WT_RGBA)
+        Alors
           couleur = _tab_intensite_couleur[ IntensiteBuffer(x+i*1.0/n, 
                   y+j*1.0/n,
                   Param._pos._z) ];
@@ -3366,7 +3389,9 @@ void DessinImageBase :: DessinePlanInterpY( )
 
       Pour(i,-n2,n-1-n2)
 
-        Si _image->_format != WT_RGB Alors
+        Si  (_image->_format != WT_RGB)&&
+            (_image->_format != WT_RGBA)
+        Alors
           couleur = _tab_intensite_couleur[ IntensiteBuffer(x+i*1.0/n, 
                   Param._pos._y,
                   z+j*1.0/n ) ];
@@ -3456,7 +3481,9 @@ void DessinImageBase::DessinePlanInterpX( )
 
       Pour(i,-n2,n-1-n2)
 
-        Si _image->_format != WT_RGB Alors
+        Si  (_image->_format != WT_RGB)&&
+            (_image->_format != WT_RGBA)
+        Alors
           couleur = _tab_intensite_couleur[ IntensiteBuffer( Param._pos._x,
                    y+i*1.0/n,
                    z+j*1.0/n

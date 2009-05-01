@@ -781,8 +781,16 @@ emptyargs         return(T_emptyargs);    /*{emptyargs,T_emptyargs}*/
   pos = n+GB_num_arg_parsed-1;
 
   if ((pos>=GB_argc)||(pos<0)) {
-    fprintf(stderr,"improcess.l \t invalid argument number %d / %d\n",n, GB_argc-GB_num_arg_parsed);
-    n=0;
+    boost::format fmt = 
+        boost::format("improcess.l \t invalid argument number %d / %d\n");
+#ifdef str
+  #undef str
+      yyiperror( str(fmt % n % (GB_argc-GB_num_arg_parsed)).c_str() );
+  #define str 1
+#else
+      yyiperror( str(fmt % n % (GB_argc-GB_num_arg_parsed)).c_str() );
+#endif
+//myss1.c_str() );
   }
 
   // we use GB_argv[n+1] because the first two arguments are the program and the script file
