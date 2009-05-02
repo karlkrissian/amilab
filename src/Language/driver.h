@@ -44,15 +44,16 @@ public:
     Duree             IP_time;
 
     // Dealing with output files
-    FILE_ptr gr_output; // grammar
+    std::ofstream language_debug_stream;
+
     std::ostream* err_output; // errors
     std::ostream* res_output; // result
 
     FILE_ptr       cmdhistory;
     std::string cmdhistory_filename;
 
-    void init_gr_output();
-    void gr_print(const char* st);
+    void init_debug_stream();
+    void close_debug_stream();
 
     void init_err_output();
     void err_print(const char* st);
@@ -79,6 +80,9 @@ public:
 
     /// construct a new parser driver context
     Driver();
+
+    /// Destructor
+    ~Driver();
 
     /// enable debug output in the flex scanner
     bool trace_scanning;

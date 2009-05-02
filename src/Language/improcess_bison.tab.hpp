@@ -254,8 +254,7 @@ void CB_delete_surfdraw( void* varid);
 
 
 #define UNARYOP_EXPR(operator,val,res)           \
-  res=operator(val);                             \
-  driver.gr_print("\n  unary_op castE->unaryE");
+  res=operator(val);                             
 
 
 #define UNARYOP_IMAGE(operator)           \
@@ -390,7 +389,7 @@ void CB_delete_surfdraw( void* varid);
 
 
 /* Line 35 of lalr1.cc.  */
-#line 394 "/home/karl/projects/Sourceforge/amilab/branches/FlexBisonCpp/src/Language/improcess_bison.tab.hpp"
+#line 393 "/home/karl/projects/Sourceforge/amilab/branches/FlexBisonCpp/src/Language/improcess_bison.tab.hpp"
 
 #include "location.hh"
 
@@ -441,7 +440,7 @@ namespace yyip
     /// Symbol semantic values.
 #ifndef YYSTYPE
     union semantic_type
-#line 386 "/home/karl/projects/Sourceforge/amilab/branches/FlexBisonCpp/src/Language/improcess_bison.ypp"
+#line 385 "/home/karl/projects/Sourceforge/amilab/branches/FlexBisonCpp/src/Language/improcess_bison.ypp"
 {
   char                  ident[IDENT_MAX_SIZE];
   Variable*             variable;
@@ -456,7 +455,7 @@ namespace yyip
   ImageExtent*          imageextent;
 }
 /* Line 35 of lalr1.cc.  */
-#line 460 "/home/karl/projects/Sourceforge/amilab/branches/FlexBisonCpp/src/Language/improcess_bison.tab.hpp"
+#line 459 "/home/karl/projects/Sourceforge/amilab/branches/FlexBisonCpp/src/Language/improcess_bison.tab.hpp"
 	;
 #else
     typedef YYSTYPE semantic_type;

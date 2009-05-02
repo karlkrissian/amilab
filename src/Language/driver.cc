@@ -17,6 +17,7 @@
 
 namespace yyip {
 
+//------------------------------------------------------
 Driver::Driver()
     : trace_scanning(false),
       trace_parsing(false),
@@ -24,14 +25,19 @@ Driver::Driver()
       yyiplineno(0),
       current_file("")
 {
-
-  init_gr_output();
+  init_debug_stream();
   init_err_output();
   init_res_output();
   init_cmdhistory();
 
 }
 
+//------------------------------------------------------
+Driver::~Driver() {
+  close_debug_stream();
+}
+
+//------------------------------------------------------
 bool Driver::parse_stream(std::istream& in, const std::string& sname)
 {
     class Scanner* previous_lexer;
@@ -43,8 +49,11 @@ bool Driver::parse_stream(std::istream& in, const std::string& sname)
     scanner.set_debug(trace_scanning);
     this->lexer = &scanner;
 
+    // Parse ...
     Parser parser(*this);
     parser.set_debug_level(trace_parsing);
+    if (language_debug_stream.good()) 
+      parser.set_debug_stream(language_debug_stream);
     int res = parser.parse();
 
     this->lexer = previous_lexer;
@@ -52,6 +61,7 @@ bool Driver::parse_stream(std::istream& in, const std::string& sname)
     return ( res== 0);
 }
 
+//-----------------------------------------------------------
 bool Driver::parse_file(const std::string &filename)
 {
     string current_file_bak = current_file;
@@ -64,12 +74,14 @@ bool Driver::parse_file(const std::string &filename)
     current_file = current_file_bak;
 }
 
+//-----------------------------------------------------------
 bool Driver::parse_string(const std::string &input, const std::string& sname)
 {
     std::istringstream iss(input);
     return parse_stream(iss, sname);
 }
 
+//-----------------------------------------------------------
 void Driver::error(const class location& l,
 		   const std::string& m)
 {
@@ -83,6 +95,7 @@ void Driver::error(const class location& l,
     err_print(tmpstr.str().c_str());
 }
 
+//-----------------------------------------------------------
 void Driver::error(const std::string& m)
 {
     stringstream tmpstr;
@@ -91,6 +104,7 @@ void Driver::error(const std::string& m)
 }
 
 
+//-----------------------------------------------------------
 bool Driver::parse_block( const AmiInstructionBlock_ptr& b )
 {
   yyiplineno = b->GetStartingLine();
@@ -99,7 +113,9 @@ bool Driver::parse_block( const AmiInstructionBlock_ptr& b )
 }
 
 
+//-----------------------------------------------------------
 void Driver::yyip_call_function( const AMIFunction_ptr& f)
+//   --------------------------
 {
   int    previous_lineno   = yyiplineno;
   string previous_filename = this->current_file;
@@ -224,28 +240,27 @@ void Driver::yyiperror(const char *s)
 
 
 //----------------------------------------------
-void Driver::init_gr_output()
-//   ----------------------
+void Driver::init_debug_stream()
+//   -------------------------
 {
-  std::string filename(".improcess/improcess.gr");
+  std::string filename(".improcess/language_debug");
 
-  gr_output= FILE_ptr(fopen(filename.c_str(),"w"),file_deleter());
-
-  if (!gr_output) {
-
+  language_debug_stream.open(filename.c_str());
+  if (!in.good()) {
     fprintf(stderr,"Error in opening %s\n",filename.c_str());
     FILE_ptr stdout_ptr(stdout);
     gr_output.swap(stdout_ptr);
   }
-} // Driver::init_gr_output()
+} // Driver::init_debug_stream()
 
-//void gr_print(char* st) { fprintf(gr_output,st); fflush(gr_output); }
 
-//-----------------------------------------------
-void Driver::gr_print(const char* st) { }
-
-//void () { fclose(gr_output); }
-
+//----------------------------------------------
+void Driver::close_debug_stream()
+//   -------------------------
+{
+  if (language_debug_stream.is_open())
+    language_debug_stream.close();
+} // Driver::close_debug_stream()
 
 //-----------------------------------------------
 void Driver::init_err_output()

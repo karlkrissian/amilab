@@ -213,8 +213,7 @@ void CB_delete_surfdraw( void* varid);
 
 
 #define UNARYOP_EXPR(operator,val,res)           \
-  res=operator(val);                             \
-  driver.gr_print("\n  unary_op castE->unaryE");
+  res=operator(val);                             
 
 
 #define UNARYOP_IMAGE(operator)           \
@@ -919,13 +918,7 @@ list_commands
           :
          end_instr | list_commands end_instr |
          command end_instr
-         {
-       driver.gr_print("list_command : command\n ");
-     }
          | list_commands command end_instr
-         {
-       driver.gr_print("list_command : list_commands command\n ");
-     }
          | loop_inst | list_commands loop_inst
          | cond_inst | list_commands cond_inst
          | func_inst | list_commands func_inst
@@ -933,9 +926,6 @@ list_commands
 
 end_instr :
         END_INSTRUCTION
-        {
-           //driver.yyiplineno++;
-        }
         | T_SEMICOLON
         ;
 
@@ -950,17 +940,12 @@ loop_inst :
 
       varint = new int;
       Vars.AddVar(type_int,$2,(void*)varint);
-      driver.gr_print("command : FOR identifier ASSIGN_OP ");
-      driver.gr_print("expr TO expr instr_block\n ");
-
-      //          printf(" block = %s \n",$7);
       for(*varint = (int) $4; *varint <= (int) $6; (*varint)++)
         {
           driver.yyiplineno = block->GetStartingLine();
           driver.parse_block(block);
         }
       Vars.deleteVar($2);
-      //      free($7);
       driver.yyiplineno=previous_lineno;
     }
         |
@@ -1013,8 +998,6 @@ cond_inst :
       int  previous_lineno;
       AmiInstructionBlock_ptr block($3);
 
-      driver.gr_print("command : IF expr instr_block  \n");
-
       // Pb with line numbers
       previous_lineno=driver.yyiplineno;
 
@@ -1031,8 +1014,6 @@ cond_inst :
 
       AmiInstructionBlock_ptr block_if(  $3);
       AmiInstructionBlock_ptr block_else($5);
-
-      driver.gr_print("command : IF expr instr_block ELSE instr_block \n");
 
       // Pb with line numbers
       previous_lineno=driver.yyiplineno;
@@ -1330,8 +1311,6 @@ command:
             Vars.AddVar(type_image,$1,imptr);
           else
             driver.err_print("assignment of NULL image\n");
-
-          driver.gr_print("command : identifier ASSIGN_OP image\n ");
         }
          |
           identifier LEFT_ASSIGN expr_image
@@ -1342,8 +1321,6 @@ command:
             Vars.AddVar(type_image,$1,imptr);
           else
             driver.err_print("assignment of NULL image\n");
-
-          driver.gr_print("command : identifier ASSIGN_OP image\n ");
         }
         | identifier ASSIGN_OP VAR_C_FUNCTION  T_OP_PAR param_list T_CL_PAR
         {
@@ -1380,8 +1357,6 @@ command:
             }
           else
             driver.err_print("assignment of NULL image\n");
-
-          driver.gr_print("command : identifier ASSIGN_OP image\n ");
         }
         |
       identifier ASSIGN_OP expr_matrix
@@ -1392,8 +1367,6 @@ command:
         Vars.AddVar(type_matrix,$1,imptr);
           else
         driver.err_print("assignment of NULL matrix\n");
-
-          driver.gr_print("command : identifier ASSIGN_OP matrix\n ");
         }
         |
         identifier ASSIGN_OP gltransform
@@ -1404,8 +1377,6 @@ command:
             Vars.AddVar(type_gltransform,$1,imptr);
           else
             driver.err_print("assignment of NULL matrix\n");
-
-          driver.gr_print("command : identifier ASSIGN_OP matrix\n ");
         }
        | VAR_MATRIX ASSIGN_OP expr
        {
@@ -1443,8 +1414,6 @@ command:
           }
           else
             driver.err_print("assignment of NULL surface\n");
-
-          driver.gr_print("command : identifier ASSIGN_OP surface\n ");
         }
         |
         identifier ASSIGN_OP surface
@@ -1455,8 +1424,6 @@ command:
             Vars.AddVar(type_surface,$1,surfptr);
           else
             driver.err_print("assignment of NULL surface\n");
-
-          driver.gr_print("command : identifier ASSIGN_OP surface\n ");
         }
         |
         var_surface LEFT_ASSIGN surface
@@ -1504,7 +1471,6 @@ command:
           int* varint;
           varint = new int((int)$5);
           Vars.AddVar(type_int,$1,(void*)varint);
-          driver.gr_print("command : identifier ASSIGN_OP T_INT(expr)\n ");
         }
     |
         identifier ASSIGN_OP T_UCHAR T_OP_PAR expr T_CL_PAR
@@ -1512,7 +1478,6 @@ command:
         unsigned char* varuchar;
         varuchar = new unsigned char((unsigned char)$5);
         Vars.AddVar(type_uchar,$1,(void*)varuchar);
-        driver.gr_print("command : identifier ASSIGN_OP T_UCHAR(expr)\n ");
         }
         |
           identifier ASSIGN_OP expr
@@ -1520,7 +1485,6 @@ command:
           float* varfloat;
           varfloat = new float($3);
           Vars.AddVar(type_float,$1,(void*)varfloat);
-          driver.gr_print("command : identifier ASSIGN_OP expr\n ");
         }
         |
           identifier ASSIGN_OP expr_string
@@ -1529,7 +1493,6 @@ command:
           varstring = new string($3);
           Vars.AddVar(type_string,$1,(void*)varstring);
               delete [] $3;
-          driver.gr_print("command : identifier ASSIGN_OP expr_string\n ");
         }
         |
         identifier ASSIGN_OP T_OPEN T_OP_PAR  expr_string T_COMMA ASTRING T_CL_PAR
@@ -1606,8 +1569,6 @@ command:
           GB_main_wxFrame->SetProgress((int)($3+0.5));
         }
         |  QUIT  {
-        driver.gr_print("command : QUIT\n ");
-
         GB_main_wxFrame->Close(true);
     }
         |  SHOW var_image
@@ -1910,8 +1871,6 @@ command:
         | ASHELL expr_string
            {
          std::system($2);
-         driver.gr_print(" command:  ASHELL ASTRING \n");
-
          delete [] $2;
            }
         | LS
@@ -1921,7 +1880,6 @@ command:
          //wxStreamToTextRedirector redirect(TC->GetLog());
 
          std::system("ls");
-         driver.gr_print("command : LS\n ");
            }
         | HELP
           {
@@ -1934,8 +1892,6 @@ command:
         driver.res_print("\t loop: loops                     \n");
         driver.res_print("\t cond: conditions                \n");
             driver.res_print("\t arit: arithmetical expressions  \n");
-
-            driver.gr_print("command : HELP\n ");
       }
         | HELP identifier
          {
@@ -2326,8 +2282,6 @@ command:
 
           draw->Paint();
 
-          driver.gr_print("command : VAR_IMAGEDRAW T_POINT SETPOS");
-          driver.gr_print("T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR\n ");
         }
         | VAR_IMAGEDRAW T_POINT SHOWCURSOR T_OP_PAR expr T_CL_PAR
         {
@@ -4549,8 +4503,6 @@ cerr << "Feature not available, needs to be updated ! " << endl;
         Vars.AddVar(type_paramwin,$1,pwptr);
           else
         driver.err_print("assignment of NULL parameter window\n");
-
-          driver.gr_print("command : identifier ASSIGN_OP T_ParamWin\n ");
               delete [] $5;
         }
     |
@@ -5012,7 +4964,6 @@ primary_expr_string: ASTRING
 postfix_expr_string
         : primary_expr_string
         {
-           driver.gr_print("->postfixE");
        fflush(stdout);
         }
         |
@@ -5070,9 +5021,6 @@ additive_expr_string
 
 expr_string
         : additive_expr_string
-        {
-           driver.gr_print("->expr_string\n");
-        }
         ;
 
 instr_block: begin_block
@@ -5091,10 +5039,6 @@ end_block: ;
 
 primary_expr
     : NUMBER
-    {
-        driver.gr_print("\n NUMBER");
-    fflush(stdout);
-    }
     | T_argc
     {
     /**
@@ -5119,39 +5063,29 @@ primary_expr
          3.14159265358979323846
       **/
       $$= 3.14159265358979323846;
-      driver.gr_print("\n CONST_PI");
     }
     | VAR_FLOAT
     {
       $$=*((float_ptr*)$1->Pointer())->get();
-      driver.gr_print("\n VAR_FLOAT");
     }
     | VAR_INT
     {
       $$ = (float) *((int_ptr*)$1->Pointer())->get();
       char tmp_string[255];
-      //sprintf(tmp_string,"\n VAR_INT %d ", (int)$1);
-      //driver.gr_print(tmp_string);
     }
     | VAR_UCHAR
     {
       $$ = (float) *((uchar_ptr*)$1->Pointer())->get();
-      //driver.gr_print( (boost::format("\n VAR_INT %d ") % (int)$1).str() );
     }
     | T_OP_PAR expr T_CL_PAR
     {
       $$=$2;
-      driver.gr_print("\n(expr)");
       fflush(stdout);
     }
     ;
 
 postfix_expr
         : primary_expr
-        {
-           driver.gr_print("->postfixE");
-       fflush(stdout);
-        }
         | var_image T_OP_PAR expr T_CL_PAR
         {
         /**
@@ -5326,7 +5260,6 @@ postfix_expr
           driver.err_print(tmp_string);
         }
 
-      driver.gr_print("\n var_image T_POINT identifier->postfixE");
         }
         | var_image T_POINT T_info
         {
@@ -6051,15 +5984,7 @@ postfix_expr
 
 unary_expr
         : postfix_expr
-        {
-           driver.gr_print("->unaryE");
-       fflush(stdout);
-        }
         | unary_operator cast_expr
-        {
-           driver.gr_print("\n unary_operator castE->unaryE");
-       fflush(stdout);
-        }
         | T_FACT cast_expr  { UNARYOP_EXPR(!,              $2,$$) }
         | T_SUB cast_expr  { UNARYOP_EXPR(-,              $2,$$) }
         | T_ADD cast_expr  { UNARYOP_EXPR(+,              $2,$$) }
@@ -6093,10 +6018,6 @@ unary_operator
 
 cast_expr:
         unary_expr
-        {
-           driver.gr_print("->castE");
-       fflush(stdout);
-        }
         |
          T_OP_PAR basic_type T_CL_PAR unary_expr
         {
@@ -6127,9 +6048,6 @@ additive_expr
 
 shift_expr
         : additive_expr
-        {
-      driver.gr_print("->shiftE");
-    }
         ;
 
 
@@ -6151,9 +6069,6 @@ equality_expr
 
 and_expr
         : equality_expr
-        {
-      driver.gr_print("->andE ");
-    }
         | and_expr T_AND equality_expr
         {
       $$ = ((int)$1) & ((int)$3);
@@ -6163,13 +6078,7 @@ and_expr
 
 exclusive_or_expr
         : and_expr
-        {
-      driver.gr_print("->xorE ");
-    }
         | exclusive_or_expr T_EXP and_expr
-        {
-      driver.gr_print("\n xorE '^' andE->xorE");
-    }
         ;
 
 inclusive_or_expr
@@ -6219,9 +6128,6 @@ assignment_expr
 
 expr
         : assignment_expr
-        {
-           driver.gr_print("->expr\n");
-        }
         ;
 
 
@@ -6301,14 +6207,12 @@ image:
        T_Image  ASTRING
        {
      driver.im_stack.AddImage($2);
-         driver.gr_print("image : T_Image  ASTRING  \n ");
      delete [] $2;
        }
        |
        T_Image T_OP_PAR expr_string T_CL_PAR
        {
      driver.im_stack.AddImage($3);
-         driver.gr_print("image : T_Image  ASTRING  \n ");
      delete [] $3;
        }
        |
@@ -6563,7 +6467,6 @@ image:
           if (driver.yy_num_buf==1)
             GB_main_wxFrame->GetConsole()
                             ->IncCommand(wxString::FromAscii(inc_cmd.c_str()));
-          driver.gr_print("image : T_Image  \n ");
       }
       |
       T_Image T_OP_PAR basic_type T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
@@ -6572,7 +6475,6 @@ image:
         printf(" ********** %d %f %f %f\n", $3, $5, $7, $9);
         im = new InrImage( (int) $5, (int) $7, (int) $9, (WORDTYPE) $3);
         driver.im_stack.AddImage(im);
-        driver.gr_print("image : T_Image ( basic_type, expr, expr, expr ) \n ");
       }
       |
       T_Image T_OP_PAR basic_type T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
@@ -6592,7 +6494,6 @@ image:
     printf(" ********** %d %f %f %f\n", $3, $5, $7, $9);
     im = new InrImage( (int) $5, (int) $7, (int) $9, (int) $11, (WORDTYPE) $3);
     driver.im_stack.AddImage(im);
-    driver.gr_print("image : T_Image ( basic_type, expr, expr, expr ) \n ");
     }
     |
     T_Image T_OP_PAR basic_type T_COMMA expr T_COMMA var_image T_CL_PAR
@@ -6632,7 +6533,6 @@ image:
          im = new InrImage(varim->_format,imname,varim.get());
          (*im)=(*varim);
           driver.im_stack.AddImage(im);
-         driver.gr_print("image : var_image \n ");
        }
       |
       var_image T_OP_BR expr T_CL_BR
@@ -9908,21 +9808,17 @@ surface:
         {
       SurfacePoly* surf = new SurfacePoly();
       driver.surf_stack.AddSurf(surf);
-          driver.gr_print("image : T_Surface  ()  \n ");
         }
         |
         T_Surface ASTRING
         {
       driver.surf_stack.AddSurf($2);
-          driver.gr_print("surface : T_Surface  ASTRING  \n ");
-
       delete [] $2;
         }
         |
         T_Surface T_OP_PAR expr_string T_CL_PAR
         {
       driver.surf_stack.AddSurf($3);
-          driver.gr_print("image : T_Surface  expr_string  \n ");
       delete [] $3;
         }
         |
@@ -9941,7 +9837,6 @@ surface:
           inc_cmd = str(format(" \"%1%\"  // from browser ") % name);
           if (driver.yy_num_buf==1)
             GB_main_wxFrame->GetConsole()->IncCommand(inc_cmd);
-          driver.gr_print("surface : T_Surface  \n ");
         }
         |
         T_ReadCTALine T_OP_PAR expr_string T_CL_PAR
@@ -10627,42 +10522,26 @@ identifier
 
 variable:
           VAR_INT
-        {   driver.gr_print("variable : VAR_INT \n ");         }
         | VAR_FLOAT
-        {   driver.gr_print("variable : VAR_FLOAT \n ");       }
         | var_image
-        {   driver.gr_print("variable : VAR_IMAGE \n ");
+        {
           $$=$1;
         }
         | VAR_IMAGEDRAW
-        {   driver.gr_print("variable : VAR_IMAGEDRAW \n ");   }
         | VAR_SURFACE
-        {   driver.gr_print("variable : VAR_SURFACE \n ");     }
         | VAR_SURFDRAW
-        {   driver.gr_print("variable : VAR_SURFDRAW \n ");    }
         | VAR_FILE
-        {   driver.gr_print("variable : VAR_FILE \n ");        }
         | VAR_C_FUNCTION
-        {   driver.gr_print("variable : VAR_C_FUNCTION \n ");  }
         | VAR_C_PROCEDURE
-        {   driver.gr_print("variable : VAR_C_PROCEDURE \n ");  }
         | VAR_C_IMAGE_FUNCTION
-        {   driver.gr_print("variable : VAR_C_IMAGE_FUNCTION \n ");  }
         | VAR_AMI_FUNCTION
-        {   driver.gr_print("variable : VAR_AMI_FUNCTION \n ");}
         | VAR_STRING
-        {   driver.gr_print("variable : VAR_STRING \n ");      }
         | VAR_MATRIX
-        {   driver.gr_print("variable : VAR_MATRIX \n ");      }
         | VAR_GLTRANSFORM
-        {   driver.gr_print("variable : VAR_GLTRANSFORM \n "); }
         | VAR_PARAMWIN
-        {   driver.gr_print("variable : VAR_PARAMWIN \n ");    }
         | VAR_ARRAY_SURFACE
-        {   driver.gr_print("variable : VAR_ARRAY_SURFACE \n ");       }
         | VAR_ARRAY_IMAGE
-        {   driver.gr_print("variable : VAR_ARRAY_IMAGE \n ");       }
-;
+          ;
 
 
 image_extent:
