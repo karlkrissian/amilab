@@ -45,18 +45,18 @@ BISON_TARGET(improcessbison
   ${AMILAB_SOURCE_DIR}/Language/improcess_bison.tab.cpp
   )
 
-IF (WIN32)
-
-  SET(Language_SRCS
-    ${BISON_improcessbison_OUTPUTS}
-    driver.cc
-    improcess_flex.cpp
-    VarContexts.cpp
-    Variable.cpp
-    Variables.cpp
-  )
-
-ELSE (WIN32)
+# IF (WIN32)
+# 
+#   SET(Language_SRCS
+#     ${BISON_improcessbison_OUTPUTS}
+#     driver.cc
+#     improcess_flex.cpp
+#     VarContexts.cpp
+#     Variable.cpp
+#     Variables.cpp
+#   )
+# 
+# ELSE (WIN32)
 
   FLEX_TARGET(improcessflex
   ${AMILAB_SOURCE_DIR}/Language/improcess_flex.lpp
@@ -73,6 +73,6 @@ ELSE (WIN32)
     Variables.cpp
   )
 
-ENDIF (WIN32)
+# ENDIF (WIN32)
 
 my_add_library ( Language)

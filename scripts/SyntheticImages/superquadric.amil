@@ -1,14 +1,12 @@
 
 
 proc SuperQuadric(NUM s1, NUM s2, NUM s3, NUM e1, NUM e2, NUM e3, IMAGE res) {
-
   res.settranslation(-res.tx/2,-res.ty/2,-res.tz/2)
   respos = SpacePos(res)
   xterm = exp(ln(abs(respos[0]/s1))/e1)
   yterm = exp(ln(abs(respos[1]/s2))/e2)
   zterm = exp(ln(abs(respos[2]/s3))/e3)
   res = xterm+yterm+zterm -1
-
 }
 
 proc CylindricalSuperQuadric(NUM s1, NUM s2, NUM e1, NUM e2, IMAGE res) {

@@ -253,15 +253,17 @@ proc RunLS( IMAGE initial, NUM graphics) {
 
 //---------------------------------------------------
 proc CB_AddSphere() {
-
-    if (exists(LS_in_draw)) {
+    if (exists(LS_in_draw)) { 
+      _x = LS_in_draw.GetXPos
+      _y = LS_in_draw.GetYPos
+      _z = LS_in_draw.GetZPos
       printn "cursor is at "
-      printn LS_in_draw.GetXPos
-      printn LS_in_draw.GetYPos
-      printn LS_in_draw.GetZPos
+      printn _x
+      printn _y
+      printn _z
       global::LS_inls_backup = LS_inls
       AddBrightSphere_mm(&LS_inls,\
-             LS_in_draw.GetXPos,LS_in_draw.GetYPos,LS_in_draw.GetZPos,\
+             _x,_y,_z,\
              sphere_radius,-1,1)
       global::LS_inls0 = LS_inls
       show LS_in;
@@ -271,7 +273,7 @@ proc CB_AddSphere() {
 }
 
 //---------------------------------------------------
-proc CB_Backup() {
+proc CB_Backup() { 
   global::LS_inls_backup = LS_inls
 }
 
