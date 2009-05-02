@@ -33,7 +33,7 @@
 
 
 #include "xmtext.hpp"
-#include "myscan.h"
+//#include "myscan.h"
 #include <stdio.h>
 #include <iostream>
 
@@ -42,6 +42,9 @@
 #include "token_list.h"
 
 #include "MainFrame.h"
+#include "driver.h"
+
+extern yyip::Driver GB_driver;
 extern MainFrame*   GB_main_wxFrame;
 
 // for completion search
@@ -50,24 +53,6 @@ extern    VarContexts  Vars;
 
 using namespace std;
 
-
- void init_gr_output();
- void gr_print(const char* st);
- void close_gr_output();
-
- void init_err_output();
- void err_print(char* st);
- void close_err_output();
-
- void init_res_output();
- void res_print(char* st);
- void close_res_output();
-
- void init_cmdhistory();
- void ws_print(const char* st);
- void close_cmdhistory();
-
-extern         char  tmp_string[255];
 static unsigned char in_changed_value = 0;
 
 
@@ -99,7 +84,7 @@ void TextControl::ConsoleClear()
 void TextControl::AddCommand( const wxString& cmd)
 {
   text.Append(cmd);
-  ws_print((const char*) cmd.mb_str(wxConvUTF8));
+  GB_driver.ws_print((const char*) cmd.mb_str(wxConvUTF8));
 
   cmd_lines[cmdlines_pos] = cmd;
   // get rid of the "\n" character at the end
@@ -117,7 +102,7 @@ void TextControl::IncCommand( const wxString& cmd)
 //  text.Append(cmd);
   AppendText(wxString::FromAscii(" "));
   AppendText(cmd);
-//  ws_print(cmd.c_str());
+  //GB_driver.ws_print(cmd.c_str());
   //this->UpdateText();
 }
 
@@ -134,7 +119,7 @@ void TextControl::AddPrompt(bool newline)
   if (newline) {
     text.Append(wxString::FromAscii("\n"));
     // adds it to the file too
-    ws_print("\n");
+    GB_driver.ws_print("\n");
   }
   text.Append(wxString::FromAscii("[AMILab] "));
   UpdateText();
@@ -274,13 +259,17 @@ void TextControl::ProcessReturn()
 
   last_cmd.Append(wxT('\0'),2);
 
-  yyip_switch_to_string(last_cmd.mb_str(wxConvUTF8));
+  /*
+  GB_driver.yyip_switch_to_string(last_cmd.mb_str(wxConvUTF8));
   //  yyiplineno=1;
-  yyip_parse();
-  yyip_popup_buffer();
-  if (yyERROR) {
+  bool parseok = GB_driver.yyip_parse();
+  GB_driver.yyip_popup_buffer();
+  */
+  bool parseok = GB_driver.parse_string(last_cmd.mb_str(wxConvUTF8));
+
+  if (!parseok) {
     cerr << "**** Error in last command " << endl;
-    yyERROR=0;
+    //yyERROR=0;
   } else {
     alltext = this->GetValue();
     last_cmd =alltext.Mid(TCsize);

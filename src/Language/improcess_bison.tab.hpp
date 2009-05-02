@@ -1,9 +1,8 @@
 /* A Bison parser, made by GNU Bison 2.3.  */
 
-/* Skeleton interface for Bison's Yacc-like parsers in C
+/* Skeleton interface for Bison LALR(1) parsers in C++
 
-   Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002, 2003, 2004, 2005, 2006
-   Free Software Foundation, Inc.
+   Copyright (C) 2002, 2003, 2004, 2005, 2006 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -33,974 +32,404 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-/* Tokens.  */
-#ifndef YYTOKENTYPE
-# define YYTOKENTYPE
-   /* Put the tokens into the symbol table, so that GDB and other debuggers
-      know about them.  */
-   enum yytokentype {
-     LEX_ERROR = 258,
-     T_SetDebugOn = 259,
-     T_SetDebugOff = 260,
-     T_SetVerboseOn = 261,
-     T_SetVerboseOff = 262,
-     T_SetProgress = 263,
-     T_argc = 264,
-     T_emptyargs = 265,
-     END_INSTRUCTION = 266,
-     T_Image = 267,
-     T_ReadRawImages = 268,
-     T_Transform = 269,
-     SHOW = 270,
-     HELP = 271,
-     QUIT = 272,
-     T_HIDE = 273,
-     PRINT = 274,
-     PRINTN = 275,
-     T_SPRINT = 276,
-     ASHELL = 277,
-     LS = 278,
-     T_SetName = 279,
-     T_GetName = 280,
-     T_GetOutput = 281,
-     T_GetDiffCoeff = 282,
-     ASTRING = 283,
-     ABLOCK = 284,
-     NUMBER = 285,
-     IDENTIFIER = 286,
-     VAR_IMAGE = 287,
-     VAR_FLOAT = 288,
-     VAR_INT = 289,
-     VAR_UCHAR = 290,
-     VAR_STRING = 291,
-     VAR_IMAGEDRAW = 292,
-     VAR_SURFACE = 293,
-     VAR_SURFDRAW = 294,
-     VAR_MATRIX = 295,
-     VAR_FILE = 296,
-     VAR_C_FUNCTION = 297,
-     VAR_C_PROCEDURE = 298,
-     VAR_C_IMAGE_FUNCTION = 299,
-     VAR_AMI_FUNCTION = 300,
-     VAR_PARAMWIN = 301,
-     VAR_GLTRANSFORM = 302,
-     VAR_ARRAY_SURFACE = 303,
-     VAR_ARRAY_IMAGE = 304,
-     T_del = 305,
-     ENDOP = 306,
-     T_global = 307,
-     T_local = 308,
-     T_global_new = 309,
-     T_local_new = 310,
-     T_wait = 311,
-     T_schedule = 312,
-     T_ParamWin = 313,
-     T_BeginPanel = 314,
-     T_EndPanel = 315,
-     T_BeginBook = 316,
-     T_EndBook = 317,
-     T_AddPage = 318,
-     T_AddFloat = 319,
-     T_AddInt = 320,
-     T_CreateWin = 321,
-     T_Display = 322,
-     T_AddButton = 323,
-     T_AddBoolean = 324,
-     T_AddEnum = 325,
-     T_AddEnumChoice = 326,
-     T_AddString = 327,
-     T_AddFilename = 328,
-     T_ShowSlider = 329,
-     T_SetCallback = 330,
-     T_SetDragCallback = 331,
-     T_BeginBox = 332,
-     T_EndBox = 333,
-     T_BeginHorizontal = 334,
-     T_EndHorizontal = 335,
-     T_redraw = 336,
-     RIGHT_ASSIGN = 337,
-     LEFT_ASSIGN = 338,
-     ADD_ASSIGN = 339,
-     SUB_ASSIGN = 340,
-     MUL_ASSIGN = 341,
-     DIV_ASSIGN = 342,
-     MOD_ASSIGN = 343,
-     AND_ASSIGN = 344,
-     XOR_ASSIGN = 345,
-     OR_ASSIGN = 346,
-     RIGHT_OP = 347,
-     INC_OP = 348,
-     DEC_OP = 349,
-     PTR_OP = 350,
-     AND_OP = 351,
-     OR_OP = 352,
-     LE_OP = 353,
-     GE_OP = 354,
-     EQ_OP = 355,
-     NE_OP = 356,
-     TRANSPOSE_OP = 357,
-     POINTWISE_MULT = 358,
-     ASSIGN_OP = 359,
-     T_COUNT = 360,
-     T_MAX = 361,
-     T_argmax = 362,
-     T_MIN = 363,
-     T_MEDIAN = 364,
-     OpImage = 365,
-     FILTER = 366,
-     NormGrad = 367,
-     T_DiscNormGrad = 368,
-     T_gradient = 369,
-     SecDerGrad = 370,
-     SecDerGrad2 = 371,
-     SubImage = 372,
-     PutImage = 373,
-     T_AutoCrop = 374,
-     T_DiscSecDerGrad = 375,
-     T_EDPdilate = 376,
-     T_EDPerode = 377,
-     T_EDPopen = 378,
-     T_EDPclose = 379,
-     AnisoGS = 380,
-     AnisoSmoothGS = 381,
-     T_vtkAnisoGS = 382,
-     T_SetDistMap = 383,
-     T_DiscMeanCurvature = 384,
-     T_vtkMedian3D = 385,
-     T_NULL = 386,
-     T_InitTime = 387,
-     T_TimeSpent = 388,
-     T_EndTime = 389,
-     T_LevelSetsCURV = 390,
-     T_UpdateResult = 391,
-     T_SetMeanCurv = 392,
-     T_SetAffineCurv = 393,
-     T_SetBalloonScheme = 394,
-     T_SetVelocity = 395,
-     T_SetExpansion = 396,
-     T_SetExpansionImage = 397,
-     T_SetAdvectionField = 398,
-     T_SetCurvWeights = 399,
-     T_GetAttachVect = 400,
-     T_GetCurvature = 401,
-     T_GetDistMap = 402,
-     T_GetAdvection = 403,
-     T_GetVelocity = 404,
-     T_GetExpansion = 405,
-     T_GetSkeleton = 406,
-     T_SetDistMethod = 407,
-     T_SetParam = 408,
-     T_SetIsoContourBin = 409,
-     T_SetBandTube = 410,
-     T_SetThreads = 411,
-     T_SaveDistMap = 412,
-     T_SaveSecDerGrad = 413,
-     T_SetNumGaussians = 414,
-     T_SetGaussian = 415,
-     T_SetProbThreshold = 416,
-     T_SetILowTh = 417,
-     T_SetIHighTh = 418,
-     T_SetProbHighTh = 419,
-     T_SetNumInitPoints = 420,
-     T_SetInitPoint = 421,
-     T_vtkFastMarching = 422,
-     T_vtkFastMarchingTarget = 423,
-     T_FluxDiffusion = 424,
-     T_AnisoWeickert = 425,
-     T_AnisoCW = 426,
-     T_SRAD_qcoeff = 427,
-     T_AnisoSRAD = 428,
-     T_AnisoSRAD2 = 429,
-     T_AnisoLeeAdd2 = 430,
-     T_AnisoDPAD = 431,
-     T_AnisoDPAD2 = 432,
-     T_AnisoNRAD = 433,
-     T_AnisoRudinMult = 434,
-     TInit = 435,
-     TSetCoeff = 436,
-     TIterate = 437,
-     TEnd = 438,
-     TAddGaussNoise = 439,
-     T_SNR = 440,
-     T_SetNoiseType = 441,
-     T_SetNoiseSD = 442,
-     T_GetNoiseSD = 443,
-     T_GetDAcoeff = 444,
-     T_SetMask = 445,
-     T_SetSRADROI = 446,
-     T_SetRNRADROI = 447,
-     T_SetRNRADROI_NEW = 448,
-     T_SetLocalStruct = 449,
-     T_SetEigenMode = 450,
-     T_Setdt = 451,
-     T_Setneighborhood = 452,
-     T_info = 453,
-     T_NbPoints = 454,
-     T_NbPolys = 455,
-     T_save = 456,
-     T_normalize = 457,
-     T_OrientField = 458,
-     T_OrientPositive = 459,
-     T_2DFlux = 460,
-     T_OutFlux = 461,
-     T_OutFluxScalar = 462,
-     T_OrientationRatio = 463,
-     T_Skeleton = 464,
-     T_SimplePoints = 465,
-     T_CircleIntegral = 466,
-     T_CircleIntegralExc = 467,
-     T_CircleIntSdExc = 468,
-     T_CircleMinIntSdExc = 469,
-     T_LocalExtrema = 470,
-     T_NormalField = 471,
-     T_DirConnectivity = 472,
-     T_eccentricity = 473,
-     T_rot2D = 474,
-     T_mean = 475,
-     T_SUM = 476,
-     T_localmean = 477,
-     T_localmean2 = 478,
-     T_localSD = 479,
-     T_localSD2 = 480,
-     T_struct_tensor = 481,
-     T_StructTensorH = 482,
-     T_HessianMatrix = 483,
-     T_HessianEVal = 484,
-     T_Derivatives = 485,
-     T_curvatures = 486,
-     T_Laplacian = 487,
-     T_setvoxelsize = 488,
-     T_settranslation = 489,
-     T_setendianness = 490,
-     T_Skeleton2lines = 491,
-     T_SmoothLines = 492,
-     T_ResampleLines = 493,
-     T_RemoveLine = 494,
-     T_ConnectLines = 495,
-     T_threscross = 496,
-     T_IsocontourPoints = 497,
-     T_IsosurfDist = 498,
-     T_vtkIsoContourDist = 499,
-     T_ShortestPath = 500,
-     T_ShortestPathImage = 501,
-     T_PathFromDispl = 502,
-     T_PathFromVectField = 503,
-     T_LineRecons = 504,
-     T_ReadCTALine = 505,
-     T_ReadCTALineRadii = 506,
-     T_WriteCTALine = 507,
-     T_SetIsoContour = 508,
-     T_SetIsoContourParam = 509,
-     T_DrawIsoContour = 510,
-     T_SetIsoContourColor = 511,
-     T_DrawAllContours = 512,
-     T_AllContoursParam = 513,
-     T_GetZmin = 514,
-     T_GetZmax = 515,
-     T_GetYmin = 516,
-     T_GetYmax = 517,
-     T_GetXmin = 518,
-     T_GetXmax = 519,
-     T_GetXPos = 520,
-     T_GetYPos = 521,
-     T_GetZPos = 522,
-     T_vtkDicomRead = 523,
-     T_vtkMINCRead = 524,
-     T_Convolve = 525,
-     T_ConvolveMask = 526,
-     T_Pad = 527,
-     T_Eigen2D = 528,
-     T_Eigen3D = 529,
-     T_ChamferDT = 530,
-     T_Chamfer2DT = 531,
-     T_BorgeforsDT = 532,
-     T_BorgeforsSDT = 533,
-     T_vtkSignedBorgefors = 534,
-     T_vtkSignedFMDist = 535,
-     T_PropagationDist = 536,
-     T_PropagationDist2 = 537,
-     T_PropDanielsson = 538,
-     T_vtkPropDanielsson = 539,
-     T_vtkPropDaniel2 = 540,
-     T_CC = 541,
-     T_ProcessXEvents = 542,
-     T_ProcessEvents = 543,
-     T_isoarea2D = 544,
-     T_posarea = 545,
-     T_isosurf = 546,
-     T_isosurf_inv = 547,
-     T_isosurf_ijk = 548,
-     T_isosurf_ras = 549,
-     T_vtkDecimate = 550,
-     T_vtkMarchingCubes = 551,
-     T_vtkSmooth = 552,
-     T_Recompute = 553,
-     T_vtkWindowedSinc = 554,
-     T_isoline = 555,
-     T_vtkDist = 556,
-     T_AndreDist = 557,
-     T_Surface = 558,
-     T_getimage = 559,
-     T_GetImageFromX = 560,
-     T_rotate = 561,
-     T_computeCC = 562,
-     T_drawCC = 563,
-     T_setminCC = 564,
-     T_addobj = 565,
-     T_setcurrentobj = 566,
-     T_writeVRML = 567,
-     T_writeVTK = 568,
-     T_OwnMaterial = 569,
-     T_SetColor = 570,
-     T_SetColors = 571,
-     T_SetColorOpacity = 572,
-     T_Paint = 573,
-     T_SetLight = 574,
-     T_SetLightPos = 575,
-     T_SetLightAmbient = 576,
-     T_SetLightDiffuse = 577,
-     T_SetLightSpecular = 578,
-     T_SetBackground = 579,
-     T_Remove = 580,
-     T_SwapBuffers = 581,
-     T_SetAmbient = 582,
-     T_SetDiffuse = 583,
-     T_SetSpecular = 584,
-     T_SetShininess = 585,
-     T_SetOpacity = 586,
-     T_SetOpacityImage = 587,
-     T_SetVisible = 588,
-     T_SetColorMaterial = 589,
-     T_penguin = 590,
-     T_Statistics = 591,
-     T_GetIntensities = 592,
-     T_GetLinesLength = 593,
-     T_GetLinesExtremities = 594,
-     T_GetConnections = 595,
-     T_SelectLines = 596,
-     T_RemoveSelection = 597,
-     T_mergepoints = 598,
-     T_Triangulate = 599,
-     T_Displace = 600,
-     T_Normals = 601,
-     T_InvertNormals = 602,
-     T_Translate = 603,
-     T_Scale = 604,
-     T_SetPointsColors = 605,
-     T_SetLineWidth = 606,
-     T_AddPoint = 607,
-     T_NewLine = 608,
-     T_EndLine = 609,
-     T_LineAddPointNumber = 610,
-     T_GetTransform = 611,
-     T_SetTransform = 612,
-     T_Interpolate = 613,
-     T_Matrix = 614,
-     T_Invert = 615,
-     T_PrintMatrices = 616,
-     SET = 617,
-     SETPOS = 618,
-     SHOWCURSOR = 619,
-     UPDATE = 620,
-     COMPARE = 621,
-     SETVECTOR = 622,
-     T_SetCompareDisplacement = 623,
-     T_DrawVector = 624,
-     T_DisplayVectors = 625,
-     T_SetVectParam = 626,
-     T_SetVectColor = 627,
-     T_SetVectStyle = 628,
-     T_SetLineThickness = 629,
-     T_SetZoom = 630,
-     T_SetWindowSize = 631,
-     T_SetColormap = 632,
-     T_drawcircle = 633,
-     T_setGLwin = 634,
-     T_initvalue = 635,
-     T_ShowSection = 636,
-     T_HideSection = 637,
-     T_Xpos = 638,
-     T_Ypos = 639,
-     T_Zpos = 640,
-     T_SpacePos = 641,
-     T_CHAR = 642,
-     T_UCHAR = 643,
-     T_SHORT = 644,
-     T_USHORT = 645,
-     T_INT = 646,
-     T_UINT = 647,
-     T_FLOAT = 648,
-     T_DOUBLE = 649,
-     T_RGB = 650,
-     T_FLOAT_VECTOR = 651,
-     T_GetFormat = 652,
-     T_atof = 653,
-     T_gnuplot = 654,
-     T_histo = 655,
-     T_cumhisto = 656,
-     T_DisplayHisto = 657,
-     T_OPEN = 658,
-     T_CLOSE = 659,
-     T_scan_float = 660,
-     T_read = 661,
-     T_rewind = 662,
-     T_LineNumber = 663,
-     CONST_PI = 664,
-     SIN = 665,
-     COS = 666,
-     TAN = 667,
-     ASIN = 668,
-     ACOS = 669,
-     ATAN = 670,
-     SINH = 671,
-     COSH = 672,
-     EXP = 673,
-     LN = 674,
-     LOG = 675,
-     SQRT = 676,
-     ABS = 677,
-     ROUND = 678,
-     FLOOR = 679,
-     NORM = 680,
-     FOR = 681,
-     TO = 682,
-     STEP = 683,
-     ENDFOR = 684,
-     T_REPEAT = 685,
-     T_UNTIL = 686,
-     T_BREAK = 687,
-     IF = 688,
-     THEN = 689,
-     ELSE = 690,
-     VARIABLES = 691,
-     FUNCTION = 692,
-     T_exists = 693,
-     T_slice = 694,
-     T_GenRead = 695,
-     T_IMAGE = 696,
-     T_IMAGEDRAW = 697,
-     T_SURFACE = 698,
-     T_NUM = 699,
-     T_STRING = 700,
-     T_TRANSFORM = 701,
-     T_PROC = 702,
-     T_MeanHalfSize = 703,
-     T_Resize = 704,
-     T_ReSlice = 705,
-     T_Flip = 706,
-     T_SetCompTransf = 707,
-     T_ConvexHull = 708,
-     T_itk = 709,
-     T_CannyEdgeDetector = 710,
-     T_CreateFlatMesh = 711,
-     T_CreateVolume = 712,
-     T_vtkCreateFlatMesh = 713,
-     T_Altitude2Position = 714,
-     T_GeoCoordinates = 715,
-     T_ElevateMesh = 716,
-     T_CreateVectors = 717,
-     T_Set3DArrowParam = 718,
-     T_CreateEllipsoids = 719,
-     T_ComputeAltitudes = 720,
-     T_Temp2Altitudes = 721,
-     T_ReadFlow = 722,
-     T_SetFluidNavFile = 723,
-     T_DrawEarthCoord = 724,
-     T_PaintCallback = 725,
-     T_SaveStructuredGrid = 726,
-     T_import_ami = 727,
-     T_import_vtk = 728,
-     T_import_itk = 729,
-     T_import_wii = 730,
-     T_import_filters = 731,
-     T_amiOFCorr2D = 732,
-     T_amiOFVar2D = 733
-   };
+/* C++ LALR(1) parser skeleton written by Akim Demaille.  */
+
+#ifndef PARSER_HEADER_H
+# define PARSER_HEADER_H
+
+#include <string>
+#include <iostream>
+#include "stack.hh"
+
+namespace yyip
+{
+  class position;
+  class location;
+}
+
+/* First part of user declarations.  */
+#line 11 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+ /*** C/C++ Declarations ***/
+  //#include <stdlib.h>
+  //#include <stdio.h>
+
+#include "MainFrame.h"
+#include "ParamPanel.hpp"
+#include <locale.h>
+#include "fonctions.h"
+#include "func_isoline.hpp"
+#include "ami_function.h"
+//#include "dist_squared.hpp"
+#include "improcess_bison.tab.hpp"
+#include "wrapAMIFluid.h"
+#include "wrapVTK.h"
+#include "wrapITK.h"
+#include "itkCannyEdgeDetector.h"
+#include "wrapWII.h"
+#include "wrapFilters.h"
+#include <cstdlib>
+
+//#include "myscan.h"
+#include "ImageDraw.hpp"
+#include "Func_ReadCTALine.h"
+#include "LineRecons.h"
+//#include "PruneLines.h"
+
+  //#define IDENT_MAX_SIZE 15
+
+#include "driver.h"
+
+#ifndef __FLEX_LEXER_H
+#define yyFlexLexer yyipFlexLexer
+#include "FlexLexer.h"
+#undef yyFlexLexer
 #endif
-/* Tokens.  */
-#define LEX_ERROR 258
-#define T_SetDebugOn 259
-#define T_SetDebugOff 260
-#define T_SetVerboseOn 261
-#define T_SetVerboseOff 262
-#define T_SetProgress 263
-#define T_argc 264
-#define T_emptyargs 265
-#define END_INSTRUCTION 266
-#define T_Image 267
-#define T_ReadRawImages 268
-#define T_Transform 269
-#define SHOW 270
-#define HELP 271
-#define QUIT 272
-#define T_HIDE 273
-#define PRINT 274
-#define PRINTN 275
-#define T_SPRINT 276
-#define ASHELL 277
-#define LS 278
-#define T_SetName 279
-#define T_GetName 280
-#define T_GetOutput 281
-#define T_GetDiffCoeff 282
-#define ASTRING 283
-#define ABLOCK 284
-#define NUMBER 285
-#define IDENTIFIER 286
-#define VAR_IMAGE 287
-#define VAR_FLOAT 288
-#define VAR_INT 289
-#define VAR_UCHAR 290
-#define VAR_STRING 291
-#define VAR_IMAGEDRAW 292
-#define VAR_SURFACE 293
-#define VAR_SURFDRAW 294
-#define VAR_MATRIX 295
-#define VAR_FILE 296
-#define VAR_C_FUNCTION 297
-#define VAR_C_PROCEDURE 298
-#define VAR_C_IMAGE_FUNCTION 299
-#define VAR_AMI_FUNCTION 300
-#define VAR_PARAMWIN 301
-#define VAR_GLTRANSFORM 302
-#define VAR_ARRAY_SURFACE 303
-#define VAR_ARRAY_IMAGE 304
-#define T_del 305
-#define ENDOP 306
-#define T_global 307
-#define T_local 308
-#define T_global_new 309
-#define T_local_new 310
-#define T_wait 311
-#define T_schedule 312
-#define T_ParamWin 313
-#define T_BeginPanel 314
-#define T_EndPanel 315
-#define T_BeginBook 316
-#define T_EndBook 317
-#define T_AddPage 318
-#define T_AddFloat 319
-#define T_AddInt 320
-#define T_CreateWin 321
-#define T_Display 322
-#define T_AddButton 323
-#define T_AddBoolean 324
-#define T_AddEnum 325
-#define T_AddEnumChoice 326
-#define T_AddString 327
-#define T_AddFilename 328
-#define T_ShowSlider 329
-#define T_SetCallback 330
-#define T_SetDragCallback 331
-#define T_BeginBox 332
-#define T_EndBox 333
-#define T_BeginHorizontal 334
-#define T_EndHorizontal 335
-#define T_redraw 336
-#define RIGHT_ASSIGN 337
-#define LEFT_ASSIGN 338
-#define ADD_ASSIGN 339
-#define SUB_ASSIGN 340
-#define MUL_ASSIGN 341
-#define DIV_ASSIGN 342
-#define MOD_ASSIGN 343
-#define AND_ASSIGN 344
-#define XOR_ASSIGN 345
-#define OR_ASSIGN 346
-#define RIGHT_OP 347
-#define INC_OP 348
-#define DEC_OP 349
-#define PTR_OP 350
-#define AND_OP 351
-#define OR_OP 352
-#define LE_OP 353
-#define GE_OP 354
-#define EQ_OP 355
-#define NE_OP 356
-#define TRANSPOSE_OP 357
-#define POINTWISE_MULT 358
-#define ASSIGN_OP 359
-#define T_COUNT 360
-#define T_MAX 361
-#define T_argmax 362
-#define T_MIN 363
-#define T_MEDIAN 364
-#define OpImage 365
-#define FILTER 366
-#define NormGrad 367
-#define T_DiscNormGrad 368
-#define T_gradient 369
-#define SecDerGrad 370
-#define SecDerGrad2 371
-#define SubImage 372
-#define PutImage 373
-#define T_AutoCrop 374
-#define T_DiscSecDerGrad 375
-#define T_EDPdilate 376
-#define T_EDPerode 377
-#define T_EDPopen 378
-#define T_EDPclose 379
-#define AnisoGS 380
-#define AnisoSmoothGS 381
-#define T_vtkAnisoGS 382
-#define T_SetDistMap 383
-#define T_DiscMeanCurvature 384
-#define T_vtkMedian3D 385
-#define T_NULL 386
-#define T_InitTime 387
-#define T_TimeSpent 388
-#define T_EndTime 389
-#define T_LevelSetsCURV 390
-#define T_UpdateResult 391
-#define T_SetMeanCurv 392
-#define T_SetAffineCurv 393
-#define T_SetBalloonScheme 394
-#define T_SetVelocity 395
-#define T_SetExpansion 396
-#define T_SetExpansionImage 397
-#define T_SetAdvectionField 398
-#define T_SetCurvWeights 399
-#define T_GetAttachVect 400
-#define T_GetCurvature 401
-#define T_GetDistMap 402
-#define T_GetAdvection 403
-#define T_GetVelocity 404
-#define T_GetExpansion 405
-#define T_GetSkeleton 406
-#define T_SetDistMethod 407
-#define T_SetParam 408
-#define T_SetIsoContourBin 409
-#define T_SetBandTube 410
-#define T_SetThreads 411
-#define T_SaveDistMap 412
-#define T_SaveSecDerGrad 413
-#define T_SetNumGaussians 414
-#define T_SetGaussian 415
-#define T_SetProbThreshold 416
-#define T_SetILowTh 417
-#define T_SetIHighTh 418
-#define T_SetProbHighTh 419
-#define T_SetNumInitPoints 420
-#define T_SetInitPoint 421
-#define T_vtkFastMarching 422
-#define T_vtkFastMarchingTarget 423
-#define T_FluxDiffusion 424
-#define T_AnisoWeickert 425
-#define T_AnisoCW 426
-#define T_SRAD_qcoeff 427
-#define T_AnisoSRAD 428
-#define T_AnisoSRAD2 429
-#define T_AnisoLeeAdd2 430
-#define T_AnisoDPAD 431
-#define T_AnisoDPAD2 432
-#define T_AnisoNRAD 433
-#define T_AnisoRudinMult 434
-#define TInit 435
-#define TSetCoeff 436
-#define TIterate 437
-#define TEnd 438
-#define TAddGaussNoise 439
-#define T_SNR 440
-#define T_SetNoiseType 441
-#define T_SetNoiseSD 442
-#define T_GetNoiseSD 443
-#define T_GetDAcoeff 444
-#define T_SetMask 445
-#define T_SetSRADROI 446
-#define T_SetRNRADROI 447
-#define T_SetRNRADROI_NEW 448
-#define T_SetLocalStruct 449
-#define T_SetEigenMode 450
-#define T_Setdt 451
-#define T_Setneighborhood 452
-#define T_info 453
-#define T_NbPoints 454
-#define T_NbPolys 455
-#define T_save 456
-#define T_normalize 457
-#define T_OrientField 458
-#define T_OrientPositive 459
-#define T_2DFlux 460
-#define T_OutFlux 461
-#define T_OutFluxScalar 462
-#define T_OrientationRatio 463
-#define T_Skeleton 464
-#define T_SimplePoints 465
-#define T_CircleIntegral 466
-#define T_CircleIntegralExc 467
-#define T_CircleIntSdExc 468
-#define T_CircleMinIntSdExc 469
-#define T_LocalExtrema 470
-#define T_NormalField 471
-#define T_DirConnectivity 472
-#define T_eccentricity 473
-#define T_rot2D 474
-#define T_mean 475
-#define T_SUM 476
-#define T_localmean 477
-#define T_localmean2 478
-#define T_localSD 479
-#define T_localSD2 480
-#define T_struct_tensor 481
-#define T_StructTensorH 482
-#define T_HessianMatrix 483
-#define T_HessianEVal 484
-#define T_Derivatives 485
-#define T_curvatures 486
-#define T_Laplacian 487
-#define T_setvoxelsize 488
-#define T_settranslation 489
-#define T_setendianness 490
-#define T_Skeleton2lines 491
-#define T_SmoothLines 492
-#define T_ResampleLines 493
-#define T_RemoveLine 494
-#define T_ConnectLines 495
-#define T_threscross 496
-#define T_IsocontourPoints 497
-#define T_IsosurfDist 498
-#define T_vtkIsoContourDist 499
-#define T_ShortestPath 500
-#define T_ShortestPathImage 501
-#define T_PathFromDispl 502
-#define T_PathFromVectField 503
-#define T_LineRecons 504
-#define T_ReadCTALine 505
-#define T_ReadCTALineRadii 506
-#define T_WriteCTALine 507
-#define T_SetIsoContour 508
-#define T_SetIsoContourParam 509
-#define T_DrawIsoContour 510
-#define T_SetIsoContourColor 511
-#define T_DrawAllContours 512
-#define T_AllContoursParam 513
-#define T_GetZmin 514
-#define T_GetZmax 515
-#define T_GetYmin 516
-#define T_GetYmax 517
-#define T_GetXmin 518
-#define T_GetXmax 519
-#define T_GetXPos 520
-#define T_GetYPos 521
-#define T_GetZPos 522
-#define T_vtkDicomRead 523
-#define T_vtkMINCRead 524
-#define T_Convolve 525
-#define T_ConvolveMask 526
-#define T_Pad 527
-#define T_Eigen2D 528
-#define T_Eigen3D 529
-#define T_ChamferDT 530
-#define T_Chamfer2DT 531
-#define T_BorgeforsDT 532
-#define T_BorgeforsSDT 533
-#define T_vtkSignedBorgefors 534
-#define T_vtkSignedFMDist 535
-#define T_PropagationDist 536
-#define T_PropagationDist2 537
-#define T_PropDanielsson 538
-#define T_vtkPropDanielsson 539
-#define T_vtkPropDaniel2 540
-#define T_CC 541
-#define T_ProcessXEvents 542
-#define T_ProcessEvents 543
-#define T_isoarea2D 544
-#define T_posarea 545
-#define T_isosurf 546
-#define T_isosurf_inv 547
-#define T_isosurf_ijk 548
-#define T_isosurf_ras 549
-#define T_vtkDecimate 550
-#define T_vtkMarchingCubes 551
-#define T_vtkSmooth 552
-#define T_Recompute 553
-#define T_vtkWindowedSinc 554
-#define T_isoline 555
-#define T_vtkDist 556
-#define T_AndreDist 557
-#define T_Surface 558
-#define T_getimage 559
-#define T_GetImageFromX 560
-#define T_rotate 561
-#define T_computeCC 562
-#define T_drawCC 563
-#define T_setminCC 564
-#define T_addobj 565
-#define T_setcurrentobj 566
-#define T_writeVRML 567
-#define T_writeVTK 568
-#define T_OwnMaterial 569
-#define T_SetColor 570
-#define T_SetColors 571
-#define T_SetColorOpacity 572
-#define T_Paint 573
-#define T_SetLight 574
-#define T_SetLightPos 575
-#define T_SetLightAmbient 576
-#define T_SetLightDiffuse 577
-#define T_SetLightSpecular 578
-#define T_SetBackground 579
-#define T_Remove 580
-#define T_SwapBuffers 581
-#define T_SetAmbient 582
-#define T_SetDiffuse 583
-#define T_SetSpecular 584
-#define T_SetShininess 585
-#define T_SetOpacity 586
-#define T_SetOpacityImage 587
-#define T_SetVisible 588
-#define T_SetColorMaterial 589
-#define T_penguin 590
-#define T_Statistics 591
-#define T_GetIntensities 592
-#define T_GetLinesLength 593
-#define T_GetLinesExtremities 594
-#define T_GetConnections 595
-#define T_SelectLines 596
-#define T_RemoveSelection 597
-#define T_mergepoints 598
-#define T_Triangulate 599
-#define T_Displace 600
-#define T_Normals 601
-#define T_InvertNormals 602
-#define T_Translate 603
-#define T_Scale 604
-#define T_SetPointsColors 605
-#define T_SetLineWidth 606
-#define T_AddPoint 607
-#define T_NewLine 608
-#define T_EndLine 609
-#define T_LineAddPointNumber 610
-#define T_GetTransform 611
-#define T_SetTransform 612
-#define T_Interpolate 613
-#define T_Matrix 614
-#define T_Invert 615
-#define T_PrintMatrices 616
-#define SET 617
-#define SETPOS 618
-#define SHOWCURSOR 619
-#define UPDATE 620
-#define COMPARE 621
-#define SETVECTOR 622
-#define T_SetCompareDisplacement 623
-#define T_DrawVector 624
-#define T_DisplayVectors 625
-#define T_SetVectParam 626
-#define T_SetVectColor 627
-#define T_SetVectStyle 628
-#define T_SetLineThickness 629
-#define T_SetZoom 630
-#define T_SetWindowSize 631
-#define T_SetColormap 632
-#define T_drawcircle 633
-#define T_setGLwin 634
-#define T_initvalue 635
-#define T_ShowSection 636
-#define T_HideSection 637
-#define T_Xpos 638
-#define T_Ypos 639
-#define T_Zpos 640
-#define T_SpacePos 641
-#define T_CHAR 642
-#define T_UCHAR 643
-#define T_SHORT 644
-#define T_USHORT 645
-#define T_INT 646
-#define T_UINT 647
-#define T_FLOAT 648
-#define T_DOUBLE 649
-#define T_RGB 650
-#define T_FLOAT_VECTOR 651
-#define T_GetFormat 652
-#define T_atof 653
-#define T_gnuplot 654
-#define T_histo 655
-#define T_cumhisto 656
-#define T_DisplayHisto 657
-#define T_OPEN 658
-#define T_CLOSE 659
-#define T_scan_float 660
-#define T_read 661
-#define T_rewind 662
-#define T_LineNumber 663
-#define CONST_PI 664
-#define SIN 665
-#define COS 666
-#define TAN 667
-#define ASIN 668
-#define ACOS 669
-#define ATAN 670
-#define SINH 671
-#define COSH 672
-#define EXP 673
-#define LN 674
-#define LOG 675
-#define SQRT 676
-#define ABS 677
-#define ROUND 678
-#define FLOOR 679
-#define NORM 680
-#define FOR 681
-#define TO 682
-#define STEP 683
-#define ENDFOR 684
-#define T_REPEAT 685
-#define T_UNTIL 686
-#define T_BREAK 687
-#define IF 688
-#define THEN 689
-#define ELSE 690
-#define VARIABLES 691
-#define FUNCTION 692
-#define T_exists 693
-#define T_slice 694
-#define T_GenRead 695
-#define T_IMAGE 696
-#define T_IMAGEDRAW 697
-#define T_SURFACE 698
-#define T_NUM 699
-#define T_STRING 700
-#define T_TRANSFORM 701
-#define T_PROC 702
-#define T_MeanHalfSize 703
-#define T_Resize 704
-#define T_ReSlice 705
-#define T_Flip 706
-#define T_SetCompTransf 707
-#define T_ConvexHull 708
-#define T_itk 709
-#define T_CannyEdgeDetector 710
-#define T_CreateFlatMesh 711
-#define T_CreateVolume 712
-#define T_vtkCreateFlatMesh 713
-#define T_Altitude2Position 714
-#define T_GeoCoordinates 715
-#define T_ElevateMesh 716
-#define T_CreateVectors 717
-#define T_Set3DArrowParam 718
-#define T_CreateEllipsoids 719
-#define T_ComputeAltitudes 720
-#define T_Temp2Altitudes 721
-#define T_ReadFlow 722
-#define T_SetFluidNavFile 723
-#define T_DrawEarthCoord 724
-#define T_PaintCallback 725
-#define T_SaveStructuredGrid 726
-#define T_import_ami 727
-#define T_import_vtk 728
-#define T_import_itk 729
-#define T_import_wii 730
-#define T_import_filters 731
-#define T_amiOFCorr2D 732
-#define T_amiOFVar2D 733
+
+
+#include "Viewer3D.hpp"
+
+//#include "Erreurs.Main.hpp"
+ // #include "Graphique.hpp"
+#include "Viewer3D.hpp"
+#include "DessinImage.hpp"
+#include "CompareImage.hpp"
+#include "bruit.hpp"
+#include "CalculAireSection.hpp"
+#include "reponse_cercle.hpp"
+#include "func_shortestpath.h"
+#include "AnisoGaussSeidel.h"
+#include "LevelSetsCURVES.h"
+#include "vtkwrap.h"
+
+#include "gnuplot.hpp"
+
+#include "xmtext.hpp"
+#include "StringUtils.hpp"
+//#include "histo.hpp"
+
+#ifndef WIN32
+#include <unistd.h>
+#endif
+
+#include <iostream>
+
+
+
+#include "VarContexts.hpp"
+#include "Duree.hpp"
+
+#include "DefineClass.hpp"
+/*
+#include <boost/shared_ptr.hpp>
+//--- string formatting using boost
+#include <iostream>
+#include <iomanip>
+#include <cassert>
+#include "boost/format.hpp"
+namespace MyNS_ForOutput {
+  using std::cout; using std::cerr;
+  using std::string;
+  using std::endl; using std::flush;
+
+  using boost::format;
+  using boost::io::group;
+}
+using namespace MyNS_ForOutput;
+*/
+
+//-------
+
+#include "wx/evtloop.h"
+
+#include "penguin.h"
+
+#include "driver.h"
+
+//ImageStack        im_stack;
+//SurfStack         surf_stack;
+//MatrixStack       driver.matrix_stack;
+//GLTransformStack  gltransf_stack;
+extern VarContexts       Vars;
+
+//Duree            IP_time;
+
+//Widget              GB_main_window;
+
+extern MainFrame*   GB_main_wxFrame;
+extern wxApp*       GB_wxApp;
+extern int       GB_argc;
+
+//extern TextControl* TC;
+//extern int          GB_argc;
+extern int       GB_num_arg_parsed;
+extern wxString  GB_scripts_dir;
+extern wxString  GB_help_dir;
+
+
+namespace AMIFluid {
+extern char* FLUID_NAVIGATION_FILE;
+}
+
+DessinImage* CreateIDraw(  std::string title, InrImage::ptr image);
+// Creation of a DessinImage pointer
+// this function is distinct if compiling with all amilab
+
+extern yyip::Driver GB_driver;
+
+//extern XtAppContext         GB_contexte;
+//extern Widget               GB_app_shell;
+extern unsigned char        GB_debug;
+extern unsigned char        GB_verbose;
+extern unsigned char        verbose;
+extern unsigned char        GB_nofile;
+
+extern char program[80];
+//extern unsigned char verbose;
+
+extern unsigned char DELETE_IDRAW;
+
+extern int procedure_declaration;
+
+//#define MAX_TIMEOUT 10
+//int GB_TimeOut[MAX_TIMEOUT];
 
 
 
 
-#if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef union YYSTYPE
-#line 446 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+
+
+/*
+static wxString GetwxStr(const char* str) {
+  return wxString::FromAscii(str);
+}
+
+static wxString GetwxStr(const string& str) {
+  return wxString::FromAscii(str.c_str());
+}
+*/
+
+static void CB_TimeOut( void* cd, long unsigned int *) {
+//  GB_TimeOut[*(int*)cd] = 1;
+}
+
+static void CB_ParamWin( void* cd );
+
+static void CB_CallAMIFunction( void* cd, long unsigned int *) {
+  CB_ParamWin(cd);
+}
+
+ static void CB_Button(  void* cd) {
+  CB_ParamWin(cd);
+}
+
+
+
+
+static void CB_ParamWin( void* cd ) {
+
+  AMIFunction_ptr f;
+  f = *(AMIFunction_ptr*) (cd);
+
+  Vars.NewContext(f->GetName().c_str());
+  GB_driver.yyip_call_function(f);
+  Vars.DeleteLastContext();
+
+} // CB_ParamWin( void* cd )
+
+
+void CB_delete_imagedraw( void* varname);
+
+void CB_delete_surfdraw( void* varid);
+
+
+#define UNARYOP_EXPR(operator,val,res)           \
+  res=operator(val);                             
+
+
+#define UNARYOP_IMAGE(operator)           \
+  InrImage* im;                           \
+  int       i;                            \
+  im = driver.im_stack.GetLastImage();           \
+  im->InitBuffer();                       \
+  Si im->ScalarFormat() Alors             \
+    Repeter                                \
+     im->FixeValeur( operator(im->ValeurBuffer()) );   \
+    JusquA Non(im->IncBuffer()) FinRepeter             \
+  Sinon                                                \
+    Pour(i,0,im->GetVDim()-1)                 \
+      im->InitBuffer();                       \
+      Repeter                                 \
+       im->VectFixeValeur( i, operator(im->VectValeurBuffer(i)) );   \
+      JusquA Non(im->IncBuffer()) FinRepeter  \
+    FinPour                                   \
+  FinSi                                       \
+  driver.im_stack.AddImage(im);
+
+#define IMAGE_OP_EXPR(operator,expr)                     \
+  InrImage* im1;                                         \
+  int       i;                                           \
+  double    val = expr;                                  \
+  im1 = driver.im_stack.GetLastImage();                         \
+  im1->InitBuffer();                                     \
+  Si im1->ScalarFormat() Alors                           \
+    Repeter                                              \
+      im1->FixeValeur(im1->ValeurBuffer() operator val); \
+    JusquA Non(im1->IncBuffer()) FinRepeter              \
+  Sinon                                                  \
+    Repeter                                              \
+      Pour(i,0,im1->GetVDim()-1)                         \
+        im1->VectFixeValeur(i,im1->VectValeurBuffer(i) operator val);  \
+      FinPour                                            \
+    JusquA Non(im1->IncBuffer()) FinRepeter              \
+  FinSi                                                  \
+  driver.im_stack.AddImage(im1);
+
+#define EXPR_OP_IMAGE(operator,expr)                     \
+  InrImage* im1;                                         \
+  int       i;                                           \
+  double    val = expr;                                  \
+  im1 = driver.im_stack.GetLastImage();                         \
+  im1->InitBuffer();                                     \
+  Si im1->ScalarFormat() Alors                           \
+    Repeter                                              \
+      im1->FixeValeur(val operator im1->ValeurBuffer() ); \
+    JusquA Non(im1->IncBuffer()) FinRepeter              \
+  Sinon                                                  \
+    Repeter                                              \
+      Pour(i,0,im1->GetVDim()-1)                         \
+        im1->VectFixeValeur(i, val operator im1->VectValeurBuffer(i));  \
+      FinPour                                            \
+    JusquA Non(im1->IncBuffer()) FinRepeter              \
+  FinSi                                                  \
+  driver.im_stack.AddImage(im1);
+
+#define IMAGE_OP_IMAGE(operator)    \
+  InrImage* im1;                    \
+  InrImage* im2;                    \
+  im2 = driver.im_stack.GetLastImage();    \
+  im1 = driver.im_stack.GetLastImage();    \
+  im1->InitBuffer();                \
+  im2->InitBuffer();                \
+  Repeter                           \
+    im1->FixeValeur(im1->ValeurBuffer() operator im2->ValeurBuffer()); \
+    im2->IncBuffer();               \
+  JusquA Non(im1->IncBuffer())      \
+  FinRepeter                        \
+  driver.im_stack.AddImage(im1);           \
+  delete im2;
+
+#define IMAGE_OP_IMAGE_2(operator)  \
+  InrImage* im1;                    \
+  InrImage* im2;                    \
+  InrImage* res;                    \
+  im2 = driver.im_stack.GetLastImage();    \
+  im1 = driver.im_stack.GetLastImage();    \
+  res = (*im1) operator (*im2);     \
+  Si res == NULL Alors              \
+    fprintf(stderr,"Error in operation \t IMAGE_OP_IMAGE_2 \n"); \
+  FinSi                             \
+  driver.im_stack.AddImage(res);           \
+  delete im1;                       \
+  delete im2;
+
+#define UNARYOP_MATRIX(operator)           \
+  FloatMatrix* mat;                         \
+  int       i,j;                            \
+  mat = driver.matrix_stack.GetLastMatrix();       \
+  for (i=0;i<mat->Rows();i++)               \
+  for (j=0;j<mat->Cols();j++) {             \
+    (*mat)[i][j]=operator((*mat)[i][j]);               \
+  }                                         \
+  driver.matrix_stack.AddMatrix(mat);
+
+#define MATRIX_OP_EXPR(operator,expr)        \
+  FloatMatrix* mat;                          \
+  int       i,j;                             \
+  float     val = expr;                      \
+  mat = driver.matrix_stack.GetLastMatrix();        \
+  for (i=0;i<mat->Rows();i++)               \
+  for (j=0;j<mat->Cols();j++) {             \
+    (*mat)[i][j]=(*mat)[i][j] operator val;            \
+  }                                         \
+  driver.matrix_stack.AddMatrix(mat);
+
+#define MATRIX_OP_MATRIX_2(operator)        \
+  FloatMatrix* mat1;                          \
+  FloatMatrix* mat2;                          \
+  FloatMatrix* mat;                          \
+  int       i,j;                             \
+  mat2 = driver.matrix_stack.GetLastMatrix();        \
+  mat1 = driver.matrix_stack.GetLastMatrix();        \
+  if ((mat1->Rows()==mat2->Rows())&&(mat1->Cols()==mat2->Cols())) { \
+    mat=new FloatMatrix(mat1->Rows(),mat1->Cols()); \
+    for (i=0;i<mat1->Rows();i++)               \
+    for (j=0;j<mat1->Cols();j++)              \
+      (*mat)[i][j]=(*mat1)[i][j] operator (*mat2)[i][j];            \
+    driver.matrix_stack.AddMatrix(mat);                 \
+    delete mat1;                                    \
+    delete mat2;                                    \
+  }                                              \
+  else {                                         \
+    delete mat2;                                    \
+    driver.matrix_stack.AddMatrix(mat1);                \
+  }
+
+
+
+
+/* Line 35 of lalr1.cc.  */
+#line 382 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.hpp"
+
+#include "location.hh"
+
+/* Enabling traces.  */
+#ifndef YYDEBUG
+# define YYDEBUG 1
+#endif
+
+/* Enabling verbose error messages.  */
+#ifdef YYERROR_VERBOSE
+# undef YYERROR_VERBOSE
+# define YYERROR_VERBOSE 1
+#else
+# define YYERROR_VERBOSE 1
+#endif
+
+/* Enabling the token table.  */
+#ifndef YYTOKEN_TABLE
+# define YYTOKEN_TABLE 0
+#endif
+
+/* YYLLOC_DEFAULT -- Set CURRENT to span from RHS[1] to RHS[N].
+   If N is 0, then set CURRENT to the empty location which ends
+   the previous symbol: RHS[0] (always defined).  */
+
+#ifndef YYLLOC_DEFAULT
+# define YYLLOC_DEFAULT(Current, Rhs, N)		\
+do {							\
+  if (N)						\
+    {							\
+      (Current).begin = (Rhs)[1].begin;			\
+      (Current).end   = (Rhs)[N].end;			\
+    }							\
+  else							\
+    {							\
+      (Current).begin = (Current).end = (Rhs)[0].end;	\
+    }							\
+} while (false)
+#endif
+
+namespace yyip
+{
+
+  /// A Bison parser.
+  class Parser
+  {
+  public:
+    /// Symbol semantic values.
+#ifndef YYSTYPE
+    union semantic_type
+#line 374 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
 {
   char                  ident[IDENT_MAX_SIZE];
   Variable*             variable;
@@ -1014,13 +443,683 @@ typedef union YYSTYPE
   ParamListDecl*        paramlistdecl;
   ImageExtent*          imageextent;
 }
-/* Line 1489 of yacc.c.  */
-#line 1019 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.hpp"
-	YYSTYPE;
-# define yystype YYSTYPE /* obsolescent; will be withdrawn */
-# define YYSTYPE_IS_DECLARED 1
-# define YYSTYPE_IS_TRIVIAL 1
+/* Line 35 of lalr1.cc.  */
+#line 448 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.hpp"
+	;
+#else
+    typedef YYSTYPE semantic_type;
+#endif
+    /// Symbol locations.
+    typedef location location_type;
+    /// Tokens.
+    struct token
+    {
+      /* Tokens.  */
+   enum yytokentype {
+     END = 0,
+     LEX_ERROR = 258,
+     T_EXP = 259,
+     T_GT = 260,
+     T_LT = 261,
+     T_MULT = 262,
+     T_DIV = 263,
+     T_FACT = 264,
+     T_ADD = 265,
+     T_SUB = 266,
+     T_OP_PAR = 267,
+     T_CL_PAR = 268,
+     T_OP_BR = 269,
+     T_CL_BR = 270,
+     T_AND = 271,
+     T_OR = 272,
+     T_POINT = 273,
+     T_COMMA = 274,
+     T_QUEST = 275,
+     T_COLON = 276,
+     T_SEMICOLON = 277,
+     T_SetDebugOn = 278,
+     T_SetDebugOff = 279,
+     T_SetVerboseOn = 280,
+     T_SetVerboseOff = 281,
+     T_SetProgress = 282,
+     T_argc = 283,
+     T_emptyargs = 284,
+     END_INSTRUCTION = 285,
+     T_Image = 286,
+     T_ReadRawImages = 287,
+     T_Transform = 288,
+     SHOW = 289,
+     HELP = 290,
+     QUIT = 291,
+     T_HIDE = 292,
+     PRINT = 293,
+     PRINTN = 294,
+     T_SPRINT = 295,
+     ASHELL = 296,
+     LS = 297,
+     T_SetName = 298,
+     T_GetName = 299,
+     T_GetOutput = 300,
+     T_GetDiffCoeff = 301,
+     ASTRING = 302,
+     ABLOCK = 303,
+     NUMBER = 304,
+     IDENTIFIER = 305,
+     VAR_IMAGE = 306,
+     VAR_FLOAT = 307,
+     VAR_INT = 308,
+     VAR_UCHAR = 309,
+     VAR_STRING = 310,
+     VAR_IMAGEDRAW = 311,
+     VAR_SURFACE = 312,
+     VAR_SURFDRAW = 313,
+     VAR_MATRIX = 314,
+     VAR_FILE = 315,
+     VAR_C_FUNCTION = 316,
+     VAR_C_PROCEDURE = 317,
+     VAR_C_IMAGE_FUNCTION = 318,
+     VAR_AMI_FUNCTION = 319,
+     VAR_PARAMWIN = 320,
+     VAR_GLTRANSFORM = 321,
+     VAR_ARRAY_SURFACE = 322,
+     VAR_ARRAY_IMAGE = 323,
+     T_del = 324,
+     ENDOP = 325,
+     T_global = 326,
+     T_local = 327,
+     T_global_new = 328,
+     T_local_new = 329,
+     T_wait = 330,
+     T_schedule = 331,
+     T_ParamWin = 332,
+     T_BeginPanel = 333,
+     T_EndPanel = 334,
+     T_BeginBook = 335,
+     T_EndBook = 336,
+     T_AddPage = 337,
+     T_AddFloat = 338,
+     T_AddInt = 339,
+     T_CreateWin = 340,
+     T_Display = 341,
+     T_AddButton = 342,
+     T_AddBoolean = 343,
+     T_AddEnum = 344,
+     T_AddEnumChoice = 345,
+     T_AddString = 346,
+     T_AddFilename = 347,
+     T_ShowSlider = 348,
+     T_SetCallback = 349,
+     T_SetDragCallback = 350,
+     T_BeginBox = 351,
+     T_EndBox = 352,
+     T_BeginHorizontal = 353,
+     T_EndHorizontal = 354,
+     T_redraw = 355,
+     RIGHT_ASSIGN = 356,
+     LEFT_ASSIGN = 357,
+     ADD_ASSIGN = 358,
+     SUB_ASSIGN = 359,
+     MUL_ASSIGN = 360,
+     DIV_ASSIGN = 361,
+     MOD_ASSIGN = 362,
+     AND_ASSIGN = 363,
+     XOR_ASSIGN = 364,
+     OR_ASSIGN = 365,
+     RIGHT_OP = 366,
+     INC_OP = 367,
+     DEC_OP = 368,
+     PTR_OP = 369,
+     AND_OP = 370,
+     OR_OP = 371,
+     LE_OP = 372,
+     GE_OP = 373,
+     EQ_OP = 374,
+     NE_OP = 375,
+     TRANSPOSE_OP = 376,
+     POINTWISE_MULT = 377,
+     ASSIGN_OP = 378,
+     T_COUNT = 379,
+     T_MAX = 380,
+     T_argmax = 381,
+     T_MIN = 382,
+     T_MEDIAN = 383,
+     OpImage = 384,
+     FILTER = 385,
+     NormGrad = 386,
+     T_DiscNormGrad = 387,
+     T_gradient = 388,
+     SecDerGrad = 389,
+     SecDerGrad2 = 390,
+     SubImage = 391,
+     PutImage = 392,
+     T_AutoCrop = 393,
+     T_DiscSecDerGrad = 394,
+     T_EDPdilate = 395,
+     T_EDPerode = 396,
+     T_EDPopen = 397,
+     T_EDPclose = 398,
+     AnisoGS = 399,
+     AnisoSmoothGS = 400,
+     T_vtkAnisoGS = 401,
+     T_SetDistMap = 402,
+     T_DiscMeanCurvature = 403,
+     T_vtkMedian3D = 404,
+     T_NULL = 405,
+     T_InitTime = 406,
+     T_TimeSpent = 407,
+     T_EndTime = 408,
+     T_LevelSetsCURV = 409,
+     T_UpdateResult = 410,
+     T_SetMeanCurv = 411,
+     T_SetAffineCurv = 412,
+     T_SetBalloonScheme = 413,
+     T_SetVelocity = 414,
+     T_SetExpansion = 415,
+     T_SetExpansionImage = 416,
+     T_SetAdvectionField = 417,
+     T_SetCurvWeights = 418,
+     T_GetAttachVect = 419,
+     T_GetCurvature = 420,
+     T_GetDistMap = 421,
+     T_GetAdvection = 422,
+     T_GetVelocity = 423,
+     T_GetExpansion = 424,
+     T_GetSkeleton = 425,
+     T_SetDistMethod = 426,
+     T_SetParam = 427,
+     T_SetIsoContourBin = 428,
+     T_SetBandTube = 429,
+     T_SetThreads = 430,
+     T_SaveDistMap = 431,
+     T_SaveSecDerGrad = 432,
+     T_SetNumGaussians = 433,
+     T_SetGaussian = 434,
+     T_SetProbThreshold = 435,
+     T_SetILowTh = 436,
+     T_SetIHighTh = 437,
+     T_SetProbHighTh = 438,
+     T_SetNumInitPoints = 439,
+     T_SetInitPoint = 440,
+     T_vtkFastMarching = 441,
+     T_vtkFastMarchingTarget = 442,
+     T_FluxDiffusion = 443,
+     T_AnisoWeickert = 444,
+     T_AnisoCW = 445,
+     T_SRAD_qcoeff = 446,
+     T_AnisoSRAD = 447,
+     T_AnisoSRAD2 = 448,
+     T_AnisoLeeAdd2 = 449,
+     T_AnisoDPAD = 450,
+     T_AnisoDPAD2 = 451,
+     T_AnisoNRAD = 452,
+     T_AnisoRudinMult = 453,
+     TInit = 454,
+     TSetCoeff = 455,
+     TIterate = 456,
+     TEnd = 457,
+     TAddGaussNoise = 458,
+     T_SNR = 459,
+     T_SetNoiseType = 460,
+     T_SetNoiseSD = 461,
+     T_GetNoiseSD = 462,
+     T_GetDAcoeff = 463,
+     T_SetMask = 464,
+     T_SetSRADROI = 465,
+     T_SetRNRADROI = 466,
+     T_SetRNRADROI_NEW = 467,
+     T_SetLocalStruct = 468,
+     T_SetEigenMode = 469,
+     T_Setdt = 470,
+     T_Setneighborhood = 471,
+     T_info = 472,
+     T_NbPoints = 473,
+     T_NbPolys = 474,
+     T_save = 475,
+     T_normalize = 476,
+     T_OrientField = 477,
+     T_OrientPositive = 478,
+     T_2DFlux = 479,
+     T_OutFlux = 480,
+     T_OutFluxScalar = 481,
+     T_OrientationRatio = 482,
+     T_Skeleton = 483,
+     T_SimplePoints = 484,
+     T_CircleIntegral = 485,
+     T_CircleIntegralExc = 486,
+     T_CircleIntSdExc = 487,
+     T_CircleMinIntSdExc = 488,
+     T_LocalExtrema = 489,
+     T_NormalField = 490,
+     T_DirConnectivity = 491,
+     T_eccentricity = 492,
+     T_rot2D = 493,
+     T_mean = 494,
+     T_SUM = 495,
+     T_localmean = 496,
+     T_localmean2 = 497,
+     T_localSD = 498,
+     T_localSD2 = 499,
+     T_struct_tensor = 500,
+     T_StructTensorH = 501,
+     T_HessianMatrix = 502,
+     T_HessianEVal = 503,
+     T_Derivatives = 504,
+     T_curvatures = 505,
+     T_Laplacian = 506,
+     T_setvoxelsize = 507,
+     T_settranslation = 508,
+     T_setendianness = 509,
+     T_Skeleton2lines = 510,
+     T_SmoothLines = 511,
+     T_ResampleLines = 512,
+     T_RemoveLine = 513,
+     T_ConnectLines = 514,
+     T_threscross = 515,
+     T_IsocontourPoints = 516,
+     T_IsosurfDist = 517,
+     T_vtkIsoContourDist = 518,
+     T_ShortestPath = 519,
+     T_ShortestPathImage = 520,
+     T_PathFromDispl = 521,
+     T_PathFromVectField = 522,
+     T_LineRecons = 523,
+     T_ReadCTALine = 524,
+     T_ReadCTALineRadii = 525,
+     T_WriteCTALine = 526,
+     T_SetIsoContour = 527,
+     T_SetIsoContourParam = 528,
+     T_DrawIsoContour = 529,
+     T_SetIsoContourColor = 530,
+     T_DrawAllContours = 531,
+     T_AllContoursParam = 532,
+     T_GetZmin = 533,
+     T_GetZmax = 534,
+     T_GetYmin = 535,
+     T_GetYmax = 536,
+     T_GetXmin = 537,
+     T_GetXmax = 538,
+     T_GetXPos = 539,
+     T_GetYPos = 540,
+     T_GetZPos = 541,
+     T_vtkDicomRead = 542,
+     T_vtkMINCRead = 543,
+     T_Convolve = 544,
+     T_ConvolveMask = 545,
+     T_Pad = 546,
+     T_Eigen2D = 547,
+     T_Eigen3D = 548,
+     T_ChamferDT = 549,
+     T_Chamfer2DT = 550,
+     T_BorgeforsDT = 551,
+     T_BorgeforsSDT = 552,
+     T_vtkSignedBorgefors = 553,
+     T_vtkSignedFMDist = 554,
+     T_PropagationDist = 555,
+     T_PropagationDist2 = 556,
+     T_PropDanielsson = 557,
+     T_vtkPropDanielsson = 558,
+     T_vtkPropDaniel2 = 559,
+     T_CC = 560,
+     T_ProcessXEvents = 561,
+     T_isoarea2D = 562,
+     T_posarea = 563,
+     T_isosurf = 564,
+     T_isosurf_inv = 565,
+     T_isosurf_ijk = 566,
+     T_isosurf_ras = 567,
+     T_vtkDecimate = 568,
+     T_vtkMarchingCubes = 569,
+     T_vtkSmooth = 570,
+     T_Recompute = 571,
+     T_vtkWindowedSinc = 572,
+     T_isoline = 573,
+     T_vtkDist = 574,
+     T_AndreDist = 575,
+     T_Surface = 576,
+     T_getimage = 577,
+     T_GetImageFromX = 578,
+     T_rotate = 579,
+     T_computeCC = 580,
+     T_drawCC = 581,
+     T_setminCC = 582,
+     T_addobj = 583,
+     T_setcurrentobj = 584,
+     T_writeVRML = 585,
+     T_writeVTK = 586,
+     T_OwnMaterial = 587,
+     T_SetColor = 588,
+     T_SetColors = 589,
+     T_SetColorOpacity = 590,
+     T_Paint = 591,
+     T_SetLight = 592,
+     T_SetLightPos = 593,
+     T_SetLightAmbient = 594,
+     T_SetLightDiffuse = 595,
+     T_SetLightSpecular = 596,
+     T_SetBackground = 597,
+     T_Remove = 598,
+     T_SwapBuffers = 599,
+     T_SetAmbient = 600,
+     T_SetDiffuse = 601,
+     T_SetSpecular = 602,
+     T_SetShininess = 603,
+     T_SetOpacity = 604,
+     T_SetOpacityImage = 605,
+     T_SetVisible = 606,
+     T_SetColorMaterial = 607,
+     T_penguin = 608,
+     T_Statistics = 609,
+     T_GetIntensities = 610,
+     T_GetLinesLength = 611,
+     T_GetLinesExtremities = 612,
+     T_GetConnections = 613,
+     T_SelectLines = 614,
+     T_RemoveSelection = 615,
+     T_mergepoints = 616,
+     T_Triangulate = 617,
+     T_Displace = 618,
+     T_Normals = 619,
+     T_InvertNormals = 620,
+     T_Translate = 621,
+     T_Scale = 622,
+     T_SetPointsColors = 623,
+     T_SetLineWidth = 624,
+     T_AddPoint = 625,
+     T_NewLine = 626,
+     T_EndLine = 627,
+     T_LineAddPointNumber = 628,
+     T_GetTransform = 629,
+     T_SetTransform = 630,
+     T_Interpolate = 631,
+     T_Matrix = 632,
+     T_Invert = 633,
+     T_PrintMatrices = 634,
+     SET = 635,
+     SETPOS = 636,
+     SHOWCURSOR = 637,
+     UPDATE = 638,
+     COMPARE = 639,
+     SETVECTOR = 640,
+     T_SetCompareDisplacement = 641,
+     T_DrawVector = 642,
+     T_DisplayVectors = 643,
+     T_SetVectParam = 644,
+     T_SetVectColor = 645,
+     T_SetVectStyle = 646,
+     T_SetLineThickness = 647,
+     T_SetZoom = 648,
+     T_SetWindowSize = 649,
+     T_SetColormap = 650,
+     T_drawcircle = 651,
+     T_setGLwin = 652,
+     T_initvalue = 653,
+     T_ShowSection = 654,
+     T_HideSection = 655,
+     T_Xpos = 656,
+     T_Ypos = 657,
+     T_Zpos = 658,
+     T_SpacePos = 659,
+     T_CHAR = 660,
+     T_UCHAR = 661,
+     T_SHORT = 662,
+     T_USHORT = 663,
+     T_INT = 664,
+     T_UINT = 665,
+     T_FLOAT = 666,
+     T_DOUBLE = 667,
+     T_RGB = 668,
+     T_FLOAT_VECTOR = 669,
+     T_GetFormat = 670,
+     T_atof = 671,
+     T_gnuplot = 672,
+     T_histo = 673,
+     T_cumhisto = 674,
+     T_DisplayHisto = 675,
+     T_OPEN = 676,
+     T_CLOSE = 677,
+     T_scan_float = 678,
+     T_read = 679,
+     T_rewind = 680,
+     T_LineNumber = 681,
+     CONST_PI = 682,
+     SIN = 683,
+     COS = 684,
+     TAN = 685,
+     ASIN = 686,
+     ACOS = 687,
+     ATAN = 688,
+     SINH = 689,
+     COSH = 690,
+     EXP = 691,
+     LN = 692,
+     LOG = 693,
+     SQRT = 694,
+     ABS = 695,
+     ROUND = 696,
+     FLOOR = 697,
+     NORM = 698,
+     FOR = 699,
+     TO = 700,
+     STEP = 701,
+     ENDFOR = 702,
+     T_REPEAT = 703,
+     T_UNTIL = 704,
+     T_BREAK = 705,
+     IF = 706,
+     THEN = 707,
+     ELSE = 708,
+     VARIABLES = 709,
+     FUNCTION = 710,
+     T_exists = 711,
+     T_slice = 712,
+     T_GenRead = 713,
+     T_IMAGE = 714,
+     T_IMAGEDRAW = 715,
+     T_SURFACE = 716,
+     T_NUM = 717,
+     T_STRING = 718,
+     T_TRANSFORM = 719,
+     T_PROC = 720,
+     T_MeanHalfSize = 721,
+     T_Resize = 722,
+     T_ReSlice = 723,
+     T_Flip = 724,
+     T_SetCompTransf = 725,
+     T_ConvexHull = 726,
+     T_itk = 727,
+     T_CannyEdgeDetector = 728,
+     T_CreateFlatMesh = 729,
+     T_CreateVolume = 730,
+     T_vtkCreateFlatMesh = 731,
+     T_Altitude2Position = 732,
+     T_GeoCoordinates = 733,
+     T_ElevateMesh = 734,
+     T_CreateVectors = 735,
+     T_Set3DArrowParam = 736,
+     T_CreateEllipsoids = 737,
+     T_ComputeAltitudes = 738,
+     T_Temp2Altitudes = 739,
+     T_ReadFlow = 740,
+     T_SetFluidNavFile = 741,
+     T_DrawEarthCoord = 742,
+     T_PaintCallback = 743,
+     T_SaveStructuredGrid = 744,
+     T_import_ami = 745,
+     T_import_vtk = 746,
+     T_import_itk = 747,
+     T_import_wii = 748,
+     T_import_filters = 749,
+     T_amiOFCorr2D = 750,
+     T_amiOFVar2D = 751
+   };
+
+    };
+    /// Token type.
+    typedef token::yytokentype token_type;
+
+    /// Build a parser object.
+    Parser (class Driver& driver_yyarg);
+    virtual ~Parser ();
+
+    /// Parse.
+    /// \returns  0 iff parsing succeeded.
+    virtual int parse ();
+
+    /// The current debugging stream.
+    std::ostream& debug_stream () const;
+    /// Set the current debugging stream.
+    void set_debug_stream (std::ostream &);
+
+    /// Type for debugging levels.
+    typedef int debug_level_type;
+    /// The current debugging level.
+    debug_level_type debug_level () const;
+    /// Set the current debugging level.
+    void set_debug_level (debug_level_type l);
+
+  private:
+    /// Report a syntax error.
+    /// \param loc    where the syntax error is found.
+    /// \param msg    a description of the syntax error.
+    virtual void error (const location_type& loc, const std::string& msg);
+
+    /// Generate an error message.
+    /// \param state   the state where the error occurred.
+    /// \param tok     the look-ahead token.
+    virtual std::string yysyntax_error_ (int yystate, int tok);
+
+#if YYDEBUG
+    /// \brief Report a symbol value on the debug stream.
+    /// \param yytype       The token type.
+    /// \param yyvaluep     Its semantic value.
+    /// \param yylocationp  Its location.
+    virtual void yy_symbol_value_print_ (int yytype,
+					 const semantic_type* yyvaluep,
+					 const location_type* yylocationp);
+    /// \brief Report a symbol on the debug stream.
+    /// \param yytype       The token type.
+    /// \param yyvaluep     Its semantic value.
+    /// \param yylocationp  Its location.
+    virtual void yy_symbol_print_ (int yytype,
+				   const semantic_type* yyvaluep,
+				   const location_type* yylocationp);
+#endif /* ! YYDEBUG */
+
+
+    /// State numbers.
+    typedef int state_type;
+    /// State stack type.
+    typedef stack<state_type>    state_stack_type;
+    /// Semantic value stack type.
+    typedef stack<semantic_type> semantic_stack_type;
+    /// location stack type.
+    typedef stack<location_type> location_stack_type;
+
+    /// The state stack.
+    state_stack_type yystate_stack_;
+    /// The semantic value stack.
+    semantic_stack_type yysemantic_stack_;
+    /// The location stack.
+    location_stack_type yylocation_stack_;
+
+    /// Internal symbol numbers.
+    typedef unsigned short int token_number_type;
+    /* Tables.  */
+    /// For a state, the index in \a yytable_ of its portion.
+    static const short int yypact_[];
+    static const short int yypact_ninf_;
+
+    /// For a state, default rule to reduce.
+    /// Unless\a  yytable_ specifies something else to do.
+    /// Zero means the default is an error.
+    static const unsigned short int yydefact_[];
+
+    static const short int yypgoto_[];
+    static const short int yydefgoto_[];
+
+    /// What to do in a state.
+    /// \a yytable_[yypact_[s]]: what to do in state \a s.
+    /// - if positive, shift that token.
+    /// - if negative, reduce the rule which number is the opposite.
+    /// - if zero, do what YYDEFACT says.
+    static const unsigned short int yytable_[];
+    static const signed char yytable_ninf_;
+
+    static const short int yycheck_[];
+
+    /// For a state, its accessing symbol.
+    static const unsigned short int yystos_[];
+
+    /// For a rule, its LHS.
+    static const unsigned short int yyr1_[];
+    /// For a rule, its RHS length.
+    static const unsigned char yyr2_[];
+
+#if YYDEBUG || YYERROR_VERBOSE || YYTOKEN_TABLE
+    /// For a symbol, its name in clear.
+    static const char* const yytname_[];
 #endif
 
-extern YYSTYPE yyiplval;
+#if YYERROR_VERBOSE
+    /// Convert the symbol name \a n to a form suitable for a diagnostic.
+    virtual std::string yytnamerr_ (const char *n);
+#endif
 
+#if YYDEBUG
+    /// A type to store symbol numbers and -1.
+    typedef short int rhs_number_type;
+    /// A `-1'-separated list of the rules' RHS.
+    static const rhs_number_type yyrhs_[];
+    /// For each rule, the index of the first RHS symbol in \a yyrhs_.
+    static const unsigned short int yyprhs_[];
+    /// For each rule, its source line number.
+    static const unsigned short int yyrline_[];
+    /// For each scanner token number, its symbol number.
+    static const unsigned short int yytoken_number_[];
+    /// Report on the debug stream that the rule \a r is going to be reduced.
+    virtual void yy_reduce_print_ (int r);
+    /// Print the state stack on the debug stream.
+    virtual void yystack_print_ ();
+#endif
+
+    /// Convert a scanner token number \a t to a symbol number.
+    token_number_type yytranslate_ (int t);
+
+    /// \brief Reclaim the memory associated to a symbol.
+    /// \param yymsg        Why this token is reclaimed.
+    /// \param yytype       The symbol type.
+    /// \param yyvaluep     Its semantic value.
+    /// \param yylocationp  Its location.
+    inline void yydestruct_ (const char* yymsg,
+			     int yytype,
+			     semantic_type* yyvaluep,
+			     location_type* yylocationp);
+
+    /// Pop \a n symbols the three stacks.
+    inline void yypop_ (unsigned int n = 1);
+
+    /* Constants.  */
+    static const int yyeof_;
+    /* LAST_ -- Last index in TABLE_.  */
+    static const int yylast_;
+    static const int yynnts_;
+    static const int yyempty_;
+    static const int yyfinal_;
+    static const int yyterror_;
+    static const int yyerrcode_;
+    static const int yyntokens_;
+    static const unsigned int yyuser_token_number_max_;
+    static const token_number_type yyundef_token_;
+
+    /* Debugging.  */
+    int yydebug_;
+    std::ostream* yycdebug_;
+
+
+    /* User arguments.  */
+    class Driver& driver;
+  };
+}
+
+
+#endif /* ! defined PARSER_HEADER_H */

@@ -38,7 +38,7 @@ include_directories (
 INCLUDE( ${VTK_USE_FILE} )
 INCLUDE(${wxWidgets_USE_FILE})
 
-BISON_TARGET_option_extraopts("-t -p yyip -dv")
+BISON_TARGET_option_extraopts("-t  -dv")
 
 BISON_TARGET(improcessbison
   ${AMILAB_SOURCE_DIR}/Language/improcess_bison.ypp
@@ -49,6 +49,7 @@ IF (WIN32)
 
   SET(Language_SRCS
     ${BISON_improcessbison_OUTPUTS}
+    driver.cc
     improcess_flex.cpp
     VarContexts.cpp
     Variable.cpp
@@ -66,6 +67,7 @@ ELSE (WIN32)
   SET(Language_SRCS
     ${BISON_improcessbison_OUTPUTS}
     ${FLEX_improcessflex_OUTPUTS}
+    driver.cc
     VarContexts.cpp
     Variable.cpp
     Variables.cpp

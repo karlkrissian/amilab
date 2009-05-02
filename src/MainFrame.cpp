@@ -51,21 +51,7 @@ extern wxString        GB_help_dir;
 extern wxString        GB_scripts_dir;
 extern VarContexts  Vars;
 
- void init_gr_output();
- void gr_print(const char* st);
-// void close_gr_output();
 
- void init_err_output();
- void err_print(char* st);
-// void close_err_output();
-
- void init_res_output();
- void res_print(char* st);
-// void close_res_output();
-
- void init_cmdhistory();
- void ws_print(const char* st);
-// void close_cmdhistory();
 
 // in function.cpp
 int AskScript(std::string& name);
