@@ -16,7 +16,11 @@
 
 #include "ami_function.h"
 #include "Duree.hpp"
-#include "fonctions.h"
+
+#include "ImageStack.h"
+#include "SurfStack.h"
+#include "MatrixStack.h"
+#include "GLTransformStack.h"
 
 struct yy_buffer_state;
 
@@ -75,6 +79,11 @@ public:
     /// kept for transition from C flex-bison code
     /// should be removed later
     bool in_console;
+
+    /// flag for accepting variable names as identifiers
+    /// when declaring the parameters of a function
+    /// not thread-safe for the language ...
+    bool  procedure_declaration;
 
 public:
 

@@ -188,42 +188,44 @@ extern char program[80];
 
 extern unsigned char DELETE_IDRAW;
 
-extern int procedure_declaration;
+//-------------------------------------------------------
+class wxWaitTimer : public wxTimer
+//    -----------
+{
+  public:
+    bool finished;
 
-//#define MAX_TIMEOUT 10
-//int GB_TimeOut[MAX_TIMEOUT];
-
-
-
-
-
-
-/*
-static wxString GetwxStr(const char* str) {
-  return wxString::FromAscii(str);
-}
-
-static wxString GetwxStr(const string& str) {
-  return wxString::FromAscii(str.c_str());
-}
-*/
-
-static void CB_TimeOut( void* cd, long unsigned int *) {
-//  GB_TimeOut[*(int*)cd] = 1;
-}
-
-static void CB_ParamWin( void* cd );
-
-static void CB_CallAMIFunction( void* cd, long unsigned int *) {
-  CB_ParamWin(cd);
-}
-
- static void CB_Button(  void* cd) {
-  CB_ParamWin(cd);
-}
+    wxWaitTimer() : finished(false) {}
+    //Called each time the timer's timeout expires
+    void Notify()     { finished = true; }
+};
 
 
 
+//------------------------------------------------------
+class wxScheduleTimer : public wxTimer
+//    ---------------
+{
+  DEFINE_CLASS(wxScheduleTimer)
+  public:
+    wxScheduleTimer( AMIFunction_ptr& callback) 
+    { 
+      f = callback; 
+    }
+
+    ~wxScheduleTimer() 
+    { cout << "~wxScheduleTimer()" << endl; }
+
+    //Called each time the timer's timeout expires
+    void Notify();
+
+  private:
+    AMIFunction_ptr f;
+};
+
+// create a array of shared pointers
+// to delete the wxScheduleTimer when necessary
+static std::list<wxScheduleTimer::ptr> schedule_timers;
 
 static void CB_ParamWin( void* cd ) {
 
@@ -236,6 +238,14 @@ static void CB_ParamWin( void* cd ) {
 
 } // CB_ParamWin( void* cd )
 
+
+static void CB_CallAMIFunction( void* cd, long unsigned int *) {
+  CB_ParamWin(cd);
+}
+
+ static void CB_Button(  void* cd) {
+  CB_ParamWin(cd);
+}
 
 void CB_delete_imagedraw( void* varname);
 
@@ -378,7 +388,7 @@ void CB_delete_surfdraw( void* varid);
 
 
 /* Line 35 of lalr1.cc.  */
-#line 382 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.hpp"
+#line 392 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.hpp"
 
 #include "location.hh"
 
@@ -429,7 +439,7 @@ namespace yyip
     /// Symbol semantic values.
 #ifndef YYSTYPE
     union semantic_type
-#line 374 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 384 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
 {
   char                  ident[IDENT_MAX_SIZE];
   Variable*             variable;
@@ -444,7 +454,7 @@ namespace yyip
   ImageExtent*          imageextent;
 }
 /* Line 35 of lalr1.cc.  */
-#line 448 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.hpp"
+#line 458 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.hpp"
 	;
 #else
     typedef YYSTYPE semantic_type;
@@ -761,196 +771,197 @@ namespace yyip
      T_vtkPropDaniel2 = 559,
      T_CC = 560,
      T_ProcessXEvents = 561,
-     T_isoarea2D = 562,
-     T_posarea = 563,
-     T_isosurf = 564,
-     T_isosurf_inv = 565,
-     T_isosurf_ijk = 566,
-     T_isosurf_ras = 567,
-     T_vtkDecimate = 568,
-     T_vtkMarchingCubes = 569,
-     T_vtkSmooth = 570,
-     T_Recompute = 571,
-     T_vtkWindowedSinc = 572,
-     T_isoline = 573,
-     T_vtkDist = 574,
-     T_AndreDist = 575,
-     T_Surface = 576,
-     T_getimage = 577,
-     T_GetImageFromX = 578,
-     T_rotate = 579,
-     T_computeCC = 580,
-     T_drawCC = 581,
-     T_setminCC = 582,
-     T_addobj = 583,
-     T_setcurrentobj = 584,
-     T_writeVRML = 585,
-     T_writeVTK = 586,
-     T_OwnMaterial = 587,
-     T_SetColor = 588,
-     T_SetColors = 589,
-     T_SetColorOpacity = 590,
-     T_Paint = 591,
-     T_SetLight = 592,
-     T_SetLightPos = 593,
-     T_SetLightAmbient = 594,
-     T_SetLightDiffuse = 595,
-     T_SetLightSpecular = 596,
-     T_SetBackground = 597,
-     T_Remove = 598,
-     T_SwapBuffers = 599,
-     T_SetAmbient = 600,
-     T_SetDiffuse = 601,
-     T_SetSpecular = 602,
-     T_SetShininess = 603,
-     T_SetOpacity = 604,
-     T_SetOpacityImage = 605,
-     T_SetVisible = 606,
-     T_SetColorMaterial = 607,
-     T_penguin = 608,
-     T_Statistics = 609,
-     T_GetIntensities = 610,
-     T_GetLinesLength = 611,
-     T_GetLinesExtremities = 612,
-     T_GetConnections = 613,
-     T_SelectLines = 614,
-     T_RemoveSelection = 615,
-     T_mergepoints = 616,
-     T_Triangulate = 617,
-     T_Displace = 618,
-     T_Normals = 619,
-     T_InvertNormals = 620,
-     T_Translate = 621,
-     T_Scale = 622,
-     T_SetPointsColors = 623,
-     T_SetLineWidth = 624,
-     T_AddPoint = 625,
-     T_NewLine = 626,
-     T_EndLine = 627,
-     T_LineAddPointNumber = 628,
-     T_GetTransform = 629,
-     T_SetTransform = 630,
-     T_Interpolate = 631,
-     T_Matrix = 632,
-     T_Invert = 633,
-     T_PrintMatrices = 634,
-     SET = 635,
-     SETPOS = 636,
-     SHOWCURSOR = 637,
-     UPDATE = 638,
-     COMPARE = 639,
-     SETVECTOR = 640,
-     T_SetCompareDisplacement = 641,
-     T_DrawVector = 642,
-     T_DisplayVectors = 643,
-     T_SetVectParam = 644,
-     T_SetVectColor = 645,
-     T_SetVectStyle = 646,
-     T_SetLineThickness = 647,
-     T_SetZoom = 648,
-     T_SetWindowSize = 649,
-     T_SetColormap = 650,
-     T_drawcircle = 651,
-     T_setGLwin = 652,
-     T_initvalue = 653,
-     T_ShowSection = 654,
-     T_HideSection = 655,
-     T_Xpos = 656,
-     T_Ypos = 657,
-     T_Zpos = 658,
-     T_SpacePos = 659,
-     T_CHAR = 660,
-     T_UCHAR = 661,
-     T_SHORT = 662,
-     T_USHORT = 663,
-     T_INT = 664,
-     T_UINT = 665,
-     T_FLOAT = 666,
-     T_DOUBLE = 667,
-     T_RGB = 668,
-     T_FLOAT_VECTOR = 669,
-     T_GetFormat = 670,
-     T_atof = 671,
-     T_gnuplot = 672,
-     T_histo = 673,
-     T_cumhisto = 674,
-     T_DisplayHisto = 675,
-     T_OPEN = 676,
-     T_CLOSE = 677,
-     T_scan_float = 678,
-     T_read = 679,
-     T_rewind = 680,
-     T_LineNumber = 681,
-     CONST_PI = 682,
-     SIN = 683,
-     COS = 684,
-     TAN = 685,
-     ASIN = 686,
-     ACOS = 687,
-     ATAN = 688,
-     SINH = 689,
-     COSH = 690,
-     EXP = 691,
-     LN = 692,
-     LOG = 693,
-     SQRT = 694,
-     ABS = 695,
-     ROUND = 696,
-     FLOOR = 697,
-     NORM = 698,
-     FOR = 699,
-     TO = 700,
-     STEP = 701,
-     ENDFOR = 702,
-     T_REPEAT = 703,
-     T_UNTIL = 704,
-     T_BREAK = 705,
-     IF = 706,
-     THEN = 707,
-     ELSE = 708,
-     VARIABLES = 709,
-     FUNCTION = 710,
-     T_exists = 711,
-     T_slice = 712,
-     T_GenRead = 713,
-     T_IMAGE = 714,
-     T_IMAGEDRAW = 715,
-     T_SURFACE = 716,
-     T_NUM = 717,
-     T_STRING = 718,
-     T_TRANSFORM = 719,
-     T_PROC = 720,
-     T_MeanHalfSize = 721,
-     T_Resize = 722,
-     T_ReSlice = 723,
-     T_Flip = 724,
-     T_SetCompTransf = 725,
-     T_ConvexHull = 726,
-     T_itk = 727,
-     T_CannyEdgeDetector = 728,
-     T_CreateFlatMesh = 729,
-     T_CreateVolume = 730,
-     T_vtkCreateFlatMesh = 731,
-     T_Altitude2Position = 732,
-     T_GeoCoordinates = 733,
-     T_ElevateMesh = 734,
-     T_CreateVectors = 735,
-     T_Set3DArrowParam = 736,
-     T_CreateEllipsoids = 737,
-     T_ComputeAltitudes = 738,
-     T_Temp2Altitudes = 739,
-     T_ReadFlow = 740,
-     T_SetFluidNavFile = 741,
-     T_DrawEarthCoord = 742,
-     T_PaintCallback = 743,
-     T_SaveStructuredGrid = 744,
-     T_import_ami = 745,
-     T_import_vtk = 746,
-     T_import_itk = 747,
-     T_import_wii = 748,
-     T_import_filters = 749,
-     T_amiOFCorr2D = 750,
-     T_amiOFVar2D = 751
+     T_ProcessEvents = 562,
+     T_isoarea2D = 563,
+     T_posarea = 564,
+     T_isosurf = 565,
+     T_isosurf_inv = 566,
+     T_isosurf_ijk = 567,
+     T_isosurf_ras = 568,
+     T_vtkDecimate = 569,
+     T_vtkMarchingCubes = 570,
+     T_vtkSmooth = 571,
+     T_Recompute = 572,
+     T_vtkWindowedSinc = 573,
+     T_isoline = 574,
+     T_vtkDist = 575,
+     T_AndreDist = 576,
+     T_Surface = 577,
+     T_getimage = 578,
+     T_GetImageFromX = 579,
+     T_rotate = 580,
+     T_computeCC = 581,
+     T_drawCC = 582,
+     T_setminCC = 583,
+     T_addobj = 584,
+     T_setcurrentobj = 585,
+     T_writeVRML = 586,
+     T_writeVTK = 587,
+     T_OwnMaterial = 588,
+     T_SetColor = 589,
+     T_SetColors = 590,
+     T_SetColorOpacity = 591,
+     T_Paint = 592,
+     T_SetLight = 593,
+     T_SetLightPos = 594,
+     T_SetLightAmbient = 595,
+     T_SetLightDiffuse = 596,
+     T_SetLightSpecular = 597,
+     T_SetBackground = 598,
+     T_Remove = 599,
+     T_SwapBuffers = 600,
+     T_SetAmbient = 601,
+     T_SetDiffuse = 602,
+     T_SetSpecular = 603,
+     T_SetShininess = 604,
+     T_SetOpacity = 605,
+     T_SetOpacityImage = 606,
+     T_SetVisible = 607,
+     T_SetColorMaterial = 608,
+     T_penguin = 609,
+     T_Statistics = 610,
+     T_GetIntensities = 611,
+     T_GetLinesLength = 612,
+     T_GetLinesExtremities = 613,
+     T_GetConnections = 614,
+     T_SelectLines = 615,
+     T_RemoveSelection = 616,
+     T_mergepoints = 617,
+     T_Triangulate = 618,
+     T_Displace = 619,
+     T_Normals = 620,
+     T_InvertNormals = 621,
+     T_Translate = 622,
+     T_Scale = 623,
+     T_SetPointsColors = 624,
+     T_SetLineWidth = 625,
+     T_AddPoint = 626,
+     T_NewLine = 627,
+     T_EndLine = 628,
+     T_LineAddPointNumber = 629,
+     T_GetTransform = 630,
+     T_SetTransform = 631,
+     T_Interpolate = 632,
+     T_Matrix = 633,
+     T_Invert = 634,
+     T_PrintMatrices = 635,
+     SET = 636,
+     SETPOS = 637,
+     SHOWCURSOR = 638,
+     UPDATE = 639,
+     COMPARE = 640,
+     SETVECTOR = 641,
+     T_SetCompareDisplacement = 642,
+     T_DrawVector = 643,
+     T_DisplayVectors = 644,
+     T_SetVectParam = 645,
+     T_SetVectColor = 646,
+     T_SetVectStyle = 647,
+     T_SetLineThickness = 648,
+     T_SetZoom = 649,
+     T_SetWindowSize = 650,
+     T_SetColormap = 651,
+     T_drawcircle = 652,
+     T_setGLwin = 653,
+     T_initvalue = 654,
+     T_ShowSection = 655,
+     T_HideSection = 656,
+     T_Xpos = 657,
+     T_Ypos = 658,
+     T_Zpos = 659,
+     T_SpacePos = 660,
+     T_CHAR = 661,
+     T_UCHAR = 662,
+     T_SHORT = 663,
+     T_USHORT = 664,
+     T_INT = 665,
+     T_UINT = 666,
+     T_FLOAT = 667,
+     T_DOUBLE = 668,
+     T_RGB = 669,
+     T_FLOAT_VECTOR = 670,
+     T_GetFormat = 671,
+     T_atof = 672,
+     T_gnuplot = 673,
+     T_histo = 674,
+     T_cumhisto = 675,
+     T_DisplayHisto = 676,
+     T_OPEN = 677,
+     T_CLOSE = 678,
+     T_scan_float = 679,
+     T_read = 680,
+     T_rewind = 681,
+     T_LineNumber = 682,
+     CONST_PI = 683,
+     SIN = 684,
+     COS = 685,
+     TAN = 686,
+     ASIN = 687,
+     ACOS = 688,
+     ATAN = 689,
+     SINH = 690,
+     COSH = 691,
+     EXP = 692,
+     LN = 693,
+     LOG = 694,
+     SQRT = 695,
+     ABS = 696,
+     ROUND = 697,
+     FLOOR = 698,
+     NORM = 699,
+     FOR = 700,
+     TO = 701,
+     STEP = 702,
+     ENDFOR = 703,
+     T_REPEAT = 704,
+     T_UNTIL = 705,
+     T_BREAK = 706,
+     IF = 707,
+     THEN = 708,
+     ELSE = 709,
+     VARIABLES = 710,
+     FUNCTION = 711,
+     T_exists = 712,
+     T_slice = 713,
+     T_GenRead = 714,
+     T_IMAGE = 715,
+     T_IMAGEDRAW = 716,
+     T_SURFACE = 717,
+     T_NUM = 718,
+     T_STRING = 719,
+     T_TRANSFORM = 720,
+     T_PROC = 721,
+     T_MeanHalfSize = 722,
+     T_Resize = 723,
+     T_ReSlice = 724,
+     T_Flip = 725,
+     T_SetCompTransf = 726,
+     T_ConvexHull = 727,
+     T_itk = 728,
+     T_CannyEdgeDetector = 729,
+     T_CreateFlatMesh = 730,
+     T_CreateVolume = 731,
+     T_vtkCreateFlatMesh = 732,
+     T_Altitude2Position = 733,
+     T_GeoCoordinates = 734,
+     T_ElevateMesh = 735,
+     T_CreateVectors = 736,
+     T_Set3DArrowParam = 737,
+     T_CreateEllipsoids = 738,
+     T_ComputeAltitudes = 739,
+     T_Temp2Altitudes = 740,
+     T_ReadFlow = 741,
+     T_SetFluidNavFile = 742,
+     T_DrawEarthCoord = 743,
+     T_PaintCallback = 744,
+     T_SaveStructuredGrid = 745,
+     T_import_ami = 746,
+     T_import_vtk = 747,
+     T_import_itk = 748,
+     T_import_wii = 749,
+     T_import_filters = 750,
+     T_amiOFCorr2D = 751,
+     T_amiOFVar2D = 752
    };
 
     };

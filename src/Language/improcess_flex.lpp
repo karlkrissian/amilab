@@ -64,9 +64,6 @@ AmiInstructionBlock* ami_block;
 int  block_level = 0;
 int comment_caller;
 
-// flag for accepting variable names as identifiers
-// when declaring the parameters of a function
-int  procedure_declaration = 0;
 
 
 extern int       GB_argc;
@@ -252,7 +249,6 @@ rewind     return(token::T_rewind); /*{rewind,T_rewind}*/
 proc {
 //============================ Parse Procedure ===============
 //
-  procedure_declaration = 1;
   return(token::T_PROC);
 
 }  /*{proc,T_PROC}*/
@@ -396,6 +392,7 @@ NULL              return(token::T_NULL); /*{NULL,T_NULL}*/
 
 
 ProcessXEvents    return(token::T_ProcessXEvents); /*{ProcessXEvents,T_ProcessXEvents}*/
+ProcessEvents    return(token::T_ProcessEvents); /*{ProcessEvents,T_ProcessEvents}*/
 
 count             return(token::T_COUNT); /*{count,T_COUNT}*/
 max               return(token::T_MAX); /*{max,T_MAX}*/
@@ -1004,16 +1001,7 @@ yyip::Parser::token::yytokentype checkvar(
 
   Variable* var;
 
-//  sprintf(tmp_string,"checkvar()  %s \n",YYText());
-//  err_print(tmp_string);
-
-//fprintf(stderr,"%s procdecl %d \n",YYText(),procedure_declaration);
-
-  // the first identifier is the procedure name and must be checked
-  if (procedure_declaration==1)
-    procedure_declaration++;
-
-  if  ((procedure_declaration!=2)&&
+  if  ((!GB_driver.procedure_declaration)&&
       (Vars.GetVar(varname,&var,context)))   {
 
     yylval->variable = var;

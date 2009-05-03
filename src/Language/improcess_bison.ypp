@@ -147,42 +147,44 @@ extern char program[80];
 
 extern unsigned char DELETE_IDRAW;
 
-extern int procedure_declaration;
+//-------------------------------------------------------
+class wxWaitTimer : public wxTimer
+//    -----------
+{
+  public:
+    bool finished;
 
-//#define MAX_TIMEOUT 10
-//int GB_TimeOut[MAX_TIMEOUT];
-
-
-
-
-
-
-/*
-static wxString GetwxStr(const char* str) {
-  return wxString::FromAscii(str);
-}
-
-static wxString GetwxStr(const string& str) {
-  return wxString::FromAscii(str.c_str());
-}
-*/
-
-static void CB_TimeOut( void* cd, long unsigned int *) {
-//  GB_TimeOut[*(int*)cd] = 1;
-}
-
-static void CB_ParamWin( void* cd );
-
-static void CB_CallAMIFunction( void* cd, long unsigned int *) {
-  CB_ParamWin(cd);
-}
-
- static void CB_Button(  void* cd) {
-  CB_ParamWin(cd);
-}
+    wxWaitTimer() : finished(false) {}
+    //Called each time the timer's timeout expires
+    void Notify()     { finished = true; }
+};
 
 
 
+//------------------------------------------------------
+class wxScheduleTimer : public wxTimer
+//    ---------------
+{
+  DEFINE_CLASS(wxScheduleTimer)
+  public:
+    wxScheduleTimer( AMIFunction_ptr& callback) 
+    { 
+      f = callback; 
+    }
+
+    ~wxScheduleTimer() 
+    { cout << "~wxScheduleTimer()" << endl; }
+
+    //Called each time the timer's timeout expires
+    void Notify();
+
+  private:
+    AMIFunction_ptr f;
+};
+
+// create a array of shared pointers
+// to delete the wxScheduleTimer when necessary
+static std::list<wxScheduleTimer::ptr> schedule_timers;
 
 static void CB_ParamWin( void* cd ) {
 
@@ -195,6 +197,14 @@ static void CB_ParamWin( void* cd ) {
 
 } // CB_ParamWin( void* cd )
 
+
+static void CB_CallAMIFunction( void* cd, long unsigned int *) {
+  CB_ParamWin(cd);
+}
+
+ static void CB_Button(  void* cd) {
+  CB_ParamWin(cd);
+}
 
 void CB_delete_imagedraw( void* varname);
 
@@ -662,6 +672,7 @@ void CB_delete_surfdraw( void* varid);
 %token T_CC
 
 %token T_ProcessXEvents
+%token T_ProcessEvents
 
 %token T_isoarea2D T_posarea
 
@@ -1021,17 +1032,20 @@ cond_inst :
 
 proc_decl:
     T_PROC  identifier
+    {
+      GB_driver.procedure_declaration = true;
+    }
         T_OP_PAR param_list_decl T_CL_PAR
         instr_block end_instr
     {
       AMIFunction* amifunc;
-      AmiInstructionBlock_ptr body($6);
+      AmiInstructionBlock_ptr body($7);
 
       amifunc = new AMIFunction;
 
       amifunc->SetName($2);
       amifunc->SetFileName(driver.current_file);
-      amifunc->SetParamList($4);
+      amifunc->SetParamList($5);
       amifunc->SetBody(     body);
       if (GB_debug) printf("%s body = %s\n", $2,body->GetBody().c_str());
 
@@ -1039,7 +1053,7 @@ proc_decl:
 
       // desactivate the flag procedure_declaration
       // which allows not to accept variables as identifiers
-      procedure_declaration = 0;
+      GB_driver.procedure_declaration = false;
     };
 
 func_inst :
@@ -1217,48 +1231,41 @@ command:
          }
          |
      T_wait T_OP_PAR expr T_CL_PAR
-         {
-/* TODO
-       int ms = (int) $3;
-
-       GB_TimeOut[0] = 0;
-       XtAppAddTimeOut( GB_contexte,
-                ms,
-                CB_TimeOut,
-                0);
-       TantQue (!GB_TimeOut[0]) Faire
-         Si XtAppPending( GB_contexte) Alors
-           XtAppProcessEvent( GB_contexte, XtIMAll);
-         FinSi
-       FinTantQue
-
+     {
+        /**
+        Description: waits the time given in milliseconds
+        */
+/*
+        int ms = (int) $3;
+        wxWaitTimer w;
+        w.Start(ms,wxTIMER_ONE_SHOT);
+        while (!w.finished) {
+          if (GB_wxApp->Pending()) {
+            GB_wxApp->Dispatch();
+          }
+        } // end while
 */
-         }
-         |
-         T_schedule T_OP_PAR expr T_COMMA VAR_AMI_FUNCTION T_CL_PAR
-         {
-          /**
-          Parameters:
-              (3) time in ms
-              (5) function to schedule
-          **/
-          // TODO To avoid pbs, make sure that the variable does not disappears
-          // by making a copy of it
-/* TODO
-          int ms = (int) $3;
-          Variable*    var   = $5;
-          AMIFunction_ptr* f;
-
-          f = new AMIFunction_ptr();
-          f = (AMIFunction_ptr*) (var->Pointer());
-
-          GB_TimeOut[0] = 0;
-              XtAppAddTimeOut( GB_contexte,
-              ms,
-              CB_CallAMIFunction,
-              (void*) f);
+      }
+      |
+      T_schedule T_OP_PAR expr T_COMMA VAR_AMI_FUNCTION T_CL_PAR
+      {
+        /**
+        Parameters:
+            (3) time in ms
+            (5) function to schedule
+        **/
+/*
+        // TODO To avoid pbs, make sure that the variable does not disappears
+        // by making a copy of it
+        int ms = (int) $3;
+        Variable*    var   = $5;
+  
+        wxScheduleTimer::ptr w = wxScheduleTimer::ptr(new wxScheduleTimer(  *(AMIFunction_ptr*) (var->Pointer()) ));
+        // add to the list of schedule timers
+        schedule_timers.push_back(w);
+        w->Start(ms,wxTIMER_ONE_SHOT);
 */
-         }
+      }
           |
           identifier ASSIGN_OP T_Surface T_OP_BR expr T_CL_BR
           {
@@ -4359,17 +4366,35 @@ command:
     |
     T_ProcessXEvents T_OP_PAR expr T_CL_PAR
     {
+      /**
+        Description: dispatches the given number of events
+      **/
       int nb_event;
 
-/* TODO
       nb_event = 0;
-      TantQue (nb_event<500)  Faire
-        Si XtAppPending( GB_contexte) Alors
-          XtAppProcessEvent( GB_contexte, XtIMAll);
-        FinSi
+      while (nb_event<500) {
+        if (GB_wxApp->Pending()) {
+          GB_wxApp->Dispatch();
+        }
+      } // end while
+      nb_event++;
+
+    }
+    |
+    T_ProcessEvents T_OP_PAR expr T_CL_PAR
+    {
+      /**
+        Description: dispatch the given number of events
+      **/
+      int nb_event;
+
+      nb_event = 0;
+      while (nb_event<500) {
+        if (GB_wxApp->Pending()) {
+          GB_wxApp->Dispatch();
+        }
         nb_event++;
-      FinTantQue
-*/
+      } // end while
 
     }
     | T_gnuplot T_OP_PAR expr_image T_COMMA expr_string T_COMMA expr T_CL_PAR
@@ -10630,6 +10655,24 @@ void CB_delete_surfdraw( void* varid)
 }
 
 
+//------------------------------------------------------
+void wxScheduleTimer::Notify()
+//   -----------------------
+{
+  cout << "Notify()" << endl;
+  CB_ParamWin(&f);
+
+  std::list<wxScheduleTimer::ptr>::iterator Iter;
+  for (Iter  = schedule_timers.begin(); 
+       Iter != schedule_timers.end()  ; Iter++ )
+  {
+    if ((*Iter).use_count()) {
+      if (Iter->get() == this) {
+        Iter = schedule_timers.erase(Iter);
+     }
+    }
+  }
+} // wxScheduleTimer::Notify()
 
 
 

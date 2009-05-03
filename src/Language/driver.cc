@@ -25,6 +25,9 @@ Driver::Driver()
       current_file("")
 {
   in_console = true;
+
+  procedure_declaration = false;
+
   init_debug_stream();
   init_err_output();
   init_res_output();
