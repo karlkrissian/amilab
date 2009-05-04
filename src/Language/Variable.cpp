@@ -1,10 +1,14 @@
 
+#include "Variable.hpp"
 
 #include "ParamBox.hpp"
 #include "ParamPanel.hpp"
 #include "DessinImage.hpp"
 #include "Viewer3D.hpp"
-#include "Variable.hpp"
+#include "ami_function.h"
+#include "ami_class.h"
+#include "ami_object.h"
+#include "FloatMatrix.hpp"
 
 #include <string>
 
@@ -48,6 +52,8 @@ void Variable::Init(vartype type, const char* name, void* p)
     CREATE_CASE(type_surface,      SurfacePoly)
     CREATE_CASE(type_file,         FILE)
     CREATE_CASE(type_ami_function, AMIFunction)
+    CREATE_CASE(type_ami_class,    AMIClass)
+    CREATE_CASE(type_ami_object,   AMIObject)
     CREATE_CASE(type_paramwin,     ParamBox)
     CREATE_CASE(type_parampanel,   ParamPanel)
     CREATE_CASE(type_matrix,       FloatMatrix)
@@ -110,6 +116,8 @@ using namespace boost;
     CREATE_CASE(type_surface,      SurfacePoly)
     CREATE_CASE(type_file,         FILE)
     CREATE_CASE(type_ami_function, AMIFunction)
+    CREATE_CASE(type_ami_class,    AMIClass)
+    CREATE_CASE(type_ami_object,   AMIObject)
     CREATE_CASE(type_paramwin,     ParamBox)
     CREATE_CASE(type_parampanel,   ParamPanel)
     CREATE_CASE(type_matrix,       FloatMatrix)
@@ -156,6 +164,8 @@ bool Variable::FreeMemory()
   case type_surface      : FreeMemory<SurfacePoly>();    break;
   case type_surfdraw     : FreeMemory<Viewer3D>();       break;
   case type_ami_function : FreeMemory<AMIFunction>();    break;
+  case type_ami_class    : FreeMemory<AMIClass>();       break;
+  case type_ami_object   : FreeMemory<AMIObject>();      break;
   case type_paramwin     : FreeMemory<ParamBox>();       break;
   case type_parampanel   : FreeMemory<ParamPanel>();     break;
   case type_matrix       : FreeMemory<FloatMatrix>();    break;
@@ -217,6 +227,8 @@ const string Variable::GetTypeName()
     case type_c_image_function: return string( "C image function");
     case type_c_function      : return string( "C function");
     case type_ami_function    : return string( "AMI function");
+    case type_ami_class       : return string( "AMI Class");
+    case type_ami_object      : return string( "AMI Object");
     case type_paramwin        : return string( "Parameters Window");
     case type_parampanel      : return string( "Parameters Panel");
     case type_matrix          : return string( "matrix");
@@ -255,6 +267,8 @@ ostream& operator<<(ostream& o, const Variable& v)
     case type_c_image_function: o << "C image function ";  break;
     case type_c_function      : o << "C function ";        break;
     case type_ami_function    : o << "AMI function ";      break;
+    case type_ami_class       : o << "AMI class ";         break;
+    case type_ami_object      : o << "AMI Object ";         break;
     case type_paramwin        : o << "Parameters Window";  break;
     case type_parampanel      : o << "Parameters Panel";  break;
     case type_matrix          : o << "matrix";             break;

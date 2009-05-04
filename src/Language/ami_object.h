@@ -2,7 +2,7 @@
     ==================================================
     Software : AMILab
     Authors  : Karl Krissian
-    Email    : karl@bwh.harvard.edu
+    Email    : krissian@dis.ulpgc.es
 
     AMILab is a language for image processing
     ==================================================
@@ -26,78 +26,58 @@
    The full GNU Lesser General Public License file is in Devel/Sources/Prog/LesserGPL_license.txt
 */
 
-#ifndef AMI_FUNCTION_H
-#define AMI_FUNCTION_H
+#ifndef _ami_object_h_
+#define _ami_object_h_
 
-#define MAX_PARAM 20
 
-#include "chaine.hpp"
-#include "inrimage.hpp"
-#include "paramlist.h"
 #include <string>
 #include <boost/shared_ptr.hpp>
 #include "DefineClass.hpp"
 #include "AmiInstructionBlock.h"
+#include "ami_class.h"
 
 using namespace boost;
 
+/**
+  The class AMIObject will contain a link to its class object
+  and will create a context of variables by running the code
+  present in the class object
+*/
+class AMIObject {
 
-class AMIFunction {
-
-  DEFINE_CLASS(AMIFunction)
+  DEFINE_CLASS(AMIObject)
 
 private:
-  ParamListDecl*            _param;
-  AmiInstructionBlock::ptr   _body;
-  std::string               _name;
-  std::string               _filename;
+  AMIClass::ptr   _class;
+  std::string     _name;
 
  public:
 
-  AMIFunction()
+  AMIObject()
     {
-      _param    = NULL;
       _name     = "";
-      _filename = "";
     }
 
-  virtual ~AMIFunction() 
+  virtual ~AMIObject() 
     {
-      if (_param!=NULL) {
-        delete _param;
-        _param = NULL;
-      }
     }
 
-  void SetParamList( ParamListDecl* pl )  {  _param = pl;  }
-
-  ParamListDecl* GetParamList( )  { return _param; }
+  void SetClass(AMIClass::ptr& amiclass)
+  {
+    if (amiclass.get()!=NULL)
+      cout  << "will run the code of the class "
+            << amiclass->GetName()
+            << " for the object " 
+            << GetName()
+            << endl;
+  }
 
   void SetName( const string& fname) { _name = fname; }
 
   const string& GetName() const { return _name; }
 
-  void SetFileName( const string& fname) { _filename = fname; }
 
-  const string& GetFileName() const { return _filename; }
-
-  void SetBody( const AmiInstructionBlock::ptr& b) 
-    { 
-      //if (GB_debug)  printf("SetBody : [%s] \n",st);
-      _body=b;
-    }
-
-  AmiInstructionBlock::ptr GetBody() const 
-  { 
-    return _body; 
-  }
-
-  const char* GetString() const 
-  { 
-    return  _body->GetBody().c_str(); 
-  }
-
-}; // AMIFunction
+}; // AMIObject
 
 
-#endif // AMI_FUNCTION_H
+#endif // _ami_object_h_

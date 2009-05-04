@@ -26,14 +26,11 @@
    The full GNU Lesser General Public License file is in Devel/Sources/Prog/LesserGPL_license.txt
 */
 
-#ifndef AMI_FUNCTION_H
-#define AMI_FUNCTION_H
+#ifndef AMI_CLASS_H
+#define AMI_CLASS_H
 
 #define MAX_PARAM 20
 
-#include "chaine.hpp"
-#include "inrimage.hpp"
-#include "paramlist.h"
 #include <string>
 #include <boost/shared_ptr.hpp>
 #include "DefineClass.hpp"
@@ -42,36 +39,27 @@
 using namespace boost;
 
 
-class AMIFunction {
+class AMIClass {
 
-  DEFINE_CLASS(AMIFunction)
+  DEFINE_CLASS(AMIClass)
 
 private:
-  ParamListDecl*            _param;
   AmiInstructionBlock::ptr   _body;
   std::string               _name;
   std::string               _filename;
 
  public:
 
-  AMIFunction()
+  AMIClass()
     {
-      _param    = NULL;
       _name     = "";
       _filename = "";
     }
 
-  virtual ~AMIFunction() 
+  virtual ~AMIClass() 
     {
-      if (_param!=NULL) {
-        delete _param;
-        _param = NULL;
-      }
     }
 
-  void SetParamList( ParamListDecl* pl )  {  _param = pl;  }
-
-  ParamListDecl* GetParamList( )  { return _param; }
 
   void SetName( const string& fname) { _name = fname; }
 
@@ -97,7 +85,7 @@ private:
     return  _body->GetBody().c_str(); 
   }
 
-}; // AMIFunction
+}; // AMIClass
 
 
-#endif // AMI_FUNCTION_H
+#endif // AMI_CLASS_H

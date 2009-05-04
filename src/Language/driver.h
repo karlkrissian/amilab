@@ -128,12 +128,12 @@ public:
     /** Switch the parser to an instruction block
     * @param b instruction block
     */
-    bool parse_block( const AmiInstructionBlock_ptr& b );
+    bool parse_block( const AmiInstructionBlock::ptr& b );
 
     /** call to a language function
     * @param f smart pointer to the function
     */
-    void yyip_call_function( const AMIFunction_ptr& f);
+    void yyip_call_function( const AMIFunction::ptr& f, const ParamList::ptr& param = ParamList::ptr() );
 
     /** switching to a script file
     * @param filename 

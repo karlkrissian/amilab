@@ -2,8 +2,10 @@
 #ifndef _AMI_VARIABLES_H
 #define _AMI_VARIABLES_H
 
-#define MAX_VARS     500
+// TODO: change and use STL ... !!!
+//#define MAX_VARS     500
 
+#include <list>
 #include "Variable.hpp"
 
 class wxString;
@@ -17,56 +19,52 @@ class wxArrayString;
 //
 class Variables{
 
-  //  static 
-  Variable* _vars[MAX_VARS];
-  // number of variables used?
-  int       _num;
-
-  // table of free positions (< _num) for put a new variable
-  int _free_pos[MAX_VARS];
-  // number of free positions available
-  int _num_free;
-  
- private:
-
-  void AddFreePosition( int i);
-
-  int GetFreePosition();
-
-  int SearchFreePosition();
-
+  std::list<Variable*>  _vars;
+  string                _context_name;
+  bool                  _global_new;
 
  public:
 
-  Variables();
+  Variables() {
+    _context_name = "global context";
+    _global_new = false;
+  }
 
   ~Variables();
 
-  Variable* operator [](int i) {  return _vars[i];  }
+//  Variable* operator [](int i) {  return _vars[i];  }
 
-  int AddVar(vartype type, const char* name, void* val);
+  string GetName() const { return _context_name; }
+  void SetName( const string& name ) { _context_name = name; }
 
-  int AddVarPtr(vartype type, const char* name, void* val);
+  bool GetGlobalNew() const { return _global_new; }
+  void SetGlobalNew( const bool& gn ) { _global_new = gn; }
 
-  int AddVar(Variable* var);
+  std::string CheckVarName(const char* name);
 
-  int AddVar(const Variable::ptr& var);
+  Variable* AddVar(vartype type, const char* name, void* val);
 
-  int AddImage(char* name, void* val);
+  Variable* AddVarPtr(vartype type, const char* name, void* val);
 
-  unsigned char ExistVar(const char* varname, int& varnum);
+  Variable* AddVar(Variable* var);
 
-  unsigned char ExistVar(Variable* var, int& varnum);
+  Variable* AddVar(const Variable::ptr& var);
+
+  Variable* AddImage(char* name, void* val);
+
+  bool ExistVar(const char* varname);
+
+  bool ExistVar(Variable* var);
 
   void SearchCompletions(const wxString& varname, wxArrayString* completions);
 
   bool GetVar(const char* varname, Variable** var);
 
-  unsigned char GetVar(const char* varname, int* i);
+//  unsigned char GetVar(const char* varname, int* i);
 
-  unsigned char deleteVar(const char* varname);
+  bool deleteVar(const char* varname);
 
-  unsigned char deleteVar(int i);
+//  unsigned char deleteVar(int i);
 
   void EmptyVariables();
 

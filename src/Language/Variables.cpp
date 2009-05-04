@@ -30,7 +30,6 @@
 #include <wx/arrstr.h>
 #include "driver.h"
 
-extern yyip::Driver GB_driver;
 extern unsigned char       GB_debug;
 extern yyip::Driver GB_driver;
 
@@ -38,44 +37,8 @@ extern yyip::Driver GB_driver;
 // PRIVATE METHODS
 //======================================================================
 
-void Variables::AddFreePosition( int i)
-{
-    if (_num_free<MAX_VARS) {
-      _free_pos[_num_free]=i;
-      _num_free++;
-    }
-}
 
-//--------------------------------------------------
-int Variables::GetFreePosition()
-{
-    if (_num_free>0) {
-      _num_free--;
-      return _free_pos[_num_free];
-    }
-    else
-      return -1;
-}
-
-
-//--------------------------------------------------
-int Variables::SearchFreePosition()
-{
-    int pos;
-    if ((pos=GetFreePosition())!=-1) return pos;
-    if (_num>=MAX_VARS-1) 
-    {
-      GB_driver.err_print("Variables::SearchFreePosition() too many variables.\n");
-      return -1;
-    }
-    else 
-    {
-      _num++;
-      return _num-1;
-    }
-}
-
-
+/*
 //--------------------------------------------------
 unsigned char Variables::deleteVar(int i)
 {
@@ -93,181 +56,106 @@ unsigned char Variables::deleteVar(int i)
   
   return true;
 }
-
+*/
 
 //======================================================================
 // PUBLIC METHODS
 //======================================================================
 
 //--------------------------------------------------
-Variables::Variables()
-{
-  int i;
-  _num = 0;
-  _num_free=0;
-  Pour(i,0,MAX_VARS-1)
-    _vars[i] = new Variable();
-  FinPour
-  
-//  _global_new = 0;
-}
-
-//--------------------------------------------------
 Variables::~Variables()
 {
-  int i;
-  
-  Pour(i,0,MAX_VARS-1)
-    delete _vars[i];
-  FinPour
+}
+
+
+//--------------------------------------------------
+std::string Variables::CheckVarName(const char* name)
+{
+  std::string resname(name);
+
+  // Check if the variable exists,
+  // if it exists try to delete it,
+  // if it cannot be delete, change the name
+  if (ExistVar(name)) {
+    if (!deleteVar(name)) {
+      // otherwise create a new name
+      int i = 1;
+      Repeter
+        resname = (format("%s_%d") % name %i).str();
+        i++;
+      JusquA Non(ExistVar(resname.c_str())) FinRepeter
+    }
+  }
+  return resname;
 }
 
 //--------------------------------------------------
-int Variables::AddVar(vartype type, 
+Variable* Variables::AddVar(vartype type, 
 		      const char* name, 
 		      void* val)
 {
-     int i,varnum=0;
-     char   resname[100];
-     int pos;
+  if (GB_debug) fprintf(stderr,"AddVar %s \t\t",name);
 
-   if (GB_debug) fprintf(stderr,"AddVar %s \t\t",name);
+  string resname = this->CheckVarName(name);
+  Variable* newvar = new Variable();
+  newvar->Init(type,resname.c_str(),val);
+  _vars.push_front(newvar);
 
-   // Check if the variable exists,
-   // if it exists try to delete it,
-   // if it cannot be delete, change the name
-
-   sprintf(resname,"%s",name);
-   Si ExistVar(name,varnum) Alors
-     // Try to delete the variable
-     Si Non(deleteVar(varnum)) Alors
-       // otherwise create a new name
-       i = 1;
-       Repeter
-         sprintf(resname,"%s_%d",name,i);
-         i++;
-       JusquA Non(ExistVar(resname,varnum)) FinRepeter
-     FinSi
-   FinSi
-
-   pos=SearchFreePosition();
-   if (pos>=0)
-    _vars[pos]->Init(type,resname,val);
-     if (GB_debug) fprintf(stderr,"position %d, _num_free = %d ,_num = %d \n",pos,_num_free,_num);
-   return pos;
+  return newvar;
 }
 
 //--------------------------------------------------
 // here val is a pointer to a smart pointer
 //
-int Variables::AddVarPtr(vartype type, 
+Variable* Variables::AddVarPtr(vartype type, 
 		      const char* name, 
 		      void* val)
 {
-     int i,varnum=0;
-     char   resname[100];
-     int pos;
+  if (GB_debug) fprintf(stderr,"AddVar %s \t\t",name);
 
-   if (GB_debug) fprintf(stderr,"AddVar %s \t\t",name);
+  string resname = this->CheckVarName(name);
+  Variable* newvar = new Variable();
+  newvar->InitPtr(type,resname.c_str(),val);
+  _vars.push_front(newvar);
 
-   // Check if the variable exists,
-   // if it exists try to delete it,
-   // if it cannot be delete, change the name
-   sprintf(resname,"%s",name);
-   Si ExistVar(name,varnum) Alors
-     // Try to delete the variable
-     Si Non(deleteVar(varnum)) Alors
-       // otherwise create a new name
-       i = 1;
-       Repeter
-         sprintf(resname,"%s_%d",name,i);
-         i++;
-       JusquA Non(ExistVar(resname,varnum)) FinRepeter
-     FinSi
-   FinSi
-
-   pos=SearchFreePosition();
-   if (pos>=0)
-    _vars[pos]->InitPtr(type,resname,val);
-     if (GB_debug) fprintf(stderr,"position %d, _num_free = %d ,_num = %d \n",pos,_num_free,_num);
-   return pos;
+  return newvar;
 } // AddVarPtr()
 
 
 //--------------------------------------------------
-int Variables::AddVar( Variable* var)
+Variable* Variables::AddVar( Variable* var)
 {
-     int i,varnum=0;
-     char   resname[100];
-     int pos;
+  if (GB_debug) fprintf(stderr,"AddVar %s \t\t",var->Name());
 
-   if (GB_debug) fprintf(stderr,"AddVar %s \t\t",var->Name());
+  string resname = this->CheckVarName(var->Name());
+  Variable* newvar = new Variable();
+  (*newvar) = (*var);
+  newvar->Rename(resname.c_str());
+  _vars.push_front(newvar);
+  delete var; // ok not deleting the smart pointer inside, but not too clean ...
 
-   // Check if the variable exists,
-   // if it exists try to delete it,
-   // if it cannot be delete, change the name
-
-   sprintf(resname,"%s",var->Name());
-   Si ExistVar(var->Name(),varnum) Alors
-     // Try to delete the variable
-     Si Non(deleteVar(varnum)) Alors
-       // otherwise create a new name
-       i = 1;
-       Repeter
-         sprintf(resname,"%s_%d",var->Name(),i);
-         i++;
-       JusquA Non(ExistVar(resname,varnum)) FinRepeter
-     FinSi
-   FinSi
-
-   pos=SearchFreePosition();
-   if (pos>=0)
-    var->Rename(resname);
-    (*_vars[pos]) = (*var);
-    delete var; // ok not deleting the smart pointer inside, but not too clean ...
-    if (GB_debug) fprintf(stderr,"position %d, _num_free = %d ,_num = %d \n",pos,_num_free,_num);
-   return pos;
+  return newvar;
 }
 
 
 //--------------------------------------------------
-int Variables::AddVar( const Variable::ptr& var)
+Variable* Variables::AddVar( const Variable::ptr& var)
 {
-     int i,varnum=0;
-     char   resname[100];
-     int pos;
+  if (GB_debug) fprintf(stderr,"AddVar %s \t\t",var->Name());
 
-   if (GB_debug) fprintf(stderr,"AddVar %s \t\t",var->Name());
+  string resname = this->CheckVarName(var->Name());
+  Variable* newvar = new Variable();
+  // TODO: vars should use smart pointers to variables ... and we should avoid this kind of "copy", but now the variable inside contains a smart pointer ...
+  (*newvar) = (*var);
+  newvar->Rename(resname.c_str());
+  _vars.push_front(newvar);
 
-   // Check if the variable exists,
-   // if it exists try to delete it,
-   // if it cannot be delete, change the name
-
-   sprintf(resname,"%s",var->Name());
-   Si ExistVar(var->Name(),varnum) Alors
-     // Try to delete the variable
-     Si Non(deleteVar(varnum)) Alors
-       // otherwise create a new name
-       i = 1;
-       Repeter
-         sprintf(resname,"%s_%d",var->Name(),i);
-         i++;
-       JusquA Non(ExistVar(resname,varnum)) FinRepeter
-     FinSi
-   FinSi
-
-   pos=SearchFreePosition();
-   if (pos>=0)
-    var->Rename(resname);
-    // TODO: vars should use smart pointers to variables ... and we should avoid this kind of "copy"
-    (*_vars[pos]) = var;
-    if (GB_debug) fprintf(stderr,"position %d, _num_free = %d ,_num = %d \n",pos,_num_free,_num);
-   return pos;
+  return newvar;
 }
 
 
 //--------------------------------------------------
-int Variables::AddImage(char* name, void* val)
+Variable* Variables::AddImage(char* name, void* val)
 {
   return AddVar(type_image,name,val);
       
@@ -276,11 +164,13 @@ int Variables::AddImage(char* name, void* val)
 //--------------------------------------------------
 void Variables::SearchCompletions(const wxString& varname, wxArrayString* completions)
 {
-  int i;
   wxString name;
-  
-  for(i=0;i<_num;i++) {
-    name = wxString::FromAscii(_vars[i]->Name());
+  std::list<Variable*>::iterator Iter;
+
+  for (Iter  = _vars.begin();
+       Iter != _vars.end()  ; Iter++ )
+  {
+    name = wxString::FromAscii((*Iter)->Name());
     if (name.First(varname) == 0) 
         completions->Add(name);
   }
@@ -288,73 +178,48 @@ void Variables::SearchCompletions(const wxString& varname, wxArrayString* comple
 
 
 //--------------------------------------------------
-unsigned char Variables::ExistVar(const char* varname, int& varnum)
+bool Variables::ExistVar(const char* varname)
 {
-  int i;
-  
-  i=0;
-  while ((i<_num)&&(!_vars[i]->HasName(varname)))
-    {
-      //	printf("%s %s\n",
-      //         (char*) _vars[i]->Name(),varname);
-      i++;
-    }
-  if (i<_num) {
-    varnum = i;
-    return 1;
-      }
-  else {
-    return 0;
+  std::list<Variable*>::iterator Iter;
+  for (Iter  = _vars.begin();
+       Iter != _vars.end()  ; Iter++ )
+  {
+    if ((*Iter)->HasName(varname)) return true;
   }
+
+  return false;
 }
 
 
 //--------------------------------------------------
-unsigned char Variables::ExistVar(Variable* var, int& varnum)
+bool Variables::ExistVar(Variable* var)
 {
-  int i;
-  
-  i=0;
-  while ((i<_num)&&(! ((*_vars[i])==(*var)) ))
-    {
-      //	printf("%s %s\n",
-      //         (char*) _vars[i]->Name(),varname);
-      i++;
-    }
-  if (i<_num) {
-    varnum = i;
-    return 1;
-      }
-  else {
-    return 0;
+  std::list<Variable*>::iterator Iter;
+  for (Iter  = _vars.begin();
+       Iter != _vars.end()  ; Iter++ )
+  {
+    if ( *(*Iter) == (*var)) return true;
   }
+  return false;
 }
 
 
 //--------------------------------------------------
 bool Variables::GetVar(const char* varname, Variable** var)
 {
-  int i;
-  
-  i=0;
-  while ((i<_num)&&(!_vars[i]->HasName(varname)))
-    {
-      //	printf("%s %s\n",(char*) _vars[i]->Name(),varname);
-      i++;
+  std::list<Variable*>::iterator Iter;
+  for (Iter  = _vars.begin();
+       Iter != _vars.end()  ; Iter++ )
+  {
+    if ((*Iter)->HasName(varname)) {
+      *var= *Iter;
+      return true;
     }
-  if (i<_num) {
-    //        printf("GetVar()  %d \n \t",i);
-    //    _vars[i]->display();
-    //    printf("\n");
-    //fflush(stdout);
-    *var= _vars[i];
-    return 1;
   }
-  else {
-    return 0;
-  }
+  return false;
 }
 
+/*
 //--------------------------------------------------
 unsigned char Variables::GetVar(const char* varname, int* i)
 {
@@ -372,31 +237,38 @@ unsigned char Variables::GetVar(const char* varname, int* i)
     return 0;
       }
 } // Variables::GetVar()
+*/
 
 //--------------------------------------------------
-unsigned char Variables::deleteVar(const char* varname)
+bool Variables::deleteVar(const char* varname)
 {
-  int i=0;
-  
   fprintf(stderr,"Variables::deleteVar(%s) \n",varname);
-  if (ExistVar(varname,i)) {
-    return deleteVar(i);
-      }
-  else {
-    fprintf(stderr,"deleteVar(%s) variable not found \n", varname);
-    return false;
+
+  std::list<Variable*>::iterator Iter;
+  for (Iter  = _vars.begin();
+       Iter != _vars.end()  ; Iter++ )
+  {
+    if ((*Iter)->HasName(varname)) {
+      (*Iter)->Delete();
+      delete (*Iter);
+      Iter = _vars.erase(Iter);
+      return true;
+    }
   }
-  
+  cerr << format("deleteVar(%s) variable not found \n") % varname;
+  return false;
+
 } // Variables::deleteVar()
 
 //--------------------------------------------------
 void Variables::display()
 {
-  int i;
   printf("VARIABLES:\n");
-  for(i=0;i<_num;i++) {
-    printf(" %2d ",i);
-    _vars[i]->display();
+  std::list<Variable*>::iterator Iter;
+  for (Iter  = _vars.begin();
+       Iter != _vars.end()  ; Iter++ )
+  {
+    (*Iter)->display();
     printf("\n");
   }
 } // Variables::display()
@@ -405,21 +277,24 @@ void Variables::display()
 //--------------------------------------------------
 void Variables::EmptyVariables()
 {
-  int i;
-
-  for(i=0;i<_num;i++) {
-    Si (_vars[i]->Type() == type_imagedraw) Alors
-      if (_vars[i]->Pointer()!=NULL) {
-	_vars[i]->Delete();
-	AddFreePosition(i);
+  std::list<Variable*>::iterator Iter;
+  for (Iter  = _vars.begin();
+       Iter != _vars.end()  ; Iter++ )
+  {
+    if ((*Iter)->Type() == type_imagedraw) {
+      if ((*Iter)->Pointer()!=NULL) {
+        (*Iter)->Delete();
+        Iter = _vars.erase(Iter);
       }
-    FinSi
+    }
   }
 
-  for(i=0;i<_num;i++) {
-    if (_vars[i]->Pointer()!=NULL) {
-      _vars[i]->Delete();
-      AddFreePosition(i);
+  for (Iter  = _vars.begin();
+       Iter != _vars.end()  ; Iter++ )
+  {
+    if ((*Iter)->Pointer()!=NULL) {
+      (*Iter)->Delete();
+      Iter = _vars.erase(Iter);
     }
   }
 

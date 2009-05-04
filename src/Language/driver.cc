@@ -14,6 +14,9 @@
 
 #include "driver.h"
 #include "scanner.h"
+#include "VarContexts.hpp"
+
+extern VarContexts       Vars;
 
 namespace yyip {
 
@@ -121,7 +124,7 @@ void Driver::error(const std::string& m)
 
 
 //-----------------------------------------------------------
-bool Driver::parse_block( const AmiInstructionBlock_ptr& b )
+bool Driver::parse_block( const AmiInstructionBlock::ptr& b )
 {
   yyiplineno = b->GetStartingLine();
   return parse_string((b->GetBody()+"\0\0").c_str());
@@ -130,17 +133,58 @@ bool Driver::parse_block( const AmiInstructionBlock_ptr& b )
 
 
 //-----------------------------------------------------------
-void Driver::yyip_call_function( const AMIFunction_ptr& f)
+void Driver::yyip_call_function( const AMIFunction::ptr& f, const ParamList::ptr& param)
 //   --------------------------
 {
   int    previous_lineno   = yyiplineno;
   string previous_filename = this->current_file;
+  int    i;
+  char*  name;
+
+  // Set the new context
+  Vars.NewContext(f->GetName().c_str());
+  Vars.SetLastContext();
+
+  // Creates the variables if needed
+  if (param.get())
+    // Verifier les parametres
+    if (f->GetParamList( )->CheckParam(param.get())) 
+      for(i=0;i<param->GetNumParam();i++) {
+        name = f->GetParamList( )->GetName(i);
+        if (Vars.GetCurrentContext()->ExistVar(name)) {
+          cerr  << "variable " << name 
+                << " already exists ... " 
+                << "in context " << Vars.GetCurrentContext()->GetName()
+                << endl;
+        }
+        else {
+          cout << format("Vars.AddVarPtr( %1%, %2%, %3% )")
+                  % param->GetType(i) % name % param->GetParam(i)
+                << endl;
+          // LOTS OF CARE HERE, now GetParam is a pointer
+          // to a smart pointer !!!
+          Vars.AddVarPtr( param->GetType(i),
+                          name,
+                          param->GetParam(i)
+                        );
+        }
+      } // end for
+    else
+      cerr  << "Driver::yyip_call_function "
+            << "\t Error checking for parameters."
+            << endl;
 
   // Call the function
   this->current_file = f->GetFileName();
   parse_block(f->GetBody());
 
-  // Restore position
+  // Restore the previous context
+  // destroy the context and its variables
+  // removing each parameter is not necessary
+  // cause it will be done by DeleteLastContext()
+  Vars.DeleteLastContext();
+
+  // Restore position and filename
   yyiplineno = previous_lineno;
   this->current_file = previous_filename;
 
@@ -169,9 +213,6 @@ bool Driver::parse_script(  const char* filename)
 
   // could check first if there is another extension ...
   currentname.SetExt(_T("amil"));
-  //  cout << "current working directory" << wxGetCwd() << endl;
-  //  cout << "current name path" << currentname.GetPath() << endl;
-  //  cout << "current name full path" << currentname.GetFullPath() << endl;
 
   //cout << "current wd = "  <<  wxGetCwd() << endl; 
   if (!currentname.DirExists(currentname.GetPath())) 
@@ -214,11 +255,6 @@ bool Driver::parse_script(  const char* filename)
     return 0;
   }
 
-
-  b = yyip_create_buffer(yyipin,YY_BUF_SIZE);
-  yyip_switch_to_buffer(b);
-  yy_buf_stack[yy_num_buf]=b;
-  yy_num_buf++;
 */
 
   bool res = parse_file(newname.GetFullPath().mb_str());

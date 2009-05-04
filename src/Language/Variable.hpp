@@ -7,10 +7,6 @@
 //#include "Viewer3D.hpp"
 #include "paramlist.h"
 #include "chaine.hpp"
-#include "ami_function.h"
-#include "FloatMatrix.hpp"
-
-
 
 #include "DefineClass.hpp"
 

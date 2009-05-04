@@ -17,7 +17,11 @@
 #include <locale.h>
 #include "fonctions.h"
 #include "func_isoline.hpp"
+
 #include "ami_function.h"
+#include "ami_class.h"
+#include "ami_object.h"
+
 //#include "dist_squared.hpp"
 #include "improcess_bison.tab.hpp"
 #include "wrapAMIFluid.h"
@@ -34,7 +38,6 @@
 #include "LineRecons.h"
 //#include "PruneLines.h"
 
-  //#define IDENT_MAX_SIZE 15
 
 #include "driver.h"
 
@@ -72,8 +75,6 @@
 
 #include <iostream>
 
-
-
 #include "VarContexts.hpp"
 #include "Duree.hpp"
 
@@ -99,27 +100,17 @@ using namespace MyNS_ForOutput;
 //-------
 
 #include "wx/evtloop.h"
-
 #include "penguin.h"
-
 #include "driver.h"
 
-//ImageStack        im_stack;
-//SurfStack         surf_stack;
-//MatrixStack       driver.matrix_stack;
-//GLTransformStack  gltransf_stack;
 extern VarContexts       Vars;
 
 //Duree            IP_time;
 
-//Widget              GB_main_window;
-
 extern MainFrame*   GB_main_wxFrame;
 extern wxApp*       GB_wxApp;
-extern int       GB_argc;
+extern int          GB_argc;
 
-//extern TextControl* TC;
-//extern int          GB_argc;
 extern int       GB_num_arg_parsed;
 extern wxString  GB_scripts_dir;
 extern wxString  GB_help_dir;
@@ -129,21 +120,19 @@ namespace AMIFluid {
 extern char* FLUID_NAVIGATION_FILE;
 }
 
+
 DessinImage* CreateIDraw(  std::string title, InrImage::ptr image);
 // Creation of a DessinImage pointer
 // this function is distinct if compiling with all amilab
 
 extern yyip::Driver GB_driver;
 
-//extern XtAppContext         GB_contexte;
-//extern Widget               GB_app_shell;
 extern unsigned char        GB_debug;
 extern unsigned char        GB_verbose;
 extern unsigned char        verbose;
 extern unsigned char        GB_nofile;
 
 extern char program[80];
-//extern unsigned char verbose;
 
 extern unsigned char DELETE_IDRAW;
 
@@ -167,7 +156,7 @@ class wxScheduleTimer : public wxTimer
 {
   DEFINE_CLASS(wxScheduleTimer)
   public:
-    wxScheduleTimer( AMIFunction_ptr& callback) 
+    wxScheduleTimer( AMIFunction::ptr& callback) 
     { 
       f = callback; 
     }
@@ -179,7 +168,7 @@ class wxScheduleTimer : public wxTimer
     void Notify();
 
   private:
-    AMIFunction_ptr f;
+    AMIFunction::ptr f;
 };
 
 // create a array of shared pointers
@@ -188,12 +177,10 @@ static std::list<wxScheduleTimer::ptr> schedule_timers;
 
 static void CB_ParamWin( void* cd ) {
 
-  AMIFunction_ptr f;
-  f = *(AMIFunction_ptr*) (cd);
+  AMIFunction::ptr f;
+  f = *(AMIFunction::ptr*) (cd);
 
-  Vars.NewContext(f->GetName().c_str());
   GB_driver.yyip_call_function(f);
-  Vars.DeleteLastContext();
 
 } // CB_ParamWin( void* cd )
 
@@ -382,7 +369,7 @@ void CB_delete_surfdraw( void* varid);
 
 
 %union {
-  char                  ident[IDENT_MAX_SIZE];
+  IdentifierInfo*       ident;
   Variable*             variable;
   char*                 astring;
   AmiInstructionBlock*  ablock;
@@ -457,6 +444,8 @@ void CB_delete_surfdraw( void* varid);
 %token VAR_C_PROCEDURE
 %token VAR_C_IMAGE_FUNCTION
 %token VAR_AMI_FUNCTION
+%token VAR_AMI_CLASS
+%token VAR_AMI_OBJECT
 %token VAR_PARAMWIN
 %token VAR_GLTRANSFORM
 %token VAR_ARRAY_SURFACE
@@ -799,6 +788,7 @@ void CB_delete_surfdraw( void* varid);
 %token T_TRANSFORM
 
 %token T_PROC
+%token T_Class
 
 %token T_MeanHalfSize
 %token T_Resize
@@ -855,6 +845,8 @@ void CB_delete_surfdraw( void* varid);
 %type <variable>       VAR_C_PROCEDURE
 %type <variable>       VAR_C_IMAGE_FUNCTION
 %type <variable>       VAR_AMI_FUNCTION
+%type <variable>       VAR_AMI_CLASS
+%type <variable>       VAR_AMI_OBJECT
 %type <variable>       VAR_STRING
 %type <variable>       VAR_PARAMWIN
 %type <variable>       VAR_MATRIX
@@ -894,6 +886,7 @@ void CB_delete_surfdraw( void* varid);
 %type <imageextent>    image_extent
 
 %destructor { delete [] $$; } ASTRING primary_expr_string postfix_expr_string additive_expr_string expr_string
+%destructor { delete  $$; } identifier IDENTIFIER
 %destructor { delete  $$; } instr_block
 %destructor { delete  $$; } image_extent
 
@@ -922,10 +915,12 @@ list_commands
          end_instr | list_commands end_instr |
          command end_instr
          | list_commands command end_instr
-         | loop_inst | list_commands loop_inst
-         | cond_inst | list_commands cond_inst
-         | func_inst | list_commands func_inst
-         | proc_decl | list_commands proc_decl;
+         | loop_inst   | list_commands loop_inst
+         | cond_inst   | list_commands cond_inst
+         | func_inst   | list_commands func_inst
+         | proc_decl   | list_commands proc_decl;
+         | class_decl  | list_commands class_decl;
+         | object_decl | list_commands object_decl;
 
 end_instr :
         END_INSTRUCTION
@@ -939,16 +934,17 @@ loop_inst :
         {
        int  previous_lineno=driver.yyiplineno;
        int* varint;
-        AmiInstructionBlock_ptr block($7);
+        AmiInstructionBlock::ptr block($7);
+        IdentifierInfo::ptr ident($2);
 
       varint = new int;
-      Vars.AddVar(type_int,$2,(void*)varint);
+      Vars.AddVar(type_int,ident,(void*)varint);
       for(*varint = (int) $4; *varint <= (int) $6; (*varint)++)
         {
           driver.yyiplineno = block->GetStartingLine();
           driver.parse_block(block);
         }
-      Vars.deleteVar($2);
+      Vars.deleteVar(ident->GetName().c_str());
       driver.yyiplineno=previous_lineno;
     }
         |
@@ -957,10 +953,11 @@ loop_inst :
         {
        int  previous_lineno=driver.yyiplineno;
        float* var;
-        AmiInstructionBlock_ptr block($9);
+        AmiInstructionBlock::ptr block($9);
+        IdentifierInfo::ptr ident($2);
 
       var = new float;
-      Vars.AddVar(type_float,$2,(void*)var);
+      Vars.AddVar(type_float,ident,(void*)var);
 
       for(*var = $4; *var <= $6; (*var)+=$8)
         {
@@ -970,14 +967,14 @@ loop_inst :
           driver.parse_block(block);
 
         }
-      Vars.deleteVar($2);
+      Vars.deleteVar(ident->GetName().c_str());
       driver.yyiplineno=previous_lineno;
     }
     |
     T_REPEAT instr_block
     {
        int  previous_lineno=driver.yyiplineno;
-        AmiInstructionBlock_ptr block($2);
+        AmiInstructionBlock::ptr block($2);
 
 
       //          printf(" block = %s \n",$7);
@@ -999,7 +996,7 @@ cond_inst :
     IF expr   instr_block end_instr
     {
       int  previous_lineno;
-      AmiInstructionBlock_ptr block($3);
+      AmiInstructionBlock::ptr block($3);
 
       // Pb with line numbers
       previous_lineno=driver.yyiplineno;
@@ -1015,8 +1012,8 @@ cond_inst :
     {
        int  previous_lineno = driver.yyiplineno;
 
-      AmiInstructionBlock_ptr block_if(  $3);
-      AmiInstructionBlock_ptr block_else($5);
+      AmiInstructionBlock::ptr block_if(  $3);
+      AmiInstructionBlock::ptr block_else($5);
 
       // Pb with line numbers
       previous_lineno=driver.yyiplineno;
@@ -1039,39 +1036,71 @@ proc_decl:
         instr_block end_instr
     {
       AMIFunction* amifunc;
-      AmiInstructionBlock_ptr body($7);
+      AmiInstructionBlock::ptr body($7);
+      IdentifierInfo::ptr ident($2);
 
       amifunc = new AMIFunction;
 
-      amifunc->SetName($2);
+      amifunc->SetName(ident->GetName().c_str());
       amifunc->SetFileName(driver.current_file);
       amifunc->SetParamList($5);
       amifunc->SetBody(     body);
-      if (GB_debug) printf("%s body = %s\n", $2,body->GetBody().c_str());
+      if (GB_debug) 
+        cout  << ident->GetName()
+              << " body = "
+              << body->GetBody()  << endl;
 
-      Vars.AddVar( type_ami_function, $2, (void*) amifunc);
+      Vars.AddVar( type_ami_function,ident, (void*) amifunc);
 
       // desactivate the flag procedure_declaration
       // which allows not to accept variables as identifiers
       GB_driver.procedure_declaration = false;
     };
 
+
+class_decl:
+    T_Class  identifier
+        instr_block end_instr
+    {
+      AMIClass* amiclass;
+      AmiInstructionBlock::ptr body($3);
+      IdentifierInfo::ptr ident($2);
+
+      amiclass = new AMIClass;
+
+      amiclass->SetName(ident->GetName());
+      amiclass->SetFileName(driver.current_file);
+      amiclass->SetBody(     body);
+      if (GB_debug) printf("%s body = %s\n", $2,body->GetBody().c_str());
+
+      Vars.AddVar( type_ami_class, ident, (void*) amiclass);
+
+    };
+
+object_decl:
+    VAR_AMI_CLASS  identifier
+    {
+      Variable*       var   = $1;
+      AMIClass::ptr ac = *(AMIClass::ptr*) (var->Pointer());
+      IdentifierInfo::ptr ident($2);
+
+      AMIObject* amiobject;
+
+      amiobject = new AMIObject;
+
+      amiobject->SetName(ident->GetName());
+      amiobject->SetClass(ac);
+
+      Vars.AddVar( type_ami_object, ident, (void*) amiobject);
+
+    };
+
 func_inst :
     FUNCTION ASTRING end_instr
     {
-        int previous_lineno;
-        string current_filename;
-
-       previous_lineno=driver.yyiplineno;
-       current_filename = driver.current_file;
-
        driver.res_print($2);
-       driver.yyiplineno=1;
        driver.parse_script($2);
        delete [] $2;
-       driver.yyiplineno=previous_lineno;
-       driver.current_file = current_filename;
-
      }
        |
        FUNCTION
@@ -1113,55 +1142,26 @@ func_inst :
           Variable*       var   = $1;
           ParamList::ptr  param($3);
           AMIFunction::ptr f;
-          int          i,n;
-          char*        name;
 
-          f = *(AMIFunction_ptr*) (var->Pointer());
+          f = *(AMIFunction::ptr*) (var->Pointer());
 
-          // Verifier les parametres
-          if (f->GetParamList( )->CheckParam(param.get())) {
-
-          // Create the variables in a new context
-          Vars.NewContext(f->GetName().c_str());
-          for(i=0;i<param->GetNumParam();i++) {
-            name = f->GetParamList( )->GetName(i);
-            if (Vars.GetCurrentContext()->ExistVar(name,n)) {
-              fprintf(stderr,"variable %s already exists ... \n",name);
-            }
-            else {
-              // LOTS OF CARE HERE, now GetParam is a pointer
-              // to a smart pointer !!!
-              Vars.AddVarPtr( param->GetType(i),
-                              name,
-                              param->GetParam(i)
-                            );
-            }
-          }
-
-        driver.yyip_call_function(f);
-        // destroy the context and its variables
-        // removing each parameter is not necessary
-        // cause it will be done by DeleteLastContext()
-        Vars.DeleteLastContext();
+        driver.yyip_call_function(f,param);
 
         if (GB_debug)
           cerr  << "End function body = "
                 << f->GetString()
                 << endl;
-      }
 
         }
         | VAR_AMI_FUNCTION  end_instr
         {
           Variable*    var   = $1;
-          AMIFunction_ptr f;
+          AMIFunction::ptr f;
 
-          f = *(AMIFunction_ptr*) (var->Pointer());
+          f = *(AMIFunction::ptr*) (var->Pointer());
 
           // Call the function
-          Vars.NewContext(f->GetName().c_str());
           driver.yyip_call_function(f);
-          Vars.DeleteLastContext();
         }
 ;
 
@@ -1189,7 +1189,7 @@ command:
          Others:
           local, global_new
          **/
-       Vars.SetCurrentContext(0);
+       Vars.SetGlobalContext();
          }
          |
          T_global_new
@@ -1260,7 +1260,7 @@ command:
         int ms = (int) $3;
         Variable*    var   = $5;
   
-        wxScheduleTimer::ptr w = wxScheduleTimer::ptr(new wxScheduleTimer(  *(AMIFunction_ptr*) (var->Pointer()) ));
+        wxScheduleTimer::ptr w = wxScheduleTimer::ptr(new wxScheduleTimer(  *(AMIFunction::ptr*) (var->Pointer()) ));
         // add to the list of schedule timers
         schedule_timers.push_back(w);
         w->Start(ms,wxTIMER_ONE_SHOT);
@@ -1270,39 +1270,45 @@ command:
           identifier ASSIGN_OP T_Surface T_OP_BR expr T_CL_BR
           {
             VarArray* arraysurf;
+            IdentifierInfo::ptr ident($1);
+
             int size = (int) $5;
             if (size<1) size = 1;
             arraysurf = new VarArray();
             arraysurf->Init(type_surface,size);
-            Vars.AddVar(type_array,$1,arraysurf);
+            Vars.AddVar(type_array,ident,arraysurf);
           }
           |
           identifier LEFT_ASSIGN T_Surface T_OP_BR expr T_CL_BR
           {
             VarArray* arraysurf;
+            IdentifierInfo::ptr ident($1);
             int size = (int) $5;
             if (size<1) size = 1;
             arraysurf = new VarArray();
             arraysurf->Init(type_surface,size);
-            Vars.AddVar(type_array,$1,arraysurf);
+            Vars.AddVar(type_array,ident,arraysurf);
           }
           |
           identifier ASSIGN_OP T_Image T_OP_BR expr T_CL_BR
           {
+            IdentifierInfo::ptr ident($1);
             VarArray* array;
             int size = (int) $5;
             if (size<1) size = 1;
             array = new VarArray();
             array->Init(type_image,size);
-            Vars.AddVar(type_array,$1,array);
+            Vars.AddVar(type_array,ident,array);
           }
          |
           identifier ASSIGN_OP expr_image
           {
           void * imptr;
+          IdentifierInfo::ptr ident($1);
+
           imptr = (void*)driver.im_stack.GetLastImage();
           if (imptr != NULL)
-            Vars.AddVar(type_image,$1,imptr);
+            Vars.AddVar(type_image,ident,imptr);
           else
             driver.err_print("assignment of NULL image\n");
         }
@@ -1311,8 +1317,10 @@ command:
           {
           void * imptr;
           imptr = (void*)driver.im_stack.GetLastImage();
+          IdentifierInfo::ptr ident($1);
+
           if (imptr != NULL)
-            Vars.AddVar(type_image,$1,imptr);
+            Vars.AddVar(type_image,ident,imptr);
           else
             driver.err_print("assignment of NULL image\n");
         }
@@ -1321,14 +1329,15 @@ command:
           Variable*      var   = $3;
           ParamList::ptr param($5);
           Variable::ptr  res;
+          IdentifierInfo::ptr ident($1);
 
           res = ((Variable::ptr (*)(ParamList*)) var->Pointer())(param.get());
           if (!res.use_count()) {
             driver.yyiperror(" function returns NULL \n");
             YYABORT;
           }
-          res->Rename($1);
-          Vars.AddVar(res);
+          res->Rename(ident->GetName().c_str());
+          Vars.AddVar(res,ident->GetCreationContext());
         }
         |
         VAR_ARRAY_IMAGE T_OP_BR expr T_CL_BR ASSIGN_OP expr_image
@@ -1357,8 +1366,10 @@ command:
             {
           void * imptr;
           imptr = (void*) driver.matrix_stack.GetLastMatrix();
+          IdentifierInfo::ptr ident($1);
+
           if (imptr != NULL)
-        Vars.AddVar(type_matrix,$1,imptr);
+        Vars.AddVar(type_matrix,ident,imptr);
           else
         driver.err_print("assignment of NULL matrix\n");
         }
@@ -1367,8 +1378,10 @@ command:
         {
           void * imptr;
           imptr = (void*)driver.gltransf_stack.GetLastMatrix();
+          IdentifierInfo::ptr ident($1);
+
           if (imptr != NULL)
-            Vars.AddVar(type_gltransform,$1,imptr);
+            Vars.AddVar(type_gltransform,ident,imptr);
           else
             driver.err_print("assignment of NULL matrix\n");
         }
@@ -1414,8 +1427,10 @@ command:
         {
           void * surfptr;
           surfptr = (void*)driver.surf_stack.GetLastSurf();
+          IdentifierInfo::ptr ident($1);
+
           if (surfptr != NULL)
-            Vars.AddVar(type_surface,$1,surfptr);
+            Vars.AddVar(type_surface,ident,surfptr);
           else
             driver.err_print("assignment of NULL surface\n");
         }
@@ -1463,39 +1478,48 @@ command:
         identifier ASSIGN_OP T_INT T_OP_PAR expr T_CL_PAR
             {
           int* varint;
+          IdentifierInfo::ptr ident($1);
+
           varint = new int((int)$5);
-          Vars.AddVar(type_int,$1,(void*)varint);
+          Vars.AddVar(type_int,ident,(void*)varint);
         }
     |
         identifier ASSIGN_OP T_UCHAR T_OP_PAR expr T_CL_PAR
         {
         unsigned char* varuchar;
+        IdentifierInfo::ptr ident($1);
+
         varuchar = new unsigned char((unsigned char)$5);
-        Vars.AddVar(type_uchar,$1,(void*)varuchar);
+        Vars.AddVar(type_uchar,ident,(void*)varuchar);
         }
         |
           identifier ASSIGN_OP expr
             {
           float* varfloat;
+          IdentifierInfo::ptr ident($1);
           varfloat = new float($3);
-          Vars.AddVar(type_float,$1,(void*)varfloat);
+
+          Vars.AddVar(type_float,ident,(void*)varfloat);
         }
         |
           identifier ASSIGN_OP expr_string
             {
           string* varstring;
           varstring = new string($3);
-          Vars.AddVar(type_string,$1,(void*)varstring);
+          IdentifierInfo::ptr ident($1);
+
+          Vars.AddVar(type_string,ident,(void*)varstring);
               delete [] $3;
         }
         |
         identifier ASSIGN_OP T_OPEN T_OP_PAR  expr_string T_COMMA ASTRING T_CL_PAR
         {
           FILE* file;
+          IdentifierInfo::ptr ident($1);
 
           file = fopen($5,$7);
           if (file!=NULL) {
-            Vars.AddVar(type_file,$1,(void*)file);
+            Vars.AddVar(type_file,ident,(void*)file);
           } else {
           fprintf(stderr,"error opening file \n");
           /*
@@ -1568,7 +1592,6 @@ command:
         |  SHOW var_image
         {
           char titre[100];
-          int i;
           Variable* var;
           int var_context = Vars.GetContext($2);
 
@@ -1596,8 +1619,8 @@ command:
               di = CreateIDraw( *varname,
                     *((InrImage::ptr*) $2->Pointer()));
 
-              Vars.SetNextVarContext(var_context);
-              i = Vars.AddVar(type_imagedraw,titre, (void*) di);
+              Vars.AddVar(type_imagedraw,titre, (void*) di,
+                          var_context);
               di->SetCloseFunction(
                 (void*) CB_delete_imagedraw,
                 (void*) (varname));
@@ -1629,7 +1652,6 @@ command:
           string    titre;
           Viewer3D* surfdraw;
           Variable* var;
-          int     i;
           int var_context = Vars.GetContext($2);
 
           if (var_context>=0) {
@@ -1638,11 +1660,12 @@ command:
               surfdraw = new Viewer3D(  GB_main_wxFrame,
                                         wxString::FromAscii(titre.c_str()));
 
-              Vars.SetNextVarContext(var_context);
-              i = Vars.AddVar(type_surfdraw,titre.c_str(), (void*) surfdraw);
+              Variable* newvar =  Vars.AddVar(type_surfdraw,titre.c_str(), 
+                          (void*) surfdraw,
+                          var_context);
               surfdraw->SetCloseFunction(
                               (void*) CB_delete_surfdraw,
-                              (void*) (*Vars.GetCurrentContext())[i]);
+                              (void*) (newvar));
               // Add the surface to the OpenGL Object
               surfdraw->GetCanvas()->AddSurface(
                                 *(SurfacePoly::ptr*) $2->Pointer());
@@ -1889,18 +1912,19 @@ command:
       }
         | HELP identifier
          {
-       if (strcmp($2,"var")==0) {
+          IdentifierInfo::ptr ident($2);
+       if (strcmp(ident->GetName().c_str(),"var")==0) {
          driver.res_print("var types: void image float int string imagedraw surface surfacedraw \n");
          driver.res_print("\t del varname\n");
          driver.res_print("\t\t\t - deletes a variable and frees its contents from memory \n");
        }
        else
-       if (strcmp($2,"cmd")==0) {
+       if (strcmp(ident->GetName().c_str(),"cmd")==0) {
          driver.res_print("commands:\n");
          driver.res_print("\t sh Quit Image Show Help ls print func filter normgrad discnormgrad OpImage EDPdilate EDPerode EDPopen EDPclose\n");
        }
        else
-       if (strcmp($2,"fnc")==0) {
+       if (strcmp(ident->GetName().c_str(),"fnc")==0) {
          driver.res_print("functions:\n");
          driver.res_print("\t  filter normgrad gradient OpImage secdergrad ");
              driver.res_print("subimage putimage\n");
@@ -1928,18 +1952,18 @@ command:
              driver.res_print("\t       Curvatures(   var_image, expr ) \n");
        }
        else
-       if (strcmp($2,"loop")==0) {
+       if (strcmp(ident->GetName().c_str(),"loop")==0) {
          driver.res_print("loops:\n");
          driver.res_print("\t  for var=expr to expr { instructions } \n");
        }
        else
-       if (strcmp($2,"cond")==0) {
+       if (strcmp(ident->GetName().c_str(),"cond")==0) {
          driver.res_print("loops:\n");
          driver.res_print("\t  if expr  { instructions } \n");
          driver.res_print("\t\t  [ else { instructions } ]\n");
        }
        else
-       if (strcmp($2,"arit")==0) {
+       if (strcmp(ident->GetName().c_str(),"arit")==0) {
          driver.res_print("arithmetical expressions:\n");
          driver.res_print("\t  constants: Pi\n");
          driver.res_print("\n");
@@ -1957,7 +1981,7 @@ command:
          driver.res_print("\t            | \n");
        }
        else
-       if (strcmp($2,"image")==0) {
+       if (strcmp(ident->GetName().c_str(),"image")==0) {
          driver.res_print("variable Image\n");
          driver.res_print(" Creation:\n");
          driver.res_print("\t Image \"filename\"\n");
@@ -2110,7 +2134,7 @@ command:
          driver.res_print("\t\t\t - normalizes a vector field image \n");
        }
        else
-       if (strcmp($2,"imagedraw")==0) {
+       if (strcmp(ident->GetName().c_str(),"imagedraw")==0) {
          driver.res_print("variable imagedraw\n");
          driver.res_print(" Creation:");
          driver.res_print("\t show var_image \n");
@@ -2304,7 +2328,6 @@ command:
             DessinImage::ptr draw;
             InrImage::ptr im;
             char title[255];
-            int i;
             Variable* var;
 
             draw = *(DessinImage::ptr*) ($1->Pointer());
@@ -2334,7 +2357,7 @@ command:
               std::string* varname = new std::string(title);
               di = CreateIDraw( *varname, im);
 
-              i = Vars.AddVar(type_imagedraw,title, (void*) di);
+              Vars.AddVar(type_imagedraw,title, (void*) di);
               di->SetCloseFunction(
                   (void*) CB_delete_imagedraw,
                   (void*) (varname));
@@ -4372,12 +4395,12 @@ command:
       int nb_event;
 
       nb_event = 0;
-      while (nb_event<500) {
+      while (nb_event<(int)$3) {
         if (GB_wxApp->Pending()) {
           GB_wxApp->Dispatch();
         }
+        nb_event++;
       } // end while
-      nb_event++;
 
     }
     |
@@ -4389,7 +4412,7 @@ command:
       int nb_event;
 
       nb_event = 0;
-      while (nb_event<500) {
+      while (nb_event<(int)$3) {
         if (GB_wxApp->Pending()) {
           GB_wxApp->Dispatch();
         }
@@ -4507,12 +4530,14 @@ cerr << "Feature not available, needs to be updated ! " << endl;
           identifier ASSIGN_OP T_ParamWin T_OP_PAR  expr_string T_CL_PAR
             {
           void * pwptr;
+          IdentifierInfo::ptr ident($1);
+
           //    pwptr = (void*)new ParamPanel(GB_main_wxFrame,  (char*) $5);
           pwptr = (void*)new ParamPanel(GB_main_wxFrame,  (char*) $5);
           GB_main_wxFrame->AddParamPage((wxWindow*)pwptr,GetwxStr((char*) $5));
           //GB_main_wxFrame->GetAuiManager().Update();
           if (pwptr != NULL)
-        Vars.AddVar(type_paramwin,$1,pwptr);
+        Vars.AddVar(type_paramwin,ident,pwptr);
           else
         driver.err_print("assignment of NULL parameter window\n");
               delete [] $5;
@@ -4896,64 +4921,76 @@ param_list_decl:
       ParamListDecl* pl = new ParamListDecl;
       $$ = pl;
     }
-        | T_NUM IDENTIFIER
-        {
+    | T_NUM IDENTIFIER
+    {
+      IdentifierInfo::ptr ident($2);
+      cout << "param_list_decl: T_NUM IDENTIFIER" << endl;
+      cout << ident->GetName().c_str() << endl;
       ParamListDecl* pl = new ParamListDecl;
-      pl->AddParam($2,type_float);
+      pl->AddParam(ident->GetName().c_str(),type_float);
       $$ = pl;
         }
         | T_STRING IDENTIFIER
         {
+      IdentifierInfo::ptr ident($2);
       ParamListDecl* pl = new ParamListDecl;
-      pl->AddParam($2,type_string);
+      pl->AddParam(ident->GetName().c_str(),type_string);
       $$ = pl;
         }
     | T_IMAGE IDENTIFIER
         {
+      IdentifierInfo::ptr ident($2);
       ParamListDecl* pl = new ParamListDecl;
-      pl->AddParam($2,type_image);
+      pl->AddParam(ident->GetName().c_str(),type_image);
       $$ = pl;
         }
     | T_IMAGEDRAW IDENTIFIER
         {
+      IdentifierInfo::ptr ident($2);
       ParamListDecl* pl = new ParamListDecl;
-      pl->AddParam($2,type_imagedraw);
+      pl->AddParam(ident->GetName().c_str(),type_imagedraw);
       $$ = pl;
         }
     | T_SURFACE IDENTIFIER
         {
+      IdentifierInfo::ptr ident($2);
       ParamListDecl* pl = new ParamListDecl;
-      pl->AddParam($2,type_surface);
+      pl->AddParam(ident->GetName().c_str(),type_surface);
       $$ = pl;
         }
     | param_list_decl T_COMMA T_NUM IDENTIFIER
         {
+      IdentifierInfo::ptr ident($4);
       ParamListDecl* pl = (ParamListDecl*) $1;
-      pl->AddParam($4,type_float);
+      pl->AddParam(ident->GetName().c_str(),type_float);
       $$ = pl;
         }
     | param_list_decl T_COMMA T_STRING IDENTIFIER
         {
+      IdentifierInfo::ptr ident($4);
       ParamListDecl* pl = (ParamListDecl*) $1;
-      pl->AddParam($4,type_string);
+      pl->AddParam(ident->GetName().c_str(),type_string);
       $$ = pl;
         }
     | param_list_decl T_COMMA T_IMAGE IDENTIFIER
         {
+      IdentifierInfo::ptr ident($4);
       ParamListDecl* pl = (ParamListDecl*) $1;
-      pl->AddParam($4,type_image);
+      pl->AddParam(ident->GetName().c_str(),type_image);
       $$ = pl;
         }
     | param_list_decl T_COMMA T_IMAGEDRAW IDENTIFIER
         {
+      IdentifierInfo::ptr ident($4);
       ParamListDecl* pl = (ParamListDecl*) $1;
-      pl->AddParam($4,type_imagedraw);
+      pl->AddParam(ident->GetName().c_str(),type_imagedraw);
       $$ = pl;
         }
     | param_list_decl T_COMMA T_SURFACE IDENTIFIER
         {
+      IdentifierInfo::ptr ident($4);
       ParamListDecl* pl = (ParamListDecl*) $1;
-      pl->AddParam($4,type_surface);
+      pl->AddParam(ident->GetName().c_str(),type_surface);
       $$ = pl;
         };
 
@@ -5216,58 +5253,59 @@ postfix_expr
         }
         | var_image T_POINT identifier
         {
-      if (strcmp($3,"tx")==0) {
+          IdentifierInfo::ptr ident($3);
+      if (strcmp(ident->GetName().c_str(),"tx")==0) {
         $$=(*(InrImage::ptr*) $1->Pointer())->_tx;
       }
       else
-      if (strcmp($3,"ty")==0) {
+      if (strcmp(ident->GetName().c_str(),"ty")==0) {
         $$=(*(InrImage::ptr*) $1->Pointer())->_ty;
       }
       else
-      if (strcmp($3,"tz")==0) {
+      if (strcmp(ident->GetName().c_str(),"tz")==0) {
         $$=(*(InrImage::ptr*) $1->Pointer())->_tz;
       }
       else
-      if (strcmp($3,"trx")==0) {
+      if (strcmp(ident->GetName().c_str(),"trx")==0) {
         $$=(*(InrImage::ptr*) $1->Pointer())->_translation_x;
       }
       else
-      if (strcmp($3,"vdim")==0) {
+      if (strcmp(ident->GetName().c_str(),"vdim")==0) {
         $$=(*(InrImage::ptr*) $1->Pointer())->GetVDim();
       }
       else
-      if (strcmp($3,"try")==0) {
+      if (strcmp(ident->GetName().c_str(),"try")==0) {
         $$=(*(InrImage::ptr*) $1->Pointer())->_translation_y;
       }
       else
-      if (strcmp($3,"trz")==0) {
+      if (strcmp(ident->GetName().c_str(),"trz")==0) {
         $$=(*(InrImage::ptr*) $1->Pointer())->_translation_z;
       }
       else
-      if (strcmp($3,"vx")==0) {
+      if (strcmp(ident->GetName().c_str(),"vx")==0) {
         $$=(*(InrImage::ptr*) $1->Pointer())->_size_x;
       }
       else
-      if (strcmp($3,"vy")==0) {
+      if (strcmp(ident->GetName().c_str(),"vy")==0) {
         $$=(*(InrImage::ptr*) $1->Pointer())->_size_y;
       }
       else
-      if (strcmp($3,"vz")==0) {
+      if (strcmp(ident->GetName().c_str(),"vz")==0) {
         $$=(*(InrImage::ptr*) $1->Pointer())->_size_z;
       }
       else
-      if (strcmp($3,"inc")==0) {
+      if (strcmp(ident->GetName().c_str(),"inc")==0) {
         (*(InrImage::ptr*) $1->Pointer())->IncBuffer();
       }
       else
-      if (strcmp($3,"val")==0) {
+      if (strcmp(ident->GetName().c_str(),"val")==0) {
         $$=(*(InrImage::ptr*) $1->Pointer())->ValeurBuffer();
       }
       else
         {
           char tmp_string[255];
           sprintf(tmp_string," %s.%s identifier not recognized \n",
-              $1->Name(), $3);
+              $1->Name(), ident->GetName().c_str());
           strcat(tmp_string," known identifiers {tx, ty, tz, vdim, trx, try, trz, vx, vy, vz, init, inc, val, info} \n");
           driver.err_print(tmp_string);
         }
@@ -10554,6 +10592,8 @@ variable:
         | VAR_C_PROCEDURE
         | VAR_C_IMAGE_FUNCTION
         | VAR_AMI_FUNCTION
+        | VAR_AMI_CLASS
+        | VAR_AMI_OBJECT
         | VAR_STRING
         | VAR_MATRIX
         | VAR_GLTRANSFORM

@@ -246,12 +246,8 @@ scan_float return(token::T_scan_float); /*{scan_float,T_scan_float}*/
 read       return(token::T_read); /*{read,T_read}*/
 rewind     return(token::T_rewind); /*{rewind,T_rewind}*/
 
-proc {
-//============================ Parse Procedure ===============
-//
-  return(token::T_PROC);
-
-}  /*{proc,T_PROC}*/
+proc       return(token::T_PROC);   /*{proc,T_PROC}*/
+Class      return(token::T_Class);  /*{Class,T_Class}*/
 
 for    {
 //
@@ -932,9 +928,6 @@ local::([A-Za-z0-9_])*   {
   string text(YYText());
   string varname = text.substr(7);
   yyip::Parser::token::yytokentype result = checkvar(yylval,varname.c_str(),context);
-  // force next variable to be global
-  if (result==token::IDENTIFIER)
-    Vars.SetNextVarContext(context);
   return result;
 }
 
@@ -945,9 +938,6 @@ global::([A-Za-z0-9_])*   {
   string text(YYText());
   string varname = text.substr(8);
   yyip::Parser::token::yytokentype result = checkvar(yylval,varname.c_str(),0);
-  // force next variable to be global
-  if (result==token::IDENTIFIER)
-    Vars.SetNextVarContext(0);
   return result;
 }
 
@@ -984,8 +974,6 @@ global::([A-Za-z0-9_])*   {
 
 %%
 
-//class Variables;
-//static Variable* Variables::_vars[MAX_VARS];
 
 //--------------------------------------------------
 //       checkvar()
@@ -1028,8 +1016,14 @@ yyip::Parser::token::yytokentype checkvar(
         /*{$variable_c_image_function,VAR_C_IMAGE_FUNCTION}*/
       case type_c_function: return token::VAR_C_FUNCTION;
         /*{$variable_c_function,VAR_C_FUNCTION}*/
+
       case type_ami_function:     return token::VAR_AMI_FUNCTION;
         /*{$variable_ami_function,VAR_AMI_FUNCTION}*/
+      case type_ami_class:     return token::VAR_AMI_CLASS;
+        /*{$variable_ami_class,VAR_AMI_CLASS}*/
+      case type_ami_object:     return token::VAR_AMI_OBJECT;
+        /*{$variable_ami_object,VAR_AMI_OBJECT}*/
+
       case type_string:           return token::VAR_STRING;
         /*{$variable_string,VAR_STRING}*/
       case type_paramwin:         return token::VAR_PARAMWIN;
@@ -1056,10 +1050,9 @@ yyip::Parser::token::yytokentype checkvar(
 
   }
 
-  if (strlen(varname)+1>IDENT_MAX_SIZE)   {
-    fprintf(stderr,"checkvar() identifier too long %s \n",varname);
-  }
-  strcpy(yylval->ident,varname);
+  yylval->ident = new IdentifierInfo;
+  yylval->ident->SetName( string(varname));
+  yylval->ident->SetCreationContext(context);
   return(token::IDENTIFIER);
 }
 
