@@ -21,8 +21,9 @@ add_subdirectory (src)
 
 
 
-FILE(GLOB files "${CMAKE_CURRENT_SOURCE_DIR}/*.h" "${CMAKE_CURRENT_SOURCE_DIR}/*.hpp")
+FILE(GLOB files "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h" "${CMAKE_CURRENT_SOURCE_DIR}/src/*.hpp")
 INSTALL(FILES ${files} DESTINATION include/wxParams )
+
 
 
 

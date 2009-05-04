@@ -154,13 +154,13 @@ class MyToolBar : public wxToolBar
   void AddRightClick( int enum_id,
                       void* rc_callback,
                       void* rc_calldata = NULL,
-                      const wxString& rc_help = "");
+                      const wxString& rc_help = _T(""));
 
   void AddEnumChoice( int enum_id, 
                       int choice_id, 
                       int value,
                       const wxBitmap& bitmap,
-                      const wxString& text="");
+                      const wxString& text= _T(""));
 
   void Update( int enum_id);
 

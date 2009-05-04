@@ -50,18 +50,18 @@ private:
 
 public:
     myBitmapComboBox(wxWindow* parent, wxWindowID id, 
-      const wxString& value = "", 
+      const wxString& value = _T(""), 
       const wxPoint& pos = wxDefaultPosition, 
       const wxSize& size = wxDefaultSize, 
       int n = 0, const wxString choices[] = NULL, 
       long style = 0, 
       const wxValidator& validator = wxDefaultValidator, 
-      const wxString& name = "comboBox"):
+      const wxString& name = _T("comboBox")):
     wxBitmapComboBox(parent,id,value,pos,size,n,choices,style,validator,name)
   {
     rc_callback = NULL;
     rc_calldata = NULL;
-    rc_help = "";
+    rc_help = _T("");
   }
 
   void add_right_click( void* cb, void* cd, const wxString& h)

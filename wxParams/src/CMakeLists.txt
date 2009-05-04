@@ -5,16 +5,20 @@
 
 INCLUDE(${wxWidgets_USE_FILE})
 
-SET(  wxParams_SRCS 
-    MyToolBar.cpp  
-    ParamBox.cpp    
-    widget.cpp            
-    wxEnumerationParameter.cpp  
-    palette.cpp    
-    ParamPanel.cpp  
-    wxColorParameter.cpp  
+SET(  wxParams_SRCS
+    MyToolBar.cpp
+    ParamBox.cpp
+    widget.cpp
+    wxEnumerationParameter.cpp
+    palette.cpp
+    ParamPanel.cpp
+    wxColorParameter.cpp
     wxParamTypes.cpp
 )
 
 add_library (wxParams  ${wxParams_SRCS})
 
+INSTALL(TARGETS wxParams
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+)
