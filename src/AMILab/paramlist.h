@@ -60,6 +60,8 @@ enum {
   type_c_image_function,
   type_c_function,
   type_ami_function,
+  type_ami_class,
+  type_ami_object,
   type_paramwin,
   type_parampanel,
   type_matrix,

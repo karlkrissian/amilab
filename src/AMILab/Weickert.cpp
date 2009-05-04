@@ -25,8 +25,7 @@
     ================================================== 
    The full GNU Lesser General Public License file is in Devel/Sources/Prog/LesserGPL_license.txt
 */
-#include "Variable.hpp"
-#include "Variables.hpp"
+
 #include "DeriveesLissees.hpp"
 #include "filtrage_rec.hpp"
 #include "FloatMatrix.hpp"
@@ -37,7 +36,6 @@
 #define MODE_2D 2
 #define MODE_3D 3
 
-extern    Variables  Vars;
 extern  unsigned char       GB_debug;
 
 //-------  Images

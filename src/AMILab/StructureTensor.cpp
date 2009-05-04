@@ -64,8 +64,6 @@
 #include <stdlib.h>
 
 #include "VarContexts.hpp"
-#include "Variable.hpp"
-#include "Variables.hpp"
 #include "style.hpp"
 #include "math1.hpp"
 #include "chaine.hpp"

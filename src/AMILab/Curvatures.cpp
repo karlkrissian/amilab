@@ -28,15 +28,12 @@
 
 #include "VarContexts.hpp"
 #include "paramlist.h"
-#include "Variable.hpp"
-#include "Variables.hpp"
 #include "inrimage.hpp"
 #include "DeriveesLissees.hpp"
 #include "CurvaturasPrincipales.hpp"
 #include "DirPrincipales.hpp"
 //#include "gradiente3D.c"
 #include "FloatMatrix.hpp"
-//#include "fonctions.h"
 
 extern    VarContexts  Vars;
 extern    unsigned char GB_debug;

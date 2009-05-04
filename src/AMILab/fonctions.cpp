@@ -44,66 +44,8 @@ extern unsigned char GB_debug;
 extern    VarContexts  Vars;
 extern wxString  GB_scripts_dir;
 
-void ImageStack::AddImage( char* name)
-{
-  InrImage* im_tmp;
-  
-  //printf("ImageStack::AddImage() %s \n", name);
-
-  if (_num>=MAX_SIZE-1) {
-    fprintf(stderr,"ImageStack::AddImage(%s) too many images.\n",name);
-    return;
-  }
-  
-  try {
-    im_tmp=new InrImage(name);
-  }
-  catch (InrImage::ErreurLecture)
-    {
-      fprintf(stderr,"Unable to read image %s\n",name);
-      _num++;
-      _images[_num]=NULL;
-      return;
-    }
-  _num++;
-  _images[_num]=im_tmp;
-}
 
 
-
-
-void SurfStack::AddSurf( char* name)
-{
-  SurfacePoly* surf_tmp;
-  unsigned char      res;
-  
-  //  fprintf(stderr,"SurfStack::AddSurf() %s \n", name);
-
-  if (_num>=MAX_SIZE-1) {
-    fprintf(stderr,"SurfStack::AddSurf(%s) too many images.\n",name);
-    return;
-  }
-  
-  //  fprintf(stderr,"SurfStack::AddSurf() 1 \n");
-  surf_tmp=new SurfacePoly;
-
-  //  fprintf(stderr,"SurfStack::AddSurf() 2 \n");
-  //  surf_tmp->ReadVRML(name);
-
-  res = surf_tmp->Read(name);
- 
-  //  fprintf(stderr,"res = %d \n",res);
-
-  Si res Alors
-    //    fprintf(stderr,"SurfStack::AddSurf() 3 \n");
-    _num++;
-   _surf[_num]=surf_tmp;
-  Sinon
-    fprintf(stderr,"SurfStack::AddSurf(%s) \t read failed.\n",name);
-  FinSi
-
-    //  fprintf(stderr,"SurfStack::AddSurf() End \n");
-} 
 
 
 InrImage* Func_OpImage( InrImage* im1, InrImage* im2, InrImage* im3,
