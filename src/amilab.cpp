@@ -145,7 +145,7 @@ bool CheckEnvDir(const wxString& envname, wxString& res, const wxString& lookfor
   }
 // else {
       // look recursively for the file needed
-      cout  << "looking for the file " << lookforfile << " in " << res << endl;
+      cout  << "looking for the file " << lookforfile.mb_str() << " in " << res.mb_str() << endl;
       wxDir directory(res);
       if (lookforfile != wxEmptyString) {
         wxString path = directory.FindFirst(res,lookforfile);
@@ -240,8 +240,8 @@ bool MyApp::OnInit()
   CheckEnvDir( _T("AMI_HELP"),    GB_help_dir,    _T("tokens.html"));
   CheckEnvDir( _T("AMI_SCRIPTS"), GB_scripts_dir, _T("scripts.amil"));
 
-  cout << "GB_help_dir = " << GB_help_dir << endl;
-  cout << "GB_scripts_dir = " << GB_scripts_dir << endl;
+  cout << "GB_help_dir = " << GB_help_dir.mb_str() << endl;
+  cout << "GB_scripts_dir = " << GB_scripts_dir.mb_str() << endl;
 
 
   GB_driver.ws_print(cmd_line);
@@ -253,7 +253,8 @@ bool MyApp::OnInit()
   GB_wxApp = this;
 
   MainFrame *frame = new MainFrame(
-                GetwxStr("AMILab: Image Processing and Visualization"),
+                _T("AMILab"),
+//                _T("AMILab: Image Processing and Visualization"),
                 wxDefaultPosition,
                 wxSize(900,700));
 

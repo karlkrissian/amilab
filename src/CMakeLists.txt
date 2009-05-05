@@ -1,13 +1,20 @@
 # The name of our project is "HELLO".  CMakeLists files in this project can
 # refer to the root source directory of the project as ${HELLO_SOURCE_DIR} and
 # to the root binary directory of the project as ${HELLO_BINARY_DIR}.
-project (AMILAB)
+project (AMILab)
 
-cmake_minimum_required(VERSION 2.4)
+cmake_minimum_required(VERSION 2.6)
 
+if(COMMAND cmake_policy)
+  cmake_policy(SET CMP0003 NEW)
+endif(COMMAND cmake_policy)
 
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_ROOT}/Modules  ${CMAKE_CURRENT_SOURCE_DIR}/../CMAKE )
 
+
+MESSAGE( "CMAKE_SYSYEM           = ${CMAKE_SYSTEM}")
+MESSAGE( "CMAKE_SYSYEM_NAME      = ${CMAKE_SYSTEM_NAME}")
+MESSAGE(" CMAKE_SYSTEM_PROCESSOR = ${CMAKE_SYSTEM_PROCESSOR}")
 
 # set packaging information
 INCLUDE(InstallRequiredSystemLibraries)
@@ -16,24 +23,29 @@ SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "AMILab image processing and visualization
 SET(CPACK_PACKAGE_VENDOR "Karl Krissian, University of Las Palmas of Gran Canaria")
 SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/ReadMe.txt")
 SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/Copyright.txt")
+SET(CPACK_PACKAGE_VERSION "2.0.3")
 SET(CPACK_PACKAGE_VERSION_MAJOR "2")
 SET(CPACK_PACKAGE_VERSION_MINOR "0")
-SET(CPACK_PACKAGE_VERSION_PATCH "2")
+SET(CPACK_PACKAGE_VERSION_PATCH "3")
 SET(CPACK_PACKAGE_INSTALL_DIRECTORY "CMake ${CMake_VERSION_MAJOR}.${CMake_VERSION_MINOR}")
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "AMILab is a software for 2D/3D image processing, including its own scripting language with wrapping possibilities")
+
+SET(CPACK_SYSTEM_NAME "${CMAKE_SYSTEM_NAME}.${CMAKE_SYSTEM_PROCESSOR}")
+SET(CPACK_TOPLEVEL_TAG ${CPACK_SYSTEM_NAME})
 
 SET(CPACK_SET_DESTDIR "ON")
 
 # RPM configuration
 SET(CPACK_RPM_PACKAGE_SUMMARY "AMILab image processing and visualization software")
-SET(CPACK_RPM_PACKAGE_NAME "AMILab")
-SET(CPACK_RPM_PACKAGE_VERSION "2.0.2")
-SET(CPACK_RPM_PACKAGE_RELEASE "1.1")
+SET(CPACK_RPM_PACKAGE_NAME "amilab")
+SET(CPACK_RPM_PACKAGE_VERSION "2.0.3")
+SET(CPACK_RPM_PACKAGE_RELEASE "fc10")
 SET(CPACK_RPM_PACKAGE_LICENSE "LGPL")
 SET(CPACK_RPM_PACKAGE_GROUP "Applications/Engineering")
 SET(CPACK_RPM_PACKAGE_VENDOR "Karl Krissian, ULPGC")
 SET(CPACK_RPM_PACKAGE_DESCRIPTION "Amilab is designed as a tool for research and prototyping, with its own scripting language.")
-SET(CPACK_RPM_PACKAGE_REQUIRES "glibc-devel glibc-headers libAMIOpticalFlow wxGTK wxGTK-gl vtk")
+SET(CPACK_RPM_PACKAGE_REQUIRES "glibc wxGTK wxGTK-gl")
+SET(CPACK_RPM_PACKAGE_ARCHITECTURE "x86_64")
 
 # DEB configuration
 SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64")
@@ -57,9 +69,12 @@ ELSE(WIN32 AND NOT UNIX)
 ENDIF(WIN32 AND NOT UNIX)
 #SET(CPACK_PACKAGE_EXECUTABLES "MyExecutable" "My Executable")
 #MESSAGE("CMake:Debug:  CPACK_PACKAGE_INSTALL_DIRECTORY         = ${CPACK_PACKAGE_INSTALL_DIRECTORY}")
-SET(CPACK_GENERATOR "RPM;STGZ;DEB")
-SET(CPACK_SOURCE_GENERATOR "TGZ")
+
+SET(CPACK_GENERATOR "RPM")
+#SET(CPACK_GENERATOR "RPM;STGZ;DEB")
+#SET(CPACK_SOURCE_GENERATOR "TGZ")
 INCLUDE(CPack)
+
 
 
 FIND_PACKAGE ( VTK )
@@ -68,6 +83,8 @@ FIND_PACKAGE ( AMIFluid )
 #FIND_PACKAGE ( wxParams )
 FIND_PACKAGE ( OpticFlow )
 FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base )
+
+# put OpenGL before VTK to find the correct library of the system
 FIND_PACKAGE ( OpenGL )
 FIND_PATH(GLEXT_INCLUDE_DIR GL/glext.h )
 
@@ -191,9 +208,6 @@ INCLUDE(${wxWidgets_USE_FILE})
 INCLUDE( ${USE_ITK_FILE} )
 
 
-if(COMMAND cmake_policy)
-  cmake_policy(SET CMP0003 NEW)
-endif(COMMAND cmake_policy)
 
 SET(amilab_bin_SRCS
   amilab.cpp 
@@ -207,7 +221,9 @@ SET(amilab_bin_SRCS
 )
 endif (WIN32)
 
-add_executable (amilab_bin WIN32
+string(TOLOWER amilab_${CPACK_PACKAGE_VERSION}_${CMAKE_BUILD_TYPE} AMILAB_BIN )
+
+add_executable (${AMILAB_BIN} WIN32
   ${amilab_bin_SRCS}
 )
 
@@ -241,7 +257,7 @@ SET(amilab_ownlibs
 
 
 # conflict between freetype and vtkfreetype
-TARGET_LINK_LIBRARIES(amilab_bin
+TARGET_LINK_LIBRARIES( ${AMILAB_BIN}
   ${amilab_ownlibs}
   vtkRendering
   vtkGraphics
@@ -267,7 +283,7 @@ TARGET_LINK_LIBRARIES(amilab_bin
 )
 
 if (WIN32)
-TARGET_LINK_LIBRARIES(amilab_bin
+TARGET_LINK_LIBRARIES( ${AMILAB_BIN}
   ole32
   oleaut32
   uuid
@@ -279,8 +295,35 @@ IF(UNIX)
   SET(CMAKE_INSTALL_PREFIX "/usr/local")
 ENDIF(UNIX)
 
-INSTALL(TARGETS amilab_bin
+INSTALL(TARGETS ${AMILAB_BIN}
   RUNTIME DESTINATION bin
 )
 
-PrintSources(amilab_bin)
+# Install the scripts
+install(DIRECTORY ${AMILAB_SOURCE_DIR}/../scripts 
+        DESTINATION share/amilab-${CPACK_PACKAGE_VERSION}
+        FILES_MATCHING PATTERN "*.amil"
+         PATTERN "*.sh"
+         PATTERN "*.html"
+        PATTERN ".svn" EXCLUDE
+        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
+                    GROUP_EXECUTE GROUP_READ
+#"*.amil" -o -name  "*.sh" -o -name "*.html"
+        )
+
+# Install the documentation
+install(DIRECTORY ${AMILAB_SOURCE_DIR}/../doc
+        DESTINATION share/amilab-${CPACK_PACKAGE_VERSION}
+        FILES_MATCHING 
+          PATTERN "*.html"
+          PATTERN "*.amih"
+          PATTERN "*.gif"
+          PATTERN "*.css"
+          PATTERN "*.txt"
+        PATTERN ".svn" EXCLUDE
+        PERMISSIONS OWNER_WRITE OWNER_READ
+                    GROUP_READ
+        )
+
+
+PrintSources(${AMILAB_BIN})

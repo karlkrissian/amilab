@@ -18,7 +18,7 @@ SET(  wxParams_SRCS
 
 add_library (wxParams  ${wxParams_SRCS})
 
-INSTALL(TARGETS wxParams
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib
-)
+# INSTALL(TARGETS wxParams
+#   LIBRARY DESTINATION lib
+#   ARCHIVE DESTINATION lib
+# )
