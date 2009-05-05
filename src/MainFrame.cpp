@@ -492,8 +492,12 @@ void MainFrame::CreateVarListPanel ( wxWindow* parent)
 */
 
   // ComboBox to select the type of variables
-  wxString filter_choices[] = {"all","images","surfaces","AMI functions"};
-  _var_list_filter = new wxComboBox(_varlist_panel,wxID_VarList_Filter,"all",
+  wxString filter_choices[] = {
+                              _T("all"),
+                              _T("images"),
+                              _T("surfaces"),
+                              _T("AMI functions")};
+  _var_list_filter = new wxComboBox(_varlist_panel,wxID_VarList_Filter,_T("all"),
                               wxDefaultPosition,
                               wxDefaultSize,
                               4,
@@ -870,13 +874,13 @@ void MainFrame::UpdateVarList()
 
     if (varfound) {
       // check for filter
-      if ((_var_list_filter->GetValue().Cmp("images")==0) && 
+      if ((_var_list_filter->GetValue().Cmp(_T("images"))==0) && 
           (var->Type() != type_image)) continue;
 
-      if ((_var_list_filter->GetValue().Cmp("surfaces")==0) && 
+      if ((_var_list_filter->GetValue().Cmp(_T("surfaces"))==0) && 
           (var->Type() != type_surface)) continue;
 
-      if ((_var_list_filter->GetValue().Cmp("AMI functions")==0) && 
+      if ((_var_list_filter->GetValue().Cmp(_T("AMI functions"))==0) && 
           (var->Type() != type_ami_function)) continue;
 
       // add an item to the list
@@ -886,7 +890,7 @@ void MainFrame::UpdateVarList()
 
     } else
 
-      if (_var_list_filter->GetValue().Cmp("all")==0) {
+      if (_var_list_filter->GetValue().Cmp(_T("all"))==0) {
         // add an item to the list
         long tmp =_var_list->InsertItem(i,(*variables)[i]);
         _var_list->SetItemData(tmp, i);
@@ -955,7 +959,9 @@ void MainFrame::OnFileOpenImage    ( wxCommandEvent& event )
                       filename.GetPathSeparator(wxPATH_UNIX)+
                       filename.GetFullName());
 
-  cmd = varname + string(" = Image \"")+newname+string("\" // from menu");
+  cmd = varname + string(" = Image \"");
+  cmd += newname.mb_str();
+  cmd += string("\" // from menu");
   this->TC->IncCommand(cmd);
   this->TC->ProcessReturn();
 }
@@ -991,7 +997,9 @@ void MainFrame::OnFileOpenPolydata ( wxCommandEvent& event )
                       filename.GetPathSeparator(wxPATH_UNIX)+
                       filename.GetFullName());
 
-  cmd = varname + string(" = Surface \"")+newname+string("\" // from menu");
+  cmd = varname + string(" = Surface \"");
+  cmd += newname.mb_str();
+  cmd += string("\" // from menu");
   this->TC->IncCommand(cmd);
   this->TC->ProcessReturn();
 }
@@ -1017,7 +1025,9 @@ void MainFrame::OnFileLoadScript   ( wxCommandEvent& event )
                       filename.GetPathSeparator(wxPATH_UNIX)+
                       filename.GetFullName());
 
-  cmd = string("func \"")+newname+string("\" // from menu");
+  cmd = string("func \"");
+  cmd += newname.mb_str();
+  cmd += string("\" // from menu");
   this->TC->IncCommand(cmd);
   this->TC->ProcessReturn();
 }
@@ -1094,7 +1104,7 @@ void MainFrame::UpdateVars( wxCommandEvent& event)
 //--------------------------------------------------
 void MainFrame::OnToolHelp( wxCommandEvent& event)
 {
-  wxLaunchDefaultBrowser("http://amilab.sourceforge.net:80/dokuwiki/doku.php?id=Help");
+  wxLaunchDefaultBrowser(_T("http://amilab.sourceforge.net:80/dokuwiki/doku.php?id=Help"));
 }
 
 //--------------------------------------------------

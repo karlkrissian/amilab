@@ -70,7 +70,7 @@
 
 //#include "surface.hpp"
 
-#define EPSILON 1E-5
+#define EPSILON_ISOSURFACE 1E-5
 
 #define SEGMENT_NON_TESTE     0
 #define SEGMENT_VIDE          1

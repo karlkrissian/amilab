@@ -88,7 +88,7 @@ unsigned char CheckEndString( char* st1, const std::string end);
 }
 */
 
-unsigned char RemoveEndString( char* st1, char* end);
+unsigned char RemoveEndString( char* st1, const char* end);
 /*
 {
   int l1 = strlen(st1);

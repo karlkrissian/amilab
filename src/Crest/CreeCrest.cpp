@@ -587,8 +587,13 @@ void CreeCrest :: RegroupeLignes( int l1, int l2)
     p1 =  Point( l2, j);
     x = (int) p1.x;   y = (int) p1.y;    z = (int) p1.z;
 
-#define macro_min(a,b) ((a)<(b)?(a):(b))
-#define macro_max(a,b) ((a)>(b)?(a):(b))
+#ifndef macro_min
+  #define macro_min(n1,n2) ((n1)<(n2)?(n1):(n2))
+#endif
+
+#ifndef macro_max
+  #define macro_max(n1,n2) ((n1)>(n2)?(n1):(n2))
+#endif 
 
     Pour( x1, macro_max(0,(x-1)), macro_min((x+1),(_image_lignes->_tx-1)) )
     Pour( y1, macro_max(0,(y-1)), macro_min((y+1),(_image_lignes->_ty-1)) )

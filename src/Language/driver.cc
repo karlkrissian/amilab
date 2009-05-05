@@ -257,7 +257,7 @@ bool Driver::parse_script(  const char* filename)
 
 */
 
-  bool res = parse_file(newname.GetFullPath().mb_str());
+  bool res = parse_file(string(newname.GetFullPath().mb_str()));
   //cout << "current wd = "  <<  wxGetCwd() << endl; 
   return res;
 

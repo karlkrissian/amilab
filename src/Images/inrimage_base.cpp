@@ -222,7 +222,7 @@ unsigned char InrImageBase::LitMaple(char* nom )
 
 
 //--------------------------------------------------------------------------
-unsigned char InrImageBase::EcritMaple(char* nom )
+unsigned char InrImageBase::EcritMaple(const char* nom )
 //                    ----------     
 {
 
@@ -337,7 +337,7 @@ void InrImageBase::SetVoxelSize( float sx, float sy, float sz)
 
 //--------------------------------------------------------------------------
 // Defaut char* nom = NULL
-unsigned char InrImageBase::Sauve(char* nom )
+unsigned char InrImageBase::Sauve(const char* nom )
 //                    -----
 {
 

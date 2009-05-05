@@ -443,7 +443,7 @@ private:
   ///
   unsigned char   LitMaple( char* nom);
   ///
-  unsigned char   EcritMaple( char* nom);
+  unsigned char   EcritMaple(const char* nom);
 
   /// initialisation du tableau de positions _positions[z][y]
   virtual unsigned char   InitPositions();
@@ -1252,15 +1252,15 @@ public:
   //@{
 
     ///
-    virtual unsigned char Sauve( char* nom = (char*)NULL);
+    virtual unsigned char Sauve( const char* nom = (char*)NULL);
     //                -----
 
 
     ///
-    unsigned char SauveMaple( char* nom = (char*)NULL)
+    unsigned char SauveMaple( const char* nom = (char*)NULL)
     //      ----------
     {
-      Si nom==(char*)NULL AlorsRetourne false;
+      Si nom==NULL AlorsRetourne false;
       return EcritMaple(nom);
     }
 

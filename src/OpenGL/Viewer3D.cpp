@@ -555,10 +555,10 @@ void Viewer3D::Create_Toolbar()
                               (void*) this);
   toolBar->AddEnumChoice( proj_id, 
                           wxID_TB_Projection, PROJ_ORTHO,
-                          wxBitmap(proj_ortho_string), "ortho");
+                          wxBitmap(proj_ortho_string), _T("ortho"));
   toolBar->AddEnumChoice( proj_id, 
                           wxID_TB_Projection, PROJ_PERSP,
-                          wxBitmap(proj_persp_string), "persp");
+                          wxBitmap(proj_persp_string), _T("persp"));
   toolBar->AddRightClick( proj_id,
                           (void*) Viewer3D::CB_ProjParam,
                           (void*) this);
@@ -575,9 +575,9 @@ void Viewer3D::Create_Toolbar()
                             (void*) this);
 
   toolBar->AddEnumChoice(fog_id, wxID_TB_Fog, 0, 
-    wxBitmap(nofog_string),"No Fog");
+    wxBitmap(nofog_string),_T("No Fog"));
   toolBar->AddEnumChoice(fog_id, wxID_TB_Fog, 1, 
-    wxBitmap(fog_string),"Fog");
+    wxBitmap(fog_string),_T("Fog"));
   toolBar->AddRightClick( fog_id,
                             (void*) Viewer3D::CB_FogParam,
                             (void*) this);
@@ -589,8 +589,8 @@ void Viewer3D::Create_Toolbar()
                                 (void*) Viewer3D::CB_redessine,
                                 (void*) this);
 
-  toolBar->AddEnumChoice(bb_id, wxID_TB_BB, 0, wxBitmap(nobb_string), "No BB");
-  toolBar->AddEnumChoice(bb_id, wxID_TB_BB, 1, wxBitmap(bb_string), "BB");
+  toolBar->AddEnumChoice(bb_id, wxID_TB_BB, 0, wxBitmap(nobb_string), _T("No BB"));
+  toolBar->AddEnumChoice(bb_id, wxID_TB_BB, 1, wxBitmap(bb_string), _T("BB"));
   toolBar->Update(bb_id);
 
 
@@ -599,10 +599,10 @@ void Viewer3D::Create_Toolbar()
                                 (void*) Viewer3D::CB_redessine,
                                 (void*) this);
 
-  toolBar->AddEnumChoice(glmode_id, wxID_TB_GLmode, GL_MODE_POINT, wxBitmap(gl_point_string),"Points");
-  toolBar->AddEnumChoice(glmode_id, wxID_TB_GLmode,  GL_MODE_LINE,  wxBitmap(gl_line_string),"Lines");
-  toolBar->AddEnumChoice(glmode_id, wxID_TB_GLmode,  GL_MODE_FILL,  wxBitmap(gl_fill_xpm),"Fill");
-  toolBar->AddEnumChoice(glmode_id, wxID_TB_GLmode,  GL_MODE_FILL_LINE,  wxBitmap(gl_fill_line_string),"Fill & Lines");
+  toolBar->AddEnumChoice(glmode_id, wxID_TB_GLmode, GL_MODE_POINT, wxBitmap(gl_point_string),_T("Points"));
+  toolBar->AddEnumChoice(glmode_id, wxID_TB_GLmode,  GL_MODE_LINE,  wxBitmap(gl_line_string),_T("Lines"));
+  toolBar->AddEnumChoice(glmode_id, wxID_TB_GLmode,  GL_MODE_FILL,  wxBitmap(gl_fill_xpm),_T("Fill"));
+  toolBar->AddEnumChoice(glmode_id, wxID_TB_GLmode,  GL_MODE_FILL_LINE,  wxBitmap(gl_fill_line_string),_T("Fill & Lines"));
   toolBar->Update(glmode_id);
 
 //#endif // not WIN32

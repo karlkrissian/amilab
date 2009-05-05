@@ -97,8 +97,14 @@
 #define Non           !
 #define Et            &&
 
-#define macro_min(n1,n2) ((n1)<(n2)?(n1):(n2))
-#define macro_max(n1,n2) ((n1)>(n2)?(n1):(n2))
+#ifndef macro_min
+  #define macro_min(n1,n2) ((n1)<(n2)?(n1):(n2))
+#endif
+
+#ifndef macro_max
+  #define macro_max(n1,n2) ((n1)>(n2)?(n1):(n2))
+#endif 
+
 #define macro_abs(n)     ((n)>0?(n):-(n))
 
 //#define phi0(x)         exp(-((x)*(x)/k/k))

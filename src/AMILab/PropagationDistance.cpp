@@ -33,8 +33,13 @@
 #define POINT_SET_FRONT  2
 #define POINT_SET        3
 
-#define macro_min(a,b) ((a<b)?a:b)
-#define macro_max(a,b) ((a>b)?a:b)
+#ifndef macro_min
+  #define macro_min(n1,n2) ((n1)<(n2)?(n1):(n2))
+#endif
+
+#ifndef macro_max
+  #define macro_max(n1,n2) ((n1)>(n2)?(n1):(n2))
+#endif 
 
 // the input image
 // contains distance values in ]-1,1[

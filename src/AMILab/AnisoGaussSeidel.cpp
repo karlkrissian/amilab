@@ -556,8 +556,13 @@ static AnisoGS* static_AnisoGS = NULL;
 #define phi3D_1(x) maxcurv_coeff
 #define phi3D_2(x) mincurv_coeff
 
-#define macro_max_abs(n1,n2) (fabsf(n1)>fabsf(n2)?(n1):(n2))
-#define macro_min_abs(n1,n2) (fabsf(n1)<fabsf(n2)?(n1):(n2))
+#ifndef macro_min
+  #define macro_min(n1,n2) ((n1)<(n2)?(n1):(n2))
+#endif
+
+#ifndef macro_max
+  #define macro_max(n1,n2) ((n1)>(n2)?(n1):(n2))
+#endif 
 
 
 // Extend Boundary Conditions

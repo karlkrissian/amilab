@@ -1118,7 +1118,7 @@ unsigned char InrImage :: LitMaple(char* nom )
 
 
 //--------------------------------------------------------------------------
-unsigned char InrImage :: EcritMaple(char* nom )
+unsigned char InrImage :: EcritMaple(const char* nom )
 //                           ----------     
 {
 
@@ -2349,7 +2349,7 @@ InrImage :: operator vtkImageData_ptr()
 
 //--------------------------------------------------------------------------
 // Defaut char* nom = NULL
-unsigned char InrImage :: Sauve(char* nom )
+unsigned char InrImage :: Sauve( const char* nom )
 //                        -----
 {
 

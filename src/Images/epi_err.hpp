@@ -137,8 +137,8 @@ desallocates all allocated routines.
 
 int E_Error(
 int no, 	/* Reference number of the error */
-char *proc, /* procedure where error occured */
-char *mess 	/* complementary message */
+const char *proc, /* procedure where error occured */
+const char *mess 	/* complementary message */
 );
 
 void E_ErrorReset( void );

@@ -290,7 +290,7 @@ bool MyApp::OnInit()
         GB_driver.yyip_parse();
         GB_driver.yyip_popup_buffer();
         */
-        GB_driver.parse_file(input_file.mb_str(wxConvUTF8));
+        GB_driver.parse_file(string(input_file.mb_str(wxConvUTF8)));
 
         GB_main_wxFrame->GetConsole()->ProcessReturn();
 

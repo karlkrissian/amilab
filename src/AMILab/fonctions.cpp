@@ -1253,12 +1253,14 @@ int AskVarName(wxWindow* parent, const string title, const string label, const s
 {
 
     wxTextEntryDialog dialog(parent,
-                            title,label,def,
+                            wxString(title.c_str(),wxConvUTF8),
+                            wxString(label.c_str(),wxConvUTF8),
+                            wxString(def.c_str(),wxConvUTF8),
                              wxOK | wxCENTRE);
 
     if (dialog.ShowModal() == wxID_OK)
     {
-      name = dialog.GetValue();
+      name = string(dialog.GetValue().mb_str());
       return 1;
     }
 

@@ -139,7 +139,7 @@ protected:
   unsigned char   LitMaple(char* nom );
 
   ///
-  unsigned char   EcritMaple(char* nom );
+  unsigned char   EcritMaple(const char* nom );
 
   ///
   unsigned char   Alloue();
@@ -302,7 +302,7 @@ public:
   //@{
 
     ///
-    unsigned char Sauve( char* nom = NULL);
+    unsigned char Sauve( const char* nom = NULL);
     //      -----
 
     ///

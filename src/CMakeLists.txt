@@ -11,21 +11,29 @@ SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_ROOT}/Modules  ${CMAKE_CURREN
 
 # set packaging information
 INCLUDE(InstallRequiredSystemLibraries)
+
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "AMILab image processing and visualization software")
 SET(CPACK_PACKAGE_VENDOR "Karl Krissian, University of Las Palmas of Gran Canaria")
 SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/ReadMe.txt")
 SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/Copyright.txt")
 SET(CPACK_PACKAGE_VERSION_MAJOR "2")
 SET(CPACK_PACKAGE_VERSION_MINOR "0")
-SET(CPACK_PACKAGE_VERSION_PATCH "0")
+SET(CPACK_PACKAGE_VERSION_PATCH "2")
 SET(CPACK_PACKAGE_INSTALL_DIRECTORY "CMake ${CMake_VERSION_MAJOR}.${CMake_VERSION_MINOR}")
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "AMILab is a software for 2D/3D image processing, including its own scripting language with wrapping possibilities")
+
+SET(CPACK_SET_DESTDIR "ON")
+
 # RPM configuration
+SET(CPACK_RPM_PACKAGE_SUMMARY "AMILab image processing and visualization software")
 SET(CPACK_RPM_PACKAGE_NAME "AMILab")
-SET(CPACK_RPM_PACKAGE_VENDOR "Karl Krissian")
-SET(CPACK_RPM_PACKAGE_GROUP "Applications/Engineering")
+SET(CPACK_RPM_PACKAGE_VERSION "2.0.2")
+SET(CPACK_RPM_PACKAGE_RELEASE "1.1")
 SET(CPACK_RPM_PACKAGE_LICENSE "LGPL")
-SET(CPACK_RPM_PACKAGE_REQUIRES "glibc-devel glibc-headers libAMIFluid libAMIOpticalFlow wxGTK wxGTK-gl boost")
+SET(CPACK_RPM_PACKAGE_GROUP "Applications/Engineering")
+SET(CPACK_RPM_PACKAGE_VENDOR "Karl Krissian, ULPGC")
+SET(CPACK_RPM_PACKAGE_DESCRIPTION "Amilab is designed as a tool for research and prototyping, with its own scripting language.")
+SET(CPACK_RPM_PACKAGE_REQUIRES "glibc-devel glibc-headers libAMIOpticalFlow wxGTK wxGTK-gl vtk")
 
 # DEB configuration
 SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64")
@@ -67,7 +75,7 @@ SET(Boost_USE_STATIC_LIBS   ON)
 SET(Boost_USE_MULTITHREAD OFF)
 #MESSAGE(  CMAKE_HOST_SYSTEM_NAME=${CMAKE_HOST_SYSTEM_NAME} )
 #MESSAGE(  CMAKE_HOST_SYSTEM=${CMAKE_HOST_SYSTEM} )
-FIND_PACKAGE( Boost  COMPONENTS date_time filesystem  system iostreams  regex)
+FIND_PACKAGE( Boost  1.38 COMPONENTS date_time filesystem  system iostreams  regex)
 #SET(Boost_USE_STATIC_LIBS ON)
 
 FIND_PACKAGE( ZLIB)

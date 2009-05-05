@@ -28,8 +28,13 @@
 
 #include "func_imagebasictools.h"
 
-#define macro_min(n1,n2) ((n1)<(n2)?(n1):(n2))
-#define macro_max(n1,n2) ((n1)>(n2)?(n1):(n2))
+#ifndef macro_min
+  #define macro_min(n1,n2) ((n1)<(n2)?(n1):(n2))
+#endif
+
+#ifndef macro_max
+  #define macro_max(n1,n2) ((n1)>(n2)?(n1):(n2))
+#endif 
 
 extern unsigned char GB_debug;
 

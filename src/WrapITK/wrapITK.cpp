@@ -237,6 +237,7 @@ cout << itk::ImageIOBase::USHORT << endl;
 // compilation pb with long: don't know why
 // /home/karl/projects/Sourceforge/amilab/src/WrapITK/wrapITK.cpp:216: error: expected unqualified-id before 'long'
 //    case itk::ImageIOBase::LONG:   res = itkReadClass<signed long,    imdim>()(*fname,WT_SIGNED_LONG);     break; \
+//
 
   switch (image_dim) {
 //    case 1: READ_IMAGE(1); break;

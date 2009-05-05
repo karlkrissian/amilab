@@ -305,15 +305,15 @@ int Cube :: CalculIntersection(int seg)
   v0 = _valeurs[p0];
   v1 = _valeurs[p1];
 
-  Si (v0> EPSILON Et v1> EPSILON) Ou
-     (v0<-EPSILON Et v1<-EPSILON) 
+  Si (v0> EPSILON_ISOSURFACE Et v1> EPSILON_ISOSURFACE) Ou
+     (v0<-EPSILON_ISOSURFACE Et v1<-EPSILON_ISOSURFACE) 
   Alors
     tabSeg[seg].SetState(SEGMENT_VIDE);
     return tabSeg[seg]._etat;
   FinSi
 
-  Si (v0<-EPSILON Et v1> EPSILON) Ou
-     (v0> EPSILON Et v1<-EPSILON)
+  Si (v0<-EPSILON_ISOSURFACE Et v1> EPSILON_ISOSURFACE) Ou
+     (v0> EPSILON_ISOSURFACE Et v1<-EPSILON_ISOSURFACE)
   Alors
 
     
@@ -357,7 +357,7 @@ int Cube :: CalculIntersection(int seg)
   FinSi
 
   // We consider the value 0 to be positive
-  Si  v1<-EPSILON
+  Si  v1<-EPSILON_ISOSURFACE
   Alors
     
       pt3D           pt;
@@ -376,7 +376,7 @@ int Cube :: CalculIntersection(int seg)
     return tabSeg[seg]._etat;
   FinSi
 
-  Si v0<-EPSILON
+  Si v0<-EPSILON_ISOSURFACE
   Alors
     
       pt3D           pt;
@@ -770,9 +770,9 @@ void IsoSurface :: CalculSurface(float seuil,
       continue;
     FinSi
     
-    Si val0>EPSILON Alors
+    Si val0>EPSILON_ISOSURFACE Alors
       val1 = valx;
-      Si  val1<-EPSILON Alors
+      Si  val1<-EPSILON_ISOSURFACE Alors
         coeff = val0/(val0-val1);
         pt.Init(x+coeff,y,z);
         _image_points->AddPoint( x, y, z, 0, pt);
@@ -785,7 +785,7 @@ void IsoSurface :: CalculSurface(float seuil,
 
       val1 = (*_image)(x,y+1,z) - _seuil;
       //      val1 = _image->ValeurBuffer(tx) - _seuil;
-      Si val1<-EPSILON Alors
+      Si val1<-EPSILON_ISOSURFACE Alors
         coeff = val0/(val0-val1);
         pt.Init(x,y+coeff,z);
         _image_points->AddPoint( x, y, z, 1, pt);
@@ -798,7 +798,7 @@ void IsoSurface :: CalculSurface(float seuil,
  
       val1 = (*_image)(x,y,z+1) - _seuil;
       //      val1 = _image->ValeurBuffer(txy) - _seuil;
-      Si  val1<-EPSILON Alors
+      Si  val1<-EPSILON_ISOSURFACE Alors
         coeff = val0/(val0-val1);
         pt.Init(x,y,z+coeff);
         _image_points->AddPoint( x, y, z, 2, pt);
@@ -809,9 +809,9 @@ void IsoSurface :: CalculSurface(float seuil,
         _image_points->ActiveCube(x-1,y,  z);
       FinSi
     Autrement
-    Si val0<-EPSILON Alors
+    Si val0<-EPSILON_ISOSURFACE Alors
       val1 = valx;
-      Si  val1>EPSILON Alors
+      Si  val1>EPSILON_ISOSURFACE Alors
         coeff = val0/(val0-val1);
         pt.Init(x+coeff,y,z);
         _image_points->AddPoint( x, y, z, 0, pt);
@@ -824,7 +824,7 @@ void IsoSurface :: CalculSurface(float seuil,
 
       val1 = (*_image)(x,y+1,z) - _seuil;
       // val1 = _image->ValeurBuffer(tx) - _seuil;
-      Si  val1>EPSILON Alors
+      Si  val1>EPSILON_ISOSURFACE Alors
         coeff = val0/(val0-val1);
         pt.Init(x,y+coeff,z);
         _image_points->AddPoint( x, y, z, 1, pt);
@@ -837,7 +837,7 @@ void IsoSurface :: CalculSurface(float seuil,
  
       val1 = (*_image)(x,y,z+1) - _seuil;
       //      val1 = _image->ValeurBuffer(txy) - _seuil;
-      Si  val1>EPSILON Alors
+      Si  val1>EPSILON_ISOSURFACE Alors
         coeff = val0/(val0-val1);
         pt.Init(x,y,z+coeff);
         _image_points->AddPoint( x, y, z, 2, pt);

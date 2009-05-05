@@ -168,8 +168,13 @@
 #include "VolumeRender.hpp"
 //#include "math1.hpp"
 
-#define macro_min(a,b) ( (a)<(b) ? (a) : (b))
-#define macro_max(a,b) ( (a)>(b) ? (a) : (b))
+#ifndef macro_min
+  #define macro_min(a,b) ( (a)<(b) ? (a) : (b))
+#endif
+
+#ifndef macro_max
+  #define macro_max(a,b) ( (a)>(b) ? (a) : (b))
+#endif
 
 
 typedef  unsigned long Dimension;
@@ -3282,7 +3287,7 @@ DessinImage::Constructeur DessinImage(
 {
 
   
-    char*  method = "DessinImage 3";
+    const char*  method = "DessinImage 3";
 
   if (GB_debug) printf("DessinImage::DessinImage title = %s \n",ATitle.c_str());
 

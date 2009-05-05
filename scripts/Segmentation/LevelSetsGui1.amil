@@ -215,7 +215,7 @@ proc RunLS( IMAGE initial, NUM graphics) {
   SetProgress(0)
   LS_stop = 0;
   for n=1 to it {
-    printn n
+    print n; print "/"; printn it
     if (!LS_stop) {
       print sprint("T= %0.2f \n",n*dt)
       LevelSetsCURV.iterate;
@@ -225,7 +225,7 @@ proc RunLS( IMAGE initial, NUM graphics) {
         lres = LevelSetsCURV.GetOutput
         k = 0
         show LS_in
-        ProcessXEvents(500)
+        ProcessXEvents(100)
       }
       SetProgress(n/it*100)
     } else {

@@ -413,7 +413,7 @@ public:
   //@{
 
     ///
-    unsigned char Sauve( char* nom = (char*)NULL) throw (ErreurMethodeNonGeree)
+    unsigned char Sauve( const char* nom = (char*)NULL) throw (ErreurMethodeNonGeree)
     //     ---------
     {
 

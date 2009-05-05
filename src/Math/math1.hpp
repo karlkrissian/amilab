@@ -69,8 +69,14 @@ const double PI = 3.141592741;
  #define log2f(x)    (logf(x)/logf(2))
 #endif
 
-#define macro_min(n1,n2) ((n1)<(n2)?(n1):(n2))
-#define macro_max(n1,n2) ((n1)>(n2)?(n1):(n2))
+#ifndef macro_min
+  #define macro_min(n1,n2) ((n1)<(n2)?(n1):(n2))
+#endif
+
+#ifndef macro_max
+  #define macro_max(n1,n2) ((n1)>(n2)?(n1):(n2))
+#endif 
+
 #define macro_abs(n)     ((n)>0?(n):-(n))
 
 typedef char st46[46];
