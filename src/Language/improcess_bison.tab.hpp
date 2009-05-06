@@ -53,6 +53,7 @@ namespace yyip
   //#include <stdlib.h>
   //#include <stdio.h>
 
+#include "CoutwxString.h"
 #include "MainFrame.h"
 #include "ParamPanel.hpp"
 #include <locale.h>
@@ -375,7 +376,7 @@ void CB_delete_surfdraw( void* varid);
 
 
 /* Line 35 of lalr1.cc.  */
-#line 379 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.hpp"
+#line 380 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.hpp"
 
 #include "location.hh"
 
@@ -426,7 +427,7 @@ namespace yyip
     /// Symbol semantic values.
 #ifndef YYSTYPE
     union semantic_type
-#line 371 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 372 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
 {
   IdentifierInfo*       ident;
   Variable*             variable;
@@ -441,7 +442,7 @@ namespace yyip
   ImageExtent*          imageextent;
 }
 /* Line 35 of lalr1.cc.  */
-#line 445 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.hpp"
+#line 446 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.hpp"
 	;
 #else
     typedef YYSTYPE semantic_type;

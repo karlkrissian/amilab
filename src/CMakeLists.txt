@@ -12,21 +12,29 @@ endif(COMMAND cmake_policy)
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_ROOT}/Modules  ${CMAKE_CURRENT_SOURCE_DIR}/../CMAKE )
 
 
-MESSAGE( "CMAKE_SYSYEM           = ${CMAKE_SYSTEM}")
-MESSAGE( "CMAKE_SYSYEM_NAME      = ${CMAKE_SYSTEM_NAME}")
-MESSAGE(" CMAKE_SYSTEM_PROCESSOR = ${CMAKE_SYSTEM_PROCESSOR}")
+#-----------------------------------------------------
+# VERSION information
+#-----------------------------------------------------
 
+SET(AMILAB_VERSION_MAJOR "2")
+SET(AMILAB_VERSION_MINOR "0")
+SET(AMILAB_VERSION_PATCH "3")
+SET(AMILAB_VERSION "${AMILAB_VERSION_MAJOR}.${AMILAB_VERSION_MINOR}.${AMILAB_VERSION_PATCH}")
+
+
+#-----------------------------------------------------
 # set packaging information
+#-----------------------------------------------------
 INCLUDE(InstallRequiredSystemLibraries)
 
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "AMILab image processing and visualization software")
 SET(CPACK_PACKAGE_VENDOR "Karl Krissian, University of Las Palmas of Gran Canaria")
 SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/ReadMe.txt")
 SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/Copyright.txt")
-SET(CPACK_PACKAGE_VERSION "2.0.3")
-SET(CPACK_PACKAGE_VERSION_MAJOR "2")
-SET(CPACK_PACKAGE_VERSION_MINOR "0")
-SET(CPACK_PACKAGE_VERSION_PATCH "3")
+SET(CPACK_PACKAGE_VERSION ${AMILAB_VERSION})
+SET(CPACK_PACKAGE_VERSION_MAJOR ${AMILAB_VERSION_MAJOR} )
+SET(CPACK_PACKAGE_VERSION_MINOR ${AMILAB_VERSION_MINOR} )
+SET(CPACK_PACKAGE_VERSION_PATCH ${AMILAB_VERSION_PATCH} )
 SET(CPACK_PACKAGE_INSTALL_DIRECTORY "CMake ${CMake_VERSION_MAJOR}.${CMake_VERSION_MINOR}")
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "AMILab is a software for 2D/3D image processing, including its own scripting language with wrapping possibilities")
 
@@ -38,7 +46,7 @@ SET(CPACK_SET_DESTDIR "ON")
 # RPM configuration
 SET(CPACK_RPM_PACKAGE_SUMMARY "AMILab image processing and visualization software")
 SET(CPACK_RPM_PACKAGE_NAME "amilab")
-SET(CPACK_RPM_PACKAGE_VERSION "2.0.3")
+SET(CPACK_RPM_PACKAGE_VERSION ${AMILAB_VERSION})
 SET(CPACK_RPM_PACKAGE_RELEASE "fc10")
 SET(CPACK_RPM_PACKAGE_LICENSE "LGPL")
 SET(CPACK_RPM_PACKAGE_GROUP "Applications/Engineering")
@@ -119,16 +127,11 @@ include_directories (
 )
 
 
-#     # and for each of your dependant executable/library targets:
-#     TARGET_LINK_LIBRARIES(<YourTarget> ${wxWidgets_LIBRARIES})
+#SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/../CMAKE)
 
-# Recurse into the "Hello" and "Demo" subdirectories.  This does not actually
-# cause another cmake executable to run.  The same process will walk through
-# the project's entire directory structure.
-#add_subdirectory (Hello)
-#add_subdirectory (Demo)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/AMILabConfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/AMILabConfig.h)
 
-SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/../CMAKE)
+
 include(amilab_macros)
 InitPrintSources()
 
@@ -139,7 +142,11 @@ include_directories (
   ${Boost_INCLUDE_DIR}
   ${OPENGL_INCLUDE_DIR}
   ${wxParams_INCLUDE_DIRS}
+  ${CMAKE_CURRENT_BINARY_DIR}
 )
+
+# for compatibility with previous name
+SET( AMILAB_SOURCE_DIR ${AMILab_SOURCE_DIR} )
 
 add_subdirectory (Common)
 add_subdirectory (Math)
@@ -292,7 +299,7 @@ TARGET_LINK_LIBRARIES( ${AMILAB_BIN}
 endif (WIN32)
 
 IF(UNIX)
-  SET(CMAKE_INSTALL_PREFIX "/usr/local")
+  SET(CMAKE_INSTALL_PREFIX "/usr/")
 ENDIF(UNIX)
 
 INSTALL(TARGETS ${AMILAB_BIN}
@@ -301,7 +308,7 @@ INSTALL(TARGETS ${AMILAB_BIN}
 
 # Install the scripts
 install(DIRECTORY ${AMILAB_SOURCE_DIR}/../scripts 
-        DESTINATION share/amilab-${CPACK_PACKAGE_VERSION}
+        DESTINATION share/amilab-${AMILAB_VERSION}
         FILES_MATCHING PATTERN "*.amil"
          PATTERN "*.sh"
          PATTERN "*.html"
@@ -313,7 +320,7 @@ install(DIRECTORY ${AMILAB_SOURCE_DIR}/../scripts
 
 # Install the documentation
 install(DIRECTORY ${AMILAB_SOURCE_DIR}/../doc
-        DESTINATION share/amilab-${CPACK_PACKAGE_VERSION}
+        DESTINATION share/amilab-${AMILAB_VERSION}
         FILES_MATCHING 
           PATTERN "*.html"
           PATTERN "*.amih"
@@ -325,5 +332,16 @@ install(DIRECTORY ${AMILAB_SOURCE_DIR}/../doc
                     GROUP_READ
         )
 
+if (UNIX)
+  # Install the documentation
+  install(DIRECTORY ${AMILAB_SOURCE_DIR}/../Releases/Linux/share
+          DESTINATION .
+          FILES_MATCHING 
+            PATTERN "*.*"
+          PATTERN ".svn" EXCLUDE
+          PATTERN "*~" EXCLUDE
+          PERMISSIONS OWNER_READ GROUP_READ
+          )
+endif(UNIX)
 
 PrintSources(${AMILAB_BIN})

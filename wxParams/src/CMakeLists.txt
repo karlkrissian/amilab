@@ -14,6 +14,7 @@ SET(  wxParams_SRCS
     ParamPanel.cpp
     wxColorParameter.cpp
     wxParamTypes.cpp
+    CoutwxString.cpp
 )
 
 add_library (wxParams  ${wxParams_SRCS})

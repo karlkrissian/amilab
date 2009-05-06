@@ -12,6 +12,7 @@
   //#include <stdlib.h>
   //#include <stdio.h>
 
+#include "CoutwxString.h"
 #include "MainFrame.h"
 #include "ParamPanel.hpp"
 #include <locale.h>
@@ -1132,7 +1133,7 @@ func_inst :
 
         driver.res_print( newname.mb_str());
         driver.res_print("\n");
-        inc_cmd = str(format(" \"%1%\" // from browser ") % newname);
+        inc_cmd = str(format(" \"%1%\" // from browser ") % newname.mb_str());
         if (driver.in_console)
           GB_main_wxFrame->GetConsole()
                           ->IncCommand(wxString::FromAscii(inc_cmd.c_str()));
@@ -5013,7 +5014,8 @@ primary_expr_string: ASTRING
 postfix_expr_string
         : primary_expr_string
         {
-       fflush(stdout);
+          $$=$1;
+          //fflush(stdout);
         }
         |
         T_SPRINT T_OP_PAR expr_string T_COMMA expr T_CL_PAR
@@ -6034,7 +6036,7 @@ postfix_expr
 
 unary_expr
         : postfix_expr
-        | unary_operator cast_expr
+        | unary_operator cast_expr { $$=$2; }
         | T_FACT cast_expr  { UNARYOP_EXPR(!,              $2,$$) }
         | T_SUB cast_expr  { UNARYOP_EXPR(-,              $2,$$) }
         | T_ADD cast_expr  { UNARYOP_EXPR(+,              $2,$$) }
@@ -6512,7 +6514,7 @@ image:
                               filename.GetFullName());
           driver.res_print(newname.mb_str());
           driver.res_print("\n");
-          inc_cmd = str(format(" \"%1%\" // from browser ") % newname);
+          inc_cmd = str(format(" \"%1%\" // from browser ") % newname.mb_str());
 
           if (driver.in_console)
             GB_main_wxFrame->GetConsole()
@@ -9388,7 +9390,7 @@ primary_image:  image | T_OP_PAR expr_image T_CL_PAR;
 postfix_image:  primary_image;
 
 unary_image  :    postfix_image
-                | unary_operator cast_image
+                | unary_operator cast_image 
                 | T_SUB  cast_image { UNARYOP_IMAGE(-)               }
                 | T_ADD  cast_image
         | SIN   cast_image { UNARYOP_IMAGE(sin)             }
@@ -9891,7 +9893,7 @@ surface:
                               filename.GetFullName());
 
 
-          inc_cmd = str(format(" \"%1%\"  // from browser ") % newname);
+          inc_cmd = str(format(" \"%1%\"  // from browser ") % newname.mb_str());
           if (driver.in_console)
             GB_main_wxFrame->GetConsole()->IncCommand(inc_cmd);
         }

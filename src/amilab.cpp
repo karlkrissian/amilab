@@ -5,10 +5,14 @@
 
 //-------------------------------------------------
 
+// configuration information, including version number ..
+#include "AMILabConfig.h"
+
 #include "MainFrame.h"
 #include <wx/stdpaths.h>
 #include <wx/dir.h>
 
+#include "CoutwxString.h"
 
 #include "DessinImage.hpp"
 #include "fonctions.h"
@@ -138,10 +142,10 @@ bool CheckEnvDir(const wxString& envname, wxString& res, const wxString& lookfor
   }
 
   if (!wxDir::Exists(res)) {
-    cerr << "Error accessing directory " << res;
+    cerr << "Error accessing directory " << res.mb_str();
     res=::wxGetCwd();
     cerr << " , set to " << res << endl
-         << "check the environment variable " << envname << endl;
+         << "check the environment variable " << envname.mb_str() << endl;
   }
 // else {
       // look recursively for the file needed
@@ -154,10 +158,14 @@ bool CheckEnvDir(const wxString& envname, wxString& res, const wxString& lookfor
         else {
           wxFileName execpath(wxStandardPaths::Get().GetExecutablePath());
           // if last directory is bin, remove it
-          if (execpath.GetDirs().Last().MakeUpper()==wxT("BIN"))
+          wxString LastDir = execpath.GetDirs().Last();
+          if (LastDir.MakeUpper()==wxT("BIN")) {
               execpath.RemoveLastDir();
+              execpath.AppendDir(_T("share"));
+              execpath.AppendDir(GetwxStr("amilab-")+GetwxStr(AMILAB_VERSION));
+          }
           res = execpath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-          cout  << "looking for the file " << lookforfile << " in " << res << endl;
+          cout  << "looking for the file " << lookforfile.mb_str() << " in " << res.mb_str() << endl;
           wxDir directory(res);
           if (lookforfile != wxEmptyString) {
             wxString path = directory.FindFirst(res,lookforfile);

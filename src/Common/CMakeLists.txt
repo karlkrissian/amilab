@@ -5,7 +5,8 @@
 include_directories (${AMILAB_SOURCE_DIR}/Common)
 
 SET(Common_SRCS
-chaine.cpp Duree.cpp Erreurs.cpp ficparam.cpp  StringUtils.cpp
+  chaine.cpp Duree.cpp Erreurs.cpp ficparam.cpp  
+  StringUtils.cpp
 )
 
 # own macro to add the library and print the source files
