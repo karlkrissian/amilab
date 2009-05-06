@@ -1,0 +1,19 @@
+//
+// C++ Interface: AMILabConfig
+//
+// Description: 
+//
+//
+// Author: Karl Krissian  <krissian@dis.ulpgc.es>, (C) 2009
+//
+// Copyright: See COPYING file that comes with this distribution
+//
+//
+
+#ifndef _AMILabConfig_h_
+#define _AMILabConfig_h_
+
+#define AMILAB_VERSION "@AMILAB_VERSION@"
+
+#endif // _AMILabConfig_h_
+
