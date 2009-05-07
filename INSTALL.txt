@@ -6,6 +6,60 @@
 ===============================
 
 
+AMILab is compiled with cmake
+
+to compile it, you need the following tools/packages:
+- cmake 2.6
+- vtk >= 5.0
+- insighttoolkit 
+- wxWidgets 2.8.9 with opengl component
+- OpenGL
+- Boost 1.38 with date_time, filesystem, system, iostreams and regex components
+- zlib
+- bzip2
+- pthread
+- flex
+- bison
+
+
+The steps to compile are:
+1. compile and install libAMIFluid
+2. compile and install libOpticFlow
+3. compile and install AMILab
+
+
+-------------------------------
+Installation on Kubuntu-9.04
+-------------------------------
+
+* install all the packages needed
+  - cmake - 2.6.2
+  - libvtk5-dev - 5.0.4-1
+  - libinsighttoolkit3-dev - 3.10.1
+  - libwxgtk2.8-dev - 2.8.9.1
+  - libbooost packages needed
+    - libboost-date-time1.37-dev
+    - libboost-filesystem1.37-dev
+    - libboost-graph1.37.dev
+    - libboost-iostreams1.37-dev
+    - libboost-regex1.37-dev
+    - libboost-system1.37-dev
+  - zlib1g-dev
+  - libbz2-dev
+  - for compiling, coming from the previous tools, we also need
+    - libpng3-dev
+    - libtiff4-dev
+    - libexpat1-dev
+    - libjpeg62-dev
+    - uuid-dev
+
+* install amilab
+  - follow installation instructions for libOpticFlow
+  - compile and install libAMIFLuid with cmake
+  - compile amilab with cmake
+
+
+
 
 --------
 WINDOWS
