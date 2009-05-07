@@ -1667,6 +1667,8 @@ command:
               surfdraw->SetCloseFunction(
                               (void*) CB_delete_surfdraw,
                               (void*) (newvar));
+
+              surfdraw->Show(true);
               // Add the surface to the OpenGL Object
               surfdraw->GetCanvas()->AddSurface(
                                 *(SurfacePoly::ptr*) $2->Pointer());

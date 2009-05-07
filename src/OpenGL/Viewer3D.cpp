@@ -151,7 +151,7 @@ Viewer3D::Viewer3D(wxFrame *frame, const wxString& title, const wxPoint& pos,
 //    SetIcon(wxIcon(sample_xpm));
     CreateGLCanvas();
     CreateParameterWindows();
-    this->Show(true);
+   // this->Show(true);
 
     // Give it an icon
     //    frame->SetIcon(wxIcon(_T("mondrian")));
