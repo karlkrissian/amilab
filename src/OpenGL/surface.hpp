@@ -543,53 +543,13 @@ public:
 
   }
 
-  void AddGLPolygon()
+  void AddGLPolygon();
   //
-  {
-
-    Si fabsf(alpha-1.0)<1E-5 Alors
-      glColor3ub( (GLubyte) red,
-              (GLubyte) green,
-              (GLubyte) blue);
-    Sinon
-      glColor4ub((GLubyte) red,
-             (GLubyte) green,
-             (GLubyte) blue,
-         (GLubyte) (alpha*255));
-    FinSi
 
 
-    norm.Normalise();
 
-    glNormal3f(norm.x, norm.y, norm.z);
-    glVertex3f(pt.x,   pt.y,   pt.z  );
-
-  }
-
-
-  void AddGLPolygon( float r, float g, float b)
+  void AddGLPolygon( float r, float g, float b);
   //
-  {
-
-    Si fabsf(alpha-1.0)<1E-2 Alors
-      glColor3ub( 
-              (GLubyte) (r*255),
-          (GLubyte) (g*255),
-          (GLubyte) (b*255));
-    Sinon
-      glColor4ub( 
-         (GLubyte) (r*255),
-         (GLubyte) (g*255),
-         (GLubyte) (b*255), 
-         (GLubyte) (alpha*255));
-    FinSi
-
-    norm.Normalise();
-
-    glNormal3f(norm.x, norm.y, norm.z);
-    glVertex3f(pt.x,   pt.y,   pt.z  );
-
-  }
 
 
   void AddGLLine()

@@ -22,7 +22,7 @@ void Viewer3D_MaterialParam::CreateParameters()
                 "Object Number");
   
   IntegerConstraints( _id_object_number,
-	   0, 0,
+	   0, 1,
 	   _object_number);
 
   ChangedValueCallback( _id_object_number,
@@ -185,8 +185,10 @@ void Viewer3D_MaterialParam::UpdateGui()
   // check for corrent _object_number
   _object_number = mcanv->GetCurrentObjectNum();
 
+  int maxobj = mcanv->_globject.size()-1;
+  if (maxobj<1) maxobj = 1;
   IntegerConstraints( _id_object_number,
-	   0, mcanv->_globject.size()-1,
+	   0, maxobj,
 	   _object_number);
 
   current = mcanv->_current_globject;

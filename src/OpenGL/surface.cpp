@@ -93,6 +93,84 @@ extern unsigned char      GB_verbose;
 
 extern std::ostream  out;
 
+
+#define my_glGenLists(a,b) \
+  { \
+    if (GB_debug) \
+      cerr << format("%1% = glGenLists( %2% ); // value %3% ") % #a %b % a << endl; \
+    a=glGenLists(b);\
+  }
+
+#define my_glNewLists(a,b) \
+  { \
+    if (GB_debug) \
+      cerr << format("%1% = glNewLists( %2%); // value %3% ") % #a %b % a << endl; \
+    a=glNewLists(b);\
+  }
+
+#define my_glNewList(a,b) \
+  { \
+    if (GB_debug) \
+      cerr << format("glNewList( %1%, %2%);") % #a %b << endl; \
+    glNewList(a,b); \
+  }
+
+#define my_glDeleteLists(a,b) \
+  { \
+    if (GB_debug) \
+      cerr << format("glDeleteLists(%1%,%2%);") % a % b << endl; \
+      glDeleteLists(a,b);\
+  }
+
+#define my_glBegin_GL_TRIANGLE_FAN  {\
+  if (GB_debug) \
+     cerr << "glBegin(GL_TRIANGLE_FAN);" << endl; \
+  glBegin(GL_TRIANGLE_FAN); }
+ 
+#define my_glEnd  {\
+  if (GB_debug) \
+     cerr << "glEnd();" << endl; \
+  glEnd(); }
+ 
+#define my_glEndList  {\
+  if (GB_debug) \
+     cerr << "glEndList();" << endl; \
+  glEndList(); }
+ 
+
+static const std::string glErrorString( GLenum err)
+{
+  switch(err) {
+  case GL_NO_ERROR: return "GL_NO_ERROR";
+  case GL_INVALID_ENUM: return "GL_INVALID_ENUM";
+  case GL_INVALID_VALUE: return "GL_INVALID_VALUE";
+  case GL_INVALID_OPERATION: return "GL_INVALID_OPERATION";
+  case GL_STACK_OVERFLOW:return "GL_STACK_OVERFLOW";
+  case GL_STACK_UNDERFLOW: return "GL_STACK_UNDERFLOW";
+  case GL_OUT_OF_MEMORY: return "GL_OUT_OF_MEMORY";
+#if !(defined(_MSC_VER) || defined(__MINGW32__))
+    //  case GL_TABLE_TOO_LARGE_EXT: return "GL_TABLE_TOO_LARGE_EXT";
+#endif
+#ifndef _solaris_
+    //  case GL_TEXTURE_TOO_LARGE_EXT: return "GL_TEXTURE_TOO_LARGE_EXT";
+#endif
+  default: return "unknown error";
+  }
+}
+
+#define  glReportErrors() \
+  { \
+    /* for help debugging, report any OpenGL errors that occur per frame */ \
+        GLenum error; \
+        while((error = glGetError()) != GL_NO_ERROR) { \
+            if (GB_debug) cerr << "!!! GL error at " \
+              << __FILE__  \
+              << " function " << __func__ \
+              <<" line " << __LINE__ \
+              << ": " << glErrorString(error) << endl; \
+        } \
+  }
+
 //======================================================================
 //  GLObject
 //======================================================================
@@ -162,21 +240,21 @@ void GLObject :: DisplayBB()
 
 
   Si _bounding_box == 0 Alors
-    _bounding_box=glGenLists(1);
-    glNewList(_bounding_box, GL_COMPILE);   
+    my_glGenLists(_bounding_box,1);
+    my_glNewList(_bounding_box, GL_COMPILE);   
       glColor3f(0.1,   0.7, 0.2);
       glBegin(GL_LINE_LOOP);
         glVertex3f(_xmin, _ymin, _zmin);
         glVertex3f(_xmin, _ymax, _zmin);
         glVertex3f(_xmax, _ymax, _zmin);
         glVertex3f(_xmax, _ymin, _zmin);
-      glEnd();
+      my_glEnd;
       glBegin(GL_LINE_LOOP);
         glVertex3f(_xmin, _ymin, _zmax);
         glVertex3f(_xmin, _ymax, _zmax);
         glVertex3f(_xmax, _ymax, _zmax);
         glVertex3f(_xmax, _ymin, _zmax);
-      glEnd();
+      my_glEnd;
       glBegin(GL_LINES);
         glVertex3f(_xmin, _ymin, _zmin);
         glVertex3f(_xmin, _ymin, _zmax);
@@ -186,7 +264,7 @@ void GLObject :: DisplayBB()
         glVertex3f(_xmax, _ymax, _zmax);
         glVertex3f(_xmax, _ymin, _zmin);
         glVertex3f(_xmax, _ymin, _zmax);
-      glEnd();
+      my_glEnd;
     glEndList();
     
   FinSi
@@ -655,6 +733,70 @@ int Surface :: BColor( int u, int v)
 } // BColor()
 
 
+//======================================================================
+// Point3DPoly
+//======================================================================
+
+#define my_glNormal3f(a,b,c) \
+  if (GB_debug) \
+    cerr << format(" glNormal3f(%1%, %2%, %3%);") %a %b %c << endl; \
+    glNormal3f(a, b, c);
+
+#define my_glVertex3f(a,b,c) \
+  if (GB_debug) \
+    cerr << format(" glVertex3f(%1%, %2%, %3%);") %a %b %c << endl; \
+    glVertex3f(a, b, c);
+
+
+ void Point3DPoly::AddGLPolygon()
+  //
+  {
+
+
+    Si fabsf(alpha-1.0)<1E-5 Alors
+      glColor3ub( (GLubyte) red,
+              (GLubyte) green,
+              (GLubyte) blue);
+    Sinon
+      glColor4ub((GLubyte) red,
+             (GLubyte) green,
+             (GLubyte) blue,
+         (GLubyte) (alpha*255));
+    FinSi
+
+
+    norm.Normalise();
+
+    my_glNormal3f(norm.x, norm.y, norm.z);
+    my_glVertex3f(pt.x,   pt.y,   pt.z  );
+
+  }
+
+
+
+  void Point3DPoly::AddGLPolygon( float r, float g, float b)
+  //
+  {
+
+    Si fabsf(alpha-1.0)<1E-2 Alors
+      glColor3ub( 
+              (GLubyte) (r*255),
+          (GLubyte) (g*255),
+          (GLubyte) (b*255));
+    Sinon
+      glColor4ub( 
+         (GLubyte) (r*255),
+         (GLubyte) (g*255),
+         (GLubyte) (b*255), 
+         (GLubyte) (alpha*255));
+    FinSi
+
+    norm.Normalise();
+
+    my_glNormal3f(norm.x, norm.y, norm.z);
+    my_glVertex3f(pt.x,   pt.y,   pt.z  );
+
+  }
 
 //======================================================================
 // SurfacePoly
@@ -1399,26 +1541,26 @@ GLuint SurfacePoly :: NewGLSurface()
 
   if (!MakeContextCurrent()) return 0;
 
-  Si _GL_list != 0 AlorsFait glDeleteLists(_GL_list, 1);
-  _GL_list=glGenLists(1);
+  Si _GL_list != 0 AlorsFait my_glDeleteLists(_GL_list, 1);
+  my_glGenLists(_GL_list,1);
 
   Si _bounding_box != 0 Alors
-    glDeleteLists(_bounding_box, 1);
+    my_glDeleteLists(_bounding_box, 1);
     _bounding_box = 0;
   FinSi
 
   Si _vectors1 != 0 Alors
-    glDeleteLists(_vectors1, 1);
+    my_glDeleteLists(_vectors1, 1);
     _vectors1 = 0;
   FinSi
 
   Si _vectors2 != 0 Alors
-    glDeleteLists(_vectors2, 1);
+    my_glDeleteLists(_vectors2, 1);
     _vectors2 = 0;
   FinSi
 
   Si _normals != 0 Alors
-    glDeleteLists(_normals, 1);
+    my_glDeleteLists(_normals, 1);
     _normals = 0;
   FinSi
 
@@ -1442,122 +1584,150 @@ void SurfacePoly :: EndGLSurface()
 
   if (!MakeContextCurrent()) return;
 
-  glNewList( _GL_list, GL_COMPILE);   
+    my_glNewList( _GL_list, GL_COMPILE);   
+
+  if ((_tab_poly.NbElts()> 0)       ||
+      (_tab_lines.NbElts()> 0)      ||
+      (_selected_points.NbElts()>0) ||
+      (_tab_pts.NbElts()-1>0)
+      )
+  {
+    
+    Si _tab_poly.NbElts()> 0 Alors
   
-  Si _tab_poly.NbElts()> 0 Alors
-
-    Pour(i,0,_tab_poly.NbElts()-1)
-      _poly = _tab_poly[i];
-      n =_tab_pts[_poly[0]].num_cc;
-      // glBegin(GL_POLYGON);
-
-      Si (_show_all_cc) Ou (_draw_cc[n]) Alors
-
-
-        Si _selected_cc.Position(n) != -1 Alors
-          glBegin(GL_TRIANGLE_FAN);
-          Pour(j,0,_poly.NbElts()-1)
-            pt = _tab_pts[_poly[j]];
-            try{ pt.AddGLPolygon( 0.9,0.5,0); }
-            catch (NormeFaible) { 
-              Si GB_verbose AlorsFait
-		cerr << "Poly " << i << "Norme faible pour la normale" << endl;
-            }
-          FinPour
-          glEnd();
-        Sinon
-          glBegin(GL_TRIANGLE_FAN);
-          Pour(j,0,_poly.NbElts()-1)
-            pt = _tab_pts[_poly[j]];
-            try{ pt.AddGLPolygon();  }
-            catch (NormeFaible) { 
-              Si GB_verbose AlorsFait
-		cerr << "Poly " << i << "Norme faible pour la normale" << endl;
-            }
-          FinPour
-          glEnd();
+      Pour(i,0,_tab_poly.NbElts()-1)
+        _poly = _tab_poly[i];
+        n =_tab_pts[_poly[0]].num_cc;
+        // glBegin(GL_POLYGON);
+  
+        if ((_show_all_cc) Ou (n<0)) {
+            my_glBegin_GL_TRIANGLE_FAN
+            Pour(j,0,_poly.NbElts()-1)
+              pt = _tab_pts[_poly[j]];
+              try{ pt.AddGLPolygon();  }
+              catch (NormeFaible) { 
+                Si GB_verbose AlorsFait
+                  cerr << "Poly " << i << "Norme faible pour la normale" << endl;
+              }
+            FinPour
+            my_glEnd
+        } else { // if ((_show_all_cc) Ou (n<0))
+          if (_draw_cc[n]) 
+            if (_selected_cc.Position(n) != -1) {
+              my_glBegin_GL_TRIANGLE_FAN
+              Pour(j,0,_poly.NbElts()-1)
+                pt = _tab_pts[_poly[j]];
+                try{ pt.AddGLPolygon( 0.9,0.5,0); }
+                catch (NormeFaible) { 
+                  Si GB_verbose AlorsFait
+                    cerr << "Poly " << i << "Norme faible pour la normale" << endl;
+                }
+              FinPour
+              my_glEnd
+            } else { // if (_selected_cc.Position(n) != -1)
+              my_glBegin_GL_TRIANGLE_FAN
+              Pour(j,0,_poly.NbElts()-1)
+                pt = _tab_pts[_poly[j]];
+                try{ pt.AddGLPolygon();  }
+                catch (NormeFaible) { 
+                  Si GB_verbose AlorsFait
+                    cerr << "Poly " << i << "Norme faible pour la normale" << endl;
+                }
+              FinPour
+              my_glEnd
+            } // if (_selected_cc.Position(n) != -1)
+  
+  
+        } // if ((_show_all_cc) Ou (n<0))
+      FinPour
+  
+    FinSi
+  
+   glReportErrors();
+  
+/*
+    Si _tab_lines.NbElts()> 0 Alors
+  
+      glDisable(GL_LIGHTING);
+  //    glPolygonMode (GL_FRONT_AND_BACK, GL_MODE_LINE);
+  
+      Pour(i,0,_tab_lines.NbElts()-1)
+        //      fprintf(stderr,"line %d ",i);fflush(stderr);
+        _line = _tab_lines[i];
+  
+        Si i == _picked_line Alors
+          glLineWidth(3);
         FinSi
-      FinSi
-    FinPour
-
-  FinSi
-
-  Si _tab_lines.NbElts()> 0 Alors
-
-    glDisable(GL_LIGHTING);
-//    glPolygonMode (GL_FRONT_AND_BACK, GL_MODE_LINE);
-
-    Pour(i,0,_tab_lines.NbElts()-1)
-      //      fprintf(stderr,"line %d ",i);fflush(stderr);
-      _line = _tab_lines[i];
-
-      Si i == _picked_line Alors
-        glLineWidth(3);
-      FinSi
-
-      glBegin(GL_LINE_STRIP);
-
-        Pour(j,0,_line.NbElts()-1)
-          pt = _tab_pts[_line[j]];
-          pt.AddGLLine();
-        FinPour
+  
+        glBegin(GL_LINE_STRIP);
+  
+          Pour(j,0,_line.NbElts()-1)
+            pt = _tab_pts[_line[j]];
+            pt.AddGLLine();
+          FinPour
+        glEnd();
+  
+        Si i == _picked_line Alors
+          glLineWidth(_line_width);
+        FinSi
+  
+      FinPour
+  
+   glReportErrors();
+  
+      glLineWidth(3);
+      Pour(i,0,_selected_lines.NbElts()-1)
+        //      fprintf(stderr,"line %d ",i);fflush(stderr);
+        _line = _tab_lines[_selected_lines[i]];
+  
+  
+        glBegin(GL_LINE_STRIP);
+  
+          Pour(j,0,_line.NbElts()-1)
+            pt = _tab_pts[_line[j]];
+            pt.AddGLLine(1,0,0);
+          FinPour
+        glEnd();
+  
+      FinPour
+      glLineWidth(_line_width);
+  
+  
+    FinSi
+   glReportErrors();
+  
+    glPointSize(5);
+    Si _selected_points.NbElts()>0 Alors
+      glDisable(GL_LIGHTING);
+      Si GB_debug AlorsFait fprintf(stderr,"Points Selected ... \n");
+      glBegin(GL_POINTS);
+      Pour(i,0,_selected_points.NbElts()-1)
+        _tab_pts[_selected_points[i]].AddGLPoint(0,0,1);
+      FinPour
       glEnd();
-
-      Si i == _picked_line Alors
-        glLineWidth(_line_width);
-      FinSi
-
-    FinPour
-
-
-    glLineWidth(3);
-    Pour(i,0,_selected_lines.NbElts()-1)
-      //      fprintf(stderr,"line %d ",i);fflush(stderr);
-      _line = _tab_lines[_selected_lines[i]];
-
-
-      glBegin(GL_LINE_STRIP);
-
-        Pour(j,0,_line.NbElts()-1)
-          pt = _tab_pts[_line[j]];
-          pt.AddGLLine(1,0,0);
-        FinPour
+    FinSi
+  
+      //  fprintf(stderr,"end lines \n");
+  
+    Si _tab_poly.NbElts() == 0 Et _tab_lines.NbElts() == 0 Alors
+  
+      glBegin(GL_POINTS);
+      //cout << "_tab_pts.NbElts()()" << _tab_pts.NbElts() << endl;
+      Pour(i,0,_tab_pts.NbElts()-1)
+        _tab_pts[i].AddGLPoint();
+      FinPour
+  
       glEnd();
+    FinSi
+*/
 
-    FinPour
-    glLineWidth(_line_width);
+  }
 
-
-  FinSi
-
-  glPointSize(5);
-  Si _selected_points.NbElts()>0 Alors
-    glDisable(GL_LIGHTING);
-    Si GB_debug AlorsFait fprintf(stderr,"Points Selected ... \n");
-    glBegin(GL_POINTS);
-    Pour(i,0,_selected_points.NbElts()-1)
-      _tab_pts[_selected_points[i]].AddGLPoint(0,0,1);
-    FinPour
-    glEnd();
-  FinSi
-
-    //  fprintf(stderr,"end lines \n");
-
-  Si _tab_poly.NbElts() == 0 Et _tab_lines.NbElts() == 0 Alors
-
-    glBegin(GL_POINTS);
-    //cout << "_tab_pts.NbElts()()" << _tab_pts.NbElts() << endl;
-    Pour(i,0,_tab_pts.NbElts()-1)
-      _tab_pts[i].AddGLPoint();
-    FinPour
-
-    glEnd();
-
-  FinSi
-
-  glEndList();
-
-  this->UpdateLimits();
+   glReportErrors();
+    my_glEndList;
+   glReportErrors();
+  
+    this->UpdateLimits();
 
   if (GB_debug) printf("EndGLSurface end\n");
 
@@ -1918,8 +2088,8 @@ void SurfacePoly :: GLRecomputeList( )
     return;
   }
  
-  Si _GL_list != 0 AlorsFait glDeleteLists( _GL_list, 1);
-  _GL_list=glGenLists(1);
+  Si _GL_list != 0 AlorsFait my_glDeleteLists( _GL_list, 1);
+  my_glGenLists(_GL_list,1);
 
   EndGLSurface();
 
@@ -1986,7 +2156,7 @@ void SurfacePoly :: GLRecomputeList( )
     glEnd();
   FinSi
 
-  glEndList();
+  my_glEndList;
 
 
 
@@ -2206,7 +2376,7 @@ void SurfacePoly :: NewVectors1( )
 {
 
   Si _vectors1 != 0 Alors
-    glDeleteLists(_vectors1, 1);
+    my_glDeleteLists(_vectors1, 1);
     _vectors1 = 0;
   FinSi
 
@@ -2219,7 +2389,7 @@ void SurfacePoly :: NewVectors2( )
 {
 
   Si _vectors2 != 0 Alors
-    glDeleteLists(_vectors2, 1);
+    my_glDeleteLists(_vectors2, 1);
     _vectors2 = 0;
   FinSi
 
@@ -2239,8 +2409,8 @@ void SurfacePoly :: DisplayVectors1( GLParam* param)
     float vx,vy,vz;
 
   Si _vectors1 == 0 Alors
-    _vectors1=glGenLists(1);
-    glNewList(_vectors1, GL_COMPILE);   
+    my_glGenLists(_vectors1,1);
+    my_glNewList(_vectors1, GL_COMPILE);   
       glColor3f(param->_vect1_color.Red()   / 255.0,
 		param->_vect1_color.Green() / 255.0,
 		param->_vect1_color.Blue()  / 255.0);
@@ -2286,7 +2456,7 @@ void SurfacePoly :: DisplayVectors1( GLParam* param)
       FinPour
 
 
-    glEndList();
+    my_glEndList;
     
   FinSi
 
@@ -2317,8 +2487,8 @@ void SurfacePoly :: DisplayVectors2( GLParam* param)
     float vx,vy,vz;
 
   Si _vectors2 == 0 Alors
-    _vectors2=glGenLists(1);
-    glNewList(_vectors2, GL_COMPILE);   
+    my_glGenLists(_vectors2,1);
+    my_glNewList(_vectors2, GL_COMPILE);   
       glColor3f(param->_vect2_color.Red()   / 255.0,
 		param->_vect2_color.Green() / 255.0,
 		param->_vect2_color.Blue()  / 255.0);
@@ -2364,7 +2534,7 @@ void SurfacePoly :: DisplayVectors2( GLParam* param)
       FinPour
 
 
-    glEndList();
+    my_glEndList;
     
   FinSi
 
@@ -2392,8 +2562,8 @@ void SurfacePoly :: DisplayNormals()
     int i;
 
   Si _normals == 0 Alors
-    _normals=glGenLists(1);
-    glNewList(_normals, GL_COMPILE);   
+    my_glGenLists(_normals,1);
+    my_glNewList(_normals, GL_COMPILE);   
       glColor3f(0.9,   0.2, 0.2);
 
 
@@ -2410,7 +2580,7 @@ void SurfacePoly :: DisplayNormals()
       FinPour
 
 
-    glEndList();
+    my_glEndList;
     
   FinSi
 
@@ -3926,7 +4096,10 @@ GLuint SurfacePoly :: GenerateGLList()
 {
    GLuint list;
    list=NewGLSurface();
+
+   glReportErrors();
    EndGLSurface();
+   glReportErrors();
    return list;
 
 } // GenerateGLList()

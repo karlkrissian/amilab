@@ -51,6 +51,19 @@ static const std::string glErrorString( GLenum err)
 }
 
 
+#define  glReportErrors() \
+  { \
+    /* for help debugging, report any OpenGL errors that occur per frame */ \
+        GLenum error; \
+        while((error = glGetError()) != GL_NO_ERROR) { \
+            if (GB_debug) cerr << "!!! GL error at " \
+              << __FILE__  \
+              << " function " << __func__ \
+              <<" line " << __LINE__ \
+              << ": " << glErrorString(error) << endl; \
+        } \
+  }
+
 /*
  * ami_wxGLCanvas implementation
  */
@@ -591,19 +604,31 @@ void ami_wxGLCanvas::AddSurface( SurfacePoly::ptr surf)
 //
 {
 if (GB_debug) fprintf(stderr,"ami_wxGLCanvas::AddSurface()\n");
+
+    glReportErrors();
+
   // Set OpenGL tasks to this drawing area
   if (!this->SetCurrentContext()) return;
 
+if (GB_debug) fprintf(stderr,"ami_wxGLCanvas::AddSurface() 2\n");
+cerr << " _globjects.size " << _globject.size() << endl;
+  
   _globject.push_back(surf);
   _current_globject = surf;
+if (GB_debug) fprintf(stderr,"ami_wxGLCanvas::AddSurface() 3\n");
 
   if (_current_globject.use_count()) {
     _current_globject->SetwxGLCanvas(this);
     _SURFACE      =  _current_globject->GenerateGLList();
     _type_surface = SURFACE_POLY;
   }
+    glReportErrors();
+
+if (GB_debug) fprintf(stderr,"ami_wxGLCanvas::AddSurface() 4\n");
 
   _parent_window->UpdateObjectListGui();
+
+    glReportErrors();
 
 if (GB_debug) fprintf(stderr,"ami_wxGLCanvas::AddSurface() end\n");
 } // AddSurface()
@@ -1086,7 +1111,12 @@ void ami_wxGLCanvas::DessineSurfaceCC(  int cc, unsigned char draw )
 void ami_wxGLCanvas::InitProprietes( )
 //                   --------------
 {
+
+    if (GB_debug)
+      cerr << "ami_wxGLCanvas::InitProprietes( ) begin" << endl;
     int i;
+
+    glReportErrors();
 
     glShadeModel( _GLParam.GLenum_shade() );
 
@@ -1110,14 +1140,7 @@ void ami_wxGLCanvas::InitProprietes( )
 
     glEnable(GL_DEPTH_TEST);
 
-    { /* for help debugging, report any OpenGL errors that occur per frame */
-        GLenum error;
-        while((error = glGetError()) != GL_NO_ERROR) {
-            fprintf(stderr, "GL error: %s\n",
-            glErrorString(error).c_str());
-            if (GB_debug) out << "!!! GL error " << glErrorString(error) << endl;
-        }
-    }
+    glReportErrors();
 
     Si _GLParam._dither Alors
       glEnable(GL_DITHER);
@@ -1125,14 +1148,7 @@ void ami_wxGLCanvas::InitProprietes( )
       glDisable(GL_DITHER);
     FinSi
 
-    { /* for help debugging, report any OpenGL errors that occur per frame */
-        GLenum error;
-        while((error = glGetError()) != GL_NO_ERROR) {
-            fprintf(stderr, "GL error: %s\n",
-            glErrorString(error).c_str());
-            if (GB_debug) out << "!!! GL error " << glErrorString(error) << endl;
-        }
-    }
+    glReportErrors();
 
 
     _GLProjParam.SetProjection();
@@ -1145,14 +1161,7 @@ void ami_wxGLCanvas::InitProprietes( )
 
     _GLFogParam.SetBGColor( &(_GLParam._background));
 
-    { /* for help debugging, report any OpenGL errors that occur per frame */
-        GLenum error;
-        while((error = glGetError()) != GL_NO_ERROR) {
-            fprintf(stderr, "GL error: %s\n",
-            glErrorString(error).c_str());
-            if (GB_debug) out << "!!! GL error " << glErrorString(error) << endl;
-        }
-    }
+    glReportErrors();
 
     glDepthFunc(GL_LESS);
     glEnable(GL_DEPTH_TEST);
@@ -1195,14 +1204,15 @@ void ami_wxGLCanvas::DessineSurface2()
 
   SurfacePoly*  surf_poly = (SurfacePoly*) _current_globject.get();
 
-  if (surf_poly==NULL) {
-    // create a surface
-    SurfacePoly::ptr  newsurf(new SurfacePoly());
-    AddSurface(newsurf);
-    surf_poly = (SurfacePoly*) _current_globject.get();
-  }
+    if (surf_poly==NULL) {
+      // create a surface
+      SurfacePoly::ptr  newsurf(new SurfacePoly());
+      AddSurface(newsurf);
+      surf_poly = (SurfacePoly*) _current_globject.get();
+    }
 
   Si (_type_surface == SURFACE_U_V) Et (_SURFACE==0) Alors
+
 
     surf_poly->NewSurface();
 
@@ -1281,6 +1291,7 @@ void ami_wxGLCanvas::DisplayObject(GLObject::ptr& obj)
       SelonQue obj->ObjType() Vaut
         Valeur OBJTYPE_SURFPOLY:{
           SurfacePoly* surf = (SurfacePoly*) (obj.get());
+          // absolutely not thread safe ...
           surf->SetwxGLCanvas(this);
           surf->DisplayObject( &_GLMaterial);
           Si _GLParam._display_normals AlorsFait
@@ -1299,14 +1310,7 @@ void ami_wxGLCanvas::DisplayObject(GLObject::ptr& obj)
             "ami_wxGLCanvas::DisplayObject() \t unknown object type \n");
       FinSelonQue
 
-      { // for help debugging, report any OpenGL errors that occur per frame
-        GLenum error;
-        while((error = glGetError()) != GL_NO_ERROR) {
-           fprintf(stderr, "GL error: %s\n",glErrorString(error).c_str());
-           if (GB_debug) out << "!!! GL error " << glErrorString(error) << endl;
-
-        }
-      }
+      glReportErrors();
 
 } // DisplayObject()
 
@@ -1591,6 +1595,8 @@ if (!_initialized) return;
   if (current!=NULL)
     current->_display_bb = _GLParam._current_bounding_box;
 
+  glReportErrors();
+
   glGetIntegerv(GL_RENDER_MODE,&render_mode);
 
   Si render_mode == GL_RENDER Alors
@@ -1599,7 +1605,12 @@ if (!_initialized) return;
     this->SetCurrentContext();
   FinSi
 
+  glReportErrors();
+
   Si GB_debug AlorsFait fprintf(stderr,"ami_wxGLCanvas::Paint() 1 \n");
+
+  glReportErrors();
+
   if (GB_debug) out << "*** ami_wxGLCanvas::Paint() 1 ***" << endl;
 
   //Si Non( XtIsRealized(_parent)) AlorsFait return;
@@ -1646,12 +1657,7 @@ if (!_initialized) return;
   if (affiche)
     AfficheBuffer( );
 
-  { /* for help debugging, report any OpenGL errors that occur per frame */
-       GLenum error;
-       while((error = glGetError()) != GL_NO_ERROR)
-           fprintf(stderr, "GL error: %s\n",
-           glErrorString(error).c_str());
-  }
+  glReportErrors();
 
   Si GB_debug AlorsFait fprintf(stderr,"ami_wxGLCanvas::Paint() Draw comparison surf \n");
   if (GB_debug) out << "*** ami_wxGLCanvas::Paint() 4 ***" << endl;
@@ -1863,14 +1869,7 @@ void ami_wxGLCanvas::InitGL()
   _object_center[1] =
   _object_center[2] = 0.0;
 
-    { // for help debugging, report any OpenGL errors that occur per frame
-        GLenum error;
-        while((error = glGetError()) != GL_NO_ERROR) {
-            fprintf(stderr, "Constructeur GL error: %s\n",
-            glErrorString(error).c_str());
-            if (GB_debug) out << "!!! GL error " << glErrorString(error) << endl;
-        }
-    }
+  glReportErrors();
 
 
     _largeur = this->GetSize().GetWidth();
