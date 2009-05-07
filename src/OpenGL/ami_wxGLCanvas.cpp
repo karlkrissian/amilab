@@ -124,7 +124,7 @@ ami_wxGLCanvas::ami_wxGLCanvas(
                 |wxFULL_REPAINT_ON_RESIZE
                 |wxBORDER_RAISED,
                 name 
-                ,gl_attrib
+                //,gl_attrib
                 )
 /*
     wxGLCanvas(parent,

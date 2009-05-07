@@ -231,7 +231,7 @@ void Viewer3D::CreateGLCanvas()
 {
     // not using the attributes because of some errors
     this->m_canvas = new ami_wxGLCanvas(this, wxID_ANY, wxDefaultPosition,
-        wxDefaultSize, 0, _T("ami_wxGLCanvas"));
+        wxDefaultSize, wxSUNKEN_BORDER, _T("ami_wxGLCanvas"));
 
   //  this->Show(true);
   //this->m_canvas->Show(true);
