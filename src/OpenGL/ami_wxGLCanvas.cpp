@@ -1,11 +1,8 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        isosurf.cpp
+// Name:   
 // Purpose:     wxGLCanvas demo program
-// Author:      Brian Paul (original gltk version), Wolfram Gloger
-// Modified by: Julian Smart
-// Created:     04/01/98
 // RCS-ID:      $Id: isosurf.cpp,v 1.18 2005/02/26 20:03:26 JS Exp $
-// Copyright:   (c) Julian Smart
+// Copyright:   (c) Karl Krissian
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -314,7 +311,14 @@ bool ami_wxGLCanvas::SetCurrentContext()
 
     if (GB_debug) out << "*** begin ami_wxGLCanvas::SetCurrentContext() ***" << endl;
 
-//    if (!GetContext()) return false;
+    if (!IsShown()) {
+      if (GB_debug) cerr << "SetCurrentContext() class not shown" << endl;
+      return false;
+    }
+    if (!GetContext()) {
+      if (GB_debug) cerr << "SetCurrentContext() GetContext() failed" << endl;
+      return false;
+    }
     SetCurrent();
 
     if (GB_debug) out << "*** end ami_wxGLCanvas::SetCurrentContext() ***" << endl;
@@ -454,13 +458,17 @@ void ami_wxGLCanvas::OnSize(wxSizeEvent& event)
             << _largeur << " "
             << _hauteur << " "
             << endl;
-
-    if (GB_debug) out << "*** ami_wxGLCanvas::OnSize()  2 ***" << endl;
-//    if (SetCurrentContext())
-    {
-      ReDimensionne();
+    if (SetCurrentContext()) {
+	glViewport(0, 0, _largeur, _hauteur);
+	
+	_GLProjParam.SetWindowSize(_largeur,_hauteur);
+	_GLProjParam.SetProjection();
+	
+	glMatrixMode(_GLTransform.GLenum_mode());
+	
+	if (GB_debug) out << "*** ami_wxGLCanvas::OnSize()  2 ***" << endl;
+	ReDimensionne();
     }
-
 
     if (GB_debug) out << "*** end ami_wxGLCanvas::OnSize() ***" << endl;
 }
@@ -1822,7 +1830,7 @@ InrImage* ami_wxGLCanvas::GetGLImage()
 void ami_wxGLCanvas:: ReDimensionne( )
 //                    -------------
 {
-  if (GB_debug) out << "*** begin ami_wxGLCanvas::ReDimensionne() ***" << endl;
+  if (!SetCurrentContext()) return;
   if (GB_debug)
     cerr << "ami_wxGLCanvas::ReDimensionne( )" << endl;
   //glXWaitX();
