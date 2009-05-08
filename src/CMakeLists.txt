@@ -41,6 +41,7 @@ SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "AMILab is a software for 2D/3D image proc
 SET(CPACK_SYSTEM_NAME "${CMAKE_SYSTEM_NAME}.${CMAKE_SYSTEM_PROCESSOR}")
 SET(CPACK_TOPLEVEL_TAG ${CPACK_SYSTEM_NAME})
 
+
 SET(CPACK_SET_DESTDIR "ON")
 
 # RPM configuration
@@ -53,12 +54,13 @@ SET(CPACK_RPM_PACKAGE_GROUP "Applications/Engineering")
 SET(CPACK_RPM_PACKAGE_VENDOR "Karl Krissian, ULPGC")
 SET(CPACK_RPM_PACKAGE_DESCRIPTION "Amilab is designed as a tool for research and prototyping, with its own scripting language.")
 SET(CPACK_RPM_PACKAGE_REQUIRES "glibc wxGTK wxGTK-gl")
-SET(CPACK_RPM_PACKAGE_ARCHITECTURE "x86_64")
+SET(CPACK_RPM_PACKAGE_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
 
 # DEB configuration
-SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64")
+# no i386 in debian, should use dpkg --print-architecture ??
+SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "i386" )
 SET(CPACK_DEBIAN_PACKAGE_MAINTAINER   "krissian@dis.ulpgc.es")
-
+SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6, libwxgtk2.8-0,  libvtk5, libinsighttoolkit3.10")
 
 IF(WIN32 AND NOT UNIX)
   # There is a bug in NSI that does not handle full unix paths properly. Makec
