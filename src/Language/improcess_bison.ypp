@@ -1236,7 +1236,7 @@ command:
         /**
         Description: waits the time given in milliseconds
         */
-/*
+
         int ms = (int) $3;
         wxWaitTimer w;
         w.Start(ms,wxTIMER_ONE_SHOT);
@@ -1245,7 +1245,6 @@ command:
             GB_wxApp->Dispatch();
           }
         } // end while
-*/
       }
       |
       T_schedule T_OP_PAR expr T_COMMA VAR_AMI_FUNCTION T_CL_PAR
@@ -1255,7 +1254,7 @@ command:
             (3) time in ms
             (5) function to schedule
         **/
-/*
+
         // TODO To avoid pbs, make sure that the variable does not disappears
         // by making a copy of it
         int ms = (int) $3;
@@ -1265,7 +1264,7 @@ command:
         // add to the list of schedule timers
         schedule_timers.push_back(w);
         w->Start(ms,wxTIMER_ONE_SHOT);
-*/
+
       }
           |
           identifier ASSIGN_OP T_Surface T_OP_BR expr T_CL_BR

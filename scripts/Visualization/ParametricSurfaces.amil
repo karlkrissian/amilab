@@ -1,0 +1,222 @@
+#!/usr/bin/amilab
+ 
+#
+# (c) Karl Krissian, ULPGC 2009
+#
+
+
+#
+# Playing with Parametric surfaces
+#
+# type:
+#  0: superquadric
+#
+
+
+proc PS_init() {
+  global_new
+
+  # resolution
+  PS_theta_dim = INT(100)
+  PS_phi_dim   = INT(100)
+
+  # coefficients
+  PS_cx = 1
+  PS_cy = 1
+  PS_cz = 1
+
+  PS_e_x = 1
+  PS_e_y = 1
+  PS_e_z = 1
+
+  # 0: superquadric
+  # 1: torus
+  PS_type = INT(0)  
+ 
+  # torus param
+  PS_R = 1
+  PS_r = 0.1
+
+  PS_updating = 0
+  PS_Update()
+}
+
+#----------------------------------------------------------
+proc PS_UpdateResolution() \
+{
+  # 3D position image
+  global::pos <<= Image(DOUBLE,PS_theta_dim,PS_phi_dim,1,3)
+
+  # Parameters
+  global::theta <<= (DOUBLE)Xpos(pos)
+  global::phi   <<= (DOUBLE)Ypos(pos)
+
+
+  if (PS_type==0) {
+    # limits of the parameters
+    theta = theta/(theta.tx-1)*2*Pi
+    phi   = (phi/(phi.ty-1)-0.5)*Pi
+  }
+  if (PS_type==1) {
+    # limits of the parameters
+    theta = theta/(theta.tx-1)*2*Pi
+    phi   = phi/(phi.ty-1)*2*Pi
+  }
+
+} // PS_UpdateResolution()
+
+
+#----------------------------------------------------------
+proc PS_NewType() {
+  PS_UpdateResolution()
+  PS_Update()
+}
+
+
+#----------------------------------------------------------
+# updates the surface based on the current parameters
+#
+proc PS_Update() \
+{
+  if (PS_updating==0) {
+    PS_updating = 1
+
+    if (!exists(pos)) {
+      PS_UpdateResolution()
+    } else {
+      if ((PS_theta_dim!=pos.tx)||(PS_phi_dim!=pos.ty)) {
+        PS_UpdateResolution()
+      }
+    }
+
+    # 0: superquadric
+    if (PS_type==0) {
+
+      pos[0] = cos(theta)*cos(phi)
+      pos[1] = sin(theta)*cos(phi)
+      pos[2] = sin(phi)
+
+      # compute the signs
+      spos0 = (pos[0]>0) - (pos[0]<0)
+      spos1 = (pos[1]>0) - (pos[1]<0)
+      spos2 = (pos[2]>0) - (pos[2]<0)
+
+      pos[0] = (exp(ln(abs(pos[0]))/PS_e_x))*spos0*PS_cx
+      pos[1] = (exp(ln(abs(pos[1]))/PS_e_y))*spos1*PS_cy
+      pos[2] = (exp(ln(abs(pos[2]))/PS_e_z))*spos2*PS_cz
+    }
+
+    # 1: torus
+    if (PS_type==1) {
+
+      pos[0] = (cos(phi)*PS_r+PS_R)*cos(theta)
+      pos[1] = (cos(phi)*PS_r+PS_R)*sin(theta)
+      pos[2] = sin(phi)*PS_r
+
+    }
+
+    if (exists(s_draw)) {
+      s_draw.Remove(s)
+      del s
+    }
+
+    # parameter 0 invert normals
+    global::s = CreateFlatMesh(theta>-1,0)
+    s.ElevateMesh(pos)  
+    # need to show the surface before computing any opengl operation!!!
+
+    if (exists(s_draw)) {
+      s_draw += s
+    } else {
+      show s
+    }
+    s.Normals
+    s.Recompute
+    s_draw.Paint
+    PS_updating = 0
+  }
+}
+
+
+#--------------------------------------------------------------
+proc PS_ResetScale() \
+{
+  PS_cx = 1
+  PS_cy = 1
+  PS_cz = 1
+  PS_win.update
+  PS_Update()
+} # PS_ResetScale()
+
+#--------------------------------------------------------------
+proc PS_SetEllipsoid() \
+{
+  PS_type=0
+  PS_e_x = 1
+  PS_e_y = 1
+  PS_e_z = 1
+  PS_win.update
+  PS_Update()
+} # PS_SetEllipsoid()
+
+
+#--------------------------------------------------------------
+proc PS_gui() {
+
+  global::PS_win = ParamWin("Param. Surf.")
+
+  PS_type_id  = PS_win.AddEnum(PS_type)
+    PS_win.AddEnumChoice(PS_type_id,"SuperQuadric")
+    PS_win.AddEnumChoice(PS_type_id,"Torus")
+  PS_win.SetCallback(PS_NewType)
+
+  PS_win.BeginBook
+    PS_win.AddPage("Main")
+      PS_win.BeginBox("Resolution")
+          PS_thetadim_id = PS_win.AddInt(PS_theta_dim,4,500)
+          PS_win.SetCallback(PS_Update)
+          PS_phidim_id   = PS_win.AddInt(PS_phi_dim,  4,500)
+          PS_win.SetCallback(PS_Update)
+      PS_win.EndBox
+    
+      PS_win.BeginBox("Scaling Coeff.")
+          PS_cx_id = PS_win.AddFloat    (PS_cx,0.1,5)
+          PS_win.SetCallback(PS_Update)
+          PS_cy_id = PS_win.AddFloat    (PS_cy,0.1,5)
+          PS_win.SetCallback(PS_Update)
+          PS_cz_id = PS_win.AddFloat    (PS_cz,0.1,5)
+          PS_win.SetCallback(PS_Update)
+          PS_win.AddButton("Reset",   PS_ResetScale)
+      PS_win.EndBox
+
+      PS_win.BeginHorizontal
+        PS_win.AddButton("Update",          PS_Update)
+      PS_win.EndHorizontal
+  
+    PS_win.AddPage("SuperQu.")
+      PS_win.BeginBox("Exponential Coeff.")
+          PS_cx_id = PS_win.AddFloat    (PS_e_x,0.1,5)
+          PS_win.SetCallback(PS_Update)
+          PS_cy_id = PS_win.AddFloat    (PS_e_y,0.1,5)
+          PS_win.SetCallback(PS_Update)
+          PS_cz_id = PS_win.AddFloat    (PS_e_z,0.1,5)
+          PS_win.SetCallback(PS_Update)
+          PS_win.AddButton("Set Ellipsoid",   PS_SetEllipsoid)
+      PS_win.EndBox
+
+    PS_win.AddPage("Torus")
+      PS_win.BeginBox("Radii")
+          PS_R_id = PS_win.AddFloat    (PS_R,0.1,5)
+          PS_win.SetCallback(PS_Update)
+          PS_r_id = PS_win.AddFloat    (PS_r,0.1,5)
+          PS_win.SetCallback(PS_Update)
+      PS_win.EndBox
+
+
+  PS_win.update
+  PS_win.Display
+
+}
+
+PS_init()
+PS_gui()

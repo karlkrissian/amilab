@@ -857,9 +857,8 @@ SurfacePoly :: Constructeur SurfacePoly( vtkPolyData* vtkpoly)
 SurfacePoly :: Destructeur SurfacePoly()
 //
 {
-
-  printf("called ~SurfacePoly() nb points %d\n",
- NbPoints() );
+ // printf("called ~SurfacePoly() nb points %d\n",
+ //NbPoints() );
 } // Destructeur SurfacePoly()
 
 

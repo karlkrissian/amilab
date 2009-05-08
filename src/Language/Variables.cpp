@@ -242,7 +242,7 @@ unsigned char Variables::GetVar(const char* varname, int* i)
 //--------------------------------------------------
 bool Variables::deleteVar(const char* varname)
 {
-  fprintf(stderr,"Variables::deleteVar(%s) \n",varname);
+  if (GB_debug) cerr << format("Variables::deleteVar(%s) ") % varname << endl;
 
   std::list<Variable*>::iterator Iter;
   for (Iter  = _vars.begin();

@@ -620,12 +620,12 @@ if (GB_debug) fprintf(stderr,"ami_wxGLCanvas::AddSurface()\n");
   // Set OpenGL tasks to this drawing area
   if (!this->SetCurrentContext()) return;
 
-if (GB_debug) fprintf(stderr,"ami_wxGLCanvas::AddSurface() 2\n");
-cerr << " _globjects.size " << _globject.size() << endl;
+  if (GB_debug) fprintf(stderr,"ami_wxGLCanvas::AddSurface() 2\n");
+  if (GB_debug) cerr << " _globjects.size " << _globject.size() << endl;
   
   _globject.push_back(surf);
   _current_globject = surf;
-if (GB_debug) fprintf(stderr,"ami_wxGLCanvas::AddSurface() 3\n");
+  if (GB_debug) fprintf(stderr,"ami_wxGLCanvas::AddSurface() 3\n");
 
   if (_current_globject.use_count()) {
     _current_globject->SetwxGLCanvas(this);
