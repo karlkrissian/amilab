@@ -116,10 +116,10 @@ proc SQ_Gui( ) {
   #SQ_win.ShowSlider(sq_torus_radius_id,sq_type==2)
 
   SQ_win.BeginHorizontal
-    SQ_win.AddButton("Create Image",              SQ_CreateImage)
-    SQ_win.AddButton("Show IsoSurface",           SQ_ShowIsoSurface)
-    SQ_win.AddButton("Create Parametric Surface", SQ_CreateParamSurface)
+    SQ_win.AddButton("Image",              SQ_CreateImage)
+    SQ_win.AddButton("IsoSurface",           SQ_ShowIsoSurface)
   SQ_win.EndHorizontal
+  SQ_win.AddButton("Parametric Surf.", SQ_CreateParamSurface)
 
   SQ_win.update
   SQ_win.Display

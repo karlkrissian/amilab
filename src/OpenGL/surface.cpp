@@ -1645,7 +1645,6 @@ void SurfacePoly :: EndGLSurface()
   
    glReportErrors();
   
-/*
     Si _tab_lines.NbElts()> 0 Alors
   
       glDisable(GL_LIGHTING);
@@ -1719,7 +1718,6 @@ void SurfacePoly :: EndGLSurface()
   
       glEnd();
     FinSi
-*/
 
   }
 

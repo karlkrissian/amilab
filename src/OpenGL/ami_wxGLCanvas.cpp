@@ -1214,15 +1214,15 @@ void ami_wxGLCanvas::DessineSurface2()
 
   SurfacePoly*  surf_poly = (SurfacePoly*) _current_globject.get();
 
+
+  Si (_type_surface == SURFACE_U_V) Et (_SURFACE==0) Alors
+
     if (surf_poly==NULL) {
       // create a surface
       SurfacePoly::ptr  newsurf(new SurfacePoly());
       AddSurface(newsurf);
       surf_poly = (SurfacePoly*) _current_globject.get();
     }
-
-  Si (_type_surface == SURFACE_U_V) Et (_SURFACE==0) Alors
-
 
     surf_poly->NewSurface();
 

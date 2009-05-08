@@ -60,7 +60,7 @@ SET(CPACK_RPM_PACKAGE_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
 # no i386 in debian, should use dpkg --print-architecture ??
 SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "i386" )
 SET(CPACK_DEBIAN_PACKAGE_MAINTAINER   "krissian@dis.ulpgc.es")
-SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6, libwxgtk2.8-0,  libvtk5, libinsighttoolkit3.10")
+SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6, libwxgtk2.8-0,  libvtk5, libinsighttoolkit3.10, libboost-date-time1.37.0, libboost-filesystem1.37.0, libboost-graph1.37.0, libboost-iostreams1.37.0, libboost-regex1.37.0, libboost-system1.37.0, libbz2-1.0, zlib1g")
 
 IF(WIN32 AND NOT UNIX)
   # There is a bug in NSI that does not handle full unix paths properly. Makec

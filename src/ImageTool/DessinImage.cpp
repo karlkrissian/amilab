@@ -5196,6 +5196,7 @@ void DessinImage::CreateGLWindow()
 {
   _GLWindow0 = Viewer3D_ptr(new Viewer3D(NULL, GetwxStr("3D Viewer")));
   _GLWindow0->SetCloseFunction( (void*) CB_CloseGL, (void*) this);
+  _GLWindow0->Show(true);
   _GLWindow = _GLWindow0;
 } // CreateGLWindow()
 

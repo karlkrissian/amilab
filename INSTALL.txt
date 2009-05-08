@@ -47,7 +47,7 @@ Installation on Kubuntu-9.04
   - zlib1g-dev
   - libbz2-dev
   - for compiling, coming from the previous tools, we also need
-    - libpng3-dev
+    - libpng12-dev
     - libtiff4-dev
     - libexpat1-dev
     - libjpeg62-dev
