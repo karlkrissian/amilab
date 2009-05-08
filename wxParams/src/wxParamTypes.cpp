@@ -288,6 +288,11 @@ void wxIntegerParameter::SetConstraints(int min, int max, int def)
 {
   string number_str;
   
+  if (max<=min) {
+    cout << "wxIntegerParameter::SetConstraints() \t for " << this->_label->GetLabel().mb_str()
+        << " setting maximum to " << min+1 << endl;
+    max = min+1;
+  }
   // Do the change in 2 steps to avoid annoying warning
   if (_min<max) {
     this->_slider->SetValue(_min);

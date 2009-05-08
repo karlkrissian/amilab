@@ -126,7 +126,8 @@ public:
 
   void UpdateVarList();
 
-  wxPanel* GetPromptPanel() { return _prompt_panel; }
+  wxPanel*       GetPromptPanel() { return _prompt_panel; }
+  wxAuiNotebook* GetParamBook() { return _param_book; }
 
   void SetProgress(int val);
 

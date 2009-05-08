@@ -4535,9 +4535,10 @@ cerr << "Feature not available, needs to be updated ! " << endl;
           void * pwptr;
           IdentifierInfo::ptr ident($1);
 
-          //    pwptr = (void*)new ParamPanel(GB_main_wxFrame,  (char*) $5);
-          pwptr = (void*)new ParamPanel(GB_main_wxFrame,  (char*) $5);
-          GB_main_wxFrame->AddParamPage((wxWindow*)pwptr,GetwxStr((char*) $5));
+          pwptr = (void*)new ParamPanel(GB_main_wxFrame,  (char*) $5  );
+//          GB_main_wxFrame->AddParamPage((wxWindow*)pwptr,GetwxStr((char*) $5),
+//                                        true // select as current page
+//                                        );
           //GB_main_wxFrame->GetAuiManager().Update();
           if (pwptr != NULL)
         Vars.AddVar(type_paramwin,ident,pwptr);
@@ -4613,12 +4614,16 @@ cerr << "Feature not available, needs to be updated ! " << endl;
         {
           ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
 
+          GB_main_wxFrame->AddParamPage((wxWindow*)pw.get(), 
+                                        pw->GetName(),
+                                        true // select as current page
+                                        );
 /* TODO
           GB_main_wxFrame->GetAuiManager().GetPane((wxWindow*) pw.get()).Show();
           //GB_main_wxFrame->GetAuiManager().GetPane((wxWindow*) pw.get()).Float();
           GB_main_wxFrame->GetAuiManager().Update();
 */
-          //pw->AfficheDialogue();
+         //pw->AfficheDialogue();
         }
         |
         VAR_PARAMWIN T_POINT T_redraw
@@ -5984,6 +5989,7 @@ postfix_expr
     **/
         ParamPanel_ptr pw  = *(ParamPanel_ptr*) $1->Pointer();
         pw->MAJ();
+        GB_main_wxFrame->GetAuiManager().Update();
     }
     |
     VAR_PARAMWIN T_POINT UPDATE T_OP_PAR  expr  T_CL_PAR

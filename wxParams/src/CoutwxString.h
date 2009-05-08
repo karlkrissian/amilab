@@ -17,11 +17,11 @@
 #include "wx/wx.h"
 using namespace std;
 
-// teach how wxString use streams (operator<<)
+#ifndef wxUSE_STD_IOSTREAM
+
 ostream & operator<<(ostream & out, const wxString & str);
-// {
-//     out << str.c_str();
-//     return out;
-// }
+
+#endif // #ifndef wxUSE_STD_IOSTREAM
+
 
 #endif // _CoutwxString_h_

@@ -18,7 +18,7 @@
 #include <boost/iostreams/stream.hpp>
 //namespace io = boost::iostreams;
 
-boost::iostreams::stream_buffer<boost::iostreams::file_sink> buf("log.txt");
+boost::iostreams::stream_buffer<boost::iostreams::file_sink> buf("ami_wxGLCanvas_trace.txt");
 std::ostream                     out(&buf);
 
 
@@ -416,6 +416,7 @@ int ami_wxGLCanvas::SetCurrentObject(int i)
 void ami_wxGLCanvas::OnPaint( wxPaintEvent& WXUNUSED(event) )
 {
     if (GB_debug) out << "*** begin ami_wxGLCanvas::OnPaint() ***" << endl;
+    if (GB_debug) cerr << "*** begin ami_wxGLCanvas::OnPaint() ***" << endl;
 
     // This is a dummy, to avoid an endless succession of paint messages.
     // OnPaint handlers must always create a wxPaintDC.
@@ -434,9 +435,10 @@ void ami_wxGLCanvas::OnPaint( wxPaintEvent& WXUNUSED(event) )
     InitGL();
     _initialized = true;
   }
-  this->Paint();
+  this->Paint(true);
 
   if (GB_debug) out << "*** end ami_wxGLCanvas::OnPaint() ***" << endl;
+  if (GB_debug) cerr << "*** end ami_wxGLCanvas::OnPaint() ***" << endl;
 }
 
 void ami_wxGLCanvas::OnSize(wxSizeEvent& event)

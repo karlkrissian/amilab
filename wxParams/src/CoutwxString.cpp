@@ -12,8 +12,12 @@
 
 #include "CoutwxString.h"
 
+#ifndef wxUSE_STD_IOSTREAM
+
 ostream & operator<<(ostream & out, const wxString & str)
 {
     out << str.c_str();
     return out;
 }
+
+#endif // #ifndef wxUSE_STD_IOSTREAM
