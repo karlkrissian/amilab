@@ -362,7 +362,11 @@ proc LoadImages2() {
   i = (FLOAT) Image($2) 
   im.putimage(i,0,0,1)
 
-  displ = Image($3)
+  if (argc>2) {
+    displ = Image($3)
+  } else {
+    displ = Image(FLOAT,i.tx,i.ty,1,3)
+  }
   displ.setvoxelsize(i.vx,i.vy,i.vz)
 
   displ_res= displ*0
@@ -989,7 +993,7 @@ proc CB_RunAlphaTests() {
 #--------------------------------------------------
 # Input Images
 #
-winput = ParamWin("Input images for Optical Flow")
+winput = ParamWin("Input")
 winput.BeginBox("Yosemite sequence from M. Black")
 use_clouds_id      = winput.AddBoolean(use_clouds)
 removelastline_id  = winput.AddBoolean(removelastline)
@@ -1014,7 +1018,7 @@ winput.CreateWin
 #--------------------------------------------------
 # Parameters for libami's code
 #
-wamiOF = ParamWin("libamiFluid: PDE Optical Flow Parameters")
+wamiOF = ParamWin("PDE Param")
 
 presmoothing_id    = wamiOF.AddFloat(presmoothing,0,3)
 beta_id            = wamiOF.AddFloat(beta,0.01,5)
@@ -1052,7 +1056,7 @@ wamiOF.CreateWin
 #--------------------------------------------------
 # Parameters for Javier's code
 #
-wJavOF = ParamWin("Javier s code: PDE Optical Flow Parameters")
+wJavOF = ParamWin("Javier PDE Param")
 zoom_id            = wJavOF.AddInt(  zoom,       0,5)
 alphaJ_id          = wJavOF.AddFloat(alfa_Javier,0.01,20)
 T_id               = wJavOF.AddFloat(T,          0.01,2000)
@@ -1063,7 +1067,7 @@ wJavOF.CreateWin
 #--------------------------------------------------
 # Parameters for Javier and Agustin's code
 #
-wJAOF = ParamWin("Javier and Agustin code: PDE Optical Flow Parameters")
+wJAOF = ParamWin("Javier and Agustin PDE Param")
 JA_zoom_id         = wJAOF.AddInt  ( JA_zoom,    0,   5)
 JA_alpha_id        = wJAOF.AddFloat( JA_alfa,    0.01,5)
 JA_beta_id         = wJAOF.AddFloat( JA_beta,    0.01,5)
@@ -1077,7 +1081,7 @@ wJAOF.CreateWin
 #--------------------------------------------------
 # Parameters for Vorticity code
 #
-wVort = ParamWin("Vorticity Optical Flow parameters")
+wVort = ParamWin("Vorticity OF param")
 vort_grid_id       = wVort.AddInt(vort_grid,   1,10)
 vort_winsize_id    = wVort.AddInt(vort_winsize,3,10)
 vort_sigma_id      = wVort.AddFloat(vort_sigma,0.1,5)
@@ -1113,7 +1117,7 @@ wGaussSc.CreateWin
 #--------------------------------------------------
 # Main Parameters
 #
-w1 = ParamWin("Optic Flow Experiments: main parameters ")
+w1 = ParamWin("Main")
 
 input_id = w1.AddButton("Input Images", CB_InputImages)
 
