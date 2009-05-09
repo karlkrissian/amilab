@@ -1,7 +1,7 @@
 //
 // C++ Interface: AMILabConfig
 //
-// Description: 
+// Description:
 //
 //
 // Author: Karl Krissian  <krissian@dis.ulpgc.es>, (C) 2009
@@ -14,6 +14,9 @@
 #define _AMILabConfig_h_
 
 #define AMILAB_VERSION "@AMILAB_VERSION@"
+
+#cmakedefine HAVE_MALLOC_H 1
+
 
 #endif // _AMILabConfig_h_
 

@@ -22,7 +22,7 @@
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-    ================================================== 
+    ==================================================
    The full GNU Lesser General Public License file is in Devel/Sources/Prog/LesserGPL_license.txt
 */
 /* epi_err.h 2.1 5/13/96 */
@@ -47,8 +47,13 @@
 extern char program[80];
 extern unsigned char verbose;
 
-#define true		1
-#define false		0
+#ifndef true
+  #define true		1
+#endif
+
+#ifndef true
+  #define false		0
+#endif
 
 #ifndef B_FNAME_LENGTH
 #define B_FNAME_LENGTH 80
@@ -66,7 +71,7 @@ extern unsigned char verbose;
 #define E_ERRARRAY 9
 #define E_ERRNULL 10
 #define E_ERRMISMATCH 11
-#define E_ERRNB 12 
+#define E_ERRNB 12
 
 #define EM_ERRNO "no errors"					/* error messages	*/
 #define EM_ERRUNKNOWN "unknown type"
@@ -89,13 +94,13 @@ extern unsigned char verbose;
 	mode is on, then the name of the procedure "proc" is printed,
 	and eventually a complementary message "mess".
 
-	E_ERR:		if (test) set the fatal error flag to no, return value	
-	E_ERRN:		if (test) set the fatal error flag to no, return no value	
+	E_ERR:		if (test) set the fatal error flag to no, return value
+	E_ERRN:		if (test) set the fatal error flag to no, return no value
 	E_XERR:		the same without test, to be used in switch()
 	E_XERRN:	... without returned values
-	E_ISERR:	test if fatal error flag on, return value	
-	E_ISERRN:	test if fatal error flag on, return no value	
-	E_SETERR:	set the fatal error flag to no, no return at this stage 
+	E_ISERR:	test if fatal error flag on, return value
+	E_ISERRN:	test if fatal error flag on, return no value
+	E_SETERR:	set the fatal error flag to no, no return at this stage
 	E_REPERR:	if fatal error, make some reparations
 	E_RESETERR:	clear the error flag
 

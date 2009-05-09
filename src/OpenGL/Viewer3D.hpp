@@ -12,6 +12,13 @@
 #ifndef _Viewer3D_h_
 #define _Viewer3D_h_
 
+#include <ostream>
+#include <boost/iostreams/device/file.hpp>
+#include <boost/iostreams/stream.hpp>
+#include <boost/shared_ptr.hpp>
+#include "DefineClass.hpp"
+
+
 #ifdef __GNUG__
 #pragma implementation
 #pragma interface
@@ -33,6 +40,7 @@
     #error "OpenGL required: set wxUSE_GLCANVAS to 1 and rebuild the library"
 #endif
 
+
 #include "wx/timer.h"
 #include "wx/math.h"
 #include "wx/toolbar.h"
@@ -40,7 +48,6 @@
 #include "MyToolBar.h"
 
 #include "ami_wxGLCanvas.hpp"
-#include "DefineClass.hpp"
 #include "ParamBox.hpp"
 
 #include "Viewer3D_ViewParam.h"
@@ -53,7 +60,6 @@
 #include "Viewer3D_LineParam.h"
 #include "Viewer3D_PointParam.h"
 
-#include <boost/shared_ptr.hpp>
 class Viewer3D;
 typedef boost::shared_ptr<Viewer3D> Viewer3D_ptr;
 typedef boost::weak_ptr  <Viewer3D> Viewer3D_wptr;

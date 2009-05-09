@@ -12,6 +12,8 @@
 extern unsigned char GB_debug;
 
 #include "Viewer3D.hpp"
+
+
 #include "MyToolBar.h"
 
 // include pixmaps
@@ -30,6 +32,7 @@ extern unsigned char GB_debug;
 #include "gl_line.xpm"
 #include "gl_fill.xpm"
 #include "gl_fill_line.xpm"
+
 
 /*
 // Pixmaps for setting 3D view
@@ -553,10 +556,10 @@ void Viewer3D::Create_Toolbar()
                               _T("Projection type [Ortho|Persp] \n Right click --> parameters"),
                               (void*) Viewer3D::CB_redessine,
                               (void*) this);
-  toolBar->AddEnumChoice( proj_id, 
+  toolBar->AddEnumChoice( proj_id,
                           wxID_TB_Projection, PROJ_ORTHO,
                           wxBitmap(proj_ortho_string), _T("ortho"));
-  toolBar->AddEnumChoice( proj_id, 
+  toolBar->AddEnumChoice( proj_id,
                           wxID_TB_Projection, PROJ_PERSP,
                           wxBitmap(proj_persp_string), _T("persp"));
   toolBar->AddRightClick( proj_id,
@@ -574,9 +577,9 @@ void Viewer3D::Create_Toolbar()
                             (void*) Viewer3D::CB_redessine,
                             (void*) this);
 
-  toolBar->AddEnumChoice(fog_id, wxID_TB_Fog, 0, 
+  toolBar->AddEnumChoice(fog_id, wxID_TB_Fog, 0,
     wxBitmap(nofog_string),_T("No Fog"));
-  toolBar->AddEnumChoice(fog_id, wxID_TB_Fog, 1, 
+  toolBar->AddEnumChoice(fog_id, wxID_TB_Fog, 1,
     wxBitmap(fog_string),_T("Fog"));
   toolBar->AddRightClick( fog_id,
                             (void*) Viewer3D::CB_FogParam,

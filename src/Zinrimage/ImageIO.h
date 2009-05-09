@@ -37,9 +37,15 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <malloc.h>
 #include <string.h>
-//#include <strings.h>
+
+#include "AMILabConfig.h"
+
+#ifdef HAVE_MALLOC_H
+#include <malloc.h>
+#else
+#include <stdlib.h>
+#endif
 
 
 #ifdef __cplusplus
@@ -272,7 +278,7 @@ void _openWriteImage(_image* im /* initialized image descriptor */,
 /* given an initialized file descriptor and a file name, open file
    from stdout (if name == NULL), a gziped pipe (if file is gziped)
    or a standard file otherwise. */
-   
+
 void _openReadImage(_image *im /* initialized image descriptor */,
 		const char *name /* image file name */);
 /* open an image file from stdin (if name == NULL), from a pipe

@@ -12,6 +12,18 @@
 #ifndef _AMI_WXGLCANVAS_H_
 #define _AMI_WXGLCANVAS_H_
 
+#include "DefineClass.hpp"
+#include <list>
+
+#if defined(__APPLE__)
+  #include <OpenGL/gl.h>
+  #include <OpenGL/glu.h>
+#else
+  #include <GL/gl.h>
+  #include <GL/glu.h>
+#endif
+
+
 #ifdef __GNUG__
 #pragma implementation
 #pragma interface
@@ -40,18 +52,6 @@
 #include "wx/sizer.h"
 
 
-#if defined(__WXMAC__) || defined(__WXCOCOA__)
-#   ifdef __DARWIN__
-#       include <OpenGL/gl.h>
-#       include <OpenGL/glu.h>
-#   else
-#       include <gl.h>
-#       include <glu.h>
-#   endif
-#else
-#   include <GL/gl.h>
-#   include <GL/glu.h>
-#endif
 
 // disabled because this has apparently changed in OpenGL 1.2, so doesn't link
 // correctly if this is on...
@@ -59,13 +59,11 @@
 #undef GL_EXT_vertex_array
 #endif
 
-#include <list>
 
 #include "GLparam.hpp"
 #include "inrimage.hpp"
 #include "isosurface.hpp"
 #include "surface.hpp"
-#include "DefineClass.hpp"
 
 #define MAX_LIGHTS 8
 
@@ -160,7 +158,7 @@ public:
 
   GLuint _ISOSURFACE;
   GLuint _LINES;
-  GLuint _SURFVECTORS; // vectors on the surfaces 
+  GLuint _SURFVECTORS; // vectors on the surfaces
 
   GLuint _VOLVECTORS1; // vectors on the volume
   GLuint _VOLVECTORS2; // vectors on the volume
@@ -247,7 +245,7 @@ public:
 
    // Variables pour le dessin de la position du curseur
    unsigned char      _curseur_ON;
-   int       _curseur_x, _curseur_y, _curseur_z; 
+   int       _curseur_x, _curseur_y, _curseur_z;
 
 
    //-----------------------------------------------------
@@ -364,12 +362,12 @@ public:
     _Tobject.Print();
 /*
     printf("\nTEXTURE:\n");
-    _Ttexture.Print();   
-*/ 
+    _Ttexture.Print();
+*/
   }
 
-  void SetLimits( float xmin, float xmax, float ymin, float ymax, float zmin, float zmax) 
-  { 
+  void SetLimits( float xmin, float xmax, float ymin, float ymax, float zmin, float zmax)
+  {
     _xmin=xmin;
     _xmax=xmax;
     _ymin=ymin;
@@ -409,7 +407,7 @@ public:
   void NewVolumeVectors1();
   void NewVolumeVectors2();
 /*
-  void DisplayOneColorVector( GLfloat center[3], 
+  void DisplayOneColorVector( GLfloat center[3],
                   GLfloat dirx, GLfloat diry, GLfloat dirz,
                   int vector_type);
   void GetVectorColor( float vx, float vy, float vz, GLubyte colors[3]);
@@ -445,7 +443,7 @@ public:
   void SetFog(             const GLFogParam&     f);
 
   GLLightParam& GetLight(int n) {
-    if (n<MAX_LIGHTS) 
+    if (n<MAX_LIGHTS)
       return _GLLight[n];
     else
       return _GLLight[0];
@@ -481,10 +479,10 @@ public:
   void Boutton3_Relache();
   void DeplaceSourisBout3();
 
-  // Look for the closest line 
+  // Look for the closest line
   void LineInfo( float x, float y, float z);
 
-  // Look for the closest point 
+  // Look for the closest point
   void PointInfo( float x, float y, float z);
 
   // Look for the closest connected component

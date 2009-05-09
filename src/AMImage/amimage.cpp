@@ -22,7 +22,7 @@
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-    ================================================== 
+    ==================================================
    The full GNU Lesser General Public License file is in LesserGPL_license.txt
 */
 
@@ -31,7 +31,7 @@
 
    Karl Krissian
 
-   Universidad de Las Palmas de Gran Canaria 
+   Universidad de Las Palmas de Gran Canaria
 
    07/05/01
 
@@ -53,10 +53,17 @@
 #include <boost/iostreams/filter/gzip.hpp>
 #include <boost/iostreams/filter/bzip2.hpp>
 #include <boost/iostreams/device/file.hpp>
-namespace bf = boost::filesystem; 
 
+namespace bf = boost::filesystem;
 
-/*// compile time endianness 
+#include <fstream>
+#include <iostream>
+using namespace boost::iostreams;
+using namespace boost;
+
+using namespace std;
+
+/*// compile time endianness
 #if (defined (_ALPHA_) || defined (_LINUX_)|| defined (_LITTLE_ENDIANNESS_))
 #define ARCHITECTURE_ENDIANNESS LITTLE_END
 #else
@@ -88,13 +95,13 @@ extern unsigned char GB_debug;
     ptr = new type[size]; \
     if (GB_debug)  \
       fprintf(stderr,"%s, allocation of %03.4f Mb \n", \
-              mess, 1.0*size*sizeof(type)/1000000.0); 
+              mess, 1.0*size*sizeof(type)/1000000.0);
 
 
 #define NUM_REPRES 12
 
 
-static string repres_datafile[2] = 
+static string repres_datafile[2] =
 { "INTERN",
   "EXTERN"
 };
@@ -102,19 +109,19 @@ static string repres_datafile[2] =
 // Creating a std::vector from the strings
 std::vector<string> repres_datafile_v(repres_datafile, repres_datafile+2);
 
-static string repres_string[NUM_REPRES] = 
+static string repres_string[NUM_REPRES] =
 { "UNKNOWN",
-  "BIN",            // Binary 1 bit 
-  "UCHAR",  // Unsigned 8 bits 
-  "SCHAR",    // Signed 8 bits 
-  "USHORT", // Unsigned 16 bits 
-  "SSHORT",   // Signed 16 bits 
-  "UINT",   // Unsigned 32 bits 
-  "SINT",     // Signed 32 bits 
-  "ULONG",  // Unsigned 64 bits 
-  "SLONG",    // Signed 64 bits 
-  "FLOAT",          // Float 32 bits 
-  "DOUBLE"          // Float 64 bits 
+  "BIN",            // Binary 1 bit
+  "UCHAR",  // Unsigned 8 bits
+  "SCHAR",    // Signed 8 bits
+  "USHORT", // Unsigned 16 bits
+  "SSHORT",   // Signed 16 bits
+  "UINT",   // Unsigned 32 bits
+  "SINT",     // Signed 32 bits
+  "ULONG",  // Unsigned 64 bits
+  "SLONG",    // Signed 64 bits
+  "FLOAT",          // Float 32 bits
+  "DOUBLE"          // Float 64 bits
 };
 
 // Creating a std::vector from the strings
@@ -164,7 +171,7 @@ static unsigned char type_size[8] = {
 };
 
 static string end_string[3] = {
-  "UNKNOWN", 
+  "UNKNOWN",
   "BIG",
   "LITTLE"
 };
@@ -174,7 +181,7 @@ std::vector<string> end_string_v(end_string, end_string+3);
 
 static string so_string[6] = {
   "LR", // SAGITTAL Left Right
-  "RL", 
+  "RL",
   "SI", // AXIAL Superior Inferior
   "IS",
   "AP", // CORONAL Anterior Posterior
@@ -208,7 +215,7 @@ bool check_value( const string& line,
     stringstream ssout(what[1]);
     ssout>>first_part;
     // remove lower cases from it
-    string line2= regex_replace(first_part, lower_case, "", 
+    string line2= regex_replace(first_part, lower_case, "",
                                 boost::match_default | boost::format_sed);
     if (line2.compare(st)!=0) {
       //cout << "no match for " << st << endl;
@@ -255,7 +262,7 @@ bool check_enum( const string&   line,
     stringstream ssout(what[1]);
     ssout>>first_part;
     // remove lower cases from it
-    string line2= regex_replace(first_part, lower_case, "", 
+    string line2= regex_replace(first_part, lower_case, "",
                                 boost::match_default | boost::format_sed);
     if (line2.compare(st)!=0) {
       //cout << "no match for " << st << endl;
@@ -399,10 +406,10 @@ void amimage::initialize()
   file_prefix = "";
   file_format = "";
   first_slice  = 0;
-  last_slice   = 0; 
+  last_slice   = 0;
 
   // Identity Matrix for the transformation
-  for(i=0;i<4;i++) 
+  for(i=0;i<4;i++)
   for(j=0;j<4;j++)
     TransfMatrix[i][j] = 0;
   for(i=0;i<3;i++) TransfMatrix[i][i] = 1;
@@ -555,7 +562,7 @@ unsigned char amimage::allocate()
   this->ComputeDataSize();
   NEW("amimage::allocate", data,  unsigned char, data_size);
 
-  if (data) 
+  if (data)
     data_allocated = true;
   else
     data_allocated = false;
@@ -569,7 +576,7 @@ unsigned char amimage::allocate()
 //----------------------------------------------------------------------
 void  amimage::SetData( void* d)
 //             -------
-{ 
+{
   this->ComputeDataSize();
   if (data_allocated)
     fprintf(stderr,"amimage::SetData() \t data already allocated \n");
@@ -605,10 +612,10 @@ unsigned char  amimage::readheader( const char* filename)
 
 
     // 2. Read the parameters
-    // read magic number 
+    // read magic number
     boost::smatch what;
     boost::regex lower_case("\\l");
-  
+
     file_str->seekg(0);
     file_str->getline(line,255);
     //string line_str(line);
@@ -631,7 +638,7 @@ unsigned char  amimage::readheader( const char* filename)
       boost::regex e("\\(");
       result = boost::regex_search(string(line), what, e);
     } while (!result);
-  
+
     string uint_expr  ="(\\d+)";
     string float_expr ="([-+]?\\d*\\.?\\d+)"; // no exponential here?
     string enum_expr  ="(\\w*)";
@@ -650,14 +657,14 @@ unsigned char  amimage::readheader( const char* filename)
     bool FP_found = false,FF_found = false;
     while (!end_header) {
       file_str->getline(line,255);
-  
+
       // read parameters
       // read image size
       if (!check_value<int>(string(line),"XD",uint_expr,xdim,XD_found))
       if (!check_value<int>(string(line),"YD",uint_expr,ydim,YD_found))
       if (!check_value<int>(string(line),"ZD",uint_expr,zdim,ZD_found))
       if (!check_value<int>(string(line),"VD",uint_expr,vdim,VD_found))
-    
+
       // read voxel size
       if (!check_value<float>(string(line),"VSX",float_expr,voxsize_x,
           VSX_found))
@@ -665,7 +672,7 @@ unsigned char  amimage::readheader( const char* filename)
           VSY_found))
       if (!check_value<float>(string(line),"VSZ",float_expr,voxsize_z,
           VSZ_found))
-    
+
       // read translation
       if (!check_value<float>(string(line),"TX",float_expr,transl_x,
           TX_found))
@@ -673,23 +680,23 @@ unsigned char  amimage::readheader( const char* filename)
           TY_found))
       if (!check_value<float>(string(line),"TZ",float_expr,transl_z,
           TZ_found))
-    
+
       // read representation
       if (!check_enum<AMI_REPRES>( string(line),"R",enum_expr,
                               repres_string_v,repres,R_found))
-    
+
       // read image type
       if (!check_enum<AMI_TYPE>( string(line),"T",enum_expr,
                             type_string_v,type,T_found))
-  
+
       // read image endianness
       if (!check_enum<AMIENDIANNESS>(  string(line),"E",enum_expr,
                                   end_string_v,endianness,E_found))
-  
+
       // read scan order
       if (!check_enum<SCANORDER>(  string(line),"SO",enum_expr,
                               so_string_v,scanorder, SO_found))
-  
+
       // read scan order
       if (!check_enum<AMI_DATAFILE>( string(line),"DF",enum_expr,
                                 repres_datafile_v,datafile, DF_found))
@@ -715,15 +722,15 @@ unsigned char  amimage::readheader( const char* filename)
 
     // convert older representation to new format
     switch (type) {
-      case AMI_2DVECTOR: 
+      case AMI_2DVECTOR:
         type = AMI_VECTOR;
         vdim = 2;
         break;
-      case AMI_3DVECTOR: 
+      case AMI_3DVECTOR:
         type = AMI_VECTOR;
         vdim = 3;
         break;
-      case AMI_RGB: 
+      case AMI_RGB:
         type = AMI_VECTOR;
         repres = AMI_UNSIGNED_CHAR;
         vdim = 3;
@@ -774,7 +781,7 @@ unsigned char amimage::CheckGenesisHeader(char* ptr, int slice, float corner[4][
     width  = GetValue<unsigned int>(ptr,OFFSET_WIDTH);
     height = GetValue<unsigned int>(ptr,OFFSET_HEIGHT);
 
-    if (GB_debug) 
+    if (GB_debug)
       fprintf(stderr,"width %3.3f, height %3.3f \n",
          width,height);
 
@@ -809,7 +816,7 @@ unsigned char amimage::CheckGenesisHeader(char* ptr, int slice, float corner[4][
 
     return 1;
   }
-  
+
   if (slice==zdim-1) {
     imheaderbuf = ptr+GetValue<unsigned int>(ptr,OFFSET_IMAGE_HEADER);
     // Get the  corner for the last slice
@@ -871,8 +878,8 @@ unsigned char  amimage::readdata_ext( )
           if( !bf::exists(bf::path(fname)) )  {
             fname = fname+".gz";
             if (!bf::exists(bf::path(fname))) {
-              cerr  << " File with prefix " << file_prefix 
-                    << " number " << first_slice+z 
+              cerr  << " File with prefix " << file_prefix
+                    << " number " << first_slice+z
                     << " not found ..." << endl;
               return 0;
             }
@@ -889,8 +896,8 @@ unsigned char  amimage::readdata_ext( )
         // try compressed file
         fname = fname + ".gz";
         if( !bf::exists(bf::path(fname)) ) {
-          cerr  << " File with prefix " << file_format 
-                << " number " << first_slice+z 
+          cerr  << " File with prefix " << file_format
+                << " number " << first_slice+z
                 << " not found ..." << endl;
           return 0;
         }
@@ -919,13 +926,13 @@ unsigned char  amimage::readdata_ext( )
     file_str->seekg (0, ios::beg); // Go back to the beginning
     file_str->read( (char*)header_ptr,header_size );
     // Get Information from the header
-    //if ( header_size<4 )  
+    //if ( header_size<4 )
     genesis_format = false;
     //  skip genesis format for the moment
     //if ( genesis_format ) genesis_format = CheckGenesisHeader ( header_ptr,z,corner );
 
     // Go back to the beginning of the data
-    file_str->seekg (-((int)slice_size), ios::end); 
+    file_str->seekg (-((int)slice_size), ios::end);
     file_str->read ( (char*) ptr,slice_size );
     cout << " size read " << file_str->gcount() << endl;
 
@@ -1011,7 +1018,7 @@ unsigned char  amimage::readdata3D_ext( )
     if( !bf::exists(bf::path(fname)) )  {
       fname = fname+".gz";
       if (!bf::exists(bf::path(fname))) {
-            cerr  << " File " << file_prefix 
+            cerr  << " File " << file_prefix
                   << " not found ..." << endl;
             return 0;
       }
@@ -1052,18 +1059,18 @@ unsigned char  amimage::readdata3D_ext( )
   //file_str->read( (char*)header_ptr,header_size );
 
   // Go back to the beginning of the data and read them
-  file_str->seekg (-((long)image_size), ios::end); 
+  file_str->seekg (-((long)image_size), ios::end);
   file_str->read ( (char*) ptr,image_size );
 
   if  (file_str->gcount() != image_size) {
     string error_msg;
     error_msg = (boost::format(
-            "amimage::readdata3D_ext() Error reading file %s \n") 
+            "amimage::readdata3D_ext() Error reading file %s \n")
             % fname).str();
     perror( error_msg.c_str() );
     close_file();
     return 0;
-  } 
+  }
   close_file();
 
 
@@ -1092,7 +1099,7 @@ unsigned char  amimage::readdata( )
     fprintf(stderr,"amimage::readdata() \t Error: header not read \n");
     return false;
   }
-  
+
   allocate();
 
   cerr << "pos=" << file_str->tellg() << endl;
@@ -1100,7 +1107,7 @@ unsigned char  amimage::readdata( )
   cerr << "off=" << offset << endl;
   file_str->seekg(offset, ios::end);
   cerr << "pos=" << file_str->tellg() << endl;
-  file_str->read((char*) data, data_size); 
+  file_str->read((char*) data, data_size);
   cerr << "pos=" << file_str->tellg() << endl;
 
   if(file_str->gcount() != (streamsize) data_size) {
@@ -1135,13 +1142,13 @@ void  amimage::swap_bytes( )
     fprintf(stderr,"amimage::swap_bytes() \t Error: data not allocated \n");
     return;
   }
-  
+
   rsize = repres_size[repres];
   rsize2 = rsize/2;
   ssize = xdim*ydim*zdim*type_size[type];
 
   ptr = (unsigned char *) data;
-    
+
 
   while(ssize--) {
     for(b=0;b<rsize2;b++) {
@@ -1149,7 +1156,7 @@ void  amimage::swap_bytes( )
       ptr[b] = ptr[rsize-1-b];
       ptr[rsize-1-b] = tmp;
     }
-    ptr += rsize;    
+    ptr += rsize;
   }
 
 
@@ -1167,10 +1174,10 @@ unsigned char  amimage::read( const char* filename)
 
 
   switch (datafile) {
-  case AMI_DATAINT: 
+  case AMI_DATAINT:
       if (!readdata()) return false;
     break;
-  case AMI_DATAEXT: 
+  case AMI_DATAEXT:
       if (!readdata_ext()) return false;
     break;
   }
@@ -1183,7 +1190,7 @@ unsigned char  amimage::read( const char* filename)
 
 
 //----------------------------------------------------------------------
-unsigned char  amimage::writeheader( const char* filename, 
+unsigned char  amimage::writeheader( const char* filename,
 //                      -----------
           filtering_ostream& out, bool include_header)
 {
@@ -1201,29 +1208,29 @@ unsigned char  amimage::writeheader( const char* filename,
     // Writting the header
     out << "AMIMAGE 1.1\n";
     out << "(\n";
-  
+
     out << format("XDim = %d\n")% xdim  ;
     out << format("YDim = %d\n")% ydim  ;
     out << format("ZDim = %d\n")% zdim  ;
     out << format("VDim = %d\n")% vdim  ;
-    
+
     out << format("VoxSizeX = %f\n") % voxsize_x  ;
     out << format("VoxSizeY = %f\n") % voxsize_y  ;
     out << format("VoxSizeZ = %f\n") % voxsize_z  ;
-    
+
     out << format("TranslX = %f\n")% transl_x  ;
     out << format("TranslY = %f\n")% transl_y  ;
     out << format("TranslZ = %f\n")% transl_z  ;
-    
+
     out << format("Repres = %s\n")%  repres_string[repres];
     out << format("Type = %s\n")  %   type_string[type];
-  
-    
+
+
     out << format("Endianness = %s\n")% end_string[endianness].c_str();
     out << format("ScanOrder  = %s\n")% so_string[scanorder].c_str();
     out << ")\n";
   }
-  
+
   return !out.bad();
 
 } // writeheader()
@@ -1240,7 +1247,7 @@ unsigned char  amimage::writedata(filtering_ostream& out)
     swap_bytes();
 
   out.write((char*)data, data_size);
-  
+
   if (out.bad()) {
     cerr << "amimage::writedata() \t error writting data !";
     //  << format("%d bytes written out of %d \n") % written %data_size);
@@ -1304,7 +1311,7 @@ void  amimage::CopyDataField( int n, void* d)
     break;
 
   case AMI_UNSIGNED_CHAR:
-    { 
+    {
     unsigned char* imdata  = (unsigned char*) data;
     unsigned char* newdata = (unsigned char*) d;
 
@@ -1319,7 +1326,7 @@ void  amimage::CopyDataField( int n, void* d)
   default:
     fprintf(stderr,"amimage::CopyDataField \t Error, repres still not available \n");
   }
-  
+
 
 } // CopyDataField()
 

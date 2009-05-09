@@ -1,6 +1,5 @@
 %{
 
-#include <string>
 #include "scanner.h"
 
 extern yyip::Driver GB_driver;
@@ -18,19 +17,19 @@ typedef yyip::Parser::token_type token_type;
 #define YY_NO_UNISTD_H
 
 
+#include <boost/format.hpp>
+#include <boost/shared_ptr.hpp>
 
-#include "fonctions.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <locale.h>
 #include "messages.h"
+#include "fonctions.h"
 #include "improcess_bison.tab.hpp"
 #include "VarContexts.hpp"
 #include "ami_function.h"
 #include <string>
-#include <boost/format.hpp>
-#include <boost/shared_ptr.hpp>
 
 #define LEX_DEBUG(expr) if (GB_debug) {expr}
 
@@ -44,7 +43,7 @@ bool LexError = 0;
 //extern  void yyiperror(const char*);
 extern  VarContexts  Vars;
 
-yyip::Parser::token::yytokentype checkvar( 
+yyip::Parser::token::yytokentype checkvar(
       yyip::Parser::semantic_type* yylval,
       const char* varname, int context=-1);
 using namespace std;
@@ -127,7 +126,7 @@ WS      [ \t]
 ">"  return(token::T_GT);   /*  >,T_GT}*/
 "<"  return(token::T_LT);   /*  <,T_LT}*/
 "*"  return(token::T_MULT); /*  *,T_MULT}*/
-".*"  return(token::POINTWISE_MULT); 
+".*"  return(token::POINTWISE_MULT);
 "/"  return(token::T_DIV);  /*  /,T_DIV}*/
 "!"  return(token::T_FACT); /*  !,T_FACT}*/
 "+"  return(token::T_ADD); /*  +, T_ADD}*/
@@ -786,7 +785,7 @@ emptyargs         return(token::T_emptyargs);    /*{emptyargs,T_emptyargs}*/
   pos = n+GB_num_arg_parsed-1;
 
   if ((pos>=GB_argc)||(pos<0)) {
-    boost::format fmt = 
+    boost::format fmt =
         boost::format("improcess.l \t invalid argument number %d / %d\n");
 #ifdef str
   #undef str
@@ -981,7 +980,7 @@ global::([A-Za-z0-9_])*   {
 //
 yyip::Parser::token::yytokentype checkvar(
   yyip::Parser::semantic_type* yylval,
-  const char* varname, 
+  const char* varname,
   int context
 )
 //

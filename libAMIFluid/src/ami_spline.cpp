@@ -2,8 +2,15 @@
 #include "ami_spline.h"
 #include <math.h>
 #include <stdio.h>
-#include <malloc.h>
 #include <float.h>
+
+#include "ami_config.h"
+
+#ifdef HAVE_MALLOC_H
+#include <malloc.h>
+#else
+#include <stdlib.h>
+#endif
 
 static void  ConvertToInterpolationCoefficients(
 					double	c[],		/* input samples --> output coefficients */
@@ -19,7 +26,7 @@ static double	InitialCausalCoefficient(
 					double	z,			/* actual pole */
 					double	Tolerance	/* admissible relative error */
 				);
-				
+
 static void		GetZline(
 					float	***Image,        /* input image array */
 					long	x,			/* x coordinate of the selected line */
@@ -35,7 +42,7 @@ static void		GetColumn(
 					double	Line[],		/* output linear array */
 					long	Height		/* length of the line */
 				);
-				
+
 static void		GetRow(
 					float	***Image,		/* input image array */
 					long	y,			/* y coordinate of the selected line */
@@ -43,13 +50,13 @@ static void		GetRow(
 					double	Line[],		/* output linear array */
 					long	Width		/* length of the line */
 				);
-				
+
 static double	InitialAntiCausalCoefficient(
 					double	c[],		/* coefficients */
 					long	DataLength,	/* number of samples or coefficients */
 					double	z			/* actual pole */
 				);
-				
+
 /*****************************************************************************
  *	Definition of static procedures
  ****************************************************************************/
@@ -944,4 +951,4 @@ double ami_spline_InterpolatedValue3D(
         }
 
 	return(interpolated);
-} 
+}

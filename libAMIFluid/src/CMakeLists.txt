@@ -48,9 +48,18 @@ SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/../../CMAKE)
 
 FIND_PACKAGE( Pthreads)
 
+INCLUDE (CheckIncludeFiles)
+# usage: CHECK_INCLUDE_FILES (<header> <RESULT_VARIABLE> )
+
+# check for malloc.h
+CHECK_INCLUDE_FILES(malloc.h HAVE_MALLOC_H)
+# create ami_config.h
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/ami_config.h.in ${CMAKE_CURRENT_BINARY_DIR}/ami_config.h)
+
 include_directories (
   ${libAMIFluid_SOURCE_DIR}
   ${PTHREADS_INCLUDE_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}
   )
 
 SET(libAMIFluid_SRCS
@@ -74,7 +83,9 @@ SET(libAMIFluid_SRCS
 
 add_library ( AMIFluid ${libAMIFluid_SRCS} )
 
-FILE(GLOB files "${CMAKE_CURRENT_SOURCE_DIR}/*.h" "${CMAKE_CURRENT_SOURCE_DIR}/*.hpp")
+FILE(GLOB files "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
+                "${CMAKE_CURRENT_SOURCE_DIR}/*.hpp"
+                ${CMAKE_CURRENT_BINARY_DIR}/ami_config.h)
 INSTALL(FILES ${files} DESTINATION include/AMIFluid )
 
 

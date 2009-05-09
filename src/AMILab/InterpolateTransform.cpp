@@ -1,4 +1,7 @@
 
+#include "InterpolateTransform.h"
+
+
 #include "wx/wxprec.h"
 #ifdef __BORLANDC__
 #pragma hdrstop
@@ -8,7 +11,6 @@
 #endif
 #include "wx/glcanvas.h"
 
-#include "InterpolateTransform.h"
 
 void            Func_SaveTransform(GLTransfMatrix* glt1, char* name)
 {
@@ -49,13 +51,13 @@ GLTransfMatrix* Func_InterpolateTransform(GLTransfMatrix* glt1,GLTransfMatrix* g
   // Translation
   GLfloat tr1[3];
   GLfloat tr2[3];
-  
+
   glt1->GetTranslation(tr1);
   glt2->GetTranslation(tr2);
 
   //printf("tr1 = %f %f %f \n",tr1[0],tr1[1],tr1[2]);
   //printf("tr2 = %f %f %f \n",tr2[0],tr2[1],tr2[2]);
-  
+
 
   res->SetTranslation( tr1[0]+ coeff*(tr2[0]-tr1[0]),
 		       tr1[1]+ coeff*(tr2[1]-tr1[1]),
@@ -73,7 +75,7 @@ GLTransfMatrix* Func_InterpolateTransform(GLTransfMatrix* glt1,GLTransfMatrix* g
   //  printf("sc  = %f  \n",res->GetScale());
 
   // Rotation
-  
+
   // 1. Compute the rotation from glt1 to glt2
   GLdouble rot[4][4];
   GLdouble rot1[4][4];
@@ -90,9 +92,9 @@ GLTransfMatrix* Func_InterpolateTransform(GLTransfMatrix* glt1,GLTransfMatrix* g
   // Decompose the rotation in 3 angles
   // cos(a+b) = cosa.cosb-sina.sinb
   // sin(a+b) = sina.cosb+cosa.sinb
-  // 
+  //
   //  1  0     0           sinb 0 cosb      cosc      -sinc  0
-  //  0  cosa  -sina    x  0    1  0      x sinc       cosc  0  
+  //  0  cosa  -sina    x  0    1  0      x sinc       cosc  0
   //  0  sina  cosa        cosb 0 -sinb     0          0     1
 
   // cosb         0       -sinb
@@ -111,7 +113,7 @@ GLTransfMatrix* Func_InterpolateTransform(GLTransfMatrix* glt1,GLTransfMatrix* g
   // we make the hypothesis that all the angles are within [-pi/2,pi/2]
 
   sinb = -mat(0,2);
-  cosb = sqrt( 1 - sinb*sinb ); 
+  cosb = sqrt( 1 - sinb*sinb );
 
   Si fabsf(cosb) > 1E-3 Alors
 
@@ -124,7 +126,7 @@ GLTransfMatrix* Func_InterpolateTransform(GLTransfMatrix* glt1,GLTransfMatrix* g
     a =  atan2( sina, cosa);
     b =  atan2( sinb, cosb);
     c =  atan2( sinc, cosc);
-  
+
   Sinon
     // If sinb==1, we have
     // 0           0         -1
@@ -135,7 +137,7 @@ GLTransfMatrix* Func_InterpolateTransform(GLTransfMatrix* glt1,GLTransfMatrix* g
     // 0           0         -1
     // sin(a+c)    cos(a+c)   0
     // -cos(a+c)   sin(a+c)   0
- 
+
     a = 0;
     b = atan2( sinb, cosb);
     c = atan2( mat(1,0), mat(1,1));
@@ -152,7 +154,7 @@ GLTransfMatrix* Func_InterpolateTransform(GLTransfMatrix* glt1,GLTransfMatrix* g
   cb = cos(b1); sb = sin(b1);
   cc = cos(c1); sc = sin(c1);
 
-  //  rot 
+  //  rot
   rot[0][0] = cb*cc;           rot[0][1] = -sc*cb;          rot[0][2] = -sb;    rot[0][3] = 0;
   rot[1][0] = -sa*sb*cc+ca*sc; rot[1][1] = sa*sb*sc+ca*cc;  rot[1][2] = -cb*sa; rot[1][3] = 0;
   rot[2][0] = ca*sb*cc+sa*sc;  rot[2][1] = -ca*sb*sc+sa*cc; rot[2][2] = cb*ca;  rot[2][3] = 0;

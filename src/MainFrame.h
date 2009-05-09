@@ -1,7 +1,7 @@
 //
 // C++ Interface: MainFrame
 //
-// Description: 
+// Description:
 //
 //
 // Author: Karl Krissian,,, <karl@UBUNTU-KARL>, (C) 2008
@@ -14,6 +14,7 @@
 #define _MainFrame_h
 
 #include "wx/wxprec.h"
+#include <wx/version.h>
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
@@ -53,7 +54,7 @@ using namespace std;
 class CustomStatusBar : public wxStatusBar
 {
   public:
-    CustomStatusBar(wxWindow* parent, wxWindowID id = wxID_ANY); 
+    CustomStatusBar(wxWindow* parent, wxWindowID id = wxID_ANY);
     void SetProgress(int val);
 
   private:
@@ -75,7 +76,7 @@ class MainFrame: public wxFrame
 //    ---------
 {
 public:
-  MainFrame ( const wxString& title, const wxPoint& pos, 
+  MainFrame ( const wxString& title, const wxPoint& pos,
               const wxSize& size );
 
   ~MainFrame() {
@@ -86,11 +87,11 @@ public:
 
   TextControl* GetConsole() { return TC; }
 
-  bool AddMainPage(wxWindow* page, const wxString& caption, 
+  bool AddMainPage(wxWindow* page, const wxString& caption,
                     bool select = false, const wxBitmap& bitmap = wxNullBitmap);
   bool RemoveMainPage(wxWindow* page);
 
-  bool AddParamPage(wxWindow* page, const wxString& caption, 
+  bool AddParamPage(wxWindow* page, const wxString& caption,
                     bool select = false, const wxBitmap& bitmap = wxNullBitmap);
   bool RemoveParamPage(wxWindow* page);
 
@@ -110,7 +111,7 @@ public:
   void OnHelpBack ( wxCommandEvent& event );
   void OnHelpForward ( wxCommandEvent& event );
 
-  #if (wxCHECK_VERSION(2,9,0)) 
+  #if (wxCHECK_VERSION(2,9,0))
     void ConsoleReset ( wxCommandEvent& event );
   #else
     void ConsoleReset ( wxAuiToolBarEvent& event );

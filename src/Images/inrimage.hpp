@@ -22,7 +22,7 @@
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-    ================================================== 
+    ==================================================
    The full GNU Lesser General Public License file is in Devel/Sources/Prog/LesserGPL_license.txt
 */
 /***************************************************************************
@@ -91,7 +91,7 @@
  *
  ***************************************************************************/
 //  Fichier inrimage2.hpp
-// 
+//
 // Creation d'une classe InrImage permettant de
 // manipuler les images dans le format inrimage
 //
@@ -100,7 +100,7 @@
 // Karl KRISSIAN    Sophia Antipolis, le 30-05-96
 //
 
-// Ce qui peut etre interessant : 
+// Ce qui peut etre interessant :
 //
 // 1. definition d'une region d'interet :
 //    i.e. d'un tableau de booleen
@@ -160,11 +160,20 @@ float fround(const float& a);
 
 //@Include: /u/broca/0/kkrissia/Sources/Prog/Commun/include/chaine.doc  /user/jmontagn/src/Zinrimage/*.h
 
+#include "AMILabConfig.h"
+
+#ifdef HAVE_MALLOC_H
+#include <malloc.h>
+#else
+#include <stdlib.h>
+#endif
+
+
 DebutDeclareC
 #include <math.h>
 #include "Zinrimage.h"
-#include <malloc.h>
 FinDeclareC
+
 
 #include "amimage.hpp"
 
@@ -180,10 +189,10 @@ return floor( d + 0.5 );
 //#include "epi_err.hpp"
 
 /*
-   \begin{center} 
-   {\bf MACROS: Diff�ents formats}\\ 
+   \begin{center}
+   {\bf MACROS: Diff�ents formats}\\
    \begin{tabular}{lll}
-   {\bf FORMAT_UNSIGNED_CHAR}  &  unsigned char       &  1 byte  \\ 
+   {\bf FORMAT_UNSIGNED_CHAR}  &  unsigned char       &  1 byte  \\
    {\bf FORMAT_UNSIGNED_SHORT} &  unsigned short int  &  2 bytes \\
    {\bf FORMAT_SIGNED_SHORT}   &  short int           &  2 bytes \\
    {\bf FORMAT_SIGNED_INT}     &  signed int          &  4 bytes \\
@@ -191,7 +200,7 @@ return floor( d + 0.5 );
    {\bf FORMAT_DOUBLE}         &  double              &  8 bytes \\
    {\bf FORMAT_RGB}            &  RGB                 &  3x1 bytes vdim = 3 \\
    {\bf FORMAT_FLOAT_VECTOR}   &  float               &  3x4 bytes vdim = 3 \\
-   \end{tabular} 
+   \end{tabular}
    \end{center}
 */
 
@@ -199,7 +208,7 @@ return floor( d + 0.5 );
 //  DEFINE
 //
 
-/**  @name Fomats  
+/**  @name Fomats
 */
 //@{
 /// format unsigned char 1 byte
@@ -236,16 +245,16 @@ return floor( d + 0.5 );
 #define TYPE_MAPLE 0
 
 // disable the magick library
-#ifdef USE_MAGICK 
+#ifdef USE_MAGICK
 //#undefine USE_MAGICK
 #endif
 
 #ifdef USE_MAGICK
 // Uses ImageMagick to write several image formats
 //
-int IM_WriteImage ( const char *name, 
-            const float *r, 
-            const float *g, 
+int IM_WriteImage ( const char *name,
+            const float *r,
+            const float *g,
             const float *b,
             const unsigned int w, const unsigned int h  );
 #endif // USE_MAGICK
@@ -270,7 +279,7 @@ int IM_WriteImage ( const char *name,
    log\\
    exp
 */
-class InrImage 
+class InrImage
 //    ========
 {
 
@@ -279,7 +288,7 @@ class InrImage
 public:
   /// Exceptions
   //@{
-    class ErreurLecture 
+    class ErreurLecture
     {
     };
 
@@ -296,7 +305,7 @@ public:
     public:
        Constructeur DepassementLimites( const Chaine message)
      {
-       cout << "InrImage "  
+       cout << "InrImage "
                 << " D�assement des Limites"
             << "\t " << message  << endl;
      }
@@ -309,10 +318,10 @@ protected:
 
 
   ///
-    //  inrimage*   _inrimage; 
+    //  inrimage*   _inrimage;
 
   /// pointer to the data
-  amimage*           _amimage; 
+  amimage*           _amimage;
   unsigned char    _amimage_allocated;
 
   ///
@@ -323,7 +332,7 @@ protected:
 
 
   ///
-  long _taille; 
+  long _taille;
   ///
   long _pos_buf;
 
@@ -375,7 +384,7 @@ protected:
     FORMAT_FLOAT_VECTOR*     _buffer_FLOAT_VECTOR;
 //@}
 
-/** @name Positions pour les diff�ents formats g�� 
+/** @name Positions pour les diff�ents formats g��
   tableau de pointeurs permettant d'acc�er directement
    au debut de la ligne:
    _positions[z][y] pointe sur l'adresse de l'element (x=0,y,z)
@@ -497,17 +506,17 @@ public:
     float       _size_y;
 
     ///
-    float       _size_z; 
+    float       _size_z;
   //@}
 
   ///
-  int     _txy;               
+  int     _txy;
 
   /// format
   WORDTYPE     _format;
 
 
-  // Transformation matrix 
+  // Transformation matrix
   float  _transf_matrix[4][4];
 
 //@}
@@ -524,18 +533,18 @@ public:
     Constructeur InrImage( char* nom, int type);
 
     Constructeur InrImage( t_Image* image);
- 
+
     Constructeur InrImage( inrimage* image, const char* nom="sansnom.inr");
- 
-    Constructeur InrImage( int dimx, int dimy, 
+
+    Constructeur InrImage( int dimx, int dimy,
                            int dimz, WORDTYPE format, const char* nom=(const char*)NULL);
 
     Constructeur InrImage(
-               int   dimx, 
-               int   dimy, 
-               int   dimz, 
+               int   dimx,
+               int   dimy,
+               int   dimz,
                int   vdim,
-               WORDTYPE format, 
+               WORDTYPE format,
                const char*    nom=(const char*)NULL
                );
 
@@ -551,12 +560,12 @@ public:
     Constructeur InrImage(  WORDTYPE format,
                             const char* nom,
                             InrImage* image);
-    Constructeur InrImage(  WORDTYPE format, int vdim, 
+    Constructeur InrImage(  WORDTYPE format, int vdim,
                             const char* nom,
                             InrImage* image);
 
     static InrImage::ptr New( WORDTYPE format, int vdim,
-                              const char* nom, 
+                              const char* nom,
                               InrImage::ptr image)
     {
       return InrImage::ptr(new InrImage(format,vdim,nom,image.get()));
@@ -593,16 +602,16 @@ public:
     //   ------------------
 
     /// Initialisation tous les voxels a la valeurs val
-    void InitImage( double val); 
+    void InitImage( double val);
     //   ---------
- 
+
     /// Initialisation tous les voxels a la valeurs val
     /// pour une image RGB ou de vecteurs
-    void InitImage( double val0, double val1, double val2); 
+    void InitImage( double val0, double val1, double val2);
     //   ---------
- 
+
     /// Initialisation tous les voxels a la valeur d'un vecteur
-    void InitImage( double* values, int size); 
+    void InitImage( double* values, int size);
     //   ---------
 
     /// Copie d'images
@@ -616,7 +625,7 @@ public:
 
   /** @name 3-Acc� aux champs de la classe */
   //@{
-    /** 
+    /**
       @return pointeur sur les donnees
     */
     void*     Buffer() { return _amimage->GetData(); }
@@ -646,15 +655,15 @@ public:
     //
 
     //
-    unsigned char   ScalarFormat() const 
-    {  
+    unsigned char   ScalarFormat() const
+    {
       SelonQue (WORDTYPE) _format Vaut
         Valeur WT_RGB:            return false;
         Valeur WT_FLOAT_VECTOR:   return false;
         Valeur WT_DOUBLE:         return (_vdim==1);
         Valeur WT_FLOAT:          return (_vdim==1);
-        Valeur WT_RGBA:  
-        Valeur WT_UNSIGNED_CHAR:  
+        Valeur WT_RGBA:
+        Valeur WT_UNSIGNED_CHAR:
           return (_vdim==1);
         Valeur WT_UNSIGNED_SHORT: return (_vdim==1);
         Valeur WT_SIGNED_SHORT:   return (_vdim==1);
@@ -662,13 +671,13 @@ public:
         Valeur WT_SIGNED_INT:     return (_vdim==1);
         Defaut: printf("InrImage::FormatScalaire()\t format non gere...\n");
       FinSelonQue
-    
+
       return false;
     }
 
     //
-    unsigned char   VectorialFormat() const 
-    {  
+    unsigned char   VectorialFormat() const
+    {
       SelonQue (WORDTYPE) _format Vaut
 
         Valeur WT_RGB:
@@ -703,8 +712,8 @@ public:
     unsigned char CoordOK( int x, int y, int z)
     //      -------
     {
-      return ( (x>=0) Et (x<_tx) Et 
-                 (y>=0) Et (y<_ty) Et 
+      return ( (x>=0) Et (x<_tx) Et
+                 (y>=0) Et (y<_ty) Et
                  (z>=0) Et (z<_tz) );
     } // CoordOK()
 
@@ -728,11 +737,11 @@ public:
       tz = _translation_z;
     }
 
-    void          GetTransfMatrix(float m[4][4]) 
-    { 
-      for(int i=0;i<4;i++) 
-        for(int j=0;j<4;j++) 
-      m[i][j] = _transf_matrix[i][j]; 
+    void          GetTransfMatrix(float m[4][4])
+    {
+      for(int i=0;i<4;i++)
+        for(int j=0;j<4;j++)
+      m[i][j] = _transf_matrix[i][j];
     }
 
 /*
@@ -766,24 +775,24 @@ public:
     }
 
     /// Conversion from voxel position to space position
-    float SpacePosX( float x) const { return x*_size_x+_translation_x; } 
+    float SpacePosX( float x) const { return x*_size_x+_translation_x; }
 
     /// Conversion from voxel position to space position
-    float SpacePosY( float y) const { return y*_size_y+_translation_y; } 
+    float SpacePosY( float y) const { return y*_size_y+_translation_y; }
 
     /// Conversion from voxel position to space position
     float SpacePosZ( float z) const { return z*_size_z+_translation_z; }
 
     /// Conversion from voxel position to space position
-    float SpacePos(const int& coord, const float& val) const 
-    { 
+    float SpacePos(const int& coord, const float& val) const
+    {
       switch(coord) {
         case 0:  return SpacePosX(val);
         case 1:  return SpacePosY(val);
         case 2:  return SpacePosZ(val);
       }
       return 0.0;
-    } 
+    }
 
     /// Conversion from space position to voxel position
     float SpaceToVoxelX( float x) const { return (x-_translation_x)/_size_x; }
@@ -808,7 +817,7 @@ public:
     }
 
 
-    //  
+    //
     void BufferPos( int x, int y, int z=0) throw (DepassementLimites)
     //             ---------
     {
@@ -823,44 +832,44 @@ public:
 
     SelonQue (WORDTYPE) _format Vaut
 
-      Valeur WT_RGB: 
-        _buffer_RGB     = (_positions_RGB[z][y] + 3*x); 
+      Valeur WT_RGB:
+        _buffer_RGB     = (_positions_RGB[z][y] + 3*x);
       FinValeur
 
-      Valeur WT_FLOAT_VECTOR: 
-        _buffer_FLOAT_VECTOR     = (_positions_FLOAT_VECTOR[z][y] + _vdim*x); 
+      Valeur WT_FLOAT_VECTOR:
+        _buffer_FLOAT_VECTOR     = (_positions_FLOAT_VECTOR[z][y] + _vdim*x);
       FinValeur
 
-      Valeur WT_DOUBLE: 
-        _buffer_DOUBLE          = (_positions_DOUBLE[z][y]         + _vdim*x); 
+      Valeur WT_DOUBLE:
+        _buffer_DOUBLE          = (_positions_DOUBLE[z][y]         + _vdim*x);
       FinValeur
 
-      Valeur WT_FLOAT: 
-        _buffer_FLOAT           = (_positions_FLOAT[z][y]          + _vdim*x); 
+      Valeur WT_FLOAT:
+        _buffer_FLOAT           = (_positions_FLOAT[z][y]          + _vdim*x);
       FinValeur
 
-      Valeur WT_RGBA:   
-      Valeur WT_UNSIGNED_CHAR:   
-        _buffer_UNSIGNED_CHAR   = (_positions_UNSIGNED_CHAR[z][y]  + _vdim*x); 
+      Valeur WT_RGBA:
+      Valeur WT_UNSIGNED_CHAR:
+        _buffer_UNSIGNED_CHAR   = (_positions_UNSIGNED_CHAR[z][y]  + _vdim*x);
       FinValeur
 
-      Valeur WT_UNSIGNED_SHORT:   
-        _buffer_UNSIGNED_SHORT  = (_positions_UNSIGNED_SHORT[z][y]   + _vdim*x); 
+      Valeur WT_UNSIGNED_SHORT:
+        _buffer_UNSIGNED_SHORT  = (_positions_UNSIGNED_SHORT[z][y]   + _vdim*x);
       FinValeur
 
-      Valeur WT_SIGNED_SHORT:  
-        _buffer_SIGNED_SHORT    = (_positions_SIGNED_SHORT[z][y] + _vdim*x);  
+      Valeur WT_SIGNED_SHORT:
+        _buffer_SIGNED_SHORT    = (_positions_SIGNED_SHORT[z][y] + _vdim*x);
       FinValeur
 
-      Valeur WT_SIGNED_INT:  
-        _buffer_SIGNED_INT     = (_positions_SIGNED_INT[z][y] + _vdim*x);  
+      Valeur WT_SIGNED_INT:
+        _buffer_SIGNED_INT     = (_positions_SIGNED_INT[z][y] + _vdim*x);
       FinValeur
 
-      Valeur WT_UNSIGNED_INT:  
-        _buffer_UNSIGNED_INT     = (_positions_UNSIGNED_INT[z][y] + _vdim*x);  
+      Valeur WT_UNSIGNED_INT:
+        _buffer_UNSIGNED_INT     = (_positions_UNSIGNED_INT[z][y] + _vdim*x);
       FinValeur
 
-      Defaut:  printf("InrImage::BufferPos() \t format non gere ...\n"); 
+      Defaut:  printf("InrImage::BufferPos() \t format non gere ...\n");
 
     FinSelonQue
 
@@ -872,16 +881,16 @@ public:
     /**
        Pointeur sur la position courante du buffer
     */
-    void*  BufferPtr() 
+    void*  BufferPtr()
     //               ---------
     {
 
       SelonQue (WORDTYPE) _format Vaut
-  
-        Valeur WT_RGB:            return (void*) _buffer_RGB;  
-        Valeur WT_FLOAT_VECTOR:   return (void*) _buffer_FLOAT_VECTOR;  
-        Valeur WT_DOUBLE:         return (void*) _buffer_DOUBLE;    
-        Valeur WT_FLOAT:          return (void*) _buffer_FLOAT;    
+
+        Valeur WT_RGB:            return (void*) _buffer_RGB;
+        Valeur WT_FLOAT_VECTOR:   return (void*) _buffer_FLOAT_VECTOR;
+        Valeur WT_DOUBLE:         return (void*) _buffer_DOUBLE;
+        Valeur WT_FLOAT:          return (void*) _buffer_FLOAT;
 
         Valeur WT_RGBA:
         Valeur WT_UNSIGNED_CHAR:  return (void*) _buffer_UNSIGNED_CHAR;
@@ -904,13 +913,13 @@ public:
        Fonction en ligne
        Incr�entation du buffer
     */
-    inline bool IncBuffer( int inc) 
+    inline bool IncBuffer( int inc)
     //          ---------
     {
       Si ++_pos_buf >= _taille AlorsRetourne false;
 
       SelonQue (WORDTYPE) _format Vaut
-  
+
         Valeur WT_RGB:            _buffer_RGB            += 3*inc;  FinValeur
         Valeur WT_FLOAT_VECTOR:   _buffer_FLOAT_VECTOR   += _vdim*inc;  FinValeur
         Valeur WT_DOUBLE:         _buffer_DOUBLE         += _vdim*inc;    FinValeur
@@ -933,7 +942,7 @@ public:
     } // IncBuffer()
 
 
-    inline bool IncBuffer( ) 
+    inline bool IncBuffer( )
     //         ---------
     {
       Si ++_pos_buf >= _taille AlorsRetourne false;
@@ -991,16 +1000,16 @@ public:
       SelonQue (WORDTYPE) _format Vaut
         Valeur WT_DOUBLE:         return (double) *_buffer_DOUBLE;
         Valeur WT_FLOAT:          return (double) *_buffer_FLOAT;
-        Valeur WT_RGBA:  
-        Valeur WT_UNSIGNED_CHAR:  
+        Valeur WT_RGBA:
+        Valeur WT_UNSIGNED_CHAR:
           return (double) *_buffer_UNSIGNED_CHAR;
         Valeur WT_UNSIGNED_SHORT: return (double) *_buffer_UNSIGNED_SHORT;
         Valeur WT_SIGNED_SHORT:   return (double) *_buffer_SIGNED_SHORT;
         Valeur WT_UNSIGNED_INT:   return (double) *_buffer_UNSIGNED_INT;
         Valeur WT_SIGNED_INT:     return (double) *_buffer_SIGNED_INT;
-        Valeur WT_RGB:   return 
+        Valeur WT_RGB:   return
       (double) (_buffer_RGB[0]+_buffer_RGB[1]+_buffer_RGB[2])/3.0;
-        Valeur WT_FLOAT_VECTOR:   return 
+        Valeur WT_FLOAT_VECTOR:   return
       (double) _buffer_FLOAT_VECTOR[0];
 
         Defaut: printf("InrImage::ValeurBuffer()\t format non gere...\n");
@@ -1027,12 +1036,12 @@ public:
         Valeur WT_SIGNED_SHORT:   return (double) *(_buffer_SIGNED_SHORT   + inc);
         Valeur WT_UNSIGNED_INT:     return (double) *(_buffer_UNSIGNED_INT     + inc);
         Valeur WT_SIGNED_INT:     return (double) *(_buffer_SIGNED_INT     + inc);
-        Valeur WT_FLOAT_VECTOR:   return 
+        Valeur WT_FLOAT_VECTOR:   return
       (double) _buffer_FLOAT_VECTOR[_vdim*inc+0];
         Defaut: printf("InrImage::InterpLinIntensite()\t format non gere...\n");
 
       FinSelonQue
- 
+
       return 0;
 
     } // ValeurBuffer()
@@ -1050,8 +1059,8 @@ public:
         Valeur WT_FLOAT:          return  _buffer_FLOAT[i];
         Valeur WT_DOUBLE:         return  _buffer_DOUBLE[i];
 
-        Valeur WT_RGBA:  
-        Valeur WT_UNSIGNED_CHAR:  
+        Valeur WT_RGBA:
+        Valeur WT_UNSIGNED_CHAR:
           return  _buffer_UNSIGNED_CHAR[i];
 
         Valeur WT_SIGNED_SHORT:   return  _buffer_SIGNED_SHORT[i];
@@ -1067,7 +1076,7 @@ public:
 
 
     /**
-      Renvoie la valeur du buffer pour la coordonnee i 
+      Renvoie la valeur du buffer pour la coordonnee i
     */
     /*
     Vect3D<float> VectValeurBuffer( )
@@ -1076,12 +1085,12 @@ public:
 
       SelonQue (WORDTYPE) _format Vaut
 
-        Valeur WT_RGB:   return 
+        Valeur WT_RGB:   return
                           Vect3D<float>( (float) _buffer_RGB[0],
                     (float) _buffer_RGB[1],
                     (float) _buffer_RGB[2]);
-        Valeur WT_FLOAT_VECTOR:   
-                         return 
+        Valeur WT_FLOAT_VECTOR:
+                         return
                           Vect3D<float>( (float) _buffer_FLOAT_VECTOR[0],
                     (float) _buffer_FLOAT_VECTOR[1],
                     (float) _buffer_FLOAT_VECTOR[2]);
@@ -1103,11 +1112,11 @@ public:
 
       SelonQue (WORDTYPE) _format Vaut
 
-        Valeur WT_DOUBLE:       
+        Valeur WT_DOUBLE:
           *_buffer_DOUBLE         = (FORMAT_DOUBLE)         val;
         FinValeur
 
-        Valeur WT_FLOAT:         
+        Valeur WT_FLOAT:
           *_buffer_FLOAT          = (FORMAT_FLOAT)          val;
         FinValeur
 
@@ -1121,25 +1130,25 @@ public:
         FinValeur
 
         Valeur WT_SIGNED_SHORT:
-          *_buffer_SIGNED_SHORT   = (FORMAT_SIGNED_SHORT)   (round(val)); 
+          *_buffer_SIGNED_SHORT   = (FORMAT_SIGNED_SHORT)   (round(val));
         FinValeur
 
         Valeur WT_UNSIGNED_INT:
-          *_buffer_UNSIGNED_INT     = (FORMAT_UNSIGNED_INT)     (val+0.05); 
+          *_buffer_UNSIGNED_INT     = (FORMAT_UNSIGNED_INT)     (val+0.05);
         FinValeur
 
         Valeur WT_SIGNED_INT:
-          *_buffer_SIGNED_INT     = (FORMAT_SIGNED_INT)     (round(val)); 
+          *_buffer_SIGNED_INT     = (FORMAT_SIGNED_INT)     (round(val));
         FinValeur
 
-        Valeur WT_RGB:         
+        Valeur WT_RGB:
           _buffer_RGB[0]   = (FORMAT_UNSIGNED_CHAR)    (val+0.05);
           _buffer_RGB[1]   = (FORMAT_UNSIGNED_CHAR)    (val+0.05);
           _buffer_RGB[2]   = (FORMAT_UNSIGNED_CHAR)    (val+0.05);
         FinValeur
 
-        Valeur WT_FLOAT_VECTOR:         
-      for(int i=0;i<_vdim;i++) 
+        Valeur WT_FLOAT_VECTOR:
+      for(int i=0;i<_vdim;i++)
             _buffer_FLOAT_VECTOR[i]   = (FORMAT_FLOAT)    val;
         FinValeur
 
@@ -1158,19 +1167,19 @@ public:
 
       SelonQue (WORDTYPE) _format Vaut
 
-        Valeur WT_RGB:         
+        Valeur WT_RGB:
           _buffer_RGB[0]   = (FORMAT_UNSIGNED_CHAR)    (valx+0.05);
           _buffer_RGB[1]   = (FORMAT_UNSIGNED_CHAR)    (valy+0.05);
           _buffer_RGB[2]   = (FORMAT_UNSIGNED_CHAR)    (valz+0.05);
         FinValeur
 
-        Valeur WT_FLOAT_VECTOR:         
+        Valeur WT_FLOAT_VECTOR:
           _buffer_FLOAT_VECTOR[0]   = (FORMAT_FLOAT)    valx;
           _buffer_FLOAT_VECTOR[1]   = (FORMAT_FLOAT)    valy;
           _buffer_FLOAT_VECTOR[2]   = (FORMAT_FLOAT)    valz;
         FinValeur
 
-        Valeur WT_FLOAT:         
+        Valeur WT_FLOAT:
           if (_vdim==3) {
             _buffer_FLOAT[0]   = (FORMAT_FLOAT)    valx;
             _buffer_FLOAT[1]   = (FORMAT_FLOAT)    valy;
@@ -1178,7 +1187,7 @@ public:
           } else printf("VectFixeValeurs() _vdim!=3 \n");
         FinValeur
 
-        Valeur WT_DOUBLE:         
+        Valeur WT_DOUBLE:
           if (_vdim==3) {
             _buffer_DOUBLE[0]   = (FORMAT_DOUBLE)    valx;
             _buffer_DOUBLE[1]   = (FORMAT_DOUBLE)    valy;
@@ -1188,9 +1197,9 @@ public:
 
 
         Defaut: printf("InrImage::VectFixeValeur()\t format non gere...\n");
-  
+
       FinSelonQue
-  
+
     } // VectFixeValeurs()
 
     //
@@ -1201,16 +1210,16 @@ public:
 
       SelonQue (WORDTYPE) _format Vaut
 
-       Valeur WT_DOUBLE:        
+       Valeur WT_DOUBLE:
           _buffer_DOUBLE[coord]   = (FORMAT_DOUBLE)    val;
        FinValeur
 
-       Valeur WT_FLOAT:         
+       Valeur WT_FLOAT:
           _buffer_FLOAT[coord]   = (FORMAT_FLOAT)    val;
        FinValeur
 
-       Valeur WT_RGBA: 
-       Valeur WT_UNSIGNED_CHAR: 
+       Valeur WT_RGBA:
+       Valeur WT_UNSIGNED_CHAR:
           _buffer_UNSIGNED_CHAR[coord]   = (FORMAT_UNSIGNED_CHAR)    (val+0.05);
        FinValeur
 
@@ -1218,30 +1227,30 @@ public:
           _buffer_UNSIGNED_SHORT[coord]   = (FORMAT_UNSIGNED_SHORT)    (val+0.05);
        FinValeur
 
-       Valeur WT_SIGNED_SHORT:  
+       Valeur WT_SIGNED_SHORT:
           _buffer_SIGNED_SHORT[coord]   = (FORMAT_SIGNED_SHORT)    round(val);
        FinValeur
 
-       Valeur WT_SIGNED_INT:    
+       Valeur WT_SIGNED_INT:
           _buffer_SIGNED_INT[coord]   = (FORMAT_SIGNED_INT)    (round(val));
        FinValeur
 
-       Valeur WT_UNSIGNED_INT:   
+       Valeur WT_UNSIGNED_INT:
           _buffer_UNSIGNED_INT[coord]   = (FORMAT_UNSIGNED_INT)    (val+0.05);
        FinValeur
- 
-       Valeur WT_RGB:         
+
+       Valeur WT_RGB:
           _buffer_RGB[coord]   = (FORMAT_UNSIGNED_CHAR)    (val+0.05);
         FinValeur
 
-        Valeur WT_FLOAT_VECTOR:         
+        Valeur WT_FLOAT_VECTOR:
           _buffer_FLOAT_VECTOR[coord]   = (FORMAT_FLOAT)    val;
         FinValeur
 
         Defaut: printf("InrImage::VectFixeValeur()\t format non gere...\n");
-  
+
       FinSelonQue
-  
+
     } // VectFixeValeur()
 
 
@@ -1282,26 +1291,26 @@ public:
      */
     operator t_Image*();
     //       -------
- 
-    /* 
+
+    /*
       */
     operator t_Image();
     //       -------
 
-    // 
+    //
     operator amimage*();
     //       -------
- 
-    // 
+
+    //
     operator inrimage*();
     //       --------
- 
-    // 
+
+    //
     operator inrimage();
     //       --------
 
 #ifndef _WITHOUT_VTK_
-    // 
+    //
     operator vtkImageData*();
     //       ------------
 
@@ -1324,15 +1333,15 @@ public:
 #endif
 
       SelonQue (WORDTYPE) _format Vaut
- 
+
         Valeur WT_DOUBLE:
           return (double)(_positions_DOUBLE[z][y][x]);
 
         Valeur WT_FLOAT:
           return (double)(_positions_FLOAT [z][y][x]);
 
-        Valeur WT_RGB: 
-        Valeur WT_UNSIGNED_CHAR: 
+        Valeur WT_RGB:
+        Valeur WT_UNSIGNED_CHAR:
            return (double)(_positions_UNSIGNED_CHAR   [z][y][x]);
 
         Valeur WT_UNSIGNED_SHORT:
@@ -1371,14 +1380,14 @@ public:
 #endif
 
       SelonQue (WORDTYPE) _format Vaut
- 
+
         Valeur WT_DOUBLE:
           return (double)(_positions_DOUBLE[0][y][x]);
 
         Valeur WT_FLOAT:
           return (double)(_positions_FLOAT [0][y][x]);
 
-        Valeur WT_UNSIGNED_CHAR: 
+        Valeur WT_UNSIGNED_CHAR:
            return (double)(_positions_UNSIGNED_CHAR   [0][y][x]);
 
         Valeur WT_UNSIGNED_SHORT:
@@ -1457,7 +1466,7 @@ public:
   //@{
 
   //
-  InrImage* CreeSousImage( int min_x, int max_x, 
+  InrImage* CreeSousImage( int min_x, int max_x,
                            int min_y, int max_y,
                            int min_z, int max_z);
 
@@ -1484,7 +1493,7 @@ public:
   //   -------------------
   {
 
-    
+
       register double coeff00,coeff01,coeff10,coeff11;
       register int     tx12;
       register double res = 0;
@@ -1544,7 +1553,7 @@ public:
   {
 
     Si (x < 0) Ou ( x >= _tx-1) Ou
-       (y < 0) Ou ( y >= _ty-1) 
+       (y < 0) Ou ( y >= _ty-1)
     Alors
       int x1=(int)(x+0.5),y1=(int)(y+0.5);
       if (x<0)      x1 = 0;
@@ -1555,7 +1564,7 @@ public:
         return (*this)(x1,y1);
       else
         return (*this)(x1,y1,0,_coord_vecteur);
-    FinSi 
+    FinSi
 
     BufferPos( (int) x, (int) y, 0);
     return InterpLinIntensite2( (x-(int)x),
@@ -1573,7 +1582,7 @@ public:
   double InterpLinIntensite( float x, float y, float z)
   //         ------------------
   {
-    
+
       register int     xi,yi,zi;
       register double dx,dy,dz;
       register double res = 0;
@@ -1587,14 +1596,14 @@ public:
     Si (z < 0)      AlorsFait z= (float) 0.0;
     Si ( x > _tx-1) AlorsFait x= (float) _tx-1;
     Si ( y > _ty-1) AlorsFait y= (float) _ty-1;
-    Si ( z > _tz-1) AlorsFait z= (float) _tz-1; 
+    Si ( z > _tz-1) AlorsFait z= (float) _tz-1;
 
-    xi = (int) x;           
-    yi = (int) y;           
+    xi = (int) x;
+    yi = (int) y;
     zi = (int) z;
 
-    dx = x - (double)xi;   
-    dy = y - (double)yi;   
+    dx = x - (double)xi;
+    dy = y - (double)yi;
     dz = z - (double)zi;
 
     Si xi == _tx-1 Alors      xi = _tx-2;      dx = 1.0;    FinSi
@@ -1638,10 +1647,10 @@ public:
     coeff000 -= coeff010;
     coeff100 -= coeff110;
 
-    coeff001 = coeff000*dz; 
-    coeff101 = coeff100*dz; 
-    coeff011 = coeff010*dz; 
-    coeff111 = coeff110*dz; 
+    coeff001 = coeff000*dz;
+    coeff101 = coeff100*dz;
+    coeff011 = coeff010*dz;
+    coeff111 = coeff110*dz;
 
     coeff000 -= coeff001;
     coeff100 -= coeff101;
@@ -1666,10 +1675,10 @@ public:
               coeff101* *(Buf +_vdim*(_txy+1)); \
       res +=  coeff011* *(Buf +_vdim*(_txy+_tx)) + \
               coeff111* *(Buf +_vdim*(_txy+_tx+1)); \
-    FinValeur 
+    FinValeur
 
 
-    //--- Calcul de l'intensit�    
+    //--- Calcul de l'intensit�
     SelonQue (WORDTYPE) _format Vaut
 
       MACRO_case_buffer(WT_DOUBLE,        _positions_DOUBLE,        _buffer_DOUBLE)
@@ -1726,14 +1735,14 @@ public:
         vois[1][1] = (float)_positions_FLOAT[z+1][y+1][x];
       FinValeur
 
-      Valeur WT_UNSIGNED_CHAR: 
+      Valeur WT_UNSIGNED_CHAR:
         vois[0][0] = (float)_positions_UNSIGNED_CHAR[z]  [y]  [x];
         vois[0][1] = (float)_positions_UNSIGNED_CHAR[z+1][y]  [x];
         vois[1][0] = (float)_positions_UNSIGNED_CHAR[z]  [y+1][x];
         vois[1][1] = (float)_positions_UNSIGNED_CHAR[z+1][y+1][x];
       FinValeur
 
-      Valeur WT_SIGNED_SHORT: 
+      Valeur WT_SIGNED_SHORT:
         vois[0][0] = (float)_positions_SIGNED_SHORT[z]  [y]  [x];
         vois[0][1] = (float)_positions_SIGNED_SHORT[z+1][y]  [x];
         vois[1][0] = (float)_positions_SIGNED_SHORT[z]  [y+1][x];
@@ -1762,9 +1771,9 @@ public:
 
   float** create_float_positions_2D(int order=0);
   void    free_float_positions_2D(float** pos, int order=0);
-  
+
   template <class T>  T*** create_positions_3D();
-  
+
   template <class T>  void free_positions_3D(T*** pos);
 
   //@}
@@ -1829,7 +1838,7 @@ T*** InrImage::create_positions_3D() {
                   sizeof(T));
       this->IncBuffer();
         }
-    
+
     return pos;
 }
 
@@ -1838,7 +1847,7 @@ template <class T>
 void    InrImage::free_positions_3D(T*** pos)
 {
   int     i,j,k;
-  
+
   this->InitBuffer();
   for(k=0;k<DimZ();k++)
     for(j=0;j<DimY();j++)
@@ -1846,7 +1855,7 @@ void    InrImage::free_positions_3D(T*** pos)
         memcpy(this->BufferPtr(),(void*)&pos[i][j][k],sizeof(T));
         this->IncBuffer();
       }
-  
+
   ami_free3d(pos);
 }
 
@@ -1915,7 +1924,7 @@ inline void InrImage :: MinMax( float* min, float* max)
 
   SelonQue (WORDTYPE) _format Vaut
 
-    Valeur WT_DOUBLE: 
+    Valeur WT_DOUBLE:
       register FORMAT_DOUBLE*         buf_DOUBLE;
 
       buf_DOUBLE = (FORMAT_DOUBLE*) this->GetData();

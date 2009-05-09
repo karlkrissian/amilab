@@ -22,13 +22,13 @@
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-    ================================================== 
+    ==================================================
    The full GNU Lesser General Public License file is in Devel/Sources/Prog/LesserGPL_license.txt
 */
 // Description de la classe Vaisseau
 // fichier ImageVaisseaux.hpp
 //
-// Karl KRISSIAN 
+// Karl KRISSIAN
 //
 // Sophia Antipolis le 21-05-97
 //
@@ -38,11 +38,13 @@
 
 #include "style.hpp"
 
-DebutDeclareC
-//#include <epidaure.h>
-//#include <epidaure.ee>
+#include "AMILabConfig.h"
+
+#ifdef HAVE_MALLOC_H
 #include <malloc.h>
-FinDeclareC
+#else
+#include <stdlib.h>
+#endif
 
 #include "Vaisseau.hpp"
 #include "inrimage.hpp"

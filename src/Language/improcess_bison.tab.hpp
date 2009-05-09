@@ -48,11 +48,12 @@ namespace yyip
 }
 
 /* First part of user declarations.  */
-#line 11 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11 "/Users/karlkrissian/Install/AMILab/trunk/src/Language/improcess_bison.ypp"
  /*** C/C++ Declarations ***/
   //#include <stdlib.h>
   //#include <stdio.h>
 
+#include "driver.h"
 #include "CoutwxString.h"
 #include "MainFrame.h"
 #include "ParamPanel.hpp"
@@ -81,7 +82,6 @@ namespace yyip
 //#include "PruneLines.h"
 
 
-#include "driver.h"
 
 #ifndef __FLEX_LEXER_H
 #define yyFlexLexer yyipFlexLexer
@@ -198,12 +198,12 @@ class wxScheduleTimer : public wxTimer
 {
   DEFINE_CLASS(wxScheduleTimer)
   public:
-    wxScheduleTimer( AMIFunction::ptr& callback) 
-    { 
-      f = callback; 
+    wxScheduleTimer( AMIFunction::ptr& callback)
+    {
+      f = callback;
     }
 
-    ~wxScheduleTimer() 
+    ~wxScheduleTimer()
     { cout << "~wxScheduleTimer()" << endl; }
 
     //Called each time the timer's timeout expires
@@ -241,7 +241,7 @@ void CB_delete_surfdraw( void* varid);
 
 
 #define UNARYOP_EXPR(operator,val,res)           \
-  res=operator(val);                             
+  res=operator(val);
 
 
 #define UNARYOP_IMAGE(operator)           \
@@ -375,8 +375,8 @@ void CB_delete_surfdraw( void* varid);
 
 
 
-/* Line 35 of lalr1.cc.  */
-#line 380 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.hpp"
+/* Line 303 of lalr1.cc.  */
+#line 380 "/Users/karlkrissian/Install/AMILab/trunk/src/Language/improcess_bison.tab.hpp"
 
 #include "location.hh"
 
@@ -427,7 +427,7 @@ namespace yyip
     /// Symbol semantic values.
 #ifndef YYSTYPE
     union semantic_type
-#line 372 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 372 "/Users/karlkrissian/Install/AMILab/trunk/src/Language/improcess_bison.ypp"
 {
   IdentifierInfo*       ident;
   Variable*             variable;
@@ -441,8 +441,8 @@ namespace yyip
   ParamListDecl*        paramlistdecl;
   ImageExtent*          imageextent;
 }
-/* Line 35 of lalr1.cc.  */
-#line 446 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.hpp"
+/* Line 303 of lalr1.cc.  */
+#line 446 "/Users/karlkrissian/Install/AMILab/trunk/src/Language/improcess_bison.tab.hpp"
 	;
 #else
     typedef YYSTYPE semantic_type;

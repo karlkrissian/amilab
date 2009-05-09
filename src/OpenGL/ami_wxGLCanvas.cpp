@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:   
+// Name:
 // Purpose:     wxGLCanvas demo program
 // RCS-ID:      $Id: isosurf.cpp,v 1.18 2005/02/26 20:03:26 JS Exp $
 // Copyright:   (c) Karl Krissian
@@ -7,15 +7,15 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
+#include <ostream>
+#include <boost/iostreams/device/file.hpp>
+#include <boost/iostreams/stream.hpp>
 #include "ami_wxGLCanvas.hpp"
 //#include "DessinImageParam.hpp"
 #include "Voxels.h"
 #include "VolumeRender.hpp"
 #include "Viewer3D.hpp"
 
-#include <ostream>
-#include <boost/iostreams/device/file.hpp>
-#include <boost/iostreams/stream.hpp>
 //namespace io = boost::iostreams;
 
 boost::iostreams::stream_buffer<boost::iostreams::file_sink> buf("ami_wxGLCanvas_trace.txt");
@@ -91,9 +91,9 @@ END_EVENT_TABLE()
     int *gl_attrib = NULL;
 #else
     int gl_attrib[20] = { WX_GL_RGBA,
-    WX_GL_MIN_RED, 1, 
+    WX_GL_MIN_RED, 1,
     WX_GL_MIN_GREEN, 1,
-    WX_GL_MIN_BLUE, 1, 
+    WX_GL_MIN_BLUE, 1,
     WX_GL_DEPTH_SIZE, 1,
     WX_GL_DOUBLEBUFFER,
 #  if defined(__WXMAC__) || defined(__WXCOCOA__)
@@ -120,7 +120,7 @@ ami_wxGLCanvas::ami_wxGLCanvas(
                 style
                 |wxFULL_REPAINT_ON_RESIZE
                 |wxBORDER_RAISED,
-                name 
+                name
                 ,gl_attrib
                 )
 /*
@@ -462,12 +462,12 @@ void ami_wxGLCanvas::OnSize(wxSizeEvent& event)
             << endl;
     if (SetCurrentContext()) {
 	glViewport(0, 0, _largeur, _hauteur);
-	
+
 	_GLProjParam.SetWindowSize(_largeur,_hauteur);
 	_GLProjParam.SetProjection();
-	
+
 	glMatrixMode(_GLTransform.GLenum_mode());
-	
+
 	if (GB_debug) out << "*** ami_wxGLCanvas::OnSize()  2 ***" << endl;
 	ReDimensionne();
     }
@@ -622,7 +622,7 @@ if (GB_debug) fprintf(stderr,"ami_wxGLCanvas::AddSurface()\n");
 
   if (GB_debug) fprintf(stderr,"ami_wxGLCanvas::AddSurface() 2\n");
   if (GB_debug) cerr << " _globjects.size " << _globject.size() << endl;
-  
+
   _globject.push_back(surf);
   _current_globject = surf;
   if (GB_debug) fprintf(stderr,"ami_wxGLCanvas::AddSurface() 3\n");
@@ -1348,7 +1348,7 @@ void ami_wxGLCanvas::DisplayObjects()
   // Better solution: order the objects by opacity ...
   // most opaque first
   GLObject::ptr_list sorted_list(_globject);
-  if (GB_debug) 
+  if (GB_debug)
     fprintf(stderr,
       "ami_wxGLCanvas::DisplayObjects() sorting elts \n");
   sorted_list.sort(compare_opacity);
@@ -1905,6 +1905,7 @@ void ami_wxGLCanvas :: Boutton_Presse()
 //                         ---------------
 {
 
+  SetCurrentContext();
   if (GB_debug) fprintf(stderr,"Boutton_Presse() begin \n");
 
   PickObjects();
@@ -1949,6 +1950,7 @@ void ami_wxGLCanvas :: Boutton_Relache()
     float var_y;
     GLdouble matrix[4][4];
 
+  SetCurrentContext();
   // First Reset initial values to compute displacements
   SelonQue _mouse_action Vaut
     Valeur MOUSE_MOVE_OBJECT:
@@ -2043,6 +2045,7 @@ void ami_wxGLCanvas :: DeplaceSourisBout1()
 //                         ------------------
 {
 
+  SetCurrentContext();
   Boutton_Relache();
 
 /*
@@ -2555,6 +2558,8 @@ void ami_wxGLCanvas :: PickObjects()
 //                     -----------
 {
 
+#ifndef __APPLE__
+
   int hits;
   int i, j;
   GLuint names, *ptr, minZ,*ptrNames=NULL, numberOfNames = 0;
@@ -2563,6 +2568,7 @@ void ami_wxGLCanvas :: PickObjects()
     fprintf(stderr,"No picking with gradient background for the moment !\n");
     return;
   }
+
 
   Si GB_debug AlorsFait printf("PickObjects() 1 \n");
   this->SetCurrentContext();
@@ -2676,6 +2682,9 @@ void ami_wxGLCanvas :: PickObjects()
     }
   FinSi
 
+#else // ifndef __APPLE__
+  cerr << "Picking not working on mac for the moment " << endl;
+#endif // ifndef __APPLE__
 
 } // PickObjects()
 

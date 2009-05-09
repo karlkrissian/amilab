@@ -105,7 +105,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 
 //    EVT_BUTTON(wxID_ConsoleReset, MainFrame::ConsoleReset)
     EVT_TOOL(         wxID_ConsoleClear, MainFrame::ConsoleClear)
-#if (wxCHECK_VERSION(2,9,0)) 
+#if (wxCHECK_VERSION(2,9,0))
     EVT_TOOL_RCLICKED(wxID_ConsoleClear, MainFrame::ConsoleReset)
 #else
     EVT_AUITOOLBAR_RIGHT_CLICK(wxID_ConsoleClear, MainFrame::ConsoleReset)
@@ -241,7 +241,7 @@ wxToolBar* MainFrame::CreateToolbar( wxWindow* parent)
         wxBitmap( helpicon_xpm), GetwxStr("Help language scripts"));
   toolBar->AddTool(wxID_HelpBack, GetwxStr("Help back"),
         wxBitmap( helpback_xpm), GetwxStr("Help back"));
-  toolBar->AddTool(wxID_HelpForward, GetwxStr("Help forward"),  
+  toolBar->AddTool(wxID_HelpForward, GetwxStr("Help forward"),
         wxBitmap(helpforward_xpm), GetwxStr("Help forward"));
   toolBar->Realize();
 
@@ -303,13 +303,13 @@ MainFrame::MainFrame( const wxString& title,
                   .Hide());
 
     // create some toolbars
-  #if (wxCHECK_VERSION(2,9,0)) 
-    wxToolBar* tb1 = new wxToolBar(this, wxID_ANY, 
+  #if (wxCHECK_VERSION(2,9,0))
+    wxToolBar* tb1 = new wxToolBar(this, wxID_ANY,
                         wxDefaultPosition, wxDefaultSize);
   #else
     wxAuiToolBar* tb1 = new wxAuiToolBar(this, wxID_ANY,
                         wxDefaultPosition, wxDefaultSize,
-                        wxAUI_TB_DEFAULT_STYLE | 
+                        wxAUI_TB_DEFAULT_STYLE |
                         wxAUI_TB_OVERFLOW);
   #endif
     tb1->SetToolBitmapSize(wxSize(48,48));
@@ -318,7 +318,7 @@ MainFrame::MainFrame( const wxString& title,
     tb1->AddTool(wxID_UpdateVars, wxT("Update variables"), wxBitmap(reload),
         wxT("Update variables"));
     tb1->AddSeparator();
-    tb1->AddTool(wxID_ConsoleClear, wxT("Clear console"), wxBitmap(gtk_clear), 
+    tb1->AddTool(wxID_ConsoleClear, wxT("Clear console"), wxBitmap(gtk_clear),
         wxT("Console: left button -> clear last command, right button-> clear all"));
 
 //   wxBitmapButton* but_clear = new wxBitmapButton(_prompt_panel,
@@ -874,13 +874,13 @@ void MainFrame::UpdateVarList()
 
     if (varfound) {
       // check for filter
-      if ((_var_list_filter->GetValue().Cmp(_T("images"))==0) && 
+      if ((_var_list_filter->GetValue().Cmp(_T("images"))==0) &&
           (var->Type() != type_image)) continue;
 
-      if ((_var_list_filter->GetValue().Cmp(_T("surfaces"))==0) && 
+      if ((_var_list_filter->GetValue().Cmp(_T("surfaces"))==0) &&
           (var->Type() != type_surface)) continue;
 
-      if ((_var_list_filter->GetValue().Cmp(_T("AMI functions"))==0) && 
+      if ((_var_list_filter->GetValue().Cmp(_T("AMI functions"))==0) &&
           (var->Type() != type_ami_function)) continue;
 
       // add an item to the list
@@ -1007,7 +1007,7 @@ void MainFrame::OnFileOpenPolydata ( wxCommandEvent& event )
 //-----------------------------------------------------
 void MainFrame::OnFileLoadScript   ( wxCommandEvent& event )
 {
-  //cout << "Load script" << endl; 
+  //cout << "Load script" << endl;
   int res;
   string name;
   string cmd; // increment the command line string
@@ -1079,7 +1079,7 @@ void MainFrame::OnHelpForward(wxCommandEvent& event)
 } // OnHelpForward()
 
 //--------------------------------------------------
-#if (wxCHECK_VERSION(2,9,0)) 
+#if (wxCHECK_VERSION(2,9,0))
   void MainFrame::ConsoleReset( wxCommandEvent& event)
 #else
   void MainFrame::ConsoleReset( wxAuiToolBarEvent& event)

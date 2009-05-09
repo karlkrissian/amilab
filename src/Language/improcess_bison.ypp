@@ -12,6 +12,7 @@
   //#include <stdlib.h>
   //#include <stdio.h>
 
+#include "driver.h"
 #include "CoutwxString.h"
 #include "MainFrame.h"
 #include "ParamPanel.hpp"
@@ -40,7 +41,6 @@
 //#include "PruneLines.h"
 
 
-#include "driver.h"
 
 #ifndef __FLEX_LEXER_H
 #define yyFlexLexer yyipFlexLexer
@@ -157,12 +157,12 @@ class wxScheduleTimer : public wxTimer
 {
   DEFINE_CLASS(wxScheduleTimer)
   public:
-    wxScheduleTimer( AMIFunction::ptr& callback) 
-    { 
-      f = callback; 
+    wxScheduleTimer( AMIFunction::ptr& callback)
+    {
+      f = callback;
     }
 
-    ~wxScheduleTimer() 
+    ~wxScheduleTimer()
     { cout << "~wxScheduleTimer()" << endl; }
 
     //Called each time the timer's timeout expires
@@ -200,7 +200,7 @@ void CB_delete_surfdraw( void* varid);
 
 
 #define UNARYOP_EXPR(operator,val,res)           \
-  res=operator(val);                             
+  res=operator(val);
 
 
 #define UNARYOP_IMAGE(operator)           \
@@ -981,7 +981,7 @@ loop_inst :
       //          printf(" block = %s \n",$7);
           int res;
       //driver.yyiplineno = $2->GetStartingLine();
-      
+
       do {
 
           //driver.yyiplineno=previous_lineno;
@@ -1046,7 +1046,7 @@ proc_decl:
       amifunc->SetFileName(driver.current_file);
       amifunc->SetParamList($5);
       amifunc->SetBody(     body);
-      if (GB_debug) 
+      if (GB_debug)
         cout  << ident->GetName()
               << " body = "
               << body->GetBody()  << endl;
@@ -1110,13 +1110,13 @@ func_inst :
           string name;
           string inc_cmd; // increment the command line string
 
-          //cout << "current wd = "  <<  wxGetCwd() << endl; 
+          //cout << "current wd = "  <<  wxGetCwd() << endl;
           res=AskScript(name);
           if (!res) {
             driver.yyiperror(" Need script \n");
             YYABORT;
           }
-          //cout << "current wd = "  <<  wxGetCwd() << endl; 
+          //cout << "current wd = "  <<  wxGetCwd() << endl;
 
         driver.res_print(name.c_str());
         driver.res_print("\n");
@@ -1259,7 +1259,7 @@ command:
         // by making a copy of it
         int ms = (int) $3;
         Variable*    var   = $5;
-  
+
         wxScheduleTimer::ptr w = wxScheduleTimer::ptr(new wxScheduleTimer(  *(AMIFunction::ptr*) (var->Pointer()) ));
         // add to the list of schedule timers
         schedule_timers.push_back(w);
@@ -1660,7 +1660,7 @@ command:
               surfdraw = new Viewer3D(  GB_main_wxFrame,
                                         wxString::FromAscii(titre.c_str()));
 
-              Variable* newvar =  Vars.AddVar(type_surfdraw,titre.c_str(), 
+              Variable* newvar =  Vars.AddVar(type_surfdraw,titre.c_str(),
                           (void*) surfdraw,
                           var_context);
               surfdraw->SetCloseFunction(
@@ -1692,7 +1692,7 @@ command:
               frame->GetCanvas()->LoadDXF(wxT("penguin.dxf"));
           #endif
 
-          // Show the frame 
+          // Show the frame
           frame->Show(true);
         }
         |  var_image ASSIGN_OP expr_image
@@ -4613,7 +4613,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
         {
           ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
 
-          GB_main_wxFrame->AddParamPage((wxWindow*)pw.get(), 
+          GB_main_wxFrame->AddParamPage((wxWindow*)pw.get(),
                                         pw->GetName(),
                                         true // select as current page
                                         );
@@ -7851,7 +7851,7 @@ image:
         (3) k: diffusion parameter that controls the diffusion depending on the local gradients.
         (4) beta: data attachment coefficient.
         (5) number of iterations
-      Description: 
+      Description:
         Runs an anisotropic diffusion filter using Gauss-Seidel numerical scheme, based on the Flux-diffusion algorithm [Krissian,IEEE TMI 2002].
       **/
       int        nb_iter,i;
@@ -9397,7 +9397,7 @@ primary_image:  image | T_OP_PAR expr_image T_CL_PAR;
 postfix_image:  primary_image;
 
 unary_image  :    postfix_image
-                | unary_operator cast_image 
+                | unary_operator cast_image
                 | T_SUB  cast_image { UNARYOP_IMAGE(-)               }
                 | T_ADD  cast_image
         | SIN   cast_image { UNARYOP_IMAGE(sin)             }
@@ -10712,7 +10712,7 @@ void wxScheduleTimer::Notify()
   CB_ParamWin(&f);
 
   std::list<wxScheduleTimer::ptr>::iterator Iter;
-  for (Iter  = schedule_timers.begin(); 
+  for (Iter  = schedule_timers.begin();
        Iter != schedule_timers.end()  ; Iter++ )
   {
     if ((*Iter).use_count()) {

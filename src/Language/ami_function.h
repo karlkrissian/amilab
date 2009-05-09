@@ -22,7 +22,7 @@
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-    ================================================== 
+    ==================================================
    The full GNU Lesser General Public License file is in Devel/Sources/Prog/LesserGPL_license.txt
 */
 
@@ -31,11 +31,11 @@
 
 #define MAX_PARAM 20
 
+#include <boost/shared_ptr.hpp>
 #include "chaine.hpp"
 #include "inrimage.hpp"
 #include "paramlist.h"
 #include <string>
-#include <boost/shared_ptr.hpp>
 #include "DefineClass.hpp"
 #include "AmiInstructionBlock.h"
 
@@ -61,7 +61,7 @@ private:
       _filename = "";
     }
 
-  virtual ~AMIFunction() 
+  virtual ~AMIFunction()
     {
       if (_param!=NULL) {
         delete _param;
@@ -81,20 +81,20 @@ private:
 
   const string& GetFileName() const { return _filename; }
 
-  void SetBody( const AmiInstructionBlock::ptr& b) 
-    { 
+  void SetBody( const AmiInstructionBlock::ptr& b)
+    {
       //if (GB_debug)  printf("SetBody : [%s] \n",st);
       _body=b;
     }
 
-  AmiInstructionBlock::ptr GetBody() const 
-  { 
-    return _body; 
+  AmiInstructionBlock::ptr GetBody() const
+  {
+    return _body;
   }
 
-  const char* GetString() const 
-  { 
-    return  _body->GetBody().c_str(); 
+  const char* GetString() const
+  {
+    return  _body->GetBody().c_str();
   }
 
 }; // AMIFunction

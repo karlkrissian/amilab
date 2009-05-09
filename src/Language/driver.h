@@ -5,12 +5,13 @@
     Timo Bingmann
   and http://ioctl.org/jan/bison/
 */
-// $Id: driver.h 17 2007-08-19 18:51:39Z tb $ 	
+// $Id: driver.h 17 2007-08-19 18:51:39Z tb $
 /** \file driver.h Declaration of the yyip::Driver class. */
 
 #ifndef EXAMPLE_DRIVER_H
 #define EXAMPLE_DRIVER_H
 
+#include <fstream>
 #include <string>
 #include <vector>
 
@@ -136,7 +137,7 @@ public:
     void yyip_call_function( const AMIFunction::ptr& f, const ParamList::ptr& param = ParamList::ptr() );
 
     /** switching to a script file
-    * @param filename 
+    * @param filename
     */
     bool parse_script(  const char* filename);
 

@@ -22,7 +22,7 @@
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-    ================================================== 
+    ==================================================
    The full GNU Lesser General Public License file is in LesserGPL_license.txt
 */
 
@@ -31,7 +31,7 @@
 
    Karl Krissian
 
-   Universidad de Las Palmas de Gran Canaria 
+   Universidad de Las Palmas de Gran Canaria
 
    07/05/01
 
@@ -42,17 +42,19 @@
 #ifndef _AMIMAGE_H_
 #define _AMIMAGE_H_
 
+#include <sstream>
+#include <boost/scoped_ptr.hpp>
+#include <boost/iostreams/filtering_stream.hpp>
+#include <boost/iostreams/filtering_streambuf.hpp>
+/*
 #include <fstream>
 #include <iostream>
-#include <sstream>
-#include <boost/iostreams/filtering_streambuf.hpp>
-#include <boost/iostreams/filtering_stream.hpp>
-#include <boost/scoped_ptr.hpp>
 
-using namespace boost::iostreams;
-using namespace boost;
+//using namespace boost::iostreams;
+//using namespace boost;
 
-using namespace std;
+//using namespace std;
+*/
 
 #include <stdio.h>
 
@@ -95,8 +97,12 @@ using namespace std;
 #define ANALYZE_BE_MAGIC "\134\001\000\000"
 /* Magic header for ANALYZE files written in big endian format */
 
-#define false 0
-#define true  1
+#ifndef false
+  #define false 0
+#endif
+#ifndef true
+  #define true  1
+#endif
 
 
 typedef enum {
@@ -106,17 +112,17 @@ typedef enum {
 
 typedef enum {
   AMI_UNKNOWN,
-  AMI_BIN,            // Binary 1 bit 
-  AMI_UNSIGNED_CHAR,  // Unsigned 8 bits 
-  AMI_SIGNED_CHAR,    // Signed 8 bits 
-  AMI_UNSIGNED_SHORT, // Unsigned 16 bits 
-  AMI_SIGNED_SHORT,   // Signed 16 bits 
-  AMI_UNSIGNED_INT,   // Unsigned 32 bits 
-  AMI_SIGNED_INT,     // Signed 32 bits 
-  AMI_UNSIGNED_LONG,  // Unsigned 64 bits 
-  AMI_SIGNED_LONG,    // Signed 64 bits 
-  AMI_FLOAT,          // Float 32 bits 
-  AMI_DOUBLE          // Float 64 bits 
+  AMI_BIN,            // Binary 1 bit
+  AMI_UNSIGNED_CHAR,  // Unsigned 8 bits
+  AMI_SIGNED_CHAR,    // Signed 8 bits
+  AMI_UNSIGNED_SHORT, // Unsigned 16 bits
+  AMI_SIGNED_SHORT,   // Signed 16 bits
+  AMI_UNSIGNED_INT,   // Unsigned 32 bits
+  AMI_SIGNED_INT,     // Signed 32 bits
+  AMI_UNSIGNED_LONG,  // Unsigned 64 bits
+  AMI_SIGNED_LONG,    // Signed 64 bits
+  AMI_FLOAT,          // Float 32 bits
+  AMI_DOUBLE          // Float 64 bits
 } AMI_REPRES;
 
 
@@ -147,12 +153,12 @@ typedef enum {
   COR_PA
 } SCANORDER;
 
-// file open mode 
+// file open mode
 typedef enum {
-  FILE_CLOSE,       // no file open 
-  FILE_STDIO,       // file is stdin or stdout 
-  FILE_PIPE,        // file is a pipe 
-  FILE_STD          // file is standard 
+  FILE_CLOSE,       // no file open
+  FILE_STDIO,       // file is stdin or stdout
+  FILE_PIPE,        // file is a pipe
+  FILE_STD          // file is standard
 } FILE_MODE;
 
 
@@ -196,28 +202,28 @@ public:
 
 
   AMI_DATAFILE   datafile;
-  string         file_prefix;
-  string         file_format;
+  std::string         file_prefix;
+  std::string         file_format;
   unsigned short first_slice;
   unsigned short last_slice;
 
   void* data;
   long data_size;
 
-  float voxsize_x;  
-  float voxsize_y;  
-  float voxsize_z;  
+  float voxsize_x;
+  float voxsize_y;
+  float voxsize_z;
 
   // Translation in space coord of the voxel (0,0,0)
-  float transl_x;  
-  float transl_y;  
-  float transl_z;  
+  float transl_x;
+  float transl_y;
+  float transl_z;
 
   AMIENDIANNESS endianness;
   AMIENDIANNESS ARCHITECTURE_ENDIANNESS;
   SCANORDER     scanorder;
 
-  scoped_ptr<stringstream> file_str;
+  boost::scoped_ptr<std::stringstream> file_str;
   //istream*  file_str;
 
   // still keep it until everything is changed
@@ -304,7 +310,7 @@ public:
     int x = 1;
     if(*(char *)&x == 1)
         return LITTLE_END;
-    else    
+    else
         return BIG_END;
   }
 
@@ -319,32 +325,32 @@ public:
   unsigned char allocate();
 
   template <class T>
-  T GetValue(char* buf,int offset) 
-  { 
+  T GetValue(char* buf,int offset)
+  {
     if (this->ARCHITECTURE_ENDIANNESS != this->endianness) {
       int size,b;
       char* ptr;
       T res;
-  
+
       size = sizeof(T);
       ptr = new char[size];
-      for(b=0;b<size;b++) 
+      for(b=0;b<size;b++)
 	ptr[size-1-b] = buf[offset+b];
       res = *(T*) ptr;
       delete [] ptr;
       return res;
     }
     else
-      return *(T*)(buf+offset); 
+      return *(T*)(buf+offset);
   }
 
   unsigned char CheckGenesisHeader(char* ptr, int slice, float corner[4][3]);
 
-  void          GetTransfMatrix(float m[4][4]) 
-  { 
-    for(int i=0;i<4;i++) 
-      for(int j=0;j<4;j++) 
-	m[i][j] = TransfMatrix[i][j]; 
+  void          GetTransfMatrix(float m[4][4])
+  {
+    for(int i=0;i<4;i++)
+      for(int j=0;j<4;j++)
+	m[i][j] = TransfMatrix[i][j];
   }
 
   unsigned char readheader(const char* filename);
@@ -355,11 +361,11 @@ public:
 
   unsigned char readdata();
 
-  unsigned char writeheader(const char* filename, 
-      filtering_ostream& out,
+  unsigned char writeheader(const char* filename,
+      boost::iostreams::filtering_ostream& out,
       bool include_header=true);
 
-  unsigned char writedata(filtering_ostream& out);
+  unsigned char writedata(boost::iostreams::filtering_ostream& out);
 
   unsigned char read(const char* filename);
 

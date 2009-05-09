@@ -22,7 +22,7 @@
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-    ================================================== 
+    ==================================================
    The full GNU Lesser General Public License file is in Devel/Sources/Prog/LesserGPL_license.txt
 */
 /***************************************************************************
@@ -87,8 +87,14 @@
 #ifndef _GL_PARAM_HPP
 #define _GL_PARAM_HPP
 
-#include <GL/gl.h>
-#include <GL/glu.h>
+#if defined(__APPLE__)
+  #include <OpenGL/gl.h>
+  #include <OpenGL/glu.h>
+#else
+  #include <GL/gl.h>
+  #include <GL/glu.h>
+#endif
+
 #include "couleur.hpp"
 #include "DefineClass.hpp"
 #include "inrimage.hpp"
@@ -186,7 +192,7 @@ public:
 
   }
 
-  Destructeur GLMaterialParam() 
+  Destructeur GLMaterialParam()
   {  }
 
   GLenum GLenum_face( int face)
@@ -210,7 +216,7 @@ public:
     params[3] = _opacity;
 
   }
-  
+
   void GLSet();
 
 }; // GLMaterialParam
@@ -276,7 +282,7 @@ public:
     _position[1]= y;
     _position[2]= z;
   }
-  
+
   ///
   void SetSpotDirection( float x, float y, float z)
   //
@@ -286,7 +292,7 @@ public:
     _spot_direction[2]= z;
   }
 
-  
+
   void SetGLfloat( ClasseCouleur* coul, GLfloat* params)
   {
     params[0] = (GLfloat) (1.0*coul->Red()  / 256.0);
@@ -295,24 +301,24 @@ public:
     params[3] = 1.0;
 
   }
-  
+
 
   void GLSet()
   {
 
-    
+
       GLfloat   params[4];
       GLenum    light;
       //      GLboolean enabled;
- 
+
     light = GL_LIGHT0 + (unsigned short) _num_light;
 
     //    glGetBooleanv(light, &enabled);
     Si _enabled Alors
-      //Si enabled == GL_false  AlorsFait 
+      //Si enabled == GL_false  AlorsFait
       glEnable( light);
     Sinon
-      //Si enabled == GL_TRUE  AlorsFait 
+      //Si enabled == GL_TRUE  AlorsFait
       glDisable( light);
       return;
     FinSi
@@ -337,9 +343,9 @@ public:
 
     glLightfv(light, GL_SPOT_DIRECTION,  _spot_direction);
 
-  
+
   }
-  
+
   GLLightParam& operator=(const GLLightParam& l)
   {
     _enabled   = l._enabled;
@@ -358,14 +364,14 @@ public:
 
     return (*this);
   }
-  
+
 
 
 }; // GLLightParam
 
 
 
-class GLParam 
+class GLParam
 //    =======
 {
 
@@ -466,9 +472,9 @@ public:
 
     switch (_background_type) {
     case BACKGROUND_ONECOLOR:
-      glClearColor( _background.Red()/255.0, 
-		    _background.Green()/255.0, 
-		    _background.Blue()/255.0, 
+      glClearColor( _background.Red()/255.0,
+		    _background.Green()/255.0,
+		    _background.Blue()/255.0,
 		    1.0);
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
       break;
@@ -487,38 +493,38 @@ public:
       // DrawBackground();
       glPushMatrix();
       glBegin(GL_POLYGON);
-      
+
       glColor3ub(_bg_botleft.Red(),
 		 _bg_botleft.Green(),
 		 _bg_botleft.Blue());
       glVertex3f( 0,     0, -1.0);
-      
+
       glColor3ub(_bg_botright.Red(),
 		 _bg_botright.Green(),
 		 _bg_botright.Blue());
       glVertex3f( width, 0, -1.0);
-      
+
       glColor3ub(_bg_topright.Red(),
 		 _bg_topright.Green(),
 		 _bg_topright.Blue());
       glVertex3f( width,  height, -1.0);
-      
+
       glColor3ub(_bg_topleft.Red(),
 		 _bg_topleft.Green(),
 		 _bg_topleft.Blue());
       glVertex3f( 0,      height, -1.0);
-      
+
       glEnd();
       glPopMatrix();
-      
+
       glClear(GL_DEPTH_BUFFER_BIT);
-      
+
       glEnable(GL_DEPTH_TEST);
       glPopMatrix();
       break;
     }
   }
- 
+
 
   Constructeur GLParam()
   //           -------
@@ -573,7 +579,7 @@ public:
 
   int _GLmode;
 
-  
+
   GLenum GLenum_mode()
   {
     SelonQue _GLmode Vaut
@@ -598,11 +604,11 @@ public:
   {
 
     SelonQue _GLmode Vaut
-      Valeur GL_MODE_MODELVIEW:   
+      Valeur GL_MODE_MODELVIEW:
         glGetDoublev(GL_MODELVIEW_MATRIX, (GLdouble*) mat);
       FinValeur
 
-      Valeur GL_MODE_PROJECTION:  
+      Valeur GL_MODE_PROJECTION:
         glGetDoublev(GL_PROJECTION_MATRIX, (GLdouble*) mat);
       FinValeur
 
@@ -703,7 +709,7 @@ public:
 
   }
   */
-  
+
   GLenum GLmode()
   {
     SelonQue _fogmode Vaut
@@ -719,7 +725,7 @@ public:
   void GLSet(float basis_far = 0.0)
   {
 
-    
+
       GLfloat color[4];
 
     Si Non(_enabled) Alors
@@ -727,7 +733,7 @@ public:
       return;
     FinSi
 
-    glEnable(GL_FOG);   
+    glEnable(GL_FOG);
 
     glFogi(  GL_FOG_MODE,  GLmode());
 
@@ -792,11 +798,11 @@ public:
   //
   {
 
-    
+
       int i,j;
 
-    _translation[0] = 
-    _translation[1] = 
+    _translation[0] =
+    _translation[1] =
     _translation[2] = 0.0;
 
 
@@ -843,8 +849,8 @@ public:
   void SetRotation( GLdouble mat[4][4])
   //
   {
-  
-    
+
+
       int i,j;
 
     Pour(i,0,3)
@@ -858,7 +864,7 @@ public:
   void GetRotation( GLdouble mat[4][4])
   //
   {
-    
+
       int i,j;
 
     Pour(i,0,3)
@@ -923,8 +929,8 @@ public:
   void GLApplyInvScale()
   //
   {
-    Si (fabs(_scale[0]) < 1E-9) Ou 
-       (fabs(_scale[1]) < 1E-9) Ou 
+    Si (fabs(_scale[0]) < 1E-9) Ou
+       (fabs(_scale[1]) < 1E-9) Ou
        (fabs(_scale[2]) < 1E-9) Alors
       fprintf(stderr,"GLApplyInvScale() \t Error, Scale lower than 1E-9\n");
       return;
@@ -958,7 +964,7 @@ public:
   //
   {
 
-    
+
       int i,j;
       GLdouble _inv_rot[4][4];
 
@@ -987,12 +993,12 @@ public:
     return (GLdouble*) _matrix;
 
   }
- 
-  
+
+
   GLTransfMatrix& operator=(const GLTransfMatrix& t)
   {
 
-    
+
       int i,j;
 
     Si _depend_R AlorsFait
