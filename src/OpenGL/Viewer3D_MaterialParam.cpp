@@ -5,7 +5,7 @@
 
 Viewer3D_MaterialParam::Viewer3D_MaterialParam(
   Viewer3D* parent): 
-  ParamPanel(parent, "Obj. Mat.")
+  ParamPanel(parent->GetParamBook(), "Obj. Mat.")
 {
   parent_class = parent;
   _object_number = 0;

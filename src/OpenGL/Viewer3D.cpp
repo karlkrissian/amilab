@@ -291,13 +291,13 @@ void Viewer3D::CreateParameterWindows()
   // TODO: check why the dialog cannot have the viewer as parent
   _param_view            = new Viewer3D_ViewParam       (this);
   _param_proj            = new Viewer3D_ProjParam       (this);
-  _param_material        = new Viewer3D_MaterialParam   (this);
   _param_backgroundcolor = new Viewer3D_BackgroundParam (this);
   _param_fog             = new Viewer3D_FogParam        (this);
   _param_vectors         = new Viewer3D_VectorsParam    (this);
   _param_lines           = new Viewer3D_LineParam       (this);
   _param_points          = new Viewer3D_PointParam      (this);
 
+  _param_material        = new Viewer3D_MaterialParam   (this);
   _param_light           = new Viewer3D_LightingParam   (this);
 
 /*
