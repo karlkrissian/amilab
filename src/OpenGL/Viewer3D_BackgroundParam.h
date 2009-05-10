@@ -15,7 +15,7 @@
 
 class Viewer3D;
 
-class  Viewer3D_BackgroundParam: public ParamBox
+class  Viewer3D_BackgroundParam: public ParamPanel
 {
 private:
 
@@ -39,7 +39,7 @@ public:
   void CreateParameters();
 
   // Callbacks  static 
-  static void CB_BackgroundColorClose(void* cd);
+  static void CB_BackgroundColorApply(void* cd);
 
 }; // class Viewer3D_BackgroundParam
 

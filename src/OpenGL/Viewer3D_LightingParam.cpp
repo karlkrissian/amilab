@@ -5,10 +5,11 @@
 
 Viewer3D_LightingParam::Viewer3D_LightingParam(Viewer3D* parent): 
       ParamPanel(parent->GetParamBook(), 
-      "Lights")
+      "Lig")
 {
   parent_class = parent;
   CreateParameters();
+  SetToolTip("Lights properties");
   //SetMinSize(wxSize(200,300));
 }
 
@@ -55,12 +56,14 @@ void Viewer3D_LightingParam::CreateParameters()
 	      (void*) CB_light_update,
 	      (void*) parent_class);
 
-  BeginHorizontal();
+  BeginHorizontal(2);
     //-------------- Ambient
     AddColor( &_id_light_ambient,
-        "Amb.",
+        "Amb",
         &mc->_GLLight_display._ambient,
         "Ambient color property");
+    // Set proportional position
+    SetLastPositionProperties(1);
   
     ChangedValueCallback( _id_light_ambient,
           (void*) CB_light_update,
@@ -68,20 +71,24 @@ void Viewer3D_LightingParam::CreateParameters()
   
     //-------------- Diffuse
     AddColor( &_id_light_diffuse,
-          "Dif.",
+          "Diff",
           &mc->_GLLight_display._diffuse,
           "Diffuse color property");
-  
+    // Set proportional position
+    SetLastPositionProperties(1);
+
     ChangedValueCallback( _id_light_diffuse,
           (void*) CB_light_update,
           (void*) parent_class);
-  
+
     //-------------- Specular
     AddColor( &_id_light_specular,
-          "Spec.",
+          "Spec",
           &mc->_GLLight_display._specular,
           "Specular color property");
-  
+    // Set proportional position
+    SetLastPositionProperties(1);
+
     ChangedValueCallback( _id_light_specular,
           (void*) CB_light_update,
           (void*) parent_class);
@@ -172,24 +179,6 @@ void Viewer3D_LightingParam::CB_light_number( void* cd)
   tgl->_param_light->MAJ();
 
 } // CB_light_number()
-
-
-//-------------------------------------------------------
-void Viewer3D_LightingParam::CB_light_visible( void* cd)
-//                           ----------------
-{
-   Viewer3D*  tgl = (Viewer3D*) cd;
-
-  Si !(tgl->ParamIsDisplayed(tgl->_param_light)) Alors
-    tgl->AddParamPage(tgl->_param_light,
-                      tgl->_param_light->GetName(),true);
-    tgl->_param_light->AfficheDialogue();
-    tgl->_param_light->MAJ();
-  Sinon
-    tgl->RemoveParamPage(tgl->_param_light);
-  FinSi
-
-} // CB_light_visible()
 
 
 //-----------------------------------------------------

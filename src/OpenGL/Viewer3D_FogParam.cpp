@@ -4,10 +4,11 @@
 
 
 //----------------------------------------------------
-Viewer3D_FogParam::Viewer3D_FogParam(Viewer3D* parent): ParamBox(parent, "Fog Parameters")
+Viewer3D_FogParam::Viewer3D_FogParam(Viewer3D* parent): ParamPanel(parent, "Fog")
 {
   parent_class = parent;
   CreateParameters();
+  SetToolTip("Fog Effect Parameters");
 }
 
 
@@ -33,7 +34,7 @@ void Viewer3D_FogParam::CreateParameters()
   AddEnumeration( &_id_fog_mode, 
                      3,
                      &mc->_GLFogParam._fogmode, 
-                     "Fog mode");
+                     "Mode");
   AddEnumChoice( _id_fog_mode, 
 	       &_id_mode_exp,      
 	       "GL_EXP");
@@ -52,9 +53,10 @@ void Viewer3D_FogParam::CreateParameters()
 
   //-------------- unsigned char Use Background Color
   AddBoolean( &_id_fog_use_backgroundcolor,
-	     &mc->_GLFogParam._use_bg_color,
-	     "Use Background Color",
-	     CaractereToggle);
+              &mc->_GLFogParam._use_bg_color,
+              "Bg Color",
+              CaractereToggle,
+              "Use the background color");
   BooleanDefault( _id_fog_use_backgroundcolor,
 	     mc->_GLFogParam._use_bg_color);
 
@@ -66,7 +68,8 @@ void Viewer3D_FogParam::CreateParameters()
   //-------------- Fog Color
   AddColor( &_id_fog_color,
 	     "Color",
-	     &mc->_GLFogParam._color);
+	     &mc->_GLFogParam._color,
+      "Fog Color");
 
   ChangedValueCallback( _id_fog_color,
     (void*) Viewer3D::CB_redessine,
@@ -75,7 +78,9 @@ void Viewer3D_FogParam::CreateParameters()
   //-------------- Fog Density
   AddFloat( &_id_fog_density, 
 	  &mc->_GLFogParam._density,
-	  "Density");
+	  "Density",
+    2,
+    "Fog Density");
   FloatConstraints( _id_fog_density, 
 	       0.1, 3.0,
 	       mc->_GLFogParam._density);
@@ -87,7 +92,9 @@ void Viewer3D_FogParam::CreateParameters()
   //-------------- Fog Start
   AddFloat( &_id_fog_start, 
 	  &mc->_GLFogParam._start,
-	  "Start");
+	  "Start",
+    2,
+    "Fog Starting Position");
   FloatConstraints( _id_fog_start, 
 	       -5.0, 5.0,
 	       mc->_GLFogParam._start);
@@ -99,7 +106,9 @@ void Viewer3D_FogParam::CreateParameters()
   //-------------- Fog End
   AddFloat( &_id_fog_end, 
 	  &mc->_GLFogParam._end,
-	  "End");
+	  "End",
+    2,
+    "Fog Ending Position");
   FloatConstraints( _id_fog_end, 
 	       -5.0, 5.0,
 	       mc->_GLFogParam._end);

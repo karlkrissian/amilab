@@ -58,7 +58,7 @@ class wxColorParameter : public wxButtonParameter
   //---------
 
   ///
-  void Update();
+  void ParamUpdate();
   //
 
   virtual void OnLeftButton( wxMouseEvent& );

@@ -208,10 +208,13 @@ private:
 
   void CloseWindow();
 
-  // File Menu
+  /// File Menu
   void CB_Close(wxCommandEvent& event);
 
-  // Options Menu
+  /// Displays or Hides a Parameter Panel
+  void ToggleParamPanel(ParamPanel* p);
+
+  /// Options Menu
   void ReDraw              (wxCommandEvent& event);
   void CB_material_visible (wxCommandEvent& event);
   void CB_proj_visible     (wxCommandEvent& event);

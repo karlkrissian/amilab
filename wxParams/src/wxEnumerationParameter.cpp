@@ -45,12 +45,16 @@ BEGIN_EVENT_TABLE(myChoice, wxChoice)
 END_EVENT_TABLE()
 
 
-wxEnumerationParameter::wxEnumerationParameter( wxWindow* parent, int* param, const char* label): wxBoxSizer(wxHORIZONTAL)
+wxEnumerationParameter::wxEnumerationParameter( wxWindow* parent, 
+    int* param, const char* label,
+    const std::string& tooltip
+    ): wxBoxSizer(wxHORIZONTAL)
 {
   this->_parameter = param;
   this->_parent    = parent;
 
   this->_label     = new wxStaticText(this->_parent, wxID_ANY, wxString::FromAscii(label));
+  if (tooltip!="") _label->SetToolTip(GetwxStr(tooltip.c_str()));
 
   this->_choice    = new myChoice(this->_parent,wxID_ANY);
   this->_choice->SetCallback((void*)wxEnumerationParameter::OnEnumUpdate,(void*) this);

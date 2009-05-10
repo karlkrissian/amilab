@@ -394,8 +394,12 @@ int  ParamBox::AddFloat(  float* param,
 
 
 //---------------------------------------------------------------
-void ParamBox::FloatConstraints( int id, float min, float max, float defaut)
-//                ---------------
+void ParamBox::FloatConstraints( 
+//             ---------------
+    int id,
+    const float& min,
+    const float& max,
+    const float& defaut)
 {
 
   if ((id < 0) || (id >= NbParameters())) {

@@ -41,7 +41,6 @@ public:
 
   // Callbacks  static 
   static void CB_light_number   (void* cd);
-  static void CB_light_visible  (void* cd);
   static void CB_light_update   (void* cd);
   static void CB_light_fermer   (void* cd);
 

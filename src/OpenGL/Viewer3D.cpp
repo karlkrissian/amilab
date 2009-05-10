@@ -155,12 +155,9 @@ Viewer3D::Viewer3D(wxFrame *frame, const wxString& title, const wxPoint& pos,
   CreateGLCanvas();
   Create_Toolbar();
   CreateParamBook(this);
+
   // CreateParameterWindows() needs _param_book ...
   CreateParameterWindows();
-
-  // need to create the parameters before the menu
-  Create_wxMenu();
-
 
   m_mgr.SetManagedWindow(this);
 
@@ -203,8 +200,10 @@ Viewer3D::Viewer3D(wxFrame *frame, const wxString& title, const wxPoint& pos,
   // tell the manager to "commit" all the changes just made
   m_mgr.Update();
 
-  _initial_perspective = m_mgr.SavePerspective();
+  // need to create the parameters before the menu
+  Create_wxMenu();
 
+  _initial_perspective = m_mgr.SavePerspective();
 
   Centre(wxBOTH);
 
@@ -291,14 +290,20 @@ void Viewer3D::CreateParameterWindows()
   // TODO: check why the dialog cannot have the viewer as parent
   _param_view            = new Viewer3D_ViewParam       (this);
   _param_proj            = new Viewer3D_ProjParam       (this);
-  _param_backgroundcolor = new Viewer3D_BackgroundParam (this);
-  _param_fog             = new Viewer3D_FogParam        (this);
-  _param_vectors         = new Viewer3D_VectorsParam    (this);
   _param_lines           = new Viewer3D_LineParam       (this);
   _param_points          = new Viewer3D_PointParam      (this);
 
+  _param_vectors         = new Viewer3D_VectorsParam    (this);
   _param_material        = new Viewer3D_MaterialParam   (this);
   _param_light           = new Viewer3D_LightingParam   (this);
+  _param_backgroundcolor = new Viewer3D_BackgroundParam (this);
+  _param_fog             = new Viewer3D_FogParam        (this);
+
+  _param_vectors         ->Hide();
+  _param_material        ->Hide();
+  _param_light           ->Hide();
+  _param_backgroundcolor ->Hide();
+  _param_fog             ->Hide();
 
 /*
 
@@ -351,7 +356,7 @@ void Viewer3D::Create_wxMenu()
     menuView->AppendCheckItem(ID_MenuView_material_param,
                                  GetwxStr("&Object"));
     menuView->Check(ID_MenuView_material_param,
-                      _param_material->IsShown());
+                      ParamIsDisplayed(_param_material));
 
     //---------------
     menuView->AppendCheckItem(ID_MenuView_projection_param,
@@ -555,8 +560,9 @@ void Viewer3D::CreateParamBook(wxWindow* parent)
                                     wxDefaultSize,
                                     wxAUI_NB_TOP          |
                                     wxAUI_NB_TAB_SPLIT    |
-                                    wxAUI_NB_TAB_MOVE     |
-                                    wxAUI_NB_SCROLL_BUTTONS
+                                    wxAUI_NB_TAB_MOVE 
+                                    |wxAUI_NB_WINDOWLIST_BUTTON 
+                                    |wxAUI_NB_SCROLL_BUTTONS
                                   );
 
   _param_book->Fit();
@@ -597,19 +603,19 @@ void Viewer3D::UpdateMenu()
 {
 
   menuView->Check(ID_MenuView_backgroundcolor,
-                   _param_material->IsShown());
+                   ParamIsDisplayed(_param_material));
 
   menuView->Check(ID_MenuView_material_param,
-                   _param_material->IsShown());
+                   ParamIsDisplayed(_param_material));
 
   menuView->Check(ID_MenuView_projection_param,
-                   _param_proj->IsShown());
+                   ParamIsDisplayed(_param_proj));
 
   menuView->Check(ID_MenuView_lighting_param,
-                   _param_light->IsShown());
+                   ParamIsDisplayed(_param_light));
 
   menuView->Check(ID_MenuView_fog_param,
-                   _param_fog->IsShown());
+                   ParamIsDisplayed(_param_fog));
 
 // tgl->_Moptions_light_visible->MAJ();
 
@@ -727,18 +733,22 @@ void Viewer3D::ReDraw(wxCommandEvent& event)
 
 
 //------------------------------------------------
+void Viewer3D::ToggleParamPanel(ParamPanel* p)
+{
+  if (!(ParamIsDisplayed(p))) {
+    AddParamPage(p,p->GetName(),true);
+    p->AfficheDialogue();
+    p->MAJ();
+  } else {
+    p->Hide();
+    RemoveParamPage(p);
+  }
+} // Viewer3D::ToggleParamPanel()
+
+//------------------------------------------------
 void Viewer3D::CB_material_visible(wxCommandEvent& event)
 {
-
-  Si !(ParamIsDisplayed(_param_material)) Alors
-    AddParamPage(_param_material,
-                 _param_material->GetName(),true);
-    _param_light->AfficheDialogue();
-    _param_light->MAJ();
-  Sinon
-    RemoveParamPage(_param_material);
-  FinSi
-
+  ToggleParamPanel(_param_material);
 } // CB_material_visible()
 
 
@@ -759,35 +769,21 @@ void Viewer3D::CB_proj_visible(wxCommandEvent& event)
 //------------------------------------------------
 void Viewer3D::CB_lighting_visible(wxCommandEvent& event)
 {
-  _param_light->CB_light_visible(this);
+  ToggleParamPanel(_param_light);
 } // CB_lighting_visible()
 
 
 //------------------------------------------------
 void Viewer3D::CB_fog_visible(wxCommandEvent& event)
 {
-  int visible;
-  visible =  menuView->IsChecked(ID_MenuView_fog_param);
-
-  Si visible Alors
-    _param_fog->AfficheDialogue();
-  Sinon
-    _param_fog->FermeDialogue( );
-  FinSi
+  ToggleParamPanel(_param_fog);
 } // CB_lighting_visible()
 
 
 //------------------------------------------------
 void Viewer3D::CB_vectors_visible(wxCommandEvent& event)
 {
-  int visible;
-  visible =  menuView->IsChecked(ID_MenuView_vectors_param);
-
-  Si visible Alors
-    _param_vectors->AfficheDialogue();
-  Sinon
-    _param_vectors->FermeDialogue( );
-  FinSi
+  ToggleParamPanel(_param_vectors);
 } // CB_vectors_visible()
 
 
@@ -849,15 +845,7 @@ void Viewer3D::CloseWindow()
 //-------------------------------------------------------------
 void Viewer3D::CB_BackgroundColor(wxCommandEvent& event)
 {
-  int visible;
-  visible =  menuView->IsChecked(ID_MenuView_backgroundcolor);
-
-  Si visible Alors
-    _param_backgroundcolor->AfficheDialogue();
-  Sinon
-    _param_backgroundcolor->FermeDialogue( );
-  FinSi
-
+  ToggleParamPanel(_param_backgroundcolor);
 }
 
 
@@ -933,17 +921,8 @@ void Viewer3D::CB_ProjParam(void* cd)
 //----------------------------------------------------------
 void Viewer3D::CB_FogParam(void* cd)
 {
-  // TODO
-  //    menuOptions->Checked(ID_MenuOption_,
-  //      param_objects_visible);
-
   Viewer3D* tgl = (Viewer3D*) cd;
-
-  Si !(tgl->_param_fog->IsShown()) Alors
-    tgl->_param_fog->AfficheDialogue();
-  Sinon
-    tgl->_param_fog->FermeDialogue( );
-  FinSi
+  tgl->ToggleParamPanel(tgl->_param_fog);
 } // CB_FogParam()
 
 

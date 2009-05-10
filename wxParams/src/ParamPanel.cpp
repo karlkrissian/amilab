@@ -43,6 +43,7 @@
 #include <stdio.h>
 #include "ParamPanel.hpp"
 #include "wxParamTypes.hpp"
+#include "wxNumericParameter.h"
 #include "wxColorParameter.h"
 
 #include <iostream>
@@ -50,6 +51,15 @@ using namespace std;
 
 #include "boost/format.hpp"
 
+#define macro_CheckParameterId(id, returning) \
+  if ((id < 0) || (id >= NbParameters())) { \
+    cerr  << __func__ << " " \
+          << this->GetName().mb_str() << "\t" \
+          <<  "Error \t wrong widget id" \
+          << id << " " << NbParameters() << "\n" \
+          << endl; \
+    returning; \
+  } // end if
 
 IMPLEMENT_CLASS(ParamPanel, wxPanel)
 
@@ -227,13 +237,15 @@ void ParamPanel::RecupereDimensions( int* l, int* h)
 } // RecupereDimensions( )
 
 
-//-----------------------------------------------------------
+/**
+  Adds the param w to the current top sizer
+*/
 template <class T>
-wxSizerItem* ParamPanel::AddParam( T* w)
+wxSizerItem* ParamPanel::AddParam( T* w,
+        int proportional,
+        int border,
+        int flag)
 {
-  int proportional = 0;
-  int border = 5;
-  int flag =  wxEXPAND |wxALL;
 
   wxBoxSizer * s = _current_sizer.top();
   switch(s->GetOrientation()) {
@@ -272,11 +284,13 @@ wxSizerItem* ParamPanel::AddWidget( wxSizer* w)
 
 
 //--------------------------------------------------------------
-unsigned char ParamPanel::AddBoolean( int* id, unsigned char* param, 
-//                   -------------
-                char* libelle, type_booleen type,
-                const std::string& tt
-                )
+unsigned char ParamPanel::AddBoolean(
+//                        ----------
+    int* id, unsigned char* param, 
+    const char* libelle,
+    type_booleen type,
+    const std::string& tt
+    )
 {
   wxBooleanParameter* wxbp = new wxBooleanParameter(
       CurrentParent(), param, libelle);
@@ -297,11 +311,7 @@ unsigned char ParamPanel::AddBoolean( int* id, unsigned char* param,
 void ParamPanel::BooleanDefault( int id, unsigned char defaut)
 //                -------------
 {
-
-  if ((id < 0) || (id >= NbParameters())) {
-    printf("ParamPanel::BooleanDefault \t Erreur, identificateur  inexistant\n");
-    return;
-  } // end if
+  macro_CheckParameterId(id,return)
 
   if (_tab_param[id].GetType() != TYPE_PARAMETRE_BOOLEEN) {
     printf("ParamPanel::BooleanDefault \t Erreur, identificateur non valide\n");
@@ -317,7 +327,7 @@ void ParamPanel::BooleanDefault( int id, unsigned char defaut)
 //--------------------------------------------------------------
 unsigned char ParamPanel::AddInteger( int* id, int* param, 
 //                      ------------
-                char* libelle,
+                const char* libelle,
                 const std::string& tt)
 {
   *id = AddInteger(param,libelle,tt);
@@ -328,12 +338,13 @@ unsigned char ParamPanel::AddInteger( int* id, int* param,
 //--------------------------------------------------------------
 int ParamPanel::AddInteger( int* param, 
 //                   ------------
-                char* libelle,
+                const char* libelle,
                 const std::string& tt)
 {
-  wxIntegerParameter* wxi = new wxIntegerParameter(
-      CurrentParent(), param, libelle);
+  wxNumericParameter<int>* wxi = new 
+    wxNumericParameter<int>( CurrentParent(), param, libelle);
   if (tt!="") wxi->SetToolTip(GetwxStr(tt.c_str()));
+  wxi->SetDecimate(0);
 
   ParamInfo pi( TYPE_PARAMETRE_ENTIER,
                 wxi,
@@ -347,11 +358,7 @@ int ParamPanel::AddInteger( int* param,
 void ParamPanel::IntegerConstraints( int id, int min, int max, int defaut)
 //                -----------------
 {
-
-  if ((id < 0) || (id >= NbParameters())) {
-    printf("ParamPanel::IntegerConstraints \t Erreur, identificateur  inexistant\n");
-    return;
-  } // end if
+  macro_CheckParameterId(id, return)
 
   if (_tab_param[id].GetType() != TYPE_PARAMETRE_ENTIER) {
     printf("ParamPanel::IntegerConstraints \t Erreur, identificateur non valide\n");
@@ -359,7 +366,7 @@ void ParamPanel::IntegerConstraints( int id, int min, int max, int defaut)
   } // end if
 
   if (_tab_param[id].GetWidget()!=NULL)
-    ((wxIntegerParameter*) _tab_param[id].GetWidget())->SetConstraints( min, max, defaut);
+    ((wxNumericParameter<int>*) _tab_param[id].GetWidget())->SetConstraints( min, max, defaut);
 
 } // IntegerConstraints()
 
@@ -367,10 +374,7 @@ void ParamPanel::IntegerConstraints( int id, int min, int max, int defaut)
 //------------------------------------------------------------------------------
 void ParamPanel::ParamIntGetLimits( int id, int& min, int& max)
 {
-  if ((id < 0) || (id >= NbParameters())) {
-    printf("ParamPanel::ParamIntGetLimits \t Erreur, identificateur  inexistant\n");
-    return;
-  } // end if
+  macro_CheckParameterId(id, return)
 
   if (_tab_param[id].GetType() != TYPE_PARAMETRE_ENTIER) {
     printf("ParamPanel::ParamIntGetLimits \t Erreur, identificateur non valide\n");
@@ -378,7 +382,7 @@ void ParamPanel::ParamIntGetLimits( int id, int& min, int& max)
   } // end if
   
   if (_tab_param[id].GetWidget()!=NULL)
-    ((wxIntegerParameter*) _tab_param[id].GetWidget())->GetLimits( min, max);
+    ((wxNumericParameter<int>*) _tab_param[id].GetWidget())->GetLimits( min, max);
 
 } // ParamIntGetLimits()
 
@@ -386,7 +390,7 @@ void ParamPanel::ParamIntGetLimits( int id, int& min, int& max)
 //------------------------------------------------------------
 unsigned char ParamPanel::AddFloat( int* id, float* param,
 //                      --------
-                char* libelle, int precision,
+                const char* libelle, int precision,
                 const std::string& tt)
 {
   *id = AddFloat(param,libelle,precision,tt);
@@ -395,12 +399,14 @@ unsigned char ParamPanel::AddFloat( int* id, float* param,
 
 
 //-----------------------------------------------------------
-int  ParamPanel::AddFloat(  float* param,
-//             --------
-                char* libelle, int precision,
-                const std::string& tt)
+int  ParamPanel::AddFloat(
+//               --------
+      float* param,
+      const char* libelle, 
+      int precision,
+      const std::string& tt)
 {
-  wxFloatParameter* wxi = new wxFloatParameter(
+  wxNumericParameter<float>* wxi = new wxNumericParameter<float>(
       CurrentParent(), param, libelle);
   if (tt!="") wxi->SetToolTip(GetwxStr(tt.c_str()));
 
@@ -415,14 +421,10 @@ int  ParamPanel::AddFloat(  float* param,
 
 
 //---------------------------------------------------------------
-void ParamPanel::FloatConstraints( int id, float min, float max, float defaut)
+void ParamPanel::FloatConstraints( int id, const float& min, const float& max, const float& defaut)
 //                ---------------
 {
-
-  if ((id < 0) || (id >= NbParameters())) {
-    printf("ParamPanel::FloatConstraints \t Erreur, identificateur  inexistant\n");
-    return;
-  } // end if
+  macro_CheckParameterId(id, return)
 
   if (_tab_param[id].GetType() != TYPE_PARAMETRE_REEL) {
     printf("ParamPanel::FloatConstraints \t Erreur, identificateur non valide\n");
@@ -430,17 +432,14 @@ void ParamPanel::FloatConstraints( int id, float min, float max, float defaut)
   } // end if
 
   if (_tab_param[id].GetWidget()!=NULL)
-    ((wxFloatParameter*) _tab_param[id].GetWidget())->SetConstraints( min, max, defaut);
+    ((wxNumericParameter<float>*) _tab_param[id].GetWidget())->SetConstraints( min, max, defaut);
 
 } // FloatConstraints()
 
 //---------------------------------------------------------------
 void ParamPanel::ParamFloatGetLimits( int id, float& min, float& max)
 {
-  if ((id < 0) || (id >= NbParameters())) {
-    printf("ParamPanel::ParamFloatGetLimits \t Erreur, identificateur  inexistant\n");
-    return;
-  } // end if
+  macro_CheckParameterId(id, return)
 
   if (_tab_param[id].GetType() != TYPE_PARAMETRE_REEL) {
     printf("ParamPanel::ParamFloatGetLimits \t Erreur, identificateur non valide\n");
@@ -448,25 +447,22 @@ void ParamPanel::ParamFloatGetLimits( int id, float& min, float& max)
   } // end if
   
   if (_tab_param[id].GetWidget()!=NULL)
-      ((wxFloatParameter*) _tab_param[id].GetWidget())->GetLimits( min, max);
+      ((wxNumericParameter<float>*) _tab_param[id].GetWidget())->GetLimits( min, max);
 
-} // ParamIntGetLimits()
+} // ParamFloatGetLimits()
 
 //-----------------------------------------------------------
 void ParamPanel::ParamShowSlider( int id, bool show)
 {
-  if ((id < 0) || (id >= NbParameters())) {
-    printf("ParamPanel::ParamFloatGetLimits \t Erreur, identificateur  inexistant\n");
-    return;
-  } // end if
+  macro_CheckParameterId(id, return)
 
   if (_tab_param[id].GetType() == TYPE_PARAMETRE_REEL) {
     if (_tab_param[id].GetWidget()!=NULL)
-      ((wxFloatParameter*) _tab_param[id].GetWidget())->ShowSlider( show);
+      ((wxNumericParameter<float>*) _tab_param[id].GetWidget())->ShowSlider( show);
   } else 
   if (_tab_param[id].GetType() == TYPE_PARAMETRE_ENTIER) {
     if (_tab_param[id].GetWidget()!=NULL)
-      ((wxIntegerParameter*) _tab_param[id].GetWidget())->ShowSlider( show);
+      ((wxNumericParameter<int>*) _tab_param[id].GetWidget())->ShowSlider( show);
   } else {
     printf("ParamPanel::ParamFloatGetLimits \t Erreur, identificateur neither float nor integer\n");
     return;
@@ -478,11 +474,12 @@ void ParamPanel::ParamShowSlider( int id, bool show)
 //------------------------------------------------------------------------------
 unsigned char ParamPanel::AddEnumeration( int* id, int taille, 
 //                      --------------
-            int* param, char* libelle,
-                type_enum type) 
+            int* param, const char* libelle,
+                type_enum type,
+                  const std::string& tt) 
 {
   wxEnumerationParameter* wxe = new wxEnumerationParameter(
-      CurrentParent(), param, libelle);
+      CurrentParent(), param, libelle, tt);
 
   ParamInfo pi( TYPE_PARAMETRE_ENUMERATION,
                 wxe,
@@ -497,11 +494,12 @@ unsigned char ParamPanel::AddEnumeration( int* id, int taille,
 //------------------------------------------------------------------------------
 unsigned char ParamPanel::AddEnumeration( int* id, 
 //                      --------------
-            int* param, char* libelle,
-                type_enum type) 
+            int* param, const char* libelle,
+                type_enum type,
+                  const std::string& tt) 
 {
   wxEnumerationParameter* wxe = new wxEnumerationParameter(
-      CurrentParent(), param, libelle);
+      CurrentParent(), param, libelle,tt);
 
   ParamInfo pi( TYPE_PARAMETRE_ENUMERATION,
                 wxe,
@@ -520,11 +518,7 @@ unsigned char ParamPanel::AddEnumChoice( int id,
             const char* libelle,
             const char* pixmap_name)
 {
-
-  if ((id < 0) || (id >= NbParameters())) {
-    printf("ParamPanel::AddEnumChoice \t Erreur, identificateur  inexistant\n");
-    return false;
-  } // end if
+  macro_CheckParameterId(id, return false)
 
   if (_tab_param[id].GetType() != TYPE_PARAMETRE_ENUMERATION) {
     printf("ParamPanel::AddEnumChoice \t Erreur, identificateur non valide\n");
@@ -550,11 +544,7 @@ unsigned char ParamPanel::AddEnumChoice( int id,
             const char* libelle,
             const char** pixmap_string)
 {
-
-  if ((id < 0) || (id >= NbParameters())) {
-    printf("ParamPanel::AddEnumChoice \t Erreur, identificateur  inexistant\n");
-    return false;
-  } // end if
+  macro_CheckParameterId(id, return false)
 
   if (_tab_param[id].GetType() != TYPE_PARAMETRE_ENUMERATION) {
     printf("ParamPanel::AddEnumChoice \t Erreur, identificateur non valide\n");
@@ -577,11 +567,7 @@ unsigned char ParamPanel::AddEnumChoice( int id,
 void ParamPanel::EnumerationDefaut( int id, int id_defaut)
 //                -----------------
 {
-
-  if ((id < 0) || (id >= NbParameters())) {
-    printf("ParamPanel::ContraintesEnumeration \t Erreur, identificateur  inexistant\n");
-    return;
-  } // end if
+  macro_CheckParameterId(id, return)
 
   if (_tab_param[id].GetType() != TYPE_PARAMETRE_ENUMERATION) {
     printf("ParamPanel::ContraintesEnumeration \t Erreur, identificateur non valide\n");
@@ -596,7 +582,7 @@ void ParamPanel::EnumerationDefaut( int id, int id_defaut)
 
 
 //--------------------------------------------------------------
-unsigned char ParamPanel::AddButton( int* id,  char* libelle,
+unsigned char ParamPanel::AddButton( int* id,  const char* libelle,
 //                      ---------
         void* callback,
         void* data,
@@ -618,7 +604,7 @@ unsigned char ParamPanel::AddButton( int* id,  char* libelle,
 
 
 //-----------------------------------------------------------------
-unsigned char ParamPanel::AddPixmapButton( int* id,  char* libelle,
+unsigned char ParamPanel::AddPixmapButton( int* id,  const char* libelle,
 //                      ---------------
                       void* callback,
                       void* data,
@@ -643,7 +629,7 @@ unsigned char ParamPanel::AddPixmapButton( int* id,  char* libelle,
 //---------------------------------------------------------------
 unsigned char ParamPanel::AddColor( int* id,
 //                      --------
-                    char* libelle,
+                    const char* libelle,
                     ClasseCouleur*  couleur,
                     const std::string& tt
                     )
@@ -661,7 +647,7 @@ unsigned char ParamPanel::AddColor( int* id,
 
 
 //----------------------------------------------------------------
-unsigned char ParamPanel::AddLabel( int* id,  char* libelle,
+unsigned char ParamPanel::AddLabel( int* id, const char* libelle,
 //                      --------
                           char* contenu, type_label type)
 {
@@ -697,35 +683,54 @@ unsigned char ParamPanel::AjouteWidget( int* id,  Widget widget)
 void ParamPanel::FixeVisible( int id, unsigned char visible)
 //                -----------
 {
-
-  if ((id < 0) || (id >= NbParameters())) {
-    printf("ParamPanel::FixeVisible %s \t Erreur, identificateur  inexistant %d %d\n",
-      (const char*)this->GetName().mb_str(wxConvUTF8),
-      id,
-      NbParameters());
-    return;
-  } // end if
-
+  macro_CheckParameterId(id, return)
 
   if ((wxGenericWidget*) _tab_param[id].GetWidget() !=NULL) {
 
     if (visible!=_tab_param[id].GetSizerItem()->IsShown())
     _tab_param[id].GetSizerItem()->Show(visible);
-
   }
-  
 } // FixeVisible()
 
+
+//--------------------------------------------------------
+void ParamPanel::SetPositionProperties(
+//               ---------------------
+      int id, 
+      int proportion,
+      int border,
+      int flags
+      )
+{
+  macro_CheckParameterId(id, return)
+
+  if ((wxGenericWidget*) _tab_param[id].GetWidget() !=NULL) {
+    if (proportion>=0)
+      _tab_param[id].GetSizerItem()->SetProportion( proportion);
+    if (border>=0)
+      _tab_param[id].GetSizerItem()->SetBorder(     border    );
+    if (flags>=0)
+      _tab_param[id].GetSizerItem()->SetFlag(       flags     );
+  }
+} // SetPositionProperties()
+
+//--------------------------------------------------------
+void ParamPanel::SetLastPositionProperties(
+//               ---------------------
+      int proportion,
+      int border,
+      int flags
+      )
+{
+  SetPositionProperties( 
+    NbParameters()-1, proportion,border,flags);
+} // SetLastPositionProperties()
 
 //------------------------------------------------------------------------------
 void ParamPanel::ChangedValueCallback( int id, void* callback, void* calldata)
 //                --------------------
 {
-
-  if ((id < 0) || (id >= NbParameters())) {
-    printf("ParamPanel::ChangedValueCallback \t Erreur, identificateur  inexistant\n");
-    return;
-  } // end if
+  macro_CheckParameterId(id, return)
 
   if ((wxGenericWidget*) _tab_param[id].GetWidget() !=NULL)
     ((wxGenericWidget*) _tab_param[id].GetWidget())->ChangedValueCallback( callback, calldata);
@@ -736,7 +741,7 @@ void ParamPanel::ChangedValueCallback( int id, void* callback, void* calldata)
 //----------------------------------------------------------------
 unsigned char ParamPanel::AjouteChaine( int* id, std::string* param, 
 //                      ------------
-                char* libelle)
+                const char* libelle)
 {
   wxStringParameter* wsp;
   wsp= new wxStringParameter(CurrentParent(),param,libelle);
@@ -754,11 +759,7 @@ unsigned char ParamPanel::AjouteChaine( int* id, std::string* param,
 void ParamPanel::ContraintesChaine( int id, char* defaut)
 //                -----------------
 {
-
-  if ((id < 0) || (id >= NbParameters())) {
-    printf("ParamPanel::ContraintesChaine \t Erreur, identificateur  inexistant\n");
-    return;
-  } // end if
+  macro_CheckParameterId(id, return)
 
   if (_tab_param[id].GetType() != TYPE_PARAMETRE_CHAINE) {
     printf("ParamPanel::ContraintesChaine \t Erreur, identificateur non valide\n");
@@ -771,7 +772,7 @@ void ParamPanel::ContraintesChaine( int id, char* defaut)
 //------------------------------------------------------------------------------
 unsigned char ParamPanel::AjouteNomFichier( int* id, std::string* param, 
 //                   ----------------
-                char* libelle)
+                const char* libelle)
 {
 
   wxFilenameParameter* wxi = new wxFilenameParameter(CurrentParent(), param, libelle);
@@ -793,11 +794,7 @@ void ParamPanel::ContraintesNomFichier( int id, const char* defaut,
 //                ---------------------
                 const char* , const char* mask)
 {
-
-  if ((id < 0) || (id >= NbParameters())) {
-    printf("ParamPanel::ContraintesNomFichier \t Erreur, identificateur  inexistant\n");
-    return;
-  } // end if
+  macro_CheckParameterId(id, return)
 
   if (_tab_param[id].GetType() != TYPE_PARAMETRE_NOM_FICHIER) {
     printf("ParamPanel::ContraintesNomFichier \t Erreur, identificateur non valide\n");
@@ -852,13 +849,9 @@ void ParamPanel::ReAfficheParametres( )
 
 //---------------------------------------------------------------------
 void ParamPanel::RecupereValeur( int id )
-//                                ---------------
+//               ---------------
 {
-
-  if ((id < 0) || (id >= NbParameters())) {
-    printf("ParamPanel:: \t Erreur, identificateur  inexistant\n");
-    return;
-  } // end if
+  macro_CheckParameterId(id, return)
 
   _tab_param[id].GetWidget()->UpdateValue();
 
@@ -940,11 +933,7 @@ NoyauParametre* ParamPanel::RecupereParametre( int id)
 void ParamPanel::UpdateParameter( int id)
 //                                -----------------
 {
-
-  if ((id < 0) || (id >= NbParameters() )) {
-    printf("ParamPanel::RecupereParametre \t Erreur, identificateur incorrect \n");
-    return;
-  } // end if
+  macro_CheckParameterId(id, return)
 
   if ((_tab_param[id].GetWidget()!=NULL)&&
       (_tab_param[id].GetSizerItem()->IsShown())) 
@@ -957,10 +946,7 @@ void ParamPanel::UpdateParameter( int id)
 void ParamPanel::SetStackDirection( int id, int type_empilement)
 //   -----------------
 {
-  if ((id < 0) || (id >= NbParameters() )) {
-    printf("ParamPanel::RecupereParametre \t Erreur, identificateur incorrect \n");
-    return;
-  } // end if
+  macro_CheckParameterId(id, return)
 
 } // SetStackDirection()
 
@@ -984,10 +970,7 @@ void  ParamPanel::Attache(int id, int id_h, int id_g,
 //---------------------------------------------------------------------
 void ParamPanel::SetDragCallback( int id) {
 
-  if ((id < 0) || (id >= NbParameters() )) {
-    printf("ParamPanel::SetDragCallback \t Erreur, identificateur incorrect \n");
-    return;
-  } // end if
+  macro_CheckParameterId(id, return)
   
 //  (*this)[id]->SetDragCallback();
     
@@ -1040,10 +1023,14 @@ void ParamPanel::EndBox()
 }
   
 //-----------------------------------------------------------
-void ParamPanel::BeginHorizontal()
+void ParamPanel::BeginHorizontal( int border)
 {
   wxBoxSizer* sizer  = new wxBoxSizer( wxHORIZONTAL );
-  _current_sizer.top()->Add(sizer, 0,wxEXPAND | wxALL, 5);
+  _current_sizer.top()->Add(
+    sizer,
+    0,
+    wxEXPAND | wxALL,
+    border);
   _current_sizer.push(sizer);
 }
 

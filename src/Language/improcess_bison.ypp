@@ -471,6 +471,7 @@ void CB_delete_surfdraw( void* varid);
 %token T_ShowSlider
 %token T_SetCallback
 %token T_SetDragCallback
+%token T_SetPositionProp
 %token T_BeginBox T_EndBox T_BeginHorizontal T_EndHorizontal
 %token T_redraw
 
@@ -3370,23 +3371,21 @@ command:
         }
         |
     var_surface T_POINT T_SetOpacity T_OP_PAR expr T_CL_PAR
-        {
+    {
 
       (*(SurfacePoly::ptr*) $1->Pointer())->GetMaterial()._opacity= $5;
 
-        }
-        |
+    }
+    |
     var_surface T_POINT T_SetVisible T_OP_PAR expr T_CL_PAR
-        {
-        /**
-        Description:
-          Sets the object visible or not visible in the scene.
-        **/
-
+    {
+      /**
+      Description:
+        Sets the object visible or not visible in the scene.
+      **/
       (*(SurfacePoly::ptr*) $1->Pointer())->SetVisible( (int) $5);
-
-        }
-        |
+    }
+    |
     var_surface T_POINT T_SetColorMaterial T_OP_PAR expr T_CL_PAR
         {
         /**
@@ -4654,6 +4653,27 @@ cerr << "Feature not available, needs to be updated ! " << endl;
           int n = pw->NbParameters();
             pw->ChangedValueCallback(n-1,(void*) CB_ParamWin, (void*) $5->Pointer() );
         }
+    |
+    VAR_PARAMWIN T_POINT T_SetPositionProp 
+      T_OP_PAR 
+        expr  T_COMMA  expr T_COMMA  expr 
+      T_CL_PAR
+    {
+      /**
+      Description:
+        Sets the object position properties of the given widget
+      Parameters:
+        - proportion property (0: not proportional, 
+                               1: standard proportion,
+                               -1: keeps previous value)
+        - border size ( -1 keeps previous value)
+        - flags       ( -1 keeps previous value)
+      **/
+      ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
+      int n = pw->NbParameters();
+        pw->SetPositionProperties(
+              n-1, (int) $5, (int) $7, (int) $9);
+    }
         |
         VAR_PARAMWIN T_POINT T_SetDragCallback T_OP_PAR expr T_CL_PAR
         {

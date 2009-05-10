@@ -650,6 +650,7 @@ AddString         return(token::T_AddString); /*{AddString,T_AddString}*/
 AddFilename       return(token::T_AddFilename); /*{AddFilename,T_AddFilename}*/
 SetCallback       return(token::T_SetCallback); /*{SetCallback,T_SetCallback}*/
 SetDragCallback   return(token::T_SetDragCallback); /*{SetDragCallback,T_SetDragCallback}*/
+SetPostionProp      return(token::T_SetPositionProp); /*{SetPositionProp,T_SetPositionProp}*/
 ShowSlider        return(token::T_ShowSlider); /*{ShowSlider,T_ShowSlider}*/
 CreateWin         return(token::T_CreateWin); /*{CreateWin,T_CreateWin}*/
 Display           return(token::T_Display); /*{Display,T_Display}*/

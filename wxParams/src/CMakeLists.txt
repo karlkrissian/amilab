@@ -13,7 +13,13 @@ SET(  wxParams_SRCS
     palette.cpp
     ParamPanel.cpp
     wxColorParameter.cpp
+    myTextCtrl.cpp
+    mySpinCtrl.cpp
+    mySlider.cpp
+    mySpinButton.cpp
     wxParamTypes.cpp
+    wxIntegerParameter.cpp
+    wxFloatParameter.cpp
     CoutwxString.cpp
 )
 

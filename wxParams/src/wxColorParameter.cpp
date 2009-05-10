@@ -60,10 +60,7 @@ wxColorParameter::wxColorParameter( wxWindow* parent, const char* libelle, Class
 		      (void*) NULL)
 {
   parametre = couleur;
-  this->_wx_color.Set(parametre->Red(),
-                      parametre->Green(),
-                      parametre->Blue());
-  this->SetBackgroundColour(this->_wx_color);
+  ParamUpdate();
 }
 
 ///
@@ -73,13 +70,20 @@ wxColorParameter::~wxColorParameter()
 }
 
 ///
-void  wxColorParameter::Update()
+void  wxColorParameter::ParamUpdate()
 //
 {
   this->_wx_color.Set(parametre->Red(),
                       parametre->Green(),
                       parametre->Blue());
   this->SetBackgroundColour(this->_wx_color);
+
+  if (_wx_color.Red()+ _wx_color.Green()+ _wx_color.Blue() 
+      < (1.5*255)) 
+    SetForegroundColour(*wxWHITE);
+  else
+    SetForegroundColour(*wxBLACK);
+
 }
 
 ///
@@ -103,7 +107,7 @@ void wxColorParameter::OnLeftButton( wxMouseEvent& event)
     }
 
   parametre->FixeValeur(col.Red(),col.Green(),col.Blue());
-  this->SetBackgroundColour(col);
+  this->ParamUpdate();
 
   printf("wxColorParameter::OnLeftButton() \tthis->_callback != NULL ??\n");
   if (this->_calldata != NULL) {

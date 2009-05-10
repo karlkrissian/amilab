@@ -37,9 +37,9 @@
 wxString GetwxStr(const char* str);
 wxString GetwxStr(const string& str);
 
-//==============================================================================
+//=========================================================
 //      wxStringSelectionParameter
-//==============================================================================
+//=========================================================
 
 BEGIN_EVENT_TABLE(myChoice, wxChoice)
   EVT_CHOICE    (wxID_ANY,  myChoice::OnChoiceUpdate)

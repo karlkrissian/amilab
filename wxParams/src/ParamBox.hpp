@@ -306,8 +306,12 @@ public:
   //      ----------
 
   ///
-  void FloatConstraints( int id, float min, float max, float defaut);
+  void FloatConstraints(
   //   ---------------
+      int id,  
+      const float& min,
+      const float& max,
+      const float& defaut);
 //@}
 
   void ParamShowSlider( int id, bool show);

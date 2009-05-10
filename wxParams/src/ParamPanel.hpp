@@ -80,7 +80,12 @@
 #include <stack>
 #include <string>
 
-#define MAX_ARGS         20
+
+#define  wxP_DefaultProportion 0
+#define  wxP_DefaultBorder     5
+#define  wxP_DefaultFlags      wxEXPAND | wxALL
+
+#define  wxP_DefHSizerBorder 2
 
 //==============================================================================
 /**
@@ -220,7 +225,12 @@ public:
  
   //
   template <class T>
-  wxSizerItem* AddParam( T* w);
+  wxSizerItem* AddParam(  
+      T* w,
+      int proportional  = wxP_DefaultProportion,
+      int border        = wxP_DefaultBorder,
+      int flag          = wxP_DefaultFlags
+    );
   //
 
   //
@@ -235,11 +245,14 @@ public:
 //@{
 
   ///
-  unsigned char AddBoolean( int* id, unsigned char* param, char* libelle,
+  unsigned char AddBoolean( 
   //      -------------
-              type_booleen type=CaractereToggle,
-              const std::string& tt=""
-              );
+    int* id,
+    unsigned char* param,
+    const char* libelle,
+    type_booleen type=CaractereToggle,
+    const std::string& tt=""
+    );
 
   ///
   void BooleanDefault( int id, unsigned char defaut);
@@ -251,15 +264,17 @@ public:
   ///
   unsigned char AddInteger( int* id, 
                             int* param, 
-                            char* libelle, 
+                            const char* libelle, 
                             const std::string& tooltip=""
                           );
   //      ------------
 
-  int AddInteger( int* param, char* libelle,
-                  const std::string& tooltip=""
+  int AddInteger( 
+  //  ----------
+      int* param, 
+      const char* libelle,
+      const std::string& tooltip=""
                 );
-  //      ------------
 
   ///
   void IntegerConstraints( int id, int min, int max, int defaut);
@@ -274,19 +289,30 @@ public:
   /**
     @param precision nombre de chiffres apr� la virgule
    */
-  unsigned char AddFloat( int* id, float* r, char* libelle, int precision = 2,
-                          const std::string& tooltip=""
+  unsigned char AddFloat( 
+      int* id,
+      float* r,
+      const char* libelle, 
+      int precision = 2,
+      const std::string& tooltip=""
                         );
   //      ----------
 
-  int AddFloat( float* r, char* libelle, int precision = 2,
-                const std::string& tooltip=""
+  int AddFloat( 
+      float* r,
+      const char* libelle,
+      int precision = 2,
+      const std::string& tooltip=""
               );
   //      ----------
 
   ///
-  void FloatConstraints( int id, float min, float max, float defaut);
+  void FloatConstraints( 
   //   ---------------
+    int id,
+    const float& min,
+    const float& max,
+    const float& defaut);
 //@}
 
   void ParamShowSlider( int id, bool show);
@@ -299,11 +325,18 @@ public:
   /**
     @param precision nombre de chiffres apr� la virgule
    */
-  unsigned char AddFloatDouble( int* id, double* r, char* libelle, int precision = 2);
-  //      ----------
+  unsigned char AddFloatDouble( 
+  //            --------------
+    int* id,
+    double* r,
+    const char* libelle,
+    int precision = 2);
 
-  int AddFloatDouble( double* r, char* libelle, int precision = 2);
-  //      ----------
+  int AddFloatDouble( 
+  //  --------------
+    double* r,
+    const char* libelle,
+    int precision = 2);
 
   ///
   void FloatConstraintsDouble( int id, double min, double max, double defaut);
@@ -313,8 +346,11 @@ public:
 /** @name Type Chaine */
 //@{
   ///
-  unsigned char AjouteChaine( int* id, std::string* ch, char* libelle);
-  //      ------------
+  unsigned char AjouteChaine(
+  //            ------------
+    int* id,
+    std::string* ch,
+    const char* libelle);
 
   ///
   void ContraintesChaine( int id, char* defaut);
@@ -325,8 +361,11 @@ public:
 /** @name Type NomFichier */
 //@{
   ///
-  unsigned char AjouteNomFichier( int* id, std::string* nom, char* libelle);
-  //      ----------------
+  unsigned char AjouteNomFichier( 
+  //            ----------------
+    int* id,
+    std::string* nom,
+    const char* libelle);
 
   ///
   void ContraintesNomFichier( int id, const char* defaut, const char* rep, const char* masque);
@@ -336,30 +375,35 @@ public:
 /** @name Type Boutton */
 //@{
   ///
-  unsigned char AddButton( int* id, char* libelle, 
-  //      -------------
-            void* callback, void* data,
-            const std::string& tooltip=""
-            );
+  unsigned char AddButton(
+  //            ---------
+    int* id,
+    const char* libelle,
+    void* callback, void* data,
+    const std::string& tooltip=""
+    );
 //@}
 
 /** @name Type Boutton avec Pixmap*/
 //@{
   ///
-  unsigned char AddPixmapButton( int* id, char* libelle, 
+  unsigned char AddPixmapButton( 
   //            ---------------
-                    void* callback, void* data,
-                    const char** pixmap_string,
-                    const std::string& tooltip=""
-                    );
+    int* id,
+    const char* libelle, 
+    void* callback, void* data,
+    const char** pixmap_string,
+    const std::string& tooltip=""
+    );
 //@}
 
 /** @name Type Couleur */
 //@{
   ///
   // for wxwidgets version
-  unsigned char AddColor( int* id, char* libelle, 
+  unsigned char AddColor( int* id, 
   //            -------
+                const char* libelle, 
                 ClasseCouleur* couleur,
                 const std::string& tt=""
               );
@@ -368,9 +412,12 @@ public:
 /** @name Type Label */
 //@{
   ///
-  unsigned char AddLabel( int* id, char* libelle, char* contenu, 
-  //      -----------
-               type_label type=LabelLabel);
+  unsigned char AddLabel( 
+  //            --------
+    int* id,
+    const char* libelle,
+    char* contenu,
+    type_label type=LabelLabel);
 //@}
   
   void SetLabelValue(int id, char* value);
@@ -388,14 +435,18 @@ public:
   ///
   unsigned char AddEnumeration( int* id, int taille, int* param, 
   //      -----------------
-                 char* libelle, 
-                 type_enum type=EnumOptionMenu);
+                  const char* libelle, 
+                  type_enum type=EnumOptionMenu,
+                  const std::string& tooltip=""
+                  );
 
   ///
   unsigned char AddEnumeration( int* id,  int* param, 
   //      -----------------
-                 char* libelle, 
-                 type_enum type=EnumOptionMenu);
+                   const char* libelle, 
+                   type_enum type=EnumOptionMenu,
+                   const std::string& tooltip=""
+                  );
 
   ///
   unsigned char AddEnumChoice( int id_enum, int* id_enum_choix, 
@@ -416,6 +467,33 @@ public:
   ///
   void FixeVisible( int id, unsigned char);
   //   -----------
+
+  /** Set the position properties for the given widget id
+     properties are
+      - proportion
+      - border
+      - flags
+  */
+  void SetPositionProperties(
+  //   ---------------------
+        int id, 
+        int proportion  = wxP_DefaultProportion,
+        int border      = wxP_DefaultBorder,
+        int flag        = wxP_DefaultFlags
+        );
+
+  /** Set the position properties for the last inserted widget
+     properties are
+      - proportion
+      - border
+      - flags
+  */
+  void SetLastPositionProperties(
+  //   ---------------------
+        int proportion  = wxP_DefaultProportion,
+        int border      = wxP_DefaultBorder,
+        int flag        = wxP_DefaultFlags
+        );
 
 /*  ///
   void Attache( int id, Widget haut, Widget gauche);
@@ -486,7 +564,7 @@ public:
   void BeginBox( const char* boxname);
   void EndBox();
   
-  void BeginHorizontal();
+  void BeginHorizontal( int b = wxP_DefHSizerBorder);
   void EndHorizontal();
   
   virtual void OnOK( wxCommandEvent& );

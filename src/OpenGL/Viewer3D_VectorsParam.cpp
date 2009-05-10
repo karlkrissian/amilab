@@ -3,10 +3,11 @@
 #include "Viewer3D.hpp"
 
 
-Viewer3D_VectorsParam::Viewer3D_VectorsParam(Viewer3D* parent): ParamBox(parent, "Vector Field Parameters")
+Viewer3D_VectorsParam::Viewer3D_VectorsParam(Viewer3D* parent): ParamPanel(parent->GetParamBook(), "Vect")
 {
   parent_class = parent;
   CreateParameters();
+  SetToolTip("Vector Field Parameters");
 }
 
 
@@ -21,9 +22,11 @@ void Viewer3D_VectorsParam::CreateParameters()
   //--------------------------------------------------
 
   AddEnumeration( &_id_vecttype, 
-	     2, 
-	     &mc->_GLParam._vector_type,
-	     "Vector type");
+      2, 
+      &mc->_GLParam._vector_type,
+      "Type",
+      EnumOptionMenu,
+      "Vector Type");
 
   AddEnumChoice( _id_vecttype, 
 	   &_id_vecttype_orient, "Orientation");
@@ -39,148 +42,155 @@ void Viewer3D_VectorsParam::CreateParameters()
   //--------------------------------------------------
   //  VECTOR FIELD 1
   //--------------------------------------------------
-BeginBox("Vector Fied 1");
-/*
-  //-------------- Vector Field image
-  AjouteNomFichier( &_id_vect1image, 
-		    &mc->_GLParam._vect1_image_name, 
-		    "Vect. Field");
+  BeginBox("First Vector Fied");
+    /*
+      //-------------- Vector Field image
+      AjouteNomFichier( &_id_vect1image, 
+            &mc->_GLParam._vect1_image_name, 
+            "Vect. Field");
+    
+      ContraintesNomFichier( _id_vect1image, "", ".", 
+          "*.ami.gz");
+    
+      ChangedValueCallback( _id_vect1image, 		  
+          (void*) Viewer3D_VectorsParam::CB_vect1_image,
+          (void*) parent_class);
+    */
 
-  ContraintesNomFichier( _id_vect1image, "", ".", 
-      "*.ami.gz");
-
-  ChangedValueCallback( _id_vect1image, 		  
-      (void*) Viewer3D_VectorsParam::CB_vect1_image,
-      (void*) parent_class);
-*/
-
-  //-------------- Display
-  AddBoolean( &_id_display_vect1, 
-				 &mc->_GLParam._display_vect1,
-				 "Display Vector",
-				 CaractereToggle);
-
-  BooleanDefault( _id_display_vect1, mc->_GLParam._display_vect1);
-
-  ChangedValueCallback( 
-                     _id_display_vect1,
-		     (void*) Viewer3D::CB_redessine,
-		     (void*) parent_class);
-
-  //-------------- Color
-  AddColor( &_id_vect1color,
-				 "Color",
-				 &mc->_GLParam._vect1_color);
-
-  ChangedValueCallback( 
-                        _id_vect1color,
-			(void*) Viewer3D_VectorsParam::CB_recompute_vect1,
-			(void*) parent_class);
-
-  //-------------- Size
-  AddFloat( &_id_vect1size,
-			      &mc->_GLParam._vect1_size,
-			      "Vector size");
-
-  FloatConstraints( _id_vect1size,
-				   0.0, 1.0,
-				   mc->_GLParam._vect1_size);
-
-
-  ChangedValueCallback(
-                  _id_vect1size,
-		  (void*) Viewer3D_VectorsParam::CB_recompute_vect1,
-		  (void*) parent_class);
-
-  //-------------- Width
-  AddInteger( &_id_vect1width,
-				&mc->_GLParam._vect1_width,
-				"Vector width");
-
-  IntegerConstraints( _id_vect1width,
-				   1, 10,
-				   mc->_GLParam._vect1_width);
-
-
-  ChangedValueCallback(
-                  _id_vect1width,
-		  (void*) Viewer3D_VectorsParam::CB_recompute_vect1,
-		  (void*) parent_class);
-
-EndBox();
+    BeginHorizontal();
+      //-------------- Display
+      AddBoolean( &_id_display_vect1, 
+            &mc->_GLParam._display_vect1,
+            "Display",
+            CaractereToggle,
+            "Display Vector Field");
+    
+      BooleanDefault( _id_display_vect1, mc->_GLParam._display_vect1);
+    
+      ChangedValueCallback( 
+                        _id_display_vect1,
+            (void*) Viewer3D::CB_redessine,
+            (void*) parent_class);
+    
+      //-------------- Color
+      AddColor( &_id_vect1color,
+            "Color",
+            &mc->_GLParam._vect1_color);
+    
+      ChangedValueCallback( 
+                            _id_vect1color,
+          (void*) Viewer3D_VectorsParam::CB_recompute_vect1,
+          (void*) parent_class);
+    EndHorizontal();
+  
+    //-------------- Size
+    AddFloat( &_id_vect1size,
+              &mc->_GLParam._vect1_size,
+              "Size",2,"Vector Size");
+  
+    FloatConstraints( _id_vect1size,
+            0.0, 1.0,
+            mc->_GLParam._vect1_size);
+  
+  
+    ChangedValueCallback(
+                    _id_vect1size,
+        (void*) Viewer3D_VectorsParam::CB_recompute_vect1,
+        (void*) parent_class);
+  
+    //-------------- Width
+    AddInteger( &_id_vect1width,
+          &mc->_GLParam._vect1_width,
+          "Width", "Vector Width");
+  
+    IntegerConstraints( _id_vect1width,
+            1, 10,
+            mc->_GLParam._vect1_width);
+  
+  
+    ChangedValueCallback(
+                    _id_vect1width,
+        (void*) Viewer3D_VectorsParam::CB_recompute_vect1,
+        (void*) parent_class);
+  
+  EndBox();
   //--------------------------------------------------
   //  VECTOR FIELD 2
   //--------------------------------------------------
-BeginBox("Vector Fied 2");
+  BeginBox("Second Vector Fied");
+  
+  /*
+  
+    //-------------- Vector Field image
+    AjouteNomFichier( &_id_vect2image, 
+              &mc->_GLParam._vect2_image_name, 
+              "Vect. Field");
+  
+    ContraintesNomFichier( _id_vect2image, "", ".", "*.inr.gz");
+  
+    ChangedValueCallback( _id_vect2image, 
+    (void*) Viewer3D_VectorsParam::CB_vect2_image,
+    (void*) parent_class);
+  
+  */
+    BeginHorizontal();
+      //-------------- Display
+      AddBoolean( &_id_display_vect2, 
+            &mc->_GLParam._display_vect2,
+            "Display",
+            CaractereToggle,
+            "Display 2nd Vector Field");
+    
+      BooleanDefault( _id_display_vect2, mc->_GLParam._display_vect2);
+    
+      ChangedValueCallback( 
+                        _id_display_vect2,
+            (void*) Viewer3D::CB_redessine,
+            (void*) parent_class);
+    
+      //-------------- Color
+      AddColor( &_id_vect2color,
+            "Color",
+            &mc->_GLParam._vect2_color,
+            "Set Vector Field Color");
+    
+      ChangedValueCallback( 
+            _id_vect2color,
+      (void*) Viewer3D_VectorsParam::CB_recompute_vect2,
+      (void*) parent_class);
+    EndHorizontal();
 
-/*
-
-  //-------------- Vector Field image
-  AjouteNomFichier( &_id_vect2image, 
-				    &mc->_GLParam._vect2_image_name, 
-				    "Vect. Field");
-
-  ContraintesNomFichier( _id_vect2image, "", ".", "*.inr.gz");
-
-  ChangedValueCallback( _id_vect2image, 
-	(void*) Viewer3D_VectorsParam::CB_vect2_image,
-	(void*) parent_class);
-
-*/
-  //-------------- Display
-  AddBoolean( &_id_display_vect2, 
-				 &mc->_GLParam._display_vect2,
-				 "Display Vector",
-				 CaractereToggle);
-
-  BooleanDefault( _id_display_vect2, mc->_GLParam._display_vect2);
-
-  ChangedValueCallback( 
-                     _id_display_vect2,
-		     (void*) Viewer3D::CB_redessine,
-		     (void*) parent_class);
-
-  //-------------- Color
-  AddColor( &_id_vect2color,
-				 "Color",
-				 &mc->_GLParam._vect2_color);
-
-  ChangedValueCallback( 
-        _id_vect2color,
-	(void*) Viewer3D_VectorsParam::CB_recompute_vect2,
-	(void*) parent_class);
-
-  //-------------- Size
-  AddFloat( &_id_vect2size,
-			      &mc->_GLParam._vect2_size,
-			      "Vector size");
-
-  FloatConstraints( _id_vect2size,
-				   0.0, 1.0,
-				   mc->_GLParam._vect2_size);
-
-
-  ChangedValueCallback(
-        _id_vect2size,
-        (void*) Viewer3D_VectorsParam::CB_recompute_vect2,
-        (void*) parent_class);
-
-  //-------------- Width
-  AddInteger( &_id_vect2width,
-				&mc->_GLParam._vect2_width,
-				"Vector width");
-
-  IntegerConstraints( _id_vect2width,
-				   1, 10,
-				   mc->_GLParam._vect2_width);
-
-
-  ChangedValueCallback(
-          _id_vect2width,
-	  (void*) Viewer3D_VectorsParam::CB_recompute_vect2,
-	  (void*) parent_class);
-
-EndBox();
+    //-------------- Size
+    AddFloat( &_id_vect2size,
+              &mc->_GLParam._vect2_size,
+              "Size",2,"Vector Field Size");
+  
+    FloatConstraints( _id_vect2size,
+            0.0, 1.0,
+            mc->_GLParam._vect2_size);
+  
+  
+    ChangedValueCallback(
+          _id_vect2size,
+          (void*) Viewer3D_VectorsParam::CB_recompute_vect2,
+          (void*) parent_class);
+  
+    //-------------- Width
+    AddInteger( &_id_vect2width,
+          &mc->_GLParam._vect2_width,
+          "Width", "Vector Field Width");
+  
+    IntegerConstraints( _id_vect2width,
+            1, 10,
+            mc->_GLParam._vect2_width);
+  
+  
+    ChangedValueCallback(
+            _id_vect2width,
+      (void*) Viewer3D_VectorsParam::CB_recompute_vect2,
+      (void*) parent_class);
+  
+  EndBox();
 
   //--------------
   EnleveBouttons();
