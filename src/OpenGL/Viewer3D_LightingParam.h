@@ -15,7 +15,7 @@
 
 class Viewer3D;
 
-class  Viewer3D_LightingParam: public ParamBox
+class  Viewer3D_LightingParam: public ParamPanel
 {
 private:
 

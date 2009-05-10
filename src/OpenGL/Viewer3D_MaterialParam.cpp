@@ -3,7 +3,9 @@
 #include "Viewer3D.hpp"
 
 
-Viewer3D_MaterialParam::Viewer3D_MaterialParam(Viewer3D* parent): ParamBox(parent, "Material Parameters")
+Viewer3D_MaterialParam::Viewer3D_MaterialParam(
+  Viewer3D* parent): 
+  ParamPanel(parent, "Obj. Mat.")
 {
   parent_class = parent;
   _object_number = 0;
@@ -19,7 +21,8 @@ void Viewer3D_MaterialParam::CreateParameters()
   //-------------- Object Number
   AddInteger( &_id_object_number,
                 &_object_number,
-                "Object Number");
+                "Nb",
+                "Object number");
   
   IntegerConstraints( _id_object_number,
 	   0, 1,
@@ -34,8 +37,9 @@ void Viewer3D_MaterialParam::CreateParameters()
   //-------------- Display Object
   AddBoolean( &_id_display_object, 
 				  &_current_object_visible,
-				  "Display object",
-				  CaractereToggle);
+				  "On",
+				  CaractereToggle,
+          "Display object");
 
   BooleanDefault( _id_display_object, _current_object_visible);
 
@@ -49,8 +53,9 @@ void Viewer3D_MaterialParam::CreateParameters()
   //-------------- Enable ColorMaterial
   AddBoolean( &_id_colormaterial, 
 				  &_GLMaterial_display._colormaterial,
-				  "Enable ColorMaterial",
-				  CaractereToggle);
+				  "ColorMat",
+				  CaractereToggle,
+          "Use ColorMaterial mode");
 
   BooleanDefault( _id_colormaterial, _GLMaterial_display._colormaterial);
 
@@ -66,27 +71,27 @@ void Viewer3D_MaterialParam::CreateParameters()
   //-------------- ColorMaterial Mode
   AddEnumeration( &_id_colormaterial_mode,5, 
 				      &_GLMaterial_display._colormaterial_mode,
-				      "CM Mode");
+				      "Mode");
 
   AddEnumChoice( _id_colormaterial_mode,
 				    &_id_colormaterial_emission,
-					   " Emission");
+					   "Emis");
 
   AddEnumChoice( _id_colormaterial_mode,
 				    &_id_colormaterial_ambient,
-					   " Ambient");
+					   "Amb");
 
   AddEnumChoice( _id_colormaterial_mode,
 				    &_id_colormaterial_diffuse,
-					   " Diffuse");
+					   "Dif");
 
   AddEnumChoice( _id_colormaterial_mode,
 				    &_id_colormaterial_specular,
-					   " Specular");
+					   " Spec");
 
   AddEnumChoice( _id_colormaterial_mode,
 				    &_id_colormaterial_ambient_and_diffuse,
-					   " Ambient+ Diffuse");
+					   " Amb+Dif");
 
   ChangedValueCallback( 
                      _id_colormaterial_mode,
@@ -94,51 +99,55 @@ void Viewer3D_MaterialParam::CreateParameters()
 		     (void*) parent_class);
 
   BeginHorizontal();
-  //-------------- Ambient
-  AddColor( &_id_mat_ambient,
-		  "Ambient",
-		  &_GLMaterial_display._ambient);
+    //-------------- Ambient
+    AddColor( &_id_mat_ambient,
+        "Ambient",
+        &_GLMaterial_display._ambient,
+        "Ambient Color");
+    
   
-
-  ChangedValueCallback( _id_mat_ambient,
-			 (void*) CB_material_update,
-			 (void*) parent_class);
-
-  //-------------- Diffuse
-  AddColor( &_id_mat_diffuse,
-				  "Diffuse",
-				  &_GLMaterial_display._diffuse);
-
-  ChangedValueCallback( _id_mat_diffuse,
-					 (void*) CB_material_update,
-					 (void*) parent_class);
-
-//  EndHorizontal();
-//  BeginHorizontal();
-
-  //-------------- Specular
-  AddColor( &_id_mat_specular,
-			  "Specular",
-			  &_GLMaterial_display._specular);
-
-  ChangedValueCallback( _id_mat_specular,
-			(void*) CB_material_update,
-			(void*) parent_class);
-
-  //-------------- Emission
-  AddColor( &_id_mat_emission,
-		  "Emission",
-		  &_GLMaterial_display._emission);
-
-  ChangedValueCallback( _id_mat_emission,
-		 (void*) CB_material_update,
-		 (void*) parent_class);
+    ChangedValueCallback( _id_mat_ambient,
+        (void*) CB_material_update,
+        (void*) parent_class);
+  
+    //-------------- Diffuse
+    AddColor( &_id_mat_diffuse,
+            "Diffuse",
+            &_GLMaterial_display._diffuse,
+            "Diffuse Color");
+  
+    ChangedValueCallback( _id_mat_diffuse,
+            (void*) CB_material_update,
+            (void*) parent_class);
+  
+  EndHorizontal();
+  BeginHorizontal();
+  
+    //-------------- Specular
+    AddColor( &_id_mat_specular,
+          "Specular",
+          &_GLMaterial_display._specular,
+          "Specular Color");
+  
+    ChangedValueCallback( _id_mat_specular,
+        (void*) CB_material_update,
+        (void*) parent_class);
+  
+    //-------------- Emission
+    AddColor( &_id_mat_emission,
+        "Emission",
+        &_GLMaterial_display._emission,
+        "Emission Color");
+  
+    ChangedValueCallback( _id_mat_emission,
+      (void*) CB_material_update,
+      (void*) parent_class);
   EndHorizontal();
 
   //-------------- Shininess
   AddFloat( &_id_mat_shininess, 
 		   &_GLMaterial_display._shininess,
-		   "Shininess");
+		   "Shin.", 1, "Shininess");
   FloatConstraints( _id_mat_shininess, 
 		0.0, 100.0,
 		_GLMaterial_display._shininess);
@@ -150,7 +159,7 @@ void Viewer3D_MaterialParam::CreateParameters()
   //-------------- Opacity
   AddFloat( &_id_mat_opacity, 
 			   &_GLMaterial_display._opacity,
-			   "Opacity");
+			   "Opac.", 2, "Opacity");
   FloatConstraints( _id_mat_opacity, 
 				0.0, 1.0,
 				_GLMaterial_display._opacity);

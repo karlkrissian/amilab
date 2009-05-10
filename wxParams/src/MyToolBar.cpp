@@ -104,41 +104,9 @@ BEGIN_EVENT_TABLE(myBitmapComboBox, wxBitmapComboBox)
 END_EVENT_TABLE()
 
 
-//--------------------------------------------------------------------------------
-void MyToolBar::AddEnumChoice(int enum_id, 
-    int combo_id, 
-    int value, 
-    const wxBitmap& bitmap, 
-    const wxString& text)
-{
-  //out << "MyToolBar::AddEnumChoice begin" << endl;
-
-  // first create the combo is needed
-  if (enum_info[enum_id]->combo==NULL) {
-    myBitmapComboBox *combo = new myBitmapComboBox(
-        this,
-        combo_id, 
-        enum_info[enum_id]->label, 
-        wxDefaultPosition, 
-        wxSize(61,-1) ,0,NULL, 
-        wxCB_READONLY  );
-    enum_info[enum_id]->combo=combo;
-    // Connect event
-    this->Connect(combo_id,wxEVT_COMMAND_COMBOBOX_SELECTED,
-                 wxCommandEventHandler(MyToolBar::OnEnumPressed));
-    combo->SetToolTip(enum_info[enum_id]->shortHelpString);
-    this->AddControl(combo);
-  }
-
-  enum_info[enum_id]->combo->Append(text,bitmap);
-  // add it to the list
-  enum_info[enum_id]->values.push_back(value);
-
-  //out << "MyToolBar::AddEnumChoice end" << endl;
-}
 
 //------------------------------------------------------------------------------
-void MyToolBar::Update(int enum_id)
+void MyToolBarBase::UpdateTool(int enum_id)
 {
 
 //#ifndef WIN32
@@ -169,7 +137,7 @@ void MyToolBar::Update(int enum_id)
 }
 
 //------------------------------------------------------------------------------
-void MyToolBar::AddRightClick(  int enum_id,
+void MyToolBarBase::AddRightClick(  int enum_id,
                                 void* rc_callback,
                                 void* rc_calldata,
                                 const wxString& rc_help)
@@ -185,7 +153,7 @@ void MyToolBar::AddRightClick(  int enum_id,
 }
 
 //------------------------------------------------------------------------------
-void MyToolBar::OnEnumPressed( wxCommandEvent& event)
+void MyToolBarBase::OnEnumPressed( wxCommandEvent& event)
 {
   // Button pressed: locate the corresponding tool
   //wxMessageBox(_T("MyToolBar::OnEnumPressed\n"));
@@ -198,7 +166,7 @@ void MyToolBar::OnEnumPressed( wxCommandEvent& event)
     if ((*Iter)->combo->GetId()==event.GetId())
     {
       (*Iter)->SetParam((*Iter)->combo->GetSelection());
-      this->Update(id);
+      this->UpdateTool(id);
       if ((*Iter)->callback!=NULL) {
         void (*pf)( void*) = (void (*)(void*)) (*Iter)->callback;
         pf( (*Iter)->calldata);
@@ -210,7 +178,83 @@ void MyToolBar::OnEnumPressed( wxCommandEvent& event)
 
 
 //----------------------------------------------------------
-wxBitmapComboBox* MyToolBar::GetCombo( int enum_id)
+wxBitmapComboBox* MyToolBarBase::GetCombo( int enum_id)
 {
   return enum_info[enum_id]->combo;
+}
+
+
+//--------------------------------------------------------------------------------
+void MyToolBar::AddEnumChoice(int enum_id, 
+    int combo_id, 
+    int value, 
+    const wxBitmap& bitmap, 
+    const wxString& text)
+{
+  //out << "MyToolBar::AddEnumChoice begin" << endl;
+
+  // first create the combo is needed
+  if (enum_info[enum_id]->combo==NULL) {
+    myBitmapComboBox *combo = new myBitmapComboBox(
+        (wxToolBar*)this,
+        combo_id, 
+        enum_info[enum_id]->label, 
+        wxDefaultPosition, 
+        wxSize(55,-1) ,0,NULL, 
+        wxCB_READONLY  );
+    enum_info[enum_id]->combo=combo;
+    // Connect event
+    wxToolBar::Connect(combo_id,wxEVT_COMMAND_COMBOBOX_SELECTED,
+                 wxCommandEventHandler(MyToolBar::OnEnumPressed));
+    combo->SetToolTip(enum_info[enum_id]->shortHelpString);
+    this->AddControl(combo);
+  }
+
+  enum_info[enum_id]->combo->Append(text,bitmap);
+
+  // add it to the list
+  enum_info[enum_id]->values.push_back(value);
+
+  int xsize = enum_info[enum_id]->combo->GetBitmapSize().GetWidth();
+  int ysize = enum_info[enum_id]->combo->GetBitmapSize().GetWidth();
+  enum_info[enum_id]->combo->SetSize(xsize+25,ysize+4);
+
+  //out << "MyToolBar::AddEnumChoice end" << endl;
+}
+
+
+//--------------------------------------------------------------------------------
+void MyAuiToolBar::AddEnumChoice(int enum_id, 
+    int combo_id, 
+    int value, 
+    const wxBitmap& bitmap, 
+    const wxString& text)
+{
+
+  // first create the combo is needed
+  if (enum_info[enum_id]->combo==NULL) {
+    myBitmapComboBox *combo = new myBitmapComboBox(
+        (wxAuiToolBar*)this,
+        combo_id, 
+        enum_info[enum_id]->label, 
+        wxDefaultPosition, 
+        wxSize(55,-1) ,0,NULL, 
+        wxCB_READONLY  );
+    enum_info[enum_id]->combo=combo;
+    // Connect event
+    wxAuiToolBar::Connect(combo_id,wxEVT_COMMAND_COMBOBOX_SELECTED,
+                 wxCommandEventHandler(MyAuiToolBar::OnEnumPressed));
+    combo->SetToolTip(enum_info[enum_id]->shortHelpString);
+    this->AddControl(combo);
+  }
+
+  enum_info[enum_id]->combo->Append(text,bitmap);
+  // add it to the list
+  enum_info[enum_id]->values.push_back(value);
+
+  int xsize = enum_info[enum_id]->combo->GetBitmapSize().GetWidth();
+  int ysize = enum_info[enum_id]->combo->GetBitmapSize().GetWidth();
+  enum_info[enum_id]->combo->SetSize(xsize+25,ysize+4);
+  //cout << "size = " << xsize << endl;
+  //out << "MyToolBar::AddEnumChoice end" << endl;
 }

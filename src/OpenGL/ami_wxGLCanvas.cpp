@@ -1835,7 +1835,6 @@ void ami_wxGLCanvas:: ReDimensionne( )
   if (!SetCurrentContext()) return;
   if (GB_debug)
     cerr << "ami_wxGLCanvas::ReDimensionne( )" << endl;
-  //glXWaitX();
   glViewport(0, 0, _largeur, _hauteur);
   _GLProjParam.SetWindowSize(_largeur,_hauteur);
   glMatrixMode(_GLTransform.GLenum_mode());

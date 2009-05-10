@@ -260,6 +260,7 @@ public:
   void FixeAccelerateur( std::string accelerateur, std::string texte);
   //   ----------------
 
+
   void UpdateValue();
   //   --------------
 
@@ -344,6 +345,8 @@ public:
   
   void Update();
 
+  void SetToolTip( const wxString& tt);
+
   }; // wxIntegerParameter
 
 //==============================================================================
@@ -414,6 +417,8 @@ public:
   void UpdateValue();
   
   void Update();
+
+  void SetToolTip( const wxString& tt);
 
 }; // wxFloatParameter
 

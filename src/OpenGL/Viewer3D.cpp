@@ -148,25 +148,72 @@ Viewer3D::Viewer3D(wxFrame *frame, const wxString& title, const wxPoint& pos,
     const wxSize& size, long style)
     : wxFrame(frame, wxID_ANY, title, pos, size, style )
 {
-    m_canvas = NULL;
-    CloseFunction = CloseData = NULL;
+  m_canvas = NULL;
+  CloseFunction = CloseData = NULL;
 
-//    SetIcon(wxIcon(sample_xpm));
-    CreateGLCanvas();
-    CreateParameterWindows();
-   // this->Show(true);
 
-    // Give it an icon
-    //    frame->SetIcon(wxIcon(_T("mondrian")));
+  CreateGLCanvas();
+  Create_Toolbar();
+  CreateParamBook(this);
+  // CreateParameterWindows() needs _param_book ...
+  CreateParameterWindows();
 
-    Create_wxMenu();
-    Create_Toolbar();
+  // need to create the parameters before the menu
+  Create_wxMenu();
+
+
+  m_mgr.SetManagedWindow(this);
+
+  //    SetIcon(wxIcon(sample_xpm));
+  // Add to AUI Manager
+  m_mgr.AddPane(this->m_canvas,  
+                wxAuiPaneInfo()
+                .Name(wxT("3D viewer"))
+                .Caption(wxT("GL viewer"))
+                //.MinSize(wxSize(200,200))
+                .Center()
+                .MaximizeButton(true)
+                .CloseButton(false));
+
+
+  // Add to AUI Manager
+  // add the toolbars to the manager
+  m_mgr.AddPane(m_toolbar, wxAuiPaneInfo()
+                .Name(wxT("toolbar"))
+                .Caption(wxT("Main Toolbar")).
+                ToolbarPane().Top()
+                .LeftDockable(false)
+                .RightDockable(false)
+                .CloseButton(false));
+
+//  m_mgr.GetPane(this->m_canvas).Float();
+//  m_mgr.GetPane(this->m_toolbar).Float();
+
+  m_mgr.AddPane(_param_book,
+                  wxAuiPaneInfo()
+                  .Name(wxT("Param Book"))
+                  .Caption(wxT("Scene Parameters"))
+                  .MinSize(wxSize(200,400))
+                  .Right().Layer(1)
+                  .MaximizeButton(true)
+                  .Hide()
+                  );
+
+
+  // tell the manager to "commit" all the changes just made
+  m_mgr.Update();
+
+  _initial_perspective = m_mgr.SavePerspective();
+
+
+  Centre(wxBOTH);
+
 }
 
 Viewer3D::~Viewer3D()
 {
   if (GB_debug) fprintf(stderr, "calling ~Viewer3D\n");
-    //delete m_canvas;
+  m_mgr.UnInit();
 }
 
 //-------------------------------------------------
@@ -232,13 +279,9 @@ void Viewer3D::CompSurfPaint()
 //--------------------------------------------------
 void Viewer3D::CreateGLCanvas()
 {
-    // not using the attributes because of some errors
-    this->m_canvas = new ami_wxGLCanvas(this, wxID_ANY, wxDefaultPosition,
-        wxDefaultSize, wxSUNKEN_BORDER, _T("ami_wxGLCanvas"));
-
-  //  this->Show(true);
-  //this->m_canvas->Show(true);
-  //  this->m_canvas->SetCurrentContext();
+  // not using the attributes because of some errors
+  this->m_canvas = new ami_wxGLCanvas(this, wxID_ANY, wxDefaultPosition,
+      wxDefaultSize, wxSUNKEN_BORDER, _T("ami_wxGLCanvas"));
 
 } // CreateGLCanvas()
 
@@ -250,12 +293,12 @@ void Viewer3D::CreateParameterWindows()
   _param_proj            = new Viewer3D_ProjParam       (this);
   _param_material        = new Viewer3D_MaterialParam   (this);
   _param_backgroundcolor = new Viewer3D_BackgroundParam (this);
-  _param_light           = new Viewer3D_LightingParam   (this);
   _param_fog             = new Viewer3D_FogParam        (this);
   _param_vectors         = new Viewer3D_VectorsParam    (this);
   _param_lines           = new Viewer3D_LineParam       (this);
   _param_points          = new Viewer3D_PointParam      (this);
 
+  _param_light           = new Viewer3D_LightingParam   (this);
 
 /*
 
@@ -491,14 +534,62 @@ void Viewer3D::Create_wxMenu()
 } // Create_wxMenu()
 
 //------------------------------------------------
-wxToolBar* Viewer3D::OnCreateToolBar(long style,
-      wxWindowID id, const wxString& name)
+wxAuiToolBar* Viewer3D::CreateAuiToolBar(long style,
+      wxWindowID id)
 {
-  return new MyToolBar(this,wx_toolbar_id,
+  return new MyAuiToolBar(this,id,
           wxDefaultPosition,
           wxDefaultSize,
-          wxTB_HORIZONTAL | wxNO_BORDER,
-          _T("MyToolBar"));
+          style,
+          _T("MyAuiToolBar"));
+}
+
+//------------------------------------------------------------------------
+void Viewer3D::CreateParamBook(wxWindow* parent)
+{
+   // create the notebook off-window to avoid flicker
+   wxSize client_size = GetClientSize();
+
+   _param_book = new wxAuiNotebook(this, wxID_ANY,
+                                    wxPoint(client_size.x, client_size.y),
+                                    wxDefaultSize,
+                                    wxAUI_NB_TOP          |
+                                    wxAUI_NB_TAB_SPLIT    |
+                                    wxAUI_NB_TAB_MOVE     |
+                                    wxAUI_NB_SCROLL_BUTTONS
+                                  );
+
+  _param_book->Fit();
+
+}
+
+//--------------------------------------------------------
+bool Viewer3D::AddParamPage(wxWindow* page, const wxString& caption,
+                            bool select, const wxBitmap& bitmap)
+{
+  cout << "Viewer3D::AddParamPage()" << endl;
+  bool result = _param_book->AddPage( page,caption,select,bitmap );
+   m_mgr.GetPane(_param_book).Show();
+   m_mgr.Update();
+  _param_book->Fit();
+  return result;
+} // AddParamPage()
+
+//--------------------------------------------------------
+bool Viewer3D::RemoveParamPage(wxWindow* page)
+{
+  bool result = _param_book->RemovePage( _param_book->GetPageIndex(page) );
+  _param_book->Fit();
+  if (_param_book->GetPageCount()==0)
+     m_mgr.GetPane(_param_book).Hide();
+  m_mgr.Update();
+  return result;
+} // RemoveParamPage()
+
+//--------------------------------------------------------
+bool Viewer3D::ParamIsDisplayed(wxWindow* page)
+{
+  return (_param_book->GetPageIndex(page)!=wxNOT_FOUND);
 }
 
 //---------------------------------------------------------
@@ -528,94 +619,98 @@ void Viewer3D::UpdateMenu()
 void Viewer3D::Create_Toolbar()
 {
 
-//      long  style =  (wxTB_FLAT | wxTB_DOCKABLE | wxTB_TEXT ) & ~wxTB_HORIZONTAL| wxTB_VERTICAL;
+  //      long  style =  (wxTB_FLAT | wxTB_DOCKABLE | wxTB_TEXT ) & ~wxTB_HORIZONTAL| wxTB_VERTICAL;
 
-  MyToolBar* toolBar = (MyToolBar*) this->CreateToolBar();
-  toolBar->SetToolBitmapSize(wxSize(30,30));
-  toolBar->SetToolSeparation(0);
-  toolBar->SetMargins(0,0);
+  m_toolbar = (MyAuiToolBar*) this->CreateAuiToolBar(
+      wxAUI_TB_DEFAULT_STYLE |
+      wxAUI_TB_OVERFLOW,
+      wx_toolbar_id);
 
-  toolBar->AddTool(wxID_TB_LoadPoly,
+  //m_toolbar->SetToolBitmapSize(wxSize(30,30));
+  //m_toolbar->SetToolSeparation(0);
+  //m_toolbar->SetMargins(0,0);
+
+/*
+  m_toolbar->AddTool(wxID_TB_LoadPoly,
       _T("Load PolyData"),
       wxBitmap(loadvrml_string),
       _T("Load PolyData"));
 
-  toolBar->AddTool(wxID_TB_SavePoly,
+  m_toolbar->AddTool(wxID_TB_SavePoly,
       _T("Save PolyData"),
       wxBitmap(savevrml_string),
       _T("Save PolyData"));
-
-  toolBar->AddTool(wxID_TB_CenterNormalize,
+*/
+  m_toolbar->AddTool(wxID_TB_CenterNormalize,
       _T("Center Normalize"),
       wxBitmap(center_normalize_string),
       _T("Center+Normalize (use 'Shift' to popup param.)"));
 
-
-  proj_id = toolBar->AddEnum( &m_canvas->_GLProjParam.type_proj,
+  proj_id = m_toolbar->AddEnum( &m_canvas->_GLProjParam.type_proj,
                               _T("Projection"),
                               _T("Projection type [Ortho|Persp] \n Right click --> parameters"),
                               (void*) Viewer3D::CB_redessine,
                               (void*) this);
-  toolBar->AddEnumChoice( proj_id,
+  m_toolbar->AddEnumChoice( proj_id,
                           wxID_TB_Projection, PROJ_ORTHO,
                           wxBitmap(proj_ortho_string), _T("ortho"));
-  toolBar->AddEnumChoice( proj_id,
+  m_toolbar->AddEnumChoice( proj_id,
                           wxID_TB_Projection, PROJ_PERSP,
                           wxBitmap(proj_persp_string), _T("persp"));
-  toolBar->AddRightClick( proj_id,
+  m_toolbar->AddRightClick( proj_id,
                           (void*) Viewer3D::CB_ProjParam,
                           (void*) this);
 
-  toolBar->Update(proj_id);
+  m_toolbar->UpdateTool(proj_id);
 
 
 //#ifndef WIN32
 
-  fog_id = toolBar->AddEnum(&m_canvas->_GLFogParam._enabled,
+  fog_id = m_toolbar->AddEnum(&m_canvas->_GLFogParam._enabled,
                             _T("Fog"),
                             _T("Fog On/Off \n Right click --> parameters"),
                             (void*) Viewer3D::CB_redessine,
                             (void*) this);
 
-  toolBar->AddEnumChoice(fog_id, wxID_TB_Fog, 0,
+  m_toolbar->AddEnumChoice(fog_id, wxID_TB_Fog, 0,
     wxBitmap(nofog_string),_T("No Fog"));
-  toolBar->AddEnumChoice(fog_id, wxID_TB_Fog, 1,
+  m_toolbar->AddEnumChoice(fog_id, wxID_TB_Fog, 1,
     wxBitmap(fog_string),_T("Fog"));
-  toolBar->AddRightClick( fog_id,
+  m_toolbar->AddRightClick( fog_id,
                             (void*) Viewer3D::CB_FogParam,
                             (void*) this);
-  toolBar->Update(fog_id);
+  m_toolbar->UpdateTool(fog_id);
 
 
-  bb_id = toolBar->AddEnum(&m_canvas->_GLParam._current_bounding_box,
+  bb_id = m_toolbar->AddEnum(&m_canvas->_GLParam._current_bounding_box,
                                 _T("BB"), _T("Bounding Box On/Off"),
                                 (void*) Viewer3D::CB_redessine,
                                 (void*) this);
 
-  toolBar->AddEnumChoice(bb_id, wxID_TB_BB, 0, wxBitmap(nobb_string), _T("No BB"));
-  toolBar->AddEnumChoice(bb_id, wxID_TB_BB, 1, wxBitmap(bb_string), _T("BB"));
-  toolBar->Update(bb_id);
+  m_toolbar->AddEnumChoice(bb_id, wxID_TB_BB, 0, wxBitmap(nobb_string), _T("No BB"));
+  m_toolbar->AddEnumChoice(bb_id, wxID_TB_BB, 1, wxBitmap(bb_string), _T("BB"));
+  m_toolbar->UpdateTool(bb_id);
 
 
-  glmode_id = toolBar->AddEnum<int>(&m_canvas->_GLParam._GLmode,
+  glmode_id = m_toolbar->AddEnum<int>(&m_canvas->_GLParam._GLmode,
                                 _T("GL mode"), _T("GL mode [Point|Line|Fill]"),
                                 (void*) Viewer3D::CB_redessine,
                                 (void*) this);
 
-  toolBar->AddEnumChoice(glmode_id, wxID_TB_GLmode, GL_MODE_POINT, wxBitmap(gl_point_string),_T("Points"));
-  toolBar->AddEnumChoice(glmode_id, wxID_TB_GLmode,  GL_MODE_LINE,  wxBitmap(gl_line_string),_T("Lines"));
-  toolBar->AddEnumChoice(glmode_id, wxID_TB_GLmode,  GL_MODE_FILL,  wxBitmap(gl_fill_xpm),_T("Fill"));
-  toolBar->AddEnumChoice(glmode_id, wxID_TB_GLmode,  GL_MODE_FILL_LINE,  wxBitmap(gl_fill_line_string),_T("Fill & Lines"));
-  toolBar->Update(glmode_id);
+  m_toolbar->AddEnumChoice(glmode_id, wxID_TB_GLmode, GL_MODE_POINT, wxBitmap(gl_point_string),_T("Points"));
+  m_toolbar->AddEnumChoice(glmode_id, wxID_TB_GLmode,  GL_MODE_LINE,  wxBitmap(gl_line_string),_T("Lines"));
+  m_toolbar->AddEnumChoice(glmode_id, wxID_TB_GLmode,  GL_MODE_FILL,  wxBitmap(gl_fill_xpm),_T("Fill"));
+  m_toolbar->AddEnumChoice(glmode_id, wxID_TB_GLmode,  GL_MODE_FILL_LINE,  wxBitmap(gl_fill_line_string),_T("Fill & Lines"));
+  m_toolbar->UpdateTool(glmode_id);
 
 //#endif // not WIN32
 
-  toolBar->Realize();
+  m_toolbar->Realize();
 
-//  toolBar->Hide();
-//  toolBar->RemoveTool(wxID_TB_ProjectionPersp);
-//  toolBar->Realize();
-//  toolBar->Show();
+//  m_toolbar->Hide();
+//  m_toolbar->RemoveTool(wxID_TB_ProjectionPersp);
+//  m_toolbar->Realize();
+//  m_toolbar->Show();
 
 } // Create_Toolbar()
 
@@ -634,14 +729,16 @@ void Viewer3D::ReDraw(wxCommandEvent& event)
 //------------------------------------------------
 void Viewer3D::CB_material_visible(wxCommandEvent& event)
 {
-  int visible;
-  visible =  menuView->IsChecked(ID_MenuView_material_param);
 
-  Si visible Alors
-    _param_material->AfficheDialogue();
+  Si !(ParamIsDisplayed(_param_material)) Alors
+    AddParamPage(_param_material,
+                 _param_material->GetName(),true);
+    _param_light->AfficheDialogue();
+    _param_light->MAJ();
   Sinon
-    _param_material->FermeDialogue( );
+    RemoveParamPage(_param_material);
   FinSi
+
 } // CB_material_visible()
 
 
@@ -662,14 +759,7 @@ void Viewer3D::CB_proj_visible(wxCommandEvent& event)
 //------------------------------------------------
 void Viewer3D::CB_lighting_visible(wxCommandEvent& event)
 {
-  int visible;
-  visible =  menuView->IsChecked(ID_MenuView_lighting_param);
-
-  Si visible Alors
-    _param_light->AfficheDialogue();
-  Sinon
-    _param_light->FermeDialogue( );
-  FinSi
+  _param_light->CB_light_visible(this);
 } // CB_lighting_visible()
 
 

@@ -207,6 +207,7 @@ wxIntegerParameter::wxIntegerParameter( wxWindow* parent, int* param, const char
           wxID_ANY,
           wxString::FromAscii(libelle));
 
+ 
 #if wxUSE_SPINCTRL
     this->_text = new MyTextCtrl( this->_parent, wxID_ANY, wxString::FromAscii("5"),
                              wxPoint(200, 160), wxSize(40, wxDefaultCoord), wxTE_PROCESS_ENTER);
@@ -227,7 +228,9 @@ wxIntegerParameter::wxIntegerParameter( wxWindow* parent, int* param, const char
     this->_limits_sizer = new wxBoxSizer(wxHORIZONTAL);
     this->_label_min = new wxStaticText(this->_parent,
           wxID_ANY,
-          wxString::FromAscii("min:"));
+          wxString::FromAscii("min"));
+    this->_label_min->SetToolTip("Change Minimal Value");
+
     this->_text_min  = new MyTextCtrl(
                               this->_parent,
                               wxID_ANY,
@@ -239,7 +242,9 @@ wxIntegerParameter::wxIntegerParameter( wxWindow* parent, int* param, const char
                              
     this->_label_max = new wxStaticText(this->_parent,
           wxID_ANY,
-          wxString::FromAscii("max:"));
+          wxString::FromAscii("max"));
+    this->_label_min->SetToolTip("Change Maximal Value");
+
     this->_text_max  = new MyTextCtrl( this->_parent,
           wxID_ANY,
           wxString::FromAscii("0"),
@@ -427,6 +432,12 @@ void wxIntegerParameter::Update( )
   this->_text->SetValue( wxString::FromAscii(number_str.c_str()));
 }
 
+//-------------------------------------------
+void wxIntegerParameter::SetToolTip( const wxString& tt)
+{
+   this->_label ->SetToolTip(tt);
+   this->_slider->SetToolTip(tt);
+}
 
 //==============================================================================
 //              wxFloatParameter
@@ -711,6 +722,12 @@ void wxFloatParameter::Update( )
   this->_text->SetValue(wxString::FromAscii(value.c_str()));
 }
 
+//-------------------------------------------
+void wxFloatParameter::SetToolTip( const wxString& tt)
+{
+   this->_label ->SetToolTip(tt);
+   this->_slider->SetToolTip(tt);
+}
 
 //==============================================================================
 // wxMenuEnum enumeration for Menus with wxWidgets
@@ -951,8 +968,11 @@ wxButtonParameter ::  wxButtonParameter( wxWindow* parent,
                              void* callback,
                              void* data,
                              button_type type) : 
-                              wxButton( parent, wxID_ANY, 
-                                        wxString::FromAscii( libelle))
+                  wxButton( parent, wxID_ANY, 
+                            wxString::FromAscii( libelle),
+                            wxDefaultPosition,
+                            wxDefaultSize,
+                            wxBU_EXACTFIT)
 {
   _libelle  = libelle;
   _btn3callback = NULL;

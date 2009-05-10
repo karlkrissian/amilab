@@ -15,7 +15,7 @@
 
 class Viewer3D;
 
-class  Viewer3D_MaterialParam: public ParamBox
+class  Viewer3D_MaterialParam: public ParamPanel
 {
 private:
 

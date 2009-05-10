@@ -40,6 +40,7 @@
 #define _MYTOOLBAR_H
 
 #include <wx/toolbar.h>
+#include "wx/aui/aui.h"
 #include <wx/tbarbase.h>
 #include <wx/bmpcbox.h>
 #include <wx/msgdlg.h>
@@ -111,27 +112,19 @@ public:
 };
 
 //======================================================================
-class MyToolBar : public wxToolBar
+class MyToolBarBase 
 //
 {
 
+protected:
   std::vector<toolbar_enum_info_base*> enum_info;
 
  public:
 
   ///
-  MyToolBar(  wxWindow* parent,
-              wxWindowID id,
-              const wxPoint& pos = wxDefaultPosition,
-              const wxSize& size = wxDefaultSize,
-              long style = wxTB_HORIZONTAL
-                        | wxNO_BORDER,
-              const wxString& name = wxPanelNameStr) :
-    wxToolBar(parent,id,pos,size,style,name)
-  {
-  }
+  MyToolBarBase()  {}
 
-  ~MyToolBar() {
+  ~MyToolBarBase() {
     // free memory of toolbar_enum_info_base
     vector<toolbar_enum_info_base*>::iterator Iter;
     for (Iter  = enum_info.begin();
@@ -157,17 +150,17 @@ class MyToolBar : public wxToolBar
                       void* rc_calldata = NULL,
                       const wxString& rc_help = _T(""));
 
-  void AddEnumChoice( int enum_id,
+  virtual void AddEnumChoice( int enum_id,
                       int choice_id,
                       int value,
                       const wxBitmap& bitmap,
-                      const wxString& text= _T(""));
+                      const wxString& text= _T("")) = 0;
 
-  void Update( int enum_id);
+  void UpdateTool( int enum_id);
 
   wxBitmapComboBox* GetCombo( int enum_id);
 
-  void OnEnumPressed(    wxCommandEvent&);
+  virtual void OnEnumPressed(    wxCommandEvent&);
 
 
 private:
@@ -175,6 +168,64 @@ private:
 };
  // MyToolBar
 
+// Allow inheritance from both classes wxToolBar and wxAuiToolBar
+class MyToolBar : public wxToolBar,  public MyToolBarBase
+{
+public:
+
+  MyToolBar(wxWindow* parent,
+              wxWindowID id,
+              const wxPoint& pos = wxDefaultPosition,
+              const wxSize& size = wxDefaultSize,
+              long style = wxTB_HORIZONTAL
+                        | wxNO_BORDER,
+              const wxString& name = wxPanelNameStr) :
+    wxToolBar(parent,id,pos,size,style,name)
+  {
+  }
+
+  void AddEnumChoice( int enum_id,
+                      int choice_id,
+                      int value,
+                      const wxBitmap& bitmap,
+                      const wxString& text= _T(""));
+
+  void OnEnumPressed(    wxCommandEvent& e) 
+  { 
+    MyToolBarBase::OnEnumPressed(e); 
+  }
+};
+
+class MyAuiToolBar : public wxAuiToolBar, public MyToolBarBase
+{
+public:
+
+  MyAuiToolBar(wxWindow* parent,
+              wxWindowID id,
+              const wxPoint& pos = wxDefaultPosition,
+              const wxSize& size = wxDefaultSize,
+              long style = wxTB_HORIZONTAL
+                        | wxNO_BORDER,
+              const wxString& name = wxPanelNameStr) :
+    wxAuiToolBar( parent,id,pos,size,
+                  style |
+                  wxAUI_TB_DEFAULT_STYLE |
+                  wxAUI_TB_OVERFLOW
+                  )
+  {
+  }
+
+  void AddEnumChoice( int enum_id,
+                      int choice_id,
+                      int value,
+                      const wxBitmap& bitmap,
+                      const wxString& text= _T(""));
+
+  void OnEnumPressed(    wxCommandEvent& e) 
+  { 
+    MyToolBarBase::OnEnumPressed(e); 
+  }
+};
 
 #endif // _MYTOOLBAR_H
 

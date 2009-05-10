@@ -12,13 +12,14 @@
 #ifndef _Viewer3D_h_
 #define _Viewer3D_h_
 
+// STL and Boost includes
 #include <ostream>
 #include <boost/iostreams/device/file.hpp>
 #include <boost/iostreams/stream.hpp>
 #include <boost/shared_ptr.hpp>
 #include "DefineClass.hpp"
 
-
+// wxWidgets includes
 #ifdef __GNUG__
 #pragma implementation
 #pragma interface
@@ -40,16 +41,20 @@
     #error "OpenGL required: set wxUSE_GLCANVAS to 1 and rebuild the library"
 #endif
 
-
 #include "wx/timer.h"
 #include "wx/math.h"
 #include "wx/toolbar.h"
+#include "wx/aui/aui.h"
+
+// wxParams includes
 #include "wxParamTypes.hpp"
 #include "MyToolBar.h"
 
 #include "ami_wxGLCanvas.hpp"
 #include "ParamBox.hpp"
+#include "ParamPanel.hpp"
 
+// AMILab includes
 #include "Viewer3D_ViewParam.h"
 #include "Viewer3D_ProjParam.h"
 #include "Viewer3D_BackgroundParam.h"
@@ -80,7 +85,7 @@ public:
     public:
       void operator()(Viewer3D * p)
       {
-        p->Destroy();
+         p->Destroy();
       }
   };
 
@@ -102,11 +107,12 @@ public:
     }
 
 
-    virtual ~Viewer3D();
+  virtual ~Viewer3D();
 
-#if wxUSE_GLCANVAS
-    ami_wxGLCanvas *m_canvas;
-#endif
+  ami_wxGLCanvas *m_canvas;
+
+  wxAuiManager&  GetAuiManager() {return m_mgr; };
+  wxAuiNotebook* GetParamBook()  { return _param_book; }
 
   void AddCompSurf( Viewer3D_ptr comp_surf);
 
@@ -119,19 +125,30 @@ public:
      CloseData = data;
   }
 
-private :
+  void CreateParamBook(wxWindow* parent);
+  bool AddParamPage(wxWindow* page, const wxString& caption,
+                    bool select = false, const wxBitmap& bitmap = wxNullBitmap);
+  bool RemoveParamPage(wxWindow* page);
+  bool ParamIsDisplayed(wxWindow* page);
 
-   void* CloseFunction;
-   void* CloseData;
+protected :
 
-   wxMenuBar*  menuBar;
-   wxMenu*     menuFile;
-   wxMenu*     menuOptions;
-   wxMenu*     menuView;
-   wxMenuEnum* _wxm_options_move;
-   wxMenuEnum* _wxm_options_GLmode;
-   wxMenuEnum* _wxm_options_shade;
-
+  void* CloseFunction;
+  void* CloseData;
+  
+  wxAuiManager m_mgr;
+  MyAuiToolBar*   m_toolbar;
+  wxAuiNotebook* _param_book;
+  wxString     _initial_perspective;
+  
+  wxMenuBar*  menuBar;
+  wxMenu*     menuFile;
+  wxMenu*     menuOptions;
+  wxMenu*     menuView;
+  wxMenuEnum* _wxm_options_move;
+  wxMenuEnum* _wxm_options_GLmode;
+  wxMenuEnum* _wxm_options_shade;
+  
   int proj_id;
   int fog_id;
   int bb_id;
@@ -184,8 +201,8 @@ private:
 
   void Create_wxMenu();
 
-  virtual wxToolBar* OnCreateToolBar(long style,
-        wxWindowID id, const wxString& name);
+  wxAuiToolBar* CreateAuiToolBar(long style,
+        wxWindowID id);
 
   void Create_Toolbar();
 
@@ -232,7 +249,7 @@ public:
 
 private:
 
-DECLARE_EVENT_TABLE()
+  DECLARE_EVENT_TABLE()
 };
 
 

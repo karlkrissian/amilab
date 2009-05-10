@@ -274,10 +274,13 @@ wxSizerItem* ParamPanel::AddWidget( wxSizer* w)
 //--------------------------------------------------------------
 unsigned char ParamPanel::AddBoolean( int* id, unsigned char* param, 
 //                   -------------
-                char* libelle, type_booleen type)
+                char* libelle, type_booleen type,
+                const std::string& tt
+                )
 {
   wxBooleanParameter* wxbp = new wxBooleanParameter(
       CurrentParent(), param, libelle);
+  if (tt!="") wxbp->SetToolTip(GetwxStr(tt.c_str()));
 
   ParamInfo pi(  TYPE_PARAMETRE_BOOLEEN,
                  wxbp,
@@ -314,9 +317,10 @@ void ParamPanel::BooleanDefault( int id, unsigned char defaut)
 //--------------------------------------------------------------
 unsigned char ParamPanel::AddInteger( int* id, int* param, 
 //                      ------------
-                char* libelle)
+                char* libelle,
+                const std::string& tt)
 {
-  *id = AddInteger(param,libelle);
+  *id = AddInteger(param,libelle,tt);
   return( true);
 } // AddInteger()
 
@@ -324,10 +328,12 @@ unsigned char ParamPanel::AddInteger( int* id, int* param,
 //--------------------------------------------------------------
 int ParamPanel::AddInteger( int* param, 
 //                   ------------
-                char* libelle)
+                char* libelle,
+                const std::string& tt)
 {
   wxIntegerParameter* wxi = new wxIntegerParameter(
       CurrentParent(), param, libelle);
+  if (tt!="") wxi->SetToolTip(GetwxStr(tt.c_str()));
 
   ParamInfo pi( TYPE_PARAMETRE_ENTIER,
                 wxi,
@@ -380,9 +386,10 @@ void ParamPanel::ParamIntGetLimits( int id, int& min, int& max)
 //------------------------------------------------------------
 unsigned char ParamPanel::AddFloat( int* id, float* param,
 //                      --------
-                char* libelle, int precision)
+                char* libelle, int precision,
+                const std::string& tt)
 {
-  *id = AddFloat(param,libelle,precision);
+  *id = AddFloat(param,libelle,precision,tt);
   return( true);
 } // AddFloat()
 
@@ -390,10 +397,13 @@ unsigned char ParamPanel::AddFloat( int* id, float* param,
 //-----------------------------------------------------------
 int  ParamPanel::AddFloat(  float* param,
 //             --------
-                char* libelle, int precision)
+                char* libelle, int precision,
+                const std::string& tt)
 {
   wxFloatParameter* wxi = new wxFloatParameter(
       CurrentParent(), param, libelle);
+  if (tt!="") wxi->SetToolTip(GetwxStr(tt.c_str()));
+
   wxi->SetDecimate(precision);
 
   ParamInfo pi( TYPE_PARAMETRE_REEL,
@@ -589,11 +599,14 @@ void ParamPanel::EnumerationDefaut( int id, int id_defaut)
 unsigned char ParamPanel::AddButton( int* id,  char* libelle,
 //                      ---------
         void* callback,
-        void* data)
+        void* data,
+        const std::string& tt
+        )
 {
   // add a wxButton
   wxButtonParameter* wxbp = new wxButtonParameter(
       CurrentParent(), libelle, callback, data);
+  if (tt!="") wxbp->SetToolTip(GetwxStr(tt.c_str()));
 
   ParamInfo pi( TYPE_PARAMETRE_BOUTTON,
                 wxbp,
@@ -609,11 +622,14 @@ unsigned char ParamPanel::AddPixmapButton( int* id,  char* libelle,
 //                      ---------------
                       void* callback,
                       void* data,
-                      const char** pixmap_string)
+                      const char** pixmap_string,
+                      const std::string& tt
+                      )
 {
   // add a wxButton 
   wxBitmap bm(pixmap_string);
   wxBitmapButtonParameter* wxbp = new wxBitmapButtonParameter(CurrentParent(), libelle, bm, callback, data);
+  if (tt!="") wxbp->SetToolTip(GetwxStr(tt.c_str()));
 
   ParamInfo pi( TYPE_PARAMETRE_BOUTTON,
                 wxbp,
@@ -628,9 +644,12 @@ unsigned char ParamPanel::AddPixmapButton( int* id,  char* libelle,
 unsigned char ParamPanel::AddColor( int* id,
 //                      --------
                     char* libelle,
-                    ClasseCouleur*  couleur)
+                    ClasseCouleur*  couleur,
+                    const std::string& tt
+                    )
 {
   wxColorParameter* wxcp = new wxColorParameter(CurrentParent(), libelle, couleur);
+  if (tt!="") wxcp->SetToolTip(GetwxStr(tt.c_str()));
 
   ParamInfo pi( TYPE_PARAMETRE_COULEUR,
                 wxcp,

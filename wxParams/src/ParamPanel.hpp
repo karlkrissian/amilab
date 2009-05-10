@@ -237,7 +237,9 @@ public:
   ///
   unsigned char AddBoolean( int* id, unsigned char* param, char* libelle,
   //      -------------
-             type_booleen type=CaractereToggle);
+              type_booleen type=CaractereToggle,
+              const std::string& tt=""
+              );
 
   ///
   void BooleanDefault( int id, unsigned char defaut);
@@ -247,10 +249,16 @@ public:
 /** @name Type int */
 //@{
   ///
-  unsigned char AddInteger( int* id, int* param, char* libelle);
+  unsigned char AddInteger( int* id, 
+                            int* param, 
+                            char* libelle, 
+                            const std::string& tooltip=""
+                          );
   //      ------------
 
-  int AddInteger( int* param, char* libelle);
+  int AddInteger( int* param, char* libelle,
+                  const std::string& tooltip=""
+                );
   //      ------------
 
   ///
@@ -266,10 +274,14 @@ public:
   /**
     @param precision nombre de chiffres apr� la virgule
    */
-  unsigned char AddFloat( int* id, float* r, char* libelle, int precision = 2);
+  unsigned char AddFloat( int* id, float* r, char* libelle, int precision = 2,
+                          const std::string& tooltip=""
+                        );
   //      ----------
 
-  int AddFloat( float* r, char* libelle, int precision = 2);
+  int AddFloat( float* r, char* libelle, int precision = 2,
+                const std::string& tooltip=""
+              );
   //      ----------
 
   ///
@@ -326,7 +338,9 @@ public:
   ///
   unsigned char AddButton( int* id, char* libelle, 
   //      -------------
-             void* callback, void* data);
+            void* callback, void* data,
+            const std::string& tooltip=""
+            );
 //@}
 
 /** @name Type Boutton avec Pixmap*/
@@ -334,8 +348,10 @@ public:
   ///
   unsigned char AddPixmapButton( int* id, char* libelle, 
   //            ---------------
-                   void* callback, void* data,
-                   const char** pixmap_string);
+                    void* callback, void* data,
+                    const char** pixmap_string,
+                    const std::string& tooltip=""
+                    );
 //@}
 
 /** @name Type Couleur */
@@ -344,7 +360,9 @@ public:
   // for wxwidgets version
   unsigned char AddColor( int* id, char* libelle, 
   //            -------
-             ClasseCouleur* couleur);
+                ClasseCouleur* couleur,
+                const std::string& tt=""
+              );
 //@}
 
 /** @name Type Label */
