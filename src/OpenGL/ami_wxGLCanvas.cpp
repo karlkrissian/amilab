@@ -461,15 +461,15 @@ void ami_wxGLCanvas::OnSize(wxSizeEvent& event)
             << _hauteur << " "
             << endl;
     if (SetCurrentContext()) {
-	glViewport(0, 0, _largeur, _hauteur);
+  glViewport(0, 0, _largeur, _hauteur);
 
-	_GLProjParam.SetWindowSize(_largeur,_hauteur);
-	_GLProjParam.SetProjection();
+  _GLProjParam.SetWindowSize(_largeur,_hauteur);
+  _GLProjParam.SetProjection();
 
-	glMatrixMode(_GLTransform.GLenum_mode());
+  glMatrixMode(_GLTransform.GLenum_mode());
 
-	if (GB_debug) out << "*** ami_wxGLCanvas::OnSize()  2 ***" << endl;
-	ReDimensionne();
+  if (GB_debug) out << "*** ami_wxGLCanvas::OnSize()  2 ***" << endl;
+  ReDimensionne();
     }
 
     if (GB_debug) out << "*** end ami_wxGLCanvas::OnSize() ***" << endl;
@@ -499,39 +499,58 @@ void ami_wxGLCanvas::OnMouseEvent(wxMouseEvent& event)
     _souris_x = (int)event.GetX();
     _souris_y = (int)event.GetY();
 
-    if(event.LeftDown())
-      if (event.ShiftDown())
-        ShiftBout1_Presse();
+    bool ld = event.LeftDown();
+    bool md = event.MiddleDown();
+    bool rd = event.RightDown();
+
+    bool lid = event.LeftIsDown();
+    bool mid = event.MiddleIsDown();
+    bool rid = event.RightIsDown();
+
+    bool lu = event.LeftUp();
+    bool mu = event.MiddleUp();
+    bool ru = event.RightUp();
+
+    bool drag  = event.Dragging();
+    bool shift = event.ShiftDown();
+    bool ctrl  = event.ControlDown();
+
+    int wr = event.GetWheelRotation();
+    if (wr != 0) {
+      cout << "wheel rotation " << wr << endl;
+      ApplyZoomFactor(exp((1.0*wr)/(10.0*event.GetWheelDelta())));
+    }
+
+    // Deal first with Shift and Control
+    if (shift && drag && lid ) AnimateRotation();
+    else
+    // Shift + Main button for picking
+    if ( shift && ld ) ApplyPicking();
+    else {
+      // Use Ctrl button for translation
+      if (ctrl) {
+        if (ld)           TranslationStart();
+        else
+        if (lu)           TranslationEnd();
+        else
+        if (drag && lid)  TranslationMotion();
+      }
       else
-        Boutton_Presse();
-    if(event.LeftUp())   Boutton_Relache();
-    if(event.LeftIsDown() && event.Dragging())
-        DeplaceSourisBout1();
-
-
-#ifdef __APPLE__
-    if(event.ControlDown())
-        if(event.LeftDown()) Boutton2_Presse();
-        if(event.LeftUp())   Boutton2_Relache();
-        if(event.LeftIsDown() && event.Dragging())
-          if (event.ShiftDown())
-            DeplaceSourisShiftBout2();
-          else
-            DeplaceSourisBout2();
-#else
-    if(event.MiddleDown()) Boutton2_Presse();
-    if(event.MiddleUp())   Boutton2_Relache();
-    if(event.MiddleIsDown() && event.Dragging())
-      if (event.ShiftDown())
-        DeplaceSourisShiftBout2();
+      // Main button (left) is for rotation
+      if (ld)          RotationStart();
       else
-        DeplaceSourisBout2();
-#endif
+      if (lu)          RotationEnd();
+      else
+      if (drag && lid)  RotationMotion();
+      else
+      // Right button for zoom
+      if (rd)         ZoomStart();
+      else
+      if (ru)         ZoomEnd();
+      else
+      if (drag&&rid)  ZoomMotion();
+    }
 
-    if(event.RightDown()) Boutton3_Presse();
-    if(event.RightUp())   Boutton3_Relache();
-    if(event.RightIsDown() && event.Dragging())
-      DeplaceSourisBout3();
 }
 
 
@@ -1900,12 +1919,12 @@ void ami_wxGLCanvas::InitGL()
 
 // -------------------------------------------------------------------------
 //
-void ami_wxGLCanvas :: Boutton_Presse()
+void ami_wxGLCanvas :: TranslationStart()
 //                         ---------------
 {
 
   SetCurrentContext();
-  if (GB_debug) fprintf(stderr,"Boutton_Presse() begin \n");
+  if (GB_debug) fprintf(stderr,"TranslationStart() begin \n");
 
   PickObjects();
   _souris_position_initiale_x = _souris_x;
@@ -1924,25 +1943,23 @@ void ami_wxGLCanvas :: Boutton_Presse()
   if (_mode_affichage==MODE_VOLREN)
     _Ttexture.GetTranslation(_initial_translation);
 
-  if (GB_debug) fprintf(stderr,"Boutton_Presse() end \n");
+  if (GB_debug) fprintf(stderr,"TranslationStart() end \n");
 
-} // Boutton_Presse()
+} // TranslationStart()
 
 
 
 // -------------------------------------------------------------------------
 //
-void ami_wxGLCanvas :: ShiftBout1_Presse()
-//                         ---------------
+void ami_wxGLCanvas :: ApplyPicking()
+//                     ---------------
 {
-
     PickObjects();
-
-} // ShiftBout1_Presse()
+} // ApplyPicking()
 
 
 //-----------------------------------------------------
-void ami_wxGLCanvas :: Boutton_Relache()
+void ami_wxGLCanvas :: TranslationEnd()
 //                         ---------------
 {
     float var_x;
@@ -1969,7 +1986,7 @@ void ami_wxGLCanvas :: Boutton_Relache()
   //printf("%f %f \n",var_x,var_y);
   var_x = var_x / _largeur * 2.0;
   var_y = var_y / _hauteur * 2.0;
-  //printf("Boutton_Relache() %d %d %f %f \n",_largeur,_hauteur,var_x,var_y);
+  //printf("TranslationEnd() %d %d %f %f \n",_largeur,_hauteur,var_x,var_y);
 
   if (_mode_affichage==MODE_VOLREN) {
     glMatrixMode(GL_MODELVIEW);
@@ -2036,18 +2053,18 @@ void ami_wxGLCanvas :: Boutton_Relache()
   Update();
 
 
-} // Boutton_Relache()
+} // TranslationEnd()
 
 
 //---------------------------------------------------
-void ami_wxGLCanvas :: DeplaceSourisBout1()
+void ami_wxGLCanvas :: TranslationMotion()
 //                         ------------------
 {
-
-  SetCurrentContext();
-  Boutton_Relache();
+  cout << __func__ << endl;
+  TranslationEnd();
 
 /*
+  SetCurrentContext();
   SelonQue _mouse_action Vaut
     Valeur MOUSE_MOVE_OBJECT:
       _Tobject.SetTranslation(_initial_translation);
@@ -2060,14 +2077,14 @@ void ami_wxGLCanvas :: DeplaceSourisBout1()
   if (_mode_affichage==MODE_VOLREN)
     _Ttexture.SetTranslation(_initial_translation);
 */
-} // DeplaceSourisBout1()
+} // TranslationMotion()
 
 
 //-------------------------------------------------------
-void ami_wxGLCanvas :: Boutton2_Presse()
-//                         --------------
+void ami_wxGLCanvas :: RotationStart()
+//                     --------------
 {
-
+  cout << __func__ << endl;
   _souris_position_initiale_x = _souris_x;
   _souris_position_initiale_y = _souris_y;
 
@@ -2083,13 +2100,14 @@ void ami_wxGLCanvas :: Boutton2_Presse()
   if (_mode_affichage==MODE_VOLREN)
     _Ttexture.GetRotation(_initial_rotation);
 
-} // Boutton2_Presse()
+} // RotationStart()
 
 
 //----------------------------------------------------------
-void ami_wxGLCanvas :: DeplaceSourisShiftBout2()
+void ami_wxGLCanvas :: AnimateRotation()
 //                         -----------------------
 {
+  cout << __func__ << endl;
   _souris_position_initiale_x = (int) (_largeur/2.0);
   _souris_position_initiale_y = (int) (_hauteur/2.0);
 
@@ -2112,7 +2130,7 @@ void ami_wxGLCanvas :: DeplaceSourisShiftBout2()
   FinTantQue
 */
 
-} // DeplaceSourisShiftBout2()
+} // AnimateRotation()
 
 
 
@@ -2213,10 +2231,10 @@ void ami_wxGLCanvas :: UserRotate( float rotX, float rotY, float rotZ)
 
 
 //------------------------------------------------------
-void ami_wxGLCanvas :: Boutton2_Relache()
-//                         ----------------
+void ami_wxGLCanvas :: RotationEnd()
+//                     ----------------
 {
-
+  cout << __func__ << endl;
   if (_animation_timer.use_count())
     if (_animation_timer->IsRunning())
       _animation_timer->Stop();
@@ -2236,11 +2254,11 @@ void ami_wxGLCanvas :: Boutton2_Relache()
 
   MAJ_rotation();
 
-} // Boutton2_Relache()
+} // RotationEnd()
 
 
 //--------------------------------------------------
-void ami_wxGLCanvas :: DeplaceSourisBout2()
+void ami_wxGLCanvas :: RotationMotion()
 //                         ------------------
 {
 
@@ -2273,37 +2291,33 @@ void ami_wxGLCanvas :: DeplaceSourisBout2()
   FinSelonQue
 */
 
-} // DeplaceSourisBout2()
+} // RotationMotion()
 
 
 // ----------------------------------------------------
-void ami_wxGLCanvas :: Boutton3_Presse()
+void ami_wxGLCanvas :: ZoomStart()
 //                          --------------
 {
-
   _souris_position_initiale_x = _souris_x;
   _souris_position_initiale_y = _souris_y;
-
 
   _initial_scale = _Tobject._scale[0];
 
   if (_mode_affichage==MODE_VOLREN)
     _initial_scale = _Ttexture._scale[0];
-
-} // Boutton3_Presse()
+} // ZoomStart()
 
 
 // ---------------------------------------------------------
 //
-void ami_wxGLCanvas::Boutton3_Relache()
+void ami_wxGLCanvas::ZoomEnd()
 //                   ----------------
 {
-
-} // Boutton3_Relache()
+} // ZoomEnd()
 
 
 //-----------------------------------------------------
-void ami_wxGLCanvas :: DeplaceSourisBout3()
+void ami_wxGLCanvas :: ZoomMotion()
 //                     ------------------
 {
     int var_y;
@@ -2318,7 +2332,17 @@ void ami_wxGLCanvas :: DeplaceSourisBout3()
   Refresh(false);
   Update();
 
-} // DeplaceSourisBout3()
+} // ZoomMotion()
+
+
+//-----------------------------------------------------
+void ami_wxGLCanvas :: ApplyZoomFactor(double factor)
+{
+  if (_mode_affichage==MODE_VOLREN) _Ttexture.SetScale(factor*_Ttexture._scale[0]);
+  _Tobject.SetScale(factor*_Tobject._scale[0]);
+  Refresh(false);
+  Update();
+} // ApplyZoomFactor()
 
 
 // -------------------------------------------------------------------------

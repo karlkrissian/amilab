@@ -170,12 +170,13 @@ Viewer3D::Viewer3D(wxFrame *frame, const wxString& title, const wxPoint& pos,
   m_mgr.AddPane(this->m_canvas,  
                 wxAuiPaneInfo()
                 .Name(wxT("3D viewer"))
-                .Caption(wxT("GL viewer"))
+                .Caption(wxT("OpenGL viewer"))
                 //.MinSize(wxSize(200,200))
                 .Center()
                 .MaximizeButton(true)
                 .CloseButton(false));
 
+  this->m_canvas->SetToolTip("This viewer uses the following mouse events: Left button for rotation, Wheel or Right button for scaling, Ctrl+Left button for translation");
 
   // Add to AUI Manager
   // add the toolbars to the manager

@@ -462,22 +462,25 @@ public:
 
 */
 
-  void Boutton_Presse();
-  void ShiftBout1_Presse();
-  void Boutton_Relache();
-  void DeplaceSourisBout1();
+  void TranslationStart();
+  void TranslationMotion();
+  void TranslationEnd();
+
+  void ApplyPicking();
 
   void MAJ_rotation();
   void UserRotate( float rotX, float rotY, float rotZ);
 
-  void Boutton2_Presse();
-  void DeplaceSourisBout2();
-  void Boutton2_Relache();
-  void DeplaceSourisShiftBout2();
+  void RotationStart();
+  void RotationMotion();
+  void RotationEnd();
+  void AnimateRotation();
 
-  void Boutton3_Presse();
-  void Boutton3_Relache();
-  void DeplaceSourisBout3();
+  void ZoomStart();
+  void ZoomEnd();
+  void ZoomMotion();
+
+  void ApplyZoomFactor(double factor);
 
   // Look for the closest line
   void LineInfo( float x, float y, float z);
