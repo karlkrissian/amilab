@@ -37,7 +37,14 @@ wxNumericParameter<T>::wxNumericParameter(
     _default = 0;
     _text = NULL;
     // need _text to exists to change its size
-    SetDecimate(2); 
+    {
+      T tmp=0;
+      // if integer number
+      if (tmp == (T)(tmp+0.5)) 
+        SetDecimate(0); 
+      else // floating number
+        SetDecimate(2);
+    } 
     _slider = new mySlider(_parent, wxID_ANY,
                             (int)round((_default*_factor)),
                             (int)round((_min    *_factor)),
@@ -67,7 +74,8 @@ wxNumericParameter<T>::wxNumericParameter(
                       _parent,
                       wxID_ANY, 
                       wxString::FromAscii(value.c_str()),
-                      wxPoint(200, 160), 
+                      wxDefaultPosition, 
+                      //wxDefaultSize, 
                       wxSize( 40+10*_decimate,
                               wxDefaultCoord),
                       wxTE_PROCESS_ENTER);
@@ -77,7 +85,7 @@ wxNumericParameter<T>::wxNumericParameter(
     _spinbut = new mySpinButton(
                         _parent,
                         wxID_ANY,
-                        wxPoint(200, 160),
+                        wxDefaultPosition,
                         wxSize( wxDefaultCoord,
                                 _text->GetSize().GetHeight()),
                         wxSP_ARROW_KEYS | wxSP_VERTICAL);
@@ -107,18 +115,18 @@ wxNumericParameter<T>::wxNumericParameter(
     _text_min  = new MyTextCtrl(_parent,
                                       wxID_ANY,
                                       wxString::FromAscii("0"),
-                                      wxPoint(100, 160),
+                                      wxDefaultPosition,
                                       wxDefaultSize, 
                                       wxTE_PROCESS_ENTER);
     _text_min->SetToolTip("Scale minimal value");
     _text_min->SetCallback((void*)wxNumericParameter<T>::OnMinMaxUpdate,(void*) this);
 
     _text_max  = new MyTextCtrl(_parent,
-                                      wxID_ANY,
-                                      wxString::FromAscii("0"),
-                                      wxPoint(200, 160),
-                                      wxDefaultSize, 
-                                      wxTE_PROCESS_ENTER);
+                                wxID_ANY,
+                                wxString::FromAscii("0"),
+                                wxDefaultPosition,
+                                wxDefaultSize, 
+                                wxTE_PROCESS_ENTER | wxTE_RIGHT );
     _text_max->SetToolTip("Scale maximal value");
     _text_max->SetCallback( (void*)wxNumericParameter<T>::OnMinMaxUpdate,
                                   (void*) this);
@@ -127,25 +135,28 @@ wxNumericParameter<T>::wxNumericParameter(
     _sizer2->Add( _label,   0, 
                       wxLEFT  | wxALIGN_CENTRE_VERTICAL, 0);
     _sizer2->Add( _text,    1, 
-                      wxLEFT  | wxALIGN_CENTRE_VERTICAL, 2);
+                        wxLEFT  
+                      | wxALIGN_CENTRE_VERTICAL 
+                      | wxEXPAND, 
+                    2);
     _sizer2->Add( _spinbut, 0, 
-                      wxRIGHT | wxALIGN_CENTRE_VERTICAL, 0);
+                       wxALIGN_CENTRE_VERTICAL, 0);
     
     _limits_sizer->Add( _label_open_sqb,0,
-                            wxRIGHT | wxALIGN_CENTRE_VERTICAL, 0);
+                            wxLEFT | wxALIGN_CENTRE_VERTICAL, 2);
     _limits_sizer->Add( _text_min,1,
-                            wxCENTER | wxALIGN_CENTRE_VERTICAL, 5);
+                            wxLEFT | wxRIGHT | wxALIGN_CENTRE_VERTICAL, 1);
     _limits_sizer->Add( _label_comma,0,
-                            wxCENTER | wxALIGN_CENTRE_VERTICAL, 0);
+                            wxLEFT | wxRIGHT | wxALIGN_CENTRE_VERTICAL, 1);
     _limits_sizer->Add( _text_max,1,
-                            wxCENTER | wxALIGN_CENTRE_VERTICAL, 5);
+                            wxLEFT | wxRIGHT | wxALIGN_CENTRE_VERTICAL, 1);
     _limits_sizer->Add( _label_close_sqb,0,
-                            wxLEFT | wxALIGN_CENTRE_VERTICAL, 0);
+                            wxRIGHT | wxALIGN_CENTRE_VERTICAL, 2);
     
-    Add(_sizer2, 0, wxLEFT | wxALIGN_CENTRE_VERTICAL, 5);
-    _slider_item = Add(_slider, 1, wxEXPAND | wxLEFT, 5);
+    Add(_sizer2, 0, wxALIGN_CENTRE_VERTICAL | wxEXPAND, 0);
+    _slider_item = Add(_slider, 1, wxEXPAND , 0);
     Add(_spinbut_limits, 0,
-                  wxFIXED_MINSIZE | wxRIGHT |  wxALIGN_CENTRE_VERTICAL, 2);
+                  wxFIXED_MINSIZE | wxRIGHT |  wxALIGN_CENTRE_VERTICAL, 1);
 
     _limits_sizer->Show(false);
 
@@ -155,6 +166,63 @@ wxNumericParameter<T>::wxNumericParameter(
 template <class T>
 wxNumericParameter<T>::~wxNumericParameter()
 {
+}
+
+//-----------------------------------------------------------
+template <class T>
+void wxNumericParameter<T>::RecomputeTextSize()
+{
+  int smin;
+  int smax;
+  int newsize;
+
+  // to do it well, we need to get the text extent:
+  {
+    // first get a drawing context
+    wxClientDC dc(_text);
+    // get the same fonts
+    dc.SetFont(_text->GetFont());
+    // truncate min and max based on _decimate value
+    double min1 = round((_min*_factor))/(1.0*_factor);
+    double max1 = round((_max*_factor))/(1.0*_factor);
+    // get the displacement value
+    double displ = 1.0/_factor;
+
+    int         max_width = 0,tmp;
+    std::string mstr;
+    // get min1
+    mstr = (_display_format % min1).str();
+    tmp = dc.GetTextExtent(
+                wxString::FromAscii(mstr.c_str())
+              ).GetWidth();
+    max_width = (max_width>tmp?max_width:tmp);
+    // get min1+displ 
+    mstr = (_display_format % (min1+displ)).str();
+    tmp = dc.GetTextExtent(
+                wxString::FromAscii(mstr.c_str())
+              ).GetWidth();
+    max_width = (max_width>tmp?max_width:tmp);
+    // get max1-displ
+    mstr = (_display_format % (max1-displ)).str();
+    tmp = dc.GetTextExtent(
+                wxString::FromAscii(mstr.c_str())
+              ).GetWidth();
+    max_width = (max_width>tmp?max_width:tmp);
+    // get max1
+    mstr = (_display_format % max1).str();
+    tmp = dc.GetTextExtent(
+                wxString::FromAscii(mstr.c_str())
+              ).GetWidth();
+    max_width = (max_width>tmp?max_width:tmp);
+
+    newsize = max_width+10; // add the margin ??
+  } // we don´t need dc anymore
+
+  // Replace method the wxTextCtrl widget
+  if (_text->GetSize().GetWidth()!=newsize) {
+    _text->SetMinSize(wxSize(newsize,wxDefaultCoord));
+    _parent->Layout();
+  }
 }
 
 //--------------------------------------------------------
@@ -200,6 +268,8 @@ void wxNumericParameter<T>::SetConstraints(
   _text_min->SetValue( wxString::FromAscii(number_str.c_str()) );
   number_str=str(_display_format % max);
   _text_max->SetValue( wxString::FromAscii(number_str.c_str()) );
+
+  RecomputeTextSize();
 
 }  
 

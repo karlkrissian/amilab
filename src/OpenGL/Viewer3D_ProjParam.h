@@ -15,7 +15,7 @@
 
 class Viewer3D;
 
-class  Viewer3D_ProjParam: public ParamBox
+class  Viewer3D_ProjParam: public ParamPanel
 {
 private:
 

@@ -138,8 +138,12 @@ BEGIN_EVENT_TABLE(Viewer3D, wxFrame)
     EVT_TOOL (wxID_TB_LoadPoly,
                         Viewer3D::CB_Ouvrir_surface)
     EVT_TOOL(wxID_TB_CenterNormalize, Viewer3D::CB_PixmapCenterNormalize)
-    EVT_TOOL_RCLICKED (wxID_TB_CenterNormalize, Viewer3D::CB_ViewParam)
 
+#if (wxCHECK_VERSION(2,9,0))
+    EVT_TOOL_RCLICKED(wxID_TB_CenterNormalize, Viewer3D::CB_ViewParam)
+#else
+    EVT_AUITOOLBAR_RIGHT_CLICK(wxID_TB_CenterNormalize, Viewer3D::CB_ViewParam)
+#endif
 
 END_EVENT_TABLE()
 
@@ -288,17 +292,19 @@ void Viewer3D::CreateGLCanvas()
 void Viewer3D::CreateParameterWindows()
 {
   // TODO: check why the dialog cannot have the viewer as parent
-  _param_view            = new Viewer3D_ViewParam       (this);
-  _param_proj            = new Viewer3D_ProjParam       (this);
   _param_lines           = new Viewer3D_LineParam       (this);
   _param_points          = new Viewer3D_PointParam      (this);
 
+  _param_view            = new Viewer3D_ViewParam       (this);
+  _param_proj            = new Viewer3D_ProjParam       (this);
   _param_vectors         = new Viewer3D_VectorsParam    (this);
   _param_material        = new Viewer3D_MaterialParam   (this);
   _param_light           = new Viewer3D_LightingParam   (this);
   _param_backgroundcolor = new Viewer3D_BackgroundParam (this);
   _param_fog             = new Viewer3D_FogParam        (this);
 
+  _param_view            ->Hide();
+  _param_proj            ->Hide();
   _param_vectors         ->Hide();
   _param_material        ->Hide();
   _param_light           ->Hide();
@@ -577,7 +583,9 @@ bool Viewer3D::AddParamPage(wxWindow* page, const wxString& caption,
   bool result = _param_book->AddPage( page,caption,select,bitmap );
    m_mgr.GetPane(_param_book).Show();
    m_mgr.Update();
-  _param_book->Fit();
+  _param_book->Layout();
+  page->Show();
+  page->Layout();
   return result;
 } // AddParamPage()
 
@@ -737,8 +745,11 @@ void Viewer3D::ToggleParamPanel(ParamPanel* p)
 {
   if (!(ParamIsDisplayed(p))) {
     AddParamPage(p,p->GetName(),true);
-    p->AfficheDialogue();
     p->MAJ();
+    p->Refresh();
+    p->Update();
+    p->AfficheDialogue();
+    p->Layout();
   } else {
     p->Hide();
     RemoveParamPage(p);
@@ -755,14 +766,7 @@ void Viewer3D::CB_material_visible(wxCommandEvent& event)
 //------------------------------------------------
 void Viewer3D::CB_proj_visible(wxCommandEvent& event)
 {
-  int visible;
-  visible =  menuView->IsChecked(ID_MenuView_projection_param);
-
-  Si visible Alors
-    _param_proj->AfficheDialogue();
-  Sinon
-    _param_proj->FermeDialogue( );
-  FinSi
+  ToggleParamPanel(_param_proj);
 } // CB_proj_visible()
 
 
@@ -874,17 +878,13 @@ void Viewer3D::CB_Ouvrir_surface(wxCommandEvent& event)
 
 
 //----------------------------------------------------------
+#if (wxCHECK_VERSION(2,9,0))
 void Viewer3D::CB_ViewParam(wxCommandEvent&)
+#else
+void Viewer3D::CB_ViewParam(wxAuiToolBarEvent&)
+#endif
 {
-  // TODO
-  //    menuOptions->Checked(ID_MenuOption_,
-  //      param_objects_visible);
-
-  Si !(_param_view->IsShown()) Alors
-    _param_view->AfficheDialogue();
-  Sinon
-    _param_view->FermeDialogue( );
-  FinSi
+  ToggleParamPanel(_param_view);
 } // CB_PixmapCenterNormalize()
 
 
@@ -904,17 +904,8 @@ void Viewer3D::CB_PixmapCenterNormalize(wxCommandEvent&)
 //----------------------------------------------------------
 void Viewer3D::CB_ProjParam(void* cd)
 {
-  // TODO
-  //    menuOptions->Checked(ID_MenuOption_,
-  //      param_objects_visible);
-
   Viewer3D* tgl = (Viewer3D*) cd;
-
-  Si !(tgl->_param_proj->IsShown()) Alors
-    tgl->_param_proj->AfficheDialogue();
-  Sinon
-    tgl->_param_proj->FermeDialogue( );
-  FinSi
+  tgl->ToggleParamPanel(tgl->_param_proj);
 } // CB_ProjParam()
 
 

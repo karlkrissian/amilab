@@ -16,93 +16,112 @@
 #include  "rot_z2.xpm"
 
 
-Viewer3D_ViewParam::Viewer3D_ViewParam(Viewer3D* parent): ParamBox(parent,"View Parameters")
+Viewer3D_ViewParam::Viewer3D_ViewParam(Viewer3D* parent):
+    ParamPanel(parent->GetParamBook(),"View")
 {
   parent_class = parent;
   CreateParameters();
+  SetToolTip("View and Orientation Control");
 }
 
 void Viewer3D_ViewParam::CreateParameters()
 {
 
   BeginHorizontal();
-  //----------------
-  AddPixmapButton( 
-                                &_id_boutton_center,  "Center",
-			        (void*)CB_Center, (void*)parent_class,
-				center_string);
+    //----------------
+    AddPixmapButton( 
+                    &_id_boutton_center,  "Center",
+                    (void*)CB_Center, (void*)parent_class,
+                    center_string,
+                    "Center the scene");
+    // Set proportional position
+    SetLastPositionProperties(1);
   
- 
-  //----------------
-  AddPixmapButton( 
-				     &_id_boutton_normalize,  
-				     "Normalize",
-				     (void*)CB_Normalize, 
-				     (void*)parent_class,
-				     normalize_string);
-
+    //----------------
+    AddPixmapButton( 
+                    &_id_boutton_normalize,  
+                    "Normalize",
+                    (void*)CB_Normalize, 
+                    (void*)parent_class,
+                    normalize_string,
+                    "Normalize the view to fit in the display");
+    // Set proportional position
+    SetLastPositionProperties(1);
+  
   EndHorizontal();
   BeginHorizontal();
-
-  //----------------
-  AddPixmapButton( &_id_boutton_XY,  
-				      "XY projection",
-				      (void*)CB_XY_proj, 
-				      (void*)parent_class,
-				      XY_string);
-
-
-
-  AddPixmapButton( &_id_boutton_XZ,  "XZ projection",
-			              (void*)CB_XZ_proj, 
-                                      (void*)parent_class,
-				      XZ_string);
-
-
-  AddPixmapButton( &_id_boutton_YZ,  "YZ projection",
-			              (void*)CB_YZ_proj, 
-                                      (void*)parent_class,
-				      YZ_string);
-
-
+    //----------------
+    AddPixmapButton( &_id_boutton_XY,  
+                    "XY projection",
+                    (void*)CB_XY_proj, 
+                    (void*)parent_class,
+                    XY_string,
+                    "XY projection");
+    // Set proportional position
+    SetLastPositionProperties(1);
+  
+    AddPixmapButton( &_id_boutton_XZ,  "XZ projection",
+                    (void*)CB_XZ_proj, 
+                    (void*)parent_class,
+                    XZ_string,
+                    "XZ projection");
+    // Set proportional position
+    SetLastPositionProperties(1);
+  
+    AddPixmapButton( &_id_boutton_YZ,  "YZ projection",
+                    (void*)CB_YZ_proj, 
+                    (void*)parent_class,
+                    YZ_string,
+                    "YZ projection");
+    // Set proportional position
+    SetLastPositionProperties(1);
   EndHorizontal();
   BeginHorizontal();
-
-  //----------------
-  AddPixmapButton( &_id_rotX_plus,  "rot X +",
-				      (void*)CB_rotX_plus, 
-				      (void*)parent_class,
-				      rot_x1_string);
-
-  AddPixmapButton( &_id_rotY_plus,  "rot Y +",
-				      (void*)CB_rotY_plus, 
-				      (void*)parent_class,
-				      rot_y1_string);
-
-  AddPixmapButton( &_id_rotZ_plus,  "rot Z +",
-				      (void*)CB_rotZ_plus, 
-				      (void*)parent_class,
-				      rot_z1_string);
-
+    //----------------
+    AddPixmapButton( &_id_rotX_plus,  "rot X +",
+                    (void*)CB_rotX_plus, 
+                    (void*)parent_class,
+                    rot_x1_string);
+    // Set proportional position
+    SetLastPositionProperties(1);
+  
+    AddPixmapButton( &_id_rotY_plus,  "rot Y +",
+                    (void*)CB_rotY_plus, 
+                    (void*)parent_class,
+                    rot_y1_string);
+    // Set proportional position
+    SetLastPositionProperties(1);
+  
+    AddPixmapButton( &_id_rotZ_plus,  "rot Z +",
+                  (void*)CB_rotZ_plus, 
+                  (void*)parent_class,
+                  rot_z1_string);
+    // Set proportional position
+    SetLastPositionProperties(1);
   EndHorizontal();
+
   BeginHorizontal();
-
-  //----------------
-  AddPixmapButton( &_id_rotX_moins,  "rot X -",
-				      (void*)CB_rotX_moins, 
-				      (void*)parent_class,
-				      rot_x2_string);
-
-  AddPixmapButton( &_id_rotY_moins,  "rot Y -",
-				      (void*)CB_rotY_moins, 
-				      (void*)parent_class,
-				      rot_y2_string);
-
-  AddPixmapButton( &_id_rotZ_moins,  "rot Z -",
-				      (void*)CB_rotZ_moins, 
-				      (void*)parent_class,
-				      rot_z2_string);
-
+    //----------------
+    AddPixmapButton( &_id_rotX_moins,  "rot X -",
+                (void*)CB_rotX_moins, 
+                (void*)parent_class,
+                rot_x2_string);
+    // Set proportional position
+    SetLastPositionProperties(1);
+  
+    AddPixmapButton( &_id_rotY_moins,  "rot Y -",
+                (void*)CB_rotY_moins, 
+                (void*)parent_class,
+                rot_y2_string);
+    // Set proportional position
+    SetLastPositionProperties(1);
+  
+    AddPixmapButton( &_id_rotZ_moins,  "rot Z -",
+                (void*)CB_rotZ_moins, 
+                (void*)parent_class,
+                rot_z2_string);
+    // Set proportional position
+    SetLastPositionProperties(1);
   EndHorizontal();
 
   //----------------
@@ -111,11 +130,6 @@ void Viewer3D_ViewParam::CreateParameters()
 		           (void*)CB_SauveImage, 
 			   (void*)parent_class);
 
-
-  //--------------
-  AddButton( &_id_boutton_fermer,  "Close",
-		        (void*) CB_view_fermer, 
-                        (void*) parent_class);
 
   //--------------
   EnleveBouttons();
@@ -447,16 +461,5 @@ void Viewer3D_ViewParam::CB_SauveImage( void* cd)
   delete anim_r;
 
 } // CB_SauveImage()
-
-
-//----------------------------------------------------
-void Viewer3D_ViewParam::CB_view_fermer( void* cd)
-//                       --------------
-{
-    Viewer3D*  tgl = (Viewer3D*) cd;
-  
-  tgl->_param_view->FermeDialogue( );
-  tgl->UpdateMenu();
-}
 
 

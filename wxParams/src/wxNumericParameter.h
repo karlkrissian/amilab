@@ -75,6 +75,8 @@ public:
   
   ~wxNumericParameter();
   
+  void RecomputeTextSize();
+
   void SetDecimate( int d)  { 
     _decimate=d; 
     if (_text!=NULL)

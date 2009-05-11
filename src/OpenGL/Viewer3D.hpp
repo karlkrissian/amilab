@@ -242,7 +242,11 @@ private:
   void CB_Ouvrir_surface        (wxCommandEvent&);
 
   void CB_PixmapCenterNormalize (wxCommandEvent&);
-  void CB_ViewParam             (wxCommandEvent&);
+  #if (wxCHECK_VERSION(2,9,0))
+    void CB_ViewParam(wxCommandEvent&);
+  #else
+    void CB_ViewParam(wxAuiToolBarEvent&);
+  #endif
 
 
 public:

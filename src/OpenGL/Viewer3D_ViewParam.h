@@ -15,7 +15,7 @@
 
 class Viewer3D;
 
-class  Viewer3D_ViewParam: public ParamBox
+class  Viewer3D_ViewParam: public ParamPanel
 {
 private:
 
@@ -44,8 +44,6 @@ private:
 //    int       _id_rot_X;
 //    int       _id_rot_Y;
 //    int       _id_rot_Z;
-   int       _id_boutton_fermer;
-   int       _etat_param_view;
 
 public:
 
@@ -66,8 +64,6 @@ public:
   static void CB_rotY_moins       (void* cd);
   static void CB_rotZ_moins       (void* cd);
   static void CB_SauveImage       (void* cd);
-  static void CB_view_fermer      (void* cd);
-
 
 }; // class Viewer3D_ViewParam
 
