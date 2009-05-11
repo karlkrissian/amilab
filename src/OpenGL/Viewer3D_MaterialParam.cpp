@@ -10,7 +10,7 @@ Viewer3D_MaterialParam::Viewer3D_MaterialParam(
   parent_class = parent;
   _object_number = 0;
   _current_object_visible = 1;
-  SetToolTip("Objects material properties");
+  SetToolTip(_T("Objects material properties"));
   CreateParameters();
 }
 

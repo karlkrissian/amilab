@@ -8,7 +8,7 @@ Viewer3D_FogParam::Viewer3D_FogParam(Viewer3D* parent): ParamPanel(parent, "Fog"
 {
   parent_class = parent;
   CreateParameters();
-  SetToolTip("Fog Effect Parameters");
+  SetToolTip(_T("Fog Effect Parameters"));
 }
 
 

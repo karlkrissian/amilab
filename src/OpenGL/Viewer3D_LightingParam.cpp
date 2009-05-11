@@ -9,7 +9,7 @@ Viewer3D_LightingParam::Viewer3D_LightingParam(Viewer3D* parent):
 {
   parent_class = parent;
   CreateParameters();
-  SetToolTip("Lights properties");
+  SetToolTip(_T("Lights properties"));
   //SetMinSize(wxSize(200,300));
 }
 

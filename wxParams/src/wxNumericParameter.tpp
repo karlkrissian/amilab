@@ -118,7 +118,7 @@ wxNumericParameter<T>::wxNumericParameter(
                                       wxDefaultPosition,
                                       wxDefaultSize, 
                                       wxTE_PROCESS_ENTER);
-    _text_min->SetToolTip("Scale minimal value");
+    _text_min->SetToolTip(_T("Scale minimal value"));
     _text_min->SetCallback((void*)wxNumericParameter<T>::OnMinMaxUpdate,(void*) this);
 
     _text_max  = new MyTextCtrl(_parent,
@@ -127,7 +127,7 @@ wxNumericParameter<T>::wxNumericParameter(
                                 wxDefaultPosition,
                                 wxDefaultSize, 
                                 wxTE_PROCESS_ENTER | wxTE_RIGHT );
-    _text_max->SetToolTip("Scale maximal value");
+    _text_max->SetToolTip(_T("Scale maximal value"));
     _text_max->SetCallback( (void*)wxNumericParameter<T>::OnMinMaxUpdate,
                                   (void*) this);
     

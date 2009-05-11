@@ -81,7 +81,7 @@ wxIntegerParameter::wxIntegerParameter( wxWindow* parent, int* param, const char
     _label_min = new wxStaticText(_parent,
           wxID_ANY,
           wxString::FromAscii("min"));
-    _label_min->SetToolTip("Change Minimal Value");
+    _label_min->SetToolTip(_T("Change Minimal Value"));
 
     _text_min  = new MyTextCtrl(
                               _parent,
@@ -95,7 +95,7 @@ wxIntegerParameter::wxIntegerParameter( wxWindow* parent, int* param, const char
     _label_max = new wxStaticText(_parent,
           wxID_ANY,
           wxString::FromAscii("max"));
-    _label_min->SetToolTip("Change Maximal Value");
+    _label_min->SetToolTip(_T("Change Maximal Value"));
 
     _text_max  = new MyTextCtrl( _parent,
           wxID_ANY,

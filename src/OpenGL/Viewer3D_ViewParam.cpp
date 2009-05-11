@@ -21,7 +21,7 @@ Viewer3D_ViewParam::Viewer3D_ViewParam(Viewer3D* parent):
 {
   parent_class = parent;
   CreateParameters();
-  SetToolTip("View and Orientation Control");
+  SetToolTip(_T("View and Orientation Control"));
 }
 
 void Viewer3D_ViewParam::CreateParameters()

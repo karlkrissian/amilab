@@ -7,7 +7,7 @@ Viewer3D_VectorsParam::Viewer3D_VectorsParam(Viewer3D* parent): ParamPanel(paren
 {
   parent_class = parent;
   CreateParameters();
-  SetToolTip("Vector Field Parameters");
+  SetToolTip(_T("Vector Field Parameters"));
 }
 
 

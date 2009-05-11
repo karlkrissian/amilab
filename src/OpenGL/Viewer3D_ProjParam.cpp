@@ -11,7 +11,7 @@ Viewer3D_ProjParam::Viewer3D_ProjParam(Viewer3D* parent):
 {
   parent_class = parent;
   CreateParameters();
-  SetToolTip("Projection Parameters");
+  SetToolTip(_T("Projection Parameters"));
 }
 
 void Viewer3D_ProjParam::CreateParameters()

@@ -7,7 +7,7 @@ Viewer3D_BackgroundParam::Viewer3D_BackgroundParam(Viewer3D* parent): ParamPanel
 {
   parent_class = parent;
   CreateParameters();
-  SetToolTip("Background Colors");
+  SetToolTip(_T("Background Colors"));
 }
 
 
