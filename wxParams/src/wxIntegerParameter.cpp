@@ -1,7 +1,7 @@
 //
 // C++ Implementation: wxIntegerParameter
 //
-// Description: 
+// Description:
 //
 //
 // Author: Karl Krissian <krissian@dis.ulpgc.es>, (C) 2009
@@ -12,6 +12,7 @@
 
 #include "wxIntegerParameter.h"
 
+#include <iostream>
 using namespace std;
 using namespace boost;
 
@@ -25,7 +26,7 @@ using namespace boost;
 wxIntegerParameter::wxIntegerParameter( wxWindow* parent, int* param, const char* libelle):
 //                  ------------------
     wxBoxSizer(wxHORIZONTAL)
-{        
+{
     _parameter = param;
     _parent = parent;
     _min=-100;
@@ -45,20 +46,20 @@ wxIntegerParameter::wxIntegerParameter( wxWindow* parent, int* param, const char
     _sizer2 = new wxBoxSizer(wxHORIZONTAL);
 */
     _sizer2 = new wxBoxSizer(wxHORIZONTAL);
-    _label = new wxStaticText(_parent, 
+    _label = new wxStaticText(_parent,
           wxID_ANY,
           wxString::FromAscii(libelle));
 
- 
+
 #if wxUSE_SPINCTRL
-    _text = new MyTextCtrl( _parent, 
-                            wxID_ANY, 
+    _text = new MyTextCtrl( _parent,
+                            wxID_ANY,
                             wxString::FromAscii("5"),
-                            wxPoint(200, 160), 
+                            wxPoint(200, 160),
                             wxSize(40, wxDefaultCoord),
                             wxTE_PROCESS_ENTER);
     _text->SetCallback((void*)wxIntegerParameter::OnTextUpdate,(void*) this);
-    
+
     _spinbut = new mySpinButton(
                         _parent,
                         wxID_ANY,
@@ -69,7 +70,7 @@ wxIntegerParameter::wxIntegerParameter( wxWindow* parent, int* param, const char
     _spinbut->SetRange(0,10);
     _spinbut->SetValue(5);
     _spinbut->SetCallback((void*)wxIntegerParameter::OnSpinCtrlUpdate, (void*) this);
-    
+
     _spinbut_limits = new mySpinButton( _parent, wxID_ANY, wxPoint(200, 160), wxDefaultSize ,wxSP_ARROW_KEYS | wxSP_VERTICAL | wxSP_WRAP);
     _spinbut_limits->SetRange(0,1);
     _spinbut_limits->SetValue(1);
@@ -91,7 +92,7 @@ wxIntegerParameter::wxIntegerParameter( wxWindow* parent, int* param, const char
                               wxSize(40, wxDefaultCoord),
                               wxTE_PROCESS_ENTER);
     _text_min->SetCallback((void*)wxIntegerParameter::OnMinMaxUpdate,(void*) this);
-                             
+
     _label_max = new wxStaticText(_parent,
           wxID_ANY,
           wxString::FromAscii("max"));
@@ -101,27 +102,27 @@ wxIntegerParameter::wxIntegerParameter( wxWindow* parent, int* param, const char
           wxID_ANY,
           wxString::FromAscii("0"),
           wxPoint(200, 160),
-          wxSize(40, wxDefaultCoord), 
+          wxSize(40, wxDefaultCoord),
           wxTE_PROCESS_ENTER);
     _text_max->SetCallback(
           (void*)wxIntegerParameter::OnMinMaxUpdate,
           (void*) this);
-    
+
     // Layout
-    _sizer2->Add(_label,   0, 
+    _sizer2->Add(_label,   0,
                           wxLEFT  | wxALIGN_CENTRE_VERTICAL, 2);
-    _sizer2->Add(_text,    1, 
+    _sizer2->Add(_text,    1,
                           wxLEFT  | wxALIGN_CENTRE_VERTICAL, 5);
-    _sizer2->Add(_spinbut, 0, 
+    _sizer2->Add(_spinbut, 0,
                           wxRIGHT | wxALIGN_CENTRE_VERTICAL, 0);
-    
-    _limits_sizer->Add(_label_min,0, 
+
+    _limits_sizer->Add(_label_min,0,
                               wxRIGHT | wxALIGN_CENTRE_VERTICAL, 5);
-    _limits_sizer->Add(_text_min,1, 
+    _limits_sizer->Add(_text_min,1,
                               wxRIGHT | wxALIGN_CENTRE_VERTICAL, 5);
-    _limits_sizer->Add(_label_max,0, 
+    _limits_sizer->Add(_label_max,0,
                               wxRIGHT | wxALIGN_CENTRE_VERTICAL, 5);
-    _limits_sizer->Add(_text_max,1, 
+    _limits_sizer->Add(_text_max,1,
                               wxRIGHT | wxALIGN_CENTRE_VERTICAL, 5);
 
     Add(_sizer2, 0, wxLEFT | wxALIGN_CENTRE_VERTICAL, 5);
@@ -135,7 +136,7 @@ wxIntegerParameter::wxIntegerParameter( wxWindow* parent, int* param, const char
 }
 
 
-// 
+//
 wxIntegerParameter::~wxIntegerParameter()
 {
 }
@@ -143,7 +144,7 @@ wxIntegerParameter::~wxIntegerParameter()
 void wxIntegerParameter::SetConstraints(int min, int max, int def)
 {
   std::string number_str;
-  
+
   if (max<=min) {
     std::cout << "wxIntegerParameter::SetConstraints() \t for " << this->_label->GetLabel().mb_str()
         << " setting maximum to " << min+1 << endl;
@@ -199,7 +200,7 @@ void wxIntegerParameter::OnSpinCtrlUpdate( void* data)
   wxIntegerParameter* _this = (wxIntegerParameter*) data;
   (*_this->_parameter) = (int)_this->_spinbut->GetValue();
 //  _this->UpdateValue();
-  _this->_slider->SetValue( (*_this->_parameter) );   
+  _this->_slider->SetValue( (*_this->_parameter) );
   number_str = str(format("%d") % *_this->_parameter);
   _this->_text->SetValue( wxString::FromAscii(number_str.c_str()) );
   _this->Callback();
@@ -210,7 +211,7 @@ void wxIntegerParameter::OnTextUpdate( void* data)
   long val;
   bool res;
   wxIntegerParameter* _this = (wxIntegerParameter*) data;
-  
+
   wxString val_str= _this->_text->GetValue();
 
   res = val_str.ToLong(&val);
@@ -226,7 +227,7 @@ void wxIntegerParameter::OnTextUpdate( void* data)
 void wxIntegerParameter::OnLimitsUpdate( void* data)
 {
   wxIntegerParameter* _this = (wxIntegerParameter*) data;
-  
+
   if (_this->_spinbut_limits->GetValue()) {
     _this->_limits_item->Show(0);
     _this->Detach(_this->_spinbut_limits);
@@ -254,17 +255,17 @@ void wxIntegerParameter::OnMinMaxUpdate( void* data)
   long valmin,valmax;
   bool res1,res2;
   wxIntegerParameter* _this = (wxIntegerParameter*) data;
-  
+
   wxString val_str= _this->_text_min->GetValue();
   res1 = val_str.ToLong(&valmin);
   val_str= _this->_text_max->GetValue();
   res2 = val_str.ToLong(&valmax);
-  
-  
+
+
   if (res1&&res2&&(valmin<valmax)) {
     _this->SetConstraints(valmin,valmax,(*_this->_parameter));
   }
-  
+
 }
 
 void wxIntegerParameter::UpdateValue( )
@@ -276,7 +277,7 @@ void wxIntegerParameter::UpdateValue( )
 void wxIntegerParameter::Update( )
 {
   string number_str;
-  
+
   this->_spinbut->SetValue( (*this->_parameter));
   this->_slider->SetValue( (*this->_parameter) );
   number_str = str(format("%d") % *this->_parameter);
