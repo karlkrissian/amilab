@@ -232,7 +232,7 @@ void wxNumericParameter<T>::RecomputeTextSize()
 
     newsize = max_width+(int)(2*_text->GetWindowBorderSize().GetWidth());
     // ad-hoc how to compute the real needed size ??
-    #ifdef WIN32
+    #if defined(WIN32) || defined(__APPLE__)
       newsize = newsize+5;
     #else
       newsize = newsize+10;
