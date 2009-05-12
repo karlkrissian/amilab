@@ -22,7 +22,7 @@
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-    ================================================== 
+    ==================================================
    The full GNU Lesser General Public License file is in Devel/Sources/Prog/LesserGPL_license.txt
 */
 /*
@@ -49,7 +49,7 @@
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-    ================================================== 
+    ==================================================
    The full GNU Lesser General Public License file is in Devel/Sources/Prog/LesserGPL_license.txt
 */
 /***************************************************************************
@@ -156,7 +156,7 @@
 // Programme de courbes dans l'espace
 // fichier DessinImage.cpp
 //
-// Karl KRISSIAN 
+// Karl KRISSIAN
 //
 // Sophia Antipolis le 08-12-96
 //
@@ -211,7 +211,7 @@ void DessinImage::InitMinMax( InrImage::ptr& image)
 
     wxString message;
     message.Printf(GetwxStr("Intensity min = max, we will use [%.2f, %.2f]"),
-                   _val_min,_val_max); 
+                   _val_min,_val_max);
     wxMessageBox( message,
                   wxString::FromAscii("Warning: constant image"),
                   wxICON_INFORMATION|wxOK);
@@ -243,7 +243,7 @@ void DessinImage::SetMinMax( float min, float max)
 //                ---------
 {
 
-  
+
     int i;
 
   Si max<=min AlorsFait return;
@@ -293,15 +293,15 @@ void DessinImage::SetMinMax( float min, float max)
   */
   _step_contours = pow(10.0, (int) (log(_val_max - _val_min)/log(10.0)));
   _param_dialog->FloatConstraints(_id_step_contours,0, _val_max-_val_min, _step_contours);
-  
+
 
 //  ParametreReel* pvox;
-  
+
 //  pvox = (ParametreReel*) (*_param_Voxels3D)[_id_voxels_seuilbas];
 //  pvox->FixeContraintes(_val_min,_val_max,_val_max);
 //  pvox->MAJ_Contraintes();
   _param_Voxels3D->FloatConstraints(_id_voxels_seuilbas,_val_min,_val_max,_val_max);
-  
+
 
 //  pvox = (ParametreReel*) (*_param_Voxels3D)[_id_voxels_seuilhaut];
 //  pvox->FixeContraintes(_val_min,_val_max,_val_max);
@@ -339,12 +339,12 @@ void DessinImage::CheckMinMax()
     float min,max;
 
     _param_dialog->ParamFloatGetLimits(_id_min,min,max);
-    Si (fabsf(min-_val_min)>1E-5) Ou (fabsf(max-_val_max)>1E-5) 
+    Si (fabsf(min-_val_min)>1E-5) Ou (fabsf(max-_val_max)>1E-5)
     Alors
       SetMinMax(min,max);
     Sinon
       _param_dialog->ParamFloatGetLimits(_id_max,min,max);
-      Si (fabsf(min-_val_min)>1E-5) Ou (fabsf(max-_val_max)>1E-5) 
+      Si (fabsf(min-_val_min)>1E-5) Ou (fabsf(max-_val_max)>1E-5)
       AlorsFait
         SetMinMax(min,max);
     FinSi
@@ -354,12 +354,12 @@ void DessinImage::CheckMinMax()
     int min,max;
 
     _param_dialog->ParamIntGetLimits(_id_min,min,max);
-    Si (fabsf(min-_val_min)>1E-5) Ou (fabsf(max-_val_max)>1E-5) 
+    Si (fabsf(min-_val_min)>1E-5) Ou (fabsf(max-_val_max)>1E-5)
     Alors
       SetMinMax(min,max);
     Sinon
       _param_dialog->ParamIntGetLimits(_id_max,min,max);
-      Si (fabsf(min-_val_min)>1E-5) Ou (fabsf(max-_val_max)>1E-5) 
+      Si (fabsf(min-_val_min)>1E-5) Ou (fabsf(max-_val_max)>1E-5)
       AlorsFait
         SetMinMax(min,max);
     FinSi
@@ -393,10 +393,10 @@ void DessinImage::ComputeBasicSizes()
 #if defined(__WXMOTIF__)
     Si _new_font != NULL AlorsFait
       XSetFont(display,contexte,_new_font->fid);
-  
+
     font_str = XQueryFont(display, XGContextFromGC(contexte));
 #endif
-  
+
     valmin = _val_min;
     valmax = _val_max;
 
@@ -466,7 +466,7 @@ void DessinImage::ComputeBasicSizes()
   _right_axe_width   = 5+2+xchar.width+2;
 
   _bottom_axe_height = 5+2+
-                       font_str->max_bounds.ascent   + 
+                       font_str->max_bounds.ascent   +
                        font_str->max_bounds.descent ;
 
   XFreeFontInfo(NULL,font_str,0);
@@ -530,7 +530,7 @@ void DessinImage::InitVoxelSize()
 
   largeur = _largeur - _colorbar_width;
   hauteur = _hauteur;
- 
+
   Pour(i,0,2)
     _right_margin[i]  = _bottom_margin[i] = 2;
     _left_margin[i]   = _top_margin[i]    = 5;
@@ -540,10 +540,10 @@ void DessinImage::InitVoxelSize()
     _bottom_margin[IMAGE_XZ] = 8;
     _right_margin[ IMAGE_ZY] = 8;
 
-    _right_margin[IMAGE_XY]  = 
+    _right_margin[IMAGE_XY]  =
     _right_margin[IMAGE_XZ]  = _right_axe_width;
 
-    _bottom_margin[IMAGE_XY] = 
+    _bottom_margin[IMAGE_XY] =
     _bottom_margin[IMAGE_ZY] = _bottom_axe_height;
   FinSi
 
@@ -559,7 +559,7 @@ void DessinImage::InitVoxelSize()
     _distance_coupes = 0;
   FinSi
 
-  // Calcul dans _size_x, _size_y, et _size_z la taille 
+  // Calcul dans _size_x, _size_y, et _size_z la taille
   // en pixels d'une unit�de longueur
 
   SelonQue Param._type_taille Vaut
@@ -575,7 +575,7 @@ void DessinImage::InitVoxelSize()
           Si avail_height<1 AlorsFait avail_height = 10;
 
           _size_x = (float) avail_width  / dim_x;
-          _size_y = (float) avail_height / dim_y;        
+          _size_y = (float) avail_height / dim_y;
           _size_z = _size_x;
         FinValeur
 
@@ -586,7 +586,7 @@ void DessinImage::InitVoxelSize()
           Si avail_height<1 AlorsFait avail_height = 10;
 
           _size_x = (float) avail_width / dim_x;
-          _size_z = (float) avail_height / dim_z;        
+          _size_z = (float) avail_height / dim_z;
           _size_y = _size_x;
         FinValeur
 
@@ -601,7 +601,7 @@ void DessinImage::InitVoxelSize()
           _size_x = _size_y;
         FinValeur
 
-        Valeur TYPE_COUPE_XY_XZ:  
+        Valeur TYPE_COUPE_XY_XZ:
 
           avail_width  = largeur - h_margin[IMAGE_XY];
           avail_height = hauteur - v_margin[IMAGE_XY]
@@ -611,12 +611,12 @@ void DessinImage::InitVoxelSize()
           Si avail_height<1 AlorsFait avail_height = 10;
 
           _size_x = (float) avail_width  / dim_x;
-          _size_y = 
+          _size_y =
           _size_z = (float) avail_height / ( dim_y + dim_z);
 
         FinValeur
 
-        Valeur TYPE_COUPE_XY_ZY:  
+        Valeur TYPE_COUPE_XY_ZY:
 
           avail_width  = largeur - h_margin[IMAGE_XY]
                                   - h_margin[IMAGE_ZY]
@@ -627,13 +627,13 @@ void DessinImage::InitVoxelSize()
           Si avail_height<1 AlorsFait avail_height = 10;
 
 
-          _size_x = 
+          _size_x =
           _size_z = (float) avail_width  / ( dim_x + dim_z);
           _size_y = (float) avail_height / dim_y;
 
         FinValeur
 
-        Valeur TYPE_COUPE_XZ_ZY:  
+        Valeur TYPE_COUPE_XZ_ZY:
         Valeur TYPE_COUPE_XY_XZ_ZY:
 
           avail_width  = largeur - h_margin[IMAGE_XY]
@@ -646,7 +646,7 @@ void DessinImage::InitVoxelSize()
           Si avail_height<1 AlorsFait avail_height = 10;
 
           val1 = (float) avail_width  / (dim_x + dim_z);
-          val2 = (float) avail_height / (dim_y + dim_z);        
+          val2 = (float) avail_height / (dim_y + dim_z);
 
           Si val1 < val2 Alors
             _size_x = _size_y = _size_z = val1;
@@ -695,7 +695,7 @@ void DessinImage::InitVoxelSize()
   val1 = min( val1, _size_z);
 
   // Calcul dans _size_x, _size_y et _size_z la taille
-  // en pixels d'un voxel selon chaque dimension. 
+  // en pixels d'un voxel selon chaque dimension.
   Si Param._option_traitement == OPTION_MIP Alors
     _size_x = _size_y = _size_z = val1;
   Sinon
@@ -733,7 +733,7 @@ void DessinImage::InitPositionImages( )
     h_margin[i] = _right_margin[i]  + _left_margin[i];
     v_margin[i] = _top_margin[i]    + _bottom_margin[i];
 
-  if (GB_debug) cerr << format("i= %d  hmargin %d vmargin %d ") 
+  if (GB_debug) cerr << format("i= %d  hmargin %d vmargin %d ")
       % i % h_margin[i]% v_margin[i] << endl;
 
   FinPour
@@ -749,9 +749,9 @@ void DessinImage::InitPositionImages( )
       Xneed = tx*_size_x + h_margin[IMAGE_XY];
       Yneed = ty*_size_y + v_margin[IMAGE_XY];
 
-      _tab_ximage_pos_x[IMAGE_XY] = (int) (largeur-Xneed)/2 + 
+      _tab_ximage_pos_x[IMAGE_XY] = (int) (largeur-Xneed)/2 +
                                            _left_margin[IMAGE_XY];
-      _tab_ximage_pos_y[IMAGE_XY] = (int) (hauteur-Yneed)/2 + 
+      _tab_ximage_pos_y[IMAGE_XY] = (int) (hauteur-Yneed)/2 +
                                            _top_margin[IMAGE_XY];
 
     FinValeur
@@ -761,7 +761,7 @@ void DessinImage::InitPositionImages( )
       Xneed = tx*_size_x + h_margin[IMAGE_XZ];
       Yneed = tz*_size_z + v_margin[IMAGE_XZ];
 
-      _tab_ximage_pos_x[IMAGE_XZ] = (int) (largeur-Xneed)/2 + 
+      _tab_ximage_pos_x[IMAGE_XZ] = (int) (largeur-Xneed)/2 +
                                            _left_margin[IMAGE_XZ];
       _tab_ximage_pos_y[IMAGE_XZ] = (int) (hauteur-Yneed)/2+
                                            _top_margin[IMAGE_XZ];
@@ -773,16 +773,16 @@ void DessinImage::InitPositionImages( )
       Xneed = tz*_size_z + h_margin[IMAGE_ZY];
       Yneed = ty*_size_y + v_margin[IMAGE_ZY];
 
-      _tab_ximage_pos_x[IMAGE_ZY] = (int) (largeur-Xneed)/2 + 
+      _tab_ximage_pos_x[IMAGE_ZY] = (int) (largeur-Xneed)/2 +
                                            _left_margin[IMAGE_ZY];
-      _tab_ximage_pos_y[IMAGE_ZY] = (int) (hauteur-Yneed)/2 + 
+      _tab_ximage_pos_y[IMAGE_ZY] = (int) (hauteur-Yneed)/2 +
                                            _top_margin[IMAGE_ZY];
     FinValeur
 
     Valeur TYPE_COUPE_XY_XZ:
 
       Xneed = tx*_size_x + h_margin[IMAGE_XY];
-      Yneed = ty*_size_y + tz*_size_z + 
+      Yneed = ty*_size_y + tz*_size_z +
               v_margin[IMAGE_XY] +
               v_margin[IMAGE_XZ] +
               _distance_coupes;
@@ -794,7 +794,7 @@ void DessinImage::InitPositionImages( )
 
 
       _tab_ximage_pos_x[IMAGE_XY] = _tab_ximage_pos_x[IMAGE_XZ];
-      _tab_ximage_pos_y[IMAGE_XY] = (int) (_tab_ximage_pos_y[IMAGE_XZ]   + 
+      _tab_ximage_pos_y[IMAGE_XY] = (int) (_tab_ximage_pos_y[IMAGE_XZ]   +
                                     tz*_size_z +
                                     _bottom_margin[IMAGE_XZ] +
                                     _distance_coupes +
@@ -802,17 +802,17 @@ void DessinImage::InitPositionImages( )
 
     FinValeur
 
-    Valeur TYPE_COUPE_XY_ZY:  
+    Valeur TYPE_COUPE_XY_ZY:
 
       Xneed = tx*_size_x + tz*_size_z +
-              h_margin[IMAGE_XY] +  
-              h_margin[IMAGE_ZY] +  
+              h_margin[IMAGE_XY] +
+              h_margin[IMAGE_ZY] +
               _distance_coupes;
       Yneed = ty*_size_y + v_margin[IMAGE_XY];
 
-      _tab_ximage_pos_x[IMAGE_ZY] = (int) (largeur-Xneed)/2 + 
+      _tab_ximage_pos_x[IMAGE_ZY] = (int) (largeur-Xneed)/2 +
                                     _left_margin[IMAGE_ZY];
-      _tab_ximage_pos_y[IMAGE_ZY] = (int) (hauteur-Yneed)/2 + 
+      _tab_ximage_pos_y[IMAGE_ZY] = (int) (hauteur-Yneed)/2 +
                                     _top_margin[IMAGE_ZY];
 
 
@@ -825,42 +825,42 @@ void DessinImage::InitPositionImages( )
 
     FinValeur
 
-    Valeur TYPE_COUPE_XZ_ZY:  
-    Valeur TYPE_COUPE_XY_XZ_ZY:  
+    Valeur TYPE_COUPE_XZ_ZY:
+    Valeur TYPE_COUPE_XY_XZ_ZY:
 
       Xneed = tx*_size_x + tz*_size_z +
               h_margin[IMAGE_XY] +
               h_margin[IMAGE_ZY] +
               _distance_coupes;
-      Yneed = ty*_size_y + tz*_size_z + 
+      Yneed = ty*_size_y + tz*_size_z +
               v_margin[IMAGE_XY] +
               v_margin[IMAGE_XZ] +
               _distance_coupes;
 
-      _tab_ximage_pos_x[IMAGE_XY] = (int) ( largeur - tx*_size_x 
+      _tab_ximage_pos_x[IMAGE_XY] = (int) ( largeur - tx*_size_x
                            -_right_margin[IMAGE_XY]);
-      _tab_ximage_pos_y[IMAGE_XY] = (int) ( hauteur - ty*_size_y 
+      _tab_ximage_pos_y[IMAGE_XY] = (int) ( hauteur - ty*_size_y
                            -_bottom_margin[IMAGE_XY]);
 
       _tab_ximage_pos_x[IMAGE_ZY] = (int) (
                     _tab_ximage_pos_x[IMAGE_XY] -
-                                    _left_margin[IMAGE_XY]  - 
+                                    _left_margin[IMAGE_XY]  -
                                     _distance_coupes -
-                                    _right_margin[IMAGE_ZY] - 
+                                    _right_margin[IMAGE_ZY] -
                     tz*_size_z );
       _tab_ximage_pos_y[IMAGE_ZY] = _tab_ximage_pos_y[IMAGE_XY];
 
       _tab_ximage_pos_x[IMAGE_XZ] =_tab_ximage_pos_x[IMAGE_XY];
       _tab_ximage_pos_y[IMAGE_XZ] = (int) (
-                                    _tab_ximage_pos_y[IMAGE_XY] - 
-                    _top_margin[IMAGE_XY] - 
+                                    _tab_ximage_pos_y[IMAGE_XY] -
+                    _top_margin[IMAGE_XY] -
                                     _distance_coupes -
-                    _bottom_margin[IMAGE_XZ] - 
+                    _bottom_margin[IMAGE_XZ] -
                                     tz*_size_z);
 
     FinValeur
 
-    Valeur TYPE_COUPES:  
+    Valeur TYPE_COUPES:
 
       _tab_ximage_pos_x[IMAGE_COUPES] = (int) ( 0 );
       _tab_ximage_pos_y[IMAGE_COUPES] = (int) ( 0 );
@@ -974,7 +974,7 @@ void DessinImage::CreeFenetreParametres(ParamBox* pb)
 
     /*
       //-------------- Drawing Area pour les histogrammes
-      _dessin_histo = new DessinHisto(_param_dialog->GetForm(), FrAn("Histogramme","Histogram"), 
+      _dessin_histo = new DessinHisto(_param_dialog->GetForm(), FrAn("Histogramme","Histogram"),
                                       _image_initiale, _palette, _val_min, _val_max);
       _dessin_histo->FixeDimensions(256,100);
       _dessin_histo->Attache(_param_dialog->GetForm(), _param_dialog->GetForm(), NULL, NULL);
@@ -982,7 +982,7 @@ void DessinImage::CreeFenetreParametres(ParamBox* pb)
 
    pb->BeginHorizontal();
    //-------------- Show axes
-  pb->AddBoolean( &_id_show_axes, 
+  pb->AddBoolean( &_id_show_axes,
                 &Param._show_axes,
                 "Axes");
   pb->BooleanDefault( _id_show_axes, Param._show_axes);
@@ -991,29 +991,29 @@ void DessinImage::CreeFenetreParametres(ParamBox* pb)
                        (void*) DessinImage::CB_redessine,
                        (void*) this);
   //-------------- axes information
-  pb->AddEnumeration( &_id_axes_info, 2, 
-                    &Param._axes_info , 
+  pb->AddEnumeration( &_id_axes_info, 2,
+                    &Param._axes_info ,
                     "Unit");
 
-  pb->AddEnumChoice( _id_axes_info, 
-                  &_id_voxel_pos,   
+  pb->AddEnumChoice( _id_axes_info,
+                  &_id_voxel_pos,
                   "Voxel");
-  pb->AddEnumChoice( _id_axes_info, 
-                  &_id_space_pos,   
+  pb->AddEnumChoice( _id_axes_info,
+                  &_id_space_pos,
                   "Spatial");
-  
+
   pb->EnumerationDefaut( _id_axes_info, Param._axes_info);
-  pb->ChangedValueCallback( _id_axes_info, 
+  pb->ChangedValueCallback( _id_axes_info,
                        (void*) DessinImage::CB_redessine,
                        (void*) this);
    pb->EndHorizontal();
-  
+
    //--------------
   pb->AddInteger( &_id_planX, &Param._pos._x, FrAn("Plan X","X plane"));
   pb->IntegerConstraints( _id_planX, 0, _image->_tx - 1, Param._pos._x);
 
-  pb->ChangedValueCallback( _id_planX, 
-                       (void*) DessinImage::CB_PlanX, 
+  pb->ChangedValueCallback( _id_planX,
+                       (void*) DessinImage::CB_PlanX,
                        (void*) this);
 
 //  pb->Attache( _id_planX, _interpole_ligne->GetWidget(), pb->GetForm());
@@ -1021,20 +1021,20 @@ void DessinImage::CreeFenetreParametres(ParamBox* pb)
 
   pb->AddInteger( &_id_planY, &Param._pos._y, FrAn("Plan Y","Y plane"));
   pb->IntegerConstraints( _id_planY, 0, _image->_ty - 1, Param._pos._y);
-  pb->ChangedValueCallback( _id_planY, 
-                       (void*) DessinImage::CB_PlanY, 
+  pb->ChangedValueCallback( _id_planY,
+                       (void*) DessinImage::CB_PlanY,
                        (void*) this);
 
 
   pb->AddInteger( &_id_planZ, &Param._pos._z, FrAn("Plan Z","Z plane"));
 
   Si _image->_tz > 1 AlorsFait
-    pb->IntegerConstraints( _id_planZ, 
-                      0, 
-                      _image->_tz - 1, 
+    pb->IntegerConstraints( _id_planZ,
+                      0,
+                      _image->_tz - 1,
                       Param._pos._z);
 
-  pb->ChangedValueCallback( _id_planZ, 
+  pb->ChangedValueCallback( _id_planZ,
                        (void*) DessinImage::CB_PlanZ,
                        (void*) this);
 
@@ -1044,8 +1044,8 @@ void DessinImage::CreeFenetreParametres(ParamBox* pb)
 /*
   //-------------- Drawing Area pour les histogrammes
   aff_err("DessinImage::CreeFenetreParametres() 1 \n");
-  _interpole_ligne = new InterpoleLigne(pb->GetForm(), 
-                    FrAn("Interpolation","Interpolation"), 
+  _interpole_ligne = new InterpoleLigne(pb->GetForm(),
+                    FrAn("Interpolation","Interpolation"),
                     _val_min, _val_max, 0, 255);
   aff_err("DessinImage::CreeFenetreParametres() 2 \n");
   _interpole_ligne->FixeDimensions(256,100);
@@ -1057,7 +1057,7 @@ void DessinImage::CreeFenetreParametres(ParamBox* pb)
 
 
   pb->AjouteWidget( &_id_interpole, _interpole_ligne->GetWidget());
-*/ 
+*/
 
   aff_err("DessinImage::CreeFenetreParametres() 5 \n");
 
@@ -1065,11 +1065,11 @@ void DessinImage::CreeFenetreParametres(ParamBox* pb)
 
   pb->AddPage("Int.");
    //--------------
-  
+
   pb->BeginHorizontal();
-  
+
   //-------------- Show colorbar
-  pb->AddBoolean( &_id_show_colorbar, 
+  pb->AddBoolean( &_id_show_colorbar,
                 &Param._show_colorbar,
                 "Colorbar");
   pb->BooleanDefault( _id_show_colorbar, Param._show_colorbar);
@@ -1079,86 +1079,86 @@ void DessinImage::CreeFenetreParametres(ParamBox* pb)
                        (void*) this);
 
   //-------------- COLORSPACE
-  pb->AddEnumeration( &_id_colorspace, 3, 
-                    &Param._I._colorspace , 
+  pb->AddEnumeration( &_id_colorspace, 3,
+                    &Param._I._colorspace ,
                     "Scale");
 
-  pb->AddEnumChoice( _id_colorspace, 
-                  &_id_colorspace_grey,   
+  pb->AddEnumChoice( _id_colorspace,
+                  &_id_colorspace_grey,
                   FrAn("Niveaux de Gris","Grey"));
-  pb->AddEnumChoice( _id_colorspace, 
-                  &_id_colorspace_rainbow,   
+  pb->AddEnumChoice( _id_colorspace,
+                  &_id_colorspace_rainbow,
                   FrAn("Arc en ciel","Rainbow"));
-  pb->AddEnumChoice( _id_colorspace, 
-                  &_id_colorspace_user,   
+  pb->AddEnumChoice( _id_colorspace,
+                  &_id_colorspace_user,
                   FrAn("Utilisateur","User"));
-  
+
   pb->EnumerationDefaut( _id_colorspace, Param._I._colorspace);
-  pb->ChangedValueCallback( _id_colorspace, 
+  pb->ChangedValueCallback( _id_colorspace,
                        (void*) DessinImage::CB_colorspace,
                        (void*) this);
   pb->EndHorizontal();
   //--------------
   pb->BeginHorizontal();
   //--------------
-  pb->AddEnumeration( &_id_type_courbe, 4, 
-                    &Param._I._type_courbe , 
+  pb->AddEnumeration( &_id_type_courbe, 4,
+                    &Param._I._type_courbe ,
                     FrAn("courbe","Curve"));
 
-  pb->AddEnumChoice( _id_type_courbe, &_id_courbe_pente,   
+  pb->AddEnumChoice( _id_type_courbe, &_id_courbe_pente,
                   FrAn("Pente    __/ --","Slope    __/ --"));
-  pb->AddEnumChoice( _id_type_courbe, &_id_courbe_plateau, 
+  pb->AddEnumChoice( _id_type_courbe, &_id_courbe_plateau,
                   FrAn("Plateau  __--__","Plateau  __--__"));
-  pb->AddEnumChoice( _id_type_courbe, &_id_courbe_pente2,  
+  pb->AddEnumChoice( _id_type_courbe, &_id_courbe_pente2,
                   FrAn("Pente2   __/ __","Slope2   __/ __"));
-  pb->AddEnumChoice( _id_type_courbe, &_id_courbe_interpole,  
+  pb->AddEnumChoice( _id_type_courbe, &_id_courbe_interpole,
                   FrAn("Interpolation lin�ire",
                        "Linear interpolation"));
-  
+
   pb->EnumerationDefaut( _id_type_courbe, _id_courbe_pente);
-  pb->ChangedValueCallback( _id_type_courbe, 
+  pb->ChangedValueCallback( _id_type_courbe,
                           (void*) DessinImage::CB_type_courbe, (void*) this);
 
    //--------------
-  
+
   pb->EndHorizontal();
-  
+
    //--------------
   Si (_image->_format == WT_FLOAT ) Ou
      (_image->_format == WT_DOUBLE) Alors
-    pb->AddFloat( &_id_min, &_intensite_float_min, 
+    pb->AddFloat( &_id_min, &_intensite_float_min,
                    FrAn("intensit�minimale","Min. int."));
     pb->FloatConstraints( _id_min,  _val_min,  _val_max, _val_min);
 
-    pb->AddFloat( &_id_max, &_intensite_float_max, 
+    pb->AddFloat( &_id_max, &_intensite_float_max,
                    FrAn("intensit�maximale","Max. int."));
     pb->FloatConstraints( _id_max,  _val_min,  _val_max, _val_max);
   Sinon
-    pb->AddInteger( &_id_min, &_intensite_entier_min, 
+    pb->AddInteger( &_id_min, &_intensite_entier_min,
                  FrAn("intensit�minimale","Min. int."));
-    pb->IntegerConstraints( _id_min,  (int) _val_min,  (int) _val_max, 
+    pb->IntegerConstraints( _id_min,  (int) _val_min,  (int) _val_max,
                                       _intensite_entier_min);
 
-    pb->AddInteger( &_id_max, &_intensite_entier_max, 
+    pb->AddInteger( &_id_max, &_intensite_entier_max,
                  FrAn("intensit�maximale","Max. int."));
     pb->IntegerConstraints( _id_max,   (int) _val_min,  (int) _val_max,
                                       _intensite_entier_max);
   FinSi
 
-  pb->ChangedValueCallback( _id_min, 
-                       (void*) DessinImage::CB_barre_min, 
+  pb->ChangedValueCallback( _id_min,
+                       (void*) DessinImage::CB_barre_min,
                        (void*) this);
 
-  pb->ChangedValueCallback( _id_max, 
-                       (void*) DessinImage::CB_barre_max, 
+  pb->ChangedValueCallback( _id_max,
+                       (void*) DessinImage::CB_barre_max,
                        (void*) this);
 
   Si GB_debug AlorsFait fprintf(stderr,"DessinImage::%s Courbe \n",method);
 
   //--------------
-  pb->FixeVisible( _id_planX, (_image->_tx>1)); 
-  pb->FixeVisible( _id_planY, (_image->_ty>1)); 
-  pb->FixeVisible( _id_planZ, (_image->_tz>1)); 
+  pb->FixeVisible( _id_planX, (_image->_tx>1));
+  pb->FixeVisible( _id_planY, (_image->_ty>1));
+  pb->FixeVisible( _id_planZ, (_image->_tz>1));
 
   Si Param._I._type_courbe == TYPE_COURBE_INTERPOLE Alors
     pb->FixeVisible( _id_min, false);
@@ -1200,27 +1200,27 @@ void DessinImage::CreeParametresVoxel()
   _param_voxel = new ParamBox( this, FrAn("Tansformations du Voxel","Tansformations du Voxel"));
 
   //--------------
-  _param_voxel->AddFloat( &_id_voxel_size_x, &Param._dim._voxel_size_x, 
+  _param_voxel->AddFloat( &_id_voxel_size_x, &Param._dim._voxel_size_x,
                 FrAn("VOXEL taille en X","VOXEL size X"));
   _param_voxel->FloatConstraints(    _id_voxel_size_x, 0.1, 10, Param._dim._voxel_size_x);
-  _param_voxel->ChangedValueCallback( _id_voxel_size_x, 
-                      (void*) DessinImage::CB_voxel_size, 
+  _param_voxel->ChangedValueCallback( _id_voxel_size_x,
+                      (void*) DessinImage::CB_voxel_size,
                       (void*) this);
 
   //--------------
-  _param_voxel->AddFloat( &_id_voxel_size_y, &Param._dim._voxel_size_y, 
+  _param_voxel->AddFloat( &_id_voxel_size_y, &Param._dim._voxel_size_y,
                 FrAn("VOXEL taille en Y","VOXEL size Y"));
   _param_voxel->FloatConstraints(    _id_voxel_size_y, 0.1, 10, Param._dim._voxel_size_y);
-  _param_voxel->ChangedValueCallback( _id_voxel_size_y, 
-                      (void*) DessinImage::CB_voxel_size, 
+  _param_voxel->ChangedValueCallback( _id_voxel_size_y,
+                      (void*) DessinImage::CB_voxel_size,
                       (void*) this);
 
   //--------------
-  _param_voxel->AddFloat( &_id_voxel_size_z, &Param._dim._voxel_size_z, 
+  _param_voxel->AddFloat( &_id_voxel_size_z, &Param._dim._voxel_size_z,
                 FrAn("VOXEL taille en Z","VOXEL size Z"));
   _param_voxel->FloatConstraints(    _id_voxel_size_z, 0.1, 10, Param._dim._voxel_size_z);
-  _param_voxel->ChangedValueCallback( _id_voxel_size_z, 
-                      (void*) DessinImage::CB_voxel_size, 
+  _param_voxel->ChangedValueCallback( _id_voxel_size_z,
+                      (void*) DessinImage::CB_voxel_size,
                       (void*) this);
 
   //---------- Creation de la boite de parametres
@@ -1245,7 +1245,7 @@ void DessinImage::CreeParametresVecteurs(ParamBox* pb)
           (void*) this);
 
   //------------- Affichage du champ de vecteurs
-  pb->AddBoolean( &_id_display_vectors, 
+  pb->AddBoolean( &_id_display_vectors,
                   &_display_vectors,
                                   FrAn("Affiche Vecteurs",
                        "Display Vectors"));
@@ -1258,13 +1258,13 @@ void DessinImage::CreeParametresVecteurs(ParamBox* pb)
 
 
   //--------------
-   pb->AddEnumeration( &_id_vector_distance_unit, 2, &_vector_distance_unit , 
+   pb->AddEnumeration( &_id_vector_distance_unit, 2, &_vector_distance_unit ,
                     "Vector Unit");
 
    pb->AddEnumChoice( _id_vector_distance_unit, &_id_vector_image_pixels,
                      "Image Pixels");
-   pb->AddEnumChoice( _id_vector_distance_unit, 
-                     &_id_vector_screen_pixels, 
+   pb->AddEnumChoice( _id_vector_distance_unit,
+                     &_id_vector_screen_pixels,
                      "Screen Pixels");
    pb->EnumerationDefaut( _id_vector_distance_unit, _id_vector_image_pixels);
 
@@ -1274,34 +1274,34 @@ void DessinImage::CreeParametresVecteurs(ParamBox* pb)
   //--------------
   pb->AddFloat( &_id_vecteurs_taille, &_taille_vecteur, FrAn("taille","Size"));
   pb->FloatConstraints(    _id_vecteurs_taille, 0.01, 100, _taille_vecteur);
-  pb->ChangedValueCallback( _id_vecteurs_taille, 
+  pb->ChangedValueCallback( _id_vecteurs_taille,
                                         (void*) DessinImage::CB_taille_vecteurs, (void*) this);
 
 
   //--------------
   pb->AddInteger( &_id_vecteurs_espacement, &_espacement_vecteur, FrAn("espacement","Spacing"));
   pb->IntegerConstraints(    _id_vecteurs_espacement, 1, 20, _espacement_vecteur);
-  pb->ChangedValueCallback( _id_vecteurs_espacement, 
+  pb->ChangedValueCallback( _id_vecteurs_espacement,
                                         (void*) DessinImage::CB_taille_vecteurs, (void*) this);
 
 
   //--------------
-  pb->AddEnumeration( &_id_vecteur_type, 3, &_vecteur_type , 
+  pb->AddEnumeration( &_id_vecteur_type, 3, &_vecteur_type ,
                       FrAn("type de vecteur","vector type"));
 
   pb->AddEnumChoice( _id_vecteur_type, &_id_vecteur_fleche,
                     FrAn(" Fl�he"," Arrow"));
-  pb->AddEnumChoice( _id_vecteur_type, 
-                    &_id_vecteur_direction, 
+  pb->AddEnumChoice( _id_vecteur_type,
+                    &_id_vecteur_direction,
                     " Direction");
-  pb->AddEnumChoice( _id_vecteur_type, 
-                    &_id_vecteur_fleche_prop, 
+  pb->AddEnumChoice( _id_vecteur_type,
+                    &_id_vecteur_fleche_prop,
                     FrAn(" Fleche prop.","Prop. arrow"));
   pb->EnumerationDefaut( _id_vecteur_type, _id_vecteur_fleche_prop);
 
   pb->ChangedValueCallback( _id_vecteur_type,
                           (void*) DessinImage::CB_type_vecteur, (void*) this);
-  
+
   pb->EndBox();
 
   int vect_id;
@@ -1309,9 +1309,9 @@ void DessinImage::CreeParametresVecteurs(ParamBox* pb)
 
   vect_id = 0;
   std::vector<vectorfield_info>::iterator Iter;
-  for (Iter  = _vector_fields.begin(); 
+  for (Iter  = _vector_fields.begin();
        Iter != _vector_fields.end()  ; Iter++, vect_id++ )
-  //if (!(*Iter).vector.expired()) 
+  //if (!(*Iter).vector.expired())
   {
 
     sprintf(name,"Vector %d",vect_id+1);
@@ -1320,24 +1320,24 @@ void DessinImage::CreeParametresVecteurs(ParamBox* pb)
     pb->BeginHorizontal();
     //------------- Dessin du premier vecteur
     pb->AddBoolean(
-            &(vf._id_affiche_vecteur), 
+            &(vf._id_affiche_vecteur),
             &(vf.visible),
             "Display");
-    pb->BooleanDefault( 
+    pb->BooleanDefault(
             vf._id_affiche_vecteur,
             true);
-    pb->ChangedValueCallback( 
+    pb->ChangedValueCallback(
             vf._id_affiche_vecteur,
             (void*) DessinImage::CB_taille_vecteurs,
             (void*) this);
 
     //---------------- Color
-    pb->AddColor( 
+    pb->AddColor(
             &(vf._id_couleur_vecteur),
             "Color",
             &vf.color);
 
-    pb->ChangedValueCallback( 
+    pb->ChangedValueCallback(
             vf._id_couleur_vecteur,
             (void*) DessinImage::CB_taille_vecteurs,
             (void*) this);
@@ -1368,22 +1368,22 @@ void DessinImage::CreeParametresCircles()
                     (void*) this);
 
   //------------- Intervalle de rayons
-  _param_circles->AddFloat( &_id_circles_min_radius, 
-                  &_circles_min_radius, 
+  _param_circles->AddFloat( &_id_circles_min_radius,
+                  &_circles_min_radius,
                   "circles min radius");
-  _param_circles->FloatConstraints(_id_circles_min_radius, 
-                  -2, 2, 
+  _param_circles->FloatConstraints(_id_circles_min_radius,
+                  -2, 2,
                   _circles_min_radius);
   _param_circles->ChangedValueCallback( _id_circles_min_radius,
                                         (void*) DessinImage::CB_redessine,
                     (void*) this);
 
   //--------------
-  _param_circles->AddFloat( &_id_circles_max_radius, 
-                  &_circles_max_radius, 
+  _param_circles->AddFloat( &_id_circles_max_radius,
+                  &_circles_max_radius,
                   "circles max radius");
-  _param_circles->FloatConstraints(_id_circles_max_radius, 
-                  -2, 2, 
+  _param_circles->FloatConstraints(_id_circles_max_radius,
+                  -2, 2,
                   _circles_max_radius);
   _param_circles->ChangedValueCallback( _id_circles_max_radius,
                                        (void*) DessinImage::CB_redessine,
@@ -1436,7 +1436,7 @@ void DessinImage::CreeParametresMIP()
   _param_MIP->BeginHorizontal();
 
   _param_MIP->AddButton(&_id_boutton_XY,  "proj XY",
-      (void*) CB_projette_XY, 
+      (void*) CB_projette_XY,
       (void*) this);
 
   _param_MIP->AddButton(&_id_boutton_XZ,  "proj XZ",
@@ -1448,12 +1448,12 @@ void DessinImage::CreeParametresMIP()
       (void*) this);
 
   _param_MIP->EndHorizontal();
-  
+
   //-------------- Angle de d�allage pour la st��
   _param_MIP->AddInteger( &_id_decal_stereo, &Param._MIP._decal_stereo, FrAn("Angle St��","Stereo Angle"));
   _param_MIP->IntegerConstraints(    _id_decal_stereo, 0, 20, 5);
   _param_MIP->ChangedValueCallback( _id_decal_stereo,
-                                   (void*) DessinImage::CB_MIP_decal_stereo, 
+                                   (void*) DessinImage::CB_MIP_decal_stereo,
                                    (void*) this);
 
   //-------------- Affichage des rotations X, Y, Z
@@ -1483,7 +1483,7 @@ void DessinImage::CreeParametresMIP()
   //--------------
   _param_MIP->AddButton( &_id_boutton_fermer_MIP,
                   FrAn("Fermer","Close"),
-                  (void*) CB_Fermer_parametresMIP, 
+                  (void*) CB_Fermer_parametresMIP,
                   (void*) this);
 
   //---------- Creation de la boite de parametres
@@ -1509,7 +1509,7 @@ void DessinImage::CreeParametresMIP_stereo()
                                   FrAn("Dist. yeux","Eyes dist."));
   _param_MIP_stereo->FloatConstraints( _id_distance_yeux, 5.0, 8.0, _distance_yeux);
   _param_MIP_stereo->ChangedValueCallback( _id_distance_yeux,
-                                   (void*) DessinImage::CB_MIP_stereo_param, 
+                                   (void*) DessinImage::CB_MIP_stereo_param,
                                    (void*) this);
 
 //  printf("_distance_oeil_ecran %f\n",_distance_oeil_ecran);
@@ -1518,16 +1518,16 @@ void DessinImage::CreeParametresMIP_stereo()
                                   FrAn("Dist oeil-ecran","Dist eye-screen"));
   _param_MIP_stereo->FloatConstraints( _id_distance_oeil_ecran, 10.0, 60.0, _distance_oeil_ecran);
   _param_MIP_stereo->ChangedValueCallback( _id_distance_oeil_ecran,
-                                   (void*) DessinImage::CB_MIP_stereo_param, 
+                                   (void*) DessinImage::CB_MIP_stereo_param,
                                    (void*) this);
-  
+
 //  printf("_distance_ecran_objet %f\n",_distance_ecran_objet);
   //-------------- Distance �ran objet
   _param_MIP_stereo->AddFloat( &_id_distance_ecran_objet, &_distance_ecran_objet,
                                   FrAn("Dist ecran-objet","Dist screen-objet"));
   _param_MIP_stereo->FloatConstraints( _id_distance_ecran_objet, 3.0, 60.0, _distance_ecran_objet);
   _param_MIP_stereo->ChangedValueCallback( _id_distance_ecran_objet,
-                                   (void*) DessinImage::CB_MIP_stereo_param, 
+                                   (void*) DessinImage::CB_MIP_stereo_param,
                                    (void*) this);
 
 //  printf("_pixel_cm %f\n",_pixel_cm);
@@ -1536,7 +1536,7 @@ void DessinImage::CreeParametresMIP_stereo()
                                   FrAn("Pixels par cm","Pixels per cm"));
   _param_MIP_stereo->FloatConstraints( _id_pixel_cm, 20.0, 50.0, _pixel_cm);
   _param_MIP_stereo->ChangedValueCallback( _id_pixel_cm,
-                                   (void*) DessinImage::CB_MIP_stereo_param, 
+                                   (void*) DessinImage::CB_MIP_stereo_param,
                                    (void*) this);
 
 
@@ -1555,13 +1555,13 @@ void DessinImage::CreeParametresCoupesXY()
   _param_CoupesXY = new ParamBox( this, FrAn("Param�res CoupesXY","XY Slices parameters"));
 
   //-------------- Z min et Z max
-  _param_CoupesXY->AddInteger( &_id_zmin, &Param._Zoom._zmin, "Z min"); 
+  _param_CoupesXY->AddInteger( &_id_zmin, &Param._Zoom._zmin, "Z min");
   _param_CoupesXY->IntegerConstraints(    _id_zmin, 0, _image->_tz-1, Param._Zoom._zmin);
   _param_CoupesXY->ChangedValueCallback( _id_zmin,
                                    (void*) DessinImage::CB_CoupesXY, (void*) this);
 
   //--------------
-  _param_CoupesXY->AddInteger( &_id_zmax, &Param._Zoom._zmax, "Z max"); 
+  _param_CoupesXY->AddInteger( &_id_zmax, &Param._Zoom._zmax, "Z max");
   _param_CoupesXY->IntegerConstraints(    _id_zmax, 0, _image->_tz-1, Param._Zoom._zmax);
   _param_CoupesXY->ChangedValueCallback( _id_zmax,
                                    (void*) DessinImage::CB_CoupesXY, (void*) this);
@@ -1582,16 +1582,16 @@ void DessinImage::CreeParametresAnimation()
   _param_Animation = new ParamBox( this,  FrAn("Param�res Animation","Animation Parameters"));
 
   _param_Animation->BeginHorizontal();
-  
+
   //------------- Bouttons PLAY et STOP
   _param_Animation->AddButton( &_id_play_button, " PLAY ",
-          (void*) DessinImage::CB_Anim_Play, 
+          (void*) DessinImage::CB_Anim_Play,
           (void*) this);
 
   _param_Animation->AddButton( &_id_stop_button, " STOP ",
-          (void*) DessinImage::CB_Anim_Stop, 
+          (void*) DessinImage::CB_Anim_Stop,
           (void*) this);
-   
+
   //-------------- Affichage des rotations X, Y, Z
 
   //--------------
@@ -1600,9 +1600,9 @@ void DessinImage::CreeParametresAnimation()
   _param_Animation->AddEnumChoice( _id_type_animation, &_id_forward,      "      Forward--->> ");
   _param_Animation->AddEnumChoice( _id_type_animation, &_id_backward,     " <<---Backward     ");
   _param_Animation->AddEnumChoice( _id_type_animation, &_id_autoreverse,  " <<-AutoReverse->> ");
-  
+
   _param_Animation->EnumerationDefaut( _id_type_animation, _id_forward);
-  _param_Animation->ChangedValueCallback( _id_type_animation, 
+  _param_Animation->ChangedValueCallback( _id_type_animation,
                           (void*) DessinImage::CB_type_animation, (void*) this);
 
   _param_Animation->EndHorizontal();
@@ -1636,14 +1636,14 @@ void DessinImage::CreeParametresIsoContour(ParamBox* pb)
     pb->BeginHorizontal();
 
       //------------- Dessin de l'isocontour ?
-    pb->AddBoolean( &_id_dessine_contour[i], 
+    pb->AddBoolean( &_id_dessine_contour[i],
                                       &_isocontours[i].visible,
                                       FrAn("Dessin","Draw"),
                       CaractereToggle);
-    pb->BooleanDefault( _id_dessine_contour[i], 
+    pb->BooleanDefault( _id_dessine_contour[i],
                        _isocontours[i].visible);
     pb->ChangedValueCallback( _id_dessine_contour[i],
-                       (void*) DessinImage::CB_IsoContourVisible, 
+                       (void*) DessinImage::CB_IsoContourVisible,
                          (void*) this);
 
     //---------------- Couleur
@@ -1657,59 +1657,59 @@ void DessinImage::CreeParametresIsoContour(ParamBox* pb)
                                       "all contours",
                                       CaractereToggle);
 
-      pb->BooleanDefault( _id_all_contours, 
+      pb->BooleanDefault( _id_all_contours,
                                       _all_contours);
 
       pb->ChangedValueCallback( _id_all_contours,
-                              (void*) DessinImage::CB_DessineIsoContour, 
+                              (void*) DessinImage::CB_DessineIsoContour,
                                              (void*) this);
     }
     pb->EndHorizontal();
-    
+
     pb->ChangedValueCallback( _id_couleur_contour[i],
                   (void*) DessinImage::CB_DessineIsoContour,
                          (void*) this);
 
 
     //-------------- Seuil de l'isocontour
-    pb->AddFloat( &_id_seuil_contour[i], 
+    pb->AddFloat( &_id_seuil_contour[i],
                                    &_isocontours[i].threshold,
                    FrAn("Seuil",
                     "Threshold"));
-    pb->FloatConstraints( _id_seuil_contour[i], 
+    pb->FloatConstraints( _id_seuil_contour[i],
                     _val_min, _val_max, _val_min);
     pb->ChangedValueCallback( _id_seuil_contour[i],
-                           (void*) DessinImage::CB_DessineIsoContour, 
+                           (void*) DessinImage::CB_DessineIsoContour,
                          (void*) this);
 
 
     Si i==0 Alors
 
       //-------------- Contours step
-      pb->AddFloat( &_id_step_contours, 
+      pb->AddFloat( &_id_step_contours,
                                      &_step_contours,
                                  FrAn("Pas",
                                       "Step"));
-      pb->FloatConstraints( _id_step_contours, 
-                                        0, _val_max-_val_min, 
+      pb->FloatConstraints( _id_step_contours,
+                                        0, _val_max-_val_min,
                                         _step_contours);
       pb->ChangedValueCallback( _id_step_contours,
-                           (void*) DessinImage::CB_DessineIsoContour, 
+                           (void*) DessinImage::CB_DessineIsoContour,
                                            (void*) this);
 
       //-------------- Contours Window Size
-      pb->AddFloat( &_id_contours_winsize, 
+      pb->AddFloat( &_id_contours_winsize,
                                      &_contours_winsize,
                                  FrAn("Taille Fenetre",
                                       "Window Size"));
-      pb->FloatConstraints( _id_contours_winsize, 
-                                        0, _val_max-_val_min, 
+      pb->FloatConstraints( _id_contours_winsize,
+                                        0, _val_max-_val_min,
                                         _contours_winsize);
       pb->ChangedValueCallback( _id_contours_winsize,
-                           (void*) DessinImage::CB_DessineIsoContour, 
+                           (void*) DessinImage::CB_DessineIsoContour,
                                            (void*) this);
 
-      //-------------- Creation de l'isosurface 
+      //-------------- Creation de l'isosurface
     pb->BeginHorizontal();
       pb->AddButton( &_id_isosurface,
                     "IsoSurface",
@@ -1760,15 +1760,15 @@ void DessinImage::CreeParametresImageSurface(ParamBox* pb)
     pb->AddFloat( &_id_imsurf_zscale,
                     &_imsurf_zscale,
                     "Z scale");
-    pb->FloatConstraints( _id_imsurf_zscale, 
+    pb->FloatConstraints( _id_imsurf_zscale,
                           0.1, 5.0, 1.0);
-  
+
   //  pb->ChangedValueCallback( _id_imsurf_zscale,
   //                       CB_imagesurface,
   //                       (void*) this);
-  
-  
-      //-------------- Creation de l'isosurface 
+
+
+      //-------------- Creation de l'isosurface
         pb->AddButton( &_id_imagesurface,
                       "ImageSurface",
                       (void*) CB_imagesurface,
@@ -1787,25 +1787,25 @@ void DessinImage::CreeParametresVoxels3D()
 
 
   //=============
-  _param_Voxels3D = new ParamBox( this, 
+  _param_Voxels3D = new ParamBox( this,
                        FrAn("Param�res Voxels3D",
                         "Voxels3D Parameters"));
 
-  //-------------- Seuil Bas 
-  _param_Voxels3D->AddFloat( &_id_voxels_seuilbas, 
+  //-------------- Seuil Bas
+  _param_Voxels3D->AddFloat( &_id_voxels_seuilbas,
                    &_voxels3D_seuilbas,
                    FrAn("Seuil bas",
                     "Low Threshold"));
-  _param_Voxels3D->FloatConstraints( _id_voxels_seuilbas, 
+  _param_Voxels3D->FloatConstraints( _id_voxels_seuilbas,
                     _val_min, _val_max, _val_min);
 
 
-  //-------------- Seuil Haut 
-  _param_Voxels3D->AddFloat( &_id_voxels_seuilhaut, 
+  //-------------- Seuil Haut
+  _param_Voxels3D->AddFloat( &_id_voxels_seuilhaut,
                    &_voxels3D_seuilhaut,
                    FrAn("Seuil haut",
                     "High Threshold"));
-  _param_Voxels3D->FloatConstraints( _id_voxels_seuilhaut, 
+  _param_Voxels3D->FloatConstraints( _id_voxels_seuilhaut,
                     _val_min, _val_max, _val_max);
 
 
@@ -1833,29 +1833,29 @@ void DessinImage::CreeParametresGLMIP()
          FrAn("Param�res OpenGL MIP",
        "OpenGL MIP Parameters"));
 
-  //-------------- Seuil Bas 
-  _param_GLMIP->AddFloat( &_id_glmip_seuilbas, 
+  //-------------- Seuil Bas
+  _param_GLMIP->AddFloat( &_id_glmip_seuilbas,
                 &_GLMIP_seuilbas,
                 FrAn("Seuil bas",
                  "Low Threshold"));
-  _param_GLMIP->FloatConstraints( _id_glmip_seuilbas, 
+  _param_GLMIP->FloatConstraints( _id_glmip_seuilbas,
                  _val_min, _val_max, _val_min);
 
 
-  //-------------- Seuil Haut 
-  _param_GLMIP->AddFloat( &_id_glmip_seuilhaut, 
+  //-------------- Seuil Haut
+  _param_GLMIP->AddFloat( &_id_glmip_seuilhaut,
                 &_GLMIP_seuilhaut,
                 FrAn("Seuil haut",
                  "High Threshold"));
-  _param_GLMIP->FloatConstraints( _id_glmip_seuilhaut, 
+  _param_GLMIP->FloatConstraints( _id_glmip_seuilhaut,
                  _val_min, _val_max, _val_max);
 
 
- //-------------- MAX QUADS 
-  _param_GLMIP->AddInteger( &_id_glmip_maxquads, 
+ //-------------- MAX QUADS
+  _param_GLMIP->AddInteger( &_id_glmip_maxquads,
                   &_GLMIP_maxquads,
                   "Max quads");
-  _param_GLMIP->IntegerConstraints( _id_glmip_maxquads, 
+  _param_GLMIP->IntegerConstraints( _id_glmip_maxquads,
                  1, 20, _GLMIP_maxquads);
 
   //-------------------- Boutton Dessin
@@ -1878,7 +1878,7 @@ void DessinImage::CreeParametresVOLREN()
 
 
   //=============
-  _param_VOLREN = new ParamBox( this, 
+  _param_VOLREN = new ParamBox( this,
                       FrAn("Param�res Volume Rendering",
                        "Volume Rendering Parameters"));
 
@@ -1945,50 +1945,50 @@ void DessinImage::CreeParametresSections3D()
 
 
   //=============
-  _param_Sections3D = new ParamBox( this, 
+  _param_Sections3D = new ParamBox( this,
                        FrAn("Param�res Sections3D",
                         "Sections3D Parameters"));
 
   //------------- section XY
-  _param_Sections3D->AddBoolean( &_id_sectionXY_visible, 
+  _param_Sections3D->AddBoolean( &_id_sectionXY_visible,
                   &_sectionXY_visible,
                   "View XY section",
                   CaractereToggle);
-  _param_Sections3D->BooleanDefault( _id_sectionXY_visible, 
+  _param_Sections3D->BooleanDefault( _id_sectionXY_visible,
                   _sectionXY_visible);
 
   _param_Sections3D->ChangedValueCallback( _id_sectionXY_visible,
-              (void*) DessinImage::CB_DessineSections3D, 
+              (void*) DessinImage::CB_DessineSections3D,
                          (void*) this);
 
 
   //------------- section XZ
-  _param_Sections3D->AddBoolean( &_id_sectionXZ_visible, 
+  _param_Sections3D->AddBoolean( &_id_sectionXZ_visible,
                   &_sectionXZ_visible,
                   "View XZ section",
                   CaractereToggle);
-  _param_Sections3D->BooleanDefault( _id_sectionXZ_visible, 
+  _param_Sections3D->BooleanDefault( _id_sectionXZ_visible,
                   _sectionXZ_visible);
 
   _param_Sections3D->ChangedValueCallback( _id_sectionXZ_visible,
-              (void*) DessinImage::CB_DessineSections3D, 
+              (void*) DessinImage::CB_DessineSections3D,
                          (void*) this);
 
 
   //------------- section YZ
-  _param_Sections3D->AddBoolean( &_id_sectionYZ_visible, 
+  _param_Sections3D->AddBoolean( &_id_sectionYZ_visible,
                   &_sectionYZ_visible,
                   "View YZ section",
                   CaractereToggle);
-  _param_Sections3D->BooleanDefault( _id_sectionYZ_visible, 
+  _param_Sections3D->BooleanDefault( _id_sectionYZ_visible,
                   _sectionYZ_visible);
 
   _param_Sections3D->ChangedValueCallback( _id_sectionYZ_visible,
-              (void*) DessinImage::CB_DessineSections3D, 
+              (void*) DessinImage::CB_DessineSections3D,
                          (void*) this);
 
 
-  //-------------- Creation de l'isosurface 
+  //-------------- Creation de l'isosurface
 
   //---------- Creation de la boite de parametres
   _param_Sections3D->CreeDialogue( );
@@ -2002,7 +2002,7 @@ void DessinImage::CreeParametresZoomFacteur()
 //                           -------------------------
 {
 
-  _param_ZoomFacteur = new ParamBox( this, 
+  _param_ZoomFacteur = new ParamBox( this,
                         FrAn("Facteur pour le Zoom",
                          "Zoom Factor"));
 
@@ -2010,24 +2010,24 @@ void DessinImage::CreeParametresZoomFacteur()
   _param_ZoomFacteur->AddEnumeration( &_id_type_facteur, 2, &_type_facteur ,
                     FrAn("facteur","factor"));
 
-  _param_ZoomFacteur->AddEnumChoice( _id_type_facteur, &_id_facteur_entier, 
+  _param_ZoomFacteur->AddEnumChoice( _id_type_facteur, &_id_facteur_entier,
                   FrAn(" int "," Integer "));
-  _param_ZoomFacteur->AddEnumChoice( _id_type_facteur, &_id_facteur_reel,   
+  _param_ZoomFacteur->AddEnumChoice( _id_type_facteur, &_id_facteur_reel,
                   FrAn(" R�l"," Real"));
-  
+
   _param_ZoomFacteur->EnumerationDefaut( _id_type_facteur, _id_facteur_reel);
-  _param_ZoomFacteur->ChangedValueCallback( _id_type_facteur, 
+  _param_ZoomFacteur->ChangedValueCallback( _id_type_facteur,
                           (void*) DessinImage::CB_redessine, (void*) this);
 
   //--------------
-  _param_ZoomFacteur->AddInteger( &_id_facteur_valentier, &_facteur_entier, 
+  _param_ZoomFacteur->AddInteger( &_id_facteur_valentier, &_facteur_entier,
                    FrAn("facteur entier","Resize Factor"));
   _param_ZoomFacteur->IntegerConstraints( _id_facteur_valentier, 1, 10, _facteur_entier);
   _param_ZoomFacteur->ChangedValueCallback( _id_facteur_valentier,
                      (void*) DessinImage::CB_facteur, (void*) this);
 
   //--------------
-  _param_ZoomFacteur->AddFloat( &_id_facteur_valreel, &_facteur_reel, 
+  _param_ZoomFacteur->AddFloat( &_id_facteur_valreel, &_facteur_reel,
                    FrAn("facteur reel","Resize Factor"));
   _param_ZoomFacteur->FloatConstraints( _id_facteur_valreel, 0.2, 2.0, _facteur_reel);
   _param_ZoomFacteur->ChangedValueCallback( _id_facteur_valreel,
@@ -2056,7 +2056,7 @@ void DessinImage::CreeParametresCouleurs()
   _param_couleurs = new ParamBox( this, FrAn("Parametres Couleurs","Colors Parameters"));
 
   //------------- Couleur du fond
-  _param_couleurs->AddColor( &_id_couleur_fond, 
+  _param_couleurs->AddColor( &_id_couleur_fond,
                   FrAn("Fond","Background"),
                   &_couleur_fond);
 
@@ -2066,7 +2066,7 @@ void DessinImage::CreeParametresCouleurs()
 
 
   //------------- Couleur de l'objet
-  _param_couleurs->AddColor( &_id_couleur_objet, 
+  _param_couleurs->AddColor( &_id_couleur_objet,
                   FrAn("Objet","Object"),
                   &_couleur_objet);
 
@@ -2076,7 +2076,7 @@ void DessinImage::CreeParametresCouleurs()
                      (void*) this);
 
   //------------- Couleur des lignes
-  _param_couleurs->AddColor( &_id_couleur_lignes, 
+  _param_couleurs->AddColor( &_id_couleur_lignes,
                   FrAn("Lignes","Lines"),
                   &_couleur_lignes);
 
@@ -2101,7 +2101,7 @@ void DessinImage::CreeSauveParametres()
   _param_sauve_image = new ParamBox( this, FrAn(" Nom de l'image"," Image name"));
 
   //----- Nom du fichier
-  _param_sauve_image->AjouteNomFichier( &_id_sauve_image,  &_nom_sauve_image, 
+  _param_sauve_image->AjouteNomFichier( &_id_sauve_image,  &_nom_sauve_image,
                     FrAn(" Nom:"," Name:"));
   _param_sauve_image->ContraintesNomFichier( _id_sauve_image, "", ".", "*.inr*");
 
@@ -2110,50 +2110,50 @@ void DessinImage::CreeSauveParametres()
   _param_sauve_image->AddEnumeration( &_id_type_sauvegarde, 3, &_type_sauvegarde,
                      FrAn("TYPE SAUVEGARDE",
                           "SAVE TYPE"       ));
-  _param_sauve_image->AddEnumChoice( _id_type_sauvegarde, &_id_inrimage, 
+  _param_sauve_image->AddEnumChoice( _id_type_sauvegarde, &_id_inrimage,
                        "INRIMAGE");
-  _param_sauve_image->AddEnumChoice( _id_type_sauvegarde, &_id_postscript_gris, 
+  _param_sauve_image->AddEnumChoice( _id_type_sauvegarde, &_id_postscript_gris,
                        FrAn("POSTSCRIPT Niveaux Gris","Greyscale POSTSCRIPT"));
-  _param_sauve_image->AddEnumChoice( _id_type_sauvegarde, &_id_postscript_couleur, 
+  _param_sauve_image->AddEnumChoice( _id_type_sauvegarde, &_id_postscript_couleur,
                        FrAn("POSTSCRIPT Couleur","Color POSTSCRIPT"));
-  
+
   _param_sauve_image->EnumerationDefaut( _id_type_sauvegarde, _id_inrimage);
 
   //----- Format inrimage
-  _param_sauve_image->AddEnumeration( &_id_image_format, 9, &_format_image , 
+  _param_sauve_image->AddEnumeration( &_id_image_format, 9, &_format_image ,
                      "FORMAT");
 
-  _param_sauve_image->AddEnumChoice( _id_image_format, &_id_format_uchar, 
+  _param_sauve_image->AddEnumChoice( _id_image_format, &_id_format_uchar,
                        " WT_UNSIGNED_CHAR ");
 
-  _param_sauve_image->AddEnumChoice( _id_image_format, &_id_format_ushort,      
+  _param_sauve_image->AddEnumChoice( _id_image_format, &_id_format_ushort,
                        " WT_UNSIGNED_SHORT ");
 
-  _param_sauve_image->AddEnumChoice( _id_image_format, &_id_format_sshort,     
+  _param_sauve_image->AddEnumChoice( _id_image_format, &_id_format_sshort,
                        " WT_SIGNED_SHORT ");
 
-  _param_sauve_image->AddEnumChoice( _id_image_format, &_id_format_uint,   
+  _param_sauve_image->AddEnumChoice( _id_image_format, &_id_format_uint,
                        " WT_UNSIGNED_INT ");
 
-  _param_sauve_image->AddEnumChoice( _id_image_format, &_id_format_sint,     
+  _param_sauve_image->AddEnumChoice( _id_image_format, &_id_format_sint,
                        " WT_SIGNED_INT ");
 
-  _param_sauve_image->AddEnumChoice( _id_image_format, &_id_format_ulong,    
+  _param_sauve_image->AddEnumChoice( _id_image_format, &_id_format_ulong,
                        " WT_UNSIGNED_LONG ");
 
-  _param_sauve_image->AddEnumChoice( _id_image_format, &_id_format_slong,    
+  _param_sauve_image->AddEnumChoice( _id_image_format, &_id_format_slong,
                        " WT_SIGNED_LONG ");
 
-  _param_sauve_image->AddEnumChoice( _id_image_format, &_id_format_float,    
+  _param_sauve_image->AddEnumChoice( _id_image_format, &_id_format_float,
                        " WT_FLOAT ");
 
-  _param_sauve_image->AddEnumChoice( _id_image_format, &_id_format_double,    
+  _param_sauve_image->AddEnumChoice( _id_image_format, &_id_format_double,
                        " WT_DOUBLE ");
-  
+
   _param_sauve_image->EnumerationDefaut( _id_image_format, _id_format_uchar);
 
   _param_sauve_image->CreeDialogue();
-  
+
 } //  CreeSauveParametres()
 
 
@@ -2162,7 +2162,7 @@ void DessinImage::CreeParametresInfo()
 //                           ------------------
 {
 
-  
+
     char texte[100];
 
   //-----
@@ -2170,54 +2170,54 @@ void DessinImage::CreeParametresInfo()
 
   //----- Nom du fichier
   _param_image_info->AddLabel( &_id_info_name, "Name",
-                  _image->Nom(), LabelTexte); 
+                  _image->Nom(), LabelTexte);
 
   //----- Nom du fichier
   _param_image_info->AddLabel( &_id_info_format, "Format",
                     _image->FormatName().c_str(),
-                    LabelTexte); 
+                    LabelTexte);
 
   //----- Dimensions
   sprintf(texte," (%4d, %4d, %4d) ",
       _image->_tx, _image->_ty, _image->_tz);
   _param_image_info->AddLabel( &_id_info_dim, "Dim =",
-                    texte, LabelTexte); 
+                    texte, LabelTexte);
 
   //----- Voxel Sizes
   sprintf(texte," (%2.2f, %2.2f, %2.2f) ",
       _image->_size_x, _image->_size_y, _image->_size_z);
   _param_image_info->AddLabel( &_id_info_voxelsize, "Voxel Size =",
-                    texte, LabelTexte); 
+                    texte, LabelTexte);
 
   //----- Statistics
   _param_image_info->AddButton( &_id_info_stat, "Statistics",
-                     (void*) DessinImage::CB_info_stat, 
+                     (void*) DessinImage::CB_info_stat,
                      (void*) this);
 
   //-----  Number of Points
   sprintf(texte," xxx xxx xxx ");
   _param_image_info->AddLabel( &_id_info_numpoints, " Number of Points =",
-                    texte, LabelTexte); 
+                    texte, LabelTexte);
 
   //----- Min Max
   sprintf(texte," [xxxx.xxxx ; xxxx.xxxx]");
   _param_image_info->AddLabel( &_id_info_min_max, "[Min ;  Max] =",
-                    texte, LabelTexte); 
+                    texte, LabelTexte);
 
   //----- Mean
   sprintf(texte," xxxx.xxxx");
   _param_image_info->AddLabel( &_id_info_mean, "Mean =",
-                    texte, LabelTexte); 
+                    texte, LabelTexte);
 
   //----- Standard Deviation
   sprintf(texte," xxxx.xxxx");
   _param_image_info->AddLabel( &_id_info_sd, "Standard Deviation =",
-                    texte, LabelTexte); 
+                    texte, LabelTexte);
 
   //----- Mean / Standard Deviation
   sprintf(texte," xxxx.xxxx %%");
   _param_image_info->AddLabel( &_id_info_sd_mean, "SD / Mean =",
-                    texte, LabelTexte); 
+                    texte, LabelTexte);
 
   _param_image_info->CreeDialogue();
 
@@ -2229,7 +2229,7 @@ void DessinImage::CreeBoitesParametres()
 //                --------------------
 {
 
-/*  
+/*
     int dimx, dimy;
     int posx, posy;
 */
@@ -2254,7 +2254,7 @@ void DessinImage::CreeBoitesParametres()
 
   posx = macro_max( 0, posx-dimx-15);
   posy = macro_max( 0, posy);
-//  cout << "pos x " << posx << "  pos y " << posy << endl;  
+//  cout << "pos x " << posx << "  pos y " << posy << endl;
   _param_dialog->FixePosition( posx, posy);
 */
 
@@ -2280,7 +2280,7 @@ void DessinImage::CreeBoitesParametres()
   _param_nom_image->ContraintesNomFichier( _id_nom_image, "", ".", "*.inr*");
 
   _param_nom_image->CreeDialogue();
-  
+
 
   //-----
   _param_nom_fichier = new ParamBox( this, FrAn(" Nom du fichier","File name"));
@@ -2289,7 +2289,7 @@ void DessinImage::CreeBoitesParametres()
   _param_nom_fichier->ContraintesNomFichier( _id_nom_fichier, "", ".", "*.fic");
 
   _param_nom_fichier->CreeDialogue();
-  
+
   //-----
   _param_nom_tc = new ParamBox( this, " Nom de la table de couleurs");
 
@@ -2314,8 +2314,8 @@ void DessinImage::CreeBoitesParametres2()
   CreeParametresCouleurs();
 
   /* TODO move to wxwidgets
-  Si  Param._parametres_visible Et 
-      Non(_interpole_ligne->WidgetCreated()) 
+  Si  Param._parametres_visible Et
+      Non(_interpole_ligne->WidgetCreated())
   Alors
     _interpole_ligne->CreeWidget(_palette);
     _interpole_ligne->Fixe_drawing_bg( wxCplour(255,255,255));
@@ -2332,7 +2332,7 @@ void DessinImage::DessineCurseurs(  int x, int y, int z)
 //                           ---------------
 //  Dessine la position du curseur sur toutes les coupes
 {
-  
+
   DessineCurseur(x,y,z,Param._curseur._type);
   Comparaisons_DessineCurseur( x, y, z);
 
@@ -2345,11 +2345,11 @@ void DessinImage::DessineScrollBar( int image)
 //  Dessine la position du curseur sur toutes les coupes
 {
     // position de l'image
-    int xmin,ymin,largeur,hauteur;                     
+    int xmin,ymin,largeur,hauteur;
     // position et dimensions de l'image
-    int val_xmin=0,val_xmax=0,val_ymin=0,val_ymax=0;     
+    int val_xmin=0,val_xmax=0,val_ymin=0,val_ymax=0;
     // position min et max visibles apres le zoom de l'image
-    int zoom_xmin=1,zoom_xmax=1,zoom_ymin=1,zoom_ymax=1; 
+    int zoom_xmin=1,zoom_xmax=1,zoom_ymin=1,zoom_ymax=1;
     ClasseCouleur blanc,noir;
 
   xmin = _tab_ximage_pos_x[image];
@@ -2404,8 +2404,8 @@ void DessinImage::DessineScrollBar( int image)
   FixeCouleurRemplissage( blanc);
   Rectangle( xmin, ymin-4, xmin + largeur , ymin-1);
   FixeCouleurRemplissage( noir);
-  Rectangle( xmin  + (int) (1.0*largeur*(zoom_xmin-val_xmin)/(val_xmax-val_xmin+1)), 
-             ymin-4, 
+  Rectangle( xmin  + (int) (1.0*largeur*(zoom_xmin-val_xmin)/(val_xmax-val_xmin+1)),
+             ymin-4,
              xmin  + (int) (1.0*largeur*(zoom_xmax+1-val_xmin)/(val_xmax-val_xmin+1)),
              ymin-1);
 
@@ -2415,8 +2415,8 @@ void DessinImage::DessineScrollBar( int image)
   Rectangle( xmin-4, ymin, xmin - 1, ymin + hauteur);
   FixeCouleurRemplissage( noir);
   Rectangle( xmin - 4,
-             ymin + (int) (1.0*hauteur*(zoom_ymin-val_ymin)/(val_ymax-val_ymin+1)), 
-             xmin - 1, 
+             ymin + (int) (1.0*hauteur*(zoom_ymin-val_ymin)/(val_ymax-val_ymin+1)),
+             xmin - 1,
              ymin + (int) (1.0*hauteur*(zoom_ymax+1-val_ymin)/(val_ymax-val_ymin+1)) );
 } // DessineScrollBar()
 
@@ -2468,7 +2468,7 @@ void DessinImage::ProjetteVecteur(  int x, int y, float vx, float vy)
 
 
 //----------------------------------------------------------------
-void DessinImage::DrawVector( int vect_id, int x, int y, int z, 
+void DessinImage::DrawVector( int vect_id, int x, int y, int z,
 //                ----------
                           int type_coupe )
 //  Dessine la valeur du vecteur pour le champ de vecteurs donn�// au point (x,y,z)  sur toutes les coupes
@@ -2478,7 +2478,7 @@ void DessinImage::DrawVector( int vect_id, int x, int y, int z,
   if (vf.vector.expired())  return;
   if (!vf.visible)          return;
 
-  int pos_x, pos_y; 
+  int pos_x, pos_y;
   Vect3D<float> v;
   int x0,y0,z0;    // Position dans l'image initiale
 
@@ -2554,7 +2554,7 @@ void DessinImage::DrawVector( int vect_id, int x, int y, int z,
 
 
 //----------------------------------------------------------------
-void DessinImage::DrawVectors(  int x, int y, int z, 
+void DessinImage::DrawVectors(  int x, int y, int z,
 //                           --------------
                           int type_coupe )
 //  Dessine la valeur du vecteur pour le champ de vecteurs donn�// au point (x,y,z)  sur toutes les coupes
@@ -2564,9 +2564,9 @@ void DessinImage::DrawVectors(  int x, int y, int z,
 
   i=0;
   std::vector<vectorfield_info>::iterator Iter;
-  for (Iter  = _vector_fields.begin(); 
+  for (Iter  = _vector_fields.begin();
        Iter != _vector_fields.end()  ; Iter++,i++ )
-    if (!(*Iter).vector.expired()) 
+    if (!(*Iter).vector.expired())
       this->DrawVector(i,x,y,z,type_coupe);
 
   _vecteur_ON = Non(_vecteur_ON);
@@ -2601,23 +2601,23 @@ void DessinImage::DessineChampVecteurs( )
   // Tests selon le type de Coupe
   int i=0;
   std::vector<vectorfield_info>::iterator Iter;
-  for (Iter  = _vector_fields.begin(); 
+  for (Iter  = _vector_fields.begin();
        Iter != _vector_fields.end()  ; Iter++,i++ )
     if ((!(*Iter).vector.expired())&&(i<3)) {
       if (GB_debug)
         fprintf(stderr,"DessineChampVecteurs() \t vector %d count %d \n",i,(int)(*Iter).vector.use_count());
 
       if ((Param._type_coupe+1) & (TYPE_COUPE_XY+1))
-        for(x=Param._Zoom._xmin; x<=Param._Zoom._xmax; 
+        for(x=Param._Zoom._xmin; x<=Param._Zoom._xmax;
             x+=pas_x)
-        for(y=Param._Zoom._ymin; y<=Param._Zoom._ymax; 
+        for(y=Param._Zoom._ymin; y<=Param._Zoom._ymax;
             y+=pas_y)
           DrawVector( i, x, y, Param._pos._z, TYPE_COUPE_XY);
 
       if ((Param._type_coupe+1) & (TYPE_COUPE_XZ+1))
-        for(x=Param._Zoom._xmin; x<=Param._Zoom._xmax; 
+        for(x=Param._Zoom._xmin; x<=Param._Zoom._xmax;
             x+=pas_x)
-        for(z=Param._Zoom._zmin; z<=Param._Zoom._zmax; 
+        for(z=Param._Zoom._zmin; z<=Param._Zoom._zmax;
             z+=pas_z)
           DrawVector( i, x, Param._pos._y, z, TYPE_COUPE_XZ);
 
@@ -2638,11 +2638,11 @@ void DessinImage::DessineChampVecteurs( )
 void DessinImage::DessineCercle(  int x, int y, int z, ClasseCouleur& c)
 //
 {
-    int pos_x, pos_y; 
+    int pos_x, pos_y;
     int x0,y0,z0;    // Position dans l'image initiale
     int type_coupe;
     float val;
-    ClasseCouleur coul;    
+    ClasseCouleur coul;
 
 
   FixeParametresLigne( _largeur_lignes+1, wxSOLID, wxCAP_ROUND, wxJOIN_MITER);
@@ -2663,10 +2663,10 @@ void DessinImage::DessineCercle(  int x, int y, int z, ClasseCouleur& c)
     coul = _circles_negative_color;
     val = -val;
   Sinon
-    coul = _circles_positive_color;  
+    coul = _circles_positive_color;
   FinSi
 
-  Si _circles_fill AlorsFait 
+  Si _circles_fill AlorsFait
     FixeCouleurRemplissage(coul);
 
   type_coupe = Param._type_coupe;
@@ -2724,7 +2724,7 @@ void DessinImage::DessineChampCercles( )
 //                           -------------------
 {
 
-  
+
     int     x,y,z;
     int     pas_x, pas_y,pas_z;
 
@@ -2774,29 +2774,29 @@ void DessinImage::DessineChampCercles( )
 
 
 //----------------------------------------------------------------
-void DessinImage::DessineLigneDansMIP( 
+void DessinImage::DessineLigneDansMIP(
 //                           -------------------
-                         const Point_3D<int>& p1, 
+                         const Point_3D<int>& p1,
                          const Point_3D<int>& p2,
                          unsigned char pointilles)
 //  Dessine une Ligne dans la  MIP
 {
 
-  
+
     float    x,y,z;
-    int  pos_x, pos_y, pos_x0, pos_y0; 
+    int  pos_x, pos_y, pos_x0, pos_y0;
 //    Point3D point;
-    
+
   _MIP->Projection2( p1.x, p1.y, p1.z, &x, &y, &z);
-  pos_x0 = (int) (_tab_ximage_pos_x[IMAGE_XY] +  
+  pos_x0 = (int) (_tab_ximage_pos_x[IMAGE_XY] +
              (x - Param._Zoom._xmin + 0.5)*_size_x);
-  pos_y0 = (int) (_tab_ximage_pos_y[IMAGE_XY] +  
+  pos_y0 = (int) (_tab_ximage_pos_y[IMAGE_XY] +
              (y - Param._Zoom._ymin + 0.5)*_size_y);
 
   _MIP->Projection2( p2.x, p2.y, p2.z, &x, &y, &z);
-  pos_x = (int) (_tab_ximage_pos_x[IMAGE_XY] +  
+  pos_x = (int) (_tab_ximage_pos_x[IMAGE_XY] +
             (x - Param._Zoom._xmin + 0.5)*_size_x);
-  pos_y = (int) (_tab_ximage_pos_y[IMAGE_XY] +  
+  pos_y = (int) (_tab_ximage_pos_y[IMAGE_XY] +
             (y - Param._Zoom._ymin + 0.5)*_size_y);
 
   Si pointilles AlorsFait
@@ -2816,7 +2816,7 @@ void DessinImage::DessineBoundingBox( )
 //  Dessine une bounding box dans la projection MIP
 {
 
-  
+
 //    float    facteur_dc; // facteur de depthcueing
     int  xmin,ymin,zmin,xmax,ymax,zmax;
     Point_3D<int> p[8];
@@ -2842,7 +2842,7 @@ void DessinImage::DessineBoundingBox( )
   p[7].Init(xmax, ymax, zmax);
 
   // Recherche du point le plus eloigne
-  Pour( i, 0, 7) 
+  Pour( i, 0, 7)
     _MIP->Projection2( p[i].x, p[i].y, p[i].z, &x, &y, &z);
     Si i==0 Alors
       maxz = z;
@@ -2882,13 +2882,13 @@ void DessinImage::DessineStereo( )
 //  Dessine une MIP en stereo
 {
   cerr << "DessinImage::DessineStereo( ) feature disabled " << endl;
- 
+
 /* TODO: decide if I keep this feature ...
-  
+
     CompareImage*   im_stereo;
     int          posx,posy;
-    XImage*         image[2]; 
-    XImage*         image_stereo; 
+    XImage*         image[2];
+    XImage*         image_stereo;
 
   im_stereo = (CompareImage*) _tab_compare_image[ _MIP_num_stereo];
 
@@ -2898,10 +2898,10 @@ void DessinImage::DessineStereo( )
   posx = _tab_ximage_pos_x[IMAGE_XY];
   posy = _tab_ximage_pos_y[IMAGE_XY];
 
-//  _MIP_OBJ_stereo->Parametres( _distance_yeux, _distance_oeil_ecran, 
+//  _MIP_OBJ_stereo->Parametres( _distance_yeux, _distance_oeil_ecran,
 //                               _distance_ecran_objet,_pixel_cm/_size_y);
 
-  _MIP_OBJ_stereo->Parametres( 0, _distance_oeil_ecran, 
+  _MIP_OBJ_stereo->Parametres( 0, _distance_oeil_ecran,
                                _distance_ecran_objet,_pixel_cm/_size_y);
 
   _MIP_OBJ_stereo->CreeStereo( _palette, image[0],image[1],&image_stereo);
@@ -2930,7 +2930,7 @@ void DessinImage::MAJ_Image()
   Si Param._pos._x < 0            AlorsFait Param._pos._x = 0;
   Si Param._pos._x >= _image->_tx AlorsFait Param._pos._x = _image->_tx - 1;
 
-  InitMinMax(_image); 
+  InitMinMax(_image);
 
   Si _image->_tx > 1 AlorsFait _param_dialog->UpdateParameter( _id_planX);
   Si _image->_ty > 1 AlorsFait _param_dialog->UpdateParameter( _id_planY);
@@ -2945,15 +2945,15 @@ void DessinImage::InitComparaisons()
 //                           ----------------
 {
 
-  
-    int i; 
+
+    int i;
 
   _compare_max = 10;
   _tab_compare_image = new CompareImage*[_compare_max+1];
 
   DebutBoucle i = 0 ItererTantQue i < _compare_max Pas i++ Faire
     _tab_compare_image[i] = NULL;
-  FinBoucle // i 
+  FinBoucle // i
 
   _nombre_comparaisons = 0;
 
@@ -2976,13 +2976,13 @@ void DessinImage::Comparaisons_UpdateStatusInfo( const Point_3D<int>& imagepos, 
     Si _tab_compare_image[i] != NULL Alors
       ((CompareImage*) _tab_compare_image[i])->MAJ_label(im_x, im_y, im_z, trouve);
     FinSi
-  FinBoucle // i 
+  FinBoucle // i
 */
   if (GB_debug)
     fprintf(stderr,"start testing _tab_compare_image2\n");
 
   std::list<compare_info>::iterator Iter;
-  for (Iter  = _tab_compare2_image.begin(); 
+  for (Iter  = _tab_compare2_image.begin();
        Iter != _tab_compare2_image.end()  ; Iter++ )
  {
   if (GB_debug) fprintf(stderr,"(*Iter).di.use_count() = %d \n",(int)(*Iter).di.use_count());
@@ -2991,7 +2991,7 @@ void DessinImage::Comparaisons_UpdateStatusInfo( const Point_3D<int>& imagepos, 
     } else {
         fprintf(stderr,"DessinImage::Comparaisons_UpdateStatusInfo() \t removing deleted image from list\n");
         // Safely removing an element
-        // by assigning the result to the current 
+        // by assigning the result to the current
         // iterator ...
         Iter = _tab_compare2_image.erase(Iter);
     }
@@ -3036,7 +3036,7 @@ void DessinImage::UpdateStatusInfo( const Point_3D<int>& imagepos,  int trouve)
 void DessinImage::Comparaisons_Paint( )
 //                           ------------------
 {
-    int i; 
+    int i;
     DessinImage::ptr di;
 
   _comparison_lock=true;
@@ -3046,10 +3046,10 @@ void DessinImage::Comparaisons_Paint( )
       ((CompareImage*) _tab_compare_image[i])->RecupereParametres();
       ((CompareImage*) _tab_compare_image[i])->Paint( true);
     FinSi
-  FinBoucle // i 
+  FinBoucle // i
 
   std::list<compare_info>::iterator Iter;
-  for (Iter  = _tab_compare2_image.begin(); 
+  for (Iter  = _tab_compare2_image.begin();
        Iter != _tab_compare2_image.end()  ; Iter++ )
   {
     if ((*Iter).di.use_count()) {
@@ -3089,7 +3089,7 @@ void DessinImage::Comparaisons_Paint( )
           di->_intensite_entier_min = (int) (di->_intensite_float_min);
           di->_intensite_entier_max = (int) (di->_intensite_float_max);
         }
-        else 
+        else
           RecupereIntervalleIntensite(
                    &di->_intensite_float_min,  &di->_intensite_float_max,
                    &di->_intensite_entier_min, &di->_intensite_entier_max);
@@ -3100,7 +3100,7 @@ void DessinImage::Comparaisons_Paint( )
       RecupereMAJ( di->Param );
       di->Paint( true);
     } // if use_count()
-  } // iterator tab_compare2_image 
+  } // iterator tab_compare2_image
 
   _comparison_lock=false;
 
@@ -3111,17 +3111,17 @@ void DessinImage::Comparaisons_Paint( )
 void DessinImage::Comparaisons_DessineCurseur( int x, int y, int z)
 //                           ---------------------------
 {
-    int i; 
+    int i;
 
   DebutBoucle i = 0 ItererTantQue i < _compare_max Pas i++ Faire
     Si _tab_compare_image[i] != NULL Alors
       ((CompareImage*) _tab_compare_image[i])->DessineCurseur( x, y, z, Param._curseur._type);
     FinSi
-  FinBoucle // i 
+  FinBoucle // i
 
 
   std::list<compare_info>::iterator Iter;
-  for (Iter  = _tab_compare2_image.begin(); 
+  for (Iter  = _tab_compare2_image.begin();
        Iter != _tab_compare2_image.end()  ; Iter++ )
   {
     float cx,cy,cz; // cursor position
@@ -3140,11 +3140,11 @@ void DessinImage::Comparaisons_DessineCurseur( int x, int y, int z)
       }
 
      // Should we draw all images at the same position?
-      ((*Iter).di.lock())->DessineSpatialCurseur( 
-                    cx, cy, cz, 
+      ((*Iter).di.lock())->DessineSpatialCurseur(
+                    cx, cy, cz,
                     Param._curseur._type);
     FinSi
-  FinBoucle // i 
+  FinBoucle // i
 
 
 } // Comparaisons_DessineCurseur()
@@ -3155,20 +3155,20 @@ void DessinImage::Comparaisons_EffaceEcran( unsigned char expose)
 //                           -------------------------
 {
 
-  
-    int i; 
+
+    int i;
 
   DebutBoucle i = 0 ItererTantQue i < _compare_max Pas i++ Faire
     Si _tab_compare_image[i] != NULL Alors
       ((CompareImage*) _tab_compare_image[i])->EffaceEcran( expose);
     FinSi
-  FinBoucle // i 
+  FinBoucle // i
 
   std::list<compare_info>::iterator Iter;
-  for (Iter  = _tab_compare2_image.begin(); 
+  for (Iter  = _tab_compare2_image.begin();
        Iter != _tab_compare2_image.end()  ; Iter++ )
   {
-    if (!(*Iter).di.expired()) 
+    if (!(*Iter).di.expired())
       ((*Iter).di.lock())->EffaceEcran( expose);
   } // _tab_compare2_image iterator
 
@@ -3188,12 +3188,12 @@ void DessinImage::Comparaisons_MAJ_taille( )
     Si _tab_compare_image[i] != NULL Alors
       ((CompareImage*) _tab_compare_image[i])->Fixe_fenetre_dimensions( l, h);
     FinSi
-  FinBoucle // i 
+  FinBoucle // i
 
   std::list<compare_info>::iterator Iter;
-  for (Iter  = _tab_compare2_image.begin(); 
+  for (Iter  = _tab_compare2_image.begin();
        Iter != _tab_compare2_image.end()  ; Iter++ )
-    if (!(*Iter).di.expired()) 
+    if (!(*Iter).di.expired())
       ((*Iter).di.lock())->Fixe_fenetre_dimensions( l, h);
 
 } // Comparaisons_MAJ_taille()
@@ -3204,19 +3204,19 @@ void DessinImage::Comparaisons_MemoriseCoupesXY( unsigned char activation )
 //                           -----------------------------
 {
 
-  
+
     int i;
 
   DebutBoucle i = 0 ItererTantQue i < _compare_max Pas i++ Faire
     Si _tab_compare_image[i] != NULL Alors
       ((CompareImage*) _tab_compare_image[i])->MemoriseCoupesXY( activation);
     FinSi
-  FinBoucle // i 
+  FinBoucle // i
 
   std::list<compare_info>::iterator Iter;
-  for (Iter  = _tab_compare2_image.begin(); 
+  for (Iter  = _tab_compare2_image.begin();
        Iter != _tab_compare2_image.end()  ; Iter++ )
-    if (!(*Iter).di.expired()) 
+    if (!(*Iter).di.expired())
       ((*Iter).di.lock())->MemoriseCoupesXY( activation);
 
 } // Comparaisons_MAJ_taille()
@@ -3278,15 +3278,15 @@ unsigned char DessinImage::CheckGLWindow()
 //----------------------------------------------------------------
 // Defaut int type=CREATE_WINDOW
 //
-DessinImage::Constructeur DessinImage(  
+DessinImage::Constructeur DessinImage(
 //                       ------------
     wxWindow* parent,
-    const std::string& ATitle, InrImage::ptr image, DessinParam::ptr param, 
-    int l, int h,   int type) 
+    const std::string& ATitle, InrImage::ptr image, DessinParam::ptr param,
+    int l, int h,   int type)
                                : DessinImageBase( parent, ATitle, l, h, type ), _vector_fields(3), m_timer(this)
 {
 
-  
+
     const char*  method = "DessinImage 3";
 
   if (GB_debug) printf("DessinImage::DessinImage title = %s \n",ATitle.c_str());
@@ -3339,12 +3339,12 @@ DessinImage::Constructeur DessinImage(
   CreeBoitesParametres2();
 
   Si GB_debug Alors
-    printf("Fin DessinImage::%s\n",method); 
+    printf("Fin DessinImage::%s\n",method);
 
-    printf(" image  (%d %d %d) image initiale (%d %d %d) \n", 
+    printf(" image  (%d %d %d) image initiale (%d %d %d) \n",
        image->_tx, image->_ty, image->_tz,
-       _image_initiale->_tx, 
-       _image_initiale->_ty, 
+       _image_initiale->_tx,
+       _image_initiale->_ty,
        _image_initiale->_tz );
   FinSi
 
@@ -3359,7 +3359,7 @@ DessinImage::Destructeur DessinImage()
 {
     int i;
 
-  Si GB_debug AlorsFait printf("Destructeur DessinImage()  %s \n", 
+  Si GB_debug AlorsFait printf("Destructeur DessinImage()  %s \n",
                    (char*)_name);
 
 #if defined(__WXMOTIF__)
@@ -3379,7 +3379,7 @@ DessinImage::Destructeur DessinImage()
     Si _tab_compare_image[i] != NULL Alors
       LibereCompareImage(i,1);
     FinSi
-  FinPour // i 
+  FinPour // i
 
   // stop the time if it is running
   if ( m_timer.IsRunning() )
@@ -3387,7 +3387,7 @@ DessinImage::Destructeur DessinImage()
       m_timer.Stop();
   }
 
-  Si GB_debug AlorsFait printf("Destructeur DessinImage() %s Fin \n", 
+  Si GB_debug AlorsFait printf("Destructeur DessinImage() %s Fin \n",
                    (char*)_name);
 
 } // Destructeur
@@ -3470,10 +3470,10 @@ void DessinImage::InitParametres()
   // initialisation des parametres de l'image
   Param.InitParam( _image.get(), _param);
 
-  // initialisation de l'image MIP 
+  // initialisation de l'image MIP
   _MIP = new ImageMIP( _image_initiale.get());
-  _MIP->FixeVoxelSize( Param._dim._voxel_size_x, 
-               Param._dim._voxel_size_y, 
+  _MIP->FixeVoxelSize( Param._dim._voxel_size_x,
+               Param._dim._voxel_size_y,
                Param._dim._voxel_size_z);
   _MIP_stereo_lunettes = false;
   _distance_yeux        = 6.0;
@@ -3483,7 +3483,7 @@ void DessinImage::InitParametres()
 
 /*
   _MIP_OBJ_stereo = new Stereo( _distance_yeux, _distance_oeil_ecran,
-                _distance_ecran_objet, 
+                _distance_ecran_objet,
                 _pixel_cm);
 */
 
@@ -3568,7 +3568,7 @@ void DessinImage::InitParametres()
 int  DessinImage::CreeCompareImage( char* titre, char* nom_image)
 //                               ----------------
 // Cette methode permet de creer un "clone"
-// de l'image de dessin avec une autre image de memes dimensions 
+// de l'image de dessin avec une autre image de memes dimensions
 // et donc de comparer deux images
 {
   InrImage::ptr     image;
@@ -3591,16 +3591,16 @@ int  DessinImage::CreeCompareImage( char* titre, char* nom_image)
 
 
 //-------------------------------------------------------------------------
-int  DessinImage::CreeCompareImage( char* titre, 
+int  DessinImage::CreeCompareImage( char* titre,
 //                               ----------------
                            InrImage::ptr image,
                            bool allocated_image)
 // Cette methode permet de creer un "clone"
-// de l'image de dessin avec une autre image de memes dimensions 
+// de l'image de dessin avec une autre image de memes dimensions
 // et donc de comparer deux images
 {
 
-  
+
     int    n,l,h;
     CompareImage* ci;
 
@@ -3614,14 +3614,14 @@ int  DessinImage::CreeCompareImage( char* titre,
 
   // Recherche du premier ��ent non NULL du tableau
   n = 0;
-  TantQue (n < _compare_max) Et (_tab_compare_image[n] != NULL) Faire 
+  TantQue (n < _compare_max) Et (_tab_compare_image[n] != NULL) Faire
    n++;
   FinTantQue
 
   // Cr�tion de la nouvelle fen�re
   Recupere_fenetre_dimensions(&l, &h);
 
-  ci = (CompareImage*) new CompareImage( this->GetParent(), titre, 
+  ci = (CompareImage*) new CompareImage( this->GetParent(), titre,
                      image, this, l, h);
 
 //  ci->SetAllocatedImage(allocated_image);
@@ -3647,7 +3647,7 @@ int  DessinImage::CreeCompare2Image( DessinImage::ptr di)
 //                               -----------------
 // Cette methode permet de comparer avec
 // un autre object du meme tytpe
-// 
+//
 {
   int    l,h;
 
@@ -3676,7 +3676,7 @@ void DessinImage::SetCompareDisplacement( DessinImage::ptr compare_win, InrImage
 
   // looking for the comparison window
   std::list<compare_info>::iterator Iter;
-  for (Iter  = _tab_compare2_image.begin(); 
+  for (Iter  = _tab_compare2_image.begin();
        Iter != _tab_compare2_image.end()  ; Iter++ )
   {
     if ((*Iter).di.lock() == compare_win) {
@@ -3697,7 +3697,7 @@ void DessinImage::LibereCompareImage( int num, unsigned char delete_window)
   printf("DessinImage::LibereCompareImage(%d) \n",num);
   if (_tab_compare_image[num]!=NULL) {
     if (delete_window) delete _tab_compare_image[num];
-    _tab_compare_image[num] = NULL; 
+    _tab_compare_image[num] = NULL;
     _nombre_comparaisons--;
   }
 
@@ -3728,9 +3728,9 @@ void DessinImage::ChangeImage( InrImage::ptr image, unsigned char Efface)
 //  (*_param_dialog)[_id_planY]->MAJ_Contraintes();
 //  (*_param_dialog)[_id_planZ]->MAJ_Contraintes();
 
-  _param_dialog->FixeVisible( _id_planX, (_image->_tx>1)); 
-  _param_dialog->FixeVisible( _id_planY, (_image->_ty>1)); 
-  _param_dialog->FixeVisible( _id_planZ, (_image->_tz>1)); 
+  _param_dialog->FixeVisible( _id_planX, (_image->_tx>1));
+  _param_dialog->FixeVisible( _id_planY, (_image->_ty>1));
+  _param_dialog->FixeVisible( _id_planZ, (_image->_tz>1));
 
   _param_dialog->ReAfficheParametres();
 
@@ -3750,7 +3750,7 @@ unsigned char DessinImage::LitFichierParametres(  char* nom_fichier)
 //                               --------------------
 {
 
-  
+
     char       NomImage[100];
     int     Pos_x, Pos_y;
     int     Hauteur, Largeur;
@@ -3846,9 +3846,9 @@ unsigned char DessinImage::LitFichierParametres(  char* nom_fichier)
   Par.Parcours( "\n");
   _couleur_fond.Set(r,g,b);
 /*
-  _boutton_couleur_fond->FixeCouleurFond( 
+  _boutton_couleur_fond->FixeCouleurFond(
      _couleur_fond );
-  _boutton_couleur_fond->FixeCouleurCaracteres( 
+  _boutton_couleur_fond->FixeCouleurCaracteres(
      _couleur_fond.RetourneCouleurDistincte() );
      */
 
@@ -3860,9 +3860,9 @@ unsigned char DessinImage::LitFichierParametres(  char* nom_fichier)
 
 
 /*
-  _boutton_couleur_objet->FixeCouleurFond( 
+  _boutton_couleur_objet->FixeCouleurFond(
      _couleur_objet.RetourneCouleur( ) );
-  _boutton_couleur_objet->FixeCouleurCaracteres( 
+  _boutton_couleur_objet->FixeCouleurCaracteres(
      _couleur_objet.RetourneCouleurDistincte( ) );
      */
 
@@ -3873,13 +3873,13 @@ unsigned char DessinImage::LitFichierParametres(  char* nom_fichier)
   _couleur_lignes.Set(r,g,b);
 
 /*
-  _boutton_couleur_lignes->FixeCouleurFond( 
+  _boutton_couleur_lignes->FixeCouleurFond(
      _couleur_lignes.RetourneCouleur() );
-  _boutton_couleur_lignes->FixeCouleurCaracteres( 
+  _boutton_couleur_lignes->FixeCouleurCaracteres(
      _couleur_lignes.RetourneCouleurDistincte( ) );
      */
 
- 
+
   Param._pos._x = PlanX;
   Param._pos._y = PlanY;
   Param._pos._z = PlanZ;
@@ -3953,7 +3953,7 @@ unsigned char DessinImage::LitFichierParametres(  char* nom_fichier)
   aff_err("LitFichierParametres:Paint()\n");
 
   // Indispensable de lancer un premier appel a Paint()
-  // pour initialiser les valeurs des images �comparer 
+  // pour initialiser les valeurs des images �comparer
   // Par exemple, les animations n'utilisent que DessinePlanZ()...
 
   // Dans le cas des MIP, on appelle Paint() apres initialisation de la
@@ -3971,8 +3971,8 @@ unsigned char DessinImage::LitFichierParametres(  char* nom_fichier)
        _param_MIP->UpdateParameter( _id_rot_Y);
        _param_MIP->UpdateParameter( _id_rot_Z);
 
-      _image_MIP = InrImage::ptr(_MIP->CreeMIP( Param._MIP._rot_X, 
-                  Param._MIP._rot_Y, 
+      _image_MIP = InrImage::ptr(_MIP->CreeMIP( Param._MIP._rot_X,
+                  Param._MIP._rot_Y,
                   Param._MIP._rot_Z));
       Param._MIP._MAJ   = true;
       _image     = _image_MIP;
@@ -4006,7 +4006,7 @@ void DessinImage::SauveFichierParametres(  char* nom_fichier)
 //                            ----------------------
 {
 
-  
+
     FILE*      pfic;
         int     Pos_x, Pos_y;
         int     Hauteur, Largeur;
@@ -4155,7 +4155,7 @@ void DessinImage::SauveImage( char* nom_image)
 //                            ----------
 {
 
-  
+
     InrImage*     nouvelle_image;
     int        x, y, z;
     WORDTYPE      format;
@@ -4168,8 +4168,8 @@ void DessinImage::SauveImage( char* nom_image)
 
   format = (WORDTYPE) _format_image;
   printf("format %d\n", format);
-  nouvelle_image = new InrImage( Param._Zoom._dessin_tx, 
-                 Param._Zoom._dessin_ty, 
+  nouvelle_image = new InrImage( Param._Zoom._dessin_tx,
+                 Param._Zoom._dessin_ty,
                  Param._Zoom._dessin_tz, format, nom_image);
   nouvelle_image->SetVoxelSize(Param._dim._voxel_size_x,
                      Param._dim._voxel_size_y,
@@ -4181,14 +4181,14 @@ void DessinImage::SauveImage( char* nom_image)
 
       nouvelle_image->InitBuffer();
       _image->InitBuffer();
-  
+
       Pour( z, 0, _image->_tz -1)
       Pour( y, 0, _image->_ty -1)
       Pour( x, 0, _image->_tx -1)
 
-        Si (x >= Param._Zoom._xmin) Et (x <= Param._Zoom._xmax) Et 
+        Si (x >= Param._Zoom._xmin) Et (x <= Param._Zoom._xmax) Et
            (y >= Param._Zoom._ymin) Et (y <= Param._Zoom._ymax) Et
-           (z >= Param._Zoom._zmin) Et (z <= Param._Zoom._zmax) 
+           (z >= Param._Zoom._zmin) Et (z <= Param._Zoom._zmax)
         Alors
           nouvelle_image->FixeValeur( IntensiteBuffer());
           nouvelle_image->IncBuffer();
@@ -4204,22 +4204,22 @@ void DessinImage::SauveImage( char* nom_image)
 
     Valeur WT_UNSIGNED_SHORT:
     Valeur WT_SIGNED_SHORT:
-    Valeur WT_UNSIGNED_INT: 
-    Valeur WT_SIGNED_INT:   
+    Valeur WT_UNSIGNED_INT:
+    Valeur WT_SIGNED_INT:
     Valeur WT_UNSIGNED_LONG:
-    Valeur WT_SIGNED_LONG:  
+    Valeur WT_SIGNED_LONG:
     Valeur WT_FLOAT:
     Valeur WT_DOUBLE:
 
       nouvelle_image->InitBuffer();
       _image->InitBuffer();
-  
+
       Pour( z, 0, _image->_tz -1)
       Pour( y, 0, _image->_ty -1)
       Pour( x, 0, _image->_tx -1)
-        Si (x >= Param._Zoom._xmin) Et (x <= Param._Zoom._xmax) Et 
+        Si (x >= Param._Zoom._xmin) Et (x <= Param._Zoom._xmax) Et
            (y >= Param._Zoom._ymin) Et (y <= Param._Zoom._ymax) Et
-           (z >= Param._Zoom._zmin) Et (z <= Param._Zoom._zmax) 
+           (z >= Param._Zoom._zmin) Et (z <= Param._Zoom._zmax)
         Alors
           nouvelle_image->FixeValeur( _image->ValeurBuffer());
           nouvelle_image->IncBuffer();
@@ -4280,11 +4280,11 @@ void DessinImage::SauveImagePS( const char* nom_image)
 
 
   SelonQue _type_sauvegarde Vaut
-    Valeur SAUVE_PS_GRIS: 
-        //   writePS( nom_image, image, colors, F_GREYSCALE); 
+    Valeur SAUVE_PS_GRIS:
+        //   writePS( nom_image, image, colors, F_GREYSCALE);
     FinValeur
-    Valeur SAUVE_PS_COULEUR: 
-        // writePS( nom_image, image, colors, F_FULLCOLOR); 
+    Valeur SAUVE_PS_COULEUR:
+        // writePS( nom_image, image, colors, F_FULLCOLOR);
     FinValeur
   FinSelonQue
 
@@ -4303,7 +4303,7 @@ unsigned char DessinImage::ChargeImageVecteur( int index, char* nom)
 
 
   Si strlen(nom) > B_FNAME_LENGTH Alors
-    _message_erreur->FixeValeurs(" Erreur", 
+    _message_erreur->FixeValeurs(" Erreur",
        "ChargeImageVecteur( ) \t nom de fichier trop grand pour la lecture inrimage");
     _message_erreur->AfficheDialogue();
 
@@ -4315,10 +4315,10 @@ unsigned char DessinImage::ChargeImageVecteur( int index, char* nom)
     _vector_fields[index].vector = new InrImage( nom);
     _vect_alloue[index]   = true;
   }
-  catch (InrImage::ErreurLecture) 
+  catch (InrImage::ErreurLecture)
   {
     _image_vecteur[index] = NULL;
-    _message_erreur->FixeValeurs(" Erreur", 
+    _message_erreur->FixeValeurs(" Erreur",
        "ChargeImageVecteur() \t lecture de l'image");
     _message_erreur->AfficheDialogue();
 
@@ -4366,7 +4366,7 @@ unsigned char DessinImage::LoadVectImage( int num, InrImage::ptr im)
 
   Si (im->_tx != _image->_tx) Ou
      (im->_ty != _image->_ty) Ou
-     (im->_tz != _image->_tz) 
+     (im->_tz != _image->_tz)
   Alors
     // interpolate vector
     if ((im->SpacePosX(0)           <=_image->SpacePosX(_image->DimX()-1))&&
@@ -4437,10 +4437,10 @@ void DessinImage::Boutton_Presse()
         _current_pen->SetWidth(1);
         dc.SetPen(*_current_pen);
         dc.SetLogicalFunction(wxINVERT);
-        dc.DrawRectangle( _zoom_x1, _zoom_y1, 
+        dc.DrawRectangle( _zoom_x1, _zoom_y1,
                           _zoom_x2-_zoom_x1, _zoom_y2-_zoom_y1);
         dc.SetLogicalFunction(wxCOPY);
-      } else 
+      } else
         cerr << "DC not OK " << endl;
     Sinon
       Si Param._curseur._ON AlorsFait DessineCurseurs( _curseur_x, _curseur_y, _curseur_z);
@@ -4461,7 +4461,7 @@ void DessinImage::Boutton_Relache()
 //                              ---------------
 {
 
-  
+
     if (GB_debug)
       printf("DessinImage::Boutton_Relache() \n");
 
@@ -4483,7 +4483,7 @@ void DessinImage::Boutton_Relache()
         _current_pen->SetWidth(1);
         dc.SetPen(*_current_pen);
         dc.SetLogicalFunction(wxINVERT);
-        dc.DrawRectangle( _zoom_x1, _zoom_y1, 
+        dc.DrawRectangle( _zoom_x1, _zoom_y1,
                           _zoom_x2-_zoom_x1, _zoom_y2-_zoom_y1);
         dc.SetLogicalFunction(wxCOPY);
       } else
@@ -4528,9 +4528,9 @@ void DessinImage::Boutton_Relache()
 
   Sinon
 
-    Si Non(Param._curseur._visible) Et Param._curseur._ON 
+    Si Non(Param._curseur._visible) Et Param._curseur._ON
         AlorsFait DessineCurseurs( _curseur_x, _curseur_y, _curseur_z);
-    
+
   FinSi
 
 } // Boutton_Relache()
@@ -4566,11 +4566,11 @@ void DessinImage::DeplaceSourisBout1()
         _current_pen->SetWidth(1);
         dc.SetPen(*_current_pen);
         dc.SetLogicalFunction(wxINVERT);
-        dc.DrawRectangle( _zoom_x1, _zoom_y1, 
+        dc.DrawRectangle( _zoom_x1, _zoom_y1,
                           _zoom_x2-_zoom_x1, _zoom_y2-_zoom_y1);
         _zoom_x2    = _souris_x;
         _zoom_y2    = _souris_y;
-        dc.DrawRectangle( _zoom_x1, _zoom_y1, 
+        dc.DrawRectangle( _zoom_x1, _zoom_y1,
                           _zoom_x2-_zoom_x1, _zoom_y2-_zoom_y1);
         dc.SetLogicalFunction(wxCOPY);
       } else
@@ -4603,7 +4603,7 @@ void DessinImage::DeplaceSourisShiftBout1()
 //                              -----------------------
 {
 
-  
+
         int       dx,dy,dz;
         int       dposx,dposy;
         static int     deplace_coupe;
@@ -4638,7 +4638,7 @@ void DessinImage::DeplaceSourisShiftBout1()
 
     SelonQue deplace_coupe Vaut
 
-      Valeur IMAGE_XY: 
+      Valeur IMAGE_XY:
         dx = (int) (-dposx/_size_x);
         dy = (int) (-dposy/_size_y);
       FinValeur
@@ -4680,7 +4680,7 @@ void DessinImage::DeplaceSourisShiftBout1()
     Param._pos._z = macro_max( Param._pos._z, Param._Zoom._zmin);
     Param._pos._z = macro_min( Param._pos._z, Param._Zoom._zmax);
 
-    Param._Zoom.ComputeSize(); 
+    Param._Zoom.ComputeSize();
 
     Param._MAJ.MAJCoupes();
     Paint();
@@ -4696,7 +4696,7 @@ void DessinImage::Boutton2_Presse()
 
     if (GB_debug)
       printf("DessinImage::Boutton2_Presse() \n");
-  
+
         Point_3D<int> im;  // position dans l'image visualisee
         int     trouve;
 
@@ -4712,7 +4712,7 @@ void DessinImage::Boutton2_Presse()
     return;
   FinSi
 
-  Param._curseur._type = TYPE_CURSEUR_copy;  
+  Param._curseur._type = TYPE_CURSEUR_copy;
   CurseurToImage(&im.x, &im.y, &im.z, &trouve);
   UpdateStatusInfo( im, trouve);
 
@@ -4720,19 +4720,19 @@ void DessinImage::Boutton2_Presse()
 
     Si Param._pos._x != im.x Alors
       Param._pos._x = im.x;
-      Param._MAJ._planZY = true;    
+      Param._MAJ._planZY = true;
       _param_dialog->UpdateParameter( _id_planX);
     FinSi
-      
+
     Si Param._pos._y != im.y Alors
       Param._pos._y = im.y;
-      Param._MAJ._planXZ = true;    
+      Param._MAJ._planXZ = true;
       _param_dialog->UpdateParameter( _id_planY);
     FinSi
 
     Si Param._pos._z != im.z Alors
       Param._pos._z = im.z;
-      Param._MAJ._planXY = true;    
+      Param._MAJ._planXY = true;
       _param_dialog->UpdateParameter( _id_planZ);
     FinSi
 
@@ -4765,7 +4765,7 @@ void DessinImage::Boutton2_Relache()
 
     if (GB_debug)
       printf("DessinImage::Boutton2_Relache() \n");
-  
+
     int var;
 
   Si _shift_zoom Alors
@@ -4782,9 +4782,9 @@ void DessinImage::Boutton2_Relache()
 
     var = _souris_x - _souris_position_initiale_x;
     _MIP->RotationY(  (double) ( var * 90.0 / _largeur ) );
-   
+
     _MIP->DetecteRotations( &Param._MIP._rot_X, &Param._MIP._rot_Y, &Param._MIP._rot_Z );
-    
+
      _param_MIP->UpdateParameter( _id_rot_X);
      _param_MIP->UpdateParameter( _id_rot_Y);
      _param_MIP->UpdateParameter( _id_rot_Z);
@@ -4832,9 +4832,9 @@ void DessinImage::DeplaceSourisBout2()
 
       var = _souris_x - _souris_position_initiale_x;
       _MIP->RotationY(  (double) ( var * 90.0 / _hauteur ) );
-   
+
       _MIP->DetecteRotations( &Param._MIP._rot_X, &Param._MIP._rot_Y, &Param._MIP._rot_Z );
-    
+
        _param_MIP->UpdateParameter( _id_rot_X);
        _param_MIP->UpdateParameter( _id_rot_Y);
        _param_MIP->UpdateParameter( _id_rot_Z);
@@ -4858,7 +4858,7 @@ void DessinImage::DeplaceSourisShiftBout2()
         float       dy,alpha;
 
         // Les images changent, mais on se base sur l'image initiale
-        // les variables statiques permettent de memoriser les parametres 
+        // les variables statiques permettent de memoriser les parametres
         // de l'image initiale
 
         // Position initiale dans l'image au moment du zoom
@@ -4889,7 +4889,7 @@ void DessinImage::DeplaceSourisShiftBout2()
 
      // Initialisation des variables statiques
      hauteur_initiale = GetImageHeight(_zoom_coupe);
- 
+
     FinSi
 
     Si (z1 < _zmin_initial) Ou (z1 > _zmax_initial) Alors
@@ -4910,24 +4910,24 @@ void DessinImage::DeplaceSourisShiftBout2()
 
 
     // Ajouter 0.5 permet de ne pas stagner si une difference est nulle
-    Param._Zoom._xmin = macro_max( 0,               
+    Param._Zoom._xmin = macro_max( 0,
                  (int) (x1 - 1.0*
                        ( x1    - _xmin_initial + 0.5)/alpha));
-    Param._Zoom._xmax = macro_min( _image->_tx - 1, 
+    Param._Zoom._xmax = macro_min( _image->_tx - 1,
                  (int) (x1 + 1.0*
                        ( _xmax_initial - x1    + 0.5)/alpha));
 
-    Param._Zoom._ymin = macro_max( 0,               
+    Param._Zoom._ymin = macro_max( 0,
                  (int) (y1 - 1.0*
                        ( y1    - _ymin_initial + 0.5)/alpha));
-    Param._Zoom._ymax = min( _image->_ty - 1, 
+    Param._Zoom._ymax = min( _image->_ty - 1,
                  (int) (y1 + 1.0*
                        ( _ymax_initial - y1    + 0.5)/alpha));
 
-    Param._Zoom._zmin = max( 0,               
+    Param._Zoom._zmin = max( 0,
                  (int) (z1 - 1.0*
                        ( z1    - _zmin_initial + 0.5)/alpha));
-    Param._Zoom._zmax = min( _image->_tz - 1, 
+    Param._Zoom._zmax = min( _image->_tz - 1,
                  (int) (z1 + 1.0*
                        ( _zmax_initial - z1    + 0.5)/alpha));
 
@@ -4962,17 +4962,17 @@ void DessinImage::Boutton3_Presse()
   Si (trouve != -1) Alors
     Si Param._pos._x != im.x Alors
       Param._pos._x = im.x;
-      Param._MAJ._planZY = true;    
+      Param._MAJ._planZY = true;
     FinSi
-      
+
     Si Param._pos._y != im.y Alors
       Param._pos._y = im.y;
-      Param._MAJ._planXZ = true;    
+      Param._MAJ._planXZ = true;
     FinSi
 
     Si Param._pos._z != im.z Alors
       Param._pos._z = im.z;
-      Param._MAJ._planXY = true;    
+      Param._MAJ._planXY = true;
     FinSi
 
     Paint();
@@ -5046,17 +5046,17 @@ void DessinImage::DeplaceSourisBout3()
   Si (trouve != -1) Alors
     Si Param._pos._x != im.x Alors
       Param._pos._x = im.x;
-      Param._MAJ._planZY = true;    
+      Param._MAJ._planZY = true;
     FinSi
-      
+
     Si Param._pos._y != im.y Alors
       Param._pos._y = im.y;
-      Param._MAJ._planXZ = true;    
+      Param._MAJ._planXZ = true;
     FinSi
 
     Si Param._pos._z != im.z Alors
       Param._pos._z = im.z;
-      Param._MAJ._planXY = true;    
+      Param._MAJ._planXY = true;
     FinSi
 
     Paint();
@@ -5094,11 +5094,9 @@ void DessinImage::DrawContour( int i, int size, int style)
   if (size==0)  size = _largeur_lignes;
   if (style==-1) style = _isocontours[i].style;
 
-#if defined(__MOTIF__)
-  FixeParametresLigne( size, style, LineSolid, _cap_style, _join_style);
-#else
+  // Previous motif version
+  //FixeParametresLigne( size, style, LineSolid, _cap_style, _join_style);
   FixeParametresLigne( size, style, wxSOLID);
-#endif
 
   FixeCouleurTrait( _isocontours[i].color);
 
@@ -5109,11 +5107,11 @@ void DessinImage::DrawContour( int i, int size, int style)
     image = InrImage::ptr(_isocontours[i].image);
 
 
-  Si ((Param._type_coupe+1) & (TYPE_COUPE_ZY+1)) 
+  Si ((Param._type_coupe+1) & (TYPE_COUPE_ZY+1))
       AlorsFait  DessinePlanXIsoContour(image,seuil);
-  Si ((Param._type_coupe+1) & (TYPE_COUPE_XZ+1)) 
+  Si ((Param._type_coupe+1) & (TYPE_COUPE_XZ+1))
       AlorsFait  DessinePlanYIsoContour(image,seuil);
-  Si ((Param._type_coupe+1) & (TYPE_COUPE_XY+1)) 
+  Si ((Param._type_coupe+1) & (TYPE_COUPE_XY+1))
       AlorsFait  DessinePlanZIsoContour(image,seuil);
 
 } // DrawContour()
@@ -5169,7 +5167,7 @@ void DessinImage::DrawAllContours()
 
     line_style = wxSOLID;
     threshold -= _step_contours;
-    TantQue (threshold >= _val_min) Et 
+    TantQue (threshold >= _val_min) Et
             (threshold_backup-threshold < _contours_winsize) Faire
       line_style = ((line_style==wxSOLID)?wxDOT:wxSOLID);
       DrawContour(0,line_size,line_style);
@@ -5265,7 +5263,7 @@ void DessinImage::Paint( unsigned char affiche)
     //--- Dans le cas de la memorisation des coupes XY,
     // Si a la fois _MAJ_planXY,  _MAJ_planZY et _MAJ_planXZ sont vrais
     // alors il faut recalculer les coupes XY memorisees
-    Si _memorise_coupes_XY Et Param._MAJ._planXZ Et 
+    Si _memorise_coupes_XY Et Param._MAJ._planXZ Et
        Param._MAJ._planZY Et Param._MAJ._planXZ
     Alors
       MAJ_ImagesXY();
@@ -5273,7 +5271,7 @@ void DessinImage::Paint( unsigned char affiche)
         Si _tab_compare_image[i] != NULL Alors
           ((CompareImage*) _tab_compare_image[i])->MAJ_ImagesXY();
         FinSi
-      FinPour // i 
+      FinPour // i
     FinSi
 
     DrawingAreaClear();
@@ -5282,14 +5280,14 @@ void DessinImage::Paint( unsigned char affiche)
 
       Si Param._MAJ._planXY AlorsFait DessinePlanZ();
       Si Non(_MIP_stereo_lunettes) Alors
-        AfficheImage( IMAGE_XY); 
+        AfficheImage( IMAGE_XY);
       FinSi
 
     Sinon
       Si (Param._type_coupe+1) & (TYPE_COUPE_XY+1) Alors
           if (Param._MAJ._planXY) DrawSlice(IMAGE_XY);
           Si Param._MAJ._planXY Ou affiche Alors
-            AfficheImage( IMAGE_XY); 
+            AfficheImage( IMAGE_XY);
             DessineAxesXY();
           FinSi
       FinSi
@@ -5297,7 +5295,7 @@ void DessinImage::Paint( unsigned char affiche)
       Si (Param._type_coupe+1) & (TYPE_COUPE_XZ+1) Alors
           if (Param._MAJ._planXZ) DrawSlice(IMAGE_XZ);
           Si Param._MAJ._planXZ Ou affiche Alors
-            AfficheImage( IMAGE_XZ); 
+            AfficheImage( IMAGE_XZ);
             DessineAxesXZ();
           FinSi
       FinSi
@@ -5305,7 +5303,7 @@ void DessinImage::Paint( unsigned char affiche)
       Si (Param._type_coupe+1) & (TYPE_COUPE_ZY+1) Alors
           if (Param._MAJ._planZY) DrawSlice(IMAGE_ZY);
           Si Param._MAJ._planZY Ou affiche Alors
-            AfficheImage( IMAGE_ZY); 
+            AfficheImage( IMAGE_ZY);
             DessineAxesZY();
           FinSi
       FinSi
@@ -5313,7 +5311,7 @@ void DessinImage::Paint( unsigned char affiche)
 
       Si (Param._type_coupe == TYPE_COUPES) Alors
           Si Param._MAJ._coupes AlorsFait DessineCoupes();
-          AfficheImage( IMAGE_COUPES); 
+          AfficheImage( IMAGE_COUPES);
       FinSi
 
     FinSi
@@ -5337,7 +5335,7 @@ void DessinImage::Paint( unsigned char affiche)
     DrawAllContours();
   Sinon
     Pour(i,0,MAX_ISOCONTOURS-1)
-      if (_isocontours[i].visible) 
+      if (_isocontours[i].visible)
         DrawContour(i);
     FinPour
   FinSi
@@ -5349,7 +5347,7 @@ void DessinImage::Paint( unsigned char affiche)
     Si _MIP_stereo_lunettes Alors
       DessineStereo();
     Sinon
-      LancePetiteAnimationStereo(3);     
+      LancePetiteAnimationStereo(3);
       Si Param._MIP._bounding_box AlorsFait DessineBoundingBox();
     FinSi
   FinSi
@@ -5372,7 +5370,7 @@ void DessinImage::Paint( unsigned char affiche)
   // if so, call the function with its parameters
   if (this->_paint_callback != NULL) {
      void (*pf)( void*) = (void (*)(void*)) _paint_callback;
-    pf(_paint_callback_data);   
+    pf(_paint_callback_data);
   }
 
   Si _display_vectors Alors
@@ -5387,7 +5385,7 @@ void DessinImage::Paint( unsigned char affiche)
     Si CheckGLWindow() Alors
       Viewer3D_ptr glwin = _GLWindow.lock();
       glwin->GetCanvas()->SetCursor(
-            _image->SpacePosX(Param._pos._x), 
+            _image->SpacePosX(Param._pos._x),
             _image->SpacePosY(Param._pos._y),
             _image->SpacePosZ(Param._pos._z));
       glwin->Paint();
@@ -5425,10 +5423,10 @@ void DessinImage::PlayAnimation( )
 //                --------------
 {
 
-  if ((_ANIM_etat == ANIM_PLAY) && 
+  if ((_ANIM_etat == ANIM_PLAY) &&
       (Param._option_traitement == OPTION_ANIM))
   {
-    switch (_type_animation) 
+    switch (_type_animation)
     {
 
       Valeur TYPE_ANIM_FORWARD:
@@ -5468,7 +5466,7 @@ void DessinImage::PlayAnimation( )
 
     std::list<compare_info>::iterator Iter;
     DessinImage::ptr di;
-    for (Iter  = _tab_compare2_image.begin(); 
+    for (Iter  = _tab_compare2_image.begin();
         Iter != _tab_compare2_image.end()  ; Iter++ )
     {
       if (!(*Iter).di.expired()) {
@@ -5482,7 +5480,7 @@ void DessinImage::PlayAnimation( )
           di->Param._pos._x = (int) di->_image->SpaceToVoxelX(px);
           di->Param._pos._y = (int) di->_image->SpaceToVoxelY(py);
           di->Param._pos._z = (int) di->_image->SpaceToVoxelZ(pz);
-  
+
           // check zoom and cursor position
           di->Param.CheckPosition( di->_image );
           di->UpdateAnimation();
@@ -5509,7 +5507,7 @@ void DessinImage::UpdateAnimation()
 {
      _param_dialog->UpdateParameter( _id_planZ);
     DessinePlanZ();
-    AfficheImage( IMAGE_XY); 
+    AfficheImage( IMAGE_XY);
     DrawingAreaDisplay();
 
     Param._MAJ._planXY = true;
@@ -5535,18 +5533,18 @@ void DessinImage::LanceAnimation( )
 void DessinImage::LancePetiteAnimationStereo( int n )
 //                            --------------------------
 {
-   
+
 /* TODO??
     CompareImage*   im_stereo;
     int          i,k,posx,posy;
-    XImage*         image[2]; 
+    XImage*         image[2];
     int          images_par_sec;
     int          image_affichee;
 
   images_par_sec = 15;
 
-  Si ( Param._option_traitement != OPTION_MIP) AlorsRetourne; 
-  Si Non(Param._MIP._stereo)                   AlorsRetourne; 
+  Si ( Param._option_traitement != OPTION_MIP) AlorsRetourne;
+  Si Non(Param._MIP._stereo)                   AlorsRetourne;
 
   im_stereo = (CompareImage*) _tab_compare_image[_MIP_num_stereo];
 
@@ -5560,7 +5558,7 @@ void DessinImage::LancePetiteAnimationStereo( int n )
 
   _ANIM_timeout = true;
   // 30 images toutes les 4 secondes
-  XtAppAddTimeOut( GB_contexte, (EntierLongPositif) (1000.0 / images_par_sec), 
+  XtAppAddTimeOut( GB_contexte, (EntierLongPositif) (1000.0 / images_par_sec),
              DessinImage::CB_TimeOutAnimation  , this);
 
   Pour( k,1,2*n)
@@ -5602,7 +5600,7 @@ void DessinImage::EffaceTousLesEcrans( unsigned char expose)
 void DessinImage::InitDrawingAreaAll(  )
 //                -------------------
 {
-    int i; 
+    int i;
 
   DrawingAreaInit();
   _comparison_lock=true;
@@ -5610,12 +5608,12 @@ void DessinImage::InitDrawingAreaAll(  )
     Si _tab_compare_image[i] != NULL Alors
       ((CompareImage*) _tab_compare_image[i])->DrawingAreaInit();
     FinSi
-  FinPour // i 
+  FinPour // i
 
   std::list<compare_info>::iterator Iter;
-  for (Iter  = _tab_compare2_image.begin(); 
+  for (Iter  = _tab_compare2_image.begin();
        Iter != _tab_compare2_image.end()  ; Iter++ )
-    if (!(*Iter).di.expired()) 
+    if (!(*Iter).di.expired())
       ((*Iter).di.lock())->DrawingAreaInit();
   _comparison_lock=false;
 
@@ -5688,7 +5686,7 @@ void DessinImage::CB_parametres_visibles( wxCommandEvent& event)
 //                            ----------------------
 {
 
-   
+
     DessinImage*    di = (DessinImage*) this;
 
 //printf("1 %d \n",(int)Param._parametres_visible);
@@ -5700,8 +5698,8 @@ void DessinImage::CB_parametres_visibles( wxCommandEvent& event)
     di->_param_dialog->AfficheDialogue();
 
     /* TODO
-    Si  di->Param._parametres_visible Et 
-        Non(di->_interpole_ligne->WidgetCreated()) 
+    Si  di->Param._parametres_visible Et
+        Non(di->_interpole_ligne->WidgetCreated())
     Alors
 //printf("3\n");
       di->_interpole_ligne->CreeWidget(di->_palette);
@@ -5738,7 +5736,7 @@ void DessinImage::CB_relire(  wxCommandEvent& event)
 
   Si di->Param._option_traitement != OPTION_COUPE Alors
     wxMessageBox( wxString::FromAscii("You must be in 'SLICE' option for ReRead"),
-                  wxString::FromAscii("File ReLoad"), 
+                  wxString::FromAscii("File ReLoad"),
                   wxICON_ERROR);
     return;
   FinSi
@@ -5748,17 +5746,17 @@ void DessinImage::CB_relire(  wxCommandEvent& event)
   }
   catch(InrImage::ErreurLecture){
     wxMessageBox( wxString::FromAscii("Read Error"),
-                  wxString::FromAscii("File ReLoad"), 
+                  wxString::FromAscii("File ReLoad"),
                   wxICON_ERROR);
     return;
   }
 
-  Si (image->_tx != di->_image_initiale->_tx) Ou 
-     (image->_ty != di->_image_initiale->_ty) Ou 
-     (image->_tz != di->_image_initiale->_tz) 
+  Si (image->_tx != di->_image_initiale->_tx) Ou
+     (image->_ty != di->_image_initiale->_ty) Ou
+     (image->_tz != di->_image_initiale->_tz)
   Alors
     wxMessageBox( wxString::FromAscii("Image dimensions have changed."),
-                  wxString::FromAscii("File ReLoad"), 
+                  wxString::FromAscii("File ReLoad"),
                   wxICON_ERROR);
     return;
   FinSi
@@ -5778,7 +5776,7 @@ void DessinImage::CB_comparer( wxCommandEvent& event)
 //                            -----------
 {
     DessinImage*    di = this;
-  
+
   di->_param_nom_image->AfficheDialogue();
 
   // TODO: fix problems of etat variable here !!
@@ -5795,7 +5793,7 @@ void DessinImage::CB_sauver_param(  wxCommandEvent&)
 //                ---------------
 {
     DessinImage*    di = (DessinImage*) this;
-  
+
   di->_param_nom_fichier->ContraintesNomFichier( di->_id_nom_fichier, "", ".", "*.fic");
   di->_param_nom_fichier->AfficheDialogue();
 
@@ -5814,7 +5812,7 @@ void DessinImage::CB_sauver_image( wxCommandEvent&)
 //                ---------------
 {
     DessinImage*    di = (DessinImage*) this;
-  
+
   di->_param_sauve_image->AfficheDialogue();
 
 /*
@@ -5824,8 +5822,8 @@ void DessinImage::CB_sauver_image( wxCommandEvent&)
     SelonQue di->_type_sauvegarde Vaut
       Valeur SAUVE_INRIMAGE:   di->SauveImage( (char*)di->_nom_sauve_image.c_str()); FinValeur
       Valeur SAUVE_PS_GRIS:
-      Valeur SAUVE_PS_COULEUR: 
-        di->SauveImagePS( di->_nom_sauve_image.c_str()); 
+      Valeur SAUVE_PS_COULEUR:
+        di->SauveImagePS( di->_nom_sauve_image.c_str());
       FinValeur
     FinSelonQue
   FinSi
@@ -5848,13 +5846,13 @@ void DessinImage::CB_info_stat( void* cd)
 //                  ------------
 {
 
-   
+
     DessinImage*    di = (DessinImage*) cd;
     float            min=0,max=0;
     double      mean, sd,tmp,val;
     char            texte[100];
     long      numpoints,unit,thous,mill;
-    unsigned char         mask_ok; 
+    unsigned char         mask_ok;
 
   // Number of points
   // Minimum Maximum of intensity
@@ -5874,9 +5872,9 @@ void DessinImage::CB_info_stat( void* cd)
       mask_ok = true;
     FinSi
 
-    Si mask_ok Et val>=di->GetMinIntensity() Et 
+    Si mask_ok Et val>=di->GetMinIntensity() Et
        val<=di->GetMaxIntensity() Alors
-  
+
       Si numpoints == 0 AlorsFait
         min = max = val;
 
@@ -5916,7 +5914,7 @@ void DessinImage::CB_info_stat( void* cd)
   FinSi
 
   di->_param_image_info->SetLabelValue(di->_id_info_numpoints,texte);
- 
+
 
 //  di->_image->MinMax(&min, &max);
   sprintf(texte," [%4.4f ; %4.4f]",min,max);
@@ -5934,7 +5932,7 @@ void DessinImage::CB_info_stat( void* cd)
     di->_image_masque->InitBuffer();
 
   Repeter
- 
+
     val = di->_image->ValeurBuffer();
 
     Si di->_dessine_masque Alors
@@ -5943,7 +5941,7 @@ void DessinImage::CB_info_stat( void* cd)
       mask_ok = true;
     FinSi
 
-    Si mask_ok Et val>=di->GetMinIntensity() Et 
+    Si mask_ok Et val>=di->GetMinIntensity() Et
        val<=di->GetMaxIntensity() Alors
       tmp = (val-mean);
       sd += tmp*tmp;
@@ -5983,7 +5981,7 @@ void DessinImage::CB_AfficheChampVect(  void* cd, void*)
 //                -------------------
 {
 
-   
+
     DessinImage*    di = (DessinImage*) cd;
 
   di->Param._MAJ.MAJCoupes();
@@ -6010,13 +6008,13 @@ void DessinImage::CB_AfficheVecteurs(  void* cd)
     di->_MIP->PosPoint( x,y, x0, y0, z0);
   Sinon
     x0 = x; y0 = y; z0 = z;
-  FinSi  
+  FinSi
 
   cout << x0 << ";" << y0 << ";" << z0  << endl;
 
   int i = 0;
   std::vector<vectorfield_info>::iterator Iter;
-  for (Iter  = di->_vector_fields.begin(); 
+  for (Iter  = di->_vector_fields.begin();
        Iter != di->_vector_fields.end()  ; Iter++,i++ )
   if (!(*Iter).vector.expired()) {
     vectorfield_info vf = (*Iter);
@@ -6037,7 +6035,7 @@ void DessinImage::CB_type_vecteur(  void* cd)
 //                            ---------------
 {
 
-   
+
     DessinImage*    di = (DessinImage*) cd;
 
   di->Param._MAJ.MAJCoupes();
@@ -6070,7 +6068,7 @@ void DessinImage::CB_imagesurface( void* cd)
   Sinon
     min = di->_intensite_entier_min;
     max = di->_intensite_entier_max;
-  FinSi  
+  FinSi
 
   di->_param_dialog->RecupereValeurs();
 
@@ -6078,8 +6076,8 @@ void DessinImage::CB_imagesurface( void* cd)
 
   cout << "di->Param._pos._z = " << di->Param._pos._z << endl;
 
-  glwin->GetCanvas()->CreeImageSurface( 
-        di->_image, 
+  glwin->GetCanvas()->CreeImageSurface(
+        di->_image,
         di->Param._pos._z,
         di->_imsurf_zscale,
         min,max);
@@ -6113,9 +6111,9 @@ void DessinImage::CB_IsoContourVisible(  void* cd)
   //di->_param_dialog->GetBookCtrl()->GetCurrentPage()->Update();
 //  di->_param_IsoContour->ReAfficheParametres();
 
-  di->Param._MAJ.MAJCoupes(); 
+  di->Param._MAJ.MAJCoupes();
   di->Paint();
- 
+
 } // CB_IsoContourVisible()
 
 
@@ -6126,7 +6124,7 @@ void DessinImage::CB_voxels3D(  wxCommandEvent&)
     DessinImage*    di = (DessinImage*) this;
     bool  init;
     float min, max;
-  
+
   Si GB_debug AlorsFait printf("CB_voxels3D\n");
   Si (di->_image->_format == WT_FLOAT ) Ou
      (di->_image->_format == WT_DOUBLE) Alors
@@ -6136,7 +6134,7 @@ void DessinImage::CB_voxels3D(  wxCommandEvent&)
   Sinon
     min = di->_intensite_entier_min;
     max = di->_intensite_entier_max;
-  FinSi  
+  FinSi
   Si GB_debug AlorsFait printf("min max %f %f \n", min, max);
 
   di->_param_Voxels3D->AfficheDialogue();
@@ -6152,7 +6150,7 @@ void DessinImage::CB_voxels3D(  wxCommandEvent&)
 
 
   Viewer3D_ptr glwin =  di->_GLWindow.lock();
-  glwin->GetCanvas()->CreeVoxels3D( di->_image.get(), 
+  glwin->GetCanvas()->CreeVoxels3D( di->_image.get(),
                    di->_voxels3D_seuilbas,
                    di->_voxels3D_seuilhaut,
                    min,
@@ -6181,7 +6179,7 @@ void DessinImage::CB_GLMIP(  wxCommandEvent&)
     DessinImage*    di = (DessinImage*) this;
     bool  init;
     float min, max;
-  
+
   Si GB_debug AlorsFait printf("CB_GLMIP\n");
   Si (di->_image->_format == WT_FLOAT ) Ou
      (di->_image->_format == WT_DOUBLE) Alors
@@ -6191,7 +6189,7 @@ void DessinImage::CB_GLMIP(  wxCommandEvent&)
   Sinon
     min = di->_intensite_entier_min;
     max = di->_intensite_entier_max;
-  FinSi  
+  FinSi
   Si GB_debug AlorsFait printf("min max %f %f \n", min, max);
 
   di->_param_GLMIP->AfficheDialogue();
@@ -6207,7 +6205,7 @@ void DessinImage::CB_GLMIP(  wxCommandEvent&)
 
 
   Viewer3D_ptr glwin =  di->_GLWindow.lock();
-  glwin->GetCanvas()->CreeGLMIP( di->_image, 
+  glwin->GetCanvas()->CreeGLMIP( di->_image,
                 di->_GLMIP_seuilbas,
                 di->_GLMIP_seuilhaut,
                 min,
@@ -6233,7 +6231,7 @@ void DessinImage::CB_VOLREN( wxCommandEvent&)
     DessinImage*    di = (DessinImage*) this;
     bool  init;
     float min, max;
-  
+
   Si GB_debug AlorsFait printf("CB_GLMIP\n");
   Si (di->_image->_format == WT_FLOAT ) Ou
      (di->_image->_format == WT_DOUBLE) Alors
@@ -6243,7 +6241,7 @@ void DessinImage::CB_VOLREN( wxCommandEvent&)
   Sinon
     min = di->_intensite_entier_min;
     max = di->_intensite_entier_max;
-  FinSi  
+  FinSi
   Si GB_debug AlorsFait printf("min max %f %f \n", min, max);
 
   di->_param_VOLREN->AfficheDialogue();
@@ -6258,7 +6256,7 @@ void DessinImage::CB_VOLREN( wxCommandEvent&)
   Si GB_debug AlorsFait printf("CB_VOLREN() 3.0 \n");
 
   Viewer3D_ptr glwin =  di->_GLWindow.lock();
-  glwin->GetCanvas()->InitVolRen( di->_image.get(), 
+  glwin->GetCanvas()->InitVolRen( di->_image.get(),
                  min,
                  max,
                  di,
@@ -6283,7 +6281,7 @@ void DessinImage::CB_sections3D(  wxCommandEvent&)
     DessinImage*    di = (DessinImage*) this;
     bool  init;
     float min, max;
-  
+
 //printf("CB_voxels3D\n");
   Si (di->_image->_format == WT_FLOAT ) Ou
      (di->_image->_format == WT_DOUBLE) Alors
@@ -6293,7 +6291,7 @@ void DessinImage::CB_sections3D(  wxCommandEvent&)
   Sinon
     min = di->_intensite_entier_min;
     max = di->_intensite_entier_max;
-  FinSi  
+  FinSi
   //printf("min max %f %f \n", min, max);
 
   di->_param_Sections3D->AfficheDialogue();
@@ -6320,14 +6318,14 @@ void DessinImage::CB_isosurface(  void* cd)
 //                --------------
 {
 
-   
+
   static SurfacePoly::ptr isosurf_ptr;
 
     DessinImage*    di = (DessinImage*) cd;
     bool      init;
     InrImage* mask;
     int       x,y,z;
- 
+
   Si Non(di->CheckGLWindow()) Alors
     di->CreateGLWindow();
     init = true;
@@ -6346,7 +6344,7 @@ void DessinImage::CB_isosurface(  void* cd)
                (y>=di->Param._Zoom._ymin) &&
                (y<=di->Param._Zoom._ymax) &&
                (z>=di->Param._Zoom._zmin) &&
-               (z<=di->Param._Zoom._zmax) 
+               (z<=di->Param._Zoom._zmax)
                          )
                     );
     mask->IncBuffer();
@@ -6359,8 +6357,8 @@ void DessinImage::CB_isosurface(  void* cd)
   if (isosurf_ptr.use_count())
     glwin->GetCanvas()->RemoveSurface(isosurf_ptr);
 
-  isosurf_ptr = glwin->GetCanvas()->CreeIsosurface( 
-      di->_image, 
+  isosurf_ptr = glwin->GetCanvas()->CreeIsosurface(
+      di->_image,
       di->_isocontours[0].threshold,
       mask);
 
@@ -6390,9 +6388,9 @@ void DessinImage::CB_UseCompareColors(  void* cd)
 {
 
 #ifndef _NO_GL_
-   
+
     DessinImage*    di = (DessinImage*) cd;
-  
+
   Si (!di->CheckGLWindow())       AlorsFait return;
   Si di->ComparisonNumber() == 0  AlorsFait return;
 
@@ -6423,9 +6421,9 @@ void DessinImage::CB_couleurs(  wxCommandEvent&)
 //                            -----------
 {
 
-   
+
     DessinImage*    di = (DessinImage*) this;
-  
+
   di->_param_couleurs->AfficheDialogue();
 
 } // CB_couleurs()
@@ -6438,7 +6436,7 @@ void DessinImage::CB_maj_couleurs( void* cd )
 
 
   DessinImage* di = (DessinImage*) cd;
-  
+
   di->Param._MAJ._intensite = true;
   di->Paint();
 
@@ -6452,7 +6450,7 @@ void DessinImage::CB_maj_couleur_lignes( void* cd)
 //                            ---------------------
 {
   DessinImage* di = (DessinImage*) cd;
-  
+
   di->_couleur_curseur =  di->_couleur_lignes;
   di->Paint();
 }
@@ -6473,9 +6471,9 @@ void DessinImage::CB_projette_XY( void* cd)
    di->_param_MIP->UpdateParameter( di->_id_rot_Y);
    di->_param_MIP->UpdateParameter( di->_id_rot_Z);
 
-  di->_image_MIP = InrImage::ptr(di->_MIP->CreeMIP( 
-      di->Param._MIP._rot_X, 
-      di->Param._MIP._rot_Y, 
+  di->_image_MIP = InrImage::ptr(di->_MIP->CreeMIP(
+      di->Param._MIP._rot_X,
+      di->Param._MIP._rot_Y,
       di->Param._MIP._rot_Z ));
   di->Param._MIP._MAJ   = true;
   di->Param._MAJ.MAJCoupes();
@@ -6498,9 +6496,9 @@ void DessinImage::CB_projette_XZ( void* cd)
    di->_param_MIP->UpdateParameter( di->_id_rot_Y);
    di->_param_MIP->UpdateParameter( di->_id_rot_Z);
 
-  di->_image_MIP = InrImage::ptr(di->_MIP->CreeMIP( 
-      di->Param._MIP._rot_X, 
-      di->Param._MIP._rot_Y, 
+  di->_image_MIP = InrImage::ptr(di->_MIP->CreeMIP(
+      di->Param._MIP._rot_X,
+      di->Param._MIP._rot_Y,
       di->Param._MIP._rot_Z ));
   di->Param._MIP._MAJ   = true;
   di->Param._MAJ.MAJCoupes();
@@ -6513,7 +6511,7 @@ void DessinImage::CB_projette_XZ( void* cd)
 void DessinImage::CB_MIP_min_max(  wxCommandEvent& event)
 //                            --------------
 {
-   
+
     DessinImage*    di = (DessinImage*) this;
 
 //  Param._MIP._min_max = menuMIP->IsChecked(ID_MenuMIP_minmax);
@@ -6522,12 +6520,12 @@ void DessinImage::CB_MIP_min_max(  wxCommandEvent& event)
     di->_MIP->FixeLimites();
   Sinon
     Si ( di->_image->_format == WT_FLOAT ) Ou
-       ( di->_image->_format == WT_DOUBLE) 
+       ( di->_image->_format == WT_DOUBLE)
     Alors
-      di->_MIP->FixeLimites( di->_intensite_float_min, 
+      di->_MIP->FixeLimites( di->_intensite_float_min,
                  di->_intensite_float_max);
     Sinon
-      di->_MIP->FixeLimites( di->_intensite_entier_min, 
+      di->_MIP->FixeLimites( di->_intensite_entier_min,
                  di->_intensite_entier_max);
      FinSi
      //    di->_boutton_min_max->ChangeTitre("Ne pas utiliser min-max");
@@ -6549,7 +6547,7 @@ void DessinImage::CB_MIP_rapide( wxCommandEvent&)
 //                            -------------
 {
 
-   
+
     DessinImage*    di = (DessinImage*) this;
 
 //  _MIP_rapide = menuMIP->IsChecked(ID_MenuMIP_Proj_fast);
@@ -6567,7 +6565,7 @@ void DessinImage::CB_MIP_bounding_box( wxCommandEvent& event)
 //                            -------------------
 {
 
-   
+
     DessinImage*    di = (DessinImage*) this;
 
 //  Param._MIP._bounding_box = menuMIP->IsChecked(ID_MenuMIP_boundingbox);
@@ -6583,7 +6581,7 @@ void DessinImage::CB_MIP_zoom_bounding_box( wxCommandEvent&)
 //                            ------------------------
 {
 
-   
+
     DessinImage*    di = (DessinImage*) this;
     float            x,y,z,xmin,xmax,ymin,ymax;
     int          tx,ty,tz;
@@ -6624,8 +6622,8 @@ void DessinImage::CB_MIP_zoom_bounding_box( wxCommandEvent&)
   xmin = macro_min(xmin,x);  xmax = macro_max(xmax,x);
   ymin = macro_min(ymin,y);  ymax = macro_max(xmax,y);
 
-  di->Param._Zoom._xmin = (int) (xmin-0.01);  di->Param._Zoom._ymin = (int) (ymin-0.01); 
-  di->Param._Zoom._xmax = (int) (xmax+0.99);  di->Param._Zoom._ymax = (int) (ymax+0.99); 
+  di->Param._Zoom._xmin = (int) (xmin-0.01);  di->Param._Zoom._ymin = (int) (ymin-0.01);
+  di->Param._Zoom._xmax = (int) (xmax+0.99);  di->Param._Zoom._ymax = (int) (ymax+0.99);
   di->Param._Zoom.ComputeSize();
   di->Param._MAJ._planXY = true;
   di->EffaceTousLesEcrans( false);
@@ -6691,12 +6689,12 @@ void DessinImage::CB_projette_YZ( void* cd)
    di->_param_MIP->UpdateParameter( di->_id_rot_Y);
    di->_param_MIP->UpdateParameter( di->_id_rot_Z);
 
-  di->_image_MIP = InrImage::ptr(di->_MIP->CreeMIP( 
-    di->Param._MIP._rot_X, 
-    di->Param._MIP._rot_Y, 
+  di->_image_MIP = InrImage::ptr(di->_MIP->CreeMIP(
+    di->Param._MIP._rot_X,
+    di->Param._MIP._rot_Y,
     di->Param._MIP._rot_Z ));
   di->Param._MIP._MAJ   = true;
-  di->Param._MAJ.MAJCoupes(); 
+  di->Param._MAJ.MAJCoupes();
   di->Paint();
 
 } // CB_projette_YZ()
@@ -6722,14 +6720,14 @@ void DessinImage::CB_MIP_stereo(  wxCommandEvent& )
 //                            -------------
 {
 
-   
+
     DessinImage*    di = (DessinImage*) this;
     Chaine          titre;
     int          numero_image;
     CompareImage*   im_stereo;
     int          Pos_x, Pos_y;
     int          Hauteur, Largeur;
- 
+
   Si Non(di->Param._MIP._stereo) Alors
     di->LibereCompareImage( di->_MIP_num_stereo);
   Sinon
@@ -6758,10 +6756,10 @@ void DessinImage::CB_MIP_anim_stereo(  wxCommandEvent&)
 //                            ------------------
 {
 
-   
+
     DessinImage*    di = (DessinImage*) this;
-  
-  Si Non(di->Param._MIP._stereo) AlorsRetourne; 
+
+  Si Non(di->Param._MIP._stereo) AlorsRetourne;
   Si di->_MIP_stereo_lunettes AlorsRetourne;
 
   di->LancePetiteAnimationStereo( 15);
@@ -6774,12 +6772,12 @@ void DessinImage::CB_MIP_stereo_lunettes(  wxCommandEvent&)
 //                            ----------------------
 {
 
-   
+
     DessinImage*    di = (DessinImage*) this;
     CompareImage*   im_stereo;
     float            voxel_cm;
-  
-  Si Non(di->Param._MIP._stereo) AlorsFait return; 
+
+  Si Non(di->Param._MIP._stereo) AlorsFait return;
 
   im_stereo = (CompareImage*) di->_tab_compare_image[ di->_MIP_num_stereo];
 
@@ -6793,7 +6791,7 @@ void DessinImage::CB_MIP_stereo_lunettes(  wxCommandEvent&)
     im_stereo->FixeDecalStereo( di->Param._MIP._decal_stereo);
 
     di->Param._MIP._MAJ   = true;
-    di->Param._MAJ.MAJCoupes(); 
+    di->Param._MAJ.MAJCoupes();
     di->Paint();
 
   Sinon
@@ -6804,18 +6802,18 @@ void DessinImage::CB_MIP_stereo_lunettes(  wxCommandEvent&)
       im_stereo->FixeDecalStereo( 0);
 
       voxel_cm = di->_pixel_cm / di->_size_x;
-      im_stereo->_MIP->ActiveStereo( di->_distance_yeux       * voxel_cm, 
-                                     di->_distance_oeil_ecran * voxel_cm, 
+      im_stereo->_MIP->ActiveStereo( di->_distance_yeux       * voxel_cm,
+                                     di->_distance_oeil_ecran * voxel_cm,
                                      di->_distance_ecran_objet* voxel_cm);
       im_stereo->_MIP->StereoOeilDroit();
 
-      di       ->_MIP->ActiveStereo( di->_distance_yeux       * voxel_cm, 
-                                     di->_distance_oeil_ecran * voxel_cm, 
+      di       ->_MIP->ActiveStereo( di->_distance_yeux       * voxel_cm,
+                                     di->_distance_oeil_ecran * voxel_cm,
                                      di->_distance_ecran_objet* voxel_cm);
       di       ->_MIP->StereoOeilGauche();
 
       di->Param._MIP._MAJ   = true;
-      di->Param._MAJ.MAJCoupes(); 
+      di->Param._MAJ.MAJCoupes();
       di->Paint();
   FinSi
 
@@ -6828,7 +6826,7 @@ void DessinImage::CB_MIP_stereo_param( void* cd)
 //                            -------------------
 {
 
-   
+
     DessinImage*    di = (DessinImage*) cd;
     CompareImage*   im_stereo;
     float            voxel_cm;
@@ -6839,22 +6837,22 @@ void DessinImage::CB_MIP_stereo_param( void* cd)
   im_stereo = (CompareImage*) di->_tab_compare_image[ di->_MIP_num_stereo];
 
   voxel_cm = di->_pixel_cm / di->_size_x;
-  im_stereo->_MIP->ActiveStereo( di->_distance_yeux       * voxel_cm, 
-                                 di->_distance_oeil_ecran * voxel_cm, 
+  im_stereo->_MIP->ActiveStereo( di->_distance_yeux       * voxel_cm,
+                                 di->_distance_oeil_ecran * voxel_cm,
                                  di->_distance_ecran_objet* voxel_cm);
   im_stereo->_MIP->StereoOeilDroit();
 
-  di       ->_MIP->ActiveStereo( di->_distance_yeux       * voxel_cm, 
-                                 di->_distance_oeil_ecran * voxel_cm, 
+  di       ->_MIP->ActiveStereo( di->_distance_yeux       * voxel_cm,
+                                 di->_distance_oeil_ecran * voxel_cm,
                                  di->_distance_ecran_objet* voxel_cm);
   di       ->_MIP->StereoOeilGauche();
 
-  di->_image_MIP = InrImage::ptr(di->_MIP->CreeMIP( 
-      di->Param._MIP._rot_X, 
-      di->Param._MIP._rot_Y, 
+  di->_image_MIP = InrImage::ptr(di->_MIP->CreeMIP(
+      di->Param._MIP._rot_X,
+      di->Param._MIP._rot_Y,
       di->Param._MIP._rot_Z ));
   di->Param._MIP._MAJ = true;
-  di->Param._MAJ.MAJCoupes(); 
+  di->Param._MAJ.MAJCoupes();
   di->Paint( );
 
 } // CB_MIP_stereo_param()
@@ -6865,11 +6863,11 @@ void DessinImage::CB_MIP_decal_stereo( void* cd)
 //                            -------------------
 {
 
-   
+
     DessinImage*    di = (DessinImage*) cd;
     CompareImage*   im_stereo;
 
-  Si Non(di->Param._MIP._stereo) AlorsRetourne; 
+  Si Non(di->Param._MIP._stereo) AlorsRetourne;
 
   im_stereo = (CompareImage*) di->_tab_compare_image[ di->_MIP_num_stereo];
   im_stereo->FixeDecalStereo( di->Param._MIP._decal_stereo);
@@ -6883,7 +6881,7 @@ void DessinImage::CB_projette_MIP( void* cd)
 //                            ---------------
 {
 
-   
+
     DessinImage*    di = (DessinImage*) cd;
 
   di->_image_MIP = InrImage::ptr(di->_MIP->CreeMIP(
@@ -6891,7 +6889,7 @@ void DessinImage::CB_projette_MIP( void* cd)
       di->Param._MIP._rot_Y,
       di->Param._MIP._rot_Z ));
   di->Param._MIP._MAJ   = true;
-   di->Param._MAJ.MAJCoupes(); 
+   di->Param._MAJ.MAJCoupes();
   di->Paint();
 
 } // CB_projette_MIP()
@@ -6902,7 +6900,7 @@ void DessinImage::CB_MIP_depth_cue( void* cd)
 //                            ----------------
 {
 
-   
+
     DessinImage*    di = (DessinImage*) cd;
 
   di->_MIP->FixeDepthCue(  true, di->Param._MIP._depth_cue);
@@ -6912,7 +6910,7 @@ void DessinImage::CB_MIP_depth_cue( void* cd)
       di->Param._MIP._rot_Y,
       di->Param._MIP._rot_Z ));
   di->Param._MIP._MAJ   = true;
-  di->Param._MAJ.MAJCoupes(); 
+  di->Param._MAJ.MAJCoupes();
   di->Paint();
 
 } // CB_MIP_depth_cue()
@@ -6922,7 +6920,7 @@ void DessinImage::CB_MIP_depth_cue( void* cd)
 void DessinImage::CB_parametresMIP_visibles( wxCommandEvent& event)
 //                            -------------------------
 {
-  
+
 //  _MIP_parametres_visibles = menuMIP->IsChecked(ID_MenuMIP_param);
 
   Si _MIP_parametres_visibles Alors
@@ -6939,7 +6937,7 @@ void DessinImage::CB_Fermer_parametresMIP( void* cd)
 //                -----------------------
 {
     DessinImage*    di = (DessinImage*) cd;
-  
+
   di->_param_MIP->FermeDialogue( );
   di->_MIP_parametres_visibles = false;
 
@@ -6954,7 +6952,7 @@ void DessinImage::CB_CoupesXY( void* cd)
 //                            -----------
 {
 
-   
+
     DessinImage*    di = (DessinImage*) cd;
 
   Si di->Param._Zoom._zmin >= di->Param._Zoom._zmax Alors
@@ -6965,7 +6963,7 @@ void DessinImage::CB_CoupesXY( void* cd)
 
   di->Param._Zoom.ComputeSize();
 
-  di->Param._MAJ._coupes = true; 
+  di->Param._MAJ._coupes = true;
   di->EffaceTousLesEcrans( false);
   di->Paint();
 
@@ -7019,9 +7017,9 @@ void DessinImage::CB_DessineIsoContour(  void* cd)
 
     DessinImage*    di = (DessinImage*) cd;
 
-  di->Param._MAJ.MAJCoupes(); 
+  di->Param._MAJ.MAJCoupes();
   di->Paint();
- 
+
 } // CB_DessineIsoContour()
 
 
@@ -7030,7 +7028,7 @@ void DessinImage::CB_DessineVoxels3D( void* cd)
 //                ------------------
 {
     DessinImage*    di = (DessinImage*) cd;
-  
+
   Si Non(di->CheckGLWindow()) AlorsFait return;
 
   di->_param_Voxels3D->RecupereValeur(di->_id_voxels_seuilbas);
@@ -7043,7 +7041,7 @@ void DessinImage::CB_DessineVoxels3D( void* cd)
 //  FinSi
 
   Viewer3D_ptr glwin =  di->_GLWindow.lock();
-  glwin->GetCanvas()->CreeVoxels3D( di->_image.get(), 
+  glwin->GetCanvas()->CreeVoxels3D( di->_image.get(),
                    di->_voxels3D_seuilbas,
                    di->_voxels3D_seuilhaut,
                    di->GetMinIntensity(),
@@ -7062,7 +7060,7 @@ void DessinImage::CB_DessineGLMIP( void* cd)
 //                  ------------------
 {
     DessinImage*    di = (DessinImage*) cd;
-  
+
   Si Non(di->CheckGLWindow()) AlorsFait return;
 
   di->_param_GLMIP ->RecupereValeur(di->_id_glmip_seuilbas);
@@ -7076,7 +7074,7 @@ void DessinImage::CB_DessineGLMIP( void* cd)
 //  FinSi
 
   Viewer3D_ptr glwin =  di->_GLWindow.lock();
-  glwin->GetCanvas()->CreeGLMIP( di->_image, 
+  glwin->GetCanvas()->CreeGLMIP( di->_image,
                 di->_GLMIP_seuilbas,
                 di->_GLMIP_seuilhaut,
                 di->GetMinIntensity(),
@@ -7095,14 +7093,14 @@ void DessinImage::CB_ResetVOLREN(  void* cd )
 //                            --------------
 {
 
-   
+
     DessinImage*    di = (DessinImage*) cd;
-  
+
   Si Non(di->CheckGLWindow()) AlorsFait return;
 
 
   Viewer3D_ptr glwin =  di->_GLWindow.lock();
-  glwin->GetCanvas()->InitVolRen( di->_image.get(), 
+  glwin->GetCanvas()->InitVolRen( di->_image.get(),
                  di->GetMinIntensity(),
                  di->GetMaxIntensity(),
                  di,
@@ -7123,9 +7121,9 @@ void DessinImage::CB_DessineVOLREN(  void* cd )
 //                  ------------------
 {
 
-   
+
     DessinImage*    di = (DessinImage*) cd;
-  
+
   Si Non(di->CheckGLWindow()) AlorsFait return;
 
 
@@ -7136,7 +7134,7 @@ void DessinImage::CB_DessineVOLREN(  void* cd )
 //  FinSi
 
   Viewer3D_ptr glwin =  di->_GLWindow.lock();
-  glwin->GetCanvas()->InitVolRen( di->_image.get(), 
+  glwin->GetCanvas()->InitVolRen( di->_image.get(),
                  di->GetMinIntensity(),
                  di->GetMaxIntensity(),
                  di);
@@ -7157,13 +7155,13 @@ void DessinImage::CB_DessineSections3D(  void* cd )
 //                            ------------------
 {
 
-   
+
     DessinImage*    di = (DessinImage*) cd;
 
   Si Non(di->CheckGLWindow()) AlorsFait return;
 
 //printf( "CB_DessineSections3D XY \n");
-  
+
 //  Si di->_image->_format != WT_FLOAT Et
 //     (di->_sectionXY_visible Ou
 //      di->_sectionXZ_visible Ou
@@ -7174,11 +7172,11 @@ void DessinImage::CB_DessineSections3D(  void* cd )
 //  FinSi
 
 
-  if ((!di->_sectionXY_visible)&& 
+  if ((!di->_sectionXY_visible)&&
       (!di->_sectionXZ_visible)&&
       (!di->_sectionYZ_visible))
       return;
-      
+
   Viewer3D_ptr glwin =  di->_GLWindow.lock();
   glwin->GetCanvas()->SetLimits(
     di->_image->SpacePosX(di->Param._Zoom._xmin),
@@ -7189,34 +7187,34 @@ void DessinImage::CB_DessineSections3D(  void* cd )
     di->_image->SpacePosZ(di->Param._Zoom._zmax)
   );
 
-  glwin->GetCanvas()->InitSection( di->_image.get(), 
+  glwin->GetCanvas()->InitSection( di->_image.get(),
                   0,
                   di->Param._pos._z,
                   di->_sectionXY_visible,
                   di->GetMinIntensity(),
                   di->GetMaxIntensity(),
                   di->Param._Zoom);
-                  
+
 //printf( "CB_DessineSections3D XZ \n");
 
-  glwin->GetCanvas()->InitSection( di->_image.get(), 
+  glwin->GetCanvas()->InitSection( di->_image.get(),
                   1,
                   di->Param._pos._y,
                   di->_sectionXZ_visible,
                   di->GetMinIntensity(),
                   di->GetMaxIntensity(),
                   di->Param._Zoom);
-                  
+
 //printf( "CB_DessineSections3D YZ \n");
 
-  glwin->GetCanvas()->InitSection( di->_image.get(), 
+  glwin->GetCanvas()->InitSection( di->_image.get(),
                   2,
                   di->Param._pos._x,
                   di->_sectionYZ_visible,
                   di->GetMinIntensity(),
                   di->GetMaxIntensity(),
                   di->Param._Zoom);
-                  
+
 
   glwin->Paint();
 
@@ -7228,21 +7226,21 @@ void DessinImage::CB_MasqueVisible( wxCommandEvent& event)
 //                            ----------------
 {
 
-   
+
     DessinImage*    di = (DessinImage*) this;
 
 printf("1\n");
 //  _dessine_masque = menuOptions->IsChecked(ID_MenuOptions_display_mask);
 
 printf("1.1 %d \n",(int)_dessine_masque);
-  Si di->_image_masque == NULL Alors 
+  Si di->_image_masque == NULL Alors
     di->_dessine_masque = false;
     menuOptions->Check(ID_MenuOptions_display_mask,_image_masque);
 //(di->_Moptions_masque_visible)->MAJ();
   FinSi
 
 printf("1.2\n");
-  di->Param._MAJ.MAJCoupes(); 
+  di->Param._MAJ.MAJCoupes();
   di->Paint();
 
 printf("2\n");
@@ -7254,10 +7252,10 @@ void DessinImage::CB_PlanX( void* cd )
 //                            --------
 {
 
-   
+
     DessinImage*    di = (DessinImage*) cd;
-  
-  Si (di->Param._option_traitement == OPTION_COUPE) Ou 
+
+  Si (di->Param._option_traitement == OPTION_COUPE) Ou
      (di->Param._option_traitement == OPTION_ANIM) Alors
 
 //    (*di->_param_dialog)[di->_id_planX]->RecupereValeur();
@@ -7284,10 +7282,10 @@ void DessinImage::CB_PlanY( void* cd )
 //                            --------
 {
 
-   
+
     DessinImage*    di = (DessinImage*) cd;
-  
-  Si (di->Param._option_traitement == OPTION_COUPE)  Ou 
+
+  Si (di->Param._option_traitement == OPTION_COUPE)  Ou
      (di->Param._option_traitement == OPTION_ANIM) Alors
 
 //    (*di->_param_dialog)[di->_id_planY]->RecupereValeur();
@@ -7314,10 +7312,10 @@ void DessinImage::CB_PlanZ( void* cd )
 //                            --------
 {
 
-   
+
     DessinImage*    di = (DessinImage*) cd;
-  
-  Si (di->Param._option_traitement == OPTION_COUPE) Ou 
+
+  Si (di->Param._option_traitement == OPTION_COUPE) Ou
      (di->Param._option_traitement == OPTION_ANIM)  Alors
 
 //    (*di->_param_dialog)[di->_id_planZ]->RecupereValeur();
@@ -7327,7 +7325,7 @@ void DessinImage::CB_PlanZ( void* cd )
       di->_param_dialog->UpdateParameter(di->_id_planZ);
     FinSi
 
-    Si di->Param._pos._z > di->_image->_tz-1 Alors 
+    Si di->Param._pos._z > di->_image->_tz-1 Alors
       di->Param._pos._z = di->_image->_tz-1;
       di->_param_dialog->UpdateParameter(di->_id_planZ);
     FinSi
@@ -7335,7 +7333,7 @@ void DessinImage::CB_PlanZ( void* cd )
     di->Param._MAJ._planXY = true;
     di->Paint( );
   FinSi
- 
+
 } // CB_PlanZ()
 
 
@@ -7344,12 +7342,12 @@ void DessinImage::CB_barre_min(  void* cd )
 //                            ------------
 {
 
-  
+
      DessinImage* di = (DessinImage*) cd;
 //     NoyauParametre* param;
      int int_min;
      float   float_min;
-  
+
 
   int_min = di->_intensite_entier_min;
   float_min = di->_intensite_float_min;
@@ -7366,7 +7364,7 @@ void DessinImage::CB_barre_min(  void* cd )
   di->Param._MAJ.MAJCoupes();
 //  di->EffaceTousLesEcrans( false);
   di->Paint();
- 
+
 } // CB_barre_min()
 
 
@@ -7375,12 +7373,12 @@ void DessinImage::CB_barre_max( void* cd )
 //                            ------------
 {
 
-  
+
      DessinImage* di = (DessinImage*) cd;
 //     NoyauParametre* param;
      int int_max;
      float   float_max;
-  
+
   int_max = di->_intensite_entier_max;
   float_max = di->_intensite_float_max;
 
@@ -7405,10 +7403,10 @@ void DessinImage::CB_facteur(  void* cd)
 //                            ----------
 {
 
-  
+
      DessinImage* di = (DessinImage*) cd;
 //     NoyauParametre* param;
-  
+
   Si di->Param._type_taille == TAILLE_FACTEUR Alors
     di->Param._MAJ.MAJCoupes();
     di->EffaceTousLesEcrans( false);
@@ -7423,9 +7421,9 @@ void DessinImage::CB_redessine( void* cd)
 //                            ------------
 {
 
-  
+
      DessinImage*    di = (DessinImage*) cd;
-  
+
   Si (di->Param._type_coupe == TYPE_COUPES) Et (di->_image->_tz > 1) Alors
     di->_param_CoupesXY->AfficheDialogue();
   FinSi
@@ -7439,7 +7437,7 @@ void DessinImage::CB_redessine( void* cd)
 //----------------------------------------------------------------
 void DessinImage::CB_redraw( wxCommandEvent& event)
 {
-  
+
      DessinImage*    di = (DessinImage*) this;
      unsigned char         nouvelle_valeur;
 
@@ -7461,23 +7459,23 @@ void DessinImage::CB_voxel_size( void* cd)
 //                            -------------
 {
 
-  
+
      DessinImage*    di = (DessinImage*) cd;
-  
+
   Si di->Param._option_traitement == OPTION_MIP Alors
-    di->_MIP->FixeVoxelSize( di->Param._dim._voxel_size_x, 
-                 di->Param._dim._voxel_size_y, 
+    di->_MIP->FixeVoxelSize( di->Param._dim._voxel_size_x,
+                 di->Param._dim._voxel_size_y,
                              di->Param._dim._voxel_size_z );
     di->_image_MIP = InrImage::ptr(di->_MIP->CreeMIP(
       di->Param._MIP._rot_X,
       di->Param._MIP._rot_Y,
       di->Param._MIP._rot_Z ));
-    // La liberation l'ancienne image de la m�oire se fait dans FixeVoxelSize 
+    // La liberation l'ancienne image de la m�oire se fait dans FixeVoxelSize
     di->Param._MIP._MAJ = true;
     di->ChangeImage( di->_image_MIP);
   FinSi
 
-  di->Param._MAJ.MAJCoupes(); 
+  di->Param._MAJ.MAJCoupes();
   di->EffaceTousLesEcrans( false);
   di->Paint();
 
@@ -7489,7 +7487,7 @@ void DessinImage::CB_option_traitement( wxCommandEvent& event)
 //                            --------------------
 {
 
-  
+
      DessinImage*    di = (DessinImage*) this;
      unsigned char         nouvelle_valeur;
 
@@ -7510,11 +7508,11 @@ void DessinImage::CB_option_traitement( wxCommandEvent& event)
 
       // Il faut remplacer l'image courante
       // par l'image de projection MIP
-      di->_MIP->FixeVoxelSize( di->Param._dim._voxel_size_x, 
-                   di->Param._dim._voxel_size_y, 
+      di->_MIP->FixeVoxelSize( di->Param._dim._voxel_size_x,
+                   di->Param._dim._voxel_size_y,
                    di->Param._dim._voxel_size_z );
-      di->_MIP->FixeLimites( di->Param._Zoom._xmin, di->Param._Zoom._xmax, 
-                 di->Param._Zoom._ymin, di->Param._Zoom._ymax, 
+      di->_MIP->FixeLimites( di->Param._Zoom._xmin, di->Param._Zoom._xmax,
+                 di->Param._Zoom._ymin, di->Param._Zoom._ymax,
                  di->Param._Zoom._zmin, di->Param._Zoom._zmax);
       di->_image_MIP = InrImage::ptr(di->_MIP->CreeMIP(
         di->Param._MIP._rot_X,
@@ -7583,9 +7581,9 @@ void DessinImage::CB_fonction_intensite( void* cd)
 //                            ---------------------
 {
 
-  
+
      DessinImage*    di = (DessinImage*) cd;
-  
+
   di->Param._MAJ._intensite = true;
   di->Param._MAJ.MAJCoupes();
 //  di->EffaceTousLesEcrans( false);
@@ -7599,13 +7597,13 @@ void DessinImage::CB_type_courbe( void* cd)
 //                            --------------
 {
 
-  
+
      DessinImage*    di = (DessinImage*) cd;
 //     unsigned char         nouvelle_valeur;
      unsigned char         interpole;
 
 /*  nouvelle_valeur =  (*di->_param_dialog)[di->_id_type_courbe]->ValueChanged();
-  
+
   Si nouvelle_valeur Alors
 */
     interpole = (di->Param._I._type_courbe==TYPE_COURBE_INTERPOLE);
@@ -7613,9 +7611,9 @@ void DessinImage::CB_type_courbe( void* cd)
 //                 Sinon di->_interpole_ligne->Unmanage();
 //    FinSi
      // TODO
-    // di->_param_dialog->FixeVisible( di->_id_interpole,     interpole ); 
-    di->_param_dialog->FixeVisible( di->_id_min,       Non(interpole)); 
-    di->_param_dialog->FixeVisible( di->_id_max,       Non(interpole)); 
+    // di->_param_dialog->FixeVisible( di->_id_interpole,     interpole );
+    di->_param_dialog->FixeVisible( di->_id_min,       Non(interpole));
+    di->_param_dialog->FixeVisible( di->_id_max,       Non(interpole));
     di->_param_dialog->ReAfficheParametres();
 //  FinSi
 
@@ -7644,7 +7642,7 @@ void DessinImage::CB_colorspace( void* cd)
       unsigned char rainbow[256*3];
       unsigned char pattern[192];
       int i;
-      
+
       Pour(i,0,  63 )
         pattern[i]= (unsigned char) (i/63.0*255.0);
       FinPour
@@ -7685,7 +7683,7 @@ void DessinImage::CB_colorspace( void* cd)
       }
       di->_palette->TypePaletteTC( colmap);
     }
-    else 
+    else
       fprintf(stderr,"DessinImage::CB_colorspace() \t no user defined colormap ! \n");
     FinValeur
 
@@ -7704,7 +7702,7 @@ void DessinImage::CB_fonction_zoom( wxCommandEvent& event)
 //                            ----------------
 {
 
-  
+
      DessinImage*    di = (DessinImage*) this;
 
   if (di->_wxm_zoom->ValueChanged(event))
@@ -7723,7 +7721,7 @@ void DessinImage::CB_type_taille(wxCommandEvent& event )
 //                            --------------
 {
 
-  
+
      DessinImage*    di = (DessinImage*) this;
      unsigned char         nouvelle_valeur;
 
@@ -7757,11 +7755,11 @@ void DessinImage::CB_image_size(  wxCommandEvent&)
 //
 {
 
-  
+
      DessinImage*    di = (DessinImage*) this;
 
   di->SetImageSize();
-    
+
 } // CB_image_size()
 
 
@@ -7770,7 +7768,7 @@ void DessinImage::CB_largeur_lignes( wxCommandEvent& event)
 //                            -----------------
 {
 
-  
+
      DessinImage*    di = (DessinImage*) this;
      unsigned char         nouvelle_valeur;
 
@@ -7789,7 +7787,7 @@ void DessinImage::CB_taille_vecteurs( void* cd)
 //                            ------------------
 {
 
-   
+
     DessinImage*    di = (DessinImage*) cd;
 
   di->Param._MAJ.MAJCoupes();

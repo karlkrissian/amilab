@@ -22,7 +22,7 @@
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-    ================================================== 
+    ==================================================
    The full GNU Lesser General Public License file is in Devel/Sources/Prog/LesserGPL_license.txt
 */
 /*
@@ -49,7 +49,7 @@
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-    ================================================== 
+    ==================================================
    The full GNU Lesser General Public License file is in Devel/Sources/Prog/LesserGPL_license.txt
 */
 /***************************************************************************
@@ -109,7 +109,7 @@
 // Visualisation d'inrimage
 // fichier DessinImageBase.hpp
 //
-// Karl KRISSIAN 
+// Karl KRISSIAN
 //
 // Sophia Antipolis le 20-10-97
 //
@@ -266,11 +266,11 @@ public:
     int              thickness;
     int              style;
 
-    isocontour_info(): 
-        image(InrImage::ptr()), 
+    isocontour_info():
+        image(InrImage::ptr()),
         visible(0),
         threshold(0),
-        thickness(0),
+        thickness(1),
         style(wxSOLID) // LineSolid
         {}
 
@@ -432,7 +432,7 @@ protected:
  */
 //@{
 /*
-Visual*      _visual;   
+Visual*      _visual;
    int       _ximage_octets;
    char*        _ximage_data;
    XImage*      _ximage;
@@ -446,7 +446,7 @@ Visual*      _visual;
    XImage**   _tab_ximage;
 #endif
    */
-    // new way 
+    // new way
     vector<wxImage_info> _tab_slices;
     wxImage_ptr           _current_slice;
 
@@ -491,7 +491,7 @@ int        _nb_images_XY;
 /** @name Intensite
  */
 //@{
-   float     _intensite_float_min; 
+   float     _intensite_float_min;
    float     _intensite_float_max;
 
    int       _intensite_entier_min;
@@ -502,13 +502,13 @@ int        _nb_images_XY;
 //@{
 //  int       _type_courbe;
 
-/** couleur des points en dessous 
+/** couleur des points en dessous
     du minimum d'intensit�
 */
-   unsigned char _couleur_inf; 
+   unsigned char _couleur_inf;
 
    /// couleur des points au dessus du max
-   unsigned char _couleur_sup; 
+   unsigned char _couleur_sup;
 //@}
 
 /** @name Variables pour le dessin de la position du curseur
@@ -516,7 +516,7 @@ int        _nb_images_XY;
 //@{
 //   unsigned char      _curseur_ON;
    FloatMatrix* _transf_matrix;
-   int            _curseur_x, _curseur_y, _curseur_z; 
+   int            _curseur_x, _curseur_y, _curseur_z;
    ClasseCouleur  _couleur_curseur;
 //   int       _type_curseur;
 
@@ -568,7 +568,7 @@ protected:
                             const int& width,
                             const int& x_min, const int& y_min,
                             const int& x_max, const int& y_max,
-                            const ClasseCouleur& intensite); 
+                            const ClasseCouleur& intensite);
 
 /*
   ///
@@ -640,24 +640,24 @@ protected:
   ///
   virtual unsigned char FonctionIntensiteBuffer();
   //                      -----------------------
-  // Fonction en ligne  
+  // Fonction en ligne
 
 
   ///
   virtual unsigned char FonctionIntensiteBuffer( float x, float y, float z);
   //                      -----------------------
-  // Fonction en ligne  
+  // Fonction en ligne
 */
 
   ///
   virtual unsigned char IntensiteBuffer();
   //                      ---------------
-  // Fonction en ligne  
+  // Fonction en ligne
 
   virtual unsigned char IntensiteBuffer(float x, float y, float z);
   /// Interpolation de l'intensit�  virtual unsigned char IntensiteBuffer( float x, float y, float z);
   //                      ---------------
-  // Fonction en ligne  
+  // Fonction en ligne
   //
 
   ///
@@ -667,7 +667,7 @@ protected:
   ///
   void     InitCouleurs();
   //       ------------
- 
+
   ///
   void     CurseurToImage( int* x, int* y, int* z, int* etat);
   //       --------------
@@ -699,11 +699,11 @@ protected:
   // Fonction en ligne
 
 public:
-  
+
   ///
-  Constructeur DessinImageBase( 
+  Constructeur DessinImageBase(
           wxWindow* parent,
-          const std::string& ATitle, 
+          const std::string& ATitle,
           int l, int h,
           int type = CREATE_WINDOW);
 
@@ -717,8 +717,8 @@ public:
   DessinImageParametres* GetParam() { return &Param; }
 
   ///
-  float GetMinIntensity() 
-  { 
+  float GetMinIntensity()
+  {
      SelonQue  _image->_format Vaut
        Valeur WT_DOUBLE:
        Valeur WT_FLOAT:
@@ -736,7 +736,7 @@ public:
 
   ///
   float GetMaxIntensity()
-  { 
+  {
      SelonQue  _image->_format Vaut
        Valeur WT_DOUBLE:
        Valeur WT_FLOAT:
@@ -755,13 +755,13 @@ public:
   ///
   void CreateWxMenu();
 
-  // 
+  //
   void  SetTransformationMatrix( FloatMatrix* m)
   {
     _transf_matrix = m;
   }
 
-  // 
+  //
   FloatMatrix*  GetTransformationMatrix( )
   {
     return _transf_matrix;
@@ -770,7 +770,7 @@ public:
   ///
   virtual unsigned char IntensiteBuffer( float val);
   //                      ---------------
-  // Fonction en ligne  
+  // Fonction en ligne
 
 
   ///
@@ -779,12 +779,12 @@ public:
   ///
   virtual unsigned char LookUpTable( const float& val, const WORDTYPE&) const;
   //                    ---------------
-  // Fonction en ligne  
+  // Fonction en ligne
 
   ///
   virtual void ColorBuffer( float val, unsigned char& red,
   //             -----------
-  // Fonction en ligne  
+  // Fonction en ligne
             unsigned char& green,
             unsigned char& blue);
 
@@ -839,11 +839,11 @@ public:
     _contours_winsize=bandwidth;
   }
 
-  void SetLineAttributes( int capstyle, int joinstyle) 
+  void SetLineAttributes( int capstyle, int joinstyle)
   {
     if ((capstyle>=0)&&(capstyle<=3))
       _cap_style=capstyle; // CapNotLast, CapButt, CapRound, or CapProjecting
-    if ((joinstyle>=0)&&(joinstyle<=2)) 
+    if ((joinstyle>=0)&&(joinstyle<=2))
       _join_style=joinstyle; // JoinMiter, JoinRound, or JoinBevel
   }
 
@@ -906,18 +906,18 @@ public:
   void DessineMasqueCoupes();
 
   ///
-  void DessinePlanXIsoContour( 
-                   InrImage::ptr& image, 
+  void DessinePlanXIsoContour(
+                   InrImage::ptr& image,
                    float threshold);
 
   ///
-  void DessinePlanYIsoContour( 
-                   InrImage::ptr& image, 
+  void DessinePlanYIsoContour(
+                   InrImage::ptr& image,
                    float threshold);
 
   ///
-  void DessinePlanZIsoContour( 
-                   InrImage::ptr& image, 
+  void DessinePlanZIsoContour(
+                   InrImage::ptr& image,
                    float threshold);
 
   ///
@@ -929,7 +929,7 @@ public:
   ///
   void DessinePlanInterpX();
 
-  /// 
+  ///
   /// Draw a line in XY slice using (x,y) coordinates as input
   ///
   void DrawLineZ( float x1, float y1, float x2, float y2);
@@ -945,10 +945,10 @@ public:
 
   int GetImageWidth(int i) {
     #if defined(__WXMOTIF__)
-      if (_tab_ximage[i]) 
+      if (_tab_ximage[i])
         return _tab_ximage[i].width;
     #else
-      if (_tab_slices[i].image.use_count()) 
+      if (_tab_slices[i].image.use_count())
         return _tab_slices[i].image->GetWidth();
     #endif
       else
@@ -957,10 +957,10 @@ public:
 
   int GetImageHeight(int i) {
     #if defined(__WXMOTIF__)
-      if (_tab_ximage[i]) 
+      if (_tab_ximage[i])
         return _tab_ximage[i].height;
     #else
-      if (_tab_slices[i].image.use_count()) 
+      if (_tab_slices[i].image.use_count())
         return _tab_slices[i].image->GetHeight();
     #endif
       else
@@ -1022,35 +1022,35 @@ EnLigne void DessinImageBase :: IncBuffer( int inc)
 
 
 /*
-// Momentanee, a enlever plus tard, ne marchera pas pour 
+// Momentanee, a enlever plus tard, ne marchera pas pour
 // les images comparees
 EnLigne unsigned char DessinImageBase :: FonctionIntensiteBuffer()
 //                                                  -----------------------
-// Fonction en ligne  
-{ 
+// Fonction en ligne
+{
 
-   
-    float valeur; 
 
-  valeur = _image->ValeurBuffer(); 
-  return _interpole_ligne->FonctionIntensite(valeur); 
+    float valeur;
+
+  valeur = _image->ValeurBuffer();
+  return _interpole_ligne->FonctionIntensite(valeur);
 
 } // FonctionIntensiteBuffer()
 
 
-// Momentanee, a enlever plus tard, ne marchera pas pour 
+// Momentanee, a enlever plus tard, ne marchera pas pour
 // les images comparees
 EnLigne unsigned char DessinImageBase :: FonctionIntensiteBuffer(
     float x, float y, float z)
 //                                                  -----------------------
-// Fonction en ligne  
-{ 
+// Fonction en ligne
+{
 
-   
-    float valeur; 
+
+    float valeur;
 
   valeur = _image->InterpLinIntensite(x,y,z);
-  return _interpole_ligne->FonctionIntensite(valeur); 
+  return _interpole_ligne->FonctionIntensite(valeur);
 
 } // FonctionIntensiteBuffer()
 */
@@ -1059,11 +1059,11 @@ EnLigne unsigned char DessinImageBase :: FonctionIntensiteBuffer(
 EnLigne unsigned char DessinImageBase::IntensiteBuffer( float valeur)
 //                                     ---------------
 {
-    
+
 
   /* TODO
    Si Param._I._type_courbe == TYPE_COURBE_INTERPOLE AlorsFait
-     return _interpole_ligne->FonctionIntensite(valeur); 
+     return _interpole_ligne->FonctionIntensite(valeur);
   */
 
     SelonQue  _image->_format Vaut
@@ -1105,13 +1105,13 @@ EnLigne unsigned char DessinImageBase::IntensiteBuffer( float valeur)
 
 
 //----------------------------------------------------------------
-EnLigne unsigned char DessinImageBase::LookUpTable( const float& valeur, 
+EnLigne unsigned char DessinImageBase::LookUpTable( const float& valeur,
 //                                     -----------
                                                     const WORDTYPE& format) const
 {
   /* TODO
    Si Param._I._type_courbe == TYPE_COURBE_INTERPOLE AlorsFait
-     return _interpole_ligne->FonctionIntensite(valeur); 
+     return _interpole_ligne->FonctionIntensite(valeur);
   */
 
     SelonQue  format Vaut
@@ -1158,7 +1158,7 @@ EnLigne void DessinImageBase :: ColorBuffer( float valeur,
               unsigned char& blue)
 //                                         -----------
 {
-  const ClasseCouleur& couleur = 
+  const ClasseCouleur& couleur =
     _tab_intensite_couleur[ IntensiteBuffer(valeur) ];
   red   = couleur.Red();
   blue  = couleur.Green();
@@ -1170,18 +1170,18 @@ EnLigne void DessinImageBase :: ColorBuffer( float valeur,
 EnLigne unsigned char DessinImageBase::IntensiteBuffer( )
 //                                     ---------------
 {
-    
+
   return IntensiteBuffer( _image->ValeurBuffer());
 
 } // IntensiteBuffer()
 
 
 //----------------------------------------------------------------
-EnLigne unsigned char DessinImageBase :: 
+EnLigne unsigned char DessinImageBase ::
                  IntensiteBuffer( float x, float y, float z)
 //               ---------------
 {
-    
+
   return IntensiteBuffer( _image->InterpLinIntensite(x,y,z));
 
 } // IntensiteBuffer()
@@ -1191,7 +1191,7 @@ EnLigne unsigned char DessinImageBase ::
 EnLigne float DessinImageBase :: InterpoleZero( float val1, float val2)
 //                                         -------------
 {
- 
+
 //  Si (fabsf(val1) < 1E-4)  AlorsRetourne 0.0;
 //  Si (fabsf(val2) < 1E-4)  AlorsRetourne 1.0;
 

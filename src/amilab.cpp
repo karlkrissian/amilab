@@ -149,6 +149,7 @@ bool CheckEnvDir(const wxString& envname, wxString& res, const wxString& lookfor
   }
 // else {
       // look recursively for the file needed
+      /*
       cout  << "looking for the file " << lookforfile.mb_str() << " in " << res.mb_str() << endl;
       wxDir directory(res);
       if (lookforfile != wxEmptyString) {
@@ -156,6 +157,7 @@ bool CheckEnvDir(const wxString& envname, wxString& res, const wxString& lookfor
         if (path!=wxEmptyString)
             res = wxFileName(path).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
         else {
+        */
           wxFileName execpath(wxStandardPaths::Get().GetExecutablePath());
           // if last directory is bin, remove it
           wxString LastDir = execpath.GetDirs().Last();
@@ -171,11 +173,13 @@ bool CheckEnvDir(const wxString& envname, wxString& res, const wxString& lookfor
             wxString path = directory.FindFirst(res,lookforfile);
             if (path!=wxEmptyString)
                 res = wxFileName(path).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-            else 
-              cerr << "file not found." << endl;
+            else
+              cerr << "file not found, set the path manually from the interface." << endl;
           }
+     /*
         }
-      }
+     }
+     */
 
 
 //  }

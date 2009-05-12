@@ -27,6 +27,10 @@ SET(AMILAB_VERSION "${AMILAB_VERSION_MAJOR}.${AMILAB_VERSION_MINOR}.${AMILAB_VER
 #-----------------------------------------------------
 INCLUDE(InstallRequiredSystemLibraries)
 
+
+#
+# Common package configuration
+#
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "AMILab image processing and visualization software")
 SET(CPACK_PACKAGE_VENDOR "Karl Krissian, University of Las Palmas of Gran Canaria")
 SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/ReadMe.txt")
@@ -44,7 +48,9 @@ SET(CPACK_TOPLEVEL_TAG ${CPACK_SYSTEM_NAME})
 
 SET(CPACK_SET_DESTDIR "ON")
 
+#
 # RPM configuration
+#
 SET(CPACK_RPM_PACKAGE_SUMMARY "AMILab image processing and visualization software")
 SET(CPACK_RPM_PACKAGE_NAME "amilab")
 SET(CPACK_RPM_PACKAGE_VERSION ${AMILAB_VERSION})
@@ -56,12 +62,17 @@ SET(CPACK_RPM_PACKAGE_DESCRIPTION "Amilab is designed as a tool for research and
 SET(CPACK_RPM_PACKAGE_REQUIRES "glibc wxGTK wxGTK-gl")
 SET(CPACK_RPM_PACKAGE_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
 
+#
 # DEB configuration
+#
 # no i386 in debian, should use dpkg --print-architecture ??
 SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "i386" )
 SET(CPACK_DEBIAN_PACKAGE_MAINTAINER   "krissian@dis.ulpgc.es")
 SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6, libwxgtk2.8-0,  libvtk5, libinsighttoolkit3.10, libboost-date-time1.37.0, libboost-filesystem1.37.0, libboost-graph1.37.0, libboost-iostreams1.37.0, libboost-regex1.37.0, libboost-system1.37.0, libbz2-1.0, zlib1g")
 
+#
+# NSIS: not used at the moment
+#
 IF(WIN32 AND NOT UNIX)
   # There is a bug in NSI that does not handle full unix paths properly. Makec
   # sure there is at least one set of four (4) backlasshes.
@@ -79,6 +90,20 @@ ELSE(WIN32 AND NOT UNIX)
 ENDIF(WIN32 AND NOT UNIX)
 #SET(CPACK_PACKAGE_EXECUTABLES "MyExecutable" "My Executable")
 #MESSAGE("CMake:Debug:  CPACK_PACKAGE_INSTALL_DIRECTORY         = ${CPACK_PACKAGE_INSTALL_DIRECTORY}")
+
+#
+# MacOS
+#
+# Bundle Configuration (still needs work ...),
+# now compiling MacOS Package with "sudo cpack -G PackageMaker ."
+#
+#SET( CPACK_PACKAGE_FILE_NAME      )
+SET( CPACK_PACKAGE_ICON            "${CMAKE_SOURCE_DIR}/../Pixmaps/amilab_logo_new.xpm")
+SET( CPACK_BUNDLE_NAME             "AMLab-${AMILAB_VERSION}-Bundle")
+SET( CPACK_BUNDLE_ICON             "${CMAKE_SOURCE_DIR}/../Pixmaps/amilab_logo_new.xpm")
+SET( CPACK_BUNDLE_PLIST            "${CMAKE_CURRENT_SOURCE_DIR}/../Releases/MacOS/Info.plist")
+#SET( CPACK_BUNDLE_STARTUP_COMMAND )
+
 
 SET(CPACK_GENERATOR "RPM")
 #SET(CPACK_GENERATOR "RPM;STGZ;DEB")
@@ -137,7 +162,7 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/AMILabConfig.h.in ${CMAKE_CURRENT_BIN
 include(amilab_macros)
 InitPrintSources()
 
-set(  wxParams_INCLUDE_DIRS 
+set(  wxParams_INCLUDE_DIRS
     ${PROJECT_SOURCE_DIR}/../wxParams/src)
 
 include_directories (
@@ -219,7 +244,7 @@ INCLUDE( ${USE_ITK_FILE} )
 
 
 SET(amilab_bin_SRCS
-  amilab.cpp 
+  amilab.cpp
   MainFrame.cpp
 )
 
@@ -309,7 +334,7 @@ INSTALL(TARGETS ${AMILAB_BIN}
 )
 
 # Install the scripts
-install(DIRECTORY ${AMILAB_SOURCE_DIR}/../scripts 
+install(DIRECTORY ${AMILAB_SOURCE_DIR}/../scripts
         DESTINATION share/amilab-${AMILAB_VERSION}
         FILES_MATCHING PATTERN "*.amil"
          PATTERN "*.sh"
@@ -323,7 +348,7 @@ install(DIRECTORY ${AMILAB_SOURCE_DIR}/../scripts
 # Install the documentation
 install(DIRECTORY ${AMILAB_SOURCE_DIR}/../doc
         DESTINATION share/amilab-${AMILAB_VERSION}
-        FILES_MATCHING 
+        FILES_MATCHING
           PATTERN "*.html"
           PATTERN "*.amih"
           PATTERN "*.gif"
@@ -338,7 +363,7 @@ if (UNIX)
   # Install the documentation
   install(DIRECTORY ${AMILAB_SOURCE_DIR}/../Releases/Linux/share
           DESTINATION .
-          FILES_MATCHING 
+          FILES_MATCHING
             PATTERN "*.*"
           PATTERN ".svn" EXCLUDE
           PATTERN "*~" EXCLUDE
