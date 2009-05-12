@@ -231,11 +231,12 @@ void wxNumericParameter<T>::RecomputeTextSize()
     max_width = (max_width>tmp?max_width:tmp);
 
     newsize = max_width+(int)(2*_text->GetWindowBorderSize().GetWidth());
-    // ad-hoc how to compute the real needed size ??
-    #if defined(WIN32) || defined(__APPLE__)
-      newsize = newsize+5;
-    #else
-      newsize = newsize+10;
+    // ad-hoc how to compute the margin with the wxTextCtl ?
+    #if defined(__WIN32__) 
+      newsize += 5;
+    #endif
+    #if defined(__WXGTK__)
+      newsize += 10;
     #endif
 
   } // we don´t need dc anymore
