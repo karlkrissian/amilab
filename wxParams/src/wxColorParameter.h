@@ -22,12 +22,12 @@
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-    ================================================== 
+    ==================================================
    The full GNU Lesser General Public License file is in Devel/Sources/Prog/LesserGPL_license.txt
 */
 //
 //  Karl Krissian
-//  Las Palmas 
+//  Las Palmas
 //  14 05 2000
 //
 
@@ -50,7 +50,7 @@ class wxColorParameter : public wxButtonParameter
  public:
 
   ///
-  wxColorParameter( wxWindow* parent, const char* libelle, 
+  wxColorParameter( wxWindow* parent, const char* libelle,
   //----------
 				 ClasseCouleur* couleur);
   ///
@@ -61,10 +61,10 @@ class wxColorParameter : public wxButtonParameter
   void ParamUpdate();
   //
 
-  virtual void OnLeftButton( wxMouseEvent& );
+  virtual void OnLeftDown( wxMouseEvent& );
 
 private:
-    DECLARE_EVENT_TABLE()
+//    DECLARE_EVENT_TABLE()
 };
  // wxColorParameter
 

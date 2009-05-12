@@ -167,7 +167,7 @@ Viewer3D::Viewer3D(wxFrame *frame, const wxString& title, const wxPoint& pos,
 
   //    SetIcon(wxIcon(sample_xpm));
   // Add to AUI Manager
-  m_mgr.AddPane(this->m_canvas,  
+  m_mgr.AddPane(this->m_canvas,
                 wxAuiPaneInfo()
                 .Name(wxT("3D viewer"))
                 .Caption(wxT("OpenGL viewer"))
@@ -176,7 +176,9 @@ Viewer3D::Viewer3D(wxFrame *frame, const wxString& title, const wxPoint& pos,
                 .MaximizeButton(true)
                 .CloseButton(false));
 
-  this->m_canvas->SetToolTip("This viewer uses the following mouse events: Left button for rotation, Wheel or Right button for scaling, Ctrl+Left button for translation");
+  this->m_canvas->SetToolTip("Mouse events: Left button --> rotation, \
+  Wheel or Right button --> scaling, \
+  Alt+Left button --> translation");
 
   // Add to AUI Manager
   // add the toolbars to the manager
@@ -567,8 +569,8 @@ void Viewer3D::CreateParamBook(wxWindow* parent)
                                     wxDefaultSize,
                                     wxAUI_NB_TOP          |
                                     wxAUI_NB_TAB_SPLIT    |
-                                    wxAUI_NB_TAB_MOVE 
-                                    |wxAUI_NB_WINDOWLIST_BUTTON 
+                                    wxAUI_NB_TAB_MOVE
+                                    |wxAUI_NB_WINDOWLIST_BUTTON
                                     |wxAUI_NB_SCROLL_BUTTONS
                                   );
 
@@ -643,7 +645,7 @@ void Viewer3D::Create_Toolbar()
 
   //m_toolbar->SetToolBitmapSize(wxSize(30,30));
   //m_toolbar->SetToolSeparation(0);
-  //m_toolbar->SetMargins(0,0);
+  m_toolbar->SetMargins(1,1);
 
 /*
   m_toolbar->AddTool(wxID_TB_LoadPoly,

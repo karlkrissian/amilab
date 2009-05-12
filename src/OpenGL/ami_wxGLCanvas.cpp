@@ -514,12 +514,19 @@ void ami_wxGLCanvas::OnMouseEvent(wxMouseEvent& event)
     bool drag  = event.Dragging();
     bool shift = event.ShiftDown();
     bool ctrl  = event.ControlDown();
+    bool alt   = event.AltDown();
 
     int wr = event.GetWheelRotation();
     if (wr != 0) {
-      cout << "wheel rotation " << wr << endl;
+      //cout << "wheel rotation " << wr << endl;
       ApplyZoomFactor(exp((1.0*wr)/(10.0*event.GetWheelDelta())));
     }
+
+    //if (ctrl) cout << "ctrl " << endl;
+    //if (shift) cout << "shift " << endl;
+    //if (ld) cout << "ld " << endl;
+    //if (lu) cout << "lu " << endl;
+    //if (lid) cout << "lid " << endl;
 
     // Deal first with Shift and Control
     if (shift && drag && lid ) AnimateRotation();
@@ -527,8 +534,8 @@ void ami_wxGLCanvas::OnMouseEvent(wxMouseEvent& event)
     // Shift + Main button for picking
     if ( shift && ld ) ApplyPicking();
     else {
-      // Use Ctrl button for translation
-      if (ctrl) {
+      // Use Alt button for translation
+      if (alt) {
         if (ld)           TranslationStart();
         else
         if (lu)           TranslationEnd();
@@ -2060,7 +2067,7 @@ void ami_wxGLCanvas :: TranslationEnd()
 void ami_wxGLCanvas :: TranslationMotion()
 //                         ------------------
 {
-  cout << __func__ << endl;
+  //cout << __func__ << endl;
   TranslationEnd();
 
 /*
@@ -2084,7 +2091,7 @@ void ami_wxGLCanvas :: TranslationMotion()
 void ami_wxGLCanvas :: RotationStart()
 //                     --------------
 {
-  cout << __func__ << endl;
+  //cout << __func__ << endl;
   _souris_position_initiale_x = _souris_x;
   _souris_position_initiale_y = _souris_y;
 
@@ -2107,7 +2114,7 @@ void ami_wxGLCanvas :: RotationStart()
 void ami_wxGLCanvas :: AnimateRotation()
 //                         -----------------------
 {
-  cout << __func__ << endl;
+  //cout << __func__ << endl;
   _souris_position_initiale_x = (int) (_largeur/2.0);
   _souris_position_initiale_y = (int) (_hauteur/2.0);
 
@@ -2234,7 +2241,7 @@ void ami_wxGLCanvas :: UserRotate( float rotX, float rotY, float rotZ)
 void ami_wxGLCanvas :: RotationEnd()
 //                     ----------------
 {
-  cout << __func__ << endl;
+  //cout << __func__ << endl;
   if (_animation_timer.use_count())
     if (_animation_timer->IsRunning())
       _animation_timer->Stop();

@@ -1,4 +1,4 @@
-# command line: improcess 
+# command line: improcess
 
 #SetDebugOn
 
@@ -44,15 +44,15 @@ proc LS_init(IMAGE _input, IMAGE _init) {
 
     LS_downsamplefactor = INT(1)
 
-    
+
     LS_inls = (FLOAT) _init
     LS_inls0 = LS_inls
-    
+
     LS_in_draw.SetIsoContour(1,LS_inls,0)
     LS_in_draw.DrawIsoContour(1,1)
     #LS_in_draw.SetIsoContour(0,LS_inls0,0)
     #LS_in_draw.DrawIsoContour(0,1)
-    
+
     DTmin = -50
     DTmax = 50
 
@@ -70,8 +70,9 @@ proc LS_init(IMAGE _input, IMAGE _init) {
 }
 
 
+//--------------------------------------------------
 proc LS_init1(IMAGE _input) {
-  tmp = _input*0-4
+  tmp = ((FLOAT)_input)*0-4
   LS_init(&_input,&tmp)
 }
 
@@ -95,7 +96,7 @@ proc LS_setinput(IMAGE input) {
 
   LS_inls = (FLOAT)LS_in*0-10
   LS_inls0 = LS_inls
-  
+
   LS_in_draw.SetIsoContour(1,LS_inls,0)
   LS_in_draw.DrawIsoContour(1,1)
 
@@ -142,7 +143,7 @@ proc ComputeIntensityStats() {
 //--------------------------------------------------
 proc RunLS( IMAGE initial, NUM graphics) {
 //   -----
-  
+
   // every how many iterations call the graphic events
   freq = 8
   it = floor(T/dt)+1
@@ -166,7 +167,7 @@ proc RunLS( IMAGE initial, NUM graphics) {
   //   6. reinitfreq
 
 
-  // 
+  //
   LevelSetsCURV.SetParam(0.7,it,LS_advcoeff,LS_curvcoeff,dt,6)
   LevelSetsCURV.SetDistMethod(method)
   LevelSetsCURV.SetThreads(LS_threads)
@@ -191,7 +192,7 @@ proc RunLS( IMAGE initial, NUM graphics) {
     LevelSetsCURV.SetProbHighTh(Imean+Isd)
   }
   LevelSetsCURV.SetExpansion(LS_expansioncoeff)
-  
+
   print "Compute Expansion Image OK \n"
 
   LevelSetsCURV.SetBandTube(3,2)
@@ -208,7 +209,7 @@ proc RunLS( IMAGE initial, NUM graphics) {
     LS_in_draw.SetIsoContour(2,lres,0)
     LS_in_draw.DrawIsoContour(2,1)
   }
- 
+
   LevelSetsCURV.iterate;
 
   k = 0
@@ -253,7 +254,7 @@ proc RunLS( IMAGE initial, NUM graphics) {
 
 //---------------------------------------------------
 proc CB_AddSphere() {
-    if (exists(LS_in_draw)) { 
+    if (exists(LS_in_draw)) {
       _x = LS_in_draw.GetXPos
       _y = LS_in_draw.GetYPos
       _z = LS_in_draw.GetZPos
@@ -261,19 +262,19 @@ proc CB_AddSphere() {
       printn _x
       printn _y
       printn _z
-      global::LS_inls_backup = LS_inls
-      AddBrightSphere_mm(&LS_inls,\
+      global::LS_inls_backup = global::LS_inls
+      AddBrightSphere_mm(&global::LS_inls,\
              _x,_y,_z,\
              sphere_radius,-1,1)
-      global::LS_inls0 = LS_inls
-      show LS_in;
+      global::LS_inls0 = global::LS_inls
+      show global::LS_in;
     } else {
       print "We have to show LS_in and position de cursor at the sphere center (using mouse middle button) \n"
     }
 }
 
 //---------------------------------------------------
-proc CB_Backup() { 
+proc CB_Backup() {
   global::LS_inls_backup = LS_inls
 }
 
@@ -311,7 +312,7 @@ proc CB_Stop() {
 
 
 //---------------------------------------------------
-proc CB_Continue() { 
+proc CB_Continue() {
   RunLS(&LS_inls,1)
   show LS_in
 }
@@ -322,7 +323,7 @@ proc CB_Surface() {
   if (exists(s0)) {
     if (exists(s0_draw)) { s0_draw -= s0; }
     del s0
-  } 
+  }
   global::s0 = isosurf(LS_inls0,0.01)
   if (!exists(s0_draw)) {
     show s0
@@ -350,7 +351,7 @@ proc CB_SaveResult() {
                         + sprint("_SD%0.2f",Isd)
   }
   if (LS_resname_addtime) {
-    filename = filename + sprint("_T%0.0f",T) 
+    filename = filename + sprint("_T%0.0f",T)
   }
   filename = filename + LS_result_filename_ext
   print "saving file "+filename+"\n"
@@ -400,8 +401,8 @@ proc LS_CreateWin() {
 
       LS_w1.BeginBox("Smoothing")
         LS_smoothtype_id = LS_w1.AddEnum(LS_smoothingtype,2)
-          LS_w1.AddEnumChoice(LS_smoothtype_id,"min. curv.") 
-          LS_w1.AddEnumChoice(LS_smoothtype_id,"mean curv.") 
+          LS_w1.AddEnumChoice(LS_smoothtype_id,"min. curv.")
+          LS_w1.AddEnumChoice(LS_smoothtype_id,"mean curv.")
         LS_curvcoeff_id = LS_w1.AddFloat(LS_curvcoeff,0,1)
         LS_affinecurv_id = LS_w1.AddBoolean(LS_affinecurv)
       LS_w1.EndBox
@@ -454,7 +455,7 @@ proc LS_CreateWin() {
 
 
   LS_w1.EndBook
-    
+
   LS_w1.CreateWin
   LS_w1.Display
 }

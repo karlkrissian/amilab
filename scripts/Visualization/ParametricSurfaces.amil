@@ -1,5 +1,5 @@
 #!/usr/bin/amilab
- 
+
 #
 # (c) Karl Krissian, ULPGC 2009
 #
@@ -31,8 +31,8 @@ proc PS_init() {
 
   # 0: superquadric
   # 1: torus
-  PS_type = INT(0)  
- 
+  PS_type = INT(0)
+
   # torus param
   PS_R = 1
   PS_r = 0.1
@@ -117,12 +117,12 @@ proc PS_Update() \
 
     if (exists(s_draw)) {
       s_draw.Remove(s)
-      del s
+      del global::s
     }
 
     # parameter 0 invert normals
     global::s = CreateFlatMesh(theta>-1,0)
-    s.ElevateMesh(pos)  
+    s.ElevateMesh(pos)
     # need to show the surface before computing any opengl operation!!!
 
     if (exists(s_draw)) {
@@ -178,7 +178,7 @@ proc PS_gui() {
           PS_phidim_id   = PS_win.AddInt(PS_phi_dim,  4,500)
           PS_win.SetCallback(PS_Update)
       PS_win.EndBox
-    
+
       PS_win.BeginBox("Scaling Coeff.")
           PS_cx_id = PS_win.AddFloat    (PS_cx,0.1,5)
           PS_win.SetCallback(PS_Update)
@@ -192,7 +192,7 @@ proc PS_gui() {
       PS_win.BeginHorizontal
         PS_win.AddButton("Update",          PS_Update)
       PS_win.EndHorizontal
-  
+
     PS_win.AddPage("SuperQu.")
       PS_win.BeginBox("Exponential Coeff.")
           PS_cx_id = PS_win.AddFloat    (PS_e_x,0.1,5)

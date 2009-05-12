@@ -22,14 +22,14 @@
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-    ================================================== 
+    ==================================================
    The full GNU Lesser General Public License file is in Devel/Sources/Prog/LesserGPL_license.txt
 */
 //
 //
 //
 //
- 
+
 #include "wxColorParameter.h"
 
 
@@ -47,18 +47,19 @@
 #endif
 #include "wx/colordlg.h"
 
-BEGIN_EVENT_TABLE(wxColorParameter, wxButtonParameter)
-    EVT_LEFT_UP(  wxColorParameter::OnLeftButton)
-END_EVENT_TABLE()
+//BEGIN_EVENT_TABLE(wxColorParameter, wxButtonParameter)
+//    EVT_LEFT_UP(  wxColorParameter::OnLeftButton)
+//END_EVENT_TABLE()
 
 
 ///
 wxColorParameter::wxColorParameter( wxWindow* parent, const char* libelle, ClasseCouleur* couleur)
-//----------				    
-  : wxButtonParameter(parent,libelle , 
+//----------
+  : wxButtonParameter(parent,libelle ,
 		      (void*) NULL,
 		      (void*) NULL)
 {
+  SetBackgroundStyle( wxBG_STYLE_COLOUR);
   parametre = couleur;
   ParamUpdate();
 }
@@ -78,8 +79,8 @@ void  wxColorParameter::ParamUpdate()
                       parametre->Blue());
   this->SetBackgroundColour(this->_wx_color);
 
-  if (_wx_color.Red()+ _wx_color.Green()+ _wx_color.Blue() 
-      < (1.5*255)) 
+  if (_wx_color.Red()+ _wx_color.Green()+ _wx_color.Blue()
+      < (1.5*255))
     SetForegroundColour(*wxWHITE);
   else
     SetForegroundColour(*wxBLACK);
@@ -87,11 +88,11 @@ void  wxColorParameter::ParamUpdate()
 }
 
 ///
-void wxColorParameter::OnLeftButton( wxMouseEvent& event)
+void wxColorParameter::OnLeftDown( wxMouseEvent& event)
 //                     ------------
 {
 
-  printf("wxColorParameter::OnLeftButton()\n");
+  //printf("wxColorParameter::OnLeftButton()\n");
   wxColour col;
   this->_wx_color.Set(parametre->Red(),
                       parametre->Green(),
@@ -109,9 +110,9 @@ void wxColorParameter::OnLeftButton( wxMouseEvent& event)
   parametre->FixeValeur(col.Red(),col.Green(),col.Blue());
   this->ParamUpdate();
 
-  printf("wxColorParameter::OnLeftButton() \tthis->_callback != NULL ??\n");
+  //printf("wxColorParameter::OnLeftButton() \tthis->_callback != NULL ??\n");
   if (this->_calldata != NULL) {
-    printf("wxColorParameter::OnLeftButton() \tthis->_callback != NULL\n");
+    //printf("wxColorParameter::OnLeftButton() \tthis->_callback != NULL\n");
     this->Callback();
   }
   //  event.Skip();
