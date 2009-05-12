@@ -1909,7 +1909,7 @@ void ami_wxGLCanvas::InitGL()
 
     _largeur = this->GetSize().GetWidth();
     _hauteur = this->GetSize().GetHeight();
-    printf(" w x h = %d %d \n",_largeur,_hauteur);
+    //printf(" w x h = %d %d \n",_largeur,_hauteur);
 
     glViewport(0, 0, _largeur, _hauteur);
 
@@ -1993,7 +1993,7 @@ void ami_wxGLCanvas :: TranslationEnd()
   //printf("%f %f \n",var_x,var_y);
   var_x = var_x / _largeur * 2.0;
   var_y = var_y / _hauteur * 2.0;
-  //printf("TranslationEnd() %d %d %f %f \n",_largeur,_hauteur,var_x,var_y);
+  printf("TranslationEnd() %d %d %f %f \n",_largeur,_hauteur,var_x,var_y);
 
   if (_mode_affichage==MODE_VOLREN) {
     glMatrixMode(GL_MODELVIEW);

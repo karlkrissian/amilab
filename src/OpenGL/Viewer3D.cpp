@@ -176,9 +176,9 @@ Viewer3D::Viewer3D(wxFrame *frame, const wxString& title, const wxPoint& pos,
                 .MaximizeButton(true)
                 .CloseButton(false));
 
-  this->m_canvas->SetToolTip("Mouse events: Left button --> rotation, \
+  this->m_canvas->SetToolTip(_T("Mouse events: Left button --> rotation, \
   Wheel or Right button --> scaling, \
-  Alt+Left button --> translation");
+  Alt+Left button --> translation"));
 
   // Add to AUI Manager
   // add the toolbars to the manager

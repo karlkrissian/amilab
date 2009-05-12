@@ -81,7 +81,9 @@ wxNumericParameter<T>::wxNumericParameter(
                       wxTE_PROCESS_ENTER);
     _text->SetCallback( (void*)wxNumericParameter<T>::OnTextUpdate,
                               (void*) this);
-    
+
+    //cout << "text left ident in mm = " << _text->GetLeftIdent(); << endl;
+
     _spinbut = new mySpinButton(
                         _parent,
                         wxID_ANY,
@@ -93,13 +95,9 @@ wxNumericParameter<T>::wxNumericParameter(
     _spinbut->SetValue(500);
     _spinbut->SetCallback((void*)wxNumericParameter<T>::OnSpinCtrlUpdate, (void*) this);
 
-    _spinbut_limits = new mySpinButton( _parent, wxID_ANY, 
-        wxPoint(200, 160), wxDefaultSize,
-        wxSP_ARROW_KEYS | wxSP_VERTICAL | wxSP_WRAP | wxBORDER_SIMPLE );
-    _spinbut_limits->SetRange(0,1);
-    _spinbut_limits->SetValue(1);
-    _spinbut_limits->SetCallback((void*)wxNumericParameter<T>::OnLimitsUpdate, (void*) this);
-    _spinbut_limits->SetToolTip(wxString::FromAscii("Change variable range"));
+    // Reset the slider's size
+    _slider->SetSize(wxSize( wxDefaultCoord,
+                            _text->GetSize().GetHeight()));
 
     // Create texts for changing the limits
     _limits_sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -130,18 +128,7 @@ wxNumericParameter<T>::wxNumericParameter(
     _text_max->SetToolTip(_T("Scale maximal value"));
     _text_max->SetCallback( (void*)wxNumericParameter<T>::OnMinMaxUpdate,
                                   (void*) this);
-    
-    // Layout
-    _sizer2->Add( _label,   0, 
-                      wxLEFT  | wxALIGN_CENTRE_VERTICAL, 0);
-    _sizer2->Add( _text,    1, 
-                        wxLEFT  
-                      | wxALIGN_CENTRE_VERTICAL 
-                      | wxEXPAND, 
-                    2);
-    _sizer2->Add( _spinbut, 0, 
-                       wxALIGN_CENTRE_VERTICAL, 0);
-    
+
     _limits_sizer->Add( _label_open_sqb,0,
                             wxLEFT | wxALIGN_CENTRE_VERTICAL, 2);
     _limits_sizer->Add( _text_min,1,
@@ -152,11 +139,39 @@ wxNumericParameter<T>::wxNumericParameter(
                             wxLEFT | wxRIGHT | wxALIGN_CENTRE_VERTICAL, 1);
     _limits_sizer->Add( _label_close_sqb,0,
                             wxRIGHT | wxALIGN_CENTRE_VERTICAL, 2);
+
+    // Create Spinbutton to change scale limits
+    _spinbut_limits = new mySpinButton( _parent, wxID_ANY, 
+        wxPoint(200, 160), 
+        wxSize( wxDefaultCoord,
+                _text->GetSize().GetHeight()),
+        //wxDefaultSize,
+        wxSP_ARROW_KEYS | wxSP_VERTICAL | wxSP_WRAP | wxBORDER_SIMPLE );
+    _spinbut_limits->SetRange(0,1);
+    _spinbut_limits->SetValue(1);
+    _spinbut_limits->SetCallback((void*)wxNumericParameter<T>::OnLimitsUpdate, (void*) this);
+    _spinbut_limits->SetToolTip(wxString::FromAscii("Change variable range"));
+
+    // Layout
+    _sizer2->Add( _label,   0, 
+                      wxLEFT  | wxALIGN_CENTRE_VERTICAL, 0);
+    _sizer2->Add( _text,    1, 
+                        wxLEFT  
+                      | wxALIGN_CENTRE_VERTICAL 
+                      , 
+                    2);
+    _sizer2->Add( _spinbut, 0, 
+                       wxALIGN_CENTRE_VERTICAL, 0);
+    
     
     Add(_sizer2, 0, wxALIGN_CENTRE_VERTICAL | wxEXPAND, 0);
     _slider_item = Add(_slider, 1, wxEXPAND , 0);
     Add(_spinbut_limits, 0,
-                  wxFIXED_MINSIZE | wxRIGHT |  wxALIGN_CENTRE_VERTICAL, 1);
+                  //wxFIXED_MINSIZE 
+                  //|
+                   wxRIGHT 
+                  |
+                    wxALIGN_CENTRE_VERTICAL, 1);
 
     _limits_sizer->Show(false);
 
@@ -215,8 +230,16 @@ void wxNumericParameter<T>::RecomputeTextSize()
               ).GetWidth();
     max_width = (max_width>tmp?max_width:tmp);
 
-    newsize = max_width+10; // add the margin ??
+    newsize = max_width+(int)(2*_text->GetWindowBorderSize().GetWidth());
+    // ad-hoc how to compute the real needed size ??
+    #ifdef WIN32
+      newsize = newsize+5;
+    #else
+      newsize = newsize+10;
+    #endif
+
   } // we don´t need dc anymore
+
 
   // Replace method the wxTextCtrl widget
   if (_text->GetSize().GetWidth()!=newsize) {
