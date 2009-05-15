@@ -395,6 +395,7 @@ void CB_delete_surfdraw( void* varid);
 %token T_FACT
 %token T_ADD
 %token T_SUB
+%token T_MOD
 
 %token T_OP_PAR
 %token T_CL_PAR
@@ -428,6 +429,7 @@ void CB_delete_surfdraw( void* varid);
 %token T_Transform
 %token SHOW HELP QUIT T_HIDE
 %token PRINT PRINTN
+%token T_boost_format
 %token T_SPRINT
 %token ASHELL LS
 
@@ -776,6 +778,7 @@ void CB_delete_surfdraw( void* varid);
 
 %token VARIABLES
 %token FUNCTION
+%token T_eval
 
 %token T_exists
 %token T_slice
@@ -1139,6 +1142,13 @@ func_inst :
           GB_main_wxFrame->GetConsole()
                           ->IncCommand(wxString::FromAscii(inc_cmd.c_str()));
       }
+    |
+    T_eval expr_string
+    {
+      std::string inputstring($2);
+      driver.parse_string(inputstring,"'eval string' command");
+      delete [] $2;
+     }
         | VAR_AMI_FUNCTION  T_OP_PAR param_list T_CL_PAR end_instr
         {
           Variable*       var   = $1;
@@ -3026,7 +3036,7 @@ command:
 
       error = Func_ItereAnisoGS();
 
-      driver.res_print("Error in AnisoGS.Iterate ");
+      //driver.res_print("Error in AnisoGS.Iterate ");
     }
         |
     AnisoGS T_POINT TEnd
@@ -5051,15 +5061,31 @@ postfix_expr_string
       //printf("expr_string=%s*\n",$3);
       //printf("expr=%f*\n",$5);
       res = new char[strlen($3)+20];
-          sprintf(res,$3,$5);
+      sprintf(res,$3,$5);
       //          res[strlen($3)]=0;
       delete [] $3;
       //printf("res=%s*\n",res);
       $$=res;
-        }
-        |
-        T_TimeSpent
-        {
+    }
+    |
+    T_boost_format T_OP_PAR expr_string T_CL_PAR T_MOD expr
+    {
+    /**
+      Description: 
+        Uses the class boost::format to create the result of 
+        the format as a string, only one numerical parameter 
+        is accepted.
+    */
+      boost::format bf($3);
+      delete [] $3;
+      std::string resstr = (bf % $6).str();
+      char* res = new char[resstr.length()+1];
+      strcpy(res,resstr.c_str());
+      $$= res;
+    }
+    |
+    T_TimeSpent
+    {
       char* res;
       long min,hour,sec;
 

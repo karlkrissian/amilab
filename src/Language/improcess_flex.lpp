@@ -131,6 +131,7 @@ WS      [ \t]
 "!"  return(token::T_FACT); /*  !,T_FACT}*/
 "+"  return(token::T_ADD); /*  +, T_ADD}*/
 "-"  return(token::T_SUB); /*  -, T_SUB}*/
+"%"  return(token::T_MOD); /*  %, T_MOD}*/
 
 "="  return(token::ASSIGN_OP); /*{=,ASSIGN_OP}*/
 "("  return(token::T_OP_PAR); /*  (,T_OP_PAR}*/
@@ -292,9 +293,11 @@ help               return(token::HELP);
 ls                 return(token::LS); /*{ls,LS}*/
 print              return(token::PRINT); /*{print,PRINT}*/
 printn             return(token::PRINTN); /*{printn,PRINTN}*/
+boost_format       return(token::T_boost_format); /*{boost_format,T_boost_format}*/
 sprint             return(token::T_SPRINT); /*{sprint,T_SPRINT}*/
 vars               return(token::VARIABLES); /*{vars,VARIABLES}*/
 func               return(token::FUNCTION); /*{func,FUNCTION}*/
+eval               return(token::T_eval); /*{eval,T_eval}*/
 filter             return(token::FILTER); /*{filter,FILTER}*/
 vtkMedian3D        return(token::T_vtkMedian3D); /*{vtkMedian3D,T_vtkMedian3D}*/
 normgrad           return(token::NormGrad); /*{normgrad,NormGrad}*/

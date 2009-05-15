@@ -37,6 +37,11 @@ proc PS_init() {
   PS_R = 1
   PS_r = 0.1
 
+  # expressions as string
+  PS_X = "cos(V)*cos(U)"
+  PS_Y = "sin(V)*cos(U)"
+  PS_Z = "sin(U)"
+
   PS_updating = 0
   PS_Update()
 }
@@ -52,7 +57,7 @@ proc PS_UpdateResolution() \
   global::phi   <<= (DOUBLE)Ypos(pos)
 
 
-  if (PS_type==0) {
+  if (PS_type==0)||(PS_type==2) {
     # limits of the parameters
     theta = theta/(theta.tx-1)*2*Pi
     phi   = (phi/(phi.ty-1)-0.5)*Pi
@@ -73,9 +78,7 @@ proc PS_NewType() {
 }
 
 
-#----------------------------------------------------------
-# updates the surface based on the current parameters
-#
+#------------------------------------------------------------
 proc PS_Update() \
 {
   if (PS_updating==0) {
@@ -113,6 +116,15 @@ proc PS_Update() \
       pos[1] = (cos(phi)*PS_r+PS_R)*sin(theta)
       pos[2] = sin(phi)*PS_r
 
+    }
+
+    # 2: User´s equation
+    if (PS_type==2) {
+      U = theta
+      V = phi
+      eval "pos[0] = "+PS_X+";"
+      eval "pos[1] = "+PS_Y+";"
+      eval "pos[2] = "+PS_Z+";"
     }
 
     if (exists(s_draw)) {
@@ -168,6 +180,7 @@ proc PS_gui() {
   PS_type_id  = PS_win.AddEnum(PS_type)
     PS_win.AddEnumChoice(PS_type_id,"SuperQuadric")
     PS_win.AddEnumChoice(PS_type_id,"Torus")
+    PS_win.AddEnumChoice(PS_type_id,"Expression")
   PS_win.SetCallback(PS_NewType)
 
   PS_win.BeginBook
@@ -189,9 +202,6 @@ proc PS_gui() {
           PS_win.AddButton("Reset",   PS_ResetScale)
       PS_win.EndBox
 
-      PS_win.BeginHorizontal
-        PS_win.AddButton("Update",          PS_Update)
-      PS_win.EndHorizontal
 
     PS_win.AddPage("SuperQu.")
       PS_win.BeginBox("Exponential Coeff.")
@@ -212,6 +222,20 @@ proc PS_gui() {
           PS_win.SetCallback(PS_Update)
       PS_win.EndBox
 
+    PS_win.AddPage("Expr")
+      PS_win.BeginBox("Equation (U,V):")
+          PS_X_id = PS_win.AddString(PS_X,"X=")
+          PS_win.SetCallback(PS_Update)
+          PS_Y_id = PS_win.AddString(PS_Y,"Y=")
+          PS_win.SetCallback(PS_Update)
+          PS_Z_id = PS_win.AddString(PS_Z,"Z=")
+          PS_win.SetCallback(PS_Update)
+      PS_win.EndBox
+
+  PS_win.EndBook
+      PS_win.BeginHorizontal
+        PS_win.AddButton("Update",          PS_Update)
+      PS_win.EndHorizontal
 
   PS_win.update
   PS_win.Display

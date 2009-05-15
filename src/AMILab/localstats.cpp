@@ -27,17 +27,9 @@
 */
 
 #include "localstats.h"
+#include "func_globalstats.h"
+#include "func_imagebasictools.h"
 
-void Func_PutImage( InrImage* i1, 
-            InrImage* i2,
-            int x1, int y1, int z1);
-
-InrImage* Func_SubImage( InrImage* im, 
-             int x1, int y1, int z1,
-             int x2, int y2, int z2);
-float         Func_mean( InrImage* im);
-
-InrImage*    Func_Histogram( InrImage* im, float min, float max, int ninterv);
 
 //--------------------------------------------------
 InrImage*     Func_localmean( InrImage* im, int size)
@@ -407,7 +399,6 @@ return NULL;
 double Func_Compute_sigma2_MRI_mode(InrImage* im, InrImage* im_ROI, int neigh_size)
 //
 {
-  InrImage* subvol;
   InrImage* im2 = im_ROI;
   int xmin,xmax,ymin,ymax,zmin,zmax;
 
@@ -422,36 +413,40 @@ double Func_Compute_sigma2_MRI_mode(InrImage* im, InrImage* im_ROI, int neigh_si
   xmax = (int) (im->SpaceToVoxelX(im2->SpacePosX(im2->DimX()-1))+0.5);
   ymax = (int) (im->SpaceToVoxelY(im2->SpacePosY(im2->DimY()-1))+0.5);
   zmax = (int) (im->SpaceToVoxelZ(im2->SpacePosZ(im2->DimZ()-1))+0.5);
-  subvol = Func_SubImage( im, xmin,ymin,zmin, xmax,ymax,zmax);
 
   //----------------------------------------------------------
-  InrImage* im1;
-  InrImage* im1_mean;
-  InrImage* im1_var;
+  InrImage::ptr im1;
+  InrImage::ptr im1_mean;
+  InrImage::ptr im1_var;
   double mean,std;
   double tmp,total;
 
-  // compute square root of image
-  im1 = new InrImage(WT_FLOAT,"im1.ami.gz",subvol);
-  im1->InitBuffer();
-  subvol->InitBuffer();
-  do {
-    tmp = subvol->ValeurBuffer();
-    if (tmp<0) tmp = 0.01;
-    im1->FixeValeur(sqrt(tmp));
-    subvol->IncBuffer();
-  }
-  while(im1->IncBuffer());
+  {
+    InrImage::ptr subvol;
+    subvol = InrImage::ptr(Func_SubImage( im, xmin,ymin,zmin, xmax,ymax,zmax));
 
-  delete subvol;
+    // compute square root of image
+    im1 = InrImage::ptr(new InrImage(WT_FLOAT,"im1.ami.gz",subvol.get()));
+    im1->InitBuffer();
+    subvol->InitBuffer();
+    do {
+      tmp = subvol->ValeurBuffer();
+      if (tmp<0) tmp = 0.01;
+      im1->FixeValeur(sqrt(tmp));
+      subvol->IncBuffer();
+    }
+    while(im1->IncBuffer());
+  
+    //delete subvol;
+  } // subvol will get deleted here
 
 //  neigh_size=2;
 
-  im1_mean = Func_localmean2(im1,neigh_size);
+  im1_mean = InrImage::ptr(Func_localmean2(im1.get(),neigh_size));
   // unbiased version
-  im1_var  = Func_localSD2(im1,im1_mean,neigh_size,1);
+  im1_var  = InrImage::ptr(Func_localSD2(im1.get(),im1_mean.get(),neigh_size,1));
 
-  mean   = Func_mean(im1_var);
+  mean   = Func_mean(im1_var.get());
   im1_var->InitBuffer();
   total =0;
   do {
@@ -467,7 +462,11 @@ double Func_Compute_sigma2_MRI_mode(InrImage* im, InrImage* im_ROI, int neigh_si
   double hist_max = mean+2*std;
   int hist_size = (int)((hist_max-hist_min+1.0)*5.0);
 
-  InrImage* im_hist = Func_Histogram(im1_var,hist_min,hist_max,hist_size);
+  InrImage::ptr im_hist( 
+                  Func_Histogram( im1_var.get(),
+                                  hist_min,
+                                  hist_max,
+                                  hist_size));
 
 
   int maxpos = 0;
@@ -485,12 +484,12 @@ double Func_Compute_sigma2_MRI_mode(InrImage* im, InrImage* im_ROI, int neigh_si
   }
   while(im_hist->IncBuffer());
 
-  delete im1;
-  delete im1_mean;
-  delete im1_var;
-  delete im_hist;
-
   float sigma_max = im_hist->SpacePosX(maxpos);
+
+  //delete im1_mean;
+  //delete im1_var;
+  //delete im_hist;
+
   return sigma_max*sigma_max;
 
 } // Func_Compute_sigma2_MRI_mode()

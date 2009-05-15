@@ -129,7 +129,7 @@ proc CB_NRAD_Filter() {
     if (NRAD_mode>=3) {
         printn "running on squared image"
         input1 = NRAD_input*NRAD_input
-        NRAD_res = AnisoNRAD(input1,NRAD_mode,NRAD_dt,numit,NRAD_neighborhood,NRAD_ROI)
+        NRAD_res = AnisoNRAD(input1,3,NRAD_dt,numit,NRAD_neighborhood,NRAD_ROI)
         NRAD_res = sqrt(NRAD_res)
     } else {
         NRAD_res = AnisoNRAD(NRAD_input,NRAD_mode,NRAD_dt,numit,NRAD_neighborhood,NRAD_ROI)

@@ -71,6 +71,7 @@ BISON_TARGET(improcessbison
     VarContexts.cpp
     Variable.cpp
     Variables.cpp
+    paramlist.cpp
   )
 
 # ENDIF (WIN32)

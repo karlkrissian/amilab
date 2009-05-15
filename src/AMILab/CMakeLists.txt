@@ -83,7 +83,6 @@ SET(AMILab_SRCS
     func_isoline.cpp
     func_shortestpath.cpp
     localstats.cpp
-    paramlist.cpp
     vtkwrap.cpp
     wrapAMIFluid.cpp
     wrapFilters.cpp

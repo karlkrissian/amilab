@@ -33,6 +33,7 @@
 #define MODE_KUAN      1
 #define MODE_ADDITIVE  2
 #define MODE_MRI       3
+#define MODE_MRI_NEW   4
 
 
 static float c_max;
@@ -504,16 +505,17 @@ void Compute_d_coeff(InrImage* image_res,InrImage* image_c,InrImage* image_d, do
   float q0_2;
   
   double mean1,mean2,q2;
-  InrImage* image_mean_I  = NULL;
-  InrImage* image_I2      = NULL;
-  InrImage* image_mean_I2 = NULL;
+  InrImage::ptr image_mean_I;
+  InrImage::ptr image_mean_I2;
 
   // if neighborhood > 0, pre-compute mean(I) and mean(I^2)
   if (neighborhood>0) {
-    image_mean_I  = Func_localmean2(image_res,neighborhood);
-    image_I2 = (*image_res)*(*image_res);
-    image_mean_I2 = Func_localmean2(image_I2, neighborhood); 
-    delete image_I2; image_I2= NULL;
+    InrImage::ptr image_I2;
+    image_mean_I  = InrImage::ptr(
+        Func_localmean2(image_res,neighborhood));
+    image_I2      = InrImage::ptr((*image_res)*(*image_res));
+    image_mean_I2 = InrImage::ptr(
+      Func_localmean2(image_I2.get(), neighborhood)); 
   }
 
 
@@ -581,10 +583,9 @@ void Compute_d_coeff(InrImage* image_res,InrImage* image_c,InrImage* image_d, do
   }
   }
 
-  if (neighborhood>0) {
-    delete image_mean_I;  image_mean_I  = NULL;
-    delete image_mean_I2; image_mean_I2 = NULL;
-  }
+  // free useless memory
+  image_mean_I.reset();
+  image_mean_I2.reset();
 
 
   // 2. Compute d
@@ -750,9 +751,9 @@ void UpdateResult2(InrImage* image_res,float dt, InrImage* image_c, InrImage* im
   float sigma2 = 0.0;
   //  float tmp;
   double mean1,mean2,q2;
-  InrImage* image_mean_I  = NULL;
-  InrImage* image_I2      = NULL;
-  InrImage* image_mean_I2 = NULL;
+  InrImage::ptr image_mean_I;
+  InrImage::ptr image_I2;
+  InrImage::ptr image_mean_I2;
   
   switch (mode) {
     case MODE_LEE:
@@ -762,6 +763,7 @@ void UpdateResult2(InrImage* image_res,float dt, InrImage* image_c, InrImage* im
         printf("q0_2 = %f \n",q0_2);
         break;
     case MODE_MRI:
+    case MODE_MRI_NEW:
 //        sigma2 = Compute_sigma2_MRI(image_res,extent);
 //        printf("sigma based on ROI = %f \n",sqrt(sigma2));
 
@@ -772,10 +774,10 @@ void UpdateResult2(InrImage* image_res,float dt, InrImage* image_c, InrImage* im
 
   // if neighborhood > 0, pre-compute mean(I) and mean(I^2)
   if (neighborhood>0) {
-    image_mean_I  = Func_localmean2(image_res,neighborhood);
-    image_I2 = (*image_res)*(*image_res);
-    image_mean_I2 = Func_localmean2(image_I2, neighborhood); 
-    delete image_I2; image_I2= NULL;
+    image_mean_I  = InrImage::ptr(Func_localmean2(image_res,neighborhood));
+    image_I2      = InrImage::ptr((*image_res)*(*image_res));
+    image_mean_I2 = InrImage::ptr(Func_localmean2(image_I2.get(), neighborhood));
+    image_I2.reset();
   }
 
   //Compute_q0_2(image_res,image_mean_I,image_mean_I2,mode,neighborhood);
@@ -824,19 +826,19 @@ void UpdateResult2(InrImage* image_res,float dt, InrImage* image_c, InrImage* im
     switch (mode) {
     case MODE_LEE:      image_c->FixeValeur( function_c(         q2,               q0_2)); break;
     case MODE_KUAN:     image_c->FixeValeur( function_c_Kuan(    q2,               q0_2)); break;
-    case MODE_ADDITIVE: image_c->FixeValeur( function_c_additive(mean2-mean1*mean1,q0_2)); break;
-    case MODE_MRI:      image_c->FixeValeur( function_c_MRI( sigma2, mean2-mean1*mean1, mean1)); break;
+    case MODE_ADDITIVE: 
+      image_c->FixeValeur( function_c_additive(mean2-mean1*mean1,q0_2)); break;
+    case MODE_MRI:
+    case MODE_MRI_NEW:
+      image_c->FixeValeur( function_c_MRI( sigma2, mean2-mean1*mean1, mean1)); break;
     } 
 
   }
   }
   }
 
-
-  if (neighborhood>0) {
-    delete image_mean_I;  image_mean_I  = NULL;
-    delete image_mean_I2; image_mean_I2 = NULL;
-  }
+  image_mean_I.reset();
+  image_mean_I2.reset();
 
   // 2. Compute d
   image_res->InitBuffer();
@@ -907,6 +909,7 @@ InrImage* Func_SRAD2( InrImage* input, float dt, int numit,
 // mode 1: Kuan
 // mode 2: Additive
 // mode 3: MRI
+// mode 4: MRI_NEW : check the diff with MRI contoursnrad_new ?
 //        ----------
 
   

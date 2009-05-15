@@ -548,7 +548,7 @@ public:
    int       _y;
    int       _z; 
 
-   int       _couleur;
+   //int       _couleur;
    int       _type;
 
    unsigned char      _visible;
@@ -559,10 +559,9 @@ public:
   Constructeur ParamCurseur() 
   //
   {
-
     _ON      = false;
     _visible = false;
-
+    _type    = TYPE_CURSEUR_equiv;
   }
 
   ///
@@ -576,7 +575,7 @@ public:
     _y  = p._y;
     _z  = p._z;
 
-    _couleur = p._couleur;
+    //_couleur = p._couleur;
     _type    = p._type;
 
     _visible = p._visible;

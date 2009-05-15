@@ -135,10 +135,31 @@ bool MyApp::OnInitGui()
 //-----------------------------------------
 bool CheckEnvDir(const wxString& envname, wxString& res, const wxString& lookforfile = wxEmptyString)
 {
+
+  // First check relative to the executable path
+  wxFileName execpath(wxStandardPaths::Get().GetExecutablePath());
+  // if last directory is bin, remove it
+  wxString LastDir = execpath.GetDirs().Last();
+  if (LastDir.MakeUpper()==wxT("BIN")) {
+      execpath.RemoveLastDir();
+      execpath.AppendDir(_T("share"));
+      execpath.AppendDir(GetwxStr("amilab-")+GetwxStr(AMILAB_VERSION));
+  }
+  res = execpath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+  cout  << "looking for the file " << lookforfile.mb_str() << " in " << res.mb_str() << endl;
+  wxDir directory(res);
+  if (lookforfile != wxEmptyString) {
+    wxString path = directory.FindFirst(res,lookforfile);
+    if (path!=wxEmptyString) {
+        res = wxFileName(path).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+        return true;
+    }
+  }
+
+  // Looking for the environment variable
   bool foundenv = wxGetEnv(envname,&res);
   if (!foundenv) {
     cerr << "Environment variable " << envname << " not defined. " << endl;
-
   }
 
   if (!wxDir::Exists(res)) {
@@ -146,44 +167,29 @@ bool CheckEnvDir(const wxString& envname, wxString& res, const wxString& lookfor
     res=::wxGetCwd();
     cerr << " , set to " << res << endl
          << "check the environment variable " << envname.mb_str() << endl;
+    return false;
   }
-// else {
-      // look recursively for the file needed
-      /*
-      cout  << "looking for the file " << lookforfile.mb_str() << " in " << res.mb_str() << endl;
-      wxDir directory(res);
-      if (lookforfile != wxEmptyString) {
-        wxString path = directory.FindFirst(res,lookforfile);
-        if (path!=wxEmptyString)
-            res = wxFileName(path).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-        else {
-        */
-          wxFileName execpath(wxStandardPaths::Get().GetExecutablePath());
-          // if last directory is bin, remove it
-          wxString LastDir = execpath.GetDirs().Last();
-          if (LastDir.MakeUpper()==wxT("BIN")) {
-              execpath.RemoveLastDir();
-              execpath.AppendDir(_T("share"));
-              execpath.AppendDir(GetwxStr("amilab-")+GetwxStr(AMILAB_VERSION));
-          }
-          res = execpath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-          cout  << "looking for the file " << lookforfile.mb_str() << " in " << res.mb_str() << endl;
-          wxDir directory(res);
-          if (lookforfile != wxEmptyString) {
-            wxString path = directory.FindFirst(res,lookforfile);
-            if (path!=wxEmptyString)
-                res = wxFileName(path).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-            else
-              cerr << "file not found, set the path manually from the interface." << endl;
-          }
-     /*
-        }
-     }
-     */
+
+  cerr << "file not found, set the path manually from the interface." << endl;
+
+  // look  for the file needed
+  /*
+  cout  << "looking for the file " << lookforfile.mb_str() << " in " << res.mb_str() << endl;
+  wxDir directory(res);
+  if (lookforfile != wxEmptyString) {
+    wxString path = directory.FindFirst(res,lookforfile);
+    if (path!=wxEmptyString)
+        res = wxFileName(path).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+    else {
+    */
+  /*
+    }
+  }
+  */
 
 
 //  }
-  return foundenv;
+  return false;
 }
 
 

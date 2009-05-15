@@ -91,16 +91,9 @@
 #define MAX(a,b) ((a)>(b)?(a):(b))
 #define MIN(a,b) ((a)<(b)?(a):(b))
 
-void Func_PutImage( InrImage* i1, 
-		    InrImage* i2,
-		    int x1, int y1, int z1);
 
-InrImage* Func_SubImage( InrImage* im, 
-			 int x1, int y1, int z1,
-			 int x2, int y2, int z2);
-float         Func_mean( InrImage* im);
-
-InrImage*    Func_Histogram( InrImage* im, float min, float max, int ninterv);
+#include "func_globalstats.h"
+#include "func_imagebasictools.h"
 
 double CubicRoot(double x) {
   if (x==0) return 0;
@@ -416,7 +409,7 @@ class AnisoGS {
     boundary_extension_size = MAX((int)(2*planstats_sigma+1.5),
                                   (int)(2*dirstats_sigma+1.5));
 
-    matrice = new FloatMatrix(3,3);
+    matrice    = new FloatMatrix(3,3);
     vec_propre = new FloatMatrix(3,3);
 
     use_filtre_rec = false;
@@ -1349,6 +1342,7 @@ void AnisoGS::ComputeImage_c(InrImage* im)
 #define MODE_KUAN      1
 #define MODE_ADDITIVE  2
 #define MODE_MRI       3
+#define MODE_MRI_NEW   4
 
   int mode = MODE_KUAN;
 
@@ -2859,9 +2853,6 @@ float AnisoGS::Itere3D( InrImage* im )
 float AnisoGS::Itere3D_2_new( InrImage* im )
 //
 {
-
-
-   
     int x,y,z; //,n,i;
     float   val0,val1;
     float   val1_implicit=0;
@@ -2896,9 +2887,9 @@ float AnisoGS::Itere3D_2_new( InrImage* im )
     float     sum_divF2;
     long int  nb_calculated_points2;
 
-    float     u,u0;
-    float     divF=0;
-    char      divFname[100];
+    float        u,u0;
+    float        divF=0;
+    std::string  divFname;
 
     unsigned char mask_test;
 //    double    phi0_value=0;
@@ -2929,7 +2920,7 @@ float AnisoGS::Itere3D_2_new( InrImage* im )
   Si this->im_tmp == NULL AlorsFait
     this->im_tmp = new InrImage(WT_FLOAT, "im_tmp.inr.gz", im);
   Si divFim == NULL Alors
-    divFim = new InrImage(WT_FLOAT, divFname , im);
+    divFim = new InrImage(WT_FLOAT, divFname.c_str() , im);
   FinSi
 
   divFim->InitImage(0);
@@ -3489,7 +3480,7 @@ if (z==ROI_zmax) alpha1_z       = gamma1_z       = 0;
     */
   }
 
-  sprintf(divFname,"divF_%03d.ami.gz",iteration);
+  divFname = (boost::format("divF_%03d.ami.gz") % iteration).str();
 //divFim->Sauve(divFname);
 
   return erreur;
@@ -3510,9 +3501,6 @@ if (z==ROI_zmax) alpha1_z       = gamma1_z       = 0;
 float AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
 //
 {
-
-
-   
     int x,y,z; //,n,i;
     float   val0,val1;
     float   val1_implicit=0;
@@ -3534,7 +3522,7 @@ float AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
 
     t_Gradient grad;
 
-    float   erreur; //,norm_grad;
+    float   erreur = 0; //,norm_grad;
     double diff;
     int nb_points_instables;
     int erreur_x=0,erreur_y=0,erreur_z=0;
@@ -3549,7 +3537,7 @@ float AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
 
     float     u,u0;
     float     divF=0;
-    char      divFname[100];
+    std::string    divFname;
 
     unsigned char mask_test;
 //    double    phi0_value=0;
@@ -3611,7 +3599,7 @@ float AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
   Si this->im_tmp == NULL AlorsFait
     this->im_tmp = new InrImage(WT_FLOAT, "im_tmp.inr.gz", im);
   Si divFim == NULL Alors
-    divFim = new InrImage(WT_FLOAT, divFname , im);
+    divFim = new InrImage(WT_FLOAT, divFname.c_str() , im);
   FinSi
 
   divFim->InitImage(0);
@@ -4153,7 +4141,7 @@ float AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
     */
   }
 
-  sprintf(divFname,"divF_%03d.ami.gz",iteration);
+  divFname = (boost::format("divF_%03d.ami.gz") % iteration).str();
 //divFim->Sauve(divFname);
 
 
@@ -4413,7 +4401,7 @@ float AnisoGS::Itere3D_distance_flux( InrImage* im )
 
 //    float     u,u0;
     float     divF=0;
-    char      divFname[100];
+    std::string     divFname;
 
     unsigned char mask_test;
 
@@ -4430,7 +4418,7 @@ double maxerr=0.5;
   Si this->im_tmp == NULL AlorsFait
     this->im_tmp = new InrImage(WT_FLOAT, "im_tmp.inr.gz", im);
   Si divFim == NULL Alors
-    divFim = new InrImage(WT_FLOAT, divFname , im);
+    divFim = new InrImage(WT_FLOAT, divFname.c_str() , im);
   FinSi
 
   divFim->InitImage(0);
@@ -5436,11 +5424,10 @@ float AnisoGS::Iterate()
 //   ----------------
 {
 
-  
-    float       erreur = 0;
+  float       erreur = 0;
 
   Si this->image_resultat==NULL Alors
-    fprintf(stderr,"Func_ItereAnisoGS() AnisoGS not initialized \n");
+    cerr << __func__ << " image_resultat==NULL, AnisoGS not initialized " << endl;
     return 0.0;
   FinSi
 
@@ -5479,7 +5466,6 @@ float AnisoGS::Iterate()
 
   if (!noise_SD_preset)
     //    EstimateNoiseStandardDeviation(this->image_resultat);
-      
   printf(" Max. Intens. change = %3.2f --  ",erreur);
   
   return erreur;
