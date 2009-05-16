@@ -2,6 +2,7 @@
 # The module defines the following variables:
 #  FLEX_FOUND - true is flex executable is found
 #  FLEX_VERSION - the version of flex
+#  FLEX_INCLUDE_DIR - directory where is the file FlexLexer.h
 # If flex is found on the system, the module provides the macro:
 #  FLEX_TARGET(Name FlexInput FlexOutput [COMPILE_FLAGS <string>])
 # which creates a custom command  to generate the <FlexOutput> file from
@@ -126,6 +127,12 @@ IF(FLEX_EXECUTABLE)
   ENDMACRO(ADD_FLEX_BISON_DEPENDENCY)
 
 ENDIF(FLEX_EXECUTABLE)
+
+#
+# Find the header file
+#
+FIND_PATH(FLEX_INCLUDE_DIR FlexLexer.h)
+
 
 IF(NOT FLEX_FOUND)
   IF(NOT FLEX_FIND_QUIETLY)

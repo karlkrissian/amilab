@@ -136,7 +136,7 @@ protected:
   void      init_from_inrimage(inrimage*);
 
   ///
-  unsigned char   LitMaple(char* nom );
+  unsigned char   LitMaple( const char* nom );
 
   ///
   unsigned char   EcritMaple(const char* nom );
@@ -206,19 +206,19 @@ public:
   //@{
     Constructeur InrImageBase( ) {}
 
-    Constructeur InrImageBase( char* nom);
+    Constructeur InrImageBase( const char* nom);
 
     // Pour des fichier d'un autre format
-    Constructeur InrImageBase( char* nom, int type);
+    Constructeur InrImageBase( const char* nom, int type);
 
     Constructeur InrImageBase( t_Image* image);
  
-    Constructeur InrImageBase( inrimage* image, char* nom="sansnom.inr");
+    Constructeur InrImageBase( inrimage* image, const char* nom="sansnom.inr");
  
     Constructeur InrImageBase( int dimx, 
 			       int dimy, 
 			       int dimz, 
-			       char* nom=NULL);
+			       const char* nom=NULL);
 
     virtual Destructeur  InrImageBase();
   //@}

@@ -117,9 +117,9 @@ ami_wxGLCanvas::ami_wxGLCanvas(
                 id,
                 pos,
                 size,
-                style
+                style 
                 |wxFULL_REPAINT_ON_RESIZE
-                |wxBORDER_RAISED,
+                ,
                 name
                 ,gl_attrib
                 )
@@ -150,13 +150,10 @@ ami_wxGLCanvas::ami_wxGLCanvas(
     _parent_window = (Viewer3D*) parent;
     if (GB_debug) out << "***2***" << endl;
 
-/*  Seems to work without those commands
+    /*  Seems to work without those commands
     parent->Show(true);
-cout << "***3***" << endl;
     SetCurrent();
-cout << "***4***" << endl;
-
-*/
+    */
 
     int i;
 

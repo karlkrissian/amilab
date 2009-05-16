@@ -53,6 +53,9 @@
 #include "FloatMatrix.hpp"
 #include "Eigen.hpp"
 
+#include "DefineClass.hpp"
+#include "amilab_messages.h"
+
 #define DER_DISCR 1
 #define DER_GAUSS 2
 
@@ -183,6 +186,9 @@ void Solve3rdOrder(float _a, float _b, float _c, double w[3], int& nb_solutions)
 
 
 class AnisoGS {
+
+  DEFINE_CLASS(AnisoGS);
+
  public:
 
   //-------  Images
@@ -1353,7 +1359,8 @@ void AnisoGS::ComputeImage_c(InrImage* im)
     case CONTOURS_RNRAD_NEW:  mode = MODE_MRI;  break;
   }
 
-  if ((this->contours_mode==CONTOURS_SRAD)||(this->contours_mode==CONTOURS_RNRAD)||
+  if ((this->contours_mode==CONTOURS_SRAD)||
+      (this->contours_mode==CONTOURS_RNRAD)||
       (this->contours_mode==CONTOURS_RNRAD_NEW)) {
 
     Si this->image_c == NULL AlorsFait
@@ -1453,7 +1460,9 @@ void AnisoGS::ComputeImage_c(InrImage* im)
       delete image_mean_I2; image_mean_I2 = NULL;
     }
 
-  }
+  } //
+  else
+    CLASS_ERROR("contours_mode mode supported");
 //  image_c->Sauve();
 
 }

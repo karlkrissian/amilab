@@ -25,7 +25,7 @@ print "NRAD_CreateParams\n"
     NRAD_sigma = 0.7
     NRAD_dt   = 1.0/6.0
     NRAD_T    = 1.0
-    # 0: Lee, 1: Kuan, 2: Additive, 3: MRI
+    # 0: Lee, 1: Kuan, 2: Additive, 3: MRI,  4:MRI_NEW 
     NRAD_mode = INT(3) 
     NRAD_neighborhood = INT(1)
     # Local Structure 0: princ. curv 1: struct tensor

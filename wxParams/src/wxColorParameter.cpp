@@ -88,8 +88,8 @@ void  wxColorParameter::ParamUpdate()
 }
 
 ///
-void wxColorParameter::OnLeftDown( wxMouseEvent& event)
-//                     ------------
+void wxColorParameter::OnButton( wxCommandEvent& event)
+//                     --------
 {
 
   //printf("wxColorParameter::OnLeftButton()\n");

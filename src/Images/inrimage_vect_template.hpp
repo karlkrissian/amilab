@@ -78,11 +78,11 @@ public:
   /** @name 2-Diff�rents constructeurs  et le destructeur */
   //@{
     ///
-    Constructeur InrImageVectTemplate( char* nom)
+    Constructeur InrImageVectTemplate( const char* nom)
       : InrImageTemplate<T>(nom)  {    }
 
     /// Pour des fichier d'un autre format
-    Constructeur InrImageVectTemplate( char* nom, int type)
+    Constructeur InrImageVectTemplate( const char* nom, int type)
       : InrImageTemplate<T>(nom, type) {  }
 
     ///
@@ -91,13 +91,13 @@ public:
  
     ///
     Constructeur InrImageVectTemplate( inrimage* image, 
-				       char* nom="sansnom.inr")
+				       const char* nom="sansnom.inr")
       : InrImageTemplate<T>( image, nom) {  }
  
     ///
     Constructeur InrImageVectTemplate( int dimx, 
 				   int dimy, 
-				   int dimz, char* nom=NULL)
+				   int dimz, const char* nom=NULL)
     {
       Si nom == NULL Alors
         this->_nom = "sans_nom.inr";

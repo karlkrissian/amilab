@@ -5,7 +5,7 @@
 include_directories (${AMILAB_SOURCE_DIR}/Zinrimage)
 
 SET(Zinrimage_SRCS
-  analyze.c ImageIO.c iris.c TGA.c Zinrimage.c
+   ImageIO.c  Zinrimage.c
 )
 
 my_add_library (Zinrimage)

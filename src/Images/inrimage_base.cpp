@@ -171,7 +171,7 @@ unsigned char InrImageBase::Desalloue()
 
 
 //--------------------------------------------------------------------------
-unsigned char InrImageBase::LitMaple(char* nom )
+unsigned char InrImageBase::LitMaple(const char* nom )
 //                    --------     
 {
 
@@ -257,7 +257,7 @@ unsigned char InrImageBase::EcritMaple(const char* nom )
 //==========================================================================
 
 //-----------------------------------------------------------------------
-InrImageBase::InrImageBase( char* nom)
+InrImageBase::InrImageBase( const char* nom)
 {
   //----- Lecture de l'image d'entree
   _nom = nom;
@@ -266,7 +266,7 @@ InrImageBase::InrImageBase( char* nom)
 }
 
 //-----------------------------------------------------------------------
-InrImageBase::InrImageBase( char* nom, int type)
+InrImageBase::InrImageBase( const char* nom, int type)
 {
   Si type != TYPE_MAPLE AlorsRetourne;
   LitMaple( nom);
@@ -286,7 +286,7 @@ InrImageBase::InrImageBase( t_Image* image)
 }
 
 //-----------------------------------------------------------------------
-InrImageBase::InrImageBase( inrimage* image, char* nom)
+InrImageBase::InrImageBase( inrimage* image, const char* nom)
 {
   //----- Lecture de l'image d'entree
   _inrimage = image;
@@ -302,7 +302,7 @@ InrImageBase::InrImageBase( inrimage* image, char* nom)
 InrImageBase::InrImageBase( int dimx, 
 			    int dimy, 
 			    int dimz, 
-			    char* nom)
+			    const char* nom)
 {
   Si nom == NULL Alors
     _nom = "sans_nom.inr";

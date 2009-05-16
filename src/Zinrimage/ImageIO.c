@@ -40,8 +40,8 @@
 
 #include <ImageIO.h>
 //#include "gif.h"
-#include "iris.h"
-#include "analyze.h"
+//#include "iris.h"
+//#include "analyze.h"
 
 
 
@@ -280,107 +280,62 @@ _image* _readNonInterlacedImage(const char *name) {
    .gz, the image is gziped. If file name's suffix is .hdr, the image
    is written in ANALYZE format. If file name is NULL, image is written
    on stdout */
-int _writeImage(_image *im, const char *name) {
+int _writeImage ( _image *im, const char *name )
+{
   int r = 1;
 
   /* open file descriptor */
-  _openWriteImage( im, name ) ;
+  _openWriteImage ( im, name ) ;
 
-  if(!im->fd) {
-     fprintf(stderr, "_writeImage: error: open failed\n");
-     return -1;
+  if ( !im->fd )
+  {
+    fprintf ( stderr, "_writeImage: error: open failed\n" );
+    return -1;
   }
 
-  printf("_writeImage() \t %s \n",name);
+  printf ( "_writeImage() \t %s \n",name );
 
-  if( name != NULL )
-    {
-      int length = strlen(name) ;
-      if ( strcmp( name+length-4, ".hdr" ) ==0 ) {
-	printf("Analyze \n");
-	im->imageFormat = IF_ANALYZE;
+
+  switch ( im->imageFormat )
+  {
+
+    case IF_INR:
+    case IF_INR_GZ:
+    case IF_GIF:
+    case IF_IRIS:
+    default:
+      /* write header */
+      if ( _writeInrimageHeader ( im ) < 0 )
+      {
+        fprintf ( stderr, "_writeImage: error: unable to write header of \'%s\'\n",
+                  name );
+        r = -1;
       }
-    }
 
-  switch( im->imageFormat ) {
-     case IF_ANALYZE:
-	/* write header */
-	if(writeAnalyzeHeader(im) < 0) {
-	   fprintf(stderr, "_writeImage: error: unable to write header of \'%s\'\n",
-		   name);
-	   r = -1;
-	}
-	else
-	{
-	   if( name != NULL )
-	   {
-	      int length = strlen(name) ;
-	      char* data_filename = (char*) (*allocRoutine)(length+1) ;
-	      if( strcmp( name+length-4, ".hdr" ) )
-	      {
-		 fprintf (stderr,
-			  "_writeImage: error: file header extention must be .hdr\n");
-		 _freeImage(im);
-		 return 0;
-	      }
-	      
-	      strcpy(data_filename,name);
-	      strcpy(data_filename+length-3, "img");
-	      
-	      _closeImage(im);
-	      _openWriteImage(im, data_filename);
-	      (*deleteRoutine)(data_filename);
-	      
-	      if(!im->fd) {
-		 fprintf(stderr, "readAnalyzeHeader: error: unable to open file \'%s\'\n", data_filename);
-		 _freeImage(im);
-		 return 0;
-	      }
-	   }
-	   
-	   /* write body */
-	   if(writeAnalyzeData(im) < 0) {
-	      fprintf(stderr, "_writeImage: error: unable to write data of \'%s\'\n",
-		      name);
-	      r = -1;
-	   }
-	}
-	break ;
-
-     case IF_INR:
-     case IF_INR_GZ:
-     case IF_GIF:
-     case IF_IRIS:
-     default:
-	/* write header */
-	if(_writeInrimageHeader(im) < 0) {
-	   fprintf(stderr, "_writeImage: error: unable to write header of \'%s\'\n",
-		   name);
-	   r = -1;
-	}
-	
-	/* write body */
-	else if(_writeInrimageData(im) < 0) {
-	   fprintf(stderr, "_writeImage: error: unable to write data of \'%s\'\n",
-		   name);
-	   r = -1;
-	}
-	break ;
+      /* write body */
+      else if ( _writeInrimageData ( im ) < 0 )
+      {
+        fprintf ( stderr, "_writeImage: error: unable to write data of \'%s\'\n",
+                  name );
+        r = -1;
+      }
+      break ;
   }
 
 
   /* close file descriptor */
-  switch(im->openMode) {
-  case OM_STDIN:
-  case OM_CLOSE:
-    break;
-  case OM_PIPE:
-    fflush(im->fd);
-    pclose(im->fd);
-    break;
-  case OM_FILE:
-    fclose(im->fd);
-    break;
+  switch ( im->openMode )
+  {
+    case OM_STDIN:
+    case OM_CLOSE:
+      break;
+    case OM_PIPE:
+      fflush ( im->fd );
+      pclose ( im->fd );
+      break;
+    case OM_FILE:
+      fclose ( im->fd );
+      break;
   }
 
   im->fd = NULL;
@@ -392,114 +347,92 @@ int _writeImage(_image *im, const char *name) {
 
 
 /* read header from an image file */
-_image *_readImageHeader(const char *name) {
+_image *_readImageHeader ( const char *name )
+{
   _image *im;
   char magic[5];
   int res;
 
   /* open image file */
   im = _initImage();
-  _openReadImage(im, name);	
+  _openReadImage ( im, name );
 
-  if(!im->fd) {
-    fprintf(stderr, "_readImageHeader: error: unable to open file \'%s\'\n", name);
-    _freeImage(im);
+  if ( !im->fd )
+  {
+    fprintf ( stderr, "_readImageHeader: error: unable to open file \'%s\'\n", name );
+    _freeImage ( im );
     return NULL;
   }
 
-  else {
+  else
+  {
 
     /* read magic number */
-    fread((void *) magic, 4, 1, im->fd);
+    fread ( ( void * ) magic, 4, 1, im->fd );
     magic[4] = '\0';
 
     /* unread magic bytes */
-    switch(im->openMode) {
-      /* unread from a file */
-    case OM_FILE:
-      fseek(im->fd, 0L, SEEK_SET);
-      break;
+    switch ( im->openMode )
+    {
+        /* unread from a file */
+      case OM_FILE:
+        fseek ( im->fd, 0L, SEEK_SET );
+        break;
 
-      /* unread from stdin or a pipe */
-    case OM_STDIN:
-    case OM_PIPE:
-      ungetc(magic[3], im->fd);
-      ungetc(magic[2], im->fd);
-      ungetc(magic[1], im->fd);
-      ungetc(magic[0], im->fd);      
-      break;
+        /* unread from stdin or a pipe */
+      case OM_STDIN:
+      case OM_PIPE:
+        ungetc ( magic[3], im->fd );
+        ungetc ( magic[2], im->fd );
+        ungetc ( magic[1], im->fd );
+        ungetc ( magic[0], im->fd );
+        break;
 
-      /* cannot happen */
-    case OM_CLOSE:
-      break;
+        /* cannot happen */
+      case OM_CLOSE:
+        break;
     }
 
     /* openned image is an inrimage */
-    if(!strcmp(magic, INR_MAGIC)) {
-      if(readInrimageHeader(im) < 0) {
-	fprintf(stderr, "_readImageHeader: error: invalid inrimage header encountered in \'%s\'\n", name);
-	_freeImage(im);
-	return NULL;
+    if ( !strcmp ( magic, INR_MAGIC ) )
+    {
+      if ( readInrimageHeader ( im ) < 0 )
+      {
+        fprintf ( stderr, "_readImageHeader: error: invalid inrimage header encountered in \'%s\'\n", name );
+        _freeImage ( im );
+        return NULL;
       }
       im->imageFormat = IF_INR;
     }
+        else
+        {
 
-    /* opened image is an ANALYZE */
-    else if(!memcmp(magic,ANALYZE_LE_MAGIC,4) ||
-	    !memcmp(magic,ANALYZE_BE_MAGIC,4))
-    {
-       if( !readAnalyzeHeader(im,name) ) {
-	  fprintf(stderr, "_readImageHeader: error: invalid ANALYZE header encountered in \'%s\'\n", name);
-	  _freeImage(im);
-	  return NULL;
-       }
-       im->imageFormat = IF_ANALYZE;
-    }    
-    else {
-
-      /* opened image is a GIF: full read */
-      /*
-      if(!strcmp(magic, GIF_MAGIC)) {
-	 res = readGifImage(im);
-	 im->imageFormat = IF_GIF;
-      }
-      else 
+      /*  fprintf(stderr,
+        "_readImageHeader: error: unknown image type \'%s\'\n", name);
       */
+      _freeImage ( im );
+      return NULL;
 
-      /* opened image is an RGB: full read */
-	if((((unsigned char *)magic)[0]<<8) + ((unsigned char *)magic)[1]
-	      == IRIS_MAGIC) {
-	//	res = readIrisImage(im);
-	//	im->imageFormat = IF_IRIS;
-      }
-
-      /* unknown image type */
-      else {
-	/*	fprintf(stderr,
-		"_readImageHeader: error: unknown image type \'%s\'\n", name);
-	*/
-	_freeImage(im);
-	return NULL;
-      }
-
-      /* close image file and return */
-      if(res > 0) {
-	_closeImage(im);
-	im->fd = NULL;
-	im->openMode = OM_CLOSE;
-      }
-      else {
-	_freeImage(im);
-	fprintf(stderr,
-		"_readImageHeader: error: invalid file \'%s\' encountered\n", name);
-	return NULL;
-      }
-
+    /* close image file and return */
+    if ( res > 0 )
+    {
+      _closeImage ( im );
+      im->fd = NULL;
+      im->openMode = OM_CLOSE;
+    }
+    else
+    {
+      _freeImage ( im );
+      fprintf ( stderr,
+                "_readImageHeader: error: invalid file \'%s\' encountered\n", name );
+      return NULL;
     }
 
   }
 
-  return im;
+}
+
+return im;
 }
 
 

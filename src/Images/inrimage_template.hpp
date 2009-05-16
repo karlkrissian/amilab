@@ -103,12 +103,12 @@ public:
     {    }
 
     ///
-    Constructeur InrImageTemplate( char* nom)
+    Constructeur InrImageTemplate( const char* nom)
       : InrImageBase(nom)
     { InitPositions();    }
 
     /// Pour des fichier d'un autre format
-    Constructeur InrImageTemplate( char* nom, int type)
+    Constructeur InrImageTemplate( const char* nom, int type)
       : InrImageBase(nom, type)
     { InitPositions();    }
 
@@ -118,14 +118,14 @@ public:
     { InitPositions();    }
  
     ///
-    Constructeur InrImageTemplate( inrimage* image, char* nom="sansnom.inr")
+    Constructeur InrImageTemplate( inrimage* image, const char* nom="sansnom.inr")
       : InrImageBase( image, nom)
     { InitPositions();    }
  
     ///
     Constructeur InrImageTemplate( int dimx, 
 				   int dimy, 
-				   int dimz, char* nom=NULL)
+				   int dimz, const char* nom=NULL)
       : InrImageBase( dimx, dimy, dimz, nom)
     {    
       _format = GetFormat();

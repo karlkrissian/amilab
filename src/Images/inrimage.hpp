@@ -131,7 +131,7 @@
 using namespace boost;
 
 #ifdef WIN32
-#pragma warning( disable : 4290 )
+  #pragma warning( disable : 4290 )
 #endif
 
 #ifndef _WITHOUT_VTK_
@@ -450,7 +450,7 @@ private:
   unsigned char   Desalloue();
 
   ///
-  unsigned char   LitMaple( char* nom);
+  unsigned char   LitMaple( const char* nom);
   ///
   unsigned char   EcritMaple(const char* nom);
 

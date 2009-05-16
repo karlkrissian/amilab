@@ -135,13 +135,8 @@ FIND_PACKAGE( BZip2)
 
 FIND_PACKAGE( Pthreads)
 
-# if (WIN32)
-#   FIND_PACKAGE(BISON)
-#   #FIND_PACKAGE(FLEXold)
-# else (WIN32)
-  FIND_PACKAGE(BISON)
-  FIND_PACKAGE(FLEX)
-# endif (WIN32)
+FIND_PACKAGE(BISON)
+FIND_PACKAGE(FLEX)
 
 INCLUDE (CheckIncludeFiles)
 # usage: CHECK_INCLUDE_FILES (<header> <RESULT_VARIABLE> )
@@ -165,12 +160,17 @@ InitPrintSources()
 set(  wxParams_INCLUDE_DIRS
     ${PROJECT_SOURCE_DIR}/../wxParams/src)
 
+#MESSAGE(wxParams_INCLUDE_DIRS=${wxParams_INCLUDE_DIRS})
+
 include_directories (
   ${Boost_INCLUDE_DIR}
   ${OPENGL_INCLUDE_DIR}
   ${wxParams_INCLUDE_DIRS}
   ${CMAKE_CURRENT_BINARY_DIR}
+  ${FLEX_INCLUDE_DIR}
 )
+
+#INCLUDE(${wxWidgets_USE_FILE})
 
 # for compatibility with previous name
 SET( AMILAB_SOURCE_DIR ${AMILab_SOURCE_DIR} )

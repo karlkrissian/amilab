@@ -336,7 +336,7 @@ void wxFilenameParameter::OnStringUpdate( void* data)
 //==============================================================================
 
 BEGIN_EVENT_TABLE(wxButtonParameter, wxButton)
-    EVT_LEFT_DOWN(  wxButtonParameter::OnLeftDown)
+    EVT_BUTTON( wxID_ANY, wxButtonParameter::OnButton)
     EVT_RIGHT_DOWN( wxButtonParameter::OnRightDown) 
 END_EVENT_TABLE()
 
@@ -392,9 +392,8 @@ wxButtonParameter :: ~ wxButtonParameter()
 } // ~ wxButtonParameter()
 
 //------------------------------------------------------------------------------
-void wxButtonParameter::OnLeftDown(wxMouseEvent& event)
+void wxButtonParameter::OnButton(wxCommandEvent& event)
 {
-
   this->Callback();
   event.Skip();
 }
@@ -402,7 +401,6 @@ void wxButtonParameter::OnLeftDown(wxMouseEvent& event)
 //------------------------------------------------------------------------------
 void wxButtonParameter::OnRightDown(wxMouseEvent& event)
 {
-
   printf("wxButtonParameter::OnRightButton() no specific right button for the moment\n");
   this->Callback();
   event.Skip();
@@ -443,7 +441,7 @@ void wxButtonParameter :: FixeCouleurCaracteres( Pixel couleur)
 
    
 BEGIN_EVENT_TABLE(wxBitmapButtonParameter, wxBitmapButton)
-    EVT_LEFT_DOWN(  wxBitmapButtonParameter::OnLeftDown)
+    EVT_BUTTON( wxID_ANY, wxBitmapButtonParameter::OnButton)
     EVT_RIGHT_DOWN( wxBitmapButtonParameter::OnRightDown)
 END_EVENT_TABLE()
    
@@ -495,7 +493,7 @@ wxBitmapButtonParameter :: ~ wxBitmapButtonParameter()
 } // ~ wxBitmapButtonParameter()
 
 //------------------------------------------------------------------------------
-void wxBitmapButtonParameter::OnLeftDown(wxMouseEvent& event)
+void wxBitmapButtonParameter::OnButton(wxCommandEvent& event)
 {
 
 //  printf("wxBitmapButtonParameter::OnLeftButton()\n");

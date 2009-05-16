@@ -131,8 +131,8 @@ float fround(const float& a)
 #include "amilab_messages.h"
 
 
-extern unsigned char GB_debug;
-extern unsigned char GB_verbose;
+//extern unsigned char GB_debug;
+//extern unsigned char GB_verbose;
 
 int InrImage::TailleFormat[NB_FORMATS]  = { 1,   // WT_UNSIGNED_CHAR
                                            2,   // WT_UNSIGNED_SHORT
@@ -1069,7 +1069,7 @@ unsigned char InrImage :: Desalloue( )
 
 
 //--------------------------------------------------------------------------
-unsigned char InrImage :: LitMaple(char* nom )
+unsigned char InrImage :: LitMaple( const char* nom )
 //                           --------     
 {
 

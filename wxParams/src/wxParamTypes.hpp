@@ -355,16 +355,17 @@ public:
   void FixeCouleurCaracteres( Pixel couleur);
 */
 
+/*
   //
   void Button3Callback( void* callback, void* calldata) 
   //   ---------------
   {  
       _btn3callback = callback; _btn3data = calldata; 
   }
-
+*/
 
 //  virtual void OnLeft( wxMouseEvent& );
-  virtual void OnLeftDown( wxMouseEvent& );
+  virtual void OnButton( wxCommandEvent& );
   void OnRightDown(wxMouseEvent& );
 
 private:
@@ -445,7 +446,7 @@ public:
 
 
 
-  virtual void OnLeftDown( wxMouseEvent& );
+  virtual void OnButton( wxCommandEvent& );
   void OnRightDown(wxMouseEvent& );
 
 private:

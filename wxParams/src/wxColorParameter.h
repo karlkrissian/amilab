@@ -61,7 +61,7 @@ class wxColorParameter : public wxButtonParameter
   void ParamUpdate();
   //
 
-  virtual void OnLeftDown( wxMouseEvent& );
+  virtual void OnButton( wxCommandEvent& );
 
 private:
 //    DECLARE_EVENT_TABLE()
