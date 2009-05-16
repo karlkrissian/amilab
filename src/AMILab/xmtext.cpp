@@ -43,6 +43,7 @@
 
 #include "MainFrame.h"
 #include "driver.h"
+#include "amilab_messages.h"
 
 extern yyip::Driver GB_driver;
 extern MainFrame*   GB_main_wxFrame;
@@ -68,7 +69,7 @@ END_EVENT_TABLE()
 //--------------------------------------------------
 void TextControl::ConsoleReset()
 {
-  if (GB_debug) cerr << "resetting the console" << endl;
+  CLASS_MESSAGE("Resetting the console");
   this->text=_T("");
   this->AddPrompt(false);
 }
@@ -76,7 +77,7 @@ void TextControl::ConsoleReset()
 //--------------------------------------------------
 void TextControl::ConsoleClear()
 {
-  if (GB_debug) cerr << "clear the console" << endl;
+  CLASS_MESSAGE("Clear the console");
   UpdateText();
 }
 
@@ -202,7 +203,7 @@ void TextControl::ProcessTab()
   wxString   alltext;
   alltext = this->GetValue();
   if (alltext==wxEmptyString) {
-    cerr << "TextControl::ProcessTab() \t empty string" << endl;
+    CLASS_ERROR("Empty string");
     return;
   }
   completion_lastword = alltext.AfterLast(' ');
@@ -245,7 +246,7 @@ void TextControl::ProcessReturn()
   wxString   alltext;
   wxString   last_cmd;
   int  TCsize;
-  if (GB_debug) cerr << " TextControl::ProcessReturn()" << endl;
+  CLASS_MESSAGE("begin")
 
   in_changed_value = 1;
 
@@ -268,7 +269,7 @@ void TextControl::ProcessReturn()
   bool parseok = GB_driver.parse_string(string(last_cmd.mb_str(wxConvUTF8)));
 
   if (!parseok) {
-    cerr << "**** Error in last command " << endl;
+    CLASS_ERROR("Error in last command");
     //yyERROR=0;
   } else {
     alltext = this->GetValue();
@@ -297,7 +298,7 @@ void TextControl::OnEnter(wxCommandEvent&  event)
 //--------------------------------------------------
 void TextControl::OnChar(wxKeyEvent& event)
 {
-    if (GB_debug) cerr << "OnChar" << endl;
+    CLASS_MESSAGE("OnChar");
     wxString key;
     long keycode = event.GetKeyCode();
 

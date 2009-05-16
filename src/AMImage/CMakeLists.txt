@@ -3,6 +3,7 @@
 
 # Make sure the compiler can find include files from our Hello library.
 include_directories (${AMILAB_SOURCE_DIR}/AMImage)
+include_directories (${AMILAB_SOURCE_DIR}/Common)
 
 SET(AMImage_SRCS amimage.cpp)
 my_add_library (AMImage )

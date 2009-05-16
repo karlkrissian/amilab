@@ -18,18 +18,21 @@
 #include <boost/shared_array.hpp>
 #include "vtkImageData.h"
 
+#include "DefineClass.hpp"
+#include "amilab_messages.h"
 
-using namespace boost;
+//using namespace boost;
 
-extern unsigned char GB_debug;
 
 template<class T>
 class vtk_deleter
 {
+  DEFINE_SIMPLE_CLASS(vtk_deleter)
+
   public: 
     void operator()(T * p) 
     { 
-      if (GB_debug) cerr << "vtk_deleter::()" << endl;
+      CLASS_MESSAGE("call")
       p->Delete(); 
     }  
 };
@@ -38,23 +41,28 @@ class vtk_deleter
 template<class T>
 class vtk_new
 {
+  DEFINE_SIMPLE_CLASS(vtk_new)
+
   public: 
-    shared_ptr<T> operator() ()
+    boost::shared_ptr<T> operator() ()
     { 
-      if (GB_debug) cerr << "vtk_new::()" << endl;
-      shared_ptr<T> res =  shared_ptr<T>(
+      CLASS_MESSAGE("Call");
+      boost::shared_ptr<T> res =  boost::shared_ptr<T>(
         (T*)T::New(),
         vtk_deleter<T>() ); 
       return res;
     }  
 
-    shared_ptr<T> operator()(T* pointer) 
+    boost::shared_ptr<T> operator()(T* pointer) 
     { 
-      shared_ptr<T> res(pointer,vtk_deleter<T>()); 
+      if (pointer==NULL) {
+        CLASS_ERROR("Null pointer");
+      }
+      boost::shared_ptr<T> res(pointer,vtk_deleter<T>()); 
       return res;
     }  
 };
 
-typedef shared_ptr<vtkImageData>  vtkImageData_ptr;
+typedef boost::shared_ptr<vtkImageData>  vtkImageData_ptr;
 
 #endif // _vtk_common_

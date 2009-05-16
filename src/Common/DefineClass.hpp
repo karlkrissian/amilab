@@ -48,6 +48,11 @@ public:\
   typedef std::list<class::ptr>       ptr_list;         \
   typedef std::list<class::wptr>      wptr_list;
 
+// no special type added
+#define DEFINE_SIMPLE_CLASS(class) \
+public:\
+  virtual char const* get_name() const { return #class; } 
+
 //--- string formatting using boost
 #include <iostream>
 #include <iomanip>

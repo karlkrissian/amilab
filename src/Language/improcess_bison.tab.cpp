@@ -2898,7 +2898,7 @@ namespace yyip
 
       error = Func_ItereAnisoGS();
 
-      driver.res_print("Error in AnisoGS.Iterate ");
+      //driver.res_print("Error in AnisoGS.Iterate ");
     ;}
     break;
 

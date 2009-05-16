@@ -123,7 +123,7 @@ protected:
   // allows to use an array for the output image without allocation
   // and not to copy any input image to this output: faster ...
   float*           input_output_array;
-  shared_ptr<vtkFloatArray>   local_floatarray;
+  boost::shared_ptr<vtkFloatArray>   local_floatarray;
 
   // Limits for each line in X direction
   int** min_x;

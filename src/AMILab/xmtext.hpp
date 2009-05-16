@@ -22,9 +22,15 @@
 
 #include <string>
 #include <iostream>
-using namespace std;
+//using namespace std;
+
+#include "DefineClass.hpp"
 
 class TextControl : public wxTextCtrl {
+
+  DEFINE_CLASS(TextControl)
+
+protected:
 
 //  wxString   alltext;
   wxString   text;

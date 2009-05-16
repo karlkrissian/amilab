@@ -557,10 +557,10 @@ protected:
   vtkImageData *SkeletonImage;
   unsigned char SkeletonImage_allocated;
 
-  shared_ptr<vtkLevelSetFastMarching>   fm;
-  shared_ptr<vtkImageIsoContourDist>    isodist;
-  shared_ptr<vtkImageFastSignedChamfer> chamfer;
-  shared_ptr<vtkImagePropagateDist2>    shape;
+  boost::shared_ptr<vtkLevelSetFastMarching>   fm;
+  boost::shared_ptr<vtkImageIsoContourDist>    isodist;
+  boost::shared_ptr<vtkImageFastSignedChamfer> chamfer;
+  boost::shared_ptr<vtkImagePropagateDist2>    shape;
 
 
   // some precomputed values

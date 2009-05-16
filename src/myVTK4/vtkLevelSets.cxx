@@ -823,7 +823,7 @@ void vtkLevelSets::DistanceMapFM()
    current_image->SetOrigin(     outputImage->GetOrigin());
    current_image->SetSpacing(    outputImage->GetSpacing());
 
-   shared_ptr<vtkFloatArray> da = vtk_new<vtkFloatArray>()();
+   boost::shared_ptr<vtkFloatArray> da = vtk_new<vtkFloatArray>()();
    da->SetArray(&(*U),imsize,1);
    current_image->GetPointData()->SetScalars(da.get());
 
@@ -955,7 +955,7 @@ void vtkLevelSets::DistanceMapChamfer()
    current_image->SetOrigin(     outputImage->GetOrigin());
    current_image->SetSpacing(    outputImage->GetSpacing());
 
-   shared_ptr<vtkFloatArray> da = vtk_new<vtkFloatArray>()();
+   boost::shared_ptr<vtkFloatArray> da = vtk_new<vtkFloatArray>()();
 
    da->SetArray(&(*U),imsize,1);
    current_image->GetPointData()->SetScalars(da.get());
@@ -983,7 +983,7 @@ void vtkLevelSets::DistanceMapChamfer()
 
   if (savedistmap)
   {
-    shared_ptr<vtkStructuredPointsWriter> writer = vtk_new<vtkStructuredPointsWriter> ()();
+    boost::shared_ptr<vtkStructuredPointsWriter> writer = vtk_new<vtkStructuredPointsWriter> ()();
     char name[255];
 
     writer->SetInput(res1);

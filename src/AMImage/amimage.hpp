@@ -57,7 +57,7 @@
 */
 
 #include <stdio.h>
-
+#include "DefineClass.hpp"
 
 #define PACK_MAGIC     "\037\036"
 /* Magic header for packed files */
@@ -181,6 +181,8 @@ unsigned char WriteAMI(const char* name,
 //----------------------------------------------------------------------
 class amimage
 {
+
+  DEFINE_CLASS(amimage)
 
 protected:
 

@@ -566,7 +566,7 @@ void vtkImageIsoContourDist::IsoSurfDist3D_band( )
     code = thr_setconcurrency(this->GetNumberOfThreads());
 #endif
 
-    shared_ptr<vtkMultiThreader> threader = vtk_new<vtkMultiThreader> ()();
+    boost::shared_ptr<vtkMultiThreader> threader = vtk_new<vtkMultiThreader> ()();
 
     // Threaded execution
     threader->SetNumberOfThreads(this->GetNumberOfThreads());

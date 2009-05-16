@@ -1752,7 +1752,7 @@ void vtkAnisoGaussSeidel::ExecuteData(vtkDataObject *out)
 
   if (NumberOfIterations < 1) NumberOfIterations = 1; 
 
-  shared_ptr<vtkImageGaussianSmooth> filter;
+  boost::shared_ptr<vtkImageGaussianSmooth> filter;
   filter = vtk_new<vtkImageGaussianSmooth>() ();
 
   total = (image_entree->GetExtent()[1] - image_entree->GetExtent()[0] + 1) 

@@ -10,10 +10,13 @@
 #include "Variables.hpp"
 #include "IdentifierInfo.h"
 
+#include "DefineClass.hpp"
 
 // VarContexts is a stack of contexts, 
 // where each context contains a set of variables
 class VarContexts {
+
+  DEFINE_CLASS(VarContexts)
 
 private:
   // _current_context is the number of contexts used

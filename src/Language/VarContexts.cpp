@@ -27,6 +27,7 @@
 */
 
 #include "VarContexts.hpp"
+#include "amilab_messages.h"
 
 #include <wx/arrstr.h>
 
@@ -136,7 +137,7 @@ Variable* VarContexts::AddVar(vartype type, const char* name,
 {
   if (context==-1) 
     context = GetNewVarContext();
-  if (GB_debug) fprintf(stderr,"AddVar in context number %d ",context);
+  CLASS_MESSAGE(boost::format("Context number %d ")% context);
   return _context[context]->AddVar(type,name,val);
 } // AddVar()
 
@@ -151,7 +152,7 @@ Variable* VarContexts::AddVar(vartype type,
   if (info->GetCreationContext()==-1) 
     context = GetNewVarContext();
 
-  if (GB_debug) fprintf(stderr,"AddVar in context number %d ",context);
+  CLASS_MESSAGE(boost::format("Context number %d ")% context);
   return _context[context]->AddVar(type,info->GetName().c_str(),val);
 } // AddVar()
 
@@ -177,7 +178,7 @@ Variable* VarContexts::AddVar(Variable* var, int context)
 {
   if (context==-1) 
     context = GetNewVarContext();
-  if (GB_debug) fprintf(stderr,"AddVar in context number %d ",context);
+  CLASS_MESSAGE(boost::format("Context number %d ")% context);
   return _context[context]->AddVar(var);
 }
 
@@ -186,7 +187,7 @@ Variable* VarContexts::AddVar(Variable::ptr var, int context)
 {
   if (context==-1) 
     context = GetNewVarContext();
-  if (GB_debug) fprintf(stderr,"AddVar in context number %d ",context);
+  CLASS_MESSAGE(boost::format("Context number %d ")% context);
   return _context[context]->AddVar(var);
 }
 

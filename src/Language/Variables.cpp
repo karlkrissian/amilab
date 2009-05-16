@@ -30,7 +30,9 @@
 #include <wx/arrstr.h>
 #include "driver.h"
 
-extern unsigned char       GB_debug;
+#include "amilab_messages.h"
+
+//extern unsigned char       GB_debug;
 extern yyip::Driver GB_driver;
 
 //======================================================================
@@ -94,7 +96,7 @@ Variable* Variables::AddVar(vartype type,
 		      const char* name, 
 		      void* val)
 {
-  if (GB_debug) fprintf(stderr,"AddVar %s \t\t",name);
+  CLASS_MESSAGE(boost::format(" %s ") % name);
 
   string resname = this->CheckVarName(name);
   Variable* newvar = new Variable();
@@ -111,7 +113,7 @@ Variable* Variables::AddVarPtr(vartype type,
 		      const char* name, 
 		      void* val)
 {
-  if (GB_debug) fprintf(stderr,"AddVar %s \t\t",name);
+  CLASS_MESSAGE(boost::format(" %s ") % name);
 
   string resname = this->CheckVarName(name);
   Variable* newvar = new Variable();
@@ -125,7 +127,7 @@ Variable* Variables::AddVarPtr(vartype type,
 //--------------------------------------------------
 Variable* Variables::AddVar( Variable* var)
 {
-  if (GB_debug) fprintf(stderr,"AddVar %s \t\t",var->Name());
+  CLASS_MESSAGE(boost::format(" %s ") % var->Name());
 
   string resname = this->CheckVarName(var->Name());
   Variable* newvar = new Variable();
@@ -141,7 +143,7 @@ Variable* Variables::AddVar( Variable* var)
 //--------------------------------------------------
 Variable* Variables::AddVar( const Variable::ptr& var)
 {
-  if (GB_debug) fprintf(stderr,"AddVar %s \t\t",var->Name());
+  CLASS_MESSAGE(boost::format(" %s ") % var->Name());
 
   string resname = this->CheckVarName(var->Name());
   Variable* newvar = new Variable();

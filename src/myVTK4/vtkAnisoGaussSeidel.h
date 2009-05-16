@@ -207,8 +207,8 @@ protected:
   vtkImageData*   image_entree ; 
   vtkImageData*   image_resultat;
   vtkImageData*   image_lissee  ;
-  shared_ptr<vtkImageData>   im_tmp1       ;
-  shared_ptr<vtkImageData>   im_tmp2       ;
+  boost::shared_ptr<vtkImageData>   im_tmp1       ;
+  boost::shared_ptr<vtkImageData>   im_tmp2       ;
 
   unsigned char   image_entree_allouee;
 

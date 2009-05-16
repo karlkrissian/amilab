@@ -7,6 +7,7 @@
 
 #include <list>
 #include "Variable.hpp"
+#include "DefineClass.hpp"
 
 class wxString;
 class wxArrayString;
@@ -19,6 +20,9 @@ class wxArrayString;
 //
 class Variables{
 
+  DEFINE_CLASS(Variables)
+
+protected:
   std::list<Variable*>  _vars;
   string                _context_name;
   bool                  _global_new;

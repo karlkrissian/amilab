@@ -90,12 +90,14 @@ using namespace std;
 
 
 extern unsigned char GB_debug;
+extern unsigned char GB_verbose;
+
+#include "amilab_messages.h"
 
 #define NEW(mess,ptr,type,size) \
     ptr = new type[size]; \
-    if (GB_debug)  \
-      fprintf(stderr,"%s, allocation of %03.4f Mb \n", \
-              mess, 1.0*size*sizeof(type)/1000000.0);
+    CLASS_MESSAGE( boost::format("%1%, allocation of %2% Mb") \
+        % mess % (1.0*size*sizeof(type)/1000000.0));
 
 
 #define NUM_REPRES 12
@@ -440,7 +442,8 @@ bool amimage::open_file( const char* filename)
   // Trying gzip
   if (!file_read) {
     try {
-      std::cout << "trying gzip" << std::endl;
+      if (GB_verbose)
+        std::cout << "trying gzip" << std::endl;
       file_read = true;
       ifstream file(filename, ios_base::in | ios_base::binary);
       filter_str.reset();
@@ -448,7 +451,8 @@ bool amimage::open_file( const char* filename)
       filter_str.push(file);
       boost::iostreams::copy(filter_str, *file_str.get());
     } catch (boost::iostreams::gzip_error) {
-      std::cout << "gzip failed" << std::endl;
+      if (GB_verbose)
+        std::cout << "gzip failed" << std::endl;
       file_read=false;
     }
   }
@@ -457,7 +461,8 @@ bool amimage::open_file( const char* filename)
   // Trying bzip2
   if (!file_read) {
     try {
-      std::cout << "trying bzip2" << std::endl;
+      if (GB_verbose)
+        std::cout << "trying bzip2" << std::endl;
       file_read = true;
       ifstream file(filename, ios_base::in | ios_base::binary);
       filter_str.reset();
@@ -465,7 +470,8 @@ bool amimage::open_file( const char* filename)
       filter_str.push(file);
       boost::iostreams::copy(filter_str, *file_str.get());
     } catch (boost::iostreams::bzip2_error) {
-      std::cout << "bzip2 failed" << std::endl;
+      if (GB_verbose)
+        std::cout << "bzip2 failed" << std::endl;
       file_read=false;
     }
   }
@@ -473,7 +479,8 @@ bool amimage::open_file( const char* filename)
   // Trying zlib
   if (!file_read) {
     try {
-      std::cout << "trying zlib" << std::endl;
+      if (GB_verbose)
+        std::cout << "trying zlib" << std::endl;
       file_read = true;
       ifstream file(filename, ios_base::in | ios_base::binary);
       filter_str.reset();
@@ -481,7 +488,8 @@ bool amimage::open_file( const char* filename)
       filter_str.push(file);
       boost::iostreams::copy(filter_str, *file_str.get());
     } catch (boost::iostreams::zlib_error) {
-      std::cout << "zlib failed" << std::endl;
+      if (GB_verbose)
+        std::cout << "zlib failed" << std::endl;
       file_read=false;
     }
   }
@@ -489,7 +497,8 @@ bool amimage::open_file( const char* filename)
 
   // Normal read
   if (!file_read) {
-    std::cout << "trying standard file" << std::endl;
+    if (GB_verbose)
+      std::cout << "trying standard file" << std::endl;
     file_read = true;
     ifstream file(filename, ios_base::in | ios_base::binary);
     filter_str.reset();
@@ -627,7 +636,7 @@ unsigned char  amimage::readheader( const char* filename)
       stringstream ssout2(what[2]);
       ssout2 >> release;
     } else {
-      cerr << "amimage::readheader()\tnot in ami format \n" << endl;
+      CLASS_ERROR("not in ami format");
       return false;
     }
 
@@ -761,18 +770,18 @@ unsigned char amimage::CheckGenesisHeader(char* ptr, int slice, float corner[4][
 //  int   i;
 
   setlocale(LC_NUMERIC,"C");
-  if (GB_debug) fprintf(stderr,"CheckGenesisHeader \n");
+  CLASS_MESSAGE("CheckGenesisHeader");
 
   // Return because of problems with byte swap .. (in linux)
   //    return 0;
 
   sprintf(magic,"%4s",ptr);
   if (strcmp(magic,"IMGF")!=0) {
-    if (GB_debug) fprintf(stderr,"Not in Genesis Format\n");
+    CLASS_MESSAGE("Not in Genesis Format");
     return 0;
   }
   else
-    if (GB_debug) fprintf(stderr,"Image in Genesis Format\n");
+    CLASS_MESSAGE("Image in Genesis Format");
 
   // pb to read Dicom ...
 #ifdef _CHECK_GENESIS

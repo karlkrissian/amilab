@@ -128,8 +128,12 @@ float fround(const float& a)
 }
 #endif
 
+#include "amilab_messages.h"
+
 
 extern unsigned char GB_debug;
+extern unsigned char GB_verbose;
+
 int InrImage::TailleFormat[NB_FORMATS]  = { 1,   // WT_UNSIGNED_CHAR
                                            2,   // WT_UNSIGNED_SHORT
                                            2,   // WT_SIGNED_SHORT
@@ -225,11 +229,9 @@ int IM_WriteImage ( const char *name,
 unsigned char InrImage :: ReadAMI( ) throw (ErreurLecture)
 //                           -------
 {
+  unsigned char   res; 
 
-  
-    unsigned char   res; 
-
-  Si GB_debug AlorsFait fprintf(stderr,"InrImage::ReadAMI() %s \n",(char*)_nom);
+  CLASS_MESSAGE((char*)_nom);
 
   // Read AMImage
   amimage* im = new amimage();
@@ -285,7 +287,7 @@ unsigned char InrImage :: ReadMagick( ) throw (ErreurLecture)
     float* blue_pixels;
     unsigned char res;
 
-    Si GB_debug AlorsFait fprintf(stderr,"reading ImageMagick() \n");
+    CLASS_MESSAGE("reading ImageMagick()");
 
     GetImageInfo(&image_info);
     strcpy(image_info.filename, _nom);
@@ -295,7 +297,7 @@ unsigned char InrImage :: ReadMagick( ) throw (ErreurLecture)
 
     tz = GetNumberScenes(image);
 
-    Si GB_debug AlorsFait fprintf(stderr,"tz = %d \n", tz);
+    CLASS_MESSAGE(boost::format("tz = %d") % tz);
 
     _vdim = 3;
     _amimage = new amimage();
@@ -369,7 +371,7 @@ unsigned char InrImage :: ReadVTK( ) throw (ErreurLecture)
     vtkStructuredPoints* in;
     int       x,y,z,n;
 
-  Si GB_debug AlorsFait fprintf(stderr,"InrImage::ReadVTK()  begin \n");
+  CLASS_MESSAGE(boost::format("InrImage::ReadVTK()  begin "));
 
   reader->SetFileName((char*) _nom);
   reader->Update();
@@ -381,17 +383,17 @@ unsigned char InrImage :: ReadVTK( ) throw (ErreurLecture)
   }
 
   _vdim = in->GetNumberOfScalarComponents();
-  printf("vdim = %d \n",_vdim);
+  CLASS_MESSAGE(boost::format("vdim = %d") % _vdim);
 
   // Check for Tensor data
   vtkPointData* pd = in->GetPointData();
   if (pd==NULL) 
-    fprintf(stderr,"Error \t InrImage::ReadVTK( ) , not point data \n");
+    CLASS_ERROR(boost::format("not point data"));
   vtkDataArray* tensor = pd->GetTensors();
 
   if (tensor!=NULL) {
     _vdim = tensor->GetNumberOfComponents();
-    printf("Tensor data is present %d, reading it.. \n", _vdim);
+    CLASS_MESSAGE(boost::format("Reading Tensor data (size %d)") % _vdim)
   }
 
   SelonQue (in->GetScalarType()) Vaut
@@ -409,7 +411,8 @@ unsigned char InrImage :: ReadVTK( ) throw (ErreurLecture)
      switch (_vdim) {
        case 1: _format = WT_UNSIGNED_CHAR; break;
        case 3: _format = WT_RGB; break;
-       default: fprintf(stderr,"InrImage::ReadVTK non-scalar uchar vdim!=3 non available \n");
+       default: 
+          CLASS_ERROR(boost::format("Non-scalar UCHAR vdim=%1% !=3 not available")%_vdim);
      }
     FinValeur
 
@@ -417,12 +420,14 @@ unsigned char InrImage :: ReadVTK( ) throw (ErreurLecture)
      _format = WT_DOUBLE;
     break;
 
-    Defaut: fprintf(stderr,"type non available \n");
+    Defaut: 
+      CLASS_ERROR(boost::format("Scalar type %1% non available")
+                           % in->GetScalarType());
     _format = WT_FLOAT;
 
   FinSelonQue
 
-  Si GB_debug AlorsFait fprintf(stderr,"InrImage::ReadVTK()  1 \n");
+  CLASS_MESSAGE("1");
 
   _tx     = in->GetDimensions()[0];
   _ty     = in->GetDimensions()[1];
@@ -431,8 +436,7 @@ unsigned char InrImage :: ReadVTK( ) throw (ErreurLecture)
   _taille = (unsigned long) _tx * _ty * _tz;
 
 
-  Si GB_debug AlorsFait fprintf(stderr,"InrImage::ReadVTK()  %d %d %d \n",
-    _tx,_ty,_tz);
+  CLASS_MESSAGE(boost::format(" %d %d %d ") % _tx % _ty % _tz);
 
     _amimage = new amimage();
     _amimage->SetDim( _tx, _ty, _tz, _vdim);
@@ -455,7 +459,7 @@ unsigned char InrImage :: ReadVTK( ) throw (ErreurLecture)
       if (_amimage-> GetVY() < 1E-5) _amimage->SetVY(1.0);
       if (_amimage-> GetVZ() < 1E-5) _amimage->SetVZ(1.0);
       
-      Si GB_debug AlorsFait fprintf(stderr,"InrImage::ReadVTK()  2 \n");
+      CLASS_MESSAGE("2");
       
 //  memcpy(_inrimage->data, in->GetScalarPointer() , in->);
 
@@ -463,7 +467,7 @@ unsigned char InrImage :: ReadVTK( ) throw (ErreurLecture)
       if (tensor==NULL) {
         scalars = pd->GetScalars();
         if (scalars==NULL) {
-          fprintf(stderr,"InrImage::ReadVTK()\t Error, neither tensor nor scalar data \n");
+          CLASS_ERROR("Neither tensor nor scalar data");
             return 0;
         }
       }
@@ -504,19 +508,16 @@ unsigned char InrImage :: ReadVTK( ) throw (ErreurLecture)
       FinPour
     }
     else {
-      fprintf(stderr,"InrImage::ReadVTK() allocation problem \n");
+      CLASS_ERROR("Allocation problem");
       return false;
     }
 
-  Si GB_debug AlorsFait fprintf(stderr,"InrImage::ReadVTK()  3 \n");
-
-
-  Si GB_debug AlorsFait fprintf(stderr,"InrImage::ReadVTK()  end \n");
+  CLASS_MESSAGE("end");
 
   return true;
 
 #else
-  fprintf(stderr,"inrimage.cpp \t AMILab compiled without VTK, function not available \n");
+  CLASS_ERROR("AMILab compiled without VTK");
   return false;
 #endif // _WITHOUT_VTK_
   
@@ -534,13 +535,18 @@ unsigned char InrImage :: ReadVTKImage( ) throw (ErreurLecture)
     vtkImageData* in;
     int       x,y,z,n;
 
-  Si GB_debug AlorsFait fprintf(stderr,"InrImage::ReadVTKImage()  begin \n");
+  CLASS_MESSAGE("begin");
 
   shared_ptr<vtkImageReader2Factory> create_reader = vtk_new<vtkImageReader2Factory>()();
-  shared_ptr<vtkImageReader2> reader = vtk_new<vtkImageReader2>()(create_reader->CreateImageReader2((char*) _nom));
+  vtkImageReader2* imreader = create_reader->CreateImageReader2((char*) _nom); 
+  if (imreader==NULL) {
+    CLASS_MESSAGE("No reader found from vtkImageReader2Factory")
+    return false;
+  }
+
+  shared_ptr<vtkImageReader2> reader = vtk_new<vtkImageReader2>()(imreader);
 
 
-   if (!reader.use_count()) return false;
   reader->SetFileName((char*) _nom);
   reader->Update();
 
@@ -582,16 +588,18 @@ unsigned char InrImage :: ReadVTKImage( ) throw (ErreurLecture)
          //_format = WT_RGB; 
          //_vdim = 3; 
        break;
-       default: fprintf(stderr,"InrImage::ReadVTKImage non-scalar uchar vdim!=3 non available %d \n", _vdim);
+       default: 
+        fprintf(stderr,"InrImage::ReadVTKImage non-scalar uchar vdim!=3 non available %d \n", _vdim);
      }
     FinValeur
 
-    Defaut: fprintf(stderr,"type non available \n");
-    _format = WT_FLOAT;
+    Defaut:   
+      CLASS_ERROR("type not available");
+      _format = WT_FLOAT;
 
   FinSelonQue
 
-  Si GB_debug AlorsFait fprintf(stderr,"InrImage::ReadVTKImage()  1 \n");
+  CLASS_MESSAGE("1");
 
   _tx     = in->GetDimensions()[0];
   _ty     = in->GetDimensions()[1];
@@ -600,8 +608,7 @@ unsigned char InrImage :: ReadVTKImage( ) throw (ErreurLecture)
   _taille = (unsigned long) _tx * _ty * _tz;
 
 
-  Si GB_debug AlorsFait fprintf(stderr,"InrImage::ReadVTKImage()  %d %d %d \n",
-    _tx,_ty,_tz);
+  CLASS_MESSAGE(boost::format(" image size: %d x %d x %d ") % _tx % _ty % _tz);
 
     _amimage = new amimage();
     _amimage->SetDim( _tx, _ty, _tz, _vdim);
@@ -624,20 +631,20 @@ unsigned char InrImage :: ReadVTKImage( ) throw (ErreurLecture)
       if (_amimage-> GetVY() < 1E-5) _amimage->SetVY(1.0);
       if (_amimage-> GetVZ() < 1E-5) _amimage->SetVZ(1.0);
       
-      Si GB_debug AlorsFait fprintf(stderr,"InrImage::ReadVTKImage()  2 \n");
+      CLASS_MESSAGE("2");
       
 //  memcpy(_inrimage->data, in->GetScalarPointer() , in->);
       // Flip in Y ?
       vtkPointData* pd = in->GetPointData();
       if (pd==NULL) {
-          fprintf(stderr,"InrImage::ReadVTKImage()\t Error, no point data \n");
+          CLASS_ERROR("no point data");
           return 0;
       }
       vtkDataArray* scalars = NULL;
       scalars = pd->GetScalars();
       if (scalars==NULL) {
-            fprintf(stderr,"InrImage::ReadVTKImage()\t Error, neither tensor nor scalar data \n");
-            return 0;
+          CLASS_ERROR("neither tensor nor scalar data");
+          return 0;
       }
 
       scoped_array<double> val(new double[_vdim]);
@@ -669,7 +676,7 @@ unsigned char InrImage :: ReadVTKImage( ) throw (ErreurLecture)
       FinPour
     }
     else {
-      fprintf(stderr,"InrImage::ReadVTKImage() allocation problem \n");
+      CLASS_ERROR("allocation problem");
       return false;
     }
 
@@ -694,7 +701,7 @@ unsigned char InrImage :: Lit( ) throw (ErreurLecture)
   inrimage* ptr;
   unsigned char   res; 
 
-  Si GB_debug AlorsFait fprintf(stderr,"reading Image() \n");
+  CLASS_MESSAGE("Begin");
 
   res = ReadAMI();
 
@@ -732,7 +739,7 @@ unsigned char InrImage :: Lit( ) throw (ErreurLecture)
   //  Si ptr == NULL Alors
 #ifdef USE_MAGICK
   if (!res) { 
-    printf("Trying reading with ImageMagick");  
+    CLASS_MESSAGE("Trying to read with ImageMagick");  
     res = ReadMagick();
   }
 #endif // USE_MAGICK
@@ -744,7 +751,7 @@ unsigned char InrImage :: Lit( ) throw (ErreurLecture)
   }
 
   if (!res) {
-    printf("Trying reading with ReadVTK");  
+    CLASS_MESSAGE("Trying reading with ReadVTK");  
     res = ReadVTK();
   }
 
@@ -1066,7 +1073,6 @@ unsigned char InrImage :: LitMaple(char* nom )
 //                           --------     
 {
 
-  
     char chaine[100];
     int    x;
     float      r;
