@@ -375,7 +375,7 @@ void Driver::res_print(const char* st)
 //   -----------------
 {
   *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString::FromAscii(st);
-  printf(st);
+  printf("%s",st);
 } // Driver::res_print()
 
 
