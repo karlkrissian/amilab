@@ -1598,8 +1598,8 @@ command:
           GB_main_wxFrame->SetProgress((int)($3+0.5));
         }
         |  QUIT  {
-        GB_main_wxFrame->Close(true);
-    }
+          GB_main_wxFrame->Close(true);
+        }
         |  SHOW var_image
         {
           char titre[100];
@@ -8985,8 +8985,12 @@ image:
 
       im1 = *(InrImage::ptr*) $1->Pointer();
 
-      res = new InrImage(im1->_format,"ImComp.ami.gz",im2);
-
+      res = new InrImage(
+                          im1->_format,
+                          im1->GetVDim(),
+                          "ImComp.ami.gz",
+                          im2);
+ 
       // Several Cases:
       // 1. scalar to scalar
       // 2. scalar to vectorial
