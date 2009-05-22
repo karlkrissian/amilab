@@ -118,12 +118,16 @@ typedef shared_ptr<wxGLContext> wxGLContext_ptr;
 class ami_wxGLCanvas:  public wxGLCanvas
 {
 
+  DEFINE_CLASS(ami_wxGLCanvas)
+
+protected:
   // TODO : remove this class and manage the comparing windows from this class !!!
   Viewer3D*       _parent_window;
   wxGLContext_ptr _opengl_context;
 
 public:
 
+  bool            _is_created;
   bool            _initialized;
 
   GLboolean       doubleBuffer;
@@ -300,7 +304,7 @@ public:
         const wxSize& size = wxDefaultSize, long style = 0,
         const wxString& name = _T("ami_wxGLCanvas"));
 
-   virtual ~ami_wxGLCanvas(){};
+  virtual ~ami_wxGLCanvas(){};
 
   bool SetCurrentContext();
 
@@ -500,6 +504,10 @@ public:
   void OnChar(           wxKeyEvent& event);
   void OnMouseEvent(     wxMouseEvent& event);
   void OnAnimationTimer( wxTimerEvent& event);
+
+  #ifndef WIN32
+    void onCreate(wxWindowCreateEvent& event);
+  #endif
 
     DECLARE_EVENT_TABLE()
 };

@@ -16,35 +16,43 @@
 #include "VolumeRender.hpp"
 #include "Viewer3D.hpp"
 
+#include "amilab_messages.h"
+
 //namespace io = boost::iostreams;
+
+#ifdef WIN
+//  #define OLD_METHOD 1
+#endif
+//#define NEW_METHOD
 
 boost::iostreams::stream_buffer<boost::iostreams::file_sink> buf("ami_wxGLCanvas_trace.txt");
 std::ostream                     out(&buf);
 
 
-extern unsigned char      GB_debug;
-extern unsigned char      GB_verbose;
+//extern unsigned char      GB_debug;
+//extern unsigned char      GB_verbose;
 extern wxApp*    GB_wxApp;
 
 
 static const std::string glErrorString( GLenum err)
 {
-  switch(err) {
-  case GL_NO_ERROR: return "GL_NO_ERROR";
-  case GL_INVALID_ENUM: return "GL_INVALID_ENUM";
-  case GL_INVALID_VALUE: return "GL_INVALID_VALUE";
-  case GL_INVALID_OPERATION: return "GL_INVALID_OPERATION";
-  case GL_STACK_OVERFLOW:return "GL_STACK_OVERFLOW";
-  case GL_STACK_UNDERFLOW: return "GL_STACK_UNDERFLOW";
-  case GL_OUT_OF_MEMORY: return "GL_OUT_OF_MEMORY";
-#if !(defined(_MSC_VER) || defined(__MINGW32__))
-    //  case GL_TABLE_TOO_LARGE_EXT: return "GL_TABLE_TOO_LARGE_EXT";
-#endif
-#ifndef _solaris_
-    //  case GL_TEXTURE_TOO_LARGE_EXT: return "GL_TEXTURE_TOO_LARGE_EXT";
-#endif
-  default: return "unknown error";
-  }
+  if (err!=GL_NO_ERROR)
+    switch(err) {
+      case GL_NO_ERROR: return "GL_NO_ERROR";
+      case GL_INVALID_ENUM: return "GL_INVALID_ENUM";
+      case GL_INVALID_VALUE: return "GL_INVALID_VALUE";
+      case GL_INVALID_OPERATION: return "GL_INVALID_OPERATION";
+      case GL_STACK_OVERFLOW:return "GL_STACK_OVERFLOW";
+      case GL_STACK_UNDERFLOW: return "GL_STACK_UNDERFLOW";
+      case GL_OUT_OF_MEMORY: return "GL_OUT_OF_MEMORY";
+      #if !(defined(_MSC_VER) || defined(__MINGW32__))
+           case GL_TABLE_TOO_LARGE: return "GL_TABLE_TOO_LARGE";
+      #endif
+      #ifndef _solaris_
+          //  case GL_TEXTURE_TOO_LARGE_EXT: return "GL_TEXTURE_TOO_LARGE_EXT";
+      #endif
+      default: return (boost::format("Unknown error number %1%") % err).str();
+    }
 }
 
 
@@ -59,6 +67,18 @@ static const std::string glErrorString( GLenum err)
               <<" line " << __LINE__ \
               << ": " << glErrorString(error) << endl; \
         } \
+  }
+
+#define  glReportError() \
+  { \
+    /* for help debugging, report any OpenGL errors that occur per frame */ \
+        GLenum error = glGetError(); \
+        if (error!=GL_NO_ERROR) \
+            if (GB_debug) cerr << "!!! GL error at " \
+              << __FILE__  \
+              << " function " << __func__ \
+              <<" line " << __LINE__ \
+              << ": " << glErrorString(error) << endl; \
   }
 
 /*
@@ -83,6 +103,11 @@ BEGIN_EVENT_TABLE(ami_wxGLCanvas, wxGLCanvas)
     EVT_MOUSE_EVENTS(         ami_wxGLCanvas::OnMouseEvent)
     EVT_ERASE_BACKGROUND(     ami_wxGLCanvas::OnEraseBackground)
     EVT_TIMER(Animation_Timer,ami_wxGLCanvas::OnAnimationTimer)
+    #ifndef OLD_METHOD
+      #ifndef WIN32
+        EVT_WINDOW_CREATE(        ami_wxGLCanvas::onCreate)
+      #endif
+    #endif
 END_EVENT_TABLE()
 
 
@@ -111,57 +136,55 @@ ami_wxGLCanvas::ami_wxGLCanvas(
         long style,
         const wxString& name)
     :
-
-    // using older constructor because of pbs with nxviewer
-    wxGLCanvas( parent,
-                id,
-                pos,
-                size,
-                style 
-                |wxFULL_REPAINT_ON_RESIZE
-                ,
-                name
-                ,gl_attrib
-                )
-/*
-    wxGLCanvas(parent,
-                id,
-                NULL, // gl attributes
-                pos,
-                size,
-                style
-                |wxFULL_REPAINT_ON_RESIZE
-                |wxBORDER_RAISED,
-                name)
-*/
+    #ifdef OLD_METHOD
+      // using older constructor because of pbs with nxviewer
+      wxGLCanvas( parent,
+                  id,
+                  pos,
+                  size,
+                  style 
+                  |wxFULL_REPAINT_ON_RESIZE
+                  ,
+                  name
+                  ,gl_attrib
+                  )
+    #else
+      wxGLCanvas(parent,
+                  id,
+                  gl_attrib, // gl attributes
+                  pos,
+                  size,
+                  style
+                  |wxFULL_REPAINT_ON_RESIZE,
+                  //|wxBORDER_RAISED,
+                  name)
+    #endif // OLD_METHOD
 {
+  // out writes to log.txt
+  CLASS_MESSAGE("begin");
 
-/* Maybe put it back on wxpython 2.9 ???
+  #ifndef OLD_METHOD
+    // Maybe put it back on wxpython 2.9 ???
     // Create opengl context
     _opengl_context = wxGLContext_ptr(
                   new wxGLContext(this));
+    #ifndef WIN32
+      _is_created = false;
+    #else
+      _is_created = true;
+    #endif
+    //SetCurrentContext();
+    //
+  #endif // ifndef OLD_METHOD
+  _parent_window = (Viewer3D*) parent;
+  CLASS_MESSAGE("2");
 
-    SetCurrentContext();
-*/
+  //  Need to show the parent for SetCurrent() !!!
+  //parent->Show(true);
+  //SetCurrent();
+  //
 
-    // out writes to log.txt
-
-    if (GB_debug) out << "*** begin ami_wxGLCanvas::ami_wxGLCanvas() ***" << endl;
-    _parent_window = (Viewer3D*) parent;
-    if (GB_debug) out << "***2***" << endl;
-
-    /*  Seems to work without those commands
-    parent->Show(true);
-    SetCurrent();
-    */
-
-    int i;
-
-  Si GB_debug AlorsFait fprintf(stderr,"Constructeur ami_wxGLCanvas \n");
-
-  Si GB_debug AlorsFait fprintf(stderr,"Constructeur ami_wxGLCanvas 1 \n");
-
-  Si GB_debug AlorsFait fprintf(stderr,"Constructeur ami_wxGLCanvas 2 \n");
+  int i;
 
   Pour(i,0,MAX_LIGHTS-1)
     _GLLight[i]._num_light=i;
@@ -238,8 +261,7 @@ ami_wxGLCanvas::ami_wxGLCanvas(
   _cursor_x = _cursor_y = _cursor_z = 0.0;
   _display_cursor = false;
 
-  if (GB_debug) out << "***  ami_wxGLCanvas::ami_wxGLCanvas() 4 ***" << endl;
-  Si GB_debug AlorsFait fprintf(stderr,"Constructeur ami_wxGLCanvas 4 \n");
+  CLASS_MESSAGE("4");
 
 /*
   X_Expression =
@@ -268,7 +290,7 @@ ami_wxGLCanvas::ami_wxGLCanvas(
 
   _plus_grande_cc = false;
 
-  Si GB_debug AlorsFait fprintf(stderr,"Constructeur ami_wxGLCanvas 5 \n");
+  CLASS_MESSAGE("5");
 
   _initialized = false;
 
@@ -295,9 +317,7 @@ ami_wxGLCanvas::ami_wxGLCanvas(
   _limits_set = false;
   _mode_affichage = MODE_SURFACE;
 
-  Si GB_debug AlorsFait fprintf(stderr,"Constructeur ami_wxGLCanvas Fin \n");
-
-  if (GB_debug) out << "*** end ami_wxGLCanvas::ami_wxGLCanvas() ***" << endl;
+  CLASS_MESSAGE("End")
 
 } // ami_wxGLCanvas
 
@@ -306,38 +326,47 @@ ami_wxGLCanvas::ami_wxGLCanvas(
 bool ami_wxGLCanvas::SetCurrentContext()
 {
 
-    if (GB_debug) out << "*** begin ami_wxGLCanvas::SetCurrentContext() ***" << endl;
+  CLASS_MESSAGE("begin")
 
-    if (!IsShown()) {
-      if (GB_debug) cerr << "SetCurrentContext() class not shown" << endl;
-      return false;
-    }
+  if (!IsShown()) {
+    CLASS_MESSAGE("Widget not shown");
+    return false;
+  }
+  if (!_parent_window->IsShown()) {
+    CLASS_MESSAGE("Parent widget not shown");
+    return false;
+  }
+  #ifdef OLD_METHOD
     if (!GetContext()) {
-      if (GB_debug) cerr << "SetCurrentContext() GetContext() failed" << endl;
+      CLASS_MESSAGE("GetContext() failed");
       return false;
     }
     SetCurrent();
+  #else
+    if (!_is_created) {
+      CLASS_MESSAGE("Window not created");
+      return false;
+    }
+    if (_opengl_context.get()) {
+      #if (wxCHECK_VERSION(2,9,0))
+        bool res= SetCurrent(*_opengl_context);
+        if (!res) CLASS_ERROR("SetCurrent() failed");
+        return res;
+      #else
+        CLASS_MESSAGE("Setting the context");
+        SetCurrent(*_opengl_context);
+      #endif
+    }
+    else {
+      CLASS_ERROR("context not initialized !");
+      return false;
+    }
+  #endif
 
-    if (GB_debug) out << "*** end ami_wxGLCanvas::SetCurrentContext() ***" << endl;
+  CLASS_MESSAGE("end")
+  return true;
 
-    return true;
 /*
-  if (_opengl_context.use_count()) {
-    #if (wxCHECK_VERSION(2,9,0))
-      bool res= SetCurrent(*_opengl_context);
-      if (!res) cerr << "ami_wxGLCanvas::SetCurrentContext()"
-                    << "\t failed " << endl;
-      return res;
-    #else
-      SetCurrent(*_opengl_context);
-    #endif
-  }
-  else {
-    cerr  << "ami_wxGLCanvas::SetCurrentContext() \t"
-          << "context not initialized ! "
-          << endl;
-    return false;
-  }
   return true;
 */
 
@@ -412,14 +441,13 @@ int ami_wxGLCanvas::SetCurrentObject(int i)
 //----------------------------------------------
 void ami_wxGLCanvas::OnPaint( wxPaintEvent& WXUNUSED(event) )
 {
-    if (GB_debug) out << "*** begin ami_wxGLCanvas::OnPaint() ***" << endl;
-    if (GB_debug) cerr << "*** begin ami_wxGLCanvas::OnPaint() ***" << endl;
+  CLASS_MESSAGE("begin");
 
-    // This is a dummy, to avoid an endless succession of paint messages.
-    // OnPaint handlers must always create a wxPaintDC.
-    wxPaintDC dc(this);
+  // This is a dummy, to avoid an endless succession of paint messages.
+  // OnPaint handlers must always create a wxPaintDC.
+  wxPaintDC dc(this);
 
-//    if (!GetContext()) return;
+ //    if (!GetContext()) return;
 
   if (!dc.IsOk()) {
     cerr  << "ami_wxGLCanvas::OnPaint()"
@@ -438,38 +466,40 @@ void ami_wxGLCanvas::OnPaint( wxPaintEvent& WXUNUSED(event) )
   if (GB_debug) cerr << "*** end ami_wxGLCanvas::OnPaint() ***" << endl;
 }
 
-void ami_wxGLCanvas::OnSize(wxSizeEvent& event)
+void ami_wxGLCanvas::OnSize( wxSizeEvent& event )
 {
-    if (GB_debug) out << "*** begin ami_wxGLCanvas::OnSize() ***" << endl;
+  CLASS_MESSAGE ("begin");
 
-    // this is also necessary to update the context on some platforms
-    wxGLCanvas::OnSize(event);
+  // trying to fic opengl problem
+  //wxClientDC dc(this);
 
-    if (GB_debug) out << "*** ami_wxGLCanvas::OnSize()  1 ***" << endl;
+  // this is also necessary to update the context on some platforms
+  wxGLCanvas::OnSize ( event );
 
-   // set GL viewport (not called by wxGLCanvas::OnSize on all platforms...)
-    int w, h;
-    GetClientSize(&w, &h);
-    _largeur = w;
-    _hauteur = h;
-    if (GB_debug)
-      cerr << "OnSize() "
-            << _largeur << " "
-            << _hauteur << " "
-            << endl;
-    if (SetCurrentContext()) {
-  glViewport(0, 0, _largeur, _hauteur);
+  CLASS_MESSAGE ( "1" );
 
-  _GLProjParam.SetWindowSize(_largeur,_hauteur);
-  _GLProjParam.SetProjection();
+  // set GL viewport (not called by wxGLCanvas::OnSize on all platforms...)
+  int w, h;
+  GetClientSize ( &w, &h );
+  _largeur = w;
+  _hauteur = h;
+  CLASS_MESSAGE(boost::format(" %1% x %2% ") 
+                  % _largeur 
+                  % _hauteur);
+  if (SetCurrentContext())
+  {
+    glViewport ( 0, 0, _largeur, _hauteur );
 
-  glMatrixMode(_GLTransform.GLenum_mode());
+    _GLProjParam.SetWindowSize ( _largeur,_hauteur );
+    _GLProjParam.SetProjection();
 
-  if (GB_debug) out << "*** ami_wxGLCanvas::OnSize()  2 ***" << endl;
-  ReDimensionne();
-    }
+    glMatrixMode ( _GLTransform.GLenum_mode() );
 
-    if (GB_debug) out << "*** end ami_wxGLCanvas::OnSize() ***" << endl;
+    CLASS_MESSAGE ( 2 );
+    ReDimensionne();
+  }
+
+  CLASS_MESSAGE ( "end" );
 }
 
 void ami_wxGLCanvas::OnChar(wxKeyEvent& event)
@@ -636,12 +666,20 @@ void ami_wxGLCanvas::UpdateObjectList( )
 void ami_wxGLCanvas::AddSurface( SurfacePoly::ptr surf)
 //
 {
-if (GB_debug) fprintf(stderr,"ami_wxGLCanvas::AddSurface()\n");
 
-    glReportErrors();
+  CLASS_MESSAGE("begin");
+
+//   if (GB_debug) {
+//     char t;
+//     cout << "Press a key then press enter: ";
+//     cin  >> t;
+//   }
 
   // Set OpenGL tasks to this drawing area
   if (!this->SetCurrentContext()) return;
+
+  glReportError();
+
 
   if (GB_debug) fprintf(stderr,"ami_wxGLCanvas::AddSurface() 2\n");
   if (GB_debug) cerr << " _globjects.size " << _globject.size() << endl;
@@ -655,15 +693,15 @@ if (GB_debug) fprintf(stderr,"ami_wxGLCanvas::AddSurface()\n");
     _SURFACE      =  _current_globject->GenerateGLList();
     _type_surface = SURFACE_POLY;
   }
-    glReportErrors();
+    glReportError();
 
 if (GB_debug) fprintf(stderr,"ami_wxGLCanvas::AddSurface() 4\n");
 
   _parent_window->UpdateObjectListGui();
 
-    glReportErrors();
+    glReportError();
 
-if (GB_debug) fprintf(stderr,"ami_wxGLCanvas::AddSurface() end\n");
+  CLASS_MESSAGE("end");
 } // AddSurface()
 
 
@@ -858,10 +896,10 @@ void ami_wxGLCanvas::SetColors( InrImage* image, float min, float max)
   Si _type_surface != SURFACE_POLY AlorsFait return;
 
   // Set OpenGL tasks to this drawing area
-  this->SetCurrentContext();
-
-  printf("ami_wxGLCanvas::SetColors()\t %f %f \n",min,max);
-  _SURFACE = surf_poly->SetColors(image,min,max);
+  if (this->SetCurrentContext()) {
+    printf("ami_wxGLCanvas::SetColors()\t %f %f \n",min,max);
+    _SURFACE = surf_poly->SetColors(image,min,max);
+  }
 
 } // SetColors()
 
@@ -891,17 +929,18 @@ void ami_wxGLCanvas::DessineSurfaceCC(  int cc )
   if (surf_poly==NULL) return;
 
   // Set OpenGL tasks to this drawing area
-  this->SetCurrentContext();
-  Si _type_surface != SURFACE_POLY AlorsFait return;
-
-  Si Non(surf_poly->_cc_calculees) Alors
-    surf_poly->CalculCC();
-  FinSi
-
-  surf_poly->GLSurfaceDrawOnlyCC( _SURFACE, cc);
-
-  _type_surface   = SURFACE_POLY;
-  _mode_affichage = MODE_SURFACE;
+  if (this->SetCurrentContext()) {
+    Si _type_surface != SURFACE_POLY AlorsFait return;
+  
+    Si Non(surf_poly->_cc_calculees) Alors
+      surf_poly->CalculCC();
+    FinSi
+  
+    surf_poly->GLSurfaceDrawOnlyCC( _SURFACE, cc);
+  
+    _type_surface   = SURFACE_POLY;
+    _mode_affichage = MODE_SURFACE;
+  }
 
 } // DessineSurfaceCC
 
@@ -1125,18 +1164,19 @@ void ami_wxGLCanvas::DessineSurfaceCC(  int cc, unsigned char draw )
   if (surf_poly==NULL) return;
 
   // Set OpenGL tasks to this drawing area
-  this->SetCurrentContext();
-
-  Si _type_surface != SURFACE_POLY AlorsFait return;
-
-  Si Non(surf_poly->_cc_calculees) Alors
-    surf_poly->CalculCC();
-  FinSi
-
-  surf_poly->GLSurfaceSetDrawCC( _SURFACE, cc, draw);
-
-  _type_surface   = SURFACE_POLY;
-  _mode_affichage = MODE_SURFACE;
+  if (this->SetCurrentContext()) {
+  
+    Si _type_surface != SURFACE_POLY AlorsFait return;
+  
+    Si Non(surf_poly->_cc_calculees) Alors
+      surf_poly->CalculCC();
+    FinSi
+  
+    surf_poly->GLSurfaceSetDrawCC( _SURFACE, cc, draw);
+  
+    _type_surface   = SURFACE_POLY;
+    _mode_affichage = MODE_SURFACE;
+  }
 
 } // DessineSurfaceCC
 
@@ -1149,7 +1189,7 @@ void ami_wxGLCanvas::InitProprietes( )
       cerr << "ami_wxGLCanvas::InitProprietes( ) begin" << endl;
     int i;
 
-    glReportErrors();
+    glReportError();
 
     glShadeModel( _GLParam.GLenum_shade() );
 
@@ -1173,7 +1213,7 @@ void ami_wxGLCanvas::InitProprietes( )
 
     glEnable(GL_DEPTH_TEST);
 
-    glReportErrors();
+    glReportError();
 
     Si _GLParam._dither Alors
       glEnable(GL_DITHER);
@@ -1181,7 +1221,7 @@ void ami_wxGLCanvas::InitProprietes( )
       glDisable(GL_DITHER);
     FinSi
 
-    glReportErrors();
+    glReportError();
 
 
     _GLProjParam.SetProjection();
@@ -1194,7 +1234,7 @@ void ami_wxGLCanvas::InitProprietes( )
 
     _GLFogParam.SetBGColor( &(_GLParam._background));
 
-    glReportErrors();
+    glReportError();
 
     glDepthFunc(GL_LESS);
     glEnable(GL_DEPTH_TEST);
@@ -1343,7 +1383,7 @@ void ami_wxGLCanvas::DisplayObject(GLObject::ptr& obj)
             "ami_wxGLCanvas::DisplayObject() \t unknown object type \n");
       FinSelonQue
 
-      glReportErrors();
+      glReportError();
 
 } // DisplayObject()
 
@@ -1628,7 +1668,7 @@ if (!_initialized) return;
   if (current!=NULL)
     current->_display_bb = _GLParam._current_bounding_box;
 
-  glReportErrors();
+  glReportError();
 
   glGetIntegerv(GL_RENDER_MODE,&render_mode);
 
@@ -1638,11 +1678,11 @@ if (!_initialized) return;
     this->SetCurrentContext();
   FinSi
 
-  glReportErrors();
+  glReportError();
 
   Si GB_debug AlorsFait fprintf(stderr,"ami_wxGLCanvas::Paint() 1 \n");
 
-  glReportErrors();
+  glReportError();
 
   if (GB_debug) out << "*** ami_wxGLCanvas::Paint() 1 ***" << endl;
 
@@ -1690,7 +1730,7 @@ if (!_initialized) return;
   if (affiche)
     AfficheBuffer( );
 
-  glReportErrors();
+  glReportError();
 
   Si GB_debug AlorsFait fprintf(stderr,"ami_wxGLCanvas::Paint() Draw comparison surf \n");
   if (GB_debug) out << "*** ami_wxGLCanvas::Paint() 4 ***" << endl;
@@ -1901,7 +1941,7 @@ void ami_wxGLCanvas::InitGL()
   _object_center[1] =
   _object_center[2] = 0.0;
 
-  glReportErrors();
+  glReportError();
 
 
     _largeur = this->GetSize().GetWidth();
@@ -2715,3 +2755,13 @@ void ami_wxGLCanvas :: PickObjects()
 
 } // PickObjects()
 
+#ifndef WIN32
+  //------------------------------------------------------
+  void ami_wxGLCanvas::onCreate(wxWindowCreateEvent& event)
+  {
+    CLASS_MESSAGE("");
+    _is_created = true;
+    event.Skip();
+    return;
+  }
+#endif
