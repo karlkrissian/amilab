@@ -45,6 +45,8 @@
 #include "slick/16x16/actions/reload.xpm"
 #include "gtk-clear.xpm"
 
+#include "amilab_messages.h"
+
 //#include "Bluecurve/32x32/actions/reload.xpm"
 
 extern wxString        GB_help_dir;
@@ -101,7 +103,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 
     EVT_MENU(ID_View_Reset,        MainFrame::OnViewReset)
 
-//    EVT_CLOSE(MainFrame::OnClose)
+    EVT_CLOSE(MainFrame::OnClose)
 
 //    EVT_BUTTON(wxID_ConsoleReset, MainFrame::ConsoleReset)
     EVT_TOOL(         wxID_ConsoleClear, MainFrame::ConsoleClear)
@@ -533,8 +535,8 @@ void MainFrame::CreateConsoleText( wxWindow* parent)
 
 
   // Then create a text control
-  wxTextValidator* textval = new wxTextValidator(wxFILTER_ASCII);
-  textval->SetBellOnError(TRUE);
+  _textcontrol_validator = boost::shared_ptr<wxTextValidator>(new wxTextValidator(wxFILTER_ASCII));
+  _textcontrol_validator->SetBellOnError(TRUE);
 
   this->TC = new TextControl( _prompt_panel,
                         wxID_ANY,
@@ -543,7 +545,7 @@ void MainFrame::CreateConsoleText( wxWindow* parent)
                         | wxHSCROLL
                         | wxFULL_REPAINT_ON_RESIZE
                         //|wxTE_RICH|wxTE_RICH2
-                        , *textval
+                        , (*_textcontrol_validator)
                         );
 
 //   wxButton* but_reset = new wxButton(_prompt_panel,
@@ -796,6 +798,7 @@ void MainFrame::CreateSettingsPanel(wxWindow* parent)
 //  cout << GB_scripts_dir << endl;
 
   wxStaticText* scripts_label = new wxStaticText(_settings_panel,wxID_ANY,GetwxStr("Scripts path:"));
+
   wxDirPickerCtrl* scripts_path = new wxDirPickerCtrl(_settings_panel,
         wxID_ScriptsPath,
         GB_scripts_dir, GetwxStr("Scripts path"));
@@ -829,10 +832,11 @@ void MainFrame::CreateSettingsPanel(wxWindow* parent)
 
 
 
-/*
 void MainFrame::OnClose(wxCloseEvent& event)
 {
-  cout << "OnClose " << endl;
+  CLASS_MESSAGE("closing main frame ...");
+  Destroy();
+/*  cout << "OnClose " << endl;
 
     if ( event.CanVeto()  )
     {
@@ -849,9 +853,8 @@ void MainFrame::OnClose(wxCloseEvent& event)
 //  printf("closing files \n");
   event.Skip();
 //    Close(true);
-
-}
 */
+}
 
 //-----------------------------------------------------
 void MainFrame::UpdateVarList()
@@ -859,7 +862,7 @@ void MainFrame::UpdateVarList()
   _var_list->Hide();
 
   _var_list->DeleteAllItems();
-  wxArrayString* variables;
+  boost::shared_ptr<wxArrayString> variables;
 
   // loop vars
   variables = Vars.SearchCompletions(GetwxStr(""));

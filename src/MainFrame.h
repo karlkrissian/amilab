@@ -51,6 +51,8 @@
 #include <iostream>
 using namespace std;
 
+#include "DefineClass.hpp"
+
 class CustomStatusBar : public wxStatusBar
 {
   public:
@@ -75,6 +77,8 @@ class CustomStatusBar : public wxStatusBar
 class MainFrame: public wxFrame
 //    ---------
 {
+  DEFINE_CLASS(MainFrame);
+
 public:
   MainFrame ( const wxString& title, const wxPoint& pos,
               const wxSize& size );
@@ -144,12 +148,16 @@ protected:
   wxPanel*     _varlist_panel;
   wxBoxSizer*  varlistpanel_sizer;
 
+  boost::shared_ptr<wxTextValidator> _textcontrol_validator;
   TextControl* TC;
   wxTextCtrl*  _log_text;
   wxPanel*     _keywords_panel;
   wxPanel*     _var_panel;
   wxPanel*     _html_panel;
+
+//  boost::shared_ptr<wxDirPickerCtrl> 
   wxPanel*     _settings_panel;
+
   wxListCtrl*  _var_list;
   wxComboBox*  _var_list_filter;
   wxHtmlWindow* _htmltext;
