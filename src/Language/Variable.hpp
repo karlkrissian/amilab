@@ -10,7 +10,7 @@
 
 #include "DefineClass.hpp"
 
-
+#include "amilab_messages.h"
 
 
 /* TODO: Change SetString */
@@ -87,14 +87,12 @@ private:
   bool FreeMemory()
   {
     if (_pointer==NULL) {
-        cerr << "Variable::FreeMemory<T>\t";
-        cerr << "pointer is NULL !\n";
+        CLASS_ERROR("pointer is NULL !");
         return false;
     }
     boost::shared_ptr<T>* ptr = (boost::shared_ptr<T>*) _pointer;
     if ((ptr->use_count()>1)&&(GB_debug)) {
-      cerr << "Variable::FreeMemory<T>\t";
-      cerr << format("variable %1% is referenced %2% times")  % _name % ptr->use_count() << endl;
+      CLASS_ERROR( format("variable %1% is referenced %2% times")  % _name % ptr->use_count() );
     }
     delete (boost::shared_ptr<T>*) _pointer;
     _pointer = NULL;

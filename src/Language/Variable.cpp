@@ -1,4 +1,5 @@
 
+#include "DefineClass.hpp"
 #include "Variable.hpp"
 
 #include "ParamBox.hpp"
@@ -40,6 +41,9 @@ void Variable::Init(vartype type, const char* name, void* p)
 
 #define CREATE_CASE(_typeid,_typename) case _typeid: _pointer = new boost::shared_ptr<_typename>((_typename*)p);    break; 
 
+#define CREATE_CASE_WXWINDOW(_typeid,_typename) case _typeid: _pointer = new boost::shared_ptr<_typename>((_typename*)p, \
+      wxwindow_nodeleter<_typename>());    break; 
+
   switch(_type) {
     case type_void: 
       _pointer = NULL; //new boost::shared_ptr<void>((void*)p); 
@@ -54,8 +58,8 @@ void Variable::Init(vartype type, const char* name, void* p)
     CREATE_CASE(type_ami_function, AMIFunction)
     CREATE_CASE(type_ami_class,    AMIClass)
     CREATE_CASE(type_ami_object,   AMIObject)
-    CREATE_CASE(type_paramwin,     ParamBox)
-    CREATE_CASE(type_parampanel,   ParamPanel)
+    CREATE_CASE_WXWINDOW(type_paramwin,     ParamBox)
+    CREATE_CASE_WXWINDOW(type_parampanel,   ParamPanel)
     CREATE_CASE(type_matrix,       FloatMatrix)
     CREATE_CASE(type_gltransform,  GLTransfMatrix)
     CREATE_CASE(type_array,        VarArray)
