@@ -74,6 +74,8 @@ typedef boost::weak_ptr  <Viewer3D> Viewer3D_wptr;
 class Viewer3D:  public wxFrame
 {
 
+  DEFINE_CLASS(Viewer3D);
+
 #define MAX_COMP_SURF 10
 
   Viewer3D_wptr   _compare_surf[MAX_COMP_SURF];
@@ -85,7 +87,8 @@ public:
     public:
       void operator()(Viewer3D * p)
       {
-         p->Destroy();
+        // will be destroyed by its parent which is the main application window
+         //p->Destroy();
       }
   };
 
@@ -157,31 +160,31 @@ protected :
 public:
 
     // 3D View parameters (object transformation)
-    Viewer3D_ViewParam* _param_view;
+    Viewer3D_ViewParam::ptr _param_view;
 
     // Gestion des parametres de la projection 3D
-    Viewer3D_ProjParam* _param_proj;
+    Viewer3D_ProjParam::ptr _param_proj;
 
     //  Background Color
-    Viewer3D_BackgroundParam* _param_backgroundcolor;
+    Viewer3D_BackgroundParam::ptr _param_backgroundcolor;
 
     //  Gestion des parametres des objets
-    Viewer3D_MaterialParam* _param_material;
+    Viewer3D_MaterialParam::ptr _param_material;
 
     //  Lighting Parameters
-    Viewer3D_LightingParam* _param_light;
+    Viewer3D_LightingParam::ptr _param_light;
 
     //  Fog effect Parameters
-    Viewer3D_FogParam*      _param_fog;
+    Viewer3D_FogParam::ptr      _param_fog;
 
     //  Vector Field Parameters
-    Viewer3D_VectorsParam* _param_vectors;
+    Viewer3D_VectorsParam::ptr _param_vectors;
 
     //  Vector Field Parameters
-    Viewer3D_LineParam*    _param_lines;
+    Viewer3D_LineParam::ptr    _param_lines;
 
     //  Vector Field Parameters
-    Viewer3D_PointParam*    _param_points;
+    Viewer3D_PointParam::ptr    _param_points;
 
 
     void UpdateMenu();
