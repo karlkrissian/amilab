@@ -15,6 +15,8 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Filtrage
   ${AMILAB_SOURCE_DIR}/ImageTool
   ${AMILAB_SOURCE_DIR}/OpenGL
+  ${AMILAB_SOURCE_DIR}
+  ${AMILAB_SOURCE_DIR}/AMILab
   ${wxParams_INCLUDE_DIRS}
   )
 
