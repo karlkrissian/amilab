@@ -76,6 +76,8 @@
 #include <vtkTriangleFilter.h>
 #endif // _WITHOUT_VTK_
 
+#include "vtk_common.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
@@ -199,10 +201,10 @@ int  GLObject::MakeContextCurrent()
     if (_wxGL_canvas) {
       // TODO: use SetCurrentContext from myGLCanvas instead ???
 
-      _wxGL_canvas->SetCurrentContext();
+      bool res = _wxGL_canvas->SetCurrentContext();
 
-  if (GB_debug) out << " end 1 GLObject::MakeContextCurrent() " << endl;
-      return 1;
+      if (GB_debug) out << " end 1 GLObject::MakeContextCurrent() " << endl;
+      return res;
     }
     break;
   case GL_SELECT: return 1;
@@ -213,9 +215,9 @@ int  GLObject::MakeContextCurrent()
                 << " GL_SELECT =  " << GL_SELECT
                 << endl;
           glRenderMode(GL_RENDER);
-          _wxGL_canvas->SetCurrentContext();
-  if (GB_debug) out << " end 2 GLObject::MakeContextCurrent() " << endl;
-          return 1;
+          bool res = _wxGL_canvas->SetCurrentContext();
+          if (GB_debug) out << " end 2 GLObject::MakeContextCurrent() " << endl;
+          return res;
   }
 
   if (GB_debug) out << " end 3 GLObject::MakeContextCurrent() " << endl;
@@ -767,8 +769,10 @@ int Surface :: BColor( int u, int v)
 
     norm.Normalise();
 
-    my_glNormal3f(norm.x, norm.y, norm.z);
-    my_glVertex3f(pt.x,   pt.y,   pt.z  );
+    //my_glNormal3f(norm.x, norm.y, norm.z);
+    //my_glVertex3f(pt.x,   pt.y,   pt.z  );
+    glNormal3f(norm.x, norm.y, norm.z);
+    glVertex3f(pt.x,   pt.y,   pt.z  );
 
   }
 
@@ -2777,12 +2781,12 @@ unsigned char SurfacePoly :: ReadVTK( char* nom )
 
 #ifndef _WITHOUT_VTK_
   
-    vtkPolyDataReader* reader;
-    vtkPolyData* poly; 
+  boost::shared_ptr<vtkPolyDataReader> reader;
+  vtkPolyData* poly; 
 
 fprintf(stderr,"SurfacePoly::ReadVTK() begin \n");
 
-  reader = vtkPolyDataReader::New();
+  reader = vtk_new<vtkPolyDataReader>()();
   reader->SetFileName(nom);
   reader->Update();
 
