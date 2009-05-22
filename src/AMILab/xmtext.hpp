@@ -43,10 +43,11 @@ protected:
 
   wxString        completion_lastcommand;
   wxString        completion_lastword;
-  wxArrayString*  completions;
-  unsigned char   in_completion;
-  int             completion_count;
-  wxTextPos       lastprompt_position;
+
+  boost::shared_ptr<wxArrayString>  completions;
+  unsigned char                     in_completion;
+  int                               completion_count;
+  wxTextPos                         lastprompt_position;
 
  public:
 
