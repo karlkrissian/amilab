@@ -46,6 +46,7 @@ VarContexts::VarContexts() {
 
 //--------------------------------------------------
 VarContexts::~VarContexts() {
+  CLASS_MESSAGE("");
   for (int i=_context.size()-1; i>=0; i--)
     delete _context[i];
 }
@@ -108,11 +109,11 @@ bool VarContexts::ExistVar(const char* varname)
 }
 
 //--------------------------------------------------
-wxArrayString* VarContexts::SearchCompletions(const wxString& varname) 
+boost::shared_ptr<wxArrayString> VarContexts::SearchCompletions(const wxString& varname) 
 {
-  wxArrayString* completions;
+  boost::shared_ptr<wxArrayString> completions;
 
-  completions = new wxArrayString();
+  completions = boost::shared_ptr<wxArrayString>(new wxArrayString());
 
   for (int i=_context.size()-1; i>=0; i--)
     _context[i]->SearchCompletions(varname,completions);

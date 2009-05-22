@@ -55,7 +55,7 @@ public:
 
   bool ExistVar(const char* varname);
 
-  wxArrayString* SearchCompletions(const wxString& varname);
+  boost::shared_ptr<wxArrayString> SearchCompletions(const wxString& varname);
 
   /// here void* val is a pointer to the variable type
   /// context is the context where to add the variable
