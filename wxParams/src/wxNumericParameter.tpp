@@ -181,6 +181,10 @@ wxNumericParameter<T>::wxNumericParameter(
 template <class T>
 wxNumericParameter<T>::~wxNumericParameter()
 {
+  // free memory
+  _sizer2->Remove(_limits_sizer);
+  Remove(_sizer2);
+  Remove(_limits_sizer);
 }
 
 //-----------------------------------------------------------

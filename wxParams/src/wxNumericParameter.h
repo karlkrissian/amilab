@@ -40,7 +40,7 @@ class wxNumericParameter : public wxBoxSizer, public wxGenericWidget
   wxWindow*     _parent;
   mySlider* _slider;
   wxSizerItem*  _slider_item;
-  wxBoxSizer*   _sizer2;
+  wxBoxSizer*  _sizer2;
   wxWindow* _boutton;
   wxStaticText* _label;
   wxWindow*     _texte;
