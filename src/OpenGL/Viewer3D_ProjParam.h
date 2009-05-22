@@ -13,10 +13,14 @@
 #ifndef _Viewer3D_ProjParam_h_
 #define _Viewer3D_ProjParam_h_
 
+#include "DefineClass.hpp"
+
 class Viewer3D;
 
 class  Viewer3D_ProjParam: public ParamPanel
 {
+  DEFINE_CLASS(Viewer3D_ProjParam);
+
 private:
 
   Viewer3D* parent_class;

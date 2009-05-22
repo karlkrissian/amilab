@@ -137,7 +137,7 @@ void Viewer3D_ProjParam::CB_proj_type(  void* cd)
 //                       ------------
 {
   Viewer3D*  tgl = (Viewer3D*) cd;
-  Viewer3D_ProjParam*  param = (Viewer3D_ProjParam*) tgl->_param_proj;
+  Viewer3D_ProjParam*  param = (Viewer3D_ProjParam*) tgl->_param_proj.get();
 
   ami_wxGLCanvas* glc = tgl->m_canvas;
 

@@ -224,7 +224,7 @@ void Viewer3D_MaterialParam::CB_object_number( void* cd)
 //              ---------------
 {
     Viewer3D*       tgl = (Viewer3D*) cd;
-    Viewer3D_MaterialParam* _this = tgl->_param_material;
+    Viewer3D_MaterialParam* _this = tgl->_param_material.get();
     ami_wxGLCanvas* mcanv = tgl->m_canvas;
     GLObject::ptr    current;
   
@@ -246,7 +246,7 @@ void Viewer3D_MaterialParam::CB_material_update( void* cd)
 //              ------------------
 {
   Viewer3D* tgl = (Viewer3D*) cd;
-  Viewer3D_MaterialParam* _this = tgl->_param_material;
+  Viewer3D_MaterialParam* _this = tgl->_param_material.get();
   ami_wxGLCanvas* mcanv = tgl->m_canvas;
   GLObject::ptr   current;
 

@@ -13,10 +13,13 @@
 #ifndef _Viewer3D_FogParam_h_
 #define _Viewer3D_FogParam_h_
 
+#include "DefineClass.hpp"
+
 class Viewer3D;
 
 class  Viewer3D_FogParam: public ParamPanel
 {
+  DEFINE_CLASS(Viewer3D_FogParam);
 private:
 
   Viewer3D* parent_class;

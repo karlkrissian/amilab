@@ -13,10 +13,13 @@
 #ifndef _Viewer3D_LightingParam_h_
 #define _Viewer3D_LightingParam_h_
 
+#include "DefineClass.hpp"
+
 class Viewer3D;
 
 class  Viewer3D_LightingParam: public ParamPanel
 {
+  DEFINE_CLASS(Viewer3D_LightingParam);
 private:
 
   Viewer3D* parent_class;
