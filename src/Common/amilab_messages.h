@@ -40,4 +40,5 @@
 extern unsigned char GB_debug;
 extern unsigned char GB_verbose;
 
+
 #endif //  _amilab_messages_h_

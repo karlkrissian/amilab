@@ -48,6 +48,30 @@ public:\
   typedef std::list<class::ptr>       ptr_list;         \
   typedef std::list<class::wptr>      wptr_list;
 
+
+template<class T>
+class wxwindow_deleter 
+  { 
+  public: 
+    void operator()(T * p) 
+    { 
+      if (p!=NULL) p->Destroy();
+    }  
+  };
+
+template<class T>
+class wxwindow_nodeleter 
+  { 
+  public: 
+    void operator()(T * p)  {  }  
+  };
+
+#define new_wxWindow_ptr(_class,_parent) \
+  _class::ptr(new _class(_parent),wxwindow_nodeleter<_class>())
+
+#define new_wxWindow_ptr_deleter(_class,_parent) \
+  _class::ptr(new _class(_parent),wxwindow_deleter<_class>())
+
 // no special type added
 #define DEFINE_SIMPLE_CLASS(class) \
 public:\
@@ -79,9 +103,6 @@ class file_deleter
 };
 
 
-
-
-
 namespace MyNS_ForOutput {
   using std::cout; using std::cerr;
   using std::string;
@@ -91,6 +112,7 @@ namespace MyNS_ForOutput {
   using boost::io::group;
 }
 using namespace MyNS_ForOutput;
+
 
 
 #endif // _LINKCLASS_HPP
