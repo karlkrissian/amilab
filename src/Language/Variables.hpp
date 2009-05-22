@@ -60,7 +60,8 @@ protected:
 
   bool ExistVar(Variable* var);
 
-  void SearchCompletions(const wxString& varname, wxArrayString* completions);
+  void SearchCompletions( const wxString& varname, 
+                          boost::shared_ptr<wxArrayString>& completions);
 
   bool GetVar(const char* varname, Variable** var);
 

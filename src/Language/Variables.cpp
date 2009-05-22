@@ -67,6 +67,8 @@ unsigned char Variables::deleteVar(int i)
 //--------------------------------------------------
 Variables::~Variables()
 {
+  CLASS_MESSAGE("");
+  EmptyVariables();
 }
 
 
@@ -164,7 +166,8 @@ Variable* Variables::AddImage(char* name, void* val)
 }
   
 //--------------------------------------------------
-void Variables::SearchCompletions(const wxString& varname, wxArrayString* completions)
+void Variables::SearchCompletions(const wxString& varname, 
+    boost::shared_ptr<wxArrayString>& completions)
 {
   wxString name;
   std::list<Variable*>::iterator Iter;
@@ -244,7 +247,7 @@ unsigned char Variables::GetVar(const char* varname, int* i)
 //--------------------------------------------------
 bool Variables::deleteVar(const char* varname)
 {
-  if (GB_debug) cerr << format("Variables::deleteVar(%s) ") % varname << endl;
+  CLASS_MESSAGE( format("Variables::deleteVar(%s) ") % varname );
 
   std::list<Variable*>::iterator Iter;
   for (Iter  = _vars.begin();
@@ -252,12 +255,11 @@ bool Variables::deleteVar(const char* varname)
   {
     if ((*Iter)->HasName(varname)) {
       (*Iter)->Delete();
-      delete (*Iter);
       Iter = _vars.erase(Iter);
       return true;
     }
   }
-  cerr << format("deleteVar(%s) variable not found \n") % varname;
+  CLASS_ERROR( format("deleteVar(%s) variable not found") % varname);
   return false;
 
 } // Variables::deleteVar()
@@ -279,6 +281,7 @@ void Variables::display()
 //--------------------------------------------------
 void Variables::EmptyVariables()
 {
+  CLASS_MESSAGE("");
   std::list<Variable*>::iterator Iter;
   for (Iter  = _vars.begin();
        Iter != _vars.end()  ; Iter++ )
@@ -286,6 +289,7 @@ void Variables::EmptyVariables()
     if ((*Iter)->Type() == type_imagedraw) {
       if ((*Iter)->Pointer()!=NULL) {
         (*Iter)->Delete();
+        delete (*Iter);
         Iter = _vars.erase(Iter);
       }
     }
@@ -296,6 +300,7 @@ void Variables::EmptyVariables()
   {
     if ((*Iter)->Pointer()!=NULL) {
       (*Iter)->Delete();
+      delete (*Iter);
       Iter = _vars.erase(Iter);
     }
   }
