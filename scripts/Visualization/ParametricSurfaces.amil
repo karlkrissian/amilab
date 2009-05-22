@@ -38,9 +38,9 @@ proc PS_init() {
   PS_r = 0.1
 
   # expressions as string
-  PS_X = "cos(V)*cos(U)"
-  PS_Y = "sin(V)*cos(U)"
-  PS_Z = "sin(U)"
+  PS_X = "cos(U)*cos(V)"
+  PS_Y = "sin(U)*cos(V)"
+  PS_Z = "sin(V)"
 
   PS_updating = 0
   PS_Update()
@@ -191,7 +191,6 @@ proc PS_gui() {
           PS_phidim_id   = PS_win.AddInt(PS_phi_dim,  4,500)
           PS_win.SetCallback(PS_Update)
       PS_win.EndBox
-
       PS_win.BeginBox("Scaling Coeff.")
           PS_cx_id = PS_win.AddFloat    (PS_cx,0.1,5)
           PS_win.SetCallback(PS_Update)
@@ -201,8 +200,6 @@ proc PS_gui() {
           PS_win.SetCallback(PS_Update)
           PS_win.AddButton("Reset",   PS_ResetScale)
       PS_win.EndBox
-
-
     PS_win.AddPage("SuperQu.")
       PS_win.BeginBox("Exponential Coeff.")
           PS_cx_id = PS_win.AddFloat    (PS_e_x,0.1,5)
@@ -213,7 +210,6 @@ proc PS_gui() {
           PS_win.SetCallback(PS_Update)
           PS_win.AddButton("Set Ellipsoid",   PS_SetEllipsoid)
       PS_win.EndBox
-
     PS_win.AddPage("Torus")
       PS_win.BeginBox("Radii")
           PS_R_id = PS_win.AddFloat    (PS_R,0.1,5)
@@ -221,7 +217,6 @@ proc PS_gui() {
           PS_r_id = PS_win.AddFloat    (PS_r,0.1,5)
           PS_win.SetCallback(PS_Update)
       PS_win.EndBox
-
     PS_win.AddPage("Expr")
       PS_win.BeginBox("Equation (U,V):")
           PS_X_id = PS_win.AddString(PS_X,"X=")
@@ -231,16 +226,14 @@ proc PS_gui() {
           PS_Z_id = PS_win.AddString(PS_Z,"Z=")
           PS_win.SetCallback(PS_Update)
       PS_win.EndBox
-
   PS_win.EndBook
       PS_win.BeginHorizontal
         PS_win.AddButton("Update",          PS_Update)
       PS_win.EndHorizontal
-
   PS_win.update
   PS_win.Display
-
 }
 
 PS_init()
 PS_gui()
+
