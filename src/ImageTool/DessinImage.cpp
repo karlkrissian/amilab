@@ -179,6 +179,9 @@
 
 typedef  unsigned long Dimension;
 
+#include "MainFrame.h"
+extern MainFrame*   GB_main_wxFrame;
+
 //extern XtAppContext GB_contexte;
 extern unsigned char      GB_debug;
 
@@ -5192,7 +5195,10 @@ void DessinImage::DrawAllContours()
 void DessinImage::CreateGLWindow()
 //                  -----------
 {
-  _GLWindow0 = Viewer3D_ptr(new Viewer3D(NULL, GetwxStr("3D Viewer")));
+  Viewer3D* viewer = new Viewer3D(GB_main_wxFrame, GetwxStr("3D Viewer"));
+  // Don´t delete the viewer since its parent will take care of it
+  _GLWindow0 = Viewer3D::ptr( viewer,
+                              wxwindow_nodeleter<Viewer3D>());
   _GLWindow0->SetCloseFunction( (void*) CB_CloseGL, (void*) this);
   _GLWindow0->Show(true);
   _GLWindow = _GLWindow0;
