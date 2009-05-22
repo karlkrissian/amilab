@@ -18,7 +18,9 @@ if (($1=="-help")||($1=="--help")||(argc!=4)) {
   printn ""
   quit
 }
-#printn "0:"+ $0 + " 1:"+ $1 + " 2:"+ $2 + " 3:"+ $3+ " 4:"+ $4
+printn "0:"+ $0 + " 1:"+ $1 + " 2:"+ $2 + " 3:"+ $3+ " 4:"+ $4
+
+
 
 filename=$1
 firstimage=atof($2)
@@ -32,7 +34,7 @@ if (argc>4) {
 
 name = sprint(filename,firstimage)
 #printn firstimage
-#printn "filename = "+filename
+printn "filename = "+filename
 #printn "name = "+ name
 
 i0 = Image(name)
