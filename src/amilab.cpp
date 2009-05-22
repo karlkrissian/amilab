@@ -223,10 +223,12 @@ bool MyApp::OnInit()
 
   // print the command line as a comment in the cmdhistory
   // TODO: check for binary path and command line before adding /usr/bin
-  if (argv[0][0]!='/')
-    cmd_line = "#!/usr/bin/";
+  if (argv[0][0]!='/') {
+    cmd_line = "#!";
+    cmd_line += wxStandardPaths::Get().GetExecutablePath().c_str();
+  }
   else
-    cmd_line = "";
+    cmd_line = "#!";
   for(n=0;n<argc;n++)
     {
       cmd_line += wxString(argv[n]).mb_str(wxConvUTF8);
@@ -331,6 +333,7 @@ bool MyApp::OnInit()
 int MyApp::OnExit()
 {
   cout << "MyApp::OnExit()" << endl;
+  // Clean memory ?
   return 0;
 }
 
