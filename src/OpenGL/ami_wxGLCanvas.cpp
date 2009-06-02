@@ -23,6 +23,11 @@
 #ifdef WIN
 //  #define OLD_METHOD 1
 #endif
+
+#ifdef __APPLE__
+  // on Mac, different interface for GLcontext
+  #define OLD_METHOD 1
+#endif
 //#define NEW_METHOD
 
 boost::iostreams::stream_buffer<boost::iostreams::file_sink> buf("ami_wxGLCanvas_trace.txt");
@@ -142,7 +147,7 @@ ami_wxGLCanvas::ami_wxGLCanvas(
                   id,
                   pos,
                   size,
-                  style 
+                  style
                   |wxFULL_REPAINT_ON_RESIZE
                   ,
                   name
@@ -483,8 +488,8 @@ void ami_wxGLCanvas::OnSize( wxSizeEvent& event )
   GetClientSize ( &w, &h );
   _largeur = w;
   _hauteur = h;
-  CLASS_MESSAGE(boost::format(" %1% x %2% ") 
-                  % _largeur 
+  CLASS_MESSAGE(boost::format(" %1% x %2% ")
+                  % _largeur
                   % _hauteur);
   if (SetCurrentContext())
   {
@@ -931,13 +936,13 @@ void ami_wxGLCanvas::DessineSurfaceCC(  int cc )
   // Set OpenGL tasks to this drawing area
   if (this->SetCurrentContext()) {
     Si _type_surface != SURFACE_POLY AlorsFait return;
-  
+
     Si Non(surf_poly->_cc_calculees) Alors
       surf_poly->CalculCC();
     FinSi
-  
+
     surf_poly->GLSurfaceDrawOnlyCC( _SURFACE, cc);
-  
+
     _type_surface   = SURFACE_POLY;
     _mode_affichage = MODE_SURFACE;
   }
@@ -1165,15 +1170,15 @@ void ami_wxGLCanvas::DessineSurfaceCC(  int cc, unsigned char draw )
 
   // Set OpenGL tasks to this drawing area
   if (this->SetCurrentContext()) {
-  
+
     Si _type_surface != SURFACE_POLY AlorsFait return;
-  
+
     Si Non(surf_poly->_cc_calculees) Alors
       surf_poly->CalculCC();
     FinSi
-  
+
     surf_poly->GLSurfaceSetDrawCC( _SURFACE, cc, draw);
-  
+
     _type_surface   = SURFACE_POLY;
     _mode_affichage = MODE_SURFACE;
   }
