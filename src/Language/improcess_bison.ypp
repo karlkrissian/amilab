@@ -1060,6 +1060,45 @@ proc_decl:
       // desactivate the flag procedure_declaration
       // which allows not to accept variables as identifiers
       GB_driver.procedure_declaration = false;
+    } 
+    |
+    T_PROC  VAR_AMI_FUNCTION
+    {
+      // allow overriding current functions
+      GB_driver.procedure_declaration = true;
+    }
+        T_OP_PAR param_list_decl T_CL_PAR
+        instr_block end_instr
+    {
+      AMIFunction* amifunc;
+      AmiInstructionBlock::ptr body($7);
+      Variable*       var   = $2;
+
+      // delete previous variable
+      std::string varname = var->Name();
+      int context = Vars.GetContext(var);
+      Vars.deleteVar(var);
+
+      FILE_MESSAGE(boost::format("Redefining procedure %1%") % varname); 
+
+      amifunc = new AMIFunction;
+
+      amifunc->SetName(varname.c_str());
+      amifunc->SetFileName(driver.current_file);
+      amifunc->SetParamList($5);
+      amifunc->SetBody(     body);
+      FILE_MESSAGE(boost::format("%1%: body = %2%")
+                    % varname  % body->GetBody());
+
+      // add the variable in the same context ...
+      Vars.AddVar(  type_ami_function,
+                    varname.c_str(),
+                    (void*) amifunc,
+                    context);
+
+      // desactivate the flag procedure_declaration
+      // which allows not to accept variables as identifiers
+      GB_driver.procedure_declaration = false;
     };
 
 
@@ -9510,7 +9549,7 @@ multiplicative_image: cast_image
 // to resolve the ambiguities
 // probably need to have a common class that can contain either number of images,
 // or any other object that accepts arithmetic operations
-//                |  unary_expr  T_MULT multiplicative_image  { IMAGE_OP_EXPR(*,$1) }
+                //|  unary_expr  T_MULT T_MULT multiplicative_image  { IMAGE_OP_EXPR(*,$1) }
                 | multiplicative_image T_DIV cast_expr  { IMAGE_OP_EXPR(/,$3) }
 //                |  unary_expr  T_DIV multiplicative_image  { EXPR_OP_IMAGE(/,$1) }
         | multiplicative_image T_MULT cast_image {  IMAGE_OP_IMAGE_2(*)   }
@@ -10749,7 +10788,8 @@ void CB_delete_surfdraw( void* varid)
   fprintf(stderr," CB_delete_surfdraw begin \n");
   Variable* v = (Variable*) varid;
   fprintf(stderr," Delete var %s \n", v->Name());
-  Vars.deleteVar( v->Name());
+  if (Vars.deleteVar( v->Name())==0)
+    fprintf(stderr,"CB_delete_surfdraw() could not delete variable '%s' !!! \n",v->Name());
   fprintf(stderr," CB_delete_surfdraw end \n");
 }
 
