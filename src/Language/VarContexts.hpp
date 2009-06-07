@@ -32,6 +32,8 @@ public:
 
   ~VarContexts();
 
+  void EmptyVariables();
+
   int GetNewVarContext();
 
   void SetGlobalNew(unsigned char gn)  {  _context[_current_context]->SetGlobalNew(gn);}
