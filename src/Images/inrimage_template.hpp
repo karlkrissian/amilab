@@ -113,16 +113,6 @@ public:
     { InitPositions();    }
 
     ///
-    Constructeur InrImageTemplate( t_Image* image)
-      : InrImageBase( image)
-    { InitPositions();    }
- 
-    ///
-    Constructeur InrImageTemplate( inrimage* image, const char* nom="sansnom.inr")
-      : InrImageBase( image, nom)
-    { InitPositions();    }
- 
-    ///
     Constructeur InrImageTemplate( int dimx, 
 				   int dimy, 
 				   int dimz, const char* nom=NULL)

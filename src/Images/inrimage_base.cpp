@@ -272,31 +272,6 @@ InrImageBase::InrImageBase( const char* nom, int type)
   LitMaple( nom);
 }
 
-//-----------------------------------------------------------------------
-InrImageBase::InrImageBase( t_Image* image)
-{
-  //----- Lecture de l'image d'entree
-  _inrimage = epidaureLib2Inrimage( image);
-  _nom      = image->fi.name;
-  _message_erreur = "";
-
-  init_from_inrimage( _inrimage);
-
-  _inrimage_allouee = false;
-}
-
-//-----------------------------------------------------------------------
-InrImageBase::InrImageBase( inrimage* image, const char* nom)
-{
-  //----- Lecture de l'image d'entree
-  _inrimage = image;
-  _nom      = nom;
-  _message_erreur = "";
-
-  init_from_inrimage( _inrimage);
-
-  _inrimage_allouee = false;
-}
 
 //-----------------------------------------------------------------------
 InrImageBase::InrImageBase( int dimx, 

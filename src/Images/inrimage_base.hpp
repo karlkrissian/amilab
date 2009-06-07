@@ -211,10 +211,6 @@ public:
     // Pour des fichier d'un autre format
     Constructeur InrImageBase( const char* nom, int type);
 
-    Constructeur InrImageBase( t_Image* image);
- 
-    Constructeur InrImageBase( inrimage* image, const char* nom="sansnom.inr");
- 
     Constructeur InrImageBase( int dimx, 
 			       int dimy, 
 			       int dimz, 
@@ -314,20 +310,6 @@ public:
 
   /** @name 6-Red�initions d'op�ateurs */
   //@{
-    /**
-     */
-    operator t_Image*() { return( inrimage2EpidaureLib(_inrimage)); }
-    //       -------
- 
-    /* 
-      */
-    operator t_Image() { return( *inrimage2EpidaureLib(_inrimage)); }
-    //       -------
-
-    // 
-    operator inrimage*() { return( _inrimage); }
-    //       --------
- 
     // 
     operator inrimage() { return( *_inrimage); }
     //       --------

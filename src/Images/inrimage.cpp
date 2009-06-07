@@ -880,6 +880,7 @@ unsigned char InrImage :: Alloue( ) throw (ErreurAllocation)
   strcpy(name,_nom);
   RemoveEndString(name,".gz");
 
+/*
   Si (CheckEndString( name, ".inr"))Ou(CheckEndString( name, ".hdr")) Alors
     // Convert to inrimage first ...
     inrimage_ptr = (inrimage*) (*this);
@@ -890,7 +891,8 @@ unsigned char InrImage :: Alloue( ) throw (ErreurAllocation)
     free(inrimage_ptr);
     //  freeInrimage(inrimage_ptr);
   Autrement
-      
+*/
+
 #ifndef _WITHOUT_VTK_
   Si (CheckEndString( name, ".vtk")) Alors
     shared_ptr<vtkStructuredPointsWriter> vtk_iw;
@@ -1055,6 +1057,7 @@ unsigned char InrImage :: Desalloue( )
 {
 
 //  printf("liberation de %s \n", (char*) _nom);
+  CLASS_MESSAGE(boost::format(" freeing image %s ") % (char*) _nom)
 
   Si (_amimage_allocated) Et (_amimage != NULL) Alors
     delete _amimage;
@@ -1444,94 +1447,6 @@ InrImage :: Constructeur InrImage( char* nom, int type)
   Si type != TYPE_MAPLE AlorsRetourne;
 
   LitMaple( nom);
-
-  InitPositions();
-
-
-} // Construteur
-
-
-//--------------------------------------------------------------------------
-InrImage :: Constructeur InrImage( t_Image* image)
-//                                 --------
-{
-
-  inrimage* inrimage_ptr;
-
-//  fprintf(stderr,"InrImage( t_Image* image) may cause problems ... \n");
-
-  InitParams();
-
-  //----- Lecture de l'image d'entree
-  inrimage_ptr = epidaureLib2Inrimage( image);
-  _nom      = image->fi.name;
-  _format   = inrimage_ptr->type;
-
-  _message_erreur = "";
-
-  _amimage = new amimage();   
-  _amimage->SetDim(inrimage_ptr->ncols, inrimage_ptr->nrows, inrimage_ptr->nplanes );
-  AMIFromWT(inrimage_ptr->vdim,inrimage_ptr->type,_amimage);
-  _amimage->SetVoxelSize(inrimage_ptr->vx,inrimage_ptr->vy,inrimage_ptr->vz);
-  _amimage->allocate();
-  memcpy(_amimage->GetData(), 
-     inrimage_ptr->data, 
-     _amimage->GetDataSize());
-  _amimage_allocated = true;
-
-
-  //----- Lecture de l'image d'entree
-
-  _tx     = _amimage->GetXDim();
-  _ty     = _amimage->GetYDim();
-  _tz     = _amimage->GetZDim();
-  _txy    = _tx*_ty;
-  _taille = (unsigned long) _tx * _ty * _tz;
-
-  _size_x = _amimage->GetVX();
-  _size_y = _amimage->GetVY();
-  _size_z = _amimage->GetVZ();
-
-  // ----- free inrimage
-  freeInrimage(inrimage_ptr);
-
-  InitPositions();
-
-} // Construteur
-
-
-//--------------------------------------------------------------------------
-InrImage :: Constructeur InrImage( inrimage* image, const char* nom)
-//                                 --------
-{
-
-//  fprintf(stderr,"InrImage( inrimage* image, char* nom) may cause problems ... \n");
-
-  InitParams();
-
-  _amimage = new amimage();   
-  _amimage->SetDim(image->ncols, image->nrows, image->nplanes, image->vdim );
-  AMIFromWT(image->vdim,image->type,_amimage);
-  _amimage->SetVoxelSize(image->vx,image->vy,image->vz);
-  _amimage->allocate();
-  memcpy(_amimage->GetData(), 
-     image->data, 
-     _amimage->GetDataSize());
-  _amimage_allocated = true;
-
-  //----- Lecture de l'image d'entree
-  _nom      = nom;
-
-  _format = image->type;
-  _tx     = _amimage->GetXDim();
-  _ty     = _amimage->GetYDim();
-  _tz     = _amimage->GetZDim();
-  _txy    = _tx*_ty;
-  _taille = (unsigned long) _tx * _ty * _tz;
-
-  _size_x = _amimage->GetVX();
-  _size_y = _amimage->GetVY();
-  _size_z = _amimage->GetVZ();
 
   InitPositions();
 
@@ -2080,8 +1995,16 @@ void InrImage :: InitImage( double val)
   Repeter
     FixeValeur( val);
   JusquA Non(IncBuffer()) FinRepeter
-  
 } // InitImage()
+
+
+//----------------------------------------------------------------
+void InrImage :: InitZero()
+//               --------
+{
+  _amimage->ComputeDataSize();
+  memset(_amimage->GetData(),0,_amimage->GetDataSize());
+}
 
 
 //----------------------------------------------------------------
@@ -2198,51 +2121,6 @@ void InrImage :: InitBuffer( int pos )
 
 
 
-//--------------------------------------------------------------------------
-InrImage :: operator t_Image*()
-//                    ---------
-{
-
-  fprintf(stderr,"InrImage::operator t_Image* \t Not Available now \n");
-  return( NULL);
-
-} // operator t_Image*()
-
-
-//--------------------------------------------------------------------------
-InrImage :: operator t_Image()
-//                    ---------
-{
-
-  return( *inrimage2EpidaureLib((inrimage*) (*this)));
-
-} // operator t_Image()
-
-
-//--------------------------------------------------------------------------
-InrImage :: operator inrimage*()
-//                    ---------
-{
-
-  inrimage* inrimage_ptr;
-
-  // Conversion to an inrimage
-  inrimage_ptr = initInrimage( DimX(), DimY(), DimZ(), 
-                   GetVDim(), 
-                   (WORDTYPE) _format );
-
-  inrimage_ptr->vx = VoxSizeX();
-  inrimage_ptr->vy = VoxSizeY();
-  inrimage_ptr->vz = VoxSizeZ();
-
-  inrimage_ptr->data   = GetData();
-  inrimage_ptr->array  = NULL;
-  inrimage_ptr->varray = NULL;
-
-  return inrimage_ptr;
-
-} // operator inrimage*()
-
 
 //--------------------------------------------------------------------------
 InrImage :: operator amimage*()
@@ -2253,15 +2131,6 @@ InrImage :: operator amimage*()
 
 } // operator amimage*()
 
-
-//--------------------------------------------------------------------------
-InrImage :: operator inrimage()
-//                    ---------
-{
-
-  return( *((inrimage*)(*this)));
-
-} // operator inrimage()
 
 #ifndef _WITHOUT_VTK_
 

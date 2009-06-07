@@ -283,7 +283,7 @@ class InrImage
 //    ========
 {
 
-  DEFINE_CLASS(InrImage)
+  DEFINE_CLASS(InrImage);
 
 public:
   /// Exceptions
@@ -323,9 +323,6 @@ protected:
   /// pointer to the data
   amimage*           _amimage;
   unsigned char    _amimage_allocated;
-
-  ///
-  //  t_Image*    _t_Image;
 
   ///
   int     _vdim; // image scalar (1), vectorial (2,3,etc...)
@@ -532,10 +529,6 @@ public:
     // Pour des fichier d'un autre format
     Constructeur InrImage( char* nom, int type);
 
-    Constructeur InrImage( t_Image* image);
-
-    Constructeur InrImage( inrimage* image, const char* nom="sansnom.inr");
-
     Constructeur InrImage( int dimx, int dimy,
                            int dimz, WORDTYPE format, const char* nom=(const char*)NULL);
 
@@ -600,6 +593,10 @@ public:
     ///
     void SetVoxelSize( float sx, float sy, float sz);
     //   ------------------
+
+    /// Initialisation tous les voxels a 0
+    void InitZero( );
+    //   --------
 
     /// Initialisation tous les voxels a la valeurs val
     void InitImage( double val);
@@ -1289,25 +1286,11 @@ public:
     { return ValeurBuffer(); }
     /**
      */
-    operator t_Image*();
-    //       -------
-
-    /*
-      */
-    operator t_Image();
-    //       -------
 
     //
     operator amimage*();
     //       -------
 
-    //
-    operator inrimage*();
-    //       --------
-
-    //
-    operator inrimage();
-    //       --------
 
 #ifndef _WITHOUT_VTK_
     //

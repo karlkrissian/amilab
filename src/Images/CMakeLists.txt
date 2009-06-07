@@ -15,10 +15,10 @@ include_directories (
 		    )
 
 SET(Images_SRCS
-      inrimage_base.cpp
+#      inrimage_base.cpp
       inrimage.cpp
-      inrimage_compressee.cpp
-      inrimage_all.cpp
+#      inrimage_compressee.cpp
+#      inrimage_all.cpp
 )
 
 my_add_library (Images)

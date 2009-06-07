@@ -86,10 +86,6 @@ public:
       : InrImageTemplate<T>(nom, type) {  }
 
     ///
-    Constructeur InrImageVectTemplate( t_Image* image)
-      : InrImageTemplate<T>( image){   }
- 
-    ///
     Constructeur InrImageVectTemplate( inrimage* image, 
 				       const char* nom="sansnom.inr")
       : InrImageTemplate<T>( image, nom) {  }
