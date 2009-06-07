@@ -51,6 +51,12 @@ VarContexts::~VarContexts() {
     delete _context[i];
 }
 
+//--------------------------------------------------
+void VarContexts::EmptyVariables() {
+  CLASS_MESSAGE("");
+  for (int i=_context.size()-1; i>=0; i--)
+    _context[i]->EmptyVariables();
+}
 
 //--------------------------------------------------
 bool VarContexts::NewContext(const char* name) {
