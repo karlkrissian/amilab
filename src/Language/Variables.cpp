@@ -283,26 +283,30 @@ void Variables::EmptyVariables()
 {
   CLASS_MESSAGE("");
   std::list<Variable*>::iterator Iter;
-  for (Iter  = _vars.begin();
-       Iter != _vars.end()  ; Iter++ )
+  Iter  = _vars.begin();
+  while (Iter != _vars.end() )
   {
     if ((*Iter)->Type() == type_imagedraw) {
       if ((*Iter)->Pointer()!=NULL) {
         (*Iter)->Delete();
         delete (*Iter);
         Iter = _vars.erase(Iter);
+        continue;
       }
     }
+    Iter++;
   }
 
-  for (Iter  = _vars.begin();
-       Iter != _vars.end()  ; Iter++ )
+  Iter  = _vars.begin();
+  while ( Iter != _vars.end())
   {
     if ((*Iter)->Pointer()!=NULL) {
       (*Iter)->Delete();
       delete (*Iter);
       Iter = _vars.erase(Iter);
+      continue;
     }
+    Iter++; 
   }
 
 } // Variables::EmptyVariables()
