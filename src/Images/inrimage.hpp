@@ -171,8 +171,27 @@ float fround(const float& a);
 
 DebutDeclareC
 #include <math.h>
-#include "Zinrimage.h"
+//#include "Zinrimage.h"
 FinDeclareC
+
+// taken from Zinrimage.h
+typedef enum {
+  WT_UNSIGNED_CHAR,  /* Unsigned 8 bits */
+  WT_UNSIGNED_SHORT, /* Unsigned 16 bits */
+  WT_SIGNED_SHORT,   /* Signed 16 bits */
+  WT_UNSIGNED_INT,   /* Unsigned 32 bits */
+  WT_SIGNED_INT,     /* Signed 32 bits */
+  WT_UNSIGNED_LONG,  /* Unsigned 64 bits */
+  WT_SIGNED_LONG,    /* Signed 64 bits */
+  WT_FLOAT,          /* Float 32 bits */
+  WT_DOUBLE,         /* Float 64 bits */
+  WT_RGB,            /* R, G, B, 8 bits each */
+  WT_RGBA,           /* R, G, B, A, 8 bits each */
+  WT_FLOAT_VECTOR,   /* Vector of 32 bit floats */
+  WT_DOUBLE_VECTOR,   /* Vector of 64 bit floats */
+  WT_UNKOWN_TYPE,
+} WORDTYPE;
+/* The different size of words for a 3D image */
 
 
 #include "amimage.hpp"

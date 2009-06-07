@@ -698,13 +698,14 @@ unsigned char InrImage :: Lit( ) throw (ErreurLecture)
 //                           ---
 {
 
-  inrimage* ptr;
+//  inrimage* ptr;
   unsigned char   res; 
 
   CLASS_MESSAGE("Begin");
 
   res = ReadAMI();
 
+/*
   Si Non(res) Alors
     Si (_nom == "<") Alors
       // entree standard
@@ -735,6 +736,7 @@ unsigned char InrImage :: Lit( ) throw (ErreurLecture)
       return true;
     FinSi
   FinSi
+*/
 
   //  Si ptr == NULL Alors
 #ifdef USE_MAGICK
@@ -771,11 +773,12 @@ unsigned char InrImage :: LitEntete( )  throw (ErreurLecture)
 //                           ---------
 {
 
-  INRIMAGE_HEADER* ptr;
-  inrimage*        ptr_image;
+//  INRIMAGE_HEADER* ptr;
+//  inrimage*        ptr_image;
 
 //  printf("lecture de l'ent�e de %s \n", (char*) _nom);
 
+/*
   Si (_nom == "<") Alors
     // entree standard
     printf("InrImage::LitEntete()\t on ne lit pas que ");
@@ -806,6 +809,7 @@ unsigned char InrImage :: LitEntete( )  throw (ErreurLecture)
   _amimage->SetVoxelSize(ptr_image->vx,ptr_image->vy,ptr_image->vz);
 
   free(ptr_image);
+*/
 
   return true;
 
@@ -873,7 +877,7 @@ unsigned char InrImage :: Alloue( ) throw (ErreurAllocation)
 #ifndef _WITHOUT_VTK_
     vtkImageData_ptr   vtk_id;
 #endif
-    inrimage*       inrimage_ptr;
+//    inrimage*       inrimage_ptr;
     char  name[200];
 
 
