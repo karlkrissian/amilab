@@ -88,7 +88,8 @@ public:
       void operator()(Viewer3D * p)
       {
         // will be destroyed by its parent which is the main application window
-         //p->Destroy();
+        // but Destroy() is ok and it closes the window too
+         p->Destroy();
       }
   };
 

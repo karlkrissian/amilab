@@ -567,7 +567,7 @@ void ami_wxGLCanvas::OnMouseEvent(wxMouseEvent& event)
     if ( shift && ld ) ApplyPicking();
     else {
       // Use Alt button for translation
-      if (alt) {
+      if ((alt)||(ctrl)) {
         if (ld)           TranslationStart();
         else
         if (lu)           TranslationEnd();
@@ -656,12 +656,14 @@ void ami_wxGLCanvas::UpdateObjectList( )
 {
   GLObject::ptr_list::iterator Iter;
 
-  for (Iter  = _globject.begin();
-       Iter != _globject.end()  ; Iter++ )
+  Iter  = _globject.begin();
+  while ( Iter != _globject.end())
   {
     if (!(*Iter).use_count()) {
       Iter = _globject.erase(Iter);
     }
+    else
+     Iter++;
   }
 
 } // UpdateObjectList()
