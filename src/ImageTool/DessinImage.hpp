@@ -233,8 +233,8 @@ public:
     public: 
       void operator()(DessinImage * p) 
       { 
-        // no need to destroy, destroyed by parent
-        //p->Destroy(); 
+        // no need to destroy, destroyed by parent ???
+        p->Destroy();
       }  
   };
 

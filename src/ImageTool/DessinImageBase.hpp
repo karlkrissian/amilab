@@ -853,9 +853,11 @@ public:
   //   -----------------
 */
 
+/*
   ///
   void InitImage( inrimage* image);
   //   ---------
+*/
 
   ///
   virtual void Paint(  unsigned char affiche = true);

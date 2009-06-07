@@ -187,6 +187,7 @@ extern unsigned char      GB_debug;
 
 #define aff_err(mess) if (GB_debug) fprintf(stderr,mess);
 
+#include "amilab_messages.h"
 
 //----------------------------------------------------------------
 void DessinImage::InitMinMax( InrImage::ptr& image)
@@ -2985,8 +2986,8 @@ void DessinImage::Comparaisons_UpdateStatusInfo( const Point_3D<int>& imagepos, 
     fprintf(stderr,"start testing _tab_compare_image2\n");
 
   std::list<compare_info>::iterator Iter;
-  for (Iter  = _tab_compare2_image.begin();
-       Iter != _tab_compare2_image.end()  ; Iter++ )
+  Iter  = _tab_compare2_image.begin();
+  while (Iter != _tab_compare2_image.end() )
  {
   if (GB_debug) fprintf(stderr,"(*Iter).di.use_count() = %d \n",(int)(*Iter).di.use_count());
     if (!(*Iter).di.expired()) {
@@ -2997,7 +2998,10 @@ void DessinImage::Comparaisons_UpdateStatusInfo( const Point_3D<int>& imagepos, 
         // by assigning the result to the current
         // iterator ...
         Iter = _tab_compare2_image.erase(Iter);
+        continue;
     }
+   Iter++;
+
  }
 
   _comparison_lock = false;
@@ -6417,7 +6421,13 @@ void DessinImage::CB_CloseGL( void* cd)
 {
   DessinImage*    di = (DessinImage*) cd;
 
-  printf("DessinImage::CB_CloseGL() called\n");
+  CLASS_MESSAGE_STATIC(di," call");
+  CLASS_MESSAGE_STATIC(di,format(" use_count() %1%") % di->_GLWindow0.use_count());
+
+  di->_GLWindow0->Close(true);
+  di->_GLWindow0->Destroy();
+
+  // no deleter for the shared pointer, will be deleted by its parent ...
   di->_GLWindow0 = Viewer3D_ptr();
 } // CB_CloseGL()
 
