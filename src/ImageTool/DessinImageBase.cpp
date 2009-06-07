@@ -1353,7 +1353,7 @@ void DessinImageBase :: DessineSpatialCurseur(  float x, float y, float z, int t
   posy = _image->SpaceToVoxelY(y);
   posz = _image->SpaceToVoxelZ(z);
 
-  DessineCurseur((int)posx,(int)posy,(int)posz,type);
+  DessineCurseur((int)(posx+0.5),(int)(posy+0.5),(int)(posz+0.5),type);
 
 } // DessineSpatialCurseur()
 
@@ -1552,6 +1552,7 @@ void DessinImageBase::DessineIsoContour( int n)
 } // DessineIsoContour()
 */
 
+/*
 //----------------------------------------------------------------
 void DessinImageBase ::  InitImage( inrimage* image)
 //                                 ---------
@@ -1570,7 +1571,7 @@ void DessinImageBase ::  InitImage( inrimage* image)
 
 
 } // InitImage()
-
+*/
 
 //----------------------------------------------------------------
 void DessinImageBase :: Paint( unsigned char affiche)
