@@ -678,7 +678,7 @@ void FiltreRecursif ::  InitDerivees( )
 
 } // InitDerivees()
 
-
+/*
 //------------------------------------------------------
 void FiltreRecursif ::  InitDeriveesCompressees( InrImage* masque, 
 //                                -----------------------
@@ -744,7 +744,7 @@ void FiltreRecursif ::  InitDeriveesCompressees( InrImage* masque,
   _derivees_compressees = true;
 
 } // InitDeriveesCompressees()
-
+*/
 
 //------------------------------------------------------
 void FiltreRecursif ::  LibereDerivees( )
@@ -980,6 +980,7 @@ void FiltreRecursif ::  CalculMyFiltres( InrImage* image_depart)
 } // CalculMyFiltres()
 
 
+/*
 //------------------------------------------------------
 void FiltreRecursif ::  CalculMyFiltresCompressees( InrImage* image_depart)
 //                                --------------------------
@@ -1123,7 +1124,7 @@ void FiltreRecursif ::  CalculMyFiltresCompressees( InrImage* image_depart)
 
 } // CalculMyFiltresCompressees()
 
-
+*/
 //------------------------------------------------------
 void FiltreRecursif ::  CalculFiltres( InrImage* mask )
 //                                -------------
@@ -1146,7 +1147,7 @@ void FiltreRecursif ::  CalculFiltres( InrImage* mask )
      Si Non(_derivees_compressees) Alors
        CalculMyFiltres( image_depart);   
      Sinon
-       CalculMyFiltresCompressees( image_depart);   
+//       CalculMyFiltresCompressees( image_depart);   
      FinSi
 
   Sinon

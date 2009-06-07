@@ -626,6 +626,7 @@ public:
   } // Filtre1D()
 
 
+/*
   //------------------------------------------------------------
   ///
   void Filtre1DCompressee( InrImage* entree, 
@@ -733,7 +734,7 @@ public:
 
 
   } // Filtre1DCompressee()
-
+*/
 
   //------------------------------------------------------------
   /** La Gaussienne doit deja etre initialisee

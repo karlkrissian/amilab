@@ -417,7 +417,7 @@ public:
   //   ------------
 
   ///
-  void InitDeriveesCompressees( InrImage* masque, int nb_points);
+//  void InitDeriveesCompressees( InrImage* masque, int nb_points);
   //   -----------------------
 
   ///
@@ -434,7 +434,7 @@ public:
   //   ---------------
 
   ///
-  void CalculMyFiltresCompressees( InrImage* image_depart);
+//  void CalculMyFiltresCompressees( InrImage* image_depart);
   //   --------------------------
 
   ///
