@@ -47,6 +47,11 @@ proc PS_init() {
 }
 
 #----------------------------------------------------------
+proc PS_close() {
+  # first delete the interface
+}
+
+#----------------------------------------------------------
 proc PS_UpdateResolution() \
 {
   # 3D position image
