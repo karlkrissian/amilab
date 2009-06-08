@@ -20,6 +20,7 @@ proc NLM_init( IMAGE _input) {
     global_new
     print "NLM_CreateParams\n"
     NLM_input =  _input
+    # noise type: 0 additive Gaussian, 1: Rician
     NLM_noisetype = INT(1)
     NLM_threads   = INT(2)
     show NLM_input
