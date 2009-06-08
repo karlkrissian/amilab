@@ -33,6 +33,11 @@ void AddWrapFilters(){
  Vars.AddVar(type_c_function,      "EigenDecomp",      (void*) Wrap_EigenDecomp   );
  Vars.AddVar(type_c_image_function,"StructureTensorH", (void*) wrap_StructureTensorHessianNew  );
  Vars.AddVar(type_c_function,      "SplineResample",   (void*) Wrap_SmoothLinesToSplines );
+
+#ifdef AMI_USE_FASTNLMEANS
+ Vars.AddVar(type_c_image_function,"NewNLmeans",          (void*) New_NLmeans   );
+#endif // AMI_USE_FASTNLMEANS
+
 }
 
 
@@ -193,11 +198,11 @@ void NSim2(ParamList* p)
 } // NSim2
 
 //------------------------------------------------------------------
-void create_weights_2d(double*& w, int f)
+void create_weights_2d(double*& w, int f, float factor)
 {
   int i,j,p;
   double sum;
-  double sigma = f/2.0;
+  double sigma = f*factor;
 //  printf("begin create_weights \n");
 
   w = new double [(2*f+1)*(2*f+1)];
@@ -225,11 +230,11 @@ void create_weights_2d(double*& w, int f)
 }
 
 //------------------------------------------------------------------
-void create_weights_3d(double*& w, int f)
+void create_weights_3d(double*& w, int f, float factor)
 {
   int i,j,k,p;
   double sum;
-  double sigma = f/2.0;
+  double sigma = f*factor;
 //  printf("begin create_weights \n");
 
   w = new double [(2*f+1)*(2*f+1)*(2*f+1)];
@@ -693,6 +698,7 @@ struct thread_NLmeans_info {
     int       noisetype;            /* noise type */
     long*     points_processed;     /* number of pixels/voxels already processed */
     int       probability_variant;  /* variant of the algorithm that uses the local statistics to define the weights */
+    float     pattern_weight_factor; /* create Gaussian weight of SD f*factor for each pattern */
 };
 
 
@@ -710,6 +716,7 @@ void* thread_NLmeans( void* threadarg)
   int       noisetype   = args->noisetype;
   long*     pts_processed = args->points_processed;
   int       probability_variant = args->probability_variant;
+  float     pattern_weight_factor = args->pattern_weight_factor;
   InrImage::ptr       smoothed_image;
   if (args->smoothed_image.use_count()) smoothed_image=args->smoothed_image;
 
@@ -739,9 +746,9 @@ void* thread_NLmeans( void* threadarg)
   cout << "smoothed_image.use_count() " << smoothed_image.use_count() << endl;
 
   if (tz>1)
-    create_weights_3d(dist_weights,f);
+    create_weights_3d(dist_weights,f,pattern_weight_factor);
   else
-    create_weights_2d(dist_weights,f);
+    create_weights_2d(dist_weights,f,pattern_weight_factor);
 
 
 /*
@@ -872,6 +879,15 @@ x has the maximum weight obtained by a point y different from it.
 
         if (w>wmax) wmax=w;
         intensity = (*input_float)(x+dx,y+dy,z+dz);
+        /*
+        if ((x==40)&&(y==20)) {
+          cout  << __func__ 
+                << boost::format(" (x,y) = (%1%,%2%) ") %x %y
+                << boost::format(" (dx,dy,dz) = (%1%,%2%,%3%) ") %dx %dy %dz
+                << boost::format(" (w,val) = (%1%,%2%) ") %w %intensity
+                << endl;
+        }
+        */
         // check if within the maximal weights
         int i = 0;
         while ((i<MAX_WEIGHTS)&&(w>max_weights[i])) {
@@ -927,7 +943,9 @@ x has the maximum weight obtained by a point y different from it.
   }
 
   free_weights(dist_weights);
-   pthread_exit(NULL);
+  // no thread if only 1
+  if (args->total_threads>1)
+    pthread_exit(NULL);
 	return NULL;
 }
 
@@ -955,6 +973,9 @@ InrImage* NLmeans(ParamList* p)
           threads (def: 2): number of threads\n\
           prob_variant (def:0) : decide if using a probability variant of the algorithm \n\
           presmooth S.T. (def:0) : Standard Deviation for Gaussian pre-smoothing, \n\
+          pattern weight factor (def:0.5): creates Gaussian weights \n\
+          within the patterns as function of the distance to the central\n\
+          point. The Gaussian has a standard deviation of  f*factor.\n\
             ";
 
     InrImage* input;
@@ -968,6 +989,7 @@ InrImage* NLmeans(ParamList* p)
     int probability_variant = 0;
     int n=0;
     float presmooth_sd=0;
+    float pattern_weight_factor = 0.5;
     InrImage::ptr smoothed_image;
 
   if (!get_image_param(  input,       p, n)) HelpAndReturnNULL;
@@ -976,8 +998,9 @@ InrImage* NLmeans(ParamList* p)
   if (!get_float_param(  h,           p, n)) HelpAndReturnNULL;
   if (!get_int_param(    noisetype,   p, n)) HelpAndReturnNULL;
   if (!get_int_param(    num_threads, p, n)) HelpAndReturnNULL;
-  if (!get_int_param(    probability_variant, p, n)) HelpAndReturnNULL;
-  if (!get_float_param(  presmooth_sd,        p, n)) HelpAndReturnNULL;
+  if (!get_int_param(    probability_variant,   p, n)) HelpAndReturnNULL;
+  if (!get_float_param(  presmooth_sd,          p, n)) HelpAndReturnNULL;
+  if (!get_float_param(  pattern_weight_factor, p, n)) HelpAndReturnNULL;
 
   if (fabs(h)<1E-2) {
     fprintf(stderr,"NLmeans error \t the coefficient h cannot be too small, it is set to 10 !\n");
@@ -995,28 +1018,44 @@ InrImage* NLmeans(ParamList* p)
   (*result)=(*input);
 
 
-    // num_threads
-    thread_NLmeans_info* thread_info;
-    int i;
-    pthread_t* threads;
-    pthread_attr_t attr;
-    int rc,status;
-    long points_processed = 0;
-
-
   if (presmooth_sd>0) {
     smoothed_image = InrImage::ptr(Func_Filter( input_float, presmooth_sd,0,0,0));
   } else {
     cout << "no smoothing" << endl; 
   }
 
+  long points_processed = 0;
+
+  if (num_threads==1) {
+    // with only 1 thread, don´t use threads...
+    thread_NLmeans_info thread_info;
+    thread_info.thread_id      = 0;
+    thread_info.total_threads  = num_threads;
+    thread_info.input_float    = input_float;
+    thread_info.result         = result;
+    thread_info.t              = t;
+    thread_info.f              = f;
+    thread_info.h              = h;
+    thread_info.noisetype      = noisetype;
+    thread_info.points_processed = &points_processed;
+    thread_info.probability_variant = probability_variant;
+    thread_info.pattern_weight_factor = pattern_weight_factor;
+    if (presmooth_sd>0)
+      thread_info.smoothed_image = smoothed_image;
+    thread_NLmeans( (void *) &thread_info);
+  } else {
+    // num_threads
+    thread_NLmeans_info* thread_info;
+    int i;
+    pthread_t* threads;
+    pthread_attr_t attr;
+    int rc,status;
 
     pthread_attr_init(&attr);
     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
 
     thread_info = new thread_NLmeans_info[num_threads];
     threads     = new pthread_t[num_threads];
-
     for (i=0;i<num_threads;i++) {
       thread_info[i].thread_id      = i;
       thread_info[i].total_threads  = num_threads;
@@ -1028,6 +1067,7 @@ InrImage* NLmeans(ParamList* p)
       thread_info[i].noisetype      = noisetype;
       thread_info[i].points_processed = &points_processed;
       thread_info[i].probability_variant = probability_variant;
+      thread_info[i].pattern_weight_factor = pattern_weight_factor;
       if (presmooth_sd>0)
         thread_info[i].smoothed_image = smoothed_image;
 
@@ -1039,20 +1079,21 @@ InrImage* NLmeans(ParamList* p)
         printf("NLmeans() \t ERROR; return code from pthread_create() is %d\n", rc);
         exit(-1);
       }
-   }
-
-   /* Free attribute and wait for the other threads */
-   pthread_attr_destroy(&attr);
-   for(i=0; i<num_threads; i++)
-   {
-      rc = (int) pthread_join((pthread_t)threads[i], (void **)&status);
-      if (rc)
-         printf("NLmeans() \t ERROR; return code from pthread_join()  is %d\n", rc);
-      //printf("Completed join with thread %d status= %d\n",i, status);
-   }
-
-  delete [] thread_info;
-  delete [] threads;
+    } // end for
+  
+    /* Free attribute and wait for the other threads */
+    pthread_attr_destroy(&attr);
+    for(i=0; i<num_threads; i++)
+    {
+        rc = (int) pthread_join((pthread_t)threads[i], (void **)&status);
+        if (rc)
+          printf("NLmeans() \t ERROR; return code from pthread_join()  is %d\n", rc);
+        //printf("Completed join with thread %d status= %d\n",i, status);
+    }
+  
+    delete [] thread_info;
+    delete [] threads;
+  } // else if  numthread==1
 
   printf("finished !...\n");
   if (input->GetFormat()!=WT_FLOAT)
