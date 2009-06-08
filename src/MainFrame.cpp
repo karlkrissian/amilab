@@ -835,6 +835,9 @@ void MainFrame::CreateSettingsPanel(wxWindow* parent)
 void MainFrame::OnClose(wxCloseEvent& event)
 {
   CLASS_MESSAGE("closing main frame ...");
+
+  // important: clear variables now before the childrens are deleted
+  Vars.EmptyVariables();
   Destroy();
 /*  cout << "OnClose " << endl;
 
