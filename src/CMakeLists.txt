@@ -134,10 +134,21 @@ FIND_PACKAGE( Boost  1.33 COMPONENTS date_time filesystem  system iostreams  reg
 FIND_PACKAGE( ZLIB)
 FIND_PACKAGE( BZip2)
 
+FIND_PACKAGE( OpenMP)
+
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+
 FIND_PACKAGE( Pthreads)
 
 FIND_PACKAGE(BISON)
 FIND_PACKAGE(FLEX)
+
+OPTION(AMI_USE_FASTNLMEANS "Use Fast NLmeans implementation" ON)
+
+IF(AMI_USE_FASTNLMEANS)
+  MESSAGE("AMI_USE_FASTNLMEANS is ON")
+ENDIF(AMI_USE_FASTNLMEANS)
 
 INCLUDE (CheckIncludeFiles)
 # usage: CHECK_INCLUDE_FILES (<header> <RESULT_VARIABLE> )
@@ -178,7 +189,7 @@ SET( AMILAB_SOURCE_DIR ${AMILab_SOURCE_DIR} )
 
 add_subdirectory (Common)
 add_subdirectory (Math)
-add_subdirectory (Zinrimage)
+#add_subdirectory (Zinrimage)
 add_subdirectory (AMImage)
 add_subdirectory (DistTransf)
 add_subdirectory (Images)
@@ -202,11 +213,12 @@ add_subdirectory (Graph)
 add_subdirectory (WrapITK)
 add_subdirectory (Language)
 
-
+IF(AMI_USE_FASTNLMEANS)
+  add_subdirectory (Algorithms)
+ENDIF(AMI_USE_FASTNLMEANS)
 
 include_directories (
   ${AMILAB_SOURCE_DIR}/Common
-  ${AMILAB_SOURCE_DIR}/Zinrimage
   ${AMILAB_SOURCE_DIR}/Images
   ${AMILAB_SOURCE_DIR}/Math
   ${AMILAB_SOURCE_DIR}/AMImage
@@ -286,9 +298,15 @@ SET(amilab_ownlibs
   Vessels
   Common
   Voxels
-  Zinrimage
   myVTK4
 )
+
+IF(AMI_USE_FASTNLMEANS)
+  SET(amilab_ownlibs
+      ${amilab_ownlibs}
+      Algorithms
+  )
+ENDIF(AMI_USE_FASTNLMEANS)
 
 
 # conflict between freetype and vtkfreetype
