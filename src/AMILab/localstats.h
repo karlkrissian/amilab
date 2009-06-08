@@ -32,8 +32,50 @@
 
 #include "inrimage.hpp"
 
+// slow version
 InrImage*     Func_localmean( InrImage* im, int size);
+
+class image_extent {
+public:
+  image_extent() {
+    for(int i=0; i<3; i++)
+      for(int j=0; j<2; j++) extent[i][j]=0;
+  }
+  image_extent(InrImage* im);
+
+  int extent[3][2]; // limits for each of the 3 dimensions
+
+  bool check_axis(const int& i) const;
+  void SetMin(const int& i, const int& min);
+  void SetMax(const int& i, const int& max);
+  void SetMinMax(const int& i, const int& min, const int& max);
+  int GetMin(const int& i) const;
+  int GetMax(const int& i) const;
+  int GetSize(const int& i) const;
+};
+
+// separable optimized version
+template <class T>
+void     Func_localsum( InrImage* im, InrImage*& res,
+                        InrImage*& tmp, int size,
+                        image_extent& extent);
+
+// separable optimized version 
+// version with smart pointers
+// using temporary image as input
+template <class T>
+void     Func_localsum( InrImage::ptr& tmp, InrImage::ptr& res,
+                        int size,
+                        image_extent& extent);
+
+
+// separable optimized version
+void     Func_localmean2( InrImage* im, InrImage*& res, InrImage*& tmp, int size);
+
+// separable optimized version
 InrImage*     Func_localmean2( InrImage* im, int size);
+
+
 InrImage*     Func_localSD( InrImage* im, InrImage* mean, int size);
 InrImage*     Func_localSD2( InrImage* im, InrImage* mean, int size, bool unbiased=false);
 
@@ -47,5 +89,7 @@ InrImage*     Func_localdirectionalSD( InrImage* im, InrImage* directions,
 //  im_ROI defined the region of interest: area without background
 //
 double        Func_Compute_sigma2_MRI_mode(InrImage* im, InrImage* im_ROI, int neigh_size=2);
+
+#include "localstats.tpp"
 
 #endif

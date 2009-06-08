@@ -29,7 +29,7 @@
 #include "localstats.h"
 #include "func_globalstats.h"
 #include "func_imagebasictools.h"
-
+#include <limits>
 
 //--------------------------------------------------
 InrImage*     Func_localmean( InrImage* im, int size)
@@ -44,7 +44,6 @@ InrImage*     Func_localmean( InrImage* im, int size)
   res->InitImage(0.0);
 
   res->InitBuffer();
-
 
   // along X
   Pour(z,0,im->_tz-1)
@@ -75,163 +74,108 @@ InrImage*     Func_localmean( InrImage* im, int size)
   return res;
 }
 
+// image_extent class
+image_extent::image_extent(InrImage* im) {
+  extent[0][0] = 0;
+  extent[1][0] = 0;
+  extent[2][0] = 0;
+  extent[0][1] = im->DimX()-1;
+  extent[1][1] = im->DimY()-1;
+  extent[2][1] = im->DimZ()-1;
+}
+
+bool image_extent::check_axis(const int& i) const
+{ 
+  return ((i>=0)&&(i<=2));
+}
+
+void image_extent::SetMin(const int& i, const int& min) 
+{ 
+  if (check_axis(i)) 
+    extent[i][0] = min; 
+}
+
+void image_extent::SetMax(const int& i, const int& max) 
+{ 
+  if (check_axis(i)) 
+    extent[i][1] = max; 
+}
+
+void image_extent::SetMinMax(const int& i, 
+      const int& min, const int& max) 
+{ 
+  if (check_axis(i)) {
+    extent[i][0] = min; 
+    extent[i][1] = max; 
+  }
+}
+
+int image_extent::GetMin(const int& i) const
+{ 
+  if (check_axis(i)) 
+    return extent[i][0]; 
+  else 
+    return -1;
+}
+
+int image_extent::GetMax(const int& i) const 
+{ 
+  if (check_axis(i)) 
+    return extent[i][1]; 
+  else 
+    return -1;
+}
+
+int image_extent::GetSize(const int& i) const
+{ 
+  if (check_axis(i)) 
+    return extent[i][1]-extent[i][0]+1; 
+  else 
+    return -1;
+}
+
+
+//--------------------------------------------------
+// separable optimized version
+void     Func_localmean2( InrImage* im, InrImage*& res, 
+                          InrImage*& tmp, int size)
+{
+  InrImage* tmp1;
+  #define swap_pointers(p1,p2) \
+    { tmp1=p1; p1 = p2; p2 = tmp1; }
+  int numpoints;
+  
+  image_extent extent(im);
+
+  Func_localsum<float>(im,res,tmp,size,extent);
+
+  numpoints = (2*size+1)*(2*size+1);
+  if ( im->DimZ() >1 ) {
+    numpoints *= (2*size+1);
+  }
+
+  // divide by the number of points here
+  // could be numerically more accurate to do it after each direction 
+  float* res_buf = (float*) res->Buffer();
+  for(int i=0;i<res->Size();
+      i++,res_buf++) 
+    *res_buf = (*res_buf)/(1.0*numpoints);
+
+}
+
+
 //--------------------------------------------------
 InrImage*     Func_localmean2( InrImage* im, int size)
 {
-  double sum;
   InrImage* res;
   InrImage* tmp;
-  InrImage* tmp1;
-  int       x,y,z;
-  int       x1,y1,z1;
-  int       num_values;
-  float*    bufmin;
-  float*    bufmax;
-  float*    res_buf;
-  int       dy,dz;
 
-  tmp = new InrImage( WT_FLOAT,"localmean.ami.gz",im);
-  (*tmp) = (*im);
-  res = new InrImage( WT_FLOAT,"localmean.ami.gz",im);
+  tmp = new InrImage ( WT_FLOAT,"localmean.ami.gz",im );
+  res = new InrImage ( WT_FLOAT,"localmean.ami.gz",im );
 
-
-  // along X
-  Pour(z,0,im->_tz-1)
-  Pour(y,0,im->_ty-1)
-
-    tmp->BufferPos(0,y,z);
-    bufmax = bufmin  = (float*) tmp->BufferPtr();
-
-    res->BufferPos(0,y,z);
-    res_buf =  (float*) res->BufferPtr();
-
-    // we extend the boundaries 
-    sum    =  *bufmax;
-    num_values = 1;
-    Pour(x1,1,size)
-      if (x1<=im->_tx-1) {
-	   bufmax++;
-	   sum += *bufmax;
-	   num_values++;
-      }
-    FinPour
-      *res_buf=sum/num_values;
-    //*res_buf=num_values;
-
-    Pour(x,1,im->_tx-1)
-      if (x+size<=im->_tx-1) {
-	bufmax++;
-	sum += *bufmax;
-	num_values++;
-      }
-      if (x-size>0) {
-	sum -= *bufmin;
-	num_values--;
-	*bufmin++;
-      }
-      res_buf++;
-      *res_buf=sum/num_values;
-      //*res_buf=num_values;
-    FinPour
-  FinPour
-  FinPour
-
-  // swap tmp and res
-  tmp1=tmp; tmp=res; res=tmp1;
-  
-  // along Y
-  dy = im->DimX();
-  Pour(z,0,im->DimZ()-1)
-  Pour(x,0,im->DimX()-1)
-
-    tmp->BufferPos(x,0,z);
-    bufmax = bufmin  = (float*) tmp->BufferPtr();
-
-    res->BufferPos(x,0,z);
-    res_buf =  (float*) res->BufferPtr();
-
-    // we extend the boundaries 
-    sum    = *bufmax;
-    num_values = 1;
-    Pour(y1,1,size)
-      if (y1<=im->DimY()-1) {
-	bufmax+=dy;
-	sum += *bufmax; 
-	num_values++;
-      }
-    FinPour
-      *res_buf=sum/num_values;
-    //*res_buf=num_values;
-
-    Pour(y,1,im->DimY()-1)
-      if (y+size<=im->DimY()-1) {
-	bufmax+=dy;
-	sum += *bufmax;
-	num_values++;
-      }
-      if (y-size>0) {
-	sum -= *bufmin;
-	num_values--;
-	bufmin+=dy;
-      }
-      res_buf+=dy;
-      *res_buf=sum/num_values;
-      //      *res_buf=num_values;
-    FinPour
-
-  FinPour
-  FinPour
-
-  if (im->DimZ()>1) {
-
-    // swap tmp and res
-    tmp1=tmp; tmp=res; res=tmp1;
-    // along Z
-    dz = dy*im->DimY();
-    Pour(y,0,im->DimY()-1)
-    Pour(x,0,im->DimX()-1)
-
-      tmp->BufferPos(x,y,0);
-      bufmax = bufmin  = (float*) tmp->BufferPtr();
-
-      res->BufferPos(x,y,0);
-      res_buf =  (float*) res->BufferPtr();
-
-      // we extend the boundaries 
-      sum    = *bufmax;
-      num_values = 1;
-      Pour(z1,1,size)
-        if (z1<=im->DimZ()-1) {
-	  bufmax+=dz;
-	  sum += *bufmax;
-	  num_values++;
-	}
-      FinPour
-	*res_buf=sum/num_values;
-      //*res_buf=num_values;
-
-      Pour(z,1,im->DimZ()-1)
-        if (z+size<=im->DimZ()-1) {
-	  bufmax+=dz;
-          sum += *bufmax;
-	  num_values++;
-	}
-        if (z-size>0) {
-	  sum -= *bufmin;
-	  num_values--;
-	  bufmin+=dz;
-	}
-        res_buf+=dz;
-	*res_buf=sum/num_values;
-	//      *res_buf=num_values;
-      FinPour
-
-    FinPour
-    FinPour
-	}
+  Func_localmean2(im,res,tmp,size);
 
   delete tmp;
-
   return res;
 }
 
