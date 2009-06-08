@@ -526,14 +526,15 @@ void vtkLevelSetFastMarching::AddAcceptedPoint( short x, short y, short z, int p
   // check for targets
   if (!target_points.empty()) {
       std::list<target_point>::iterator Iter;
-      for ( Iter  = target_points.begin(); 
-            Iter != target_points.end()  ; Iter++ )
+      Iter  = target_points.begin();
+      while ( Iter != target_points.end() ) {
         if ((Iter->x == x)&&(Iter->y == y)&&(Iter->z==z)) {
           // remove point from target list
           Iter = target_points.erase(Iter);
           cout << " removed target point " << x << " " << y << " " << z << endl;
-
-        }
+        } else
+        Iter++;
+      }
 
   }
 
