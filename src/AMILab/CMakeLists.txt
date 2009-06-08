@@ -39,7 +39,14 @@ include_directories (
   ${AMIFLUID_INCLUDE_DIR}
   ${PTHREADS_INCLUDE_DIR}
   ${Boost_INCLUDE_DIR}
+)
+
+IF(AMI_USE_FASTNLMEANS)
+  MESSAGE("including ${AMILAB_SOURCE_DIR}/Algorithms/Denoising")
+  include_directories (
+    ${AMILAB_SOURCE_DIR}/Algorithms/Denoising
   )
+ENDIF(AMI_USE_FASTNLMEANS)
 
 INCLUDE( ${VTK_USE_FILE} )
 INCLUDE(${wxWidgets_USE_FILE})
