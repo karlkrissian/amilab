@@ -35,6 +35,14 @@
 #endif
 #include "style.hpp"
 
+#ifdef AMI_USE_OPENMP
+  #include <omp.h>
+#endif
+
+#include <iostream>
+
+
+double am_timer(void);
 
 
 #if defined(_MSC_VER) || defined(__MINGW32__)
@@ -42,6 +50,7 @@ int gettimeofday(struct timeval* tp, void* tzp);
 #endif
 
 #include <iostream>
+#include <string>
 using namespace std;
 
 
@@ -53,59 +62,48 @@ class Duree
   unsigned char          debut_OK, fin_OK;
   struct timeval   time1, time2;
 
+  double timer_t1;
+  double timer_t2;
+  double diff_timer;
+  double cumul_timer;
+
   int           diff_sec;
   int           diff_microsec;
 
   long       cumul_diff_sec;
   long       cumul_diff_microsec;
+  string     name;
   
 public:
 
-  Constructeur Duree()
+  Constructeur Duree( const std::string& _name = "")
   //
   {
     debut_OK = fin_OK = false;
     diff_sec      = 0; 
     diff_microsec = 0; 
+    name = _name;
+    InitCumul();
+    diff_timer = 0;
   } 
 
   void InitCumul()
   {
     cumul_diff_sec = 0;
+    cumul_diff_microsec = 0;
+    cumul_timer = 0;
   }
 
   void AddCumul()
   {
     cumul_diff_sec += diff_sec;
+    cumul_diff_microsec += diff_microsec;
+    cumul_timer += diff_timer;
   }
 
-  void AfficheCumul(ostream& o)
-  {
-    
-      long minutes;
-      long heures;
-      long secondes;
+  double GetCumulTimer() { return cumul_timer; }
 
-    heures = minutes = secondes = 0;
-
-    secondes = cumul_diff_sec;
-    Si secondes > 60 Alors
-       minutes  = secondes / 60;
-       secondes = secondes % 60;
-    FinSi
-
-    Si minutes        > 60 Alors
-       heures   = minutes / 60;
-       minutes  = minutes % 60;
-    FinSi
-    
-
-      o << " temps cumule " 
-        << heures << ":" 
-        << minutes << ":" 
-        << secondes << " " << endl;
-
-  }
+  void AfficheCumul(ostream& o);
 
   void GetCumul(long& heures, long& minutes, long& secondes )
   {
@@ -132,6 +130,7 @@ public:
     fin_OK   = false;
     diff_sec      = 0;
     diff_microsec = 0;
+    timer_t1 = am_timer();
   }
 
 
@@ -142,6 +141,9 @@ public:
       diff_sec      = time2.tv_sec  - time1.tv_sec;
       diff_microsec = time2.tv_usec - time1.tv_usec;
     FinSi
+
+    timer_t2 = am_timer();
+    diff_timer = timer_t2-timer_t1;
   }
 
   ///

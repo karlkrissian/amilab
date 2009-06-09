@@ -56,6 +56,26 @@
 
 #include <Duree.hpp>
 
+
+double am_timer(void)
+{
+#ifdef _OPENMP
+  /*
+   * The omp_get_wtime() function was added to the OpenMP API
+   * in version 2.0 (March 2002).  For older versions, default
+   * to clock().
+   */
+  #if (_OPENMP >= 200203)
+    //std::cout << "om_get_wtime()" << std::endl;
+    return omp_get_wtime();
+  #else
+    return (double)clock() / (double)CLOCKS_PER_SEC;
+  #endif
+#endif
+  return (double)clock() / (double)CLOCKS_PER_SEC;
+} /* am_timer() */
+
+
 #if defined(_MSC_VER) || defined(__MINGW32__)
 
 #include <mmsystem.h>
@@ -81,4 +101,42 @@ ostream& operator<<(ostream& o, const Duree& d)
   Sinon
     return o << " Duree inconnue ";
   FinSi
+}
+
+//--------------------------------------
+void Duree::AfficheCumul(ostream& o)
+{
+  
+    long minutes;
+    long heures;
+    long secondes;
+
+  heures = minutes = secondes = 0;
+
+  secondes = cumul_diff_sec;
+  Si secondes > 60 Alors
+      minutes  = secondes / 60;
+      secondes = secondes % 60;
+  FinSi
+
+  Si minutes        > 60 Alors
+      heures   = minutes / 60;
+      minutes  = minutes % 60;
+  FinSi
+  
+
+    o << " Cumul of time for " 
+      << name << " is: \t ";
+/*      << heures << "h" 
+      << minutes << "min" 
+      << secondes << "s. " << endl
+
+      << cumul_diff_microsec/1000.0 << " msec." << endl
+
+      << "OMP: " */
+      if (cumul_timer>1)
+        o << cumul_timer << " sec." << endl;
+      else
+        o << cumul_timer*1000.0 << " msec." << endl;
+
 }
