@@ -168,11 +168,7 @@ float fround(const float& a);
 #include <stdlib.h>
 #endif
 
-
-DebutDeclareC
 #include <math.h>
-//#include "Zinrimage.h"
-FinDeclareC
 
 // taken from Zinrimage.h
 typedef enum {

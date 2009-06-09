@@ -82,29 +82,30 @@ extern "C" {
 }
 #endif
 
-#ifndef _WITHOUT_VTK_
+#include "AMILabConfig.h"
 
-//#include <vtkImageWriter.h> 
-#include "vtkStructuredPointsReader.h"
-#include "vtkStructuredPointsWriter.h"
-#include "vtkImageReader2Factory.h"
-#include "vtkImageReader2.h"
-#include "vtkJPEGWriter.h"
-#include "vtkTIFFWriter.h"
-#include "vtkPNGWriter.h"
-#include "vtkStructuredPoints.h"
-#include "vtkPointData.h"
-#include "vtkImageData.h"
-#include "vtkDataArray.h"
-#include "vtkDoubleArray.h"
-#include "vtkFloatArray.h"
-#include "vtkIntArray.h"
-#include "vtkUnsignedCharArray.h"
-#include "vtkUnsignedShortArray.h"
-#include "vtkShortArray.h"
-#include "vtkImageFlip.h"
-#include "vtk_common.h"
-#endif // _WITHOUT_VTK_
+#ifdef AMI_USE_VTK
+  //#include <vtkImageWriter.h> 
+  #include "vtkStructuredPointsReader.h"
+  #include "vtkStructuredPointsWriter.h"
+  #include "vtkImageReader2Factory.h"
+  #include "vtkImageReader2.h"
+  #include "vtkJPEGWriter.h"
+  #include "vtkTIFFWriter.h"
+  #include "vtkPNGWriter.h"
+  #include "vtkStructuredPoints.h"
+  #include "vtkPointData.h"
+  #include "vtkImageData.h"
+  #include "vtkDataArray.h"
+  #include "vtkDoubleArray.h"
+  #include "vtkFloatArray.h"
+  #include "vtkIntArray.h"
+  #include "vtkUnsignedCharArray.h"
+  #include "vtkUnsignedShortArray.h"
+  #include "vtkShortArray.h"
+  #include "vtkImageFlip.h"
+  #include "vtk_common.h"
+#endif // AMI_USE_VTK
 
 #include <boost/scoped_array.hpp>
 using namespace boost;
@@ -365,7 +366,7 @@ unsigned char InrImage :: ReadVTK( ) throw (ErreurLecture)
 //                           -------
 {
 
-#ifndef _WITHOUT_VTK_
+#ifdef AMI_USE_VTK
   
    shared_ptr<vtkStructuredPointsReader> reader = vtk_new<vtkStructuredPointsReader>()();
     vtkStructuredPoints* in;
@@ -519,7 +520,7 @@ unsigned char InrImage :: ReadVTK( ) throw (ErreurLecture)
 #else
   CLASS_ERROR("AMILab compiled without VTK");
   return false;
-#endif // _WITHOUT_VTK_
+#endif // AMI_USE_VTK
   
   
 } // ReadVTK()
@@ -530,7 +531,7 @@ unsigned char InrImage :: ReadVTKImage( ) throw (ErreurLecture)
 //                           ------------
 {
 
-#ifndef _WITHOUT_VTK_
+#ifdef AMI_USE_VTK
 
     vtkImageData* in;
     int       x,y,z,n;
@@ -686,9 +687,9 @@ unsigned char InrImage :: ReadVTKImage( ) throw (ErreurLecture)
   return true;
 
 #else
-  fprintf(stderr,"inrimage.cpp \t AMILab compiled without VTK, function not available \n");
+  CLASS_ERROR(" AMILab compiled without VTK, function not available");
   return false;
-#endif // _WITHOUT_VTK_
+#endif // AMI_USE_VTK
 
 } // ReadVTKImage()
 
@@ -874,7 +875,7 @@ unsigned char InrImage :: Alloue( ) throw (ErreurAllocation)
 {
 
   
-#ifndef _WITHOUT_VTK_
+#ifdef AMI_USE_VTK
     vtkImageData_ptr   vtk_id;
 #endif
 //    inrimage*       inrimage_ptr;
@@ -897,7 +898,7 @@ unsigned char InrImage :: Alloue( ) throw (ErreurAllocation)
   Autrement
 */
 
-#ifndef _WITHOUT_VTK_
+#ifdef AMI_USE_VTK
   Si (CheckEndString( name, ".vtk")) Alors
     shared_ptr<vtkStructuredPointsWriter> vtk_iw;
     vtk_id = (vtkImageData_ptr) (*this);
@@ -954,7 +955,7 @@ unsigned char InrImage :: Alloue( ) throw (ErreurAllocation)
 //    flipY->Delete();
   Autrement
 
-#endif // _WITHOUT_VTK_
+#endif // AMI_USE_VTK
       
   Si (CheckEndString( name, ".raw"))  Alors
     // write only raw data
@@ -1622,7 +1623,7 @@ InrImage :: Constructeur InrImage(  WORDTYPE format, int vdim,
 
 } // Construteur
 
-#ifndef _WITHOUT_VTK_
+#ifdef AMI_USE_VTK
 //--------------------------------------------------------------------------
 InrImage :: Constructeur InrImage( vtkImageData* vtkim)
 //                                 --------
@@ -1739,7 +1740,7 @@ InrImage :: Constructeur InrImage( vtkImageData* vtkim)
     //  InitPositions();
 } // Constructeur
 
-#endif // _WITHOUT_VTK_
+#endif // AMI_USE_VTK
 
 //--------------------------------------------------------------------------
 InrImage :: Destructeur InrImage()
@@ -2136,7 +2137,7 @@ InrImage :: operator amimage*()
 } // operator amimage*()
 
 
-#ifndef _WITHOUT_VTK_
+#ifdef AMI_USE_VTK
 
 //--------------------------------------------------------------------------
 //
@@ -2224,7 +2225,7 @@ InrImage :: operator vtkImageData_ptr()
   return vtk_new<vtkImageData>()((vtkImageData*)(*this));
 }
 
-#endif // _WITHOUT_VTK_
+#endif // AMI_USE_VTK
 
 //--------------------------------------------------------------------------
 // Defaut char* nom = NULL
