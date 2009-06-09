@@ -21,6 +21,14 @@
     std::cerr << "      \t" << m        << std::endl; \
   }
 
+#define FILE_MESSAGE( m) \
+  if ((GB_verbose) || (GB_debug)) { \
+    std::cerr << "Info \t" \
+              << "file: " << __FILE__    << " , " \
+              << "      \t" << __func__ << " : " \
+              << "      \t" << m        << std::endl; \
+  }
+
 #define CLASS_ERROR( m) \
   if (GB_debug)  {\
     std::cerr << "Error \t" \
@@ -33,6 +41,14 @@
   if ((GB_verbose) || (GB_debug)) { \
     std::cerr << "Info \t" \
               << this->get_name() << "::" \
+              << __func__ << "()\t"  \
+              << m << std::endl; \
+  }
+
+#define CLASS_MESSAGE_STATIC(_this,m) \
+  if ((GB_verbose) || (GB_debug)) { \
+    std::cerr << "Info \t" \
+              << _this->get_name() << "::" \
               << __func__ << "()\t"  \
               << m << std::endl; \
   }
