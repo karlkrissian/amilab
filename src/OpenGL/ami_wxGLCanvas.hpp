@@ -65,6 +65,11 @@
 #include "isosurface.hpp"
 #include "surface.hpp"
 
+
+#include <fstream>
+//#include <boost/iostreams/device/file.hpp>
+//#include <boost/iostreams/stream.hpp>
+
 #define MAX_LIGHTS 8
 
 #define MOUSE_MOVE_OBJECT 0
@@ -129,6 +134,9 @@ public:
 
   bool            _is_created;
   bool            _initialized;
+
+//  std::iostreams::stream_buffer<boost::iostreams::file_sink>* buf; //("ami_wxGLCanvas_trace.txt");
+  std::ofstream                     out; //(&buf);
 
   GLboolean       doubleBuffer;
 
@@ -304,7 +312,10 @@ public:
         const wxSize& size = wxDefaultSize, long style = 0,
         const wxString& name = _T("ami_wxGLCanvas"));
 
-  virtual ~ami_wxGLCanvas(){};
+  virtual ~ami_wxGLCanvas()
+  { 
+    if (out.is_open()) out.close();
+  };
 
   bool SetCurrentContext();
 

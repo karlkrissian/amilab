@@ -53,6 +53,7 @@ unsigned char GB_AfficheErreur  = false;
 
 //XtAppContext  GB_contexte;
 unsigned char       GB_debug;
+unsigned char       GB_debug_opengl;
 unsigned char       GB_verbose;
 unsigned char       GB_nofile;
 
@@ -216,6 +217,8 @@ bool MyApp::OnInit()
   int  n;
   Chaine cmd_line;
 
+  GB_debug = false;
+  GB_debug_opengl = false;
   GB_nofile = false;
 
   GB_argc  = argc;

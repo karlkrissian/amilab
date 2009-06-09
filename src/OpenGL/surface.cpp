@@ -93,7 +93,7 @@
 extern unsigned char      GB_debug;
 extern unsigned char      GB_verbose;
 
-extern std::ostream  out;
+//extern std::ostream  out;
 
 
 #define my_glGenLists(a,b) \
@@ -185,7 +185,7 @@ int  GLObject::MakeContextCurrent()
 
   GLint render_mode;
 
-  if (GB_debug) out << " begin GLObject::MakeContextCurrent() " << endl;
+  if (GB_debug) cerr << " begin GLObject::MakeContextCurrent() " << endl;
 //  if (_context==NULL) return 0;
   if (!_wxGL_canvas) {
     cerr << "GLObject::MakeContextCurrent() \t_wxGL_canvas not initialized " << endl;
@@ -203,7 +203,7 @@ int  GLObject::MakeContextCurrent()
 
       bool res = _wxGL_canvas->SetCurrentContext();
 
-      if (GB_debug) out << " end 1 GLObject::MakeContextCurrent() " << endl;
+      if (GB_debug) cerr << " end 1 GLObject::MakeContextCurrent() " << endl;
       return res;
     }
     break;
@@ -216,11 +216,11 @@ int  GLObject::MakeContextCurrent()
                 << endl;
           glRenderMode(GL_RENDER);
           bool res = _wxGL_canvas->SetCurrentContext();
-          if (GB_debug) out << " end 2 GLObject::MakeContextCurrent() " << endl;
+          if (GB_debug) cerr << " end 2 GLObject::MakeContextCurrent() " << endl;
           return res;
   }
 
-  if (GB_debug) out << " end 3 GLObject::MakeContextCurrent() " << endl;
+  if (GB_debug) cerr << " end 3 GLObject::MakeContextCurrent() " << endl;
   return 0;
 
   

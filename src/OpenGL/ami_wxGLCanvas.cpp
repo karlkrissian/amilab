@@ -7,9 +7,6 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-#include <ostream>
-#include <boost/iostreams/device/file.hpp>
-#include <boost/iostreams/stream.hpp>
 #include "ami_wxGLCanvas.hpp"
 //#include "DessinImageParam.hpp"
 #include "Voxels.h"
@@ -17,6 +14,15 @@
 #include "Viewer3D.hpp"
 
 #include "amilab_messages.h"
+
+#define CLASS_GL_MESSAGE(m) \
+  if (GB_debug_opengl) { \
+    out << "Info \t" \
+        << this->get_name() << "::" \
+        << __func__ << "()\t"  \
+        << m << std::endl; \
+  }
+
 
 //namespace io = boost::iostreams;
 
@@ -30,11 +36,10 @@
 #endif
 //#define NEW_METHOD
 
-boost::iostreams::stream_buffer<boost::iostreams::file_sink> buf("ami_wxGLCanvas_trace.txt");
-std::ostream                     out(&buf);
 
 
 //extern unsigned char      GB_debug;
+extern unsigned char      GB_debug_opengl;
 //extern unsigned char      GB_verbose;
 extern wxApp*    GB_wxApp;
 
@@ -165,6 +170,10 @@ ami_wxGLCanvas::ami_wxGLCanvas(
                   name)
     #endif // OLD_METHOD
 {
+  if (GB_debug_opengl) {
+    out.open("ami_wxGLCanvas_trace.txt");
+  }
+
   // out writes to log.txt
   CLASS_MESSAGE("begin");
 
@@ -455,8 +464,7 @@ void ami_wxGLCanvas::OnPaint( wxPaintEvent& WXUNUSED(event) )
  //    if (!GetContext()) return;
 
   if (!dc.IsOk()) {
-    cerr  << "ami_wxGLCanvas::OnPaint()"
-          << "\t PaintDC not OK" << endl;
+    CLASS_ERROR("PaintDC not OK");
     return;
   }
 
@@ -467,8 +475,8 @@ void ami_wxGLCanvas::OnPaint( wxPaintEvent& WXUNUSED(event) )
   }
   this->Paint(true);
 
-  if (GB_debug) out << "*** end ami_wxGLCanvas::OnPaint() ***" << endl;
-  if (GB_debug) cerr << "*** end ami_wxGLCanvas::OnPaint() ***" << endl;
+  CLASS_GL_MESSAGE("End");
+  CLASS_MESSAGE("End");
 }
 
 void ami_wxGLCanvas::OnSize( wxSizeEvent& event )
@@ -1649,8 +1657,7 @@ void ami_wxGLCanvas::SetFog( const GLFogParam& f)
 void ami_wxGLCanvas::Paint( const bool& affiche)
 //                   -----
 {
-
-  if (GB_debug) out << "*** begin ami_wxGLCanvas::Paint() ***" << endl;
+  CLASS_GL_MESSAGE("Begin");
 
 if (!_initialized) return;
 
@@ -1687,11 +1694,11 @@ if (!_initialized) return;
 
   glReportError();
 
-  Si GB_debug AlorsFait fprintf(stderr,"ami_wxGLCanvas::Paint() 1 \n");
+  CLASS_MESSAGE("1")
 
   glReportError();
 
-  if (GB_debug) out << "*** ami_wxGLCanvas::Paint() 1 ***" << endl;
+  CLASS_GL_MESSAGE("1")
 
   //Si Non( XtIsRealized(_parent)) AlorsFait return;
 
@@ -1699,11 +1706,8 @@ if (!_initialized) return;
   //InitSurface();
   InitProprietes();
 
-  Si GB_debug AlorsFait fprintf(stderr,"ami_wxGLCanvas::Paint() 2 \n");
-  if (GB_debug) out << "*** ami_wxGLCanvas::Paint() 2 ***" << endl;
-
-  Si GB_debug AlorsFait fprintf(stderr,"ami_wxGLCanvas::Paint() Draw objects \n");
-  if (GB_debug) out << "*** ami_wxGLCanvas::Paint() 3 ***" << endl;
+  CLASS_MESSAGE("Draw objects")
+  CLASS_GL_MESSAGE("Draw objects")
 
   EmpileMatrice();
 
@@ -1739,22 +1743,21 @@ if (!_initialized) return;
 
   glReportError();
 
-  Si GB_debug AlorsFait fprintf(stderr,"ami_wxGLCanvas::Paint() Draw comparison surf \n");
-  if (GB_debug) out << "*** ami_wxGLCanvas::Paint() 4 ***" << endl;
-
+  CLASS_MESSAGE("Draw comparison")
+  CLASS_GL_MESSAGE("Draw comparison")
+ 
   // Paint the Comparison Surfaces
   _parent_window->CompSurfPaint();
 
   Si render_mode == GL_RENDER Alors
-    Si GB_debug AlorsFait fprintf(stderr,"ami_wxGLCanvas::Paint() come back to context \n");
+    CLASS_MESSAGE("back to context")
     // Set OpenGL tasks to this drawing area
     this->SetCurrentContext();
   FinSi
   //SetCurrentContext();
 
-  Si GB_debug AlorsFait fprintf(stderr,"ami_wxGLCanvas::Paint() End \n");
-
-  if (GB_debug) out << "*** end ami_wxGLCanvas::Paint() ***" << endl;
+  CLASS_MESSAGE("End")
+  CLASS_GL_MESSAGE("End")
 
 } // Paint()
 
@@ -1903,8 +1906,8 @@ void ami_wxGLCanvas:: ReDimensionne( )
 //                    -------------
 {
   if (!SetCurrentContext()) return;
-  if (GB_debug)
-    cerr << "ami_wxGLCanvas::ReDimensionne( )" << endl;
+  CLASS_MESSAGE("Begin")
+
   glViewport(0, 0, _largeur, _hauteur);
   _GLProjParam.SetWindowSize(_largeur,_hauteur);
   glMatrixMode(_GLTransform.GLenum_mode());
@@ -1917,7 +1920,8 @@ void ami_wxGLCanvas:: ReDimensionne( )
 //  Update();
   Refresh(false);
 
-  if (GB_debug) out << "*** end ami_wxGLCanvas::ReDimensionne() ***" << endl;
+  CLASS_MESSAGE("End");
+
 } // ReDimensionne()
 
 
@@ -1925,15 +1929,13 @@ void ami_wxGLCanvas:: ReDimensionne( )
 void ami_wxGLCanvas::InitGL()
 //                   ------
 {
-  if (GB_debug) out << "*** begin ami_wxGLCanvas::InitGL() ***" << endl;
+  CLASS_MESSAGE("Begin")
 
-  if (GB_debug) cerr << "InitGL() begin" << endl;
 //    this->SetCurrentContext();
 //    this->Show();
 //  Show();
   if (!SetCurrentContext()) {
-    cerr  << "ami_wxGLCanvas::InitGL()\t"
-          << "SetCurrentContext() failed " << endl;
+    CLASS_MESSAGE("failed");
     return;
   }
 //  InitGL();
@@ -1962,9 +1964,7 @@ void ami_wxGLCanvas::InitGL()
 
     glMatrixMode(_GLTransform.GLenum_mode());
 
-  if (GB_debug) cerr << "InitGL() end" << endl;
-
-  if (GB_debug) out << "*** end ami_wxGLCanvas::InitGL() ***" << endl;
+  CLASS_MESSAGE("End")
 
 } // InitGL()
 
@@ -2085,11 +2085,13 @@ void ami_wxGLCanvas :: TranslationEnd()
 
   SelonQue _mouse_action Vaut
     Valeur MOUSE_MOVE_OBJECT:
+      /*
       if (GB_debug) cout << "  Setting new translation " <<  matrix[3][0]<< " ; " <<  matrix[3][1] << " ;" <<  matrix[3][2]<< endl;
+      */
       _Tobject.SetTranslation(matrix[3][0],
                   matrix[3][1],
                   matrix[3][2]);
-      if (GB_debug) PrintMatrices();
+      //if (GB_debug) PrintMatrices();
     FinValeur
     Valeur MOUSE_MOVE_BASIS:
       _Tbasis.SetTranslation(matrix[3][0],
