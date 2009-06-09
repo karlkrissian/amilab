@@ -74,66 +74,6 @@ InrImage*     Func_localmean( InrImage* im, int size)
   return res;
 }
 
-// image_extent class
-image_extent::image_extent(InrImage* im) {
-  extent[0][0] = 0;
-  extent[1][0] = 0;
-  extent[2][0] = 0;
-  extent[0][1] = im->DimX()-1;
-  extent[1][1] = im->DimY()-1;
-  extent[2][1] = im->DimZ()-1;
-}
-
-bool image_extent::check_axis(const int& i) const
-{ 
-  return ((i>=0)&&(i<=2));
-}
-
-void image_extent::SetMin(const int& i, const int& min) 
-{ 
-  if (check_axis(i)) 
-    extent[i][0] = min; 
-}
-
-void image_extent::SetMax(const int& i, const int& max) 
-{ 
-  if (check_axis(i)) 
-    extent[i][1] = max; 
-}
-
-void image_extent::SetMinMax(const int& i, 
-      const int& min, const int& max) 
-{ 
-  if (check_axis(i)) {
-    extent[i][0] = min; 
-    extent[i][1] = max; 
-  }
-}
-
-int image_extent::GetMin(const int& i) const
-{ 
-  if (check_axis(i)) 
-    return extent[i][0]; 
-  else 
-    return -1;
-}
-
-int image_extent::GetMax(const int& i) const 
-{ 
-  if (check_axis(i)) 
-    return extent[i][1]; 
-  else 
-    return -1;
-}
-
-int image_extent::GetSize(const int& i) const
-{ 
-  if (check_axis(i)) 
-    return extent[i][1]-extent[i][0]+1; 
-  else 
-    return -1;
-}
-
 
 //--------------------------------------------------
 // separable optimized version
@@ -145,7 +85,7 @@ void     Func_localmean2( InrImage* im, InrImage*& res,
     { tmp1=p1; p1 = p2; p2 = tmp1; }
   int numpoints;
   
-  image_extent extent(im);
+  ImageExtent<int> extent(im);
 
   Func_localsum<float>(im,res,tmp,size,extent);
 

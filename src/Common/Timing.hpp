@@ -1,7 +1,7 @@
 /***************************************************************************
  * $Author: karl $
  * $Revision: 1.1.1.1 $
- * $Log: Duree.hpp,v $
+ * $Log: Timing.hpp,v $
  * Revision 1.1.1.1  2004/02/02 20:47:07  karl
  * source code in C++
  *
@@ -33,7 +33,7 @@
 #else
 #include <sys/time.h>
 #endif
-#include "style.hpp"
+//#include "style.hpp"
 
 #ifdef AMI_USE_OPENMP
   #include <omp.h>
@@ -55,7 +55,7 @@ using namespace std;
 
 
 //======================================================================
-class Duree
+class Timing
 //     -----
 {
 
@@ -76,7 +76,7 @@ class Duree
   
 public:
 
-  Constructeur Duree( const std::string& _name = "")
+  Timing( const std::string& _name = "")
   //
   {
     debut_OK = fin_OK = false;
@@ -111,16 +111,15 @@ public:
     heures = minutes = secondes = 0;
 
     secondes = cumul_diff_sec;
-    Si secondes > 60 Alors
+    if (secondes > 60) {
        minutes  = secondes / 60;
        secondes = secondes % 60;
-    FinSi
+    }
 
-    Si minutes        > 60 Alors
+    if (minutes        > 60) {
        heures   = minutes / 60;
        minutes  = minutes % 60;
-    FinSi
-    
+    }
 
   }
 
@@ -137,17 +136,17 @@ public:
   void Fin()
   {
     fin_OK = (gettimeofday( &time2, NULL ) != -1);
-    Si debut_OK Et fin_OK Alors
+    if (debut_OK && fin_OK) {
       diff_sec      = time2.tv_sec  - time1.tv_sec;
       diff_microsec = time2.tv_usec - time1.tv_usec;
-    FinSi
+    }
 
     timer_t2 = am_timer();
     diff_timer = timer_t2-timer_t1;
   }
 
   ///
-  friend ostream& operator<<(ostream& o, const Duree& d);
+  friend ostream& operator<<(ostream& o, const Timing& d);
 
 };
 

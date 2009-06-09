@@ -16,7 +16,7 @@
 #include <vector>
 
 #include "ami_function.h"
-#include "Duree.hpp"
+#include "Timing.hpp"
 
 #include "ImageStack.h"
 #include "SurfStack.h"
@@ -46,7 +46,7 @@ public:
     SurfStack         surf_stack;
     MatrixStack       matrix_stack;
     GLTransformStack  gltransf_stack;
-    Duree             IP_time;
+    Timing             IP_time;
 
     // Dealing with output files
     std::ofstream language_debug_stream;

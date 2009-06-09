@@ -86,7 +86,7 @@ using namespace boost;
 
 #include <stdlib.h>
 #include "IsoContour2.hpp"
-
+#include "Timing.hpp"
 
 //extern InrImage* image_contours;
 
@@ -1098,7 +1098,7 @@ void IsoContour2 :: CalculAire( )
       int         num_pt;
       int         num_surfinterp;
       CalculAireSection* calcul_aire_section;
-      Duree          temps_calcul;
+      Timing          temps_calcul;
 
 if (_image_un_contour==NULL)
   fprintf(stderr,"Cannot compute surface of section with _image_un_contour==NULL \n");

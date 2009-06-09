@@ -58,7 +58,7 @@
 #endif
 
 #include "isosurface.hpp"
-#include "Duree.hpp"
+#include "Timing.hpp"
 
 
 //--------------------------------------------------
@@ -728,7 +728,7 @@ void IsoSurface :: CalculSurface(float seuil,
     Voxel  voxel;
     float   val[8];
     Cube   cube;
-    Duree  temps_calcul;
+    Timing  temps_calcul;
     pt3D   pt;
     double coeff;
     float   val0, val1, valx;

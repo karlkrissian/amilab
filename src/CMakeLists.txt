@@ -113,8 +113,18 @@ INCLUDE(CPack)
 
 
 
-FIND_PACKAGE ( VTK )
-FIND_PACKAGE ( ITK )
+OPTION(AMI_USE_VTK "Use VTK: recommended" ON)
+
+IF(AMI_USE_VTK)
+  FIND_PACKAGE ( VTK )
+ENDIF(AMI_USE_VTK)
+
+OPTION(AMI_USE_ITK "Use ITK: recommended" ON)
+
+IF(AMI_USE_ITK)
+  FIND_PACKAGE ( ITK )
+ENDIF(AMI_USE_ITK)
+
 FIND_PACKAGE ( AMIFluid )
 #FIND_PACKAGE ( wxParams )
 FIND_PACKAGE ( OpticFlow )
@@ -212,7 +222,11 @@ add_subdirectory (OpenGL)
 add_subdirectory (penguin)
 add_subdirectory (Voxels)
 add_subdirectory (AMILab)
-add_subdirectory (myVTK4)
+
+IF(AMI_USE_VTK)
+  add_subdirectory (myVTK4)
+ENDIF(AMI_USE_VTK)
+
 add_subdirectory (Line)
 add_subdirectory (SplineThevenaz)
 #add_subdirectory (libamiFluid)
@@ -242,7 +256,6 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}/Filtrage
   ${AMILAB_SOURCE_DIR}/Line
-  ${AMILAB_SOURCE_DIR}/myVTK4
   ${AMILAB_SOURCE_DIR}/SplineThevenaz
   ${AMILAB_SOURCE_DIR}/Contours
   ${AMILAB_SOURCE_DIR}/DistTransf
@@ -257,7 +270,13 @@ include_directories (
 #  ${wxParams_INCLUDE_DIRS}
   )
 
-INCLUDE( ${USE_VTK_FILE} )
+IF(AMI_USE_VTK)
+  include_directories (
+    ${AMILAB_SOURCE_DIR}/myVTK4
+  )
+  INCLUDE( ${USE_VTK_FILE} )
+ENDIF(AMI_USE_VTK)
+
 INCLUDE(${wxWidgets_USE_FILE})
 INCLUDE( ${USE_ITK_FILE} )
 
@@ -305,7 +324,6 @@ SET(amilab_ownlibs
   Vessels
   Common
   Voxels
-  myVTK4
 )
 
 IF(AMI_USE_FASTNLMEANS)
@@ -315,17 +333,31 @@ IF(AMI_USE_FASTNLMEANS)
   )
 ENDIF(AMI_USE_FASTNLMEANS)
 
+IF(AMI_USE_VTK)
+  SET(amilab_ownlibs
+      ${amilab_ownlibs}
+      myVTK4
+  )
+  SET(LINK_VTK
+    vtkRendering
+    vtkGraphics
+    vtkImaging
+    vtkIO
+    vtkFiltering
+    vtkCommon
+    vtkNetCDF
+  )
+ELSE(AMI_USE_VTK)
+  SET(LINK_VTK
+  )
+ENDIF(AMI_USE_VTK)
+
+
 
 # conflict between freetype and vtkfreetype
 TARGET_LINK_LIBRARIES( ${AMILAB_BIN}
   ${amilab_ownlibs}
-  vtkRendering
-  vtkGraphics
-  vtkImaging
-  vtkIO
-  vtkFiltering
-  vtkCommon
-  vtkNetCDF
+  ${LINK_VTK}
   ITKIO
   itkvnl
   itkvnl_algo

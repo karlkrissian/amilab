@@ -5,7 +5,7 @@
 include_directories (${AMILAB_SOURCE_DIR}/Common)
 
 SET(Common_SRCS
-  chaine.cpp Duree.cpp Erreurs.cpp ficparam.cpp  
+  chaine.cpp Timing.cpp Erreurs.cpp ficparam.cpp  
   StringUtils.cpp
 )
 

@@ -19,23 +19,23 @@
 */
 
 #include <omp.h>
-#include "Duree.hpp"
+#include "Timing.hpp"
 #include "amilab_messages.h"
 
 #include "FastVector.hpp"
 
 /*
-#include "Duree.hpp"
-extern Duree localmeanX;
-extern Duree localmeanY;
-extern Duree localmeanZ;
+#include "Timing.hpp"
+extern Timing localmeanX;
+extern Timing localmeanY;
+extern Timing localmeanZ;
 */
 
 #define USE_TIMING 
 
 #ifdef USE_TIMING 
   #define START_TIMING( message ) \
-      Duree timer(__func__); \
+      Timing timer(__func__); \
       timer.Debut(); \
       cout << endl << __func__ << " " << message << endl; 
   
@@ -52,7 +52,7 @@ extern Duree localmeanZ;
 template<class T,class TInc>
 void FastLocalDiffX( InrImage* in, InrImage* out, 
                       int size, int axis, 
-                      const image_extent& extent,
+                      const ImageExtent<int>& extent,
                       const unsigned char& stepsize=4)
 {
 
@@ -218,7 +218,7 @@ void FastLocalDiffX( InrImage* in, InrImage* out,
 template<class T,class TInc>
 void FastLocalSumX_noborder( InrImage* in, InrImage* out, 
                       int size, int axis, 
-                      const image_extent& extent,
+                      const ImageExtent<int>& extent,
                       const unsigned char& stepsize=4)
 {
 
@@ -278,7 +278,7 @@ void FastLocalSumX_noborder( InrImage* in, InrImage* out,
 template<class T,class TInc>
 void FastLocalSumY_noborder( InrImage* in, InrImage* out, 
                       int size, int axis, 
-                      const image_extent& extent,
+                      const ImageExtent<int>& extent,
                       const unsigned char& stepsize=4)
 {
 
@@ -361,7 +361,7 @@ void FastLocalSumY_noborder( InrImage* in, InrImage* out,
 template<class T,class TInc>
 void FastLocalSumX( InrImage* in, InrImage* out, 
                       int size, int axis, 
-                      const image_extent& extent,
+                      const ImageExtent<int>& extent,
                       const unsigned char& stepsize=4)
 {
 
@@ -532,7 +532,7 @@ void FastLocalSumX( InrImage* in, InrImage* out,
 template<class T,class TInc>
 void FastLocalSumDirNonX( InrImage* in, InrImage* out, 
                       int size, int axis, 
-                      const image_extent& extent,
+                      const ImageExtent<int>& extent,
                       const unsigned char& stepsize=8)
 {
 
@@ -715,7 +715,7 @@ void FastLocalSumDirNonX( InrImage* in, InrImage* out,
 template<class T,class TInc>
 void FastLocalSumDir( InrImage* in, InrImage* out, 
                       int size, int axis, 
-                      const image_extent& extent)
+                      const ImageExtent<int>& extent)
 {
   START_TIMING(boost::format("%1%, %2%") 
                   % typeid(T).name() 
@@ -888,7 +888,7 @@ void FastLocalSumDir( InrImage* in, InrImage* out,
 template <class T>
 void     Func_localsum( InrImage* im, InrImage*& res, 
                         InrImage*& tmp, int size,
-                        image_extent& extent)
+                        ImageExtent<int>& extent)
 {
 
   START_TIMING(boost::format("%1%") 
@@ -983,7 +983,7 @@ void     Func_localsum( InrImage* im, InrImage*& res,
 // that corresponds to the template parameter
 template <class T>
 void     Func_localsum( InrImage::ptr& tmp, InrImage::ptr& res, 
-                        int size, image_extent& extent)
+                        int size, ImageExtent<int>& extent)
 {
 
   FastLocalSumDir<T,unsigned char>(tmp.get(),res.get(),size,0,extent);

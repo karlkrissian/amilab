@@ -85,7 +85,7 @@
 #include "CalculAireSection.hpp"
 
 #include "PointContour.hpp"
-#include "Duree.hpp"
+#include "Timing.hpp"
 
 #define EPSILON 1E-2
 

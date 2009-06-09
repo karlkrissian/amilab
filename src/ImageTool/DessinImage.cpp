@@ -163,7 +163,6 @@
 
 #include "DessinImage.hpp"
 #include "CompareImage.hpp"
-#include "epi_err.hpp"
 #include "ficparam.hpp"
 #include "VolumeRender.hpp"
 //#include "math1.hpp"

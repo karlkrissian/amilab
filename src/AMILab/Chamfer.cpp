@@ -35,7 +35,7 @@
 //#include "Variable.hpp"
 //#include "Variables.hpp"
 #include "FloatMatrix.hpp"
-#include "Duree.hpp"
+#include "Timing.hpp"
 #include "Chamfer.h"
 
 //
@@ -50,7 +50,7 @@ InrImage* Func_Chamfer(InrImage* im, float a, float b, float c)
   register float dist_neighbor[13];
   register float min,val=0;
   register float* buf;
-  Duree duree;
+  Timing duree;
 
   duree.Debut();
 
@@ -193,7 +193,7 @@ InrImage* Func_Chamfer2(InrImage* im, float a, float b, float c, float dmax)
   register float* buf3;
   register int imin,imax,jmin,jmax,kmin,kmax;
   register int tx,ty,tz,txy;
-  Duree duree;
+  Timing duree;
 
   if (im->DimZ()==1) return Func_Chamfer2_2D(im,a,b,dmax);
 
@@ -477,7 +477,7 @@ InrImage* Func_Chamfer2Signed(InrImage* im, float a, float b, float c, float dma
   register float* buf3;
   register int imin,imax,jmin,jmax,kmin,kmax;
   register int tx,ty,tz,txy;
-  Duree duree;
+  Timing duree;
 
   if (im->DimZ()==1) return Func_Chamfer2Signed_2D(im,a,b,dmax);
 

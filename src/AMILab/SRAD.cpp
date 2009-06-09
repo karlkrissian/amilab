@@ -76,7 +76,7 @@ double Cmad(InrImage* im)
 
 
 //--------------------------------------------------------------------------------
-double Compute_q0_subvol(InrImage* im, int mode, ImageExtent* extent)
+double Compute_q0_subvol(InrImage* im, int mode, ImageExtent<float>* extent)
 //
 {
   InrImage* subvol;
@@ -125,7 +125,7 @@ double Compute_q0_subvol(InrImage* im, int mode, ImageExtent* extent)
 
 
 //--------------------------------------------------------------------------------
-double Compute_q0_2(InrImage* im, int mode, ImageExtent* extent)
+double Compute_q0_2(InrImage* im, int mode, ImageExtent<float>* extent)
 //
 {
 
@@ -137,7 +137,7 @@ double Compute_q0_2(InrImage* im, int mode, ImageExtent* extent)
 }
 
 //--------------------------------------------------------------------------------
-double Compute_sigma2_MRI(InrImage* im, ImageExtent* extent)
+double Compute_sigma2_MRI(InrImage* im, ImageExtent<float>* extent)
 //
 {
   InrImage* subvol;
@@ -176,7 +176,7 @@ double Compute_sigma2_MRI(InrImage* im, ImageExtent* extent)
 
 
 //--------------------------------------------------------------------------------
-double Compute_sigma2_MRI_mode(InrImage* im, ImageExtent* extent)
+double Compute_sigma2_MRI_mode(InrImage* im, ImageExtent<float>* extent)
 //
 {
   InrImage* im1;
@@ -488,7 +488,7 @@ void Compute_q_coeff(InrImage* image_in, InrImage* image_q ){
 //--------------------------------------------------------------------------------
 void Compute_d_coeff(InrImage* image_res,InrImage* image_c,InrImage* image_d, double& dt1, int mode, 
 //   ---------------
-		     int neighborhood, ImageExtent* extent) 
+		     int neighborhood, ImageExtent<float>* extent) 
 {
 
   int x,y,z;
@@ -664,7 +664,7 @@ InrImage* Func_SRAD_qcoeff( InrImage* input) {
 InrImage* Func_SRAD( InrImage* input, float dt, int numit, int mode,  
 //        ---------
 		     int neighborhood,
-		     ImageExtent* extent) 
+		     ImageExtent<float>* extent) 
 {
 
   
@@ -733,7 +733,7 @@ InrImage* Func_SRAD( InrImage* input, float dt, int numit, int mode,
 
 
 //--------------------------------------------------------------------------------
-void UpdateResult2(InrImage* image_res,float dt, InrImage* image_c, InrImage* image_d, int neighborhood, int mode, ImageExtent* extent) {
+void UpdateResult2(InrImage* image_res,float dt, InrImage* image_c, InrImage* image_d, int neighborhood, int mode, ImageExtent<float>* extent) {
 //   -------------
 
   int x,y,z;
@@ -898,7 +898,7 @@ void UpdateResult2(InrImage* image_res,float dt, InrImage* image_c, InrImage* im
 InrImage* Func_SRAD2( InrImage* input, float dt, int numit, 
 		      int mode, 
 		      int neighborhood,
-		      ImageExtent* extent)
+		      ImageExtent<float>* extent)
 {
 //
 // neighborhood:

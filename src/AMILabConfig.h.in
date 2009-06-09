@@ -18,8 +18,9 @@
 #cmakedefine HAVE_MALLOC_H 1
 
 #cmakedefine AMI_USE_FASTNLMEANS
-
 #cmakedefine AMI_USE_OPENMP
+#cmakedefine AMI_USE_VTK
+#cmakedefine AMI_USE_ITK
 
 #endif // _AMILabConfig_h_
 

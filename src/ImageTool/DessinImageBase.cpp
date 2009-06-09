@@ -123,7 +123,6 @@
 //#endif
 
 #include "DessinImageBase.hpp"
-#include "epi_err.hpp"
 #include "DessinImageMenu.h"
 
 

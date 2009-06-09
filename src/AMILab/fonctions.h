@@ -130,11 +130,11 @@ InrImage* Func_SRAD_qcoeff( InrImage* input);
 //         ---------------
 
 InrImage* Func_SRAD( InrImage* input, float dt, int numit, int mode, int neighborhood,
-             ImageExtent* extent);
+             ImageExtent<float>* extent);
 //        ---------
 
 InrImage* Func_SRAD2( InrImage* input, float dt,  int numit, int mode, int neighborhood,
-              ImageExtent* extent);
+              ImageExtent<float>* extent);
 //        ---------
 
 //----------------------------------------------------------------------

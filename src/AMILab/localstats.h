@@ -31,34 +31,20 @@
 
 
 #include "inrimage.hpp"
+#include "imageextent.h"
+
+
+
 
 // slow version
 InrImage*     Func_localmean( InrImage* im, int size);
 
-class image_extent {
-public:
-  image_extent() {
-    for(int i=0; i<3; i++)
-      for(int j=0; j<2; j++) extent[i][j]=0;
-  }
-  image_extent(InrImage* im);
-
-  int extent[3][2]; // limits for each of the 3 dimensions
-
-  bool check_axis(const int& i) const;
-  void SetMin(const int& i, const int& min);
-  void SetMax(const int& i, const int& max);
-  void SetMinMax(const int& i, const int& min, const int& max);
-  int GetMin(const int& i) const;
-  int GetMax(const int& i) const;
-  int GetSize(const int& i) const;
-};
 
 // separable optimized version
 template <class T>
 void     Func_localsum( InrImage* im, InrImage*& res,
                         InrImage*& tmp, int size,
-                        image_extent& extent);
+                        ImageExtent<int>& extent);
 
 // separable optimized version 
 // version with smart pointers
@@ -66,7 +52,7 @@ void     Func_localsum( InrImage* im, InrImage*& res,
 template <class T>
 void     Func_localsum( InrImage::ptr& tmp, InrImage::ptr& res,
                         int size,
-                        image_extent& extent);
+                        ImageExtent<int>& extent);
 
 
 // separable optimized version

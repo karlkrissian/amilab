@@ -77,7 +77,7 @@
 #include <iostream>
 
 #include "VarContexts.hpp"
-#include "Duree.hpp"
+//#include "Duree.hpp"
 
 #include "DefineClass.hpp"
 /*
@@ -380,7 +380,7 @@ void CB_delete_surfdraw( void* varid);
   ParamList*            paramlist; // here smart pointer
                             // not allowed in union ...
   ParamListDecl*        paramlistdecl;
-  ImageExtent*          imageextent;
+  ImageExtent<float>*          imageextent;
 }
 
 %token LEX_ERROR
@@ -7558,7 +7558,7 @@ image:
        var_image T_OP_BR image_extent T_CL_BR
       {
     InrImage*  res;
-    ImageExtent* extent = (ImageExtent*) $3;
+    ImageExtent<float>* extent = (ImageExtent<float>*) $3;
 
     //  extent->print();
     extent->SetRelative(((InrImage::ptr*) $1->Pointer())->get());
@@ -8139,7 +8139,7 @@ image:
       InrImage*  res;
       float dt = (float) $5;
       int numit = (int) $7;
-      ImageExtent* extent = (ImageExtent*) $9;
+      ImageExtent<float>* extent = (ImageExtent<float>*) $9;
 
       res = Func_SRAD( ((InrImage::ptr*) $3->Pointer())->get(),dt,numit,
                0, // Lee mode
@@ -8163,7 +8163,7 @@ image:
       float dt = (float) $5;
       int numit = (int) $7;
       int neighborhood = (int) $9;
-      ImageExtent* extent = (ImageExtent*) $11;
+      ImageExtent<float>* extent = (ImageExtent<float>*) $11;
 
       res = Func_SRAD( ((InrImage::ptr*) $3->Pointer())->get(),dt,numit,
                0, // Lee mode
@@ -8186,7 +8186,7 @@ image:
       InrImage*  res;
       float dt = (float) $5;
       int numit = (int) $7;
-      ImageExtent* extent = (ImageExtent*) $9;
+      ImageExtent<float>* extent = (ImageExtent<float>*) $9;
 
 
       res = Func_SRAD2( ((InrImage::ptr*) $3->Pointer())->get(),dt,numit,
@@ -8213,7 +8213,7 @@ image:
       float dt = (float) $5;
       int numit = (int) $7;
       int neighborhood = (int) $9;
-      ImageExtent* extent = (ImageExtent*) $11;
+      ImageExtent<float>* extent = (ImageExtent<float>*) $11;
 
       res = Func_SRAD2( ((InrImage::ptr*) $3->Pointer())->get(),dt,numit,
                 0, // Lee function
@@ -8235,7 +8235,7 @@ image:
       InrImage*  res;
       float dt = (float) $5;
       int numit = (int) $7;
-      ImageExtent* extent = (ImageExtent*) $9;
+      ImageExtent<float>* extent = (ImageExtent<float>*) $9;
 
       res = Func_SRAD2( ((InrImage::ptr*) $3->Pointer())->get(),dt,numit,
                 2, // Additive mode
@@ -8258,7 +8258,7 @@ image:
       float dt         = (float) $5;
       int numit        = (int) $7;
       int neighborhood = (int) $9;
-      ImageExtent* extent = (ImageExtent*) $11;
+      ImageExtent<float>* extent = (ImageExtent<float>*) $11;
 
       res = Func_SRAD( ((InrImage::ptr*) $3->Pointer())->get(),dt,numit,
                1, // Kuan's function
@@ -8281,7 +8281,7 @@ image:
       float dt = (float) $5;
       int numit = (int) $7;
       int neighborhood = (int) $9;
-      ImageExtent* extent = (ImageExtent*) $11;
+      ImageExtent<float>* extent = (ImageExtent<float>*) $11;
 
       res = Func_SRAD2( ((InrImage::ptr*) $3->Pointer())->get(),dt,numit,
                 1, // Kuan's function
@@ -8324,7 +8324,7 @@ image:
             float dt = (float) $7;
             int numit = (int) $9;
             int neighborhood = (int) $11;
-            ImageExtent* extent = (ImageExtent*) $13;
+            ImageExtent<float>* extent = (ImageExtent<float>*) $13;
 
             res = Func_SRAD2( ((InrImage::ptr*) $3->Pointer())->get(),dt,numit,
                         mode, // fiter mode
@@ -10704,7 +10704,7 @@ variable:
 image_extent:
         expr T_COLON expr T_COMMA  expr T_COLON expr T_COMMA  expr T_COLON expr
         {
-          ImageExtent* extent=new ImageExtent( (float)$1,(float)$3,(float)$5,
+          ImageExtent<float>* extent=new ImageExtent<float>( (float)$1,(float)$3,(float)$5,
                               (float)$7,(float)$9,(float)$11);
           extent->SetMode(1); // relative
           $$=extent;
@@ -10712,7 +10712,7 @@ image_extent:
         |
         expr T_COLON expr T_COMMA  expr T_COLON expr
         {
-          ImageExtent* extent=new ImageExtent((float)$1,(float)$3,(float)$5,(float)$7);
+          ImageExtent<float>* extent=new ImageExtent<float>((float)$1,(float)$3,(float)$5,(float)$7);
           extent->SetMode(1); // relative
           $$=extent;
         }
@@ -10721,7 +10721,7 @@ image_extent:
         {
           InrImage::ptr im = *(InrImage::ptr*) $1->Pointer();
 
-          ImageExtent* extent=new ImageExtent();
+          ImageExtent<float>* extent=new ImageExtent<float>();
           extent->SetMode(0); // absolute
           extent->SetXmin( im->SpacePosX(0));
           extent->SetXmax( im->SpacePosX(im->DimX()-1));
@@ -10743,7 +10743,7 @@ image_extent:
         string comment;
 
         draw->GetZoom(xmin,ymin,zmin,xmax,ymax,zmax);
-        ImageExtent* extent=new ImageExtent(xmin,xmax,ymin,ymax,zmin,zmax);
+        ImageExtent<float>* extent=new ImageExtent<float>(xmin,xmax,ymin,ymax,zmin,zmax);
         extent->SetMode(1); // relative extent
 
         comment = str(format(" //  subvolume [%3d:%3d, %3d:%3d, %3d:%3d] ")

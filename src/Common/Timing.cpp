@@ -28,7 +28,7 @@
 /***************************************************************************
  * $Author: karl $
  * $Revision: 1.2 $
- * $Log: Duree.cpp,v $
+ * $Log: Timing.cpp,v $
  * Revision 1.2  2005/11/16 14:03:07  karl
  * added LGPL license
  *
@@ -54,7 +54,7 @@
  *
  ***************************************************************************/
 
-#include <Duree.hpp>
+#include <Timing.hpp>
 
 
 double am_timer(void)
@@ -93,18 +93,17 @@ int gettimeofday(struct timeval* tp, void* tzp)
 
 //---------------------------------------------------------------------
 //
-ostream& operator<<(ostream& o, const Duree& d)
+ostream& operator<<(ostream& o, const Timing& d)
 {
-  Si d.debut_OK Et d.fin_OK Alors
-    return o << " Duree du traitement: " << 
+  if (d.debut_OK && d.fin_OK)
+    return o << " Timing du traitement: " << 
                 d.diff_sec*1.0+d.diff_microsec*1E-6 << " sec. ";
-  Sinon
-    return o << " Duree inconnue ";
-  FinSi
+  else
+    return o << " Timing inconnue ";
 }
 
 //--------------------------------------
-void Duree::AfficheCumul(ostream& o)
+void Timing::AfficheCumul(ostream& o)
 {
   
     long minutes;
@@ -114,29 +113,29 @@ void Duree::AfficheCumul(ostream& o)
   heures = minutes = secondes = 0;
 
   secondes = cumul_diff_sec;
-  Si secondes > 60 Alors
+  if (secondes > 60) {
       minutes  = secondes / 60;
       secondes = secondes % 60;
-  FinSi
+  }
 
-  Si minutes        > 60 Alors
+  if (minutes        > 60) {
       heures   = minutes / 60;
       minutes  = minutes % 60;
-  FinSi
+  }
   
 
-    o << " Cumul of time for " 
-      << name << " is: \t ";
-/*      << heures << "h" 
-      << minutes << "min" 
-      << secondes << "s. " << endl
+  o << " Cumul of time for " 
+    << name << " is: \t ";
+  /*      << heures << "h" 
+  << minutes << "min" 
+  << secondes << "s. " << endl
 
-      << cumul_diff_microsec/1000.0 << " msec." << endl
+  << cumul_diff_microsec/1000.0 << " msec." << endl
 
-      << "OMP: " */
-      if (cumul_timer>1)
-        o << cumul_timer << " sec." << endl;
-      else
-        o << cumul_timer*1000.0 << " msec." << endl;
+  << "OMP: " */
+  if (cumul_timer>1)
+    o << cumul_timer << " sec." << endl;
+  else
+    o << cumul_timer*1000.0 << " msec." << endl;
 
 }

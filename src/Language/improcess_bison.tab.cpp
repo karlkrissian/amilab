@@ -8230,7 +8230,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
 #line 7559 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     InrImage*  res;
-    ImageExtent* extent = (ImageExtent*) (yysemantic_stack_[(4) - (3)].imageextent);
+    ImageExtent<float>* extent = (ImageExtent<float>*) (yysemantic_stack_[(4) - (3)].imageextent);
 
     //  extent->print();
     extent->SetRelative(((InrImage::ptr*) (yysemantic_stack_[(4) - (1)].variable)->Pointer())->get());
@@ -8838,7 +8838,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
       InrImage*  res;
       float dt = (float) (yysemantic_stack_[(10) - (5)].adouble);
       int numit = (int) (yysemantic_stack_[(10) - (7)].adouble);
-      ImageExtent* extent = (ImageExtent*) (yysemantic_stack_[(10) - (9)].imageextent);
+      ImageExtent<float>* extent = (ImageExtent<float>*) (yysemantic_stack_[(10) - (9)].imageextent);
 
       res = Func_SRAD( ((InrImage::ptr*) (yysemantic_stack_[(10) - (3)].variable)->Pointer())->get(),dt,numit,
                0, // Lee mode
@@ -8863,7 +8863,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
       float dt = (float) (yysemantic_stack_[(12) - (5)].adouble);
       int numit = (int) (yysemantic_stack_[(12) - (7)].adouble);
       int neighborhood = (int) (yysemantic_stack_[(12) - (9)].adouble);
-      ImageExtent* extent = (ImageExtent*) (yysemantic_stack_[(12) - (11)].imageextent);
+      ImageExtent<float>* extent = (ImageExtent<float>*) (yysemantic_stack_[(12) - (11)].imageextent);
 
       res = Func_SRAD( ((InrImage::ptr*) (yysemantic_stack_[(12) - (3)].variable)->Pointer())->get(),dt,numit,
                0, // Lee mode
@@ -8887,7 +8887,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
       InrImage*  res;
       float dt = (float) (yysemantic_stack_[(10) - (5)].adouble);
       int numit = (int) (yysemantic_stack_[(10) - (7)].adouble);
-      ImageExtent* extent = (ImageExtent*) (yysemantic_stack_[(10) - (9)].imageextent);
+      ImageExtent<float>* extent = (ImageExtent<float>*) (yysemantic_stack_[(10) - (9)].imageextent);
 
 
       res = Func_SRAD2( ((InrImage::ptr*) (yysemantic_stack_[(10) - (3)].variable)->Pointer())->get(),dt,numit,
@@ -8914,7 +8914,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
       float dt = (float) (yysemantic_stack_[(12) - (5)].adouble);
       int numit = (int) (yysemantic_stack_[(12) - (7)].adouble);
       int neighborhood = (int) (yysemantic_stack_[(12) - (9)].adouble);
-      ImageExtent* extent = (ImageExtent*) (yysemantic_stack_[(12) - (11)].imageextent);
+      ImageExtent<float>* extent = (ImageExtent<float>*) (yysemantic_stack_[(12) - (11)].imageextent);
 
       res = Func_SRAD2( ((InrImage::ptr*) (yysemantic_stack_[(12) - (3)].variable)->Pointer())->get(),dt,numit,
                 0, // Lee function
@@ -8938,7 +8938,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
       InrImage*  res;
       float dt = (float) (yysemantic_stack_[(10) - (5)].adouble);
       int numit = (int) (yysemantic_stack_[(10) - (7)].adouble);
-      ImageExtent* extent = (ImageExtent*) (yysemantic_stack_[(10) - (9)].imageextent);
+      ImageExtent<float>* extent = (ImageExtent<float>*) (yysemantic_stack_[(10) - (9)].imageextent);
 
       res = Func_SRAD2( ((InrImage::ptr*) (yysemantic_stack_[(10) - (3)].variable)->Pointer())->get(),dt,numit,
                 2, // Additive mode
@@ -8963,7 +8963,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
       float dt         = (float) (yysemantic_stack_[(12) - (5)].adouble);
       int numit        = (int) (yysemantic_stack_[(12) - (7)].adouble);
       int neighborhood = (int) (yysemantic_stack_[(12) - (9)].adouble);
-      ImageExtent* extent = (ImageExtent*) (yysemantic_stack_[(12) - (11)].imageextent);
+      ImageExtent<float>* extent = (ImageExtent<float>*) (yysemantic_stack_[(12) - (11)].imageextent);
 
       res = Func_SRAD( ((InrImage::ptr*) (yysemantic_stack_[(12) - (3)].variable)->Pointer())->get(),dt,numit,
                1, // Kuan's function
@@ -8987,7 +8987,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
       float dt = (float) (yysemantic_stack_[(12) - (5)].adouble);
       int numit = (int) (yysemantic_stack_[(12) - (7)].adouble);
       int neighborhood = (int) (yysemantic_stack_[(12) - (9)].adouble);
-      ImageExtent* extent = (ImageExtent*) (yysemantic_stack_[(12) - (11)].imageextent);
+      ImageExtent<float>* extent = (ImageExtent<float>*) (yysemantic_stack_[(12) - (11)].imageextent);
 
       res = Func_SRAD2( ((InrImage::ptr*) (yysemantic_stack_[(12) - (3)].variable)->Pointer())->get(),dt,numit,
                 1, // Kuan's function
@@ -9031,7 +9031,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
             float dt = (float) (yysemantic_stack_[(14) - (7)].adouble);
             int numit = (int) (yysemantic_stack_[(14) - (9)].adouble);
             int neighborhood = (int) (yysemantic_stack_[(14) - (11)].adouble);
-            ImageExtent* extent = (ImageExtent*) (yysemantic_stack_[(14) - (13)].imageextent);
+            ImageExtent<float>* extent = (ImageExtent<float>*) (yysemantic_stack_[(14) - (13)].imageextent);
 
             res = Func_SRAD2( ((InrImage::ptr*) (yysemantic_stack_[(14) - (3)].variable)->Pointer())->get(),dt,numit,
                         mode, // fiter mode
@@ -11700,7 +11700,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 831:
 #line 10706 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          ImageExtent* extent=new ImageExtent( (float)(yysemantic_stack_[(11) - (1)].adouble),(float)(yysemantic_stack_[(11) - (3)].adouble),(float)(yysemantic_stack_[(11) - (5)].adouble),
+          ImageExtent<float>* extent=new ImageExtent<float>( (float)(yysemantic_stack_[(11) - (1)].adouble),(float)(yysemantic_stack_[(11) - (3)].adouble),(float)(yysemantic_stack_[(11) - (5)].adouble),
                               (float)(yysemantic_stack_[(11) - (7)].adouble),(float)(yysemantic_stack_[(11) - (9)].adouble),(float)(yysemantic_stack_[(11) - (11)].adouble));
           extent->SetMode(1); // relative
           (yyval.imageextent)=extent;
@@ -11710,7 +11710,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 832:
 #line 10714 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          ImageExtent* extent=new ImageExtent((float)(yysemantic_stack_[(7) - (1)].adouble),(float)(yysemantic_stack_[(7) - (3)].adouble),(float)(yysemantic_stack_[(7) - (5)].adouble),(float)(yysemantic_stack_[(7) - (7)].adouble));
+          ImageExtent<float>* extent=new ImageExtent<float>((float)(yysemantic_stack_[(7) - (1)].adouble),(float)(yysemantic_stack_[(7) - (3)].adouble),(float)(yysemantic_stack_[(7) - (5)].adouble),(float)(yysemantic_stack_[(7) - (7)].adouble));
           extent->SetMode(1); // relative
           (yyval.imageextent)=extent;
         ;}
@@ -11721,7 +11721,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
     {
           InrImage::ptr im = *(InrImage::ptr*) (yysemantic_stack_[(1) - (1)].variable)->Pointer();
 
-          ImageExtent* extent=new ImageExtent();
+          ImageExtent<float>* extent=new ImageExtent<float>();
           extent->SetMode(0); // absolute
           extent->SetXmin( im->SpacePosX(0));
           extent->SetXmax( im->SpacePosX(im->DimX()-1));
@@ -11745,7 +11745,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
         string comment;
 
         draw->GetZoom(xmin,ymin,zmin,xmax,ymax,zmax);
-        ImageExtent* extent=new ImageExtent(xmin,xmax,ymin,ymax,zmin,zmax);
+        ImageExtent<float>* extent=new ImageExtent<float>(xmin,xmax,ymin,ymax,zmin,zmax);
         extent->SetMode(1); // relative extent
 
         comment = str(format(" //  subvolume [%3d:%3d, %3d:%3d, %3d:%3d] ")
@@ -17518,16 +17518,14 @@ void wxScheduleTimer::Notify()
   CB_ParamWin(&f);
 
   std::list<wxScheduleTimer::ptr>::iterator Iter;
-  Iter  = schedule_timers.begin();
-  while (Iter != schedule_timers.end() )
+  for (Iter  = schedule_timers.begin();
+       Iter != schedule_timers.end()  ; Iter++ )
   {
     if ((*Iter).use_count()) {
       if (Iter->get() == this) {
         Iter = schedule_timers.erase(Iter);
-        continue;
      }
     }
-    Iter++;
   }
 } // wxScheduleTimer::Notify()
 

@@ -118,7 +118,7 @@ namespace yyip
 #include <iostream>
 
 #include "VarContexts.hpp"
-#include "Duree.hpp"
+//#include "Duree.hpp"
 
 #include "DefineClass.hpp"
 /*
@@ -439,7 +439,7 @@ namespace yyip
   ParamList*            paramlist; // here smart pointer
                             // not allowed in union ...
   ParamListDecl*        paramlistdecl;
-  ImageExtent*          imageextent;
+  ImageExtent<float>*          imageextent;
 }
 /* Line 35 of lalr1.cc.  */
 #line 446 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.hpp"
