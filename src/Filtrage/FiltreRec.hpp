@@ -152,7 +152,7 @@ protected:
 //  e_SepFilterPar _param_filtre_conv;
 
   ///
-  PTRINRIMAGE _image_initiale;
+//  PTRINRIMAGE _image_initiale;
 
   ///
   InrImage*  _InrImage_initiale;

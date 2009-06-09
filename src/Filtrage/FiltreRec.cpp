@@ -1420,19 +1420,9 @@ void FiltreRecursif :: Hessien2D( double* hessien,
     coeffy /= _normy;
   FinSi
 
-  Si Non(_derivees_compressees) Alors
     hessien[0] =               (*(*this)(IMxx_sigma))(x,y,z) / coeffx / coeffx;
     hessien[1] = hessien[2] =  (*(*this)(IMxy_sigma))(x,y,z) / coeffx / coeffy;
     hessien[3] =               (*(*this)(IMyy_sigma))(x,y,z) / coeffy / coeffy;
-  Sinon
-    hessien[0] =               (* (InrImageCompressee*)(*this)(IMxx_sigma))(x,y,z) 
-                               / coeffx / coeffx;
-    hessien[1] = hessien[2] =  (* (InrImageCompressee*)(*this)(IMxy_sigma))(x,y,z) 
-                               / coeffx / coeffy;
-    hessien[3] =               (* (InrImageCompressee*)(*this)(IMyy_sigma))(x,y,z) 
-                               / coeffy / coeffy;
-  FinSi
-
  
 } // Hessien2D()
 
@@ -1467,7 +1457,6 @@ void FiltreRecursif :: Hessien( double* hessien,
     coeffz /= _normz;
   FinSi
 
-  Si Non(_derivees_compressees) Alors
     hessien[0] =               (*(*this)(IMxx_sigma))(x,y,z) / coeffx / coeffx;
     hessien[1] = hessien[3] =  (*(*this)(IMxy_sigma))(x,y,z) / coeffx / coeffy;
     hessien[4] =               (*(*this)(IMyy_sigma))(x,y,z) / coeffy / coeffy;
@@ -1480,26 +1469,6 @@ void FiltreRecursif :: Hessien( double* hessien,
       hessien[5] = hessien[7] =  (*(*this)(IMzy_sigma))(x,y,z) / coeffz / coeffy;
       hessien[8] =               (*(*this)(IMzz_sigma))(x,y,z) / coeffz / coeffz;
     FinSi
-  Sinon
-    hessien[0] =               (* (InrImageCompressee*)(*this)(IMxx_sigma))(x,y,z) 
-                               / coeffx / coeffx;
-    hessien[1] = hessien[3] =  (* (InrImageCompressee*)(*this)(IMxy_sigma))(x,y,z) 
-                               / coeffx / coeffy;
-    hessien[4] =               (* (InrImageCompressee*)(*this)(IMyy_sigma))(x,y,z) 
-                               / coeffy / coeffy;
-    Si _dim == MODE_2D Alors
-      hessien[2] = hessien[6] =  0.0;
-      hessien[5] = hessien[7] =  0.0;
-      hessien[8] =               0.0;
-    Sinon
-      hessien[2] = hessien[6] =  (* (InrImageCompressee*)(*this)(IMzx_sigma))(x,y,z) 
-                                 / coeffx / coeffz;
-      hessien[5] = hessien[7] =  (* (InrImageCompressee*)(*this)(IMzy_sigma))(x,y,z) 
-                                 / coeffz / coeffy;
-      hessien[8] =               (* (InrImageCompressee*)(*this)(IMzz_sigma))(x,y,z) 
-                                 / coeffz / coeffz;
-    FinSi
-  FinSi
 
  
 } // Hessien()
