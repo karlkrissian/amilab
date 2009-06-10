@@ -26,8 +26,9 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/SplineThevenaz
   ${AMILAB_SOURCE_DIR}/Contours
   ${AMILAB_SOURCE_DIR}/Language
+  ${AMILAB_SOURCE_DIR}/Algorithms/Graph
+  ${AMILAB_SOURCE_DIR}/Algorithms/Denoising
 # still needed for now
-
 #  ${AMILAB_SOURCE_DIR}/libamiFluid
 #  ${AMILAB_SOURCE_DIR}/libamiFluid/opticflow/
 #  ${AMILAB_SOURCE_DIR}/libamiFluid/opticflow/version_inversa
@@ -42,7 +43,7 @@ include_directories (
 )
 
 IF(AMI_USE_FASTNLMEANS)
-  MESSAGE("including ${AMILAB_SOURCE_DIR}")
+  MESSAGE("including NewNLMeans_INCLUDE_DIRS=${NewNLMeans_INCLUDE_DIRS}")
   include_directories (
     ${NewNLMeans_INCLUDE_DIRS}
   )
@@ -88,7 +89,7 @@ SET(AMILab_SRCS
     func_globalstats.cpp
     func_imagebasictools.cpp
     func_isoline.cpp
-    func_shortestpath.cpp
+#    func_shortestpath.cpp
     localstats.cpp
     vtkwrap.cpp
     wrapAMIFluid.cpp

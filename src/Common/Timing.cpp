@@ -54,8 +54,12 @@
  *
  ***************************************************************************/
 
-#include <Timing.hpp>
+#include "Timing.hpp"
 
+#include "AMILabConfig.h"
+#ifdef AMI_USE_OPENMP
+  #include <omp.h>
+#endif
 
 double am_timer(void)
 {

@@ -20,6 +20,11 @@
 #include "wrap_StructureTensor.h"
 #include <pthread.h>
 
+#include "AMILabConfig.h"
+#ifdef AMI_USE_FASTNLMEANS
+  #include "Wrap_NewNLMeans.h"
+#endif // AMI_USE_FASTNLMEANS
+
 extern VarContexts  Vars;
 
 //---------------------------------------------------------
@@ -35,7 +40,7 @@ void AddWrapFilters(){
  Vars.AddVar(type_c_function,      "SplineResample",   (void*) Wrap_SmoothLinesToSplines );
 
 #ifdef AMI_USE_FASTNLMEANS
- Vars.AddVar(type_c_image_function,"NewNLmeans",          (void*) New_NLmeans   );
+ Vars.AddVar(type_c_image_function,"NewNLmeans",          (void*) Wrap_NewNLmeans  );
 #endif // AMI_USE_FASTNLMEANS
 
 }

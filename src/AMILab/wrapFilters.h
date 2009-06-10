@@ -18,9 +18,6 @@
 #include "paramlist.h"
 #include "Variable.hpp"
 
-#ifdef AMI_USE_FASTNLMEANS
-  #include "NewNLmeans.h"
-#endif // AMI_USE_FASTNLMEANS
 
 /** function that add the wrapping of different filters
  *  to the AMI language

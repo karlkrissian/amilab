@@ -24,7 +24,16 @@ include_directories (
 INCLUDE( ${VTK_USE_FILE} )
 INCLUDE(${wxWidgets_USE_FILE})
 
+IF(AMI_USE_FASTNLMEANS)
+  MESSAGE("including NewNLMeans_INCLUDE_DIRS=${NewNLMeans_INCLUDE_DIRS}")
+  include_directories (
+    ${NewNLMeans_INCLUDE_DIRS}
+  )
+ENDIF(AMI_USE_FASTNLMEANS)
+
 SET(Algorithms_SRCS
+  Graph/func_shortestpath.cpp
+  Denoising/Wrap_NewNLMeans.cpp
 )
 
 my_add_library ( Algorithms)
