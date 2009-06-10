@@ -27,12 +27,4 @@ INCLUDE(${wxWidgets_USE_FILE})
 SET(Algorithms_SRCS
 )
 
-if(AMI_USE_FASTNLMEANS)
-SET(Algorithms_SRCS
-    ${Algorithms_SRCS}
-    Denoising/NewNLmeans.cpp
-)
-endif(AMI_USE_FASTNLMEANS)
-
-
 my_add_library ( Algorithms)

@@ -42,9 +42,9 @@ include_directories (
 )
 
 IF(AMI_USE_FASTNLMEANS)
-  MESSAGE("including ${AMILAB_SOURCE_DIR}/Algorithms/Denoising")
+  MESSAGE("including ${AMILAB_SOURCE_DIR}")
   include_directories (
-    ${AMILAB_SOURCE_DIR}/Algorithms/Denoising
+    ${NewNLMeans_INCLUDE_DIRS}
   )
 ENDIF(AMI_USE_FASTNLMEANS)
 
