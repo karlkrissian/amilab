@@ -54,7 +54,6 @@
 
 #include "style.hpp"
 #include "math1.hpp"
-#include "chaine.hpp"
 #include "EDPmorpho.h"
 
 extern unsigned char GB_debug; 

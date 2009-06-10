@@ -29,7 +29,6 @@
 #ifndef RESIZE_HPP_
 #define RESIZE_HPP_
 
-#include "chaine.hpp"
 #include "inrimage.hpp"
 #include "math1.hpp"
 

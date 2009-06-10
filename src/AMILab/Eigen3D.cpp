@@ -58,7 +58,6 @@
 #include "fonctions.h"
 #include "VarContexts.hpp"
 #include "math1.hpp"
-#include "chaine.hpp"
 #include "inrimage.hpp"
 #include "FloatMatrix.hpp"
 #include "Eigen.hpp"

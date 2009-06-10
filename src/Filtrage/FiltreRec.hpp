@@ -47,6 +47,7 @@ FinDeclareC
 #include "inrimage.hpp"
 #include "filtrage.hpp"
 
+#include "chaine.hpp"
 #include "DefineClass.hpp"
 
 #ifndef MODE_1D

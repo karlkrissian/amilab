@@ -37,7 +37,7 @@ DebutDeclareC
 #include <stdlib.h>
 FinDeclareC
 
-#include "chaine.hpp"
+//#include "chaine.hpp"
 #include "inrimage.hpp"
 #include "Coordonnees.hpp"
 #include "Voxel.hpp"
@@ -54,7 +54,7 @@ FinDeclareC
 #define val_abs( x) (((x)>=0)?(x):-(x))
 #define epsilon  1E-2
 
-static Chaine  ce_fichier = "IsoLigneMain.cpp";
+//static Chaine  ce_fichier = "IsoLigneMain.cpp";
 
 extern char program[80];
 extern unsigned char verbose;
@@ -137,7 +137,7 @@ CreeCrest* Func_IsoLine( InrImage* input, float Sigma, InrImage* image_masque, I
 {
 
   
-    Chaine           nom_fic_param;
+    //Chaine           nom_fic_param;
 
     double           hessien[9];
     float            vap[3];
@@ -152,7 +152,7 @@ CreeCrest* Func_IsoLine( InrImage* input, float Sigma, InrImage* image_masque, I
 
     CalculIsoLignes* calcul_isolignes;
 
-    Chaine           nom_crest;
+    //Chaine           nom_crest;
 
     FloatMatrix H(3,3);
     FloatMatrix vp(3,3);

@@ -215,7 +215,7 @@ bool MyApp::OnInit()
 
  // this was  main()
   int  n;
-  Chaine cmd_line;
+  std::string cmd_line;
 
   GB_debug = false;
   GB_debug_opengl = false;
@@ -267,7 +267,7 @@ bool MyApp::OnInit()
   cout << "GB_scripts_dir = " << GB_scripts_dir.mb_str() << endl;
 
 
-  GB_driver.ws_print(cmd_line);
+  GB_driver.ws_print(cmd_line.c_str());
 
 
 //  printf("MyApp::OnInit()\n");

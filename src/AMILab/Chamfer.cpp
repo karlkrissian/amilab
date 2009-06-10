@@ -27,7 +27,6 @@
 */
 
 //#include "fonctions.h"
-#include "chaine.hpp"
 #include "inrimage.hpp"
 #include "math1.hpp"
 //#include "paramlist.h"

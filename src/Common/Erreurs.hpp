@@ -44,6 +44,7 @@
 using namespace std;
 
 #include "chaine.hpp"
+#include <string>
 #include "Pile.hpp"
 
 
@@ -72,13 +73,13 @@ void AffichePileNomMethode();
 //NomMethode* Pile<NomMethode*>::_defaut = NULL;
 
 ///
-static  Chaine GB_mess_warning[1] = {
+static  std::string GB_mess_warning[1] = {
   "Warning              "
 };
 
 
 ///
-static  Chaine GB_mess_erreur[4] = {
+static  std::string GB_mess_erreur[4] = {
   "Erreur de Calcul     ",
   "Erreur d'allocation  ",
   "Erreur de parametres ",

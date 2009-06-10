@@ -28,7 +28,6 @@
 
 //#include "style.hpp"
 //#include "DessinImage.hpp"
-#include "chaine.hpp"
 #include "inrimage.hpp"
 #include "math1.hpp"
 

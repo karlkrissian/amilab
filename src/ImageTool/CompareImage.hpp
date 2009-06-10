@@ -109,7 +109,7 @@ public:
 
   Destructeur CompareImage();
 
-  char*  NomImage() { return _image_initiale->Nom();}
+  const char*  NomImage() { return _image_initiale->Nom();}
 
   void NumeroFenetre( int num) { _numero_fenetre = num;}
 

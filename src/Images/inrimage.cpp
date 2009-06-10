@@ -232,13 +232,13 @@ unsigned char InrImage :: ReadAMI( ) throw (ErreurLecture)
 {
   unsigned char   res; 
 
-  CLASS_MESSAGE((char*)_nom);
+  CLASS_MESSAGE(_nom.c_str());
 
   // Read AMImage
   amimage* im = new amimage();
-  res = im->read( (char*) _nom);
+  res = im->read( (char*) _nom.c_str());
 
-  Si res Alors
+  if ( res ) {
 
     //      im.displayinfo();
     res = GetFormatFromAMI(im,_format);
@@ -250,7 +250,7 @@ unsigned char InrImage :: ReadAMI( ) throw (ErreurLecture)
     // Get the transformation matrix
     im->GetTransfMatrix(_transf_matrix);
 
-    Si res Alors
+    if ( res ) {
         _tx     = im->GetXDim();
         _ty     = im->GetYDim();
         _tz     = im->GetZDim();
@@ -261,9 +261,9 @@ unsigned char InrImage :: ReadAMI( ) throw (ErreurLecture)
         _amimage = im;
         _amimage_allocated = true;
 
-    FinSi
+    } // end if
 
-  FinSi
+  } // end if
 
   return res;
 
@@ -326,7 +326,7 @@ unsigned char InrImage :: ReadMagick( ) throw (ErreurLecture)
 
     Pour(z,0,tz-1)
 
-      Si (image != (const Image *) NULL) Alors
+      if ( (image != (const Image *) NULL) ) {
 
         GetPixels( image,
            red_pixels,
@@ -346,7 +346,7 @@ unsigned char InrImage :: ReadMagick( ) throw (ErreurLecture)
 
         image = image->next;
 
-      FinSi
+      } // end if
 
     FinPour
 
@@ -374,7 +374,7 @@ unsigned char InrImage :: ReadVTK( ) throw (ErreurLecture)
 
   CLASS_MESSAGE(boost::format("InrImage::ReadVTK()  begin "));
 
-  reader->SetFileName((char*) _nom);
+  reader->SetFileName((char*) _nom.c_str());
   reader->Update();
 
   in = reader->GetOutput();
@@ -399,15 +399,15 @@ unsigned char InrImage :: ReadVTK( ) throw (ErreurLecture)
 
   SelonQue (in->GetScalarType()) Vaut
     Valeur VTK_FLOAT:          _format = WT_FLOAT;
-    FinValeur
+    break;
     Valeur VTK_UNSIGNED_SHORT: _format = WT_UNSIGNED_SHORT;
-    FinValeur
+    break;
     Valeur VTK_SHORT:          _format = WT_SIGNED_SHORT;
-    FinValeur
+    break;
     Valeur VTK_UNSIGNED_INT:   _format = WT_UNSIGNED_INT;
-    FinValeur
+    break;
     Valeur VTK_INT:            _format = WT_SIGNED_INT;
-    FinValeur
+    break;
     Valeur VTK_UNSIGNED_CHAR:
      switch (_vdim) {
        case 1: _format = WT_UNSIGNED_CHAR; break;
@@ -415,7 +415,7 @@ unsigned char InrImage :: ReadVTK( ) throw (ErreurLecture)
        default: 
           CLASS_ERROR(boost::format("Non-scalar UCHAR vdim=%1% !=3 not available")%_vdim);
      }
-    FinValeur
+    break;
 
     Valeur VTK_DOUBLE:
      _format = WT_DOUBLE;
@@ -539,7 +539,7 @@ unsigned char InrImage :: ReadVTKImage( ) throw (ErreurLecture)
   CLASS_MESSAGE("begin");
 
   shared_ptr<vtkImageReader2Factory> create_reader = vtk_new<vtkImageReader2Factory>()();
-  vtkImageReader2* imreader = create_reader->CreateImageReader2((char*) _nom); 
+  vtkImageReader2* imreader = create_reader->CreateImageReader2( _nom.c_str()); 
   if (imreader==NULL) {
     CLASS_MESSAGE("No reader found from vtkImageReader2Factory")
     return false;
@@ -548,7 +548,7 @@ unsigned char InrImage :: ReadVTKImage( ) throw (ErreurLecture)
   shared_ptr<vtkImageReader2> reader = vtk_new<vtkImageReader2>()(imreader);
 
 
-  reader->SetFileName((char*) _nom);
+  reader->SetFileName(_nom.c_str());
   reader->Update();
 
   in = reader->GetOutput();
@@ -567,19 +567,19 @@ unsigned char InrImage :: ReadVTKImage( ) throw (ErreurLecture)
        default: _format = WT_FLOAT_VECTOR; break;
      }
      
-    FinValeur
+    break;
     Valeur VTK_UNSIGNED_SHORT:
       _format = WT_UNSIGNED_SHORT;
-    FinValeur
+    break;
     Valeur VTK_SHORT:
       _format = WT_SIGNED_SHORT;
-    FinValeur
+    break;
     Valeur VTK_UNSIGNED_INT:
       _format = WT_UNSIGNED_INT;
-    FinValeur
+    break;
     Valeur VTK_INT:
       _format = WT_SIGNED_INT;
-    FinValeur
+    break;
     Valeur VTK_UNSIGNED_CHAR:
      switch (_vdim) {
        case 1: _format = WT_UNSIGNED_CHAR; break;
@@ -592,7 +592,7 @@ unsigned char InrImage :: ReadVTKImage( ) throw (ErreurLecture)
        default: 
         fprintf(stderr,"InrImage::ReadVTKImage non-scalar uchar vdim!=3 non available %d \n", _vdim);
      }
-    FinValeur
+    break;
 
     Defaut:   
       CLASS_ERROR("type not available");
@@ -681,8 +681,8 @@ unsigned char InrImage :: ReadVTKImage( ) throw (ErreurLecture)
       return false;
     }
 
-  Si GB_debug AlorsFait fprintf(stderr,"InrImage::ReadVTKImage()  3 \n");
-  Si GB_debug AlorsFait fprintf(stderr,"InrImage::ReadVTKImage()  end \n");
+  if ( GB_debug AlorsFait fprintf(stderr,"InrImage::ReadVTKImage()  3 \n");
+  if ( GB_debug AlorsFait fprintf(stderr,"InrImage::ReadVTKImage()  end \n");
 
   return true;
 
@@ -707,15 +707,15 @@ unsigned char InrImage :: Lit( ) throw (ErreurLecture)
   res = ReadAMI();
 
 /*
-  Si Non(res) Alors
-    Si (_nom == "<") Alors
+  if ( Non(res) ) {
+    if ( (_nom == "<") ) {
       // entree standard
       ptr = readZInrimage( NULL);
-    Sinon
+    } else {
       ptr = readZInrimage( (char*) _nom);
-    FinSi
+    } // end if
 
-    Si ptr != NULL Alors
+    if ( ptr != NULL ) {
       _format = ptr->type;
       //    _inrimage = ptr;
       //    _inrimage_allouee = true;
@@ -735,11 +735,11 @@ unsigned char InrImage :: Lit( ) throw (ErreurLecture)
       ptr = NULL;
 
       return true;
-    FinSi
-  FinSi
+    } // end if
+  } // end if
 */
 
-  //  Si ptr == NULL Alors
+  //  if ( ptr == NULL ) {
 #ifdef USE_MAGICK
   if (!res) { 
     CLASS_MESSAGE("Trying to read with ImageMagick");  
@@ -758,10 +758,10 @@ unsigned char InrImage :: Lit( ) throw (ErreurLecture)
     res = ReadVTK();
   }
 
-  Si !res Alors
+  if ( !res ) {
     cerr << " Error reading image " << endl;
     throw ErreurLecture();
-  FinSi
+  } // end if
 
 
   return (res);
@@ -780,22 +780,22 @@ unsigned char InrImage :: LitEntete( )  throw (ErreurLecture)
 //  printf("lecture de l'ent�e de %s \n", (char*) _nom);
 
 /*
-  Si (_nom == "<") Alors
+  if ( (_nom == "<") ) {
     // entree standard
     printf("InrImage::LitEntete()\t on ne lit pas que ");
     printf("l'entete sur l'entree standard\n");
     ptr_image = readZInrimage( NULL);
 //    _inrimage_allouee = true;
-  Sinon
+  } else {
     ptr = readZInrimageHeader( (char*) _nom);
     ptr_image = ptr->inr;
 //    _inrimage_allouee = false;
-  FinSi
+  } // end if
 
-  Si ptr_image == NULL Alors
+  if ( ptr_image == NULL ) {
   //    E_SETERR(E_ERRR, "reading in file", (char*) _nom);
     throw ErreurLecture();
-  FinSi
+  } // end if
 
 
   // put the information in the _amimage member and free the pointer
@@ -828,7 +828,7 @@ unsigned char InrImage :: Alloue( ) throw (ErreurAllocation)
 //       << " " <<  TailleFormat[_format]  
 //       << endl;
 
-  Si _vdim == 1 Alors
+  if ( _vdim == 1 ) {
     SelonQue (WORDTYPE) _format Vaut
 
       Valeur WT_DOUBLE:        
@@ -838,15 +838,15 @@ unsigned char InrImage :: Alloue( ) throw (ErreurAllocation)
       Valeur WT_SIGNED_SHORT:  
       Valeur WT_UNSIGNED_INT: 
       Valeur WT_SIGNED_INT:  _vdim = 1;
-      FinValeur
+      break;
 
       Valeur WT_RGB:
         _vdim = 3;
-      FinValeur
+      break;
       Defaut:  _vdim=1;
 
     FinSelonQue
-  FinSi
+  } // end if
 
   _amimage = new amimage();
   _amimage->SetDim(_tx,_ty,_tz, _vdim );
@@ -857,10 +857,10 @@ unsigned char InrImage :: Alloue( ) throw (ErreurAllocation)
                _translation_z);
   _amimage->allocate();
 
-  Si _amimage == NULL Alors
+  if ( _amimage == NULL ) {
     cerr << " Probleme d'allocation de l'image " << _nom << endl;
     throw ErreurAllocation();
-  FinSi
+  } // end if
 
   _amimage_allocated = true;
 
@@ -882,39 +882,39 @@ unsigned char InrImage :: Alloue( ) throw (ErreurAllocation)
     char  name[200];
 
 
-  strcpy(name,_nom);
+  strcpy(name,_nom.c_str());
   RemoveEndString(name,".gz");
 
 /*
-  Si (CheckEndString( name, ".inr"))Ou(CheckEndString( name, ".hdr")) Alors
+  if ( (CheckEndString( name, ".inr"))||(CheckEndString( name, ".hdr")) ) {
     // Convert to inrimage first ...
     inrimage_ptr = (inrimage*) (*this);
-    Si (writeZInrimage( inrimage_ptr, (char*) _nom)<0) Alors
+    if ( (writeZInrimage( inrimage_ptr, (char*) _nom)<0) ) {
       throw ImageWriteError();
-    FinSi
+    } // end if
     // delete inrimage_ptr ?
     free(inrimage_ptr);
     //  freeInrimage(inrimage_ptr);
-  Autrement
+  } else
 */
 
 #ifdef AMI_USE_VTK
-  Si (CheckEndString( name, ".vtk")) Alors
+  if ( (CheckEndString( name, ".vtk")) ) {
     shared_ptr<vtkStructuredPointsWriter> vtk_iw;
     vtk_id = (vtkImageData_ptr) (*this);
     vtk_iw = vtk_new<vtkStructuredPointsWriter>()();
 
     vtk_iw->SetInput(vtk_id.get());
-    vtk_iw->SetFileName((char*) _nom);
+    vtk_iw->SetFileName( _nom.c_str());
     vtk_iw->SetFileTypeToBinary();
 //    vtk_iw->SetFileDimensionality(3);
 
     vtk_iw->Write();
 
-  Autrement
+  } else
   // Use VTK for writing jpeg if possible
-  Si (CheckEndString( name, ".jpg") Ou 
-      CheckEndString( name, ".jpeg")) Alors
+  if ( (CheckEndString( name, ".jpg") || 
+      CheckEndString( name, ".jpeg")) ) {
     vtk_id    = (vtkImageData_ptr) (*this);
     shared_ptr<vtkJPEGWriter> vtk_jpegw = vtk_new<vtkJPEGWriter>()();
 
@@ -924,12 +924,12 @@ unsigned char InrImage :: Alloue( ) throw (ErreurAllocation)
 
 //    vtk_jpegw->SetInput(flipY->GetOutput());
     vtk_jpegw->SetInput(vtk_id.get());
-    vtk_jpegw->SetFileName((char*) _nom);
+    vtk_jpegw->SetFileName((char*) _nom.c_str());
     vtk_jpegw->Write();
 
 //    flipY->Delete();
-  Autrement
-  Si (CheckEndString( name, ".tiff") Ou CheckEndString( name, ".tif")) Alors
+  } else
+  if ( (CheckEndString( name, ".tiff") || CheckEndString( name, ".tif")) ) {
     vtk_id = (vtkImageData_ptr) (*this);
     shared_ptr<vtkTIFFWriter> vtk_tiffw = vtk_new<vtkTIFFWriter>()();
 
@@ -939,34 +939,34 @@ unsigned char InrImage :: Alloue( ) throw (ErreurAllocation)
 
 //    vtk_tiffw->SetInput(flipY->GetOutput());
     vtk_tiffw->SetInput(vtk_id.get());
-    vtk_tiffw->SetFileName((char*) _nom);
+    vtk_tiffw->SetFileName((char*) _nom.c_str());
     vtk_tiffw->Write();
 
 //    flipY->Delete();
-  Autrement
-  Si (CheckEndString( name, ".png") Ou CheckEndString( name, ".PNG")) Alors
+  } else
+  if ( (CheckEndString( name, ".png") || CheckEndString( name, ".PNG")) ) {
     vtk_id = (vtkImageData_ptr) (*this);
     shared_ptr<vtkPNGWriter> vtk_pngw = vtk_new<vtkPNGWriter>()();
 
 //    vtk_pngw->SetInput(flipY->GetOutput());
     vtk_pngw->SetInput(vtk_id.get());
-    vtk_pngw->SetFileName((char*) _nom);
+    vtk_pngw->SetFileName((char*) _nom.c_str());
     vtk_pngw->Write();
 //    flipY->Delete();
-  Autrement
+  } else
 
 #endif // AMI_USE_VTK
       
-  Si (CheckEndString( name, ".raw"))  Alors
+  if ( (CheckEndString( name, ".raw"))  ) {
     // write only raw data
-    return _amimage->write((char*) _nom,0);
-  Autrement
-  Si (CheckEndString( name, ".ami")) Ou ( _format != WT_RGB) Alors
+    return _amimage->write((char*) _nom.c_str(),0);
+  } else
+  if ( (CheckEndString( name, ".ami")) || ( _format != WT_RGB) ) {
 
-    return _amimage->write((char*) _nom);
+    return _amimage->write((char*) _nom.c_str());
 
 #ifdef USE_MAGICK
-  Sinon
+  } else {
     
       float* r;
       float* g;
@@ -977,8 +977,8 @@ unsigned char InrImage :: Alloue( ) throw (ErreurAllocation)
     NEW(g , float, _tx*_ty);
     NEW(b , float, _tx*_ty);
 
-    Si _tz == 1 Alors
-      Si _format == WT_RGB Alors
+    if ( _tz == 1 ) {
+      if ( _format == WT_RGB ) {
         InitBuffer();
         Pour(n,0,_txy-1)
       r[n] = VectValeurBuffer(0)/255.0;
@@ -986,21 +986,21 @@ unsigned char InrImage :: Alloue( ) throw (ErreurAllocation)
       b[n] = VectValeurBuffer(2)/255.0;
           IncBuffer();
         FinPour
-      Sinon
+      } else {
         fprintf(stderr,"InrImage::Ecrit() \t Magick seulement pour RGB \n");
         delete r;
         delete g;
         delete b;
         throw ImageWriteError();
-      FinSi
+      } // end if
       IM_WriteImage(_nom,r,g,b,_tx,_ty);
-    Sinon
+    } else {
       
         char name[256];
         char num[10];
         int  pos1,pos2;
 
-      Si _format == WT_RGB Alors
+      if ( _format == WT_RGB ) {
         Pour(z,0,_tz-1)
           BufferPos(0,0,z);
           Pour(n,0,_txy-1)
@@ -1012,7 +1012,7 @@ unsigned char InrImage :: Alloue( ) throw (ErreurAllocation)
           
           sprintf(num,"%03d",z);
           pos1 = pos2 =0;
-          while ((_nom[pos1]!='.')Et(_nom[pos1]!='\0'))
+          while ((_nom[pos1]!='.')&&(_nom[pos1]!='\0'))
           {
         name[pos2]=_nom[pos1];
             pos2++; pos1++;
@@ -1035,21 +1035,21 @@ unsigned char InrImage :: Alloue( ) throw (ErreurAllocation)
             throw ImageWriteError();
       }
         FinPour
-      Sinon
+      } else {
         fprintf(stderr,"InrImage::Ecrit() \t Magick seulement pour RGB \n");
         delete r;
         delete g;
         delete b;
         throw ImageWriteError();
-      FinSi
-    FinSi
+      } // end if
+    } // end if
 
     delete r;
     delete g;
     delete b;
 #endif // USE_MAGICK
 
-  FinSi
+  } // end if
 
   return true;
 
@@ -1062,14 +1062,14 @@ unsigned char InrImage :: Desalloue( )
 {
 
 //  printf("liberation de %s \n", (char*) _nom);
-  CLASS_MESSAGE(boost::format(" freeing image %s ") % (char*) _nom)
+  CLASS_MESSAGE(boost::format(" freeing image %s ") % (char*) _nom.c_str())
 
-  Si (_amimage_allocated) Et (_amimage != NULL) Alors
+  if ( (_amimage_allocated) && (_amimage != NULL) ) {
     delete _amimage;
     _amimage = NULL;
     _amimage_allocated = false;
     //delete _nom;
-  FinSi
+  } // end if
 
   return true;
 
@@ -1087,17 +1087,17 @@ unsigned char InrImage :: LitMaple( const char* nom )
     FILE*     fic;
 
   fic = fopen( nom, "r");
-  Si fic == NULL Alors
+  if ( fic == NULL ) {
     printf("InrImage::LitMaple()\t Erreur dans l'ouverture du fichier de %s \n", nom);
     return false;
-  FinSi
+  } // end if
 
   fscanf(fic,"Type:\t%s\n",chaine);
   printf("chaine = '%s'\n",chaine);
-  Si strcmp(chaine,"Image1D")!=0 Alors
+  if ( strcmp(chaine,"Image1D")!=0 ) {
     printf("InrImage::LitMaple()\t Erreur, Pour lecture d'image 1D uniquement ... \n");
     return false;
-  FinSi
+  } // end if
 
   // Initialisation
   _nom = nom;
@@ -1142,10 +1142,10 @@ unsigned char InrImage :: EcritMaple(const char* nom )
     FILE*     fic;
 
   fic = fopen( nom, "w");
-  Si fic == NULL Alors
+  if ( fic == NULL ) {
     printf(" Erreur dans l'ouverture du fichier de %s \n", nom);
     return false;
-  FinSi
+  } // end if
 
   fprintf(fic,"Type:\tImage1D\n");
   fprintf(fic,"Dimension:\t%d\n",_tx);
@@ -1185,7 +1185,7 @@ unsigned char InrImage :: InitPositions( )
          (FORMAT_UNSIGNED_CHAR*)_amimage->GetData()+_vdim*(z*txy+y*_tx);
         FinPour
       FinPour
-    FinValeur
+    break;
 
     Valeur WT_UNSIGNED_SHORT   :   
       _positions_UNSIGNED_SHORT = new FORMAT_UNSIGNED_SHORT**[_tz];
@@ -1196,7 +1196,7 @@ unsigned char InrImage :: InitPositions( )
          (FORMAT_UNSIGNED_SHORT*)_amimage->GetData()+_vdim*(z*txy+y*_tx);
         FinPour
       FinPour
-    FinValeur
+    break;
 
     Valeur WT_SIGNED_SHORT  :  
       _positions_SIGNED_SHORT = new FORMAT_SIGNED_SHORT**[_tz];
@@ -1207,7 +1207,7 @@ unsigned char InrImage :: InitPositions( )
          (FORMAT_SIGNED_SHORT*)_amimage->GetData()+_vdim*(z*txy+y*_tx);
         FinPour
       FinPour
-    FinValeur
+    break;
 
     Valeur WT_UNSIGNED_INT  :  
       _positions_UNSIGNED_INT = new FORMAT_UNSIGNED_INT**[_tz];
@@ -1218,7 +1218,7 @@ unsigned char InrImage :: InitPositions( )
          (FORMAT_UNSIGNED_INT*)_amimage->GetData()+_vdim*(z*txy+y*_tx);
         FinPour
       FinPour
-    FinValeur
+    break;
 
     Valeur WT_SIGNED_INT  :  
       _positions_SIGNED_INT = new FORMAT_SIGNED_INT**[_tz];
@@ -1229,7 +1229,7 @@ unsigned char InrImage :: InitPositions( )
          (FORMAT_SIGNED_INT*)_amimage->GetData()+_vdim*(z*txy+y*_tx);
         FinPour
       FinPour
-    FinValeur
+    break;
 
     Valeur WT_FLOAT : 
       _positions_FLOAT = new FORMAT_FLOAT**[_tz];
@@ -1240,7 +1240,7 @@ unsigned char InrImage :: InitPositions( )
              (FORMAT_FLOAT*)_amimage->GetData()+_vdim*(z*txy+y*_tx);
         FinPour
       FinPour
-    FinValeur
+    break;
 
     Valeur WT_DOUBLE : 
       _positions_DOUBLE = new FORMAT_DOUBLE**[_tz];
@@ -1251,7 +1251,7 @@ unsigned char InrImage :: InitPositions( )
              (FORMAT_DOUBLE*)_amimage->GetData()+_vdim*(z*txy+y*_tx);
         FinPour
       FinPour
-    FinValeur
+    break;
 
     Valeur WT_RGB : 
       _positions_RGB = new FORMAT_RGB**[_tz];
@@ -1262,7 +1262,7 @@ unsigned char InrImage :: InitPositions( )
              (FORMAT_RGB*)_amimage->GetData()+3*(z*txy+y*_tx);
         FinPour
       FinPour
-    FinValeur
+    break;
 
     Valeur WT_FLOAT_VECTOR : 
       _positions_FLOAT_VECTOR = new FORMAT_FLOAT_VECTOR**[_tz];
@@ -1273,7 +1273,7 @@ unsigned char InrImage :: InitPositions( )
              (FORMAT_FLOAT_VECTOR*)_amimage->GetData()+_vdim*(z*txy+y*_tx);
         FinPour
       FinPour
-    FinValeur
+    break;
 
     Defaut:
     fprintf(stderr,"InitPosition, format not processed ... \n");
@@ -1296,7 +1296,7 @@ unsigned char InrImage :: EffacePositions( )
     int z;
     int txy;
 
-  Si Non(_positions_allouees) AlorsFait return false;
+  if ( Non(_positions_allouees) AlorsFait return false;
 
   txy = _tx*_ty;
 
@@ -1306,44 +1306,44 @@ unsigned char InrImage :: EffacePositions( )
     Valeur WT_UNSIGNED_CHAR: 
        Pour(z,0,_tz-1) delete [] _positions_UNSIGNED_CHAR[z];FinPour
        delete [] _positions_UNSIGNED_CHAR;
-    FinValeur
+    break;
 
     Valeur WT_UNSIGNED_SHORT: 
        Pour(z,0,_tz-1) delete [] _positions_UNSIGNED_SHORT[z];FinPour
        delete [] _positions_UNSIGNED_SHORT;
-    FinValeur
+    break;
 
     Valeur WT_SIGNED_SHORT: Pour(z,0,_tz-1) delete [] _positions_SIGNED_SHORT[z];FinPour
        delete [] _positions_SIGNED_SHORT;
-    FinValeur
+    break;
 
     Valeur WT_UNSIGNED_INT: Pour(z,0,_tz-1) delete [] _positions_UNSIGNED_INT[z];FinPour
        delete [] _positions_UNSIGNED_INT;
-    FinValeur
+    break;
 
     Valeur WT_SIGNED_INT: Pour(z,0,_tz-1) delete [] _positions_SIGNED_INT[z];FinPour
        delete [] _positions_SIGNED_INT;
-    FinValeur
+    break;
 
     Valeur WT_FLOAT:
        Pour(z,0,_tz-1) delete [] _positions_FLOAT[z];FinPour
        delete [] _positions_FLOAT;
-    FinValeur
+    break;
 
     Valeur WT_DOUBLE:
        Pour(z,0,_tz-1) delete [] _positions_DOUBLE[z];FinPour
        delete [] _positions_DOUBLE;
-    FinValeur
+    break;
 
     Valeur WT_RGB:
        Pour(z,0,_tz-1) delete [] _positions_RGB[z];FinPour
        delete [] _positions_RGB;
-    FinValeur
+    break;
 
     Valeur WT_FLOAT_VECTOR:
        Pour(z,0,_tz-1) delete [] _positions_FLOAT_VECTOR[z];FinPour
        delete [] _positions_FLOAT_VECTOR;
-    FinValeur
+    break;
 
     Defaut:
     fprintf(stderr,"InrImage::EffacePositions, format not processed ... \n");
@@ -1410,7 +1410,7 @@ InrImage :: Constructeur InrImage( )
 
 
 //--------------------------------------------------------------------------
-InrImage :: Constructeur InrImage( char* nom)
+InrImage :: Constructeur InrImage( const char* nom)
 //                                 --------
 {
 
@@ -1443,13 +1443,13 @@ InrImage :: Constructeur InrImage( char* nom)
 
 
 //--------------------------------------------------------------------------
-InrImage :: Constructeur InrImage( char* nom, int type)
+InrImage :: Constructeur InrImage( const char* nom, int type)
 //                                 --------
 {
 
   InitParams();
 
-  Si type != TYPE_MAPLE AlorsRetourne;
+  if ( type != TYPE_MAPLE AlorsRetourne;
 
   LitMaple( nom);
 
@@ -1469,11 +1469,11 @@ InrImage :: Constructeur InrImage( int dimx, int dimy,
 
   InitParams();
 
-  Si nom == NULL Alors
+  if ( nom == NULL ) {
     _nom = "sans_nom.inr";
-  Sinon
+  } else {
     _nom = nom;
-  FinSi
+  } // end if
 
   _tx = dimx;
   _ty = dimy;
@@ -1507,11 +1507,11 @@ InrImage :: Constructeur InrImage( int dimx, int dimy,
 
   InitParams();
 
-  Si nom == NULL Alors
+  if ( nom == NULL ) {
     _nom = "sans_nom.inr";
-  Sinon
+  } else {
     _nom = nom;
-  FinSi
+  } // end if
 
   _tx     = dimx;
   _ty     = dimy;
@@ -1541,11 +1541,11 @@ InrImage :: Constructeur InrImage(  WORDTYPE format,
 
   InitParams();
 
-  Si nom == NULL Alors
+  if ( nom == NULL ) {
     _nom = "sans_nom.inr";
-  Sinon
+  } else {
     _nom = nom;
-  FinSi
+  } // end if
 
   _tx = image->_tx;
   _ty = image->_ty;
@@ -1595,11 +1595,11 @@ InrImage :: Constructeur InrImage(  WORDTYPE format, int vdim,
 
   InitParams();
 
-  Si nom == NULL Alors
+  if ( nom == NULL ) {
     _nom = "sans_nom.inr";
-  Sinon
+  } else {
     _nom = nom;
-  FinSi
+  } // end if
 
   _tx = image->_tx;
   _ty = image->_ty;
@@ -1631,10 +1631,10 @@ InrImage :: Constructeur InrImage( vtkImageData* vtkim)
     int x,y,z,n;
     float val;
 
-  Si vtkim==NULL Alors
+  if ( vtkim==NULL ) {
     fprintf(stderr,"InrImage::InrImage(vtkImageData*) \t NULL input \n");
     return;
-  FinSi
+  } // end if
 
 
   _tx     = vtkim->GetDimensions()[0];
@@ -1649,36 +1649,36 @@ InrImage :: Constructeur InrImage( vtkImageData* vtkim)
 
   SelonQue (vtkim->GetScalarType()) Vaut
     Valeur VTK_DOUBLE:
-      Si _vdim==1 Alors 
+      if ( _vdim==1 ) { 
         _format = WT_DOUBLE;
-      Sinon
+      } else {
         _format = WT_DOUBLE_VECTOR;
-      FinSi
-    FinValeur
+      } // end if
+    break;
     Valeur VTK_FLOAT:
         _format = WT_FLOAT;
-    FinValeur
+    break;
     Valeur VTK_SHORT:
       _format = WT_SIGNED_SHORT;
-    FinValeur
+    break;
     Valeur VTK_UNSIGNED_SHORT:
       _format = WT_UNSIGNED_SHORT;
-    FinValeur
+    break;
     Valeur VTK_INT:
       _format = WT_SIGNED_INT;
-    FinValeur
+    break;
     Valeur VTK_UNSIGNED_INT:
       _format = WT_UNSIGNED_INT;
-    FinValeur
+    break;
     Valeur VTK_UNSIGNED_CHAR:
-      Si _vdim==1 Alors 
+      if ( _vdim==1 ) { 
         _format = WT_UNSIGNED_CHAR;
-      Autrement
-      Si _vdim==3 Alors 
+      } else
+      if ( _vdim==3 ) { 
         _format = WT_RGB;
-      Autrement
+      } else
         fprintf(stderr,"Vector of unsigned char not available \n");
-    FinValeur
+    break;
     Defaut: fprintf(stderr,"type non available \n");
     _format = WT_FLOAT;
   FinSelonQue
@@ -1719,9 +1719,9 @@ InrImage :: Constructeur InrImage( vtkImageData* vtkim)
 
 
   // Use memcpy() ???
-  Si ScalarFormat() Alors
+  if ( ScalarFormat() ) {
     memcpy(Buffer(), vtkim->GetScalarPointer(), _taille*TailleFormat[_format]*_vdim);    
-  Sinon
+  } else {
     InitBuffer();
     Pour(z,0,_tz-1)
     Pour(y,0,_ty-1)
@@ -1735,7 +1735,7 @@ InrImage :: Constructeur InrImage( vtkImageData* vtkim)
     FinPour
     FinPour
     FinPour
-  FinSi
+  } // end if
 
     //  InitPositions();
 } // Constructeur
@@ -1911,11 +1911,11 @@ void InrImage :: SetImageData( int dimx, int dimy, int dimz,
 
 //  _inrimage = initInrimage( _tx, _ty, _tz, 1, (WORDTYPE) _format );
 // ----- Debut init image
-  Si _amimage == NULL Alors
+  if ( _amimage == NULL ) {
   //    cout << "*"<< endl;
     _amimage = new amimage();
     _amimage_allocated = true;
-  FinSi
+  } // end if
 
   _amimage->SetDim(_tx,_ty,_tz,_vdim);
   AMIFromWT(_vdim,_format,_amimage);
@@ -1956,10 +1956,10 @@ void InrImage :: SetImageData( int dimx, int dimy, int dimz, int vdim,
 
 //  _inrimage = initInrimage( _tx, _ty, _tz, 1, (WORDTYPE) _format );
 // ----- Debut init image
-  Si _amimage == NULL Alors
+  if ( _amimage == NULL ) {
   //    cout << "*"<< endl;
     _amimage = new amimage();
-  FinSi
+  } // end if
 
   _amimage->SetDim(_tx,_ty,_tz);
   AMIFromWT(_vdim,_format,_amimage);
@@ -2082,40 +2082,40 @@ void InrImage :: InitBuffer( int pos )
 
     Valeur WT_DOUBLE:
       _buffer_DOUBLE          = (FORMAT_DOUBLE*)         this->GetData() + _vdim*pos;  
-    FinValeur
+    break;
 
     Valeur WT_FLOAT:
       _buffer_FLOAT           = (FORMAT_FLOAT*)          this->GetData() + _vdim*pos;  
-    FinValeur
+    break;
 
     Valeur WT_RGBA:
     Valeur WT_UNSIGNED_CHAR:
       _buffer_UNSIGNED_CHAR   = (FORMAT_UNSIGNED_CHAR*)  this->GetData() + _vdim*pos;  
-    FinValeur
+    break;
 
     Valeur WT_UNSIGNED_SHORT:
       _buffer_UNSIGNED_SHORT  = (FORMAT_UNSIGNED_SHORT*) this->GetData() + _vdim*pos;  
-    FinValeur
+    break;
 
     Valeur WT_SIGNED_SHORT:
       _buffer_SIGNED_SHORT    = (FORMAT_SIGNED_SHORT*)  this->GetData() + _vdim*pos;  
-    FinValeur
+    break;
 
     Valeur WT_UNSIGNED_INT:
       _buffer_UNSIGNED_INT      = (FORMAT_UNSIGNED_INT*)    this->GetData() + _vdim*pos;  
-    FinValeur
+    break;
 
     Valeur WT_SIGNED_INT:
       _buffer_SIGNED_INT      = (FORMAT_SIGNED_INT*)    this->GetData() + _vdim*pos;  
-    FinValeur
+    break;
 
     Valeur WT_RGB:
       _buffer_RGB             = (FORMAT_UNSIGNED_CHAR*) this->GetData() + _vdim*pos;  
-    FinValeur
+    break;
 
     Valeur WT_FLOAT_VECTOR:
       _buffer_FLOAT_VECTOR    = (FORMAT_FLOAT*)          this->GetData() + _vdim*pos;  
-    FinValeur
+    break;
 
     default:
     fprintf(stderr,"InrImage::InitBuffer() format not processed ... \n");
@@ -2160,15 +2160,15 @@ InrImage :: operator vtkImageData*()
                this->TrZ());
 
   SelonQue (WORDTYPE) _format Vaut
-     Valeur WT_DOUBLE        : vtk_image->SetScalarType( VTK_DOUBLE); FinValeur
+     Valeur WT_DOUBLE        : vtk_image->SetScalarType( VTK_DOUBLE); break;
      Valeur WT_FLOAT         : 
-     Valeur WT_FLOAT_VECTOR  : vtk_image->SetScalarType(VTK_FLOAT);  FinValeur
+     Valeur WT_FLOAT_VECTOR  : vtk_image->SetScalarType(VTK_FLOAT);  break;
      Valeur WT_UNSIGNED_CHAR : 
-     Valeur WT_RGB           : vtk_image->SetScalarType(VTK_UNSIGNED_CHAR);  FinValeur
-     Valeur WT_UNSIGNED_SHORT: vtk_image->SetScalarType(VTK_UNSIGNED_SHORT); FinValeur
-     Valeur WT_SIGNED_SHORT  : vtk_image->SetScalarType(VTK_SHORT);  FinValeur
-     Valeur WT_UNSIGNED_INT    : vtk_image->SetScalarType(VTK_UNSIGNED_INT);    FinValeur
-     Valeur WT_SIGNED_INT    : vtk_image->SetScalarType(VTK_INT);    FinValeur
+     Valeur WT_RGB           : vtk_image->SetScalarType(VTK_UNSIGNED_CHAR);  break;
+     Valeur WT_UNSIGNED_SHORT: vtk_image->SetScalarType(VTK_UNSIGNED_SHORT); break;
+     Valeur WT_SIGNED_SHORT  : vtk_image->SetScalarType(VTK_SHORT);  break;
+     Valeur WT_UNSIGNED_INT    : vtk_image->SetScalarType(VTK_UNSIGNED_INT);    break;
+     Valeur WT_SIGNED_INT    : vtk_image->SetScalarType(VTK_INT);    break;
      Defaut: printf("InrImage::operator vtkImageData*()\t format non gere...\n");
   FinSelonQue
   
@@ -2203,13 +2203,13 @@ InrImage :: operator vtkImageData*()
     for(x=0;x<DimX();x++) {
       // Flip in Y, only for 2D images???
       BufferPos(x,y,z);
-      Si _vdim == 1 Alors
+      if ( _vdim == 1 ) {
         vtk_scalars->SetTuple1(i,ValeurBuffer());
-      Sinon
+      } else {
       Pour(n,0,_vdim-1)
         vtk_scalars->SetComponent(i,n,VectValeurBuffer(n));
       FinPour
-      FinSi
+      } // end if
       i++;
     }
   }
@@ -2233,9 +2233,9 @@ unsigned char InrImage :: Sauve( const char* nom )
 //                        -----
 {
 
-  Si nom!=NULL Alors
+  if ( nom!=NULL ) {
     _nom = nom;
-  FinSi
+  } // end if
 
   return Ecrit();
 
@@ -2254,12 +2254,12 @@ InrImage* InrImage :: CreeSousImage( int min_x, int max_x,
     int     x,y,z;
 //    float      val;
 
-  Si (max_x < min_x) Ou (max_y < min_y) Ou (max_z < min_z) Ou
-     (min_x < 0)     Ou (min_y < 0)     Ou (min_z < 0)     Ou
-     (max_x > _tx)   Ou (max_y > _ty)   Ou (max_z > _tz)     
-  Alors
+  if ( (max_x < min_x) || (max_y < min_y) || (max_z < min_z) ||
+     (min_x < 0)     || (min_y < 0)     || (min_z < 0)     ||
+     (max_x > _tx)   || (max_y > _ty)   || (max_z > _tz)     
+  ) {
     return NULL;
-  FinSi
+  } // end if
 
   res = new InrImage( max_x - min_x + 1, max_y - min_y + 1, max_z - min_z +1, _format);
   res->SetVoxelSize( _size_x, _size_y, _size_z );
@@ -2274,43 +2274,43 @@ InrImage* InrImage :: CreeSousImage( int min_x, int max_x,
         ((FORMAT_DOUBLE*) res->GetData())[ (z*_ty + y)*_tx + x ] = 
         ((FORMAT_DOUBLE*)      this->GetData())
                   [ ((z+min_z)*_ty + (y+min_y))*_tx + x + min_x];
-      FinValeur
+      break;
 
       Valeur WT_FLOAT:
         ((FORMAT_FLOAT*) res->GetData())[ (z*_ty +  y)*_tx + x ] = 
         ((FORMAT_FLOAT*)      this->GetData())
               [ ((z+min_z)*_ty + (y+min_y))*_tx + x + min_x];
-      FinValeur
+      break;
 
       Valeur WT_UNSIGNED_CHAR:
         ((FORMAT_UNSIGNED_CHAR*) res->GetData())[ (z*_ty + y)*_tx + x ] =
         ((FORMAT_UNSIGNED_CHAR*)      this->GetData())
               [ ((z+min_z)*_ty + (y+min_y))*_tx + x + min_x];
-      FinValeur
+      break;
 
       Valeur WT_UNSIGNED_SHORT:
         ((FORMAT_UNSIGNED_SHORT*) res->GetData())[ (z*_ty + y)*_tx + x] = 
         ((FORMAT_UNSIGNED_SHORT*)      this->GetData())
               [ ((z+min_z)*_ty + (y+min_y))*_tx + x + min_x];
-      FinValeur
+      break;
 
       Valeur WT_SIGNED_SHORT:
         ((FORMAT_SIGNED_SHORT*) res->GetData())[ (z*_ty + y)*_tx + x] = 
         ((FORMAT_SIGNED_SHORT*)      this->GetData())
               [ ((z+min_z)*_ty + (y+min_y))*_tx + x + min_x];
-      FinValeur
+      break;
 
       Valeur WT_UNSIGNED_INT:
         ((FORMAT_UNSIGNED_INT*) res->GetData())[ (z*_ty + y)*_tx + x] = 
         ((FORMAT_UNSIGNED_INT*)      this->GetData())
               [ ((z+min_z)*_ty + (y+min_y))*_tx + x + min_x];
-      FinValeur
+      break;
 
       Valeur WT_SIGNED_INT:
         ((FORMAT_SIGNED_INT*) res->GetData())[ (z*_ty + y)*_tx + x] = 
         ((FORMAT_SIGNED_INT*)      this->GetData())
               [ ((z+min_z)*_ty + (y+min_y))*_tx + x + min_x];
-      FinValeur
+      break;
 
       Defaut: printf("InrImage::CreeSousImage()\t format non g��..\n");
 
@@ -2330,7 +2330,7 @@ InrImage* InrImage :: CreeSousImage( int min_x, int max_x,
 //--------------------------------------------------------------------------
 InrImage* InrImage :: Convert256( float min, float max)
 //                              ----------
-// Si l'image n'est pas de type WT_UNSIGNED_CHAR, alloue une nouvelle image
+// if ( l'image n'est pas de type WT_UNSIGNED_CHAR, alloue une nouvelle image
 // et la convertit en TYPE_UNSIGNED_CHAR
 // avec le minimum �0 et le maximum �255
 {
@@ -2346,7 +2346,7 @@ InrImage* InrImage :: Convert256( float min, float max)
        InrImage*     image_res;
        float          diff;
 
-  Si _format == WT_UNSIGNED_CHAR AlorsRetourne (InrImage*) this;
+  if ( _format == WT_UNSIGNED_CHAR AlorsRetourne (InrImage*) this;
 
   image_res = new InrImage( _tx, _ty, _tz, WT_UNSIGNED_CHAR);
 
@@ -2361,109 +2361,109 @@ InrImage* InrImage :: Convert256( float min, float max)
       buf_DOUBLE = (FORMAT_DOUBLE*) this->GetData();
       DebutBoucle n=0 ItererTantQue n < _tx*_ty*_tz Pas n++ Faire
 
-        Si fabs(diff) < 1E-5 Alors
+        if ( fabs(diff) < 1E-5 ) {
           *buf_resultat = 0;      
-        Autrement    
-        Si *buf_DOUBLE <= min Alors
+        } else    
+        if ( *buf_DOUBLE <= min ) {
            *buf_resultat = 0;
-        Autrement    
-        Si *buf_DOUBLE >= max Alors
+        } else    
+        if ( *buf_DOUBLE >= max ) {
            *buf_resultat = 255;
-        Sinon
+        } else {
           *buf_resultat = (FORMAT_UNSIGNED_CHAR) ( 255 * (*buf_DOUBLE - min) / diff);          
-        FinSi
+        } // end if
 
         buf_DOUBLE++;
         buf_resultat++;
       FinBoucle // n
-    FinValeur
+    break;
 
     Valeur WT_FLOAT:
     //     --------
       buf_FLOAT = (FORMAT_FLOAT*) this->GetData();
       DebutBoucle n=0 ItererTantQue n < _tx*_ty*_tz Pas n++ Faire
 
-        Si fabs(diff) < 1E-5 Alors
+        if ( fabs(diff) < 1E-5 ) {
           *buf_resultat = 0;      
-        Autrement    
-        Si *buf_FLOAT <= min Alors
+        } else    
+        if ( *buf_FLOAT <= min ) {
            *buf_resultat = 0;
-        Autrement    
-        Si *buf_FLOAT >= max Alors
+        } else    
+        if ( *buf_FLOAT >= max ) {
            *buf_resultat = 255;
-        Sinon
+        } else {
           *buf_resultat = (FORMAT_UNSIGNED_CHAR) ( 255 * (*buf_FLOAT - min) / diff);          
-        FinSi
+        } // end if
 
         buf_FLOAT++;
         buf_resultat++;
       FinBoucle // n
-    FinValeur
+    break;
 
     Valeur WT_UNSIGNED_SHORT:
     //     ----------
       buf_UNSIGNED_SHORT = (FORMAT_UNSIGNED_SHORT*) this->GetData();
       DebutBoucle n=0 ItererTantQue n < _tx*_ty*_tz Pas n++ Faire
-        Si fabs(diff) < 1E-5 Alors
+        if ( fabs(diff) < 1E-5 ) {
           *buf_resultat = 0;          
-        Autrement    
-        Si *buf_UNSIGNED_SHORT <= min Alors
+        } else    
+        if ( *buf_UNSIGNED_SHORT <= min ) {
            *buf_resultat = 0;
-        Autrement    
-        Si *buf_UNSIGNED_SHORT >= max Alors
+        } else    
+        if ( *buf_UNSIGNED_SHORT >= max ) {
            *buf_resultat = 255;
-        Sinon
+        } else {
           *buf_resultat = (FORMAT_UNSIGNED_CHAR) ( 255 * (*buf_UNSIGNED_SHORT - min) / diff);          
-        FinSi
+        } // end if
 
         buf_UNSIGNED_SHORT++;
         buf_resultat++;
       FinBoucle // n
-    FinValeur
+    break;
 
     Valeur WT_SIGNED_SHORT:
     //     -----------
       buf_SIGNED_SHORT = (FORMAT_SIGNED_SHORT*) this->GetData();
       DebutBoucle n=0 ItererTantQue n < _tx*_ty*_tz Pas n++ Faire
 
-        Si fabs(diff) < 1E-5 Alors
+        if ( fabs(diff) < 1E-5 ) {
           *buf_resultat = 0;          
-        Autrement    
-        Si *buf_SIGNED_SHORT <= min Alors
+        } else    
+        if ( *buf_SIGNED_SHORT <= min ) {
            *buf_resultat = 0;
-        Autrement    
-        Si *buf_SIGNED_SHORT >= max Alors
+        } else    
+        if ( *buf_SIGNED_SHORT >= max ) {
            *buf_resultat = 255;
-        Sinon
+        } else {
           *buf_resultat = (FORMAT_UNSIGNED_CHAR) ( 255 * (*buf_SIGNED_SHORT - min) / diff);          
-        FinSi
+        } // end if
 
         buf_SIGNED_SHORT++;
         buf_resultat++;
       FinBoucle // n
-    FinValeur
+    break;
 
     Valeur WT_SIGNED_INT:
     //     -----------
       buf_SIGNED_INT = (FORMAT_SIGNED_INT*) this->GetData();
       DebutBoucle n=0 ItererTantQue n < _tx*_ty*_tz Pas n++ Faire
 
-        Si fabs(diff) < 1E-5 Alors
+        if ( fabs(diff) < 1E-5 ) {
           *buf_resultat = 0;          
-        Autrement    
-        Si *buf_SIGNED_INT <= min Alors
+        } else    
+        if ( *buf_SIGNED_INT <= min ) {
            *buf_resultat = 0;
-        Autrement    
-        Si *buf_SIGNED_INT >= max Alors
+        } else    
+        if ( *buf_SIGNED_INT >= max ) {
            *buf_resultat = 255;
-        Sinon
+        } else {
           *buf_resultat = (FORMAT_UNSIGNED_CHAR) ( 255 * (*buf_SIGNED_INT - min) / diff);          
-        FinSi
+        } // end if
 
         buf_SIGNED_INT++;
         buf_resultat++;
       FinBoucle // n
-    FinValeur
+    break;
 
     Defaut: printf("InrImage::convert256()\t format non g��..\n");
 
@@ -2477,7 +2477,7 @@ InrImage* InrImage :: Convert256( float min, float max)
 //--------------------------------------------------------------------------
 InrImage* InrImage :: Convert256( )
 //                              ----------
-// Si l'image n'est pas de type WT_UNSIGNED_CHAR, alloue une nouvelle image
+// if ( l'image n'est pas de type WT_UNSIGNED_CHAR, alloue une nouvelle image
 // et la convertit en TYPE_UNSIGNED_CHAR
 // avec le minimum �0 et le maximum �255
 {
@@ -2490,11 +2490,11 @@ InrImage* InrImage :: Convert256( )
 
 
 //--------------------------------------------------------------------------------------
-Chaine* InrImage :: MessageErreur()
+const std::string& InrImage :: MessageErreur()
 //                            -------------
 {
 
-  return &_message_erreur;
+  return _message_erreur;
 
 } // MessageErreur()
 
@@ -2506,9 +2506,9 @@ InrImage* operator -(  InrImage& i1,  InrImage& i2)
 
   InrImage* res;
 
-  Si i1._tx != i2._tx AlorsFait return NULL;
-  Si i1._ty != i2._ty AlorsFait return NULL;
-  Si i1._tz != i2._tz AlorsFait return NULL;
+  if ( i1._tx != i2._tx AlorsFait return NULL;
+  if ( i1._ty != i2._ty AlorsFait return NULL;
+  if ( i1._tz != i2._tz AlorsFait return NULL;
 
   WORDTYPE format;
 
@@ -2517,7 +2517,7 @@ InrImage* operator -(  InrImage& i1,  InrImage& i2)
   else 
     format = WT_FLOAT;
 
-  Si i1.ScalarFormat() Et i2.ScalarFormat() Alors
+  if ( i1.ScalarFormat() && i2.ScalarFormat() ) {
 
     res = new InrImage(format,"minusop.inr.gz",&i1);
     res->InitBuffer();
@@ -2532,8 +2532,8 @@ InrImage* operator -(  InrImage& i1,  InrImage& i2)
 
     return res;
 
-  Autrement
-  Si i1.VectorialFormat() Et i2.VectorialFormat() Alors
+  } else
+  if ( i1.VectorialFormat() && i2.VectorialFormat() ) {
     int vdim = (i1.GetVDim()<i2.GetVDim()?i1.GetVDim():i2.GetVDim());
     res = new InrImage(format,vdim,"minusop.inr.gz",&i1);
     res->InitBuffer();
@@ -2549,9 +2549,9 @@ InrImage* operator -(  InrImage& i1,  InrImage& i2)
 
     return res;
 
-  Sinon
+  } else {
     fprintf(stderr,"operator - (InrImage*, InrImage*) \t Error: scalar and vectorial types \n");
-  FinSi
+  } // end if
 
   return NULL;
 }
@@ -2570,7 +2570,7 @@ InrImage* operator -(  InrImage& i1,  double r)
   else 
     format = WT_FLOAT;
 
-  Si i1.ScalarFormat()  Alors
+  if ( i1.ScalarFormat()  ) {
 
     res = new InrImage(format,"minusop.inr.gz",&i1);
     res->InitBuffer();
@@ -2583,8 +2583,8 @@ InrImage* operator -(  InrImage& i1,  double r)
 
     return res;
 
-  Autrement
-  Si i1.VectorialFormat() Alors
+  } else
+  if ( i1.VectorialFormat() ) {
 
     res = new InrImage(i1._format,"minusop.inr.gz",&i1);
     res->InitBuffer();
@@ -2598,9 +2598,9 @@ InrImage* operator -(  InrImage& i1,  double r)
 
     return res;
 
-  Sinon
+  } else {
     fprintf(stderr,"operator - (InrImage*, double) \t Error: scalar and vectorial types \n");
-  FinSi
+  } // end if
 
   return NULL;
 }
@@ -2621,11 +2621,11 @@ InrImage* operator +(  InrImage& i1,  InrImage& i2)
   else 
     format = WT_FLOAT;
 
-  Si i1._tx != i2._tx AlorsFait return NULL;
-  Si i1._ty != i2._ty AlorsFait return NULL;
-  Si i1._tz != i2._tz AlorsFait return NULL;
+  if ( i1._tx != i2._tx AlorsFait return NULL;
+  if ( i1._ty != i2._ty AlorsFait return NULL;
+  if ( i1._tz != i2._tz AlorsFait return NULL;
 
-  Si i1.ScalarFormat() Et i2.ScalarFormat() Alors
+  if ( i1.ScalarFormat() && i2.ScalarFormat() ) {
     res = new InrImage(format,"plusop.inr.gz",&i1);
     res->InitBuffer();
     i1.InitBuffer();                
@@ -2639,13 +2639,13 @@ InrImage* operator +(  InrImage& i1,  InrImage& i2)
 
     return res;
 
-  Autrement
-  Si i1.VectorialFormat() Et i2.VectorialFormat() Alors
+  } else
+  if ( i1.VectorialFormat() && i2.VectorialFormat() ) {
 
-    Si i1.GetVDim() != i2.GetVDim() Alors
+    if ( i1.GetVDim() != i2.GetVDim() ) {
       fprintf(stderr,"InrImage*InrImage \t Vector dimensions don't match \n");
       return NULL;
-    FinSi
+    } // end if
 
     res = new InrImage(i1._format,"plusop.inr.gz",&i1);
     res->InitBuffer();
@@ -2663,9 +2663,9 @@ InrImage* operator +(  InrImage& i1,  InrImage& i2)
 
     return res;
 
-  Sinon
+  } else {
     fprintf(stderr,"operator + (InrImage*, InrImage*) \t Error: scalar and vectorial types \n");
-  FinSi
+  } // end if
 
   return NULL;
 }
@@ -2682,9 +2682,9 @@ InrImage* operator *(  InrImage& i1,  InrImage& i2)
   double val2;
   long   i;
 
-  Si i1._tx != i2._tx AlorsFait return NULL;
-  Si i1._ty != i2._ty AlorsFait return NULL;
-  Si i1._tz != i2._tz AlorsFait return NULL;
+  if ( i1._tx != i2._tx AlorsFait return NULL;
+  if ( i1._ty != i2._ty AlorsFait return NULL;
+  if ( i1._tz != i2._tz AlorsFait return NULL;
 
   WORDTYPE format;
   if ((i1.GetFormat()==WT_DOUBLE)||(i2.GetFormat()==WT_DOUBLE))
@@ -2692,7 +2692,7 @@ InrImage* operator *(  InrImage& i1,  InrImage& i2)
   else 
     format = WT_FLOAT;
 
-  Si i1.ScalarFormat() Et i2.ScalarFormat() Alors
+  if ( i1.ScalarFormat() && i2.ScalarFormat() ) {
 
     res = new InrImage(format,1,"multop.inr.gz",&i1);
     res->InitBuffer();
@@ -2705,14 +2705,14 @@ InrImage* operator *(  InrImage& i1,  InrImage& i2)
 
     return res;
 
-  Autrement
-  Si i1.VectorialFormat() Et i2.VectorialFormat() Alors
+  } else
+  if ( i1.VectorialFormat() && i2.VectorialFormat() ) {
     printf("dim im1 = %d \n",i1.GetVDim());
     printf("dim im2 = %d \n",i2.GetVDim());
-    Si i1.GetVDim() != i2.GetVDim() Alors
+    if ( i1.GetVDim() != i2.GetVDim() ) {
       fprintf(stderr,"InrImage*InrImage \t Vector dimensions don't match \n");
       return NULL;
-    FinSi
+    } // end if
     res = new InrImage(format,1,"scalar.inr.gz",&i1);
     res->InitBuffer();
     i1.InitBuffer();                
@@ -2730,9 +2730,9 @@ InrImage* operator *(  InrImage& i1,  InrImage& i2)
 
     return res;
 
-  Sinon
+  } else {
     // i1 vectorial and i2 scalar
-    Si i1.VectorialFormat() Alors
+    if ( i1.VectorialFormat() ) {
       res = new InrImage(format,i1.GetVDim(),"prod.inr.gz",&i1);
       res->InitBuffer();
       i1.InitBuffer();                
@@ -2750,7 +2750,7 @@ InrImage* operator *(  InrImage& i1,  InrImage& i2)
 
       return res;
 
-    Sinon
+    } else {
     // i2 vectorial and i1 scalar
       res = new InrImage(format,i2.GetVDim(),"prod.inr.gz",&i2);
       res->InitBuffer();
@@ -2769,9 +2769,9 @@ InrImage* operator *(  InrImage& i1,  InrImage& i2)
 
       return res;
 
-    FinSi
+    } // end if
 
-  FinSi
+  } // end if
 
   return NULL;
 
@@ -2789,9 +2789,9 @@ InrImage* operator /(  InrImage& i1,  InrImage& i2)
   float val2;
   long   i;
 
-  Si i1._tx != i2._tx AlorsFait return NULL;
-  Si i1._ty != i2._ty AlorsFait return NULL;
-  Si i1._tz != i2._tz AlorsFait return NULL;
+  if ( i1._tx != i2._tx AlorsFait return NULL;
+  if ( i1._ty != i2._ty AlorsFait return NULL;
+  if ( i1._tz != i2._tz AlorsFait return NULL;
 
   WORDTYPE format;
   if ((i1.GetFormat()==WT_DOUBLE)||(i2.GetFormat()==WT_DOUBLE))
@@ -2799,7 +2799,7 @@ InrImage* operator /(  InrImage& i1,  InrImage& i2)
   else 
     format = WT_FLOAT;
 
-  Si i1.ScalarFormat() Et i2.ScalarFormat() Alors
+  if ( i1.ScalarFormat() && i2.ScalarFormat() ) {
 
     res = new InrImage(format,"multop.inr.gz",&i1);
     res->InitBuffer();
@@ -2813,14 +2813,14 @@ InrImage* operator /(  InrImage& i1,  InrImage& i2)
 
     return res;
 
-  Autrement
-  Si i1.VectorialFormat() Et i2.VectorialFormat() Alors
+  } else
+  if ( i1.VectorialFormat() && i2.VectorialFormat() ) {
     fprintf(stderr,"InrImage/InrImage \t no vector/vector operation \n");
     return NULL;
 
-  Sinon
+  } else {
     // i1 vectorial and i2 scalar
-    Si i1.VectorialFormat() Alors
+    if ( i1.VectorialFormat() ) {
       res = new InrImage(format,i1.GetVDim(),"prod.inr.gz",&i1);
       res->InitBuffer();
       i1.InitBuffer();                
@@ -2841,7 +2841,7 @@ InrImage* operator /(  InrImage& i1,  InrImage& i2)
 
       return res;
 
-    Sinon
+    } else {
     // i2 vectorial and i1 scalar
       res = new InrImage(format,i2.GetVDim(),"prod.inr.gz",&i2);
       res->InitBuffer();
@@ -2863,9 +2863,9 @@ InrImage* operator /(  InrImage& i1,  InrImage& i2)
 
       return res;
 
-    FinSi
+    } // end if
 
-  FinSi
+  } // end if
 
   return NULL;
 
@@ -2880,9 +2880,9 @@ InrImage* operator ^(  InrImage& i1,  InrImage& i2)
   InrImage* res;
   register float ux,uy,uz,vx,vy,vz;
 
-  Si i1._tx != i2._tx AlorsFait return NULL;
-  Si i1._ty != i2._ty AlorsFait return NULL;
-  Si i1._tz != i2._tz AlorsFait return NULL;
+  if ( i1._tx != i2._tx AlorsFait return NULL;
+  if ( i1._ty != i2._ty AlorsFait return NULL;
+  if ( i1._tz != i2._tz AlorsFait return NULL;
 
   WORDTYPE format;
   if ((i1.GetFormat()==WT_DOUBLE)||(i2.GetFormat()==WT_DOUBLE))
@@ -2890,17 +2890,17 @@ InrImage* operator ^(  InrImage& i1,  InrImage& i2)
   else 
     format = WT_FLOAT;
 
-  Si i1.ScalarFormat() Ou i2.ScalarFormat() Alors
+  if ( i1.ScalarFormat() || i2.ScalarFormat() ) {
 
     return NULL;
 
-  Autrement
-  Si i1.VectorialFormat() Et i2.VectorialFormat() Alors
+  } else
+  if ( i1.VectorialFormat() && i2.VectorialFormat() ) {
 
-    Si i1.GetVDim()!=3 Ou i2.GetVDim()!=3 Alors
+    if ( i1.GetVDim()!=3 || i2.GetVDim()!=3 ) {
       fprintf(stderr,"operator^(InrImage,InrImage) \t only for dimension 3 vectors \n");
       return NULL;
-    FinSi
+    } // end if
 
     res = new InrImage(format,3,"vect_prod.ami.gz",&i1);
     res->InitBuffer();
@@ -2926,7 +2926,7 @@ InrImage* operator ^(  InrImage& i1,  InrImage& i2)
 
     return res;
 
-  FinSi
+  } // end if
 
   return NULL;
 
@@ -2940,7 +2940,7 @@ InrImage* Norm(  InrImage& i1)
 
   InrImage* res;
 
-  Si i1.ScalarFormat() Alors
+  if ( i1.ScalarFormat() ) {
 
     res = new InrImage(WT_FLOAT,"norm.ami.gz",&i1);
     res->InitBuffer();
@@ -2952,8 +2952,8 @@ InrImage* Norm(  InrImage& i1)
     FinRepeter                        
     return res;
 
-  Autrement
-  Si i1.VectorialFormat() Alors
+  } else
+  if ( i1.VectorialFormat() ) {
 
     double n2,tmp; 
     int i;
@@ -2976,7 +2976,7 @@ InrImage* Norm(  InrImage& i1)
 
     return res;
 
-  FinSi
+  } // end if
 
   return NULL;
 

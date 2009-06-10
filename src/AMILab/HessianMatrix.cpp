@@ -62,7 +62,6 @@
 
 #include "fonctions.h"
 #include "VarContexts.hpp"
-#include "chaine.hpp"
 #include "inrimage.hpp"
 #include "FiltreRec.hpp"
 #include "FloatMatrix.hpp"

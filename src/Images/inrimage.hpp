@@ -148,7 +148,7 @@ typedef shared_ptr<vtkImageData>  vtkImageData_ptr;
 */
 
 #include "style.hpp"
-#include "chaine.hpp"
+//#include "chaine.hpp"
 #include "DefineClass.hpp"
 
 #if defined(_MSC_VER) || defined(__MINGW32__)
@@ -318,10 +318,10 @@ public:
     class DepassementLimites
     {
     public:
-       Constructeur DepassementLimites( const Chaine message)
+       Constructeur DepassementLimites( const std::string message)
      {
        cout << "InrImage "
-                << " D�assement des Limites"
+                << " Out of image limits"
             << "\t " << message  << endl;
      }
     };
@@ -349,14 +349,14 @@ protected:
   long _pos_buf;
 
   ///
-  Chaine     _nom;   // nom du fichier sur disque
+  std::string     _nom;   // nom du fichier sur disque
 
 
   ///
   int     _coord_vecteur;
 
   ///
-  Chaine     _message_erreur;
+  std::string     _message_erreur;
 
   ///
   //  unsigned char    _inrimage_allouee;
@@ -539,10 +539,10 @@ public:
     // constructeur utile pour la classe InrimageCompressee
     Constructeur InrImage( );
 
-    Constructeur InrImage( char* nom);
+    Constructeur InrImage( const char* nom);
 
     // Pour des fichier d'un autre format
-    Constructeur InrImage( char* nom, int type);
+    Constructeur InrImage( const char* nom, int type);
 
     Constructeur InrImage( int dimx, int dimy,
                            int dimz, WORDTYPE format, const char* nom=(const char*)NULL);
@@ -651,7 +651,7 @@ public:
     //        ----------
 
     ///
-    char*    Nom() { return _nom;}
+    const char*    Nom() const { return _nom.c_str();}
     //            ---
 
     ///
@@ -669,20 +669,20 @@ public:
     //
     unsigned char   ScalarFormat() const
     {
-      SelonQue (WORDTYPE) _format Vaut
-        Valeur WT_RGB:            return false;
-        Valeur WT_FLOAT_VECTOR:   return false;
-        Valeur WT_DOUBLE:         return (_vdim==1);
-        Valeur WT_FLOAT:          return (_vdim==1);
-        Valeur WT_RGBA:
-        Valeur WT_UNSIGNED_CHAR:
+      switch ( (WORDTYPE) _format ) {
+        case WT_RGB:            return false;
+        case WT_FLOAT_VECTOR:   return false;
+        case WT_DOUBLE:         return (_vdim==1);
+        case WT_FLOAT:          return (_vdim==1);
+        case WT_RGBA:
+        case WT_UNSIGNED_CHAR:
           return (_vdim==1);
-        Valeur WT_UNSIGNED_SHORT: return (_vdim==1);
-        Valeur WT_SIGNED_SHORT:   return (_vdim==1);
-        Valeur WT_UNSIGNED_INT:   return (_vdim==1);
-        Valeur WT_SIGNED_INT:     return (_vdim==1);
+        case WT_UNSIGNED_SHORT: return (_vdim==1);
+        case WT_SIGNED_SHORT:   return (_vdim==1);
+        case WT_UNSIGNED_INT:   return (_vdim==1);
+        case WT_SIGNED_INT:     return (_vdim==1);
         Defaut: printf("InrImage::FormatScalaire()\t format non gere...\n");
-      FinSelonQue
+      } // end switch
 
       return false;
     }
@@ -690,21 +690,21 @@ public:
     //
     unsigned char   VectorialFormat() const
     {
-      SelonQue (WORDTYPE) _format Vaut
+      switch ( (WORDTYPE) _format ) {
 
-        Valeur WT_RGB:
-        Valeur WT_RGBA:
-        Valeur WT_FLOAT_VECTOR:   return true;
+        case WT_RGB:
+        case WT_RGBA:
+        case WT_FLOAT_VECTOR:   return true;
 
-        Valeur WT_DOUBLE:
-        Valeur WT_FLOAT:
-        Valeur WT_UNSIGNED_CHAR:
-        Valeur WT_UNSIGNED_SHORT:
-        Valeur WT_SIGNED_SHORT:
-        Valeur WT_UNSIGNED_INT:
-        Valeur WT_SIGNED_INT:     return (_vdim>1);
+        case WT_DOUBLE:
+        case WT_FLOAT:
+        case WT_UNSIGNED_CHAR:
+        case WT_UNSIGNED_SHORT:
+        case WT_SIGNED_SHORT:
+        case WT_UNSIGNED_INT:
+        case WT_SIGNED_INT:     return (_vdim>1);
         Defaut: printf("InrImage::FormatScalaire()\t format non gere...\n");
-      FinSelonQue
+      } // end switch
 
       return false;
     }
@@ -842,48 +842,48 @@ public:
       FinSi
 #endif
 
-    SelonQue (WORDTYPE) _format Vaut
+    switch ( (WORDTYPE) _format ) {
 
-      Valeur WT_RGB:
+      case WT_RGB:
         _buffer_RGB     = (_positions_RGB[z][y] + 3*x);
-      FinValeur
+      break;
 
-      Valeur WT_FLOAT_VECTOR:
+      case WT_FLOAT_VECTOR:
         _buffer_FLOAT_VECTOR     = (_positions_FLOAT_VECTOR[z][y] + _vdim*x);
-      FinValeur
+      break;
 
-      Valeur WT_DOUBLE:
+      case WT_DOUBLE:
         _buffer_DOUBLE          = (_positions_DOUBLE[z][y]         + _vdim*x);
-      FinValeur
+      break;
 
-      Valeur WT_FLOAT:
+      case WT_FLOAT:
         _buffer_FLOAT           = (_positions_FLOAT[z][y]          + _vdim*x);
-      FinValeur
+      break;
 
-      Valeur WT_RGBA:
-      Valeur WT_UNSIGNED_CHAR:
+      case WT_RGBA:
+      case WT_UNSIGNED_CHAR:
         _buffer_UNSIGNED_CHAR   = (_positions_UNSIGNED_CHAR[z][y]  + _vdim*x);
-      FinValeur
+      break;
 
-      Valeur WT_UNSIGNED_SHORT:
+      case WT_UNSIGNED_SHORT:
         _buffer_UNSIGNED_SHORT  = (_positions_UNSIGNED_SHORT[z][y]   + _vdim*x);
-      FinValeur
+      break;
 
-      Valeur WT_SIGNED_SHORT:
+      case WT_SIGNED_SHORT:
         _buffer_SIGNED_SHORT    = (_positions_SIGNED_SHORT[z][y] + _vdim*x);
-      FinValeur
+      break;
 
-      Valeur WT_SIGNED_INT:
+      case WT_SIGNED_INT:
         _buffer_SIGNED_INT     = (_positions_SIGNED_INT[z][y] + _vdim*x);
-      FinValeur
+      break;
 
-      Valeur WT_UNSIGNED_INT:
+      case WT_UNSIGNED_INT:
         _buffer_UNSIGNED_INT     = (_positions_UNSIGNED_INT[z][y] + _vdim*x);
-      FinValeur
+      break;
 
       Defaut:  printf("InrImage::BufferPos() \t format non gere ...\n");
 
-    FinSelonQue
+    } // end switch
 
     _pos_buf = ((unsigned long) z*_ty + y)* _tx + x;
 
@@ -897,24 +897,24 @@ public:
     //               ---------
     {
 
-      SelonQue (WORDTYPE) _format Vaut
+      switch ( (WORDTYPE) _format ) {
 
-        Valeur WT_RGB:            return (void*) _buffer_RGB;
-        Valeur WT_FLOAT_VECTOR:   return (void*) _buffer_FLOAT_VECTOR;
-        Valeur WT_DOUBLE:         return (void*) _buffer_DOUBLE;
-        Valeur WT_FLOAT:          return (void*) _buffer_FLOAT;
+        case WT_RGB:            return (void*) _buffer_RGB;
+        case WT_FLOAT_VECTOR:   return (void*) _buffer_FLOAT_VECTOR;
+        case WT_DOUBLE:         return (void*) _buffer_DOUBLE;
+        case WT_FLOAT:          return (void*) _buffer_FLOAT;
 
-        Valeur WT_RGBA:
-        Valeur WT_UNSIGNED_CHAR:  return (void*) _buffer_UNSIGNED_CHAR;
+        case WT_RGBA:
+        case WT_UNSIGNED_CHAR:  return (void*) _buffer_UNSIGNED_CHAR;
 
-        Valeur WT_UNSIGNED_SHORT: return (void*) _buffer_UNSIGNED_SHORT;
-        Valeur WT_SIGNED_SHORT:   return (void*) _buffer_SIGNED_SHORT;
-        Valeur WT_UNSIGNED_INT:     return (void*) _buffer_UNSIGNED_INT;
-        Valeur WT_SIGNED_INT:     return (void*) _buffer_SIGNED_INT;
+        case WT_UNSIGNED_SHORT: return (void*) _buffer_UNSIGNED_SHORT;
+        case WT_SIGNED_SHORT:   return (void*) _buffer_SIGNED_SHORT;
+        case WT_UNSIGNED_INT:     return (void*) _buffer_UNSIGNED_INT;
+        case WT_SIGNED_INT:     return (void*) _buffer_SIGNED_INT;
 
         Defaut: printf("InrImage::BufferPtr()\t format non gere...\n");
 
-      FinSelonQue
+      } // end switch
 
       return NULL;
 
@@ -930,24 +930,24 @@ public:
     {
       Si ++_pos_buf >= _taille AlorsRetourne false;
 
-      SelonQue (WORDTYPE) _format Vaut
+      switch ( (WORDTYPE) _format ) {
 
-        Valeur WT_RGB:            _buffer_RGB            += 3*inc;  FinValeur
-        Valeur WT_FLOAT_VECTOR:   _buffer_FLOAT_VECTOR   += _vdim*inc;  FinValeur
-        Valeur WT_DOUBLE:         _buffer_DOUBLE         += _vdim*inc;    FinValeur
-        Valeur WT_FLOAT:          _buffer_FLOAT          += _vdim*inc;    FinValeur
+        case WT_RGB:            _buffer_RGB            += 3*inc;  break;
+        case WT_FLOAT_VECTOR:   _buffer_FLOAT_VECTOR   += _vdim*inc;  break;
+        case WT_DOUBLE:         _buffer_DOUBLE         += _vdim*inc;    break;
+        case WT_FLOAT:          _buffer_FLOAT          += _vdim*inc;    break;
 
-        Valeur WT_RGBA:
-        Valeur WT_UNSIGNED_CHAR:  _buffer_UNSIGNED_CHAR  += _vdim*inc;    FinValeur
+        case WT_RGBA:
+        case WT_UNSIGNED_CHAR:  _buffer_UNSIGNED_CHAR  += _vdim*inc;    break;
 
-        Valeur WT_UNSIGNED_SHORT: _buffer_UNSIGNED_SHORT += _vdim*inc;    FinValeur
-        Valeur WT_SIGNED_SHORT:   _buffer_SIGNED_SHORT   += _vdim*inc;    FinValeur
-        Valeur WT_UNSIGNED_INT:     _buffer_UNSIGNED_INT     += _vdim*inc;    FinValeur
-        Valeur WT_SIGNED_INT:     _buffer_SIGNED_INT     += _vdim*inc;    FinValeur
+        case WT_UNSIGNED_SHORT: _buffer_UNSIGNED_SHORT += _vdim*inc;    break;
+        case WT_SIGNED_SHORT:   _buffer_SIGNED_SHORT   += _vdim*inc;    break;
+        case WT_UNSIGNED_INT:     _buffer_UNSIGNED_INT     += _vdim*inc;    break;
+        case WT_SIGNED_INT:     _buffer_SIGNED_INT     += _vdim*inc;    break;
 
         Defaut: printf("InrImage::IncBuffer()\t format non gere...\n");
 
-      FinSelonQue
+      } // end switch
 
       return true;
 
@@ -959,22 +959,22 @@ public:
     {
       Si ++_pos_buf >= _taille AlorsRetourne false;
 
-      SelonQue (WORDTYPE) _format Vaut
-        Valeur WT_RGB:            _buffer_RGB            += 3;  FinValeur
-        Valeur WT_FLOAT_VECTOR:   _buffer_FLOAT_VECTOR   += _vdim;  FinValeur
-        Valeur WT_DOUBLE:         _buffer_DOUBLE         += _vdim;    FinValeur
-        Valeur WT_FLOAT:          _buffer_FLOAT          += _vdim;    FinValeur
-        Valeur WT_RGBA:
-        Valeur WT_UNSIGNED_CHAR:
-          _buffer_UNSIGNED_CHAR  += _vdim;    FinValeur
-        Valeur WT_UNSIGNED_SHORT: _buffer_UNSIGNED_SHORT += _vdim;    FinValeur
-        Valeur WT_SIGNED_SHORT:   _buffer_SIGNED_SHORT   += _vdim;    FinValeur
-        Valeur WT_UNSIGNED_INT:     _buffer_UNSIGNED_INT += _vdim;    FinValeur
-        Valeur WT_SIGNED_INT:     _buffer_SIGNED_INT     += _vdim;    FinValeur
+      switch ( (WORDTYPE) _format ) {
+        case WT_RGB:            _buffer_RGB            += 3;  break;
+        case WT_FLOAT_VECTOR:   _buffer_FLOAT_VECTOR   += _vdim;  break;
+        case WT_DOUBLE:         _buffer_DOUBLE         += _vdim;    break;
+        case WT_FLOAT:          _buffer_FLOAT          += _vdim;    break;
+        case WT_RGBA:
+        case WT_UNSIGNED_CHAR:
+          _buffer_UNSIGNED_CHAR  += _vdim;    break;
+        case WT_UNSIGNED_SHORT: _buffer_UNSIGNED_SHORT += _vdim;    break;
+        case WT_SIGNED_SHORT:   _buffer_SIGNED_SHORT   += _vdim;    break;
+        case WT_UNSIGNED_INT:     _buffer_UNSIGNED_INT += _vdim;    break;
+        case WT_SIGNED_INT:     _buffer_SIGNED_INT     += _vdim;    break;
 
         Defaut: printf("InrImage::IncBuffer()\t format non gere...\n");
 
-      FinSelonQue
+      } // end switch
 
       return true;
 
@@ -1003,30 +1003,30 @@ public:
 
 
     /**
-       Renvoie la valeur de l'image �la position courante du buffer
+       Renvoie la case de l'image �la position courante du buffer
     */
     inline  double ValeurBuffer( ) const
     //             ------------
     {
 
-      SelonQue (WORDTYPE) _format Vaut
-        Valeur WT_DOUBLE:         return (double) *_buffer_DOUBLE;
-        Valeur WT_FLOAT:          return (double) *_buffer_FLOAT;
-        Valeur WT_RGBA:
-        Valeur WT_UNSIGNED_CHAR:
+      switch ( (WORDTYPE) _format ) {
+        case WT_DOUBLE:         return (double) *_buffer_DOUBLE;
+        case WT_FLOAT:          return (double) *_buffer_FLOAT;
+        case WT_RGBA:
+        case WT_UNSIGNED_CHAR:
           return (double) *_buffer_UNSIGNED_CHAR;
-        Valeur WT_UNSIGNED_SHORT: return (double) *_buffer_UNSIGNED_SHORT;
-        Valeur WT_SIGNED_SHORT:   return (double) *_buffer_SIGNED_SHORT;
-        Valeur WT_UNSIGNED_INT:   return (double) *_buffer_UNSIGNED_INT;
-        Valeur WT_SIGNED_INT:     return (double) *_buffer_SIGNED_INT;
-        Valeur WT_RGB:   return
+        case WT_UNSIGNED_SHORT: return (double) *_buffer_UNSIGNED_SHORT;
+        case WT_SIGNED_SHORT:   return (double) *_buffer_SIGNED_SHORT;
+        case WT_UNSIGNED_INT:   return (double) *_buffer_UNSIGNED_INT;
+        case WT_SIGNED_INT:     return (double) *_buffer_SIGNED_INT;
+        case WT_RGB:   return
       (double) (_buffer_RGB[0]+_buffer_RGB[1]+_buffer_RGB[2])/3.0;
-        Valeur WT_FLOAT_VECTOR:   return
+        case WT_FLOAT_VECTOR:   return
       (double) _buffer_FLOAT_VECTOR[0];
 
         Defaut: printf("InrImage::ValeurBuffer()\t format non gere...\n");
 
-      FinSelonQue
+      } // end switch
 
       return 0;
 
@@ -1036,23 +1036,23 @@ public:
     //
     double ValeurBuffer( long inc)
     //                   ------------
-    // Renvoie la valeur du buffer+inc
+    // Renvoie la Valeur du buffer+inc
     {
 
-      SelonQue (WORDTYPE) _format Vaut
+      switch ( (WORDTYPE) _format ) {
 
-        Valeur WT_DOUBLE:         return (double) *(_buffer_DOUBLE         + inc);
-        Valeur WT_FLOAT:          return (double) *(_buffer_FLOAT          + inc);
-        Valeur WT_UNSIGNED_CHAR:  return (double) *(_buffer_UNSIGNED_CHAR  + inc);
-        Valeur WT_UNSIGNED_SHORT: return (double) *(_buffer_UNSIGNED_SHORT + inc);
-        Valeur WT_SIGNED_SHORT:   return (double) *(_buffer_SIGNED_SHORT   + inc);
-        Valeur WT_UNSIGNED_INT:     return (double) *(_buffer_UNSIGNED_INT     + inc);
-        Valeur WT_SIGNED_INT:     return (double) *(_buffer_SIGNED_INT     + inc);
-        Valeur WT_FLOAT_VECTOR:   return
+        case WT_DOUBLE:         return (double) *(_buffer_DOUBLE         + inc);
+        case WT_FLOAT:          return (double) *(_buffer_FLOAT          + inc);
+        case WT_UNSIGNED_CHAR:  return (double) *(_buffer_UNSIGNED_CHAR  + inc);
+        case WT_UNSIGNED_SHORT: return (double) *(_buffer_UNSIGNED_SHORT + inc);
+        case WT_SIGNED_SHORT:   return (double) *(_buffer_SIGNED_SHORT   + inc);
+        case WT_UNSIGNED_INT:     return (double) *(_buffer_UNSIGNED_INT     + inc);
+        case WT_SIGNED_INT:     return (double) *(_buffer_SIGNED_INT     + inc);
+        case WT_FLOAT_VECTOR:   return
       (double) _buffer_FLOAT_VECTOR[_vdim*inc+0];
         Defaut: printf("InrImage::InterpLinIntensite()\t format non gere...\n");
 
-      FinSelonQue
+      } // end switch
 
       return 0;
 
@@ -1065,22 +1065,22 @@ public:
     //                   ----------------
     {
 
-      SelonQue (WORDTYPE) _format Vaut
-        Valeur WT_RGB:   return (double) _buffer_RGB[i];
-        Valeur WT_FLOAT_VECTOR:   return (double) _buffer_FLOAT_VECTOR[i];
-        Valeur WT_FLOAT:          return  _buffer_FLOAT[i];
-        Valeur WT_DOUBLE:         return  _buffer_DOUBLE[i];
+      switch ( (WORDTYPE) _format ) {
+        case WT_RGB:   return (double) _buffer_RGB[i];
+        case WT_FLOAT_VECTOR:   return (double) _buffer_FLOAT_VECTOR[i];
+        case WT_FLOAT:          return  _buffer_FLOAT[i];
+        case WT_DOUBLE:         return  _buffer_DOUBLE[i];
 
-        Valeur WT_RGBA:
-        Valeur WT_UNSIGNED_CHAR:
+        case WT_RGBA:
+        case WT_UNSIGNED_CHAR:
           return  _buffer_UNSIGNED_CHAR[i];
 
-        Valeur WT_SIGNED_SHORT:   return  _buffer_SIGNED_SHORT[i];
-        Valeur WT_SIGNED_INT:     return  _buffer_SIGNED_INT[i];
-        Valeur WT_UNSIGNED_SHORT: return  _buffer_UNSIGNED_SHORT[i];
-        Valeur WT_UNSIGNED_INT:   return  _buffer_UNSIGNED_INT[i];
+        case WT_SIGNED_SHORT:   return  _buffer_SIGNED_SHORT[i];
+        case WT_SIGNED_INT:     return  _buffer_SIGNED_INT[i];
+        case WT_UNSIGNED_SHORT: return  _buffer_UNSIGNED_SHORT[i];
+        case WT_UNSIGNED_INT:   return  _buffer_UNSIGNED_INT[i];
         Defaut: printf("InrImage::VectValeurBuffer()\t format non gere...\n");
-      FinSelonQue
+      } // end switch
 
       return 0;
 
@@ -1088,20 +1088,20 @@ public:
 
 
     /**
-      Renvoie la valeur du buffer pour la coordonnee i
+      Renvoie la Valeur du buffer pour la coordonnee i
     */
     /*
     Vect3D<float> VectValeurBuffer( )
     //           ----------------
     {
 
-      SelonQue (WORDTYPE) _format Vaut
+      switch ( (WORDTYPE) _format ) {
 
-        Valeur WT_RGB:   return
+        case WT_RGB:   return
                           Vect3D<float>( (float) _buffer_RGB[0],
                     (float) _buffer_RGB[1],
                     (float) _buffer_RGB[2]);
-        Valeur WT_FLOAT_VECTOR:
+        case WT_FLOAT_VECTOR:
                          return
                           Vect3D<float>( (float) _buffer_FLOAT_VECTOR[0],
                     (float) _buffer_FLOAT_VECTOR[1],
@@ -1109,7 +1109,7 @@ public:
 
         Defaut: printf("InrImage::VectValeurBuffer()\t format non gere...\n");
 
-      FinSelonQue
+      } // end switch
 
       return Vect3D<float>(0.0,0.0,0.0);
 
@@ -1122,51 +1122,51 @@ public:
     // Fixe la valeur de l'image au point courant du buffer
     {
 
-      SelonQue (WORDTYPE) _format Vaut
+      switch ( (WORDTYPE) _format ) {
 
-        Valeur WT_DOUBLE:
+        case WT_DOUBLE:
           *_buffer_DOUBLE         = (FORMAT_DOUBLE)         val;
-        FinValeur
+        break;
 
-        Valeur WT_FLOAT:
+        case WT_FLOAT:
           *_buffer_FLOAT          = (FORMAT_FLOAT)          val;
-        FinValeur
+        break;
 
-        Valeur WT_RGBA:
-        Valeur WT_UNSIGNED_CHAR:
+        case WT_RGBA:
+        case WT_UNSIGNED_CHAR:
           *_buffer_UNSIGNED_CHAR  = (FORMAT_UNSIGNED_CHAR)  (val+0.05);
-        FinValeur
+        break;
 
-        Valeur WT_UNSIGNED_SHORT:
+        case WT_UNSIGNED_SHORT:
           *_buffer_UNSIGNED_SHORT = (FORMAT_UNSIGNED_SHORT) (val+0.05);
-        FinValeur
+        break;
 
-        Valeur WT_SIGNED_SHORT:
+        case WT_SIGNED_SHORT:
           *_buffer_SIGNED_SHORT   = (FORMAT_SIGNED_SHORT)   (round(val));
-        FinValeur
+        break;
 
-        Valeur WT_UNSIGNED_INT:
+        case WT_UNSIGNED_INT:
           *_buffer_UNSIGNED_INT     = (FORMAT_UNSIGNED_INT)     (val+0.05);
-        FinValeur
+        break;
 
-        Valeur WT_SIGNED_INT:
+        case WT_SIGNED_INT:
           *_buffer_SIGNED_INT     = (FORMAT_SIGNED_INT)     (round(val));
-        FinValeur
+        break;
 
-        Valeur WT_RGB:
+        case WT_RGB:
           _buffer_RGB[0]   = (FORMAT_UNSIGNED_CHAR)    (val+0.05);
           _buffer_RGB[1]   = (FORMAT_UNSIGNED_CHAR)    (val+0.05);
           _buffer_RGB[2]   = (FORMAT_UNSIGNED_CHAR)    (val+0.05);
-        FinValeur
+        break;
 
-        Valeur WT_FLOAT_VECTOR:
+        case WT_FLOAT_VECTOR:
       for(int i=0;i<_vdim;i++)
             _buffer_FLOAT_VECTOR[i]   = (FORMAT_FLOAT)    val;
-        FinValeur
+        break;
 
         Defaut: printf("InrImage::FixeValeur()\t format non gere...\n");
 
-      FinSelonQue
+      } // end switch
 
     } // FixeValeur()
 
@@ -1177,40 +1177,40 @@ public:
     // Fixe la valeur de l'image au point courant du buffer
     {
 
-      SelonQue (WORDTYPE) _format Vaut
+      switch ( (WORDTYPE) _format ) {
 
-        Valeur WT_RGB:
+        case WT_RGB:
           _buffer_RGB[0]   = (FORMAT_UNSIGNED_CHAR)    (valx+0.05);
           _buffer_RGB[1]   = (FORMAT_UNSIGNED_CHAR)    (valy+0.05);
           _buffer_RGB[2]   = (FORMAT_UNSIGNED_CHAR)    (valz+0.05);
-        FinValeur
+        break;
 
-        Valeur WT_FLOAT_VECTOR:
+        case WT_FLOAT_VECTOR:
           _buffer_FLOAT_VECTOR[0]   = (FORMAT_FLOAT)    valx;
           _buffer_FLOAT_VECTOR[1]   = (FORMAT_FLOAT)    valy;
           _buffer_FLOAT_VECTOR[2]   = (FORMAT_FLOAT)    valz;
-        FinValeur
+        break;
 
-        Valeur WT_FLOAT:
+        case WT_FLOAT:
           if (_vdim==3) {
             _buffer_FLOAT[0]   = (FORMAT_FLOAT)    valx;
             _buffer_FLOAT[1]   = (FORMAT_FLOAT)    valy;
             _buffer_FLOAT[2]   = (FORMAT_FLOAT)    valz;
           } else printf("VectFixeValeurs() _vdim!=3 \n");
-        FinValeur
+        break;
 
-        Valeur WT_DOUBLE:
+        case WT_DOUBLE:
           if (_vdim==3) {
             _buffer_DOUBLE[0]   = (FORMAT_DOUBLE)    valx;
             _buffer_DOUBLE[1]   = (FORMAT_DOUBLE)    valy;
             _buffer_DOUBLE[2]   = (FORMAT_DOUBLE)    valz;
           } else printf("VectFixeValeurs() _vdim!=3 \n");
-        FinValeur
+        break;
 
 
         Defaut: printf("InrImage::VectFixeValeur()\t format non gere...\n");
 
-      FinSelonQue
+      } // end switch
 
     } // VectFixeValeurs()
 
@@ -1220,48 +1220,48 @@ public:
     // Fixe la valeur de l'image au point courant du buffer
     {
 
-      SelonQue (WORDTYPE) _format Vaut
+      switch ( (WORDTYPE) _format ) {
 
-       Valeur WT_DOUBLE:
+       case WT_DOUBLE:
           _buffer_DOUBLE[coord]   = (FORMAT_DOUBLE)    val;
-       FinValeur
+       break;
 
-       Valeur WT_FLOAT:
+       case WT_FLOAT:
           _buffer_FLOAT[coord]   = (FORMAT_FLOAT)    val;
-       FinValeur
+       break;
 
-       Valeur WT_RGBA:
-       Valeur WT_UNSIGNED_CHAR:
+       case WT_RGBA:
+       case WT_UNSIGNED_CHAR:
           _buffer_UNSIGNED_CHAR[coord]   = (FORMAT_UNSIGNED_CHAR)    (val+0.05);
-       FinValeur
+       break;
 
-       Valeur WT_UNSIGNED_SHORT:
+       case WT_UNSIGNED_SHORT:
           _buffer_UNSIGNED_SHORT[coord]   = (FORMAT_UNSIGNED_SHORT)    (val+0.05);
-       FinValeur
+       break;
 
-       Valeur WT_SIGNED_SHORT:
+       case WT_SIGNED_SHORT:
           _buffer_SIGNED_SHORT[coord]   = (FORMAT_SIGNED_SHORT)    round(val);
-       FinValeur
+       break;
 
-       Valeur WT_SIGNED_INT:
+       case WT_SIGNED_INT:
           _buffer_SIGNED_INT[coord]   = (FORMAT_SIGNED_INT)    (round(val));
-       FinValeur
+       break;
 
-       Valeur WT_UNSIGNED_INT:
+       case WT_UNSIGNED_INT:
           _buffer_UNSIGNED_INT[coord]   = (FORMAT_UNSIGNED_INT)    (val+0.05);
-       FinValeur
+       break;
 
-       Valeur WT_RGB:
+       case WT_RGB:
           _buffer_RGB[coord]   = (FORMAT_UNSIGNED_CHAR)    (val+0.05);
-        FinValeur
+        break;
 
-        Valeur WT_FLOAT_VECTOR:
+        case WT_FLOAT_VECTOR:
           _buffer_FLOAT_VECTOR[coord]   = (FORMAT_FLOAT)    val;
-        FinValeur
+        break;
 
         Defaut: printf("InrImage::VectFixeValeur()\t format non gere...\n");
 
-      FinSelonQue
+      } // end switch
 
     } // VectFixeValeur()
 
@@ -1286,8 +1286,8 @@ public:
     }
 
     ///
-    Chaine* MessageErreur();
-    //      -------------
+    const std::string& MessageErreur();
+    //          -------------
 
   //@}
 
@@ -1330,34 +1330,34 @@ public:
       FinSi
 #endif
 
-      SelonQue (WORDTYPE) _format Vaut
+      switch ( (WORDTYPE) _format ) {
 
-        Valeur WT_DOUBLE:
+        case WT_DOUBLE:
           return (double)(_positions_DOUBLE[z][y][x]);
 
-        Valeur WT_FLOAT:
+        case WT_FLOAT:
           return (double)(_positions_FLOAT [z][y][x]);
 
-        Valeur WT_RGB:
-        Valeur WT_UNSIGNED_CHAR:
+        case WT_RGB:
+        case WT_UNSIGNED_CHAR:
            return (double)(_positions_UNSIGNED_CHAR   [z][y][x]);
 
-        Valeur WT_UNSIGNED_SHORT:
+        case WT_UNSIGNED_SHORT:
            return (double)(_positions_UNSIGNED_SHORT   [z][y][x]);
 
-        Valeur WT_SIGNED_SHORT:
+        case WT_SIGNED_SHORT:
            return (double)(_positions_SIGNED_SHORT  [z][y][x]);
 
-        Valeur WT_UNSIGNED_INT:
+        case WT_UNSIGNED_INT:
            return (double)(_positions_UNSIGNED_INT  [z][y][x]);
 
-        Valeur WT_SIGNED_INT:
+        case WT_SIGNED_INT:
            return (double)(_positions_SIGNED_INT  [z][y][x]);
 
 
         Defaut: printf("InrImage::operator()\t format non gere...\n");
 
-      FinSelonQue
+      } // end switch
 
       return 0;
 
@@ -1377,32 +1377,32 @@ public:
       FinSi
 #endif
 
-      SelonQue (WORDTYPE) _format Vaut
+      switch ( (WORDTYPE) _format ) {
 
-        Valeur WT_DOUBLE:
+        case WT_DOUBLE:
           return (double)(_positions_DOUBLE[0][y][x]);
 
-        Valeur WT_FLOAT:
+        case WT_FLOAT:
           return (double)(_positions_FLOAT [0][y][x]);
 
-        Valeur WT_UNSIGNED_CHAR:
+        case WT_UNSIGNED_CHAR:
            return (double)(_positions_UNSIGNED_CHAR   [0][y][x]);
 
-        Valeur WT_UNSIGNED_SHORT:
+        case WT_UNSIGNED_SHORT:
            return (double)(_positions_UNSIGNED_SHORT   [0][y][x]);
 
-        Valeur WT_SIGNED_SHORT:
+        case WT_SIGNED_SHORT:
            return (double)(_positions_SIGNED_SHORT  [0][y][x]);
 
-        Valeur WT_UNSIGNED_INT:
+        case WT_UNSIGNED_INT:
            return (double)(_positions_UNSIGNED_INT  [0][y][x]);
 
-        Valeur WT_SIGNED_INT:
+        case WT_SIGNED_INT:
            return (double)(_positions_SIGNED_INT  [0][y][x]);
 
         Defaut: printf("InrImage::operator()\t format non gere...\n");
 
-      FinSelonQue
+      } // end switch
 
       return 0;
 
@@ -1414,38 +1414,38 @@ public:
     //         --------
     {
 
-      SelonQue (WORDTYPE) _format Vaut
+      switch ( (WORDTYPE) _format ) {
 
-        Valeur WT_RGB:
+        case WT_RGB:
           return (double)(_positions_RGB [z][y][3*x+coord]);
 
-        Valeur WT_FLOAT:
+        case WT_FLOAT:
           return (double)(_positions_FLOAT[z][y][_vdim*x+coord]);
-        Valeur WT_DOUBLE:
+        case WT_DOUBLE:
           return (double)(_positions_DOUBLE[z][y][_vdim*x+coord]);
 
-        Valeur WT_FLOAT_VECTOR:
+        case WT_FLOAT_VECTOR:
           return (double)(_positions_FLOAT_VECTOR [z][y][_vdim*x+coord]);
 
-        Valeur WT_RGBA:
-        Valeur WT_UNSIGNED_CHAR:
+        case WT_RGBA:
+        case WT_UNSIGNED_CHAR:
           return (double)(_positions_UNSIGNED_CHAR [z][y][_vdim*x+coord]);
 
-        Valeur WT_SIGNED_SHORT:
+        case WT_SIGNED_SHORT:
           return (double)(_positions_SIGNED_SHORT[z][y][_vdim*x+coord]);
 
-        Valeur WT_UNSIGNED_SHORT:
+        case WT_UNSIGNED_SHORT:
           return (double)(_positions_UNSIGNED_SHORT[z][y][_vdim*x+coord]);
 
-        Valeur WT_SIGNED_INT:
+        case WT_SIGNED_INT:
           return (double)(_positions_SIGNED_INT[z][y][_vdim*x+coord]);
 
-        Valeur WT_UNSIGNED_INT:
+        case WT_UNSIGNED_INT:
           return (double)(_positions_UNSIGNED_INT[z][y][_vdim*x+coord]);
 
         Defaut: printf("InrImage::operator(x,y,z,coord)\t format non gere...\n");
 
-      FinSelonQue
+      } // end switch
 
       return 0;
 
@@ -1509,16 +1509,16 @@ public:
 
 #define MACRO_case_buffer(Format,Buf) \
 \
-      Valeur Format: \
+      case Format: \
         Buf += _coord_vecteur; \
         res  =  coeff00* *(Buf)       + \
                 coeff10* *(Buf+_vdim*tx1); \
         res +=  coeff01* *(Buf+_vdim*tx2) + \
                 coeff11* *(Buf+_vdim*tx12); \
-      FinValeur
+      break;
 
 
-    SelonQue (WORDTYPE) _format Vaut
+    switch ( (WORDTYPE) _format ) {
 
       MACRO_case_buffer(WT_DOUBLE,          _buffer_DOUBLE)
       MACRO_case_buffer(WT_FLOAT,           _buffer_FLOAT)
@@ -1532,7 +1532,7 @@ public:
 
       Defaut: printf("InrImage::InterpLinIntensite2()\t format non gere...\n");
 
-    FinSelonQue
+    } // end switch
 
 #undef MACRO_case_buffer
 
@@ -1663,7 +1663,7 @@ public:
 
 #define MACRO_case_buffer(Format,Pos,Buf) \
 \
-    Valeur Format: \
+    case Format: \
       Buf = (  Pos[zi][yi] + _vdim*xi + _coord_vecteur); \
       res  =  coeff000* *(Buf) + \
               coeff100* *(Buf +_vdim); \
@@ -1673,11 +1673,11 @@ public:
               coeff101* *(Buf +_vdim*(_txy+1)); \
       res +=  coeff011* *(Buf +_vdim*(_txy+_tx)) + \
               coeff111* *(Buf +_vdim*(_txy+_tx+1)); \
-    FinValeur
+    break;
 
 
     //--- Calcul de l'intensit�
-    SelonQue (WORDTYPE) _format Vaut
+    switch ( (WORDTYPE) _format ) {
 
       MACRO_case_buffer(WT_DOUBLE,        _positions_DOUBLE,        _buffer_DOUBLE)
       MACRO_case_buffer(WT_FLOAT,         _positions_FLOAT,         _buffer_FLOAT)
@@ -1691,7 +1691,7 @@ public:
 
       Defaut: printf("InrImage::InterpLinIntensite()\t format non gere...\n");
 
-    FinSelonQue
+    } // end switch
 
 #undef MACRO_case_buffer
 
@@ -1717,53 +1717,53 @@ public:
   //   -----------
   {
 
-    SelonQue (WORDTYPE) _format Vaut
+    switch ( (WORDTYPE) _format ) {
 
-      Valeur WT_DOUBLE:
+      case WT_DOUBLE:
         vois[0][0] = (float)_positions_DOUBLE[z]  [y]  [x];
         vois[0][1] = (float)_positions_DOUBLE[z+1][y]  [x];
         vois[1][0] = (float)_positions_DOUBLE[z]  [y+1][x];
         vois[1][1] = (float)_positions_DOUBLE[z+1][y+1][x];
-      FinValeur
+      break;
 
-      Valeur WT_FLOAT:
+      case WT_FLOAT:
         vois[0][0] = (float)_positions_FLOAT[z]  [y]  [x];
         vois[0][1] = (float)_positions_FLOAT[z+1][y]  [x];
         vois[1][0] = (float)_positions_FLOAT[z]  [y+1][x];
         vois[1][1] = (float)_positions_FLOAT[z+1][y+1][x];
-      FinValeur
+      break;
 
-      Valeur WT_UNSIGNED_CHAR:
+      case WT_UNSIGNED_CHAR:
         vois[0][0] = (float)_positions_UNSIGNED_CHAR[z]  [y]  [x];
         vois[0][1] = (float)_positions_UNSIGNED_CHAR[z+1][y]  [x];
         vois[1][0] = (float)_positions_UNSIGNED_CHAR[z]  [y+1][x];
         vois[1][1] = (float)_positions_UNSIGNED_CHAR[z+1][y+1][x];
-      FinValeur
+      break;
 
-      Valeur WT_SIGNED_SHORT:
+      case WT_SIGNED_SHORT:
         vois[0][0] = (float)_positions_SIGNED_SHORT[z]  [y]  [x];
         vois[0][1] = (float)_positions_SIGNED_SHORT[z+1][y]  [x];
         vois[1][0] = (float)_positions_SIGNED_SHORT[z]  [y+1][x];
         vois[1][1] = (float)_positions_SIGNED_SHORT[z+1][y+1][x];
-      FinValeur
+      break;
 
-      Valeur WT_UNSIGNED_SHORT:
+      case WT_UNSIGNED_SHORT:
         vois[0][0] = (float)_positions_UNSIGNED_SHORT[z]  [y]  [x];
         vois[0][1] = (float)_positions_UNSIGNED_SHORT[z+1][y]  [x];
         vois[1][0] = (float)_positions_UNSIGNED_SHORT[z]  [y+1][x];
         vois[1][1] = (float)_positions_UNSIGNED_SHORT[z+1][y+1][x];
-      FinValeur
+      break;
 
-      Valeur WT_SIGNED_INT:
+      case WT_SIGNED_INT:
         vois[0][0] = (float)_positions_SIGNED_INT[z]  [y]  [x];
         vois[0][1] = (float)_positions_SIGNED_INT[z+1][y]  [x];
         vois[1][0] = (float)_positions_SIGNED_INT[z]  [y+1][x];
         vois[1][1] = (float)_positions_SIGNED_INT[z+1][y+1][x];
-      FinValeur
+      break;
 
       Defaut: printf("InrImage::VoisinageYZ()\t format non gere...\n");
 
-    FinSelonQue
+    } // end switch
 
   } // VoisinageYZ()
 
@@ -1920,9 +1920,9 @@ inline void InrImage :: MinMax( float* min, float* max)
 
   size = _tx*_ty*_tz;
 
-  SelonQue (WORDTYPE) _format Vaut
+  switch ( (WORDTYPE) _format ) {
 
-    Valeur WT_DOUBLE:
+    case WT_DOUBLE:
       register FORMAT_DOUBLE*         buf_DOUBLE;
 
       buf_DOUBLE = (FORMAT_DOUBLE*) this->GetData();
@@ -1933,9 +1933,9 @@ inline void InrImage :: MinMax( float* min, float* max)
         buf_DOUBLE++;
       FinBoucle // n
 
-    FinValeur
+    break;
 
-    Valeur WT_FLOAT:
+    case WT_FLOAT:
       register  FORMAT_FLOAT*          buf_FLOAT;
       buf_FLOAT = (FORMAT_FLOAT*) this->GetData();
       *min = *max = *buf_FLOAT;
@@ -1945,9 +1945,9 @@ inline void InrImage :: MinMax( float* min, float* max)
         buf_FLOAT++;
       FinBoucle // n
 
-    FinValeur
+    break;
 
-    Valeur WT_UNSIGNED_CHAR:
+    case WT_UNSIGNED_CHAR:
       register FORMAT_UNSIGNED_CHAR*  buf_UNSIGNED_CHAR;
 
       buf_UNSIGNED_CHAR = (FORMAT_UNSIGNED_CHAR*) this->GetData();
@@ -1958,9 +1958,9 @@ inline void InrImage :: MinMax( float* min, float* max)
         buf_UNSIGNED_CHAR++;
       FinBoucle // n
 
-    FinValeur
+    break;
 
-    Valeur WT_UNSIGNED_SHORT:
+    case WT_UNSIGNED_SHORT:
       register FORMAT_UNSIGNED_SHORT* buf_UNSIGNED_SHORT;
 
       buf_UNSIGNED_SHORT = (FORMAT_UNSIGNED_SHORT*) this->GetData();
@@ -1971,9 +1971,9 @@ inline void InrImage :: MinMax( float* min, float* max)
         buf_UNSIGNED_SHORT++;
       FinBoucle // n
 
-    FinValeur
+    break;
 
-    Valeur WT_SIGNED_SHORT:
+    case WT_SIGNED_SHORT:
       register FORMAT_SIGNED_SHORT*   buf_SIGNED_SHORT;
 
       buf_SIGNED_SHORT = (FORMAT_SIGNED_SHORT*) this->GetData();
@@ -1984,9 +1984,9 @@ inline void InrImage :: MinMax( float* min, float* max)
         buf_SIGNED_SHORT++;
       FinBoucle // n
 
-    FinValeur
+    break;
 
-    Valeur WT_UNSIGNED_INT:
+    case WT_UNSIGNED_INT:
       register FORMAT_UNSIGNED_INT*   buf_UNSIGNED_INT;
 
       buf_UNSIGNED_INT = (FORMAT_UNSIGNED_INT*) this->GetData();
@@ -1997,9 +1997,9 @@ inline void InrImage :: MinMax( float* min, float* max)
         buf_UNSIGNED_INT++;
       FinBoucle // n
 
-    FinValeur
+    break;
 
-    Valeur WT_SIGNED_INT:
+    case WT_SIGNED_INT:
       register FORMAT_SIGNED_INT*   buf_SIGNED_INT;
 
       buf_SIGNED_INT = (FORMAT_SIGNED_INT*) this->GetData();
@@ -2010,19 +2010,19 @@ inline void InrImage :: MinMax( float* min, float* max)
         buf_SIGNED_INT++;
       FinBoucle // n
 
-    FinValeur
+    break;
 
-    Valeur WT_RGB:
-    Valeur WT_RGBA:
+    case WT_RGB:
+    case WT_RGBA:
 
       *min = 0;
       *max = 255;
 
-    FinValeur
+    break;
 
     Defaut: printf("InrImage::MinMax()\t format non gere..\n");
 
-  FinSelonQue
+  } // end switch
 
   return;
 
