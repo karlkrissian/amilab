@@ -66,6 +66,13 @@ class wxwindow_nodeleter
     void operator()(T * p)  {  }  
   };
 
+template<class T>
+class smartpointer_nodeleter 
+  { 
+  public: 
+    void operator()(T * p)  {  }  
+  };
+
 #define new_wxWindow_ptr(_class,_parent) \
   _class::ptr(new _class(_parent),wxwindow_nodeleter<_class>())
 

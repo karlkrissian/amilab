@@ -61,7 +61,17 @@ bool Driver::parse_stream(std::istream& in, const std::string& sname)
     parser.set_debug_level(trace_parsing);
     if (language_debug_stream.good()) 
       parser.set_debug_stream(language_debug_stream);
-    int res = parser.parse();
+
+    int res;
+    try {
+      res = parser.parse();
+    }
+    catch(std::exception const& e) {
+      err_print( (boost::format("std::exception catched during parsing \n %1%") % e.what()).str().c_str());
+    }
+    catch(...) { 
+      err_print("Unknown exception catched during parsing");
+    }
 
     this->lexer = previous_lexer;
 

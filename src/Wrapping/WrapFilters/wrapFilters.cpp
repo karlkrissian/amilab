@@ -24,24 +24,28 @@
 #ifdef AMI_USE_FASTNLMEANS
   #include "Wrap_NewNLMeans.h"
 #endif // AMI_USE_FASTNLMEANS
+#include "wrapAlgorithmsBasic.h"
 
 extern VarContexts  Vars;
 
 //---------------------------------------------------------
 void AddWrapFilters(){
- Vars.AddVar(type_c_image_function,"NSim",             (void*) NSim );
- Vars.AddVar(type_c_procedure,     "NSim2",         (void*) NSim2 );
- Vars.AddVar(type_c_image_function,"NLmeans",          (void*) NLmeans   );
- Vars.AddVar(type_c_image_function,"NLmeans_fast",     (void*) NLmeans_fast   );
- Vars.AddVar(type_c_image_function,"NLmeans_MRI",      (void*) NLmeans_MRI   );
- Vars.AddVar(type_c_image_function,"LeastSquares",     (void*) WrapLeastSquares   );
- Vars.AddVar(type_c_function,      "EigenDecomp",      (void*) Wrap_EigenDecomp   );
- Vars.AddVar(type_c_image_function,"StructureTensorH", (void*) wrap_StructureTensorHessianNew  );
- Vars.AddVar(type_c_function,      "SplineResample",   (void*) Wrap_SmoothLinesToSplines );
 
-#ifdef AMI_USE_FASTNLMEANS
- Vars.AddVar(type_c_image_function,"NewNLmeans",          (void*) Wrap_NewNLmeans  );
-#endif // AMI_USE_FASTNLMEANS
+  wrapAlgorithmsBasic();
+
+  Vars.AddVar(type_c_image_function,"NSim",             (void*) NSim );
+  Vars.AddVar(type_c_procedure,     "NSim2",            (void*) NSim2 );
+  Vars.AddVar(type_c_image_function,"NLmeans",          (void*) NLmeans   );
+  Vars.AddVar(type_c_image_function,"NLmeans_fast",     (void*) NLmeans_fast   );
+  Vars.AddVar(type_c_image_function,"NLmeans_MRI",      (void*) NLmeans_MRI   );
+  Vars.AddVar(type_c_image_function,"LeastSquares",     (void*) WrapLeastSquares   );
+  Vars.AddVar(type_c_function,      "EigenDecomp",      (void*) Wrap_EigenDecomp   );
+  Vars.AddVar(type_c_image_function,"StructureTensorH", (void*) wrap_StructureTensorHessianNew  );
+  Vars.AddVar(type_c_function,      "SplineResample",   (void*) Wrap_SmoothLinesToSplines );
+  
+  #ifdef AMI_USE_FASTNLMEANS
+    Vars.AddVar(type_c_image_function,"NewNLmeans", (void*) Wrap_NewNLmeans  );
+  #endif // AMI_USE_FASTNLMEANS
 
 }
 

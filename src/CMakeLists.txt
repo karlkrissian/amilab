@@ -311,8 +311,10 @@ add_executable (${AMILAB_BIN} WIN32
 
 SET(amilab_ownlibs
   Language
-  AMILab
+  WrapVTK
+  WrapFilters
   WrapITK
+  AMILab
   AMImage
   Contours
   Coordinates

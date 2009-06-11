@@ -43,12 +43,6 @@ include_directories (
   ${Boost_INCLUDE_DIR}
 )
 
-IF(AMI_USE_FASTNLMEANS)
-  MESSAGE("including NewNLMeans_INCLUDE_DIRS=${NewNLMeans_INCLUDE_DIRS}")
-  include_directories (
-    ${NewNLMeans_INCLUDE_DIRS}
-  )
-ENDIF(AMI_USE_FASTNLMEANS)
 
 INCLUDE( ${VTK_USE_FILE} )
 INCLUDE(${wxWidgets_USE_FILE})
@@ -92,10 +86,10 @@ SET(AMILab_SRCS
     func_isoline.cpp
 #    func_shortestpath.cpp
 #    localstats.cpp
-    vtkwrap.cpp
+#    vtkwrap.cpp
     wrapAMIFluid.cpp
-    wrapFilters.cpp
-    wrapVTK.cpp
+#    wrapFilters.cpp
+#    wrapVTK.cpp
     wrapWII.cpp
     wrap_StructureTensor.cpp
     wrapfunctions.cpp
