@@ -30,8 +30,9 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/JavierHornSchunck
   ${AMILAB_SOURCE_DIR}/Language
   ${AMILAB_SOURCE_DIR}/DistTransf
-  ${AMILAB_SOURCE_DIR}/WrapITK
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapITK
   ${AMILAB_SOURCE_DIR}/penguin
+  ${AMILAB_SOURCE_DIR}/Algorithms/Basic
   ${AMILAB_SOURCE_DIR}/Algorithms/Graph
   ${AMILAB_SOURCE_DIR}/Algorithms/Denoising
   ${AMILAB_SOURCE_DIR}/

@@ -14,6 +14,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/AMILab
   ${AMILAB_SOURCE_DIR}/Language
   ${AMILAB_SOURCE_DIR}/OpenGL
+  ${AMILAB_SOURCE_DIR}/Algorithms/Basic
   ${AMILAB_SOURCE_DIR}/Algorithms/Denoising
   ${AMILAB_SOURCE_DIR}
   ${AMIFLUID_INCLUDE_DIR}
@@ -32,6 +33,7 @@ IF(AMI_USE_FASTNLMEANS)
 ENDIF(AMI_USE_FASTNLMEANS)
 
 SET(Algorithms_SRCS
+  Basic/localstats.cpp
   Graph/func_shortestpath.cpp
   Denoising/Wrap_NewNLMeans.cpp
 )

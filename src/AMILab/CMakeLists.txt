@@ -26,6 +26,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/SplineThevenaz
   ${AMILAB_SOURCE_DIR}/Contours
   ${AMILAB_SOURCE_DIR}/Language
+  ${AMILAB_SOURCE_DIR}/Algorithms/Basic
   ${AMILAB_SOURCE_DIR}/Algorithms/Graph
   ${AMILAB_SOURCE_DIR}/Algorithms/Denoising
 # still needed for now
@@ -90,7 +91,7 @@ SET(AMILab_SRCS
     func_imagebasictools.cpp
     func_isoline.cpp
 #    func_shortestpath.cpp
-    localstats.cpp
+#    localstats.cpp
     vtkwrap.cpp
     wrapAMIFluid.cpp
     wrapFilters.cpp

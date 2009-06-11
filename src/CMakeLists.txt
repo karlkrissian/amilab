@@ -138,7 +138,11 @@ SET(Boost_USE_STATIC_LIBS   ON)
 SET(Boost_USE_MULTITHREAD OFF)
 #MESSAGE(  CMAKE_HOST_SYSTEM_NAME=${CMAKE_HOST_SYSTEM_NAME} )
 #MESSAGE(  CMAKE_HOST_SYSTEM=${CMAKE_HOST_SYSTEM} )
-FIND_PACKAGE( Boost  1.33 COMPONENTS date_time filesystem  system iostreams  regex)
+
+SET(BOOST_RELEASE "1.33" CACHE STRING "specify boost version")
+
+
+FIND_PACKAGE( Boost ${BOOST_RELEASE} COMPONENTS date_time filesystem  system iostreams  regex)
 #SET(Boost_USE_STATIC_LIBS ON)
 
 FIND_PACKAGE( ZLIB)
@@ -231,7 +235,10 @@ add_subdirectory (Line)
 add_subdirectory (SplineThevenaz)
 #add_subdirectory (libamiFluid)
 add_subdirectory (Graph)
-add_subdirectory (WrapITK)
+
+#add_subdirectory (WrapITK)
+add_subdirectory (Wrapping)
+
 add_subdirectory (Language)
 
 IF(AMI_USE_FASTNLMEANS)
@@ -259,7 +266,8 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/SplineThevenaz
   ${AMILAB_SOURCE_DIR}/Contours
   ${AMILAB_SOURCE_DIR}/DistTransf
-  ${AMILAB_SOURCE_DIR}/WrapITK
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapITK
+  ${AMILAB_SOURCE_DIR}/Algorithms/Basic
   ${AMILAB_SOURCE_DIR}
   ${AMILAB_SOURCE_DIR}/../Pixmaps
   ${AMILAB_BINARY_DIR}
@@ -353,6 +361,7 @@ ELSE(AMI_USE_VTK)
 ENDIF(AMI_USE_VTK)
 
 
+MESSAGE( "Boost_LIBRARIES=${Boost_LIBRARIES}" )
 
 # conflict between freetype and vtkfreetype
 TARGET_LINK_LIBRARIES( ${AMILAB_BIN}
