@@ -392,7 +392,7 @@ void FastLocalSumZ_noborder( InrImage* in, InrImage* out,
   float sum[dy][line_size];
 
   for(y=ymin;y<=ymax;y++)
-    for(x=xmin;x<=xmax;x++) sum[y][x] = 0; // use memset here?
+    for(x=xmin;x<=xmax;x++) sum[y][x-xmin] = 0; // use memset here?
 
   // initialize sums
   for(i=0;i<d;i++) {
@@ -456,6 +456,109 @@ void FastLocalSumZ_noborder( InrImage* in, InrImage* out,
   END_TIMING
 
 } // FastLocalSumZ_noborder<T>
+
+
+///
+/// here iterate first on y then z and x
+/// allowing to keep only 1 line in memory at a time
+///
+template<class T,class TInc>
+void FastLocalSumZ_noborder_2( InrImage* in, InrImage* out, 
+                      int size, 
+                      const ImageExtent<int>& extent,
+                      const unsigned char& stepsize=4)
+{
+  START_TIMING(boost::format("%1%, %2%, x%3%") 
+                  % typeid(T).name() 
+                  % typeid(TInc).name()
+                  % (int)stepsize)
+
+  int d = 2*size+1;
+  float* in_buf;
+  float* vmin_buf;
+  float* vmax_buf;
+  float* vres_buf;
+  float* vmin_buf1;
+  float* vmax_buf1;
+  float* vres_buf1;
+  int new_size    = in->Size()-d;
+  short i;
+
+  short xmin = extent.GetMin(0);
+  short xmax = extent.GetMax(0);
+  short ymin = extent.GetMin(1);
+  short ymax = extent.GetMax(1);
+  short zmin = extent.GetMin(2);
+  short zmax = extent.GetMax(2);
+
+  // 2*size+1 needs to be smaller and the extent in X !!
+  // now need to go line by line
+  int x,y,z;
+  unsigned short dx = in->DimX(); // limit to approx. 64000 dim in X
+  unsigned short dy = in->DimY(); // limit to approx. 64000 dim in X
+  unsigned int dxy = dx*dy;
+
+  int line_size = xmax-xmin+1;
+  float sum[line_size];
+  float* sum1;
+
+  for(y=ymin;y<=ymax;y++) {
+
+    for(x=xmin;x<=xmax;x++) sum[x] = 0; // use memset here?
+
+    // initialize sums
+    for(i=0;i<d;i++) {
+      in->BufferPos(0,y,zmin+i);
+      in_buf = (float*) in->BufferPtr();
+      for(x=xmin;x<=xmax;x++) sum[x] += in_buf[x];
+    } // i
+  
+    out->BufferPos(0,y,zmin+size); // hyp: ymin+size < ymax !!
+    vres_buf = (float*)out->BufferPtr();
+  
+    // set values at zmin+size
+    for(x=xmin;x<=xmax;x++)  vres_buf[x] = sum[x];
+
+    // initialize positions
+    in->BufferPos(0,y,zmin);
+    in_buf = (float*) in->BufferPtr();
+
+    vmin_buf = in_buf;          // at 0,ymin,zmin
+    vmax_buf = in_buf+d*dx*dy;  // at 0,ymin,zmin+(2*size+1)
+
+    out->BufferPos(0,y,zmin+size+1); 
+    vres_buf = (float*)out->BufferPtr();
+
+    short xmax1;
+    unsigned char ns;
+    for (z=zmin+size+1;z<=zmax-size;z++) {
+      xmax1=xmax-stepsize;
+      x = xmin;
+      sum1 = sum;
+      vres_buf1=vres_buf;
+      vmin_buf1=vmin_buf;
+      vmax_buf1=vmax_buf;
+      while(x<=xmax1) {
+        for(ns=0;ns<stepsize;ns++) {
+          *sum1 += *vmax_buf1++ - *vmin_buf1++;
+          *vres_buf1++ = *sum1++;
+        }
+        x += stepsize;
+      }
+      while(x<=xmax) {
+        *sum1 += *vmax_buf1++ - *vmin_buf1++;
+        *vres_buf1++ = *sum1++;
+        x++;
+      }
+      vres_buf += dxy; // point to the beginning of next line
+      vmax_buf += dxy;
+      vmin_buf += dxy;
+    } // end for y
+  } // end for z
+
+  END_TIMING
+
+} // FastLocalSumZ_noborder_2<T>
 
 template<class T,class TInc>
 void FastLocalSumX( InrImage* in, InrImage* out, 
@@ -814,7 +917,9 @@ void FastLocalSumDirNonX( InrImage* in, InrImage* out,
 template<class T>
 void FastLocalSumDirNonX( InrImage* in, InrImage* out, 
                       int size, int axis, 
-                      const ImageExtent<int>& extent)
+                      const ImageExtent<int>& extent,
+                      const unsigned char& stepsize=8
+                      )
 {
   //START_TIMING(boost::format("%1%, %2%") 
   //                % typeid(T).name() )
@@ -828,16 +933,16 @@ void FastLocalSumDirNonX( InrImage* in, InrImage* out,
   if (axis>1) inc *= in->DimY();
 
   if (inc <= std::numeric_limits<unsigned char>::max()+1) 
-    FastLocalSumDirNonX<T,unsigned char>(in,out,size,axis,extent);
+    FastLocalSumDirNonX<T,unsigned char>(in,out,size,axis,extent,stepsize);
   else
   if (inc <= std::numeric_limits<unsigned short>::max()+1) 
-    FastLocalSumDirNonX<T,unsigned short>(in,out,size,axis,extent);
+    FastLocalSumDirNonX<T,unsigned short>(in,out,size,axis,extent,stepsize);
   else
   if (inc <= std::numeric_limits<unsigned int>::max()+1) 
-    FastLocalSumDirNonX<T,unsigned int>(in,out,size,axis,extent);
+    FastLocalSumDirNonX<T,unsigned int>(in,out,size,axis,extent,stepsize);
   else
   if (inc <= std::numeric_limits<unsigned long>::max()+1) 
-    FastLocalSumDirNonX<T,unsigned long>(in,out,size,axis,extent);
+    FastLocalSumDirNonX<T,unsigned long>(in,out,size,axis,extent,stepsize);
 
   //END_TIMING
 
@@ -1120,7 +1225,12 @@ void     Func_localsum( InrImage* im, InrImage*& res,
       FastLocalSumZ_noborder<T,unsigned short>(im,res,size,extent,4);
       FastLocalSumZ_noborder<T,unsigned short>(im,res,size,extent,1);
 
-      FastLocalSumDirNonX<T,unsigned short>(tmp,res,size,2,extent,64);
+     FastLocalSumZ_noborder_2<T,unsigned short>(im,res,size,extent,16);
+      FastLocalSumZ_noborder_2<T,unsigned short>(im,res,size,extent,8);
+      FastLocalSumZ_noborder_2<T,unsigned short>(im,res,size,extent,4);
+      FastLocalSumZ_noborder_2<T,unsigned short>(im,res,size,extent,1);
+ 
+     FastLocalSumDirNonX<T,unsigned short>(tmp,res,size,2,extent,64);
       FastLocalSumDirNonX<T,unsigned short>(tmp,res,size,2,extent,32);
       FastLocalSumDirNonX<T,unsigned short>(tmp,res,size,2,extent,16);
       FastLocalSumDirNonX<T,unsigned short>(tmp,res,size,2,extent,8);
@@ -1132,6 +1242,11 @@ void     Func_localsum( InrImage* im, InrImage*& res,
       FastLocalSumZ_noborder<T,unsigned int>(im,res,size,extent,8);
       FastLocalSumZ_noborder<T,unsigned int>(im,res,size,extent,4);
       FastLocalSumZ_noborder<T,unsigned int>(im,res,size,extent,1);
+
+      FastLocalSumZ_noborder_2<T,unsigned int>(im,res,size,extent,16);
+      FastLocalSumZ_noborder_2<T,unsigned int>(im,res,size,extent,8);
+      FastLocalSumZ_noborder_2<T,unsigned int>(im,res,size,extent,4);
+      FastLocalSumZ_noborder_2<T,unsigned int>(im,res,size,extent,1);
 
       FastLocalSumDirNonX<T,unsigned int>(tmp,res,size,2,extent,64);
       FastLocalSumDirNonX<T,unsigned int>(tmp,res,size,2,extent,32);

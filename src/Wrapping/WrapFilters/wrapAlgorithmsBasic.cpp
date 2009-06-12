@@ -122,7 +122,9 @@ InrImage* wrapFastLocalSumDir2(ParamList* p)
     FastLocalSumY_noborder<float,unsigned short>(input1.get(),result,wsize,extent);
   else
   if (axis==2)
-    FastLocalSumZ_noborder<float,unsigned int>  (input1.get(),result,wsize,extent);
+//    FastLocalSumZ_noborder<float,unsigned int>  (input1.get(),result,wsize,extent);
+//    FastLocalSumZ_noborder_2<float,unsigned int>  (input1.get(),result,wsize,extent);
+    FastLocalSumDirNonX<float,unsigned int>  (input1.get(),result,wsize,2,extent,16);
   else
     FILE_ERROR("Wrong axis number (0,1 or 2 for X,Y or Z)");
 
