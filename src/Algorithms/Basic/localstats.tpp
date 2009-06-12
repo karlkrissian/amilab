@@ -276,11 +276,13 @@ void FastLocalSumX_noborder( InrImage* in, InrImage* out,
 template<class T,class TInc>
 void FastLocalSumY_noborder( InrImage* in, InrImage* out, 
                       int size, 
-                      const ImageExtent<int>& extent)
+                      const ImageExtent<int>& extent,
+                      const unsigned char& stepsize=4)
 {
-  START_TIMING(boost::format("%1%, %2%") 
+  START_TIMING(boost::format("%1%, %2%, x%3%") 
                   % typeid(T).name() 
-                  % typeid(TInc).name())
+                  % typeid(TInc).name()
+                  % (int)stepsize)
 
   int d = 2*size+1;
   float* in_buf;
@@ -336,6 +338,24 @@ void FastLocalSumY_noborder( InrImage* in, InrImage* out,
         vres_buf[x] = sum[x];
       }
 
+/*
+      float* sum1      = sum;
+      short xmax1=xmax-stepsize;
+      unsigned char ns;
+      x = xmin;
+      while(x<=xmax1) {
+        for(ns=0;ns<stepsize;ns++) {
+          *sum1 += *vmax_buf1++ - *vmin_buf1++;
+          *vres_buf1++ = *sum1++;
+        }
+        x         += stepsize;
+      }
+      while(x<=xmax) {
+        *sum1 += *vmax_buf1++ - *vmin_buf1++;
+        *vres_buf1++ = *sum1++;
+        x         ++;
+      }
+*/
       // move to next line
       vres_buf += incy;
       vmin_buf += incy;
@@ -385,10 +405,10 @@ void FastLocalSumZ_noborder( InrImage* in, InrImage* out,
 
 
   int line_size = xmax-xmin+1;
-  cout << "line_size = " << line_size << endl;
+  //cout << "line_size = " << line_size << endl;
   // ensure multiple of 4 to help alignment of the beginning of each line
-  line_size = floor(line_size/4)*4+4;
-  cout << "line_size = " << line_size << endl;
+  line_size = floor((line_size+3)/4)*4;
+  //cout << "line_size = " << line_size << endl;
   float sum[dy][line_size];
 
   for(y=ymin;y<=ymax;y++)
@@ -1124,27 +1144,27 @@ void FastLocalSumDir( InrImage* in, InrImage* out,
                       int size, int axis, 
                       const ImageExtent<int>& extent)
 {
-  //START_TIMING(boost::format("%1%, %2%") 
-  //                % typeid(T).name() )
+  START_TIMING(boost::format("%1% size = %2%, axis = %3%") 
+                  % typeid(T).name() % size % axis)
 
   // 1. check increment value
   long inc = 1;
   if (axis>0) inc *= in->DimX();
   if (axis>1) inc *= in->DimY();
 
-  if (inc <= std::numeric_limits<unsigned char>::max()+1) 
+  if (inc <= std::numeric_limits<unsigned char>::max()) 
     FastLocalSumDir<T,unsigned char>(in,out,size,axis,extent);
   else
-  if (inc <= std::numeric_limits<unsigned short>::max()+1) 
+  if (inc <= std::numeric_limits<unsigned short>::max()) 
     FastLocalSumDir<T,unsigned short>(in,out,size,axis,extent);
   else
-  if (inc <= std::numeric_limits<unsigned int>::max()+1) 
+  if (inc <= std::numeric_limits<unsigned int>::max()) 
     FastLocalSumDir<T,unsigned int>(in,out,size,axis,extent);
   else
-  if (inc <= std::numeric_limits<unsigned long>::max()+1) 
+  if (inc <= std::numeric_limits<unsigned long>::max()) 
     FastLocalSumDir<T,unsigned long>(in,out,size,axis,extent);
 
-  //END_TIMING
+  END_TIMING
 
 } // FastLocalSumDir<T>
 
@@ -1167,6 +1187,28 @@ void     Func_localsum( InrImage* im, InrImage*& res,
   #define swap_pointers(p1,p2) \
     { tmp1=p1; p1 = p2; p2 = tmp1; }
 
+  if (im->GetFormat()==tmp->GetFormat()) {
+    FastLocalSumX_noborder<T,unsigned char>(im,res,size,extent);
+  }
+  else {
+    ( *tmp ) = ( *im );
+    FastLocalSumX_noborder<T,unsigned char>(im,res,size,extent);
+  }
+
+  swap_pointers(tmp,res);
+  FastLocalSumY_noborder<T,unsigned short>(im,res,size,extent);
+
+  if ( im->DimZ() >1 ) {
+    swap_pointers(tmp,res);
+    if (im->DimX()*im->DimY() <= std::numeric_limits<unsigned short>::max()) {
+      FastLocalSumZ_noborder_2<T,unsigned short>(im,res,size,extent,8); 
+    }
+    else {
+      FastLocalSumZ_noborder_2<T,unsigned int>(im,res,size,extent,8);
+    }
+  }
+
+/*
   {
     if (im->GetFormat()==tmp->GetFormat()) {
       FastLocalDiffX<T,unsigned char>(im,res,size,0,extent,1);
@@ -1182,21 +1224,17 @@ void     Func_localsum( InrImage* im, InrImage*& res,
 
   {
     if (im->GetFormat()==tmp->GetFormat()) {
-/*
-      FastLocalSumX<T,unsigned char>(im,res,size,0,extent,32);
-      FastLocalSumX<T,unsigned char>(im,res,size,0,extent,16);
-      FastLocalSumX<T,unsigned char>(im,res,size,0,extent,8);
-*/
+     // FastLocalSumX<T,unsigned char>(im,res,size,0,extent,32);
+     // FastLocalSumX<T,unsigned char>(im,res,size,0,extent,16);
+     // FastLocalSumX<T,unsigned char>(im,res,size,0,extent,8);
       FastLocalSumX<T,unsigned char>(im,res,size,0,extent,4);
       FastLocalSumX<T,unsigned char>(im,res,size,0,extent,1);
     }
     else {
       ( *tmp ) = ( *im );
-/*
-//      FastLocalSumX<T,unsigned char>(im,res,size,0,extent,32);
-      FastLocalSumX<T,unsigned char>(im,res,size,0,extent,16);
+      //FastLocalSumX<T,unsigned char>(im,res,size,0,extent,32);
+      //FastLocalSumX<T,unsigned char>(im,res,size,0,extent,16);
       FastLocalSumX<T,unsigned char>(im,res,size,0,extent,8);
-*/
       FastLocalSumX<T,unsigned char>(im,res,size,0,extent,4);
       FastLocalSumX<T,unsigned char>(im,res,size,0,extent,1);
     }
@@ -1207,13 +1245,11 @@ void     Func_localsum( InrImage* im, InrImage*& res,
 
     FastLocalSumY_noborder<T,unsigned short>(im,res,size,extent);
 
-//    FastLocalSumDirNonX<T,unsigned short>(tmp,res,size,1,extent,32);
+    //FastLocalSumDirNonX<T,unsigned short>(tmp,res,size,1,extent,32);
     FastLocalSumDirNonX<T,unsigned short>(tmp,res,size,1,extent,16);
     FastLocalSumDirNonX<T,unsigned short>(tmp,res,size,1,extent,8);
-/*
-    FastLocalSumDirNonX<T,unsigned short>(tmp,res,size,1,extent,4);
-    FastLocalSumDirNonX<T,unsigned short>(tmp,res,size,1,extent,1);
-*/
+    //FastLocalSumDirNonX<T,unsigned short>(tmp,res,size,1,extent,4);
+    //FastLocalSumDirNonX<T,unsigned short>(tmp,res,size,1,extent,1);
   }
 
   if ( im->DimZ() >1 ) {
@@ -1256,7 +1292,7 @@ void     Func_localsum( InrImage* im, InrImage*& res,
       FastLocalSumDirNonX<T,unsigned int>(tmp,res,size,2,extent,1);
     }
   }
-
+*/
   END_TIMING
 }
 
@@ -1270,6 +1306,7 @@ template <class T>
 void     Func_localsum( InrImage::ptr& tmp, InrImage::ptr& res, 
                         int size, ImageExtent<int>& extent)
 {
+
   FastLocalSumDir<T>(tmp.get(),res.get(),size,0,extent);
 
   tmp.swap(res);
@@ -1280,5 +1317,21 @@ void     Func_localsum( InrImage::ptr& tmp, InrImage::ptr& res,
       FastLocalSumDirNonX<T>(tmp.get(),res.get(),size,2,extent,16);
   }
 
+
+/*
+  FastLocalSumX_noborder<T,unsigned char>(  tmp.get(),res.get(),size,extent);
+  tmp.swap(res);
+  FastLocalSumY_noborder<T,unsigned short>( tmp.get(),res.get(),size,extent);
+
+  if ( tmp->DimZ() >1 ) {
+    tmp.swap(res);
+    if (tmp->DimX()*tmp->DimY() <= std::numeric_limits<unsigned short>::max()) {
+      FastLocalSumZ_noborder_2<T,unsigned short>(tmp.get(),res.get(),size,extent,8); 
+    }
+    else {
+      FastLocalSumZ_noborder_2<T,unsigned int>(tmp.get(),res.get(),size,extent,8);
+    }
+  }
+*/
 }
 

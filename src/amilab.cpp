@@ -226,13 +226,16 @@ bool MyApp::OnInit()
 
   // print the command line as a comment in the cmdhistory
   // TODO: check for binary path and command line before adding /usr/bin
-  if (argv[0][0]!='/') {
+//  if (argv[0][0]!='/') {
     cmd_line = "#!";
     cmd_line += (char*) wxStandardPaths::Get().GetExecutablePath().c_str();
-  }
+    cmd_line += " ";
+
+/*  }
   else
     cmd_line = "#!";
-  for(n=0;n<argc;n++)
+*/
+  for(n=1;n<argc;n++)
     {
       cmd_line += wxString(argv[n]).mb_str(wxConvUTF8);
       cmd_line += " ";
