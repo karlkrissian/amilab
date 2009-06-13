@@ -66,7 +66,7 @@ int comment_caller;
 
 
 extern int       GB_argc;
-extern char**    GB_argv;
+extern wxChar**  GB_argv;
 extern int       GB_num_arg_parsed;
 
 
@@ -803,12 +803,14 @@ emptyargs         return(token::T_emptyargs);    /*{emptyargs,T_emptyargs}*/
   }
 
   // we use GB_argv[n+1] because the first two arguments are the program and the script file
-  if((yylval->astring = new char[strlen(GB_argv[pos])+1])==NULL) {
+  wxString argument(GB_argv[pos]);
+  
+  if((yylval->astring = new char[strlen(argument.mb_str(wxConvUTF8))+1])==NULL) {
     GB_driver.yyiperror(E_MEM);
     return token::LEX_ERROR;
   }
 
-  strcpy(yylval->astring,GB_argv[pos]);
+  strcpy(yylval->astring,argument.mb_str(wxConvUTF8));
 
   return(token::ASTRING);
 

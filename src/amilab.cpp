@@ -228,9 +228,8 @@ bool MyApp::OnInit()
   // TODO: check for binary path and command line before adding /usr/bin
 //  if (argv[0][0]!='/') {
     cmd_line = "#!";
-    cmd_line += (char*) wxStandardPaths::Get().GetExecutablePath().c_str();
+    cmd_line += (const char*) wxStandardPaths::Get().GetExecutablePath().mb_str();
     cmd_line += " ";
-
 /*  }
   else
     cmd_line = "#!";
