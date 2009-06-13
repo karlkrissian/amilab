@@ -24,7 +24,7 @@ SET(Graphic_SRCS
     fonction2D.cpp
     gnuplot.cpp
 #    palette.cpp
-    saveps.cpp
+#    saveps.cpp
 #    widget.cpp
 #    wxParamTypes.cpp
 #    wxColorParameter.cpp

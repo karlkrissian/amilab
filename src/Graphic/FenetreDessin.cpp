@@ -181,7 +181,7 @@ void FenetreDessin :: FreeContext( )
 void FenetreDessin::AfficheFenetre( )
 //                  --------------
 {
-  char    nom_classe[6][20];
+  //char    nom_classe[6][20];
 
   aff_err("FenetreDessin::AfficheFenetre()\n");
 
