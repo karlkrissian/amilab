@@ -163,7 +163,7 @@ extern char* FLUID_NAVIGATION_FILE;
 }
 
 
-DessinImage* CreateIDraw(  std::string title, InrImage::ptr image);
+DessinImage* CreateIDraw(  const std::string& title, InrImage::ptr image);
 // Creation of a DessinImage pointer
 // this function is distinct if compiling with all amilab
 
@@ -204,7 +204,9 @@ class wxScheduleTimer : public wxTimer
     }
 
     ~wxScheduleTimer()
-    { cout << "~wxScheduleTimer()" << endl; }
+    { 
+      //cout << "~wxScheduleTimer()" << endl; 
+    }
 
     //Called each time the timer's timeout expires
     void Notify();
@@ -227,15 +229,15 @@ static void CB_ParamWin( void* cd ) {
 } // CB_ParamWin( void* cd )
 
 
-static void CB_CallAMIFunction( void* cd, long unsigned int *) {
-  CB_ParamWin(cd);
-}
+//static void ( void* cd, long unsigned int *) {
+//  CB_ParamWin(cd);
+//}
 
  static void CB_Button(  void* cd) {
   CB_ParamWin(cd);
 }
 
-void CB_delete_imagedraw( void* varname);
+void CB_delete_imagedraw( void* var);
 
 void CB_delete_surfdraw( void* varid);
 
@@ -376,7 +378,7 @@ void CB_delete_surfdraw( void* varid);
 
 
 /* Line 35 of lalr1.cc.  */
-#line 380 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.hpp"
+#line 382 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.hpp"
 
 #include "location.hh"
 
@@ -427,7 +429,7 @@ namespace yyip
     /// Symbol semantic values.
 #ifndef YYSTYPE
     union semantic_type
-#line 372 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 374 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
 {
   IdentifierInfo*       ident;
   Variable*             variable;
@@ -442,7 +444,7 @@ namespace yyip
   ImageExtent<float>*          imageextent;
 }
 /* Line 35 of lalr1.cc.  */
-#line 446 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.hpp"
+#line 448 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.hpp"
 	;
 #else
     typedef YYSTYPE semantic_type;
