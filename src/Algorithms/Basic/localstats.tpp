@@ -31,7 +31,7 @@ extern Timing localmeanY;
 extern Timing localmeanZ;
 */
 
-#define USE_TIMING 
+//#define USE_TIMING 
 
 #ifdef USE_TIMING 
   #define START_TIMING( message ) \
@@ -39,13 +39,28 @@ extern Timing localmeanZ;
       Timing timer(timing_mess); \
       timer.Debut(); 
   
+/*
   #define END_TIMING \
       timer.Fin(); \
       timer.AddCumul(); \
       timer.AfficheCumul(cout); 
+*/
+
+  #define END_TIMING(imsize) \
+      timer.Fin(); \
+      timer.AddCumul(); \
+      timer.AfficheCumul(cout); \
+      cout << " Time per million voxels: "; \
+      cout << timer.GetCumulTimer()/(1.0*imsize)*1000000; \
+      cout << endl;
+/*\
+      cout << " Time per million voxels: " \
+          << timer.GetCumulTimer()/(1.0*imsize)*1000000 \
+          << " /Megavoxel"<< end;
+*/
 #else
-  #define START_TIMING( ) 
-  #define END_TIMING 
+  #define START_TIMING(  message ) 
+  #define END_TIMING( imsize )
 #endif
 
 
@@ -209,7 +224,7 @@ void FastLocalDiffX( InrImage* in, InrImage* out,
     } // for p1
   } // for p0
 
-  END_TIMING
+  END_TIMING(extent.GetNbVoxels())
 
 } // FastLocalDiffX<T>
 
@@ -230,7 +245,7 @@ void FastLocalSumX_noborder( InrImage* in, InrImage* out,
   float* vmin_buf;
   float* vmax_buf;
   float* vres_buf;
-  int new_size    = in->Size()-d;
+  // int new_size    = in->Size()-d;
   short i;
 
   short xmin = extent.GetMin(0);
@@ -247,7 +262,7 @@ void FastLocalSumX_noborder( InrImage* in, InrImage* out,
   for (z=zmin;z<=zmax;z++) {
     for (y=ymin;y<=ymax;y++) {
       // position buffers at the beginning of the lines
-      out->BufferPos(xmin+size,y,z);
+      out->BufferPos(xmin,y,z);
       vres_buf = (float*)out->BufferPtr();
       // initialize sum
       in->BufferPos(xmin,y,z);
@@ -255,8 +270,11 @@ void FastLocalSumX_noborder( InrImage* in, InrImage* out,
       sum = 0;
       for(i=0;i<d;i++) sum += in_buf[i];
       // go through the line
-      *vres_buf = sum; // sum from xmin to xmin+2*size included
-      vres_buf++; // at xmin+size+1
+
+      for(i=0;i<=size;i++)
+        *vres_buf++ = sum; // sum is from xmin to xmin+2*size included
+
+      //vres_buf at xmin+size+1
       vmin_buf = in_buf;
       vmax_buf = in_buf+d;
 
@@ -265,10 +283,15 @@ void FastLocalSumX_noborder( InrImage* in, InrImage* out,
         *vres_buf++ = sum;
       }
 
-    }
-  }
+      // extend the value up to xmax
+      while(x<=xmax) {
+        *vres_buf++ = sum; 
+        x++;
+      }
+    } // end for y
+  } // end for z
 
-  END_TIMING
+  END_TIMING(extent.GetNbVoxels())
 
 } // FastLocalSumX_noborder<T>
 
@@ -289,7 +312,7 @@ void FastLocalSumY_noborder( InrImage* in, InrImage* out,
   float* vmin_buf;
   float* vmax_buf;
   float* vres_buf;
-  int new_size    = in->Size()-d;
+  // int new_size    = in->Size()-d;
   short i;
 
   short xmin = extent.GetMin(0);
@@ -321,14 +344,17 @@ void FastLocalSumY_noborder( InrImage* in, InrImage* out,
     in->BufferPos(0,ymin,z);
     in_buf = (float*) in->BufferPtr();
 
-    out->BufferPos(0,ymin+size,z); // hyp: ymin+size < ymax !!
+    out->BufferPos(0,ymin,z); // hyp: ymin+size < ymax !!
     vres_buf = (float*)out->BufferPtr();
 
-    // set values at ymin+size
-    for(x=xmin;x<=xmax;x++) vres_buf[x] = sum[x];
+    // set values at from ymin to ymin+size
+    for (y=ymin;y<=ymin+size;y++) {
+      for(x=xmin;x<=xmax;x++) vres_buf[x] = sum[x];
+      vres_buf += incy; 
+    }
 
+    //vres_buf is  at ymin+size+1
     // increment positions
-    vres_buf += incy; // at ymin+size+1
     vmin_buf = in_buf;
     vmax_buf = in_buf+d*incy;
 
@@ -360,10 +386,19 @@ void FastLocalSumY_noborder( InrImage* in, InrImage* out,
       vres_buf += incy;
       vmin_buf += incy;
       vmax_buf += incy;
-    }
-  }
+    } // end for y
 
-  END_TIMING
+    // extends to ymax
+    while (y<=ymax) {
+      for(x=xmin;x<=xmax;x++) vres_buf[x] = sum[x];
+      vres_buf += incy; 
+      y++;
+    }
+
+  } // end for z
+
+//  END_TIMING
+  END_TIMING(extent.GetNbVoxels())
 
 } // FastLocalSumY_noborder<T>
 
@@ -387,7 +422,7 @@ void FastLocalSumZ_noborder( InrImage* in, InrImage* out,
   float* vmin_buf1;
   float* vmax_buf1;
   float* vres_buf1;
-  int new_size    = in->Size()-d;
+  //int new_size    = in->Size()-d;
   short i;
 
   short xmin = extent.GetMin(0);
@@ -473,7 +508,8 @@ void FastLocalSumZ_noborder( InrImage* in, InrImage* out,
     } // end for y
   } // end for z
 
-  END_TIMING
+//  END_TIMING
+  END_TIMING(extent.GetNbVoxels())
 
 } // FastLocalSumZ_noborder<T>
 
@@ -501,7 +537,7 @@ void FastLocalSumZ_noborder_2( InrImage* in, InrImage* out,
   float* vmin_buf1;
   float* vmax_buf1;
   float* vres_buf1;
-  int new_size    = in->Size()-d;
+  //int new_size    = in->Size()-d;
   short i;
 
   short xmin = extent.GetMin(0);
@@ -533,24 +569,27 @@ void FastLocalSumZ_noborder_2( InrImage* in, InrImage* out,
       for(x=xmin;x<=xmax;x++) sum[x] += in_buf[x];
     } // i
   
-    out->BufferPos(0,y,zmin+size); // hyp: ymin+size < ymax !!
+    out->BufferPos(0,y,zmin); // hyp: ymin+size < ymax !!
     vres_buf = (float*)out->BufferPtr();
   
     // set values at zmin+size
-    for(x=xmin;x<=xmax;x++)  vres_buf[x] = sum[x];
+    for (z=zmin;z<=zmin+size;z++) {
+      for(x=xmin;x<=xmax;x++)  vres_buf[x] = sum[x];
+      vres_buf += dxy; 
+    }
 
     // initialize positions
     in->BufferPos(0,y,zmin);
     in_buf = (float*) in->BufferPtr();
 
-    vmin_buf = in_buf;          // at 0,ymin,zmin
-    vmax_buf = in_buf+d*dx*dy;  // at 0,ymin,zmin+(2*size+1)
+    vmin_buf = in_buf;          // at 0,y,zmin
+    vmax_buf = in_buf+d*dx*dy;  // at 0,y,zmin+(2*size+1)
 
-    out->BufferPos(0,y,zmin+size+1); 
-    vres_buf = (float*)out->BufferPtr();
+    // vres_buf is at 0,y,zmin+size+1
 
     short xmax1;
     unsigned char ns;
+
     for (z=zmin+size+1;z<=zmax-size;z++) {
       xmax1=xmax-stepsize;
       x = xmin;
@@ -573,10 +612,19 @@ void FastLocalSumZ_noborder_2( InrImage* in, InrImage* out,
       vres_buf += dxy; // point to the beginning of next line
       vmax_buf += dxy;
       vmin_buf += dxy;
-    } // end for y
-  } // end for z
+    } // end for z
 
-  END_TIMING
+    // set values at zmin+size
+    while(z<=zmax) {
+      for(x=xmin;x<=xmax;x++)  vres_buf[x] = sum[x];
+      vres_buf += dxy; 
+      z++;
+    }
+
+  } // end for y
+
+//  END_TIMING
+  END_TIMING(extent.GetNbVoxels())
 
 } // FastLocalSumZ_noborder_2<T>
 
@@ -602,15 +650,15 @@ void FastLocalSumX( InrImage* in, InrImage* out,
   T*        bufmax[stepsize];
   register T*        res_buf[stepsize];
   register float     sum[stepsize];
-  int       num_values;
+  //int       num_values;
 
   // check that input and output are of the right type ???
   dir[0] = (axis+1)%3; // 1
   dir[1] = (axis+2)%3; // 2
   dir[2] = axis; // 0
   
-  int dim0 = dim[dir[0]];
-  int dim1 = dim[dir[1]];
+  //int dim0 = dim[dir[0]];
+  //int dim1 = dim[dir[1]];
   int dim2 = dim[dir[2]];
 
   int& p0 = pos[dir[0]];
@@ -743,7 +791,8 @@ void FastLocalSumX( InrImage* in, InrImage* out,
     } // for p1
   } // for p0
 
-  END_TIMING
+//  END_TIMING
+  END_TIMING(extent.GetNbVoxels())
 
 } // FastLocalSumX<T>
 
@@ -777,7 +826,7 @@ void FastLocalSumDirNonX( InrImage* in, InrImage* out,
 
   register unsigned char ns;
 
-  int       num_values;
+  //int       num_values;
 
   // check that input and output are of the right type ???
   dir[0] = (axis+1)%3; // Z
@@ -791,8 +840,8 @@ void FastLocalSumDirNonX( InrImage* in, InrImage* out,
       cerr << __func__ << " axis should be 1 or 2 " << endl;
   }
   
-  int dim0 = dim[dir[0]];
-  int dim1 = dim[dir[1]];
+  //int dim0 = dim[dir[0]];
+  //int dim1 = dim[dir[1]];
   int dim2 = dim[dir[2]];
 
   int& p0 = pos[dir[0]];
@@ -814,8 +863,8 @@ void FastLocalSumDirNonX( InrImage* in, InrImage* out,
 
   int p2_size = extent.GetSize(dir[2]);
 
-  T* in_data  = (T*) in ->GetData();
-  T* out_data = (T*) out->GetData();
+  //T* in_data  = (T*) in ->GetData();
+  //T* out_data = (T*) out->GetData();
 
   // along dir0
   for ( p0=p0_min; p0<=p0_max; p0++ )
@@ -928,7 +977,8 @@ void FastLocalSumDirNonX( InrImage* in, InrImage* out,
     } // for p1
   } // for p0
 
-  END_TIMING
+//  END_TIMING
+  END_TIMING(extent.GetNbVoxels())
 
 } // FastLocalSumDirNonX<T>
 
@@ -987,15 +1037,15 @@ void FastLocalSumDir( InrImage* in, InrImage* out,
   T*        bufmax;
   register T*        res_buf;
   register double    sum;
-  int       num_values;
+  //int       num_values;
 
   // check that input and output are of the right type ???
   dir[0] = (axis+1)%3;
   dir[1] = (axis+2)%3;
   dir[2] = axis;
   
-  int dim0 = dim[dir[0]];
-  int dim1 = dim[dir[1]];
+  //int dim0 = dim[dir[0]];
+  //int dim1 = dim[dir[1]];
   int dim2 = dim[dir[2]];
 
   int& p0 = pos[dir[0]];
@@ -1133,7 +1183,8 @@ void FastLocalSumDir( InrImage* in, InrImage* out,
     } // for p1
   } // for p0
 
-  END_TIMING
+//  END_TIMING
+  END_TIMING(extent.GetNbVoxels())
 
 } // FastLocalSumDir<T>
 
@@ -1160,11 +1211,11 @@ void FastLocalSumDir( InrImage* in, InrImage* out,
   else
   if (inc <= std::numeric_limits<unsigned int>::max()) 
     FastLocalSumDir<T,unsigned int>(in,out,size,axis,extent);
-  else
-  if (inc <= std::numeric_limits<unsigned long>::max()) 
-    FastLocalSumDir<T,unsigned long>(in,out,size,axis,extent);
+  else // long is maximum here
+    FastLocalSumDir<T,long>(in,out,size,axis,extent);
 
-  END_TIMING
+//  END_TIMING
+  END_TIMING(extent.GetNbVoxels())
 
 } // FastLocalSumDir<T>
 
@@ -1293,7 +1344,8 @@ void     Func_localsum( InrImage* im, InrImage*& res,
     }
   }
 */
-  END_TIMING
+//  END_TIMING
+  END_TIMING(extent.GetNbVoxels())
 }
 
 
@@ -1307,6 +1359,7 @@ void     Func_localsum( InrImage::ptr& tmp, InrImage::ptr& res,
                         int size, ImageExtent<int>& extent)
 {
 
+/*
   FastLocalSumDir<T>(tmp.get(),res.get(),size,0,extent);
 
   tmp.swap(res);
@@ -1316,9 +1369,8 @@ void     Func_localsum( InrImage::ptr& tmp, InrImage::ptr& res,
     tmp.swap(res);
       FastLocalSumDirNonX<T>(tmp.get(),res.get(),size,2,extent,16);
   }
+*/
 
-
-/*
   FastLocalSumX_noborder<T,unsigned char>(  tmp.get(),res.get(),size,extent);
   tmp.swap(res);
   FastLocalSumY_noborder<T,unsigned short>( tmp.get(),res.get(),size,extent);
@@ -1332,6 +1384,5 @@ void     Func_localsum( InrImage::ptr& tmp, InrImage::ptr& res,
       FastLocalSumZ_noborder_2<T,unsigned int>(tmp.get(),res.get(),size,extent,8);
     }
   }
-*/
 }
 
