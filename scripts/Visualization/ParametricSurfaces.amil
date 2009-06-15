@@ -42,6 +42,15 @@ proc PS_init() {
   PS_Y = "sin(U)*cos(V)"
   PS_Z = "sin(V)"
 
+  # temporal evolution of the equation
+  # evolution state 0:stopped, 1:running, 2:stopping
+  PS_in_evolve = UCHAR(0)
+  PS_evolve_state = INT(0)
+  PS_k        = INT(0)
+  PS_kmax     = INT(0)
+  # timestep in milliseconds
+  PS_timestep = INT(100) 
+
   PS_updating = 0
   PS_Update()
 }
@@ -127,8 +136,11 @@ proc PS_Update() \
     if (PS_type==2) {
       U = theta
       V = phi
+      k = PS_k
       eval "pos[0] = "+PS_X+";"
+      X = pos[0]
       eval "pos[1] = "+PS_Y+";"
+      Y = pos[1]
       eval "pos[2] = "+PS_Z+";"
     }
 
@@ -152,6 +164,44 @@ proc PS_Update() \
     s_draw.Paint
     PS_updating = 0
   }
+}
+
+#--------------------------------------------------------------
+proc PS_Evolve() \
+{
+  if (PS_in_evolve==0){
+    PS_in_evolve = 1
+    if (PS_evolve_state==0) {
+      if (PS_kmax>0) {
+        PS_k = 0
+        # starts
+        PS_evolve_state=1
+      }
+    }
+    if (PS_evolve_state==1) {
+      # first update the equation
+      PS_Update()
+      # second: increment PS_k and schedule new update
+      PS_k = PS_k + 1
+      if (PS_k==PS_kmax) { PS_k = 0; }
+      schedule(PS_timestep,PS_Evolve)
+    }
+  }
+  PS_in_evolve = 0
+}
+
+
+#--------------------------------------------------------------
+proc PS_Start() \
+{
+  PS_evolve_state = 0
+  PS_Evolve
+}
+
+#--------------------------------------------------------------
+proc PS_Stop() \
+{
+  PS_evolve_state = 2
 }
 
 
@@ -189,6 +239,7 @@ proc PS_gui() {
   PS_win.SetCallback(PS_NewType)
 
   PS_win.BeginBook
+    # Main Page
     PS_win.AddPage("Main")
       PS_win.BeginBox("Resolution")
           PS_thetadim_id = PS_win.AddInt(PS_theta_dim,4,500)
@@ -205,6 +256,9 @@ proc PS_gui() {
           PS_win.SetCallback(PS_Update)
           PS_win.AddButton("Reset",   PS_ResetScale)
       PS_win.EndBox
+
+
+    # SuperQuadric Page
     PS_win.AddPage("SuperQu.")
       PS_win.BeginBox("Exponential Coeff.")
           PS_cx_id = PS_win.AddFloat    (PS_e_x,0.1,5)
@@ -215,6 +269,8 @@ proc PS_gui() {
           PS_win.SetCallback(PS_Update)
           PS_win.AddButton("Set Ellipsoid",   PS_SetEllipsoid)
       PS_win.EndBox
+
+    # SuperQuadric Torus
     PS_win.AddPage("Torus")
       PS_win.BeginBox("Radii")
           PS_R_id = PS_win.AddFloat    (PS_R,0.1,5)
@@ -222,15 +278,27 @@ proc PS_gui() {
           PS_r_id = PS_win.AddFloat    (PS_r,0.1,5)
           PS_win.SetCallback(PS_Update)
       PS_win.EndBox
+
+    # User Equation Page
     PS_win.AddPage("Expr")
       PS_win.BeginBox("Equation (U,V):")
-          PS_X_id = PS_win.AddString(PS_X,"X=")
-          PS_win.SetCallback(PS_Update)
-          PS_Y_id = PS_win.AddString(PS_Y,"Y=")
-          PS_win.SetCallback(PS_Update)
-          PS_Z_id = PS_win.AddString(PS_Z,"Z=")
-          PS_win.SetCallback(PS_Update)
+        PS_X_id = PS_win.AddString(PS_X,"X=")
+        PS_win.SetCallback(PS_Update)
+        PS_Y_id = PS_win.AddString(PS_Y,"Y=")
+        PS_win.SetCallback(PS_Update)
+        PS_Z_id = PS_win.AddString(PS_Z,"Z=")
+        PS_win.SetCallback(PS_Update)
       PS_win.EndBox
+      PS_win.BeginBox("Time evolution:")
+        PS_win.AddInt(PS_kmax,0,100)
+        PS_win.AddInt(PS_timestep,0,1000)
+        PS_win.BeginHorizontal
+          PS_win.AddButton("Start", PS_Start)
+          PS_win.AddButton("Stop",  PS_Stop)
+        PS_win.EndHorizontal
+      PS_win.EndBox
+      
+
   PS_win.EndBook
       PS_win.BeginHorizontal
         PS_win.AddButton("Update",          PS_Update)
