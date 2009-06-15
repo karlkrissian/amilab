@@ -940,31 +940,16 @@ public:
   ///
   void InitFenetre();
 
-#if defined(__WXMOTIF__)
-  ///
-  XImage* GetImage(  int id_image) { return _tab_ximage[id_image]; }
-#endif
-
   int GetImageWidth(int i) {
-    #if defined(__WXMOTIF__)
-      if (_tab_ximage[i])
-        return _tab_ximage[i].width;
-    #else
       if (_tab_slices[i].image.use_count())
         return _tab_slices[i].image->GetWidth();
-    #endif
       else
         return 0;
   }
 
   int GetImageHeight(int i) {
-    #if defined(__WXMOTIF__)
-      if (_tab_ximage[i])
-        return _tab_ximage[i].height;
-    #else
       if (_tab_slices[i].image.use_count())
         return _tab_slices[i].image->GetHeight();
-    #endif
       else
         return 0;
   }

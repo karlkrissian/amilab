@@ -125,6 +125,7 @@
 #include "DessinImageBase.hpp"
 #include "DessinImageMenu.h"
 
+#include "amilab_messages.h"
 
 //#if  defined(_linux_) || defined(_solaris)
 #if  defined(_solaris)
@@ -170,23 +171,10 @@ void DessinImageBase::FixeImageCourante( int id_image )
 void DessinImageBase :: CreeImage( int id_image, unsigned int largeur, unsigned int hauteur )
 //                                 ---------
 {
+  CLASS_MESSAGE(boost::format(" id_image %1% dim %2% x %3%") 
+                      % id_image % (int)largeur % (int) hauteur);
 
-#if defined(__WXMOTIF__)
-
-  Si ( _tab_ximage[id_image] != NULL ) AlorsFait
-    Si ( _tab_ximage[id_image]->width == (int) largeur ) Et
-       ( _tab_ximage[id_image]->height == (int) hauteur )
-    AlorsRetourne;
-
-  Si (_tab_ximage[id_image] != NULL) Alors
-    EffaceImage( id_image);
-  FinSi
-
-  _tab_ximage[id_image] =
-     CreeXImage( largeur, hauteur, _tab_ximage_data[id_image]);
-
-#else
-
+  // if the image with correct dimensions exists, keep it
   if (_tab_slices[id_image].image.use_count()) {
     wxImage_ptr im = _tab_slices[id_image].image;
     if ((im->GetWidth()  == (int) largeur) &&
@@ -204,8 +192,6 @@ void DessinImageBase :: CreeImage( int id_image, unsigned int largeur, unsigned 
   _tab_slices[id_image].context->SelectObject(
         *_tab_slices[id_image].bitmap);
 */
-#endif
-
 
 } // CreeImage()
 
@@ -433,37 +419,14 @@ void DessinImageBase :: AfficheImage( int pos_x, int pos_y)
 void DessinImageBase :: AfficheImage( int id_image)
 //                      ------------
 {
-
-#if defined(__MOTIF__)
-
-  Si _tab_ximage[id_image] == NULL Alors
-    printf(" Erreur: Tentative d'affichage d'une image de pointeur NULL \n");
-    return;
-  FinSi
-
-
-  if (GB_debug) cerr << format("AfficheImage(%1%) at %2% %3% ") % id_image
-        % _tab_ximage_pos_x[id_image]
-        % _tab_ximage_pos_y[id_image]
-        << endl;
-
-  PlaceImage( _tab_ximage_pos_x[id_image],
-        _tab_ximage_pos_y[id_image],
-        _tab_ximage[id_image]);
-
-#else
-
   if (!_tab_slices[id_image].image.use_count()) {
-    cerr << "DessinImageBase :: AfficheImage( " << id_image << ")"
-        << "\t not valid" << endl;
+    CLASS_ERROR(boost::format(" id_image=%1% not valid...") % id_image);
     return;
   }
 
   PutSlice( _tab_ximage_pos_x[id_image],
             _tab_ximage_pos_y[id_image],
             _tab_slices[id_image].image);
-
-#endif
 
 } // AfficheImage()
 
@@ -2130,25 +2093,11 @@ void DessinImageBase::DrawSlice( int slice_id )
   //--- On rajoute 1E-4 pour etre sur d'arrondir 0.99999 a la valeur
   //    superieure et d'eviter
   //--- un plantage
-  #if defined(__MOTIF__)
-    Si _memorise_coupes_XY Alors
-      //--- On verifie l'allocation des images avec les bonnes dimensions
-      AlloueImagesXY( (int) (Param._Zoom._dessin_tx*_size_x+1E-4), (int) (Param._Zoom._dessin_ty*_size_y+1E-4));
-      //--- On utilise la coupe deja allouee
-      _tab_ximage_data[slice_id] = _tab_ximage_XY_data[ Param._pos._z];
-      _tab_ximage     [slice_id] = _tab_ximage_XY     [ Param._pos._z];
-      //--- Si l'image est a jour, on sort de la fonction
-      Si _image_XY_a_jour[ Param._pos._z] AlorsRetourne;
-    Sinon
-  #endif
   displ_dimx = zdx*vsx;
   displ_dimy = zdy*vsy; // full display size
 
   CreeImage( slice_id, (int) (displ_dimx+1E-4), (int) (displ_dimy+1E-4));
 
-  #if defined(__MOTIF__)
-    FinSi
-  #endif
 
   FixeImageCourante( slice_id);
   register rgb_color* image_data  = (rgb_color*)
@@ -2600,8 +2549,6 @@ void DessinImageBase :: DessineCoupes( )
 void DessinImageBase :: DessinePlanMasqueZ( )
 //                      ------------------
 {
-
-
      register int             x,y;
      register float           px, py;
      register float           px1, py1;
@@ -2691,7 +2638,7 @@ void DessinImageBase :: DessinePlanMasqueZ( )
 
 //----------------------------------------------------------------
 void DessinImageBase :: DessinePlanMasqueY( )
-//                                ------------------
+//                      ------------------
 {
      register int            x, z;
      register float          px,pz;

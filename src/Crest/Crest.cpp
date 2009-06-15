@@ -1029,7 +1029,7 @@ unsigned char Crest ::  ImportVTK( vtkPolyData* poly)
 
   _CREST_tab_points.Resize(poly->GetNumberOfPoints());
 
-  printf("Number of points: %d \n",poly->GetNumberOfPoints());
+  printf("Number of points: %d \n",(int)poly->GetNumberOfPoints());
 
   vtk_colors = poly->GetPointData()->GetScalars();
   get_colors = ((vtk_colors!=NULL)&&(vtk_colors->GetDataType()==VTK_UNSIGNED_CHAR));
@@ -1052,7 +1052,7 @@ unsigned char Crest ::  ImportVTK( vtkPolyData* poly)
   int nb_lignes = 0;
   _CREST_tab_lignes.Resize(lines->GetNumberOfCells());
 
-  printf("Number of lines: %d \n",lines->GetNumberOfCells());
+  printf("Number of lines: %d \n",(int)lines->GetNumberOfCells());
 
   lines->SetTraversalLocation(0); 
   Pour(i,0,lines->GetNumberOfCells()-1)
@@ -1102,7 +1102,7 @@ unsigned char Crest ::  ReadVTK( char* name)
 
   _CREST_tab_points.Resize(poly->GetNumberOfPoints());
 
-  printf("Number of points: %d \n",poly->GetNumberOfPoints());
+  printf("Number of points: %d \n",(int)poly->GetNumberOfPoints());
 
   vtk_colors = poly->GetPointData()->GetScalars();
   get_colors = ((vtk_colors!=NULL)&&(vtk_colors->GetDataType()==VTK_UNSIGNED_CHAR));
@@ -1125,7 +1125,7 @@ unsigned char Crest ::  ReadVTK( char* name)
 
   _CREST_tab_lignes.Resize(lines->GetNumberOfCells());
 
-  printf("Number of lines: %d \n",lines->GetNumberOfCells());
+  printf("Number of lines: %d \n",(int)lines->GetNumberOfCells());
 
   lines->SetTraversalLocation(0); 
   Pour(i,0,lines->GetNumberOfCells()-1)

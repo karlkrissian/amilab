@@ -234,7 +234,6 @@ protected:
   Point3D Point( const point_ligne& p)
   //      -----
   {
-    
       t_point pt;
 
     Si fabsf( p.coeff - 1) < 1E-3 Alors
