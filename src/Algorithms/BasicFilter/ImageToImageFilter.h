@@ -28,7 +28,6 @@ class ImageToImageFilterParam {
 
   int NumberOfThreads;
   InrImage::ptr input;
-  InrImage::ptr output;
 
 public:
 
@@ -40,6 +39,11 @@ public:
   int  GetNumberOfThreads() 
   { 
     return NumberOfThreads;
+  }
+
+  void SetInput( InrImage::ptr& in)
+  {
+    intput = in;
   }
 
   ImageToImageFilterParam() {}
@@ -56,12 +60,17 @@ public:
 //
 class ImageToImageFilter {
 
-  ImageToImageFilterParam params;
+  ImageToImageFilterParam* params;
 
 public:
 
   ImageToImageFilter();
   ~ImageToImageFilter();
+
+  void SetParameters( ImageToImageFilterParam* p)
+  {
+    params = p;
+  }
 
   virtual void Init();
 
