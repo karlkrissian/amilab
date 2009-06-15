@@ -48,7 +48,7 @@ SurfacePoly* Func_SmoothLinesToSplines(SurfacePoly* s, float samplingStep )
 {
     SurfacePoly* res;
     T_Line line;
-    register int    t;
+    //register int    t;
     register int    l,n;
     int nb_lines,nb_points;
 

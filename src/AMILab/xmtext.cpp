@@ -235,7 +235,7 @@ void TextControl::ProcessTab()
     DisplayCompletion();
     printf("Found %d completions \n",(int)completions->GetCount());
     for(int i=0;i<(int)completions->GetCount();i++) {
-      cout << (*completions)[i] << endl;
+      cout << (*completions)[i].mb_str() << endl;
     }
   }
 } // ProcessTab()

@@ -97,7 +97,7 @@ InrImage* wrapFastLocalSumDir(ParamList* p)
       switch (mode) {
         case 1:
         case 2:
-          FastLocalSumY_noborder<float,unsigned short>(input1.get(),result,wsize,extent);
+          FastLocalSumY_noborder<float,unsigned short>(input1.get(),result,wsize,extent,stepsize);
         break;
         case 3:
           FastLocalSumDirNonX<float,unsigned short>  (input1.get(),result,wsize,axis,extent,stepsize);

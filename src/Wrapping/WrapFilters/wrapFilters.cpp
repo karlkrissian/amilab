@@ -287,19 +287,20 @@ double probability_weight2(InrImage* in, InrImage* smoothed,
                             double* w, int f, int check_limits)
 {
 //  printf("b sd \n");
-  double mean = 0.0, var = 0.0;
-  int i,j,k,tx,ty,tz,txy;
+  //double mean = 0.0, var = 0.0;
+  //int i,j,k;
+  int tx,ty,tz,txy;
 
-  float* in_buf0;
-  float* in_buf1;
-  float* in_buf2;
-  double* w_buf0;
-  double* w_buf1;
-  double* w_buf2;
+  //float* in_buf0;
+  //float* in_buf1;
+  //float* in_buf2;
+  //double* w_buf0;
+  //double* w_buf1;
+  //double* w_buf2;
 
 
-  int displ_dxdy;
-  int displ_dxdydz;
+  //int displ_dxdy;
+  //int displ_dxdydz;
 
   tx = in->DimX();
   ty = in->DimY();
