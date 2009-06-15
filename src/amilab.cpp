@@ -85,16 +85,16 @@ unsigned char verbose;
 
 
 
-DessinImage* CreateIDraw(  std::string GetwxStritle, InrImage::ptr image)
+DessinImage* CreateIDraw( const std::string& title, InrImage::ptr image)
 {
   if (GB_debug)
-    fprintf(stderr,"CreateIDraw(%s, image) \n", GetwxStritle.c_str());
+    fprintf(stderr,"CreateIDraw(%s, image) \n", title.c_str());
 
     DessinParam::ptr parametres;
 
     DessinImage* di = new DessinImage(
             GB_main_wxFrame,
-            GetwxStritle,
+            title,
             image,
             parametres,
             400,400,

@@ -2988,11 +2988,12 @@ void DessinImage::Comparaisons_UpdateStatusInfo( const Point_3D<int>& imagepos, 
   Iter  = _tab_compare2_image.begin();
   while (Iter != _tab_compare2_image.end() )
  {
-  if (GB_debug) fprintf(stderr,"(*Iter).di.use_count() = %d \n",(int)(*Iter).di.use_count());
+  CLASS_MESSAGE(boost::format("(*Iter).di.use_count() = %d")
+                %(int)(*Iter).di.use_count());
     if (!(*Iter).di.expired()) {
         ((*Iter).di.lock())->UpdateStatusInfo(imagepos, trouve);
     } else {
-        fprintf(stderr,"DessinImage::Comparaisons_UpdateStatusInfo() \t removing deleted image from list\n");
+        CLASS_MESSAGE("Removing deleted image from list");
         // Safely removing an element
         // by assigning the result to the current
         // iterator ...
@@ -3289,7 +3290,9 @@ DessinImage::Constructeur DessinImage(
     wxWindow* parent,
     const std::string& ATitle, InrImage::ptr image, DessinParam::ptr param,
     int l, int h,   int type)
-                               : DessinImageBase( parent, ATitle, l, h, type ), _vector_fields(3), m_timer(this)
+                               : DessinImageBase( parent, ATitle, l, h, type ) 
+                                , m_timer(this)
+                                ,_vector_fields(3)
 {
 
 
@@ -4028,15 +4031,15 @@ void DessinImage::SauveFichierParametres(  char* nom_fichier)
   fprintf( pfic, "\n");
 
   fprintf( pfic, "Position: ");
-  fprintf( pfic, "%u", (Dimension) Pos_x);
+  fprintf( pfic, "%lu", (Dimension) Pos_x);
   fprintf( pfic, ", ");
-  fprintf( pfic, "%u", (Dimension) Pos_y);
+  fprintf( pfic, "%lu", (Dimension) Pos_y);
   fprintf( pfic, "\n");
 
   fprintf( pfic, "Dimension: ");
-  fprintf( pfic, "%u", (Dimension) Largeur);
+  fprintf( pfic, "%lu", (Dimension) Largeur);
   fprintf( pfic, ", ");
-  fprintf( pfic, "%u", (Dimension) Hauteur);
+  fprintf( pfic, "%lu", (Dimension) Hauteur);
   fprintf( pfic, "\n");
 
   fprintf( pfic, "Option: ");
@@ -4143,9 +4146,9 @@ void DessinImage::SauveFichierParametres(  char* nom_fichier)
       ((CompareImage*) _tab_compare_image[i])->Recupere_fenetre_position( &Pos_x, &Pos_y);
 
       fprintf( pfic, "Position: ");
-      fprintf( pfic, "%u", (Dimension) Pos_x );
+      fprintf( pfic, "%lu", (Dimension) Pos_x );
       fprintf( pfic, ", ");
-      fprintf( pfic, "%u", (Dimension) Pos_y );
+      fprintf( pfic, "%lu", (Dimension) Pos_y );
       fprintf( pfic, "\n");
     FinSi
 

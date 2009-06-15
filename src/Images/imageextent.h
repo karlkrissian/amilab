@@ -153,6 +153,13 @@ class ImageExtent {
       return -1;
   }
 
+  int GetNbVoxels() const
+  {
+    int size = (extent[0][1]-extent[0][0]+1);
+    size *= (extent[1][1]-extent[1][0]+1);
+    size *= (extent[2][1]-extent[2][0]+1);
+    return size;
+  }
 };
 
 #endif // _imageextent_h_
