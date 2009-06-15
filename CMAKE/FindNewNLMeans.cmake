@@ -68,8 +68,9 @@ SET(NewNLMeans_LIBDIR_SUFFIXES
   NewNLMeans/lib/NewNLMeans
   )
 
-SET(names NewNLMeans)
+set(libnewnlmeans NewNLMeans_${CMAKE_BUILD_TYPE})
 
+SET(names ${libnewnlmeans})
 
 FIND_LIBRARY(NewNLMeans_LIBRARY ${names}
     DOC "NewNLMeans library"
