@@ -222,12 +222,6 @@ strcpy(nom_classe[PseudoColor],"PseudoColor");
     aff_err("new palette OK \n");
   FinSi
 
-#if defined(__WXMOTIF__)
-  XSetForeground( display, _pixmap_contexte,
-		  ClasseCouleur((unsigned char)255,
-                                (unsigned char)255,
-                                (unsigned char)255).GetPixel());
-#endif
 
   //  printf("window attributes : visual class %s\n",
   //	 nom_classe[w_attrib.visual->c_class]);
@@ -398,12 +392,8 @@ void FenetreDessin::FixeCouleurRemplissage(
 //                  ----------------------
                 const ClasseCouleur& couleur)
 {
-  #if defined(__WXMOTIF__)
-    XSetForeground( display, contexte, couleur.GetPixel());
-  #else
     _current_brush->SetColour((wxColour)couleur);
     _memory_dc->SetBrush(*_current_brush);
-  #endif
 } // FixeCouleurRemplissage()
 
 
@@ -441,12 +431,8 @@ void FenetreDessin::FixeCouleurTrait(
 void FenetreDessin::FixeCouleurTrait(  const wxColour& couleur)
 //                  ----------------
 {
-  #if defined(__WXMOTIF__)
-    XSetForeground( display, contexte, couleur->GetPixel());
-  #else
     _current_pen->SetColour(couleur);
     _memory_dc->SetPen(*_current_pen);
-  #endif
 } // FixeCouleurTrait()
 
 
@@ -581,27 +567,11 @@ void FenetreDessin :: DrawingAreaClear( )
 //                    -------------
 {
 
-#if defined(__WXMOTIF__)
-
-    Pixel   bg;
-
-  Si Non(_pixmap_alloue) Alors
-    fprintf(stderr,"FenetreDessin::DrawingAreaClear() \t Pixmap not allocated \n");
-    return;
-  FinSi
-  bg = _drawing_window->GetBackgroundColour().GetPixel();
-  XSetForeground( display, _pixmap_contexte, bg);
-  XFillRectangle( display, 
-		  _pixmap, 
-		  _pixmap_contexte, 
-		  0, 0, _largeur, _hauteur);
-#else
   if (_memory_dc) {
     //_memory_dc->SelectObject(*_bitmap);
     _memory_dc->SetBackground(_drawing_window->GetBackgroundColour());
     _memory_dc->Clear();
   }
-#endif
 
 } // DrawingAreaClear( )
 
@@ -718,44 +688,7 @@ void FenetreDessin :: Point( int x1, int y1)
 void FenetreDessin :: Texte( int x, int y, const Chaine& chaine, unsigned char overwrite)
 //                              -----
 {
-#if defined(__WXMOTIF__)
-  Si overwrite Alors
-    XFontStruct* font_str;
-    int          dir;
-    int          ascent;
-    int          descent;
-    XCharStruct  xchar;
-    Pixel        bg;
-    XGCValues    xgc;
-
-    font_str = XQueryFont(display, XGContextFromGC(contexte));
-
-    XTextExtents(font_str,
-		 (char*) chaine,
-		 strlen((char*) chaine),
-		 &dir,
-		 &ascent,
-		 &descent,
-		 &xchar);
-
-  bg = _drawing_window->GetBackgroundColour().GetPixel();
-
-    XGetGCValues(display,contexte,GCForeground,&xgc);
-    XSetForeground( display, contexte, bg);
-    XFillRectangle(display, _ecran_dessin, contexte,
-		   x+xchar.lbearing-1,
-		   y-xchar.ascent-1,
-		   xchar.width+2,
-		   xchar.ascent+xchar.descent+2);
-    XChangeGC(display,contexte,GCForeground,&xgc);
-
-  FinSi
-
-  XDrawString( display, _ecran_dessin, contexte, x, y, 
-	       (char*) chaine,  chaine.length());
-#else
   _memory_dc->DrawText(wxString((const char*) chaine,wxConvUTF8),x,y);
-#endif
 
 } // Texte()
 

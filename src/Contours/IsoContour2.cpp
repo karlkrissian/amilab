@@ -909,9 +909,9 @@ if (_lignes!=NULL) {
       Si _tab_ccinfo[i].nbpts == 0 Alors
         printf(" contour %3d aucun point ...", i);
       Sinon
-      if (_image_ligne != (InrImage*) NULL)
+      if (_image_ligne != (InrImage*) NULL) {
         if (_verbose)
-	  printf(" contour %3d %3d %3d %e %2.2f\n",
+	        printf(" contour %3d %3d %3d %e %2.2f\n",
 	       i, _tab_ccinfo[i].sign, 
 	       _tab_ccinfo[i].contenance, 
 	       _tab_ccinfo[i].meangrad/_tab_ccinfo[i].nbpts, 
@@ -922,7 +922,7 @@ if (_lignes!=NULL) {
 	       i, _tab_ccinfo[i].sign, 
 	       _tab_ccinfo[i].contenance, 
 	       _tab_ccinfo[i].nbpts);
-
+      }
       FinSi
       /*
 cout << " contour " << i 
@@ -1022,13 +1022,13 @@ void IsoContour2 ::  SortContours()
             i,_tab_ccinfo[i].number, _tab_ccinfo[i].sign, 
                 _tab_ccinfo[i].nbpts);
         reorder[_tab_ccinfo[i].number]=i;
-        if (_verbose)
+        if (_verbose) {
             Si i%3 == 0 Alors
                 printf("\n");
             Sinon
                 printf("\t");
             FinSi
-	  //      }
+       }
     FinPour
 
     _sort_image = new InrImage(_nb_contours+1,1,1,WT_SIGNED_INT,"sort_image.ami.gz");
