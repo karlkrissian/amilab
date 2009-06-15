@@ -122,7 +122,7 @@ extern char* FLUID_NAVIGATION_FILE;
 }
 
 
-DessinImage* CreateIDraw(  std::string title, InrImage::ptr image);
+DessinImage* CreateIDraw(  const std::string& title, InrImage::ptr image);
 // Creation of a DessinImage pointer
 // this function is distinct if compiling with all amilab
 
@@ -163,7 +163,9 @@ class wxScheduleTimer : public wxTimer
     }
 
     ~wxScheduleTimer()
-    { cout << "~wxScheduleTimer()" << endl; }
+    { 
+      //cout << "~wxScheduleTimer()" << endl; 
+    }
 
     //Called each time the timer's timeout expires
     void Notify();
@@ -186,15 +188,15 @@ static void CB_ParamWin( void* cd ) {
 } // CB_ParamWin( void* cd )
 
 
-static void CB_CallAMIFunction( void* cd, long unsigned int *) {
-  CB_ParamWin(cd);
-}
+//static void ( void* cd, long unsigned int *) {
+//  CB_ParamWin(cd);
+//}
 
  static void CB_Button(  void* cd) {
   CB_ParamWin(cd);
 }
 
-void CB_delete_imagedraw( void* varname);
+void CB_delete_imagedraw( void* var);
 
 void CB_delete_surfdraw( void* varid);
 
@@ -1115,7 +1117,7 @@ class_decl:
       amiclass->SetName(ident->GetName());
       amiclass->SetFileName(driver.current_file);
       amiclass->SetBody(     body);
-      if (GB_debug) printf("%s body = %s\n", $2,body->GetBody().c_str());
+      if (GB_debug) printf("%s body = %s\n", ident->GetName().c_str(),body->GetBody().c_str());
 
       Vars.AddVar( type_ami_class, ident, (void*) amiclass);
 
@@ -1664,16 +1666,16 @@ command:
               if (GB_debug) fprintf(stderr,"SHOW var_image creating title %s \n",titre);
               DessinImage* di;
 
-              std::string* varname = new std::string(titre);
+              std::string varname(titre);
 
-              di = CreateIDraw( *varname,
+              di = CreateIDraw( varname,
                     *((InrImage::ptr*) $2->Pointer()));
 
-              Vars.AddVar(type_imagedraw,titre, (void*) di,
+              Variable* newvar = Vars.AddVar(type_imagedraw,titre, (void*) di,
                           var_context);
               di->SetCloseFunction(
                 (void*) CB_delete_imagedraw,
-                (void*) (varname));
+                (void*) (newvar));
             }
           } // var_context >=0
         }
@@ -2406,13 +2408,13 @@ command:
             else
             {
               DessinImage* di;
-              std::string* varname = new std::string(title);
-              di = CreateIDraw( *varname, im);
+              std::string varname(title);
+              di = CreateIDraw( varname, im);
 
-              Vars.AddVar(type_imagedraw,title, (void*) di);
+              Variable* newvar = Vars.AddVar(type_imagedraw,title, (void*) di);
               di->SetCloseFunction(
                   (void*) CB_delete_imagedraw,
-                  (void*) (varname));
+                  (void*) (newvar));
               // get the pointer to the newly created
               // variable
               Variable* var;
@@ -5213,7 +5215,6 @@ primary_expr
     | VAR_INT
     {
       $$ = (float) *((int_ptr*)$1->Pointer())->get();
-      char tmp_string[255];
     }
     | VAR_UCHAR
     {
@@ -10772,12 +10773,13 @@ void yyip::Parser::error(const Parser::location_type& l,
     driver.error(l, m);
 }
 
-void CB_delete_imagedraw( void* varname)
+void CB_delete_imagedraw( void* var)
 {
-  if (GB_debug) fprintf(stderr,"CB_delete_imagedraw() \n");
-  std::string* name = (std::string*) varname;
-  if (Vars.deleteVar( name->c_str())==0)
-    fprintf(stderr,"CB_delete_imagedraw() could not delete variable '%s' !!! \n",name->c_str());
+  Variable* vartodelete = (Variable*) var;
+
+  FILE_MESSAGE(boost::format("deleting %1%") % vartodelete->Name());
+  if (Vars.deleteVar(vartodelete)==0)
+    FILE_ERROR("Could not delete variable "); 
 
 // deleting is risky, use smart pointers instead ...
 //  delete name;
@@ -10798,7 +10800,7 @@ void CB_delete_surfdraw( void* varid)
 void wxScheduleTimer::Notify()
 //   -----------------------
 {
-  cout << "Notify()" << endl;
+  //cout << "Notify()" << endl;
   CB_ParamWin(&f);
 
   std::list<wxScheduleTimer::ptr>::iterator Iter;

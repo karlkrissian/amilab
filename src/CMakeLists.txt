@@ -162,6 +162,7 @@ OPTION(AMI_USE_FASTNLMEANS "Use Fast NLmeans implementation" ON)
 
 IF(AMI_USE_FASTNLMEANS)
   FIND_PACKAGE(NewNLMeans)
+  MESSAGE("NewNLMeans_LIBRARY=${NewNLMeans_LIBRARY}")
 ENDIF(AMI_USE_FASTNLMEANS)
 
 OPTION(AMI_USE_OPENMP "Use OpenMP for multithreading and timing" ON)

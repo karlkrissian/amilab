@@ -302,12 +302,13 @@ public:
       Si ordre == 0 AlorsFait somme_coeff = 0.0;
       Pour( i, 0, _taille_div2)
         _tab_coeff[i] = Gaussienne( -i);
-        Si ordre == 0 AlorsFait
-	    Si i==0 Alors
+        Si ordre == 0 Alors
+          Si i==0 Alors
               somme_coeff += _tab_coeff[i];
-            Sinon
+          Sinon
               somme_coeff += 2*_tab_coeff[i];
-            FinSi
+          FinSi
+        FinSi
       FinPour
 
       Si ordre == 0 Alors
@@ -325,12 +326,13 @@ public:
 
         Pour( i, 0, _taille_div2)
           _tab_coeff[i] = Gaussienne( -i);
-          Si ordre == 0 AlorsFait 
-	    Si i==0 Alors
+          Si ordre == 0 Alors
+            Si i==0 Alors
               somme_coeff += _tab_coeff[i];
             Sinon
               somme_coeff += 2*_tab_coeff[i];
             FinSi
+          FinSi
         FinPour
 
         Si ordre == 0 Alors

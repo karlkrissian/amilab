@@ -606,15 +606,15 @@ void  amimage::SetData( void* d)
 unsigned char  amimage::readheader( const char* filename)
 //                      ----------
 {
-  int          resscan;
-  unsigned int v_uint;
-  float        v_float;
-  char         v_string[256];
-  char         attrib[100];
+  //int          resscan;
+  //unsigned int v_uint;
+  //float        v_float;
+  //char         v_string[256];
+  //char         attrib[100];
   char        line[200];
   int version;
   int release;
-  int c;
+  //int c;
 
   //  fprintf(stderr,"amimage::readheader() 1 \n");
   setlocale(LC_NUMERIC,"C");
@@ -670,7 +670,8 @@ unsigned char  amimage::readheader( const char* filename)
     bool SO_found = false;
     bool DF_found = false;
     bool FS_found = false,LS_found = false;
-    bool FP_found = false,FF_found = false;
+    bool FP_found = false;
+    //bool FF_found = false;
     while (!end_header) {
       file_str->getline(line,255);
 
@@ -750,6 +751,8 @@ unsigned char  amimage::readheader( const char* filename)
         type = AMI_VECTOR;
         repres = AMI_UNSIGNED_CHAR;
         vdim = 3;
+        break;
+      default: ;// nothing here
     } // end switch type
 
   }
@@ -850,19 +853,20 @@ unsigned char amimage::CheckGenesisHeader(char* ptr, int slice, float corner[4][
 unsigned char  amimage::readdata_ext( )
 //                      ------------
 {
-  FILE*          f;
+  //FILE*          f;
   int            z; //,error;
   string         fname;
   string         fname2;
-  char           cmd[1024];
+  //char           cmd[1024];
   unsigned char* ptr;
   char*          header_ptr = NULL;
   unsigned int   slice_size;
-  int            openmode;
-  int            header_size=0,read_size;
+  //int            openmode;
+  int            header_size=0;
+  //int read_size;
 
   unsigned char  genesis_format;
-  float          corner[4][3];
+  //float          corner[4][3];
 
   setlocale ( LC_NUMERIC,"C" );
 //  fprintf(stderr,"amimage::readdata_ext() \t 1\n");
@@ -1005,12 +1009,13 @@ unsigned char  amimage::readdata3D_ext( )
 
 {
 
-  int            z; //,error;
+  //int            z; //,error;
   string         fname;
   unsigned char* ptr;
-  char*          header_ptr = NULL;
+  //char*          header_ptr = NULL;
   unsigned int   image_size;
-  int            header_size=0,read_size;
+  int            header_size=0;
+  //int read_size;
 
 
   //  fprintf(stderr,"amimage::readdata_ext() \t 1\n");
@@ -1103,7 +1108,7 @@ unsigned char  amimage::readdata3D_ext( )
 unsigned char  amimage::readdata( )
 //                      --------
 {
-  int  nread;
+  //int  nread;
 //  unsigned char  rsize; // size of the scalar representation
 //  unsigned long  ssize; // number of scalars
 //  unsigned char* ptr1;
@@ -1255,7 +1260,7 @@ unsigned char  amimage::writeheader( const char* filename,
 unsigned char  amimage::writedata(filtering_ostream& out)
 //                      ---------
 {
-  int res,written;
+  //int res,written;
 
   ComputeDataSize();
 
