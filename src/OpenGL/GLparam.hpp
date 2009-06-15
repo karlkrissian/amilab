@@ -1010,7 +1010,7 @@ public:
     FinPour
 
     Si _depend_T AlorsFait
-    Pour(i,0,3)
+    Pour(i,0,2)
       _translation[i] = t._translation[i];
     FinPour
 
