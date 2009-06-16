@@ -43,7 +43,7 @@ public:
 
   void SetInput( InrImage::ptr& in)
   {
-    intput = in;
+    input = in;
   }
 
   ImageToImageFilterParam() {}
@@ -75,7 +75,7 @@ public:
   virtual void Init();
 
   virtual void Process( int threadid = 0, int numthreads = 1) = 0;
-  virtual static void* Process_thread(void* threadarg);
+  static void* Process_thread(void* threadarg);
   void Run_multithreads();
 
   virtual void Run();

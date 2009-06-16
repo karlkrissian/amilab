@@ -24,7 +24,7 @@ struct thread_info {
 
 
 //------------------------------------------------------------------
-static void* ImageToImageFilter::Process_thread(void* threadarg)
+void* ImageToImageFilter::Process_thread(void* threadarg)
 {
   // Get the arguments from threadarg
   thread_info<ImageToImageFilter>* args = (thread_info<ImageToImageFilter>*) threadarg;
@@ -44,34 +44,34 @@ static void* ImageToImageFilter::Process_thread(void* threadarg)
 
 
 //------------------------------------------------------------------
-void ImageToImageFilter::Process_multithreads()
+void ImageToImageFilter::Run_multithreads()
 {
-  if (params.num_threads==1) {
+  if (params->GetNumberOfThreads()==1) {
     // no thread here ...
     Process();
   } else {
     // num_threads
-    thread_info<ImageToImageFilter>* thread_info;
+    thread_info<ImageToImageFilter>* thread_info_array;
     int i;
     pthread_t* threads;
     pthread_attr_t attr;
     int rc,status;
-    int num_threads = params.GetNumberOfThreads();
+    int num_threads = params->GetNumberOfThreads();
 
     pthread_attr_init(&attr);
     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
 
-    thread_info = new thread_info<ImageToImageFilter>[num_threads];
+    thread_info_array = new thread_info<ImageToImageFilter>[num_threads];
 
     threads     = new pthread_t[num_threads];
     for (i=0;i<num_threads;i++) {
-      thread_info[i].thread_id      = i;
-      thread_info[i].total_threads  = num_threads;
-      thread_info[i]._this          = this;
+      thread_info_array[i].thread_id      = i;
+      thread_info_array[i].total_threads  = num_threads;
+      thread_info_array[i]._this          = this;
 
       rc = pthread_create(&threads[i], &attr,
                           Process_thread,
-                          (void *) &thread_info[i]);
+                          (void *) &thread_info_array[i]);
       if (rc) {
         cerr  << __func__ 
               << " \t ERROR; return code from pthread_create()"
@@ -82,7 +82,7 @@ void ImageToImageFilter::Process_multithreads()
   
     // Free attribute and wait for the other threads 
     pthread_attr_destroy(&attr);
-    for(i=0; i<params.num_threads; i++)
+    for(i=0; i<num_threads; i++)
     {
         rc = (int) pthread_join((pthread_t)threads[i], (void **)&status);
         if (rc)
@@ -91,7 +91,7 @@ void ImageToImageFilter::Process_multithreads()
                 <<  "is " <<  rc << endl;
     }
   
-    delete [] thread_info;
+    delete [] thread_info_array;
     delete [] threads;
   } // else if  numthread==1
 } // ImageToImageFilter::Process_multithreads()

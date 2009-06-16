@@ -33,6 +33,7 @@ IF(AMI_USE_FASTNLMEANS)
 ENDIF(AMI_USE_FASTNLMEANS)
 
 SET(Algorithms_SRCS
+  BasicFilter/ImageToImageFilter.cpp
   Basic/localstats.cpp
   Graph/func_shortestpath.cpp
   Denoising/Wrap_NewNLMeans.cpp

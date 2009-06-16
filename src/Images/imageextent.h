@@ -79,13 +79,19 @@ class ImageExtent {
   void SetRelative( InrImage* im) {
     if (this->GetMode()==0) {
       
-      for(int i=0; i<3; i++) {
-        for(int j=0; j<2; j++)
-          extent[i][j] =  (int) (im->SpaceToVoxelX(extent[i][j])+0.5);
-        if (extent[i][0]<0) extent[i][0]=0;
-      }
+      extent[0][0] =  (int) (im->SpaceToVoxelX(extent[0][0])+0.5);
+      extent[0][1] =  (int) (im->SpaceToVoxelX(extent[0][1])+0.5);
+      if (extent[0][0]<0) extent[0][0]=0;
       if (extent[0][1]>im->DimX()-1) extent[0][1]=im->DimX()-1;
+
+      extent[1][0] =  (int) (im->SpaceToVoxelY(extent[1][0])+0.5);
+      extent[1][1] =  (int) (im->SpaceToVoxelY(extent[1][1])+0.5);
+      if (extent[1][0]<0) extent[1][0]=0;
       if (extent[1][1]>im->DimY()-1) extent[1][1]=im->DimY()-1;
+
+      extent[2][0] =  (int) (im->SpaceToVoxelZ(extent[2][0])+0.5);
+      extent[2][1] =  (int) (im->SpaceToVoxelZ(extent[2][1])+0.5);
+      if (extent[2][0]<0) extent[2][0]=0;
       if (extent[2][1]>im->DimZ()-1) extent[2][1]=im->DimZ()-1;
 
       for(int i=0; i<3; i++) 

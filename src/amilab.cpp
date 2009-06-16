@@ -137,6 +137,16 @@ bool MyApp::OnInitGui()
 bool CheckEnvDir(const wxString& envname, wxString& res, const wxString& lookforfile = wxEmptyString)
 {
 
+  // Looking for the environment variable
+  bool foundenv = wxGetEnv(envname,&res);
+  if (!foundenv) {
+    cerr << "Environment variable " << envname << " not defined. " << endl;
+  } else
+  if (!wxDir::Exists(res)) {
+    cerr << "Error accessing directory " << res.mb_str();
+  } else
+    return true;
+
   // First check relative to the executable path
   wxFileName execpath(wxStandardPaths::Get().GetExecutablePath());
   // if last directory is bin, remove it
@@ -157,21 +167,13 @@ bool CheckEnvDir(const wxString& envname, wxString& res, const wxString& lookfor
     }
   }
 
-  // Looking for the environment variable
-  bool foundenv = wxGetEnv(envname,&res);
-  if (!foundenv) {
-    cerr << "Environment variable " << envname << " not defined. " << endl;
-  }
-
-  if (!wxDir::Exists(res)) {
-    cerr << "Error accessing directory " << res.mb_str();
-    res=::wxGetCwd();
-    cerr << " , set to " << res << endl
-         << "check the environment variable " << envname.mb_str() << endl;
-    return false;
-  }
 
   cerr << "file not found, set the path manually from the interface." << endl;
+
+  res=::wxGetCwd();
+  cerr << " , set to " << res << endl
+        << "check the environment variable " << envname.mb_str() << endl;
+  return false;
 
   // look  for the file needed
   /*
@@ -189,8 +191,6 @@ bool CheckEnvDir(const wxString& envname, wxString& res, const wxString& lookfor
   */
 
 
-//  }
-  return false;
 }
 
 
