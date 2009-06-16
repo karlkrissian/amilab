@@ -25,6 +25,8 @@
 #include <wx/combobox.h>
 #include <iostream>
 
+#include "myTreeCtrl.h"
+
 #include <sys/stat.h>
 #ifndef WIN32
 #include <unistd.h>
@@ -286,6 +288,14 @@ MainFrame::MainFrame( const wxString& title,
                   .Left().Layer(1)
                   .MinimizeButton(true));
 
+  CreateVarTreePanel(this);
+  m_mgr.AddPane(_vartree_panel,
+                  wxAuiPaneInfo()
+                  .Name(wxT("Variables"))
+                  .Caption(wxT("Variables"))
+                  .Left().Layer(1)
+                  .MinimizeButton(true));
+
   CreateLogText(this);
   m_mgr.AddPane(_log_text,
                   wxAuiPaneInfo()
@@ -510,6 +520,33 @@ void MainFrame::CreateVarListPanel ( wxWindow* parent)
   varlistpanel_sizer->Fit(_varlist_panel);
 
 } // CreateVarListPanel()
+
+//--------------------------------------------------------
+void MainFrame::CreateVarTreePanel ( wxWindow* parent)
+{
+
+  _vartree_panel = new wxPanel(parent);
+  vartreepanel_sizer  = new wxBoxSizer( wxVERTICAL );
+  _vartree_panel->SetSizer(vartreepanel_sizer);
+
+  _var_tree = new myTreeCtrl( _vartree_panel,
+                              wxID_ANY,
+                              wxDefaultPosition,
+                              wxDefaultSize,
+                              wxTR_HAS_BUTTONS | wxTR_HIDE_ROOT 
+                            );
+  _var_tree->SetFont( wxFont(10,wxMODERN,wxNORMAL,wxNORMAL)); // try a fixed pitch font
+  _vartree_root      = _var_tree->AddRoot(_T("Variables"));
+  _vartree_images    = _var_tree->AppendItem(_vartree_root,_T("Images"));
+  _vartree_surfaces  = _var_tree->AppendItem(_vartree_root,_T("Surfaces"));
+  _vartree_numbers   = _var_tree->AppendItem(_vartree_root,_T("Numbers"));
+  _vartree_functions = _var_tree->AppendItem(_vartree_root,_T("Functions"));
+  _vartree_others    = _var_tree->AppendItem(_vartree_root,_T("Others"));
+
+  vartreepanel_sizer->Add(_var_tree, 1, wxEXPAND , 5);
+  vartreepanel_sizer->Fit(_vartree_panel);
+
+} // CreateVarTreePanel()
 
 //--------------------------------------------------------
 void MainFrame::CreateConsoleText( wxWindow* parent)
@@ -909,6 +946,65 @@ void MainFrame::UpdateVarList()
   _var_list->SetColumnWidth( 1, wxLIST_AUTOSIZE );
 
 //  _var_list->Fit();
+  _var_list->Show();
+}
+
+
+//-----------------------------------------------------
+void MainFrame::UpdateVarTree()
+{
+  // delete second level children
+  wxTreeItemIdValue cookie;
+  wxTreeItemId item = _var_tree->GetFirstChild( _vartree_root, cookie );
+  while(item.IsOk()) {
+    _var_tree->DeleteChildren(item);
+    item = _var_tree->GetNextChild( _vartree_root, cookie);
+  }
+
+
+  boost::shared_ptr<wxArrayString> variables;
+
+  // loop vars
+  variables = Vars.SearchCompletions(GetwxStr(""));
+
+
+  for(int i=0;i<(int)variables->GetCount();i++) {
+    //cout << "set item variable " << i << endl;
+
+    Variable* var;
+    wxString type_str;
+    bool varfound = Vars.GetVar((*variables)[i].mb_str(),&var);
+
+    if (varfound) {
+      if (var->Type() == type_image) {
+        // create text with image information
+        InrImage::ptr im = *((InrImage::ptr*)var->Pointer());
+        std::string text = (boost::format("%1% %15t %2% %25t %3%x%4%x%5%")
+                            % var->Name()
+                            % im->FormatName()
+                            % im->DimX()
+                            % im->DimY()
+                            % im->DimZ()).str();
+        //cout << text << endl;
+        _var_tree->AppendItem(_vartree_images,wxString(text.c_str(), wxConvUTF8));
+        _var_tree->SetIndent(5);
+      } else
+      if (var->Type() == type_surface) {
+        _var_tree->AppendItem(_vartree_surfaces,(*variables)[i]);
+      } else
+      if ((var->Type() == type_float)||
+          (var->Type() == type_int)  ||
+          (var->Type() == type_uchar))
+      {
+        _var_tree->AppendItem(_vartree_numbers,(*variables)[i]);
+      } else
+      if (var->Type() == type_ami_function)
+      {
+        _var_tree->AppendItem(_vartree_functions,(*variables)[i]);
+      } else
+        _var_tree->AppendItem(_vartree_others,(*variables)[i]);
+    }
+  }
   _var_list->Show();
 }
 

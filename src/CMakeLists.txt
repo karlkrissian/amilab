@@ -293,6 +293,7 @@ INCLUDE( ${USE_ITK_FILE} )
 
 SET(amilab_bin_SRCS
   amilab.cpp
+  myTreeCtrl.cpp
   MainFrame.cpp
 )
 

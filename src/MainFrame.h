@@ -39,6 +39,8 @@
 #include "wx/textdlg.h"
 #include "wx/aui/aui.h"
 
+#include "myTreeCtrl.h"
+
 #include "wx/listctrl.h"
 #include "wx/wxhtml.h"
 #include <wx/html/helpwnd.h>
@@ -131,6 +133,8 @@ public:
 
   void UpdateVarList();
 
+  void UpdateVarTree();
+
   wxPanel*       GetPromptPanel() { return _prompt_panel; }
   wxAuiNotebook* GetParamBook() { return _param_book; }
 
@@ -148,6 +152,9 @@ protected:
   wxPanel*     _varlist_panel;
   wxBoxSizer*  varlistpanel_sizer;
 
+  wxPanel*     _vartree_panel;
+  wxBoxSizer*  vartreepanel_sizer;
+
   boost::shared_ptr<wxTextValidator> _textcontrol_validator;
   TextControl* TC;
   wxTextCtrl*  _log_text;
@@ -162,6 +169,14 @@ protected:
   wxComboBox*  _var_list_filter;
   wxHtmlWindow* _htmltext;
 
+  myTreeCtrl*  _var_tree;
+  wxTreeItemId _vartree_root;
+  wxTreeItemId _vartree_images;
+  wxTreeItemId _vartree_surfaces;
+  wxTreeItemId _vartree_numbers;
+  wxTreeItemId _vartree_functions;
+  wxTreeItemId _vartree_others;
+
   void CreateMenu();
 
   wxToolBar* CreateToolbar ( wxWindow* parent );
@@ -171,6 +186,7 @@ protected:
 
   void CreateConsoleText  ( wxWindow*);
   void CreateVarListPanel ( wxWindow*);
+  void CreateVarTreePanel ( wxWindow*);
   void CreateLogText      ( wxWindow*);
   void CreateKeywordsPanel( wxWindow*);
   void CreateVarPanel     ( wxWindow*);

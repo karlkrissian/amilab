@@ -282,6 +282,7 @@ void TextControl::ProcessReturn()
   // Add now the newline character ...
   in_changed_value = 0;
   GB_main_wxFrame->UpdateVarList();
+  GB_main_wxFrame->UpdateVarTree();
 
   // event.Skip();
 }
