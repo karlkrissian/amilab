@@ -1371,10 +1371,18 @@ void     Func_localsum( InrImage::ptr& tmp, InrImage::ptr& res,
   }
 */
 
+  FastLocalSumDir<T>(tmp.get(),res.get(),size,0,extent);
+
+  tmp.swap(res);
+  FastLocalSumDirNonX<T>(tmp.get(),res.get(),size,1,extent,16);
+/*
   FastLocalSumX_noborder<T,unsigned char>(  tmp.get(),res.get(),size,extent);
+
   tmp.swap(res);
   FastLocalSumY_noborder<T,unsigned short>( tmp.get(),res.get(),size,extent);
+*/
 
+/*
   if ( tmp->DimZ() >1 ) {
     tmp.swap(res);
     if (tmp->DimX()*tmp->DimY() <= std::numeric_limits<unsigned short>::max()) {
@@ -1384,5 +1392,6 @@ void     Func_localsum( InrImage::ptr& tmp, InrImage::ptr& res,
       FastLocalSumZ_noborder_2<T,unsigned int>(tmp.get(),res.get(),size,extent,8);
     }
   }
+*/
 }
 

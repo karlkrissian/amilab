@@ -108,7 +108,7 @@ class ImageExtent {
     }
   }
 
-  void print() {
+  void print() const {
     printf("extent [%3.3f:%3.3f] [%3.3f:%3.3f] [%3.3f:%3.3f] \n",
             (float)extent[0][0],(float)extent[0][1],
             (float)extent[1][0],(float)extent[1][1],
