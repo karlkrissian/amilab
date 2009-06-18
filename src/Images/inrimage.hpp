@@ -893,6 +893,36 @@ public:
     /**
        Pointeur sur la position courante du buffer
     */
+    void*  BufferPtr( int x, int y, int z=0) const
+    //     ---------
+    {
+
+      switch ( (WORDTYPE) _format ) {
+
+        case WT_RGB:            return (void*) (_positions_RGB[z][y]           + _vdim*x);
+        case WT_FLOAT_VECTOR:   return (void*) (_positions_FLOAT_VECTOR[z][y]  + _vdim*x);
+        case WT_DOUBLE:         return (void*) (_positions_DOUBLE[z][y]        + _vdim*x);
+        case WT_FLOAT:          return (void*) (_positions_FLOAT[z][y]         + _vdim*x);
+
+        case WT_RGBA:
+        case WT_UNSIGNED_CHAR:  return (void*) (_positions_UNSIGNED_CHAR[z][y] + _vdim*x);
+
+        case WT_UNSIGNED_SHORT: return (void*) (_positions_UNSIGNED_SHORT[z][y]+ _vdim*x);
+        case WT_SIGNED_SHORT:   return (void*) (_positions_SIGNED_SHORT[z][y]  + _vdim*x);
+        case WT_UNSIGNED_INT:   return (void*) (_positions_UNSIGNED_INT[z][y]  + _vdim*x);
+        case WT_SIGNED_INT:     return (void*) (_positions_SIGNED_INT[z][y]    + _vdim*x);
+
+        Defaut: printf("InrImage::BufferPtr()\t format not available...\n");
+
+      } // end switch
+
+      return NULL;
+
+    } // BufferPtr()
+
+    /**
+       Pointeur sur la position courante du buffer
+    */
     void*  BufferPtr()
     //               ---------
     {
