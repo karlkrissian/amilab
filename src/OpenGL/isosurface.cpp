@@ -278,7 +278,7 @@ void Cube :: Constructeur InitVoxel( int x, int y, int z,
 
   nb_inters_a_traiter = 0;
 
-  Pour(s,0,12) 
+  Pour(s,0,11) 
     tabSeg[s].SetState( SEGMENT_NON_TESTE);
   FinPour
 
