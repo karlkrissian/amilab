@@ -10,6 +10,9 @@
 //
 //
 
+
+// TODO: BufferPos() NOT THREAD SAFE !!!! try to fix it in the future
+
 /*
   sum squared neighborhoods of size (2*size+1)
   along one axis
@@ -262,11 +265,9 @@ void FastLocalSumX_noborder( InrImage* in, InrImage* out,
   for (z=zmin;z<=zmax;z++) {
     for (y=ymin;y<=ymax;y++) {
       // position buffers at the beginning of the lines
-      out->BufferPos(xmin,y,z);
-      vres_buf = (float*)out->BufferPtr();
+      vres_buf = (float*)out->BufferPtr(xmin,y,z);
       // initialize sum
-      in->BufferPos(xmin,y,z);
-      in_buf = (float*) in->BufferPtr();
+      in_buf = (float*) in->BufferPtr(xmin,y,z);
       sum = 0;
       for(i=0;i<d;i++) sum += in_buf[i];
       // go through the line
@@ -308,10 +309,10 @@ void FastLocalSumY_noborder( InrImage* in, InrImage* out,
                   % (int)stepsize)
 
   int d = 2*size+1;
-  float* in_buf;
-  float* vmin_buf;
-  float* vmax_buf;
-  float* vres_buf;
+  T* in_buf;
+  T* vmin_buf;
+  T* vmax_buf;
+  T* vres_buf;
   // int new_size    = in->Size()-d;
   short i;
 
@@ -332,8 +333,7 @@ void FastLocalSumY_noborder( InrImage* in, InrImage* out,
     // initialize sums
     for(x=xmin;x<=xmax;x++) sum[x] = 0; // use memset here?
     for(i=0;i<d;i++) {
-      in->BufferPos(0,ymin+i,z);
-      in_buf = (float*) in->BufferPtr();
+      in_buf = (T*) in->BufferPtr(0,ymin+i,z);
       for(x=xmin;x<=xmax;x++) {
         //if ((z==zmin)&&(x==xmin))
         // cout << boost::format(" value at %1% %2% %3% : %4%") % x % (ymin+i) % z % in_buf[x] << endl;
@@ -341,15 +341,16 @@ void FastLocalSumY_noborder( InrImage* in, InrImage* out,
       }
     }
     // initialize positions
-    in->BufferPos(0,ymin,z);
-    in_buf = (float*) in->BufferPtr();
+    in_buf = (T*) in->BufferPtr(0,ymin,z);
 
-    out->BufferPos(0,ymin,z); // hyp: ymin+size < ymax !!
-    vres_buf = (float*)out->BufferPtr();
+    vres_buf = (T*)out->BufferPtr(0,ymin,z);
 
     // set values at from ymin to ymin+size
     for (y=ymin;y<=ymin+size;y++) {
-      for(x=xmin;x<=xmax;x++) vres_buf[x] = sum[x];
+      for(x=xmin;x<=xmax;x++) {
+        vres_buf[x] = sum[x];
+        //if (vres_buf[x]<0) { cout << "*1"; cout.flush(); }
+      }
       vres_buf += incy; 
     }
 
@@ -362,6 +363,10 @@ void FastLocalSumY_noborder( InrImage* in, InrImage* out,
       for(x=xmin;x<=xmax;x++) {
         sum[x] += vmax_buf[x]-vmin_buf[x];
         vres_buf[x] = sum[x];
+       //if (vres_buf[x]<0) { 
+       //   cout << boost::format("%1%,%2%,%3%-->%4%") % x % y % z % vres_buf[x] << endl; 
+       //   cout.flush();
+       // }
       }
 
 /*
@@ -390,7 +395,10 @@ void FastLocalSumY_noborder( InrImage* in, InrImage* out,
 
     // extends to ymax
     while (y<=ymax) {
-      for(x=xmin;x<=xmax;x++) vres_buf[x] = sum[x];
+      for(x=xmin;x<=xmax;x++) {
+        vres_buf[x] = sum[x];
+        //if (vres_buf[x]<0) { cout << "*3"; cout.flush(); }
+      }
       vres_buf += incy; 
       y++;
     }
@@ -451,8 +459,7 @@ void FastLocalSumZ_noborder( InrImage* in, InrImage* out,
 
   // initialize sums
   for(i=0;i<d;i++) {
-    in->BufferPos(0,ymin,zmin+i);
-    in_buf = (float*) in->BufferPtr();
+    in_buf = (float*) in->BufferPtr(0,ymin,zmin+i);
     for(y=ymin;y<=ymax;y++) {
       float* sum1 = sum[y];
       for(x=xmin;x<=xmax;x++) *sum1++ += in_buf[x];
@@ -460,8 +467,7 @@ void FastLocalSumZ_noborder( InrImage* in, InrImage* out,
     } // y
   } // i
 
-  out->BufferPos(0,ymin,zmin+size); // hyp: ymin+size < ymax !!
-  vres_buf = (float*)out->BufferPtr();
+  vres_buf = (float*)out->BufferPtr(0,ymin,zmin+size);
 
   // set values at zmin+size
   for(y=ymin;y<=ymax;y++) {
@@ -473,14 +479,12 @@ void FastLocalSumZ_noborder( InrImage* in, InrImage* out,
   for (z=zmin+size+1;z<=zmax-size;z++) {
 
     // initialize positions
-    in->BufferPos(0,ymin,z);
-    in_buf = (float*) in->BufferPtr();
+    in_buf = (float*) in->BufferPtr(0,ymin,z);
 
     vmin_buf = in_buf-(size+1)*dx*dy;          // at 0,ymin,zmin
     vmax_buf = in_buf+size*dx*dy;  // at 0,ymin,zmin+(2*size+1)
 
-    out->BufferPos(0,ymin,z); 
-    vres_buf = (float*)out->BufferPtr();
+    vres_buf = (float*)out->BufferPtr(0,ymin,z);
 
     for(y=ymin;y<=ymax;y++) {
       float* sum1      = sum[y];
@@ -564,13 +568,12 @@ void FastLocalSumZ_noborder_2( InrImage* in, InrImage* out,
 
     // initialize sums
     for(i=0;i<d;i++) {
-      in->BufferPos(0,y,zmin+i);
-      in_buf = (float*) in->BufferPtr();
+      in_buf = (float*) in->BufferPtr(0,y,zmin+i);
       for(x=xmin;x<=xmax;x++) sum[x] += in_buf[x];
     } // i
   
-    out->BufferPos(0,y,zmin); // hyp: ymin+size < ymax !!
-    vres_buf = (float*)out->BufferPtr();
+    // hyp: ymin+size < ymax !!
+    vres_buf = (float*)out->BufferPtr(0,y,zmin);
   
     // set values at zmin+size
     for (z=zmin;z<=zmin+size;z++) {
@@ -579,8 +582,7 @@ void FastLocalSumZ_noborder_2( InrImage* in, InrImage* out,
     }
 
     // initialize positions
-    in->BufferPos(0,y,zmin);
-    in_buf = (float*) in->BufferPtr();
+    in_buf = (float*) in->BufferPtr(0,y,zmin);
 
     vmin_buf = in_buf;          // at 0,y,zmin
     vmax_buf = in_buf+d*dx*dy;  // at 0,y,zmin+(2*size+1)
@@ -873,12 +875,10 @@ void FastLocalSumDirNonX( InrImage* in, InrImage* out,
     for ( p1=p1_min; p1+stepsize-1<=p1_max; p1+=stepsize )
     {
       p2 = p2_min;
-      in->BufferPos(pos[0],pos[1],pos[2]);
-      buf = bufmax = bufmin  = ( T* ) in->BufferPtr();
+      buf = bufmax = bufmin  = ( T* ) in->BufferPtr(pos[0],pos[1],pos[2]);
 
       // begin of line within extent
-      out->BufferPos(pos[0],pos[1],pos[2]);
-      res_buf = ( T* ) out->BufferPtr();
+      res_buf = ( T* ) out->BufferPtr(pos[0],pos[1],pos[2]);
 
       if (p2_size<=2*size+1) {
         // fill all values with mean*size
@@ -1371,18 +1371,10 @@ void     Func_localsum( InrImage::ptr& tmp, InrImage::ptr& res,
   }
 */
 
-  FastLocalSumDir<T>(tmp.get(),res.get(),size,0,extent);
-
-  tmp.swap(res);
-  FastLocalSumDirNonX<T>(tmp.get(),res.get(),size,1,extent,16);
-/*
   FastLocalSumX_noborder<T,unsigned char>(  tmp.get(),res.get(),size,extent);
-
   tmp.swap(res);
   FastLocalSumY_noborder<T,unsigned short>( tmp.get(),res.get(),size,extent);
-*/
 
-/*
   if ( tmp->DimZ() >1 ) {
     tmp.swap(res);
     if (tmp->DimX()*tmp->DimY() <= std::numeric_limits<unsigned short>::max()) {
@@ -1392,6 +1384,6 @@ void     Func_localsum( InrImage::ptr& tmp, InrImage::ptr& res,
       FastLocalSumZ_noborder_2<T,unsigned int>(tmp.get(),res.get(),size,extent,8);
     }
   }
-*/
+
 }
 
