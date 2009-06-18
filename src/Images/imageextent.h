@@ -166,6 +166,24 @@ class ImageExtent {
     size *= (extent[2][1]-extent[2][0]+1);
     return size;
   }
+
+  #ifndef macro_min
+    #define macro_min(n1,n2) ((n1)<(n2)?(n1):(n2))
+  #endif
+  
+  #ifndef macro_max
+    #define macro_max(n1,n2) ((n1)>(n2)?(n1):(n2))
+  #endif 
+
+  void Intersect( const ImageExtent<T>& e)
+  {
+    for(int i=0; i<3; i++)
+       SetMin(i, macro_max(GetMin(i), e.GetMin(i)));
+
+    for(int i=0; i<3; i++)
+       SetMax(i, macro_min(GetMax(i), e.GetMax(i)));
+  }
+
 };
 
 #endif // _imageextent_h_
