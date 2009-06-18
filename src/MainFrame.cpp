@@ -294,7 +294,7 @@ MainFrame::MainFrame( const wxString& title,
                   .Name(wxT("Variables"))
                   .Caption(wxT("Variables"))
                   .Left().Layer(1)
-                  .MinimizeButton(true));
+                  .MaximizeButton(true));
 
   CreateLogText(this);
   m_mgr.AddPane(_log_text,
