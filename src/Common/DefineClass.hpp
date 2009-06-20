@@ -37,6 +37,7 @@
 #include <boost/weak_ptr.hpp>
 #include <list>
 #include <vector>
+#include <stdio.h>
 
 #define DEFINE_CLASS(class) \
 public:\

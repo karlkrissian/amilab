@@ -30,6 +30,11 @@
 #undef yyFlexLexer
 #endif
 
+#include "IdentifierInfo.h"
+#include "Variable.hpp"
+#include "imageextent.h"
+#include "AmiInstructionBlock.h"
+
 #include "improcess_bison.tab.hpp"
 
 //#include "parser.h"

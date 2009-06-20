@@ -60,6 +60,7 @@
 
 #include "style.hpp"
 #include "Erreurs.hpp"
+#include <stdio.h>
 
 
 class OutOfArray {};

@@ -213,7 +213,7 @@ bool check_value( const string& line,
   if (found) return false;
   boost::smatch what;
   boost::regex lower_case("\\l");
-  bool result;
+  bool result=false;
 
   // get rid of lower cases on the left side of '='
   //cout << "**" << line2 << "**" << endl;
@@ -263,7 +263,7 @@ bool check_enum( const string&   line,
   if (found) return false;
   boost::smatch what;
   boost::regex lower_case("\\l");
-  bool result;
+  bool result=false;
 
   try {
     boost::regex e(string("(\\w+)\\s*=\\s*")+format);

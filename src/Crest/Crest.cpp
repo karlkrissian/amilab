@@ -1049,7 +1049,7 @@ unsigned char Crest ::  ImportVTK( vtkPolyData* poly)
   // Get the lines
   lines = poly->GetLines();
 
-  int nb_lignes = 0;
+  //int nb_lignes = 0;
   _CREST_tab_lignes.Resize(lines->GetNumberOfCells());
 
   printf("Number of lines: %d \n",(int)lines->GetNumberOfCells());

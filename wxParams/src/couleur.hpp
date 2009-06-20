@@ -66,6 +66,7 @@ public:
   ClasseCouleur( )
   //           -------------
   {
+    Set(0,0,0);
     compact_color.r = compact_color.g = compact_color.b = 0;
   }
 

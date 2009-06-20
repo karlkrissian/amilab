@@ -140,7 +140,7 @@ SurfacePoly* Func_decimate( SurfacePoly* surf, float target_reduction )
 
   surf_result = new SurfacePoly(deci->GetOutput());
 
-  printf("Resulting image: %d points \n",deci->GetOutput()->GetNumberOfPoints());
+  printf("Resulting image: %d points \n",(int)deci->GetOutput()->GetNumberOfPoints());
 
   triangle_filter  ->Delete();
   deci             ->Delete();

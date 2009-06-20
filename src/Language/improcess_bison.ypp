@@ -8,7 +8,8 @@
  */
 
 
-%{ /*** C/C++ Declarations ***/
+%{
+ /*** C/C++ Declarations ***/
   //#include <stdlib.h>
   //#include <stdio.h>
 
@@ -23,6 +24,7 @@
 #include "ami_function.h"
 #include "ami_class.h"
 #include "ami_object.h"
+#include "IdentifierInfo.h"
 
 //#include "dist_squared.hpp"
 #include "improcess_bison.tab.hpp"

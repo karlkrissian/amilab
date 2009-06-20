@@ -1,5 +1,11 @@
 %{
 
+#include "IdentifierInfo.h"
+#include "Variable.hpp"
+#include "imageextent.h"
+#include "AmiInstructionBlock.h"
+#include "driver.h"
+
 #include "scanner.h"
 
 extern yyip::Driver GB_driver;
@@ -26,6 +32,12 @@ typedef yyip::Parser::token_type token_type;
 #include <locale.h>
 #include "messages.h"
 #include "fonctions.h"
+
+#include "IdentifierInfo.h"
+#include "Variable.hpp"
+#include "imageextent.h"
+#include "AmiInstructionBlock.h"
+
 #include "improcess_bison.tab.hpp"
 #include "VarContexts.hpp"
 #include "ami_function.h"

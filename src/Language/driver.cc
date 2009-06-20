@@ -12,12 +12,19 @@
 #include <fstream>
 #include <sstream>
 
+#include "wxParamTypes.hpp"
 #include "driver.h"
 #include "scanner.h"
 #include "VarContexts.hpp"
 #include "CoutwxString.h"
+#include "MainFrame.h"
 
-extern VarContexts       Vars;
+#include <wx/filename.h>
+
+extern VarContexts    Vars;
+extern wxString       GB_scripts_dir;
+extern MainFrame*     GB_main_wxFrame;
+extern unsigned char  GB_nofile;
 
 namespace yyip {
 
