@@ -97,9 +97,9 @@ extern unsigned char GB_verbose;
 #include "amilab_messages.h"
 
 #define NEW(mess,ptr,type,size) \
-    ptr = (type*) _mm_malloc (sizeof(type)*size,16); \
     CLASS_MESSAGE( boost::format("%1%, allocation of %2% Mb") \
         % mess % (1.0*size*sizeof(type)/1000000.0)); \
+    ptr = (type*) _mm_malloc (sizeof(type)*size,16); \
     if (!ptr) \
       CLASS_ERROR("Error in _mm_malloc allocation !")
 

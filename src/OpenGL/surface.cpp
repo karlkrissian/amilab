@@ -889,7 +889,7 @@ void SurfacePoly :: AddVTKPoly( vtkPolyData* vtkpoly)
   poly_create = (vtkpoly->GetNumberOfStrips() >0);
   Si poly_create Alors
     fprintf(stderr,"number of strips %d  \n",
-	    vtkpoly->GetNumberOfStrips());
+	    (int)vtkpoly->GetNumberOfStrips());
     triangle_filter = vtkTriangleFilter::New();
     triangle_filter->SetInput(vtkpoly);
     triangle_filter->Update();
@@ -902,7 +902,7 @@ Si GB_debug AlorsFait fprintf(stderr,"SurfacePoly::AddVTKPoly() \t Insert Points
   // Insert points
 
   fprintf(stderr,"number of points %d  \n",
-	  vtkpoly->GetNumberOfPoints());
+	  (int)vtkpoly->GetNumberOfPoints());
 
   vtk_colors = vtkpoly->GetPointData()->GetScalars();
   get_colors = ((vtk_colors!=NULL)&&(vtk_colors->GetDataType()==VTK_UNSIGNED_CHAR));
@@ -928,7 +928,7 @@ Si GB_debug AlorsFait fprintf(stderr,"SurfacePoly::AddVTKPoly() \t Insert Points
   polys_res = vtkpoly->GetPolys();
 
   fprintf(stderr,"number of polygons %d  \n",
-	  polys_res->GetNumberOfCells());
+	  (int)polys_res->GetNumberOfCells());
 
 Si GB_debug AlorsFait fprintf(stderr,"SurfacePoly::AddVTKPoly() \t Insert Polygons \n");
   // Insert polygons
@@ -939,7 +939,7 @@ Si GB_debug AlorsFait fprintf(stderr,"SurfacePoly::AddVTKPoly() \t Insert Polygo
     //    polys_res->GetCell(i,nb_pts,res_points);
     polys_res->GetNextCell(nb_pts,res_points);
 
-    Si GB_debug AlorsFait fprintf(stderr," %d nbpoints %d \n",i,nb_pts);
+    Si GB_debug AlorsFait fprintf(stderr," %d nbpoints %d \n",(int)i,(int)nb_pts);
 
     Si nb_pts==0 AlorsFait continue;
 
@@ -955,7 +955,7 @@ Si GB_debug AlorsFait fprintf(stderr,"SurfacePoly::AddVTKPoly() \t Insert Polygo
   lines = vtkpoly->GetLines();
 
   fprintf(stderr,"number of lines %d  \n",
-	  lines->GetNumberOfCells());
+	  (int)lines->GetNumberOfCells());
 
   lines->SetTraversalLocation(0); 
   Pour(i,0,lines->GetNumberOfCells()-1)
@@ -2784,19 +2784,19 @@ unsigned char SurfacePoly :: ReadVTK( char* nom )
   boost::shared_ptr<vtkPolyDataReader> reader;
   vtkPolyData* poly; 
 
-fprintf(stderr,"SurfacePoly::ReadVTK() begin \n");
+  fprintf(stderr,"SurfacePoly::ReadVTK() begin \n");
 
   reader = vtk_new<vtkPolyDataReader>()();
   reader->SetFileName(nom);
-  reader->Update();
-
-  poly = reader->GetOutput();
-
-  AddVTKPoly(poly);
-
-fprintf(stderr,"SurfacePoly::ReadVTK() end \n");
-
-  return true;
+  if (reader->IsFilePolyData( )) {
+    reader->Update();
+    poly = reader->GetOutput();
+    AddVTKPoly(poly);
+    //fprintf(stderr,"SurfacePoly::ReadVTK() end \n");
+    return true;
+  } else {
+    return false;
+  }
 
 #else
   fprintf(stderr,"SurfacePoly::ReadVTK()\t VTK not available ...\n");
@@ -2810,13 +2810,12 @@ fprintf(stderr,"SurfacePoly::ReadVTK() end \n");
 unsigned char SurfacePoly :: Read( char* nom )
 //                               ----
 {
+  bool result = false;
+  result = ReadVTK(nom);
+  if (!result)
+    result = ReadVRML(nom);
 
- Si CheckEndString(nom,".vtk") Alors
-    return ReadVTK(nom);
-  Sinon
-    return ReadVRML(nom);
-  FinSi
-
+  return result;
 } // Read()
 
 //----------------------------------------------------------------------

@@ -1201,6 +1201,7 @@ void MainFrame::ConsoleClear( wxCommandEvent& event)
 void MainFrame::UpdateVars( wxCommandEvent& event)
 {
   UpdateVarList();
+  UpdateVarTree();
 }
 
 //--------------------------------------------------

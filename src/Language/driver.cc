@@ -62,7 +62,7 @@ bool Driver::parse_stream(std::istream& in, const std::string& sname)
     if (language_debug_stream.good()) 
       parser.set_debug_stream(language_debug_stream);
 
-    int res;
+    int res = 0;
     try {
       res = parser.parse();
     }

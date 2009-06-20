@@ -1142,7 +1142,7 @@ object_decl:
     };
 
 func_inst :
-    FUNCTION ASTRING end_instr
+    FUNCTION expr_string end_instr
     {
        driver.res_print($2);
        driver.parse_script($2);
@@ -1573,7 +1573,8 @@ command:
           if (file!=NULL) {
             Vars.AddVar(type_file,ident,(void*)file);
           } else {
-          fprintf(stderr,"error opening file \n");
+            fprintf(stderr,"error opening file '%s' in mode '%s'\n",
+                      $5,$7);
           /*
           switch (errno) {
           case EEXIST: fprintf(stderr,"EEXIST \n"); break;
@@ -1609,7 +1610,8 @@ command:
             if (file!=NULL) {
                 Vars.AddVar(type_file,filename.c_str(),(void*)file);
             } else {
-                fprintf(stderr,"error opening file \n");
+              fprintf(stderr,"error opening file '%s' in mode '%s'\n",
+                      $5,$7);
             }
         }
         | VAR_FILE T_POINT T_rewind
