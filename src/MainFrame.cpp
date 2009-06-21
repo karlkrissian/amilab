@@ -49,6 +49,8 @@
 
 #include "amilab_messages.h"
 
+#include "surface.hpp"
+
 //#include "Bluecurve/32x32/actions/reload.xpm"
 
 extern wxString        GB_help_dir;
@@ -536,11 +538,15 @@ void MainFrame::CreateVarTreePanel ( wxWindow* parent)
                               wxTR_HAS_BUTTONS | wxTR_HIDE_ROOT 
                             );
   _var_tree->SetFont( wxFont(10,wxMODERN,wxNORMAL,wxNORMAL)); // try a fixed pitch font
+  _var_tree->SetIndent(5);
+
   _vartree_root      = _var_tree->AddRoot(_T("Variables"));
   _vartree_images    = _var_tree->AppendItem(_vartree_root,_T("Images"));
   _vartree_surfaces  = _var_tree->AppendItem(_vartree_root,_T("Surfaces"));
   _vartree_numbers   = _var_tree->AppendItem(_vartree_root,_T("Numbers"));
+  _vartree_strings   = _var_tree->AppendItem(_vartree_root,_T("Strings"));
   _vartree_functions = _var_tree->AppendItem(_vartree_root,_T("Functions"));
+  _vartree_wrapped_functions = _var_tree->AppendItem(_vartree_root,_T("Wrapped Functions"));
   _vartree_others    = _var_tree->AppendItem(_vartree_root,_T("Others"));
 
   vartreepanel_sizer->Add(_var_tree, 1, wxEXPAND , 5);
@@ -967,7 +973,6 @@ void MainFrame::UpdateVarTree()
   // loop vars
   variables = Vars.SearchCompletions(GetwxStr(""));
 
-
   for(int i=0;i<(int)variables->GetCount();i++) {
     //cout << "set item variable " << i << endl;
 
@@ -987,10 +992,15 @@ void MainFrame::UpdateVarTree()
                             % im->DimZ()).str();
         //cout << text << endl;
         _var_tree->AppendItem(_vartree_images,wxString(text.c_str(), wxConvUTF8));
-        _var_tree->SetIndent(5);
       } else
       if (var->Type() == type_surface) {
-        _var_tree->AppendItem(_vartree_surfaces,(*variables)[i]);
+        SurfacePoly::ptr surf = (*(SurfacePoly::ptr*)var->Pointer());
+        std::string text = (boost::format("%1% %15t pts: %2% %25t poly:%3%")
+                            % var->Name()
+                            % surf->GetNumberOfPoints()
+                            % surf->GetNumberOfPolys()).str();
+        //cout << text << endl;
+        _var_tree->AppendItem(_vartree_surfaces,wxString(text.c_str(), wxConvUTF8));
       } else
       if ((var->Type() == type_float)||
           (var->Type() == type_int)  ||
@@ -998,9 +1008,17 @@ void MainFrame::UpdateVarTree()
       {
         _var_tree->AppendItem(_vartree_numbers,(*variables)[i]);
       } else
+      if (var->Type() == type_string)
+      {
+        _var_tree->AppendItem(_vartree_strings,(*variables)[i]);
+      } else
       if (var->Type() == type_ami_function)
       {
         _var_tree->AppendItem(_vartree_functions,(*variables)[i]);
+      } else
+      if (var->Type() == type_c_image_function)
+      {
+        _var_tree->AppendItem(_vartree_wrapped_functions,(*variables)[i]);
       } else
         _var_tree->AppendItem(_vartree_others,(*variables)[i]);
     }

@@ -49,6 +49,7 @@ InrImage* wrapFastLocalSumDir(ParamList* p)
                 1: using FastLocalSumX_noborder, FastLocalSumY_noborder, FastLocalSumZ_noborder\n\
                 2: using FastLocalSumX_noborder, FastLocalSumY_noborder, FastLocalSumZ_noborder_2 \n\
                 3: using FastLocalSumX and FastLocalSumDirNonX \n\
+                4: using FastLocalMeanX_noborder \n\
               stepsize: (def:4) \n\
             ";
 
@@ -86,10 +87,14 @@ InrImage* wrapFastLocalSumDir(ParamList* p)
       switch (mode) {
         case 1:
         case 2:
-          FastLocalSumX_noborder<float,unsigned char> (input1.get(),result,wsize,extent);
+          // input and output extents are set equal
+          FastLocalSumX_noborder<float,unsigned char> (input1.get(),result,wsize,extent,extent);
         break;
         case 3:
           FastLocalSumX<float,unsigned char> (input1.get(),result,wsize,axis,extent,stepsize);
+        break;
+        case 4:
+          FastLocalMeanX_noborder<float,unsigned char> (input1.get(),result,wsize,extent);
         break;
       }
     else
@@ -97,7 +102,7 @@ InrImage* wrapFastLocalSumDir(ParamList* p)
       switch (mode) {
         case 1:
         case 2:
-          FastLocalSumY_noborder<float,unsigned short>(input1.get(),result,wsize,extent,stepsize);
+          FastLocalSumY_noborder<float,unsigned short>(input1.get(),result,wsize,extent,extent,stepsize);
         break;
         case 3:
           FastLocalSumDirNonX<float,unsigned short>  (input1.get(),result,wsize,axis,extent,stepsize);
@@ -110,7 +115,7 @@ InrImage* wrapFastLocalSumDir(ParamList* p)
           FastLocalSumZ_noborder<float,unsigned int>  (input1.get(),result,wsize,extent,stepsize);
         break;
         case 2:
-          FastLocalSumZ_noborder_2<float,unsigned int>  (input1.get(),result,wsize,extent,stepsize);
+          FastLocalSumZ_noborder_2<float,unsigned int>  (input1.get(),result,wsize,extent,extent,stepsize);
         break;
         case 3:
           FastLocalSumDirNonX<float,unsigned int>  (input1.get(),result,wsize,axis,extent,stepsize);

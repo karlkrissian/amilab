@@ -30,10 +30,11 @@ namespace yyip {
 
 //------------------------------------------------------
 Driver::Driver()
-    : trace_scanning(false),
-      trace_parsing(false),
+    : 
       yyiplineno(1),
-      current_file("")
+      current_file(""),
+      trace_scanning(false),
+      trace_parsing(false)
 {
   in_console = true;
 
@@ -164,9 +165,9 @@ void Driver::yyip_call_function( const AMIFunction::ptr& f, const ParamList::ptr
   Vars.SetLastContext();
 
   // Creates the variables if needed
-  if (param.get())
+  if (param.get()) {
     // Verifier les parametres
-    if (f->GetParamList( )->CheckParam(param.get())) 
+    if (f->GetParamList( )->CheckParam(param.get())) {
       for(i=0;i<param->GetNumParam();i++) {
         name = f->GetParamList( )->GetName(i);
         if (Vars.GetCurrentContext()->ExistVar(name)) {
@@ -189,10 +190,11 @@ void Driver::yyip_call_function( const AMIFunction::ptr& f, const ParamList::ptr
                         );
         }
       } // end for
-    else
+    } else
       cerr  << "Driver::yyip_call_function "
             << "\t Error checking for parameters."
             << endl;
+  }
 
   // Call the function
   this->current_file = f->GetFileName();

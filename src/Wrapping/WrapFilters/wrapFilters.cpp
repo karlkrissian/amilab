@@ -152,7 +152,7 @@ void NSim2(ParamList* p)
 //    int minx,maxx,miny,maxy,minz,maxz;
     double val=0,mean=0,var=0;
 
-    InrImage* result;
+    //InrImage* result;
 
   if (!get_image_param(  input,        p, n)) HelpAndReturn;
   if (!get_image_param(  local_mean,   p, n)) HelpAndReturn;
@@ -437,7 +437,7 @@ double probability_weight(InrImage* in, int x,int y, int z,
   tz = in->DimZ();
   txy = tx*in->DimY();
 
-  int fj_min,fj_max,fi_min,fi_max,fk_min,fk_max;
+  int fj_min=0,fj_max=0,fi_min,fi_max,fk_min=0,fk_max=0;
   if (check_limits) {
     // check limit for patch center on x,y,z
     fi_min = (x-f>=0   ?-f:-x);
@@ -581,7 +581,7 @@ double square_distance(InrImage* in, int x,int y, int z, int dx, int dy, int dz,
   tz = in->DimZ();
   txy = tx*in->DimY();
 
-  int fj_min,fj_max,fi_min,fi_max,fk_min,fk_max;
+  int fj_min=0,fj_max=0,fi_min,fi_max,fk_min=0,fk_max=0;
   if (check_limits) {
     // check limit for patch center on x,y,z
     fi_min = (x-f>=0   ?-f:-x);
@@ -744,7 +744,7 @@ void* thread_NLmeans( void* threadarg)
 
   int x,y,z;
   register int dx,dy,dz;
-  register double wmax,dist, w, average, total_weight;
+  register double wmax,dist, w=0, average, total_weight;
 
   int percentage=0;
   int new_percentage=0;

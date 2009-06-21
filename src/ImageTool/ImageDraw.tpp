@@ -75,8 +75,8 @@ void ImageDraw<T>::Apply(int width_dir, int height_dir, int width, int height )
 	register int         x,y;
 	register float       px,py;
 	register float       px1,py1;
-        T* im_buf0;
-        T* im_buf;
+        T* im_buf0 = NULL;
+        T* im_buf = NULL;
 
 	int wo,ho; // width and height orientation
 	int pw,ph; // image pixel width and height

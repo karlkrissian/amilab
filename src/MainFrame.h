@@ -174,7 +174,9 @@ protected:
   wxTreeItemId _vartree_images;
   wxTreeItemId _vartree_surfaces;
   wxTreeItemId _vartree_numbers;
+  wxTreeItemId _vartree_strings;
   wxTreeItemId _vartree_functions;
+  wxTreeItemId _vartree_wrapped_functions;
   wxTreeItemId _vartree_others;
 
   void CreateMenu();

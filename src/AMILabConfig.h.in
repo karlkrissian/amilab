@@ -22,5 +22,7 @@
 #cmakedefine AMI_USE_VTK
 #cmakedefine AMI_USE_ITK
 
+#define AMI_BUILD_@AMI_BUILD_TYPE@
+
 #endif // _AMILabConfig_h_
 

@@ -38,6 +38,7 @@ class ImageExtent {
     extent[1][1]=y2;
     extent[2][0]=z1;
     extent[2][1]=z2;
+    mode = 0;
   }
 
   ImageExtent(float x1,float x2, float y1=0, float y2=0, float z1=0, float z2=0) {
@@ -47,6 +48,7 @@ class ImageExtent {
     extent[1][1]=y2;
     extent[2][0]=z1;
     extent[2][1]=z2;
+    mode = 0;
   }
 
   ImageExtent(InrImage* im)
@@ -57,6 +59,7 @@ class ImageExtent {
     extent[0][1] = im->DimX()-1;
     extent[1][1] = im->DimY()-1;
     extent[2][1] = im->DimZ()-1;
+    mode = 0;
   }
 
   const T& Xmin() const { return extent[0][0];}
@@ -182,6 +185,25 @@ class ImageExtent {
 
     for(int i=0; i<3; i++)
        SetMax(i, macro_min(GetMax(i), e.GetMax(i)));
+  }
+
+  void SetRelative( const ImageExtent<T>& e)
+  {
+    // substract e.GetMin(.) for each coordinate
+    for(int i=0; i<3; i++) {
+       SetMin(i, GetMin(i) - e.GetMin(i));
+       SetMax(i, GetMax(i) - e.GetMin(i));
+    }
+  }
+
+  /// adds a size to each border within the given extent
+  void AddMargin( const int& size, const ImageExtent<T>& e)
+  {
+    // substract e.GetMin(.) for each coordinate
+    for(int i=0; i<3; i++) {
+       SetMin(i, macro_max(GetMin(i) - size, e.GetMin(i)));
+       SetMax(i, macro_min(GetMax(i) + size, e.GetMax(i)));
+    }
   }
 
 };
