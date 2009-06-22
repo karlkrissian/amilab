@@ -3,11 +3,36 @@
 #
 #
 
+# typical root dirs of installations, exactly one of them is used
+SET (OPTICFLOW_POSSIBLE_ROOT_DIRS
+  "$ENV{ProgramFiles}/libAMIOpticalFlow"
+  /usr/local
+  /usr
+  )
+
+#
+#
+FIND_PATH(OPTICFLOW_ROOT_DIR
+  NAMES
+  include/OpticalFlow/optic_flow.h 
+  PATHS ${OPTICFLOW_POSSIBLE_ROOT_DIRS})
+
+
+MESSAGE("OPTICFLOW_ROOT_DIR=${OPTICFLOW_ROOT_DIR}")
+
+  # header include dir suffixes appended to AMIFLUID_ROOT_DIR
+SET(OPTICFLOW_INCDIR_SUFFIXES
+  include
+  include/OpticalFlow
+  libAMIOpticalFlow/include/OpticalFlow
+  )
 
 #
 # Find the header file
 #
-FIND_PATH(OPTICFLOW_INCLUDE_DIR OpticalFlow/optic_flow.h)
+FIND_PATH(OPTICFLOW_INCLUDE_DIR OpticalFlow/optic_flow.h
+	PATHS ${OPTICFLOW_ROOT_DIR}
+	PATH_SUFFIXES ${OPTICFLOW_INCDIR_SUFFIXES} )
 
 #
 # Find the library

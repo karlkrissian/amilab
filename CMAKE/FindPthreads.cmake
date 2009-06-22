@@ -56,10 +56,24 @@ ELSE(NOT DEFINED PTHREADS_EXCEPTION_SCHEME)
 
 ENDIF(NOT DEFINED PTHREADS_EXCEPTION_SCHEME)
 
+# typical root dirs of installations, exactly one of them is used
+SET (PTHREADS_POSSIBLE_ROOT_DIRS
+  "$ENV{ProgramFiles}/pthreads"
+  "$ENV{ProgramFiles}/pthreads.2"
+  /usr/local
+  /usr
+  )
+
+FIND_PATH(PTHREADS_ROOT_DIR
+  NAMES
+  pthread.h
+  include/pthread.h 
+  PATHS ${PTHREADS_POSSIBLE_ROOT_DIRS})
+
 #
 # Find the header file
 #
-FIND_PATH(PTHREADS_INCLUDE_DIR pthread.h)
+FIND_PATH(PTHREADS_INCLUDE_DIR pthread.h PATHS ${PTHREADS_ROOT_DIR})
 
 #
 # Find the library
@@ -79,7 +93,14 @@ ELSE(MSVC) # Unix / Cygwin / Apple / Etc.
     SET(names pthread)
 ENDIF(MSVC)
     
-FIND_LIBRARY(PTHREADS_LIBRARY ${names}
+# library linkdir suffixes appended to AMIFLUID_ROOT_DIR
+SET(PTHREADS_LIBDIR_SUFFIXES
+  lib
+  )
+	
+	
+FIND_LIBRARY(PTHREADS_LIBRARY ${names} PATHS ${PTHREADS_ROOT_DIR}
+	PATH_SUFFIXES ${PTHREADS_LIBDIR_SUFFIXES}
     DOC "The Portable Threads Library")
 
 INCLUDE(FindPackageHandleStandardArgs)
