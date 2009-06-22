@@ -13,6 +13,8 @@
 #ifndef _amilab_messages_h_
 #define _amilab_messages_h_
 
+#include "AMILabConfig.h"
+
 #define FILE_ERROR( m) \
   if (GB_debug)  {\
     std::cerr << "Error \t"; \

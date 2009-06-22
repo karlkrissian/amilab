@@ -18,8 +18,8 @@ include_directories (
   ${Boost_INCLUDE_DIR}
   )
 
-INCLUDE( ${ITK_USE_FILE} )
-MESSAGE( "ITK_USE_FILE = ${ITK_USE_FILE}")
+INCLUDE( ${USE_ITK_FILE} )
+MESSAGE( "USE_ITK_FILE = ${USE_ITK_FILE}")
 
 INCLUDE( ${wxWidgets_USE_FILE})
 MESSAGE( "wxWidgets_USE_FILE = ${wxWidgets_USE_FILE}")

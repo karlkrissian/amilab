@@ -43,25 +43,22 @@ include_directories (
 INCLUDE( ${VTK_USE_FILE} )
 INCLUDE(${wxWidgets_USE_FILE})
 
-BISON_TARGET_option_extraopts("-t  -dv")
+SET(Language_SRCS
+    driver.cc
+    VarContexts.cpp
+    Variable.cpp
+    Variables.cpp
+    paramlist.cpp
+)
 
-BISON_TARGET(improcessbison
-  ${AMILAB_SOURCE_DIR}/Language/improcess_bison.ypp
-  ${AMILAB_SOURCE_DIR}/Language/improcess_bison.tab.cpp
+IF(AMI_USE_FLEXBISON)
+
+  BISON_TARGET_option_extraopts("-t  -dv")
+
+  BISON_TARGET(improcessbison
+    ${AMILAB_SOURCE_DIR}/Language/improcess_bison.ypp
+    ${AMILAB_SOURCE_DIR}/Language/improcess_bison.tab.cpp
   )
-
-# IF (WIN32)
-# 
-#   SET(Language_SRCS
-#     ${BISON_improcessbison_OUTPUTS}
-#     driver.cc
-#     improcess_flex.cpp
-#     VarContexts.cpp
-#     Variable.cpp
-#     Variables.cpp
-#   )
-# 
-# ELSE (WIN32)
 
   FLEX_TARGET(improcessflex
   ${AMILAB_SOURCE_DIR}/Language/improcess_flex.lpp
@@ -72,13 +69,22 @@ BISON_TARGET(improcessbison
   SET(Language_SRCS
     ${BISON_improcessbison_OUTPUTS}
     ${FLEX_improcessflex_OUTPUTS}
-    driver.cc
-    VarContexts.cpp
-    Variable.cpp
-    Variables.cpp
-    paramlist.cpp
+    ${Language_SRCS}
   )
+  
+ELSE(AMI_USE_FLEXBISON)
+ 
+   SET( FLEXBISON_OUTPUTS
+		${AMILAB_SOURCE_DIR}/Language/improcess_bison.tab.cpp
+		${AMILAB_SOURCE_DIR}/Language/improcess_flex.cpp
+	)
+ 
+   SET(Language_SRCS
+     ${FLEXBISON_OUTPUTS}
+     ${Language_SRCS}
+   )
+ 
 
-# ENDIF (WIN32)
+ENDIF(AMI_USE_FLEXBISON)
 
 my_add_library ( Language)
