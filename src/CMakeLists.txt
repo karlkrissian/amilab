@@ -171,6 +171,17 @@ IF(AMI_USE_OPENMP)
   FIND_PACKAGE( OpenMP)
 ENDIF(AMI_USE_OPENMP)
 
+OPTION(AMI_USE_SSE "Use SSE CPU instructions set" ON)
+
+IF(AMI_USE_SSE)
+  # add flag for mingw
+    MESSAGE("${CMAKE_CXX_COMPILER}")
+  IF(${CMAKE_CXX_COMPILER} STREQUAL "/usr/bin/i686-pc-mingw32-g++")
+    MESSAGE("adding -msse for compiler")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse")
+  ENDIF(${CMAKE_CXX_COMPILER} STREQUAL "/usr/bin/i686-pc-mingw32-g++")
+ENDIF(AMI_USE_SSE)
+
 
 INCLUDE (CheckIncludeFiles)
 # usage: CHECK_INCLUDE_FILES (<header> <RESULT_VARIABLE> )
@@ -244,16 +255,18 @@ add_subdirectory (Wrapping)
 
 add_subdirectory (Language)
 
-IF(AMI_USE_FASTNLMEANS)
-  add_subdirectory (Algorithms)
-ENDIF(AMI_USE_FASTNLMEANS)
+#IF(AMI_USE_FASTNLMEANS)
+add_subdirectory (Algorithms)
+#ENDIF(AMI_USE_FASTNLMEANS)
 
 include_directories (
   ${AMILAB_SOURCE_DIR}/Common
   ${AMILAB_SOURCE_DIR}/Images
   ${AMILAB_SOURCE_DIR}/Math
   ${AMILAB_SOURCE_DIR}/AMImage
+  ${AMILAB_SOURCE_DIR}/Algorithms/Basic
   ${AMILAB_SOURCE_DIR}/Language
+  ${AMILAB_SOURCE_DIR}/Algorithms/Basic
   ${AMILAB_SOURCE_DIR}/Coordonnees
   ${AMILAB_SOURCE_DIR}/Vaisseaux
   ${AMILAB_SOURCE_DIR}/Graphic
@@ -270,7 +283,6 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Contours
   ${AMILAB_SOURCE_DIR}/DistTransf
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapITK
-  ${AMILAB_SOURCE_DIR}/Algorithms/Basic
   ${AMILAB_SOURCE_DIR}
   ${AMILAB_SOURCE_DIR}/../Pixmaps
   ${AMILAB_BINARY_DIR}
@@ -340,12 +352,12 @@ SET(amilab_ownlibs
   Voxels
 )
 
-IF(AMI_USE_FASTNLMEANS)
+#IF(AMI_USE_FASTNLMEANS)
   SET(amilab_ownlibs
       ${amilab_ownlibs}
       Algorithms
   )
-ENDIF(AMI_USE_FASTNLMEANS)
+#ENDIF(AMI_USE_FASTNLMEANS)
 
 IF(AMI_USE_VTK)
   SET(amilab_ownlibs

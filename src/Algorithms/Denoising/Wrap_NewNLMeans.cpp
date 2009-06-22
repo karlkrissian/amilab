@@ -11,7 +11,10 @@
 //
 
 #include "Wrap_NewNLMeans.h"
-#include "FastNLmeans.hpp"
+
+#ifdef AMI_USE_FASTNLMEANS
+  #include "FastNLmeans.hpp"
+#endif
 
 
 //------------------------------------------------------
@@ -35,6 +38,7 @@ InrImage* Wrap_NewNLmeans(ParamList* p)
           minweight (def: 15):  minimal weight threshold is exp(-minweight) \n\
             ";
 
+#ifdef AMI_USE_FASTNLMEANS
   FastNLmeans_params params;
   int n=0;
 
@@ -51,6 +55,10 @@ InrImage* Wrap_NewNLmeans(ParamList* p)
   //printf("finished !...\n");
 
   return fast_nlmeans.GetResult();
+#else
+  cerr << " need to compile with FastNLmeans enabled" << endl;
+  return NULL;
+#endif
 
 } // Wrap_NewNLmeans
 

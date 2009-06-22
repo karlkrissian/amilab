@@ -21,7 +21,10 @@
   only mirror boundaries at the moment
 */
 
-#include <omp.h>
+#ifdef AMI_USE_OPENMP
+  #include <omp.h>
+#endif
+
 #include "Timing.hpp"
 #include "amilab_messages.h"
 

@@ -21,6 +21,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Algorithms/Denoising
   ${Boost_INCLUDE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
+  ${PTHREADS_INCLUDE_DIR}
 )
 
 IF(AMI_USE_FASTNLMEANS)

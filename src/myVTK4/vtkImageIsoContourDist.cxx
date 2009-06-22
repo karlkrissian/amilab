@@ -265,6 +265,7 @@ void vtkImageIsoContourDist::IsoSurfDist2D( )
   displace[0] = 1;
   displace[1] = tx;
 
+  // TODO: check if range should be narrower ... 
   for(y=0; y<=ty-2; y++) {
   inPtr  = (float*) inputImage ->GetScalarPointer(0,y,0);
   for(x=0; x<=tx-2; x++) {
@@ -386,10 +387,11 @@ void vtkImageIsoContourDist::IsoSurfDist3D( )
 
   //  fprintf(stderr,"IsoSurf3D() compute \n");
 
-  for(z=1; z<=tz-2; z++) {
-  for(y=1; y<=ty-2; y++) {
+  // need 2 voxels margin ...
+  for(z=2; z<=tz-3; z++) {
+  for(y=2; y<=ty-3; y++) {
   inPtr  = (float*) inputImage ->GetScalarPointer(1,y,z);
-  for(x=1; x<=tx-2; x++) {
+  for(x=2; x<=tx-3; x++) {
 
     val0 = *inPtr-threshold;
     sign = (val0>0); 
