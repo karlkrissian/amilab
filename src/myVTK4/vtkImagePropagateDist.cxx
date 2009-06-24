@@ -43,8 +43,8 @@
 //#define FALSE   0
 #define EPSILON 1E-5
 
-#define min(x,y) (((x)<(y))?(x):(y))
-#define max(x,y) (((x)>(y))?(x):(y))
+#define macro_min(x,y) (((x)<(y))?(x):(y))
+#define macro_max(x,y) (((x)>(y))?(x):(y))
 
 
 #define dist2(a,b,c)  (sq[abs(a)]+sq[abs(b)]+sq[abs(c)])
@@ -333,11 +333,11 @@ void vtkImagePropagateDist::PropagateDanielsson2D( )
       val0 = buf[tp];
 
       if (buf[p]>0) {
-    val_min_pos = min(val_min_pos,buf[p]);
-    val_max_pos = max(val_max_pos,buf[p]);
+    val_min_pos = macro_min(val_min_pos,buf[p]);
+    val_max_pos = macro_max(val_max_pos,buf[p]);
       } else {
-    val_min_neg = min(val_min_neg,buf[p]);
-    val_max_neg = max(val_max_neg,buf[p]);
+    val_min_neg = macro_min(val_min_neg,buf[p]);
+    val_max_neg = macro_max(val_max_neg,buf[p]);
       }
 
 
@@ -777,11 +777,11 @@ void vtkImagePropagateDist::PropagateDanielsson3D( )
       val0 = buf[tp];
 
       if (buf[p]>0) {
-    val_min_pos = min(val_min_pos,buf[p]);
-    val_max_pos = max(val_max_pos,buf[p]);
+    val_min_pos = macro_min(val_min_pos,buf[p]);
+    val_max_pos = macro_max(val_max_pos,buf[p]);
       } else {
-    val_min_neg = min(val_min_neg,buf[p]);
-    val_max_neg = max(val_max_neg,buf[p]);
+    val_min_neg = macro_min(val_min_neg,buf[p]);
+    val_max_neg = macro_max(val_max_neg,buf[p]);
       }
 
       x0 = p%tx;

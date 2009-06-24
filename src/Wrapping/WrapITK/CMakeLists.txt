@@ -28,6 +28,16 @@ SET(  WrapITK_SRCS
     itkCannyEdgeDetector.cpp
     wrapITK.cpp
     LeastSquares.cpp
+
+	itkCannyEdgeDetector.cpp
+	LeastSquares.cpp
+	wrapitkRecursiveGaussianImageFilter.cpp
+	wrapitkRead_3D_US.cpp
+	wrapitkRead.cpp
+	wrapitkIsoContourDist.cpp
+	#wrapitkBasicNLMeansFilter.cpp
+    wrapITK.cpp
+	#itkBasicNLMeansFilter.txx
 )
 
 my_add_library ( WrapITK)

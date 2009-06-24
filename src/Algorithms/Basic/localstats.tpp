@@ -10,6 +10,7 @@
 //
 //
 
+#include <boost/scoped_array.hpp>
 
 // TODO: BufferPos() NOT THREAD SAFE !!!! try to fix it in the future
 
@@ -405,7 +406,7 @@ void FastLocalSumY_noborder( InrImage* in, InrImage* out,
   // now need to go line by line
   int x,y,z;
   unsigned short incy = in->DimX(); // limit to approx. 64000 dim in X
-  float sum[incy];
+  boost::scoped_array<float> sum(new float[incy]);
 
   for (z=zmin;z<=zmax;z++) {
     // initialize sums
@@ -528,9 +529,14 @@ void FastLocalSumZ_noborder( InrImage* in, InrImage* out,
   int line_size = xmax-xmin+1;
   //cout << "line_size = " << line_size << endl;
   // ensure multiple of 4 to help alignment of the beginning of each line
-  line_size = floor((line_size+3)/4)*4;
+  line_size = floor((double)((line_size+3.0)/4.0))*4;
   //cout << "line_size = " << line_size << endl;
-  float sum[dy][line_size];
+  float** sum;
+  // allocation of sum
+  sum = new float*[dy];
+  for(int k=0;k<dy;k++) {
+	sum[k] = new float[line_size];
+  }
 
   for(y=ymin;y<=ymax;y++)
     for(x=xmin;x<=xmax;x++) sum[y][x-xmin] = 0; // use memset here?
@@ -590,6 +596,10 @@ void FastLocalSumZ_noborder( InrImage* in, InrImage* out,
     } // end for y
   } // end for z
 
+  // liberation of sum
+  for(int k=0;k<dy;k++)	delete [] sum[k];
+  delete [] sum;
+
 //  END_TIMING
   END_TIMING(extent.GetNbVoxels())
 
@@ -638,7 +648,7 @@ void FastLocalSumZ_noborder_2( InrImage* in, InrImage* out,
   unsigned int dxy = dx*dy;
 
   int line_size = xmax-xmin+1;
-  float sum[line_size];
+  boost::scoped_array<float> sum(new float[line_size]);
   float* sum1;
 
   for(y=ymin;y<=ymax;y++) {
@@ -674,7 +684,7 @@ void FastLocalSumZ_noborder_2( InrImage* in, InrImage* out,
     for (z=zmin+size+1;z<=zmax-size;z++) {
       xmax1=xmax-stepsize;
       x = xmin;
-      sum1 = sum;
+      sum1 = sum.get();
       vres_buf1=vres_buf;
       vmin_buf1=vmin_buf;
       vmax_buf1=vmax_buf;
@@ -711,6 +721,7 @@ void FastLocalSumZ_noborder_2( InrImage* in, InrImage* out,
 
 } // FastLocalSumZ_noborder_2<T>
 
+
 template<class T,class TInc>
 void FastLocalSumX( InrImage* in, InrImage* out, 
                       int size, int axis, 
@@ -728,11 +739,16 @@ void FastLocalSumX( InrImage* in, InrImage* out,
   int       pos[3] = {0,0,0};
   unsigned char ns;
 
-  T*        buf[stepsize];
-  T*        bufmin[stepsize];
-  T*        bufmax[stepsize];
-  register T*        res_buf[stepsize];
-  register float     sum[stepsize];
+  boost::scoped_array<T*> buf(new T*[stepsize]);
+  boost::scoped_array<T*> bufmin(new T*[stepsize]);
+  boost::scoped_array<T*> bufmax(new T*[stepsize]);
+  //T*        buf[stepsize];
+  //T*        bufmin[stepsize];
+  //T*        bufmax[stepsize];
+  register boost::scoped_array<T*> res_buf(new T*[stepsize]);
+  register boost::scoped_array<float> sum(new float[stepsize]);
+  //register T*        res_buf[stepsize];
+  //register float     sum[stepsize];
   //int       num_values;
 
   // check that input and output are of the right type ???
@@ -905,7 +921,8 @@ void FastLocalSumDirNonX( InrImage* in, InrImage* out,
   T*        bufmax;
   register T*        res_buf;
 
-  register float    sum[stepsize]; // compute 4 sums in parallel
+  register boost::scoped_array<float> sum(new float[stepsize]);
+  //register float    sum[stepsize]; // compute 4 sums in parallel
 
   register unsigned char ns;
 
@@ -1082,6 +1099,10 @@ void FastLocalSumDirNonX( InrImage* in, InrImage* out,
   }
   long inc = in->DimX();
   if (axis>1) inc *= in->DimY();
+
+#ifdef max
+#undef max
+#endif
 
   if (inc <= std::numeric_limits<unsigned char>::max()+1) 
     FastLocalSumDirNonX<T,unsigned char>(in,out,size,axis,extent,stepsize);
@@ -1290,7 +1311,7 @@ void FastLocalSumDir( InrImage* in, InrImage* out,
   if (inc <= std::numeric_limits<unsigned short>::max()) 
     FastLocalSumDir<T,unsigned short>(in,out,size,axis,extent);
   else
-  if (inc <= std::numeric_limits<unsigned int>::max()) 
+  if (inc <= (long) std::numeric_limits<unsigned int>::max()) 
     FastLocalSumDir<T,unsigned int>(in,out,size,axis,extent);
   else // long is maximum here
     FastLocalSumDir<T,long>(in,out,size,axis,extent);

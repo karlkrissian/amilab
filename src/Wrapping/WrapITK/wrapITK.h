@@ -27,4 +27,8 @@ InrImage* itkRead(ParamList*);
 
 InrImage* itkIsoContourDist(ParamList*);
 
+InrImage* itkRecursiveGaussianImageFilter2D(ParamList*);
+
+InrImage* itkRecursiveGaussianImageFilter3D(ParamList*);
+
 #endif // _WRAPITK_H_

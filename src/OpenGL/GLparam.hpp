@@ -87,6 +87,10 @@
 #ifndef _GL_PARAM_HPP
 #define _GL_PARAM_HPP
 
+#ifdef WIN32
+  #include <windows.h>
+#endif
+
 #if defined(__APPLE__)
   #include <OpenGL/gl.h>
   #include <OpenGL/glu.h>

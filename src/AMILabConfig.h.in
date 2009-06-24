@@ -22,10 +22,15 @@
 #cmakedefine AMI_USE_VTK
 #cmakedefine AMI_USE_ITK
 
+#cmakedefine AMI_USE_ZLIB
+
+#cmakedefine AMI_USE_BZIP2
+
 #define AMI_BUILD_@AMI_BUILD_TYPE@
 
 #ifdef _MSC_VER
   #define __func__ __FUNCTION__
+  #define _CRT_SECURE_NO_WARNINGS
 #endif
 
 #endif // _AMILabConfig_h_

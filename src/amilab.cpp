@@ -46,6 +46,7 @@
 
 #include "driver.h"
 
+#include <wx/apptrait.h>
 
 Pile<NomMethode*> GB_pile_nom_methode((NomMethode*)NULL);
 unsigned char GB_AfficheWarning = false;

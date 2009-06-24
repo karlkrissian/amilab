@@ -26,6 +26,8 @@
    The full GNU Lesser General Public License file is in Devel/Sources/Prog/LesserGPL_license.txt
 */
 
+#include "AMILabConfig.h"
+
 #include "DeriveesLissees.hpp"
 #include "filtrage_rec.hpp"
 #include "FloatMatrix.hpp"

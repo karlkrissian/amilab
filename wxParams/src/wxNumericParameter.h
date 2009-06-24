@@ -80,7 +80,7 @@ public:
   void SetDecimate( int d)  { 
     _decimate=d; 
     if (_text!=NULL)
-      _text->SetSize(wxSize( 10*(int)log10(_max)+
+      _text->SetSize(wxSize( 10*(int)log10((double)_max)+
                              10*_decimate,
                              wxDefaultCoord));
     _factor=1;

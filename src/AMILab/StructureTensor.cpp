@@ -139,7 +139,7 @@ unsigned char Func_StructureTensor2D( InrImage* image_initiale,
     InrImage*                   image_vap1;
     InrImage*                   image_vap2;
     FiltreRecursif::ptr  filtre;
-    char                        resname[100];
+	std::string                 resname;
 
   type_filtre = MY_FILTRE_CONV;
   Si (image_initiale->_format == WT_FLOAT) Alors
@@ -261,17 +261,17 @@ unsigned char Func_StructureTensor2D( InrImage* image_initiale,
   FinPour
   FinPour
 
-  sprintf(resname,"%s_STvep1",varname);
-  Vars.AddVar(type_image,resname,image_vep1);
+  resname = (boost::format("%s_STvep1") % varname).str();
+  Vars.AddVar(type_image,resname.c_str(),image_vep1);
 
-  sprintf(resname,"%s_STvep2",varname);
-  Vars.AddVar(type_image,resname,image_vep2);
+  resname = (boost::format("%s_STvep2") % varname).str();
+  Vars.AddVar(type_image,resname.c_str(),image_vep2);
 
-  sprintf(resname,"%s_STvap1",varname);
-  Vars.AddVar(type_image,resname,image_vap1);
+  resname = (boost::format("%s_STvap1") % varname).str();
+  Vars.AddVar(type_image,resname.c_str(),image_vap1);
 
-  sprintf(resname,"%s_STvap2",varname);
-  Vars.AddVar(type_image,resname,image_vap2);
+  resname = (boost::format("%s_STvap2") % varname).str();
+  Vars.AddVar(type_image,resname.c_str(),image_vap2);
 
   delete tenseur_xx;
   delete tenseur_xy;
@@ -321,7 +321,7 @@ unsigned char Func_StructureTensor( InrImage* image_initiale,
     InrImage*       image_vap2;
     InrImage*       image_vap3;
     FiltreRecursif* filtre;
-    char            resname[100];
+	std::string     resname;
 //    int             i;
 
 //  verbose = true;
@@ -521,23 +521,23 @@ printf("smoothing zz\n");
   FinPour
   FinPour
 
-  sprintf(resname,"%s_STvep1",varname);
-  Vars.AddVar(type_image,resname,image_vep1);
+  resname = (boost::format("%s_STvep1") % varname).str();
+  Vars.AddVar(type_image,resname.c_str(),image_vep1);
 
-  sprintf(resname,"%s_STvep2",varname);
-  Vars.AddVar(type_image,resname,image_vep2);
+  resname = (boost::format("%s_STvep2") % varname).str();
+  Vars.AddVar(type_image,resname.c_str(),image_vep2);
 
-  sprintf(resname,"%s_STvep3",varname);
-  Vars.AddVar(type_image,resname,image_vep3);
+  resname = (boost::format("%s_STvep3") % varname).str();
+  Vars.AddVar(type_image,resname.c_str(),image_vep3);
 
-  sprintf(resname,"%s_STvap1",varname);
-  Vars.AddVar(type_image,resname,image_vap1);
+  resname = (boost::format("%s_STvap1") % varname).str();
+  Vars.AddVar(type_image,resname.c_str(),image_vap1);
 
-  sprintf(resname,"%s_STvap2",varname);
-  Vars.AddVar(type_image,resname,image_vap2);
+  resname = (boost::format("%s_STvap2") % varname).str();
+  Vars.AddVar(type_image,resname.c_str(),image_vap2);
 
-  sprintf(resname,"%s_STvap3",varname);
-  Vars.AddVar(type_image,resname,image_vap3);
+  resname = (boost::format("%s_STvap3") % varname).str();
+  Vars.AddVar(type_image,resname.c_str(),image_vap3);
 
   delete tenseur_xx;
   delete tenseur_xy;
@@ -600,7 +600,7 @@ unsigned char Func_StructureTensorHessian( InrImage* image_initiale,
     InrImage*        image_grad = NULL;
 
     FiltreRecursif* filtre;
-    char            resname[100];
+	std::string     resname;
     double          hessien[9];
     int             i,j,k;
 
@@ -767,22 +767,22 @@ unsigned char Func_StructureTensorHessian( InrImage* image_initiale,
     if (GB_debug) printf("deleting filter \n");
   delete filtre;
 
-  sprintf(resname,"%s_STHvep1",varname);
-  Vars.AddVar(type_image,resname,image_vep1);
-  sprintf(resname,"%s_STHvep2",varname);
-  Vars.AddVar(type_image,resname,image_vep2);
-  sprintf(resname,"%s_STHvep3",varname);
-  Vars.AddVar(type_image,resname,image_vep3);
-  sprintf(resname,"%s_STHvap1",varname);
-  Vars.AddVar(type_image,resname,image_vap1);
-  sprintf(resname,"%s_STHvap2",varname);
-  Vars.AddVar(type_image,resname,image_vap2);
-  sprintf(resname,"%s_STHvap3",varname);
-  Vars.AddVar(type_image,resname,image_vap3);
+  resname = (boost::format("%s_STHvep1")%varname).str();
+  Vars.AddVar(type_image,resname.c_str(),image_vep1);
+  resname = (boost::format("%s_STHvep2")%varname).str();
+  Vars.AddVar(type_image,resname.c_str(),image_vep2);
+  resname = (boost::format("%s_STHvep3")%varname).str();
+  Vars.AddVar(type_image,resname.c_str(),image_vep3);
+  resname = (boost::format("%s_STHvap1")%varname).str();
+  Vars.AddVar(type_image,resname.c_str(),image_vap1);
+  resname = (boost::format("%s_STHvap2")%varname).str();
+  Vars.AddVar(type_image,resname.c_str(),image_vap2);
+  resname = (boost::format("%s_STHvap3")%varname).str();
+  Vars.AddVar(type_image,resname.c_str(),image_vap3);
 
   if (save_grad) {
-    sprintf(resname,"%s_STHgrad",varname);
-    Vars.AddVar(type_image,resname,image_grad);
+	resname = (boost::format("%s_STHgrad") %varname).str();
+    Vars.AddVar(type_image,resname.c_str(),image_grad);
   }
 
 

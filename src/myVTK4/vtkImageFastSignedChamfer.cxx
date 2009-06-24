@@ -43,8 +43,8 @@
 #define EPSILON 1E-5
 
 
-#define min(x,y) (((x)<(y))?(x):(y))
-#define max(x,y) (((x)>(y))?(x):(y))
+#define macro_min(x,y) (((x)<(y))?(x):(y))
+#define macro_max(x,y) (((x)>(y))?(x):(y))
 
 //
 //---------------------------------------------------------------------------

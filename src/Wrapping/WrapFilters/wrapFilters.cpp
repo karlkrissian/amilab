@@ -1890,7 +1890,7 @@ Variable::ptr Wrap_SmoothLinesToSplines(ParamList* p)
       ";
 
     SurfacePoly* input;
-    float samplingstep = 0.1;
+    float samplingstep = 0.1f;
     int n=0;
 
   if (!get_surface_param(  input,        p, n)) HelpAndReturnVarPtr;

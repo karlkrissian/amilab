@@ -38,6 +38,8 @@
 
 */
 
+#include "AMILabConfig.h"
+
 #include "amimage.hpp"
 #include <string.h>
 #include <stdio.h>
@@ -51,9 +53,16 @@
 #include <boost/format.hpp>
 
 #define BOOST_IOSTREAMS_NO_LIB
-#include <boost/iostreams/filter/zlib.hpp>
-#include <boost/iostreams/filter/gzip.hpp>
-#include <boost/iostreams/filter/bzip2.hpp>
+
+#ifdef AMI_USE_ZLIB
+  #include <boost/iostreams/filter/zlib.hpp>
+  #include <boost/iostreams/filter/gzip.hpp>
+#endif
+
+#ifdef AMI_USE_BZIP2
+  #include <boost/iostreams/filter/bzip2.hpp>
+#endif
+
 #include <boost/iostreams/device/file.hpp>
 
 namespace bf = boost::filesystem;
@@ -448,6 +457,7 @@ bool amimage::open_file( const char* filename)
   filtering_stream<input> filter_str;
 
 
+#ifdef AMI_USE_ZLIB
   // Trying gzip
   if (!file_read) {
     try {
@@ -465,8 +475,9 @@ bool amimage::open_file( const char* filename)
       file_read=false;
     }
   }
+#endif
 
-#ifndef WIN32 // don´t know why windows doesn´t catch the exception for bzip2 and zlib ...
+#ifdef AMI_USE_BZIP2 // don´t know why windows doesn´t catch the exception for bzip2 and zlib ...
   // Trying bzip2
   if (!file_read) {
     try {
@@ -484,7 +495,9 @@ bool amimage::open_file( const char* filename)
       file_read=false;
     }
   }
+#endif
 
+#ifdef AMI_USE_ZLIB
   // Trying zlib
   if (!file_read) {
     try {
@@ -502,7 +515,7 @@ bool amimage::open_file( const char* filename)
       file_read=false;
     }
   }
-#endif // not WIN32
+#endif // AMI_USE_ZLIB
 
   // Normal read
   if (!file_read) {
@@ -1219,9 +1232,11 @@ unsigned char  amimage::writeheader( const char* filename,
 
   // Openning the file
   int i = strlen(filename);
-  if(!strncmp(filename+i-3, ".gz", 3)) {
-    out.push(gzip_compressor());
-  }
+  #ifdef AMI_USE_ZLIB
+    if(!strncmp(filename+i-3, ".gz", 3)) {
+      out.push(gzip_compressor());
+    }
+  #endif
   out.push(file_sink(filename));
   // write to out using std::ostream interface
 

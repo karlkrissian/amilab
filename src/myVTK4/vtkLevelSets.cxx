@@ -30,6 +30,7 @@
    The full GNU Lesser General Public License file is in vtkLevelSets/LesserGPL_license.txt
 */
 
+#include "AMILabConfig.h"
 
 #include "vtkLevelSets.h"
 #include "vtkObjectFactory.h"

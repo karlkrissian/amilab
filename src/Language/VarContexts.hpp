@@ -36,7 +36,7 @@ public:
 
   int GetNewVarContext();
 
-  void SetGlobalNew(unsigned char gn)  {  _context[_current_context]->SetGlobalNew(gn);}
+  void SetGlobalNew(bool gn)  {  _context[_current_context]->SetGlobalNew(gn);}
 
   int GetCurrentContextNumber() {
     return _current_context;

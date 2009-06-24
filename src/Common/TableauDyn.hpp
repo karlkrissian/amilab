@@ -62,6 +62,9 @@
 #include "Erreurs.hpp"
 #include <stdio.h>
 
+#ifdef _MSC_VER
+  #pragma warning( disable : 4290 )
+#endif
 
 class OutOfArray {};
 

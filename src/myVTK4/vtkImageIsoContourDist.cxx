@@ -45,8 +45,8 @@
 #define false   0
 #define EPSILON 1E-5
 
-#define min(x,y) (((x)<(y))?(x):(y))
-#define max(x,y) (((x)>(y))?(x):(y))
+#define macro_min(x,y) (((x)<(y))?(x):(y))
+#define macro_max(x,y) (((x)>(y))?(x):(y))
 
 #ifdef _SOLARIS_
 /* Must be a Sun machine */
@@ -696,8 +696,8 @@ void vtkImageIsoContourDist::IsoSurfDist3D_band( int first_band, int last_band)
       if (fabs(val0_new)<fabs(*outPtr)) {
         *outPtr = val0_new;
         if (min_x!=NULL) {
-          min_x[y][z] = min(min_x[y][z],x);
-          max_x[y][z] = max(max_x[y][z],x);
+          min_x[y][z] = macro_min(min_x[y][z],x);
+          max_x[y][z] = macro_max(max_x[y][z],x);
         }
       } // end if
       
@@ -707,16 +707,16 @@ void vtkImageIsoContourDist::IsoSurfDist3D_band( int first_band, int last_band)
         if (min_x!=NULL) {
           switch(n) {
           case 0:
-        min_x[y][z] = min(min_x[y][z],x+1);
-        max_x[y][z] = max(max_x[y][z],x+1);
+        min_x[y][z] = macro_min(min_x[y][z],x+1);
+        max_x[y][z] = macro_max(max_x[y][z],x+1);
         break;
           case 1:
-        min_x[y+1][z] = min(min_x[y+1][z],x);
-        max_x[y+1][z] = max(max_x[y+1][z],x);
+        min_x[y+1][z] = macro_min(min_x[y+1][z],x);
+        max_x[y+1][z] = macro_max(max_x[y+1][z],x);
         break;
           case 2:
-        min_x[y][z+1] = min(min_x[y][z+1],x);
-        max_x[y][z+1] = max(max_x[y][z+1],x);
+        min_x[y][z+1] = macro_min(min_x[y][z+1],x);
+        max_x[y][z+1] = macro_max(max_x[y][z+1],x);
         break;
           }
         }

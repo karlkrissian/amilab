@@ -285,16 +285,16 @@ MainFrame::MainFrame( const wxString& title,
   CreateVarListPanel(this);
   m_mgr.AddPane(_varlist_panel,
                   wxAuiPaneInfo()
-                  .Name(wxT("Variables"))
-                  .Caption(wxT("Variables"))
+                  .Name(wxT("VariablesList"))
+                  .Caption(wxT("Variables List"))
                   .Left().Layer(1)
                   .MinimizeButton(true));
 
   CreateVarTreePanel(this);
   m_mgr.AddPane(_vartree_panel,
                   wxAuiPaneInfo()
-                  .Name(wxT("Variables"))
-                  .Caption(wxT("Variables"))
+                  .Name(wxT("VariablesTree"))
+                  .Caption(wxT("Variables Tree"))
                   .Left().Layer(1)
                   .MaximizeButton(true));
 

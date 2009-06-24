@@ -12,8 +12,9 @@
 #ifndef _AMI_WXGLCANVAS_H_
 #define _AMI_WXGLCANVAS_H_
 
-#include "DefineClass.hpp"
-#include <list>
+#ifdef WIN32
+  #include <windows.h>
+#endif
 
 #if defined(__APPLE__)
   #include <OpenGL/gl.h>
@@ -22,6 +23,10 @@
   #include <GL/gl.h>
   #include <GL/glu.h>
 #endif
+
+#include "DefineClass.hpp"
+#include <list>
+
 
 
 #ifdef __GNUG__

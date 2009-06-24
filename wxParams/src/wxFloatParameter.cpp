@@ -15,6 +15,13 @@
 using namespace std;
 using namespace boost;
 
+#if defined(WIN32)
+inline double round( double d )
+{
+return floor( d + 0.5 );
+}
+#endif
+
 //================================================================
 //              wxFloatParameter
 //================================================================
