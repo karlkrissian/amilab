@@ -59,6 +59,8 @@ public:
 
   boost::shared_ptr<wxArrayString> SearchCompletions(const wxString& varname);
 
+  boost::shared_ptr<wxArrayString> SearchVariables(const vartype& type);
+
   /// here void* val is a pointer to the variable type
   /// context is the context where to add the variable
   /// -1 means the current context

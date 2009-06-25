@@ -202,6 +202,16 @@ void CB_delete_imagedraw( void* var);
 
 void CB_delete_surfdraw( void* varid);
 
+//------------------------------------------------------
+void CB_update_imagelist( void* imagelist_gui)
+//   -------------------
+{
+  wxEnumerationParameter* imlist = (wxEnumerationParameter*) imagelist_gui;
+  boost::shared_ptr<wxArrayString> imagelist;
+
+  imagelist = Vars.SearchVariables(type_image);
+  imlist->SetChoices(imagelist);
+}
 
 #define UNARYOP_EXPR(operator,val,res)           \
   res=operator(val);
@@ -473,6 +483,7 @@ void CB_delete_surfdraw( void* varid);
 %token T_AddFloat T_AddInt T_CreateWin T_Display
 %token T_AddButton T_AddBoolean
 %token T_AddEnum T_AddEnumChoice
+%token T_AddImageChoice 
 %token T_AddString T_AddFilename
 %token T_ShowSlider
 %token T_SetCallback
@@ -5970,6 +5981,32 @@ postfix_expr
       int var_id;
       pw->AddBoolean( &var_id, var, (char*)$5->Name());
       pw->BooleanDefault( var_id, *var);
+      $$ = var_id;
+    }
+    |
+    VAR_PARAMWIN T_POINT T_AddImageChoice T_OP_PAR  VAR_STRING  T_COMMA expr_string T_CL_PAR
+    {
+    /**
+    Parameters:
+      - string variable that will contain the name of the
+              selected image
+      - label: description of the image to select
+    Description:
+      Allows the user to choose among the current image variables available
+    **/
+      ParamPanel_ptr pw  = *(ParamPanel_ptr*) $1->Pointer();
+      boost::shared_ptr<wxArrayString> imagelist;
+      int var_id;
+
+      imagelist = Vars.SearchVariables(type_image);
+
+      // Get list of image names
+      pw->AddListChoice( &var_id,
+          ((string_ptr*)$5->Pointer())->get(),
+          (char*) $7,
+          imagelist,
+          (void*)CB_update_imagelist);
+      //pw->EnumerationDefaut( var_id,  *var);
       $$ = var_id;
     }
     |

@@ -183,6 +183,24 @@ void Variables::SearchCompletions(const wxString& varname,
 
 
 //--------------------------------------------------
+void Variables::SearchVariables( const vartype& type,
+                      boost::shared_ptr<wxArrayString>& varlist)
+{
+  wxString name;
+  std::list<Variable*>::iterator Iter;
+
+  for (Iter  = _vars.begin();
+       Iter != _vars.end()  ; Iter++ )
+  {
+    if ((*Iter)->Type()==type) {
+      name = wxString::FromAscii((*Iter)->Name());
+      varlist->Add(name);
+    }
+  }
+} // SearchVariables()
+
+
+//--------------------------------------------------
 bool Variables::ExistVar(const char* varname)
 {
   std::list<Variable*>::iterator Iter;

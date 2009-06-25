@@ -661,6 +661,7 @@ AddButton         return(token::T_AddButton); /*{AddButton,T_AddButton}*/
 AddBoolean        return(token::T_AddBoolean); /*{AddBoolean,T_AddBoolean}*/
 AddEnum           return(token::T_AddEnum); /*{AddEnum,T_AddEnum}*/
 AddEnumChoice     return(token::T_AddEnumChoice); /*{AddEnumChoice,T_AddEnumChoice}*/
+AddImageChoice    return(token::T_AddImageChoice); /*{AddImageChoice,T_AddImageChoice}*/
 AddString         return(token::T_AddString); /*{AddString,T_AddString}*/
 AddFilename       return(token::T_AddFilename); /*{AddFilename,T_AddFilename}*/
 SetCallback       return(token::T_SetCallback); /*{SetCallback,T_SetCallback}*/

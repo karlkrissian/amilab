@@ -191,8 +191,8 @@ wxNumericParameter<T>::~wxNumericParameter()
 template <class T>
 void wxNumericParameter<T>::RecomputeTextSize()
 {
-  int smin;
-  int smax;
+  //int smin;
+  //int smax;
   int newsize;
 
   // to do it well, we need to get the text extent:

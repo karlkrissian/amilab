@@ -128,6 +128,18 @@ boost::shared_ptr<wxArrayString> VarContexts::SearchCompletions(const wxString& 
 
 
 //--------------------------------------------------
+boost::shared_ptr<wxArrayString> VarContexts::SearchVariables(const vartype& type)
+{
+  boost::shared_ptr<wxArrayString> completions;
+  completions = boost::shared_ptr<wxArrayString>(new wxArrayString());
+
+  for (int i=_context.size()-1; i>=0; i--)
+    _context[i]->SearchVariables(type,completions);
+  return completions;
+}
+
+
+//--------------------------------------------------
 int VarContexts::GetNewVarContext()
 {
   if (this->_context[_current_context]->GetGlobalNew())

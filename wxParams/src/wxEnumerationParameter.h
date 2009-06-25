@@ -19,6 +19,13 @@
 #ifndef _WX_ENUMERATIONPARAMETER_H_
 #define _WX_ENUMERATIONPARAMETER_H_
 
+#include <list>
+#include <string>
+#include <boost/shared_ptr.hpp>
+//#include "wxParamTypes.hpp"
+
+class wxBitmapButtonParameter;
+
 //==============================================================================
 //==============================================================================
 /*!
@@ -59,10 +66,14 @@ private:
 */
 class wxEnumerationParameter: public wxBoxSizer, public wxGenericWidget
 {
-  int*          _parameter;
-  wxWindow*     _parent;
-  wxStaticText* _label;
-  myChoice*     _choice;
+  /// if the result is given as a integer
+  int*            _parameter;
+  /// if the result is given as a string
+  std::string*    _selection_param;
+  wxWindow*       _parent;
+  wxStaticText*   _label;
+  myChoice*       _choice;
+  wxBitmapButtonParameter* _update_button;
 
   public:
   
@@ -70,15 +81,28 @@ class wxEnumerationParameter: public wxBoxSizer, public wxGenericWidget
     const char* label,
     const std::string& tooltip="");
   
+  wxEnumerationParameter( wxWindow* parent,
+    std::string* selection_param,
+    const char* label,
+    const std::string& tooltip="");
+  
   ~wxEnumerationParameter();
   
   void AddChoice( int* choix_id, const char* label);
+
+  void SetChoices( const boost::shared_ptr<wxArrayString>& choices);
   
+  wxString GetStringSelection();
+
+  void AddUpdateButton(void* update_cb);
+
   void SetSelection(int n);
   
   void Update();
   
   static void OnEnumUpdate(void* data);
+
+//  void OnButtonUpdate( wxCommandEvent& data);
 
 }; // wxEnumerationParameter
 

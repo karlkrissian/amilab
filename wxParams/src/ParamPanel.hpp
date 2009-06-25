@@ -464,6 +464,16 @@ public:
 //@}
 
 
+  bool AddListChoice( int* id,  
+  //   -------------
+            std::string* selection_param,
+            const char* libelle, 
+            const boost::shared_ptr<wxArrayString>& choicelist,
+            void* update_cb,
+            type_enum type=EnumOptionMenu,
+            const std::string& tooltip=""
+            );
+
   ///
   void FixeVisible( int id, unsigned char);
   //   -----------

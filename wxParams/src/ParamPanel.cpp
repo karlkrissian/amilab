@@ -591,6 +591,30 @@ void ParamPanel::EnumerationDefaut( int id, int id_defaut)
 } // EnumerationDefaut()
 
 
+//--------------------------------------------------------------
+bool ParamPanel::AddListChoice( int* id,  
+//               -------------
+          std::string* selection_param,
+          const char* libelle, 
+          const boost::shared_ptr<wxArrayString>& choicelist,
+          void* update_cb,
+          type_enum type,
+          const std::string& tooltip
+          )
+{
+  wxEnumerationParameter* wxe = new wxEnumerationParameter(
+      CurrentParent(), selection_param, libelle, tooltip);
+  wxe->AddUpdateButton(update_cb);
+  wxe->SetChoices(choicelist);
+
+  ParamInfo pi( TYPE_PARAMETRE_ENUMERATION,
+                wxe,
+                AddWidget(wxe));
+  _tab_param.push_back(pi);
+
+  *id = _tab_param.size()-1;
+  return( true);
+}
 
 //--------------------------------------------------------------
 unsigned char ParamPanel::AddButton( int* id,  const char* libelle,

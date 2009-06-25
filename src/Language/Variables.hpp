@@ -63,6 +63,9 @@ protected:
   void SearchCompletions( const wxString& varname, 
                           boost::shared_ptr<wxArrayString>& completions);
 
+  void SearchVariables( const vartype& type,
+                          boost::shared_ptr<wxArrayString>& varlist);
+
   bool GetVar(const char* varname, Variable** var);
 
 //  unsigned char GetVar(const char* varname, int* i);
