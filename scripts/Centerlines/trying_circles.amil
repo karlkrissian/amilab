@@ -87,6 +87,7 @@ proc TC_init(IMAGE im, NUM minint, STRING datasetdir) {
   TC_pairs_mode = INT(0)
   TC_keephighest = INT(100)
 
+  TC_input_name = ""
   TC_input0  = im 
   TC_input   = (FLOAT) im
   TC_rmax    = im*0
@@ -360,6 +361,7 @@ proc TC_CreateWindow() {
 
       TC_win.AddPage("Main")
         TC_win.BeginBox("Initialization")
+          TC_inputname_id     = TC_win.AddImageChoice( TC_input_name, "Input image")
           TC_usezoom_id       = TC_win.AddBoolean (TC_usezoom       )
           TC_splitnum_id      = TC_win.AddInt     (TC_split_number, 1,5)
           TC_minint_id        = TC_win.AddFloat   (TC_minint,       0,3000)

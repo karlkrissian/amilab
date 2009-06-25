@@ -66,7 +66,8 @@ enum {
   type_parampanel,
   type_matrix,
   type_gltransform,
-  type_array
+  type_array,
+  type_context
 } vartype;
 
 

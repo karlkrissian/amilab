@@ -282,6 +282,30 @@ bool Variables::deleteVar(const char* varname)
 
 } // Variables::deleteVar()
 
+
+//--------------------------------------------------
+int Variables::deleteVars(const std::string& varmatch)
+{
+  // convert string to wxString
+  wxString wxvarmatch(varmatch.c_str(), wxConvUTF8);
+  int count=0;
+
+  std::list<Variable*>::iterator Iter;
+  Iter  = _vars.begin();
+  while(Iter != _vars.end())
+  {
+    // convert name to wxString
+    wxString wxvarname((*Iter)->Name(), wxConvUTF8);
+    if (wxvarname.Matches(wxvarmatch)) {
+      Iter = _vars.erase(Iter);
+      count++;
+    } else
+      Iter++;
+  }
+  return count;
+} // Variables::deleteVars()
+
+
 //--------------------------------------------------
 void Variables::display()
 {

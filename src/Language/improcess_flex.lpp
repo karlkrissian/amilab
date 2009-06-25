@@ -58,6 +58,9 @@ extern  VarContexts  Vars;
 yyip::Parser::token::yytokentype checkvar(
       yyip::Parser::semantic_type* yylval,
       const char* varname, int context=-1);
+
+bool IsContext( const char* varname);
+
 using namespace std;
 
 
@@ -219,6 +222,7 @@ global        return(token::T_global);     /*{global,T_global}*/
 global_new    return(token::T_global_new); /*{global_new,T_global_new}*/
 local_new     return(token::T_local_new); /*{local_new,T_local_new}*/
 local         return(token::T_local);      /*{local,T_local}*/
+context       return(token::T_context);   /*{context,T_context}*/
 wait          return(token::T_wait);       /*{wait,T_wait}*/
 schedule      return(token::T_schedule);   /*{schedule,T_schedule}*/
 
@@ -960,6 +964,27 @@ global::([A-Za-z0-9_])*   {
 }
 
 
+([A-Za-z0-9_])*::([A-Za-z0-9_])*   {
+//
+//============================ Parse variable in a given context ====================
+//
+  cout << "variable in context ?" << endl;
+  string text(YYText());
+  size_t pos = text.find("::");
+  string contextname = text.substr(0,pos);
+  // check if contextname is really a context
+  if (IsContext(contextname.c_str())) 
+    cout << "Context found" << endl;
+  else
+    cout << "Context not found" << endl;
+  string varname = text.substr(pos+2);
+  cout << "contextname = "  << contextname  << endl;
+  cout << "varname = "      << varname      << endl;
+  yyip::Parser::token::yytokentype result = checkvar(yylval,varname.c_str(),0);
+  return result;
+}
+
+
 ([A-Za-z0-9_])*   {
 //
 //============================ Parse variable ====================
@@ -991,6 +1016,21 @@ global::([A-Za-z0-9_])*   {
 
 
 %%
+
+
+//--------------------------------------------------
+//       IsContext()
+//--------------------------------------------------
+//
+bool IsContext( const char* varname)
+//
+{
+  Variable* var;
+  if (Vars.GetVar(varname,&var))
+    return (var->Type() == type_context);
+  else
+    return false;
+}
 
 
 //--------------------------------------------------

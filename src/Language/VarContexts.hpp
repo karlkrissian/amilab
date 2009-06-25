@@ -83,6 +83,8 @@ public:
 
   bool deleteVar(const char* varname);
 
+  int deleteVars(const std::string& varmatch);
+
   int GetContext(Variable* var);
   bool deleteVar(Variable* var);
 

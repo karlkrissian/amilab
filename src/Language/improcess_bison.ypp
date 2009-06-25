@@ -474,6 +474,8 @@ void CB_update_imagelist( void* imagelist_gui)
 %token T_local
 %token T_global_new
 %token T_local_new
+%token T_context
+
 %token T_wait
 %token T_schedule
 
@@ -1488,6 +1490,15 @@ command:
             driver.err_print("assignment of NULL surface\n");
         }
         |
+        identifier ASSIGN_OP T_context
+        {
+          Variables* contextptr = new Variables();
+          IdentifierInfo::ptr ident($1);
+          contextptr->SetName(ident->GetName());
+
+          Vars.AddVar(type_context,ident,(void*)contextptr);
+        }
+        |
         identifier ASSIGN_OP surface
         {
           void * surfptr;
@@ -1944,6 +1955,16 @@ command:
          Vars.deleteVar($2->Name());
          */
          Vars.deleteVar($2);
+        }
+        | T_del expr_string
+        {
+        /**
+          Description: 
+            Delete all variables that match the expression, where the expression can contain 
+            '*' and '?' characters
+        */
+         std::string varmatch($2);
+         Vars.deleteVars(varmatch);
         }
         | T_del VAR_ARRAY_SURFACE T_OP_BR expr T_CL_BR
         {

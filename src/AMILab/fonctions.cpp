@@ -1327,7 +1327,7 @@ int AskScript(std::string& name)
     if (GB_debug) cerr << format_choices << endl;
 
     wxString filename = wxFileSelector(
-                                    _T("Select the image to load"),
+                                    _T("Select the script to load"),
                                     GB_scripts_dir, // default path
                                     wxEmptyString, // default filename
                                     s_extDef, // default extension

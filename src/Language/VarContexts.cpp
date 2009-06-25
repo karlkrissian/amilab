@@ -265,6 +265,18 @@ bool VarContexts::deleteVar(Variable* var)
   return false;
 }
 
+//--------------------------------------------------
+int VarContexts::deleteVars(const std::string& varmatch)
+{
+  int count =0;
+
+  int i;
+  for(i=_current_context;i>=0;i--)
+    count += _context[i]->deleteVars(varmatch);
+
+  return count;
+  
+}
 
 //--------------------------------------------------
 void VarContexts::SetGlobalContext() {

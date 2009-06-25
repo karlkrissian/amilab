@@ -72,6 +72,8 @@ protected:
 
   bool deleteVar(const char* varname);
 
+  int deleteVars(const std::string& varmatch);
+
 //  unsigned char deleteVar(int i);
 
   void EmptyVariables();
