@@ -1345,19 +1345,19 @@ void     Func_localsum( InrImage* im, InrImage*& res,
   }
   else {
     ( *tmp ) = ( *im );
-    FastLocalSumX_noborder<T,unsigned char>(im,res,size,extent,extent);
+    FastLocalSumX_noborder<T,unsigned char>(tmp,res,size,extent,extent);
   }
 
   swap_pointers(tmp,res);
-  FastLocalSumY_noborder<T,unsigned short>(im,res,size,extent,extent);
+  FastLocalSumY_noborder<T,unsigned short>(tmp,res,size,extent,extent);
 
   if ( im->DimZ() >1 ) {
     swap_pointers(tmp,res);
     if (im->DimX()*im->DimY() <= std::numeric_limits<unsigned short>::max()) {
-      FastLocalSumZ_noborder_2<T,unsigned short>(im,res,size,extent,extent,8); 
+      FastLocalSumZ_noborder_2<T,unsigned short>(tmp,res,size,extent,extent,8); 
     }
     else {
-      FastLocalSumZ_noborder_2<T,unsigned int>(im,res,size,extent,extent,8);
+      FastLocalSumZ_noborder_2<T,unsigned int>(tmp,res,size,extent,extent,8);
     }
   }
 

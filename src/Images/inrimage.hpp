@@ -130,7 +130,7 @@
 #include <boost/shared_ptr.hpp>
 using namespace boost;
 
-#ifdef WIN32
+#ifdef _MSC_VER
   #pragma warning( disable : 4290 )
 #endif
 
