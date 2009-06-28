@@ -219,16 +219,19 @@ void wxMenuEnum::OnEnumUpdate(wxCommandEvent&)
 //          Filename Parameter
 //==============================================================================
 
-wxStringParameter::wxStringParameter( wxWindow* parent, std::string* value,
+wxStringParameter::wxStringParameter( wxWindow* parent, string_ptr* param,
                                       const char* label): wxBoxSizer(wxHORIZONTAL)
 {
+  this->_parameter = param;
+  // allocate a new string if needed
+  if (!(*_parameter).get()) 
+    (*_parameter) = string_ptr(new std::string(""));
 
-  this->_parameter = value;
   this->_parent    = parent;
   this->_label     = new wxStaticText(this->_parent, wxID_ANY, wxString::FromAscii(label));
 
   this->_text = new MyTextCtrl( this->_parent, wxID_ANY,
-                              wxString::FromAscii(value->c_str()),
+                              wxString::FromAscii((*param)->c_str()),
                               wxDefaultPosition, 
                               //wxSize(40, wxDefaultCoord),
                               wxDefaultSize,
@@ -247,8 +250,7 @@ wxStringParameter::wxStringParameter( wxWindow* parent, std::string* value,
 void wxStringParameter::OnStringUpdate( void* data) 
 {
   wxStringParameter* _this=(wxStringParameter*)data;
-  // risky operation ... parameter has to be allocated with enough space ...
-  *_this->_parameter = (_this->_text->GetValue()).mb_str(wxConvUTF8);
+  _this->SetValue((const char*) (_this->_text->GetValue()).mb_str(wxConvUTF8));
   
 }
 
@@ -256,7 +258,7 @@ void wxStringParameter::OnStringUpdate( void* data)
 void wxStringParameter::Update()
 //   ------
 {
-  this->_text->SetValue(wxString::FromAscii((*this->_parameter).c_str()));
+  this->_text->SetValue(wxString::FromAscii((*this->_parameter)->c_str()));
 } // Update()
 
 
@@ -269,17 +271,20 @@ BEGIN_EVENT_TABLE(myButton, wxButton)
 END_EVENT_TABLE()
 
 wxFilenameParameter::wxFilenameParameter( wxWindow* parent,
-                                          std::string* value,
+                                          string_ptr* param,
                                           const char* label,
                                           type_label type): wxBoxSizer(wxHORIZONTAL)
 {
+  this->_parameter = param;
+  // allocate a new string if needed
+  if (!(*_parameter).get()) 
+    (*_parameter) = string_ptr(new std::string(""));
 
   this->_default_path      = wxString::FromAscii("");
   this->_default_filename  = wxString::FromAscii("");
   this->_default_extension = wxString::FromAscii("");
   this->_wildcard          = wxString::FromAscii("*.*");
   
-  this->_parameter = value;
   this->_parent    = parent;
   this->_label     = new wxStaticText(this->_parent,
                                       wxID_ANY,
@@ -287,7 +292,7 @@ wxFilenameParameter::wxFilenameParameter( wxWindow* parent,
 
   this->_text = new MyTextCtrl( this->_parent,
                                 wxID_ANY,
-                                wxString::FromAscii(value->c_str()),
+                                wxString::FromAscii((*param)->c_str()),
                                 wxDefaultPosition, 
                                 wxSize(40, wxDefaultCoord),
                                 wxTE_PROCESS_ENTER);
@@ -317,8 +322,7 @@ void wxFilenameParameter::BrowseFile(void* data)
   if ( !filename.empty() )
   {
      _this->_text->SetValue(filename);
-     // risky operation ... parameter has to be allocated with enough space ...
-     *_this->_parameter = filename.mb_str(wxConvUTF8);
+     _this->SetValue((const char*)filename.mb_str(wxConvUTF8));
   }
 }
  
@@ -326,8 +330,7 @@ void wxFilenameParameter::BrowseFile(void* data)
 void wxFilenameParameter::OnStringUpdate( void* data) 
 {
   wxFilenameParameter* _this=(wxFilenameParameter*)data;
-  // risky operation ... parameter has to be allocated with enough space ...
-  *_this->_parameter = _this->_text->GetValue().mb_str(wxConvUTF8);
+  _this->SetValue((const char*)_this->_text->GetValue().mb_str(wxConvUTF8));
   
 }
 

@@ -447,6 +447,8 @@ bool MainFrame::RemoveMainPage(wxWindow* page)
 bool MainFrame::AddParamPage(wxWindow* page, const wxString& caption,
                             bool select, const wxBitmap& bitmap)
 {
+  if (_param_book->GetPageIndex(page)!=wxNOT_FOUND)
+    return false;
   bool result = _param_book->AddPage( page,caption,select,bitmap );
   _param_book->Fit();
    m_mgr.GetPane(_param_book).Show();
@@ -464,6 +466,34 @@ bool MainFrame::RemoveParamPage(wxWindow* page)
   m_mgr.Update();
   return result;
 } // RemoveParamPage()
+
+
+//--------------------------------------------------------
+bool MainFrame::AddParamPanelPage(ParamPanel::ptr& page, const wxString& caption,
+                            bool select, const wxBitmap& bitmap)
+{
+  bool res;
+  if (page.get()) {
+    res = AddParamPage((wxWindow*) page.get(), caption,
+                        select, bitmap);
+    page->Show();
+    if (res) _parampanel_ptrs.push_back(page);
+    return res;
+  } else
+    return false;
+} // AddParamPanelPage()
+
+//--------------------------------------------------------
+bool MainFrame::RemoveParamPanelPage(ParamPanel::ptr& page)
+{
+  if (page.get()) {
+    page->Hide();
+    // remove the corresponding smart pointers from the list
+    _parampanel_ptrs.remove(page);
+    return RemoveParamPage((wxWindow*) page.get());
+  } else
+    return false;
+} // RemoveParamPanelPage()
 
 
 //--------------------------------------------------------

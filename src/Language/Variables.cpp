@@ -297,6 +297,8 @@ int Variables::deleteVars(const std::string& varmatch)
     // convert name to wxString
     wxString wxvarname((*Iter)->Name(), wxConvUTF8);
     if (wxvarname.Matches(wxvarmatch)) {
+      // why seg fault ??
+      (*Iter)->Delete();
       Iter = _vars.erase(Iter);
       count++;
     } else

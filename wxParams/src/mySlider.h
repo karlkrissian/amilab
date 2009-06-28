@@ -38,17 +38,37 @@ class mySlider: public wxSlider
         const wxString& name = wxSliderNameStr) :
         wxSlider(parent,id,value,minValue,maxValue,pos,size,style,validator,name)
     {
+      // default behaviour callback during dragging
+      _drag_callback = true;
     }
     
   void SetCallback(void* cb, void* cd) { _callback=cb; _calldata=cd;}
-  virtual void OnSliderUpdate( wxScrollEvent &WXUNUSED(event) )
+
+  virtual void OnSliderChanged( wxScrollEvent &WXUNUSED(event) )
   {
     void (*cbf)( void*) = (void (*)(void*)) this->_callback;
     cbf(this->_calldata);
   }
+
+  void SetDragCallback(bool dcb)
+  {
+    _drag_callback = dcb;
+  }
+
+  virtual void OnThumbTrack( wxScrollEvent &WXUNUSED(event) )
+  {
+    if (_drag_callback) {
+      void (*cbf)( void*) = (void (*)(void*)) this->_callback;
+      cbf(this->_calldata);
+    }
+  }
+  
+
 protected:
   void* _callback;
   void* _calldata;
+
+  bool _drag_callback;
 private:
     DECLARE_EVENT_TABLE();
 };

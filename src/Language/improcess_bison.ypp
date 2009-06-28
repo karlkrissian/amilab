@@ -210,6 +210,7 @@ void CB_update_imagelist( void* imagelist_gui)
   boost::shared_ptr<wxArrayString> imagelist;
 
   imagelist = Vars.SearchVariables(type_image);
+  imagelist->Add(_T("Image"));
   imlist->SetChoices(imagelist);
 }
 
@@ -1793,18 +1794,36 @@ command:
           Replacing the previous image by the new one.
         **/
           Variable* var = $1;
-          void* imptr  = (void*) driver.im_stack.GetLastImage();
+          InrImage::ptr i1 = *(InrImage::ptr*) $1->Pointer();
+          InrImage* imptr  = driver.im_stack.GetLastImage();
+          bool can_skip_allocation = false;
 
-          // instead of deleting and creating,
-          // replace the pointer and the information
-          if (imptr != NULL) {
-            var->FreeMemory();
-            var->Init(type_image,
-                      var->Name(),
-                      imptr);
-          }
-          else
-            driver.err_print("assignment of NULL image\n");
+          if (i1.get()!=imptr) {
+            can_skip_allocation = (i1->GetFormat()==imptr->GetFormat());
+            if (can_skip_allocation) {
+              // first try the standard data copy
+              can_skip_allocation = ((*i1)=(*imptr));
+              if (can_skip_allocation) {
+                // copy additional information here
+                i1->SetTranslation(imptr->TrX(), imptr->TrY(), imptr->TrZ());
+                i1->SetVoxelSize( imptr->VoxSizeX(), 
+                                  imptr->VoxSizeY(),
+                                  imptr->VoxSizeZ());
+              }
+            }
+            if (!can_skip_allocation) {
+              // instead of deleting and creating,
+              // replace the pointer and the information
+              if (imptr != NULL) {
+                var->FreeMemory();
+                var->Init(type_image,
+                          var->Name(),
+                          (void*)imptr);
+              }
+              else
+                driver.err_print("assignment of NULL image\n");
+            } // end if (!can_skip_allocation)
+          } // end if (i1.get()!=imptr)
         }
         |  var_image ASSIGN_OP expr
         {
@@ -3272,6 +3291,14 @@ command:
         |
         T_LevelSetsCURV T_POINT T_SetExpansionImage T_OP_PAR  var_image T_CL_PAR
         {
+          /** 
+            Parameters:
+              - input image: expansion image, expansion force for the level set evolution
+            Description:
+              Set the expansion to be the given image instead of a combination of Gaussian functions
+              The expansion will then be multiplied by the expansion coefficient during the evolution.
+              
+          */
           Func_LevelSetsExpansionImage( ((InrImage::ptr*) $5->Pointer())->get());
         }
         |
@@ -4626,7 +4653,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
 //                                        );
           //GB_main_wxFrame->GetAuiManager().Update();
           if (pwptr != NULL)
-        Vars.AddVar(type_paramwin,ident,pwptr);
+        Vars.AddVar(type_parampanel,ident,pwptr);
           else
         driver.err_print("assignment of NULL parameter window\n");
               delete [] $5;
@@ -4697,18 +4724,28 @@ cerr << "Feature not available, needs to be updated ! " << endl;
         |
         VAR_PARAMWIN T_POINT T_Display
         {
+        /**
+          Description:
+            Displays the given parameter panel, a smart pointer
+            copy is stored
+        */
           ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
 
-          GB_main_wxFrame->AddParamPage((wxWindow*)pw.get(),
+          GB_main_wxFrame->AddParamPanelPage(pw,
                                         pw->GetName(),
                                         true // select as current page
                                         );
-/* TODO
-          GB_main_wxFrame->GetAuiManager().GetPane((wxWindow*) pw.get()).Show();
-          //GB_main_wxFrame->GetAuiManager().GetPane((wxWindow*) pw.get()).Float();
-          GB_main_wxFrame->GetAuiManager().Update();
-*/
-         //pw->AfficheDialogue();
+        }
+        |
+        VAR_PARAMWIN T_POINT T_HIDE
+        {
+        /**
+          Description:
+            Hides the given parameter panel, the smart pointer copy is released
+        */
+          ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
+
+          GB_main_wxFrame->RemoveParamPanelPage(pw);
         }
         |
         VAR_PARAMWIN T_POINT T_redraw
@@ -4762,15 +4799,41 @@ cerr << "Feature not available, needs to be updated ! " << endl;
               n-1, (int) $5, (int) $7, (int) $9);
     }
         |
-        VAR_PARAMWIN T_POINT T_SetDragCallback T_OP_PAR expr T_CL_PAR
+        VAR_PARAMWIN T_POINT T_SetDragCallback T_OP_PAR expr
+           T_CL_PAR
         {
+        /**
+          Parameters:
+            - index of the parameter for which to set the drag callback
+          Description: activate the drag callback
+        */
       ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
       int n = pw->NbParameters();
-      int i = (int) $5;
+      int i     = (int) $5;
+      bool drag = true;
       if ((i>=0)&&(i<n))
-        pw->SetDragCallback(i);
+        pw->SetDragCallback(i,drag);
       else
-        fprintf(stderr,"VAR_PARAMWIN.SetDragCallbackO( %d ) \t bad parameter number \n",i);
+        fprintf(stderr,"VAR_PARAMWIN.SetDragCallbackO( %d , .. ) \t bad parameter number \n",i);
+        }
+        |
+        VAR_PARAMWIN T_POINT T_SetDragCallback T_OP_PAR expr
+          T_COMMA expr T_CL_PAR
+        {
+        /**
+          Parameters:
+            - index of the parameter for which to set the drag callback
+            - boolean value: activate or desactivate the drag callbacks
+          Description: activate the drag callback
+        */
+      ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
+      int n = pw->NbParameters();
+      int i     = (int) $5;
+      bool drag = (bool) $7;
+      if ((i>=0)&&(i<n))
+        pw->SetDragCallback(i,drag);
+      else
+        fprintf(stderr,"VAR_PARAMWIN.SetDragCallbackO( %d , .. ) \t bad parameter number \n",i);
         }
         |
         T_SaveStructuredGrid T_OP_PAR var_image T_COMMA expr_string T_CL_PAR
@@ -5466,8 +5529,9 @@ postfix_expr
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) $1->Pointer();
 
       char tmp_string[255];
-      sprintf(tmp_string," %d points  %d polygons  \n",
+      sprintf(tmp_string," %d points %d lines %d polygons  \n",
           s->GetNumberOfPoints(),
+          s->GetNumberOfLines(),
           s->GetNumberOfPolys ()
           );
       driver.res_print(tmp_string);
@@ -6020,10 +6084,11 @@ postfix_expr
       int var_id;
 
       imagelist = Vars.SearchVariables(type_image);
+      imagelist->Add(_T("Image"));
 
       // Get list of image names
       pw->AddListChoice( &var_id,
-          ((string_ptr*)$5->Pointer())->get(),
+          (string_ptr*)$5->Pointer(),
           (char*) $7,
           imagelist,
           (void*)CB_update_imagelist);
@@ -6098,7 +6163,7 @@ postfix_expr
         ParamPanel_ptr pw  = *(ParamPanel_ptr*) $1->Pointer();
         int var_id;
         pw->AjouteChaine( &var_id,
-          ((string_ptr*)$5->Pointer())->get(),
+          (string_ptr*)$5->Pointer(),
           (char*) $7);
         pw->ContraintesChaine(var_id,(char*) ((string_ptr*)$5->Pointer())->get()->c_str());
         $$=var_id;
@@ -6120,7 +6185,7 @@ postfix_expr
         ParamPanel_ptr pw  = *(ParamPanel_ptr*) $1->Pointer();
         int var_id;
         // passer AjouteNomFichier a std::string !!!!
-        pw->AjouteNomFichier( &var_id, ((string_ptr*)$5->Pointer())->get(), (char*) $7);
+        pw->AjouteNomFichier( &var_id, (string_ptr*)$5->Pointer(), (char*) $7);
         pw->ContraintesNomFichier(var_id,(char*) $9,(char*)"",(char*) $11);
         $$=var_id;
     }

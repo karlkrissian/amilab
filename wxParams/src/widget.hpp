@@ -123,14 +123,6 @@ public:
       _callback = callback; _calldata = calldata; 
   }
 
-/*
-  void ChangedValueCallback( XtCallbackProc callback, void* calldata) 
-  //   --------------------
-  {  
-      _motif_callback = callback; 
-      _calldata = calldata; 
-  }
-*/
   
 //  virtual void Show( bool) {}
   

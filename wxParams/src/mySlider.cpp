@@ -13,6 +13,7 @@
 #include "mySlider.h"
 
 BEGIN_EVENT_TABLE(mySlider, wxSlider)
-  EVT_SCROLL    ( mySlider::OnSliderUpdate)
+  EVT_SCROLL_CHANGED    ( mySlider::OnSliderChanged)
+  EVT_SCROLL_THUMBTRACK ( mySlider::OnThumbTrack)
 END_EVENT_TABLE()
 

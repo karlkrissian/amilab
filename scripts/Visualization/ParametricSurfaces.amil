@@ -42,6 +42,8 @@ proc PS_init() {
   PS_Y = "sin(U)*cos(V)"
   PS_Z = "sin(V)"
 
+  PS_eq_filename = "user_equation1.amil"
+
   # temporal evolution of the equation
   # evolution state 0:stopped, 1:running, 2:stopping
   PS_in_evolve = UCHAR(0)
@@ -228,6 +230,42 @@ proc PS_SetEllipsoid() \
 
 
 #--------------------------------------------------------------
+proc PS_SaveEquation() {
+
+  eq_file = open(PS_eq_filename,"w")
+
+  eq_file.print "#-- Saving equation \n"
+
+  eq_file.print "#---- Main Parameters\n"
+
+  eq_file.print boost_format("PS_theta_dim = %1%\n") % PS_theta_dim
+  eq_file.print boost_format("PS_phi_dim = %1%\n") % PS_phi_dim
+
+  eq_file.print "#---- Parametric equation expression \n"
+
+  eq_file.print "PS_X = \"" +PS_X +"\"\n"
+  eq_file.print "PS_Y = \"" +PS_Y +"\"\n"
+  eq_file.print "PS_Z = \"" +PS_Z +"\"\n"
+
+  eq_file.print boost_format("PS_kmax = %1%\n") \
+                              % PS_kmax
+  eq_file.print boost_format("PS_timestep = %1%\n") \
+                              % PS_timestep
+
+  eq_file.print "# Update interface\n"
+  eq_file.print "PS_win.update\n"
+
+}
+
+
+#--------------------------------------------------------------
+proc PS_ReadEquation() {
+  # call func to read a script ...
+  func
+}
+
+
+#--------------------------------------------------------------
 proc PS_gui() {
 
   global::PS_win = ParamWin("Param. Surf.")
@@ -298,6 +336,11 @@ proc PS_gui() {
         PS_win.EndHorizontal
       PS_win.EndBox
       
+      PS_win.AddString(PS_eq_filename,"Eq. filename")
+      PS_win.BeginHorizontal
+        PS_win.AddButton("Save", PS_SaveEquation)
+        PS_win.AddButton("Read", PS_ReadEquation)
+      PS_win.EndHorizontal
 
   PS_win.EndBook
       PS_win.BeginHorizontal

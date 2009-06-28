@@ -1178,18 +1178,16 @@ SurfacePoly :: operator vtkPolyData* (void) const
     vtkPolyData*       vtk_surf;
     vtkDataArray       *vtk_normals;
     vtkDataArray       *vtk_colors;
-    vector<vtkIdType>        pts(1000);
+    vector<vtkIdType>  pts;
 
     // Renumerotation pour ne sauver que les points utilises
-    unsigned char            show_poly;
-    int*            pts_sauves;
-    int             num_point=0;
-    int                numcc;
+    unsigned char       show_poly;
+    int*                pts_sauves;
+    int                 num_point=0;
+    int                 numcc;
 
 
-//printf("operator vtkPolyData* 1\n");
-
-// Write the points
+  CLASS_MESSAGE("start")
 
   Si _cc_calculees Et (_show_all_cc == false) Alors
     pts_sauves = new int [this->_tab_pts.NbElts()];
@@ -1269,60 +1267,54 @@ SurfacePoly :: operator vtkPolyData* (void) const
 
   FinPour
 
-printf("operator vtkPolyData* 2\n");
   // Write the polygons
 
-   try {
-  polys = vtkCellArray::New();
+  try {
+    polys = vtkCellArray::New();
+  
+    polys->SetTraversalLocation(0); 
+    Pour(i,0,GetNumberOfPolys()-1)
+      pts.clear();
+      poly = _tab_poly[i];
+      // Temporary solution
+      // in case of the computation of connex component
+      // save only the main connex component
+      // otherwise save all the polygons
+      show_poly = true;
+      Si _cc_calculees Et (_show_all_cc == false) AlorsFait
+        show_poly=_draw_cc[_tab_pts[poly[0]].num_cc];
+  
+      Si show_poly 
+      Alors
+        Pour(j,0,poly.NbElts()-1)
+          Si pts_sauves != NULL Alors
+            pts.push_back( pts_sauves[poly[j]]);
+          Sinon
+            pts.push_back(poly[j]);
+          FinSi
+        FinPour
+        polys->InsertNextCell(poly.NbElts(), &pts.front());
+      FinSi
+  
+    FinPour
+  }
+    catch (OutOfArray) {
+    fprintf(stderr,"OutofArray cached ...");
+  }
 
-  polys->SetTraversalLocation(0); 
-  Pour(i,0,GetNumberOfPolys()-1)
-
-    poly = _tab_poly[i];
-    // Temporary solution
-    // in case of the computation of connex component
-    // save only the main connex component
-    // otherwise save all the polygons
-    show_poly = true;
-    Si _cc_calculees Et (_show_all_cc == false) AlorsFait
-      show_poly=_draw_cc[_tab_pts[poly[0]].num_cc];
-
-    Si show_poly 
-    Alors
-      Pour(j,0,poly.NbElts()-1)
-        Si pts_sauves != NULL Alors
-          pts.push_back( pts_sauves[poly[j]]);
-        Sinon
-          pts[j] = poly[j];
-        FinSi
-      FinPour
-      polys->InsertNextCell(poly.NbElts(),
-			    &pts.front());
-    FinSi
-
-  FinPour
-
-      }
-catch (OutOfArray) {
-  fprintf(stderr,"OutofArray cached ...");
-}
-printf("operator vtkPolyData* 3\n");
   // Write the lines
   lines = vtkCellArray::New();
 
   lines->SetTraversalLocation(0); 
   Pour( i, 0, GetNumberOfLines()-1)
+    pts.clear();
     n = _tab_lines[i].NbElts();
+    CLASS_MESSAGE(boost::format("line %d : %d points")% i % n )
     Si n>0 Alors
       Pour(j,0,_tab_lines[i].NbElts()-1)
         pts.push_back(_tab_lines[i][j]);
       FinPour
       lines->InsertNextCell(_tab_lines[i].NbElts(), &pts.front());
-    /*
-    Sinon
-      Si n>=1000 AlorsFait
-        fprintf(stderr,"SurfacePoly::SaveVTK() \t Too many points in line. \n");
-    */
     FinSi
   FinPour  //i
 
@@ -1342,7 +1334,7 @@ printf("operator vtkPolyData* 3\n");
   vtk_normals->Delete(); 
   vtk_colors ->Delete(); 
 
-printf("operator vtkPolyData* end\n");
+  CLASS_MESSAGE("end");
 
   return vtk_surf;
 
@@ -1615,7 +1607,7 @@ void SurfacePoly :: EndGLSurface()
             FinPour
             my_glEnd
         } else { // if ((_show_all_cc) Ou (n<0))
-          if (_draw_cc[n]) 
+          if (_draw_cc[n]) {
             if (_selected_cc.Position(n) != -1) {
               my_glBegin_GL_TRIANGLE_FAN
               Pour(j,0,_poly.NbElts()-1)
@@ -1639,7 +1631,7 @@ void SurfacePoly :: EndGLSurface()
               FinPour
               my_glEnd
             } // if (_selected_cc.Position(n) != -1)
-  
+          } // end if _draw_cc[n]
   
         } // if ((_show_all_cc) Ou (n<0))
       FinPour
@@ -1647,8 +1639,9 @@ void SurfacePoly :: EndGLSurface()
     FinSi
   
    glReportErrors();
-  
+
     Si _tab_lines.NbElts()> 0 Alors
+    CLASS_MESSAGE("Drawing lines")  
   
       glDisable(GL_LIGHTING);
   //    glPolygonMode (GL_FRONT_AND_BACK, GL_MODE_LINE);
@@ -1663,6 +1656,8 @@ void SurfacePoly :: EndGLSurface()
   
         glBegin(GL_LINE_STRIP);
   
+          CLASS_MESSAGE(boost::format("line %d : %d elts")
+                        % i %  _line.NbElts() );
           Pour(j,0,_line.NbElts()-1)
             pt = _tab_pts[_line[j]];
             pt.AddGLLine();
@@ -4216,7 +4211,7 @@ void SurfacePoly :: SaveSelectedLines( char* name)
     SurfPoly           poly;
     vtkPolyData*       vtk_lines;
     vtkPolyDataWriter* writer;
-    vector<vtkIdType>        pts(1000);
+    vector<vtkIdType>  pts;
 
     // Renumerotation pour ne sauver que les points utilises
 
@@ -4239,6 +4234,7 @@ void SurfacePoly :: SaveSelectedLines( char* name)
   lines->SetTraversalLocation(0); 
   Pour( i, 0, _selected_lines.NbElts()-1)
     n = _tab_lines[_selected_lines[i]].NbElts();
+    pts.clear();
     Si n>0 Alors
       Pour(j,0,n-1)
         pts.push_back(_tab_lines[_selected_lines[i]][j]);

@@ -185,8 +185,8 @@ void Viewer3D_MaterialParam::CreateParameters()
 
   MAJ();
 
-  SetDragCallback(_id_mat_opacity);
-  SetDragCallback(_id_mat_shininess);
+  SetDragCallback(_id_mat_opacity,true);
+  SetDragCallback(_id_mat_shininess,true);
 
 }
 

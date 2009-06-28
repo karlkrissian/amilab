@@ -9,19 +9,39 @@ if (argc==1) {
 
 func "Centerlines/MultiLines.amil"
 
-proc RML_init( IMAGE input) {
+proc RML_init() {
   global_new
-  RML_input = input
+  RML_input_name = ""
+  RML_mask_name = ""
   RML_radmin=0.5
   RML_radmax=3
   RML_numrad=INT(5)
-  RML_mask = RML_input
-  RML_mask <<= (UCHAR) (RML_mask>0.1)*255
 
   RML_output_name="Multilines-maxresponse.ami.gz"
   RML_gui()
 }
 
+
+#-----------------------------------------------
+proc RML_load_input() {
+
+  eval "global::RML_input <<= (FLOAT)"+RML_input_name+";"
+  if (RML_input_name=="Image") {
+    RML_input_name = "RML_input"
+  }
+
+  if (RML_mask_name=="Image") {
+    global::RML_mask <<= (UCHAR) ((RML_input>0.1)*255)
+    RML_mask_name = "RML_mask"
+  } else {
+    eval "global::RML_mask <<="+RML_mask_name+";"
+  }
+  RML_win.update
+
+}
+
+
+#-----------------------------------------------
 proc RML_SetMask( IMAGE mask) {
   global_new
   RML_mask <<= (UCHAR) (mask>0.1)*255
@@ -30,6 +50,7 @@ proc RML_SetMask( IMAGE mask) {
 proc RML_filter() {
   global_new
 
+  RML_load_input()
   if (!exists(RML_result)) {
     RML_result=Image(FLOAT,1,RML_input)
   }
@@ -95,6 +116,11 @@ proc RML_gui() {
 
   RML_win = ParamWin("Vesselness")
 
+  # set the input image
+  RML_win.AddImageChoice(RML_input_name, "Input")
+  # set the mask image
+  RML_win.AddImageChoice(RML_mask_name, "Mask")
+
   RML_radmin_id = RML_win.AddFloat(RML_radmin,0.01,10)
   RML_radmax_id = RML_win.AddFloat(RML_radmax,0.01,10)
   RML_numrad_id = RML_win.AddInt(  RML_numrad,1,20)
@@ -117,7 +143,10 @@ proc RML_gui() {
 }
 
 
+#-------------------------------------------
+RML_init()
 if (inputname != "") {
   in = Image(inputname)
-  RML_init(&in)
+  RML_input_name = "in"
+  RML_win.update
 }

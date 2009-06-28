@@ -1,0 +1,12 @@
+#-- Saving equation 
+#---- Main Parameters
+PS_theta_dim = 100
+PS_phi_dim = 100
+#---- Parametric equation expression 
+PS_X = "cos(U*3)*15+cos(V*2)*(cos(U*2)*2)/sqrt(cos(U*2)*cos(U*2)*4+sin(U*3)*sin(U*3)*9)"
+PS_Y = "sin(U*2)*15+cos(V*2)*(sin(U*3)*3)/sqrt(cos(U*2)*cos(U*2)*4+sin(U*3)*sin(U*3)*9)"
+PS_Z = "sin(V*2)+sin(U)*4"
+PS_kmax = 0
+PS_timestep = 100
+# Update interface
+PS_win.update

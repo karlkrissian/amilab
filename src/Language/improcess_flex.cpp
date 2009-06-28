@@ -7541,6 +7541,8 @@ yyip::Parser::token::yytokentype checkvar(
         /*{$variable_string,VAR_STRING}*/
       case type_paramwin:         return token::VAR_PARAMWIN;
         /*{$variable_paramwin,VAR_PARAMWIN}*/
+      case type_parampanel:         return token::VAR_PARAMWIN;
+        /*{$variable_parampanel,VAR_PARAMPANEL}*/
       case type_matrix:           return token::VAR_MATRIX;
         /*{$variable_matrix,VAR_MATRIX}*/
       case type_gltransform:      return token::VAR_GLTRANSFORM;

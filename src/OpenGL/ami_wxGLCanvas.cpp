@@ -1372,34 +1372,39 @@ void ami_wxGLCanvas::DessineSurface2()
 void ami_wxGLCanvas::DisplayObject(GLObject::ptr& obj)
 //
 {
-    if (!obj.use_count()) return;
-    if (!obj->Visible())    return;
+  CLASS_MESSAGE("start");
+  if (!obj.use_count()) return;
+  if (!obj->Visible())  return;
 
-      if (GB_debug) fprintf(stderr,"ami_wxGLCanvas::DisplayObject() object \n");
-      SelonQue obj->ObjType() Vaut
-        Valeur OBJTYPE_SURFPOLY:{
-          SurfacePoly* surf = (SurfacePoly*) (obj.get());
-          // absolutely not thread safe ...
-          surf->SetwxGLCanvas(this);
-          surf->DisplayObject( &_GLMaterial);
-          Si _GLParam._display_normals AlorsFait
-            surf->DisplayNormals();
-          Si _GLParam._display_vect1   AlorsFait
-            surf->DisplayVectors1( &_GLParam);
-          Si _GLParam._display_vect2   AlorsFait
-            surf->DisplayVectors2( &_GLParam);}
-        FinValeur
+  SelonQue obj->ObjType() Vaut
+    Valeur OBJTYPE_SURFPOLY:
+      { // should lock the smart pointer here !
+      SurfacePoly* surf = (SurfacePoly*) (obj.get());
+      // absolutely not thread safe ...
+      surf->SetwxGLCanvas(this);
+      surf->DisplayObject( &_GLMaterial);
+      Si _GLParam._display_normals AlorsFait
+        surf->DisplayNormals();
+      Si _GLParam._display_vect1   AlorsFait
+        surf->DisplayVectors1( &_GLParam);
+      Si _GLParam._display_vect2   AlorsFait
+        surf->DisplayVectors2( &_GLParam);
+      }
+    FinValeur
 
-        Valeur OBJTYPE_USERLIST:{
-         obj->SetwxGLCanvas(this);
-         obj->DisplayObject( &_GLMaterial);}
-        FinValeur
-        Defaut: fprintf(stderr,
-            "ami_wxGLCanvas::DisplayObject() \t unknown object type \n");
-      FinSelonQue
+    Valeur OBJTYPE_USERLIST:
+      {
+      obj->SetwxGLCanvas(this);
+      obj->DisplayObject( &_GLMaterial);
+      }
+    FinValeur
+    Defaut: fprintf(stderr,
+        "ami_wxGLCanvas::DisplayObject() \t unknown object type \n");
+  FinSelonQue
 
-      glReportError();
+  glReportError();
 
+  CLASS_MESSAGE("end");
 } // DisplayObject()
 
 //------------------------------------------------------
@@ -1607,21 +1612,21 @@ void ami_wxGLCanvas::DisplayCursor()
     _CURSOR=glGenLists(1);
     glNewList(_CURSOR, GL_COMPILE);
       glBegin(GL_LINES);
-        Si _limits_set Alors
+        if (_limits_set) {
           glVertex3f(_xmin,      _cursor_y, _cursor_z);
           glVertex3f(_xmax,      _cursor_y, _cursor_z);
           glVertex3f( _cursor_x, _ymin,     _cursor_z);
           glVertex3f( _cursor_x, _ymax,     _cursor_z);
           glVertex3f( _cursor_x, _cursor_y, _zmin    );
           glVertex3f( _cursor_x, _cursor_y, _zmax    );
-        Sinon
+        } else {
           glVertex3f( _current_globject->_xmin,      _cursor_y, _cursor_z);
           glVertex3f( _current_globject->_xmax,      _cursor_y, _cursor_z);
           glVertex3f( _cursor_x, _current_globject->_ymin,      _cursor_z);
           glVertex3f( _cursor_x, _current_globject->_ymax,      _cursor_z);
           glVertex3f( _cursor_x, _cursor_y, _current_globject->_zmin    );
           glVertex3f( _cursor_x, _cursor_y, _current_globject->_zmax    );
-        FinSi
+        }
       glEnd();
     glEndList();
   FinSi

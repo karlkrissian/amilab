@@ -159,9 +159,9 @@ void Viewer3D_LightingParam::CreateParameters()
   EnleveBouttons();
   CreeDialogue( );
 
-  SetDragCallback(_id_light_position_x);
-  SetDragCallback(_id_light_position_y);
-  SetDragCallback(_id_light_position_z);
+  SetDragCallback(_id_light_position_x,true);
+  SetDragCallback(_id_light_position_y,true);
+  SetDragCallback(_id_light_position_z,true);
 
   MAJ();
 

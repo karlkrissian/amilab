@@ -87,6 +87,9 @@
 
 #define MAX_ARGS         20
 
+#include <boost/shared_ptr.hpp>
+typedef boost::shared_ptr<std::string>     string_ptr;
+
 //==============================================================================
 /**
   La classe {\em ParamBox} permet de g�er facilement la modification \\
@@ -338,7 +341,7 @@ public:
 /** @name Type Chaine */
 //@{
   ///
-  unsigned char AjouteChaine( int* id, std::string* ch, const char* libelle);
+  unsigned char AjouteChaine( int* id, string_ptr* ch, const char* libelle);
   //      ------------
 
   ///
@@ -350,7 +353,7 @@ public:
 /** @name Type NomFichier */
 //@{
   ///
-  unsigned char AjouteNomFichier( int* id, std::string* nom, const char* libelle);
+  unsigned char AjouteNomFichier( int* id, string_ptr* nom, const char* libelle);
   //      ----------------
 
   ///

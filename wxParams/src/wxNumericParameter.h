@@ -87,6 +87,10 @@ public:
     for (int i=0; i<_decimate; i++) _factor*=10;
     }
   
+  void SetDragCallback(bool dcb) {
+    _slider->SetDragCallback(dcb);
+  }
+
   static void OnSliderUpdate  (void* data);
   static void OnSpinCtrlUpdate(void* data);
   static void OnTextUpdate    (void* data);

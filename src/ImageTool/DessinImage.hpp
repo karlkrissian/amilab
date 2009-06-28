@@ -710,9 +710,9 @@ protected:
 /** @name     Saisie d'une image
  */
 //@{
-   ParamBox* _param_nom_image;
-   int      _id_nom_image;
-   std::string            _nom_nouvelle_image;
+   ParamBox*  _param_nom_image;
+   int        _id_nom_image;
+   string_ptr _nom_nouvelle_image;
 
 //@}
 
@@ -761,7 +761,7 @@ protected:
 //@}
 
    ///
-   std::string          _nom_sauve_image;
+   string_ptr        _nom_sauve_image;
    ///
    int               _format_image;
    ///
@@ -801,18 +801,18 @@ protected:
 /** @name  Saisie du fichier de parametres
  */
 //@{
-   ParamBox* _param_nom_fichier;
-   int      _id_nom_fichier;
-   std::string          _nom_fichier;
+   ParamBox*  _param_nom_fichier;
+   int        _id_nom_fichier;
+   string_ptr _nom_fichier;
 
 //@}
 
 /** @name  Saisie de la table de couleurs
  */
 //@{
-   ParamBox* _param_nom_tc;
-   int      _id_nom_tc;
-   std::string            _nom_tc;
+   ParamBox*  _param_nom_tc;
+   int        _id_nom_tc;
+   string_ptr _nom_tc;
 //@}
 
 

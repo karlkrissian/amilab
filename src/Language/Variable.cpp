@@ -44,6 +44,9 @@ void Variable::Init(vartype type, const char* name, void* p)
 #define CREATE_CASE_WXWINDOW(_typeid,_typename) case _typeid: _pointer = new boost::shared_ptr<_typename>((_typename*)p, \
       wxwindow_nodeleter<_typename>());    break; 
 
+#define CREATE_CASE_WXWINDOW_DELETER(_typeid,_typename) case _typeid: _pointer = new boost::shared_ptr<_typename>((_typename*)p, \
+      wxwindow_deleter<_typename>());    break; 
+
   switch(_type) {
     case type_void: 
       _pointer = NULL; //new boost::shared_ptr<void>((void*)p); 
@@ -58,6 +61,8 @@ void Variable::Init(vartype type, const char* name, void* p)
     CREATE_CASE(type_ami_function, AMIFunction)
     CREATE_CASE(type_ami_class,    AMIClass)
     CREATE_CASE(type_ami_object,   AMIObject)
+    // don´t call the deleter for now because of a seg. fault
+    // issue (29-06-09)
     CREATE_CASE_WXWINDOW(type_paramwin,     ParamBox)
     CREATE_CASE_WXWINDOW(type_parampanel,   ParamPanel)
     CREATE_CASE(type_matrix,       FloatMatrix)
@@ -84,7 +89,9 @@ void Variable::Init(vartype type, const char* name, void* p)
     case type_c_function:
       _pointer = p; // no smart pointer here
     break;
-    default       : printf("unknown type "); break;
+    default       : 
+      CLASS_ERROR(boost::format("unknown type %1%") % _type << endl); 
+    break;
   }
 
 #undef CREATE_CASE
@@ -134,7 +141,9 @@ using namespace boost;
     case type_c_function:
       _pointer = p; // no smart pointer here
     break;
-    default       : printf("unknown type "); break;
+    default       : 
+      CLASS_ERROR(boost::format("unknown type %1%") % _type << endl); 
+    break;
   }
 
 #undef CREATE_CASE
@@ -142,6 +151,7 @@ using namespace boost;
 
 void  Variable::SetString(string_ptr st) 
 {
+  // Not good, or OK?
   if (_type==type_string) {
     *((string_ptr*)_pointer)=st;
   }
@@ -183,7 +193,9 @@ bool Variable::FreeMemory()
 //  case type_c_function   : 
 //    fprintf(stderr, "delete of C function not available \n");
 //    break;
-  default       : printf("unknown type "); break;
+    default       : 
+      CLASS_ERROR(boost::format("unknown type %1%") % _type << endl); 
+    break;
   }
   _pointer = NULL;
   return true;
@@ -242,7 +254,8 @@ const string Variable::GetTypeName()
       VarArray::ptr array =  *((VarArray::ptr*) Pointer());
       return str( format("array \t %d \n") % array->Size());
     }
-    default                : return string( "unknown type");
+    default                : 
+      return string( "unknown type");
   }
 
   return string();

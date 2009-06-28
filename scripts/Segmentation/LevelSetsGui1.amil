@@ -456,7 +456,7 @@ proc LS_CreateWin() {
 
   LS_w1.EndBook
 
-  LS_w1.CreateWin
+  LS_w1.update
   LS_w1.Display
 }
 

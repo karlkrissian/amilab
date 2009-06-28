@@ -50,7 +50,10 @@
 
 #include "xmtext.hpp"
 
+#include "ParamPanel.hpp"
+
 #include <iostream>
+#include <list>
 using namespace std;
 
 #include "DefineClass.hpp"
@@ -97,9 +100,15 @@ public:
                     bool select = false, const wxBitmap& bitmap = wxNullBitmap);
   bool RemoveMainPage(wxWindow* page);
 
+  // Deal with standard wxWindow* pages
   bool AddParamPage(wxWindow* page, const wxString& caption,
                     bool select = false, const wxBitmap& bitmap = wxNullBitmap);
   bool RemoveParamPage(wxWindow* page);
+
+  // Deal with ParamPanel::ptr pages
+  bool AddParamPanelPage(ParamPanel::ptr& panel, const wxString& caption,
+                    bool select = false, const wxBitmap& bitmap = wxNullBitmap);
+  bool RemoveParamPanelPage(ParamPanel::ptr& panel);
 
   void OnFileOpenImage    ( wxCommandEvent& event );
   void OnFileOpenPolydata ( wxCommandEvent& event );
@@ -146,6 +155,8 @@ protected:
   wxAuiNotebook* _main_book;
   wxAuiNotebook* _param_book;
   wxString       _initial_perspective;
+  // store the smart pointers of the used param panels for protection
+  std::list<ParamPanel::ptr> _parampanel_ptrs;
 
   wxPanel*     _prompt_panel;
 

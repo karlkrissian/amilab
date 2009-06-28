@@ -75,6 +75,10 @@ wxString GetwxStr(const string& str);
 #include "mySpinButton.h"
 #include "myTextCtrl.h"
 
+#include <boost/shared_ptr.hpp>
+typedef boost::shared_ptr<std::string>     string_ptr;
+
+
 //
 class myButton: public wxButton
 {
@@ -217,7 +221,7 @@ class wxMenuEnum: public wxMenu
 */
 class wxStringParameter : public wxBoxSizer, public wxGenericWidget
 {
-  std::string*         _parameter;
+  string_ptr*   _parameter;
   wxWindow*     _parent;
   wxStaticText* _label;
   MyTextCtrl*   _text;
@@ -228,12 +232,18 @@ class wxStringParameter : public wxBoxSizer, public wxGenericWidget
   
   public:
   
-  wxStringParameter( wxWindow* parent, std::string* value, const char* label);
+  wxStringParameter( wxWindow* parent, string_ptr* value, const char* label);
   
   ~wxStringParameter() {}
     
   ///
-  void SetValue( char* value) { *_parameter = value; } 
+  void SetValue( const char* value) 
+  { 
+    // allocate a new string if needed
+    if (!(*_parameter).get()) 
+      (*_parameter) = string_ptr(new std::string());
+    *(*_parameter) = value; 
+  }
   
   static void OnStringUpdate(void* data);
 
@@ -251,14 +261,14 @@ class wxStringParameter : public wxBoxSizer, public wxGenericWidget
 */
 class wxFilenameParameter : public wxBoxSizer, public wxGenericWidget
 {
-  std::string*         _parameter;
+  string_ptr*   _parameter;
   wxWindow*     _parent;
   wxStaticText* _label;
   MyTextCtrl*   _text;
   myButton*     _button;
   
-  std::string    _label_name;
-  std::string        _label_value;
+  std::string   _label_name;
+  std::string   _label_value;
   int           _type;
   
   wxString      _default_path;
@@ -268,7 +278,7 @@ class wxFilenameParameter : public wxBoxSizer, public wxGenericWidget
 
   public:
   
-  wxFilenameParameter( wxWindow* parent, std::string* value, const char* label,  type_label type=LabelLabel );
+  wxFilenameParameter( wxWindow* parent, string_ptr* value, const char* label,  type_label type=LabelLabel );
   
   ~wxFilenameParameter() {}
   
@@ -291,7 +301,13 @@ class wxFilenameParameter : public wxBoxSizer, public wxGenericWidget
   static void OnStringUpdate(void* data);
   
   ///
-  void SetValue( char* value) { *_parameter = value; } 
+  void SetValue( const char* value) 
+  { 
+    // allocate a new string if needed
+    if (!(*_parameter).get()) 
+      (*_parameter) = string_ptr(new std::string());
+    *(*_parameter) = value; 
+  } 
 
 }; // wxFilenameParameter
 

@@ -594,7 +594,7 @@ void ParamPanel::EnumerationDefaut( int id, int id_defaut)
 //--------------------------------------------------------------
 bool ParamPanel::AddListChoice( int* id,  
 //               -------------
-          std::string* selection_param,
+          string_ptr* selection_param,
           const char* libelle, 
           const boost::shared_ptr<wxArrayString>& choicelist,
           void* update_cb,
@@ -774,7 +774,7 @@ void ParamPanel::ChangedValueCallback( int id, void* callback, void* calldata)
 
 
 //----------------------------------------------------------------
-unsigned char ParamPanel::AjouteChaine( int* id, std::string* param, 
+unsigned char ParamPanel::AjouteChaine( int* id, string_ptr* param, 
 //                      ------------
                 const char* libelle)
 {
@@ -805,7 +805,7 @@ void ParamPanel::ContraintesChaine( int id, char* defaut)
 
 
 //------------------------------------------------------------------------------
-unsigned char ParamPanel::AjouteNomFichier( int* id, std::string* param, 
+unsigned char ParamPanel::AjouteNomFichier( int* id, string_ptr* param, 
 //                   ----------------
                 const char* libelle)
 {
@@ -1003,12 +1003,19 @@ void  ParamPanel::Attache(int id, int id_h, int id_g,
 */
 
 //---------------------------------------------------------------------
-void ParamPanel::SetDragCallback( int id) {
+void ParamPanel::SetDragCallback( int id, bool dcb) {
 
   macro_CheckParameterId(id, return)
   
-//  (*this)[id]->SetDragCallback();
-    
+  if (_tab_param[id].GetType() == TYPE_PARAMETRE_ENTIER) {
+    if (_tab_param[id].GetWidget()!=NULL)
+    ((wxNumericParameter<int>*) _tab_param[id].GetWidget())->SetDragCallback(dcb);
+  } else
+  if (_tab_param[id].GetType() == TYPE_PARAMETRE_REEL) {
+    if (_tab_param[id].GetWidget()!=NULL)
+    ((wxNumericParameter<float>*) _tab_param[id].GetWidget())->SetDragCallback(dcb);
+  } else
+    cerr << __func__ << " only available for integers and floats." << endl;
 }
 
 

@@ -87,6 +87,9 @@
 
 #define  wxP_DefHSizerBorder 2
 
+#include <boost/shared_ptr.hpp>
+typedef boost::shared_ptr<std::string>     string_ptr;
+
 //==============================================================================
 /**
   La classe {\em ParamPanel} permet de g�er facilement la modification \\
@@ -132,7 +135,10 @@ class ParamPanel: public  wxPanel
 //    ========
 {
 
-  DECLARE_CLASS(ParamPanel)
+  DECLARE_CLASS(ParamPanel);
+
+public:
+  typedef boost::shared_ptr<ParamPanel>    ptr;
 
 private:
 
@@ -349,7 +355,7 @@ public:
   unsigned char AjouteChaine(
   //            ------------
     int* id,
-    std::string* ch,
+    string_ptr* ch,
     const char* libelle);
 
   ///
@@ -364,7 +370,7 @@ public:
   unsigned char AjouteNomFichier( 
   //            ----------------
     int* id,
-    std::string* nom,
+    string_ptr* nom,
     const char* libelle);
 
   ///
@@ -466,7 +472,7 @@ public:
 
   bool AddListChoice( int* id,  
   //   -------------
-            std::string* selection_param,
+            string_ptr* selection_param,
             const char* libelle, 
             const boost::shared_ptr<wxArrayString>& choicelist,
             void* update_cb,
@@ -569,7 +575,7 @@ public:
   //     ---------
 */
 
-  void SetDragCallback( int id);
+  void SetDragCallback( int id, bool dcb);
 
   void BeginBox( const char* boxname);
   void EndBox();

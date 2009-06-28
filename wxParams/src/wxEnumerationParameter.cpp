@@ -57,6 +57,7 @@ wxEnumerationParameter::wxEnumerationParameter( wxWindow* parent,
   this->_parameter       = param;
   this->_selection_param = NULL,
   this->_parent          = parent;
+  this->_update_button   = NULL;
 
   this->_label     = new wxStaticText(this->_parent, wxID_ANY, wxString::FromAscii(label));
   if (tooltip!="") _label->SetToolTip(GetwxStr(tooltip.c_str()));
@@ -71,7 +72,7 @@ wxEnumerationParameter::wxEnumerationParameter( wxWindow* parent,
 
 //---------------------------------------------------------------
 wxEnumerationParameter::wxEnumerationParameter( wxWindow* parent, 
-    std::string* selection_param,
+    string_ptr* selection_param,
     const char* label,
     const std::string& tooltip
     ): wxBoxSizer(wxHORIZONTAL)
@@ -79,6 +80,7 @@ wxEnumerationParameter::wxEnumerationParameter( wxWindow* parent,
   this->_parent          = parent;
   this->_parameter       = NULL;
   this->_selection_param = selection_param,
+  this->_update_button   = NULL;
 
   this->_label     = new wxStaticText(this->_parent, wxID_ANY, wxString::FromAscii(label));
   if (tooltip!="") _label->SetToolTip(GetwxStr(tooltip.c_str()));
@@ -124,12 +126,17 @@ void wxEnumerationParameter::AddChoice( int* choix_id, const char* label)
 //----------------------------------------------
 void wxEnumerationParameter::SetChoices( const boost::shared_ptr<wxArrayString>& choices)
 {
+  // get the current selected name
+  wxString currentselection = GetStringSelection();
   this->_choice->Clear();
   for(int i=0;i<choices->GetCount();i++) {
     this->_choice->Append((*choices)[i]);
   }
-  if (choices->GetCount()>0)
-    SetSelection(0);
+
+  if (!this->_choice->SetStringSelection(currentselection))
+    // if not able to set the same selection, set to the first item
+    if (choices->GetCount()>0)
+      SetSelection(0);
 }
 
 
@@ -142,13 +149,28 @@ wxString wxEnumerationParameter::GetStringSelection()
 //----------------------------------------------
 void wxEnumerationParameter::SetSelection( int n)
 {
-   this->_choice->SetSelection(n);
+  this->_choice->SetSelection(n);
+  this->OnEnumUpdate(this);
 }
 
+//----------------------------------------------
 void wxEnumerationParameter::Update()
 {
   if (this->_parameter!=NULL)
-    this->SetSelection(*this->_parameter);
+    this->_choice->SetSelection(*this->_parameter);
+  //  this->SetSelection(*this->_parameter);
+
+  if (this->_selection_param!=NULL) {
+    // eventually call update button callback function
+    if (_update_button!=NULL) {
+      _update_button->Callback();
+    }
+    string_ptr currentparam = *_selection_param;
+    wxString wxcp = wxString(currentparam->c_str(),wxConvUTF8);
+    this->_choice->SetStringSelection(wxcp);
+    //this->OnEnumUpdate(this);
+  }
+
 }
 
 void wxEnumerationParameter::OnEnumUpdate(void* data)
@@ -157,9 +179,15 @@ void wxEnumerationParameter::OnEnumUpdate(void* data)
   
   if (_this->_parameter!=NULL)
     (*_this->_parameter) = (int)_this->_choice->GetSelection();
-  if (_this->_selection_param!=NULL)
-    (*_this->_selection_param) = _this->_choice->GetStringSelection().mb_str(wxConvUTF8);
+  if (_this->_selection_param!=NULL) 
+  {
+    std::string res = std::string(_this->_choice->GetStringSelection().mb_str(wxConvUTF8));
+    cout << __func__ << "setting selection string to " << res << endl;
+    // change the smart pointer contents 
+    (*_this->_selection_param) = string_ptr(new std::string(res));
+  }
   _this->Callback();
+
 }
 
 //---------------------------------------------
