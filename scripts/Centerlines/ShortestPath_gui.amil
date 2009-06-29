@@ -1,0 +1,226 @@
+#
+# Find Shortest path between 2 points
+# using a speed image
+#
+
+if (!exists(SP_defined)) {
+  SP_defined = 1
+
+  func "SyntheticImages/AddSphere"
+  
+  proc SP_init() {
+    global_new
+  
+    # input image name
+    SP_input_name = ""
+    # speed image name
+    SP_speed_name = ""
+  
+    # start point
+    SP_px1 = 0
+    SP_py1 = 0
+    SP_pz1 = 0
+    # end point
+    SP_px2 = 0
+    SP_py2 = 0
+    SP_pz2 = 0
+  
+    # Path mode 0 or 1
+  
+    SP_Gui
+  }
+  
+  
+  #-----------------------------------------------
+  proc SP_load_input() {
+    eval "global::SP_input <<="+SP_input_name+";"
+    if (SP_input_name=="Image") {
+      SP_input_name = "SP_input"
+      SP_win.update
+    }
+  }
+  
+  #-----------------------------------------------
+  proc SP_load_speed() {
+    eval "global::SP_speed <<="+SP_speed_name+";"
+    if (SP_speed_name=="Image") {
+      SP_speed_name = "SP_speed"
+      SP_win.update
+    }
+  }
+  
+  #-----------------------------------------------
+  proc SP_StartPoint() \
+  {
+    SP_load_input
+    show SP_input
+    if (exists(SP_input_draw)) {
+      SP_SetStartPoint(
+                        SP_input_draw.GetXPos, \
+                        SP_input_draw.GetYPos, \
+                        SP_input_draw.GetZPos, \
+                      )
+    }
+  }
+  
+  
+  #-----------------------------------------------
+  proc SP_SetStartPoint( NUM x, NUM y, NUM z) \
+  {
+    global::SP_px1 = x
+    global::SP_py1 = y
+    global::SP_pz1 = z
+    global::SP_Px1 = SP_input.trx + x*SP_input.vx
+    global::SP_Py1 = SP_input.try + y*SP_input.vy
+    global::SP_Pz1 = SP_input.trz + z*SP_input.vz
+  }
+  
+  
+  #-----------------------------------------------
+  proc SP_SetStartPointWorld( NUM x, NUM y, NUM z) \
+  {
+    global::SP_Px1 = x
+    global::SP_Py1 = y
+    global::SP_Pz1 = z
+    global::SP_px1 = (x-SP_input.trx)/SP_input.vx
+    global::SP_py1 = (y-SP_input.try)/SP_input.vy
+    global::SP_pz1 = (z-SP_input.trz)/SP_input.vz
+  }
+  
+  #-----------------------------------------------
+  proc SP_EndPoint() \
+  {
+    SP_load_input
+    show SP_input
+    if (exists(SP_input_draw)) {
+      SP_SetEndPoint(
+                        SP_input_draw.GetXPos, \
+                        SP_input_draw.GetYPos, \
+                        SP_input_draw.GetZPos, \
+                      )
+    }
+    global::SP_Px2 = SP_input.trx + SP_px2*SP_input.vx
+    global::SP_Py2 = SP_input.try + SP_py2*SP_input.vy
+    global::SP_Pz2 = SP_input.trz + SP_pz2*SP_input.vz
+  }
+  
+  
+  #-----------------------------------------------
+  proc SP_SetEndPoint( NUM x, NUM y, NUM z) \
+  {
+    global::SP_px2 = x
+    global::SP_py2 = y
+    global::SP_pz2 = z
+    global::SP_Px2 = SP_input.trx + x*SP_input.vx
+    global::SP_Py2 = SP_input.try + y*SP_input.vy
+    global::SP_Pz2 = SP_input.trz + z*SP_input.vz
+  }
+  
+  
+  #-----------------------------------------------
+  proc SP_SetEndPointWorld( NUM x, NUM y, NUM z) \
+  {
+    global::SP_Px2 = x
+    global::SP_Py2 = y
+    global::SP_Pz2 = z
+    global::SP_px2 = (x-SP_input.trx)/SP_input.vx
+    global::SP_py2 = (y-SP_input.try)/SP_input.vy
+    global::SP_pz2 = (z-SP_input.trz)/SP_input.vz
+  }
+  
+  
+  #-----------------------------------------------
+  proc SP_Display() \
+  {
+    SP_load_input
+    SP_load_speed
+    show SP_input
+    show SP_speed
+    SP_input_draw.compare(SP_speed)
+    if (exists(SP_path)) { show SP_path; }
+  }
+  
+  
+  #-----------------------------------------------
+  proc SP_Close() \
+  {
+  }
+  
+  
+  #-----------------------------------------------
+  proc SP_Run() \
+  {
+    SP_load_speed()
+  
+    # force a minimal value of 0.02
+    maxrepim_crop = SP_speed+0.02
+  
+    # Add Spheres around extremities to facilitate
+    # their connections
+    AddBrightSphere_mm( &maxrepim_crop,\
+                        SP_px1,SP_py1,SP_pz1,\
+                        3,0.01,0.5)
+    AddBrightSphere_mm( &maxrepim_crop,\
+                        SP_px2,SP_py2,SP_pz2,\
+                        3,0.01,0.5)
+  
+    # Run a Fast Marching start from Point 2 up to distance 1000
+    fm_max = 1000
+    fminit = (FLOAT) maxrepim_crop*0+fm_max
+  
+    if (SP_px2<2) { SP_px2=2; }
+    if (SP_py2<2) { SP_py2=2; }
+    if (SP_pz2<2) { SP_pz2=2; }
+    fminit.setpos(SP_px2,SP_py2,SP_pz2)
+    fminit.set(-fm_max)
+    #maxrepim_crop = maxrepim_crop/10
+    # running fast marching until the point 1 is reached
+    printn "FMT"
+    res = vtkFastMarchingTarget(maxrepim_crop,fminit,fm_max,\
+                          SP_px1+0.5,SP_py1+0.5,SP_pz1+0.5)
+    res.info
+  
+    printn "FMT done"
+    if (exists(global::SP_path)) { del global::SP_path; }
+    global::SP_path = PathFromVectField( res,\
+                              0.1,500,\
+                              SP_Px1,SP_Py1,SP_Pz1,\
+                              SP_Px2,SP_Py2,SP_Pz2)
+  }
+  
+  
+  #-------------------------------------------
+  proc SP_Gui() \
+  {
+    global::SP_win = ParamWin("Path")
+  
+    # set the input image
+    SP_win.AddImageChoice(SP_input_name, "Input")
+    # set the speed image
+    SP_win.AddImageChoice(SP_speed_name, "Speed")
+  
+    SP_win.BeginBox("Extremities")
+      # set the first point
+      SP_win.AddButton("Set Start Point",SP_StartPoint)
+      # set the second point
+      SP_win.AddButton("Set End Point",  SP_EndPoint)
+    SP_win.EndBox
+  
+    SP_win.BeginHorizontal
+      # run
+      SP_win.AddButton("Run",      SP_Run)
+      # display
+      SP_win.AddButton("Display",  SP_Display)
+    SP_win.EndHorizontal
+  
+    # close
+    SP_win.AddButton("Close",    SP_Close)
+  
+    SP_win.update
+    SP_win.Display
+  }
+  
+  SP_init
+
+}
+# end if (!SP_defined)

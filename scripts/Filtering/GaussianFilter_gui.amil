@@ -1,0 +1,66 @@
+
+#
+# Example of using the Gaussian Filtering
+# with the command filter
+#
+
+proc GF_Init( ) {
+  global_new
+
+  GF_input_name = ""
+  GF_sigma      = 1
+  GF_CreateGui()
+}
+
+proc GF_Close() {
+  GF_win.Hide
+  del "GF_*_draw"
+  del "GF_*"
+}
+
+proc GF_load_input() {
+  eval "global::GF_input <<="+GF_input_name+";"
+  if (GF_input_name=="Image") {
+    GF_input_name = "GF_input"
+    GF_win.update
+  }
+}
+
+proc GF_Filter() {
+  GF_load_input()
+  global::GF_res <<= filter(GF_input,GF_sigma,0,0,0)
+  GF_Display()
+}
+
+proc GF_Display() {
+  global
+  show GF_input
+  if (exists(GF_res)) {
+    show GF_res
+    GF_input_draw.compare(GF_res)
+  }
+}
+
+proc GF_Save() {
+  GF_res.save resultname
+}
+
+proc GF_CreateGui() {
+
+  # parameters window
+  global::GF_win = ParamWin("GaussFilter")
+
+  GF_win.AddImageChoice(GF_input_name, "Input")
+  sigma_id = GF_win.AddFloat(GF_sigma,0.1,10)
+  GF_win.SetCallback(GF_Filter)
+  #GF_win.SetDragCallback(sigma_id,0)
+  GF_win.AddButton("Close",    GF_Close)
+
+  GF_win.update
+  GF_win.Display
+}
+
+
+GF_Init
+
+
