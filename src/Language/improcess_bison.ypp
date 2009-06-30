@@ -6252,6 +6252,16 @@ postfix_expr
         setlocale(LC_NUMERIC, "C");
         $$ = fscanf(file.get(),"%f",var);
     }
+    | VAR_FILE T_POINT T_read T_OP_PAR VAR_STRING T_CL_PAR
+    {
+      FILE_ptr file = *(FILE_ptr*) ($1->Pointer());
+      setlocale(LC_NUMERIC, "C");
+      // not safe, TODO: use iostream or boost for files here ...
+      char res[100];
+      $$ = fscanf(file.get(),"%s",res);
+      string_ptr var( new std::string(res));
+      $5->SetString(var);
+    }
     ;
 
 unary_expr
@@ -6310,6 +6320,7 @@ multiplicative_expr
         : cast_expr
         | multiplicative_expr T_MULT cast_expr { $$=$1*$3; }
         | multiplicative_expr T_DIV cast_expr { $$=$1/$3; }
+        | multiplicative_expr T_MOD cast_expr { $$= ((int) round($1)) % ((int) round($3)); }
         ;
 
 additive_expr

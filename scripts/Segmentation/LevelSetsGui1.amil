@@ -2,487 +2,583 @@
 
 #SetDebugOn
 
-func "SyntheticImages/AddSphere.amil"
 
-//---------------------------------------------------
-proc LS_init(IMAGE _input, IMAGE _init) {
-  global_new
-    LS_in = (FLOAT)_input
-    show LS_in
+if (!exists(LS_defined)) {
+  LS_defined=1
 
-    LS_inputmin = min(LS_in)
-    LS_inputmax = max(LS_in)
-    minimal_intensity = LS_inputmin
+  func "SyntheticImages/AddSphere.amil"
 
-    if (count(_init>0)>0) {
-      Imean= mean[_init>0](_input)
-      Isd  = mean[_init>0] ( (_input-Imean)*(_input-Imean))
-      Isd  = sqrt(Isd)
-    } else {
-      Imean=70
-      Isd=50
-    }
-    sphere_radius = 3
-    accept_high_intensity = UCHAR(1)
-    LS_expansioncoeff  = 0.5
+  //---------------------------------------------------
+  proc LS_Init(IMAGE _input, IMAGE _init) {
+    global_new
 
-    dt = 0.5
-    T=200
+      LS_input_name   = ""
+      LS_initial_name = ""
+      # 0: for spheres 1: for initial image
+      LS_init_mode    = INT(0) 
 
-    LS_stop = 0;
-    // number of threads (not used right now)
-    LS_threads = INT(2)
+      LS_inputmin = 0
+      LS_inputmax = 32000
+      LS_minimal_intensity = 0
 
-    LS_advcoeff  = 0.5
+      LS_Imean=70
+      LS_Isd=50
+      LS_sphere_radius = 3
+      LS_accept_high_intensity = UCHAR(1)
+      LS_expansioncoeff  = 0.5
 
-    LS_curvcoeff = 0.5
+      LS_dt = 0.5
+      LS_T=200
 
-    LS_smoothingtype = INT(0) // 0: mean curv 1: min curv
-    LS_affinecurv    = UCHAR(0) // 0: 2D affine curvature 1: 2D mean curvature
+      LS_check_convergence = UCHAR(1)
+      LS_conv_freq         = INT(20)
 
-    LS_velcoeff  = 0.0
+      LS_stop = 0;
+      # number of threads (not used right now)
+      LS_threads = INT(2)
 
-    LS_downsamplefactor = INT(1)
+      LS_advcoeff  = 0.5
 
+      LS_curvcoeff = 0.5
 
-    LS_inls = (FLOAT) _init
-    LS_inls0 = LS_inls
+      LS_smoothingtype = INT(0) // 0: mean curv 1: min curv
+      LS_affinecurv    = UCHAR(0) // 0: 2D affine curvature 1: 2D mean curvature
 
-    LS_in_draw.SetIsoContour(1,LS_inls,0)
-    LS_in_draw.DrawIsoContour(1,1)
-    #LS_in_draw.SetIsoContour(0,LS_inls0,0)
-    #LS_in_draw.DrawIsoContour(0,1)
+      LS_velcoeff  = 0.0
 
-    DTmin = -50
-    DTmax = 50
+      LS_downsamplefactor = INT(1)
 
-    if (argc >= 1) {
-      LS_result_filename = $1
-    } else {
+      #LS_in_draw.SetIsoContour(0,LS_inls0,0)
+      #LS_in_draw.DrawIsoContour(0,1)
+
+      DTmin = -50
+      DTmax = 50
+
       LS_result_filename = "LevelSetResult"
+      LS_result_filename_ext = ".ami.gz"
+      LS_resname_addtime = UCHAR(1)
+      LS_resname_addprob = UCHAR(1)
+
+      LS_Gui()
+  }
+
+
+  #-----------------------------------------------
+  proc LS_load_input() {
+
+    eval "global::LS_input <<= (FLOAT)"+LS_input_name+";"
+    if (LS_input_name=="Image") {
+      LS_input_name = "LS_input"
+      LS_win.update
     }
-    LS_result_filename_ext = ".ami.gz"
-    LS_resname_addtime = UCHAR(1)
-    LS_resname_addprob = UCHAR(1)
 
-    printn "*"
-    LS_CreateWin()
-}
+    LS_inputmin          = min(LS_input)
+    LS_inputmax          = max(LS_input)
+    LS_minimal_intensity = LS_inputmin
 
-
-//--------------------------------------------------
-proc LS_init1(IMAGE _input) {
-  tmp = ((FLOAT)_input)*0-4
-  LS_init(&_input,&tmp)
-}
-
-//--------------------------------------------------
-proc LS_setinput(IMAGE input) {
-  global_new
-
-  if (exists(LS_in_draw)) { del LS_in_draw; }
-  if (exists(LS_inls))    { del LS_inls; }
-  if (exists(LS_inls0))   { del LS_inls0; }
-  if (exists(LS_in))      { del LS_in; }
-  if (exists(LS_in))      { del LS_inls_backup; }
-
-  LS_in = (FLOAT)_input
-  show LS_in
-
-
-  LS_inputmin = min(LS_in)
-  LS_inputmax = max(LS_in)
-  minimal_intensity = LS_inputmin
-
-  LS_inls = (FLOAT)LS_in*0-10
-  LS_inls0 = LS_inls
-
-  LS_in_draw.SetIsoContour(1,LS_inls,0)
-  LS_in_draw.DrawIsoContour(1,1)
-
-}
-
-//---------------------------------------------------
-proc LS_SetVelocityField( IMAGE vel, NUM coeff ) {
-
-  global::LS_velfield = vel
-  global::LS_velcoeff = coeff
-  LS_w1.update
-
-}
-
-
-//---------------------------------------------------
-proc CB_Reset() {
-  if (exists(LS_inls)) {
-     LS_inls = -1
-  }
-  show LS_in
-}
-
-
-//---------------------------------------------------
-proc ComputeIntensityStats() {
-
-  if (exists(LS_inls)) {
-   if (count(LS_inls>0)>0) {
-      global::Imean= mean[LS_inls>0](LS_in)
-      global::Isd  = mean[LS_inls>0] ( (LS_in-Imean)*(LS_in-Imean))
-      Isd  = sqrt(Isd)
-      printn sprint("mean %f",Imean)
-      printn sprint("sd   %f",Isd)
-    } else  {
-      printn "No point within initial level set"
-    }
-  }
-  if (exists(LS_w1)) {
-    LS_w1.update
-  }
-}
-
-//--------------------------------------------------
-proc RunLS( IMAGE initial, NUM graphics) {
-//   -----
-
-  // every how many iterations call the graphic events
-  freq = 8
-  it = floor(T/dt)+1
-
-  // 0:liana s, 1: fast marching 2: fast chamfer
-  method     = 2
-
-  v_x = LS_in.vx
-  v_y = LS_in.vy
-  v_z = LS_in.vz
-
-  setvoxelsize(LS_in,  1,1,1)
-  setvoxelsize(initial,1,1,1)
-
-  // Parameters:
-  //   1. grad threshold
-  //   2. iterations
-  //   3. attach coeff
-  //   4. curvcoeff
-  //   5. dt
-  //   6. reinitfreq
-
-
-  //
-  LevelSetsCURV.SetParam(0.7,it,LS_advcoeff,LS_curvcoeff,dt,6)
-  LevelSetsCURV.SetDistMethod(method)
-  LevelSetsCURV.SetThreads(LS_threads)
-  LevelSetsCURV.SetMeanCurv(LS_smoothingtype)
-  LevelSetsCURV.SetAffineCurv(LS_affinecurv)
-
-  if (exists(LS_velfield)) {
-    LevelSetsCURV.SetVelocity(LS_velfield,LS_velcoeff)
+    show LS_input
   }
 
-  print "Compute Expansion Image \n"
+  #-----------------------------------------------
+  proc LS_load_initial() {
 
-  print "Mean = "; print Imean;
-  print " SD = ";  print Isd;
-  print "\n"
-
-  LevelSetsCURV.SetILowTh(minimal_intensity)
-  LevelSetsCURV.SetNumGaussians(1)
-  LevelSetsCURV.SetGaussian(0,Imean,Isd)
-  LevelSetsCURV.SetProbThreshold(0.3)
-  if (accept_high_intensity) {
-    LevelSetsCURV.SetProbHighTh(Imean+Isd)
-  }
-  LevelSetsCURV.SetExpansion(LS_expansioncoeff)
-
-  print "Compute Expansion Image OK \n"
-
-  LevelSetsCURV.SetBandTube(3,2)
-
-  lres = LevelSetsCURV.init(LS_in,initial)
-#  lres = LevelSetsCURV.init(LS_in,900)
-
-  if (graphics) {
-    show LS_in
-    // sets the isocontour number 0 to the image 'initial' with threshold 0
-    LS_in_draw.SetIsoContour(1,initial,0)
-    // sets the isocontour number 0 to be active
-    LS_in_draw.DrawIsoContour(1,1)
-    LS_in_draw.SetIsoContour(2,lres,0)
-    LS_in_draw.DrawIsoContour(2,1)
-  }
-
-  LevelSetsCURV.iterate;
-
-  k = 0
-  SetProgress(0)
-  LS_stop = 0;
-  for n=1 to it {
-    print n; print "/"; printn it
-    if (!LS_stop) {
-      print sprint("T= %0.2f \n",n*dt)
-      LevelSetsCURV.iterate;
-      k = k+1
-      if (graphics)&&(k==freq) {
-        LevelSetsCURV.UpdateResult
-        lres = LevelSetsCURV.GetOutput
-        k = 0
-        show LS_in
-        ProcessXEvents(100)
-      }
-      SetProgress(n/it*100)
+    if (!exists(LS_input)) {
+      printn "LS_load_initial() \t Need to load input image first!"
     } else {
-      printn "stopped!"
-      n=it+1;
+      if (LS_init_mode==1) {
+        eval "global::LS_inls <<= (FLOAT)"+LS_initial_name+";"
+        if (LS_input_name=="Image") {
+          LS_input_name = "LS_input"
+          LS_win.update
+        }
+    
+        if (count(LS_inls>0)>0) {
+          LS_Imean= mean[LS_inls>0](LS_input)
+          LS_Isd  = mean[LS_inls>0] ( (LS_input-LS_Imean)*(LS_input-LS_Imean))
+          LS_Isd  = sqrt(LS_Isd)
+        } else {
+          LS_Imean=70
+          LS_Isd=50
+        }
+      } else {
+        global::LS_inls = LS_input*0-1
+      }
+  
+      global::LS_inls0 = LS_inls
+      LS_input_draw.SetIsoContour(1,LS_inls,0)
+      LS_input_draw.DrawIsoContour(1,1)
     }
   }
 
-  printn "continue commands"
-  setvoxelsize( LS_in,   v_x, v_y, v_z)
-  setvoxelsize( initial, v_x, v_y, v_z)
-  setvoxelsize( lres,    v_x, v_y, v_z)
 
-  // invert before ending to be compatible with input convention
-  LevelSetsCURV.UpdateResult
-  lres = LevelSetsCURV.GetOutput
-  initial = -lres;
+  //--------------------------------------------------
+  proc LS_Init1(IMAGE _input) {
+    tmp = ((FLOAT)_input)*0-4
+    LS_Init(&_input,&tmp)
+  }
+  
+  //--------------------------------------------------
+  proc LS_Setinput(IMAGE input) {
+    global_new
+  
+    if (exists(LS_input_draw)) { del LS_input_draw; }
+    if (exists(LS_inls))    { del LS_inls; }
+    if (exists(LS_inls0))   { del LS_inls0; }
+    if (exists(LS_input))      { del LS_input; }
+    if (exists(LS_inls_backup))      { del LS_inls_backup; }
+  
+    LS_input = (FLOAT)_input
+    show LS_input
+  
+  
+    LS_inputmin = min(LS_input)
+    LS_inputmax = max(LS_input)
+    LS_minimal_intensity = LS_inputmin
+  
+    LS_inls = (FLOAT)LS_input*0-10
+    LS_inls0 = LS_inls
+  
+    LS_input_draw.SetIsoContour(1,LS_inls,0)
+    LS_input_draw.DrawIsoContour(1,1)
+  
+  }
+  
+  #--------------------------
+  proc LS_Close() \
+  {
+    LS_win.Hide
+    del "LS_*_draw"
+    del "LS_*"
+  }
 
-  LevelSetsCURV.end
-  SetProgress(0)
-
-}
-# RunLS()
-
-
-//---------------------------------------------------
-proc CB_AddSphere() {
-    if (exists(LS_in_draw)) {
-      _x = LS_in_draw.GetXPos
-      _y = LS_in_draw.GetYPos
-      _z = LS_in_draw.GetZPos
+  //---------------------------------------------------
+  proc LS_SetVelocityField( IMAGE vel, NUM coeff ) {
+  
+    global::LS_velfield = vel
+    global::LS_velcoeff = coeff
+    LS_win.update
+  
+  }
+  
+  
+  //---------------------------------------------------
+  proc LS_Reset() {
+    if (exists(LS_inls)) {
+      LS_inls = -1
+    }
+    show LS_input
+  }
+  
+  
+  //---------------------------------------------------
+  proc LS_ComputeIntensityStats() {
+  
+    if (exists(LS_inls)) {
+    if (count(LS_inls>0)>0) {
+        global::LS_Imean= mean[LS_inls>0](LS_input)
+        global::LS_Isd  = mean[LS_inls>0] ( (LS_input-LS_Imean)*(LS_input-LS_Imean))
+        LS_Isd  = sqrt(LS_Isd)
+        printn sprint("mean %f",LS_Imean)
+        printn sprint("sd   %f",LS_Isd)
+      } else  {
+        printn "No point within initial level set"
+      }
+    }
+    if (exists(LS_win)) {
+      LS_win.update
+    }
+  }
+  
+  //--------------------------------------------------
+  proc LS_Run( IMAGE initial, NUM graphics) {
+  //   -----
+  
+    // every how many iterations call the graphic events
+    freq = 8
+    it = floor(LS_T/LS_dt)+1
+  
+    // 0:liana s, 1: fast marching 2: fast chamfer
+    method     = 2
+  
+    v_x = LS_input.vx
+    v_y = LS_input.vy
+    v_z = LS_input.vz
+  
+    setvoxelsize(LS_input,  1,1,1)
+    setvoxelsize(initial,1,1,1)
+  
+    // Parameters:
+    //   1. grad threshold
+    //   2. iterations
+    //   3. attach coeff
+    //   4. curvcoeff
+    //   5. dt
+    //   6. reinitfreq
+  
+  
+    //
+    LevelSetsCURV.SetParam(0.7,it,LS_advcoeff,LS_curvcoeff,LS_dt,6)
+    LevelSetsCURV.SetDistMethod(method)
+    LevelSetsCURV.SetThreads(LS_threads)
+    LevelSetsCURV.SetMeanCurv(LS_smoothingtype)
+    LevelSetsCURV.SetAffineCurv(LS_affinecurv)
+  
+    if (exists(LS_velfield)) {
+      LevelSetsCURV.SetVelocity(LS_velfield,LS_velcoeff)
+    }
+  
+    print "Compute Expansion Image \n"
+  
+    print "Mean = "; print LS_Imean;
+    print " SD = ";  print LS_Isd;
+    print "\n"
+  
+    LevelSetsCURV.SetILowTh(LS_minimal_intensity)
+    LevelSetsCURV.SetNumGaussians(1)
+    LevelSetsCURV.SetGaussian(0,LS_Imean,LS_Isd)
+    LevelSetsCURV.SetProbThreshold(0.3)
+    if (LS_accept_high_intensity) {
+      LevelSetsCURV.SetProbHighTh(LS_Imean+LS_Isd)
+    }
+    LevelSetsCURV.SetExpansion(LS_expansioncoeff)
+  
+    print "Compute Expansion Image OK \n"
+  
+    LevelSetsCURV.SetBandTube(3,2)
+  
+    lres = LevelSetsCURV.init(LS_input,initial)
+  #  lres = LevelSetsCURV.init(LS_input,900)
+  
+    if (graphics) {
+      show LS_input
+      // sets the isocontour number 0 to the image 'initial' with threshold 0
+      LS_input_draw.SetIsoContour(1,initial,0)
+      // sets the isocontour number 0 to be active
+      LS_input_draw.DrawIsoContour(1,1)
+      LS_input_draw.SetIsoContour(2,lres,0)
+      LS_input_draw.DrawIsoContour(2,1)
+    }
+  
+    printn "1"
+    LevelSetsCURV.iterate;
+    LevelSetsCURV.UpdateResult
+    previous_ls = LevelSetsCURV.GetOutput
+    printn "2"
+  
+    k = 0
+    SetProgress(0)
+    LS_stop = 0;
+    
+    for n=1 to it {
+      print n; print "/"; printn it
+      if (!LS_stop) {
+        print sprint("LS_T= %0.2f \n",n*LS_dt)
+        LevelSetsCURV.iterate;
+        k = k+1
+        if (graphics)&&(k==freq) {
+          LevelSetsCURV.UpdateResult
+          lres = LevelSetsCURV.GetOutput
+          k = 0
+          show LS_input
+          ProcessXEvents(100)
+        }
+        SetProgress(n/it*100)
+        if (LS_check_convergence) {
+          if ((n % LS_conv_freq) == 0) {
+            # check for convergence
+            LevelSetsCURV.UpdateResult
+            lres = LevelSetsCURV.GetOutput
+            stillmoving = count((previous_ls*lres)<0)
+            print "*** Convergence test = "; printn stillmoving
+            if (stillmoving==0) { LS_stop=1; }
+            previous_ls = lres
+          }
+        }
+      } else {
+        printn "stopped!"
+        n=it+1;
+      }
+    }
+  
+    printn "continue commands"
+    setvoxelsize( LS_input,   v_x, v_y, v_z)
+    setvoxelsize( initial, v_x, v_y, v_z)
+    setvoxelsize( lres,    v_x, v_y, v_z)
+  
+    // invert before ending to be compatible with input convention
+    LevelSetsCURV.UpdateResult
+    lres = LevelSetsCURV.GetOutput
+    initial = -lres;
+  
+    LevelSetsCURV.end
+    SetProgress(0)
+  
+  }
+  # LS_Run()
+  
+  
+  //---------------------------------------------------
+  proc LS_AddSphere() \
+  {
+    if (!exists(LS_inls))        { LS_load_initial; }
+    if (exists(LS_input_draw)) {
+      _x = LS_input_draw.GetXPos
+      _y = LS_input_draw.GetYPos
+      _z = LS_input_draw.GetZPos
       printn "cursor is at "
       printn _x
       printn _y
       printn _z
       global::LS_inls_backup = global::LS_inls
       AddBrightSphere_mm(&global::LS_inls,\
-             _x,_y,_z,\
-             sphere_radius,-1,1)
+            _x,_y,_z,\
+            LS_sphere_radius,-1,1)
       global::LS_inls0 = global::LS_inls
-      show global::LS_in;
+      show global::LS_input;
     } else {
-      print "We have to show LS_in and position de cursor at the sphere center (using mouse middle button) \n"
+      print "We have to show LS_input and position de cursor at the sphere center (using mouse middle button) \n"
     }
-}
-
-//---------------------------------------------------
-proc CB_Backup() {
-  global::LS_inls_backup = LS_inls
-}
-
-//---------------------------------------------------
-proc CB_Undo() {
-    if (exists(LS_inls_backup)) {
-      LS_inls = LS_inls_backup
+  }
+  
+  //---------------------------------------------------
+  proc LS_Backup() {
+    global::LS_inls_backup = LS_inls
+  }
+  
+  //---------------------------------------------------
+  proc LS_Undo() {
+      if (exists(LS_inls_backup)) {
+        LS_inls = LS_inls_backup
+      } else {
+        print "There is no current backup"
+      }
+  }
+  
+  
+  //---------------------------------------------------
+  proc LS_ChangedValues() {
+  }
+  
+  //---------------------------------------------------
+  proc LS_ApplyDT() {
+    LS_inls = vtkPropDaniel2(LS_inls,0,DTmin,DTmax)
+  }
+  
+  //---------------------------------------------------
+  proc LS_ReRun() {
+    if (!exists(LS_input_image)) { LS_load_input; }
+    if (!exists(LS_inls))        { LS_load_initial; }
+    LS_inls = LS_inls0
+    LS_Run(&LS_inls,1)
+    show LS_input
+  }
+  
+  //---------------------------------------------------
+  proc LS_Stop() {
+    LS_stop = 1
+    printn "stopping"
+  }
+  
+  
+  //---------------------------------------------------
+  proc LS_Continue() {
+    LS_Run(&LS_inls,1)
+    show LS_input
+  }
+  
+  //---------------------------------------------------
+  proc LS_Surface() {
+  
+    if (exists(LS_s0)) {
+      if (exists(LS_s0_draw)) { LS_s0_draw -= LS_s0; }
+      del LS_s0
+    }
+    global::LS_s0 = isosurf(LS_inls0,0.01)
+    if (!exists(LS_s0_draw)) {
+      show LS_s0
     } else {
-      print "There is no current backup"
+      LS_s0_draw += LS_s0
     }
-}
-
-
-//---------------------------------------------------
-proc CB_ChangedValues() {
-}
-
-//---------------------------------------------------
-proc CB_ApplyDT() {
-  LS_inls = vtkPropDaniel2(LS_inls,0,DTmin,DTmax)
-}
-
-//---------------------------------------------------
-proc CB_ReRun() {
-  LS_inls = LS_inls0
-  RunLS(&LS_inls,1)
-  show LS_in
-}
-
-//---------------------------------------------------
-proc CB_Stop() {
-  LS_stop = 1
-  printn "stopping"
-}
-
-
-//---------------------------------------------------
-proc CB_Continue() {
-  RunLS(&LS_inls,1)
-  show LS_in
-}
-
-//---------------------------------------------------
-proc CB_Surface() {
-
-  if (exists(s0)) {
-    if (exists(s0_draw)) { s0_draw -= s0; }
-    del s0
+    if (exists(LS_s1)) {
+      LS_s0_draw -= LS_s1
+      del LS_s1
+    }
+    global::LS_s1 = isosurf(LS_inls,0.01)
+    LS_s0_draw += LS_s1
+    if (exists(LS_input_draw)) {
+      LS_input_draw.setGLwin(LS_s0_draw)
+    }
+  
   }
-  global::s0 = isosurf(LS_inls0,0.01)
-  if (!exists(s0_draw)) {
-    show s0
-  } else {
-    s0_draw += s0
+  
+  //---------------------------------------------------
+  proc LS_SaveResult() {
+  
+    filename=LS_result_filename-".gz"-".ami";
+    if (LS_resname_addprob) {
+      filename = filename + sprint("_mean%0.0f",LS_Imean) \
+                          + sprint("_SD%0.2f",LS_Isd)
+    }
+    if (LS_resname_addtime) {
+      filename = filename + sprint("_T%0.0f",LS_T)
+    }
+    filename = filename + LS_result_filename_ext
+    print "saving file "+filename+"\n"
+    LS_inls.save filename
   }
-  if (exists(s1)) {
-    s0_draw -= s1
-    del s1
+  
+  //---------------------------------------------------
+  proc LS_SaveInsideModel() {
   }
-  global::s1 = isosurf(LS_inls,0.01)
-  s0_draw += s1
-  if (exists(LS_in_draw)) {
-    LS_in_draw.setGLwin(s0_draw)
+  
+  //---------------------------------------------------
+  proc LS_SaveOutsideModel() {
   }
+  
+  
+  //---------------------------------------------------
+  proc LS_Gui() {
+  
+  #  LS_win = ParamWin("Evolve Active Contours using Level Sets")
+    global::LS_win = ParamWin("LevelSets")
+    LS_win.BeginBook
+  
+      LS_win.AddPage("Init")
 
-}
+        LS_win.BeginBox("Input Image")
+          # set the input image
+          LS_win.AddImageChoice(LS_input_name, "Input")
+          LS_win.AddButton("Load input",LS_load_input)
+        LS_win.EndBox
 
-//---------------------------------------------------
-proc CB_SaveResult() {
+        LS_win.BeginBox("Initial Level Set")
+          initmode_id = LS_win.AddEnum(LS_init_mode)
+            LS_win.AddEnumChoice(initmode_id,"Manual")
+            LS_win.AddEnumChoice(initmode_id,"Initial image")
+  
+          # set the initial level set image
+          LS_win.AddImageChoice(LS_initial_name, "Initial")
+  
+          LS_win.BeginHorizontal
+            LS_win.AddButton("Reset",LS_Reset)
+            LS_win.AddButton("Add Sphere", LS_AddSphere)
+          LS_win.EndHorizontal
+          LS_win.AddFloat(LS_sphere_radius,0.1,10.0)
+          LS_win.BeginHorizontal
+            LS_win.AddButton("Backup",     LS_Backup)
+            LS_win.AddButton("Undo",       LS_Undo)
+          LS_win.EndHorizontal
+        LS_win.EndBox
 
-  filename=LS_result_filename-".gz"-".ami";
-  if (LS_resname_addprob) {
-    filename = filename + sprint("_mean%0.0f",Imean) \
-                        + sprint("_SD%0.2f",Isd)
+        LS_win.AddButton("Compute Intensity stats",LS_ComputeIntensityStats)
+  
+        LS_win.AddInt( LS_downsamplefactor, 1, 4)
+        LS_win.AddFloat(LS_minimal_intensity,LS_inputmin,LS_inputmax)
+  
+      LS_win.AddPage("Param")
+        LS_win.BeginBox("Probability")
+          LS_win.AddFloat(LS_Imean, LS_inputmin,LS_inputmax)
+          LS_win.AddFloat(LS_Isd,0,(LS_inputmax-LS_inputmin)/2)
+          LS_win.AddBoolean(LS_accept_high_intensity)
+          LS_win.AddFloat(LS_expansioncoeff,0,1)
+      LS_win.EndBox
+        LS_win.BeginBox("Advection")
+          LS_win.AddFloat(LS_advcoeff,0,1)
+        LS_win.EndBox
+  
+        LS_win.BeginBox("Smoothing")
+          LS_smoothtype_id = LS_win.AddEnum(LS_smoothingtype,2)
+            LS_win.AddEnumChoice(LS_smoothtype_id,"min. curv.")
+            LS_win.AddEnumChoice(LS_smoothtype_id,"mean curv.")
+          LS_win.AddFloat(LS_curvcoeff,0,1)
+          LS_win.AddBoolean(LS_affinecurv)
+        LS_win.EndBox
+  
+        LS_win.BeginBox("Velocity")
+          LS_win.AddFloat(LS_velcoeff,0,1)
+        LS_win.EndBox
+  
+      LS_win.AddPage("Evol")
+  
+        LS_win.BeginBox("Time")
+          LS_win.AddFloat(LS_dt,0.01,1)
+          LS_win.AddFloat(LS_T,0.01,500)
+        LS_win.EndBox
+  
+        LS_win.BeginBox("Processing")
+        LS_win.AddInt(LS_threads,1,10)
+        LS_win.BeginHorizontal
+          LS_win.AddButton("ReRun",     LS_ReRun)
+          LS_win.AddButton("Continue",  LS_Continue)
+        LS_win.EndHorizontal
+        LS_win.BeginHorizontal
+          LS_win.AddButton("Stop",      LS_Stop)
+          LS_win.AddButton("Surface",   LS_Surface)
+        LS_win.EndHorizontal
+        LS_win.EndBox
+
+        LS_win.BeginBox("Convergence")
+          LS_win.AddBoolean(LS_check_convergence)
+          LS_win.AddInt(LS_conv_freq,5,100)
+        LS_win.EndBox 
+      LS_win.AddPage("Dist")
+        LS_win.AddFloat(DTmin,-100,0)
+        LS_win.AddFloat(DTmax,0,100)
+        LS_win.AddButton("Apply",  LS_ApplyDT)
+  
+      LS_win.AddPage("Res")
+  
+        LS_win.AddString(LS_result_filename,"base name:")
+        LS_win.AddString(LS_result_filename_ext,"extension:")
+        LS_win.AddBoolean(LS_resname_addtime)
+        LS_win.AddBoolean(LS_resname_addprob)
+  
+        LS_win.BeginBox("Save")
+        LS_win.BeginHorizontal
+          LS_win.AddButton("Result",   LS_SaveResult)
+        LS_win.EndHorizontal
+  
+        LS_win.BeginHorizontal
+          LS_win.AddButton("Inside model",   LS_SaveInsideModel)
+          LS_win.AddButton("Outside model",  LS_SaveOutsideModel)
+        LS_win.EndHorizontal
+        LS_win.EndBox
+  
+  
+    LS_win.EndBook
+  
+    LS_win.AddButton("Close",LS_Close)
+
+    LS_win.update
+    LS_win.Display
   }
-  if (LS_resname_addtime) {
-    filename = filename + sprint("_T%0.0f",T)
+  
+  LS_Init
+  if (argc==1) {
+    # start with one image
+    im     = Image $1
+    LS_input_name = "im"
+    LS_win.update
   }
-  filename = filename + LS_result_filename_ext
-  print "saving file "+filename+"\n"
-  LS_inls.save filename
-}
-
-//---------------------------------------------------
-proc CB_SaveInsideModel() {
-}
-
-//---------------------------------------------------
-proc CB_SaveOutsideModel() {
-}
-
-
-//---------------------------------------------------
-proc LS_CreateWin() {
-  global_new
-
-#  LS_w1 = ParamWin("Evolve Active Contours using Level Sets")
-  LS_w1 = ParamWin("LevelSets")
-  LS_w1.BeginBook
-
-    LS_w1.AddPage("Init")
-      LS_w1.AddButton("Reset",CB_Reset)
-      LS_w1.AddButton("Add Sphere", CB_AddSphere)
-      sphere_radius_id =LS_w1.AddFloat(sphere_radius,0.1,10.0)
-      LS_w1.BeginHorizontal
-        LS_w1.AddButton("Backup",     CB_Backup)
-        LS_w1.AddButton("Undo",       CB_Undo)
-      LS_w1.EndHorizontal
-      LS_w1.AddButton("Compute Intensity stats",ComputeIntensityStats)
-
-      dsf_id      = LS_w1.AddInt( LS_downsamplefactor, 1, 4)
-      minimalint_id=LS_w1.AddFloat(minimal_intensity,LS_inputmin,LS_inputmax)
-
-    LS_w1.AddPage("Param")
-      LS_w1.BeginBox("Probability")
-        aid=          LS_w1.AddFloat(Imean, LS_inputmin,LS_inputmax)
-        aid=          LS_w1.AddFloat(Isd,0,(LS_inputmax-LS_inputmin)/2)
-        accept_high_intensity_id = LS_w1.AddBoolean(accept_high_intensity)
-        LS_expansioncoeff_id     = LS_w1.AddFloat(LS_expansioncoeff,0,1)
-     LS_w1.EndBox
-      LS_w1.BeginBox("Advection")
-        LS_advcoeff_id  = LS_w1.AddFloat(LS_advcoeff,0,1)
-      LS_w1.EndBox
-
-      LS_w1.BeginBox("Smoothing")
-        LS_smoothtype_id = LS_w1.AddEnum(LS_smoothingtype,2)
-          LS_w1.AddEnumChoice(LS_smoothtype_id,"min. curv.")
-          LS_w1.AddEnumChoice(LS_smoothtype_id,"mean curv.")
-        LS_curvcoeff_id = LS_w1.AddFloat(LS_curvcoeff,0,1)
-        LS_affinecurv_id = LS_w1.AddBoolean(LS_affinecurv)
-      LS_w1.EndBox
-
-      LS_w1.BeginBox("Velocity")
-        LS_velcoeff_id = LS_w1.AddFloat(LS_velcoeff,0,1)
-      LS_w1.EndBox
-
-    LS_w1.AddPage("Evol")
-
-      LS_w1.BeginBox("Time")
-        dt_id =       LS_w1.AddFloat(dt,0.01,1)
-        T_id  =       LS_w1.AddFloat(T,0.01,500)
-      LS_w1.EndBox
-
-      LS_w1.BeginBox("Processing")
-      LS_w1.AddInt(LS_threads,1,10)
-      LS_w1.BeginHorizontal
-        LS_w1.AddButton("ReRun",     CB_ReRun)
-        LS_w1.AddButton("Continue",  CB_Continue)
-      LS_w1.EndHorizontal
-      LS_w1.BeginHorizontal
-        LS_w1.AddButton("Stop",      CB_Stop)
-        LS_w1.AddButton("Surface",   CB_Surface)
-      LS_w1.EndHorizontal
-      LS_w1.EndBox
-
-    LS_w1.AddPage("Dist")
-      dtmin_id =  LS_w1.AddFloat(DTmin,-100,0)
-      dtmax_id =  LS_w1.AddFloat(DTmax,0,100)
-      LS_w1.AddButton("Apply",  CB_ApplyDT)
-
-    LS_w1.AddPage("Res")
-
-      LS_w1.AddString(LS_result_filename,"base name:")
-      LS_w1.AddString(LS_result_filename_ext,"extension:")
-      LS_w1.AddBoolean(LS_resname_addtime)
-      LS_w1.AddBoolean(LS_resname_addprob)
-
-      LS_w1.BeginBox("Save")
-      LS_w1.BeginHorizontal
-        LS_w1.AddButton("Result",   CB_SaveResult)
-      LS_w1.EndHorizontal
-
-      LS_w1.BeginHorizontal
-        LS_w1.AddButton("Inside model",   CB_SaveInsideModel)
-        LS_w1.AddButton("Outside model",  CB_SaveOutsideModel)
-      LS_w1.EndHorizontal
-      LS_w1.EndBox
-
-
-  LS_w1.EndBook
-
-  LS_w1.update
-  LS_w1.Display
-}
-
-printn $#
-#printn $1
-
-
-if (argc==1) {
-  // start with one image
-  im     = Image $1
-  initim = im*0-1
-  LS_init(&im,initim)
-}
-
-if (argc==2) {
-  // start with an image and an initialization
-  im     = Image $1
-  initim = Image $2
-  LS_init(&im,initim)
-}
-
-if (argc==3) {
-  // start with an image and an initialization and a threshold
-  im     = Image $1
-  initim = Image $2
-  th = atof($3)
-  initim = initim-th
-  LS_init(&im,initim)
-}
+  
+  if (argc==2) {
+    // start with an image and an initialization
+    im     = Image $1
+    initim = Image $2
+    LS_input_name   = "im"
+    LS_initial_name = "initim"
+    LS_win.update
+  }
+  
+  if (argc==3) {
+    # start with an image and an initialization and a threshold
+    im     = Image $1
+    initim = Image $2
+    th = atof($3)
+    initim = initim-th
+    LS_input_name   = "im"
+    LS_initial_name = "initim"
+    LS_win.update
+  }
+} 
+# end if (!LS_defined) 

@@ -63,6 +63,7 @@ if (!exists(NLM_defined)) {
   #----------------------------
   proc NLM_LoadInput() \
   {
+    printn "evaluation of --> global::NLM_input <<="+NLM_input_name+";"
     eval "global::NLM_input <<="+NLM_input_name+";"
     if (NLM_input_name=="Image") {
       NLM_input_name = "NLM_input"
