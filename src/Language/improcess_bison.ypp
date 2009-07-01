@@ -2330,6 +2330,14 @@ command:
           fflush(file.get());
           delete [] $4;
         }
+        | VAR_FILE T_POINT PRINTN expr_string
+        {
+          FILE_ptr file = *(FILE_ptr*) ($1->Pointer());
+
+          fprintf(file.get(),"%s\n",$4);
+          fflush(file.get());
+          delete [] $4;
+        }
         | PRINT expr_string
         {
          /**

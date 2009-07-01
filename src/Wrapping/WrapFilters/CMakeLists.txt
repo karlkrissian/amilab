@@ -19,6 +19,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Vaisseaux
   ${AMILAB_SOURCE_DIR}/Algorithms/Basic
   ${AMILAB_SOURCE_DIR}/Algorithms/Denoising
+  ${AMILAB_SOURCE_DIR}/Algorithms/Others
   ${Boost_INCLUDE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${PTHREADS_INCLUDE_DIR}
@@ -37,6 +38,7 @@ INCLUDE( ${wxWidgets_USE_FILE})
 SET(  WrapFilters_SRCS
   wrapFilters.cpp
   wrapAlgorithmsBasic.cpp
+  wrapComputePV.cpp
 )
 
 my_add_library ( WrapFilters)

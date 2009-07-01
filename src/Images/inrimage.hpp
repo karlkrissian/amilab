@@ -890,6 +890,13 @@ public:
     } // BufferPos()
 
 
+    void GetBufferIncrements( int& incx, int& incy, int& incz) const
+    {
+      incx = _vdim;
+      incy = _tx*_vdim;
+      incz = _tx*_ty*_vdim;
+    }
+
     /**
        Pointeur sur la position courante du buffer
     */
@@ -1199,7 +1206,6 @@ public:
       } // end switch
 
     } // FixeValeur()
-
 
     //
     void VectFixeValeurs( double valx, double valy, double valz)

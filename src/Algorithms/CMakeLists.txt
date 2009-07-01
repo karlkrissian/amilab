@@ -37,6 +37,7 @@ SET(Algorithms_SRCS
   Basic/localstats.cpp
   Graph/func_shortestpath.cpp
   Denoising/Wrap_NewNLMeans.cpp
+  Others/ComputePartialVolume.cpp
 )
 
 my_add_library ( Algorithms)

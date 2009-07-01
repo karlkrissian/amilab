@@ -780,7 +780,6 @@ emptyargs         return(token::T_emptyargs);    /*{emptyargs,T_emptyargs}*/
 <str>\\f cpp_string->append(1,'\f');
 
 <str>\\(.|\n) cpp_string->append(1,YYText()[1]);
-#<str>\\(\n) cpp_string->append(1,YYText()[1]);
 
 <str>[^\\\n\"]+ {
   cpp_string->append(YYText());

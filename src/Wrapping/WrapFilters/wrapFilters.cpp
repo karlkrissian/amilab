@@ -25,6 +25,7 @@
   #include "Wrap_NewNLMeans.h"
 #endif // AMI_USE_FASTNLMEANS
 #include "wrapAlgorithmsBasic.h"
+#include "wrapComputePV.h"
 
 extern VarContexts  Vars;
 
@@ -47,7 +48,13 @@ void AddWrapFilters(){
     Vars.AddVar(type_c_image_function,"NewNLmeans", (void*) Wrap_NewNLmeans  );
   #endif // AMI_USE_FASTNLMEANS
 
+  Vars.AddVar(type_c_image_function,"ComputePV", 
+                (void*) wrapComputePV  );
+  Vars.AddVar(type_c_image_function,"ComputePV_subdiv", 
+                (void*) wrapComputePV_subdiv  );
+
 }
+
 
 
 
