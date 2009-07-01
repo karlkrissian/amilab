@@ -31,6 +31,7 @@ SET(  WrapITK_SRCS
     wrapitkRecursiveGaussianImageFilter.cpp
     wrapitkRead_3D_US.cpp
     wrapitkRead.cpp
+    wrapitkWrite.cpp
     wrapitkIsoContourDist.cpp
     #wrapitkBasicNLMeansFilter.cpp
     #itkBasicNLMeansFilter.txx
