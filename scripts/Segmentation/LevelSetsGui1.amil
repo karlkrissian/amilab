@@ -144,6 +144,35 @@ if (!exists(LS_defined)) {
   }
   
   #--------------------------
+  proc LS_SaveParams( STRING filename) \
+  {
+    pfile = open(filename,"w")
+    
+    #pfile.printn "#"
+    #pfile.printn "# amilab"
+    #pfile.printn "#"
+    #pfile.printn "# Parameters using for the level set evolution:"
+    #pfile.printn "#"
+    pfile.printn " "
+    #pfile.printn "# Initialization:"
+    pfile.printn boost_format("LS_init_mode = %1%") % LS_init_mode
+    pfile.printn boost_format("LS_inputmin  = %1%") % LS_inputmin
+    pfile.printn boost_format("LS_inputmax  = %1%") % LS_inputmax
+    pfile.printn boost_format("LS_minimal_intensity = %1%") % LS_minimal_intensity
+    pfile.printn boost_format("LS_sphere_radius = %1%") % LS_sphere_radius
+    pfile.printn " "
+    #pfile.printn "# Evolution equation:"
+    pfile.printn boost_format("LS_Imean         = %1%") % LS_Imean
+    pfile.printn boost_format("LS_Isd           = %1%") % LS_Isd
+    pfile.printn boost_format("LS_accept_high_intensity = %1%") % LS_accept_high_intensity
+
+    pfile.printn boost_format("LS_expansion_coeff = %1%") % LS_expansioncoeff
+    pfile.printn boost_format("LS_dt              = %1%") % LS_dt
+    pfile.printn boost_format("LS_T               = %1%") % LS_T
+
+  }
+
+  #--------------------------
   proc LS_Close() \
   {
     LS_win.Hide
@@ -270,9 +299,9 @@ if (!exists(LS_defined)) {
     LS_stop = 0;
     
     for n=1 to it {
-      print n; print "/"; printn it
+      #print n; print "/"; printn it
       if (!LS_stop) {
-        print sprint("LS_T= %0.2f \n",n*LS_dt)
+        #print sprint("LS_T= %0.2f \n",n*LS_dt)
         LevelSetsCURV.iterate;
         k = k+1
         if (graphics)&&(k==freq) {
