@@ -996,7 +996,10 @@ global::([A-Za-z0-9_])*   {
                     yylloc->step();
                   }
 
-\\\n              {}
+\\\n              {
+                    // allow multiline command
+                     GB_driver.yyiplineno++;
+                  }
 
 \n                {
                      yylloc->lines(yyleng); yylloc->step();

@@ -37,7 +37,10 @@ proc FillHolesLComp( IMAGE input, IMAGE res, NUM _comp) {
 // Fill the holes for all components with positive sign
 proc FillHolesPositive( IMAGE input, IMAGE res) {
   print "Entering FillHolesPositive \n"
-  _icc = CC(input)
+  # to improve robustness for points too close to 0,
+  # preprocess input as its sign 1,-1,or 0
+  input1 = (input>0)-(input<0)
+  _icc = CC(input1)
   _icc_inclusion_sign = (FLOAT)cc_sign(inclusion(_icc))
   res = (FLOAT) input*(_icc_inclusion_sign<1) + (_icc_inclusion_sign>=1)*0.1
   print "Leaving FillHolesPositive \n"

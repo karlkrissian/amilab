@@ -6532,12 +6532,15 @@ case 509:
 /* rule 509 can match eol */
 YY_RULE_SETUP
 #line 999 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
-{}
+{
+                    // allow multiline command
+                     GB_driver.yyiplineno++;
+                  }
 	YY_BREAK
 case 510:
 /* rule 510 can match eol */
 YY_RULE_SETUP
-#line 1001 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 1004 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
                      yylloc->lines(yyleng); yylloc->step();
                      GB_driver.yyiplineno++;
@@ -6546,7 +6549,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 511:
 YY_RULE_SETUP
-#line 1007 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 1010 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
 
     std::string error_string =" lex error \t invalid characters ";
@@ -6556,10 +6559,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 512:
 YY_RULE_SETUP
-#line 1017 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 1020 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 ECHO;
 	YY_BREAK
-#line 6563 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.cpp"
+#line 6566 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.cpp"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(str):
 case YY_STATE_EOF(block):
@@ -7462,7 +7465,7 @@ void yyipfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 1017 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 1020 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 
 
 

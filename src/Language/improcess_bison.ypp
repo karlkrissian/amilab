@@ -8768,7 +8768,7 @@ image:
     /**
     Parameters:
       (3) input image
-      (5) initialization
+      (5) initialization image
       (7) maximal time
     Description:
       Runs the fast marching algorithm
