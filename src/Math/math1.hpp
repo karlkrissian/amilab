@@ -133,7 +133,6 @@ enum Token {
 int   comb           ( int p, int n);
 float abs            ( float);
 float puis           ( float a, float b);
-int   round          ( float a);
 float nombre         ( st46 a);
 
 /* ===========================================================================

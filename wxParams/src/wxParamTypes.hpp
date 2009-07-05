@@ -354,7 +354,6 @@ public:
   ~wxButtonParameter();
   //   ---------
 
-
   ///
   void CreateParameter();
   //   ---------------

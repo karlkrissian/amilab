@@ -298,7 +298,7 @@ void CB_update_imagelist( void* imagelist_gui)
   im1 = driver.im_stack.GetLastImage();    \
   res = (*im1) operator (*im2);     \
   Si res == NULL Alors              \
-    fprintf(stderr,"Error in operation \t IMAGE_OP_IMAGE_2 \n"); \
+    driver.err_print((boost::format("Error in operation %s \t IMAGE_OP_IMAGE_2 \n") % #operator).str().c_str()); \
   FinSi                             \
   driver.im_stack.AddImage(res);           \
   delete im1;                       \
@@ -2984,11 +2984,11 @@ command:
       i1->GetTranslation(tx1,ty1,tz1);
       i2->GetTranslation(tx2,ty2,tz2);
       Func_PutImage( i1.get(), i2.get(),
-             (int) round((tx2-tx1)/i1->VoxSizeX()),
-             (int) round((ty2-ty1)/i1->VoxSizeY()),
-             (int) round((tz2-tz1)/i1->VoxSizeZ()));
-        }
-        |
+             (int) round((double)(tx2-tx1)/i1->VoxSizeX()),
+             (int) round((double)(ty2-ty1)/i1->VoxSizeY()),
+             (int) round((double)(tz2-tz1)/i1->VoxSizeZ()));
+    }
+    |
     var_image T_POINT T_SetName T_OP_PAR expr_string T_CL_PAR {
       (*(InrImage::ptr*) $1->Pointer())->FixeNom( $5);
       delete [] $5;
@@ -5516,38 +5516,39 @@ postfix_expr
         {
         InrImage::ptr im;
         im=*(InrImage::ptr*) $1->Pointer();
-        char tmp_string[255];
-        sprintf(tmp_string," format=%s  dim=(%d,%d,%d)x%d  vox=(%f,%f,%f) \
-  translation =(%f,%f,%f) \n",
-            im->FormatName().c_str(),
-            im->_tx,
-            im->_ty,
-            im->_tz,
-            im->GetVDim(),
-            im->_size_x,
-            im->_size_y,
-            im->_size_z,
-            im->_translation_x,
-            im->_translation_y,
-            im->_translation_z);
+        std::string tmp_string;
+        tmp_string = (boost::format(" %s: format=%s  dim=(%d,%d,%d)x%d  vox=(%f,%f,%f) \
+  translation =(%f,%f,%f) \n")
+            % $1->Name()
+            % im->FormatName().c_str()
+            % im->_tx
+            % im->_ty
+            % im->_tz
+            % im->GetVDim()
+            % im->_size_x
+            % im->_size_y
+            % im->_size_z
+            % im->_translation_x
+            % im->_translation_y
+            % im->_translation_z).str();
         driver.res_print(tmp_string);
     }
-        | var_surface T_POINT T_info
-        {
+    | var_surface T_POINT T_info
+    {
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) $1->Pointer();
 
-      char tmp_string[255];
-      sprintf(tmp_string," %d points %d lines %d polygons  \n",
-          s->GetNumberOfPoints(),
-          s->GetNumberOfLines(),
-          s->GetNumberOfPolys ()
-          );
+      std::string tmp_string;
+      tmp_string = (boost::format(" %s: %d points %d lines %d polygons  \n")
+        % $1->Name()
+        % s->GetNumberOfPoints()
+        % s->GetNumberOfLines()
+        % s->GetNumberOfPolys ()
+        ).str();
       driver.res_print(tmp_string);
-          sprintf(tmp_string," limits X:[%4.2f %4.2f] Y:[%4.2f %4.2f]  Z:[%4.2f %4.2f]  \n",
-          s->_xmin,s->_xmax,
-          s->_ymin,s->_ymax,
-          s->_zmin,s->_zmax);
-
+      tmp_string = (boost::format(" limits X:[%4.2f %4.2f] Y:[%4.2f %4.2f]  Z:[%4.2f %4.2f]  \n")
+        % s->_xmin % s->_xmax
+        % s->_ymin % s->_ymax
+        % s->_zmin % s->_zmax).str();
       driver.res_print(tmp_string);
     }
         |
@@ -6495,7 +6496,7 @@ var_image:
 
 
 image:
-       T_Image  ASTRING
+       T_Image  expr_string
        {
      driver.im_stack.AddImage($2);
      delete [] $2;
@@ -7689,9 +7690,9 @@ image:
     FinSi
 
     driver.im_stack.AddImage(res);
-      }
-      | T_AutoCrop T_OP_PAR expr_image T_COMMA expr T_CL_PAR
-      {
+    }
+    | T_AutoCrop T_OP_PAR expr_image T_COMMA expr T_CL_PAR
+    {
 
           InrImage* res;
           InrImage* im = (InrImage*) driver.im_stack.GetLastImage();
@@ -7700,54 +7701,55 @@ image:
 
         driver.im_stack.AddImage(res);
         delete im;
-      }
-      |
-       var_image T_OP_BR image_extent T_CL_BR
-      {
-    InrImage*  res;
-    ImageExtent<float>* extent = (ImageExtent<float>*) $3;
-
-    //  extent->print();
-    extent->SetRelative(((InrImage::ptr*) $1->Pointer())->get());
-
-    //  extent->print();
-
-    res = Func_SubImage( ((InrImage::ptr*) $1->Pointer())->get(),
-                 (int)  round(extent->Xmin()),
-                 (int)  round(extent->Ymin()),
-                 (int)  round(extent->Zmin()),
-                 (int)  round(extent->Xmax()),
-                 (int)  round(extent->Ymax()),
-                 (int)  round(extent->Zmax())
-                );
-    delete extent;
-
-    Si res==NULL Alors
-      fprintf(stderr,"SubImage() erreur ... \n");
-      res= ((InrImage::ptr*) $1->Pointer())->get();
-    FinSi
-
-    driver.im_stack.AddImage(res);
-      }
-      |
-       var_image
+    }
+    |
+      var_image T_OP_BR image_extent T_CL_BR
+    {
+      InrImage*  res;
+      ImageExtent<float>* extent = (ImageExtent<float>*) $3;
+  
+      extent->print();
+      extent->SetRelative(((InrImage::ptr*) $1->Pointer())->get());
+  
+      extent->print();
+      cout << "xmax = " << (int)  extent->Xmax() << endl;
+      cout << "xmax = " << (int)  round((double)extent->Xmax()) << endl;
+      res = Func_SubImage( ((InrImage::ptr*) $1->Pointer())->get(),
+                  (int)  round((double)extent->Xmin()),
+                  (int)  round((double)extent->Ymin()),
+                  (int)  round((double)extent->Zmin()),
+                  (int)  round((double)extent->Xmax()),
+                  (int)  round((double)extent->Ymax()),
+                  (int)  round((double)extent->Zmax())
+                  );
+      delete extent;
+  
+      Si res==NULL Alors
+        fprintf(stderr,"SubImage() erreur ... \n");
+        res= ((InrImage::ptr*) $1->Pointer())->get();
+      FinSi
+  
+      driver.im_stack.AddImage(res);
+    }
+    |
+    var_image
       T_OP_BR  T_COLON  T_COMMA
-           T_COLON  T_COMMA
-          expr T_COLON expr T_CL_BR
-      {
-    InrImage::ptr  im = *(InrImage::ptr*) $1->Pointer();
-    InrImage*  res;
-
-    res = Func_SubImage( im.get(),
-                 0, 0,  (int) round($7),
-                 im->DimX()-1,  im->DimY()-1, (int) round($9));
-
-    Si res==NULL Alors
-      fprintf(stderr,"SubImage() erreur ... \n");
-      res=((InrImage::ptr*) $1->Pointer())->get();
-    FinSi
-
-    driver.im_stack.AddImage(res);
+      T_COLON  T_COMMA
+      expr T_COLON expr T_CL_BR
+    {
+      InrImage::ptr  im = *(InrImage::ptr*) $1->Pointer();
+      InrImage*  res;
+  
+      res = Func_SubImage( im.get(),
+                  0, 0,  (int) round($7),
+                  im->DimX()-1,  im->DimY()-1, (int) round($9));
+  
+      Si res==NULL Alors
+        fprintf(stderr,"SubImage() erreur ... \n");
+        res=((InrImage::ptr*) $1->Pointer())->get();
+      FinSi
+  
+      driver.im_stack.AddImage(res);
       }
       |
       SubImage
@@ -8419,11 +8421,11 @@ image:
       FinSi
 
       driver.im_stack.AddImage(res);
-        }
-        |
-        T_AnisoDPAD2
-        T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
-        {
+    }
+    |
+    T_AnisoDPAD2
+    T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
+    {
       InrImage*  res;
       float dt = (float) $5;
       int numit = (int) $7;
@@ -8443,11 +8445,11 @@ image:
       FinSi
 
       driver.im_stack.AddImage(res);
-        }
-        |
-        T_AnisoNRAD
-        T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
-        {
+    }
+    |
+    T_AnisoNRAD
+    T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
+    {
         /**
          Parameters:
             (3) var_image: input image
@@ -8486,12 +8488,12 @@ image:
             FinSi
 
             driver.im_stack.AddImage(res);
-        }
-        |
-        T_AnisoRudinMult
-        T_OP_PAR var_image
-        T_COMMA expr T_COMMA expr  T_COMMA expr T_COMMA expr T_CL_PAR
-        {
+    }
+    |
+    T_AnisoRudinMult
+    T_OP_PAR var_image
+    T_COMMA expr T_COMMA expr  T_COMMA expr T_COMMA expr T_CL_PAR
+    {
       InrImage::ptr  initim = *(InrImage::ptr*) $3->Pointer();
       InrImage*  res;
       float dt = (float) $5;
@@ -8510,12 +8512,12 @@ image:
       FinSi
 
       driver.im_stack.AddImage(res);
-        }
-        |
-        TAddGaussNoise
-        T_OP_PAR var_image
-        T_COMMA expr T_COMMA expr T_CL_PAR
-        {
+    }
+    |
+    TAddGaussNoise
+    T_OP_PAR var_image
+    T_COMMA expr T_COMMA expr T_CL_PAR
+    {
       /**
         Description:
           Add Gaussian noise with specified mean and variance.
@@ -9426,9 +9428,17 @@ image:
       res = s->GetImageLinesLength(  );
 
       if (res!=NULL) driver.im_stack.AddImage(res);
-        }
-        | var_surface T_POINT T_GetLinesExtremities T_OP_PAR   T_CL_PAR
-        {
+    }
+    | var_surface T_POINT T_GetLinesExtremities T_OP_PAR   T_CL_PAR
+    {
+    /**
+      Parameters:
+        - input polydata containing lines
+      Description:
+        Returns an image Mx2 where M is the number of lines and 
+        containing the point id of the 2 extremities of each 
+        line
+    */
       InrImage*         res;
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) $1->Pointer());
 
@@ -9436,9 +9446,17 @@ image:
       res = s->GetImageLinesExtremities(  );
 
       if (res!=NULL) driver.im_stack.AddImage(res);
-        }
-        | var_surface T_POINT T_GetConnections T_OP_PAR   T_CL_PAR
-        {
+    }
+    | var_surface T_POINT T_GetConnections T_OP_PAR   T_CL_PAR
+    {
+    /**
+      Parameters:
+        - input polydata containing lines
+      Description:
+        Get the number of lines connected to each point.
+        The result is given as a 1D image of size the total
+        number of points of the polydata
+    */
       InrImage*         res;
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) $1->Pointer());
 
@@ -10196,7 +10214,7 @@ surface:
       FinSi
       Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
-          FinSi
+      FinSi
     }
     |
     T_SmoothLines T_OP_PAR var_surface  T_CL_PAR
@@ -10272,6 +10290,14 @@ surface:
     T_ShortestPath T_OP_PAR var_surface T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA
                                        expr T_COMMA expr T_COMMA expr T_CL_PAR
     {
+    /**
+      Parameters:
+        - input polydata containing lines
+        - point 1: x,y,z
+        - point 2: x,y,z 
+      Description:
+        Finds the shortest path within the lines of the polydata
+    */
       SurfacePoly* surf;
 
       surf = Func_shortestpath( ((SurfacePoly::ptr*) $3->Pointer())->get(),
@@ -10420,9 +10446,7 @@ surface:
       FinSi
       Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
-          FinSi
-
-
+      FinSi
     }
     | T_CreateFlatMesh T_OP_PAR expr_image T_CL_PAR
     {

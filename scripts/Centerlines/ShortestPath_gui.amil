@@ -15,7 +15,15 @@ if (!exists(SP_defined)) {
     SP_input_name = ""
     # speed image name
     SP_speed_name = ""
+
+    SP_epsilon = 0.02
+    SP_maxcost = 1000
   
+    SP_use_input_speed = UCHAR(0)
+    SP_input_Imin  = 0
+    SP_input_Imax  = 1000
+    SP_input_speed = 1
+
     # start point
     SP_px1 = 0
     SP_py1 = 0
@@ -144,16 +152,25 @@ if (!exists(SP_defined)) {
   #-----------------------------------------------
   proc SP_Close() \
   {
+    SP_win.Hide
+    del "SP_*_draw"
+    del "SP_*"
   }
   
   
   #-----------------------------------------------
   proc SP_Run() \
   {
+    SP_load_input()
     SP_load_speed()
   
-    # force a minimal value of 0.02
-    maxrepim_crop = SP_speed+0.02
+    # force a minimal value of SP_epsilon
+    maxrepim_crop = SP_speed+SP_epsilon
+    if (SP_use_input_speed) {
+      maxrepim_crop = maxrepim_crop + \
+                      (SP_input>SP_input_Imin)*\
+                      (SP_input<SP_input_Imax)*SP_input_speed
+    }
   
     # Add Spheres around extremities to facilitate
     # their connections
@@ -165,18 +182,17 @@ if (!exists(SP_defined)) {
                         3,0.01,0.5)
   
     # Run a Fast Marching start from Point 2 up to distance 1000
-    fm_max = 1000
-    fminit = (FLOAT) maxrepim_crop*0+fm_max
+    fminit = (FLOAT) maxrepim_crop*0+SP_maxcost
   
     if (SP_px2<2) { SP_px2=2; }
     if (SP_py2<2) { SP_py2=2; }
     if (SP_pz2<2) { SP_pz2=2; }
     fminit.setpos(SP_px2,SP_py2,SP_pz2)
-    fminit.set(-fm_max)
+    fminit.set(-SP_maxcost)
     #maxrepim_crop = maxrepim_crop/10
     # running fast marching until the point 1 is reached
     printn "FMT"
-    res = vtkFastMarchingTarget(maxrepim_crop,fminit,fm_max,\
+    res = vtkFastMarchingTarget(maxrepim_crop,fminit,SP_maxcost,\
                           SP_px1+0.5,SP_py1+0.5,SP_pz1+0.5)
     res.info
   
@@ -194,24 +210,36 @@ if (!exists(SP_defined)) {
   {
     global::SP_win = ParamWin("Path")
   
-    # set the input image
-    SP_win.AddImageChoice(SP_input_name, "Input")
-    # set the speed image
-    SP_win.AddImageChoice(SP_speed_name, "Speed")
+    SP_win.BeginPanel("Parameters")
+      # set the input image
+      SP_win.AddImageChoice(SP_input_name, "Input")
+      # set the speed image
+      SP_win.AddImageChoice(SP_speed_name, "Speed")
+    
+      SP_win.BeginBox("Extremities")
+        # set the first point
+        SP_win.AddButton("Set Start Point",SP_StartPoint)
+        # set the second point
+        SP_win.AddButton("Set End Point",  SP_EndPoint)
+      SP_win.EndBox
+    
+      SP_win.AddFloat(SP_epsilon,0.01,10)
+      SP_win.AddFloat(SP_maxcost,1,100000)
   
-    SP_win.BeginBox("Extremities")
-      # set the first point
-      SP_win.AddButton("Set Start Point",SP_StartPoint)
-      # set the second point
-      SP_win.AddButton("Set End Point",  SP_EndPoint)
-    SP_win.EndBox
-  
-    SP_win.BeginHorizontal
-      # run
-      SP_win.AddButton("Run",      SP_Run)
-      # display
-      SP_win.AddButton("Display",  SP_Display)
-    SP_win.EndHorizontal
+      SP_win.BeginBox("Input intensity-based speed")
+        SP_win.AddBoolean(SP_use_input_speed)
+        SP_win.AddFloat(SP_input_Imin,0,10000)
+        SP_win.AddFloat(SP_input_Imax,0,10000)
+        SP_win.AddFloat(SP_input_speed,0,100)
+      SP_win.EndBox
+
+      SP_win.BeginHorizontal
+        # run
+        SP_win.AddButton("Run",      SP_Run)
+        # display
+        SP_win.AddButton("Display",  SP_Display)
+      SP_win.EndHorizontal
+    SP_win.EndPanel
   
     # close
     SP_win.AddButton("Close",    SP_Close)

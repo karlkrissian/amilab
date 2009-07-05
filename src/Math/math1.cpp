@@ -152,7 +152,7 @@ int comb( int p, int n)
 #if not(defined(_MSC_VER) || defined(__MINGW32__))
 float abs( float r)
 {
-  On r < 0  DoReturn -1*r;
+  if (r < 0)  return -r;
   return r;
 }
 #endif
@@ -171,7 +171,7 @@ float puis( float a, float b)
       puis1 = 1;
 
       If b != 0 Then
-	InitLoop i = 1 NextWhile i <= abs(round(b)) Step i++ Do
+	InitLoop i = 1 NextWhile i <= abs(roundf(b)) Step i++ Do
 	  puis1 *= a;
         NextLoop
       Else
@@ -195,8 +195,8 @@ float puis( float a, float b)
     puis1 = 0;
 
   Otherwise
-  If (a<0) And (1/b == round(1.0/b))
-  And ( round(1.0/b)/2 != round(round(1.0/b)/2) ) Then
+  If (a<0) And (1/b == roundf(1.0/b))
+  And ( roundf(1.0/b)/2 != roundf(roundf(1.0/b)/2) ) Then
     puis1 = -exp(b*log(-a));
 
   Else
@@ -210,7 +210,7 @@ float puis( float a, float b)
 /* ---------------------------------------------------------------------------
  */
 
-int   round( float a)
+static int   round( float a)
 {
  If fabs(a)<32767 Then
    If a >= 0 Then

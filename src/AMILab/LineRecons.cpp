@@ -105,15 +105,15 @@ void DessineCylindre(
   double tmp;
   tmp = inf(  point1.x - facteur_cube*rayon1,
               point2.x - facteur_cube*rayon2);
-  inf_x = (int) round(ref->SpaceToVoxelX(tmp));
+  inf_x = (int) round((double)ref->SpaceToVoxelX(tmp));
 
   tmp = inf(  point1.y - facteur_cube*rayon1,
               point2.y - facteur_cube*rayon2);
-  inf_y = (int) round(ref->SpaceToVoxelY(tmp));
+  inf_y = (int) round((double)ref->SpaceToVoxelY(tmp));
 
   tmp = inf(  point1.z - facteur_cube*rayon1, 
 	      point2.z - facteur_cube*rayon2);
-  inf_z = (int) round(ref->SpaceToVoxelZ(tmp));
+  inf_z = (int) round((double)ref->SpaceToVoxelZ(tmp));
 
   inf_x = sup( 0, inf_x);
   inf_y = sup( 0, inf_y);
@@ -121,15 +121,15 @@ void DessineCylindre(
 
   tmp = sup(  point1.x + facteur_cube*rayon1,
 	      point2.x + facteur_cube*rayon2);
-  sup_x = (int) round(ref->SpaceToVoxelX(tmp));
+  sup_x = (int) round((double)ref->SpaceToVoxelX(tmp));
 
   tmp = sup(  point1.y + facteur_cube*rayon1,
 	      point2.y + facteur_cube*rayon2);
-  sup_y = (int) round(ref->SpaceToVoxelY(tmp));
+  sup_y = (int) round((double)ref->SpaceToVoxelY(tmp));
 
   tmp = sup(  point1.z + facteur_cube*rayon1,
 	      point2.z + facteur_cube*rayon2);
-  sup_z = (int) round(ref->SpaceToVoxelZ(tmp));
+  sup_z = (int) round((double)ref->SpaceToVoxelZ(tmp));
 
   sup_x = inf( ref->DimX()-1, sup_x);
   sup_y = inf( ref->DimY()-1, sup_y);

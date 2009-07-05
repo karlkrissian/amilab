@@ -62,14 +62,26 @@ public:
 
     void init_err_output();
     void err_print(const char* st);
+    void err_print(const std::string& st) 
+    { 
+      this->err_print(st.c_str()); 
+    }
     void close_err_output(void);
 
     void init_res_output();
     void res_print(const char* st);
+    void res_print(const std::string& st) 
+    { 
+      this->res_print(st.c_str()); 
+    }
     void close_res_output();
 
     void init_cmdhistory();
     void ws_print(const char* st);
+    void ws_print(const std::string& st) 
+    { 
+      this->ws_print(st.c_str()); 
+    }
     void close_cmdhistory();
 
     /// kept for transition from C flex-bison code

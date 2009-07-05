@@ -188,9 +188,9 @@ void  CalculRepCercle :: ComputeResponse( const Point3D& pos,
 
     // Check for linear interpolation flag
     if (_NoLinearInterp) {
-      int posx = (int) round(pos.x);
-      int posy = (int) round(pos.y);
-      int posz = (int) round(pos.z);
+      int posx = (int) roundf(pos.x);
+      int posy = (int) roundf(pos.y);
+      int posz = (int) roundf(pos.z);
       if (_filter!= NULL) 
           g = _filter->Gradient( posx,posy,posz);
       else

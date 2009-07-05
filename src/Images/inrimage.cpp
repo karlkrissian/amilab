@@ -123,7 +123,7 @@ int rint(const float& a)
 	return (int) floor(a+0.5);
 }
 
-float fround(const float& a)
+float roundf(const float& a)
 {
 	return (float) floor(a+0.5);
 }
@@ -2057,6 +2057,7 @@ const string InrImage :: FormatName()
     Valeur WT_UNSIGNED_SHORT: return "UNSIGNED SHORT";
     Valeur WT_SIGNED_SHORT  : return "SIGNED SHORT";  
     Valeur WT_SIGNED_INT    : return "SIGNED INT";    
+    Valeur WT_UNSIGNED_INT  : return "UNSIGNED INT";    
     Valeur WT_RGB           : return "RGB";       
     Valeur WT_RGBA          : return "RGBA";
     Valeur WT_FLOAT_VECTOR  : return "FLOAT_VECTOR";  

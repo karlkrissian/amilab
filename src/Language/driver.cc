@@ -223,30 +223,43 @@ bool Driver::parse_script(  const char* filename)
   cout << "yyip_switch_to_file(" << filename << ")" << endl;
 
   // Looking for the filename
-  wxFileName currentname(GetwxStr(filename));
+  wxFileName current_filename(GetwxStr(current_file.c_str()));
+  wxFileName inputname(GetwxStr(filename));
   wxFileName newname(GetwxStr(filename));
 
-  if (!currentname.IsOk()) {
+  if (!inputname.IsOk()) {
     tmp_string = (format("Problem with the filename %s\n") 
-               % currentname.GetFullPath().c_str()).str();
+               % inputname.GetFullPath().mb_str()).str();
     err_print(tmp_string.c_str());
     return 0;
   }
 
   // could check first if there is another extension ...
-  currentname.SetExt(_T("amil"));
+  inputname.SetExt(_T("amil"));
 
   //cout << "current wd = "  <<  wxGetCwd() << endl; 
-  if (!currentname.DirExists(currentname.GetPath())) 
+  if (!inputname.DirExists(inputname.GetPath())) 
   {
     // try with current directory
     newname.Assign(
             wxGetCwd() 
             +
-            currentname.GetPathSeparator()
+            inputname.GetPathSeparator()
             +
-            currentname.GetPath(),
-            currentname.GetName(),_T("amil"));
+            inputname.GetPath(),
+            inputname.GetName(),_T("amil"));
+  }
+
+  if (!newname.IsFileReadable()) 
+  {
+    // try in the directory of the runnning script
+    newname.Assign(
+            current_filename.GetPath() 
+            +
+            inputname.GetPathSeparator()
+            +
+            inputname.GetPath(),
+            inputname.GetName(),_T("amil"));
   }
 
   if (!newname.IsFileReadable()) 
@@ -254,14 +267,14 @@ bool Driver::parse_script(  const char* filename)
     // try with AMI_SCRIPTS environment variable
     newname.Assign(GB_scripts_dir
             +
-            currentname.GetPathSeparator()
+            inputname.GetPathSeparator()
             +
-            currentname.GetPath(),
-            currentname.GetName(),_T("amil"));
+            inputname.GetPath(),
+            inputname.GetName(),_T("amil"));
   }
 
   if (!newname.IsFileReadable()) {
-   string mess =  (format("Error in reading %s \n") % currentname.GetFullPath().c_str()).str();
+   string mess =  (format("Error in reading %s \n") % inputname.GetFullPath().mb_str()).str();
    wxMessageDialog* err_msg = new wxMessageDialog(NULL,GetwxStr(mess),GetwxStr("Error"),wxOK | wxICON_ERROR);
    err_msg->ShowModal();
    return 0;

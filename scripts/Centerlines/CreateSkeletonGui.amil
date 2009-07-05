@@ -73,12 +73,16 @@ if (!exists(Skel_defined)) {
       # 1: Andre Robatino
       # 2: Fast Marching
       Skel_Ordering     = INT(0)
+      Skel_DTmin        = -10
       Skel_DTmax        = 10
 
       Skel_linemethod   = INT(0)
   
       #Skel_prune        = UCHAR(0)
       Skel_prunesize    = 2
+
+      Skel_connect_dist = 0.1
+      Skel_connect_dir  = 1
   
       Skel_UseFlux      = UCHAR(0)
   
@@ -200,7 +204,7 @@ if (!exists(Skel_defined)) {
         } else {
           # compute distance inside the structure
           print "Compute Danielsson distance\n"
-          global::Skel_idist <<= vtkPropDaniel2(_i,0,-Skel_DTmax,Skel_DTmax)
+          global::Skel_idist <<= vtkPropDaniel2(_i,0,Skel_DTmin,Skel_DTmax)
         }
       } 
     
@@ -287,6 +291,11 @@ if (!exists(Skel_defined)) {
         Skel_res_draw.Paint
       }
     }
+  }
+  
+  #---------------------------------------------------
+  proc Skel_ConnectLines() {
+    Skel_res <<= Skel_res.ConnectLines(Skel_connect_dist,Skel_connect_dir)
   }
   
   #---------------------------------------------------
@@ -728,6 +737,7 @@ if (!exists(Skel_defined)) {
           Skel_win.AddEnumChoice(dt_id,"vtkPropDaniel2")
           Skel_win.AddEnumChoice(dt_id,"Andre Robatino's")
           Skel_win.AddEnumChoice(dt_id,"Fast Marching")
+        Skel_win.AddFloat(Skel_DTmin,-100,0)
         Skel_win.AddFloat(Skel_DTmax,0,100)
         flux_id = Skel_win.AddBoolean(Skel_UseFlux)
       Skel_win.EndBox
@@ -742,6 +752,11 @@ if (!exists(Skel_defined)) {
           prunesel_id  = Skel_win.AddButton( "Select", Skel_SelectPrune)
           prunerem_id  = Skel_win.AddButton( "Remove", Skel_RemovePrune)
         Skel_win.EndHorizontal
+        Skel_win.BeginBox("Connection")
+          Skel_win.AddFloat(Skel_connect_dist,0,5)
+          Skel_win.AddFloat(Skel_connect_dir,-2,2)
+          Skel_win.AddButton("Connect Lines",  Skel_ConnectLines)
+        Skel_win.EndBox
       Skel_win.EndBox
       Skel_win.AddButton("Smooth Lines",  Skel_SmoothLines)
   

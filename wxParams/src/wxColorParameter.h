@@ -58,7 +58,7 @@ class wxColorParameter : public wxButtonParameter
   //---------
 
   ///
-  void ParamUpdate();
+  void Update();
   //
 
   virtual void OnButton( wxCommandEvent& );

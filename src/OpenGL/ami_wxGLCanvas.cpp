@@ -1978,9 +1978,9 @@ void ami_wxGLCanvas::InitGL()
 void ami_wxGLCanvas :: TranslationStart()
 //                         ---------------
 {
+  CLASS_MESSAGE("begin");
 
   SetCurrentContext();
-  if (GB_debug) fprintf(stderr,"TranslationStart() begin \n");
 
   PickObjects();
   _souris_position_initiale_x = _souris_x;
@@ -1999,7 +1999,7 @@ void ami_wxGLCanvas :: TranslationStart()
   if (_mode_affichage==MODE_VOLREN)
     _Ttexture.GetTranslation(_initial_translation);
 
-  if (GB_debug) fprintf(stderr,"TranslationStart() end \n");
+  CLASS_MESSAGE("end");
 
 } // TranslationStart()
 
@@ -2406,8 +2406,8 @@ void ami_wxGLCanvas :: ApplyZoomFactor(double factor)
 // -------------------------------------------------------------------------
 // Finds the objects at the position of the cursor
 //
-void ami_wxGLCanvas:: LineInfo( float x, float y, float z)
-//                         --------
+void ami_wxGLCanvas::LineInfo( float x, float y, float z)
+//                   --------
 {
 
     SurfacePoly* lines;
@@ -2641,6 +2641,7 @@ void ami_wxGLCanvas :: PickObjects()
 
 #ifndef __APPLE__
 
+  CLASS_MESSAGE("\n\n ********** begin \n\n")
   int hits;
   int i, j;
   GLuint names, *ptr, minZ,*ptrNames=NULL, numberOfNames = 0;
@@ -2651,32 +2652,34 @@ void ami_wxGLCanvas :: PickObjects()
   }
 
 
-  Si GB_debug AlorsFait printf("PickObjects() 1 \n");
+  CLASS_MESSAGE("1")
   this->SetCurrentContext();
-  Si GB_debug AlorsFait printf("PickObjects() 2 \n");
+  CLASS_MESSAGE("2")
 
-   glSelectBuffer(BUFSIZE,_selectBuf);
-   glRenderMode(GL_SELECT);
+  glSelectBuffer(BUFSIZE,_selectBuf);
+  glRenderMode(GL_SELECT);
 
-   _GLProjParam.SetPicking(true);
-   _GLProjParam.SetPickPosition(_souris_x, _souris_y);
-  Si GB_debug AlorsFait printf("PickObjects() 3 \n");
+  _GLProjParam.SetPicking(true);
+  _GLProjParam.SetPickPosition(_souris_x, _souris_y);
+  CLASS_MESSAGE("3")
 
-  Refresh(false);
+  //Refresh(false);
+  Refresh(true);
   Update();
+  this->Paint(true);
 
-  Si GB_debug AlorsFait printf("PickObjects() 4 \n");
-   glFlush();
+  CLASS_MESSAGE("4")
+  glFlush();
 
-  Si GB_debug AlorsFait printf("PickObjects() 5 \n");
-   // returning to normal rendering mode
-   hits = glRenderMode(GL_RENDER);
-   _GLProjParam.SetPicking(false);
+  CLASS_MESSAGE("5")
+  // returning to normal rendering mode
+  hits = glRenderMode(GL_RENDER);
+  _GLProjParam.SetPicking(false);
 
   // Process hits
 
 
-//  printf ("hits = %d\n", hits);
+  //  printf ("hits = %d\n", hits);
 
   Si hits>0 Alors
     ptr = (GLuint *) _selectBuf;

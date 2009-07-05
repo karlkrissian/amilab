@@ -61,7 +61,7 @@ wxColorParameter::wxColorParameter( wxWindow* parent, const char* libelle, Class
 {
   SetBackgroundStyle( wxBG_STYLE_COLOUR);
   parametre = couleur;
-  ParamUpdate();
+  Update();
 }
 
 ///
@@ -71,7 +71,7 @@ wxColorParameter::~wxColorParameter()
 }
 
 ///
-void  wxColorParameter::ParamUpdate()
+void  wxColorParameter::Update()
 //
 {
   this->_wx_color.Set(parametre->Red(),
@@ -108,7 +108,7 @@ void wxColorParameter::OnButton( wxCommandEvent& event)
     }
 
   parametre->FixeValeur(col.Red(),col.Green(),col.Blue());
-  this->ParamUpdate();
+  this->Update();
 
   //printf("wxColorParameter::OnLeftButton() \tthis->_callback != NULL ??\n");
   if (this->_calldata != NULL) {

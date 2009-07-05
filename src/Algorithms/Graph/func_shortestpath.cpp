@@ -17,6 +17,7 @@ using namespace std;
 #include "dijkstra.h"
 #include "func_shortestpath.h"
 #include "inrimage.hpp"
+#include "amilab_messages.h"
 
 #ifdef WIN32
 #include <limits>
@@ -76,7 +77,7 @@ SurfacePoly* Func_shortestpath( SurfacePoly* lines,
     FinPour
 
   } else {
-    cerr << "Func_shortestpath() \t input does not contain lines " << endl;
+    FILE_ERROR("Input does not contain lines.");
     return NULL;
   }
 
@@ -109,10 +110,12 @@ SurfacePoly* Func_shortestpath( SurfacePoly* lines,
   }
 
   if ((selected_line1==-1)||(selected_line2==-1)) {
-    cerr << "Func_shortestpath() \t Selected lines not found, aborting " << endl;
+    FILE_ERROR("Selected lines not found, aborting.");
     return NULL;
-  }  else
+  }  else {
     cout << "initial line = " << selected_line1 << endl;
+    cout << "final   line = " << selected_line2 << endl;
+  }
 
   // Create the graph
   graph_ptr graph = CreateUndirectedGraph(
@@ -139,7 +142,7 @@ SurfacePoly* Func_shortestpath( SurfacePoly* lines,
   if (path.distance[current_point]==
 	  numeric_limits<weight_type>::max())
   {
-    cerr << "SurfacePoly::SelectMinPath() \tNo path between points " << endl;
+    FILE_ERROR("No path between points.");
     return NULL;
   }
 
