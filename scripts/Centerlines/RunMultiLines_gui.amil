@@ -127,30 +127,32 @@ proc RML_gui() {
 
   RML_win = ParamWin("Vesselness")
 
-  # set the input image
-  RML_win.AddImageChoice(RML_input_name, "Input")
-  # set the mask image
-  RML_win.AddImageChoice(RML_mask_name, "Mask")
+  RML_win.AddPanel("Parameters")
+    # set the input image
+    RML_win.AddImageChoice(RML_input_name, "Input")
+    # set the mask image
+    RML_win.AddImageChoice(RML_mask_name, "Mask")
+  
+    RML_radmin_id = RML_win.AddFloat(RML_radmin,0.01,10)
+    RML_radmax_id = RML_win.AddFloat(RML_radmax,0.01,10)
+    RML_numrad_id = RML_win.AddInt(  RML_numrad,1,20)
+    RML_outputname_id = RML_win.AddString(  RML_output_name, "Output")
+  
+    RML_win.BeginBox("Controls")
+      RML_win.BeginHorizontal
+          ROI_id     = RML_win.AddButton("Select ROI", RML_CB_ROI)
+          iterate_id = RML_win.AddButton("Filter",     RML_CB_Filter)
+      RML_win.EndHorizontal
+      RML_win.BeginHorizontal
+          display_id = RML_win.AddButton("Display",    RML_CB_Display)
+          display_id = RML_win.AddButton("Save",       RML_CB_Save)
+      RML_win.EndHorizontal
+    RML_win.EndBox
+  RML_win.EndPanel
+  RML_win.AddButton("Close",RML_Close)
 
-  RML_radmin_id = RML_win.AddFloat(RML_radmin,0.01,10)
-  RML_radmax_id = RML_win.AddFloat(RML_radmax,0.01,10)
-  RML_numrad_id = RML_win.AddInt(  RML_numrad,1,20)
-  RML_outputname_id = RML_win.AddString(  RML_output_name, "Output")
-
-  RML_win.BeginBox("Controls")
-    RML_win.BeginHorizontal
-        ROI_id     = RML_win.AddButton("Select ROI", RML_CB_ROI)
-        iterate_id = RML_win.AddButton("Filter",     RML_CB_Filter)
-    RML_win.EndHorizontal
-    RML_win.BeginHorizontal
-        display_id = RML_win.AddButton("Display",    RML_CB_Display)
-        display_id = RML_win.AddButton("Save",       RML_CB_Save)
-    RML_win.EndHorizontal
-  RML_win.EndBox
-
-  RML_win.CreateWin
-  RML_win.Display
   RML_win.update
+  RML_win.Display
 }
 
 
