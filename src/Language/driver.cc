@@ -375,6 +375,17 @@ void Driver::err_print(const char* st)
 } // Driver::err_print()
 
 
+//--------------------------------------------------
+void Driver::info_print(const char* st) 
+//   -----------------
+{
+  *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString::FromAscii(st);
+  string mess =  (format("Information: %s \n") % st).str();
+  wxMessageDialog* err_msg = new wxMessageDialog(NULL,GetwxStr(mess),GetwxStr("Info"),wxOK | wxICON_INFORMATION );
+  err_msg->ShowModal();
+} // Driver::err_print()
+
+
 //---------------------------------------------
 void Driver::close_err_output(void)
 //   ------------------------

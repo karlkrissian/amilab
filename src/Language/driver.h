@@ -68,6 +68,13 @@ public:
     }
     void close_err_output(void);
 
+    void info_print(const char* st);
+    void info_print(const std::string& st)
+    {
+      this->info_print(st.c_str()); 
+    }
+
+
     void init_res_output();
     void res_print(const char* st);
     void res_print(const std::string& st) 

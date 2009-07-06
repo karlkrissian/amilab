@@ -620,6 +620,8 @@ OrientPositive    return(token::T_OrientPositive); /*{OrientPositive,T_OrientPos
 Skeleton2lines    return(token::T_Skeleton2lines); /*{Skeleton2lines,T_Skeleton2lines}*/
 SmoothLines       return(token::T_SmoothLines);  /*{SmoothLines,T_SmoothLines}*/
 RemoveLine        return(token::T_RemoveLine);   /*{RemoveLine,T_RemoveLine}*/
+GetNumberOfLines  return(token::T_GetNumberOfLines); /*{GetNumberOfLines,T_GetNumberOfLines}*/
+GetLine           return(token::T_GetLine); /*{GetLine,T_GetLine}*/
 ConnectLines      return(token::T_ConnectLines); /*{ConnectLines,T_ConnectLines}*/
 ResampleLines     return(token::T_ResampleLines); /*{ResampleLines,T_ResampleLines}*/
 ShortestPath      return(token::T_ShortestPath); /*{ShortestPath,T_ShortestPath}*/
@@ -712,6 +714,9 @@ vtkDicomRead      return(token::T_vtkDicomRead); /*{vtkDicomRead,T_vtkDicomRead}
 vtkMINCRead       return(token::T_vtkMINCRead);  /*{vtkMINCRead,T_vtkMINCRead}*/
 
 exists            return(token::T_exists);       /*{exists,T_exists}*/
+FileExists        return(token::T_FileExists);  /*{FileExists,T_FileExists}*/
+
+InfoDialog        return(token::T_InfoDialog); /*{InfoDialog,T_InfoDialog}*/
 
 slice             return(token::T_slice);        /*{slice,T_slice}*/
 

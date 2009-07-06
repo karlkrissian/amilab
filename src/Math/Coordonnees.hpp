@@ -566,6 +566,14 @@ public:
   void Init( T x0, T y0, T z0) { x=x0; y=y0; z=z0;}
 
 
+  T& X() { return x; }
+  T& Y() { return y; }
+  T& Z() { return z; }
+
+  T& X() const { return x; }
+  T& Y() const { return y; }
+  T& Z() const { return z; }
+
   /**
    */
   Point_3D<T>& operator=(const Point_3D<T>& p)

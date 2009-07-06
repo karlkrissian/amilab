@@ -444,6 +444,7 @@ void CB_update_imagelist( void* imagelist_gui)
 %token T_Transform
 %token SHOW HELP QUIT T_HIDE
 %token PRINT PRINTN
+%token T_InfoDialog
 %token T_boost_format
 %token T_SPRINT
 %token ASHELL LS
@@ -640,6 +641,8 @@ void CB_update_imagelist( void* imagelist_gui)
 %token T_PathFromDispl
 %token T_PathFromVectField
 %token T_LineRecons
+%token T_GetNumberOfLines
+%token T_GetLine
 
 %token T_ReadCTALine
 %token T_ReadCTALineRadii
@@ -799,6 +802,7 @@ void CB_update_imagelist( void* imagelist_gui)
 %token T_eval
 
 %token T_exists
+%token T_FileExists
 %token T_slice
 
 %token T_GenRead
@@ -1905,6 +1909,9 @@ command:
         }
         |  var_image T_OP_PAR expr T_COLON expr T_COMMA expr T_COLON expr T_COMMA expr T_COLON expr T_CL_PAR ASSIGN_OP expr_image
         {
+        /**
+          Description: Pads the image ...
+        */
           int posx  = (int) $3;
           int stepx = (int) $5;
           int posy  = (int) $7;
@@ -2356,15 +2363,26 @@ command:
         driver.res_print($2);
         driver.res_print("\n");
         delete [] $2;
-          }
-        | PRINT expr_matrix
-          {
+      }
+      | PRINT expr_matrix
+      {
         FloatMatrix* mat=driver.matrix_stack.GetLastMatrix();
         mat->PrintSelf();
         delete mat;
-          }
-        | expr_matrix
-          {
+      }
+      | T_InfoDialog expr_string
+      {
+         /**
+          Parameters:
+            string expression: information text
+          Description:
+            Popup an Information Dialog with the given message
+          **/
+          driver.info_print($2);
+          delete [] $2;
+      }
+      | expr_matrix
+      {
         FloatMatrix* mat=driver.matrix_stack.GetLastMatrix();
         mat->PrintSelf();
         delete mat;
@@ -3509,7 +3527,7 @@ command:
     }
     |
     var_surface T_POINT T_SetColorMaterial T_OP_PAR expr T_CL_PAR
-        {
+    {
         /**
         Description:
           Enable/Disable colormaterial for the associated surface.
@@ -3517,25 +3535,25 @@ command:
 
       (*(SurfacePoly::ptr*) $1->Pointer())->GetMaterial()._colormaterial = (unsigned char) ($5>0.5);
 
-        }
-        |
-    var_surface T_POINT T_SetColorOpacity T_OP_PAR expr T_CL_PAR
-        {
-        /**
-        Parameters:
-         (1) surface object
-         (5) alpha value
-
-        Description:
-         to define the transparency to the RGB color
-         associated per each vertex (actived with Enable ColorMaterial)
-        **/
+    }
+    |
+      var_surface T_POINT T_SetColorOpacity T_OP_PAR expr T_CL_PAR
+    {
+      /**
+      Parameters:
+        (1) surface object
+        (5) alpha value
+    
+      Description:
+        to define the transparency to the RGB color
+        associated per each vertex (actived with Enable ColorMaterial)
+      **/
 
       (*(SurfacePoly::ptr*) $1->Pointer())->SetColorOpacity($5);
 
-        }
-        | var_surface T_POINT T_SetColor T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
-        {
+    }
+    | var_surface T_POINT T_SetColor T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
+    {
       int n;
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) $1->Pointer());
 
@@ -3548,51 +3566,51 @@ command:
           s->SetColorMaterial(true);
           s->GLRecomputeList(  );
 
-        }
-        | var_surface T_POINT T_SetPointsColors T_OP_PAR var_image  T_CL_PAR
-        {
+    }
+    | var_surface T_POINT T_SetPointsColors T_OP_PAR var_image  T_CL_PAR
+    {
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) $1->Pointer());
 
 
       s->SetPointsColors( ((InrImage::ptr*) $5->Pointer())->get() );
 
-        }
-        | var_surface T_POINT T_SetColors T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_CL_PAR
-        {
+    }
+    | var_surface T_POINT T_SetColors T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_CL_PAR
+    {
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) $1->Pointer());
 
       InrImage*   i = (InrImage*) driver.im_stack.GetLastImage();
 
       s->SetColors( i , $7, $9);
 
-        }
-        | var_surface T_POINT T_SetColors T_OP_PAR expr_image  T_CL_PAR
-        {
+    }
+    | var_surface T_POINT T_SetColors T_OP_PAR expr_image  T_CL_PAR
+    {
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) $1->Pointer());
 
       InrImage*   i = (InrImage*) driver.im_stack.GetLastImage();
 
       s->SetColors( i );
 
-        }
-        | var_surface T_POINT T_Statistics T_OP_PAR var_image  T_CL_PAR
-        {
+    }
+    | var_surface T_POINT T_Statistics T_OP_PAR var_image  T_CL_PAR
+    {
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) $1->Pointer());
 
 
       s->Statistics( ((InrImage::ptr*) $5->Pointer())->get() );
 
-        }
-        | var_surface T_POINT T_mergepoints T_OP_PAR expr T_CL_PAR
-        {
+    }
+    | var_surface T_POINT T_mergepoints T_OP_PAR expr T_CL_PAR
+    {
       (*(SurfacePoly::ptr*) $1->Pointer())->MergePoints($5);
-        }
-        | var_surface T_POINT T_Triangulate
-        {
+    }
+    | var_surface T_POINT T_Triangulate
+    {
       (*(SurfacePoly::ptr*) $1->Pointer())->Triangulate();
-        }
-        | var_surface T_POINT T_curvatures T_OP_PAR expr T_CL_PAR
-        {
+    }
+    | var_surface T_POINT T_curvatures T_OP_PAR expr T_CL_PAR
+    {
 
       SurfacePoly::ptr surf = *(SurfacePoly::ptr*) $1->Pointer();
       float        depth = $5;
@@ -3627,9 +3645,9 @@ command:
       sprintf(name,"%s_dmax",$1->Name());
       Vars.AddVar(type_image,name,Idmax);
 
-        }
-        | var_surface T_POINT T_Displace T_OP_PAR expr_image T_CL_PAR
-        {
+    }
+    | var_surface T_POINT T_Displace T_OP_PAR expr_image T_CL_PAR
+    {
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) $1->Pointer());
       InrImage*   i = (InrImage*) driver.im_stack.GetLastImage();
 
@@ -5232,6 +5250,22 @@ postfix_expr_string
       $$= res;
     }
     |
+    T_boost_format T_OP_PAR expr_string T_CL_PAR T_MOD expr_string
+    {
+    /**
+      Description: 
+        Uses the class boost::format to create the result of 
+        the format as a string, using a string expression as a parameter.
+    */
+      boost::format bf($3);
+      delete [] $3;
+      std::string resstr = (bf % $6).str();
+      char* res = new char[resstr.length()+1];
+      strcpy(res,resstr.c_str());
+      $$= res;
+      delete [] $6;
+    }
+    |
     T_TimeSpent
     {
       char* res;
@@ -6242,6 +6276,17 @@ postfix_expr
     **/
           $$=1;
     }
+    | T_FileExists T_OP_PAR expr_string T_CL_PAR
+    {
+    /**
+    Parameters:
+      string: input filename
+    Description:
+      Check for the existence of the given filename
+    **/
+      $$ = wxFileExists(wxT($3));
+      delete [] $3;
+    }
     | basic_type
     {
           $$ = (int) $1;
@@ -6270,6 +6315,18 @@ postfix_expr
       $$ = fscanf(file.get(),"%s",res);
       string_ptr var( new std::string(res));
       $5->SetString(var);
+    }
+    | var_surface T_POINT T_GetNumberOfLines 
+    {
+    /**
+      Parameters:
+        - input polydata
+      Description: 
+        Returns the number of lines of the polydata structure
+    */
+      SurfacePoly::ptr s = (*(SurfacePoly::ptr*) $1->Pointer());
+
+      $$ = s->GetNumberOfLines(  );
     }
     ;
 
@@ -9405,9 +9462,9 @@ image:
 
       if (res!=NULL) driver.im_stack.AddImage(res);
 
-        }
-        | T_ConvexHull T_OP_PAR expr_image T_COMMA expr  T_COMMA expr T_CL_PAR
-        {
+    }
+    | T_ConvexHull T_OP_PAR expr_image T_COMMA expr  T_COMMA expr T_CL_PAR
+    {
       InrImage*         res;
       int   order = (int) $5;
       float resolution = $7;
@@ -9418,9 +9475,9 @@ image:
 
       if (res!=NULL) driver.im_stack.AddImage(res);
       delete input;
-        }
-        | var_surface T_POINT T_GetLinesLength T_OP_PAR   T_CL_PAR
-        {
+    }
+    | var_surface T_POINT T_GetLinesLength T_OP_PAR   T_CL_PAR
+    {
       InrImage*         res;
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) $1->Pointer());
 
@@ -9428,6 +9485,43 @@ image:
       res = s->GetImageLinesLength(  );
 
       if (res!=NULL) driver.im_stack.AddImage(res);
+    }
+    | var_surface T_POINT T_GetLine T_OP_PAR expr  T_CL_PAR
+    {
+      /**
+        Parameters:
+          - input polydata
+          - line number
+        Description:
+          Get the points of the given line as a vectorial 1D image of 
+          the point positions.
+      */
+      InrImage*         res = NULL;
+      SurfacePoly::ptr s = (*(SurfacePoly::ptr*) $1->Pointer());
+      int linenumber = (int) $5;
+      
+      if ((linenumber>=0)&&(linenumber<s->GetNumberOfLines())) {
+        T_Line line=s->GetLine(linenumber);
+        if (line.NbElts()>0) {
+          // Create the image
+          res = new InrImage(line.NbElts(),1,1,3,WT_FLOAT,
+            (boost::format("%1%_line%2%") 
+              % $1->Name()
+              % linenumber
+            ).str().c_str());
+          // fill it with the point positions
+          for(int n=0;n<line.NbElts();n++) {
+            res->BufferPos(n,0,0);
+            Point_3D<float>  pt = s->GetPoint(line[n]).pt;
+            res->VectFixeValeurs( pt.X(),pt.Y(),pt.Z());
+          }
+          driver.im_stack.AddImage(res);
+        } else
+          driver.err_print((boost::format("Line %1% has no point.") % linenumber).str());
+      } else {
+        driver.err_print("Invalid line number.");
+      }
+
     }
     | var_surface T_POINT T_GetLinesExtremities T_OP_PAR   T_CL_PAR
     {
