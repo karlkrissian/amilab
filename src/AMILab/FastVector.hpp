@@ -6,6 +6,8 @@
 #include <boost/format.hpp>
 
 
+namespace amilab {
+
 template <class VType, class SizeType>
 class FVector 
 {
@@ -95,3 +97,5 @@ DECL_FVECTOR_POINT_OPERATION_SSE(float,sub)
 */
 
 #include "FastVector.tpp"
+
+}

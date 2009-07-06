@@ -3662,8 +3662,9 @@ float vtkLevelSets::ExpansionMap( float I, unsigned char compute)
     res = 0;
     for(n=0;n<NumGaussians;n++) {
       tmp = I-Gaussians[n][0];
-      res += exp(-tmp*tmp/Gaussians[n][1]/Gaussians[n][1]);
+      res += exp(-tmp*tmp/2.0/Gaussians[n][1]/Gaussians[n][1]);
     }
+    // Divide by NumGaussians here ??? or take the maximum instead of the sum??
     if (res>1) res=1;
     // Cut at a certain value
     return (res-ProbabilityThreshold);

@@ -130,9 +130,9 @@ void FastLocalDiffX( InrImage* in, InrImage* out,
   T* in_data  = (T*) in ->GetData();
   T* out_data = (T*) out->GetData();
 
-  FVector<float,short> vmin( dim[0]);
-  FVector<float,short> vmax( dim[0]);
-  FVector<float,short> vres( dim[0]);
+  amilab::FVector<float,short> vmin( dim[0]);
+  amilab::FVector<float,short> vmax( dim[0]);
+  amilab::FVector<float,short> vres( dim[0]);
 
   // along dir0
   for ( p0=p0_min; p0<=p0_max; p0++ )
@@ -194,7 +194,7 @@ void FastLocalDiffX( InrImage* in, InrImage* out,
         vmin.CopyData(bufmin,vsize);
         vmax.CopyData(bufmax,vsize);
         vres.CopyData(res_buf,vsize);
-        FVector_sub_float_sse_uua<float,short>(vmax,vmin,vres);
+        amilab::FVector_sub_float_sse_uua<float,short>(vmax,vmin,vres);
         bufmin  += vsize;
         bufmax  += vsize;
         res_buf += vsize;

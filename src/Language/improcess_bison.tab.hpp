@@ -50,7 +50,7 @@
 namespace yyip {
 
 /* Line 35 of lalr1.cc  */
-#line 54 "/home/sara/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.hpp"
+#line 54 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.hpp"
   class position;
   class location;
 
@@ -60,7 +60,7 @@ namespace yyip {
 } // yyip
 
 /* Line 35 of lalr1.cc  */
-#line 64 "/home/sara/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.hpp"
+#line 64 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.hpp"
 
 #include "location.hh"
 
@@ -108,7 +108,7 @@ do {							\
 namespace yyip {
 
 /* Line 35 of lalr1.cc  */
-#line 112 "/home/sara/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.hpp"
+#line 112 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.hpp"
 
   /// A Bison parser.
   class Parser
@@ -120,7 +120,7 @@ namespace yyip {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 387 "/home/sara/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 387 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
 
   IdentifierInfo*       ident;
   Variable*             variable;
@@ -137,7 +137,7 @@ namespace yyip {
 
 
 /* Line 35 of lalr1.cc  */
-#line 141 "/home/sara/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.hpp"
+#line 141 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -834,7 +834,7 @@ namespace yyip {
 } // yyip
 
 /* Line 35 of lalr1.cc  */
-#line 838 "/home/sara/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.hpp"
+#line 838 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.hpp"
 
 
 

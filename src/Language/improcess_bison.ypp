@@ -10201,34 +10201,34 @@ surface:
     }
     |
     T_vtkWindowedSinc T_OP_PAR var_surface T_COMMA expr T_CL_PAR
-        {
+    {
           SurfacePoly* surf;
           surf = Func_vtkWindowedSinc(((SurfacePoly::ptr*) $3->Pointer())->get(), (int) $5);
       Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
           FinSi
     }
-        |
-        T_Surface T_OP_PAR T_CL_PAR
-        {
+    |
+    T_Surface T_OP_PAR T_CL_PAR
+    {
       SurfacePoly* surf = new SurfacePoly();
       driver.surf_stack.AddSurf(surf);
-        }
-        |
-        T_Surface ASTRING
-        {
+    }
+    |
+    T_Surface expr_string
+    {
       driver.surf_stack.AddSurf($2);
       delete [] $2;
-        }
-        |
-        T_Surface T_OP_PAR expr_string T_CL_PAR
-        {
+    }
+    |
+    T_Surface T_OP_PAR expr_string T_CL_PAR
+    {
       driver.surf_stack.AddSurf($3);
       delete [] $3;
-        }
-        |
-        T_Surface
-        {
+    }
+    |
+    T_Surface
+    {
           int res;
           string name;
           string inc_cmd; // increment the command line string
@@ -10265,10 +10265,10 @@ surface:
           SurfacePoly* surf;
           surf = Func_ReadCTALine($3);
           driver.surf_stack.AddSurf(surf);
-        }
-        |
-        T_ReadCTALine T_OP_PAR expr_string T_COMMA expr T_CL_PAR
-        {
+      }
+      |
+      T_ReadCTALine T_OP_PAR expr_string T_COMMA expr T_CL_PAR
+      {
         /**
         Parameters:
             (3): input filename (text file)
@@ -10281,20 +10281,20 @@ surface:
           SurfacePoly* surf;
           surf = Func_ReadCTALine($3, (int) $5);
           driver.surf_stack.AddSurf(surf);
-        }
-        |
-    var_surface
-        {
+      }
+      |
+      var_surface
+      {
       SurfacePoly* newsurf;
       SurfacePoly::ptr surf = *(SurfacePoly::ptr*) $1->Pointer();
 
       newsurf = new SurfacePoly( (*surf) );
 
           driver.surf_stack.AddSurf(newsurf);
-    }
-        |
-        T_Skeleton2lines T_OP_PAR var_image  T_CL_PAR
-        {
+      }
+      |
+      T_Skeleton2lines T_OP_PAR var_image  T_CL_PAR
+      {
         /**
         Description:
           Creates lines from a skeleton image
@@ -10379,7 +10379,7 @@ surface:
       Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
           FinSi
-        }
+    }
     |
     T_ShortestPath T_OP_PAR var_surface T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA
                                        expr T_COMMA expr T_COMMA expr T_CL_PAR
