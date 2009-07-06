@@ -127,7 +127,7 @@ proc RML_gui() {
 
   RML_win = ParamWin("Vesselness")
 
-  RML_win.AddPanel("Parameters")
+  RML_win.BeginPanel("Parameters")
     # set the input image
     RML_win.AddImageChoice(RML_input_name, "Input")
     # set the mask image
@@ -149,6 +149,7 @@ proc RML_gui() {
       RML_win.EndHorizontal
     RML_win.EndBox
   RML_win.EndPanel
+
   RML_win.AddButton("Close",RML_Close)
 
   RML_win.update
