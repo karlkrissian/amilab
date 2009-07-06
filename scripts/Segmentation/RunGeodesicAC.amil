@@ -42,7 +42,7 @@ proc RunGeodesicAC( IMAGE im, IMAGE initial, IMAGE _G, IMAGE _gradG, IMAGE _Expa
   _gradGz = _gradG[2]
   LevelSetsCURV.SetAdvectionField(_gradGx,_gradGy,_gradGz)
 
-  // set to 0 in order to use the image
+  # using the input expansion image
   LevelSetsCURV.SetExpansion(1)
   LevelSetsCURV.SetExpansionImage(_Expansion)
 
