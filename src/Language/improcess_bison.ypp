@@ -6284,7 +6284,7 @@ postfix_expr
     Description:
       Check for the existence of the given filename
     **/
-      $$ = wxFileExists(wxT($3));
+      $$ = wxFileExists(wxString($3,wxConvUTF8));
       delete [] $3;
     }
     | basic_type

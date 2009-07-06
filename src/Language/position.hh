@@ -50,7 +50,7 @@
 namespace yyip {
 
 /* Line 38 of location.cc  */
-#line 54 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/position.hh"
+#line 54 "/home/sara/Sourceforge/amilab/trunk/src/Language/position.hh"
   /// Abstract a position.
   class position
   {
@@ -163,5 +163,5 @@ namespace yyip {
 } // yyip
 
 /* Line 144 of location.cc  */
-#line 167 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/position.hh"
+#line 167 "/home/sara/Sourceforge/amilab/trunk/src/Language/position.hh"
 #endif // not BISON_POSITION_HH

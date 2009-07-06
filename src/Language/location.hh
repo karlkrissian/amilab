@@ -50,7 +50,7 @@
 namespace yyip {
 
 /* Line 162 of location.cc  */
-#line 54 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/location.hh"
+#line 54 "/home/sara/Sourceforge/amilab/trunk/src/Language/location.hh"
 
   /// Abstract a location.
   class location
@@ -166,6 +166,6 @@ namespace yyip {
 } // yyip
 
 /* Line 271 of location.cc  */
-#line 170 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/location.hh"
+#line 170 "/home/sara/Sourceforge/amilab/trunk/src/Language/location.hh"
 
 #endif // not BISON_LOCATION_HH
