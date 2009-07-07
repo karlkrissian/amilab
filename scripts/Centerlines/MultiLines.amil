@@ -160,11 +160,11 @@ proc ML_ComputeResponse_new(\
   local::pairs_mode  = 0
   local::keephighest = 100
 
-  _response = CircleMinIntSdExc(grad,\
-                      eig[3],\
-                      eig[4],\
+  _response = CircleMinIntSdExc(&grad,\
+                      &eig[3],\
+                      &eig[4],\
                       _theta*_sigma, \
-                      _mask,\
+                      &_mask,\
                       SD_th,\
                       EXC_th, \
                       pairs_mode, \
