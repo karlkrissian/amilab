@@ -5696,10 +5696,10 @@ postfix_expr
       delete im;
         }
         |
-        T_MAX T_OP_PAR var_image  T_CL_PAR
+        T_MAX T_OP_PAR expr_image  T_CL_PAR
         {
         /**
-             description:
+             description: 
              returns the maximal value of an image
 
              parameters:
@@ -5711,7 +5711,9 @@ postfix_expr
                 min, mean, median
 
         **/
-      $$=Func_max( ((InrImage::ptr*) $3->Pointer())->get(),NULL);
+      InrImage* im = (InrImage*) driver.im_stack.GetLastImage();
+      $$=Func_max( im,NULL);
+      delete im;
         }
         |
         T_argmax T_OP_PAR expr_image  T_CL_PAR
@@ -6327,6 +6329,16 @@ postfix_expr
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) $1->Pointer());
 
       $$ = s->GetNumberOfLines(  );
+    }
+    | T_MAX  T_OP_PAR expr T_COMMA expr T_CL_PAR
+    {
+    /**
+      Parameters:
+        - 2 numbers
+      Description: 
+        Returns the maximal value
+    */
+      $$ = macro_max($3,$5);
     }
     ;
 
