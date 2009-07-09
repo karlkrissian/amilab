@@ -314,7 +314,7 @@ unsigned char CalculIsoLignes :: CalculVepArete( Vect3D<double> *vep_arete)
 
 
 //---------------------------------------------------------
-EnLigne unsigned char  CalculIsoLignes :: PassageParZero( int& signe, 
+inline unsigned char  CalculIsoLignes :: PassageParZero( int& signe, 
 //                                            --------------
                                   double valeur)
 {

@@ -562,6 +562,7 @@ void amimage::displayinfo()
 
 
 //----------------------------------------------------------------------
+// TODO: take care of freeing the created stringstream
 amimage::amimage() : file_str(new stringstream)
 //       -------
 {

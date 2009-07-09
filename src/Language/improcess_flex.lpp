@@ -426,6 +426,7 @@ Zpos              return(token::T_Zpos); /*{Zpos,T_Zpos}*/
 SpacePos          return(token::T_SpacePos); /*{SpacePos,T_SpacePos}*/
 
 del               return(token::T_del); /*{del,T_del}*/
+delvars           return(token::T_delvars); /*{delvars,T_delvars}*/
 
 EDPdilate         return(token::T_EDPdilate); /*{EDPdilate,T_EDPdilate}*/
 EDPerode          return(token::T_EDPerode); /*{EDPerode,T_EDPerode}*/
@@ -706,6 +707,7 @@ import_vtk        return(token::T_import_vtk);     /*{import_vtk,T_import_vtk}*/
 import_itk        return(token::T_import_itk);     /*{import_itk,T_import_itk}*/
 import_wii        return(token::T_import_wii);     /*{import_wii,T_import_wii}*/
 import_filters    return(token::T_import_filters); /*{import_filters,T_import_filters}*/
+import_sys        return(token::T_import_sys);     /*{import_sys,T_import_sys}*/
 
 amiOFCorr2D       return(token::T_amiOFCorr2D);  /*{amiOFCorr2D,T_amiOFCorr2D}*/
 amiOFVar2D        return(token::T_amiOFVar2D);   /*{amiOFVar2D,T_amiOFVar2D}*/

@@ -56,8 +56,8 @@ if (!exists(NLM_defined)) {
   proc NLM_Close() \
   {
     NLM_win.Hide
-    del "NLM_*_draw"
-    del "NLM_*"
+    delvars "NLM_*_draw"
+    delvars "NLM_*"
   }
   
   #----------------------------

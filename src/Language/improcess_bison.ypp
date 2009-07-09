@@ -26,6 +26,7 @@
 #include "ami_object.h"
 #include "IdentifierInfo.h"
 
+#include "localstats.h"
 //#include "dist_squared.hpp"
 #include "improcess_bison.tab.hpp"
 #include "wrapAMIFluid.h"
@@ -34,6 +35,7 @@
 #include "itkCannyEdgeDetector.h"
 #include "wrapWII.h"
 #include "wrapFilters.h"
+#include "wrapSystem.h"
 #include <cstdlib>
 
 //#include "myscan.h"
@@ -470,6 +472,7 @@ void CB_update_imagelist( void* imagelist_gui)
 %token VAR_ARRAY_SURFACE
 %token VAR_ARRAY_IMAGE
 %token T_del
+%token T_delvars
 %token ENDOP
 
 %token T_global
@@ -852,6 +855,8 @@ void CB_update_imagelist( void* imagelist_gui)
 %token T_import_itk
 %token T_import_wii
 %token T_import_filters
+%token T_import_sys
+
 %token T_amiOFCorr2D
 %token T_amiOFVar2D
 //%token T_amiOFVar2DZoom
@@ -1781,15 +1786,14 @@ command:
         |  var_image ASSIGN_OP expr_image
         {
           InrImage::ptr i1 = *(InrImage::ptr*) $1->Pointer();
-          InrImage* i2 = (InrImage*) driver.im_stack.GetLastImage();
+          InrImage::ptr i2 = InrImage::ptr(driver.im_stack.GetLastImage());
 
-          Si i2!=NULL Alors
+          if (i2.get()) {
             // copy option
             if (!((*i1)=(*i2))) driver.err_print(" Error in images assignement\n");
-          Sinon
+          } else {
             driver.err_print("Error\n");
-          FinSi
-          delete i2;
+          }
         }
         |  var_image LEFT_ASSIGN expr_image
         {
@@ -1813,6 +1817,8 @@ command:
                 i1->SetVoxelSize( imptr->VoxSizeX(), 
                                   imptr->VoxSizeY(),
                                   imptr->VoxSizeZ());
+                // then delete imptr
+                delete imptr;
               }
             }
             if (!can_skip_allocation) {
@@ -1921,11 +1927,10 @@ command:
 
 
           InrImage::ptr i1 = *(InrImage::ptr*) $1->Pointer();
-          InrImage* i2 = (InrImage*) driver.im_stack.GetLastImage();
+          InrImage::ptr i2 = InrImage::ptr(driver.im_stack.GetLastImage());
 
-          Func_Pad(i1.get(),i2,stepx,posx,stepy,posy,stepz,posz);
+          Func_Pad(i1.get(),i2.get(),stepx,posx,stepy,posy,stepz,posz);
 
-          delete i2;
 
         }
         |  VAR_FLOAT INC_OP
@@ -1975,6 +1980,10 @@ command:
         }
         | T_del variable
         {
+        /**
+          Description: 
+            Delete the given variable
+        */
          /*Variable* var;
 
          if (Vars.GetVar($2->Name(),&var))
@@ -1982,7 +1991,7 @@ command:
          */
          Vars.deleteVar($2);
         }
-        | T_del expr_string
+        | T_delvars expr_string
         {
         /**
           Description: 
@@ -2689,6 +2698,7 @@ command:
         | VAR_IMAGEDRAW T_POINT T_SetColormap T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_CL_PAR
         {
           DessinImage::ptr draw;
+          // TODO: fix this memory problem ...
           InrImage* colmap=(InrImage*) driver.im_stack.GetLastImage();
 
           draw = *(DessinImage::ptr*) ($1->Pointer());
@@ -3578,26 +3588,20 @@ command:
     | var_surface T_POINT T_SetColors T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_CL_PAR
     {
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) $1->Pointer());
-
-      InrImage*   i = (InrImage*) driver.im_stack.GetLastImage();
-
-      s->SetColors( i , $7, $9);
-
+      InrImage::ptr i = InrImage::ptr(driver.im_stack.GetLastImage());
+      // TODO: use smart pointer to image in SetColors ...
+      s->SetColors( i.get() , $7, $9);
     }
     | var_surface T_POINT T_SetColors T_OP_PAR expr_image  T_CL_PAR
     {
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) $1->Pointer());
-
-      InrImage*   i = (InrImage*) driver.im_stack.GetLastImage();
-
-      s->SetColors( i );
+      InrImage::ptr i = InrImage::ptr(driver.im_stack.GetLastImage());
+      s->SetColors( i.get() );
 
     }
     | var_surface T_POINT T_Statistics T_OP_PAR var_image  T_CL_PAR
     {
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) $1->Pointer());
-
-
       s->Statistics( ((InrImage::ptr*) $5->Pointer())->get() );
 
     }
@@ -3649,21 +3653,18 @@ command:
     | var_surface T_POINT T_Displace T_OP_PAR expr_image T_CL_PAR
     {
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) $1->Pointer());
-      InrImage*   i = (InrImage*) driver.im_stack.GetLastImage();
-
-      s->DisplacePoints( i );
-      delete i;
-
-        }
-        | var_surface T_POINT T_Translate T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
-        {
+      InrImage::ptr i = InrImage::ptr(driver.im_stack.GetLastImage());
+      s->DisplacePoints( i.get() );
+    }
+    | var_surface T_POINT T_Translate T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
+    {
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) $1->Pointer());
 
       s->Translate( $5,$7,$9 );
 
-        }
-        | var_surface T_POINT T_Scale T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
-        {
+    }
+    | var_surface T_POINT T_Scale T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
+    {
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) $1->Pointer());
 
       s->Scale( $5,$7,$9,0 );
@@ -3700,11 +3701,10 @@ command:
     **/
 
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) $1->Pointer());
-      InrImage* im = (InrImage*) driver.im_stack.GetLastImage();
+      InrImage::ptr im = InrImage::ptr(driver.im_stack.GetLastImage());
 
-      s->SelectLines(im);
+      s->SelectLines(im.get());
       s->GLRecomputeList();
-      delete im;
     }
     | var_surface T_POINT T_RemoveSelection
     {
@@ -3982,9 +3982,9 @@ command:
       InrImage* im = (InrImage*) driver.im_stack.GetLastImage();
       AMIFluid::Func_ElevateMesh(s.get(),im);
       delete im;
-        }
-        | VAR_SURFDRAW T_POINT T_rotate T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
-        {
+    }
+    | VAR_SURFDRAW T_POINT T_rotate T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
+    {
           Viewer3D_ptr sdraw = *((Viewer3D_ptr*) $1->Pointer());
 
           sdraw->GetCanvas()->UserRotate($5,$7,$9);
@@ -4905,6 +4905,11 @@ cerr << "Feature not available, needs to be updated ! " << endl;
           AddWrapFilters();
         }
         |
+        T_import_sys
+        {
+          AddWrapSystem();
+        }
+        |
         T_amiOFCorr2D T_OP_PAR var_image T_COMMA var_image T_COMMA
         var_image  T_COMMA var_image T_COMMA
         var_image  T_COMMA
@@ -5204,6 +5209,9 @@ primary_expr_string: ASTRING
         |
         VAR_STRING
         {
+      //
+      // TODO: replace string expression to use std::string !!!
+      //
       char* res;
 
       res = new char[(*(string_ptr*)$1->Pointer())->length()+1];
@@ -5895,16 +5903,17 @@ postfix_expr
 
           $$=Func_mean( ((InrImage::ptr*) $3->Pointer())->get(), mask);
           delete mask;
-        }
-        |  T_atof T_OP_PAR ASTRING T_CL_PAR
-        {
+    }
+    |  T_atof T_OP_PAR expr_string T_CL_PAR
+    {
 //    setlocale(LC_NUMERIC,"C");
       setlocale(LC_NUMERIC, "C");
       $$=atof($3);
-        }
-        |
-        VAR_IMAGEDRAW T_POINT T_GetXmin
-        {
+      delete [] $3;
+    }
+    |
+    VAR_IMAGEDRAW T_POINT T_GetXmin
+    {
       DessinImage::ptr draw;
       DessinImageParametres* param;
 
@@ -6209,9 +6218,10 @@ postfix_expr
         int var_id;
         pw->AjouteChaine( &var_id,
           (string_ptr*)$5->Pointer(),
-          (char*) $7);
+          $7);
         pw->ContraintesChaine(var_id,(char*) ((string_ptr*)$5->Pointer())->get()->c_str());
         $$=var_id;
+        delete [] $7;
     }
     |
     VAR_PARAMWIN T_POINT T_AddFilename T_OP_PAR  VAR_STRING  T_COMMA expr_string  T_COMMA expr_string T_COMMA expr_string T_CL_PAR
@@ -8871,18 +8881,18 @@ image:
       Runs the fast marching algorithm
      **/
 
-        InrImage*    init = (InrImage*) driver.im_stack.GetLastImage(); // 2nd param
-        InrImage*    input  = (InrImage*) driver.im_stack.GetLastImage(); // 1st param
-        InrImage*    res = NULL;
-        float   maxtime = (float) $7;
+      InrImage::ptr init  = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
+      InrImage::ptr input = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
+      InrImage*     res = NULL;
+      float   maxtime = (float) $7;
 
-        res = Func_vtkFastMarchingTarget( input, init,  maxtime,
-                (int) round($9),
-                (int) round($11),
-                (int) round($13)
-                );
+      res = Func_vtkFastMarchingTarget( input.get(), init.get(),  maxtime,
+              (int) round($9),
+              (int) round($11),
+              (int) round($13)
+              );
 
-        driver.im_stack.AddImage(res);
+      driver.im_stack.AddImage(res);
     }
     |
     T_vtkFastMarching T_OP_PAR expr_image T_COMMA expr_image T_COMMA
@@ -8899,18 +8909,16 @@ image:
       Runs the fast marching algorithm
      **/
 
-        InrImage*    init = (InrImage*) driver.im_stack.GetLastImage(); // 2nd param
-        InrImage*    input  = (InrImage*) driver.im_stack.GetLastImage(); // 1st param
-        InrImage*    res = NULL;
-        float   mean    = (float) $7;
-        float   sd      = (float) $9;
-        float   maxtime = (float) $11;
+      InrImage::ptr init  = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
+      InrImage::ptr input = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
+      InrImage*    res = NULL;
+      float   mean    = (float) $7;
+      float   sd      = (float) $9;
+      float   maxtime = (float) $11;
 
-          res = Func_vtkFastMarching( input, init, mean, sd, maxtime);
+      res = Func_vtkFastMarching( input.get(), init.get(), mean, sd, maxtime);
 
-          driver.im_stack.AddImage(res);
-          delete init;
-          delete input;
+      driver.im_stack.AddImage(res);
     }
     |
     T_vtkFastMarching T_OP_PAR expr_image T_COMMA expr_image T_COMMA
@@ -8929,19 +8937,17 @@ image:
      **/
       /* Version without initialization */
 
-        InrImage*    init = (InrImage*) driver.im_stack.GetLastImage(); // 2nd param
-        InrImage*    input  = (InrImage*) driver.im_stack.GetLastImage(); // 1st param
-        InrImage*    res = NULL;
-        float   mean     = (float) $7;
-        float   sd       = (float) $9;
-        float   maxtime  = (float) $11;
-        int     inittype = (int) $13;
+      InrImage::ptr init  = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
+      InrImage::ptr input = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
+      InrImage*    res = NULL;
+      float   mean     = (float) $7;
+      float   sd       = (float) $9;
+      float   maxtime  = (float) $11;
+      int     inittype = (int) $13;
 
-      res = Func_vtkFastMarching( input, init, mean, sd, maxtime,inittype);
+      res = Func_vtkFastMarching( input.get(), init.get(), mean, sd, maxtime,inittype);
 
-          driver.im_stack.AddImage(res);
-          delete init;
-          delete input;
+      driver.im_stack.AddImage(res);
     }
     |
     T_vtkFastMarching T_OP_PAR expr_image T_COMMA expr_image T_COMMA
@@ -8962,21 +8968,19 @@ image:
      **/
       /* Version without initialization */
 
-        InrImage*    init = (InrImage*) driver.im_stack.GetLastImage(); // 2nd param
-        InrImage*    input  = (InrImage*) driver.im_stack.GetLastImage(); // 1st param
-        InrImage*    res   = NULL;
-        float   maxtime    = (float) $9;
-        int     inittype   = (int)   $11;
+      InrImage::ptr init  = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
+      InrImage::ptr input = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
+      InrImage*    res   = NULL;
+      float   maxtime    = (float) $9;
+      int     inittype   = (int)   $11;
 
       res = Func_vtkFastMarching(
-                  input,
-                  init,
+                  input.get(),
+                  init.get(),
                   ((InrImage::ptr*) $7->Pointer())->get(),
                   maxtime,inittype);
 
       driver.im_stack.AddImage(res);
-      delete init;
-      delete input;
     }
     |
     T_Convolve T_OP_PAR var_image T_COMMA var_image T_CL_PAR
@@ -9350,9 +9354,9 @@ image:
       res = Func_Histogram(im,vmin,vmax,nint);
       driver.im_stack.AddImage(res);
       delete im;
-        }
-        | T_cumhisto T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
-        {
+    }
+    | T_cumhisto T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
+    {
       InrImage* im = (InrImage*) driver.im_stack.GetLastImage();
       float vmin  = $5;
       float vmax  = $7;
@@ -9392,42 +9396,39 @@ image:
 
       driver.im_stack.AddImage(res);
       delete im;
-        }
-        | T_MeanHalfSize T_OP_PAR expr_image T_CL_PAR
-        {
+    }
+    | T_MeanHalfSize T_OP_PAR expr_image T_CL_PAR
+    {
       InrImage* res;
+      InrImage::ptr im = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
 
-      InrImage* im = (InrImage*) driver.im_stack.GetLastImage();
       if (im->DimZ()>1)
-        res = Func_MeanHalfSize(im,3);
+        res = Func_MeanHalfSize(im.get(),3);
       else
-        res = Func_MeanHalfSize(im,2);
+        res = Func_MeanHalfSize(im.get(),2);
 
       if (res!=NULL) driver.im_stack.AddImage(res);
-      delete im;
-        }
-        | T_MeanHalfSize T_OP_PAR expr_image T_COMMA expr T_CL_PAR
-        {
+    }
+    | T_MeanHalfSize T_OP_PAR expr_image T_COMMA expr T_CL_PAR
+    {
       InrImage* res;
       int dim = (int) $5;
 
-      InrImage* im = (InrImage*) driver.im_stack.GetLastImage();
-      res = Func_MeanHalfSize(im,dim);
-
+      InrImage::ptr im = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
+      res = Func_MeanHalfSize(im.get(),dim);
       if (res!=NULL) driver.im_stack.AddImage(res);
-      delete im;
-        }
-        | T_Flip T_OP_PAR expr_image T_COMMA expr  T_CL_PAR
-        {
-            InrImage* res;
-            int axis=(int) $5;
+    }
+    | T_Flip T_OP_PAR expr_image T_COMMA expr  T_CL_PAR
+    {
+        InrImage* res;
+        int axis=(int) $5;
 
-            InrImage::ptr im = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
-            res=Func_Flip(im,axis);
-            driver.im_stack.AddImage(res);
-        }
-        | T_Resize T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr T_CL_PAR
-        {
+        InrImage::ptr im = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
+        res=Func_Flip(im,axis);
+        driver.im_stack.AddImage(res);
+    }
+    | T_Resize T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr T_CL_PAR
+    {
         /**
         Parameters:
             image to resize
@@ -9444,11 +9445,10 @@ image:
             int sz = (int) $9;
             unsigned char interpolate=(unsigned char) $11;
 
-            InrImage* im = (InrImage*) driver.im_stack.GetLastImage();
-            res = Func_Resize(im,sx,sy,sz,interpolate);
+            InrImage::ptr im = InrImage::ptr(driver.im_stack.GetLastImage());
+            res = Func_Resize(im.get(),sx,sy,sz,interpolate);
 
             if (res!=NULL) driver.im_stack.AddImage(res);
-            delete im;
         }
         | T_ReSlice T_OP_PAR var_image T_COMMA var_image T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA  expr T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA  expr T_COMMA expr T_CL_PAR
         {
@@ -9590,34 +9590,34 @@ image:
       if (res!=NULL) driver.im_stack.AddImage(res);
 
       delete im;
-        }
-        | T_Altitude2Position T_OP_PAR expr_image T_CL_PAR
-        {
+    }
+    | T_Altitude2Position T_OP_PAR expr_image T_CL_PAR
+    {
       InrImage* im =  (InrImage*) driver.im_stack.GetLastImage();
       InrImage* res;
       res = AMIFluid::Func_Altitude2Position(im);
       if (res!=NULL) driver.im_stack.AddImage(res);
       delete im;
-        }
-        | T_GeoCoordinates T_OP_PAR expr_image  T_COMMA expr T_CL_PAR
-        {
+    }
+    | T_GeoCoordinates T_OP_PAR expr_image  T_COMMA expr T_CL_PAR
+    {
       InrImage* im =  (InrImage*) driver.im_stack.GetLastImage();
       InrImage* res;
       res = AMIFluid::Func_GeoCoordinates(im,(int)$5);
       if (res!=NULL) driver.im_stack.AddImage(res);
       delete im;
-        }
-        | T_GeoCoordinates T_OP_PAR expr_image  T_CL_PAR
-        {
+    }
+    | T_GeoCoordinates T_OP_PAR expr_image  T_CL_PAR
+    {
       InrImage* im =  (InrImage*) driver.im_stack.GetLastImage();
       InrImage* res;
       res = AMIFluid::Func_GeoCoordinates(im);
       if (res!=NULL) driver.im_stack.AddImage(res);
       delete im;
-        }
-        | T_ComputeAltitudes T_OP_PAR expr_image T_COMMA expr_image  T_CL_PAR
-        {
-        /**
+    }
+    | T_ComputeAltitudes T_OP_PAR expr_image T_COMMA expr_image  T_CL_PAR
+    {
+    /**
 
         description:
           Compute the altitude to the sea level based on the
@@ -9632,19 +9632,17 @@ image:
           Fluid
 
         **/
-      InrImage* coeff =  (InrImage*) driver.im_stack.GetLastImage();
-      InrImage* input =  (InrImage*) driver.im_stack.GetLastImage();
+      InrImage::ptr coeff = InrImage::ptr(driver.im_stack.GetLastImage());
+      InrImage::ptr input = InrImage::ptr(driver.im_stack.GetLastImage());
       InrImage* res;
 
-      res = AMIFluid::Func_ComputeAltitudes(input,coeff);
+      res = AMIFluid::Func_ComputeAltitudes(input.get(),coeff.get());
       if (res!=NULL) driver.im_stack.AddImage(res);
 
-      delete coeff;
-      delete input;
-        }
-        | T_Temp2Altitudes T_OP_PAR expr_image  T_CL_PAR
-        {
-        /**
+    }
+    | T_Temp2Altitudes T_OP_PAR expr_image  T_CL_PAR
+    {
+    /**
 
         description:
         Compute the altitude to the sea level based on the
@@ -9655,13 +9653,12 @@ image:
         in Kelvin.
 
         **/
-      InrImage* input =  (InrImage*) driver.im_stack.GetLastImage();
+      InrImage::ptr input = InrImage::ptr(driver.im_stack.GetLastImage());
       InrImage* res;
 
-      res = AMIFluid::Func_Temp2Altitudes(input);
+      res = AMIFluid::Func_Temp2Altitudes(input.get());
       if (res!=NULL) driver.im_stack.AddImage(res);
 
-      delete input;
         }
         | T_ReadFlow T_OP_PAR expr_string   T_CL_PAR
         {
@@ -9670,16 +9667,16 @@ image:
       if (res!=NULL) driver.im_stack.AddImage(res);
       delete [] $3;
     }
-        |
-        T_slice T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
-        {
-        /**
+    |
+    T_slice T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
+    {
+    /**
 
-        description:
-    Trying the slicing procedure to incorporate into the
-    image drawing class
+      description:
+        Trying the slicing procedure to incorporate into the
+        image drawing class
 
-        params:
+      params:
         (3) image to slice
         (5) width orientation 1,2,3 for XY, XZ, ZY
         (7) height orientation
@@ -9688,25 +9685,21 @@ image:
         (17) expected height
 
         **/
-        InrImage* im = (InrImage*) driver.im_stack.GetLastImage();
+        InrImage::ptr im = InrImage::ptr(driver.im_stack.GetLastImage());
         InrImage* res;
 
         if (im->_format==WT_UNSIGNED_CHAR) {
           ImageDraw<unsigned char> imdraw;
-      imdraw.SetInput((unsigned char*)im->GetData(),im->DimX(),im->DimY(),im->DimZ());
-      imdraw.SetVoxelSize(im->VoxSizeX(),im->VoxSizeY(),im->VoxSizeZ());
+          imdraw.SetInput((unsigned char*)im->GetData(),im->DimX(),im->DimY(),im->DimZ());
+          imdraw.SetVoxelSize(im->VoxSizeX(),im->VoxSizeY(),im->VoxSizeZ());
           imdraw.SetCursorPosition((int)$9,(int)$11,(int)$13);
           imdraw.Apply((int)$5,(int)$7,(int)$15,(int)$17);
           // copy to RGB image
           res = new InrImage(imdraw.RGB_width, imdraw.RGB_height, 1, WT_RGB);
           memcpy(res->GetData(),imdraw.RGB_image,imdraw.RGB_width*imdraw.RGB_height*3);
-      driver.im_stack.AddImage(res);
-
+          driver.im_stack.AddImage(res);
         } else
-     fprintf(stderr,"only UCHAR format for now \n");
-
-        delete im;
-
+          fprintf(stderr,"only UCHAR format for now \n");
         }
     |
     T_LineRecons T_OP_PAR var_surface T_COMMA var_image T_COMMA expr_image T_CL_PAR
@@ -9771,20 +9764,18 @@ unary_image  :    postfix_image
         | ACOS  cast_image { UNARYOP_IMAGE(acos)            }
         | ATAN  cast_image { UNARYOP_IMAGE(atan)            }
         | EXP   cast_image { UNARYOP_IMAGE(exp)             }
-                | LOG  cast_image { UNARYOP_IMAGE(1.0/log(10.0)*log) }
-                | LN   cast_image { UNARYOP_IMAGE(log)             }
-                | NORM cast_image
-                {
-          InrImage* im1;
+        | LOG  cast_image { UNARYOP_IMAGE(1.0/log(10.0)*log) }
+        | LN   cast_image { UNARYOP_IMAGE(log)             }
+        | NORM cast_image
+        {
           InrImage* res;
 
-          im1 = driver.im_stack.GetLastImage();
+          InrImage::ptr im1 = InrImage::ptr(driver.im_stack.GetLastImage());
           res = Norm(*im1);
           if (res!=NULL)
             driver.im_stack.AddImage(res);
           else
             fprintf(stderr,"Error computing the norm |image| \n");
-          delete im1;
         }
                ;
 
@@ -9804,13 +9795,11 @@ cast_image:
                   i = Image(FLOAT,10,10,10)
                   j = (RGB) i
         **/
-            InrImage* im1;
             InrImage* im;
-            im1 = driver.im_stack.GetLastImage();
-            im  = new InrImage( (WORDTYPE) $2, "tmp.inr.gz", im1);
+            InrImage::ptr im1 = InrImage::ptr(driver.im_stack.GetLastImage());
+            im  = new InrImage( (WORDTYPE) $2, "tmp.inr.gz", im1.get());
             (*im) = (*im1);
             driver.im_stack.AddImage(im);
-            delete im1;
           }
 ;
 
@@ -10109,8 +10098,8 @@ var_surface:
 surface:
         T_isosurf T_OP_PAR expr_image T_COMMA expr T_CL_PAR
         {
-          InrImage::ptr im = InrImage::ptr(driver.im_stack.GetLastImage());
           SurfacePoly* surf;
+          InrImage::ptr im = InrImage::ptr(driver.im_stack.GetLastImage());
           surf = Func_isosurf(im,
                   $5,
                   NULL);
@@ -10133,7 +10122,7 @@ surface:
     |
     T_isosurf T_OP_PAR expr_image T_COMMA expr T_COMMA var_image T_CL_PAR
     {
-    InrImage::ptr im = InrImage::ptr(driver.im_stack.GetLastImage());
+        InrImage::ptr im = InrImage::ptr(driver.im_stack.GetLastImage());
         SurfacePoly* surf;
         surf = Func_isosurf(im,
                 $5,
@@ -10585,10 +10574,10 @@ surface:
       surf = AMIFluid::Func_CreateFlatMesh(im.get(), (int) $5 );
       Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
-          FinSi
-        }
-        | T_CreateFlatMesh T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_CL_PAR
-        {
+      FinSi
+    }
+    | T_CreateFlatMesh T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_CL_PAR
+    {
       InrImage::ptr im = InrImage::ptr(driver.im_stack.GetLastImage());
       float minth = $5;
       float maxth = $7;
@@ -10597,10 +10586,10 @@ surface:
       surf = AMIFluid::Func_CreateFlatMesh(im.get(),minth,maxth);
       Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
-          FinSi
-        }
-        | T_vtkCreateFlatMesh T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_CL_PAR
-        {
+      FinSi
+    }
+    | T_vtkCreateFlatMesh T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_CL_PAR
+    {
       InrImage* im = (InrImage*) driver.im_stack.GetLastImage();
           SurfacePoly* surf;
       float minth = $5;
@@ -10637,26 +10626,23 @@ surface:
          changes the position of the nodes of a 3D mesh
 
         **/
-      InrImage* highpos = (InrImage*) driver.im_stack.GetLastImage();
-      InrImage* lowpos  = (InrImage*) driver.im_stack.GetLastImage();
-      InrImage* input   = (InrImage*) driver.im_stack.GetLastImage();
-          SurfacePoly* surf;
+      InrImage::ptr highpos = InrImage::ptr(driver.im_stack.GetLastImage());
+      InrImage::ptr lowpos  = InrImage::ptr(driver.im_stack.GetLastImage());
+      InrImage::ptr input   = InrImage::ptr(driver.im_stack.GetLastImage());
+      SurfacePoly* surf;
       float minth = $5;
       float maxth = $7;
 
-      surf = AMIFluid::Func_CreateVolume(input, minth, maxth, lowpos, highpos);
+      surf = AMIFluid::Func_CreateVolume(input.get(), minth, maxth, lowpos.get(), highpos.get());
       Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
           FinSi
-      delete highpos;
-      delete lowpos;
-      delete input;
-        }
-        |  T_CreateVolume T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_COMMA expr_image T_COMMA expr_image T_COMMA expr_image T_COMMA expr T_CL_PAR
-        {
+    }
+    |  T_CreateVolume T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_COMMA expr_image T_COMMA expr_image T_COMMA expr_image T_COMMA expr T_CL_PAR
+    {
         /**
         description:
-          CreateVolume creates a close surface composed of 2 surfaces:
+          CreateVolume creates a closed surface composed of 2 surfaces:
           a top and a bottom, where each surface is calculated by converting
           the pixel position of 3D positions based on the 2 last parameters.
           It scans all the points of the 2D image,
@@ -10680,25 +10666,23 @@ surface:
          changes the position of the nodes of a 3D mesh
 
         **/
-      InrImage* colors  = (InrImage*) driver.im_stack.GetLastImage();
-      InrImage* highpos = (InrImage*) driver.im_stack.GetLastImage();
-      InrImage* lowpos  = (InrImage*) driver.im_stack.GetLastImage();
-      InrImage* input   = (InrImage*) driver.im_stack.GetLastImage();
-          SurfacePoly* surf;
+      InrImage::ptr colors  = InrImage::ptr(driver.im_stack.GetLastImage());
+      InrImage::ptr highpos = InrImage::ptr(driver.im_stack.GetLastImage());
+      InrImage::ptr lowpos  = InrImage::ptr(driver.im_stack.GetLastImage());
+      InrImage::ptr input  = InrImage::ptr(driver.im_stack.GetLastImage());
+      SurfacePoly* surf;
       float minth = $5;
       float maxth = $7;
       float alpha = $15;
 
-      surf = AMIFluid::Func_CreateVolume(input, minth, maxth, lowpos, highpos, colors, alpha);
+      surf = AMIFluid::Func_CreateVolume(input.get(), minth, maxth, 
+                                          lowpos.get(), highpos.get(), colors.get(), alpha);
       Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
-          FinSi
-      delete highpos;
-      delete lowpos;
-      delete input;
-        }
-        | T_CreateVectors T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr_image T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr T_CL_PAR
-        {
+      FinSi
+    }
+    | T_CreateVectors T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr_image T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr T_CL_PAR
+    {
         /**
         Parameters
           #1 expr_image:        altitudes1
@@ -10730,25 +10714,23 @@ surface:
                 CreateFlatMesh, ElevateMesh, ComputeAltitudes, Altitudes2Position
       **/
 
-      InrImage* alt2  = (InrImage*) driver.im_stack.GetLastImage();
-      InrImage* displ = (InrImage*) driver.im_stack.GetLastImage();
-      InrImage* alt1  = (InrImage*) driver.im_stack.GetLastImage();
+      InrImage::ptr alt2  = InrImage::ptr(driver.im_stack.GetLastImage());
+      InrImage::ptr displ = InrImage::ptr(driver.im_stack.GetLastImage());
+      InrImage::ptr alt1  = InrImage::ptr(driver.im_stack.GetLastImage());
       int stepx   = (int) $9;
       int stepy   = (int) $11;
       float scale = $13;
       int   type  = (int) $15;
           SurfacePoly* surf;
 
-      surf = AMIFluid::Func_CreateVectors(alt1,displ,alt2, stepx, stepy, scale, type);
+      surf = AMIFluid::Func_CreateVectors(alt1.get(),displ.get(),alt2.get(), 
+                                          stepx, stepy, scale, type);
       Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
           FinSi
-     delete alt1;
-     delete displ;
-     delete alt2;
-        }
-        | T_CreateVectors T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr_image T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr T_COMMA expr T_CL_PAR
-        {
+    }
+    | T_CreateVectors T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr_image T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr T_COMMA expr T_CL_PAR
+    {
         /**
         Parameters
           #1 expr_image:        altitudes1
@@ -10782,9 +10764,9 @@ surface:
                 CreateFlatMesh, ElevateMesh, ComputeAltitudes, Altitudes2Position
       **/
 
-      InrImage* alt2  = (InrImage*) driver.im_stack.GetLastImage();
-      InrImage* displ = (InrImage*) driver.im_stack.GetLastImage();
-      InrImage* alt1  = (InrImage*) driver.im_stack.GetLastImage();
+      InrImage::ptr alt2  = InrImage::ptr(driver.im_stack.GetLastImage());
+      InrImage::ptr displ = InrImage::ptr(driver.im_stack.GetLastImage());
+      InrImage::ptr alt1  = InrImage::ptr(driver.im_stack.GetLastImage());
       int stepx   = (int) $9;
       int stepy   = (int) $11;
       float scale = $13;
@@ -10792,16 +10774,15 @@ surface:
       int   style  = (int) $17;
           SurfacePoly* surf;
 
-      surf = AMIFluid::Func_CreateVectors(alt1,displ,alt2, stepx, stepy, scale, type,style);
+      surf = AMIFluid::Func_CreateVectors(alt1.get(),
+          displ.get(),
+          alt2.get(), stepx, stepy, scale, type,style);
       Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
-          FinSi
-     delete alt1;
-     delete displ;
-     delete alt2;
-        }
-        | T_CreateVectors T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr_image T_COMMA expr T_COMMA expr T_COMMA  expr T_CL_PAR
-        {
+      FinSi
+    }
+    | T_CreateVectors T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr_image T_COMMA expr T_COMMA expr T_COMMA  expr T_CL_PAR
+    {
         /**
         Parameters
           #1 expr_image:        altitudes1
@@ -10830,24 +10811,21 @@ surface:
         See Also:
                 CreateFlatMesh, ElevateMesh, ComputeAltitudes, Altitudes2Position
       **/
-      InrImage* alt2  = (InrImage*) driver.im_stack.GetLastImage();
-      InrImage* displ = (InrImage*) driver.im_stack.GetLastImage();
-      InrImage* alt1  = (InrImage*) driver.im_stack.GetLastImage();
+      InrImage::ptr alt2  = InrImage::ptr(driver.im_stack.GetLastImage());
+      InrImage::ptr displ = InrImage::ptr(driver.im_stack.GetLastImage());
+      InrImage::ptr alt1  = InrImage::ptr(driver.im_stack.GetLastImage());
       int stepx   = (int) $9;
       int stepy   = (int) $11;
       float scale = $13;
           SurfacePoly* surf;
 
-      surf = AMIFluid::Func_CreateVectors(alt1,displ,alt2, stepx, stepy, scale);
+      surf = AMIFluid::Func_CreateVectors(alt1.get(),displ.get(),alt2.get(), stepx, stepy, scale);
       Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
-          FinSi
-     delete alt1;
-     delete displ;
-     delete alt2;
-        }
-        | T_CreateVectors T_OP_PAR expr_image  T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr  T_COMMA expr T_CL_PAR
-        {
+      FinSi
+    }
+    | T_CreateVectors T_OP_PAR expr_image  T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr  T_COMMA expr T_CL_PAR
+    {
         /**
         Parameters
           (3) expr_image:        displacement field in voxel coordinates
@@ -10861,7 +10839,7 @@ surface:
         Creates a 3D vector field for visualization.
 
       **/
-      InrImage* displ = (InrImage*) driver.im_stack.GetLastImage();
+      InrImage::ptr displ = InrImage::ptr(driver.im_stack.GetLastImage());
       int stepx   = (int) $5;
       int stepy   = (int) $7;
       int stepz   = (int) $9;
@@ -10869,14 +10847,13 @@ surface:
       int style = (int) $13;
       SurfacePoly* surf;
 
-       surf = AMIFluid::Func_CreateVectors(displ, stepx, stepy, stepz,  scale, style);
+       surf = AMIFluid::Func_CreateVectors(displ.get(), stepx, stepy, stepz,  scale, style);
        Si surf != NULL Alors
          driver.surf_stack.AddSurf(surf);
        FinSi
-       delete displ;
-        }
-        | T_CreateEllipsoids T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr_image T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr T_CL_PAR
-        {
+    }
+    | T_CreateEllipsoids T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr_image T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr T_CL_PAR
+    {
     /**
     Parameters:
         (3)  First  vector field v1
@@ -10904,12 +10881,12 @@ surface:
               v2.get(),
               v3.get(),
               stepx,stepy,stepz,res);
-        Si surf != NULL Alors
+      Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
-          FinSi
-        }
-        | T_CreateEllipsoids T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr_image T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr T_COMMA expr_image T_COMMA  expr_image T_CL_PAR
-        {
+      FinSi
+    }
+    | T_CreateEllipsoids T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr_image T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr T_COMMA expr_image T_COMMA  expr_image T_CL_PAR
+    {
     /**
     Parameters:
         (3)  First  vector field v1
@@ -10925,11 +10902,12 @@ surface:
     Description:
         Create 3D ellipsoids based on 3 vector fields
     **/
-      InrImage* mask    = (InrImage*) driver.im_stack.GetLastImage();
-      InrImage* colors  = (InrImage*) driver.im_stack.GetLastImage();
-      InrImage* v3      = (InrImage*) driver.im_stack.GetLastImage();
-      InrImage* v2      = (InrImage*) driver.im_stack.GetLastImage();
-      InrImage* v1      = (InrImage*) driver.im_stack.GetLastImage();
+      InrImage::ptr mask   = InrImage::ptr(driver.im_stack.GetLastImage());
+      InrImage::ptr colors = InrImage::ptr(driver.im_stack.GetLastImage());
+      InrImage::ptr v3     = InrImage::ptr(driver.im_stack.GetLastImage());
+      InrImage::ptr v2     = InrImage::ptr(driver.im_stack.GetLastImage());
+      InrImage::ptr v1     = InrImage::ptr(driver.im_stack.GetLastImage());
+
       int stepx   = (int) $9;
       int stepy   = (int) $11;
       int stepz   = (int) $13;
@@ -10937,14 +10915,15 @@ surface:
 
           SurfacePoly* surf;
 
-      surf = Func_CreateEllipsoids(v1,v2,v3,stepx,stepy,stepz,res,colors,mask);
-      Si surf != NULL Alors
+      surf = Func_CreateEllipsoids( v1.get(),
+                                    v2.get(),
+                                    v3.get(),stepx,stepy,stepz,res,
+                                    colors.get(),
+                                    mask.get());
+      if (surf != NULL) {
         driver.surf_stack.AddSurf(surf);
-          FinSi
-     delete v1;
-     delete v2;
-     delete v3;
-        }
+      }
+    }
 ;
 
 

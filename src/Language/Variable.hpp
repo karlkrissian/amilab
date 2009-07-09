@@ -18,7 +18,7 @@
 //----------------------------------------------------------------------
 class Variable {
 
-  DEFINE_CLASS(Variable)
+  DEFINE_CLASS(Variable);
 
 private:
   vartype       _type;

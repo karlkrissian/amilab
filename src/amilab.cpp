@@ -226,8 +226,7 @@ bool MyApp::OnInit()
   GB_argv  = argv;
 
   // print the command line as a comment in the cmdhistory
-  // TODO: check for binary path and command line before adding /usr/bin
-//  if (argv[0][0]!='/') {
+  //  if (argv[0][0]!='/') {
     cmd_line = "#!";
     cmd_line += (const char*) wxStandardPaths::Get().GetExecutablePath().mb_str();
     cmd_line += " ";

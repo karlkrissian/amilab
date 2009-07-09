@@ -18,6 +18,7 @@ include_directories (
 
 INCLUDE( ${wxWidgets_USE_FILE})
 
-add_subdirectory ( WrapITK )
-add_subdirectory ( WrapVTK )
+add_subdirectory ( WrapITK     )
+add_subdirectory ( WrapVTK     )
 add_subdirectory ( WrapFilters )
+add_subdirectory ( WrapSystem  )

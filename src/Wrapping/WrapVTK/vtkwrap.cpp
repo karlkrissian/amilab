@@ -1,7 +1,7 @@
 
 #include "vtkwrap.h"
 
-#ifndef _WITHOUT_VTK_
+#ifdef AMI_USE_VTK
 
 // all the needed vtk files
 
@@ -29,7 +29,7 @@
 #include "vtkConvexHull.h"
 #include "vtkAnisoGaussSeidel.h"
 
-#endif // _WITHOUT_VTK_
+#endif // AMI_USE_VTK
 
 extern unsigned char GB_debug;
 
@@ -38,18 +38,18 @@ InrImage* Func_vtkMedianFilter3D( InrImage* im, int kx, int ky, int kz)
 //        ----------------------
 {
 
-#ifndef _WITHOUT_VTK_
+#ifdef AMI_USE_VTK
   
-  vtkImageData*              vtk_image;
+  vtkImageData_ptr           vtk_image;
   vtkImageMedian3D*          vtk_median;
   InrImage*                  res;
 
   // Convert InrImage to vtkImageData
-  vtk_image = (vtkImageData*) (*im);
+  vtk_image = vtk_new<vtkImageData>()((vtkImageData*) (*im));
 
   vtk_median = vtkImageMedian3D::New();
 
-  vtk_median->SetInput(vtk_image);
+  vtk_median->SetInput(vtk_image.get());
   vtk_median->SetKernelSize(kx,ky,kz);
 
   vtk_median->Update();
@@ -62,7 +62,7 @@ InrImage* Func_vtkMedianFilter3D( InrImage* im, int kx, int ky, int kz)
 #else
   fprintf(stderr," VTK not available, you need to compile with VTK ...\n");
   return NULL;
-#endif // _WITHOUT_VTK_
+#endif // AMI_USE_VTK
 
 } // Func_vtkMedianFilter3D()
 
@@ -71,18 +71,18 @@ SurfacePoly* Func_vtkMarchingCubes( InrImage* im, float Threshold)
 //           ---------------------
 {
 
-#ifndef _WITHOUT_VTK_
+#ifdef AMI_USE_VTK
 
   
-  vtkImageData*          vtk_image;
+  vtkImageData_ptr       vtk_image;
   vtkImageMarchingCubes* vtk_mc;
   SurfacePoly*           res;
 
   // Convert InrImage to vtkImageData
-  vtk_image = (vtkImageData*) (*im);
+  vtk_image = vtk_new<vtkImageData>()((vtkImageData*) (*im));
 
   vtk_mc = vtkImageMarchingCubes::New();
-  vtk_mc->SetInput(vtk_image);
+  vtk_mc->SetInput(vtk_image.get());
   vtk_mc->SetValue(0,Threshold);
 
   vtk_mc->ComputeNormalsOff();
@@ -99,7 +99,7 @@ SurfacePoly* Func_vtkMarchingCubes( InrImage* im, float Threshold)
 #else
   fprintf(stderr," VTK not available, you need to compile with VTK ...\n");
   return NULL;
-#endif // _WITHOUT_VTK_
+#endif // AMI_USE_VTK
 
 } // Func_vtkMarchingCubes()
 
@@ -107,7 +107,7 @@ SurfacePoly* Func_vtkMarchingCubes( InrImage* im, float Threshold)
 SurfacePoly* Func_decimate( SurfacePoly* surf, float target_reduction )
 //           -------------
 {
-#ifndef _WITHOUT_VTK_
+#ifdef AMI_USE_VTK
 
   
   vtkPolyData*       vtk_surf;
@@ -149,7 +149,7 @@ SurfacePoly* Func_decimate( SurfacePoly* surf, float target_reduction )
 #else
   fprintf(stderr," VTK not available, you need to compile with VTK ...\n");
   return NULL;
-#endif // _WITHOUT_VTK_
+#endif // AMI_USE_VTK
 
 } // Func_decimate()
 
@@ -159,7 +159,7 @@ SurfacePoly* Func_decimate( SurfacePoly* surf, float target_reduction )
 SurfacePoly* Func_vtkSmooth( SurfacePoly* surf , int numiter)
 //           --------------
 {
-#ifndef _WITHOUT_VTK_
+#ifdef AMI_USE_VTK
   
   vtkPolyData*              vtk_surf;
   vtkSmoothPolyDataFilter*  vtk_smooth;
@@ -192,7 +192,7 @@ SurfacePoly* Func_vtkSmooth( SurfacePoly* surf , int numiter)
 #else
   fprintf(stderr," VTK not available, you need to compile with VTK ...\n");
   return NULL;
-#endif // _WITHOUT_VTK_
+#endif // AMI_USE_VTK
 
 } // Func_vtkSmooth()
 
@@ -201,7 +201,7 @@ SurfacePoly* Func_vtkSmooth( SurfacePoly* surf , int numiter)
 SurfacePoly* Func_vtkWindowedSinc( SurfacePoly* surf , int numiter)
 //           --------------
 {
-#ifndef _WITHOUT_VTK_
+#ifdef AMI_USE_VTK
   
   vtkPolyData*              vtk_surf;
   vtkWindowedSincPolyDataFilter*  vtk_smooth;
@@ -234,7 +234,7 @@ SurfacePoly* Func_vtkWindowedSinc( SurfacePoly* surf , int numiter)
 #else
   fprintf(stderr," VTK not available, you need to compile with VTK ...\n");
   return NULL;
-#endif // _WITHOUT_VTK_
+#endif // AMI_USE_VTK
 
 } // Func_vtkWindowedSinc()
 
@@ -243,7 +243,7 @@ SurfacePoly* Func_vtkWindowedSinc( SurfacePoly* surf , int numiter)
 void Func_ApplyvtkSmooth( SurfacePoly* surf , int numiter)
 //   -------------------
 {
-#ifndef _WITHOUT_VTK_
+#ifdef AMI_USE_VTK
 
   
   vtkPolyData*              vtk_surf;
@@ -285,7 +285,7 @@ void Func_ApplyvtkSmooth( SurfacePoly* surf , int numiter)
   vtk_res   ->Delete();
 #else
   fprintf(stderr," VTK not available, you need to compile with VTK ...\n");
-#endif // _WITHOUT_VTK_
+#endif // AMI_USE_VTK
 
 } // Func_ApplyvtkSmooth()
 
@@ -294,15 +294,14 @@ void Func_ApplyvtkSmooth( SurfacePoly* surf , int numiter)
 InrImage* Func_vtkDist( InrImage* im)
 //        ------------
 {
-#ifndef _WITHOUT_VTK_
+#ifdef AMI_USE_VTK
 
-  
-  vtkImageData*              vtk_image;
+  vtkImageData_ptr           vtk_image;
   vtkImageCityBlockDistance* vtk_dist;
   InrImage*                  res;
 
   // Convert InrImage to vtkImageData
-  vtk_image = (vtkImageData*) (*im);
+  vtk_image = vtk_new<vtkImageData>()((vtkImageData*) (*im));
 
   vtk_dist = vtkImageCityBlockDistance::New();
 
@@ -311,7 +310,7 @@ InrImage* Func_vtkDist( InrImage* im)
     if (im->_ty>1)  vtk_dist->SetDimensionality(2);
     else            vtk_dist->SetDimensionality(1);
 
-  vtk_dist->SetInput(vtk_image);
+  vtk_dist->SetInput(vtk_image.get());
 
   vtk_dist->Update();
 
@@ -325,7 +324,7 @@ InrImage* Func_vtkDist( InrImage* im)
 #else
   fprintf(stderr," VTK not available, you need to compile with VTK ...\n");
   return NULL;
-#endif // _WITHOUT_VTK_
+#endif // AMI_USE_VTK
 
 } // Func_vtkDist()
 
@@ -333,19 +332,18 @@ InrImage* Func_vtkDist( InrImage* im)
 InrImage* Func_vtkPropDanielsson( InrImage* im, float dmin, float dmax)
 //        ------------
 {
-#ifndef _WITHOUT_VTK_
+#ifdef AMI_USE_VTK
 
-  
-  vtkImageData*              vtk_image;
+  vtkImageData_ptr           vtk_image;
   vtkImagePropagateDist*     vtk_prop;
   InrImage*                  res;
 
   // Convert InrImage to vtkImageData
 
-  vtk_image = (vtkImageData*) (*im);
+  vtk_image = vtk_new<vtkImageData>()((vtkImageData*) (*im));
   vtk_prop  = vtkImagePropagateDist::New();
 
-  vtk_prop->SetInput(   vtk_image);
+  vtk_prop->SetInput(   vtk_image.get());
   vtk_prop->Setmindist( dmin);
   vtk_prop->Setmaxdist( dmax);
 
@@ -361,7 +359,7 @@ InrImage* Func_vtkPropDanielsson( InrImage* im, float dmin, float dmax)
 #else
   fprintf(stderr," VTK not available, you need to compile with VTK ...\n");
   return NULL;
-#endif // _WITHOUT_VTK_
+#endif // AMI_USE_VTK
 
 } // Func_vtkPropDanielsson()
 
@@ -372,18 +370,18 @@ InrImage* Func_vtkPropDaniel2( InrImage* im,
                                //        ------------
                                float threshold, float dmin, float dmax)
 {
-#ifndef _WITHOUT_VTK_
+#ifdef AMI_USE_VTK
 
-  vtkImageData*               vtk_image;
+  vtkImageData_ptr            vtk_image;
   vtkImagePropagateDist2*     vtk_prop;
   InrImage*                   res;
 
   // Convert InrImage to vtkImageData
 
-  vtk_image = (vtkImageData*) (*im);
+  vtk_image = vtk_new<vtkImageData>()((vtkImageData*) (*im));
   vtk_prop  = vtkImagePropagateDist2::New();
 
-  vtk_prop->SetInput(   vtk_image);
+  vtk_prop->SetInput(   vtk_image.get());
   vtk_prop->Setthreshold( threshold);
   vtk_prop->Setmindist(   dmin);
   vtk_prop->Setmaxdist(   dmax);
@@ -401,7 +399,7 @@ InrImage* Func_vtkPropDaniel2( InrImage* im,
 #else
   fprintf(stderr," VTK not available, you need to compile with VTK ...\n");
   return NULL;
-#endif // _WITHOUT_VTK_
+#endif // AMI_USE_VTK
 
 } // Func_vtkPropDaniel2()
 
@@ -410,16 +408,16 @@ InrImage* Func_vtkPropDaniel2( InrImage* im,
 //---------------------------------------------------------------------------
 InrImage*    Func_vtkConvexHull( InrImage* im, int angles, float resolution)
 {
-#ifndef _WITHOUT_VTK_
+#ifdef AMI_USE_VTK
 
-  vtkImageData*     vtk_image;
+  vtkImageData_ptr  vtk_image;
   vtkConvexHull*    vtk_CH;
   InrImage*         res;
 
   // Convert InrImage to vtkImageData
-  vtk_image = (vtkImageData*) (*im);
+  vtk_image = vtk_new<vtkImageData>()((vtkImageData*) (*im));
   vtk_CH = vtkConvexHull::New();
-  vtk_CH->SetInput(vtk_image);
+  vtk_CH->SetInput(vtk_image.get());
   vtk_CH->SetAngles(angles);
   vtk_CH->SetResolution(resolution);
   vtk_CH->Update();
@@ -431,7 +429,7 @@ InrImage*    Func_vtkConvexHull( InrImage* im, int angles, float resolution)
 #else
   fprintf(stderr," VTK not available, you need to compile with VTK ...\n");
   return NULL;
-#endif // _WITHOUT_VTK_
+#endif // AMI_USE_VTK
 
 } // Func_vtkConvexHull()
 
@@ -440,9 +438,9 @@ InrImage*    Func_vtkConvexHull( InrImage* im, int angles, float resolution)
 //---------------------------------------------------------------------------
 InrImage*    Func_vtkIsoContourDist( InrImage* im, float th)
 {
-#ifndef _WITHOUT_VTK_
+#ifdef AMI_USE_VTK
   
-  vtkImageData*              vtk_image;
+  vtkImageData_ptr           vtk_image;
   vtkImageIsoContourDist*    vtk_isodist;
   InrImage*                  res;
 
@@ -450,12 +448,12 @@ InrImage*    Func_vtkIsoContourDist( InrImage* im, float th)
 
   fprintf(stderr,"fonctions.c:Func_vtkIsoContourDist() \t conversion vtkImageData \n");
   // Convert InrImage to vtkImageData
-  vtk_image = (vtkImageData*) (*im);
+  vtk_image = vtk_new<vtkImageData>()((vtkImageData*) (*im));
 
   fprintf(stderr,"fonctions.c:Func_vtkIsoContourDist() \t conversion vtkImageIsoContourDist \n");
   vtk_isodist = vtkImageIsoContourDist::New();
 
-  vtk_isodist->SetInput(     vtk_image);
+  vtk_isodist->SetInput(     vtk_image.get());
   vtk_isodist->Setthreshold( th);
 
   vtk_isodist->Update();
@@ -472,7 +470,7 @@ InrImage*    Func_vtkIsoContourDist( InrImage* im, float th)
 #else
   fprintf(stderr," VTK not available, you need to compile with VTK ...\n");
   return NULL;
-#endif // _WITHOUT_VTK_
+#endif // AMI_USE_VTK
 
 } // Func_vtkIsoContourDist()
 
@@ -484,22 +482,22 @@ InrImage*    Func_vtkIsoContourDist( InrImage* im, float th)
 InrImage*    Func_vtkFastMarching( InrImage* input, InrImage* init,
                                    float maxtime, int inittype)
 {
-#ifndef _WITHOUT_VTK_
+#ifdef AMI_USE_VTK
   
-  vtkImageData*              vtk_input;
-  vtkImageData*              vtk_init;
+  vtkImageData_ptr           vtk_input;
+  vtkImageData_ptr           vtk_init;
   vtkLevelSetFastMarching*   vtk_FM;
   InrImage*                  res;
 
   // Convert InrImage to vtkImageData
-  vtk_input = (vtkImageData*) (*input);
-  vtk_init  = (vtkImageData*) (*init);
+  vtk_input = vtk_new<vtkImageData>()((vtkImageData*) (*input));
+  vtk_init  = vtk_new<vtkImageData>()((vtkImageData*) (*init));
 
   vtk_FM = vtkLevelSetFastMarching::New();
 
-  vtk_FM->SetInput(     vtk_input);
+  vtk_FM->SetInput(     vtk_input.get());
 
-  vtk_FM->Setinitimage( vtk_init);
+  vtk_FM->Setinitimage( vtk_init.get());
   // if we set initiso to a different value than -1E10 (default value)
   // the it will call InitIsoSurf which recomputes the distance close to the surface
   // otherwise, it call InitWithImage which is much faster, and
@@ -530,7 +528,7 @@ InrImage*    Func_vtkFastMarching( InrImage* input, InrImage* init,
 #else
   fprintf(stderr," VTK not available, you need to compile with VTK ...\n");
   return NULL;
-#endif // _WITHOUT_VTK_
+#endif // AMI_USE_VTK
 
 } // Func_vtkFastMarching()
 
@@ -542,7 +540,7 @@ InrImage*    Func_vtkFastMarchingTarget(  InrImage* input, InrImage* init,
                                     float maxtime, 
                                     int x, int y, int z)
 {
-#ifndef _WITHOUT_VTK_
+#ifdef AMI_USE_VTK
   
   vtkImageData_ptr           vtk_input;
   vtkImageData_ptr           vtk_init;
@@ -593,7 +591,7 @@ InrImage*    Func_vtkFastMarchingTarget(  InrImage* input, InrImage* init,
 #else
   fprintf(stderr," VTK not available, you need to compile with VTK ...\n");
   return NULL;
-#endif // _WITHOUT_VTK_
+#endif // AMI_USE_VTK
 
 } // Func_vtkFastMarchingTarget()
 
@@ -604,7 +602,7 @@ InrImage*  Func_vtkFastMarching(  InrImage* input, InrImage* init,
                                   int inittype,
                                   int evol_scheme)
 {
-#ifndef _WITHOUT_VTK_
+#ifdef AMI_USE_VTK
   
   vtkImageData_ptr           vtk_input;
   vtkImageData_ptr           vtk_init;
@@ -648,7 +646,7 @@ InrImage*  Func_vtkFastMarching(  InrImage* input, InrImage* init,
 #else
   fprintf(stderr," VTK not available, you need to compile with VTK ...\n");
   return NULL;
-#endif // _WITHOUT_VTK_
+#endif // AMI_USE_VTK
 
 } // Func_vtkFastMarching()
 
@@ -661,7 +659,7 @@ InrImage*  Func_vtkFastMarching(
               float mean, float sd, float maxtime, 
               int inittype)
 {
-#ifndef _WITHOUT_VTK_
+#ifdef AMI_USE_VTK
   vtkImageData_ptr           vtk_input;
   vtkImageData_ptr           vtk_init;
   vtkImageData_ptr           vtk_track;
@@ -709,7 +707,7 @@ InrImage*  Func_vtkFastMarching(
 #else
   fprintf(stderr," VTK not available, you need to compile with VTK ...\n");
   return NULL;
-#endif // _WITHOUT_VTK_
+#endif // AMI_USE_VTK
 
 } // Func_vtkFastMarching()
 
@@ -721,7 +719,7 @@ InrImage*  Func_vtkFastMarching(
               float maxtime,
               int inittype)
 {
-#ifndef _WITHOUT_VTK_
+#ifdef AMI_USE_VTK
   vtkImageData_ptr           vtk_input;
   vtkImageData_ptr           vtk_init;
   vtkImageData_ptr           vtk_track;
@@ -769,7 +767,7 @@ InrImage*  Func_vtkFastMarching(
 #else
   fprintf(stderr," VTK not available, you need to compile with VTK ...\n");
   return NULL;
-#endif // _WITHOUT_VTK_
+#endif // AMI_USE_VTK
 
 } // Func_vtkFastMarching()
 
@@ -777,7 +775,7 @@ InrImage*  Func_vtkFastMarching(
 //---------------------------------------------------------------------------
 InrImage*    Func_vtkSignedBorgefors(InrImage* im, float dmax)
 {
-#ifndef _WITHOUT_VTK_
+#ifdef AMI_USE_VTK
   
   vtkImageData*              vtk_image;
   vtkImageFastSignedChamfer* vtk_SDT;
@@ -810,7 +808,7 @@ InrImage*    Func_vtkSignedBorgefors(InrImage* im, float dmax)
 #else
   fprintf(stderr," VTK not available, you need to compile with VTK ...\n");
   return NULL;
-#endif // _WITHOUT_VTK_
+#endif // AMI_USE_VTK
 
 } // Func_vtkSignedBorgefors()
 
@@ -819,7 +817,7 @@ InrImage*    Func_vtkSignedBorgefors(InrImage* im, float dmax)
 //---------------------------------------------------------------------------
 InrImage*    Func_vtkSignedFMDist(InrImage* im, float dmax)
 {
-#ifndef _WITHOUT_VTK_
+#ifdef AMI_USE_VTK
   
   vtkImageData*              vtk_image;
   vtkLevelSetFastMarching*           vtk_FM;
@@ -853,7 +851,7 @@ InrImage*    Func_vtkSignedFMDist(InrImage* im, float dmax)
 #else
   fprintf(stderr," VTK not available, you need to compile with VTK ...\n");
   return NULL;
-#endif // _WITHOUT_VTK_
+#endif // AMI_USE_VTK
 
 } // Func_vtkSignedFMDist()
 
@@ -861,7 +859,7 @@ InrImage*    Func_vtkSignedFMDist(InrImage* im, float dmax)
 //---------------------------------------------------------------------------
 InrImage*    Func_vtkAnisoGS(   InrImage* in, float sigma, float k, float beta, int nb_iter, int nb_threads)
 {
-#ifndef _WITHOUT_VTK_
+#ifdef AMI_USE_VTK
 
   cerr << "deprecated: use import_vtk and corresponding function" << endl;
   return NULL;
@@ -895,14 +893,14 @@ InrImage*    Func_vtkAnisoGS(   InrImage* in, float sigma, float k, float beta, 
 #else
   fprintf(stderr," VTK not available, you need to compile with VTK ...\n");
   return NULL;
-#endif // _WITHOUT_VTK_
+#endif // AMI_USE_VTK
 
 } // Func_vtkAnisoGS()
 
 
 InrImage*    Func_vtkDicomRead( char* directoryname)
 {
-#ifndef _WITHOUT_VTK_
+#ifdef AMI_USE_VTK
   InrImage* res;
   vtkDICOMImageReader* reader;
 
@@ -916,12 +914,12 @@ InrImage*    Func_vtkDicomRead( char* directoryname)
 #else
   fprintf(stderr," VTK not available, you need to compile with VTK ...\n");
   return NULL;
-#endif // _WITHOUT_VTK_
+#endif // AMI_USE_VTK
 }
 
 InrImage*    Func_vtkMINCRead( char* filename)
 {
-#ifndef _WITHOUT_VTK_
+#ifdef AMI_USE_VTK
   InrImage* res;
   vtkMINCImageReader* reader;
 
@@ -936,7 +934,7 @@ InrImage*    Func_vtkMINCRead( char* filename)
 #else
   fprintf(stderr," VTK  not available , you need to compile with VTK...\n");
   return NULL;
-#endif // _WITHOUT_VTK_
+#endif // AMI_USE_VTK
 
 }
 

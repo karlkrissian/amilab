@@ -57,8 +57,8 @@ InrImage*     Func_localmean( InrImage* im, int size)
     Pour(y1,y-size,y+size)
     Pour(x1,x-size,x+size)
       if (im->CoordOK(x1,y1,z1)) {
-	mean += (*im)(x1,y1,z1);
-	num_values++;
+	      mean += (*im)(x1,y1,z1);
+	      num_values++;
       }
     FinPour
     FinPour

@@ -16,6 +16,9 @@ if (!exists(SP_defined)) {
     # speed image name
     SP_speed_name = ""
 
+    # save the Fast Marching image
+    SP_save_FM = UCHAR(0)
+
     SP_epsilon = 0.02
     SP_maxcost = 1000
   
@@ -63,10 +66,10 @@ if (!exists(SP_defined)) {
     SP_load_input
     show SP_input
     if (exists(SP_input_draw)) {
-      SP_SetStartPoint(
+      SP_SetStartPoint( \
                         SP_input_draw.GetXPos, \
                         SP_input_draw.GetYPos, \
-                        SP_input_draw.GetZPos, \
+                        SP_input_draw.GetZPos \
                       )
     }
   }
@@ -101,10 +104,10 @@ if (!exists(SP_defined)) {
     SP_load_input
     show SP_input
     if (exists(SP_input_draw)) {
-      SP_SetEndPoint(
+      SP_SetEndPoint( \
                         SP_input_draw.GetXPos, \
                         SP_input_draw.GetYPos, \
-                        SP_input_draw.GetZPos, \
+                        SP_input_draw.GetZPos \
                       )
     }
     global::SP_Px2 = SP_input.trx + SP_px2*SP_input.vx
@@ -153,8 +156,8 @@ if (!exists(SP_defined)) {
   proc SP_Close() \
   {
     SP_win.Hide
-    del "SP_*_draw"
-    del "SP_*"
+    delvars "SP_*_draw"
+    delvars "SP_*"
   }
   
   
@@ -196,6 +199,10 @@ if (!exists(SP_defined)) {
                           SP_px1+0.5,SP_py1+0.5,SP_pz1+0.5)
     res.info
   
+    if (SP_save_FM) {
+      global::SP_FM = res
+    }
+
     printn "FMT done"
     if (exists(global::SP_path)) { del global::SP_path; }
     global::SP_path = PathFromVectField( res,\
@@ -223,6 +230,8 @@ if (!exists(SP_defined)) {
         SP_win.AddButton("Set End Point",  SP_EndPoint)
       SP_win.EndBox
     
+      SP_win.AddBoolean(SP_save_FM)
+
       SP_win.AddFloat(SP_epsilon,0.01,10)
       SP_win.AddFloat(SP_maxcost,1,100000)
   

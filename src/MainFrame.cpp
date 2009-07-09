@@ -4,7 +4,7 @@
 // Description:
 //
 //
-// Author:  <>, (C) 2008
+// Author:  <Karl Krissian>, (C) 2008
 //
 // Copyright: See COPYING file that comes with this distribution
 //
@@ -1002,6 +1002,7 @@ void MainFrame::UpdateVarTree()
 
   // loop vars
   variables = Vars.SearchCompletions(GetwxStr(""));
+  unsigned long total_image_size = 0;
 
   for(int i=0;i<(int)variables->GetCount();i++) {
     //cout << "set item variable " << i << endl;
@@ -1014,14 +1015,16 @@ void MainFrame::UpdateVarTree()
       if (var->Type() == type_image) {
         // create text with image information
         InrImage::ptr im = *((InrImage::ptr*)var->Pointer());
-        std::string text = (boost::format("%1% %15t %2% %25t %3%x%4%x%5%")
+        std::string text = (boost::format("%1% %20t %2% %35t %3%x%4%x%5%  %55t %|6$+5| Mb")
                             % var->Name()
                             % im->FormatName()
                             % im->DimX()
                             % im->DimY()
-                            % im->DimZ()).str();
+                            % im->DimZ()
+                            % (im->GetDataSize()/1000000)).str();
         //cout << text << endl;
         _var_tree->AppendItem(_vartree_images,wxString(text.c_str(), wxConvUTF8));
+        total_image_size += im->GetDataSize();
       } else
       if (var->Type() == type_surface) {
         SurfacePoly::ptr surf = (*(SurfacePoly::ptr*)var->Pointer());
@@ -1052,7 +1055,15 @@ void MainFrame::UpdateVarTree()
       } else
         _var_tree->AppendItem(_vartree_others,(*variables)[i]);
     }
+  } // end for
+
+  // Display the total size of images in Mb
+  if (total_image_size != 0) {
+    std::string text = (boost::format(" %45t total = %55t %|1$+5| Mb")
+                        % (total_image_size/1000000)).str();
+    _var_tree->AppendItem(_vartree_images,wxString(text.c_str(), wxConvUTF8));
   }
+
   _var_list->Show();
 }
 

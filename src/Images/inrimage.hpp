@@ -774,6 +774,11 @@ public:
 
     long Size() const { return _taille; }
 
+    unsigned long  GetDataSize() const 
+    {
+      return _amimage->GetDataSize(); 
+    }
+
     float VoxSizeX() const { return _size_x; }
     float VoxSizeY() const { return _size_y; }
     float VoxSizeZ() const { return _size_z; }

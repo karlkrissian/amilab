@@ -26,8 +26,8 @@ proc RML_init() {
 proc RML_Close() \
 {
   RML_win.Hide
-  del "RML_*_draw"
-  del "RML_*"
+  delvars "RML_*_draw"
+  delvars "RML_*"
 }
 
 

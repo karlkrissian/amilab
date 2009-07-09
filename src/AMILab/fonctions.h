@@ -53,7 +53,7 @@
 //#include "LevelSetsCURVES.h"
 #include "EDPmorpho.h"
 #include "Rudin.h"
-#include "localstats.h"
+//#include "localstats.h"
 #include "FluidProject.h"
 #include "VectorImage2StructuredGrid.h"
 #include "InterpolateTransform.h"

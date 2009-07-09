@@ -11,6 +11,7 @@
 //
 
 #include "fonctions.h"
+#include "localstats.h"
 #include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include <pthread.h>

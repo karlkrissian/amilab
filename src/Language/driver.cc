@@ -252,6 +252,7 @@ bool Driver::parse_script(  const char* filename)
 
   if (!newname.IsFileReadable()) 
   {
+    cout << " current_filename.GetPath() = " << current_filename.GetPath().mb_str() << endl;
     // try in the directory of the runnning script
     newname.Assign(
             current_filename.GetPath() 

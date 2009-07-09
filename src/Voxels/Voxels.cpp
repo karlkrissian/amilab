@@ -426,8 +426,8 @@ void CreateMIP(InrImage::ptr im,
 // glBlendEquation(GL_MAX_EXT);
   #ifndef WIN32
     #if (defined(GL_EXT_texture3D))&&(!defined(__APPLE__))
-      PFNGLBLENDEQUATIONPROC glBlendEquation;
-      glBlendEquation = (PFNGLBLENDEQUATIONPROC) glXGetProcAddress((const GLubyte*)"glBlendEquation");
+      //PFNGLBLENDEQUATIONPROC glBlendEquation;
+      //glBlendEquation = (PFNGLBLENDEQUATIONPROC) glXGetProcAddress((const GLubyte*)"glBlendEquation");
       glBlendEquation ( GL_MAX );
     #else
       glBlendEquation ( GL_MAX );
@@ -498,7 +498,7 @@ void CreateMIP(InrImage::ptr im,
             nb_quads++;
             if ( ( nb_quads % 10000 ) ==0 )
               printf ( "nb points treated %d \n",nb_quads );
-          FinSi
+            }
           }
 
           // y constant

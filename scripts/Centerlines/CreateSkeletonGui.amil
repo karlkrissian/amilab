@@ -126,8 +126,8 @@ if (!exists(Skel_defined)) {
   proc Skel_Close() \
   {
     Skel_win.Hide
-    del "Skel_*_draw"
-    del "Skel_*"
+    delvars "Skel_*_draw"
+    delvars "Skel_*"
   }
 
   #--------------------------------------------------

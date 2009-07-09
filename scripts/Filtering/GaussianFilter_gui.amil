@@ -14,8 +14,8 @@ proc GF_Init( ) {
 
 proc GF_Close() {
   GF_win.Hide
-  del "GF_*_draw"
-  del "GF_*"
+  delvars "GF_*_draw"
+  delvars "GF_*"
 }
 
 proc GF_load_input() {

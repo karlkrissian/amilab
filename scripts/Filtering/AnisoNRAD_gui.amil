@@ -53,8 +53,8 @@ if (exists(NRAD_Init)) {
   #------------------------------------
   proc NRAD_Close() {
     NRAD_win.Hide
-    del "NRAD_*_draw"
-    del "NRAD_*"
+    delvars "NRAD_*_draw"
+    delvars "NRAD_*"
   }
   
   #------------------------------------

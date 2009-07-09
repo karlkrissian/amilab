@@ -184,8 +184,8 @@ if (!exists(LS_defined)) {
   proc LS_Close() \
   {
     LS_win.Hide
-    del "LS_*_draw"
-    del "LS_*"
+    delvars "LS_*_draw"
+    delvars "LS_*"
   }
 
   //---------------------------------------------------
