@@ -1,5 +1,5 @@
 /* XPM */
-static char * amilab_logo_new_32x32_alpha_xpm[] = {
+static const char * amilab_logo_new_32x32_alpha_xpm[] = {
 "32 32 539 2",
 "  	c None",
 ". 	c #35E335",
