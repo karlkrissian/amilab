@@ -13,7 +13,7 @@ AllowNoIcons=True
 AlwaysUsePersonalGroup=True
 UsePreviousGroup=True
 VersionInfoVersion=1.1
-UninstallDisplayIcon=K:\projects\Sourceforge\amilab\trunk\Pixmaps\amilab_logo_new.ico,1
+UninstallDisplayIcon=K:\projects\Sourceforge\amilab\trunk\Pixmaps\amilab_logo_new_64x64_alpha.ico,1
 UninstallDisplayName=uninstall AMILab
 UninstallFilesDir={group}
 SolidCompression=True
@@ -33,9 +33,8 @@ Name: {userprograms}\AMILab; Permissions: users-full; Flags: uninsalwaysuninstal
 Source: share\amilab-${version}\*; DestDir: {app}\share\amilab-${version}; Flags: createallsubdirs recursesubdirs
 Source: bin\*.dll; DestDir: {app}\bin; Permissions: everyone-readexec
 Source: bin\amilab_${version}_${buildtype}.exe; DestDir: {app}\bin; Permissions: everyone-readexec; Flags: 32bit nocompression; MinVersion: 4.1.1998,4.0.1381
-Source: K:\projects\Sourceforge\amilab\trunk\Pixmaps\amilab_logo_new.ico; DestDir: {app}\Pixmaps
-Source: K:\projects\Sourceforge\amilab\trunk\Pixmaps\amilab_logo_new.xpm; DestDir: {app}\Pixmaps; Permissions: users-full
+Source: K:\projects\Sourceforge\amilab\trunk\Pixmaps\amilab_logo_new_64x64_alpha.ico; DestDir: {app}\Pixmaps
 
 [Icons]
-Name: {userdesktop}\AMILab; Filename: {app}\bin\amilab_${version}_${buildtype}.exe; WorkingDir: {app}; IconFilename: {app}\Pixmaps\amilab_logo_new.ico
-Name: {group}\AMILab; Filename: {app}\bin\amilab_${version}_${buildtype}.exe; WorkingDir: {app}; IconFilename: {app}\Pixmaps\amilab_logo_new.ico
+Name: {userdesktop}\AMILab; Filename: {app}\bin\amilab_${version}_${buildtype}.exe; WorkingDir: {app}; IconFilename: {app}\Pixmaps\amilab_logo_new_64x64_alpha.ico
+Name: {group}\AMILab; Filename: {app}\bin\amilab_${version}_${buildtype}.exe; WorkingDir: {app}; IconFilename: {app}\Pixmaps\amilab_logo_new_64x64_alpha.ico
