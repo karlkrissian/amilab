@@ -33,6 +33,10 @@ extern unsigned char GB_debug;
 #include "gl_fill.xpm"
 #include "gl_fill_line.xpm"
 
+#ifdef WIN32
+  #include "amilab_logo_new_32x32_alpha.xpm"
+#endif
+
 
 /*
 // Pixmaps for setting 3D view
@@ -152,6 +156,11 @@ Viewer3D::Viewer3D(wxFrame *frame, const wxString& title, const wxPoint& pos,
     const wxSize& size, long style)
     : wxFrame(frame, wxID_ANY, title, pos, size, style )
 {
+
+  #ifdef WIN32
+      this->SetIcon(wxIcon(amilab_logo_new_32x32_alpha_xpm));
+  #endif
+
   m_canvas = NULL;
   CloseFunction = CloseData = NULL;
 

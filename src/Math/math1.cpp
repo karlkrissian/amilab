@@ -149,7 +149,8 @@ int comb( int p, int n)
  * fonction valeur absolue
  */
 
-#if not(defined(_MSC_VER) || defined(__MINGW32__))
+#if not(defined(_MSC_VER))
+// || defined(__MINGW32__))
 float abs( float r)
 {
   if (r < 0)  return -r;

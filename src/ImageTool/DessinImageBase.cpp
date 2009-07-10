@@ -197,7 +197,7 @@ void DessinImageBase :: CreeImage( int id_image, unsigned int largeur, unsigned 
 
 
 //----------------------------------------------------------------
-EnLigne void DessinImageBase::FastImageRectangle(
+inline void DessinImageBase::FastImageRectangle(
 //                            ------------------
                           rgb_color* image_data,
                           const int& width,
@@ -238,6 +238,40 @@ EnLigne void DessinImageBase::FastImageRectangle(
         for (x = x_min; x < x_max; x++,data++)
             *data = color;
     }
+
+  #ifdef _SAFETY_CHECK_
+  } else {
+    cerr << "FastImageRectangle() no drawing context!" << endl;
+  }
+  #endif
+
+
+} // FastImageRectangle()
+
+
+//----------------------------------------------------------------
+inline void DessinImageBase::FastImagePoint(
+//                            ------------------
+                          rgb_color* image_data,
+                          const int& width,
+                          const int& x, const int& y,
+                          const ClasseCouleur& intensite)
+{
+  #ifdef _SAFETY_CHECK_
+  if (_current_slice.use_count()) {
+    if (GB_debug)
+      cerr  << "drawing rectangle at "
+            << format("(%d,%d) size (%d x %d) ")
+                % x_min % y_min % (x_max-x_min) % (y_max-y_min)
+            << format(" color %d %d %d ")
+                % (int) intensite.Red()
+                % (int) intensite.Green()
+                % (int) intensite.Blue()
+            << endl;
+  #endif
+
+    // TODO: use wxImage ?
+    *(image_data + y*width + x) = intensite.GetCompactColor();
 
   #ifdef _SAFETY_CHECK_
   } else {
@@ -2096,7 +2130,12 @@ void DessinImageBase::DrawSlice( int slice_id )
   displ_dimx = zdx*vsx;
   displ_dimy = zdy*vsy; // full display size
 
-  CreeImage( slice_id, (int) (displ_dimx+1E-4), (int) (displ_dimy+1E-4));
+    
+  #ifdef AMI_BUILD_Debug
+    CLASS_MESSAGE(boost::format("displ_dimx = %1%, displ_dimy = %2%") % displ_dimx % displ_dimy );
+  #endif
+
+  CreeImage( slice_id, (int) (displ_dimx+1-1E-4), (int) (displ_dimy+1-1E-4));
 
 
   FixeImageCourante( slice_id);
@@ -2106,8 +2145,7 @@ void DessinImageBase::DrawSlice( int slice_id )
 
 //  _current_slice->SetPen(*wxTRANSPARENT_PEN);
   if (!_image) {
-    cerr << "DessinImageBase::DessinePlanZ( )"
-        << "\t image not allocated !" << endl;
+    CLASS_ERROR(" image not allocated !");
     return;
   }
 
@@ -2124,19 +2162,34 @@ void DessinImageBase::DrawSlice( int slice_id )
   image->InitBuffer( );
   InitLookUpTable();
 
+  // compute increments in X an Y to be sure to move to next pixel
+  short stepx = floor(macro_max(1, 1.0/vsx));
+  short stepy = floor(macro_max(1, 1.0/vsy));
+  float nvsx    = vsx*stepx;
+  float nvsy    = vsy*stepy;
+  int   nincr_x = stepx*incr_x;
+  int   maxy    = cmax_y-stepy+1; // max value in Y where we can draw using stepy
+  int   maxx    = cmax_x-stepx+1; // max value in X where we can draw using stepx
+
+  CLASS_MESSAGE( boost::format(" vsx %1% vsy %2%") % vsx % vsy );
+  CLASS_MESSAGE( boost::format(" stepx %1% stepy %2%") % stepx % stepy );
+
+  // if we have to step several image pixels, then each displayed pixel is drawn separately
+  bool  pointlevel = (stepx>1)&&(stepy>1);
+
   py = 0;
-  for( y = cmin_y; y  <= cmax_y; y++)
+  for( y = cmin_y; y  <= maxy; y+=stepy)
   {
-    py1=py+vsy;
+    py1=py+nvsy;
     buf_pos[cix] = cmin_x;
     buf_pos[ciy] = y;
     //if (_dessine_masque)
     //  _image_masque->BufferPos( buf_pos[0], buf_pos[1], buf_pos[2]);
     image->BufferPos( buf_pos[0], buf_pos[1], buf_pos[2]);
     px = 0;
-    for( x = cmin_x; x  <= cmax_x; x++ )
+    for( x = cmin_x; x  <= maxx; x+=stepx )
     {
-      px1=px+vsx; // add epsilon ??
+      px1=px+nvsx; // add epsilon ??
 
       Si (image_format != WT_RGB)&&
          (image_format != WT_RGBA)
@@ -2151,14 +2204,48 @@ void DessinImageBase::DrawSlice( int slice_id )
                                );
       FinSi
 
-      FastImageRectangle( image_data, image_width,
-                          (int) px,
-                          (int) py,
-                          (int) px1,
-                          (int) py1,
-                          couleur);
+      if (pointlevel) {
 
-      image->IncBuffer(incr_x);
+        #ifdef AMI_BUILD_Debug
+          // check for image limits
+          if (  (((int)px)>=image_width)||
+                (((int)py)>=_current_slice->GetHeight()) ) 
+          {
+            CLASS_ERROR( boost::format(" cmin_{x,y} cmax_{x,y} %1% %2%, %3% %4%")
+                          % cmin_x % cmin_y % cmax_x % cmax_y );
+            CLASS_ERROR( boost::format(" px py = %1%, %2% --> %3%, %4% size is %3%x%4%")
+                          % px % py 
+                          % ((int)px) % ((int)py) 
+                          % image_width % _current_slice->GetHeight() );
+          } else
+        #endif
+
+        FastImagePoint( image_data, image_width,
+                            (int) px,
+                            (int) py,
+                            couleur);
+      } else {
+
+        #ifdef AMI_BUILD_Debug
+          // check for image limits
+          if (  (((int)px1)>image_width)||
+                (((int)py1)>_current_slice->GetHeight()) ) 
+          {
+            CLASS_ERROR( boost::format(" cmin_{x,y} cmax_{x,y} %1% %2%, %3% %4%")
+                          % cmin_x % cmin_y % cmax_x % cmax_y );
+            CLASS_ERROR( boost::format(" px1, py1 = %1%, %2% size is %3%x%4%")
+                          % ((int)px1) % ((int)py1) % image_width % _current_slice->GetHeight() );
+          } else
+        #endif
+
+        FastImageRectangle( image_data, image_width,
+                            (int) px,
+                            (int) py,
+                            (int) px1,
+                            (int) py1,
+                            couleur);
+      }
+      image->IncBuffer(nincr_x);
       px = px1;
     } // x
     py = py1;

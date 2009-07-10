@@ -577,8 +577,8 @@ void DessinImage::InitVoxelSize()
           Si avail_width <1 AlorsFait avail_width  = 10;
           Si avail_height<1 AlorsFait avail_height = 10;
 
-          _size_x = (float) avail_width  / dim_x;
-          _size_y = (float) avail_height / dim_y;
+          _size_x = (float) avail_width  / (1.0*dim_x);
+          _size_y = (float) avail_height / (1.0*dim_y);
           _size_z = _size_x;
         FinValeur
 
@@ -656,6 +656,12 @@ void DessinImage::InitVoxelSize()
           Sinon
             _size_x = _size_y = _size_z = val2;
           FinSi
+          #ifdef AMI_BUILD_Debug
+            CLASS_MESSAGE( boost::format(" avail_width, avail_height = %1% %2% size: %3% %4% %5% ")
+                            % avail_width % avail_height 
+                            % _size_x % _size_y % _size_z )
+          #endif
+
         FinValeur
 
       FinSelonQue // Param._type_coupe
@@ -678,17 +684,17 @@ void DessinImage::InitVoxelSize()
   FinSi
 
   Si _size_x <= 0 Alors
-    fprintf(stderr,"DessinImage::InitVoxelSize() \t _size_x < 0, set to 1 \n ");
+    CLASS_ERROR(" _size_x < 0, set to 1 ");
     _size_x = 1;
   FinSi
 
   Si _size_y <= 0 Alors
-    fprintf(stderr,"DessinImage::InitVoxelSize() \t _size_y < 0, set to 1 \n ");
+    CLASS_ERROR(" _size_y < 0, set to 1 ");
     _size_y = 1;
   FinSi
 
   Si _size_z <= 0  Alors
-    fprintf(stderr,"DessinImage::InitVoxelSize() \t _size_z < 0, set to 1 \n ");
+    CLASS_ERROR(" _size_z < 0, set to 1 ");
     _size_z = 1;
   FinSi
 
@@ -707,8 +713,10 @@ void DessinImage::InitVoxelSize()
     _size_z = val1 * Param._dim._voxel_size_z;
   FinSi
 
-  Si GB_debug AlorsFait
-    fprintf(stderr,"DessinImage::InitVoxelSize() Fin \n");
+  CLASS_MESSAGE( boost::format("_size_x,y,z = %1% %2% %3% ") 
+                % _size_x % _size_y % _size_z );
+
+  CLASS_MESSAGE("End");
 
 } // InitVoxelSize()
 
@@ -5011,8 +5019,7 @@ void DessinImage::Boutton3_Relache()
 //                              ----------------
 {
 
-  Si GB_debug AlorsFait
-    fprintf(stderr,"DessinImage::Boutton3_Relache()\n");
+  CLASS_MESSAGE("begin");
 
   Si _vecteur_ON AlorsFait Paint(); // DrawVectors( _curseur_x, _curseur_y, _curseur_z);
 
@@ -5030,8 +5037,7 @@ void DessinImage::Boutton3_Relache()
   XFreeCursor( display, _vecteur_curseur);
 #endif
 
-  Si GB_debug AlorsFait
-    fprintf(stderr,"DessinImage::Boutton3_Relache() Fin \n");
+  CLASS_MESSAGE("end");
 
 } // Boutton3_Relache()
 

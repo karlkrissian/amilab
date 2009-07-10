@@ -1189,11 +1189,11 @@ typedef map<string,string>  file_format_map;
 //----------------------------------------------------------------------
 int AskImage(std::string& name)
 {
-    wxString s_extDef = wxString::FromAscii("*.ami;*.ami.gz");
-    wxString format_choices;
 
     file_format_map formats;
 
+    formats.insert(file_format( "Available",
+                                "*.ami;*.ami.gz;*.vtk;*.jpg;*.jpeg;*.png;*.bmp;*.tif;*.tiff"));
     formats.insert(file_format( "Amilab",
                                 "*.ami;*.ami.gz"));
     formats.insert(file_format( "VTK",
@@ -1204,6 +1204,9 @@ int AskImage(std::string& name)
                                 "*.mhd"));
     formats.insert(file_format( "All files with extensions",
                                 "*.*"));
+
+    wxString s_extDef = wxString::FromAscii(formats["Available"].c_str());
+    wxString format_choices;
 
     for(file_format_map::iterator p = formats.begin(); 
         p!=formats.end();

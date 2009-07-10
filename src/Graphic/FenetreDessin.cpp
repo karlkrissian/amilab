@@ -39,6 +39,9 @@
 
 // TODO: get rid of the need of the X11 display
 
+#ifdef WIN32
+  #include "amilab_logo_new_32x32_alpha.xpm"
+#endif
 
 
 
@@ -75,6 +78,10 @@ FenetreDessin::FenetreDessin(
       wxString::FromAscii((char*)RemovePath(titre.c_str())),
       wxPoint(50,50), wxSize(largeur,hauteur))
 {
+  #ifdef WIN32
+      this->SetIcon(wxIcon(amilab_logo_new_32x32_alpha_xpm));
+  #endif
+
     Chaine  WindowTitle;
 
   if (GB_debug) fprintf(stderr,"FenetreDessin::FenetreDessin title = %s \n",titre.c_str());
@@ -88,10 +95,6 @@ FenetreDessin::FenetreDessin(
   _palette_allouee = false;
   _palette = NULL;
 
-#if defined(__MOTIF__)
-  _pixmap_alloue = false;
-  _fenetre_affichee = false;
-#endif
 
   _this = this;
 

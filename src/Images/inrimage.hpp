@@ -151,7 +151,8 @@ typedef shared_ptr<vtkImageData>  vtkImageData_ptr;
 //#include "chaine.hpp"
 #include "DefineClass.hpp"
 
-#if defined(_MSC_VER) || defined(__MINGW32__)
+#if defined(_MSC_VER) 
+//|| defined(__MINGW32__)
 int   rint(const float& a);
 float roundf(const float& a);
 #endif

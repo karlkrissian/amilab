@@ -13,6 +13,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/OpenGL
   ${AMILAB_SOURCE_DIR}/Graphic
   ${AMILAB_SOURCE_DIR}/wxParams
+  ${AMILAB_SOURCE_DIR}/../Pixmaps
   )
 
 INCLUDE(${wxWidgets_USE_FILE})

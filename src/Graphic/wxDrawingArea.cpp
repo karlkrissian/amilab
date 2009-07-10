@@ -72,27 +72,56 @@ void wxDrawingArea::OnChar(wxKeyEvent& event)
 //-------------------------------------------------
 void wxDrawingArea::OnMouseEvent(wxMouseEvent& event)
 {
+
     _mouse_x = (int)event.GetX();
     _mouse_y = (int)event.GetY();
+
+    bool ld = event.LeftDown();
+    bool md = event.MiddleDown();
+    bool rd = event.RightDown();
+
+    bool lid = event.LeftIsDown();
+    bool mid = event.MiddleIsDown();
+    bool rid = event.RightIsDown();
+
+    bool lu = event.LeftUp();
+    bool mu = event.MiddleUp();
+    bool ru = event.RightUp();
+
+    bool drag  = event.Dragging();
+    bool shift = event.ShiftDown();
+    bool ctrl  = event.ControlDown();
+    bool alt   = event.AltDown();
+
+    int wr = event.GetWheelRotation();
+
     _parent_window->SetMousePosition(_mouse_x,_mouse_y);
 
-    if(event.LeftUp())      _parent_window->Boutton_Relache();
-    if(event.MiddleUp())    _parent_window->Boutton2_Relache();
-    if(event.RightUp())     _parent_window->Boutton3_Relache();
-
-    if(event.LeftDown())    _parent_window->Boutton_Presse();
-    if(event.MiddleDown())  _parent_window->Boutton2_Presse();
-    if(event.RightDown())   _parent_window->Boutton3_Presse();
-
-    if (event.Dragging()) {
-      if (event.ShiftDown()) {
-        if (event.LeftIsDown())   _parent_window->DeplaceSourisShiftBout1();
-        if (event.MiddleIsDown()) _parent_window->DeplaceSourisShiftBout2();
-        if (event.RightIsDown())  _parent_window->DeplaceSourisShiftBout3();
+    if (lu)  _parent_window->Boutton_Relache();
+    else
+    if (mu)  _parent_window->Boutton2_Relache();
+    else
+    if (ru)  _parent_window->Boutton3_Relache();
+    else
+    if(ld)   _parent_window->Boutton_Presse();
+    else
+    if(md)   _parent_window->Boutton2_Presse();
+    else
+    if(rd)   _parent_window->Boutton3_Presse();
+    else
+    if (drag) {
+      if (shift) {
+        if (lid)  _parent_window->DeplaceSourisShiftBout1();
+        else
+        if (mid)  _parent_window->DeplaceSourisShiftBout2();
+        else
+        if (rid)  _parent_window->DeplaceSourisShiftBout3();
       } else {
-        if (event.LeftIsDown())   _parent_window->DeplaceSourisBout1();
-        if (event.MiddleIsDown()) _parent_window->DeplaceSourisBout2();
-        if (event.RightIsDown())  _parent_window->DeplaceSourisBout3();
+        if (lid)  _parent_window->DeplaceSourisBout1();
+        else
+        if (mid)  _parent_window->DeplaceSourisBout2();
+        else
+        if (rid)  _parent_window->DeplaceSourisBout3();
       }
     }
 } // OnMouseEvent()

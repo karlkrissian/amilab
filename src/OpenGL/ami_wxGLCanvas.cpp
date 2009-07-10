@@ -37,7 +37,6 @@
 //#define NEW_METHOD
 
 
-
 //extern unsigned char      GB_debug;
 extern unsigned char      GB_debug_opengl;
 //extern unsigned char      GB_verbose;

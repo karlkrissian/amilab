@@ -570,6 +570,12 @@ protected:
                             const int& x_max, const int& y_max,
                             const ClasseCouleur& intensite);
 
+  void FastImagePoint(  rgb_color* image_data,
+  //   --------------
+                        const int& width,
+                        const int& x, const int& y,
+                        const ClasseCouleur& intensite);
+
 /*
   ///
   void AfficheImage( int pos_x, int pos_y);

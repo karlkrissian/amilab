@@ -38,10 +38,10 @@
 #include <ApplicationServices/ApplicationServices.h>
 #endif
 
-#include "amilab_logo_new_16x16_alpha.xpm"
 
 #ifdef WIN32
-#include "guicon.h"
+  #include "guicon.h"
+  #include "amilab_logo_new_32x32_alpha.xpm"
 #endif
 
 #include "driver.h"
@@ -283,7 +283,9 @@ bool MyApp::OnInit()
                 wxDefaultPosition,
                 wxSize(900,700));
 
-//  frame->SetIcon(wxIcon(amilab_logo_new_16x16_alpha_xpm));
+  #ifdef WIN32
+    frame->SetIcon(wxIcon(amilab_logo_new_32x32_alpha_xpm));
+  #endif
 
 //  printf("frame->Show(true)\n");
 

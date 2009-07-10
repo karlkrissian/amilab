@@ -117,7 +117,8 @@ using namespace boost;
 
 #include "math1.hpp"
 
-#if defined(_MSC_VER) || defined(__MINGW32__)
+#if defined(_MSC_VER) 
+//|| defined(__MINGW32__)
 int rint(const float& a)
 {
 	return (int) floor(a+0.5);
