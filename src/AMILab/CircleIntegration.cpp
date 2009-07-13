@@ -158,15 +158,12 @@ InrImage*    Func_CircleIntSdExc( InrImage* grad, InrImage* vep0,
   //  rep->SetFilter(         filtre);
   rep->SetNoLinearInterp( 1);
   //  rep->SetOptReponse(     1);
-  rep->useSD(  true, th_sd);
+  rep->useSD(  th_sd);
 
   rep->ReducePairs( true, pairs_mode);
-  rep->KeepHighest( true, highest_percentage);
+  rep->KeepHighest( highest_percentage);
 
-  if (th_exc<5) 
-    rep->useEXC( true, th_exc);
-  else
-    rep->useEXC( false);
+  rep->useEXC( th_exc);
 
   rep->FixeRayon(            radius, 1);
   rep->SetGradient(          grad);
