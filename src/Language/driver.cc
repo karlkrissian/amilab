@@ -53,37 +53,44 @@ Driver::~Driver() {
 }
 
 //------------------------------------------------------
-bool Driver::parse_stream(std::istream& in, const std::string& sname)
+bool Driver::parse_stream(std::istream& in, 
+                          const std::string& sname,
+                          bool inconsole)
 {
-    class Scanner* previous_lexer;
+  class Scanner* previous_lexer;
 
-    streamname = sname;
+  bool   in_console_bak   = in_console;
+  in_console   = inconsole;
 
-    previous_lexer = this->lexer;
-    Scanner scanner(&in);
-    scanner.set_debug(trace_scanning);
-    this->lexer = &scanner;
+  streamname = sname;
 
-    // Parse ...
-    Parser parser(*this);
-    parser.set_debug_level(trace_parsing);
-    if (language_debug_stream.good()) 
-      parser.set_debug_stream(language_debug_stream);
+  previous_lexer = this->lexer;
+  Scanner scanner(&in);
+  scanner.set_debug(trace_scanning);
+  this->lexer = &scanner;
 
-    int res = 0;
-    try {
-      res = parser.parse();
-    }
-    catch(std::exception const& e) {
-      err_print( (boost::format("std::exception catched during parsing \n %1%") % e.what()).str().c_str());
-    }
-    catch(...) { 
-      err_print("Unknown exception catched during parsing");
-    }
+  // Parse ...
+  Parser parser(*this);
+  parser.set_debug_level(trace_parsing);
+  if (language_debug_stream.good()) 
+    parser.set_debug_stream(language_debug_stream);
 
-    this->lexer = previous_lexer;
+  int res = 0;
+  try {
+    res = parser.parse();
+  }
+  catch(std::exception const& e) {
+    err_print( (boost::format("std::exception catched during parsing \n %1%") % e.what()).str().c_str());
+  }
+  catch(...) { 
+    err_print("Unknown exception catched during parsing");
+  }
 
-    return ( res== 0);
+  this->lexer = previous_lexer;
+
+  in_console   = in_console_bak;
+
+  return ( res== 0);
 }
 
 //-----------------------------------------------------------
@@ -93,16 +100,13 @@ bool Driver::parse_file(const std::string &filename)
   if (!in.good()) return false;
 
   string current_file_bak = current_file;
-  bool   in_console_bak   = in_console;
   int    yyiplineno_bak   = yyiplineno;
   current_file = filename;
-  in_console   = false;
   yyiplineno   = 1;
 
   bool res = parse_stream(in, filename);
 
   current_file = current_file_bak;
-  in_console   = in_console_bak;
   yyiplineno   = yyiplineno_bak;
 
   return res;
@@ -113,6 +117,14 @@ bool Driver::parse_string(const std::string &input, const std::string& sname)
 {
     std::istringstream iss(input);
     return parse_stream(iss, sname);
+}
+
+//-----------------------------------------------------------
+bool Driver::parse_commandline(const std::string &input, const std::string& sname)
+{
+  std::istringstream iss(input);
+  return parse_stream(iss, sname,true);
+  
 }
 
 //-----------------------------------------------------------
