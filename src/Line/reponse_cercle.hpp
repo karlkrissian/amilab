@@ -32,7 +32,7 @@
 #define CIRCLE_RESPONSE_MEAN           1
 #define CIRCLE_RESPONSE_MEDIAN         2
 
-#include <list>
+#include <vector>
 
 class response_info {
 public:
@@ -40,11 +40,14 @@ public:
   float tangent_gradient; // gradient vector scalar tangent direction
 
   response_info(): radius_gradient(0),tangent_gradient(0) {}
-  bool operator < (const response_info& r) const
-  { 
-    return radius_gradient < r.radius_gradient; 
+  bool operator < (const response_info& r) const {
+    return radius_gradient < r.radius_gradient;
   }
 };
+
+// sort in decreasing order
+bool sort_operator(const response_info& r1,const response_info& r2);
+
 
 //======================================================================
 class CalculRepCercle
@@ -64,7 +67,7 @@ class CalculRepCercle
   bool        _keep_highest;
   int         _highest_percentage;
 
-  std::list<response_info> responses;
+  std::vector<response_info> responses;
 
   // Precompute cosinus and sinus
   double*   coeff_cos;
@@ -99,11 +102,8 @@ class CalculRepCercle
 
 private:
 
-  ///
-  int  VT_Mediane( float* tab, int dim, double* res );
-
   /// 
-  unsigned char GradientCorrect(  const Point3D& p);
+  unsigned char GradientCorrect(  const Vect3D<double>& p);
 
 public:
 
@@ -127,22 +127,30 @@ public:
   void SetGradient(InrImage* g )     { _grad = g; }
   //   -----------
 
-  void useSD( bool usesd,  float s=1 )   
+  // if s<1E-5 desactivate SD
+  void useSD(  float s=1 )   
   { 
-    _use_SD  = usesd;
+    _use_SD  = (s>1E-5);
     _SeuilET = s;
   }
 
-  void useEXC(bool useexc, float s=1 )   
+  // if s<1E-5 desactivate EXC
+  void useEXC( float s=1 )   
   { 
-    _use_EXC  = useexc; 
+    _use_EXC  = (s>1E-5); 
     _SeuilEXC = s; 
   }
 
-  void KeepHighest(bool kh, int percent ) 
+  // if percent == 100, desactivate KeepHighest
+  void KeepHighest( int percent ) 
   {
-    _keep_highest       = kh;
-    _highest_percentage = percent;
+    if (percent<100-1E-5) {
+      _keep_highest       = true;
+      _highest_percentage = percent;
+    } else {
+      _keep_highest       = false;
+      _highest_percentage = percent;
+    }
   }
 
   void ReducePairs( bool rp, int mode) 
@@ -157,15 +165,15 @@ public:
 
 
   ///
-  void  ComputeResponse( const Point3D& pos, const Vect3D<double>& vect, response_info& rep);
+  void  ComputeResponse( const Vect3D<double>& pos, const Vect3D<double>& vect, response_info& rep);
   //    ---------------
 
   ///
-  void  CalculReponses( int x, int y, int z, 
+  void  CalculReponses( const int& x, const int& y, const int& z, 
   //      --------------
-        Vect3D<double> vep0, 
-        Vect3D<double> vep1, 
-        float rap_ellipse  );
+        const Vect3D<double>& vep0, 
+        const Vect3D<double>& vep1, 
+        const float& rap_ellipse  );
  
   ///
   double Reponse( int type_rep);

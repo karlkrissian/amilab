@@ -18,38 +18,20 @@
 #include <limits>
 using namespace std;
 
+bool sort_operator(const response_info& r1,const response_info& r2)
+{ 
+  return r1.radius_gradient > r2.radius_gradient; 
+}
+
 //======================================================================
 // MEMBRES PRIVES
 //======================================================================
 
 /*============================================================*/
 
-int  VT_Compare( const void* e1, const void* e2 )
-{
-
-  if ( *((float*) e1 ) >  *((float*) e2 ) ) return 1;
-  if ( *((float*) e1 ) <  *((float*) e2 ) ) return -1;
-  return 0;
-
-} /* VT_Compare() */
-
-
-//----------------------------------------------------------------------
-///
-int CalculRepCercle :: VT_Mediane( float* tab, int dim, double* res )
-//                                 ------------
-{
-
-  qsort( (void*) tab, dim, sizeof(float), VT_Compare );
-  *res = tab[ (int) (dim / 2) ];
-
-  return true;
-
-} // VT_Mediane()
-
 
 //--------------------------------------------------------------------------------
-unsigned char  CalculRepCercle :: GradientCorrect( const Point3D& p)
+unsigned char  CalculRepCercle :: GradientCorrect( const Vect3D<double>& p)
 //                                   ---------------
 {
 
@@ -88,9 +70,9 @@ CalculRepCercle :: Constructeur CalculRepCercle( InrImage* image, int type_repon
   _OptReponse     = false;
 
   ReducePairs(  true, PAIRS_MIN);
-  useSD(        true, 0.7);
-  useEXC(       true, 1);
-  KeepHighest(  true, 70);
+  useSD(        0.7);
+  useEXC(       1);
+  KeepHighest(  70);
 
   coeff_cos = coeff_sin = (double*) NULL;
 
@@ -171,7 +153,7 @@ void CalculRepCercle :: FixeRayon( double rayon, float coeff_rayon)
 
   
 //----------------------------------------------------------------------------
-void  CalculRepCercle :: ComputeResponse( const Point3D& pos, 
+void  CalculRepCercle :: ComputeResponse( const Vect3D<double>& pos, 
 //                      ---------------
                                         const Vect3D<double>& vect,
                                         response_info& response)
@@ -188,15 +170,18 @@ void  CalculRepCercle :: ComputeResponse( const Point3D& pos,
 
     // Check for linear interpolation flag
     if (_NoLinearInterp) {
-      int posx = (int) roundf(pos.x);
-      int posy = (int) roundf(pos.y);
-      int posz = (int) roundf(pos.z);
+      int posx = (int) (pos.x+0.5);
+      int posy = (int) (pos.y+0.5);
+      int posz = (int) (pos.z+0.5);
       if (_filter!= NULL) 
           g = _filter->Gradient( posx,posy,posz);
-      else
-        g.Init( (*_grad)(posx,posy,posz,0),
-                (*_grad)(posx,posy,posz,1),
-                (*_grad)(posx,posy,posz,2));
+      else {
+        // buffer pos is not thread safe ...
+        _grad->BufferPos(posx,posy,posz);
+        g.Init( _grad->ValeurBuffer(0),
+                _grad->ValeurBuffer(1),
+                _grad->ValeurBuffer(2));
+      }
     } else {
       if (_filter!= NULL) 
           g = _filter->Gradient( pos.x , pos.y, pos.z);
@@ -225,11 +210,12 @@ void  CalculRepCercle :: ComputeResponse( const Point3D& pos,
 
 //----------------------------------------------------------------------
 ///
-void  CalculRepCercle::CalculReponses( int x, int y, int z, 
-//                    --------------
-                                      Vect3D<double> vep0,
-                                      Vect3D<double> vep1,
-                                      float rap_ellipse  )
+void  CalculRepCercle::CalculReponses(  const int& x, 
+                                        const int& y, 
+                                        const int& z, 
+                                        const Vect3D<double>& vep0,
+                                        const Vect3D<double>& vep1,
+                                        const float& rap_ellipse  )
 {
       /*---  Variables pour int�grer la r�ponse le long d'un cercle ---*/
       int    k;
@@ -237,9 +223,9 @@ void  CalculRepCercle::CalculReponses( int x, int y, int z,
       double coeff_v2;
       register Vect3D<double>     g;
       register Vect3D<double>     vecteur;
-      Vect3D<float>               displacement;
-      Point3D                     p(x,y,z);
-      register Point3D            pos;
+      Vect3D<double>              displacement;
+      Vect3D<double>              p(x,y,z);
+      register Vect3D<double>     pos;
       float                       radius_x,radius_y,radius_z;
       response_info               rep1,rep2;
 
@@ -247,7 +233,7 @@ void  CalculRepCercle::CalculReponses( int x, int y, int z,
     /*--- calcul de la reponse du filtre gradient par integrale le long 
      *    du cercle de centre (x,y,z) de rayon sigma dans le plan // a (v1,v2)
      */
-    // empty list of responses
+    // empty vector of responses
     responses.clear();
 
     k         = 0;
@@ -264,7 +250,7 @@ void  CalculRepCercle::CalculReponses( int x, int y, int z,
 
       /*--- calcul de la position ---*/
       vecteur      = (coeff_v1*vep0) + (coeff_v2*vep1);
-      displacement = Vect3D<float>( vecteur.x*radius_x,
+      displacement = Vect3D<double>( vecteur.x*radius_x,
                                     vecteur.y*radius_y,
                                     vecteur.z*radius_z);
 
@@ -277,7 +263,7 @@ void  CalculRepCercle::CalculReponses( int x, int y, int z,
       //
       // Second point: opposite point for the circle
       //
-      pos = p + ((float)-1.0)*displacement;
+      pos = p + (-1.0)*displacement;
       vecteur = -1.0*vecteur;
       this->ComputeResponse(pos,vecteur, rep2);
 
@@ -305,7 +291,7 @@ void  CalculRepCercle::CalculReponses( int x, int y, int z,
           break;
         }
       } else {
-      // else adds both points to the list
+      // else adds both points to the vector
         responses.push_back(rep1); 
         responses.push_back(rep2); 
       } // if _reduce_pairs
@@ -320,28 +306,26 @@ double CalculRepCercle::Reponse ( int type_rep )
 //                      -------
 {
   response_info rep;
-  std::list<response_info>::iterator Iter;
+  std::vector<response_info>::iterator Iter;
   double result = 0;
   int pos;
 
   if (responses.empty()) return 0;
 
-  // if applying median, reduce the list to the highest values
+  // if applying median, reduce the vector to the highest values
   if (_keep_highest) {
-    // 1. sort the list
-    responses.sort();
-    // getting decreasing order
-    responses.reverse();
+    // 1. sort the vector, decreasing order
+    std::sort(responses.begin(),responses.end(),sort_operator);
     // dropping elements
     size_t new_size = (int) (_highest_percentage*responses.size()/100.0);
     responses.resize(new_size);
   }
 
-  // here use list iterators
+  // here use vector iterators
   switch ( type_rep )
   {
     case CIRCLE_RESPONSE_MIN:
-      // list already sorted in decreasing order
+      // vector already sorted in decreasing order
       if (_keep_highest)
         return responses.back().radius_gradient;
 
@@ -367,7 +351,9 @@ double CalculRepCercle::Reponse ( int type_rep )
     break;
 
     case CIRCLE_RESPONSE_MEDIAN:
-      if (!_keep_highest) responses.sort();
+      if (!_keep_highest) {
+        sort(responses.begin(),responses.end());
+      }
 
       Iter = responses.begin();
       pos = 0;
@@ -407,17 +393,16 @@ double CalculRepCercle::Reponse ( int type_rep )
   }
 
   if (_use_EXC) {
-
-/* TODO: add this feature but is it really useful ?
-        moy2 = 0;
-        for ( i=0; i<nb_points; i++ ) moy2 += InfoExcentree[i];
-        moy2 /= nb_points;
-
-        coeff_exc = fabs ( moy2/moy1 ) /_SeuilEXC;
-        coeff_exc =  exp ( -1.0 * coeff_exc*coeff_exc );
-
-        resultat *=  coeff_exc;
-*/
+    /* TODO: add this feature but is it really useful ?
+            moy2 = 0;
+            for ( i=0; i<nb_points; i++ ) moy2 += InfoExcentree[i];
+            moy2 /= nb_points;
+    
+            coeff_exc = fabs ( moy2/moy1 ) /_SeuilEXC;
+            coeff_exc =  exp ( -1.0 * coeff_exc*coeff_exc );
+    
+            resultat *=  coeff_exc;
+    */
   }
 
   return result;
