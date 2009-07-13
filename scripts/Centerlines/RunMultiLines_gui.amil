@@ -56,6 +56,7 @@ proc RML_SetMask( IMAGE mask) {
   RML_mask <<= (UCHAR) (mask>0.1)*255
 }
 
+#-----------------------------------------------
 proc RML_filter() {
   global_new
 
@@ -89,6 +90,7 @@ proc RML_filter() {
 
 
 
+#-----------------------------------------------
 proc RML_CB_ROI() {
   global
   if (exists(RML_input_draw)) {
@@ -100,12 +102,14 @@ proc RML_CB_ROI() {
   }
 }
 
+#-----------------------------------------------
 proc RML_CB_Filter() {
   InitTime
   RML_filter()
   EndTime
 }
 
+#-----------------------------------------------
 proc RML_CB_Display() {
   global_new
   show RML_input
@@ -118,10 +122,12 @@ proc RML_CB_Display() {
   }
 }
 
+#-----------------------------------------------
 proc RML_CB_Save() {
   RML_result.save RML_output_name
 }
 
+#-----------------------------------------------
 proc RML_gui() {
   global_new
 

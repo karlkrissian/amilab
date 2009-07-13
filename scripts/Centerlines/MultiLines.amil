@@ -23,369 +23,574 @@
 #
 
 #SetDebugOn
+# no interface here
 
 import_filters
 
-#--------------------------------------------------
-proc ML_h(NUM _gamma, NUM _theta, NUM res) {
-#    ----
-  tmp1=2*(_gamma-1)
-  theta2 = _theta*_theta
-  tmp2=theta2-tmp1
-  tmp2=tmp2*tmp2
-  delta = tmp2+16-tmp1*tmp1
-  res= sqrt((sqrt(delta)+tmp1-theta2)/(2*(3-_gamma)))
-}
+if (!exists(ML_defined)) {
+  ML_defined = 1
 
-#--------------------------------------------------
-proc ML_rad2sigma(NUM _rad, NUM _sigma) {
-#    ------------
-  _sigma=rad2sigma_coeff*_rad
-  printn _sigma
-}
+  if (argc==1) {
+    inputname=$1
+    emptyargs
+  } else {
+    inputname = ""
+  }
 
+  #--------------------------------------------------
+  proc ML_Init() \
+  {
+    global
+      # inputs
+      ML_input_name   = ""
+      ML_mask_name    = ""
 
-#--------------------------------------------------
-proc ML_ComputeResponse(NUM _sigma, IMAGE _input, NUM _gamma, NUM _theta, IMAGE _response,  IMAGE _v1, IMAGE _v2, IMAGE _v3, IMAGE _mask, NUM mode) {
-#    ---------------
-printn "ML_ComputeResponse"
+      # circle integration
+      # a value of 0 desactivates the SD feature
+      # should better create a boolean variable here for clarity
+      ML_use_SD       = UCHAR(0)
+      ML_SD_th        = 2
+      # a value of 0 desactivates the EXC feature
+      ML_use_EXC      = UCHAR(0)
+      ML_EXC_th       = 5
+      ML_pairs_mode   = INT(0)
+      ML_keephighest  = 100
 
-  _response.initvalue(0)
+      # multiscale evolution
+      ML_radmin       = 0.5
+      ML_radmax       = 5
+      ML_numrad       = INT(5)
 
-  // Computation of the direction
-  // the results are 
-  // _input_Hvep1, _input_Hvep2, _input_Hvep3
-  // _input_Hvap1, _input_Hvap2, _input_Hvap3
-  //
-  // 1. Gamma normalized with the coefficient _gamma
-  // 2. the eigenvalues are arranged into descending order of absolute values
-  //
+      # Compute local maxima
+      ML_local_maxima      = UCHAR(0)
 
-  // Old way: HessianMatrix(_input,_sigma,_gamma)
-  //
-  // 2,2,0,1 means:
-  // 3: 1st eigenvector & eigenvalue
-  // 3: 2st eigenvector & eigenvalue
-  // 0: don't need the third eigen(vector/value)
-  // 1: gradient vector
-  //
+      ML_keep_orientations = UCHAR(0)
+      ML_keep_radii        = UCHAR(0)
 
+      # 0: Hessian Matrix 1: Structure Tensor
+      ML_mode         = INT(0)
 
-  if (mode==0) {
-    print "Hessian Matrix\n"
-    Derivatives(_input,_sigma,_gamma,3,3,1,1,_mask)
-    vap1 = _input_Hvap1
-    vap2 = _input_Hvap2
-    _v1  = _input_Hvep1
-    _v2  = _input_Hvep2
-    _v3  = _input_Hvep3
-    del _input_Hvap1
-    del _input_Hvap2
-    del _input_Hvep1
-    del _input_Hvep2
+      # normalization
+      ML_gamma           = 1
+      ML_theta           = sqrt(3)
+      # this coefficient is recomputed at each scale
+      ML_rad2sigma_coeff = 1
 
-    // create a region of interest
-    _mask1 = (UCHAR) ((_mask>0)*(vap1<0)*(vap2<0)*255)
+      # Progress information
+      ML_current_progress = 0;
+      ML_current_step     = 0;
 
-    del vap1
-    del vap2
+      ML_output_name="Multilines-maxresponse.ami.gz"
 
-  }  else {
+      ML_Gui()
+  }
+  
+  #----------------------------
+  proc ML_Close() \
+  {
+    ML_win.Hide
+    delvars "ML_*_draw"
+    delvars "ML_*"
+  }
 
+  #-----------------------------------------------
+  proc ML_load_input() {
+  
+    eval "global::ML_input <<= (FLOAT)"+ML_input_name+";"
+    if (ML_input_name=="Image") {
+      ML_input_name = "ML_input"
+    }
+  
+    if (ML_mask_name=="Image") {
+      global::ML_mask <<= (UCHAR) ((ML_input>0.1)*255)
+      ML_mask_name = "ML_mask"
+    } else {
+      eval "global::ML_mask <<="+ML_mask_name+";"
+    }
+    ML_win.update
+  }
+  
+  #-----------------------------------------------
+  proc ML_SetMask( IMAGE mask) \
+  {
+    global::ML_mask <<= (UCHAR) (mask>0.1)*255
+  }
+  
+  #--------------------------------------------------
+  proc ML_h(NUM gamma, NUM theta, NUM res) {
+  #    ----
+    tmp1=2*(gamma-1)
+    theta2 = theta*theta
+    tmp2=theta2-tmp1
+    tmp2=tmp2*tmp2
+    delta = tmp2+16-tmp1*tmp1
+    res= sqrt((sqrt(delta)+tmp1-theta2)/(2*(3-gamma)))
+  }
+  
+  #--------------------------------------------------
+  proc ML_rad2sigma(NUM rad, NUM sigma) {
+  #    ------------
+    sigma=ML_rad2sigma_coeff*rad
+  }
+  
+  
+  #--------------------------------------------------
+  proc ML_ComputeResponse(NUM sigma, IMAGE _response,  IMAGE _v1, IMAGE _v2, IMAGE _v3) \
+  {
+  #    ---------------
+    printn "ML_ComputeResponse"
+  
+    _response.initvalue(0)
+  
+    // Computation of the direction
+    // the results are 
+    // _input_Hvep1, _input_Hvep2, _input_Hvep3
+    // _input_Hvap1, _input_Hvap2, _input_Hvap3
+    //
+    // 1. Gamma normalized with the coefficient _gamma
+    // 2. the eigenvalues are arranged into descending order of absolute values
+    //
+  
+    // Old way: HessianMatrix(_input,sigma,_gamma)
+    //
+    // 2,2,0,1 means:
+    // 3: 1st eigenvector & eigenvalue
+    // 3: 2st eigenvector & eigenvalue
+    // 0: don't need the third eigen(vector/value)
+    // 1: gradient vector
+    //
+  
+  
+    if (ML_mode==0) {
+      Derivatives(ML_input,sigma,ML_gamma,3,3,1,1,ML_mask)
+      vap1 = _input_Hvap1
+      vap2 = _input_Hvap2
+      _v1  = _input_Hvep1
+      _v2  = _input_Hvep2
+      _v3  = _input_Hvep3
+      del _input_Hvap1
+      del _input_Hvap2
+      del _input_Hvep1
+      del _input_Hvep2
+  
+      // create a region of interest
+      _mask1 = (UCHAR) ((ML_mask>0)*(vap1<0)*(vap2<0)*255)
+  
+      del vap1
+      del vap2
+  
+    }  else {
+  
+      // Compute Structure Tensor
+      printn "Structure Tensor"
+  
+      StructTensorH(ML_input,sigma,1,ML_mask,1)
+      _v1  = _input_STHvep1
+      _v2  = _input_STHvep2    
+      _v3  = _input_STHvep3
+      _input_grad = _input_STHgrad
+      del _input_STHvap1
+      del _input_STHvap2
+      del _input_STHvap3
+      del _input_STHvep1
+      del _input_STHvep2
+      del _input_STHvep3
+      del _input_STHgrad
+  
+      _mask1 = ML_mask
+    }
+  
+    // run the circle integration on a region of interest
+    // Integrate the border information on a circle of radius theta*sigma
+    _response = CircleInt( _input_grad, _v1, _v2, ML_theta*sigma, _mask1)
+    // _response   = CircleIntSdExc( _input_grad,_v1,_v2,_theta*sigma,_mask1,1,1.5)
+  
+  
+  } // ML_ComputeResponse
+  
+  
+  #--------------------------------------------------
+  proc ML_ComputeResponse_new( NUM sigma, IMAGE _response) \
+  {
+    printn "ML_ComputeResponse_new"
+  
+    _response.initvalue(0)
+  
+    // Computation of the direction
+    // the results are 
+    //
+    // 1. Gamma normalized with the coefficient _gamma
+    // 2. the eigenvalues are arranged into descending order of absolute values
+    //
+  
     // Compute Structure Tensor
     printn "Structure Tensor"
-
-    StructTensorH(_input,_sigma,1,_mask,1)
-    _v1  = _input_STHvep1
-    _v2  = _input_STHvep2    
-    _v3  = _input_STHvep3
-    _input_grad = _input_STHgrad
-    del _input_STHvap1
-    del _input_STHvap2
-    del _input_STHvap3
-    del _input_STHvep1
-    del _input_STHvep2
-    del _input_STHvep3
-    del _input_STHgrad
-
-    _mask1 = _mask
-  }
- 
-  // run the circle integration on a region of interest
-  // Integrate the border information on a circle of radius theta*sigma
-  _response = CircleInt( _input_grad, _v1, _v2, _theta*_sigma, _mask1)
-  // _response   = CircleIntSdExc( _input_grad,_v1,_v2,_theta*_sigma,_mask1,1,1.5)
-
-
-} // ML_ComputeResponse
-
-
-#--------------------------------------------------
-proc ML_ComputeResponse_new(\
-                            NUM _sigma, \
-                            IMAGE _input,  \
-                            NUM _gamma, NUM _theta, \
-                            IMAGE _response, \
-                            IMAGE _mask, NUM mode) \
-{
-  printn "ML_ComputeResponse_new"
-
-  _response.initvalue(0)
-
-  // Computation of the direction
-  // the results are 
-  //
-  // 1. Gamma normalized with the coefficient _gamma
-  // 2. the eigenvalues are arranged into descending order of absolute values
-  //
-
-  // Compute Structure Tensor
-  printn "Structure Tensor"
-  sth = StructureTensorH(&_input,_sigma,1,&_mask)
-
-  SetProgress(current_progress+current_step*0.25)
-
-  eig = EigenDecomp(&sth,0,3,&_mask)
-  SetProgress(current_progress+current_step*0.5)
-  del sth
-
-  local::grad = gradient(_input,_sigma)
-  SetProgress(current_progress+current_step*0.75)
-
-  // create a region of interest
-  //_mask1 = (UCHAR) ((_mask>0)*(vap1<0)*(vap2<0)*255)
-
-  local::SD_th       = 2
-  local::EXC_th      = 5
-  local::pairs_mode  = 0
-  local::keephighest = 100
-
-  _response = CircleMinIntSdExc(grad,\
-                      eig[3],\
-                      eig[4],\
-                      _theta*_sigma, \
-                      _mask,\
-                      SD_th,\
-                      EXC_th, \
-                      pairs_mode, \
-                      keephighest)
-
-  // run the circle integration on a region of interest
-  // Integrate the border information on a circle of radius theta*sigma
-
-  // Error: I did not comment this line for the challenge !!!!
-  //_response = CircleInt( grad, eig[3], eig[4],\
-  //                        _theta*_sigma, _mask)
-
-
-
-} // ML_ComputeResponse_new
-
-
-#--------------------------------------------------
-#
-# mode is 0: use Hessian matrix
-# mode is 1: use Structure tensor
-#
-proc MultiLines(  IMAGE input_image, IMAGE result, \
-                  IMAGE maxresult, \
-                  IMAGE radii,\
-                  NUM radmin, NUM radmax, NUM numrad,\
-                  IMAGE _mask, NUM mode) {
-#    ----------
-
-printn radmin
-printn radmax
-
-  GB_gamma=1
-  GB_theta=sqrt(3)
-
-  # create the variable
-  rad2sigma_coeff=1
-
-  # Precompute coefficient of proportionality
-  ML_h(GB_gamma,GB_theta,&rad2sigma_coeff)
-  print sprint("rad2sigma_coeff = %03.2f\n",rad2sigma_coeff)
-
-
-  rad=radmin
-  printn radmin
-
-  sigma=0
-  if (numrad>1) {
-    _step=exp((ln(radmax)-ln(radmin))/(numrad-1))
-  } else {
-    _step = 1
-  }
-  print sprint("step = %03.2f \n",_step)
-
-  #
-  # main loop 
-  #
-
-  response=Image(FLOAT,1,input_image)
-  response.initvalue(0)
-
-  v1=Image(FLOAT,3,input_image)
-  v1.initvalue(0,0,0)
-  v2=Image(FLOAT,3,input_image)
-  v2.initvalue(0,0,0)
-  v3=Image(FLOAT,3,input_image)
-  v3.initvalue(0,0,0)
-
-  for _i=0 to numrad-1 {
-
-    print "----------\n"
-    print "iteration ";print _i; print "\n"
-    print "----------\n"
-
-    printn rad
-
-    ML_rad2sigma(rad,&sigma)
-
-    printn sigma
-
-
-    ML_ComputeResponse( sigma,input_image,\
-                        GB_gamma,GB_theta,&response, \
-                        &v1, &v2,&v3,_mask, mode)
-
-    // save response to file
-    print "save response\n"
-    #response_filename=result.GetName-".gz"-".inr"-".ami"-".vtk"
-    #response_filename = "multilines"
-    #response_filename = sprint("rep%02.0f.ami.gz",_i)
-    #response.save response_filename
-    #response.save sprint("rep%02.0f.ami.gz",_i)
-
-
-    // Compute and Update Local Maxima
-    print "Compute and Update Local Maxima\n"
-
-    // keep maximal response
-    if (_i==0) {
-      max_response=response
-      prev_response=response
-      maxima = response*0
-      real_maxima = response*0
-      v1_max=v1
-      v2_max=v2
-      v3_max=v3
-      radius = (response>0)*rad;
-    } else {
-
-      // Update the maxima
-      // only keep the first maxima found
-      real_maxima = (real_maxima!=0)*real_maxima+(real_maxima==0)*(maxima>response)*maxima
-
-      v1_max = v1_max*(max_response>=response)+v1*(max_response<response)
-      v2_max = v2_max*(max_response>=response)+v2*(max_response<response)
-      v3_max = v3_max*(max_response>=response)+v3*(max_response<response)
-      radius = (max_response>=response)*radius+(max_response<response)*rad
-      max_response=max(response,max_response)
-      // Compute local maxima
-      maxima = LocalExtrema(response,v1,v2,_mask)
-      maxima = maxima*(response>prev_response)
-      
-    }
-
-
-    rad = rad*_step
-  }
-
+    sth = StructureTensorH(&ML_input,sigma,1,&ML_mask)
   
-  v3_max.save sprint("v3_max_%01.0f.ami.gz",mode)
-#  v2_max.save sprint("v2_max_%01.0f.ami.gz",mode)
-
-  // computing local maxima on the maximum response accross scales
-  real_maxima2 = LocalExtrema(max_response,v1_max,v2_max,_mask)
-
-  // save maximal response to file
-  result    = max_response
-  maxresult = real_maxima2
-  radii     = radius
-
-} 
-// MultiLines
-
-
-#--------------------------------------------------
-#
-# mode is 0: use Hessian matrix
-# mode is 1: use Structure tensor
-#
-proc MultiLines_new(  IMAGE input_image, IMAGE result, \
-                      NUM radmin, NUM radmax, NUM numrad,\
-                      IMAGE _mask, NUM mode) {
-#    ----------
-
-  printn "begin MultiLines_new()"
-  printn radmin
-  printn radmax
-
-  GB_gamma=1
-  GB_theta=sqrt(3)
-
-  # create the variable
-  rad2sigma_coeff=1
-
-  # Precompute coefficient of proportionality
-  ML_h(GB_gamma,GB_theta,&rad2sigma_coeff)
-  print sprint("rad2sigma_coeff = %03.2f\n",rad2sigma_coeff)
-
-
-  rad=radmin
-  printn radmin
-
-  sigma=0
-  if (numrad>1) {
-    _step=exp((ln(radmax)-ln(radmin))/(numrad-1))
-  } else {
-    _step = 1
-  }
-  print sprint("step = %03.2f \n",_step)
-
+    SetProgress(ML_current_progress+ML_current_step*0.25)
+  
+    # EigenDecomp, parameters:  the structure tensor,
+    # the eigenvalues flag: 0
+    # the eigenvectors flag 3
+    eig = EigenDecomp(&sth,0,3,&ML_mask)
+    SetProgress(ML_current_progress+ML_current_step*0.5)
+    del sth
+  
+    # do we get the gradient separately to avoid the mask here??
+    grad = gradient(ML_input,sigma)
+    SetProgress(ML_current_progress+ML_current_step*0.75)
+  
+    // create a region of interest
+    //_mask1 = (UCHAR) ((_mask>0)*(vap1<0)*(vap2<0)*255)
+  
+  
+    _response = CircleMinIntSdExc(grad,\
+                        eig[3],\
+                        eig[4],\
+                        ML_theta*sigma, \
+                        ML_mask,\
+                        ML_SD_th*ML_use_SD,\
+                        ML_EXC_th*ML_use_EXC, \
+                        ML_pairs_mode, \
+                        ML_keephighest)
+  
+    // run the circle integration on a region of interest
+    // Integrate the border information on a circle of radius theta*sigma
+  
+    // Error: I did not comment this line for the challenge !!!!
+    //_response = CircleInt( grad, eig[3], eig[4],\
+    //                        _theta*sigma, _mask)
+  
+    if (ML_local_maxima) {
+      # copy the 2 eigenvectors
+      global::ML_current_v1 <<= eig[3]
+      global::ML_current_v2 <<= eig[4]
+    }
+  
+  } // ML_ComputeResponse_new
+  
+  
+  #--------------------------------------------------
   #
-  # main loop 
+  # mode is 0: use Hessian matrix
+  # mode is 1: use Structure tensor
   #
-  response=Image(FLOAT,1,input_image)
-  response.initvalue(0)
+  proc ML_MultiLines( ) \
+  {
+    InitTime
 
-  for local::_i=0 to numrad-1 {
+    #  Load input images
+    ML_load_input()
 
-    print "----------\n"
-    print "iteration ";print _i; print "\n"
-    print "----------\n"
-    global::current_progress =_i/numrad*100
-    global::current_step     =1/numrad*100
-    SetProgress(current_progress)
-
-    printn sprint(" radius = %0.2f",rad)
-
-    ML_rad2sigma(rad,&sigma)
-
-    printn sprint(" sigma = %0.2f",sigma)
-
-    ML_ComputeResponse_new( sigma,&input_image,\
-                            GB_gamma,GB_theta,&response, \
-                            &_mask, mode)
-
-    // Compute and Update Local Maxima
-    print "Compute and Update Local Maxima\n"
-
-    // keep maximal response
-    printn " _i = "; printn _i
-    if (_i==0) {
-      max_response=response
+    # Precompute coefficient of proportionality
+    ML_h(ML_gamma,ML_theta,&ML_rad2sigma_coeff)
+  
+    ML_current_rad=ML_radmin
+  
+    ML_current_sigma=0
+    if (ML_numrad>1) {
+      _step=exp((ln(ML_radmax)-ln(ML_radmin))/(ML_numrad-1))
     } else {
-      max_response=max(response,max_response)
+      _step = 1
+    }
+  
+    #
+    # main loop 
+    #
+  
+    response=Image(FLOAT,1,ML_input)
+    response.initvalue(0)
+  
+    v1=Image(FLOAT,3,ML_input)
+    v1.initvalue(0,0,0)
+    v2=Image(FLOAT,3,ML_input)
+    v2.initvalue(0,0,0)
+    v3=Image(FLOAT,3,ML_input)
+    v3.initvalue(0,0,0)
+  
+    for _i=0 to ML_numrad-1 {
+  
+      print "----------\n"
+      print "iteration ";print _i; print "\n"
+      print "----------\n"
+  
+      ML_rad2sigma(rad,&ML_current_sigma)
+    
+      ML_ComputeResponse( ML_current_sigma, \
+                          ML_input,\
+                          ML_gamma,ML_theta,\
+                          &response, \
+                          &v1, &v2,&v3,\
+                          ML_mask, \
+                          ML_mode)
+  
+      // save response to file
+      #response_filename=result.GetName-".gz"-".inr"-".ami"-".vtk"
+      #response_filename = "multilines"
+      #response_filename = sprint("rep%02.0f.ami.gz",_i)
+      #response.save response_filename
+      #response.save sprint("rep%02.0f.ami.gz",_i)
+  
+  
+      // Compute and Update Local Maxima
+      print "Compute and Update Local Maxima\n"
+  
+      // keep maximal response
+      if (_i==0) {
+        max_response=response
+        prev_response=response
+        maxima = response*0
+        ML_maxima = response*0
+        v1_max=v1
+        v2_max=v2
+        v3_max=v3
+        radius = (response>0)*rad;
+      } else {
+  
+        // Update the maxima
+        // only keep the first maxima found
+        ML_maxima = (ML_maxima!=0)*ML_maxima+(ML_maxima==0)*(maxima>response)*maxima
+  
+        v1_max = v1_max*(max_response>=response)+v1*(max_response<response)
+        v2_max = v2_max*(max_response>=response)+v2*(max_response<response)
+        v3_max = v3_max*(max_response>=response)+v3*(max_response<response)
+        radius = (max_response>=response)*radius+(max_response<response)*rad
+        max_response=max(response,max_response)
+        // Compute local maxima
+        maxima = LocalExtrema(response,v1,v2,_mask)
+        maxima = maxima*(response>prev_response)
+        
+      }
+  
+  
+      ML_current_rad = ML_current_rad*_step
+    }
+  
+    
+    v3_max.save sprint("v3_max_%01.0f.ami.gz",mode)
+  #  v2_max.save sprint("v2_max_%01.0f.ami.gz",mode)
+  
+    # computing local maxima on the maximum response accross scales
+    real_maxima2 = LocalExtrema(max_response,v1_max,v2_max,ML_mask)
+  
+    # save maximal response to file
+    result    = max_response
+    maxresult = real_maxima2
+    radii     = radius
+  
+    EndTime
+  } 
+  # end MultiLines()
+  
+  
+  #--------------------------------------------------
+  #
+  # mode is 0: use Hessian matrix
+  # mode is 1: use Structure tensor
+  #
+  proc ML_MultiLines_new( ) \
+  {
+    current_proc = "ML_MultiLines_new()"
+    if (!exists(ML_SD_th)) {
+      InfoDialog "MultiLines_new Multilines not initialized"
     }
 
-    rad = rad*_step
-    SetProgress(_i/numrad*100)
+    # TODO: adapt for ROI
+    InitTime
+
+    #  Load input images
+    ML_load_input()
+
+    # Precompute coefficient of proportionality
+    ML_h(ML_gamma,ML_theta,&ML_rad2sigma_coeff)
+  
+    global::ML_current_rad   = ML_radmin
+    global::ML_current_sigma = 0
+
+    if (ML_numrad>1) {
+      _step=exp((ln(ML_radmax)-ln(ML_radmin))/(ML_numrad-1))
+    } else {
+      _step = 1
+    }
+  
+    #
+    # main loop 
+    #
+    response=Image(FLOAT,1,ML_input)
+    response.initvalue(0)
+  
+    for local::i=0 to ML_numrad-1 {
+      iteration_mess = boost_format(" Iteration %1%") % i
+      SetStatusText( current_proc+iteration_mess )
+      ML_current_progress = i/ML_numrad*100
+      ML_current_step     = 1/ML_numrad*100
+      SetProgress(ML_current_progress)
+  
+  
+      ML_rad2sigma(ML_current_rad,&ML_current_sigma)
+  
+      printn sprint(" radius = %0.2f",ML_current_rad)
+      printn sprint(" sigma = %0.2f", ML_current_sigma)
+  
+      ML_ComputeResponse_new(ML_current_sigma, &response)
+  
+      // Compute and Update Local Maxima
+      SetStatusText( iteration_mess + \
+                      "Compute and Update Local Maxima")
+  
+      # keep maximal response
+      if (i==0) {
+        max_response=response
+        if (ML_local_maxima) {
+          # 3 more images in memory
+          prev_response=response
+          maxima = response*0
+          global::ML_maxima <<= response*0
+          if (ML_keep_orientations) {
+            # check how to get the vectors here, or keep the symmetric matric??
+            #v1_max=v1
+            #v2_max=v2
+            #v3_max=v3
+          }
+          if (ML_keep_radii) {
+            radius = (response>0)*ML_current_rad;
+          }
+        }
+      } else {
+        max_response=max(response,max_response)
+
+        if (ML_local_maxima) {
+          # Update the maxima
+          # only keep the first maxima found
+          ML_maxima = (ML_maxima!=0)*ML_maxima+(ML_maxima==0)*(maxima>response)*maxima
+          if (ML_keep_orientations) {
+            # to do
+            #v1_max = v1_max*(max_response>=response)+v1*(max_response<response)
+            #v2_max = v2_max*(max_response>=response)+v2*(max_response<response)
+            #v3_max = v3_max*(max_response>=response)+v3*(max_response<response)
+          }
+          if (ML_keep_radii) {
+            radius = (max_response>=response)*radius+(max_response<response)*rad
+          }
+          # Compute local maxima
+          maxima = LocalExtrema(response,ML_current_v1,ML_current_v2,ML_mask)
+          maxima = maxima*(response>prev_response)
+        } 
+        # end if (ML_local_maxima)
+      }
+  
+      ML_current_rad = ML_current_rad*_step
+      SetProgress(i/ML_numrad*100)
+    }
+
+    # free memory from global images used for the computation
+    if (ML_local_maxima) {
+      del ML_current_v1
+      del ML_current_v2
+    }
+
+    # set the result image
+    global::ML_result <<= max_response
+
+    SetProgress(0)
+    SetStatusText( "Finished MultiLines_new" )
+    EndTime
+  } // MultiLines_new
+
+  #-----------------------------------------------
+  proc ML_CB_ROI() {
+    global
+    if (exists(ML_input_draw)) {
+      ML_roi <<= ML_input[ML_input_draw]
+      ML_roi_contour = (UCHAR) ML_input*0
+      ML_roi = 1
+      ML_roi_contour.putimage(ML_roi)
+      ML_Display()
+    }
   }
 
-  result    = max_response
-  SetProgress(0)
+  #-----------------------------------------------
+  proc ML_Display() {
+    global_new
+    show ML_input
+    if (exists(ML_result)) {
+      ML_input_draw.compare(ML_result)
+    }
+    if (exists(ML_roi_contour)) {
+      ML_input_draw.SetIsoContour(0,ML_roi_contour,0.5)
+      ML_input_draw.DrawIsoContour(0,1)
+    }
+  }
+  
+  #-----------------------------------------------
+  proc ML_Save() {
+    ML_result.save ML_output_name
+  }
 
-} // MultiLines_new
+  #-----------------------------------------------
+  proc ML_Gui() \
+  {
+    global::ML_win = ParamWin("Vesselness")
+  
+    ML_win.BeginBook
+      ML_win.AddPage("Main")
+        # set the input image
+        ML_win.AddImageChoice(ML_input_name, "Input")
+        # set the mask image
+        ML_win.AddImageChoice(ML_mask_name, "Mask")
+      
+
+        modeid = ML_win.AddEnum(ML_mode)
+          ML_win.AddEnumChoice(modeid,"Hessian Matrix")
+          ML_win.AddEnumChoice(modeid,"Structure Tensor")
+
+        ML_win.BeginBox("Controls")
+          ML_win.BeginHorizontal
+            ML_win.AddButton("Select ROI", ML_CB_ROI)
+            ML_win.AddButton("Run",        ML_MultiLines)
+            ML_win.AddButton("Run new",    ML_MultiLines_new)
+          ML_win.EndHorizontal
+          ML_outputname_id = ML_win.AddString(  ML_output_name, "Output")
+          ML_win.BeginHorizontal
+              display_id = ML_win.AddButton("Display",    ML_Display)
+              display_id = ML_win.AddButton("Save",       ML_Save)
+          ML_win.EndHorizontal
+        ML_win.EndBox
+      ML_win.AddPage("Circle")
+
+        ML_win.AddBoolean(ML_use_SD)
+        ML_win.AddFloat(ML_SD_th, 0,10)
+        ML_win.AddBoolean(ML_use_EXC)
+        ML_win.AddFloat(ML_EXC_th,0,10)
+        pairmodeid = ML_win.AddEnum(ML_pairs_mode)
+          ML_win.AddEnumChoice(pairmodeid,"Min")
+          ML_win.AddEnumChoice(pairmodeid,"Max")
+          ML_win.AddEnumChoice(pairmodeid,"Mean")
+        ML_win.AddFloat(ML_keephighest,0,100)
+      ML_win.AddPage("Scales")
+        ML_radmin_id = ML_win.AddFloat(ML_radmin,0.01,10)
+        ML_radmax_id = ML_win.AddFloat(ML_radmax,0.01,10)
+        ML_numrad_id = ML_win.AddInt(  ML_numrad,1,20)
+      
+        ML_win.AddBoolean(ML_local_maxima)
+        ML_win.AddBoolean(ML_keep_orientations)
+        ML_win.AddBoolean(ML_keep_radii)
+
+
+    ML_win.EndBook
+  
+    ML_win.AddButton("Close",ML_Close)
+  
+    ML_win.update
+    ML_win.Display
+  }
+
+#-------------------------------------------
+ML_Init()
+if (inputname != "") {
+  in = Image(inputname)
+  ML_input_name = "in"
+  ML_win.update
+}
+
+}

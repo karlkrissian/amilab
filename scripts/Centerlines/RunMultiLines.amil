@@ -35,6 +35,8 @@ result.SetName(output_name)
 maxres = result
 radim = result
 
+ML_init
+
 #MultiLines(input_image,&result,&maxres,&radim,radmin,radmax,numrad,GB_mask,1)
 MultiLines_new(&input_image,&result,radmin,radmax,numrad,&GB_mask,1)
 
