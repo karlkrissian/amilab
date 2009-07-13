@@ -30,12 +30,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "Eigen.hpp"
+
 // 
 //  Routines from numerical recipes in C
 //
 
 #define vector(b,e) new float[e-b+2];
-
 #define free_vector(v) delete [] v;
 
 #define ROTATE(a,i,j,k,l) g=a[i][j]; h=a[k][l]; a[i][j]=g-s*(h+g*tau); \
@@ -43,6 +44,24 @@
 
 
 int jacobi(float** a, int n, float d[], float** v, int *nrot)
+// see jacobi2 for details
+{
+  float *b,*z;
+
+  b=vector(1,n);
+  z=vector(1,n);
+
+  int res = jacobi2(a, n,d,v,nrot,b,z);
+
+  free_vector(z);
+  free_vector(b);
+  return res;
+}
+
+
+//---------------------------------------------------------------------
+int jacobi2(float** a, int n, float d[], float** v, int *nrot,
+            float* b, float* z)
 //
 //
 // Computes all eigenvalues and eigenvectors of a real symmetric matrix
@@ -55,11 +74,8 @@ int jacobi(float** a, int n, float d[], float** v, int *nrot)
 
 {
   int   j,iq,ip,i;
-  float tresh,theta,tau,t,sm,s,h,c,*b,*z;
+  float tresh,theta,tau,t,sm,s,h,c;
   float g;
-
-  b=vector(1,n);
-  z=vector(1,n);
 
   // Initialize to identity matrix
   for(ip=0;ip<n; ip++) {
@@ -89,8 +105,6 @@ int jacobi(float** a, int n, float d[], float** v, int *nrot)
     // The normal return, which relies on 
     // quadratic convergence to machine underflow.
     if (sm==0.0) {
-      free_vector(z);
-      free_vector(b);
       return 1;
     }
 
@@ -104,67 +118,66 @@ int jacobi(float** a, int n, float d[], float** v, int *nrot)
 
     for(ip=0;ip<n-1;ip++) 
       {
-	for(iq=ip+1;iq<n;iq++) 	
-	  {
-	    g=100.0*fabs(a[ip][iq]);
-	    // After 4 sweeps, skip the rotation if the off-diagonal element is small.
-	    if ((i>4)  && ((float) (fabs(d[ip])+g) == (float) fabs(d[ip]))
-		&& ((float) (fabs(d[iq])+g) == (float) fabs(d[iq])))
-	      a[ip][iq] = 0.0;
-	    else 
-	      if (fabs(a[ip][iq]) > tresh) {
-		h=d[iq]-d[ip];
-		if ((float)(fabs(h)+g) == (float) fabs(h))
-		  // t=1/(2*theta)
-		  t=(a[ip][iq])/h;
-		else {
-		  theta=0.5*h/(a[ip][iq]);
-		  t=1.0/(fabs(theta)+sqrt(1.0+theta*theta));
-		  if (theta < 0.0) t=-t;
-		}
-		c=1.0/sqrt(1.0+t*t);
-		s=t*c;
-		tau=s/(1.0+c);
-		h=t*a[ip][iq];
-		z[ip] -= h;
-		z[iq] += h;
-		d[ip] -= h;
-		d[iq] += h;
-		a[ip][iq] = 0.0;
-		for(j=0;j<=ip-1;j++) {
-		  // Case of rotations 1<=j<p
-		  ROTATE(a,j,ip,j,iq)
-		    }
-		for(j=ip+1;j<=iq-1;j++) {
-		  // Case of rotations p<j<q
-		  ROTATE(a,ip,j,j,iq)
-		    }
-		for(j=iq+1;j<n;j++) {
-		  // Case of rotations q<=j<n
-		  ROTATE(a,ip,j,iq,j)
-		    }
-		for(j=0;j<n;j++) {
-		  ROTATE(v,j,ip,j,iq)
-		    }
-		++(*nrot);
-	      }
-	  }  
+  for(iq=ip+1;iq<n;iq++)  
+    {
+      g=100.0*fabs(a[ip][iq]);
+      // After 4 sweeps, skip the rotation if the off-diagonal element is small.
+      if ((i>4)  && ((float) (fabs(d[ip])+g) == (float) fabs(d[ip]))
+    && ((float) (fabs(d[iq])+g) == (float) fabs(d[iq])))
+        a[ip][iq] = 0.0;
+      else 
+        if (fabs(a[ip][iq]) > tresh) {
+    h=d[iq]-d[ip];
+    if ((float)(fabs(h)+g) == (float) fabs(h))
+      // t=1/(2*theta)
+      t=(a[ip][iq])/h;
+    else {
+      theta=0.5*h/(a[ip][iq]);
+      t=1.0/(fabs(theta)+sqrt(1.0+theta*theta));
+      if (theta < 0.0) t=-t;
+    }
+    c=1.0/sqrt(1.0+t*t);
+    s=t*c;
+    tau=s/(1.0+c);
+    h=t*a[ip][iq];
+    z[ip] -= h;
+    z[iq] += h;
+    d[ip] -= h;
+    d[iq] += h;
+    a[ip][iq] = 0.0;
+    for(j=0;j<=ip-1;j++) {
+      // Case of rotations 1<=j<p
+      ROTATE(a,j,ip,j,iq)
+        }
+    for(j=ip+1;j<=iq-1;j++) {
+      // Case of rotations p<j<q
+      ROTATE(a,ip,j,j,iq)
+        }
+    for(j=iq+1;j<n;j++) {
+      // Case of rotations q<=j<n
+      ROTATE(a,ip,j,iq,j)
+        }
+    for(j=0;j<n;j++) {
+      ROTATE(v,j,ip,j,iq)
+        }
+    ++(*nrot);
+        }
+    }  
 
       }
       for(ip=0;ip<n;ip++) {
-	   b[ip] += z[ip];
-	   d[ip] = b[ip];
-	   z[ip] = 0.0;
+     b[ip] += z[ip];
+     d[ip] = b[ip];
+     z[ip] = 0.0;
       }
 
   }
-  
   fprintf(stderr,"Too many iterations in routine Jacobi\n");
 
-  free_vector(z);
-  free_vector(b);
   return 0;
 }
+
+
 
 
 void eigsrt(float d[], float** v, int n)

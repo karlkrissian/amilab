@@ -30,6 +30,8 @@
 //  Routines from numerical recipes in C
 //
 
+#ifndef _Eigen_hpp_
+#define _Eigen_hpp_
 
 //======================================================================
 // For any dimension
@@ -46,6 +48,13 @@ int jacobi(float** a, int n, float d[], float** v, int *nrot);
 // eigenvectors of a.
 // nrot returns the number of Jacobi rotations that were required.
 //
+
+// same as previous function, but to avoid allocation,
+// we give 2 vectors of size n as parameters
+int jacobi2(  float** a, int n, float d[], float** v, int *nrot, 
+              float* tmp_b,
+              float* tmp_z);
+
 
 void eigsrt(float d[], float** v, int n);
 //
@@ -66,3 +75,4 @@ void eigsrt_inc(float d[], float** v, int n);
 // and rearranges the columns of v correspondingly.
 //
 
+#endif // defined _Eigen_hpp_
