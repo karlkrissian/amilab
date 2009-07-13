@@ -80,6 +80,7 @@ InrImage* itkWrite(ParamList* p)
   cout << "Converting image to ITK format " << endl;
   	
 	image = InrToITK<PixelType,Dimension>(input,region);
+  cout << "Writing itk file " << endl;
 	itkWriteClass<PixelType,Dimension>()(image,*fname);
 	return input;
 
