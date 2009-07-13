@@ -32,10 +32,19 @@ SurfacePoly* Func_path_from_displ( InrImage* displ,
                                    int startx, int starty, int startz);
 
 //-------------------------------------------------------
-SurfacePoly* Func_path_from_vectfield( InrImage* displ,
+SurfacePoly* Func_path_from_vectfield(  InrImage::ptr displ,
+                                        double start[3],
+                                        double step_size,
+                                        double max_length,
+                                        double delta = 0.05);
+
+//-------------------------------------------------------
+SurfacePoly* Func_path_from_vectfield( InrImage::ptr displ,
                                       double start[3],
                                       double end[3],
                                       double step_size,
-                                      double max_length);
+                                      double max_length,
+                                      double delta = 0.05);
+
 
 #endif // _func_shortestpath_h_

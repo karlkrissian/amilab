@@ -637,26 +637,29 @@ SurfacePoly* Func_path_from_displ( InrImage* displ,
 }
 
 
+
 //-------------------------------------------------------
-SurfacePoly* Func_path_from_vectfield( InrImage* displ,
-                                      double start[3],
-                                      double end[3],
-                                      double step_size,
-                                      double max_length)
+// delta is the small increment used to estimate the derivatives
+// based on linear interpolation
+// only for 3D images
+SurfacePoly* Func_path_from_vectfield(  InrImage::ptr displ,
+                                        double start[3],
+                                        double step_size,
+                                        double max_length,
+                                        double delta)
 {
   double p[3] = {start[0],start[1],start[2]};
+  double q[3];
   double vox_p[3];
 
   double vx,vy,vz,nv;
+  double I,Ixp,Ixm,Iyp,Iym,Izp,Izm;
   int num_points=0;
   bool end_reached=false;
   double distance = 0.0, prev_dist = 0.0;
   bool   vectorfield = false;
   double closest_point_intensity;
 
-  cout  << "Func_path_from_vectfield() \t expected endpoint "
-        << format(" %0.2f %0.2f %0.2f ") % end[0] % end[1] % end[2]
-        << endl;
   vectorfield = ((displ->GetVDim() ==3));
 
   vox_p[0] = displ->SpaceToVoxelX(p[0]);
@@ -674,6 +677,7 @@ SurfacePoly* Func_path_from_vectfield( InrImage* displ,
 
   SurfacePoly* res = new SurfacePoly();
   res->NewLine();
+  for(int i=0;i<2;i++) q[i] = p[i];
 
   while (!end_reached) {
 
@@ -690,26 +694,88 @@ SurfacePoly* Func_path_from_vectfield( InrImage* displ,
                   vox_p[0],vox_p[1],vox_p[2],2);
       nv = sqrt(vx*vx+vy*vy+vz*vz);
     } else {
-      double step = 0.1;
+      double step = delta;
       float vpx = vox_p[0];
       float vpy = vox_p[1];
       float vpz = vox_p[2];
-      vx =  displ->InterpLinIntensite(vpx+step,vpy,vpz)-
-            displ->InterpLinIntensite(vpx-step,vpy,vpz);
-      vy =  displ->InterpLinIntensite(vpx,vpy+step,vpz)-
-            displ->InterpLinIntensite(vpx,vpy-step,vpz);
-      vz =  displ->InterpLinIntensite(vpx,vpy,vpz+step)-
-            displ->InterpLinIntensite(vpx,vpy,vpz-step);
-      // go in the oposite direction of the gradient
-      vx /= (-2.0*step*displ->VoxSizeX());
-      vy /= (-2.0*step*displ->VoxSizeY());
-      vz /= (-2.0*step*displ->VoxSizeZ());
+      // Compute downwind gradient to ensure evolution toward lower intensities
+      I   = displ->InterpLinIntensite(vpx,vpy,vpz);
+      Ixp = displ->InterpLinIntensite(vpx+step,vpy,vpz);
+      Ixm = displ->InterpLinIntensite(vpx-step,vpy,vpz);
+      Iyp = displ->InterpLinIntensite(vpx,vpy+step,vpz);
+      Iym = displ->InterpLinIntensite(vpx,vpy-step,vpz);
+      Izp = displ->InterpLinIntensite(vpx,vpy,vpz+step);
+      Izm = displ->InterpLinIntensite(vpx,vpy,vpz-step);
+
+      // go in the oposite direction of the gradient and towards lower values
+      if ((Ixp<=Ixm)&&(Ixp<I)) 
+        vx = (I-Ixp)/(step*displ->VoxSizeX());
+      else
+      if ((Ixm<Ixp)&&(Ixm<I)) 
+        vx = (Ixm-I)/(step*displ->VoxSizeX());
+      else
+        vx = 0;
+
+      if ((Iyp<=Iym)&&(Iyp<I)) 
+        vy = (I-Iyp)/(step*displ->VoxSizeY());
+      else
+      if ((Iym<Iyp)&&(Iym<I)) 
+        vy = (Iym-I)/(step*displ->VoxSizeY());
+      else
+        vy = 0;
+
+      if ((Izp<=Izm)&&(Izp<I)) 
+        vz = (I-Izp)/(step*displ->VoxSizeZ());
+      else
+      if ((Izm<Izp)&&(Izm<I)) 
+        vz = (Izm-I)/(step*displ->VoxSizeZ());
+      else
+        vz = 0;
+
       nv = sqrt(vx*vx+vy*vy+vz*vz);
       // if the gradient is strong enough, normalize it
       if (nv>1E-4) {
         vx /= nv;
         vy /= nv;
         vz /= nv;
+      } else {
+        FILE_ERROR( 
+          format(" local maximul found at %1% %2% %3% :") % vpx % vpy % vpz
+          << format(" I I{x,y,z}{p,m} = %1% %2% %3% %4% %5% %6% %7%")
+          % I % Ixp % Ixm % Iyp % Iym % Izp % Izm
+          );
+        // look for the minimal over the neighbors
+        int xpos = round(vpx);
+        int ypos = round(vpy);
+        int zpos = round(vpz);
+        float valmin = I;
+        bool  minfound = false;
+        int xmin,ymin,zmin;
+        for (int i=-1;i<=1;i++)
+        for (int j=-1;j<=1;j++)
+        for (int k=-1;k<=1;k++)  {
+          if (displ->CoordOK(xpos+i,ypos+j,zpos+k))
+            if ((*displ)(xpos+i,ypos+j,zpos+k)<valmin) 
+            {
+              valmin = (*displ)(xpos+i,ypos+j,zpos+k);
+              xmin = xpos+i;
+              ymin = ypos+j;
+              zmin = zpos+k;
+              minfound = true;
+            }
+        }
+        if (minfound) {
+          // move toward the neighbor point with lower intensity
+          vx = (xmin-vpx)*displ->VoxSizeX();
+          vy = (ymin-vpy)*displ->VoxSizeY();
+          vz = (zmin-vpz)*displ->VoxSizeZ();
+          nv = sqrt(vx*vx+vy*vy+vz*vz);
+        }
+        if (nv>1E-4) {
+          vx /= nv;
+          vy /= nv;
+          vz /= nv;
+        }
       }
     }
 
@@ -721,19 +787,19 @@ SurfacePoly* Func_path_from_vectfield( InrImage* displ,
     distance += step_size;
     if ((distance>=prev_dist+10)||(distance<2)) {
       prev_dist = distance;
-      cout  << " point " << num_points 
-            << format(" ( %0.2f, %0.2f %0.2f )") 
-                  % p[0] % p[1] % p[2]
-            << format(" ( %0.2f, %0.2f %0.2f )") 
-                  % vox_p[0] % vox_p[1] % vox_p[2]
-            << format(" ( %0.2f, %0.2f %0.2f )") 
-                  % vx % vy % vz
-            << format("  nv %0.3f") %  nv
+      for(int i=0;i<2;i++) q[i] = p[i];
+      FILE_MESSAGE( format(" point %1% ") % num_points
+                    << format(" ( %0.2f, %0.2f %0.2f )") 
+                           % p[0] % p[1] % p[2]
+                    << format(" ( %0.2f, %0.2f %0.2f )") 
+                           % vox_p[0] % vox_p[1] % vox_p[2] 
+                    << format(" ( %0.2f, %0.2f %0.2f )") 
+                     % vx % vy % vz
+                    << format("  nv %0.3f") %  nv 
             << format("  current val %0.4f %0.4f")
               % displ->InterpLinIntensite(vox_p[0],vox_p[1],vox_p[2])
               % closest_point_intensity
-            << format("  d= %0.3f mm") %  distance
-            << endl;
+            << format("  d= %0.3f mm") %  distance )
     }
 
     p[0] += vx*step_size;
@@ -761,26 +827,7 @@ SurfacePoly* Func_path_from_vectfield( InrImage* displ,
 
   res->EndLine();
 
-  // check that we are close to the expected endpoint
-  double dist_end;
-  dist_end = sqrt ( (p[0]-end[0])*(p[0]-end[0]) +
-                    (p[1]-end[1])*(p[1]-end[1]) +
-                    (p[2]-end[2])*(p[2]-end[2])
-                  );
-  double voxdis = sqrt( displ->VoxSizeX()*displ->VoxSizeX() +
-                        displ->VoxSizeY()*displ->VoxSizeY() +
-                        displ->VoxSizeZ()*displ->VoxSizeZ() 
-                       );
-  if (dist_end<voxdis) {
-    cout << "*** Adding reached end point ***" << endl;
-    res->AddPoint(end[0],end[1],end[2]);
-    res->LineAddPointNumber(num_points);
-    num_points++;
-  } else
-    cout << "*** End point not reached  ***" 
-          << format(" %1% > %2% ") % dist_end % voxdis
-          << endl;
-
+  // cannot check for end point here
   cout  << " Finished point " << num_points 
         << format(" ( %0.2f, %0.2f %0.2f )") 
               % p[0] % p[1] % p[2]
@@ -798,3 +845,57 @@ SurfacePoly* Func_path_from_vectfield( InrImage* displ,
   return res;
 
 } // Func_path_from_vectfield()
+
+
+//-------------------------------------------------------
+// delta is the small increment used to estimate the derivatives
+// based on linear interpolation
+// only for 3D images
+SurfacePoly* Func_path_from_vectfield( InrImage::ptr displ,
+                                      double start[3],
+                                      double end[3],
+                                      double step_size,
+                                      double max_length,
+                                      double delta)
+{
+
+  FILE_MESSAGE(format(" expected endpoint %0.2f %0.2f %0.2f ") 
+                      % end[0] % end[1] % end[2] );
+
+  SurfacePoly* res = Func_path_from_vectfield(displ,start,step_size,max_length,delta);
+
+  // check that we are close to the expected endpoint
+  if (res->GetNumberOfLines() !=1) {
+    FILE_ERROR(" Polydata should contain exactly 1 line");
+    return res;
+  }
+
+  // get the last point of the line
+  T_Line&      l = res->GetLine(0);
+  if (l.NbElts()>0) {
+    Point3DPoly& pt = res->GetPoint(l[l.NbElts()-1]);
+    float p[3] = { pt.pt.x, pt.pt.y, pt.pt.z };
+
+    double dist_end;
+    dist_end = sqrt ( (p[0]-end[0])*(p[0]-end[0]) +
+                      (p[1]-end[1])*(p[1]-end[1]) +
+                      (p[2]-end[2])*(p[2]-end[2])
+                    );
+    double voxdis = sqrt( displ->VoxSizeX()*displ->VoxSizeX() +
+                          displ->VoxSizeY()*displ->VoxSizeY() +
+                          displ->VoxSizeZ()*displ->VoxSizeZ() 
+                        );
+    if (dist_end<voxdis) {
+      cout << "*** Could Add reached end point ***" << endl;
+    } else
+      cout << "*** End point not reached  ***" 
+            << format(" %1% > %2% ") % dist_end % voxdis
+            << endl;
+  
+  } else
+    FILE_ERROR("Resulting line has no point");
+
+  return res;
+
+} // Func_path_from_vectfield()
+
