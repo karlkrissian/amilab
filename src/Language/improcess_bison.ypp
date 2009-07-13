@@ -435,6 +435,7 @@ void CB_update_imagelist( void* imagelist_gui)
 %token T_SetVerboseOn
 %token T_SetVerboseOff
 %token T_SetProgress
+%token T_SetStatusText
 
 %token T_argc
 %token T_emptyargs
@@ -492,6 +493,7 @@ void CB_update_imagelist( void* imagelist_gui)
 %token T_AddEnum T_AddEnumChoice
 %token T_AddImageChoice 
 %token T_AddString T_AddFilename
+%token T_AddLabel
 %token T_ShowSlider
 %token T_SetCallback
 %token T_SetDragCallback
@@ -749,6 +751,7 @@ void CB_update_imagelist( void* imagelist_gui)
 %token T_PrintMatrices
 
 %token SET SETPOS SHOWCURSOR UPDATE COMPARE SETVECTOR
+%token T_lininterp
 %token T_SetCompareDisplacement
 %token T_DrawVector
 %token T_DisplayVectors
@@ -1173,9 +1176,9 @@ func_inst :
        driver.parse_script($2);
        delete [] $2;
      }
-       |
-       FUNCTION
-       {
+    |
+    FUNCTION
+    {
           int res;
           string name;
           string inc_cmd; // increment the command line string
@@ -1211,12 +1214,12 @@ func_inst :
     |
     T_eval expr_string
     {
-      std::string inputstring($2);
-      driver.parse_string(inputstring,"'eval string' command");
-      delete [] $2;
+      string_ptr inputstring( new std::string($2));
+      driver.parse_string( *inputstring,
+                          "'eval string' command");
      }
-        | VAR_AMI_FUNCTION  T_OP_PAR param_list T_CL_PAR end_instr
-        {
+    | VAR_AMI_FUNCTION  T_OP_PAR param_list T_CL_PAR end_instr
+    {
           Variable*       var   = $1;
           ParamList::ptr  param($3);
           AMIFunction::ptr f;
@@ -1561,8 +1564,8 @@ command:
 
         }
         |
-        identifier ASSIGN_OP T_INT T_OP_PAR expr T_CL_PAR
-            {
+          identifier ASSIGN_OP T_INT T_OP_PAR expr T_CL_PAR
+        {
           int* varint;
           IdentifierInfo::ptr ident($1);
 
@@ -1580,7 +1583,7 @@ command:
         }
         |
           identifier ASSIGN_OP expr
-            {
+        {
           float* varfloat;
           IdentifierInfo::ptr ident($1);
           varfloat = new float($3);
@@ -1589,7 +1592,7 @@ command:
         }
         |
           identifier ASSIGN_OP expr_string
-            {
+        {
           string* varstring;
           varstring = new string($3);
           IdentifierInfo::ptr ident($1);
@@ -1665,16 +1668,33 @@ command:
         {
       GB_verbose = 1;
       verbose = 1;
-        }
-        |  T_SetVerboseOff
-        {
+    }
+    |  T_SetVerboseOff
+    {
       GB_verbose = 0;
-        }
-        |  T_SetProgress T_OP_PAR expr T_CL_PAR
-        {
+    }
+    |  T_SetProgress T_OP_PAR expr T_CL_PAR
+    {
+    /**
+      Parameter:
+        Number: percentage of the current process that has been processed.
+      Description:
+        Sets the Progress bar in the Main window to the given percentage (between 0 and 100).
+    */
           GB_main_wxFrame->SetProgress((int)($3+0.5));
-        }
-        |  QUIT  {
+    }
+    |  T_SetStatusText T_OP_PAR expr_string T_CL_PAR
+    {
+    /**
+      Parameter:
+        String: input text
+      Description:
+        Set the given text in the status bar
+    */
+        string_ptr text( new std::string($3));
+        GB_main_wxFrame->SetStatusText( (*text) );
+    }
+    |  QUIT  {
           GB_main_wxFrame->Close(true);
         }
         |  SHOW var_image
@@ -1998,8 +2018,8 @@ command:
             Delete all variables that match the expression, where the expression can contain 
             '*' and '?' characters
         */
-         std::string varmatch($2);
-         Vars.deleteVars(varmatch);
+        string_ptr varmatch( new std::string($2));
+         Vars.deleteVars( *varmatch);
         }
         | T_del VAR_ARRAY_SURFACE T_OP_BR expr T_CL_BR
         {
@@ -2009,14 +2029,20 @@ command:
           if (array->GetVar(i).Pointer()!=NULL) {
             array->GetVar(i).FreeMemory();
           }
-        }
-        | ASHELL expr_string
-           {
-         std::system($2);
-         delete [] $2;
-           }
-        | LS
-           {
+      }
+      | ASHELL expr_string
+      {
+      /**
+        Parameters:
+          - string expression: command to call
+        Description:
+          calls a command from the system using std::system()
+      */
+        string_ptr cmd( new std::string($2));
+        std::system( cmd->c_str());
+      }
+      | LS
+      {
 //         std::ostream streamtest(TC->GetLog());
 //        std::cout=streamtest;
          //wxStreamToTextRedirector redirect(TC->GetLog());
@@ -2341,18 +2367,18 @@ command:
         | VAR_FILE T_POINT PRINT expr_string
         {
           FILE_ptr file = *(FILE_ptr*) ($1->Pointer());
+          string_ptr text( new std::string($4));
 
-          fprintf(file.get(),"%s",$4);
+          fprintf(file.get(),"%s",text->c_str());
           fflush(file.get());
-          delete [] $4;
         }
         | VAR_FILE T_POINT PRINTN expr_string
         {
           FILE_ptr file = *(FILE_ptr*) ($1->Pointer());
+          string_ptr text( new std::string($4));
 
-          fprintf(file.get(),"%s\n",$4);
+          fprintf(file.get(),"%s\n",text->c_str());
           fflush(file.get());
-          delete [] $4;
         }
         | PRINT expr_string
         {
@@ -5409,12 +5435,37 @@ postfix_expr
         **/
       $$=(**(InrImage::ptr*) $1->Pointer())((int) $3,(int) ( $5));
     }
-        | var_image T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
-        {
-      $$=(**(InrImage::ptr*) $1->Pointer())((int) $3,(int) ( $5), (int) ($7));
+    | var_image T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
+    {
+      /**
+        Parameters:
+          - input image variable
+          - pixel position x,y,z
+        Description:
+          returns the pixel intensity at the given position
+          the position value are rounded to the closest integer
+      */
+      $$=(**(InrImage::ptr*) $1->Pointer())((int) round($3),
+          (int) round( $5), 
+          (int) round($7));
     }
-        | var_image T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
-        {
+    | var_image T_POINT T_lininterp T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
+    {
+      /**
+        Parameters:
+          - input image variable
+          - pixel position x,y,z
+        Description:
+          returns the pixel intensity at the given position
+          the position using linear interpolation
+      */
+      $$=(*(InrImage::ptr*) $1->Pointer())->InterpLinIntensite(
+          $5,
+          $7, 
+          $9);
+    }
+    | var_image T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
+    {
         /**
         Description:
         get image component value at a given 3D voxel position.
@@ -6219,9 +6270,31 @@ postfix_expr
         pw->AjouteChaine( &var_id,
           (string_ptr*)$5->Pointer(),
           $7);
-        pw->ContraintesChaine(var_id,(char*) ((string_ptr*)$5->Pointer())->get()->c_str());
+        pw->ContraintesChaine(var_id,
+          (char*) ((string_ptr*)$5->Pointer())->get()->c_str());
         $$=var_id;
         delete [] $7;
+    }
+    |
+    VAR_PARAMWIN T_POINT T_AddLabel T_OP_PAR  expr_string  T_COMMA expr_string  T_CL_PAR
+    {
+    /**
+    Parameters:
+      (1) Parameter window
+      (5) label label
+      (7) label value
+
+    Description:
+      Adds a label in the parameter window
+    **/
+        ParamPanel_ptr pw  = *(ParamPanel_ptr*) $1->Pointer();
+        string_ptr label( new std::string($5));
+        string_ptr value( new std::string($7));
+        int var_id;
+        pw->AddLabel( &var_id,
+                      label->c_str(),
+                      value->c_str());
+        $$=var_id;
     }
     |
     VAR_PARAMWIN T_POINT T_AddFilename T_OP_PAR  VAR_STRING  T_COMMA expr_string  T_COMMA expr_string T_COMMA expr_string T_CL_PAR
@@ -6239,9 +6312,16 @@ postfix_expr
     **/
         ParamPanel_ptr pw  = *(ParamPanel_ptr*) $1->Pointer();
         int var_id;
+        string_ptr label( new std::string($7));
+        string_ptr defpath( new std::string($9));
+        string_ptr defmask( new std::string($11));
+
         // passer AjouteNomFichier a std::string !!!!
-        pw->AjouteNomFichier( &var_id, (string_ptr*)$5->Pointer(), (char*) $7);
-        pw->ContraintesNomFichier(var_id,(char*) $9,(char*)"",(char*) $11);
+        pw->AjouteNomFichier( &var_id, (string_ptr*)$5->Pointer(), label->c_str());
+        pw->ContraintesNomFichier(var_id,
+                                  defpath->c_str(),
+                                  (char*)"",
+                                  defmask->c_str());
         $$=var_id;
     }
     |
@@ -6296,8 +6376,9 @@ postfix_expr
     Description:
       Check for the existence of the given filename
     **/
-      $$ = wxFileExists(wxString($3,wxConvUTF8));
-      delete [] $3;
+      string_ptr name( new std::string($3));
+
+      $$ = wxFileExists(wxString(name->c_str(),wxConvUTF8));
     }
     | basic_type
     {
@@ -6305,10 +6386,17 @@ postfix_expr
     }
     | VAR_FILE T_POINT T_scan_float T_OP_PAR expr_string T_CL_PAR
     {
+    /**
+      Description:
+        Scans a float number in the given file and based on the
+        given formatting expression.
+    */
         float res;
         FILE_ptr file = *(FILE_ptr*) ($1->Pointer());
+        string_ptr format( new std::string($5));
+
         setlocale(LC_NUMERIC, "C");
-        fscanf(file.get(),$5,&res);
+        fscanf(file.get(),format->c_str(),&res);
         $$ =  res;
     }
     | VAR_FILE T_POINT T_read T_OP_PAR VAR_FLOAT T_CL_PAR
@@ -8223,24 +8311,24 @@ image:
       driver.im_stack.AddImage(res);
 
     }
-        |
-        T_vtkAnisoGS
-        T_OP_PAR var_image
-        T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
-        {
-        /**
-          Parameters:
-            (3)  input image
-            (5)  standard deviation for Gaussian smoothing sigma
-            (7)  threshold on the gradient magnitude
-            (9)  data attachment coefficient
-            (11) number of iterations
-            (13) number of threads
+    |
+    T_vtkAnisoGS
+    T_OP_PAR var_image
+    T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
+    {
+      /**
+        Parameters:
+          (3)  input image
+          (5)  standard deviation for Gaussian smoothing sigma
+          (7)  threshold on the gradient magnitude
+          (9)  data attachment coefficient
+          (11) number of iterations
+          (13) number of threads
 
-          Description:
-            Anisotropic diffusion filter based on the Flux diffusion paper
-            (Krissian, 2002, IEEE TMI).
-        **/
+        Description:
+          Anisotropic diffusion filter based on the Flux diffusion paper
+          (Krissian, 2002, IEEE TMI).
+      **/
       InrImage::ptr  in      = *(InrImage::ptr*) $3->Pointer();
       float      sigma   = $5;
       float      k       = $7;
@@ -9659,9 +9747,9 @@ image:
       res = AMIFluid::Func_Temp2Altitudes(input.get());
       if (res!=NULL) driver.im_stack.AddImage(res);
 
-        }
-        | T_ReadFlow T_OP_PAR expr_string   T_CL_PAR
-        {
+    }
+    | T_ReadFlow T_OP_PAR expr_string   T_CL_PAR
+    {
       InrImage* res;
       res= AMIFluid::Func_ReadFlow((char*)$3);
       if (res!=NULL) driver.im_stack.AddImage(res);
@@ -10508,8 +10596,50 @@ surface:
 
       double start[3] = {$9,$11,$13};
       double end[3] = {$15,$17,$19};
-      surf = Func_path_from_vectfield(  im.get(),
+      surf = Func_path_from_vectfield(  im,
                                         start,end,
+                                        $5, $7);
+
+      Si surf==NULL Alors
+        driver.err_print("Func_path_from_vectfield() error ... \n");
+      FinSi
+      Si surf != NULL Alors
+        driver.surf_stack.AddSurf(surf);
+      FinSi
+    }
+    |
+    T_PathFromVectField T_OP_PAR     expr_image
+                            T_COMMA expr T_COMMA expr
+                            T_COMMA expr T_COMMA expr T_COMMA expr
+                          T_CL_PAR
+    {
+    /**
+    Parameters:
+      (3)  input image as a vector field in spatial coordinates
+            or as a scalar potential
+      (5) time step for the evolution
+      (7) maximal Euclidean distance of the path
+      (9)  X coord of the starting point (in spatial coord.)
+      (11)  Y coord ---
+      (13)  Z coord ---
+
+    Description:
+      Creates a path starting at a point in spatial coordinates
+      and following the displacements given by the input vector field
+      image
+      if the input is scalar the corresponding vector field is computed
+      from its gradient by local linear interpolation
+      the tracking stops in one of the following cases:
+        - the maximal distance is reached
+        - the closest voxel to the current location has a negative intensity
+        - the current gradient is very low
+    **/
+      InrImage::ptr im = InrImage::ptr(driver.im_stack.GetLastImage());
+      SurfacePoly* surf;
+
+      double start[3] = {$9,$11,$13};
+      surf = Func_path_from_vectfield(  im,
+                                        start,
                                         $5, $7);
 
       Si surf==NULL Alors
