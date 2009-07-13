@@ -770,11 +770,21 @@ SurfacePoly* Func_path_from_vectfield(  InrImage::ptr displ,
           vy = (ymin-vpy)*displ->VoxSizeY();
           vz = (zmin-vpz)*displ->VoxSizeZ();
           nv = sqrt(vx*vx+vy*vy+vz*vz);
+         FILE_ERROR(  format(" minimum found at  %1% %2% %3% :") % xmin % ymin % zmin
+          << format(" new vector %1% %2% %3% norm %4%")
+          % vx % vy % vz % nv
+          );
+        } else  {
+          FILE_ERROR(" no minimum found among neighbors !");
         }
         if (nv>1E-4) {
           vx /= nv;
           vy /= nv;
           vz /= nv;
+          // jump to new point !!!
+          vx /=step_size;
+          vy /=step_size;
+          vz /=step_size;
         }
       }
     }
@@ -785,6 +795,25 @@ SurfacePoly* Func_path_from_vectfield(  InrImage::ptr displ,
     closest_point_intensity = displ->ValeurBuffer();
 
     distance += step_size;
+
+    // debug information
+    int xpos = round(vox_p[0]);
+    int ypos = round(vox_p[1]);
+    int zpos = round(vox_p[2]);
+    if ((xpos==74)&(ypos==78)&(zpos==72)) {
+      FILE_MESSAGE( format(" point %1% ") % num_points
+                    << format(" ( %0.2f, %0.2f %0.2f )") 
+                           % p[0] % p[1] % p[2]
+                    << format(" ( %0.2f, %0.2f %0.2f )") 
+                           % vox_p[0] % vox_p[1] % vox_p[2] 
+                    << format(" ( %0.2f, %0.2f %0.2f )") 
+                     % vx % vy % vz
+                    << format("  nv %0.3f") %  nv 
+            << format("  current val %0.4f %0.4f")
+              % displ->InterpLinIntensite(vox_p[0],vox_p[1],vox_p[2])
+              % closest_point_intensity
+            << format("  d= %0.3f mm") %  distance );
+    }
     if ((distance>=prev_dist+10)||(distance<2)) {
       prev_dist = distance;
       for(int i=0;i<2;i++) q[i] = p[i];
@@ -799,7 +828,7 @@ SurfacePoly* Func_path_from_vectfield(  InrImage::ptr displ,
             << format("  current val %0.4f %0.4f")
               % displ->InterpLinIntensite(vox_p[0],vox_p[1],vox_p[2])
               % closest_point_intensity
-            << format("  d= %0.3f mm") %  distance )
+            << format("  d= %0.3f mm") %  distance );
     }
 
     p[0] += vx*step_size;
