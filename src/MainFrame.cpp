@@ -207,9 +207,12 @@ void MainFrame::CreateMenu()
   wxMenu *menuView = new wxMenu;
   menuView->Append( ID_View_Reset, GetwxStr("&Reset") );
 
+  wxMenu *menuScripts = new wxMenu;
+
   wxMenuBar *menuBar = new wxMenuBar;
-  menuBar->Append( menuFile, GetwxStr("&File") );
-  menuBar->Append( menuView, GetwxStr("&View") );
+  menuBar->Append( menuFile,    GetwxStr("&File") );
+  menuBar->Append( menuView,    GetwxStr("&View") );
+  menuBar->Append( menuScripts, GetwxStr("&Scripts") );
 
   SetMenuBar( menuBar );
 } // CreateMenu()
@@ -932,6 +935,14 @@ void MainFrame::OnClose(wxCloseEvent& event)
 */
 }
 
+/*
+//-----------------------------------------------------
+void MainFrame::OnInternalIdle()
+{
+    if (wxUpdateUIEvent::CanUpdate(this))
+        UpdateWindowUI(wxUPDATE_UI_FROMIDLE);
+}
+*/
 //-----------------------------------------------------
 void MainFrame::UpdateVarList()
 {
@@ -1072,6 +1083,12 @@ void MainFrame::UpdateVarTree()
 void MainFrame::SetProgress( int val )
 {
   _status_bar->SetProgress(val);
+}
+
+//---------------------------------------------------------------
+void MainFrame::SetStatusText( const std::string& text )
+{
+  _status_bar->SetStatusText( GetwxStr(text.c_str()));
 }
 
 //---------------------------------------------------------------
