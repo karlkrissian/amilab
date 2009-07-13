@@ -170,6 +170,7 @@ LineNumber      return(token::T_LineNumber); /*{LineNumber,T_LineNumber}*/
 update           return(token::UPDATE);            /*{update,UPDATE}*/
 set              return(token::SET);               /*{set,SET}*/
 setpos           return(token::SETPOS);            /*{setpos,SETPOS}*/
+lininterp        return(token::T_lininterp);      /*{lininterp,T_lininterp}*/
 initvalue        return(token::T_initvalue);       /*{initvalue,T_initvalue}*/
 showcursor       return(token::SHOWCURSOR);        /*{showcursor,SHOWCURSOR}*/
 compare          return(token::COMPARE);           /*{compare,COMPARE}*/
@@ -293,6 +294,7 @@ SetDebugOff        return(token::T_SetDebugOff); /*{SetDebugOff,T_SetDebugOff}*/
 SetVerboseOn       return(token::T_SetVerboseOn); /*{SetVerboseOn,T_SetVerboseOn}*/
 SetVerboseOff      return(token::T_SetVerboseOff); /*{SetVerboseOff,T_SetVerboseOff}*/
 SetProgress        return(token::T_SetProgress); /*{SetProgress,T_SetProgress}*/
+SetStatusText      return(token::T_SetStatusText); /*{SetStatusText,T_SetStatusText}*/
 Quit               return(token::QUIT); /*{Quit,QUIT}*/
 quit               return(token::QUIT);
 Image              return(token::T_Image); /*{Image,T_Image}*/
@@ -671,6 +673,7 @@ AddEnumChoice     return(token::T_AddEnumChoice); /*{AddEnumChoice,T_AddEnumChoi
 AddImageChoice    return(token::T_AddImageChoice); /*{AddImageChoice,T_AddImageChoice}*/
 AddString         return(token::T_AddString); /*{AddString,T_AddString}*/
 AddFilename       return(token::T_AddFilename); /*{AddFilename,T_AddFilename}*/
+AddLabel          return(token::T_AddLabel); /*{AddLabel,T_AddLabel}*/
 SetCallback       return(token::T_SetCallback); /*{SetCallback,T_SetCallback}*/
 SetDragCallback   return(token::T_SetDragCallback); /*{SetDragCallback,T_SetDragCallback}*/
 SetPostionProp      return(token::T_SetPositionProp); /*{SetPositionProp,T_SetPositionProp}*/
