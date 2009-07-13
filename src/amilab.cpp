@@ -307,6 +307,22 @@ bool MyApp::OnInit()
     GB_driver.yyiplineno=1;
     GB_driver.current_file="Command line prompt";
 
+    // check for existence of config file
+    wxString homedir = ::wxGetUserHome();
+    wxFileName amilab_config;
+    amilab_config.AssignHomeDir();
+    amilab_config.AppendDir(wxT(".amilab"));
+    amilab_config.SetFullName(wxT("config.amil"));
+
+    if (amilab_config.FileExists())
+    try {
+        GB_driver.parse_file(string(amilab_config.GetFullPath().mb_str(wxConvUTF8)));
+        GB_main_wxFrame->GetConsole()->ProcessReturn();
+    }
+    catch (char * str ) {
+        cerr << "Error catched ! " << str << endl;
+    }
+
     Si argc>GB_num_arg_parsed  Alors
       try {
         wxString input_file(argv[GB_num_arg_parsed]);
@@ -319,7 +335,6 @@ bool MyApp::OnInit()
         GB_driver.yyip_popup_buffer();
         */
         GB_driver.parse_file(string(input_file.mb_str(wxConvUTF8)));
-
         GB_main_wxFrame->GetConsole()->ProcessReturn();
 
       } catch (char * str ) {
