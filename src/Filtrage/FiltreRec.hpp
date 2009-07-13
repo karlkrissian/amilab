@@ -477,8 +477,8 @@ public:
     throw (GradientNotComputed);
 
   /// trilinear interpolation
-  Vect3D<double>  Gradient( float x, float y, float z)
-  //              --------
+  Vect3D<double>  Gradient( const double& x, const double& y, 
+                            const double& z) 
     throw (GradientNotComputed);
 
   ///

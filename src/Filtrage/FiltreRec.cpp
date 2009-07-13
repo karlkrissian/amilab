@@ -1286,8 +1286,7 @@ Vect2D<double> FiltreRecursif :: Gradient( int x, int y)
 
 
 //------------------------------------------------------
-Vect3D<double> FiltreRecursif :: Gradient( float x, float y, float z)
-//                                         --------
+Vect3D<double> FiltreRecursif :: Gradient( const double& x, const double& y,  const double& z) 
       throw (GradientNotComputed)
 {
 
