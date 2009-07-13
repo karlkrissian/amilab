@@ -14,6 +14,7 @@
 #include "EigenDecomp.h"
 #include "FloatMatrix.hpp"
 #include "Eigen.hpp"
+#include <boost/scoped_array.hpp>
 
 //--------------------------------------------------------------------
 //  Return a vector of 6 pointers to images including
@@ -67,6 +68,9 @@ InrImage::ptr_vector EigenDecomp3D(InrImage* im,
   bool            mask_ok;
   size_t          per,prev_per=0;
 
+  // temporary vector for jacobi eigen decomposition
+  boost::scoped_array<float> tmp_b (new float[4]);
+  boost::scoped_array<float> tmp_z (new float[4]);
 
   if ( value_flag & GET_FIRST ) {
     result[0] = InrImage::ptr(new InrImage(WT_FLOAT,1,
@@ -142,12 +146,15 @@ InrImage::ptr_vector EigenDecomp3D(InrImage* im,
   
       // Calcul des vep et des vap dans les images associees
       // use vnl here?
-      Diagonale = jacobi( 
+      Diagonale = jacobi2( 
               matrice, 
               3, 
               vap, 
               vec_propre, 
-              &niter );
+              &niter,
+              tmp_b.get(),
+              tmp_z.get() );
+      //
   
       if (Diagonale) {
           eigsrt(vap,  vec_propre, 3);
