@@ -422,7 +422,7 @@ public:
   //            --------
     int* id,
     const char* libelle,
-    char* contenu,
+    const char* contenu,
     type_label type=LabelLabel);
 //@}
   
