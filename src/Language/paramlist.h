@@ -138,19 +138,20 @@ private:
   unsigned char AddParam( vartype t, void* paramp, unsigned char ref=0);
 
   void*         GetParam(int i);
-  unsigned char GetParam( int num, void*& paramp, vartype& t);
+  unsigned char GetParam( int num, void*& paramp, vartype& t, bool needed=true);
 
   template <class T>
-  boost::shared_ptr<T> GetParamPtr(vartype t, int num)
+  boost::shared_ptr<T> GetParamPtr(vartype t, int num, bool needed=true)
   {
     unsigned char OK;
     void* param;
     vartype type;
 
-    OK = GetParam(num,param,type);
+    OK = GetParam(num,param,type,needed);
     if (!OK) {
+      if (needed)
         cerr << format("ParamList::GetParam<>(%1%)\t Using default value") % num << endl;
-        return boost::shared_ptr<T>();
+      return boost::shared_ptr<T>();
     }
 
     if (type==t)
@@ -208,53 +209,59 @@ class ParamListDecl {
   }
 
   unsigned char AddParam( Chaine st, vartype t)
+  {
+    if ( num_param<MAX_PARAM-2 )
     {
-      if (num_param<MAX_PARAM-2) {
-	name[num_param] = st;
-	type[num_param] = t;
-	num_param++;
-	return 1;
-      }
-      else {
-	fprintf(stderr,"ParamListDecl::AddParam() \t too many parameters \n");
-	return 0;
-      }
-    }
-
-  unsigned char GetParam( int num, Chaine& st, vartype& t)
-    {
-      if ((num>=0)&&(num<num_param)) {
-	st = name[num];
-	t  = type[num];
-	return 1;
-      }
-      else {
-	fprintf(stderr,"ParamListDecl::GetParam()\t bad parameter number\n");
-	return 0;
-      }
-    }
-
-  int CheckParam( ParamList* pl) 
-    {
-      int       i;
-      //void*     p;
-      //vartype t;
-
-      if (pl->GetNumParam() != GetNumParam()) {
-	fprintf(stderr,"Bad number of parameters \n");
-	return 0;
-      }
-      for(i=0;i<GetNumParam();i++) {
-	//	pl->GetParam( i, p, t);
-	//	printf("%d: %d %d \n",i,t,type[i]);
-	if (pl->GetType(i)!=GetType(i)) {
-	  fprintf(stderr,"Parameter %d has incorrect type \n",i);
-	  return 0;
-	}
-      }
-      
+      name[num_param] = st;
+      type[num_param] = t;
+      num_param++;
       return 1;
     }
+    else
+    {
+      fprintf ( stderr,"ParamListDecl::AddParam() \t too many parameters \n" );
+      return 0;
+    }
+  }
+
+  unsigned char GetParam( int num, Chaine& st, vartype& t, bool needed)
+  {
+    if ((num>=0)&&(num<num_param)) {
+      st = name[num];
+      t  = type[num];
+      return 1;
+    }
+    else {
+      if (needed)
+        fprintf(stderr,"ParamListDecl::GetParam()\t bad parameter number\n");
+      return 0;
+    }
+  }
+
+  int CheckParam( ParamList* pl) 
+  {
+    int       i;
+    //void*     p;
+    //vartype t;
+  
+    if ( pl->GetNumParam() != GetNumParam() )
+    {
+      fprintf ( stderr,"Bad number of parameters \n" );
+      return 0;
+    }
+    for ( i=0;i<GetNumParam();i++ )
+    {
+      //  pl->GetParam( i, p, t);
+      //  printf("%d: %d %d \n",i,t,type[i]);
+      if ( pl->GetType ( i ) !=GetType ( i ) )
+      {
+        fprintf ( stderr,"Parameter %d has incorrect type \n",i );
+        return 0;
+      }
+    }
+  
+    return 1;
+  }
 
 
 }; // class ParamListDecl

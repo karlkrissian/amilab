@@ -46,10 +46,10 @@ InrImage* wrap_StructureTensorHessianNew(ParamList* p)
    if (!get_float_param(         sigma,       p, n)) HelpAndReturnNULL;
    if (!get_float_param(         beta,        p, n)) HelpAndReturnNULL;
 
-   mask = p->GetParamPtr<InrImage>(type_image,n++);
+   mask = p->GetParamPtr<InrImage>(type_image,n++,false);
    if (mask==NULL) mask = InrImage::ptr();
 
-   imgrad = p->GetParamPtr<InrImage>(type_image,n++);
+   imgrad = p->GetParamPtr<InrImage>(type_image,n++,false);
    if (imgrad==NULL) imgrad = InrImage::ptr();
 
   InrImage* result = Func_StructureTensorHessianNew( input, sigma, beta, mask, imgrad);

@@ -684,7 +684,7 @@ unsigned char ParamPanel::AddColor( int* id,
 //----------------------------------------------------------------
 unsigned char ParamPanel::AddLabel( int* id, const char* libelle,
 //                      --------
-                          char* contenu, type_label type)
+                          const char* contenu, type_label type)
 {
   wxLabelParameter* wxl = new wxLabelParameter(CurrentParent(), libelle, contenu, type);
 

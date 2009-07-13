@@ -90,13 +90,14 @@ void* ParamList::GetParam(int i)    {
 }
 
 
-unsigned char ParamList::GetParam( int num, void*& paramp, vartype& t) {
+unsigned char ParamList::GetParam( int num, void*& paramp, vartype& t, bool needed ) {
     if ((num>=0)&&(num<num_param)) {
         paramp = params[num];
         t      = type[num];
         return 1;
     } else {
-        fprintf(stderr,"ParamList::GetParam()\t bad parameter number\n");
+        if (needed)
+          cerr << "ParamList::GetParam()\t bad parameter number\n" << endl;
         return 0;
     }
 }
