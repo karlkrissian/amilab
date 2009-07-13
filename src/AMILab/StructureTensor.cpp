@@ -802,13 +802,17 @@ unsigned char Func_StructureTensorHessian( InrImage* image_initiale,
 //  the mask in the filtering part  for the moment
 // this function returns the tensor instead of
 // its eigenvalues and eigenvectors
+// imgrad, if exists, should be a 3D vector field
+// of the same dimensions as image_initiale
 //---------------------------------------------------------
 
 InrImage* Func_StructureTensorHessianNew( InrImage::ptr image_initiale, 
 //        ------------------------------
-                     float sigma,
-                     float beta,
-                     InrImage::ptr mask)
+                        float sigma,
+                        float beta,
+                        InrImage::ptr mask,
+                        InrImage::ptr imgrad  
+                        )
 {
   // TODO: 2D version
     FloatMatrix         matrice(3,3);
@@ -861,6 +865,10 @@ InrImage* Func_StructureTensorHessianNew( InrImage::ptr image_initiale,
   result->InitImage(initval,6);
 
   result->InitBuffer();
+  if (imgrad.get()) {
+    imgrad->InitImage(0,0,0);
+    imgrad->InitBuffer();
+  }
 
   long int n=0;
   int prev_per=0;
@@ -901,18 +909,25 @@ InrImage* Func_StructureTensorHessianNew( InrImage::ptr image_initiale,
       H_3D[2][2] = hessien[8];
 
       int pos=0;
-      for(i=0;i<3;i++)
-      for(j=i;j<3;j++) 
+      for(i=0;i<3;i++) 
       {
-          matrice[i][j]=0;
-          for(k=0;k<3;k++)
-            matrice[i][j] += H_3D[i][k]*H_3D[k][j];
-          matrice[i][j] += beta*gradarray[i]*gradarray[j];
-          result->VectFixeValeur( pos++, matrice[i][j]);
+        for(j=i;j<3;j++) 
+        {
+            matrice[i][j]=0;
+            for(k=0;k<3;k++)
+              matrice[i][j] += H_3D[i][k]*H_3D[k][j];
+            matrice[i][j] += beta*gradarray[i]*gradarray[j];
+            result->VectFixeValeur( pos++, matrice[i][j]);
+        }
+      }
+      if (imgrad.get()) {
+        for(i=0;i<3;i++) 
+          imgrad->VectFixeValeur( i, gradarray[i]);
       }
     }
 
     result->IncBuffer();
+    if (imgrad.get()) imgrad->IncBuffer();
 
     n++;
 
