@@ -119,6 +119,10 @@ public:
   void OnQuit ( wxCommandEvent& event );
   void OnClose ( wxCloseEvent& event );
 
+/*
+  void OnInternalIdle();
+*/
+
   void OnHelpTokens ( wxCommandEvent& event );
   void OnHelpRules ( wxCommandEvent& event );
   void OnHelpScripts ( wxCommandEvent& event );
@@ -147,7 +151,8 @@ public:
   wxPanel*       GetPromptPanel() { return _prompt_panel; }
   wxAuiNotebook* GetParamBook() { return _param_book; }
 
-  void SetProgress(int val);
+  void SetProgress(   int val);
+  void SetStatusText( const std::string& text);
 
 protected:
   CustomStatusBar* _status_bar;
