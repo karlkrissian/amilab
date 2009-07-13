@@ -44,6 +44,8 @@ InrImage* Func_StructureTensorHessianNew( InrImage::ptr image_initiale,
 //        ------------------------------
                      float sigma,
                      float beta,
-                     InrImage::ptr mask);
+                     InrImage::ptr mask,
+                     InrImage::ptr imgrad
+                     );
 
 #endif // _StructureTensor_h_
