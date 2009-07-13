@@ -266,7 +266,7 @@ void TextControl::ProcessReturn()
   bool parseok = GB_driver.yyip_parse();
   GB_driver.yyip_popup_buffer();
   */
-  bool parseok = GB_driver.parse_string(string(last_cmd.mb_str(wxConvUTF8)));
+  bool parseok = GB_driver.parse_commandline(string(last_cmd.mb_str(wxConvUTF8)));
 
   if (!parseok) {
     CLASS_ERROR("Error in last command");
