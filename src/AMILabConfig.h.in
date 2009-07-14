@@ -26,6 +26,8 @@
 
 #cmakedefine AMI_USE_BZIP2
 
+#cmakedefine AMI_USE_SSE
+
 #define AMI_BUILD_@AMI_BUILD_TYPE@
 
 #ifdef _MSC_VER

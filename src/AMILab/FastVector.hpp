@@ -1,5 +1,7 @@
 
-#include <xmmintrin.h>
+#ifdef AMI_USE_SSE
+  #include <xmmintrin.h>
+#endif
 #include <string.h>
 #include <iostream>
 #include <string>

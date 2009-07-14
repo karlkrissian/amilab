@@ -194,7 +194,11 @@ void FastLocalDiffX( InrImage* in, InrImage* out,
         vmin.CopyData(bufmin,vsize);
         vmax.CopyData(bufmax,vsize);
         vres.CopyData(res_buf,vsize);
-        amilab::FVector_sub_float_sse_uua<float,short>(vmax,vmin,vres);
+        #ifdef AMI_USE_SSE
+          amilab::FVector_sub_float_sse_uua<float,short>(vmax,vmin,vres);
+        #else
+          amilab::FVector_sub<float,short>(vmax,vmin,vres);
+        #endif
         bufmin  += vsize;
         bufmax  += vsize;
         res_buf += vsize;

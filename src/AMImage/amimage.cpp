@@ -45,7 +45,9 @@
 #include <stdio.h>
 #include <locale.h>
 
-#include <xmmintrin.h>
+#ifdef AMI_USE_SSE
+  #include <xmmintrin.h>
+#endif
 
 #include <boost/iostreams/copy.hpp>
 #include <boost/filesystem/operations.hpp>
@@ -105,17 +107,31 @@ extern unsigned char GB_verbose;
 
 #include "amilab_messages.h"
 
-#define NEW(mess,ptr,type,size) \
-    CLASS_MESSAGE( boost::format("%1%, allocation of %2% Mb") \
-        % mess % (1.0*size*sizeof(type)/1000000.0)); \
-    ptr = (type*) _mm_malloc (sizeof(type)*size,16); \
-    if (!ptr) \
-      CLASS_ERROR("Error in _mm_malloc allocation !")
-
-#define DELETE(ptr) \
-  { \
-    CLASS_MESSAGE( " calling _mm_free() "); \
-   _mm_free(ptr); ptr = NULL; } \
+#ifdef AMI_USE_SSE
+  #define NEW(mess,ptr,type,size) \
+      CLASS_MESSAGE( boost::format("%1%, allocation of %2% Mb using _mm_malloc") \
+          % mess % (1.0*size*sizeof(type)/1000000.0)); \
+      ptr = (type*) _mm_malloc (sizeof(type)*size,16); \
+      if (!ptr) \
+        CLASS_ERROR("Error in _mm_malloc allocation !")
+  
+  #define DELETE(ptr) \
+    { \
+      CLASS_MESSAGE( " calling _mm_free() "); \
+    _mm_free(ptr); ptr = NULL; } 
+#else
+  #define NEW(mess,ptr,type,size) \
+      CLASS_MESSAGE( boost::format("%1%, allocation of %2% Mb using new") \
+          % mess % (1.0*size*sizeof(type)/1000000.0)); \
+      ptr = new type[size]; \
+      if (!ptr) \
+        CLASS_ERROR(boost::format("Error in allocation %1%!") % mess)
+  
+  #define DELETE(ptr) \
+    { \
+      CLASS_MESSAGE( " calling delete [] "); \
+    delete [] ptr; ptr = NULL; } 
+#endif
 
 
 #define NUM_REPRES 12
