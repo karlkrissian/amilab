@@ -715,6 +715,7 @@ void CB_update_imagelist( void* imagelist_gui)
 %token T_SetLight T_SetLightPos
 %token T_SetLightAmbient T_SetLightDiffuse T_SetLightSpecular
 %token T_SetBackground
+%token T_Normalize T_Center
 
 %token T_Remove
 %token T_SwapBuffers
@@ -4197,6 +4198,24 @@ command:
           sdraw->GetCanvas()->SetBG((int)$5,(int)$7,(int)$9);
           sdraw->Paint();
         }
+        | VAR_SURFDRAW T_POINT T_Normalize
+        {
+        /**
+          Description:
+            Normalizes the 3D view based on the limits in space of the current objects
+        */
+          Viewer3D_ptr sdraw = *(Viewer3D_ptr*) $1->Pointer();
+          sdraw->GetCanvas()->Normalize();
+        }
+        | VAR_SURFDRAW T_POINT T_Center
+        {
+        /**
+          Description:
+            Centers the 3D view based on the limits in space of the current objects
+        */
+          Viewer3D_ptr sdraw = *(Viewer3D_ptr*) $1->Pointer();
+          sdraw->GetCanvas()->Center();
+        }
         | VAR_SURFDRAW T_POINT T_SetWindowSize T_OP_PAR expr T_COMMA expr   T_CL_PAR
         {
           Viewer3D_ptr sdraw = *(Viewer3D_ptr*) $1->Pointer();
@@ -7130,29 +7149,29 @@ image:
               res->FixeValeur(sum);
             }
           break;
-        }
-        } else
-        {
-          driver.err_print("sum operator only for scalar images ... \n");
-        }
+    }
+    } else
+    {
+      driver.err_print("sum operator only for scalar images ... \n");
+    }
         driver.im_stack.AddImage(res);
         delete im;
-      }
-      |
-      T_localmean T_OP_PAR expr_image  T_COMMA expr T_CL_PAR
-      {
-    InrImage* im  = (InrImage*) driver.im_stack.GetLastImage();
-    InrImage* res =Func_localmean( im, (int) $5);
-    driver.im_stack.AddImage(res);
-    delete im;
-      }
-      |
-      T_localmean2 T_OP_PAR expr_image  T_COMMA expr T_CL_PAR
-      {
-    InrImage* im  = (InrImage*) driver.im_stack.GetLastImage();
-    InrImage* res =Func_localmean2( im, (int) $5);
-    driver.im_stack.AddImage(res);
-    delete im;
+    }
+    |
+    T_localmean T_OP_PAR expr_image  T_COMMA expr T_CL_PAR
+    {
+      InrImage* im  = (InrImage*) driver.im_stack.GetLastImage();
+      InrImage* res =Func_localmean( im, (int) $5);
+      driver.im_stack.AddImage(res);
+      delete im;
+    }
+    |
+    T_localmean2 T_OP_PAR expr_image  T_COMMA expr T_CL_PAR
+    {
+      InrImage* im  = (InrImage*) driver.im_stack.GetLastImage();
+      InrImage* res =Func_localmean2( im, (int) $5);
+      driver.im_stack.AddImage(res);
+      delete im;
       }
       |
       T_localSD T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr T_CL_PAR
@@ -10191,33 +10210,38 @@ surface:
           surf = Func_isosurf(im,
                   $5,
                   NULL);
-          Si surf != NULL Alors
-            driver.surf_stack.AddSurf(surf);
-          FinSi
-        }
-        |
-        T_isosurf_ras T_OP_PAR var_image T_COMMA expr T_CL_PAR
-        {
-          SurfacePoly* surf;
-          surf = Func_isosurf((*(InrImage::ptr*) $3->Pointer()),
-                  $5,
-                  NULL,
-                  2);
-      Si surf != NULL Alors
+          if (surf==NULL) driver.err_print("Isosurface failed!");
+          driver.surf_stack.AddSurf(surf);
+    }
+    |
+    T_isosurf_ras T_OP_PAR var_image T_COMMA expr T_CL_PAR
+    {
+        SurfacePoly* surf;
+        surf = Func_isosurf((*(InrImage::ptr*) $3->Pointer()),
+                $5,
+                NULL,
+                2);
         driver.surf_stack.AddSurf(surf);
-          FinSi
     }
     |
     T_isosurf T_OP_PAR expr_image T_COMMA expr T_COMMA var_image T_CL_PAR
     {
+    /**
+      Parameters:
+        image expression: input image
+        expression:       isosurface threshold
+        image variable:   mask
+      Description:
+        Computed isosurface of the input image with a given threshold within a region
+        defined by the mask image.
+    */
         InrImage::ptr im = InrImage::ptr(driver.im_stack.GetLastImage());
         SurfacePoly* surf;
         surf = Func_isosurf(im,
                 $5,
                 ((InrImage::ptr*) $7->Pointer())->get());
-    Si surf != NULL Alors
+        if (surf==NULL) driver.err_print("Isosurface failed!");
         driver.surf_stack.AddSurf(surf);
-    FinSi
     }
     |
     T_isoline T_OP_PAR expr_image T_COMMA expr T_COMMA expr_image T_CL_PAR
@@ -10245,8 +10269,9 @@ surface:
       vtklines = (vtkPolyData*) (*crestlines);
 
       lines = new SurfacePoly(vtklines);
-      if (lines != NULL)
-        driver.surf_stack.AddSurf(lines);
+      if (lines == NULL)
+        driver.err_print("IsoLine failed!");
+      driver.surf_stack.AddSurf(lines);
 
       //vtklines->Delete();
       delete crestlines;
@@ -10291,11 +10316,10 @@ surface:
     |
     T_vtkWindowedSinc T_OP_PAR var_surface T_COMMA expr T_CL_PAR
     {
-          SurfacePoly* surf;
-          surf = Func_vtkWindowedSinc(((SurfacePoly::ptr*) $3->Pointer())->get(), (int) $5);
-      Si surf != NULL Alors
+        SurfacePoly* surf;
+        surf = Func_vtkWindowedSinc(((SurfacePoly::ptr*) $3->Pointer())->get(), (int) $5);
+        if (surf==NULL) driver.err_print("vtkWindowedSinc failed!");
         driver.surf_stack.AddSurf(surf);
-          FinSi
     }
     |
     T_Surface T_OP_PAR T_CL_PAR
@@ -10490,9 +10514,7 @@ surface:
       Si surf==NULL Alors
         driver.err_print("Func_shortestpath () error ... \n");
       FinSi
-      Si surf != NULL Alors
-        driver.surf_stack.AddSurf(surf);
-      FinSi
+      driver.surf_stack.AddSurf(surf);
     }
     |
     T_ShortestPathImage T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA

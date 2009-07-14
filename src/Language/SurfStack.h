@@ -16,7 +16,12 @@
 #include <stack>
 #include "surface.hpp"
 
+#include "DefineClass.hpp"
+#include "amilab_messages.h"
+
 class SurfStack{
+
+  DEFINE_CLASS(SurfStack);
 
   std::stack<SurfacePoly*> _surf;
 
@@ -32,11 +37,12 @@ class SurfStack{
     unsigned char      res;
     surf_tmp=new SurfacePoly;
     res = surf_tmp->Read(name);
-    Si res Alors
+    if (res) {
       _surf.push(surf_tmp);
-    Sinon
-      fprintf(stderr,"SurfStack::AddSurf(%s) \t read failed.\n",name);
-    FinSi
+    } else {
+      CLASS_ERROR( boost::format("read of %1% failed.") % name);
+      _surf.push(NULL);
+    }
   }
 
   void AddSurf( SurfacePoly* surf)

@@ -31,13 +31,12 @@
               << "      \t" << m        << std::endl; \
   }
 
+// Error message should always be displayed
 #define CLASS_ERROR( m) \
-  if (GB_debug)  {\
     std::cerr << "Error \t" \
               << this->get_name() << "::" \
               << __func__  << "(), line " << __LINE__ << "\t"\
-              << m        << std::endl; \
-  }
+              << m        << std::endl; 
 
 #define CLASS_MESSAGE(m) \
   if ((GB_verbose) || (GB_debug)) { \

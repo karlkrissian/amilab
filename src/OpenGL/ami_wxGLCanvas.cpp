@@ -539,15 +539,15 @@ void ami_wxGLCanvas::OnMouseEvent(wxMouseEvent& event)
     _souris_y = (int)event.GetY();
 
     bool ld = event.LeftDown();
-    bool md = event.MiddleDown();
+    //bool md = event.MiddleDown();
     bool rd = event.RightDown();
 
     bool lid = event.LeftIsDown();
-    bool mid = event.MiddleIsDown();
+    //bool mid = event.MiddleIsDown();
     bool rid = event.RightIsDown();
 
     bool lu = event.LeftUp();
-    bool mu = event.MiddleUp();
+    //bool mu = event.MiddleUp();
     bool ru = event.RightUp();
 
     bool drag  = event.Dragging();

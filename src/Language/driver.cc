@@ -247,7 +247,8 @@ bool Driver::parse_script(  const char* filename)
   }
 
   // could check first if there is another extension ...
-  inputname.SetExt(_T("amil"));
+  if (inputname.GetExt().Cmp("")==0)
+    inputname.SetExt(_T("amil"));
 
   //cout << "current wd = "  <<  wxGetCwd() << endl; 
   if (!inputname.DirExists(inputname.GetPath())) 
@@ -259,7 +260,7 @@ bool Driver::parse_script(  const char* filename)
             inputname.GetPathSeparator()
             +
             inputname.GetPath(),
-            inputname.GetName(),_T("amil"));
+            inputname.GetFullName());
   }
 
   if (!newname.IsFileReadable()) 
@@ -272,7 +273,7 @@ bool Driver::parse_script(  const char* filename)
             inputname.GetPathSeparator()
             +
             inputname.GetPath(),
-            inputname.GetName(),_T("amil"));
+            inputname.GetFullName());
   }
 
   if (!newname.IsFileReadable()) 
@@ -283,7 +284,7 @@ bool Driver::parse_script(  const char* filename)
             inputname.GetPathSeparator()
             +
             inputname.GetPath(),
-            inputname.GetName(),_T("amil"));
+            inputname.GetFullName());
   }
 
   if (!newname.IsFileReadable()) {

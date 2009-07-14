@@ -18,7 +18,7 @@
 /// Information carried out by identifiers
 class IdentifierInfo {
 
-  DEFINE_CLASS(IdentifierInfo)
+  DEFINE_CLASS(IdentifierInfo);
 
 protected:
 

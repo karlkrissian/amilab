@@ -568,6 +568,9 @@ SetLightDiffuse   return(token::T_SetLightDiffuse); /*{SetLightDiffuse,T_SetLigh
 SetLightSpecular  return(token::T_SetLightSpecular); /*{SetLightSpecular,T_SetLightSpecular}*/
 SetBackground     return(token::T_SetBackground); /*{SetBackground,T_SetBackground}*/
 
+Normalize         return(token::T_Normalize); /*{Normalize,T_Normalize}*/
+Center            return(token::T_Center);    /*{Center,T_Center}*/
+
 OwnMaterial         return(token::T_OwnMaterial); /*{OwnMaterial,T_OwnMaterial}*/
 SetColor            return(token::T_SetColor); /*{SetColor,T_SetColor}*/
 SetColorOpacity     return(token::T_SetColorOpacity); /*{SetColorOpacity,T_SetColorOpacity}*/
