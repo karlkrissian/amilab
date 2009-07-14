@@ -247,7 +247,7 @@ bool Driver::parse_script(  const char* filename)
   }
 
   // could check first if there is another extension ...
-  if (inputname.GetExt().Cmp("")==0)
+  if (inputname.GetExt().Cmp(wxT(""))==0)
     inputname.SetExt(_T("amil"));
 
   //cout << "current wd = "  <<  wxGetCwd() << endl; 
