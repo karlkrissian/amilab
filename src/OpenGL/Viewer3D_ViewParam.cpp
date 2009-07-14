@@ -6,8 +6,8 @@
 #include "center.xpm"
 #include "normalize.xpm"
 #include "XY.xpm"
-#include "XZ.xpm"
-#include "YZ.xpm"
+#include "XZ2.xpm"
+#include "YZ2.xpm"
 #include "rot_x1.xpm"
 #include "rot_y1.xpm"
 #include "rot_z1.xpm"
@@ -63,7 +63,7 @@ void Viewer3D_ViewParam::CreateParameters()
     AddPixmapButton( &_id_boutton_XZ,  "XZ projection",
                     (void*)CB_XZ_proj, 
                     (void*)parent_class,
-                    XZ_string,
+                    XZ2_string,
                     "XZ projection");
     // Set proportional position
     SetLastPositionProperties(1);
@@ -71,7 +71,7 @@ void Viewer3D_ViewParam::CreateParameters()
     AddPixmapButton( &_id_boutton_YZ,  "YZ projection",
                     (void*)CB_YZ_proj, 
                     (void*)parent_class,
-                    YZ_string,
+                    YZ2_string,
                     "YZ projection");
     // Set proportional position
     SetLastPositionProperties(1);

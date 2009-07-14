@@ -190,6 +190,11 @@ bool Variable::FreeMemory()
         // for a cleaner implementation ...
         fclose( (*(boost::shared_ptr<FILE>*) _pointer).get()); 
     break;
+    case type_c_procedure     : 
+    case type_c_image_function:
+    case type_c_function:
+      // no specific memory free here, since no smart pointer is used
+    break;
 //  case type_c_function   : 
 //    fprintf(stderr, "delete of C function not available \n");
 //    break;
