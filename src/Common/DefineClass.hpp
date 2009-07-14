@@ -22,7 +22,7 @@
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-    ================================================== 
+    ==================================================
    The full GNU Lesser General Public License file is in Devel/Sources/Prog/LesserGPL_license.txt
 */
 //
@@ -32,6 +32,12 @@
 
 #ifndef _LINKCLASS_HPP
 #define _LINKCLASS_HPP
+
+//--- string formatting using boost
+#include <iostream>
+#include <iomanip>
+#include <cassert>
+#include "boost/format.hpp"
 
 #include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>
@@ -51,27 +57,27 @@ public:\
 
 
 template<class T>
-class wxwindow_deleter 
-  { 
-  public: 
-    void operator()(T * p) 
-    { 
+class wxwindow_deleter
+  {
+  public:
+    void operator()(T * p)
+    {
       if (p!=NULL) p->Destroy();
-    }  
+    }
   };
 
 template<class T>
-class wxwindow_nodeleter 
-  { 
-  public: 
-    void operator()(T * p)  {  }  
+class wxwindow_nodeleter
+  {
+  public:
+    void operator()(T * p)  {  }
   };
 
 template<class T>
-class smartpointer_nodeleter 
-  { 
-  public: 
-    void operator()(T * p)  {  }  
+class smartpointer_nodeleter
+  {
+  public:
+    void operator()(T * p)  {  }
   };
 
 #define new_wxWindow_ptr(_class,_parent) \
@@ -83,13 +89,8 @@ class smartpointer_nodeleter
 // no special type added
 #define DEFINE_SIMPLE_CLASS(class) \
 public:\
-  virtual char const* get_name() const { return #class; } 
+  virtual char const* get_name() const { return #class; }
 
-//--- string formatting using boost
-#include <iostream>
-#include <iomanip>
-#include <cassert>
-#include "boost/format.hpp"
 
 
 typedef boost::shared_ptr<float>           float_ptr;
@@ -101,13 +102,13 @@ typedef boost::shared_ptr<FILE>            FILE_ptr;
 
 class file_deleter
 {
-  public: 
-    void operator()(FILE * p) 
-    { 
+  public:
+    void operator()(FILE * p)
+    {
       if (p!=NULL)
-        if (p!=stdout) 
-          fclose(p); 
-    }  
+        if (p!=stdout)
+          fclose(p);
+    }
 };
 
 

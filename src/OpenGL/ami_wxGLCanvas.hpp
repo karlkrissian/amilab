@@ -16,6 +16,11 @@
   #include <windows.h>
 #endif
 
+#include "inrimage.hpp"
+
+#include "DefineClass.hpp"
+#include <list>
+
 #if defined(__APPLE__)
   #include <OpenGL/gl.h>
   #include <OpenGL/glu.h>
@@ -23,11 +28,6 @@
   #include <GL/gl.h>
   #include <GL/glu.h>
 #endif
-
-#include "DefineClass.hpp"
-#include <list>
-
-
 
 #ifdef __GNUG__
 #pragma implementation
@@ -318,7 +318,7 @@ public:
         const wxString& name = _T("ami_wxGLCanvas"));
 
   virtual ~ami_wxGLCanvas()
-  { 
+  {
     if (out.is_open()) out.close();
   };
 

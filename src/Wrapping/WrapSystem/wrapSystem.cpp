@@ -24,7 +24,7 @@ extern VarContexts  Vars;
 //---------------------------------------------------------
 void AddWrapSystem(){
 
-  Vars.AddVar(type_c_function, "GetFreeMemory",    (void*) wrap_GetFreeMemory );
+//  Vars.AddVar(type_c_function, "GetFreeMemory",    (void*) wrap_GetFreeMemory );
   Vars.AddVar(type_c_function, "GetFullHostName",  (void*) wrap_GetFullHostName );
   Vars.AddVar(type_c_function, "GetHomeDir",       (void*) wrap_GetHomeDir );
   Vars.AddVar(type_c_function, "GetHostName",      (void*) wrap_GetHostName );
@@ -34,9 +34,9 @@ void AddWrapSystem(){
 
 }
 
-
+/*
 //--------------------------------------------------------------------
-Variable::ptr wrap_GetFreeMemory(ParamList* p) 
+Variable::ptr wrap_GetFreeMemory(ParamList* p)
 {
     char functionname[] = "GetFreeMemory";
     char description[]=" \n\
@@ -50,20 +50,22 @@ Variable::ptr wrap_GetFreeMemory(ParamList* p)
 
 
   if (p->GetNumParam()!=0)  HelpAndReturnVarPtr;
-  cout << boost::format("Free Memory = %1%") % ::wxGetFreeMemory() << endl;
+  long long val = ::wxGetFreeMemory();
+  cout << (boost::format("Free Memory = %1%") % val).str() << endl;
 
   // cast not compiling, why ???
   //  float* value = new float(FreeMemory);
-  string* value = new string( (boost::format("%1%") % ::wxGetFreeMemory()).str());
+  string* value = new string( (boost::format("%1%") % val).str());
 
   Variable::ptr varres(new Variable());
-  varres->Init(type_string,"FullHostName",value);
+  varres->Init(type_string,"FreeMemory",value);
 
   return varres;
 }
+*/
 
 //--------------------------------------------------------------------
-Variable::ptr wrap_GetFullHostName(ParamList* p) 
+Variable::ptr wrap_GetFullHostName(ParamList* p)
 {
     char functionname[] = "GetFullHostName";
     char description[]=" \n\
@@ -108,7 +110,7 @@ Variable::ptr wrap_GetHomeDir(ParamList* p) {
 }
 
 //--------------------------------------------------------------------
-Variable::ptr wrap_GetUserHome(ParamList* p) 
+Variable::ptr wrap_GetUserHome(ParamList* p)
 {
     char functionname[] = "GetUserHome";
     char description[]=" \n\
@@ -131,7 +133,7 @@ Variable::ptr wrap_GetUserHome(ParamList* p)
 }
 
 //--------------------------------------------------------------------
-Variable::ptr wrap_GetUserId(ParamList* p) 
+Variable::ptr wrap_GetUserId(ParamList* p)
 {
     char functionname[] = "GetUserId";
     char description[]=" \n\
@@ -154,7 +156,7 @@ Variable::ptr wrap_GetUserId(ParamList* p)
 }
 
 //--------------------------------------------------------------------
-Variable::ptr wrap_GetUserName(ParamList* p) 
+Variable::ptr wrap_GetUserName(ParamList* p)
 {
     char functionname[] = "GetUserName";
     char description[]=" \n\
@@ -178,7 +180,7 @@ Variable::ptr wrap_GetUserName(ParamList* p)
 
 //--------------------------------------------------------------------
 
-Variable::ptr wrap_GetHostName(ParamList* p) 
+Variable::ptr wrap_GetHostName(ParamList* p)
 {
     char functionname[] = "GetHostName";
     char description[]=" \n\
