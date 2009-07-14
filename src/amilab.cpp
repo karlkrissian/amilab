@@ -35,11 +35,11 @@
 #include "token_list.h"
 
 #ifdef __APPLE__
-#include <ApplicationServices/ApplicationServices.h>
+  #include <ApplicationServices/ApplicationServices.h>
+  #include "amilab_logo_new_32x32_alpha.xpm"
 #endif
 
-
-#ifdef WIN32
+#if defined(WIN32) 
   #include "guicon.h"
   #include "amilab_logo_new_32x32_alpha.xpm"
 #endif
@@ -283,7 +283,7 @@ bool MyApp::OnInit()
                 wxDefaultPosition,
                 wxSize(900,700));
 
-  #ifdef WIN32
+  #if defined(WIN32) || defined(__APPLE__)
     frame->SetIcon(wxIcon(amilab_logo_new_32x32_alpha_xpm));
   #endif
 

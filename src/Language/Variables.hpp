@@ -34,7 +34,7 @@ protected:
     _global_new = false;
   }
 
-  ~Variables();
+  virtual ~Variables();
 
 //  Variable* operator [](int i) {  return _vars[i];  }
 

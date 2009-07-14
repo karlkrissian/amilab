@@ -30,7 +30,7 @@ public:
 
   VarContexts();
 
-  ~VarContexts();
+  virtual ~VarContexts();
 
   void EmptyVariables();
 

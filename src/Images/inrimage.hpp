@@ -1848,6 +1848,7 @@ InrImage* Norm(  InrImage& i1);
 //
 //
 
+#ifndef ami_malloc3d
 #define ami_malloc3d(direccion,tipo,depth,height,width) {int ml,mu; \
           direccion=(tipo ***) malloc(sizeof(tipo **)*(depth)); \
           direccion[0]=(tipo **)malloc(sizeof(tipo *)*(depth)*(height)); \
@@ -1858,6 +1859,7 @@ InrImage* Norm(  InrImage& i1);
             direccion[mu]=&(direccion[0][mu*(height)]);}\
         }
 #define ami_free3d(direccion) { free(direccion[0][0]); free(direccion[0]); free(direccion); }
+#endif
 
 template <class T>
 T*** InrImage::create_positions_3D() {

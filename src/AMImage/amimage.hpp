@@ -241,7 +241,7 @@ public:
 
   amimage();
 
-  ~amimage();
+  virtual ~amimage();
 
   void SetRepres(AMI_REPRES r) { repres = r; }
 

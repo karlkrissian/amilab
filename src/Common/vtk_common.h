@@ -30,6 +30,7 @@ class vtk_deleter
   DEFINE_SIMPLE_CLASS(vtk_deleter)
 
   public: 
+  virtual ~vtk_deleter() {}
     void operator()(T * p) 
     { 
       CLASS_MESSAGE("call")
@@ -44,6 +45,7 @@ class vtk_new
   DEFINE_SIMPLE_CLASS(vtk_new)
 
   public: 
+  virtual ~vtk_new() {}
     boost::shared_ptr<T> operator() ()
     { 
       CLASS_MESSAGE("Call");

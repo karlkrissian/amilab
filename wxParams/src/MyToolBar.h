@@ -72,6 +72,8 @@ public:
     calldata = cd;
   }
 
+  virtual ~toolbar_enum_info_base() {}
+	
   virtual void SetParam( int val) = 0;
   virtual void IncParam() = 0;
   virtual int CurrentPosition() = 0;
@@ -124,7 +126,7 @@ protected:
   ///
   MyToolBarBase()  {}
 
-  ~MyToolBarBase() {
+  virtual ~MyToolBarBase() {
     // free memory of toolbar_enum_info_base
     vector<toolbar_enum_info_base*>::iterator Iter;
     for (Iter  = enum_info.begin();
