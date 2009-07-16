@@ -5812,41 +5812,43 @@ postfix_expr
       InrImage* im = (InrImage*) driver.im_stack.GetLastImage();
       $$=Func_argmax( im);
       delete im;
-        }
-        |
-        T_MIN T_OP_PAR var_image  T_CL_PAR
-        {
-        /**
-             description:
-             returns the minimal value of an image
+      }
+      |
+      T_MIN T_OP_PAR expr_image  T_CL_PAR
+      {
+      /**
+            description:
+            returns the minimal value of an image
 
-             parameters:
-               (3) image variable
+            parameters:
+              (3) image variable
 
-            Keywords:
+          Keywords:
 
-            Others:
-                max, mean, median
+          Others:
+              max, mean, median
 
-        **/
-      $$=Func_min( ((InrImage::ptr*) $3->Pointer())->get(),NULL);
-        }
-        |
-        T_MEDIAN T_OP_PAR var_image  T_CL_PAR
-        {
-        /**
-             description:
-             returns the median value of an image
+      **/
+      InrImage* im = (InrImage*) driver.im_stack.GetLastImage();
+      $$=Func_min( im,NULL);
+      delete im;
+      }
+      |
+      T_MEDIAN T_OP_PAR var_image  T_CL_PAR
+      {
+      /**
+            description:
+            returns the median value of an image
 
-             parameters:
-               (3) image variable
+            parameters:
+              (3) image variable
 
-            Keywords:
+          Keywords:
 
-            Others:
-                min, max, mean, count
+          Others:
+              min, max, mean, count
 
-        **/
+      **/
       $$=Func_med( ((InrImage::ptr*) $3->Pointer())->get(),0.5,NULL);
         }
         |
