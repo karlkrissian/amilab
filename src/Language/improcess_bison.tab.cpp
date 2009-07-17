@@ -7387,7 +7387,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
       InrImage* im = (InrImage*) driver.im_stack.GetLastImage();
       (yyval.adouble)=Func_argmax( im);
       delete im;
-        }
+      }
     break;
 
   case 419:
@@ -7395,41 +7395,43 @@ cerr << "Feature not available, needs to be updated ! " << endl;
 /* Line 678 of lalr1.cc  */
 #line 5818 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-        /**
-             description:
-             returns the minimal value of an image
+      /**
+            description:
+            returns the minimal value of an image
 
-             parameters:
-               (3) image variable
+            parameters:
+              (3) image variable
 
-            Keywords:
+          Keywords:
 
-            Others:
-                max, mean, median
+          Others:
+              max, mean, median
 
-        **/
-      (yyval.adouble)=Func_min( ((InrImage::ptr*) (yysemantic_stack_[(4) - (3)].variable)->Pointer())->get(),NULL);
-        }
+      **/
+      InrImage* im = (InrImage*) driver.im_stack.GetLastImage();
+      (yyval.adouble)=Func_min( im,NULL);
+      delete im;
+      }
     break;
 
   case 420:
 
 /* Line 678 of lalr1.cc  */
-#line 5836 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5838 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-        /**
-             description:
-             returns the median value of an image
+      /**
+            description:
+            returns the median value of an image
 
-             parameters:
-               (3) image variable
+            parameters:
+              (3) image variable
 
-            Keywords:
+          Keywords:
 
-            Others:
-                min, max, mean, count
+          Others:
+              min, max, mean, count
 
-        **/
+      **/
       (yyval.adouble)=Func_med( ((InrImage::ptr*) (yysemantic_stack_[(4) - (3)].variable)->Pointer())->get(),0.5,NULL);
         }
     break;
@@ -7437,7 +7439,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 421:
 
 /* Line 678 of lalr1.cc  */
-#line 5854 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5856 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
              description:
@@ -7464,7 +7466,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 422:
 
 /* Line 678 of lalr1.cc  */
-#line 5877 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5879 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
              description:
@@ -7491,7 +7493,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 423:
 
 /* Line 678 of lalr1.cc  */
-#line 5900 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5902 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
              description:
@@ -15696,7 +15698,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
      722,     0,     0,     0,     0,     0,     0,     0,   725,   664,
-     725,   725,     0,   725,     0,   725,     0,     0,     0,     0,
+     725,   725,   725,   725,     0,   725,     0,     0,     0,     0,
        0,     0,     0,   725,   725,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,   725,     0,     0,     0,     0,     0,     0,     0,
@@ -17252,7 +17254,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
     1298,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   303,   304,
-     305,   306,    -1,   308,    -1,   310,    -1,    -1,    -1,    -1,
+     305,   306,   307,   308,    -1,   310,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,   318,   319,    -1,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
       -1,    -1,   337,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
@@ -18202,7 +18204,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
      558,   558,    10,    11,    13,    60,   136,   155,   165,   445,
      446,   447,   448,   449,   450,   453,   454,   455,   456,   457,
      458,   459,   544,   560,   579,   599,    60,   558,   579,   579,
-     579,   560,   579,   560,   579,   560,   158,   210,   211,   212,
+     579,   579,   579,   560,   579,   560,   158,   210,   211,   212,
      213,   216,   217,   218,   219,   220,   221,   222,   223,   224,
      225,   226,   227,   166,   167,   168,   169,   170,   171,   172,
      173,   174,   176,   177,   178,   179,   180,   181,   182,   183,
@@ -19125,7 +19127,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
       20,   558,    20,   558,    20,   558,    14,    -1,   135,    13,
      579,    14,    -1,   250,    13,   579,    14,    -1,   136,    13,
      579,    14,    -1,   137,    13,   579,    14,    -1,   138,    13,
-     560,    14,    -1,   139,    13,   560,    14,    -1,   136,    15,
+     579,    14,    -1,   139,    13,   560,    14,    -1,   136,    15,
      579,    16,    13,   560,    14,    -1,   138,    15,   579,    16,
       13,   560,    14,    -1,   139,    15,   579,    16,    13,   579,
       14,    -1,   139,    15,   579,    16,    13,   560,    20,   558,

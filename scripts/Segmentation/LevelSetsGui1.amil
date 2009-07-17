@@ -228,6 +228,31 @@ if (!exists(LS_defined)) {
     }
   }
   
+  //---------------------------------------------------
+  // use median instead of mean
+  // to be more robust to outliers
+  //
+  proc LS_ComputeIntensityStatsMedian() {
+  
+    if (exists(LS_inls)) {
+      if (count(LS_inls>0)>0) {
+        global::LS_Imean= median[LS_inls>0](LS_input)
+        tmp = (LS_input-LS_Imean)*(LS_input-LS_Imean)
+        global::LS_Isd  = median[LS_inls>0] ( tmp)
+        LS_Isd  = sqrt(LS_Isd)
+        printn sprint("median: mean %f",LS_Imean)
+        printn sprint("median: sd   %f",LS_Isd)
+      } else  {
+        InfoDialog "LS_ComputeIntensityStatsMedian() \n No point within initial level set"
+      }
+      if (exists(LS_win)) {
+        LS_win.update
+      }
+    } else {
+        InfoDialog "LS_ComputeIntensityStatsMedian() \n LS_inls not found"
+    }
+  }
+  
   //--------------------------------------------------
   proc LS_Run( IMAGE initial, NUM graphics) {
   //   -----
