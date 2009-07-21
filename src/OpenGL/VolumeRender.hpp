@@ -164,12 +164,16 @@ public:
     zmin=im->SpacePosZ(0);
     zmax=im->SpacePosZ(im->DimZ()-1);
 
+
     _VOL.SetIdentity();
+    // try to set voxel size
+    _VOL.SetScale(im->VoxSizeX(),im->VoxSizeY(),im->VoxSizeZ());
+/*
     _VOL.SetScale((xmax-xmin)/_ml.xsize,
 		  (ymax-ymin)/_ml.ysize,
 		  (zmax-zmin)/_ml.zsize);
     _VOL.SetTranslation(-_ml.xmin,-_ml.ymin,-_ml.zmin);
-
+*/
     _planes = im->DimY();
 
   }

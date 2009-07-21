@@ -504,7 +504,8 @@ void VolumeRender::Render(unsigned char map)
 
   glPushMatrix();
 
-  //  _VOL.GLApplyInvMatrix();
+  //_VOL.GLApplyInvMatrix();
+  _VOL.GLApplyMatrix();
   _Ttexture->GLApplyMatrix();
 
   glClipPlane(GL_CLIP_PLANE0, clipplane0);
@@ -530,6 +531,7 @@ void VolumeRender::Render(unsigned char map)
     {
     _SRT.GLApplyMatrix();
     _Ttexture->GLApplyInvMatrix();
+    _VOL.GLApplyInvMatrix();
     //_VOL.GLApplyMatrix();
     _SRT.GLApplyInvMatrix();
     }
@@ -581,10 +583,10 @@ void VolumeRender::Render(unsigned char map)
     {
       tpos =  _ml.zmin + offR + i * (_ml.zsize - 2 * offR)/(_planes - 1); 
       glBegin(GL_QUADS);
-	glVertex3f( _ml.xmin, _ml.ymin,  tpos);
-	glVertex3f( _ml.xmax, _ml.ymin,  tpos);
-	glVertex3f( _ml.xmax, _ml.ymax,  tpos);
-	glVertex3f( _ml.xmin, _ml.ymax,  tpos);
+        glVertex3f( _ml.xmin, _ml.ymin,  tpos);
+        glVertex3f( _ml.xmax, _ml.ymin,  tpos);
+        glVertex3f( _ml.xmax, _ml.ymax,  tpos);
+        glVertex3f( _ml.xmin, _ml.ymax,  tpos);
       glEnd();
     }
 

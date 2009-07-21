@@ -181,7 +181,7 @@ InrImage* Func_Filter( InrImage* im, float sigma,
   InrImage*       image_entree;
   InrImage*       image_res;
   FiltreRecursif* filtre;
-  char            resname[255];
+  std::string     resname;
   int             mode;
 
   Si (im->_format == WT_FLOAT) Alors
@@ -193,8 +193,8 @@ InrImage* Func_Filter( InrImage* im, float sigma,
     (*image_entree) = (*im);
   FinSi
 
-  sprintf(resname,"%s.filter", im->Nom());
-  image_res = new InrImage(WT_FLOAT, resname , im);
+  resname = (boost::format("%s.filter") % im->Nom()).str();
+  image_res = new InrImage(WT_FLOAT, resname.c_str() , im);
 
   Si image_entree->_tz > 1 Alors
     mode = MODE_3D; 
@@ -230,7 +230,7 @@ InrImage* Func_NormGrad( InrImage* im, float sigma,
   InrImage*       image_der;
   InrImage*       image_res;
   FiltreRecursif* filtre;
-  char            resname[255];
+  std::string     resname;
   int             mode;
   double          tmp;
 
@@ -243,11 +243,11 @@ InrImage* Func_NormGrad( InrImage* im, float sigma,
     (*image_entree) = (*im);
   FinSi
 
-  sprintf(resname,"%s.normgrad", im->Nom());
-  image_res = new InrImage(WT_FLOAT, resname , im);
+  resname = (boost::format("%s.normgrad") % im->Nom()).str();
+  image_res = new InrImage(WT_FLOAT, resname.c_str() , im);
 
-  sprintf(resname,"%s.filter", im->Nom());
-  image_der = new InrImage(WT_FLOAT, resname , im);
+  resname = (boost::format("%s.filter") % im->Nom()).str();
+  image_der = new InrImage(WT_FLOAT, resname.c_str() , im);
 
   Si image_entree->_tz > 1 Alors
     mode = MODE_3D; 
@@ -336,15 +336,15 @@ InrImage* Func_DiscNormGrad( InrImage* im )
 {
 
   InrImage*       image_res;
-  char            resname[255];
+  std::string     resname;
   register int    x,y,z;
   register double dx,dy,dz;
   unsigned long   tx,txy;
 
 
 
-  sprintf(resname,"%s.discnormgrad", im->Nom());
-  image_res = new InrImage(WT_FLOAT, resname , im);
+  resname = (boost::format("%s.discnormgrad") % im->Nom()).str();
+  image_res = new InrImage(WT_FLOAT, resname.c_str() , im);
 
   image_res->InitImage(0);
 
@@ -437,7 +437,7 @@ InrImage* Func_DiscMeanCurvature( InrImage* im )
 {
 
   InrImage*       image_res;
-  char            resname[255];
+  std::string     resname;
   register int    x,y,z;
   double D0x,D0y,D0z;
   long   tx,txy,ty,tz;
@@ -455,8 +455,8 @@ InrImage* Func_DiscMeanCurvature( InrImage* im )
     register double dxy, dyz, dxz;
  
 
-  sprintf(resname,"%s.discnormgrad", im->Nom());
-  image_res = new InrImage(WT_FLOAT, resname , im);
+  resname = (boost::format("%s.discmeancurv") % im->Nom()).str();
+  image_res = new InrImage(WT_FLOAT, resname.c_str() , im);
 
   image_res->InitImage(0);
 
@@ -584,15 +584,15 @@ InrImage* Func_Laplacian( InrImage* im )
 {
 
   InrImage*       image_res;
-  char            resname[255];
+  std::string     resname;
   register int    x,y,z;
   int txy,px,mx,py,my,pz,mz;
   double u0,umx,upx,umy,upy,umz,upz;
   double laplacian;
  
 
-  sprintf(resname,"%s.laplacian", im->Nom());
-  image_res = new InrImage(WT_FLOAT, resname , im);
+  resname = (boost::format("%s.laplacian") % im->Nom()).str();
+  image_res = new InrImage(WT_FLOAT, resname.c_str() , im);
 
   image_res->InitImage(0);
 
@@ -653,8 +653,10 @@ InrImage* Func_Gradient( InrImage* im, float sigma )
   InrImage*       image_der;
   InrImage*       image_res;
   FiltreRecursif* filtre;
-  char            resname[255];
+  std::string     resname;
   int             mode;
+
+  resname = (boost::format("%1%.normgrad") % im->Nom()).str();
 
   Si (im->_format == WT_FLOAT) Alors
     image_entree = im;
@@ -667,16 +669,15 @@ InrImage* Func_Gradient( InrImage* im, float sigma )
 
   Si image_entree->_tz > 1 Alors
     mode = MODE_3D; 
-    image_res = new InrImage(WT_FLOAT, 3,resname , im);
+    image_res = new InrImage(WT_FLOAT, 3,resname.c_str(), im);
   Sinon
     mode = MODE_2D; 
-    image_res = new InrImage(WT_FLOAT, 2,resname , im);
+    image_res = new InrImage(WT_FLOAT, 2,resname.c_str(), im);
   FinSi
 
-  sprintf(resname,"%s.normgrad", im->Nom());
+  resname = (boost::format("%1%.filter") % im->Nom()).str();
 
-  sprintf(resname,"%s.filter", im->Nom());
-  image_der = new InrImage(WT_FLOAT, resname , im);
+  image_der = new InrImage(WT_FLOAT, resname.c_str() , im);
 
 
   filtre = new FiltreRecursif( image_entree,  mode);
@@ -865,7 +866,7 @@ InrImage* Func_SecDerGrad( InrImage* im, float sigma )
     InrImage*       image_res;
     FiltreRecursif* filtre;
     int             mode;
-    char            resname[255];
+    std::string     resname;
     int           x,y,z;
     Vect3D<double>   Grad;
     double           hessien[9];
@@ -900,8 +901,8 @@ InrImage* Func_SecDerGrad( InrImage* im, float sigma )
   filtre->InitFiltre( sigma, MY_FILTRE_CONV );  
   filtre->CalculFiltres( );
 
-  sprintf(resname,"%s.d2grad", image_entree->Nom());
-  image_res = new InrImage(WT_FLOAT, resname , image_entree);
+  resname = (boost::format("%s.d2grad") % image_entree->Nom()).str();
+  image_res = new InrImage(WT_FLOAT, resname.c_str() , image_entree);
   image_res->InitImage(0.0);
 
   image_res->InitBuffer();
@@ -960,7 +961,7 @@ InrImage* Func_SecDerGrad2( InrImage* im, float sigma )
     InrImage*       image_res;
     FiltreRecursif* filtre;
     int             mode;
-    char            resname[255];
+    std::string     resname;
     int           x,y,z;
     Vect3D<double>   Grad;
     double           hessien[9];
@@ -996,8 +997,8 @@ InrImage* Func_SecDerGrad2( InrImage* im, float sigma )
   filtre->InitFiltre( sigma, MY_FILTRE_CONV );  
   filtre->CalculFiltres( );
 
-  sprintf(resname,"%s.d2grad", image_entree->Nom());
-  image_res = new InrImage(WT_FLOAT, resname , image_entree);
+  resname = (boost::format("%s.d2grad") % image_entree->Nom()).str();
+  image_res = new InrImage(WT_FLOAT, resname.c_str() , image_entree);
   image_res->InitImage(0.0);
 
   image_res->InitBuffer();
@@ -1056,7 +1057,7 @@ InrImage* Func_SecDerGradOld( InrImage* im, float sigma )
     InrImage*       image_lissee;
     FiltreRecursif* filtre;
     int             mode;
-    char            resname[255];
+    std::string     resname;
 
   Si (im->_format == WT_FLOAT) Alors
     image_entree = im;
@@ -1078,8 +1079,8 @@ InrImage* Func_SecDerGradOld( InrImage* im, float sigma )
   filtre->InitFiltre( sigma, MY_FILTRE_CONV );  
 
 
-  sprintf(resname,"%s.smoothed", im->Nom());
-  image_lissee = new InrImage(WT_FLOAT, resname , im);
+  resname = (boost::format("%s.smoothed") % im->Nom()).str();
+  image_lissee = new InrImage(WT_FLOAT, resname.c_str() , im);
 
   Si mode == MODE_3D Alors
     filtre->MyFiltre( image_entree, image_lissee, 0, -1, -1);
@@ -1091,8 +1092,8 @@ InrImage* Func_SecDerGradOld( InrImage* im, float sigma )
 
   delete filtre;
 
-  sprintf(resname,"%s.d2grad", image_entree->Nom());
-  image_res = new InrImage(WT_FLOAT, resname , image_entree);
+  resname = (boost::format("%s.d2grad") % image_entree->Nom()).str();
+  image_res = new InrImage(WT_FLOAT, resname.c_str() , image_entree);
   image_res->InitImage(0.0);
 
   Func_DiscSecDerGrad(image_lissee, image_res, NULL);
