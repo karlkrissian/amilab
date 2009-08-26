@@ -686,7 +686,8 @@ unsigned char ParamPanel::AddLabel( int* id, const char* libelle,
 //                      --------
                           const char* contenu, type_label type)
 {
-  wxLabelParameter* wxl = new wxLabelParameter(CurrentParent(), libelle, contenu, type);
+  wxLabelParameter* wxl = new wxLabelParameter(CurrentParent(), 
+                                              libelle, contenu, type);
 
   ParamInfo pi( TYPE_PARAMETRE_LABEL,
                 wxl,

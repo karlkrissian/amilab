@@ -58,30 +58,32 @@ proc PS_init() {
 }
 
 #----------------------------------------------------------
-proc PS_close() {
-  # first delete the interface
+proc PS_Close() {
+  PS_win.Hide
+  delvars "PS_*_draw"
+  delvars "PS_*"
 }
 
 #----------------------------------------------------------
 proc PS_UpdateResolution() \
 {
   # 3D position image
-  global::pos <<= Image(DOUBLE,PS_theta_dim,PS_phi_dim,1,3)
+  global::PS_pos <<= Image(DOUBLE,PS_theta_dim,PS_phi_dim,1,3)
 
   # Parameters
-  global::theta <<= (DOUBLE)Xpos(pos)
-  global::phi   <<= (DOUBLE)Ypos(pos)
+  global::PS_theta <<= (DOUBLE)Xpos(PS_pos)
+  global::PS_phi   <<= (DOUBLE)Ypos(PS_pos)
 
 
   if (PS_type==0)||(PS_type==2) {
     # limits of the parameters
-    theta = theta/(theta.tx-1)*2*Pi
-    phi   = (phi/(phi.ty-1)-0.5)*Pi
+    PS_theta = PS_theta/(PS_theta.tx-1)*2*Pi
+    PS_phi   = (PS_phi/(PS_phi.ty-1)-0.5)*Pi
   }
   if (PS_type==1) {
     # limits of the parameters
-    theta = theta/(theta.tx-1)*2*Pi
-    phi   = phi/(phi.ty-1)*2*Pi
+    PS_theta = PS_theta/(PS_theta.tx-1)*2*Pi
+    PS_phi   = PS_phi/(PS_phi.ty-1)*2*Pi
   }
 
 } // PS_UpdateResolution()
@@ -100,10 +102,10 @@ proc PS_Update() \
   if (PS_updating==0) {
     PS_updating = 1
 
-    if (!exists(pos)) {
+    if (!exists(PS_pos)) {
       PS_UpdateResolution()
     } else {
-      if ((PS_theta_dim!=pos.tx)||(PS_phi_dim!=pos.ty)) {
+      if ((PS_theta_dim!=PS_pos.tx)||(PS_phi_dim!=PS_pos.ty)) {
         PS_UpdateResolution()
       }
     }
@@ -111,59 +113,59 @@ proc PS_Update() \
     # 0: superquadric
     if (PS_type==0) {
 
-      pos[0] = cos(theta)*cos(phi)
-      pos[1] = sin(theta)*cos(phi)
-      pos[2] = sin(phi)
+      PS_pos[0] = cos(PS_theta)*cos(PS_phi)
+      PS_pos[1] = sin(PS_theta)*cos(PS_phi)
+      PS_pos[2] = sin(PS_phi)
 
       # compute the signs
-      spos0 = (pos[0]>0) - (pos[0]<0)
-      spos1 = (pos[1]>0) - (pos[1]<0)
-      spos2 = (pos[2]>0) - (pos[2]<0)
+      spos0 = (PS_pos[0]>0) - (PS_pos[0]<0)
+      spos1 = (PS_pos[1]>0) - (PS_pos[1]<0)
+      spos2 = (PS_pos[2]>0) - (PS_pos[2]<0)
 
-      pos[0] = (exp(ln(abs(pos[0]))/PS_e_x))*spos0*PS_cx
-      pos[1] = (exp(ln(abs(pos[1]))/PS_e_y))*spos1*PS_cy
-      pos[2] = (exp(ln(abs(pos[2]))/PS_e_z))*spos2*PS_cz
+      PS_pos[0] = (exp(ln(abs(PS_pos[0]))/PS_e_x))*spos0*PS_cx
+      PS_pos[1] = (exp(ln(abs(PS_pos[1]))/PS_e_y))*spos1*PS_cy
+      PS_pos[2] = (exp(ln(abs(PS_pos[2]))/PS_e_z))*spos2*PS_cz
     }
 
     # 1: torus
     if (PS_type==1) {
 
-      pos[0] = (cos(phi)*PS_r+PS_R)*cos(theta)
-      pos[1] = (cos(phi)*PS_r+PS_R)*sin(theta)
-      pos[2] = sin(phi)*PS_r
+      PS_pos[0] = (cos(PS_phi)*PS_r+PS_R)*cos(PS_theta)
+      PS_pos[1] = (cos(PS_phi)*PS_r+PS_R)*sin(PS_theta)
+      PS_pos[2] = sin(PS_phi)*PS_r
 
     }
 
     # 2: User´s equation
     if (PS_type==2) {
-      U = theta
-      V = phi
+      U = PS_theta
+      V = PS_phi
       k = PS_k
-      eval "pos[0] = "+PS_X+";"
-      X = pos[0]
-      eval "pos[1] = "+PS_Y+";"
-      Y = pos[1]
-      eval "pos[2] = "+PS_Z+";"
+      eval "PS_pos[0] = "+PS_X+";"
+      X = PS_pos[0]
+      eval "PS_pos[1] = "+PS_Y+";"
+      Y = PS_pos[1]
+      eval "PS_pos[2] = "+PS_Z+";"
     }
 
-    if (exists(s_draw)) {
-      s_draw.Remove(s)
-      del global::s
+    if (exists(PS_s_draw)) {
+      PS_s_draw.Remove(PS_s)
+      del global::PS_s
     }
 
     # parameter 0 invert normals
-    global::s = CreateFlatMesh(theta>-1,0)
-    s.ElevateMesh(pos)
+    global::PS_s = CreateFlatMesh(PS_theta>-1,0)
+    PS_s.ElevateMesh(PS_pos)
     # need to show the surface before computing any opengl operation!!!
 
-    if (exists(s_draw)) {
-      s_draw += s
+    if (exists(PS_s_draw)) {
+      PS_s_draw += PS_s
     } else {
-      show s
+      show PS_s
     }
-    s.Normals
-    s.Recompute
-    s_draw.Paint
+    PS_s.Normals
+    PS_s.Recompute
+    PS_s_draw.Paint
     PS_updating = 0
   }
 }
@@ -234,14 +236,14 @@ proc PS_SaveEquation() {
 
   eq_file = open(PS_eq_filename,"w")
 
-  eq_file.print "#-- Saving equation \n"
+  eq_file.print "//-- Saving equation \n"
 
-  eq_file.print "#---- Main Parameters\n"
+  eq_file.print "//---- Main Parameters\n"
 
   eq_file.print boost_format("PS_theta_dim = %1%\n") % PS_theta_dim
   eq_file.print boost_format("PS_phi_dim = %1%\n") % PS_phi_dim
 
-  eq_file.print "#---- Parametric equation expression \n"
+  eq_file.print "//---- Parametric equation expression \n"
 
   eq_file.print "PS_X = \"" +PS_X +"\"\n"
   eq_file.print "PS_Y = \"" +PS_Y +"\"\n"
@@ -252,7 +254,7 @@ proc PS_SaveEquation() {
   eq_file.print boost_format("PS_timestep = %1%\n") \
                               % PS_timestep
 
-  eq_file.print "# Update interface\n"
+  eq_file.print "// Update interface\n"
   eq_file.print "PS_win.update\n"
 
 }
@@ -344,7 +346,8 @@ proc PS_gui() {
 
   PS_win.EndBook
       PS_win.BeginHorizontal
-        PS_win.AddButton("Update",          PS_Update)
+        PS_win.AddButton("Update",         PS_Update)
+        PS_win.AddButton("Close",          PS_Close)
       PS_win.EndHorizontal
   PS_win.update
   PS_win.Display
