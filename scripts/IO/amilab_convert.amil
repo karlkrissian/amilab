@@ -10,3 +10,5 @@ if (argc==2) {
 
 i = Image input_name
 i.save output_name
+
+quit
