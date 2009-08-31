@@ -6384,7 +6384,7 @@ postfix_expr
     | T_exists T_OP_PAR variable T_CL_PAR
     {
     /**
-    Description:
+    Description: 
     Check for the existence of a variable, returns 1
     **/
           $$=1;

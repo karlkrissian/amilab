@@ -8116,7 +8116,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
 #line 6385 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
-    Description:
+    Description: 
     Check for the existence of a variable, returns 1
     **/
           (yyval.adouble)=1;
