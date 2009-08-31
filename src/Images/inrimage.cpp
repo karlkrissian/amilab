@@ -124,10 +124,12 @@ int rint(const float& a)
 	return (int) floor(a+0.5);
 }
 
+/* roundf defined now in math1.cpp
 float roundf(const float& a)
 {
 	return (float) floor(a+0.5);
 }
+*/
 #endif
 
 #include "amilab_messages.h"

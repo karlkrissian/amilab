@@ -50,6 +50,13 @@ FinDeclareC
 #include "chaine.hpp"
 #include "math1.hpp"
 
+#if defined(_MSC_VER) 
+  inline float roundf(const float& x)
+  {
+   return (x-floor(x))>0.5 ? ceil(x) : floor(x);
+  }
+#endif
+
 
 #define If        if(
 #define Then      ){

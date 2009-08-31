@@ -19,6 +19,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Voxels
   ${AMILAB_SOURCE_DIR}/Crest
   ${AMILAB_SOURCE_DIR}/Graph
+  ${AMILAB_SOURCE_DIR}/Language
   ${GLEXT_INCLUDE_DIR}
   ${Boost_INCLUDE_DIR}
   )

@@ -51,6 +51,7 @@ class ImageStack{
 
   InrImage* GetLastImage()
   {
+    if (_images.empty()) return NULL;
     InrImage* tmp;
     tmp=_images.top();
     _images.pop();

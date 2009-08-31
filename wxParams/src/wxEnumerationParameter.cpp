@@ -36,6 +36,10 @@
 
 #include "slick/16x16/actions/reload.xpm"
 
+#ifdef _MSC_VER
+  #define __func__ __FUNCTION__
+#endif
+
 wxString GetwxStr(const char* str);
 wxString GetwxStr(const string& str);
 

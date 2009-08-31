@@ -732,8 +732,10 @@ void vtkLevelSets::DistanceMapCurves()
 void vtkLevelSets::DistanceMapFMOld()
 //                   ------------
 {
-   float_vec_it        U    = u[this->current].begin();
-   float_vec_it        newU = u[1-this->current].begin();
+   int U_pos    = this->current;
+   int newU_pos = 1-this->current;
+   float_vec_it        U    = u[U_pos].begin();
+   float_vec_it        newU = u[newU_pos].begin();
    vtkImageData* current_image = vtkImageData::New();
 
 
@@ -749,7 +751,7 @@ void vtkLevelSets::DistanceMapFMOld()
    current_image->SetNumberOfScalarComponents(1);
    vtkFloatArray* da = vtkFloatArray::New();
 
-   da->SetArray(&(*U),imsize,1);
+   da->SetArray(&(u[U_pos].front()),imsize,1);
    current_image->GetPointData()->SetScalars(da);
 
    // use newU as output
@@ -803,8 +805,10 @@ void vtkLevelSets::DistanceMapFMOld()
 void vtkLevelSets::DistanceMapFM()
 //                   ------------
 {
-   float_vec_it        U    = u[this->current].begin();
-   float_vec_it        newU = u[1-this->current].begin();
+   int U_pos    = this->current;
+   int newU_pos = 1-this->current;
+   float_vec_it        U    = u[U_pos].begin();
+   float_vec_it        newU = u[newU_pos].begin();
    float*              ptr;
    vector_size      i;
    vtkImageData_ptr      res1;
@@ -825,14 +829,14 @@ void vtkLevelSets::DistanceMapFM()
    current_image->SetSpacing(    outputImage->GetSpacing());
 
    boost::shared_ptr<vtkFloatArray> da = vtk_new<vtkFloatArray>()();
-   da->SetArray(&(*U),imsize,1);
+   da->SetArray(&(u[U_pos].front()),imsize,1);
    current_image->GetPointData()->SetScalars(da.get());
 
    // Compute the distance for the neighbors of the isocontour
    isodist->SetInput(current_image.get());
    isodist->Setthreshold(0);
    isodist->Setfarvalue(Band+1);
-   isodist->SetNarrowBand(&(*this->bnd.begin()),
+   isodist->SetNarrowBand(&(this->bnd.front()),
                           this->bnd.size());
    isodist->Update();
    res1 = vtk_new<vtkImageData>()(isodist->GetOutput());
@@ -862,7 +866,7 @@ void vtkLevelSets::DistanceMapFM()
    for(i=0;i<imsize;i++) ptr[i] = fabs(ptr[i]);
 
    // use newU as output
-   fm->UseOutputArray( &(*newU) );
+   fm->UseOutputArray( &(u[newU_pos].front()) );
 
    // Set the parameters
    // Trick:
@@ -873,7 +877,7 @@ void vtkLevelSets::DistanceMapFM()
    // The to Band because of possible anisotropic voxels
    fm->Setinitmaxdist(1+1E-3);
 
-   fm->SetNarrowBand(&(*this->bnd.begin()),
+   fm->SetNarrowBand(&(this->bnd.front()),
                       this->bnd.size());
 
    //   fm->Setinitiso(0);
@@ -931,8 +935,10 @@ void vtkLevelSets::DistanceMapFM()
 void vtkLevelSets::DistanceMapChamfer()
 //                   ------------
 {
-   float_vec_it        U    = u[this->current].begin();
-   float_vec_it        newU = u[1-this->current].begin();
+   int U_pos    = this->current;
+   int newU_pos = 1-this->current;
+   float_vec_it        U    = u[U_pos].begin();
+   float_vec_it        newU = u[newU_pos].begin();
    float*        ptr;
    vector_size      i;
 
@@ -958,7 +964,7 @@ void vtkLevelSets::DistanceMapChamfer()
 
    boost::shared_ptr<vtkFloatArray> da = vtk_new<vtkFloatArray>()();
 
-   da->SetArray(&(*U),imsize,1);
+   da->SetArray(&(u[U_pos].front()),imsize,1);
    current_image->GetPointData()->SetScalars(da.get());
 
    // Compute the distance for the neighbors of the isocontour
@@ -967,10 +973,10 @@ void vtkLevelSets::DistanceMapChamfer()
    isodist->Setfarvalue(Band+1);
 
    // directly updates newU ...
-   isodist->UseOutputArray( &(*newU) );
+   isodist->UseOutputArray( &(u[newU_pos].front()) );
 
    if (!this->bnd.empty())
-    isodist->SetNarrowBand(&(*this->bnd.begin()),
+     isodist->SetNarrowBand(&(this->bnd.front()),
                             this->bnd.size());
 
    //     fprintf(stderr, "DistanceMapChamfer() Register \n");
@@ -1018,7 +1024,7 @@ void vtkLevelSets::DistanceMapChamfer()
    //     fprintf(stderr, "DistanceMapChamfer() chamfer \n");
 
    // uses newU both as input and output
-   chamfer->UseInputOutputArray( &(*newU) );
+   chamfer->UseInputOutputArray( &(u[newU_pos].front()) );
 
    // input not used ...
    chamfer->SetInput(       res1);
@@ -1065,8 +1071,10 @@ void vtkLevelSets::DistanceMapChamfer()
 void vtkLevelSets::DistanceMapShape()
 //                 ----------------
 {
-   float_vec_it    U    = u[this->current].begin();
-   float_vec_it    newU = u[1-this->current].begin();
+   int U_pos    = this->current;
+   int newU_pos = 1-this->current;
+   float_vec_it        U    = u[U_pos].begin();
+   float_vec_it        newU = u[newU_pos].begin();
 
    vtkImageData*              current_image;
 
@@ -1084,7 +1092,7 @@ void vtkLevelSets::DistanceMapShape()
    current_image->SetOrigin(     outputImage->GetOrigin());
    current_image->SetSpacing(    outputImage->GetSpacing());
    vtkFloatArray* da = vtkFloatArray::New();
-   da->SetArray(&(*U),imsize,1);
+   da->SetArray(&(u[U_pos].front()),imsize,1);
    current_image->GetPointData()->SetScalars(da);
 
    // Compute the distance for the neighbors of the isocontour
@@ -1094,9 +1102,9 @@ void vtkLevelSets::DistanceMapShape()
    shape->Setmaxdist(Band+1);
 
    // directly updates newU ...
-   shape->UseOutputArray( &(*newU) );
+   shape->UseOutputArray( &(u[newU_pos].front()) );
 
-   shape->SetNarrowBand(&(*this->bnd.begin()),
+   shape->SetNarrowBand(&(this->bnd.front()),
                         this->bnd.size());
 
    shape->Update();

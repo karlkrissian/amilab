@@ -13,7 +13,10 @@
 #include "VolumeRender.hpp"
 #include "Viewer3D.hpp"
 
+#include "driver.h"
 #include "amilab_messages.h"
+
+extern yyip::Driver GB_driver;
 
 #define CLASS_GL_MESSAGE(m) \
   if (GB_debug_opengl) { \
@@ -745,9 +748,10 @@ void ami_wxGLCanvas::RemoveSurface( SurfacePoly::ptr surf)
   }
 
   _globject.erase(Iter);
-
+cout << "_globject.size() = " << _globject.size() << endl;
   if (_current_globject==surf)
-    _current_globject = _globject.front();
+    if (_globject.size()>0)
+      _current_globject = _globject.front();
 
 } // RemoveSurface()
 
@@ -1424,54 +1428,62 @@ bool compare_opacity (GLObject::ptr first,
 void ami_wxGLCanvas::DisplayObjects()
 //
 {
+  try {
 
-  if (GB_debug) fprintf(stderr,"ami_wxGLCanvas::DisplayObjects() Begin \n");
+    if (GB_debug) fprintf(stderr,"ami_wxGLCanvas::DisplayObjects() Begin \n");
 
-  // Better solution: order the objects by opacity ...
-  // most opaque first
-  GLObject::ptr_list sorted_list(_globject);
-  if (GB_debug)
-    fprintf(stderr,
-      "ami_wxGLCanvas::DisplayObjects() sorting elts \n");
-  sorted_list.sort(compare_opacity);
-  GLObject::ptr_list::iterator Iter;
+    // Better solution: order the objects by opacity ...
+    // most opaque first
+    GLObject::ptr_list sorted_list(_globject);
+    if (GB_debug)
+      fprintf(stderr,
+        "ami_wxGLCanvas::DisplayObjects() sorting elts \n");
+    sorted_list.sort(compare_opacity);
+    GLObject::ptr_list::iterator Iter;
 
 
-  if (_GLParam._GLmode != GL_MODE_FILL_LINE) {
-    glPolygonMode (GL_FRONT_AND_BACK, _GLParam.GLenum_mode());
-    glLineWidth(_GLParam._line_width);
-    glPointSize(_GLParam._point_size);
-    if (GB_debug) fprintf(stderr,
-      "ami_wxGLCanvas::DisplayObjects() iterating throught sorted elts \n");
-    for (Iter  = sorted_list.begin();
-        Iter != sorted_list.end()  ; Iter++ )
-      if ((*Iter).use_count()) DisplayObject(*Iter);
-  } else { // FILL and LINE
-    glLineWidth(_GLParam._line_width);
-    glPointSize(_GLParam._point_size);
-    if (GB_debug) fprintf(stderr,
-      "ami_wxGLCanvas::DisplayObjects() iterating throught sorted elts \n");
-    for (Iter  = sorted_list.begin();
-        Iter != sorted_list.end()  ; Iter++ )
-      if ((*Iter).use_count()) {
-        // First with FILL
-        glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
-        DisplayObject(*Iter);
+    if (_GLParam._GLmode != GL_MODE_FILL_LINE) {
+      glPolygonMode (GL_FRONT_AND_BACK, _GLParam.GLenum_mode());
+      glLineWidth(_GLParam._line_width);
+      glPointSize(_GLParam._point_size);
+      if (GB_debug) fprintf(stderr,
+        "ami_wxGLCanvas::DisplayObjects() iterating throught sorted elts \n");
+      for (Iter  = sorted_list.begin();
+          Iter != sorted_list.end()  ; Iter++ )
+        if ((*Iter).use_count()) DisplayObject(*Iter);
+    } else { // FILL and LINE
+      glLineWidth(_GLParam._line_width);
+      glPointSize(_GLParam._point_size);
+      if (GB_debug) fprintf(stderr,
+        "ami_wxGLCanvas::DisplayObjects() iterating throught sorted elts \n");
+      for (Iter  = sorted_list.begin();
+          Iter != sorted_list.end()  ; Iter++ )
+        if ((*Iter).use_count()) {
+          // First with FILL
+          glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
+          DisplayObject(*Iter);
 
-        // Second with LINES and without light
-        glPolygonMode (GL_FRONT_AND_BACK, GL_LINE);
-        int  lw = (*Iter)->GetLineWidth();
-        bool light_enabled = (*Iter)->GetEnableLight();
-        (*Iter)->SetLineWidth(lw+1);
-        (*Iter)->SetEnableLight(false);
-        DisplayObject(*Iter);
-        (*Iter)->SetLineWidth(lw);
-        (*Iter)->SetEnableLight(light_enabled);
-      }
+          // Second with LINES and without light
+          glPolygonMode (GL_FRONT_AND_BACK, GL_LINE);
+          int  lw = (*Iter)->GetLineWidth();
+          bool light_enabled = (*Iter)->GetEnableLight();
+          (*Iter)->SetLineWidth(lw+1);
+          (*Iter)->SetEnableLight(false);
+          DisplayObject(*Iter);
+          (*Iter)->SetLineWidth(lw);
+          (*Iter)->SetEnableLight(light_enabled);
+        }
 
-  }
+    }
 
-  if (GB_debug) fprintf(stderr,"ami_wxGLCanvas::DisplayObjects() End \n");
+    if (GB_debug) fprintf(stderr,"ami_wxGLCanvas::DisplayObjects() End \n");
+	}
+	catch(std::exception const& e) {
+	  GB_driver.err_print( (boost::format("std::exception catched during parsing \n %1% at %2% ") % e.what() % __func__ ).str().c_str());
+	}
+	catch(...) { 
+	  GB_driver.err_print("Unknown exception catched during parsing");
+	}
 
 } // DisplayObjects()
 

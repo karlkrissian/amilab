@@ -270,7 +270,7 @@ public:
    Surface       _surf;
 
    GLObject::ptr_list  _globject;
-   GLObject::ptr             _current_globject;
+   GLObject::ptr       _current_globject;
 
    int        _type_surface;
 
