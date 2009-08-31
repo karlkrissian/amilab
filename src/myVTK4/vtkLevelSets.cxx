@@ -969,8 +969,9 @@ void vtkLevelSets::DistanceMapChamfer()
    // directly updates newU ...
    isodist->UseOutputArray( &(*newU) );
 
-   isodist->SetNarrowBand(&(*this->bnd.begin()),
-                          this->bnd.size());
+   if (!this->bnd.empty())
+    isodist->SetNarrowBand(&(*this->bnd.begin()),
+                            this->bnd.size());
 
    //     fprintf(stderr, "DistanceMapChamfer() Register \n");
      //   isodist->Register(current_image);
