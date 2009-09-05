@@ -76,6 +76,10 @@ enum
 
     ID_View_Reset,
 
+    ID_LevelSets,
+    ID_FluxDiffusion,
+    ID_ParametricSurfaces,
+
     wxID_HelpTokens,
     wxID_HelpRules,
     wxID_HelpScripts,
@@ -207,7 +211,22 @@ void MainFrame::CreateMenu()
   wxMenu *menuView = new wxMenu;
   menuView->Append( ID_View_Reset, GetwxStr("&Reset") );
 
+
+  wxMenu *menuSegmentation = new wxMenu;
+  menuSegmentation->Append( ID_LevelSets, GetwxStr("&LevelSets") );
+
+  wxMenu *menuNoiseReduction = new wxMenu;
+  menuNoiseReduction->Append( ID_FluxDiffusion, GetwxStr("&FluxDiffusion") );
+
+  wxMenu *menuVisualization = new wxMenu;
+  menuVisualization->Append( ID_ParametricSurfaces, GetwxStr("&Param. Surfaces") );
+
+
   wxMenu *menuScripts = new wxMenu;
+  menuScripts->AppendSubMenu( menuSegmentation,   GetwxStr("&Segmentation"),    "Segmentation scripts" );
+  menuScripts->AppendSubMenu( menuNoiseReduction, GetwxStr("&Noise Reduction"), "Noise Reduction scripts" );
+  menuScripts->AppendSubMenu( menuVisualization,  GetwxStr("&Visualization"),   "Visualization scripts" );
+
 
   wxMenuBar *menuBar = new wxMenuBar;
   menuBar->Append( menuFile,    GetwxStr("&File") );
@@ -215,6 +234,15 @@ void MainFrame::CreateMenu()
   menuBar->Append( menuScripts, GetwxStr("&Scripts") );
 
   SetMenuBar( menuBar );
+
+  // connect event handlers
+  Connect(ID_LevelSets,wxEVT_COMMAND_MENU_SELECTED,
+     wxCommandEventHandler(MainFrame::OnLevelSets));
+  Connect(ID_FluxDiffusion,wxEVT_COMMAND_MENU_SELECTED,
+     wxCommandEventHandler(MainFrame::OnFluxDiffusion));
+  Connect(ID_ParametricSurfaces,wxEVT_COMMAND_MENU_SELECTED,
+     wxCommandEventHandler(MainFrame::OnParametricSurfaces));
+
 } // CreateMenu()
 
 
@@ -1307,4 +1335,33 @@ void MainFrame::OnHelpPath   ( wxFileDirPickerEvent& event)
 }
 
 
+//--------------------------------------------------
+void MainFrame::OnLevelSets(      wxCommandEvent& event)
+{
+  string cmd; // increment the command line string
+  cmd = string("func \"Segmentation/LevelSetsGui1.amil");
+  cmd += string("\" // from menu");
+  this->TC->IncCommand(cmd);
+  this->TC->ProcessReturn();
+}
+
+//--------------------------------------------------
+void MainFrame::OnFluxDiffusion(  wxCommandEvent& event)
+{
+  string cmd; // increment the command line string
+  cmd = string("func \"Filtering/AnisoGS_gui.amil");
+  cmd += string("\" // from menu");
+  this->TC->IncCommand(cmd);
+  this->TC->ProcessReturn();
+}
+
+//--------------------------------------------------
+void MainFrame::OnParametricSurfaces(  wxCommandEvent& event)
+{
+  string cmd; // increment the command line string
+  cmd = string("func \"Visualization/ParametricSurfaces.amil");
+  cmd += string("\" // from menu");
+  this->TC->IncCommand(cmd);
+  this->TC->ProcessReturn();
+}
 

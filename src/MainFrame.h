@@ -154,6 +154,11 @@ public:
   void SetProgress(   int val);
   void SetStatusText( const std::string& text);
 
+
+  void OnLevelSets(           wxCommandEvent& event);
+  void OnFluxDiffusion(       wxCommandEvent& event);
+  void OnParametricSurfaces(  wxCommandEvent& event);
+
 protected:
   CustomStatusBar* _status_bar;
 
