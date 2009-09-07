@@ -158,6 +158,7 @@ public:
   void OnLevelSets(           wxCommandEvent& event);
   void OnFluxDiffusion(       wxCommandEvent& event);
   void OnParametricSurfaces(  wxCommandEvent& event);
+  void OnCreateTorus(         wxCommandEvent& event);
 
 protected:
   CustomStatusBar* _status_bar;

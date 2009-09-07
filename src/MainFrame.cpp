@@ -79,6 +79,7 @@ enum
     ID_LevelSets,
     ID_FluxDiffusion,
     ID_ParametricSurfaces,
+    ID_CreateTorus,
 
     wxID_HelpTokens,
     wxID_HelpRules,
@@ -221,11 +222,15 @@ void MainFrame::CreateMenu()
   wxMenu *menuVisualization = new wxMenu;
   menuVisualization->Append( ID_ParametricSurfaces, GetwxStr("&Param. Surfaces") );
 
+  wxMenu *menuSyntheticImages = new wxMenu;
+  menuSyntheticImages->Append( ID_CreateTorus, GetwxStr("&Torus") );
+
 
   wxMenu *menuScripts = new wxMenu;
-  menuScripts->AppendSubMenu( menuSegmentation,   GetwxStr("&Segmentation"),    "Segmentation scripts" );
-  menuScripts->AppendSubMenu( menuNoiseReduction, GetwxStr("&Noise Reduction"), "Noise Reduction scripts" );
-  menuScripts->AppendSubMenu( menuVisualization,  GetwxStr("&Visualization"),   "Visualization scripts" );
+  menuScripts->AppendSubMenu( menuSegmentation,   GetwxStr("&Segmentation"),    GetwxStr("Segmentation scripts") );
+  menuScripts->AppendSubMenu( menuNoiseReduction, GetwxStr("&Noise Reduction"), GetwxStr("Noise Reduction scripts") );
+  menuScripts->AppendSubMenu( menuVisualization,  GetwxStr("&Visualization"),   GetwxStr("Visualization scripts") );
+  menuScripts->AppendSubMenu( menuSyntheticImages,  GetwxStr("&Synthetic Images"),   GetwxStr("Creation of synthetic images") );
 
 
   wxMenuBar *menuBar = new wxMenuBar;
@@ -242,6 +247,8 @@ void MainFrame::CreateMenu()
      wxCommandEventHandler(MainFrame::OnFluxDiffusion));
   Connect(ID_ParametricSurfaces,wxEVT_COMMAND_MENU_SELECTED,
      wxCommandEventHandler(MainFrame::OnParametricSurfaces));
+  Connect(ID_CreateTorus,wxEVT_COMMAND_MENU_SELECTED,
+     wxCommandEventHandler(MainFrame::OnCreateTorus));
 
 } // CreateMenu()
 
@@ -1339,8 +1346,7 @@ void MainFrame::OnHelpPath   ( wxFileDirPickerEvent& event)
 void MainFrame::OnLevelSets(      wxCommandEvent& event)
 {
   string cmd; // increment the command line string
-  cmd = string("func \"Segmentation/LevelSetsGui1.amil");
-  cmd += string("\" // from menu");
+  cmd = string("func \"Segmentation/LevelSetsGui1.amil\" // from menu");
   this->TC->IncCommand(cmd);
   this->TC->ProcessReturn();
 }
@@ -1349,8 +1355,7 @@ void MainFrame::OnLevelSets(      wxCommandEvent& event)
 void MainFrame::OnFluxDiffusion(  wxCommandEvent& event)
 {
   string cmd; // increment the command line string
-  cmd = string("func \"Filtering/AnisoGS_gui.amil");
-  cmd += string("\" // from menu");
+  cmd = string("func \"Filtering/AnisoGS_gui.amil\" // from menu");
   this->TC->IncCommand(cmd);
   this->TC->ProcessReturn();
 }
@@ -1359,8 +1364,16 @@ void MainFrame::OnFluxDiffusion(  wxCommandEvent& event)
 void MainFrame::OnParametricSurfaces(  wxCommandEvent& event)
 {
   string cmd; // increment the command line string
-  cmd = string("func \"Visualization/ParametricSurfaces.amil");
-  cmd += string("\" // from menu");
+  cmd = string("func \"Visualization/ParametricSurfaces.amil\" // from menu");
+  this->TC->IncCommand(cmd);
+  this->TC->ProcessReturn();
+}
+
+//--------------------------------------------------
+void MainFrame::OnCreateTorus(  wxCommandEvent& event)
+{
+  string cmd; // increment the command line string
+  cmd = string("func \"SyntheticImages/create_torus_gui.amil\" // from menu");
   this->TC->IncCommand(cmd);
   this->TC->ProcessReturn();
 }
