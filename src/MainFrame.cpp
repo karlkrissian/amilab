@@ -78,6 +78,7 @@ enum
 
     ID_LevelSets,
     ID_FluxDiffusion,
+    ID_NRAD,
     ID_ParametricSurfaces,
     ID_CreateTorus,
     ID_CreateSphere,
@@ -219,6 +220,7 @@ void MainFrame::CreateMenu()
 
   wxMenu *menuNoiseReduction = new wxMenu;
   menuNoiseReduction->Append( ID_FluxDiffusion, GetwxStr("&FluxDiffusion") );
+  menuNoiseReduction->Append( ID_NRAD, GetwxStr("&Noise Reducing A.D.") );
 
   wxMenu *menuVisualization = new wxMenu;
   menuVisualization->Append( ID_ParametricSurfaces, GetwxStr("&Param. Surfaces") );
@@ -245,8 +247,12 @@ void MainFrame::CreateMenu()
   // connect event handlers
   Connect(ID_LevelSets,wxEVT_COMMAND_MENU_SELECTED,
      wxCommandEventHandler(MainFrame::OnLevelSets));
+
   Connect(ID_FluxDiffusion,wxEVT_COMMAND_MENU_SELECTED,
      wxCommandEventHandler(MainFrame::OnFluxDiffusion));
+  Connect(ID_NRAD,         wxEVT_COMMAND_MENU_SELECTED,
+     wxCommandEventHandler(MainFrame::OnNRAD));
+
   Connect(ID_ParametricSurfaces,wxEVT_COMMAND_MENU_SELECTED,
      wxCommandEventHandler(MainFrame::OnParametricSurfaces));
   Connect(ID_CreateTorus,wxEVT_COMMAND_MENU_SELECTED,
@@ -1360,6 +1366,15 @@ void MainFrame::OnFluxDiffusion(  wxCommandEvent& event)
 {
   string cmd; // increment the command line string
   cmd = string("func \"Filtering/AnisoGS_gui.amil\" // from menu");
+  this->TC->IncCommand(cmd);
+  this->TC->ProcessReturn();
+}
+
+//--------------------------------------------------
+void MainFrame::OnNRAD(  wxCommandEvent& event)
+{
+  string cmd; // increment the command line string
+  cmd = string("func \"Filtering/AnisoNRAD_gui.amil\" // from menu");
   this->TC->IncCommand(cmd);
   this->TC->ProcessReturn();
 }

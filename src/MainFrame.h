@@ -157,6 +157,7 @@ public:
 
   void OnLevelSets(           wxCommandEvent& event);
   void OnFluxDiffusion(       wxCommandEvent& event);
+  void OnNRAD(                wxCommandEvent& event);
   void OnParametricSurfaces(  wxCommandEvent& event);
   void OnCreateTorus(         wxCommandEvent& event);
   void OnCreateSphere(        wxCommandEvent& event);
