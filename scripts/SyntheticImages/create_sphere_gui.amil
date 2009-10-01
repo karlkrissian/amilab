@@ -1,0 +1,78 @@
+#
+# Creates a sphere within a volume data
+#
+
+if (!exists(CSPH_defined)) {
+  CSPH_defined=1
+
+  import_filters
+  
+  proc CSPH_Init() {
+    global_new
+    
+    CSPH_dimx = INT(100)
+    CSPH_dimy = INT(100)
+    CSPH_dimz = INT(100)
+    # Background intensity
+    CSPH_bg = 0
+    # Foreground intensity
+    CSPH_fg = 100
+    # Radius
+    CSPH_R = 20 
+    
+    CSPH_image_name = "i"
+    CSPH_Gui
+  }
+  
+  proc CSPH_Close() {
+    CSPH_win.Hide
+    delvars "CSPH_*_draw"
+    delvars "CSPH_*"
+  }
+  
+  proc CSPH_Create() {
+    tmp = Image(FLOAT,CSPH_dimx,CSPH_dimy,CSPH_dimz)
+    tmp_x = (FLOAT) Xpos(tmp)
+    tmp_y = (FLOAT) Ypos(tmp)
+    tmp_z = (FLOAT) Zpos(tmp)
+    tmp_x = tmp_x-CSPH_dimx/2
+    tmp_y = tmp_y-CSPH_dimy/2
+    tmp_z = tmp_z-CSPH_dimz/2
+    res=-sqrt(tmp_x*tmp_x+tmp_y*tmp_y+tmp_z*tmp_z)+CSPH_R
+  
+    # estimate partial volume effect based on linear interpolation
+    res = ComputePV_subdiv(res)
+    res = res*(CSPH_fg-CSPH_bg)+CSPH_bg
+    
+    eval "global::"+CSPH_image_name+"<<=res;"
+  }
+  
+  proc CSPH_Show() {
+    global_new
+    eval "show "+CSPH_image_name+";"
+  }
+  
+  proc CSPH_Gui() {
+    global::CSPH_win = ParamWin("CreateSphere")
+  
+    CSPH_win.AddInt(CSPH_dimx,1,1000)
+    CSPH_win.AddInt(CSPH_dimy,1,1000)
+    CSPH_win.AddInt(CSPH_dimz,1,1000)
+  
+    CSPH_win.AddFloat(CSPH_bg,0.1,500)
+    CSPH_win.AddFloat(CSPH_fg,0.1,500)
+  
+    CSPH_win.AddFloat(CSPH_R,0.1,50)
+  
+    CSPH_win.AddButton("Create", CSPH_Create)
+    CSPH_win.AddButton("Show",   CSPH_Show)
+    CSPH_win.AddButton("Close",  CSPH_Close)
+  
+    CSPH_win.update
+    CSPH_win.Display
+  }
+  
+  CSPH_Init()
+}
+#endif CSPH_defined
+

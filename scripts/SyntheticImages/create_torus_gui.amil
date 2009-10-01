@@ -45,6 +45,7 @@ if (!exists(CT_defined)) {
   
     # estimate partial volume effect based on linear interpolation
     res = ComputePV_subdiv(res)
+    res = res*(CT_fg-CT_bg)+CT_bg
     
     eval "global::"+CT_image_name+"<<=res;"
   }

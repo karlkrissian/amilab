@@ -390,7 +390,7 @@ void vtkImageIsoContourDist::IsoSurfDist3D( )
   // need 2 voxels margin ...
   for(z=2; z<=tz-3; z++) {
   for(y=2; y<=ty-3; y++) {
-  inPtr  = (float*) inputImage ->GetScalarPointer(1,y,z);
+  inPtr  = (float*) inputImage ->GetScalarPointer(2,y,z);
   for(x=2; x<=tx-3; x++) {
 
     val0 = *inPtr-threshold;

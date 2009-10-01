@@ -69,10 +69,10 @@ if (!exists(Skel_defined)) {
       Skel_InputIntensity = UCHAR(0)
 
       # Ordering distance Transform
-      # 0: vtkPropDaniel2
+      # 0: vtkPropDaniel2: can produce seg fault ??
       # 1: Andre Robatino
       # 2: Fast Marching
-      Skel_Ordering     = INT(0)
+      Skel_Ordering     = INT(2)
       Skel_DTmin        = -10
       Skel_DTmax        = 10
 

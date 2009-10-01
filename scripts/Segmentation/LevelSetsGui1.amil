@@ -34,6 +34,9 @@ if (!exists(LS_defined)) {
       LS_dt = 0.5
       LS_T=200
 
+      LS_NBD_method     = INT(2)     // 0:liana s, 1: fast marching 2: fast chamfer
+      LS_NBD_freq       = INT(6)
+
       LS_check_convergence = UCHAR(1)
       LS_conv_freq         = INT(20)
 
@@ -254,22 +257,20 @@ if (!exists(LS_defined)) {
   }
   
   //--------------------------------------------------
-  proc LS_Run( IMAGE initial, NUM graphics) {
+  proc LS_Run(  NUM graphics) {
   //   -----
   
     // every how many iterations call the graphic events
-    freq = 8
+    LS_displ_freq = 8
     it = floor(LS_T/LS_dt)+1
   
-    // 0:liana s, 1: fast marching 2: fast chamfer
-    method     = 2
   
     v_x = LS_input.vx
     v_y = LS_input.vy
     v_z = LS_input.vz
   
     setvoxelsize(LS_input,  1,1,1)
-    setvoxelsize(initial,1,1,1)
+    setvoxelsize(LS_inls,1,1,1)
   
     // Parameters:
     //   1. grad threshold
@@ -281,8 +282,8 @@ if (!exists(LS_defined)) {
   
   
     //
-    LevelSetsCURV.SetParam(0.7,it,LS_advcoeff,LS_curvcoeff,LS_dt,6)
-    LevelSetsCURV.SetDistMethod(method)
+    LevelSetsCURV.SetParam(0.7,it,LS_advcoeff,LS_curvcoeff,LS_dt,LS_NBD_freq)
+    LevelSetsCURV.SetDistMethod(LS_NBD_method)
     LevelSetsCURV.SetThreads(LS_threads)
     LevelSetsCURV.SetMeanCurv(LS_smoothingtype)
     LevelSetsCURV.SetAffineCurv(LS_affinecurv)
@@ -319,13 +320,13 @@ if (!exists(LS_defined)) {
   
     LevelSetsCURV.SetBandTube(3,2)
   
-    lres = LevelSetsCURV.init(LS_input,initial)
+    lres = LevelSetsCURV.init(LS_input,LS_inls)
   #  lres = LevelSetsCURV.init(LS_input,900)
   
     if (graphics) {
       show LS_input
       // sets the isocontour number 0 to the image 'initial' with threshold 0
-      LS_input_draw.SetIsoContour(1,initial,0)
+      LS_input_draw.SetIsoContour(1,LS_inls,0)
       // sets the isocontour number 0 to be active
       LS_input_draw.DrawIsoContour(1,1)
       LS_input_draw.SetIsoContour(2,lres,0)
@@ -348,7 +349,7 @@ if (!exists(LS_defined)) {
         #print sprint("LS_T= %0.2f \n",n*LS_dt)
         LevelSetsCURV.iterate;
         k = k+1
-        if (graphics)&&(k==freq) {
+        if (graphics)&&(k==LS_displ_freq) {
           LevelSetsCURV.UpdateResult
           lres = LevelSetsCURV.GetOutput
           k = 0
@@ -375,17 +376,18 @@ if (!exists(LS_defined)) {
   
     printn "continue commands"
     setvoxelsize( LS_input,   v_x, v_y, v_z)
-    setvoxelsize( initial, v_x, v_y, v_z)
+    setvoxelsize( LS_inls, v_x, v_y, v_z)
     setvoxelsize( lres,    v_x, v_y, v_z)
   
     // invert before ending to be compatible with input convention
     LevelSetsCURV.UpdateResult
     lres = LevelSetsCURV.GetOutput
-    initial = -lres;
+    LS_inls = -lres;
   
     LevelSetsCURV.end
     SetProgress(0)
   
+    LS_input_draw.DrawIsoContour(2,0)
   }
   # LS_Run()
   
@@ -442,7 +444,7 @@ if (!exists(LS_defined)) {
     if (!exists(LS_input_image)) { LS_load_input; }
     if (!exists(LS_inls))        { LS_load_initial; }
     LS_inls = LS_inls0
-    LS_Run(&LS_inls,1)
+    LS_Run(1)
     show LS_input
   }
   
@@ -455,7 +457,7 @@ if (!exists(LS_defined)) {
   
   //---------------------------------------------------
   proc LS_Continue() {
-    LS_Run(&LS_inls,1)
+    LS_Run(1)
     show LS_input
   }
   
@@ -577,6 +579,14 @@ if (!exists(LS_defined)) {
   
         LS_win.EndBook
   
+      LS_win.AddPage("Band")
+        LS_win.BeginBox("Re-Distancing")
+            LS_DistType_id = LS_win.AddEnum(LS_NBD_method)
+              LS_win.AddEnumChoice(LS_DistType_id,"Liana")
+              LS_win.AddEnumChoice(LS_DistType_id,"Fast Marching")
+              LS_win.AddEnumChoice(LS_DistType_id,"Fast Chamfer")
+        LS_win.EndBox
+
       LS_win.AddPage("Evol")
   
         LS_win.BeginBox("Time")

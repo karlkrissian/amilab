@@ -80,6 +80,7 @@ enum
     ID_FluxDiffusion,
     ID_ParametricSurfaces,
     ID_CreateTorus,
+    ID_CreateSphere,
 
     wxID_HelpTokens,
     wxID_HelpRules,
@@ -223,7 +224,8 @@ void MainFrame::CreateMenu()
   menuVisualization->Append( ID_ParametricSurfaces, GetwxStr("&Param. Surfaces") );
 
   wxMenu *menuSyntheticImages = new wxMenu;
-  menuSyntheticImages->Append( ID_CreateTorus, GetwxStr("&Torus") );
+  menuSyntheticImages->Append( ID_CreateTorus,  GetwxStr("&Torus") );
+  menuSyntheticImages->Append( ID_CreateSphere, GetwxStr("&Sphere") );
 
 
   wxMenu *menuScripts = new wxMenu;
@@ -249,6 +251,8 @@ void MainFrame::CreateMenu()
      wxCommandEventHandler(MainFrame::OnParametricSurfaces));
   Connect(ID_CreateTorus,wxEVT_COMMAND_MENU_SELECTED,
      wxCommandEventHandler(MainFrame::OnCreateTorus));
+  Connect(ID_CreateSphere,wxEVT_COMMAND_MENU_SELECTED,
+     wxCommandEventHandler(MainFrame::OnCreateSphere));
 
 } // CreateMenu()
 
@@ -1374,6 +1378,15 @@ void MainFrame::OnCreateTorus(  wxCommandEvent& event)
 {
   string cmd; // increment the command line string
   cmd = string("func \"SyntheticImages/create_torus_gui.amil\" // from menu");
+  this->TC->IncCommand(cmd);
+  this->TC->ProcessReturn();
+}
+
+//--------------------------------------------------
+void MainFrame::OnCreateSphere(  wxCommandEvent& event)
+{
+  string cmd; // increment the command line string
+  cmd = string("func \"SyntheticImages/create_sphere_gui.amil\" // from menu");
   this->TC->IncCommand(cmd);
   this->TC->ProcessReturn();
 }
