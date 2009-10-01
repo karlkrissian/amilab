@@ -127,7 +127,7 @@ protected:
 
   // Op�ation d'allocation, de lecture, d'ecriture
   ///
-  unsigned char   Lit();
+  unsigned char   Read();
 
   ///
   unsigned char   LitEntete();

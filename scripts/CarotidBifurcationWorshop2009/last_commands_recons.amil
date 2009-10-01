@@ -1,0 +1,45 @@
+#!/home/karl/projects/SourceForge/builds/amilab_release/amilab_2.0.4_release /home/karl/projects/data/CarotidChallengeMiccai09/svn/CarotidChallenge09/trunk/scripts/CarotidChallengeMiccai09/RunExperimentsGui.amil 
+
+proc RML_load_input() {
+
+  eval "global::RML_input <<= (FLOAT)"+RML_input_name+";"
+  if (RML_input_name=="Image") {
+    RML_input_name = "RML_input"
+  }
+
+  if (RML_mask_name=="Image") {
+    global::RML_mask <<= (UCHAR) ((RML_input>0.1)*255)
+    RML_mask_name = "RML_mask"
+  } else {
+    eval "global::RML_mask <<="+RML_mask_name+";"
+  }
+  RML_win.update
+
+}
+
+show NLM_res
+show RML_result
+line1 = SP_path
+show line1
+line2 = SP_path
+show line1; line1_draw += line2
+line1_draw += CE_GTiso
+show RML_result
+RML_result_draw.setGLwin(line1_draw)
+line1.save "data004_line1.vtk"
+line2.save "data004_line2.vtk"
+recons = NLM_input*0
+radii_im = recons*0+2
+radii_pts = line1.GetIntensities(radii_im)
+radii_pts.info
+recons = LineRecons(line1,recons,radii_pts)
+show recons
+recons2 = NLM_input*0
+radii_pts2 = line2.GetIntensities(radii_im)
+recons2 = LineRecons(line2,recons2,radii_pts2)
+recons1 = recons
+recons = max(recons1,recons2)
+show recons
+show CE_input_cropped
+CE_input_cropped_draw.SetIsoContour(0,recons,100)
+quit

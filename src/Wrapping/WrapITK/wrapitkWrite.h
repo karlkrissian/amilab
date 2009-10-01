@@ -1,3 +1,3 @@
 #include "paramlist.h"
 
-InrImage* itkWrite(ParamList*);
+void itkWrite(ParamList*);

@@ -63,7 +63,7 @@ Fonction2D :: Constructeur Fonction2D( Chaine nom)
 
   _xmin = _ymin = 0.0;
   _xmax = _ymax = 0.0;
-  Lit(nom);
+  Read(nom);
 
 } // Constructeur
 
@@ -96,7 +96,7 @@ Fonction2D :: Destructeur Fonction2D( )
 
 //----------------------------------------------------------------------
 ///
-void Fonction2D :: Lit( Chaine nom) throw( ErreurLecture)
+void Fonction2D :: Read( Chaine nom) throw( ErreurLecture)
 //                           ---
 {
 
@@ -125,7 +125,7 @@ void Fonction2D :: Lit( Chaine nom) throw( ErreurLecture)
     _points += Point2D<float>(x,y);
   FinTantQue
 
-} // Lit()
+} // Read()
 
 
 //----------------------------------------------------------------------

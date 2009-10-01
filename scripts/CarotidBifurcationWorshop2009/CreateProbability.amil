@@ -1,0 +1,117 @@
+#
+# Script to compute probability of belonging to a structure
+# based on an intensity mapping of the local statistics
+# of the image intensity (local mean and local standard deviation)
+#
+
+
+if (!exists(CP_defined)) {
+  CP_defined=1
+
+  #--------------------------
+  proc CP_Init() \
+  {
+    global::CP_input_name  = ""
+    global::CP_output_name = "CP_prob"
+    global::CP_localstats_winsize  = INT(1)
+
+    global::CP_lsd_erosion         = 0
+
+    global::CP_localmean_low       = 1050
+    global::CP_localmean_high      = 1600
+    global::CP_localmean_smoothing = 5
+    global::CP_localsd_high        = 30
+    CP_Gui
+  }
+
+  #--------------------------
+  proc CP_LoadInput() \
+  {
+    eval "global::CP_input <<="+CP_input_name+";"
+    if (CP_input_name=="Image") {
+      CP_input_name = "CP_input"
+      CP_win.update
+    }
+  }
+
+  #--------------------------
+  proc CP_Close() \
+  {
+    CP_win.Hide
+    delvars "CP_*_draw"
+    delvars "CP_*"
+  }
+
+  #--------------------------
+  proc CP_Apply() \
+  {
+    CP_LoadInput
+
+    # compute local mean intensity
+    global::CP_lm = localmean2(CP_input,CP_localstats_winsize)
+
+    # Create local mean intensity map
+    # will map intensity from 0 to 10000
+    imap = Image(FLOAT,10000,1,1)
+    imap = Xpos(imap)
+    imap = (imap>=CP_localmean_low)*(imap<=CP_localmean_high)
+    # smooth the mapping
+    imap = filter(imap,CP_localmean_smoothing,0,-1,-1)
+    # apply
+    global::CP_lm_map = imap(CP_lm)
+
+    # Compute local standard deviations
+    global::CP_lsd = localSD2(CP_input,CP_lm,CP_localstats_winsize)
+
+    if (CP_lsd_erosion>0.01) {
+      CP_lsd = EDPerode(CP_lsd,CP_lsd_erosion,0.25)
+    }
+
+    # map with a "Gaussian"
+    global::CP_lsd_map = exp(-(CP_lsd*CP_lsd)/ \
+                              (CP_localsd_high*CP_localsd_high))
+
+    # now combine both
+    eval "global::"+CP_output_name+" = CP_lm_map*CP_lsd_map;"
+
+  }
+
+  #--------------------------
+  proc CP_Gui() \
+  {
+    global::CP_win = ParamWin("Prob")
+
+    CP_win.BeginPanel("Param")
+      CP_win.AddImageChoice(CP_input_name,"Input")
+      CP_win.AddString(CP_output_name,"Output")
+  
+      CP_win.AddInt(CP_localstats_winsize,1,10)
+
+      CP_win.AddFloat(CP_lsd_erosion,0,5)
+  
+      CP_win.BeginBox("local mean range")
+        CP_win.AddFloat(CP_localmean_low,0,3000)
+        CP_win.AddFloat(CP_localmean_high,0,3000)
+        CP_win.AddFloat(CP_localmean_smoothing,0,100)
+      CP_win.EndBox
+  
+      CP_win.BeginBox("local stand. dev. parameter")
+        CP_win.AddFloat(CP_localsd_high,0,3000)
+      CP_win.EndBox
+  
+      CP_win.AddButton("Apply",CP_Apply)
+    CP_win.EndPanel
+
+    CP_win.AddButton("Close",CP_Close)
+
+    CP_win.update
+    CP_win.Display
+  }
+
+  #----------------------------
+  # Main
+  #----------------------------
+  CP_Init
+
+} 
+# end if (!exists(CreateProbability)) 

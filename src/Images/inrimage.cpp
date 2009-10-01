@@ -107,6 +107,7 @@ extern "C" {
   #include "vtk_common.h"
 #endif // AMI_USE_VTK
 
+
 #include <boost/scoped_array.hpp>
 using namespace boost;
 
@@ -117,17 +118,22 @@ using namespace boost;
 
 #include "math1.hpp"
 
+
+#ifdef AMI_USE_ITK
+  #include "wrapitkRead.h"
+#endif // AMI_USE_ITK
+
 #if defined(_MSC_VER) 
 //|| defined(__MINGW32__)
 int rint(const float& a)
 {
-	return (int) floor(a+0.5);
+  return (int) floor(a+0.5);
 }
 
 /* roundf defined now in math1.cpp
 float roundf(const float& a)
 {
-	return (float) floor(a+0.5);
+  return (float) floor(a+0.5);
 }
 */
 #endif
@@ -698,7 +704,7 @@ unsigned char InrImage :: ReadVTKImage( ) throw (ErreurLecture)
 
 
 //--------------------------------------------------------------------------
-unsigned char InrImage :: Lit( ) throw (ErreurLecture)
+unsigned char InrImage :: Read( ) throw (ErreurLecture)
 //                           ---
 {
 
@@ -761,6 +767,35 @@ unsigned char InrImage :: Lit( ) throw (ErreurLecture)
     res = ReadVTK();
   }
 
+#ifdef AMI_USE_ITK
+  // trying with ITK
+  if (!res) {
+    InrImage* tmpim = itkRead(_nom);
+    res = (tmpim!=NULL);
+    if (res) {
+      // need to allocate the image first
+      _tx     = tmpim->_tx;
+      _ty     = tmpim->_ty;
+      _tz     = tmpim->_tz;
+      _vdim   = tmpim->_vdim;
+      _format = tmpim->_format;
+      _txy    = _tx*_ty;
+      _taille = (unsigned long) _tx * _ty * _tz;
+
+      _amimage = new amimage();
+      _amimage->SetDim( _tx, _ty, _tz, _vdim);
+      AMIFromWT(_vdim,_format,_amimage);
+      if (_amimage->allocate()) {
+        _amimage_allocated = true;
+        SetVoxelSize(tmpim->VoxSizeX(),tmpim->VoxSizeY(),tmpim->VoxSizeZ());
+        SetTranslation(tmpim->TrX(),tmpim->TrY(),tmpim->TrZ());
+        (*this) = (*tmpim);
+        delete tmpim;
+      }
+    }
+  }
+#endif
+
   if ( !res ) {
     cerr << " Error reading image " << endl;
     throw ErreurLecture();
@@ -769,7 +804,7 @@ unsigned char InrImage :: Lit( ) throw (ErreurLecture)
 
   return (res);
 
-} // Lit()
+} // Read()
 
 
 //--------------------------------------------------------------------------
@@ -1422,7 +1457,7 @@ InrImage :: Constructeur InrImage( const char* nom)
   //----- Lecture de l'image d'entree
   _nom = nom;
 
-  Lit();
+  Read();
 
   _tx     = _amimage->GetXDim();
   _ty     = _amimage->GetYDim();

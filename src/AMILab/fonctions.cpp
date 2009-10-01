@@ -1194,14 +1194,14 @@ int AskImage(std::string& name)
     file_format_map formats;
 
     formats.insert(file_format( "Available",
-                                "*.ami;*.ami.gz;*.vtk;*.jpg;*.jpeg;*.png;*.bmp;*.tif;*.tiff"));
+                                "*.ami;*.ami.gz;*.vtk;*.mhd;*.jpg;*.jpeg;*.png;*.bmp;*.tif;*.tiff"));
     formats.insert(file_format( "Amilab",
                                 "*.ami;*.ami.gz"));
     formats.insert(file_format( "VTK",
                                 "*.vtk"));
     formats.insert(file_format( "Standard images",  
                                 "*.jpg;*.jpeg;*.png;*.bmp;*.tif;*.tiff"));
-    formats.insert(file_format( "ITK ( need to run import_itk and ReadITK() )",
+    formats.insert(file_format( "ITK",
                                 "*.mhd"));
     formats.insert(file_format( "All files with extensions",
                                 "*.*"));

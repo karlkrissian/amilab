@@ -1,0 +1,85 @@
+
+#
+# Create Spheres at the positions of the 3 initial points
+# given by the global variables p{1,2,3}{x,y,z}
+#
+
+func "SyntheticImages/AddSphere.amil"
+
+proc CheckInitialPoints( IMAGE input, STRING resname, NUM size ) \
+{
+
+  # create the resulting image as a global variable, with inital negative values of -10
+  res = (FLOAT)input*0-10
+
+
+  # add first sphere
+  AddBrightSphereGlobal_mm(&res,p1x,p1y,p1z,size,-10,10)
+  s1_mean= mean[res>0](input)
+  s1_sd  = mean[res>0] ( (input-s1_mean)*(input-s1_mean))
+  s1_sd  = sqrt(s1_sd)
+  printn boost_format(" Sphere 1, mean = %1%") % s1_mean
+  printn boost_format(" Sphere 1, sd   = %1%") % s1_sd
+
+  res=-10;
+
+  # add second sphere
+  AddBrightSphereGlobal_mm(&res,p2x,p2y,p2z,size,-10,10)
+  s2_mean= mean[res>0](input)
+  s2_sd  = mean[res>0] ( (input-s2_mean)*(input-s2_mean))
+  s2_sd  = sqrt(s2_sd)
+  printn boost_format(" Sphere 2, mean = %1%") % s2_mean
+  printn boost_format(" Sphere 2, sd   = %1%") % s2_sd
+
+  res=-10;
+
+  # add third sphere
+  AddBrightSphereGlobal_mm(&res,p3x,p3y,p3z,size,-10,10)
+  s3_mean= mean[res>0](input)
+  s3_sd  = mean[res>0] ( (input-s3_mean)*(input-s3_mean))
+  s3_sd  = sqrt(s3_sd)
+  printn boost_format(" Sphere 3, mean = %1%") % s3_mean
+  printn boost_format(" Sphere 3, sd   = %1%") % s3_sd
+
+  # check point intensities
+  if ((s1_mean>1150)||((s2_mean+s3_mean)/2<(s1_mean+100))) {
+    eval "global::"+resname+"_pt1_OK = 1;"
+  }
+  if ((s2_mean>1150)||((s1_mean+s3_mean)/2<(s2_mean+100))) {
+    eval "global::"+resname+"_pt2_OK = 1;"
+  }
+  if ((s3_mean>1150)||((s2_mean+s1_mean)/2<(s3_mean+100))) {
+    eval "global::"+resname+"_pt3_OK = 1;"
+  }
+
+}
+
+
+proc CreateInitialSpheres( IMAGE input, STRING resname, NUM size) \
+{
+  # create the resulting image as a global variable, with inital negative values of -10
+  res = (FLOAT)input*0-10
+
+  CheckInitialPoints(&input,resname,size)
+
+  # add spheres
+  res=-10
+  eval "pt1_ok = "+resname+"_pt1_OK;"
+  eval "pt2_ok = "+resname+"_pt2_OK;"
+  eval "pt3_ok = "+resname+"_pt3_OK;"
+  if (pt1_ok) {
+    AddBrightSphereGlobal_mm(&res,p1x,p1y,p1z,size,-10,10)
+  }
+  if (pt2_ok) {
+    AddBrightSphereGlobal_mm(&res,p2x,p2y,p2z,size,-10,10)
+  }
+  if (pt3_ok) {
+    AddBrightSphereGlobal_mm(&res,p3x,p3y,p3z,size,-10,10)
+  }
+
+  eval "global::"+resname+"<<=res;"
+}
+
+#          LS_Imean= mean[LS_inls>0](LS_input)
+#          LS_Isd  = mean[LS_inls>0] ( (LS_input-LS_Imean)*(LS_input-LS_Imean))
+#          LS_Isd  = sqrt(LS_Isd)

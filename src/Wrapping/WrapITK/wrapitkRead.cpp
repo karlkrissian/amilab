@@ -10,7 +10,6 @@
 #include "wrapfunctions.hpp" 
 
 
-/** Read a 3D Flow from an ASCII file **/
 template<class TPixel, unsigned int Dimension>
 class itkReadClass {
   typedef typename itk::Image< TPixel, Dimension>    ImageType;
@@ -99,25 +98,14 @@ class itkReadClass {
 };
 
 
-InrImage* itkRead(ParamList* p)
+//-------------------------------------------------------------------------------------
+InrImage* itkRead(const std::string& fname)
 {
 
 #ifndef _WITHOUT_ITK_
 
-  char functionname[] = "itkRead";
-  char description[]=" \n\
-        Use itk Reader factory to read a 3D image file of type unsigned short\n\
-      ";
-  char parameters[] =" \n\
-          Parameters:\n\
-          string: filename\n\
-      ";
-    
-  std::string*  fname = NULL;
   InrImage* res = NULL;
   int n=0;
-  
-  if (!get_string_param( fname, p, n)) HelpAndReturnNULL;
 
   itk::ImageIOBase* image_io=NULL;
   typedef  itk::Image< unsigned char, 3>    ImageType;
@@ -129,7 +117,7 @@ InrImage* itkRead(ParamList* p)
   ptype image_pixel_type = itk::ImageIOBase::UNKNOWNPIXELTYPE;
 
   try {
-    reader->SetFileName( fname->c_str());
+    reader->SetFileName( fname.c_str());
     reader->GenerateOutputInformation();
     image_io= reader->GetImageIO();
     image_component_type = image_io->GetComponentType();
@@ -154,14 +142,14 @@ InrImage* itkRead(ParamList* p)
 
 #define READ_IMAGE(imdim) \
   switch(image_component_type) { \
-    case itk::ImageIOBase::UCHAR:  res = itkReadClass<unsigned char,  imdim>()(*fname,WT_UNSIGNED_CHAR);   break; \
-    case itk::ImageIOBase::USHORT: res = itkReadClass<unsigned short, imdim>()(*fname,WT_UNSIGNED_SHORT);  break; \
-    case itk::ImageIOBase::SHORT:  res = itkReadClass<signed short,   imdim>()(*fname,WT_SIGNED_SHORT);    break; \
-    case itk::ImageIOBase::UINT:   res = itkReadClass<unsigned int,   imdim>()(*fname,WT_UNSIGNED_INT);    break; \
-    case itk::ImageIOBase::INT:    res = itkReadClass<signed int,     imdim>()(*fname,WT_SIGNED_INT);      break; \
-    case itk::ImageIOBase::ULONG:  res = itkReadClass<unsigned long,  imdim>()(*fname,WT_UNSIGNED_LONG);   break; \
-    case itk::ImageIOBase::FLOAT:  res = itkReadClass<float,          imdim>()(*fname,WT_FLOAT);           break; \
-    case itk::ImageIOBase::DOUBLE: res = itkReadClass<double,         imdim>()(*fname,WT_DOUBLE);          break; \
+    case itk::ImageIOBase::UCHAR:  res = itkReadClass<unsigned char,  imdim>()(fname,WT_UNSIGNED_CHAR);   break; \
+    case itk::ImageIOBase::USHORT: res = itkReadClass<unsigned short, imdim>()(fname,WT_UNSIGNED_SHORT);  break; \
+    case itk::ImageIOBase::SHORT:  res = itkReadClass<signed short,   imdim>()(fname,WT_SIGNED_SHORT);    break; \
+    case itk::ImageIOBase::UINT:   res = itkReadClass<unsigned int,   imdim>()(fname,WT_UNSIGNED_INT);    break; \
+    case itk::ImageIOBase::INT:    res = itkReadClass<signed int,     imdim>()(fname,WT_SIGNED_INT);      break; \
+    case itk::ImageIOBase::ULONG:  res = itkReadClass<unsigned long,  imdim>()(fname,WT_UNSIGNED_LONG);   break; \
+    case itk::ImageIOBase::FLOAT:  res = itkReadClass<float,          imdim>()(fname,WT_FLOAT);           break; \
+    case itk::ImageIOBase::DOUBLE: res = itkReadClass<double,         imdim>()(fname,WT_DOUBLE);          break; \
     case itk::ImageIOBase::CHAR:    \
     case itk::ImageIOBase::UNKNOWNPIXELTYPE:  \
       cerr << "Format not supported in InrImage class "<< endl;  \
@@ -190,3 +178,34 @@ cout << itk::ImageIOBase::USHORT << endl;
 #endif // _WITHOUT_ITK_
 
 } // itkRead()
+
+
+//-------------------------------------------------------------------------------
+InrImage* wrap_itkRead(ParamList* p)
+{
+
+#ifndef _WITHOUT_ITK_
+
+  char functionname[] = "itkRead";
+  char description[]=" \n\
+        Use itk Reader factory to read a 3D image file of type unsigned short\n\
+      ";
+  char parameters[] =" \n\
+          Parameters:\n\
+          string: filename\n\
+      ";
+    
+  std::string*  fname = NULL;
+  InrImage* res = NULL;
+  int n=0;
+  
+  if (!get_string_param( fname, p, n)) HelpAndReturnNULL;
+
+  return itkRead(*fname);
+
+#else
+  fprintf(stderr," ITK not available, you need to compile with ITK ...\n");
+  return NULL;
+#endif // _WITHOUT_ITK_
+
+} // wrap_itkRead()

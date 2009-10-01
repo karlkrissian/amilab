@@ -9,7 +9,9 @@ include_directories (
 		    ${AMILAB_SOURCE_DIR}/Common
 		    ${AMILAB_SOURCE_DIR}/Images
 		    ${AMILAB_SOURCE_DIR}/Math
-		    ${AMILAB_SOURCE_DIR}/AMImage
+        ${AMILAB_SOURCE_DIR}/AMImage
+        ${AMILAB_SOURCE_DIR}/Language
+        ${AMILAB_SOURCE_DIR}/Wrapping/WrapITK
         ${Boost_INCLUDE_DIR}
 		    )
 

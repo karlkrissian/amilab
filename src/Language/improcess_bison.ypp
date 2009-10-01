@@ -436,6 +436,7 @@ void CB_update_imagelist( void* imagelist_gui)
 %token T_SetVerboseOff
 %token T_SetProgress
 %token T_SetStatusText
+%token T_GetScriptsDir
 
 %token T_argc
 %token T_emptyargs
@@ -5334,6 +5335,13 @@ postfix_expr_string
         |
     var_image T_POINT T_GetName {
       $$=(char*) (*(InrImage::ptr*) $1->Pointer())->Nom();
+    }
+    |
+    T_GetScriptsDir
+    {
+      char* res = new char[GB_scripts_dir.Len()+1];
+      strcpy(res,(const char*)GB_scripts_dir.mb_str(wxConvUTF8));
+      $$= res;
     }
 ;
 

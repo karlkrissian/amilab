@@ -15,20 +15,10 @@
 
 #include "paramlist.h"
 
+
 /** function that add the wrapping from ITK library
  *  to the AMI language
  */
 void AddWrapITK(); 
-
-// Wrapping functions:
-InrImage* itkRead_3D_US(ParamList*);
-
-InrImage* itkRead(ParamList*);
-
-InrImage* itkIsoContourDist(ParamList*);
-
-InrImage* itkRecursiveGaussianImageFilter2D(ParamList*);
-
-InrImage* itkRecursiveGaussianImageFilter3D(ParamList*);
 
 #endif // _WRAPITK_H_

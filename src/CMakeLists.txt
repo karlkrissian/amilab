@@ -191,7 +191,7 @@ IF(AMI_USE_OPENMP)
   FIND_PACKAGE( OpenMP)
 ENDIF(AMI_USE_OPENMP)
 
-OPTION(AMI_USE_SSE "Use SSE CPU instructions set" ON)
+OPTION(AMI_USE_SSE "Use SSE CPU instructions set" OFF)
 
 IF(AMI_USE_SSE)
   # add flag for mingw

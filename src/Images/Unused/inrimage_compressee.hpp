@@ -152,7 +152,7 @@ private:
 
   // Operation d'allocation, de lecture, d'ecriture
   ///
-  unsigned char   Lit() throw (ErreurLecture);
+  unsigned char   Read() throw (ErreurLecture);
 
   ///
   unsigned char   Alloue();

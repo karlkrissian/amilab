@@ -35,6 +35,7 @@ SET(  WrapITK_SRCS
     wrapitkIsoContourDist.cpp
     #wrapitkBasicNLMeansFilter.cpp
     #itkBasicNLMeansFilter.txx
+    wrapitkFastMarchingImageFilter.cpp
 )
 
 my_add_library ( WrapITK)

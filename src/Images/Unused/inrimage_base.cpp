@@ -114,7 +114,7 @@ void InrImageBase::init_from_inrimage(inrimage* inr)
 } //init_from_inrimage()
 
 //-----------------------------------------------------------------------
-unsigned char InrImageBase::Lit()
+unsigned char InrImageBase::Read()
 {
   inrimage* ptr;
 
@@ -262,7 +262,7 @@ InrImageBase::InrImageBase( const char* nom)
   //----- Lecture de l'image d'entree
   _nom = nom;
   _message_erreur = "";
-  Lit();
+  Read();
 }
 
 //-----------------------------------------------------------------------

@@ -1,0 +1,69 @@
+
+#
+# based on 3 points, stored in global variables p{1,2,3}{x,y,z}
+# and in real coordinates,
+# crop the image to contain these points + a given margins in mm (real coord unit)
+#
+
+proc CropImageFromPoints( IMAGE input, STRING nameresult, NUM marginxy, NUM marginztop, NUM marginzbot ) \
+{
+  // 1. compute min-max for each coordinates
+  xmin = input.trx+(input.tx-1)*input.vx
+  ymin = input.try+(input.ty-1)*input.vy
+  zmin = input.trz+(input.tz-1)*input.vz
+  xmax = 0
+  ymax = 0
+  zmax = 0
+  if (p1x<xmin) { xmin = p1x; }
+  if (p1x>xmax) { xmax = p1x; }
+  if (p2x<xmin) { xmin = p2x; }
+  if (p2x>xmax) { xmax = p2x; }
+  if (p3x<xmin) { xmin = p3x; }
+  if (p3x>xmax) { xmax = p3x; }
+
+  if (p1y<ymin) { ymin = p1y; }
+  if (p1y>ymax) { ymax = p1y; }
+  if (p2y<ymin) { ymin = p2y; }
+  if (p2y>ymax) { ymax = p2y; }
+  if (p3y<ymin) { ymin = p3y; }
+  if (p3y>ymax) { ymax = p3y; }
+
+  if (p1z<zmin) { zmin = p1z; }
+  if (p1z>zmax) { zmax = p1z; }
+  if (p2z<zmin) { zmin = p2z; }
+  if (p2z>zmax) { zmax = p2z; }
+  if (p3z<zmin) { zmin = p3z; }
+  if (p3z>zmax) { zmax = p3z; }
+  
+  # - add margins
+  xmin = xmin-marginxy
+  xmax = xmax+marginxy
+  ymin = ymin-marginxy
+  ymax = ymax+marginxy
+  zmin = zmin-marginzbot
+  zmax = zmax+marginztop
+
+  # -- convert limits to voxel coordinates
+  xmin_vox = (xmin-input.trx)/input.vx
+  xmax_vox = (xmax-input.trx)/input.vx
+
+  ymin_vox = (ymin-input.try)/input.vy
+  ymax_vox = (ymax-input.try)/input.vy
+
+  zmin_vox = (zmin-input.trz)/input.vz
+  zmax_vox = (zmax-input.trz)/input.vz
+
+  # -- check that it fits in the image
+  if (xmin_vox<0) { xmin_vox = 0; }
+  if (xmax_vox>=input.tx) { xmax_vox = input.tx-1; }
+
+  if (ymin_vox<0) { ymin_vox = 0; }
+  if (ymax_vox>=input.ty) { ymax_vox = input.ty-1; }
+
+  if (zmin_vox<0) { zmin_vox = 0; }
+  if (zmax_vox>=input.tz) { zmax_vox = input.tz-1; }
+  
+  # -- create the cropped image as a global variable with the given name 
+  eval "global::"+nameresult + " <<= input[xmin_vox:xmax_vox,ymin_vox:ymax_vox,zmin_vox:zmax_vox];"
+
+}

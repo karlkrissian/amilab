@@ -109,7 +109,7 @@ public:
   //
    
   ///
-  void Lit( Chaine nom) throw( ErreurLecture);
+  void Read( Chaine nom) throw( ErreurLecture);
   //
 
   ///
