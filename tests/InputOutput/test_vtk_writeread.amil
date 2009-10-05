@@ -15,4 +15,4 @@ j= Image "smallvolume.vtk"
 d = mean((i-j)*(i-j))
 printn boost_format("\t ******* Test Result:  %1%") % (d<0.00000001)
 
-quit
+#quit

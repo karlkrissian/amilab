@@ -161,6 +161,7 @@ public:
   void OnParametricSurfaces(  wxCommandEvent& event);
   void OnCreateTorus(         wxCommandEvent& event);
   void OnCreateSphere(        wxCommandEvent& event);
+  void OnAddNoise(            wxCommandEvent& event);
 
 protected:
   CustomStatusBar* _status_bar;

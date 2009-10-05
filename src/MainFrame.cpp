@@ -82,6 +82,7 @@ enum
     ID_ParametricSurfaces,
     ID_CreateTorus,
     ID_CreateSphere,
+    ID_AddNoise,
 
     wxID_HelpTokens,
     wxID_HelpRules,
@@ -228,6 +229,7 @@ void MainFrame::CreateMenu()
   wxMenu *menuSyntheticImages = new wxMenu;
   menuSyntheticImages->Append( ID_CreateTorus,  GetwxStr("&Torus") );
   menuSyntheticImages->Append( ID_CreateSphere, GetwxStr("&Sphere") );
+  menuSyntheticImages->Append( ID_AddNoise, GetwxStr("Add &Noise") );
 
 
   wxMenu *menuScripts = new wxMenu;
@@ -259,6 +261,8 @@ void MainFrame::CreateMenu()
      wxCommandEventHandler(MainFrame::OnCreateTorus));
   Connect(ID_CreateSphere,wxEVT_COMMAND_MENU_SELECTED,
      wxCommandEventHandler(MainFrame::OnCreateSphere));
+  Connect(ID_AddNoise,wxEVT_COMMAND_MENU_SELECTED,
+     wxCommandEventHandler(MainFrame::OnAddNoise));
 
 } // CreateMenu()
 
@@ -1402,6 +1406,15 @@ void MainFrame::OnCreateSphere(  wxCommandEvent& event)
 {
   string cmd; // increment the command line string
   cmd = string("func \"SyntheticImages/create_sphere_gui.amil\" // from menu");
+  this->TC->IncCommand(cmd);
+  this->TC->ProcessReturn();
+}
+
+//--------------------------------------------------
+void MainFrame::OnAddNoise(  wxCommandEvent& event)
+{
+  string cmd; // increment the command line string
+  cmd = string("func \"Noise/AddNoise_gui.amil\" // from menu");
   this->TC->IncCommand(cmd);
   this->TC->ProcessReturn();
 }

@@ -38,4 +38,4 @@ diff = LS_inls-res
 print "Root Mean Square Diff = "
 printn sqrt(mean(diff*diff))
 
-quit
+#quit
