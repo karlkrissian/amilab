@@ -205,7 +205,7 @@ void CB_delete_imagedraw( void* var);
 void CB_delete_surfdraw( void* varid);
 
 //------------------------------------------------------
-void CB_update_imagelist( void* imagelist_gui)
+static void CB_update_imagelist( void* imagelist_gui)
 //   -------------------
 {
   wxEnumerationParameter* imlist = (wxEnumerationParameter*) imagelist_gui;
