@@ -1,0 +1,2 @@
+
+turn off VTK_USE_PTHREADS

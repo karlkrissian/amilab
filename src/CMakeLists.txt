@@ -409,7 +409,6 @@ IF(AMI_USE_VTK)
       myVTK4
   )
   SET(LINK_VTK
-    vtkRendering
     vtkGraphics
     vtkImaging
     vtkIO

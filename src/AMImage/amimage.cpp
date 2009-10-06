@@ -115,7 +115,7 @@ extern unsigned char GB_verbose;
       if (!ptr) \
         CLASS_ERROR("Error in _mm_malloc allocation !")
   
-  #define DELETE(ptr) \
+  #define AMI_DELETE(ptr) \
     { \
       CLASS_MESSAGE( " calling _mm_free() "); \
     _mm_free(ptr); ptr = NULL; } 
@@ -127,10 +127,10 @@ extern unsigned char GB_verbose;
       if (!ptr) \
         CLASS_ERROR(boost::format("Error in allocation %1%!") % mess)
   
-  #define DELETE(ptr) \
+  #define AMI_DELETE(ptr) \
     { \
       CLASS_MESSAGE( " calling delete [] "); \
-    delete [] ptr; ptr = NULL; } 
+    delete [] (unsigned char*)ptr; ptr = NULL; } 
 #endif
 
 
@@ -591,7 +591,7 @@ amimage::~amimage()
 //        -------
 {
   if (data_allocated) {
-    DELETE(data);
+    AMI_DELETE(data);
   }
 }
 
@@ -602,7 +602,7 @@ unsigned char amimage::allocate()
 {
 
   if (data_allocated) {
-    DELETE(data);
+    AMI_DELETE(data);
   }
 
   this->ComputeDataSize();
@@ -994,7 +994,7 @@ unsigned char  amimage::readdata_ext( )
 
   if ( header_ptr!=NULL )
   {
-    DELETE(header_ptr);
+    AMI_DELETE(header_ptr);
     header_ptr = NULL;
   }
 

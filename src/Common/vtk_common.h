@@ -33,7 +33,7 @@ class vtk_deleter
   virtual ~vtk_deleter() {}
     void operator()(T * p) 
     { 
-      CLASS_MESSAGE("call")
+      CLASS_MESSAGE(p->GetClassName())
       p->Delete(); 
     }  
 };
@@ -48,10 +48,11 @@ class vtk_new
   virtual ~vtk_new() {}
     boost::shared_ptr<T> operator() ()
     { 
-      CLASS_MESSAGE("Call");
+      CLASS_MESSAGE("");
       boost::shared_ptr<T> res =  boost::shared_ptr<T>(
         (T*)T::New(),
         vtk_deleter<T>() ); 
+      CLASS_MESSAGE(res->GetClassName());
       return res;
     }  
 

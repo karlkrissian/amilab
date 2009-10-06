@@ -46,6 +46,14 @@
               << m << std::endl; \
   }
 
+#define VTK_CLASS_MESSAGE(m) \
+  if ((GB_verbose) || (GB_debug)) { \
+    std::cerr << "Info \t" \
+              << this->GetClassName() << "::" \
+              << __func__ << "()\t"  \
+              << m << std::endl; \
+  }
+
 #define CLASS_MESSAGE_STATIC(_this,m) \
   if ((GB_verbose) || (GB_debug)) { \
     std::cerr << "Info \t" \

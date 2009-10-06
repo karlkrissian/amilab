@@ -350,6 +350,8 @@ void vtkLevelSets::SetGaussian( int num, float mean, float sd)
 void vtkLevelSets::DistanceMap()
 //                   -----------
 {
+  VTK_CLASS_MESSAGE("Begin");
+
   // Save the input
   if (savedistmap)
   {
@@ -385,12 +387,16 @@ void vtkLevelSets::DistanceMap()
   }
 
 
+    cout << "DistanceMap() 1.1" << endl;
+
   switch (DMmethod) {
     case DISTMAP_CURVES      : DistanceMapCurves();    break;
     case DISTMAP_FASTMARCHING: DistanceMapFM();    break;
     case DISTMAP_CHAMFER     : DistanceMapChamfer();    break;
     case DISTMAP_SHAPE       : DistanceMapShape();    break;
   }
+
+    cout << "DistanceMap() 1.2" << endl;
 
   // swap the images
   this->current=1-this->current;
@@ -437,6 +443,7 @@ void vtkLevelSets::DistanceMap()
     copyImage->Delete();
   }
 
+  VTK_CLASS_MESSAGE("End");
 
 } // DistanceMap()
 
@@ -935,6 +942,9 @@ void vtkLevelSets::DistanceMapFM()
 void vtkLevelSets::DistanceMapChamfer()
 //                   ------------
 {
+
+  VTK_CLASS_MESSAGE("Begin");
+
    int U_pos    = this->current;
    int newU_pos = 1-this->current;
    float_vec_it        U    = u[U_pos].begin();
@@ -1038,6 +1048,8 @@ void vtkLevelSets::DistanceMapChamfer()
 
    if (GB_debug)
      fprintf(stderr, ";\n");
+
+    VTK_CLASS_MESSAGE("End");
 
 } // DistanceMapChamfer()
 
@@ -1143,7 +1155,7 @@ unsigned char vtkLevelSets::CheckConvergence( )
      float          converged_check2;
      float          converged_check;
 
-   if (GB_debug) fprintf(stderr, "vtkLevelSets::CheckConvergence( ) begin \n");
+  VTK_CLASS_MESSAGE("Begin");
 
    return 0;
 
@@ -1200,35 +1212,53 @@ unsigned char vtkLevelSets::CheckConvergence( )
 // Check the convergence.
 void vtkLevelSets::CheckConvergenceNew( )
 {
+  VTK_CLASS_MESSAGE("Begin");
+
+  if (bnd.size()==0) {
+    VTK_CLASS_MESSAGE("Narrow Band not initialized");
+    return;
+  }
 
   register float_vec_it U =this->u[  this->current].begin();
   vector_size b;
   int i;
   // histogram of the log of the changes
-  int loghisto[5];
+  int* loghisto = new int[5];
   int logdiff;
 
-  if (GB_debug) fprintf(stderr, "vtkLevelSets::CheckConvergenceNew( ) begin \n");
+  //cout << "bnd size = " << bnd.size() << endl;
+  //cout << "bnd initialvalues = " << bnd_initialvalues.size() << endl;
+  VTK_CLASS_MESSAGE("1.1");
+  for(i=0;i<5;i++) {
+//    cout << "i= " << i << endl;
+    loghisto[i]=0;
+  }
 
-  for(i=0;i<5;i++) loghisto[i]=0;
-
+  VTK_CLASS_MESSAGE("1.2");
   // Loop over the Narrow Band and check the intensity change
   for(b=0;b<this->bnd.size();b++) {
-    logdiff = (int) log(fabs(bnd_initialvalues[b]-U[this->bnd[b]]));
-    if (-logdiff<=0) loghisto[0]++;
-    else
-      if (-logdiff>=4) loghisto[4]++;
+    double tmp = fabs(bnd_initialvalues[b]-U[this->bnd[b]]);
+//    cout << "b = " << b << "; tmp = " << tmp << endl;
+    if (tmp>1E-5) {
+      logdiff = (int) log(tmp);
+      if (-logdiff<=0) loghisto[0]++;
       else
-    loghisto[-logdiff]++;
+        if (-logdiff>=4) loghisto[4]++;
+        else
+      loghisto[-logdiff]++;
+    } else loghisto[4]++;
   }
+
+  VTK_CLASS_MESSAGE("1.3");
 
   // print the convergence results
   printf("\nConv test :");
   for(i=0;i<5;i++)
     printf(" %d, %02.2f  ",i,(loghisto[i]*100.0)/this->bnd.size());
 
-  if (GB_debug) fprintf(stderr, "vtkLevelSets::CheckConvergenceNew( ) end \n");
+  VTK_CLASS_MESSAGE("End");
 
+  delete [] loghisto;
 } // CheckConvergenceNew()
 
 
@@ -1247,6 +1277,7 @@ inline void vtkLevelSets::ExtractCoords(int p, short& x, short& y, short& z)
 //
 void vtkLevelSets::MakeBand( )
 {
+  VTK_CLASS_MESSAGE("Begin" );
 
   // before creating the new band, check the convergence
   this->CheckConvergenceNew();
@@ -1283,6 +1314,7 @@ void vtkLevelSets::MakeBand( )
    }
   */
 
+    VTK_CLASS_MESSAGE("End" );
 }
 
 
@@ -1320,6 +1352,9 @@ void vtkLevelSets::MakeBand( )
 //
 void vtkLevelSets::MakeBand0( )
 {
+
+  VTK_CLASS_MESSAGE("Begin" );
+
   register vector_size   p;
   register int   x, y, z;
   register float_vec_it U = u[  current].begin();
@@ -1441,6 +1476,9 @@ void vtkLevelSets::MakeBand0( )
 
     case DISTMAP_CHAMFER:
       //   ---------------
+
+      VTK_CLASS_MESSAGE("Chamfer distance init" );
+
       // don't need INTUBE and TUBEFRONT
       U = this->u[this->current].begin();
 
@@ -1487,6 +1525,8 @@ void vtkLevelSets::MakeBand0( )
         } // end for y
         p += tx * ( ty - 1 - ymax );
       } // end for z
+      VTK_CLASS_MESSAGE("Chamfer distance init end" );
+
       break;
 
       // Slow: initial during the processing of the distance ...
@@ -1541,6 +1581,7 @@ void vtkLevelSets::MakeBand0( )
       break;
   } // switch (DMmethod)
 
+  VTK_CLASS_MESSAGE("End" );
 
 } // MakeBand0()
 
@@ -2971,7 +3012,10 @@ void vtkLevelSets::InitEvolution()
         (data_attach_x.empty()) )
     PreComputeDataAttachment();
 
+    cout << "InitEvolution DMethod = " << DMmethod << endl;
+
   if ( DMmethod == 0 ) {
+
     this->MakeBand();
     //
     this->DistanceMap();
@@ -2979,9 +3023,13 @@ void vtkLevelSets::InitEvolution()
 
     this->DistanceMap();
     this->MakeBand();
+
   } else {
+
+    cout << "InitEvolution 2.0" << endl;
     this->DistanceMap();
 
+    VTK_CLASS_MESSAGE( "copy");
     // copy the initial image to the new image
     // after the first distance computation
     // to have correct minimal and maximal values:
@@ -2992,13 +3040,15 @@ void vtkLevelSets::InitEvolution()
       u[1-current].begin()
     );
 
+    VTK_CLASS_MESSAGE( "make band");
     this->MakeBand();
+    VTK_CLASS_MESSAGE(" 2.2" );
   }
 
   step       = 0;
   reinitcntr = 0;
 
-  if ( GB_debug ) fprintf ( stderr, "InitEvolution() End \n" );
+  VTK_CLASS_MESSAGE("End" );
 
 } // InitEvolution()
 
@@ -3251,6 +3301,7 @@ void vtkLevelSets::PreComputeDataAttachment()
 
   max_normgrad = sqrt(maxnorm);
 
+  cout << "PreComputeDataAttachment 1" << endl;
   if (advection_scheme == ADVECTION_MORPHO) {
     NormalizeSecDerGrad();
     delete [] this->normgrad;
@@ -3258,11 +3309,14 @@ void vtkLevelSets::PreComputeDataAttachment()
     ADDMEMORY("vtkLevelSets::PreComputeDataAttachment()  delete normgrad",-1.0*sizeof(float)*this->imsize);
   }
 
+  cout << "PreComputeDataAttachment 2" << endl;
   //
   // Save secdergrad
   //
 
   if (savesecdergrad)  {
+    cout << "PreComputeDataAttachment savesecdergrad" << endl;
+
     vtkStructuredPointsWriter *writer = vtkStructuredPointsWriter::New();
     vtkImageData* copyImage = vtkImageData::New();
     float* ptr;
@@ -3291,6 +3345,7 @@ void vtkLevelSets::PreComputeDataAttachment()
     writer->Delete();
   }
 
+  cout << "PreComputeDataAttachment 3" << endl;
 
 } // PreComputeDataAttachment()
 
@@ -3460,6 +3515,8 @@ void vtkLevelSets::NormalizeSecDerGrad()
   printf("NormalizeSecDerGrad() maxnorm %.2f threshold %.2f +/- %.2f \n",
      max_normgrad,threshold,max_normgrad/histosize);
 
+  cout << "1" << endl;
+
   for(vector_size p=0;p<this->imsize;p++) {
     if (normgrad[p]>EPSILON)
       secdergrad[p] *= 1-exp(-normgrad[p]*normgrad[p]/threshold/threshold);
@@ -3478,6 +3535,8 @@ void vtkLevelSets::NormalizeSecDerGrad()
   delete [] histo;
   delete [] tmp;
   ADDMEMORY("vtkLevelSets::NormalizeSecDerGrad() tmp",-1.0*sizeof(float)*this->imsize);
+
+  cout << "end NormalizeSecDerGrad()" << endl;
 
 } // NormalizeSecDerGrad()
 
