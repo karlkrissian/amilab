@@ -1,0 +1,94 @@
+
+#
+# Example of using the Gaussian Filtering
+# with the command filter
+#
+
+func "Noise/AddRiceNoise.amil"
+
+proc AddNoise_Init( ) {
+  global_new
+
+  AddNoise_input_name = ""
+
+  # 0: Additive Gaussian Noise
+  # 1: Multiplicative Gaussian Noise
+  # 2: Rician Noise
+  AddNoise_type       = INT(0)
+  
+  AddNoise_mean       = 0
+  AddNoise_stddev     = 1
+  AddNoise_CreateGui()
+}
+
+proc AddNoise_Close() {
+  AddNoise_win.Hide
+  delvars "AddNoise_*_draw"
+  delvars "AddNoise_*"
+}
+
+proc AddNoise_load_input() {
+  eval "global::AddNoise_input <<="+AddNoise_input_name+";"
+  if (AddNoise_input_name=="Image") {
+    AddNoise_input_name = "AddNoise_input"
+    AddNoise_win.update
+  }
+}
+
+proc AddNoise_Run() {
+  AddNoise_load_input()
+  if (AddNoise_type==0) {
+    global::AddNoise_res <<= AddGaussNoise(AddNoise_input,AddNoise_mean,AddNoise_stddev)
+  }
+  if (AddNoise_type==1) {
+    noise = AddNoise_input*0
+    noise = AddGaussNoise(AddNoise_noise,1,AddNoise_stddev)
+    global::AddNoise_res <<= AddNoise_input*noise
+  }
+  if (AddNoise_type==2) {
+    global::AddNoise_res <<= AddNoise_input
+    AddRiceNoise(&AddNoise_res,AddNoise_stddev)
+  }
+  AddNoise_Display()
+}
+
+proc AddNoise_Display() {
+  global
+  show AddNoise_input
+  if (exists(AddNoise_res)) {
+    show AddNoise_res
+    AddNoise_input_draw.compare(AddNoise_res)
+  }
+}
+
+proc AddNoise_Save() {
+  AddNoise_res.save resultname
+}
+
+proc AddNoise_CreateGui() {
+
+  # parameters window
+  global::AddNoise_win = ParamWin("GaussFilter")
+
+  AddNoise_win.AddImageChoice(AddNoise_input_name, "Input")
+
+
+  AddNoise_type_id = AddNoise_win.AddEnum(AddNoise_type)
+    AddNoise_win.AddEnumChoice(AddNoise_type_id,"Add. Gaussian")
+    AddNoise_win.AddEnumChoice(AddNoise_type_id,"Mult. Gaussian")
+    AddNoise_win.AddEnumChoice(AddNoise_type_id,"Rician")
+  
+  AddNoise_win.AddFloat(AddNoise_mean,0.1,  50)
+  AddNoise_win.AddFloat(AddNoise_stddev,0.1,50)
+
+  AddNoise_win.SetCallback(AddNoise_Run)
+  AddNoise_win.AddButton("Close",    AddNoise_Close)
+
+  AddNoise_win.update
+  AddNoise_win.Display
+}
+
+
+AddNoise_Init
+
+
