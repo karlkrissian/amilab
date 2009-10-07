@@ -106,9 +106,8 @@ if (exists(NRAD_Init)) {
     if (!exists(NRAD_input)) {
       NRAD_load_input
     }
-    global
     numit = NRAD_t/NRAD_dt
-    input1 = NRAD_input*NRAD_input
+    local::input1 = NRAD_input*NRAD_input
   
     # sigma = 0.7
     # threshold = 1 // not used
@@ -133,7 +132,7 @@ if (exists(NRAD_Init)) {
   
     # process iterations
     NRAD_res0 = AnisoGS.GetOutput
-    NRAD_res = sqrt(NRAD_res0)
+    global::NRAD_res = sqrt(NRAD_res0)
   #  show NRAD_res
   #  NRAD_input_draw.compare(NRAD_res)
     InitTime
@@ -152,7 +151,6 @@ if (exists(NRAD_Init)) {
   
   //  AnisoGS.end
   //  hide NRAD_res
-    local
   }
   
   #------------------------------------
@@ -167,7 +165,7 @@ if (exists(NRAD_Init)) {
       numit = NRAD_t/NRAD_dt
       if (NRAD_mode>=3) {
           printn "running on squared image"
-          input1 = NRAD_input*NRAD_input
+          local::input1 = NRAD_input*NRAD_input
           global::NRAD_res = AnisoNRAD(input1,3,\
                       NRAD_dt,numit,NRAD_neighborhood,NRAD_roi)
           NRAD_res = sqrt(NRAD_res)
@@ -180,7 +178,7 @@ if (exists(NRAD_Init)) {
   
   #------------------------------------
   proc NRAD_Display() {
-    global
+    global_new
     if (!exists(NRAD_input)) {
       NRAD_load_input
     }
@@ -189,11 +187,11 @@ if (exists(NRAD_Init)) {
     }
     // draw limits of ROI
     if exists(NRAD_roi) {
-      roibox = NRAD_roi*0+1
-      imbox  = NRAD_input*0
-      imbox.putimage(roibox)
+      local::roibox = NRAD_roi*0+1
+      global::NRAD_imbox  = NRAD_input*0
+      NRAD_imbox.putimage(roibox)
       del roibox
-      NRAD_input_draw.SetIsoContour(0,imbox,0.5)
+      NRAD_input_draw.SetIsoContour(0,NRAD_imbox,0.5)
       NRAD_input_draw.DrawIsoContour(0,1)
       show NRAD_input
     }
@@ -201,7 +199,7 @@ if (exists(NRAD_Init)) {
       show NRAD_res
       NRAD_input_draw.compare(NRAD_res_draw)
     }
-    local
+    local_new
   }
   
   proc NRAD_DisplaySurfaces() {
