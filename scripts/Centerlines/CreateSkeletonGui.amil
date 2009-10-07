@@ -70,9 +70,8 @@ if (!exists(Skel_defined)) {
 
       # Ordering distance Transform
       # 0: vtkPropDaniel2: can produce seg fault ??
-      # 1: Andre Robatino
-      # 2: Fast Marching
-      Skel_Ordering     = INT(2)
+      # 1: Fast Marching
+      Skel_Ordering     = INT(1)
       Skel_DTmin        = -10
       Skel_DTmax        = 10
 
@@ -207,18 +206,12 @@ if (!exists(Skel_defined)) {
           global::Skel_idist <<= vtkPropDaniel2(_i,0,Skel_DTmin,Skel_DTmax)
         }
       } 
-    
-      if (Skel_Ordering==1) {
-        _j1  = (Skel_bin<127)*255
-        print "Running the distance transform from Andre\n"
-        global::Skel_idist <<= AndreDist(_j1)
-      } 
 
-      if (Skel_Ordering==2) {
+      if (Skel_Ordering==1) {
           # compute distance inside the structure
           printn "Compute Fast Marching distance"
           initim = IsosurfDist(_i,0)
-          global::Skel_idist <<= vtkFastMarching(_i,initim,Skel_DTmax)
+          global::Skel_idist <<= vtkFastMarching((_i>0),initim,Skel_DTmax)
       } 
 
       #Skel_idist = vtkPropDanielsson(_res,-1,50)
@@ -701,7 +694,7 @@ if (!exists(Skel_defined)) {
   proc Skel_Gui( ) {
     global_new
   
-    Skel_win = ParamWin("Skeletonization parameters")
+    Skel_win = ParamWin("Skeleton")
     Skel_win.BeginBook
     Skel_win.AddPage("Init")
   
@@ -735,7 +728,6 @@ if (!exists(Skel_defined)) {
       Skel_win.BeginBox("Create sorting weights")
         dt_id = Skel_win.AddEnum(Skel_Ordering)
           Skel_win.AddEnumChoice(dt_id,"vtkPropDaniel2")
-          Skel_win.AddEnumChoice(dt_id,"Andre Robatino's")
           Skel_win.AddEnumChoice(dt_id,"Fast Marching")
         Skel_win.AddFloat(Skel_DTmin,-100,0)
         Skel_win.AddFloat(Skel_DTmax,0,100)

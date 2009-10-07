@@ -3,7 +3,7 @@
 import_ami
 import_filters
 printn sprint("5: %0.0f",LineNumber)
-func "find_minimum"
+func "OpticFlow/find_minimum"
 
 print "1\n"; printn sprint("8: %0.0f",LineNumber)
 

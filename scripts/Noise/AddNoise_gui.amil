@@ -9,7 +9,8 @@ func "Noise/AddRiceNoise.amil"
 proc AddNoise_Init( ) {
   global_new
 
-  AddNoise_input_name = ""
+  AddNoise_input_name  = ""
+  AddNoise_output_name = "addnoise_output"
 
   # 0: Additive Gaussian Noise
   # 1: Multiplicative Gaussian Noise
@@ -41,15 +42,18 @@ proc AddNoise_Run() {
     global::AddNoise_res <<= AddGaussNoise(AddNoise_input,AddNoise_mean,AddNoise_stddev)
   }
   if (AddNoise_type==1) {
-    noise = AddNoise_input*0
-    noise = AddGaussNoise(AddNoise_noise,1,AddNoise_stddev)
-    global::AddNoise_res <<= AddNoise_input*noise
+    AddNoise_noise = AddNoise_input*0
+    AddNoise_noise = AddGaussNoise(AddNoise_noise,1,AddNoise_stddev)
+    global::AddNoise_res <<= AddNoise_input*AddNoise_noise
   }
   if (AddNoise_type==2) {
     global::AddNoise_res <<= AddNoise_input
     AddRiceNoise(&AddNoise_res,AddNoise_stddev)
   }
-  AddNoise_Display()
+  
+  eval "global::"+AddNoise_output_name+" <<= AddNoise_res;"
+
+  #  AddNoise_Display()
 }
 
 proc AddNoise_Display() {
@@ -72,6 +76,7 @@ proc AddNoise_CreateGui() {
 
   AddNoise_win.AddImageChoice(AddNoise_input_name, "Input")
 
+  AddNoise_win.AddString(AddNoise_output_name,"Output name")
 
   AddNoise_type_id = AddNoise_win.AddEnum(AddNoise_type)
     AddNoise_win.AddEnumChoice(AddNoise_type_id,"Add. Gaussian")
@@ -81,7 +86,11 @@ proc AddNoise_CreateGui() {
   AddNoise_win.AddFloat(AddNoise_mean,0.1,  50)
   AddNoise_win.AddFloat(AddNoise_stddev,0.1,50)
 
-  AddNoise_win.SetCallback(AddNoise_Run)
+  #AddNoise_win.SetCallback(AddNoise_Run)
+
+  AddNoise_win.AddButton("Run",        AddNoise_Run)
+  AddNoise_win.AddButton("Display",    AddNoise_Display)
+
   AddNoise_win.AddButton("Close",    AddNoise_Close)
 
   AddNoise_win.update
