@@ -1,0 +1,27 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+
+
+for extension in ".vtk", ".ami", ".ami.gz" {
+
+  # read test
+  l_i0 = Image "smallvolume"+extension
+  l_i = Image(FLOAT,2,2,2)
+  l_i = Xpos(l_i)
+  
+  l_d = mean((l_i-l_i0)*(l_i-l_i0))
+  printn boost_format("\t ******* "+extension+" Read Test Result:  %1%") % (l_d<0.00000001)
+  
+  
+  # write test
+  l_i.save "smallvolume2"+extension
+  l_j= Image "smallvolume2"+extension
+  l_d = mean((l_i-l_j)*(l_i-l_j))
+  printn boost_format("\t ******* "+extension+" Write Test Result:  %1%") % (l_d<0.00000001)
+
+  # clear created variables
+  delvars "l_*"
+}
+
+#quit

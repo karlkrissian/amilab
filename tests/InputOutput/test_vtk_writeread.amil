@@ -2,17 +2,21 @@
 
 #SetDebugOn
 
+extension=".vtk"
+
+# read test
+i0 = Image "smallvolume"+extension
 i = Image(FLOAT,2,2,2)
 i = Xpos(i)
-i.save "smallvolume.vtk"
+
+d = mean((i-i0)*(i-i0))
+printn boost_format("\t ******* Read Test Result:  %1%") % (d<0.00000001)
 
 
-m=mean(i)
-printn "test_vtk_writeread.amil:"
-printn boost_format("\t write: %1%") % (abs(m-0.5)<0.00000001)
-
-j= Image "smallvolume.vtk"
+# write test
+i.save "smallvolume2"+extension
+j= Image "smallvolume2"+extension
 d = mean((i-j)*(i-j))
-printn boost_format("\t ******* Test Result:  %1%") % (d<0.00000001)
+printn boost_format("\t ******* Write Test Result:  %1%") % (d<0.00000001)
 
 #quit
