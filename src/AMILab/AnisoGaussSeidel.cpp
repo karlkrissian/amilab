@@ -1337,10 +1337,10 @@ double AnisoGS::function_c_MRI(double sigma2, double vg, double meang)
 void AnisoGS::ComputeImage_c(InrImage* im)
 //            --------------
 {
-   
-    int x,y,z; //,n,i;
-    double I,Ixm,Iym,Izm,Ixp,Iyp,Izp,mean1,mean2,q0_2=0.0,q2;
-    double sigma2=0.0;
+
+  int x,y,z; //,n,i;
+  double I,Ixm,Iym,Izm,Ixp,Iyp,Izp,mean1,mean2,q0_2=0.0,q2;
+  double sigma2=0.0;
 
 
 #define MODE_LEE       0
@@ -1352,116 +1352,147 @@ void AnisoGS::ComputeImage_c(InrImage* im)
   int mode = MODE_KUAN;
 
 //  printf("AnisoGS::ComputeImage_c() \t contour mode = %d \n",this->contours_mode);
-  switch(this->contours_mode) {
-    case CONTOURS_SRAD:       mode = MODE_KUAN; break;
-    case CONTOURS_RNRAD:      mode = MODE_MRI;  break;
-    case CONTOURS_RNRAD_NEW:  mode = MODE_MRI;  break;
-  }
+  switch (this->contours_mode)
+    {
+    case CONTOURS_SRAD:
+      mode = MODE_KUAN;
+      break;
+    case CONTOURS_RNRAD:
+      mode = MODE_MRI;
+      break;
+    case CONTOURS_RNRAD_NEW:
+      mode = MODE_MRI;
+      break;
+    }
 
   if ((this->contours_mode==CONTOURS_SRAD)||
       (this->contours_mode==CONTOURS_RNRAD)||
-      (this->contours_mode==CONTOURS_RNRAD_NEW)) {
+      (this->contours_mode==CONTOURS_RNRAD_NEW))
+    {
 
-    Si this->image_c == NULL AlorsFait
+      Si this->image_c == NULL AlorsFait
       this->image_c = new InrImage(WT_FLOAT, "image_c.ami.gz", im);
 
-    // we limit for the moment to Kuan's function with Yu's neighborhood
+      // we limit for the moment to Kuan's function with Yu's neighborhood
 
-    // precompute image of coefficients
-    switch (mode) {
-      case MODE_LEE:
-      case MODE_KUAN:
-      case MODE_ADDITIVE:
-        q0_2= Compute_q0_subvol(im);
-        printf("q0_2 = %f \n",q0_2);
-        break;
-      case MODE_MRI:
-/*        sigma2 = Compute_sigma2_MRI(im);
-        printf("sigma = %f \n",sqrt(sigma2));
-*/
-        sigma2 = Compute_sigma2_MRI_mode(im);
-        printf("noise SD = %3.2f \t",sqrt(sigma2));
-        break;
-    }
-    
-    // Precompute mean of I and mean of I^2
-    InrImage* image_mean_I  = NULL;
-    InrImage* image_I2      = NULL;
-    InrImage* image_mean_I2 = NULL;
+      // precompute image of coefficients
+      switch (mode)
+        {
+        case MODE_LEE:
+        case MODE_KUAN:
+        case MODE_ADDITIVE:
+          q0_2= Compute_q0_subvol(im);
+          printf("q0_2 = %f \n",q0_2);
+          break;
+        case MODE_MRI:
+          /*        sigma2 = Compute_sigma2_MRI(im);
+                  printf("sigma = %f \n",sqrt(sigma2));
+          */
+          sigma2 = Compute_sigma2_MRI_mode(im);
+          printf("noise SD = %3.2f \t",sqrt(sigma2));
+          break;
+        }
+
+      // Precompute mean of I and mean of I^2
+      InrImage* image_mean_I  = NULL;
+      InrImage* image_I2      = NULL;
+      InrImage* image_mean_I2 = NULL;
 
 
-    image_mean_I  = Func_localmean2(im,neighborhood);
-    image_I2 = (*im)*(*im);
-    image_mean_I2 = Func_localmean2(image_I2, neighborhood); 
-    delete image_I2; image_I2= NULL;
+      image_mean_I  = Func_localmean2(im,neighborhood);
+      image_I2 = (*im)*(*im);
+      image_mean_I2 = Func_localmean2(image_I2, neighborhood);
+      delete image_I2;
+      image_I2= NULL;
 
-    // 1. Compute c
-    for (z=0;z<tz;z++) {
-      for (y=0;y<ty;y++) {
-	for (x=0;x<tx;x++) {
-	  I = (*im)(x,y,z);
-	  if (fabsf(I)<1) I=1;
-	  if (x>0)     Ixm = (*im)(x-1,y,z); else Ixm = I;
-	  if (y>0)     Iym = (*im)(x,y-1,z); else Iym = I;
-	  if (z>0)     Izm = (*im)(x,y,z-1); else Izm = I;
-	  
-	  if (x<tx-1)  Ixp = (*im)(x+1,y,z); else Ixp = I;
-	  if (y<ty-1)  Iyp = (*im)(x,y+1,z); else Iyp = I;
-	  if (z<tz-1)  Izp = (*im)(x,y,z+1); else Izp = I;
-	  
-	  // other (simpler version of q2):
-	  switch (neighborhood) {
-	  case 0: 
-	    mean1 = Ixm+Ixp+Iym+Iyp;
-	    mean2 = Ixm*Ixm+Ixp*Ixp+Iym*Iym+Iyp*Iyp;
-	    if (tz==1) {
-	      mean1/=4.0;
-	      mean2/=4.0;
-	    }
-	    else {
-	      mean1+=Izm+Izp;
-	      mean2+=Izm*Izm+Izp*Izp;
-	      mean1/=6.0;
-	      mean2/=6.0;
-	    }
-	    break;
-/*
-	    //mean1 = (Ixm+Ixp+Iym+Iyp)/4.0;
-	    //mean2 = (Ixm*Ixm+Ixp*Ixp+Iym*Iym+Iyp*Iyp)/4.0;
-	    // adding the central point for stability
-	    mean1 = (Ixm+Ixp+Iym+Iyp+I)/5.0;
-	    mean2 = (Ixm*Ixm+Ixp*Ixp+Iym*Iym+Iyp*Iyp+I*I)/5.0;
-*/
-	    break;
-	  default:
-	    mean1 = (*image_mean_I) (x,y,z);
-	    mean2 = (*image_mean_I2)(x,y,z);
-	  }
+      // 1. Compute c
+      for (z=0;z<tz;z++)
+        {
+          for (y=0;y<ty;y++)
+            {
+              for (x=0;x<tx;x++)
+                {
+                  I = (*im)(x,y,z);
+                  if (fabsf(I)<1) I=1;
+                  if (x>0)     Ixm = (*im)(x-1,y,z);
+                  else Ixm = I;
+                  if (y>0)     Iym = (*im)(x,y-1,z);
+                  else Iym = I;
+                  if (z>0)     Izm = (*im)(x,y,z-1);
+                  else Izm = I;
 
-	  if (fabsf(mean1)>1E-6) 
-	    q2    = mean2/(mean1*mean1)-1;
-	  else q2 = 0;
-	  
-	  image_c->BufferPos(x,y,z);
-	  switch (mode) {
-	  case MODE_LEE:  image_c->FixeValeur( function_c_Lee(     q2,               q0_2)); break;
-	  case MODE_KUAN: image_c->FixeValeur( function_c_Kuan(    q2,               q0_2)); break;
-	    //	  case MODE_ADDITIVE: image_c->FixeValeur( function_c_additive(mean2-mean1*mean1,q0_2)); break;
-      case MODE_MRI: image_c->FixeValeur( function_c_MRI( sigma2, mean2-mean1*mean1, mean1));
-        break;
-	  }
-	}
-      }
-    } // for z
+                  if (x<tx-1)  Ixp = (*im)(x+1,y,z);
+                  else Ixp = I;
+                  if (y<ty-1)  Iyp = (*im)(x,y+1,z);
+                  else Iyp = I;
+                  if (z<tz-1)  Izp = (*im)(x,y,z+1);
+                  else Izp = I;
 
-    if (neighborhood>0) {
-      delete image_mean_I;  image_mean_I  = NULL;
-      delete image_mean_I2; image_mean_I2 = NULL;
-    }
+                  // other (simpler version of q2):
+                  switch (neighborhood)
+                    {
+                    case 0:
+                      mean1 = Ixm+Ixp+Iym+Iyp;
+                      mean2 = Ixm*Ixm+Ixp*Ixp+Iym*Iym+Iyp*Iyp;
+                      if (tz==1)
+                        {
+                          mean1/=4.0;
+                          mean2/=4.0;
+                        }
+                      else
+                        {
+                          mean1+=Izm+Izp;
+                          mean2+=Izm*Izm+Izp*Izp;
+                          mean1/=6.0;
+                          mean2/=6.0;
+                        }
+                      break;
+                      /*
+                            //mean1 = (Ixm+Ixp+Iym+Iyp)/4.0;
+                            //mean2 = (Ixm*Ixm+Ixp*Ixp+Iym*Iym+Iyp*Iyp)/4.0;
+                            // adding the central point for stability
+                            mean1 = (Ixm+Ixp+Iym+Iyp+I)/5.0;
+                            mean2 = (Ixm*Ixm+Ixp*Ixp+Iym*Iym+Iyp*Iyp+I*I)/5.0;
+                      */
+                      break;
+                    default:
+                      mean1 = (*image_mean_I) (x,y,z);
+                      mean2 = (*image_mean_I2)(x,y,z);
+                    }
 
-  } //
+                  if (fabsf(mean1)>1E-6)
+                    q2    = mean2/(mean1*mean1)-1;
+                  else q2 = 0;
+
+                  image_c->BufferPos(x,y,z);
+                  switch (mode)
+                    {
+                    case MODE_LEE:
+                      image_c->FixeValeur( function_c_Lee(     q2,               q0_2));
+                      break;
+                    case MODE_KUAN:
+                      image_c->FixeValeur( function_c_Kuan(    q2,               q0_2));
+                      break;
+                      //    case MODE_ADDITIVE: image_c->FixeValeur( function_c_additive(mean2-mean1*mean1,q0_2)); break;
+                    case MODE_MRI:
+                      image_c->FixeValeur( function_c_MRI( sigma2, mean2-mean1*mean1, mean1));
+                      break;
+                    }
+                }
+            }
+        } // for z
+
+      if (neighborhood>0)
+        {
+          delete image_mean_I;
+          image_mean_I  = NULL;
+          delete image_mean_I2;
+          image_mean_I2 = NULL;
+        }
+
+    } //
   else
-    CLASS_ERROR("contours_mode mode supported");
+    CLASS_ERROR(boost::format("contours_mode %1% not supported")%contours_mode);
 //  image_c->Sauve();
 
 }

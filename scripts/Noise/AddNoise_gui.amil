@@ -72,7 +72,7 @@ proc AddNoise_Save() {
 proc AddNoise_CreateGui() {
 
   # parameters window
-  global::AddNoise_win = ParamWin("GaussFilter")
+  global::AddNoise_win = ParamWin("Noise")
 
   AddNoise_win.AddImageChoice(AddNoise_input_name, "Input")
 

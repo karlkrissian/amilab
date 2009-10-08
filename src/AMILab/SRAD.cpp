@@ -929,6 +929,7 @@ InrImage* Func_SRAD2( InrImage* input, float dt, int numit,
   
   (*image_res)=(*input);
 
+  // TODO: only to this part for specific noise type !
   // set the minimal intensity value to 1 ...
   image_res->InitBuffer();
   do {
