@@ -387,17 +387,18 @@ static void CB_update_imagelist( void* imagelist_gui)
 
 
 %union {
-  IdentifierInfo*       ident;
-  Variable*             variable;
-  char*                 astring;
-  AmiInstructionBlock*  ablock;
-  float                 afloat;
-  double                adouble;
-  int                   aint;
-  ParamList*            paramlist; // here smart pointer
+  IdentifierInfo*         ident;
+  Variable*               variable;
+  char*                   astring;
+  AmiInstructionBlock*    ablock;
+  float                   afloat;
+  double                  adouble;
+  int                     aint;
+  ParamList*              paramlist; // here smart pointer
                             // not allowed in union ...
-  ParamListDecl*        paramlistdecl;
-  ImageExtent<float>*          imageextent;
+  ParamListDecl*          paramlistdecl;
+  ImageExtent<float>*     imageextent;
+  std::list<std::string>* string_list;
 }
 
 %token LEX_ERROR
@@ -800,7 +801,7 @@ static void CB_update_imagelist( void* imagelist_gui)
 %token SQRT ABS ROUND FLOOR
 %token NORM
 
-%token FOR TO STEP ENDFOR
+%token FOR TO STEP ENDFOR T_IN
 %token T_REPEAT T_UNTIL
 %token T_BREAK
 %token IF THEN ELSE
@@ -921,6 +922,8 @@ static void CB_update_imagelist( void* imagelist_gui)
 %type <paramlist>      param_list
 %type <paramlistdecl>  param_list_decl
 %type <imageextent>    image_extent
+%type <string_list>     stringlist
+%type <string_list>     exprstringlist
 
 %destructor { delete [] $$; } ASTRING primary_expr_string postfix_expr_string additive_expr_string expr_string
 %destructor { delete  $$; } identifier IDENTIFIER
@@ -1006,6 +1009,41 @@ loop_inst :
         }
       Vars.deleteVar(ident->GetName().c_str());
       driver.yyiplineno=previous_lineno;
+    }
+    |
+    FOR identifier T_IN exprstringlist
+      instr_block end_instr
+    {
+    /**
+      Description: 
+          Iteration through a list of strings.
+    **/
+
+      std::list<std::string>* sl = $4;
+
+      int  previous_lineno=driver.yyiplineno;
+      AmiInstructionBlock::ptr block($5);
+      IdentifierInfo::ptr ident($2);
+
+      // create the variable
+      string* tmp = new string();
+      Variable* var = Vars.AddVar(type_string,ident,(void*)tmp);
+
+      std::list<std::string>::iterator sl_it;
+      for (sl_it=sl->begin(); sl_it!=sl->end(); sl_it++) {
+
+        // assign new value to the variable
+        string_ptr newval( new std::string(*sl_it));
+        var->SetString(newval);
+
+        driver.yyiplineno = block->GetStartingLine();
+        //driver.yyiplineno=previous_lineno;
+        driver.parse_block(block);
+
+      }
+      Vars.deleteVar(ident->GetName().c_str());
+      driver.yyiplineno=previous_lineno;
+
     }
     |
     T_REPEAT instr_block
@@ -4359,6 +4397,15 @@ command:
         |
         T_HessianMatrix T_OP_PAR var_image T_COMMA expr T_COMMA expr  T_COMMA expr_image T_CL_PAR
         {
+      /**
+        Description:
+          Computes the Hessian Matrix in 3D
+        Parameters:
+          - input image
+          - Gaussian kernel standard deviation
+          - Gamma normalization parameter
+          - Mask image
+      **/
       InrImage* mask = (InrImage*) driver.im_stack.GetLastImage();
 
           Func_HessianMatrix(((InrImage::ptr*) $3->Pointer())->get(),
@@ -5044,6 +5091,31 @@ cerr << "Feature not available, needs to be updated ! " << endl;
         }
         ;
 
+
+
+exprstringlist: 
+        expr_string 
+        {
+            std::list<std::string>* sl = new std::list<std::string>();
+            sl->push_back(string($1));
+            delete [] $1;
+            $$ = sl;
+        }
+        |
+        exprstringlist T_COMMA expr_string 
+        {
+            std::list<std::string>* sl = $1;
+            sl->push_back(string($3));
+            delete [] $3;
+            $$ = sl;
+        }
+
+
+stringlist:
+      T_OP_BR exprstringlist T_CL_BR
+      {
+        $$=$2;
+      }
 
 
 param_list:

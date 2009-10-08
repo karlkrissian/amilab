@@ -272,6 +272,7 @@ for    {
 //
 return(token::FOR);
 } /*{for,FOR}*/
+in     return(token::T_IN); /*{in,T_IN}*/
 to     return(token::TO); /*{to,TO}*/
 step     return(token::STEP); /*{step,STEP}*/
 endfor return(token::ENDFOR); /*{endfor,ENDFOR}*/

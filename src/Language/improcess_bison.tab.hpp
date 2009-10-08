@@ -122,22 +122,23 @@ namespace yyip {
 /* Line 35 of lalr1.cc  */
 #line 389 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
 
-  IdentifierInfo*       ident;
-  Variable*             variable;
-  char*                 astring;
-  AmiInstructionBlock*  ablock;
-  float                 afloat;
-  double                adouble;
-  int                   aint;
-  ParamList*            paramlist; // here smart pointer
+  IdentifierInfo*         ident;
+  Variable*               variable;
+  char*                   astring;
+  AmiInstructionBlock*    ablock;
+  float                   afloat;
+  double                  adouble;
+  int                     aint;
+  ParamList*              paramlist; // here smart pointer
                             // not allowed in union ...
-  ParamListDecl*        paramlistdecl;
-  ImageExtent<float>*          imageextent;
+  ParamListDecl*          paramlistdecl;
+  ImageExtent<float>*     imageextent;
+  std::list<std::string>* string_list;
 
 
 
 /* Line 35 of lalr1.cc  */
-#line 141 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.hpp"
+#line 142 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -613,59 +614,60 @@ namespace yyip {
      TO = 718,
      STEP = 719,
      ENDFOR = 720,
-     T_REPEAT = 721,
-     T_UNTIL = 722,
-     T_BREAK = 723,
-     IF = 724,
-     THEN = 725,
-     ELSE = 726,
-     VARIABLES = 727,
-     FUNCTION = 728,
-     T_eval = 729,
-     T_exists = 730,
-     T_FileExists = 731,
-     T_slice = 732,
-     T_GenRead = 733,
-     T_IMAGE = 734,
-     T_IMAGEDRAW = 735,
-     T_SURFACE = 736,
-     T_NUM = 737,
-     T_STRING = 738,
-     T_TRANSFORM = 739,
-     T_PROC = 740,
-     T_Class = 741,
-     T_MeanHalfSize = 742,
-     T_Resize = 743,
-     T_ReSlice = 744,
-     T_Flip = 745,
-     T_SetCompTransf = 746,
-     T_ConvexHull = 747,
-     T_itk = 748,
-     T_CannyEdgeDetector = 749,
-     T_CreateFlatMesh = 750,
-     T_CreateVolume = 751,
-     T_vtkCreateFlatMesh = 752,
-     T_Altitude2Position = 753,
-     T_GeoCoordinates = 754,
-     T_ElevateMesh = 755,
-     T_CreateVectors = 756,
-     T_Set3DArrowParam = 757,
-     T_CreateEllipsoids = 758,
-     T_ComputeAltitudes = 759,
-     T_Temp2Altitudes = 760,
-     T_ReadFlow = 761,
-     T_SetFluidNavFile = 762,
-     T_DrawEarthCoord = 763,
-     T_PaintCallback = 764,
-     T_SaveStructuredGrid = 765,
-     T_import_ami = 766,
-     T_import_vtk = 767,
-     T_import_itk = 768,
-     T_import_wii = 769,
-     T_import_filters = 770,
-     T_import_sys = 771,
-     T_amiOFCorr2D = 772,
-     T_amiOFVar2D = 773
+     T_IN = 721,
+     T_REPEAT = 722,
+     T_UNTIL = 723,
+     T_BREAK = 724,
+     IF = 725,
+     THEN = 726,
+     ELSE = 727,
+     VARIABLES = 728,
+     FUNCTION = 729,
+     T_eval = 730,
+     T_exists = 731,
+     T_FileExists = 732,
+     T_slice = 733,
+     T_GenRead = 734,
+     T_IMAGE = 735,
+     T_IMAGEDRAW = 736,
+     T_SURFACE = 737,
+     T_NUM = 738,
+     T_STRING = 739,
+     T_TRANSFORM = 740,
+     T_PROC = 741,
+     T_Class = 742,
+     T_MeanHalfSize = 743,
+     T_Resize = 744,
+     T_ReSlice = 745,
+     T_Flip = 746,
+     T_SetCompTransf = 747,
+     T_ConvexHull = 748,
+     T_itk = 749,
+     T_CannyEdgeDetector = 750,
+     T_CreateFlatMesh = 751,
+     T_CreateVolume = 752,
+     T_vtkCreateFlatMesh = 753,
+     T_Altitude2Position = 754,
+     T_GeoCoordinates = 755,
+     T_ElevateMesh = 756,
+     T_CreateVectors = 757,
+     T_Set3DArrowParam = 758,
+     T_CreateEllipsoids = 759,
+     T_ComputeAltitudes = 760,
+     T_Temp2Altitudes = 761,
+     T_ReadFlow = 762,
+     T_SetFluidNavFile = 763,
+     T_DrawEarthCoord = 764,
+     T_PaintCallback = 765,
+     T_SaveStructuredGrid = 766,
+     T_import_ami = 767,
+     T_import_vtk = 768,
+     T_import_itk = 769,
+     T_import_wii = 770,
+     T_import_filters = 771,
+     T_import_sys = 772,
+     T_amiOFCorr2D = 773,
+     T_amiOFVar2D = 774
    };
 
     };
@@ -842,7 +844,7 @@ namespace yyip {
 } // yyip
 
 /* Line 35 of lalr1.cc  */
-#line 846 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.hpp"
+#line 848 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.hpp"
 
 
 
