@@ -22,7 +22,7 @@ if (!exists(CT_defined)) {
     # Small radius
     CT_r = 4
     
-    CT_image_name = "i"
+    CT_image_name = "torus"
     CT_Gui
   }
   
@@ -33,6 +33,23 @@ if (!exists(CT_defined)) {
   }
   
   proc CT_Create() {
+
+    # if the dimensions have changed close the potential window
+    eval "exists_win = exists("+CT_image_name+"_draw);"
+    if (exists_win) {
+printn "exists_win"
+      if (exists(CT_dimx_prev)) {
+printn "exists CT_dimx_prev"
+        if (CT_dimx_prev!=CT_dimx) ||(CT_dimy_prev!=CT_dimy) ||(CT_dimz_prev!=CT_dimz) {
+printn "deleting windows"
+          eval "del "+CT_image_name+"_draw;"
+        }
+      } else {
+        InfoDialog "Image "+CT_image_name+" already exists and will be overwritten !"
+        eval "del "+CT_image_name+"_draw;"
+      }
+    }
+
     tmp = Image(FLOAT,CT_dimx,CT_dimy,CT_dimz)
     tmp_x = (FLOAT) Xpos(tmp)
     tmp_y = (FLOAT) Ypos(tmp)
@@ -47,6 +64,9 @@ if (!exists(CT_defined)) {
     res = ComputePV_subdiv(res)
     res = res*(CT_fg-CT_bg)+CT_bg
     
+    global::CT_dimx_prev = CT_dimx
+    global::CT_dimy_prev = CT_dimy
+    global::CT_dimz_prev = CT_dimz
     eval "global::"+CT_image_name+"<<=res;"
   }
   
@@ -58,18 +78,29 @@ if (!exists(CT_defined)) {
   proc CT_Gui() {
     global::CT_win = ParamWin("CreateTorus")
   
-    CT_win.AddInt(CT_dimx,1,1000)
-    CT_win.AddInt(CT_dimy,1,1000)
-    CT_win.AddInt(CT_dimz,1,1000)
-  
-    CT_win.AddFloat(CT_bg,0.1,500)
-    CT_win.AddFloat(CT_fg,0.1,500)
-  
-    CT_win.AddFloat(CT_R,0.1,50)
-    CT_win.AddFloat(CT_r,0.1,50)
-  
-    CT_win.AddButton("Create", CT_Create)
-    CT_win.AddButton("Show",   CT_Show)
+    CT_win.BeginBook
+      CT_win.AddPage("Param")
+        CT_win.BeginBox("Dimensions")
+          CT_win.AddInt(CT_dimx,1,1000)
+          CT_win.AddInt(CT_dimy,1,1000)
+          CT_win.AddInt(CT_dimz,1,1000)
+        CT_win.EndBox
+      
+        CT_win.BeginBox("Colors")
+          CT_win.AddFloat(CT_bg,0.1,500)
+          CT_win.AddFloat(CT_fg,0.1,500)
+        CT_win.EndBox
+      
+        CT_win.BeginBox("Radii")
+          CT_win.AddFloat(CT_R,0.1,50)
+          CT_win.AddFloat(CT_r,0.1,50)
+        CT_win.EndBox
+      
+        CT_win.AddString(CT_image_name,"Result name")
+        CT_win.AddButton("Create", CT_Create)
+        CT_win.AddButton("Show",   CT_Show)
+    CT_win.EndBook
+
     CT_win.AddButton("Close",  CT_Close)
   
     CT_win.update

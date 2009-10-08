@@ -1,102 +1,152 @@
+#!/usr/bin/amilab
 
-proc AGS_init( IMAGE input) {
-  global_new
+#
+# Denoising algorithm
+#
 
-  AGS_input = input
-  AGS_sigma=1
-  AGS_threshold=10
-  AGS_datacoeff=0.05
-  AGS_niter=INT(5)
-  AGS_use_zoom=UCHAR(0)
-  AGS_started=0
+if (exists(AGS_Init)) {
+  printn "AGS script already loaded, close it first"
+} else {
 
-  AGS_gui()
-}
-
-proc CB_Restart() {
-  global_new
-  if (AGS_started) {
-    AnisoGS.end
-    if exists(res_draw) {
-      del res_draw
-    }
-    if exists(res) {
-      del res
-    }
-    if exists(input) {
-      del input
-    }
-  }
-  if (AGS_use_zoom)&&(exists(AGS_input_draw)) {
-    input = (FLOAT) AGS_input[AGS_input_draw.GetXmin:AGS_input_draw.GetXmax,\
-                           AGS_input_draw.GetYmin:AGS_input_draw.GetYmax,\
-                           AGS_input_draw.GetZmin:AGS_input_draw.GetZmax ]
-  } else {
-    input = (FLOAT) AGS_input
-  }
-  AnisoGS.init(input,AGS_sigma,AGS_threshold,AGS_datacoeff)
-  AGS_started=1
-  res = AnisoGS.GetOutput
-  local
-}
-
-proc CB_Filter() {
-  global
-  if (!AGS_started) {
-    CB_Restart()
-  }
-  for k=1 to AGS_niter {
-    AnisoGS.iterate
-    if exists(res_draw) {
-      show res
-    }
-  }
-  res = AnisoGS.GetOutput
-  local
-}
-
-proc CB_Display() {
-  global_new
-  show AGS_input
-  if exists(res) {
-    AGS_input_draw.compare(res)
-  }
-  local
-}
-
-proc CB_Save() {
-  res.save resultname
-}
-
-proc AGS_gui() {
-  global_new
-  # parameters window
-  AGS_win = ParamWin("AnisoGS")
-  AGS_sigma_id           = AGS_win.AddFloat(AGS_sigma,0.01,10)
-  AGS_threshold_id       = AGS_win.AddFloat(AGS_threshold,0,100)
-  AGS_datacoeff_id       = AGS_win.AddFloat(AGS_datacoeff,0.01,10)
-  AGS_niter_id           = AGS_win.AddInt(AGS_niter,0,100)
-  AGS_use_zoom_id        = AGS_win.AddBoolean(AGS_use_zoom)
+  proc AGS_Init() \
+  {
+    global_new
   
-  AGS_win.BeginBox("Controls")
-  AGS_win.BeginHorizontal
-  restart_id = AGS_win.AddButton("Restart",    CB_Restart)
-  iterate_id = AGS_win.AddButton("Filter",     CB_Filter)
-  display_id = AGS_win.AddButton("Display",    CB_Display)
-  display_id = AGS_win.AddButton("Save",       CB_Save)
-  AGS_win.EndHorizontal
-  AGS_win.EndBox
+    AGS_input_name  = ""
+    AGS_result_name = "AnisoGS_result"
+    AGS_result_filename = "AnisoGS_result.ami.gz"
+    AGS_sigma=1
+    AGS_threshold=10
+    AGS_datacoeff=0.05
+    AGS_niter=INT(5)
+    AGS_use_zoom=UCHAR(0)
+    AGS_started=0
   
-  AGS_win.CreateWin
-  AGS_win.Display
-  AGS_win.update
-}
+    AGS_CreateWindow()
+  }
+  
+  #------------------------------------
+  proc AGS_Close() {
+    AGS_win.Hide
+    delvars "AGS_*_draw"
+    delvars "AGS_*"
+  }
+  
+  #------------------------------------
+  proc AGS_load_input() {
+    if (AGS_input_name=="Image") {
+      # read image using browser
+      global::AGS_input << Image
+      AGS_input_name = "AGS_input"
+      AGS_win.update
+    } else {
+      eval "global::AGS_input <<="+AGS_input_name+";"
+    }
+  }
 
+  #------------------------------------
+  proc AGS_Restart() {
 
-if (argc>=2) {
-  imagename  = $1
-  resultname = $2
-  input0 = Image(imagename)
-  AGS_init(&input0)
-  AGS_gui()
+    if (AGS_started) {
+      AnisoGS.end
+      if exists(AGS_res_draw) {
+        del AGS_res_draw
+      }
+      if exists(AGS_res) {
+        del AGS_res
+      }
+      if exists(AGS_input) {
+        del AGS_input
+      }
+    }
+    if (!exists(NRAD_input)) {
+      AGS_load_input
+    }
+    if (AGS_use_zoom)&&(exists(AGS_input_draw)) {
+      global::AGS_input_roi <<= (FLOAT) AGS_input[AGS_input_draw.GetXmin:AGS_input_draw.GetXmax,\
+                            AGS_input_draw.GetYmin:AGS_input_draw.GetYmax,\
+                            AGS_input_draw.GetZmin:AGS_input_draw.GetZmax ]
+    } else {
+      global::AGS_input_roi <<= (FLOAT) AGS_input
+    }
+    AnisoGS.init(AGS_input_roi,AGS_sigma,AGS_threshold,AGS_datacoeff)
+    AGS_started=1
+    global::AGS_res <<= AnisoGS.GetOutput
+  }
+  
+  #------------------------------------
+  proc AGS_Filter() {
+
+    if (!AGS_started) {
+      AGS_Restart()
+    }
+    for k=1 to AGS_niter {
+      AnisoGS.iterate
+      if exists(AGS_res_draw) {
+        show AGS_res
+      }
+    }
+    AGS_res = AnisoGS.GetOutput
+  }
+  
+  #------------------------------------
+  proc AGS_Display() {
+    show AGS_input
+    if exists(AGS_res) {
+      global_new
+        AGS_input_draw.compare(AGS_res)
+    }
+  }
+  
+  #------------------------------------
+  proc AGS_Save() {
+    AGS_res.save AGS_result_name
+  }
+  
+  #------------------------------------
+  proc AGS_CreateWindow() {
+
+    # parameters window
+    global::AGS_win = ParamWin("AnisoGS")
+
+    AGS_win.BeginBook
+      AGS_win.AddPage("Param")
+        AGS_win.AddImageChoice(AGS_input_name, "Input")
+    
+        AGS_win.AddFloat(AGS_sigma,0.01,10)
+        AGS_win.AddFloat(AGS_threshold,0,100)
+        AGS_win.AddFloat(AGS_datacoeff,0.01,10)
+        AGS_win.AddInt(AGS_niter,0,100)
+        AGS_win.AddBoolean(AGS_use_zoom)
+        AGS_win.AddString(AGS_result_name,"result name")
+        AGS_win.AddString(AGS_result_filename,"result filename")
+        
+        AGS_win.BeginBox("Controls")
+          AGS_win.BeginHorizontal
+            AGS_win.AddButton("Restart",    AGS_Restart)
+            AGS_win.AddButton("Filter",     AGS_Filter)
+            AGS_win.AddButton("Display",    AGS_Display)
+            AGS_win.AddButton("Save",       AGS_Save)
+          AGS_win.EndHorizontal
+        AGS_win.EndBox
+    AGS_win.EndBook
+
+    AGS_win.AddButton("Close",          AGS_Close)
+    
+    AGS_win.CreateWin
+    AGS_win.Display
+    AGS_win.update
+  }
+  
+  
+  #------------------------------------
+  AGS_Init
+  if (argc>=2) {
+    printn "reading image"
+    input_arg = Image($1)
+    AGS_input_image = "input_arg"
+    AGS_result_filename = $2
+    AGS_win.update
+  }
 }
+# endif exists(AGS_Init)

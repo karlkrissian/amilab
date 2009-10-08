@@ -1251,10 +1251,11 @@ unsigned char  amimage::writeheader( const char* filename,
   int i = strlen(filename);
   #ifdef AMI_USE_ZLIB
     if(!strncmp(filename+i-3, ".gz", 3)) {
+      cout << "adding gzip compressor" << endl;
       out.push(gzip_compressor());
     }
   #endif
-  out.push(file_sink(filename));
+  out.push(file_sink(filename, std::ios::binary));
   // write to out using std::ostream interface
 
   if (include_header) {

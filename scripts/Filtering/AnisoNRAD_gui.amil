@@ -27,7 +27,7 @@ if (exists(NRAD_Init)) {
 } else {
 
   #------------------------------------
-  proc NRAD_Init( IMAGE _input) \
+  proc NRAD_Init() \
   {
     global_new
   
@@ -63,7 +63,7 @@ if (exists(NRAD_Init)) {
       # read image using browser
       global::NRAD_input << Image
       NRAD_input_name = "NRAD_input"
-      GF_win.update
+      NRAD_win.update
     } else {
       eval "global::NRAD_input <<="+NRAD_input_name+";"
     }
@@ -93,6 +93,7 @@ if (exists(NRAD_Init)) {
   {
     if (!exists(NRAD_input)) {
       NRAD_load_input
+      NRAD_Display()
     }
     if (exists(NRAD_input_draw)) {
       global::NRAD_roi <<= NRAD_input[NRAD_input_draw]

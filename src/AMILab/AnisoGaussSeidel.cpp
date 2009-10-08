@@ -1759,6 +1759,7 @@ float AnisoGS::Itere2D ( InrImage* im )
   unsigned char mask_test;
 
 
+  if (contours_mode!=CONTOURS_GRAD)
   ComputeImage_c ( im );
 
   ResetCoefficients();
@@ -2484,8 +2485,7 @@ float AnisoGS::Itere3D( InrImage* im )
     int erreur_x=0,erreur_y=0,erreur_z=0;
     double   phi0_value=0;
 
-
-  ComputeImage_c(im);
+    ComputeImage_c(im);
 
   ResetCoefficients();
   Si this->im_tmp == NULL AlorsFait
@@ -2947,7 +2947,8 @@ float AnisoGS::Itere3D_2_new( InrImage* im )
   // printf("Itere3D_2_new \n");
 
   if (contours_mode!=CONTOURS_RNRAD_NEW) {
-    ComputeImage_c(im);
+    if (contours_mode!=CONTOURS_GRAD)
+      ComputeImage_c(im);
   } else {
     ComputeImage_c(im);
     sigma2 = Compute_sigma2_MRI_mode(im);
@@ -3623,7 +3624,8 @@ float AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
   }
 
   if (contours_mode!=CONTOURS_RNRAD_NEW) {
-    ComputeImage_c(im);
+    if (contours_mode!=CONTOURS_GRAD)
+      ComputeImage_c(im);
   } else {
     ComputeImage_c(im);
     sigma2 = Compute_sigma2_MRI_mode(im);
