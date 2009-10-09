@@ -121,6 +121,7 @@ using namespace boost;
 
 #ifdef AMI_USE_ITK
   #include "wrapitkRead.h"
+  #include "wrapitkWrite.h"
 #endif // AMI_USE_ITK
 
 #if defined(_MSC_VER) 
@@ -994,6 +995,11 @@ unsigned char InrImage :: Alloue( ) throw (ErreurAllocation)
   } else
 
 #endif // AMI_USE_VTK
+#ifdef AMI_USE_ITK
+  if ( (CheckEndString( name, ".mhd"))  ) {
+    return itkWrite(this,_nom);
+  } else
+#endif // AMI_USE_ITK
       
   if ( (CheckEndString( name, ".raw"))  ) {
     // write only raw data

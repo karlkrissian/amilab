@@ -1,3 +1,4 @@
 #include "paramlist.h"
 
-void itkWrite(ParamList*);
+bool itkWrite(InrImage* input, const std::string& fname);
+void wrap_itkWrite(ParamList*);

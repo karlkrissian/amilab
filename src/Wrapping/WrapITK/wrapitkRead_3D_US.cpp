@@ -1,11 +1,13 @@
-#ifndef _WITHOUT_ITK_
+#include "AMILabConfig.h"
+
+#ifdef AMI_USE_ITK
 
 #include "itkImage.h"
 #include "itkImageIOBase.h"
 #include "itkImageFileReader.h"
 #include "itkImageLinearConstIteratorWithIndex.h"
 
-#endif // _WITHOUT_ITK_
+#endif // AMI_USE_ITK
 
 #include "wrapfunctions.hpp" 
 
@@ -25,7 +27,7 @@ class itkReadClass {
   public: 
     InrImage* operator()(const string& filename, WORDTYPE type) 
     { 
-    #ifndef _WITHOUT_ITK_
+    #ifdef AMI_USE_ITK
 
       InrImage* res = NULL;
     
@@ -93,7 +95,7 @@ class itkReadClass {
     #else
       fprintf(stderr," ITK not available, you need to compile with ITK ...\n");
       return NULL;
-    #endif // _WITHOUT_ITK_
+    #endif // AMI_USE_ITK
 
     }  
 };
@@ -102,16 +104,16 @@ class itkReadClass {
 InrImage* itkRead_3D_US(ParamList* p)
 {
 
-#ifndef _WITHOUT_ITK_
+#ifdef AMI_USE_ITK
 
-	char functionname[] = "itkRead";
-	char description[]=" \n\
+  char functionname[] = "itkRead";
+  char description[]=" \n\
         Use itk Reader factory to read a 3D image file of type unsigned short\n\
-			";
-	char parameters[] =" \n\
+      ";
+  char parameters[] =" \n\
           Parameters:\n\
           string: filename\n\
-			";
+      ";
     
   std::string*  filename_param = NULL;
   InrImage* res = NULL;
@@ -126,6 +128,6 @@ InrImage* itkRead_3D_US(ParamList* p)
 #else
   fprintf(stderr," ITK not available, you need to compile with ITK ...\n");
   return NULL;
-#endif // _WITHOUT_ITK_
+#endif // AMI_USE_ITK
 
 } // itkRead()

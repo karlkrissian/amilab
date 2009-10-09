@@ -1,11 +1,15 @@
-#ifndef _WITHOUT_ITK_
+
+#include "AMILabConfig.h"
+
+
+#ifdef AMI_USE_ITK
 
 #include "itkImage.h"
 #include "itkImageIOBase.h"
 #include "itkImageFileReader.h"
 #include "itkImageLinearConstIteratorWithIndex.h"
 
-#endif // _WITHOUT_ITK_
+#endif // AMI_USE_ITK
 
 #include "wrapfunctions.hpp" 
 
@@ -24,7 +28,7 @@ class itkReadClass {
   public: 
     InrImage* operator()(const string& filename, WORDTYPE type) 
     { 
-    #ifndef _WITHOUT_ITK_
+    #ifdef AMI_USE_ITK
 
       InrImage* res = NULL;
     
@@ -92,7 +96,7 @@ class itkReadClass {
     #else
       fprintf(stderr," ITK not available, you need to compile with ITK ...\n");
       return NULL;
-    #endif // _WITHOUT_ITK_
+    #endif // AMI_USE_ITK
 
     }  
 };
@@ -102,7 +106,7 @@ class itkReadClass {
 InrImage* itkRead(const std::string& fname)
 {
 
-#ifndef _WITHOUT_ITK_
+#ifdef AMI_USE_ITK
 
   InrImage* res = NULL;
   int n=0;
@@ -175,7 +179,7 @@ cout << itk::ImageIOBase::USHORT << endl;
 #else
   fprintf(stderr," ITK not available, you need to compile with ITK ...\n");
   return NULL;
-#endif // _WITHOUT_ITK_
+#endif // AMI_USE_ITK
 
 } // itkRead()
 
@@ -184,7 +188,7 @@ cout << itk::ImageIOBase::USHORT << endl;
 InrImage* wrap_itkRead(ParamList* p)
 {
 
-#ifndef _WITHOUT_ITK_
+#ifdef AMI_USE_ITK
 
   char functionname[] = "itkRead";
   char description[]=" \n\
@@ -206,6 +210,6 @@ InrImage* wrap_itkRead(ParamList* p)
 #else
   fprintf(stderr," ITK not available, you need to compile with ITK ...\n");
   return NULL;
-#endif // _WITHOUT_ITK_
+#endif // AMI_USE_ITK
 
 } // wrap_itkRead()

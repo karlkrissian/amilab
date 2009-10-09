@@ -1,11 +1,14 @@
-#ifndef _WITHOUT_ITK_
+
+#include "AMILabConfig.h"
+
+#ifdef AMI_USE_ITK
 
 #include "itkImage.h"
 #include "itkImageIOBase.h"
 #include "itkImageFileWriter.h"
 #include "itkImageLinearConstIteratorWithIndex.h"
 
-#endif // _WITHOUT_ITK_
+#endif // AMI_USE_ITK
 
 #include "wrapfunctions.hpp" 
 #include "wrapitkWrite.h"
@@ -19,14 +22,14 @@ class itkWriteClass {
   typedef typename itk::ImageFileWriter< ImageType >  WriterType;
 
   public: 
-		void operator()(typename ImageType::Pointer image, const string& filename) 
+    bool operator()(typename ImageType::Pointer image, const string& filename) 
     { 
-    #ifndef _WITHOUT_ITK_
+    #ifdef AMI_USE_ITK
 
       typename WriterType::Pointer writer = WriterType::New();
     
-			writer->SetFileName( filename.c_str());
-			writer->SetInput(image);
+      writer->SetFileName( filename.c_str());
+      writer->SetInput(image);
     
       try
         {
@@ -36,22 +39,69 @@ class itkWriteClass {
         {
         std::cerr << "ExceptionObject caught !" << std::endl;
         std::cerr << err << std::endl;
-        //return NULL;
+        return false;
         }
+      return true;
    
     #else
       fprintf(stderr," ITK not available, you need to compile with ITK ...\n");
-      return NULL;
-    #endif // _WITHOUT_ITK_
+      return false;
+    #endif // AMI_USE_ITK
 
     }  
 };
 
+#define INRWRITEITK(type,dim)  { \
+        itk::Image< type, dim >::RegionType region; \
+        itk::Image< type, dim >::Pointer image;     \
+        image = InrToITK<type,dim>(input,region); \
+        return itkWriteClass<type,dim>()(image,fname);   }
 
-void itkWrite(ParamList* p)
+//----------------------------------------------------------------
+bool itkWrite(InrImage* input, const std::string& fname) 
 {
 
-#ifndef _WITHOUT_ITK_
+  const WORDTYPE image_component_type = input->GetFormat();
+  std::cout << "Dimension: " << input->DimZ() << " " << std::endl;
+  
+  
+
+  if (input->DimZ()==1)  
+  {
+    switch(image_component_type) { 
+      case WT_UNSIGNED_CHAR :  INRWRITEITK(unsigned char,  2); break;
+      case WT_UNSIGNED_SHORT:  INRWRITEITK(unsigned short, 2); break;
+      case WT_SIGNED_SHORT  :  INRWRITEITK(  signed short, 2); break;
+      case WT_UNSIGNED_INT  :  INRWRITEITK(unsigned int,   2); break;
+      case WT_SIGNED_INT    :  INRWRITEITK(  signed int,   2); break;
+      case WT_UNSIGNED_LONG :  INRWRITEITK(unsigned long,  2); break;
+      case WT_FLOAT         :  INRWRITEITK(float,          2); break;
+      case WT_DOUBLE        :  INRWRITEITK(double,         2); break;
+      default:  
+        cerr << "Format not supported in InrImage class "<< endl;  
+    }
+  }  else
+    switch(image_component_type) { 
+      case WT_UNSIGNED_CHAR :  INRWRITEITK(unsigned char,  3); break;
+      case WT_UNSIGNED_SHORT:  INRWRITEITK(unsigned short, 3); break;
+      case WT_SIGNED_SHORT  :  INRWRITEITK(  signed short, 3); break;
+      case WT_UNSIGNED_INT  :  INRWRITEITK(unsigned int,   3); break;
+      case WT_SIGNED_INT    :  INRWRITEITK(  signed int,   3); break;
+      case WT_UNSIGNED_LONG :  INRWRITEITK(unsigned long,  3); break;
+      case WT_FLOAT         :  INRWRITEITK(float,          3); break;
+      case WT_DOUBLE        :  INRWRITEITK(double,         3); break;
+      default:  
+        cerr << "Format not supported in InrImage class "<< endl;  
+    }
+
+}
+
+
+//-----------------------------------------------------------------------
+void wrap_itkWrite(ParamList* p)
+{
+
+#ifdef AMI_USE_ITK
 
   char functionname[] = "itkWrite";
   char description[]=" \n\
@@ -59,236 +109,21 @@ void itkWrite(ParamList* p)
       ";
   char parameters[] =" \n\
           Parameters:\n\
-					InrImage:\n\
+          InrImage:\n\
           string: filename\n\
       ";
   
-	InrImage* input = NULL;
+  InrImage* input = NULL;
   std::string*  fname = NULL;
   int n=0;
   
-	if (!get_image_param(  input,      p, n)) HelpAndReturn;
+  if (!get_image_param(  input,      p, n)) HelpAndReturn;
   if (!get_string_param( fname, p, n)) HelpAndReturn;
 
-	const WORDTYPE image_component_type = input->GetFormat();
-	std::cout << "Dimension: " << input->DimZ() << " " << std::endl;
-	
-  //typedef float               PixelType;
-  //const   unsigned int        Dimension = 3;
-  //typedef itk::Image< unsigned char, 3 >    ImageType;
-	
-	if (input->DimZ()<3)
-	{
-		std::cout << "Dimension 2" << std::endl;
-		switch(image_component_type) { \
-			case WT_UNSIGNED_CHAR:
-			{
-				itk::Image< unsigned char, 2 >::RegionType region;
-				itk::Image< unsigned char, 2 >::Pointer image;
-				// Convert from InrImage to ITK
-				cout << "Converting image to ITK format " << endl;
-	  	
-				image = InrToITK<unsigned char,2>(input,region);
-				itkWriteClass<unsigned char,2>()(image,*fname);
-				
-				break; \
-			}
-			case WT_UNSIGNED_SHORT: 
-			{
-				itk::Image< unsigned short, 2 >::RegionType region;
-				itk::Image< unsigned short, 2 >::Pointer image;
-				// Convert from InrImage to ITK
-				cout << "Converting image to ITK format " << endl;
-	  	
-				image = InrToITK<unsigned short,2>(input,region);
-				itkWriteClass<unsigned short,2>()(image,*fname);
-				
-				break; \
-			}
-			case WT_SIGNED_SHORT:
-			{
-				itk::Image< signed short, 2 >::RegionType region;
-				itk::Image< signed short, 2 >::Pointer image;
-				// Convert from InrImage to ITK
-				cout << "Converting image to ITK format " << endl;
-	  	
-				image = InrToITK<signed short,2>(input,region);
-				itkWriteClass<signed short,2>()(image,*fname);
-				
-				break; \
-			}
-			case WT_UNSIGNED_INT:
-			{
-				itk::Image< unsigned int, 2 >::RegionType region;
-				itk::Image< unsigned int, 2 >::Pointer image;
-				// Convert from InrImage to ITK
-				cout << "Converting image to ITK format " << endl;
-	  	
-				image = InrToITK<unsigned int,2>(input,region);
-				itkWriteClass<unsigned int,2>()(image,*fname);
-				
-				break; \
-			}
-			case WT_SIGNED_INT:
-			{
-				itk::Image< signed int, 2 >::RegionType region;
-				itk::Image< signed int, 2 >::Pointer image;
-				// Convert from InrImage to ITK
-				cout << "Converting image to ITK format " << endl;
-	  	
-				image = InrToITK<signed int,2>(input,region);
-				itkWriteClass<signed int,2>()(image,*fname);
-				
-				break; \
-			}
-			case WT_UNSIGNED_LONG:
-			{
-				itk::Image< unsigned long, 2 >::RegionType region;
-				itk::Image< unsigned long, 2 >::Pointer image;
-				// Convert from InrImage to ITK
-				cout << "Converting image to ITK format " << endl;
-	  	
-				image = InrToITK<unsigned long,2>(input,region);
-				itkWriteClass<unsigned long,2>()(image,*fname);
-				
-				break; \
-			}
-			case WT_FLOAT:
-			{
-				itk::Image< float, 2 >::RegionType region;
-				itk::Image< float, 2 >::Pointer image;
-				// Convert from InrImage to ITK
-				cout << "Converting image to ITK format " << endl;
-	  	
-				image = InrToITK<float,2>(input,region);
-				itkWriteClass<float,2>()(image,*fname);
-				
-				break; \
-			}
-			case WT_DOUBLE:
-			{
-				itk::Image< double, 2 >::RegionType region;
-				itk::Image< double, 2 >::Pointer image;
-				// Convert from InrImage to ITK
-				cout << "Converting image to ITK format " << endl;
-	  	
-				image = InrToITK<double,2>(input,region);
-				itkWriteClass<double,2>()(image,*fname);
-				
-				break; \
-			}
-			default:  \
-				cerr << "Format not supported in InrImage class "<< endl;  \
-		}
-	}
-	else
-	{
-		std::cout << "Dimension 3" << std::endl;
-		switch(image_component_type) { \
-			case WT_UNSIGNED_CHAR:
-			{
-				itk::Image< unsigned char, 3 >::RegionType region;
-				itk::Image< unsigned char, 3 >::Pointer image;
-				// Convert from InrImage to ITK
-				cout << "Converting image to ITK format " << endl;
-	  	
-				image = InrToITK<unsigned char,3>(input,region);
-				itkWriteClass<unsigned char,3>()(image,*fname);
-				
-				break; \
-			}
-			case WT_UNSIGNED_SHORT: 
-			{
-				itk::Image< unsigned short, 3 >::RegionType region;
-				itk::Image< unsigned short, 3 >::Pointer image;
-				// Convert from InrImage to ITK
-				cout << "Converting image to ITK format " << endl;
-	  	
-				image = InrToITK<unsigned short,3>(input,region);
-				itkWriteClass<unsigned short,3>()(image,*fname);
-				
-				break; \
-			}
-			case WT_SIGNED_SHORT:
-			{
-				itk::Image< signed short, 3 >::RegionType region;
-				itk::Image< signed short, 3 >::Pointer image;
-				// Convert from InrImage to ITK
-				cout << "Converting image to ITK format " << endl;
-	  	
-				image = InrToITK<signed short,3>(input,region);
-				itkWriteClass<signed short,3>()(image,*fname);
-				
-				break; \
-			}
-			case WT_UNSIGNED_INT:
-			{
-				itk::Image< unsigned int, 3 >::RegionType region;
-				itk::Image< unsigned int, 3 >::Pointer image;
-				// Convert from InrImage to ITK
-				cout << "Converting image to ITK format " << endl;
-	  	
-				image = InrToITK<unsigned int,3>(input,region);
-				itkWriteClass<unsigned int,3>()(image,*fname);
-				
-				break; \
-			}
-			case WT_SIGNED_INT:
-			{
-				itk::Image< signed int, 3 >::RegionType region;
-				itk::Image< signed int, 3 >::Pointer image;
-				// Convert from InrImage to ITK
-				cout << "Converting image to ITK format " << endl;
-	  	
-				image = InrToITK<signed int,3>(input,region);
-				itkWriteClass<signed int,3>()(image,*fname);
-				
-				break; \
-			}
-			case WT_UNSIGNED_LONG:
-			{
-				itk::Image< unsigned long, 3 >::RegionType region;
-				itk::Image< unsigned long, 3 >::Pointer image;
-				// Convert from InrImage to ITK
-				cout << "Converting image to ITK format " << endl;
-	  	
-				image = InrToITK<unsigned long,3>(input,region);
-				itkWriteClass<unsigned long,3>()(image,*fname);
-				
-				break; \
-			}
-			case WT_FLOAT:
-			{
-				itk::Image< float, 3 >::RegionType region;
-				itk::Image< float, 3 >::Pointer image;
-				// Convert from InrImage to ITK
-				cout << "Converting image to ITK format " << endl;
-	  	
-				image = InrToITK<float,3>(input,region);
-				itkWriteClass<float,3>()(image,*fname);
-				
-				break; \
-			}
-			case WT_DOUBLE:
-			{
-				itk::Image< double, 3 >::RegionType region;
-				itk::Image< double, 3 >::Pointer image;
-				// Convert from InrImage to ITK
-				cout << "Converting image to ITK format " << endl;
-	  	
-				image = InrToITK<double,3>(input,region);
-				itkWriteClass<double,3>()(image,*fname);
-				
-				break; \
-			}
-			default:  \
-				cerr << "Format not supported in InrImage class "<< endl;  \
-		}
-	}
+  itkWrite(input,*fname);
 
 #else
   fprintf(stderr," ITK not available, you need to compile with ITK ...\n");
-  return NULL;
-#endif // _WITHOUT_ITK_
+#endif // else ifdef AMI_USE_ITK
 
 } // itkWrite()

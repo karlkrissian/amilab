@@ -1,4 +1,4 @@
-#ifndef _WITHOUT_ITK_
+#ifdef AMI_USE_ITK
 
 #include "itkImageLinearConstIteratorWithIndex.h"
 #include "itkImageLinearIteratorWithIndex.h"
@@ -8,7 +8,7 @@
 #include "itkImageFileReader.h"
 #include "itkImage.h"
 
-#endif // _WITHOUT_ITK_
+#endif // AMI_USE_ITK
 
 // #include "VarContexts.hpp"
 #include "wrapfunctions.hpp" 

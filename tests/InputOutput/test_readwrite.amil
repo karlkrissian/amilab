@@ -3,7 +3,7 @@
 #SetDebugOn
 
 
-for extension in ".vtk", ".ami", ".ami.gz" {
+for extension in ".vtk", ".mhd", ".ami", ".ami.gz" {
 
   # read test
   l_i0 = Image "smallvolume"+extension

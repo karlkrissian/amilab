@@ -12,7 +12,7 @@
 
 
 
-// #ifndef _WITHOUT_ITK_
+// #ifdef AMI_USE_ITK
 
 // #include "itkImageLinearConstIteratorWithIndex.h"
 // #include "itkImageLinearIteratorWithIndex.h"
@@ -27,7 +27,7 @@
 
 // #include "itkImageFileReader.h"
 
-// #endif // _WITHOUT_ITK_
+// #endif // AMI_USE_ITK
 
 
 #include "VarContexts.hpp"
@@ -57,7 +57,7 @@ void AddWrapITK(){
 // Vars.AddVar(type_c_image_function,"itkBasicNLMeans3D", (void*) itkBasicNLMeans3D);
  Vars.AddVar(type_c_image_function,"itkRecursiveGaussianImageFilter2D", (void*) itkRecursiveGaussianImageFilter2D);
  Vars.AddVar(type_c_image_function,"itkRecursiveGaussianImageFilter3D", (void*) itkRecursiveGaussianImageFilter3D);
- Vars.AddVar(type_c_procedure,"itkWrite", (void*) itkWrite);
- Vars.AddVar(type_c_image_function,"itkFastMarchingImageFilter2D", (void*) itkFastMarchingImageFilter2D);
- Vars.AddVar(type_c_image_function,"itkFastMarchingImageFilter3D", (void*) itkFastMarchingImageFilter3D);
+ Vars.AddVar(type_c_procedure,     "itkWrite"                         , (void*) wrap_itkWrite);
+ Vars.AddVar(type_c_image_function,"itkFastMarchingImageFilter2D"     , (void*) itkFastMarchingImageFilter2D);
+ Vars.AddVar(type_c_image_function,"itkFastMarchingImageFilter3D"     , (void*) itkFastMarchingImageFilter3D);
 }

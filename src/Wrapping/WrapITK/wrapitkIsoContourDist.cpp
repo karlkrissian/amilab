@@ -1,4 +1,7 @@
-#ifndef _WITHOUT_ITK_
+
+#include "AMILabConfig.h"
+
+#ifdef AMI_USE_ITK
 
 #include "itkImage.h"
 #include "itkImageIOBase.h"
@@ -6,7 +9,7 @@
 #include "itkImageLinearIteratorWithIndex.h"
 #include "itkIsoContourDistanceImageFilter.h"
 
-#endif // _WITHOUT_ITK_
+#endif // AMI_USE_ITK
 
 #include "wrapfunctions.hpp" 
 #include "wrapConversion.h"
@@ -16,14 +19,14 @@
 InrImage* itkIsoContourDist(ParamList* p)
 {
 
-#ifndef _WITHOUT_ITK_
+#ifdef AMI_USE_ITK
 
   char functionname[] = "itkIsoContourDist";
   char description[]=" \n\
         Computes an approximation of the distance to the isocontour\n\
       ";
   char parameters[] =" \n\
-					Parameters:\n\
+          Parameters:\n\
           input image \n\
           isocontour threshold (def:0)\n\
           far value (def:10)\n\
@@ -84,6 +87,6 @@ InrImage* itkIsoContourDist(ParamList* p)
 #else
   fprintf(stderr," ITK not available, you need to compile with ITK ...\n");
   return NULL;
-#endif // _WITHOUT_ITK_
+#endif // AMI_USE_ITK
 
 } // itkIsoContourDist
