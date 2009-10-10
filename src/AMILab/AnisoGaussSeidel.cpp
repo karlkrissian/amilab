@@ -4133,7 +4133,7 @@ float AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
 
   // backup previous image in image_c
   ExtendBoundariesVonNeumann(im_tmp);
-  (*image_c) = (*im);
+  if (image_c!=NULL)  (*image_c) = (*im);
   (*im) = (*this->im_tmp);
 
   printf(" speedup %3.3f %% \n",speedup_counter/(1.0*txy*tz)*100.0);
