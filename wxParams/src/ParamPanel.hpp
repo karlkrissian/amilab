@@ -577,6 +577,8 @@ public:
 
   void SetDragCallback( int id, bool dcb);
 
+  void Enable( int id,bool enable=true);
+
   void BeginBox( const char* boxname);
   void EndBox();
   

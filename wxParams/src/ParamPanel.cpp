@@ -1020,6 +1020,20 @@ void ParamPanel::SetDragCallback( int id, bool dcb) {
 }
 
 
+//---------------------------------------------------------------------
+void ParamPanel::Enable( int id, bool enable) {
+
+  macro_CheckParameterId(id, return)
+  
+  if ((wxGenericWidget*) _tab_param[id].GetWidget() !=NULL) {
+    wxGenericWidget* pwidget = (wxGenericWidget*) _tab_param[id].GetWidget();
+
+    if (enable!=pwidget->IsEnabled())
+      pwidget->Enable(enable);
+  }
+}
+
+
 /*
 //---------------------------------------------------------------------
 Widget ParamPanel::GetWidget( int id)

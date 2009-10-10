@@ -103,6 +103,7 @@ protected:
 
   void*       _calldata;
   void*       _callback;
+  bool        _enabled;
 //  void*       _motif_callback;
 
 public:
@@ -110,6 +111,7 @@ public:
   {
     _callback       = NULL;
     _calldata       = NULL;
+    _enabled        = true;
 //    _motif_callback = NULL;
   }
   
@@ -129,6 +131,14 @@ public:
   virtual void UpdateValue() {}
   
   virtual void Update() {}
+
+  bool IsEnabled() const 
+  {
+    return _enabled;
+  }
+
+  virtual bool Enable(bool enable = true) { return true; }
+
 };
 
 #endif // _WIDGET_HPP

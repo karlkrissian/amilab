@@ -443,3 +443,18 @@ void wxNumericParameter<T>::SetToolTip( const wxString& tt)
    _label ->SetToolTip(tt);
    _slider->SetToolTip(tt);
 }
+
+//-------------------------------------------
+template <class T>
+bool wxNumericParameter<T>::Enable(bool enable)
+{
+  if (enable!=_enabled) {
+    _label          ->Enable(enable);
+    _slider         ->Enable(enable);
+    _text           ->Enable(enable);
+    _spinbut        ->Enable(enable);
+    _spinbut_limits ->Enable(enable);
+    _enabled = enable;
+  }
+}
+

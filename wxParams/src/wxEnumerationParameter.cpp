@@ -194,6 +194,18 @@ void wxEnumerationParameter::OnEnumUpdate(void* data)
 
 }
 
+//-------------------------------------------
+bool wxEnumerationParameter::Enable(bool enable)
+{
+  if (enable!=_enabled) {
+    _label         ->Enable(enable);
+    _choice        ->Enable(enable);
+    if (_update_button!=NULL)
+      ((wxBitmapButton*)_update_button) ->Enable(enable);
+    _enabled = enable;
+  }
+}
+
 //---------------------------------------------
 //void wxEnumerationParameter::OnButtonUpdate( wxCommandEvent& data)
 //{
