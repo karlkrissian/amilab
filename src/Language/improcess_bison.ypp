@@ -502,6 +502,7 @@ static void CB_update_imagelist( void* imagelist_gui)
 %token T_SetPositionProp
 %token T_BeginBox T_EndBox T_BeginHorizontal T_EndHorizontal
 %token T_redraw
+%token T_Enable T_Disable
 
 %token RIGHT_ASSIGN LEFT_ASSIGN ADD_ASSIGN
 %token SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN
@@ -4917,15 +4918,15 @@ cerr << "Feature not available, needs to be updated ! " << endl;
         pw->SetPositionProperties(
               n-1, (int) $5, (int) $7, (int) $9);
     }
-        |
-        VAR_PARAMWIN T_POINT T_SetDragCallback T_OP_PAR expr
-           T_CL_PAR
-        {
-        /**
-          Parameters:
-            - index of the parameter for which to set the drag callback
-          Description: activate the drag callback
-        */
+    |
+    VAR_PARAMWIN T_POINT T_SetDragCallback T_OP_PAR expr
+        T_CL_PAR
+    {
+    /**
+      Parameters:
+        - index of the parameter for which to set the drag callback
+      Description: activate the drag callback
+    */
       ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
       int n = pw->NbParameters();
       int i     = (int) $5;
@@ -4934,17 +4935,17 @@ cerr << "Feature not available, needs to be updated ! " << endl;
         pw->SetDragCallback(i,drag);
       else
         fprintf(stderr,"VAR_PARAMWIN.SetDragCallbackO( %d , .. ) \t bad parameter number \n",i);
-        }
-        |
-        VAR_PARAMWIN T_POINT T_SetDragCallback T_OP_PAR expr
-          T_COMMA expr T_CL_PAR
-        {
-        /**
-          Parameters:
-            - index of the parameter for which to set the drag callback
-            - boolean value: activate or desactivate the drag callbacks
-          Description: activate the drag callback
-        */
+    }
+    |
+    VAR_PARAMWIN T_POINT T_SetDragCallback T_OP_PAR expr
+      T_COMMA expr T_CL_PAR
+    {
+    /**
+      Parameters:
+        - index of the parameter for which to set the drag callback
+        - boolean value: activate or desactivate the drag callbacks
+      Description: activate the drag callback
+    */
       ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
       int n = pw->NbParameters();
       int i     = (int) $5;
@@ -4954,6 +4955,26 @@ cerr << "Feature not available, needs to be updated ! " << endl;
       else
         fprintf(stderr,"VAR_PARAMWIN.SetDragCallbackO( %d , .. ) \t bad parameter number \n",i);
         }
+      |
+      VAR_PARAMWIN T_POINT T_Enable T_OP_PAR expr  T_COMMA expr T_CL_PAR
+      {
+      /**
+        Description: 
+          Enable a parameter
+        Parameters:
+          - index of the parameter for which to set the drag callback
+          - value enable:1 disable:0
+      */
+      ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
+      int n = pw->NbParameters();
+      int i     = (int) $5;
+      bool val  = (bool) $7;
+      if ((i>=0)&&(i<n))
+        pw->Enable(i,val);
+      else
+        driver.err_print(
+          (boost::format("VAR_PARAMWIN.Enable( %d , .. ) \t bad parameter number ")%i).str().c_str());
+      }
         |
         T_SaveStructuredGrid T_OP_PAR var_image T_COMMA expr_string T_CL_PAR
         {
