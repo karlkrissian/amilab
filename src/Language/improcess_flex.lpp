@@ -691,6 +691,9 @@ BeginHorizontal   return(token::T_BeginHorizontal); /*{BeginHorizontal,T_BeginHo
 EndHorizontal     return(token::T_EndHorizontal); /*{EndHorizontal,T_EndHorizontal}*/
 redraw            return(token::T_redraw); /*{redraw,T_redraw}*/
 
+Enable            return(token::T_Enable);  /*{Enable,T_Enable}*/
+Disable           return(token::T_Disable); /*{Disable,T_Disable}*/
+
 CreateFlatMesh    return(token::T_CreateFlatMesh);    /*{CreateFlatMesh,T_CreateFlatMesh}*/
 CreateVolume      return(token::T_CreateVolume);      /*{CreateVolume,T_CreateVolume}*/
 vtkCreateFlatMesh return(token::T_vtkCreateFlatMesh); /*{vtkCreateFlatMesh,T_vtkCreateFlatMesh}*/
