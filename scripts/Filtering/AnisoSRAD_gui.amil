@@ -1,95 +1,145 @@
+#!/usr/bin/amilab
+
+#
+# Speckle Reducing Anisotropic Diffusion
+#
+#  Based on the paper of Yu and Acton: Speckle Reducing Anisotropic Diffusion TIP 2002
+#  and
+#  Oriented Speckle Reducing Anisotropic Diffusion
+# `Karl Krissian, Carl-Fredrik Westin, Ron Kikinis and Kirby Vosburgh'
+# IEEE Transactions on Image Processing, vol 16:5, pages 1412-1424, may 2007.
+#
 
 
+if (exists(SRAD_Init)) {
+  printn "SRAD script already loaded, close it first"
+} \
+else \
+{
 
-proc SRAD_Init( IMAGE _input, STRING resname ) {
-  global_new
-  SRAD_input = (FLOAT) _input
-  show SRAD_input
-  SRAD_dt   = 0.1
-  SRAD_T    = 10
-  # 0: Lee, 1: Kuan, 2: Additive
-  SRAD_mode = INT(0) 
-  SRAD_neighborhood = INT(3)
-  # Scheme, 0: explicit 1: semi-implicit
-  SRAD_scheme = INT(1)
-  # SRAD_ROI 
-  SRAD_CreateGui()
-}
+  proc SRAD_Init(  ) {
 
-
-proc CB_ROI() {
-  global
-  if (exists(SRAD_ROI)) {
-    del SRAD_ROI
+    global_new
+    SRAD_input_name = ""
+    SRAD_output_name = ""
+    SRAD_output_filename = "SRAD_result.ami.gz"
+    SRAD_dt   = 0.1
+    SRAD_T    = 10
+    # 0: Lee, 1: Kuan, 2: Additive
+    SRAD_mode = INT(0) 
+    SRAD_neighborhood = INT(3)
+    # Scheme, 0: explicit 1: semi-implicit
+    SRAD_scheme = INT(1)
+    # SRAD_ROI 
+    SRAD_CreateGui()
   }
-  if (exists(SRAD_input_draw)) {
-    SRAD_ROI = SRAD_input[SRAD_input_draw]
+  
+  #------------------------------------
+  proc SRAD_Close() {
+    SRAD_win.Hide
+    delvars "SRAD_*_draw"
+    delvars "SRAD_*"
   }
-  local
-}
-
-proc CB_Filter() {
-  global
-  numit = SRAD_T/SRAD_dt
-  res = AnisoLeeAdd2(SRAD_input,SRAD_dt,numit,SRAD_ROI)
-  local
-}
-
-proc CB_Display() {
-  global
-  if (!exists(SRAD_input_draw)) {
-    show SRAD_input
+  
+  #------------------------------------
+  proc SRAD_load_input() {
+    if (SRAD_input_name=="Image") {
+      # read image using browser
+      global::SRAD_input << Image
+      SRAD_input_name = "SRAD_input"
+      SRAD_win.update
+    } else {
+      eval "global::SRAD_input <<="+SRAD_input_name+";"
+    }
   }
-  if exists(res) {
-    SRAD_input_draw.compare(res)
+
+  
+  proc SRAD_ROI() {
+    global
+    if (exists(SRAD_ROI)) {
+      del SRAD_ROI
+    }
+    if (exists(SRAD_input_draw)) {
+      SRAD_ROI = SRAD_input[SRAD_input_draw]
+    }
+    local
   }
-  local
-}
-
-proc CB_Save() {
-  res.save resultname
-}
-
-proc SRAD_CreateGui() {
-  global_new 
-
-  # parameters window
-  SRAD_win = ParamWin("Speckle Reducing Anisotropic Diffusion Parameters")
-  SRAD_dt_id         = SRAD_win.AddFloat(SRAD_dt,0.01,10)
-  SRAD_T_id          = SRAD_win.AddFloat(SRAD_T,0,100)
   
-  SRAD_mode_id       = SRAD_win.AddEnum(SRAD_mode,3)
-  SRAD_mode_Lee_id   = SRAD_win.AddEnumChoice(SRAD_mode_id,"Lee")
-  SRAD_mode_Kuan_id  = SRAD_win.AddEnumChoice(SRAD_mode_id,"Kuan")
-  SRAD_mode_Add_id   = SRAD_win.AddEnumChoice(SRAD_mode_id,"Additive")
+  proc SRAD_Filter() {
+    numit = SRAD_T/SRAD_dt
+    global::SRAD_res = AnisoLeeAdd2(SRAD_input,SRAD_dt,numit,SRAD_ROI)
+    eval "global::"+SRAD_output_name+" <<= SRAD_res;"
+  }
   
-  SRAD_neighborhood_id = SRAD_win.AddInt(SRAD_neighborhood,0,4)
-  SRAD_scheme_id       = SRAD_win.AddEnum(SRAD_scheme,2)
-  SRAD_scheme_expl_id  = SRAD_win.AddEnumChoice(SRAD_scheme_id,"Explicit")
-  SRAD_scheme_impl_id  = SRAD_win.AddEnumChoice(SRAD_scheme_id,"Semi-implicit")
+  proc SRAD_Display() {
+    global
+    if (!exists(SRAD_input_draw)) {
+      show SRAD_input
+    }
+    if exists(SRAD_res) {
+      SRAD_input_draw.compare(SRAD_res)
+    }
+    local
+  }
   
-  SRAD_win.BeginBox("Controls")
-  SRAD_win.BeginHorizontal
-  ROI_id     = SRAD_win.AddButton("Select ROI", CB_ROI)
-  iterate_id = SRAD_win.AddButton("Filter",     CB_Filter)
-  display_id = SRAD_win.AddButton("Display",    CB_Display)
-  display_id = SRAD_win.AddButton("Save",       CB_Save)
-  SRAD_win.EndHorizontal
-  SRAD_win.EndBox
+  proc SRAD_Save() {
+    SRAD_res.save SRAD_output_filename
+  }
   
-  SRAD_win.CreateWin
-  SRAD_win.Display
-}
+  proc SRAD_CreateGui() {
+    global_new 
+  
+    # parameters window
+    SRAD_win = ParamWin("Speckle Reducing Anisotropic Diffusion Parameters")
 
+    SRAD_win.BeginBook
+      SRAD_win.AddPage("Param")
+        SRAD_win.AddImageChoice(SRAD_input_name, "Input")
+        SRAD_win.AddString(SRAD_output_name,"result name")
 
+        SRAD_dt_id         = SRAD_win.AddFloat(SRAD_dt,0.01,10)
+        SRAD_T_id          = SRAD_win.AddFloat(SRAD_T,0,100)
+        
+        SRAD_mode_id       = SRAD_win.AddEnum(SRAD_mode,3)
+        SRAD_mode_Lee_id   = SRAD_win.AddEnumChoice(SRAD_mode_id,"Lee")
+        SRAD_mode_Kuan_id  = SRAD_win.AddEnumChoice(SRAD_mode_id,"Kuan")
+        SRAD_mode_Add_id   = SRAD_win.AddEnumChoice(SRAD_mode_id,"Additive")
+        
+        SRAD_neighborhood_id = SRAD_win.AddInt(SRAD_neighborhood,0,4)
+        SRAD_scheme_id       = SRAD_win.AddEnum(SRAD_scheme,2)
+        SRAD_scheme_expl_id  = SRAD_win.AddEnumChoice(SRAD_scheme_id,"Explicit")
+        SRAD_scheme_impl_id  = SRAD_win.AddEnumChoice(SRAD_scheme_id,"Semi-implicit")
+        
+        SRAD_win.BeginBox("Controls")
+          SRAD_win.BeginHorizontal
+            ROI_id     = SRAD_win.AddButton("Select ROI", SRAD_ROI)
+            iterate_id = SRAD_win.AddButton("Filter",     SRAD_Filter)
+            display_id = SRAD_win.AddButton("Display",    SRAD_Display)
+          SRAD_win.EndHorizontal
+        SRAD_win.EndBox
 
-if (argc==2) {
-  // start with an image and an initialization
-  imagename  = $1
-  resultname = $2
-  input0 = Image(imagename)
-  in = (FLOAT) input0
-  del input0
-  SRAD_Init(&in,resultname)
-}
+        SRAD_win.BeginBox("Save to disk")
+          SRAD_win.AddString(SRAD_output_filename,"result filename")
+          display_id = SRAD_win.AddButton("Save",       SRAD_Save)
+        SRAD_win.EndBox
+    
+    SRAD_win.EndBook
+    SRAD_win.AddButton("Close",             SRAD_Close)
+
+    SRAD_win.CreateWin
+    SRAD_win.Display
+  }
+  
+  
+  
+  SRAD_Init
+  if (argc==2) {
+    // start with an image and an initialization
+    input_arg = Image($1)
+    SRAD_input_image = "input_arg"
+    SRAD_output_name = $2
+    NRAD_win.update
+  }
+} 
+# endif exists(SRAD_Init)
 
