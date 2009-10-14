@@ -80,13 +80,16 @@ if (exists(AGS_Init)) {
     if (!AGS_started) {
       AGS_Restart()
     }
+    SetProgress(0)
     for k=1 to AGS_niter {
       AnisoGS.iterate
+      SetProgress(k/AGS_niter*100)
       if exists(AGS_res_draw) {
         show AGS_res
       }
     }
     AGS_res = AnisoGS.GetOutput
+    SetProgress(0)
   }
   
   #------------------------------------

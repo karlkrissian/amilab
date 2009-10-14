@@ -379,6 +379,7 @@ SET(amilab_ownlibs
   Coordinates
   Crest
 #  DistTransf
+  Algorithms
   Filtering
   ImageTool
   Images
@@ -395,12 +396,6 @@ SET(amilab_ownlibs
   Voxels
 )
 
-#IF(AMI_USE_FASTNLMEANS)
-  SET(amilab_ownlibs
-      ${amilab_ownlibs}
-      Algorithms
-  )
-#ENDIF(AMI_USE_FASTNLMEANS)
 
 IF(AMI_USE_VTK)
   SET(amilab_ownlibs

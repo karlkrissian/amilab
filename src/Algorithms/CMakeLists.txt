@@ -36,7 +36,10 @@ SET(Algorithms_SRCS
   BasicFilter/ImageToImageFilter.cpp
   Basic/localstats.cpp
   Graph/func_shortestpath.cpp
+
   Denoising/Wrap_NewNLMeans.cpp
+  Denoising/AnisoGaussSeidel.cpp
+
   Others/ComputePartialVolume.cpp
 )
 

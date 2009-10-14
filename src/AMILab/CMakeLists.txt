@@ -48,7 +48,6 @@ INCLUDE( ${VTK_USE_FILE} )
 INCLUDE(${wxWidgets_USE_FILE})
 
 SET(AMILab_SRCS
-    AnisoGaussSeidel.cpp
     Chamfer.cpp
     CircleIntegration.cpp
     ConnectLines.cpp
