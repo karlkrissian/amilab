@@ -1,109 +1,22 @@
-/*
-    ==================================================
-    Software : AMILab
-    Authors  : Karl Krissian
-    Email    : karl@bwh.harvard.edu
+//
+// C++ Implementation: AnisoGS
+//
+// Description: Denoising Filter
+//
+//
+// Author: Karl Krissian <krissian@dis.ulpgc.es>, (C) 2009
+//
+// Copyright: See COPYING file that comes with this distribution
+//
+//
 
-    AMILab is a language for image processing
-    ==================================================
-    Copyright (C) 1996-2005  Karl Krissian
+#include "AnisoGS.h"
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
-
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    ================================================== 
-   The full GNU Lesser General Public License file is in Devel/Sources/Prog/LesserGPL_license.txt
-*/
-/* Calcul des courbures principales
- *
- *
- * Karl KRISSIAN
- * fichier AnisoGaussSeidel.c
- *
- * 2D and 3D Restoration with Anisotropic diffusion
- * 
- */
-
-#include <pthread.h>
-
-#include "style.hpp"
-#include "inrimage.hpp"
-#include "math1.hpp"
-#include "DeriveesLissees.hpp"
-#include "filtrage_rec.hpp"
-#include "DirPrincipales.hpp"
-#include "CurvaturasPrincipales.hpp"
-#include "AnisoGaussSeidel.h"
-#include "stdio.h"
-//#include "fonctions.h"
 #include "localstats.h"
-
-#include "FloatMatrix.hpp"
-#include "Eigen.hpp"
-
-#include "DefineClass.hpp"
-#include "amilab_messages.h"
-
-#define DER_DISCR 1
-#define DER_GAUSS 2
-
-#define MODE_2D 2
-#define MODE_3D 3
-
-#define GAUSSIAN_NOISE 0
-#define SPECKLE_NOISE  1
-
-#define CONTOURS_GRAD      0
-#define CONTOURS_SRAD      1  // use Yu and Acton term for contours
-#define CONTOURS_RNRAD     2  // Rician Noise Reducing Anisotropic Diffusion
-#define CONTOURS_RNRAD_NEW 3  // Rician Noise Reducing Anisotropic Diffusion, new version using
-                             // directional local statistics for the diffusion matrix
-
-#define IMPLICIT 1
-
-#define LOCAL_STRUCT_CURV   0 // use gradient and princ. curv. for the
-                              // description of the local structure
-#define LOCAL_STRUCT_TENSOR 1 // Use the structure tensor
-
-#define DIFF_MATRIX_EIGEN_SUM 0 // version of the eigenvalues of the diffusion matrix using a sum of the local diffusion coefficients 
-#define DIFF_MATRIX_EIGEN_MAX 1 // version using the maximum
-
-#define AddSetGetVar( name, type) \
-  type  name; \
-  void Set##name( type _arg) \
-  { \
-    this->name = _arg; \
-  };  \
-  type Get##name() \
-  { \
-    return this->name; \
-  };
-
-#define MAX(a,b) ((a)>(b)?(a):(b))
-#define MIN(a,b) ((a)<(b)?(a):(b))
-
-
 #include "func_globalstats.h"
 #include "func_imagebasictools.h"
-
-double CubicRoot(double x) {
-  if (x==0) return 0;
-  if (x>0) return exp(log(x)/3.0);
-  if (x<0) return -exp(log(-x)/3.0);
-  return 0;
-}
-
+#include "Eigen.hpp"
+#include "CurvaturasPrincipales.hpp"
 
 #define IncX(I)  ((x<tx-1)?(I+1):I)
 #define Inc2X(I) ((x<tx-2)?(I+1):I)
@@ -116,6 +29,38 @@ double CubicRoot(double x) {
 #define IncZ(I)  ((z<tz-1)?(I+txy):I)
 #define Inc2Z(I) ((z<tz-2)?(I+txy):I)
 #define DecZ(I)  ((z>0)?(I-txy):I)
+
+
+//#define phi0(x)         exp(-((x)*(x)/k/k))
+#define phi0(x)         exp(-0.5*((x)*(x)/k/k))
+#define phi1(x)         tang_coeff
+
+//#define phi3D_0(x) exp(-((x)*(x)/k/k))
+//#define phi3D_0(x) exp(-0.5*((x)*(x)/k/k))
+//#define phi3D_0(x) 1.0/(x+0.001)
+//#define phi3D_0(x) tanh((x)/k)/(x)
+#define phi3D_0(x) 1.0/(1.0+(x)*(x)/k/k)
+
+
+#define phi3D_1(x) maxcurv_coeff
+#define phi3D_2(x) mincurv_coeff
+
+#ifndef macro_min
+  #define macro_min(n1,n2) ((n1)<(n2)?(n1):(n2))
+#endif
+
+#ifndef macro_max
+  #define macro_max(n1,n2) ((n1)>(n2)?(n1):(n2))
+#endif 
+
+double CubicRoot(double x) {
+  if (x==0) return 0;
+  if (x>0) return exp(log(x)/3.0);
+  if (x<0) return -exp(log(-x)/3.0);
+  return 0;
+}
+
+
 
 
 // Solving a 3rd order polynomial equation
@@ -182,385 +127,6 @@ void Solve3rdOrder(float _a, float _b, float _c, double w[3], int& nb_solutions)
 
 } // Solve3rdOrder()
 
-
-
-class AnisoGS {
-
-  DEFINE_CLASS(AnisoGS);
-
- public:
-
-  //-------  Images
-  InrImage* input_image; // original input image
-  InrImage* image_entree  ; // copy for processing
-  InrImage* image_resultat;
-  InrImage* image_lissee  ;
-  InrImage* im_tmp        ;
-  InrImage* image_c; // coefficients for SRAD type filtering
-
-  InrImage* tensor_xx;
-  InrImage* tensor_xy;
-  InrImage* tensor_xz;
-  InrImage* tensor_yy;
-  InrImage* tensor_yz;
-  InrImage* tensor_zz;
-
-  InrImage* eigenvect_xp;
-  InrImage* eigenvect_yp;
-  InrImage* eigenvect_zp;
-
-  AddSetGetVar(dt,float);
-  AddSetGetVar(neighborhood,int);
-
-
-  AddSetGetVar( mask, InrImage*)
- 
-  InrImage* divFim        ;
-
-  double   planstats_sigma;
-  double   dirstats_sigma;
-
-  unsigned char   image_entree_allouee;
-  int       boundary_extension_size;
-  
-  float      alpha_x, gamma_x;
-  float*     alpha_y;
-  float*     gamma_y;
-  float**    alpha_z;
-  float**    gamma_z;
-  
-  
-  FiltreRecursif*  filtre;
-  FiltrageRec*     filtre_rec;
-  DeriveesLissees* DerLiss;
-  
-  
-  //-------- Parameters
-  int     mode;
-  unsigned char    use_filtre_rec;
-  unsigned char    opt_mem;
-  float       sigma;
-
-  AddSetGetVar( beta, float)
-
-  int     iteration;
-  int     loop, max_loop;
-  float       k;
-  float       epsilon;
-  int     tx,ty,tz,txy;
-
-  int ROI_xmin,ROI_xmax;
-  int ROI_ymin,ROI_ymax;
-  int ROI_zmin,ROI_zmax;
-
-  //-------- Precomputed pointers to neighborhood
-  float* I0;
-  float* Ixp;
-  float* Ixm;
-  float* Iyp;
-  float* Iym;
-  float* Izp;
-  float* Izm;
-  float* Ixpxp;
-  float* Iypyp;
-  float* Izpzp;
-  float* Ixpyp;
-  float* Ixpym;
-  float* Ixmyp;
-  float* Ixmym;
-  float* Ixpzp;
-  float* Ixpzm;
-  float* Ixmzp;
-  float* Ixmzm;
-  float* Iypzp;
-  float* Iypzm;
-  float* Iymzp;
-  float* Iymzm;
-
-  float* Ixpypzp;
-  float* Ixpypzm;
-  float* Ixpymzp;
-  float* Ixpymzm;
-  float* Ixmypzp;
-  float* Ixmypzm;
-  float* Ixmymzp;
-  float* Ixmymzm; 
- 
-  // for structure tensor eigenvectors
-  FloatMatrix*     matrice;
-  float            vap[3];
-  FloatMatrix*     vec_propre;
-
-  AddSetGetVar(tang_coeff, float)
-
-  AddSetGetVar(maxcurv_coeff, float)
-  AddSetGetVar(mincurv_coeff, float)
-
-  // noise Gaussian or Speckle, by default Gaussian
-  AddSetGetVar(noise_type, int)
-  AddSetGetVar(noise_standard_deviation, float)
-  unsigned char noise_SD_preset;
-  double variance;
-
-  // estimated data attachment coeff
-  AddSetGetVar(estimated_DA_coeff,float);
-  
-  // If true, uses the norm of the smoothed gradient
-  // as parameter of the first diffusion function
-  // otherwise uses the first order derivative of intensity
-  // in the direction of the smoothed gradient.
-  AddSetGetVar(SmoothedParam,unsigned char);
-
-  // Computes Euclidian distance maps
-  AddSetGetVar(DistanceMap,unsigned char);
-  
-  // Get the minimal and maximal intensity of the initial image
-  // to limit unstabilities
-  float min_intensity;
-  float max_intensity;
-
-  //  int       contours_mode;
-  //  InrImage* SRAD_ROI;
-
-  AddSetGetVar( contours_mode,int);
-  AddSetGetVar( SRAD_ROI,     InrImage*);
-  AddSetGetVar( local_structure_mode,  int);
-  AddSetGetVar( diffusion_eigenvalues_mode,  int);
-
-  AnisoGS()
-    {
-      InitParam();
-    }
-
-  ~AnisoGS()
-    {
-
-      DeleteCoefficients();
-      
-      Si filtre     != NULL Alors
-	delete filtre;
-        filtre = NULL;
-      FinSi
-	
-      Si filtre_rec != NULL Alors
-	delete filtre_rec;
-        filtre_rec = NULL;
-      FinSi
-	
-      Si this->image_lissee != NULL Alors
-	delete this->image_lissee;
-        this->image_lissee=NULL;
-      FinSi
-	
-      Si this->im_tmp != NULL Alors
-	delete this->im_tmp;
-        this->im_tmp = NULL;
-      FinSi
-	
-      Si this->image_c != NULL Alors
-	delete this->image_c;
-        this->image_c = NULL;
-      FinSi
-	
-      Si divFim != NULL Alors
-	delete divFim;
-        divFim = NULL;
-      FinSi
-	
-      Si Non(opt_mem) Et (image_entree_allouee) Alors
-	delete image_entree;
-        image_entree=NULL;
-      FinSi
-      mask = NULL;
-      
-    if (tensor_xx!=NULL) { delete tensor_xx; tensor_xx=NULL; }
-    if (tensor_xy!=NULL) { delete tensor_xy; tensor_xy=NULL; }
-    if (tensor_xz!=NULL) { delete tensor_xz; tensor_xz=NULL; }
-    if (tensor_yy!=NULL) { delete tensor_yy; tensor_yy=NULL; }
-    if (tensor_yz!=NULL) { delete tensor_yz; tensor_yz=NULL; }
-    if (tensor_zz!=NULL) { delete tensor_zz; tensor_zz=NULL; }
-
-    if (eigenvect_xp!=NULL) { delete eigenvect_xp; eigenvect_xp=NULL; }
-    if (eigenvect_yp!=NULL) { delete eigenvect_yp; eigenvect_yp=NULL; }
-    if (eigenvect_zp!=NULL) { delete eigenvect_zp; eigenvect_zp=NULL; }
-
-    delete matrice;
-    delete vec_propre;
-
-    }
-
-  void InitParam() {
-    image_entree  = NULL;
-    this->image_resultat= NULL;
-    this->image_lissee  = NULL;
-    this->im_tmp        = NULL;
-    this->image_c       = NULL;
-    this->tensor_xx     = NULL;
-    this->tensor_xy     = NULL;
-    this->tensor_xz     = NULL;
-    this->tensor_yy     = NULL;
-    this->tensor_yz     = NULL;
-    this->tensor_zz     = NULL;
-    this->eigenvect_xp  = NULL;
-    this->eigenvect_yp  = NULL;
-    this->eigenvect_zp  = NULL;
-    mask          = NULL;
-
-    this->planstats_sigma = 1.0;
-    this->dirstats_sigma  = 1.5;
-
-    divFim        = NULL;
-
-    boundary_extension_size = MAX((int)(2*planstats_sigma+1.5),
-                                  (int)(2*dirstats_sigma+1.5));
-
-    matrice    = new FloatMatrix(3,3);
-    vec_propre = new FloatMatrix(3,3);
-
-    use_filtre_rec = false;
-    opt_mem        = false;
-
-    tang_coeff    = 1.0;
-    maxcurv_coeff = 0.0;
-    mincurv_coeff = 1.0;
-
-    local_structure_mode       = LOCAL_STRUCT_CURV;
-    diffusion_eigenvalues_mode = DIFF_MATRIX_EIGEN_SUM;
-
-    noise_type = GAUSSIAN_NOISE;
-    noise_standard_deviation = -1;
-    noise_SD_preset=0;
-    variance = 0;
-
-    epsilon     = 1E-2;
-
-    SmoothedParam = false;
-
-    filtre_rec = NULL;
-    filtre = NULL;
-
-    DistanceMap = 0;
-
-    contours_mode  = CONTOURS_GRAD;
-    this->SRAD_ROI = NULL;
-
-
-    neighborhood = 1;
-    dt = 0.05;
-  }
-
-  void ExtendBoundariesVonNeumann( InrImage* input);
-  void CreateBoundariesVonNeumann( InrImage* input);
-
-  void EstimateNoiseStandardDeviation( InrImage* im);
-
-  void InitCoefficients();
-  void ResetCoefficients();
-  void DeleteCoefficients();
-
-
-  double Compute_q0_subvol( InrImage* im);
-  double function_c_Kuan(double q_2, double q0_2);
-  double function_c_Lee(double q_2, double q0_2);
-
-  double Compute_sigma2_MRI(InrImage* im);
-  double Compute_sigma2_MRI_mode(InrImage* im);
-  double function_c_MRI(double sigma2, double vg, double meang);
-
-  void Smooth(InrImage* im, float sigma);
-  void ComputeStructureTensor(InrImage* im, float sigma1, float sigma2);
-  void ComputeEigenVectors();
-
-  void ComputeImage_c(InrImage*);
-
-  float Itere2D(   InrImage* im );
-  float Itere3D(   InrImage* im );
-  float Itere3D_2( InrImage* im );
-
-  float Itere3D_2_new( InrImage* im );
-  float Itere3D_ST_RNRAD( InrImage* im );
-
-  float Itere3D_distance( InrImage* im );
-  float Itere3D_distance_flux( InrImage* im );
-  float Itere3D_Flux( InrImage* im , InrImage* VectField, float coeff);
-  float Itere3D_3( InrImage* im );
-
-  void Init(InrImage* in, float p_sigma, float p_k, float p_beta);
-
-  float Iterate();
-
-  float IterateFlux( InrImage* vect, float coeff);
-
-  void InitFlux( t_3Point& e0,t_3Point& e1,t_3Point& e2);
-
-  // for 2D
-  void InitNeighborhood(float* I,int x,int y);
-  void Grad2D(float* I,float grad[2]);
-  void Grad2DShiftX(float* I, t_3Point& grad);
-  void Grad2DShiftY(float* I, t_3Point& grad);
-
-  // for 3D
-  void InitNeighborhood(float* I,int x,int y, int z);
-  void Grad(float* I,float grad[3]);
-  void GradShiftX(float* I,float grad[3]);
-  void GradShiftY(float* I,float grad[3]);
-  void GradShiftZ(float* I,float grad[3]);
-  void Hessian(float* I,float** H);
-  void HessianShiftX(float* I,float H[3][3]);
-  void HessianShiftY(float* I,float H[3][3]);
-  void HessianShiftZ(float* I,float H[3][3]);
-
-  float Norm(float v[3]);
-  float ScalarProduct(const t_Gradient v1, const t_3Point v2);
-
-  void PrincipalCurvatures(float grad[3], float H[3][3],  float norm_grad,
-                    t_3Point& e0, t_3Point& e1, t_3Point& e2);
-
-  void StructTensor_eigenvectors( int coord, int x, int y, int z, t_3Point& e0, t_3Point& e1, t_3Point& e2);
-
-  unsigned char convert_uchar(double val);
-  short         convert_short(double val);
-  void GetVectors(int coord, int x, int y, int z, t_3Point& e0, t_3Point& e1, t_3Point& e2);
-
-  // Compute the local  mean and standard deviation within a plan,
-  // using a Gaussian of standard deviation sd
-  void ComputeLocalPlanStats(InrImage* im, float x, float y, float z, 
-    t_3Point d1,t_3Point d2,
-    float sd, double& mean, double& var);
-
-  // Compute the local directional mean and standard deviation,
-  // using a Gaussian of standard deviation sd
-  void ComputeLocalDirStats(InrImage* im, float x, float y, float z, t_3Point e,
-    float sd, double& mean, double& var);
-
-}; // end class AnisoGS
-
-
-static AnisoGS* static_AnisoGS = NULL;
-
-
-//static float   *in;
-//#define phi0(x)         exp(-((x)*(x)/k/k))
-#define phi0(x)         exp(-0.5*((x)*(x)/k/k))
-#define phi1(x)         tang_coeff
-
-//#define phi3D_0(x) exp(-((x)*(x)/k/k))
-//#define phi3D_0(x) exp(-0.5*((x)*(x)/k/k))
-//#define phi3D_0(x) 1.0/(x+0.001)
-//#define phi3D_0(x) tanh((x)/k)/(x)
-#define phi3D_0(x) 1.0/(1.0+(x)*(x)/k/k)
-
-
-#define phi3D_1(x) maxcurv_coeff
-#define phi3D_2(x) mincurv_coeff
-
-#ifndef macro_min
-  #define macro_min(n1,n2) ((n1)<(n2)?(n1):(n2))
-#endif
-
-#ifndef macro_max
-  #define macro_max(n1,n2) ((n1)>(n2)?(n1):(n2))
-#endif 
 
 
 // Extend Boundary Conditions
@@ -840,7 +406,7 @@ void AnisoGS::EstimateNoiseStandardDeviation( InrImage* im)
     noise_im->InitBuffer();
     Repeter
       if (im->ValeurBuffer()>1)
-	noise_im->FixeValeur(noise_im->ValeurBuffer()/sqrt(im->ValeurBuffer()));
+  noise_im->FixeValeur(noise_im->ValeurBuffer()/sqrt(im->ValeurBuffer()));
       im->IncBuffer();
     JusquA Non(noise_im->IncBuffer())
     FinRepeter
@@ -859,12 +425,12 @@ void AnisoGS::EstimateNoiseStandardDeviation( InrImage* im)
     for(z=0;z<tz;z++)
     for(y=0;y<ty;y++)
       for(x=0;x<tx;x++) {
-	Si x>0 Et x<tx-1 Et y>0 Et y<ty-1 Et z>0 Et z<tz-1 
-	Alors
-	  mean += buf[i];
-  	  nb_points++;
+  Si x>0 Et x<tx-1 Et y>0 Et y<ty-1 Et z>0 Et z<tz-1 
+  Alors
+    mean += buf[i];
+      nb_points++;
         FinSi
-	i++;
+  i++;
       }
 
     //for(i=0;i<im->Size();i++) mean += buf[i];
@@ -878,12 +444,12 @@ void AnisoGS::EstimateNoiseStandardDeviation( InrImage* im)
     for(z=0;z<tz;z++)
     for(y=0;y<ty;y++)
       for(x=0;x<tx;x++) {
-	Si x>0 Et x<tx-1 Et y>0 Et y<ty-1 Et z>0 Et z<tz-1 
-	Alors
-	  d  = buf[i]-mean;
-	  this->variance += d*d;
+  Si x>0 Et x<tx-1 Et y>0 Et y<ty-1 Et z>0 Et z<tz-1 
+  Alors
+    d  = buf[i]-mean;
+    this->variance += d*d;
         FinSi
-	i++;
+  i++;
       }
     this->variance /= 1.0*nb_points;
 
@@ -898,8 +464,8 @@ void AnisoGS::EstimateNoiseStandardDeviation( InrImage* im)
 
     for(i=0;i<im->Size();i++) {
       if (mask->ValeurBuffer()>0.5) {
-	mean += buf[i];
-	mask_size++;
+  mean += buf[i];
+  mask_size++;
       }
       mask->IncBuffer();
     }
@@ -911,8 +477,8 @@ void AnisoGS::EstimateNoiseStandardDeviation( InrImage* im)
 
     for(i=0;i<im->Size();i++) {
       if (mask->ValeurBuffer()>0.5) {
-	d  = buf[i]-mean;
-	this->variance += d*d;
+  d  = buf[i]-mean;
+  this->variance += d*d;
       }
       mask->IncBuffer();
     }
@@ -924,7 +490,7 @@ void AnisoGS::EstimateNoiseStandardDeviation( InrImage* im)
   delete noise_im;
 
   fprintf(stderr,"Noise mean=%3.3f; VARIANCE=%3.3f; SD=%3.3f \n",
-	  mean,this->variance,sqrt(this->variance));  
+    mean,this->variance,sqrt(this->variance));  
 
   // BUG fixed take the square root of the variance!!!
   this->noise_standard_deviation = sqrt(this->variance);
@@ -964,7 +530,7 @@ void AnisoGS::InitCoefficients()
 
 
       Pour(y,0,ty-1)
-	alpha_z[x][y] = gamma_z[x][y] = 0;
+  alpha_z[x][y] = gamma_z[x][y] = 0;
       FinPour
 
     FinPour
@@ -993,7 +559,7 @@ void AnisoGS::ResetCoefficients()
 
     Pour(x,0,tx-1)
       Pour(y,0,ty-1)
-	alpha_z[x][y] = gamma_z[x][y] = 0;
+  alpha_z[x][y] = gamma_z[x][y] = 0;
       FinPour
     FinPour
 
@@ -1115,8 +681,8 @@ double AnisoGS::Compute_q0_subvol( InrImage* im)
   ymax = (int) ((im2->TrY()-im->TrY())/im2->VoxSizeY()+im2->DimY()-1+0.5);
   zmax = (int) ((im2->TrZ()-im->TrZ())/im2->VoxSizeZ()+im2->DimZ()-1+0.5);
   subvol = Func_SubImage( im,
-			  xmin,ymin,zmin,
-			  xmax,ymax,zmax);
+        xmin,ymin,zmin,
+        xmax,ymax,zmax);
   mean   = Func_mean(subvol);
 
   subvol->InitBuffer();
@@ -2213,14 +1779,14 @@ void AnisoGS::HessianShiftX(float* I,float H[3][3])
   H[1][0] = H[0][1] = ((*Ixpyp-*Iyp)-(*Ixpym-*Iym))/2.0;
   H[2][0] = H[0][2] = ((*Ixpzp-*Izp)-(*Ixpzm-*Izm))/2.0;
   H[1][1] = ((*Iyp  -2*(*I0) +*Iym  ) +
-	     (*Ixpyp-2*(*Ixp)+*Ixpym) )/2.0;
+       (*Ixpyp-2*(*Ixp)+*Ixpym) )/2.0;
   H[2][1] = 
   H[1][2] = ( (*Iypzp-*Iymzp)-
-	      (*Iypzm-*Iymzm)+
-	      (*Ixpypzp-*Ixpymzp)-
-	      (*Ixpypzm-*Ixpymzm))/8.0;
+        (*Iypzm-*Iymzm)+
+        (*Ixpypzp-*Ixpymzp)-
+        (*Ixpypzm-*Ixpymzm))/8.0;
   H[2][2] = ( *Izp  -2*(*I0) + *Izm  +
-	      *Ixpzp-2*(*Ixp)+ *Ixpzm)/2.0;
+        *Ixpzp-2*(*Ixp)+ *Ixpzm)/2.0;
 
 }
 
@@ -2235,7 +1801,7 @@ void AnisoGS::HessianShiftY(float* I,float H[3][3])
   H[1][0] = H[0][1] = ((*Ixpyp-*Ixmyp)-(*Ixp-*Ixm))/2.0;
   H[2][0] = H[0][2] = ((*Ixpzp  -*Ixmzp  )-
                        (*Ixpzm  -*Ixmzm  )+
-		       (*Ixpypzp-*Ixmypzp)-
+           (*Ixpypzp-*Ixmypzp)-
                        (*Ixpypzm-*Ixmypzm))/8.0;
   H[1][1] = ((*Iypyp-*I0)-(*Iyp-*Iym))/2.0;
   H[2][1] = H[1][2] = ((*Iypzp-*Izp)-(*Iypzm-*Izm))/2.0;
@@ -2252,16 +1818,16 @@ void AnisoGS::HessianShiftZ(float* I,float H[3][3])
 {
 
   H[0][0] = (*Ixp  -2*(*I0) +*Ixm +
-	     *Ixpzp-2*(*Izp)+*Ixmzp)/2.0;
+       *Ixpzp-2*(*Izp)+*Ixmzp)/2.0;
   H[1][0] = H[0][1] = ( (*Ixpyp-*Ixmyp) -
-		        (*Ixpym-*Ixmym) +
-		        (*Ixpypzp-*Ixmypzp)-
-		        (*Ixpymzp-*Ixmymzp) )/8.0;
+            (*Ixpym-*Ixmym) +
+            (*Ixpypzp-*Ixmypzp)-
+            (*Ixpymzp-*Ixmymzp) )/8.0;
 
   H[2][0] = H[0][2] = ((*Ixpzp-*Ixmzp)-
                        (*Ixp  -*Ixm  ))/2.0;
   H[1][1] = ( *Iyp  -2*(*I0) +*Iym +
-	      *Iypzp-2*(*Izp)+*Iymzp )/2.0;
+        *Iypzp-2*(*Izp)+*Iymzp )/2.0;
 
   H[2][1] = H[1][2] = ((*Iypzp-*Iymzp)-(*Iyp-*Iym))/2.0;
   H[2][2] = ((*Izpzp-*I0)-(*Izp-*Izm))/2.0;
@@ -2421,7 +1987,7 @@ void AnisoGS::GetVectors( int coord, int x, int y, int z, t_3Point& e0, t_3Point
 //
 void AnisoGS::PrincipalCurvatures(float grad[3], float H[3][3], float norm_grad,
 //            -------------------
-				  t_3Point& e0, t_3Point& e1, t_3Point& e2)
+          t_3Point& e0, t_3Point& e1, t_3Point& e2)
 {
   
     float vmax[3];
@@ -2431,11 +1997,11 @@ void AnisoGS::PrincipalCurvatures(float grad[3], float H[3][3], float norm_grad,
 
   // Calcul de la base (e0, e1, e2):
   Si CurvaturasPrincipales(  H, 
-			     (float*) grad, 
-			     (float*) vmax, 
-			     (float*) vmin, 
-			     &lmax, &lmin,
-			     1E-2) != -1 Alors
+           (float*) grad, 
+           (float*) vmax, 
+           (float*) vmin, 
+           &lmax, &lmin,
+           1E-2) != -1 Alors
     e0.x = grad[0]/norm_grad;
     e0.y = grad[1]/norm_grad;
     e0.z = grad[2]/norm_grad;
@@ -2533,20 +2099,20 @@ float AnisoGS::Itere3D( InrImage* im )
 
       Si y>0 Et y<ty-1 Alors
         hessien[1][0] = hessien[0][1] = 
-	    ((*(Iconv+1+tx) - *(Iconv-1+tx))
+      ((*(Iconv+1+tx) - *(Iconv-1+tx))
            -
-	     (*(Iconv+1-tx) - *(Iconv-1-tx)))
-	    /4.0;
+       (*(Iconv+1-tx) - *(Iconv-1-tx)))
+      /4.0;
       Sinon
         hessien[1][0] = hessien[0][1] = 0.0;
       FinSi
 
       Si z>0 Et z<tz-1 Alors
         hessien[2][0] = hessien[0][2] = 
-	    ((*(Iconv+1+txy) - *(Iconv-1+txy))
+      ((*(Iconv+1+txy) - *(Iconv-1+txy))
            -
-	     (*(Iconv+1-txy) - *(Iconv-1-txy)))
-	    /4.0;
+       (*(Iconv+1-txy) - *(Iconv-1-txy)))
+      /4.0;
       Sinon
         hessien[2][0] = hessien[0][2] = 0.0;
       FinSi
@@ -2562,10 +2128,10 @@ float AnisoGS::Itere3D( InrImage* im )
 
       Si z>0 Et z<tz-1 Alors
         hessien[2][1] = hessien[1][2] = 
-	    ((*(Iconv+tx+txy) - *(Iconv-tx+txy))
+      ((*(Iconv+tx+txy) - *(Iconv-tx+txy))
            -
-	     (*(Iconv+tx-txy) - *(Iconv-tx-txy)))
-	    /4.0;
+       (*(Iconv+tx-txy) - *(Iconv-tx-txy)))
+      /4.0;
       Sinon
         hessien[2][1] = hessien[1][2] = 0.0;
       FinSi
@@ -2593,11 +2159,11 @@ float AnisoGS::Itere3D( InrImage* im )
 
     // Calcul de la base (e0, e1, e2):
     Si CurvaturasPrincipales(  hessien, 
-			       (float*) gradient, 
-			       (float*) vmax, 
-			       (float*) vmin, 
-			       &lmax, &lmin,
-			       1E-2) != -1 Alors
+             (float*) gradient, 
+             (float*) vmax, 
+             (float*) vmin, 
+             &lmax, &lmin,
+             1E-2) != -1 Alors
       e0.x = gradient[0]/norm_grad;
       e0.y = gradient[1]/norm_grad;
       e0.z = gradient[2]/norm_grad;
@@ -2632,7 +2198,7 @@ float AnisoGS::Itere3D( InrImage* im )
     // Gradient en (x+1/2,y,z)
     Si (x < tx - 1) Et (z > 0) Et (z < tz - 1)  Alors
       grad.z = ( 
-      	   *(in + txy     ) - *(in - txy     )
+           *(in + txy     ) - *(in - txy     )
                  +
                  *(in + txy + 1 ) - *(in - txy + 1 )
                ) / 4.0;
@@ -2746,10 +2312,10 @@ float AnisoGS::Itere3D( InrImage* im )
     //  gradient en X
     Si (z < tz-1) Et (x > 0) Et ( x < tx - 1 ) Alors
       grad.x = (
-    	    *(in + 1) - *(in - 1)
+          *(in + 1) - *(in - 1)
                 +
-    	    *(in + 1 + txy) - *(in - 1 + txy)
-    	    ) / 4.0;
+          *(in + 1 + txy) - *(in - 1 + txy)
+          ) / 4.0;
     Sinon
       grad.x = 0;
     FinSi
@@ -2805,11 +2371,11 @@ float AnisoGS::Itere3D( InrImage* im )
     switch(contours_mode) {
       case CONTOURS_GRAD:
         Si fabsf(val1div)>1E-4 Alors
-	      val1 /= val1div;
+        val1 /= val1div;
         Sinon
-	      fprintf(stderr,"AnisoGaussSeidel.c:Itere3D() \t fabsf(val1div)<1E-4 \n");
+        fprintf(stderr,"AnisoGaussSeidel.c:Itere3D() \t fabsf(val1div)<1E-4 \n");
         FinSi
-	  break;
+    break;
       case CONTOURS_SRAD:
       case CONTOURS_RNRAD:
         val1 = (*in + dt*val1)/(1+dt*val1div);
@@ -3141,8 +2707,8 @@ float AnisoGS::Itere3D_2_new( InrImage* im )
       norm_grad =  this->Norm(gradient);
       InitFlux(e0,e1,e2);
       if (norm_grad > min_normgrad) {
-	this->HessianShiftY(Iconv,hessien);
-	this->PrincipalCurvatures(gradient,hessien,norm_grad,e0,e1,e2);
+  this->HessianShiftY(Iconv,hessien);
+  this->PrincipalCurvatures(gradient,hessien,norm_grad,e0,e1,e2);
       }
       // Derivees directionnelles
       u_e0 = this->ScalarProduct(grad,e0);
@@ -3217,8 +2783,8 @@ float AnisoGS::Itere3D_2_new( InrImage* im )
       norm_grad =  this->Norm(gradient);
       InitFlux(e0,e1,e2);
       if (norm_grad > min_normgrad) {
-  	    this->HessianShiftZ(Iconv,hessien);
-	    this->PrincipalCurvatures(gradient,hessien,norm_grad,e0,e1,e2);
+        this->HessianShiftZ(Iconv,hessien);
+      this->PrincipalCurvatures(gradient,hessien,norm_grad,e0,e1,e2);
       }
       // Derivees directionnelles
       u_e0 = this->ScalarProduct(grad,e0);
@@ -3414,8 +2980,8 @@ if (z==ROI_zmax) alpha1_z       = gamma1_z       = 0;
       }
 
       if (divFim!=NULL) {
-	divFim->BufferPos(x,y,z);
-	divFim->FixeValeur(divF);
+  divFim->BufferPos(x,y,z);
+  divFim->FixeValeur(divF);
       }
 
 
@@ -3492,29 +3058,29 @@ if (z==ROI_zmax) alpha1_z       = gamma1_z       = 0;
 /*    fprintf(stderr,"noise SD <0 ?\n");
     estimated_DA_coeff = sum_divF/(1.0*nb_calculated_points);
     fprintf(stderr,"lambda estimation for noise/sigma_noise^2 = %f \n", 
-	    estimated_DA_coeff);
+      estimated_DA_coeff);
 */
   }
   else {
     estimated_DA_coeff =sum_divF/(1.0*nb_calculated_points)/this->variance;
     fprintf(stderr,"sum_divF=%3.2f, nb_calculated_points = %5d, variance = %3.3f, \n ===  lambda estimation for noise = %f \n", 
-	    sum_divF,(int)nb_calculated_points,this->variance, estimated_DA_coeff);
+      sum_divF,(int)nb_calculated_points,this->variance, estimated_DA_coeff);
 
       if ((noise_SD_preset)&&(estimated_DA_coeff>0))
-	this->beta = estimated_DA_coeff;
+  this->beta = estimated_DA_coeff;
       fprintf(stderr, "\n  Setting beta to %2.2f \n\n",beta);
 
     estimated_DA_coeff =sum_divF2/(1.0*nb_calculated_points2)/this->variance;
     fprintf(stderr,
-	    " ===  lambda2 estimation for noise = %f, %02.2f percent of points \n", 
-	    estimated_DA_coeff,
-	    (nb_calculated_points2*100.0/nb_calculated_points));
+      " ===  lambda2 estimation for noise = %f, %02.2f percent of points \n", 
+      estimated_DA_coeff,
+      (nb_calculated_points2*100.0/nb_calculated_points));
 
     /*
     // set to the 2nd estimation
     if ( (nb_calculated_points2*100.0/nb_calculated_points) > 80 ) {
       if ((noise_SD_preset)&&(estimated_DA_coeff>0))
-	this->beta = estimated_DA_coeff;
+  this->beta = estimated_DA_coeff;
       fprintf(stderr, "\n  Setting beta to %2.2f \n\n",beta);
     }
     */
@@ -4297,7 +3863,7 @@ int xp,xm,yp,ym,zp,zm;
 
     if (norm_grad2>1E-3) {
       meancurv= 0.5*((dyy+dzz)*dx2+(dxx+dzz)*dy2+(dxx+dyy)*dz2)-
-	(dx*dy*dxy+dy*dz*dyz+dx*dz*dxz);
+  (dx*dy*dxy+dy*dz*dyz+dx*dz*dxz);
       meancurv/=norm_grad2/norm_grad;
     }
 
@@ -4578,7 +4144,7 @@ alpha1_z = 0;
 
       val1    += this->beta*(*image_entree)(x,y,z);
       val1div += this->beta;
-	 
+   
 //      Si fabsf(val1div)>1E-3 Alors
       //val1 /=val1div;
       val1 = *in + 0.05*(val1-val1div*(*in));
@@ -4592,8 +4158,8 @@ alpha1_z = 0;
       }
 
       if (divFim!=NULL) {
-	divFim->BufferPos(x,y,z);
-	divFim->FixeValeur(divF);
+  divFim->BufferPos(x,y,z);
+  divFim->FixeValeur(divF);
       }
 
 
@@ -4728,7 +4294,7 @@ float AnisoGS::Itere3D_Flux( InrImage* im , InrImage* VectField, float coeff)
       try {
         e0.Normalise();
       } catch (NormeFaible) {
-	weak_norm = true;
+  weak_norm = true;
       }
 
       Si Non(weak_norm) Alors
@@ -4754,7 +4320,7 @@ float AnisoGS::Itere3D_Flux( InrImage* im , InrImage* VectField, float coeff)
       try {
         e0.Normalise();
       } catch (NormeFaible) {
-	weak_norm = true;
+  weak_norm = true;
       }
  
       Si Non(weak_norm) Alors
@@ -4778,7 +4344,7 @@ float AnisoGS::Itere3D_Flux( InrImage* im , InrImage* VectField, float coeff)
       try {
         e0.Normalise();
       } catch (NormeFaible) {
-	weak_norm = true;
+  weak_norm = true;
       }
 
       Si Non(weak_norm) Alors
@@ -5004,8 +4570,8 @@ float  AnisoGS::Itere3D_3( InrImage* im )
       u_e2 = this->ScalarProduct(grad,e2);
 
       alpha1_x = 3.0/8.0*(phi3D_0(u_e0)*e0.x*e0.x + 
-			  phi3D_1(u_e1)*e1.x*e1.x +
-			  phi3D_2(u_e2)*e2.x*e2.x );
+        phi3D_1(u_e1)*e1.x*e1.x +
+        phi3D_2(u_e2)*e2.x*e2.x );
 
       gamma1_x = ((*(in+2)-*(in-1))/8.0*e0.x+grad.y*e0.y + grad.z*e0.z)
                  *phi3D_0(u_e0)*e0.x + 
@@ -5055,8 +4621,8 @@ float  AnisoGS::Itere3D_3( InrImage* im )
       u_e2 = this->ScalarProduct(grad,e2);
 
       alpha1_y = 3.0/8.0*(phi3D_0(u_e0)*e0.y*e0.y + 
-			phi3D_1(u_e1)*e1.y*e1.y +
-			phi3D_2(u_e2)*e2.y*e2.y);
+      phi3D_1(u_e1)*e1.y*e1.y +
+      phi3D_2(u_e2)*e2.y*e2.y);
 
       gamma1_y = (grad.x*e0.x + (*(in+2*tx)-*(in-tx))/8.0*e0.y + grad.z*e0.z)
                  *phi3D_0(u_e0)*e0.y + 
@@ -5064,7 +4630,7 @@ float  AnisoGS::Itere3D_3( InrImage* im )
                  *phi3D_1(u_e1)*e1.y +
                  (grad.x*e2.x + (*(in+2*tx)-*(in-tx))/8.0*e2.y + grad.z*e2.z)
                  *phi3D_2(u_e2)*e2.y;
-		 
+     
 
       //----- Calcul de alpha1_z, gamma1_z 
       grad.x = (*(in+1 ) - *(in-1 ) + *(in+1 +txy) - *(in-1 +txy))/4.0;
@@ -5081,7 +4647,7 @@ float  AnisoGS::Itere3D_3( InrImage* im )
       hessien[0][0] = *(Iconv+1)-2*(*Iconv)+*(Iconv-1);
       hessien[1][0] = 
       hessien[0][1] = ((*(Iconv+1+tx)-*(Iconv-1+tx))-
-			 (*(Iconv+1-tx)-*(Iconv-1-tx)))/4.0;
+       (*(Iconv+1-tx)-*(Iconv-1-tx)))/4.0;
       hessien[2][0] = 
       hessien[0][2] = ((*(Iconv+1+txy)-*(Iconv-1+txy))-
                          (*(Iconv+1    )-*(Iconv-1    )) )/2.0;
@@ -5090,7 +4656,7 @@ float  AnisoGS::Itere3D_3( InrImage* im )
       hessien[1][2] = ( (*(Iconv+tx+txy)-*(Iconv-tx+txy)) -
                         (*(Iconv+tx    )-*(Iconv-tx    ))  )/2.0;
       hessien[2][2] = ((*(Iconv+2*txy)-*(Iconv    )) - 
-        	       (*(Iconv+  txy)-*(Iconv-txy))  )/2.0;
+                 (*(Iconv+  txy)-*(Iconv-txy))  )/2.0;
       // Courbures principales
       norm_grad =  this->Norm(gradient);
       InitFlux(e0,e1,e2);
@@ -5106,8 +4672,8 @@ float  AnisoGS::Itere3D_3( InrImage* im )
       u_e2 = this->ScalarProduct(grad,e2);
 
       alpha1_z = 3.0/8.0*(phi3D_0(u_e0)*e0.z*e0.z + 
-			phi3D_1(u_e1)*e1.z*e1.z +
-			phi3D_2(u_e2)*e2.z*e2.z);
+      phi3D_1(u_e1)*e1.z*e1.z +
+      phi3D_2(u_e2)*e2.z*e2.z);
 
       gamma1_z = (grad.x*e0.x + grad.y*e0.y + (*(in+2*txy)-*(in-txy))/8.0*e0.z)
                  *phi3D_0(u_e0)*e0.z + 
@@ -5115,7 +4681,7 @@ float  AnisoGS::Itere3D_3( InrImage* im )
                  *phi3D_1(u_e1)*e1.z +
                  (grad.x*e2.x + grad.y*e2.y + (*(in+2*txy)-*(in-txy))/8.0*e2.z)
                  *phi3D_2(u_e2)*e2.z;
-		 
+     
 
       //----- Mise a jour de l'image
 
@@ -5211,10 +4777,10 @@ float  AnisoGS::Itere3D_3( InrImage* im )
 
 //----------------------------------------------------------------------
 void AnisoGS::Init(InrImage* in, 
-			float p_sigma, 
-			float p_k,
-			float p_beta
-			)
+      float p_sigma, 
+      float p_k,
+      float p_beta
+      )
 {
   
     char resname[100];
@@ -5285,7 +4851,7 @@ void AnisoGS::Init(InrImage* in,
     filtre_rec = new FiltrageRec(this->image_lissee);
   Sinon
     filtre = new FiltreRecursif(image_entree, 
-				mode);
+        mode);
     filtre->GammaNormalise(false);
     filtre->InitFiltre( sigma, MY_FILTRE_CONV );  
   FinSi
@@ -5315,152 +4881,6 @@ void AnisoGS::Init(InrImage* in,
 
 
 //----------------------------------------------------------------------
-void Func_InitAnisoGS(InrImage* in, 
-			   float p_sigma, 
-			   float p_k,
-			   float p_beta
-			   )
-{
-
-  if (static_AnisoGS!=NULL) delete static_AnisoGS;
-
-  static_AnisoGS=new AnisoGS();
-
-  static_AnisoGS->Init(in,p_sigma,p_k,p_beta);
-
-} // Func_InitAnisoGS()
-
-//----------------------------------------------------------------------
-void Func_SetCoeffAnisoGS( float p_tang  )
-{
-  static_AnisoGS->Settang_coeff(p_tang);
-}
-
-//----------------------------------------------------------------------
-void Func_SetCoeffAnisoGS3D( float cmin, float cmax  )
-{
-  static_AnisoGS->Setmincurv_coeff(cmin);
-  static_AnisoGS->Setmaxcurv_coeff(cmax);
-}
-
-//----------------------------------------------------------------------
-void      Func_AnisoGS_SetNoiseType( int nt)
-//
-{
-  switch (nt) {
-  case GAUSSIAN_NOISE:
-  case SPECKLE_NOISE:
-    static_AnisoGS->Setnoise_type( nt);
-    break;
-  default:
-    fprintf(stderr,"Func_AnisoGS_SetNoiseType(%d) \t bad noise type \n",nt);
-  }
-}
-
-//----------------------------------------------------------------------
-void      Func_AnisoGS_SetDistanceMap( unsigned char dm)
-//
-{
-
-  static_AnisoGS->SetDistanceMap(dm);
-}
-
-//----------------------------------------------------------------------
-void Func_AnisoGS_SetMask( InrImage* m  )
-{
-  static_AnisoGS->Setmask(m);
-}
-
-
-//----------------------------------------------------------------------
-void      Func_AnisoGS_SetDataCoeff( float datacoeff  )
-//
-{
-  static_AnisoGS->Setbeta(datacoeff);
-}
-
-
-//----------------------------------------------------------------------
-void      Func_AnisoGS_SetNoiseSD( float noiseSD  )
-//
-{
-  static_AnisoGS->Setnoise_standard_deviation( noiseSD);
-}
-
-
-//----------------------------------------------------------------------
-float      Func_AnisoGS_GetNoiseSD(  )
-//
-{
-  return static_AnisoGS->Getnoise_standard_deviation();
-}
-
-
-//----------------------------------------------------------------------
-float      Func_AnisoGS_GetDAcoeff(  )
-//
-{
-  return static_AnisoGS->Getestimated_DA_coeff();
-}
-
-
-//----------------------------------------------------------------------
-void Func_SetSmoothedParam( unsigned char sp  )
-{
-  static_AnisoGS->SetSmoothedParam( sp);
-}
-
-
-
-//----------------------------------------------------------------------
-void Func_AnisoGS_SetSRAD_ROI( InrImage* SRAD_roi)
-{
-  printf("Func_AnisoGS_SetSRAD_ROI()\n");
-  static_AnisoGS->SetSRAD_ROI(      SRAD_roi);
-  static_AnisoGS->Setcontours_mode( CONTOURS_SRAD);
-}
-
-//----------------------------------------------------------------------
-void Func_AnisoGS_SetRNRAD_ROI( InrImage* RNRAD_roi)
-{
-  printf("Func_AnisoGS_SetRNRAD_ROI()\n");
-  static_AnisoGS->SetSRAD_ROI(      RNRAD_roi);
-  static_AnisoGS->Setcontours_mode( CONTOURS_RNRAD);
-}
-
-//----------------------------------------------------------------------
-void Func_AnisoGS_SetRNRAD_ROI_NEW( InrImage* RNRAD_roi)
-{
-  printf("Func_AnisoGS_SetRNRAD_NEW_ROI()\n");
-  static_AnisoGS->SetSRAD_ROI(      RNRAD_roi);
-  static_AnisoGS->Setcontours_mode( CONTOURS_RNRAD_NEW);
-}
-
-//----------------------------------------------------------------------
-void Func_AnisoGS_Setneighborhood( int n)
-{
-  static_AnisoGS->Setneighborhood( n);
-}
-
-//----------------------------------------------------------------------
-void Func_AnisoGS_Setdt( float dt)
-{
-  static_AnisoGS->Setdt( dt);
-}
-
-//----------------------------------------------------------------------
-void      Func_SetLocalStructureMode( int local_struct_mode)
-{
-  static_AnisoGS->Setlocal_structure_mode( local_struct_mode);
-}
-
-//----------------------------------------------------------------------
-void      Func_SetEigenvaluesMode( int eigenvalues_mode)
-{
-  static_AnisoGS->Setdiffusion_eigenvalues_mode( eigenvalues_mode);
-}
-
-//----------------------------------------------------------------------
 float AnisoGS::Iterate()
 //   ----------------
 {
@@ -5477,7 +4897,7 @@ float AnisoGS::Iterate()
     noise_SD_preset = (noise_standard_deviation!=-1);
     if (noise_SD_preset)
       this->variance = this->noise_standard_deviation*
-	this->noise_standard_deviation;
+  this->noise_standard_deviation;
   } 
 
   iteration++;
@@ -5512,133 +4932,5 @@ float AnisoGS::Iterate()
   return erreur;
 
 } // AnisoGS::Iterate()
-
-
-//----------------------------------------------------------------------
-float Func_ItereAnisoGS()
-//   -----------------
-{
-
-  if (static_AnisoGS != NULL)
-    return static_AnisoGS->Iterate();
-  else
-    return 0;
-
-} // Func_ItereAnisoGS()
-
-
-//----------------------------------------------------------------------
-float AnisoGS::IterateFlux( InrImage* vect, float coeff)
-//   --------------------
-{
-
-  
-    float       erreur;
-
-  Si vect== NULL Alors
-    fprintf(stderr,"Func_ItereFlux() \t NULL vector \n");
-    return 0.0;
-  FinSi
-
-  Si Non(vect->VectorialFormat()) Alors
-    fprintf(stderr,"Func_ItereFlux() \t input image not in  vectorial format \n");
-    return 0.0;
-  FinSi
-
-  Si this->image_resultat==NULL Alors
-    fprintf(stderr,"Func_ItereFlux() AnisoGS not initialized \n");
-    return 0.0;
-  FinSi
-
-  iteration++;
-
-  Si mode == MODE_2D Alors
-    fprintf(stderr,"Func_ItereFlux() 2D mode not supported yet \n");
-    return 0.0;
-  //    erreur = Itere2D(    this->image_resultat);
-  Sinon
-    erreur = Itere3D_Flux( this->image_resultat, vect, coeff);
-  FinSi
-    
-  printf(" iteration %d : %f \n", iteration,erreur);
-  
-  return erreur;
-
-} // AnisoGS::IterateFlux()
-
-
-//----------------------------------------------------------------------
-float Func_ItereFlux( InrImage* vect, float coeff)
-//   --------------
-{
-
-  if (static_AnisoGS != NULL)
-    return static_AnisoGS->IterateFlux(vect,coeff);
-  else
-    return 0;
-
-} // Func_ItereAnisoGS()
-
-
-
-//----------------------------------------------------------------------
-int Func_EndAnisoGS()
-{
-
-  delete static_AnisoGS;
-  static_AnisoGS = NULL;
-
-  return 1;
-
-} // Func_EndAnisoGS()
-
-
-//----------------------------------------------------------------------
-InrImage* Func_AnisoGS_GetOutput()
-{
-
-  if (static_AnisoGS != NULL) {
-    InrImage* imres = static_AnisoGS->image_resultat;
-    InrImage* res;
-    int bs = static_AnisoGS->boundary_extension_size;
-
-    res = Func_SubImage( imres,
-                          bs,bs,bs,
-                          imres->DimX()-1-bs,
-                          imres->DimY()-1-bs,
-                          imres->DimZ()-1-bs);
-
-    // Set translation and voxel size ?
-
-    return res;
-  }
-  else
-    return NULL;
-
-} // Func_GetOutput()
-
-
-//----------------------------------------------------------------------
-InrImage* Func_AnisoGS_GetDiffusionCoeff()
-{
-  InrImage* res;
-
-  if (static_AnisoGS != NULL) {
-    if (static_AnisoGS->image_c!=NULL) {
-      res = new InrImage(WT_FLOAT, "imagec_copy.ami.gz",  static_AnisoGS->image_c);
-      (*res) = (*static_AnisoGS->image_c);
-      return res;
-    }
-    else {
-      printf("static_AnisoGS->image_c == NULL \n");
-      return NULL;
-    }
-  }
-  else
-    return NULL;
-
-} // Func_GetDiffusionCoeff()
-
-
 
 

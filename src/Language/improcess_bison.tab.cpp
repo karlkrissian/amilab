@@ -95,7 +95,7 @@
 #include "CalculAireSection.hpp"
 #include "reponse_cercle.hpp"
 #include "func_shortestpath.h"
-#include "AnisoGaussSeidel.h"
+#include "Wrap_AnisoGS.h"
 #include "LevelSetsCURVES.h"
 #include "vtkwrap.h"
 

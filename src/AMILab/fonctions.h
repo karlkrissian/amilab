@@ -49,7 +49,6 @@
 #include "func_imagebasictools.h"
 #include "func_globalstats.h"
 
-//#include "AnisoGaussSeidel.h"
 //#include "LevelSetsCURVES.h"
 #include "EDPmorpho.h"
 #include "Rudin.h"

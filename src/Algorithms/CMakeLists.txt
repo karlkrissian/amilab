@@ -38,7 +38,8 @@ SET(Algorithms_SRCS
   Graph/func_shortestpath.cpp
 
   Denoising/Wrap_NewNLMeans.cpp
-  Denoising/AnisoGaussSeidel.cpp
+  Denoising/AnisoGS.cpp
+  Denoising/Wrap_AnisoGS.cpp
 
   Others/ComputePartialVolume.cpp
 )
