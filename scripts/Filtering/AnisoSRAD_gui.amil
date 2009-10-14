@@ -17,20 +17,21 @@ if (exists(SRAD_Init)) {
 else \
 {
 
-  proc SRAD_Init(  ) {
+  #------------------------------------
+  proc SRAD_Init() {
 
     global_new
     SRAD_input_name = ""
-    SRAD_output_name = ""
+    SRAD_output_name = "srad_result"
     SRAD_output_filename = "SRAD_result.ami.gz"
     SRAD_dt   = 0.1
     SRAD_T    = 10
     # 0: Lee, 1: Kuan, 2: Additive
-    SRAD_mode = INT(0) 
+    SRAD_mode = INT(1) 
     SRAD_neighborhood = INT(3)
     # Scheme, 0: explicit 1: semi-implicit
     SRAD_scheme = INT(1)
-    # SRAD_ROI 
+
     SRAD_CreateGui()
   }
   
@@ -54,43 +55,56 @@ else \
   }
 
   
-  proc SRAD_ROI() {
-    global
-    if (exists(SRAD_ROI)) {
-      del SRAD_ROI
-    }
-    if (exists(SRAD_input_draw)) {
-      SRAD_ROI = SRAD_input[SRAD_input_draw]
-    }
-    local
+  #------------------------------------
+  proc SRAD_CreateRoi() {
+    global_new
+      if (!exists(SRAD_input_draw)) {
+        SRAD_Display
+      }
+      if (exists(SRAD_input_draw)) {
+        SRAD_roi <<= SRAD_input[SRAD_input_draw]
+      }
   }
   
+  #------------------------------------
   proc SRAD_Filter() {
+    if (!exists(SRAD_input)) {
+      SRAD_load_input
+      SRAD_Display
+    }
+    if (!exists(SRAD_roi)) {
+      InfoDialog "Please select the Region of Interest (ROI)"
+    }
     numit = SRAD_T/SRAD_dt
-    global::SRAD_res = AnisoLeeAdd2(SRAD_input,SRAD_dt,numit,SRAD_ROI)
+    global::SRAD_res = AnisoLeeAdd2(SRAD_input,SRAD_dt,numit,SRAD_roi)
     eval "global::"+SRAD_output_name+" <<= SRAD_res;"
   }
   
+  #------------------------------------
   proc SRAD_Display() {
-    global
+    global_new
+    if (!exists(SRAD_input)) {
+      SRAD_load_input
+    }
     if (!exists(SRAD_input_draw)) {
       show SRAD_input
     }
     if exists(SRAD_res) {
       SRAD_input_draw.compare(SRAD_res)
     }
-    local
   }
   
+  #------------------------------------
   proc SRAD_Save() {
     SRAD_res.save SRAD_output_filename
   }
   
+  #------------------------------------
   proc SRAD_CreateGui() {
     global_new 
   
     # parameters window
-    SRAD_win = ParamWin("Speckle Reducing Anisotropic Diffusion Parameters")
+    SRAD_win = ParamWin("SRAD")
 
     SRAD_win.BeginBook
       SRAD_win.AddPage("Param")
@@ -112,7 +126,7 @@ else \
         
         SRAD_win.BeginBox("Controls")
           SRAD_win.BeginHorizontal
-            ROI_id     = SRAD_win.AddButton("Select ROI", SRAD_ROI)
+            ROI_id     = SRAD_win.AddButton("Select ROI", SRAD_CreateRoi)
             iterate_id = SRAD_win.AddButton("Filter",     SRAD_Filter)
             display_id = SRAD_win.AddButton("Display",    SRAD_Display)
           SRAD_win.EndHorizontal
@@ -128,9 +142,8 @@ else \
 
     SRAD_win.CreateWin
     SRAD_win.Display
+    SRAD_win.update
   }
-  
-  
   
   SRAD_Init
   if (argc==2) {

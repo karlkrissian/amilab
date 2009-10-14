@@ -10,6 +10,8 @@ if (!exists(CT_defined)) {
   proc CT_Init() {
     global_new
     
+    CT_autoresize = UCHAR(0)
+    CT_margin = INT(10)
     CT_dimx = INT(100)
     CT_dimy = INT(100)
     CT_dimz = INT(100)
@@ -70,6 +72,13 @@ printn "deleting windows"
     eval "global::"+CT_image_name+"<<=res;"
   }
   
+  proc CT_ComputeSize() {
+    CT_dimx = 2*(CT_R+CT_r)+CT_margin
+    CT_dimy = CT_dimx
+    CT_dimz = 2*CT_r+CT_margin
+    CT_win.update
+  }
+
   proc CT_Show() {
     global_new
     eval "show "+CT_image_name+";"
@@ -80,12 +89,11 @@ printn "deleting windows"
   
     CT_win.BeginBook
       CT_win.AddPage("Param")
-        CT_win.BeginBox("Dimensions")
-          CT_win.AddInt(CT_dimx,1,1000)
-          CT_win.AddInt(CT_dimy,1,1000)
-          CT_win.AddInt(CT_dimz,1,1000)
+        CT_win.BeginBox("Automatic size")
+          CT_win.AddInt(CT_margin,1,50)
+          CT_win.AddButton("Compute Size",CT_ComputeSize)
         CT_win.EndBox
-      
+
         CT_win.BeginBox("Colors")
           CT_win.AddFloat(CT_bg,0.1,500)
           CT_win.AddFloat(CT_fg,0.1,500)
@@ -99,6 +107,12 @@ printn "deleting windows"
         CT_win.AddString(CT_image_name,"Result name")
         CT_win.AddButton("Create", CT_Create)
         CT_win.AddButton("Show",   CT_Show)
+      CT_win.AddPage("Dimensions")
+        CT_win.BeginBox("Dimensions")
+          CT_win.AddInt(CT_dimx,1,1000)
+          CT_win.AddInt(CT_dimy,1,1000)
+          CT_win.AddInt(CT_dimz,1,1000)
+        CT_win.EndBox
     CT_win.EndBook
 
     CT_win.AddButton("Close",  CT_Close)

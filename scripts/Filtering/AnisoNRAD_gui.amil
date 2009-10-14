@@ -181,6 +181,10 @@ if (exists(NRAD_Init)) {
     if (!exists(NRAD_input)) {
       NRAD_load_input
     }
+    if (!exists(NRAD_roi)) {
+      InfoDialog "Region of Interest not selected taking the full image by default"
+      NRAD_roi = NRAD_input
+    }
 
     if (NRAD_equation_type==1) {
       NRAD_FilterFlux()
