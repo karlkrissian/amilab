@@ -435,6 +435,7 @@ static void CB_update_imagelist( void* imagelist_gui)
 %token T_SetDebugOff
 %token T_SetVerboseOn
 %token T_SetVerboseOff
+%token T_AddMenuScript
 %token T_SetProgress
 %token T_SetStatusText
 %token T_GetScriptsDir
@@ -1356,7 +1357,7 @@ command:
      {
         /**
         Description: waits the time given in milliseconds
-        */
+        **/
 
         int ms = (int) $3;
         wxWaitTimer w;
@@ -1714,6 +1715,21 @@ command:
     {
       GB_verbose = 0;
     }
+    |  T_AddMenuScript T_OP_PAR expr_string T_COMMA expr_string T_COMMA expr_string T_CL_PAR
+    {
+    /**
+      Description:
+        Adds a new link to a script from the menus
+      Parameters:
+        - string expression: category of the script
+        - string expression: menu label
+        - string expression: script name
+   **/
+          string_ptr category( new std::string($3));
+          string_ptr label(    new std::string($5));
+          string_ptr script(   new std::string($7));
+          GB_main_wxFrame->AddMenuScript(*category,*label,*script);
+    }
     |  T_SetProgress T_OP_PAR expr T_CL_PAR
     {
     /**
@@ -1721,7 +1737,7 @@ command:
         Number: percentage of the current process that has been processed.
       Description:
         Sets the Progress bar in the Main window to the given percentage (between 0 and 100).
-    */
+    **/
           GB_main_wxFrame->SetProgress((int)($3+0.5));
     }
     |  T_SetStatusText T_OP_PAR expr_string T_CL_PAR
@@ -1731,7 +1747,7 @@ command:
         String: input text
       Description:
         Set the given text in the status bar
-    */
+    **/
         string_ptr text( new std::string($3));
         GB_main_wxFrame->SetStatusText( (*text) );
     }
@@ -1978,7 +1994,7 @@ command:
         {
         /**
           Description: Pads the image ...
-        */
+        **/
           int posx  = (int) $3;
           int stepx = (int) $5;
           int posy  = (int) $7;
@@ -2044,7 +2060,7 @@ command:
         /**
           Description: 
             Delete the given variable
-        */
+        **/
          /*Variable* var;
 
          if (Vars.GetVar($2->Name(),&var))
@@ -2058,7 +2074,7 @@ command:
           Description: 
             Delete all variables that match the expression, where the expression can contain 
             '*' and '?' characters
-        */
+        **/
         string_ptr varmatch( new std::string($2));
          Vars.deleteVars( *varmatch);
         }
@@ -2078,7 +2094,7 @@ command:
           - string expression: command to call
         Description:
           calls a command from the system using std::system()
-      */
+      **/
         string_ptr cmd( new std::string($2));
         std::system( cmd->c_str());
       }
@@ -3401,7 +3417,7 @@ command:
               Set the expansion to be the given image instead of a combination of Gaussian functions
               The expansion will then be multiplied by the expansion coefficient during the evolution.
               
-          */
+          **/
           Func_LevelSetsExpansionImage( ((InrImage::ptr*) $5->Pointer())->get());
         }
         |
@@ -4243,7 +4259,7 @@ command:
         /**
           Description:
             Normalizes the 3D view based on the limits in space of the current objects
-        */
+        **/
           Viewer3D_ptr sdraw = *(Viewer3D_ptr*) $1->Pointer();
           sdraw->GetCanvas()->Normalize();
         }
@@ -4252,7 +4268,7 @@ command:
         /**
           Description:
             Centers the 3D view based on the limits in space of the current objects
-        */
+        **/
           Viewer3D_ptr sdraw = *(Viewer3D_ptr*) $1->Pointer();
           sdraw->GetCanvas()->Center();
         }
@@ -4848,7 +4864,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
           Description:
             Displays the given parameter panel, a smart pointer
             copy is stored
-        */
+        **/
           ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
 
           GB_main_wxFrame->AddParamPanelPage(pw,
@@ -4862,7 +4878,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
         /**
           Description:
             Hides the given parameter panel, the smart pointer copy is released
-        */
+        **/
           ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
 
           GB_main_wxFrame->RemoveParamPanelPage(pw);
@@ -4926,7 +4942,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
       Parameters:
         - index of the parameter for which to set the drag callback
       Description: activate the drag callback
-    */
+    **/
       ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
       int n = pw->NbParameters();
       int i     = (int) $5;
@@ -4945,7 +4961,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
         - index of the parameter for which to set the drag callback
         - boolean value: activate or desactivate the drag callbacks
       Description: activate the drag callback
-    */
+    **/
       ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
       int n = pw->NbParameters();
       int i     = (int) $5;
@@ -4964,7 +4980,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
         Parameters:
           - index of the parameter for which to set the drag callback
           - value enable:1 disable:0
-      */
+      **/
       ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
       int n = pw->NbParameters();
       int i     = (int) $5;
@@ -5388,7 +5404,7 @@ postfix_expr_string
         Uses the class boost::format to create the result of 
         the format as a string, only one numerical parameter 
         is accepted.
-    */
+    **/
       boost::format bf($3);
       delete [] $3;
       std::string resstr = (bf % $6).str();
@@ -5403,7 +5419,7 @@ postfix_expr_string
       Description: 
         Uses the class boost::format to create the result of 
         the format as a string, using a string expression as a parameter.
-    */
+    **/
       boost::format bf($3);
       delete [] $3;
       std::string resstr = (bf % $6).str();
@@ -5564,7 +5580,7 @@ postfix_expr
         Description:
           returns the pixel intensity at the given position
           the position value are rounded to the closest integer
-      */
+      **/
       $$=(**(InrImage::ptr*) $1->Pointer())((int) round($3),
           (int) round( $5), 
           (int) round($7));
@@ -5578,7 +5594,7 @@ postfix_expr
         Description:
           returns the pixel intensity at the given position
           the position using linear interpolation
-      */
+      **/
       $$=(*(InrImage::ptr*) $1->Pointer())->InterpLinIntensite(
           $5,
           $7, 
@@ -6512,7 +6528,7 @@ postfix_expr
       Description:
         Scans a float number in the given file and based on the
         given formatting expression.
-    */
+    **/
         float res;
         FILE_ptr file = *(FILE_ptr*) ($1->Pointer());
         string_ptr format( new std::string($5));
@@ -6545,7 +6561,7 @@ postfix_expr
         - input polydata
       Description: 
         Returns the number of lines of the polydata structure
-    */
+    **/
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) $1->Pointer());
 
       $$ = s->GetNumberOfLines(  );
@@ -6557,7 +6573,7 @@ postfix_expr
         - 2 numbers
       Description: 
         Returns the maximal value
-    */
+    **/
       $$ = macro_max($3,$5);
     }
     ;
@@ -9717,7 +9733,7 @@ image:
         Description:
           Get the points of the given line as a vectorial 1D image of 
           the point positions.
-      */
+      **/
       InrImage*         res = NULL;
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) $1->Pointer());
       int linenumber = (int) $5;
@@ -9754,7 +9770,7 @@ image:
         Returns an image Mx2 where M is the number of lines and 
         containing the point id of the 2 extremities of each 
         line
-    */
+    **/
       InrImage*         res;
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) $1->Pointer());
 
@@ -9772,7 +9788,7 @@ image:
         Get the number of lines connected to each point.
         The result is given as a 1D image of size the total
         number of points of the polydata
-    */
+    **/
       InrImage*         res;
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) $1->Pointer());
 
@@ -10337,7 +10353,7 @@ surface:
       Description:
         Computed isosurface of the input image with a given threshold within a region
         defined by the mask image.
-    */
+    **/
         InrImage::ptr im = InrImage::ptr(driver.im_stack.GetLastImage());
         SurfacePoly* surf;
         surf = Func_isosurf(im,
@@ -10607,7 +10623,7 @@ surface:
         - point 2: x,y,z 
       Description:
         Finds the shortest path within the lines of the polydata
-    */
+    **/
       SurfacePoly* surf;
 
       surf = Func_shortestpath( ((SurfacePoly::ptr*) $3->Pointer())->get(),

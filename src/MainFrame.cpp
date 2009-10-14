@@ -4,7 +4,7 @@
 // Description:
 //
 //
-// Author:  <Karl Krissian>, (C) 2008
+// Author:  Karl Krissian <>, (C) 2008
 //
 // Copyright: See COPYING file that comes with this distribution
 //
@@ -206,40 +206,42 @@ void CustomStatusBar::Reposition()
 void MainFrame::CreateMenu()
 //            ----------
 {
-  wxMenu *menuFile = new wxMenu;
+  usermenu_id = 1000;
+
+  menuFile = new wxMenu;
   menuFile->Append( ID_File_OpenImage,    GetwxStr("Open &image") );
   menuFile->Append( ID_File_OpenPolydata, GetwxStr("Open &polydata") );
   menuFile->Append( ID_File_LoadScript, GetwxStr("Load &script") );
   menuFile->Append( ID_Quit, GetwxStr("E&xit") );
 
-  wxMenu *menuView = new wxMenu;
+  menuView = new wxMenu;
   menuView->Append( ID_View_Reset, GetwxStr("&Reset") );
 
 
-  wxMenu *menuSegmentation = new wxMenu;
+  menuSegmentation = new wxMenu;
   menuSegmentation->Append( ID_LevelSets, GetwxStr("&LevelSets") );
 
-  wxMenu *menuNoiseReduction = new wxMenu;
+  menuNoiseReduction = new wxMenu;
   menuNoiseReduction->Append( ID_FluxDiffusion, GetwxStr("&FluxDiffusion") );
   menuNoiseReduction->Append( ID_NRAD, GetwxStr("&Noise Reducing A.D.") );
 
-  wxMenu *menuVisualization = new wxMenu;
+  menuVisualization = new wxMenu;
   menuVisualization->Append( ID_ParametricSurfaces, GetwxStr("&Param. Surfaces") );
 
-  wxMenu *menuSyntheticImages = new wxMenu;
+  menuSyntheticImages = new wxMenu;
   menuSyntheticImages->Append( ID_CreateTorus,  GetwxStr("&Torus") );
   menuSyntheticImages->Append( ID_CreateSphere, GetwxStr("&Sphere") );
   menuSyntheticImages->Append( ID_AddNoise, GetwxStr("Add &Noise") );
 
 
-  wxMenu *menuScripts = new wxMenu;
+  menuScripts = new wxMenu;
   menuScripts->AppendSubMenu( menuSegmentation,   GetwxStr("&Segmentation"),    GetwxStr("Segmentation scripts") );
   menuScripts->AppendSubMenu( menuNoiseReduction, GetwxStr("&Noise Reduction"), GetwxStr("Noise Reduction scripts") );
   menuScripts->AppendSubMenu( menuVisualization,  GetwxStr("&Visualization"),   GetwxStr("Visualization scripts") );
   menuScripts->AppendSubMenu( menuSyntheticImages,  GetwxStr("&Synthetic Images"),   GetwxStr("Creation of synthetic images") );
 
 
-  wxMenuBar *menuBar = new wxMenuBar;
+  menuBar = new wxMenuBar;
   menuBar->Append( menuFile,    GetwxStr("&File") );
   menuBar->Append( menuView,    GetwxStr("&View") );
   menuBar->Append( menuScripts, GetwxStr("&Scripts") );
@@ -1357,6 +1359,44 @@ void MainFrame::OnHelpPath   ( wxFileDirPickerEvent& event)
 
 
 //--------------------------------------------------
+void MainFrame::AddMenuScript(  const std::string& script_category,
+                                const std::string& script_label,
+                                const std::string& script_name)
+{
+  wxMenu* parent = menuScripts;
+
+  usermenu_id++;
+  usermenu_scripts[usermenu_id] = script_name;
+  // first try to find the menu corresponding to the given category
+  int menuid = menuScripts->FindItem(wxString(script_category.c_str(), wxConvUTF8));
+  if (menuid != wxNOT_FOUND) {
+    // category found, adding as submenu
+    cout << "category found" << endl;
+    wxMenuItem* menuitem = menuScripts->FindItem(menuid);
+    if (menuitem!=NULL) {
+      if (menuitem->GetSubMenu())
+        parent = menuitem->GetSubMenu();
+      else
+        parent = menuitem->GetMenu();
+    }
+  } else {
+    if (script_category.length()>1) {
+      wxMenu* newsubmenu = new wxMenu;
+      // add new category
+      menuScripts->AppendSubMenu( newsubmenu,   GetwxStr(script_category.c_str()));
+      parent = newsubmenu;
+    }
+  }
+  // adding script
+  parent->Append(usermenu_id, GetwxStr(script_label.c_str()));
+
+  // connecting
+  Connect(usermenu_id,wxEVT_COMMAND_MENU_SELECTED,
+     wxCommandEventHandler(MainFrame::OnUserMenuScript));
+  
+}
+
+//--------------------------------------------------
 void MainFrame::OnLevelSets(      wxCommandEvent& event)
 {
   string cmd; // increment the command line string
@@ -1415,6 +1455,18 @@ void MainFrame::OnAddNoise(  wxCommandEvent& event)
 {
   string cmd; // increment the command line string
   cmd = string("func \"Noise/AddNoise_gui.amil\" // from menu");
+  this->TC->IncCommand(cmd);
+  this->TC->ProcessReturn();
+}
+
+//--------------------------------------------------
+void MainFrame::OnUserMenuScript(  wxCommandEvent& event)
+{
+  cout << "MainFrame::OnUserMenuScript() ";
+  cout << "GetId() = "<< event.GetId() << endl;
+  cout << "script = " << usermenu_scripts[event.GetId()] << endl;
+  string cmd; // increment the command line string
+  cmd = (boost::format("func \"%1%\" // from menu") % usermenu_scripts[event.GetId()]).str();
   this->TC->IncCommand(cmd);
   this->TC->ProcessReturn();
 }

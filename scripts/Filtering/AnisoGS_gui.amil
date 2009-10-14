@@ -132,6 +132,12 @@ if (exists(AGS_Init)) {
             AGS_win.AddButton("Save",       AGS_Save)
           AGS_win.EndHorizontal
         AGS_win.EndBox
+      AGS_win.AddPage("Contour Smoothing")
+        AGS_win.BeginBox("2D Images")
+        AGS_win.EndBox
+        AGS_win.BeginBox("3D Images")
+        AGS_win.EndBox
+
     AGS_win.EndBook
 
     AGS_win.AddButton("Close",          AGS_Close)

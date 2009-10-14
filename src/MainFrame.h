@@ -54,7 +54,8 @@
 
 #include <iostream>
 #include <list>
-using namespace std;
+#include <map>
+
 
 #include "DefineClass.hpp"
 
@@ -154,6 +155,9 @@ public:
   void SetProgress(   int val);
   void SetStatusText( const std::string& text);
 
+  void AddMenuScript( const std::string& script_category, 
+                      const std::string& script_label, 
+                      const std::string& script_name);
 
   void OnLevelSets(           wxCommandEvent& event);
   void OnFluxDiffusion(       wxCommandEvent& event);
@@ -162,8 +166,23 @@ public:
   void OnCreateTorus(         wxCommandEvent& event);
   void OnCreateSphere(        wxCommandEvent& event);
   void OnAddNoise(            wxCommandEvent& event);
+  void OnUserMenuScript(      wxCommandEvent& event);
 
 protected:
+
+  // menus
+  wxMenuBar *menuBar;
+  wxMenu *menuFile;
+  wxMenu *menuView;
+  wxMenu *menuScripts;
+    wxMenu *menuSegmentation;
+    wxMenu *menuNoiseReduction;
+    wxMenu *menuVisualization;
+    wxMenu *menuSyntheticImages;
+
+  int usermenu_id;
+  std::map<int,string> usermenu_scripts; // Scripts added to the menu by the user
+
   CustomStatusBar* _status_bar;
 
   wxAuiNotebook* _main_book;

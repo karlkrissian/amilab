@@ -294,7 +294,8 @@ SetDebugOn         return(token::T_SetDebugOn); /*{SetDebugOn,T_SetDebugOn}*/
 SetDebugOff        return(token::T_SetDebugOff); /*{SetDebugOff,T_SetDebugOff}*/
 SetVerboseOn       return(token::T_SetVerboseOn); /*{SetVerboseOn,T_SetVerboseOn}*/
 SetVerboseOff      return(token::T_SetVerboseOff); /*{SetVerboseOff,T_SetVerboseOff}*/
-GetScriptsDir      return(token::T_GetScriptsDir);
+GetScriptsDir      return(token::T_GetScriptsDir); /*{GetScriptDir,T_GetScriptDir}*/
+AddMenuScript      return(token::T_AddMenuScript); /*{AddMenuScript,T_AddMenuScript}*/
 SetProgress        return(token::T_SetProgress); /*{SetProgress,T_SetProgress}*/
 SetStatusText      return(token::T_SetStatusText); /*{SetStatusText,T_SetStatusText}*/
 Quit               return(token::QUIT); /*{Quit,QUIT}*/
