@@ -1,0 +1,12 @@
+#!/usr/bin/amilab
+
+#
+# Adding main Gui scripts to the menu
+#
+
+category = "&3D Synthetic Images"
+dir      = "SyntheticImages/"
+
+AddMenuScript(category,"&Sphere",         dir+"create_sphere_gui")
+AddMenuScript(category,"&Torus",          dir+"create_torus_gui")
+AddMenuScript(category,"&Superquadric",   dir+"superquadric_gui")

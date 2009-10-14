@@ -1,0 +1,13 @@
+#!/usr/bin/amilab
+
+#
+# Adding main GUI scripts to the menu interface
+#
+
+for dir in "Filtering","Noise","Segmentation","SyntheticImages","Visualization" \
+{
+  if FileExists(GetScriptsDir+"/"+dir+"/Add2Menu.amil") {
+    func dir+"/Add2Menu.amil"
+  }
+}
+#quit

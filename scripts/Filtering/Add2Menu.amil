@@ -1,0 +1,10 @@
+#!/usr/bin/amilab
+
+#
+# Adding main Gui scripts to the menu
+#
+
+
+AddMenuScript("&Filtering","&AnisoGS",  "Filtering/AnisoGS_gui.amil")
+AddMenuScript("&Filtering","&AnisoSRAD","Filtering/AnisoSRAD_gui.amil")
+AddMenuScript("&Filtering","&AnisoNRAD","Filtering/AnisoNRAD_gui.amil")

@@ -1,0 +1,7 @@
+#!/usr/bin/amilab
+
+#
+# Adding main Gui scripts to the menu
+#
+
+AddMenuScript("&Segmentation","&Level Set","Segmentation/LevelSetsGui1.amil")

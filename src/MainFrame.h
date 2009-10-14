@@ -159,9 +159,6 @@ public:
                       const std::string& script_label, 
                       const std::string& script_name);
 
-  void OnLevelSets(           wxCommandEvent& event);
-  void OnFluxDiffusion(       wxCommandEvent& event);
-  void OnNRAD(                wxCommandEvent& event);
   void OnParametricSurfaces(  wxCommandEvent& event);
   void OnCreateTorus(         wxCommandEvent& event);
   void OnCreateSphere(        wxCommandEvent& event);

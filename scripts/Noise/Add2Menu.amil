@@ -1,0 +1,7 @@
+#!/usr/bin/amilab
+
+#
+# Adding main Gui scripts to the menu
+#
+
+AddMenuScript("&Noise","Create &Noise","Noise/AddNoise_gui.amil")
