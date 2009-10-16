@@ -259,7 +259,7 @@ bool VarContexts::deleteVar(Variable* var)
       if (GB_debug) 
         cerr << "Deleted Var in context number " << i << endl;
       // TODO: improve efficiency by not going twice through the variables
-      _context[i]->deleteVar(var->Name());
+      _context[i]->deleteVar(var->Name().c_str());
       return true;
     }
   return false;

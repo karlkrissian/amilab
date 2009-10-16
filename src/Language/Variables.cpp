@@ -131,7 +131,7 @@ Variable* Variables::AddVar( Variable* var)
 {
   CLASS_MESSAGE(boost::format(" %s ") % var->Name());
 
-  string resname = this->CheckVarName(var->Name());
+  string resname = this->CheckVarName(var->Name().c_str());
   Variable* newvar = new Variable();
   (*newvar) = (*var);
   newvar->Rename(resname.c_str());
@@ -147,7 +147,7 @@ Variable* Variables::AddVar( const Variable::ptr& var)
 {
   CLASS_MESSAGE(boost::format(" %s ") % var->Name());
 
-  string resname = this->CheckVarName(var->Name());
+  string resname = this->CheckVarName(var->Name().c_str());
   Variable* newvar = new Variable();
   // TODO: vars should use smart pointers to variables ... and we should avoid this kind of "copy", but now the variable inside contains a smart pointer ...
   (*newvar) = (*var);
@@ -175,7 +175,7 @@ void Variables::SearchCompletions(const wxString& varname,
   for (Iter  = _vars.begin();
        Iter != _vars.end()  ; Iter++ )
   {
-    name = wxString::FromAscii((*Iter)->Name());
+    name = wxString::FromAscii((*Iter)->Name().c_str());
     if (name.First(varname) == 0) 
         completions->Add(name);
   }
@@ -193,7 +193,7 @@ void Variables::SearchVariables( const vartype& type,
        Iter != _vars.end()  ; Iter++ )
   {
     if ((*Iter)->Type()==type) {
-      name = wxString::FromAscii((*Iter)->Name());
+      name = wxString::FromAscii((*Iter)->Name().c_str());
       varlist->Add(name);
     }
   }
@@ -295,7 +295,7 @@ int Variables::deleteVars(const std::string& varmatch)
   while(Iter != _vars.end())
   {
     // convert name to wxString
-    wxString wxvarname((*Iter)->Name(), wxConvUTF8);
+    wxString wxvarname((*Iter)->Name().c_str(), wxConvUTF8);
     if (wxvarname.Matches(wxvarmatch)) {
       // why seg fault ??
       (*Iter)->Delete();

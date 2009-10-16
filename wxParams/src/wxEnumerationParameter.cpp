@@ -195,7 +195,7 @@ void wxEnumerationParameter::OnEnumUpdate(void* data)
 }
 
 //-------------------------------------------
-bool wxEnumerationParameter::Enable(bool enable)
+void wxEnumerationParameter::Enable(bool enable)
 {
   if (enable!=_enabled) {
     _label         ->Enable(enable);

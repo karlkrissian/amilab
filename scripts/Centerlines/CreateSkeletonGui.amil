@@ -253,6 +253,12 @@ if (!exists(Skel_defined)) {
   #---------------------------------------------------
   proc Skel_SmoothLines() {
     if (exists(Skel_res)) {
+      if (exists(Skel_slines)) { 
+        if (exists(Skel_res_draw)) {
+          Skel_res_draw -= Skel_slines; 
+        }
+        del Skel_slines;
+      }
       global::Skel_slines  = SmoothLines(Skel_res)
       if (exists(Skel_res_draw)) {
         Skel_res_draw -= Skel_res
@@ -692,29 +698,28 @@ if (!exists(Skel_defined)) {
   
   #---------------------------------------------------
   proc Skel_Gui( ) {
-    global_new
   
-    Skel_win = ParamWin("Skeleton")
+    global::Skel_win = ParamWin("Skeleton")
     Skel_win.BeginBook
     Skel_win.AddPage("Init")
   
       # set the input image
       Skel_win.AddImageChoice(Skel_input_name, "Input")
       
-      fh_id = Skel_win.AddBoolean(Skel_UseZoom)
+      Skel_win.AddBoolean(Skel_UseZoom)
   
       Skel_win.BeginBox("Connected to point")
-        uip_id = Skel_win.AddBoolean(Skel_UseInitPoint)
-        vn_id  = Skel_win.AddInt    (Skel_VesselNumber,0,3)
+        Skel_win.AddBoolean(Skel_UseInitPoint)
+        Skel_win.AddInt    (Skel_VesselNumber,0,3)
         pi_id  = Skel_win.AddEnum   (Skel_PointId,2)
           Skel_win.AddEnumChoice(pi_id,"A")
           Skel_win.AddEnumChoice(pi_id,"B")
       Skel_win.EndBox
   
       # TODO: set the limits after reading the input image
-      th_id  = Skel_win.AddFloat(Skel_Threshold, -1000,1000)
-      fh_id  = Skel_win.AddBoolean(Skel_FillHoles)
-      mgt_id = Skel_win.AddBoolean(Skel_mask_with_gt)
+      Skel_win.AddFloat(Skel_Threshold, -1000,1000)
+      Skel_win.AddBoolean(Skel_FillHoles)
+      Skel_win.AddBoolean(Skel_mask_with_gt)
   
       ept_id = Skel_win.AddEnum(Skel_endpoint_type,3)
         Skel_win.AddEnumChoice(ept_id,"line")
@@ -723,7 +728,7 @@ if (!exists(Skel_defined)) {
     
     Skel_win.AddPage("Ordering")
   
-      flux_id = Skel_win.AddBoolean(Skel_InputIntensity)
+      Skel_win.AddBoolean(Skel_InputIntensity)
   
       Skel_win.BeginBox("Create sorting weights")
         dt_id = Skel_win.AddEnum(Skel_Ordering)

@@ -126,12 +126,13 @@ typedef boost::shared_ptr<std::string>     string_ptr;
  */
 
 #include "ParamBox.hpp"
+#include <wx/scrolwin.h>
 
 
 /*!
   \brief ParamPanel: a wxPanel to include parameters
 */
-class ParamPanel: public  wxPanel
+class ParamPanel: public  wxScrolledWindow
 //    ========
 {
 

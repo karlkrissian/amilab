@@ -223,7 +223,7 @@ int Variable::HasName(const char* name)
 {
   //printf("Variable::HasName( %s) \n",name);
   if (_type==type_void) return 0;
-  return (strcmp(_name, name)==0);
+  return (strcmp(_name.c_str(), name)==0);
 }
 
 

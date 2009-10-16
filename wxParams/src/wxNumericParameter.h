@@ -111,7 +111,7 @@ public:
 
   void SetToolTip( const wxString& tt);
 
-  bool Enable(bool enable = true);
+  void Enable(bool enable = true);
 
 }; // wxNumericParameter
 

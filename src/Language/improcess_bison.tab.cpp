@@ -1476,7 +1476,7 @@ namespace yyip {
           array = *((VarArray::ptr*) ((yysemantic_stack_[(6) - (1)].variable)->Pointer()));
           if (imptr != NULL)
             if (array->GetVar(i).Pointer()==NULL) {
-              sprintf(name,"%s[%d]",(yysemantic_stack_[(6) - (1)].variable)->Name(),i);
+              sprintf(name,"%s[%d]",(yysemantic_stack_[(6) - (1)].variable)->Name().c_str(),i);
               array->InitElement(i,imptr,name);
             }
             else
@@ -1559,7 +1559,7 @@ namespace yyip {
           surfptr = (void*)driver.surf_stack.GetLastSurf();
           if (surfptr != NULL)
           if (array->GetVar(i).Pointer()==NULL) {
-            sprintf(name,"%s[%d]",(yysemantic_stack_[(6) - (1)].variable)->Name(),i);
+            sprintf(name,"%s[%d]",(yysemantic_stack_[(6) - (1)].variable)->Name().c_str(),i);
             array->InitElement(i,surfptr,name);
           }
           else
@@ -1614,7 +1614,7 @@ namespace yyip {
           if (surfptr != NULL) {
             var->FreeMemory();
             var->Init(type_surface,
-                      var->Name(),
+                      var->Name().c_str(),
                       surfptr);
           }
           else
@@ -1640,7 +1640,7 @@ namespace yyip {
           if (arraysurf != NULL) {
             var->FreeMemory();
             var->Init(type_array,
-                      var->Name(),
+                      var->Name().c_str(),
                       arraysurf);
           }
           else
@@ -1878,7 +1878,7 @@ namespace yyip {
           int var_context = Vars.GetContext((yysemantic_stack_[(2) - (2)].variable));
 
           if (var_context>=0) {
-            sprintf(titre,"%s_draw",(yysemantic_stack_[(2) - (2)].variable)->Name());
+            sprintf(titre,"%s_draw",(yysemantic_stack_[(2) - (2)].variable)->Name().c_str());
             if (GB_debug) fprintf(stderr,
                       "SHOW var_image  title %s \n",
                       titre);
@@ -1919,7 +1919,7 @@ namespace yyip {
           char titre[100];
           Variable* var;
 
-          sprintf(titre,"%s_draw",(yysemantic_stack_[(2) - (2)].variable)->Name());
+          sprintf(titre,"%s_draw",(yysemantic_stack_[(2) - (2)].variable)->Name().c_str());
           if (Vars.GetVar(titre,&var)) {
 
         if (var->Type() == type_imagedraw) {
@@ -1928,10 +1928,10 @@ namespace yyip {
         }
         else
           fprintf(stderr,"Variable %s_draw not of type imagedraw \n",
-            (yysemantic_stack_[(2) - (2)].variable)->Name());
+            (yysemantic_stack_[(2) - (2)].variable)->Name().c_str());
           } else
         fprintf(stderr,"Image %s not visible \n",
-            (yysemantic_stack_[(2) - (2)].variable)->Name());
+            (yysemantic_stack_[(2) - (2)].variable)->Name().c_str());
 
         }
     break;
@@ -2046,7 +2046,7 @@ namespace yyip {
               if (imptr != NULL) {
                 var->FreeMemory();
                 var->Init(type_image,
-                          var->Name(),
+                          var->Name().c_str(),
                           (void*)imptr);
               }
               else
@@ -2892,7 +2892,7 @@ namespace yyip {
             draw = *(DessinImage::ptr*) ((yysemantic_stack_[(6) - (1)].variable)->Pointer());
             im   = *(InrImage::ptr*) (yysemantic_stack_[(6) - (5)].variable)->Pointer();
 
-            sprintf(title,"%s_draw",(yysemantic_stack_[(6) - (5)].variable)->Name());
+            sprintf(title,"%s_draw",(yysemantic_stack_[(6) - (5)].variable)->Name().c_str());
 
             if (Vars.GetCurrentContext()->GetVar(title,&var)) {
               DessinImage::ptr di;
@@ -4538,13 +4538,13 @@ namespace yyip {
 
       surf->ComputeCurvatures(Icmin,Icmax,Idmin,Idmax, (int) depth);
 
-      sprintf(name,"%s_cmin",(yysemantic_stack_[(6) - (1)].variable)->Name());
+      sprintf(name,"%s_cmin",(yysemantic_stack_[(6) - (1)].variable)->Name().c_str());
       Vars.AddVar(type_image,name,Icmin);
-      sprintf(name,"%s_cmax",(yysemantic_stack_[(6) - (1)].variable)->Name());
+      sprintf(name,"%s_cmax",(yysemantic_stack_[(6) - (1)].variable)->Name().c_str());
       Vars.AddVar(type_image,name,Icmax);
-      sprintf(name,"%s_dmin",(yysemantic_stack_[(6) - (1)].variable)->Name());
+      sprintf(name,"%s_dmin",(yysemantic_stack_[(6) - (1)].variable)->Name().c_str());
       Vars.AddVar(type_image,name,Idmin);
-      sprintf(name,"%s_dmax",(yysemantic_stack_[(6) - (1)].variable)->Name());
+      sprintf(name,"%s_dmax",(yysemantic_stack_[(6) - (1)].variable)->Name().c_str());
       Vars.AddVar(type_image,name,Idmax);
 
     }
@@ -5341,7 +5341,7 @@ namespace yyip {
 #line 4289 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Func_StructureTensor(((InrImage::ptr*) (yysemantic_stack_[(8) - (3)].variable)->Pointer())->get(),
-                   (yysemantic_stack_[(8) - (3)].variable)->Name(),
+                   (yysemantic_stack_[(8) - (3)].variable)->Name().c_str(),
                    (yysemantic_stack_[(8) - (5)].adouble), (yysemantic_stack_[(8) - (7)].adouble), NULL);
         }
     break;
@@ -5355,7 +5355,7 @@ namespace yyip {
 
           Func_StructureTensor(
             ((InrImage::ptr*) (yysemantic_stack_[(10) - (3)].variable)->Pointer())->get(),
-            (yysemantic_stack_[(10) - (3)].variable)->Name(),
+            (yysemantic_stack_[(10) - (3)].variable)->Name().c_str(),
             (yysemantic_stack_[(10) - (5)].adouble), (yysemantic_stack_[(10) - (7)].adouble), mask);
           delete mask;
         }
@@ -5382,7 +5382,7 @@ namespace yyip {
         **/
           Func_StructureTensorHessian(
             ((InrImage::ptr*) (yysemantic_stack_[(8) - (3)].variable)->Pointer())->get(),
-            (yysemantic_stack_[(8) - (3)].variable)->Name(),
+            (yysemantic_stack_[(8) - (3)].variable)->Name().c_str(),
             (yysemantic_stack_[(8) - (5)].adouble), (yysemantic_stack_[(8) - (7)].adouble), NULL);
         }
     break;
@@ -5411,7 +5411,7 @@ namespace yyip {
 
           Func_StructureTensorHessian(
             ((InrImage::ptr*) (yysemantic_stack_[(10) - (3)].variable)->Pointer())->get(),
-            (yysemantic_stack_[(10) - (3)].variable)->Name(),
+            (yysemantic_stack_[(10) - (3)].variable)->Name().c_str(),
             (yysemantic_stack_[(10) - (5)].adouble), (yysemantic_stack_[(10) - (7)].adouble), mask);
           delete mask;
         }
@@ -5443,7 +5443,7 @@ namespace yyip {
       int save_grad = (int) (yysemantic_stack_[(12) - (11)].adouble);
 
           Func_StructureTensorHessian(((InrImage::ptr*) (yysemantic_stack_[(12) - (3)].variable)->Pointer())->get(),
-                   (yysemantic_stack_[(12) - (3)].variable)->Name(),
+                   (yysemantic_stack_[(12) - (3)].variable)->Name().c_str(),
                    (yysemantic_stack_[(12) - (5)].adouble), (yysemantic_stack_[(12) - (7)].adouble), mask, save_grad);
       delete mask;
         }
@@ -5455,7 +5455,7 @@ namespace yyip {
 #line 4383 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Func_HessianMatrix(((InrImage::ptr*) (yysemantic_stack_[(6) - (3)].variable)->Pointer())->get(),
-                 (yysemantic_stack_[(6) - (3)].variable)->Name(),
+                 (yysemantic_stack_[(6) - (3)].variable)->Name().c_str(),
                  (yysemantic_stack_[(6) - (5)].adouble),   // sigma
                  0,   // gamma
                  NULL  // mask
@@ -5471,7 +5471,7 @@ namespace yyip {
       InrImage* mask = (InrImage*) driver.im_stack.GetLastImage();
 
           Func_HessianMatrix(((InrImage::ptr*) (yysemantic_stack_[(8) - (3)].variable)->Pointer())->get(),
-                 (yysemantic_stack_[(8) - (3)].variable)->Name(),
+                 (yysemantic_stack_[(8) - (3)].variable)->Name().c_str(),
                  (yysemantic_stack_[(8) - (5)].adouble),   // sigma
                  0,   // gamma
                  mask  // mask
@@ -5486,7 +5486,7 @@ namespace yyip {
 #line 4406 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Func_HessianMatrix(((InrImage::ptr*) (yysemantic_stack_[(8) - (3)].variable)->Pointer())->get(),
-                 (yysemantic_stack_[(8) - (3)].variable)->Name(),
+                 (yysemantic_stack_[(8) - (3)].variable)->Name().c_str(),
                  (yysemantic_stack_[(8) - (5)].adouble),   // sigma
                  (yysemantic_stack_[(8) - (7)].adouble),   // gamma
                  NULL  // mask
@@ -5511,7 +5511,7 @@ namespace yyip {
       InrImage* mask = (InrImage*) driver.im_stack.GetLastImage();
 
           Func_HessianMatrix(((InrImage::ptr*) (yysemantic_stack_[(10) - (3)].variable)->Pointer())->get(),
-                 (yysemantic_stack_[(10) - (3)].variable)->Name(),
+                 (yysemantic_stack_[(10) - (3)].variable)->Name().c_str(),
                  (yysemantic_stack_[(10) - (5)].adouble),   // sigma
                  (yysemantic_stack_[(10) - (7)].adouble),   // gamma
                  mask  // mask
@@ -5541,7 +5541,7 @@ namespace yyip {
          **/
 
           Func_Derivatives(((InrImage::ptr*) (yysemantic_stack_[(16) - (3)].variable)->Pointer())->get(),
-               (yysemantic_stack_[(16) - (3)].variable)->Name(),
+               (yysemantic_stack_[(16) - (3)].variable)->Name().c_str(),
                (yysemantic_stack_[(16) - (5)].adouble),   // sigma
                (yysemantic_stack_[(16) - (7)].adouble),   // gamma
                NULL,
@@ -5561,7 +5561,7 @@ namespace yyip {
       InrImage* mask = (InrImage*) driver.im_stack.GetLastImage();
 
           Func_Derivatives(((InrImage::ptr*) (yysemantic_stack_[(18) - (3)].variable)->Pointer())->get(),
-               (yysemantic_stack_[(18) - (3)].variable)->Name(),
+               (yysemantic_stack_[(18) - (3)].variable)->Name().c_str(),
                (yysemantic_stack_[(18) - (5)].adouble),   // sigma
                (yysemantic_stack_[(18) - (7)].adouble),   // gamma
                mask,  // mask
@@ -5582,7 +5582,7 @@ namespace yyip {
       InrImage* mask = (InrImage*) driver.im_stack.GetLastImage();
 
           Func_HessianVap(((InrImage::ptr*) (yysemantic_stack_[(12) - (3)].variable)->Pointer())->get(),
-              (yysemantic_stack_[(12) - (3)].variable)->Name(),
+              (yysemantic_stack_[(12) - (3)].variable)->Name().c_str(),
               (yysemantic_stack_[(12) - (5)].adouble),   // sigma
               (yysemantic_stack_[(12) - (7)].adouble),   // gamma
               mask,
@@ -5598,7 +5598,7 @@ namespace yyip {
 #line 4499 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Func_Curvatures(((InrImage::ptr*) (yysemantic_stack_[(6) - (3)].variable)->Pointer())->get(),
-              (yysemantic_stack_[(6) - (3)].variable)->Name(),
+              (yysemantic_stack_[(6) - (3)].variable)->Name().c_str(),
               (yysemantic_stack_[(6) - (5)].adouble));
         }
     break;
@@ -7265,7 +7265,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
         {
           char tmp_string[255];
           sprintf(tmp_string," %s.%s identifier not recognized \n",
-              (yysemantic_stack_[(3) - (1)].variable)->Name(), ident->GetName().c_str());
+              (yysemantic_stack_[(3) - (1)].variable)->Name().c_str(), ident->GetName().c_str());
           strcat(tmp_string," known identifiers {tx, ty, tz, vdim, trx, try, trz, vx, vy, vz, init, inc, val, info} \n");
           driver.err_print(tmp_string);
         }
@@ -7949,10 +7949,10 @@ cerr << "Feature not available, needs to be updated ! " << endl;
       float min_value = (float)(yysemantic_stack_[(10) - (7)].adouble);
       float max_value = (float)(yysemantic_stack_[(10) - (9)].adouble);
 
-    ParamPanel_ptr pw = *(ParamPanel_ptr*) (yysemantic_stack_[(10) - (1)].variable)->Pointer();
-        int var_id = pw->AddFloat( var, (char*)(yysemantic_stack_[(10) - (5)].variable)->Name());
-        pw->FloatConstraints( var_id, min_value, max_value, *var );
-        (yyval.adouble) = var_id;
+      ParamPanel_ptr pw = *(ParamPanel_ptr*) (yysemantic_stack_[(10) - (1)].variable)->Pointer();
+      int var_id = pw->AddFloat( var, (yysemantic_stack_[(10) - (5)].variable)->Name().c_str(),2,(yysemantic_stack_[(10) - (5)].variable)->Name());
+      pw->FloatConstraints( var_id, min_value, max_value, *var );
+      (yyval.adouble) = var_id;
     }
     break;
 
@@ -7967,8 +7967,8 @@ cerr << "Feature not available, needs to be updated ! " << endl;
       **/
       int* var = ((int_ptr*)(yysemantic_stack_[(10) - (5)].variable)->Pointer())->get();
       ParamPanel_ptr pw = *(ParamPanel_ptr*) (yysemantic_stack_[(10) - (1)].variable)->Pointer();
-      int var_id = pw->AddInteger( var, (char*)(yysemantic_stack_[(10) - (5)].variable)->Name());
-          pw->IntegerConstraints( var_id, (int)(yysemantic_stack_[(10) - (7)].adouble), (int)(yysemantic_stack_[(10) - (9)].adouble), *var );
+      int var_id = pw->AddInteger( var, (char*)(yysemantic_stack_[(10) - (5)].variable)->Name().c_str(), (char*)(yysemantic_stack_[(10) - (5)].variable)->Name().c_str());
+      pw->IntegerConstraints( var_id, (int)(yysemantic_stack_[(10) - (7)].adouble), (int)(yysemantic_stack_[(10) - (9)].adouble), *var );
       (yyval.adouble) = var_id;
     }
     break;
@@ -8002,7 +8002,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
       unsigned char*   var = ((uchar_ptr*) (yysemantic_stack_[(6) - (5)].variable)->Pointer())->get();
       ParamPanel_ptr pw  = *(ParamPanel_ptr*) (yysemantic_stack_[(6) - (1)].variable)->Pointer();
       int var_id;
-      pw->AddBoolean( &var_id, var, (char*)(yysemantic_stack_[(6) - (5)].variable)->Name());
+      pw->AddBoolean( &var_id, var, (char*)(yysemantic_stack_[(6) - (5)].variable)->Name().c_str());
       pw->BooleanDefault( var_id, *var);
       (yyval.adouble) = var_id;
     }
@@ -8056,7 +8056,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
       ParamPanel_ptr pw  = *(ParamPanel_ptr*) (yysemantic_stack_[(8) - (1)].variable)->Pointer();
       int size = (int) (yysemantic_stack_[(8) - (7)].adouble);
       int var_id;
-      pw->AddEnumeration( &var_id, size, var, (char*)(yysemantic_stack_[(8) - (5)].variable)->Name());
+      pw->AddEnumeration( &var_id, size, var, (char*)(yysemantic_stack_[(8) - (5)].variable)->Name().c_str());
       //pw->EnumerationDefaut( var_id,  *var);
       (yyval.adouble) = var_id;
     }
@@ -8077,7 +8077,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
       int*   var = ((int_ptr*) (yysemantic_stack_[(6) - (5)].variable)->Pointer())->get();
       ParamPanel_ptr pw  = *(ParamPanel_ptr*) (yysemantic_stack_[(6) - (1)].variable)->Pointer();
       int var_id;
-      pw->AddEnumeration( &var_id, var, (char*)(yysemantic_stack_[(6) - (5)].variable)->Name());
+      pw->AddEnumeration( &var_id, var, (char*)(yysemantic_stack_[(6) - (5)].variable)->Name().c_str());
       (yyval.adouble) = var_id;
     }
     break;
@@ -9165,7 +9165,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
          char  imname[200];
 
          varim=*(InrImage::ptr*) (yysemantic_stack_[(1) - (1)].variable)->Pointer();
-         sprintf(imname,"copy_%s",(yysemantic_stack_[(1) - (1)].variable)->Name());
+         sprintf(imname,"copy_%s",(yysemantic_stack_[(1) - (1)].variable)->Name().c_str());
          im = new InrImage(varim->_format,imname,varim.get());
          (*im)=(*varim);
           driver.im_stack.AddImage(im);
@@ -9204,7 +9204,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
           i = (int) (yysemantic_stack_[(4) - (3)].adouble);
           Si i<0               AlorsFait i = 0;
           Si i>=im1->GetVDim() AlorsFait i = im1->GetVDim()-1;
-          sprintf(imname,"C%d_%s",i,(yysemantic_stack_[(4) - (1)].variable)->Name());
+          sprintf(imname,"C%d_%s",i,(yysemantic_stack_[(4) - (1)].variable)->Name().c_str());
 
          SelonQue im1->_format Vaut
           Valeur WT_RGB:
@@ -13099,7 +13099,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
             // initialize the surface
             SurfacePoly* surf = new SurfacePoly();
             char name[256];
-            sprintf(name,"%s[%d]",(yysemantic_stack_[(4) - (1)].variable)->Name(),i);
+            sprintf(name,"%s[%d]",(yysemantic_stack_[(4) - (1)].variable)->Name().c_str(),i);
             array->InitElement(i,surf,name);
           }
           (yyval.variable)=&(array->GetVar(i));
@@ -19912,9 +19912,9 @@ void CB_delete_surfdraw( void* varid)
 {
   fprintf(stderr," CB_delete_surfdraw begin \n");
   Variable* v = (Variable*) varid;
-  fprintf(stderr," Delete var %s \n", v->Name());
-  if (Vars.deleteVar( v->Name())==0)
-    fprintf(stderr,"CB_delete_surfdraw() could not delete variable '%s' !!! \n",v->Name());
+  fprintf(stderr," Delete var %s \n", v->Name().c_str());
+  if (Vars.deleteVar( v->Name().c_str())==0)
+    fprintf(stderr,"CB_delete_surfdraw() could not delete variable '%s' !!! \n",v->Name().c_str());
   fprintf(stderr," CB_delete_surfdraw end \n");
 }
 

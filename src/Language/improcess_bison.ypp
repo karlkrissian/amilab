@@ -1472,7 +1472,7 @@ command:
           array = *((VarArray::ptr*) ($1->Pointer()));
           if (imptr != NULL)
             if (array->GetVar(i).Pointer()==NULL) {
-              sprintf(name,"%s[%d]",$1->Name(),i);
+              sprintf(name,"%s[%d]",$1->Name().c_str(),i);
               array->InitElement(i,imptr,name);
             }
             else
@@ -1533,7 +1533,7 @@ command:
           surfptr = (void*)driver.surf_stack.GetLastSurf();
           if (surfptr != NULL)
           if (array->GetVar(i).Pointer()==NULL) {
-            sprintf(name,"%s[%d]",$1->Name(),i);
+            sprintf(name,"%s[%d]",$1->Name().c_str(),i);
             array->InitElement(i,surfptr,name);
           }
           else
@@ -1576,7 +1576,7 @@ command:
           if (surfptr != NULL) {
             var->FreeMemory();
             var->Init(type_surface,
-                      var->Name(),
+                      var->Name().c_str(),
                       surfptr);
           }
           else
@@ -1598,7 +1598,7 @@ command:
           if (arraysurf != NULL) {
             var->FreeMemory();
             var->Init(type_array,
-                      var->Name(),
+                      var->Name().c_str(),
                       arraysurf);
           }
           else
@@ -1761,7 +1761,7 @@ command:
           int var_context = Vars.GetContext($2);
 
           if (var_context>=0) {
-            sprintf(titre,"%s_draw",$2->Name());
+            sprintf(titre,"%s_draw",$2->Name().c_str());
             if (GB_debug) fprintf(stderr,
                       "SHOW var_image  title %s \n",
                       titre);
@@ -1797,7 +1797,7 @@ command:
           char titre[100];
           Variable* var;
 
-          sprintf(titre,"%s_draw",$2->Name());
+          sprintf(titre,"%s_draw",$2->Name().c_str());
           if (Vars.GetVar(titre,&var)) {
 
         if (var->Type() == type_imagedraw) {
@@ -1806,10 +1806,10 @@ command:
         }
         else
           fprintf(stderr,"Variable %s_draw not of type imagedraw \n",
-            $2->Name());
+            $2->Name().c_str());
           } else
         fprintf(stderr,"Image %s not visible \n",
-            $2->Name());
+            $2->Name().c_str());
 
         }
         |  SHOW var_surface
@@ -1904,7 +1904,7 @@ command:
               if (imptr != NULL) {
                 var->FreeMemory();
                 var->Init(type_image,
-                          var->Name(),
+                          var->Name().c_str(),
                           (void*)imptr);
               }
               else
@@ -2560,7 +2560,7 @@ command:
             draw = *(DessinImage::ptr*) ($1->Pointer());
             im   = *(InrImage::ptr*) $5->Pointer();
 
-            sprintf(title,"%s_draw",$5->Name());
+            sprintf(title,"%s_draw",$5->Name().c_str());
 
             if (Vars.GetCurrentContext()->GetVar(title,&var)) {
               DessinImage::ptr di;
@@ -3723,13 +3723,13 @@ command:
 
       surf->ComputeCurvatures(Icmin,Icmax,Idmin,Idmax, (int) depth);
 
-      sprintf(name,"%s_cmin",$1->Name());
+      sprintf(name,"%s_cmin",$1->Name().c_str());
       Vars.AddVar(type_image,name,Icmin);
-      sprintf(name,"%s_cmax",$1->Name());
+      sprintf(name,"%s_cmax",$1->Name().c_str());
       Vars.AddVar(type_image,name,Icmax);
-      sprintf(name,"%s_dmin",$1->Name());
+      sprintf(name,"%s_dmin",$1->Name().c_str());
       Vars.AddVar(type_image,name,Idmin);
-      sprintf(name,"%s_dmax",$1->Name());
+      sprintf(name,"%s_dmax",$1->Name().c_str());
       Vars.AddVar(type_image,name,Idmax);
 
     }
@@ -4288,7 +4288,7 @@ command:
         T_struct_tensor T_OP_PAR var_image T_COMMA expr T_COMMA expr T_CL_PAR
         {
           Func_StructureTensor(((InrImage::ptr*) $3->Pointer())->get(),
-                   $3->Name(),
+                   $3->Name().c_str(),
                    $5, $7, NULL);
         }
         |
@@ -4298,7 +4298,7 @@ command:
 
           Func_StructureTensor(
             ((InrImage::ptr*) $3->Pointer())->get(),
-            $3->Name(),
+            $3->Name().c_str(),
             $5, $7, mask);
           delete mask;
         }
@@ -4321,7 +4321,7 @@ command:
         **/
           Func_StructureTensorHessian(
             ((InrImage::ptr*) $3->Pointer())->get(),
-            $3->Name(),
+            $3->Name().c_str(),
             $5, $7, NULL);
         }
         |
@@ -4346,7 +4346,7 @@ command:
 
           Func_StructureTensorHessian(
             ((InrImage::ptr*) $3->Pointer())->get(),
-            $3->Name(),
+            $3->Name().c_str(),
             $5, $7, mask);
           delete mask;
         }
@@ -4374,7 +4374,7 @@ command:
       int save_grad = (int) $11;
 
           Func_StructureTensorHessian(((InrImage::ptr*) $3->Pointer())->get(),
-                   $3->Name(),
+                   $3->Name().c_str(),
                    $5, $7, mask, save_grad);
       delete mask;
         }
@@ -4382,7 +4382,7 @@ command:
         T_HessianMatrix T_OP_PAR var_image T_COMMA expr  T_CL_PAR
         {
           Func_HessianMatrix(((InrImage::ptr*) $3->Pointer())->get(),
-                 $3->Name(),
+                 $3->Name().c_str(),
                  $5,   // sigma
                  0,   // gamma
                  NULL  // mask
@@ -4394,7 +4394,7 @@ command:
       InrImage* mask = (InrImage*) driver.im_stack.GetLastImage();
 
           Func_HessianMatrix(((InrImage::ptr*) $3->Pointer())->get(),
-                 $3->Name(),
+                 $3->Name().c_str(),
                  $5,   // sigma
                  0,   // gamma
                  mask  // mask
@@ -4405,7 +4405,7 @@ command:
         T_HessianMatrix T_OP_PAR var_image T_COMMA expr T_COMMA expr T_CL_PAR
         {
           Func_HessianMatrix(((InrImage::ptr*) $3->Pointer())->get(),
-                 $3->Name(),
+                 $3->Name().c_str(),
                  $5,   // sigma
                  $7,   // gamma
                  NULL  // mask
@@ -4426,7 +4426,7 @@ command:
       InrImage* mask = (InrImage*) driver.im_stack.GetLastImage();
 
           Func_HessianMatrix(((InrImage::ptr*) $3->Pointer())->get(),
-                 $3->Name(),
+                 $3->Name().c_str(),
                  $5,   // sigma
                  $7,   // gamma
                  mask  // mask
@@ -4452,7 +4452,7 @@ command:
          **/
 
           Func_Derivatives(((InrImage::ptr*) $3->Pointer())->get(),
-               $3->Name(),
+               $3->Name().c_str(),
                $5,   // sigma
                $7,   // gamma
                NULL,
@@ -4468,7 +4468,7 @@ command:
       InrImage* mask = (InrImage*) driver.im_stack.GetLastImage();
 
           Func_Derivatives(((InrImage::ptr*) $3->Pointer())->get(),
-               $3->Name(),
+               $3->Name().c_str(),
                $5,   // sigma
                $7,   // gamma
                mask,  // mask
@@ -4486,7 +4486,7 @@ command:
       InrImage* mask = (InrImage*) driver.im_stack.GetLastImage();
 
           Func_HessianVap(((InrImage::ptr*) $3->Pointer())->get(),
-              $3->Name(),
+              $3->Name().c_str(),
               $5,   // sigma
               $7,   // gamma
               mask,
@@ -4498,7 +4498,7 @@ command:
         T_curvatures T_OP_PAR var_image T_COMMA expr  T_CL_PAR
         {
           Func_Curvatures(((InrImage::ptr*) $3->Pointer())->get(),
-              $3->Name(),
+              $3->Name().c_str(),
               $5);
         }
         |
@@ -5735,7 +5735,7 @@ postfix_expr
         {
           char tmp_string[255];
           sprintf(tmp_string," %s.%s identifier not recognized \n",
-              $1->Name(), ident->GetName().c_str());
+              $1->Name().c_str(), ident->GetName().c_str());
           strcat(tmp_string," known identifiers {tx, ty, tz, vdim, trx, try, trz, vx, vy, vz, init, inc, val, info} \n");
           driver.err_print(tmp_string);
         }
@@ -6266,10 +6266,10 @@ postfix_expr
       float min_value = (float)$7;
       float max_value = (float)$9;
 
-    ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
-        int var_id = pw->AddFloat( var, (char*)$5->Name());
-        pw->FloatConstraints( var_id, min_value, max_value, *var );
-        $$ = var_id;
+      ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
+      int var_id = pw->AddFloat( var, $5->Name().c_str(),2,$5->Name());
+      pw->FloatConstraints( var_id, min_value, max_value, *var );
+      $$ = var_id;
     }
     |
     VAR_PARAMWIN T_POINT T_AddInt T_OP_PAR  VAR_INT  T_COMMA expr T_COMMA expr T_CL_PAR
@@ -6280,8 +6280,8 @@ postfix_expr
       **/
       int* var = ((int_ptr*)$5->Pointer())->get();
       ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
-      int var_id = pw->AddInteger( var, (char*)$5->Name());
-          pw->IntegerConstraints( var_id, (int)$7, (int)$9, *var );
+      int var_id = pw->AddInteger( var, (char*)$5->Name().c_str(), (char*)$5->Name().c_str());
+      pw->IntegerConstraints( var_id, (int)$7, (int)$9, *var );
       $$ = var_id;
     }
     |
@@ -6307,7 +6307,7 @@ postfix_expr
       unsigned char*   var = ((uchar_ptr*) $5->Pointer())->get();
       ParamPanel_ptr pw  = *(ParamPanel_ptr*) $1->Pointer();
       int var_id;
-      pw->AddBoolean( &var_id, var, (char*)$5->Name());
+      pw->AddBoolean( &var_id, var, (char*)$5->Name().c_str());
       pw->BooleanDefault( var_id, *var);
       $$ = var_id;
     }
@@ -6353,7 +6353,7 @@ postfix_expr
       ParamPanel_ptr pw  = *(ParamPanel_ptr*) $1->Pointer();
       int size = (int) $7;
       int var_id;
-      pw->AddEnumeration( &var_id, size, var, (char*)$5->Name());
+      pw->AddEnumeration( &var_id, size, var, (char*)$5->Name().c_str());
       //pw->EnumerationDefaut( var_id,  *var);
       $$ = var_id;
     }
@@ -6370,7 +6370,7 @@ postfix_expr
       int*   var = ((int_ptr*) $5->Pointer())->get();
       ParamPanel_ptr pw  = *(ParamPanel_ptr*) $1->Pointer();
       int var_id;
-      pw->AddEnumeration( &var_id, var, (char*)$5->Name());
+      pw->AddEnumeration( &var_id, var, (char*)$5->Name().c_str());
       $$ = var_id;
     }
     |
@@ -7126,7 +7126,7 @@ image:
          char  imname[200];
 
          varim=*(InrImage::ptr*) $1->Pointer();
-         sprintf(imname,"copy_%s",$1->Name());
+         sprintf(imname,"copy_%s",$1->Name().c_str());
          im = new InrImage(varim->_format,imname,varim.get());
          (*im)=(*varim);
           driver.im_stack.AddImage(im);
@@ -7161,7 +7161,7 @@ image:
           i = (int) $3;
           Si i<0               AlorsFait i = 0;
           Si i>=im1->GetVDim() AlorsFait i = im1->GetVDim()-1;
-          sprintf(imname,"C%d_%s",i,$1->Name());
+          sprintf(imname,"C%d_%s",i,$1->Name().c_str());
 
          SelonQue im1->_format Vaut
           Valeur WT_RGB:
@@ -10315,7 +10315,7 @@ var_surface:
             // initialize the surface
             SurfacePoly* surf = new SurfacePoly();
             char name[256];
-            sprintf(name,"%s[%d]",$1->Name(),i);
+            sprintf(name,"%s[%d]",$1->Name().c_str(),i);
             array->InitElement(i,surf,name);
           }
           $$=&(array->GetVar(i));
@@ -11315,9 +11315,9 @@ void CB_delete_surfdraw( void* varid)
 {
   fprintf(stderr," CB_delete_surfdraw begin \n");
   Variable* v = (Variable*) varid;
-  fprintf(stderr," Delete var %s \n", v->Name());
-  if (Vars.deleteVar( v->Name())==0)
-    fprintf(stderr,"CB_delete_surfdraw() could not delete variable '%s' !!! \n",v->Name());
+  fprintf(stderr," Delete var %s \n", v->Name().c_str());
+  if (Vars.deleteVar( v->Name().c_str())==0)
+    fprintf(stderr,"CB_delete_surfdraw() could not delete variable '%s' !!! \n",v->Name().c_str());
   fprintf(stderr," CB_delete_surfdraw end \n");
 }
 

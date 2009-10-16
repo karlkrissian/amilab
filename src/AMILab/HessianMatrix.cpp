@@ -95,7 +95,7 @@ static int dimension;
 //         3 save both
 //
 unsigned char      Func_Derivatives( InrImage* image_initiale, 
-                   char* varname,
+                   const char* varname,
                    float Sigma, 
                    float Gamma,
                    InrImage* mask,
@@ -317,7 +317,7 @@ unsigned char      Func_Derivatives( InrImage* image_initiale,
 
 unsigned char Func_HessianMatrix( InrImage* image_initiale, 
 //      ------------------
-                    char* varname,
+                    const char* varname,
                     float Sigma, 
                 float Gamma,
                     InrImage* mask)
@@ -492,7 +492,7 @@ printf("Func_HessianMatrix\n");
 
 unsigned char Func_HessianVap( InrImage* image_initiale, 
 //      ---------------
-             char* varname,
+             const char* varname,
              float Sigma, 
              float Gamma,
              InrImage* mask,

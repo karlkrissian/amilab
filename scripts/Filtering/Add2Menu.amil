@@ -4,7 +4,13 @@
 # Adding main Gui scripts to the menu
 #
 
+filt_category = "&Filtering"
+filt_dir = "Filtering/"
 
-AddMenuScript("&Filtering","&AnisoGS",  "Filtering/AnisoGS_gui.amil")
-AddMenuScript("&Filtering","&AnisoSRAD","Filtering/AnisoSRAD_gui.amil")
-AddMenuScript("&Filtering","&AnisoNRAD","Filtering/AnisoNRAD_gui.amil")
+AddMenuScript(filt_category,"Aniso &GS",        filt_dir+"AnisoGS_gui")
+AddMenuScript(filt_category,"Aniso &SRAD",      filt_dir+"AnisoSRAD_gui")
+AddMenuScript(filt_category,"Aniso &NRAD",      filt_dir+"AnisoNRAD_gui")
+AddMenuScript(filt_category,"Non-Local &Means", filt_dir+"NLmeans_gui")
+
+del filt_category
+del filt_dir

@@ -134,7 +134,7 @@ void EstimeCourbures( float gradient[3], float hessien[3][3], void* data)
 
 
 //----------------------------------------------------------------------
-unsigned char  Func_Curvatures( InrImage* image_initiale, char* varname, 
+unsigned char  Func_Curvatures( InrImage* image_initiale, const char* varname, 
 //       ---------------
 			  float sigma)
 {

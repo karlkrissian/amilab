@@ -151,7 +151,7 @@ SurfacePoly* Func_isosurf( InrImage::ptr im, float Threshold, InrImage* mask=NUL
                int coord_system=0);
 
 
-unsigned char      Func_HessianMatrix( InrImage* image_initiale,  char* varname,
+unsigned char      Func_HessianMatrix( InrImage* image_initiale, const char* varname,
                  float Sigma,  float Gamma, InrImage* mask);
 
 
@@ -167,7 +167,7 @@ unsigned char      Func_HessianMatrix( InrImage* image_initiale,  char* varname,
 //         3 save both
 //
 unsigned char      Func_Derivatives( InrImage* image_initiale,
-                   char* varname,
+                   const char* varname,
                    float Sigma,
                    float Gamma,
                    InrImage* mask,
@@ -175,7 +175,7 @@ unsigned char      Func_Derivatives( InrImage* image_initiale,
                    int _H2,int _H3,int _G);
 
 
-unsigned char      Func_HessianVap( InrImage* image_initiale, char* varname,
+unsigned char      Func_HessianVap( InrImage* image_initiale, const char* varname,
                   float Sigma,  float Gamma,
                   InrImage* mask, int vap_num);
 
@@ -205,7 +205,7 @@ InrImage*    Func_LocalExtrema( InrImage* im,
                 InrImage* mask,
                 int samples=16);
 
-unsigned char      Func_Curvatures(  InrImage* im, char* varname, float sigma);
+unsigned char      Func_Curvatures(  InrImage* im, const char* varname, float sigma);
 InrImage*    Func_Laplacian(   InrImage* im);
 
 float         Func_PositiveArea(float val[4]);

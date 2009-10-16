@@ -6,7 +6,7 @@
 //#include "DessinImage.hpp"
 //#include "Viewer3D.hpp"
 #include "paramlist.h"
-#include "chaine.hpp"
+#include <string>
 
 #include "DefineClass.hpp"
 
@@ -22,7 +22,7 @@ class Variable {
 
 private:
   vartype       _type;
-  Chaine        _name;
+  std::string  _name;
   void*         _pointer; // TODO remove all pointers!!!
 
  public:
@@ -79,7 +79,7 @@ private:
   void  SetString(string_ptr st);
 
   void Rename(const char* newname) {  _name=newname;}
-  char* Name() const { return (char*) _name;}
+  std::string Name() const { return _name;}
 
   bool FreeMemory();
 

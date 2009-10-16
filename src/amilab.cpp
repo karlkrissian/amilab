@@ -323,6 +323,20 @@ bool MyApp::OnInit()
         cerr << "Error catched ! " << str << endl;
     }
 
+    // check for existence of Menus for scripts
+    wxFileName amilab_menuscripts;
+    amilab_menuscripts.AssignDir(GB_scripts_dir);
+    amilab_menuscripts.SetFullName(wxT("Add2Menu.amil"));
+
+    if (amilab_menuscripts.FileExists())
+    try {
+        GB_driver.parse_file(string(amilab_menuscripts.GetFullPath().mb_str(wxConvUTF8)));
+        GB_main_wxFrame->GetConsole()->ProcessReturn();
+    }
+    catch (char * str ) {
+        cerr << "Error catched ! " << str << endl;
+    }
+
     Si argc>GB_num_arg_parsed  Alors
       try {
         wxString input_file(argv[GB_num_arg_parsed]);

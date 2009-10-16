@@ -45,7 +45,8 @@
 #include "wxParamTypes.hpp"
 #include "wxNumericParameter.h"
 #include "wxColorParameter.h"
-
+#include <wx/scrolbar.h>
+#include <wx/scrolwin.h>
 #include <iostream>
 using namespace std;
 
@@ -91,11 +92,12 @@ ParamPanel::ParamPanel( wxWindow* parent,
 //                           ------------
                                 const char* titre,
                                 long style ):
-      wxPanel( parent, 
+      wxScrolledWindow( parent, 
                 wxID_ANY,
                 wxDefaultPosition,
                 wxDefaultSize,
-                wxTAB_TRAVERSAL //| wxVSCROLL
+                wxTAB_TRAVERSAL 
+                | wxVSCROLL
                 ,
                 wxString::FromAscii(titre)
                 ) 
@@ -117,6 +119,12 @@ ParamPanel::ParamPanel( wxWindow* parent,
 
   _inclu_bouttons = false;
 
+//  wxScrollBar* sb = new wxScrollBar(this, wxID_ANY);
+//  _current_sizer.top()->Add(sb, 1, wxEXPAND, 0);
+//  this->SetScrollbar(wxVERTICAL, 0, 16, 50);
+  this->SetScrollbars(3,3,10,10);
+  this->EnableScrolling(true,true);
+
 } //  ParamPanel()
 
 
@@ -127,7 +135,7 @@ void ParamPanel::BeginBook()
 
   nb = new wxNotebook(CurrentParent(), wxID_ANY,
                       wxDefaultPosition,
-                      wxDefaultSize//,
+                      wxDefaultSize
                       //wxVSCROLL
                       );
   //  nb->SetFont(wxFont(12, wxDEFAULT, wxNORMAL, wxBOLD));

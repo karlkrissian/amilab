@@ -530,7 +530,7 @@ if (!exists(ML_defined)) {
   #-----------------------------------------------
   proc ML_Gui() \
   {
-    global::ML_win = ParamWin("Vesselness")
+    global::ML_win = ParamWin("MultiLines")
   
     ML_win.BeginBook
       ML_win.AddPage("Main")

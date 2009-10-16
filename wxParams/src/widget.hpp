@@ -137,7 +137,7 @@ public:
     return _enabled;
   }
 
-  virtual bool Enable(bool enable = true) { return true; }
+  virtual void Enable(bool enable = true) {  }
 
 };
 

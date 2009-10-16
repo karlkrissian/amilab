@@ -20,20 +20,20 @@
 
 unsigned char Func_StructureTensor2D( InrImage* image_initiale, 
 //            ----------------------
-                char* varname,
+               const char* varname,
                 float Sigma1, float Sigma2,
                 InrImage* mask);
 
 
 unsigned char Func_StructureTensor( InrImage* image_initiale, 
 //            --------------------
-                      char* varname,
+                      const char* varname,
                   float Sigma1, float Sigma2,
                   InrImage* mask);
 
 unsigned char Func_StructureTensorHessian( InrImage* image_initiale, 
 //      ---------------------------
-                     char* varname,
+                     const char* varname,
                      float sigma,
                      float beta,
                      InrImage* mask,

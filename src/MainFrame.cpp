@@ -95,6 +95,7 @@ enum {
   wxID_ConsoleClear,
   wxID_UpdateVars,
   wxID_ToolHelp,
+  wxID_ToolQuit,
   wxID_VarList,
   wxID_VarList_Filter,
 };
@@ -118,6 +119,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 #endif
     EVT_TOOL(wxID_UpdateVars,   MainFrame::UpdateVars)
     EVT_TOOL(wxID_ToolHelp,     MainFrame::OnToolHelp)
+    EVT_TOOL(wxID_ToolQuit,     MainFrame::OnQuit)
 
     EVT_TOOL (wxID_HelpTokens,  MainFrame::OnHelpTokens)
     //EVT_TOOL_RCLICKED(wxID_HelpTokens, MainFrame::OnHelpRules)
@@ -351,8 +353,11 @@ MainFrame::MainFrame( const wxString& title,
 //   wxToolTip::Enable(true);
 //   but_clear->SetToolTip(GetwxStr("Clear current line"));
     tb1->AddSeparator();
-    tb1->AddTool(wxID_ToolHelp, wxT("Help"), wxArtProvider::GetBitmap(wxART_QUESTION),
+    tb1->AddTool(wxID_ToolHelp, wxT("Help"), wxArtProvider::GetBitmap(wxART_HELP),
         wxT("Help (load in default browser)"));
+
+    tb1->AddTool(wxID_ToolQuit, wxT("Quit"), wxArtProvider::GetBitmap(wxART_QUIT),
+        wxT("Quit AMILab"));
 
 
 //    tb1->AddTool(ID_SampleItem+3, wxT("Test"), wxArtProvider::GetBitmap(wxART_INFORMATION));
@@ -1220,7 +1225,6 @@ void MainFrame::OnFileLoadScript   ( wxCommandEvent& event )
 //-----------------------------------------------------
 void MainFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
-cout << "OnQuit" << endl;
   Close(true);
 }
 
@@ -1360,6 +1364,7 @@ void MainFrame::OnUserMenuScript(  wxCommandEvent& event)
   cout << "script = " << usermenu_scripts[event.GetId()] << endl;
   string cmd; // increment the command line string
   cmd = (boost::format("func \"%1%\" // from menu") % usermenu_scripts[event.GetId()]).str();
+  TC->ConsoleClear();
   this->TC->IncCommand(cmd);
   this->TC->ProcessReturn();
 }
