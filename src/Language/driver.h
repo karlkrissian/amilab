@@ -96,6 +96,9 @@ public:
     int yyiplineno;
     std::string current_file;
 
+    /// Access to last comments parsed
+    std::string last_comments;
+
     /// kept for transition from C flex-bison code
     /// should be removed later
     bool in_console;

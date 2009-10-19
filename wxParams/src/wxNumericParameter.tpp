@@ -63,7 +63,8 @@ wxNumericParameter<T>::wxNumericParameter(
                         wxID_ANY,
                         wxString::FromAscii(libelle),
                         wxDefaultPosition,
-                        wxDefaultSize
+                        wxDefaultSize,
+                        wxALIGN_LEFT 
                         );
     _label->Wrap(1);
     std::string value;

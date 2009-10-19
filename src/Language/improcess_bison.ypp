@@ -477,6 +477,7 @@ static void CB_update_imagelist( void* imagelist_gui)
 %token VAR_ARRAY_IMAGE
 %token T_del
 %token T_delvars
+%token T_Comments
 %token ENDOP
 
 %token T_global
@@ -490,6 +491,7 @@ static void CB_update_imagelist( void* imagelist_gui)
 
 %token T_ParamWin
 %token T_BeginPanel T_EndPanel
+%token T_BeginBoxPanel T_EndBoxPanel
 %token T_BeginBook T_EndBook T_AddPage
 %token T_AddFloat T_AddInt T_CreateWin T_Display
 %token T_AddButton T_AddBoolean
@@ -503,7 +505,7 @@ static void CB_update_imagelist( void* imagelist_gui)
 %token T_SetPositionProp
 %token T_BeginBox T_EndBox T_BeginHorizontal T_EndHorizontal
 %token T_redraw
-%token T_Enable T_Disable
+%token T_Enable T_EnableBox T_EnablePanel
 
 %token RIGHT_ASSIGN LEFT_ASSIGN ADD_ASSIGN
 %token SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN
@@ -2054,6 +2056,17 @@ command:
         | SHOW VARIABLES
         {
           Vars.display();
+        }
+        | variable T_POINT T_Comments T_OP_PAR expr_string T_CL_PAR
+        {
+        /**
+          Parameters:
+              variable: input variable
+              string expression: comments
+          Description: Set comments for a variable
+        **/
+          string_ptr comments( new std::string($5));
+          $1->SetComments(*comments);
         }
         | T_del variable
         {
@@ -4795,13 +4808,6 @@ cerr << "Feature not available, needs to be updated ! " << endl;
               delete [] $5;
         }
     |
-    VAR_PARAMWIN T_POINT T_BeginBox T_OP_PAR  expr_string T_CL_PAR
-    {
-      ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
-    pw->BeginBox( (char*) $5);
-    delete [] $5;
-    }
-    |
     VAR_PARAMWIN T_POINT T_BeginBook
     {
       ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
@@ -4814,24 +4820,17 @@ cerr << "Feature not available, needs to be updated ! " << endl;
       pw->EndBook();
     }
     |
-    VAR_PARAMWIN T_POINT T_AddPage T_OP_PAR  expr_string T_CL_PAR
-    {
-      ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
-      pw->AddPage( (char*) $5);
-      delete [] $5;
-    }
-    |
-    VAR_PARAMWIN T_POINT T_BeginPanel T_OP_PAR  expr_string T_CL_PAR
-    {
-      ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
-      pw->BeginPanel( (char*) $5);
-      delete [] $5;
-    }
-    |
     VAR_PARAMWIN T_POINT T_EndPanel
     {
       ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
       pw->EndPanel();
+    }
+    |
+    VAR_PARAMWIN T_POINT T_EndBoxPanel
+    {
+      ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
+      pw->EndPanel();
+      pw->EndBox( );
     }
     |
     VAR_PARAMWIN T_POINT T_EndBox
@@ -4888,6 +4887,34 @@ cerr << "Feature not available, needs to be updated ! " << endl;
         {
           ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
           pw->ReAfficheParametres();
+        }
+        |
+        VAR_PARAMWIN T_POINT UPDATE
+        {
+        /**
+        Parameters:
+          (1) Parameter window
+    
+        Description:
+          update the display of all the parameters
+        **/
+            ParamPanel_ptr pw  = *(ParamPanel_ptr*) $1->Pointer();
+            pw->MAJ();
+            GB_main_wxFrame->GetAuiManager().Update();
+        }
+        |
+        VAR_PARAMWIN T_POINT UPDATE T_OP_PAR  expr  T_CL_PAR
+        {
+        /**
+        Parameters:
+          (1) Parameter window
+          (5) parameter id
+    
+        Description:
+          update the display of one parameter
+        **/
+            ParamPanel_ptr pw  = *(ParamPanel_ptr*) $1->Pointer();
+            pw->UpdateParameter((int)$5);
         }
         |
         VAR_PARAMWIN T_POINT T_ShowSlider T_OP_PAR expr T_COMMA expr T_CL_PAR
@@ -4990,6 +5017,46 @@ cerr << "Feature not available, needs to be updated ! " << endl;
       else
         driver.err_print(
           (boost::format("VAR_PARAMWIN.Enable( %d , .. ) \t bad parameter number ")%i).str().c_str());
+      }
+      |
+      VAR_PARAMWIN T_POINT T_EnableBox T_OP_PAR expr  T_COMMA expr T_CL_PAR
+      {
+      /**
+        Description: 
+          Enable a static box
+        Parameters:
+          - index of the box
+          - value enable:1 disable:0
+      **/
+      ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
+      int n = pw->NbBoxes();
+      int i     = (int) $5;
+      bool val  = (bool) $7;
+      if ((i>=0)&&(i<n))
+        pw->EnableBox(i,val);
+      else
+        driver.err_print(
+          (boost::format("VAR_PARAMWIN.EnableBox( %d , .. ) \t bad parameter number ")%i).str().c_str());
+      }
+      |
+      VAR_PARAMWIN T_POINT T_EnablePanel T_OP_PAR expr  T_COMMA expr T_CL_PAR
+      {
+      /**
+        Description: 
+          Enable a panel
+        Parameters:
+          - index of the panel
+          - value enable:1 disable:0
+      **/
+      ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
+      int n = pw->NbPanels();
+      int i     = (int) $5;
+      bool val  = (bool) $7;
+      if ((i>=0)&&(i<n))
+        pw->EnablePanel(i,val);
+      else
+        driver.err_print(
+          (boost::format("VAR_PARAMWIN.EnablePanel( %d , .. ) \t bad parameter number ")%i).str().c_str());
       }
         |
         T_SaveStructuredGrid T_OP_PAR var_image T_COMMA expr_string T_CL_PAR
@@ -6272,11 +6339,53 @@ postfix_expr
       $$ = var_id;
     }
     |
+    VAR_PARAMWIN T_POINT T_AddFloat T_OP_PAR  VAR_FLOAT T_COMMA expr_string T_COMMA expr T_COMMA expr T_CL_PAR
+    {
+      /**
+          description:
+            Adds an interface for a floating point variable to the window of parameters.
+
+          parameters:
+            (3) variable of type window of parameters
+            (5) string expression: label
+            (7) float variable for which we want to create an interface
+            (9) minimal value accepted
+            (11) maximal value accepted
+
+        Keywords:
+
+        Others:
+            ParamWin, AddInt, CreateWin, Display
+
+        Example:
+          a=1
+          w1 = ParamWin("test")
+          w1.AddFloat(a,1,100)
+          w1.CreateWin
+          w1.Display
+      **/
+
+      float* var = ((float_ptr*)$5->Pointer())->get();
+      string_ptr label( new std::string($7));
+      float min_value = (float)$9;
+      float max_value = (float)$11;
+
+      ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
+      std::string tooltip = (boost::format("%s  (%s)") % $5->GetComments() % $5->Name()).str();
+      int var_id = pw->AddFloat( var, label->c_str(),2,tooltip);
+      pw->FloatConstraints( var_id, min_value, max_value, *var );
+      $$ = var_id;
+    }
+    |
     VAR_PARAMWIN T_POINT T_AddInt T_OP_PAR  VAR_INT  T_COMMA expr T_COMMA expr T_CL_PAR
     {
       /**
+        Parameters:
+          - integer variable
+          - minimal scale value
+          - maximal scale value
         Description:
-        Add interface to set an integer value between a minimal and a maximal value.
+          Add interface to set an integer value between a minimal and a maximal value.
       **/
       int* var = ((int_ptr*)$5->Pointer())->get();
       ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
@@ -6285,13 +6394,35 @@ postfix_expr
       $$ = var_id;
     }
     |
+    VAR_PARAMWIN T_POINT T_AddInt T_OP_PAR  VAR_INT  T_COMMA expr_string T_COMMA expr T_COMMA expr T_CL_PAR
+    {
+      /**
+        Parameters:
+          - integer variable
+          - string expression: label
+          - minimal scale value
+          - maximal scale value
+        Description:
+          Add interface to set an integer value between a minimal and a maximal value.
+      **/
+      string_ptr label( new std::string($7));
+      int* var = ((int_ptr*)$5->Pointer())->get();
+      ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
+      std::string tooltip = (boost::format("%s  (%s)") % $5->GetComments() % $5->Name()).str();
+      int var_id = pw->AddInteger( var, label->c_str(), tooltip);
+      pw->IntegerConstraints( var_id, (int)$9, (int)$11, *var );
+      $$ = var_id;
+    }
+    |
     VAR_PARAMWIN T_POINT T_AddButton T_OP_PAR  expr_string T_COMMA VAR_AMI_FUNCTION T_CL_PAR
     {
     int bid;
     ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
+    std::string tooltip = (boost::format("%s  (%s)") % $7->GetComments() % $7->Name()).str();
     pw->AddButton( &bid, $5,
                 (void*) CB_Button,
-                (void*) $7->Pointer());
+                (void*) $7->Pointer(),
+                tooltip);
     $$ = bid;
     }
     |
@@ -6312,6 +6443,26 @@ postfix_expr
       $$ = var_id;
     }
     |
+    VAR_PARAMWIN T_POINT T_AddBoolean T_OP_PAR   VAR_UCHAR T_COMMA expr_string  T_CL_PAR
+    {
+    /**
+    Parameters:
+      (5) Variable of type UCHAR
+      (7) string expression: label
+
+    Description:
+      Adds a boolean variable to the parameter window.
+    **/
+      string_ptr label( new std::string($7));
+      unsigned char*   var = ((uchar_ptr*) $5->Pointer())->get();
+      ParamPanel_ptr pw  = *(ParamPanel_ptr*) $1->Pointer();
+      int var_id;
+      std::string tooltip = (boost::format("%s  (%s)") % $5->GetComments() % $5->Name()).str();
+      pw->AddBoolean( &var_id, var, label->c_str(),CaractereToggle,tooltip);
+      pw->BooleanDefault( var_id, *var);
+      $$ = var_id;
+    }
+    |
     VAR_PARAMWIN T_POINT T_AddImageChoice T_OP_PAR  VAR_STRING  T_COMMA expr_string T_CL_PAR
     {
     /**
@@ -6322,6 +6473,7 @@ postfix_expr
     Description:
       Allows the user to choose among the current image variables available
     **/
+      string_ptr label( new std::string($7));
       ParamPanel_ptr pw  = *(ParamPanel_ptr*) $1->Pointer();
       boost::shared_ptr<wxArrayString> imagelist;
       int var_id;
@@ -6332,7 +6484,7 @@ postfix_expr
       // Get list of image names
       pw->AddListChoice( &var_id,
           (string_ptr*)$5->Pointer(),
-          (char*) $7,
+          label->c_str(),
           imagelist,
           (void*)CB_update_imagelist);
       //pw->EnumerationDefaut( var_id,  *var);
@@ -6354,6 +6506,27 @@ postfix_expr
       int size = (int) $7;
       int var_id;
       pw->AddEnumeration( &var_id, size, var, (char*)$5->Name().c_str());
+      //pw->EnumerationDefaut( var_id,  *var);
+      $$ = var_id;
+    }
+    |
+    VAR_PARAMWIN T_POINT T_AddEnum T_OP_PAR   VAR_INT T_COMMA expr_string   T_CL_PAR
+    {
+    /**
+    Parameters:
+      (5) Variable of type INT
+      (7) expr_string label
+
+    Description:
+      Adds an integer variable as an enumeration to the parameter window.
+    **/
+      string_ptr label( new std::string($7));
+      int*   var = ((int_ptr*) $5->Pointer())->get();
+      ParamPanel_ptr pw  = *(ParamPanel_ptr*) $1->Pointer();
+      int var_id;
+      pw->AddEnumeration( &var_id,  var, label->c_str(),
+                          EnumOptionMenu,
+                          (char*)$5->Name().c_str());
       //pw->EnumerationDefaut( var_id,  *var);
       $$ = var_id;
     }
@@ -6384,12 +6557,12 @@ postfix_expr
     Description:
       Adds a choice for an enumeration created in the parameter window
     **/
+      string_ptr text( new std::string($7));
       ParamPanel_ptr pw  = *(ParamPanel_ptr*) $1->Pointer();
       int id = (int) $5;
       int var_id;
-      pw->AddEnumChoice( id, &var_id, (char*) $7);
+      pw->AddEnumChoice( id, &var_id, text->c_str());
       $$ = var_id;
-      delete [] $7;
     }
     |
     VAR_PARAMWIN T_POINT T_AddString T_OP_PAR  VAR_STRING  T_COMMA expr_string  T_CL_PAR
@@ -6403,15 +6576,15 @@ postfix_expr
     Description:
       Adds a string in the parameter window
     **/
+        string_ptr label( new std::string($7));
         ParamPanel_ptr pw  = *(ParamPanel_ptr*) $1->Pointer();
         int var_id;
         pw->AjouteChaine( &var_id,
           (string_ptr*)$5->Pointer(),
-          $7);
+          label->c_str());
         pw->ContraintesChaine(var_id,
           (char*) ((string_ptr*)$5->Pointer())->get()->c_str());
         $$=var_id;
-        delete [] $7;
     }
     |
     VAR_PARAMWIN T_POINT T_AddLabel T_OP_PAR  expr_string  T_COMMA expr_string  T_CL_PAR
@@ -6463,32 +6636,58 @@ postfix_expr
         $$=var_id;
     }
     |
-    VAR_PARAMWIN T_POINT UPDATE
+    VAR_PARAMWIN T_POINT T_BeginBox T_OP_PAR  expr_string T_CL_PAR
     {
     /**
-    Parameters:
-      (1) Parameter window
-
-    Description:
-      update the display of all the parameters
+      Parameters:
+        string expression
+      Description:
+        Adds a box around the parameters, with the given text as label, and returns the id of the created box.
     **/
-        ParamPanel_ptr pw  = *(ParamPanel_ptr*) $1->Pointer();
-        pw->MAJ();
-        GB_main_wxFrame->GetAuiManager().Update();
+      string_ptr label( new std::string($5));
+      ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
+      pw->BeginBox( label->c_str());
+      $$= pw->NbBoxes()-1;
     }
     |
-    VAR_PARAMWIN T_POINT UPDATE T_OP_PAR  expr  T_CL_PAR
+    VAR_PARAMWIN T_POINT T_AddPage T_OP_PAR  expr_string T_CL_PAR
     {
     /**
-    Parameters:
-      (1) Parameter window
-      (5) parameter id
-
-    Description:
-      update the display of one parameter
     **/
-        ParamPanel_ptr pw  = *(ParamPanel_ptr*) $1->Pointer();
-        pw->UpdateParameter((int)$5);
+      string_ptr label( new std::string($5));
+      ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
+      int id = pw->AddPage( label->c_str());
+      $$=id;
+    }
+    |
+    VAR_PARAMWIN T_POINT T_BeginPanel T_OP_PAR  expr_string T_CL_PAR
+    {
+    /**
+      Parameters:
+        string expr: label of the new panel
+      Description:
+        Adds a new panel, return the id of the corresponding panel
+    **/
+      string_ptr label( new std::string($5));
+      ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
+      int id = pw->BeginPanel( label->c_str());
+      $$=id;
+    }
+    |
+    VAR_PARAMWIN T_POINT T_BeginBoxPanel T_OP_PAR  expr_string T_CL_PAR
+    {
+    /**
+      Parameters:
+        string expr: label of the new panel
+      Description:
+        Adds a new panel, return the id of the corresponding panel
+    **/
+      string_ptr label( new std::string($5));
+      ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
+      pw->BeginBox( label->c_str());
+      int id = pw->BeginPanel( label->c_str());
+      //$$= pw->NbBoxes()-1;
+      $$=id;
     }
     | T_exists T_OP_PAR identifier T_CL_PAR
     {
@@ -11205,6 +11404,7 @@ identifier
 variable:
           VAR_INT
         | VAR_FLOAT
+        | VAR_UCHAR
         | var_image
         {
           $$=$1;

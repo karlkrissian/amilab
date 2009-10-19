@@ -48,6 +48,7 @@
 #include <wx/scrolbar.h>
 #include <wx/scrolwin.h>
 #include <iostream>
+
 using namespace std;
 
 #include "boost/format.hpp"
@@ -162,30 +163,34 @@ void ParamPanel::EndBook()
 // add a page to the book
 // with a new panel
 // if the book has another page, close it first
-void ParamPanel::AddPage(const std::string& panel_name)
+int ParamPanel::AddPage(const std::string& panel_name)
 //             -------
 {
   wxBoxSizer* panelsizer;
 
   if (!GetBookCtrl()) {
     cerr << "AddPage without any Book ! " << endl;
-    return;
+    return 0;
   }
 
   // closes previous page if any
   if (GetBookCtrl()->GetPageCount())
     this->EndPanel();
 
-  _panels.push( 
-    new wxPanel(GetBookCtrl(),
+  wxScrolledWindow* panel = 
+    new wxScrolledWindow(GetBookCtrl(),
                 wxID_ANY,
                 wxDefaultPosition,
                 wxDefaultSize,
                 wxTAB_TRAVERSAL|
                 wxFULL_REPAINT_ON_RESIZE 
-                //|
-                //wxVSCROLL
-                ));
+                |wxVSCROLL
+                );
+  panel->SetScrollbars(3,3,10,10);
+  panel->EnableScrolling(true,true);
+  _tab_panels.push_back(panel);
+
+  _panels.push( panel);
 
   GetBookCtrl()->AddPage( LastPanel(),
                           wxString::FromAscii(panel_name.c_str()));
@@ -194,21 +199,27 @@ void ParamPanel::AddPage(const std::string& panel_name)
   LastPanel()->SetSizer(panelsizer);
   _current_sizer.push(panelsizer);
 
+  return _tab_panels.size()-1;
 } // AddPage()
 
 
 //---------------------------------------------------------
-void ParamPanel::BeginPanel(const std::string& panel_name)
+int ParamPanel::BeginPanel(const std::string& panel_name)
 //             --------
 {
   wxBoxSizer* panelsizer;
 
-  _panels.push( new wxPanel(CurrentParent(),
+  wxScrolledWindow* panel = new wxScrolledWindow(CurrentParent(),
                             wxID_ANY, 
                             wxDefaultPosition, 
                             wxDefaultSize, 
-                            wxTAB_TRAVERSAL // | wxVSCROLL
-                          ));
+                            wxTAB_TRAVERSAL  | wxVSCROLL
+                          );
+//  panel->SetScrollbars(3,3,10,10);
+//  panel->EnableScrolling(true,true);
+  _tab_panels.push_back(panel);
+
+  _panels.push( panel);
 
   LastPanel()->SetToolTip(wxString::FromAscii(panel_name.c_str()));
 
@@ -217,9 +228,10 @@ void ParamPanel::BeginPanel(const std::string& panel_name)
   LastPanel()->SetSizer(panelsizer);
 
   // add new panel to the current sizer
-  _current_sizer.top()->Add(LastPanel(), 1, wxEXPAND, 0);
+  _current_sizer.top()->Add(LastPanel(), 0, wxEXPAND, 0);
   _current_sizer.push(panelsizer);
 
+  return _tab_panels.size()-1;
 } // BeginPanel()
 
 
@@ -1041,6 +1053,39 @@ void ParamPanel::Enable( int id, bool enable) {
   }
 }
 
+//---------------------------------------------------------------------
+void ParamPanel::EnableBox( int id, bool enable) {
+
+  if (id<_tab_boxes.size()) {
+    wxStaticBox* box = _tab_boxes[id];
+    if (enable!=box->IsEnabled())
+      box->Enable(enable);
+  } else {
+    cerr  << __func__ << " " \
+          << this->GetName().mb_str() << "\t" \
+          <<  "Error \t wrong box id" \
+          << id << " " << _tab_boxes.size() << "\n" \
+          << endl; \
+    return;
+  }
+}
+
+//---------------------------------------------------------------------
+void ParamPanel::EnablePanel( int id, bool enable) {
+
+  if (id<_tab_panels.size()) {
+    wxWindow* panel = _tab_panels[id];
+    if (enable!=panel->IsEnabled())
+      panel->Enable(enable);
+  } else {
+    cerr  << __func__ << " " \
+          << this->GetName().mb_str() << "\t" \
+          <<  "Error \t wrong box id" \
+          << id << " " << _tab_panels.size() << "\n" \
+          << endl; \
+    return;
+  }
+}
 
 /*
 //---------------------------------------------------------------------
@@ -1067,17 +1112,19 @@ Widget ParamPanel::GetWidget( int id)
 
 
 //---------------------------------------------------------------------
-void ParamPanel::BeginBox( const char* boxname)
+int ParamPanel::BeginBox( const char* boxname)
 {
   int BoxBorder=2;
 
   wxStaticBox* sb = new wxStaticBox(CurrentParent(),
                                     wxID_ANY,
                                     wxString::FromAscii(boxname));
+  _tab_boxes.push_back(sb);
   wxStaticBoxSizer* sizer  = new wxStaticBoxSizer( sb, wxVERTICAL );
   _current_sizer.top()->Add(sizer, 0,wxEXPAND | wxALL, BoxBorder);
   _current_sizer.push(sizer);
 
+  return _tab_boxes.size()-1;
 } // BeginBox
 
 

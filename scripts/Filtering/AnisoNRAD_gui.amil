@@ -158,6 +158,7 @@ if (exists(NRAD_Init)) {
     global::NRAD_res = sqrt(NRAD_res0)
   #  show NRAD_res
   #  NRAD_input_draw.compare(NRAD_res)
+    SetProgress(0)
     InitTime
     for k=1 to numit {
       AnisoGS.iterate
@@ -167,6 +168,7 @@ if (exists(NRAD_Init)) {
       if (exists(NRAD_groundtruth)) {
         ComputeMSE(NRAD_res);
       }
+      SetProgress(k/numit*100)
       show NRAD_res
       ProcessXEvents(50)
     }
@@ -262,10 +264,13 @@ if (exists(NRAD_Init)) {
   }
   
   proc NRAD_new_eq_type() {
-    NRAD_win.Enable(NRAD_localstruct_id,NRAD_equation_type==1)
-    NRAD_win.Enable(NRAD_eigenmode_id,  NRAD_equation_type==1)
-    NRAD_win.Enable(NRAD_matrix_mode_id,NRAD_equation_type==1)
-    NRAD_win.Enable(NRAD_sigma_id      ,NRAD_equation_type==1)
+    NRAD_win.EnableBox(NRAD_mat_boxid, NRAD_equation_type==1)
+    NRAD_win.Enable(NRAD_sigma_id, NRAD_equation_type==1)
+    NRAD_win.Enable(NRAD_matrix_mode_id, NRAD_equation_type==1)
+    NRAD_win.Enable(NRAD_localstruct_id, NRAD_equation_type==1)
+    NRAD_win.Enable(NRAD_eigenmode_id, NRAD_equation_type==1)
+
+    NRAD_win.EnableBox(NRAD_scal_boxid,NRAD_equation_type!=1)
     NRAD_win.Enable(NRAD_scalar_mode_id,NRAD_equation_type!=1)
   }
   
@@ -277,12 +282,12 @@ if (exists(NRAD_Init)) {
     NRAD_win.BeginBook
       NRAD_win.AddPage("Param")
         NRAD_win.AddImageChoice(NRAD_input_name, "Input")
-        NRAD_win.AddFloat(NRAD_dt,0.01,10)
-        NRAD_win.AddFloat(NRAD_t,0,100)
+        NRAD_win.AddFloat(NRAD_dt,"dt",0.01,10)
+        NRAD_win.AddFloat(NRAD_t,"T",0,100)
         
         NRAD_win.AddInt(NRAD_neighborhood,0,4)
     
-        NRAD_scheme_id       = NRAD_win.AddEnum(NRAD_scheme)
+        NRAD_scheme_id       = NRAD_win.AddEnum(NRAD_scheme,"Scheme")
           NRAD_win.AddEnumChoice(NRAD_scheme_id,"Explicit")
           NRAD_win.AddEnumChoice(NRAD_scheme_id,"Semi-implicit")
         
@@ -291,7 +296,7 @@ if (exists(NRAD_Init)) {
           NRAD_win.AddEnumChoice(NRAD_eq_type_id,"Matrix")
         NRAD_win.SetCallback(NRAD_new_eq_type)
     
-        NRAD_win.BeginBox("Scalar diffusion parameters")
+        global::NRAD_scal_boxid = NRAD_win.BeginBox("Scalar diffusion parameters")
           global::NRAD_scalar_mode_id = NRAD_win.AddEnum(NRAD_scalar_mode)
             NRAD_win.AddEnumChoice(NRAD_scalar_mode_id,"Lee")
             NRAD_win.AddEnumChoice(NRAD_scalar_mode_id,"Kuan")
@@ -300,7 +305,7 @@ if (exists(NRAD_Init)) {
             NRAD_win.AddEnumChoice(NRAD_scalar_mode_id,"MRI new")
         NRAD_win.EndBox
 
-        NRAD_win.BeginBox("Matrix diffusion parameters")
+        global::NRAD_mat_boxid = NRAD_win.BeginBox("Matrix diffusion parameters")
           global::NRAD_sigma_id = NRAD_win.AddFloat(NRAD_sigma,0.01,10)
           global::NRAD_matrix_mode_id = NRAD_win.AddEnum(NRAD_matrix_mode)
             NRAD_win.AddEnumChoice(NRAD_matrix_mode_id,"Grad")

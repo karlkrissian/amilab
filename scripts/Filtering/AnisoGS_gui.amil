@@ -20,6 +20,7 @@ if (exists(AGS_Init)) {
     AGS_datacoeff=0.05
     AGS_niter=INT(5)
     AGS_use_zoom=UCHAR(0)
+    AGS_use_zoom.Comments("Allow to process only on the Region-Of-Interest defined by the current zoom in the input image display window")
     AGS_started=0
   
     AGS_CreateWindow()
@@ -120,7 +121,7 @@ if (exists(AGS_Init)) {
         AGS_win.AddFloat(AGS_threshold,0,100)
         AGS_win.AddFloat(AGS_datacoeff,0.01,10)
         AGS_win.AddInt(AGS_niter,0,100)
-        AGS_win.AddBoolean(AGS_use_zoom)
+        AGS_win.AddBoolean(AGS_use_zoom,"Use Zoom")
         AGS_win.AddString(AGS_result_name,"result name")
         AGS_win.AddString(AGS_result_filename,"result filename")
         

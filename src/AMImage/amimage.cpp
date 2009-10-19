@@ -919,6 +919,7 @@ unsigned char  amimage::readdata_ext( )
       // Use file prefix, kept for compatibility ...
       fname = (boost::format("%s.%03d")%file_prefix
                                 %(first_slice+z)).str();
+      cout << "fname = " << fname << endl;
       // check for existence of the file
       if( !bf::exists(bf::path(fname)) )  {
         fname = fname+".gz";

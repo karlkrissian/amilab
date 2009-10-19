@@ -11,16 +11,24 @@ if (!exists(CSPH_defined)) {
     global_new
     
     CSPH_dimx = INT(100)
+    CSPH_dimx.Comments("Image dimension in X axis")
     CSPH_dimy = INT(100)
+    CSPH_dimy.Comments("Image dimension in Y axis")
     CSPH_dimz = INT(100)
-    # Background intensity
+    CSPH_dimz.Comments("Image dimension in Z axis")
+
     CSPH_bg = 0
-    # Foreground intensity
+    CSPH_bg.Comments("Image background intensity")
+
     CSPH_fg = 100
-    # Radius
+    CSPH_fg.Comments("Image foreground intensity")
+
     CSPH_R = 20 
+    CSPH_R.Comments("Sphere radius")
     
     CSPH_image_name = "i"
+    CSPH_image_name.Comments("Output image variable name")
+
     CSPH_Gui
   }
   
@@ -46,26 +54,35 @@ if (!exists(CSPH_defined)) {
     
     eval "global::"+CSPH_image_name+"<<=res;"
   }
+  CSPH_Create.Comments("Create the synthetic image of a sphere")
   
   proc CSPH_Show() {
     global_new
     eval "show "+CSPH_image_name+";"
   }
+  CSPH_Show.Comments("Shows the resulting sphere")
   
   proc CSPH_Gui() {
     global::CSPH_win = ParamWin("CreateSphere")
   
-    CSPH_win.AddInt(CSPH_dimx,1,1000)
-    CSPH_win.AddInt(CSPH_dimy,1,1000)
-    CSPH_win.AddInt(CSPH_dimz,1,1000)
-  
-    CSPH_win.AddFloat(CSPH_bg,0.1,500)
-    CSPH_win.AddFloat(CSPH_fg,0.1,500)
-  
-    CSPH_win.AddFloat(CSPH_R,0.1,50)
-  
-    CSPH_win.AddButton("Create", CSPH_Create)
-    CSPH_win.AddButton("Show",   CSPH_Show)
+    CSPH_win.BeginBook
+      CSPH_win.AddPage("Param")
+        CSPH_win.AddInt(CSPH_dimx,"X_dim",1,1000)
+        CSPH_win.AddInt(CSPH_dimy,"Y_dim",1,1000)
+        CSPH_win.AddInt(CSPH_dimz,"Z_dim",1,1000)
+      
+        CSPH_win.BeginBox("Intensity param")
+        CSPH_win.BeginPanel("Intensities")
+          CSPH_win.AddFloat(CSPH_bg,"Background",0.1,500)
+          CSPH_win.AddFloat(CSPH_fg,"Foreground",0.1,500)
+        CSPH_win.EndPanel
+        CSPH_win.EndBox
+      
+        CSPH_win.AddFloat(CSPH_R,"Radius",0.1,50)
+      
+        CSPH_win.AddButton("Create", CSPH_Create)
+        CSPH_win.AddButton("Show",   CSPH_Show)
+    CSPH_win.EndBook
     CSPH_win.AddButton("Close",  CSPH_Close)
   
     CSPH_win.update

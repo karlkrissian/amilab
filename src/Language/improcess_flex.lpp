@@ -209,6 +209,7 @@ DOUBLE        return(token::T_DOUBLE); /*{DOUBLE,T_DOUBLE}*/
 RGB           return(token::T_RGB); /*{RGB,T_RGB}*/
 FLOAT_VECTOR  return(token::T_FLOAT_VECTOR); /*{FLOAT_VECTOR,T_FLOAT_VECTOR}*/
 GetFormat     return(token::T_GetFormat); /*{GetFormat,T_GetFormat}*/
+Comments      return(token::T_Comments); /*{Comments,T_Comments}*/
 
 SURFACE       return(token::T_SURFACE); /*{SURFACE,T_SURFACE}*/
 IMAGE         return(token::T_IMAGE); /*{IMAGE,T_IMAGE}*/
@@ -668,8 +669,12 @@ ParamWin          {
 BeginBook         return(token::T_BeginBook); /*{BeginBook,T_BeginBook}*/
 EndBook           return(token::T_EndBook);   /*{EndBook,T_EndBook}*/
 AddPage           return(token::T_AddPage); /*{AddPage,T_AddPage}*/
-BeginPanel          return(token::T_BeginPanel); /*{BeginPanel,T_BeginPanel}*/
+BeginPanel        return(token::T_BeginPanel); /*{BeginPanel,T_BeginPanel}*/
 EndPanel          return(token::T_EndPanel); /*{EndPanel,T_EndPanel}*/
+
+BeginBoxPanel     return(token::T_BeginBoxPanel); /*{BeginBoxPanel,T_BeginBoxPanel}*/
+EndBoxPanel       return(token::T_EndBoxPanel); /*{EndBoxPanel,T_EndBoxPanel}*/
+
 AddFloat          return(token::T_AddFloat); /*{AddFloat,T_AddFloat}*/
 AddInt            return(token::T_AddInt); /*{AddInt,T_AddInt}*/
 AddButton         return(token::T_AddButton); /*{AddButton,T_AddButton}*/
@@ -693,7 +698,8 @@ EndHorizontal     return(token::T_EndHorizontal); /*{EndHorizontal,T_EndHorizont
 redraw            return(token::T_redraw); /*{redraw,T_redraw}*/
 
 Enable            return(token::T_Enable);  /*{Enable,T_Enable}*/
-Disable           return(token::T_Disable); /*{Disable,T_Disable}*/
+EnableBox         return(token::T_EnableBox);  /*{EnableBox,T_EnableBox}*/
+EnablePanel       return(token::T_EnablePanel);  /*{EnablePanel,T_EnablePanel}*/
 
 CreateFlatMesh    return(token::T_CreateFlatMesh);    /*{CreateFlatMesh,T_CreateFlatMesh}*/
 CreateVolume      return(token::T_CreateVolume);      /*{CreateVolume,T_CreateVolume}*/
@@ -958,6 +964,7 @@ emptyargs         return(token::T_emptyargs);    /*{emptyargs,T_emptyargs}*/
 
 <comment>.                 {
   // on ecrit ce qu'on veut dans un commentaire ...
+  // sauver les commentaires dans une variable du driver??
 }
 
 local::([A-Za-z0-9_])*   {

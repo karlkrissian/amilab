@@ -323,7 +323,8 @@ MainFrame::MainFrame( const wxString& title,
                   wxAuiPaneInfo()
                   .Name(wxT("Param Book"))
                   .Caption(wxT("User Interface"))
-                  .MinSize(wxSize(300,100))
+                  .MinSize(wxSize(200,100))
+                  .BestSize(wxSize(300,100))
                   .Right().Layer(1)
                   .MaximizeButton(true)
                   .Hide());

@@ -19,12 +19,19 @@ if (!exists(LS_defined)) {
 
       LS_inputmin = 0
       LS_inputmax = 32000
+
       LS_minimal_intensity = 0
+      LS_minimal_intensity.Comments("Minimal Intensity for the input image")
 
       LS_use_expansion_image = UCHAR(0)
       LS_expansion_image_name = "Image"
+
       LS_Imean=70
+      LS_Imean.Comments("Estimated mean intensity of the structure to segment")
+
       LS_Isd=50
+      LS_Isd.Comments("Estimated intensity standard deviation of the structure to segment")
+
       # probability threshold belong which expansion becomes negative
       LS_prob_threshold = 0.3 
       LS_sphere_radius = 3
@@ -54,6 +61,7 @@ if (!exists(LS_defined)) {
       LS_velcoeff  = 0.0
 
       LS_downsamplefactor = INT(1)
+      LS_downsamplefactor.Comments("Down-sampling factor, unused for the moment")
 
       #LS_in_draw.SetIsoContour(0,LS_inls0,0)
       #LS_in_draw.DrawIsoContour(0,1)
@@ -82,6 +90,7 @@ if (!exists(LS_defined)) {
     LS_inputmin          = min(LS_input)
     LS_inputmax          = max(LS_input)
     LS_minimal_intensity = LS_inputmin
+    LS_win.update
 
     show LS_input
   }
@@ -520,68 +529,75 @@ if (!exists(LS_defined)) {
   
       LS_win.AddPage("Init")
 
-        LS_win.BeginBox("Input Image")
+        LS_win.BeginBoxPanel("Input Image")
           # set the input image
-          LS_win.AddImageChoice(LS_input_name, "Input")
-          LS_win.AddButton("Load input",LS_load_input)
-        LS_win.EndBox
+          LS_win.BeginHorizontal
+            LS_win.AddImageChoice(LS_input_name, "")
+            LS_win.AddButton("Load",LS_load_input)
+          LS_win.EndHorizontal
+          LS_win.AddFloat(LS_minimal_intensity,"Min. intensity",LS_inputmin,LS_inputmax)
+        LS_win.EndBoxPanel
 
-        LS_win.BeginBox("Initial Level Set")
-          initmode_id = LS_win.AddEnum(LS_init_mode)
-            LS_win.AddEnumChoice(initmode_id,"Manual")
+        LS_win.BeginBoxPanel("Initial Level Set")
+          initmode_id = LS_win.AddEnum(LS_init_mode,"Mode")
+            LS_win.AddEnumChoice(initmode_id,"Manual Spheres")
             LS_win.AddEnumChoice(initmode_id,"Initial image")
   
+          LS_win.BeginBoxPanel("Spheres")
+            LS_win.BeginHorizontal
+              LS_win.AddButton("Reset", LS_Reset)
+              LS_win.AddButton("Add",   LS_AddSphere)
+              LS_win.AddButton("Undo",  LS_Undo)
+              LS_win.AddButton("Backup",     LS_Backup)
+            LS_win.EndHorizontal
+            LS_win.AddFloat(LS_sphere_radius,"Radius",0.1,10.0)
+          LS_win.EndBoxPanel
+
           # set the initial level set image
-          LS_win.AddImageChoice(LS_initial_name, "Initial")
-          LS_win.AddButton("Load initial LS",LS_load_initial)
+          LS_win.BeginBoxPanel("Initial Image")
+            LS_win.BeginHorizontal
+              LS_win.AddImageChoice(LS_initial_name, "")
+              LS_win.AddButton("Load",LS_load_initial)
+            LS_win.EndHorizontal
+          LS_win.EndBoxPanel
   
-          LS_win.BeginHorizontal
-            LS_win.AddButton("Reset",LS_Reset)
-            LS_win.AddButton("Add Sphere", LS_AddSphere)
-          LS_win.EndHorizontal
-          LS_win.AddFloat(LS_sphere_radius,0.1,10.0)
-          LS_win.BeginHorizontal
-            LS_win.AddButton("Backup",     LS_Backup)
-            LS_win.AddButton("Undo",       LS_Undo)
-          LS_win.EndHorizontal
-        LS_win.EndBox
+        LS_win.EndBoxPanel
 
         LS_win.AddButton("Compute Intensity stats",LS_ComputeIntensityStats)
   
-        LS_win.AddInt( LS_downsamplefactor, 1, 4)
-        LS_win.AddFloat(LS_minimal_intensity,LS_inputmin,LS_inputmax)
+        LS_win.AddInt( LS_downsamplefactor,"Downsample", 1, 4)
   
       LS_win.AddPage("Param")
         LS_win.BeginBook
           LS_win.AddPage("Exp")
-            LS_win.AddBoolean(LS_use_expansion_image)
+            LS_win.AddFloat(LS_expansioncoeff,"Weight",0,1)
+            LS_win.AddBoolean(LS_use_expansion_image,"Use expansion image")
             LS_win.AddImageChoice(LS_expansion_image_name,"Exp. Image:")
-            LS_win.BeginBox("Intensity-based")
-              LS_win.AddFloat(LS_Imean, LS_inputmin,LS_inputmax)
-              LS_win.AddFloat(LS_Isd,0,(LS_inputmax-LS_inputmin)/2)
-              LS_win.AddFloat(LS_prob_threshold,0,1)
-              LS_win.AddBoolean(LS_accept_high_intensity)
-            LS_win.EndBox
-            LS_win.AddFloat(LS_expansioncoeff,0,1)
+            LS_win.BeginBoxPanel("Intensity-based force")
+              LS_win.AddFloat(LS_Imean,"Mean", LS_inputmin,LS_inputmax)
+              LS_win.AddFloat(LS_Isd,"StandDev",0,(LS_inputmax-LS_inputmin)/2)
+              LS_win.AddFloat(LS_prob_threshold,"Threshold",0,1)
+              LS_win.AddBoolean(LS_accept_high_intensity,"Accept high intensities")
+            LS_win.EndBoxPanel
   
           LS_win.AddPage("Adv")
-            LS_win.AddFloat(LS_advcoeff,0,1)
+            LS_win.AddFloat(LS_advcoeff,"Weight",0,1)
     
           LS_win.AddPage("Smooth")
-            LS_smoothtype_id = LS_win.AddEnum(LS_smoothingtype,2)
-              LS_win.AddEnumChoice(LS_smoothtype_id,"min. curv.")
-              LS_win.AddEnumChoice(LS_smoothtype_id,"mean curv.")
-            LS_win.AddFloat(LS_curvcoeff,0,1)
-            LS_win.AddBoolean(LS_affinecurv)
+            LS_win.AddFloat(LS_curvcoeff,"Weight",0,1)
+            LS_smoothtype_id = LS_win.AddEnum(LS_smoothingtype,"Type")
+              LS_win.AddEnumChoice(LS_smoothtype_id,"min curv")
+              LS_win.AddEnumChoice(LS_smoothtype_id,"mean curv")
+            LS_win.AddBoolean(LS_affinecurv,"Affine curv")
     
-          LS_win.AddPage("Vel")
-            LS_win.AddFloat(LS_velcoeff,0,1)
+          global::LS_vel_pid = LS_win.AddPage("Vel")
+            LS_win.AddFloat(LS_velcoeff,"Weight",0,1)
   
         LS_win.EndBook
   
       LS_win.AddPage("Band")
         LS_win.BeginBox("Re-Distancing")
-            LS_DistType_id = LS_win.AddEnum(LS_NBD_method)
+            LS_DistType_id = LS_win.AddEnum(LS_NBD_method,"Method")
               LS_win.AddEnumChoice(LS_DistType_id,"Liana")
               LS_win.AddEnumChoice(LS_DistType_id,"Fast Marching")
               LS_win.AddEnumChoice(LS_DistType_id,"Fast Chamfer")
@@ -589,40 +605,42 @@ if (!exists(LS_defined)) {
 
       LS_win.AddPage("Evol")
   
-        LS_win.BeginBox("Time")
-          LS_win.AddFloat(LS_dt,0.01,1)
-          LS_win.AddFloat(LS_T,0.01,500)
-        LS_win.EndBox
+        LS_win.BeginBoxPanel("Time")
+          LS_win.AddFloat(LS_dt,"dt",0.01,1)
+          LS_win.AddFloat(LS_T,"T",0.01,500)
+        LS_win.EndBoxPanel
   
-        LS_win.BeginBox("Processing")
-        LS_win.AddInt(LS_threads,1,10)
-        LS_win.BeginHorizontal
-          LS_win.AddButton("ReRun",     LS_ReRun)
-          LS_win.AddButton("Continue",  LS_Continue)
-        LS_win.EndHorizontal
-        LS_win.BeginHorizontal
-          LS_win.AddButton("Stop",      LS_Stop)
-          LS_win.AddButton("Surface",   LS_Surface)
-        LS_win.EndHorizontal
-        LS_win.EndBox
+        LS_win.BeginBoxPanel("Processing")
+          LS_win.AddInt(LS_threads,"Threads",1,10)
+          LS_win.BeginHorizontal
+            LS_win.AddButton("ReRun",     LS_ReRun)
+            LS_win.AddButton("Continue",  LS_Continue)
+          LS_win.EndHorizontal
+          LS_win.BeginHorizontal
+            LS_win.AddButton("Stop",      LS_Stop)
+            LS_win.AddButton("Surface",   LS_Surface)
+          LS_win.EndHorizontal
+        LS_win.EndBoxPanel
 
-        LS_win.BeginBox("Convergence")
-          LS_win.AddBoolean(LS_check_convergence)
-          LS_win.AddInt(LS_conv_freq,5,100)
-        LS_win.EndBox 
+        LS_win.BeginBoxPanel("Convergence")
+          LS_win.AddBoolean(LS_check_convergence,"Check")
+          LS_win.AddInt(LS_conv_freq,"Freq",5,100)
+        LS_win.EndBoxPanel
       LS_win.AddPage("Dist")
-        LS_win.AddFloat(DTmin,-100,0)
-        LS_win.AddFloat(DTmax,0,100)
+        LS_win.AddFloat(DTmin,"min",-100,0)
+        LS_win.AddFloat(DTmax,"max",0,100)
         LS_win.AddButton("Apply",  LS_ApplyDT)
   
       LS_win.AddPage("Res")
   
-        LS_win.AddString(LS_result_filename,"base name:")
-        LS_win.AddString(LS_result_filename_ext,"extension:")
-        LS_win.AddBoolean(LS_resname_addtime)
-        LS_win.AddBoolean(LS_resname_addprob)
+        LS_win.BeginBoxPanel("Result filename")
+          LS_win.AddString(LS_result_filename,"base name:")
+          LS_win.AddString(LS_result_filename_ext,"extension:")
+          LS_win.AddBoolean(LS_resname_addtime,"Add evol. time")
+          LS_win.AddBoolean(LS_resname_addprob,"Add prob.")
+        LS_win.EndBoxPanel
   
-        LS_win.BeginBox("Save")
+        LS_win.BeginBoxPanel("Save")
         LS_win.BeginHorizontal
           LS_win.AddButton("Result",   LS_SaveResult)
         LS_win.EndHorizontal
@@ -631,7 +649,7 @@ if (!exists(LS_defined)) {
           LS_win.AddButton("Inside model",   LS_SaveInsideModel)
           LS_win.AddButton("Outside model",  LS_SaveOutsideModel)
         LS_win.EndHorizontal
-        LS_win.EndBox
+        LS_win.EndBoxPanel
   
   
     LS_win.EndBook

@@ -22,7 +22,8 @@ class Variable {
 
 private:
   vartype       _type;
-  std::string  _name;
+  std::string   _name;
+  std::string   _comments;
   void*         _pointer; // TODO remove all pointers!!!
 
  public:
@@ -34,18 +35,21 @@ private:
       _type         = v._type;
       _name         = v._name;
       _pointer      = v._pointer;
+      _comments     = v._comments;
   }
 
   void operator = (const Variable::ptr& v) {
       _type         = v->_type;
       _name         = v->_name;
+      _comments     = v->_comments;
       _pointer      = v->_pointer;
   }
 
   bool operator == (const Variable& v) {
-      return ((_type == v._type) &&
-              (_name == v._name) &&
-              (_pointer == v._pointer));
+      return ((_type     == v._type) &&
+              (_name     == v._name) &&
+              (_comments == v._comments) &&
+              (_pointer  == v._pointer));
   }
 
   void* Pointer() const { return _pointer;}
@@ -80,6 +84,9 @@ private:
 
   void Rename(const char* newname) {  _name=newname;}
   std::string Name() const { return _name;}
+
+  void SetComments(const std::string& comments) { _comments = comments;}
+  std::string GetComments() const { return _comments; }
 
   bool FreeMemory();
 

@@ -101,28 +101,27 @@ else \
   
   #------------------------------------
   proc SRAD_CreateGui() {
-    global_new 
   
     # parameters window
-    SRAD_win = ParamWin("SRAD")
+    global::SRAD_win = ParamWin("SRAD")
 
     SRAD_win.BeginBook
       SRAD_win.AddPage("Param")
         SRAD_win.AddImageChoice(SRAD_input_name, "Input")
-        SRAD_win.AddString(SRAD_output_name,"result name")
+        SRAD_win.AddString(SRAD_output_name,"Result name")
 
-        SRAD_dt_id         = SRAD_win.AddFloat(SRAD_dt,0.01,10)
-        SRAD_T_id          = SRAD_win.AddFloat(SRAD_T,0,100)
+        SRAD_dt_id         = SRAD_win.AddFloat(SRAD_dt,"dt",0.01,10)
+        SRAD_T_id          = SRAD_win.AddFloat(SRAD_T,"T",0,100)
         
-        SRAD_mode_id       = SRAD_win.AddEnum(SRAD_mode,3)
-        SRAD_mode_Lee_id   = SRAD_win.AddEnumChoice(SRAD_mode_id,"Lee")
-        SRAD_mode_Kuan_id  = SRAD_win.AddEnumChoice(SRAD_mode_id,"Kuan")
-        SRAD_mode_Add_id   = SRAD_win.AddEnumChoice(SRAD_mode_id,"Additive")
+        SRAD_mode_id       = SRAD_win.AddEnum(SRAD_mode,"Mode")
+          SRAD_win.AddEnumChoice(SRAD_mode_id,"Lee")
+          SRAD_win.AddEnumChoice(SRAD_mode_id,"Kuan")
+          SRAD_win.AddEnumChoice(SRAD_mode_id,"Additive")
         
-        SRAD_neighborhood_id = SRAD_win.AddInt(SRAD_neighborhood,0,4)
-        SRAD_scheme_id       = SRAD_win.AddEnum(SRAD_scheme,2)
-        SRAD_scheme_expl_id  = SRAD_win.AddEnumChoice(SRAD_scheme_id,"Explicit")
-        SRAD_scheme_impl_id  = SRAD_win.AddEnumChoice(SRAD_scheme_id,"Semi-implicit")
+        SRAD_neighborhood_id = SRAD_win.AddInt(SRAD_neighborhood,"Neighborhood",0,4)
+        SRAD_scheme_id       = SRAD_win.AddEnum(SRAD_scheme,"Scheme")
+          SRAD_win.AddEnumChoice(SRAD_scheme_id,"Explicit")
+          SRAD_win.AddEnumChoice(SRAD_scheme_id,"Semi-implicit")
         
         SRAD_win.BeginBox("Controls")
           SRAD_win.BeginHorizontal

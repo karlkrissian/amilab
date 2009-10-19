@@ -51,12 +51,15 @@ wxStringSelectionParameter::wxStringSelectionParameter( wxWindow* parent, int* p
   this->_parameter = param;
   this->_parent    = parent;
 
-  this->_label     = new wxStaticText(this->_parent, wxID_ANY, wxString::FromAscii(label));
+  this->_label     = new wxStaticText(this->_parent, wxID_ANY, wxString::FromAscii(label),
+                        wxDefaultPosition,
+                        wxDefaultSize,
+                        wxALIGN_LEFT );
 
   this->_choice    = new myChoice(this->_parent,wxID_ANY);
   this->_choice->SetCallback((void*)wxStringSelectionParameter::OnEnumUpdate,(void*) this);
 
-  this->Add(this->_label, 0, wxLEFT | wxALIGN_CENTRE_VERTICAL, 5);
+  this->Add(this->_label, 0, wxLEFT | wxALIGN_CENTRE_VERTICAL, 2);
   this->Add(this->_choice,0, wxLEFT | wxALIGN_CENTRE_VERTICAL, 5);
 }
 

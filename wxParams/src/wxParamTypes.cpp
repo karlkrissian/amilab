@@ -240,7 +240,7 @@ wxStringParameter::wxStringParameter( wxWindow* parent, string_ptr* param,
   this->_text->SetCallback((void*)wxStringParameter::OnStringUpdate,(void*) this);
   //this->_text->SetMinSize(wxSize(80,25));
   //this->_text->SetMinClientSize(wxSize(80,25));
-  this->Add(this->_label, 0, wxLEFT | wxALIGN_CENTRE_VERTICAL, 5);
+  this->Add(this->_label, 0, wxLEFT | wxALIGN_CENTRE_VERTICAL, 2);
   this->Add(this->_text,  1, wxALL | wxEXPAND,5 );
 //wxALL, 5);
 //wxLEFT | wxALIGN_CENTRE_VERTICAL, 5);
@@ -303,7 +303,7 @@ wxFilenameParameter::wxFilenameParameter( wxWindow* parent,
                                 wxString::FromAscii("Browse"));
   this->_button->SetCallback((void*)wxFilenameParameter::BrowseFile, (void*) this);
 
-  this->Add(this->_label, 0, wxLEFT | wxALIGN_CENTRE_VERTICAL, 5);
+  this->Add(this->_label, 0, wxLEFT | wxALIGN_CENTRE_VERTICAL, 2);
   this->Add(this->_text,  1, 0,5);
 //wxLEFT | wxALIGN_CENTRE_VERTICAL, 5);
   this->Add(this->_button,0, wxLEFT | wxALIGN_CENTRE_VERTICAL, 5);

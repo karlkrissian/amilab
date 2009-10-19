@@ -145,10 +145,12 @@ private:
 
   unsigned char       _inclu_bouttons;
 
-  std::vector<ParamInfo> _tab_param;
+  std::vector<ParamInfo>    _tab_param;
+  std::vector<wxStaticBox*> _tab_boxes;
+  std::vector<wxWindow*>    _tab_panels;
 
   std::stack<wxBoxSizer*>  _current_sizer;
-  std::stack<wxPanel*>     _panels;
+  std::stack<wxWindow*>     _panels;
   std::stack<wxNotebook*>  _current_book;
 
   wxBoxSizer*  _main_sizer;
@@ -185,10 +187,10 @@ public:
 
   void EndBook();
 
-  void AddPage(const std::string& panel_name);
+  int AddPage(const std::string& panel_name);
   //   -------
 
-  void BeginPanel(const std::string& panel_name);
+  int  BeginPanel(const std::string& panel_name);
   //   --------
 
   void EndPanel();
@@ -198,7 +200,7 @@ public:
   //---------
 //@}
 
-  wxPanel* LastPanel()
+  wxWindow* LastPanel()
   {
     if (_panels.empty()) {
       BeginPanel("main panel");
@@ -228,6 +230,11 @@ public:
   //
 
   int NbParameters() { return _tab_param.size(); } 
+  //
+
+  int NbBoxes() { return _tab_boxes.size(); } 
+  //
+  int NbPanels() { return _tab_panels.size(); } 
   //
  
   //
@@ -578,9 +585,11 @@ public:
 
   void SetDragCallback( int id, bool dcb);
 
-  void Enable( int id,bool enable=true);
+  void Enable(      int id,bool enable=true);
+  void EnableBox(   int id,bool enable=true);
+  void EnablePanel( int id,bool enable=true);
 
-  void BeginBox( const char* boxname);
+  int  BeginBox( const char* boxname);
   void EndBox();
   
   void BeginHorizontal( int b = wxP_DefHSizerBorder);
