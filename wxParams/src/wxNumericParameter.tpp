@@ -441,8 +441,10 @@ void wxNumericParameter<T>::Update( )
 template <class T>
 void wxNumericParameter<T>::SetToolTip( const wxString& tt)
 {
-   _label ->SetToolTip(tt);
-   _slider->SetToolTip(tt);
+   _label  ->SetToolTip(tt);
+   _slider ->SetToolTip(tt);
+   _text   ->SetToolTip(tt);
+   _spinbut->SetToolTip(tt);
 }
 
 //-------------------------------------------

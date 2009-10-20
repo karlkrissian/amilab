@@ -13,9 +13,12 @@ if (!exists(LS_defined)) {
     global_new
 
       LS_input_name   = ""
+      LS_input_name.Comments("Name of the input image variable")
       LS_initial_name = ""
+      LS_initial_name.Comments("Name of the initial level set image variable")
       # 0: for spheres 1: for initial image
       LS_init_mode    = INT(0) 
+      LS_init_mode.Comments("Contout initialization mode: spheres or zero-crossing of an image ")
 
       LS_inputmin = 0
       LS_inputmax = 32000
@@ -23,7 +26,14 @@ if (!exists(LS_defined)) {
       LS_minimal_intensity = 0
       LS_minimal_intensity.Comments("Minimal Intensity for the input image")
 
-      LS_use_expansion_image = UCHAR(0)
+      LS_use_expansion = UCHAR(1,"Use Expansion Force")
+      LS_use_advection = UCHAR(1,"Use Advection Force")
+      LS_use_smoothing = UCHAR(1,"Use Smoothing Force")
+      LS_use_velocity  = UCHAR(0,"Use Velocity Force")
+
+      LS_use_expansion_image = UCHAR(0,\
+                                "Set expansion force from an image")
+
       LS_expansion_image_name = "Image"
 
       LS_Imean=70
@@ -34,12 +44,18 @@ if (!exists(LS_defined)) {
 
       # probability threshold belong which expansion becomes negative
       LS_prob_threshold = 0.3 
+      LS_prob_threshold.Comments("Expansion force parameter to create negative forces (shrinking force) when the intensity is too distant from the expected intensity based on its mean and standard deviation")
+
       LS_sphere_radius = 3
-      LS_accept_high_intensity = UCHAR(1)
+      LS_sphere_radius.Comments("Radius in current unit (usually in mm) of the sphere to add")
+      LS_accept_high_intensity = UCHAR(1,"If set to true, will allow the maximal expansion force for any intensity higher the given mean intensity")
       LS_expansioncoeff  = 0.5
+      LS_expansioncoeff.Comments("Expansion weight in the evolution equation")
 
       LS_dt = 0.5
+      LS_dt.Comments("Evolution time-step")
       LS_T=200
+      LS_T.Comments("Total Evolution time")
 
       LS_NBD_method     = INT(2)     // 0:liana s, 1: fast marching 2: fast chamfer
       LS_NBD_freq       = INT(6)
@@ -199,6 +215,7 @@ if (!exists(LS_defined)) {
     delvars "LS_*_draw"
     delvars "LS_*"
   }
+  LS_Close.Comments("Close current script and delete its variables")
 
   //---------------------------------------------------
   proc LS_SetVelocityField( IMAGE vel, NUM coeff ) {
@@ -519,6 +536,12 @@ if (!exists(LS_defined)) {
   proc LS_SaveOutsideModel() {
   }
   
+  //---------------------------------------------------
+  proc LS_activate_terms() {
+    LS_win.EnablePanel(LS_exp_pid,LS_use_expansion)
+    LS_win.EnablePanel(LS_adv_pid,LS_use_advection)
+    LS_win.EnablePanel(LS_smo_pid,LS_use_smoothing)
+  }
   
   //---------------------------------------------------
   proc LS_Gui() {
@@ -568,8 +591,14 @@ if (!exists(LS_defined)) {
         LS_win.AddInt( LS_downsamplefactor,"Downsample", 1, 4)
   
       LS_win.AddPage("Param")
+        LS_win.AddBoolean(LS_use_expansion,"Expansion")
+        LS_win.SetCallback(LS_activate_terms)
+        LS_win.AddBoolean(LS_use_advection,"Advection")
+        LS_win.SetCallback(LS_activate_terms)
+        LS_win.AddBoolean(LS_use_smoothing,"Smoothing")
+        LS_win.SetCallback(LS_activate_terms)
         LS_win.BeginBook
-          LS_win.AddPage("Exp")
+          global::LS_exp_pid = LS_win.AddPage("Exp")
             LS_win.AddFloat(LS_expansioncoeff,"Weight",0,1)
             LS_win.AddBoolean(LS_use_expansion_image,"Use expansion image")
             LS_win.AddImageChoice(LS_expansion_image_name,"Exp. Image:")
@@ -580,10 +609,10 @@ if (!exists(LS_defined)) {
               LS_win.AddBoolean(LS_accept_high_intensity,"Accept high intensities")
             LS_win.EndBoxPanel
   
-          LS_win.AddPage("Adv")
+          global::LS_adv_pid = LS_win.AddPage("Adv")
             LS_win.AddFloat(LS_advcoeff,"Weight",0,1)
     
-          LS_win.AddPage("Smooth")
+          global::LS_smo_pid = LS_win.AddPage("Smooth")
             LS_win.AddFloat(LS_curvcoeff,"Weight",0,1)
             LS_smoothtype_id = LS_win.AddEnum(LS_smoothingtype,"Type")
               LS_win.AddEnumChoice(LS_smoothtype_id,"min curv")

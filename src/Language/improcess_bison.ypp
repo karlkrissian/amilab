@@ -1616,18 +1616,39 @@ command:
           varint = new int((int)$5);
           Vars.AddVar(type_int,ident,(void*)varint);
         }
-    |
-        identifier ASSIGN_OP T_UCHAR T_OP_PAR expr T_CL_PAR
-        {
+      |
+      identifier ASSIGN_OP T_UCHAR T_OP_PAR expr T_CL_PAR
+      {
+      /**
+      Description: creates a variable of type unsigned char (used for boolean type too)
+      **/
         unsigned char* varuchar;
         IdentifierInfo::ptr ident($1);
 
         varuchar = new unsigned char((unsigned char)$5);
         Vars.AddVar(type_uchar,ident,(void*)varuchar);
-        }
-        |
-          identifier ASSIGN_OP expr
-        {
+      }
+      |
+      identifier ASSIGN_OP T_UCHAR T_OP_PAR expr T_COMMA expr_string T_CL_PAR
+      {
+      /**
+      Parameters:
+        - identifier: name of the new variable
+        - expr: value of the new variable
+        - expr_string: short description of the new variable
+      Description: creates a variable of type unsigned char (used for boolean type too)
+      **/
+        unsigned char* varuchar;
+        IdentifierInfo::ptr ident($1);
+
+        varuchar = new unsigned char((unsigned char)$5);
+        Variable* var=Vars.AddVar(type_uchar,ident,(void*)varuchar);
+        string_ptr comments( new std::string($7));
+        var->SetComments(*comments);
+      }
+      |
+        identifier ASSIGN_OP expr
+      {
           float* varfloat;
           IdentifierInfo::ptr ident($1);
           varfloat = new float($3);
