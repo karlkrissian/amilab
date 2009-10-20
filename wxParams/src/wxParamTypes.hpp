@@ -251,6 +251,8 @@ class wxStringParameter : public wxBoxSizer, public wxGenericWidget
   void Update();
   //   ------
 
+  void SetToolTip( const wxString& tt);
+
 }; // wxStringParameter
 
 

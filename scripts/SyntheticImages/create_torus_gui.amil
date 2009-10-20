@@ -10,21 +10,22 @@ if (!exists(CT_defined)) {
   proc CT_Init() {
     global_new
     
-    CT_autoresize = UCHAR(0)
-    CT_margin = INT(10)
-    CT_dimx = INT(100)
-    CT_dimy = INT(100)
-    CT_dimz = INT(100)
-    # Background intensity
-    CT_bg = 0
+    CT_autoresize = UCHAR(0) , "Allow automatic calculation of the image dimensions"
+    CT_margin = INT(10), "Image margin in all directions for automatic calculation"
+    CT_dimx = INT(100), "Image dimension in X (in voxels)"
+    CT_dimy = INT(100), "Image dimension in Y (in voxels)"
+    CT_dimz = INT(100), "Image dimension in Z (in voxels)"
+
+    CT_bg = 0, "Background intensity"
+
     # Foreground intensity
-    CT_fg = 100
+    CT_fg = 100, "Foreground intensity"
     # Big radius
-    CT_R = 20 
+    CT_R = 20, "Big Radius of the torus"
     # Small radius
-    CT_r = 4
+    CT_r = 4, "Small Radius of the torus"
     
-    CT_image_name = "torus"
+    CT_image_name = "torus", "Name of the resulting image variable"
     CT_Gui
   }
   
@@ -89,30 +90,32 @@ printn "deleting windows"
   
     CT_win.BeginBook
       CT_win.AddPage("Param")
-        CT_win.BeginBox("Automatic size")
-          CT_win.AddInt(CT_margin,1,50)
-          CT_win.AddButton("Compute Size",CT_ComputeSize)
-        CT_win.EndBox
 
-        CT_win.BeginBox("Colors")
-          CT_win.AddFloat(CT_bg,0.1,500)
-          CT_win.AddFloat(CT_fg,0.1,500)
-        CT_win.EndBox
-      
-        CT_win.BeginBox("Radii")
-          CT_win.AddFloat(CT_R,0.1,50)
-          CT_win.AddFloat(CT_r,0.1,50)
-        CT_win.EndBox
+        CT_win.BeginBoxPanel("Radii")
+          CT_win.AddFloat(CT_R,"R",0.1,50)
+          CT_win.AddFloat(CT_r,"r",0.1,50)
+        CT_win.EndBoxPanel
+
+        CT_win.BeginBoxPanel("Colors")
+          CT_win.AddFloat(CT_bg,"Bg",0.1,500)
+          CT_win.AddFloat(CT_fg,"Fg",0.1,500)
+        CT_win.EndBoxPanel
       
         CT_win.AddString(CT_image_name,"Result name")
         CT_win.AddButton("Create", CT_Create)
         CT_win.AddButton("Show",   CT_Show)
+
       CT_win.AddPage("Dimensions")
-        CT_win.BeginBox("Dimensions")
+        CT_win.BeginBoxPanel("Dimensions")
           CT_win.AddInt(CT_dimx,1,1000)
           CT_win.AddInt(CT_dimy,1,1000)
           CT_win.AddInt(CT_dimz,1,1000)
-        CT_win.EndBox
+        CT_win.EndBoxPanel
+        CT_win.BeginBoxPanel("Automatic size")
+          CT_win.AddInt(CT_margin,"margin",1,50)
+          CT_win.AddButton("Compute Size",CT_ComputeSize)
+        CT_win.EndBoxPanel
+
     CT_win.EndBook
 
     CT_win.AddButton("Close",  CT_Close)

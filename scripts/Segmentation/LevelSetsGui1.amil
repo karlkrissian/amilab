@@ -12,50 +12,38 @@ if (!exists(LS_defined)) {
   proc LS_Init(IMAGE _input, IMAGE _init) {
     global_new
 
-      LS_input_name   = ""
-      LS_input_name.Comments("Name of the input image variable")
-      LS_initial_name = ""
-      LS_initial_name.Comments("Name of the initial level set image variable")
+      LS_input_name   = "","Name of the input image variable"
+      LS_initial_name = "","Name of the initial level set image variable"
       # 0: for spheres 1: for initial image
-      LS_init_mode    = INT(0) 
-      LS_init_mode.Comments("Contout initialization mode: spheres or zero-crossing of an image ")
+      LS_init_mode    = INT(0), "Contour initialization mode: spheres or zero-crossing of an image "
 
       LS_inputmin = 0
       LS_inputmax = 32000
 
-      LS_minimal_intensity = 0
-      LS_minimal_intensity.Comments("Minimal Intensity for the input image")
+      LS_minimal_intensity = 0, "Minimal Intensity for the input image"
 
-      LS_use_expansion = UCHAR(1,"Use Expansion Force")
-      LS_use_advection = UCHAR(1,"Use Advection Force")
-      LS_use_smoothing = UCHAR(1,"Use Smoothing Force")
-      LS_use_velocity  = UCHAR(0,"Use Velocity Force")
+      LS_use_expansion = UCHAR(1) ,"Use Expansion Force"
+      LS_use_advection = UCHAR(1) ,"Use Advection Force"
+      LS_use_smoothing = UCHAR(1) ,"Use Smoothing Force"
+      LS_use_velocity  = UCHAR(0) ,"Use Velocity Force"
 
-      LS_use_expansion_image = UCHAR(0,\
-                                "Set expansion force from an image")
+      LS_use_expansion_image = UCHAR(0), "Set expansion force from an image"
 
       LS_expansion_image_name = "Image"
 
-      LS_Imean=70
-      LS_Imean.Comments("Estimated mean intensity of the structure to segment")
+      LS_Imean=70, "Estimated mean intensity of the structure to segment"
 
-      LS_Isd=50
-      LS_Isd.Comments("Estimated intensity standard deviation of the structure to segment")
+      LS_Isd=50, "Estimated intensity standard deviation of the structure to segment"
 
       # probability threshold belong which expansion becomes negative
-      LS_prob_threshold = 0.3 
-      LS_prob_threshold.Comments("Expansion force parameter to create negative forces (shrinking force) when the intensity is too distant from the expected intensity based on its mean and standard deviation")
+      LS_prob_threshold = 0.3, "Expansion force parameter to create negative forces (shrinking force) when the intensity is too distant from the expected intensity based on its mean and standard deviation"
 
-      LS_sphere_radius = 3
-      LS_sphere_radius.Comments("Radius in current unit (usually in mm) of the sphere to add")
-      LS_accept_high_intensity = UCHAR(1,"If set to true, will allow the maximal expansion force for any intensity higher the given mean intensity")
-      LS_expansioncoeff  = 0.5
-      LS_expansioncoeff.Comments("Expansion weight in the evolution equation")
+      LS_sphere_radius = 3, "Radius in current unit (usually in mm) of the sphere to add"
+      LS_accept_high_intensity = UCHAR(0) ,"If set to true, will allow the maximal expansion force for any intensity higher the given mean intensity"
+      LS_expansioncoeff  = 0.5, "Expansion weight in the evolution equation"
 
-      LS_dt = 0.5
-      LS_dt.Comments("Evolution time-step")
-      LS_T=200
-      LS_T.Comments("Total Evolution time")
+      LS_dt = 0.5, "Evolution time-step"
+      LS_T=200, "Total Evolution time"
 
       LS_NBD_method     = INT(2)     // 0:liana s, 1: fast marching 2: fast chamfer
       LS_NBD_freq       = INT(6)
@@ -63,16 +51,19 @@ if (!exists(LS_defined)) {
       LS_check_convergence = UCHAR(1)
       LS_conv_freq         = INT(20)
 
-      LS_stop = 0;
+      LS_stop = 0,          "Test if the stop button has been pressed"
       # number of threads (not used right now)
-      LS_threads = INT(2)
+      LS_threads = INT(2),  "Number of threads used during the evolution (the re-distancing of the narrow band is not multi-threaded)"
 
-      LS_advcoeff  = 0.5
+      LS_advcoeff  = 0.5,   "Advection weight in the PDE"
 
-      LS_curvcoeff = 0.5
+      LS_curvcoeff = 0.5,   "Smoothing weight in the PDE"
 
-      LS_smoothingtype = INT(0) // 0: mean curv 1: min curv
-      LS_affinecurv    = UCHAR(0) // 0: 2D affine curvature 1: 2D mean curvature
+      LS_smoothingtype = INT(0),\
+                            "Smoothing mode: either mean curvature or minimal curvature"
+      LS_affinecurv    = UCHAR(0),\
+                            "Experimental: use of affine curvature"
+                         // 0: 2D affine curvature 1: 2D mean curvature
 
       LS_velcoeff  = 0.0
 
@@ -307,8 +298,16 @@ if (!exists(LS_defined)) {
     //   6. reinitfreq
   
   
+    adv_coeff = 0;
+    if (LS_use_advection) {
+      adv_coeff = LS_advcoeff;
+    }
+    smo_coeff = 0;
+    if (LS_use_smoothing) {
+      smo_coeff = LS_curvcoeff;
+    }
     //
-    LevelSetsCURV.SetParam(0.7,it,LS_advcoeff,LS_curvcoeff,LS_dt,LS_NBD_freq)
+    LevelSetsCURV.SetParam(0.7,it,adv_coeff,smo_coeff,LS_dt,LS_NBD_freq)
     LevelSetsCURV.SetDistMethod(LS_NBD_method)
     LevelSetsCURV.SetThreads(LS_threads)
     LevelSetsCURV.SetMeanCurv(LS_smoothingtype)
@@ -325,22 +324,27 @@ if (!exists(LS_defined)) {
     print "\n"
   
     LevelSetsCURV.SetILowTh(LS_minimal_intensity)
-    if (LS_use_expansion_image) {
-      if (!exists(LS_expansion_image)) {
-        LS_load_expansion
-      }
-      LevelSetsCURV.SetExpansionImage(LS_expansion_image)
-    } else {
-      LevelSetsCURV.SetNumGaussians(1)
-      LevelSetsCURV.SetGaussian(0,LS_Imean,LS_Isd)
-      LevelSetsCURV.SetProbThreshold(LS_prob_threshold)
-      if (LS_accept_high_intensity) {
-        LevelSetsCURV.SetProbHighTh(LS_Imean+LS_Isd)
-      }
-    } 
-    # end else / if (LS_use_expansion_image)
 
-    LevelSetsCURV.SetExpansion(LS_expansioncoeff)
+    if (LS_use_expansion) {
+      if (LS_use_expansion_image) {
+        if (!exists(LS_expansion_image)) {
+          LS_load_expansion
+        }
+        LevelSetsCURV.SetExpansionImage(LS_expansion_image)
+      } else {
+        LevelSetsCURV.SetNumGaussians(1)
+        LevelSetsCURV.SetGaussian(0,LS_Imean,LS_Isd)
+        LevelSetsCURV.SetProbThreshold(LS_prob_threshold)
+        if (LS_accept_high_intensity) {
+          LevelSetsCURV.SetProbHighTh(LS_Imean+LS_Isd)
+        }
+      } 
+      # end else / if (LS_use_expansion_image)
+  
+      LevelSetsCURV.SetExpansion(LS_expansioncoeff)
+    } else {
+      LevelSetsCURV.SetExpansion(0)
+    }
   
     print "Compute Expansion Image OK \n"
   
@@ -625,12 +629,12 @@ if (!exists(LS_defined)) {
         LS_win.EndBook
   
       LS_win.AddPage("Band")
-        LS_win.BeginBox("Re-Distancing")
+        LS_win.BeginBoxPanel("Re-Distancing")
             LS_DistType_id = LS_win.AddEnum(LS_NBD_method,"Method")
               LS_win.AddEnumChoice(LS_DistType_id,"Liana")
               LS_win.AddEnumChoice(LS_DistType_id,"Fast Marching")
               LS_win.AddEnumChoice(LS_DistType_id,"Fast Chamfer")
-        LS_win.EndBox
+        LS_win.EndBoxPanel
 
       LS_win.AddPage("Evol")
   

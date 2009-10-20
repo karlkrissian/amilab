@@ -48,6 +48,7 @@
 #include <wx/scrolbar.h>
 #include <wx/scrolwin.h>
 #include <iostream>
+//#include <wx/artprov.h>
 
 using namespace std;
 
@@ -125,6 +126,11 @@ ParamPanel::ParamPanel( wxWindow* parent,
 //  this->SetScrollbar(wxVERTICAL, 0, 16, 50);
   this->SetScrollbars(3,3,10,10);
   this->EnableScrolling(true,true);
+
+//  _toolbar = new wxToolBar(this,wxID_ANY);
+//  _toolbar->AddTool(wxID_ANY, wxT("Quit"), wxArtProvider::GetBitmap(wxART_QUIT),
+//    wxT("Quit Panel"));
+
 
 } //  ParamPanel()
 
@@ -797,7 +803,9 @@ void ParamPanel::ChangedValueCallback( int id, void* callback, void* calldata)
 //----------------------------------------------------------------
 unsigned char ParamPanel::AjouteChaine( int* id, string_ptr* param, 
 //                      ------------
-                const char* libelle)
+                const char* libelle,
+                const std::string& tt
+                )
 {
   wxStringParameter* wsp;
   wsp= new wxStringParameter(CurrentParent(),param,libelle);
@@ -805,6 +813,7 @@ unsigned char ParamPanel::AjouteChaine( int* id, string_ptr* param,
   ParamInfo pi( TYPE_PARAMETRE_CHAINE,
                 wsp,
                 AddWidget(wsp));
+  if (tt!="") wsp->SetToolTip(GetwxStr(tt.c_str()));
   _tab_param.push_back(pi);
   *id = _tab_param.size()-1;
   return( true);

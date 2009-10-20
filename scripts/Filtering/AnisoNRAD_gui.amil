@@ -33,28 +33,28 @@ if (exists(NRAD_Init)) {
   
       NRAD_input_name = ""
       # suggested 1/6 in 3D and 1/4 in 2D
-      NRAD_dt   = 1.0/6.0
-      NRAD_t    = 1.0
+      NRAD_dt   = 1.0/6.0, "Time step for the Partial Differential Equation"
+      NRAD_t    = 1.0, "Total diffusion time of the equation"
 
       # 0: Lee, 1: Kuan, 2: Additive, 3: MRI
-      NRAD_scalar_mode = INT(3)
+      NRAD_scalar_mode = INT(3), "Scalar mode: Lee, Kuan, Additive or MRI"
 
       # 0: Grad, 1: MRI,  2:MRI_NEW 
-      NRAD_matrix_mode = INT(1)
+      NRAD_matrix_mode = INT(1), "Matrix mode: Gradient, MRI or MRI_new"
 
-      NRAD_neighborhood = INT(1)
+      NRAD_neighborhood = INT(1), "Size of the neighborhood for local statistics, the window size is (2n+1)^3, where n is the parameter"
 
-      NRAD_sigma = 0.7
+      NRAD_sigma = 0.7, "Gaussian convolution standard deviation for computing the local structure"
       # Local Structure 0: princ. curv 1: struct tensor
-      NRAD_local_struct = INT(1)
+      NRAD_local_struct = INT(1), "Local Structure mode: either gradient and principal curvature directions, or structure tensor eigenvectors"
       # Eigenvalues mode 0: SUM 1: MAX
-      NRAD_eigen_mode = INT(0)
+      NRAD_eigen_mode = INT(0), "Eigenvalues mode, decides how to combine the diffusions along each line, plane and local volume: either the sum, or the maximum (default is sum)"
 
       # 0: scalar diffusion, 1: matrix diffusion equation
-      NRAD_equation_type = INT(0)
+      NRAD_equation_type = INT(0), "Equation type: scalar or matrix"
 
       # Scheme, 0: explicit 1: semi-implicit
-      NRAD_scheme = INT(1)
+      NRAD_scheme = INT(1), "Numerical scheme: explicit or semi-implicit"
   
       NRAD_CreateWindow()
       # NRAD_ROI 
@@ -264,14 +264,14 @@ if (exists(NRAD_Init)) {
   }
   
   proc NRAD_new_eq_type() {
-    NRAD_win.EnableBox(NRAD_mat_boxid, NRAD_equation_type==1)
-    NRAD_win.Enable(NRAD_sigma_id, NRAD_equation_type==1)
-    NRAD_win.Enable(NRAD_matrix_mode_id, NRAD_equation_type==1)
-    NRAD_win.Enable(NRAD_localstruct_id, NRAD_equation_type==1)
-    NRAD_win.Enable(NRAD_eigenmode_id, NRAD_equation_type==1)
+    NRAD_win.EnablePanel(NRAD_mat_boxid, NRAD_equation_type==1)
+    #NRAD_win.Enable(NRAD_sigma_id, NRAD_equation_type==1)
+    #NRAD_win.Enable(NRAD_matrix_mode_id, NRAD_equation_type==1)
+    #NRAD_win.Enable(NRAD_localstruct_id, NRAD_equation_type==1)
+    #NRAD_win.Enable(NRAD_eigenmode_id, NRAD_equation_type==1)
 
-    NRAD_win.EnableBox(NRAD_scal_boxid,NRAD_equation_type!=1)
-    NRAD_win.Enable(NRAD_scalar_mode_id,NRAD_equation_type!=1)
+    NRAD_win.EnablePanel(NRAD_scal_boxid,NRAD_equation_type!=1)
+    #NRAD_win.Enable(NRAD_scalar_mode_id,NRAD_equation_type!=1)
   }
   
   #------------------------------------
@@ -285,7 +285,7 @@ if (exists(NRAD_Init)) {
         NRAD_win.AddFloat(NRAD_dt,"dt",0.01,10)
         NRAD_win.AddFloat(NRAD_t,"T",0,100)
         
-        NRAD_win.AddInt(NRAD_neighborhood,0,4)
+        NRAD_win.AddInt(NRAD_neighborhood,"Neighborhood",0,4)
     
         NRAD_scheme_id       = NRAD_win.AddEnum(NRAD_scheme,"Scheme")
           NRAD_win.AddEnumChoice(NRAD_scheme_id,"Explicit")
@@ -296,30 +296,30 @@ if (exists(NRAD_Init)) {
           NRAD_win.AddEnumChoice(NRAD_eq_type_id,"Matrix")
         NRAD_win.SetCallback(NRAD_new_eq_type)
     
-        global::NRAD_scal_boxid = NRAD_win.BeginBox("Scalar diffusion parameters")
-          global::NRAD_scalar_mode_id = NRAD_win.AddEnum(NRAD_scalar_mode)
+        global::NRAD_scal_boxid = NRAD_win.BeginBoxPanel("Scalar diffusion parameters")
+          global::NRAD_scalar_mode_id = NRAD_win.AddEnum(NRAD_scalar_mode,"Scalar mode")
             NRAD_win.AddEnumChoice(NRAD_scalar_mode_id,"Lee")
             NRAD_win.AddEnumChoice(NRAD_scalar_mode_id,"Kuan")
             NRAD_win.AddEnumChoice(NRAD_scalar_mode_id,"Additive")
             NRAD_win.AddEnumChoice(NRAD_scalar_mode_id,"MRI")
             NRAD_win.AddEnumChoice(NRAD_scalar_mode_id,"MRI new")
-        NRAD_win.EndBox
+        NRAD_win.EndBoxPanel
 
-        global::NRAD_mat_boxid = NRAD_win.BeginBox("Matrix diffusion parameters")
-          global::NRAD_sigma_id = NRAD_win.AddFloat(NRAD_sigma,0.01,10)
-          global::NRAD_matrix_mode_id = NRAD_win.AddEnum(NRAD_matrix_mode)
+        global::NRAD_mat_boxid = NRAD_win.BeginBoxPanel("Matrix diffusion parameters")
+          global::NRAD_sigma_id = NRAD_win.AddFloat(NRAD_sigma,"sigma",0.01,10)
+          global::NRAD_matrix_mode_id = NRAD_win.AddEnum(NRAD_matrix_mode,"Matrix mode")
             NRAD_win.AddEnumChoice(NRAD_matrix_mode_id,"Grad")
             NRAD_win.AddEnumChoice(NRAD_matrix_mode_id,"MRI")
             NRAD_win.AddEnumChoice(NRAD_matrix_mode_id,"MRI new")
   
-          global::NRAD_localstruct_id = NRAD_win.AddEnum(NRAD_local_struct)
+          global::NRAD_localstruct_id = NRAD_win.AddEnum(NRAD_local_struct,"Local Struct.")
             NRAD_win.AddEnumChoice(NRAD_localstruct_id,"Grad & Curv. Dir.")
             NRAD_win.AddEnumChoice(NRAD_localstruct_id,"Struct. Tensor")
       
-          global::NRAD_eigenmode_id = NRAD_win.AddEnum(NRAD_eigen_mode,2)
+          global::NRAD_eigenmode_id = NRAD_win.AddEnum(NRAD_eigen_mode,"Eigen mode")
             NRAD_win.AddEnumChoice(NRAD_eigenmode_id,"Sum")
             NRAD_win.AddEnumChoice(NRAD_eigenmode_id,"Max")
-        NRAD_win.EndBox
+        NRAD_win.EndBoxPanel
         
         NRAD_win.AddPage("Controls")
           NRAD_win.BeginHorizontal

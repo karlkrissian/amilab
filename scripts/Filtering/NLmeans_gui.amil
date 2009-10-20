@@ -28,10 +28,10 @@ if (!exists(NLM_defined)) {
       # noise type: 0 additive Gaussian, 1: Rician
       NLM_noisetype = INT(1)
       NLM_threads   = INT(2)
-      # Patch window size
-      NLM_f = INT(2) 
-      # Match window area
-      NLM_t = INT(4)
+
+      NLM_f = INT(2),     "Patch window size"
+      NLM_t = INT(4),     "Match window area"
+
       # Threshold for distance 
       NLM_h = 10
       # Sigma: standard deviation of the Gaussian smoothing for fast version

@@ -38,7 +38,7 @@ public:
    wxDrawingArea(wxWindow *parent, wxWindowID id = wxID_ANY,
         const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize, long style = 0,
-        const wxString& name = _T("ami_wxGLCanvas"));
+        const wxString& name = _T("wxDrawingArea"));
 
    virtual ~wxDrawingArea(){};
 

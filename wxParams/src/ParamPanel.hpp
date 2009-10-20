@@ -127,7 +127,7 @@ typedef boost::shared_ptr<std::string>     string_ptr;
 
 #include "ParamBox.hpp"
 #include <wx/scrolwin.h>
-
+#include <wx/toolbar.h>
 
 /*!
   \brief ParamPanel: a wxPanel to include parameters
@@ -155,6 +155,7 @@ private:
 
   wxBoxSizer*  _main_sizer;
 
+//  wxToolBar*   _toolbar;
 
 public:
 
@@ -364,7 +365,9 @@ public:
   //            ------------
     int* id,
     string_ptr* ch,
-    const char* libelle);
+    const char* libelle,
+    const std::string& tooltip=""
+    );
 
   ///
   void ContraintesChaine( int id, char* defaut);

@@ -1606,21 +1606,45 @@ command:
           else
             driver.err_print("not able to create surface array !\n");
 
-        }
-        |
-          identifier ASSIGN_OP T_INT T_OP_PAR expr T_CL_PAR
-        {
-          int* varint;
-          IdentifierInfo::ptr ident($1);
+      }
+      |
+      identifier ASSIGN_OP T_INT T_OP_PAR expr T_CL_PAR
+      {
+      /**
+        Description: 
+          Creates a variable of type int
+      **/
+        int* varint;
+        IdentifierInfo::ptr ident($1);
 
-          varint = new int((int)$5);
-          Vars.AddVar(type_int,ident,(void*)varint);
-        }
+        varint = new int((int)$5);
+        Vars.AddVar(type_int,ident,(void*)varint);
+      }
+      |
+      identifier ASSIGN_OP T_INT T_OP_PAR expr T_CL_PAR T_COMMA expr_string
+      {
+      /**
+      Parameters:
+        - identifier: name of the new variable
+        - expr: value of the new variable
+        - expr_string: short description of the new variable
+        Description: 
+          Creates a variable of type int
+      **/
+        int* varint;
+        IdentifierInfo::ptr ident($1);
+
+        varint = new int((int)$5);
+        Variable* var=Vars.AddVar(type_int,ident,(void*)varint);
+        string_ptr comments( new std::string($8));
+        var->SetComments(*comments);
+      }
       |
       identifier ASSIGN_OP T_UCHAR T_OP_PAR expr T_CL_PAR
       {
       /**
-      Description: creates a variable of type unsigned char (used for boolean type too)
+        Description: 
+          Creates a variable of type unsigned char (used for boolean type too)
       **/
         unsigned char* varuchar;
         IdentifierInfo::ptr ident($1);
@@ -1629,7 +1653,7 @@ command:
         Vars.AddVar(type_uchar,ident,(void*)varuchar);
       }
       |
-      identifier ASSIGN_OP T_UCHAR T_OP_PAR expr T_COMMA expr_string T_CL_PAR
+      identifier ASSIGN_OP T_UCHAR T_OP_PAR expr  T_CL_PAR T_COMMA expr_string
       {
       /**
       Parameters:
@@ -1643,31 +1667,74 @@ command:
 
         varuchar = new unsigned char((unsigned char)$5);
         Variable* var=Vars.AddVar(type_uchar,ident,(void*)varuchar);
-        string_ptr comments( new std::string($7));
+        string_ptr comments( new std::string($8));
         var->SetComments(*comments);
       }
       |
         identifier ASSIGN_OP expr
       {
+      /**
+        Description: Creation of a new floating point number variable
+      **/
           float* varfloat;
           IdentifierInfo::ptr ident($1);
           varfloat = new float($3);
 
           Vars.AddVar(type_float,ident,(void*)varfloat);
         }
-        |
-          identifier ASSIGN_OP expr_string
-        {
+      |
+      identifier ASSIGN_OP expr T_COMMA expr_string
+      {
+      /**
+        Parameters:
+          - identifier: name of the new variable
+          - expr: value of the new variable
+          - expr_string: short description of the new variable
+        Description: Creation of a new floating point number variable
+      **/
+        float* varfloat;
+        IdentifierInfo::ptr ident($1);
+        varfloat = new float($3);
+
+        Variable* var = Vars.AddVar(type_float,ident,(void*)varfloat);
+        string_ptr comments( new std::string($5));
+        var->SetComments(*comments);
+      }
+      |
+      identifier ASSIGN_OP expr_string
+      {
+      /**
+        Description: Creation of a new string variable
+      **/
           string* varstring;
           varstring = new string($3);
           IdentifierInfo::ptr ident($1);
 
           Vars.AddVar(type_string,ident,(void*)varstring);
-              delete [] $3;
-        }
-        |
-        identifier ASSIGN_OP T_OPEN T_OP_PAR  expr_string T_COMMA ASTRING T_CL_PAR
-        {
+          delete [] $3;
+      }
+      |
+      identifier ASSIGN_OP expr_string T_COMMA expr_string
+      {
+      /**
+        Parameters:
+          - identifier: name of the new variable
+          - expr_string: value of the new variable
+          - expr_string: short description of the new variable
+        Description: Creation of a new string variable
+      **/
+        string_ptr value( new std::string($3));
+        string* varstring;
+        varstring = new string(value->c_str());
+        IdentifierInfo::ptr ident($1);
+
+        Variable* var = Vars.AddVar(type_string,ident,(void*)varstring);
+        string_ptr comments( new std::string($5));
+        var->SetComments(*comments);
+      }
+      |
+      identifier ASSIGN_OP T_OPEN T_OP_PAR  expr_string T_COMMA ASTRING T_CL_PAR
+      {
           FILE* file;
           IdentifierInfo::ptr ident($1);
 
@@ -6545,9 +6612,10 @@ postfix_expr
       int*   var = ((int_ptr*) $5->Pointer())->get();
       ParamPanel_ptr pw  = *(ParamPanel_ptr*) $1->Pointer();
       int var_id;
+      std::string tooltip = (boost::format("%s  (%s)") % $5->GetComments() % $5->Name()).str();
       pw->AddEnumeration( &var_id,  var, label->c_str(),
                           EnumOptionMenu,
-                          (char*)$5->Name().c_str());
+                          tooltip);
       //pw->EnumerationDefaut( var_id,  *var);
       $$ = var_id;
     }
@@ -6600,9 +6668,11 @@ postfix_expr
         string_ptr label( new std::string($7));
         ParamPanel_ptr pw  = *(ParamPanel_ptr*) $1->Pointer();
         int var_id;
+        std::string tooltip = (boost::format("%s  (%s)") % $5->GetComments() % $5->Name()).str();
         pw->AjouteChaine( &var_id,
           (string_ptr*)$5->Pointer(),
-          label->c_str());
+          label->c_str(),
+          tooltip);
         pw->ContraintesChaine(var_id,
           (char*) ((string_ptr*)$5->Pointer())->get()->c_str());
         $$=var_id;

@@ -216,7 +216,7 @@ void wxMenuEnum::OnEnumUpdate(wxCommandEvent&)
 
 
 //==============================================================================
-//          Filename Parameter
+//          String Parameter
 //==============================================================================
 
 wxStringParameter::wxStringParameter( wxWindow* parent, string_ptr* param,
@@ -261,6 +261,12 @@ void wxStringParameter::Update()
   this->_text->SetValue(wxString::FromAscii((*this->_parameter)->c_str()));
 } // Update()
 
+
+void wxStringParameter::SetToolTip( const wxString& tt)
+{
+   _label  ->SetToolTip(tt);
+   _text   ->SetToolTip(tt);
+}
 
 //==============================================================================
 //          Filename Parameter
