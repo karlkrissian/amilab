@@ -1,0 +1,15 @@
+#!/usr/bin/amilab
+
+#
+# Adding main Gui scripts to the menu
+#
+
+cl_category = "&Centerlines"
+cl_dir = "Centerlines/"
+
+AddMenuScript(cl_category,"&Skeleton",        cl_dir+"CreateSkeletonGui")
+AddMenuScript(cl_category,"&Multi-Line",      cl_dir+"MultiLines")
+AddMenuScript(cl_category,"Shortest &Path",   cl_dir+"ShortestPath_gui")
+
+del cl_category
+del cl_dir
