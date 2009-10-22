@@ -6563,12 +6563,17 @@ postfix_expr
       imagelist = Vars.SearchVariables(type_image);
       imagelist->Add(_T("Image"));
 
+      // Get comments as tooltip
+      std::string tooltip = (boost::format("%s  (%s)") % $5->GetComments() % $5->Name()).str();
+
       // Get list of image names
       pw->AddListChoice( &var_id,
           (string_ptr*)$5->Pointer(),
           label->c_str(),
           imagelist,
-          (void*)CB_update_imagelist);
+          (void*)CB_update_imagelist,
+          EnumOptionMenu,
+          tooltip);
       //pw->EnumerationDefaut( var_id,  *var);
       $$ = var_id;
     }

@@ -74,10 +74,6 @@ wxEnumerationParameter::wxEnumerationParameter( wxWindow* parent,
   this->Add(this->_label, 0, wxLEFT | wxALIGN_CENTRE_VERTICAL, 2);
   this->Add(this->_choice,0, wxLEFT | wxALIGN_CENTRE_VERTICAL, 5);
 
-  if (tooltip!="") {
-    _label->SetToolTip(GetwxStr(tooltip.c_str()));
-    _choice->SetToolTip(GetwxStr(tooltip.c_str()));
-  }
 }
 
 
@@ -99,8 +95,14 @@ wxEnumerationParameter::wxEnumerationParameter( wxWindow* parent,
   this->_choice    = new myChoice(this->_parent,wxID_ANY);
   this->_choice->SetCallback((void*)wxEnumerationParameter::OnEnumUpdate,(void*) this);
 
-  this->Add(this->_label, 0, wxLEFT | wxALIGN_CENTRE_VERTICAL, 5);
+  this->Add(this->_label, 0, wxLEFT | wxALIGN_CENTRE_VERTICAL, 2);
   this->Add(this->_choice,0, wxLEFT | wxALIGN_CENTRE_VERTICAL, 5);
+
+  if (tooltip!="") {
+    _label->SetToolTip(GetwxStr(tooltip.c_str()));
+    _choice->SetToolTip(GetwxStr(tooltip.c_str()));
+  }
+
 }
 
 

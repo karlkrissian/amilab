@@ -42,17 +42,17 @@ if (!exists(ML_defined)) {
   {
     global
       # inputs
-      ML_input_name   = ""
-      ML_mask_name    = ""
+      ML_input_name   = "", "Input image name"
+      ML_mask_name    = "", "Mask of the pixels to process, this image must be of type UCHAR and the values > 127 are considered part of the mask"
 
       # circle integration
       # a value of 0 desactivates the SD feature
       # should better create a boolean variable here for clarity
-      ML_use_SD       = UCHAR(0)
-      ML_SD_th        = 2
+      ML_use_SD       = UCHAR(0), "Take into account standard deviation of boundary information along the integration circle"
+      ML_SD_th        = 2, "Standard Deviation Coefficient to weight the response function"
       # a value of 0 desactivates the EXC feature
-      ML_use_EXC      = UCHAR(0)
-      ML_EXC_th       = 5
+      ML_use_EXC      = UCHAR(0), "Take into account the excentricity of the boundary vectors along the integration circle"
+      ML_EXC_th       = 5, "Excentricity coefficient to weight the response function"
       ML_pairs_mode   = INT(0)
       ML_keephighest  = 100
 
@@ -62,10 +62,10 @@ if (!exists(ML_defined)) {
       ML_numrad       = INT(5)
 
       # Compute local maxima
-      ML_local_maxima      = UCHAR(0)
+      ML_local_maxima      = UCHAR(0), "Compute local maxima"
 
-      ML_keep_orientations = UCHAR(0)
-      ML_keep_radii        = UCHAR(0)
+      ML_keep_orientations = UCHAR(0), "Keep orientations image"
+      ML_keep_radii        = UCHAR(0), "Keep radii image"
 
       # 0: Hessian Matrix 1: Structure Tensor
       ML_mode         = INT(0)
@@ -92,6 +92,7 @@ if (!exists(ML_defined)) {
     delvars "ML_*_draw"
     delvars "ML_*"
   }
+  ML_Close.Comments("Close this script and  delete the corresponding variables")
 
   #-----------------------------------------------
   proc ML_load_input() {
@@ -544,7 +545,7 @@ if (!exists(ML_defined)) {
           ML_win.AddEnumChoice(modeid,"Hessian Matrix")
           ML_win.AddEnumChoice(modeid,"Structure Tensor")
 
-        ML_win.BeginBox("Controls")
+        ML_win.BeginBoxPanel("Controls")
           ML_win.BeginHorizontal
             ML_win.AddButton("Select ROI", ML_CB_ROI)
             ML_win.AddButton("Run",        ML_MultiLines)
@@ -555,26 +556,29 @@ if (!exists(ML_defined)) {
               display_id = ML_win.AddButton("Display",    ML_Display)
               display_id = ML_win.AddButton("Save",       ML_Save)
           ML_win.EndHorizontal
-        ML_win.EndBox
+        ML_win.EndBoxPanel
       ML_win.AddPage("Circle")
 
-        ML_win.AddBoolean(ML_use_SD)
-        ML_win.AddFloat(ML_SD_th, 0,10)
-        ML_win.AddBoolean(ML_use_EXC)
-        ML_win.AddFloat(ML_EXC_th,0,10)
+        ML_win.AddBoolean(ML_use_SD,"Use StdDev")
+        ML_win.AddFloat(ML_SD_th,"StdDev_thres", 0,10)
+        ML_win.AddBoolean(ML_use_EXC,"Use Exc")
+        ML_win.AddFloat(ML_EXC_th,"Exc_thres",0,10)
         pairmodeid = ML_win.AddEnum(ML_pairs_mode)
           ML_win.AddEnumChoice(pairmodeid,"Min")
           ML_win.AddEnumChoice(pairmodeid,"Max")
           ML_win.AddEnumChoice(pairmodeid,"Mean")
         ML_win.AddFloat(ML_keephighest,0,100)
+
       ML_win.AddPage("Scales")
-        ML_radmin_id = ML_win.AddFloat(ML_radmin,0.01,10)
-        ML_radmax_id = ML_win.AddFloat(ML_radmax,0.01,10)
-        ML_numrad_id = ML_win.AddInt(  ML_numrad,1,20)
+        ML_win.BeginBoxPanel("Radii (or scales)")
+          ML_win.AddFloat(ML_radmin,"min.",0.01,10)
+          ML_win.AddFloat(ML_radmax,"max.",0.01,10)
+          ML_win.AddInt(  ML_numrad,"number",1,20)
+        ML_win.EndBoxPanel
       
-        ML_win.AddBoolean(ML_local_maxima)
-        ML_win.AddBoolean(ML_keep_orientations)
-        ML_win.AddBoolean(ML_keep_radii)
+        ML_win.AddBoolean(ML_local_maxima,"Local maxima")
+        ML_win.AddBoolean(ML_keep_orientations,"Orientations")
+        ML_win.AddBoolean(ML_keep_radii,"Radii")
 
 
     ML_win.EndBook
