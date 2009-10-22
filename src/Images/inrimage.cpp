@@ -93,6 +93,7 @@ extern "C" {
   #include "vtkJPEGWriter.h"
   #include "vtkTIFFWriter.h"
   #include "vtkPNGWriter.h"
+  #include <vtkTIFFReader.h>
   #include "vtkStructuredPoints.h"
   #include "vtkPointData.h"
   #include "vtkImageData.h"
@@ -549,19 +550,32 @@ unsigned char InrImage :: ReadVTKImage( ) throw (ErreurLecture)
   CLASS_MESSAGE("begin");
 
   shared_ptr<vtkImageReader2Factory> create_reader = vtk_new<vtkImageReader2Factory>()();
+//cout << "0.1" << endl;
   vtkImageReader2* imreader = create_reader->CreateImageReader2( _nom.c_str()); 
+//cout << "0.2" << endl;
   if (imreader==NULL) {
     CLASS_MESSAGE("No reader found from vtkImageReader2Factory")
     return false;
   }
-
+//cout << "1" << endl;
   shared_ptr<vtkImageReader2> reader = vtk_new<vtkImageReader2>()(imreader);
 
+//  cout << "2" << endl;
 
   reader->SetFileName(_nom.c_str());
   reader->Update();
 
+  cout << "GetFileLowerLeft() = " << reader->GetFileLowerLeft() << endl;
+  cout << "Reader is [" << reader->GetDescriptiveName() << "]" << endl;
+
   in = reader->GetOutput();
+
+  std::string readername = reader->GetDescriptiveName();
+  if (readername.compare("TIFF")) {
+    // get specific tiff information?
+    vtkTIFFReader* tiffreader = (dynamic_cast<vtkTIFFReader*> (reader.get()));
+    cout << "GetOrientationType =" << tiffreader->GetOrientationType() << endl;
+  }
 
   if (reader->GetErrorCode()!=0) { 
     return false; 
@@ -757,17 +771,6 @@ unsigned char InrImage :: Read( ) throw (ErreurLecture)
   }
 #endif // USE_MAGICK
 
-  // try with the vtk image reader factory
-  if (!res) {
-    cout << "Trying reading with VTK image factory" << endl;  
-    res = ReadVTKImage();
-  }
-
-  if (!res) {
-    CLASS_MESSAGE("Trying reading with ReadVTK");  
-    res = ReadVTK();
-  }
-
 #ifdef AMI_USE_ITK
   // trying with ITK
   if (!res) {
@@ -796,6 +799,18 @@ unsigned char InrImage :: Read( ) throw (ErreurLecture)
     }
   }
 #endif
+
+  // try with the vtk image reader factory
+  if (!res) {
+    cout << "Trying reading with VTK image factory" << endl;  
+    res = ReadVTKImage();
+  }
+
+  if (!res) {
+    CLASS_MESSAGE("Trying reading with ReadVTK");  
+    res = ReadVTK();
+  }
+
 
   if ( !res ) {
     cerr << " Error reading image " << endl;
@@ -937,6 +952,21 @@ unsigned char InrImage :: Alloue( ) throw (ErreurAllocation)
   } else
 */
 
+#ifdef AMI_USE_ITK
+  if (  CheckEndString( name, ".mhd")  || 
+        CheckEndString( name, ".jpg")  ||  
+        CheckEndString( name, ".jpeg") ||
+        CheckEndString( name, ".tif")  ||  
+        CheckEndString( name, ".tiff") ||
+        CheckEndString( name, ".png")  ||  
+        CheckEndString( name, ".bmp") 
+     ) 
+  {
+    return itkWrite(this,_nom);
+  } else
+#else
+#endif // AMI_USE_ITK
+
 #ifdef AMI_USE_VTK
   if ( (CheckEndString( name, ".vtk")) ) {
     shared_ptr<vtkStructuredPointsWriter> vtk_iw;
@@ -957,49 +987,49 @@ unsigned char InrImage :: Alloue( ) throw (ErreurAllocation)
     vtk_id    = (vtkImageData_ptr) (*this);
     shared_ptr<vtkJPEGWriter> vtk_jpegw = vtk_new<vtkJPEGWriter>()();
 
-//    vtkImageFlip* flipY = vtkImageFlip::New();
-//    flipY->SetInput(vtk_id);
-//    flipY->SetFilteredAxis(1);
+    shared_ptr<vtkImageFlip> flipY = vtk_new<vtkImageFlip>()();
+    flipY->SetInput(vtk_id.get());
+    flipY->SetFilteredAxis(1);
+    flipY->Update();
 
-//    vtk_jpegw->SetInput(flipY->GetOutput());
-    vtk_jpegw->SetInput(vtk_id.get());
+    vtk_jpegw->SetInput(flipY->GetOutput());
+//    vtk_jpegw->SetInput(vtk_id.get());
     vtk_jpegw->SetFileName((char*) _nom.c_str());
     vtk_jpegw->Write();
 
-//    flipY->Delete();
   } else
   if ( (CheckEndString( name, ".tiff") || CheckEndString( name, ".tif")) ) {
     vtk_id = (vtkImageData_ptr) (*this);
     shared_ptr<vtkTIFFWriter> vtk_tiffw = vtk_new<vtkTIFFWriter>()();
 
-//    vtkImageFlip* flipY = vtkImageFlip::New();
-//    flipY->SetInput(vtk_id);
-//    flipY->SetFilteredAxis(1);
+    shared_ptr<vtkImageFlip> flipY = vtk_new<vtkImageFlip>()();
+    flipY->SetInput(vtk_id.get());
+    flipY->SetFilteredAxis(1);
+    flipY->Update();
 
-//    vtk_tiffw->SetInput(flipY->GetOutput());
-    vtk_tiffw->SetInput(vtk_id.get());
+    vtk_tiffw->SetInput(flipY->GetOutput());
+//    vtk_tiffw->SetInput(vtk_id.get());
     vtk_tiffw->SetFileName((char*) _nom.c_str());
     vtk_tiffw->Write();
 
-//    flipY->Delete();
   } else
   if ( (CheckEndString( name, ".png") || CheckEndString( name, ".PNG")) ) {
     vtk_id = (vtkImageData_ptr) (*this);
     shared_ptr<vtkPNGWriter> vtk_pngw = vtk_new<vtkPNGWriter>()();
 
-//    vtk_pngw->SetInput(flipY->GetOutput());
-    vtk_pngw->SetInput(vtk_id.get());
+    shared_ptr<vtkImageFlip> flipY = vtk_new<vtkImageFlip>()();
+    flipY->SetInput(vtk_id.get());
+    flipY->SetFilteredAxis(1);
+    flipY->Update();
+
+    vtk_pngw->SetInput(flipY->GetOutput());
+//    vtk_pngw->SetInput(vtk_id.get());
     vtk_pngw->SetFileName((char*) _nom.c_str());
     vtk_pngw->Write();
 //    flipY->Delete();
   } else
-
 #endif // AMI_USE_VTK
-#ifdef AMI_USE_ITK
-  if ( (CheckEndString( name, ".mhd"))  ) {
-    return itkWrite(this,_nom);
-  } else
-#endif // AMI_USE_ITK
+
       
   if ( (CheckEndString( name, ".raw"))  ) {
     // write only raw data
@@ -2030,7 +2060,11 @@ void InrImage :: SetVoxelSize( float sx, float sy, float sz)
   _size_y = sy;
   _size_z = sz;
 
-  _amimage->SetVoxelSize(sx,sy,sz);
+  if (_size_x<1E-10) _size_x=1;
+  if (_size_y<1E-10) _size_y=1;
+  if (_size_z<1E-10) _size_z=1;
+
+  _amimage->SetVoxelSize(_size_x,_size_y,_size_z);
 
 } // SetVoxelSize()
 

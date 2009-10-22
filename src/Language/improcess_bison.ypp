@@ -5987,16 +5987,16 @@ postfix_expr
 
       delete compute_area;
 
-        }
-        |
-        T_posarea T_OP_PAR var_image T_CL_PAR
-        {
+    }
+    |
+    T_posarea T_OP_PAR var_image T_CL_PAR
+    {
 
       $$=Func_ComputePositiveArea( ((InrImage::ptr*) $3->Pointer())->get() );
-        }
-        |
-        T_posarea T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
-        {
+    }
+    |
+    T_posarea T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
+    {
       float val[4];
 
       val[0] = $3;
@@ -6021,9 +6021,8 @@ postfix_expr
                 max, mean, min, median
 
         **/
-      InrImage* im = (InrImage*) driver.im_stack.GetLastImage();
-      $$=Func_count( im );
-      delete im;
+      InrImage::ptr im  = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
+      $$=Func_count( im.get() );
         }
         |
         T_mean T_OP_PAR expr_image  T_CL_PAR
@@ -6041,9 +6040,8 @@ postfix_expr
                 min, max, median
 
         **/
-      InrImage* im = (InrImage*) driver.im_stack.GetLastImage();
-      $$=Func_mean( im);
-      delete im;
+      InrImage::ptr im  = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
+      $$=Func_mean( im.get());
         }
         |
         T_MAX T_OP_PAR expr_image  T_CL_PAR
@@ -6061,9 +6059,8 @@ postfix_expr
                 min, mean, median
 
         **/
-      InrImage* im = (InrImage*) driver.im_stack.GetLastImage();
-      $$=Func_max( im,NULL);
-      delete im;
+      InrImage::ptr im  = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
+      $$=Func_max( im.get(),NULL);
         }
         |
         T_argmax T_OP_PAR expr_image  T_CL_PAR
@@ -6081,9 +6078,8 @@ postfix_expr
                 min, mean, median, max
 
         **/
-      InrImage* im = (InrImage*) driver.im_stack.GetLastImage();
-      $$=Func_argmax( im);
-      delete im;
+      InrImage::ptr im  = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
+      $$=Func_argmax( im.get());
       }
       |
       T_MIN T_OP_PAR expr_image  T_CL_PAR
@@ -6101,19 +6097,18 @@ postfix_expr
               max, mean, median
 
       **/
-      InrImage* im = (InrImage*) driver.im_stack.GetLastImage();
-      $$=Func_min( im,NULL);
-      delete im;
+      InrImage::ptr im  = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
+      $$=Func_min( im.get(),NULL);
       }
       |
-      T_MEDIAN T_OP_PAR var_image  T_CL_PAR
+      T_MEDIAN T_OP_PAR expr_image  T_CL_PAR
       {
       /**
             description:
             returns the median value of an image
 
             parameters:
-              (3) image variable
+              (3) image expression
 
           Keywords:
 
@@ -6121,10 +6116,11 @@ postfix_expr
               min, max, mean, count
 
       **/
-      $$=Func_med( ((InrImage::ptr*) $3->Pointer())->get(),0.5,NULL);
+      InrImage::ptr im  = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
+      $$=Func_med( im.get(),0.5,NULL);
         }
         |
-        T_MAX T_OP_BR expr_image T_CL_BR T_OP_PAR var_image  T_CL_PAR
+        T_MAX T_OP_BR expr_image T_CL_BR T_OP_PAR expr_image  T_CL_PAR
         {
         /**
              description:
@@ -6133,8 +6129,8 @@ postfix_expr
              higher than 0.5 in the image between []
 
              parameters:
-               (3) image expression
-               (5) image variable
+               (3) image expression: mask
+               (5) image expression: input
 
             Keywords:
 
@@ -6142,9 +6138,9 @@ postfix_expr
                 min, max, mean, median, count
 
         **/
-          InrImage* mask = (InrImage*) driver.im_stack.GetLastImage();
-          $$=Func_max( ((InrImage::ptr*) $6->Pointer())->get(),mask);
-          delete mask;
+      InrImage::ptr im  = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
+      InrImage::ptr mask  = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
+          $$=Func_max( im.get(),mask.get());
         }
         |
         T_MIN T_OP_BR expr_image T_CL_BR T_OP_PAR var_image  T_CL_PAR
@@ -6165,9 +6161,8 @@ postfix_expr
                 min, max, mean, median, count
 
         **/
-          InrImage* mask = (InrImage*) driver.im_stack.GetLastImage();
-          $$=Func_min( ((InrImage::ptr*) $6->Pointer())->get(),mask);
-          delete mask;
+      InrImage::ptr mask  = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
+          $$=Func_min( ((InrImage::ptr*) $6->Pointer())->get(),mask.get());
         }
         |
         T_MEDIAN T_OP_BR expr_image T_CL_BR T_OP_PAR var_image  T_CL_PAR
@@ -6218,11 +6213,10 @@ postfix_expr
                 min, max, mean, median, count
 
         **/
-          InrImage* input = (InrImage*) driver.im_stack.GetLastImage();
-          InrImage* mask  = (InrImage*) driver.im_stack.GetLastImage();
-          $$=Func_mean( input,mask);
-          delete mask;
-          delete input;
+      InrImage::ptr input  = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
+      InrImage::ptr mask  = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
+
+          $$=Func_mean( input.get(),mask.get());
         }
         |
         T_mean T_OP_PAR var_image T_COMMA expr_image T_CL_PAR

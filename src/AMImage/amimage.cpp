@@ -317,7 +317,7 @@ bool check_enum( const string&   line,
       if ((*i).compare(what[2])==0) {
         int val_int = i-enum_strings.begin();
         val = T(val_int);
-        cout << st << " = " << enum_strings[val] << endl;
+//        cout << st << " = " << enum_strings[val] << endl;
         found = true;
         return true;
       }
@@ -641,7 +641,7 @@ unsigned char  amimage::readheader( const char* filename)
   //float        v_float;
   //char         v_string[256];
   //char         attrib[100];
-  char        line[200];
+  char        line[300];
   int version;
   int release;
   //int c;

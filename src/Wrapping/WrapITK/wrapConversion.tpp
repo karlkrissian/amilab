@@ -62,8 +62,11 @@ InrImage* ITKToInr(typename itk::Image<TPixel,Dimension>::Pointer image,
 }
 
 
+//------------------------------------------------------------------
 template <class TPixel, unsigned int Dimension> 
-typename itk::Image<TPixel,Dimension>::Pointer InrToITK(InrImage* input, 
+typename itk::Image<TPixel,Dimension>::Pointer 
+    InrToITK_Vect(InrImage* input,
+//  ------------- 
 								typename itk::Image<TPixel,Dimension>::RegionType &region)
 {
 	typedef  TPixel              PixelType;
@@ -103,10 +106,66 @@ typename itk::Image<TPixel,Dimension>::Pointer InrToITK(InrImage* input,
 		iter.GoToBeginOfLine();
 		while ( ! iter.IsAtEndOfLine() )
 		{
-			iter.Set(input->ValeurBuffer());
+      TPixel v;
+      for(int i=0;i<input->GetVDim();i++)
+        v.SetNthComponent(i,input->VectValeurBuffer(i));
+      iter.Set(v);
 			++iter;
 			input->IncBuffer();
 		}
 	}
 	return image;
+}
+
+
+//------------------------------------------------------------------
+template <class TPixel, unsigned int Dimension> 
+typename itk::Image<TPixel,Dimension>::Pointer 
+  InrToITK(InrImage* input, 
+//--------
+                typename itk::Image<TPixel,Dimension>::RegionType &region)
+{
+  typedef  TPixel              PixelType;
+  typedef typename itk::Image< TPixel,Dimension>    ImageType;
+  
+  typename ImageType::ConstPointer inputImage;
+  typedef itk::ImageLinearConstIteratorWithIndex< ImageType >  ConstIteratorType;
+  typedef itk::ImageLinearIteratorWithIndex< ImageType >       IteratorType;
+  
+  typename ImageType::Pointer image = ImageType::New();
+  typename ImageType::SizeType size;
+
+  size[0] = input->DimX();
+  size[1] = input->DimY();
+  if (Dimension==3) size[2] = input->DimZ();
+  region.SetSize(size);
+  image->SetRegions(region);
+  image->Allocate();
+
+  float origin[Dimension];
+  origin[0] = input->TrX();
+  origin[1] = input->TrY();
+  if (Dimension==3) origin[2] = input->TrZ();
+  image->SetOrigin(origin);
+  float voxsize[Dimension];
+  voxsize[0] = input->VoxSizeX();
+  voxsize[1] = input->VoxSizeY();
+  if (Dimension==3) voxsize[2] = input->VoxSizeZ();
+  image->SetSpacing(voxsize);
+
+  IteratorType iter( image, region );
+  iter.GoToBegin();
+  input->InitBuffer();
+  iter.SetDirection(0);
+  for ( iter.GoToBegin(); ! iter.IsAtEnd();  iter.NextLine())
+  {
+    iter.GoToBeginOfLine();
+    while ( ! iter.IsAtEndOfLine() )
+    {
+      iter.Set(input->ValeurBuffer());
+      ++iter;
+      input->IncBuffer();
+    }
+  }
+  return image;
 }

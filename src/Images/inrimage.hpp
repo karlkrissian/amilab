@@ -1381,6 +1381,8 @@ public:
           return (double)(_positions_FLOAT [z][y][x]);
 
         case WT_RGB:
+           return (double)(_positions_RGB   [z][y][3*x]);
+
         case WT_UNSIGNED_CHAR:
            return (double)(_positions_UNSIGNED_CHAR   [z][y][x]);
 
