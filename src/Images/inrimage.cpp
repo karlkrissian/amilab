@@ -574,7 +574,7 @@ unsigned char InrImage :: ReadVTKImage( ) throw (ErreurLecture)
   if (readername.compare("TIFF")) {
     // get specific tiff information?
     vtkTIFFReader* tiffreader = (dynamic_cast<vtkTIFFReader*> (reader.get()));
-    cout << "GetOrientationType =" << tiffreader->GetOrientationType() << endl;
+    //cout << "GetOrientationType =" << tiffreader->GetOrientationType() << endl;
   }
 
   if (reader->GetErrorCode()!=0) { 
