@@ -1324,10 +1324,12 @@ unsigned char  amimage::write( const char* filename, bool include_header)
 
   if (!writeheader(filename,out,include_header))
   {
+    CLASS_ERROR(boost::format("failed to write header for %1%")% filename);
     return false;
   }
   if (!writedata(out))
   {
+    CLASS_ERROR(boost::format("failed to write data for %1%") % filename);
     return false;
   }
 

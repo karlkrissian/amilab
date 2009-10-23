@@ -50,6 +50,7 @@ SET(Language_SRCS
     Variable.cpp
     Variables.cpp
     paramlist.cpp
+    ImageStack.cpp
 )
 
 IF(AMI_USE_FLEXBISON)

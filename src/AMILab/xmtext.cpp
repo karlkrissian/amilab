@@ -157,7 +157,7 @@ void TextControl::UpdateText()
 void TextControl::OnPaste(wxCommandEvent& event)
 //                -------
 {
-  if (GB_debug) printf("OnPaste\n");
+  CLASS_MESSAGE("begin");
   event.Skip();
 }
 
@@ -166,7 +166,7 @@ void TextControl::OnPaste(wxCommandEvent& event)
 void TextControl::OnUpdate(wxCommandEvent&  event)
 {
 
-  if (GB_debug) printf("OnUpdate\n");
+  CLASS_MESSAGE("begin");
 
   if (in_changed_value) { 
     //printf("in_changed_value\n");  

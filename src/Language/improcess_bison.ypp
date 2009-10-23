@@ -1434,7 +1434,7 @@ command:
           if (imptr != NULL)
             Vars.AddVar(type_image,ident,imptr);
           else
-            driver.err_print("assignment of NULL image\n");
+            driver.err_print((boost::format("assignment of NULL image for %1%  \n") % $1).str().c_str() );;
         }
          |
           identifier LEFT_ASSIGN expr_image
@@ -1446,7 +1446,7 @@ command:
           if (imptr != NULL)
             Vars.AddVar(type_image,ident,imptr);
           else
-            driver.err_print("assignment of NULL image\n");
+            driver.err_print((boost::format("assignment of NULL image for %1%  \n") %$1).str().c_str() );;
         }
         | identifier ASSIGN_OP VAR_C_FUNCTION  T_OP_PAR param_list T_CL_PAR
         {

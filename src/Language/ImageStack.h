@@ -15,12 +15,19 @@
 
 #include <stack>
 #include "inrimage.hpp"
+#include <wx/filename.h>
+#include "ami_class.h"
+#include "amilab_messages.h"
+
 
 //----------------------------------------------------------------------
 // Image Stack: Allows operations on images
 //
 class ImageStack{
 //    ----------
+
+  DEFINE_CLASS(ImageStack);
+
   std::stack<InrImage*> _images;
 
  public:
@@ -29,20 +36,7 @@ class ImageStack{
 
   ~ImageStack()    { }
 
-  void AddImage( char* name)
-  {
-    InrImage* im_tmp;
-    try {
-      im_tmp=new InrImage(name);
-    }
-    catch (InrImage::ErreurLecture)
-      {
-        fprintf(stderr,"Unable to read image %s\n",name);
-        _images.push(NULL);
-        return;
-      }
-    _images.push(im_tmp);
-  }
+  void AddImage( char* name);
 
   void AddImage( InrImage* im)
   {

@@ -18,6 +18,7 @@
 #include "VarContexts.hpp"
 #include "CoutwxString.h"
 #include "MainFrame.h"
+#include "ImageStack.h"
 
 #include <wx/filename.h>
 
@@ -232,7 +233,7 @@ bool Driver::parse_script(  const char* filename)
   string  fullname;
   string tmp_string;
 
-  cout << "yyip_switch_to_file(" << filename << ")" << endl;
+  CLASS_MESSAGE( boost::format("Switching to %1% ") % filename );
 
   // Looking for the filename
   wxFileName current_filename(GetwxStr(current_file.c_str()));
@@ -265,7 +266,8 @@ bool Driver::parse_script(  const char* filename)
 
   if (!newname.IsFileReadable()) 
   {
-    cout << " current_filename.GetPath() = " << current_filename.GetPath().mb_str() << endl;
+    CLASS_MESSAGE(boost::format(" current_filename.GetPath() = %1%") 
+                % current_filename.GetPath().mb_str());
     // try in the directory of the runnning script
     newname.Assign(
             current_filename.GetPath() 

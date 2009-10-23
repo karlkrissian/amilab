@@ -4538,1522 +4538,1522 @@ return(token::ASHELL);
 	YY_BREAK
 case 133:
 YY_RULE_SETUP
-#line 294 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 295 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetDebugOn); /*{SetDebugOn,T_SetDebugOn}*/
 	YY_BREAK
 case 134:
 YY_RULE_SETUP
-#line 295 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 296 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetDebugOff); /*{SetDebugOff,T_SetDebugOff}*/
 	YY_BREAK
 case 135:
 YY_RULE_SETUP
-#line 296 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 297 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetVerboseOn); /*{SetVerboseOn,T_SetVerboseOn}*/
 	YY_BREAK
 case 136:
 YY_RULE_SETUP
-#line 297 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 298 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetVerboseOff); /*{SetVerboseOff,T_SetVerboseOff}*/
 	YY_BREAK
 case 137:
 YY_RULE_SETUP
-#line 298 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 299 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_GetScriptsDir); /*{GetScriptDir,T_GetScriptDir}*/
 	YY_BREAK
 case 138:
 YY_RULE_SETUP
-#line 299 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 300 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_AddMenuScript); /*{AddMenuScript,T_AddMenuScript}*/
 	YY_BREAK
 case 139:
 YY_RULE_SETUP
-#line 300 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 301 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetProgress); /*{SetProgress,T_SetProgress}*/
 	YY_BREAK
 case 140:
 YY_RULE_SETUP
-#line 301 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 302 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetStatusText); /*{SetStatusText,T_SetStatusText}*/
 	YY_BREAK
 case 141:
 YY_RULE_SETUP
-#line 302 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 303 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::QUIT); /*{Quit,QUIT}*/
 	YY_BREAK
 case 142:
 YY_RULE_SETUP
-#line 303 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 304 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::QUIT);
 	YY_BREAK
 case 143:
 YY_RULE_SETUP
-#line 304 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 305 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Image); /*{Image,T_Image}*/
 	YY_BREAK
 case 144:
 YY_RULE_SETUP
-#line 305 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 306 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_ReadRawImages); /*{ReadRawImages,T_ReadRawImages}*/
 	YY_BREAK
 case 145:
 YY_RULE_SETUP
-#line 306 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 307 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Transform); /*{Transform,T_Transform}*/
 	YY_BREAK
 case 146:
 YY_RULE_SETUP
-#line 307 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 308 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::SHOW); /*{Show,SHOW}*/
 	YY_BREAK
 case 147:
 YY_RULE_SETUP
-#line 308 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 309 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::SHOW);
 	YY_BREAK
 case 148:
 YY_RULE_SETUP
-#line 309 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 310 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Remove); /*{Remove,T_Remove}*/
 	YY_BREAK
 case 149:
 YY_RULE_SETUP
-#line 310 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 311 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SwapBuffers); /*{SwapBuffers, T_SwapBuffers}*/
 	YY_BREAK
 case 150:
 YY_RULE_SETUP
-#line 311 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 312 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_HIDE); /*{Hide,T_HIDE}*/
 	YY_BREAK
 case 151:
 YY_RULE_SETUP
-#line 312 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 313 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_HIDE);
 	YY_BREAK
 case 152:
 YY_RULE_SETUP
-#line 313 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 314 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::HELP); /*{Help,HELP}*/
 	YY_BREAK
 case 153:
 YY_RULE_SETUP
-#line 314 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 315 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::HELP);
 	YY_BREAK
 case 154:
 YY_RULE_SETUP
-#line 315 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 316 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::LS); /*{ls,LS}*/
 	YY_BREAK
 case 155:
 YY_RULE_SETUP
-#line 316 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 317 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::PRINT); /*{print,PRINT}*/
 	YY_BREAK
 case 156:
 YY_RULE_SETUP
-#line 317 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 318 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::PRINTN); /*{printn,PRINTN}*/
 	YY_BREAK
 case 157:
 YY_RULE_SETUP
-#line 318 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 319 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_boost_format); /*{boost_format,T_boost_format}*/
 	YY_BREAK
 case 158:
 YY_RULE_SETUP
-#line 319 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 320 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SPRINT); /*{sprint,T_SPRINT}*/
 	YY_BREAK
 case 159:
 YY_RULE_SETUP
-#line 320 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 321 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::VARIABLES); /*{vars,VARIABLES}*/
 	YY_BREAK
 case 160:
 YY_RULE_SETUP
-#line 321 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 322 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::FUNCTION); /*{func,FUNCTION}*/
 	YY_BREAK
 case 161:
 YY_RULE_SETUP
-#line 322 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 323 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_eval); /*{eval,T_eval}*/
 	YY_BREAK
 case 162:
 YY_RULE_SETUP
-#line 323 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 324 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::FILTER); /*{filter,FILTER}*/
 	YY_BREAK
 case 163:
 YY_RULE_SETUP
-#line 324 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 325 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_vtkMedian3D); /*{vtkMedian3D,T_vtkMedian3D}*/
 	YY_BREAK
 case 164:
 YY_RULE_SETUP
-#line 325 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 326 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::NormGrad); /*{normgrad,NormGrad}*/
 	YY_BREAK
 case 165:
 YY_RULE_SETUP
-#line 326 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 327 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_DiscNormGrad); /*{discnormgrad,T_DiscNormGrad}*/
 	YY_BREAK
 case 166:
 YY_RULE_SETUP
-#line 327 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 328 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_gradient); /*{gradient,T_gradient}*/
 	YY_BREAK
 case 167:
 YY_RULE_SETUP
-#line 328 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 329 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::SecDerGrad); /*{secdergrad,SecDerGrad}*/
 	YY_BREAK
 case 168:
 YY_RULE_SETUP
-#line 329 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 330 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::SecDerGrad2); /*{secdergrad2,SecDerGrad2}*/
 	YY_BREAK
 case 169:
 YY_RULE_SETUP
-#line 330 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 331 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_DiscSecDerGrad); /*{discsecdergrad,T_DiscSecDerGrad}*/
 	YY_BREAK
 case 170:
 YY_RULE_SETUP
-#line 331 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 332 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::OpImage); /*{OpImage,OpImage}*/
 	YY_BREAK
 case 171:
 YY_RULE_SETUP
-#line 332 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 333 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::SubImage); /*{subimage,SubImage}*/
 	YY_BREAK
 case 172:
 YY_RULE_SETUP
-#line 333 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 334 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_AutoCrop); /*{autocrop,T_AutoCrop}*/
 	YY_BREAK
 case 173:
 YY_RULE_SETUP
-#line 334 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 335 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::PutImage); /*{putimage,PutImage}*/
 	YY_BREAK
 case 174:
 YY_RULE_SETUP
-#line 335 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 336 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_rot2D); /*{rot2D,T_rot2D}*/
 	YY_BREAK
 case 175:
 YY_RULE_SETUP
-#line 336 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 337 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_rotate); /*{rotate,T_rotate}*/
 	YY_BREAK
 case 176:
 YY_RULE_SETUP
-#line 337 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 338 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_mean); /*{mean,T_mean}*/
 	YY_BREAK
 case 177:
 YY_RULE_SETUP
-#line 338 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 339 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_localmean); /*{localmean,T_localmean}*/
 	YY_BREAK
 case 178:
 YY_RULE_SETUP
-#line 339 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 340 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_localmean2); /*{localmean2,T_localmean2}*/
 	YY_BREAK
 case 179:
 YY_RULE_SETUP
-#line 340 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 341 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_localSD); /*{localSD,T_localSD}*/
 	YY_BREAK
 case 180:
 YY_RULE_SETUP
-#line 341 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 342 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_localSD2); /*{localSD2,T_localSD2}*/
 	YY_BREAK
 case 181:
 YY_RULE_SETUP
-#line 342 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 343 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_struct_tensor); /*{StructTensor,T_struct_tensor}*/
 	YY_BREAK
 case 182:
 YY_RULE_SETUP
-#line 343 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 344 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_StructTensorH); /*{StructTensorH,T_StructTensorH}*/
 	YY_BREAK
 case 183:
 YY_RULE_SETUP
-#line 344 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 345 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_HessianMatrix); /*{HessianMatrix,T_HessianMatrix}*/
 	YY_BREAK
 case 184:
 YY_RULE_SETUP
-#line 345 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 346 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_HessianEVal); /*{HessianEVal,T_HessianEVal}*/
 	YY_BREAK
 case 185:
 YY_RULE_SETUP
-#line 346 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 347 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Derivatives); /*{Derivatives,T_Derivatives}*/
 	YY_BREAK
 case 186:
 YY_RULE_SETUP
-#line 347 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 348 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_curvatures); /*{Curvatures,T_curvatures}*/
 	YY_BREAK
 case 187:
 YY_RULE_SETUP
-#line 348 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 349 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_DiscMeanCurvature); /*{DiscMeanCurvature,T_DiscMeanCurvature}*/
 	YY_BREAK
 case 188:
 YY_RULE_SETUP
-#line 349 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 350 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Laplacian); /*{Laplacian,T_Laplacian}*/
 	YY_BREAK
 case 189:
 YY_RULE_SETUP
-#line 350 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 351 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_setvoxelsize); /*{setvoxelsize,T_setvoxelsize}*/
 	YY_BREAK
 case 190:
 YY_RULE_SETUP
-#line 351 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 352 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_settranslation); /*{settranslation,T_settranslation}*/
 	YY_BREAK
 case 191:
 YY_RULE_SETUP
-#line 352 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 353 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_setendianness);  /*{setendianness,T_setendianness}*/
 	YY_BREAK
 case 192:
 YY_RULE_SETUP
-#line 354 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 355 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_threscross); /*{threscross,T_threscross}*/
 	YY_BREAK
 case 193:
 YY_RULE_SETUP
-#line 355 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 356 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_IsocontourPoints); /*{IsocontourPoints,T_IsocontourPoints}*/
 	YY_BREAK
 case 194:
 YY_RULE_SETUP
-#line 356 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 357 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_IsosurfDist); /*{IsosurfDist,T_IsosurfDist}*/
 	YY_BREAK
 case 195:
 YY_RULE_SETUP
-#line 357 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 358 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_vtkIsoContourDist); /*{vtkIsoContourDist,T_vtkIsoContourDist}*/
 	YY_BREAK
 case 196:
 YY_RULE_SETUP
-#line 359 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 360 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetIsoContour); /*{SetIsoContour,T_SetIsoContour}*/
 	YY_BREAK
 case 197:
 YY_RULE_SETUP
-#line 360 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 361 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetIsoContourParam); /*{SetIsoContourParam,T_SetIsoContourParam}*/
 	YY_BREAK
 case 198:
 YY_RULE_SETUP
-#line 361 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 362 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_DrawIsoContour); /*{DrawIsoContour,T_DrawIsoContour}*/
 	YY_BREAK
 case 199:
 YY_RULE_SETUP
-#line 362 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 363 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetIsoContourColor);  /*{SetIsoContourColor,T_SetIsoContourColor}*/
 	YY_BREAK
 case 200:
 YY_RULE_SETUP
-#line 363 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 364 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_DrawAllContours);     /*{DrawAllContours,T_DrawAllContours}*/
 	YY_BREAK
 case 201:
 YY_RULE_SETUP
-#line 364 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 365 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_AllContoursParam);    /*{AllContoursParam,T_AllContoursParam}*/
 	YY_BREAK
 case 202:
 YY_RULE_SETUP
-#line 366 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 367 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_GetZmin); /*{GetZmin,T_GetZmin}*/
 	YY_BREAK
 case 203:
 YY_RULE_SETUP
-#line 367 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 368 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_GetZmax); /*{GetZmax,T_GetZmax}*/
 	YY_BREAK
 case 204:
 YY_RULE_SETUP
-#line 368 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 369 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_GetYmin); /*{GetYmin,T_GetYmin}*/
 	YY_BREAK
 case 205:
 YY_RULE_SETUP
-#line 369 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 370 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_GetYmax); /*{GetYmax,T_GetYmax}*/
 	YY_BREAK
 case 206:
 YY_RULE_SETUP
-#line 370 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 371 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_GetXmin); /*{GetXmin,T_GetXmin}*/
 	YY_BREAK
 case 207:
 YY_RULE_SETUP
-#line 371 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 372 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_GetXmax); /*{GetXmax,T_GetXmax}*/
 	YY_BREAK
 case 208:
 YY_RULE_SETUP
-#line 373 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 374 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_GetXPos); /*{GetXPos,T_GetXPos}*/
 	YY_BREAK
 case 209:
 YY_RULE_SETUP
-#line 374 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 375 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_GetYPos); /*{GetYPos,T_GetYPos}*/
 	YY_BREAK
 case 210:
 YY_RULE_SETUP
-#line 375 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 376 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_GetZPos); /*{GetZPos,T_GetZPos}*/
 	YY_BREAK
 case 211:
 YY_RULE_SETUP
-#line 377 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 378 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetZoom); /*{SetZoom,T_SetZoom}*/
 	YY_BREAK
 case 212:
 YY_RULE_SETUP
-#line 378 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 379 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetWindowSize); /*{SetWindowSize,T_SetWindowSize}*/
 	YY_BREAK
 case 213:
 YY_RULE_SETUP
-#line 380 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 381 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Convolve); /*{Convolve,T_Convolve}*/
 	YY_BREAK
 case 214:
 YY_RULE_SETUP
-#line 381 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 382 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_ConvolveMask); /*{ConvolveMask,T_ConvolveMask}*/
 	YY_BREAK
 case 215:
 YY_RULE_SETUP
-#line 382 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 383 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Pad); /*{Pad,T_Pad}*/
 	YY_BREAK
 case 216:
 YY_RULE_SETUP
-#line 383 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 384 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Eigen2D); /*{Eigen2D,T_Eigen2D}*/
 	YY_BREAK
 case 217:
 YY_RULE_SETUP
-#line 384 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 385 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Eigen3D); /*{Eigen3D,T_Eigen3D}*/
 	YY_BREAK
 case 218:
 YY_RULE_SETUP
-#line 385 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 386 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_ChamferDT); /*{ChamferDT,T_ChamferDT}*/
 	YY_BREAK
 case 219:
 YY_RULE_SETUP
-#line 386 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 387 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Chamfer2DT); /*{Chamfer2DT,T_Chamfer2DT}*/
 	YY_BREAK
 case 220:
 YY_RULE_SETUP
-#line 387 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 388 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_BorgeforsDT); /*{BorgeforsDT,T_BorgeforsDT}*/
 	YY_BREAK
 case 221:
 YY_RULE_SETUP
-#line 388 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 389 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_BorgeforsSDT); /*{BorgeforsSDT,T_BorgeforsSDT}*/
 	YY_BREAK
 case 222:
 YY_RULE_SETUP
-#line 389 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 390 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_vtkSignedBorgefors); /*{vtkSignedBorgefors,T_vtkSignedBorgefors}*/
 	YY_BREAK
 case 223:
 YY_RULE_SETUP
-#line 390 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 391 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_vtkSignedFMDist); /*{vtkSignedFMDist,T_vtkSignedFMDist}*/
 	YY_BREAK
 case 224:
 YY_RULE_SETUP
-#line 391 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 392 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_PropagationDist); /*{PropagationDist,T_PropagationDist}*/
 	YY_BREAK
 case 225:
 YY_RULE_SETUP
-#line 392 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 393 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_PropagationDist2); /*{PropagationDist2,T_PropagationDist2}*/
 	YY_BREAK
 case 226:
 YY_RULE_SETUP
-#line 393 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 394 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_PropDanielsson); /*{PropDanielsson,T_PropDanielsson}*/
 	YY_BREAK
 case 227:
 YY_RULE_SETUP
-#line 394 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 395 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_vtkPropDanielsson); /*{vtkPropDanielsson,T_vtkPropDanielsson}*/
 	YY_BREAK
 case 228:
 YY_RULE_SETUP
-#line 395 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 396 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_vtkPropDaniel2); /*{vtkPropDaniel2,T_vtkPropDaniel2}*/
 	YY_BREAK
 case 229:
 YY_RULE_SETUP
-#line 396 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 397 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_CC); /*{CC,T_CC}*/
 	YY_BREAK
 case 230:
 YY_RULE_SETUP
-#line 398 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 399 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_ConvexHull); /*{ConvexHull,T_ConvexHull}*/
 	YY_BREAK
 case 231:
 YY_RULE_SETUP
-#line 400 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 401 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_MeanHalfSize); /*{MeanHalfSize,T_MeanHalfSize}*/
 	YY_BREAK
 case 232:
 YY_RULE_SETUP
-#line 401 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 402 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Resize); /*{Resize,T_Resize}*/
 	YY_BREAK
 case 233:
 YY_RULE_SETUP
-#line 402 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 403 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_ReSlice); /*{ReSlice,T_ReSlice}*/
 	YY_BREAK
 case 234:
 YY_RULE_SETUP
-#line 403 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 404 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Flip);  /*{Flip,T_Flip}*/// flips image in one of the main axis direction
 	YY_BREAK
 case 235:
 YY_RULE_SETUP
-#line 405 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 406 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetCompTransf); /*{SetCompTransf,T_SetCompTransf}*/
 	YY_BREAK
 case 236:
 YY_RULE_SETUP
-#line 407 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 408 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_InitTime); /*{InitTime,T_InitTime}*/
 	YY_BREAK
 case 237:
 YY_RULE_SETUP
-#line 408 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 409 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_TimeSpent); /*{TimeSpent,T_TimeSpent}*/
 	YY_BREAK
 case 238:
 YY_RULE_SETUP
-#line 409 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 410 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_EndTime); /*{EndTime,T_EndTime}*/
 	YY_BREAK
 case 239:
 YY_RULE_SETUP
-#line 411 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 412 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_NULL); /*{NULL,T_NULL}*/
 	YY_BREAK
 case 240:
 YY_RULE_SETUP
-#line 414 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 415 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_ProcessXEvents); /*{ProcessXEvents,T_ProcessXEvents}*/
 	YY_BREAK
 case 241:
 YY_RULE_SETUP
-#line 415 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 416 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_ProcessEvents); /*{ProcessEvents,T_ProcessEvents}*/
 	YY_BREAK
 case 242:
 YY_RULE_SETUP
-#line 417 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 418 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_COUNT); /*{count,T_COUNT}*/
 	YY_BREAK
 case 243:
 YY_RULE_SETUP
-#line 418 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 419 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_MAX); /*{max,T_MAX}*/
 	YY_BREAK
 case 244:
 YY_RULE_SETUP
-#line 419 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 420 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_argmax); /*{argmax,T_argmax}*/
 	YY_BREAK
 case 245:
 YY_RULE_SETUP
-#line 420 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 421 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_MIN); /*{min,T_MIN}*/
 	YY_BREAK
 case 246:
 YY_RULE_SETUP
-#line 421 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 422 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_MEDIAN); /*{median,T_MEDIAN}*/
 	YY_BREAK
 case 247:
 YY_RULE_SETUP
-#line 422 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 423 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SUM); /*{sum,T_SUM}*/
 	YY_BREAK
 case 248:
 YY_RULE_SETUP
-#line 424 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 425 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_info); /*{info,T_info}*/
 	YY_BREAK
 case 249:
 YY_RULE_SETUP
-#line 425 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 426 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_NbPoints); /*{NbPoints,T_NbPoints}*/
 	YY_BREAK
 case 250:
 YY_RULE_SETUP
-#line 426 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 427 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_NbPolys); /*{NbPolys,T_NbPolys}*/
 	YY_BREAK
 case 251:
 YY_RULE_SETUP
-#line 429 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 430 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Xpos); /*{Xpos,T_Xpos}*/
 	YY_BREAK
 case 252:
 YY_RULE_SETUP
-#line 430 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 431 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Ypos); /*{Ypos,T_Ypos}*/
 	YY_BREAK
 case 253:
 YY_RULE_SETUP
-#line 431 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 432 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Zpos); /*{Zpos,T_Zpos}*/
 	YY_BREAK
 case 254:
 YY_RULE_SETUP
-#line 432 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 433 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SpacePos); /*{SpacePos,T_SpacePos}*/
 	YY_BREAK
 case 255:
 YY_RULE_SETUP
-#line 434 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 435 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_del); /*{del,T_del}*/
 	YY_BREAK
 case 256:
 YY_RULE_SETUP
-#line 435 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 436 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_delvars); /*{delvars,T_delvars}*/
 	YY_BREAK
 case 257:
 YY_RULE_SETUP
-#line 437 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 438 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_EDPdilate); /*{EDPdilate,T_EDPdilate}*/
 	YY_BREAK
 case 258:
 YY_RULE_SETUP
-#line 438 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 439 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_EDPerode); /*{EDPerode,T_EDPerode}*/
 	YY_BREAK
 case 259:
 YY_RULE_SETUP
-#line 439 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 440 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_EDPopen); /*{EDPopen,T_EDPopen}*/
 	YY_BREAK
 case 260:
 YY_RULE_SETUP
-#line 440 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 441 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_EDPclose); /*{EDPclose,T_EDPclose}*/
 	YY_BREAK
 case 261:
 YY_RULE_SETUP
-#line 442 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 443 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::AnisoGS); /*{AnisoGS,AnisoGS}*/
 	YY_BREAK
 case 262:
 YY_RULE_SETUP
-#line 445 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 446 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_LevelSetsCURV); /*{LevelSetsCURV,T_LevelSetsCURV}*/
 	YY_BREAK
 case 263:
 YY_RULE_SETUP
-#line 446 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 447 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_UpdateResult); /*{UpdateResult,T_UpdateResult}*/
 	YY_BREAK
 case 264:
 YY_RULE_SETUP
-#line 447 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 448 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetMeanCurv); /*{SetMeanCurv,T_SetMeanCurv}*/
 	YY_BREAK
 case 265:
 YY_RULE_SETUP
-#line 448 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 449 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetAffineCurv); /*{SetAffineCurv,T_SetAffineCurv}*/
 	YY_BREAK
 case 266:
 YY_RULE_SETUP
-#line 449 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 450 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetDistMethod); /*{SetDistMethod,T_SetDistMethod}*/
 	YY_BREAK
 case 267:
 YY_RULE_SETUP
-#line 450 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 451 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetAdvectionField); /*{SetAdvectionField,T_SetAdvectionField}*/
 	YY_BREAK
 case 268:
 YY_RULE_SETUP
-#line 451 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 452 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetCurvWeights); /*{SetCurvWeights,T_SetCurvWeights}*/
 	YY_BREAK
 case 269:
 YY_RULE_SETUP
-#line 452 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 453 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_GetAttachVect); /*{GetAttachVect,T_GetAttachVect}*/
 	YY_BREAK
 case 270:
 YY_RULE_SETUP
-#line 453 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 454 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetVelocity); /*{SetVelocity,T_SetVelocity}*/
 	YY_BREAK
 case 271:
 YY_RULE_SETUP
-#line 454 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 455 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetExpansion); /*{SetExpansion,T_SetExpansion}*/
 	YY_BREAK
 case 272:
 YY_RULE_SETUP
-#line 455 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 456 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetExpansionImage); /*{SetExpansionImage,T_SetExpansionImage}*/
 	YY_BREAK
 case 273:
 YY_RULE_SETUP
-#line 456 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 457 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetParam); /*{SetParam,T_SetParam}*/
 	YY_BREAK
 case 274:
 YY_RULE_SETUP
-#line 457 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 458 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetIsoContourBin); /*{SetIsoContourBin,T_SetIsoContourBin}*/
 	YY_BREAK
 case 275:
 YY_RULE_SETUP
-#line 458 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 459 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetBandTube); /*{SetBandTube,T_SetBandTube}*/
 	YY_BREAK
 case 276:
 YY_RULE_SETUP
-#line 459 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 460 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetThreads); /*{SetThreads,T_SetThreads}*/
 	YY_BREAK
 case 277:
 YY_RULE_SETUP
-#line 460 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 461 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetDistMap); /*{SetDistMap,T_SetDistMap}*/
 	YY_BREAK
 case 278:
 YY_RULE_SETUP
-#line 461 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 462 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetBalloonScheme); /*{SetBalloonScheme,T_SetBalloonScheme}*/
 	YY_BREAK
 case 279:
 YY_RULE_SETUP
-#line 464 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 465 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_vtkFastMarching); /*{vtkFastMarching,T_vtkFastMarching}*/
 	YY_BREAK
 case 280:
 YY_RULE_SETUP
-#line 465 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 466 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_vtkFastMarchingTarget); /*{vtkFastMarchingTarget,T_vtkFastMarchingTarget}*/
 	YY_BREAK
 case 281:
 YY_RULE_SETUP
-#line 467 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 468 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetNumGaussians); /*{SetNumGaussians,T_SetNumGaussians}*/
 	YY_BREAK
 case 282:
 YY_RULE_SETUP
-#line 468 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 469 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetGaussian); /*{SetGaussian,T_SetGaussian}*/
 	YY_BREAK
 case 283:
 YY_RULE_SETUP
-#line 469 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 470 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetProbThreshold); /*{SetProbThreshold,T_SetProbThreshold}*/
 	YY_BREAK
 case 284:
 YY_RULE_SETUP
-#line 471 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 472 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetILowTh); /*{SetILowTh,T_SetILowTh}*/
 	YY_BREAK
 case 285:
 YY_RULE_SETUP
-#line 472 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 473 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetIHighTh); /*{SetIHighTh,T_SetIHighTh}*/
 	YY_BREAK
 case 286:
 YY_RULE_SETUP
-#line 473 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 474 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetProbHighTh); /*{SetProbHighTh,T_SetProbHighTh}*/
 	YY_BREAK
 case 287:
 YY_RULE_SETUP
-#line 475 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 476 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetNumInitPoints); /*{SetNumInitPoints,T_SetNumInitPoints}*/
 	YY_BREAK
 case 288:
 YY_RULE_SETUP
-#line 476 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 477 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetInitPoint); /*{SetInitPoint,T_SetInitPoint}*/
 	YY_BREAK
 case 289:
 YY_RULE_SETUP
-#line 478 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 479 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_GetCurvature); /*{GetCurvature,T_GetCurvature}*/
 	YY_BREAK
 case 290:
 YY_RULE_SETUP
-#line 479 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 480 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_GetAdvection); /*{GetAdvection,T_GetAdvection}*/
 	YY_BREAK
 case 291:
 YY_RULE_SETUP
-#line 480 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 481 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_GetVelocity); /*{GetVelocity,T_GetVelocity}*/
 	YY_BREAK
 case 292:
 YY_RULE_SETUP
-#line 481 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 482 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_GetExpansion); /*{GetExpansion,T_GetExpansion}*/
 	YY_BREAK
 case 293:
 YY_RULE_SETUP
-#line 482 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 483 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_GetSkeleton); /*{GetSkeleton,T_GetSkeleton}*/
 	YY_BREAK
 case 294:
 YY_RULE_SETUP
-#line 483 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 484 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_GetDistMap); /*{GetDistMap,T_GetDistMap}*/
 	YY_BREAK
 case 295:
 YY_RULE_SETUP
-#line 485 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 486 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SaveDistMap); /*{SaveDistMap,T_SaveDistMap}*/
 	YY_BREAK
 case 296:
 YY_RULE_SETUP
-#line 486 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 487 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SaveSecDerGrad); /*{SaveSecDerGrad,T_SaveSecDerGrad}*/
 	YY_BREAK
 case 297:
 YY_RULE_SETUP
-#line 488 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 489 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_FluxDiffusion); /*{FluxDiffusion,T_FluxDiffusion}*/
 	YY_BREAK
 case 298:
 YY_RULE_SETUP
-#line 489 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 490 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_vtkAnisoGS); /*{vtkAnisoGS,T_vtkAnisoGS}*/
 	YY_BREAK
 case 299:
 YY_RULE_SETUP
-#line 490 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 491 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::AnisoSmoothGS); /*{AnisoSmoothGS,AnisoSmoothGS}*/
 	YY_BREAK
 case 300:
 YY_RULE_SETUP
-#line 491 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 492 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::TInit); /*{init,TInit}*/
 	YY_BREAK
 case 301:
 YY_RULE_SETUP
-#line 492 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 493 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::TSetCoeff); /*{setcoeff,TSetCoeff}*/
 	YY_BREAK
 case 302:
 YY_RULE_SETUP
-#line 493 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 494 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::TIterate); /*{iterate,TIterate}*/
 	YY_BREAK
 case 303:
 YY_RULE_SETUP
-#line 494 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 495 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetNoiseType); /*{SetNoiseType,T_SetNoiseType}*/
 	YY_BREAK
 case 304:
 YY_RULE_SETUP
-#line 495 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 496 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetNoiseSD); /*{SetNoiseSD,T_SetNoiseSD}*/
 	YY_BREAK
 case 305:
 YY_RULE_SETUP
-#line 496 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 497 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_GetNoiseSD); /*{GetNoiseSD,T_GetNoiseSD}*/
 	YY_BREAK
 case 306:
 YY_RULE_SETUP
-#line 497 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 498 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_GetDAcoeff); /*{GetDAcoeff,T_GetDAcoeff}*/
 	YY_BREAK
 case 307:
 YY_RULE_SETUP
-#line 498 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 499 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetMask); /*{SetMask,T_SetMask}*/
 	YY_BREAK
 case 308:
 YY_RULE_SETUP
-#line 499 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 500 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetSRADROI); /*{SetSRADROI,T_SetSRADROI}*/
 	YY_BREAK
 case 309:
 YY_RULE_SETUP
-#line 500 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 501 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetRNRADROI); /*{SetRNRADROI,T_SetRNRADROI}*/
 	YY_BREAK
 case 310:
 YY_RULE_SETUP
-#line 501 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 502 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetRNRADROI_NEW); /*{SetRNRADROI_NEW,T_SetRNRADROI_NEW}*/
 	YY_BREAK
 case 311:
 YY_RULE_SETUP
-#line 502 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 503 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetLocalStruct); /*{SetLocalStruct,T_SetLocalStruct}*/
 	YY_BREAK
 case 312:
 YY_RULE_SETUP
-#line 503 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 504 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetEigenMode); /*{SetEigenMode,T_SetEigenMode}*/
 	YY_BREAK
 case 313:
 YY_RULE_SETUP
-#line 504 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 505 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Setdt); /*{Setdt,T_Setdt}*/
 	YY_BREAK
 case 314:
 YY_RULE_SETUP
-#line 505 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 506 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Setneighborhood); /*{Setneighborhood,T_Setneighborhood}*/
 	YY_BREAK
 case 315:
 YY_RULE_SETUP
-#line 506 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 507 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::TEnd); /*{end,TEnd}*/
 	YY_BREAK
 case 316:
 YY_RULE_SETUP
-#line 508 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 509 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_AnisoWeickert); /*{AnisoWeickert,T_AnisoWeickert}*/
 	YY_BREAK
 case 317:
 YY_RULE_SETUP
-#line 509 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 510 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_AnisoCW); /*{AnisoCW,T_AnisoCW}*/
 	YY_BREAK
 case 318:
 YY_RULE_SETUP
-#line 511 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 512 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SRAD_qcoeff); /*{SRAD_qcoeff,T_SRAD_qcoeff}*/
 	YY_BREAK
 case 319:
 YY_RULE_SETUP
-#line 512 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 513 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_AnisoSRAD); /*{AnisoSRAD,T_AnisoSRAD}*/
 	YY_BREAK
 case 320:
 YY_RULE_SETUP
-#line 513 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 514 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_AnisoSRAD2); /*{AnisoSRAD2,T_AnisoSRAD2}*/
 	YY_BREAK
 case 321:
 YY_RULE_SETUP
-#line 514 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 515 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_AnisoDPAD); /*{AnisoDPAD,T_AnisoDPAD}*/
 	YY_BREAK
 case 322:
 YY_RULE_SETUP
-#line 515 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 516 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_AnisoDPAD2); /*{AnisoDPAD2,T_AnisoDPAD2}*/
 	YY_BREAK
 case 323:
 YY_RULE_SETUP
-#line 516 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 517 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_AnisoNRAD); /*{AnisoNRAD,T_AnisoNRAD}*/
 	YY_BREAK
 case 324:
 YY_RULE_SETUP
-#line 517 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 518 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_AnisoLeeAdd2); /*{AnisoLeeAdd2,T_AnisoLeeAdd2}*/
 	YY_BREAK
 case 325:
 YY_RULE_SETUP
-#line 519 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 520 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_AnisoRudinMult); /*{AnisoRudinMult,T_AnisoRudinMult}*/
 	YY_BREAK
 case 326:
 YY_RULE_SETUP
-#line 521 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 522 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::TAddGaussNoise); /*{AddGaussNoise,TAddGaussNoise}*/
 	YY_BREAK
 case 327:
 YY_RULE_SETUP
-#line 523 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 524 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SNR); /*{SNR,T_SNR}*/
 	YY_BREAK
 case 328:
 YY_RULE_SETUP
-#line 525 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 526 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_save); /*{save,T_save}*/
 	YY_BREAK
 case 329:
 YY_RULE_SETUP
-#line 527 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 528 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_eccentricity); /*{eccentricity,T_eccentricity}*/
 	YY_BREAK
 case 330:
 YY_RULE_SETUP
-#line 529 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 530 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_getimage); /*{getimage,T_getimage}*/
 	YY_BREAK
 case 331:
 YY_RULE_SETUP
-#line 530 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 531 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_GetImageFromX); /*{GetImageFromX,T_GetImageFromX}*/
 	YY_BREAK
 case 332:
 YY_RULE_SETUP
-#line 532 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 533 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_isoarea2D); /*{isoarea2D,T_isoarea2D}*/
 	YY_BREAK
 case 333:
 YY_RULE_SETUP
-#line 533 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 534 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_posarea); /*{posarea,T_posarea}*/
 	YY_BREAK
 case 334:
 YY_RULE_SETUP
-#line 535 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 536 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_ReadCTALine); /*{ReadCTALine,T_ReadCTALine}*/
 	YY_BREAK
 case 335:
 YY_RULE_SETUP
-#line 536 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 537 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_ReadCTALineRadii); /*{ReadCTALineRadii,T_ReadCTALineRadii}*/
 	YY_BREAK
 case 336:
 YY_RULE_SETUP
-#line 537 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 538 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_WriteCTALine); /*{WriteCTALine,T_WriteCTALine}*/
 	YY_BREAK
 case 337:
 YY_RULE_SETUP
-#line 539 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 540 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_isosurf); /*{isosurf,T_isosurf}*/
 	YY_BREAK
 case 338:
 YY_RULE_SETUP
-#line 540 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 541 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_isosurf_inv); /*{isosurf_inv,T_isosurf_inv}*/
 	YY_BREAK
 case 339:
 YY_RULE_SETUP
-#line 541 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 542 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_isosurf_ijk); /*{isosurf_ijk,T_isosurf_ijk}*/
 	YY_BREAK
 case 340:
 YY_RULE_SETUP
-#line 542 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 543 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_isosurf_ras); /*{isosurf_ras,T_isosurf_ras}*/
 	YY_BREAK
 case 341:
 YY_RULE_SETUP
-#line 543 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 544 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Surface); /*{Surface,T_Surface}*/
 	YY_BREAK
 case 342:
 YY_RULE_SETUP
-#line 544 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 545 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_vtkDecimate); /*{vtkDecimate,T_vtkDecimate}*/
 	YY_BREAK
 case 343:
 YY_RULE_SETUP
-#line 545 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 546 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_vtkMarchingCubes); /*{vtkMarchingCubes,T_vtkMarchingCubes}*/
 	YY_BREAK
 case 344:
 YY_RULE_SETUP
-#line 546 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 547 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_vtkSmooth); /*{vtkSmooth,T_vtkSmooth}*/
 	YY_BREAK
 case 345:
 YY_RULE_SETUP
-#line 547 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 548 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_vtkWindowedSinc); /*{vtkWindowedSinc,T_vtkWindowedSinc}*/
 	YY_BREAK
 case 346:
 YY_RULE_SETUP
-#line 549 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 550 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_isoline); /*{isoline,T_isoline}*/
 	YY_BREAK
 case 347:
 YY_RULE_SETUP
-#line 551 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 552 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_AddPoint); /*{AddPoint,T_AddPoint}*/
 	YY_BREAK
 case 348:
 YY_RULE_SETUP
-#line 552 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 553 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_NewLine); /*{NewLine,T_NewLine}*/
 	YY_BREAK
 case 349:
 YY_RULE_SETUP
-#line 553 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 554 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_EndLine); /*{EndLine,T_EndLine}*/
 	YY_BREAK
 case 350:
 YY_RULE_SETUP
-#line 554 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 555 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_LineAddPointNumber); /*{LineAddPointNumber,T_LineAddPointNumber}*/
 	YY_BREAK
 case 351:
 YY_RULE_SETUP
-#line 556 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 557 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_vtkDist); /*{vtkDist,T_vtkDist}*/
 	YY_BREAK
 case 352:
 YY_RULE_SETUP
-#line 557 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 558 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_AndreDist); /*{AndreDist,T_AndreDist}*/
 	YY_BREAK
 case 353:
 YY_RULE_SETUP
-#line 559 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 560 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_OutFlux); /*{OutFlux,T_OutFlux}*/
 	YY_BREAK
 case 354:
 YY_RULE_SETUP
-#line 560 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 561 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_OutFluxScalar); /*{OutFluxScalar,T_OutFluxScalar}*/
 	YY_BREAK
 case 355:
 YY_RULE_SETUP
-#line 561 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 562 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_2DFlux); /*{2DFlux,T_2DFlux}*/
 	YY_BREAK
 case 356:
 YY_RULE_SETUP
-#line 562 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 563 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_OrientationRatio); /*{OrientationRatio,T_OrientationRatio}*/
 	YY_BREAK
 case 357:
 YY_RULE_SETUP
-#line 564 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 565 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_computeCC); /*{computeCC,T_computeCC}*/
 	YY_BREAK
 case 358:
 YY_RULE_SETUP
-#line 565 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 566 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_drawCC); /*{drawCC,T_drawCC}*/
 	YY_BREAK
 case 359:
 YY_RULE_SETUP
-#line 566 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 567 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_setminCC); /*{setminCC,T_setminCC}*/
 	YY_BREAK
 case 360:
 YY_RULE_SETUP
-#line 567 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 568 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Paint); /*{Paint,T_Paint}*/
 	YY_BREAK
 case 361:
 YY_RULE_SETUP
-#line 568 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 569 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetLight); /*{SetLight,T_SetLight}*/
 	YY_BREAK
 case 362:
 YY_RULE_SETUP
-#line 569 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 570 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetLightPos); /*{SetLightPos,T_SetLightPos}*/
 	YY_BREAK
 case 363:
 YY_RULE_SETUP
-#line 570 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 571 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetLightAmbient); /*{SetLightAmbient,T_SetLightAmbient}*/
 	YY_BREAK
 case 364:
 YY_RULE_SETUP
-#line 571 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 572 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetLightDiffuse); /*{SetLightDiffuse,T_SetLightDiffuse}*/
 	YY_BREAK
 case 365:
 YY_RULE_SETUP
-#line 572 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 573 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetLightSpecular); /*{SetLightSpecular,T_SetLightSpecular}*/
 	YY_BREAK
 case 366:
 YY_RULE_SETUP
-#line 573 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 574 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetBackground); /*{SetBackground,T_SetBackground}*/
 	YY_BREAK
 case 367:
 YY_RULE_SETUP
-#line 575 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 576 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Normalize); /*{Normalize,T_Normalize}*/
 	YY_BREAK
 case 368:
 YY_RULE_SETUP
-#line 576 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 577 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Center);    /*{Center,T_Center}*/
 	YY_BREAK
 case 369:
 YY_RULE_SETUP
-#line 578 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 579 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_OwnMaterial); /*{OwnMaterial,T_OwnMaterial}*/
 	YY_BREAK
 case 370:
 YY_RULE_SETUP
-#line 579 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 580 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetColor); /*{SetColor,T_SetColor}*/
 	YY_BREAK
 case 371:
 YY_RULE_SETUP
-#line 580 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 581 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetColorOpacity); /*{SetColorOpacity,T_SetColorOpacity}*/
 	YY_BREAK
 case 372:
 YY_RULE_SETUP
-#line 581 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 582 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetColors); /*{SetColors,T_SetColors}*/
 	YY_BREAK
 case 373:
 YY_RULE_SETUP
-#line 582 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 583 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetPointsColors); /*{SetPointsColors,T_SetPointsColors}*/
 	YY_BREAK
 case 374:
 YY_RULE_SETUP
-#line 583 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 584 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_GetLinesLength); /*{GetLinesLength,T_GetLinesLength}*/
 	YY_BREAK
 case 375:
 YY_RULE_SETUP
-#line 584 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 585 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_GetLinesExtremities); /*{GetLinesExtremities,T_GetLinesExtremities}*/
 	YY_BREAK
 case 376:
 YY_RULE_SETUP
-#line 585 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 586 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_GetConnections); /*{GetConnections,T_GetConnections}*/
 	YY_BREAK
 case 377:
 YY_RULE_SETUP
-#line 586 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 587 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SelectLines); /*{SelectLines,T_SelectLines}*/
 	YY_BREAK
 case 378:
 YY_RULE_SETUP
-#line 587 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 588 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_RemoveSelection); /*{RemoveSelection,T_RemoveSelection}*/
 	YY_BREAK
 case 379:
 YY_RULE_SETUP
-#line 588 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 589 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_GetIntensities); /*{GetIntensities,T_GetIntensities}*/
 	YY_BREAK
 case 380:
 YY_RULE_SETUP
-#line 589 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 590 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Statistics); /*{Statistics,T_Statistics}*/
 	YY_BREAK
 case 381:
 YY_RULE_SETUP
-#line 591 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 592 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetAmbient); /*{SetAmbient,T_SetAmbient}*/
 	YY_BREAK
 case 382:
 YY_RULE_SETUP
-#line 592 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 593 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetDiffuse); /*{SetDiffuse,T_SetDiffuse}*/
 	YY_BREAK
 case 383:
 YY_RULE_SETUP
-#line 593 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 594 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetSpecular); /*{SetSpecular,T_SetSpecular}*/
 	YY_BREAK
 case 384:
 YY_RULE_SETUP
-#line 594 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 595 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetShininess); /*{SetShininess,T_SetShininess}*/
 	YY_BREAK
 case 385:
 YY_RULE_SETUP
-#line 595 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 596 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetOpacity); /*{SetOpacity,T_SetOpacity}*/
 	YY_BREAK
 case 386:
 YY_RULE_SETUP
-#line 596 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 597 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetOpacityImage); /*{SetOpacityImage,T_SetOpacityImage}*/
 	YY_BREAK
 case 387:
 YY_RULE_SETUP
-#line 597 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 598 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetColorMaterial); /*{SetColorMaterial,T_SetColorMaterial}*/
 	YY_BREAK
 case 388:
 YY_RULE_SETUP
-#line 598 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 599 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetVisible); /*{SetVisible,T_SetVisible}*/
 	YY_BREAK
 case 389:
 YY_RULE_SETUP
-#line 600 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 601 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_penguin); /*{penguin,T_penguin}*/
 	YY_BREAK
 case 390:
 YY_RULE_SETUP
-#line 602 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 603 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_PrintMatrices); /*{PrintMatrices,T_PrintMatrices}*/ // print the matrices of Viewer3D class
 	YY_BREAK
 case 391:
 YY_RULE_SETUP
-#line 604 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 605 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_addobj); /*{AddObject,T_addobj}*/
 	YY_BREAK
 case 392:
 YY_RULE_SETUP
-#line 605 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 606 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_setcurrentobj); /*{SetCurrentObj,T_setcurrentobj}*/
 	YY_BREAK
 case 393:
 YY_RULE_SETUP
-#line 607 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 608 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetLineWidth); /*{SetLineWidth,T_SetLineWidth}*/
 	YY_BREAK
 case 394:
 YY_RULE_SETUP
-#line 609 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 610 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_mergepoints); /*{MergePoints,T_mergepoints}*/
 	YY_BREAK
 case 395:
 YY_RULE_SETUP
-#line 610 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 611 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Triangulate); /*{Triangulate,T_Triangulate}*/
 	YY_BREAK
 case 396:
 YY_RULE_SETUP
-#line 611 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 612 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Displace); /*{Displace,T_Displace}*/
 	YY_BREAK
 case 397:
 YY_RULE_SETUP
-#line 612 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 613 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Translate); /*{Translate,T_Translate}*/
 	YY_BREAK
 case 398:
 YY_RULE_SETUP
-#line 613 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 614 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Scale); /*{Scale,T_Scale}*/
 	YY_BREAK
 case 399:
 YY_RULE_SETUP
-#line 614 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 615 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Normals); /*{Normals,T_Normals}*/
 	YY_BREAK
 case 400:
 YY_RULE_SETUP
-#line 615 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 616 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_InvertNormals); /*{InvertNormals,T_InvertNormals}*/
 	YY_BREAK
 case 401:
 YY_RULE_SETUP
-#line 616 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 617 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Recompute); /*{Recompute,T_Recompute}*/
 	YY_BREAK
 case 402:
 YY_RULE_SETUP
-#line 617 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 618 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_GetTransform); /*{GetTransform,T_GetTransform}*/
 	YY_BREAK
 case 403:
 YY_RULE_SETUP
-#line 618 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 619 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetTransform); /*{SetTransform,T_SetTransform}*/
 	YY_BREAK
 case 404:
 YY_RULE_SETUP
-#line 620 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 621 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Interpolate); /*{Interpolate,T_Interpolate}*/
 	YY_BREAK
 case 405:
 YY_RULE_SETUP
-#line 622 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 623 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Skeleton); /*{Skeleton,T_Skeleton}*/
 	YY_BREAK
 case 406:
 YY_RULE_SETUP
-#line 623 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 624 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SimplePoints); /*{SimplePoints,T_SimplePoints}*/
 	YY_BREAK
 case 407:
 YY_RULE_SETUP
-#line 625 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 626 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_NormalField); /*{NormalField,T_NormalField}*/
 	YY_BREAK
 case 408:
 YY_RULE_SETUP
-#line 626 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 627 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_DirConnectivity); /*{DirConnectivity,T_DirConnectivity}*/
 	YY_BREAK
 case 409:
 YY_RULE_SETUP
-#line 627 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 628 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_OrientField); /*{OrientField,T_OrientField}*/
 	YY_BREAK
 case 410:
 YY_RULE_SETUP
-#line 628 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 629 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_OrientPositive); /*{OrientPositive,T_OrientPositive}*/
 	YY_BREAK
 case 411:
 YY_RULE_SETUP
-#line 630 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 631 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Skeleton2lines); /*{Skeleton2lines,T_Skeleton2lines}*/
 	YY_BREAK
 case 412:
 YY_RULE_SETUP
-#line 631 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 632 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SmoothLines);  /*{SmoothLines,T_SmoothLines}*/
 	YY_BREAK
 case 413:
 YY_RULE_SETUP
-#line 632 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 633 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_RemoveLine);   /*{RemoveLine,T_RemoveLine}*/
 	YY_BREAK
 case 414:
 YY_RULE_SETUP
-#line 633 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 634 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_GetNumberOfLines); /*{GetNumberOfLines,T_GetNumberOfLines}*/
 	YY_BREAK
 case 415:
 YY_RULE_SETUP
-#line 634 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 635 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_GetLine); /*{GetLine,T_GetLine}*/
 	YY_BREAK
 case 416:
 YY_RULE_SETUP
-#line 635 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 636 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_ConnectLines); /*{ConnectLines,T_ConnectLines}*/
 	YY_BREAK
 case 417:
 YY_RULE_SETUP
-#line 636 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 637 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_ResampleLines); /*{ResampleLines,T_ResampleLines}*/
 	YY_BREAK
 case 418:
 YY_RULE_SETUP
-#line 637 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 638 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_ShortestPath); /*{ShortestPath,T_ShortestPath}*/
 	YY_BREAK
 case 419:
 YY_RULE_SETUP
-#line 638 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 639 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_ShortestPathImage); /*{ShortestPathImage,T_ShortestPathImage}*/
 	YY_BREAK
 case 420:
 YY_RULE_SETUP
-#line 639 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 640 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_PathFromDispl); /*{PathFromDispl, T_PathFromDispl}*/
 	YY_BREAK
 case 421:
 YY_RULE_SETUP
-#line 640 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 641 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_PathFromVectField); /*{PathFromVectField, T_PathFromVectField}*/
 	YY_BREAK
 case 422:
 YY_RULE_SETUP
-#line 641 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 642 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_LineRecons); /*{LineRecons,T_LineRecons}*/
 	YY_BREAK
 case 423:
 YY_RULE_SETUP
-#line 643 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 644 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_CircleIntegral); /*{CircleInt,T_CircleIntegral}*/
 	YY_BREAK
 case 424:
 YY_RULE_SETUP
-#line 644 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 645 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_CircleIntegralExc); /*{CircleIntExc,T_CircleIntegralExc}*/
 	YY_BREAK
 case 425:
 YY_RULE_SETUP
-#line 645 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 646 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_CircleIntSdExc); /*{CircleIntSdExc,T_CircleIntSdExc}*/
 	YY_BREAK
 case 426:
 YY_RULE_SETUP
-#line 646 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 647 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_CircleMinIntSdExc); /*{CircleMinIntSdExc,T_CircleMinIntSdExc}*/
 	YY_BREAK
 case 427:
 YY_RULE_SETUP
-#line 647 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 648 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_LocalExtrema); /*{LocalExtrema,T_LocalExtrema}*/
 	YY_BREAK
 case 428:
 YY_RULE_SETUP
-#line 650 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 651 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_gnuplot); /*{gnuplot,T_gnuplot}*/
 	YY_BREAK
 case 429:
 YY_RULE_SETUP
-#line 651 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 652 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_histo); /*{histo,T_histo}*/
 	YY_BREAK
 case 430:
 YY_RULE_SETUP
-#line 652 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 653 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_cumhisto); /*{cumhisto,T_cumhisto}*/
 	YY_BREAK
 case 431:
 YY_RULE_SETUP
-#line 653 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 654 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_DisplayHisto); /*{DisplayHisto,T_DisplayHisto}*/
 	YY_BREAK
 case 432:
 YY_RULE_SETUP
-#line 655 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 656 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_GenRead); /*{GenRead,T_GenRead}*/
 	YY_BREAK
 case 433:
 YY_RULE_SETUP
-#line 658 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 659 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Matrix); /*{Matrix,T_Matrix}*/
 	YY_BREAK
 case 434:
 YY_RULE_SETUP
-#line 659 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 660 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Invert); /*{Invert,T_Invert}*/
 	YY_BREAK
 case 435:
 YY_RULE_SETUP
-#line 661 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 662 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SaveStructuredGrid); /*{SaveStructuredGrid,T_SaveStructuredGrid}*/
 	YY_BREAK
 case 436:
 YY_RULE_SETUP
-#line 663 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 664 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
 //
 //============================== PARAMWIN options ====================
@@ -6063,317 +6063,317 @@ YY_RULE_SETUP
 	YY_BREAK
 case 437:
 YY_RULE_SETUP
-#line 669 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 670 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_BeginBook); /*{BeginBook,T_BeginBook}*/
 	YY_BREAK
 case 438:
 YY_RULE_SETUP
-#line 670 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 671 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_EndBook);   /*{EndBook,T_EndBook}*/
 	YY_BREAK
 case 439:
 YY_RULE_SETUP
-#line 671 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 672 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_AddPage); /*{AddPage,T_AddPage}*/
 	YY_BREAK
 case 440:
 YY_RULE_SETUP
-#line 672 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 673 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_BeginPanel); /*{BeginPanel,T_BeginPanel}*/
 	YY_BREAK
 case 441:
 YY_RULE_SETUP
-#line 673 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 674 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_EndPanel); /*{EndPanel,T_EndPanel}*/
 	YY_BREAK
 case 442:
 YY_RULE_SETUP
-#line 675 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 676 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_BeginBoxPanel); /*{BeginBoxPanel,T_BeginBoxPanel}*/
 	YY_BREAK
 case 443:
 YY_RULE_SETUP
-#line 676 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 677 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_EndBoxPanel); /*{EndBoxPanel,T_EndBoxPanel}*/
 	YY_BREAK
 case 444:
 YY_RULE_SETUP
-#line 678 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 679 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_AddFloat); /*{AddFloat,T_AddFloat}*/
 	YY_BREAK
 case 445:
 YY_RULE_SETUP
-#line 679 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 680 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_AddInt); /*{AddInt,T_AddInt}*/
 	YY_BREAK
 case 446:
 YY_RULE_SETUP
-#line 680 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 681 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_AddButton); /*{AddButton,T_AddButton}*/
 	YY_BREAK
 case 447:
 YY_RULE_SETUP
-#line 681 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 682 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_AddBoolean); /*{AddBoolean,T_AddBoolean}*/
 	YY_BREAK
 case 448:
 YY_RULE_SETUP
-#line 682 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 683 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_AddEnum); /*{AddEnum,T_AddEnum}*/
 	YY_BREAK
 case 449:
 YY_RULE_SETUP
-#line 683 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 684 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_AddEnumChoice); /*{AddEnumChoice,T_AddEnumChoice}*/
 	YY_BREAK
 case 450:
 YY_RULE_SETUP
-#line 684 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 685 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_AddImageChoice); /*{AddImageChoice,T_AddImageChoice}*/
 	YY_BREAK
 case 451:
 YY_RULE_SETUP
-#line 685 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 686 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_AddString); /*{AddString,T_AddString}*/
 	YY_BREAK
 case 452:
 YY_RULE_SETUP
-#line 686 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 687 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_AddFilename); /*{AddFilename,T_AddFilename}*/
 	YY_BREAK
 case 453:
 YY_RULE_SETUP
-#line 687 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 688 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_AddLabel); /*{AddLabel,T_AddLabel}*/
 	YY_BREAK
 case 454:
 YY_RULE_SETUP
-#line 688 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 689 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetCallback); /*{SetCallback,T_SetCallback}*/
 	YY_BREAK
 case 455:
 YY_RULE_SETUP
-#line 689 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 690 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetDragCallback); /*{SetDragCallback,T_SetDragCallback}*/
 	YY_BREAK
 case 456:
 YY_RULE_SETUP
-#line 690 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 691 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetPositionProp); /*{SetPositionProp,T_SetPositionProp}*/
 	YY_BREAK
 case 457:
 YY_RULE_SETUP
-#line 691 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 692 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_ShowSlider); /*{ShowSlider,T_ShowSlider}*/
 	YY_BREAK
 case 458:
 YY_RULE_SETUP
-#line 692 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 693 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_CreateWin); /*{CreateWin,T_CreateWin}*/
 	YY_BREAK
 case 459:
 YY_RULE_SETUP
-#line 693 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 694 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Display); /*{Display,T_Display}*/
 	YY_BREAK
 case 460:
 YY_RULE_SETUP
-#line 694 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 695 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_BeginBox); /*{BeginBox,T_BeginBox}*/
 	YY_BREAK
 case 461:
 YY_RULE_SETUP
-#line 695 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 696 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_EndBox); /*{EndBox,T_EndBox}*/
 	YY_BREAK
 case 462:
 YY_RULE_SETUP
-#line 696 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 697 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_BeginHorizontal); /*{BeginHorizontal,T_BeginHorizontal}*/
 	YY_BREAK
 case 463:
 YY_RULE_SETUP
-#line 697 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 698 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_EndHorizontal); /*{EndHorizontal,T_EndHorizontal}*/
 	YY_BREAK
 case 464:
 YY_RULE_SETUP
-#line 698 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 699 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_redraw); /*{redraw,T_redraw}*/
 	YY_BREAK
 case 465:
 YY_RULE_SETUP
-#line 700 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 701 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Enable);  /*{Enable,T_Enable}*/
 	YY_BREAK
 case 466:
 YY_RULE_SETUP
-#line 701 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 702 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_EnableBox);  /*{EnableBox,T_EnableBox}*/
 	YY_BREAK
 case 467:
 YY_RULE_SETUP
-#line 702 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 703 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_EnablePanel);  /*{EnablePanel,T_EnablePanel}*/
 	YY_BREAK
 case 468:
 YY_RULE_SETUP
-#line 704 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 705 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_CreateFlatMesh);    /*{CreateFlatMesh,T_CreateFlatMesh}*/
 	YY_BREAK
 case 469:
 YY_RULE_SETUP
-#line 705 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 706 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_CreateVolume);      /*{CreateVolume,T_CreateVolume}*/
 	YY_BREAK
 case 470:
 YY_RULE_SETUP
-#line 706 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 707 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_vtkCreateFlatMesh); /*{vtkCreateFlatMesh,T_vtkCreateFlatMesh}*/
 	YY_BREAK
 case 471:
 YY_RULE_SETUP
-#line 707 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 708 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Altitude2Position); /*{Altitude2Position,T_Altitude2Position}*/
 	YY_BREAK
 case 472:
 YY_RULE_SETUP
-#line 708 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 709 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Temp2Altitudes);    /*{Temp2Altitudes,T_Temp2Altitudes}*/
 	YY_BREAK
 case 473:
 YY_RULE_SETUP
-#line 709 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 710 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_GeoCoordinates);    /*{GeoCoordinates,T_GeoCoordinates}*/
 	YY_BREAK
 case 474:
 YY_RULE_SETUP
-#line 710 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 711 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_ElevateMesh);       /*{ElevateMesh,T_ElevateMesh}*/
 	YY_BREAK
 case 475:
 YY_RULE_SETUP
-#line 711 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 712 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_Set3DArrowParam); /*{Set3DArrowParam,T_Set3DArrowParam}*/
 	YY_BREAK
 case 476:
 YY_RULE_SETUP
-#line 712 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 713 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_CreateVectors); /*{CreateVectors,T_CreateVectors}*/
 	YY_BREAK
 case 477:
 YY_RULE_SETUP
-#line 713 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 714 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_ComputeAltitudes); /*{ComputeAltitudes,T_ComputeAltitudes}*/
 	YY_BREAK
 case 478:
 YY_RULE_SETUP
-#line 714 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 715 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_ReadFlow); /*{ReadFlow,T_ReadFlow}*/
 	YY_BREAK
 case 479:
 YY_RULE_SETUP
-#line 715 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 716 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_SetFluidNavFile); /*{SetFluidNavFile,T_SetFluidNavFile}*/
 	YY_BREAK
 case 480:
 YY_RULE_SETUP
-#line 716 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 717 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_DrawEarthCoord); /*{DrawEarthCoord,T_DrawEarthCoord}*/
 	YY_BREAK
 case 481:
 YY_RULE_SETUP
-#line 718 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 719 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_PaintCallback); /*{PaintCallback,T_PaintCallback}*/
 	YY_BREAK
 case 482:
 YY_RULE_SETUP
-#line 720 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 721 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_CreateEllipsoids); /*{CreateEllipsoids,T_CreateEllipsoids}*/
 	YY_BREAK
 case 483:
 YY_RULE_SETUP
-#line 722 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 723 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_import_ami);     /*{import_ami,T_import_ami}*/
 	YY_BREAK
 case 484:
 YY_RULE_SETUP
-#line 724 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 725 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_import_vtk);     /*{import_vtk,T_import_vtk}*/
 	YY_BREAK
 case 485:
 YY_RULE_SETUP
-#line 725 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 726 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_import_itk);     /*{import_itk,T_import_itk}*/
 	YY_BREAK
 case 486:
 YY_RULE_SETUP
-#line 726 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 727 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_import_wii);     /*{import_wii,T_import_wii}*/
 	YY_BREAK
 case 487:
 YY_RULE_SETUP
-#line 727 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 728 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_import_filters); /*{import_filters,T_import_filters}*/
 	YY_BREAK
 case 488:
 YY_RULE_SETUP
-#line 728 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 729 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_import_sys);     /*{import_sys,T_import_sys}*/
 	YY_BREAK
 case 489:
 YY_RULE_SETUP
-#line 730 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 731 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_amiOFCorr2D);  /*{amiOFCorr2D,T_amiOFCorr2D}*/
 	YY_BREAK
 case 490:
 YY_RULE_SETUP
-#line 731 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 732 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_amiOFVar2D);   /*{amiOFVar2D,T_amiOFVar2D}*/
 	YY_BREAK
 case 491:
 YY_RULE_SETUP
-#line 733 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 734 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_vtkDicomRead); /*{vtkDicomRead,T_vtkDicomRead}*/
 	YY_BREAK
 case 492:
 YY_RULE_SETUP
-#line 734 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 735 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_vtkMINCRead);  /*{vtkMINCRead,T_vtkMINCRead}*/
 	YY_BREAK
 case 493:
 YY_RULE_SETUP
-#line 736 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 737 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_exists);       /*{exists,T_exists}*/
 	YY_BREAK
 case 494:
 YY_RULE_SETUP
-#line 737 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 738 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_FileExists);  /*{FileExists,T_FileExists}*/
 	YY_BREAK
 case 495:
 YY_RULE_SETUP
-#line 739 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 740 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_InfoDialog); /*{InfoDialog,T_InfoDialog}*/
 	YY_BREAK
 case 496:
 YY_RULE_SETUP
-#line 741 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 742 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_slice);        /*{slice,T_slice}*/
 	YY_BREAK
 case 497:
 YY_RULE_SETUP
-#line 743 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 744 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_argc);         /*{argc,T_argc}*/
 	YY_BREAK
 case 498:
 YY_RULE_SETUP
-#line 744 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 745 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 return(token::T_emptyargs);    /*{emptyargs,T_emptyargs}*/
 	YY_BREAK
 case 499:
 YY_RULE_SETUP
-#line 746 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 747 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
 //
 //============================ Parse float ====================
@@ -6386,7 +6386,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 500:
 YY_RULE_SETUP
-#line 757 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 758 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
 //
 //============================ Parse interger ====================
@@ -6399,7 +6399,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 501:
 YY_RULE_SETUP
-#line 770 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 771 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
 //
 //
@@ -6411,7 +6411,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 502:
 YY_RULE_SETUP
-#line 779 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 780 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
   // end of string
   // Not thread safe ...
@@ -6433,45 +6433,45 @@ YY_RULE_SETUP
 case 503:
 /* rule 503 can match eol */
 YY_RULE_SETUP
-#line 797 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 798 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
   GB_driver.yyiperror(E_UNTERM_STRING);
 }
 	YY_BREAK
 case 504:
 YY_RULE_SETUP
-#line 801 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 802 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 cpp_string->append(1,'\n');
 	YY_BREAK
 case 505:
 YY_RULE_SETUP
-#line 802 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 803 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 cpp_string->append(1,'\t');
 	YY_BREAK
 case 506:
 YY_RULE_SETUP
-#line 803 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 804 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 cpp_string->append(1,'\r');
 	YY_BREAK
 case 507:
 YY_RULE_SETUP
-#line 804 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 805 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 cpp_string->append(1,'\b');
 	YY_BREAK
 case 508:
 YY_RULE_SETUP
-#line 805 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 806 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 cpp_string->append(1,'\f');
 	YY_BREAK
 case 509:
 /* rule 509 can match eol */
 YY_RULE_SETUP
-#line 807 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 808 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 cpp_string->append(1,YYText()[1]);
 	YY_BREAK
 case 510:
 YY_RULE_SETUP
-#line 809 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 810 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
   cpp_string->append(YYText());
 /*
@@ -6484,7 +6484,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 511:
 YY_RULE_SETUP
-#line 820 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 821 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
   yylval->adouble=GB_argc-GB_num_arg_parsed;
   return(token::NUMBER);
@@ -6492,7 +6492,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 512:
 YY_RULE_SETUP
-#line 825 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 826 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
   // TODO allow more than 10 arguments!!
   int n,pos;
@@ -6530,7 +6530,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 513:
 YY_RULE_SETUP
-#line 860 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 861 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
 //============================ Parse block ====================
 //
@@ -6546,7 +6546,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 514:
 YY_RULE_SETUP
-#line 873 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 874 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
 //============================ Parse comment ====================
 //
@@ -6557,7 +6557,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 515:
 YY_RULE_SETUP
-#line 881 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 882 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
     comment_caller = block;
     BEGIN(comment);
@@ -6567,7 +6567,7 @@ YY_RULE_SETUP
 case 516:
 /* rule 516 can match eol */
 YY_RULE_SETUP
-#line 887 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 888 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
   yylloc->lines(yyleng); yylloc->step();
   GB_driver.yyiplineno++;
@@ -6576,7 +6576,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 517:
 YY_RULE_SETUP
-#line 894 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 895 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
   block_level++;
   ami_block->GetBody().append(1,'{');
@@ -6584,7 +6584,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 518:
 YY_RULE_SETUP
-#line 899 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 900 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
 
   block_level--;
@@ -6622,7 +6622,7 @@ YY_RULE_SETUP
 case 519:
 /* rule 519 can match eol */
 YY_RULE_SETUP
-#line 934 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 935 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
 //  char *yptr = YYText();
 //  while (*yptr)
@@ -6632,7 +6632,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 520:
 YY_RULE_SETUP
-#line 942 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 943 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
 //============================ Parse comment ====================
 //
@@ -6643,7 +6643,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 521:
 YY_RULE_SETUP
-#line 950 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 951 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
     comment_caller = INITIAL;
     BEGIN(comment);
@@ -6653,7 +6653,7 @@ YY_RULE_SETUP
 case 522:
 /* rule 522 can match eol */
 YY_RULE_SETUP
-#line 957 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 958 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
   //GB_driver.yyiplineno++;
 //  printf("end comment from %d \n",comment_caller);
@@ -6664,7 +6664,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 523:
 YY_RULE_SETUP
-#line 965 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 966 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
   // on ecrit ce qu'on veut dans un commentaire ...
   // sauver les commentaires dans une variable du driver??
@@ -6672,7 +6672,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 524:
 YY_RULE_SETUP
-#line 970 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 971 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
 //
 //============================ Parse variable ====================
@@ -6686,7 +6686,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 525:
 YY_RULE_SETUP
-#line 981 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 982 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
 //
 //============================ Parse variable ====================
@@ -6699,7 +6699,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 526:
 YY_RULE_SETUP
-#line 992 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 993 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
 //
 //============================ Parse variable in a given context ====================
@@ -6722,7 +6722,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 527:
 YY_RULE_SETUP
-#line 1013 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 1014 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
 //
 //============================ Parse variable ====================
@@ -6732,7 +6732,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 528:
 YY_RULE_SETUP
-#line 1021 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 1022 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
                     yylloc->step();
                   }
@@ -6740,7 +6740,7 @@ YY_RULE_SETUP
 case 529:
 /* rule 529 can match eol */
 YY_RULE_SETUP
-#line 1025 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 1026 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
                     // allow multiline command
                      GB_driver.yyiplineno++;
@@ -6749,7 +6749,7 @@ YY_RULE_SETUP
 case 530:
 /* rule 530 can match eol */
 YY_RULE_SETUP
-#line 1030 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 1031 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
                      yylloc->lines(yyleng); yylloc->step();
                      GB_driver.yyiplineno++;
@@ -6758,7 +6758,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 531:
 YY_RULE_SETUP
-#line 1036 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 1037 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 {
 
     std::string error_string =" lex error \t invalid characters ";
@@ -6768,7 +6768,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 532:
 YY_RULE_SETUP
-#line 1046 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 1047 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 ECHO;
 	YY_BREAK
 #line 6775 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.cpp"
@@ -7674,7 +7674,7 @@ void yyipfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 1046 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
+#line 1047 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
 
 
 

@@ -1423,7 +1423,7 @@ namespace yyip {
           if (imptr != NULL)
             Vars.AddVar(type_image,ident,imptr);
           else
-            driver.err_print("assignment of NULL image\n");
+            driver.err_print((boost::format("assignment of NULL image for %1%  \n") % (yysemantic_stack_[(3) - (1)].ident)).str().c_str() );;
         }
     break;
 
@@ -1439,7 +1439,7 @@ namespace yyip {
           if (imptr != NULL)
             Vars.AddVar(type_image,ident,imptr);
           else
-            driver.err_print("assignment of NULL image\n");
+            driver.err_print((boost::format("assignment of NULL image for %1%  \n") %(yysemantic_stack_[(3) - (1)].ident)).str().c_str() );;
         }
     break;
 

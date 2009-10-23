@@ -18,6 +18,8 @@
 #include "ami_function.h"
 #include "Timing.hpp"
 
+//class ImageStack;
+
 #include "ImageStack.h"
 #include "SurfStack.h"
 #include "MatrixStack.h"
@@ -40,6 +42,8 @@ namespace yyip {
  * structure into which the parsed data is saved. */
 class Driver
 {
+  DEFINE_CLASS(Driver);
+
 public:
 
     ImageStack        im_stack;
@@ -187,6 +191,9 @@ public:
     /** General error handling. This can be modified to output the error
      * e.g. to a dialog box. */
     void error(const std::string& m);
+
+    /** Return the current filename */
+    std::string& GetCurrentFilename() { return current_file; };
 
     /** Pointer to the current lexer instance, this is used to connect the
      * parser to the scanner. It is used in the yylex macro. */

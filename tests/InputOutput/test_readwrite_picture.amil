@@ -4,6 +4,9 @@ SetDebugOn
 #SetVerboseOn
 #import_itk
 
+import_sys
+#InfoDialog l_script_dir
+
 image_name ="amilab_logo_rgb8bits"
 image_name2="amilab_logo_rgb8bits2"
 
@@ -11,6 +14,8 @@ printn "Reading/writing 8 bits RGB test image:"
 
 for extension in ".png", ".jpg", ".tiff" , ".bmp" {
 #for extension in  ".tiff" {
+
+  l_script_dir = GetCurrentScriptDir()
   l_exact=(extension==".png") || (extension==".bmp")
 
   # read test
@@ -41,7 +46,7 @@ for extension in ".png", ".jpg", ".tiff" , ".bmp" {
   
   
   # write test
-  l_i.save image_name2+extension
+  l_i.save l_script_dir+"/"+image_name2+extension
   l_j= Image(image_name2+extension)
   l_imd = (FLOAT) l_i - (FLOAT) l_j
   if (l_exact) {

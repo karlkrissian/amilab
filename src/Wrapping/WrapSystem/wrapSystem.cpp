@@ -16,6 +16,9 @@
 #include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "wrapSystem.h"
+#include "driver.h"
+
+extern yyip::Driver GB_driver;
 
 #include <wx/utils.h>
 
@@ -25,12 +28,13 @@ extern VarContexts  Vars;
 void AddWrapSystem(){
 
 //  Vars.AddVar(type_c_function, "GetFreeMemory",    (void*) wrap_GetFreeMemory );
-  Vars.AddVar(type_c_function, "GetFullHostName",  (void*) wrap_GetFullHostName );
-  Vars.AddVar(type_c_function, "GetHomeDir",       (void*) wrap_GetHomeDir );
-  Vars.AddVar(type_c_function, "GetHostName",      (void*) wrap_GetHostName );
-  Vars.AddVar(type_c_function, "GetUserHome",      (void*) wrap_GetUserHome );
-  Vars.AddVar(type_c_function, "GetUserId",        (void*) wrap_GetUserId );
-  Vars.AddVar(type_c_function, "GetUserName",      (void*) wrap_GetUserName );
+  Vars.AddVar(type_c_function, "GetFullHostName",     (void*) wrap_GetFullHostName );
+  Vars.AddVar(type_c_function, "GetHomeDir",          (void*) wrap_GetHomeDir );
+  Vars.AddVar(type_c_function, "GetHostName",         (void*) wrap_GetHostName );
+  Vars.AddVar(type_c_function, "GetUserHome",         (void*) wrap_GetUserHome );
+  Vars.AddVar(type_c_function, "GetUserId",           (void*) wrap_GetUserId );
+  Vars.AddVar(type_c_function, "GetUserName",         (void*) wrap_GetUserName );
+  Vars.AddVar(type_c_function, "GetCurrentScriptDir", (void*) wrap_GetCurrentScriptDir );
 
 }
 
@@ -203,3 +207,25 @@ Variable::ptr wrap_GetHostName(ParamList* p)
 }
 
 
+//--------------------------------------------------------------------
+Variable::ptr wrap_GetCurrentScriptDir(ParamList* p)
+{
+    char functionname[] = "GetCurrentScriptDir";
+    char description[]=" \n\
+        Returns the directory of the current script\n\
+            ";
+    char parameters[] =" \n\
+          Return:\n\
+              the directory of the current script\n\
+            ";
+
+  if (p->GetNumParam()!=0)  HelpAndReturnVarPtr;
+  
+  wxString wxvalue = wxFileName(GB_driver.GetCurrentFilename().c_str()).GetPath();
+  string* value = new string(wxvalue.mb_str());
+
+  Variable::ptr varres(new Variable());
+  varres->Init(type_string,"hostname",value);
+
+  return varres;
+}
