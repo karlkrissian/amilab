@@ -20,8 +20,8 @@ extern yyip::Driver GB_driver;
 void ImageStack::AddImage( char* name)
 {
   // look for the image 
-  wxFileName inputname(name);
-  wxFileName newname(name);
+  wxFileName inputname(wxString(name, wxConvUTF8));
+  wxFileName newname(wxString(name,wxConvUTF8));
 
   if (!inputname.IsFileReadable()) 
   // add the current script path
