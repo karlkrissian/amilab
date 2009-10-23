@@ -27,7 +27,7 @@ void ImageStack::AddImage( char* name)
   // add the current script path
   {
     newname.Assign(
-            wxFileName(GB_driver.GetCurrentFilename().c_str()).GetPath() +
+            wxFileName(wxString(GB_driver.GetCurrentFilename().c_str(),wxConvUTF8)).GetPath() +
             inputname.GetPathSeparator()+
             inputname.GetPath(),
             inputname.GetFullName());
