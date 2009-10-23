@@ -221,7 +221,7 @@ Variable::ptr wrap_GetCurrentScriptDir(ParamList* p)
 
   if (p->GetNumParam()!=0)  HelpAndReturnVarPtr;
   
-  wxString wxvalue = wxFileName(GB_driver.GetCurrentFilename().c_str()).GetPath();
+  wxString wxvalue = wxFileName(wxString(GB_driver.GetCurrentFilename().c_str(), wxConvUTF8)).GetPath();
   string* value = new string(wxvalue.mb_str());
 
   Variable::ptr varres(new Variable());
