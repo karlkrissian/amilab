@@ -1,0 +1,114 @@
+
+#
+# Example of using the Gaussian Filtering
+# with the command filter
+#
+
+if (!exists(GF_Init)) {
+
+
+  proc GF_Init( ) {
+    global_new
+  
+    GF_input_name = ""
+    GF_sigma      = 1, "Gaussian kernel standard devation"
+    GF_derx = INT(0), "Derivation order in X (0: no derivation)"
+    GF_dery = INT(0), "Derivation order in Y (0: no derivation)"
+    GF_derz = INT(0), "Derivation order in Z (0: no derivation)"
+    GF_auto = UCHAR(0), "Apply the filter automatically after changing the standard deviation value"
+    GF_autodrag = UCHAR(0), "Apply the filter automatically while moving the scale"
+    GF_CreateGui()
+  }
+  
+  proc GF_Close() {
+    GF_win.Hide
+    delvars "GF_*_draw"
+    delvars "GF_*"
+  }
+  
+  proc GF_load_input() {
+    eval "global::GF_input <<="+GF_input_name+";"
+    if (GF_input_name=="Image") {
+      GF_input_name = "GF_input"
+      GF_win.update
+    }
+  }
+  
+  #--------------------------------------------------
+  proc GF_Filter() {
+    GF_load_input()
+    global::GF_res <<= GF_input
+    if (GF_input.vdim==1) {
+      GF_res = filter(GF_input,GF_sigma,\
+                      GF_derx,GF_dery,GF_derz)
+    } else {
+      for n=0 to GF_input.vdim-1 {
+        GF_res[n] = filter( GF_input[n],GF_sigma,\
+                            GF_derx,GF_dery,GF_derz)
+      }
+    }
+    GF_Display()
+  }
+  GF_Filter.Comments("Apply Gaussian convolution on each channel of the image.")
+  
+  proc GF_Display() {
+    global
+    show GF_input
+    if (exists(GF_res)) {
+      show GF_res
+      GF_input_draw.compare(GF_res)
+    }
+  }
+  
+  #-----------------------------------------
+  proc GF_AutoFilter() {
+    if (GF_auto) { GF_Filter; }
+  }
+  GF_AutoFilter.Comments("Apply the filter automatically if this option is enabled")
+
+  #-----------------------------------------
+  proc GF_AutoDrag() {
+    GF_win.SetDragCallback(GF_sigma_id,GF_autodrag)
+  }
+  GF_AutoDrag.Comments("Enable/Disable real-time filtering while moving the scale")
+  
+  #-----------------------------------------
+  proc GF_Save() {
+    GF_res.save resultname
+  }
+  GF_Save.Comments("Save the resulting image")
+  
+  proc GF_CreateGui() {
+  
+    # parameters window
+    global::GF_win = ParamWin("GaussFilter")
+  
+    GF_win.BeginBook
+      GF_win.AddPage("Param")
+
+      GF_win.AddImageChoice(GF_input_name, "Input")
+      global::GF_sigma_id = GF_win.AddFloat(GF_sigma,"std_dev",0.1,10)
+      GF_win.SetCallback(GF_AutoFilter)
+      GF_win.SetDragCallback(GF_sigma_id,GF_autodrag)
+
+      GF_win.AddInt(GF_derx,"Der_order_X",0,2)
+      GF_win.AddInt(GF_dery,"Der_order_Y",0,2)
+      GF_win.AddInt(GF_derz,"Der_order_Z",0,2)
+      GF_win.AddBoolean(GF_auto,"Auto")
+      GF_win.AddBoolean(GF_autodrag,"Auto drag")
+      GF_win.SetCallback(GF_AutoDrag)
+      GF_win.AddButton("Apply",GF_Filter)
+    GF_win.EndBook
+    GF_win.AddButton("Close",    GF_Close)
+  
+    GF_win.update
+    GF_win.Display
+  }
+  
+  
+  GF_Init
+} else {
+  InfoDialog "The script seems to be already loaded."
+}
+
+

@@ -20,7 +20,7 @@ class wxArrayString;
 //
 class Variables{
 
-  DEFINE_CLASS(Variables)
+  DEFINE_CLASS(Variables);
 
 protected:
   std::list<Variable*>  _vars;
@@ -38,7 +38,7 @@ protected:
 
 //  Variable* operator [](int i) {  return _vars[i];  }
 
-  string GetName() const { return _context_name; }
+  std::string GetName() const { return _context_name; }
   void SetName( const string& name ) { _context_name = name; }
 
   bool GetGlobalNew() const { return _global_new; }
@@ -46,15 +46,13 @@ protected:
 
   std::string CheckVarName(const char* name);
 
-  Variable* AddVar(vartype type, const char* name, void* val);
+  Variable* AddVar(vartype type, const char* name, void* val, boost::shared_ptr<Variables> context = boost::shared_ptr<Variables>() );
 
   Variable* AddVarPtr(vartype type, const char* name, void* val);
 
   Variable* AddVar(Variable* var);
 
   Variable* AddVar(const Variable::ptr& var);
-
-  Variable* AddImage(char* name, void* val);
 
   bool ExistVar(const char* varname);
 

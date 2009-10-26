@@ -12,6 +12,9 @@
 
 #include "DefineClass.hpp"
 
+#define NEWVAR_CONTEXT -1
+#define OBJECT_CONTEXT_NUMBER -10
+
 // VarContexts is a stack of contexts, 
 // where each context contains a set of variables
 class VarContexts {
@@ -23,8 +26,10 @@ private:
   int        _current_context;
  
   // A context is a set of variables
-  std::vector<Variables*> _context;
+  // use smart pointers here ...
+  std::vector<Variables::ptr> _context;
 
+  Variables::ptr _object_context;
 
 public:
 
@@ -36,6 +41,16 @@ public:
 
   int GetNewVarContext();
 
+  void SetObjectContext(const Variables::ptr& ocontext)
+  {
+    _object_context = ocontext;
+  }
+
+  Variables::ptr& GetObjectContext() 
+  { 
+    return _object_context;
+  }
+
   void SetGlobalNew(bool gn)  {  _context[_current_context]->SetGlobalNew(gn);}
 
   int GetCurrentContextNumber() {
@@ -45,7 +60,7 @@ public:
   void SetGlobalContext();
   void SetLastContext();
 
-  Variables* GetCurrentContext() {
+  Variables::ptr GetCurrentContext() {
     return _context[_current_context];
   }
 
@@ -65,7 +80,7 @@ public:
   /// context is the context where to add the variable
   /// -1 means the current context
   Variable* AddVar(vartype type, const char* name, void* val,
-                    int context=-1);
+                    int context=NEWVAR_CONTEXT);
 
   /// IndentifierInfo contains the name and the context
   Variable* AddVar(vartype type, const IdentifierInfo::ptr& info, void* val);
@@ -74,12 +89,12 @@ public:
   // a smart pointer of the variable type
   Variable* AddVarPtr(vartype type, const char* name, void* val);
 
-  Variable* AddVar(Variable* var, int context=-1);
+  Variable* AddVar(Variable* var, int context=NEWVAR_CONTEXT);
 
-  Variable* AddVar(Variable::ptr var, int context=-1);
+  Variable* AddVar(Variable::ptr var, int context=NEWVAR_CONTEXT);
 
   bool GetVar( const char* varname, Variable** var,
-                        int context=-1);
+                        int context=NEWVAR_CONTEXT);
 
   bool deleteVar(const char* varname);
 

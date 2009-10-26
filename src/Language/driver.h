@@ -24,6 +24,8 @@
 #include "SurfStack.h"
 #include "MatrixStack.h"
 #include "GLTransformStack.h"
+#include "ami_class.h"
+#include "ami_object.h"
 
 struct yy_buffer_state;
 
@@ -167,9 +169,17 @@ public:
     bool parse_block( const AmiInstructionBlock::ptr& b );
 
     /** call to a language function
+    * @param v function type variable
+    * @param param list of parameters
+    */
+    void yyip_call_function( const Variable* v, 
+              const ParamList::ptr& param = ParamList::ptr() );
+
+    /** instanciate an object of a given class
     * @param f smart pointer to the function
     */
-    void yyip_call_function( const AMIFunction::ptr& f, const ParamList::ptr& param = ParamList::ptr() );
+    void yyip_instanciate_object( const AMIClass::ptr& oclass,
+      AMIObject* object);
 
     /** switching to a script file
     * @param filename

@@ -213,7 +213,7 @@ void Variable::Delete()
   if (_pointer==NULL) return;
   if (!FreeMemory()) 
   {
-    //if (GB_debug) fprintf(stderr,"Could not really delete variable %s \n", (char*) _name);
+    CLASS_MESSAGE(boost::format("Could not completely delete variable %s") % _name);
   }
   _pointer=NULL;
   _type = type_void;

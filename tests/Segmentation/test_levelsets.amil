@@ -24,8 +24,8 @@ AddBrightSphere_mm(&ls_init, CT_dimx/2+CT_R, CT_dimy/2,CT_dimz/2, CT_r-2,-1,1)
 LS_initial_name  = "ls_init"
 LS_load_initial()
 
-LS_Imean = 1
-LS_Isd = 0.5
+LS_Imean = max(ls_input)
+LS_Isd = (max(ls_input)-min(ls_input))/2
 LS_T = 150
 LS_win.update
 

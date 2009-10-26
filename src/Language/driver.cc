@@ -165,13 +165,66 @@ bool Driver::parse_block( const AmiInstructionBlock::ptr& b )
 
 
 //-----------------------------------------------------------
-void Driver::yyip_call_function( const AMIFunction::ptr& f, const ParamList::ptr& param)
+void Driver::yyip_instanciate_object( const AMIClass::ptr& oclass,
+      AMIObject* object)
+{
+
+  int    previous_lineno   = yyiplineno;
+  string previous_filename = this->current_file;
+  int    i;
+  char*  name;
+
+  // Set the new local context
+  std::string contextname = (boost::format("local_%1%")%object->GetName()).str();
+  Vars.NewContext(contextname.c_str());
+  Vars.SetLastContext();
+
+  // Set the object context
+  Variables::ptr previous_ocontext = Vars.GetObjectContext();
+  Vars.SetObjectContext(object->GetContext());
+
+  // TODO: Could execute inherited classes in the future ...
+
+  // Call the class body
+  this->current_file = oclass->GetFileName();
+  parse_block(oclass->GetBody());
+
+  // Restore the previous context
+  // destroy the context and its variables
+  // removing each parameter is not necessary
+  // cause it will be done by DeleteLastContext()
+  Vars.DeleteLastContext();
+
+  // Restore the object context
+  Vars.SetObjectContext(previous_ocontext);
+
+  // Restore position and filename
+  yyiplineno = previous_lineno;
+  this->current_file = previous_filename;
+}
+
+//-----------------------------------------------------------
+void Driver::yyip_call_function( const Variable* v, const ParamList::ptr& param)
 //   --------------------------
 {
   int    previous_lineno   = yyiplineno;
   string previous_filename = this->current_file;
   int    i;
   char*  name;
+
+  // check that v is a function variable
+  if (v->Type()!=type_ami_function) {
+    error("Variable is not a function");
+    return;
+  }
+
+  // Get the function
+  AMIFunction::ptr f;
+  f = *(AMIFunction::ptr*) (v->Pointer());
+
+  // Set the object context
+  Variables::ptr previous_ocontext = Vars.GetObjectContext();
+  Vars.SetObjectContext(v->GetContext());
 
   // Set the new context
   Vars.NewContext(f->GetName().c_str());
@@ -218,6 +271,9 @@ void Driver::yyip_call_function( const AMIFunction::ptr& f, const ParamList::ptr
   // removing each parameter is not necessary
   // cause it will be done by DeleteLastContext()
   Vars.DeleteLastContext();
+
+  // Restore the object context
+  Vars.SetObjectContext(previous_ocontext);
 
   // Restore position and filename
   yyiplineno = previous_lineno;

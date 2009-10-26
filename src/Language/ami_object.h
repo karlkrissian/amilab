@@ -35,6 +35,7 @@
 #include "DefineClass.hpp"
 #include "AmiInstructionBlock.h"
 #include "ami_class.h"
+#include "Variables.hpp"
 
 using namespace boost;
 
@@ -50,16 +51,21 @@ class AMIObject {
 private:
   AMIClass::ptr   _class;
   std::string     _name;
+  // have its own list of variables
+  Variables::ptr  _vars;
 
  public:
 
   AMIObject()
     {
       _name     = "";
+      _vars     = Variables::ptr(new Variables);
+      _vars->SetName("object");
     }
 
   virtual ~AMIObject() 
     {
+    _vars->EmptyVariables();
     }
 
   void SetClass(AMIClass::ptr& amiclass)
@@ -70,12 +76,20 @@ private:
             << " for the object " 
             << GetName()
             << endl;
+    _class = amiclass;
   }
 
-  void SetName( const string& fname) { _name = fname; }
+  AMIClass::ptr& GetClass() { return _class;}
+
+  void SetName( const string& fname) 
+  { 
+    _name = fname; 
+    _vars->SetName(fname);
+  }
 
   const string& GetName() const { return _name; }
 
+  Variables::ptr& GetContext() { return _vars;}
 
 }; // AMIObject
 

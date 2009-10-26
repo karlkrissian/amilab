@@ -12,6 +12,8 @@
 
 #include "amilab_messages.h"
 
+// forward definition of Variables
+class Variables;
 
 /* TODO: Change SetString */
 
@@ -25,6 +27,8 @@ private:
   std::string   _name;
   std::string   _comments;
   void*         _pointer; // TODO remove all pointers!!!
+  boost::shared_ptr<Variables>   _context; // points to the context
+    // that the variable belong to, if any
 
  public:
 
@@ -53,6 +57,16 @@ private:
   }
 
   void* Pointer() const { return _pointer;}
+
+  void SetContext(const boost::shared_ptr<Variables>& val) 
+  {
+    _context = val;
+  }
+
+  boost::shared_ptr<Variables> GetContext() const
+  {
+    return _context;
+  }
 
   // create a new shared pointer reference to the object
   void Init(vartype type, const char* name, void* p);

@@ -39,7 +39,7 @@ extern unsigned char       GB_debug;
 
 //--------------------------------------------------
 VarContexts::VarContexts() {
-  _context.push_back(new Variables());
+  _context.push_back(Variables::ptr(new Variables()));
   _context[0]->SetName("Global context");
   _current_context = 0;
 }
@@ -47,8 +47,10 @@ VarContexts::VarContexts() {
 //--------------------------------------------------
 VarContexts::~VarContexts() {
   CLASS_MESSAGE("");
-  for (int i=_context.size()-1; i>=0; i--)
-    delete _context[i];
+  // no need to delete, smart pointers ...
+  while (_context.size()>1) {
+    DeleteLastContext();
+  }
 }
 
 //--------------------------------------------------
@@ -61,7 +63,7 @@ void VarContexts::EmptyVariables() {
 //--------------------------------------------------
 bool VarContexts::NewContext(const char* name) {
 
-  Variables* newcontext = new Variables();
+  Variables::ptr newcontext = Variables::ptr(new Variables());
   newcontext->SetName(name);
   _context.push_back(newcontext);
 
@@ -74,19 +76,18 @@ bool VarContexts::NewContext(const char* name) {
 //--------------------------------------------------
 bool VarContexts::DeleteLastContext() {
 
-  if (GB_debug) 
-    cerr << "Removing last context" << endl;
+  CLASS_MESSAGE("Removing last context")
   if (_context.size()>1) {
-    Variables* last_context = _context.back();
-    last_context->EmptyVariables();
-    delete last_context;
+    // no need to delete, smart pointer
+    //Variables::ptr last_context = _context.back();
+    //last_context->EmptyVariables();
+    // delete last_context;
     _context.pop_back();
     SetLastContext();
     return true;
   }
   else {
-    cerr  << "VarContexts::DeleteLastContext() "
-          << "\t cannot remove the main context " << endl;
+    CLASS_ERROR("Cannot remove the main context ");
     return false;
   }
 }
@@ -154,7 +155,21 @@ Variable* VarContexts::AddVar(vartype type, const char* name,
                               void* val,
                               int context)
 {
-  if (context==-1) 
+  CLASS_MESSAGE("start");
+  if (context==OBJECT_CONTEXT_NUMBER) {
+    CLASS_MESSAGE("object context");
+    if (_object_context.get()) {
+      CLASS_MESSAGE(boost::format("adding object of type %1%, name %2% into object context ") % type % name);
+      return _object_context->AddVar(type,name,val,
+                                    _object_context);
+    }
+    else {
+      CLASS_ERROR("Calling object variable without any object context");
+      return NULL;
+    }
+  }
+
+  if (context==NEWVAR_CONTEXT) 
     context = GetNewVarContext();
   CLASS_MESSAGE(boost::format("Context number %d ")% context);
   return _context[context]->AddVar(type,name,val);
@@ -168,11 +183,9 @@ Variable* VarContexts::AddVar(vartype type,
 {
   int context;
   context = info->GetCreationContext();
-  if (info->GetCreationContext()==-1) 
-    context = GetNewVarContext();
 
-  CLASS_MESSAGE(boost::format("Context number %d ")% context);
-  return _context[context]->AddVar(type,info->GetName().c_str(),val);
+  return AddVar(type,info->GetName().c_str(),val,context);
+
 } // AddVar()
 
 //--------------------------------------------------
@@ -195,7 +208,7 @@ Variable* VarContexts::AddVarPtr(vartype type, const char* name, void* val)
 //--------------------------------------------------
 Variable* VarContexts::AddVar(Variable* var, int context)
 {
-  if (context==-1) 
+  if (context==NEWVAR_CONTEXT) 
     context = GetNewVarContext();
   CLASS_MESSAGE(boost::format("Context number %d ")% context);
   return _context[context]->AddVar(var);
@@ -217,9 +230,20 @@ bool VarContexts::GetVar(const char* varname, Variable** var,
   if (context==-1) {
     for(int i=_context.size()-1;i>=0;i--)
       if (_context[i]->GetVar(varname,var)) return true;
-  } else 
+    return false;
+  }
+  else 
     if ((context>=0)&&(context<=_current_context))
-      if (_context[context]->GetVar(varname,var)) return true;
+      return (_context[context]->GetVar(varname,var));
+  else
+    if ((context==OBJECT_CONTEXT_NUMBER)&&(_object_context.get())) {
+      bool res = _object_context->GetVar(varname,var);
+      CLASS_MESSAGE(boost::format("Looking in object context for %1% ... %2% ") % varname % res );
+      //_object_context->display();
+      return res;
+    }
+  else 
+    return false;
 
   return false;
 }
@@ -242,8 +266,11 @@ bool VarContexts::deleteVar(const char* varname)
 //--------------------------------------------------
 int VarContexts::GetContext(Variable* var)
 {
-  int i;
-  for(i=_current_context;i>=0;i--)
+  // check first for object context
+  if (var->GetContext().get()) {
+      return OBJECT_CONTEXT_NUMBER;
+  }
+  for(int i=_current_context;i>=0;i--)
     if (_context[i]->ExistVar(var)) 
       return i;
   return -1;
@@ -253,8 +280,14 @@ int VarContexts::GetContext(Variable* var)
 //--------------------------------------------------
 bool VarContexts::deleteVar(Variable* var)
 {
-  int i;
-  for(i=_current_context;i>=0;i--)
+
+  // Check for object context
+  if (var->GetContext().get()) {
+    var->GetContext()->deleteVar(var->Name().c_str());
+    return true;
+  }
+
+  for(int i=_current_context;i>=0;i--)
     if (_context[i]->ExistVar(var)) {
       if (GB_debug) 
         cerr << "Deleted Var in context number " << i << endl;

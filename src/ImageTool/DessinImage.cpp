@@ -5251,7 +5251,10 @@ void DessinImage::Paint( unsigned char affiche)
 //    Cursor curseur = 0;
     int i;
 
-  if (this->_in_paint) return;
+  if (this->_in_paint) {
+    CLASS_MESSAGE("_in_paint is true, return")
+    return;
+  }
   _in_paint=1;
 
   Si GB_debug AlorsFait

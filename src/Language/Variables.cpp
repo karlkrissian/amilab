@@ -96,13 +96,15 @@ std::string Variables::CheckVarName(const char* name)
 //--------------------------------------------------
 Variable* Variables::AddVar(vartype type, 
 		      const char* name, 
-		      void* val)
+		      void* val, 
+          boost::shared_ptr<Variables> context)
 {
   CLASS_MESSAGE(boost::format(" %s ") % name);
 
   string resname = this->CheckVarName(name);
   Variable* newvar = new Variable();
   newvar->Init(type,resname.c_str(),val);
+  newvar->SetContext(context);
   _vars.push_front(newvar);
 
   return newvar;
@@ -157,14 +159,6 @@ Variable* Variables::AddVar( const Variable::ptr& var)
   return newvar;
 }
 
-
-//--------------------------------------------------
-Variable* Variables::AddImage(char* name, void* val)
-{
-  return AddVar(type_image,name,val);
-      
-}
-  
 //--------------------------------------------------
 void Variables::SearchCompletions(const wxString& varname, 
     boost::shared_ptr<wxArrayString>& completions)
@@ -330,7 +324,8 @@ void Variables::EmptyVariables()
   Iter  = _vars.begin();
   while (Iter != _vars.end() )
   {
-    if ((*Iter)->Type() == type_imagedraw) {
+    if (((*Iter)->Type() == type_imagedraw)||
+        ((*Iter)->Type() == type_surfdraw )) {
       if ((*Iter)->Pointer()!=NULL) {
         (*Iter)->Delete();
         delete (*Iter);

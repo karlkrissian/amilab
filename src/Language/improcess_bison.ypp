@@ -161,9 +161,9 @@ class wxScheduleTimer : public wxTimer
 {
   DEFINE_CLASS(wxScheduleTimer)
   public:
-    wxScheduleTimer( AMIFunction::ptr& callback)
+    wxScheduleTimer( Variable* callback)
     {
-      f = callback;
+      var = callback;
     }
 
     ~wxScheduleTimer()
@@ -175,7 +175,8 @@ class wxScheduleTimer : public wxTimer
     void Notify();
 
   private:
-    AMIFunction::ptr f;
+    // variable of type type_ami_function
+    Variable* var;
 };
 
 // create a array of shared pointers
@@ -184,10 +185,9 @@ static std::list<wxScheduleTimer::ptr> schedule_timers;
 
 static void CB_ParamWin( void* cd ) {
 
-  AMIFunction::ptr f;
-  f = *(AMIFunction::ptr*) (cd);
+  Variable* v = (Variable*) (cd);
 
-  GB_driver.yyip_call_function(f);
+  GB_driver.yyip_call_function(v);
 
 } // CB_ParamWin( void* cd )
 
@@ -196,7 +196,7 @@ static void CB_ParamWin( void* cd ) {
 //  CB_ParamWin(cd);
 //}
 
- static void CB_Button(  void* cd) {
+static void CB_Button(  void* cd) {
   CB_ParamWin(cd);
 }
 
@@ -457,6 +457,7 @@ static void CB_update_imagelist( void* imagelist_gui)
 
 %token T_SetName
 %token T_GetName
+%token T_GetObjectName
 %token T_GetOutput
 %token T_GetDiffCoeff
 
@@ -1202,12 +1203,16 @@ object_decl:
       AMIClass::ptr ac = *(AMIClass::ptr*) (var->Pointer());
       IdentifierInfo::ptr ident($2);
 
+      //AMIObject::ptr amiobject;
+      //amiobject = AMIObject::ptr(new AMIObject);
       AMIObject* amiobject;
-
       amiobject = new AMIObject;
 
       amiobject->SetName(ident->GetName());
       amiobject->SetClass(ac);
+
+      // execute the code of the class with the variables of the object
+      driver.yyip_instanciate_object(ac,amiobject);
 
       Vars.AddVar( type_ami_object, ident, (void*) amiobject);
 
@@ -1264,29 +1269,19 @@ func_inst :
      }
     | VAR_AMI_FUNCTION  T_OP_PAR param_list T_CL_PAR end_instr
     {
-          Variable*       var   = $1;
-          ParamList::ptr  param($3);
-          AMIFunction::ptr f;
+        Variable*       var   = $1;
+        ParamList::ptr  param($3);
 
-          f = *(AMIFunction::ptr*) (var->Pointer());
+        driver.yyip_call_function(var,param);
 
-        driver.yyip_call_function(f,param);
-
-        if (GB_debug)
-          cerr  << "End function body = "
-                << f->GetString()
-                << endl;
 
         }
         | VAR_AMI_FUNCTION  end_instr
         {
           Variable*    var   = $1;
-          AMIFunction::ptr f;
-
-          f = *(AMIFunction::ptr*) (var->Pointer());
 
           // Call the function
-          driver.yyip_call_function(f);
+          driver.yyip_call_function(var);
         }
 ;
 
@@ -1384,7 +1379,7 @@ command:
         int ms = (int) $3;
         Variable*    var   = $5;
 
-        wxScheduleTimer::ptr w = wxScheduleTimer::ptr(new wxScheduleTimer(  *(AMIFunction::ptr*) (var->Pointer()) ));
+        wxScheduleTimer::ptr w = wxScheduleTimer::ptr(new wxScheduleTimer( var ));
         // add to the list of schedule timers
         schedule_timers.push_back(w);
         w->Start(ms,wxTIMER_ONE_SHOT);
@@ -1846,17 +1841,23 @@ command:
         }
         |  SHOW var_image
         {
-          char titre[100];
+          std::string titre;
+          Variable* imagevar = $2;
           Variable* var;
-          int var_context = Vars.GetContext($2);
+          int var_context = Vars.GetContext(imagevar);
 
-          if (var_context>=0) {
-            sprintf(titre,"%s_draw",$2->Name().c_str());
-            if (GB_debug) fprintf(stderr,
-                      "SHOW var_image  title %s \n",
-                      titre);
+          Variables::ptr previous_ocontext = Vars.GetObjectContext();
+          if (var_context==OBJECT_CONTEXT_NUMBER) {
+            // set new object context
+            Vars.SetObjectContext(imagevar->GetContext());
+          }
+
+          if ((var_context>=0)||
+              (var_context==OBJECT_CONTEXT_NUMBER)) {
+            titre = (boost::format("%s_draw") % $2->Name().c_str()).str();
+            FILE_MESSAGE(boost::format("SHOW var_image  title %s") % titre);
             //if (Vars.GetCurrentContext()->GetVar(titre,&var)) {
-            if (Vars.GetVar(titre,&var,var_context)) {
+            if (Vars.GetVar(titre.c_str(),&var,var_context)) {
               DessinImageParametres* param;
               DessinImage::ptr di;
               di = *((DessinImage::ptr*) var->Pointer());
@@ -1866,7 +1867,7 @@ command:
             }
             else
             {
-              if (GB_debug) fprintf(stderr,"SHOW var_image creating title %s \n",titre);
+              FILE_MESSAGE(boost::format("SHOW var_image creating title %s ") % titre);
               DessinImage* di;
 
               std::string varname(titre);
@@ -1874,13 +1875,19 @@ command:
               di = CreateIDraw( varname,
                     *((InrImage::ptr*) $2->Pointer()));
 
-              Variable* newvar = Vars.AddVar(type_imagedraw,titre, (void*) di,
+              Variable* newvar = Vars.AddVar(type_imagedraw,titre.c_str(), (void*) di,
                           var_context);
               di->SetCloseFunction(
                 (void*) CB_delete_imagedraw,
                 (void*) (newvar));
             }
           } // var_context >=0
+
+          if (var_context==OBJECT_CONTEXT_NUMBER) {
+            // Restore the object context
+            Vars.SetObjectContext(previous_ocontext);
+          }
+
         }
         |  T_HIDE var_image
         {
@@ -1906,10 +1913,18 @@ command:
         {
           string    titre;
           Viewer3D* surfdraw;
+          Variable* imagevar = $2;
           Variable* var;
-          int var_context = Vars.GetContext($2);
+          int var_context = Vars.GetContext(imagevar);
 
-          if (var_context>=0) {
+          Variables::ptr previous_ocontext = Vars.GetObjectContext();
+          if (var_context==OBJECT_CONTEXT_NUMBER) {
+            // set new object context
+            Vars.SetObjectContext(imagevar->GetContext());
+          }
+
+          if ((var_context>=0)||
+              (var_context==OBJECT_CONTEXT_NUMBER)) {
             titre = str(format("%s_draw") % $2->Name());
             if (!Vars.GetVar(titre.c_str(),&var,var_context)) {
               surfdraw = new Viewer3D(  GB_main_wxFrame,
@@ -1932,6 +1947,12 @@ command:
             } else
               cerr << " variable " << titre << " already exists " << endl;
           } // var_context >=0
+
+          // Restore the object context
+          if (var_context==OBJECT_CONTEXT_NUMBER) {
+            Vars.SetObjectContext(previous_ocontext);
+          }
+
         }
         |  T_penguin
         {
@@ -3032,7 +3053,7 @@ command:
             DessinImage::ptr draw;
 
             draw = *(DessinImage::ptr*) ($1->Pointer());
-            draw->SetPaintCallback( (void*) CB_ParamWin, (void*) $5->Pointer());
+            draw->SetPaintCallback( (void*) CB_ParamWin, (void*) $5);
             // may be a pb to call Paint() here since it will start another interpreter ??? to check
             //draw->Paint();
         }
@@ -5026,7 +5047,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
         {
           ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
           int n = pw->NbParameters();
-            pw->ChangedValueCallback(n-1,(void*) CB_ParamWin, (void*) $5->Pointer() );
+            pw->ChangedValueCallback(n-1,(void*) CB_ParamWin, (void*) $5 );
         }
     |
     VAR_PARAMWIN T_POINT T_SetPositionProp 
@@ -5593,12 +5614,42 @@ postfix_expr_string
       driver.IP_time.AddCumul();
       driver.IP_time.GetCumul(hour,min,sec);
       res = new char[10];
-          sprintf(res,"%03d:%02d:%02d",(int)hour,(int)min,(int)sec);
+      sprintf(res,"%03d:%02d:%02d",(int)hour,(int)min,(int)sec);
       $$=res;
-        }
-        |
+    }
+    |
     var_image T_POINT T_GetName {
       $$=(char*) (*(InrImage::ptr*) $1->Pointer())->Nom();
+    }
+    |
+    T_GetName T_OP_PAR variable T_CL_PAR {
+    /**
+      Description:
+        Returns the name of the variable as a string
+    **/
+      char* resstr = (char*) $3->Name().c_str();
+      char* res = new char[strlen(resstr)+1];
+      strcpy(res,resstr);
+      $$= res;
+    }
+    |
+    T_GetObjectName T_OP_PAR variable T_CL_PAR {
+    /**
+      Description:
+        Returns the name of the object instance to which this variable belongs. If this variable does not belong to an object, returns an empty string.
+    **/
+      boost::shared_ptr<Variables> context = $3->GetContext();
+      if (context.get()) {
+        char* resstr = (char*) context->GetName().c_str();
+        char* res = new char[strlen(resstr)+1];
+        strcpy(res,resstr);
+        $$= res;
+      } else {
+        char* empty_string;
+        empty_string = new char[1];
+        empty_string[0] = '\0';
+        $$ = empty_string;
+      }
     }
     |
     T_GetScriptsDir
@@ -5895,9 +5946,13 @@ postfix_expr
           driver.err_print(tmp_string);
         }
 
-        }
-        | var_image T_POINT T_info
-        {
+      }
+      | var_image T_POINT T_info
+      {
+        /**
+          Description:
+            Prints the image information
+        **/
         InrImage::ptr im;
         im=*(InrImage::ptr*) $1->Pointer();
         std::string tmp_string;
@@ -5916,6 +5971,26 @@ postfix_expr
             % im->_translation_y
             % im->_translation_z).str();
         driver.res_print(tmp_string);
+    }
+    | VAR_AMI_OBJECT  T_info
+    {
+      /**
+        Description:
+          Prints the object information
+      **/
+      AMIObject::ptr o = *(AMIObject::ptr*) $1->Pointer();
+      
+      if (o.get()) {
+        cout << "var   name = " << $1->Name() <<endl;
+        cout << "class name = " << o->GetClass()->GetName() <<endl;
+        o->GetContext()->display();
+      }
+/*      std::string tmp_string;
+      tmp_string = (boost::format("Object '%1%' instance of class '%2% \n")
+          % $1->Name() % o->GetClass()->GetName() ).str();
+      driver.res_print(tmp_string);
+      o->GetContext()->display();
+*/
     }
     | var_surface T_POINT T_info
     {
@@ -6503,7 +6578,7 @@ postfix_expr
     std::string tooltip = (boost::format("%s  (%s)") % $7->GetComments() % $7->Name()).str();
     pw->AddButton( &bid, $5,
                 (void*) CB_Button,
-                (void*) $7->Pointer(),
+                (void*) $7,
                 tooltip);
     $$ = bid;
     }
@@ -9143,6 +9218,15 @@ image:
     T_rot2D T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA
                     expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
+    /**
+      Parameters:
+        - input image
+        - rotation center X,Y
+        - rotation angle
+        - dimensions of the resulting image
+      Description:
+        - Performs a 2D rotation of the image
+    **/
 
         InrImage*    res;
 
@@ -11617,7 +11701,7 @@ void wxScheduleTimer::Notify()
 //   -----------------------
 {
   //cout << "Notify()" << endl;
-  CB_ParamWin(&f);
+  CB_ParamWin(var);
 
   std::list<wxScheduleTimer::ptr>::iterator Iter;
   for (Iter  = schedule_timers.begin();

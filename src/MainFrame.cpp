@@ -1332,7 +1332,7 @@ void MainFrame::AddMenuScript(  const std::string& script_category,
   int menuid = menuScripts->FindItem(wxString(script_category.c_str(), wxConvUTF8));
   if (menuid != wxNOT_FOUND) {
     // category found, adding as submenu
-    //cout << "category found" << endl;
+    CLASS_MESSAGE("category found");
     wxMenuItem* menuitem = menuScripts->FindItem(menuid);
     if (menuitem!=NULL) {
       if (menuitem->GetSubMenu())
