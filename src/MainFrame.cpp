@@ -1250,7 +1250,7 @@ void MainFrame::OnHelpRules(  wxCommandEvent& event)
 //-----------------------------------------------------
 void MainFrame::OnHelpScripts(  wxCommandEvent& event)
 {
-  wxFileName scripts(GB_help_dir,_T("scripts.html"));
+  wxFileName scripts(GB_help_dir,_T("docamil_scripts.html"));
   _htmltext->LoadPage(scripts.GetFullPath());
 } // OnHelpScrips()
 
