@@ -291,7 +291,7 @@ class Html_Page:
         self.f.write ("<dl compact='compact'>\n")
         for cmd,root in self.scripts:
             self.f.write("<tr>\n")
-            self.f.write ("<td><a  href=\""+root+"/"+cmd+".amil.html\">"+cmd+"</a></td>\n")
+            self.f.write ("<td><a  href=\""+scripts_path+"/HTML/"+cmd+".amil.html\">"+cmd+"</a></td>\n")
             self.f.write ("<td>"+root+"</td>\n")
         self.f.write("</tr>\n")
         self.f.write ("</table>\n")
@@ -464,9 +464,10 @@ if __name__ == "__main__":
                 #print cmd
                 scripts.append((cmd,root))
                 # generate html from the script
-                scriptname = root+"/"+cmd+".amil"
+                scriptname    = root+"/"+cmd+".amil"
+                scriptnewname = scripts_path+"/HTML/"+cmd+".amil"
                 syscmd = improcess_html+ " " + \
-                         scriptname + " > " + scriptname+".html"
+                         scriptname + " > " + scriptnewname+".html"
                 os.system(syscmd)
                 #print commands
     scripts.sort(lambda x, y: cmp(x[0].lower(), y[0].lower()))
