@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist SYSTEM "file://localhost/System/Library/DTDs/PropertyList.dtd">
+<plist version="0.9">
+<dict>
+        <key>CFBundleInfoDictionaryVersion</key>
+        <string>6.0</string>
+
+
+        <key>CFBundleDevelopmentRegion</key>
+        <string>English</string>
+
+        <key>CFBundleExecutable</key>
+        <string>amilab_2.0.3_release</string>
+
+        <key>CFBundleName</key>
+        <string>amilab_2.0.3_release</string>
+
+        <key>CFBundlePackageType</key>
+        <string>APPL</string>
+
+        <key>CFBundleSignature</key>
+        <string>????</string>
+
+        <key>CFBundleVersion</key>
+        <string>2.0.3</string>
+
+        <key>CFBundleShortVersionString</key>
+        <string>2.0.3</string>
+
+        <key>CFBundleGetInfoString</key>
+        <string>AMILab, 2.0.3 (c) 2009 LGPL </string>
+
+        <key>CFBundleLongVersionString</key>
+        <string>2.0.3, (c) 2009 LGPL </string>
+
+        <key>NSHumanReadableCopyright</key>
+        <string>Copyright 2009 LPGL</string>
+
+</dict>
+</plist>
