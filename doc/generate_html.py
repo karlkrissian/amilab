@@ -34,11 +34,29 @@ improcess_bison_tab_cpp = "../src/Language/improcess_bison.tab.cpp"
 
 scripts_path="../scripts/."
 
+#
+def find_key(dic, val):
+  #
+  """return the key of dictionary dic given the value"""
+  #
+  return [k for k, v in dic.iteritems() if v == val][0]
+  #
+
+def standardtoken(val):
+  if len(val)>0:
+    return True;
+    #(((val[0]>='a')and(val[0]<='z'))or\
+    #        ((val[0]>='A')and(val[0]<='Z')) or \
+    #        ((val[0]>='0')and(val[0]<='9')) or \
+    #        val[0]=='$')
+  else:
+    return False;
+
 def get_tokens():
     lex_tokens={}
     f = open (improcess_flex_lpp, "r")
     fc = f.read()
-    parse_token=re.compile('/\*\{.*,.*\}\*/')
+    parse_token=re.compile('/\*\{(.+),(.*)\}\*/')
     f.seek(0)
     #
     lines=split(fc,'\n')
@@ -46,10 +64,9 @@ def get_tokens():
     for l in lines:
         t=parse_token.search(l)
         if t:
-            values=split(t.group()[3:-3],',')
-            lex_tokens[values[1]]=values[0]
+            lex_tokens[t.group(2)]=t.group(1)
             # now split expression and lex token:
-    #print lex_tokens
+    print lex_tokens
     return lex_tokens
 
 class Html_Page:
@@ -140,17 +157,21 @@ class Html_Page:
     def set_scripts(self,scripts):
       self.scripts=scripts
 
-    def html_token(self,token,parent=""):
-        if token in self.tokens_nolinks:
+    def html_token(self,token_name,token,parent=""):
+        #if token in self.tokens_nolinks:
+        #  return token
+        # we will check for special characters to create separate files for them
+        if standardtoken(token):
+          res=""
+          res = res + '<a  href="%sTokens/%s_rules.html" target="FRULES" >'%(parent,token_name) +   '<span class="token">'+ token + '</span> </a>'
+          if token in self.documented_commands:
+              pos = self.documented_commands.index(token)
+              res= res +' <a  href="' + parent+self.commands[pos][1] + '/' + self.commands[pos][0] + '.amih" target="FDOC" >'
+              res = res+'<IMG SRC="'+parent+'book.gif" BORDER="0">'
+              res = res+"</a>"
+          return res
+        else:
           return token
-        res=""
-        res = res + '<a  href="%sTokens/%s_rules.html" target="FRULES" >'%(parent,token) +   '<span class="token">'+ token + '</span> </a>'
-        if token in self.documented_commands:
-            pos = self.documented_commands.index(token)
-            res= res +' <a  href="' + parent+self.commands[pos][1] + '/' + self.commands[pos][0] + '.amih" target="FDOC" >'
-            res = res+'<IMG SRC="'+parent+'book.gif" BORDER="0">'
-            res = res+"</a>"
-        return res
     
     def html_node(self,node,parent=""):
         res='<a  href="%srules.html#%s" target="FBROWSE" > %s </a>'%(parent,node,node)
@@ -183,7 +204,9 @@ class Html_Page:
           self.file_write('<td '+width_str+'%>')
           # look for token in the list of commands
           initial_token=self.tvalues[tvaluescap.index(v)]
-          self.file_write(self.html_token(initial_token))
+          token_name = find_key(self.tokens,initial_token)
+          #print "token_name=",token_name
+          self.file_write(self.html_token(token_name,initial_token))
           self.file_write ("</td>\n")
           i=i+1
           if i%nb_columns ==0 :
@@ -201,26 +224,31 @@ class Html_Page:
         #f = open("Tokens/"+token+"_rules.html",w)
         # generate rules for this token
         self.file_write('<table>\n')
-        for r in self.rules:
-          if (t[0]!="'") and re.search(r'\b'+re.escape(t)+r'\b',r[2]):
-            self.file_write('<tr valign=top align=left>\n')
-            self.file_write('<td nowrap><font size=-1>(%3d) </font>'%(r[0]))
-            if os.path.isfile("Rules/%d.txt"%r[0]):
-              self.file_write('<a href="../Rules/%d.txt" target="FDOC"><IMG SRC="../book.gif" BORDER="0"></a>.'%(r[0]))
-            self.file_write("</td><td nowrap>%s</td><td><--</td> </td>\n<td>%s</td>\n"%(r[1],self.translate_rule(r[2],"../")))
-            self.file_write('</tr>')
-        self.file_write('</table>')
+        if len(t)>0:
+          for r in self.rules:
+            if (t[0]!="'") and re.search(r'\b'+re.escape(t)+r'\b',r[2]):
+              self.file_write('<tr valign=top align=left>\n')
+              self.file_write('<td nowrap><font size=-1>(%3d) </font>'%(r[0]))
+              if os.path.isfile("Rules/%d.txt"%r[0]):
+                self.file_write('<a href="../Rules/%d.txt" target="FDOC"><IMG SRC="../book.gif" BORDER="0"></a>.'%(r[0]))
+              self.file_write("</td><td nowrap>%s</td><td><--</td> </td>\n<td>%s</td>\n"%(r[1],self.translate_rule(r[2],"../")))
+              self.file_write('</tr>')
+          self.file_write('</table>')
+        else:
+          print "len(t)=0"
     
     def translate_rule(self,rule,parent=""):
       #--- search for the tokens in the rule
       tr_rule=rule
       for t in self.tokens:
-        if (t[0]!="'"):
-          t1=r'\b'+re.escape(t)+r'\b'
+        if len(t)>0:
+          if (t[0]!="'"):
+            t1=r'\b'+re.escape(t)+r'\b'
+          else:
+            t1=re.escape(t)
+          tr_rule=re.sub(t1,self.html_token(t,self.tokens[t],parent),tr_rule)
         else:
-          t1=re.escape(t)
-        #print "%s %s %s \n"%(t1,lex_tokens[t],tr_rule)
-        tr_rule=re.sub(t1,self.html_token(self.tokens[t],parent),tr_rule)
+          print "%s %s %s \n"%(t,lex_tokens[t],tr_rule)
       # treat ',' apart for the moment
       tr_rule=re.sub(re.escape("','"),",",tr_rule)
       
@@ -440,7 +468,7 @@ if __name__ == "__main__":
     #-------------------------------------------------
 
     p = Main_Page("AMILab Documentation", "<i>html doc for AMILAb </i>",
-                  "docamil_scripts.html")
+                  "scripts.html")
     p.generate_heading ("white")
     p.generate_body ()
 
@@ -595,10 +623,10 @@ if __name__ == "__main__":
     os.mkdir("Tokens")
     for t in lex_tokens:
       # exclude tokens with special characters
-      if (t[0]!="'"):
+      if (standardtoken(lex_tokens[t])):
         print "creating page for "+lex_tokens[t]+"\n"
         p = Main_Page("rules for "+lex_tokens[t], "<i>rules using %s</i>"%lex_tokens[t],
-                    "Tokens/"+lex_tokens[t]+"_rules.html")
+                    "Tokens/"+t+"_rules.html")
         p.generate_heading ("white")
         p.generate_body ()
         p.set_tokens(lex_tokens,lex_tokens_nolinks)
