@@ -59,12 +59,12 @@ IF(AMI_USE_FLEXBISON)
 
   BISON_TARGET(improcessbison
     ${AMILAB_SOURCE_DIR}/Language/improcess_bison.ypp
-    ${AMILAB_SOURCE_DIR}/Language/improcess_bison.tab.cpp
+    ${AMILAB_SOURCE_DIR}/Language/GeneratedFlexBison/improcess_bison.tab.cpp
   )
 
   FLEX_TARGET(improcessflex
   ${AMILAB_SOURCE_DIR}/Language/improcess_flex.lpp
-  ${AMILAB_SOURCE_DIR}/Language/improcess_flex.cpp)
+  ${AMILAB_SOURCE_DIR}/Language/GeneratedFlexBison/improcess_flex.cpp)
 
   ADD_FLEX_BISON_DEPENDENCY(improcessflex improcessbison)
 
@@ -77,8 +77,8 @@ IF(AMI_USE_FLEXBISON)
 ELSE(AMI_USE_FLEXBISON)
  
    SET( FLEXBISON_OUTPUTS
-		${AMILAB_SOURCE_DIR}/Language/improcess_bison.tab.cpp
-		${AMILAB_SOURCE_DIR}/Language/improcess_flex.cpp
+		${AMILAB_SOURCE_DIR}/Language/GeneratedFlexBison/improcess_bison.tab.cpp
+		${AMILAB_SOURCE_DIR}/Language/GeneratedFlexBison/improcess_flex.cpp
 	)
  
    SET(Language_SRCS
