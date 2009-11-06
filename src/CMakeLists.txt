@@ -64,7 +64,7 @@ SET(CPACK_RPM_PACKAGE_DESCRIPTION "Amilab is designed as a tool for research and
 SET(CPACK_RPM_PACKAGE_REQUIRES "glibc wxGTK wxGTK-gl")
 SET(CPACK_RPM_PACKAGE_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
 
-# this will make the package relocatable !!cd 
+# this will make the package relocatable !!cd
 SET(CPACK_RPM_SPEC_MORE_DEFINE "Prefix: /usr")
 
 #
@@ -103,10 +103,10 @@ ENDIF(WIN32 AND NOT UNIX)
 # now compiling MacOS Package with "sudo cpack -G PackageMaker ."
 #
 #SET( CPACK_PACKAGE_FILE_NAME      )
-SET( CPACK_PACKAGE_ICON            "${CMAKE_SOURCE_DIR}/../Pixmaps/amilab_logo_new.xpm")
+SET( CPACK_PACKAGE_ICON            "${CMAKE_SOURCE_DIR}/../Pixmaps/amilab_logo_new_48x48_alpha.xpm")
 SET( CPACK_BUNDLE_NAME             "AMLab-${AMILAB_VERSION}-Bundle")
-SET( CPACK_BUNDLE_ICON             "${CMAKE_SOURCE_DIR}/../Pixmaps/amilab_logo_new.xpm")
-SET( CPACK_BUNDLE_PLIST            "${CMAKE_CURRENT_SOURCE_DIR}/../Releases/MacOS/Info.plist")
+SET( CPACK_BUNDLE_ICON             "${CMAKE_SOURCE_DIR}/../Pixmaps/amilab_logo_new_48x48_alpha.xpm")
+SET( CPACK_BUNDLE_PLIST            "${CMAKE_CURRENT_SOURCE_DIR}/../Releases/MacOS/Info_${AMILAB_VERSION}.plist")
 #SET( CPACK_BUNDLE_STARTUP_COMMAND )
 
 
@@ -188,7 +188,7 @@ IF(AMI_USE_FLEXBISON)
 ELSE(AMI_USE_FLEXBISON)
   SET(FLEX_INCLUDE_DIR "${AMILAB_SOURCE_DIR}/Language")
 ENDIF(AMI_USE_FLEXBISON)
-  
+
 OPTION(AMI_USE_FASTNLMEANS "Use Fast NLmeans implementation" OFF)
 
 IF(AMI_USE_FASTNLMEANS)
@@ -245,6 +245,7 @@ set(  wxParams_INCLUDE_DIRS
     ${PROJECT_SOURCE_DIR}/../wxParams/src)
 
 #MESSAGE(wxParams_INCLUDE_DIRS=${wxParams_INCLUDE_DIRS})
+MESSAGE(FLEX_INCLUDE_DIR=${FLEX_INCLUDE_DIR})
 
 include_directories (
   ${Boost_INCLUDE_DIR}

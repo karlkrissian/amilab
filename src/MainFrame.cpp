@@ -581,7 +581,7 @@ void MainFrame::CreateVarTreePanel ( wxWindow* parent)
                               wxID_ANY,
                               wxDefaultPosition,
                               wxDefaultSize,
-                              wxTR_HAS_BUTTONS | wxTR_HIDE_ROOT 
+                              wxTR_HAS_BUTTONS | wxTR_HIDE_ROOT
                             );
   _var_tree->SetFont( wxFont(10,wxMODERN,wxNORMAL,wxNORMAL)); // try a fixed pitch font
   _var_tree->SetIndent(5);
@@ -1354,7 +1354,7 @@ void MainFrame::AddMenuScript(  const std::string& script_category,
   // connecting
   Connect(usermenu_id,wxEVT_COMMAND_MENU_SELECTED,
      wxCommandEventHandler(MainFrame::OnUserMenuScript));
-  
+
 }
 
 //--------------------------------------------------

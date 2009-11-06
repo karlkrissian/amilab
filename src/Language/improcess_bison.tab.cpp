@@ -38,7 +38,7 @@
 /* First part of user declarations.  */
 
 /* Line 311 of lalr1.cc  */
-#line 11 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11 "/home/karl/projects/Sourceforge/amilab/release-2.0.4/src/Language/improcess_bison.ypp"
 
  /*** C/C++ Declarations ***/
   //#include <stdlib.h>
@@ -383,7 +383,7 @@ static void CB_update_imagelist( void* imagelist_gui)
 
 
 /* Line 311 of lalr1.cc  */
-#line 387 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.cpp"
+#line 387 "/home/karl/projects/Sourceforge/amilab/release-2.0.4/src/Language/improcess_bison.tab.cpp"
 
 
 #include "improcess_bison.tab.hpp"
@@ -406,7 +406,7 @@ static void CB_update_imagelist( void* imagelist_gui)
 
 
 /* Line 317 of lalr1.cc  */
-#line 410 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.cpp"
+#line 410 "/home/karl/projects/Sourceforge/amilab/release-2.0.4/src/Language/improcess_bison.tab.cpp"
 
 #ifndef YY_
 # if YYENABLE_NLS
@@ -475,7 +475,7 @@ do {					\
 namespace yyip {
 
 /* Line 380 of lalr1.cc  */
-#line 479 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.cpp"
+#line 479 "/home/karl/projects/Sourceforge/amilab/release-2.0.4/src/Language/improcess_bison.tab.cpp"
 #if YYERROR_VERBOSE
 
   /* Return YYSTR after stripping away unnecessary quotes and
@@ -582,7 +582,7 @@ namespace yyip {
 	{ delete [] (yyvaluep->astring); };
 
 /* Line 480 of lalr1.cc  */
-#line 586 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.cpp"
+#line 586 "/home/karl/projects/Sourceforge/amilab/release-2.0.4/src/Language/improcess_bison.tab.cpp"
 	break;
       case 57: /* "IDENTIFIER" */
 
@@ -591,7 +591,7 @@ namespace yyip {
 	{ delete  (yyvaluep->ident); };
 
 /* Line 480 of lalr1.cc  */
-#line 595 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.cpp"
+#line 595 "/home/karl/projects/Sourceforge/amilab/release-2.0.4/src/Language/improcess_bison.tab.cpp"
 	break;
       case 545: /* "primary_expr_string" */
 
@@ -600,7 +600,7 @@ namespace yyip {
 	{ delete [] (yyvaluep->astring); };
 
 /* Line 480 of lalr1.cc  */
-#line 604 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.cpp"
+#line 604 "/home/karl/projects/Sourceforge/amilab/release-2.0.4/src/Language/improcess_bison.tab.cpp"
 	break;
       case 546: /* "postfix_expr_string" */
 
@@ -609,7 +609,7 @@ namespace yyip {
 	{ delete [] (yyvaluep->astring); };
 
 /* Line 480 of lalr1.cc  */
-#line 613 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.cpp"
+#line 613 "/home/karl/projects/Sourceforge/amilab/release-2.0.4/src/Language/improcess_bison.tab.cpp"
 	break;
       case 547: /* "additive_expr_string" */
 
@@ -618,7 +618,7 @@ namespace yyip {
 	{ delete [] (yyvaluep->astring); };
 
 /* Line 480 of lalr1.cc  */
-#line 622 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.cpp"
+#line 622 "/home/karl/projects/Sourceforge/amilab/release-2.0.4/src/Language/improcess_bison.tab.cpp"
 	break;
       case 548: /* "expr_string" */
 
@@ -627,7 +627,7 @@ namespace yyip {
 	{ delete [] (yyvaluep->astring); };
 
 /* Line 480 of lalr1.cc  */
-#line 631 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.cpp"
+#line 631 "/home/karl/projects/Sourceforge/amilab/release-2.0.4/src/Language/improcess_bison.tab.cpp"
 	break;
       case 549: /* "instr_block" */
 
@@ -636,7 +636,7 @@ namespace yyip {
 	{ delete  (yyvaluep->ablock); };
 
 /* Line 480 of lalr1.cc  */
-#line 640 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.cpp"
+#line 640 "/home/karl/projects/Sourceforge/amilab/release-2.0.4/src/Language/improcess_bison.tab.cpp"
 	break;
       case 612: /* "identifier" */
 
@@ -645,7 +645,7 @@ namespace yyip {
 	{ delete  (yyvaluep->ident); };
 
 /* Line 480 of lalr1.cc  */
-#line 649 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.cpp"
+#line 649 "/home/karl/projects/Sourceforge/amilab/release-2.0.4/src/Language/improcess_bison.tab.cpp"
 	break;
       case 614: /* "image_extent" */
 
@@ -654,7 +654,7 @@ namespace yyip {
 	{ delete  (yyvaluep->imageextent); };
 
 /* Line 480 of lalr1.cc  */
-#line 658 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.cpp"
+#line 658 "/home/karl/projects/Sourceforge/amilab/release-2.0.4/src/Language/improcess_bison.tab.cpp"
 	break;
 
 	default:
@@ -733,14 +733,14 @@ namespace yyip {
     /* User initialization code.  */
     
 /* Line 553 of lalr1.cc  */
-#line 375 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 375 "/home/karl/projects/Sourceforge/amilab/release-2.0.4/src/Language/improcess_bison.ypp"
 {
     // initialize the initial location object
     yylloc.begin.filename = yylloc.end.filename = &driver.streamname;
 }
 
 /* Line 553 of lalr1.cc  */
-#line 744 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.tab.cpp"
+#line 744 "/home/karl/projects/Sourceforge/amilab/release-2.0.4/src/Language/improcess_bison.tab.cpp"
 
     /* Initialize the stacks.  The initial state will be pushed in
        yynewstate, since the latter expects the semantical and the

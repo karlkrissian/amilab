@@ -11,7 +11,7 @@ AMILab is compiled with cmake
 to compile it, you need the following tools/packages:
 - cmake 2.6
 - vtk >= 5.0
-- insighttoolkit 
+- insighttoolkit
 - wxWidgets 2.8.9 with opengl component
 - OpenGL
 - Boost 1.38 with date_time, filesystem, system, iostreams and regex components
@@ -20,6 +20,9 @@ to compile it, you need the following tools/packages:
 - pthread
 - flex
 - bison
+
+
+
 
 
 The steps to compile are:

@@ -115,55 +115,55 @@ WS      [ \t]
     yylloc->step();
 %}
 
-">>="                   return(token::RIGHT_ASSIGN);   /*  >>=,RIGHT_ASSIGN  got rid of all tokens with special characters because of windows installer*/
-"<<="                   return(token::LEFT_ASSIGN);    /*  <<=,LEFT_ASSIGN  */
-"+="                    return(token::ADD_ASSIGN);     /*  +=,ADD_ASSIGN  */
-"-="                    return(token::SUB_ASSIGN);     /*  -=,SUB_ASSIGN  */
-"*="                    return(token::MUL_ASSIGN);     /*  *=,MUL_ASSIGN}*/
-"/="                    {  return(token::DIV_ASSIGN); } /*  /=,DIV_ASSIGN}*/
-"%="                    {  return(token::MOD_ASSIGN); } /*  %=,MOD_ASSIGN}*/
-"&="                    {  return(token::AND_ASSIGN); } /*  &=,AND_ASSIGN}*/
-"^="                    {  return(token::XOR_ASSIGN); } /*   ^=,XOR_ASSIGN}*/
-"|="                    {  return(token::OR_ASSIGN); } /*  |=,OR_ASSIGN}*/
-">>"                    {  return(token::RIGHT_OP); } /*  >>,RIGHT_OP}*/
-"++"                    {  return(token::INC_OP); } /*  ++,INC_OP}*/
-"--"                    {  return(token::DEC_OP); } /*  --,DEC_OP}*/
-"->"                    {  return(token::PTR_OP); } /*  ->,PTR_OP}*/
-"&&"                    {  return(token::AND_OP); } /*  &&,AND_OP}*/
-"||"                    {  return(token::OR_OP); } /*  ||,OR_OP}*/
-"<="                    {  return(token::LE_OP); } /*  <=,LE_OP}*/
-">="                    {  return(token::GE_OP); } /*  >=,GE_OP}*/
-"=="                    {  return(token::EQ_OP); } /*  ==,EQ_OP}*/
-"!="                    {  return(token::NE_OP); } /*  !=,NE_OP}*/
+">>="                   return(token::RIGHT_ASSIGN);   /*{>>=,RIGHT_ASSIGN}*/
+"<<="                   return(token::LEFT_ASSIGN);    /*{<<=,LEFT_ASSIGN}*/
+"+="                    return(token::ADD_ASSIGN);     /*{+=,ADD_ASSIGN}*/
+"-="                    return(token::SUB_ASSIGN);     /*{-=,SUB_ASSIGN}*/
+"*="                    return(token::MUL_ASSIGN);     /*{*=,MUL_ASSIGN}*/
+"/="                    {  return(token::DIV_ASSIGN); } /*{/=,DIV_ASSIGN}*/
+"%="                    {  return(token::MOD_ASSIGN); } /*{%=,MOD_ASSIGN}*/
+"&="                    {  return(token::AND_ASSIGN); } /*{&=,AND_ASSIGN}*/
+"^="                    {  return(token::XOR_ASSIGN); } /*{ ^=,XOR_ASSIGN}*/
+"|="                    {  return(token::OR_ASSIGN); } /*{|=,OR_ASSIGN}*/
+">>"                    {  return(token::RIGHT_OP); } /*{>>,RIGHT_OP}*/
+"++"                    {  return(token::INC_OP); } /*{++,INC_OP}*/
+"--"                    {  return(token::DEC_OP); } /*{--,DEC_OP}*/
+"->"                    {  return(token::PTR_OP); } /*{->,PTR_OP}*/
+"&&"                    {  return(token::AND_OP); } /*{&&,AND_OP}*/
+"||"                    {  return(token::OR_OP); } /*{||,OR_OP}*/
+"<="                    {  return(token::LE_OP); } /*{<=,LE_OP}*/
+">="                    {  return(token::GE_OP); } /*{>=,GE_OP}*/
+"=="                    {  return(token::EQ_OP); } /*{==,EQ_OP}*/
+"!="                    {  return(token::NE_OP); } /*{!=,NE_OP}*/
 
 
-"'"  return(token::TRANSPOSE_OP); /*  ',TRANSPOSE_OP}*/
-"^"  return(token::T_EXP);  /*  ^,T_EXP}*/
-">"  return(token::T_GT);   /*  >,T_GT}*/
-"<"  return(token::T_LT);   /*  <,T_LT}*/
-"*"  return(token::T_MULT); /*  *,T_MULT}*/
+"'"  return(token::TRANSPOSE_OP); /*{',TRANSPOSE_OP}*/
+"^"  return(token::T_EXP);  /*{^,T_EXP}*/
+">"  return(token::T_GT);   /*{>,T_GT}*/
+"<"  return(token::T_LT);   /*{<,T_LT}*/
+"*"  return(token::T_MULT); /*{*,T_MULT}*/
 ".*"  return(token::POINTWISE_MULT);
-"/"  return(token::T_DIV);  /*  /,T_DIV}*/
-"!"  return(token::T_FACT); /*  !,T_FACT}*/
-"+"  return(token::T_ADD); /*  +, T_ADD}*/
-"-"  return(token::T_SUB); /*  -, T_SUB}*/
-"%"  return(token::T_MOD); /*  %, T_MOD}*/
+"/"  return(token::T_DIV);  /*{/,T_DIV}*/
+"!"  return(token::T_FACT); /*{!,T_FACT}*/
+"+"  return(token::T_ADD); /*{+,T_ADD}*/
+"-"  return(token::T_SUB); /*{-,T_SUB}*/
+"%"  return(token::T_MOD); /*{%,T_MOD}*/
 
 "="  return(token::ASSIGN_OP); /*{=,ASSIGN_OP}*/
-"("  return(token::T_OP_PAR); /*  (,T_OP_PAR}*/
-")"  return(token::T_CL_PAR); /*  ),T_CL_PAR}*/
-"["  return(token::T_OP_BR);  /*  [,T_OP_BR}*/
-"]"  return(token::T_CL_BR);  /*  ],T_CL_BR}*/
-"&"  return(token::T_AND);    /*  &,T_AND}*/
-"|"  return(token::T_OR);     /*  |,T_OR}*/
+"("  return(token::T_OP_PAR); /*{(,T_OP_PAR}*/
+")"  return(token::T_CL_PAR); /*{),T_CL_PAR}*/
+"["  return(token::T_OP_BR);  /*{[,T_OP_BR}*/
+"]"  return(token::T_CL_BR);  /*{],T_CL_BR}*/
+"&"  return(token::T_AND);    /*{&,T_AND}*/
+"|"  return(token::T_OR);     /*{|,T_OR}*/
 
-"."  return(token::T_POINT); /*  .,T_POINT}*/
-","  return(token::T_COMMA); /*  ,,T_COMMA}*/
-"?"  return(token::T_QUEST);  /*  ?,T_QUEST}*/
-":"  return(token::T_COLON); /*  :,T_COLON}*/
+"."  return(token::T_POINT); /*{.,T_POINT}*/
+","  return(token::T_COMMA); /*{,,T_COMMA}*/
+"?"  return(token::T_QUEST);  /*{?,T_QUEST}*/
+":"  return(token::T_COLON); /*{:,T_COLON}*/
 
 
-";"  return(token::T_SEMICOLON);  /*  ;,T_SEMICOLON}*/
+";"  return(token::T_SEMICOLON);  /*{;,T_SEMICOLON}*/
 
 
 LineNumber      return(token::T_LineNumber); /*{LineNumber,T_LineNumber}*/
