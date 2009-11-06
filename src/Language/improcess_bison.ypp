@@ -1306,7 +1306,7 @@ command:
           creates new variables as global and can only
           access global variables
 
-         Others:
+         See also:
           local, global_new
          **/
        Vars.SetGlobalContext();
@@ -1320,7 +1320,7 @@ command:
           creates new variables as global,
           but allow access to lobal variables
 
-         Others:
+         See also:
           local, global
          **/
        Vars.SetGlobalNew(1);
@@ -1334,7 +1334,7 @@ command:
           creates new variables as local,
           and allow access to local variables
 
-         Others:
+         See also:
           local, global, global_new
          **/
        Vars.SetGlobalNew(0);
@@ -1655,7 +1655,8 @@ command:
         - identifier: name of the new variable
         - expr: value of the new variable
         - expr_string: short description of the new variable
-      Description: creates a variable of type unsigned char (used for boolean type too)
+      Description: 
+        creates a variable of type unsigned char (used for boolean type too)
       **/
         unsigned char* varuchar;
         IdentifierInfo::ptr ident($1);
@@ -1669,7 +1670,8 @@ command:
         identifier ASSIGN_OP expr
       {
       /**
-        Description: Creation of a new floating point number variable
+        Description: 
+          Creation of a new floating point number variable
       **/
           float* varfloat;
           IdentifierInfo::ptr ident($1);
@@ -1685,7 +1687,8 @@ command:
           - identifier: name of the new variable
           - expr: value of the new variable
           - expr_string: short description of the new variable
-        Description: Creation of a new floating point number variable
+        Description: 
+          Creation of a new floating point number variable
       **/
         float* varfloat;
         IdentifierInfo::ptr ident($1);
@@ -1699,7 +1702,8 @@ command:
       identifier ASSIGN_OP expr_string
       {
       /**
-        Description: Creation of a new string variable
+        Description: 
+          Creation of a new string variable
       **/
           string* varstring;
           varstring = new string($3);
@@ -1716,7 +1720,8 @@ command:
           - identifier: name of the new variable
           - expr_string: value of the new variable
           - expr_string: short description of the new variable
-        Description: Creation of a new string variable
+        Description: 
+          Creation of a new string variable
       **/
         string_ptr value( new std::string($3));
         string* varstring;
@@ -2026,11 +2031,11 @@ command:
         |  var_image ASSIGN_OP expr
         {
         /**
-        parameters:
+        Parameters:
         (1) image
         (3) expression
 
-        description:
+        Description:
         Sets the whole image to a constant value given by expression.
         **/
           InrImage::ptr i1 = *(InrImage::ptr*) $1->Pointer();
@@ -2039,12 +2044,12 @@ command:
         |  var_image T_OP_BR expr T_CL_BR ASSIGN_OP expr_image
         {
         /**
-        parameters:
+        Parameters:
         (1) image: vectorial or RGB input image
         (3) n: component index
         (6) imageval: image expression
 
-        description:
+        Description:
         assigns imageval to the component 'n' of the input image
         **/
           int comp = (int) $3;
@@ -2074,12 +2079,12 @@ command:
         |  var_image T_OP_BR expr T_CL_BR ASSIGN_OP expr
         {
         /**
-        parameters:
+        Parameters:
         (1) image: vectorial or RGB input image
         (3) n: component index
         (6) val: numerical expression
 
-        description:
+        Description:
         assigns the value val to every component 'n' of the input image
         **/
           int comp = (int) $3;
@@ -3060,7 +3065,7 @@ command:
         | VAR_IMAGEDRAW T_POINT T_SetOpacityImage T_OP_PAR var_image T_CL_PAR
         {
         /**
-         description:
+         Description:
             Setting the opacity image for the volume rendering.
             This image should have unsigned char values.
          **/
@@ -3074,10 +3079,10 @@ command:
         | var_image T_POINT T_initvalue T_OP_PAR expr T_CL_PAR
         {
         /**
-        parameters:
+        Parameters:
           (5) expr:  value to init the image
 
-        description:
+        Description:
           Set the whole image to the same vector value .
         **/
           (*(InrImage::ptr*) $1->Pointer())->InitImage($5);
@@ -3085,12 +3090,12 @@ command:
         | var_image T_POINT T_initvalue T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
         /**
-        parameters:
+        Parameters:
           (5) expr:  X coord of the init vector
           (7) expr:  Y coord of the init vector
           (9) expr:  Z coord of the init vector
 
-        description:
+        Description:
           Set the whole image to the same value.
         **/
       (*(InrImage::ptr*) $1->Pointer())->InitImage($5,$7,$9);
@@ -3098,17 +3103,17 @@ command:
         | var_image T_POINT SET T_OP_PAR expr T_CL_PAR
         {
         /**
-        parameters:
+        Parameters:
           #1 expr:  scalar value
 
-        description:
+        Description:
         Set the current voxel (or pixel)
         to the specified value.
         The position of the current voxel can be set
         using 'setpos'.
 
 
-        Others:
+        See also:
                 setpos
         **/
       (*(InrImage::ptr*) $1->Pointer())->FixeValeur($5);
@@ -3117,19 +3122,19 @@ command:
         {
 
         /**
-        parameters:
+        Parameters:
           #1 expr:  X coord of the vector value
           #2 expr:  Y coord of the vector value
           #3 expr:  Z coord of the vector value
 
-        description:
+        Description:
         Set the current voxel (or pixel)
         to the specified value.
         The position of the current voxel can be set
         using 'setpos'.
 
 
-        Others:
+        See also:
                 setpos
         **/
 
@@ -3172,12 +3177,12 @@ command:
           (9)  expr:      Y position
           (11) expr:      Z position
 
-        description:
+        Description:
           Insert an image (#2) in a given image (#1)
           at the specified position in voxel coordinates,
           does not use the translation information from the image.
 
-        Example:
+        Example(s):
           i = Image(FLOAT,10,10,10)
           j = Image(FLOAT,5,5,5)
           i.putimage(j,2,2,2)
@@ -3197,12 +3202,12 @@ command:
           (1)  var_image: image to modify
           (5)  var_image: image to insert
 
-        description:
+        Description:
           Insert an image  in a given image,
           uses the translation and the voxel size information
           to calculate where to insert the image.
 
-        Example:
+        Example(s):
           i = Image(FLOAT,10,10,10)
           j = Image(FLOAT,5,5,5)
           i.putimage(j,2,2,2)
@@ -3409,7 +3414,7 @@ command:
         T_LevelSetsCURV T_POINT T_SetParam T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA expr  T_CL_PAR
         {
     //
-    // parameters:
+    // Parameters:
     // 1. number of iterations
     // 2. coefficient of the data attachment
     // 3. curvature coefficient
@@ -3430,7 +3435,7 @@ command:
                                            expr T_COMMA expr T_COMMA expr  T_CL_PAR
         {
     //
-    // parameters:
+    // Parameters:
     // 1. threshold on the cumulative histo of the grad norm for data attachment
     // 2. number of iterations
     // 3. coefficient of the data attachment
@@ -3640,7 +3645,7 @@ command:
           (jpeg, gif, etc...) you need to have a RGB image.
 
 
-        Example:
+        Example(s):
 
           rgb_im = (RGB) im
           im.save "image.jpg"
@@ -3658,7 +3663,7 @@ command:
         Description:
           Normalizes a vector field given by a vectorial image.
 
-        Example:
+        Example(s):
           v1.normalize
 
         **/
@@ -4157,7 +4162,7 @@ command:
         | var_surface T_POINT T_ElevateMesh T_OP_PAR expr_image T_CL_PAR
         {
         /**
-        description:
+        Description:
           ElevateMesh can have different behaviors depending on the type of
           the input image. In any case, it scans all the points of the mesh,
           and uses their 2 first coordinates (x,y) to deduce a position in
@@ -4169,16 +4174,16 @@ command:
             - if the image contains 3D vectors, those vectors are used
             to set new positions (x,y,z) for each vertex of the mesh.
 
-        parameters:
+        Parameters:
         (1) input surface
         (5) input image
 
-       Examples:
+       Example(s):
          s = CreateFlatMesh(i)
          ipos = Altitude2Postion(i,1)
          s.ElevateMesh(ipos)
 
-       Others:
+       See also:
          CreateFlatMesh, ElevateMesh
          changes the position of the nodes of a 3D mesh
 
@@ -5749,11 +5754,11 @@ postfix_expr
         | var_image T_OP_PAR expr T_CL_PAR
         {
         /**
-        parameters:
+        Parameters:
         (1) input_image
         (3) x
 
-        description:
+        Description:
         returns the image value at pixel (x,y=0,z=0).
 
         return:
@@ -5764,12 +5769,12 @@ postfix_expr
         | var_image T_OP_PAR expr T_COMMA expr  T_CL_PAR
         {
         /**
-        parameters:
+        Parameters:
         (1) input_image
         (3) x
         (5) y
 
-        description:
+        Description:
         returns the image value at pixel (x,y,z=0) by default
 
         return:
@@ -5869,7 +5874,7 @@ postfix_expr
         | var_image T_POINT TInit
         {
         /**
-        description:
+        Description:
         Init the image buffer to the first voxel or pixel:
         at coordinates (0,0,0).
 
@@ -6084,15 +6089,15 @@ postfix_expr
         T_COUNT T_OP_PAR expr_image  T_CL_PAR
         {
         /**
-             description:
+             Description:
              returns the of pixels (or voxels) with intensity higher than 0.5
 
-             parameters:
+             Parameters:
                (3) image expression
 
             Keywords:
 
-            Others:
+            See also:
                 max, mean, min, median
 
         **/
@@ -6103,15 +6108,15 @@ postfix_expr
         T_mean T_OP_PAR expr_image  T_CL_PAR
         {
         /**
-             description:
+             Description:
              returns the average value of an image
 
-             parameters:
+             Parameters:
                (3) image expression
 
             Keywords:
 
-            Others:
+            See also:
                 min, max, median
 
         **/
@@ -6122,15 +6127,15 @@ postfix_expr
         T_MAX T_OP_PAR expr_image  T_CL_PAR
         {
         /**
-             description: 
+             Description: 
              returns the maximal value of an image
 
-             parameters:
+             Parameters:
                (3) image variable
 
             Keywords:
 
-            Others:
+            See also:
                 min, mean, median
 
         **/
@@ -6141,15 +6146,15 @@ postfix_expr
         T_argmax T_OP_PAR expr_image  T_CL_PAR
         {
         /**
-             description:
+             Description:
              returns the position of the maximal value of an image
 
-             parameters:
+             Parameters:
                (3) image expression
 
             Keywords:
 
-            Others:
+            See also:
                 min, mean, median, max
 
         **/
@@ -6160,15 +6165,15 @@ postfix_expr
       T_MIN T_OP_PAR expr_image  T_CL_PAR
       {
       /**
-            description:
+            Description:
             returns the minimal value of an image
 
-            parameters:
+            Parameters:
               (3) image variable
 
           Keywords:
 
-          Others:
+          See also:
               max, mean, median
 
       **/
@@ -6179,15 +6184,15 @@ postfix_expr
       T_MEDIAN T_OP_PAR expr_image  T_CL_PAR
       {
       /**
-            description:
+            Description:
             returns the median value of an image
 
-            parameters:
+            Parameters:
               (3) image expression
 
           Keywords:
 
-          Others:
+          See also:
               min, max, mean, count
 
       **/
@@ -6198,18 +6203,18 @@ postfix_expr
         T_MAX T_OP_BR expr_image T_CL_BR T_OP_PAR expr_image  T_CL_PAR
         {
         /**
-             description:
+             Description:
              returns the maximal value of an image in a region of
              interest defined by pixels (or voxels) of intensity
              higher than 0.5 in the image between []
 
-             parameters:
+             Parameters:
                (3) image expression: mask
                (5) image expression: input
 
             Keywords:
 
-            Others:
+            See also:
                 min, max, mean, median, count
 
         **/
@@ -6221,18 +6226,18 @@ postfix_expr
         T_MIN T_OP_BR expr_image T_CL_BR T_OP_PAR var_image  T_CL_PAR
         {
         /**
-             description:
+             Description:
              returns the minimal value of an image in a region of
              interest defined by pixels (or voxels) of intensity
              higher than 0.5 in the image between []
 
-             parameters:
+             Parameters:
                (3) image expression
                (5) image variable
 
             Keywords:
 
-            Others:
+            See also:
                 min, max, mean, median, count
 
         **/
@@ -6243,18 +6248,18 @@ postfix_expr
         T_MEDIAN T_OP_BR expr_image T_CL_BR T_OP_PAR var_image  T_CL_PAR
         {
         /**
-             description:
+             Description:
              returns the median value of an image in a region of
              interest defined by pixels (or voxels) of intensity
              higher than 0.5 in the image between []
 
-             parameters:
+             Parameters:
                (3) image expression
                (5) image variable
 
             Keywords:
 
-            Others:
+            See also:
                 min, max, mean, median, count
 
         **/
@@ -6273,18 +6278,18 @@ postfix_expr
         T_mean T_OP_BR expr_image T_CL_BR T_OP_PAR expr_image  T_CL_PAR
         {
         /**
-             description:
+             Description:
              returns the average value of an image in a region of
              interest defined by pixels (or voxels) of intensity
              higher than 0.5 in the image between []
 
-             parameters:
+             Parameters:
                (3) image expression: defines the Region of Interest
                (5) image expression: image from which to compute the mean intensity value.
 
             Keywords:
 
-            Others:
+            See also:
                 min, max, mean, median, count
 
         **/
@@ -6297,18 +6302,18 @@ postfix_expr
         T_mean T_OP_PAR var_image T_COMMA expr_image T_CL_PAR
         {
         /**
-             description:
+             Description:
              returns the maximal value of an image in a region of
              interest
 
-             parameters:
+             Parameters:
                (3) image variable
                (5) image expression: the pixels (or voxels) higher than 0.5
                define the Region of Interest
 
             Keywords:
 
-            Others:
+            See also:
                 min, max, mean, median, count
 
         **/
@@ -6464,10 +6469,10 @@ postfix_expr
     VAR_PARAMWIN T_POINT T_AddFloat T_OP_PAR  VAR_FLOAT T_COMMA expr T_COMMA expr T_CL_PAR
     {
       /**
-          description:
+          Description:
             Adds an interface for a floating point variable to the window of parameters.
 
-          parameters:
+          Parameters:
             (1) variable of type window of parameters
             (5) float variable for which we want to create an interface
             (7) minimal value accepted
@@ -6475,10 +6480,10 @@ postfix_expr
 
         Keywords:
 
-        Others:
+        See also:
             ParamWin, AddInt, CreateWin, Display
 
-        Example:
+        Example(s):
           a=1
           w1 = ParamWin("test")
           w1.AddFloat(a,1,100)
@@ -6499,10 +6504,10 @@ postfix_expr
     VAR_PARAMWIN T_POINT T_AddFloat T_OP_PAR  VAR_FLOAT T_COMMA expr_string T_COMMA expr T_COMMA expr T_CL_PAR
     {
       /**
-          description:
+          Description:
             Adds an interface for a floating point variable to the window of parameters.
 
-          parameters:
+          Parameters:
             (3) variable of type window of parameters
             (5) string expression: label
             (7) float variable for which we want to create an interface
@@ -6511,10 +6516,10 @@ postfix_expr
 
         Keywords:
 
-        Others:
+        See also:
             ParamWin, AddInt, CreateWin, Display
 
-        Example:
+        Example(s):
           a=1
           w1 = ParamWin("test")
           w1.AddFloat(a,1,100)
@@ -7197,7 +7202,7 @@ image:
          if the file is not found, it looks for the same filename with a '.gz' extention. If
          it can find it, it will open the file using the 'popen' (pipe open) command and the 'gunzip' program.
 
-       Examples:
+       Example(s):
           i = ReadRawImages(1024,1024,USHORT,0,"AfGG.%d",48,48)
        **/
      InrImage* im  = new InrImage();
@@ -7254,7 +7259,7 @@ image:
          if the file is not found, it looks for the same filename with a '.gz' extention. If
          it can find it, it will open the file using the 'popen' (pipe open) command and the 'gunzip' program.
 
-       Examples:
+       Example(s):
           i = ReadRawImages(256,256,256,USHORT,0,"data.raw")
        **/
      InrImage* im  = new InrImage();
@@ -7309,7 +7314,7 @@ image:
          if the file is not found, it looks for the same filename with a '.gz' extention. If
          it can find it, it will open the file using the 'popen' (pipe open) command and the 'gunzip' program.
 
-       Examples:
+       Example(s):
           i = ReadRawImages(256,256,256,FLOAT,3,0,"3dvectorfielddata.raw")
        **/
      InrImage* im  = new InrImage();
@@ -7506,7 +7511,7 @@ image:
           expr=1 returns Green if RGB or the Y coordinate if vectorial
           expr=2 returns Blue  if RGB or the Z coordinate if vectorial
 
-        Examples:
+        Example(s):
           i = Image "test.jpg"
           ired   = i[0]
           igreen = i[1]
@@ -7577,17 +7582,17 @@ image:
        T_SUM T_OP_PAR expr_image  T_COMMA expr T_CL_PAR
        {
         /**
-             description:
+             Description:
              returns the sum of the values of an image along the specified dimension
              0 for X, 1 for Y, 2 for Z
 
-             parameters:
+             Parameters:
                (3) image expression
                (5) expr
 
             Keywords:
 
-            Others:
+            See also:
                 min, max, median
 
         **/
@@ -7833,7 +7838,7 @@ image:
           #4 expr:     derivation order in Y coordinates
           #5 expr:     derivation order in Z coordinates
 
-        description:
+        Description:
         Apply a Gaussian filter of specified standard deviation to
         input image and returns a new image.
 
@@ -8441,14 +8446,14 @@ image:
       at the same position using putimage command.
       The same operation can also be achieved using the [] operator.
 
-      Example:
+      Example(s):
 
       - Extract a subimage of size 4x4x4
 
       i = Image(FLOAT,10,10,10)
       j = subimage(i,5,5,5,8,8,8)
 
-      Others:
+      See also:
         putimage, []
 
       **/
@@ -8674,7 +8679,7 @@ image:
       T_LevelSetsCURV T_POINT TInit T_OP_PAR var_image  T_COMMA expr  T_CL_PAR
       {
     //
-    // parameters:
+    // Parameters:
     // 1. input image
     // 2. isosurface threshold on the input image
 
@@ -8694,7 +8699,7 @@ image:
       T_LevelSetsCURV T_POINT TInit T_OP_PAR var_image T_COMMA var_image  T_CL_PAR
       {
     //
-    // parameters:
+    // Parameters:
     // 1. input image
     // 2. Initial position of the level set a the zero-crossing of
     //    this image
@@ -9253,7 +9258,7 @@ image:
         x = Xpos(i)
         i = i * (x>2) * ( x < i.tx-3)
 
-        Others:
+        See also:
                 Ypos, Zpos
        **/
 
@@ -9290,7 +9295,7 @@ image:
         y = Ypos(i)
         i = i * (y>2) * ( y < i.tx-3)
 
-        Others:
+        See also:
                 Xpos, Zpos
        **/
 
@@ -9327,7 +9332,7 @@ image:
         z = Zpos(i)
         i = i * (z>2) * ( z < i.tx-3)
 
-        Others:
+        See also:
                 Xpos, Ypos
        **/
 
@@ -9359,7 +9364,7 @@ image:
         and are saved as vectors.
 
 
-        Others:
+        See also:
                 Xpos, Ypos, Zpos
        **/
 
@@ -9805,7 +9810,7 @@ image:
                 - inclusion :
                 - cc_size   :
                 - cc_sign   :
-        Example:
+        Example(s):
             To analyze connected component from an isocontour value n for an image i,
             you can call i_cc=CC((FLOAT)i-n)
         **/
@@ -10218,16 +10223,16 @@ image:
     {
     /**
 
-        description:
+        Description:
           Compute the altitude to the sea level based on the
           infrared channel.
 
-        parameters:
+        Parameters:
           (3) image containing the infrared channel
           (5) image containing 5 coefficients for the computation
               of the temperature and of the altitude,
 
-        keywords:
+        Keywords:
           Fluid
 
         **/
@@ -10243,11 +10248,11 @@ image:
     {
     /**
 
-        description:
+        Description:
         Compute the altitude to the sea level based on the
         temperature channel.
 
-        params:
+        Parameters:
         (3) image containing the temperature at the top of the clouds
         in Kelvin.
 
@@ -10271,11 +10276,11 @@ image:
     {
     /**
 
-      description:
+      Description:
         Trying the slicing procedure to incorporate into the
         image drawing class
 
-      params:
+      Parameters:
         (3) image to slice
         (5) width orientation 1,2,3 for XY, XZ, ZY
         (7) height orientation
@@ -10383,14 +10388,14 @@ cast_image:
         | T_OP_PAR basic_type T_CL_PAR unary_image
                   {
         /**
-        description:
+        Description:
                   The image conversion is done using the cast operator
                   where basic_type can be one of the basic type accepted,
                   currently:
                   CHAR UCHAR SHORT USHORT FLOAT DOUBLE RGB FLOAT_VECTOR
 
 
-                Example:
+                Example(s):
                   i = Image(FLOAT,10,10,10)
                   j = (RGB) i
         **/
@@ -11200,11 +11205,11 @@ surface:
     {
           /**
 
-        description:
+        Description:
       creates a flat triangulates mesh from the image domain,
       discarding pixels with null intensity.
 
-        parameters:
+        Parameters:
         (3) input image
         (5) triangle orientation:
             1: following X^Y
@@ -11247,7 +11252,7 @@ surface:
         |  T_CreateVolume T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_COMMA expr_image T_COMMA expr_image T_CL_PAR
         {
         /**
-        description:
+        Description:
           CreateVolume creates a close surface composed of 2 surfaces:
           a top and a bottom, where each surface is calculated by converting
           the pixel position of 3D positions based on the 2 last parameters.
@@ -11257,14 +11262,14 @@ surface:
             - the 2 last parameters are 2D images of 3D vectors, those vectors are used
             to set new positions (x,y,z) for each vertex of the mesh.
 
-        parameters:
+        Parameters:
         (3) input surface
         (5) minimal intensity value of the region of interest
         (7) maximal intensity value of the region of interest
         (9) 3D vector field image for the lower positions
         (11) 3D vector fiels image for the higher positions
 
-       Others:
+       See also:
          CreateFlatMesh, ElevateMesh
          changes the position of the nodes of a 3D mesh
 
@@ -11284,7 +11289,7 @@ surface:
     |  T_CreateVolume T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_COMMA expr_image T_COMMA expr_image T_COMMA expr_image T_COMMA expr T_CL_PAR
     {
         /**
-        description:
+        Description:
           CreateVolume creates a closed surface composed of 2 surfaces:
           a top and a bottom, where each surface is calculated by converting
           the pixel position of 3D positions based on the 2 last parameters.
@@ -11294,7 +11299,7 @@ surface:
             - the 2 last parameters are 2D images of 3D vectors, those vectors are used
             to set new positions (x,y,z) for each vertex of the mesh.
 
-        parameters:
+        Parameters:
         (3) input surface
         (5) minimal intensity value of the region of interest
         (7) maximal intensity value of the region of interest
@@ -11304,7 +11309,7 @@ surface:
         (15) alpha opacity value (in [0,1], 0 is fully transparent)
 
 
-       Others:
+       See also:
          CreateFlatMesh, ElevateMesh
          changes the position of the nodes of a 3D mesh
 
@@ -11327,7 +11332,7 @@ surface:
     | T_CreateVectors T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr_image T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr T_CL_PAR
     {
         /**
-        Parameters
+        Parameters:
           #1 expr_image:        altitudes1
           #2 expr_image:        displacement
           #3 expr_image:        altitudes2
@@ -11336,7 +11341,7 @@ surface:
           #6 expr:              scale
           #7 expr:              type
 
-        description:
+        Description:
         Creates a 3D vector field for visualization of the displacement of clouds
         between times t1 and t2.
         description of the input parameters:
@@ -11375,7 +11380,7 @@ surface:
     | T_CreateVectors T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr_image T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr T_COMMA expr T_CL_PAR
     {
         /**
-        Parameters
+        Parameters:
           #1 expr_image:        altitudes1
           #2 expr_image:        displacement
           #3 expr_image:        altitudes2
@@ -11385,7 +11390,7 @@ surface:
           #7 expr:              type
           expr:                 vector_style (in {0,1})
 
-        description:
+        Description:
         Creates a 3D vector field for visualization of the displacement of clouds
         between times t1 and t2.
         description of the input parameters:
@@ -11427,7 +11432,7 @@ surface:
     | T_CreateVectors T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr_image T_COMMA expr T_COMMA expr T_COMMA  expr T_CL_PAR
     {
         /**
-        Parameters
+        Parameters:
           #1 expr_image:        altitudes1
           #2 expr_image:        displacement
           #3 expr_image:        altitudes2
@@ -11435,7 +11440,7 @@ surface:
           #5 expr:              stepy
           #6 expr:              scale
 
-        description:
+        Description:
         Creates a 3D vector field for visualization of the displacement of clouds
         between times t1 and t2.
         description of the input parameters:
@@ -11470,7 +11475,7 @@ surface:
     | T_CreateVectors T_OP_PAR expr_image  T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr  T_COMMA expr T_CL_PAR
     {
         /**
-        Parameters
+        Parameters:
           (3) expr_image:        displacement field in voxel coordinates
           (5) expr:              spacing between vectors in X direction
           (7) expr:              spacing between vectors in Y direction
@@ -11478,7 +11483,7 @@ surface:
           (11) expr:             scale
           (13) vector style   0: simple line, 1: 3D vector composed of 2 tetrahedra
 
-        description:
+        Description:
         Creates a 3D vector field for visualization.
 
       **/

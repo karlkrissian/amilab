@@ -84,7 +84,7 @@ class Html_Page:
         self.html_tab ="    "
         self.html_currenttab = ""
 
-    def generate_heading (self, bgcolor="", logo=""):
+    def generate_heading (self, bgcolor="", logo="", csspath=""):
         #
         # Generate heading for a page
         #
@@ -93,12 +93,12 @@ class Html_Page:
         self.f.write ("<title>" + self.title + "</title>\n")
         # add style sheet ...
         self.f.write ('<link rel="stylesheet" '+
-            'href="tabs.css"' +
+            'href="%stabs.css"'%csspath +
         'type="text/css">\n')
-        self.f.write ('<link href="documentstyle.css" rel="stylesheet" type="text/css" media="all" />\n')
+        self.f.write ('<link href="%sdocumentstyle.css" rel="stylesheet" type="text/css" media="all" />\n'%csspath)
         self.f.write ("</head>\n")
         self.f.write ("<body bgcolor=" + bgcolor + ">\n")
-        self.f.write ("<h1 align=center>" + self.heading + "</h1>\n")
+        self.f.write ("<h2 align=center>" + self.heading + "</h2>\n")
         if (logo!=""):
           self.f.write('<img src="%s">'%logo)
 
@@ -163,7 +163,7 @@ class Html_Page:
         # we will check for special characters to create separate files for them
         if standardtoken(token):
           res=""
-          res = res + '<a  href="%sTokens/%s_rules.html" target="FRULES" >'%(parent,token_name) +   '<span class="token">'+ token + '</span> </a>'
+          res = res + '<a  href="%sTokens/%s_rules.html" target="FDOC" >'%(parent,token_name) +   '<span class="token">'+ token + '</span> </a>'
           if token in self.documented_commands:
               pos = self.documented_commands.index(token)
               res= res +' <a  href="' + parent+self.commands[pos][1] + '/' + self.commands[pos][0] + '.amih" target="FDOC" >'
@@ -191,7 +191,7 @@ class Html_Page:
         self.html_inctab()
         self.file_write ("<dl compact='compact'>\n")
         i=0
-        nb_columns=3
+        nb_columns=1
         width_str = "width=%d"%(100/nb_columns)
         tvaluescap = [ v.upper() for v in self.tvalues]
         tvaluescap_sorted=[ v.upper() for v in self.tvalues]
@@ -229,8 +229,8 @@ class Html_Page:
             if (t[0]!="'") and re.search(r'\b'+re.escape(t)+r'\b',r[2]):
               self.file_write('<tr valign=top align=left>\n')
               self.file_write('<td nowrap><font size=-1>(%3d) </font>'%(r[0]))
-              if os.path.isfile("Rules/%d.txt"%r[0]):
-                self.file_write('<a href="../Rules/%d.txt" target="FDOC"><IMG SRC="../book.gif" BORDER="0"></a>.'%(r[0]))
+              if os.path.isfile("Rules/%d.html"%r[0]):
+                self.file_write('<a href="../Rules/%d.html" target="FDOC"><IMG SRC="../book.gif" BORDER="0"></a>'%(r[0]))
               self.file_write("</td><td nowrap>%s</td><td><--</td> </td>\n<td>%s</td>\n"%(r[1],self.translate_rule(r[2],"../")))
               self.file_write('</tr>')
           self.file_write('</table>')
@@ -275,8 +275,8 @@ class Html_Page:
             self.html_inctab()
             #self.file_write('<td> %d </td> \t'%r[0])
             self.file_write('<td><font size=-1>(%3d) </font>'%(r[0]))
-            if os.path.isfile("Rules/%d.txt"%r[0]):
-              self.file_write('<a href="Rules/%d.txt" target="FDOC"><IMG SRC="book.gif" BORDER="0"></a>\n'%r[0])
+            if os.path.isfile("Rules/%d.html"%r[0]):
+              self.file_write('<a href="Rules/%d.html" target="FDOC"><IMG SRC="book.gif" BORDER="0"></a>\n'%r[0])
             self.file_write(' %s \n'%(self.translate_rule(r[2])))
             self.file_write('</td> \n')
             self.html_dectab()
@@ -362,20 +362,17 @@ if __name__ == "__main__":
     f.write('<HEAD>')
     f.write('<TITLE> AMILab Help </TITLE>')
     f.write('</HEAD>')
-    f.write('<FRAMESET rows="140,1*">')
+    f.write('<FRAMESET rows="120,1*">')
     f.write('  <FRAME SRC="title.html"   name="FTITLE" noresize >')
-    f.write('  <FRAMESET cols="600,1*">')
-    f.write('    <FRAME SRC="tokens.html" name="FBROWSE" noresize >')
-    f.write('    <FRAMESET rows="150,1*">')
-    f.write('      <FRAME SRC="test.amih"   name="FRULES">')
-    f.write('      <FRAME SRC="test.amih"   name="FDOC">')
-    f.write('    </FRAMESET>')
+    f.write('  <FRAMESET cols="300,1*">')
+    f.write('    <FRAME SRC="tokens.html" name="FBROWSE" >')
+    f.write('    <FRAME SRC="test.amih"   name="FDOC">')
     f.write('  </FRAMESET>')
     f.write('</FRAMESET>')
     f.write('</HTML>')
 
     # title page
-    p = Main_Page("AMILab Documentation", "<i>AMILAb documentation</i>",
+    p = Main_Page("AMILab scripting language documentation", "<i>AMILab scripting language documentation</i>",
                   "title.html")
     p.generate_heading ("white","logoami2.gif")
     p.generate_alltabs(0,0)
@@ -434,7 +431,7 @@ if __name__ == "__main__":
     # Directories
     #-------------------------------------------------
 
-    p = Main_Page("AMILab Documentation", "<i>html doc for AMILAb </i>",
+    p = Main_Page("AMILab scripting language documentation", "<i>html doc for AMILAb </i>",
                   "docamil_directories.html")
     p.generate_heading ("white")
     p.generate_body ()
@@ -467,7 +464,7 @@ if __name__ == "__main__":
     # Scripts
     #-------------------------------------------------
 
-    p = Main_Page("AMILab Documentation", "<i>html doc for AMILAb </i>",
+    p = Main_Page("AMILab scripting language documentation", "<i>html doc for AMILAb </i>",
                   "scripts.html")
     p.generate_heading ("white")
     p.generate_body ()
@@ -572,12 +569,24 @@ if __name__ == "__main__":
       # removing the files under the directory Rules
       for root, dirs, files in os.walk("Rules"):
         for name in files:
-            os.remove(os.path.join(root, name))
+          os.remove(os.path.join(root, name))
       os.rmdir("Rules")
-    os.mkdir("Rules")
+      os.mkdir("Rules")
     f = open (improcess_bison_tab_cpp, "r")
     
     # delete current rules
+    
+    def RuleReplace(val,st1,st2):
+      return re.sub(re.escape(st1),\
+                  "<BR><u><b>%s</b></u><BR>"%st2,val)
+    def RuleDescriptionHTML(r):
+      res = RuleReplace(r,  "Description:","Description:")
+      res = RuleReplace(res,"Parameters:", "Parameters:")
+      res = RuleReplace(res,"Keywords:",   "Keywords:")
+      res = RuleReplace(res,"See also:",   "See also:")
+      res = RuleReplace(res,"Example(s):", "Example(s):")
+      return res
+      
     
     l=f.readline()
     while (l):
@@ -589,20 +598,38 @@ if __name__ == "__main__":
           # looking for documentation in the code
           l=f.readline()
           res=re.search(r"case (?P<int>\d+):", l)
+          
+
           while l and not(res):
             doc=re.search(re.escape("/**"),l)
             if doc:
               # read until the end
-              print "rule %d %s = %s \n"%(rule_number,rules[rule_number][1],rules[rule_number][2])
               # creating first documentation file
-              frule = open("Rules/%d.txt"%rule_number,"w")
+              p = Main_Page("Rule %d documentation"%rule_number, "<i>Rule documentation</i>",
+                          "Rules/%d.html"%rule_number)
+              p.generate_heading ("white","","../")
+              p.generate_body ()
+              p.set_tokens(lex_tokens,lex_tokens_nolinks)
+              p.set_commands(commands)
+              p.set_rules(rules)
+              p.set_nodes(nodes)
+              
+              p.f.write( "<BR> <b> Rule %d </b> <BR> "%rule_number)
+              p.f.write('<SPAN STYLE="background: #ccffff">')
+              p.f.write("<P ALIGN=CENTER> %s <-- %s </P><BR><BR>\n"%(rules[rule_number][1],\
+                      p.translate_rule(rules[rule_number][2])))
+              p.f.write('</SPAN>')
+              l=f.readline()
               enddoc=re.search(re.escape("**/"),l)
               while l and not(enddoc):
-                frule.write(l)
-                l=f.readline()
+                p.f.write(RuleDescriptionHTML(l))
+                p.f.write("<BR>")
+                l=f.readline();
                 enddoc=re.search(re.escape("**/"),l)
-              frule.write(l)
-              frule.close()
+              #frule.write(l)
+              p.f.write("<BR><BR>")
+              #frule.close()
+              p.generate_trailer ()
             l=f.readline()
             res=re.search(r"case (?P<int>\d+):", l)
         else:
@@ -618,7 +645,7 @@ if __name__ == "__main__":
       # removing the files under the directory Tokens
       for root, dirs, files in os.walk("Tokens"):
         for name in files:
-            os.remove(os.path.join(root, name))
+          os.remove(os.path.join(root, name))
       os.rmdir("Tokens")
     os.mkdir("Tokens")
     for t in lex_tokens:
@@ -627,7 +654,7 @@ if __name__ == "__main__":
         print "creating page for "+lex_tokens[t]+"\n"
         p = Main_Page("rules for "+lex_tokens[t], "<i>rules using %s</i>"%lex_tokens[t],
                     "Tokens/"+t+"_rules.html")
-        p.generate_heading ("white")
+        p.generate_heading ("white","","../")
         p.generate_body ()
         p.set_tokens(lex_tokens,lex_tokens_nolinks)
         p.set_commands(commands)
