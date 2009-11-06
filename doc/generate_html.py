@@ -319,7 +319,7 @@ class Html_Page:
         self.f.write ("<dl compact='compact'>\n")
         for cmd,root in self.scripts:
             self.f.write("<tr>\n")
-            self.f.write ("<td><a  href=\""+scripts_path+"/HTML/"+cmd+".amil.html\">"+cmd+"</a></td>\n")
+            self.f.write ("<td><a  href=\""+scripts_path+"/HTML/"+cmd+".amil.html\" target=\"FDOC\" >"+cmd+"</a></td>\n")
             self.f.write ("<td>"+root+"</td>\n")
         self.f.write("</tr>\n")
         self.f.write ("</table>\n")
@@ -363,10 +363,10 @@ if __name__ == "__main__":
     f.write('<TITLE> AMILab Help </TITLE>')
     f.write('</HEAD>')
     f.write('<FRAMESET rows="120,1*">')
-    f.write('  <FRAME SRC="title.html"   name="FTITLE" noresize >')
+    f.write('  <FRAME SRC="title.html"   name="FTITLE" noresize FRAMEBORDER=0 >')
     f.write('  <FRAMESET cols="300,1*">')
-    f.write('    <FRAME SRC="tokens.html" name="FBROWSE" >')
-    f.write('    <FRAME SRC="test.amih"   name="FDOC">')
+    f.write('    <FRAME SRC="tokens.html" name="FBROWSE" FRAMEBORDER=0 >')
+    f.write('    <FRAME SRC="test.amih"   name="FDOC" FRAMEBORDER=0 >')
     f.write('  </FRAMESET>')
     f.write('</FRAMESET>')
     f.write('</HTML>')
@@ -464,7 +464,7 @@ if __name__ == "__main__":
     # Scripts
     #-------------------------------------------------
 
-    p = Main_Page("AMILab scripting language documentation", "<i>html doc for AMILAb </i>",
+    p = Main_Page("AMILab scripting language documentation", "<i> AMILAb scripts </i>",
                   "scripts.html")
     p.generate_heading ("white")
     p.generate_body ()
