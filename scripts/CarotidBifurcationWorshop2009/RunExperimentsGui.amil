@@ -210,6 +210,8 @@ if (!exists(CE_defined)) {
     global::CE_input_trx = CE_input.trx
     global::CE_input_try = CE_input.try
     global::CE_input_trz = CE_input.trz
+    # keep a reduced size input
+    global::CE_input_reduced = (USHORT) MeanHalfSize(CE_input)
     del CE_input
   }
   

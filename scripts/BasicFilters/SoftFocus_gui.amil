@@ -8,132 +8,134 @@ if (!exists(SoftFocus)) {
   Class SoftFocus {
 
     #--------------------------------
-    proc this::Init( ) {
-      this::input_name = ""
-      this::sigma      = 1, "Gaussian kernel standard devation"
-      this::cx = INT(0), "Center X position "
-      this::cy = INT(0), "Center X position"
-      this::cz = INT(0), "Center X position"
-      this::radius = 10, "Radius of the effect"
-      this::auto = UCHAR(0), "Apply the filter automatically after changing the standard deviation value"
-      this::autodrag = UCHAR(0), "Apply the filter automatically while moving the scale"
-      this::CreateGui()
+    proc ::Init( ) {
+      ::input_name = ""
+      ::sigma      = 1, "Gaussian kernel standard devation"
+      ::cx = INT(0), "Center X position "
+      ::cy = INT(0), "Center X position"
+      ::cz = INT(0), "Center X position"
+      ::radius = 10, "Radius of the effect"
+      ::auto = UCHAR(0), "Apply the filter automatically after changing the standard deviation value"
+      ::autodrag = UCHAR(0), "Apply the filter automatically while moving the scale"
+      ::CreateGui()
     }
 
     #--------------------------------
-    proc this::Close() {
-      this::win.Hide
-      delvars GetObjectName(this::Close)
+    proc ::Close() {
+      ::win.Hide
+      delvars GetObjectName(::Close)
     }
+    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
     #--------------------------------
-    proc this::load_input() {
-      eval "this::input <<="+this::input_name+";"
-      if (this::input_name=="Image") {
-        this::input_name = "this::input"
-        this::win.update
+    proc ::load_input() {
+      eval "::input <<="+::input_name+";"
+      if (::input_name=="Image") {
+        ::input_name = "::input"
+        ::win.update
       }
     }
     
     #--------------------------------------------------
-    proc this::Filter() {
-      this::load_input()
-      this::res <<= this::input
-      if (this::input.vdim==1) {
-        this::res = filter(this::input,this::sigma,\
+    proc ::Filter() {
+      ::load_input()
+      ::res <<= ::input
+      if (::input.vdim==1) {
+        ::res = filter(::input,::sigma,\
                         0,0,0)
       } else {
-        for n=0 to this::input.vdim-1 {
-          this::res[n] = filter( this::input[n],this::sigma,\
+        for n=0 to ::input.vdim-1 {
+          ::res[n] = filter( ::input[n],::sigma,\
                               0,0,0)
         }
       }
-      # now this::res is the smoothed image, combine the images
-      xpos = ((FLOAT) Xpos(this::input)) - this::cx
-      ypos = ((FLOAT) Ypos(this::input)) - this::cy
-      zpos = ((FLOAT) Zpos(this::input)) - this::cz
-      d2 = (xpos*xpos+ypos*ypos+zpos*zpos)/(this::radius*this::radius)
+      # now ::res is the smoothed image, combine the images
+      xpos = ((FLOAT) Xpos(::input)) - ::cx
+      ypos = ((FLOAT) Ypos(::input)) - ::cy
+      zpos = ((FLOAT) Zpos(::input)) - ::cz
+      d2 = (xpos*xpos+ypos*ypos+zpos*zpos)/(::radius*::radius)
       d2 = exp(-d2*d2)
-      this::res = this::input*d2 + this::res*(-d2+1)
-      this::Display()
+      ::res = ::input*d2 + ::res*(-d2+1)
+      ::Display()
     }
-    this::Filter.Comments("Apply Gaussian convolution on each channel of the image.")
+    ::Filter.Comments("Apply Gaussian convolution on each channel of the image.")
     
     #-----------------------------------------
-    proc this::Display() {
-      show this::input
-      if (exists(this::res)) {
-        show this::res
-        this::input_draw.compare(this::res)
+    proc ::Display() {
+      show ::input
+      if (exists(::res)) {
+        show ::res
+        ::input_draw.compare(::res)
       }
     }
     
     #-----------------------------------------
-    proc this::AutoFilter() {
-      if (this::auto) { this::Filter; }
+    proc ::AutoFilter() {
+      if (::auto) { ::Filter; }
     }
-    this::AutoFilter.Comments("Apply the filter automatically if this option is enabled")
+    ::AutoFilter.Comments("Apply the filter automatically if this option is enabled")
   
     #-----------------------------------------
-    proc this::AutoDrag() {
-      this::win.SetDragCallback(this::sigma_id,this::autodrag)
+    proc ::AutoDrag() {
+      ::win.SetDragCallback(::sigma_id,::autodrag)
     }
-    this::AutoDrag.Comments("Enable/Disable real-time filtering while moving the scale")
+    ::AutoDrag.Comments("Enable/Disable real-time filtering while moving the scale")
     
     #-----------------------------------------
-    proc this::CursorPos() {
-      if (exists(this::input_draw)) {
-        this::cx = this::input_draw.GetXPos
-        this::cy = this::input_draw.GetYPos
-        this::cz = this::input_draw.GetZPos
-        this::win.update
+    proc ::CursorPos() {
+      if (exists(::input_draw)) {
+        ::cx = ::input_draw.GetXPos
+        ::cy = ::input_draw.GetYPos
+        ::cz = ::input_draw.GetZPos
+        ::win.update
       }
     }
+    ::CursorPos.Comments("Set the position parameter from the current cursor position in the input_draw window")
     
     #-----------------------------------------
-    proc this::Save() {
-      this::res.save resultname
+    proc ::Save() {
+      ::res.save resultname
     }
-    this::Save.Comments("Save the resulting image")
+    ::Save.Comments("Save the resulting image")
     
     #--------------------------------
-    proc this::CreateGui() {
+    proc ::CreateGui() {
     
       # parameters window
-      this::win = ParamWin("SoftFocus")
+      ::win = ParamWin("SoftFocus")
     
-      this::win.BeginBook
-        this::win.AddPage("Param")
+      ::win.BeginBook
+        ::win.AddPage("Param")
   
-        this::win.AddImageChoice(this::input_name, "Input")
-        this::sigma_id = this::win.AddFloat(this::sigma,"std_dev",0.1,100)
-        this::win.SetCallback(this::AutoFilter)
-        this::win.SetDragCallback(this::sigma_id,this::autodrag)
+        ::win.AddImageChoice(::input_name, "Input")
+        ::sigma_id = ::win.AddFloat(::sigma,"std_dev",0.1,100)
+        ::win.SetCallback(::AutoFilter)
+        ::win.SetDragCallback(::sigma_id,::autodrag)
   
-        this::win.BeginBoxPanel("Center position")
-          this::win.AddInt(this::cx,"X",0,1000)
-          this::win.AddInt(this::cy,"Y",0,1000)
-          this::win.AddInt(this::cz,"Z",0,1000)
-          this::win.AddButton("From Cursor",this::CursorPos)
-        this::win.EndBoxPanel
+        ::win.BeginBoxPanel("Center position")
+          ::win.AddInt(::cx,"X",0,1000)
+          ::win.AddInt(::cy,"Y",0,1000)
+          ::win.AddInt(::cz,"Z",0,1000)
+          ::win.AddButton("From Cursor",::CursorPos)
+        ::win.EndBoxPanel
   
-        this::win.AddFloat(this::radius,"Radius",0.1,1000)
+        ::win.AddFloat(::radius,"Radius",0.1,1000)
   
-        this::win.BeginHorizontal
-          this::win.AddBoolean(this::auto,"Auto")
-          this::win.AddBoolean(this::autodrag,"Auto drag")
-          this::win.SetCallback(this::AutoDrag)
-        this::win.EndHorizontal
-        this::win.AddButton("Apply",this::Filter)
-      this::win.EndBook
-      this::win.AddButton("Close",    this::Close)
+        ::win.BeginHorizontal
+          ::win.AddBoolean(::auto,"Auto")
+          ::win.AddBoolean(::autodrag,"Auto drag")
+          ::win.SetCallback(::AutoDrag)
+        ::win.EndHorizontal
+        ::win.AddButton("Apply",::Filter)
+      ::win.EndBook
+      ::win.AddButton("Close",    ::Close)
     
-      this::win.update
-      this::win.Display
+      ::win.update
+      ::win.Display
     }
   
   
-    this::Init
+    ::Init
 
   }
 
@@ -143,7 +145,7 @@ if (!exists(SoftFocus)) {
 
 if (!exists(SoftFocus_instance)) {
 
-  SoftFocus SoftFocus_instance
+  SoftFocus sf1
   
 } else {
   InfoDialog "The script seems to be already loaded."

@@ -1005,6 +1005,19 @@ this::([A-Za-z0-9_])*   {
 }
 
 
+::([A-Za-z0-9_])*   {
+//
+//============================ Parse variable ====================
+//
+  string text(YYText());
+  string varname = text.substr(2);
+  yyip::Parser::token::yytokentype 
+      result = checkvar(yylval,varname.c_str(),
+                        OBJECT_CONTEXT_NUMBER);
+  return result;
+}
+
+
 
 ([A-Za-z0-9_])*->([A-Za-z0-9_])*   {
 //

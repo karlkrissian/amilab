@@ -1226,7 +1226,7 @@ func_inst :
        delete [] $2;
      }
     |
-    FUNCTION
+    FUNCTION end_instr
     {
           int res;
           string name;
@@ -3226,9 +3226,9 @@ command:
       (*(InrImage::ptr*) $1->Pointer())->FixeNom( $5);
       delete [] $5;
     }
-        |
-        AnisoGS T_POINT TInit  T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
-        {
+    |
+    AnisoGS T_POINT TInit  T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
+    {
         /**
         Parameters:
             (5)  var_image: input image
@@ -10687,9 +10687,8 @@ var_surface:
           if (array->GetVar(i).Pointer()==NULL) {
             // initialize the surface
             SurfacePoly* surf = new SurfacePoly();
-            char name[256];
-            sprintf(name,"%s[%d]",$1->Name().c_str(),i);
-            array->InitElement(i,surf,name);
+            std::string name = (boost::format("%s[%d]") %$1->Name().c_str() %i).str();
+            array->InitElement(i,surf,name.c_str());
           }
           $$=&(array->GetVar(i));
         }
