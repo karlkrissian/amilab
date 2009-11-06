@@ -105,12 +105,13 @@ ENDIF(WIN32 AND NOT UNIX)
 #SET( CPACK_PACKAGE_FILE_NAME      )
 SET( CPACK_PACKAGE_ICON            "${CMAKE_SOURCE_DIR}/../Pixmaps/amilab_logo_new_48x48_alpha.xpm")
 SET( CPACK_BUNDLE_NAME             "AMLab-${AMILAB_VERSION}-Bundle")
-SET( CPACK_BUNDLE_ICON             "${CMAKE_SOURCE_DIR}/../Pixmaps/amilab_logo_new_48x48_alpha.xpm")
-SET( CPACK_BUNDLE_PLIST            "${CMAKE_CURRENT_SOURCE_DIR}/../Releases/MacOS/Info_${AMILAB_VERSION}.plist")
+SET( CPACK_BUNDLE_ICON             "${CMAKE_SOURCE_DIR}/../Pixmaps/amilab_logo_new_64x64_alpha.icns")
+SET( CPACK_BUNDLE_PLIST            "${CMAKE_CURRENT_SOURCE_DIR}/../Releases/MacOS/${AMILAB_VERSION}/Info.plist")
 #SET( CPACK_BUNDLE_STARTUP_COMMAND )
 
+#SET( CPACK_COMPONENTS_ALL applications scripts doc )
 
-SET(CPACK_GENERATOR "RPM")
+#SET(CPACK_GENERATOR "RPM")
 #SET(CPACK_GENERATOR "RPM;STGZ;DEB")
 #SET(CPACK_SOURCE_GENERATOR "TGZ")
 INCLUDE(CPack)
@@ -364,6 +365,7 @@ ELSE(CMAKE_BUILD_TYPE)
 ENDIF(CMAKE_BUILD_TYPE)
 
 add_executable (${AMILAB_BIN} WIN32
+  #MACOSX_BUNDLE
   ${amilab_bin_SRCS}
 )
 
@@ -464,13 +466,31 @@ IF(UNIX)
   SET(CMAKE_INSTALL_PREFIX "/usr/")
 ENDIF(UNIX)
 
+#IF(APPLE)
+#    MESSAGE("APPLE ...")
+#  SET(CMAKE_INSTALL_PREFIX "/Applications/AMILab.app/")
+#ENDIF(APPLE)
+
+IF (APPLE)
+  SET_TARGET_PROPERTIES( ${AMILAB_BIN}
+      PROPERTIES
+      MACOSX_BUNDLE_BUNDLE_NAME AMILab
+      MACOSX_BUNDLE_ICON_FILE "${CMAKE_SOURCE_DIR}/../Pixmaps/amilab_logo_new_64x64_alpha.icns"
+  )
+ENDIF(APPLE)
+
 INSTALL(TARGETS ${AMILAB_BIN}
   RUNTIME DESTINATION bin
+#  COMPONENT applications
+  BUNDLE DESTINATION /Applications
 )
+
+
 
 # Install the scripts
 install(DIRECTORY ${AMILAB_SOURCE_DIR}/../scripts
         DESTINATION share/amilab-${AMILAB_VERSION}
+#        COMPONENT scripts
         FILES_MATCHING PATTERN "*.amil"
          PATTERN "*.sh"
          PATTERN "*.html"
@@ -483,6 +503,7 @@ install(DIRECTORY ${AMILAB_SOURCE_DIR}/../scripts
 # Install the documentation
 install(DIRECTORY ${AMILAB_SOURCE_DIR}/../doc
         DESTINATION share/amilab-${AMILAB_VERSION}
+#        COMPONENT doc
         FILES_MATCHING
           PATTERN "*.html"
           PATTERN "*.amih"
