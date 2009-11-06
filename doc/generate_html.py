@@ -571,7 +571,7 @@ if __name__ == "__main__":
         for name in files:
           os.remove(os.path.join(root, name))
       os.rmdir("Rules")
-      os.mkdir("Rules")
+    os.mkdir("Rules")
     f = open (improcess_bison_tab_cpp, "r")
     
     # delete current rules
