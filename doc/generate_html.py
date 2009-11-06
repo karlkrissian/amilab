@@ -118,12 +118,12 @@ class Html_Page:
             self.html_dectab()
             self.file_write("</ul>\n")
             self.file_write("</div><br>\n")
-    
+
     def generate_alltabs (self, level1, level2):
       self.generate_tabs("",self.tabs,level1)
       if self.tabs[level1] in self.tabs2.keys():
         self.generate_tabs(self.tabs[level1]+"_",self.tabs2[self.tabs[level1]],level2)
-    
+
     def generate_body (self):
 	    #
 	    # Empty function - to be redefined in a descendant
@@ -135,7 +135,7 @@ class Html_Page:
 
     def html_inctab(self):
       self.html_currenttab = self.html_currenttab+self.html_tab
-    
+
     def html_dectab(self):
       self.html_currenttab = self.html_currenttab[:-len(self.html_tab)]
 
@@ -143,7 +143,7 @@ class Html_Page:
       self.tokens=tokens
       self.tokens_nolinks=tokens_nolinks
       self.tvalues=self.tokens.values()
-      
+
     def set_commands(self,commands):
       self.commands=commands
       self.documented_commands = [ c[0] for c in self.commands]
@@ -172,14 +172,14 @@ class Html_Page:
           return res
         else:
           return token
-    
+
     def html_node(self,node,parent=""):
         res='<a  href="%srules.html#%s" target="FBROWSE" > %s </a>'%(parent,node,node)
         #res ='<span style="font-style: italic;">'+token+"</span>"
         #if token in self.documented_commands:
         #  res = res+"</a>"
         return res
-    
+
     def add_tokens(self):
         #
         # sorted by command name
@@ -212,14 +212,14 @@ class Html_Page:
           if i%nb_columns ==0 :
             self.html_dectab()
             self.file_write("</tr>\n")
-        
+
         if i%nb_columns !=0:
             self.html_dectab()
             self.file_write("</tr>\n")
         self.html_dectab()
         self.file_write ("</table>\n")
         print "*** Done"
-        
+
     def token_generate_rules(self,t):
         #f = open("Tokens/"+token+"_rules.html",w)
         # generate rules for this token
@@ -236,7 +236,7 @@ class Html_Page:
           self.file_write('</table>')
         else:
           print "len(t)=0"
-    
+
     def translate_rule(self,rule,parent=""):
       #--- search for the tokens in the rule
       tr_rule=rule
@@ -251,14 +251,14 @@ class Html_Page:
           print "%s %s %s \n"%(t,lex_tokens[t],tr_rule)
       # treat ',' apart for the moment
       tr_rule=re.sub(re.escape("','"),",",tr_rule)
-      
+
       #--- search for nodes in the rule
       for n in self.nodes:
         n1=r'\b'+re.escape(n)+r'\b'
         tr_rule=re.sub(n1,self.html_node(n,parent),tr_rule)
-      
+
       return tr_rule
-    
+
     def add_rules(self):
         #
         # sorted by command name
@@ -270,7 +270,7 @@ class Html_Page:
             if (r[1]!=current_node):
                 current_node=r[1]
                 print "adding "+current_node+"\n"
-                self.file_write ('<td style="text-align: center;" colspan="1" rowspan="1"><a name="%s"></a><span style="font-weight: bold;">%s</span></td>\n'%(current_node,current_node)) 
+                self.file_write ('<td style="text-align: center;" colspan="1" rowspan="1"><a name="%s"></a><span style="font-weight: bold;">%s</span></td>\n'%(current_node,current_node))
             self.file_write('<tr>')
             self.html_inctab()
             #self.file_write('<td> %d </td> \t'%r[0])
@@ -283,8 +283,8 @@ class Html_Page:
             self.file_write('</tr>')
         self.html_dectab()
         self.file_write ("</table>\n")
-    
-    
+
+
     def add_commands(self):
         #
         # sorted by command name
@@ -331,7 +331,7 @@ class Html_Page:
         self.f.write ("</body>\n")
         self.f.write ("</html>\n")
         self.f.close()
-    
+
     def generate (self, bgcolor=""):
 	    self.generate_heading (bgcolor)
 	    self.generate_body ()
@@ -377,12 +377,12 @@ if __name__ == "__main__":
     p.generate_heading ("white","logoami2.gif")
     p.generate_alltabs(0,0)
     p.generate_trailer ()
-    
+
     #-------------------------------------------------
     # Alphabetic tokens
     #-------------------------------------------------
 
-    
+
     p = Main_Page("List of tokens (keywords)", "<i>List of tokens (keywords)</i>",
                   "tokens.html")
     p.generate_heading ("white")
@@ -406,10 +406,10 @@ if __name__ == "__main__":
                 commands.append((cmd,root))
         #print commands
     commands.sort(lambda x, y: cmp(x[0].lower(), y[0].lower()))
-    
+
     # get the list of tokens from the lex file
     lex_tokens=get_tokens()
-    
+
     # save tokens strings for usage in C
     if (sys.argv[1]=="-tokens"):
         f = open ("token_list.h", "w")
@@ -419,7 +419,7 @@ if __name__ == "__main__":
                f.write('\t'+ '"'+lex_tokens[t]+'", ')
         f.write("\t 0 };")
         sys.exit(0)
-    
+
     lex_tokens_nolinks=['(',')','[',']',',','.','{','}']
     p.set_tokens(lex_tokens,lex_tokens_nolinks)
     p.set_commands(commands)
@@ -516,21 +516,21 @@ if __name__ == "__main__":
     # after each empty line, new terminal
 
     def s_node(scanner, token): return token[:-1]
-    def s_int(scanner, token):  return int(token) 
-    def s_rule(scanner, token): return token[1:] 
-    
+    def s_int(scanner, token):  return int(token)
+    def s_rule(scanner, token): return token[1:]
+
     scanner_newnode = re.Scanner(  [ (r"\d+",s_int),
     (r"\s+", None),(r"[^\']*\:",s_node),(r"/\*.*\*/",None) ])
     scanner_newrule = re.Scanner( [ (r"\d+",s_int),
-    (r"\s+", None),(r"\|.*",s_rule),(r"/\*.*\*/",None) ]) 
-    scanner_newline = re.Scanner( [ (r"\s+", None) ]) 
-    
+    (r"\s+", None),(r"\|.*",s_rule),(r"/\*.*\*/",None) ])
+    scanner_newline = re.Scanner( [ (r"\s+", None) ])
+
     rule_number=0
     current_node=""
     new_node=1
     rules=[]
     nodes=[]
-    
+
     while (rule_number>=0):
         l=f.readline()
         while (scanner_newline.scan(l)[1]==''):
@@ -559,7 +559,7 @@ if __name__ == "__main__":
             else:
                 print "End of rules\n"
                 rule_number=-1
-    
+
     #
     # Parsing rule documentation
     #
@@ -569,13 +569,14 @@ if __name__ == "__main__":
       # removing the files under the directory Rules
       for root, dirs, files in os.walk("Rules"):
         for name in files:
-          os.remove(os.path.join(root, name))
-      os.rmdir("Rules")
-      os.mkdir("Rules")
+          if (name[-4:]=="html"):
+            os.remove(os.path.join(root, name))
+    #  os.rmdir("Rules")
+    #  os.mkdir("Rules")
     f = open (improcess_bison_tab_cpp, "r")
-    
+
     # delete current rules
-    
+
     def RuleReplace(val,st1,st2):
       return re.sub(re.escape(st1),\
                   "<BR><u><b>%s</b></u><BR>"%st2,val)
@@ -586,8 +587,8 @@ if __name__ == "__main__":
       res = RuleReplace(res,"See also:",   "See also:")
       res = RuleReplace(res,"Example(s):", "Example(s):")
       return res
-      
-    
+
+
     l=f.readline()
     while (l):
         res=re.search(r"case (?P<int>\d+):", l)
@@ -598,7 +599,7 @@ if __name__ == "__main__":
           # looking for documentation in the code
           l=f.readline()
           res=re.search(r"case (?P<int>\d+):", l)
-          
+
 
           while l and not(res):
             doc=re.search(re.escape("/**"),l)
@@ -613,7 +614,7 @@ if __name__ == "__main__":
               p.set_commands(commands)
               p.set_rules(rules)
               p.set_nodes(nodes)
-              
+
               p.f.write( "<BR> <b> Rule %d </b> <BR> "%rule_number)
               p.f.write('<SPAN STYLE="background: #ccffff">')
               p.f.write("<P ALIGN=CENTER> %s <-- %s </P><BR><BR>\n"%(rules[rule_number][1],\
@@ -636,8 +637,8 @@ if __name__ == "__main__":
           l=f.readline()
 
     print "end\n"
-    
-    
+
+
     #
     # create list of rules per token
     #
@@ -662,7 +663,7 @@ if __name__ == "__main__":
         p.set_nodes(nodes)
         p.token_generate_rules(t)
         p.generate_trailer ()
-    
+
     #
     # create the file rules.html
     #
@@ -677,9 +678,8 @@ if __name__ == "__main__":
     p.set_commands(commands)
     p.set_rules(rules)
     p.set_nodes(nodes)
-    
+
 
     p.add_rules()
     p.generate_trailer ()
 
-    
