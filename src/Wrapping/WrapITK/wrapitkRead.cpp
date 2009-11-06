@@ -60,11 +60,12 @@ class itkReadClass {
         dim[i] = region.GetSize(i);
       res = new InrImage(dim[0],dim[1],dim[2],vdim,type,"Image_itk.ami.gz");
 
-      int tr[3] = {0,0,0};
-      int vs[3] = {1,1,1};
+      float tr[3] = {0,0,0};
+      float vs[3] = {1,1,1};
       for (unsigned int i=0; i<Dimension; i++) {
         tr[i] = inputImage->GetOrigin()[i];
         vs[i] = inputImage->GetSpacing()[i];
+        cout << "vs["<<i<<"] = " << vs[i] << endl;
       }
       res->SetTranslation( tr[0], tr[1], tr[2]);
       res->SetVoxelSize(   vs[0], vs[1], vs[2]);
@@ -367,7 +368,7 @@ InrImage* wrap_itkRead(ParamList* p)
       ";
     
   std::string*  fname = NULL;
-  InrImage* res = NULL;
+  //InrImage* res = NULL;
   int n=0;
   
   if (!get_string_param( fname, p, n)) HelpAndReturnNULL;
