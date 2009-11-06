@@ -29,6 +29,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/libamiFluid/opticflow/
   ${AMILAB_SOURCE_DIR}/JavierHornSchunck
   ${AMILAB_SOURCE_DIR}/Language
+  ${AMILAB_SOURCE_DIR}/Language/GeneratedFlexBison
   ${AMILAB_SOURCE_DIR}/DistTransf
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapVTK
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapITK
@@ -76,6 +77,9 @@ IF(AMI_USE_FLEXBISON)
   
 ELSE(AMI_USE_FLEXBISON)
  
+  # find FlexLexer.h
+  INCLUDE(${AMILAB_SOURCE_DIR}/Language/FlexInclude)
+
    SET( FLEXBISON_OUTPUTS
 		${AMILAB_SOURCE_DIR}/Language/GeneratedFlexBison/improcess_bison.tab.cpp
 		${AMILAB_SOURCE_DIR}/Language/GeneratedFlexBison/improcess_flex.cpp
