@@ -36,13 +36,12 @@
 
 #ifdef __APPLE__
   #include <ApplicationServices/ApplicationServices.h>
-  #include "amilab_logo_new_32x32_alpha.xpm"
 #endif
 
 #if defined(WIN32) 
   #include "guicon.h"
-  #include "amilab_logo_new_32x32_alpha.xpm"
 #endif
+#include "amilab_logo_new_32x32_alpha.xpm"
 
 #include "driver.h"
 
@@ -283,9 +282,9 @@ bool MyApp::OnInit()
                 wxDefaultPosition,
                 wxSize(900,700));
 
-  #if defined(WIN32) || defined(__APPLE__)
+//  #if defined(WIN32) || defined(__APPLE__)
     frame->SetIcon(wxIcon(amilab_logo_new_32x32_alpha_xpm));
-  #endif
+//  #endif
 
 //  printf("frame->Show(true)\n");
 
