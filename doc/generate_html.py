@@ -29,8 +29,8 @@ if (len(sys.argv)<=1):
 improcess_flex_lpp      = "../src/Language/improcess_flex.lpp"
 # try to replace improcess_html by a python script !!!
 improcess_html          = "/home/karl/projects/Fluid/fluid/Karl/src/AMILab/Lex/improcess_html"
-improcess_bison_output  = "../src/Language/improcess_bison.output"
-improcess_bison_tab_cpp = "../src/Language/improcess_bison.tab.cpp"
+improcess_bison_output  = "../src/Language/GeneratedFlexBison/improcess_bison.output"
+improcess_bison_tab_cpp = "../src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
 
 scripts_path="../scripts/."
 
