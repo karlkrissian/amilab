@@ -85,26 +85,18 @@ IF(UNIX)
   # creating dependencies ...
   MESSAGE(" ${AMILAB_BIN}")
   if (EXISTS "${AMILAB_BIN}")
-    FIND_PROGRAM( objdump_prog "objdump")
-    MESSAGE(" objdump_prog = ${objdump_prog}")
-    if (objdump_prog)
-      FIND_PROGRAM( awk_prog "awk")
-      MESSAGE("${objdump_prog} -p ${AMILAB_BIN} | grep NEEDED")
-      FILE(WRITE "${CMAKE_BINARY_DIR}/awk_cmd" "{ printf(\"%s \",$2) }"  )
-      MESSAGE( "${awk_command}" )
       EXECUTE_PROCESS( 
-        COMMAND ${objdump_prog} -p ${AMILAB_BIN} 
-        COMMAND grep NEEDED 
-        COMMAND ${awk_prog} -f awk_cmd
+        COMMAND ${CMAKE_SOURCE_DIR}/../Releases/Debian/list_dependencies.sh  ${AMILAB_BIN} 
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
         RESULT_VARIABLE amilab_dep_result 
         OUTPUT_VARIABLE amilab_dep_output
         ERROR_VARIABLE amilab_dep_error
       )
     
-      MESSAGE ("Dependencies = [${amilab_dep_result}], ${amilab_dep_output}, ${amilab_dep_error}")
+      MESSAGE ("Dependencies = [${amilab_dep_result}], [${amilab_dep_output}] , [${amilab_dep_error}]")
       SET(CPACK_DEBIAN_PACKAGE_DEPENDS "${amilab_dep_output}")
-    endif(objdump_prog)
+#      SET(CPACK_DEBIAN_PACKAGE_DEPENDS "lib64expat1, libbz2-1.0, libc6, libc6-amd64, libc6-i686, libexpat1, libgcc1, libgl1-mesa-glx, libglu1-mesa, libice6, libjpeg62, libpng12-0, libsm6, libstdc++6, libtiff4, libuuid1, libvtk5.2, libwxbase2.8-0, libwxgtk2.8-0, libx11-6, libxext6, zlib1g")
+#    endif(objdump_prog)
   
   ENDIF(EXISTS "${AMILAB_BIN}")
 ENDIF(UNIX)
@@ -251,7 +243,7 @@ ENDIF(AMI_USE_SSE)
 
  IF( AMI_USE_STATIC_LIBS )
    SET(CMAKE_FIND_LIBRARY_SUFFIXES ${_ami_ORIG_CMAKE_FIND_LIBRARY_SUFFIXES})
- ENDIF( HDF5_USE_STATIC_LIBS )
+ ENDIF( AMI_USE_STATIC_LIBS )
 
 
 
