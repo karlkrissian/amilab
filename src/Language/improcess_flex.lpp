@@ -1138,7 +1138,7 @@ yyip::Parser::token::yytokentype checkvar(
 
   Variable* var;
   bool res = Vars.GetVar(varname,&var,context);
-  cout << "res = " << res << endl;
+  //cout << "res = " << res << endl;
   if  ((!GB_driver.procedure_declaration)&&res)   {
 
     yylval->variable = var;
