@@ -67,13 +67,47 @@ SET(CPACK_RPM_PACKAGE_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
 # this will make the package relocatable !!cd
 SET(CPACK_RPM_SPEC_MORE_DEFINE "Prefix: /usr")
 
-#
-# DEB configuration
-#
-# no i386 in debian, should use dpkg --print-architecture ??
-SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "i386" )
-SET(CPACK_DEBIAN_PACKAGE_MAINTAINER   "krissian@dis.ulpgc.es")
-SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6, libwxgtk2.8-0,  libvtk5, libinsighttoolkit3.10, libboost-date-time1.37.0, libboost-filesystem1.37.0, libboost-graph1.37.0, libboost-iostreams1.37.0, libboost-regex1.37.0, libboost-system1.37.0, libbz2-1.0, zlib1g")
+IF(CMAKE_BUILD_TYPE)
+  string(TOLOWER amilab_${CPACK_PACKAGE_VERSION}_${CMAKE_BUILD_TYPE} AMILAB_BIN )
+ELSE(CMAKE_BUILD_TYPE)
+  string(TOLOWER amilab_${CPACK_PACKAGE_VERSION} AMILAB_BIN )
+ENDIF(CMAKE_BUILD_TYPE)
+
+
+IF(UNIX)
+  #
+  # DEB configuration
+  #
+  # no i386 in debian, should use dpkg --print-architecture ??
+  SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "i386" )
+  SET(CPACK_DEBIAN_PACKAGE_MAINTAINER   "krissian@dis.ulpgc.es")
+  
+  # creating dependencies ...
+  MESSAGE(" ${AMILAB_BIN}")
+  if (EXISTS "${AMILAB_BIN}")
+    FIND_PROGRAM( objdump_prog "objdump")
+    MESSAGE(" objdump_prog = ${objdump_prog}")
+    if (objdump_prog)
+      FIND_PROGRAM( awk_prog "awk")
+      MESSAGE("${objdump_prog} -p ${AMILAB_BIN} | grep NEEDED")
+      FILE(WRITE "${CMAKE_BINARY_DIR}/awk_cmd" "{ printf(\"%s \",$2) }"  )
+      MESSAGE( "${awk_command}" )
+      EXECUTE_PROCESS( 
+        COMMAND ${objdump_prog} -p ${AMILAB_BIN} 
+        COMMAND grep NEEDED 
+        COMMAND ${awk_prog} -f awk_cmd
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        RESULT_VARIABLE amilab_dep_result 
+        OUTPUT_VARIABLE amilab_dep_output
+        ERROR_VARIABLE amilab_dep_error
+      )
+    
+      MESSAGE ("Dependencies = [${amilab_dep_result}], ${amilab_dep_output}, ${amilab_dep_error}")
+      SET(CPACK_DEBIAN_PACKAGE_DEPENDS "${amilab_dep_output}")
+    endif(objdump_prog)
+  
+  ENDIF(EXISTS "${AMILAB_BIN}")
+ENDIF(UNIX)
 
 #
 # NSIS: not used at the moment
@@ -358,11 +392,6 @@ SET(amilab_bin_SRCS
 )
 endif (WIN32)
 
-IF(CMAKE_BUILD_TYPE)
-  string(TOLOWER amilab_${CPACK_PACKAGE_VERSION}_${CMAKE_BUILD_TYPE} AMILAB_BIN )
-ELSE(CMAKE_BUILD_TYPE)
-  string(TOLOWER amilab_${CPACK_PACKAGE_VERSION} AMILAB_BIN )
-ENDIF(CMAKE_BUILD_TYPE)
 
 add_executable (${AMILAB_BIN} WIN32
   #MACOSX_BUNDLE
