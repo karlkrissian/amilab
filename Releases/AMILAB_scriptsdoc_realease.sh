@@ -46,7 +46,7 @@ echo "Creating doc dir"
 doc_files=`find -L ../doc/. -type f \
   \( -name "*.html" -o -name "*.amih" \
                       -o -name "*.gif" \
-                      -o -name ".css" \
+                      -o -name "*.css" \
                       -o -name "*.txt"   \) `
 
 #              -o -name "-*"  -o -name "<*"  \) \

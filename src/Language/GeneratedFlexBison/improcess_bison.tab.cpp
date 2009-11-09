@@ -3648,7 +3648,7 @@ namespace yyip {
           Set the current voxel (or pixel) of the image
           to the specified position.
 
-        See Also:
+        See also:
           set
         **/
           Si (*(InrImage::ptr*) (yysemantic_stack_[(10) - (1)].variable)->Pointer())->CoordOK( (int) (yysemantic_stack_[(10) - (5)].adouble),(int)(yysemantic_stack_[(10) - (7)].adouble),(int)(yysemantic_stack_[(10) - (9)].adouble))
@@ -7452,7 +7452,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
         Init the image buffer to the first voxel or pixel:
         at coordinates (0,0,0).
 
-        See Also:
+        See also:
                 inc val
 
         Example(s):
@@ -9851,7 +9851,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
       Returns the image corresponding to the pointwise maximum between 2 images.
 
 
-      See Also:
+      See also:
               min, median
         **/
     InrImage* im1;
@@ -14367,7 +14367,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
         vects = CreateVectors(alt1,displ,alt2,8,8,3,1)
 
 
-        See Also:
+        See also:
                 CreateFlatMesh, ElevateMesh, ComputeAltitudes, Altitudes2Position
       **/
 
@@ -14422,7 +14422,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
         vects = CreateVectors(alt1,displ,alt2,8,8,3,1,1)
 
 
-        See Also:
+        See also:
                 CreateFlatMesh, ElevateMesh, ComputeAltitudes, Altitudes2Position
       **/
 
@@ -14475,7 +14475,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
         vects = CreateVectors(alt1,displ,alt2,8,8,3)
 
 
-        See Also:
+        See also:
                 CreateFlatMesh, ElevateMesh, ComputeAltitudes, Altitudes2Position
       **/
       InrImage::ptr alt2  = InrImage::ptr(driver.im_stack.GetLastImage());

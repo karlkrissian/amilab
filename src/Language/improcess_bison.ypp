@@ -3153,7 +3153,7 @@ command:
           Set the current voxel (or pixel) of the image
           to the specified position.
 
-        See Also:
+        See also:
           set
         **/
           Si (*(InrImage::ptr*) $1->Pointer())->CoordOK( (int) $5,(int)$7,(int)$9)
@@ -5892,7 +5892,7 @@ postfix_expr
         Init the image buffer to the first voxel or pixel:
         at coordinates (0,0,0).
 
-        See Also:
+        See also:
                 inc val
 
         Example(s):
@@ -7716,7 +7716,7 @@ image:
       Returns the image corresponding to the pointwise maximum between 2 images.
 
 
-      See Also:
+      See also:
               min, median
         **/
     InrImage* im1;
@@ -11385,7 +11385,7 @@ surface:
         vects = CreateVectors(alt1,displ,alt2,8,8,3,1)
 
 
-        See Also:
+        See also:
                 CreateFlatMesh, ElevateMesh, ComputeAltitudes, Altitudes2Position
       **/
 
@@ -11435,7 +11435,7 @@ surface:
         vects = CreateVectors(alt1,displ,alt2,8,8,3,1,1)
 
 
-        See Also:
+        See also:
                 CreateFlatMesh, ElevateMesh, ComputeAltitudes, Altitudes2Position
       **/
 
@@ -11483,7 +11483,7 @@ surface:
         vects = CreateVectors(alt1,displ,alt2,8,8,3)
 
 
-        See Also:
+        See also:
                 CreateFlatMesh, ElevateMesh, ComputeAltitudes, Altitudes2Position
       **/
       InrImage::ptr alt2  = InrImage::ptr(driver.im_stack.GetLastImage());
