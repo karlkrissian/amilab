@@ -148,6 +148,7 @@ private:
   std::vector<ParamInfo>    _tab_param;
   std::vector<wxStaticBox*> _tab_boxes;
   std::vector<wxWindow*>    _tab_panels;
+  std::vector<wxNotebook*>  _tab_books;
 
   std::stack<wxBoxSizer*>  _current_sizer;
   std::stack<wxWindow*>     _panels;
@@ -184,7 +185,7 @@ public:
       return NULL;
   }
 
-  void BeginBook();
+  int BeginBook();
 
   void EndBook();
 
@@ -591,6 +592,8 @@ public:
   void Enable(      int id,bool enable=true);
   void EnableBox(   int id,bool enable=true);
   void EnablePanel( int id,bool enable=true);
+
+  void SelectPage( int book_id, int panel_nb);
 
   int  BeginBox( const char* boxname);
   void EndBox();

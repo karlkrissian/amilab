@@ -136,7 +136,7 @@ ParamPanel::ParamPanel( wxWindow* parent,
 
 
 //---------------------------------------------------------------
-void ParamPanel::BeginBook()
+int ParamPanel::BeginBook()
 {
   wxNotebook* nb;
 
@@ -150,6 +150,9 @@ void ParamPanel::BeginBook()
   //nb->SetOwnBackgroundColour(wxColour("#e1dfff"));
   _current_book.push(nb);
   _current_sizer.top()->Add(GetBookCtrl(), 1, wxEXPAND, 0);
+
+  _tab_books.push_back(nb);
+  return _tab_books.size()-1;
 
 } // ParamPanel::BeginBook()
 
@@ -1079,7 +1082,7 @@ void ParamPanel::EnableBox( int id, bool enable) {
   }
 }
 
-//---------------------------------------------------------------------
+//------------------------------------------------------------
 void ParamPanel::EnablePanel( int id, bool enable) {
 
   if (id<_tab_panels.size()) {
@@ -1091,6 +1094,22 @@ void ParamPanel::EnablePanel( int id, bool enable) {
           << this->GetName().mb_str() << "\t" \
           <<  "Error \t wrong box id" \
           << id << " " << _tab_panels.size() << "\n" \
+          << endl; \
+    return;
+  }
+}
+
+//------------------------------------------------------------
+void ParamPanel::SelectPage( int book_id, int panel_nb)
+{
+  if (book_id<_tab_books.size()) {
+    wxNotebook* book = _tab_books[book_id];
+    book->ChangeSelection(panel_nb);
+  } else {
+    cerr  << __func__ << " " \
+          << this->GetName().mb_str() << "\t" \
+          <<  "Error \t wrong book id" \
+          << book_id << " " << _tab_books.size() << "\n" \
           << endl; \
     return;
   }
