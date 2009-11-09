@@ -137,7 +137,7 @@ if (!exists(NLmeansClass)) {
     #----------------------------
     proc ::Filter() {
 
-      #InitTime
+      InitTime
       if (exists(::roi)) {
         ::res0 = ::res[::roi]
   
@@ -200,8 +200,8 @@ if (!exists(NLmeansClass)) {
         diff = sqrt(mean((::res0-::res)*(::res0-::res)))
         print sprint("Diff = %f \n",diff)
       }
-      #EndTime
-      #printn "processing time: "+TimeSpent
+      EndTime
+      printn "processing time: "+TimeSpent
 
       if (exists(::res0)) {
         del ::res0
@@ -492,8 +492,8 @@ if (!exists(NLmeansClass)) {
           ::win.EndBoxPanel
 
         ::win.AddPage("Param")
-          filtermode_id = ::win.AddEnum(::filter_mode)
-            ::win.AddEnumChoice(filtermode_id,"Stand.")
+          filtermode_id = ::win.AddEnum(::filter_mode,"Method")
+            ::win.AddEnumChoice(filtermode_id,"Standard")
             ::win.AddEnumChoice(filtermode_id,"MRI")
             ::win.AddEnumChoice(filtermode_id,"Feature")
             ::win.AddEnumChoice(filtermode_id,"Fast")
