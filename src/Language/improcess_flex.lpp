@@ -675,6 +675,7 @@ EndBook           return(token::T_EndBook);   /*{EndBook,T_EndBook}*/
 AddPage           return(token::T_AddPage); /*{AddPage,T_AddPage}*/
 BeginPanel        return(token::T_BeginPanel); /*{BeginPanel,T_BeginPanel}*/
 EndPanel          return(token::T_EndPanel); /*{EndPanel,T_EndPanel}*/
+SelectPage        return(token::T_SelectPage); /*{SelectPage,T_SelectPage}*/
 
 BeginBoxPanel     return(token::T_BeginBoxPanel); /*{BeginBoxPanel,T_BeginBoxPanel}*/
 EndBoxPanel       return(token::T_EndBoxPanel); /*{EndBoxPanel,T_EndBoxPanel}*/

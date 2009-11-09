@@ -494,6 +494,7 @@ static void CB_update_imagelist( void* imagelist_gui)
 %token T_BeginPanel T_EndPanel
 %token T_BeginBoxPanel T_EndBoxPanel
 %token T_BeginBook T_EndBook T_AddPage
+%token T_SelectPage
 %token T_AddFloat T_AddInt T_CreateWin T_Display
 %token T_AddButton T_AddBoolean
 %token T_AddEnum T_AddEnumChoice
@@ -4922,16 +4923,29 @@ cerr << "Feature not available, needs to be updated ! " << endl;
               delete [] $5;
         }
     |
-    VAR_PARAMWIN T_POINT T_BeginBook
-    {
-      ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
-      pw->BeginBook();
-    }
-    |
     VAR_PARAMWIN T_POINT T_EndBook
     {
+    /**
+      Description:
+        Ends a notebook.
+    **/
       ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
       pw->EndBook();
+    }
+    |
+    VAR_PARAMWIN T_POINT T_SelectPage T_OP_PAR expr T_COMMA expr T_CL_PAR
+    {
+    /**
+      Parameters:
+        - num expression: id of the notebook
+        - num expression: position of the page
+      Description:
+        Selects a give page number in a book (notebook)
+    **/
+      int book_id = $5;
+      int pagepos = $7;
+      ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
+      pw->SelectPage(book_id,pagepos);
     }
     |
     VAR_PARAMWIN T_POINT T_EndPanel
@@ -6828,6 +6842,19 @@ postfix_expr
       ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
       int id = pw->AddPage( label->c_str());
       $$=id;
+    }
+    |
+    VAR_PARAMWIN T_POINT T_BeginBook
+    {
+    /**
+      Description:
+        Adds a new NoteBook, return the corresponding id.
+      See also:
+        EndBook, AddPage
+    **/
+      ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
+      int id = pw->BeginBook();
+      $$ = id;
     }
     |
     VAR_PARAMWIN T_POINT T_BeginPanel T_OP_PAR  expr_string T_CL_PAR
