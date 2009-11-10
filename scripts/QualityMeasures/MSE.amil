@@ -1,0 +1,157 @@
+#!/usr/bin/amilab
+
+#
+# Non Local Means GUI
+#
+# Based on the work of Buades et al.
+#
+
+# call 
+# NLM_init( IMAGE)
+#
+# result in NLM_res
+#
+
+# NLM_resultname = $2
+
+if (!exists(MSEClass)) {
+
+  Class MSEClass {
+
+    #----------------------------
+    proc ::Init() \
+    {
+        ::input_name =  "", "input image"
+        ::groundtruth_name =  "", "ground truth image" 
+        ::CreateWindow()
+    }
+    
+    #----------------------------
+    proc ::Close() \
+    {
+      ::win.Hide
+      delvars GetObjectName(::Close)
+    }
+    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    
+    #----------------------------
+    proc ::LoadInput() \
+    {
+      printn "evaluation of --> ::input <<="+::input_name+";"
+      eval "::input <<="+::input_name+";"
+      if (::input_name=="Image") {
+        ::input_name = "::input"
+        ::win.update
+      }
+      ::win.update
+      if (exists(::input_draw)) { del ::input_draw; }
+      show ::input
+    }
+    
+    #----------------------------
+    proc ::LoadGroundTruth() \
+    {
+      printn "evaluation of --> ::gt <<="+::groundtruth_name+";"
+      eval "::gt <<="+::groundtruth_name+";"
+      if (::groundtruth_name=="Image") {
+        ::groundtruth_name = "::gt"
+        ::win.update
+      }
+      ::win.update
+      if (exists(::gt_draw)) { del ::gt_draw; }
+      show ::gt
+    }
+    
+    #----------------------------
+    proc ::ComputeMSE( IMAGE res) \
+    {
+      if exists(::groundtruth) {
+        if (::noisetype==1) {
+          res1=res*res-2*::noisesigma*::noisesigma
+          res1 = sqrt(res1*(res1>0))
+          mask = res1*0
+          if (exists(::roi)) {
+            smask = ::roi*0+1
+            mask.putimage(smask)
+          } else {
+            mask = 1
+          }
+          ::mse = mean[mask]((res1-::groundtruth)*(res1-::groundtruth))
+          printn sprint("MSE %3.5f \n",::mse)
+        } else {
+          mask = res*0
+          if (exists(::roi)) {
+            smask = ::roi*0+1
+            mask.putimage(smask)
+          } else {
+            mask = 1
+          }
+          ::mse = mean[mask]((res-::groundtruth)*(res-::groundtruth))
+          printn sprint("MSE %3.5f \n",::mse)
+        }
+      }
+    }
+    
+    
+    #----------------------------
+    proc ::CreateWindow() {
+    
+      # parameters window
+      ::win = ParamWin("Quality")
+      
+      ::win.BeginBook
+    
+        ::win.AddPage("Inputs")
+
+          # set the input image
+          ::win.BeginBoxPanel("Input")
+            ::win.BeginHorizontal
+              ::win.AddImageChoice(::input_name, "")
+              ::win.AddButton("Load",::LoadInput)
+            ::win.EndHorizontal
+          ::win.EndBoxPanel
+
+          # set the input image
+          ::win.BeginBoxPanel("Ground truth")
+            ::win.BeginHorizontal
+              ::win.AddImageChoice(::groundtruth_name, "")
+              ::win.AddButton("Load",::LoadGroundTruth)
+            ::win.EndHorizontal
+          ::win.EndBoxPanel
+
+    
+          ::win.AddButton("Run",     ::Run)
+
+      ::win.EndBook
+      ::win.AddButton("Close", ::Close)
+      
+      ::win.update
+      ::win.Display
+    }
+
+    ::Init
+  } 
+  # Class MSEClass
+} 
+# end if (!exists(MSEClass))
+  
+  
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(mse)) {
+
+  MSEClass mse
+  
+  if (argc>=1) {
+    printn "reading image"
+    input = Image($1)
+    mse->image_name = "input"
+    mse->win.update
+  }
+
+} else {
+  InfoDialog "The script seems to be already loaded."
+}
+
