@@ -24,6 +24,10 @@ if (!exists(NLmeansClass)) {
     proc ::Init() \
     {
         ::input_name =  ""
+        ::result_image_name =  "NLM_res", "name of the resulting image global variable"
+
+        ::result_filename = "NLM_result.ami.gz", "filename for saving the resulting image to disk"
+
         #
         # Filter type
         #
@@ -303,8 +307,8 @@ if (!exists(NLmeansClass)) {
             ::res[2] = NLmeans_fast((FLOAT)::res0[2],::matchfield,::t,::h,::noisetype,::threads)
           }
     
-          diff = sqrt(mean((::res0-::res)*(::res0-::res)))
-          print sprint("Diff = %f \n",diff)
+          _diff = sqrt(mean((::res0-::res)*(::res0-::res)))
+          print sprint("Diff = %f \n",_diff)
         }
     
       #  printn "freeing memory 1"
@@ -327,7 +331,7 @@ if (!exists(NLmeansClass)) {
     proc ::FastFilter() \
     {
       InitTime
-      ::res <<= NewNLmeans(&::input,::t,::f,::h,::threads)
+      ::res <<= NewNLmeans(&::res,::t,::f,::h,::threads)
       EndTime
     }
     # ::FastFilter()
@@ -377,6 +381,8 @@ if (!exists(NLmeansClass)) {
         ::ComputeMSE(::res)
       } 
       # end for k
+
+      eval "global::"+::result_image_name+"<<="+"::res;"
     }
     # end ::Run()
 
@@ -451,7 +457,7 @@ if (!exists(NLmeansClass)) {
     #----------------------------
     proc ::Save() \
     {
-      ::res.save "NLM_result.ami.gz"
+      ::res.save ::result_filename
     }
     ::Save.Comments("Save image to disk as NLM_result.ami.gz")
     
@@ -481,7 +487,7 @@ if (!exists(NLmeansClass)) {
       
       ::win.BeginBook
     
-        ::win.AddPage("Input")
+        ::win.AddPage("Input/Output")
 
           # set the input image
           ::win.BeginBoxPanel("Input")
@@ -490,6 +496,8 @@ if (!exists(NLmeansClass)) {
               ::win.AddButton("Load",::LoadInput)
             ::win.EndHorizontal
           ::win.EndBoxPanel
+
+          ::win.AddString(::result_image_name,"Result image")
 
         ::win.AddPage("Param")
           filtermode_id = ::win.AddEnum(::filter_mode,"Method")
@@ -546,6 +554,7 @@ if (!exists(NLmeansClass)) {
           ::win.EndBoxPanel
   
           ::win.BeginBoxPanel("Result")
+              ::win.AddString(::result_filename,"file")
               ::win.BeginHorizontal
                   display_id = ::win.AddButton("Save",       ::Save)
                   display_id = ::win.AddButton("Display",    ::Display)
