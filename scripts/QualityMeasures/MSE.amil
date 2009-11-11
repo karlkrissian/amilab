@@ -23,6 +23,8 @@ if (!exists(MSEClass)) {
     {
         ::input_name =  "", "input image"
         ::groundtruth_name =  "", "ground truth image" 
+        ::MSE_string = "", "Mean Square Error value"
+        ::PSNR_string = "", "Pick Signal To Noise Ratio value"
         ::CreateWindow()
     }
     
@@ -46,6 +48,7 @@ if (!exists(MSEClass)) {
       ::win.update
       if (exists(::input_draw)) { del ::input_draw; }
       show ::input
+      ::CheckInputs()
     }
     
     #----------------------------
@@ -60,35 +63,47 @@ if (!exists(MSEClass)) {
       ::win.update
       if (exists(::gt_draw)) { del ::gt_draw; }
       show ::gt
+      ::CheckInputs()
     }
-    
+
     #----------------------------
-    proc ::ComputeMSE( IMAGE res) \
+    proc ::CheckInputs() \
     {
-      if exists(::groundtruth) {
-        if (::noisetype==1) {
-          res1=res*res-2*::noisesigma*::noisesigma
-          res1 = sqrt(res1*(res1>0))
-          mask = res1*0
-          if (exists(::roi)) {
-            smask = ::roi*0+1
-            mask.putimage(smask)
-          } else {
-            mask = 1
-          }
-          ::mse = mean[mask]((res1-::groundtruth)*(res1-::groundtruth))
-          printn sprint("MSE %3.5f \n",::mse)
-        } else {
-          mask = res*0
-          if (exists(::roi)) {
-            smask = ::roi*0+1
-            mask.putimage(smask)
-          } else {
-            mask = 1
-          }
-          ::mse = mean[mask]((res-::groundtruth)*(res-::groundtruth))
-          printn sprint("MSE %3.5f \n",::mse)
+      input_ok =  (exists(::input)&&exists(::gt))
+      if (input_ok) {
+        size_ok =     (::input.tx==::gt.tx) \
+                  && (::input.ty==::gt.ty) \
+                  && (::input.tz==::gt.tz) 
+        if (!size_ok) {
+          InfoDialog "Input and Groundtruth have different sizes ..."
         }
+      } else {
+        size_ok = 0
+      }
+      ::win.EnablePanel(::results_panel,(input_ok&&size_ok))
+    }
+
+    #----------------------------
+    proc ::Run() \
+    {
+      # test for ROI and for noise type ??
+      if (exists(::input) &&exists(::gt)) {
+        # MSE
+        if (exists(::roi)) {
+          smask = ::roi*0+1
+          mask.putimage(smask)
+          ::MSE = mean[mask]((::input-::gt)*(::input-::gt))
+        } else {
+          ::MSE = mean((::input-::gt)*(::input-::gt))
+        }
+        ::MSE_string = boost_format("%1%")%::MSE
+        # PSNR
+        ::PSNR = 10*(2*log(255)-log(::MSE))
+        ::PSNR_string = boost_format("%1%")%::PSNR
+
+        ::win.update
+      } else {
+        InfoDialog "You need to load the input and ground truth first"
       }
     }
     
@@ -120,13 +135,18 @@ if (!exists(MSEClass)) {
           ::win.EndBoxPanel
 
     
-          ::win.AddButton("Run",     ::Run)
+          ::results_panel = ::win.BeginBoxPanel("Results")
+            ::runbutton_id = ::win.AddButton("Run",     ::Run)
+            ::win.AddString(::MSE_string, "MSE =")
+            ::win.AddString(::PSNR_string,"PSNR =")
+          ::win.EndBoxPanel
 
       ::win.EndBook
       ::win.AddButton("Close", ::Close)
       
       ::win.update
       ::win.Display
+      ::CheckInputs
     }
 
     ::Init
