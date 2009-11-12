@@ -59,6 +59,7 @@ if (!exists(NLmeansClass)) {
         ::stop =0
         ::show_images = UCHAR(1)
         ::mse = 0
+        ::surf_scaling = 0.1
         ::CreateWindow()
     }
     
@@ -438,15 +439,15 @@ if (!exists(NLmeansClass)) {
     proc ::DisplaySurfaces() \
     {
       if (::input.tz==1)&&(::input.GetFormat != RGB) {
+        if (exists(::input_surf_draw)) { del ::input_surf_draw; }
+        if (exists(::res_surf_draw))   { del ::res_surf_draw; }
         if (exists(::input_surf)) { del ::input_surf; }
         if (exists(::res_surf))   { del ::res_surf; }
-        if (exists(::input)) { del ::input; }
-        if (exists(::res))   { del ::res; }
     
         ::input_surf = CreateFlatMesh(::input,0)
         ::res_surf   = CreateFlatMesh(::res,0)
-        ::input_surf.ElevateMesh(::input/10)
-        ::res_surf.ElevateMesh(::res/10)
+        ::input_surf.ElevateMesh(::input*::surf_scaling)
+        ::res_surf.ElevateMesh(::res*::surf_scaling)
         ::input_surf.Normals
         ::res_surf.Normals
         show ::input_surf
@@ -570,8 +571,12 @@ if (!exists(NLmeansClass)) {
               ::win.BeginHorizontal
                   display_id = ::win.AddButton("Save",       ::Save)
                   display_id = ::win.AddButton("Display",    ::Display)
-                  display_surf_id = ::win.AddButton("Surfaces",    ::DisplaySurfaces)
               ::win.EndHorizontal
+          ::win.EndBoxPanel
+
+          ::win.BeginBoxPanel("Surface display")
+              ::win.AddFloat(::surf_scaling,"surf scale",0.01,10)
+              display_surf_id = ::win.AddButton("Surfaces",    ::DisplaySurfaces)
           ::win.EndBoxPanel
       ::win.EndBook
       ::win.AddButton("Close", ::Close)
