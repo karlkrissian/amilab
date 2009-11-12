@@ -13,6 +13,9 @@
   //#include <stdlib.h>
   //#include <stdio.h>
 
+// use NOMINMAX to avoid conflicts between windows.h min,max and std::min std::max ...
+#define NOMINMAX
+
 #include "driver.h"
 #include "CoutwxString.h"
 #include "MainFrame.h"
