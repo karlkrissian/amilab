@@ -120,7 +120,7 @@ namespace yyip {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 391 "/home/karl/projects/Sourceforge/amilab/branches/release-2.0.4/src/Language/improcess_bison.ypp"
+#line 392 "/home/karl/projects/Sourceforge/amilab/branches/release-2.0.4/src/Language/improcess_bison.ypp"
 
   IdentifierInfo*         ident;
   Variable*               variable;
