@@ -1,6 +1,5 @@
 # Create a library called "Hello" which includes the source file "hello.cxx".
 # The extension is already found.  Any number of sources could be listed here.
-
 MESSAGE("***** Boost_INCLUDE_DIR=${Boost_INCLUDE_DIR}")
 
 # Make sure the compiler can find include files from our Hello library.
@@ -36,6 +35,7 @@ SET(  WrapITK_SRCS
     #wrapitkBasicNLMeansFilter.cpp
     #itkBasicNLMeansFilter.txx
     wrapitkFastMarchingImageFilter.cpp
+		wrapitkWaterShedImageFilter.cpp
 )
 
 my_add_library ( WrapITK)

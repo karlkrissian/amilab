@@ -5,3 +5,4 @@
 #
 
 AddMenuScript("&Segmentation","&Level Set","Segmentation/LevelSetsGui1.amil")
+AddMenuScript("&Segmentation","&Watershed","Segmentation/WaterShed.amil")
