@@ -51,6 +51,9 @@ if (!exists(NLmeansClass)) {
         #  
         ::presmooth_SD = 0, "standard deviation of Gaussian pre-smoothing"
     
+        ::pattern_weight_param = 0.5, "Size of the Gaussian weighting function for the pattern similarity, the standard deviation of the Gaussian is pattern_weight_param*f"
+
+        ::minweight = 15, "sets the minimal weight threshold is exp(-minweight)"
         # 
         ::iterations = INT(1), "Number of iterations"
         ::stop =0
@@ -151,7 +154,8 @@ if (!exists(NLmeansClass)) {
                                 ::t,::f,::h,\
                                 ::noisetype,::threads,\
                                 ::filter_type,\
-                                ::presmooth_SD)
+                                ::presmooth_SD,\
+                                ::pattern_weight_param)
           EndTime
           printn "processing time: "+TimeSpent
         } else {
@@ -161,17 +165,20 @@ if (!exists(NLmeansClass)) {
                                     ::t,::f,::h,\
                                     ::noisetype,::threads,\
                                     ::filter_type,\
-                                ::presmooth_SD)
+                                ::presmooth_SD,\
+                                ::pattern_weight_param)
           ::res_roi[1] = NLmeans( (FLOAT)::res0[1],\
                                     ::t,::f,::h,\
                                     ::noisetype,::threads,\
                                     ::filter_type,\
-                                ::presmooth_SD)
+                                ::presmooth_SD,\
+                                ::pattern_weight_param)
           ::res_roi[2] = NLmeans( (FLOAT)::res0[2],\
                                     ::t,::f,::h,\
                                     ::noisetype,::threads,\
                                     ::filter_type,\
-                                ::presmooth_SD)
+                                ::presmooth_SD,\
+                                ::pattern_weight_param)
         }
   
         ::res0.info
@@ -192,13 +199,16 @@ if (!exists(NLmeansClass)) {
         } else {
           ::res[0] = NLmeans((FLOAT)::res0[0],::t,::f,::h,::noisetype,::threads,\
                                     ::filter_type,\
-                                ::presmooth_SD)
+                                ::presmooth_SD,\
+                                ::pattern_weight_param)
           ::res[1] = NLmeans((FLOAT)::res0[1],::t,::f,::h,::noisetype,::threads,\
                                     ::filter_type,\
-                                ::presmooth_SD)
+                                ::presmooth_SD,\
+                                ::pattern_weight_param)
           ::res[2] = NLmeans((FLOAT)::res0[2],::t,::f,::h,::noisetype,::threads,\
                                     ::filter_type,\
-                                ::presmooth_SD)
+                                ::presmooth_SD,\
+                                ::pattern_weight_param)
         }
   
         diff = sqrt(mean((::res0-::res)*(::res0-::res)))
@@ -331,7 +341,7 @@ if (!exists(NLmeansClass)) {
     proc ::FastFilter() \
     {
       InitTime
-      ::res <<= NewNLmeans(&::res,::t,::f,::h,::threads)
+      ::res <<= NewNLmeans(&::res,::t,::f,::h,::threads,::minweight)
       EndTime
     }
     # ::FastFilter()
@@ -524,6 +534,7 @@ if (!exists(NLmeansClass)) {
                 ::win.AddEnumChoice(::filtertype_id,"Stand.")
                 ::win.AddEnumChoice(::filtertype_id,"Prob.")
                 ::win.AddEnumChoice(::filtertype_id,"Prob. + Smooth.")
+              ::win.AddFloat(::pattern_weight_param,"Weights size",0.1,10)
 
             ::mri_param_panel = ::win.AddPage("MRI")
               ::win.AddInt(::f,"f", 1,10)
@@ -539,6 +550,7 @@ if (!exists(NLmeansClass)) {
 
             ::fast_param_panel = ::win.AddPage("Fast")
               ::win.AddInt(::f,"f", 1,10)
+              ::win.AddFloat(::minweight,"Min. weight",1,100)
           ::win.EndBook
 
     

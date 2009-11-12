@@ -221,6 +221,7 @@ void create_weights_2d(double*& w, int f, float factor)
   double sum;
   double sigma = f*factor;
 //  printf("begin create_weights \n");
+  FILE_MESSAGE(boost::format("factor = %1%")%factor);
 
   w = new double [(2*f+1)*(2*f+1)];
   sum = 0;
@@ -1024,6 +1025,8 @@ InrImage* NLmeans(ParamList* p)
     fprintf(stderr,"NLmeans error \t the coefficient h cannot be too small, it is set to 10 !\n");
     h = 10;
   }
+
+  FILE_MESSAGE(boost::format("Pattern weight factor = %1%")%pattern_weight_factor);
 
   if (input->GetFormat()!=WT_FLOAT) {
    input_float = new InrImage(WT_FLOAT,"NLmeans_result.ami.gz",input);
