@@ -450,7 +450,6 @@ TARGET_LINK_LIBRARIES( ${AMILAB_BIN}
   ${amilab_ownlibs}
   ${LINK_VTK}
   ITKIO
-  ITKAlgorithms
   itkvnl
   itkvnl_algo
   ${AMIFLUID_LIBRARIES}
