@@ -747,6 +747,7 @@ slice             return(token::T_slice);        /*{slice,T_slice}*/
 argc              return(token::T_argc);         /*{argc,T_argc}*/
 emptyargs         return(token::T_emptyargs);    /*{emptyargs,T_emptyargs}*/
 
+
 [0-9]+"."[0-9]+   {
 //
 //============================ Parse float ====================
@@ -798,7 +799,7 @@ emptyargs         return(token::T_emptyargs);    /*{emptyargs,T_emptyargs}*/
   return(token::ASTRING);
 }
 
-<str>\n  {
+<str>[\n\r]  {
   GB_driver.yyiperror(E_UNTERM_STRING);
 }
 
@@ -808,9 +809,9 @@ emptyargs         return(token::T_emptyargs);    /*{emptyargs,T_emptyargs}*/
 <str>\\b cpp_string->append(1,'\b');
 <str>\\f cpp_string->append(1,'\f');
 
-<str>\\(.|\n) cpp_string->append(1,YYText()[1]);
+<str>\\(.|\n\r) cpp_string->append(1,YYText()[1]);
 
-<str>[^\\\n\"]+ {
+<str>[^\\\n\r\"]+ {
   cpp_string->append(YYText());
 /*
   char *yptr = YYText();
@@ -888,8 +889,9 @@ emptyargs         return(token::T_emptyargs);    /*{emptyargs,T_emptyargs}*/
 //    printf("begin comment in block \n");
 }
 
-<block>\n {
-  yylloc->lines(yyleng); yylloc->step();
+<block>\r\n|[\r\n] {
+  // dealing with windows end-of-lines ...
+  yylloc->lines(1); yylloc->step();
   GB_driver.yyiplineno++;
   ami_block->GetBody().append(YYText());
 }
@@ -958,11 +960,19 @@ emptyargs         return(token::T_emptyargs);    /*{emptyargs,T_emptyargs}*/
 }
 
 
-<comment>\n {
+<comment>\r\n|[\n\r] {
   //GB_driver.yyiplineno++;
 //  printf("end comment from %d \n",comment_caller);
   // use unput to accept the end of the command if any
-  unput('\n');
+//  cout << "<comment>\n [" << YYText() << "]" << endl;
+//  cout << "length = " << strlen(YYText()) << endl;
+  if (strlen(YYText())==1) {
+    unput(YYText()[0]);
+  }
+  if (strlen(YYText())==2) {
+    unput(YYText()[1]);
+    unput(YYText()[0]);
+  }
   BEGIN(comment_caller);
 }
 
@@ -1026,16 +1036,19 @@ global::([A-Za-z0-9_])*   {
                     yylloc->step();
                   }
 
-\\\n              {
-                    // allow multiline command
-                     GB_driver.yyiplineno++;
-                  }
+\\(\r\n|[\n\r])              {
+      //cout << "\\NEWLINE \n" << endl;
+      // allow multiline command
+      GB_driver.yyiplineno++;
+    }
 
-\n                {
-                     yylloc->lines(yyleng); yylloc->step();
-                     GB_driver.yyiplineno++;
-                     return(token::END_INSTRUCTION);
-                  } /*{end-of-line,END_INSTRUCTION}*/
+\r\n|[\n\r]                {
+          //cout << "NEWLINE \n" << endl;
+//          if (yyleng!=1) cout << " ******* yyleng = " << yyleng << "************" << endl; 
+          yylloc->lines(1); yylloc->step();
+          GB_driver.yyiplineno++;
+          return(token::END_INSTRUCTION);
+      } /*{end-of-line,END_INSTRUCTION}*/
 
 .                 {
 
