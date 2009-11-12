@@ -1,5 +1,8 @@
 %{
 
+// use NOMINMAX to avoid conflicts between windows.h min,max and std::min std::max ...
+#define NOMINMAX
+
 #include "IdentifierInfo.h"
 #include "Variable.hpp"
 #include "imageextent.h"

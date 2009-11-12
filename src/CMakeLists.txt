@@ -70,10 +70,34 @@ SET(CPACK_RPM_SPEC_MORE_DEFINE "Prefix: /usr")
 #
 # DEB configuration
 #
-# no i386 in debian, should use dpkg --print-architecture ??
-SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "i386" )
-SET(CPACK_DEBIAN_PACKAGE_MAINTAINER   "krissian@dis.ulpgc.es")
-SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6, libwxgtk2.8-0,  libvtk5, libinsighttoolkit3.10, libboost-date-time1.37.0, libboost-filesystem1.37.0, libboost-graph1.37.0, libboost-iostreams1.37.0, libboost-regex1.37.0, libboost-system1.37.0, libbz2-1.0, zlib1g")
+
+
+IF(UNIX)
+  #
+  # DEB configuration
+  #
+  # no i386 in debian, should use dpkg --print-architecture ??
+  SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "i386" )
+  SET(CPACK_DEBIAN_PACKAGE_MAINTAINER   "krissian@dis.ulpgc.es")
+  
+  # creating dependencies ...
+  MESSAGE(" ${AMILAB_BIN}")
+  if (EXISTS "${AMILAB_BIN}")
+      EXECUTE_PROCESS( 
+        COMMAND ${CMAKE_SOURCE_DIR}/../Releases/Debian/list_dependencies.sh  ${AMILAB_BIN} 
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        RESULT_VARIABLE amilab_dep_result 
+        OUTPUT_VARIABLE amilab_dep_output
+        ERROR_VARIABLE amilab_dep_error
+      )
+    
+      MESSAGE ("Dependencies = [${amilab_dep_result}], [${amilab_dep_output}] , [${amilab_dep_error}]")
+      SET(CPACK_DEBIAN_PACKAGE_DEPENDS "${amilab_dep_output}")
+#      SET(CPACK_DEBIAN_PACKAGE_DEPENDS "lib64expat1, libbz2-1.0, libc6, libc6-amd64, libc6-i686, libexpat1, libgcc1, libgl1-mesa-glx, libglu1-mesa, libice6, libjpeg62, libpng12-0, libsm6, libstdc++6, libtiff4, libuuid1, libvtk5.2, libwxbase2.8-0, libwxgtk2.8-0, libx11-6, libxext6, zlib1g")
+#    endif(objdump_prog)
+  
+  ENDIF(EXISTS "${AMILAB_BIN}")
+ENDIF(UNIX)
 
 #
 # NSIS: not used at the moment
@@ -109,6 +133,7 @@ SET( CPACK_BUNDLE_ICON             "${CMAKE_SOURCE_DIR}/../Pixmaps/amilab_logo_n
 SET( CPACK_BUNDLE_PLIST            "${CMAKE_CURRENT_SOURCE_DIR}/../Releases/MacOS/Info_${AMILAB_VERSION}.plist")
 #SET( CPACK_BUNDLE_STARTUP_COMMAND )
 
+#SET( CPACK_COMPONENTS_ALL applications scripts doc )
 
 SET(CPACK_GENERATOR "RPM")
 #SET(CPACK_GENERATOR "RPM;STGZ;DEB")
@@ -216,7 +241,7 @@ ENDIF(AMI_USE_SSE)
 
  IF( AMI_USE_STATIC_LIBS )
    SET(CMAKE_FIND_LIBRARY_SUFFIXES ${_ami_ORIG_CMAKE_FIND_LIBRARY_SUFFIXES})
- ENDIF( HDF5_USE_STATIC_LIBS )
+ ENDIF( AMI_USE_STATIC_LIBS )
 
 
 
@@ -364,6 +389,7 @@ ELSE(CMAKE_BUILD_TYPE)
 ENDIF(CMAKE_BUILD_TYPE)
 
 add_executable (${AMILAB_BIN} WIN32
+  #MACOSX_BUNDLE
   ${amilab_bin_SRCS}
 )
 
@@ -464,13 +490,32 @@ IF(UNIX)
   SET(CMAKE_INSTALL_PREFIX "/usr/")
 ENDIF(UNIX)
 
+#IF(APPLE)
+#    MESSAGE("APPLE ...")
+#  SET(CMAKE_INSTALL_PREFIX "/Applications/AMILab.app/")
+#ENDIF(APPLE)
+
+IF (APPLE)
+  SET_TARGET_PROPERTIES( ${AMILAB_BIN}
+      PROPERTIES
+      MACOSX_BUNDLE_BUNDLE_NAME AMILab
+      MACOSX_BUNDLE_ICON_FILE "${CMAKE_SOURCE_DIR}/../Pixmaps/amilab_logo_new_64x64_alpha.icns"
+  )
+ENDIF(APPLE)
+
+
 INSTALL(TARGETS ${AMILAB_BIN}
   RUNTIME DESTINATION bin
+#  COMPONENT applications
+  BUNDLE DESTINATION /Applications
 )
+
+
 
 # Install the scripts
 install(DIRECTORY ${AMILAB_SOURCE_DIR}/../scripts
         DESTINATION share/amilab-${AMILAB_VERSION}
+#        COMPONENT scripts
         FILES_MATCHING PATTERN "*.amil"
          PATTERN "*.sh"
          PATTERN "*.html"
@@ -483,6 +528,7 @@ install(DIRECTORY ${AMILAB_SOURCE_DIR}/../scripts
 # Install the documentation
 install(DIRECTORY ${AMILAB_SOURCE_DIR}/../doc
         DESTINATION share/amilab-${AMILAB_VERSION}
+#        COMPONENT doc
         FILES_MATCHING
           PATTERN "*.html"
           PATTERN "*.amih"
