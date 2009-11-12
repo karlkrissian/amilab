@@ -40,6 +40,7 @@
 //#include "wrapitkBasicNLMeansFilter.h"
 #include "wrapitkWrite.h"
 #include "wrapitkFastMarchingImageFilter.h"
+#include "wrapitkWaterShedImageFilter.h"
 
 
 extern VarContexts  Vars;
@@ -60,4 +61,6 @@ void AddWrapITK(){
  Vars.AddVar(type_c_procedure,     "itkWrite"                         , (void*) wrap_itkWrite);
  Vars.AddVar(type_c_image_function,"itkFastMarchingImageFilter2D"     , (void*) itkFastMarchingImageFilter2D);
  Vars.AddVar(type_c_image_function,"itkFastMarchingImageFilter3D"     , (void*) itkFastMarchingImageFilter3D);
+ Vars.AddVar(type_c_image_function,"itkWaterShedImageFilter2D"     , (void*) itkWaterShedImageFilter2D);
+ Vars.AddVar(type_c_image_function,"itkWaterShedImageFilter3D"     , (void*) itkWaterShedImageFilter3D);
 }
