@@ -78,7 +78,7 @@ IF(AMI_USE_FLEXBISON)
 ELSE(AMI_USE_FLEXBISON)
  
   # find FlexLexer.h
-  INCLUDE(${AMILAB_SOURCE_DIR}/Language/FlexInclude)
+  include_directories(${AMILAB_SOURCE_DIR}/Language/FlexInclude)
 
    SET( FLEXBISON_OUTPUTS
 		${AMILAB_SOURCE_DIR}/Language/GeneratedFlexBison/improcess_bison.tab.cpp
