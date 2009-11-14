@@ -113,7 +113,13 @@ public:
 
 };
 
+/*
 //======================================================================
+// this is a class to mix with wxwidgets ... !!!
+// check http://wiki.wxwidgets.org/Multiple_Inheritance for relative information
+//
+
+//------------------------------------------------------------------------------------------
 class MyToolBarBase 
 //
 {
@@ -122,6 +128,8 @@ protected:
   std::vector<toolbar_enum_info_base*> enum_info;
 
  public:
+
+  DECLARE_CLASS(MyToolBarBase);
 
   ///
   MyToolBarBase()  {}
@@ -165,14 +173,21 @@ protected:
   virtual void OnEnumPressed(    wxCommandEvent&);
 
 
-private:
-
 };
- // MyToolBar
+ // MyToolBarBase
+
+IMPLEMENT_CLASS0(MyToolBarBase)
+
+*/
+
+
 
 // Allow inheritance from both classes wxToolBar and wxAuiToolBar
-class MyToolBar : public wxToolBar,  public MyToolBarBase
+class MyToolBar : public wxToolBar
 {
+protected:
+  std::vector<toolbar_enum_info_base*> enum_info;
+
 public:
 
   MyToolBar(wxWindow* parent,
@@ -186,20 +201,50 @@ public:
   {
   }
 
-  void AddEnumChoice( int enum_id,
-                      int choice_id,
-                      int value,
-                      const wxBitmap& bitmap,
-                      const wxString& text= _T(""));
-
-  void OnEnumPressed(    wxCommandEvent& e) 
-  { 
-    MyToolBarBase::OnEnumPressed(e); 
+  virtual ~MyToolBar() {
+    // free memory of toolbar_enum_info_base
+    vector<toolbar_enum_info_base*>::iterator Iter;
+    for (Iter  = enum_info.begin();
+       Iter != enum_info.end()  ; Iter++ )
+    {
+      delete *Iter;
+    }
   }
+
+  void AddEnumChoice( int enum_id,
+				    int choice_id,
+				    int value,
+				    const wxBitmap& bitmap,
+				    const wxString& text= _T(""));
+
+
+  template <class T>
+  int AddEnum(  T* variable,
+                const wxString& label,
+                const wxString& shortHelpString = "",
+                void* callback = NULL,
+                void* calldata = NULL)
+  {
+    enum_info.push_back(new toolbar_enum_info<T>(variable,label,shortHelpString,callback,calldata));
+    return enum_info.size()-1;
+  }
+  void AddRightClick( int enum_id,
+                      void* rc_callback,
+                      void* rc_calldata = NULL,
+                      const wxString& rc_help = _T(""));
+  void UpdateTool( int enum_id);
+  wxBitmapComboBox* GetCombo( int enum_id);
+  void OnEnumPressed(    wxCommandEvent&);
+
 };
 
-class MyAuiToolBar : public wxAuiToolBar, public MyToolBarBase
+
+
+class MyAuiToolBar : public wxAuiToolBar
 {
+protected:
+  std::vector<toolbar_enum_info_base*> enum_info;
+
 public:
 
   MyAuiToolBar(wxWindow* parent,
@@ -217,16 +262,41 @@ public:
   {
   }
 
+  virtual ~MyAuiToolBar() {
+    // free memory of toolbar_enum_info_base
+    vector<toolbar_enum_info_base*>::iterator Iter;
+    for (Iter  = enum_info.begin();
+       Iter != enum_info.end()  ; Iter++ )
+    {
+      delete *Iter;
+    }
+  }
+
   void AddEnumChoice( int enum_id,
                       int choice_id,
                       int value,
                       const wxBitmap& bitmap,
                       const wxString& text= _T(""));
 
-  void OnEnumPressed(    wxCommandEvent& e) 
-  { 
-    MyToolBarBase::OnEnumPressed(e); 
+
+  template <class T>
+  int AddEnum(  T* variable,
+                const wxString& label,
+                const wxString& shortHelpString = "",
+                void* callback = NULL,
+                void* calldata = NULL)
+  {
+    enum_info.push_back(new toolbar_enum_info<T>(variable,label,shortHelpString,callback,calldata));
+    return enum_info.size()-1;
   }
+  void AddRightClick( int enum_id,
+                      void* rc_callback,
+                      void* rc_calldata = NULL,
+                      const wxString& rc_help = _T(""));
+  void UpdateTool( int enum_id);
+  wxBitmapComboBox* GetCombo( int enum_id);
+  void OnEnumPressed(    wxCommandEvent&);
+
 };
 
 #endif // _MYTOOLBAR_H

@@ -105,85 +105,9 @@ END_EVENT_TABLE()
 
 
 
-//------------------------------------------------------------------------------
-void MyToolBarBase::UpdateTool(int enum_id)
-{
 
-//#ifndef WIN32
-
-  //out << "MyToolBar::Update begin" << endl;
-
-/*
-  if (this->GetParent()->IsShown())
-    wxMessageBox(_T("Parent is shown\n"));
-  else
-    wxMessageBox(_T("Parent is not shown \n"));
-*/
-
-  if (enum_id<0) enum_id = 0;
-  if (enum_id>=enum_info.size()) enum_id = enum_info.size()-1;
-
-  toolbar_enum_info_base* info = enum_info[enum_id];
-
-  // find current position
-  int current_pos = info->CurrentPosition();
-  if (current_pos==-1) current_pos = 0;
-
-  if (current_pos == info->displayed_tool) return;
-
-  info->combo->Select(current_pos);
-  info->displayed_tool = current_pos;
-
-}
-
-//------------------------------------------------------------------------------
-void MyToolBarBase::AddRightClick(  int enum_id,
-                                void* rc_callback,
-                                void* rc_calldata,
-                                const wxString& rc_help)
-{
-
-  //out << "MyToolBar::AddRightClick begin" << endl;
-
-  ((myBitmapComboBox*) (enum_info[enum_id]->combo))
-    ->add_right_click(rc_callback,rc_calldata,rc_help);
-
-
-  //out << "MyToolBar::AddRightClick end" << endl;
-}
-
-//------------------------------------------------------------------------------
-void MyToolBarBase::OnEnumPressed( wxCommandEvent& event)
-{
-  // Button pressed: locate the corresponding tool
-  //wxMessageBox(_T("MyToolBar::OnEnumPressed\n"));
-
-  vector<toolbar_enum_info_base*>::iterator Iter;
-  int id=0;
-  for (Iter  = enum_info.begin();
-       Iter != enum_info.end()  ; Iter++,id++ )
-  {
-    if ((*Iter)->combo->GetId()==event.GetId())
-    {
-      (*Iter)->SetParam((*Iter)->combo->GetSelection());
-      this->UpdateTool(id);
-      if ((*Iter)->callback!=NULL) {
-        void (*pf)( void*) = (void (*)(void*)) (*Iter)->callback;
-        pf( (*Iter)->calldata);
-      }
-    }
-  }
-
-}
-
-
-//----------------------------------------------------------
-wxBitmapComboBox* MyToolBarBase::GetCombo( int enum_id)
-{
-  return enum_info[enum_id]->combo;
-}
-
-
+//--------------------------------------------------------------------------------
+// MyToolBar
 //--------------------------------------------------------------------------------
 void MyToolBar::AddEnumChoice(int enum_id, 
     int combo_id, 
@@ -204,7 +128,7 @@ void MyToolBar::AddEnumChoice(int enum_id,
         wxCB_READONLY  );
     enum_info[enum_id]->combo=combo;
     // Connect event
-    wxToolBar::Connect(combo_id,wxEVT_COMMAND_COMBOBOX_SELECTED,
+	wxToolBar::Connect(combo_id,wxEVT_COMMAND_COMBOBOX_SELECTED,
                  wxCommandEventHandler(MyToolBar::OnEnumPressed));
     combo->SetToolTip(enum_info[enum_id]->shortHelpString);
     this->AddControl(combo);
@@ -223,7 +147,81 @@ void MyToolBar::AddEnumChoice(int enum_id,
 }
 
 
+//------------------------------------------------------------------------------
+void MyToolBar::UpdateTool(int enum_id)
+{
+
+/*
+  if (this->GetParent()->IsShown())
+    wxMessageBox(_T("Parent is shown\n"));
+  else
+    wxMessageBox(_T("Parent is not shown \n"));
+*/
+  if (enum_id<0) enum_id = 0;
+  if (enum_id>=(int)enum_info.size()) enum_id = enum_info.size()-1;
+
+  toolbar_enum_info_base* info = enum_info[enum_id];
+
+  // find current position
+  int current_pos = info->CurrentPosition();
+  if (current_pos==-1) current_pos = 0;
+
+  if (current_pos == info->displayed_tool) return;
+
+  info->combo->Select(current_pos);
+  info->displayed_tool = current_pos;
+}
+
+//------------------------------------------------------------------------------
+void MyToolBar::AddRightClick(  int enum_id,
+                                void* rc_callback,
+                                void* rc_calldata,
+                                const wxString& rc_help)
+{
+
+  //out << "MyToolBar::AddRightClick begin" << endl;
+
+  ((myBitmapComboBox*) (enum_info[enum_id]->combo))
+    ->add_right_click(rc_callback,rc_calldata,rc_help);
+
+
+  //out << "MyToolBar::AddRightClick end" << endl;
+}
+
+//------------------------------------------------------------------------------
+void MyToolBar::OnEnumPressed( wxCommandEvent& event)
+{
+  //wxMessageBox(_T("MyToolBar::OnEnumPressed\n"));
+  vector<toolbar_enum_info_base*>::iterator Iter;
+  int id=0;
+  for (Iter  = enum_info.begin();
+       Iter != enum_info.end()  ; Iter++,id++ )
+  {
+    if ((*Iter)->combo->GetId()==event.GetId())
+    {
+      (*Iter)->SetParam((*Iter)->combo->GetSelection());
+      this->UpdateTool(id);
+      if ((*Iter)->callback!=NULL) {
+        void (*pf)( void*) = (void (*)(void*)) (*Iter)->callback;
+        pf( (*Iter)->calldata);
+      }
+    }
+  }
+}
+
+
+//----------------------------------------------------------
+wxBitmapComboBox* MyToolBar::GetCombo( int enum_id)
+{
+  return enum_info[enum_id]->combo;
+}
+
+
+
 //--------------------------------------------------------------------------------
+// MyAuiToolBar
+//--------------------------------------------------------------------------------
+
 void MyAuiToolBar::AddEnumChoice(int enum_id, 
     int combo_id, 
     int value, 
@@ -241,9 +239,11 @@ void MyAuiToolBar::AddEnumChoice(int enum_id,
         wxSize(55,-1) ,0,NULL, 
         wxCB_READONLY  );
     enum_info[enum_id]->combo=combo;
-    // Connect event
+
+// Connect event
     wxAuiToolBar::Connect(combo_id,wxEVT_COMMAND_COMBOBOX_SELECTED,
                  wxCommandEventHandler(MyAuiToolBar::OnEnumPressed));
+				 
     combo->SetToolTip(enum_info[enum_id]->shortHelpString);
     this->AddControl(combo);
   }
@@ -257,4 +257,73 @@ void MyAuiToolBar::AddEnumChoice(int enum_id,
   enum_info[enum_id]->combo->SetSize(xsize+25,ysize+4);
   //cout << "size = " << xsize << endl;
   //out << "MyToolBar::AddEnumChoice end" << endl;
+}
+
+//------------------------------------------------------------------------------
+void MyAuiToolBar::UpdateTool(int enum_id)
+{
+
+/*
+  if (this->GetParent()->IsShown())
+    wxMessageBox(_T("Parent is shown\n"));
+  else
+    wxMessageBox(_T("Parent is not shown \n"));
+*/
+  if (enum_id<0) enum_id = 0;
+  if (enum_id>=(int)enum_info.size()) enum_id = enum_info.size()-1;
+
+  toolbar_enum_info_base* info = enum_info[enum_id];
+
+  // find current position
+  int current_pos = info->CurrentPosition();
+  if (current_pos==-1) current_pos = 0;
+
+  if (current_pos == info->displayed_tool) return;
+
+  info->combo->Select(current_pos);
+  info->displayed_tool = current_pos;
+}
+
+//------------------------------------------------------------------------------
+void MyAuiToolBar::AddRightClick(  int enum_id,
+                                void* rc_callback,
+                                void* rc_calldata,
+                                const wxString& rc_help)
+{
+
+  //out << "MyToolBar::AddRightClick begin" << endl;
+
+  ((myBitmapComboBox*) (enum_info[enum_id]->combo))
+    ->add_right_click(rc_callback,rc_calldata,rc_help);
+
+
+  //out << "MyToolBar::AddRightClick end" << endl;
+}
+
+//------------------------------------------------------------------------------
+void MyAuiToolBar::OnEnumPressed( wxCommandEvent& event)
+{
+  //wxMessageBox(_T("MyAuiToolBar::OnEnumPressed\n"));
+  vector<toolbar_enum_info_base*>::iterator Iter;
+  int id=0;
+  for (Iter  = enum_info.begin();
+       Iter != enum_info.end()  ; Iter++,id++ )
+  {
+    if ((*Iter)->combo->GetId()==event.GetId())
+    {
+      (*Iter)->SetParam((*Iter)->combo->GetSelection());
+      this->UpdateTool(id);
+      if ((*Iter)->callback!=NULL) {
+        void (*pf)( void*) = (void (*)(void*)) (*Iter)->callback;
+        pf( (*Iter)->calldata);
+      }
+    }
+  }
+}
+
+
+//----------------------------------------------------------
+wxBitmapComboBox* MyAuiToolBar::GetCombo( int enum_id)
+{
+  return enum_info[enum_id]->combo;
 }
