@@ -53,6 +53,8 @@ using namespace std;
 #include "gl_line.xpm"
 #include "gl_fill.xpm"
 
+unsigned short GB_debug=false;
+
 // Toolbar buttons
 enum {
     wx_toolbar_id = 2000,
