@@ -228,7 +228,8 @@ MainFrame::MainFrame( const wxString& title,
                             (void*) MainFrame::CB_proj,
                             (void*) this);
 
-  toolBar->Update(proj_id);
+//  toolBar->Update(proj_id);
+  toolBar->Update();
 
 /*
 #else
