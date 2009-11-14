@@ -30,10 +30,15 @@
 class myTreeCtrl: public wxTreeCtrl
 {
 public: 
-  myTreeCtrl(wxWindow* parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxTR_HAS_BUTTONS, const wxValidator& validator = wxDefaultValidator, const wxString& name = _T("treeCtrl")):
-    wxTreeCtrl(parent,id,pos,size,style,validator,name) {}
+  myTreeCtrl(wxWindow* parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxTR_HAS_BUTTONS, const wxValidator& validator = wxDefaultValidator, const wxString& name = _T("treeCtrl"));
+
 protected:
-  void OnMouseRightDown(wxMouseEvent& event);
+  void OnItemMenu(wxTreeEvent& event);
+  void ShowMenu(wxTreeItemId id, const wxPoint& pt);
+//  void OnMouseRightDown(wxMouseEvent& event);
+
+//  void OnTimerTip(wxTimerEvent &event);
+
 private:
     DECLARE_EVENT_TABLE();
 };

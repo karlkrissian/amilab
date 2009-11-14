@@ -583,6 +583,8 @@ void MainFrame::CreateVarTreePanel ( wxWindow* parent)
                               wxDefaultSize,
                               wxTR_HAS_BUTTONS | wxTR_HIDE_ROOT
                             );
+  //_var_tree->SetToolTip(_T("Tree Control for current variables"));
+
   _var_tree->SetFont( wxFont(10,wxMODERN,wxNORMAL,wxNORMAL)); // try a fixed pitch font
   _var_tree->SetIndent(5);
 
