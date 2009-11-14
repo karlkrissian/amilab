@@ -13,12 +13,10 @@
 #include "myTreeCtrl.h"
 #include <iostream>
 
-/*
 BEGIN_EVENT_TABLE(myTreeCtrl, wxTreeCtrl)
 //  EVT_RIGHT_DOWN(myTreeCtrl::OnMouseRightDown)
-  EVT_TIMER(ID_TIMER_TIPWINDOW myTreeCtrl::OnTimerTip)
+//  EVT_TIMER(ID_TIMER_TIPWINDOW myTreeCtrl::OnTimerTip)
 END_EVENT_TABLE()
-*/
 
 myTreeCtrl::myTreeCtrl(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size , long style , const wxValidator& validator , const wxString& name ) : wxTreeCtrl(parent,id,pos,size,style,validator,name)
 {
