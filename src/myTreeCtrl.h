@@ -26,6 +26,21 @@
 
 #include "wx/treectrl.h"
 
+class Variable;
+//#include "Variable.hpp"
+
+//----------------------------------------------------
+class MyTreeItemData : public wxTreeItemData
+{
+public:
+    MyTreeItemData(Variable* lvar) : _var(lvar) { }
+
+    Variable* GetVar() const { return _var; }
+
+private:
+    Variable* _var;
+};
+
 //=======================================================
 class myTreeCtrl: public wxTreeCtrl
 {

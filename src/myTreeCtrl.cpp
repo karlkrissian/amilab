@@ -11,6 +11,8 @@
 //
 
 #include "myTreeCtrl.h"
+#include "Variable.hpp"
+
 #include <iostream>
 
 BEGIN_EVENT_TABLE(myTreeCtrl, wxTreeCtrl)
@@ -28,20 +30,29 @@ void myTreeCtrl::ShowMenu(wxTreeItemId id, const wxPoint& pt)
   wxString title;
   if ( id.IsOk() )
   {
-      title << wxT("Menu for ") << GetItemText(id);
+    title << GetItemText(id);
+    MyTreeItemData *item = (MyTreeItemData *)GetItemData(id);
+    if (item) {
+      wxMenu menu(title);
+      Variable* var = item->GetVar();
+      if (var) {
+        std::string com = var->GetComments();
+        if (com.compare("")!=0) {
+          wxString comments(com.c_str(), wxConvUTF8);
+          menu.Append(wxID_ANY, comments);
+        }
+      }
+      menu.Append(wxID_ANY, wxT("&About..."));
+      PopupMenu(&menu, pt);
+    }
   }
   else
   {
-      title = wxT("Menu for no particular item");
+    title = wxT("No particular item");
+    wxMenu menu(title);
+    PopupMenu(&menu, pt);
   }
 
-  wxMenu menu(title);
-  menu.Append(wxID_ANY, wxT("&About..."));
-  menu.AppendSeparator();
-  menu.Append(wxID_ANY, wxT("&Highlight item"));
-  menu.Append(wxID_ANY, wxT("&Dump"));
-
-  PopupMenu(&menu, pt);
 }
 
 void myTreeCtrl::OnItemMenu(wxTreeEvent& event)
