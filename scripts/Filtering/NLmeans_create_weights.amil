@@ -71,6 +71,8 @@ proc CB_DrawWeights() {
   if (exists(NLMw_input)) {
     pos_x = NLMw_input_draw.GetXPos
     pos_y = NLMw_input_draw.GetYPos
+    printn boost_format("x=%1%")%pos_x
+    printn boost_format("y=%1%")%pos_y
     CreateWeights(&NLMw_weights,&NLMw_cont,pos_x,pos_y,NLMw_patsize,NLMw_winsize,NLMw_thres)
     ShowWeights()
   }

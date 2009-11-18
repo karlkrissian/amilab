@@ -25,6 +25,7 @@ if (!exists(MSEClass)) {
         ::groundtruth_name =  "", "ground truth image" 
         ::MSE_string = "", "Mean Square Error value"
         ::PSNR_string = "", "Pick Signal To Noise Ratio value"
+        ::display_error_image = UCHAR(0), "Display the image of errors"
         ::CreateWindow()
     }
     
@@ -35,6 +36,14 @@ if (!exists(MSEClass)) {
       delvars GetObjectName(::Close)
     }
     ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    
+    #----------------------------
+    proc ::CloseAll() \
+    {
+      ::Close
+      if (exists(MSEClass)) { del MSEClass; }
+    }
+    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
     
     #----------------------------
     proc ::LoadInput() \
@@ -81,6 +90,7 @@ if (!exists(MSEClass)) {
         size_ok = 0
       }
       ::win.EnablePanel(::results_panel,(input_ok&&size_ok))
+      ::win.EnablePanel(::display_panel,(input_ok&&size_ok))
     }
 
     #----------------------------
@@ -108,6 +118,21 @@ if (!exists(MSEClass)) {
     }
     
     
+    #----------------------------
+    proc ::DisplayErrorImage() \
+    {
+      if (::display_error_image) {
+        show ::input
+        ::errors <<= abs(::input-::gt)
+        show ::errors
+        ::input_draw.compare(::errors)
+      } else {
+        if (exists(::errors_draw)) {
+          del ::errors_draw
+        }
+      }
+    }
+
     #----------------------------
     proc ::CreateWindow() {
     
@@ -141,8 +166,17 @@ if (!exists(MSEClass)) {
             ::win.AddString(::PSNR_string,"PSNR =")
           ::win.EndBoxPanel
 
+          ::display_panel = ::win.BeginBoxPanel("Display")
+            ::win.AddBoolean(::display_error_image, "Error Image")
+            ::win.SetCallback(::DisplayErrorImage)
+          ::win.EndBoxPanel
+
       ::win.EndBook
-      ::win.AddButton("Close", ::Close)
+
+      ::win.BeginHorizontal
+        ::win.AddButton("Close", ::Close)
+        ::win.AddButton("Close All", ::CloseAll)
+      ::win.EndHorizontal
       
       ::win.update
       ::win.Display
