@@ -76,6 +76,7 @@ class CustomStatusBar : public wxStatusBar
   DECLARE_EVENT_TABLE();
 }; // CustomStatusBar
 
+
 //----------------------------------------------------------------
 /*!
   \brief MainFrame: the main window of AMILab

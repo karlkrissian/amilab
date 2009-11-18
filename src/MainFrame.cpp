@@ -1049,7 +1049,11 @@ void MainFrame::UpdateVarTree()
                             % im->DimZ()
                             % (im->GetDataSize()/1000000)).str();
         //cout << text << endl;
-        _var_tree->AppendItem(_vartree_images,wxString(text.c_str(), wxConvUTF8));
+        _var_tree->AppendItem(
+              _vartree_images,
+              wxString(text.c_str(), wxConvUTF8),
+              -1,-1,
+              new MyTreeItemData(var));
         total_image_size += im->GetDataSize();
       } else
       if (var->Type() == type_surface) {
@@ -1059,27 +1063,51 @@ void MainFrame::UpdateVarTree()
                             % surf->GetNumberOfPoints()
                             % surf->GetNumberOfPolys()).str();
         //cout << text << endl;
-        _var_tree->AppendItem(_vartree_surfaces,wxString(text.c_str(), wxConvUTF8));
+        _var_tree->AppendItem(
+              _vartree_surfaces,
+              wxString(text.c_str(), wxConvUTF8),
+              -1,-1,
+              new MyTreeItemData(var));
       } else
       if ((var->Type() == type_float)||
           (var->Type() == type_int)  ||
           (var->Type() == type_uchar))
       {
-        _var_tree->AppendItem(_vartree_numbers,(*variables)[i]);
+        _var_tree->AppendItem(
+              _vartree_numbers,
+              (*variables)[i],
+              -1,-1,
+              new MyTreeItemData(var));
       } else
       if (var->Type() == type_string)
       {
-        _var_tree->AppendItem(_vartree_strings,(*variables)[i]);
+        _var_tree->AppendItem(
+              _vartree_strings,
+              (*variables)[i],
+              -1,-1,
+              new MyTreeItemData(var));
       } else
       if (var->Type() == type_ami_function)
       {
-        _var_tree->AppendItem(_vartree_functions,(*variables)[i]);
+        _var_tree->AppendItem(
+              _vartree_functions,
+              (*variables)[i],
+              -1,-1,
+              new MyTreeItemData(var));
       } else
       if (var->Type() == type_c_image_function)
       {
-        _var_tree->AppendItem(_vartree_wrapped_functions,(*variables)[i]);
+        _var_tree->AppendItem(
+              _vartree_wrapped_functions,
+              (*variables)[i],
+              -1,-1,
+              new MyTreeItemData(var));
       } else
-        _var_tree->AppendItem(_vartree_others,(*variables)[i]);
+        _var_tree->AppendItem(
+              _vartree_others,
+              (*variables)[i],
+              -1,-1,
+              new MyTreeItemData(var));
     }
   } // end for
 
