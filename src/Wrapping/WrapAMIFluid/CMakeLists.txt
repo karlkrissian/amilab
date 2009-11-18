@@ -16,31 +16,25 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Graphic
   ${AMILAB_SOURCE_DIR}/wxParams
   ${AMILAB_SOURCE_DIR}/myVTK4
-  ${AMILAB_SOURCE_DIR}/Vaisseaux
   ${AMILAB_SOURCE_DIR}/Algorithms/Basic
   ${AMILAB_SOURCE_DIR}/Algorithms/Denoising
   ${AMILAB_SOURCE_DIR}/Algorithms/Others
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapCommon
+  ${OPTICFLOW_INCLUDE_DIR}
+  ${OPTICFLOW_INCLUDE_DIR}/OpticalFlow
+  ${OPTICFLOW_INCLUDE_DIR}/OpticalFlow/src
+  ${AMILAB_SOURCE_DIR}
+  ${AMIFLUID_INCLUDE_DIR}
   ${Boost_INCLUDE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${PTHREADS_INCLUDE_DIR}
 )
 
-IF(AMI_USE_FASTNLMEANS)
-  MESSAGE("including NewNLMeans_INCLUDE_DIRS=${NewNLMeans_INCLUDE_DIRS}")
-  include_directories (
-    ${NewNLMeans_INCLUDE_DIRS}
-  )
-ENDIF(AMI_USE_FASTNLMEANS)
-
 INCLUDE( ${VTK_USE_FILE} )
 INCLUDE( ${wxWidgets_USE_FILE})
 
-SET(  WrapFilters_SRCS
-  wrapFilters.cpp
-  wrapAlgorithmsBasic.cpp
-  wrapComputePV.cpp
-  wrap_StructureTensor.cpp
+SET(  WrapAMIFluid_SRCS
+  wrapAMIFluid.cpp
 )
 
-my_add_library ( WrapFilters)
+my_add_library ( WrapAMIFluid)
