@@ -16,6 +16,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/OpenGL
   ${AMILAB_SOURCE_DIR}/Algorithms/Basic
   ${AMILAB_SOURCE_DIR}/Algorithms/Denoising
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapCommon
   ${AMILAB_SOURCE_DIR}
   ${AMIFLUID_INCLUDE_DIR}
   ${PTHREADS_INCLUDE_DIR}
