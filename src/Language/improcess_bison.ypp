@@ -9954,10 +9954,13 @@ image:
         res->InitBuffer();
         im2->InitBuffer();
         Repeter
-          pos = (int) im2->ValeurBuffer();
-          Si (pos<0) AlorsFait pos = 0;
-          Si (pos>=im1->DimX()) AlorsFait pos = im1->DimX()-1;
-          im1->BufferPos(pos,0,0);
+          //pos = (int) im2->ValeurBuffer();
+          int pos1 = (int) (im1->SpaceToVoxelX(im2->ValeurBuffer())+0.5);
+          Si (pos<0)  AlorsFait pos = 0;
+          Si (pos>=im1->DimX()) 
+                      AlorsFait pos = im1->DimX()-1;
+          // convert to space coordinates
+ //         im1->BufferPos(pos,0,0);
           res->FixeValeur(im1->ValeurBuffer());
           im2->IncBuffer();
             JusquA Non(res->IncBuffer()) FinRepeter
