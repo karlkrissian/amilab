@@ -388,6 +388,10 @@ ELSE(CMAKE_BUILD_TYPE)
   string(TOLOWER amilab_${CPACK_PACKAGE_VERSION} AMILAB_BIN )
 ENDIF(CMAKE_BUILD_TYPE)
 
+include_directories (
+  ${AMILAB_SOURCE_DIR}/Language
+)
+
 add_executable (${AMILAB_BIN} WIN32
   #MACOSX_BUNDLE
   ${amilab_bin_SRCS}
@@ -400,6 +404,9 @@ SET(amilab_ownlibs
   WrapFilters
   WrapSystem
   WrapITK
+  WrapAMIFluid
+  WrapWII
+  WrapCommon
   AMILab
   AMImage
   Contours
