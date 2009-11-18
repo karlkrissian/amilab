@@ -29,11 +29,6 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Algorithms/Basic
   ${AMILAB_SOURCE_DIR}/Algorithms/Graph
   ${AMILAB_SOURCE_DIR}/Algorithms/Denoising
-# still needed for now
-#  ${AMILAB_SOURCE_DIR}/libamiFluid
-#  ${AMILAB_SOURCE_DIR}/libamiFluid/opticflow/
-#  ${AMILAB_SOURCE_DIR}/libamiFluid/opticflow/version_inversa
-#  ${AMILAB_SOURCE_DIR}/JavierHornSchunck
   ${OPTICFLOW_INCLUDE_DIR}
   ${OPTICFLOW_INCLUDE_DIR}/OpticalFlow
   ${OPTICFLOW_INCLUDE_DIR}/OpticalFlow/src
@@ -86,12 +81,11 @@ SET(AMILab_SRCS
 #    func_shortestpath.cpp
 #    localstats.cpp
 #    vtkwrap.cpp
-    wrapAMIFluid.cpp
+#    wrapAMIFluid.cpp
 #    wrapFilters.cpp
 #    wrapVTK.cpp
-    wrapWII.cpp
-    wrap_StructureTensor.cpp
-    wrapfunctions.cpp
+#    wrapWII.cpp
+#    wrap_StructureTensor.cpp
     xmtext.cpp
 )
 
