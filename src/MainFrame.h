@@ -52,6 +52,8 @@
 
 #include "ParamPanel.hpp"
 
+#include "wxDrawingWindow.h"
+
 #include <iostream>
 #include <list>
 #include <map>
@@ -93,6 +95,8 @@ public:
   ~MainFrame() {
      m_mgr.UnInit();
   }
+
+  wxDrawingWindow* GetDrawingWindow() { return _drawing_window; }
 
   wxAuiManager& GetAuiManager() {return m_mgr; };
 
@@ -203,6 +207,7 @@ protected:
   wxPanel*     _keywords_panel;
   wxPanel*     _var_panel;
   wxPanel*     _html_panel;
+  wxPanel*     _drawing_panel;
 
 //  boost::shared_ptr<wxDirPickerCtrl> 
   wxPanel*     _settings_panel;
@@ -221,6 +226,8 @@ protected:
   wxTreeItemId _vartree_wrapped_functions;
   wxTreeItemId _vartree_others;
 
+  wxDrawingWindow* _drawing_window;
+
   void CreateMenu();
 
   wxToolBar* CreateToolbar ( wxWindow* parent );
@@ -235,6 +242,7 @@ protected:
   void CreateKeywordsPanel( wxWindow*);
   void CreateVarPanel     ( wxWindow*);
   void CreateHtmlPanel    ( wxWindow*);
+  void CreateDrawingPanel ( wxWindow*);
   void CreateSettingsPanel( wxWindow*);
 
 private:

@@ -21,6 +21,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Algorithms/Denoising
   ${AMILAB_SOURCE_DIR}/Algorithms/Others
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapCommon
+  ${AMILAB_SOURCE_DIR}
   ${Boost_INCLUDE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${PTHREADS_INCLUDE_DIR}
@@ -41,6 +42,8 @@ SET(  WrapFilters_SRCS
   wrapAlgorithmsBasic.cpp
   wrapComputePV.cpp
   wrap_StructureTensor.cpp
+  wrap_NLmeans.cpp
+  Wrap_NewNLMeans.cpp
 )
 
 my_add_library ( WrapFilters)

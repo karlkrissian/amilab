@@ -35,6 +35,7 @@
 #include "wrapAMIFluid.h"
 #include "wrapVTK.h"
 #include "wrapITK.h"
+#include "wrap_mainframe.h"
 #include "itkCannyEdgeDetector.h"
 #include "wrapWII.h"
 #include "wrapFilters.h"
@@ -871,6 +872,7 @@ static void CB_update_imagelist( void* imagelist_gui)
 %token T_import_wii
 %token T_import_filters
 %token T_import_sys
+%token T_import_mainframe
 
 %token T_amiOFCorr2D
 %token T_amiOFVar2D
@@ -4806,7 +4808,8 @@ command:
         {
         /**
         Parameters:
-            (3) IMAGE: 1D image to plot, where the voxel size in X is used
+            (3) IMAGE: 1D image to plot, where the voxel size in X is used,
+            if 2D image, plot several functions, one per line
             (5) String: plot title
             (7) NUM: delay
         Description:
@@ -4817,19 +4820,23 @@ command:
       float* taby;
       GnuPlot   gnuplot;
       int x,num_courbe;
-      char name[200];
+      std::string name;
 
-          tabx = new float[image->_tx];
-          taby = new float[image->_tx];
+      tabx = new float[image->_tx];
+      taby = new float[image->_tx];
 
-      Pour(x,0,image->_tx-1)
-        tabx[x] = image->SpacePosX(x);
-        taby[x] = (*image)(x,0,0);
-      FinPour
+      for (int y=0; y<image->DimY(); y++) {
+        Pour(x,0,image->_tx-1)
+          tabx[x] = image->SpacePosX(x);
+          taby[x] = (*image)(x,y,0);
+          //cout << boost::format("%1%,%2% --> %3%")%x%y%taby[x] << endl;
+        FinPour
+        name =  (boost::format("%s_%02d")%$5%y).str();
+        num_courbe = gnuplot.AddCourbe( image->_tx, tabx, taby, name.c_str());
+      }
 
-          num_courbe = gnuplot.AddCourbe( image->_tx, tabx, taby, $5);
-      sprintf(name,"%s.gnuplot",$5);
-      gnuplot.XPlot(name,(int)$7);
+      name =  (boost::format("%s.gnuplot")%$5).str();
+      gnuplot.XPlot(name.c_str(),(int)$7);
 
       delete [] tabx;
       delete [] taby;
@@ -5236,6 +5243,11 @@ cerr << "Feature not available, needs to be updated ! " << endl;
         T_import_sys
         {
           AddWrapSystem();
+        }
+        |
+        T_import_mainframe
+        {
+          AddWrapMainFrame();
         }
         |
         T_amiOFCorr2D T_OP_PAR var_image T_COMMA var_image T_COMMA
@@ -9955,15 +9967,16 @@ image:
         im2->InitBuffer();
         Repeter
           //pos = (int) im2->ValeurBuffer();
-          int pos1 = (int) (im1->SpaceToVoxelX(im2->ValeurBuffer())+0.5);
+          int pos = (int) (im1->SpaceToVoxelX(im2->ValeurBuffer())+0.5);
+          //cout << boost::format(" im2->ValeurBuffer() = %1% pos = %2%")%im2->ValeurBuffer() % pos << endl;
           Si (pos<0)  AlorsFait pos = 0;
           Si (pos>=im1->DimX()) 
                       AlorsFait pos = im1->DimX()-1;
           // convert to space coordinates
- //         im1->BufferPos(pos,0,0);
+          im1->BufferPos(pos,0,0);
           res->FixeValeur(im1->ValeurBuffer());
           im2->IncBuffer();
-            JusquA Non(res->IncBuffer()) FinRepeter
+        JusquA Non(res->IncBuffer()) FinRepeter
       } else
       // Applying a transformation ...
       if (im1->VectorialFormat()&&im2->VectorialFormat()) {

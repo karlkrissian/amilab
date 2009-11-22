@@ -184,38 +184,12 @@ void FenetreDessin :: FreeContext( )
 void FenetreDessin::AfficheFenetre( )
 //                  --------------
 {
-  //char    nom_classe[6][20];
-
   aff_err("FenetreDessin::AfficheFenetre()\n");
 
-/*
-strcpy(nom_classe[PseudoColor],"PseudoColor");
-  strcpy(nom_classe[GrayScale],  "GrayScale");
-  strcpy(nom_classe[DirectColor],"DirectColor");
-  strcpy(nom_classe[TrueColor],  "TrueColor");
-  strcpy(nom_classe[StaticColor],"StaticColor");
-  strcpy(nom_classe[StaticGray], "StaticGray");
-*/
-
   InitFenetre();
-
-#if defined(__WXMOTIF__)
-  display     = (Display*) window->GetXDisplay();
-  fenetre     = (Window) _drawing_window->GetClientXWindow();
-#elif defined(__WXX11__)
-  display     = (Display*) wxGlobalDisplay();
-  fenetre     = (Window) _drawing_window->GetMainWindow();
-#endif
-
-  //  XGetWindowAttributes( display, fenetre, &w_attrib);
-
   CreateContext();
 
-
-
   aff_err("_pixmap_contexte OK \n");
-
-  //  XSetWindowBackground( display, fenetre, 100);
 
   //----- Definition de la palette
   Si _palette == NULL Alors
@@ -224,14 +198,6 @@ strcpy(nom_classe[PseudoColor],"PseudoColor");
     _palette_allouee = true;
     aff_err("new palette OK \n");
   FinSi
-
-
-  //  printf("window attributes : visual class %s\n",
-  //	 nom_classe[w_attrib.visual->c_class]);
-  //  printf("palette attributes : visual class %s\n",
-  //	 nom_classe[_palette->_visual->c_class]);
-
-  // Getting rid of pseudo color ...
 
   _fenetre_affichee = true;
   aff_err("AfficheFenetre() Fin\n");

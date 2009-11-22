@@ -18,6 +18,7 @@
 #include "paramlist.h"
 #include "Variable.hpp"
 
+#include "wrap_NLmeans.h"
 
 /** function that add the wrapping of different filters
  *  to the AMI language
@@ -36,8 +37,6 @@ InrImage* RampPreservingPeronaMalik2(ParamList*);
 InrImage* NSim(ParamList* p);
 
 void NSim2(ParamList* p);
-
-InrImage* NLmeans(ParamList*);
 
 InrImage* NLmeans_fast(ParamList*);
 

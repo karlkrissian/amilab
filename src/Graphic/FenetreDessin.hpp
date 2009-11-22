@@ -100,11 +100,6 @@ protected:
 
   int        _type;
 
-/*
-Widget	_parent;
-  XtAppContext  _contexte;
-*/
-
   int	_hauteur;
   int	_largeur;
 
@@ -133,13 +128,6 @@ Widget	_parent;
   /// current pen
   scoped_ptr<wxPen>     _current_pen;
 
-#if defined(__MOTIF__)
-  // Declaration du pixmap
-  unsigned char  _pixmap_alloue;
-  Pixmap         _pixmap;
-  GC             _pixmap_contexte; // pour effacer le pixmap 
-  Drawable _ecran_dessin;
-#endif
 
   unsigned char _fenetre_affichee;
   
@@ -307,12 +295,6 @@ public:
   virtual void DeplaceSourisShiftBout2()  { printf("shift souris 2 deplacee \n");}
   virtual void DeplaceSourisShiftBout3()  { printf("shift souris 3 deplacee \n");}
 
-/*
-///
-  virtual void TouchePressee( KeySym keysym)      
-     { printf("touche pressee %c %d \n", (int) keysym%256, (int) keysym>>8); }
-*/
-
   ///
   virtual void OnChar(wxKeyEvent& ) {  }
 
@@ -334,22 +316,7 @@ public:
 
   virtual void CloseWindow();
   ///
-
-
-/*
-  static void CB_CloseWindow( Widget, void* cd, void*) {    ((FenetreDessin*) cd)->CloseWindow();}
-
-  ///
-  static void CB_Expose( 	Widget, void*, void* );
-  ///
-  static void CB_Input( 	Widget, void*, void* );
-  ///
-  static void CB_Resize( 	Widget, void*, void* );
-*/
  
-  ///
-//  static void Act_DeplaceSourisBout1( Widget, XEvent*, String*, Cardinal* );
-
   void OnClose(wxCloseEvent& event);
 
   DECLARE_EVENT_TABLE()

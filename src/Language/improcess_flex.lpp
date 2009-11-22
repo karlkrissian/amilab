@@ -734,6 +734,7 @@ import_itk        return(token::T_import_itk);     /*{import_itk,T_import_itk}*/
 import_wii        return(token::T_import_wii);     /*{import_wii,T_import_wii}*/
 import_filters    return(token::T_import_filters); /*{import_filters,T_import_filters}*/
 import_sys        return(token::T_import_sys);     /*{import_sys,T_import_sys}*/
+import_mainframe  return(token::T_import_mainframe);     /*{import_mainframe,T_import_mainframe}*/
 
 amiOFCorr2D       return(token::T_amiOFCorr2D);  /*{amiOFCorr2D,T_amiOFCorr2D}*/
 amiOFVar2D        return(token::T_amiOFVar2D);   /*{amiOFVar2D,T_amiOFVar2D}*/

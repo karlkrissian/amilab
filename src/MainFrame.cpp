@@ -416,6 +416,9 @@ void MainFrame::CreateMainBook(wxWindow* parent)
   CreateKeywordsPanel(this);
   _main_book->AddPage( _keywords_panel , wxT("Keywords") );
 
+  CreateDrawingPanel(this);
+  _main_book->AddPage( _drawing_panel , wxT("Drawing") );
+
   _main_book->Fit();
 
 }
@@ -920,6 +923,45 @@ void MainFrame::CreateSettingsPanel(wxWindow* parent)
   scripts_path->Update();
 
 } // CreateSettingsPanel()
+
+
+//-------------------------------------------------------
+void MainFrame::CreateDrawingPanel(wxWindow* parent)
+//            --------------------
+{
+  // Setting
+  _drawing_panel = new wxPanel(
+          parent,
+          wxID_ANY,
+          wxDefaultPosition,
+          wxDefaultSize,
+            wxFULL_REPAINT_ON_RESIZE
+          | wxTAB_TRAVERSAL
+          );
+
+  wxStaticBox* drawing_box = new wxStaticBox(
+          _drawing_panel,
+          wxID_ANY,
+          GetwxStr("Drawing") );
+  wxStaticBoxSizer* drawingpanel_sizer  = new wxStaticBoxSizer(
+            drawing_box
+          , wxVERTICAL
+          //, wxHORIZONTAL
+          );
+
+  _drawing_panel->SetSizer(drawingpanel_sizer);
+  _drawing_window = new wxDrawingWindow(
+      _drawing_panel,
+      wxID_ANY,
+      wxDefaultPosition,
+      wxSize(300,300),
+      wxHW_SCROLLBAR_AUTO);
+
+  drawingpanel_sizer->Add(_drawing_window,  1,  wxALL | wxEXPAND, 0);
+  drawingpanel_sizer->Fit(_drawing_panel);
+
+
+} // CreateDrawingPanel()
 
 
 

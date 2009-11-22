@@ -30,6 +30,7 @@ SET(Graphic_SRCS
 #    wxParamTypes.cpp
 #    wxColorParameter.cpp
     wxDrawingArea.cpp
+    wxDrawingWindow.cpp
 )
 
 my_add_library (Graphic)

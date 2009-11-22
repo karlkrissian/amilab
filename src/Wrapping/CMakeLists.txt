@@ -19,10 +19,11 @@ include_directories (
 
 INCLUDE( ${wxWidgets_USE_FILE})
 
-add_subdirectory ( WrapCommon   )
-add_subdirectory ( WrapAMIFluid )
-add_subdirectory ( WrapITK      )
-add_subdirectory ( WrapVTK      )
-add_subdirectory ( WrapFilters  )
-add_subdirectory ( WrapSystem   )
-add_subdirectory ( WrapWII      )
+add_subdirectory ( WrapCommon    )
+add_subdirectory ( WrapAMIFluid  )
+add_subdirectory ( WrapITK       )
+add_subdirectory ( WrapVTK       )
+add_subdirectory ( WrapFilters   )
+add_subdirectory ( WrapSystem    )
+add_subdirectory ( WrapWII       )
+add_subdirectory ( WrapInterface )

@@ -120,7 +120,7 @@ namespace yyip {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 392 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 393 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
 
   IdentifierInfo*         ident;
   Variable*               variable;
@@ -675,8 +675,9 @@ namespace yyip {
      T_import_wii = 779,
      T_import_filters = 780,
      T_import_sys = 781,
-     T_amiOFCorr2D = 782,
-     T_amiOFVar2D = 783
+     T_import_mainframe = 782,
+     T_amiOFCorr2D = 783,
+     T_amiOFVar2D = 784
    };
 
     };
@@ -853,7 +854,7 @@ namespace yyip {
 } // yyip
 
 /* Line 35 of lalr1.cc  */
-#line 857 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
+#line 858 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
 
 
 
