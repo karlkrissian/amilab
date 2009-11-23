@@ -1451,6 +1451,10 @@ command:
         }
         | identifier ASSIGN_OP VAR_C_FUNCTION  T_OP_PAR param_list T_CL_PAR
         {
+        /**
+          Description:
+            Calls a wrapped function that returns a smart pointer to a variable, requires a new variable name as a result
+        **/
           Variable*      var   = $3;
           ParamList::ptr param($5);
           Variable::ptr  res;
@@ -2500,6 +2504,36 @@ command:
          driver.res_print("\t\t\t   between 1 and 3 \n");
        }
      }
+    | HELP VAR_C_IMAGE_FUNCTION
+    {
+    /**
+      Description: 
+        Displays the documentation relative to the wrapped image function.
+    **/
+       Variable*  var   = $2;
+        // call with NULL paramlist pointer to trigger help message
+       ((InrImage* (*)(ParamList*)) var->Pointer())(NULL);
+    }
+    | HELP VAR_C_FUNCTION
+    {
+    /**
+      Description: 
+        Displays the documentation relative to the wrapped image function.
+    **/
+       Variable*  var   = $2;
+        // call with NULL paramlist pointer to trigger help message
+        ((Variable::ptr (*)(ParamList*)) var->Pointer())(NULL);
+    }
+    | HELP VAR_C_PROCEDURE
+    {
+    /**
+      Description: 
+        Displays the documentation relative to the wrapped image function.
+    **/
+       Variable*  var   = $2;
+        // call with NULL paramlist pointer to trigger help message
+        ((void (*)(ParamList*)) var->Pointer())(NULL);
+    }
     | HELP ASTRING
     {
       string  help_cmd;

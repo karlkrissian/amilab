@@ -49,12 +49,14 @@ public:
 
 protected:
   void OnItemMenu(wxTreeEvent& event);
+  void OnAbout(wxCommandEvent& event);
   void ShowMenu(wxTreeItemId id, const wxPoint& pt);
 //  void OnMouseRightDown(wxMouseEvent& event);
 
 //  void OnTimerTip(wxTimerEvent &event);
 
 private:
+    Variable* _currentmenu_var;
     DECLARE_EVENT_TABLE();
 };
 

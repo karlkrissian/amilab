@@ -15,7 +15,9 @@
 
 #include <iostream>
 
+
 BEGIN_EVENT_TABLE(myTreeCtrl, wxTreeCtrl)
+  EVT_MENU(wxID_ABOUT, myTreeCtrl::OnAbout)
 //  EVT_RIGHT_DOWN(myTreeCtrl::OnMouseRightDown)
 //  EVT_TIMER(ID_TIMER_TIPWINDOW myTreeCtrl::OnTimerTip)
 END_EVENT_TABLE()
@@ -35,14 +37,15 @@ void myTreeCtrl::ShowMenu(wxTreeItemId id, const wxPoint& pt)
     if (item) {
       wxMenu menu(title);
       Variable* var = item->GetVar();
-      if (var) {
+     _currentmenu_var = var;
+     if (var) {
         std::string com = var->GetComments();
         if (com.compare("")!=0) {
           wxString comments(com.c_str(), wxConvUTF8);
           menu.Append(wxID_ANY, comments);
         }
       }
-      menu.Append(wxID_ANY, wxT("&About..."));
+      menu.Append(wxID_ABOUT, wxT("&About..."));
       PopupMenu(&menu, pt);
     }
   }
@@ -72,6 +75,31 @@ void myTreeCtrl::OnItemMenu(wxTreeEvent& event)
 
   ShowMenu(itemId, clientpt);
   event.Skip();
+}
+
+void myTreeCtrl::OnAbout(wxCommandEvent& event)
+{
+  std::string mess;
+  if (_currentmenu_var) {
+    switch (_currentmenu_var->Type()) {
+      case type_c_procedure     : 
+        ((void (*)(ParamList*)) _currentmenu_var->Pointer())(NULL);
+        return;
+      case type_c_image_function:
+       ((InrImage* (*)(ParamList*)) _currentmenu_var->Pointer())(NULL);
+        return;
+      case type_c_function:
+        ((Variable::ptr (*)(ParamList*)) _currentmenu_var->Pointer())(NULL);
+        return;
+      default:
+        mess = _currentmenu_var->GetComments();
+    }
+  } else {
+    mess = "No variable for this item";
+  }
+  wxMessageDialog* msg = new wxMessageDialog(NULL,wxString::FromAscii(mess.c_str()),
+      wxString::FromAscii("Help"),wxOK | wxICON_QUESTION );
+  msg->ShowModal();
 }
 
 

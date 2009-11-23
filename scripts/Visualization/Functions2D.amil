@@ -1,0 +1,295 @@
+#!/usr/bin/amilab
+
+#
+# Script for drawing 2D functions
+# or lines from an image
+#
+
+if (!exists(NLmeansClass)) {
+
+  import_filters
+  
+  Class NLmeansClass {
+
+    #----------------------------
+    proc ::Init() \
+    {
+        ::input_name =  ""
+        ::result_image_name =  "NLM_res", "name of the resulting image global variable"
+
+        ::result_filename = "NLM_result.ami.gz", "filename for saving the resulting image to disk"
+
+        #
+        # Filter type
+        #
+        ::filter_mode = INT(0), "Filter mode: 0 for standard, 1 for MRI, 2 for feature-based, 3 for fast"
+
+        ::noisetype = INT(1), "noise type: 0 additive Gaussian, 1: Rician"
+        ::threads   = INT(2)
+  
+        ::f = INT(2),     "Patch window size"
+        ::t = INT(4),     "Match window area"
+  
+        #  
+        ::h = 10, "Threshold for distance"
+        # 
+        ::sigma = 1, "Sigma: standard deviation of the Gaussian smoothing for fast version"
+        # 
+        ::usegrad = UCHAR(0), "use the norm of the gradient as a feature"
+    
+        # 
+        ::filter_type = INT(0), "0: standard 1: probability variant"
+        #  
+        ::presmooth_SD = 0, "standard deviation of Gaussian pre-smoothing"
+    
+        ::pattern_weight_param = 0.5, "Size of the Gaussian weighting function for the pattern similarity, the standard deviation of the Gaussian is pattern_weight_param*f"
+
+        ::minweight = 15, "sets the minimal weight threshold is exp(-minweight)"
+        # 
+        ::iterations = INT(1), "Number of iterations"
+        ::stop =0
+        ::show_images = UCHAR(1)
+        ::mse = 0
+        ::surf_scaling = 0.1
+        ::CreateWindow()
+    }
+    
+    #----------------------------
+    proc ::Close() \
+    {
+      ::win.Hide
+      delvars GetObjectName(::Close)
+    }
+    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    
+    #----------------------------
+    proc ::LoadInput() \
+    {
+      printn "evaluation of --> ::input <<="+::input_name+";"
+      eval "::input <<="+::input_name+";"
+      if (::input_name=="Image") {
+        ::input_name = "::input"
+        ::win.update
+      }
+      ::win.update
+      if (exists(::input_draw)) { del ::input_draw; }
+      show ::input
+    }
+    
+    
+    
+    #----------------------------
+    proc ::Run() \
+    {
+      if (!exists(::input)) { ::LoadInput; }
+      ::stop = 0
+      if (!exists(::res)) {
+        ::res =  ::input
+      }
+      for k=1 to ::iterations {
+        if (!::stop) {
+          print sprint("Iteration %0.0f \n",k)
+          if (::filter_mode==0) { ::Filter; }
+          if (::filter_mode==1) { ::MRIFilter; }
+          if (::filter_mode==2) { ::FeatureFilter; }
+          if (::filter_mode==3) { ::FastFilter; }
+        }
+        if (::show_images) {
+          ::Display
+          ProcessXEvents(50)
+        }
+        ::ComputeMSE(::res)
+      } 
+      # end for k
+
+      eval "global::"+::result_image_name+"<<="+"::res;"
+    }
+    # end ::Run()
+
+    #----------------------------
+    proc ::Display() \
+    {
+      printn "::Display begin"
+      #::LoadInput
+      if (!exists(::input_draw)) {
+        show ::input
+      }
+      # draw limits of ROI
+      if exists(::roi) {
+        roibox = (FLOAT)::roi*0+1
+        ::imbox  = (FLOAT)::input*0
+        ::imbox.putimage(roibox)
+        ::input_draw.SetIsoContour(0,::imbox,0.5)
+        ::input_draw.DrawIsoContour(0,1)
+        show ::input
+      }
+      # draw limits of Noise ROI
+      if exists(::noise_roi) {
+        roibox = (FLOAT)::noise_roi*0+1
+        ::noise_imbox  = (FLOAT)::input*0
+        ::noise_imbox.putimage(roibox)
+        del roibox
+        ::input_draw.SetIsoContour(1,::noise_imbox,0.5)
+        ::input_draw.DrawIsoContour(1,1)
+        show ::input
+      }
+      if exists(::res) {
+        show ::res
+        if exists(::roi) {
+          ::res_draw.SetIsoContour(0,::imbox,0.5)
+          ::res_draw.DrawIsoContour(0,1)
+        }
+        ::input_draw.compare(::res_draw)
+        # draw limits of ROI
+      }
+    }
+    
+    
+    
+    #----------------------------
+    proc ::Save() \
+    {
+      ::res.save ::result_filename
+    }
+    ::Save.Comments("Save image to disk as NLM_result.ami.gz")
+    
+    #----------------------------
+    proc ::Stop() \
+    {
+      ::stop = 1
+    }
+    ::Stop.Comments("Stop the current process")
+    
+    #--------------------------------
+    proc ::FilterModeEvent() \
+    {
+      ::win.EnablePanel(::standard_param_panel , ::filter_mode==0)
+      ::win.EnablePanel(::mri_param_panel ,      ::filter_mode==1)
+      ::win.EnablePanel(::feature_param_panel ,  ::filter_mode==2)
+      ::win.EnablePanel(::fast_param_panel ,     ::filter_mode==3)
+      ::win.SelectPage(::param_book,::filter_mode)
+    }
+
+    
+    #----------------------------
+    proc ::CreateWindow() {
+    
+      # parameters window
+      ::win = ParamWin("NL-means")
+      
+      ::win.BeginBook
+    
+        ::win.AddPage("Input/Output")
+
+          # set the input image
+          ::win.BeginBoxPanel("Input")
+            ::win.BeginHorizontal
+              ::win.AddImageChoice(::input_name, "")
+              ::win.AddButton("Load",::LoadInput)
+            ::win.EndHorizontal
+          ::win.EndBoxPanel
+
+          ::win.AddString(::result_image_name,"Result image")
+
+        ::win.AddPage("Param")
+          filtermode_id = ::win.AddEnum(::filter_mode,"Method")
+            ::win.AddEnumChoice(filtermode_id,"Standard")
+            ::win.AddEnumChoice(filtermode_id,"MRI")
+            ::win.AddEnumChoice(filtermode_id,"Feature")
+            ::win.AddEnumChoice(filtermode_id,"Fast")
+          ::win.SetCallback(::FilterModeEvent)
+
+          ::win.BeginBoxPanel("Common Parameters")
+            ::win.AddFloat(::h,      "h",      0.01,200)
+            ::win.AddInt(  ::threads,"Threads",1,   10 )
+            ::win.AddInt(  ::t,      "t",      1,   30 )
+          ::win.EndBoxPanel
+    
+          ::param_book = ::win.BeginBook
+            ::standard_param_panel = ::win.AddPage("Stand")
+              ::presmooth_id     = ::win.AddFloat(::presmooth_SD,"pre-smooth",0,3)
+              ::win.AddInt(::f,"f", 1,10)
+              ::noisetype_id = ::win.AddEnum(::noisetype,"Type")
+                ::win.AddEnumChoice(::noisetype_id,"Add. Gaussian")
+                ::win.AddEnumChoice(::noisetype_id,"Rician (MRI)")
+              ::filtertype_id = ::win.AddEnum(::filter_type)
+                ::win.AddEnumChoice(::filtertype_id,"Stand.")
+                ::win.AddEnumChoice(::filtertype_id,"Prob.")
+                ::win.AddEnumChoice(::filtertype_id,"Prob. + Smooth.")
+              ::win.AddFloat(::pattern_weight_param,"Weights size",0.1,10)
+
+            ::mri_param_panel = ::win.AddPage("MRI")
+              ::win.AddInt(::f,"f", 1,10)
+              ::win.AddFloat(  ::sigma,"Sigma",0.5,10)
+              ::win.AddButton("Select noise ROI", ::GetNoiseROI)
+
+            ::feature_param_panel = ::win.AddPage("Feature")
+              ::win.AddFloat(  ::sigma,"Sigma",0.5,10)
+              ::usegrad_id = ::win.AddBoolean(::usegrad,"Use_Grad")
+              ::noisetype_id = ::win.AddEnum(::noisetype,"Type")
+                ::win.AddEnumChoice(::noisetype_id,"Add. Gaussian")
+                ::win.AddEnumChoice(::noisetype_id,"Rician (MRI)")
+
+            ::fast_param_panel = ::win.AddPage("Fast")
+              ::win.AddInt(::f,"f", 1,10)
+              ::win.AddFloat(::minweight,"Min. weight",1,100)
+          ::win.EndBook
+
+    
+        ::win.AddPage("Controls")
+          ::win.BeginBoxPanel("Execution")
+              ROI_id     = ::win.AddButton("Select ROI", ::GetROI)
+              ::win.BeginHorizontal
+                  restart_id = ::win.AddButton("Restart", ::Restart)
+                  display_id = ::win.AddButton("Stop",    ::Stop)
+              ::win.EndHorizontal
+              ::it_id      = ::win.AddInt(::iterations,"Iter",1,50)
+              ::win.AddButton("Run",     ::Run)
+          ::win.EndBoxPanel
+  
+          ::win.BeginBoxPanel("Result")
+              ::win.AddString(::result_filename,"file")
+              ::win.BeginHorizontal
+                  display_id = ::win.AddButton("Save",       ::Save)
+                  display_id = ::win.AddButton("Display",    ::Display)
+              ::win.EndHorizontal
+          ::win.EndBoxPanel
+
+          ::win.BeginBoxPanel("Surface display")
+              ::win.AddFloat(::surf_scaling,"surf scale",0.01,10)
+              display_surf_id = ::win.AddButton("Surfaces",    ::DisplaySurfaces)
+          ::win.EndBoxPanel
+      ::win.EndBook
+      ::win.AddButton("Close", ::Close)
+      
+      ::win.update
+      ::win.Display
+      ::FilterModeEvent
+    }
+
+    ::Init
+  } 
+  # Class NLmeansClass
+} 
+# end if (!exists(NLmeansClass))
+  
+  
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(nlm)) {
+
+  NLmeansClass nlm
+  
+  if (argc>=1) {
+    printn "reading image"
+    input = Image($1)
+    nlm->image_name = "input"
+    nlm->win.update
+  }
+
+} else {
+  InfoDialog "The script seems to be already loaded."
+}
+
