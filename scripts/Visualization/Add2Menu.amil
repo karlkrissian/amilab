@@ -8,4 +8,5 @@ category = "&Visualization"
 dir      = "Visualization/"
 
 AddMenuScript(category,"&Parametric Surfaces",  dir+"ParametricSurfaces")
+AddMenuScript(category,"2D &Function plot",  dir+"Functions2D")
 

@@ -20,7 +20,8 @@
  */
 void AddWrapMainFrame();
 
-void wrap_MainFrameDrawSetLimits( ParamList* p);
+void wrap_MainFrameDrawSetXLimits( ParamList* p);
+void wrap_MainFrameDrawSetYLimits( ParamList* p);
 void wrap_MainFrameDrawSetCurve( ParamList* p);
 
 #endif //  _wrap_mainframe_h_

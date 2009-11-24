@@ -72,6 +72,14 @@ if (!exists(NLmeansClass)) {
     ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
     #----------------------------
+    proc ::CloseAll() \
+    {
+      ::Close
+      if (exists(NLmeansClass)) { del NLmeansClass; }
+    }
+    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    
+    #----------------------------
     proc ::LoadInput() \
     {
       printn "evaluation of --> ::input <<="+::input_name+";"
@@ -153,7 +161,8 @@ if (!exists(NLmeansClass)) {
           InitTime
           ::res_roi = NLmeans((FLOAT)::res0,\
                                 ::t,::f,::h,\
-                                ::noisetype,::threads,\
+                                ::noisetype,\
+                                ::threads,\
                                 ::filter_type,\
                                 ::presmooth_SD,\
                                 ::pattern_weight_param)
@@ -164,10 +173,11 @@ if (!exists(NLmeansClass)) {
           ::res_roi.info
           ::res_roi[0] = NLmeans( (FLOAT)::res0[0],\
                                     ::t,::f,::h,\
-                                    ::noisetype,::threads,\
+                                    ::noisetype,\
+                                    ::threads,\
                                     ::filter_type,\
-                                ::presmooth_SD,\
-                                ::pattern_weight_param)
+                                    ::presmooth_SD,\
+                                    ::pattern_weight_param)
           ::res_roi[1] = NLmeans( (FLOAT)::res0[1],\
                                     ::t,::f,::h,\
                                     ::noisetype,::threads,\
@@ -193,21 +203,22 @@ if (!exists(NLmeansClass)) {
   
         if (::res0.GetFormat != RGB) {
           ::res = NLmeans(::res0,\
-                            ::t,::f,::h,\
-                            ::noisetype,::threads,\
-                            ::filter_type,\
-                                ::presmooth_SD)
+                          ::t,::f,::h,\
+                          ::noisetype,::threads,\
+                          ::filter_type,\
+                          ::presmooth_SD,\
+                          ::pattern_weight_param)
         } else {
           ::res[0] = NLmeans((FLOAT)::res0[0],::t,::f,::h,::noisetype,::threads,\
-                                    ::filter_type,\
+                                ::filter_type,\
                                 ::presmooth_SD,\
                                 ::pattern_weight_param)
           ::res[1] = NLmeans((FLOAT)::res0[1],::t,::f,::h,::noisetype,::threads,\
-                                    ::filter_type,\
+                                ::filter_type,\
                                 ::presmooth_SD,\
                                 ::pattern_weight_param)
           ::res[2] = NLmeans((FLOAT)::res0[2],::t,::f,::h,::noisetype,::threads,\
-                                    ::filter_type,\
+                                ::filter_type,\
                                 ::presmooth_SD,\
                                 ::pattern_weight_param)
         }
@@ -461,7 +472,7 @@ if (!exists(NLmeansClass)) {
     proc ::Restart() \
     {
       ::LoadInput
-      ::res = ::input
+      ::res <<= ::input
       show ::res
     }
     
@@ -579,7 +590,10 @@ if (!exists(NLmeansClass)) {
               display_surf_id = ::win.AddButton("Surfaces",    ::DisplaySurfaces)
           ::win.EndBoxPanel
       ::win.EndBook
-      ::win.AddButton("Close", ::Close)
+      ::win.BeginHorizontal
+        ::win.AddButton("Close",      ::Close)
+        ::win.AddButton("Close All",  ::CloseAll)
+      ::win.EndHorizontal
       
       ::win.update
       ::win.Display

@@ -1147,7 +1147,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 1229 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-       driver.res_print((yysemantic_stack_[(3) - (2)].astring));
+       //driver.res_print($2);
        driver.parse_script((yysemantic_stack_[(3) - (2)].astring));
        delete [] (yysemantic_stack_[(3) - (2)].astring);
      }
@@ -9657,7 +9657,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
 #line 7548 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         InrImage* im;
-        printf(" ********** %d %f %f %f\n", (yysemantic_stack_[(10) - (3)].aint), (yysemantic_stack_[(10) - (5)].adouble), (yysemantic_stack_[(10) - (7)].adouble), (yysemantic_stack_[(10) - (9)].adouble));
+        //printf(" ********** %d %f %f %f\n", $3, $5, $7, $9);
         im = new InrImage( (int) (yysemantic_stack_[(10) - (5)].adouble), (int) (yysemantic_stack_[(10) - (7)].adouble), (int) (yysemantic_stack_[(10) - (9)].adouble), (WORDTYPE) (yysemantic_stack_[(10) - (3)].aint));
         driver.im_stack.AddImage(im);
       }
@@ -9680,7 +9680,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
       Creates a new image
       **/
     InrImage* im;
-    printf(" ********** %d %f %f %f\n", (yysemantic_stack_[(12) - (3)].aint), (yysemantic_stack_[(12) - (5)].adouble), (yysemantic_stack_[(12) - (7)].adouble), (yysemantic_stack_[(12) - (9)].adouble));
+    //printf(" ********** %d %f %f %f\n", $3, $5, $7, $9);
     im = new InrImage( (int) (yysemantic_stack_[(12) - (5)].adouble), (int) (yysemantic_stack_[(12) - (7)].adouble), (int) (yysemantic_stack_[(12) - (9)].adouble), (int) (yysemantic_stack_[(12) - (11)].adouble), (WORDTYPE) (yysemantic_stack_[(12) - (3)].aint));
     driver.im_stack.AddImage(im);
     }

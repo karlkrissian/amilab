@@ -251,6 +251,8 @@ void wxStringParameter::OnStringUpdate( void* data)
 {
   wxStringParameter* _this=(wxStringParameter*)data;
   _this->SetValue((const char*) (_this->_text->GetValue()).mb_str(wxConvUTF8));
+
+  _this->Callback();
   
 }
 

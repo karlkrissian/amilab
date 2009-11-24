@@ -1227,7 +1227,7 @@ object_decl:
 func_inst :
     FUNCTION expr_string end_instr
     {
-       driver.res_print($2);
+       //driver.res_print($2);
        driver.parse_script($2);
        delete [] $2;
      }
@@ -7547,7 +7547,7 @@ image:
       T_Image T_OP_PAR basic_type T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
       {
         InrImage* im;
-        printf(" ********** %d %f %f %f\n", $3, $5, $7, $9);
+        //printf(" ********** %d %f %f %f\n", $3, $5, $7, $9);
         im = new InrImage( (int) $5, (int) $7, (int) $9, (WORDTYPE) $3);
         driver.im_stack.AddImage(im);
       }
@@ -7566,7 +7566,7 @@ image:
       Creates a new image
       **/
     InrImage* im;
-    printf(" ********** %d %f %f %f\n", $3, $5, $7, $9);
+    //printf(" ********** %d %f %f %f\n", $3, $5, $7, $9);
     im = new InrImage( (int) $5, (int) $7, (int) $9, (int) $11, (WORDTYPE) $3);
     driver.im_stack.AddImage(im);
     }

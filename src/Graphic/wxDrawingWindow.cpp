@@ -22,13 +22,17 @@ END_EVENT_TABLE()
 wxDrawingWindow::wxDrawingWindow(wxWindow *parent, wxWindowID id,
     const wxPoint& pos, const wxSize& size, long style,
     const wxString& name)
-    : wxWindow(parent, id, pos, size, style
+    : wxScrolledWindow(parent, id, pos, size, style
     |wxFULL_REPAINT_ON_RESIZE
     //|wxDOUBLE_BORDER
     |wxBORDER_RAISED
+    | wxHSCROLL | wxVSCROLL
     , 
     name)
 {
+  this->SetScrollbars(3,3,10,10);
+  this->EnableScrolling(true,true);
+
   // default values
   _xaxis = _yaxis = 0;
   _xmin = _ymin = -10;

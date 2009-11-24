@@ -955,7 +955,7 @@ void MainFrame::CreateDrawingPanel(wxWindow* parent)
       wxID_ANY,
       wxDefaultPosition,
       wxSize(300,300),
-      wxHW_SCROLLBAR_AUTO);
+      wxHSCROLL);
 
   drawingpanel_sizer->Add(_drawing_window,  1,  wxALL | wxEXPAND, 0);
   drawingpanel_sizer->Fit(_drawing_panel);
@@ -1432,9 +1432,9 @@ void MainFrame::AddMenuScript(  const std::string& script_category,
 //--------------------------------------------------
 void MainFrame::OnUserMenuScript(  wxCommandEvent& event)
 {
-  cout << "MainFrame::OnUserMenuScript() ";
-  cout << "GetId() = "<< event.GetId() << endl;
-  cout << "script = " << usermenu_scripts[event.GetId()] << endl;
+  //cout << "MainFrame::OnUserMenuScript() ";
+  //cout << "GetId() = "<< event.GetId() << endl;
+  //cout << "script = " << usermenu_scripts[event.GetId()] << endl;
   string cmd; // increment the command line string
   cmd = (boost::format("func \"%1%\" // from menu") % usermenu_scripts[event.GetId()]).str();
   TC->ConsoleClear();

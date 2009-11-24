@@ -15,6 +15,7 @@
 
 
 #include "wx/window.h"
+#include <wx/scrolwin.h>
 #include <vector>
 #include "inrimage.hpp"
 
@@ -31,7 +32,7 @@ public:
 };
 
 
-class wxDrawingWindow : public wxWindow
+class wxDrawingWindow : public wxScrolledWindow
 {
   // curve drawing parameters
   double _xmin, _xmax;
