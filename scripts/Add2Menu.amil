@@ -9,6 +9,8 @@ for dir in  "Filtering","Denoising","Noise","Segmentation","SyntheticImages",\
 {
   if FileExists(GetScriptsDir+"/"+dir+"/Add2Menu.amil") {
     func dir+"/Add2Menu.amil"
+  } else {
+    InfoDialog GetScriptsDir+"/"+dir+"/Add2Menu.amil does not exists"
   }
 }
 #quit

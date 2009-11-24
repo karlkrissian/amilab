@@ -35,23 +35,23 @@ if (exists(RRD_Init)) {
   proc RRD_Read() {
   
     printn "Read"
-    if (typePix == 0) {
-      global::i = ReadRawImages(dimx,dimy,dimz,UCHAR,dimv,endianess,file_name)
+    if (RRD_typePix == 0) {
+      global::i = ReadRawImages(RRD_dimx,RRD_dimy,RRD_dimz,UCHAR,RRD_dimv,RRD_endianess,RRD_file_name)
     }
-    if (typePix == 1) {
-      global::i = ReadRawImages(dimx,dimy,dimz,UINT,dimv,endianess,file_name)
+    if (RRD_typePix == 1) {
+      global::i = ReadRawImages(RRD_dimx,RRD_dimy,RRD_dimz,UINT,RRD_dimv,RRD_endianess,RRD_file_name)
     }
-    if (typePix == 2) {
-      global::i = ReadRawImages(dimx,dimy,dimz,INT,dimv,endianess,file_name)
+    if (RRD_typePix == 2) {
+      global::i = ReadRawImages(RRD_dimx,RRD_dimy,RRD_dimz,INT,RRD_dimv,RRD_endianess,RRD_file_name)
     }
-    if (typePix == 3) {
-      global::i = ReadRawImages(dimx,dimy,dimz,FLOAT,dimv,endianess,file_name)
+    if (RRD_typePix == 3) {
+      global::i = ReadRawImages(RRD_dimx,RRD_dimy,RRD_dimz,FLOAT,RRD_dimv,RRD_endianess,RRD_file_name)
     }
-    if (typePix == 4) {
-      global::i = ReadRawImages(dimx,dimy,dimz,DOUBLE,dimv,endianess,file_name)
+    if (RRD_typePix == 4) {
+      global::i = ReadRawImages(RRD_dimx,RRD_dimy,RRD_dimz,DOUBLE,RRD_dimv,RRD_endianess,RRD_file_name)
     }
   
-    i.setvoxelsize(voxSizeX, voxSizeY, voxSizeZ)
+    i.setvoxelsize(RRD_voxSizeX, RRD_voxSizeY, RRD_voxSizeZ)
   
   }
   
