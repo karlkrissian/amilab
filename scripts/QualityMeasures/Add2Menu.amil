@@ -1,0 +1,7 @@
+#!/usr/bin/amilab
+
+#
+# Adding main Gui scripts to the menu
+#
+
+AddMenuScript("&QualityMeasures","Image &Differences","QualityMeasures/MSE.amil")
