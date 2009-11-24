@@ -98,7 +98,7 @@ void myTreeCtrl::OnAbout(wxCommandEvent& event)
     mess = "No variable for this item";
   }
   wxMessageDialog* msg = new wxMessageDialog(NULL,wxString::FromAscii(mess.c_str()),
-      wxString::FromAscii("Help"),wxOK | wxICON_QUESTION );
+      wxString::FromAscii("Help"),wxOK | wxICON_INFORMATION );
   msg->ShowModal();
 }
 

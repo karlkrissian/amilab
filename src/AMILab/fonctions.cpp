@@ -1188,6 +1188,63 @@ typedef pair<string,string> file_format;
 typedef map<string,string>  file_format_map;
 
 //----------------------------------------------------------------------
+int AskFilename(std::string& name)
+{
+
+    file_format_map formats;
+
+    formats.insert(file_format( "All ext",
+                                "*.*"));
+    formats.insert(file_format( "Amilab",
+                                "*.ami;*.ami.gz"));
+    formats.insert(file_format( "VTK",
+                                "*.vtk"));
+    formats.insert(file_format( "Standard images",  
+                                "*.jpg;*.jpeg;*.png;*.bmp;*.tif;*.tiff"));
+    formats.insert(file_format( "ITK",
+                                "*.mhd"));
+    formats.insert(file_format( "All",
+                                "*"));
+
+    wxString s_extDef = wxString::FromAscii(formats["All ext"].c_str());
+    wxString format_choices;
+
+    for(file_format_map::iterator p = formats.begin(); 
+        p!=formats.end();
+        ++p)
+    {
+      if (p!=formats.begin())
+        format_choices << wxString::FromAscii("|");
+      format_choices << wxString::FromAscii(str(format(" %1% (%2%) |%2%") % p->first % p->second).c_str());
+    }
+    if (GB_debug) cerr << format_choices << endl;
+
+    wxString filename = wxFileSelector(
+                                    _T("Select the filename"),
+                                    wxEmptyString, // default path
+                                    wxEmptyString, // default filename
+                                    s_extDef, // default extension
+                                    wxString::Format // wildcard
+                                    ( format_choices,
+                                        wxFileSelectorDefaultWildcardStr,
+                                        wxFileSelectorDefaultWildcardStr
+                                    ),
+                                      wxFD_OPEN
+                                    //|wxFD_CHANGE_DIR
+                                    |wxFD_PREVIEW
+                                    |wxFD_FILE_MUST_EXIST, // FLAGS
+                                    NULL // parent
+                                   );
+
+    if ( !filename ) return 0;
+
+    // it is just a sample, would use wxSplitPath in real program
+    s_extDef = filename.AfterLast(_T('.'));
+    name = filename.mb_str(wxConvUTF8);
+    return 1;
+}
+
+//----------------------------------------------------------------------
 int AskImage(std::string& name)
 {
 

@@ -17,6 +17,17 @@
 using namespace std;
 
 /**
+ * Function returns the number of parameters of the parameters list
+ * if the pointer is NULL, returns -1 to allow display the documentation
+ */
+int get_num_param(ParamList* p)
+{
+  if (!p) return -1;
+  return p->GetNumParam();
+}
+
+
+/**
  * Function used to parse a string in a list of parameters
  */
 bool get_string_param(std::string*& arg, ParamList*p, int& num)

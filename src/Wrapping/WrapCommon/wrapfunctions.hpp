@@ -23,7 +23,7 @@
   mess = mess + (boost::format("Description:\n %s \n") % description).str(); \
   mess = mess + (boost::format("Parameters:\n  %s \n") % parameters).str(); \
   wxMessageDialog* msg = new wxMessageDialog(NULL,wxString::FromAscii(mess.c_str()),\
-      wxString::FromAscii("Info"),wxOK | wxICON_QUESTION  );\
+      wxString::FromAscii("Info"),wxOK | wxICON_INFORMATION );\
   msg->ShowModal();\
   return Variable::ptr(); }
 
@@ -33,7 +33,7 @@
   mess = mess + (boost::format("Description:\n %s \n") % description).str(); \
   mess = mess + (boost::format("Parameters:\n  %s \n") % parameters).str(); \
   wxMessageDialog* msg = new wxMessageDialog(NULL,wxString::FromAscii(mess.c_str()),\
-      wxString::FromAscii("Info"),wxOK | wxICON_QUESTION  );\
+      wxString::FromAscii("Info"),wxOK | wxICON_INFORMATION  );\
   msg->ShowModal();\
   return; } \
 
@@ -43,10 +43,16 @@
   mess = mess + (boost::format("Description:\n %s \n") % description).str(); \
   mess = mess + (boost::format("Parameters:\n  %s \n") % parameters).str(); \
   wxMessageDialog* msg = new wxMessageDialog(NULL,wxString::FromAscii(mess.c_str()),\
-      wxString::FromAscii("Info"),wxOK | wxICON_QUESTION  );\
+      wxString::FromAscii("Info"),wxOK | wxICON_INFORMATION  );\
   msg->ShowModal();\
   return NULL; } \
 
+
+/**
+ * Function returns the number of parameters of the parameters list
+ * if the pointer is NULL, returns -1 to allow display the documentation
+ */
+int get_num_param(ParamList* p);
 
 /**
  * Function used to parse a string in a list of parameters

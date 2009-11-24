@@ -45,6 +45,8 @@
 #include "driver.h"
 #include "amilab_messages.h"
 
+#include "fonctions.h"
+
 extern yyip::Driver GB_driver;
 extern MainFrame*   GB_main_wxFrame;
 
@@ -452,8 +454,30 @@ void TextControl::OnChar(wxKeyEvent& event)
               if ( wxIsprint((int)keycode) )
                   key.Printf(_T("'%c'"), (char)keycode);
               else if ( keycode > 0 && keycode < 27 ) {
-                  key.Printf(_("Ctrl-%c"), _T('A') + keycode - 1);
+                key.Printf(_("Ctrl-%c"), _T('A') + keycode - 1);
                 // remove the last character
+
+                // Use Ctrl-F to write a filename in the console
+                if (_T('A') + keycode - 1 == _T('F')) {
+
+                  int res;
+                  string name;
+                  string inc_cmd; // increment the command line string
+        
+                  res=AskFilename(name);
+                  if (!res) {
+                    GB_driver.yyiperror(" No filename given! \n");
+                  }
+        
+                  wxFileName filename(_T(name));
+                  filename.Normalize(wxPATH_NORM_ALL,wxEmptyString,wxPATH_UNIX);
+                  wxString newname(   filename.GetVolume()+filename.GetVolumeSeparator()+
+                                      filename.GetPath(wxPATH_GET_VOLUME,wxPATH_UNIX)+
+                                      filename.GetPathSeparator(wxPATH_UNIX)+
+                                      filename.GetFullName());
+                  inc_cmd = str(format(" \"%1%\" ") % newname.mb_str());
+                  this->IncCommand(wxString::FromAscii(inc_cmd.c_str()));
+                }
               }
               else
                   key.Printf(_T("unknown (%ld)"), keycode);

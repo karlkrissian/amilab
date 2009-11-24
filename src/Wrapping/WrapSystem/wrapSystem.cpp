@@ -53,7 +53,7 @@ Variable::ptr wrap_GetFreeMemory(ParamList* p)
             ";
 
 
-  if (p->GetNumParam()!=0)  HelpAndReturnVarPtr;
+  if (p->get_num_param()!=0)  HelpAndReturnVarPtr;
   long long val = ::wxGetFreeMemory();
   cout << (boost::format("Free Memory = %1%") % val).str() << endl;
 
@@ -81,7 +81,7 @@ Variable::ptr wrap_GetFullHostName(ParamList* p)
               Returns a string variable with the result of wxGetFullHostName\n\
             ";
 
-  if (p->GetNumParam()!=0)  HelpAndReturnVarPtr;
+  if (get_num_param(p)!=0)  HelpAndReturnVarPtr;
   wxString FullHostName = ::wxGetFullHostName();
   string* value = new string(FullHostName.mb_str());
 
@@ -103,7 +103,7 @@ Variable::ptr wrap_GetHomeDir(ParamList* p) {
               Returns a string variable with the result of wxGetHomeDir\n\
             ";
 
-  if (p->GetNumParam()!=0)  HelpAndReturnVarPtr;
+  if (get_num_param(p)!=0)  HelpAndReturnVarPtr;
   wxString HomeDir = ::wxGetHomeDir();
   string* value = new string(HomeDir.mb_str());
 
@@ -126,7 +126,7 @@ Variable::ptr wrap_GetUserHome(ParamList* p)
               Returns a string variable with the result of wxGetUserHome\n\
             ";
 
-  if (p->GetNumParam()!=0)  HelpAndReturnVarPtr;
+  if (get_num_param(p)!=0)  HelpAndReturnVarPtr;
   wxString UserHome = ::wxGetUserHome();
   string* value = new string(UserHome.mb_str());
 
@@ -149,7 +149,7 @@ Variable::ptr wrap_GetUserId(ParamList* p)
               Returns a string variable with the result of wxGetUserId\n\
             ";
 
-  if (p->GetNumParam()!=0)  HelpAndReturnVarPtr;
+  if (get_num_param(p)!=0)  HelpAndReturnVarPtr;
   wxString UserId = ::wxGetUserId();
   string* value = new string(UserId.mb_str());
 
@@ -172,7 +172,7 @@ Variable::ptr wrap_GetUserName(ParamList* p)
               Returns a string variable with the result of wxGetUserName\n\
             ";
 
-  if (p->GetNumParam()!=0)  HelpAndReturnVarPtr;
+  if (get_num_param(p)!=0)  HelpAndReturnVarPtr;
   wxString UserName = ::wxGetUserName();
   string* value = new string(UserName.mb_str());
 
@@ -196,7 +196,7 @@ Variable::ptr wrap_GetHostName(ParamList* p)
               Returns a string variable with the result of wxGetHostName\n\
             ";
 
-  if (p->GetNumParam()!=0)  HelpAndReturnVarPtr;
+  if (get_num_param(p)!=0)  HelpAndReturnVarPtr;
   wxString hostname = ::wxGetHostName();
   string* value = new string(hostname.mb_str());
 
@@ -219,7 +219,7 @@ Variable::ptr wrap_GetCurrentScriptDir(ParamList* p)
               the directory of the current script\n\
             ";
 
-  if (p->GetNumParam()!=0)  HelpAndReturnVarPtr;
+  if (get_num_param(p)!=0)  HelpAndReturnVarPtr;
   
   wxString wxvalue = wxFileName(wxString(GB_driver.GetCurrentFilename().c_str(), wxConvUTF8)).GetPath();
   string* value = new string(wxvalue.mb_str());

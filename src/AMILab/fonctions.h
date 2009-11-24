@@ -98,10 +98,11 @@ InrImage* Func_SecDerGrad2( InrImage* im, float sigma );
 void      Func_DiscSecDerGrad( InrImage* im, InrImage* Isecder, InrImage* Inormgrad = NULL);
 
 
-int AskImage(       std::string& name);
-int AskVarName(   wxWindow* parent, const string title, const string label, const string def, std::string& name);
-int AskSurface(     std::string& name);
-int AskScript(      std::string& name);
+int AskImage   (  std::string& name);
+int AskFilename(  std::string& name);
+int AskVarName (   wxWindow* parent, const string title, const string label, const string def, std::string& name);
+int AskSurface (  std::string& name);
+int AskScript  (  std::string& name);
 
 
 //------- Weickert
