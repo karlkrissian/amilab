@@ -26,7 +26,6 @@ MESSAGE( "wxWidgets_USE_FILE = ${wxWidgets_USE_FILE}")
 SET(  WrapITK_SRCS
     itkCannyEdgeDetector.cpp
     wrapITK.cpp
-    LeastSquares.cpp
     wrapitkRecursiveGaussianImageFilter.cpp
     wrapitkRead_3D_US.cpp
     wrapitkRead.cpp

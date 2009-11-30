@@ -5,7 +5,7 @@
 #
 
 for dir in  "Filtering","Denoising","Noise","Segmentation","SyntheticImages",\
-            "Visualization","IO","Centerlines", "QualityMeasures" \
+            "Visualization","IO","Centerlines", "QualityMeasures", "Fitting" \
 {
   if FileExists(GetScriptsDir+"/"+dir+"/Add2Menu.amil") {
     func dir+"/Add2Menu.amil"

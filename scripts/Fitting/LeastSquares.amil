@@ -1,0 +1,160 @@
+#
+# Local Fitting by Least Squares
+#
+
+import_filters
+
+if (!exists(LeastSquaresClass)) \
+{
+  Class LeastSquaresClass \
+  {
+    #-------------------
+    proc ::Init() {
+      ::input_name =  ""
+      ::size_x = INT(3), "window size in X is (2*val+1)"
+      ::size_y = INT(3), "window size in Y is (2*val+1)"
+
+      ::weight_mode = INT(0), "window weights: 0 for uniform, 1 for Gaussian"
+      ::use_constant = UCHAR(1), "use constant"
+      ::use_X        = UCHAR(1), "use unit slope in X"
+      ::use_Y        = UCHAR(1), "use unit slope in Y"
+      # todo: allow Gaussian weights
+      # todo: allow mask
+
+      ::CreateWindow()
+    }
+  
+    #----------------------------
+    proc ::Close() \
+    {
+      ::win.Hide
+      delvars GetObjectName(::Close)
+    }
+    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    
+    #----------------------------
+    proc ::CloseAll() \
+    {
+      ::Close
+      if (exists(LeastSquaresClass)) { del LeastSquaresClass; }
+    }
+    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    
+    #----------------------------
+    proc ::LoadInput() \
+    {
+      printn "evaluation of --> ::input <<="+::input_name+";"
+      eval "::input <<="+::input_name+";"
+      if (::input_name=="Image") {
+        ::input_name = "::input"
+        ::win.update
+      }
+      ::win.update
+      if (exists(::input_draw)) { del ::input_draw; }
+      show ::input
+    }
+    
+    #-----------------------------------
+    proc ::Run() \
+    {
+      # fitting base
+      sizex = 2*::size_x+1
+      sizey = 2*::size_y+1
+      numcoeff = 3
+      b = Image(FLOAT,sizex,sizey,1,numcoeff)
+      b[0] = ((FLOAT) Ypos(b)-b.ty/2)
+      b[1] = ((FLOAT) Xpos(b)-b.tx/2)
+      b[2] = 1
+      weights = Image(FLOAT,sizex,sizey,1)
+      weights.settranslation(-::size_x,-::size_y,0)
+      weights = 1
+      if (::weight_mode==1) {
+        # TODO ...
+        #wp  = SpacePos(weights)
+        #nwp = sqrt(wp[0]*wp[0]+wp[1]*wp[1])
+        #gaussian_size = _size_y*_sigma
+        #nwp = exp(-nwp*nwp/(gaussian_size*gaussian_size))
+      }
+      mask = ::input*0+1
+      ::res <<= LeastSquares(::input,b,weights,mask)
+    }
+
+    proc ::Display() {
+      show ::input
+      show ::res
+      ::input_draw.compare(::res_draw)
+    }
+
+    #-------------------
+    proc ::CreateWindow() {
+
+      # parameters window
+      ::win = ParamWin("LeastSqu")
+      
+      ::win.BeginBook
+    
+        ::win.AddPage("Input/Output")
+
+          # set the input image
+          ::win.BeginBoxPanel("Input")
+            ::win.BeginHorizontal
+              ::win.AddImageChoice(::input_name, "")
+              ::win.AddButton("Load",::LoadInput)
+            ::win.EndHorizontal
+          ::win.EndBoxPanel
+
+
+        ::win.AddPage("Param")
+          ::win.AddInt(::size_x,"size X",1,10)
+          ::win.AddInt(::size_y,"size Y",1,10)
+
+          ::win.BeginBoxPanel("Coefficients to fit")
+            ::win.AddBoolean(::use_constant,"constant")
+            ::win.AddBoolean(::use_X,"X")
+            ::win.AddBoolean(::use_Y,"Y")
+          ::win.EndBoxPanel
+    
+        ::win.AddPage("Controls")
+          ::win.AddButton("Run",     ::Run)
+  
+          ::win.BeginBoxPanel("Result")
+            ::win.AddButton("Display",    ::Display)
+          ::win.EndBoxPanel
+
+      ::win.EndBook
+      ::win.BeginHorizontal
+        ::win.AddButton("Close",      ::Close)
+        ::win.AddButton("Close All",  ::CloseAll)
+      ::win.EndHorizontal
+      
+      ::win.update
+      ::win.Display
+    }
+  
+    ::Init()
+  
+  }
+  # end Class LeastSquaresClass
+
+}
+# end if (!exists(LeastSquaresClass))
+
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(lsf)) {
+
+  LeastSquaresClass lsf
+  
+  if (argc>=1) {
+    printn "reading image"
+    input = Image($1)
+    lsf->image_name = "input"
+    lsf->win.update
+  }
+
+} else {
+  InfoDialog "The script seems to be already loaded."
+}
+

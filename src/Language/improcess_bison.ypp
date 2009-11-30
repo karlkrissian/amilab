@@ -6210,7 +6210,7 @@ postfix_expr
         {
         /**
              Description:
-             returns the position of the maximal value of an image
+             returns the position of the maximal value of an image, the 3D position is returned as a single integer value of the position of the vector of the image intensity, where the voxels are ordered in X first,Y second and Z.
 
              Parameters:
                (3) image expression
@@ -8491,12 +8491,12 @@ image:
       InrImage*  res;
       ImageExtent<float>* extent = (ImageExtent<float>*) $3;
   
-      extent->print();
+      //extent->print();
       extent->SetRelative(((InrImage::ptr*) $1->Pointer())->get());
   
-      extent->print();
-      cout << "xmax = " << (int)  extent->Xmax() << endl;
-      cout << "xmax = " << (int)  round((double)extent->Xmax()) << endl;
+      //extent->print();
+      //cout << "xmax = " << (int)  extent->Xmax() << endl;
+      //cout << "xmax = " << (int)  round((double)extent->Xmax()) << endl;
       res = Func_SubImage( ((InrImage::ptr*) $1->Pointer())->get(),
                   (int)  round((double)extent->Xmin()),
                   (int)  round((double)extent->Ymin()),

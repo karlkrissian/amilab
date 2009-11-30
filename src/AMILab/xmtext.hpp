@@ -77,8 +77,7 @@ protected:
     in_completion      = 0;
     completion_count   = 0;
     SetSizeHints(wxSize(200,100));
-    SetToolTip(_T("Amilab command line console, \n\ Keyboard shortcuts: \n \tCtrl-F: load a filename as a string. \n \tTab: complete a keyword or a variable name. \n \tUp-Down arrows to browse command history. "));
-    
+    SetToolTip(_T("Amilab command line console, \n \tKeyboard shortcuts: \n \tCtrl-F: load a filename as a string. \n \tTab: complete a keyword or a variable name. \n \tUp-Down arrows to browse command history. "));    
   };
 
   ~TextControl() {

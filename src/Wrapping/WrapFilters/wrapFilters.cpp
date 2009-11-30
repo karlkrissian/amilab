@@ -27,6 +27,7 @@
 #endif // AMI_USE_FASTNLMEANS
 #include "wrapAlgorithmsBasic.h"
 #include "wrapComputePV.h"
+#include "wrap_DirSum.h"
 
 extern VarContexts  Vars;
 
@@ -53,6 +54,9 @@ void AddWrapFilters(){
                 (void*) wrapComputePV  );
   Vars.AddVar(type_c_image_function,"ComputePV_subdiv", 
                 (void*) wrapComputePV_subdiv  );
+
+  Vars.AddVar(type_c_image_function,"DirSum", 
+                (void*) wrap_DirSum  );
 
 }
 

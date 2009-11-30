@@ -1,0 +1,13 @@
+#!/usr/bin/amilab
+
+#
+# Adding main Gui scripts to the menu
+#
+
+filt_category = "&Fitting"
+filt_dir = "Fitting/"
+
+AddMenuScript(filt_category,"&Least Squares",        filt_dir+"LeastSquares")
+
+del filt_category
+del filt_dir

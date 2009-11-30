@@ -34,6 +34,7 @@ IF(AMI_USE_FASTNLMEANS)
   )
 ENDIF(AMI_USE_FASTNLMEANS)
 
+INCLUDE( ${USE_ITK_FILE} )
 INCLUDE( ${VTK_USE_FILE} )
 INCLUDE( ${wxWidgets_USE_FILE})
 
@@ -44,6 +45,8 @@ SET(  WrapFilters_SRCS
   wrap_StructureTensor.cpp
   wrap_NLmeans.cpp
   Wrap_NewNLMeans.cpp
+  wrap_DirSum.cpp
+  LeastSquares.cpp
 )
 
 my_add_library ( WrapFilters)

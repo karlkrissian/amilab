@@ -7852,7 +7852,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
     {
         /**
              Description:
-             returns the position of the maximal value of an image
+             returns the position of the maximal value of an image, the 3D position is returned as a single integer value of the position of the vector of the image intensity, where the voxels are ordered in X first,Y second and Z.
 
              Parameters:
                (3) image expression
@@ -10765,12 +10765,12 @@ cerr << "Feature not available, needs to be updated ! " << endl;
       InrImage*  res;
       ImageExtent<float>* extent = (ImageExtent<float>*) (yysemantic_stack_[(4) - (3)].imageextent);
   
-      extent->print();
+      //extent->print();
       extent->SetRelative(((InrImage::ptr*) (yysemantic_stack_[(4) - (1)].variable)->Pointer())->get());
   
-      extent->print();
-      cout << "xmax = " << (int)  extent->Xmax() << endl;
-      cout << "xmax = " << (int)  round((double)extent->Xmax()) << endl;
+      //extent->print();
+      //cout << "xmax = " << (int)  extent->Xmax() << endl;
+      //cout << "xmax = " << (int)  round((double)extent->Xmax()) << endl;
       res = Func_SubImage( ((InrImage::ptr*) (yysemantic_stack_[(4) - (1)].variable)->Pointer())->get(),
                   (int)  round((double)extent->Xmin()),
                   (int)  round((double)extent->Ymin()),

@@ -37,6 +37,8 @@ extern "C" {
 #include    "interpol.h"
 }
 
+extern unsigned char GB_debug;
+
 /*
 //#define MacroInterpoleCoeff2D( xr,yr, coeff)                           \
 //  xi = (int)xr;           yi = (int)yr;                          \
@@ -107,7 +109,8 @@ InrImage* Func_MeanHalfSize( InrImage* in, int dimension)
 
   FinPour
   FinPour
-  //    Si GB_debug Alors
+    // to do : progress system
+    Si GB_debug Alors
       Si z > 0 Alors 
         printf("\b\b\b");
       Sinon
@@ -115,7 +118,7 @@ InrImage* Func_MeanHalfSize( InrImage* in, int dimension)
       FinSi
       printf("%3d",z); 
       fflush(stdout);
-//    FinSi
+    FinSi
 
   FinPour
 
@@ -249,12 +252,13 @@ InrImage* Func_Resize( InrImage* in, int newsizex, int newsizey, int newsizez,
   Pour( y, 0, out->DimY() - 1)
   Pour( x, 0, out->DimX() - 1)
 
+    // TODO: check consistency of coordinates !! what are the continuous limits of a voxel?
     x1 =  1.0 * x / (out->DimX() -1) * (in->DimX() -1);
     y1 =  1.0 * y / (out->DimY() -1) * (in->DimY() -1);
-    Si (in->DimZ()>1) Alors
+    Si (out->DimZ()>1) Alors
       z1 =  1.0 * z / (out->DimZ() -1) * (in->DimZ() -1);
     Sinon
-      z1 = z;
+      z1 = 0;
     FinSi
 
     if (interpolate==1) {
@@ -300,7 +304,8 @@ InrImage* Func_Resize( InrImage* in, int newsizex, int newsizey, int newsizez,
 
   FinPour
   FinPour
-  //    Si verbose Alors
+    // to do : progress system
+    Si GB_debug Alors
       Si z > 0 Alors 
         printf("\b\b\b");
       Sinon
@@ -308,7 +313,7 @@ InrImage* Func_Resize( InrImage* in, int newsizex, int newsizey, int newsizez,
       FinSi
       printf("%3d",z); 
       fflush(stdout);
-  //    FinSi
+    FinSi
   FinPour
 
   out->SetVoxelSize(
