@@ -22,7 +22,7 @@
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-    ================================================== 
+    ==================================================
    The full GNU Lesser General Public License file is in Devel/Sources/Prog/LesserGPL_license.txt
 */
 
@@ -148,9 +148,9 @@ void TextControl::UpdateText()
   this->SetInsertionPointEnd();
   _protect = 1;
   if (GB_debug) {
-    cerr << "TextControl::Update() text =" 
+    cerr << "TextControl::Update() text ="
          << text.Len()
-         << "Is ASCII ?" << text.IsAscii() 
+         << "Is ASCII ?" << text.IsAscii()
          << endl;
   }
 }
@@ -170,15 +170,15 @@ void TextControl::OnUpdate(wxCommandEvent&  event)
 
   CLASS_MESSAGE("begin");
 
-  if (in_changed_value) { 
-    //printf("in_changed_value\n");  
-    event.Skip(); return;} 
-  if (!_protect)        { 
-    //printf("!_protect\n"); 
+  if (in_changed_value) {
+    //printf("in_changed_value\n");
+    event.Skip(); return;}
+  if (!_protect)        {
+    //printf("!_protect\n");
     event.Skip(); return;}
 
   if (GB_debug)
-    cerr  << " insertion position " 
+    cerr  << " insertion position "
           << (int) this->GetInsertionPoint()
           << " " << lastprompt_position << endl;
 }
@@ -214,7 +214,7 @@ void TextControl::ProcessTab()
   completion_lastword = completion_lastword.AfterLast('.');
   //completion_lastword.RemoveLast();
 
-  cout << "last word to complete " 
+  cout << "last word to complete "
        << completion_lastword << endl;
   completions = Vars.SearchCompletions(completion_lastword);
 
@@ -222,7 +222,7 @@ void TextControl::ProcessTab()
   int i = 0;
   while (token_list[i]!=0) {
     wxString token=wxString::FromAscii(token_list[i]);
-    if (token.First(completion_lastword) == 0) 
+    if (token.First(completion_lastword) == 0)
         completions->Add(token);
     i++;
   }
@@ -307,7 +307,7 @@ void TextControl::OnChar(wxKeyEvent& event)
 
    if (this->GetInsertionPoint()<lastprompt_position) {
      this->SetInsertionPoint(this->text.Len());
-    if (GB_debug) cerr << format("TextControl::OnChar  insertion point %1% <  last position %2% ") 
+    if (GB_debug) cerr << format("TextControl::OnChar  insertion point %1% <  last position %2% ")
         % GetInsertionPoint()
         % lastprompt_position
         << "text = [" << this->text << "]"
@@ -334,7 +334,7 @@ void TextControl::OnChar(wxKeyEvent& event)
     {
         switch ( keycode )
         {
-            case WXK_TAB: 
+            case WXK_TAB:
               // process the new line
               this->ProcessTab();
               return;
@@ -342,7 +342,7 @@ void TextControl::OnChar(wxKeyEvent& event)
             case WXK_RETURN: //key = _T("RETURN"); break;
               // process the new line
               cout << "OnChar return" << endl;
-              if (in_changed_value) 
+              if (in_changed_value)
                 event.Skip();
               else
                 this->ProcessReturn();
@@ -350,9 +350,9 @@ void TextControl::OnChar(wxKeyEvent& event)
 
 
             case WXK_BACK:
-                // Don't allow deleting the prompt ... 
+                // Don't allow deleting the prompt ...
                 if (GB_debug) cerr << "OnChar BACK" << endl;
-                if (this->GetInsertionPoint()==lastprompt_position) 
+                if (this->GetInsertionPoint()==lastprompt_position)
                   this->SetInsertionPoint(this->text.Len());
                 if ((int)this->GetInsertionPoint()>lastprompt_position) event.Skip();
                 return;
@@ -374,10 +374,10 @@ void TextControl::OnChar(wxKeyEvent& event)
              if (this->GetInsertionPoint()==lastprompt_position)
                 return;
 
-            case '.': 
-            case ',': 
-            case '(': 
-            case '[': 
+            case '.':
+            case ',':
+            case '(':
+            case '[':
               // Check for putting color to last word
             break;
 
@@ -463,13 +463,13 @@ void TextControl::OnChar(wxKeyEvent& event)
                   int res;
                   string name;
                   string inc_cmd; // increment the command line string
-        
+
                   res=AskFilename(name);
                   if (!res) {
                     GB_driver.yyiperror(" No filename given! \n");
                   }
-        
-                  wxFileName filename(_T(name));
+
+                  wxFileName filename(_T(name.c_str()));
                   filename.Normalize(wxPATH_NORM_ALL,wxEmptyString,wxPATH_UNIX);
                   wxString newname(   filename.GetVolume()+filename.GetVolumeSeparator()+
                                       filename.GetPath(wxPATH_GET_VOLUME,wxPATH_UNIX)+
@@ -487,7 +487,7 @@ void TextControl::OnChar(wxKeyEvent& event)
 
     if (GB_debug) cerr <<  key << endl;
     event.Skip();
-} // OnChar() 
+} // OnChar()
 
 
 //--------------------------------------------------
