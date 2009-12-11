@@ -802,7 +802,7 @@ public:
     float SpacePosZ( float z) const { return z*_size_z+_translation_z; }
 
     /// Conversion from voxel position to space position
-    float SpacePos(const int& coord, const float& val) const
+    float SpacePos(const int coord, const float& val) const
     {
       switch(coord) {
         case 0:  return SpacePosX(val);
@@ -996,6 +996,25 @@ public:
 
     } // IncBuffer()
 
+    /**
+       Fonction en ligne
+       Incr�entation du buffer
+    */
+    inline void IncScalarBufferFast()
+    //          -------------------
+    {
+      switch ( (WORDTYPE) _format ) {
+        case WT_DOUBLE:         _buffer_DOUBLE         ++;    break;
+        case WT_FLOAT:          _buffer_FLOAT          ++;    break;
+        case WT_UNSIGNED_CHAR:  _buffer_UNSIGNED_CHAR  ++;    break;
+        case WT_UNSIGNED_SHORT: _buffer_UNSIGNED_SHORT ++;    break;
+        case WT_SIGNED_SHORT:   _buffer_SIGNED_SHORT   ++;    break;
+        case WT_UNSIGNED_INT:   _buffer_UNSIGNED_INT   ++;    break;
+        case WT_SIGNED_INT:     _buffer_SIGNED_INT     ++;    break;
+        Defaut: cerr << __func__  << " Wrong image format ..." << endl;
+      } // end switch
+
+    } // IncScalarBufferFast()
 
     inline bool IncBuffer( )
     //         ---------

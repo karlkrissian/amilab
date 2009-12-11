@@ -540,6 +540,7 @@ static void CB_update_imagelist( void* imagelist_gui)
 
 %token T_NULL
 
+%token T_RestartTime
 %token T_InitTime
 %token T_TimeSpent
 %token T_EndTime
@@ -3195,14 +3196,17 @@ command:
         See also:
           set
         **/
-          Si (*(InrImage::ptr*) $1->Pointer())->CoordOK( (int) $5,(int)$7,(int)$9)
-          Alors
-        (*(InrImage::ptr*) $1->Pointer())->BufferPos((int)$5,(int)$7,(int)$9);
-          Sinon
-        char tmp_string[255];
-        sprintf(tmp_string,"coord = %f %f %f \n",$5, $7, $9);
-        driver.err_print(tmp_string);
-          FinSi
+        int x = (int) round((double)$5);
+        int y = (int) round((double)$7);
+        int z = (int) round((double)$9);
+        Si (*(InrImage::ptr*) $1->Pointer())->CoordOK( x,y,z)
+        Alors
+          (*(InrImage::ptr*) $1->Pointer())->BufferPos(x,y,z);
+        Sinon
+          std::string tmp_string;
+          tmp_string = (boost::format("setpos \t coord = (%1% %2% %3%) from (%4% %5% %6%) \n")%x%y%z % $5 % $7 % $9).str();
+         driver.err_print(tmp_string);
+        FinSi
         }
         |
         var_image T_POINT PutImage
@@ -4939,6 +4943,11 @@ cerr << "Feature not available, needs to be updated ! " << endl;
       Func_GenRead($3);
         }
         |
+    T_RestartTime
+        {
+      driver.IP_time.InitCumul();
+        }
+        |
     T_InitTime
         {
       driver.IP_time.Debut();
@@ -5675,15 +5684,26 @@ postfix_expr_string
     |
     T_TimeSpent
     {
-      char* res;
-      long min,hour,sec;
+      long min,hour;
+      float sec;
 
       driver.IP_time.Fin();
       driver.IP_time.AddCumul();
       driver.IP_time.GetCumul(hour,min,sec);
-      res = new char[10];
-      sprintf(res,"%03d:%02d:%02d",(int)hour,(int)min,(int)sec);
-      $$=res;
+      std::string res;
+      if (hour>0) {
+        res = (boost::format("%3d h %2d min %2d sec")%(int)hour
+                        %(int)min %(int)sec).str();
+      } else
+        res = (boost::format("%2d min %2d sec")
+                        %(int)min %(int)sec).str();
+        if (min>0) {
+        } else
+          res = (boost::format("%2.2f sec") %sec).str();
+
+      char* reschar = new char[res.size()+1];
+      strcpy(reschar,res.c_str());
+      $$= reschar;
     }
     |
     var_image T_POINT T_GetName {

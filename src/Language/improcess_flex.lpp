@@ -411,6 +411,7 @@ Flip              return(token::T_Flip);  /*{Flip,T_Flip}*/// flips image in one
 
 SetCompTransf     return(token::T_SetCompTransf); /*{SetCompTransf,T_SetCompTransf}*/
 
+RestartTime       return(token::T_RestartTime); /*{RestartTime,T_RestartTime}*/
 InitTime          return(token::T_InitTime); /*{InitTime,T_InitTime}*/
 TimeSpent         return(token::T_TimeSpent); /*{TimeSpent,T_TimeSpent}*/
 EndTime           return(token::T_EndTime); /*{EndTime,T_EndTime}*/

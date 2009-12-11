@@ -37,6 +37,7 @@
 #include "chaine.hpp"
 #include "inrimage.hpp"
 #include "DefineClass.hpp"
+#include "amilab_messages.h"
 
 extern unsigned char GB_debug;
 

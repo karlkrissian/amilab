@@ -46,6 +46,7 @@ SET(  WrapFilters_SRCS
   wrap_NLmeans.cpp
   Wrap_NewNLMeans.cpp
   wrap_DirSum.cpp
+  wrap_ImTranslate.cpp
   LeastSquares.cpp
 )
 

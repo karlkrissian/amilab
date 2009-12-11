@@ -28,6 +28,7 @@
 #include "wrapAlgorithmsBasic.h"
 #include "wrapComputePV.h"
 #include "wrap_DirSum.h"
+#include "wrap_ImTranslate.h"
 
 extern VarContexts  Vars;
 
@@ -36,6 +37,7 @@ void AddWrapFilters(){
 
   wrapAlgorithmsBasic();
 
+//  Vars.AddVar(type_c_image_function,"ImTranslation",             (void*) ImTranslation );
   Vars.AddVar(type_c_image_function,"NSim",             (void*) NSim );
   Vars.AddVar(type_c_procedure,     "NSim2",            (void*) NSim2 );
   Vars.AddVar(type_c_image_function,"NLmeans",          (void*) NLmeans   );
@@ -57,6 +59,9 @@ void AddWrapFilters(){
 
   Vars.AddVar(type_c_image_function,"DirSum", 
                 (void*) wrap_DirSum  );
+
+  Vars.AddVar(type_c_image_function,"ImTranslate", 
+                (void*) wrap_ImTranslate  );
 
 }
 

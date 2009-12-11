@@ -2999,7 +2999,17 @@ void DessinImage::Comparaisons_UpdateStatusInfo( const Point_3D<int>& imagepos, 
   CLASS_MESSAGE(boost::format("(*Iter).di.use_count() = %d")
                 %(int)(*Iter).di.use_count());
     if (!(*Iter).di.expired()) {
-        ((*Iter).di.lock())->UpdateStatusInfo(imagepos, trouve);
+      // need to convert spatial coordinates
+      InrImage::ptr input = this->GetImage();
+      float px,py,pz;
+      px = input->SpacePos(0,(float) imagepos.X());
+      py = input->SpacePos(1,(float) imagepos.Y());
+      pz = input->SpacePos(2,(float) imagepos.Z());
+      InrImage::ptr input2 = ((*Iter).di.lock())->GetImage();
+      Point_3D<int> newpos( (int) round(input2->SpaceToVoxelX(px)),
+                            (int) round(input2->SpaceToVoxelY(py)),
+                            (int) round(input2->SpaceToVoxelZ(pz)));
+      ((*Iter).di.lock())->UpdateStatusInfo(newpos, trouve);
     } else {
         CLASS_MESSAGE("Removing deleted image from list");
         // Safely removing an element
@@ -3024,8 +3034,7 @@ void DessinImage::UpdateStatusInfo( const Point_3D<int>& imagepos,  int trouve)
 //                --------------
 {
 
- Si GB_debug AlorsFait
-    fprintf(stderr, "DessinImage::UpdateStatusInfo() \n");
+  CLASS_MESSAGE("Begin");
 
   if (_comparison_lock) return;
 
@@ -3041,8 +3050,7 @@ void DessinImage::UpdateStatusInfo( const Point_3D<int>& imagepos,  int trouve)
 
   Comparaisons_UpdateStatusInfo( imagepos, trouve);
 
-  Si GB_debug AlorsFait
-    fprintf(stderr, "DessinImage::UpdateStatusInfo() Fin \n");
+  CLASS_MESSAGE("End");
 
 } // UpdateStatusInfo()
 

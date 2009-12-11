@@ -2708,13 +2708,14 @@ InrImage* operator +(  InrImage& i1,  InrImage& i2)
     res = new InrImage(format,"plusop.inr.gz",&i1);
     res->InitBuffer();
     i1.InitBuffer();                
-    i2.InitBuffer();                
-    Repeter                           
-      res->FixeValeur(i1.ValeurBuffer() + i2.ValeurBuffer()); 
-      i1.IncBuffer();               
-      i2.IncBuffer();               
-    JusquA Non(res->IncBuffer())      
-    FinRepeter                        
+    i2.InitBuffer();
+    long size = i1.Size();
+    long i;
+    for(i=0;i<size;i++) {
+      res->FixeValeur( i1.ValeurBuffer(i) +
+                       i2.ValeurBuffer(i)); 
+      res->IncScalarBufferFast();
+    }
 
     return res;
 
@@ -2779,7 +2780,7 @@ InrImage* operator *(  InrImage& i1,  InrImage& i2)
     i2.InitBuffer();                
     Pour(i,0,i1.Size()-1)
       res->FixeValeur(i1.ValeurBuffer(i) * i2.ValeurBuffer(i)); 
-      res->IncBuffer();
+      res->IncScalarBufferFast();
     FinPour
 
     return res;
