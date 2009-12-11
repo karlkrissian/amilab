@@ -24,8 +24,10 @@ if (!exists(MSEClass)) {
         ::input_name =  "", "input image"
         ::groundtruth_name =  "", "ground truth image" 
         ::MSE_string = "", "Mean Square Error value"
+        ::MAE_string = "", "Mean Absolute Error value"
         ::PSNR_string = "", "Pick Signal To Noise Ratio value"
         ::display_error_image = UCHAR(0), "Display the image of errors"
+        ::border = INT(0), "Remove border"
         ::CreateWindow()
     }
     
@@ -55,8 +57,6 @@ if (!exists(MSEClass)) {
         ::win.update
       }
       ::win.update
-      if (exists(::input_draw)) { del ::input_draw; }
-      show ::input
       ::CheckInputs()
     }
     
@@ -70,10 +70,19 @@ if (!exists(MSEClass)) {
         ::win.update
       }
       ::win.update
-      if (exists(::gt_draw)) { del ::gt_draw; }
-      show ::gt
       ::CheckInputs()
     }
+
+    #----------------------------
+    proc ::Display() \
+    {
+      if (exists(::input_draw)) { del ::input_draw; }
+      show ::input
+      if (exists(::gt_draw)) { del ::gt_draw; }
+      show ::gt
+      ::input_draw.compare(::gt_draw)
+    }
+    
 
     #----------------------------
     proc ::CheckInputs() \
@@ -98,15 +107,23 @@ if (!exists(MSEClass)) {
     {
       # test for ROI and for noise type ??
       if (exists(::input) &&exists(::gt)) {
+        if (::border>0) {
+          ::roi <<= ::input[::border: ::input.tx-1-::border,\
+                            ::border: ::input.ty-1-::border,0:0]
+        }
         # MSE
         if (exists(::roi)) {
+          mask = ::input*0
           smask = ::roi*0+1
           mask.putimage(smask)
           ::MSE = mean[mask]((::input-::gt)*(::input-::gt))
+          ::MAE = mean[mask](abs(::input-::gt))
         } else {
           ::MSE = mean((::input-::gt)*(::input-::gt))
+          ::MAE = mean(abs(::input-::gt))
         }
         ::MSE_string = boost_format("%1%")%::MSE
+        ::MAE_string = boost_format("%1%")%::MAE
         # PSNR
         ::PSNR = 10*(2*log(255)-log(::MSE))
         ::PSNR_string = boost_format("%1%")%::PSNR
@@ -159,14 +176,18 @@ if (!exists(MSEClass)) {
             ::win.EndHorizontal
           ::win.EndBoxPanel
 
-    
+        ::win.AddPage("Param")
+          ::win.AddInt(::border,"Border",0,20) 
+
           ::results_panel = ::win.BeginBoxPanel("Results")
             ::runbutton_id = ::win.AddButton("Run",     ::Run)
             ::win.AddString(::MSE_string, "MSE =")
+            ::win.AddString(::MAE_string, "MAE =")
             ::win.AddString(::PSNR_string,"PSNR =")
           ::win.EndBoxPanel
 
           ::display_panel = ::win.BeginBoxPanel("Display")
+            ::win.AddButton("Display images",::Display)
             ::win.AddBoolean(::display_error_image, "Error Image")
             ::win.SetCallback(::DisplayErrorImage)
           ::win.EndBoxPanel
