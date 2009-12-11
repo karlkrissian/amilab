@@ -5,12 +5,15 @@
 //#include "ParamBox.hpp"
 //#include "DessinImage.hpp"
 //#include "Viewer3D.hpp"
-#include "paramlist.h"
+//#include "paramlist.h"
 #include <string>
+#include <iostream>
 
 #include "DefineClass.hpp"
 
 #include "amilab_messages.h"
+#include "vartype.h"
+
 
 // forward definition of Variables
 class Variables;
@@ -127,9 +130,9 @@ private:
   const string GetTypeName();
 
   //
-  friend ostream& operator<<(ostream& o, const Variable& v);
+  friend std::ostream& operator<<(std::ostream& o, const Variable& v);
 
-  friend ostream& PrintType(ostream& o, const Variable& v);
+  friend std::ostream& PrintType(std::ostream& o, const Variable& v);
 
   //
   void display();
@@ -178,7 +181,7 @@ private:
   void display();
 
   //
-  friend ostream& operator<<(ostream& o, const VarArray& v);
+  friend std::ostream& operator<<(std::ostream& o, const VarArray& v);
 
 }; // VarArray
 

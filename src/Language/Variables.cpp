@@ -94,7 +94,7 @@ std::string Variables::CheckVarName(const char* name)
 }
 
 //--------------------------------------------------
-Variable* Variables::AddVar(vartype type, 
+Variable* Variables::AddVar( vartype type, 
 		      const char* name, 
 		      void* val, 
           boost::shared_ptr<Variables> context)
@@ -113,7 +113,7 @@ Variable* Variables::AddVar(vartype type,
 //--------------------------------------------------
 // here val is a pointer to a smart pointer
 //
-Variable* Variables::AddVarPtr(vartype type, 
+Variable* Variables::AddVarPtr( vartype type, 
 		      const char* name, 
 		      void* val)
 {

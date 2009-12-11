@@ -3572,13 +3572,17 @@ void DessinImageBase :: DrawLineZ( float x1, float y1,
      //  FixeParametresLigne( size, style, _cap_style, _join_style);
      FixeCouleurTrait( _couleur_masque);
      //     printf(" DrawLineZ(%3.1f,%3.1f,%3.1f,%3.1f)\n",x1,y1,x2,y2);
-     pos_x1 = _tab_ximage_pos_x[IMAGE_XY] +  (x1-1 - Param._Zoom._xmin + 0.5)*_size_x;
-     pos_y1 = _tab_ximage_pos_y[IMAGE_XY] +  (y1-1 - Param._Zoom._ymin + 0.5)*_size_y;
+    // TODO: check why we need +/- 0.5 and create coordinate conversion functions
+     pos_x1 = _tab_ximage_pos_x[IMAGE_XY] +  (x1+0.5 - Param._Zoom._xmin )*_size_x;
+     pos_y1 = _tab_ximage_pos_y[IMAGE_XY] +  (y1+0.5 - Param._Zoom._ymin )*_size_y;
 
-     pos_x2 = _tab_ximage_pos_x[IMAGE_XY] +  (x2-1 - Param._Zoom._xmin + 0.5)*_size_x;
-     pos_y2 = _tab_ximage_pos_y[IMAGE_XY] +  (y2-1 - Param._Zoom._ymin + 0.5)*_size_y;
+     pos_x2 = _tab_ximage_pos_x[IMAGE_XY] +  (x2+0.5 - Param._Zoom._xmin )*_size_x;
+     pos_y2 = _tab_ximage_pos_y[IMAGE_XY] +  (y2+0.5 - Param._Zoom._ymin )*_size_y;
 
-     Ligne( (int)pos_x1,(int)pos_y1,(int)pos_x2,(int)pos_y2);
+     Ligne( (int) round(pos_x1),
+            (int) round(pos_y1),
+            (int) round(pos_x2),
+            (int) round(pos_y2));
 
 } // DrawLineZ()
 

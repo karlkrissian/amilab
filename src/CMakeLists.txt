@@ -406,8 +406,8 @@ SET(amilab_ownlibs
   WrapITK
   WrapAMIFluid
   WrapWII
-  WrapCommon
   WrapInterface
+  WrapCommon
   AMILab
   AMImage
   Contours

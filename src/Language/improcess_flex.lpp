@@ -736,6 +736,7 @@ import_wii        return(token::T_import_wii);     /*{import_wii,T_import_wii}*/
 import_filters    return(token::T_import_filters); /*{import_filters,T_import_filters}*/
 import_sys        return(token::T_import_sys);     /*{import_sys,T_import_sys}*/
 import_mainframe  return(token::T_import_mainframe);     /*{import_mainframe,T_import_mainframe}*/
+import_imagedraw  return(token::T_import_imagedraw);     /*{import_imagedraw,T_import_imagedraw}*/
 
 amiOFCorr2D       return(token::T_amiOFCorr2D);  /*{amiOFCorr2D,T_amiOFCorr2D}*/
 amiOFVar2D        return(token::T_amiOFVar2D);   /*{amiOFVar2D,T_amiOFVar2D}*/
@@ -1039,7 +1040,7 @@ this::([A-Za-z0-9_])*   {
 //
 //============================ Parse variable in a given context ====================
 //
-  cout << "variable in object ?" << endl;
+  //cout << "variable in object ?" << endl;
   string text(YYText());
   size_t pos = text.find("->");
   string contextname = text.substr(0,pos);

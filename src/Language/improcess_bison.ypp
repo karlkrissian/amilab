@@ -36,6 +36,7 @@
 #include "wrapVTK.h"
 #include "wrapITK.h"
 #include "wrap_mainframe.h"
+#include "wrap_imagedraw.h"
 #include "itkCannyEdgeDetector.h"
 #include "wrapWII.h"
 #include "wrapFilters.h"
@@ -874,6 +875,7 @@ static void CB_update_imagelist( void* imagelist_gui)
 %token T_import_filters
 %token T_import_sys
 %token T_import_mainframe
+%token T_import_imagedraw
 
 %token T_amiOFCorr2D
 %token T_amiOFVar2D
@@ -5291,6 +5293,11 @@ cerr << "Feature not available, needs to be updated ! " << endl;
         T_import_mainframe
         {
           AddWrapMainFrame();
+        }
+        |
+        T_import_imagedraw
+        {
+          AddWrapImageDraw();
         }
         |
         T_amiOFCorr2D T_OP_PAR var_image T_COMMA var_image T_COMMA

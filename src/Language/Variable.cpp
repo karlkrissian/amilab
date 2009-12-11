@@ -13,6 +13,7 @@
 
 #include <string>
 
+using namespace std;
 
 extern unsigned char       GB_debug;
 

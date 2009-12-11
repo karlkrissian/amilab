@@ -341,7 +341,7 @@ void TextControl::OnChar(wxKeyEvent& event)
 
             case WXK_RETURN: //key = _T("RETURN"); break;
               // process the new line
-              cout << "OnChar return" << endl;
+              //cout << "OnChar return" << endl;
               if (in_changed_value)
                 event.Skip();
               else

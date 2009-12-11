@@ -12,6 +12,7 @@
 
 #include "myTreeCtrl.h"
 #include "Variable.hpp"
+#include "paramlist.h"
 
 #include <iostream>
 
