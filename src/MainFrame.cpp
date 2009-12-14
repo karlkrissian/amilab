@@ -50,6 +50,7 @@
 #include "amilab_messages.h"
 
 #include "surface.hpp"
+#include "ami_object.h"
 
 //#include "Bluecurve/32x32/actions/reload.xpm"
 
@@ -584,21 +585,19 @@ void MainFrame::CreateVarTreePanel ( wxWindow* parent)
                               wxID_ANY,
                               wxDefaultPosition,
                               wxDefaultSize,
-                              wxTR_HAS_BUTTONS | wxTR_HIDE_ROOT
+                              (wxTR_HAS_BUTTONS 
+                              | wxTR_HIDE_ROOT 
+                              | wxTR_FULL_ROW_HIGHLIGHT 
+                              ) 
+                              ^ (wxTR_NO_LINES )
                             );
+  _var_tree->SetWindowStyle(_var_tree->GetWindowStyle() ^ wxTR_NO_LINES);
   //_var_tree->SetToolTip(_T("Tree Control for current variables"));
 
   _var_tree->SetFont( wxFont(10,wxMODERN,wxNORMAL,wxNORMAL)); // try a fixed pitch font
   _var_tree->SetIndent(5);
 
   _vartree_root      = _var_tree->AddRoot(_T("Variables"));
-  _vartree_images    = _var_tree->AppendItem(_vartree_root,_T("Images"));
-  _vartree_surfaces  = _var_tree->AppendItem(_vartree_root,_T("Surfaces"));
-  _vartree_numbers   = _var_tree->AppendItem(_vartree_root,_T("Numbers"));
-  _vartree_strings   = _var_tree->AppendItem(_vartree_root,_T("Strings"));
-  _vartree_functions = _var_tree->AppendItem(_vartree_root,_T("Functions"));
-  _vartree_wrapped_functions = _var_tree->AppendItem(_vartree_root,_T("Wrapped Functions"));
-  _vartree_others    = _var_tree->AppendItem(_vartree_root,_T("Others"));
 
   vartreepanel_sizer->Add(_var_tree, 1, wxEXPAND , 5);
   vartreepanel_sizer->Fit(_vartree_panel);
@@ -1055,21 +1054,29 @@ void MainFrame::UpdateVarList()
 
 
 //-----------------------------------------------------
-void MainFrame::UpdateVarTree()
+void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch, 
+                                Variables::ptr context)
 {
-  // delete second level children
-  wxTreeItemIdValue cookie;
-  wxTreeItemId item = _var_tree->GetFirstChild( _vartree_root, cookie );
-  while(item.IsOk()) {
-    _var_tree->DeleteChildren(item);
-    item = _var_tree->GetNextChild( _vartree_root, cookie);
-  }
 
-
+  // delete children of root
+  _var_tree->DeleteChildren(rootbranch);
   boost::shared_ptr<wxArrayString> variables;
 
+  // TODO: avoid creation of all branches at each update
+  // create all the first branches
+  wxTreeItemId vartree_images    = _var_tree->AppendItem(rootbranch,_T("Images"));
+  wxTreeItemId vartree_surfaces  = _var_tree->AppendItem(rootbranch,_T("Surfaces"));
+  wxTreeItemId vartree_numbers   = _var_tree->AppendItem(rootbranch,_T("Numbers"));
+  wxTreeItemId vartree_strings   = _var_tree->AppendItem(rootbranch,_T("Strings"));
+  wxTreeItemId vartree_functions = _var_tree->AppendItem(rootbranch,_T("Functions"));
+  wxTreeItemId vartree_classes   = _var_tree->AppendItem(rootbranch,_T("Classes"));
+  wxTreeItemId vartree_objects   = _var_tree->AppendItem(rootbranch,_T("Objects"));
+  wxTreeItemId vartree_wrapped_functions = _var_tree->AppendItem(rootbranch,_T("Wrapped Functions"));
+  wxTreeItemId vartree_others    = _var_tree->AppendItem(rootbranch,_T("Others"));
+
   // loop vars
-  variables = Vars.SearchCompletions(GetwxStr(""));
+  variables = boost::shared_ptr<wxArrayString>(new wxArrayString());
+  context->SearchCompletions(GetwxStr(""),variables);
   unsigned long total_image_size = 0;
 
   for(int i=0;i<(int)variables->GetCount();i++) {
@@ -1077,7 +1084,7 @@ void MainFrame::UpdateVarTree()
 
     Variable* var;
     wxString type_str;
-    bool varfound = Vars.GetVar((*variables)[i].mb_str(),&var);
+    bool varfound = context->GetVar((*variables)[i].mb_str(),&var);
 
     if (varfound) {
       if (var->Type() == type_image) {
@@ -1092,7 +1099,7 @@ void MainFrame::UpdateVarTree()
                             % (im->GetDataSize()/1000000)).str();
         //cout << text << endl;
         _var_tree->AppendItem(
-              _vartree_images,
+              vartree_images,
               wxString(text.c_str(), wxConvUTF8),
               -1,-1,
               new MyTreeItemData(var));
@@ -1106,7 +1113,7 @@ void MainFrame::UpdateVarTree()
                             % surf->GetNumberOfPolys()).str();
         //cout << text << endl;
         _var_tree->AppendItem(
-              _vartree_surfaces,
+              vartree_surfaces,
               wxString(text.c_str(), wxConvUTF8),
               -1,-1,
               new MyTreeItemData(var));
@@ -1116,7 +1123,7 @@ void MainFrame::UpdateVarTree()
           (var->Type() == type_uchar))
       {
         _var_tree->AppendItem(
-              _vartree_numbers,
+              vartree_numbers,
               (*variables)[i],
               -1,-1,
               new MyTreeItemData(var));
@@ -1124,7 +1131,7 @@ void MainFrame::UpdateVarTree()
       if (var->Type() == type_string)
       {
         _var_tree->AppendItem(
-              _vartree_strings,
+              vartree_strings,
               (*variables)[i],
               -1,-1,
               new MyTreeItemData(var));
@@ -1132,21 +1139,41 @@ void MainFrame::UpdateVarTree()
       if (var->Type() == type_ami_function)
       {
         _var_tree->AppendItem(
-              _vartree_functions,
+              vartree_functions,
               (*variables)[i],
               -1,-1,
               new MyTreeItemData(var));
+      } else
+      if (var->Type() == type_ami_class)
+      {
+        _var_tree->AppendItem(
+              vartree_classes,
+              (*variables)[i],
+              -1,-1,
+              new MyTreeItemData(var));
+      } else
+      if (var->Type() == type_ami_object)
+      {
+        wxTreeItemId obj_itemid = _var_tree->AppendItem(
+              vartree_objects,
+              (*variables)[i],
+              -1,-1,
+              new MyTreeItemData(var));
+        // get the pointer to the objet
+        AMIObject::ptr obj = (*(AMIObject::ptr*)var->Pointer());
+        // create the tree by recursive call
+        this->UpdateVarTree(obj_itemid, obj->GetContext());
       } else
       if (var->Type() == type_c_image_function)
       {
         _var_tree->AppendItem(
-              _vartree_wrapped_functions,
+              vartree_wrapped_functions,
               (*variables)[i],
               -1,-1,
               new MyTreeItemData(var));
       } else
         _var_tree->AppendItem(
-              _vartree_others,
+              vartree_others,
               (*variables)[i],
               -1,-1,
               new MyTreeItemData(var));
@@ -1157,8 +1184,28 @@ void MainFrame::UpdateVarTree()
   if (total_image_size != 0) {
     std::string text = (boost::format(" %45t total = %55t %|1$+5| Mb")
                         % (total_image_size/1000000)).str();
-    _var_tree->AppendItem(_vartree_images,wxString(text.c_str(), wxConvUTF8));
+    _var_tree->AppendItem(vartree_images,wxString(text.c_str(), wxConvUTF8));
   }
+
+  // delete empty branches
+  if (!_var_tree->ItemHasChildren(vartree_images)) 
+    _var_tree->Delete(vartree_images);
+  if (!_var_tree->ItemHasChildren(vartree_surfaces)) 
+    _var_tree->Delete(vartree_surfaces);
+  if (!_var_tree->ItemHasChildren(vartree_numbers)) 
+    _var_tree->Delete(vartree_numbers);
+  if (!_var_tree->ItemHasChildren(vartree_strings)) 
+    _var_tree->Delete(vartree_strings);
+  if (!_var_tree->ItemHasChildren(vartree_functions)) 
+    _var_tree->Delete(vartree_functions);
+  if (!_var_tree->ItemHasChildren(vartree_classes)) 
+    _var_tree->Delete(vartree_classes);
+  if (!_var_tree->ItemHasChildren(vartree_objects)) 
+    _var_tree->Delete(vartree_objects);
+  if (!_var_tree->ItemHasChildren(vartree_wrapped_functions)) 
+    _var_tree->Delete(vartree_wrapped_functions);
+  if (!_var_tree->ItemHasChildren(vartree_others)) 
+    _var_tree->Delete(vartree_others);
 
   _var_list->Show();
 }
@@ -1358,10 +1405,16 @@ void MainFrame::ConsoleClear( wxCommandEvent& event)
 }
 
 //--------------------------------------------------
-void MainFrame::UpdateVars( wxCommandEvent& event)
+void MainFrame::UpdateVarsDisplay()
 {
   UpdateVarList();
-  UpdateVarTree();
+  UpdateVarTree(_vartree_root, Vars.GetCurrentContext());
+}
+
+//--------------------------------------------------
+void MainFrame::UpdateVars( wxCommandEvent& event)
+{
+  UpdateVarsDisplay();
 }
 
 //--------------------------------------------------

@@ -51,6 +51,10 @@ protected:
   void OnItemMenu(wxTreeEvent& event);
   void OnAbout(wxCommandEvent& event);
   void ShowMenu(wxTreeItemId id, const wxPoint& pt);
+/*
+  void OnEraseBackground( wxEraseEvent& WXUNUSED(event) );
+  void OnPaint( wxPaintEvent& event );
+*/
 //  void OnMouseRightDown(wxMouseEvent& event);
 
 //  void OnTimerTip(wxTimerEvent &event);

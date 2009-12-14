@@ -19,6 +19,10 @@
 
 BEGIN_EVENT_TABLE(myTreeCtrl, wxTreeCtrl)
   EVT_MENU(wxID_ABOUT, myTreeCtrl::OnAbout)
+/*
+  EVT_ERASE_BACKGROUND(    myTreeCtrl::OnEraseBackground)
+  EVT_PAINT(               myTreeCtrl::OnPaint)
+*/
 //  EVT_RIGHT_DOWN(myTreeCtrl::OnMouseRightDown)
 //  EVT_TIMER(ID_TIMER_TIPWINDOW myTreeCtrl::OnTimerTip)
 END_EVENT_TABLE()
@@ -120,4 +124,20 @@ void myTreeCtrl::OnMouseRightDown(wxMouseEvent& event)
   }
   event.Skip();
 }
+*/
+
+/*
+void myTreeCtrl::OnEraseBackground( wxEraseEvent& WXUNUSED(event) )
+{
+}
+
+void myTreeCtrl::OnPaint( wxPaintEvent& event )
+{
+  wxRect rec = this->GetRect();
+  wxPaintDC dc;
+  dc.GradientFillLinear(rec,wxColour(0,0,0),wxColour(0,0,100),wxWEST);
+
+  event.Skip();
+}
+
 */
