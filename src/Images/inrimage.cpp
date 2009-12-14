@@ -2585,9 +2585,14 @@ InrImage* operator -(  InrImage& i1,  InrImage& i2)
 
   InrImage* res;
 
-  if ( i1._tx != i2._tx AlorsFait return NULL;
-  if ( i1._ty != i2._ty AlorsFait return NULL;
-  if ( i1._tz != i2._tz AlorsFait return NULL;
+  if (( i1.DimX() != i2.DimX()) ||
+      ( i1.DimY() != i2.DimY()) ||
+      ( i1.DimZ() != i2.DimZ())) 
+  {
+    FILE_ERROR("different dimensions");
+    cout << "*" << endl;
+    return NULL;
+  }
 
   WORDTYPE format;
 
@@ -2748,6 +2753,66 @@ InrImage* operator +(  InrImage& i1,  InrImage& i2)
   } // end if
 
   return NULL;
+}
+
+
+//--------------------------------------------------
+InrImage& operator +=(  InrImage& i1,  InrImage& i2)
+//        -----------
+{
+
+  int i;
+  double val;
+  WORDTYPE format;
+
+  if ((i1.GetFormat()==WT_DOUBLE)||(i2.GetFormat()==WT_DOUBLE))
+    format = WT_DOUBLE;
+  else 
+    format = WT_FLOAT;
+
+  if ( i1.DimX() != i2.DimX() AlorsFait return i1;
+  if ( i1.DimY() != i2.DimY() AlorsFait return i1;
+  if ( i1.DimZ() != i2.DimZ() AlorsFait return i1;
+
+  if ( i1.ScalarFormat() && i2.ScalarFormat() ) {
+    i1.InitBuffer();                
+    i2.InitBuffer();
+    long size = i1.Size();
+    long i;
+    for(i=0;i<size;i++) {
+      i1.FixeValeur( i1.ValeurBuffer() +
+                      i2.ValeurBuffer(i)); 
+      i1.IncScalarBufferFast();
+    }
+
+    return i1;
+
+  } else
+  if ( i1.VectorialFormat() && i2.VectorialFormat() ) {
+
+    if ( i1.GetVDim() != i2.GetVDim() ) {
+      fprintf(stderr,"InrImage*InrImage \t Vector dimensions don't match \n");
+      return i1;
+    } // end if
+
+    i1.InitBuffer();                
+    i2.InitBuffer();                
+    Repeter                           
+      Pour(i,0,i1.GetVDim()-1)
+        val = i1.VectValeurBuffer(i)+i2.VectValeurBuffer(i);
+        i1.VectFixeValeur(i,val);
+      FinPour
+      i2.IncBuffer();               
+    JusquA Non(i1.IncBuffer())      
+    FinRepeter                        
+
+    return i1;
+
+  } else {
+    FILE_ERROR("Scalar and vectorial types ");
+  } // end if
+
+  return i1;
 }
 
 
