@@ -2001,6 +2001,18 @@ command:
             driver.err_print("Error\n");
           }
         }
+        |  var_image ADD_ASSIGN expr_image
+        {
+          InrImage::ptr i1 = *(InrImage::ptr*) $1->Pointer();
+          InrImage::ptr i2 = InrImage::ptr(driver.im_stack.GetLastImage());
+
+          if (i2.get()) {
+            // copy option
+            (*i1)+=(*i2);
+          } else {
+            driver.err_print("Error\n");
+          }
+        }
         |  var_image LEFT_ASSIGN expr_image
         {
         /**
@@ -11774,7 +11786,7 @@ image_extent:
           extent->SetYmax( im->SpacePosY(im->DimY()-1));
           extent->SetZmin( im->SpacePosZ(0));
           extent->SetZmax( im->SpacePosZ(im->DimZ()-1));
-          extent->print();
+          //extent->print();
           $$=extent;
        }
        |
