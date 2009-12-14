@@ -17,6 +17,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/OpenGL
   ${AMILAB_SOURCE_DIR}
   ${AMILAB_SOURCE_DIR}/AMILab
+  ${AMILAB_SOURCE_DIR}/Language
   ${wxParams_INCLUDE_DIRS}
   )
 
