@@ -1094,7 +1094,6 @@ public:
 
     } // ValeurBuffer()
 
-
     //
     double ValeurBuffer( long inc)
     //                   ------------
@@ -1850,6 +1849,15 @@ InrImage* operator-(  InrImage& i, double r );
 
 InrImage* operator+(  InrImage& i1,  InrImage& i2);
 //
+
+
+/**
+ * += operator operates on 2 images, either both scalar or both vectorial, the second image is added to the first one, and the resulting first image is returned
+ * @param i1 first image
+ * @param i2 second image
+ * @return possibly modified i1
+ */
+InrImage& operator +=(  InrImage& i1,  InrImage& i2);
 
 
 InrImage* operator*(  InrImage& i1,  InrImage& i2);
