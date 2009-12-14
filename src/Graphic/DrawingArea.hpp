@@ -115,7 +115,7 @@ public:
   void  Recupere_dimensions( int* l, int* h);
   void  Fixe_dimensions( int l, int h);
   void  FixeCouleurFond( const ClasseCouleur&);
-  void	FixeCouleurTrait( const ClasseCouleur&);
+  void	SetPenColor( const ClasseCouleur&);
   void  FixeCouleurRemplissage( const ClasseCouleur&);
   void  FixeParametresLigne( unsigned int largeur, int style, int extremites, int intersection);
 

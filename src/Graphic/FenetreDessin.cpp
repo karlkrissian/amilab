@@ -380,7 +380,7 @@ void  FenetreDessin::FixeStyleRemplissage( const int& style)
 
 /*
 //------------------------------------------------------------
-void FenetreDessin::FixeCouleurTrait( 
+void FenetreDessin::SetPenColor( 
 //                  ----------------
       const ClasseCouleur& couleur)
 {
@@ -392,17 +392,17 @@ void FenetreDessin::FixeCouleurTrait(
   _memory_dc->SetPen(*_current_pen);
 #endif
 
-} // FixeCouleurTrait()
+} // SetPenColor()
 */
 
 
 //------------------------------------------------------------
-void FenetreDessin::FixeCouleurTrait(  const wxColour& couleur)
+void FenetreDessin::SetPenColor(  const wxColour& couleur)
 //                  ----------------
 {
     _current_pen->SetColour(couleur);
     _memory_dc->SetPen(*_current_pen);
-} // FixeCouleurTrait()
+} // SetPenColor()
 
 
 //------------------------------------------------------------
@@ -707,7 +707,7 @@ void  FenetreDessin::PutSlice(  int pos_x, int pos_y,
                           (wxCoord)pos_x,
                           (wxCoord)pos_y );
   // Draw a rectangle outside?
-  FixeCouleurTrait( *wxBLACK);
+  SetPenColor( *wxBLACK);
   FixeStyleRemplissage(wxTRANSPARENT);
   FixeParametresLigne(1,wxSOLID);
   Rectangle((wxCoord)pos_x,(wxCoord)pos_y,

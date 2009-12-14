@@ -1521,7 +1521,7 @@ void DessinImageBase::DessineIsoContour( int n)
   if (size==0)  size = _largeur_lignes;
   style = _isocontours[n].style;
   FixeParametresLigne( size, style, _cap_style, _join_style);
-  FixeCouleurTrait( isocontours[n].color.RetourneCouleur());
+  SetPenColor( isocontours[n].color.RetourneCouleur());
 
   if ((_isocontours[n].image.expired()) ||
       (Param._option_traitement == OPTION_MIP))
@@ -1627,7 +1627,7 @@ void DessinImageBase::DrawAxis( int orientation, // 0: horiz, 1: vert
     break;
   }
 
-  FixeCouleurTrait( *wxBLACK);
+  SetPenColor( *wxBLACK);
   FixeParametresLigne( 1, wxSOLID);
 
   wxCoord maxCharWidth,maxCharHeight;
@@ -2038,7 +2038,7 @@ void DessinImageBase :: DrawColorBar( )
      SetTextFg( *wxBLACK);
      //Texte(r+2,(int)(vpos2+step+char_ymax/2),Istring);
      FixeParametresLigne(1,wxSHORT_DASH);
-     FixeCouleurTrait(*wxBLACK);
+     SetPenColor(*wxBLACK);
      //cout << "drawing line for " << Istring
      //     << " at " << (int) (vpos2+step/2) << endl;
      Ligne(
@@ -2054,7 +2054,7 @@ void DessinImageBase :: DrawColorBar( )
    val += val_step;
   FinPour
 
-  FixeCouleurTrait( *wxBLACK);
+  SetPenColor( *wxBLACK);
   FixeStyleRemplissage(wxTRANSPARENT);
 //wxBRUSHSTYLE_TRANSPARENT);
   FixeParametresLigne(1,wxSOLID);
@@ -2239,10 +2239,10 @@ void DessinImageBase::DrawSlice( int slice_id )
         #endif
 
         FastImageRectangle( image_data, image_width,
-                            (int) px,
-                            (int) py,
-                            (int) px1,
-                            (int) py1,
+                            (int) round(px),
+                            (int) round(py),
+                            (int) round(px1),
+                            (int) round(py1),
                             couleur);
       }
       image->IncBuffer(nincr_x);
@@ -2353,10 +2353,10 @@ void DessinImageBase::DessinePlanZ( )
       FinSi
 
       FastImageRectangle( image_data, image_width,
-                          (int) px,
-                          (int) py,
-                          (int) px1,
-                          (int) py1,
+                          (int) round(px),
+                          (int) round(py),
+                          (int) round(px1),
+                          (int) round(py1),
                           couleur);
 
       image->IncBuffer();
@@ -2435,9 +2435,10 @@ void DessinImageBase :: DessinePlanY( )
       FinSi
 
       FastImageRectangle( image_data, image_width,
-                          (int) px ,  (int) pz,
-                          (int) (px1+1E-4),
-                          (int) (pz1+1E-4),
+                          (int) round(px) ,  
+                          (int) round(pz),
+                          (int) round(px1),
+                          (int) round(pz1),
                           couleur);
 
       IncBuffer();
@@ -2513,9 +2514,10 @@ void DessinImageBase :: DessinePlanX( )
       FinSi
 
       FastImageRectangle( image_data, image_width,
-                          (int) pz,            (int) py,
-                          (int) (pz1+1E-4),
-                          (int) (py1+1E-4),
+                          (int) round(pz),
+                          (int) round(py),
+                          (int) round(pz1),
+                          (int) round(py1),
                           couleur);
 
       IncBuffer( _image->_tx);
@@ -2614,9 +2616,11 @@ void DessinImageBase :: DessineCoupes( )
         FinSi
 
         FastImageRectangle( image_data, image_width,
-                            (int) (px + pos_x),    (int) (py + pos_y),
-                            (int) (px + pos_x + _size_x),
-          (int) (py + pos_y + _size_y), couleur);
+                            (int) round(px + pos_x),    
+                            (int) round(py + pos_y),
+                            (int) round(px + pos_x + _size_x),
+                            (int) round(py + pos_y + _size_y), 
+                            couleur);
         IncBuffer();
         px += _size_x;
       FinPour // x
@@ -3570,7 +3574,7 @@ void DessinImageBase :: DrawLineZ( float x1, float y1,
      register float          pos_x2, pos_y2;
 
      //  FixeParametresLigne( size, style, _cap_style, _join_style);
-     FixeCouleurTrait( _couleur_masque);
+     //SetPenColor( _couleur_masque);
      //     printf(" DrawLineZ(%3.1f,%3.1f,%3.1f,%3.1f)\n",x1,y1,x2,y2);
     // TODO: check why we need +/- 0.5 and create coordinate conversion functions
      pos_x1 = _tab_ximage_pos_x[IMAGE_XY] +  (x1+0.5 - Param._Zoom._xmin )*_size_x;
