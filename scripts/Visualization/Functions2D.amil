@@ -68,6 +68,56 @@ if (!exists(Functions2DClass)) {
         ::xmax = ::xmin+::smallest_interval
         ::win.update
       }
+      if (::ymax<=::ymin+::smallest_interval) {
+        ::ymax = ::ymin+::smallest_interval
+        ::win.update
+      }
+    }
+
+    #----------------------------
+    proc ::AutoX() \
+    {
+      if (::eq1_mode==1) {
+        local::_pos = SpacePos(::input)
+        ::xmin = min(_pos[0])
+        ::xmax = max(_pos[0])
+        _xw = ::xmax-::xmin
+        ::xmin = ::xmin-_xw/10
+        ::xmax = ::xmax+_xw/10
+        ::win.update
+        mf_DrawSetXLimits(::xmin,::xmax)
+      }
+    }
+
+    #----------------------------
+    proc ::AutoY() \
+    {
+      if (::eq1_mode==0) {
+        numval = INT((::xmax-::xmin)/::resolution+0.5)
+        ::X <<= Image(FLOAT,numval,1,1)
+        ::X.settranslation(::xmin,0,0)
+        ::X.setvoxelsize(::resolution,1,1)
+        _pos = SpacePos(::X)
+        ::X = _pos[0]
+        local::X = ::X
+        eval "::Y <<= "+::equation+";"
+        ::ymin = min(::Y)
+        ::ymax = max(::Y)
+        _yw = ::ymax-::ymin
+        ::ymin = ::ymin-_yw/10
+        ::ymax = ::ymax+_yw/10
+        ::win.update
+        mf_DrawSetYLimits(::ymin,::ymax)
+      }
+      if (::eq1_mode==1) {
+        ::ymin = min(::input)
+        ::ymax = max(::input)
+        _yw = ::ymax-::ymin
+        ::ymin = ::ymin-_yw/10
+        ::ymax = ::ymax+_yw/10
+        ::win.update
+        mf_DrawSetYLimits(::ymin,::ymax)
+      }
     }
 
     #----------------------------
@@ -84,18 +134,11 @@ if (!exists(Functions2DClass)) {
         local::X = ::X
         eval "::Y <<= "+::equation+";"
         mf_DrawSetXLimits(::xmin,::xmax)
+        mf_DrawSetYLimits(::ymin,::ymax)
         mf_DrawSetCurve(::Y)
       }
       if (::eq1_mode==1) {
         # set min and max
-        local::_pos = SpacePos(::input)
-        _xw = ::xmax-::xmin
-        _yw = ::ymax-::ymin
-        ::xmin = min(_pos[0])-_xw/10
-        ::xmax = max(_pos[0])+_xw/10
-        ::ymin = min(::input)-_yw/10
-        ::ymax = max(::input)+_yw/10
-        ::win.update
         mf_DrawSetXLimits(::xmin,::xmax)
         mf_DrawSetYLimits(::ymin,::ymax)
         mf_DrawSetCurve(::input)
@@ -131,6 +174,13 @@ if (!exists(Functions2DClass)) {
             ::win.SetCallback(::OnEquation)
             ::win.AddFloat(::xmax,"xmax",-30,30)
             ::win.SetCallback(::OnEquation)
+            ::win.AddButton("Auto X", ::AutoX)
+
+            ::win.AddFloat(::ymin,"ymin",-30,30)
+            ::win.SetCallback(::OnEquation)
+            ::win.AddFloat(::ymax,"ymax",-30,30)
+            ::win.SetCallback(::OnEquation)
+            ::win.AddButton("Auto Y", ::AutoY)
           ::win.EndBoxPanel
 
           ::res_id = ::win.AddFloat(::resolution,"res.",0.01,10)

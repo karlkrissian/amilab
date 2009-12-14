@@ -9,4 +9,5 @@ dir      = "Visualization/"
 
 AddMenuScript(category,"&Parametric Surfaces",  dir+"ParametricSurfaces")
 AddMenuScript(category,"2D &Function plot",  dir+"Functions2D")
+AddMenuScript(category,"Image &Grid",  dir+"ImageGrid")
 

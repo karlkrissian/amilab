@@ -1,0 +1,169 @@
+#!/usr/bin/amilab
+
+#
+# Script for drawing 2D functions
+# or lines from an image
+#
+
+comments="ImageGridClass: this class allows to draw a grid around the pixels on an 2D image display (draw on XY slice for 3D images)."
+
+import_imagedraw
+
+if (!exists(ImageGridClass)) {
+
+  
+  Class ImageGridClass {
+
+    #----------------------------
+    proc ::Init() \
+    {
+      ::classname  = "ImageGridClass"
+      ::input_name =  "", "name of the input image, the drawing window of this image will be used"
+      ::enable = UCHAR(1), "Enable/Disable grid"
+      ::thickness = INT(1), "line thickness"
+      ::style     = INT(0), "line style 0 for solid, 1 for dot"
+      ::color_r = INT(0), "Red component of the color"
+      ::color_g = INT(0), "Green component of the color"
+      ::color_b = INT(0), "Blue component of the color"
+      ::color_a = INT(255), "Alpha component of the color"
+      ::CreateWindow()
+    }
+    
+    #----------------------------
+    proc ::Close() \
+    {
+      ::win.Hide
+      delvars GetObjectName(::Close)
+    }
+    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    
+    #----------------------------
+    proc ::CloseAll() \
+    {
+      closeclass_cmd = boost_format("if (exists(%1%)) { del %1%; };")%::classname
+      eval closeclass_cmd
+      ::Close
+    }
+    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    
+    #----------------------------
+    proc ::UpdateDisplay() \
+    {
+      cmd = boost_format("if (exists(%1%_draw)) { %1%_draw.update; };") % ::input_name
+      eval cmd
+    }
+
+    #----------------------------
+    proc ::SetAsCallback() \
+    {
+      cmd = boost_format("%1%_draw.PaintCallback(") % ::input_name
+      printn cmd
+      cmd = cmd + boost_format(" %1%->DrawGrid);") % GetObjectName(::SetAsCallback)
+      printn cmd
+
+      eval cmd
+    }
+    ::SetAsCallback.Comments("Set the grid display function as a paint callback of the drawing area")
+
+    #----------------------------
+    proc ::DrawGrid() \
+    {
+      if (::enable) {
+        eval boost_format("ok = exists(%1%_draw);")%::input_name
+        if (ok) {
+          
+          color_string = " wrap_idraw_inst->SetLineColor(%1%_draw,::color_r,::color_g,::color_b,::color_a);"
+          eval boost_format(color_string) % ::input_name
+
+          param_string = " wrap_idraw_inst->LineParam(%1%_draw,::thickness,::style);"
+          eval boost_format(param_string) % ::input_name
+
+          # draw vertical
+          for_string = "for c=%1%_draw.GetXmin+1 to %1%_draw.GetXmax { "
+          for_string = for_string + "wrap_idraw_inst->DrawLine(%1%_draw,c-0.5,"
+          for_string = for_string + "%1%_draw.GetYmin-0.5,c-0.5,%1%_draw.GetYmax+0.5); };"
+          for_string = boost_format(for_string)%::input_name
+          eval for_string
+
+          # draw horizontal
+          for_string = "for l=%1%_draw.GetYmin+1 to %1%_draw.GetYmax { "
+          for_string = for_string + "wrap_idraw_inst->DrawLine(%1%_draw,%1%_draw.GetXmin-0.5,"
+          for_string = for_string + "l-0.5,%1%_draw.GetXmax+0.5,l-0.5); };"
+          for_string = boost_format(for_string)%::input_name
+          eval for_string
+
+          displ_string = boost_format("wrap_idraw_inst->DisplayDA(%1%_draw);")%::input_name
+          eval displ_string
+        }
+      }
+      # end if enable
+    }
+
+    #----------------------------
+    proc ::CreateWindow() {
+    
+      # parameters window
+      ::win = ParamWin("ImGrid")
+      
+      ::win.BeginBook
+    
+        ::win.AddPage("Param")
+
+          # set the input image drawing window
+          ::win.BeginBoxPanel("Input")
+            ::win.BeginHorizontal
+              ::win.AddImageChoice(::input_name, "")
+            ::win.EndHorizontal
+          ::win.EndBoxPanel
+
+          ::win.AddBoolean(::enable,"Enable")
+          ::win.SetCallback(::UpdateDisplay)
+          ::win.AddButton("Draw",::DrawGrid)
+          ::win.AddButton("SetCallback",::SetAsCallback)
+
+          ::win.AddInt(::thickness,"thickness",0,5)
+          ::win.SetCallback(::UpdateDisplay)
+          ::win.AddInt(::style,"style",0,1)
+          ::win.SetCallback(::UpdateDisplay)
+
+          ::win.BeginBoxPanel("Color")
+            ::win.AddInt(::color_r,"red",0,255)
+            ::win.SetCallback(::UpdateDisplay)
+            ::win.AddInt(::color_g,"green",0,255)
+            ::win.SetCallback(::UpdateDisplay)
+            ::win.AddInt(::color_b,"blue",0,255)
+            ::win.SetCallback(::UpdateDisplay)
+            ::win.AddInt(::color_a,"alpha",0,255)
+            ::win.SetCallback(::UpdateDisplay)
+          ::win.EndBoxPanel
+  
+      ::win.EndBook
+      ::win.BeginHorizontal
+        ::win.AddButton("Close", ::Close)
+        ::win.AddButton("Close All", ::CloseAll)
+      ::win.EndHorizontal
+      
+      ::win.update
+      ::win.Display
+   }
+
+    ::Init
+  } 
+  # Class ImageGridClass
+  ImageGridClass.Comments(comments)
+} 
+# end if (!exists(Functions2DClass))
+  
+  
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(imgrid)) {
+
+  ImageGridClass imgrid
+  
+} else {
+  InfoDialog "The script seems to be already loaded."
+}
+
