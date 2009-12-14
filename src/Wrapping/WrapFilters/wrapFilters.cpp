@@ -29,6 +29,8 @@
 #include "wrapComputePV.h"
 #include "wrap_DirSum.h"
 #include "wrap_ImTranslate.h"
+#include "wrap_AddSubImage.h"
+#include "wrap_MaxSubImage.h"
 
 extern VarContexts  Vars;
 
@@ -62,6 +64,11 @@ void AddWrapFilters(){
 
   Vars.AddVar(type_c_image_function,"ImTranslate", 
                 (void*) wrap_ImTranslate  );
+
+  Vars.AddVar(type_c_procedure,"AddSubImage", 
+                (void*) wrap_AddSubImage  );
+  Vars.AddVar(type_c_procedure,"MaxSubImage", 
+                (void*) wrap_MaxSubImage  );
 
 }
 

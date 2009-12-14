@@ -47,6 +47,8 @@ SET(  WrapFilters_SRCS
   Wrap_NewNLMeans.cpp
   wrap_DirSum.cpp
   wrap_ImTranslate.cpp
+  wrap_AddSubImage.cpp
+  wrap_MaxSubImage.cpp
   LeastSquares.cpp
 )
 

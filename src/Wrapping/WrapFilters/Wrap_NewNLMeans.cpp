@@ -26,16 +26,16 @@ InrImage* Wrap_NewNLmeans(ParamList* p)
         proposed by Buades et al.\n\
             ";
     char parameters[] =" \n\
-          Parameters:\n\
-              input image\n\
-          t (def: 7): define a window of size (2t+1)^n \n\
-            used to search for similar pixels/voxels\n\
-          f (def: 3): define a window of size (2f+1)^n\n\
-            for the pixel/voxel pattern to match (f<t)\n\
-          h (def: 10): threshold for the distance between\n\
-            patches, suggested 10*standard deviation of the noise\n\
-          threads (def: 2): number of threads\n\
-          minweight (def: 15):  minimal weight threshold is exp(-minweight) \n\
+      - input image\n\
+      - t (def: 7): define a window of size (2t+1)^n \n\
+        used to search for similar pixels/voxels\n\
+      - f (def: 3): define a window of size (2f+1)^n\n\
+        for the pixel/voxel pattern to match (f<t)\n\
+      - h (def: 10): threshold for the distance between\n\
+        patches, suggested 10*standard deviation of the noise\n\
+      - threads (def: 2): number of threads\n\
+      - minweight (def: 15):  minimal weight threshold is exp(-minweight) \n\
+      - dist_mode (def:0): distance mode: 0 for square intensity differences, 1 for absolute\n\
             ";
 
 #ifdef AMI_USE_FASTNLMEANS
@@ -48,6 +48,7 @@ InrImage* Wrap_NewNLmeans(ParamList* p)
   if (!get_float_param(  params.h,           p, n)) HelpAndReturnNULL;
   if (!get_int_param(    params.num_threads, p, n)) HelpAndReturnNULL;
   if (!get_float_param(  params.minweight,   p, n)) HelpAndReturnNULL;
+  if (!get_int_param(    params.dist_mode,   p, n)) HelpAndReturnNULL;
 
   FastNLmeans fast_nlmeans(params);
   fast_nlmeans.Init();

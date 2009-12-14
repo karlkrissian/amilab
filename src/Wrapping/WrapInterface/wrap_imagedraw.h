@@ -20,8 +20,9 @@
  */
 void AddWrapImageDraw();
 
-void wrap_ImageDrawDrawLine(  ParamList* p);
-void wrap_ImageDrawLineParam( ParamList* p);
-void wrap_ImageDrawDisplayDA( ParamList* p);
+void wrap_ImageDrawSetLineColor( ParamList* p);
+void wrap_ImageDrawDrawLine(     ParamList* p);
+void wrap_ImageDrawLineParam(    ParamList* p);
+void wrap_ImageDrawDisplayDA(    ParamList* p);
 
 #endif //  _wrap_mainframe_h_

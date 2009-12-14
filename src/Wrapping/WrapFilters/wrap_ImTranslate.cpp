@@ -51,15 +51,19 @@ InrImage* wrap_ImTranslate(ParamList* p)
       result = new InrImage( input->GetFormat(), "ImTranslate.ami.gz", input);
       break;
     case 1:
-      result = new InrImage( input->DimX()-dx, input->DimY()-dy,
-        input->DimZ()-dz, input->GetVDim(), input->GetFormat(),
-        "ImTranslate.ami.gz");
+      result = new InrImage(  input->DimX()-abs(dx),
+                              input->DimY()-abs(dy),
+                              input->DimZ()-abs(dz),
+                              input->GetVDim(),
+                              input->GetFormat(),
+                              "ImTranslate.ami.gz");
       result->SetVoxelSize( input->VoxSizeX(),
                             input->VoxSizeY(), 
                             input->VoxSizeZ());
-      result->SetTranslation( input->TrX()+dx*input->VoxSizeX(),
-                              input->TrY()+dy*input->VoxSizeY(),
-                              input->TrZ()+dz*input->VoxSizeZ());
+      result->SetTranslation(
+        input->TrX()+macro_max(dx,0)*input->VoxSizeX(),
+        input->TrY()+macro_max(dy,0)*input->VoxSizeY(),
+        input->TrZ()+macro_max(dz,0)*input->VoxSizeZ());
       break;
     default:
       FILE_ERROR("Wrong border mode");
@@ -90,7 +94,9 @@ InrImage* wrap_ImTranslate(ParamList* p)
       if (border_mode==0) 
         result->BufferPos(xmin,y,z);
       else
-        result->BufferPos(xmin-dx,y-dy,z-dz);
+        result->BufferPos(xmin - macro_max(0,dx),
+                          y    - macro_max(0,dy),
+                          z    - macro_max(0,dz));
       input->BufferPos(xmin-dx,y-dy,z-dz);
       for(x=xmin;x<=xmax;x++) {
         result->FixeValeur(input->ValeurBuffer());
@@ -104,7 +110,9 @@ InrImage* wrap_ImTranslate(ParamList* p)
       if (border_mode==0) 
         result->BufferPos(xmin,y,z);
       else
-        result->BufferPos(xmin-dx,y-dy,z-dz);
+        result->BufferPos(xmin - macro_max(0,dx),
+                          y    - macro_max(0,dy),
+                          z    - macro_max(0,dz));
       input->BufferPos(xmin-dx,y-dy,z-dz);
       for(x=xmin;x<=xmax;x++) {
         for(int n=0;n<input->GetVDim();n++) {

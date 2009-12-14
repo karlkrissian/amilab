@@ -48,6 +48,7 @@ void AddWrapImageDraw()
   Vars.AddVar(type_c_procedure, "DrawLine",  (void*)  wrap_ImageDrawDrawLine, OBJECT_CONTEXT_NUMBER);
   Vars.AddVar(type_c_procedure, "DisplayDA",  (void*)  wrap_ImageDrawDisplayDA, OBJECT_CONTEXT_NUMBER);
   Vars.AddVar(type_c_procedure, "LineParam",  (void*)  wrap_ImageDrawLineParam, OBJECT_CONTEXT_NUMBER);
+  Vars.AddVar(type_c_procedure, "SetLineColor",  (void*)  wrap_ImageDrawSetLineColor, OBJECT_CONTEXT_NUMBER);
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);
@@ -90,6 +91,45 @@ void wrap_ImageDrawLineParam( ParamList* p)
   }
   imdraw->FixeParametresLigne( thickness, wxstyle, wxCAP_ROUND, wxJOIN_MITER);
 
+}
+
+
+/**
+ * set the line color on an image drawing window
+ * @param p 
+ */
+void wrap_ImageDrawSetLineColor( ParamList* p)
+{
+    char functionname[] = "SetLineColor";
+    char description[]=" \n\
+      Sets the color of the line. \n\
+            ";
+    char parameters[] =" \n\
+      - image drawing window\n\
+      - red    (0-255) default 10\n\
+      - green  (0-255) default 10\n\
+      - blue   (0-255) default 10\n\
+      - alpha  (0-255) default wxALPHA_OPAQUE \n\
+      \n\
+            ";
+
+  DessinImage::ptr imdraw;
+  int red   = 10;
+  int green = 10;
+  int blue  = 10;
+  int alpha = wxALPHA_OPAQUE;
+  int n=0;
+
+  if (!get_imagedraw_param( imdraw, p, n)) HelpAndReturn;
+  if (!get_int_param( red,   p, n)) HelpAndReturn;
+  if (!get_int_param( green, p, n)) HelpAndReturn;
+  if (!get_int_param( blue,  p, n)) HelpAndReturn;
+  if (!get_int_param( alpha, p, n)) HelpAndReturn;
+
+  imdraw->SetPenColor(wxColour((unsigned char)red,
+    (unsigned char)green,
+    (unsigned char)blue,
+    (unsigned char)alpha));
 }
 
 
