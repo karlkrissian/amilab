@@ -1054,6 +1054,7 @@ public:
     _volren_opacity = volren_opacity;
   }
 
+   wxColour GetLineColor() { return _couleur_lignes; }
 
   int      ComparisonNumber() { return _nombre_comparaisons;}
 
