@@ -149,7 +149,7 @@ void wrap_ImageDrawDrawLine( ParamList* p)
       - number y1  \n\
       - number x2  \n\
       - number y2  \n\
-      - number update (def:0): 0 does not update display, 1 updates display\n\ 
+      - number update (def:0): 0 does not update display, 1 updates display\n\
             ";
 
   DessinImage::ptr imdraw;

@@ -586,10 +586,10 @@ void MainFrame::CreateVarTreePanel ( wxWindow* parent)
                               wxDefaultPosition,
                               wxDefaultSize,
                               (wxTR_HAS_BUTTONS 
-                              | wxTR_HIDE_ROOT 
+                              //| wxTR_HIDE_ROOT 
                               | wxTR_FULL_ROW_HIGHLIGHT 
                               ) 
-                              ^ (wxTR_NO_LINES )
+                              //^ (wxTR_NO_LINES )
                             );
   _var_tree->SetWindowStyle(_var_tree->GetWindowStyle() ^ wxTR_NO_LINES);
   //_var_tree->SetToolTip(_T("Tree Control for current variables"));
@@ -1409,6 +1409,8 @@ void MainFrame::UpdateVarsDisplay()
 {
   UpdateVarList();
   UpdateVarTree(_vartree_root, Vars.GetCurrentContext());
+  _var_tree->Expand(  _vartree_root);
+
 }
 
 //--------------------------------------------------
