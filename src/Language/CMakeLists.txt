@@ -57,6 +57,30 @@ SET(Language_SRCS
     ImageStack.cpp
 )
 
+SET(Language_HDRS
+    ami_class.h
+    AmiInstructionBlock.h
+    driver.h
+    IdentifierInfo.h
+    MatrixStack.h  
+    scanner.h
+    vartype.h
+    ami_function.h
+    ami_object.h
+    GLTransformStack.h
+    ImageStack.h
+    paramlist.h
+    SurfStack.h
+    VarContexts.hpp
+    Variable.hpp
+    Variables.hpp
+)
+
+SET(Language_BISONFLEX_SRCS
+  improcess_bison.ypp
+  improcess_flex.lpp
+)
+
 IF(AMI_USE_FLEXBISON)
 
   BISON_TARGET_option_extraopts("-t  -dv")
@@ -76,6 +100,8 @@ IF(AMI_USE_FLEXBISON)
     ${BISON_improcessbison_OUTPUTS}
     ${FLEX_improcessflex_OUTPUTS}
     ${Language_SRCS}
+    ${Language_BISONFLEX_SRCS}
+    ${Language_HDRS}
   )
   
 ELSE(AMI_USE_FLEXBISON)
@@ -91,6 +117,7 @@ ELSE(AMI_USE_FLEXBISON)
    SET(Language_SRCS
      ${FLEXBISON_OUTPUTS}
      ${Language_SRCS}
+     ${Language_HDRS}
    )
  
 
