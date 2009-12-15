@@ -90,8 +90,8 @@ bool Driver::parse_stream(std::istream& in,
   this->lexer = previous_lexer;
 
   in_console   = in_console_bak;
-
-  return ( res== 0);
+  CLASS_MESSAGE(boost::format(" parsing result = %1%")%res);
+  return ( res==0);
 }
 
 //-----------------------------------------------------------
@@ -129,7 +129,7 @@ bool Driver::parse_commandline(const std::string &input, const std::string& snam
 }
 
 //-----------------------------------------------------------
-void Driver::error(const class location& l,
+int Driver::error(const class location& l,
 		   const std::string& m)
 {
     stringstream tmpstr;
@@ -143,15 +143,15 @@ void Driver::error(const class location& l,
               << endl
             << m 
             << std::endl;
-    err_print(tmpstr.str().c_str());
+    return err_print(tmpstr.str().c_str());
 }
 
 //-----------------------------------------------------------
-void Driver::error(const std::string& m)
+int Driver::error(const std::string& m)
 {
     stringstream tmpstr;
     tmpstr << m << std::endl;
-    err_print(tmpstr.str().c_str());
+    return err_print(tmpstr.str().c_str());
 }
 
 
@@ -437,13 +437,14 @@ void Driver::init_err_output()
 
 
 //--------------------------------------------------
-void Driver::err_print(const char* st) 
+int Driver::err_print(const char* st) 
 //   -----------------
 {
   *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString::FromAscii(st);
   string mess =  (format("Error %s \n") % st).str();
-  wxMessageDialog* err_msg = new wxMessageDialog(NULL,GetwxStr(mess),GetwxStr("Error"),wxOK | wxICON_ERROR);
-  err_msg->ShowModal();
+  mess = mess + " Abort current parsing ?";
+  wxMessageDialog* err_msg = new wxMessageDialog(NULL,GetwxStr(mess),GetwxStr("Error"),wxYES_NO |  wxYES_DEFAULT  | wxICON_ERROR);
+  return err_msg->ShowModal();
 } // Driver::err_print()
 
 

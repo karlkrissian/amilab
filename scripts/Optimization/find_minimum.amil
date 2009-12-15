@@ -4,7 +4,7 @@ if (!exists(MinSearchClass)) {
   Class MinSearchClass {
 
     proc ::Init() {
-      ::eval_string = "res = (P1-10)*(P1-10)", "Evaluation string, defines the function to minimize and uses 'P1', 'P2', ... as input value and 'res' as resulting value"
+      ::eval_string = "res = (P1-10)*(P1-10);", "Evaluation string, defines the function to minimize and uses 'P1', 'P2', ... as input value and 'res' as resulting value"
 
       ::P1min   = 0, "Minimal value, 1st parameter"
       ::P1max   = 1, "Maximal value, 1st parameter"
@@ -16,7 +16,8 @@ if (!exists(MinSearchClass)) {
       ::P2nbits = INT(4), "number of iteration of dichotomial method, 2nd parameter"
       ::P2inc   = 0.2, "increment for grid method, 2nd parameter"
 
-      ::result_string = "", "Display (param,value) at minimum"
+      ::result_string = "", "Best parameter found"
+      ::result_value  = "", "Minimal value obtained"
 
       ::CreateWindow()
     }
@@ -71,8 +72,8 @@ if (!exists(MinSearchClass)) {
       } 
       # end for _n
     
-      ::result_string = boost_format("%1%, ")%::xmin
-      ::result_string =  ::result_string + boost_format("%1%")%::valmin
+      ::result_string = boost_format("%1%")%::xmin
+      ::result_value  = boost_format("%1%")%::valmin
       ::win.update
     
     }
@@ -95,44 +96,52 @@ if (!exists(MinSearchClass)) {
     
       current=::P1min+_step
     
-      for _n=0 to ::P1nbits { 
+      nb_div = 0
+      iterations = 0
+      repeat { 
     
-      # different configurations  
-      if (v0<v1) {
-        if ((current-2*_step)>::P1min) {
-          v2=v1
-          v1=v0
-          current=current-_step
-          ::EvalFunction(current-_step,&v0)      
+        iterations++;
+        printn boost_format("*********   nb_div = %1%") %nb_div;
+        if (nb_div>::P1nbits) { break; }
+        # different configurations  
+        if (v0<v1) {
+          if ((current-2*_step)>::P1min) {
+            v2=v1
+            v1=v0
+            current=current-_step
+            ::EvalFunction(current-_step,&v0)      
+          } else {
+            v2=v1
+            _step=_step/2.0
+            nb_div++
+            current=current-_step
+            ::EvalFunction(current,&v1)
+          }
         } else {
-          v2=v1
-          _step=_step/2.0
-          current=current-_step
-          ::EvalFunction(current,&v1)
-        }
-      } else {
-        if ((v1<v0)&&(v1<v2)) {
-          _step=_step/2
-          ::EvalFunction(current-_step,&v0)
-          ::EvalFunction(current+_step,&v2)
-        } else {
-          if (v2<v1) {
-            if ((current+2*_step)<::P1max) {
-              v0=v1
-              v1=v2
-              current=current+_step
-              ::EvalFunction(current+_step,&v2)      
-            } else {
-              _step=_step/2
-              current=current+_step
-              v0=v1
-              ::EvalFunction(current,&v1)     
+          if ((v1<=v0)&&(v1<=v2)) {
+            _step=_step/2
+            nb_div++
+            ::EvalFunction(current-_step,&v0)
+            ::EvalFunction(current+_step,&v2)
+          } else {
+            if (v2<v1) {
+              if ((current+2*_step)<::P1max) {
+                v0=v1
+                v1=v2
+                current=current+_step
+                ::EvalFunction(current+_step,&v2)      
+              } else {
+                _step=_step/2
+                nb_div++
+                current=current+_step
+                v0=v1
+                ::EvalFunction(current,&v1)     
+              }
             }
           }
         }
-      }
     
-      } // for
+      } // repeat
     
     
       print sprint("x=     %2.3f \t",current-_step)
@@ -143,9 +152,16 @@ if (!exists(MinSearchClass)) {
       print sprint("%2.3f \t",v1)
       print sprint("%2.3f \n",v2)
     
-      ::result_string = boost_format("%1%, ")%current
-      ::result_string =  ::result_string + boost_format("%1%")%v1
-    
+      resX = current-_step
+      resV = v0
+      if (v1<resV) { resX = current;       resV = v1; } 
+      if (v2<resV) { resX = current+_step; resV = v2; } 
+
+      ::result_string = boost_format("%1% ")%resX
+      ::result_string =  ::result_string + boost_format(" +/- %1%")%_step
+      ::result_value  =  boost_format("%1%")%resV
+      ::win.update
+
     }
     ::MinDichotomy.Comments("Simple procedure to find the minimum of a function by dichotomy.")
 
@@ -177,6 +193,7 @@ if (!exists(MinSearchClass)) {
           ::win.EndBook
 
           ::win.AddString(::result_string,"res")
+          ::win.AddString(::result_value,"val")
           ::win.AddButton("Dichotomy",::MinDichotomy)
           ::win.AddButton("Grid",     ::MinGrid)
       ::win.EndBook

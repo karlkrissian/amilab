@@ -72,7 +72,7 @@
 #include "wrapWII.h"
 #include "wrapFilters.h"
 #include "wrapSystem.h"
-#include <cstdlib>
+#include <cstdlib> 
 
 //#include "myscan.h"
 #include "ImageDraw.hpp"
@@ -952,6 +952,13 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 1064 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
+    /**
+      Description:
+        Repeats a block of instructions, and stop when an error is generated.
+        Use the command 'break' to leave the loop
+      See Also:
+        break
+     **/
        int  previous_lineno=driver.yyiplineno;
         AmiInstructionBlock::ptr block((yysemantic_stack_[(2) - (2)].ablock));
 
@@ -966,7 +973,7 @@ namespace yyip {
           driver.yyiplineno = block->GetStartingLine();
           res=driver.parse_block(block);
 
-      } while (!res);
+      } while (res);
       driver.yyiplineno = previous_lineno;
     }
     break;
@@ -974,7 +981,7 @@ namespace yyip {
   case 26:
 
 /* Line 678 of lalr1.cc  */
-#line 1086 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1093 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       int  previous_lineno;
       AmiInstructionBlock::ptr block((yysemantic_stack_[(4) - (3)].ablock));
@@ -985,7 +992,7 @@ namespace yyip {
         if ((yysemantic_stack_[(4) - (2)].adouble)>0.5)
         {
           //driver.yyiplineno=previous_lineno;
-          driver.parse_block(block);
+          if (!driver.parse_block(block)) YYABORT;
           driver.yyiplineno = previous_lineno;
         }
     }
@@ -994,7 +1001,7 @@ namespace yyip {
   case 27:
 
 /* Line 678 of lalr1.cc  */
-#line 1101 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1108 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
        int  previous_lineno = driver.yyiplineno;
 
@@ -1004,10 +1011,12 @@ namespace yyip {
       // Pb with line numbers
       previous_lineno=driver.yyiplineno;
 
+      bool res;
       if ((yysemantic_stack_[(6) - (2)].adouble)>0.5)
-        driver.parse_block(block_if);
+        res = driver.parse_block(block_if);
       else
-        driver.parse_block(block_else);
+        res = driver.parse_block(block_else);
+      if (!res) YYABORT;
       driver.yyiplineno = previous_lineno;
 
     }
@@ -1016,7 +1025,7 @@ namespace yyip {
   case 28:
 
 /* Line 678 of lalr1.cc  */
-#line 1121 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1130 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       GB_driver.procedure_declaration = true;
     }
@@ -1025,7 +1034,7 @@ namespace yyip {
   case 29:
 
 /* Line 678 of lalr1.cc  */
-#line 1126 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1135 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       AMIFunction* amifunc;
       AmiInstructionBlock::ptr body((yysemantic_stack_[(8) - (7)].ablock));
@@ -1053,7 +1062,7 @@ namespace yyip {
   case 30:
 
 /* Line 678 of lalr1.cc  */
-#line 1150 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1159 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       // allow overriding current functions
       GB_driver.procedure_declaration = true;
@@ -1063,7 +1072,7 @@ namespace yyip {
   case 31:
 
 /* Line 678 of lalr1.cc  */
-#line 1156 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1165 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       AMIFunction* amifunc;
       AmiInstructionBlock::ptr body((yysemantic_stack_[(8) - (7)].ablock));
@@ -1100,7 +1109,7 @@ namespace yyip {
   case 32:
 
 /* Line 678 of lalr1.cc  */
-#line 1192 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1201 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       AMIClass* amiclass;
       AmiInstructionBlock::ptr body((yysemantic_stack_[(4) - (3)].ablock));
@@ -1121,7 +1130,7 @@ namespace yyip {
   case 33:
 
 /* Line 678 of lalr1.cc  */
-#line 1210 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1219 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       Variable*       var   = (yysemantic_stack_[(2) - (1)].variable);
       AMIClass::ptr ac = *(AMIClass::ptr*) (var->Pointer());
@@ -1146,7 +1155,7 @@ namespace yyip {
   case 34:
 
 /* Line 678 of lalr1.cc  */
-#line 1232 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1241 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
        //driver.res_print($2);
        driver.parse_script((yysemantic_stack_[(3) - (2)].astring));
@@ -1157,7 +1166,7 @@ namespace yyip {
   case 35:
 
 /* Line 678 of lalr1.cc  */
-#line 1239 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1248 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           int res;
           string name;
@@ -1196,7 +1205,7 @@ namespace yyip {
   case 36:
 
 /* Line 678 of lalr1.cc  */
-#line 1274 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1283 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       string_ptr inputstring( new std::string((yysemantic_stack_[(2) - (2)].astring)));
       driver.parse_string( *inputstring,
@@ -1207,7 +1216,7 @@ namespace yyip {
   case 37:
 
 /* Line 678 of lalr1.cc  */
-#line 1280 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1289 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         Variable*       var   = (yysemantic_stack_[(5) - (1)].variable);
         ParamList::ptr  param((yysemantic_stack_[(5) - (3)].paramlist));
@@ -1221,7 +1230,7 @@ namespace yyip {
   case 38:
 
 /* Line 678 of lalr1.cc  */
-#line 1289 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1298 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Variable*    var   = (yysemantic_stack_[(2) - (1)].variable);
 
@@ -1233,7 +1242,7 @@ namespace yyip {
   case 39:
 
 /* Line 678 of lalr1.cc  */
-#line 1298 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1307 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
          /**
           Description:
@@ -1246,8 +1255,14 @@ namespace yyip {
   case 40:
 
 /* Line 678 of lalr1.cc  */
-#line 1306 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1315 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
+          /**
+            Description:
+              Calls YYABORT to leave the current instruction block.
+            See Also:
+              repeat
+          **/
            YYABORT;
          }
     break;
@@ -1255,7 +1270,7 @@ namespace yyip {
   case 41:
 
 /* Line 678 of lalr1.cc  */
-#line 1311 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1326 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
          /**
          Description:
@@ -1273,7 +1288,7 @@ namespace yyip {
   case 42:
 
 /* Line 678 of lalr1.cc  */
-#line 1325 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1340 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
          /**
          Description:
@@ -1291,7 +1306,7 @@ namespace yyip {
   case 43:
 
 /* Line 678 of lalr1.cc  */
-#line 1339 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1354 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
          /**
          Description:
@@ -1309,7 +1324,7 @@ namespace yyip {
   case 44:
 
 /* Line 678 of lalr1.cc  */
-#line 1353 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1368 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
          /**
          Description:
@@ -1323,7 +1338,7 @@ namespace yyip {
   case 45:
 
 /* Line 678 of lalr1.cc  */
-#line 1363 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1378 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Description: waits the time given in milliseconds
@@ -1343,7 +1358,7 @@ namespace yyip {
   case 46:
 
 /* Line 678 of lalr1.cc  */
-#line 1379 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1394 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -1367,7 +1382,7 @@ namespace yyip {
   case 47:
 
 /* Line 678 of lalr1.cc  */
-#line 1399 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1414 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
             VarArray* arraysurf;
             IdentifierInfo::ptr ident((yysemantic_stack_[(6) - (1)].ident));
@@ -1383,7 +1398,7 @@ namespace yyip {
   case 48:
 
 /* Line 678 of lalr1.cc  */
-#line 1411 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1426 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
             VarArray* arraysurf;
             IdentifierInfo::ptr ident((yysemantic_stack_[(6) - (1)].ident));
@@ -1398,7 +1413,7 @@ namespace yyip {
   case 49:
 
 /* Line 678 of lalr1.cc  */
-#line 1422 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1437 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
             IdentifierInfo::ptr ident((yysemantic_stack_[(6) - (1)].ident));
             VarArray* array;
@@ -1413,7 +1428,7 @@ namespace yyip {
   case 50:
 
 /* Line 678 of lalr1.cc  */
-#line 1433 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1448 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           void * imptr;
           IdentifierInfo::ptr ident((yysemantic_stack_[(3) - (1)].ident));
@@ -1429,7 +1444,7 @@ namespace yyip {
   case 51:
 
 /* Line 678 of lalr1.cc  */
-#line 1445 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1460 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           void * imptr;
           imptr = (void*)driver.im_stack.GetLastImage();
@@ -1445,7 +1460,7 @@ namespace yyip {
   case 52:
 
 /* Line 678 of lalr1.cc  */
-#line 1456 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1471 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
           Description:
@@ -1469,7 +1484,7 @@ namespace yyip {
   case 53:
 
 /* Line 678 of lalr1.cc  */
-#line 1476 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1491 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           VarArray::ptr array;
           void * imptr = (void*)driver.im_stack.GetLastImage();
@@ -1495,7 +1510,7 @@ namespace yyip {
   case 54:
 
 /* Line 678 of lalr1.cc  */
-#line 1498 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1513 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           void * imptr;
           imptr = (void*) driver.matrix_stack.GetLastMatrix();
@@ -1511,7 +1526,7 @@ namespace yyip {
   case 55:
 
 /* Line 678 of lalr1.cc  */
-#line 1510 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1525 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           void * imptr;
           imptr = (void*)driver.gltransf_stack.GetLastMatrix();
@@ -1527,7 +1542,7 @@ namespace yyip {
   case 56:
 
 /* Line 678 of lalr1.cc  */
-#line 1521 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1536 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           FloatMatrix::ptr m1 = *((FloatMatrix::ptr*) ((yysemantic_stack_[(3) - (1)].variable)->Pointer()));
           (*m1) = (yysemantic_stack_[(3) - (3)].adouble);
@@ -1537,7 +1552,7 @@ namespace yyip {
   case 57:
 
 /* Line 678 of lalr1.cc  */
-#line 1526 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1541 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           FloatMatrix::ptr m1 = *((FloatMatrix::ptr*) ((yysemantic_stack_[(3) - (1)].variable)->Pointer()));
           FloatMatrix* m2 = driver.matrix_stack.GetLastMatrix();
@@ -1551,7 +1566,7 @@ namespace yyip {
   case 58:
 
 /* Line 678 of lalr1.cc  */
-#line 1536 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1551 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           VarArray::ptr array;
           void * surfptr;
@@ -1578,7 +1593,7 @@ namespace yyip {
   case 59:
 
 /* Line 678 of lalr1.cc  */
-#line 1559 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1574 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Variables* contextptr = new Variables();
           IdentifierInfo::ptr ident((yysemantic_stack_[(3) - (1)].ident));
@@ -1591,7 +1606,7 @@ namespace yyip {
   case 60:
 
 /* Line 678 of lalr1.cc  */
-#line 1568 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1583 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           void * surfptr;
           surfptr = (void*)driver.surf_stack.GetLastSurf();
@@ -1607,7 +1622,7 @@ namespace yyip {
   case 61:
 
 /* Line 678 of lalr1.cc  */
-#line 1580 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1595 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Variable* var = (yysemantic_stack_[(3) - (1)].variable);
           void* surfptr  = (void*) driver.surf_stack.GetLastSurf();
@@ -1629,7 +1644,7 @@ namespace yyip {
   case 62:
 
 /* Line 678 of lalr1.cc  */
-#line 1598 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1613 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Variable* var = (yysemantic_stack_[(6) - (1)].variable);
           VarArray* arraysurf;
@@ -1655,7 +1670,7 @@ namespace yyip {
   case 63:
 
 /* Line 678 of lalr1.cc  */
-#line 1620 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1635 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
         Description: 
@@ -1672,7 +1687,7 @@ namespace yyip {
   case 64:
 
 /* Line 678 of lalr1.cc  */
-#line 1633 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1648 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
       Parameters:
@@ -1695,7 +1710,7 @@ namespace yyip {
   case 65:
 
 /* Line 678 of lalr1.cc  */
-#line 1652 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1667 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
         Description: 
@@ -1712,7 +1727,7 @@ namespace yyip {
   case 66:
 
 /* Line 678 of lalr1.cc  */
-#line 1665 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1680 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
       Parameters:
@@ -1735,7 +1750,7 @@ namespace yyip {
   case 67:
 
 /* Line 678 of lalr1.cc  */
-#line 1684 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1699 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
         Description: 
@@ -1752,7 +1767,7 @@ namespace yyip {
   case 68:
 
 /* Line 678 of lalr1.cc  */
-#line 1697 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1712 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
         Parameters:
@@ -1775,7 +1790,7 @@ namespace yyip {
   case 69:
 
 /* Line 678 of lalr1.cc  */
-#line 1716 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1731 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
         Description: 
@@ -1793,7 +1808,7 @@ namespace yyip {
   case 70:
 
 /* Line 678 of lalr1.cc  */
-#line 1730 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1745 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
         Parameters:
@@ -1817,7 +1832,7 @@ namespace yyip {
   case 71:
 
 /* Line 678 of lalr1.cc  */
-#line 1750 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1765 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           FILE* file;
           IdentifierInfo::ptr ident((yysemantic_stack_[(8) - (1)].ident));
@@ -1854,7 +1869,7 @@ namespace yyip {
   case 72:
 
 /* Line 678 of lalr1.cc  */
-#line 1783 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1798 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
             std::string filename((yysemantic_stack_[(8) - (1)].variable)->Name());
             Variable* var;
@@ -1876,7 +1891,7 @@ namespace yyip {
   case 73:
 
 /* Line 678 of lalr1.cc  */
-#line 1800 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1815 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
             FILE_ptr file = *(FILE_ptr*) ((yysemantic_stack_[(3) - (1)].variable)->Pointer());
             rewind(file.get());
@@ -1886,7 +1901,7 @@ namespace yyip {
   case 74:
 
 /* Line 678 of lalr1.cc  */
-#line 1805 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1820 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       GB_debug = 1;
         }
@@ -1895,7 +1910,7 @@ namespace yyip {
   case 75:
 
 /* Line 678 of lalr1.cc  */
-#line 1809 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1824 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       GB_debug = 0;
         }
@@ -1904,7 +1919,7 @@ namespace yyip {
   case 76:
 
 /* Line 678 of lalr1.cc  */
-#line 1813 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1828 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       GB_verbose = 1;
       verbose = 1;
@@ -1914,7 +1929,7 @@ namespace yyip {
   case 77:
 
 /* Line 678 of lalr1.cc  */
-#line 1818 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1833 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       GB_verbose = 0;
     }
@@ -1923,7 +1938,7 @@ namespace yyip {
   case 78:
 
 /* Line 678 of lalr1.cc  */
-#line 1822 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1837 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
       Description:
@@ -1943,7 +1958,7 @@ namespace yyip {
   case 79:
 
 /* Line 678 of lalr1.cc  */
-#line 1837 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1852 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
       Parameter:
@@ -1958,7 +1973,7 @@ namespace yyip {
   case 80:
 
 /* Line 678 of lalr1.cc  */
-#line 1847 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1862 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
       Parameter:
@@ -1974,7 +1989,7 @@ namespace yyip {
   case 81:
 
 /* Line 678 of lalr1.cc  */
-#line 1857 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1872 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           GB_main_wxFrame->Close(true);
         }
@@ -1983,7 +1998,7 @@ namespace yyip {
   case 82:
 
 /* Line 678 of lalr1.cc  */
-#line 1861 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1876 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           std::string titre;
           Variable* imagevar = (yysemantic_stack_[(2) - (2)].variable);
@@ -2038,7 +2053,7 @@ namespace yyip {
   case 83:
 
 /* Line 678 of lalr1.cc  */
-#line 1911 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1926 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           char titre[100];
           Variable* var;
@@ -2063,7 +2078,7 @@ namespace yyip {
   case 84:
 
 /* Line 678 of lalr1.cc  */
-#line 1931 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1946 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           string    titre;
           Viewer3D* surfdraw;
@@ -2113,7 +2128,7 @@ namespace yyip {
   case 85:
 
 /* Line 678 of lalr1.cc  */
-#line 1976 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1991 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           // Create the main frame window
           PenguinFrame *frame = new PenguinFrame(GB_main_wxFrame, wxT("wxWidgets Penguin Sample"),
@@ -2135,7 +2150,7 @@ namespace yyip {
   case 86:
 
 /* Line 678 of lalr1.cc  */
-#line 1993 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2008 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           InrImage::ptr i1 = *(InrImage::ptr*) (yysemantic_stack_[(3) - (1)].variable)->Pointer();
           InrImage::ptr i2 = InrImage::ptr(driver.im_stack.GetLastImage());
@@ -2144,7 +2159,7 @@ namespace yyip {
             // copy option
             if (!((*i1)=(*i2))) driver.err_print(" Error in images assignement\n");
           } else {
-            driver.err_print("Error\n");
+            if (driver.err_print("Error\n")==wxID_YES) YYABORT;
           }
         }
     break;
@@ -2152,7 +2167,7 @@ namespace yyip {
   case 87:
 
 /* Line 678 of lalr1.cc  */
-#line 2005 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2020 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           InrImage::ptr i1 = *(InrImage::ptr*) (yysemantic_stack_[(3) - (1)].variable)->Pointer();
           InrImage::ptr i2 = InrImage::ptr(driver.im_stack.GetLastImage());
@@ -2169,7 +2184,7 @@ namespace yyip {
   case 88:
 
 /* Line 678 of lalr1.cc  */
-#line 2017 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2032 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -2214,7 +2229,7 @@ namespace yyip {
   case 89:
 
 /* Line 678 of lalr1.cc  */
-#line 2057 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2072 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -2232,7 +2247,7 @@ namespace yyip {
   case 90:
 
 /* Line 678 of lalr1.cc  */
-#line 2070 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2085 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -2272,7 +2287,7 @@ namespace yyip {
   case 91:
 
 /* Line 678 of lalr1.cc  */
-#line 2105 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2120 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -2307,7 +2322,7 @@ namespace yyip {
   case 92:
 
 /* Line 678 of lalr1.cc  */
-#line 2135 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2150 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
           Description: Pads the image ...
@@ -2332,7 +2347,7 @@ namespace yyip {
   case 93:
 
 /* Line 678 of lalr1.cc  */
-#line 2155 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2170 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           (*(*(float_ptr*) (yysemantic_stack_[(2) - (1)].variable)->Pointer()))++;
         }
@@ -2341,7 +2356,7 @@ namespace yyip {
   case 94:
 
 /* Line 678 of lalr1.cc  */
-#line 2159 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2174 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           (*(*(float_ptr*) (yysemantic_stack_[(2) - (1)].variable)->Pointer()))--;
         }
@@ -2350,7 +2365,7 @@ namespace yyip {
   case 95:
 
 /* Line 678 of lalr1.cc  */
-#line 2163 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2178 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           *(*(float_ptr*) (yysemantic_stack_[(3) - (1)].variable)->Pointer()) = (yysemantic_stack_[(3) - (3)].adouble);
         }
@@ -2359,7 +2374,7 @@ namespace yyip {
   case 96:
 
 /* Line 678 of lalr1.cc  */
-#line 2167 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2182 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           (*(*(int_ptr*) (yysemantic_stack_[(2) - (1)].variable)->Pointer()))++;
         }
@@ -2368,7 +2383,7 @@ namespace yyip {
   case 97:
 
 /* Line 678 of lalr1.cc  */
-#line 2171 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2186 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           (*(*(int_ptr*) (yysemantic_stack_[(2) - (1)].variable)->Pointer()))--;
         }
@@ -2377,7 +2392,7 @@ namespace yyip {
   case 98:
 
 /* Line 678 of lalr1.cc  */
-#line 2175 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2190 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           *(*(int_ptr*) (yysemantic_stack_[(3) - (1)].variable)->Pointer()) = (int) (yysemantic_stack_[(3) - (3)].adouble);
         }
@@ -2386,7 +2401,7 @@ namespace yyip {
   case 99:
 
 /* Line 678 of lalr1.cc  */
-#line 2179 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2194 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
            *(*(uchar_ptr*) (yysemantic_stack_[(3) - (1)].variable)->Pointer()) = (unsigned char) (yysemantic_stack_[(3) - (3)].adouble);
         }
@@ -2395,7 +2410,7 @@ namespace yyip {
   case 100:
 
 /* Line 678 of lalr1.cc  */
-#line 2183 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2198 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
            (*(*(uchar_ptr*) (yysemantic_stack_[(2) - (1)].variable)->Pointer()))++;
         }
@@ -2404,7 +2419,7 @@ namespace yyip {
   case 101:
 
 /* Line 678 of lalr1.cc  */
-#line 2187 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2202 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
            (*(*(uchar_ptr*) (yysemantic_stack_[(2) - (1)].variable)->Pointer()))--;
         }
@@ -2413,7 +2428,7 @@ namespace yyip {
   case 102:
 
 /* Line 678 of lalr1.cc  */
-#line 2191 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2206 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           string_ptr newname( new std::string((yysemantic_stack_[(3) - (3)].astring)));
           (yysemantic_stack_[(3) - (1)].variable)->SetString(newname);
@@ -2423,7 +2438,7 @@ namespace yyip {
   case 103:
 
 /* Line 678 of lalr1.cc  */
-#line 2196 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2211 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Vars.display();
         }
@@ -2432,7 +2447,7 @@ namespace yyip {
   case 104:
 
 /* Line 678 of lalr1.cc  */
-#line 2200 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2215 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
           Parameters:
@@ -2448,7 +2463,7 @@ namespace yyip {
   case 105:
 
 /* Line 678 of lalr1.cc  */
-#line 2211 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2226 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
           Description: 
@@ -2466,7 +2481,7 @@ namespace yyip {
   case 106:
 
 /* Line 678 of lalr1.cc  */
-#line 2224 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2239 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
           Description: 
@@ -2481,7 +2496,7 @@ namespace yyip {
   case 107:
 
 /* Line 678 of lalr1.cc  */
-#line 2234 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2249 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           VarArray::ptr array = *(VarArray::ptr*) ((yysemantic_stack_[(5) - (2)].variable)->Pointer());;
           int  i = (int) (yysemantic_stack_[(5) - (4)].adouble);
@@ -2495,7 +2510,7 @@ namespace yyip {
   case 108:
 
 /* Line 678 of lalr1.cc  */
-#line 2243 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2258 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
         Parameters:
@@ -2511,7 +2526,7 @@ namespace yyip {
   case 109:
 
 /* Line 678 of lalr1.cc  */
-#line 2254 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2269 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 //         std::ostream streamtest(TC->GetLog());
 //        std::cout=streamtest;
@@ -2524,7 +2539,7 @@ namespace yyip {
   case 110:
 
 /* Line 678 of lalr1.cc  */
-#line 2262 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2277 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         driver.res_print("Topics: \n");
         driver.res_print("\t var:  variables                 \n");
@@ -2541,7 +2556,7 @@ namespace yyip {
   case 111:
 
 /* Line 678 of lalr1.cc  */
-#line 2274 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2289 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           IdentifierInfo::ptr ident((yysemantic_stack_[(2) - (2)].ident));
        if (strcmp(ident->GetName().c_str(),"var")==0) {
@@ -2795,7 +2810,7 @@ namespace yyip {
   case 112:
 
 /* Line 678 of lalr1.cc  */
-#line 2523 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2538 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
       Description: 
@@ -2810,7 +2825,7 @@ namespace yyip {
   case 113:
 
 /* Line 678 of lalr1.cc  */
-#line 2533 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2548 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
       Description: 
@@ -2825,7 +2840,7 @@ namespace yyip {
   case 114:
 
 /* Line 678 of lalr1.cc  */
-#line 2543 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2558 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
       Description: 
@@ -2840,7 +2855,7 @@ namespace yyip {
   case 115:
 
 /* Line 678 of lalr1.cc  */
-#line 2553 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2568 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       string  help_cmd;
       string  help_file;
@@ -2899,7 +2914,7 @@ namespace yyip {
   case 116:
 
 /* Line 678 of lalr1.cc  */
-#line 2607 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2622 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           FILE_ptr file = *(FILE_ptr*) ((yysemantic_stack_[(4) - (1)].variable)->Pointer());
           string_ptr text( new std::string((yysemantic_stack_[(4) - (4)].astring)));
@@ -2912,7 +2927,7 @@ namespace yyip {
   case 117:
 
 /* Line 678 of lalr1.cc  */
-#line 2615 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2630 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           FILE_ptr file = *(FILE_ptr*) ((yysemantic_stack_[(4) - (1)].variable)->Pointer());
           string_ptr text( new std::string((yysemantic_stack_[(4) - (4)].astring)));
@@ -2925,7 +2940,7 @@ namespace yyip {
   case 118:
 
 /* Line 678 of lalr1.cc  */
-#line 2623 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2638 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
          /**
           Description:
@@ -2939,7 +2954,7 @@ namespace yyip {
   case 119:
 
 /* Line 678 of lalr1.cc  */
-#line 2632 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2647 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
          /**
           Description:
@@ -2954,7 +2969,7 @@ namespace yyip {
   case 120:
 
 /* Line 678 of lalr1.cc  */
-#line 2642 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2657 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         FloatMatrix* mat=driver.matrix_stack.GetLastMatrix();
         mat->PrintSelf();
@@ -2965,7 +2980,7 @@ namespace yyip {
   case 121:
 
 /* Line 678 of lalr1.cc  */
-#line 2648 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2663 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
          /**
           Parameters:
@@ -2981,7 +2996,7 @@ namespace yyip {
   case 122:
 
 /* Line 678 of lalr1.cc  */
-#line 2659 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2674 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         FloatMatrix* mat=driver.matrix_stack.GetLastMatrix();
         mat->PrintSelf();
@@ -2992,7 +3007,7 @@ namespace yyip {
   case 123:
 
 /* Line 678 of lalr1.cc  */
-#line 2665 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2680 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
             FILE_ptr file = *(FILE_ptr*) ((yysemantic_stack_[(4) - (1)].variable)->Pointer());
 
@@ -3004,7 +3019,7 @@ namespace yyip {
   case 124:
 
 /* Line 678 of lalr1.cc  */
-#line 2672 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2687 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
             printf("Files are not close anymore: delete the variable instead \n");
           //FILE_ptr file = *(FILE_ptr*) ($1->Pointer());
@@ -3015,7 +3030,7 @@ namespace yyip {
   case 125:
 
 /* Line 678 of lalr1.cc  */
-#line 2678 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2693 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
           Description:
@@ -3030,7 +3045,7 @@ namespace yyip {
   case 126:
 
 /* Line 678 of lalr1.cc  */
-#line 2688 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2703 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
           Description:
@@ -3045,7 +3060,7 @@ namespace yyip {
   case 127:
 
 /* Line 678 of lalr1.cc  */
-#line 2698 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2713 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           DessinImage::ptr draw;
           DessinImageParametres* param;
@@ -3066,7 +3081,7 @@ namespace yyip {
   case 128:
 
 /* Line 678 of lalr1.cc  */
-#line 2714 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2729 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           DessinImage::ptr draw;
           DessinImageParametres* param;
@@ -3083,7 +3098,7 @@ namespace yyip {
   case 129:
 
 /* Line 678 of lalr1.cc  */
-#line 2726 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2741 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           DessinImage::ptr draw;
           DessinImageParametres* param;
@@ -3098,7 +3113,7 @@ namespace yyip {
   case 130:
 
 /* Line 678 of lalr1.cc  */
-#line 2736 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2751 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
             DessinImage::ptr draw;
             InrImage::ptr im;
@@ -3151,7 +3166,7 @@ namespace yyip {
   case 131:
 
 /* Line 678 of lalr1.cc  */
-#line 2784 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2799 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         DessinImage::ptr draw1;
         DessinImage::ptr draw2;
@@ -3171,7 +3186,7 @@ namespace yyip {
   case 132:
 
 /* Line 678 of lalr1.cc  */
-#line 2799 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2814 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -3197,7 +3212,7 @@ namespace yyip {
   case 133:
 
 /* Line 678 of lalr1.cc  */
-#line 2824 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2839 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         DessinImage::ptr draw;
         FloatMatrix* mat;
@@ -3229,7 +3244,7 @@ namespace yyip {
   case 134:
 
 /* Line 678 of lalr1.cc  */
-#line 2851 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2866 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           /**
             Parameters:
@@ -3249,7 +3264,7 @@ namespace yyip {
   case 135:
 
 /* Line 678 of lalr1.cc  */
-#line 2866 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2881 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           DessinImage::ptr draw;
 
@@ -3261,7 +3276,7 @@ namespace yyip {
   case 136:
 
 /* Line 678 of lalr1.cc  */
-#line 2873 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2888 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           DessinImage::ptr draw;
 
@@ -3273,7 +3288,7 @@ namespace yyip {
   case 137:
 
 /* Line 678 of lalr1.cc  */
-#line 2880 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2895 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           /**
           Parameters:
@@ -3296,7 +3311,7 @@ namespace yyip {
   case 138:
 
 /* Line 678 of lalr1.cc  */
-#line 2898 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2913 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           /**
             Parameters:
@@ -3324,7 +3339,7 @@ namespace yyip {
   case 139:
 
 /* Line 678 of lalr1.cc  */
-#line 2921 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2936 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           DessinImage::ptr draw= *(DessinImage::ptr*) ((yysemantic_stack_[(6) - (1)].variable)->Pointer());
           draw->SetVectType((int)(yysemantic_stack_[(6) - (5)].adouble));
@@ -3334,7 +3349,7 @@ namespace yyip {
   case 140:
 
 /* Line 678 of lalr1.cc  */
-#line 2926 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2941 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           DessinImage::ptr draw= *(DessinImage::ptr*) ((yysemantic_stack_[(6) - (1)].variable)->Pointer());
           draw->SetLineThickness((int)(yysemantic_stack_[(6) - (5)].adouble));
@@ -3344,7 +3359,7 @@ namespace yyip {
   case 141:
 
 /* Line 678 of lalr1.cc  */
-#line 2931 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2946 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           int xmin = (int)  (yysemantic_stack_[(16) - (5)].adouble);
           int ymin = (int)  (yysemantic_stack_[(16) - (7)].adouble);
@@ -3362,7 +3377,7 @@ namespace yyip {
   case 142:
 
 /* Line 678 of lalr1.cc  */
-#line 2944 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2959 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           int width  = (int) (yysemantic_stack_[(8) - (5)].adouble);
           int height = (int) (yysemantic_stack_[(8) - (7)].adouble);
@@ -3378,7 +3393,7 @@ namespace yyip {
   case 143:
 
 /* Line 678 of lalr1.cc  */
-#line 2955 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2970 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           DessinImage::ptr draw;
           ClasseCouleur c;
@@ -3392,7 +3407,7 @@ namespace yyip {
   case 144:
 
 /* Line 678 of lalr1.cc  */
-#line 2964 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2979 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           DessinImage::ptr draw;
           // TODO: fix this memory problem ...
@@ -3407,7 +3422,7 @@ namespace yyip {
   case 145:
 
 /* Line 678 of lalr1.cc  */
-#line 2974 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2989 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           DessinImage::ptr draw;
 
@@ -3420,7 +3435,7 @@ namespace yyip {
   case 146:
 
 /* Line 678 of lalr1.cc  */
-#line 2982 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2997 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
             /**
             Parameters:
@@ -3442,7 +3457,7 @@ namespace yyip {
   case 147:
 
 /* Line 678 of lalr1.cc  */
-#line 2999 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3014 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
             /**
             Parameters:
@@ -3463,7 +3478,7 @@ namespace yyip {
   case 148:
 
 /* Line 678 of lalr1.cc  */
-#line 3015 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3030 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
             /**
             Parameters:
@@ -3485,7 +3500,7 @@ namespace yyip {
   case 149:
 
 /* Line 678 of lalr1.cc  */
-#line 3032 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3047 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
             /**
             Parameters:
@@ -3510,7 +3525,7 @@ namespace yyip {
   case 150:
 
 /* Line 678 of lalr1.cc  */
-#line 3052 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3067 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
             /**
             Parameters:
@@ -3530,7 +3545,7 @@ namespace yyip {
   case 151:
 
 /* Line 678 of lalr1.cc  */
-#line 3067 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3082 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
             /**
             Parameters:
@@ -3553,7 +3568,7 @@ namespace yyip {
   case 152:
 
 /* Line 678 of lalr1.cc  */
-#line 3085 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3100 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
             /**
             Parameters:
@@ -3571,7 +3586,7 @@ namespace yyip {
   case 153:
 
 /* Line 678 of lalr1.cc  */
-#line 3098 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3113 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
             /**
             Parameters:
@@ -3590,7 +3605,7 @@ namespace yyip {
   case 154:
 
 /* Line 678 of lalr1.cc  */
-#line 3112 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3127 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
             DessinImage::ptr draw;
 
@@ -3604,7 +3619,7 @@ namespace yyip {
   case 155:
 
 /* Line 678 of lalr1.cc  */
-#line 3121 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3136 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
          Description:
@@ -3623,7 +3638,7 @@ namespace yyip {
   case 156:
 
 /* Line 678 of lalr1.cc  */
-#line 3135 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3150 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -3639,7 +3654,7 @@ namespace yyip {
   case 157:
 
 /* Line 678 of lalr1.cc  */
-#line 3146 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3161 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -3657,7 +3672,7 @@ namespace yyip {
   case 158:
 
 /* Line 678 of lalr1.cc  */
-#line 3159 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3174 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -3680,7 +3695,7 @@ namespace yyip {
   case 159:
 
 /* Line 678 of lalr1.cc  */
-#line 3177 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3192 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
         /**
@@ -3707,7 +3722,7 @@ namespace yyip {
   case 160:
 
 /* Line 678 of lalr1.cc  */
-#line 3199 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3214 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -3739,7 +3754,7 @@ namespace yyip {
   case 161:
 
 /* Line 678 of lalr1.cc  */
-#line 3229 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3244 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -3771,7 +3786,7 @@ namespace yyip {
   case 162:
 
 /* Line 678 of lalr1.cc  */
-#line 3257 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3272 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -3807,7 +3822,7 @@ namespace yyip {
   case 163:
 
 /* Line 678 of lalr1.cc  */
-#line 3288 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3303 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       (*(InrImage::ptr*) (yysemantic_stack_[(6) - (1)].variable)->Pointer())->FixeNom( (yysemantic_stack_[(6) - (5)].astring));
       delete [] (yysemantic_stack_[(6) - (5)].astring);
@@ -3817,7 +3832,7 @@ namespace yyip {
   case 164:
 
 /* Line 678 of lalr1.cc  */
-#line 3294 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3309 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -3839,7 +3854,7 @@ namespace yyip {
   case 165:
 
 /* Line 678 of lalr1.cc  */
-#line 3312 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3327 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Func_SetCoeffAnisoGS((yysemantic_stack_[(6) - (5)].adouble));
         }
@@ -3848,7 +3863,7 @@ namespace yyip {
   case 166:
 
 /* Line 678 of lalr1.cc  */
-#line 3317 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3332 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Func_AnisoGS_SetDistanceMap((int)(yysemantic_stack_[(6) - (5)].adouble));
         }
@@ -3857,7 +3872,7 @@ namespace yyip {
   case 167:
 
 /* Line 678 of lalr1.cc  */
-#line 3322 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3337 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Func_AnisoGS_SetNoiseType((int)(yysemantic_stack_[(6) - (5)].adouble));
         }
@@ -3866,7 +3881,7 @@ namespace yyip {
   case 168:
 
 /* Line 678 of lalr1.cc  */
-#line 3327 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3342 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Func_AnisoGS_SetNoiseSD((yysemantic_stack_[(6) - (5)].adouble));
         }
@@ -3875,7 +3890,7 @@ namespace yyip {
   case 169:
 
 /* Line 678 of lalr1.cc  */
-#line 3332 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3347 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Func_AnisoGS_SetMask(((InrImage::ptr*) (yysemantic_stack_[(6) - (5)].variable)->Pointer())->get());
         }
@@ -3884,7 +3899,7 @@ namespace yyip {
   case 170:
 
 /* Line 678 of lalr1.cc  */
-#line 3337 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3352 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
          Parameters:
@@ -3902,7 +3917,7 @@ namespace yyip {
   case 171:
 
 /* Line 678 of lalr1.cc  */
-#line 3351 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3366 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
          Parameters:
@@ -3921,7 +3936,7 @@ namespace yyip {
   case 172:
 
 /* Line 678 of lalr1.cc  */
-#line 3366 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3381 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
          Parameters:
@@ -3942,7 +3957,7 @@ namespace yyip {
   case 173:
 
 /* Line 678 of lalr1.cc  */
-#line 3383 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3398 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
           Parameters:
@@ -3960,7 +3975,7 @@ namespace yyip {
   case 174:
 
 /* Line 678 of lalr1.cc  */
-#line 3397 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3412 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
           Parameters:
@@ -3984,7 +3999,7 @@ namespace yyip {
   case 175:
 
 /* Line 678 of lalr1.cc  */
-#line 3417 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3432 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       Func_AnisoGS_Setdt((yysemantic_stack_[(6) - (5)].adouble));
         }
@@ -3993,7 +4008,7 @@ namespace yyip {
   case 176:
 
 /* Line 678 of lalr1.cc  */
-#line 3422 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3437 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       Func_AnisoGS_Setneighborhood((int)(yysemantic_stack_[(6) - (5)].adouble));
         }
@@ -4002,7 +4017,7 @@ namespace yyip {
   case 177:
 
 /* Line 678 of lalr1.cc  */
-#line 3427 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3442 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
       Func_SetCoeffAnisoGS3D((yysemantic_stack_[(8) - (5)].adouble),(yysemantic_stack_[(8) - (7)].adouble));
@@ -4013,7 +4028,7 @@ namespace yyip {
   case 178:
 
 /* Line 678 of lalr1.cc  */
-#line 3434 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3449 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       float  error;
 
@@ -4026,7 +4041,7 @@ namespace yyip {
   case 179:
 
 /* Line 678 of lalr1.cc  */
-#line 3443 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3458 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       int res;
 
@@ -4038,7 +4053,7 @@ namespace yyip {
   case 180:
 
 /* Line 678 of lalr1.cc  */
-#line 3451 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3466 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       Func_IterateWeickert();
     }
@@ -4047,7 +4062,7 @@ namespace yyip {
   case 181:
 
 /* Line 678 of lalr1.cc  */
-#line 3456 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3471 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
       Func_EndWeickert();
@@ -4058,7 +4073,7 @@ namespace yyip {
   case 182:
 
 /* Line 678 of lalr1.cc  */
-#line 3463 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3478 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       Func_IterateWeickert();
     }
@@ -4067,7 +4082,7 @@ namespace yyip {
   case 183:
 
 /* Line 678 of lalr1.cc  */
-#line 3468 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3483 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       Func_EndWeickert();
     }
@@ -4076,7 +4091,7 @@ namespace yyip {
   case 184:
 
 /* Line 678 of lalr1.cc  */
-#line 3473 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3488 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     //
     // Parameters:
@@ -4100,7 +4115,7 @@ namespace yyip {
   case 185:
 
 /* Line 678 of lalr1.cc  */
-#line 3494 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3509 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     //
     // Parameters:
@@ -4127,7 +4142,7 @@ namespace yyip {
   case 186:
 
 /* Line 678 of lalr1.cc  */
-#line 3517 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3532 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       Func_LevelSets_SetMeanCurv( (int) (yysemantic_stack_[(6) - (5)].adouble));
         }
@@ -4136,7 +4151,7 @@ namespace yyip {
   case 187:
 
 /* Line 678 of lalr1.cc  */
-#line 3522 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3537 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       Func_LevelSets_SetAffineCurvature( (int) (yysemantic_stack_[(6) - (5)].adouble));
         }
@@ -4145,7 +4160,7 @@ namespace yyip {
   case 188:
 
 /* Line 678 of lalr1.cc  */
-#line 3527 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3542 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       Func_LevelSets_SetBalloonScheme( (int) (yysemantic_stack_[(6) - (5)].adouble));
         }
@@ -4154,7 +4169,7 @@ namespace yyip {
   case 189:
 
 /* Line 678 of lalr1.cc  */
-#line 3532 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3547 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       Func_LevelSets_SetDMmethod( (int) (yysemantic_stack_[(6) - (5)].adouble));
     }
@@ -4163,7 +4178,7 @@ namespace yyip {
   case 190:
 
 /* Line 678 of lalr1.cc  */
-#line 3537 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3552 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       Func_LevelSets_SetThreads( (int) (yysemantic_stack_[(6) - (5)].adouble));
     }
@@ -4172,7 +4187,7 @@ namespace yyip {
   case 191:
 
 /* Line 678 of lalr1.cc  */
-#line 3542 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3557 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       Func_LevelSets_SetProbThreshold( (yysemantic_stack_[(6) - (5)].adouble));
     }
@@ -4181,7 +4196,7 @@ namespace yyip {
   case 192:
 
 /* Line 678 of lalr1.cc  */
-#line 3547 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3562 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       Func_LevelSets_SetIntensityLowThreshold( (yysemantic_stack_[(6) - (5)].adouble));
     }
@@ -4190,7 +4205,7 @@ namespace yyip {
   case 193:
 
 /* Line 678 of lalr1.cc  */
-#line 3552 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3567 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       Func_LevelSets_SetIntensityHighThreshold( (yysemantic_stack_[(6) - (5)].adouble));
     }
@@ -4199,7 +4214,7 @@ namespace yyip {
   case 194:
 
 /* Line 678 of lalr1.cc  */
-#line 3557 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3572 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       Func_LevelSets_SetProbabilityHighThreshold( (yysemantic_stack_[(6) - (5)].adouble));
     }
@@ -4208,7 +4223,7 @@ namespace yyip {
   case 195:
 
 /* Line 678 of lalr1.cc  */
-#line 3562 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3577 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       Func_LevelSets_SetNumGaussians( (int) (yysemantic_stack_[(6) - (5)].adouble));
     }
@@ -4217,7 +4232,7 @@ namespace yyip {
   case 196:
 
 /* Line 678 of lalr1.cc  */
-#line 3567 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3582 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       Func_LevelSets_SetGaussian( (int) (yysemantic_stack_[(10) - (5)].adouble), (yysemantic_stack_[(10) - (7)].adouble), (yysemantic_stack_[(10) - (9)].adouble));
     }
@@ -4226,7 +4241,7 @@ namespace yyip {
   case 197:
 
 /* Line 678 of lalr1.cc  */
-#line 3572 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3587 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       Func_LevelSets_SetNumInitPoints( (int) (yysemantic_stack_[(6) - (5)].adouble));
     }
@@ -4235,7 +4250,7 @@ namespace yyip {
   case 198:
 
 /* Line 678 of lalr1.cc  */
-#line 3577 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3592 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       Func_LevelSets_SetInitPoint( (int) (yysemantic_stack_[(14) - (5)].adouble), (int) (yysemantic_stack_[(14) - (7)].adouble), (int) (yysemantic_stack_[(14) - (9)].adouble), (int) (yysemantic_stack_[(14) - (11)].adouble), (int) (yysemantic_stack_[(14) - (13)].adouble));
     }
@@ -4244,7 +4259,7 @@ namespace yyip {
   case 199:
 
 /* Line 678 of lalr1.cc  */
-#line 3582 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3597 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Func_LevelSets_SetIsoContourBin( (int) (yysemantic_stack_[(6) - (5)].adouble));
         }
@@ -4253,7 +4268,7 @@ namespace yyip {
   case 200:
 
 /* Line 678 of lalr1.cc  */
-#line 3587 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3602 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Func_LevelSetsVelocity(((InrImage::ptr*) (yysemantic_stack_[(8) - (5)].variable)->Pointer())->get(),(yysemantic_stack_[(8) - (7)].adouble));
         }
@@ -4262,7 +4277,7 @@ namespace yyip {
   case 201:
 
 /* Line 678 of lalr1.cc  */
-#line 3592 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3607 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Func_LevelSetsExpansion((yysemantic_stack_[(6) - (5)].adouble));
         }
@@ -4271,7 +4286,7 @@ namespace yyip {
   case 202:
 
 /* Line 678 of lalr1.cc  */
-#line 3597 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3612 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           /** 
             Parameters:
@@ -4288,7 +4303,7 @@ namespace yyip {
   case 203:
 
 /* Line 678 of lalr1.cc  */
-#line 3610 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3625 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Func_LevelSetsBandAndTube((int)(yysemantic_stack_[(8) - (5)].adouble),(int)(yysemantic_stack_[(8) - (7)].adouble));
         }
@@ -4297,7 +4312,7 @@ namespace yyip {
   case 204:
 
 /* Line 678 of lalr1.cc  */
-#line 3615 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3630 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Func_LevelSetsSetCurvWeights( ((InrImage::ptr*) (yysemantic_stack_[(6) - (5)].variable)->Pointer())->get());
         }
@@ -4306,7 +4321,7 @@ namespace yyip {
   case 205:
 
 /* Line 678 of lalr1.cc  */
-#line 3620 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3635 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Func_LevelSetsSetAdvectionField(
                 ((InrImage::ptr*) (yysemantic_stack_[(10) - (5)].variable)->Pointer())->get(),
@@ -4318,7 +4333,7 @@ namespace yyip {
   case 206:
 
 /* Line 678 of lalr1.cc  */
-#line 3628 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3643 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       Func_LevelSetsGetCurvatureData( ((InrImage::ptr*) (yysemantic_stack_[(6) - (5)].variable)->Pointer())->get());
         }
@@ -4327,7 +4342,7 @@ namespace yyip {
   case 207:
 
 /* Line 678 of lalr1.cc  */
-#line 3633 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3648 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       Func_LevelSetsGetDistanceMap( ((InrImage::ptr*) (yysemantic_stack_[(6) - (5)].variable)->Pointer())->get());
         }
@@ -4336,7 +4351,7 @@ namespace yyip {
   case 208:
 
 /* Line 678 of lalr1.cc  */
-#line 3638 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3653 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       Func_LevelSetsGetAdvectionData( ((InrImage::ptr*) (yysemantic_stack_[(6) - (5)].variable)->Pointer())->get());
         }
@@ -4345,7 +4360,7 @@ namespace yyip {
   case 209:
 
 /* Line 678 of lalr1.cc  */
-#line 3643 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3658 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       Func_LevelSetsGetSkeleton( ((InrImage::ptr*) (yysemantic_stack_[(6) - (5)].variable)->Pointer())->get());
         }
@@ -4354,7 +4369,7 @@ namespace yyip {
   case 210:
 
 /* Line 678 of lalr1.cc  */
-#line 3648 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3663 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       Func_LevelSetsGetVelocityData( ((InrImage::ptr*) (yysemantic_stack_[(6) - (5)].variable)->Pointer())->get());
         }
@@ -4363,7 +4378,7 @@ namespace yyip {
   case 211:
 
 /* Line 678 of lalr1.cc  */
-#line 3653 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3668 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       Func_LevelSetsGetExpansionData( ((InrImage::ptr*) (yysemantic_stack_[(6) - (5)].variable)->Pointer())->get());
         }
@@ -4372,7 +4387,7 @@ namespace yyip {
   case 212:
 
 /* Line 678 of lalr1.cc  */
-#line 3658 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3673 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       Func_LevelSetsGetCurvatureData( NULL );
         }
@@ -4381,7 +4396,7 @@ namespace yyip {
   case 213:
 
 /* Line 678 of lalr1.cc  */
-#line 3663 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3678 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       Func_LevelSetsGetAdvectionData( NULL);
         }
@@ -4390,7 +4405,7 @@ namespace yyip {
   case 214:
 
 /* Line 678 of lalr1.cc  */
-#line 3668 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3683 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       Func_LevelSetsGetVelocityData( NULL);
         }
@@ -4399,7 +4414,7 @@ namespace yyip {
   case 215:
 
 /* Line 678 of lalr1.cc  */
-#line 3673 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3688 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       Func_LevelSetsSaveDistMap( (int) (yysemantic_stack_[(6) - (5)].adouble));
         }
@@ -4408,7 +4423,7 @@ namespace yyip {
   case 216:
 
 /* Line 678 of lalr1.cc  */
-#line 3678 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3693 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       Func_LevelSetsSaveSecDerGrad( (int) (yysemantic_stack_[(6) - (5)].adouble));
         }
@@ -4417,7 +4432,7 @@ namespace yyip {
   case 217:
 
 /* Line 678 of lalr1.cc  */
-#line 3683 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3698 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       (yyval.aint) = Func_LevelSets_Iterate();
     }
@@ -4426,7 +4441,7 @@ namespace yyip {
   case 218:
 
 /* Line 678 of lalr1.cc  */
-#line 3688 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3703 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       Func_LevelSets_End();
     }
@@ -4435,7 +4450,7 @@ namespace yyip {
   case 219:
 
 /* Line 678 of lalr1.cc  */
-#line 3692 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3707 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters
@@ -4467,7 +4482,7 @@ namespace yyip {
   case 220:
 
 /* Line 678 of lalr1.cc  */
-#line 3719 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3734 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -4484,7 +4499,7 @@ namespace yyip {
   case 221:
 
 /* Line 678 of lalr1.cc  */
-#line 3732 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3747 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Func_OrientField( ((InrImage::ptr*) (yysemantic_stack_[(6) - (1)].variable)->Pointer())->get() , ((InrImage::ptr*) (yysemantic_stack_[(6) - (5)].variable)->Pointer())->get() );
         }
@@ -4493,7 +4508,7 @@ namespace yyip {
   case 222:
 
 /* Line 678 of lalr1.cc  */
-#line 3737 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3752 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
        Func_OrientPositive( ((InrImage::ptr*) (yysemantic_stack_[(6) - (1)].variable)->Pointer())->get() , ((InrImage::ptr*) (yysemantic_stack_[(6) - (5)].variable)->Pointer())->get() );
     }
@@ -4502,7 +4517,7 @@ namespace yyip {
   case 223:
 
 /* Line 678 of lalr1.cc  */
-#line 3741 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3756 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       (*(SurfacePoly::ptr*) (yysemantic_stack_[(4) - (1)].variable)->Pointer())->Write((yysemantic_stack_[(4) - (4)].astring));
       delete [] (yysemantic_stack_[(4) - (4)].astring);
@@ -4512,7 +4527,7 @@ namespace yyip {
   case 224:
 
 /* Line 678 of lalr1.cc  */
-#line 3747 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3762 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -4530,7 +4545,7 @@ namespace yyip {
   case 225:
 
 /* Line 678 of lalr1.cc  */
-#line 3760 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3775 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
       (*(SurfacePoly::ptr*) (yysemantic_stack_[(6) - (1)].variable)->Pointer())->SetOwnMaterial( (int) (yysemantic_stack_[(6) - (5)].adouble));
@@ -4541,7 +4556,7 @@ namespace yyip {
   case 226:
 
 /* Line 678 of lalr1.cc  */
-#line 3766 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3781 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
       (*(SurfacePoly::ptr*) (yysemantic_stack_[(10) - (1)].variable)->Pointer())->GetMaterial()._ambient.FixeValeur((int) (yysemantic_stack_[(10) - (5)].adouble),(int) (yysemantic_stack_[(10) - (7)].adouble),(int) (yysemantic_stack_[(10) - (9)].adouble));
@@ -4552,7 +4567,7 @@ namespace yyip {
   case 227:
 
 /* Line 678 of lalr1.cc  */
-#line 3772 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3787 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
       (*(SurfacePoly::ptr*) (yysemantic_stack_[(10) - (1)].variable)->Pointer())->GetMaterial()._diffuse.FixeValeur((int) (yysemantic_stack_[(10) - (5)].adouble),(int) (yysemantic_stack_[(10) - (7)].adouble),(int) (yysemantic_stack_[(10) - (9)].adouble));
@@ -4563,7 +4578,7 @@ namespace yyip {
   case 228:
 
 /* Line 678 of lalr1.cc  */
-#line 3778 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3793 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
       (*(SurfacePoly::ptr*) (yysemantic_stack_[(10) - (1)].variable)->Pointer())->GetMaterial()._specular.FixeValeur((int) (yysemantic_stack_[(10) - (5)].adouble),(int) (yysemantic_stack_[(10) - (7)].adouble),(int) (yysemantic_stack_[(10) - (9)].adouble));
@@ -4574,7 +4589,7 @@ namespace yyip {
   case 229:
 
 /* Line 678 of lalr1.cc  */
-#line 3785 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3800 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
       (*(SurfacePoly::ptr*) (yysemantic_stack_[(6) - (1)].variable)->Pointer())->GetMaterial()._shininess= (yysemantic_stack_[(6) - (5)].adouble);
@@ -4585,7 +4600,7 @@ namespace yyip {
   case 230:
 
 /* Line 678 of lalr1.cc  */
-#line 3792 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3807 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
       (*(SurfacePoly::ptr*) (yysemantic_stack_[(6) - (1)].variable)->Pointer())->GetMaterial()._opacity= (yysemantic_stack_[(6) - (5)].adouble);
@@ -4596,7 +4611,7 @@ namespace yyip {
   case 231:
 
 /* Line 678 of lalr1.cc  */
-#line 3799 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3814 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
       Description:
@@ -4609,7 +4624,7 @@ namespace yyip {
   case 232:
 
 /* Line 678 of lalr1.cc  */
-#line 3808 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3823 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -4624,7 +4639,7 @@ namespace yyip {
   case 233:
 
 /* Line 678 of lalr1.cc  */
-#line 3819 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3834 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
       Parameters:
@@ -4644,7 +4659,7 @@ namespace yyip {
   case 234:
 
 /* Line 678 of lalr1.cc  */
-#line 3834 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3849 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       int n;
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) (yysemantic_stack_[(10) - (1)].variable)->Pointer());
@@ -4664,7 +4679,7 @@ namespace yyip {
   case 235:
 
 /* Line 678 of lalr1.cc  */
-#line 3849 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3864 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) (yysemantic_stack_[(6) - (1)].variable)->Pointer());
 
@@ -4677,7 +4692,7 @@ namespace yyip {
   case 236:
 
 /* Line 678 of lalr1.cc  */
-#line 3857 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3872 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) (yysemantic_stack_[(10) - (1)].variable)->Pointer());
       InrImage::ptr i = InrImage::ptr(driver.im_stack.GetLastImage());
@@ -4689,7 +4704,7 @@ namespace yyip {
   case 237:
 
 /* Line 678 of lalr1.cc  */
-#line 3864 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3879 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) (yysemantic_stack_[(6) - (1)].variable)->Pointer());
       InrImage::ptr i = InrImage::ptr(driver.im_stack.GetLastImage());
@@ -4701,7 +4716,7 @@ namespace yyip {
   case 238:
 
 /* Line 678 of lalr1.cc  */
-#line 3871 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3886 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) (yysemantic_stack_[(6) - (1)].variable)->Pointer());
       s->Statistics( ((InrImage::ptr*) (yysemantic_stack_[(6) - (5)].variable)->Pointer())->get() );
@@ -4712,7 +4727,7 @@ namespace yyip {
   case 239:
 
 /* Line 678 of lalr1.cc  */
-#line 3877 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3892 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       (*(SurfacePoly::ptr*) (yysemantic_stack_[(6) - (1)].variable)->Pointer())->MergePoints((yysemantic_stack_[(6) - (5)].adouble));
     }
@@ -4721,7 +4736,7 @@ namespace yyip {
   case 240:
 
 /* Line 678 of lalr1.cc  */
-#line 3881 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3896 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       (*(SurfacePoly::ptr*) (yysemantic_stack_[(3) - (1)].variable)->Pointer())->Triangulate();
     }
@@ -4730,7 +4745,7 @@ namespace yyip {
   case 241:
 
 /* Line 678 of lalr1.cc  */
-#line 3885 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3900 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
       SurfacePoly::ptr surf = *(SurfacePoly::ptr*) (yysemantic_stack_[(6) - (1)].variable)->Pointer();
@@ -4772,7 +4787,7 @@ namespace yyip {
   case 242:
 
 /* Line 678 of lalr1.cc  */
-#line 3922 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3937 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) (yysemantic_stack_[(6) - (1)].variable)->Pointer());
       InrImage::ptr i = InrImage::ptr(driver.im_stack.GetLastImage());
@@ -4783,7 +4798,7 @@ namespace yyip {
   case 243:
 
 /* Line 678 of lalr1.cc  */
-#line 3928 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3943 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) (yysemantic_stack_[(10) - (1)].variable)->Pointer());
 
@@ -4795,7 +4810,7 @@ namespace yyip {
   case 244:
 
 /* Line 678 of lalr1.cc  */
-#line 3935 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3950 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) (yysemantic_stack_[(10) - (1)].variable)->Pointer());
 
@@ -4807,7 +4822,7 @@ namespace yyip {
   case 245:
 
 /* Line 678 of lalr1.cc  */
-#line 3942 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3957 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) (yysemantic_stack_[(6) - (1)].variable)->Pointer());
           int          w = (int) (yysemantic_stack_[(6) - (5)].adouble);
@@ -4823,7 +4838,7 @@ namespace yyip {
   case 246:
 
 /* Line 678 of lalr1.cc  */
-#line 3953 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3968 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) (yysemantic_stack_[(6) - (1)].variable)->Pointer());
 
@@ -4836,7 +4851,7 @@ namespace yyip {
   case 247:
 
 /* Line 678 of lalr1.cc  */
-#line 3961 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3976 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
       Parameters:
@@ -4858,7 +4873,7 @@ namespace yyip {
   case 248:
 
 /* Line 678 of lalr1.cc  */
-#line 3978 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3993 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
       Description: Remove selected lines
@@ -4873,7 +4888,7 @@ namespace yyip {
   case 249:
 
 /* Line 678 of lalr1.cc  */
-#line 3988 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4003 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     (*(SurfacePoly::ptr*) (yysemantic_stack_[(3) - (1)].variable)->Pointer())->GLRecomputeList();
 
@@ -4883,7 +4898,7 @@ namespace yyip {
   case 250:
 
 /* Line 678 of lalr1.cc  */
-#line 3993 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4008 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) (yysemantic_stack_[(3) - (1)].variable)->Pointer());
 
@@ -4895,7 +4910,7 @@ namespace yyip {
   case 251:
 
 /* Line 678 of lalr1.cc  */
-#line 4000 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4015 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) (yysemantic_stack_[(3) - (1)].variable)->Pointer());
 
@@ -4907,7 +4922,7 @@ namespace yyip {
   case 252:
 
 /* Line 678 of lalr1.cc  */
-#line 4007 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4022 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) (yysemantic_stack_[(6) - (1)].variable)->Pointer());
 
@@ -4920,7 +4935,7 @@ namespace yyip {
   case 253:
 
 /* Line 678 of lalr1.cc  */
-#line 4015 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4030 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) (yysemantic_stack_[(6) - (1)].variable)->Pointer());
 
@@ -4933,7 +4948,7 @@ namespace yyip {
   case 254:
 
 /* Line 678 of lalr1.cc  */
-#line 4023 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4038 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
           SurfacePoly::ptr surf_init = *(SurfacePoly::ptr*) (yysemantic_stack_[(3) - (1)].variable)->Pointer();
@@ -4957,7 +4972,7 @@ namespace yyip {
   case 255:
 
 /* Line 678 of lalr1.cc  */
-#line 4042 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4057 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -4978,7 +4993,7 @@ namespace yyip {
   case 256:
 
 /* Line 678 of lalr1.cc  */
-#line 4058 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4073 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -5000,7 +5015,7 @@ namespace yyip {
   case 257:
 
 /* Line 678 of lalr1.cc  */
-#line 4075 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4090 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -5022,7 +5037,7 @@ namespace yyip {
   case 258:
 
 /* Line 678 of lalr1.cc  */
-#line 4092 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4107 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) (yysemantic_stack_[(10) - (1)].variable)->Pointer());
       s->AddPoint((yysemantic_stack_[(10) - (5)].adouble),(yysemantic_stack_[(10) - (7)].adouble),(yysemantic_stack_[(10) - (9)].adouble));
@@ -5032,7 +5047,7 @@ namespace yyip {
   case 259:
 
 /* Line 678 of lalr1.cc  */
-#line 4097 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4112 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) (yysemantic_stack_[(3) - (1)].variable)->Pointer();
       s->NewLine();
@@ -5042,7 +5057,7 @@ namespace yyip {
   case 260:
 
 /* Line 678 of lalr1.cc  */
-#line 4102 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4117 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) (yysemantic_stack_[(6) - (1)].variable)->Pointer();
       s->LineAddPointNumber( (int) (yysemantic_stack_[(6) - (5)].adouble) );
@@ -5052,7 +5067,7 @@ namespace yyip {
   case 261:
 
 /* Line 678 of lalr1.cc  */
-#line 4107 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4122 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) (yysemantic_stack_[(3) - (1)].variable)->Pointer();
       s->EndLine();
@@ -5062,7 +5077,7 @@ namespace yyip {
   case 262:
 
 /* Line 678 of lalr1.cc  */
-#line 4112 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4127 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       if (strlen((yysemantic_stack_[(4) - (3)].astring))<255) {
         strcpy(AMIFluid::FLUID_NAVIGATION_FILE,(yysemantic_stack_[(4) - (3)].astring));
@@ -5075,7 +5090,7 @@ namespace yyip {
   case 263:
 
 /* Line 678 of lalr1.cc  */
-#line 4121 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4136 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       DessinImage::ptr di = *(DessinImage::ptr*) (yysemantic_stack_[(20) - (3)].variable)->Pointer();
       float minlat  = (yysemantic_stack_[(20) - (5)].adouble);
@@ -5180,7 +5195,7 @@ namespace yyip {
   case 264:
 
 /* Line 678 of lalr1.cc  */
-#line 4221 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4236 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -5219,7 +5234,7 @@ namespace yyip {
   case 265:
 
 /* Line 678 of lalr1.cc  */
-#line 4255 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4270 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Viewer3D_ptr sdraw = *((Viewer3D_ptr*) (yysemantic_stack_[(10) - (1)].variable)->Pointer());
 
@@ -5231,7 +5246,7 @@ namespace yyip {
   case 266:
 
 /* Line 678 of lalr1.cc  */
-#line 4262 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4277 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Viewer3D_ptr sdraw = *((Viewer3D_ptr*) (yysemantic_stack_[(6) - (1)].variable)->Pointer());
           SurfacePoly::ptr surf = SurfacePoly::ptr(driver.surf_stack.GetLastSurf());
@@ -5244,7 +5259,7 @@ namespace yyip {
   case 267:
 
 /* Line 678 of lalr1.cc  */
-#line 4270 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4285 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Viewer3D_ptr sdraw = *((Viewer3D_ptr*) (yysemantic_stack_[(3) - (1)].variable)->Pointer());
           sdraw->GetCanvas()->AddSurface(*(SurfacePoly::ptr*) (yysemantic_stack_[(3) - (3)].variable)->Pointer());
@@ -5255,7 +5270,7 @@ namespace yyip {
   case 268:
 
 /* Line 678 of lalr1.cc  */
-#line 4276 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4291 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Viewer3D_ptr sdraw = *((Viewer3D_ptr*) (yysemantic_stack_[(3) - (1)].variable)->Pointer());
 
@@ -5267,7 +5282,7 @@ namespace yyip {
   case 269:
 
 /* Line 678 of lalr1.cc  */
-#line 4283 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4298 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           /**
             Description: Removes the surface without swapping the 3D buffer
@@ -5282,7 +5297,7 @@ namespace yyip {
   case 270:
 
 /* Line 678 of lalr1.cc  */
-#line 4293 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4308 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           /**
             Description:  Swaps the 3D buffer
@@ -5296,7 +5311,7 @@ namespace yyip {
   case 271:
 
 /* Line 678 of lalr1.cc  */
-#line 4302 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4317 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Viewer3D_ptr sdraw = *((Viewer3D_ptr*) (yysemantic_stack_[(6) - (1)].variable)->Pointer());
 
@@ -5308,7 +5323,7 @@ namespace yyip {
   case 272:
 
 /* Line 678 of lalr1.cc  */
-#line 4309 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4324 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Viewer3D_ptr sdraw = *((Viewer3D_ptr*) (yysemantic_stack_[(8) - (1)].variable)->Pointer());
 
@@ -5320,7 +5335,7 @@ namespace yyip {
   case 273:
 
 /* Line 678 of lalr1.cc  */
-#line 4316 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4331 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Viewer3D_ptr sdraw = *((Viewer3D_ptr*) (yysemantic_stack_[(6) - (1)].variable)->Pointer());
 
@@ -5335,7 +5350,7 @@ namespace yyip {
   case 274:
 
 /* Line 678 of lalr1.cc  */
-#line 4326 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4341 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Viewer3D_ptr sdraw1 = *((Viewer3D_ptr*) (yysemantic_stack_[(6) - (1)].variable)->Pointer());
           Viewer3D_ptr sdraw2 = *((Viewer3D_ptr*) (yysemantic_stack_[(6) - (5)].variable)->Pointer());
@@ -5347,7 +5362,7 @@ namespace yyip {
   case 275:
 
 /* Line 678 of lalr1.cc  */
-#line 4333 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4348 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       Viewer3D_ptr draw;
 
@@ -5366,7 +5381,7 @@ namespace yyip {
   case 276:
 
 /* Line 678 of lalr1.cc  */
-#line 4347 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4362 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       Viewer3D_ptr draw = *((Viewer3D_ptr*) (yysemantic_stack_[(16) - (1)].variable)->Pointer());
       int num = (int) (yysemantic_stack_[(16) - (5)].adouble);
@@ -5385,7 +5400,7 @@ namespace yyip {
   case 277:
 
 /* Line 678 of lalr1.cc  */
-#line 4361 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4376 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       Viewer3D_ptr draw = *((Viewer3D_ptr*) (yysemantic_stack_[(6) - (1)].variable)->Pointer());
       int num = (int) (yysemantic_stack_[(6) - (5)].adouble);
@@ -5398,7 +5413,7 @@ namespace yyip {
   case 278:
 
 /* Line 678 of lalr1.cc  */
-#line 4369 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4384 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Viewer3D_ptr glclass=*((Viewer3D_ptr*) (yysemantic_stack_[(3) - (1)].variable)->Pointer());
           glclass->GetCanvas()->PrintMatrices();
@@ -5408,7 +5423,7 @@ namespace yyip {
   case 279:
 
 /* Line 678 of lalr1.cc  */
-#line 4374 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4389 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           GLTransfMatrix* tr = (GLTransfMatrix*) driver.gltransf_stack.GetLastMatrix();
           Viewer3D_ptr sdraw = *(Viewer3D_ptr*) (yysemantic_stack_[(6) - (1)].variable)->Pointer();
@@ -5421,7 +5436,7 @@ namespace yyip {
   case 280:
 
 /* Line 678 of lalr1.cc  */
-#line 4382 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4397 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           GLTransfMatrix* tr = (GLTransfMatrix*) driver.gltransf_stack.GetLastMatrix();
           Viewer3D_ptr sdraw = *(Viewer3D_ptr*) (yysemantic_stack_[(8) - (1)].variable)->Pointer();
@@ -5434,7 +5449,7 @@ namespace yyip {
   case 281:
 
 /* Line 678 of lalr1.cc  */
-#line 4390 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4405 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Viewer3D_ptr sdraw = *(Viewer3D_ptr*) (yysemantic_stack_[(3) - (1)].variable)->Pointer();
           sdraw->Paint();
@@ -5450,7 +5465,7 @@ namespace yyip {
   case 282:
 
 /* Line 678 of lalr1.cc  */
-#line 4401 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4416 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Viewer3D_ptr sdraw = *(Viewer3D_ptr*) (yysemantic_stack_[(12) - (1)].variable)->Pointer();
           int lightnumber = (int) (yysemantic_stack_[(12) - (5)].adouble);
@@ -5467,7 +5482,7 @@ namespace yyip {
   case 283:
 
 /* Line 678 of lalr1.cc  */
-#line 4413 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4428 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Viewer3D_ptr sdraw = *(Viewer3D_ptr*) (yysemantic_stack_[(12) - (1)].variable)->Pointer();
           int lightnumber = (int) (yysemantic_stack_[(12) - (5)].adouble);
@@ -5484,7 +5499,7 @@ namespace yyip {
   case 284:
 
 /* Line 678 of lalr1.cc  */
-#line 4425 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4440 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Viewer3D_ptr sdraw = *(Viewer3D_ptr*) (yysemantic_stack_[(12) - (1)].variable)->Pointer();
           int lightnumber = (int) (yysemantic_stack_[(12) - (5)].adouble);
@@ -5501,7 +5516,7 @@ namespace yyip {
   case 285:
 
 /* Line 678 of lalr1.cc  */
-#line 4437 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4452 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Viewer3D_ptr sdraw = *(Viewer3D_ptr*) (yysemantic_stack_[(10) - (1)].variable)->Pointer();
           sdraw->GetCanvas()->SetBG((int)(yysemantic_stack_[(10) - (5)].adouble),(int)(yysemantic_stack_[(10) - (7)].adouble),(int)(yysemantic_stack_[(10) - (9)].adouble));
@@ -5512,7 +5527,7 @@ namespace yyip {
   case 286:
 
 /* Line 678 of lalr1.cc  */
-#line 4443 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4458 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
           Description:
@@ -5526,7 +5541,7 @@ namespace yyip {
   case 287:
 
 /* Line 678 of lalr1.cc  */
-#line 4452 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4467 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
           Description:
@@ -5540,7 +5555,7 @@ namespace yyip {
   case 288:
 
 /* Line 678 of lalr1.cc  */
-#line 4461 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4476 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Viewer3D_ptr sdraw = *(Viewer3D_ptr*) (yysemantic_stack_[(8) - (1)].variable)->Pointer();
           sdraw->SetSize((int) (yysemantic_stack_[(8) - (5)].adouble), (int) (yysemantic_stack_[(8) - (7)].adouble));
@@ -5557,7 +5572,7 @@ namespace yyip {
   case 289:
 
 /* Line 678 of lalr1.cc  */
-#line 4474 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4489 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Func_StructureTensor(((InrImage::ptr*) (yysemantic_stack_[(8) - (3)].variable)->Pointer())->get(),
                    (yysemantic_stack_[(8) - (3)].variable)->Name().c_str(),
@@ -5568,7 +5583,7 @@ namespace yyip {
   case 290:
 
 /* Line 678 of lalr1.cc  */
-#line 4481 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4496 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           InrImage* mask = (InrImage*) driver.im_stack.GetLastImage();
 
@@ -5583,7 +5598,7 @@ namespace yyip {
   case 291:
 
 /* Line 678 of lalr1.cc  */
-#line 4492 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4507 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -5609,7 +5624,7 @@ namespace yyip {
   case 292:
 
 /* Line 678 of lalr1.cc  */
-#line 4514 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4529 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -5639,7 +5654,7 @@ namespace yyip {
   case 293:
 
 /* Line 678 of lalr1.cc  */
-#line 4540 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4555 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -5671,7 +5686,7 @@ namespace yyip {
   case 294:
 
 /* Line 678 of lalr1.cc  */
-#line 4568 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4583 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Func_HessianMatrix(((InrImage::ptr*) (yysemantic_stack_[(6) - (3)].variable)->Pointer())->get(),
                  (yysemantic_stack_[(6) - (3)].variable)->Name().c_str(),
@@ -5685,7 +5700,7 @@ namespace yyip {
   case 295:
 
 /* Line 678 of lalr1.cc  */
-#line 4578 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4593 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage* mask = (InrImage*) driver.im_stack.GetLastImage();
 
@@ -5702,7 +5717,7 @@ namespace yyip {
   case 296:
 
 /* Line 678 of lalr1.cc  */
-#line 4591 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4606 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Func_HessianMatrix(((InrImage::ptr*) (yysemantic_stack_[(8) - (3)].variable)->Pointer())->get(),
                  (yysemantic_stack_[(8) - (3)].variable)->Name().c_str(),
@@ -5716,7 +5731,7 @@ namespace yyip {
   case 297:
 
 /* Line 678 of lalr1.cc  */
-#line 4601 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4616 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
         Description:
@@ -5742,7 +5757,7 @@ namespace yyip {
   case 298:
 
 /* Line 678 of lalr1.cc  */
-#line 4623 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4638 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -5775,7 +5790,7 @@ namespace yyip {
   case 299:
 
 /* Line 678 of lalr1.cc  */
-#line 4652 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4667 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage* mask = (InrImage*) driver.im_stack.GetLastImage();
 
@@ -5796,7 +5811,7 @@ namespace yyip {
   case 300:
 
 /* Line 678 of lalr1.cc  */
-#line 4670 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4685 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage* mask = (InrImage*) driver.im_stack.GetLastImage();
 
@@ -5814,7 +5829,7 @@ namespace yyip {
   case 301:
 
 /* Line 678 of lalr1.cc  */
-#line 4684 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4699 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Func_Curvatures(((InrImage::ptr*) (yysemantic_stack_[(6) - (3)].variable)->Pointer())->get(),
               (yysemantic_stack_[(6) - (3)].variable)->Name().c_str(),
@@ -5825,7 +5840,7 @@ namespace yyip {
   case 302:
 
 /* Line 678 of lalr1.cc  */
-#line 4696 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4711 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage* mask = (InrImage*) driver.im_stack.GetLastImage();
 
@@ -5846,7 +5861,7 @@ namespace yyip {
   case 303:
 
 /* Line 678 of lalr1.cc  */
-#line 4717 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4732 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
           Func_Eigen3D(
@@ -5865,7 +5880,7 @@ namespace yyip {
   case 304:
 
 /* Line 678 of lalr1.cc  */
-#line 4736 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4751 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage* mask = (InrImage*) driver.im_stack.GetLastImage();
 
@@ -5883,7 +5898,7 @@ namespace yyip {
   case 305:
 
 /* Line 678 of lalr1.cc  */
-#line 4753 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4768 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Func_Eigen2D(
                (char*) (yysemantic_stack_[(10) - (3)].astring),
@@ -5898,7 +5913,7 @@ namespace yyip {
   case 306:
 
 /* Line 678 of lalr1.cc  */
-#line 4764 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4779 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       (((InrImage::ptr*) (yysemantic_stack_[(10) - (3)].variable)->Pointer())->get())->SetVoxelSize((yysemantic_stack_[(10) - (5)].adouble), (yysemantic_stack_[(10) - (7)].adouble), (yysemantic_stack_[(10) - (9)].adouble));
     }
@@ -5907,7 +5922,7 @@ namespace yyip {
   case 307:
 
 /* Line 678 of lalr1.cc  */
-#line 4769 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4784 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       (*(InrImage::ptr*) (yysemantic_stack_[(10) - (1)].variable)->Pointer())->SetVoxelSize((yysemantic_stack_[(10) - (5)].adouble), (yysemantic_stack_[(10) - (7)].adouble), (yysemantic_stack_[(10) - (9)].adouble));
     }
@@ -5916,7 +5931,7 @@ namespace yyip {
   case 308:
 
 /* Line 678 of lalr1.cc  */
-#line 4774 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4789 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage::ptr im = *(InrImage::ptr*) (yysemantic_stack_[(6) - (5)].variable)->Pointer();
       (*(InrImage::ptr*) (yysemantic_stack_[(6) - (1)].variable)->Pointer())->SetVoxelSize(
@@ -5929,7 +5944,7 @@ namespace yyip {
   case 309:
 
 /* Line 678 of lalr1.cc  */
-#line 4783 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4798 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       (*(InrImage::ptr*) (yysemantic_stack_[(10) - (1)].variable)->Pointer())->SetTranslation((yysemantic_stack_[(10) - (5)].adouble), (yysemantic_stack_[(10) - (7)].adouble), (yysemantic_stack_[(10) - (9)].adouble));
     }
@@ -5938,7 +5953,7 @@ namespace yyip {
   case 310:
 
 /* Line 678 of lalr1.cc  */
-#line 4788 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4803 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage::ptr im = *(InrImage::ptr*) (yysemantic_stack_[(6) - (5)].variable)->Pointer();
       (*(InrImage::ptr*) (yysemantic_stack_[(6) - (1)].variable)->Pointer())->SetVoxelSize(
@@ -5951,7 +5966,7 @@ namespace yyip {
   case 311:
 
 /* Line 678 of lalr1.cc  */
-#line 4797 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4812 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
       Parameters:
@@ -5969,7 +5984,7 @@ namespace yyip {
   case 312:
 
 /* Line 678 of lalr1.cc  */
-#line 4811 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4826 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       Func_DiscSecDerGrad(
         ((InrImage::ptr*) (yysemantic_stack_[(6) - (3)].variable)->Pointer())->get(),
@@ -5980,7 +5995,7 @@ namespace yyip {
   case 313:
 
 /* Line 678 of lalr1.cc  */
-#line 4818 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4833 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       Func_DiscSecDerGrad(
                 ((InrImage::ptr*) (yysemantic_stack_[(8) - (3)].variable)->Pointer())->get(),
@@ -5992,14 +6007,14 @@ namespace yyip {
   case 314:
 
 /* Line 678 of lalr1.cc  */
-#line 4824 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4839 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { (yyval.aint)=1;}
     break;
 
   case 315:
 
 /* Line 678 of lalr1.cc  */
-#line 4827 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4842 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
         Description: dispatches the given number of events
@@ -6020,7 +6035,7 @@ namespace yyip {
   case 316:
 
 /* Line 678 of lalr1.cc  */
-#line 4844 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4859 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
         Description: dispatch the given number of events
@@ -6041,7 +6056,7 @@ namespace yyip {
   case 317:
 
 /* Line 678 of lalr1.cc  */
-#line 4860 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4875 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -6085,7 +6100,7 @@ namespace yyip {
   case 318:
 
 /* Line 678 of lalr1.cc  */
-#line 4899 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4914 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 cerr << "Feature not available, needs to be updated ! " << endl;
 /*
@@ -6102,7 +6117,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 319:
 
 /* Line 678 of lalr1.cc  */
-#line 4916 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4931 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -6146,7 +6161,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 320:
 
 /* Line 678 of lalr1.cc  */
-#line 4956 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4971 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       Func_GenRead((yysemantic_stack_[(4) - (3)].astring));
         }
@@ -6155,7 +6170,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 321:
 
 /* Line 678 of lalr1.cc  */
-#line 4961 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4976 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       driver.IP_time.InitCumul();
         }
@@ -6164,7 +6179,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 322:
 
 /* Line 678 of lalr1.cc  */
-#line 4966 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4981 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       driver.IP_time.Debut();
         }
@@ -6173,7 +6188,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 323:
 
 /* Line 678 of lalr1.cc  */
-#line 4971 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4986 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       driver.IP_time.Fin();
       cout << "time spent = " << driver.IP_time << endl;
@@ -6183,7 +6198,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 324:
 
 /* Line 678 of lalr1.cc  */
-#line 4977 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4992 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           void * pwptr;
           IdentifierInfo::ptr ident((yysemantic_stack_[(6) - (1)].ident));
@@ -6204,7 +6219,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 325:
 
 /* Line 678 of lalr1.cc  */
-#line 4994 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5009 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
       Description:
@@ -6218,7 +6233,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 326:
 
 /* Line 678 of lalr1.cc  */
-#line 5004 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5019 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
       Parameters:
@@ -6237,7 +6252,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 327:
 
 /* Line 678 of lalr1.cc  */
-#line 5019 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5034 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       ParamPanel_ptr pw = *(ParamPanel_ptr*) (yysemantic_stack_[(3) - (1)].variable)->Pointer();
       pw->EndPanel();
@@ -6247,7 +6262,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 328:
 
 /* Line 678 of lalr1.cc  */
-#line 5025 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5040 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       ParamPanel_ptr pw = *(ParamPanel_ptr*) (yysemantic_stack_[(3) - (1)].variable)->Pointer();
       pw->EndPanel();
@@ -6258,7 +6273,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 329:
 
 /* Line 678 of lalr1.cc  */
-#line 5032 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5047 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       ParamPanel_ptr pw = *(ParamPanel_ptr*) (yysemantic_stack_[(3) - (1)].variable)->Pointer();
       pw->EndBox( );
@@ -6268,7 +6283,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 330:
 
 /* Line 678 of lalr1.cc  */
-#line 5038 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5053 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       ParamPanel_ptr pw = *(ParamPanel_ptr*) (yysemantic_stack_[(3) - (1)].variable)->Pointer();
       pw->BeginHorizontal( );
@@ -6278,7 +6293,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 331:
 
 /* Line 678 of lalr1.cc  */
-#line 5044 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5059 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
             ParamPanel_ptr pw = *(ParamPanel_ptr*) (yysemantic_stack_[(3) - (1)].variable)->Pointer();
         pw->EndHorizontal( );
@@ -6288,7 +6303,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 332:
 
 /* Line 678 of lalr1.cc  */
-#line 5050 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5065 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           ParamPanel_ptr pw = *(ParamPanel_ptr*) (yysemantic_stack_[(3) - (1)].variable)->Pointer();
           pw->CreeDialogue( );
@@ -6298,7 +6313,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 333:
 
 /* Line 678 of lalr1.cc  */
-#line 5056 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5071 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
           Description:
@@ -6317,7 +6332,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 334:
 
 /* Line 678 of lalr1.cc  */
-#line 5071 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5086 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
           Description:
@@ -6332,7 +6347,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 335:
 
 /* Line 678 of lalr1.cc  */
-#line 5082 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5097 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           ParamPanel_ptr pw = *(ParamPanel_ptr*) (yysemantic_stack_[(3) - (1)].variable)->Pointer();
           pw->ReAfficheParametres();
@@ -6342,7 +6357,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 336:
 
 /* Line 678 of lalr1.cc  */
-#line 5088 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5103 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -6360,7 +6375,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 337:
 
 /* Line 678 of lalr1.cc  */
-#line 5102 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5117 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -6378,7 +6393,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 338:
 
 /* Line 678 of lalr1.cc  */
-#line 5116 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5131 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -6399,7 +6414,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 339:
 
 /* Line 678 of lalr1.cc  */
-#line 5133 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5148 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           ParamPanel_ptr pw = *(ParamPanel_ptr*) (yysemantic_stack_[(6) - (1)].variable)->Pointer();
           int n = pw->NbParameters();
@@ -6410,7 +6425,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 340:
 
 /* Line 678 of lalr1.cc  */
-#line 5143 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5158 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
       Description:
@@ -6432,7 +6447,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 341:
 
 /* Line 678 of lalr1.cc  */
-#line 5162 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5177 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
       Parameters:
@@ -6453,7 +6468,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 342:
 
 /* Line 678 of lalr1.cc  */
-#line 5180 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5195 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
       Parameters:
@@ -6475,7 +6490,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 343:
 
 /* Line 678 of lalr1.cc  */
-#line 5198 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5213 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
         Description: 
@@ -6499,7 +6514,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 344:
 
 /* Line 678 of lalr1.cc  */
-#line 5218 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5233 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
         Description: 
@@ -6523,7 +6538,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 345:
 
 /* Line 678 of lalr1.cc  */
-#line 5238 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5253 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
         Description: 
@@ -6547,7 +6562,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 346:
 
 /* Line 678 of lalr1.cc  */
-#line 5258 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5273 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           InrImage::ptr   i = *(InrImage::ptr*) (yysemantic_stack_[(6) - (3)].variable)->Pointer();
           Func_VectorImage2StructuredGrid(i.get(),(yysemantic_stack_[(6) - (5)].astring));
@@ -6558,7 +6573,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 347:
 
 /* Line 678 of lalr1.cc  */
-#line 5265 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5280 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           (*(GLTransfMatrix_ptr*) (yysemantic_stack_[(3) - (1)].variable)->Pointer())->Print();
         }
@@ -6567,7 +6582,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 348:
 
 /* Line 678 of lalr1.cc  */
-#line 5270 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5285 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Func_SaveTransform(((GLTransfMatrix_ptr*) (yysemantic_stack_[(4) - (1)].variable)->Pointer())->get(),(yysemantic_stack_[(4) - (4)].astring));
           delete [] (yysemantic_stack_[(4) - (4)].astring);
@@ -6577,7 +6592,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 349:
 
 /* Line 678 of lalr1.cc  */
-#line 5276 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5291 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           AddWrapFluid();
         }
@@ -6586,7 +6601,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 350:
 
 /* Line 678 of lalr1.cc  */
-#line 5281 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5296 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           AddWrapVTK();
         }
@@ -6595,7 +6610,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 351:
 
 /* Line 678 of lalr1.cc  */
-#line 5286 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5301 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           AddWrapITK();
         }
@@ -6604,7 +6619,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 352:
 
 /* Line 678 of lalr1.cc  */
-#line 5291 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5306 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           AddWrapWII();
         }
@@ -6613,7 +6628,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 353:
 
 /* Line 678 of lalr1.cc  */
-#line 5296 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5311 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           AddWrapFilters();
         }
@@ -6622,7 +6637,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 354:
 
 /* Line 678 of lalr1.cc  */
-#line 5301 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5316 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           AddWrapSystem();
         }
@@ -6631,7 +6646,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 355:
 
 /* Line 678 of lalr1.cc  */
-#line 5306 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5321 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           AddWrapMainFrame();
         }
@@ -6640,7 +6655,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 356:
 
 /* Line 678 of lalr1.cc  */
-#line 5311 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5326 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           AddWrapImageDraw();
         }
@@ -6649,7 +6664,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 357:
 
 /* Line 678 of lalr1.cc  */
-#line 5322 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5337 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         InrImage::ptr im1 = *(InrImage::ptr*) (yysemantic_stack_[(30) - (3)].variable)->Pointer();
     InrImage::ptr im2 = *(InrImage::ptr*) (yysemantic_stack_[(30) - (5)].variable)->Pointer();
@@ -6682,7 +6697,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 358:
 
 /* Line 678 of lalr1.cc  */
-#line 5354 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5369 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         InrImage::ptr im1 = *(InrImage::ptr*) (yysemantic_stack_[(24) - (3)].variable)->Pointer();
         InrImage::ptr im2 = *(InrImage::ptr*) (yysemantic_stack_[(24) - (5)].variable)->Pointer();
@@ -6710,7 +6725,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 359:
 
 /* Line 678 of lalr1.cc  */
-#line 5378 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5393 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           Variable*  var   = (yysemantic_stack_[(4) - (1)].variable);
           ParamList::ptr param((yysemantic_stack_[(4) - (3)].paramlist));
@@ -6721,7 +6736,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 360:
 
 /* Line 678 of lalr1.cc  */
-#line 5385 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5400 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -6743,7 +6758,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 361:
 
 /* Line 678 of lalr1.cc  */
-#line 5407 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5422 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
             std::list<std::string>* sl = new std::list<std::string>();
             sl->push_back(string((yysemantic_stack_[(1) - (1)].astring)));
@@ -6755,7 +6770,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 362:
 
 /* Line 678 of lalr1.cc  */
-#line 5415 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5430 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
             std::list<std::string>* sl = (yysemantic_stack_[(3) - (1)].string_list);
             sl->push_back(string((yysemantic_stack_[(3) - (3)].astring)));
@@ -6767,7 +6782,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 363:
 
 /* Line 678 of lalr1.cc  */
-#line 5431 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5446 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           ParamList* pl = new ParamList();
           (yyval.paramlist) = pl;
@@ -6777,7 +6792,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 364:
 
 /* Line 678 of lalr1.cc  */
-#line 5436 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5451 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           ParamList* pl(new ParamList);
           float_ptr* x = new float_ptr(new float((yysemantic_stack_[(1) - (1)].adouble)));
@@ -6789,7 +6804,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 365:
 
 /* Line 678 of lalr1.cc  */
-#line 5443 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5458 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           ParamList* pl =  (yysemantic_stack_[(3) - (1)].paramlist);
           float_ptr* x= new float_ptr(new float((yysemantic_stack_[(3) - (3)].adouble)));
@@ -6801,7 +6816,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 366:
 
 /* Line 678 of lalr1.cc  */
-#line 5450 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5465 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           ParamList* pl = new ParamList();
           string_ptr* x = new string_ptr(new string((yysemantic_stack_[(1) - (1)].astring)));
@@ -6814,7 +6829,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 367:
 
 /* Line 678 of lalr1.cc  */
-#line 5458 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5473 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           ParamList* pl =  (yysemantic_stack_[(3) - (1)].paramlist);
           string_ptr* x = new string_ptr(new string((yysemantic_stack_[(3) - (3)].astring)));
@@ -6827,7 +6842,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 368:
 
 /* Line 678 of lalr1.cc  */
-#line 5466 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5481 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           ParamList* pl =  new ParamList();
           // creating reference
@@ -6841,7 +6856,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 369:
 
 /* Line 678 of lalr1.cc  */
-#line 5475 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5490 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           ParamList* pl = (yysemantic_stack_[(4) - (1)].paramlist);
           float_ptr*   x = new float_ptr(* ((float_ptr*)(yysemantic_stack_[(4) - (4)].variable)->Pointer()));
@@ -6853,7 +6868,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 370:
 
 /* Line 678 of lalr1.cc  */
-#line 5482 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5497 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           ParamList* pl = new ParamList();
           int_ptr*   x = new int_ptr(*((int_ptr*)(yysemantic_stack_[(2) - (2)].variable)->Pointer()));
@@ -6865,7 +6880,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 371:
 
 /* Line 678 of lalr1.cc  */
-#line 5489 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5504 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           ParamList* pl = (yysemantic_stack_[(4) - (1)].paramlist);
           int_ptr*   x = new int_ptr( *((int_ptr*)(yysemantic_stack_[(4) - (4)].variable)->Pointer()));
@@ -6877,7 +6892,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 372:
 
 /* Line 678 of lalr1.cc  */
-#line 5496 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5511 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           ParamList* pl = new ParamList();
           InrImage::ptr* i = new InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
@@ -6889,7 +6904,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 373:
 
 /* Line 678 of lalr1.cc  */
-#line 5503 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5518 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           ParamList* pl = (yysemantic_stack_[(3) - (1)].paramlist);
           InrImage::ptr*   i = new InrImage::ptr( (InrImage*) driver.im_stack.GetLastImage());
@@ -6901,7 +6916,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 374:
 
 /* Line 678 of lalr1.cc  */
-#line 5510 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5525 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           ParamList* pl = new ParamList();
           InrImage::ptr*  i = new InrImage::ptr(*(InrImage::ptr*) (yysemantic_stack_[(2) - (2)].variable)->Pointer());
@@ -6913,7 +6928,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 375:
 
 /* Line 678 of lalr1.cc  */
-#line 5517 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5532 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           ParamList* pl = (yysemantic_stack_[(4) - (1)].paramlist);
           InrImage::ptr* i = new InrImage::ptr(*(InrImage::ptr*) (yysemantic_stack_[(4) - (4)].variable)->Pointer());
@@ -6925,7 +6940,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 376:
 
 /* Line 678 of lalr1.cc  */
-#line 5524 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5539 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           ParamList* pl = new ParamList();
           SurfacePoly::ptr*  s = new SurfacePoly::ptr(*(SurfacePoly::ptr*) (yysemantic_stack_[(2) - (2)].variable)->Pointer());
@@ -6937,7 +6952,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 377:
 
 /* Line 678 of lalr1.cc  */
-#line 5531 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5546 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           ParamList* pl = (yysemantic_stack_[(4) - (1)].paramlist);
           SurfacePoly::ptr*  s = new SurfacePoly::ptr(*(SurfacePoly::ptr*) (yysemantic_stack_[(4) - (4)].variable)->Pointer());
@@ -6949,7 +6964,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 378:
 
 /* Line 678 of lalr1.cc  */
-#line 5538 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5553 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           ParamList* pl = new ParamList();
           DessinImage::ptr* i = new DessinImage::ptr(*(DessinImage::ptr*) (yysemantic_stack_[(1) - (1)].variable)->Pointer());
@@ -6961,7 +6976,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 379:
 
 /* Line 678 of lalr1.cc  */
-#line 5545 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5560 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           ParamList* pl = (yysemantic_stack_[(3) - (1)].paramlist);
           DessinImage::ptr*  i = new DessinImage::ptr(*(DessinImage::ptr*) (yysemantic_stack_[(3) - (3)].variable)->Pointer());
@@ -6973,7 +6988,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 380:
 
 /* Line 678 of lalr1.cc  */
-#line 5554 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5569 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       //      printf("no parameters \n");
       ParamListDecl* pl = new ParamListDecl;
@@ -6984,7 +6999,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 381:
 
 /* Line 678 of lalr1.cc  */
-#line 5560 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5575 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       IdentifierInfo::ptr ident((yysemantic_stack_[(2) - (2)].ident));
       cout << "param_list_decl: T_NUM IDENTIFIER" << endl;
@@ -6998,7 +7013,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 382:
 
 /* Line 678 of lalr1.cc  */
-#line 5569 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5584 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       IdentifierInfo::ptr ident((yysemantic_stack_[(2) - (2)].ident));
       ParamListDecl* pl = new ParamListDecl;
@@ -7010,7 +7025,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 383:
 
 /* Line 678 of lalr1.cc  */
-#line 5576 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5591 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       IdentifierInfo::ptr ident((yysemantic_stack_[(2) - (2)].ident));
       ParamListDecl* pl = new ParamListDecl;
@@ -7022,7 +7037,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 384:
 
 /* Line 678 of lalr1.cc  */
-#line 5583 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5598 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       IdentifierInfo::ptr ident((yysemantic_stack_[(2) - (2)].ident));
       ParamListDecl* pl = new ParamListDecl;
@@ -7034,7 +7049,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 385:
 
 /* Line 678 of lalr1.cc  */
-#line 5590 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5605 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       IdentifierInfo::ptr ident((yysemantic_stack_[(2) - (2)].ident));
       ParamListDecl* pl = new ParamListDecl;
@@ -7046,7 +7061,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 386:
 
 /* Line 678 of lalr1.cc  */
-#line 5597 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5612 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       IdentifierInfo::ptr ident((yysemantic_stack_[(4) - (4)].ident));
       ParamListDecl* pl = (ParamListDecl*) (yysemantic_stack_[(4) - (1)].paramlistdecl);
@@ -7058,7 +7073,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 387:
 
 /* Line 678 of lalr1.cc  */
-#line 5604 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5619 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       IdentifierInfo::ptr ident((yysemantic_stack_[(4) - (4)].ident));
       ParamListDecl* pl = (ParamListDecl*) (yysemantic_stack_[(4) - (1)].paramlistdecl);
@@ -7070,7 +7085,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 388:
 
 /* Line 678 of lalr1.cc  */
-#line 5611 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5626 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       IdentifierInfo::ptr ident((yysemantic_stack_[(4) - (4)].ident));
       ParamListDecl* pl = (ParamListDecl*) (yysemantic_stack_[(4) - (1)].paramlistdecl);
@@ -7082,7 +7097,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 389:
 
 /* Line 678 of lalr1.cc  */
-#line 5618 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5633 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       IdentifierInfo::ptr ident((yysemantic_stack_[(4) - (4)].ident));
       ParamListDecl* pl = (ParamListDecl*) (yysemantic_stack_[(4) - (1)].paramlistdecl);
@@ -7094,7 +7109,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 390:
 
 /* Line 678 of lalr1.cc  */
-#line 5625 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5640 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       IdentifierInfo::ptr ident((yysemantic_stack_[(4) - (4)].ident));
       ParamListDecl* pl = (ParamListDecl*) (yysemantic_stack_[(4) - (1)].paramlistdecl);
@@ -7106,7 +7121,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 391:
 
 /* Line 678 of lalr1.cc  */
-#line 5633 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5648 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         (yyval.astring)=(yysemantic_stack_[(1) - (1)].astring);
         }
@@ -7115,7 +7130,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 392:
 
 /* Line 678 of lalr1.cc  */
-#line 5638 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5653 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       //
       // TODO: replace string expression to use std::string !!!
@@ -7131,7 +7146,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 393:
 
 /* Line 678 of lalr1.cc  */
-#line 5653 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5668 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           (yyval.astring)=(yysemantic_stack_[(1) - (1)].astring);
           //fflush(stdout);
@@ -7141,7 +7156,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 394:
 
 /* Line 678 of lalr1.cc  */
-#line 5659 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5674 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       char* res;
 
@@ -7159,7 +7174,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 395:
 
 /* Line 678 of lalr1.cc  */
-#line 5673 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5688 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
       Description: 
@@ -7179,7 +7194,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 396:
 
 /* Line 678 of lalr1.cc  */
-#line 5689 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5704 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
       Description: 
@@ -7199,7 +7214,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 397:
 
 /* Line 678 of lalr1.cc  */
-#line 5705 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5720 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       long min,hour;
       float sec;
@@ -7227,7 +7242,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 398:
 
 /* Line 678 of lalr1.cc  */
-#line 5728 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5743 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       (yyval.astring)=(char*) (*(InrImage::ptr*) (yysemantic_stack_[(3) - (1)].variable)->Pointer())->Nom();
     }
@@ -7236,7 +7251,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 399:
 
 /* Line 678 of lalr1.cc  */
-#line 5732 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5747 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
       Description:
@@ -7252,7 +7267,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 400:
 
 /* Line 678 of lalr1.cc  */
-#line 5743 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5758 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
       Description:
@@ -7260,9 +7275,8 @@ cerr << "Feature not available, needs to be updated ! " << endl;
     **/
       boost::shared_ptr<Variables> context = (yysemantic_stack_[(4) - (3)].variable)->GetContext();
       if (context.get()) {
-        char* resstr = (char*) context->GetName().c_str();
-        char* res = new char[strlen(resstr)+1];
-        strcpy(res,resstr);
+        char* res = new char[strlen(context->GetName().c_str())+1];
+        strcpy(res,context->GetName().c_str());
         (yyval.astring)= res;
       } else {
         char* empty_string;
@@ -7276,7 +7290,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 401:
 
 /* Line 678 of lalr1.cc  */
-#line 5763 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5777 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       char* res = new char[GB_scripts_dir.Len()+1];
       strcpy(res,(const char*)GB_scripts_dir.mb_str(wxConvUTF8));
@@ -7287,7 +7301,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 403:
 
 /* Line 678 of lalr1.cc  */
-#line 5774 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5788 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           char* res;
           res = new char[strlen((yysemantic_stack_[(3) - (1)].astring))+strlen((yysemantic_stack_[(3) - (3)].astring))+1];
@@ -7302,7 +7316,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 404:
 
 /* Line 678 of lalr1.cc  */
-#line 5784 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5798 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           RemoveEndString((yysemantic_stack_[(3) - (1)].astring),(yysemantic_stack_[(3) - (3)].astring));
           (yyval.astring)=(yysemantic_stack_[(3) - (1)].astring);
@@ -7312,7 +7326,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 406:
 
 /* Line 678 of lalr1.cc  */
-#line 5797 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5811 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         (yyval.ablock)=(yysemantic_stack_[(3) - (2)].ablock);
         if (GB_debug)
@@ -7325,7 +7339,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 410:
 
 /* Line 678 of lalr1.cc  */
-#line 5811 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5825 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Description:
@@ -7338,7 +7352,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 411:
 
 /* Line 678 of lalr1.cc  */
-#line 5819 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5833 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Description:
@@ -7351,7 +7365,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 412:
 
 /* Line 678 of lalr1.cc  */
-#line 5827 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5841 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
       Description:
@@ -7365,7 +7379,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 413:
 
 /* Line 678 of lalr1.cc  */
-#line 5836 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5850 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       (yyval.adouble)=*((float_ptr*)(yysemantic_stack_[(1) - (1)].variable)->Pointer())->get();
     }
@@ -7374,7 +7388,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 414:
 
 /* Line 678 of lalr1.cc  */
-#line 5840 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5854 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       (yyval.adouble) = (float) *((int_ptr*)(yysemantic_stack_[(1) - (1)].variable)->Pointer())->get();
     }
@@ -7383,7 +7397,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 415:
 
 /* Line 678 of lalr1.cc  */
-#line 5844 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5858 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       (yyval.adouble) = (float) *((uchar_ptr*)(yysemantic_stack_[(1) - (1)].variable)->Pointer())->get();
     }
@@ -7392,7 +7406,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 416:
 
 /* Line 678 of lalr1.cc  */
-#line 5848 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5862 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       (yyval.adouble)=(yysemantic_stack_[(3) - (2)].adouble);
       fflush(stdout);
@@ -7402,7 +7416,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 418:
 
 /* Line 678 of lalr1.cc  */
-#line 5857 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5871 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -7422,7 +7436,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 419:
 
 /* Line 678 of lalr1.cc  */
-#line 5872 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5886 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -7443,7 +7457,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 420:
 
 /* Line 678 of lalr1.cc  */
-#line 5888 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5902 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
         Parameters:
@@ -7462,7 +7476,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 421:
 
 /* Line 678 of lalr1.cc  */
-#line 5902 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5916 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
         Parameters:
@@ -7482,7 +7496,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 422:
 
 /* Line 678 of lalr1.cc  */
-#line 5917 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5931 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -7504,7 +7518,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 423:
 
 /* Line 678 of lalr1.cc  */
-#line 5934 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5948 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -7525,7 +7539,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 424:
 
 /* Line 678 of lalr1.cc  */
-#line 5950 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5964 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -7544,7 +7558,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 425:
 
 /* Line 678 of lalr1.cc  */
-#line 5964 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5978 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -7562,7 +7576,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 426:
 
 /* Line 678 of lalr1.cc  */
-#line 5977 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5991 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -7588,7 +7602,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 427:
 
 /* Line 678 of lalr1.cc  */
-#line 5998 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6012 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           IdentifierInfo::ptr ident((yysemantic_stack_[(3) - (3)].ident));
       if (strcmp(ident->GetName().c_str(),"tx")==0) {
@@ -7653,7 +7667,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 428:
 
 /* Line 678 of lalr1.cc  */
-#line 6058 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6072 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
           Description:
@@ -7683,7 +7697,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 429:
 
 /* Line 678 of lalr1.cc  */
-#line 6083 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6097 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
         Description:
@@ -7708,7 +7722,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 430:
 
 /* Line 678 of lalr1.cc  */
-#line 6103 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6117 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) (yysemantic_stack_[(3) - (1)].variable)->Pointer();
 
@@ -7731,7 +7745,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 431:
 
 /* Line 678 of lalr1.cc  */
-#line 6122 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6136 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) (yysemantic_stack_[(3) - (1)].variable)->Pointer();
 
@@ -7742,7 +7756,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 432:
 
 /* Line 678 of lalr1.cc  */
-#line 6129 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6143 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) (yysemantic_stack_[(3) - (1)].variable)->Pointer();
 
@@ -7754,7 +7768,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 433:
 
 /* Line 678 of lalr1.cc  */
-#line 6137 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6151 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       (yyval.adouble)=Func_SNR(((InrImage::ptr*) (yysemantic_stack_[(6) - (3)].variable)->Pointer())->get(),((InrImage::ptr*) (yysemantic_stack_[(6) - (5)].variable)->Pointer())->get());
         }
@@ -7763,7 +7777,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 434:
 
 /* Line 678 of lalr1.cc  */
-#line 6142 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6156 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
            (yyval.adouble)=Func_eccentricity(((InrImage::ptr*) (yysemantic_stack_[(4) - (3)].variable)->Pointer())->get());
         }
@@ -7772,7 +7786,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 435:
 
 /* Line 678 of lalr1.cc  */
-#line 6147 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6161 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           float   resolution = (yysemantic_stack_[(10) - (5)].adouble);
           int     cx = (int) (yysemantic_stack_[(10) - (7)].adouble);
@@ -7804,7 +7818,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 436:
 
 /* Line 678 of lalr1.cc  */
-#line 6175 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6189 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
       (yyval.adouble)=Func_ComputePositiveArea( ((InrImage::ptr*) (yysemantic_stack_[(4) - (3)].variable)->Pointer())->get() );
@@ -7814,7 +7828,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 437:
 
 /* Line 678 of lalr1.cc  */
-#line 6181 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6195 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       float val[4];
 
@@ -7829,7 +7843,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 438:
 
 /* Line 678 of lalr1.cc  */
-#line 6192 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6206 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
              Description:
@@ -7852,7 +7866,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 439:
 
 /* Line 678 of lalr1.cc  */
-#line 6211 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6225 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
              Description:
@@ -7875,7 +7889,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 440:
 
 /* Line 678 of lalr1.cc  */
-#line 6230 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6244 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
              Description: 
@@ -7898,7 +7912,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 441:
 
 /* Line 678 of lalr1.cc  */
-#line 6249 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6263 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
              Description:
@@ -7921,7 +7935,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 442:
 
 /* Line 678 of lalr1.cc  */
-#line 6268 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6282 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
             Description:
@@ -7944,7 +7958,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 443:
 
 /* Line 678 of lalr1.cc  */
-#line 6287 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6301 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
             Description:
@@ -7967,7 +7981,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 444:
 
 /* Line 678 of lalr1.cc  */
-#line 6306 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6320 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
              Description:
@@ -7994,7 +8008,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 445:
 
 /* Line 678 of lalr1.cc  */
-#line 6329 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6343 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
              Description:
@@ -8020,7 +8034,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 446:
 
 /* Line 678 of lalr1.cc  */
-#line 6351 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6365 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
              Description:
@@ -8047,7 +8061,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 447:
 
 /* Line 678 of lalr1.cc  */
-#line 6374 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6388 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           InrImage* mask = (InrImage*) driver.im_stack.GetLastImage();
           (yyval.adouble)=Func_med( ((InrImage::ptr*) (yysemantic_stack_[(9) - (6)].variable)->Pointer())->get(),(float) (yysemantic_stack_[(9) - (8)].adouble),mask);
@@ -8058,7 +8072,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 448:
 
 /* Line 678 of lalr1.cc  */
-#line 6381 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6395 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
              Description:
@@ -8086,7 +8100,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 449:
 
 /* Line 678 of lalr1.cc  */
-#line 6405 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6419 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
              Description:
@@ -8114,7 +8128,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 450:
 
 /* Line 678 of lalr1.cc  */
-#line 6428 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6442 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 //    setlocale(LC_NUMERIC,"C");
       setlocale(LC_NUMERIC, "C");
@@ -8126,7 +8140,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 451:
 
 /* Line 678 of lalr1.cc  */
-#line 6436 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6450 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       DessinImage::ptr draw;
       DessinImageParametres* param;
@@ -8140,7 +8154,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 452:
 
 /* Line 678 of lalr1.cc  */
-#line 6446 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6460 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       DessinImage::ptr draw;
       DessinImageParametres* param;
@@ -8154,7 +8168,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 453:
 
 /* Line 678 of lalr1.cc  */
-#line 6456 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6470 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       DessinImage::ptr draw;
       DessinImageParametres* param;
@@ -8168,7 +8182,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 454:
 
 /* Line 678 of lalr1.cc  */
-#line 6466 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6480 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       DessinImage::ptr draw;
       DessinImageParametres* param;
@@ -8182,7 +8196,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 455:
 
 /* Line 678 of lalr1.cc  */
-#line 6476 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6490 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       DessinImage::ptr draw;
       DessinImageParametres* param;
@@ -8196,7 +8210,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 456:
 
 /* Line 678 of lalr1.cc  */
-#line 6486 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6500 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       DessinImage::ptr draw;
       DessinImageParametres* param;
@@ -8210,7 +8224,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 457:
 
 /* Line 678 of lalr1.cc  */
-#line 6496 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6510 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           DessinImage::ptr draw;
           DessinImageParametres* param;
@@ -8228,7 +8242,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 458:
 
 /* Line 678 of lalr1.cc  */
-#line 6510 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6524 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       DessinImage::ptr draw;
       DessinImageParametres* param;
@@ -8249,7 +8263,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 459:
 
 /* Line 678 of lalr1.cc  */
-#line 6527 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6541 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       DessinImage::ptr draw;
       DessinImageParametres* param;
@@ -8269,7 +8283,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 460:
 
 /* Line 678 of lalr1.cc  */
-#line 6543 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6557 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       (yyval.adouble)=Func_AnisoGS_GetNoiseSD();
     }
@@ -8278,7 +8292,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 461:
 
 /* Line 678 of lalr1.cc  */
-#line 6548 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6562 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       (yyval.adouble)=Func_AnisoGS_GetDAcoeff();
     }
@@ -8287,7 +8301,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 462:
 
 /* Line 678 of lalr1.cc  */
-#line 6553 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6567 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       (yyval.adouble) = Func_LevelSets_UpdateResult();
     }
@@ -8296,7 +8310,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 463:
 
 /* Line 678 of lalr1.cc  */
-#line 6557 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6571 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           FloatMatrix::ptr mat = *(FloatMatrix::ptr*)(yysemantic_stack_[(6) - (1)].variable)->Pointer();
           int i = (int)(yysemantic_stack_[(6) - (3)].adouble);
@@ -8308,7 +8322,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 464:
 
 /* Line 678 of lalr1.cc  */
-#line 6564 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6578 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           FloatMatrix::ptr mat = *(FloatMatrix::ptr*)(yysemantic_stack_[(8) - (1)].variable)->Pointer();
           int i = (int)(yysemantic_stack_[(8) - (3)].adouble);
@@ -8320,7 +8334,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 465:
 
 /* Line 678 of lalr1.cc  */
-#line 6572 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6586 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
           Description:
@@ -8359,7 +8373,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 466:
 
 /* Line 678 of lalr1.cc  */
-#line 6607 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6621 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
           Description:
@@ -8401,7 +8415,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 467:
 
 /* Line 678 of lalr1.cc  */
-#line 6645 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6659 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
         Parameters:
@@ -8422,7 +8436,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 468:
 
 /* Line 678 of lalr1.cc  */
-#line 6662 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6676 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
         Parameters:
@@ -8446,7 +8460,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 469:
 
 /* Line 678 of lalr1.cc  */
-#line 6682 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6696 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     int bid;
     ParamPanel_ptr pw = *(ParamPanel_ptr*) (yysemantic_stack_[(8) - (1)].variable)->Pointer();
@@ -8462,7 +8476,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 470:
 
 /* Line 678 of lalr1.cc  */
-#line 6694 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6708 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -8483,7 +8497,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 471:
 
 /* Line 678 of lalr1.cc  */
-#line 6711 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6725 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -8507,7 +8521,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 472:
 
 /* Line 678 of lalr1.cc  */
-#line 6731 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6745 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -8544,7 +8558,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 473:
 
 /* Line 678 of lalr1.cc  */
-#line 6764 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6778 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -8567,7 +8581,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 474:
 
 /* Line 678 of lalr1.cc  */
-#line 6783 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6797 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -8593,7 +8607,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 475:
 
 /* Line 678 of lalr1.cc  */
-#line 6805 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6819 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -8613,7 +8627,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 476:
 
 /* Line 678 of lalr1.cc  */
-#line 6821 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6835 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -8635,7 +8649,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 477:
 
 /* Line 678 of lalr1.cc  */
-#line 6839 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6853 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -8663,7 +8677,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 478:
 
 /* Line 678 of lalr1.cc  */
-#line 6863 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6877 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -8688,7 +8702,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 479:
 
 /* Line 678 of lalr1.cc  */
-#line 6884 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6898 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -8720,7 +8734,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 480:
 
 /* Line 678 of lalr1.cc  */
-#line 6912 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6926 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
       Parameters:
@@ -8738,7 +8752,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 481:
 
 /* Line 678 of lalr1.cc  */
-#line 6926 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6940 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     **/
@@ -8752,7 +8766,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 482:
 
 /* Line 678 of lalr1.cc  */
-#line 6936 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6950 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
       Description:
@@ -8769,7 +8783,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 483:
 
 /* Line 678 of lalr1.cc  */
-#line 6949 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6963 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
       Parameters:
@@ -8787,7 +8801,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 484:
 
 /* Line 678 of lalr1.cc  */
-#line 6963 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6977 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
       Parameters:
@@ -8807,7 +8821,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 485:
 
 /* Line 678 of lalr1.cc  */
-#line 6978 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6992 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Description:
@@ -8820,7 +8834,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 486:
 
 /* Line 678 of lalr1.cc  */
-#line 6986 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7000 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Description: 
@@ -8833,7 +8847,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 487:
 
 /* Line 678 of lalr1.cc  */
-#line 6994 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7008 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -8850,7 +8864,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 488:
 
 /* Line 678 of lalr1.cc  */
-#line 7006 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7020 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           (yyval.adouble) = (int) (yysemantic_stack_[(1) - (1)].aint);
     }
@@ -8859,7 +8873,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 489:
 
 /* Line 678 of lalr1.cc  */
-#line 7010 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7024 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
       Description:
@@ -8879,7 +8893,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 490:
 
 /* Line 678 of lalr1.cc  */
-#line 7025 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7039 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
        float*  var = ((float_ptr*) (yysemantic_stack_[(6) - (5)].variable)->Pointer())->get();
         FILE_ptr file = *(FILE_ptr*) ((yysemantic_stack_[(6) - (1)].variable)->Pointer());
@@ -8891,7 +8905,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 491:
 
 /* Line 678 of lalr1.cc  */
-#line 7032 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7046 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       FILE_ptr file = *(FILE_ptr*) ((yysemantic_stack_[(6) - (1)].variable)->Pointer());
       setlocale(LC_NUMERIC, "C");
@@ -8906,7 +8920,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 492:
 
 /* Line 678 of lalr1.cc  */
-#line 7042 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7056 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
       Parameters:
@@ -8923,7 +8937,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 493:
 
 /* Line 678 of lalr1.cc  */
-#line 7054 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7068 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
       Parameters:
@@ -8938,70 +8952,70 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 495:
 
 /* Line 678 of lalr1.cc  */
-#line 7067 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7081 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { (yyval.adouble)=(yysemantic_stack_[(2) - (2)].adouble); }
     break;
 
   case 496:
 
 /* Line 678 of lalr1.cc  */
-#line 7068 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7082 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_EXPR(!,              (yysemantic_stack_[(2) - (2)].adouble),(yyval.adouble)) }
     break;
 
   case 497:
 
 /* Line 678 of lalr1.cc  */
-#line 7069 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7083 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_EXPR(-,              (yysemantic_stack_[(2) - (2)].adouble),(yyval.adouble)) }
     break;
 
   case 498:
 
 /* Line 678 of lalr1.cc  */
-#line 7070 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7084 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_EXPR(+,              (yysemantic_stack_[(2) - (2)].adouble),(yyval.adouble)) }
     break;
 
   case 499:
 
 /* Line 678 of lalr1.cc  */
-#line 7071 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7085 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_EXPR(sin,            (yysemantic_stack_[(2) - (2)].adouble),(yyval.adouble)) }
     break;
 
   case 500:
 
 /* Line 678 of lalr1.cc  */
-#line 7072 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7086 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_EXPR(cos,            (yysemantic_stack_[(2) - (2)].adouble),(yyval.adouble)) }
     break;
 
   case 501:
 
 /* Line 678 of lalr1.cc  */
-#line 7073 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7087 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_EXPR(sqrt,           (yysemantic_stack_[(2) - (2)].adouble),(yyval.adouble)) }
     break;
 
   case 502:
 
 /* Line 678 of lalr1.cc  */
-#line 7074 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7088 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_EXPR(fabs,           (yysemantic_stack_[(2) - (2)].adouble),(yyval.adouble)) }
     break;
 
   case 503:
 
 /* Line 678 of lalr1.cc  */
-#line 7075 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7089 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_EXPR(round,           (yysemantic_stack_[(2) - (2)].adouble),(yyval.adouble)) }
     break;
 
   case 504:
 
 /* Line 678 of lalr1.cc  */
-#line 7077 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7091 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           /**
             Description:
@@ -9014,35 +9028,35 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 505:
 
 /* Line 678 of lalr1.cc  */
-#line 7084 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7098 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_EXPR(tan,            (yysemantic_stack_[(2) - (2)].adouble),(yyval.adouble)) }
     break;
 
   case 506:
 
 /* Line 678 of lalr1.cc  */
-#line 7085 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7099 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_EXPR(asin,           (yysemantic_stack_[(2) - (2)].adouble),(yyval.adouble)) }
     break;
 
   case 507:
 
 /* Line 678 of lalr1.cc  */
-#line 7086 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7100 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_EXPR(acos,           (yysemantic_stack_[(2) - (2)].adouble),(yyval.adouble)) }
     break;
 
   case 508:
 
 /* Line 678 of lalr1.cc  */
-#line 7087 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7101 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_EXPR(atan,           (yysemantic_stack_[(2) - (2)].adouble),(yyval.adouble)) }
     break;
 
   case 509:
 
 /* Line 678 of lalr1.cc  */
-#line 7089 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7103 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { 
         /**
           Parameters:
@@ -9059,7 +9073,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 510:
 
 /* Line 678 of lalr1.cc  */
-#line 7101 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7115 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { 
         /**
           Parameters:
@@ -9076,7 +9090,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 511:
 
 /* Line 678 of lalr1.cc  */
-#line 7113 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7127 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { 
         /**
           Parameters:
@@ -9093,7 +9107,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 515:
 
 /* Line 678 of lalr1.cc  */
-#line 7136 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7150 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       switch((WORDTYPE) (yysemantic_stack_[(4) - (2)].aint)) {
       case WT_UNSIGNED_CHAR:  (yyval.adouble)=(unsigned char) (yysemantic_stack_[(4) - (4)].adouble); break;
@@ -9111,98 +9125,98 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 517:
 
 /* Line 678 of lalr1.cc  */
-#line 7152 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7166 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { (yyval.adouble)=(yysemantic_stack_[(3) - (1)].adouble)*(yysemantic_stack_[(3) - (3)].adouble); }
     break;
 
   case 518:
 
 /* Line 678 of lalr1.cc  */
-#line 7153 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7167 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { (yyval.adouble)=(yysemantic_stack_[(3) - (1)].adouble)/(yysemantic_stack_[(3) - (3)].adouble); }
     break;
 
   case 519:
 
 /* Line 678 of lalr1.cc  */
-#line 7154 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7168 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { (yyval.adouble)= ((int) round((yysemantic_stack_[(3) - (1)].adouble))) % ((int) round((yysemantic_stack_[(3) - (3)].adouble))); }
     break;
 
   case 521:
 
 /* Line 678 of lalr1.cc  */
-#line 7159 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7173 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {  (yyval.adouble)=(yysemantic_stack_[(3) - (1)].adouble)+(yysemantic_stack_[(3) - (3)].adouble); }
     break;
 
   case 522:
 
 /* Line 678 of lalr1.cc  */
-#line 7160 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7174 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {  (yyval.adouble)=(yysemantic_stack_[(3) - (1)].adouble)-(yysemantic_stack_[(3) - (3)].adouble); }
     break;
 
   case 525:
 
 /* Line 678 of lalr1.cc  */
-#line 7170 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7184 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {  (yyval.adouble)=((yysemantic_stack_[(3) - (1)].adouble)<(yysemantic_stack_[(3) - (3)].adouble));  }
     break;
 
   case 526:
 
 /* Line 678 of lalr1.cc  */
-#line 7171 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7185 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {  (yyval.adouble)=((yysemantic_stack_[(3) - (1)].adouble)>(yysemantic_stack_[(3) - (3)].adouble));  }
     break;
 
   case 527:
 
 /* Line 678 of lalr1.cc  */
-#line 7172 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7186 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {  (yyval.adouble)=((yysemantic_stack_[(3) - (1)].adouble)<=(yysemantic_stack_[(3) - (3)].adouble)); }
     break;
 
   case 528:
 
 /* Line 678 of lalr1.cc  */
-#line 7173 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7187 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {  (yyval.adouble)=((yysemantic_stack_[(3) - (1)].adouble)>=(yysemantic_stack_[(3) - (3)].adouble)); }
     break;
 
   case 530:
 
 /* Line 678 of lalr1.cc  */
-#line 7178 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7192 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { (yyval.adouble)=((yysemantic_stack_[(3) - (1)].adouble)==(yysemantic_stack_[(3) - (3)].adouble)); }
     break;
 
   case 531:
 
 /* Line 678 of lalr1.cc  */
-#line 7179 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7193 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { (yyval.adouble)=((yysemantic_stack_[(3) - (1)].adouble)!=(yysemantic_stack_[(3) - (3)].adouble)); }
     break;
 
   case 532:
 
 /* Line 678 of lalr1.cc  */
-#line 7180 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7194 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { (yyval.adouble)=(strcmp((yysemantic_stack_[(3) - (1)].astring),(yysemantic_stack_[(3) - (3)].astring))==0); }
     break;
 
   case 533:
 
 /* Line 678 of lalr1.cc  */
-#line 7181 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7195 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { (yyval.adouble)=(strcmp((yysemantic_stack_[(3) - (1)].astring),(yysemantic_stack_[(3) - (3)].astring))!=0); }
     break;
 
   case 535:
 
 /* Line 678 of lalr1.cc  */
-#line 7187 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7201 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       (yyval.adouble) = ((int)(yysemantic_stack_[(3) - (1)].adouble)) & ((int)(yysemantic_stack_[(3) - (3)].adouble));
     }
@@ -9211,7 +9225,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 538:
 
 /* Line 678 of lalr1.cc  */
-#line 7200 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7214 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           (yyval.adouble)=(yysemantic_stack_[(1) - (1)].adouble);
         }
@@ -9220,7 +9234,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 539:
 
 /* Line 678 of lalr1.cc  */
-#line 7204 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7218 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       (yyval.adouble) = ((int)(yysemantic_stack_[(3) - (1)].adouble)) | ((int)(yysemantic_stack_[(3) - (3)].adouble));
         }
@@ -9229,7 +9243,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 540:
 
 /* Line 678 of lalr1.cc  */
-#line 7211 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7225 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
            (yyval.adouble)=(yysemantic_stack_[(1) - (1)].adouble);
         }
@@ -9238,7 +9252,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 541:
 
 /* Line 678 of lalr1.cc  */
-#line 7215 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7229 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           (yyval.adouble)=(yysemantic_stack_[(3) - (1)].adouble)&&(yysemantic_stack_[(3) - (3)].adouble);
         }
@@ -9247,7 +9261,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 542:
 
 /* Line 678 of lalr1.cc  */
-#line 7222 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7236 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       (yyval.adouble)=(yysemantic_stack_[(1) - (1)].adouble);
     }
@@ -9256,7 +9270,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 543:
 
 /* Line 678 of lalr1.cc  */
-#line 7226 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7240 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       (yyval.adouble)=(yysemantic_stack_[(3) - (1)].adouble)||(yysemantic_stack_[(3) - (3)].adouble);
     }
@@ -9265,7 +9279,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 545:
 
 /* Line 678 of lalr1.cc  */
-#line 7234 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7248 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       (yyval.adouble)=((yysemantic_stack_[(5) - (1)].adouble)?(yysemantic_stack_[(5) - (3)].adouble):(yysemantic_stack_[(5) - (5)].adouble));
         }
@@ -9274,7 +9288,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 548:
 
 /* Line 678 of lalr1.cc  */
-#line 7251 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7265 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       driver.err_print(" char format is not available: use unsigned char \n");
       (yyval.aint)=WT_UNSIGNED_CHAR;
@@ -9284,7 +9298,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 549:
 
 /* Line 678 of lalr1.cc  */
-#line 7256 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7270 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           (yyval.aint)=WT_UNSIGNED_CHAR;
        }
@@ -9293,7 +9307,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 550:
 
 /* Line 678 of lalr1.cc  */
-#line 7260 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7274 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
      (yyval.aint)=WT_SIGNED_SHORT;
        }
@@ -9302,7 +9316,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 551:
 
 /* Line 678 of lalr1.cc  */
-#line 7264 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7278 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
      (yyval.aint)=WT_UNSIGNED_SHORT;
        }
@@ -9311,7 +9325,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 552:
 
 /* Line 678 of lalr1.cc  */
-#line 7268 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7282 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
      (yyval.aint)=WT_SIGNED_INT;
        }
@@ -9320,7 +9334,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 553:
 
 /* Line 678 of lalr1.cc  */
-#line 7272 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7286 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
      (yyval.aint)=WT_UNSIGNED_INT;
        }
@@ -9329,7 +9343,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 554:
 
 /* Line 678 of lalr1.cc  */
-#line 7276 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7290 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
      (yyval.aint)=WT_FLOAT;
        }
@@ -9338,7 +9352,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 555:
 
 /* Line 678 of lalr1.cc  */
-#line 7280 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7294 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
      (yyval.aint)=WT_DOUBLE;
        }
@@ -9347,7 +9361,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 556:
 
 /* Line 678 of lalr1.cc  */
-#line 7284 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7298 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
      (yyval.aint)=WT_RGB;
        }
@@ -9356,7 +9370,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 557:
 
 /* Line 678 of lalr1.cc  */
-#line 7288 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7302 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
      (yyval.aint)=WT_FLOAT_VECTOR;
        }
@@ -9365,7 +9379,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 558:
 
 /* Line 678 of lalr1.cc  */
-#line 7292 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7306 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 //        printf("format %d \n",(int) ( *(InrImage::ptr*) $1->Pointer())->GetFormat());
         (yyval.aint) = (int) (*(InrImage::ptr*) (yysemantic_stack_[(3) - (1)].variable)->Pointer())->GetFormat();
@@ -9375,7 +9389,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 559:
 
 /* Line 678 of lalr1.cc  */
-#line 7300 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7314 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           (yyval.variable)=(yysemantic_stack_[(1) - (1)].variable);
         }
@@ -9384,7 +9398,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 560:
 
 /* Line 678 of lalr1.cc  */
-#line 7305 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7319 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           VarArray::ptr array;
           int  i = (int) (yysemantic_stack_[(4) - (3)].adouble);
@@ -9403,7 +9417,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 561:
 
 /* Line 678 of lalr1.cc  */
-#line 7322 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7336 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
      driver.im_stack.AddImage((yysemantic_stack_[(2) - (2)].astring));
      delete [] (yysemantic_stack_[(2) - (2)].astring);
@@ -9413,7 +9427,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 562:
 
 /* Line 678 of lalr1.cc  */
-#line 7328 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7342 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
      driver.im_stack.AddImage((yysemantic_stack_[(4) - (3)].astring));
      delete [] (yysemantic_stack_[(4) - (3)].astring);
@@ -9423,7 +9437,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 563:
 
 /* Line 678 of lalr1.cc  */
-#line 7335 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7349 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
        /**
        Parameters:
@@ -9484,7 +9498,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 564:
 
 /* Line 678 of lalr1.cc  */
-#line 7393 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7407 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
        /**
        Parameters:
@@ -9541,7 +9555,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 565:
 
 /* Line 678 of lalr1.cc  */
-#line 7447 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7461 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
        /**
        Parameters:
@@ -9601,7 +9615,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 566:
 
 /* Line 678 of lalr1.cc  */
-#line 7502 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7516 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
        /**
        Parameters:
@@ -9627,7 +9641,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 567:
 
 /* Line 678 of lalr1.cc  */
-#line 7523 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7537 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
        /**
        Parameters:
@@ -9653,7 +9667,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 568:
 
 /* Line 678 of lalr1.cc  */
-#line 7544 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7558 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
        Variable*  var   = (yysemantic_stack_[(4) - (1)].variable);
        ParamList::ptr param((yysemantic_stack_[(4) - (3)].paramlist));
@@ -9671,7 +9685,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 569:
 
 /* Line 678 of lalr1.cc  */
-#line 7558 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7572 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           int res;
           string name;
@@ -9704,7 +9718,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 570:
 
 /* Line 678 of lalr1.cc  */
-#line 7587 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7601 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         InrImage* im;
         //printf(" ********** %d %f %f %f\n", $3, $5, $7, $9);
@@ -9716,7 +9730,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 571:
 
 /* Line 678 of lalr1.cc  */
-#line 7595 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7609 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
     Parameters:
@@ -9739,7 +9753,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 572:
 
 /* Line 678 of lalr1.cc  */
-#line 7614 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7628 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -9769,7 +9783,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 573:
 
 /* Line 678 of lalr1.cc  */
-#line 7640 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7654 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
          InrImage::ptr varim;
          InrImage* im;
@@ -9786,7 +9800,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 574:
 
 /* Line 678 of lalr1.cc  */
-#line 7653 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7667 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
        /**
         Description:
@@ -9868,7 +9882,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 575:
 
 /* Line 678 of lalr1.cc  */
-#line 7731 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7745 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
              Description:
@@ -9939,7 +9953,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 576:
 
 /* Line 678 of lalr1.cc  */
-#line 7798 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7812 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage* im  = (InrImage*) driver.im_stack.GetLastImage();
       InrImage* res =Func_localmean( im, (int) (yysemantic_stack_[(6) - (5)].adouble));
@@ -9951,7 +9965,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 577:
 
 /* Line 678 of lalr1.cc  */
-#line 7806 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7820 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage* im  = (InrImage*) driver.im_stack.GetLastImage();
       InrImage* res =Func_localmean2( im, (int) (yysemantic_stack_[(6) - (5)].adouble));
@@ -9963,7 +9977,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 578:
 
 /* Line 678 of lalr1.cc  */
-#line 7814 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7828 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     InrImage* mean    = (InrImage*) driver.im_stack.GetLastImage();
     InrImage* im      = (InrImage*) driver.im_stack.GetLastImage();
@@ -9977,7 +9991,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 579:
 
 /* Line 678 of lalr1.cc  */
-#line 7824 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7838 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     InrImage* mean    = (InrImage*) driver.im_stack.GetLastImage();
     InrImage* im      = (InrImage*) driver.im_stack.GetLastImage();
@@ -9991,7 +10005,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 580:
 
 /* Line 678 of lalr1.cc  */
-#line 7834 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7848 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
       Description:
@@ -10025,7 +10039,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 581:
 
 /* Line 678 of lalr1.cc  */
-#line 7864 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7878 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     InrImage*  res;
 
@@ -10047,7 +10061,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 582:
 
 /* Line 678 of lalr1.cc  */
-#line 7882 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7896 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     InrImage*  res;
 
@@ -10071,7 +10085,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 583:
 
 /* Line 678 of lalr1.cc  */
-#line 7902 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7916 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     InrImage*  res;
 
@@ -10093,7 +10107,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 584:
 
 /* Line 678 of lalr1.cc  */
-#line 7920 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7934 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     InrImage*  res;
 
@@ -10117,7 +10131,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 585:
 
 /* Line 678 of lalr1.cc  */
-#line 7940 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7954 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         InrImage*  res;
 
@@ -10139,7 +10153,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 586:
 
 /* Line 678 of lalr1.cc  */
-#line 7959 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7973 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         InrImage*  res;
 
@@ -10161,7 +10175,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 587:
 
 /* Line 678 of lalr1.cc  */
-#line 7980 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7994 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
         Parameters
@@ -10203,7 +10217,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 588:
 
 /* Line 678 of lalr1.cc  */
-#line 8017 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8031 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         InrImage* res;
         float var           = (yysemantic_stack_[(10) - (7)].adouble);
@@ -10222,7 +10236,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 589:
 
 /* Line 678 of lalr1.cc  */
-#line 8032 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8046 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         InrImage*  res;
 
@@ -10240,7 +10254,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 590:
 
 /* Line 678 of lalr1.cc  */
-#line 8046 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8060 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         InrImage*  res;
 
@@ -10260,7 +10274,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 591:
 
 /* Line 678 of lalr1.cc  */
-#line 8062 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8076 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         driver.err_print("The function AndreDist() has been removed for licence issues! \n");
 /*
@@ -10287,7 +10301,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 592:
 
 /* Line 678 of lalr1.cc  */
-#line 8085 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8099 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     InrImage*  res;
 
@@ -10305,7 +10319,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 593:
 
 /* Line 678 of lalr1.cc  */
-#line 8099 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8113 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     InrImage*  res;
 
@@ -10323,7 +10337,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 594:
 
 /* Line 678 of lalr1.cc  */
-#line 8113 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8127 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     InrImage*  res;
 
@@ -10341,7 +10355,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 595:
 
 /* Line 678 of lalr1.cc  */
-#line 8127 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8141 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     InrImage*  res;
 
@@ -10359,7 +10373,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 596:
 
 /* Line 678 of lalr1.cc  */
-#line 8141 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8155 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
         Parameters:
@@ -10398,7 +10412,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 597:
 
 /* Line 678 of lalr1.cc  */
-#line 8176 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8190 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     InrImage*  res;
 
@@ -10416,7 +10430,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 598:
 
 /* Line 678 of lalr1.cc  */
-#line 8191 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8205 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         InrImage*  res;
 
@@ -10440,7 +10454,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 599:
 
 /* Line 678 of lalr1.cc  */
-#line 8212 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8226 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage*  res;
 
@@ -10464,7 +10478,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 600:
 
 /* Line 678 of lalr1.cc  */
-#line 8233 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8247 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -10508,7 +10522,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 601:
 
 /* Line 678 of lalr1.cc  */
-#line 8274 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8288 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
       Parameters:
@@ -10557,7 +10571,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 602:
 
 /* Line 678 of lalr1.cc  */
-#line 8319 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8333 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     InrImage*  res;
 
@@ -10578,7 +10592,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 603:
 
 /* Line 678 of lalr1.cc  */
-#line 8336 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8350 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     InrImage*  res;
     int samples = (int) (yysemantic_stack_[(12) - (11)].adouble);
@@ -10601,7 +10615,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 604:
 
 /* Line 678 of lalr1.cc  */
-#line 8355 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8369 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     InrImage*  res;
 
@@ -10619,7 +10633,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 605:
 
 /* Line 678 of lalr1.cc  */
-#line 8369 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8383 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     InrImage*  res;
 
@@ -10637,7 +10651,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 606:
 
 /* Line 678 of lalr1.cc  */
-#line 8383 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8397 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     InrImage*  res;
 
@@ -10655,7 +10669,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 607:
 
 /* Line 678 of lalr1.cc  */
-#line 8399 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8413 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     InrImage*  res;
     InrImage*    input  = (InrImage*) driver.im_stack.GetLastImage();
@@ -10676,7 +10690,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 608:
 
 /* Line 678 of lalr1.cc  */
-#line 8417 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8431 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     InrImage*  res;
 
@@ -10694,7 +10708,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 609:
 
 /* Line 678 of lalr1.cc  */
-#line 8432 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8446 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     InrImage*  res;
 
@@ -10712,7 +10726,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 610:
 
 /* Line 678 of lalr1.cc  */
-#line 8448 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8462 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     InrImage*  res;
 
@@ -10731,7 +10745,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 611:
 
 /* Line 678 of lalr1.cc  */
-#line 8463 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8477 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
         Parameters:
@@ -10756,7 +10770,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 612:
 
 /* Line 678 of lalr1.cc  */
-#line 8486 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8500 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     InrImage*  res;
 
@@ -10775,7 +10789,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 613:
 
 /* Line 678 of lalr1.cc  */
-#line 8503 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8517 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     InrImage*  res;
 
@@ -10794,7 +10808,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 614:
 
 /* Line 678 of lalr1.cc  */
-#line 8517 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8531 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
           InrImage* res;
@@ -10810,7 +10824,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 615:
 
 /* Line 678 of lalr1.cc  */
-#line 8529 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8543 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage*  res;
       ImageExtent<float>* extent = (ImageExtent<float>*) (yysemantic_stack_[(4) - (3)].imageextent);
@@ -10843,7 +10857,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 616:
 
 /* Line 678 of lalr1.cc  */
-#line 8561 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8575 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage::ptr  im = *(InrImage::ptr*) (yysemantic_stack_[(10) - (1)].variable)->Pointer();
       InrImage*  res;
@@ -10864,7 +10878,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 617:
 
 /* Line 678 of lalr1.cc  */
-#line 8581 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8595 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
       Parameters
@@ -10910,7 +10924,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 618:
 
 /* Line 678 of lalr1.cc  */
-#line 8623 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8637 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     InrImage*  res;
     res = Func_EDP_dilate( ((InrImage::ptr*) (yysemantic_stack_[(10) - (3)].variable)->Pointer())->get(),
@@ -10926,7 +10940,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 619:
 
 /* Line 678 of lalr1.cc  */
-#line 8635 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8649 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     InrImage*  res;
     res = Func_EDP_dilate( ((InrImage::ptr*) (yysemantic_stack_[(8) - (3)].variable)->Pointer())->get(), (yysemantic_stack_[(8) - (5)].adouble),  (yysemantic_stack_[(8) - (7)].adouble));
@@ -10941,7 +10955,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 620:
 
 /* Line 678 of lalr1.cc  */
-#line 8646 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8660 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     InrImage*  res;
     float Imin = (yysemantic_stack_[(12) - (9)].adouble);
@@ -10958,7 +10972,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 621:
 
 /* Line 678 of lalr1.cc  */
-#line 8659 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8673 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     InrImage*  res;
     res = Func_EDP_erode( ((InrImage::ptr*) (yysemantic_stack_[(10) - (3)].variable)->Pointer())->get(),
@@ -10974,7 +10988,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 622:
 
 /* Line 678 of lalr1.cc  */
-#line 8671 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8685 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     InrImage*  res;
     res = Func_EDP_erode( ((InrImage::ptr*) (yysemantic_stack_[(8) - (3)].variable)->Pointer())->get(), (yysemantic_stack_[(8) - (5)].adouble),  (yysemantic_stack_[(8) - (7)].adouble));
@@ -10989,7 +11003,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 623:
 
 /* Line 678 of lalr1.cc  */
-#line 8682 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8696 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -11019,7 +11033,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 624:
 
 /* Line 678 of lalr1.cc  */
-#line 8710 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8724 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -11048,7 +11062,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 625:
 
 /* Line 678 of lalr1.cc  */
-#line 8737 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8751 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -11082,7 +11096,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 626:
 
 /* Line 678 of lalr1.cc  */
-#line 8769 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8783 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     InrImage*  res;
 
@@ -11101,7 +11115,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 627:
 
 /* Line 678 of lalr1.cc  */
-#line 8785 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8799 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     InrImage*  res;
     float Imin = (yysemantic_stack_[(12) - (9)].adouble);
@@ -11122,7 +11136,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 628:
 
 /* Line 678 of lalr1.cc  */
-#line 8802 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8816 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     InrImage*  res;
 
@@ -11139,7 +11153,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 629:
 
 /* Line 678 of lalr1.cc  */
-#line 8815 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8829 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     InrImage*  res;
 
@@ -11156,7 +11170,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 630:
 
 /* Line 678 of lalr1.cc  */
-#line 8828 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8842 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     //
     // Parameters:
@@ -11180,7 +11194,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 631:
 
 /* Line 678 of lalr1.cc  */
-#line 8848 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8862 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     //
     // Parameters:
@@ -11207,7 +11221,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 632:
 
 /* Line 678 of lalr1.cc  */
-#line 8871 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8885 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
     InrImage*  res;
@@ -11225,7 +11239,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 633:
 
 /* Line 678 of lalr1.cc  */
-#line 8885 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8899 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
     InrImage*  res;
@@ -11244,7 +11258,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 634:
 
 /* Line 678 of lalr1.cc  */
-#line 8902 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8916 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
       Parameters:
@@ -11280,7 +11294,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 635:
 
 /* Line 678 of lalr1.cc  */
-#line 8935 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8949 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       //
       // param 1: input image
@@ -11320,7 +11334,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 636:
 
 /* Line 678 of lalr1.cc  */
-#line 8973 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8987 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
         Parameters:
@@ -11357,7 +11371,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 637:
 
 /* Line 678 of lalr1.cc  */
-#line 9008 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9022 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage*  res;
       int        nb_iter,i;
@@ -11392,7 +11406,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 638:
 
 /* Line 678 of lalr1.cc  */
-#line 9041 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9055 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage*  res;
 
@@ -11411,7 +11425,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 639:
 
 /* Line 678 of lalr1.cc  */
-#line 9058 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9072 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage*  res;
 
@@ -11430,7 +11444,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 640:
 
 /* Line 678 of lalr1.cc  */
-#line 9073 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9087 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage*  res;
 
@@ -11448,7 +11462,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 641:
 
 /* Line 678 of lalr1.cc  */
-#line 9089 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9103 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage*  res;
       float dt = (float) (yysemantic_stack_[(8) - (5)].adouble);
@@ -11471,7 +11485,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 642:
 
 /* Line 678 of lalr1.cc  */
-#line 9109 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9123 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage*  res;
       float dt = (float) (yysemantic_stack_[(10) - (5)].adouble);
@@ -11497,7 +11511,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 643:
 
 /* Line 678 of lalr1.cc  */
-#line 9132 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9146 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage*  res;
       float dt = (float) (yysemantic_stack_[(12) - (5)].adouble);
@@ -11524,7 +11538,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 644:
 
 /* Line 678 of lalr1.cc  */
-#line 9156 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9170 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage*  res;
       float dt = (float) (yysemantic_stack_[(10) - (5)].adouble);
@@ -11552,7 +11566,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 645:
 
 /* Line 678 of lalr1.cc  */
-#line 9182 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9196 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage*  res;
       float dt = (float) (yysemantic_stack_[(12) - (5)].adouble);
@@ -11579,7 +11593,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 646:
 
 /* Line 678 of lalr1.cc  */
-#line 9205 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9219 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage*  res;
       float dt = (float) (yysemantic_stack_[(10) - (5)].adouble);
@@ -11605,7 +11619,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 647:
 
 /* Line 678 of lalr1.cc  */
-#line 9227 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9241 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage*  res;
       float dt         = (float) (yysemantic_stack_[(12) - (5)].adouble);
@@ -11631,7 +11645,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 648:
 
 /* Line 678 of lalr1.cc  */
-#line 9250 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9264 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage*  res;
       float dt = (float) (yysemantic_stack_[(12) - (5)].adouble);
@@ -11658,7 +11672,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 649:
 
 /* Line 678 of lalr1.cc  */
-#line 9274 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9288 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
          Parameters:
@@ -11704,7 +11718,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 650:
 
 /* Line 678 of lalr1.cc  */
-#line 9318 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9332 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage::ptr  initim = *(InrImage::ptr*) (yysemantic_stack_[(12) - (3)].variable)->Pointer();
       InrImage*  res;
@@ -11730,7 +11744,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 651:
 
 /* Line 678 of lalr1.cc  */
-#line 9342 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9356 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
         Description:
@@ -11764,7 +11778,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 652:
 
 /* Line 678 of lalr1.cc  */
-#line 9373 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9387 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
       Parameters:
@@ -11791,7 +11805,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 653:
 
 /* Line 678 of lalr1.cc  */
-#line 9395 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9409 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -11833,7 +11847,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 654:
 
 /* Line 678 of lalr1.cc  */
-#line 9432 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9446 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -11875,7 +11889,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 655:
 
 /* Line 678 of lalr1.cc  */
-#line 9469 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9483 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -11917,7 +11931,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 656:
 
 /* Line 678 of lalr1.cc  */
-#line 9506 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9520 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -11956,7 +11970,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 657:
 
 /* Line 678 of lalr1.cc  */
-#line 9541 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9555 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           driver.im_stack.AddImage((*(Viewer3D_ptr*) (yysemantic_stack_[(3) - (1)].variable)->Pointer())->GetCanvas()->GetGLImage());
         }
@@ -11965,7 +11979,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 658:
 
 /* Line 678 of lalr1.cc  */
-#line 9546 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9560 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           fprintf(stderr,"not available in new wxwidgets version of the 3D viewer ! \n");
           driver.im_stack.AddImage((InrImage*)NULL);
@@ -11978,7 +11992,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 659:
 
 /* Line 678 of lalr1.cc  */
-#line 9555 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9569 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       driver.im_stack.AddImage((*(DessinImage::ptr*) (yysemantic_stack_[(3) - (1)].variable)->Pointer())->GetInrImage());
     }
@@ -11987,7 +12001,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 660:
 
 /* Line 678 of lalr1.cc  */
-#line 9560 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9574 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
     InrImage*    res;
@@ -12002,7 +12016,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 661:
 
 /* Line 678 of lalr1.cc  */
-#line 9571 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9585 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage*    res;
 
@@ -12016,7 +12030,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 662:
 
 /* Line 678 of lalr1.cc  */
-#line 9581 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9595 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         InrImage*    res;
 
@@ -12030,7 +12044,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 663:
 
 /* Line 678 of lalr1.cc  */
-#line 9591 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9605 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         InrImage*    res;
 
@@ -12043,7 +12057,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 664:
 
 /* Line 678 of lalr1.cc  */
-#line 9600 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9614 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -12068,7 +12082,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 665:
 
 /* Line 678 of lalr1.cc  */
-#line 9623 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9637 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -12100,7 +12114,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 666:
 
 /* Line 678 of lalr1.cc  */
-#line 9652 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9666 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -12129,7 +12143,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 667:
 
 /* Line 678 of lalr1.cc  */
-#line 9678 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9692 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -12161,7 +12175,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 668:
 
 /* Line 678 of lalr1.cc  */
-#line 9709 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9723 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -12195,7 +12209,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 669:
 
 /* Line 678 of lalr1.cc  */
-#line 9739 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9753 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
       InrImage* res;
@@ -12210,7 +12224,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 670:
 
 /* Line 678 of lalr1.cc  */
-#line 9750 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9764 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
             InrImage* res;
@@ -12230,7 +12244,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 671:
 
 /* Line 678 of lalr1.cc  */
-#line 9766 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9780 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
             InrImage* res;
@@ -12244,7 +12258,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 672:
 
 /* Line 678 of lalr1.cc  */
-#line 9776 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9790 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
             InrImage* res;
@@ -12258,7 +12272,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 673:
 
 /* Line 678 of lalr1.cc  */
-#line 9786 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9800 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
             InrImage* res;
@@ -12277,7 +12291,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 674:
 
 /* Line 678 of lalr1.cc  */
-#line 9801 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9815 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
             InrImage* res;
@@ -12295,7 +12309,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 675:
 
 /* Line 678 of lalr1.cc  */
-#line 9815 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9829 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
             InrImage* res;
@@ -12313,7 +12327,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 676:
 
 /* Line 678 of lalr1.cc  */
-#line 9829 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9843 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
             InrImage* res;
@@ -12330,7 +12344,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 677:
 
 /* Line 678 of lalr1.cc  */
-#line 9842 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9856 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
             InrImage* res;
@@ -12347,7 +12361,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 678:
 
 /* Line 678 of lalr1.cc  */
-#line 9855 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9869 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
             InrImage* res;
@@ -12363,7 +12377,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 679:
 
 /* Line 678 of lalr1.cc  */
-#line 9867 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9881 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
             InrImage* res;
@@ -12379,7 +12393,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 680:
 
 /* Line 678 of lalr1.cc  */
-#line 9879 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9893 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
             InrImage* res;
@@ -12395,7 +12409,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 681:
 
 /* Line 678 of lalr1.cc  */
-#line 9891 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9905 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
             InrImage* res;
@@ -12410,7 +12424,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 682:
 
 /* Line 678 of lalr1.cc  */
-#line 9902 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9916 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
             InrImage* res;
@@ -12427,7 +12441,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 683:
 
 /* Line 678 of lalr1.cc  */
-#line 9915 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9929 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -12458,7 +12472,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 684:
 
 /* Line 678 of lalr1.cc  */
-#line 9942 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9956 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -12495,7 +12509,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 685:
 
 /* Line 678 of lalr1.cc  */
-#line 9975 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9989 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
      /**
        Parameters:
@@ -12616,7 +12630,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 686:
 
 /* Line 678 of lalr1.cc  */
-#line 10091 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10105 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
        Parameters:
@@ -12645,7 +12659,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 687:
 
 /* Line 678 of lalr1.cc  */
-#line 10115 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10129 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage* im = (InrImage*) driver.im_stack.GetLastImage();
       float vmin  = (yysemantic_stack_[(10) - (5)].adouble);
@@ -12692,7 +12706,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 688:
 
 /* Line 678 of lalr1.cc  */
-#line 10157 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10171 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage* res;
       InrImage::ptr im = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
@@ -12709,7 +12723,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 689:
 
 /* Line 678 of lalr1.cc  */
-#line 10169 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10183 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage* res;
       int dim = (int) (yysemantic_stack_[(6) - (5)].adouble);
@@ -12723,7 +12737,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 690:
 
 /* Line 678 of lalr1.cc  */
-#line 10178 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10192 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         InrImage* res;
         int axis=(int) (yysemantic_stack_[(6) - (5)].adouble);
@@ -12737,7 +12751,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 691:
 
 /* Line 678 of lalr1.cc  */
-#line 10187 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10201 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -12765,7 +12779,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 692:
 
 /* Line 678 of lalr1.cc  */
-#line 10210 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10224 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage* res;
       FloatMatrix m(4,4);
@@ -12795,7 +12809,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 693:
 
 /* Line 678 of lalr1.cc  */
-#line 10235 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10249 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage*         res;
       int   order = (int) (yysemantic_stack_[(8) - (5)].adouble);
@@ -12813,7 +12827,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 694:
 
 /* Line 678 of lalr1.cc  */
-#line 10248 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10262 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage*         res;
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) (yysemantic_stack_[(5) - (1)].variable)->Pointer());
@@ -12828,7 +12842,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 695:
 
 /* Line 678 of lalr1.cc  */
-#line 10258 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10272 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       /**
         Parameters:
@@ -12870,7 +12884,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 696:
 
 /* Line 678 of lalr1.cc  */
-#line 10295 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10309 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
       Parameters:
@@ -12893,7 +12907,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 697:
 
 /* Line 678 of lalr1.cc  */
-#line 10313 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10327 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
       Parameters:
@@ -12916,7 +12930,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 698:
 
 /* Line 678 of lalr1.cc  */
-#line 10331 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10345 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage*         res;
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) (yysemantic_stack_[(6) - (1)].variable)->Pointer());
@@ -12931,7 +12945,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 699:
 
 /* Line 678 of lalr1.cc  */
-#line 10341 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10355 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage* im =  (InrImage*) driver.im_stack.GetLastImage();
       InrImage* res;
@@ -12946,7 +12960,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 700:
 
 /* Line 678 of lalr1.cc  */
-#line 10351 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10365 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage* im =  (InrImage*) driver.im_stack.GetLastImage();
       InrImage* res;
@@ -12959,7 +12973,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 701:
 
 /* Line 678 of lalr1.cc  */
-#line 10359 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10373 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage* im =  (InrImage*) driver.im_stack.GetLastImage();
       InrImage* res;
@@ -12972,7 +12986,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 702:
 
 /* Line 678 of lalr1.cc  */
-#line 10367 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10381 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage* im =  (InrImage*) driver.im_stack.GetLastImage();
       InrImage* res;
@@ -12985,7 +12999,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 703:
 
 /* Line 678 of lalr1.cc  */
-#line 10375 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10389 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
 
@@ -13015,7 +13029,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 704:
 
 /* Line 678 of lalr1.cc  */
-#line 10400 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10414 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
 
@@ -13040,7 +13054,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 705:
 
 /* Line 678 of lalr1.cc  */
-#line 10420 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10434 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage* res;
       res= AMIFluid::Func_ReadFlow((char*)(yysemantic_stack_[(4) - (3)].astring));
@@ -13052,7 +13066,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 706:
 
 /* Line 678 of lalr1.cc  */
-#line 10428 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10442 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
 
@@ -13090,7 +13104,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 707:
 
 /* Line 678 of lalr1.cc  */
-#line 10462 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10476 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -13117,7 +13131,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 708:
 
 /* Line 678 of lalr1.cc  */
-#line 10485 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10499 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -13140,105 +13154,105 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 714:
 
 /* Line 678 of lalr1.cc  */
-#line 10510 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10524 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_IMAGE(-)               }
     break;
 
   case 716:
 
 /* Line 678 of lalr1.cc  */
-#line 10512 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10526 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_IMAGE(sin)             }
     break;
 
   case 717:
 
 /* Line 678 of lalr1.cc  */
-#line 10513 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10527 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_IMAGE(cos)             }
     break;
 
   case 718:
 
 /* Line 678 of lalr1.cc  */
-#line 10514 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10528 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_IMAGE(sqrt)            }
     break;
 
   case 719:
 
 /* Line 678 of lalr1.cc  */
-#line 10515 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10529 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_IMAGE(fabs)            }
     break;
 
   case 720:
 
 /* Line 678 of lalr1.cc  */
-#line 10516 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10530 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_IMAGE(round)           }
     break;
 
   case 721:
 
 /* Line 678 of lalr1.cc  */
-#line 10517 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10531 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_IMAGE(floor)           }
     break;
 
   case 722:
 
 /* Line 678 of lalr1.cc  */
-#line 10518 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10532 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_IMAGE(tan)             }
     break;
 
   case 723:
 
 /* Line 678 of lalr1.cc  */
-#line 10519 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10533 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_IMAGE(asin)            }
     break;
 
   case 724:
 
 /* Line 678 of lalr1.cc  */
-#line 10520 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10534 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_IMAGE(acos)            }
     break;
 
   case 725:
 
 /* Line 678 of lalr1.cc  */
-#line 10521 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10535 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_IMAGE(atan)            }
     break;
 
   case 726:
 
 /* Line 678 of lalr1.cc  */
-#line 10522 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10536 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_IMAGE(exp)             }
     break;
 
   case 727:
 
 /* Line 678 of lalr1.cc  */
-#line 10523 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10537 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_IMAGE(1.0/log(10.0)*log) }
     break;
 
   case 728:
 
 /* Line 678 of lalr1.cc  */
-#line 10524 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10538 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_IMAGE(log)             }
     break;
 
   case 729:
 
 /* Line 678 of lalr1.cc  */
-#line 10526 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10540 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           InrImage* res;
 
@@ -13254,7 +13268,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 731:
 
 /* Line 678 of lalr1.cc  */
-#line 10541 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10555 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -13279,154 +13293,154 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 733:
 
 /* Line 678 of lalr1.cc  */
-#line 10563 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10577 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { IMAGE_OP_EXPR(*,(yysemantic_stack_[(3) - (3)].adouble)) }
     break;
 
   case 734:
 
 /* Line 678 of lalr1.cc  */
-#line 10569 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10583 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { IMAGE_OP_EXPR(/,(yysemantic_stack_[(3) - (3)].adouble)) }
     break;
 
   case 735:
 
 /* Line 678 of lalr1.cc  */
-#line 10571 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10585 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {  IMAGE_OP_IMAGE_2(*)   }
     break;
 
   case 736:
 
 /* Line 678 of lalr1.cc  */
-#line 10572 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10586 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { IMAGE_OP_IMAGE_2(/)   }
     break;
 
   case 737:
 
 /* Line 678 of lalr1.cc  */
-#line 10573 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10587 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { IMAGE_OP_IMAGE_2(^)   }
     break;
 
   case 740:
 
 /* Line 678 of lalr1.cc  */
-#line 10582 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10596 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { IMAGE_OP_EXPR(+,(yysemantic_stack_[(3) - (3)].adouble)) }
     break;
 
   case 741:
 
 /* Line 678 of lalr1.cc  */
-#line 10583 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10597 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { IMAGE_OP_EXPR(-,(yysemantic_stack_[(3) - (3)].adouble)) }
     break;
 
   case 742:
 
 /* Line 678 of lalr1.cc  */
-#line 10584 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10598 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { IMAGE_OP_IMAGE_2(+)   }
     break;
 
   case 743:
 
 /* Line 678 of lalr1.cc  */
-#line 10585 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10599 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { IMAGE_OP_IMAGE_2(-)   }
     break;
 
   case 746:
 
 /* Line 678 of lalr1.cc  */
-#line 10593 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10607 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { IMAGE_OP_IMAGE(<)    }
     break;
 
   case 747:
 
 /* Line 678 of lalr1.cc  */
-#line 10594 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10608 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { IMAGE_OP_IMAGE(>)    }
     break;
 
   case 748:
 
 /* Line 678 of lalr1.cc  */
-#line 10595 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10609 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { IMAGE_OP_IMAGE(<=)   }
     break;
 
   case 749:
 
 /* Line 678 of lalr1.cc  */
-#line 10596 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10610 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { IMAGE_OP_IMAGE(>=)   }
     break;
 
   case 750:
 
 /* Line 678 of lalr1.cc  */
-#line 10597 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10611 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { IMAGE_OP_EXPR(<, (yysemantic_stack_[(3) - (3)].adouble)) }
     break;
 
   case 751:
 
 /* Line 678 of lalr1.cc  */
-#line 10598 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10612 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { IMAGE_OP_EXPR(>, (yysemantic_stack_[(3) - (3)].adouble)) }
     break;
 
   case 752:
 
 /* Line 678 of lalr1.cc  */
-#line 10599 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10613 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { IMAGE_OP_EXPR(<=,(yysemantic_stack_[(3) - (3)].adouble)) }
     break;
 
   case 753:
 
 /* Line 678 of lalr1.cc  */
-#line 10600 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10614 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { IMAGE_OP_EXPR(>=,(yysemantic_stack_[(3) - (3)].adouble)) }
     break;
 
   case 755:
 
 /* Line 678 of lalr1.cc  */
-#line 10605 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10619 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { IMAGE_OP_IMAGE(==)   }
     break;
 
   case 756:
 
 /* Line 678 of lalr1.cc  */
-#line 10606 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10620 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { IMAGE_OP_IMAGE(!=)   }
     break;
 
   case 757:
 
 /* Line 678 of lalr1.cc  */
-#line 10607 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10621 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { IMAGE_OP_EXPR(==,(yysemantic_stack_[(3) - (3)].adouble))   }
     break;
 
   case 758:
 
 /* Line 678 of lalr1.cc  */
-#line 10608 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10622 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { IMAGE_OP_EXPR(!=,(yysemantic_stack_[(3) - (3)].adouble))   }
     break;
 
   case 773:
 
 /* Line 678 of lalr1.cc  */
-#line 10650 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10664 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
          GLTransfMatrix* newglt;
          GLTransfMatrix_ptr glt = *(GLTransfMatrix_ptr*) (yysemantic_stack_[(1) - (1)].variable)->Pointer();
@@ -13441,7 +13455,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 774:
 
 /* Line 678 of lalr1.cc  */
-#line 10661 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10675 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
          GLTransfMatrix glt;
          GLTransfMatrix* newglt;
@@ -13458,7 +13472,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 775:
 
 /* Line 678 of lalr1.cc  */
-#line 10674 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10688 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
          GLTransfMatrix* newglt = NULL;
          GLTransfMatrix_ptr glt1 = *(GLTransfMatrix_ptr*) (yysemantic_stack_[(8) - (3)].variable)->Pointer();
@@ -13473,7 +13487,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 776:
 
 /* Line 678 of lalr1.cc  */
-#line 10685 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10699 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
          GLTransfMatrix* newglt;
          newglt = Func_ReadTransform((yysemantic_stack_[(4) - (3)].astring));
@@ -13493,7 +13507,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 777:
 
 /* Line 678 of lalr1.cc  */
-#line 10702 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10716 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
          FloatMatrix* m;
          m = new FloatMatrix((int)(yysemantic_stack_[(6) - (3)].adouble),(int)(yysemantic_stack_[(6) - (5)].adouble));
@@ -13504,7 +13518,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 778:
 
 /* Line 678 of lalr1.cc  */
-#line 10709 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10723 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       FloatMatrix* newmat;
       FloatMatrix::ptr mat = *(FloatMatrix::ptr*) (yysemantic_stack_[(1) - (1)].variable)->Pointer();
@@ -13518,7 +13532,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 779:
 
 /* Line 678 of lalr1.cc  */
-#line 10719 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10733 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -13536,14 +13550,14 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 785:
 
 /* Line 678 of lalr1.cc  */
-#line 10739 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10753 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_MATRIX(-)               }
     break;
 
   case 787:
 
 /* Line 678 of lalr1.cc  */
-#line 10742 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10756 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           FloatMatrix* mat;
           FloatMatrix* res;
@@ -13557,112 +13571,112 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 788:
 
 /* Line 678 of lalr1.cc  */
-#line 10750 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10764 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_MATRIX(sin)             }
     break;
 
   case 789:
 
 /* Line 678 of lalr1.cc  */
-#line 10751 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10765 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_MATRIX(cos)             }
     break;
 
   case 790:
 
 /* Line 678 of lalr1.cc  */
-#line 10752 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10766 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_MATRIX(sqrt)            }
     break;
 
   case 791:
 
 /* Line 678 of lalr1.cc  */
-#line 10753 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10767 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_MATRIX(fabs)            }
     break;
 
   case 792:
 
 /* Line 678 of lalr1.cc  */
-#line 10754 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10768 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_MATRIX(round)           }
     break;
 
   case 793:
 
 /* Line 678 of lalr1.cc  */
-#line 10755 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10769 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_MATRIX(floor)           }
     break;
 
   case 794:
 
 /* Line 678 of lalr1.cc  */
-#line 10756 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10770 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_MATRIX(tan)             }
     break;
 
   case 795:
 
 /* Line 678 of lalr1.cc  */
-#line 10757 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10771 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_MATRIX(asin)            }
     break;
 
   case 796:
 
 /* Line 678 of lalr1.cc  */
-#line 10758 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10772 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_MATRIX(acos)            }
     break;
 
   case 797:
 
 /* Line 678 of lalr1.cc  */
-#line 10759 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10773 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_MATRIX(atan)            }
     break;
 
   case 798:
 
 /* Line 678 of lalr1.cc  */
-#line 10760 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10774 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_MATRIX(exp)             }
     break;
 
   case 799:
 
 /* Line 678 of lalr1.cc  */
-#line 10761 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10775 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_MATRIX(1.0/log(10.0)*log) }
     break;
 
   case 800:
 
 /* Line 678 of lalr1.cc  */
-#line 10762 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10776 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { UNARYOP_MATRIX(log)             }
     break;
 
   case 803:
 
 /* Line 678 of lalr1.cc  */
-#line 10769 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10783 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { MATRIX_OP_EXPR(*,(yysemantic_stack_[(3) - (3)].adouble)) }
     break;
 
   case 804:
 
 /* Line 678 of lalr1.cc  */
-#line 10770 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10784 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { MATRIX_OP_MATRIX_2(*)   }
     break;
 
   case 805:
 
 /* Line 678 of lalr1.cc  */
-#line 10772 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10786 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
          FloatMatrix* m2 = driver.matrix_stack.GetLastMatrix();
          FloatMatrix* m1 = driver.matrix_stack.GetLastMatrix();
@@ -13676,35 +13690,35 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 807:
 
 /* Line 678 of lalr1.cc  */
-#line 10782 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10796 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { MATRIX_OP_EXPR(+,(yysemantic_stack_[(3) - (3)].adouble)) }
     break;
 
   case 808:
 
 /* Line 678 of lalr1.cc  */
-#line 10783 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10797 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { MATRIX_OP_EXPR(-,(yysemantic_stack_[(3) - (3)].adouble)) }
     break;
 
   case 809:
 
 /* Line 678 of lalr1.cc  */
-#line 10784 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10798 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { MATRIX_OP_MATRIX_2(+)   }
     break;
 
   case 810:
 
 /* Line 678 of lalr1.cc  */
-#line 10785 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10799 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     { MATRIX_OP_MATRIX_2(-)   }
     break;
 
   case 822:
 
 /* Line 678 of lalr1.cc  */
-#line 10834 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10848 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           (yyval.variable)=(yysemantic_stack_[(1) - (1)].variable);
         }
@@ -13713,7 +13727,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 823:
 
 /* Line 678 of lalr1.cc  */
-#line 10839 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10853 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           VarArray::ptr array;
           int  i = (int) (yysemantic_stack_[(4) - (3)].adouble);
@@ -13732,7 +13746,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 824:
 
 /* Line 678 of lalr1.cc  */
-#line 10855 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10869 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           SurfacePoly* surf;
           InrImage::ptr im = InrImage::ptr(driver.im_stack.GetLastImage());
@@ -13747,7 +13761,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 825:
 
 /* Line 678 of lalr1.cc  */
-#line 10866 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10880 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         SurfacePoly* surf;
         surf = Func_isosurf((*(InrImage::ptr*) (yysemantic_stack_[(6) - (3)].variable)->Pointer()),
@@ -13761,7 +13775,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 826:
 
 /* Line 678 of lalr1.cc  */
-#line 10876 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10890 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
       Parameters:
@@ -13785,7 +13799,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 827:
 
 /* Line 678 of lalr1.cc  */
-#line 10896 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10910 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
      Parameters:
@@ -13823,7 +13837,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 828:
 
 /* Line 678 of lalr1.cc  */
-#line 10930 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10944 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           SurfacePoly* surf;
           surf = Func_decimate(((SurfacePoly::ptr*) (yysemantic_stack_[(4) - (3)].variable)->Pointer())->get());
@@ -13836,7 +13850,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 829:
 
 /* Line 678 of lalr1.cc  */
-#line 10939 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10953 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           SurfacePoly* surf;
           surf = Func_decimate(((SurfacePoly::ptr*) (yysemantic_stack_[(6) - (3)].variable)->Pointer())->get(), (yysemantic_stack_[(6) - (5)].adouble) );
@@ -13849,7 +13863,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 830:
 
 /* Line 678 of lalr1.cc  */
-#line 10948 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10962 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           SurfacePoly* surf;
           surf = Func_vtkMarchingCubes(((InrImage::ptr*) (yysemantic_stack_[(6) - (3)].variable)->Pointer())->get(),(yysemantic_stack_[(6) - (5)].adouble));
@@ -13862,7 +13876,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 831:
 
 /* Line 678 of lalr1.cc  */
-#line 10957 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10971 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           SurfacePoly* surf;
           surf = Func_vtkSmooth(((SurfacePoly::ptr*) (yysemantic_stack_[(6) - (3)].variable)->Pointer())->get(), (int) (yysemantic_stack_[(6) - (5)].adouble));
@@ -13875,7 +13889,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 832:
 
 /* Line 678 of lalr1.cc  */
-#line 10966 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10980 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         SurfacePoly* surf;
         surf = Func_vtkWindowedSinc(((SurfacePoly::ptr*) (yysemantic_stack_[(6) - (3)].variable)->Pointer())->get(), (int) (yysemantic_stack_[(6) - (5)].adouble));
@@ -13887,7 +13901,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 833:
 
 /* Line 678 of lalr1.cc  */
-#line 10974 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10988 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       SurfacePoly* surf = new SurfacePoly();
       driver.surf_stack.AddSurf(surf);
@@ -13897,7 +13911,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 834:
 
 /* Line 678 of lalr1.cc  */
-#line 10980 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10994 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       driver.surf_stack.AddSurf((yysemantic_stack_[(2) - (2)].astring));
       delete [] (yysemantic_stack_[(2) - (2)].astring);
@@ -13907,7 +13921,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 835:
 
 /* Line 678 of lalr1.cc  */
-#line 10986 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11000 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       driver.surf_stack.AddSurf((yysemantic_stack_[(4) - (3)].astring));
       delete [] (yysemantic_stack_[(4) - (3)].astring);
@@ -13917,7 +13931,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 836:
 
 /* Line 678 of lalr1.cc  */
-#line 10992 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11006 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           int res;
           string name;
@@ -13947,7 +13961,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 837:
 
 /* Line 678 of lalr1.cc  */
-#line 11018 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11032 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -13965,7 +13979,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 838:
 
 /* Line 678 of lalr1.cc  */
-#line 11032 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11046 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -13985,7 +13999,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 839:
 
 /* Line 678 of lalr1.cc  */
-#line 11048 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11062 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       SurfacePoly* newsurf;
       SurfacePoly::ptr surf = *(SurfacePoly::ptr*) (yysemantic_stack_[(1) - (1)].variable)->Pointer();
@@ -13999,7 +14013,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 840:
 
 /* Line 678 of lalr1.cc  */
-#line 11058 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11072 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -14021,7 +14035,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 841:
 
 /* Line 678 of lalr1.cc  */
-#line 11076 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11090 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -14053,7 +14067,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 842:
 
 /* Line 678 of lalr1.cc  */
-#line 11104 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11118 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -14084,7 +14098,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 843:
 
 /* Line 678 of lalr1.cc  */
-#line 11131 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11145 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       SurfacePoly* surf;
 
@@ -14103,7 +14117,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 844:
 
 /* Line 678 of lalr1.cc  */
-#line 11147 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11161 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
       Parameters:
@@ -14129,7 +14143,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 845:
 
 /* Line 678 of lalr1.cc  */
-#line 11170 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11184 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -14166,7 +14180,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 846:
 
 /* Line 678 of lalr1.cc  */
-#line 11203 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11217 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -14202,7 +14216,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 847:
 
 /* Line 678 of lalr1.cc  */
-#line 11239 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11253 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -14249,7 +14263,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 848:
 
 /* Line 678 of lalr1.cc  */
-#line 11285 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11299 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -14292,7 +14306,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 849:
 
 /* Line 678 of lalr1.cc  */
-#line 11323 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11337 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -14321,7 +14335,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 850:
 
 /* Line 678 of lalr1.cc  */
-#line 11347 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11361 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     InrImage::ptr im = InrImage::ptr(driver.im_stack.GetLastImage());
       SurfacePoly* surf;
@@ -14336,7 +14350,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 851:
 
 /* Line 678 of lalr1.cc  */
-#line 11357 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11371 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           /**
 
@@ -14364,7 +14378,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 852:
 
 /* Line 678 of lalr1.cc  */
-#line 11380 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11394 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage::ptr im = InrImage::ptr(driver.im_stack.GetLastImage());
       float minth = (yysemantic_stack_[(8) - (5)].adouble);
@@ -14381,7 +14395,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 853:
 
 /* Line 678 of lalr1.cc  */
-#line 11392 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11406 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       InrImage* im = (InrImage*) driver.im_stack.GetLastImage();
           SurfacePoly* surf;
@@ -14399,7 +14413,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 854:
 
 /* Line 678 of lalr1.cc  */
-#line 11405 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11419 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -14441,7 +14455,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 855:
 
 /* Line 678 of lalr1.cc  */
-#line 11442 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11456 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -14489,7 +14503,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 856:
 
 /* Line 678 of lalr1.cc  */
-#line 11485 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11499 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -14542,7 +14556,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 857:
 
 /* Line 678 of lalr1.cc  */
-#line 11533 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11547 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -14599,7 +14613,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 858:
 
 /* Line 678 of lalr1.cc  */
-#line 11585 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11599 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -14647,7 +14661,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 859:
 
 /* Line 678 of lalr1.cc  */
-#line 11628 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11642 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -14680,7 +14694,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 860:
 
 /* Line 678 of lalr1.cc  */
-#line 11656 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11670 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -14718,7 +14732,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 861:
 
 /* Line 678 of lalr1.cc  */
-#line 11689 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11703 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -14762,7 +14776,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 866:
 
 /* Line 678 of lalr1.cc  */
-#line 11739 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11753 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           (yyval.variable)=(yysemantic_stack_[(1) - (1)].variable);
         }
@@ -14771,7 +14785,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 883:
 
 /* Line 678 of lalr1.cc  */
-#line 11763 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11777 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           ImageExtent<float>* extent=new ImageExtent<float>( (float)(yysemantic_stack_[(11) - (1)].adouble),(float)(yysemantic_stack_[(11) - (3)].adouble),(float)(yysemantic_stack_[(11) - (5)].adouble),
                               (float)(yysemantic_stack_[(11) - (7)].adouble),(float)(yysemantic_stack_[(11) - (9)].adouble),(float)(yysemantic_stack_[(11) - (11)].adouble));
@@ -14783,7 +14797,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 884:
 
 /* Line 678 of lalr1.cc  */
-#line 11771 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11785 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           ImageExtent<float>* extent=new ImageExtent<float>((float)(yysemantic_stack_[(7) - (1)].adouble),(float)(yysemantic_stack_[(7) - (3)].adouble),(float)(yysemantic_stack_[(7) - (5)].adouble),(float)(yysemantic_stack_[(7) - (7)].adouble));
           extent->SetMode(1); // relative
@@ -14794,7 +14808,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 885:
 
 /* Line 678 of lalr1.cc  */
-#line 11778 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11792 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           InrImage::ptr im = *(InrImage::ptr*) (yysemantic_stack_[(1) - (1)].variable)->Pointer();
 
@@ -14814,7 +14828,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   case 886:
 
 /* Line 678 of lalr1.cc  */
-#line 11794 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11808 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         DessinImage::ptr draw = *(DessinImage::ptr*) ((yysemantic_stack_[(1) - (1)].variable)->Pointer());
 
@@ -14839,7 +14853,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
 
 
 /* Line 678 of lalr1.cc  */
-#line 14843 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
+#line 14857 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
 	default:
           break;
       }
@@ -20377,93 +20391,93 @@ cerr << "Feature not available, needs to be updated ! " << endl;
   {
          0,   964,   964,   965,   969,   969,   970,   971,   972,   972,
      973,   973,   974,   974,   975,   975,   976,   976,   977,   977,
-     980,   981,   986,  1005,  1028,  1063,  1085,  1100,  1121,  1120,
-    1150,  1149,  1190,  1209,  1231,  1238,  1273,  1279,  1288,  1298,
-    1306,  1310,  1324,  1338,  1352,  1362,  1378,  1398,  1410,  1421,
-    1432,  1444,  1455,  1475,  1497,  1509,  1520,  1525,  1535,  1558,
-    1567,  1579,  1597,  1619,  1632,  1651,  1664,  1683,  1696,  1715,
-    1729,  1749,  1782,  1799,  1804,  1808,  1812,  1817,  1821,  1836,
-    1846,  1857,  1860,  1910,  1930,  1975,  1992,  2004,  2016,  2056,
-    2069,  2104,  2134,  2154,  2158,  2162,  2166,  2170,  2174,  2178,
-    2182,  2186,  2190,  2195,  2199,  2210,  2223,  2233,  2242,  2253,
-    2261,  2273,  2522,  2532,  2542,  2552,  2606,  2614,  2622,  2631,
-    2641,  2647,  2658,  2664,  2671,  2677,  2687,  2697,  2713,  2725,
-    2735,  2783,  2798,  2819,  2850,  2865,  2872,  2879,  2897,  2920,
-    2925,  2930,  2943,  2954,  2963,  2973,  2981,  2998,  3014,  3031,
-    3051,  3066,  3084,  3097,  3111,  3120,  3134,  3145,  3158,  3176,
-    3198,  3226,  3256,  3288,  3293,  3311,  3316,  3321,  3326,  3331,
-    3336,  3350,  3365,  3382,  3396,  3416,  3421,  3426,  3433,  3442,
-    3450,  3455,  3462,  3467,  3472,  3492,  3516,  3521,  3526,  3531,
-    3536,  3541,  3546,  3551,  3556,  3561,  3566,  3571,  3576,  3581,
-    3586,  3591,  3596,  3609,  3614,  3619,  3627,  3632,  3637,  3642,
-    3647,  3652,  3657,  3662,  3667,  3672,  3677,  3682,  3687,  3691,
-    3718,  3731,  3736,  3740,  3746,  3759,  3765,  3771,  3777,  3784,
-    3791,  3798,  3807,  3818,  3833,  3848,  3856,  3863,  3870,  3876,
-    3880,  3884,  3921,  3927,  3934,  3941,  3952,  3960,  3977,  3987,
-    3992,  3999,  4006,  4014,  4022,  4041,  4057,  4074,  4091,  4096,
-    4101,  4106,  4111,  4119,  4220,  4254,  4261,  4269,  4275,  4282,
-    4292,  4301,  4308,  4315,  4325,  4332,  4346,  4360,  4368,  4373,
-    4381,  4389,  4400,  4412,  4424,  4436,  4442,  4451,  4460,  4473,
-    4480,  4491,  4513,  4539,  4567,  4577,  4590,  4600,  4622,  4651,
-    4668,  4683,  4690,  4712,  4731,  4749,  4763,  4768,  4773,  4782,
-    4787,  4796,  4810,  4817,  4824,  4826,  4843,  4859,  4898,  4911,
-    4955,  4960,  4965,  4970,  4976,  4993,  5003,  5018,  5024,  5031,
-    5037,  5043,  5049,  5055,  5070,  5081,  5087,  5101,  5115,  5132,
-    5139,  5160,  5178,  5197,  5217,  5237,  5257,  5264,  5269,  5275,
-    5280,  5285,  5290,  5295,  5300,  5305,  5310,  5315,  5350,  5377,
-    5384,  5406,  5414,  5431,  5435,  5442,  5449,  5457,  5465,  5474,
-    5481,  5488,  5495,  5502,  5509,  5516,  5523,  5530,  5537,  5544,
-    5554,  5559,  5568,  5575,  5582,  5589,  5596,  5603,  5610,  5617,
-    5624,  5632,  5637,  5652,  5658,  5672,  5688,  5704,  5728,  5732,
-    5743,  5762,  5772,  5773,  5783,  5791,  5794,  5805,  5806,  5809,
-    5810,  5818,  5826,  5835,  5839,  5843,  5847,  5855,  5856,  5871,
-    5887,  5901,  5916,  5933,  5949,  5963,  5976,  5997,  6057,  6082,
-    6102,  6121,  6128,  6136,  6141,  6146,  6174,  6180,  6191,  6210,
-    6229,  6248,  6267,  6286,  6305,  6328,  6350,  6373,  6380,  6404,
-    6427,  6435,  6445,  6455,  6465,  6475,  6485,  6495,  6509,  6526,
-    6542,  6547,  6552,  6556,  6563,  6571,  6606,  6644,  6661,  6681,
-    6693,  6710,  6730,  6763,  6782,  6804,  6820,  6838,  6862,  6883,
-    6911,  6925,  6935,  6948,  6962,  6977,  6985,  6993,  7005,  7009,
-    7024,  7031,  7041,  7053,  7066,  7067,  7068,  7069,  7070,  7071,
-    7072,  7073,  7074,  7075,  7076,  7084,  7085,  7086,  7087,  7088,
-    7100,  7112,  7128,  7129,  7133,  7135,  7151,  7152,  7153,  7154,
-    7158,  7159,  7160,  7164,  7169,  7170,  7171,  7172,  7173,  7177,
-    7178,  7179,  7180,  7181,  7185,  7186,  7194,  7195,  7199,  7203,
-    7210,  7214,  7221,  7225,  7232,  7233,  7240,  7244,  7250,  7255,
-    7259,  7263,  7267,  7271,  7275,  7279,  7283,  7287,  7291,  7299,
-    7304,  7321,  7327,  7333,  7391,  7445,  7501,  7522,  7543,  7557,
-    7586,  7594,  7613,  7639,  7652,  7730,  7797,  7805,  7813,  7823,
-    7833,  7863,  7881,  7901,  7919,  7939,  7957,  7976,  8016,  8031,
-    8045,  8061,  8084,  8098,  8112,  8126,  8140,  8175,  8189,  8210,
-    8231,  8272,  8318,  8335,  8354,  8368,  8382,  8396,  8415,  8430,
-    8445,  8462,  8483,  8500,  8516,  8528,  8557,  8577,  8622,  8634,
-    8645,  8658,  8670,  8681,  8707,  8734,  8766,  8783,  8801,  8814,
-    8827,  8847,  8870,  8884,  8899,  8933,  8970,  9005,  9038,  9055,
-    9072,  9086,  9107,  9130,  9154,  9179,  9204,  9226,  9248,  9272,
-    9315,  9339,  9371,  9394,  9431,  9468,  9505,  9540,  9545,  9554,
-    9559,  9570,  9580,  9590,  9599,  9620,  9650,  9676,  9705,  9738,
-    9749,  9765,  9775,  9785,  9800,  9814,  9828,  9841,  9854,  9866,
-    9878,  9890,  9901,  9914,  9941,  9974, 10090, 10114, 10156, 10168,
-   10177, 10186, 10209, 10234, 10247, 10257, 10294, 10312, 10330, 10340,
-   10350, 10358, 10366, 10374, 10399, 10419, 10427, 10461, 10484, 10504,
-   10504, 10506, 10508, 10509, 10510, 10511, 10512, 10513, 10514, 10515,
-   10516, 10517, 10518, 10519, 10520, 10521, 10522, 10523, 10524, 10525,
-   10539, 10540, 10562, 10563, 10569, 10571, 10572, 10573, 10576, 10581,
-   10582, 10583, 10584, 10585, 10588, 10592, 10593, 10594, 10595, 10596,
-   10597, 10598, 10599, 10600, 10604, 10605, 10606, 10607, 10608, 10612,
-   10613, 10618, 10622, 10623, 10627, 10628, 10632, 10633, 10637, 10638,
-   10642, 10643, 10646, 10650, 10660, 10673, 10684, 10701, 10708, 10718,
-   10733, 10733, 10735, 10737, 10738, 10739, 10740, 10741, 10750, 10751,
-   10752, 10753, 10754, 10755, 10756, 10757, 10758, 10759, 10760, 10761,
-   10762, 10766, 10768, 10769, 10770, 10771, 10781, 10782, 10783, 10784,
-   10785, 10788, 10792, 10796, 10800, 10805, 10809, 10813, 10817, 10821,
-   10825, 10828, 10833, 10838, 10854, 10865, 10875, 10895, 10929, 10938,
-   10947, 10956, 10965, 10973, 10979, 10985, 10991, 11017, 11031, 11047,
-   11057, 11075, 11103, 11130, 11145, 11168, 11202, 11234, 11281, 11322,
-   11346, 11356, 11379, 11391, 11404, 11441, 11484, 11532, 11584, 11627,
-   11655, 11688, 11731, 11735, 11736, 11737, 11738, 11742, 11743, 11744,
-   11745, 11746, 11747, 11748, 11749, 11750, 11751, 11752, 11753, 11754,
-   11755, 11756, 11757, 11762, 11770, 11777, 11793
+     980,   981,   986,  1005,  1028,  1063,  1092,  1107,  1130,  1129,
+    1159,  1158,  1199,  1218,  1240,  1247,  1282,  1288,  1297,  1307,
+    1315,  1325,  1339,  1353,  1367,  1377,  1393,  1413,  1425,  1436,
+    1447,  1459,  1470,  1490,  1512,  1524,  1535,  1540,  1550,  1573,
+    1582,  1594,  1612,  1634,  1647,  1666,  1679,  1698,  1711,  1730,
+    1744,  1764,  1797,  1814,  1819,  1823,  1827,  1832,  1836,  1851,
+    1861,  1872,  1875,  1925,  1945,  1990,  2007,  2019,  2031,  2071,
+    2084,  2119,  2149,  2169,  2173,  2177,  2181,  2185,  2189,  2193,
+    2197,  2201,  2205,  2210,  2214,  2225,  2238,  2248,  2257,  2268,
+    2276,  2288,  2537,  2547,  2557,  2567,  2621,  2629,  2637,  2646,
+    2656,  2662,  2673,  2679,  2686,  2692,  2702,  2712,  2728,  2740,
+    2750,  2798,  2813,  2834,  2865,  2880,  2887,  2894,  2912,  2935,
+    2940,  2945,  2958,  2969,  2978,  2988,  2996,  3013,  3029,  3046,
+    3066,  3081,  3099,  3112,  3126,  3135,  3149,  3160,  3173,  3191,
+    3213,  3241,  3271,  3303,  3308,  3326,  3331,  3336,  3341,  3346,
+    3351,  3365,  3380,  3397,  3411,  3431,  3436,  3441,  3448,  3457,
+    3465,  3470,  3477,  3482,  3487,  3507,  3531,  3536,  3541,  3546,
+    3551,  3556,  3561,  3566,  3571,  3576,  3581,  3586,  3591,  3596,
+    3601,  3606,  3611,  3624,  3629,  3634,  3642,  3647,  3652,  3657,
+    3662,  3667,  3672,  3677,  3682,  3687,  3692,  3697,  3702,  3706,
+    3733,  3746,  3751,  3755,  3761,  3774,  3780,  3786,  3792,  3799,
+    3806,  3813,  3822,  3833,  3848,  3863,  3871,  3878,  3885,  3891,
+    3895,  3899,  3936,  3942,  3949,  3956,  3967,  3975,  3992,  4002,
+    4007,  4014,  4021,  4029,  4037,  4056,  4072,  4089,  4106,  4111,
+    4116,  4121,  4126,  4134,  4235,  4269,  4276,  4284,  4290,  4297,
+    4307,  4316,  4323,  4330,  4340,  4347,  4361,  4375,  4383,  4388,
+    4396,  4404,  4415,  4427,  4439,  4451,  4457,  4466,  4475,  4488,
+    4495,  4506,  4528,  4554,  4582,  4592,  4605,  4615,  4637,  4666,
+    4683,  4698,  4705,  4727,  4746,  4764,  4778,  4783,  4788,  4797,
+    4802,  4811,  4825,  4832,  4839,  4841,  4858,  4874,  4913,  4926,
+    4970,  4975,  4980,  4985,  4991,  5008,  5018,  5033,  5039,  5046,
+    5052,  5058,  5064,  5070,  5085,  5096,  5102,  5116,  5130,  5147,
+    5154,  5175,  5193,  5212,  5232,  5252,  5272,  5279,  5284,  5290,
+    5295,  5300,  5305,  5310,  5315,  5320,  5325,  5330,  5365,  5392,
+    5399,  5421,  5429,  5446,  5450,  5457,  5464,  5472,  5480,  5489,
+    5496,  5503,  5510,  5517,  5524,  5531,  5538,  5545,  5552,  5559,
+    5569,  5574,  5583,  5590,  5597,  5604,  5611,  5618,  5625,  5632,
+    5639,  5647,  5652,  5667,  5673,  5687,  5703,  5719,  5743,  5747,
+    5758,  5776,  5786,  5787,  5797,  5805,  5808,  5819,  5820,  5823,
+    5824,  5832,  5840,  5849,  5853,  5857,  5861,  5869,  5870,  5885,
+    5901,  5915,  5930,  5947,  5963,  5977,  5990,  6011,  6071,  6096,
+    6116,  6135,  6142,  6150,  6155,  6160,  6188,  6194,  6205,  6224,
+    6243,  6262,  6281,  6300,  6319,  6342,  6364,  6387,  6394,  6418,
+    6441,  6449,  6459,  6469,  6479,  6489,  6499,  6509,  6523,  6540,
+    6556,  6561,  6566,  6570,  6577,  6585,  6620,  6658,  6675,  6695,
+    6707,  6724,  6744,  6777,  6796,  6818,  6834,  6852,  6876,  6897,
+    6925,  6939,  6949,  6962,  6976,  6991,  6999,  7007,  7019,  7023,
+    7038,  7045,  7055,  7067,  7080,  7081,  7082,  7083,  7084,  7085,
+    7086,  7087,  7088,  7089,  7090,  7098,  7099,  7100,  7101,  7102,
+    7114,  7126,  7142,  7143,  7147,  7149,  7165,  7166,  7167,  7168,
+    7172,  7173,  7174,  7178,  7183,  7184,  7185,  7186,  7187,  7191,
+    7192,  7193,  7194,  7195,  7199,  7200,  7208,  7209,  7213,  7217,
+    7224,  7228,  7235,  7239,  7246,  7247,  7254,  7258,  7264,  7269,
+    7273,  7277,  7281,  7285,  7289,  7293,  7297,  7301,  7305,  7313,
+    7318,  7335,  7341,  7347,  7405,  7459,  7515,  7536,  7557,  7571,
+    7600,  7608,  7627,  7653,  7666,  7744,  7811,  7819,  7827,  7837,
+    7847,  7877,  7895,  7915,  7933,  7953,  7971,  7990,  8030,  8045,
+    8059,  8075,  8098,  8112,  8126,  8140,  8154,  8189,  8203,  8224,
+    8245,  8286,  8332,  8349,  8368,  8382,  8396,  8410,  8429,  8444,
+    8459,  8476,  8497,  8514,  8530,  8542,  8571,  8591,  8636,  8648,
+    8659,  8672,  8684,  8695,  8721,  8748,  8780,  8797,  8815,  8828,
+    8841,  8861,  8884,  8898,  8913,  8947,  8984,  9019,  9052,  9069,
+    9086,  9100,  9121,  9144,  9168,  9193,  9218,  9240,  9262,  9286,
+    9329,  9353,  9385,  9408,  9445,  9482,  9519,  9554,  9559,  9568,
+    9573,  9584,  9594,  9604,  9613,  9634,  9664,  9690,  9719,  9752,
+    9763,  9779,  9789,  9799,  9814,  9828,  9842,  9855,  9868,  9880,
+    9892,  9904,  9915,  9928,  9955,  9988, 10104, 10128, 10170, 10182,
+   10191, 10200, 10223, 10248, 10261, 10271, 10308, 10326, 10344, 10354,
+   10364, 10372, 10380, 10388, 10413, 10433, 10441, 10475, 10498, 10518,
+   10518, 10520, 10522, 10523, 10524, 10525, 10526, 10527, 10528, 10529,
+   10530, 10531, 10532, 10533, 10534, 10535, 10536, 10537, 10538, 10539,
+   10553, 10554, 10576, 10577, 10583, 10585, 10586, 10587, 10590, 10595,
+   10596, 10597, 10598, 10599, 10602, 10606, 10607, 10608, 10609, 10610,
+   10611, 10612, 10613, 10614, 10618, 10619, 10620, 10621, 10622, 10626,
+   10627, 10632, 10636, 10637, 10641, 10642, 10646, 10647, 10651, 10652,
+   10656, 10657, 10660, 10664, 10674, 10687, 10698, 10715, 10722, 10732,
+   10747, 10747, 10749, 10751, 10752, 10753, 10754, 10755, 10764, 10765,
+   10766, 10767, 10768, 10769, 10770, 10771, 10772, 10773, 10774, 10775,
+   10776, 10780, 10782, 10783, 10784, 10785, 10795, 10796, 10797, 10798,
+   10799, 10802, 10806, 10810, 10814, 10819, 10823, 10827, 10831, 10835,
+   10839, 10842, 10847, 10852, 10868, 10879, 10889, 10909, 10943, 10952,
+   10961, 10970, 10979, 10987, 10993, 10999, 11005, 11031, 11045, 11061,
+   11071, 11089, 11117, 11144, 11159, 11182, 11216, 11248, 11295, 11336,
+   11360, 11370, 11393, 11405, 11418, 11455, 11498, 11546, 11598, 11641,
+   11669, 11702, 11745, 11749, 11750, 11751, 11752, 11756, 11757, 11758,
+   11759, 11760, 11761, 11762, 11763, 11764, 11765, 11766, 11767, 11768,
+   11769, 11770, 11771, 11776, 11784, 11791, 11807
   };
 
   // Print the state stack on the debug stream.
@@ -20608,11 +20622,11 @@ cerr << "Feature not available, needs to be updated ! " << endl;
 } // yyip
 
 /* Line 1054 of lalr1.cc  */
-#line 20612 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
+#line 20626 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
 
 
 /* Line 1056 of lalr1.cc  */
-#line 11813 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11827 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
 
 #include <stdio.h>
 

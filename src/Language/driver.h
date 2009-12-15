@@ -67,10 +67,10 @@ public:
     void close_debug_stream();
 
     void init_err_output();
-    void err_print(const char* st);
-    void err_print(const std::string& st) 
+    int  err_print(const char* st);
+    int  err_print(const std::string& st) 
     { 
-      this->err_print(st.c_str()); 
+      return this->err_print(st.c_str()); 
     }
     void close_err_output(void);
 
@@ -196,11 +196,11 @@ public:
 
     /** Error handling with associated line number. This can be modified to
      * output the error e.g. to a dialog box. */
-    void error(const class location& l, const std::string& m);
+    int error(const class location& l, const std::string& m);
 
     /** General error handling. This can be modified to output the error
      * e.g. to a dialog box. */
-    void error(const std::string& m);
+    int error(const std::string& m);
 
     /** Return the current filename */
     std::string& GetCurrentFilename() { return current_file; };

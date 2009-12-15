@@ -1062,6 +1062,13 @@ loop_inst :
     |
     T_REPEAT instr_block
     {
+    /**
+      Description:
+        Repeats a block of instructions, and stop when an error is generated.
+        Use the command 'break' to leave the loop
+      See Also:
+        break
+     **/
        int  previous_lineno=driver.yyiplineno;
         AmiInstructionBlock::ptr block($2);
 
@@ -1076,7 +1083,7 @@ loop_inst :
           driver.yyiplineno = block->GetStartingLine();
           res=driver.parse_block(block);
 
-      } while (!res);
+      } while (res);
       driver.yyiplineno = previous_lineno;
     };
 
@@ -1093,7 +1100,7 @@ cond_inst :
         if ($2>0.5)
         {
           //driver.yyiplineno=previous_lineno;
-          driver.parse_block(block);
+          if (!driver.parse_block(block)) YYABORT;
           driver.yyiplineno = previous_lineno;
         }
     }
@@ -1107,10 +1114,12 @@ cond_inst :
       // Pb with line numbers
       previous_lineno=driver.yyiplineno;
 
+      bool res;
       if ($2>0.5)
-        driver.parse_block(block_if);
+        res = driver.parse_block(block_if);
       else
-        driver.parse_block(block_else);
+        res = driver.parse_block(block_else);
+      if (!res) YYABORT;
       driver.yyiplineno = previous_lineno;
 
     };
@@ -1304,6 +1313,12 @@ command:
          }
          |
          T_BREAK {
+          /**
+            Description:
+              Calls YYABORT to leave the current instruction block.
+            See Also:
+              repeat
+          **/
            YYABORT;
          }
          |
@@ -1998,7 +2013,7 @@ command:
             // copy option
             if (!((*i1)=(*i2))) driver.err_print(" Error in images assignement\n");
           } else {
-            driver.err_print("Error\n");
+            if (driver.err_print("Error\n")==wxID_YES) YYABORT;
           }
         }
         |  var_image ADD_ASSIGN expr_image

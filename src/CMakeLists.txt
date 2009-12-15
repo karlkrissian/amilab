@@ -466,12 +466,14 @@ TARGET_LINK_LIBRARIES( ${AMILAB_BIN}
   ${OPENGL_glu_LIBRARY}
   ${PTHREADS_LIBRARY}
   ${wxWidgets_LIBRARIES}
-  ${WX_gl}
+# should be included in wxWdigets_LIBRARIES already ...
+#  ${WX_gl}
   ${Boost_LIBRARIES}
 )
 
+# is it needed or already included by boost?
 IF(AMI_USE_ZLIB)
-  TARGET_LINK_LIBRARIES( ${AMILAB_BIN} ${ZLIB_LIBRARIES})
+#  TARGET_LINK_LIBRARIES( ${AMILAB_BIN} ${ZLIB_LIBRARIES})
 ENDIF(AMI_USE_ZLIB)
 
 IF(AMI_USE_BZIP2)
