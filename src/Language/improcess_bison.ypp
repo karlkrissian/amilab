@@ -41,7 +41,7 @@
 #include "wrapWII.h"
 #include "wrapFilters.h"
 #include "wrapSystem.h"
-#include <cstdlib>
+#include <cstdlib> 
 
 //#include "myscan.h"
 #include "ImageDraw.hpp"
@@ -5747,9 +5747,8 @@ postfix_expr_string
     **/
       boost::shared_ptr<Variables> context = $3->GetContext();
       if (context.get()) {
-        char* resstr = (char*) context->GetName().c_str();
-        char* res = new char[strlen(resstr)+1];
-        strcpy(res,resstr);
+        char* res = new char[strlen(context->GetName().c_str())+1];
+        strcpy(res,context->GetName().c_str());
         $$= res;
       } else {
         char* empty_string;
