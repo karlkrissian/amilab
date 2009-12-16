@@ -32,10 +32,15 @@ SET(  WrapITK_SRCS
     wrapitkRead.cpp
     wrapitkWrite.cpp
     wrapitkIsoContourDist.cpp
-    #wrapitkBasicNLMeansFilter.cpp
-    #itkBasicNLMeansFilter.txx
+    wrapitkBasicNLMeansFilter.cpp
+    itkBasicNLMeansFilter.txx
     wrapitkFastMarchingImageFilter.cpp
-		wrapitkWaterShedImageFilter.cpp
+    wrapitkWaterShedImageFilter.cpp
+    wrapitkMultiScaleVesselnessFilter.cpp
+    wrapitkDICOMReadWrite.cpp
+    wrapitkSigmoidImageFilter.cpp
+    wrapitkLevelSet.cpp
+    wrapitkBinaryThresholdImageFilter.cpp
 )
 
 my_add_library ( WrapITK)

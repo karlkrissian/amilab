@@ -16,7 +16,6 @@
 
 InrImage* itkWaterShedImageFilter2D(ParamList* p)
 {
-//	clock_t ITime = clock();
 
 #ifndef _WITHOUT_ITK_
 
@@ -75,10 +74,7 @@ InrImage* itkWaterShedImageFilter2D(ParamList* p)
   cout << "Converting back to InrImage " << endl;
 
 	res = ITKToInr<OutputPixelType,Dimension>(outimage, region);
-//	cout << "Sale ?" << endl;
-//  clock_t FTime = clock();
-//  float seg = (FTime - ITime) / CLK_TCK;
-//  std::cout << "Time: " << seg << "seg" << std::endl;
+
 	return res;
 			
 #else
@@ -89,7 +85,6 @@ InrImage* itkWaterShedImageFilter2D(ParamList* p)
 
 InrImage* itkWaterShedImageFilter3D(ParamList* p)
 {
-//	clock_t ITime = clock();
 
 #ifndef _WITHOUT_ITK_
 
@@ -148,10 +143,7 @@ InrImage* itkWaterShedImageFilter3D(ParamList* p)
   cout << "Converting back to InrImage " << endl;
 
 	res = ITKToInr<OutputPixelType,Dimension>(outimage, region);
-//	cout << "Sale ?" << endl;
-//  clock_t FTime = clock();
-//  float seg = (FTime - ITime) / CLK_TCK;
-//  std::cout << "Time: " << seg << "seg" << std::endl;
+
 	return res;
 			
 #else

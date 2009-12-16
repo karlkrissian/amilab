@@ -15,7 +15,6 @@
 
 InrImage* itkRecursiveGaussianImageFilter2D(ParamList* p)
 {
-  clock_t ITime = clock();
 
 #ifdef AMI_USE_ITK
 
@@ -115,11 +114,7 @@ InrImage* itkRecursiveGaussianImageFilter2D(ParamList* p)
   cout << "Converting back to InrImage " << endl;
 
   res = ITKToInr<PixelType,Dimension>(image, region);
-  clock_t FTime = clock();
-  float seg = (FTime - ITime) / CLOCKS_PER_SEC;
-//CLK_TCK;
-  
-  std::cout << "Time: " << seg << "seg" << std::endl;
+
   return res;
 
 #else
@@ -131,7 +126,6 @@ InrImage* itkRecursiveGaussianImageFilter2D(ParamList* p)
 
 InrImage* itkRecursiveGaussianImageFilter3D(ParamList* p)
 {
-  clock_t ITime = clock();
 
 #ifdef AMI_USE_ITK
 
@@ -240,12 +234,8 @@ InrImage* itkRecursiveGaussianImageFilter3D(ParamList* p)
   cout << "Converting back to InrImage " << endl;
 
   res = ITKToInr<PixelType,Dimension>(image, region);
-  clock_t FTime = clock();
-  float seg = (FTime - ITime) / CLOCKS_PER_SEC;
-  //CLK_TCK;
-  
-  std::cout << "Time: " << seg << "seg" << std::endl;
-  return res;
+
+	return res;
 
 #else
   fprintf(stderr," ITK not available, you need to compile with ITK ...\n");

@@ -1,0 +1,192 @@
+#if defined(_MSC_VER)
+#pragma warning ( disable : 4786 )
+#endif
+
+#ifdef __BORLANDC__
+#define ITK_LEAN_AND_MEAN
+#endif
+
+#ifndef _WITHOUT_ITK_
+//#include "itkRescaleIntensityImageFilter.h"
+#include "itkImage.h"
+#include "itkHessian3DToVesselnessMeasureImageFilter.h"
+#include "itkMultiScaleHessianBasedMeasureImageFilter.h"
+#include "itkHessianToObjectnessMeasureImageFilter.h"
+#endif // _WITHOUT_ITK_
+
+#include "wrapfunctions.hpp" 
+#include "wrapConversion.tpp"
+#include "wrapitkMultiScaleVesselnessFilter.h"
+
+InrImage* itkMultiScaleVesselnessFilter2D(ParamList* p)
+{
+
+#ifndef _WITHOUT_ITK_
+
+	char functionname[] = "itkMultiScaleVesselnessFilter2D";
+  char description[]=" \n\
+        Filter to compute a multiscale vesselness measure in 2D.\n\
+      ";
+	  
+  char parameters[] =" \n\
+          Parameters:\n\
+          input image \n\
+					sigmaMin \n\
+					sigmaMax \n\
+					numberOfScales \n\
+      ";
+			
+	InrImage* input = NULL;
+	InrImage* res = NULL;
+	float sigmaMin = 0.0;
+	float sigmaMax = 0.0;
+	int numberOfScales = 0;
+	int n=0;
+	
+	if (!get_image_param(  input,      p, n)) HelpAndReturnNULL;
+	if (!get_float_param(  sigmaMin,      p, n)) HelpAndReturnNULL;
+	if (!get_float_param(  sigmaMax,      p, n)) HelpAndReturnNULL;
+	if (!get_int_param(  numberOfScales,      p, n)) HelpAndReturnNULL;
+	
+	const unsigned char Dimension = 2;
+	
+	typedef float PixelType;
+
+  // Declare the types of the images
+  typedef itk::Image<PixelType,Dimension> ImageType;
+	
+	ImageType::Pointer outimage;
+
+  //typedef itk::RescaleIntensityImageFilter<ImageType> RescaleFilterType;
+ 
+  // Declare the type of enhancement filter
+	typedef itk::HessianToObjectnessMeasureImageFilter<double,Dimension> ObjectnessFilterType;
+  
+  // Declare the type of multiscale enhancement filter
+  typedef itk::MultiScaleHessianBasedMeasureImageFilter<ImageType,ObjectnessFilterType> MultiScaleEnhancementFilterType;
+	
+	// Convert from InrImage to ITK
+	ImageType::RegionType region;
+  ImageType::Pointer image;
+  cout << "Converting image to ITK format " << endl;
+  	
+	image = InrToITK<PixelType,Dimension>(input,region);
+	
+	cout << "Conversión hecha" << endl;
+	
+	MultiScaleEnhancementFilterType::Pointer multiScaleEnhancementFilter = MultiScaleEnhancementFilterType::New();
+  multiScaleEnhancementFilter->SetInput(image);
+
+  ObjectnessFilterType* objectnessFilter = multiScaleEnhancementFilter->GetHessianToMeasureFilter();
+  objectnessFilter->SetScaleObjectnessMeasure(false);
+  objectnessFilter->SetBrightObject(false);
+  objectnessFilter->SetGamma(5.0);
+	
+	multiScaleEnhancementFilter->SetSigmaMin( sigmaMin  );
+	multiScaleEnhancementFilter->SetSigmaMax( sigmaMax );
+	multiScaleEnhancementFilter->SetNumberOfSigmaSteps( numberOfScales );
+	
+	multiScaleEnhancementFilter->Update();
+	
+	//RescaleFilterType::Pointer rescale = RescaleFilterType::New();
+  //rescale->SetInput(multiScaleEnhancementFilter->GetOutput());
+  //rescale->SetOutputMinimum(0);
+  //rescale->SetOutputMaximum(255);
+	//rescale->Update();
+	
+	outimage = multiScaleEnhancementFilter->GetOutput();
+	
+	cout << "Converting back to InrImage " << endl;
+
+	res = ITKToInr<PixelType,Dimension>(outimage, region);
+
+	return res;
+#else
+  fprintf(stderr," ITK not available, you need to compile with ITK ...\n");
+  return NULL;
+#endif // _WITHOUT_ITK_	
+} //itkMultiScaleVesselnessFilter2D
+
+InrImage* itkMultiScaleVesselnessFilter3D(ParamList* p)
+{
+
+#ifndef _WITHOUT_ITK_
+
+char functionname[] = "itkMultiScaleVesselnessFilter3D";
+  char description[]=" \n\
+        Filter to compute a multiscale vesselness measure in 3D.\n\
+      ";
+	  
+  char parameters[] =" \n\
+          Parameters:\n\
+          input image \n\
+					sigmaMin \n\
+					sigmaMax \n\
+					numberOfScales \n\
+      ";
+			
+	InrImage* input = NULL;
+	InrImage* res = NULL;
+	float sigmaMin = 0.0;
+	float sigmaMax = 0.0;
+	int numberOfScales = 0;
+	int n=0;
+	
+	if (!get_image_param(  input,      p, n)) HelpAndReturnNULL;
+	if (!get_float_param(  sigmaMin,      p, n)) HelpAndReturnNULL;
+	if (!get_float_param(  sigmaMax,      p, n)) HelpAndReturnNULL;
+	if (!get_int_param(  numberOfScales,      p, n)) HelpAndReturnNULL;
+	
+	const unsigned char Dimension = 3;
+
+  typedef float PixelType;
+
+  // Declare the types of the images
+  typedef itk::Image<PixelType,Dimension> ImageType;
+
+	ImageType::Pointer outimage;
+
+  //typedef itk::RescaleIntensityImageFilter<ImageType> RescaleFilterType;
+ 
+  // Declare the type of enhancement filter - use ITK's 3D vesselness (Sato)
+  typedef itk::Hessian3DToVesselnessMeasureImageFilter<double> VesselnessFilterType;
+  
+  // Declare the type of multiscale enhancement filter
+  typedef itk::MultiScaleHessianBasedMeasureImageFilter<ImageType,VesselnessFilterType> MultiScaleEnhancementFilterType;
+	
+	// Convert from InrImage to ITK
+	ImageType::RegionType region;
+  ImageType::Pointer image;
+  cout << "Converting image to ITK format " << endl;
+  	
+	image = InrToITK<PixelType,Dimension>(input,region);
+	
+	cout << "Conversión hecha" << endl;
+	
+	// Instantiate the multiscale filter and set the input image
+  MultiScaleEnhancementFilterType::Pointer multiScaleEnhancementFilter = MultiScaleEnhancementFilterType::New();
+  multiScaleEnhancementFilter->SetInput(image);
+  multiScaleEnhancementFilter->SetSigmaMin(sigmaMin);
+  multiScaleEnhancementFilter->SetSigmaMax(sigmaMax);
+  multiScaleEnhancementFilter->SetNumberOfSigmaSteps(numberOfScales);
+
+  // Get the vesselness filter and set the parameters
+  VesselnessFilterType* vesselnessFilter = multiScaleEnhancementFilter->GetHessianToMeasureFilter();
+  vesselnessFilter->SetAlpha1(0.5);
+  vesselnessFilter->SetAlpha2(0.5);
+	
+	multiScaleEnhancementFilter->Update();
+	
+	outimage = multiScaleEnhancementFilter->GetOutput();
+	
+	cout << "Converting back to InrImage " << endl;
+
+	res = ITKToInr<PixelType,Dimension>(outimage, region);
+
+	return res;
+
+#else
+  fprintf(stderr," ITK not available, you need to compile with ITK ...\n");
+  return NULL;
+#endif // _WITHOUT_ITK_	
+} //itkMultiScaleVesselnessFilter3D
