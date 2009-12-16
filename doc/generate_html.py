@@ -569,9 +569,10 @@ if __name__ == "__main__":
       # removing the files under the directory Rules
       for root, dirs, files in os.walk("Rules"):
         for name in files:
-          os.remove(os.path.join(root, name))
-      os.rmdir("Rules")
-    os.mkdir("Rules")
+          if (name[-5:]==".html"):
+            os.remove(os.path.join(root, name))
+      #os.rmdir("Rules")
+    #os.mkdir("Rules")
     f = open (improcess_bison_tab_cpp, "r")
     
     # delete current rules

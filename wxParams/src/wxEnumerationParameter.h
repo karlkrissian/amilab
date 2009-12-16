@@ -97,7 +97,8 @@ class wxEnumerationParameter: public wxBoxSizer, public wxGenericWidget
   
   wxString GetStringSelection();
 
-  void AddUpdateButton(void* update_cb);
+  void AddUpdateButton(void* update_cb,
+  const std::string& tooltip);
 
   void SetSelection(int n);
   

@@ -19,28 +19,30 @@
 #include <vector>
 #include "inrimage.hpp"
 
-class dw_Point2D {
-  double _x;
-  double _y;
-public:
-  dw_Point2D() :_x(0),_y(0) {}
-  dw_Point2D(double x, double y) :_x(x),_y(y) {}
-  double GetX() { return _x;}
-  double GetY() { return _y;}
-  void SetX(double x) { _x = x; }
-  void SetY(double y) { _y = y; }
-};
+#include "dw_Curve.h"
+#include "DefineClass.hpp"
 
-
+/**
+  * A wxWindow that draws 2D curves.
+  */
 class wxDrawingWindow : public wxScrolledWindow
 {
-  // curve drawing parameters
-  double _xmin, _xmax;
-  double _ymin, _ymax;
-  double _xaxis,_yaxis;
+  DEFINE_CLASS(wxDrawingWindow);
 
-  // curve
-  std::vector<dw_Point2D> _points;
+  //! axis limits in X
+  double _xmin, _xmax;
+
+  //! axis limits in Y
+  double _ymin, _ymax;
+
+  //! position in Y of X axis
+  double _xaxis;
+
+  //! position in X of Y axis
+  double _yaxis;
+
+  //! std::vector of the curves to draw
+  std::vector<dw_Curve> _curves;
 
 public:
    wxDrawingWindow(wxWindow *parent, wxWindowID id = wxID_ANY,
@@ -65,16 +67,42 @@ public:
     _ymin = ymin; _ymax = ymax;
   }
 
-  void AddFunction( InrImage* im);
+  /**
+   * 
+   * @return the current number of curves
+   */
+  int GetNumberOfCurves() 
+  {
+    return _curves.size();
+  }
 
-  void DrawFunction( wxDC& dc );
+  /**
+   * Adds a new curve
+   * @param im 
+   */
+  void AddCurve( InrImage* im);
+
+  /**
+   * Changes the values of an existing curve
+   * @param i 
+   * @param im 
+   * @return true/false for success/failure
+   */
+  bool SetCurve( int i, InrImage* im);
+
+  /**
+   * Draw a given curve in a given graphical context.
+   * @param i  curve number
+   * @param dc  context
+   */
+  void DrawCurve( int i, wxDC& dc );
 
   void OnPaint(          wxPaintEvent& event);
   //void OnSize(           wxSizeEvent& event);
   //void OnChar(           wxKeyEvent&  event);
   //void OnMouseEvent(     wxMouseEvent& event);
 
-  DECLARE_EVENT_TABLE()
+  DECLARE_EVENT_TABLE();
 };
 
 #endif // _wxDrawingWindow_h_

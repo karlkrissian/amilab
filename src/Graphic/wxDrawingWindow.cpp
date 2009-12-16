@@ -12,11 +12,12 @@
 
 #include "wxDrawingWindow.h"
 
+#include "amilab_messages.h"
 #include "wx/dcclient.h"
 
 BEGIN_EVENT_TABLE(wxDrawingWindow, wxWindow)
   EVT_PAINT(wxDrawingWindow::OnPaint)
-END_EVENT_TABLE()
+END_EVENT_TABLE();
 
 //------------------------------------------------
 wxDrawingWindow::wxDrawingWindow(wxWindow *parent, wxWindowID id,
@@ -53,25 +54,57 @@ void wxDrawingWindow::World2Window( wxDC& dc, double x, double y, wxCoord& wx, w
 }
 
 //------------------------------------------------
-void wxDrawingWindow::AddFunction( InrImage* im)
+void wxDrawingWindow::AddCurve( InrImage* im)
 {
+  // new curve
+  dw_Curve c;
+
   double x1,y1;
-  _points.clear();
   // Go through the points and add them to the curve
   for(int x=0;x<im->DimX();x++) {
     x1 = im->SpacePosX(x);
     y1 = (*im)(x,0,0);
-    _points.push_back(dw_Point2D(x1,y1));
+    c.AddPoint(dw_Point2D(x1,y1));
   }
 
+  // Add the curve
+  _curves.push_back(c);
 }
 
 //------------------------------------------------
-void wxDrawingWindow::DrawFunction( wxDC& dc )
+bool wxDrawingWindow::SetCurve( int i, InrImage* im)
 {
+
+  if ((i>=0)&&(i<_curves.size())) {
+    // new curve
+    dw_Curve c;
+  
+    double x1,y1;
+    // Go through the points and add them to the curve
+    for(int x=0;x<im->DimX();x++) {
+      x1 = im->SpacePosX(x);
+      y1 = (*im)(x,0,0);
+      c.AddPoint(dw_Point2D(x1,y1));
+    }
+    _curves[i] = c;
+  } else {
+    CLASS_ERROR("Wrong curve number");
+    return false;
+  }
+  return true;
+}
+
+
+//------------------------------------------------
+void wxDrawingWindow::DrawCurve(int i, wxDC& dc )
+{
+
+  std::vector<dw_Point2D>& _points = _curves[i].GetPoints();
+  // iterate through the curves
   std::vector<dw_Point2D>::iterator it;
   wxCoord x1,y1,x2,y2;
 
+  
   for(it=_points.begin();it!=_points.end();it++)
   {
     // draw line from previous to current point
@@ -138,6 +171,7 @@ void wxDrawingWindow::OnPaint(wxPaintEvent& event)
       dc.SetPen(*wxBLACK_PEN);
       DrawAxes(dc);
       dc.SetPen(*wxRED_PEN);
-      DrawFunction(dc);
+      for (int i=0; i<GetNumberOfCurves(); i++)
+        DrawCurve(i,dc);
     }
 }

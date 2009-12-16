@@ -18,19 +18,28 @@ include_directories (
 
 INCLUDE(${wxWidgets_USE_FILE})
 
+
+SET(Graphic_HDRS
+    FenetreDessin.hpp
+    fonction2D.hpp
+    gnuplot.hpp
+    wxDrawingArea.h
+    wxDrawingWindow.h
+    dw_Curve.h
+    dw_Point2D.h
+)
+
 SET(Graphic_SRCS
     FenetreDessin.cpp
-#    ParamBox.cpp
-#    ParamPanel.cpp
     fonction2D.cpp
     gnuplot.cpp
-#    palette.cpp
-#    saveps.cpp
-#    widget.cpp
-#    wxParamTypes.cpp
-#    wxColorParameter.cpp
     wxDrawingArea.cpp
     wxDrawingWindow.cpp
+)
+
+SET(Graphic_SRCS
+  ${Graphic_SRCS}
+  ${Graphic_HDRS}
 )
 
 my_add_library (Graphic)

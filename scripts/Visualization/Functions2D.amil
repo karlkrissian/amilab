@@ -14,18 +14,40 @@ if (!exists(Functions2DClass)) {
   
   Class Functions2DClass {
 
+    #--------------------------------------------
+    Class CurveParamClass  {
+    #     ---------------
+      ::mode = INT(0), "Equation mode: 0 for user equation, 1 for equation from input image"
+      ::equation   =  "sin(X)*3", "Equation as a function of the image X, example sin(X)"
+      ::input_name =  "", "Name of input image"
+
+      #----------------------------
+      proc ::LoadInput() \
+      {
+        printn "evaluation of --> ::input <<="+::input_name+";"
+        eval "::input <<="+::input_name+";"
+        if (::input_name=="Image") {
+          ::input1_name = "::input"
+          ::win.update
+        }
+        ::win.update
+      }
+    }
+    CurveParamClass.Comments("Parameters for drawing a curve")
+
     #----------------------------
     proc ::Init() \
     {
-      ::input_name =  ""
       ::xmin = -10, "minimal value along X axis"
       ::xmax = 10,  "maximal value along X axis"
       ::ymin = -10, "minimal value along Y axis"
       ::ymax = 10,  "maximal value along Y axis"
       ::resolution = 0.1, "Curve resolution along X"
-      ::eq1_mode = INT(0), "Equation mode: 0 for user equation, 1 for equation from input image"
-      ::equation   =  "sin(X)*3", "Equation as a function of the image X, example sin(X)"
-      ::equation_drag = UCHAR(1)
+      CurveParamClass ::c1, "Parameters for curve 1"
+      CurveParamClass ::c2, "Parameters for curve 2"
+
+
+      #::equation1_drag = UCHAR(1)
       ::CreateWindow()
     }
     
@@ -44,21 +66,6 @@ if (!exists(Functions2DClass)) {
       if (exists(Functions2DClass)) { del Functions2DClass; }
     }
     ::CloseAll.Comments("Call ::Close() method and delete the class variable")
-    
-    #----------------------------
-    proc ::LoadInput() \
-    {
-      printn "evaluation of --> ::input <<="+::input_name+";"
-      eval "::input <<="+::input_name+";"
-      if (::input_name=="Image") {
-        ::input_name = "::input"
-        ::win.update
-      }
-      ::win.update
-      #if (exists(::input_draw)) { del ::input_draw; }
-      #show ::input
-    }
-    
     
     #----------------------------
     proc ::CheckLimits() \
@@ -92,7 +99,7 @@ if (!exists(Functions2DClass)) {
     #----------------------------
     proc ::AutoY() \
     {
-      if (::eq1_mode==0) {
+      if (::c1->mode==0) {
         numval = INT((::xmax-::xmin)/::resolution+0.5)
         ::X <<= Image(FLOAT,numval,1,1)
         ::X.settranslation(::xmin,0,0)
@@ -100,7 +107,7 @@ if (!exists(Functions2DClass)) {
         _pos = SpacePos(::X)
         ::X = _pos[0]
         local::X = ::X
-        eval "::Y <<= "+::equation+";"
+        eval "::Y <<= "+::c1->equation+";"
         ::ymin = min(::Y)
         ::ymax = max(::Y)
         _yw = ::ymax-::ymin
@@ -121,9 +128,12 @@ if (!exists(Functions2DClass)) {
     }
 
     #----------------------------
-    proc ::Set() \
+    proc ::SetCurve1() \
     {
       ::CheckLimits()
+      mf_DrawSetXLimits(::xmin,::xmax)
+      mf_DrawSetYLimits(::ymin,::ymax)
+
       if (::eq1_mode==0) {
         numval = INT((::xmax-::xmin)/::resolution+0.5)
         ::X <<= Image(FLOAT,numval,1,1)
@@ -132,24 +142,52 @@ if (!exists(Functions2DClass)) {
         _pos = SpacePos(::X)
         ::X = _pos[0]
         local::X = ::X
-        eval "::Y <<= "+::equation+";"
-        mf_DrawSetXLimits(::xmin,::xmax)
-        mf_DrawSetYLimits(::ymin,::ymax)
-        mf_DrawSetCurve(::Y)
+        eval "::Y1 <<= "+::equation1+";"
+        mf_DrawSetCurve(::Y1,0)
       }
       if (::eq1_mode==1) {
         # set min and max
-        mf_DrawSetXLimits(::xmin,::xmax)
-        mf_DrawSetYLimits(::ymin,::ymax)
-        mf_DrawSetCurve(::input)
+        mf_DrawSetCurve(::input1,0)
       }
     }
-    # end ::Set()
+    # end ::SetCurve1()
 
     #----------------------------
-    proc ::OnEquation() {
+    proc ::SetCurve2() \
+    {
+      ::CheckLimits()
+      if (::eq2_mode==0) {
+        numval = INT((::xmax-::xmin)/::resolution+0.5)
+        ::X <<= Image(FLOAT,numval,1,1)
+        ::X.settranslation(::xmin,0,0)
+        ::X.setvoxelsize(::resolution,1,1)
+        _pos = SpacePos(::X)
+        ::X = _pos[0]
+        local::X = ::X
+        eval "::Y2 <<= "+::equation2+";"
+        mf_DrawSetXLimits(::xmin,::xmax)
+        mf_DrawSetYLimits(::ymin,::ymax)
+        mf_DrawSetCurve(::Y2,1)
+      }
+      if (::eq2_mode==1) {
+        # set min and max
+        mf_DrawSetXLimits(::xmin,::xmax)
+        mf_DrawSetYLimits(::ymin,::ymax)
+        mf_DrawSetCurve(::input2,1)
+      }
+    }
+    # end ::SetCurve2()
+
+    #----------------------------
+    proc ::OnCurve1() {
       # InfoDialog ::equation
-      ::Set()
+      ::SetCurve1()
+    }
+
+    #----------------------------
+    proc ::OnCurve2() {
+      # InfoDialog ::equation
+      ::SetCurve2()
     }
     
     #--------------------------------
@@ -187,6 +225,7 @@ if (!exists(Functions2DClass)) {
           ::win.SetCallback(::OnEquation)
           ::win.SetDragCallback(::res_id,1)
 
+        #---------------- Curve 1 -------------------------------
         ::win.AddPage("Curve 1")
           ::eq1_mode_id = ::win.AddEnum(::eq1_mode,"mode")
             ::win.AddEnumChoice(::eq1_mode_id,"User equation")
@@ -195,15 +234,36 @@ if (!exists(Functions2DClass)) {
 
           # set input equation
           ::c1_eq_panel = ::win.BeginBoxPanel("Equation")
-            ::eq_id = ::win.AddString(::equation,"Y=")
-            ::win.SetCallback(::OnEquation)
+            ::win.AddString(::equation1,"Y=")
+            ::win.SetCallback(::OnCurve1)
           ::win.EndBoxPanel
 
           # set the input image
           ::c1_input_panel = ::win.BeginBoxPanel("Input")
             ::win.BeginHorizontal
-              ::win.AddImageChoice(::input_name, "")
-              ::win.AddButton("Load",::LoadInput)
+              ::win.AddImageChoice(::input1_name, "")
+              ::win.AddButton("Load",::LoadInput1)
+            ::win.EndHorizontal
+          ::win.EndBoxPanel
+
+        #---------------- Curve 2 -------------------------------
+        ::win.AddPage("Curve 2")
+          ::eq2_mode_id = ::win.AddEnum(::eq2_mode,"mode")
+            ::win.AddEnumChoice(::eq2_mode_id,"User equation")
+            ::win.AddEnumChoice(::eq2_mode_id,"Input image")
+          ::win.SetCallback(::Eq2ModeEvent)
+
+          # set input equation
+          ::c1_eq_panel = ::win.BeginBoxPanel("Equation")
+            ::win.AddString(::equation2,"Y=")
+            ::win.SetCallback(::OnCurve2)
+          ::win.EndBoxPanel
+
+          # set the input image
+          ::c1_input_panel = ::win.BeginBoxPanel("Input")
+            ::win.BeginHorizontal
+              ::win.AddImageChoice(::input2_name, "")
+              ::win.AddButton("Load",::LoadInput2)
             ::win.EndHorizontal
           ::win.EndBoxPanel
 

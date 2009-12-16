@@ -85,16 +85,23 @@ void wrap_MainFrameDrawSetCurve( ParamList* p)
             ";
     char parameters[] =" \n\
           Parameters:\n\
-              input image\n\
+              input          : image\n\
+              integer (def 0): position number of the curve to draw, if the number does not correspond to an existing position, a new curve is added to the list\n\
             ";
 
   InrImage* input;
+  int pos = 0;
   int n=0;
 
-  if (!get_image_param(  input,      p, n)) HelpAndReturn;
+  if (!get_image_param( input,    p, n)) HelpAndReturn;
+  if (!get_int_param(   pos,      p, n)) HelpAndReturn;
 
-  GB_main_wxFrame->GetDrawingWindow()->AddFunction(input);
-  GB_main_wxFrame->GetDrawingWindow()->Refresh();
+  wxDrawingWindow* dw = GB_main_wxFrame->GetDrawingWindow();
+  if ((pos>0)&&(pos<dw->GetNumberOfCurves()))
+    dw->SetCurve(pos,input);
+  else
+    dw->AddCurve(input);
+  dw->Refresh();
 
 }
 

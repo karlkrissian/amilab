@@ -1074,6 +1074,42 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
   wxTreeItemId vartree_wrapped_functions = _var_tree->AppendItem(rootbranch,_T("Wrapped Functions"));
   wxTreeItemId vartree_others    = _var_tree->AppendItem(rootbranch,_T("Others"));
 
+  wxFont root_font = _var_tree->GetItemFont(rootbranch);
+  wxColour vartype_colour = *wxBLUE;
+  root_font.SetStyle(wxFONTSTYLE_ITALIC);
+  root_font.SetWeight(wxLIGHT);
+  //_var_tree->SetItemFont(rootbranch,root_font);
+  _var_tree->SetItemFont(      vartree_images,root_font);
+  _var_tree->SetItemTextColour(vartree_images,vartype_colour);
+
+  _var_tree->SetItemFont(      vartree_surfaces,root_font);
+  _var_tree->SetItemTextColour(vartree_surfaces,vartype_colour);
+
+  _var_tree->SetItemFont(vartree_numbers,root_font);
+  _var_tree->SetItemTextColour(vartree_numbers,vartype_colour);
+
+  _var_tree->SetItemFont(vartree_strings,root_font);
+  _var_tree->SetItemTextColour(vartree_strings,vartype_colour);
+
+  _var_tree->SetItemFont(vartree_functions,root_font);
+  _var_tree->SetItemTextColour(vartree_functions,vartype_colour);
+
+  _var_tree->SetItemFont(vartree_classes,root_font);
+  _var_tree->SetItemTextColour(vartree_classes,vartype_colour);
+
+  _var_tree->SetItemFont(vartree_objects,root_font);
+  _var_tree->SetItemTextColour(vartree_objects,vartype_colour);
+
+  _var_tree->SetItemFont(vartree_wrapped_functions,root_font);
+  _var_tree->SetItemTextColour(vartree_wrapped_functions,vartype_colour);
+
+  _var_tree->SetItemFont(vartree_others,root_font);
+  _var_tree->SetItemTextColour(vartree_others,vartype_colour);
+
+  root_font.SetStyle(wxFONTSTYLE_NORMAL);
+  root_font.SetWeight(wxNORMAL);
+  wxTreeItemId itemid;
+
   // loop vars
   variables = boost::shared_ptr<wxArrayString>(new wxArrayString());
   context->SearchCompletions(GetwxStr(""),variables);
@@ -1098,11 +1134,12 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
                             % im->DimZ()
                             % (im->GetDataSize()/1000000)).str();
         //cout << text << endl;
-        _var_tree->AppendItem(
+        itemid = _var_tree->AppendItem(
               vartree_images,
               wxString(text.c_str(), wxConvUTF8),
               -1,-1,
               new MyTreeItemData(var));
+        _var_tree->SetItemFont(itemid,root_font);
         total_image_size += im->GetDataSize();
       } else
       if (var->Type() == type_surface) {
@@ -1112,45 +1149,50 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
                             % surf->GetNumberOfPoints()
                             % surf->GetNumberOfPolys()).str();
         //cout << text << endl;
-        _var_tree->AppendItem(
+        itemid = _var_tree->AppendItem(
               vartree_surfaces,
               wxString(text.c_str(), wxConvUTF8),
               -1,-1,
               new MyTreeItemData(var));
+        _var_tree->SetItemFont(itemid,root_font);
       } else
       if ((var->Type() == type_float)||
           (var->Type() == type_int)  ||
           (var->Type() == type_uchar))
       {
-        _var_tree->AppendItem(
+        itemid = _var_tree->AppendItem(
               vartree_numbers,
               (*variables)[i],
               -1,-1,
               new MyTreeItemData(var));
+        _var_tree->SetItemFont(itemid,root_font);
       } else
       if (var->Type() == type_string)
       {
-        _var_tree->AppendItem(
+        itemid = _var_tree->AppendItem(
               vartree_strings,
               (*variables)[i],
               -1,-1,
               new MyTreeItemData(var));
+        _var_tree->SetItemFont(itemid,root_font);
       } else
       if (var->Type() == type_ami_function)
       {
-        _var_tree->AppendItem(
+        itemid = _var_tree->AppendItem(
               vartree_functions,
               (*variables)[i],
               -1,-1,
               new MyTreeItemData(var));
+        _var_tree->SetItemFont(itemid,root_font);
       } else
       if (var->Type() == type_ami_class)
       {
-        _var_tree->AppendItem(
+        itemid = _var_tree->AppendItem(
               vartree_classes,
               (*variables)[i],
               -1,-1,
               new MyTreeItemData(var));
+        _var_tree->SetItemFont(itemid,root_font);
       } else
       if (var->Type() == type_ami_object)
       {
@@ -1159,6 +1201,7 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
               (*variables)[i],
               -1,-1,
               new MyTreeItemData(var));
+        _var_tree->SetItemFont(obj_itemid,root_font);
         // get the pointer to the objet
         AMIObject::ptr obj = (*(AMIObject::ptr*)var->Pointer());
         // create the tree by recursive call
@@ -1166,17 +1209,19 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
       } else
       if (var->Type() == type_c_image_function)
       {
-        _var_tree->AppendItem(
+        itemid = _var_tree->AppendItem(
               vartree_wrapped_functions,
               (*variables)[i],
               -1,-1,
               new MyTreeItemData(var));
+        _var_tree->SetItemFont(itemid,root_font);
       } else
-        _var_tree->AppendItem(
+        itemid = _var_tree->AppendItem(
               vartree_others,
               (*variables)[i],
               -1,-1,
               new MyTreeItemData(var));
+        _var_tree->SetItemFont(itemid,root_font);
     }
   } // end for
 
@@ -1410,6 +1455,11 @@ void MainFrame::UpdateVarsDisplay()
   UpdateVarList();
   UpdateVarTree(_vartree_root, Vars.GetCurrentContext());
   _var_tree->Expand(  _vartree_root);
+
+  wxFont root_font = _var_tree->GetItemFont(_vartree_root);
+  root_font.SetStyle(wxFONTSTYLE_ITALIC);
+  root_font.SetWeight(wxFONTWEIGHT_BOLD);
+  _var_tree->SetItemFont(_vartree_root,root_font);
 
 }
 

@@ -1262,6 +1262,8 @@ int AskImage(std::string& name)
                                 "*.mhd"));
     formats.insert(file_format( "All files with extensions",
                                 "*.*"));
+    formats.insert(file_format( "All files",
+                                "*"));
 
     wxString s_extDef = wxString::FromAscii(formats["Available"].c_str());
     wxString format_choices;
