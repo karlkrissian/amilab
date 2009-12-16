@@ -1,0 +1,66 @@
+if (!exists(DI_defined)) {
+  DI_defined=1
+	import_itk
+	
+	proc DI_init() {
+		global_new
+		
+		DI_dicom_folder = "./dicomFolder/"
+    DI_output = "./output/"
+		
+		DI_Gui()
+	}
+	
+	proc DI_Close() \
+  {
+    DI_win.Hide
+    delvars "DI_*_draw"
+    delvars "DI_*"
+  }
+  DI_Close.Comments("Close current script and delete its variables")
+  
+  proc DI_Run() {
+    itkDICOMReadWrite(DI_dicom_folder,DI_output)
+    
+    global::DI_out=Image(DI_output)  
+    show DI_out
+	}
+  
+  proc DI_Gui() {
+		global::DI_win = ParamWin("DICOM")
+    DI_win.BeginBook
+		
+			DI_win.AddPage("Init")
+			
+			DI_win.BeginBoxPanel("DICOM Folder")
+        DI_win.BeginHorizontal
+          DI_win.AddString(DI_dicom_folder,"DICOM Folder")
+        DI_win.EndHorizontal
+			DI_win.EndBoxPanel
+			
+			DI_win.AddPage("Output")
+			
+			DI_win.BeginBoxPanel("Output")
+        DI_win.BeginHorizontal
+          DI_win.AddString(DI_output,"Output")
+        DI_win.EndHorizontal
+			DI_win.EndBoxPanel
+			
+			DI_win.AddPage("Run")
+			
+			DI_win.BeginBoxPanel("Processing")
+				DI_win.AddButton("Run", DI_Run)
+			DI_win.EndBoxPanel
+			
+		DI_win.EndBook
+		
+		DI_win.AddButton("Close",DI_Close)
+		
+		DI_win.update
+    DI_win.Display
+	}
+	
+	DI_init
+	
+}
+# end if (!DI_defined) 

@@ -6,3 +6,4 @@
 
 AddMenuScript("&Segmentation","&Level Set","Segmentation/LevelSetsGui1.amil")
 AddMenuScript("&Segmentation","&Watershed","Segmentation/WaterShed.amil")
+AddMenuScript("&Segmentation","&itkFastMarching","Segmentation/itkFastMarching.amil")

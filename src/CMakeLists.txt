@@ -174,7 +174,7 @@ FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base )
 FIND_PACKAGE ( OpenGL )
 FIND_PATH(GLEXT_INCLUDE_DIR GL/glext.h )
 
-OPTION(Boost_USE_STATIC_LIBS "Use Boost static libraries" OFF)
+OPTION(Boost_USE_STATIC_LIBS "Use Boost static libraries" ON)
 
 SET(Boost_USE_MULTITHREAD OFF)
 #MESSAGE(  CMAKE_HOST_SYSTEM_NAME=${CMAKE_HOST_SYSTEM_NAME} )

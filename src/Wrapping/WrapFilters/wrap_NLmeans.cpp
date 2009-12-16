@@ -16,6 +16,7 @@
 #include "NLmeans.h"
 #include "fonctions.h"
 #include "wrapfunctions.hpp"
+#include <pthread.h>
 
 //------------------------------------------------------------------
 InrImage* NLmeans(ParamList* p)
