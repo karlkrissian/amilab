@@ -24,9 +24,60 @@ class dw_Curve {
     //! curve points as a vetor of 2D points dw_Point2D
     std::vector<dw_Point2D> points;
 
+    //! Colour of the curve
+    wxColour color;
+
+    /** Style of the curve
+     * supported styles are
+     * 0: wxSOLID   Solid style.
+     * 1: wxDOT   Dotted style.
+     * 2: wxLONG_DASH   Long dashed style.
+     * 3: wxSHORT_DASH  Short dashed style.
+     * 4: wxDOT_DASH  Dot and dash style. 
+     **/
+    int style;
+
+    //! Thickness of the curve
+    int width;
+
   public:
     //! simple Constructor
-    dw_Curve() {}
+    dw_Curve() : color(*wxRED), style(wxSOLID), width(1) {}
+
+    /**
+     * 
+     * @param c , color of the curve
+     */
+    void SetColor( const wxColour& c)    { color = c; }
+
+    /**
+     * 
+     * @return Curve color
+     */
+    const wxColour& GetColor() const { return color; }
+
+    /**
+     * @param s , style of the curve see wxPen documentation
+     */
+    void SetStyle( int s) { style = s; }
+
+    /**
+     * 
+     * @return style of the curve
+     */
+    int GetStyle() const { return style; }
+
+    /**
+     * 
+     * @param  width of the curve
+     */
+    void SetWidth( int w) { width = w; }
+
+   /**
+    * 
+    * @return width of the curve
+    */
+   int GetWidth() const { return width; }
 
     /**
      * 

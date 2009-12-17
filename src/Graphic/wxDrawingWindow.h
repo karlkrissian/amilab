@@ -90,6 +90,28 @@ public:
    */
   bool SetCurve( int i, InrImage* im);
 
+
+  /**
+   * Set the curve number i color from the string, see wxColour for documentation
+   * @param i 
+   * @param color_string 
+   */
+  void SetCurveColor( int i, std::string color_string);
+
+  /**
+   * Sets the curve style.
+   * @param i 
+   * @param style 
+   */
+  void SetCurveStyle( int i, int style);
+
+  /**
+   * Sets the curve width.
+   * @param i 
+   * @param style 
+   */
+  void SetCurveWidth( int i, int width);
+
   /**
    * Draw a given curve in a given graphical context.
    * @param i  curve number

@@ -63,7 +63,7 @@ yyip::Parser::token::yytokentype checkvar(
       const char* varname, int context=-1);
 
 bool IsContext( const char* varname);
-Variable* IsObject(  const char* varname);
+Variable* IsObject(  const char* varname, int context=-1);
 
 using namespace std;
 
@@ -818,6 +818,10 @@ emptyargs         return(token::T_emptyargs);    /*{emptyargs,T_emptyargs}*/
 
 <str>\\(.|\n\r) cpp_string->append(1,YYText()[1]);
 
+<str>\# {
+  cpp_string->append(YYText());
+}
+
 <str>[^\\\n\r\"]+ {
   cpp_string->append(YYText());
 /*
@@ -880,8 +884,8 @@ emptyargs         return(token::T_emptyargs);    /*{emptyargs,T_emptyargs}*/
     block_level++;
     BEGIN(block);
   }
-}
 
+/*
 <block>\# {
 //============================ Parse comment ====================
 //
@@ -894,6 +898,8 @@ emptyargs         return(token::T_emptyargs);    /*{emptyargs,T_emptyargs}*/
     comment_caller = block;
     BEGIN(comment);
 //    printf("begin comment in block \n");
+}
+*/
 }
 
 <block>\r\n|[\r\n] {
@@ -1035,6 +1041,44 @@ this::([A-Za-z0-9_])*   {
 }
 
 
+::([A-Za-z0-9_])*->([A-Za-z0-9_])*   {
+// TODO: can all the variable system to return only variable from lex !!!
+// this rule is a hack
+//
+//============================ Parse variable in a given context ====================
+//
+  //cout << "::XX->XX variable in object ?" << endl;
+  string text(YYText());
+  size_t pos = text.find("->");
+  string contextname = text.substr(2,pos-2);
+
+  // TODO: check for context  with :: ??
+  //if (IsContext(contextname.c_str())) 
+  //  cout << "Context found" << endl;
+
+  // check if contextname is really a context
+  //cout << "looking for "<< contextname << endl;
+  Variable* var = IsObject(contextname.c_str(),OBJECT_CONTEXT_NUMBER);
+  if (var!=NULL) 
+  {
+    FILE_MESSAGE("Object found");
+    string varname = text.substr(pos+2);
+
+    AMIObject::ptr object = *(AMIObject::ptr*) var->Pointer();
+
+    Variables::ptr previous_ocontext = Vars.GetObjectContext();
+    Vars.SetObjectContext(object->GetContext());
+
+    yyip::Parser::token::yytokentype result = checkvar(yylval,varname.c_str(),OBJECT_CONTEXT_NUMBER);
+
+    Vars.SetObjectContext(previous_ocontext);
+    return result;
+  } else {
+    std::string error_string =" lex error \t object not found ";
+    GB_driver.yyiperror(error_string.c_str());
+  }
+}
+
 
 ([A-Za-z0-9_])*->([A-Za-z0-9_])*   {
 //
@@ -1070,6 +1114,9 @@ this::([A-Za-z0-9_])*   {
     GB_driver.yyiperror(error_string.c_str());
   }
 }
+
+
+
 
 
 ([A-Za-z0-9_])*   {
@@ -1130,11 +1177,11 @@ bool IsContext( const char* varname)
 //       IsObject()
 //--------------------------------------------------
 //
-Variable* IsObject( const char* varname)
+Variable* IsObject( const char* varname, int context)
 //
 {
   Variable* var;
-  if (Vars.GetVar(varname,&var))
+  if (Vars.GetVar(varname,&var,context))
     if (var->Type() == type_ami_object) 
       return var;
     else 

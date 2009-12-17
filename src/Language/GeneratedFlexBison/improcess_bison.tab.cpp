@@ -2528,10 +2528,10 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 2269 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-//         std::ostream streamtest(TC->GetLog());
-//        std::cout=streamtest;
-         //wxStreamToTextRedirector redirect(TC->GetLog());
-
+      /**
+        Description:
+        Calls system 'ls' command (for unix systems)
+      **/
          std::system("ls");
            }
     break;

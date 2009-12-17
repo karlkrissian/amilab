@@ -25,6 +25,7 @@ void AddWrapMainFrame()
   Vars.AddVar(type_c_procedure, "mf_DrawSetCurve",  (void*) wrap_MainFrameDrawSetCurve );
   Vars.AddVar(type_c_procedure, "mf_DrawSetXLimits",  (void*) wrap_MainFrameDrawSetXLimits );
   Vars.AddVar(type_c_procedure, "mf_DrawSetYLimits",  (void*) wrap_MainFrameDrawSetYLimits );
+  Vars.AddVar(type_c_procedure, "mf_DrawSetCurveProperties",  (void*) wrap_MainFrameDrawSetCurveProperties );
 }
 
 
@@ -97,7 +98,7 @@ void wrap_MainFrameDrawSetCurve( ParamList* p)
   if (!get_int_param(   pos,      p, n)) HelpAndReturn;
 
   wxDrawingWindow* dw = GB_main_wxFrame->GetDrawingWindow();
-  if ((pos>0)&&(pos<dw->GetNumberOfCurves()))
+  if ((pos>=0)&&(pos<dw->GetNumberOfCurves()))
     dw->SetCurve(pos,input);
   else
     dw->AddCurve(input);
@@ -105,3 +106,37 @@ void wrap_MainFrameDrawSetCurve( ParamList* p)
 
 }
 
+//---------------------------------------------------------
+void wrap_MainFrameDrawSetCurveProperties(  ParamList* p)
+{
+    char functionname[] = "mf_DrawSetCurveProperties";
+    char description[]=" \n\
+      Sets the properties of the displayed curve: color, style, width. \n\
+            ";
+    char parameters[] =" \n\
+      1. curve number (def:0)\n\
+      2. color as a string, format is #RRGGBB  \n\
+      3. style (def:0 for wxSOLID),\n\
+        supported styles are: \n\
+        0: wxSOLID   Solid style.\n\
+        1: wxDOT   Dotted style.\n\
+        2: wxLONG_DASH   Long dashed style.\n\
+        3: wxSHORT_DASH  Short dashed style.\n\
+        4: wxDOT_DASH  Dot and dash style. \n\
+      4. width (def:1)\n\
+            ";
+  int curve_number       = 0;
+  std::string* color_str = NULL;
+  int style              = wxSOLID;
+  int width              = 1;
+  int n                  = 0;
+
+  if (!get_int_param(    curve_number, p, n)) HelpAndReturn;
+  if (!get_string_param( color_str,    p, n)) HelpAndReturn;
+  if (!get_int_param(    style,        p, n)) HelpAndReturn;
+  if (!get_int_param(    width,        p, n)) HelpAndReturn;
+
+  GB_main_wxFrame->GetDrawingWindow()->SetCurveColor(curve_number,*color_str);
+  GB_main_wxFrame->GetDrawingWindow()->SetCurveStyle(curve_number,style);
+  GB_main_wxFrame->GetDrawingWindow()->SetCurveWidth(curve_number,width);
+}

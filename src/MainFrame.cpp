@@ -295,6 +295,7 @@ MainFrame::MainFrame( const wxString& title,
                   .Center()
                   .MaximizeButton(true));
 
+/*
   CreateVarListPanel(this);
   m_mgr.AddPane(_varlist_panel,
                   wxAuiPaneInfo()
@@ -302,6 +303,7 @@ MainFrame::MainFrame( const wxString& title,
                   .Caption(wxT("Variables List"))
                   .Left().Layer(1)
                   .MinimizeButton(true));
+*/
 
   CreateVarTreePanel(this);
   m_mgr.AddPane(_vartree_panel,
@@ -1002,6 +1004,7 @@ void MainFrame::OnInternalIdle()
 //-----------------------------------------------------
 void MainFrame::UpdateVarList()
 {
+/*
   _var_list->Hide();
 
   _var_list->DeleteAllItems();
@@ -1050,6 +1053,7 @@ void MainFrame::UpdateVarList()
 
 //  _var_list->Fit();
   _var_list->Show();
+*/
 }
 
 
@@ -1252,7 +1256,7 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
   if (!_var_tree->ItemHasChildren(vartree_others)) 
     _var_tree->Delete(vartree_others);
 
-  _var_list->Show();
+  //_var_list->Show();
 }
 
 
@@ -1452,14 +1456,17 @@ void MainFrame::ConsoleClear( wxCommandEvent& event)
 //--------------------------------------------------
 void MainFrame::UpdateVarsDisplay()
 {
-  UpdateVarList();
-  UpdateVarTree(_vartree_root, Vars.GetCurrentContext());
-  _var_tree->Expand(  _vartree_root);
+  //UpdateVarList();
 
   wxFont root_font = _var_tree->GetItemFont(_vartree_root);
   root_font.SetStyle(wxFONTSTYLE_ITALIC);
   root_font.SetWeight(wxFONTWEIGHT_BOLD);
+  root_font.SetPointSize(10);
   _var_tree->SetItemFont(_vartree_root,root_font);
+
+  UpdateVarTree(_vartree_root, Vars.GetCurrentContext());
+  _var_tree->Expand(  _vartree_root);
+
 
 }
 

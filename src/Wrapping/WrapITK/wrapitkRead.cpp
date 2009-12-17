@@ -274,7 +274,7 @@ InrImage* itkRead(const std::string& fname)
   switch (image_pixel_type) {
     case itk::ImageIOBase::SCALAR:
       switch (image_dim) {
-        case 1: READ_IMAGE(1); break;
+        //case 1: READ_IMAGE(1); break;
         case 2: READ_IMAGE(2); break;
         case 3: READ_IMAGE(3); break;
         default:
@@ -286,7 +286,7 @@ InrImage* itkRead(const std::string& fname)
       switch (vdim) {
         case 2: {
             switch (image_dim) {
-              case 1: READ_VECTOR_IMAGE(1,2); break;
+              //case 1: READ_VECTOR_IMAGE(1,2); break;
               case 2: READ_VECTOR_IMAGE(2,2); break;
               case 3: READ_VECTOR_IMAGE(3,2); break;
               default:
@@ -296,7 +296,7 @@ InrImage* itkRead(const std::string& fname)
          break;
         case 3: {
           switch (image_dim) {
-            case 1: READ_VECTOR_IMAGE(1,3); break;
+            //case 1: READ_VECTOR_IMAGE(1,3); break;
             case 2: READ_VECTOR_IMAGE(2,3); break;
             case 3: READ_VECTOR_IMAGE(3,3); break;
             default:
@@ -310,7 +310,7 @@ InrImage* itkRead(const std::string& fname)
 
     case itk::ImageIOBase::RGB:
       switch (image_dim) {
-        case 1: READ_RGB_IMAGE(1); break;
+        //case 1: READ_RGB_IMAGE(1); break;
         case 2: READ_RGB_IMAGE(2); break;
         case 3: READ_RGB_IMAGE(3); break;
         default:
@@ -319,7 +319,7 @@ InrImage* itkRead(const std::string& fname)
     break;
     case itk::ImageIOBase::RGBA:
       switch (image_dim) {
-        case 1: READ_RGBA_IMAGE(1); break;
+        //case 1: READ_RGBA_IMAGE(1); break;
         case 2: READ_RGBA_IMAGE(2); break;
         case 3: READ_RGBA_IMAGE(3); break;
         default:
