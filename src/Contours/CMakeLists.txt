@@ -29,4 +29,18 @@ SET(Contours_SRCS
       PointContour.cpp
 )
 
+SET(Contours_HDRS
+	CalculAireSection.hpp
+	IsoContour.hpp
+	IsoContour2.hpp
+	IsoContour2D.hpp
+	PointContour.hpp
+	PropagePoints.hpp
+)
+
+SET(Contours_SRCS
+     ${Contours_SRCS}
+     ${Contours_HDRS}
+)
+
 my_add_library (Contours)

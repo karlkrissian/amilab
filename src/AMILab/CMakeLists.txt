@@ -89,6 +89,36 @@ SET(AMILab_SRCS
     xmtext.cpp
 )
 
+SET (AMILab_HDRS
+	Chamfer.h
+	EDPmorpho.h
+	EigenDecomp.h
+	FluidProject.h
+	fonctions.h
+	func_globalstats.h
+	func_imagebasictools.h
+	Func_ReadCTALine.h
+	InterpolateTransform.h
+	LevelSetsCURVES.h
+	LineCC.h
+	LineRecons.h
+	messages.h
+	myscan.h
+	Rudin.h
+	StructureTensor.h
+	token_list.h
+	VectorImage2StructuredGrid.h
+	dif_param.hpp
+	DirPrincipales.hpp
+	FastVector.hpp
+	func_isoline.hpp
+	Resize.hpp
+	xmtext.hpp
+)
 
+SET (AMILab_SRCS
+     ${AMILab_SRCS}
+     ${AMILab_HDRS}
+)
 
 my_add_library ( AMILab)

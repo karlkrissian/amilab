@@ -373,6 +373,17 @@ SET(amilab_bin_SRCS
   MainFrame.cpp
 )
 
+SET(amilab_bin_HDRS
+	guicon.h
+	MainFrame.h
+	myTreeCtrl.h
+)
+
+SET(amilab_bin_SRCS
+     ${amilab_bin_SRCS}
+     ${amilab_bin_HDRS}
+)
+
 if (WIN32)
 SET(amilab_bin_SRCS
   ${amilab_bin_SRCS}

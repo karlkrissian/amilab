@@ -15,4 +15,15 @@ SET(penguin_SRCS
   trackball.c
 )
 
+SET(penguin_HDRS
+	dxfrenderer.h
+	penguin.h
+	trackball.h
+)
+
+SET(penguin_SRCS
+     ${penguin_SRCS}
+     ${penguin_HDRS}
+)
+
 my_add_library ( penguin)

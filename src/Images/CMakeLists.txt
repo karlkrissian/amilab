@@ -22,4 +22,14 @@ SET(Images_SRCS
 #      inrimage_all.cpp
 )
 
+SET(Images_HDRS
+	imageextent.h
+	inrimage.hpp
+)
+
+SET(Images_SRCS
+     ${Images_SRCS}
+     ${Images_HDRS}
+)
+
 my_add_library (Images)

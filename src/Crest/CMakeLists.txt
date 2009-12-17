@@ -25,4 +25,16 @@ SET(Crest_SRCS
     MultiCrest.cpp
 )
 
+SET(Crest_HDRS
+	CreeCrest.hpp
+	Crest.hpp
+	MultiCrest.hpp
+	MultiCrest2.hpp
+)
+
+SET(Crest_SRCS
+     ${Crest_SRCS}
+     ${Crest_HDRS}
+)
+
 my_add_library (Crest)

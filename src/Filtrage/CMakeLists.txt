@@ -25,4 +25,18 @@ SET(Filtering_SRCS
       FiltreRec.cpp
 )
 
+SET(Filtering_HDRS
+	bruit.hpp
+	DeriveesLissees.hpp
+	filtrage.hpp
+	filtrage_rec.hpp
+	FiltreRec.hpp
+	filtre_param.hpp
+)
+
+SET(Filtering_SRCS
+     ${Filtering_SRCS}
+     ${Filtering_HDRS}
+)
+
 my_add_library (Filtering)

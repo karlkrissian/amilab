@@ -37,4 +37,13 @@ SET(  WrapAMIFluid_SRCS
   wrapAMIFluid.cpp
 )
 
+SET(WrapAMIFluid_HDRS
+	wrapAMIFluid.h
+)
+
+SET(WrapAMIFluid_SRCS
+     ${WrapAMIFluid_SRCS}
+     ${WrapAMIFluid_HDRS}
+)
+
 my_add_library ( WrapAMIFluid)

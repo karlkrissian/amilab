@@ -26,4 +26,21 @@ SET(  Vessels_SRCS
   Voxel.cpp
 )
 
+SET(Vessels_HDRS
+	CalculBoules.hpp
+	CalculIsoLignes.hpp
+	ImageVaisseaux.hpp
+	InrViewIsoLignes.hpp
+	IntersectIsosurf.hpp
+	IsoLigne.hpp
+	IsoLigne2.hpp
+	Vaisseau.hpp
+	Voxel.hpp
+)
+
+SET(Vessels_SRCS
+     ${Vessels_SRCS}
+     ${Vessels_HDRS}
+)
+
 my_add_library (Vessels)

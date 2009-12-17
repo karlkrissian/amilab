@@ -31,4 +31,25 @@ SET(ImageTool_SRCS
     Stereo.cpp
 )
 
+SET(ImageTool_HDRS
+	DessinImageMenu.h
+	Menu.h
+	CompareImage.hpp
+	DessinFonction2D.hpp
+	DessinHisto.hpp
+	DessinImage.hpp
+	DessinImageBase.hpp
+	DessinImageParam.hpp
+	histo.hpp
+	HistoPoints.hpp
+	ImageDraw.hpp
+	ImageMIP.hpp
+	Stereo.hpp
+)
+
+SET(ImageTool_HDRS
+     ${ImageTool_SRCS}
+     ${ImageTool_HDRS}
+)
+
 my_add_library (ImageTool)

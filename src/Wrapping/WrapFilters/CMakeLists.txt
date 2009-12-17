@@ -52,4 +52,23 @@ SET(  WrapFilters_SRCS
   LeastSquares.cpp
 )
 
+SET(WrapFilters_HDRS
+	LeastSquares.h
+	wrapAlgorithmsBasic.h
+	wrapComputePV.h
+	wrapFilters.h
+	wrap_AddSubImage.h
+	wrap_DirSum.h
+	wrap_ImTranslate.h
+	wrap_MaxSubImage.h
+	Wrap_NewNLMeans.h
+	wrap_NLmeans.h
+	wrap_StructureTensor.h
+)
+
+SET(WrapFilters_SRCS
+     ${WrapFilters_SRCS}
+     ${WrapFilters_HDRS}
+)
+
 my_add_library ( WrapFilters)

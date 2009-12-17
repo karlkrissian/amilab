@@ -18,4 +18,13 @@ SET(Voxels_SRCS
     Voxels.cpp
 )
 
+SET(Voxels_HDRS
+	Voxels.h
+)
+
+SET(Voxels_SRCS
+     ${Voxels_SRCS}
+     ${Voxels_HDRS}
+)
+
 my_add_library ( Voxels)

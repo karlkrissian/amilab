@@ -28,4 +28,14 @@ SET(  WrapCommon_SRCS
   wrapfunctions_draw.cpp
 )
 
+SET(WrapCommon_HDRS
+	wrapfunctions_draw.h
+	wrapfunctions.hpp
+)
+
+SET(WrapCommon_SRCS
+     ${WrapCommon_SRCS}
+     ${WrapCommon_HDRS}
+)
+
 my_add_library ( WrapCommon)

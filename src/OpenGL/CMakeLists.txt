@@ -45,4 +45,28 @@ SET(OpenGL_SRCS
     surface.cpp
 )
 
+SET(OpenGL_HDRS
+	Viewer3D_BackgroundParam.h
+	Viewer3D_FogParam.h
+	Viewer3D_LightingParam.h
+	Viewer3D_LineParam.h
+	Viewer3D_MaterialParam.h
+	Viewer3D_PointParam.h
+	Viewer3D_ProjParam.h
+	Viewer3D_VectorsParam.h
+	Viewer3D_ViewParam.h
+	ami_wxGLCanvas.hpp
+	GLparam.hpp
+	isosurface.hpp
+	surface.hpp
+	TestGL.hpp
+	Viewer3D.hpp
+	VolumeRender.hpp
+)
+
+SET(OpenGL_SRCS
+     ${OpenGL_SRCS}
+     ${OpenGL_HDRS}
+)
+
 my_add_library ( OpenGL)

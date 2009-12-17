@@ -26,4 +26,37 @@ SET(myVTK4_SRCS
     vtkSkeleton2Lines.cxx
 )
 
+SET(myVTK4_HDRS
+	DynTable.h
+	PrincipalCurvatures.h
+	vtkAnisoGaussSeidel.h
+	vtkConvexHull.h
+	vtkConvexHullConfigure.h
+	vtkCorCTAConfigure.h
+	vtkDecimate.h
+	vtkDecimateConfigure.h
+	vtkFluxDiffusionConfigure.h
+	vtkImageDataBase.h
+	vtkImageFastSignedChamfer.h
+	vtkImageIsoContourDist.h
+	vtkImagePropagateDist.h
+	vtkImagePropagateDist2.h
+	vtkImageTemplate.h
+	vtkLevelSetFastMarching.h
+	vtkLevelSets.h
+	vtkLevelSetsConfigure.h
+	vtkMINC.h
+	vtkMINCImageAttributes.h
+	vtkMINCImageReader.h
+	vtkMinHeap.h
+	vtkmyVTKConfigure.h
+	vtkSkeleton2Lines.h
+	vtkThinning.h
+)
+
+SET(myVTK4_SRCS
+     ${myVTK4_SRCS}
+     ${myVTK4_HDRS}
+)
+
 my_add_library ( myVTK4)

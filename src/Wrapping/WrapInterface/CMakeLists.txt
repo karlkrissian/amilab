@@ -24,4 +24,14 @@ SET(  WrapInterface_SRCS
   wrap_imagedraw.cpp 
 )
 
+SET(WrapInterface_HDRS
+	wrap_imagedraw.h
+	wrap_mainframe.h
+)
+
+SET(WrapInterface_SRCS
+     ${WrapInterface_SRCS}
+     ${WrapInterface_HDRS}
+)
+
 my_add_library ( WrapInterface)

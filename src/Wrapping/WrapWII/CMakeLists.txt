@@ -14,4 +14,13 @@ SET(  WrapWII_SRCS
   wrapWII.cpp
 )
 
+SET(WrapWII_HDRS
+	wrapWII.h
+)
+
+SET(WrapWII_SRCS
+     ${WrapWII_SRCS}
+     ${WrapWII_HDRS}
+)
+
 my_add_library ( WrapWII)

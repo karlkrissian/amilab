@@ -10,4 +10,13 @@ SET( Graph_SRCS
   dijkstra.cpp
 )
 
+SET(Graph_HDRS
+	dijkstra.h
+)
+
+SET(Graph_SRCS
+     ${Graph_SRCS}
+     ${Graph_HDRS}
+)
+
 my_add_library ( Graph)

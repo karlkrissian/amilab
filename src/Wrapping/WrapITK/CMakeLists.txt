@@ -34,7 +34,25 @@ SET(  WrapITK_SRCS
     #wrapitkBasicNLMeansFilter.cpp
     #itkBasicNLMeansFilter.txx
     wrapitkFastMarchingImageFilter.cpp
-		wrapitkWaterShedImageFilter.cpp
+	wrapitkWaterShedImageFilter.cpp
+)
+
+SET(WrapITK_HDRS
+	itkCannyEdgeDetector.h
+	wrapConversion.h
+	wrapITK.h
+	wrapitkFastMarchingImageFilter.h
+	wrapitkIsoContourDist.h
+	wrapitkRead.h
+	wrapitkRead_3D_US.h
+	wrapitkRecursiveGaussianImageFilter.h
+	wrapitkWaterShedImageFilter.h
+	wrapitkWrite.h
+)
+
+SET(WrapITK_SRCS
+     ${WrapITK_SRCS}
+     ${WrapITK_HDRS}
 )
 
 my_add_library ( WrapITK)
