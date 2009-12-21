@@ -9,14 +9,18 @@ if (!exists(FM_defined)) {
 		FM_gradient_mode = INT(0), "Gradient mode: Computes the norm of the gradient of the image."
 		FM_stand = 0.5, "Standard deviation of the Gaussian kernel."
     
-		FM_seed_X = 20, "Seed point in X-axis."
-		FM_seed_Y = 13, "Seed point in Y-axis."
-    FM_seed_Z = 10, "Seed point in Z-axis."
+    FM_min = 0.0, "Set the minimum value of the output image."
+    FM_max = 1.0, "Set the maximum value of the output image."
+    
+		FM_seed_X = 0, "Seed point in X-axis."
+		FM_seed_Y = 0, "Seed point in Y-axis."
+    FM_seed_Z = 0, "Seed point in Z-axis."
     FM_alpha = -0.5, "Constant to compute the sigmoid function."
     FM_beta = 3, "Constant to compute the sigmoid function."
-    FM_threshold = 0, "Set the upper threshold of the BinaryThreshold Filter."
+    FM_lower = 0, "Set the lower threshold of the BinaryThreshold Filter."
+    FM_upper = 0, "Set the upper threshold of the BinaryThreshold Filter."
     FM_stopping_time = 0, "Fast Marching algorithm is terminated when the value of the smallest trial point is greater than the stopping value."
-		FM_dim = INT(1), "The dimension of the image."
+    FM_dim = INT(1), "The dimension of the image."
 		
 		FM_inputmin = 0, "Minimal Intensity of the image."
 		FM_inputmax = 32000, "Maximal Intensity of the image."
@@ -58,17 +62,21 @@ if (!exists(FM_defined)) {
 			FM_g = 1
 		}
 
-		if (FM_dim==0) {
-			global::FM_fast = itkFastMarchingImageFilter2D(FM_grad,FM_seed_X,FM_seed_Y,FM_alpha,FM_beta,FM_threshold,FM_stopping_time)
+    if (FM_dim==0) {
+      global::FM_sigmoid = itkSigmoidImageFilter2D(FM_grad,FM_min,FM_max,FM_alpha,FM_beta)
+      global::FM_fast = itkFastMarchingImageFilter2D(FM_sigmoid,FM_seed_X,FM_seed_Y,FM_alpha,FM_beta,FM_stopping_time)
+      global::FM_thres = itkBinaryThresholdImageFilter2D(FM_fast,FM_lower,FM_upper)
 			FM_f = 1			
 		} else {
-			global::FM_fast = itkFastMarchingImageFilter3D(FM_grad,FM_seed_X,FM_seed_Y,FM_seed_Z,FM_alpha,FM_beta,FM_threshold,FM_stopping_time)
+      global::FM_sigmoid = itkSigmoidImageFilter3D(FM_grad,FM_min,FM_max,FM_alpha,FM_beta)
+      global::FM_fast = itkFastMarchingImageFilter3D(FM_sigmoid,FM_seed_X,FM_seed_Y,FM_seed_Z,FM_alpha,FM_beta,FM_stopping_time)
+      global::FM_thres = itkBinaryThresholdImageFilter3D(FM_fast,FM_lower,FM_upper)
 			FM_f = 1
 		}
     
-		show FM_grad
-		show FM_fast
-		FM_grad_draw.compare(FM_fast_draw)
+    show FM_input
+		show FM_thres
+		FM_input_draw.compare(FM_thres_draw)
 	}
   
   proc FM_SeedPoint() \
@@ -96,8 +104,6 @@ if (!exists(FM_defined)) {
     printn y
     FM_seed_X = x
     FM_seed_Y = y
-    #FM_seed_X = FM_input.trx + x*FM_input.vx
-    #FM_seed_Y = FM_input.try + y*FM_input.vy
   }
   
   proc FM_SetSeedPoint3( NUM x, NUM y, NUM z) \
@@ -108,24 +114,9 @@ if (!exists(FM_defined)) {
     FM_seed_X = x
     FM_seed_Y = y
     FM_seed_Z = z
-    #FM_seed_X = FM_input.trx + x*FM_input.vx
-    #FM_seed_Y = FM_input.try + y*FM_input.vy
-    #FM_seed_Z = FM_input.trz + z*FM_input.vz
   }
   
-	proc FM_SaveG() {
-		filename=FM_gradient_filename-".gz"-".ami";
-    if (FM_g) {
-      filename = filename + sprint("_standDev%0.0f",FM_stand)
-    } else {
-			print "First you must create the image.\n"
-		}
-    filename = filename + FM_result_filename_ext
-    print "saving file "+filename+"\n"
-    FM_grad.save filename
-  }
-  
-	proc FM_SaveF() {
+	proc FM_Save() {
 		filename=FM_fast_filename-".gz"-".ami";
     if (FM_f) {
       if (FM_dim==0) {
@@ -134,7 +125,9 @@ if (!exists(FM_defined)) {
                             + sprint("_alpha%0.1f",FM_alpha) \
                             + sprint("_beta%0.1f",FM_beta) \
                             + sprint("_thres%0.0f",FM_threshold) \
-                            + sprint("_stop%0.0f",FM_stopping_time)
+                            + sprint("_stop%0.0f",FM_stopping_time) \
+                            + sprint("_outmin%0.1f",FM_min) \
+                            + sprint("_outmax%0.1f",FM_max) 
       } else {
         filename = filename + sprint("_seedX%0.1f",FM_seed_X) \
                             + sprint("_seedY%0.1f",FM_seed_Y) \
@@ -142,14 +135,16 @@ if (!exists(FM_defined)) {
                             + sprint("_alpha%0.1f",FM_alpha) \
                             + sprint("_beta%0.1f",FM_beta) \
                             + sprint("_thres%0.0f",FM_threshold) \
-                            + sprint("_stop%0.0f",FM_stopping_time)
+                            + sprint("_stop%0.0f",FM_stopping_time)\
+                            + sprint("_outmin%0.1f",FM_min) \
+                            + sprint("_outmax%0.1f",FM_max)
       }
     } else {
 			print "First you must create the image.\n"
 		}
     filename = filename + FM_result_filename_ext
     print "saving file "+filename+"\n"
-    FM_fast.save filename
+    FM_thres.save filename
   }
   
 	proc FM_Gui() {
@@ -179,18 +174,26 @@ if (!exists(FM_defined)) {
 			
 			FM_win.AddPage("Param")
 			
-			FM_win.BeginBoxPanel("Gradient Param")
-				FM_win.AddFloat(FM_stand,"StandDev",0,(FM_inputmax-FM_inputmin)/2)
-      FM_win.EndBoxPanel
+      FM_win.BeginBook
+        FM_win.AddPage("Gradient")
+          FM_win.AddFloat(FM_stand,"StandDev",0,(FM_inputmax-FM_inputmin)/2)
+            
+        FM_win.AddPage("Sigmoid")
+          FM_win.AddFloat(FM_min,"OutputMin",0,FM_inputmin)
+          FM_win.AddFloat(FM_max,"OutputMax",0,FM_inputmax)
+            
+        FM_win.AddPage("FastMarching")
+          FM_win.AddButton("Set Seed Point",FM_SeedPoint)             
+          FM_win.AddFloat(FM_alpha,"Alpha",-3,FM_inputmax)
+          FM_win.AddFloat(FM_beta,"Beta",0,FM_inputmax)
+          FM_win.AddFloat(FM_stopping_time,"Stopping Time Value",0,FM_inputmax)
+            
+        FM_win.AddPage("Thresholding Param")
+          FM_win.AddFloat(FM_lower,"Lower Threshold",0,FM_inputmax)
+          FM_win.AddFloat(FM_upper,"Upper Threshold",0,FM_inputmax)
       
-      FM_win.BeginBoxPanel("FastMarching Param")
-        FM_win.AddButton("Set Seed Point",FM_SeedPoint)             
-        FM_win.AddFloat(FM_alpha,"Alpha",-3,FM_inputmax)
-        FM_win.AddFloat(FM_beta,"Beta",0,FM_inputmax)
-        FM_win.AddFloat(FM_threshold,"Threshold",0,FM_inputmax)
-        FM_win.AddFloat(FM_stopping_time,"Stopping Time Value",0,FM_inputmax)
-      FM_win.EndBoxPanel
-			
+      FM_win.EndBook
+        
 			FM_win.AddPage("Run")
 			
 			FM_win.BeginBoxPanel("Processing")
@@ -200,11 +203,7 @@ if (!exists(FM_defined)) {
 			FM_win.AddPage("Save")
 			
 			FM_win.BeginBoxPanel("Result")
-				FM_win.AddButton("Save", FM_SaveF)
-			FM_win.EndBoxPanel
-			
-			FM_win.BeginBoxPanel("Gradient")
-				FM_win.AddButton("Save", FM_SaveG)
+				FM_win.AddButton("Save", FM_Save)
 			FM_win.EndBoxPanel
 			
 		FM_win.EndBook

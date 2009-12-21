@@ -11,7 +11,6 @@ filt_dir = "Filtering/"
 #AddMenuScript(filt_category,"Aniso &SRAD",      filt_dir+"AnisoSRAD_gui")
 #AddMenuScript(filt_category,"Aniso &NRAD",      filt_dir+"AnisoNRAD_gui")
 #AddMenuScript(filt_category,"Non-Local &Means", filt_dir+"NLmeans_gui")
-AddMenuScript(filt_category,"itkNon-Local &Means", filt_dir+"itkNLmeans")
 AddMenuScript(filt_category,"&Recursive Gaussian", filt_dir+"RecursiveGaussian")
 
 del filt_category
