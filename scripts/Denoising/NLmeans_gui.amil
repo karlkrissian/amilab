@@ -353,9 +353,17 @@ if (!exists(NLmeansClass)) {
     proc ::FastFilter() \
     {
       InitTime
+      if (::res.vdim==1) {
       ::res <<= NewNLmeans(&::res,::t,::f,::h,::threads,::minweight)
+      } else {
+        for local::k = 0 to ::res.vdim-1 {
+          local::c = ::res[k]
+          ::res[k] = NewNLmeans(&c,::t,::f,::h,::threads,::minweight)
+        }
+      }
       EndTime
     }
+    ::FastFilter.Comment("This procedure will call the fast C code, and will run it idependently on each channel (scalar images have only 1 channel) of the image")
     # ::FastFilter()
     
     #----------------------------
@@ -388,7 +396,7 @@ if (!exists(NLmeansClass)) {
       if (!exists(::res)) {
         ::res =  ::input
       }
-      for k=1 to ::iterations {
+      for local::k=1 to ::iterations {
         if (!::stop) {
           print sprint("Iteration %0.0f \n",k)
           if (::filter_mode==0) { ::Filter; }

@@ -1,0 +1,245 @@
+#!/usr/bin/amilab
+
+#
+# Interface for Greyscale Morphology
+#
+#
+
+if (!exists(GreyMorphoClass)) {
+
+  Class GreyMorphoClass {
+
+    #----------------------------
+    proc ::Init() \
+    {
+        ::class_name ="GreyMorphoClass"
+        ::input_name =  ""
+        ::result_image_name =  "greymorpho_res", "name of the resulting image global variable"
+
+        ::result_filename = "greymorpho_res.ami.gz", "filename for saving the resulting image to disk"
+
+        ::operation = INT(0), "0: dilation 1: erosion 2: opening 3: closing"
+  
+        ::step = 0.5,   "step size for the PDE"
+        ::size = 1,     "Size in pixels of the operation"
+
+        ::surf_scaling = 1
+  
+        #  
+        ::Imin = 0, "Minimal intensity"
+        #  
+        ::Imax = 1, "Maximal intensity"
+        # 
+        ::CreateWindow()
+    }
+    
+    #----------------------------
+    proc ::Close() \
+    {
+      ::win.Hide
+      delvars GetObjectName(::Close)
+    }
+    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    
+    #----------------------------
+    proc ::CloseAll() \
+    {
+      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
+      ::Close
+    }
+    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    
+    #----------------------------
+    proc ::LoadInput() \
+    {
+      printn "evaluation of --> ::input <<="+::input_name+";"
+      eval "::input <<="+::input_name+";"
+      if (::input_name=="Image") {
+        ::input_name = "::input"
+        ::win.update
+      }
+      ::win.update
+    }
+    
+    #----------------------------
+    proc ::ProcessImage( IMAGE input) \
+    {
+      if (::operation==0) {
+        input = EDPdilate(input,::size,::step)
+      }
+      if (::operation==1) {
+        input = EDPerode(input,::size,::step)
+      }
+      if (::operation==2) {
+        input = EDPclose(input,::size,::step)
+      }
+      if (::operation==3) {
+        input = EDPopen(input,::size,::step)
+      }
+    }
+
+    #----------------------------
+    proc ::Process() {
+
+      if (!exists(::res)) {
+        ::Restart
+      }
+      RestartTime;InitTime
+      if (::res.vdim==1) {
+        ::ProcessImage(&::res)
+      } else {
+        for local::k=0 to ::res.vdim-1 {
+          _c = ::res[k]
+          ::ProcessImage(&_c)
+          ::res[k] = _c
+        }
+      }
+      EndTime
+      SetStatusText("Time Spent (hh:mm:ss) = "+TimeSpent)
+      EndTime
+    }
+    
+
+    #----------------------------
+    proc ::Display() \
+    {
+      printn "::Display begin"
+      #::LoadInput
+      if (!exists(::input_draw)) {
+        show ::input
+      }
+      if exists(::res) {
+        show ::res
+        ::input_draw.compare(::res_draw)
+        # draw limits of ROI
+      }
+    }
+    
+    #----------------------------
+    proc ::DisplaySurfaces() \
+    {
+      # 2D display images as surfaces
+      if (::input.tz==1)&&(::input.GetFormat != RGB) {
+        if (exists(::input_surf_draw)) { del ::input_surf_draw; }
+        if (exists(::res_surf_draw))   { del ::res_surf_draw; }
+        if (exists(::input_surf)) { del ::input_surf; }
+        if (exists(::res_surf))   { del ::res_surf; }
+    
+        ::input_surf = CreateFlatMesh(::input,0)
+        ::res_surf   = CreateFlatMesh(::res,0)
+        ::input_surf.ElevateMesh(::input*::surf_scaling)
+        ::res_surf.ElevateMesh(::res*::surf_scaling)
+        ::input_surf.Normals
+        ::res_surf.Normals
+        show ::input_surf
+        ::input_surf_draw += ::res_surf
+      }
+    }
+    
+    
+    #----------------------------
+    proc ::Restart() \
+    {
+      ::LoadInput
+      ::res <<= ::input
+      show ::res
+    }
+    
+    #----------------------------
+    proc ::Save() \
+    {
+      ::res.save ::result_filename
+    }
+    ::Save.Comments("Save image to disk")
+    
+    
+    #----------------------------
+    proc ::CreateWindow() {
+    
+      # parameters window
+      ::win = ParamWin("GreyMorpho")
+      
+      ::win.BeginBook
+    
+        ::win.AddPage("Input/Output")
+
+          # set the input image
+          ::win.BeginBoxPanel("Input")
+            ::win.BeginHorizontal
+              ::win.AddImageChoice(::input_name, "")
+              ::win.AddButton("Load",::LoadInput)
+            ::win.EndHorizontal
+          ::win.EndBoxPanel
+
+          ::win.AddString(::result_image_name,"Result image")
+
+        ::win.AddPage("Param")
+          operation_id = ::win.AddEnum(::operation,"Method")
+            ::win.AddEnumChoice(operation_id,"Dilate")
+            ::win.AddEnumChoice(operation_id,"Erode")
+            ::win.AddEnumChoice(operation_id,"Close")
+            ::win.AddEnumChoice(operation_id,"Open")
+
+          ::win.BeginBoxPanel("Parameters")
+            ::win.AddFloat(::step,  "step",  0.01,1)
+            ::win.AddFloat(::size,  "size",  1,   30 )
+            ::win.AddFloat(::Imin,  "Imin",  0,   30 )
+            ::win.AddFloat(::Imax,  "Imax",  0,   30 )
+          ::win.EndBoxPanel
+    
+        ::win.AddPage("Controls")
+          ::win.BeginBoxPanel("Execution")
+              ::win.BeginHorizontal
+                  restart_id = ::win.AddButton("Restart", ::Restart)
+              ::win.EndHorizontal
+              ::win.AddButton("Run",     ::Process)
+          ::win.EndBoxPanel
+  
+          ::win.BeginBoxPanel("Result")
+              ::win.AddString(::result_filename,"file")
+              ::win.BeginHorizontal
+                  display_id = ::win.AddButton("Save",       ::Save)
+                  display_id = ::win.AddButton("Display",    ::Display)
+              ::win.EndHorizontal
+          ::win.EndBoxPanel
+
+          ::win.BeginBoxPanel("Surface display")
+              ::win.AddFloat(::surf_scaling,"surf scale",0.01,10)
+              display_surf_id = ::win.AddButton("Surfaces",    ::DisplaySurfaces)
+          ::win.EndBoxPanel
+      ::win.EndBook
+      ::win.BeginHorizontal
+        ::win.AddButton("Close",      ::Close)
+        ::win.AddButton("Close All",  ::CloseAll)
+      ::win.EndHorizontal
+      
+      ::win.update
+      ::win.Display
+    }
+
+    ::Init
+  } 
+  # Class GreyMorphoClass
+} 
+# end if (!exists(GreyMorphoClass))
+  
+  
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(gmorpho)) {
+
+  GreyMorphoClass gmorpho
+  
+  if (argc>=1) {
+    printn "reading image"
+    input = Image($1)
+    gmorpho->image_name = "input"
+    gmorpho->win.update
+  }
+
+} else {
+  InfoDialog "The script seems to be already loaded."
+}
+

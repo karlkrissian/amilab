@@ -4,7 +4,7 @@
 # Adding main GUI scripts to the menu interface
 #
 
-for dir in  "Filtering","Denoising","Noise","Segmentation","SyntheticImages",\
+for dir in  "BasicFilters","Filtering","Denoising","Noise","Segmentation","SyntheticImages",\
             "Visualization","IO","Centerlines", "QualityMeasures", "Fitting", "Optimization" \
 {
   if FileExists(GetScriptsDir+"/"+dir+"/Add2Menu.amil") {
