@@ -43,10 +43,16 @@ void wrap_AddSubImage(ParamList* p)
   if (!get_int_param(   posy,        p, n)) HelpAndReturn;
   if (!get_int_param(   posz,        p, n)) HelpAndReturn;
 
-  if ((posx<0)||(posy<0)||(posz<0)) HelpAndReturn;
+  if ((posx<0)||(posy<0)||(posz<0)) {
+    FILE_ERROR(boost::format("Wrong parameters: negative coordinate (%1%,%2%,%3%)") % posx % posy % posz );
+    HelpAndReturn;
+  }
   if ((posx>=input->DimX())||
       (posy>=input->DimY())||
-      (posz>=input->DimZ())) HelpAndReturn;
+      (posz>=input->DimZ())) {
+    FILE_ERROR(boost::format("Wrong parameters: out of range coordinate (%1%,%2%,%3%)")% posx % posy % posz);
+    HelpAndReturn;
+  }
 
   int x,y,z;
   // compute min-max position in X,Y,Z
