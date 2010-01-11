@@ -19,6 +19,7 @@
 /** function that add wrapping of the MainFrame window
  */
 void AddWrapMainFrame();
+void wrap_MainFrame( ParamList* p);
 
 void wrap_MainFrameDrawSetXLimits(          ParamList* p);
 void wrap_MainFrameDrawSetYLimits(          ParamList* p);

@@ -319,7 +319,7 @@ MainFrame::MainFrame( const wxString& title,
                   .Name(wxT("Log"))
                   .Caption(wxT("Output"))
                   .Bottom()
-                  .MinimizeButton(true));
+                  .MaximizeButton(true));
 
   CreateParamBook(this);
   m_mgr.AddPane(_param_book,
@@ -332,6 +332,8 @@ MainFrame::MainFrame( const wxString& title,
                   .MaximizeButton(true)
                   .Hide());
 
+  /// @cond wxCHECK
+
     // create some toolbars
   #if (wxCHECK_VERSION(2,9,0))
     wxToolBar* tb1 = new wxToolBar(this, wxID_ANY,
@@ -342,6 +344,7 @@ MainFrame::MainFrame( const wxString& title,
                         wxAUI_TB_DEFAULT_STYLE |
                         wxAUI_TB_OVERFLOW);
   #endif
+  /// @endcond
     tb1->SetToolBitmapSize(wxSize(48,48));
 //    tb1->AddTool(wxID_ANY, wxT("Test"), wxArtProvider::GetBitmap(wxART_ERROR));
 //    tb1->AddSeparator();
@@ -1075,7 +1078,9 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
   wxTreeItemId vartree_functions = _var_tree->AppendItem(rootbranch,_T("Functions"));
   wxTreeItemId vartree_classes   = _var_tree->AppendItem(rootbranch,_T("Classes"));
   wxTreeItemId vartree_objects   = _var_tree->AppendItem(rootbranch,_T("Objects"));
-  wxTreeItemId vartree_wrapped_functions = _var_tree->AppendItem(rootbranch,_T("Wrapped Functions"));
+  wxTreeItemId vartree_wrapped_functions = _var_tree->AppendItem(rootbranch,_T("Wrapped Image Functions"));
+  wxTreeItemId vartree_wrapped_procedures = _var_tree->AppendItem(rootbranch,_T("Wrapped Procedures"));
+  wxTreeItemId vartree_wrapped_var_functions = _var_tree->AppendItem(rootbranch,_T("Wrapped Var. Func."));
   wxTreeItemId vartree_others    = _var_tree->AppendItem(rootbranch,_T("Others"));
 
   wxFont root_font = _var_tree->GetItemFont(rootbranch);
@@ -1106,6 +1111,12 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
 
   _var_tree->SetItemFont(vartree_wrapped_functions,root_font);
   _var_tree->SetItemTextColour(vartree_wrapped_functions,vartype_colour);
+
+  _var_tree->SetItemFont(vartree_wrapped_procedures,root_font);
+  _var_tree->SetItemTextColour(vartree_wrapped_procedures,vartype_colour);
+
+  _var_tree->SetItemFont(vartree_wrapped_var_functions,root_font);
+  _var_tree->SetItemTextColour(vartree_wrapped_var_functions,vartype_colour);
 
   _var_tree->SetItemFont(vartree_others,root_font);
   _var_tree->SetItemTextColour(vartree_others,vartype_colour);
@@ -1220,6 +1231,24 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
               new MyTreeItemData(var));
         _var_tree->SetItemFont(itemid,root_font);
       } else
+      if (var->Type() == type_c_procedure)
+      {
+        itemid = _var_tree->AppendItem(
+              vartree_wrapped_procedures,
+              (*variables)[i],
+              -1,-1,
+              new MyTreeItemData(var));
+        _var_tree->SetItemFont(itemid,root_font);
+      } else
+      if (var->Type() == type_c_function)
+      {
+        itemid = _var_tree->AppendItem(
+              vartree_wrapped_var_functions,
+              (*variables)[i],
+              -1,-1,
+              new MyTreeItemData(var));
+        _var_tree->SetItemFont(itemid,root_font);
+      } else
         itemid = _var_tree->AppendItem(
               vartree_others,
               (*variables)[i],
@@ -1253,6 +1282,10 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
     _var_tree->Delete(vartree_objects);
   if (!_var_tree->ItemHasChildren(vartree_wrapped_functions)) 
     _var_tree->Delete(vartree_wrapped_functions);
+  if (!_var_tree->ItemHasChildren(vartree_wrapped_procedures)) 
+    _var_tree->Delete(vartree_wrapped_procedures);
+  if (!_var_tree->ItemHasChildren(vartree_wrapped_var_functions)) 
+    _var_tree->Delete(vartree_wrapped_var_functions);
   if (!_var_tree->ItemHasChildren(vartree_others)) 
     _var_tree->Delete(vartree_others);
 

@@ -168,7 +168,7 @@ ENDIF(AMI_USE_ITK)
 FIND_PACKAGE ( AMIFluid )
 #FIND_PACKAGE ( wxParams )
 FIND_PACKAGE ( OpticFlow )
-FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base )
+FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc )
 
 # put OpenGL before VTK to find the correct library of the system
 FIND_PACKAGE ( OpenGL )
@@ -298,7 +298,8 @@ add_subdirectory (ImageTool)
 add_subdirectory (Graphic)
 add_subdirectory (../wxParams/src binary_dir )
 add_subdirectory (OpenGL)
-add_subdirectory (penguin)
+add_subdirectory (wxSamples/penguin)
+add_subdirectory (wxSamples/stctest)
 add_subdirectory (Voxels)
 add_subdirectory (AMILab)
 
@@ -344,6 +345,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Contours
   ${AMILAB_SOURCE_DIR}/DistTransf
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapITK
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapImports
   ${AMILAB_SOURCE_DIR}
   ${AMILAB_SOURCE_DIR}/../Pixmaps
   ${AMILAB_BINARY_DIR}
@@ -409,6 +411,7 @@ add_executable (${AMILAB_BIN} WIN32
 
 SET(amilab_ownlibs
   Language
+  WrapImports
   WrapVTK
   WrapFilters
   WrapSystem
@@ -417,6 +420,7 @@ SET(amilab_ownlibs
   WrapWII
   WrapInterface
   WrapCommon
+  WrapWXSamples
   AMILab
   AMImage
   Contours
@@ -430,7 +434,6 @@ SET(amilab_ownlibs
   Line
   Math
   OpenGL
-  penguin
   Graphic
   wxParams
   SplineThevenaz
@@ -438,6 +441,9 @@ SET(amilab_ownlibs
   Vessels
   Common
   Voxels
+# wrapped wxwidgets samples
+  penguin
+  stctest
 )
 
 

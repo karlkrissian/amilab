@@ -23,6 +23,7 @@
  *  to the AMI language
  */
 void AddWrapSystem();
+void wrap_System(ParamList* p);
 
 Variable::ptr wrap_GetFreeMemory(   ParamList* p);
 Variable::ptr wrap_GetFullHostName( ParamList* p);

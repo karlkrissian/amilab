@@ -280,21 +280,9 @@ int IM_WriteImage ( const char *name,
 //=========================================================================
 
 
-/** Operations de base
-   copie d'une image vers une autre\\
-         a partir d'un objet InrImage\\
-         a partir d'une structure t_inrimage\\
-   conversion de format\\
-   Lecture a partir d'un fichier\\
-
-   operations arithmetiques\\
-   addition\\
-   soustraction\\
-   multiplication\\
-   division\\
-   log\\
-   exp
-*/
+/**
+ Image Class, not templated
+ */
 class InrImage
 //    ========
 {

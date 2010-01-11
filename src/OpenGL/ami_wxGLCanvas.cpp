@@ -364,6 +364,7 @@ bool ami_wxGLCanvas::SetCurrentContext()
       return false;
     }
     if (_opengl_context.get()) {
+      /// @cond wxCHECK
       #if (wxCHECK_VERSION(2,9,0))
         bool res= SetCurrent(*_opengl_context);
         if (!res) CLASS_ERROR("SetCurrent() failed");
@@ -372,6 +373,7 @@ bool ami_wxGLCanvas::SetCurrentContext()
         CLASS_MESSAGE("Setting the context");
         SetCurrent(*_opengl_context);
       #endif
+      /// @endcond
     }
     else {
       CLASS_ERROR("context not initialized !");

@@ -1271,11 +1271,15 @@ void DessinImageBase :: DessineCurseur(  int x, int y, int z, int type)
   _current_pen->SetColour(_couleur_curseur);
   _current_pen->SetWidth(_largeur_lignes+1);
 
+  /// @cond wxCHECK
+
   #if (wxCHECK_VERSION(2,9,0))
     _current_pen->SetStyle((wxPenStyle)wxSOLID);
   #else
     _current_pen->SetStyle(wxSOLID);
   #endif
+  /// @endcond
+
   drawcontext->SetPen(*_current_pen);
 
   Si (Param._type_coupe+1) & (TYPE_COUPE_XY+1) Alors

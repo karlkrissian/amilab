@@ -40,22 +40,30 @@
 using namespace boost;
 
 /**
-  The class AMIObject will contain a link to its class object
-  and will create a context of variables by running the code
-  present in the class object
+  The class AMIObject can be created either with or without a link to a class object.
+  If a class object is present, it will create a context of variables by running the code
+  present in the class object, otherwise it can be considered as a namespace.
 */
 class AMIObject {
 
-  DEFINE_CLASS(AMIObject)
+  DEFINE_CLASS(AMIObject);
 
 private:
+
+  /// Smart pointer to the corresponding class if any
   AMIClass::ptr   _class;
+
+  /// Object name
   std::string     _name;
-  // have its own list of variables
+
+  /// Own list of variables
   Variables::ptr  _vars;
 
  public:
 
+  /**
+   * Constructor: creates a smart pointer to the list of variables
+   */
   AMIObject()
     {
       _name     = "";
@@ -63,11 +71,18 @@ private:
       _vars->SetName("object");
     }
 
+  /**
+   * Destructor : empties the list of variables
+   */
   virtual ~AMIObject() 
     {
     _vars->EmptyVariables();
     }
 
+  /**
+   * Associates the class to the object
+   * @param amiclass 
+   */
   void SetClass(AMIClass::ptr& amiclass)
   {
     if (amiclass.get()!=NULL)
@@ -79,19 +94,36 @@ private:
     _class = amiclass;
   }
 
+  /**
+   * Gets a smart pointer to the associated class if any
+   * @return 
+   */
   AMIClass::ptr& GetClass() { return _class;}
 
+  /**
+   * Sets the object name
+   * @param fname 
+   */
   void SetName( const string& fname) 
   { 
     _name = fname; 
     _vars->SetName(fname);
   }
 
+  /**
+   * Gets the object name
+   * @return object name
+   */
   const string& GetName() const { return _name; }
 
+  /**
+   * Gets the list of variables 
+   * @return object context (contains its variables)
+   */
   Variables::ptr& GetContext() { return _vars;}
 
 }; // AMIObject
 
 
 #endif // _ami_object_h_
+

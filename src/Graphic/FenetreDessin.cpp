@@ -369,11 +369,13 @@ void FenetreDessin::FixeCouleurRemplissage(
 //-------------------------------------------------
 void  FenetreDessin::FixeStyleRemplissage( const int& style)
 {
+  /// @cond wxCHECK
   #if (wxCHECK_VERSION(2,9,0)) 
   _current_brush->SetStyle((wxBrushStyle)style);
   #else
   _current_brush->SetStyle(style);
   #endif
+  /// @endcond
   _memory_dc->SetBrush(*_current_brush);
 } // FixeStyleRemplissage
 
@@ -429,6 +431,8 @@ void FenetreDessin ::  FixeParametresLigne( unsigned int largeur,
                         int intersection)
 {
   _current_pen->SetWidth(largeur);
+  /// @cond wxCHECK
+
   #if (wxCHECK_VERSION(2,9,0)) 
     if (style!=-1)
       _current_pen->SetStyle((wxPenStyle)style);
@@ -440,6 +444,7 @@ void FenetreDessin ::  FixeParametresLigne( unsigned int largeur,
     if (extremites!=-1) 
       _current_pen->SetJoin(extremites);
   #endif
+  /// @endcond
   _memory_dc->SetPen(*_current_pen);
 } // FixeParametresLigne()
 

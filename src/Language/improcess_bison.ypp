@@ -110,7 +110,6 @@ using namespace MyNS_ForOutput;
 //-------
 
 #include "wx/evtloop.h"
-#include "penguin.h"
 #include "driver.h"
 
 extern VarContexts       Vars;
@@ -743,8 +742,6 @@ static void CB_update_imagelist( void* imagelist_gui)
 %token T_SetVisible
 %token T_SetColorMaterial
 
-%token T_penguin
-
 %token T_Statistics T_GetIntensities
 %token T_GetLinesLength
 %token T_GetLinesExtremities
@@ -868,14 +865,9 @@ static void CB_update_imagelist( void* imagelist_gui)
 
 %token T_SaveStructuredGrid
 
-%token T_import_ami
 %token T_import_vtk
-%token T_import_itk
 %token T_import_wii
 %token T_import_filters
-%token T_import_sys
-%token T_import_mainframe
-%token T_import_imagedraw
 
 %token T_amiOFCorr2D
 %token T_amiOFVar2D
@@ -1986,23 +1978,6 @@ command:
             Vars.SetObjectContext(previous_ocontext);
           }
 
-        }
-        |  T_penguin
-        {
-          // Create the main frame window
-          PenguinFrame *frame = new PenguinFrame(GB_main_wxFrame, wxT("wxWidgets Penguin Sample"),
-              wxDefaultPosition, wxDefaultSize);
-
-          #if wxUSE_ZLIB
-            if (wxFileExists(wxT("penguin.dxf.gz")))
-              frame->GetCanvas()->LoadDXF(wxT("penguin.dxf.gz"));
-          #else
-            if (wxFileExists(wxT("penguin.dxf")))
-              frame->GetCanvas()->LoadDXF(wxT("penguin.dxf"));
-          #endif
-
-          // Show the frame
-          frame->Show(true);
         }
         |  var_image ASSIGN_OP expr_image
         {
@@ -5287,19 +5262,9 @@ cerr << "Feature not available, needs to be updated ! " << endl;
           delete [] $4;
         }
         |
-        T_import_ami
-        {
-          AddWrapFluid();
-        }
-        |
         T_import_vtk
         {
           AddWrapVTK();
-        }
-        |
-        T_import_itk
-        {
-          AddWrapITK();
         }
         |
         T_import_wii
@@ -5310,21 +5275,6 @@ cerr << "Feature not available, needs to be updated ! " << endl;
         T_import_filters
         {
           AddWrapFilters();
-        }
-        |
-        T_import_sys
-        {
-          AddWrapSystem();
-        }
-        |
-        T_import_mainframe
-        {
-          AddWrapMainFrame();
-        }
-        |
-        T_import_imagedraw
-        {
-          AddWrapImageDraw();
         }
         |
         T_amiOFCorr2D T_OP_PAR var_image T_COMMA var_image T_COMMA
@@ -6135,7 +6085,9 @@ postfix_expr
       
       if (o.get()) {
         cout << "var   name = " << $1->Name() <<endl;
-        cout << "class name = " << o->GetClass()->GetName() <<endl;
+        if (o->GetClass().get()) {
+          cout << "class name = " << o->GetClass()->GetName() <<endl;
+        }
         o->GetContext()->display();
       }
 /*      std::string tmp_string;

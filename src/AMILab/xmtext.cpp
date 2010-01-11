@@ -468,7 +468,7 @@ void TextControl::OnChar(wxKeyEvent& event)
                     GB_driver.yyiperror(" No filename given! \n");
                   }
 
-                  wxFileName filename(_T(name.c_str()));
+                  wxFileName filename(wxString(name.c_str(), wxConvUTF8));
                   filename.Normalize(wxPATH_NORM_ALL,wxEmptyString,wxPATH_UNIX);
                   wxString newname(   filename.GetVolume()+filename.GetVolumeSeparator()+
                                       filename.GetPath(wxPATH_GET_VOLUME,wxPATH_UNIX)+

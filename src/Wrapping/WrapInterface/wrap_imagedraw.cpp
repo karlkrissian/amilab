@@ -23,28 +23,14 @@ extern VarContexts  Vars;
 
 void AddWrapImageDraw()
 {
-  // 1. create new class
-  AMIClass::ptr amiclass = AMIClass::ptr(new AMIClass);
-  amiclass->SetName("wrap_idraw");
-  amiclass->SetFileName(__FILE__);
-  AmiInstructionBlock::ptr body(new AmiInstructionBlock);
-  amiclass->SetBody(body);
-  Vars.AddVarPtr( type_ami_class, amiclass->GetName().c_str(), (void*) &amiclass);
-  
-  // 2. create new instance of the class
-  AMIObject* amiobject;
-  amiobject = new AMIObject;
-
+  // Create new instance of the class
+  AMIObject* amiobject = new AMIObject;
   amiobject->SetName("wrap_idraw_inst");
-  amiobject->SetClass(amiclass);
-
-  // execute the code of the class with the variables of the object
 
   // Set the object context
   Variables::ptr previous_ocontext = Vars.GetObjectContext();
   Vars.SetObjectContext(amiobject->GetContext());
 
-  // TODO: Could execute inherited classes in the future ...
   Vars.AddVar(type_c_procedure, "DrawLine",  (void*)  wrap_ImageDrawDrawLine, OBJECT_CONTEXT_NUMBER);
   Vars.AddVar(type_c_procedure, "DisplayDA",  (void*)  wrap_ImageDrawDisplayDA, OBJECT_CONTEXT_NUMBER);
   Vars.AddVar(type_c_procedure, "LineParam",  (void*)  wrap_ImageDrawLineParam, OBJECT_CONTEXT_NUMBER);
@@ -55,6 +41,22 @@ void AddWrapImageDraw()
 
   // 3. add the variables to this instance
   Vars.AddVar( type_ami_object, amiobject->GetName().c_str(), (void*) amiobject);
+}
+
+/**
+ * Adds the ImageDraw wrapping
+ * @param p 
+ */
+void wrap_ImageDraw( ParamList* p)
+{
+    char functionname[] = "ImageDraw";
+    char description[]=" \n\
+      Adds wrapping for ImageDraw. \n\
+            ";
+    char parameters[] =" \n\
+            ";
+
+  AddWrapImageDraw();
 }
 
 

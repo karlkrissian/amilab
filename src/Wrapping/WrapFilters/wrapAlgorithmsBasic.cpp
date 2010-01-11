@@ -28,7 +28,8 @@ extern VarContexts  Vars;
 
 void wrapAlgorithmsBasic()
 {
-   Vars.AddVar(type_c_image_function,"FastLocalSumDir", (void*) wrapFastLocalSumDir);
+  // adding to the current object context
+   Vars.AddVar(type_c_image_function,"FastLocalSumDir", (void*) wrapFastLocalSumDir, OBJECT_CONTEXT_NUMBER);
 }
 
 

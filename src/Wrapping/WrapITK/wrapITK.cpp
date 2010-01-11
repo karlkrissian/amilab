@@ -41,6 +41,7 @@
 #include "wrapitkWrite.h"
 #include "wrapitkFastMarchingImageFilter.h"
 #include "wrapitkWaterShedImageFilter.h"
+#include "ami_object.h"
 
 
 extern VarContexts  Vars;
@@ -48,19 +49,50 @@ extern VarContexts  Vars;
 //---------------------------------------------------------
 void AddWrapITK(){
 
- Vars.AddVar(type_c_image_function,"itkRead_3D_US", (void*) itkRead_3D_US);
+  // Create new instance of the class
+  AMIObject* amiobject = new AMIObject;
+  amiobject->SetName("itk");
 
- Vars.AddVar(type_c_image_function,"itkRead", (void*) wrap_itkRead);
+  // Set the object context
+  Variables::ptr previous_ocontext = Vars.GetObjectContext();
+  Vars.SetObjectContext(amiobject->GetContext());
 
- Vars.AddVar(type_c_image_function,"itkIsoContourDist", (void*) itkIsoContourDist);
+  Vars.AddVar(type_c_image_function,"Read_3D_US", (void*) itkRead_3D_US, OBJECT_CONTEXT_NUMBER);
+  
+  Vars.AddVar(type_c_image_function,"Read", (void*) wrap_itkRead, OBJECT_CONTEXT_NUMBER);
+  
+  Vars.AddVar(type_c_image_function,"IsoContourDist", (void*) itkIsoContourDist, OBJECT_CONTEXT_NUMBER);
+  
+  // Vars.AddVar(type_c_image_function,"BasicNLMeans2D", (void*) itkBasicNLMeans2D, OBJECT_CONTEXT_NUMBER);
+  // Vars.AddVar(type_c_image_function,"BasicNLMeans3D", (void*) itkBasicNLMeans3D, OBJECT_CONTEXT_NUMBER);
+  Vars.AddVar(type_c_image_function,"RecursiveGaussianImageFilter2D", (void*) itkRecursiveGaussianImageFilter2D, OBJECT_CONTEXT_NUMBER);
+  Vars.AddVar(type_c_image_function,"RecursiveGaussianImageFilter3D", (void*) itkRecursiveGaussianImageFilter3D, OBJECT_CONTEXT_NUMBER);
+  Vars.AddVar(type_c_procedure,     "Write"                         , (void*) wrap_itkWrite, OBJECT_CONTEXT_NUMBER);
+  Vars.AddVar(type_c_image_function,"FastMarchingImageFilter2D"     , (void*) itkFastMarchingImageFilter2D, OBJECT_CONTEXT_NUMBER);
+  Vars.AddVar(type_c_image_function,"FastMarchingImageFilter3D"     , (void*) itkFastMarchingImageFilter3D, OBJECT_CONTEXT_NUMBER);
+  Vars.AddVar(type_c_image_function,"WaterShedImageFilter2D"     , (void*) itkWaterShedImageFilter2D, OBJECT_CONTEXT_NUMBER);
+  Vars.AddVar(type_c_image_function,"WaterShedImageFilter3D"     , (void*) itkWaterShedImageFilter3D, OBJECT_CONTEXT_NUMBER);
 
-// Vars.AddVar(type_c_image_function,"itkBasicNLMeans2D", (void*) itkBasicNLMeans2D);
-// Vars.AddVar(type_c_image_function,"itkBasicNLMeans3D", (void*) itkBasicNLMeans3D);
- Vars.AddVar(type_c_image_function,"itkRecursiveGaussianImageFilter2D", (void*) itkRecursiveGaussianImageFilter2D);
- Vars.AddVar(type_c_image_function,"itkRecursiveGaussianImageFilter3D", (void*) itkRecursiveGaussianImageFilter3D);
- Vars.AddVar(type_c_procedure,     "itkWrite"                         , (void*) wrap_itkWrite);
- Vars.AddVar(type_c_image_function,"itkFastMarchingImageFilter2D"     , (void*) itkFastMarchingImageFilter2D);
- Vars.AddVar(type_c_image_function,"itkFastMarchingImageFilter3D"     , (void*) itkFastMarchingImageFilter3D);
- Vars.AddVar(type_c_image_function,"itkWaterShedImageFilter2D"     , (void*) itkWaterShedImageFilter2D);
- Vars.AddVar(type_c_image_function,"itkWaterShedImageFilter3D"     , (void*) itkWaterShedImageFilter3D);
+  // Restore the object context
+  Vars.SetObjectContext(previous_ocontext);
+
+  // Add the new object (namespace)
+  Vars.AddVar( type_ami_object, amiobject->GetName().c_str(), (void*) amiobject);
+}
+
+
+/**
+ * Adds the ITK wrapping
+ * @param p 
+ */
+void wrap_ITK( ParamList* p)
+{
+    char functionname[] = "ITK";
+    char description[]=" \n\
+      Adds wrapping for ITK. \n\
+            ";
+    char parameters[] =" \n\
+            ";
+
+  AddWrapITK();
 }

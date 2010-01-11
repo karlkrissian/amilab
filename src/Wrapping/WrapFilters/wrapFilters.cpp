@@ -31,49 +31,78 @@
 #include "wrap_ImTranslate.h"
 #include "wrap_AddSubImage.h"
 #include "wrap_MaxSubImage.h"
+#include "ami_object.h"
 
 extern VarContexts  Vars;
 
 //---------------------------------------------------------
 void AddWrapFilters(){
 
+  // Create new instance of the class
+  AMIObject* amiobject = new AMIObject;
+  amiobject->SetName("filters");
+
+  // Set the object context
+  Variables::ptr previous_ocontext = Vars.GetObjectContext();
+  Vars.SetObjectContext(amiobject->GetContext());
+
   wrapAlgorithmsBasic();
 
 //  Vars.AddVar(type_c_image_function,"ImTranslation",             (void*) ImTranslation );
-  Vars.AddVar(type_c_image_function,"NSim",             (void*) NSim );
-  Vars.AddVar(type_c_procedure,     "NSim2",            (void*) NSim2 );
-  Vars.AddVar(type_c_image_function,"NLmeans",          (void*) NLmeans   );
-  Vars.AddVar(type_c_image_function,"NLmeans_fast",     (void*) NLmeans_fast   );
-  Vars.AddVar(type_c_image_function,"NLmeans_MRI",      (void*) NLmeans_MRI   );
-  Vars.AddVar(type_c_image_function,"LeastSquares",     (void*) WrapLeastSquares   );
-  Vars.AddVar(type_c_function,      "EigenDecomp",      (void*) Wrap_EigenDecomp   );
-  Vars.AddVar(type_c_image_function,"StructureTensorH", (void*) wrap_StructureTensorHessianNew  );
-  Vars.AddVar(type_c_function,      "SplineResample",   (void*) Wrap_SmoothLinesToSplines );
+  Vars.AddVar(type_c_image_function,"NSim",             (void*) NSim , OBJECT_CONTEXT_NUMBER);
+  Vars.AddVar(type_c_procedure,     "NSim2",            (void*) NSim2 , OBJECT_CONTEXT_NUMBER);
+  Vars.AddVar(type_c_image_function,"NLmeans",          (void*) NLmeans, OBJECT_CONTEXT_NUMBER);
+  Vars.AddVar(type_c_image_function,"NLmeans_fast",     (void*) NLmeans_fast, OBJECT_CONTEXT_NUMBER);
+  Vars.AddVar(type_c_image_function,"NLmeans_MRI",      (void*) NLmeans_MRI, OBJECT_CONTEXT_NUMBER);
+  Vars.AddVar(type_c_image_function,"LeastSquares",     (void*) WrapLeastSquares, OBJECT_CONTEXT_NUMBER);
+  Vars.AddVar(type_c_function,      "EigenDecomp",      (void*) Wrap_EigenDecomp, OBJECT_CONTEXT_NUMBER);
+  Vars.AddVar(type_c_image_function,"StructureTensorH", (void*) wrap_StructureTensorHessianNew, OBJECT_CONTEXT_NUMBER);
+  Vars.AddVar(type_c_function,      "SplineResample",   (void*) Wrap_SmoothLinesToSplines, OBJECT_CONTEXT_NUMBER);
   
   #ifdef AMI_USE_FASTNLMEANS
-    Vars.AddVar(type_c_image_function,"NewNLmeans", (void*) Wrap_NewNLmeans  );
+    Vars.AddVar(type_c_image_function,"NewNLmeans", (void*) Wrap_NewNLmeans, OBJECT_CONTEXT_NUMBER);
   #endif // AMI_USE_FASTNLMEANS
 
   Vars.AddVar(type_c_image_function,"ComputePV", 
-                (void*) wrapComputePV  );
+                (void*) wrapComputePV, OBJECT_CONTEXT_NUMBER);
   Vars.AddVar(type_c_image_function,"ComputePV_subdiv", 
-                (void*) wrapComputePV_subdiv  );
+                (void*) wrapComputePV_subdiv, OBJECT_CONTEXT_NUMBER);
 
   Vars.AddVar(type_c_image_function,"DirSum", 
-                (void*) wrap_DirSum  );
+                (void*) wrap_DirSum, OBJECT_CONTEXT_NUMBER);
 
   Vars.AddVar(type_c_image_function,"ImTranslate", 
-                (void*) wrap_ImTranslate  );
+                (void*) wrap_ImTranslate, OBJECT_CONTEXT_NUMBER);
 
   Vars.AddVar(type_c_procedure,"AddSubImage", 
-                (void*) wrap_AddSubImage  );
+                (void*) wrap_AddSubImage, OBJECT_CONTEXT_NUMBER);
   Vars.AddVar(type_c_procedure,"MaxSubImage", 
-                (void*) wrap_MaxSubImage  );
+                (void*) wrap_MaxSubImage, OBJECT_CONTEXT_NUMBER);
+
+  // Restore the object context
+  Vars.SetObjectContext(previous_ocontext);
+
+  // 3. add the variables to this instance
+  Vars.AddVar( type_ami_object, amiobject->GetName().c_str(), (void*) amiobject);
 
 }
 
 
+/**
+ * Adds the Filters wrapping
+ * @param p 
+ */
+void wrap_Filters( ParamList* p)
+{
+  char functionname[] = "Filters";
+  char description[]=" \n\
+    Adds wrapping for Filters. \n\
+          ";
+  char parameters[] =" \n\
+          ";
 
+  AddWrapFilters();
+}
 
 
 /* neighborhood similarity ...

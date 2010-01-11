@@ -19,6 +19,7 @@
 /** function that add wrapping of the Image Drawing window
  */
 void AddWrapImageDraw();
+void wrap_ImageDraw( ParamList* p);
 
 void wrap_ImageDrawSetLineColor( ParamList* p);
 void wrap_ImageDrawDrawLine(     ParamList* p);

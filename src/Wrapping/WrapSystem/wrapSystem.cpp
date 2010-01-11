@@ -26,17 +26,49 @@ extern VarContexts  Vars;
 
 //---------------------------------------------------------
 void AddWrapSystem(){
+  // Create new instance of the class
+  AMIObject* amiobject = new AMIObject;
+  amiobject->SetName("op_system");
 
-//  Vars.AddVar(type_c_function, "GetFreeMemory",    (void*) wrap_GetFreeMemory );
-  Vars.AddVar(type_c_function, "GetFullHostName",     (void*) wrap_GetFullHostName );
-  Vars.AddVar(type_c_function, "GetHomeDir",          (void*) wrap_GetHomeDir );
-  Vars.AddVar(type_c_function, "GetHostName",         (void*) wrap_GetHostName );
-  Vars.AddVar(type_c_function, "GetUserHome",         (void*) wrap_GetUserHome );
-  Vars.AddVar(type_c_function, "GetUserId",           (void*) wrap_GetUserId );
-  Vars.AddVar(type_c_function, "GetUserName",         (void*) wrap_GetUserName );
-  Vars.AddVar(type_c_function, "GetCurrentScriptDir", (void*) wrap_GetCurrentScriptDir );
+  // Set the object context
+  Variables::ptr previous_ocontext = Vars.GetObjectContext();
+  Vars.SetObjectContext(amiobject->GetContext());
+
+//  Vars.AddVar(type_c_function, "GetFreeMemory",    (void*) wrap_GetFreeMemory , OBJECT_CONTEXT_NUMBER);
+  Vars.AddVar(type_c_function, "GetFullHostName",     (void*) wrap_GetFullHostName , OBJECT_CONTEXT_NUMBER);
+  Vars.AddVar(type_c_function, "GetHomeDir",          (void*) wrap_GetHomeDir , OBJECT_CONTEXT_NUMBER);
+  Vars.AddVar(type_c_function, "GetHostName",         (void*) wrap_GetHostName , OBJECT_CONTEXT_NUMBER);
+  Vars.AddVar(type_c_function, "GetUserHome",         (void*) wrap_GetUserHome , OBJECT_CONTEXT_NUMBER);
+  Vars.AddVar(type_c_function, "GetUserId",           (void*) wrap_GetUserId , OBJECT_CONTEXT_NUMBER);
+  Vars.AddVar(type_c_function, "GetUserName",         (void*) wrap_GetUserName , OBJECT_CONTEXT_NUMBER);
+  Vars.AddVar(type_c_function, "GetCurrentScriptDir", (void*) wrap_GetCurrentScriptDir , OBJECT_CONTEXT_NUMBER);
+
+  // Restore the object context
+  Vars.SetObjectContext(previous_ocontext);
+
+  // 3. add the variables to this instance
+  Vars.AddVar( type_ami_object, amiobject->GetName().c_str(), (void*) amiobject);
+
 
 }
+
+
+/**
+ * Adds the System wrapping
+ * @param p 
+ */
+void wrap_System(ParamList* p)
+{
+    char functionname[] = "System";
+    char description[]=" \n\
+      Adds wrapping for Operating System operations. \n\
+            ";
+    char parameters[] =" \n\
+            ";
+
+  AddWrapSystem();
+}
+
 
 /*
 //--------------------------------------------------------------------

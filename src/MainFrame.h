@@ -137,11 +137,14 @@ public:
   void OnHelpBack ( wxCommandEvent& event );
   void OnHelpForward ( wxCommandEvent& event );
 
+  /// @cond wxCHECK
   #if (wxCHECK_VERSION(2,9,0))
     void ConsoleReset ( wxCommandEvent& event );
   #else
     void ConsoleReset ( wxAuiToolBarEvent& event );
   #endif
+  /// @endcond
+
   void ConsoleClear ( wxCommandEvent& event );
   void UpdateVarsDisplay   ();
   void UpdateVars   ( wxCommandEvent& event);

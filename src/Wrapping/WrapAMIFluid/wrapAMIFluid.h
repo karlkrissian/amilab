@@ -19,6 +19,7 @@
  *  to the AMI language
  */
 void AddWrapFluid(); 
+void wrap_AMIFluid(ParamList* p);
 
 // Wrapping functions:
 

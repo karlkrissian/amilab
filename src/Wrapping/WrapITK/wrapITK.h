@@ -20,5 +20,6 @@
  *  to the AMI language
  */
 void AddWrapITK(); 
+void wrap_ITK(ParamList* p);
 
 #endif // _WRAPITK_H_
