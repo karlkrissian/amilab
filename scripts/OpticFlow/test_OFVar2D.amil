@@ -1,6 +1,6 @@
 # command line: ./amilab 
 
-import_ami
+ami_import->AMIFluid()
 
 #--------------------------------------------------
 sigma    = 2.0
@@ -23,7 +23,7 @@ dtype = INT(0)
 proc call_amiOFVar2D(IMAGE _im1, IMAGE _im2, IMAGE _res) {
   _u = _res[0];
   _v = _res[1];
-  amiOFVar2DZoom(_im1,_im2,sigma,T,alpha,dtype,quantile,ht,&_u,&_v,nbiter,zoom);
+  AMIFluid->amiOFVar2DZoom(_im1,_im2,sigma,T,alpha,dtype,quantile,ht,&_u,&_v,nbiter,zoom);
   _res[0]=_u;
   _res[1]=_v;
 }

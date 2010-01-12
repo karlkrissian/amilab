@@ -19,6 +19,7 @@
 #include "CoutwxString.h"
 #include "MainFrame.h"
 #include "ImageStack.h"
+#include "stctest.h"
 
 #include <wx/filename.h>
 
@@ -442,9 +443,25 @@ int Driver::err_print(const char* st)
 {
   *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString::FromAscii(st);
   string mess =  (format("Error %s \n") % st).str();
-  mess = mess + " Abort current parsing ?";
+  mess = mess + " Abort current parsing and open file?";
   wxMessageDialog* err_msg = new wxMessageDialog(NULL,GetwxStr(mess),GetwxStr("Error"),wxYES_NO |  wxYES_DEFAULT  | wxICON_ERROR);
-  return err_msg->ShowModal();
+  int res = err_msg->ShowModal();
+  if (res==wxID_YES) {
+    // create application frame
+    StcTestFrame*  m_frame = new StcTestFrame ( wxT("AMILab editor"));
+    // open application frame
+    m_frame->Layout ();
+    m_frame->Show (true);
+    m_frame->FileOpen (wxString(this->current_file.c_str(),wxConvUTF8));
+    Edit* editor = m_frame->GetEditor();
+    // TODO: 
+    // - set show line numbers
+    // - set highlight C++
+    // - go to specific line
+    editor->ShowLineNumbers(true);
+    editor->GotoLine(this->yyiplineno);
+  }
+  return res;
 } // Driver::err_print()
 
 

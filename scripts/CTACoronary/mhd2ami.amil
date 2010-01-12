@@ -1,8 +1,8 @@
 #!/usr/bin/amilab
 
-import_itk
+ami_import->ITK()
 
-i = itkRead_3D_US($1)
+i = itk->Read_3D_US($1)
 
 // Don't compress with gzip since it doesn't gain much
 // and it is much slower

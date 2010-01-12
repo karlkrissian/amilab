@@ -1,6 +1,6 @@
 # command line: ./amilab 
 
-import_ami
+ami_import->AMIFluid()
 
 #--------------------------------------------------
 beta            = 0.25
@@ -77,7 +77,7 @@ proc ZoomImages() {
       zd=d
       zd1=d1
       for k=1 to zoomdown {
-	zi  = amiZoomDown3D(zi)
+	zi  = AMIFluid->amiZoomDown3D(zi)
 	zd  = Resize(zd,zd.tx/2,zd.ty/2,zd.tz,1)
 	zd=zd/2
 	zd1  = Resize(zd1,zd1.tx/2,zd.ty/2,zd1.tz,1)
@@ -95,10 +95,10 @@ proc call_amiOF_2D_T(IMAGE _im, IMAGE _res) {
 print "call_amiOF_2D_T begin\n"
   Conv_GS     = exp(ln(10)*Conv_GS_exp    )  
   Conv_Scales = exp(ln(10)*Conv_Scales_exp)  
-  amiOF_2D_T(_im,&_res,beta,beta,2,2,alfa,alfa,Conv_GS,Nscales,Conv_Scales,gradtype,smoothfunction)
+  AMIFluid->amiOF_2D_T(_im,&_res,beta,beta,2,2,alfa,alfa,Conv_GS,Nscales,Conv_Scales,gradtype,smoothfunction)
   
   // invert flux
-  _res = amiInverseFlow(_res)
+  _res = AMIFluid->amiInverseFlow(_res)
   
 print "call_amiOF_2D_T end\n"
 

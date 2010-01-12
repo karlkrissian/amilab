@@ -1,6 +1,6 @@
 #!/usr/bin/amilab
 
-import_ami
+ami_import->AMIFluid()
 
 if (($1=="-help")||($1=="--help")) {
     printn
@@ -251,7 +251,7 @@ proc LoadRFImage() {
 
 proc InverseFlow( IMAGE _flow, NUM scale_factor) {
   flow1 = Resize(_flow,_flow.tx*scale_factor,_flow.ty*scale_factor,1,2)
-  flow1 = amiInverseFlow(flow1/2)
+  flow1 = AMIFluid->amiInverseFlow(flow1/2)
   _flow = Resize(flow1,_flow.tx,_flow.ty,_flow.tz,2)
 }
 
@@ -270,11 +270,11 @@ proc invert_flow_2d_t(IMAGE _flow) {
 #--------------------------------------------------
 proc call_amiOFPDE_temp(IMAGE _im, IMAGE _res) {
 
-  amiOFSetSymmetric(symmetric)
+  AMIFluid->amiOFSetSymmetric(symmetric)
   
   Conv_GS     = exp(ln(10)*Conv_GS_exp    )  
   Conv_Scales = exp(ln(10)*Conv_Scales_exp)  
-  amiOF_2D_T(_im,&_res,beta,beta,2,2,alfa,alfa,Conv_GS,Nscales,Conv_Scales,gradtype,smoothfunction)
+  AMIFluid->amiOF_2D_T(_im,&_res,beta,beta,2,2,alfa,alfa,Conv_GS,Nscales,Conv_Scales,gradtype,smoothfunction)
   
   if (symmetric) {
     // invert flux
@@ -293,7 +293,7 @@ proc call_amiOFPDE_Zoom(IMAGE _im1,IMAGE _im2, IMAGE _res) {
   _resx=_res[0]
   _resy=_res[1]
 
-  amiOFVar2DZoom(_im1,_im2,OFzoom_sigma,OFzoom_T,OFzoom_alpha,OFzoom_dtype,OFzoom_quantile,OFzoom_ht,&_resx,&_resy,OFzoom_nbiter,OFzoom_zoom);
+  AMIFluid->amiOFVar2DZoom(_im1,_im2,OFzoom_sigma,OFzoom_T,OFzoom_alpha,OFzoom_dtype,OFzoom_quantile,OFzoom_ht,&_resx,&_resy,OFzoom_nbiter,OFzoom_zoom);
 
   _res[0]=_resx
   _res[1]=_resy
@@ -310,7 +310,7 @@ proc call_amiOFPDE_Vorticity(IMAGE _im1,IMAGE _im2, IMAGE _res) {
   _resy=_res[1]
   _vort=_resx;
 
-  amiGradVorticity(_im1,_im2,&_resx,&_resy,vort_grid,vort_winsize,vort_sigma,vort_alpha,vort_TOL,&_vort)
+  AMIFluid->amiGradVorticity(_im1,_im2,&_resx,&_resy,vort_grid,vort_winsize,vort_sigma,vort_alpha,vort_TOL,&_vort)
 
   _res[0]=_resx
   _res[1]=_resy
@@ -327,7 +327,7 @@ proc call_amiCorr2D(IMAGE _im1, IMAGE _im2, IMAGE _res) {
   corr=_im1*0
   cx = _im1*0
   cy = _im1*0
-  amiOFCorr2D(_im1,_im2,_u,_v,corr,cx,cy,0,0,corr_step_x,corr_step_y,wsx,wsy,1);
+  AMIFluid->amiOFCorr2D(_im1,_im2,_u,_v,corr,cx,cy,0,0,corr_step_x,corr_step_y,wsx,wsy,1);
   _res[0]=_u;
   _res[1]=_v;
 }
@@ -356,7 +356,7 @@ proc call_OF(IMAGE _im1, IMAGE _im2, IMAGE _res) {
 #--------------------------------------------------
 proc call_amiOFPDE_GaussSc(IMAGE _im1, IMAGE _im2, IMAGE _res) {
 
-  amiOFSetSymmetric(symmetric)
+  AMIFluid->amiOFSetSymmetric(symmetric)
   zoom_z = 1+_im1.tz>1;
   Conv_GS     = exp(ln(10)*Conv_GS_exp    )  
   Conv_Scales = exp(ln(10)*Conv_Scales_exp)  
@@ -372,8 +372,8 @@ proc call_amiOFPDE_GaussSc(IMAGE _im1, IMAGE _im2, IMAGE _res) {
     print sprint("\n sigma = %0.2f \n",_sigma)
     _im1s = filter(_im1,_sigma,0,0,0)
     _im2s = filter(_im2,_sigma,0,0,0)
-    amiOFPDE_Param(beta,beta,beta,2,2,zoom_z,alfa,alfa,alfa,Conv_GS,1,Conv_Scales,gradtype,smoothfunction)
-    amiOFPDE(_im1s,_im2s,&_res)
+    AMIFluid->amiOFPDE_Param(beta,beta,beta,2,2,zoom_z,alfa,alfa,alfa,Conv_GS,1,Conv_Scales,gradtype,smoothfunction)
+    AMIFluid->amiOFPDE(_im1s,_im2s,&_res)
   }
 
   if (symmetric==1) {
@@ -390,13 +390,13 @@ proc call_amiOFPDE(IMAGE _im1, IMAGE _im2, IMAGE _res) {
   if (Gaussian_scales==1) {
     call_amiOFPDE_GaussSc(_im1,_im2,&_res)
   } else {
-    amiOFSetSymmetric(symmetric)
+    AMIFluid->amiOFSetSymmetric(symmetric)
     zoom_z = 1+_im1.tz>1;
     Conv_GS     = exp(ln(10)*Conv_GS_exp    )  
     Conv_Scales = exp(ln(10)*Conv_Scales_exp)  
 
-    amiOFPDE_Param(beta,beta,beta,2,2,zoom_z,alfa,alfa,alfa,Conv_GS,Nscales,Conv_Scales,gradtype,smoothfunction)
-    amiOFPDE(_im1,_im2,&_res)
+    AMIFluid->amiOFPDE_Param(beta,beta,beta,2,2,zoom_z,alfa,alfa,alfa,Conv_GS,Nscales,Conv_Scales,gradtype,smoothfunction)
+    AMIFluid->amiOFPDE(_im1,_im2,&_res)
 
     if (symmetric==1) {
       // inverse flow
@@ -565,14 +565,14 @@ proc CB_Iterate() {
   alpha_epsilon  = exp(ln(10)*alpha_norm_epsilon)
 
   #print sprint("global smoothing = %01.0f \n",global_smoothing)
-  amiOFSetGlobalConstraint(global_smoothing)
-  amiOFSetSmoothGradient(smoothgradient)
-  amiOFSetGradient(gradcomputation)
-  amiOFSetBoundaryType(boundarytype)
-  amiOFSetAlphaNormEpsilon(alpha_epsilon)
-  amiOFSetNormalizeAlpha(alpha_normalization)
+  AMIFluid->amiOFSetGlobalConstraint(global_smoothing)
+  AMIFluid->amiOFSetSmoothGradient(smoothgradient)
+  AMIFluid->amiOFSetGradient(gradcomputation)
+  AMIFluid->amiOFSetBoundaryType(boundarytype)
+  AMIFluid->amiOFSetAlphaNormEpsilon(alpha_epsilon)
+  AMIFluid->amiOFSetNormalizeAlpha(alpha_normalization)
 
-  amiOFSetInterpolation(use_splines)
+  AMIFluid->amiOFSetInterpolation(use_splines)
   if (temporal==1) {
     CB_IterateTemporal()
   } else {

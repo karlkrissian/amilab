@@ -25,7 +25,7 @@
 #SetDebugOn
 # no interface here
 
-import_filters
+ami_import->Filters()
 
 if (!exists(ML_defined)) {
   ML_defined = 1
@@ -226,14 +226,14 @@ if (!exists(ML_defined)) {
   
     // Compute Structure Tensor
     printn "Structure Tensor"
-    sth = StructureTensorH(&ML_input,sigma,1,&ML_mask)
+    sth = filters->StructureTensorH(&ML_input,sigma,1,&ML_mask)
   
     SetProgress(ML_current_progress+ML_current_step*0.25)
   
     # EigenDecomp, parameters:  the structure tensor,
     # the eigenvalues flag: 0
     # the eigenvectors flag 3
-    eig = EigenDecomp(&sth,0,3,&ML_mask)
+    eig = filters->EigenDecomp(&sth,0,3,&ML_mask)
     SetProgress(ML_current_progress+ML_current_step*0.5)
     del sth
   

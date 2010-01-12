@@ -5,7 +5,7 @@
 if (!exists(CT_defined)) {
   CT_defined=1
 
-  import_filters
+  ami_import->Filters()
   
   proc CT_Init() {
     global_new
@@ -64,7 +64,7 @@ printn "deleting windows"
     res = -(dxy*dxy+tmp_z*tmp_z)+(CT_r*CT_r)
   
     # estimate partial volume effect based on linear interpolation
-    res = ComputePV_subdiv(res)
+    res = filters->ComputePV_subdiv(res)
     res = res*(CT_fg-CT_bg)+CT_bg
     
     global::CT_dimx_prev = CT_dimx

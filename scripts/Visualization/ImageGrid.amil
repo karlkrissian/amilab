@@ -7,7 +7,7 @@
 
 comments="ImageGridClass: this class allows to draw a grid around the pixels on an 2D image display (draw on XY slice for 3D images)."
 
-import_imagedraw
+ami_import->ImageDraw()
 
 if (!exists(ImageGridClass)) {
 

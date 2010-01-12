@@ -38,7 +38,8 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapAMIFluid
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapWII
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapInterface
-  ${AMILAB_SOURCE_DIR}/penguin
+  ${AMILAB_SOURCE_DIR}/wxSamples/penguin
+  ${AMILAB_SOURCE_DIR}/wxSamples/stctest
   ${AMILAB_SOURCE_DIR}/Algorithms/Basic
   ${AMILAB_SOURCE_DIR}/Algorithms/Graph
   ${AMILAB_SOURCE_DIR}/Algorithms/Denoising

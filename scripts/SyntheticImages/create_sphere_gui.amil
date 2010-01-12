@@ -5,7 +5,7 @@
 if (!exists(CSPH_defined)) {
   CSPH_defined=1
 
-  import_filters
+  ami_import->Filters()
   
   proc CSPH_Init() {
     global_new
@@ -49,7 +49,7 @@ if (!exists(CSPH_defined)) {
     res=-sqrt(tmp_x*tmp_x+tmp_y*tmp_y+tmp_z*tmp_z)+CSPH_R
   
     # estimate partial volume effect based on linear interpolation
-    res = ComputePV_subdiv(res)
+    res = filters->ComputePV_subdiv(res)
     res = res*(CSPH_fg-CSPH_bg)+CSPH_bg
     
     eval "global::"+CSPH_image_name+"<<=res;"

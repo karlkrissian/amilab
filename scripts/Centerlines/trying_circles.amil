@@ -43,7 +43,7 @@ func "Centerlines/test_divergence.amil"
 #SetVerboseOn
 #SetDebugOn
 
-import_filters
+ami_import->Filters()
 
 //----------------------------------------
 proc TC_init(IMAGE im, NUM minint, STRING datasetdir) {
@@ -144,14 +144,14 @@ proc TC_execute(IMAGE input, IMAGE mask, IMAGE repmax, IMAGE extr) {
 
   if (exists(eig)) { del eig; }
 
-  sth = StructureTensorH(&input,TC_sigma,TC_beta,&mask)
+  sth = filters->StructureTensorH(&input,TC_sigma,TC_beta,&mask)
 
   if (exists(TC_mask2)) {
     mask2 = TC_mask2
   } else {
     mask2 = mask
   }
-  eig = EigenDecomp(&sth,0,7,&mask2)
+  eig = filters->EigenDecomp(&sth,0,7,&mask2)
   del sth
   #show vars
   #StructTensorH(input,TC_sigma,TC_beta,mask)

@@ -7,7 +7,7 @@
 #
 
 if (!exists(NLMweightsClass)) {
-  import_filters
+  ami_import->Filters()
   func "Noise/AddRiceNoise.amil"
 
   Class NLMweightsClass {
@@ -60,9 +60,9 @@ if (!exists(NLMweightsClass)) {
       i_w <<= ::weights 
       if (::smoothing>0.001) {
         i1s = filter(::weights,::smoothing,0,0,0)
-        i_w = NSim(i1s,px,py,0,wsize)
+        i_w = filters->NSim(i1s,px,py,0,wsize)
       } else {
-        i_w = NSim(::weights,px,py,0,wsize)
+        i_w = filters->NSim(::weights,px,py,0,wsize)
       }
       # get a smaller window around
       xmin = px-::winsize

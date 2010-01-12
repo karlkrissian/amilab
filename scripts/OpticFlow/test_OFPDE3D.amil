@@ -1,6 +1,6 @@
 # command line: ./amilab 
 
-import_ami
+ami_import->AMIFluid()
 
 
 #--------------------------------------------------
@@ -10,6 +10,7 @@ Conv_GS_exp     = INT(-5)
 Nscales         = INT(3)
 Conv_Scales_exp = INT(-2)
 gradtype        = INT(2)
+zoom_z          = 1
 
 
 #--------------------------------------------------
@@ -22,8 +23,13 @@ proc call_amiOFPDE3D(IMAGE _im1, IMAGE _im2, IMAGE _res) {
   Conv_Scales = exp(ln(10)*Conv_Scales_exp)  
   
   InitTime
-  amiOFPDE_Param(beta,beta,beta,2,2,zoom_z,alfa,alfa,alfa,Conv_GS,Nscales,Conv_Scales,gradtype)
-  amiOFPDE(_im1,_im2,&_res,)
+  AMIFluid->amiOFPDE_Param(beta,beta,beta,\
+      2,2,zoom_z,\
+      alfa,alfa,alfa,\
+      Conv_GS,Nscales,Conv_Scales,\
+      gradtype)
+
+  AMIFluid->amiOFPDE(_im1,_im2,&_res)
   
   EndTime
 
@@ -44,7 +50,7 @@ proc call_amiOFPDE3D(IMAGE _im1, IMAGE _im2, IMAGE _res) {
 }
 
 i = Image(FLOAT,64,64,64)
-func "/home/karl/projects/Scripts/AddSphere.amil"
+func "SyntheticImages/AddSphere.amil"
 i = i*0-10
 AddBrightSphere(&i,32,32,32,10)
 i2 = i*0-10
@@ -82,7 +88,7 @@ proc CB_Iterate() {
 }
 
 #--------------------------------------------------
-w1 = ParamWin("libamiFluid: PDE Optical Flow")
+w1 = ParamWin("Opt.Flow")
 
 beta_id    = w1.AddFloat(beta,0.01,5)
 alfa_id    = w1.AddFloat(alfa,0.01,20)
