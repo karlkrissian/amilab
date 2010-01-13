@@ -778,9 +778,11 @@ SurfacePoly* Func_path_from_vectfield(  InrImage::ptr displ,
           FILE_ERROR(" no minimum found among neighbors !");
         }
         if (nv>1E-4) {
+          /*
           vx /= nv;
           vy /= nv;
           vz /= nv;
+          */
           // jump to new point !!!
           vx /=step_size;
           vy /=step_size;
