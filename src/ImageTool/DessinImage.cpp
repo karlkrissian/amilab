@@ -2516,12 +2516,9 @@ void DessinImage::DrawVector( int vect_id, int x, int y, int z,
       y1 = vect->SpaceToVoxelY(y1);
       z1 = vect->SpaceToVoxelZ(z1);
       // NOT THREAD SAFE: fixe vector coordinates is not thread safe ...
-      vect->FixeVecteurCoord(0);
-      v.x = (float) vect->InterpLinIntensite(x1,y1,z1);
-      vect->FixeVecteurCoord(1);
-      v.y = (float) vect->InterpLinIntensite(x1,y1,z1);
-      vect->FixeVecteurCoord(2);
-      v.z = (float) vect->InterpLinIntensite(x1,y1,z1);
+      v.x = (float) vect->InterpLinIntensite(x1,y1,z1,0);
+      v.y = (float) vect->InterpLinIntensite(x1,y1,z1,1);
+      v.z = (float) vect->InterpLinIntensite(x1,y1,z1,2);
   }
 
   // Return if vector too small

@@ -3347,13 +3347,9 @@ void DessinImageBase::DessinePlanInterpZ( )
         Sinon
 
           float R,G,B;
-
-          _image->FixeVecteurCoord(0);
-          R = _image->InterpLinIntensite(x+i*1.0/n, y+j*1.0/n, Param._pos._z);
-          _image->FixeVecteurCoord(1);
-          G = _image->InterpLinIntensite(x+i*1.0/n, y+j*1.0/n, Param._pos._z);
-          _image->FixeVecteurCoord(2);
-          B = _image->InterpLinIntensite(x+i*1.0/n, y+j*1.0/n, Param._pos._z);
+          R = _image->InterpLinIntensite(x+i*1.0/n, y+j*1.0/n, Param._pos._z, 0);
+          G = _image->InterpLinIntensite(x+i*1.0/n, y+j*1.0/n, Param._pos._z, 1);
+          B = _image->InterpLinIntensite(x+i*1.0/n, y+j*1.0/n, Param._pos._z, 2);
           couleur.Set((unsigned char) R,
                       (unsigned char) G,
                       (unsigned char) B);

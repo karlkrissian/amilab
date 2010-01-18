@@ -31,6 +31,8 @@
 #include "wrap_ImTranslate.h"
 #include "wrap_AddSubImage.h"
 #include "wrap_MaxSubImage.h"
+#include "wrap_ImageAddScalar.h"
+#include "wrap_ImageCos.h"
 #include "ami_object.h"
 
 extern VarContexts  Vars;
@@ -78,6 +80,11 @@ void AddWrapFilters(){
                 (void*) wrap_AddSubImage, OBJECT_CONTEXT_NUMBER);
   Vars.AddVar(type_c_procedure,"MaxSubImage", 
                 (void*) wrap_MaxSubImage, OBJECT_CONTEXT_NUMBER);
+
+  Vars.AddVar(type_c_procedure,"ImageAddScalar", 
+                (void*) wrap_ImageAddScalar, OBJECT_CONTEXT_NUMBER);
+  Vars.AddVar(type_c_procedure,"ImageCos", 
+                (void*) wrap_ImageCos, OBJECT_CONTEXT_NUMBER);
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);

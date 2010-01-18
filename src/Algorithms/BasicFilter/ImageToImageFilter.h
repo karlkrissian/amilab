@@ -46,6 +46,11 @@ public:
     input = in;
   }
 
+  InrImage::ptr& GetInput()
+  {
+    return input;
+  }
+
   ImageToImageFilterParam() {}
 
 }; // ImageToImageFilterParam;
@@ -60,27 +65,28 @@ public:
 //
 class ImageToImageFilter {
 
-  ImageToImageFilterParam* params;
+protected:
+  ImageToImageFilterParam params;
 
 public:
 
-  ImageToImageFilter();
-  ~ImageToImageFilter();
+  ImageToImageFilter() {}
+  ~ImageToImageFilter() {}
 
-  void SetParameters( ImageToImageFilterParam* p)
+  void SetParameters( const ImageToImageFilterParam& p)
   {
     params = p;
   }
 
-  virtual void Init();
+  virtual void Init() {}
 
-  virtual void Process( int threadid = 0, int numthreads = 1) = 0;
+  virtual void Process( int threadid = 0) = 0;
   static void* Process_thread(void* threadarg);
   void Run_multithreads();
 
   virtual void Run();
 
-  virtual void Close();
+  virtual void Close() {}
 
 }; // ImageToImageFilter
 

@@ -35,6 +35,8 @@ ENDIF(AMI_USE_FASTNLMEANS)
 
 SET(Algorithms_SRCS
   BasicFilter/ImageToImageFilter.cpp
+  BasicFilter/ImageAddScalar.cpp
+  BasicFilter/ImageCos.cpp
   Basic/localstats.cpp
   Graph/func_shortestpath.cpp
 
@@ -43,6 +45,26 @@ SET(Algorithms_SRCS
   Denoising/NLmeans.cpp
 
   Others/ComputePartialVolume.cpp
+)
+
+
+SET(Algorithms_HDRS
+  BasicFilter/ImageToImageFilter.h
+  BasicFilter/ImageAddScalar.h
+  BasicFilter/ImageCos.h
+  Basic/localstats.h
+  Graph/func_shortestpath.h
+
+  Denoising/AnisoGS.h
+  Denoising/Wrap_AnisoGS.h
+  Denoising/NLmeans.h
+
+  Others/ComputePartialVolume.h
+)
+
+SET(OpenGL_SRCS
+     ${OpenGL_SRCS}
+     ${OpenGL_HDRS}
 )
 
 my_add_library ( Algorithms)
