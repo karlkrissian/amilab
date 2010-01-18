@@ -143,6 +143,7 @@ float roundf(const float& a)
 #include "amilab_messages.h"
 
 #include "ImagePositions.h"
+#include "InrImageIteratorBase.h"
 #include "InrImageIterator.h"
 
 //extern unsigned char GB_debug;
@@ -1267,6 +1268,14 @@ unsigned char InrImage :: InitPositions( )
       ImagePositions<int> *positions = new ImagePositions<int>(this);
       _positions = positions;}
     break;
+    case WT_UNSIGNED_LONG  :  {
+      ImagePositions<unsigned long> *positions = new ImagePositions<unsigned long>(this);
+      _positions = positions;}
+    break;
+    case WT_SIGNED_LONG  :  {
+      ImagePositions<long> *positions = new ImagePositions<long>(this);
+      _positions = positions;}
+    break;
     case WT_FLOAT : 
     case WT_FLOAT_VECTOR : {
       ImagePositions<float> *positions = new ImagePositions<float>(this);
@@ -1275,8 +1284,9 @@ unsigned char InrImage :: InitPositions( )
     case WT_DOUBLE : {
       ImagePositions<double> *positions = new ImagePositions<double>(this);
       _positions = positions;}
+    break;
     default:
-      CLASS_ERROR(" format not processed ... \n");
+      CLASS_ERROR(boost::format(" format not processed %1% ... \n") % _format);
       return false;
   }
 
@@ -1319,7 +1329,6 @@ void InrImage :: InitParams()
   _size_y =
   _size_z = 1;
   _vdim   = 1;
-  _coord_vecteur = 0;
   _translation_x =
   _translation_y =
   _translation_z = 0;
@@ -1337,7 +1346,6 @@ void InrImage :: InitParams()
     _transf_matrix[i][j] = 0;
   for(i=0;i<3;i++) _transf_matrix[i][i] = 1;
 
-  _Iterator = CreateIterator();
 
 } // InitParams()
 
@@ -1370,6 +1378,14 @@ InrImageIteratorBase::ptr InrImage::CreateIterator()
       return InrImageIteratorBase::ptr(
           new InrImageIterator<int>(this));
     break;
+    case WT_UNSIGNED_LONG  :
+      return InrImageIteratorBase::ptr(
+          new InrImageIterator<unsigned long>(this));
+    break;
+    case WT_SIGNED_LONG  : 
+      return InrImageIteratorBase::ptr(
+          new InrImageIterator<long>(this));
+    break;
     case WT_FLOAT : 
     case WT_FLOAT_VECTOR :
       return InrImageIteratorBase::ptr(
@@ -1395,6 +1411,9 @@ InrImage :: Constructeur InrImage( )
 {
 
   InitParams();
+
+  _Iterator = CreateIterator();
+  _linear_interpolator = ImageLinearInterpolator::ptr( new ImageLinearInterpolator(this));
 
 } // Construteur
 
@@ -1427,6 +1446,8 @@ InrImage :: Constructeur InrImage( const char* nom)
 
   InitPositions();
 
+  _Iterator = CreateIterator();
+  _linear_interpolator = ImageLinearInterpolator::ptr( new ImageLinearInterpolator(this));
 
 } // Construteur
 
@@ -1445,6 +1466,8 @@ InrImage :: Constructeur InrImage( const char* nom, int type)
 
   InitPositions();
 
+  _Iterator = CreateIterator();
+  _linear_interpolator = ImageLinearInterpolator::ptr( new ImageLinearInterpolator(this));
 
 } // Construteur
 
@@ -1483,6 +1506,8 @@ InrImage :: Constructeur InrImage( int dimx, int dimy,
 
   InitPositions();
 
+  _Iterator = CreateIterator();
+  _linear_interpolator = ImageLinearInterpolator::ptr( new ImageLinearInterpolator(this));
 
 } // Construteur
 
@@ -1516,6 +1541,8 @@ InrImage :: Constructeur InrImage( int dimx, int dimy,
 
   InitPositions();
 
+  _Iterator = CreateIterator();
+  _linear_interpolator = ImageLinearInterpolator::ptr( new ImageLinearInterpolator(this));
 
 } // Construteur
 
@@ -1571,6 +1598,8 @@ InrImage :: Constructeur InrImage(  WORDTYPE format,
 
   InitPositions();
 
+  _Iterator = CreateIterator();
+  _linear_interpolator = ImageLinearInterpolator::ptr( new ImageLinearInterpolator(this));
 
 } // Construteur
 
@@ -1610,6 +1639,9 @@ InrImage :: Constructeur InrImage(  WORDTYPE format, int vdim,
   _format = (WORDTYPE) format;
   Alloue();
   InitPositions();
+
+  _Iterator = CreateIterator();
+  _linear_interpolator = ImageLinearInterpolator::ptr( new ImageLinearInterpolator(this));
 
 } // Construteur
 
@@ -1704,6 +1736,9 @@ InrImage :: Constructeur InrImage( vtkImageData* vtkim)
   _translation_z = vtkim->GetOrigin()[2];
 
   InitPositions();
+
+  _Iterator = CreateIterator();
+  _linear_interpolator = ImageLinearInterpolator::ptr( new ImageLinearInterpolator(this));
 
   printf("vox size: %f %f %f \n", _size_x,_size_y,_size_z);
 

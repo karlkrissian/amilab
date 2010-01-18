@@ -24,18 +24,24 @@ class InrImageIteratorBase
 
 public:
 
-  InrImageIteratorBase( );
+  InrImageIteratorBase( ) {}
 
   virtual void InitBuffer( int pos = 0)           = 0;
   virtual void BufferPos( int x, int y, int z=0)  = 0;
   virtual void* PosPointer()                      = 0;
+  /**
+   * this is the prefix ++ operator
+   * @return 
+   */
   virtual bool operator ++()                      = 0;
   virtual bool Inc( const int& d)                 = 0;
-  virtual bool ValueInc( const int& d)            = 0;
+  virtual void ValueInc( const int& d)            = 0;
   virtual double GetDoubleValue( int field = 0)   = 0;
   virtual double GetIncDoubleValue( const int& inc, const int& field = 0) const = 0;
+  virtual double GetValueIncDoubleValue( const int& inc = 0 ) const = 0;
   virtual void SetDoubleValue( const double& val) = 0;
   virtual void SetDoubleValue( int field, const double& val) = 0;
+  virtual void SetDoubleVectorValues( const double& valx, const double& valy, const double& valz) = 0;
   virtual void IncScalarBufferFast()              = 0;
 };
 

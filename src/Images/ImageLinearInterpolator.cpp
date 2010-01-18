@@ -11,7 +11,7 @@
 //
 //=========================================================================
 
-
+#include "inrimage.hpp"
 #include "ImageLinearInterpolator.h"
 
 ImageLinearInterpolator::ImageLinearInterpolator( InrImage* im)
@@ -21,7 +21,11 @@ ImageLinearInterpolator::ImageLinearInterpolator( InrImage* im)
   _tx = im->DimX();
   _ty = im->DimY();
   _tz = im->DimZ();
-
+  _txy = _tx*_ty;
+  _vdim = im->GetVDim();
+  _step_x = _vdim;
+  _step_y = _tx*_vdim;
+  _step_z = _txy*_vdim;
   _Iterator = im->CreateIterator();
 }
 
@@ -42,11 +46,11 @@ double ImageLinearInterpolator::InterpLinIntensite2( double dx1, double dx2, int
 
   tx12 = tx1+tx2;
 
-  _Iterator->IncValue(_coord); 
+  _Iterator->ValueInc(_coord); 
   res  =  coeff00* _Iterator->GetDoubleValue() + 
-          coeff10* _Iterator->GetIncDoubleValue(tx1); 
-  res +=  coeff01* _Iterator->GetIncDoubleValue(tx2) + 
-          coeff11* _Iterator->GetIncDoubleValue(tx12); 
+          coeff10* _Iterator->GetValueIncDoubleValue(tx1); 
+  res +=  coeff01* _Iterator->GetValueIncDoubleValue(tx2) + 
+          coeff11* _Iterator->GetValueIncDoubleValue(tx12); 
 
   return res;
 }
@@ -64,25 +68,25 @@ double ImageLinearInterpolator::InterpLinIntensite( float x, float y)
     if (_image->ScalarFormat())
       return (*_image)(x1,y1);
     else
-      return (*_image)(x1,y1,0,_coord_vecteur);
+      return (*_image)(x1,y1,0,_coord);
   }
 
   _Iterator->BufferPos( (int) x, (int) y, 0);
   return InterpLinIntensite2( (x-(int)x),
                 (y-(int)y),
-                1,_tx);
+                _step_x,_step_y);
 }
 
 double ImageLinearInterpolator::InterpLinIntensite( float x, float y, float z)
 {
+
+  if ((z==0)||(_tz == 1)) return InterpLinIntensite(x,y);
 
   register int     xi,yi,zi;
   register double dx,dy,dz;
   register double res = 0;
   register double coeff000,coeff010,coeff100,coeff110;
   register double coeff001,coeff011,coeff101,coeff111;
-
-  if (_tz == 1) return InterpLinIntensite(x,y);
 
   if (x < 0)       x= (float) 0.0;
   if (y < 0)       y= (float) 0.0;
@@ -105,17 +109,17 @@ double ImageLinearInterpolator::InterpLinIntensite( float x, float y, float z)
 
   if (dx < 1E-10) {
     _Iterator->BufferPos(xi,yi,zi);
-    return  InterpLinIntensite2(dy,dz,_tx,_txy);
+    return  InterpLinIntensite2(dy,dz,_step_y,_step_z);
   }
 
   if (dy < 1E-10) {
     _Iterator->BufferPos(xi,yi,zi);
-    return InterpLinIntensite2(dx,dz,1,_txy);
+    return InterpLinIntensite2(dx,dz,_step_x,_step_z);
   }
 
   if (dz < 1E-10) {
-    BufferPos(xi,yi,zi);
-    return InterpLinIntensite2(dx,dy,1,_tx);
+    _Iterator->BufferPos(xi,yi,zi);
+    return InterpLinIntensite2(dx,dy,_step_x,_step_y);
   }
 
   /*--- calcul des poids associés à chaque point ---*/
@@ -154,13 +158,13 @@ double ImageLinearInterpolator::InterpLinIntensite( float x, float y, float z)
   _Iterator->ValueInc(_coord);
 
   res  =  coeff000* _Iterator->GetDoubleValue() + 
-          coeff100* _Iterator->GetDoubleValue(1);
-  res +=  coeff010* _Iterator->GetDoubleValue(_tx)
-          coeff110* _Iterator->GetDoubleValue(_tx+1); 
-  res +=  coeff001* _Iterator->GetDoubleValue(_txy ) + 
-          coeff101* _Iterator->GetDoubleValue(_txy+1); 
-  res +=  coeff011* _Iterator->GetDoubleValue(_txy+_tx) + 
-          coeff111* _Iterator->GetDoubleValue(_txy+_tx+1); 
+          coeff100* _Iterator->GetValueIncDoubleValue(_step_x);
+  res +=  coeff010* _Iterator->GetValueIncDoubleValue(_step_y) +
+          coeff110* _Iterator->GetValueIncDoubleValue(_step_y+_step_x); 
+  res +=  coeff001* _Iterator->GetValueIncDoubleValue(_step_z ) + 
+          coeff101* _Iterator->GetValueIncDoubleValue(_step_z+_step_x); 
+  res +=  coeff011* _Iterator->GetValueIncDoubleValue(_step_z+_step_y) + 
+          coeff111* _Iterator->GetValueIncDoubleValue(_step_z+_step_y+_step_x); 
 
   return res;
 }

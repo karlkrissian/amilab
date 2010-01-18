@@ -79,7 +79,7 @@ public:
    * @param d 
    * @return 
    */
-  bool ValueInc( const int& d);
+  void ValueInc( const int& d);
 
   double GetDoubleValue( int field = 0);
 
@@ -91,13 +91,25 @@ public:
    */
   double GetIncDoubleValue( const int& inc, const int& field = 0 ) const;
 
+  /**
+   * Gets the value at the current position + inc, stepping by value instead of by pixel/voxel
+   * @param inc
+   * @return 
+   */
+  double GetValueIncDoubleValue( const int& inc = 0 ) const;
+
   void SetDoubleValue( const double& val);
 
-  T GetValue( int field = 0) const;
+  const T& GetValue( ) const;
+
+  const T& GetValue( const int& field ) const;
 
   void SetValue( const T& val);
+  void AddValue( const T& val);
 
   void SetDoubleValue( int field, const double& val);
+
+  void SetDoubleVectorValues( const double& valx, const double& valy, const double& valz);
 
   void SetValue( int field, const T& val);
 

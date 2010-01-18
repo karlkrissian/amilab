@@ -1073,19 +1073,14 @@ void Func_ElevateMesh(SurfacePoly* surf, InrImage* im)
       pt.pt.z =  im->InterpLinIntensite(x,y);
       break;
     case 2:
-      im->FixeVecteurCoord(0);
-      vx = im->InterpLinIntensite(x,y);
-      im->FixeVecteurCoord(1);
-      vy = im->InterpLinIntensite(x,y);
+      vx = im->InterpLinIntensite(x,y,0,0);
+      vy = im->InterpLinIntensite(x,y,0,1);
       pt.pt.Init( vx,vy,pt.Z());
       break;
     case 3:
-      im->FixeVecteurCoord(0);
-      vx = im->InterpLinIntensite(x,y);
-      im->FixeVecteurCoord(1);
-      vy = im->InterpLinIntensite(x,y);
-      im->FixeVecteurCoord(2);
-      vz = im->InterpLinIntensite(x,y);
+      vx = im->InterpLinIntensite(x,y,0,0);
+      vy = im->InterpLinIntensite(x,y,0,1);
+      vz = im->InterpLinIntensite(x,y,0,2);
       pt.pt.Init( vx,vy,vz);
       break;
       }

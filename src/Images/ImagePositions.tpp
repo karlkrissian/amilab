@@ -16,7 +16,13 @@ ImagePositions<T>::ImagePositions( InrImage* im)
   _image = im;
   _positions_allocated = false;
   _vdim  = _image->GetVDim();
+  InitPositions();
+}
 
+template<class T>
+ImagePositions<T>::~ImagePositions()
+{
+  FreePositions();
 }
 
 

@@ -38,6 +38,8 @@ public:
 
   ImagePositions( InrImage* im);
 
+  ~ImagePositions();
+
   bool InitPositions( );
 
   bool FreePositions( );

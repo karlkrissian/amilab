@@ -12,6 +12,8 @@
 
 #include "ImageAddScalar.h"
 #include "imageextent.h"
+#include "InrImageIteratorBase.h"
+#include "InrImageIterator.h"
 
 void ImageAddScalar::Init()
 {
@@ -69,6 +71,22 @@ void ImageAddScalar::Process( int threadid)
   // here cannot use incbuffer or buffer pos, need of an image iterator !!!
   // now to check for multithreading only process float images
   if (in->GetFormat()==WT_FLOAT) {
+    InrImageIteratorBase::ptr iter = in->CreateIterator();
+    InrImageIterator<float>* iter1 = (InrImageIterator<float>*) iter.get();
+
+    for(z=extent.GetMin(2);z<=extent.GetMax(2); z++)
+    for(y=extent.GetMin(1);y<=extent.GetMax(1); y++)
+    {
+      iter1->BufferPos(extent.GetMin(0),y,z);
+      for(x=extent.GetMin(0);x<=extent.GetMax(0); x++)
+      {
+        iter1->AddValue(scalar);
+        iter1->IncScalarBufferFast();
+      }
+    }
+
+
+/*
     int incx,incy,incz;
     in->GetBufferIncrements(incx,incy,incz);
     float* in_data = (float*) in->GetData();
@@ -83,6 +101,24 @@ void ImageAddScalar::Process( int threadid)
         in_data1++;
       }
     }
+*/
+  }  else 
+  if (in->GetFormat()==WT_DOUBLE) {
+
+    InrImageIteratorBase::ptr iter = in->CreateIterator();
+    InrImageIterator<double>* iter1 = (InrImageIterator<double>*) iter.get();
+
+    for(z=extent.GetMin(2);z<=extent.GetMax(2); z++)
+    for(y=extent.GetMin(1);y<=extent.GetMax(1); y++)
+    {
+      iter1->BufferPos(extent.GetMin(0),y,z);
+      for(x=extent.GetMin(0);x<=extent.GetMax(0); x++)
+      {
+        iter1->SetValue(iter1->GetValue()+scalar);
+        iter1->IncScalarBufferFast();
+      }
+    }
+
   }
 
 }
