@@ -29,6 +29,10 @@ public:
   virtual void InitBuffer( int pos = 0)           = 0;
   virtual void BufferPos( int x, int y, int z=0)  = 0;
   virtual void* PosPointer()                      = 0;
+
+  virtual void SetEnd( int loop_size)             = 0;
+  virtual bool NotAtEnd()                         = 0;
+
   /**
    * this is the prefix ++ operator
    * @return 

@@ -17,6 +17,7 @@
 #include "imageextent.h"
 #include "ImageToImageFilter.h"
 #include <vector>
+#include "DefineClass.hpp"
 
 // use amilab namespace here ??
 
@@ -28,16 +29,28 @@
 //
 class ImageAddScalar : public ImageToImageFilter 
 {
+
+  DEFINE_CLASS(ImageAddScalar);
+
   double scalar;
   typedef ImageExtent<int> extenttype;
   std::vector<extenttype> extents;
 
+  /// filter mode: 1 or 2, trying different code for optimization; 1: use iterators, 2: use pointers
+  int _mode;
+
 public:
+
+  ImageAddScalar(): _mode(1) 
+  { 
+  }
 
   /**
    * Creates the extents for each thread
    */
   void Init();
+
+  void SetMode( int mode) { _mode = mode; }
 
   /**
    * Set the scalar value to add to the image

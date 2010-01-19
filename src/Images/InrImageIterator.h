@@ -38,6 +38,9 @@ protected:
   /// Current position within the data
   T*    _datapos;
 
+  /// End position for the current loop
+  T*    _endpos;
+
   /// index of the current position
   long  _pos_buf;
 
@@ -57,6 +60,22 @@ public:
     */
   void InitBuffer( int pos = 0);
   //             ----------
+
+  /**
+   * Sets the pointer to the last loop element + 1
+   * @param loop_size 
+   */
+  void SetEnd( int loop_size)
+  {
+    _endpos = _datapos+loop_size*_vdim;
+  }
+
+  /**
+   * 
+   * @return if the end of the loop is reached
+   */
+  bool NotAtEnd() { return _datapos<_endpos; }
+
   void BufferPos( int x, int y, int z=0);
 // throw (DepassementLimites);
 
