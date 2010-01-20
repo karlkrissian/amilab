@@ -1,5 +1,9 @@
 #!/usr/bin/amilab
+if (!exists(AnisoGSClass)) {
 
+  Class AnisoGSClass {
+
+  #----------------------------
 #
 # Denoising algorithm
 #
