@@ -1,358 +1,387 @@
 #!/usr/bin/amilab
-
 #
 # (c) Karl Krissian, ULPGC 2009
 #
-
-
 #
 # Playing with Parametric surfaces
 #
 # type:
 #  0: superquadric
 #
+if (!exists(ParametricSurfaceClass)) {
+  Class ParametricSurfaceClass {
 
+  #---------------------------------------------
+  proc ::Init() \
+  {
+    
 
-proc PS_init() {
-  global_new
+    # resolution
+    ::theta_dim = INT(100)
+    ::phi_dim   = INT(100)
 
-  # resolution
-  PS_theta_dim = INT(100)
-  PS_phi_dim   = INT(100)
+    # coefficients
+    ::cx = 1
+    ::cy = 1
+    ::cz = 1
 
-  # coefficients
-  PS_cx = 1
-  PS_cy = 1
-  PS_cz = 1
-
-  PS_e_x = 1
-  PS_e_y = 1
-  PS_e_z = 1
-
-  # 0: superquadric
-  # 1: torus
-  PS_type = INT(0)
-
-  # torus param
-  PS_R = 1
-  PS_r = 0.1
-
-  # expressions as string
-  PS_X = "cos(U)*cos(V)"
-  PS_Y = "sin(U)*cos(V)"
-  PS_Z = "sin(V)"
-
-  PS_eq_filename = "user_equation1.amil"
-
-  # temporal evolution of the equation
-  # evolution state 0:stopped, 1:running, 2:stopping
-  PS_in_evolve = UCHAR(0)
-  PS_evolve_state = INT(0)
-  PS_k        = INT(0)
-  PS_kmax     = INT(0)
-  # timestep in milliseconds
-  PS_timestep = INT(100) 
-
-  PS_updating = 0
-  PS_Update()
-}
-
-#----------------------------------------------------------
-proc PS_Close() {
-  PS_win.Hide
-  delvars "PS_*_draw"
-  delvars "PS_*"
-}
-
-#----------------------------------------------------------
-proc PS_UpdateResolution() \
-{
-  # 3D position image
-  global::PS_pos <<= Image(DOUBLE,PS_theta_dim,PS_phi_dim,1,3)
-
-  # Parameters
-  global::PS_theta <<= (DOUBLE)Xpos(PS_pos)
-  global::PS_phi   <<= (DOUBLE)Ypos(PS_pos)
-
-
-  if (PS_type==0)||(PS_type==2) {
-    # limits of the parameters
-    PS_theta = PS_theta/(PS_theta.tx-1)*2*Pi
-    PS_phi   = (PS_phi/(PS_phi.ty-1)-0.5)*Pi
-  }
-  if (PS_type==1) {
-    # limits of the parameters
-    PS_theta = PS_theta/(PS_theta.tx-1)*2*Pi
-    PS_phi   = PS_phi/(PS_phi.ty-1)*2*Pi
-  }
-
-} // PS_UpdateResolution()
-
-
-#----------------------------------------------------------
-proc PS_NewType() {
-  PS_UpdateResolution()
-  PS_Update()
-}
-
-
-#------------------------------------------------------------
-proc PS_Update() \
-{
-  if (PS_updating==0) {
-    PS_updating = 1
-
-    if (!exists(PS_pos)) {
-      PS_UpdateResolution()
-    } else {
-      if ((PS_theta_dim!=PS_pos.tx)||(PS_phi_dim!=PS_pos.ty)) {
-        PS_UpdateResolution()
-      }
-    }
+    ::e_x = 1
+    ::e_y = 1
+    ::e_z = 1
 
     # 0: superquadric
-    if (PS_type==0) {
-
-      PS_pos[0] = cos(PS_theta)*cos(PS_phi)
-      PS_pos[1] = sin(PS_theta)*cos(PS_phi)
-      PS_pos[2] = sin(PS_phi)
-
-      # compute the signs
-      spos0 = (PS_pos[0]>0) - (PS_pos[0]<0)
-      spos1 = (PS_pos[1]>0) - (PS_pos[1]<0)
-      spos2 = (PS_pos[2]>0) - (PS_pos[2]<0)
-
-      PS_pos[0] = (exp(ln(abs(PS_pos[0]))/PS_e_x))*spos0*PS_cx
-      PS_pos[1] = (exp(ln(abs(PS_pos[1]))/PS_e_y))*spos1*PS_cy
-      PS_pos[2] = (exp(ln(abs(PS_pos[2]))/PS_e_z))*spos2*PS_cz
-    }
-
     # 1: torus
-    if (PS_type==1) {
+    ::type = INT(0)
 
-      PS_pos[0] = (cos(PS_phi)*PS_r+PS_R)*cos(PS_theta)
-      PS_pos[1] = (cos(PS_phi)*PS_r+PS_R)*sin(PS_theta)
-      PS_pos[2] = sin(PS_phi)*PS_r
+    # torus param
+    ::R = 1
+    ::r = 0.1
 
-    }
+    # expressions as string
+    ::X = "cos(U)*cos(V)"
+    ::Y = "sin(U)*cos(V)"
+    ::Z = "sin(V)"
 
-    # 2: User´s equation
-    if (PS_type==2) {
-      U = PS_theta
-      V = PS_phi
-      k = PS_k
-      eval "PS_pos[0] = "+PS_X+";"
-      X = PS_pos[0]
-      eval "PS_pos[1] = "+PS_Y+";"
-      Y = PS_pos[1]
-      eval "PS_pos[2] = "+PS_Z+";"
-    }
+    ::eq_filename = "user_equation1.amil"
 
-    if (exists(PS_s_draw)) {
-      PS_s_draw.Remove(PS_s)
-      del global::PS_s
-    }
-
-    # parameter 0 invert normals
-    global::PS_s = CreateFlatMesh(PS_theta>-1,0)
-    PS_s.ElevateMesh(PS_pos)
-    # need to show the surface before computing any opengl operation!!!
-
-    if (exists(PS_s_draw)) {
-      PS_s_draw += PS_s
-    } else {
-      show PS_s
-    }
-    PS_s.Normals
-    PS_s.Recompute
-    PS_s_draw.Paint
-    PS_updating = 0
+    # temporal evolution of the equation
+    # evolution state 0:stopped, 1:running, 2:stopping
+    ::in_evolve = UCHAR(0)
+    ::evolve_state = INT(0)
+    ::k        = INT(0)
+    ::kmax     = INT(0)
+    # timestep in milliseconds
+    ::timestep = INT(100) 
+    
+    ::updating = 0
+    ::Update()
+    ::Gui()
+    
   }
-}
 
-#--------------------------------------------------------------
-proc PS_Evolve() \
-{
-  if (PS_in_evolve==0){
-    PS_in_evolve = 1
-    if (PS_evolve_state==0) {
-      if (PS_kmax>0) {
-        PS_k = 0
-        # starts
-        PS_evolve_state=1
+    #----------------------------------------------------------
+   
+  proc ::Close() \
+  {
+    ::win.Hide
+    delvars GetObjectName(::Close)
+  }
+  ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    
+    #----------------------------
+    
+  proc ::CloseAll() \
+  {
+    eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
+    ::Close
+  }
+  ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    
+  #------------------------------------
+
+  proc ::UpdateResolution() \
+  {
+    # 3D position image
+    ::pos <<= Image(DOUBLE,::theta_dim,::phi_dim,1,3)
+
+    # Parameters
+    ::theta <<= (DOUBLE)Xpos(::pos)
+    ::phi   <<= (DOUBLE)Ypos(::pos)
+
+    if (::type==0)||(::type==2) {
+      # limits of the parameters
+      ::theta = ::theta/(::theta.tx-1)*2*Pi
+      ::phi   = (::phi/(::phi.ty-1)-0.5)*Pi
+    }
+    if (::type==1) {
+      # limits of the parameters
+      ::theta = ::theta/(::theta.tx-1)*2*Pi
+      ::phi   = ::phi/(::phi.ty-1)*2*Pi
+    }
+
+  } // ::UpdateResolution()
+
+#----------------------------------------------------------
+  proc ::NewType() {
+    ::UpdateResolution()
+    ::Update()
+  }
+
+#------------------------------------------------------------
+
+  proc ::Update() \
+  {
+    if (::updating==0) {
+      ::updating = 1
+      if (!exists(::pos)) {
+        ::UpdateResolution()
+      }else {
+        if ((::theta_dim!=::pos.tx)||(::phi_dim!=::pos.ty)) {
+          ::UpdateResolution()
+        }
+      }
+      # 0: superquadric
+      if (::type==0) {
+      
+        ::pos[0] = cos(::theta)*cos(::phi)
+        ::pos[1] = sin(::theta)*cos(::phi)
+        ::pos[2] = sin(::phi)
+
+        # compute the signs
+        spos0 = (::pos[0]>0) - (::pos[0]<0)
+        spos1 = (::pos[1]>0) - (::pos[1]<0)
+        spos2 = (::pos[2]>0) - (::pos[2]<0)
+
+        ::pos[0] = (exp(ln(abs(::pos[0]))/::e_x))*spos0*::cx
+        ::pos[1] = (exp(ln(abs(::pos[1]))/::e_y))*spos1*::cy
+        ::pos[2] = (exp(ln(abs(::pos[2]))/::e_z))*spos2*::cz
+      }
+
+      # 1: torus
+      if (::type==1) {
+        ::pos[0] = (cos(::phi)*::r+::R)*cos(::theta)
+        ::pos[1] = (cos(::phi)*::r+::R)*sin(::theta)
+        ::pos[2] = sin(::phi)*::r
+      }
+
+      # 2: User´s equation
+      if (::type==2) {
+        U = ::theta
+        V = ::phi
+        k = ::k
+        eval "::pos[0] = "+::X+";"
+        X = ::pos[0]
+        eval "::pos[1] = "+::Y+";"
+        Y = ::pos[1]
+        eval "::pos[2] = "+::Z+";"
+      }
+
+      if (exists(::s_draw)) {
+        ::s_draw.Remove(::s)
+        del ::s
+      }
+
+      # parameter 0 invert normals
+      ::s = CreateFlatMesh(::theta>-1,0)
+      ::s.ElevateMesh(::pos)
+      # need to show the surface before computing any opengl operation!!!
+
+      if (exists(::s_draw)) {
+        ::s_draw += ::s
+      } else {
+        show ::s
+      }
+      ::s.Normals
+      ::s.Recompute
+      ::s_draw.Paint
+      ::updating = 0
+    }
+  }
+
+  #--------------------------------------------------------------
+  proc ::Evolve() \
+  {
+    if (::in_evolve==0) {
+      ::in_evolve = 1
+      if (::evolve_state==0) {
+        if (::kmax>0) {
+          ::k = 0
+          # starts
+          ::evolve_state=1
+        }
+      }
+      if (::evolve_state==1) {
+        # first update the equation
+        ::Update()
+        # second: increment ::k and schedule new update
+        ::k = ::k + 1
+        if (::k==::kmax) { 
+          ::k = 0; 
+        }
+        schedule(::timestep,::Evolve)
       }
     }
-    if (PS_evolve_state==1) {
-      # first update the equation
-      PS_Update()
-      # second: increment PS_k and schedule new update
-      PS_k = PS_k + 1
-      if (PS_k==PS_kmax) { PS_k = 0; }
-      schedule(PS_timestep,PS_Evolve)
-    }
+    ::in_evolve = 0
   }
-  PS_in_evolve = 0
+
+  #--------------------------------------------------------------
+  proc ::Start() \
+  {
+    ::evolve_state = 0
+    ::Evolve
+  }
+
+  #--------------------------------------------------------------
+  proc ::Stop() \
+  {
+    ::evolve_state = 2
+  }
+
+
+  #--------------------------------------------------------------
+  proc ::ResetScale() \
+  {
+    ::cx = 1
+    ::cy = 1
+    ::cz = 1
+    ::win.update
+    ::Update()
+  } # ::ResetScale()
+
+  #--------------------------------------------------------------
+  proc ::SetEllipsoid() \
+  {
+    ::type=0
+    ::e_x = 1
+    ::e_y = 1
+    ::e_z = 1
+    ::win.update
+    ::Update()
+  } 
+  # ::SetEllipsoid()
+
+  #--------------------------------------------------------------
+  proc ::SaveEquation() {
+    eq_file = open(::eq_filename,"w")
+
+    eq_file.print "//-- Saving equation \n"
+
+    eq_file.print "//---- Main Parameters\n"
+
+    eq_file.print boost_format("::theta_dim = %1%\n") % ::theta_dim
+    eq_file.print boost_format("::phi_dim = %1%\n") % ::phi_dim
+
+    eq_file.print "//---- Parametric equation expression \n"
+
+    eq_file.print "::X = \"" +::X +"\"\n"
+    eq_file.print "::Y = \"" +::Y +"\"\n"
+    eq_file.print "::Z = \"" +::Z +"\"\n"
+
+    eq_file.print boost_format("::kmax = %1%\n") \
+                                % ::kmax
+    eq_file.print boost_format("::timestep = %1%\n") \
+                                % ::timestep
+
+    eq_file.print "// Update interface\n"
+    eq_file.print "::win.update\n"
+
+  }
+
+
+  #--------------------------------------------------------------
+  proc ::ReadEquation() {
+    # call func to read a script ...
+    func
+  }
+
+  #--------------------------------------------------------------
+  proc ::Gui(){
+  
+    ::win = ParamWin("Param. Surf.")
+
+    ::type_id  = ::win.AddEnum(::type)
+      ::win.AddEnumChoice(::type_id,"SuperQuadric")
+      ::win.AddEnumChoice(::type_id,"Torus")
+      ::win.AddEnumChoice(::type_id,"Expression")
+    ::win.SetCallback(::NewType)
+
+    ::win.BeginBook
+      # Main Page
+      ::win.AddPage("Main")
+        ::win.BeginBox("Resolution")
+            ::thetadim_id = ::win.AddInt(::theta_dim,4,500)
+            ::win.SetCallback(::Update)
+            ::phidim_id   = ::win.AddInt(::phi_dim,  4,500)
+            ::win.SetCallback(::Update)
+        ::win.EndBox
+        ::win.BeginBox("Scaling Coeff.")
+            ::cx_id = ::win.AddFloat    (::cx,0.1,5)
+            ::win.SetCallback(::Update)
+            ::cy_id = ::win.AddFloat    (::cy,0.1,5)
+            ::win.SetCallback(::Update)
+            ::cz_id = ::win.AddFloat    (::cz,0.1,5)
+            ::win.SetCallback(::Update)
+            ::win.AddButton("Reset",   ::ResetScale)
+        ::win.EndBox
+
+
+      # SuperQuadric Page
+      ::win.AddPage("SuperQu.")
+        ::win.BeginBox("Exponential Coeff.")
+            ::cx_id = ::win.AddFloat    (::e_x,0.1,5)
+            ::win.SetCallback(::Update)
+            ::cy_id = ::win.AddFloat    (::e_y,0.1,5)
+            ::win.SetCallback(::Update)
+            ::cz_id = ::win.AddFloat    (::e_z,0.1,5)
+            ::win.SetCallback(::Update)
+            ::win.AddButton("Set Ellipsoid",   ::SetEllipsoid)
+        ::win.EndBox
+
+      # SuperQuadric Torus
+      ::win.AddPage("Torus")
+        ::win.BeginBox("Radii")
+            ::R_id = ::win.AddFloat    (::R,0.1,5)
+            ::win.SetCallback(::Update)
+            ::r_id = ::win.AddFloat    (::r,0.1,5)
+            ::win.SetCallback(::Update)
+        ::win.EndBox
+
+      # User Equation Page
+      ::win.AddPage("Expr")
+        ::win.BeginBox("Equation (U,V):")
+          ::X_id = ::win.AddString(::X,"X=")
+          ::win.SetCallback(::Update)
+          ::Y_id = ::win.AddString(::Y,"Y=")
+          ::win.SetCallback(::Update)
+          ::Z_id = ::win.AddString(::Z,"Z=")
+          ::win.SetCallback(::Update)
+        ::win.EndBox
+        ::win.BeginBox("Time evolution:")
+          ::win.AddInt(::kmax,0,100)
+          ::win.AddInt(::timestep,0,1000)
+          ::win.BeginHorizontal
+            ::win.AddButton("Start", ::Start)
+            ::win.AddButton("Stop",  ::Stop)
+          ::win.EndHorizontal
+        ::win.EndBox
+        
+        ::win.AddString(::eq_filename,"Eq. filename")
+        ::win.BeginHorizontal
+          ::win.AddButton("Save", ::SaveEquation)
+          ::win.AddButton("Read", ::ReadEquation)
+        ::win.EndHorizontal
+
+    ::win.EndBook
+        ::win.BeginHorizontal
+          ::win.AddButton("Update",         ::Update)
+          ::win.AddButton("Close",          ::Close)
+          ::win.AddButton("Close All",          ::CloseAll)
+        ::win.EndHorizontal
+    ::win.update
+    ::win.Display
+  }
+  
+  ::Init
+  }
+
 }
+  # end if (!exists(ParametricSurfaceClass))
 
 
-#--------------------------------------------------------------
-proc PS_Start() \
-{
-  PS_evolve_state = 0
-  PS_Evolve
-}
+  #----------------------------
+  # Main
+  #----------------------------
 
-#--------------------------------------------------------------
-proc PS_Stop() \
-{
-  PS_evolve_state = 2
-}
+  if (!exists(ps)) {
+    ParametricSurfaceClass ps  
+    #if (argc>=1) {
+      #printn "reading image"
+      #input = Image($1)
+      #ps->image_name = "input"
+      #ps->win.update
+    #}
 
-
-#--------------------------------------------------------------
-proc PS_ResetScale() \
-{
-  PS_cx = 1
-  PS_cy = 1
-  PS_cz = 1
-  PS_win.update
-  PS_Update()
-} # PS_ResetScale()
-
-#--------------------------------------------------------------
-proc PS_SetEllipsoid() \
-{
-  PS_type=0
-  PS_e_x = 1
-  PS_e_y = 1
-  PS_e_z = 1
-  PS_win.update
-  PS_Update()
-} # PS_SetEllipsoid()
-
-
-#--------------------------------------------------------------
-proc PS_SaveEquation() {
-
-  eq_file = open(PS_eq_filename,"w")
-
-  eq_file.print "//-- Saving equation \n"
-
-  eq_file.print "//---- Main Parameters\n"
-
-  eq_file.print boost_format("PS_theta_dim = %1%\n") % PS_theta_dim
-  eq_file.print boost_format("PS_phi_dim = %1%\n") % PS_phi_dim
-
-  eq_file.print "//---- Parametric equation expression \n"
-
-  eq_file.print "PS_X = \"" +PS_X +"\"\n"
-  eq_file.print "PS_Y = \"" +PS_Y +"\"\n"
-  eq_file.print "PS_Z = \"" +PS_Z +"\"\n"
-
-  eq_file.print boost_format("PS_kmax = %1%\n") \
-                              % PS_kmax
-  eq_file.print boost_format("PS_timestep = %1%\n") \
-                              % PS_timestep
-
-  eq_file.print "// Update interface\n"
-  eq_file.print "PS_win.update\n"
-
-}
-
-
-#--------------------------------------------------------------
-proc PS_ReadEquation() {
-  # call func to read a script ...
-  func
-}
-
-
-#--------------------------------------------------------------
-proc PS_gui() {
-
-  global::PS_win = ParamWin("Param. Surf.")
-
-  PS_type_id  = PS_win.AddEnum(PS_type)
-    PS_win.AddEnumChoice(PS_type_id,"SuperQuadric")
-    PS_win.AddEnumChoice(PS_type_id,"Torus")
-    PS_win.AddEnumChoice(PS_type_id,"Expression")
-  PS_win.SetCallback(PS_NewType)
-
-  PS_win.BeginBook
-    # Main Page
-    PS_win.AddPage("Main")
-      PS_win.BeginBox("Resolution")
-          PS_thetadim_id = PS_win.AddInt(PS_theta_dim,4,500)
-          PS_win.SetCallback(PS_Update)
-          PS_phidim_id   = PS_win.AddInt(PS_phi_dim,  4,500)
-          PS_win.SetCallback(PS_Update)
-      PS_win.EndBox
-      PS_win.BeginBox("Scaling Coeff.")
-          PS_cx_id = PS_win.AddFloat    (PS_cx,0.1,5)
-          PS_win.SetCallback(PS_Update)
-          PS_cy_id = PS_win.AddFloat    (PS_cy,0.1,5)
-          PS_win.SetCallback(PS_Update)
-          PS_cz_id = PS_win.AddFloat    (PS_cz,0.1,5)
-          PS_win.SetCallback(PS_Update)
-          PS_win.AddButton("Reset",   PS_ResetScale)
-      PS_win.EndBox
-
-
-    # SuperQuadric Page
-    PS_win.AddPage("SuperQu.")
-      PS_win.BeginBox("Exponential Coeff.")
-          PS_cx_id = PS_win.AddFloat    (PS_e_x,0.1,5)
-          PS_win.SetCallback(PS_Update)
-          PS_cy_id = PS_win.AddFloat    (PS_e_y,0.1,5)
-          PS_win.SetCallback(PS_Update)
-          PS_cz_id = PS_win.AddFloat    (PS_e_z,0.1,5)
-          PS_win.SetCallback(PS_Update)
-          PS_win.AddButton("Set Ellipsoid",   PS_SetEllipsoid)
-      PS_win.EndBox
-
-    # SuperQuadric Torus
-    PS_win.AddPage("Torus")
-      PS_win.BeginBox("Radii")
-          PS_R_id = PS_win.AddFloat    (PS_R,0.1,5)
-          PS_win.SetCallback(PS_Update)
-          PS_r_id = PS_win.AddFloat    (PS_r,0.1,5)
-          PS_win.SetCallback(PS_Update)
-      PS_win.EndBox
-
-    # User Equation Page
-    PS_win.AddPage("Expr")
-      PS_win.BeginBox("Equation (U,V):")
-        PS_X_id = PS_win.AddString(PS_X,"X=")
-        PS_win.SetCallback(PS_Update)
-        PS_Y_id = PS_win.AddString(PS_Y,"Y=")
-        PS_win.SetCallback(PS_Update)
-        PS_Z_id = PS_win.AddString(PS_Z,"Z=")
-        PS_win.SetCallback(PS_Update)
-      PS_win.EndBox
-      PS_win.BeginBox("Time evolution:")
-        PS_win.AddInt(PS_kmax,0,100)
-        PS_win.AddInt(PS_timestep,0,1000)
-        PS_win.BeginHorizontal
-          PS_win.AddButton("Start", PS_Start)
-          PS_win.AddButton("Stop",  PS_Stop)
-        PS_win.EndHorizontal
-      PS_win.EndBox
-      
-      PS_win.AddString(PS_eq_filename,"Eq. filename")
-      PS_win.BeginHorizontal
-        PS_win.AddButton("Save", PS_SaveEquation)
-        PS_win.AddButton("Read", PS_ReadEquation)
-      PS_win.EndHorizontal
-
-  PS_win.EndBook
-      PS_win.BeginHorizontal
-        PS_win.AddButton("Update",         PS_Update)
-        PS_win.AddButton("Close",          PS_Close)
-      PS_win.EndHorizontal
-  PS_win.update
-  PS_win.Display
-}
-
-PS_init()
-PS_gui()
-
+  } else {
+    InfoDialog "The script seems to be already loaded."
+  }
+  
