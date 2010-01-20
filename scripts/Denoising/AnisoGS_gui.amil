@@ -3,160 +3,185 @@
 #
 # Denoising algorithm
 #
+if (!exists(AnisoGSClass)) {
 
-if (exists(AGS_Init)) {
-  printn "AGS script already loaded, close it first"
-} else {
+  Class AnisoGSClass {
 
-  proc AGS_Init() \
-  {
-    global_new
+  #----------------------------
   
-    AGS_input_name  = ""
-    AGS_result_name = "AnisoGS_result"
-    AGS_result_filename = "AnisoGS_result.ami.gz"
-    AGS_sigma=1
-    AGS_threshold=10
-    AGS_datacoeff=0.05
-    AGS_niter=INT(5)
-    AGS_use_zoom=UCHAR(0)
-    AGS_use_zoom.Comments("Allow to process only on the Region-Of-Interest defined by the current zoom in the input image display window")
-    AGS_started=0
+  proc ::Init() {
+    ::class_name ="AnisoGSClass"
   
-    AGS_CreateWindow()
+    ::input_name  = ""
+    ::result_name = "AnisoGS_result"
+    ::result_filename = "AnisoGS_result.ami.gz"
+    ::sigma=1
+    ::threshold=10
+    ::datacoeff=0.05
+    ::niter=INT(5)
+    ::use_zoom=UCHAR(0)
+    ::use_zoom.Comments("Allow to process only on the Region-Of-Interest defined by the current zoom in the input image display window")
+    ::started=0
+  
+    ::CreateWindow()
   }
   
-  #------------------------------------
-  proc AGS_Close() {
-    AGS_win.Hide
-    delvars "AGS_*_draw"
-    delvars "AGS_*"
+  #----------------------------
+  proc ::Close() {
+    ::win.Hide
+    delvars GetObjectName(::Close)
   }
+  ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    
+  #----------------------------
+  proc ::CloseAll() {
+    eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
+    ::Close
+  }
+  ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    
+  #----------------------------
   
   #------------------------------------
-  proc AGS_load_input() {
-    if (AGS_input_name=="Image") {
+  proc ::load_input() {
+    if (::input_name=="Image") {
       # read image using browser
-      global::AGS_input << Image
-      AGS_input_name = "AGS_input"
-      AGS_win.update
+      ::input <<= Image
+      ::input_name = "::input"
+      ::win.update
     } else {
-      eval "global::AGS_input <<="+AGS_input_name+";"
+      eval "::input <<="+::input_name+";"
     }
   }
 
   #------------------------------------
-  proc AGS_Restart() {
+  proc ::Restart() {
 
-    if (AGS_started) {
+    if (::started) {
       AnisoGS.end
-      if exists(AGS_res_draw) {
-        del AGS_res_draw
+      if exists(::res_draw) {
+        del ::res_draw
       }
-      if exists(AGS_res) {
-        del AGS_res
+      if exists(::res) {
+        del ::res
       }
-      if exists(AGS_input) {
-        del AGS_input
+      if exists(::input) {
+        del ::input
       }
     }
     if (!exists(NRAD_input)) {
-      AGS_load_input
+      ::load_input
     }
-    if (AGS_use_zoom)&&(exists(AGS_input_draw)) {
-      global::AGS_input_roi <<= (FLOAT) AGS_input[AGS_input_draw.GetXmin:AGS_input_draw.GetXmax,\
-                            AGS_input_draw.GetYmin:AGS_input_draw.GetYmax,\
-                            AGS_input_draw.GetZmin:AGS_input_draw.GetZmax ]
+    if (::use_zoom)&&(exists(::input_draw)) {
+      global::::input_roi <<= (FLOAT) ::input[::input_draw.GetXmin:::input_draw.GetXmax,\
+                            ::input_draw.GetYmin:::input_draw.GetYmax,\
+                            ::input_draw.GetZmin:::input_draw.GetZmax ]
     } else {
-      global::AGS_input_roi <<= (FLOAT) AGS_input
+      ::input_roi <<= (FLOAT) ::input
     }
-    AnisoGS.init(AGS_input_roi,AGS_sigma,AGS_threshold,AGS_datacoeff)
-    AGS_started=1
-    global::AGS_res <<= AnisoGS.GetOutput
+    AnisoGS.init(::input_roi,::sigma,::threshold,::datacoeff)
+    ::started=1
+    ::res <<= AnisoGS.GetOutput
   }
   
   #------------------------------------
-  proc AGS_Filter() {
+  
+  proc ::Filter() {
 
-    if (!AGS_started) {
-      AGS_Restart()
+    if (!::started) {
+      ::Restart()
     }
     SetProgress(0)
-    for k=1 to AGS_niter {
+    for k=1 to ::niter {
       AnisoGS.iterate
-      SetProgress(k/AGS_niter*100)
-      if exists(AGS_res_draw) {
-        show AGS_res
+      SetProgress(k/::niter*100)
+      if exists(::res_draw) {
+        show ::res
       }
     }
-    AGS_res = AnisoGS.GetOutput
+    ::res = AnisoGS.GetOutput
     SetProgress(0)
   }
   
   #------------------------------------
-  proc AGS_Display() {
-    show AGS_input
-    if exists(AGS_res) {
-      global_new
-        AGS_input_draw.compare(AGS_res)
+  
+  proc ::Display() {
+    show ::input
+    if exists(::res) {
+        show ::res
+        ::input_draw.compare(::res_draw)
     }
   }
   
   #------------------------------------
-  proc AGS_Save() {
-    AGS_res.save AGS_result_name
+  proc ::Save() {
+    ::res.save ::result_name
   }
   
   #------------------------------------
-  proc AGS_CreateWindow() {
+  
+  proc ::CreateWindow() {
 
     # parameters window
-    global::AGS_win = ParamWin("AnisoGS")
+    ::win = ParamWin("AnisoGS")
 
-    AGS_win.BeginBook
-      AGS_win.AddPage("Param")
-        AGS_win.AddImageChoice(AGS_input_name, "Input")
+    ::win.BeginBook
+      ::win.AddPage("Param")
+        ::win.AddImageChoice(::input_name, "Input")
     
-        AGS_win.AddFloat(AGS_sigma,0.01,10)
-        AGS_win.AddFloat(AGS_threshold,0,100)
-        AGS_win.AddFloat(AGS_datacoeff,0.01,10)
-        AGS_win.AddInt(AGS_niter,0,100)
-        AGS_win.AddBoolean(AGS_use_zoom,"Use Zoom")
-        AGS_win.AddString(AGS_result_name,"result name")
-        AGS_win.AddString(AGS_result_filename,"result filename")
+        ::win.AddFloat(::sigma,0.01,10)
+        ::win.AddFloat(::threshold,0,100)
+        ::win.AddFloat(::datacoeff,0.01,10)
+        ::win.AddInt(::niter,0,100)
+        ::win.AddBoolean(::use_zoom,"Use Zoom")
+        ::win.AddString(::result_name,"result name")
+        ::win.AddString(::result_filename,"result filename")
         
-        AGS_win.BeginBox("Controls")
-          AGS_win.BeginHorizontal
-            AGS_win.AddButton("Restart",    AGS_Restart)
-            AGS_win.AddButton("Filter",     AGS_Filter)
-            AGS_win.AddButton("Display",    AGS_Display)
-            AGS_win.AddButton("Save",       AGS_Save)
-          AGS_win.EndHorizontal
-        AGS_win.EndBox
-      AGS_win.AddPage("Contour Smoothing")
-        AGS_win.BeginBox("2D Images")
-        AGS_win.EndBox
-        AGS_win.BeginBox("3D Images")
-        AGS_win.EndBox
+        ::win.BeginBox("Controls")
+          ::win.BeginHorizontal
+            ::win.AddButton("Restart",    ::Restart)
+            ::win.AddButton("Filter",     ::Filter)
+            ::win.AddButton("Display",    ::Display)
+            ::win.AddButton("Save",       ::Save)
+          ::win.EndHorizontal
+        ::win.EndBox
+      ::win.AddPage("Contour Smoothing")
+        ::win.BeginBox("2D Images")
+        ::win.EndBox
+        ::win.BeginBox("3D Images")
+        ::win.EndBox
 
-    AGS_win.EndBook
-
-    AGS_win.AddButton("Close",          AGS_Close)
-    
-    AGS_win.CreateWin
-    AGS_win.Display
-    AGS_win.update
+    ::win.EndBook
+    ::win.BeginHorizontal
+      ::win.AddButton("Close",          ::Close)
+      ::win.AddButton("Close All",          ::CloseAll)
+    ::win.EndHorizontal  
+    ::win.CreateWin
+    ::win.Display
+    ::win.update
   }
   
+  ::Init
   
-  #------------------------------------
-  AGS_Init
+  }#end of class
+  
+}#end of if
+
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(anigsc)) {
+
+  AnisoGSClass anigsc  
+   
   if (argc>=2) {
-    printn "reading image"
-    input_arg = Image($1)
-    AGS_input_image = "input_arg"
-    AGS_result_filename = $2
-    AGS_win.update
+      printn "reading image"
+      input_arg = Image($1)
+      ::input_image = "input_arg"
+      ::result_filename = $2
+      ::win.update
   }
+} else {
+InfoDialog "The script seems to be already loaded." 
 }
-# endif exists(AGS_Init)
