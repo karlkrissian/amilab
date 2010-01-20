@@ -9,372 +9,397 @@
 #
 
 # call 
-# NRAD_CreateParams( IMAGE)
+# ::CreateParams( IMAGE)
 # and
-# NRAD_CreateWindow()
+# ::CreateWindow()
 #
-# result in NRAD_res
+# result in ::res
 #
 # Style Conventions:
-#   all variables and functions will start with NRAD_
+#   all variables and functions will start with ::
 #   function variables will start with an uppercase character after
 #   other variables will start with a lowercase character
 #
-# NRAD_resultname = $2
+# ::resultname = $2
 
-if (exists(NRAD_Init)) {
-  printn "NRAD script already loaded, close it first"
-} else {
+if (!exists(AnisoNRADClass)) {
 
-  #------------------------------------
-  proc NRAD_Init() \
-  {
-    global_new
+  Class AnisoNRADClass {
+
+  #----------------------------
   
-      NRAD_input_name = ""
+  proc ::Init() \
+  {
+  
+      ::input_name = ""
       # suggested 1/6 in 3D and 1/4 in 2D
-      NRAD_dt   = 1.0/6.0, "Time step for the Partial Differential Equation"
-      NRAD_t    = 2.0, "Total diffusion time of the equation"
+      ::dt   = 1.0/6.0, "Time step for the Partial Differential Equation"
+      ::t    = 2.0, "Total diffusion time of the equation"
 
       # 0: Lee, 1: Kuan, 2: Additive, 3: MRI
-      NRAD_scalar_mode = INT(3), "Scalar mode: Lee, Kuan, Additive or MRI"
+      ::scalar_mode = INT(3), "Scalar mode: Lee, Kuan, Additive or MRI"
 
       # 0: Grad, 1: MRI,  2:MRI_NEW 
-      NRAD_matrix_mode = INT(2), "Matrix mode: Gradient, MRI or MRI_new"
+      ::matrix_mode = INT(2), "Matrix mode: Gradient, MRI or MRI_new"
 
-      NRAD_neighborhood = INT(1), "Size of the neighborhood for local statistics, the window size is (2n+1)^3, where n is the parameter"
+      ::neighborhood = INT(1), "Size of the neighborhood for local statistics, the window size is (2n+1)^3, where n is the parameter"
 
-      NRAD_sigma = 0.7, "Gaussian convolution standard deviation for computing the local structure"
+      ::sigma = 0.7, "Gaussian convolution standard deviation for computing the local structure"
       # Local Structure 0: princ. curv 1: struct tensor
-      NRAD_local_struct = INT(1), "Local Structure mode: either gradient and principal curvature directions, or structure tensor eigenvectors"
+      ::local_struct = INT(1), "Local Structure mode: either gradient and principal curvature directions, or structure tensor eigenvectors"
       # Eigenvalues mode 0: SUM 1: MAX
-      NRAD_eigen_mode = INT(0), "Eigenvalues mode, decides how to combine the diffusions along each line, plane and local volume: either the sum, or the maximum (default is sum)"
+      ::eigen_mode = INT(0), "Eigenvalues mode, decides how to combine the diffusions along each line, plane and local volume: either the sum, or the maximum (default is sum)"
 
       # 0: scalar diffusion, 1: matrix diffusion equation
-      NRAD_equation_type = INT(0), "Equation type: scalar or matrix"
+      ::equation_type = INT(0), "Equation type: scalar or matrix"
 
       # Scheme, 0: explicit 1: semi-implicit
-      NRAD_scheme = INT(1), "Numerical scheme: explicit or semi-implicit"
+      ::scheme = INT(1), "Numerical scheme: explicit or semi-implicit"
   
-      NRAD_run_on_roi = UCHAR(0), "Run only on the selected region-of-interest"
+      ::run_on_roi = UCHAR(0), "Run only on the selected region-of-interest"
 
-      NRAD_CreateWindow()
-      # NRAD_ROI 
+      ::CreateWindow()
+      # ::ROI 
   }
   
-  #------------------------------------
-  proc NRAD_Close() {
-    NRAD_win.Hide
-    delvars "NRAD_*_draw"
-    delvars "NRAD_*"
+  #----------------------------
+  proc ::Close() {
+    ::win.Hide
+    delvars GetObjectName(::Close)
   }
+  ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    
+  #----------------------------
+  proc ::CloseAll() {
+    eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
+    ::Close
+  }
+  ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    
+  #----------------------------
   
-  #------------------------------------
-  proc NRAD_load_input() {
-    if (NRAD_input_name=="Image") {
+  proc ::load_input() {
+    if (::input_name=="Image") {
       # read image using browser
-      global::NRAD_input << Image
-      NRAD_input_name = "NRAD_input"
-      NRAD_win.update
+      ::input <<== Image
+      ::input_name = "::input"
+      ::win.update
     } else {
-      eval "global::NRAD_input <<="+NRAD_input_name+";"
+      eval "::input <<="+::input_name+";"
     }
   }
 
   #------------------------------------
-  proc NRAD_SetGroundTruth( IMAGE gt, NUM sigma) {
-    global_new
+  proc ::SetGroundTruth( IMAGE gt, NUM sigma) {
+    
   
-    NRAD_groundtruth = gt
-    NRAD_noisesigma  = sigma
+    ::groundtruth = gt
+    ::noisesigma  = sigma
   }
   
   #------------------------------------
-  proc NRAD_ComputeMSE( IMAGE res) {
-    res1=res*res-2*NRAD_noisesigma*NRAD_noisesigma
+  proc ::ComputeMSE( IMAGE res) {
+    res1=res*res-2*::noisesigma*::noisesigma
     res1 = sqrt(res1*(res1>0))
-    printn sprint("MSE %3.2f \n",mean((res1-NRAD_groundtruth)*(res1-NRAD_groundtruth)))
+    printn sprint("MSE %3.2f \n",mean((res1-::groundtruth)*(res1-::groundtruth)))
   
-    res1=res*res-2*NRAD_noisesigma*NRAD_noisesigma
+    res1=res*res-2*::noisesigma*::noisesigma
     res1 = sqrt(res1*(res1>0))
-    printn sprint("MSE %3.2f (I>0) \n",mean[NRAD_groundtruth>0]((res1-NRAD_groundtruth)*(res1-NRAD_groundtruth)))
+    printn sprint("MSE %3.2f (I>0) \n",mean[::groundtruth>0]((res1-::groundtruth)*(res1-::groundtruth)))
   }
   
   #------------------------------------
-  proc NRAD_ReloadInput() \
+  proc ::ReloadInput() \
   {
-    if (exists(NRAD_input)) {
-      delvars "NRAD_*_draw"
-      del NRAD_roi
-      del NRAD_imbox
+    if (exists(::input)) {
+      delvars "::*_draw"
+      del ::roi
+      del ::imbox
     }
-    NRAD_load_input
-    NRAD_Display()
+    ::load_input
+    ::Display()
   }
   
   #------------------------------------
-  proc NRAD_GetRoi() \
+  proc ::GetRoi() \
   {
-    if (!exists(NRAD_input)) {
-      NRAD_load_input
-      NRAD_Display()
+    if (!exists(::input)) {
+      ::load_input
+      ::Display()
     }
-    if (exists(NRAD_input_draw)) {
-      global::NRAD_roi <<= NRAD_input[NRAD_input_draw]
+    if (exists(::input_draw)) {
+      ::roi <<= ::input[::input_draw]
     }
-    NRAD_Display()
+    ::Display()
   }
   
-  #------------------------------------
-  proc NRAD_FilterFlux() \
+   #------------------------------------
+  proc ::FilterFlux() \
   {
-    if (!exists(NRAD_input)) {
-      NRAD_load_input
+    if (!exists(::input)) {
+      ::load_input
     }
-    numit = NRAD_t/NRAD_dt
-    local::input1 = NRAD_input*NRAD_input
-    if (NRAD_run_on_roi) {
-      input1 <<= input1[NRAD_roi]
+    numit = ::t/::dt
+    local::input1 = ::input*::input
+    if (::run_on_roi) {
+      input1 <<= input1[::roi]
     }
   
     # sigma = 0.7
     # threshold = 1 // not used
     # data attachment = 0
-    AnisoGS.init(input1,NRAD_sigma,1,0)
-    AnisoGS.Setneighborhood(NRAD_neighborhood)
-    AnisoGS.Setdt(NRAD_dt)
+    AnisoGS.init(input1,::sigma,1,0)
+    AnisoGS.Setneighborhood(::neighborhood)
+    AnisoGS.Setdt(::dt)
     # diffusion coefficient in minimal and maximal curvature directions
     AnisoGS.setcoeff(0.5,0.01)
   
-    if (NRAD_matrix_mode==1) {
+    if (::matrix_mode==1) {
       # set Rician Noise Reducing Anisotropic Diffusion and the ROI
-      AnisoGS.SetRNRADROI(NRAD_roi)
+      AnisoGS.SetRNRADROI(::roi)
     }
-    if (NRAD_matrix_mode==2) {
+    if (::matrix_mode==2) {
       # set Rician Noise Reducing Anisotropic Diffusion and the ROI
-      AnisoGS.SetRNRADROI_NEW(NRAD_roi)
+      AnisoGS.SetRNRADROI_NEW(::roi)
     }
   
-    AnisoGS.SetLocalStruct(NRAD_local_struct)
-    AnisoGS.SetEigenMode(  NRAD_eigen_mode)
+    AnisoGS.SetLocalStruct(::local_struct)
+    AnisoGS.SetEigenMode(  ::eigen_mode)
   
     # process iterations
-    NRAD_res0 = AnisoGS.GetOutput
-    if (NRAD_run_on_roi) {
-      global::NRAD_res <<= NRAD_input
-      NRAD_res0 = sqrt(NRAD_res0)
-      NRAD_res.putimage(NRAD_res0)
+    ::res0 = AnisoGS.GetOutput
+    if (::run_on_roi) {
+      ::res <<= ::input
+      ::res0 = sqrt(::res0)
+      ::res.putimage(::res0)
     } else {
-      global::NRAD_res <<= sqrt(NRAD_res0)
+      ::res <<= sqrt(::res0)
     }
-  #  show NRAD_res
-  #  NRAD_input_draw.compare(NRAD_res)
+  #  show ::res
+  #  ::input_draw.compare(::res)
     SetProgress(0)
     InitTime
     for k=1 to numit {
       AnisoGS.iterate
-      NRAD_res0 = AnisoGS.GetOutput
-      NRAD_res0 = NRAD_res0*(NRAD_res0>0)
-      if (NRAD_run_on_roi) {
-        NRAD_res0 = sqrt(NRAD_res0)
-        NRAD_res.putimage(NRAD_res0)
+      ::res0 = AnisoGS.GetOutput
+      ::res0 = ::res0*(::res0>0)
+      if (::run_on_roi) {
+        ::res0 = sqrt(::res0)
+        ::res.putimage(::res0)
       } else {
-        NRAD_res = sqrt(NRAD_res0)
+        ::res = sqrt(::res0)
       }
-      if (exists(NRAD_groundtruth)) {
-        ComputeMSE(NRAD_res);
+      if (exists(::groundtruth)) {
+        ComputeMSE(::res);
       }
       SetProgress(k/numit*100)
-      show NRAD_res
+      show ::res
       ProcessXEvents(50)
     }
     EndTime
   
   //  AnisoGS.end
-  //  hide NRAD_res
+  //  hide ::res
   }
   
-  #------------------------------------
-  proc NRAD_Filter() {
-    if (!exists(NRAD_input)) {
-      NRAD_load_input
+   #------------------------------------
+  proc ::Filter() {
+    if (!exists(::input)) {
+      ::load_input
     }
-    if (!exists(NRAD_roi)) {
+    if (!exists(::roi)) {
       InfoDialog "Region of Interest not selected taking the full image by default"
-      NRAD_roi = NRAD_input
+      ::roi = ::input
     }
 
-    if (NRAD_equation_type==1) {
-      NRAD_FilterFlux()
+    if (::equation_type==1) {
+      ::FilterFlux()
     } else {
-      numit = NRAD_t/NRAD_dt
-      if (NRAD_scalar_mode==3) {
+      numit = ::t/::dt
+      if (::scalar_mode==3) {
           printn "running on squared image"
-          local::input1 = NRAD_input*NRAD_input
-          global::NRAD_res = AnisoNRAD(input1,NRAD_scalar_mode,\
-                      NRAD_dt,numit,NRAD_neighborhood,NRAD_roi)
-          NRAD_res = sqrt(NRAD_res)
+          local::input1 = ::input*::input
+          ::res = AnisoNRAD(input1,::scalar_mode,\
+                      ::dt,numit,::neighborhood,::roi)
+          ::res = sqrt(::res)
       } else {
-          global::NRAD_res = AnisoNRAD(NRAD_input,NRAD_scalar_mode,\
-                      NRAD_dt,numit,NRAD_neighborhood,NRAD_roi)
+          ::res = AnisoNRAD(::input,::scalar_mode,\
+                      ::dt,numit,::neighborhood,::roi)
       }
     }
   }
   
   #------------------------------------
-  proc NRAD_Display() {
-    global_new
-    if (!exists(NRAD_input)) {
-      NRAD_load_input
+  proc ::Display() {
+    
+    if (!exists(::input)) {
+      ::load_input
     }
-    if (!exists(NRAD_input_draw)) {
-      show NRAD_input
+    if (!exists(::input_draw)) {
+      show ::input
     }
     // draw limits of ROI
-    if exists(NRAD_roi) {
-      local::roibox = NRAD_roi*0+1
-      global::NRAD_imbox  <<= NRAD_input*0
-      NRAD_imbox.putimage(roibox)
+    if exists(::roi) {
+      local::roibox = ::roi*0+1
+      ::imbox  <<= ::input*0
+      ::imbox.putimage(roibox)
       del roibox
-      NRAD_input_draw.SetIsoContour(0,NRAD_imbox,0.5)
-      NRAD_input_draw.DrawIsoContour(0,1)
-      show NRAD_input
+      ::input_draw.SetIsoContour(0,::imbox,0.5)
+      ::input_draw.DrawIsoContour(0,1)
+      show ::input
     }
-    if exists(NRAD_res) {
-      show NRAD_res
-      NRAD_input_draw.compare(NRAD_res_draw)
+    if exists(::res) {
+      show ::res
+      ::input_draw.compare(::res_draw)
     }
     local_new
   }
   
-  proc NRAD_CompareSurfaces(IMAGE i1, IMAGE i2) {
-    global_new
-      delvars "NRAD_*_surf_draw"
-      delvars "NRAD_*_surf"
-      NRAD_input_surf = CreateFlatMesh(i1,0)
-      NRAD_res_surf   = CreateFlatMesh(i2,0)
-      NRAD_input_surf.ElevateMesh(i1/10)
-      NRAD_res_surf.ElevateMesh(i2/10)
-      NRAD_input_surf.Normals
-      NRAD_res_surf.Normals
-      show NRAD_input_surf
-      show NRAD_res_surf
-      NRAD_input_surf_draw.compare(NRAD_res_surf_draw)
+  proc ::CompareSurfaces(IMAGE i1, IMAGE i2) {
+    
+      delvars "::*_surf_draw"
+      delvars "::*_surf"
+      ::input_surf = CreateFlatMesh(i1,0)
+      ::res_surf   = CreateFlatMesh(i2,0)
+      ::input_surf.ElevateMesh(i1/10)
+      ::res_surf.ElevateMesh(i2/10)
+      ::input_surf.Normals
+      ::res_surf.Normals
+      show ::input_surf
+      show ::res_surf
+      ::input_surf_draw.compare(::res_surf_draw)
   }
 
-  proc NRAD_DisplaySurfaces() {
-    if (NRAD_input.tz==1) {
-      NRAD_CompareSurfaces(&NRAD_input,&NRAD_res)
+  proc ::DisplaySurfaces() {
+    if (::input.tz==1) {
+      ::CompareSurfaces(&::input,&::res)
     } else {
-      if (exists(NRAD_input_draw)) {
+      if (exists(::input_draw)) {
         InfoDialog "Taking the current slice from input image viewer"
-        zpos = NRAD_input_draw.GetZPos
+        zpos = ::input_draw.GetZPos
       } else {
         InfoDialog "Taking the middle slice of the image"
-        zpos = NRAD_input.tz/2 
+        zpos = ::input.tz/2 
       }
-      inslice = NRAD_input[:,:,zpos:zpos]
-      resslice = NRAD_res[:,:,zpos:zpos]
-      NRAD_CompareSurfaces(&inslice,&resslice)
+      inslice = ::input[:,:,zpos:zpos]
+      resslice = ::res[:,:,zpos:zpos]
+      ::CompareSurfaces(&inslice,&resslice)
     }
   }
   
-  
-  proc NRAD_Save() {
-    NRAD_res.save "NRAD_result.ami.gz"
+  proc ::Save() {
+    ::res.save "::result.ami.gz"
   }
   
-  proc NRAD_new_eq_type() {
-    NRAD_win.EnablePanel(NRAD_mat_boxid, NRAD_equation_type==1)
-    #NRAD_win.Enable(NRAD_sigma_id, NRAD_equation_type==1)
-    #NRAD_win.Enable(NRAD_matrix_mode_id, NRAD_equation_type==1)
-    #NRAD_win.Enable(NRAD_localstruct_id, NRAD_equation_type==1)
-    #NRAD_win.Enable(NRAD_eigenmode_id, NRAD_equation_type==1)
+  proc ::new_eq_type() {
+    ::win.EnablePanel(::mat_boxid, ::equation_type==1)
+    #::win.Enable(::sigma_id, ::equation_type==1)
+    #::win.Enable(::matrix_mode_id, ::equation_type==1)
+    #::win.Enable(::localstruct_id, ::equation_type==1)
+    #::win.Enable(::eigenmode_id, ::equation_type==1)
 
-    NRAD_win.EnablePanel(NRAD_scal_boxid,NRAD_equation_type!=1)
-    #NRAD_win.Enable(NRAD_scalar_mode_id,NRAD_equation_type!=1)
+    ::win.EnablePanel(::scal_boxid,::equation_type!=1)
+    #::win.Enable(::scalar_mode_id,::equation_type!=1)
   }
   
   #------------------------------------
-  proc NRAD_CreateWindow() {
+  
+  proc ::CreateWindow() {
     # parameters window
-    global::NRAD_win = ParamWin("NRAD")
+    ::win = ParamWin("NRAD")
 
-    NRAD_win.BeginBook
-      NRAD_win.AddPage("Param")
-        NRAD_win.AddImageChoice(NRAD_input_name, "Input")
-        NRAD_win.AddFloat(NRAD_dt,"dt",0.01,10)
-        NRAD_win.AddFloat(NRAD_t,"T",0,100)
+    ::win.BeginBook
+      ::win.AddPage("Param")
+        ::win.AddImageChoice(::input_name, "Input")
+        ::win.AddFloat(::dt,"dt",0.01,10)
+        ::win.AddFloat(::t,"T",0,100)
         
-        NRAD_win.AddInt(NRAD_neighborhood,"Neighborhood",0,4)
+        ::win.AddInt(::neighborhood,"Neighborhood",0,4)
     
-        NRAD_scheme_id       = NRAD_win.AddEnum(NRAD_scheme,"Scheme")
-          NRAD_win.AddEnumChoice(NRAD_scheme_id,"Explicit")
-          NRAD_win.AddEnumChoice(NRAD_scheme_id,"Semi-implicit")
+        ::scheme_id       = ::win.AddEnum(::scheme,"Scheme")
+          ::win.AddEnumChoice(::scheme_id,"Explicit")
+          ::win.AddEnumChoice(::scheme_id,"Semi-implicit")
         
-        NRAD_eq_type_id      = NRAD_win.AddEnum(NRAD_equation_type)
-          NRAD_win.AddEnumChoice(NRAD_eq_type_id,"Scalar")
-          NRAD_win.AddEnumChoice(NRAD_eq_type_id,"Matrix")
-        NRAD_win.SetCallback(NRAD_new_eq_type)
+        ::eq_type_id      = ::win.AddEnum(::equation_type)
+          ::win.AddEnumChoice(::eq_type_id,"Scalar")
+          ::win.AddEnumChoice(::eq_type_id,"Matrix")
+        ::win.SetCallback(::new_eq_type)
     
-        global::NRAD_scal_boxid = NRAD_win.BeginBoxPanel("Scalar diffusion parameters")
-          global::NRAD_scalar_mode_id = NRAD_win.AddEnum(NRAD_scalar_mode,"Scalar mode")
-            NRAD_win.AddEnumChoice(NRAD_scalar_mode_id,"Lee")
-            NRAD_win.AddEnumChoice(NRAD_scalar_mode_id,"Kuan")
-            NRAD_win.AddEnumChoice(NRAD_scalar_mode_id,"Additive")
-            NRAD_win.AddEnumChoice(NRAD_scalar_mode_id,"MRI")
-            NRAD_win.AddEnumChoice(NRAD_scalar_mode_id,"MRI new")
-        NRAD_win.EndBoxPanel
+        ::scal_boxid = ::win.BeginBoxPanel("Scalar diffusion parameters")
+          ::scalar_mode_id = ::win.AddEnum(::scalar_mode,"Scalar mode")
+            ::win.AddEnumChoice(::scalar_mode_id,"Lee")
+            ::win.AddEnumChoice(::scalar_mode_id,"Kuan")
+            ::win.AddEnumChoice(::scalar_mode_id,"Additive")
+            ::win.AddEnumChoice(::scalar_mode_id,"MRI")
+            ::win.AddEnumChoice(::scalar_mode_id,"MRI new")
+        ::win.EndBoxPanel
 
-        global::NRAD_mat_boxid = NRAD_win.BeginBoxPanel("Matrix diffusion parameters")
-          global::NRAD_sigma_id = NRAD_win.AddFloat(NRAD_sigma,"sigma",0.01,10)
-          global::NRAD_matrix_mode_id = NRAD_win.AddEnum(NRAD_matrix_mode,"Matrix mode")
-            NRAD_win.AddEnumChoice(NRAD_matrix_mode_id,"Grad")
-            NRAD_win.AddEnumChoice(NRAD_matrix_mode_id,"MRI")
-            NRAD_win.AddEnumChoice(NRAD_matrix_mode_id,"MRI new")
+        ::mat_boxid = ::win.BeginBoxPanel("Matrix diffusion parameters")
+          ::sigma_id = ::win.AddFloat(::sigma,"sigma",0.01,10)
+          ::matrix_mode_id = ::win.AddEnum(::matrix_mode,"Matrix mode")
+            ::win.AddEnumChoice(::matrix_mode_id,"Grad")
+            ::win.AddEnumChoice(::matrix_mode_id,"MRI")
+            ::win.AddEnumChoice(::matrix_mode_id,"MRI new")
   
-          global::NRAD_localstruct_id = NRAD_win.AddEnum(NRAD_local_struct,"Local Struct.")
-            NRAD_win.AddEnumChoice(NRAD_localstruct_id,"Grad & Curv. Dir.")
-            NRAD_win.AddEnumChoice(NRAD_localstruct_id,"Struct. Tensor")
+          ::localstruct_id = ::win.AddEnum(::local_struct,"Local Struct.")
+            ::win.AddEnumChoice(::localstruct_id,"Grad & Curv. Dir.")
+            ::win.AddEnumChoice(::localstruct_id,"Struct. Tensor")
       
-          global::NRAD_eigenmode_id = NRAD_win.AddEnum(NRAD_eigen_mode,"Eigen mode")
-            NRAD_win.AddEnumChoice(NRAD_eigenmode_id,"Sum")
-            NRAD_win.AddEnumChoice(NRAD_eigenmode_id,"Max")
-        NRAD_win.EndBoxPanel
+          ::eigenmode_id = ::win.AddEnum(::eigen_mode,"Eigen mode")
+            ::win.AddEnumChoice(::eigenmode_id,"Sum")
+            ::win.AddEnumChoice(::eigenmode_id,"Max")
+        ::win.EndBoxPanel
         
-        NRAD_win.AddPage("Controls")
-          NRAD_win.AddBoolean(NRAD_run_on_roi,"Run on ROI")
-          NRAD_win.BeginHorizontal
-            NRAD_win.AddButton("Reload input", NRAD_ReloadInput)
-            NRAD_win.AddButton("Select ROI", NRAD_GetRoi)
-            NRAD_win.AddButton("Filter",     NRAD_Filter)
-          NRAD_win.EndHorizontal
-          NRAD_win.BeginHorizontal
-            NRAD_win.AddButton("Display",    NRAD_Display)
-            NRAD_win.AddButton("Display Surfaces",  NRAD_DisplaySurfaces)
-            NRAD_win.AddButton("Save",       NRAD_Save)
-          NRAD_win.EndHorizontal
+        ::win.AddPage("Controls")
+          ::win.AddBoolean(::run_on_roi,"Run on ROI")
+          ::win.BeginHorizontal
+            ::win.AddButton("Reload input", ::ReloadInput)
+            ::win.AddButton("Select ROI", ::GetRoi)
+            ::win.AddButton("Filter",     ::Filter)
+          ::win.EndHorizontal
+          ::win.BeginHorizontal
+            ::win.AddButton("Display",    ::Display)
+            ::win.AddButton("Display Surfaces",  ::DisplaySurfaces)
+            ::win.AddButton("Save",       ::Save)
+          ::win.EndHorizontal
 
-    NRAD_win.EndBook
+    ::win.EndBook
 
-    NRAD_win.AddButton("Close",             NRAD_Close)
+    ::win.BeginHorizontal
+      ::win.AddButton("Close",          ::Close)
+      ::win.AddButton("Close All",          ::CloseAll)
+    ::win.EndHorizontal  
     
-    NRAD_win.CreateWin
-    NRAD_win.Display
-    NRAD_win.update
-    NRAD_new_eq_type
+    ::win.CreateWin
+    ::win.Display
+    ::win.update
+    ::new_eq_type
   }
   
   #------------------------------------
-  NRAD_Init
+  
+  ::Init
+  
+  }#End of Class
+
+}#End of if
+
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(aniNRAD)) {
+
+  AnisoNRADClass aniNRAD  
+   
   if (argc>=1) {
     printn "reading image"
     input_arg = Image($1)
-    NRAD_input_image = "input_arg"
-    NRAD_win.update
+    ::input_image = "input_arg"
+    ::win.update
     #NRAD_CreateParams( input)
     #NRAD_CreateWindow()
   }
-
-} 
-# endif exists(NRAD_Init)
+} else {
+InfoDialog "The script seems to be already loaded." 
+}
