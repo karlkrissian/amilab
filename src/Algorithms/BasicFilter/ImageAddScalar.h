@@ -62,7 +62,13 @@ public:
   /**
    * Process part of the image
    * @param threadid 
-   * @param numthreads 
+   */
+  template <class T>
+  void TemplateProcess( int threadid = 0);
+
+  /**
+   * Process part of the image
+   * @param threadid 
    */
   void Process( int threadid = 0);
 

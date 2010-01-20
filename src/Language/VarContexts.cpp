@@ -228,8 +228,10 @@ bool VarContexts::GetVar(const char* varname, Variable** var,
                                   int context)
 {
   if (context==-1) {
+    // TODO: limit to last context, if nothing else is specified !!!
     for(int i=_context.size()-1;i>=0;i--)
       if (_context[i]->GetVar(varname,var)) return true;
+    //if (_context[_context.size()-1]->GetVar(varname,var)) return true;
     return false;
   }
   else 

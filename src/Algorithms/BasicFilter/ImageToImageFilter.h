@@ -28,6 +28,7 @@ class ImageToImageFilterParam {
 
   int NumberOfThreads;
   InrImage::ptr input;
+  ImageExtent<int> output_extent;
 
 public:
 
@@ -44,11 +45,22 @@ public:
   void SetInput( InrImage::ptr& in)
   {
     input = in;
+    // default output extent to all input
+    output_extent = ImageExtent<int>(in.get());
   }
 
   InrImage::ptr& GetInput()
   {
     return input;
+  }
+
+  void SetOutputExtent( const ImageExtent<int>& oext)
+  {
+    output_extent = oext;
+  }
+
+  ImageExtent<int>& GetOutputExtent() {
+    return output_extent;
   }
 
   ImageToImageFilterParam() {}
@@ -81,6 +93,7 @@ public:
   virtual void Init() {}
 
   virtual void Process( int threadid = 0) = 0;
+
   static void* Process_thread(void* threadarg);
   void Run_multithreads();
 

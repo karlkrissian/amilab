@@ -17,6 +17,7 @@
 #include "imageextent.h"
 #include "ImageToImageFilter.h"
 #include <vector>
+#include "DefineClass.hpp"
 
 // use amilab namespace here ??
 
@@ -28,6 +29,9 @@
 //
 class ImageCos : public ImageToImageFilter 
 {
+  DEFINE_CLASS(ImageCos);
+
+protected:
   double scalar;
   typedef ImageExtent<int> extenttype;
   std::vector<extenttype> extents;
@@ -43,7 +47,13 @@ public:
   /**
    * Process part of the image
    * @param threadid 
-   * @param numthreads 
+   */
+  template <class T>
+  void TemplateProcess( int threadid = 0);
+
+  /**
+   * Process part of the image
+   * @param threadid 
    */
   void Process( int threadid = 0);
 

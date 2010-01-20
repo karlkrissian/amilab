@@ -22,6 +22,7 @@
 template<class T>
 class InrImageIterator : public InrImageIteratorBase
 {
+
 protected:
   // image format
   // pointer to image data
