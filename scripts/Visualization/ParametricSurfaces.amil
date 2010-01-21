@@ -150,6 +150,9 @@ proc PS_Update() \
 
     if (exists(PS_s_draw)) {
       PS_s_draw.Remove(PS_s)
+    }
+
+    if (exists(PS_s)) {
       del global::PS_s
     }
 

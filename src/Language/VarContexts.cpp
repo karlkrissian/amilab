@@ -134,8 +134,11 @@ boost::shared_ptr<wxArrayString> VarContexts::SearchVariables(const vartype& typ
   boost::shared_ptr<wxArrayString> completions;
   completions = boost::shared_ptr<wxArrayString>(new wxArrayString());
 
-  for (int i=_context.size()-1; i>=0; i--)
+  for (int i=_context.size()-1; i>=1; i--)
     _context[i]->SearchVariables(type,completions);
+
+  // global context, prepend "global::"
+  _context[0]->SearchVariables(type,completions,"global::");
   return completions;
 }
 
@@ -189,17 +192,48 @@ Variable* VarContexts::AddVar(vartype type,
 } // AddVar()
 
 //--------------------------------------------------
+Variable* VarContexts::AddVarPtr(vartype type, 
+                              const IdentifierInfo::ptr& info, 
+                              void* val)
+{
+  int context;
+  context = info->GetCreationContext();
+
+  return AddVarPtr(type,info->GetName().c_str(),val,context);
+
+} // AddVar()
+
+//--------------------------------------------------
 // void* val is a pointer to a smart pointer of the type
 //
-Variable* VarContexts::AddVarPtr(vartype type, const char* name, void* val)
+Variable* VarContexts::AddVarPtr( vartype type, const char* name, 
+                                  void* val, int context )
 {
-  int  context = GetNewVarContext();
+
+  if (context==OBJECT_CONTEXT_NUMBER) {
+    CLASS_MESSAGE("object context");
+    if (_object_context.get()) {
+      CLASS_MESSAGE(boost::format("adding object of type %1%, name %2% into object context ") % type % name);
+      return _object_context->AddVarPtr(type,name,val,
+                                    _object_context);
+    }
+    else {
+      CLASS_ERROR("Calling object variable without any object context");
+      return NULL;
+    }
+  }
+
+  if (context==NEWVAR_CONTEXT) 
+    context = GetNewVarContext();
+  CLASS_MESSAGE(boost::format("Context number %d ")% context);
+
   if (GB_debug) 
     cerr  << "AddVar " << name 
           << " in context number  "
           << context 
           << " called " << _context[context]->GetName()
           << endl;
+
   return _context[context]->AddVarPtr(type,name,val);
 
 } // AddVarPtr()
@@ -229,9 +263,9 @@ bool VarContexts::GetVar(const char* varname, Variable** var,
 {
   if (context==-1) {
     // TODO: limit to last context, if nothing else is specified !!!
-    for(int i=_context.size()-1;i>=0;i--)
-      if (_context[i]->GetVar(varname,var)) return true;
-    //if (_context[_context.size()-1]->GetVar(varname,var)) return true;
+    //for(int i=_context.size()-1;i>=0;i--)
+    //  if (_context[i]->GetVar(varname,var)) return true;
+    if (_context[_context.size()-1]->GetVar(varname,var)) return true;
     return false;
   }
   else 

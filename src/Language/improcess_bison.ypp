@@ -1266,7 +1266,7 @@ func_inst :
         driver.res_print( newname.mb_str());
         driver.res_print("\n");
         inc_cmd = str(format(" \"%1%\" // from browser ") % newname.mb_str());
-        if (driver.in_console)
+        if (driver.InConsole())
           GB_main_wxFrame->GetConsole()
                           ->IncCommand(wxString::FromAscii(inc_cmd.c_str()));
       }
@@ -1401,6 +1401,19 @@ command:
         w->Start(ms,wxTIMER_ONE_SHOT);
 
       }
+          |
+          identifier ASSIGN_OP T_AND variable
+          {
+        /**
+          Description:
+            Creates a new variable that is a reference to an existing one.
+          Parameters:
+            - new variable name;
+            - existing variable name.
+        **/
+            IdentifierInfo::ptr ident($1);
+            Vars.AddVarPtr($4->Type(),ident,$4->Pointer());
+          }
           |
           identifier ASSIGN_OP T_Surface T_OP_BR expr T_CL_BR
           {
@@ -6499,7 +6512,7 @@ postfix_expr
           param = draw->GetParam();
           $$=param->_pos._x;
           comment = str(format(" //  xpos=%3d") % param->_pos._x);
-          if (driver.in_console)
+          if (driver.InConsole())
             GB_main_wxFrame->GetConsole()
                            ->IncCommand(wxString::FromAscii(comment.c_str()));
         }
@@ -6515,7 +6528,7 @@ postfix_expr
       $$=param->_pos._y;
 
       comment = str( format(" //  ypos=%3d") % param->_pos._y);
-      if (driver.in_console)
+      if (driver.InConsole())
         GB_main_wxFrame->GetConsole()
                        ->IncCommand(wxString::FromAscii(comment.c_str()));
 
@@ -6532,7 +6545,7 @@ postfix_expr
       $$=param->_pos._z;
 
       comment = str( format(" //  xpos=%3d") % param->_pos._z);
-      if (driver.in_console)
+      if (driver.InConsole())
         GB_main_wxFrame->GetConsole()
                         ->IncCommand(wxString::FromAscii(comment.c_str()));
     }
@@ -7576,7 +7589,7 @@ image:
           driver.res_print("\n");
           inc_cmd = str(format(" \"%1%\" // from browser ") % newname.mb_str());
 
-          if (driver.in_console)
+          if (driver.InConsole())
             GB_main_wxFrame->GetConsole()
                             ->IncCommand(wxString::FromAscii(inc_cmd.c_str()));
       }
@@ -11008,7 +11021,7 @@ surface:
 
 
           inc_cmd = str(format(" \"%1%\"  // from browser ") % newname.mb_str());
-          if (driver.in_console)
+          if (driver.InConsole())
             GB_main_wxFrame->GetConsole()->IncCommand(inc_cmd);
         }
         |
@@ -11804,7 +11817,7 @@ image_extent:
         comment = str(format(" //  subvolume [%3d:%3d, %3d:%3d, %3d:%3d] ")
             % xmin % xmax % ymin % ymax % zmin % zmax);
         if (GB_debug) cerr << "********* extent ****" << endl;
-        if (driver.in_console) GB_main_wxFrame->GetConsole()->IncCommand(comment);
+        if (driver.InConsole()) GB_main_wxFrame->GetConsole()->IncCommand(comment);
 
         $$=extent;
        }

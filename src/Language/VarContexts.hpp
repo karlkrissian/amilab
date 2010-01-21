@@ -105,28 +105,47 @@ public:
 
   boost::shared_ptr<wxArrayString> SearchVariables(const vartype& type);
 
-/**
- * 
- * @param type variable type
- * @param name variable name
- * @param val is a pointer to the variable type
- * @param context NEWVAR_CONTEXT (-1) means the current context | OBJECT_CONTEXT_NUMBER (-10) 
- * @return 
- */
+  /**
+  * 
+  * @param type variable type
+  * @param name variable name
+  * @param val is a pointer to the variable type
+  * @param context NEWVAR_CONTEXT (-1) means the current context | OBJECT_CONTEXT_NUMBER (-10) 
+  * @return 
+  */
   Variable* AddVar(vartype type, const char* name, void* val,
                     int context=NEWVAR_CONTEXT);
 
-  /// IndentifierInfo contains the name and the context
+  /** 
+   * Adds a new variable based on its type, pointer to value, and indentifier information.
+   * IndentifierInfo contains the name and the context
+   **/
   Variable* AddVar(vartype type, const IdentifierInfo::ptr& info, void* val);
 
-  // here void* val is a pointer to 
-  // a smart pointer of the variable type
-  Variable* AddVarPtr(vartype type, const char* name, void* val);
+  /** 
+   * Adds a new variable based on its type, pointer to value, and indentifier information.
+   * IndentifierInfo contains the name and the context
+   * @param val  is a pointer to a smart pointer of the variable type
+   **/
+  Variable* AddVarPtr(vartype type, const IdentifierInfo::ptr& info, void* val);
+
+  /**
+   * @param val  is a pointer to a smart pointer of the variable type
+   **/
+  Variable* AddVarPtr(vartype type, const char* name, void* val,
+                    int context=NEWVAR_CONTEXT);
 
   Variable* AddVar(Variable* var, int context=NEWVAR_CONTEXT);
 
   Variable* AddVar(Variable::ptr var, int context=NEWVAR_CONTEXT);
 
+  /**
+   * Find a variable based on its name, if context is -1, look for variable in the local context
+   * @param varname name of the variable
+   * @param var resulting variable
+   * @param context possible values: -1, 0--contexts, OBJECT_CONTEXT_NUMBER
+   * @return true if success, false otherwise
+   */
   bool GetVar( const char* varname, Variable** var,
                         int context=NEWVAR_CONTEXT);
 

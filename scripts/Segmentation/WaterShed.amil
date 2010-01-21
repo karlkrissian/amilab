@@ -57,6 +57,7 @@ if (!exists(WS_defined)) {
       WS_g = 1
     }
     
+    itk = &global::itk
     if (WS_dim==0) {
       global::WS_water = itk->WaterShedImageFilter2D(WS_grad,WS_lThreshold,WS_FloodLevel)
       WS_w = 1

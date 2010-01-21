@@ -15,9 +15,9 @@ class wxArrayString;
 #include <boost/shared_ptr.hpp>
 
 
-//----------------------------------------------------------------------
-// Variables for each context
-//
+/**
+ * Variables for each context.
+ **/
 class Variables{
 
   DEFINE_CLASS(Variables);
@@ -46,9 +46,25 @@ protected:
 
   std::string CheckVarName(const char* name);
 
+  /**
+   *  Add a new variable based on its type, name, pointer to the object information, and context.
+   * @param type 
+   * @param name 
+   * @param val 
+   * @param context 
+   * @return 
+   */
   Variable* AddVar(vartype type, const char* name, void* val, boost::shared_ptr<Variables> context = boost::shared_ptr<Variables>() );
 
-  Variable* AddVarPtr(vartype type, const char* name, void* val);
+  /**
+   *  Add a new variable based on its type, name, pointer to a smart pointer of the object information, and context.
+   * @param type 
+   * @param name 
+   * @param val 
+   * @param context 
+   * @return 
+   */
+  Variable* AddVarPtr(vartype type, const char* name, void* val, boost::shared_ptr<Variables> context = boost::shared_ptr<Variables>());
 
   Variable* AddVar(Variable* var);
 
@@ -61,9 +77,23 @@ protected:
   void SearchCompletions( const wxString& varname, 
                           boost::shared_ptr<wxArrayString>& completions);
 
+  /**
+   *  Search all variable of a given type within the object,
+   *  and preprend the given string to the result.
+   * @param type 
+   * @param varlist 
+   * @param preprend
+   */
   void SearchVariables( const vartype& type,
-                          boost::shared_ptr<wxArrayString>& varlist);
+                          boost::shared_ptr<wxArrayString>& varlist,
+                        const std::string& preprend = "");
 
+  /**
+   * Find a variable based on its name.
+   * @param varname variable name
+   * @param var resulting pointer to the variable
+   * @return 
+   */
   bool GetVar(const char* varname, Variable** var);
 
 //  unsigned char GetVar(const char* varname, int* i);
