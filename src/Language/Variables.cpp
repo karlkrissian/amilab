@@ -115,13 +115,15 @@ Variable* Variables::AddVar( vartype type,
 //
 Variable* Variables::AddVarPtr( vartype type, 
 		      const char* name, 
-		      void* val)
+		      void* val,
+          boost::shared_ptr<Variables> context)
 {
   CLASS_MESSAGE(boost::format(" %s ") % name);
 
   string resname = this->CheckVarName(name);
   Variable* newvar = new Variable();
   newvar->InitPtr(type,resname.c_str(),val);
+  newvar->SetContext(context);
   _vars.push_front(newvar);
 
   return newvar;
@@ -178,7 +180,8 @@ void Variables::SearchCompletions(const wxString& varname,
 
 //--------------------------------------------------
 void Variables::SearchVariables( const vartype& type,
-                      boost::shared_ptr<wxArrayString>& varlist)
+                      boost::shared_ptr<wxArrayString>& varlist,
+                      const std::string& prepend)
 {
   wxString name;
   std::list<Variable*>::iterator Iter;
@@ -187,7 +190,7 @@ void Variables::SearchVariables( const vartype& type,
        Iter != _vars.end()  ; Iter++ )
   {
     if ((*Iter)->Type()==type) {
-      name = wxString::FromAscii((*Iter)->Name().c_str());
+      name = wxString::FromAscii((prepend+(*Iter)->Name()).c_str());
       varlist->Add(name);
     }
   }

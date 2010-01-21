@@ -46,6 +46,14 @@ class Driver
 {
   DEFINE_CLASS(Driver);
 
+protected:
+
+    /** 
+     * Check if the current command is from the command line.
+     * Kept for transition from C flex-bison code should be removed later
+     **/
+    bool in_console;
+
 public:
 
     ImageStack        im_stack;
@@ -105,10 +113,6 @@ public:
     /// Access to last comments parsed
     std::string last_comments;
 
-    /// kept for transition from C flex-bison code
-    /// should be removed later
-    bool in_console;
-
     /// flag for accepting variable names as identifiers
     /// when declaring the parameters of a function
     /// not thread-safe for the language ...
@@ -127,6 +131,13 @@ public:
 
     /// enable debug output in the bison parser
     bool trace_parsing;
+
+
+    /**
+     * Check if we are running from the command line.
+     * @return if we are running from the command line.
+     */
+    bool InConsole() { return in_console; }
 
     /// stream name (file or input stream) used for error messages.
     std::string streamname;

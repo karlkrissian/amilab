@@ -13,27 +13,27 @@
 
 //! types of variables
 typedef enum {
-  type_void,    /**< no type */
-  type_image,   /**< image */
-  type_float,   /**< floating point number */
-  type_int,     /**< integer number*/
-  type_uchar,   /**< unsigned char number */
-  type_string,  /**< string */
-  type_imagedraw,
-  type_surface,
-  type_surfdraw,
-  type_file,
-  type_c_procedure,
-  type_c_image_function,
-  type_c_function,
-  type_ami_function,
-  type_ami_class,
-  type_ami_object,
-  type_paramwin,
-  type_parampanel,
-  type_matrix,
-  type_gltransform,
-  type_array,
-  type_context
+  type_void,             /**< no type */
+  type_image,            /**< image */
+  type_float,            /**< floating point number */
+  type_int,              /**< integer number*/
+  type_uchar,            /**< unsigned char number */
+  type_string,           /**< string */
+  type_imagedraw,        /**< image drawing window */
+  type_surface,          /**< polydata structure, surface and/or lines */
+  type_surfdraw,         /**< polydata drawing window */
+  type_file,             /**< file */
+  type_c_procedure,      /**< C wrapped procedure */
+  type_c_image_function, /**< C wrapped function that returns an image */
+  type_c_function,       /**< C wrapped function that returns a variable */
+  type_ami_function,     /**< AMI Language function */
+  type_ami_class,        /**< AMI Language class */
+  type_ami_object,       /**< AMI Language object (instance of a class, or namespace) */
+  type_paramwin,         /**< Parameter window */
+  type_parampanel,       /**< Parameter panel */
+  type_matrix,           /**< matrix */
+  type_gltransform,      /**< OpenGL transformation */
+  type_array,            /**< Array */
+  type_context           /**< Context */
 } vartype; //! types of variables
  

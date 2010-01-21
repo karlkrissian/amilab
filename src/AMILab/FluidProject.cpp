@@ -789,18 +789,12 @@ printf("begin CreateVolume() \n");
 	    Px = (x1*b+x2*a)/(a+b);
 	    Py = (y1*b+y2*a)/(a+b);
 	    // get interpolated vector at (Px,Py)
-	    highpos->FixeVecteurCoord(0);
-	    vxl = highpos->InterpLinIntensite(Px,Py,0);
-	    highpos->FixeVecteurCoord(1);
-	    vyl = highpos->InterpLinIntensite(Px,Py,0);
-	    highpos->FixeVecteurCoord(2);
-	    vzl = highpos->InterpLinIntensite(Px,Py,0);
-	    highpos->FixeVecteurCoord(0);
-	    vxh = highpos->InterpLinIntensite(Px,Py,0);
-	    highpos->FixeVecteurCoord(1);
-	    vyh = highpos->InterpLinIntensite(Px,Py,0);
-	    highpos->FixeVecteurCoord(2);
-	    vzh = highpos->InterpLinIntensite(Px,Py,0);
+	    vxl = highpos->InterpLinIntensite(Px,Py,0,0);
+	    vyl = highpos->InterpLinIntensite(Px,Py,0,1);
+	    vzl = highpos->InterpLinIntensite(Px,Py,0,2);
+	    vxh = highpos->InterpLinIntensite(Px,Py,0,0);
+	    vyh = highpos->InterpLinIntensite(Px,Py,0,1);
+	    vzh = highpos->InterpLinIntensite(Px,Py,0,2);
 	    surf   ->AddPoint((vxl+vxh)/2.0,(vyl+vyh)/2.0,(vzl+vzh)/2.0);
 	    interpolated_points[nb_ipoints]=surf->GetNumberOfPoints()-1;
 	    if (nb_points==0) surf->NewPoly();
@@ -1079,19 +1073,14 @@ void Func_ElevateMesh(SurfacePoly* surf, InrImage* im)
       pt.pt.z =  im->InterpLinIntensite(x,y);
       break;
     case 2:
-      im->FixeVecteurCoord(0);
-      vx = im->InterpLinIntensite(x,y);
-      im->FixeVecteurCoord(1);
-      vy = im->InterpLinIntensite(x,y);
+      vx = im->InterpLinIntensite(x,y,0,0);
+      vy = im->InterpLinIntensite(x,y,0,1);
       pt.pt.Init( vx,vy,pt.Z());
       break;
     case 3:
-      im->FixeVecteurCoord(0);
-      vx = im->InterpLinIntensite(x,y);
-      im->FixeVecteurCoord(1);
-      vy = im->InterpLinIntensite(x,y);
-      im->FixeVecteurCoord(2);
-      vz = im->InterpLinIntensite(x,y);
+      vx = im->InterpLinIntensite(x,y,0,0);
+      vy = im->InterpLinIntensite(x,y,0,1);
+      vz = im->InterpLinIntensite(x,y,0,2);
       pt.pt.Init( vx,vy,vz);
       break;
       }

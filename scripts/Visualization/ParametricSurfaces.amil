@@ -384,4 +384,3 @@ if (!exists(ParametricSurfaceClass)) {
   } else {
     InfoDialog "The script seems to be already loaded."
   }
-  

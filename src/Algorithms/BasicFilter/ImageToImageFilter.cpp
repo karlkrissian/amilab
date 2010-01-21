@@ -35,7 +35,7 @@ void* ImageToImageFilter::Process_thread(void* threadarg)
   ImageToImageFilter* _this = args->_this;
 
   //cout  << " thread " << thread_id 
-  _this->Process(thread_id, total_threads);
+  _this->Process(thread_id);
 
   pthread_exit(NULL);
   return(NULL);
@@ -46,7 +46,7 @@ void* ImageToImageFilter::Process_thread(void* threadarg)
 //------------------------------------------------------------------
 void ImageToImageFilter::Run_multithreads()
 {
-  if (params->GetNumberOfThreads()==1) {
+  if (params.GetNumberOfThreads()==1) {
     // no thread here ...
     Process();
   } else {
@@ -56,7 +56,7 @@ void ImageToImageFilter::Run_multithreads()
     pthread_t* threads;
     pthread_attr_t attr;
     int rc,status;
-    int num_threads = params->GetNumberOfThreads();
+    int num_threads = params.GetNumberOfThreads();
 
     pthread_attr_init(&attr);
     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
@@ -100,6 +100,8 @@ void ImageToImageFilter::Run_multithreads()
 //------------------------------------------------------------------
 void ImageToImageFilter::Run()
 {
+  Init();
   Run_multithreads();
+  Close();
 } // ImageToImageFilter::Run()
 

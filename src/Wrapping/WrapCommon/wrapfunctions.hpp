@@ -115,6 +115,11 @@ bool get_intvar_param(int*& arg, ParamList*p, int& num);
 bool get_image_param(InrImage*& arg, ParamList*p, int& num);
 
 /**
+ * Function used to parse an image pointer in a list of parameters
+ */
+bool get_imageptr_param(InrImage::ptr& arg, ParamList*p, int& num);
+
+/**
  * Function used to parse an image in a list of parameters
  */
 bool get_optionalimage_param(InrImage*& arg, ParamList*p, int& num);

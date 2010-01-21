@@ -32,16 +32,16 @@ void wrap_AddSubImage(ParamList* p)
 
     InrImage* input;
     InrImage* subimage;
-    int posx=0;
-    int posy=0;
-    int posz=0;
+    float posx=0;
+    float posy=0;
+    float posz=0;
     int n=0;
 
   if (!get_image_param( input,       p, n)) HelpAndReturn;
   if (!get_image_param( subimage,    p, n)) HelpAndReturn;
-  if (!get_int_param(   posx,        p, n)) HelpAndReturn;
-  if (!get_int_param(   posy,        p, n)) HelpAndReturn;
-  if (!get_int_param(   posz,        p, n)) HelpAndReturn;
+  if (!get_float_param(   posx,        p, n)) HelpAndReturn;
+  if (!get_float_param(   posy,        p, n)) HelpAndReturn;
+  if (!get_float_param(   posz,        p, n)) HelpAndReturn;
 
   if ((posx<0)||(posy<0)||(posz<0)) {
     FILE_ERROR(boost::format("Wrong parameters: negative coordinate (%1%,%2%,%3%)") % posx % posy % posz );

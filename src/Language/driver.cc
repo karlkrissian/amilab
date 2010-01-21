@@ -443,10 +443,16 @@ int Driver::err_print(const char* st)
 {
   *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString::FromAscii(st);
   string mess =  (format("Error %s \n") % st).str();
-  mess = mess + " Abort current parsing and open file?";
+  if (InConsole()) 
+    mess = mess + " Abort current parsing ?";
+  else 
+    mess = mess + " Abort current parsing and open file?";
+
   wxMessageDialog* err_msg = new wxMessageDialog(NULL,GetwxStr(mess),GetwxStr("Error"),wxYES_NO |  wxYES_DEFAULT  | wxICON_ERROR);
+
   int res = err_msg->ShowModal();
-  if (res==wxID_YES) {
+
+  if ((!InConsole())&&(res==wxID_YES)) {
     // create application frame
     StcTestFrame*  m_frame = new StcTestFrame ( wxT("AMILab editor"));
     // open application frame
@@ -459,8 +465,9 @@ int Driver::err_print(const char* st)
     // - set highlight C++
     // - go to specific line
     editor->ShowLineNumbers(true);
-    editor->GotoLine(this->yyiplineno);
+    editor->GotoLine(this->yyiplineno-1);
   }
+
   return res;
 } // Driver::err_print()
 

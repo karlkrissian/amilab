@@ -141,6 +141,7 @@ if (!exists(CE_defined)) {
       inputname = CE_current_datadir + "/cta"+CE_datanumber_str+"r.mhd"
     }
     printn "inputname="+inputname
+    itk = &global::itk
     global::CE_input <<= itk->Read(inputname)
   
     # read input points
@@ -166,6 +167,7 @@ if (!exists(CE_defined)) {
       GTname = CE_current_gtdir + "/pv"+CE_datanumber_str+".mhd"
       printn "Reading itk image "+GTname
       if (FileExists(GTname)) {
+        itk = &global::itk
         global::CE_GT <<= itk->Read(GTname)
     
         # read the ROI information
@@ -179,6 +181,7 @@ if (!exists(CE_defined)) {
     
         # Read the Exterior image
         extname = CE_current_gtdir + "/ext"+CE_datanumber_str+".mhd"
+        itk = &global::itk
         global::CE_ext <<= itk->Read(extname)
     
         # Read the GT Isosurface
@@ -1253,6 +1256,7 @@ if (!exists(CE_defined)) {
         pvim_big = pvim
       }
       del pvim
+      itk = &global::itk
       itk->Write(&pvim_big,CE_current_resultsdir+"/pv"+CE_datanumber_str+".mhd")
   
       # 2. Save ROI text file
@@ -1298,6 +1302,7 @@ if (!exists(CE_defined)) {
     }
     # read the mask image
     ext_name = CE_current_gtdir + "/ext" + CE_datanumber_str + ".mhd"
+    itk = &global::itk
     global::CE_ext = itk->Read(ext_name)
     # read the level set results
     imname = CE_current_resultsdir+"/levelset_result.ami.gz"
@@ -1340,6 +1345,7 @@ if (!exists(CE_defined)) {
     }
     # read the mask image
     ext_name = CE_current_gtdir + "/ext" + CE_datanumber_str + ".mhd"
+    itk = &global::itk
     global::CE_ext <<= itk->Read(ext_name)
     # read the level set results obtained including calcifications
     imname = CE_current_resultsdir+"/levelset_result_calc.ami.gz"

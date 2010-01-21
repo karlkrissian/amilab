@@ -1175,18 +1175,40 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
           (var->Type() == type_int)  ||
           (var->Type() == type_uchar))
       {
+        std::string text;
+        switch(var->Type()) {
+          case type_float:
+            text = (boost::format("%1% %20t FLOAT %30t %2%")
+                            % var->Name()
+                            % (*(*(float_ptr*) var->Pointer()))).str();
+            break;
+          case type_int:
+            text = (boost::format("%1% %20t INT %30t %2%")
+                            % var->Name()
+                            % (*(*(int_ptr*) var->Pointer()))).str();
+            break;
+          case type_uchar:
+            text = (boost::format("%1% %20t UCHAR %30t %2%")
+                            % var->Name()
+                            % (int) (*(*(uchar_ptr*) var->Pointer()))).str();
+            break;
+          default:;
+        }
         itemid = _var_tree->AppendItem(
               vartree_numbers,
-              (*variables)[i],
+              wxString(text.c_str(), wxConvUTF8),
               -1,-1,
               new MyTreeItemData(var));
         _var_tree->SetItemFont(itemid,root_font);
       } else
       if (var->Type() == type_string)
       {
+        std::string text = (boost::format("%1% %20t \"%2%\"")
+                        % var->Name()
+                        % (*(*(string_ptr*) var->Pointer()))).str();
         itemid = _var_tree->AppendItem(
               vartree_strings,
-              (*variables)[i],
+              wxString(text.c_str(), wxConvUTF8),
               -1,-1,
               new MyTreeItemData(var));
         _var_tree->SetItemFont(itemid,root_font);

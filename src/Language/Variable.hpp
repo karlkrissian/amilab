@@ -17,10 +17,15 @@
 
 // forward definition of Variables
 class Variables;
+class VarArray;
 
 /* TODO: Change SetString */
 
 //----------------------------------------------------------------------
+/**
+ * Define one variable, which contains a generic pointer (void*) to a smart pointer
+ * of the contained object.
+ **/
 class Variable {
 
   DEFINE_CLASS(Variable);
@@ -33,50 +38,7 @@ private:
   boost::shared_ptr<Variables>   _context; // points to the context
     // that the variable belong to, if any
 
- public:
-
-  Variable();
-  virtual ~Variable(){}
-
-  void operator = (const Variable& v) {
-      _type         = v._type;
-      _name         = v._name;
-      _pointer      = v._pointer;
-      _comments     = v._comments;
-  }
-
-  void operator = (const Variable::ptr& v) {
-      _type         = v->_type;
-      _name         = v->_name;
-      _comments     = v->_comments;
-      _pointer      = v->_pointer;
-  }
-
-  bool operator == (const Variable& v) {
-      return ((_type     == v._type) &&
-              (_name     == v._name) &&
-              (_comments == v._comments) &&
-              (_pointer  == v._pointer));
-  }
-
-  void* Pointer() const { return _pointer;}
-
-  void SetContext(const boost::shared_ptr<Variables>& val) 
-  {
-    _context = val;
-  }
-
-  boost::shared_ptr<Variables> GetContext() const
-  {
-    return _context;
-  }
-
-  // create a new shared pointer reference to the object
-  void Init(vartype type, const char* name, void* p);
-
-  // create a new shared pointer reference to the object
-  // void* p is a pointer to a smart pointer
-  void InitPtr(vartype type, const char* name, void* p);
+private:
 
   // keep the shared pointer reference
   // TODO we should avoid using pointers to shared pointers!
@@ -95,18 +57,6 @@ private:
       }
   }
 
-  vartype Type() const { return _type; }
-
-  void  SetString(string_ptr st);
-
-  void Rename(const char* newname) {  _name=newname;}
-  std::string Name() const { return _name;}
-
-  void SetComments(const std::string& comments) { _comments = comments;}
-  std::string GetComments() const { return _comments; }
-
-  bool FreeMemory();
-
   template <class T>
   bool FreeMemory()
   {
@@ -123,6 +73,84 @@ private:
     return true;
   }
 
+public:
+
+  Variable();
+  virtual ~Variable(){}
+
+  /**
+   * Copy of variables
+   * @param v 
+   */
+  void operator = (const Variable& v) {
+      _type         = v._type;
+      _name         = v._name;
+      _pointer      = v._pointer;
+      _comments     = v._comments;
+  }
+
+  /**
+   * Copy of variables
+   * @param v 
+   */
+  void operator = (const Variable::ptr& v) {
+      _type         = v->_type;
+      _name         = v->_name;
+      _comments     = v->_comments;
+      _pointer      = v->_pointer;
+  }
+
+  bool operator == (const Variable& v) {
+      return ((_type     == v._type) &&
+              (_name     == v._name) &&
+              (_comments == v._comments) &&
+              (_pointer  == v._pointer));
+  }
+
+  /**
+  * 
+  * @return Pointer of the variable, points to a smart pointer
+  */
+  void* Pointer() const { return _pointer;}
+
+  void SetContext(const boost::shared_ptr<Variables>& val) 
+  {
+    _context = val;
+  }
+
+  /**
+   * Create a new shared pointer reference to the object.
+   * @return variable's context
+   */
+  boost::shared_ptr<Variables> GetContext() const
+  {
+    return _context;
+  }
+
+
+  void Init(vartype type, const char* name, void* p);
+
+  /**
+   * Create a new shared pointer reference to the object.
+   * void* p is a pointer to a smart pointer.
+   * @param type  variable type
+   * @param name  variable name
+   * @param p     pointer to a smart pointer depending on the variable type
+   */
+  void InitPtr(vartype type, const char* name, void* p);
+
+  vartype Type() const { return _type; }
+
+  void  SetString(string_ptr st);
+
+  void Rename(const char* newname) {  _name=newname;}
+  std::string Name() const { return _name;}
+
+  void SetComments(const std::string& comments) { _comments = comments;}
+  std::string GetComments() const { return _comments; }
+
+  bool FreeMemory();
+
   void Delete();
 
   int HasName(const char* name);
@@ -136,6 +164,9 @@ private:
 
   //
   void display();
+
+  // allow access to private members of Variable class
+  friend class VarArray;
 
 }; // class Variable
 

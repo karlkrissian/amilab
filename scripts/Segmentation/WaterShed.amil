@@ -67,9 +67,10 @@ if (!exists(WaterShedClass)){
       ::g = 1
     }
     
-    if (::dim==0) {
-      ::water = itk->WaterShedImageFilter2D(::grad,::lThreshold,::FloodLevel)
-      ::w = 1
+    itk = &global::itk
+    if (WS_dim==0) {
+      global::WS_water = itk->WaterShedImageFilter2D(WS_grad,WS_lThreshold,WS_FloodLevel)
+      WS_w = 1
     } else {
       ::water = itk->WaterShedImageFilter3D(::grad,::lThreshold,::FloodLevel)
       ::w = 1

@@ -323,6 +323,26 @@ bool get_image_param(InrImage*& arg, ParamList*p, int& num)
 
 
 /**
+ * Function used to parse an image pointer in a list of parameters
+ */
+bool get_imageptr_param(InrImage::ptr& arg, ParamList*p, int& num)
+{
+  if (!p) return false;
+  InrImage::ptr    temp;
+  temp = p->GetParamPtr<InrImage>(type_image,num++);
+  if (temp.use_count()) {
+    arg=temp;
+    return true;
+  }
+  else
+  {
+    fprintf(stderr, "get_image_param ()\t Error in the parameter %d\n",num);
+    return false;
+  }
+}
+
+
+/**
  * Function used to parse a vectorial image in a list of parameters
  */
 bool get_vectimage_param(InrImage*& arg, ParamList*p, int& num)
