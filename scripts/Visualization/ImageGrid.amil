@@ -7,17 +7,16 @@
 
 comments="ImageGridClass: this class allows to draw a grid around the pixels on an 2D image display (draw on XY slice for 3D images)."
 
-ami_import->ImageDraw()
 
-if (!exists(ImageGridClass)) {
+if (!exists(global::ImageGridClass)) {
 
-  
-  Class ImageGridClass {
+  Class global::ImageGridClass {
 
+    ::ami_import = &global::ami_import
     #----------------------------
     proc ::Init() \
     {
-      ::classname  = "ImageGridClass"
+      ::classname  = "global::ImageGridClass"
       ::input_name =  "", "name of the input image, the drawing window of this image will be used"
       ::enable = UCHAR(1), "Enable/Disable grid"
       ::thickness = INT(1), "line thickness"
@@ -56,12 +55,12 @@ if (!exists(ImageGridClass)) {
     #----------------------------
     proc ::SetAsCallback() \
     {
-      cmd = boost_format("%1%_draw.PaintCallback(") % ::input_name
-      printn cmd
-      cmd = cmd + boost_format(" %1%->DrawGrid);") % GetObjectName(::SetAsCallback)
-      printn cmd
-
-      eval cmd
+      eval boost_format("ok = exists(%1%_draw);")%::input_name
+      if (ok) {
+        # get local reference to input image drawing window
+        eval boost_format("_in_draw = &%1%_draw;") % ::input_name
+        _in_draw.PaintCallback(::DrawGrid);
+      }
     }
     ::SetAsCallback.Comments("Set the grid display function as a paint callback of the drawing area")
 
@@ -71,29 +70,31 @@ if (!exists(ImageGridClass)) {
       if (::enable) {
         eval boost_format("ok = exists(%1%_draw);")%::input_name
         if (ok) {
+          # get local reference to input image
+          eval boost_format("_in = &%1%;") % ::input_name
+          # get local reference to input image drawing window
+          eval boost_format("_in_draw = &%1%_draw;") % ::input_name
           
-          color_string = " wrap_idraw_inst->SetLineColor(%1%_draw,::color_r,::color_g,::color_b,::color_a);"
-          eval boost_format(color_string) % ::input_name
-
-          param_string = " wrap_idraw_inst->LineParam(%1%_draw,::thickness,::style);"
-          eval boost_format(param_string) % ::input_name
+          # wrapping ${input_name}_draw with new local variable indraw_wrap
+          ::ami_import->ImageDraw(_in_draw,"indraw_wrap");
+          indraw_wrap->SetLineColor(::color_r,::color_g,::color_b,::color_a)
+          indraw_wrap->LineParam(::thickness,::style)
 
           # draw vertical
-          for_string = "for c=%1%_draw.GetXmin+1 to %1%_draw.GetXmax { "
-          for_string = for_string + "wrap_idraw_inst->DrawLine(%1%_draw,c-0.5,"
-          for_string = for_string + "%1%_draw.GetYmin-0.5,c-0.5,%1%_draw.GetYmax+0.5); };"
-          for_string = boost_format(for_string)%::input_name
-          eval for_string
+          _xmin = _in_draw.GetXmin
+          _xmax = _in_draw.GetXmax
+          _ymin = _in_draw.GetYmin
+          _ymax = _in_draw.GetYmax
+          for c=_xmin+1 to _xmax { 
+            indraw_wrap->DrawLine(c-0.5,_ymin-0.5,c-0.5,_ymax+0.5); 
+          }
 
           # draw horizontal
-          for_string = "for l=%1%_draw.GetYmin+1 to %1%_draw.GetYmax { "
-          for_string = for_string + "wrap_idraw_inst->DrawLine(%1%_draw,%1%_draw.GetXmin-0.5,"
-          for_string = for_string + "l-0.5,%1%_draw.GetXmax+0.5,l-0.5); };"
-          for_string = boost_format(for_string)%::input_name
-          eval for_string
+          for l=_ymin+1 to _ymax { 
+            indraw_wrap->DrawLine(_xmin-0.5,l-0.5,_xmax+0.5,l-0.5); 
+          }
 
-          displ_string = boost_format("wrap_idraw_inst->DisplayDA(%1%_draw);")%::input_name
-          eval displ_string
+          indraw_wrap->DisplayDA()
         }
       }
       # end if enable
