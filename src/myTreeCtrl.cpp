@@ -13,6 +13,7 @@
 #include "myTreeCtrl.h"
 #include "Variable.hpp"
 #include "paramlist.h"
+#include "wrapfunction_class.h"
 
 #include <iostream>
 
@@ -89,6 +90,11 @@ void myTreeCtrl::OnAbout(wxCommandEvent& event)
     switch (_currentmenu_var->Type()) {
       case type_c_procedure     : 
         ((void (*)(ParamList*)) _currentmenu_var->Pointer())(NULL);
+        return;
+
+      case type_class_procedure     : 
+        // getting the associated help
+        (*((WrapClassMember::ptr*) _currentmenu_var->Pointer()))->CallProc(NULL);
         return;
       case type_c_image_function:
        ((InrImage* (*)(ParamList*)) _currentmenu_var->Pointer())(NULL);

@@ -13,17 +13,45 @@
 #ifndef _wrap_imagedraw_h_
 #define _wrap_imagedraw_h_
 
+#include "wrapfunction_class.h"
 #include "paramlist.h"
-
+#include "DessinImage.hpp"
 
 /** function that add wrapping of the Image Drawing window
  */
-void AddWrapImageDraw();
 void wrap_ImageDraw( ParamList* p);
 
-void wrap_ImageDrawSetLineColor( ParamList* p);
-void wrap_ImageDrawDrawLine(     ParamList* p);
-void wrap_ImageDrawLineParam(    ParamList* p);
-void wrap_ImageDrawDisplayDA(    ParamList* p);
+///
+class wrap_ImageDrawSetLineColor : public WrapClassMember {
+    DessinImage::ptr _imdraw;
+  public:
+    wrap_ImageDrawSetLineColor(const DessinImage::ptr& imdraw) : _imdraw(imdraw) {}
+    void CallProc(ParamList*);
+};
+
+///
+class wrap_ImageDrawDrawLine : public WrapClassMember {
+    DessinImage::ptr _imdraw;
+  public:
+    wrap_ImageDrawDrawLine(const DessinImage::ptr& imdraw) : _imdraw(imdraw) {}
+    void CallProc(ParamList*);
+};
+
+///
+class wrap_ImageDrawLineParam : public WrapClassMember {
+    DessinImage::ptr _imdraw;
+  public:
+    wrap_ImageDrawLineParam(const DessinImage::ptr& imdraw) : _imdraw(imdraw) {}
+    void CallProc(ParamList*);
+};
+
+///
+class wrap_ImageDrawDisplayDA : public WrapClassMember {
+    DessinImage::ptr _imdraw;
+  public:
+    wrap_ImageDrawDisplayDA(const DessinImage::ptr& imdraw) : _imdraw(imdraw) {}
+    void CallProc(ParamList*);
+};
+
 
 #endif //  _wrap_mainframe_h_

@@ -1253,7 +1253,7 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
               new MyTreeItemData(var));
         _var_tree->SetItemFont(itemid,root_font);
       } else
-      if (var->Type() == type_c_procedure)
+      if ((var->Type() == type_c_procedure)||(var->Type() == type_class_procedure))
       {
         itemid = _var_tree->AppendItem(
               vartree_wrapped_procedures,

@@ -11,6 +11,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Crest
   ${AMILAB_SOURCE_DIR}/Vaisseaux
   ${AMILAB_SOURCE_DIR}/Coordonnees
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapCommon
   ${AMILAB_SOURCE_DIR}
   ${Boost_INCLUDE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}

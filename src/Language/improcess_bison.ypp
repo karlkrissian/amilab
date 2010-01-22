@@ -49,6 +49,7 @@
 #include "LineRecons.h"
 //#include "PruneLines.h"
 
+#include "wrapfunction_class.h"
 
 
 #ifndef __FLEX_LEXER_H
@@ -472,6 +473,7 @@ static void CB_update_imagelist( void* imagelist_gui)
 %token VAR_FILE
 %token VAR_C_FUNCTION
 %token VAR_C_PROCEDURE
+%token VAR_CLASS_PROCEDURE
 %token VAR_C_IMAGE_FUNCTION
 %token VAR_AMI_FUNCTION
 %token VAR_AMI_CLASS
@@ -887,6 +889,7 @@ static void CB_update_imagelist( void* imagelist_gui)
 %type <variable>       VAR_FILE
 %type <variable>       VAR_C_FUNCTION
 %type <variable>       VAR_C_PROCEDURE
+%type <variable>       VAR_CLASS_PROCEDURE
 %type <variable>       VAR_C_IMAGE_FUNCTION
 %type <variable>       VAR_AMI_FUNCTION
 %type <variable>       VAR_AMI_CLASS
@@ -2551,6 +2554,16 @@ command:
        Variable*  var   = $2;
         // call with NULL paramlist pointer to trigger help message
         ((void (*)(ParamList*)) var->Pointer())(NULL);
+    }
+    | HELP VAR_CLASS_PROCEDURE
+    {
+    /**
+      Description: 
+        Displays the documentation relative to the wrapped c++ member.
+    **/
+       Variable*  var   = $2;
+        // call with NULL paramlist pointer to trigger help message
+        (*(WrapClassMember::ptr*) var->Pointer())->CallProc(NULL);
     }
     | HELP ASTRING
     {
@@ -5357,6 +5370,13 @@ cerr << "Feature not available, needs to be updated ! " << endl;
           Variable*  var   = $1;
           ParamList::ptr param($3);
           ((void (*)(ParamList*)) var->Pointer())(param.get());
+        }
+        |
+        VAR_CLASS_PROCEDURE  T_OP_PAR param_list T_CL_PAR
+        {
+          Variable*  var   = $1;
+          ParamList::ptr param($3);
+          (*(WrapClassMember::ptr*) var->Pointer())->CallProc(param.get());
         }
         |
         T_Set3DArrowParam T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
@@ -11756,6 +11776,7 @@ variable:
         | VAR_FILE
         | VAR_C_FUNCTION
         | VAR_C_PROCEDURE
+        | VAR_CLASS_PROCEDURE
         | VAR_C_IMAGE_FUNCTION
         | VAR_AMI_FUNCTION
         | VAR_AMI_CLASS

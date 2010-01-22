@@ -24,6 +24,7 @@ typedef enum {
   type_surfdraw,         /**< polydata drawing window */
   type_file,             /**< file */
   type_c_procedure,      /**< C wrapped procedure */
+  type_class_procedure,  /**< wrapped C++ class procedure member */
   type_c_image_function, /**< C wrapped function that returns an image */
   type_c_function,       /**< C wrapped function that returns a variable */
   type_ami_function,     /**< AMI Language function */

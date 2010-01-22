@@ -31,6 +31,7 @@ SET(  WrapCommon_SRCS
 SET(WrapCommon_HDRS
 	wrapfunctions_draw.h
 	wrapfunctions.hpp
+  wrapfunction_class.h
 )
 
 SET(WrapCommon_SRCS
