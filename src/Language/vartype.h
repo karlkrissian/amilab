@@ -29,6 +29,7 @@ typedef enum {
   type_ami_function,     /**< AMI Language function */
   type_ami_class,        /**< AMI Language class */
   type_ami_object,       /**< AMI Language object (instance of a class, or namespace) */
+  type_ami_cpp_object,   /**< AMI Language C++ object (instance of a class, or namespace) */
   type_paramwin,         /**< Parameter window */
   type_parampanel,       /**< Parameter panel */
   type_matrix,           /**< matrix */

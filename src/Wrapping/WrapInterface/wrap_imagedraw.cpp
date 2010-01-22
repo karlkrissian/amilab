@@ -34,7 +34,7 @@ void AddWrapImageDraw()
   Vars.AddVar(type_c_procedure, "DrawLine",  (void*)  wrap_ImageDrawDrawLine, OBJECT_CONTEXT_NUMBER);
   Vars.AddVar(type_c_procedure, "DisplayDA",  (void*)  wrap_ImageDrawDisplayDA, OBJECT_CONTEXT_NUMBER);
   Vars.AddVar(type_c_procedure, "LineParam",  (void*)  wrap_ImageDrawLineParam, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure, "SetLineColor",  (void*)  wrap_ImageDrawSetLineColor, OBJECT_CONTEXT_NUMBER);
+  Vars.AddVar(type_c_procedure, "SetLineColor", (void*)  wrap_ImageDrawSetLineColor, OBJECT_CONTEXT_NUMBER);
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);
@@ -54,7 +54,12 @@ void wrap_ImageDraw( ParamList* p)
       Adds wrapping for ImageDraw. \n\
             ";
     char parameters[] =" \n\
+      - image drawing window\n\
             ";
+
+  int n=0;
+  DessinImage::ptr imdraw;
+  if (!get_imagedraw_param( imdraw, p, n)) HelpAndReturn;
 
   AddWrapImageDraw();
 }

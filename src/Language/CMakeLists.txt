@@ -68,6 +68,7 @@ SET(Language_HDRS
     vartype.h
     ami_function.h
     ami_object.h
+    ami_cpp_object.h
     GLTransformStack.h
     ImageStack.h
     paramlist.h

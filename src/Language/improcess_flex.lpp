@@ -1174,7 +1174,7 @@ Variable* IsObject( const char* varname, int context)
 {
   Variable* var;
   if (Vars.GetVar(varname,&var,context))
-    if (var->Type() == type_ami_object) 
+    if ((var->Type() == type_ami_object)||(var->Type() == type_ami_cpp_object))
       return var;
     else 
       return NULL;

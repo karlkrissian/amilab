@@ -1231,7 +1231,7 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
               new MyTreeItemData(var));
         _var_tree->SetItemFont(itemid,root_font);
       } else
-      if (var->Type() == type_ami_object)
+      if ((var->Type() == type_ami_object)||(var->Type() == type_ami_cpp_object))
       {
         wxTreeItemId obj_itemid = _var_tree->AppendItem(
               vartree_objects,

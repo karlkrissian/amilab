@@ -9,7 +9,7 @@ if(COMMAND cmake_policy)
   cmake_policy(SET CMP0003 NEW)
 endif(COMMAND cmake_policy)
 
-SET(CMAKE_MODULE_PATH  ${CMAKE_MODULE_PATH} ${CMAKE_ROOT}/Modules  ${CMAKE_CURRENT_SOURCE_DIR}/../CMAKE )
+SET(CMAKE_MODULE_PATH  ${CMAKE_CURRENT_SOURCE_DIR}/../CMAKE ${CMAKE_MODULE_PATH} ${CMAKE_ROOT}/Modules   )
 
 
 #-----------------------------------------------------
