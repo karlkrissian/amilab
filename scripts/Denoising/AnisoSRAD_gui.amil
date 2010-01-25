@@ -19,7 +19,7 @@ if (!exists(AnisoSRADClass)) {
   #------------------------------------
   proc ::Init() {
 
-    ::class_name ="AnisoSRADClass"
+    ::class_name ="global::AnisoSRADClass"
     ::input_name = ""
     ::output_name = "SRAD_result"
     ::output_filename = "SRAD_result.ami.gz"

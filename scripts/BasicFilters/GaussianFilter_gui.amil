@@ -9,7 +9,7 @@ if (!exists(GaussianFilterClass)) {
 
   #----------------------------
   proc ::Init() {
-    ::class_name ="GaussianFilterClass"
+    ::class_name ="global::GaussianFilterClass"
     ::input_name = ""
     ::sigma      = 1, "Gaussian kernel standard devation"
     ::derx = INT(0), "Derivation order in X (0: no derivation)"

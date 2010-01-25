@@ -1,130 +1,157 @@
 #
 # Creates a torus within a volume data
 #
-
-if (!exists(CT_defined)) {
-  CT_defined=1
+if (!exists(CTClass)) {
 
   ami_import->Filters()
   
-  proc CT_Init() {
-    global_new
-    
-    CT_autoresize = UCHAR(0) , "Allow automatic calculation of the image dimensions"
-    CT_margin = INT(10), "Image margin in all directions for automatic calculation"
-    CT_dimx = INT(100), "Image dimension in X (in voxels)"
-    CT_dimy = INT(100), "Image dimension in Y (in voxels)"
-    CT_dimz = INT(100), "Image dimension in Z (in voxels)"
+  Class CTClass {
 
-    CT_bg = 0, "Background intensity"
+    ::filters=&global::filters
 
-    # Foreground intensity
-    CT_fg = 100, "Foreground intensity"
-    # Big radius
-    CT_R = 20, "Big Radius of the torus"
-    # Small radius
-    CT_r = 4, "Small Radius of the torus"
+    #----------------------------
+    proc ::Init() {
+      ::class_name ="global::CTClass"
+      ::autoresize = UCHAR(0) , "Allow automatic calculation of the image dimensions"
+      ::margin = INT(10), "Image margin in all directions for automatic calculation"
+      ::dimx = INT(100), "Image dimension in X (in voxels)"
+      ::dimy = INT(100), "Image dimension in Y (in voxels)"
+      ::dimz = INT(100), "Image dimension in Z (in voxels)"
+
+      ::bg = 0, "Background intensity"
+
+      # Foreground intensity
+      ::fg = 100, "Foreground intensity"
+      # Big radius
+      ::R = 20, "Big Radius of the torus"
+      # Small radius
+      ::r = 4, "Small Radius of the torus"
+      
+      ::image_name = "global::torus", "Name of the resulting image variable"
+      ::Gui
+    }
     
-    CT_image_name = "torus", "Name of the resulting image variable"
-    CT_Gui
-  }
-  
-  proc CT_Close() {
-    CT_win.Hide
-    delvars "CT_*_draw"
-    delvars "CT_*"
-  }
-  
-  proc CT_Create() {
+    #----------------------------
+    proc ::Close() {
+      ::win.Hide
+      delvars GetObjectName(::Close)
+    }
+    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    
+    #----------------------------
+    proc ::CloseAll() {
+      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
+      ::Close
+    }
+    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+        
+    #------------------------------------
+    
+    proc ::Create() {
 
     # if the dimensions have changed close the potential window
-    eval "exists_win = exists("+CT_image_name+"_draw);"
+    eval "exists_win = exists("+::image_name+"_draw);"
     if (exists_win) {
 printn "exists_win"
-      if (exists(CT_dimx_prev)) {
-printn "exists CT_dimx_prev"
-        if (CT_dimx_prev!=CT_dimx) ||(CT_dimy_prev!=CT_dimy) ||(CT_dimz_prev!=CT_dimz) {
+      if (exists(::dimx_prev)) {
+printn "exists ::dimx_prev"
+        if (::dimx_prev!=::dimx) ||(::dimy_prev!=::dimy) ||(::dimz_prev!=::dimz) {
 printn "deleting windows"
-          eval "del "+CT_image_name+"_draw;"
+          eval "del "+::image_name+"_draw;"
         }
       } else {
-        InfoDialog "Image "+CT_image_name+" already exists and will be overwritten !"
-        eval "del "+CT_image_name+"_draw;"
+        InfoDialog "Image "+::image_name+" already exists and will be overwritten !"
+        eval "del "+::image_name+"_draw;"
       }
     }
 
-    tmp = Image(FLOAT,CT_dimx,CT_dimy,CT_dimz)
+    tmp = Image(FLOAT,::dimx,::dimy,::dimz)
     tmp_x = (FLOAT) Xpos(tmp)
     tmp_y = (FLOAT) Ypos(tmp)
     tmp_z = (FLOAT) Zpos(tmp)
-    tmp_x = tmp_x-CT_dimx/2
-    tmp_y = tmp_y-CT_dimy/2
-    tmp_z = tmp_z-CT_dimz/2
-    dxy=sqrt(tmp_x*tmp_x+tmp_y*tmp_y)-CT_R
-    res = -(dxy*dxy+tmp_z*tmp_z)+(CT_r*CT_r)
+    tmp_x = tmp_x-::dimx/2
+    tmp_y = tmp_y-::dimy/2
+    tmp_z = tmp_z-::dimz/2
+    dxy=sqrt(tmp_x*tmp_x+tmp_y*tmp_y)-::R
+    res = -(dxy*dxy+tmp_z*tmp_z)+(::r*::r)
   
     # estimate partial volume effect based on linear interpolation
-    res = filters->ComputePV_subdiv(res)
-    res = res*(CT_fg-CT_bg)+CT_bg
+    res = ::filters->ComputePV_subdiv(res)
+    res = res*(::fg-::bg)+::bg
     
-    global::CT_dimx_prev = CT_dimx
-    global::CT_dimy_prev = CT_dimy
-    global::CT_dimz_prev = CT_dimz
-    eval "global::"+CT_image_name+"<<=res;"
+    ::dimx_prev = ::dimx
+    ::dimy_prev = ::dimy
+    ::dimz_prev = ::dimz
+    eval ::image_name+"<<=res;"
   }
   
-  proc CT_ComputeSize() {
-    CT_dimx = 2*(CT_R+CT_r)+CT_margin
-    CT_dimy = CT_dimx
-    CT_dimz = 2*CT_r+CT_margin
-    CT_win.update
+  proc ::ComputeSize() {
+    ::dimx = 2*(::R+::r)+::margin
+    ::dimy = ::dimx
+    ::dimz = 2*::r+::margin
+    ::win.update
   }
 
-  proc CT_Show() {
-    global_new
-    eval "show "+CT_image_name+";"
+  proc ::Show() {
+    
+    eval "show "+::image_name+";"
   }
   
-  proc CT_Gui() {
-    global::CT_win = ParamWin("CreateTorus")
+  proc ::Gui() {
+    ::win = ParamWin("CreateTorus")
   
-    CT_win.BeginBook
-      CT_win.AddPage("Param")
+    ::win.BeginBook
+      ::win.AddPage("Param")
 
-        CT_win.BeginBoxPanel("Radii")
-          CT_win.AddFloat(CT_R,"R",0.1,50)
-          CT_win.AddFloat(CT_r,"r",0.1,50)
-        CT_win.EndBoxPanel
+        ::win.BeginBoxPanel("Radii")
+          ::win.AddFloat(::R,"R",0.1,50)
+          ::win.AddFloat(::r,"r",0.1,50)
+        ::win.EndBoxPanel
 
-        CT_win.BeginBoxPanel("Colors")
-          CT_win.AddFloat(CT_bg,"Bg",0.1,500)
-          CT_win.AddFloat(CT_fg,"Fg",0.1,500)
-        CT_win.EndBoxPanel
+        ::win.BeginBoxPanel("Colors")
+          ::win.AddFloat(::bg,"Bg",0.1,500)
+          ::win.AddFloat(::fg,"Fg",0.1,500)
+        ::win.EndBoxPanel
       
-        CT_win.AddString(CT_image_name,"Result name")
-        CT_win.AddButton("Create", CT_Create)
-        CT_win.AddButton("Show",   CT_Show)
+        ::win.AddString(::image_name,"Result name")
+        ::win.AddButton("Create", ::Create)
+        ::win.AddButton("Show",   ::Show)
 
-      CT_win.AddPage("Dimensions")
-        CT_win.BeginBoxPanel("Dimensions")
-          CT_win.AddInt(CT_dimx,1,1000)
-          CT_win.AddInt(CT_dimy,1,1000)
-          CT_win.AddInt(CT_dimz,1,1000)
-        CT_win.EndBoxPanel
-        CT_win.BeginBoxPanel("Automatic size")
-          CT_win.AddInt(CT_margin,"margin",1,50)
-          CT_win.AddButton("Compute Size",CT_ComputeSize)
-        CT_win.EndBoxPanel
+      ::win.AddPage("Dimensions")
+        ::win.BeginBoxPanel("Dimensions")
+          ::win.AddInt(::dimx,1,1000)
+          ::win.AddInt(::dimy,1,1000)
+          ::win.AddInt(::dimz,1,1000)
+        ::win.EndBoxPanel
+        ::win.BeginBoxPanel("Automatic size")
+          ::win.AddInt(::margin,"margin",1,50)
+          ::win.AddButton("Compute Size",::ComputeSize)
+        ::win.EndBoxPanel
 
-    CT_win.EndBook
+    ::win.EndBook
 
-    CT_win.AddButton("Close",  CT_Close)
+    ::win.BeginHorizontal
+          ::win.AddButton("Close",      ::Close)
+          ::win.AddButton("Close All",  ::CloseAll)
+        ::win.EndHorizontal
   
-    CT_win.update
-    CT_win.Display
+    ::win.update
+    ::win.Display
   }
   
-  CT_Init()
-}
-#endif CT_defined
+  ::Init()
+} #End of class
+  
+} # End of if
 
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(ctobject)) {
+
+  CTClass ctobject
+} else {
+  InfoDialog "The script seems to be already loaded."
+}
+      

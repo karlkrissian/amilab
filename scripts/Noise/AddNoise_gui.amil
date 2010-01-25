@@ -9,7 +9,7 @@ if (!exists(AddNoiseClass)){
   func "Noise/AddRiceNoise.amil"
   
   proc ::Init() {
-    ::class_name ="AddNoiseClass"
+    ::class_name ="global::AddNoiseClass"
     ::input_name  = "",  "name of input image"
     ::output_name = "AddNoise_output", "name of output image variable"
   

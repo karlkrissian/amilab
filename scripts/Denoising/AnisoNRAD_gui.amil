@@ -30,7 +30,7 @@ if (!exists(AnisoNRADClass)) {
   
   proc ::Init() \
   {
-      ::class_name ="AnisoNRADClass"
+      ::class_name ="global::AnisoNRADClass"
       ::input_name = ""
       # suggested 1/6 in 3D and 1/4 in 2D
       ::dt   = 1.0/6.0, "Time step for the Partial Differential Equation"

@@ -15,7 +15,7 @@ if (!exists(ParametricSurfaceClass)) {
   proc ::Init() \
   {
     
-
+    ::class_name = "global::ParametricSurfaceClass"
     # resolution
     ::theta_dim = INT(100)
     ::phi_dim   = INT(100)

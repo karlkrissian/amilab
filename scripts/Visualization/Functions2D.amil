@@ -10,10 +10,11 @@ comments="Functions2DClass: this class provides an interface for plotting 2D fun
 ami_import->MainFrame()
 
 if (!exists(Functions2DClass)) {
-
+  
+  
   
   Class Functions2DClass {
-
+    
     #--------------------------------------------
     Class ::CurveParamClass  {
     #     ---------------
@@ -144,7 +145,7 @@ if (!exists(Functions2DClass)) {
 #      ::xmin = ::xmin-_xw/10
 #      ::xmax = ::xmax+_xw/10
       ::win.update
-      mf_DrawSetXLimits(::xmin,::xmax)
+      global::mf_DrawSetXLimits(::xmin,::xmax)
     }
 
     #----------------------------
@@ -162,15 +163,15 @@ if (!exists(Functions2DClass)) {
       ::ymin = ::ymin-_yw/10
       ::ymax = ::ymax+_yw/10
       ::win.update
-      mf_DrawSetYLimits(::ymin,::ymax)
+      global::mf_DrawSetYLimits(::ymin,::ymax)
     }
 
     #----------------------------
     proc ::SetCurve1() \
     {
       ::CheckLimits()
-      mf_DrawSetXLimits(::xmin,::xmax)
-      mf_DrawSetYLimits(::ymin,::ymax)
+      global::mf_DrawSetXLimits(::xmin,::xmax)
+      global::mf_DrawSetYLimits(::ymin,::ymax)
 
       if (::c1->mode==0) {
         numval = INT((::xmax-::xmin)/::resolution+0.5)
@@ -181,11 +182,11 @@ if (!exists(Functions2DClass)) {
         ::X = _pos[0]
         local::X = ::X
         eval "::Y1 <<= "+::c1->equation+";"
-        mf_DrawSetCurve(::Y1,0)
+        global::mf_DrawSetCurve(::Y1,0)
       }
       if (::c1->mode==1) {
         # set min and max
-        mf_DrawSetCurve(::c1->input,0)
+        global::mf_DrawSetCurve(::c1->input,0)
       }
     }
     # end ::SetCurve1()
@@ -203,15 +204,15 @@ if (!exists(Functions2DClass)) {
         ::X = _pos[0]
         local::X = ::X
         eval "::Y2 <<= "+::c2->equation+";"
-        mf_DrawSetXLimits(::xmin,::xmax)
-        mf_DrawSetYLimits(::ymin,::ymax)
-        mf_DrawSetCurve(::Y2,1)
+        global::mf_DrawSetXLimits(::xmin,::xmax)
+        global::mf_DrawSetYLimits(::ymin,::ymax)
+        global::mf_DrawSetCurve(::Y2,1)
       }
       if (::c2->mode==1) {
         # set min and max
-        mf_DrawSetXLimits(::xmin,::xmax)
-        mf_DrawSetYLimits(::ymin,::ymax)
-        mf_DrawSetCurve(::c2->input,1)
+        global::mf_DrawSetXLimits(::xmin,::xmax)
+        global::mf_DrawSetYLimits(::ymin,::ymax)
+        global::mf_DrawSetCurve(::c2->input,1)
       }
     }
     # end ::SetCurve2()
@@ -219,9 +220,9 @@ if (!exists(Functions2DClass)) {
     #----------------------------
     proc ::OnCurves() {
       # InfoDialog ::equation
-      mf_DrawSetCurveProperties(0,::c1->color_str,::c1->_style,::c1->_width)
+      global::mf_DrawSetCurveProperties(0,::c1->color_str,::c1->_style,::c1->_width)
       ::SetCurve1()
-      mf_DrawSetCurveProperties(1,::c2->color_str,::c2->_style,::c2->_width)
+      global::mf_DrawSetCurveProperties(1,::c2->color_str,::c2->_style,::c2->_width)
       ::SetCurve2()
     }
 

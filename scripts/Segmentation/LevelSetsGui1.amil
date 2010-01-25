@@ -3,17 +3,15 @@
 #SetDebugOn
 
 if (!exists(LevelSetsClass)){
+  func "SyntheticImages/AddSphere.amil"
+
   Class LevelSetsClass {
   #------------------------------------
-  
-  ::defined=1
-
-  func "SyntheticImages/AddSphere.amil"
-  
+    
   //---------------------------------------------------
   proc ::Init(IMAGE _input, IMAGE _init) {
     
-      ::class_name ="LevelSetsClass"
+      ::class_name  = "global::LevelSetsClass"
       ::input_name   = "","Name of the input image variable"
       ::initial_name = "","Name of the initial level set image variable"
       # 0: for spheres 1: for initial image
@@ -75,8 +73,8 @@ if (!exists(LevelSetsClass)){
       #::in_draw.SetIsoContour(0,::inls0,0)
       #::in_draw.DrawIsoContour(0,1)
 
-      DTmin = -50
-      DTmax = 50
+      ::DTmin = -50
+      ::DTmax = 50
 
       ::result_filename = "LevelSetResult"
       ::result_filename_ext = ".ami.gz"
@@ -86,26 +84,26 @@ if (!exists(LevelSetsClass)){
       ::Gui()
   }
     #-----------------------------------------------
-  proc ::load_input() {
+    proc ::load_input() {
 
-    eval ":: <<= (FLOAT)"+::_name+";"
-    if (::_name=="Image") {
-      ::_name = "::"
+    eval "::input <<= (FLOAT)"+::input_name+";"
+    if (::input_name=="Image") {
+      ::input_name = "::input"
       ::win.update
     }
 
-    ::min          = min(::)
-    ::max          = max(::)
+    ::min          = min(::input)
+    ::max          = max(::input)
     ::minimal_intensity = ::min
     ::win.update
 
-    show ::
+    show ::input
   }
 
   #-----------------------------------------------
   proc ::load_initial() {
 
-    if (!exists(::)) {
+    if (!exists(::input)) {
       InfoDialog "::load_initial() \t Need to load input image first!"
     } else {
       if (::init_mode==1) {
@@ -116,12 +114,12 @@ if (!exists(LevelSetsClass)){
         }
         ::ComputeIntensityStats
       } else {
-        ::inls = ::*0-1
+        ::inls = ::input*0-1
       }
   
       ::inls0 = ::inls
-      ::_draw.SetIsoContour(1,::inls,0)
-      ::_draw.DrawIsoContour(1,1)
+      ::input_draw.SetIsoContour(1,::inls,0)
+      ::input_draw.DrawIsoContour(1,1)
     }
   }
   
@@ -144,14 +142,14 @@ if (!exists(LevelSetsClass)){
   }
   
   //--------------------------------------------------
-  proc ::Setinput(IMAGE input) {
+  proc ::Setinput(IMAGE _input) {
     
   
     if (exists(::input_draw)) { del ::input_draw; }
     if (exists(::inls))    { del ::inls; }
     if (exists(::inls0))   { del ::inls0; }
     if (exists(::input))      { del ::input; }
-    if (exists(::in::backup))      { del ::in::backup; }
+    if (exists(::inls_backup))      { del ::inls_backup; }
   
     ::input = (FLOAT)_input
     show ::input
@@ -439,8 +437,8 @@ if (!exists(LevelSetsClass)){
       printn _x
       printn _y
       printn _z
-      ::in::backup = ::inls
-      AddBrightSphere_mm(&::inls,\
+      ::inls_backup = ::inls
+      global::AddBrightSphere_mm(&::inls,\
             _x,_y,_z,\
             ::sphere_radius,-1,1)
       ::inls0 = ::inls
@@ -452,13 +450,13 @@ if (!exists(LevelSetsClass)){
   
   //---------------------------------------------------
   proc ::Backup() {
-    ::in::backup = ::inls
+    ::inls_backup = ::inls
   }
   
   //---------------------------------------------------
   proc ::Undo() {
-      if (exists(::in::backup)) {
-        ::inls = ::in::backup
+      if (exists(::inls_backup)) {
+        ::inls = ::inls_backup
       } else {
         print "There is no current backup"
       }
@@ -471,7 +469,7 @@ if (!exists(LevelSetsClass)){
   
   //---------------------------------------------------
   proc ::ApplyDT() {
-    ::inls = vtkPropDaniel2(::inls,0,DTmin,DTmax)
+    ::inls = vtkPropDaniel2(::inls,0,::DTmin,::DTmax)
   }
   
   //---------------------------------------------------
@@ -665,8 +663,8 @@ if (!exists(LevelSetsClass)){
           ::win.AddInt(::conv_freq,"Freq",5,100)
         ::win.EndBoxPanel
       ::win.AddPage("Dist")
-        ::win.AddFloat(DTmin,"min",-100,0)
-        ::win.AddFloat(DTmax,"max",0,100)
+        ::win.AddFloat(::DTmin,"min",-100,0)
+        ::win.AddFloat(::DTmax,"max",0,100)
         ::win.AddButton("Apply",  ::ApplyDT)
   
       ::win.AddPage("Res")

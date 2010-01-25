@@ -11,7 +11,7 @@ if (!exists(RawFloat2AmiClass)) {
     #----------------------------
     proc ::Init() \
     {
-	    ::class_name ="RawFloat2AmiClass"
+	    ::class_name ="global::RawFloat2AmiClass"
 	    ::dimx = INT(512)
       ::dimy = INT(512)
       ::dimz = INT(100)
@@ -75,7 +75,6 @@ if (!exists(RawFloat2AmiClass)) {
   }
 
 proc ::Gui( ) {
-    global_new
   
     ::win = ParamWin("Read Raw")
 
@@ -87,12 +86,12 @@ proc ::Gui( ) {
         ::win.AddInt    (::dimy,0,1024)
         ::win.AddInt    (::dimz,0,1024)
   
-        pi_typePix = ::win.AddEnum   (::typePix)
-          ::win.AddEnumChoice(pi_typePix,"UCHAR")
-          ::win.AddEnumChoice(pi_typePix,"UINT")
-          ::win.AddEnumChoice(pi_typePix,"INT")
-          ::win.AddEnumChoice(pi_typePix,"FLOAT")
-          ::win.AddEnumChoice(pi_typePix,"DOUBLE")
+        global::pi_typePix = ::win.AddEnum   (::typePix)
+          ::win.AddEnumChoice(global::pi_typePix,"UCHAR")
+          ::win.AddEnumChoice(global::pi_typePix,"UINT")
+          ::win.AddEnumChoice(global::pi_typePix,"INT")
+          ::win.AddEnumChoice(global::pi_typePix,"FLOAT")
+          ::win.AddEnumChoice(global::pi_typePix,"DOUBLE")
         pi_endianess  = ::win.AddEnum   (::endianess,2)
           ::win.AddEnumChoice(pi_endianess,"Little")
           ::win.AddEnumChoice(pi_endianess,"Big")
@@ -111,7 +110,10 @@ proc ::Gui( ) {
       ::win.EndHorizontal
       ::win.AddButton("Save as ami.gz", ::Save)
     ::win.EndBook
-    ::win.AddButton("Close",::Close)
+    ::win.BeginHorizontal
+      ::win.AddButton("Close",      ::Close)
+      ::win.AddButton("Close All",  ::CloseAll)
+    ::win.EndHorizontal
   
     ::win.update
     ::win.Display

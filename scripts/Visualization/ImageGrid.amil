@@ -17,7 +17,7 @@ if (!exists(ImageGridClass)) {
     #----------------------------
     proc ::Init() \
     {
-      ::classname  = "ImageGridClass"
+      ::classname  = "global::ImageGridClass"
       ::input_name =  "", "name of the input image, the drawing window of this image will be used"
       ::enable = UCHAR(1), "Enable/Disable grid"
       ::thickness = INT(1), "line thickness"

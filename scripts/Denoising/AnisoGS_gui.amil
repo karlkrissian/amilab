@@ -14,7 +14,7 @@ if (!exists(AnisoGSClass)) {
   #----------------------------
   
   proc ::Init() {
-    ::class_name ="AnisoGSClass"
+    ::class_name ="global::AnisoGSClass"
   
     ::input_name  = ""
     ::result_name = "AnisoGS_result"

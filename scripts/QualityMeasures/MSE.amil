@@ -21,6 +21,7 @@ if (!exists(MSEClass)) {
     #----------------------------
     proc ::Init() \
     {
+        ::class_name = "global::MSEClass"
         ::input_name =  "", "input image"
         ::groundtruth_name =  "", "ground truth image" 
         ::MSE_string = "", "Mean Square Error value"
@@ -39,14 +40,13 @@ if (!exists(MSEClass)) {
     }
     ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
-    #----------------------------
-    proc ::CloseAll() \
-    {
+     #----------------------------
+    proc ::CloseAll() {
+      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
       ::Close
-      if (exists(MSEClass)) { del MSEClass; }
     }
     ::CloseAll.Comments("Call ::Close() method and delete the class variable")
-    
+     
     #----------------------------
     proc ::LoadInput() \
     {
