@@ -108,7 +108,7 @@ public:
   /**
    * Sets the curve width.
    * @param i 
-   * @param style 
+   * @param width 
    */
   void SetCurveWidth( int i, int width);
 

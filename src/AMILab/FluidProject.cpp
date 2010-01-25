@@ -947,10 +947,6 @@ int InitCoordinates( int& i_offset, int& j_offset, TNavig& nav, std::string type
 	Calcula las coordenadas cartesianas 3D de los píxeles de una imagen MSG en función de sus altitudes,
 	usando como origen el centro de la esfera terrestre.
 
-	\param altitudes  Array con las altitudes de los píxeles de la imagen ordenados por filas
-	\param width, height  Ancho y alto de la imagen
-	\param type  Tipo de imagen ("NAtl" o "AfGG")
-	\param Coordenadas  Matriz devuelta con las 3 coordenadas cartesianas {x,y,z} para cada píxel
 */
 int coordenadas_esfera(InrImage* im, std::string type, float* coordenadas)
 //  ------------------
