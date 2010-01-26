@@ -40,7 +40,7 @@ if (!exists(GaussianFilterClass)) {
   proc ::load_input() {
     eval "::input <<="+::input_name+";"
     if (::input_name=="Image") {
-      ::input_name = "GF_input"
+      ::input_name = "::input"
       ::win.update
     }
   }
@@ -67,7 +67,7 @@ if (!exists(GaussianFilterClass)) {
     show ::input
     if (exists(::res)) {
       show ::res
-      ::input_draw.compare(::res)
+      ::input_draw.compare(::res_draw)
     }
   }
   

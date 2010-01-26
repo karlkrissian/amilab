@@ -709,21 +709,21 @@ if (!exists(LevelSetsClass)){
 #----------------------------
 
 if (!exists(lsobjetct)) {
-  LevelSetsClass lsobjetct
+  LevelSetsClass lsobject
   if (argc==1) {
     # start with one image
     im     = Image $1
-    ::input_name = "im"
-    ::win.update
+    lsobject->input_name = "global::im"
+    lsobject->win.update
   }
   
   if (argc==2) {
     // start with an image and an initialization
     im     = Image $1
     initim = Image $2
-    ::input_name   = "im"
-    ::initial_name = "initim"
-    ::win.update
+    lsobject->input_name   = "global::im"
+    lsobject->initial_name = "global::initim"
+    lsobject->win.update
   }
   
   if (argc==3) {
@@ -732,9 +732,9 @@ if (!exists(lsobjetct)) {
     initim = Image $2
     th = atof($3)
     initim = initim-th
-    ::input_name   = "im"
-    ::initial_name = "initim"
-    ::win.update
+    lsobject->input_name   = "global::im"
+    lsobject->initial_name = "global::initim"
+    lsobject->win.update
   } 
 } else {
 InfoDialog "The script seems to be already loaded." 
