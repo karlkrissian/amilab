@@ -12,7 +12,7 @@ if (!exists(GreyMorphoClass)) {
     #----------------------------
     proc ::Init() \
     {
-        ::class_name ="GreyMorphoClass"
+        ::class_name ="global::GreyMorphoClass"
         ::input_name =  ""
         ::result_image_name =  "greymorpho_res", "name of the resulting image global variable"
 

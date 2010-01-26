@@ -1,95 +1,124 @@
 #
 # Creates a sphere within a volume data
 #
-
-if (!exists(CSPH_defined)) {
-  CSPH_defined=1
+if (!exists(CSPHClass)) {
 
   ami_import->Filters()
   
-  proc CSPH_Init() {
-    global_new
+  Class CSPHClass {
+
+    ::filters=&global::filters
+
+    #----------------------------
+    proc ::Init() {
     
-    CSPH_dimx = INT(100)
-    CSPH_dimx.Comments("Image dimension in X axis")
-    CSPH_dimy = INT(100)
-    CSPH_dimy.Comments("Image dimension in Y axis")
-    CSPH_dimz = INT(100)
-    CSPH_dimz.Comments("Image dimension in Z axis")
+      ::class_name ="global::CSPHClass"
+      ::dimx = INT(100)
+      ::dimx.Comments("Image dimension in X axis")
+      ::dimy = INT(100)
+      ::dimy.Comments("Image dimension in Y axis")
+      ::dimz = INT(100)
+      ::dimz.Comments("Image dimension in Z axis")
 
-    CSPH_bg = 0
-    CSPH_bg.Comments("Image background intensity")
+      ::bg = 0
+      ::bg.Comments("Image background intensity")
 
-    CSPH_fg = 100
-    CSPH_fg.Comments("Image foreground intensity")
+      ::fg = 100
+      ::fg.Comments("Image foreground intensity")
 
-    CSPH_R = 20 
-    CSPH_R.Comments("Sphere radius")
+      ::R = 20 
+      ::R.Comments("Sphere radius")
+      
+      ::image_name = "i"
+      ::image_name.Comments("Output image variable name")
+
+      ::Gui
+    }
     
-    CSPH_image_name = "i"
-    CSPH_image_name.Comments("Output image variable name")
-
-    CSPH_Gui
-  }
-  
-  proc CSPH_Close() {
-    CSPH_win.Hide
-    delvars "CSPH_*_draw"
-    delvars "CSPH_*"
-  }
-  
-  proc CSPH_Create() {
-    tmp = Image(FLOAT,CSPH_dimx,CSPH_dimy,CSPH_dimz)
-    tmp_x = (FLOAT) Xpos(tmp)
-    tmp_y = (FLOAT) Ypos(tmp)
-    tmp_z = (FLOAT) Zpos(tmp)
-    tmp_x = tmp_x-CSPH_dimx/2
-    tmp_y = tmp_y-CSPH_dimy/2
-    tmp_z = tmp_z-CSPH_dimz/2
-    res=-sqrt(tmp_x*tmp_x+tmp_y*tmp_y+tmp_z*tmp_z)+CSPH_R
-  
-    # estimate partial volume effect based on linear interpolation
-    res = filters->ComputePV_subdiv(res)
-    res = res*(CSPH_fg-CSPH_bg)+CSPH_bg
+    #----------------------------
+    proc ::Close() {
+      ::win.Hide
+      delvars GetObjectName(::Close)
+    }
+    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
-    eval "global::"+CSPH_image_name+"<<=res;"
-  }
-  CSPH_Create.Comments("Create the synthetic image of a sphere")
-  
-  proc CSPH_Show() {
-    global_new
-    eval "show "+CSPH_image_name+";"
-  }
-  CSPH_Show.Comments("Shows the resulting sphere")
-  
-  proc CSPH_Gui() {
-    global::CSPH_win = ParamWin("CreateSphere")
-  
-    CSPH_win.BeginBook
-      CSPH_win.AddPage("Param")
-        CSPH_win.AddInt(CSPH_dimx,"X_dim",1,1000)
-        CSPH_win.AddInt(CSPH_dimy,"Y_dim",1,1000)
-        CSPH_win.AddInt(CSPH_dimz,"Z_dim",1,1000)
+    #----------------------------
+    proc ::CloseAll() {
+      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
+      ::Close
+    }
+    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+        
+    #------------------------------------
       
-        CSPH_win.BeginBox("Intensity param")
-        CSPH_win.BeginPanel("Intensities")
-          CSPH_win.AddFloat(CSPH_bg,"Background",0.1,500)
-          CSPH_win.AddFloat(CSPH_fg,"Foreground",0.1,500)
-        CSPH_win.EndPanel
-        CSPH_win.EndBox
       
-        CSPH_win.AddFloat(CSPH_R,"Radius",0.1,50)
+    proc ::Create() {
+      tmp = Image(FLOAT,::dimx,::dimy,::dimz)
+      tmp_x = (FLOAT) Xpos(tmp)
+      tmp_y = (FLOAT) Ypos(tmp)
+      tmp_z = (FLOAT) Zpos(tmp)
+      tmp_x = tmp_x-::dimx/2
+      tmp_y = tmp_y-::dimy/2
+      tmp_z = tmp_z-::dimz/2
+      res=-sqrt(tmp_x*tmp_x+tmp_y*tmp_y+tmp_z*tmp_z)+::R
+    
+      # estimate partial volume effect based on linear interpolation
+      res = ::filters->ComputePV_subdiv(res)
+      res = res*(::fg-::bg)+::bg
       
-        CSPH_win.AddButton("Create", CSPH_Create)
-        CSPH_win.AddButton("Show",   CSPH_Show)
-    CSPH_win.EndBook
-    CSPH_win.AddButton("Close",  CSPH_Close)
+      eval ::image_name+"<<=res;"
+    }
+    ::Create.Comments("Create the synthetic image of a sphere")
+    
+    proc ::Show() {
+      
+      eval "show "+::image_name+";"
+    }
+    ::Show.Comments("Shows the resulting sphere")
+    
+    proc ::Gui() {
+      ::win = ParamWin("CreateSphere")
+    
+      ::win.BeginBook
+        ::win.AddPage("Param")
+          ::win.AddInt(::dimx,"X_dim",1,1000)
+          ::win.AddInt(::dimy,"Y_dim",1,1000)
+          ::win.AddInt(::dimz,"Z_dim",1,1000)
+        
+          ::win.BeginBox("Intensity param")
+          ::win.BeginPanel("Intensities")
+            ::win.AddFloat(::bg,"Background",0.1,500)
+            ::win.AddFloat(::fg,"Foreground",0.1,500)
+          ::win.EndPanel
+          ::win.EndBox
+        
+          ::win.AddFloat(::R,"Radius",0.1,50)
+        
+          ::win.AddButton("Create", ::Create)
+          ::win.AddButton("Show",   ::Show)
+      ::win.EndBook
+      ::win.BeginHorizontal
+          ::win.AddButton("Close",      ::Close)
+          ::win.AddButton("Close All",  ::CloseAll)
+        ::win.EndHorizontal
+    
+      ::win.update
+      ::win.Display
+    }
+    
+    ::Init
+    
+  } #End of class
   
-    CSPH_win.update
-    CSPH_win.Display
-  }
-  
-  CSPH_Init()
+} # End of if
+
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(csph)) {
+
+  CSPHClass csph
+  } else {
+  InfoDialog "The script seems to be already loaded."
 }
-#endif CSPH_defined
-

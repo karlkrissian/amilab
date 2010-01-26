@@ -4,6 +4,7 @@ if (!exists(MinSearchClass)) {
   Class MinSearchClass {
 
     proc ::Init() {
+      ::class_name = "global::MinSearchClass"
       ::eval_string = "res = (P1-10)*(P1-10);", "Evaluation string, defines the function to minimize and uses 'P1', 'P2', ... as input value and 'res' as resulting value"
 
       ::P1min   = 0, "Minimal value, 1st parameter"
@@ -31,10 +32,9 @@ if (!exists(MinSearchClass)) {
     ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
     #----------------------------
-    proc ::CloseAll() \
-    {
+    proc ::CloseAll() {
+      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
       ::Close
-      if (exists(MinSearchClass)) { del MinSearchClass; }
     }
     ::CloseAll.Comments("Call ::Close() method and delete the class variable")
     

@@ -2,319 +2,325 @@
 # Find Shortest path between 2 points
 # using a speed image
 #
-
-if (!exists(SP_defined)) {
-  SP_defined = 1
-
+if (!exists(SPClass)) {
   func "SyntheticImages/AddSphere"
-  
-  proc SP_init() {
-    global_new
-  
-    # input image name
-    SP_input_name = ""
-    # speed image name
-    SP_speed_name = ""
+  Class SPClass {
+    #----------------------------
+    proc ::init() {
+      ::class_name = "global::SPClass"
+      # input image name
+      ::input_name = ""
+      # speed image name
+      ::speed_name = ""
 
-    # save the Fast Marching image
-    SP_save_FM = UCHAR(0)
+      # save the Fast Marching image
+      ::save_FM = UCHAR(0)
 
-    SP_epsilon = 0.02
-    SP_maxcost = 1000
-  
-    SP_use_input_speed = UCHAR(0)
-    SP_input_Imin  = 0
-    SP_input_Imax  = 1000
-    SP_input_speed = 1
-
-    # start point
-    SP_startx = 0
-    SP_starty = 0
-    SP_startz = 0
-
-    # stop mode -- 0: point, 1: mask
-    SP_end_mode = INT(0) 
-
-    SP_endmask_name = ""
-    # end point
-    SP_endx = 0
-    SP_endy = 0
-    SP_endz = 0
-  
-    SP_step_size = 0.1
-    SP_maxlength = 500
-    # Path mode 0 or 1
-  
-    SP_Gui
-  }
-  
-  
-  #-----------------------------------------------
-  proc SP_load_input() \
-  {
-    eval "global::SP_input <<="+SP_input_name+";"
-    if (SP_input_name=="Image") {
-      SP_input_name = "SP_input"
-      SP_win.update
-    }
-  }
-  
-  #-----------------------------------------------
-  proc SP_load_speed() \
-  {
-    eval "global::SP_speed <<="+SP_speed_name+";"
-    if (SP_speed_name=="Image") {
-      SP_speed_name = "SP_speed"
-      SP_win.update
-    }
-  }
-  
-  #-----------------------------------------------
-  proc SP_load_endmask() \
-  {
-    eval "global::SP_endmask <<="+SP_endmask_name+";"
-    if (SP_endmask_name=="Image") {
-      SP_endmask_name = "SP_endmask"
-      SP_win.update
-    }
-  }
-
-  #-----------------------------------------------
-  proc SP_StartPoint() \
-  {
-    SP_load_input
-    show SP_input
-    if (exists(SP_input_draw)) {
-      SP_SetStartPoint( \
-                        SP_input_draw.GetXPos, \
-                        SP_input_draw.GetYPos, \
-                        SP_input_draw.GetZPos \
-                      )
-    }
-  }
-  
-  
-  #-----------------------------------------------
-  proc SP_SetStartPoint( NUM x, NUM y, NUM z) \
-  {
-    global::SP_startx = x
-    global::SP_starty = y
-    global::SP_startz = z
-    global::SP_Px1 = SP_input.trx + x*SP_input.vx
-    global::SP_Py1 = SP_input.try + y*SP_input.vy
-    global::SP_Pz1 = SP_input.trz + z*SP_input.vz
-  }
-  
-  
-  #-----------------------------------------------
-  proc SP_SetStartPointWorld( NUM x, NUM y, NUM z) \
-  {
-    global::SP_Px1 = x
-    global::SP_Py1 = y
-    global::SP_Pz1 = z
-    global::SP_startx = (x-SP_input.trx)/SP_input.vx
-    global::SP_starty = (y-SP_input.try)/SP_input.vy
-    global::SP_startz = (z-SP_input.trz)/SP_input.vz
-  }
-  
-  #-----------------------------------------------
-  proc SP_EndPoint() \
-  {
-    SP_load_input
-    show SP_input
-    if (exists(SP_input_draw)) {
-      SP_SetEndPoint( \
-                        SP_input_draw.GetXPos, \
-                        SP_input_draw.GetYPos, \
-                        SP_input_draw.GetZPos \
-                      )
-    }
-    global::SP_Px2 = SP_input.trx + SP_endx*SP_input.vx
-    global::SP_Py2 = SP_input.try + SP_endy*SP_input.vy
-    global::SP_Pz2 = SP_input.trz + SP_endz*SP_input.vz
-  }
-  
-  
-  #-----------------------------------------------
-  proc SP_SetEndPoint( NUM x, NUM y, NUM z) \
-  {
-    global::SP_endx = x
-    global::SP_endy = y
-    global::SP_endz = z
-    global::SP_Px2 = SP_input.trx + x*SP_input.vx
-    global::SP_Py2 = SP_input.try + y*SP_input.vy
-    global::SP_Pz2 = SP_input.trz + z*SP_input.vz
-  }
-  
-  
-  #-----------------------------------------------
-  proc SP_SetEndPointWorld( NUM x, NUM y, NUM z) \
-  {
-    global::SP_Px2 = x
-    global::SP_Py2 = y
-    global::SP_Pz2 = z
-    global::SP_endx = (x-SP_input.trx)/SP_input.vx
-    global::SP_endy = (y-SP_input.try)/SP_input.vy
-    global::SP_endz = (z-SP_input.trz)/SP_input.vz
-  }
-  
-  
-  #-----------------------------------------------
-  proc SP_Display() \
-  {
-    SP_load_input
-    SP_load_speed
-    show SP_input
-    show SP_speed
-    SP_input_draw.compare(SP_speed)
-    if (exists(SP_path)) { show SP_path; }
-  }
-  
-  
-  #-----------------------------------------------
-  proc SP_Close() \
-  {
-    SP_win.Hide
-    delvars "SP_*_draw"
-    delvars "SP_*"
-  }
-  
-  
-  #-----------------------------------------------
-  proc SP_Run() \
-  {
-    SP_load_input()
-    SP_load_speed()
-  
-    # force a minimal value of SP_epsilon
-    maxrepim_crop = SP_speed+SP_epsilon
-    if (SP_use_input_speed) {
-      maxrepim_crop = maxrepim_crop + \
-                      (SP_input>SP_input_Imin)*\
-                      (SP_input<SP_input_Imax)*SP_input_speed
-    }
-  
-    # Add Spheres around extremities to facilitate
-    # their connections
-    AddBrightSphere_mm( &maxrepim_crop,\
-                        SP_startx,SP_starty,SP_startz,\
-                        3,0.01,0.5)
-
-    # Run a Fast Marching start from End (point or mask) 
-    # up to distance 1000
-    fminit = (FLOAT) maxrepim_crop*0+SP_maxcost
-
-    if (SP_end_mode==0) {
-      AddBrightSphere_mm( &maxrepim_crop,\
-                          SP_endx,SP_endy,SP_endz,\
-                          3,0.01,0.5)
-      if (SP_endx<2) { SP_endx=2; }
-      if (SP_endy<2) { SP_endy=2; }
-      if (SP_endz<2) { SP_endz=2; }
-      fminit.setpos(SP_endx,SP_endy,SP_endz)
-      fminit.set(-SP_maxcost)
-    } else {
-      # load end mask
-      SP_load_endmask()
-      fminit = fminit*(SP_endmask<=0.5)+(SP_endmask>=0.5)*-SP_maxcost
-    }
-  
-  
-    #maxrepim_crop = maxrepim_crop/10
-    # running fast marching until the point 1 is reached
-    printn "FMT"
-    res = vtkFastMarchingTarget(maxrepim_crop,fminit,SP_maxcost,\
-                          SP_startx+0.5,SP_starty+0.5,SP_startz+0.5)
-    res.info
-  
-    if (SP_save_FM) {
-      global::SP_FM = res
-    }
-
-    # reset the maximum to limit gradient and lower side effects of linear interpolation
-    epsilon = 0.0001
-    maxdist = max[res<SP_maxcost-epsilon](res)
-    res = res*(res<=(maxdist+epsilon))+(res>(maxdist+epsilon))*(maxdist+epsilon)
-
-    printn "FMT done"
-    if (exists(global::SP_path)) { del global::SP_path; }
-    if (SP_end_mode==0) {
-      global::SP_path = PathFromVectField( res,\
-                                SP_step_size,\
-                                SP_maxlength,\
-                                SP_Px1,SP_Py1,SP_Pz1,\
-                                SP_Px2,SP_Py2,SP_Pz2)
-    } else {
-      global::SP_path = PathFromVectField( res,\
-                                SP_step_size,\
-                                SP_maxlength,\
-                                SP_Px1,SP_Py1,SP_Pz1)
-    }
-  }
-  
-  
-  #-------------------------------------------
-  proc SP_Gui() \
-  {
-    global::SP_win = ParamWin("Path")
-  
-    SP_win.BeginBook
-
-      SP_win.AddPage("Init")
-        # set the input image
-        SP_win.AddImageChoice(SP_input_name, "Input")
-        # set the speed image
-        SP_win.AddImageChoice(SP_speed_name, "Speed")
-      
-        SP_win.BeginBox("Extremities")
-          # set the first point
-          SP_win.AddButton("Set Start Point",SP_StartPoint)
-
-          #
-          stopmode_id = SP_win.AddEnum( SP_end_mode)
-            SP_win.AddEnumChoice(stopmode_id,"Point")
-            SP_win.AddEnumChoice(stopmode_id,"Mask")
-
-          # set the second point
-          SP_win.AddButton("Set End Point",  SP_EndPoint)
-          # set the end mask
-          SP_win.AddImageChoice(SP_endmask_name,"Stopping mask" )
-
-        SP_win.EndBox
-  
-      SP_win.AddPage("Param")
-      
-        SP_win.AddBoolean(SP_save_FM)
-  
-        SP_win.AddFloat(SP_epsilon,0.01,10)
-        SP_win.AddFloat(SP_maxcost,1,100000)
+      ::epsilon = 0.02
+      ::maxcost = 1000
     
-        SP_win.BeginBox("Input intensity-based speed")
-          SP_win.AddBoolean(SP_use_input_speed)
-          SP_win.AddFloat(SP_input_Imin,0,10000)
-          SP_win.AddFloat(SP_input_Imax,0,10000)
-          SP_win.AddFloat(SP_input_speed,0,100)
-        SP_win.EndBox
-  
-        SP_win.AddFloat(SP_step_size,0.01,1)
-        SP_win.AddFloat(SP_maxlength,0,1000)
-  
-        SP_win.BeginHorizontal
-          # run
-          SP_win.AddButton("Run",      SP_Run)
-          # display
-          SP_win.AddButton("Display",  SP_Display)
-        SP_win.EndHorizontal  
-    SP_win.EndBook
+      ::use_input_speed = UCHAR(0)
+      ::input_Imin  = 0
+      ::input_Imax  = 1000
+      ::input_speed = 1
 
-    # close
-    SP_win.AddButton("Close",    SP_Close)
-  
-    SP_win.update
-    SP_win.Display
-  }
-  
-  SP_init
+      # start point
+      ::startx = 0
+      ::starty = 0
+      ::startz = 0
 
+      # stop mode -- 0: point, 1: mask
+      ::end_mode = INT(0) 
+
+      ::endmask_name = ""
+      # end point
+      ::endx = 0
+      ::endy = 0
+      ::endz = 0
+    
+      ::step_size = 0.1
+      ::maxlength = 500
+      # Path mode 0 or 1
+    
+      ::Gui
+    }
+    #-----------------------------------------------
+    proc ::load_input() \
+    {
+      eval "::input <<="+::input_name+";"
+      if (::input_name=="Image") {
+        ::input_name = "SP_input"
+        ::win.update
+      }
+    }
+    
+    #-----------------------------------------------
+    proc ::load_speed() \
+    {
+      eval "::speed <<="+::speed_name+";"
+      if (::speed_name=="Image") {
+        ::speed_name = "SP_speed"
+        ::win.update
+      }
+    }
+    
+    #-----------------------------------------------
+    proc ::load_endmask() \
+    {
+      eval "::endmask <<="+::endmask_name+";"
+      if (::endmask_name=="Image") {
+        ::endmask_name = "SP_endmask"
+        ::win.update
+      }
+    }
+
+    #-----------------------------------------------
+    proc ::StartPoint() \
+    {
+      ::load_input
+      show ::input
+      if (exists(::input_draw)) {
+        ::SetStartPoint( \
+                          ::input_draw.GetXPos, \
+                          ::input_draw.GetYPos, \
+                          ::input_draw.GetZPos \
+                        )
+      }
+    }
+    #-----------------------------------------------
+    proc ::SetStartPoint( NUM x, NUM y, NUM z) \
+    {
+      ::startx = x
+      ::starty = y
+      ::startz = z
+      ::Px1 = ::input.trx + x*::input.vx
+      ::Py1 = ::input.try + y*::input.vy
+      ::Pz1 = ::input.trz + z*::input.vz
+    }
+    
+    
+    #-----------------------------------------------
+    proc ::SetStartPointWorld( NUM x, NUM y, NUM z) \
+    {
+      ::Px1 = x
+      ::Py1 = y
+      ::Pz1 = z
+      ::startx = (x-::input.trx)/::input.vx
+      ::starty = (y-::input.try)/::input.vy
+      ::startz = (z-::input.trz)/::input.vz
+    }
+    
+    #-----------------------------------------------
+    proc ::EndPoint() \
+    {
+      ::load_input
+      show ::input
+      if (exists(::input_draw)) {
+        ::SetEndPoint( \
+                          ::input_draw.GetXPos, \
+                          ::input_draw.GetYPos, \
+                          ::input_draw.GetZPos \
+                        )
+      }
+      ::Px2 = ::input.trx + ::endx*::input.vx
+      ::Py2 = ::input.try + ::endy*::input.vy
+      ::Pz2 = ::input.trz + ::endz*::input.vz
+    }
+    
+    
+    #-----------------------------------------------
+    proc ::SetEndPoint( NUM x, NUM y, NUM z) \
+    {
+      ::endx = x
+      ::endy = y
+      ::endz = z
+      ::Px2 = ::input.trx + x*::input.vx
+      ::Py2 = ::input.try + y*::input.vy
+      ::Pz2 = ::input.trz + z*::input.vz
+    }
+    
+    
+    #-----------------------------------------------
+    proc ::SetEndPointWorld( NUM x, NUM y, NUM z) \
+    {
+      ::Px2 = x
+      ::Py2 = y
+      ::Pz2 = z
+      ::endx = (x-::input.trx)/::input.vx
+      ::endy = (y-::input.try)/::input.vy
+      ::endz = (z-::input.trz)/::input.vz
+    }
+    #-----------------------------------------------
+    proc ::Display() \
+    {
+      ::load_input
+      ::load_speed
+      show ::input
+      show ::speed
+      ::input_draw.compare(::speed)
+      if (exists(::path)) { show ::path; }
+    }  
+    #----------------------------
+    proc ::Close() {
+      ::win.Hide
+      delvars GetObjectName(::Close)
+    }
+    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    
+    #----------------------------
+    proc ::CloseAll() {
+      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
+      ::Close
+    }
+    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+        
+    #------------------------------------
+    #-----------------------------------------------
+    proc ::Run() \
+    {
+      ::load_input()
+      ::load_speed()
+    
+      # force a minimal value of ::epsilon
+      maxrepim_crop = ::speed+::epsilon
+      if (::use_input_speed) {
+        maxrepim_crop = maxrepim_crop + \
+                        (::input>::input_Imin)*\
+                        (::input<::input_Imax)*::input_speed
+      }
+    
+      # Add Spheres around extremities to facilitate
+      # their connections
+      AddBrightSphere_mm( &maxrepim_crop,\
+                          ::startx,::starty,::startz,\
+                          3,0.01,0.5)
+
+      # Run a Fast Marching start from End (point or mask) 
+      # up to distance 1000
+      fminit = (FLOAT) maxrepim_crop*0+::maxcost
+
+      if (::end_mode==0) {
+        AddBrightSphere_mm( &maxrepim_crop,\
+                            ::endx,::endy,::endz,\
+                            3,0.01,0.5)
+        if (::endx<2) { ::endx=2; }
+        if (::endy<2) { ::endy=2; }
+        if (::endz<2) { ::endz=2; }
+        fminit.setpos(::endx,::endy,::endz)
+        fminit.set(-::maxcost)
+      } else {
+        # load end mask
+        ::load_endmask()
+        fminit = fminit*(::endmask<=0.5)+(::endmask>=0.5)*-::maxcost
+      }
+    
+    
+      #maxrepim_crop = maxrepim_crop/10
+      # running fast marching until the point 1 is reached
+      printn "FMT"
+      res = vtkFastMarchingTarget(maxrepim_crop,fminit,::maxcost,\
+                            ::startx+0.5,::starty+0.5,::startz+0.5)
+      res.info
+    
+      if (::save_FM) {
+        ::FM = res
+      }
+
+      # reset the maximum to limit gradient and lower side effects of linear interpolation
+      epsilon = 0.0001
+      maxdist = max[res<::maxcost-epsilon](res)
+      res = res*(res<=(maxdist+epsilon))+(res>(maxdist+epsilon))*(maxdist+epsilon)
+
+      printn "FMT done"
+      if (exists(::path)) { del ::path; }
+      if (::end_mode==0) {
+        ::path = PathFromVectField( res,\
+                                  ::step_size,\
+                                  ::maxlength,\
+                                  ::Px1,::Py1,::Pz1,\
+                                  ::Px2,::Py2,::Pz2)
+      } else {
+        ::path = PathFromVectField( res,\
+                                  SP_step_size,\
+                                  SP_maxlength,\
+                                  SP_Px1,SP_Py1,SP_Pz1)
+      }
+    }
+    #-------------------------------------------
+    proc ::Gui() \
+    {
+      ::win = ParamWin("Path")
+    
+      ::win.BeginBook
+
+        ::win.AddPage("Init")
+          # set the input image
+          ::win.AddImageChoice(::input_name, "Input")
+          # set the speed image
+          ::win.AddImageChoice(::speed_name, "Speed")
+        
+          ::win.BeginBox("Extremities")
+            # set the first point
+            ::win.AddButton("Set Start Point",::StartPoint)
+
+            #
+            stopmode_id = ::win.AddEnum( ::end_mode)
+              ::win.AddEnumChoice(stopmode_id,"Point")
+              ::win.AddEnumChoice(stopmode_id,"Mask")
+
+            # set the second point
+            ::win.AddButton("Set End Point",  ::EndPoint)
+            # set the end mask
+            ::win.AddImageChoice(::endmask_name,"Stopping mask" )
+
+          ::win.EndBox
+    
+        ::win.AddPage("Param")
+        
+          ::win.AddBoolean(::save_FM)
+    
+          ::win.AddFloat(::epsilon,0.01,10)
+          ::win.AddFloat(::maxcost,1,100000)
+      
+          ::win.BeginBox("Input intensity-based speed")
+            ::win.AddBoolean(::use_input_speed)
+            ::win.AddFloat(::input_Imin,0,10000)
+            ::win.AddFloat(::input_Imax,0,10000)
+            ::win.AddFloat(::input_speed,0,100)
+          ::win.EndBox
+    
+          ::win.AddFloat(::step_size,0.01,1)
+          ::win.AddFloat(::maxlength,0,1000)
+    
+          ::win.BeginHorizontal
+            # run
+            ::win.AddButton("Run",      ::Run)
+            # display
+            ::win.AddButton("Display",  ::Display)
+          ::win.EndHorizontal  
+      ::win.EndBook
+
+      # close
+      ::win.BeginHorizontal
+        ::win.AddButton("Close",      ::Close)
+        ::win.AddButton("Close All",  ::CloseAll)
+      ::win.EndHorizontal
+    
+      ::win.update
+      ::win.Display
+    }
+    
+    ::init
+    } #End of class
+  
+} # End of if
+
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(spobj)) {
+  SPClass spobj
+} else {
+  InfoDialog "The script seems to be already loaded."
 }
-# end if (!SP_defined)

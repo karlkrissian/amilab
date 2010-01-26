@@ -1,129 +1,165 @@
+if (!exists(SuperquadricClass)) {
 
-func "SyntheticImages/superquadric.amil"
-
-proc SQ_Init() {
-  global_new
-  sq_imdimx = INT(110)
-  sq_imdimy = INT(110)
-  sq_imdimz = INT(110)
-  sq_s1 = INT(50)
-  sq_s2 = INT(50)
-  sq_s3 = INT(50)
-  sq_r = 1
-  sq_s = 1
-  sq_t = 1
-  sq_torus_radius = 30
-  sq_type = INT(0) # 0:Spherical 1:Cylindrical 2:Toroidal
-  sq_image = Image(FLOAT,sq_imdimx,sq_imdimy,sq_imdimz)
-  SQ_Update()
-  sq_isosurf = Surface()
-  SQ_Gui()
-}
-
-# print parameters 
-# to do
-proc SQ_Print() {
+  func "SyntheticImages/superquadric.amil"
   
-}
+  Class SuperquadricClass {
 
-# save parameters 
-# to do
-proc SQ_SaveParam() {
+    #----------------------------
+    proc ::Init() {
+      ::class_name ="global::SuperquadricClass"
+      ::imdimx = INT(110)
+      ::imdimy = INT(110)
+      ::imdimz = INT(110)
+      ::s1 = INT(50)
+      ::s2 = INT(50)
+      ::s3 = INT(50)
+      ::r = 1
+      ::s = 1
+      ::t = 1
+      ::torus_radius = 30
+      ::type = INT(0) # 0:Spherical 1:Cylindrical 2:Toroidal
+      ::image = Image(FLOAT,::imdimx,::imdimy,::imdimz)
+      ::Update()
+      ::isosurf = Surface()
+      ::Gui()
+    }
+
+    # print parameters 
+    # to do
+    proc ::Print() {
+      
+    }
+    
+    # save parameters 
+    # to do
+    proc ::SaveParam() {
+      
+    }
+
+    proc ::Update() {
+      if (::image.tx!=::imdimx) || (::image.ty!=::imdimy) || (::image.tz!=::imdimz) {
+        ::image <<= Image(FLOAT,::imdimx,::imdimy,::imdimz)
+      }
+      if (::type == 0) {
+        global::SuperQuadric(::s1,::s2,::s3,::r,::s,::t,&::image)
+      }
+      if (::type == 1) {
+        global::CylindricalSuperQuadric(::s1,::s2,::r,::s,&::image)
+      }
+      if (::type == 2) {
+        global::ToroidalSuperQuadric(::torus_radius,::s1,::s2,::r,::s,&::image)
+      }
+    }
+
+    proc ::CreateImage() {
+      ::Update()
+      show ::image
+    }
+
+    proc ::ShowIsoSurface() {
+      ::Update()
+      if (exists(::isosurf_draw)) {
+        ::isosurf_draw -= ::isosurf
+      }
+      ::isosurf <<= isosurf(-::image,0.0001)
+      if (exists(::isosurf_draw)) {
+        ::isosurf_draw += ::isosurf
+      } else {
+        show ::isosurf
+      }
+    }
+
+    proc ::CreateParamSurface() {
+    }
+
+    proc ::UpdateType() {
+
+      # to do: show/hide a parameter !!!
+
+      #::win.ShowSlider(::torus_radius_id,::type==2)
+      #::win.update
+      #::win.Display
+    }
+    
+    
+    #----------------------------
+    proc ::Close() {
+      ::win.Hide
+      delvars GetObjectName(::Close)
+    }
+    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+      
+    #----------------------------
+    proc ::CloseAll() {
+      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
+      ::Close
+    }
+    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+        
+    #------------------------------------
+    
+    
+    proc ::Gui( ) {
+      ::win = ParamWin("SuperQuadrics")
+      ::win.BeginBook
+      ::win.AddPage("Resolution")
+
+     ::win.BeginBox("Image dimensions")
+          ::imx_i  = ::win.AddInt    (::imdimx,0,1024)
+          ::imy_i  = ::win.AddInt    (::imdimy,0,1024)
+          ::imz_i  = ::win.AddInt    (::imdimz,0,1024)
+     ::win.EndBox
+
+      ::win.AddPage("Sup.Quad.")
+     ::win.BeginBox("SQ dimensions")
+          ::s1_i  = ::win.AddInt    (::s1,0,1024)
+          ::s2_i  = ::win.AddInt    (::s2,0,1024)
+          ::s3_i  = ::win.AddInt    (::s3,0,1024)
+     ::win.EndBox
+
+     ::win.BeginBox("Coefficients")
+          ::r_i  = ::win.AddFloat    (::r,0,5)
+          ::s_i  = ::win.AddFloat    (::s,0,5)
+          ::t_i  = ::win.AddFloat    (::t,0,5)
+      ::win.EndBox
+
+      ::type_id  = ::win.AddEnum   (::type,3)
+        ::win.AddEnumChoice(::type_id,"SPHERICAL")
+        ::win.AddEnumChoice(::type_id,"CYLINDRICAL")
+        ::win.AddEnumChoice(::type_id,"TOROIDAL")
+      ::win.SetCallback(::UpdateType)
+
+      ::torus_radius_id =  ::win.AddFloat(::torus_radius,0,200)
+      #::win.ShowSlider(::torus_radius_id,::type==2)
+
+      ::win.BeginHorizontal
+        ::win.AddButton("Image",              ::CreateImage)
+        ::win.AddButton("IsoSurface",           ::ShowIsoSurface)
+      ::win.EndHorizontal
+      ::win.AddButton("Parametric Surf.", ::CreateParamSurface)
+      
+      ::win.BeginHorizontal
+          ::win.AddButton("Close",      ::Close)
+          ::win.AddButton("Close All",  ::CloseAll)
+        ::win.EndHorizontal
+      
+      ::win.update
+      ::win.Display
+      
+    }
+
+    ::Init()
+  } #End of class
   
-}
+} # End of if
 
-proc SQ_Update() {
-  global_new
-  if (sq_image.tx!=sq_imdimx) || (sq_image.ty!=sq_imdimy) || (sq_image.tz!=sq_imdimz) {
-    sq_image <<= Image(FLOAT,sq_imdimx,sq_imdimy,sq_imdimz)
-  }
-  if (sq_type == 0) {
-    SuperQuadric(sq_s1,sq_s2,sq_s3,sq_r,sq_s,sq_t,&sq_image)
-  }
-  if (sq_type == 1) {
-    CylindricalSuperQuadric(sq_s1,sq_s2,sq_r,sq_s,&sq_image)
-  }
-  if (sq_type == 2) {
-    ToroidalSuperQuadric(sq_torus_radius,sq_s1,sq_s2,sq_r,sq_s,&sq_image)
-  }
-}
+#----------------------------
+# Main
+#----------------------------
 
-proc SQ_CreateImage() {
-  global_new
-  SQ_Update()
-  show sq_image
-}
+if (!exists(superq)) {
 
-proc SQ_ShowIsoSurface() {
-  global_new
-  SQ_Update()
-  if (exists(sq_isosurf_draw)) {
-    sq_isosurf_draw -= sq_isosurf
-  }
-  sq_isosurf <<= isosurf(-sq_image,0.0001)
-  if (exists(sq_isosurf_draw)) {
-    sq_isosurf_draw += sq_isosurf
+  SuperquadricClass superq
   } else {
-    show sq_isosurf
-  }
+  InfoDialog "The script seems to be already loaded."
 }
-
-proc SQ_CreateParamSurface() {
-}
-
-proc SQ_UpdateType() {
-
-  # to do: show/hide a parameter !!!
-
-  #SQ_win.ShowSlider(sq_torus_radius_id,sq_type==2)
-  #SQ_win.update
-  #SQ_win.Display
-}
-
-proc SQ_Gui( ) {
-  global_new
-
-  SQ_win = ParamWin("SuperQuadrics")
-  SQ_win.BeginBook
-  SQ_win.AddPage("Resolution")
-
- SQ_win.BeginBox("Image dimensions")
-      sq_imx_i  = SQ_win.AddInt    (sq_imdimx,0,1024)
-      sq_imy_i  = SQ_win.AddInt    (sq_imdimy,0,1024)
-      sq_imz_i  = SQ_win.AddInt    (sq_imdimz,0,1024)
- SQ_win.EndBox
-
-  SQ_win.AddPage("Sup.Quad.")
- SQ_win.BeginBox("SQ dimensions")
-      sq_s1_i  = SQ_win.AddInt    (sq_s1,0,1024)
-      sq_s2_i  = SQ_win.AddInt    (sq_s2,0,1024)
-      sq_s3_i  = SQ_win.AddInt    (sq_s3,0,1024)
- SQ_win.EndBox
-
- SQ_win.BeginBox("Coefficients")
-      sq_r_i  = SQ_win.AddFloat    (sq_r,0,5)
-      sq_s_i  = SQ_win.AddFloat    (sq_s,0,5)
-      sq_t_i  = SQ_win.AddFloat    (sq_t,0,5)
-  SQ_win.EndBox
-
-  sq_type_id  = SQ_win.AddEnum   (sq_type,3)
-    SQ_win.AddEnumChoice(sq_type_id,"SPHERICAL")
-    SQ_win.AddEnumChoice(sq_type_id,"CYLINDRICAL")
-    SQ_win.AddEnumChoice(sq_type_id,"TOROIDAL")
-  SQ_win.SetCallback(SQ_UpdateType)
-
-  sq_torus_radius_id =  SQ_win.AddFloat(sq_torus_radius,0,200)
-  #SQ_win.ShowSlider(sq_torus_radius_id,sq_type==2)
-
-  SQ_win.BeginHorizontal
-    SQ_win.AddButton("Image",              SQ_CreateImage)
-    SQ_win.AddButton("IsoSurface",           SQ_ShowIsoSurface)
-  SQ_win.EndHorizontal
-  SQ_win.AddButton("Parametric Surf.", SQ_CreateParamSurface)
-
-  SQ_win.update
-  SQ_win.Display
-  
-}
-
-SQ_Init()

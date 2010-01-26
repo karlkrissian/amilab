@@ -1,111 +1,130 @@
-
 #
 # Example of using the Gaussian Filtering
 # with the command filter
 #
-if (exists(AddNoise_Init)) {
-  printn "AGS script already loaded, close it first"
-} else {
 
+if (!exists(AddNoiseClass)){
+  Class AddNoiseClass {
+  #------------------------------------
   func "Noise/AddRiceNoise.amil"
   
-  proc AddNoise_Init( ) {
-    global_new
-  
-    AddNoise_input_name  = "",  "name of input image"
-    AddNoise_output_name = "addnoise_output", "name of output image variable"
+  proc ::Init() {
+    ::class_name ="global::AddNoiseClass"
+    ::input_name  = "",  "name of input image"
+    ::output_name = "AddNoise_output", "name of output image variable"
   
     # 0: Additive Gaussian Noise
     # 1: Multiplicative Gaussian Noise
     # 2: Rician Noise
-    AddNoise_type       = INT(0), "Noise type: 0: Additive Gaussian, 1: Multiplicative Gaussian, 1: Rician Noise"
+    ::type       = INT(0), "Noise type: 0: Additive Gaussian, 1: Multiplicative Gaussian, 1: Rician Noise"
     
-    AddNoise_mean       = 0, "Mean of the noise"
-    AddNoise_stddev     = 1, "Standard deviation of the noise"
-    AddNoise_CreateGui()
+    ::mean       = 0, "Mean of the noise"
+    ::stddev     = 1, "Standard deviation of the noise"
+    ::CreateGui()
   }
   
-  proc AddNoise_Close() {
-    AddNoise_win.Hide
-    delvars "AddNoise_*_draw"
-    delvars "AddNoise_*"
+  #----------------------------
+  proc ::Close() {
+    ::win.Hide
+    delvars GetObjectName(::Close)
   }
-  
-  proc AddNoise_load_input() {
-    eval "global::AddNoise_input <<="+AddNoise_input_name+";"
-    if (AddNoise_input_name=="Image") {
-      AddNoise_input_name = "AddNoise_input"
-      AddNoise_win.update
+  ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    
+  #----------------------------
+  proc ::CloseAll() {
+    eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
+    ::Close
+  }
+  ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+      
+  #------------------------------------
+    
+  proc ::load_input() {
+    eval "::input <<="+::input_name+";"
+    if (::input_name=="Image") {
+      ::input_name = "AddNoise_input"
+      ::win.update
     }
   }
   
-  proc AddNoise_Run() {
-    AddNoise_load_input()
-    if (AddNoise_type==0) {
-      global::AddNoise_res <<= AddGaussNoise(AddNoise_input,AddNoise_mean,AddNoise_stddev)
+  proc ::Run() {
+    ::load_input()
+    if (::type==0) {
+      ::res <<= AddGaussNoise(::input,::mean,::stddev)
     }
-    if (AddNoise_type==1) {
-      AddNoise_noise = AddNoise_input*0
-      AddNoise_noise = AddGaussNoise(AddNoise_noise,1,AddNoise_stddev)
-      global::AddNoise_res <<= AddNoise_input*AddNoise_noise
+    if (::type==1) {
+      ::noise = ::input*0
+      ::noise = AddGaussNoise(::noise,1,::stddev)
+      ::res <<= ::input*::noise
     }
-    if (AddNoise_type==2) {
-      global::AddNoise_res <<= AddNoise_input
-      AddRiceNoise(&AddNoise_res,AddNoise_stddev)
+    if (::type==2) {
+      ::res <<= ::input
+      AddRiceNoise(&::res,::stddev)
     }
     
-    eval "global::"+AddNoise_output_name+" <<= AddNoise_res;"
+    eval ::output_name+" <<= ::res;"
   
-    #  AddNoise_Display()
+    #  ::Display()
   }
   
-  proc AddNoise_Display() {
-    global
-    show AddNoise_input
-    if (exists(AddNoise_res)) {
-      show AddNoise_res
-      AddNoise_input_draw.compare(AddNoise_res)
+proc ::Display() {    
+    show ::input
+    
+    if (exists(::res)) {
+      show ::res
+      ::input_draw.compare(::res_draw)
     }
   }
   
-  proc AddNoise_Save() {
-    AddNoise_res.save resultname
+  proc ::Save() {
+    ::res.save resultname
   }
   
-  proc AddNoise_CreateGui() {
-  
+  proc ::CreateGui() {  
     # parameters window
-    global::AddNoise_win = ParamWin("Noise")
+    ::win = ParamWin("Noise")
   
-    AddNoise_win.BeginBook
-      AddNoise_win.AddPage("Param")
-        AddNoise_win.AddImageChoice(AddNoise_input_name, "Input")
+    ::win.BeginBook
+      ::win.AddPage("Param")
+        ::win.AddImageChoice(::input_name, "Input")
       
-        AddNoise_win.AddString(AddNoise_output_name,"Output name")
+        ::win.AddString(::output_name,"Output name")
       
-        AddNoise_type_id = AddNoise_win.AddEnum(AddNoise_type, "Type")
-          AddNoise_win.AddEnumChoice(AddNoise_type_id,"Add. Gaussian")
-          AddNoise_win.AddEnumChoice(AddNoise_type_id,"Mult. Gaussian")
-          AddNoise_win.AddEnumChoice(AddNoise_type_id,"Rician")
+        ::type_id = ::win.AddEnum(::type, "Type")
+          ::win.AddEnumChoice(::type_id,"Add. Gaussian")
+          ::win.AddEnumChoice(::type_id,"Mult. Gaussian")
+          ::win.AddEnumChoice(::type_id,"Rician")
         
-        AddNoise_win.AddFloat(AddNoise_mean,"Mean",0.1,  50)
-        AddNoise_win.AddFloat(AddNoise_stddev,"Std dev",0.1,50)
+        ::win.AddFloat(::mean,"Mean",0.1,  50)
+        ::win.AddFloat(::stddev,"Std dev",0.1,50)
       
-        #AddNoise_win.SetCallback(AddNoise_Run)
+        #::win.SetCallback(::Run)
       
-        AddNoise_win.AddButton("Run",        AddNoise_Run)
-        AddNoise_win.AddButton("Display",    AddNoise_Display)
-    AddNoise_win.EndBook
+        ::win.AddButton("Run",        ::Run)
+        ::win.AddButton("Display",    ::Display)
+    ::win.EndBook
   
-    AddNoise_win.AddButton("Close",    AddNoise_Close)
+    ::win.BeginHorizontal
+      ::win.AddButton("Close",          ::Close)
+      ::win.AddButton("Close All",          ::CloseAll)
+    ::win.EndHorizontal  
   
-    AddNoise_win.update
-    AddNoise_win.Display
+    ::win.update
+    ::win.Display
   }
   
+  ::Init
   
-  AddNoise_Init
-  
-} 
-# end else, if exists AddNoise_Init
+ } #End of class 
+   
+} #End of if
 
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(anoise)) {
+  AddNoiseClass anoise 
+} else {
+InfoDialog "The script seems to be already loaded." 
+}
