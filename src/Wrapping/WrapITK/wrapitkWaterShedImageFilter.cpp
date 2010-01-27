@@ -1,10 +1,4 @@
-#if defined(_MSC_VER)
-#pragma warning ( disable : 4786 )
-#endif
-
-#ifdef __BORLANDC__
-#define ITK_LEAN_AND_MEAN
-#endif
+#include "AMILabConfig.h"
 
 #ifndef _WITHOUT_ITK_
 #include "itkWatershedImageFilter.h"
@@ -14,9 +8,8 @@
 #include "wrapConversion.tpp"
 #include "wrapitkWaterShedImageFilter.h"
 
-InrImage* itkWaterShedImageFilter2D(ParamList* p)
+InrImage* wrap_itkWaterShedImageFilter2D(ParamList* p)
 {
-//	clock_t ITime = clock();
 
 #ifndef _WITHOUT_ITK_
 
@@ -75,21 +68,17 @@ InrImage* itkWaterShedImageFilter2D(ParamList* p)
   cout << "Converting back to InrImage " << endl;
 
 	res = ITKToInr<OutputPixelType,Dimension>(outimage, region);
-//	cout << "Sale ?" << endl;
-//  clock_t FTime = clock();
-//  float seg = (FTime - ITime) / CLK_TCK;
-//  std::cout << "Time: " << seg << "seg" << std::endl;
+
 	return res;
 			
 #else
   fprintf(stderr," ITK not available, you need to compile with ITK ...\n");
   return NULL;
 #endif // _WITHOUT_ITK_	
-} //itkWaterShedImageFilter2D
+} // wrap_itkWaterShedImageFilter2D
 
-InrImage* itkWaterShedImageFilter3D(ParamList* p)
+InrImage* wrap_itkWaterShedImageFilter3D(ParamList* p)
 {
-//	clock_t ITime = clock();
 
 #ifndef _WITHOUT_ITK_
 
@@ -148,16 +137,13 @@ InrImage* itkWaterShedImageFilter3D(ParamList* p)
   cout << "Converting back to InrImage " << endl;
 
 	res = ITKToInr<OutputPixelType,Dimension>(outimage, region);
-//	cout << "Sale ?" << endl;
-//  clock_t FTime = clock();
-//  float seg = (FTime - ITime) / CLK_TCK;
-//  std::cout << "Time: " << seg << "seg" << std::endl;
+
 	return res;
 			
 #else
   fprintf(stderr," ITK not available, you need to compile with ITK ...\n");
   return NULL;
 #endif // _WITHOUT_ITK_	
-} //itkWaterShedImageFilter3D
+} // wrap_itkWaterShedImageFilter3D
 
 			

@@ -1,4 +1,3 @@
-
 #include "amilab_messages.h"
 #include "AMILabConfig.h"
 

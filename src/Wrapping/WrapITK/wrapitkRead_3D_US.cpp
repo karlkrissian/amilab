@@ -9,7 +9,8 @@
 
 #endif // AMI_USE_ITK
 
-#include "wrapfunctions.hpp" 
+#include "wrapfunctions.hpp"
+#include "wrapitkRead_3D_US.h"
 
 
 /** Read a 3D Flow from an ASCII file **/
@@ -101,7 +102,7 @@ class itkReadClass {
 };
 
 
-InrImage* itkRead_3D_US(ParamList* p)
+InrImage* wrap_itkRead_3D_US(ParamList* p)
 {
 
 #ifdef AMI_USE_ITK

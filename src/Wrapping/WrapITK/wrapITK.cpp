@@ -10,25 +10,7 @@
 //
 //
 
-
-
-// #ifdef AMI_USE_ITK
-
-// #include "itkImageLinearConstIteratorWithIndex.h"
-// #include "itkImageLinearIteratorWithIndex.h"
-// #include "itkImage.h"
-// #include "itkImageIOBase.h"
-// #include "itkIsoContourDistanceImageFilter.h"
-// #include "itkBasicNLMeansFilter.h"
-// #include "itkRecursiveGaussianImageFilter.h"
-// #include "itkFastMarchingImageFilter.h"
-
-// //using namespace itk;
-
-// #include "itkImageFileReader.h"
-
-// #endif // AMI_USE_ITK
-
+#include "AMILabConfig.h"
 
 #include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
@@ -37,10 +19,16 @@
 #include "wrapitkRead.h"
 #include "wrapitkRecursiveGaussianImageFilter.h"
 #include "wrapitkIsoContourDist.h"
-//#include "wrapitkBasicNLMeansFilter.h"
+#include "wrapitkBasicNLMeansFilter.h"
 #include "wrapitkWrite.h"
 #include "wrapitkFastMarchingImageFilter.h"
 #include "wrapitkWaterShedImageFilter.h"
+#include "wrapitkMultiScaleVesselnessFilter.h"
+#include "wrapitkDICOMReadWrite.h"
+#include "wrapitkSigmoidImageFilter.h"
+#include "wrapitkLevelSet.h"
+#include "wrapitkBinaryThresholdImageFilter.h"
+//#include "wrapitkFastNLMeansImageFilter.h"
 
 
 extern VarContexts  Vars;
@@ -48,19 +36,30 @@ extern VarContexts  Vars;
 //---------------------------------------------------------
 void AddWrapITK(){
 
- Vars.AddVar(type_c_image_function,"itkRead_3D_US", (void*) itkRead_3D_US);
+ Vars.AddVar(type_c_image_function,"itkRead_3D_US", (void*) wrap_itkRead_3D_US);
 
  Vars.AddVar(type_c_image_function,"itkRead", (void*) wrap_itkRead);
 
- Vars.AddVar(type_c_image_function,"itkIsoContourDist", (void*) itkIsoContourDist);
+ Vars.AddVar(type_c_image_function,"itkIsoContourDist", (void*) wrap_itkIsoContourDist);
 
-// Vars.AddVar(type_c_image_function,"itkBasicNLMeans2D", (void*) itkBasicNLMeans2D);
-// Vars.AddVar(type_c_image_function,"itkBasicNLMeans3D", (void*) itkBasicNLMeans3D);
- Vars.AddVar(type_c_image_function,"itkRecursiveGaussianImageFilter2D", (void*) itkRecursiveGaussianImageFilter2D);
- Vars.AddVar(type_c_image_function,"itkRecursiveGaussianImageFilter3D", (void*) itkRecursiveGaussianImageFilter3D);
+ Vars.AddVar(type_c_image_function,"itkBasicNLMeans2D", (void*) wrap_itkBasicNLMeans2D);
+ Vars.AddVar(type_c_image_function,"itkBasicNLMeans3D", (void*) wrap_itkBasicNLMeans3D);
+ Vars.AddVar(type_c_image_function,"itkRecursiveGaussianImageFilter2D", (void*) wrap_itkRecursiveGaussianImageFilter2D);
+ Vars.AddVar(type_c_image_function,"itkRecursiveGaussianImageFilter3D", (void*) wrap_itkRecursiveGaussianImageFilter3D);
  Vars.AddVar(type_c_procedure,     "itkWrite"                         , (void*) wrap_itkWrite);
- Vars.AddVar(type_c_image_function,"itkFastMarchingImageFilter2D"     , (void*) itkFastMarchingImageFilter2D);
- Vars.AddVar(type_c_image_function,"itkFastMarchingImageFilter3D"     , (void*) itkFastMarchingImageFilter3D);
- Vars.AddVar(type_c_image_function,"itkWaterShedImageFilter2D"     , (void*) itkWaterShedImageFilter2D);
- Vars.AddVar(type_c_image_function,"itkWaterShedImageFilter3D"     , (void*) itkWaterShedImageFilter3D);
+ Vars.AddVar(type_c_image_function,"itkFastMarchingImageFilter2D"     , (void*) wrap_itkFastMarchingImageFilter2D);
+ Vars.AddVar(type_c_image_function,"itkFastMarchingImageFilter3D"     , (void*) wrap_itkFastMarchingImageFilter3D);
+ Vars.AddVar(type_c_image_function,"itkWaterShedImageFilter2D"     , (void*) wrap_itkWaterShedImageFilter2D);
+ Vars.AddVar(type_c_image_function,"itkWaterShedImageFilter3D"     , (void*) wrap_itkWaterShedImageFilter3D);
+ Vars.AddVar(type_c_image_function,"itkMultiScaleVesselnessFilter2D"     , (void*) wrap_itkMultiScaleVesselnessFilter2D);
+ Vars.AddVar(type_c_image_function,"itkMultiScaleVesselnessFilter3D"     , (void*) wrap_itkMultiScaleVesselnessFilter3D);
+ Vars.AddVar(type_c_procedure,     "itkDICOMReadWrite"                         , (void*) wrap_itkDICOMReadWrite);
+ Vars.AddVar(type_c_image_function,"itkSigmoidImageFilter2D"     , (void*) wrap_itkSigmoidImageFilter2D);
+ Vars.AddVar(type_c_image_function,"itkSigmoidImageFilter3D"     , (void*) wrap_itkSigmoidImageFilter3D);
+ Vars.AddVar(type_c_image_function,"itkLevelSetFilter2D"     , (void*) wrap_itkLevelSetFilter2D);
+ Vars.AddVar(type_c_image_function,"itkLevelSetFilter3D"     , (void*) wrap_itkLevelSetFilter3D);
+ Vars.AddVar(type_c_image_function,"itkBinaryThresholdImageFilter2D"     , (void*) wrap_itkBinaryThresholdImageFilter2D);
+ Vars.AddVar(type_c_image_function,"itkBinaryThresholdImageFilter3D"     , (void*) wrap_itkBinaryThresholdImageFilter3D);
+ //Vars.AddVar(type_c_image_function,"itkFastNLMeansImageFilter2D"     , (void*) wrap_itkFastNLMeansImageFilter2D);
+ //Vars.AddVar(type_c_image_function,"itkFastNLMeansImageFilter3D"     , (void*) wrap_itkFastNLMeansImageFilter3D);
 }

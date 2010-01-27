@@ -1,4 +1,3 @@
-
 #include "AMILabConfig.h"
 
 #ifdef AMI_USE_ITK
@@ -16,7 +15,7 @@
 #include "wrapitkIsoContourDist.h"
 
 
-InrImage* itkIsoContourDist(ParamList* p)
+InrImage* wrap_itkIsoContourDist(ParamList* p)
 {
 
 #ifdef AMI_USE_ITK
@@ -89,4 +88,4 @@ InrImage* itkIsoContourDist(ParamList* p)
   return NULL;
 #endif // AMI_USE_ITK
 
-} // itkIsoContourDist
+} // wrap_itkIsoContourDist

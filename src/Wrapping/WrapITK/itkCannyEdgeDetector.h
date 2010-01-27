@@ -26,6 +26,9 @@
    The full GNU Lesser General Public License file is in Devel/Sources/Prog/LesserGPL_license.txt
 */
 
+#ifndef _itkCannyEdgeDetector_h_
+#define _itkCannyEdgeDetector_h_
+
 #include "inrimage.hpp"
 
 
@@ -33,3 +36,5 @@ template <unsigned int Dimension>
 InrImage* Func_itkCannyEdgeDetector(InrImage* input, float var, float lowthreshold);
 
 InrImage* Func_itkCannyEdgeDetector(InrImage* input, float var, float lowthreshold);
+
+#endif //_itkCannyEdgeDetector_h_

@@ -1,4 +1,3 @@
-
 #include "AMILabConfig.h"
 #include "amilab_messages.h"
 
@@ -12,7 +11,8 @@
 
 #endif // AMI_USE_ITK
 
-#include "wrapfunctions.hpp" 
+#include "wrapfunctions.hpp"
+#include "wrapitkRead.h"
 
 
 template<class TPixel, unsigned int Dimension>

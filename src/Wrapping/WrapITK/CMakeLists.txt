@@ -26,15 +26,22 @@ MESSAGE( "wxWidgets_USE_FILE = ${wxWidgets_USE_FILE}")
 SET(  WrapITK_SRCS
     itkCannyEdgeDetector.cpp
     wrapITK.cpp
+    LeastSquares.cpp
     wrapitkRecursiveGaussianImageFilter.cpp
     wrapitkRead_3D_US.cpp
     wrapitkRead.cpp
     wrapitkWrite.cpp
     wrapitkIsoContourDist.cpp
-    #wrapitkBasicNLMeansFilter.cpp
-    #itkBasicNLMeansFilter.txx
+    wrapitkBasicNLMeansFilter.cpp
+    itkBasicNLMeansFilter.txx
     wrapitkFastMarchingImageFilter.cpp
-		wrapitkWaterShedImageFilter.cpp
+    wrapitkWaterShedImageFilter.cpp
+    wrapitkMultiScaleVesselnessFilter.cpp
+    wrapitkDICOMReadWrite.cpp
+    wrapitkSigmoidImageFilter.cpp
+    wrapitkLevelSet.cpp
+    wrapitkBinaryThresholdImageFilter.cpp
+    #wrapitkFastNLMeansImageFilter.cpp
 )
 
 my_add_library ( WrapITK)

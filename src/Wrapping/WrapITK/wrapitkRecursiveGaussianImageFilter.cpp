@@ -1,4 +1,3 @@
-
 #include "AMILabConfig.h"
 
 #ifdef AMI_USE_ITK
@@ -11,11 +10,11 @@
 
 #include "wrapfunctions.hpp" 
 #include "wrapConversion.h"
+#include "wrapitkRecursiveGaussianImageFilter.h"
 
 
-InrImage* itkRecursiveGaussianImageFilter2D(ParamList* p)
+InrImage* wrap_itkRecursiveGaussianImageFilter2D(ParamList* p)
 {
-  clock_t ITime = clock();
 
 #ifdef AMI_USE_ITK
 
@@ -115,23 +114,18 @@ InrImage* itkRecursiveGaussianImageFilter2D(ParamList* p)
   cout << "Converting back to InrImage " << endl;
 
   res = ITKToInr<PixelType,Dimension>(image, region);
-  clock_t FTime = clock();
-  float seg = (FTime - ITime) / CLOCKS_PER_SEC;
-//CLK_TCK;
-  
-  std::cout << "Time: " << seg << "seg" << std::endl;
+
   return res;
 
 #else
   fprintf(stderr," ITK not available, you need to compile with ITK ...\n");
   return NULL;
 #endif // AMI_USE_ITK
-} //itkRecursiveGaussianImageFilter2D
+} // wrap_itkRecursiveGaussianImageFilter2D
 
 
-InrImage* itkRecursiveGaussianImageFilter3D(ParamList* p)
+InrImage* wrap_itkRecursiveGaussianImageFilter3D(ParamList* p)
 {
-  clock_t ITime = clock();
 
 #ifdef AMI_USE_ITK
 
@@ -240,15 +234,11 @@ InrImage* itkRecursiveGaussianImageFilter3D(ParamList* p)
   cout << "Converting back to InrImage " << endl;
 
   res = ITKToInr<PixelType,Dimension>(image, region);
-  clock_t FTime = clock();
-  float seg = (FTime - ITime) / CLOCKS_PER_SEC;
-  //CLK_TCK;
-  
-  std::cout << "Time: " << seg << "seg" << std::endl;
-  return res;
+
+	return res;
 
 #else
   fprintf(stderr," ITK not available, you need to compile with ITK ...\n");
   return NULL;
 #endif // AMI_USE_ITK
-} //itkRecursiveGaussianImageFilter3D
+} // wrap_itkRecursiveGaussianImageFilter3D
