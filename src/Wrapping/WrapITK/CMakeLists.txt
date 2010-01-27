@@ -41,7 +41,6 @@ SET(  WrapITK_SRCS
     wrapitkSigmoidImageFilter.cpp
     wrapitkLevelSet.cpp
     wrapitkBinaryThresholdImageFilter.cpp
-    #wrapitkFastNLMeansImageFilter.cpp
 )
 
 my_add_library ( WrapITK)

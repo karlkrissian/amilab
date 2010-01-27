@@ -28,7 +28,6 @@
 #include "wrapitkSigmoidImageFilter.h"
 #include "wrapitkLevelSet.h"
 #include "wrapitkBinaryThresholdImageFilter.h"
-//#include "wrapitkFastNLMeansImageFilter.h"
 
 
 extern VarContexts  Vars;
@@ -60,6 +59,4 @@ void AddWrapITK(){
  Vars.AddVar(type_c_image_function,"itkLevelSetFilter3D"     , (void*) wrap_itkLevelSetFilter3D);
  Vars.AddVar(type_c_image_function,"itkBinaryThresholdImageFilter2D"     , (void*) wrap_itkBinaryThresholdImageFilter2D);
  Vars.AddVar(type_c_image_function,"itkBinaryThresholdImageFilter3D"     , (void*) wrap_itkBinaryThresholdImageFilter3D);
- //Vars.AddVar(type_c_image_function,"itkFastNLMeansImageFilter2D"     , (void*) wrap_itkFastNLMeansImageFilter2D);
- //Vars.AddVar(type_c_image_function,"itkFastNLMeansImageFilter3D"     , (void*) wrap_itkFastNLMeansImageFilter3D);
 }
