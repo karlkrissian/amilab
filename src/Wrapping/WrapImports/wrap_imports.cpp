@@ -23,6 +23,7 @@
 #include "wrapAMIFluid.h"
 #include "wrapFilters.h"
 #include "wrap_wxsamples.h"
+#include "wrap_parampanel.h"
 
 extern VarContexts  Vars;
 
@@ -42,6 +43,9 @@ void AddWrapImports()
 
   Vars.AddVar(type_c_procedure, "ImageDraw",  (void*)  wrap_ImageDraw, OBJECT_CONTEXT_NUMBER);
   Vars.AddVar(type_c_procedure, "MainFrame",  (void*)  wrap_MainFrame, OBJECT_CONTEXT_NUMBER);
+
+  Vars.AddVar(type_c_function,  "ParamPanel", (void*) wrap_ParamPanel, OBJECT_CONTEXT_NUMBER);
+
   Vars.AddVar(type_c_procedure, "System",  (void*)  wrap_System, OBJECT_CONTEXT_NUMBER);
   Vars.AddVar(type_c_procedure, "ITK",  (void*)  wrap_ITK, OBJECT_CONTEXT_NUMBER);
   Vars.AddVar(type_c_procedure, "AMIFluid",  (void*)  wrap_AMIFluid, OBJECT_CONTEXT_NUMBER);

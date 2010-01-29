@@ -23,11 +23,13 @@ INCLUDE( ${wxWidgets_USE_FILE})
 SET(  WrapInterface_SRCS
   wrap_mainframe.cpp
   wrap_imagedraw.cpp 
+  wrap_parampanel.cpp 
 )
 
 SET(WrapInterface_HDRS
 	wrap_imagedraw.h
 	wrap_mainframe.h
+  wrap_parampanel.h
 )
 
 SET(WrapInterface_SRCS

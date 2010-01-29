@@ -4415,6 +4415,20 @@ unsigned char DessinImage::LoadVectImage( int num, InrImage::ptr im)
 } // LoadVectImage()
 
 
+// --------------------------------------------------------
+void DessinImage::OnWheel(wxMouseEvent& event) 
+{
+  // ici faire zoom??
+  CLASS_MESSAGE(" Should apply zoom here s")
+
+  int wr = event.GetWheelRotation();
+  if (wr != 0) {
+    //cout << "wheel rotation " << wr << endl;
+    float zoom_factor = exp((1.0*wr)/(10.0*event.GetWheelDelta()));
+    CLASS_MESSAGE(boost::format(" computed zoom factor = %1%")%zoom_factor)
+  }
+}
+
 // -------------------------------------------------------------------------
 //
 void DessinImage::Boutton_Presse()

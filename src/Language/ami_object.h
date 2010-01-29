@@ -53,8 +53,15 @@ private:
   /// Smart pointer to the corresponding class if any
   AMIClass::ptr   _class;
 
+  // why should object have a name, while a variable has one
+/*
   /// Object name
   std::string     _name;
+*/
+
+  // What happens with references here???
+  /// Pointer to the language variable containing the object
+  Variable::ptr _var;
 
   /// Own list of variables
   Variables::ptr  _vars;
@@ -66,9 +73,11 @@ private:
    */
   AMIObject()
     {
-      _name     = "";
+     // _name     = "";
       _vars     = Variables::ptr(new Variables);
+/*
       _vars->SetName("object");
+*/
     }
 
   /**
@@ -106,7 +115,7 @@ private:
    */
   void SetName( const string& fname) 
   { 
-    _name = fname; 
+//    _name = fname; 
     _vars->SetName(fname);
   }
 
@@ -114,7 +123,10 @@ private:
    * Gets the object name
    * @return object name
    */
-  const string& GetName() const { return _name; }
+  const string GetName() const 
+  { 
+    return _vars->GetName();
+  }
 
   /**
    * Gets the list of variables 

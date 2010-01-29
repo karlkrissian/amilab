@@ -143,7 +143,15 @@ public:
 
   void  SetString(string_ptr st);
 
-  void Rename(const char* newname) {  _name=newname;}
+  /**
+   * Rename variable.
+   * @param newname 
+   */
+  void Rename(const char* newname) 
+  {  
+    _name=newname;
+  }
+
   std::string Name() const { return _name;}
 
   void SetComments(const std::string& comments) { _comments = comments;}

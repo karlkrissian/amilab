@@ -1,4 +1,4 @@
-#!/usr/bin/amilab
+#!/usr/local/bin/amilab
 
 printn argc
 printn $1

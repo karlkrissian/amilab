@@ -1317,6 +1317,7 @@ public:
 
   void ReDimensionne();
 
+  void OnWheel(wxMouseEvent& event);
 
   void Boutton_Presse();
   void Boutton_Relache();

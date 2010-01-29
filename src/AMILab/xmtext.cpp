@@ -87,7 +87,9 @@ void TextControl::ConsoleClear()
 void TextControl::AddCommand( const wxString& cmd)
 {
   text.Append(cmd);
-  GB_driver.ws_print((const char*) cmd.mb_str(wxConvUTF8));
+  wxString unformat_cmd = cmd;
+  unformat_cmd.Replace(_T("%"),_T("%%"));
+  GB_driver.ws_print((const char*) unformat_cmd.mb_str(wxConvUTF8));
 
   cmd_lines[cmdlines_pos] = cmd;
   // get rid of the "\n" character at the end

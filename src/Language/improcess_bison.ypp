@@ -4989,8 +4989,15 @@ cerr << "Feature not available, needs to be updated ! " << endl;
       cout << "time spent = " << driver.IP_time << endl;
         }
         |
-          identifier ASSIGN_OP T_ParamWin T_OP_PAR  expr_string T_CL_PAR
-            {
+      identifier ASSIGN_OP T_ParamWin T_OP_PAR  expr_string T_CL_PAR
+        {
+      /**
+        Description:
+          Creates a new tab for controling parameters.
+        Parameters:
+          - identifier: name of the new ParamPanel
+          - expr_string: title of the tab
+       **/
           void * pwptr;
           IdentifierInfo::ptr ident($1);
 
@@ -5699,6 +5706,38 @@ postfix_expr_string
       delete [] $6;
     }
     |
+    primary_expr_string T_MOD expr_string
+    {
+    /** 
+      Description: 
+        Uses the class boost::format to create the result of 
+        the format as a string, using a string expression as a parameter.
+    **/
+      boost::format bf($1);
+      delete [] $1;
+      std::string resstr = (bf % $3).str();
+      char* res = new char[resstr.length()+1];
+      strcpy(res,resstr.c_str());
+      $$= res;
+      delete [] $3;
+    }
+    |
+    primary_expr_string  T_MOD expr
+    {
+    /**
+      Description: 
+        Uses the class boost::format to create the result of 
+        the format as a string, only one numerical parameter 
+        is accepted.
+    **/
+      boost::format bf($1);
+      delete [] $1;
+      std::string resstr = (bf % $3).str();
+      char* res = new char[resstr.length()+1];
+      strcpy(res,resstr.c_str());
+      $$= res;
+    }
+    |
     T_TimeSpent
     {
       long min,hour;
@@ -5786,38 +5825,6 @@ additive_expr_string
 
 expr_string
         : additive_expr_string
-    |
-    expr_string T_MOD  additive_expr_string
-    {
-    /**
-      Description: 
-        Uses the class boost::format to create the result of 
-        the format as a string, using a string expression as a parameter.
-    **/
-      boost::format bf($1);
-      delete [] $1;
-      std::string resstr = (bf % $3).str();
-      char* res = new char[resstr.length()+1];
-      strcpy(res,resstr.c_str());
-      $$= res;
-      delete [] $3;
-    }
-    |
-    additive_expr_string  T_MOD expr
-    {
-    /**
-      Description: 
-        Uses the class boost::format to create the result of 
-        the format as a string, only one numerical parameter 
-        is accepted.
-    **/
-      boost::format bf($1);
-      delete [] $1;
-      std::string resstr = (bf % $3).str();
-      char* res = new char[resstr.length()+1];
-      strcpy(res,resstr.c_str());
-      $$= res;
-    }
         ;
 
 instr_block: begin_block

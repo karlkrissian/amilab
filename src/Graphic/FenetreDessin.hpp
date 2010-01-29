@@ -275,6 +275,8 @@ public:
     _souris_y = y;
   }
 
+  virtual void OnWheel(wxMouseEvent& event) { printf("OnWheel()\n"); }
+
   virtual void Boutton_Presse()      { printf("boutton 1 presse \n"); }
   virtual void Boutton2_Presse()     { printf("boutton 2 presse \n"); }
   virtual void Boutton3_Presse()     { printf("boutton 3 presse \n"); }

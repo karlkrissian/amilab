@@ -366,7 +366,7 @@ void StcTestFrame::CreateMenu ()
     menuEdit->Append (wxID_CLEAR, _("&Delete\tDel"));
     menuEdit->AppendSeparator();
     menuEdit->Append (wxID_FIND, _("&Find\tCtrl+F"));
-    menuEdit->Enable (wxID_FIND, false);
+//    menuEdit->Enable (wxID_FIND, false);
     menuEdit->Append (myID_FINDNEXT, _("Find &next\tF3"));
     menuEdit->Enable (myID_FINDNEXT, false);
     menuEdit->Append (myID_REPLACE, _("&Replace\tCtrl+H"));

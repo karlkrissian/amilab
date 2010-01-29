@@ -28,6 +28,35 @@ SET(  wxParams_SRCS
     CoutwxString.cpp
 )
 
+
+SET(  wxParams_HDRS
+  MyToolBar.h
+  ParamBox.hpp
+  widget.hpp
+  wxEnumerationParameter.h
+  ParamPanel.hpp
+  wxColorParameter.h
+  myTextCtrl.h
+  mySpinCtrl.h
+  mySlider.h
+  mySpinButton.h
+  wxParamTypes.hpp
+  wxIntegerParameter.h
+  wxFloatParameter.h
+  wxNumericParameter.h
+  CoutwxString.h
+  wxStringSelectionParameter.h
+  couleur.hpp
+  palette.hpp
+  StructParams.hpp    
+)
+
+
+SET(  wxParams_SRCS
+  ${wxParams_SRCS}
+  ${wxParams_HDRS}
+)
+
 add_library (wxParams  ${wxParams_SRCS})
 
 # INSTALL(TARGETS wxParams

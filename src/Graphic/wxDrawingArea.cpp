@@ -94,6 +94,11 @@ void wxDrawingArea::OnMouseEvent(wxMouseEvent& event)
     bool alt   = event.AltDown();
 
     int wr = event.GetWheelRotation();
+    if (wr != 0) {
+      cout << "wheel rotation " << wr << endl;
+      cout << " mouse "<< _mouse_x << " " << _mouse_y << endl;
+      _parent_window->OnWheel(event);
+    }
 
     _parent_window->SetMousePosition(_mouse_x,_mouse_y);
 
