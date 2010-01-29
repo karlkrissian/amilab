@@ -369,18 +369,20 @@ void FenetreDessin::FixeCouleurRemplissage(
 //-------------------------------------------------
 void  FenetreDessin::FixeStyleRemplissage( const int& style)
 {
+  /// @cond wxCHECK
   #if (wxCHECK_VERSION(2,9,0)) 
   _current_brush->SetStyle((wxBrushStyle)style);
   #else
   _current_brush->SetStyle(style);
   #endif
+  /// @endcond
   _memory_dc->SetBrush(*_current_brush);
 } // FixeStyleRemplissage
 
 
 /*
 //------------------------------------------------------------
-void FenetreDessin::FixeCouleurTrait( 
+void FenetreDessin::SetPenColor( 
 //                  ----------------
       const ClasseCouleur& couleur)
 {
@@ -392,17 +394,17 @@ void FenetreDessin::FixeCouleurTrait(
   _memory_dc->SetPen(*_current_pen);
 #endif
 
-} // FixeCouleurTrait()
+} // SetPenColor()
 */
 
 
 //------------------------------------------------------------
-void FenetreDessin::FixeCouleurTrait(  const wxColour& couleur)
+void FenetreDessin::SetPenColor(  const wxColour& couleur)
 //                  ----------------
 {
     _current_pen->SetColour(couleur);
     _memory_dc->SetPen(*_current_pen);
-} // FixeCouleurTrait()
+} // SetPenColor()
 
 
 //------------------------------------------------------------
@@ -429,6 +431,8 @@ void FenetreDessin ::  FixeParametresLigne( unsigned int largeur,
                         int intersection)
 {
   _current_pen->SetWidth(largeur);
+  /// @cond wxCHECK
+
   #if (wxCHECK_VERSION(2,9,0)) 
     if (style!=-1)
       _current_pen->SetStyle((wxPenStyle)style);
@@ -440,6 +444,7 @@ void FenetreDessin ::  FixeParametresLigne( unsigned int largeur,
     if (extremites!=-1) 
       _current_pen->SetJoin(extremites);
   #endif
+  /// @endcond
   _memory_dc->SetPen(*_current_pen);
 } // FixeParametresLigne()
 
@@ -707,7 +712,7 @@ void  FenetreDessin::PutSlice(  int pos_x, int pos_y,
                           (wxCoord)pos_x,
                           (wxCoord)pos_y );
   // Draw a rectangle outside?
-  FixeCouleurTrait( *wxBLACK);
+  SetPenColor( *wxBLACK);
   FixeStyleRemplissage(wxTRANSPARENT);
   FixeParametresLigne(1,wxSOLID);
   Rectangle((wxCoord)pos_x,(wxCoord)pos_y,

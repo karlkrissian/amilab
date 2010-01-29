@@ -13,6 +13,8 @@
 #ifndef _imageextent_h_
 #define _imageextent_h_
 
+#include "inrimage.hpp"
+
 //
 // image extent can work in float or in integer limits
 //

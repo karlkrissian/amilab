@@ -570,9 +570,9 @@ public:
   T& Y() { return y; }
   T& Z() { return z; }
 
-  T& X() const { return x; }
-  T& Y() const { return y; }
-  T& Z() const { return z; }
+  T X() const { return x; }
+  T Y() const { return y; }
+  T Z() const { return z; }
 
   /**
    */

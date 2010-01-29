@@ -36,11 +36,12 @@
 #include "wrapVTK.h"
 #include "wrapITK.h"
 #include "wrap_mainframe.h"
+#include "wrap_imagedraw.h"
 #include "itkCannyEdgeDetector.h"
 #include "wrapWII.h"
 #include "wrapFilters.h"
 #include "wrapSystem.h"
-#include <cstdlib>
+#include <cstdlib> 
 
 //#include "myscan.h"
 #include "ImageDraw.hpp"
@@ -48,6 +49,7 @@
 #include "LineRecons.h"
 //#include "PruneLines.h"
 
+#include "wrapfunction_class.h"
 
 
 #ifndef __FLEX_LEXER_H
@@ -109,7 +111,6 @@ using namespace MyNS_ForOutput;
 //-------
 
 #include "wx/evtloop.h"
-#include "penguin.h"
 #include "driver.h"
 
 extern VarContexts       Vars;
@@ -472,6 +473,7 @@ static void CB_update_imagelist( void* imagelist_gui)
 %token VAR_FILE
 %token VAR_C_FUNCTION
 %token VAR_C_PROCEDURE
+%token VAR_CLASS_PROCEDURE
 %token VAR_C_IMAGE_FUNCTION
 %token VAR_AMI_FUNCTION
 %token VAR_AMI_CLASS
@@ -540,6 +542,7 @@ static void CB_update_imagelist( void* imagelist_gui)
 
 %token T_NULL
 
+%token T_RestartTime
 %token T_InitTime
 %token T_TimeSpent
 %token T_EndTime
@@ -741,8 +744,6 @@ static void CB_update_imagelist( void* imagelist_gui)
 %token T_SetVisible
 %token T_SetColorMaterial
 
-%token T_penguin
-
 %token T_Statistics T_GetIntensities
 %token T_GetLinesLength
 %token T_GetLinesExtremities
@@ -866,13 +867,9 @@ static void CB_update_imagelist( void* imagelist_gui)
 
 %token T_SaveStructuredGrid
 
-%token T_import_ami
 %token T_import_vtk
-%token T_import_itk
 %token T_import_wii
 %token T_import_filters
-%token T_import_sys
-%token T_import_mainframe
 
 %token T_amiOFCorr2D
 %token T_amiOFVar2D
@@ -892,6 +889,7 @@ static void CB_update_imagelist( void* imagelist_gui)
 %type <variable>       VAR_FILE
 %type <variable>       VAR_C_FUNCTION
 %type <variable>       VAR_C_PROCEDURE
+%type <variable>       VAR_CLASS_PROCEDURE
 %type <variable>       VAR_C_IMAGE_FUNCTION
 %type <variable>       VAR_AMI_FUNCTION
 %type <variable>       VAR_AMI_CLASS
@@ -1059,6 +1057,13 @@ loop_inst :
     |
     T_REPEAT instr_block
     {
+    /**
+      Description:
+        Repeats a block of instructions, and stop when an error is generated.
+        Use the command 'break' to leave the loop
+      See Also:
+        break
+     **/
        int  previous_lineno=driver.yyiplineno;
         AmiInstructionBlock::ptr block($2);
 
@@ -1073,7 +1078,7 @@ loop_inst :
           driver.yyiplineno = block->GetStartingLine();
           res=driver.parse_block(block);
 
-      } while (!res);
+      } while (res);
       driver.yyiplineno = previous_lineno;
     };
 
@@ -1090,7 +1095,7 @@ cond_inst :
         if ($2>0.5)
         {
           //driver.yyiplineno=previous_lineno;
-          driver.parse_block(block);
+          if (!driver.parse_block(block)) YYABORT;
           driver.yyiplineno = previous_lineno;
         }
     }
@@ -1104,10 +1109,12 @@ cond_inst :
       // Pb with line numbers
       previous_lineno=driver.yyiplineno;
 
+      bool res;
       if ($2>0.5)
-        driver.parse_block(block_if);
+        res = driver.parse_block(block_if);
       else
-        driver.parse_block(block_else);
+        res = driver.parse_block(block_else);
+      if (!res) YYABORT;
       driver.yyiplineno = previous_lineno;
 
     };
@@ -1262,7 +1269,7 @@ func_inst :
         driver.res_print( newname.mb_str());
         driver.res_print("\n");
         inc_cmd = str(format(" \"%1%\" // from browser ") % newname.mb_str());
-        if (driver.in_console)
+        if (driver.InConsole())
           GB_main_wxFrame->GetConsole()
                           ->IncCommand(wxString::FromAscii(inc_cmd.c_str()));
       }
@@ -1301,6 +1308,12 @@ command:
          }
          |
          T_BREAK {
+          /**
+            Description:
+              Calls YYABORT to leave the current instruction block.
+            See Also:
+              repeat
+          **/
            YYABORT;
          }
          |
@@ -1391,6 +1404,19 @@ command:
         w->Start(ms,wxTIMER_ONE_SHOT);
 
       }
+          |
+          identifier ASSIGN_OP T_AND variable
+          {
+        /**
+          Description:
+            Creates a new variable that is a reference to an existing one.
+          Parameters:
+            - new variable name;
+            - existing variable name.
+        **/
+            IdentifierInfo::ptr ident($1);
+            Vars.AddVarPtr($4->Type(),ident,$4->Pointer());
+          }
           |
           identifier ASSIGN_OP T_Surface T_OP_BR expr T_CL_BR
           {
@@ -1969,23 +1995,6 @@ command:
           }
 
         }
-        |  T_penguin
-        {
-          // Create the main frame window
-          PenguinFrame *frame = new PenguinFrame(GB_main_wxFrame, wxT("wxWidgets Penguin Sample"),
-              wxDefaultPosition, wxDefaultSize);
-
-          #if wxUSE_ZLIB
-            if (wxFileExists(wxT("penguin.dxf.gz")))
-              frame->GetCanvas()->LoadDXF(wxT("penguin.dxf.gz"));
-          #else
-            if (wxFileExists(wxT("penguin.dxf")))
-              frame->GetCanvas()->LoadDXF(wxT("penguin.dxf"));
-          #endif
-
-          // Show the frame
-          frame->Show(true);
-        }
         |  var_image ASSIGN_OP expr_image
         {
           InrImage::ptr i1 = *(InrImage::ptr*) $1->Pointer();
@@ -1994,6 +2003,18 @@ command:
           if (i2.get()) {
             // copy option
             if (!((*i1)=(*i2))) driver.err_print(" Error in images assignement\n");
+          } else {
+            if (driver.err_print("Error\n")==wxID_YES) YYABORT;
+          }
+        }
+        |  var_image ADD_ASSIGN expr_image
+        {
+          InrImage::ptr i1 = *(InrImage::ptr*) $1->Pointer();
+          InrImage::ptr i2 = InrImage::ptr(driver.im_stack.GetLastImage());
+
+          if (i2.get()) {
+            // copy option
+            (*i1)+=(*i2);
           } else {
             driver.err_print("Error\n");
           }
@@ -2237,10 +2258,10 @@ command:
       }
       | LS
       {
-//         std::ostream streamtest(TC->GetLog());
-//        std::cout=streamtest;
-         //wxStreamToTextRedirector redirect(TC->GetLog());
-
+      /**
+        Description:
+        Calls system 'ls' command (for unix systems)
+      **/
          std::system("ls");
            }
         | HELP
@@ -2533,6 +2554,16 @@ command:
        Variable*  var   = $2;
         // call with NULL paramlist pointer to trigger help message
         ((void (*)(ParamList*)) var->Pointer())(NULL);
+    }
+    | HELP VAR_CLASS_PROCEDURE
+    {
+    /**
+      Description: 
+        Displays the documentation relative to the wrapped c++ member.
+    **/
+       Variable*  var   = $2;
+        // call with NULL paramlist pointer to trigger help message
+        (*(WrapClassMember::ptr*) var->Pointer())->CallProc(NULL);
     }
     | HELP ASTRING
     {
@@ -3195,14 +3226,17 @@ command:
         See also:
           set
         **/
-          Si (*(InrImage::ptr*) $1->Pointer())->CoordOK( (int) $5,(int)$7,(int)$9)
-          Alors
-        (*(InrImage::ptr*) $1->Pointer())->BufferPos((int)$5,(int)$7,(int)$9);
-          Sinon
-        char tmp_string[255];
-        sprintf(tmp_string,"coord = %f %f %f \n",$5, $7, $9);
-        driver.err_print(tmp_string);
-          FinSi
+        int x = (int) round((double)$5);
+        int y = (int) round((double)$7);
+        int z = (int) round((double)$9);
+        Si (*(InrImage::ptr*) $1->Pointer())->CoordOK( x,y,z)
+        Alors
+          (*(InrImage::ptr*) $1->Pointer())->BufferPos(x,y,z);
+        Sinon
+          std::string tmp_string;
+          tmp_string = (boost::format("setpos \t coord = (%1% %2% %3%) from (%4% %5% %6%) \n")%x%y%z % $5 % $7 % $9).str();
+         driver.err_print(tmp_string);
+        FinSi
         }
         |
         var_image T_POINT PutImage
@@ -4939,6 +4973,11 @@ cerr << "Feature not available, needs to be updated ! " << endl;
       Func_GenRead($3);
         }
         |
+    T_RestartTime
+        {
+      driver.IP_time.InitCumul();
+        }
+        |
     T_InitTime
         {
       driver.IP_time.Debut();
@@ -5249,19 +5288,9 @@ cerr << "Feature not available, needs to be updated ! " << endl;
           delete [] $4;
         }
         |
-        T_import_ami
-        {
-          AddWrapFluid();
-        }
-        |
         T_import_vtk
         {
           AddWrapVTK();
-        }
-        |
-        T_import_itk
-        {
-          AddWrapITK();
         }
         |
         T_import_wii
@@ -5272,16 +5301,6 @@ cerr << "Feature not available, needs to be updated ! " << endl;
         T_import_filters
         {
           AddWrapFilters();
-        }
-        |
-        T_import_sys
-        {
-          AddWrapSystem();
-        }
-        |
-        T_import_mainframe
-        {
-          AddWrapMainFrame();
         }
         |
         T_amiOFCorr2D T_OP_PAR var_image T_COMMA var_image T_COMMA
@@ -5351,6 +5370,13 @@ cerr << "Feature not available, needs to be updated ! " << endl;
           Variable*  var   = $1;
           ParamList::ptr param($3);
           ((void (*)(ParamList*)) var->Pointer())(param.get());
+        }
+        |
+        VAR_CLASS_PROCEDURE  T_OP_PAR param_list T_CL_PAR
+        {
+          Variable*  var   = $1;
+          ParamList::ptr param($3);
+          (*(WrapClassMember::ptr*) var->Pointer())->CallProc(param.get());
         }
         |
         T_Set3DArrowParam T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
@@ -5675,15 +5701,26 @@ postfix_expr_string
     |
     T_TimeSpent
     {
-      char* res;
-      long min,hour,sec;
+      long min,hour;
+      float sec;
 
       driver.IP_time.Fin();
       driver.IP_time.AddCumul();
       driver.IP_time.GetCumul(hour,min,sec);
-      res = new char[10];
-      sprintf(res,"%03d:%02d:%02d",(int)hour,(int)min,(int)sec);
-      $$=res;
+      std::string res;
+      if (hour>0) {
+        res = (boost::format("%3d h %2d min %2d sec")%(int)hour
+                        %(int)min %(int)sec).str();
+      } else
+        res = (boost::format("%2d min %2d sec")
+                        %(int)min %(int)sec).str();
+        if (min>0) {
+        } else
+          res = (boost::format("%2.2f sec") %sec).str();
+
+      char* reschar = new char[res.size()+1];
+      strcpy(reschar,res.c_str());
+      $$= reschar;
     }
     |
     var_image T_POINT T_GetName {
@@ -5708,9 +5745,8 @@ postfix_expr_string
     **/
       boost::shared_ptr<Variables> context = $3->GetContext();
       if (context.get()) {
-        char* resstr = (char*) context->GetName().c_str();
-        char* res = new char[strlen(resstr)+1];
-        strcpy(res,resstr);
+        char* res = new char[strlen(context->GetName().c_str())+1];
+        strcpy(res,context->GetName().c_str());
         $$= res;
       } else {
         char* empty_string;
@@ -5750,6 +5786,38 @@ additive_expr_string
 
 expr_string
         : additive_expr_string
+    |
+    expr_string T_MOD  additive_expr_string
+    {
+    /**
+      Description: 
+        Uses the class boost::format to create the result of 
+        the format as a string, using a string expression as a parameter.
+    **/
+      boost::format bf($1);
+      delete [] $1;
+      std::string resstr = (bf % $3).str();
+      char* res = new char[resstr.length()+1];
+      strcpy(res,resstr.c_str());
+      $$= res;
+      delete [] $3;
+    }
+    |
+    additive_expr_string  T_MOD expr
+    {
+    /**
+      Description: 
+        Uses the class boost::format to create the result of 
+        the format as a string, only one numerical parameter 
+        is accepted.
+    **/
+      boost::format bf($1);
+      delete [] $1;
+      std::string resstr = (bf % $3).str();
+      char* res = new char[resstr.length()+1];
+      strcpy(res,resstr.c_str());
+      $$= res;
+    }
         ;
 
 instr_block: begin_block
@@ -6050,7 +6118,9 @@ postfix_expr
       
       if (o.get()) {
         cout << "var   name = " << $1->Name() <<endl;
-        cout << "class name = " << o->GetClass()->GetName() <<endl;
+        if (o->GetClass().get()) {
+          cout << "class name = " << o->GetClass()->GetName() <<endl;
+        }
         o->GetContext()->display();
       }
 /*      std::string tmp_string;
@@ -6462,7 +6532,7 @@ postfix_expr
           param = draw->GetParam();
           $$=param->_pos._x;
           comment = str(format(" //  xpos=%3d") % param->_pos._x);
-          if (driver.in_console)
+          if (driver.InConsole())
             GB_main_wxFrame->GetConsole()
                            ->IncCommand(wxString::FromAscii(comment.c_str()));
         }
@@ -6478,7 +6548,7 @@ postfix_expr
       $$=param->_pos._y;
 
       comment = str( format(" //  ypos=%3d") % param->_pos._y);
-      if (driver.in_console)
+      if (driver.InConsole())
         GB_main_wxFrame->GetConsole()
                        ->IncCommand(wxString::FromAscii(comment.c_str()));
 
@@ -6495,7 +6565,7 @@ postfix_expr
       $$=param->_pos._z;
 
       comment = str( format(" //  xpos=%3d") % param->_pos._z);
-      if (driver.in_console)
+      if (driver.InConsole())
         GB_main_wxFrame->GetConsole()
                         ->IncCommand(wxString::FromAscii(comment.c_str()));
     }
@@ -7539,7 +7609,7 @@ image:
           driver.res_print("\n");
           inc_cmd = str(format(" \"%1%\" // from browser ") % newname.mb_str());
 
-          if (driver.in_console)
+          if (driver.InConsole())
             GB_main_wxFrame->GetConsole()
                             ->IncCommand(wxString::FromAscii(inc_cmd.c_str()));
       }
@@ -10971,7 +11041,7 @@ surface:
 
 
           inc_cmd = str(format(" \"%1%\"  // from browser ") % newname.mb_str());
-          if (driver.in_console)
+          if (driver.InConsole())
             GB_main_wxFrame->GetConsole()->IncCommand(inc_cmd);
         }
         |
@@ -11706,6 +11776,7 @@ variable:
         | VAR_FILE
         | VAR_C_FUNCTION
         | VAR_C_PROCEDURE
+        | VAR_CLASS_PROCEDURE
         | VAR_C_IMAGE_FUNCTION
         | VAR_AMI_FUNCTION
         | VAR_AMI_CLASS
@@ -11747,7 +11818,7 @@ image_extent:
           extent->SetYmax( im->SpacePosY(im->DimY()-1));
           extent->SetZmin( im->SpacePosZ(0));
           extent->SetZmax( im->SpacePosZ(im->DimZ()-1));
-          extent->print();
+          //extent->print();
           $$=extent;
        }
        |
@@ -11767,7 +11838,7 @@ image_extent:
         comment = str(format(" //  subvolume [%3d:%3d, %3d:%3d, %3d:%3d] ")
             % xmin % xmax % ymin % ymax % zmin % zmax);
         if (GB_debug) cerr << "********* extent ****" << endl;
-        if (driver.in_console) GB_main_wxFrame->GetConsole()->IncCommand(comment);
+        if (driver.InConsole()) GB_main_wxFrame->GetConsole()->IncCommand(comment);
 
         $$=extent;
        }

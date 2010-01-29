@@ -217,7 +217,7 @@ public:
                       unsigned char blue);
 
   void  FixeCouleurFond         ( const ClasseCouleur&);
-  void	FixeCouleurTrait        ( const wxColour&);
+  void	SetPenColor        ( const wxColour&);
   void	SetTextBg               ( const wxColour&);
   void	SetTextFg               ( const wxColour&);
   void  FixeCouleurRemplissage  ( const ClasseCouleur&);

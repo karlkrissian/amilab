@@ -105,15 +105,16 @@ public:
 
   void AfficheCumul(ostream& o);
 
-  void GetCumul(long& heures, long& minutes, long& secondes )
+  void GetCumul(long& heures, long& minutes, float& secondes )
   {
 
     heures = minutes = secondes = 0;
 
-    secondes = cumul_diff_sec;
+    secondes = 1.0*cumul_diff_sec + cumul_diff_microsec/1000000.0;
     if (secondes > 60) {
-       minutes  = secondes / 60;
-       secondes = secondes % 60;
+       int sec_int = int(secondes+0.5);
+       minutes  = sec_int / 60;
+       secondes = sec_int % 60;
     }
 
     if (minutes        > 60) {

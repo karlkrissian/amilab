@@ -5,8 +5,35 @@
 include_directories (${AMILAB_SOURCE_DIR}/Common)
 
 SET(Common_SRCS
-  chaine.cpp Timing.cpp Erreurs.cpp ficparam.cpp  
+  chaine.cpp 
+  Timing.cpp 
+  Erreurs.cpp 
+  ficparam.cpp  
   StringUtils.cpp
+)
+
+SET(Common_HDRS
+	amilab_messages.h
+	std_common.h
+	vtk_common.h
+	chaine.hpp
+	DefineClass.hpp
+	ensemble.hpp
+	Erreurs.hpp
+	Erreurs.Main.hpp
+	ficparam.hpp
+	MinHeap.hpp
+	Pile.hpp
+	StringUtils.hpp
+	style.hpp
+	TableauDyn.hpp
+	Timing.hpp
+	Voisins27.hpp
+)
+
+SET (Common_SRCS
+     ${Common_SRCS}
+     ${Common_HDRS}
 )
 
 # own macro to add the library and print the source files

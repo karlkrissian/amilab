@@ -2397,66 +2397,65 @@ void SurfacePoly :: DisplayVectors1( GLParam* param)
 //
 {
 
-   
-    GLint linewidth;
-    GLboolean light_enabled;
-    int i;
-    float x,y,z;
-    float vx,vy,vz;
+  GLint linewidth;
+  GLboolean light_enabled;
+  int i;
+  float x, y, z;
+  float vx, vy, vz;
 
-  Si _vectors1 == 0 Alors
-    my_glGenLists(_vectors1,1);
-    my_glNewList(_vectors1, GL_COMPILE);   
-      glColor3f(param->_vect1_color.Red()   / 255.0,
-		param->_vect1_color.Green() / 255.0,
-		param->_vect1_color.Blue()  / 255.0);
+  if (_vectors1 == 0) {
+    my_glGenLists(_vectors1, 1);
+    my_glNewList(_vectors1, GL_COMPILE);
+    glColor3f(param->_vect1_color.Red()   / 255.0,
+              param->_vect1_color.Green() / 255.0,
+              param->_vect1_color.Blue()  / 255.0);
 
 
-      Pour(i,0,_tab_pts.NbElts()-1)
-        glBegin(GL_LINES);
+    for (i = 0; i < _tab_pts.NbElts();i++) {
+      glBegin(GL_LINES);
 
-          x = _tab_pts[i].pt.x;
-          y = _tab_pts[i].pt.y;
-          z = _tab_pts[i].pt.z;
+      x = _tab_pts[i].pt.x;
+      y = _tab_pts[i].pt.y;
+      z = _tab_pts[i].pt.z;
 
-          Si param->GetVector(1) == NULL Alors
-            vx = _tab_pts[i].norm.x;
-            vy = _tab_pts[i].norm.y;
-            vz = _tab_pts[i].norm.z;
-          Sinon
-  	    param->_vect1_image->FixeVecteurCoord(0);
-            vx = param->_vect1_image->InterpLinIntensite(x,y,z);
-  	    param->_vect1_image->FixeVecteurCoord(1);
-            vy = param->_vect1_image->InterpLinIntensite(x,y,z);
-  	    param->_vect1_image->FixeVecteurCoord(2);
-            vz = param->_vect1_image->InterpLinIntensite(x,y,z);
-	  FinSi
+      if (param->GetVector(1) == NULL) {
+        vx = _tab_pts[i].norm.x;
+        vy = _tab_pts[i].norm.y;
+        vz = _tab_pts[i].norm.z;
+      } else {
+        vx = param->_vect1_image->InterpLinIntensite(x, y, z, 0);
+        vy = param->_vect1_image->InterpLinIntensite(x, y, z, 1);
+        vz = param->_vect1_image->InterpLinIntensite(x, y, z, 2);
+      }
 
-          vx *= param->_vect1_size;
-          vy *= param->_vect1_size;
-          vz *= param->_vect1_size;
+      vx *= param->_vect1_size;
+      vy *= param->_vect1_size;
+      vz *= param->_vect1_size;
 
-          SelonQue param->_vector_type Vaut
-  	    Valeur DISPLAY_VECT_ORIENTATION:
-              glVertex3f( x - vx/2.0,  y - vy/2.0,  z - vz/2.0 );
-              glVertex3f( x + vx/2.0,  y + vy/2.0,  z + vz/2.0 );
-            FinValeur
-  	    Valeur DISPLAY_VECT_DIRECTION:
-              glVertex3f( x,y,z);
-              glVertex3f( x + vx,  y + vy,  z + vz );
-            FinValeur
-          FinSelonQue
+      switch (param->_vector_type) {
 
-        glEnd();
+        case DISPLAY_VECT_ORIENTATION:
+          glVertex3f(x - vx / 2.0,  y - vy / 2.0,  z - vz / 2.0);
+          glVertex3f(x + vx / 2.0,  y + vy / 2.0,  z + vz / 2.0);
+          break;
 
-      FinPour
+        case DISPLAY_VECT_DIRECTION:
+          glVertex3f(x, y, z);
+          glVertex3f(x + vx,  y + vy,  z + vz);
+          break;
+      }
+
+      glEnd();
+
+    }
 
 
     my_glEndList;
-    
-  FinSi
+
+  }
 
   glGetIntegerv(GL_LINE_WIDTH, &linewidth);
+
   glLineWidth(param->_vect1_width);
   glGetBooleanv(GL_LIGHTING, &light_enabled);
   glDisable(GL_LIGHTING);
@@ -2475,66 +2474,67 @@ void SurfacePoly :: DisplayVectors2( GLParam* param)
 //
 {
 
-   
-    GLint linewidth;
-    GLboolean light_enabled;
-    int i;
-    float x,y,z;
-    float vx,vy,vz;
 
-  Si _vectors2 == 0 Alors
-    my_glGenLists(_vectors2,1);
-    my_glNewList(_vectors2, GL_COMPILE);   
-      glColor3f(param->_vect2_color.Red()   / 255.0,
-		param->_vect2_color.Green() / 255.0,
-		param->_vect2_color.Blue()  / 255.0);
+  GLint linewidth;
+  GLboolean light_enabled;
+  int i;
+  float x, y, z;
+  float vx, vy, vz;
+
+  if (_vectors2 == 0) {
+    my_glGenLists(_vectors2, 1);
+    my_glNewList(_vectors2, GL_COMPILE);
+    glColor3f(param->_vect2_color.Red()   / 255.0,
+              param->_vect2_color.Green() / 255.0,
+              param->_vect2_color.Blue()  / 255.0);
 
 
-      Pour(i,0,_tab_pts.NbElts()-1)
-        glBegin(GL_LINES);
+    for (i = 0; i < _tab_pts.NbElts(); i++) {
+      glBegin(GL_LINES);
 
-          x = _tab_pts[i].pt.x;
-          y = _tab_pts[i].pt.y;
-          z = _tab_pts[i].pt.z;
+      x = _tab_pts[i].pt.x;
+      y = _tab_pts[i].pt.y;
+      z = _tab_pts[i].pt.z;
 
-          Si param->GetVector(2) == NULL Alors
-            vx = _tab_pts[i].norm.x;
-            vy = _tab_pts[i].norm.y;
-            vz = _tab_pts[i].norm.z;
-          Sinon
-  	    param->_vect2_image->FixeVecteurCoord(0);
-            vx = param->_vect2_image->InterpLinIntensite(x,y,z);
-  	    param->_vect2_image->FixeVecteurCoord(1);
-            vy = param->_vect2_image->InterpLinIntensite(x,y,z);
-  	    param->_vect2_image->FixeVecteurCoord(2);
-            vz = param->_vect2_image->InterpLinIntensite(x,y,z);
-	  FinSi
+      if (param->GetVector(2) == NULL) {
+        vx = _tab_pts[i].norm.x;
+        vy = _tab_pts[i].norm.y;
+        vz = _tab_pts[i].norm.z;
+      } else {
+        vx = param->_vect2_image->InterpLinIntensite(x, y, z, 0);
+        vy = param->_vect2_image->InterpLinIntensite(x, y, z, 1);
+        vz = param->_vect2_image->InterpLinIntensite(x, y, z, 2);
+      }
 
-          vx *= param->_vect2_size;
-          vy *= param->_vect2_size;
-          vz *= param->_vect2_size;
+      vx *= param->_vect2_size;
 
-          SelonQue param->_vector_type Vaut
-  	    Valeur DISPLAY_VECT_ORIENTATION:
-              glVertex3f( x - vx/2.0,  y - vy/2.0,  z - vz/2.0 );
-              glVertex3f( x + vx/2.0,  y + vy/2.0,  z + vz/2.0 );
-            FinValeur
-  	    Valeur DISPLAY_VECT_DIRECTION:
-              glVertex3f( x,y,z);
-              glVertex3f( x + vx,  y + vy,  z + vz );
-            FinValeur
-          FinSelonQue
+      vy *= param->_vect2_size;
+      vz *= param->_vect2_size;
 
-        glEnd();
+      switch (param->_vector_type) {
 
-      FinPour
+        case DISPLAY_VECT_ORIENTATION:
+          glVertex3f(x - vx / 2.0,  y - vy / 2.0,  z - vz / 2.0);
+          glVertex3f(x + vx / 2.0,  y + vy / 2.0,  z + vz / 2.0);
+          break;
+
+        case DISPLAY_VECT_DIRECTION:
+          glVertex3f(x, y, z);
+          glVertex3f(x + vx,  y + vy,  z + vz);
+          break;
+      }
+
+      glEnd();
+
+    }
 
 
     my_glEndList;
-    
-  FinSi
+
+  }
 
   glGetIntegerv(GL_LINE_WIDTH, &linewidth);
+
   glLineWidth(param->_vect2_width);
   glGetBooleanv(GL_LIGHTING, &light_enabled);
   glDisable(GL_LIGHTING);

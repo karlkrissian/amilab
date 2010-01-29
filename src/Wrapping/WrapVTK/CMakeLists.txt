@@ -30,4 +30,14 @@ SET(  WrapVTK_SRCS
   wrapVTK.cpp
 )
 
+SET(WrapVTK_HDRS
+	vtkwrap.h
+	wrapVTK.h
+)
+
+SET(WrapVTK_SRCS
+     ${WrapVTK_SRCS}
+     ${WrapVTK_HDRS}
+)
+
 my_add_library ( WrapVTK)

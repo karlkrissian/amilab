@@ -53,6 +53,7 @@
 #include "ParamPanel.hpp"
 
 #include "wxDrawingWindow.h"
+#include "Variables.hpp"
 
 #include <iostream>
 #include <list>
@@ -136,12 +137,16 @@ public:
   void OnHelpBack ( wxCommandEvent& event );
   void OnHelpForward ( wxCommandEvent& event );
 
+  /// @cond wxCHECK
   #if (wxCHECK_VERSION(2,9,0))
     void ConsoleReset ( wxCommandEvent& event );
   #else
     void ConsoleReset ( wxAuiToolBarEvent& event );
   #endif
+  /// @endcond
+
   void ConsoleClear ( wxCommandEvent& event );
+  void UpdateVarsDisplay   ();
   void UpdateVars   ( wxCommandEvent& event);
   void OnToolHelp   ( wxCommandEvent& event);
 
@@ -152,7 +157,7 @@ public:
 
   void UpdateVarList();
 
-  void UpdateVarTree();
+  void UpdateVarTree( const wxTreeItemId& rootbranch, Variables::ptr context);
 
   wxPanel*       GetPromptPanel() { return _prompt_panel; }
   wxAuiNotebook* GetParamBook() { return _param_book; }
@@ -223,6 +228,8 @@ protected:
   wxTreeItemId _vartree_numbers;
   wxTreeItemId _vartree_strings;
   wxTreeItemId _vartree_functions;
+  wxTreeItemId _vartree_classes;
+  wxTreeItemId _vartree_objects;
   wxTreeItemId _vartree_wrapped_functions;
   wxTreeItemId _vartree_others;
 

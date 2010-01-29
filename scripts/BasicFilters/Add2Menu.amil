@@ -1,0 +1,15 @@
+#!/usr/bin/amilab
+
+#
+# Adding main Gui scripts to the menu
+#
+
+filt_category = "&Basic Filters"
+filt_dir = "BasicFilters/"
+
+AddMenuScript(filt_category,"&Gaussian Filter",      filt_dir+"GaussianFilter_gui")
+AddMenuScript(filt_category,"&Soft Focus", filt_dir+"SoftFocus_gui")
+AddMenuScript(filt_category,"Grey &Morpho", filt_dir+"GreyMorpho")
+
+del filt_category
+del filt_dir

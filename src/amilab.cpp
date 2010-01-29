@@ -49,6 +49,8 @@
 
 #include <wx/apptrait.h>
 
+#include "wrap_imports.h"
+
 Pile<NomMethode*> GB_pile_nom_methode((NomMethode*)NULL);
 unsigned char GB_AfficheWarning = false;
 unsigned char GB_AfficheErreur  = false;
@@ -272,6 +274,9 @@ bool MyApp::OnInit()
 
   GB_driver.ws_print(cmd_line.c_str());
 
+
+  // Add imports language
+  AddWrapImports();
 
 //  printf("MyApp::OnInit()\n");
 //  wxFont::SetDefaultEncoding(wxFONTENCODING_ISO8859_15);

@@ -15,7 +15,19 @@ include_directories (
 
 
 SET(Coordinates_SRCS
-  coord_image.cpp  Point3D.cpp
+  coord_image.cpp  
+  Point3D.cpp
+)
+
+SET(Coordinates_HDRS
+	coord_image.hpp
+	coord_op.hpp
+	Point3D.hpp
+)
+
+SET(Coordinates_SRCS
+     ${Coordinates_SRCS}
+     ${Coordinates_HDRS}
 )
 
 my_add_library (Coordinates)

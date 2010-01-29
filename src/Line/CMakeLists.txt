@@ -23,4 +23,13 @@ SET(Line_SRCS
   reponse_cercle.cpp
 )
 
+SET(Line_HDRS
+	reponse_cercle.hpp
+)
+
+SET(Line_SRCS
+     ${Line_SRCS}
+     ${Line_HDRS}
+)
+
 my_add_library ( Line)

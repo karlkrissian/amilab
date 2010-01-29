@@ -15,13 +15,12 @@
 
 #include "AMILabConfig.h"
 
+// Error message should always be displayed
 #define FILE_ERROR( m) \
-  if (GB_debug)  {\
     std::cerr << "Error \t"; \
     std::cerr << "file: " << __FILE__    << std::endl; \
     std::cerr << "      \t" << __func__ << std::endl; \
-    std::cerr << "      \t" << m        << std::endl; \
-  }
+    std::cerr << "      \t" << m        << std::endl; 
 
 #define FILE_MESSAGE( m) \
   if ((GB_verbose) || (GB_debug)) { \

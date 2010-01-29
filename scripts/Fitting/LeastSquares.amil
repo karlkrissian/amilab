@@ -2,7 +2,7 @@
 # Local Fitting by Least Squares
 #
 
-import_filters
+ami_import->Filters()
 
 if (!exists(LeastSquaresClass)) \
 {
@@ -10,6 +10,7 @@ if (!exists(LeastSquaresClass)) \
   {
     #-------------------
     proc ::Init() {
+      ::class_name = "global::LeastSquaresClass"
       ::input_name =  ""
       ::size_x = INT(3), "window size in X is (2*val+1)"
       ::size_y = INT(3), "window size in Y is (2*val+1)"
@@ -33,14 +34,13 @@ if (!exists(LeastSquaresClass)) \
     ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
     #----------------------------
-    proc ::CloseAll() \
-    {
+    proc ::CloseAll() {
+      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
       ::Close
-      if (exists(LeastSquaresClass)) { del LeastSquaresClass; }
     }
     ::CloseAll.Comments("Call ::Close() method and delete the class variable")
-    
-    #----------------------------
+        
+    #------------------------------------
     proc ::LoadInput() \
     {
       printn "evaluation of --> ::input <<="+::input_name+";"
@@ -76,7 +76,7 @@ if (!exists(LeastSquaresClass)) \
         #nwp = exp(-nwp*nwp/(gaussian_size*gaussian_size))
       }
       mask = ::input*0+1
-      ::res <<= LeastSquares(::input,b,weights,mask)
+      ::res <<= filters->LeastSquares(::input,b,weights,mask)
     }
 
     proc ::Display() {

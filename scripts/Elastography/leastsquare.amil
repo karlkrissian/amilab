@@ -1,5 +1,5 @@
 # command line: amilab OpticFlow/test_3dflow.amil 
-import_filters
+ami_import->Filters()
 
 #if ($#<3) {
 #  printn $0
@@ -44,7 +44,7 @@ proc RunLeastSquares2D_Yslope(IMAGE _input, IMAGE _output, NUM _size_x, NUM _siz
   b.info
   weights.info
   mask.info
-  res = LeastSquares(_input,b,weights,mask)
+  res = filters->LeastSquares(_input,b,weights,mask)
 printn "3"
   _output = res[0]*100
 }

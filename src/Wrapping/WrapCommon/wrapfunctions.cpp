@@ -12,6 +12,7 @@
 
 #include "wrapfunctions.hpp"
 #include "DefineClass.hpp"
+#include "amilab_messages.h"
 
 #include <string>
 using namespace std;
@@ -235,7 +236,7 @@ bool get_int_param(int& arg, ParamList*p, int& num)
   float_ptr    temp;
   // if the parameter number is too high, skip it (use default value)
   if (num>=p->GetNumParam()) {
-    printf("get_int_param %d \t Using default value \n",num);
+    FILE_MESSAGE(boost::format(" parameter %d \t Using default value")%num);
     return true;
   }
   temp = p->GetParamPtr<float>(type_float,num++);
@@ -311,6 +312,26 @@ bool get_image_param(InrImage*& arg, ParamList*p, int& num)
   temp = p->GetParamPtr<InrImage>(type_image,num++);
   if (temp.use_count()) {
     arg=temp.get();
+    return true;
+  }
+  else
+  {
+    fprintf(stderr, "get_image_param ()\t Error in the parameter %d\n",num);
+    return false;
+  }
+}
+
+
+/**
+ * Function used to parse an image pointer in a list of parameters
+ */
+bool get_imageptr_param(InrImage::ptr& arg, ParamList*p, int& num)
+{
+  if (!p) return false;
+  InrImage::ptr    temp;
+  temp = p->GetParamPtr<InrImage>(type_image,num++);
+  if (temp.use_count()) {
+    arg=temp;
     return true;
   }
   else

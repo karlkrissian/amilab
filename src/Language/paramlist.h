@@ -1,34 +1,17 @@
-/*
-    ==================================================
-    Software : AMILab
-    Authors  : Karl Krissian
-    Email    : karl@bwh.harvard.edu
-
-    AMILab is a language for image processing
-    ==================================================
-    Copyright (C) 1996-2005  Karl Krissian
-
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
-
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    ================================================== 
-   The full GNU Lesser General Public License file is in Devel/Sources/Prog/LesserGPL_license.txt
-*/
+//
+// C++ Interface: ParamList
+//
+// Description: 
+//
+//
+// Author: Karl Krissian <>, (C) 2009
+//
+// Copyright: See COPYING file that comes with this distribution
+//
+//
 
 #ifndef PARAMLIST_H
 #define PARAMLIST_H
-
 
 
 
@@ -37,43 +20,22 @@
 #include "chaine.hpp"
 #include "inrimage.hpp"
 #include "DefineClass.hpp"
+#include "amilab_messages.h"
+#include "Variable.hpp"
 
 extern unsigned char GB_debug;
 
 #include <string>
 using namespace std;
 
-typedef
-enum {
-  type_void,
-  type_image,
-  type_float,
-  type_int,
-  type_uchar,
-  type_string,
-  type_imagedraw,
-  type_surface,
-  type_surfdraw,
-  type_file,
-//  type_c_function,
-  type_c_procedure,
-  type_c_image_function,
-  type_c_function,
-  type_ami_function,
-  type_ami_class,
-  type_ami_object,
-  type_paramwin,
-  type_parampanel,
-  type_matrix,
-  type_gltransform,
-  type_array,
-  type_context
-} vartype;
 
 
+/**
+ * Stores a list of parameters from the scripting language
+ **/
 class ParamList {
 
-  DEFINE_CLASS(ParamList)
+  DEFINE_CLASS(ParamList);
 
 private:
   int       num_param;
@@ -84,6 +46,11 @@ private:
   unsigned char reference[MAX_PARAM];
 
  public:
+
+
+  /**
+   * Constructor
+   */
   ParamList()
     {
       num_param = 0;
@@ -109,8 +76,17 @@ private:
     return true;
   }
 
+  /**
+   * 
+   * @return the number of parameters
+   */
   int GetNumParam() { return num_param; }
 
+  /**
+   * 
+   * @param i 
+   * @return the type of the parameter i
+   */
   vartype GetType( int i) { 
     if (i<0) {
       fprintf(stderr,"ParamList:: GetType() negative param number \n");
@@ -123,6 +99,11 @@ private:
     return type[i];
   }
 
+  /**
+   * 
+   * @param i 
+   * @return returns if the parameter number i is a reference
+   */
   unsigned char IsReference( int i) { 
     if (i<0) {
       fprintf(stderr,"ParamList:: IsReference() negative param number \n");

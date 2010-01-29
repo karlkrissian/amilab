@@ -121,7 +121,8 @@ wxEnumerationParameter::~wxEnumerationParameter()
   }
 
 //----------------------------------------------
-void wxEnumerationParameter::AddUpdateButton( void* update_cb)
+void wxEnumerationParameter::AddUpdateButton( void* update_cb,
+  const std::string& tooltip)
 {
   _update_button = new wxBitmapButtonParameter(
         this->_parent, 
@@ -129,6 +130,7 @@ void wxEnumerationParameter::AddUpdateButton( void* update_cb)
         wxBitmap(reload),
         update_cb,
         (void*) this);
+  _update_button->SetToolTip(GetwxStr(tooltip.c_str()));
   this->Add(this->_update_button,0, wxLEFT | wxALIGN_CENTRE_VERTICAL, 5);
 }
 

@@ -1271,11 +1271,15 @@ void DessinImageBase :: DessineCurseur(  int x, int y, int z, int type)
   _current_pen->SetColour(_couleur_curseur);
   _current_pen->SetWidth(_largeur_lignes+1);
 
+  /// @cond wxCHECK
+
   #if (wxCHECK_VERSION(2,9,0))
     _current_pen->SetStyle((wxPenStyle)wxSOLID);
   #else
     _current_pen->SetStyle(wxSOLID);
   #endif
+  /// @endcond
+
   drawcontext->SetPen(*_current_pen);
 
   Si (Param._type_coupe+1) & (TYPE_COUPE_XY+1) Alors
@@ -1521,7 +1525,7 @@ void DessinImageBase::DessineIsoContour( int n)
   if (size==0)  size = _largeur_lignes;
   style = _isocontours[n].style;
   FixeParametresLigne( size, style, _cap_style, _join_style);
-  FixeCouleurTrait( isocontours[n].color.RetourneCouleur());
+  SetPenColor( isocontours[n].color.RetourneCouleur());
 
   if ((_isocontours[n].image.expired()) ||
       (Param._option_traitement == OPTION_MIP))
@@ -1627,7 +1631,7 @@ void DessinImageBase::DrawAxis( int orientation, // 0: horiz, 1: vert
     break;
   }
 
-  FixeCouleurTrait( *wxBLACK);
+  SetPenColor( *wxBLACK);
   FixeParametresLigne( 1, wxSOLID);
 
   wxCoord maxCharWidth,maxCharHeight;
@@ -2038,7 +2042,7 @@ void DessinImageBase :: DrawColorBar( )
      SetTextFg( *wxBLACK);
      //Texte(r+2,(int)(vpos2+step+char_ymax/2),Istring);
      FixeParametresLigne(1,wxSHORT_DASH);
-     FixeCouleurTrait(*wxBLACK);
+     SetPenColor(*wxBLACK);
      //cout << "drawing line for " << Istring
      //     << " at " << (int) (vpos2+step/2) << endl;
      Ligne(
@@ -2054,7 +2058,7 @@ void DessinImageBase :: DrawColorBar( )
    val += val_step;
   FinPour
 
-  FixeCouleurTrait( *wxBLACK);
+  SetPenColor( *wxBLACK);
   FixeStyleRemplissage(wxTRANSPARENT);
 //wxBRUSHSTYLE_TRANSPARENT);
   FixeParametresLigne(1,wxSOLID);
@@ -2239,10 +2243,10 @@ void DessinImageBase::DrawSlice( int slice_id )
         #endif
 
         FastImageRectangle( image_data, image_width,
-                            (int) px,
-                            (int) py,
-                            (int) px1,
-                            (int) py1,
+                            (int) round(px),
+                            (int) round(py),
+                            (int) round(px1),
+                            (int) round(py1),
                             couleur);
       }
       image->IncBuffer(nincr_x);
@@ -2353,10 +2357,10 @@ void DessinImageBase::DessinePlanZ( )
       FinSi
 
       FastImageRectangle( image_data, image_width,
-                          (int) px,
-                          (int) py,
-                          (int) px1,
-                          (int) py1,
+                          (int) round(px),
+                          (int) round(py),
+                          (int) round(px1),
+                          (int) round(py1),
                           couleur);
 
       image->IncBuffer();
@@ -2435,9 +2439,10 @@ void DessinImageBase :: DessinePlanY( )
       FinSi
 
       FastImageRectangle( image_data, image_width,
-                          (int) px ,  (int) pz,
-                          (int) (px1+1E-4),
-                          (int) (pz1+1E-4),
+                          (int) round(px) ,  
+                          (int) round(pz),
+                          (int) round(px1),
+                          (int) round(pz1),
                           couleur);
 
       IncBuffer();
@@ -2513,9 +2518,10 @@ void DessinImageBase :: DessinePlanX( )
       FinSi
 
       FastImageRectangle( image_data, image_width,
-                          (int) pz,            (int) py,
-                          (int) (pz1+1E-4),
-                          (int) (py1+1E-4),
+                          (int) round(pz),
+                          (int) round(py),
+                          (int) round(pz1),
+                          (int) round(py1),
                           couleur);
 
       IncBuffer( _image->_tx);
@@ -2614,9 +2620,11 @@ void DessinImageBase :: DessineCoupes( )
         FinSi
 
         FastImageRectangle( image_data, image_width,
-                            (int) (px + pos_x),    (int) (py + pos_y),
-                            (int) (px + pos_x + _size_x),
-          (int) (py + pos_y + _size_y), couleur);
+                            (int) round(px + pos_x),    
+                            (int) round(py + pos_y),
+                            (int) round(px + pos_x + _size_x),
+                            (int) round(py + pos_y + _size_y), 
+                            couleur);
         IncBuffer();
         px += _size_x;
       FinPour // x
@@ -3339,13 +3347,9 @@ void DessinImageBase::DessinePlanInterpZ( )
         Sinon
 
           float R,G,B;
-
-          _image->FixeVecteurCoord(0);
-          R = _image->InterpLinIntensite(x+i*1.0/n, y+j*1.0/n, Param._pos._z);
-          _image->FixeVecteurCoord(1);
-          G = _image->InterpLinIntensite(x+i*1.0/n, y+j*1.0/n, Param._pos._z);
-          _image->FixeVecteurCoord(2);
-          B = _image->InterpLinIntensite(x+i*1.0/n, y+j*1.0/n, Param._pos._z);
+          R = _image->InterpLinIntensite(x+i*1.0/n, y+j*1.0/n, Param._pos._z, 0);
+          G = _image->InterpLinIntensite(x+i*1.0/n, y+j*1.0/n, Param._pos._z, 1);
+          B = _image->InterpLinIntensite(x+i*1.0/n, y+j*1.0/n, Param._pos._z, 2);
           couleur.Set((unsigned char) R,
                       (unsigned char) G,
                       (unsigned char) B);
@@ -3570,15 +3574,19 @@ void DessinImageBase :: DrawLineZ( float x1, float y1,
      register float          pos_x2, pos_y2;
 
      //  FixeParametresLigne( size, style, _cap_style, _join_style);
-     FixeCouleurTrait( _couleur_masque);
+     //SetPenColor( _couleur_masque);
      //     printf(" DrawLineZ(%3.1f,%3.1f,%3.1f,%3.1f)\n",x1,y1,x2,y2);
-     pos_x1 = _tab_ximage_pos_x[IMAGE_XY] +  (x1-1 - Param._Zoom._xmin + 0.5)*_size_x;
-     pos_y1 = _tab_ximage_pos_y[IMAGE_XY] +  (y1-1 - Param._Zoom._ymin + 0.5)*_size_y;
+    // TODO: check why we need +/- 0.5 and create coordinate conversion functions
+     pos_x1 = _tab_ximage_pos_x[IMAGE_XY] +  (x1+0.5 - Param._Zoom._xmin )*_size_x;
+     pos_y1 = _tab_ximage_pos_y[IMAGE_XY] +  (y1+0.5 - Param._Zoom._ymin )*_size_y;
 
-     pos_x2 = _tab_ximage_pos_x[IMAGE_XY] +  (x2-1 - Param._Zoom._xmin + 0.5)*_size_x;
-     pos_y2 = _tab_ximage_pos_y[IMAGE_XY] +  (y2-1 - Param._Zoom._ymin + 0.5)*_size_y;
+     pos_x2 = _tab_ximage_pos_x[IMAGE_XY] +  (x2+0.5 - Param._Zoom._xmin )*_size_x;
+     pos_y2 = _tab_ximage_pos_y[IMAGE_XY] +  (y2+0.5 - Param._Zoom._ymin )*_size_y;
 
-     Ligne( (int)pos_x1,(int)pos_y1,(int)pos_x2,(int)pos_y2);
+     Ligne( (int) round(pos_x1),
+            (int) round(pos_y1),
+            (int) round(pos_x2),
+            (int) round(pos_y2));
 
 } // DrawLineZ()
 

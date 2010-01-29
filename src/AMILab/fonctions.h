@@ -78,6 +78,15 @@ InrImage* Func_OpImage( InrImage* im1, InrImage* im2, InrImage* im3,
             char* exprmath,
             int Format = WT_FLOAT);
 
+/**
+ * Apply a Gaussian (or its derivatives) convolution to the input image
+ * @param im input image
+ * @param sigma Gaussian standard deviation
+ * @param der_x derivation order in X (-1: no convolution, 0: Gaussian smoothing, 1: first order derivative, 2:second order der.)
+ * @param der_y same in Y
+ * @param der_z same in Z
+ * @return pointer to the resulting image
+ */
 InrImage* Func_Filter( InrImage* im, float sigma,
                int der_x, int der_y, int der_z);
 

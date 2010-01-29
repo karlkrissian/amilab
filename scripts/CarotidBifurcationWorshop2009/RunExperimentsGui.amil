@@ -1,6 +1,6 @@
 #!/usr/local/bin/amilab
 
-import_itk
+ami_import->ITK()
 
 if (!exists(CE_defined)) {
   CE_defined=1
@@ -141,7 +141,8 @@ if (!exists(CE_defined)) {
       inputname = CE_current_datadir + "/cta"+CE_datanumber_str+"r.mhd"
     }
     printn "inputname="+inputname
-    global::CE_input <<= itkRead(inputname)
+    itk = &global::itk
+    global::CE_input <<= itk->Read(inputname)
   
     # read input points
     pointsname = CE_current_datadir + "/points"+CE_datanumber_str+".txt"
@@ -166,7 +167,8 @@ if (!exists(CE_defined)) {
       GTname = CE_current_gtdir + "/pv"+CE_datanumber_str+".mhd"
       printn "Reading itk image "+GTname
       if (FileExists(GTname)) {
-        global::CE_GT <<= itkRead(GTname)
+        itk = &global::itk
+        global::CE_GT <<= itk->Read(GTname)
     
         # read the ROI information
         ROIname = CE_current_gtdir + "/roi"+CE_datanumber_str+".txt"
@@ -179,7 +181,8 @@ if (!exists(CE_defined)) {
     
         # Read the Exterior image
         extname = CE_current_gtdir + "/ext"+CE_datanumber_str+".mhd"
-        global::CE_ext <<= itkRead(extname)
+        itk = &global::itk
+        global::CE_ext <<= itk->Read(extname)
     
         # Read the GT Isosurface
         isoname = CE_current_gtdir + "/iso"+CE_datanumber_str+".vtp"
@@ -1224,7 +1227,7 @@ if (!exists(CE_defined)) {
   #------------------------------------------
   proc CarotidExperiments_SaveResults() \
   {
-    import_filters
+    ami_import->Filters()
     if (!exists(LS_inls)) {
       InfoDialog "Need to run the segmentation first: loading level set  ..."
       global
@@ -1242,7 +1245,7 @@ if (!exists(CE_defined)) {
       }
   
       # create the image with partial volume effect
-      pvim = ComputePV_subdiv(&LS_inls,4)
+      pvim = filters->ComputePV_subdiv(&LS_inls,4)
       if (0) {
         # put in bigger image
         pvim_big <<= Image(FLOAT,CE_input_tx,CE_input_ty,CE_input_tz)
@@ -1253,7 +1256,8 @@ if (!exists(CE_defined)) {
         pvim_big = pvim
       }
       del pvim
-      itkWrite(&pvim_big,CE_current_resultsdir+"/pv"+CE_datanumber_str+".mhd")
+      itk = &global::itk
+      itk->Write(&pvim_big,CE_current_resultsdir+"/pv"+CE_datanumber_str+".mhd")
   
       # 2. Save ROI text file
       roi_file = open(CE_current_resultsdir+"/roi"+CE_datanumber_str+".txt","w")
@@ -1298,7 +1302,8 @@ if (!exists(CE_defined)) {
     }
     # read the mask image
     ext_name = CE_current_gtdir + "/ext" + CE_datanumber_str + ".mhd"
-    global::CE_ext = itkRead(ext_name)
+    itk = &global::itk
+    global::CE_ext = itk->Read(ext_name)
     # read the level set results
     imname = CE_current_resultsdir+"/levelset_result.ami.gz"
     printn " reading " + imname
@@ -1340,7 +1345,8 @@ if (!exists(CE_defined)) {
     }
     # read the mask image
     ext_name = CE_current_gtdir + "/ext" + CE_datanumber_str + ".mhd"
-    global::CE_ext <<= itkRead(ext_name)
+    itk = &global::itk
+    global::CE_ext <<= itk->Read(ext_name)
     # read the level set results obtained including calcifications
     imname = CE_current_resultsdir+"/levelset_result_calc.ami.gz"
     printn " reading " + imname

@@ -10,148 +10,170 @@
 # IEEE Transactions on Image Processing, vol 16:5, pages 1412-1424, may 2007.
 #
 
+if (!exists(AnisoSRADClass)) {
 
-if (exists(SRAD_Init)) {
-  printn "SRAD script already loaded, close it first"
-} \
-else \
-{
+  Class AnisoSRADClass {
 
+  #----------------------------
+  
   #------------------------------------
-  proc SRAD_Init() {
+  proc ::Init() {
 
-    global_new
-    SRAD_input_name = ""
-    SRAD_output_name = "srad_result"
-    SRAD_output_filename = "SRAD_result.ami.gz"
-    SRAD_dt   = 0.1
-    SRAD_T    = 10
+    ::class_name ="global::AnisoSRADClass"
+    ::input_name = ""
+    ::output_name = "SRAD_result"
+    ::output_filename = "SRAD_result.ami.gz"
+    ::dt   = 0.1
+    ::T    = 10
     # 0: Lee, 1: Kuan, 2: Additive
-    SRAD_mode = INT(1) 
-    SRAD_neighborhood = INT(3)
+    ::mode = INT(1) 
+    ::neighborhood = INT(3)
     # Scheme, 0: explicit 1: semi-implicit
-    SRAD_scheme = INT(1)
+    ::scheme = INT(1)
 
-    SRAD_CreateGui()
+    ::CreateGui()
   }
   
-  #------------------------------------
-  proc SRAD_Close() {
-    SRAD_win.Hide
-    delvars "SRAD_*_draw"
-    delvars "SRAD_*"
+  #----------------------------
+  proc ::Close() {
+    ::win.Hide
+    delvars GetObjectName(::Close)
   }
+  ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    
+  #----------------------------
+  proc ::CloseAll() {
+    eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
+    ::Close
+  }
+  ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    
+  
   
   #------------------------------------
-  proc SRAD_load_input() {
-    if (SRAD_input_name=="Image") {
+  proc ::load_input() {
+    if (::input_name=="Image") {
       # read image using browser
-      global::SRAD_input << Image
-      SRAD_input_name = "SRAD_input"
-      SRAD_win.update
+      ::input << Image
+      ::input_name = "::input"
+      ::win.update
     } else {
-      eval "global::SRAD_input <<="+SRAD_input_name+";"
+      eval "::input <<="+::input_name+";"
     }
   }
 
   
   #------------------------------------
-  proc SRAD_CreateRoi() {
-    global_new
-      if (!exists(SRAD_input_draw)) {
-        SRAD_Display
+  proc ::CreateRoi() {
+      if (!exists(::input_draw)) {
+        ::Display
       }
-      if (exists(SRAD_input_draw)) {
-        SRAD_roi <<= SRAD_input[SRAD_input_draw]
+      if (exists(::input_draw)) {
+        ::roi <<= ::input[::input_draw]
       }
   }
   
   #------------------------------------
-  proc SRAD_Filter() {
-    if (!exists(SRAD_input)) {
-      SRAD_load_input
-      SRAD_Display
+  proc ::Filter() {
+    if (!exists(::input)) {
+      ::load_input
+      ::Display
     }
-    if (!exists(SRAD_roi)) {
+    if (!exists(::roi)) {
       InfoDialog "Please select the Region of Interest (ROI)"
     }
-    numit = SRAD_T/SRAD_dt
-    global::SRAD_res = AnisoLeeAdd2(SRAD_input,SRAD_dt,numit,SRAD_roi)
-    eval "global::"+SRAD_output_name+" <<= SRAD_res;"
+    numit = ::T/::dt
+    ::res = AnisoLeeAdd2(::input,::dt,numit,::roi)
+    eval ::output_name+" <<= ::res;"
   }
   
   #------------------------------------
-  proc SRAD_Display() {
-    global_new
-    if (!exists(SRAD_input)) {
-      SRAD_load_input
+  proc ::Display() {
+    if (!exists(::input)) {
+      ::load_input
     }
-    if (!exists(SRAD_input_draw)) {
-      show SRAD_input
+    if (!exists(::input_draw)) {
+      show ::input
     }
-    if exists(SRAD_res) {
-      SRAD_input_draw.compare(SRAD_res)
+    if exists(::res) {
+      show ::res
+      ::input_draw.compare(::res_draw)
     }
   }
   
   #------------------------------------
-  proc SRAD_Save() {
-    SRAD_res.save SRAD_output_filename
+  proc ::Save() {
+    ::res.save ::output_filename
   }
   
   #------------------------------------
-  proc SRAD_CreateGui() {
+  proc ::CreateGui() {
   
     # parameters window
-    global::SRAD_win = ParamWin("SRAD")
+    ::win = ParamWin("SRAD")
 
-    SRAD_win.BeginBook
-      SRAD_win.AddPage("Param")
-        SRAD_win.AddImageChoice(SRAD_input_name, "Input")
-        SRAD_win.AddString(SRAD_output_name,"Result name")
+    ::win.BeginBook
+      ::win.AddPage("Param")
+        ::win.AddImageChoice(::input_name, "Input")
+        ::win.AddString(::output_name,"Result name")
 
-        SRAD_dt_id         = SRAD_win.AddFloat(SRAD_dt,"dt",0.01,10)
-        SRAD_T_id          = SRAD_win.AddFloat(SRAD_T,"T",0,100)
+        ::dt_id         = ::win.AddFloat(::dt,"dt",0.01,10)
+        ::T_id          = ::win.AddFloat(::T,"T",0,100)
         
-        SRAD_mode_id       = SRAD_win.AddEnum(SRAD_mode,"Mode")
-          SRAD_win.AddEnumChoice(SRAD_mode_id,"Lee")
-          SRAD_win.AddEnumChoice(SRAD_mode_id,"Kuan")
-          SRAD_win.AddEnumChoice(SRAD_mode_id,"Additive")
+        ::mode_id       = ::win.AddEnum(::mode,"Mode")
+          ::win.AddEnumChoice(::mode_id,"Lee")
+          ::win.AddEnumChoice(::mode_id,"Kuan")
+          ::win.AddEnumChoice(::mode_id,"Additive")
         
-        SRAD_neighborhood_id = SRAD_win.AddInt(SRAD_neighborhood,"Neighborhood",0,4)
-        SRAD_scheme_id       = SRAD_win.AddEnum(SRAD_scheme,"Scheme")
-          SRAD_win.AddEnumChoice(SRAD_scheme_id,"Explicit")
-          SRAD_win.AddEnumChoice(SRAD_scheme_id,"Semi-implicit")
+        ::neighborhood_id = ::win.AddInt(::neighborhood,"Neighborhood",0,4)
+        ::scheme_id       = ::win.AddEnum(::scheme,"Scheme")
+          ::win.AddEnumChoice(::scheme_id,"Explicit")
+          ::win.AddEnumChoice(::scheme_id,"Semi-implicit")
         
-        SRAD_win.BeginBox("Controls")
-          SRAD_win.BeginHorizontal
-            ROI_id     = SRAD_win.AddButton("Select ROI", SRAD_CreateRoi)
-            iterate_id = SRAD_win.AddButton("Filter",     SRAD_Filter)
-            display_id = SRAD_win.AddButton("Display",    SRAD_Display)
-          SRAD_win.EndHorizontal
-        SRAD_win.EndBox
+        ::win.BeginBox("Controls")
+          ::win.BeginHorizontal
+            ROI_id     = ::win.AddButton("Select ROI", ::CreateRoi)
+            iterate_id = ::win.AddButton("Filter",     ::Filter)
+            display_id = ::win.AddButton("Display",    ::Display)
+          ::win.EndHorizontal
+        ::win.EndBox
 
-        SRAD_win.BeginBox("Save to disk")
-          SRAD_win.AddString(SRAD_output_filename,"result filename")
-          display_id = SRAD_win.AddButton("Save",       SRAD_Save)
-        SRAD_win.EndBox
+        ::win.BeginBox("Save to disk")
+          ::win.AddString(::output_filename,"result filename")
+          display_id = ::win.AddButton("Save",       ::Save)
+        ::win.EndBox
     
-    SRAD_win.EndBook
-    SRAD_win.AddButton("Close",             SRAD_Close)
+    ::win.EndBook
+    ::win.BeginHorizontal
+      ::win.AddButton("Close",          ::Close)
+      ::win.AddButton("Close All",          ::CloseAll)
+    ::win.EndHorizontal  
 
-    SRAD_win.CreateWin
-    SRAD_win.Display
-    SRAD_win.update
+    ::win.CreateWin
+    ::win.Display
+    ::win.update
   }
   
-  SRAD_Init
-  if (argc==2) {
-    // start with an image and an initialization
-    input_arg = Image($1)
-    SRAD_input_image = "input_arg"
-    SRAD_output_name = $2
-    NRAD_win.update
-  }
-} 
-# endif exists(SRAD_Init)
+  ::Init
+  
+  } #End of Class
+  
+} #End of if
 
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(aniSRAD)) {
+
+  AnisoSRADClass aniSRAD  
+   
+  if (argc==2) {    
+    input_arg = Image($1)
+    ::input_image = "input_arg"
+    ::output_name = $2
+    ::win.update
+  }
+} else {
+InfoDialog "The script seems to be already loaded." 
+}

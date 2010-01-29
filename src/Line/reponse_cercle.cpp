@@ -186,12 +186,9 @@ void  CalculRepCercle :: ComputeResponse( const Vect3D<double>& pos,
       if (_filter!= NULL) 
           g = _filter->Gradient( pos.x , pos.y, pos.z);
       else {
-          _grad->FixeVecteurCoord(0);
-          gx = _grad->InterpLinIntensite(pos.x,pos.y,pos.z);
-          _grad->FixeVecteurCoord(1);
-          gy = _grad->InterpLinIntensite(pos.x,pos.y,pos.z);
-          _grad->FixeVecteurCoord(2);
-          gz = _grad->InterpLinIntensite(pos.x,pos.y,pos.z);
+          gx = _grad->InterpLinIntensite(pos.x,pos.y,pos.z,0);
+          gy = _grad->InterpLinIntensite(pos.x,pos.y,pos.z,1);
+          gz = _grad->InterpLinIntensite(pos.x,pos.y,pos.z,2);
           g.Init(gx,gy,gz);
       }
     }

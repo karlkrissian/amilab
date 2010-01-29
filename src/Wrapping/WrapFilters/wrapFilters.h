@@ -24,6 +24,7 @@
  *  to the AMI language
  */
 void AddWrapFilters();
+void wrap_Filters( ParamList* p);
 
 
 // Wrapping functions:

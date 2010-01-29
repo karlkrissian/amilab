@@ -6,5 +6,12 @@ include_directories (${AMILAB_SOURCE_DIR}/AMImage)
 include_directories (${AMILAB_SOURCE_DIR}/Common)
 
 SET(AMImage_SRCS amimage.cpp)
+
+SET(AMImage_HDRS amimage.hpp)
+
+SET(AMImage_SRCS 
+     ${AMImage_SRCS}
+     ${AMImage_HDRS}
+)
 my_add_library (AMImage )
 

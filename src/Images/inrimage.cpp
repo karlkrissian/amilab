@@ -142,6 +142,9 @@ float roundf(const float& a)
 
 #include "amilab_messages.h"
 
+#include "ImagePositions.h"
+#include "InrImageIteratorBase.h"
+#include "InrImageIterator.h"
 
 //extern unsigned char GB_debug;
 //extern unsigned char GB_verbose;
@@ -1238,123 +1241,56 @@ unsigned char InrImage :: EcritMaple(const char* nom )
 
 //--------------------------------------------------------------------------
 unsigned char InrImage :: InitPositions( )
-//                           -------------
+//                        -------------
 {
 
-   
-    int z,y;
-    int txy;
-
-  txy = _tx*_ty;
-
-  SelonQue (WORDTYPE) _format Vaut
-
-    Valeur WT_RGBA   : 
-    Valeur WT_UNSIGNED_CHAR   : 
-      _positions_UNSIGNED_CHAR = new FORMAT_UNSIGNED_CHAR**[_tz];
-      Pour( z, 0, _tz-1)
-        _positions_UNSIGNED_CHAR[z] = new FORMAT_UNSIGNED_CHAR*[ _ty];
-        Pour( y, 0, _ty-1)
-          _positions_UNSIGNED_CHAR[z][y] = 
-         (FORMAT_UNSIGNED_CHAR*)_amimage->GetData()+_vdim*(z*txy+y*_tx);
-        FinPour
-      FinPour
+  // here we will initialize the ImagePositionBase* _positions member
+  switch (_format) {
+    case WT_RGB: 
+    case WT_RGBA: 
+    case WT_UNSIGNED_CHAR: {
+      ImagePositions<unsigned char> *positions = new ImagePositions<unsigned char>(this);
+      _positions = positions;}
     break;
-
-    Valeur WT_UNSIGNED_SHORT   :   
-      _positions_UNSIGNED_SHORT = new FORMAT_UNSIGNED_SHORT**[_tz];
-      Pour( z, 0, _tz-1)
-        _positions_UNSIGNED_SHORT[z] = new FORMAT_UNSIGNED_SHORT*[ _ty];
-        Pour( y, 0, _ty-1)
-          _positions_UNSIGNED_SHORT[z][y] = 
-         (FORMAT_UNSIGNED_SHORT*)_amimage->GetData()+_vdim*(z*txy+y*_tx);
-        FinPour
-      FinPour
+    case WT_UNSIGNED_SHORT:{
+      ImagePositions<unsigned short> *positions = new ImagePositions<unsigned short>(this);
+      _positions = positions;}
     break;
-
-    Valeur WT_SIGNED_SHORT  :  
-      _positions_SIGNED_SHORT = new FORMAT_SIGNED_SHORT**[_tz];
-      Pour( z, 0, _tz-1)
-        _positions_SIGNED_SHORT[z] = new FORMAT_SIGNED_SHORT*[ _ty];
-        Pour( y, 0, _ty-1)
-          _positions_SIGNED_SHORT[z][y] = 
-         (FORMAT_SIGNED_SHORT*)_amimage->GetData()+_vdim*(z*txy+y*_tx);
-        FinPour
-      FinPour
+    case WT_SIGNED_SHORT  :  {
+      ImagePositions<short> *positions = new ImagePositions<short>(this);
+      _positions = positions;}
     break;
-
-    Valeur WT_UNSIGNED_INT  :  
-      _positions_UNSIGNED_INT = new FORMAT_UNSIGNED_INT**[_tz];
-      Pour( z, 0, _tz-1)
-        _positions_UNSIGNED_INT[z] = new FORMAT_UNSIGNED_INT*[ _ty];
-        Pour( y, 0, _ty-1)
-          _positions_UNSIGNED_INT[z][y] = 
-         (FORMAT_UNSIGNED_INT*)_amimage->GetData()+_vdim*(z*txy+y*_tx);
-        FinPour
-      FinPour
+    case WT_UNSIGNED_INT  :  {
+      ImagePositions<unsigned int> *positions = new ImagePositions<unsigned int>(this);
+      _positions = positions;}
     break;
-
-    Valeur WT_SIGNED_INT  :  
-      _positions_SIGNED_INT = new FORMAT_SIGNED_INT**[_tz];
-      Pour( z, 0, _tz-1)
-        _positions_SIGNED_INT[z] = new FORMAT_SIGNED_INT*[ _ty];
-        Pour( y, 0, _ty-1)
-          _positions_SIGNED_INT[z][y] = 
-         (FORMAT_SIGNED_INT*)_amimage->GetData()+_vdim*(z*txy+y*_tx);
-        FinPour
-      FinPour
+    case WT_SIGNED_INT  :  {
+      ImagePositions<int> *positions = new ImagePositions<int>(this);
+      _positions = positions;}
     break;
-
-    Valeur WT_FLOAT : 
-      _positions_FLOAT = new FORMAT_FLOAT**[_tz];
-      Pour( z, 0, _tz-1)
-        _positions_FLOAT[z] = new FORMAT_FLOAT*[ _ty];
-        Pour( y, 0, _ty-1)
-          _positions_FLOAT[z][y] = 
-             (FORMAT_FLOAT*)_amimage->GetData()+_vdim*(z*txy+y*_tx);
-        FinPour
-      FinPour
+    case WT_UNSIGNED_LONG  :  {
+      ImagePositions<unsigned long> *positions = new ImagePositions<unsigned long>(this);
+      _positions = positions;}
     break;
-
-    Valeur WT_DOUBLE : 
-      _positions_DOUBLE = new FORMAT_DOUBLE**[_tz];
-      Pour( z, 0, _tz-1)
-        _positions_DOUBLE[z] = new FORMAT_DOUBLE*[ _ty];
-        Pour( y, 0, _ty-1)
-          _positions_DOUBLE[z][y] = 
-             (FORMAT_DOUBLE*)_amimage->GetData()+_vdim*(z*txy+y*_tx);
-        FinPour
-      FinPour
+    case WT_SIGNED_LONG  :  {
+      ImagePositions<long> *positions = new ImagePositions<long>(this);
+      _positions = positions;}
     break;
-
-    Valeur WT_RGB : 
-      _positions_RGB = new FORMAT_RGB**[_tz];
-      Pour( z, 0, _tz-1)
-        _positions_RGB[z] = new FORMAT_RGB*[ _ty];
-        Pour( y, 0, _ty-1)
-          _positions_RGB[z][y] = 
-             (FORMAT_RGB*)_amimage->GetData()+3*(z*txy+y*_tx);
-        FinPour
-      FinPour
+    case WT_FLOAT : 
+    case WT_FLOAT_VECTOR : {
+      ImagePositions<float> *positions = new ImagePositions<float>(this);
+      _positions = positions;}
     break;
-
-    Valeur WT_FLOAT_VECTOR : 
-      _positions_FLOAT_VECTOR = new FORMAT_FLOAT_VECTOR**[_tz];
-      Pour( z, 0, _tz-1)
-        _positions_FLOAT_VECTOR[z] = new FORMAT_FLOAT_VECTOR*[ _ty];
-        Pour( y, 0, _ty-1)
-          _positions_FLOAT_VECTOR[z][y] = 
-             (FORMAT_FLOAT_VECTOR*)_amimage->GetData()+_vdim*(z*txy+y*_tx);
-        FinPour
-      FinPour
+    case WT_DOUBLE : {
+      ImagePositions<double> *positions = new ImagePositions<double>(this);
+      _positions = positions;}
     break;
+    default:
+      CLASS_ERROR(boost::format(" format not processed %1% ... \n") % _format);
+      return false;
+  }
 
-    Defaut:
-    fprintf(stderr,"InitPosition, format not processed ... \n");
-
-  FinSelonQue
-
-  _positions_allouees = true;
+  _positions_allocated = true;
 
   return true;
 
@@ -1366,64 +1302,9 @@ unsigned char InrImage :: EffacePositions( )
 //                           ---------------
 {
 
+  delete _positions;
    
-    int z;
-    int txy;
-
-  if ( Non(_positions_allouees) AlorsFait return false;
-
-  txy = _tx*_ty;
-
-  SelonQue (WORDTYPE) _format Vaut
-
-    Valeur WT_RGBA: 
-    Valeur WT_UNSIGNED_CHAR: 
-       Pour(z,0,_tz-1) delete [] _positions_UNSIGNED_CHAR[z];FinPour
-       delete [] _positions_UNSIGNED_CHAR;
-    break;
-
-    Valeur WT_UNSIGNED_SHORT: 
-       Pour(z,0,_tz-1) delete [] _positions_UNSIGNED_SHORT[z];FinPour
-       delete [] _positions_UNSIGNED_SHORT;
-    break;
-
-    Valeur WT_SIGNED_SHORT: Pour(z,0,_tz-1) delete [] _positions_SIGNED_SHORT[z];FinPour
-       delete [] _positions_SIGNED_SHORT;
-    break;
-
-    Valeur WT_UNSIGNED_INT: Pour(z,0,_tz-1) delete [] _positions_UNSIGNED_INT[z];FinPour
-       delete [] _positions_UNSIGNED_INT;
-    break;
-
-    Valeur WT_SIGNED_INT: Pour(z,0,_tz-1) delete [] _positions_SIGNED_INT[z];FinPour
-       delete [] _positions_SIGNED_INT;
-    break;
-
-    Valeur WT_FLOAT:
-       Pour(z,0,_tz-1) delete [] _positions_FLOAT[z];FinPour
-       delete [] _positions_FLOAT;
-    break;
-
-    Valeur WT_DOUBLE:
-       Pour(z,0,_tz-1) delete [] _positions_DOUBLE[z];FinPour
-       delete [] _positions_DOUBLE;
-    break;
-
-    Valeur WT_RGB:
-       Pour(z,0,_tz-1) delete [] _positions_RGB[z];FinPour
-       delete [] _positions_RGB;
-    break;
-
-    Valeur WT_FLOAT_VECTOR:
-       Pour(z,0,_tz-1) delete [] _positions_FLOAT_VECTOR[z];FinPour
-       delete [] _positions_FLOAT_VECTOR;
-    break;
-
-    Defaut:
-    fprintf(stderr,"InrImage::EffacePositions, format not processed ... \n");
-  FinSelonQue
-
-  _positions_allouees = false;
+  _positions_allocated = false;
 
   return true;
 
@@ -1448,7 +1329,6 @@ void InrImage :: InitParams()
   _size_y =
   _size_z = 1;
   _vdim   = 1;
-  _coord_vecteur = 0;
   _translation_x =
   _translation_y =
   _translation_z = 0;
@@ -1458,7 +1338,7 @@ void InrImage :: InitParams()
 
 //  _inrimage_allouee   = false;
   _amimage_allocated   = false;
-  _positions_allouees = false;
+  _positions_allocated = false;
 
   // Identity Matrix
   for(i=0;i<4;i++) 
@@ -1466,8 +1346,60 @@ void InrImage :: InitParams()
     _transf_matrix[i][j] = 0;
   for(i=0;i<3;i++) _transf_matrix[i][i] = 1;
 
+
 } // InitParams()
 
+
+//----------------------------------------------------------------------
+InrImageIteratorBase::ptr InrImage::CreateIterator()
+{
+
+  // here we will initialize the ImagePositionBase* _positions member
+  switch (_format) {
+    case WT_RGB: 
+    case WT_RGBA: 
+    case WT_UNSIGNED_CHAR: 
+      return InrImageIteratorBase::ptr(
+          new InrImageIterator<unsigned char>(this));
+    break;
+    case WT_UNSIGNED_SHORT:
+      return InrImageIteratorBase::ptr(
+          new InrImageIterator<unsigned short>(this));
+    break;
+    case WT_SIGNED_SHORT  : 
+      return InrImageIteratorBase::ptr(
+          new InrImageIterator<short>(this));
+    break;
+    case WT_UNSIGNED_INT  :
+      return InrImageIteratorBase::ptr(
+          new InrImageIterator<unsigned int>(this));
+    break;
+    case WT_SIGNED_INT  : 
+      return InrImageIteratorBase::ptr(
+          new InrImageIterator<int>(this));
+    break;
+    case WT_UNSIGNED_LONG  :
+      return InrImageIteratorBase::ptr(
+          new InrImageIterator<unsigned long>(this));
+    break;
+    case WT_SIGNED_LONG  : 
+      return InrImageIteratorBase::ptr(
+          new InrImageIterator<long>(this));
+    break;
+    case WT_FLOAT : 
+    case WT_FLOAT_VECTOR :
+      return InrImageIteratorBase::ptr(
+          new InrImageIterator<float>(this));
+    break;
+    case WT_DOUBLE :
+      return InrImageIteratorBase::ptr(
+          new InrImageIterator<double>(this));
+    default:
+      CLASS_ERROR(" format not processed ... \n");
+  }
+  return InrImageIteratorBase::ptr();
+
+}
 
 //==========================================================================
 // MEMBRES PUBLICS
@@ -1479,6 +1411,9 @@ InrImage :: Constructeur InrImage( )
 {
 
   InitParams();
+
+  _Iterator = CreateIterator();
+  _linear_interpolator = ImageLinearInterpolator::ptr( new ImageLinearInterpolator(this));
 
 } // Construteur
 
@@ -1511,6 +1446,8 @@ InrImage :: Constructeur InrImage( const char* nom)
 
   InitPositions();
 
+  _Iterator = CreateIterator();
+  _linear_interpolator = ImageLinearInterpolator::ptr( new ImageLinearInterpolator(this));
 
 } // Construteur
 
@@ -1529,6 +1466,8 @@ InrImage :: Constructeur InrImage( const char* nom, int type)
 
   InitPositions();
 
+  _Iterator = CreateIterator();
+  _linear_interpolator = ImageLinearInterpolator::ptr( new ImageLinearInterpolator(this));
 
 } // Construteur
 
@@ -1567,6 +1506,8 @@ InrImage :: Constructeur InrImage( int dimx, int dimy,
 
   InitPositions();
 
+  _Iterator = CreateIterator();
+  _linear_interpolator = ImageLinearInterpolator::ptr( new ImageLinearInterpolator(this));
 
 } // Construteur
 
@@ -1600,6 +1541,8 @@ InrImage :: Constructeur InrImage( int dimx, int dimy,
 
   InitPositions();
 
+  _Iterator = CreateIterator();
+  _linear_interpolator = ImageLinearInterpolator::ptr( new ImageLinearInterpolator(this));
 
 } // Construteur
 
@@ -1655,6 +1598,8 @@ InrImage :: Constructeur InrImage(  WORDTYPE format,
 
   InitPositions();
 
+  _Iterator = CreateIterator();
+  _linear_interpolator = ImageLinearInterpolator::ptr( new ImageLinearInterpolator(this));
 
 } // Construteur
 
@@ -1694,6 +1639,9 @@ InrImage :: Constructeur InrImage(  WORDTYPE format, int vdim,
   _format = (WORDTYPE) format;
   Alloue();
   InitPositions();
+
+  _Iterator = CreateIterator();
+  _linear_interpolator = ImageLinearInterpolator::ptr( new ImageLinearInterpolator(this));
 
 } // Construteur
 
@@ -1788,6 +1736,9 @@ InrImage :: Constructeur InrImage( vtkImageData* vtkim)
   _translation_z = vtkim->GetOrigin()[2];
 
   InitPositions();
+
+  _Iterator = CreateIterator();
+  _linear_interpolator = ImageLinearInterpolator::ptr( new ImageLinearInterpolator(this));
 
   printf("vox size: %f %f %f \n", _size_x,_size_y,_size_z);
 
@@ -2154,56 +2105,26 @@ const string InrImage :: FormatName()
 void InrImage :: InitBuffer( int pos )
 //                         ---------
 {
-
-  _pos_buf = pos;
-
-  SelonQue (WORDTYPE) _format Vaut
-
-    Valeur WT_DOUBLE:
-      _buffer_DOUBLE          = (FORMAT_DOUBLE*)         this->GetData() + _vdim*pos;  
-    break;
-
-    Valeur WT_FLOAT:
-      _buffer_FLOAT           = (FORMAT_FLOAT*)          this->GetData() + _vdim*pos;  
-    break;
-
-    Valeur WT_RGBA:
-    Valeur WT_UNSIGNED_CHAR:
-      _buffer_UNSIGNED_CHAR   = (FORMAT_UNSIGNED_CHAR*)  this->GetData() + _vdim*pos;  
-    break;
-
-    Valeur WT_UNSIGNED_SHORT:
-      _buffer_UNSIGNED_SHORT  = (FORMAT_UNSIGNED_SHORT*) this->GetData() + _vdim*pos;  
-    break;
-
-    Valeur WT_SIGNED_SHORT:
-      _buffer_SIGNED_SHORT    = (FORMAT_SIGNED_SHORT*)  this->GetData() + _vdim*pos;  
-    break;
-
-    Valeur WT_UNSIGNED_INT:
-      _buffer_UNSIGNED_INT      = (FORMAT_UNSIGNED_INT*)    this->GetData() + _vdim*pos;  
-    break;
-
-    Valeur WT_SIGNED_INT:
-      _buffer_SIGNED_INT      = (FORMAT_SIGNED_INT*)    this->GetData() + _vdim*pos;  
-    break;
-
-    Valeur WT_RGB:
-      _buffer_RGB             = (FORMAT_UNSIGNED_CHAR*) this->GetData() + _vdim*pos;  
-    break;
-
-    Valeur WT_FLOAT_VECTOR:
-      _buffer_FLOAT_VECTOR    = (FORMAT_FLOAT*)          this->GetData() + _vdim*pos;  
-    break;
-
-    default:
-    fprintf(stderr,"InrImage::InitBuffer() format not processed ... \n");
-
-  FinSelonQue
+  _Iterator->InitBuffer(pos);
 
 } // InitBuffer()
 
 
+//-----------------------------------------------------------------
+void InrImage::BufferPos( int x, int y, int z) throw (DepassementLimites)
+//             ---------
+{
+  #ifdef _debug_
+  Si x<0 Ou x>=_tx Ou y<0 Ou y>=_ty Ou z<0 Ou z>=_tz Alors
+    char message[100];
+    sprintf(message, " image %s ( %d %d %d )", (char*)_nom, x, y, z);
+    throw DepassementLimites( message);
+  FinSi
+  #endif
+
+  _Iterator->BufferPos(x,y,z);
+
+} // BufferPos()
 
 
 //--------------------------------------------------------------------------
@@ -2585,9 +2506,14 @@ InrImage* operator -(  InrImage& i1,  InrImage& i2)
 
   InrImage* res;
 
-  if ( i1._tx != i2._tx AlorsFait return NULL;
-  if ( i1._ty != i2._ty AlorsFait return NULL;
-  if ( i1._tz != i2._tz AlorsFait return NULL;
+  if (( i1.DimX() != i2.DimX()) ||
+      ( i1.DimY() != i2.DimY()) ||
+      ( i1.DimZ() != i2.DimZ())) 
+  {
+    FILE_ERROR("different dimensions");
+    cout << "*" << endl;
+    return NULL;
+  }
 
   WORDTYPE format;
 
@@ -2708,13 +2634,14 @@ InrImage* operator +(  InrImage& i1,  InrImage& i2)
     res = new InrImage(format,"plusop.inr.gz",&i1);
     res->InitBuffer();
     i1.InitBuffer();                
-    i2.InitBuffer();                
-    Repeter                           
-      res->FixeValeur(i1.ValeurBuffer() + i2.ValeurBuffer()); 
-      i1.IncBuffer();               
-      i2.IncBuffer();               
-    JusquA Non(res->IncBuffer())      
-    FinRepeter                        
+    i2.InitBuffer();
+    long size = i1.Size();
+    long i;
+    for(i=0;i<size;i++) {
+      res->FixeValeur( i1.ValeurBuffer(i) +
+                       i2.ValeurBuffer(i)); 
+      res->IncScalarBufferFast();
+    }
 
     return res;
 
@@ -2751,6 +2678,66 @@ InrImage* operator +(  InrImage& i1,  InrImage& i2)
 
 
 //--------------------------------------------------
+InrImage& operator +=(  InrImage& i1,  InrImage& i2)
+//        -----------
+{
+
+  int i;
+  double val;
+  WORDTYPE format;
+
+  if ((i1.GetFormat()==WT_DOUBLE)||(i2.GetFormat()==WT_DOUBLE))
+    format = WT_DOUBLE;
+  else 
+    format = WT_FLOAT;
+
+  if ( i1.DimX() != i2.DimX() AlorsFait return i1;
+  if ( i1.DimY() != i2.DimY() AlorsFait return i1;
+  if ( i1.DimZ() != i2.DimZ() AlorsFait return i1;
+
+  if ( i1.ScalarFormat() && i2.ScalarFormat() ) {
+    i1.InitBuffer();                
+    i2.InitBuffer();
+    long size = i1.Size();
+    long i;
+    for(i=0;i<size;i++) {
+      i1.FixeValeur( i1.ValeurBuffer() +
+                      i2.ValeurBuffer(i)); 
+      i1.IncScalarBufferFast();
+    }
+
+    return i1;
+
+  } else
+  if ( i1.VectorialFormat() && i2.VectorialFormat() ) {
+
+    if ( i1.GetVDim() != i2.GetVDim() ) {
+      fprintf(stderr,"InrImage*InrImage \t Vector dimensions don't match \n");
+      return i1;
+    } // end if
+
+    i1.InitBuffer();                
+    i2.InitBuffer();                
+    Repeter                           
+      Pour(i,0,i1.GetVDim()-1)
+        val = i1.VectValeurBuffer(i)+i2.VectValeurBuffer(i);
+        i1.VectFixeValeur(i,val);
+      FinPour
+      i2.IncBuffer();               
+    JusquA Non(i1.IncBuffer())      
+    FinRepeter                        
+
+    return i1;
+
+  } else {
+    FILE_ERROR("Scalar and vectorial types ");
+  } // end if
+
+  return i1;
+}
+
+
+//--------------------------------------------------
 InrImage* operator *(  InrImage& i1,  InrImage& i2)
 //        -----------
 {
@@ -2779,7 +2766,7 @@ InrImage* operator *(  InrImage& i1,  InrImage& i2)
     i2.InitBuffer();                
     Pour(i,0,i1.Size()-1)
       res->FixeValeur(i1.ValeurBuffer(i) * i2.ValeurBuffer(i)); 
-      res->IncBuffer();
+      res->IncScalarBufferFast();
     FinPour
 
     return res;

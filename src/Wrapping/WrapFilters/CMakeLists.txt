@@ -20,6 +20,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Algorithms/Basic
   ${AMILAB_SOURCE_DIR}/Algorithms/Denoising
   ${AMILAB_SOURCE_DIR}/Algorithms/Others
+  ${AMILAB_SOURCE_DIR}/Algorithms/BasicFilter
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapCommon
   ${AMILAB_SOURCE_DIR}
   ${Boost_INCLUDE_DIR}
@@ -46,7 +47,33 @@ SET(  WrapFilters_SRCS
   wrap_NLmeans.cpp
   Wrap_NewNLMeans.cpp
   wrap_DirSum.cpp
+  wrap_ImTranslate.cpp
+  wrap_AddSubImage.cpp
+  wrap_MaxSubImage.cpp
   LeastSquares.cpp
+  wrap_ImageAddScalar.cpp
+  wrap_ImageCos.cpp
+)
+
+SET(WrapFilters_HDRS
+	LeastSquares.h
+	wrapAlgorithmsBasic.h
+	wrapComputePV.h
+	wrapFilters.h
+	wrap_AddSubImage.h
+	wrap_DirSum.h
+	wrap_ImTranslate.h
+	wrap_MaxSubImage.h
+	Wrap_NewNLMeans.h
+	wrap_NLmeans.h
+  wrap_StructureTensor.h
+  wrap_ImageAddScalar.h
+  wrap_ImageCos.h
+)
+
+SET(WrapFilters_SRCS
+     ${WrapFilters_SRCS}
+     ${WrapFilters_HDRS}
 )
 
 my_add_library ( WrapFilters)

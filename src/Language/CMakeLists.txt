@@ -31,6 +31,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Language
   ${AMILAB_SOURCE_DIR}/Language/GeneratedFlexBison
   ${AMILAB_SOURCE_DIR}/DistTransf
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapCommon
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapVTK
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapITK
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapFilters
@@ -38,7 +39,8 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapAMIFluid
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapWII
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapInterface
-  ${AMILAB_SOURCE_DIR}/penguin
+  ${AMILAB_SOURCE_DIR}/wxSamples/penguin
+  ${AMILAB_SOURCE_DIR}/wxSamples/stctest
   ${AMILAB_SOURCE_DIR}/Algorithms/Basic
   ${AMILAB_SOURCE_DIR}/Algorithms/Graph
   ${AMILAB_SOURCE_DIR}/Algorithms/Denoising
@@ -55,6 +57,31 @@ SET(Language_SRCS
     Variables.cpp
     paramlist.cpp
     ImageStack.cpp
+)
+
+SET(Language_HDRS
+    ami_class.h
+    AmiInstructionBlock.h
+    driver.h
+    IdentifierInfo.h
+    MatrixStack.h  
+    scanner.h
+    vartype.h
+    ami_function.h
+    ami_object.h
+    ami_cpp_object.h
+    GLTransformStack.h
+    ImageStack.h
+    paramlist.h
+    SurfStack.h
+    VarContexts.hpp
+    Variable.hpp
+    Variables.hpp
+)
+
+SET(Language_BISONFLEX_SRCS
+  improcess_bison.ypp
+  improcess_flex.lpp
 )
 
 IF(AMI_USE_FLEXBISON)
@@ -76,6 +103,8 @@ IF(AMI_USE_FLEXBISON)
     ${BISON_improcessbison_OUTPUTS}
     ${FLEX_improcessflex_OUTPUTS}
     ${Language_SRCS}
+    ${Language_BISONFLEX_SRCS}
+    ${Language_HDRS}
   )
   
 ELSE(AMI_USE_FLEXBISON)
@@ -91,6 +120,7 @@ ELSE(AMI_USE_FLEXBISON)
    SET(Language_SRCS
      ${FLEXBISON_OUTPUTS}
      ${Language_SRCS}
+     ${Language_HDRS}
    )
  
 

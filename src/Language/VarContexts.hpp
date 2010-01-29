@@ -1,6 +1,10 @@
-// Create several contexts for variables: 
-// allow local variables in functions for example
-// later will be used for object oriented programming
+/** 
+ * \file VarContexts.hpp
+ * \author Karl Krissian
+ * Create several contexts for variables: 
+ * allow local variables in functions for example
+ * later will be used for object oriented programming
+ */
 
  
 #ifndef _AMI_VARCONTEXTS_HPP
@@ -15,48 +19,68 @@
 #define NEWVAR_CONTEXT -1
 #define OBJECT_CONTEXT_NUMBER -10
 
-// VarContexts is a stack of contexts, 
-// where each context contains a set of variables
+/** VarContexts
+ *  is a stack of contexts, 
+ *  where each context contains a set of variables
+ **/
 class VarContexts {
 
   DEFINE_CLASS(VarContexts)
 
 private:
-  // _current_context is the number of contexts used
+  /// _current_context is the number of contexts used
   int        _current_context;
  
-  // A context is a set of variables
-  // use smart pointers here ...
+  /// A context is an array of variables
   std::vector<Variables::ptr> _context;
 
+  /// points to the current object context
   Variables::ptr _object_context;
 
 public:
 
+  /// Constructor
   VarContexts();
 
+  /// Destructor
   virtual ~VarContexts();
 
+  /// Remove all the variables
   void EmptyVariables();
 
+  /// Creates a new context of variables
   int GetNewVarContext();
 
+  /// Sets the current object context
   void SetObjectContext(const Variables::ptr& ocontext)
   {
     _object_context = ocontext;
   }
 
+  /**
+   * @return a reference to the current object context
+   */
   Variables::ptr& GetObjectContext() 
   { 
     return _object_context;
   }
 
+  /**
+   * Activate/Desactivate the creation of new variables as global
+   * @param gn 
+   */
   void SetGlobalNew(bool gn)  {  _context[_current_context]->SetGlobalNew(gn);}
 
+  /**
+   * @return the current context number
+   */
   int GetCurrentContextNumber() {
     return _current_context;
   }
   
+  /**
+   * 
+   */
   void SetGlobalContext();
   void SetLastContext();
 
@@ -64,6 +88,11 @@ public:
     return _context[_current_context];
   }
 
+  /**
+   * Creates a new context
+   * @param name of the new context
+   * @return true/false for success/failure
+   */
   bool NewContext(const char* name);
 
   bool DeleteLastContext();
@@ -76,23 +105,47 @@ public:
 
   boost::shared_ptr<wxArrayString> SearchVariables(const vartype& type);
 
-  /// here void* val is a pointer to the variable type
-  /// context is the context where to add the variable
-  /// -1 means the current context
+  /**
+  * 
+  * @param type variable type
+  * @param name variable name
+  * @param val is a pointer to the variable type
+  * @param context NEWVAR_CONTEXT (-1) means the current context | OBJECT_CONTEXT_NUMBER (-10) 
+  * @return 
+  */
   Variable* AddVar(vartype type, const char* name, void* val,
                     int context=NEWVAR_CONTEXT);
 
-  /// IndentifierInfo contains the name and the context
+  /** 
+   * Adds a new variable based on its type, pointer to value, and indentifier information.
+   * IndentifierInfo contains the name and the context
+   **/
   Variable* AddVar(vartype type, const IdentifierInfo::ptr& info, void* val);
 
-  // here void* val is a pointer to 
-  // a smart pointer of the variable type
-  Variable* AddVarPtr(vartype type, const char* name, void* val);
+  /** 
+   * Adds a new variable based on its type, pointer to value, and indentifier information.
+   * IndentifierInfo contains the name and the context
+   * @param val  is a pointer to a smart pointer of the variable type
+   **/
+  Variable* AddVarPtr(vartype type, const IdentifierInfo::ptr& info, void* val);
+
+  /**
+   * @param val  is a pointer to a smart pointer of the variable type
+   **/
+  Variable* AddVarPtr(vartype type, const char* name, void* val,
+                    int context=NEWVAR_CONTEXT);
 
   Variable* AddVar(Variable* var, int context=NEWVAR_CONTEXT);
 
   Variable* AddVar(Variable::ptr var, int context=NEWVAR_CONTEXT);
 
+  /**
+   * Find a variable based on its name, if context is -1, look for variable in the local context
+   * @param varname name of the variable
+   * @param var resulting variable
+   * @param context possible values: -1, 0--contexts, OBJECT_CONTEXT_NUMBER
+   * @return true if success, false otherwise
+   */
   bool GetVar( const char* varname, Variable** var,
                         int context=NEWVAR_CONTEXT);
 

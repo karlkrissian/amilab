@@ -14,4 +14,13 @@ SET(  WrapSystem_SRCS
   wrapSystem.cpp
 )
 
+SET(WrapSystem_HDRS
+	wrapSystem.h
+)
+
+SET(WrapSystem_SRCS
+     ${WrapSystem_SRCS}
+     ${WrapSystem_HDRS}
+)
+
 my_add_library ( WrapSystem)

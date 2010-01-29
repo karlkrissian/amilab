@@ -1,5 +1,5 @@
 
-import_ami
+ami_import->AMIFluid()
 
 
 #
@@ -28,9 +28,9 @@ proc call_amiOFPDE3D(IMAGE _im1, IMAGE _im2, IMAGE _res) {
   Conv_GS     = exp(ln(10)*Conv_GS_exp    )  
   Conv_Scales = exp(ln(10)*Conv_Scales_exp)  
 
-  amiPDESetSolenoidal(1)    
-  amiOFSetGlobalConstraint(1)
-  amiOFPDE(_im1,_im2,&_res,beta,beta,beta,2,2,zoom_z,alfa,alfa,alfa,Conv_GS,Nscales,Conv_Scales,gradtype)
+  AMIFluid->amiPDESetSolenoidal(1)    
+  AMIFluid->amiOFSetGlobalConstraint(1)
+  AMIFluid->amiOFPDE(_im1,_im2,&_res,beta,beta,beta,2,2,zoom_z,alfa,alfa,alfa,Conv_GS,Nscales,Conv_Scales,gradtype)
 
 }
 

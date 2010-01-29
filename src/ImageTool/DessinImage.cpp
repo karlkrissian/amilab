@@ -2411,7 +2411,7 @@ void DessinImage::DessineScrollBar( int image)
   noir  = _tab_intensite_couleur[0];
 
   // ScrollBar Horizontal
-  FixeCouleurTrait(       noir);
+  SetPenColor(       noir);
   FixeCouleurRemplissage( blanc);
   Rectangle( xmin, ymin-4, xmin + largeur , ymin-1);
   FixeCouleurRemplissage( noir);
@@ -2421,7 +2421,7 @@ void DessinImage::DessineScrollBar( int image)
              ymin-1);
 
   // ScrollBar Vertical
-  FixeCouleurTrait(       noir);
+  SetPenColor(       noir);
   FixeCouleurRemplissage( blanc);
   Rectangle( xmin-4, ymin, xmin - 1, ymin + hauteur);
   FixeCouleurRemplissage( noir);
@@ -2516,12 +2516,9 @@ void DessinImage::DrawVector( int vect_id, int x, int y, int z,
       y1 = vect->SpaceToVoxelY(y1);
       z1 = vect->SpaceToVoxelZ(z1);
       // NOT THREAD SAFE: fixe vector coordinates is not thread safe ...
-      vect->FixeVecteurCoord(0);
-      v.x = (float) vect->InterpLinIntensite(x1,y1,z1);
-      vect->FixeVecteurCoord(1);
-      v.y = (float) vect->InterpLinIntensite(x1,y1,z1);
-      vect->FixeVecteurCoord(2);
-      v.z = (float) vect->InterpLinIntensite(x1,y1,z1);
+      v.x = (float) vect->InterpLinIntensite(x1,y1,z1,0);
+      v.y = (float) vect->InterpLinIntensite(x1,y1,z1,1);
+      v.z = (float) vect->InterpLinIntensite(x1,y1,z1,2);
   }
 
   // Return if vector too small
@@ -2539,7 +2536,7 @@ void DessinImage::DrawVector( int vect_id, int x, int y, int z,
       v.z *= _size_z;
   }
 
-  FixeCouleurTrait( vf.color );
+  SetPenColor( vf.color );
   // Tests selon le type de Coupe
   Si (type_coupe+1) & (TYPE_COUPE_XY+1) Alors
     pos_x = (int) (_tab_ximage_pos_x[IMAGE_XY] + (x - Param._Zoom._xmin + 0.5)*_size_x);
@@ -2688,7 +2685,7 @@ void DessinImage::DessineCercle(  int x, int y, int z, ClasseCouleur& c)
     pos_x = (int) (_tab_ximage_pos_x[IMAGE_XY] + (x - Param._Zoom._xmin + 0.5)*_size_x);
     pos_y = (int) (_tab_ximage_pos_y[IMAGE_XY] + (y - Param._Zoom._ymin + 0.5)*_size_y);
 
-    FixeCouleurTrait( coul );
+    SetPenColor( coul );
     Si _circles_fill Alors
       RemplitEllipse(pos_x,pos_y,(int) (val*_size_x), (int) (val*_size_y));
     Autrement
@@ -2701,7 +2698,7 @@ void DessinImage::DessineCercle(  int x, int y, int z, ClasseCouleur& c)
     pos_x = (int) ( _tab_ximage_pos_x[IMAGE_XZ] + (x - Param._Zoom._xmin + 0.5)*_size_x);
     pos_y = (int) ( _tab_ximage_pos_y[IMAGE_XZ] + (z - Param._Zoom._zmin + 0.5)*_size_z);
 
-    FixeCouleurTrait( coul );
+    SetPenColor( coul );
     Si _circles_fill Alors
       RemplitEllipse(pos_x,pos_y, (int) (val*_size_x), (int) (val*_size_z));
     Autrement
@@ -2715,7 +2712,7 @@ void DessinImage::DessineCercle(  int x, int y, int z, ClasseCouleur& c)
     pos_x = (int) ( _tab_ximage_pos_x[IMAGE_ZY] + (z - Param._Zoom._zmin + 0.5)*_size_z);
     pos_y = (int) ( _tab_ximage_pos_y[IMAGE_ZY] + (y - Param._Zoom._ymin + 0.5)*_size_y);
 
-    FixeCouleurTrait( coul );
+    SetPenColor( coul );
     Si _circles_fill Alors
       RemplitEllipse(pos_x,pos_y,(int) (val*_size_y),(int) (val*_size_z));
     Autrement
@@ -2840,7 +2837,7 @@ void DessinImage::DessineBoundingBox( )
   zmax = _image_initiale->_tz -1;
 
   FixeParametresLigne( 1,  wxSOLID, wxCAP_ROUND, wxJOIN_MITER);
-  FixeCouleurTrait( _couleur_curseur);
+  SetPenColor( _couleur_curseur);
 
   // Initialisation des 8 sommets du cube
   p[0].Init(xmin, ymin, zmin);
@@ -2999,7 +2996,17 @@ void DessinImage::Comparaisons_UpdateStatusInfo( const Point_3D<int>& imagepos, 
   CLASS_MESSAGE(boost::format("(*Iter).di.use_count() = %d")
                 %(int)(*Iter).di.use_count());
     if (!(*Iter).di.expired()) {
-        ((*Iter).di.lock())->UpdateStatusInfo(imagepos, trouve);
+      // need to convert spatial coordinates
+      InrImage::ptr input = this->GetImage();
+      float px,py,pz;
+      px = input->SpacePos(0,(float) imagepos.X());
+      py = input->SpacePos(1,(float) imagepos.Y());
+      pz = input->SpacePos(2,(float) imagepos.Z());
+      InrImage::ptr input2 = ((*Iter).di.lock())->GetImage();
+      Point_3D<int> newpos( (int) round(input2->SpaceToVoxelX(px)),
+                            (int) round(input2->SpaceToVoxelY(py)),
+                            (int) round(input2->SpaceToVoxelZ(pz)));
+      ((*Iter).di.lock())->UpdateStatusInfo(newpos, trouve);
     } else {
         CLASS_MESSAGE("Removing deleted image from list");
         // Safely removing an element
@@ -3024,8 +3031,7 @@ void DessinImage::UpdateStatusInfo( const Point_3D<int>& imagepos,  int trouve)
 //                --------------
 {
 
- Si GB_debug AlorsFait
-    fprintf(stderr, "DessinImage::UpdateStatusInfo() \n");
+  CLASS_MESSAGE("Begin");
 
   if (_comparison_lock) return;
 
@@ -3041,8 +3047,7 @@ void DessinImage::UpdateStatusInfo( const Point_3D<int>& imagepos,  int trouve)
 
   Comparaisons_UpdateStatusInfo( imagepos, trouve);
 
-  Si GB_debug AlorsFait
-    fprintf(stderr, "DessinImage::UpdateStatusInfo() Fin \n");
+  CLASS_MESSAGE("End");
 
 } // UpdateStatusInfo()
 
@@ -5113,7 +5118,7 @@ void DessinImage::DrawContour( int i, int size, int style)
   //FixeParametresLigne( size, style, LineSolid, _cap_style, _join_style);
   FixeParametresLigne( size, style, wxSOLID);
 
-  FixeCouleurTrait( _isocontours[i].color);
+  SetPenColor( _isocontours[i].color);
 
   if ((_isocontours[i].image.expired()) ||
       (Param._option_traitement == OPTION_MIP))

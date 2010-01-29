@@ -9,7 +9,7 @@ if(COMMAND cmake_policy)
   cmake_policy(SET CMP0003 NEW)
 endif(COMMAND cmake_policy)
 
-SET(CMAKE_MODULE_PATH  ${CMAKE_MODULE_PATH} ${CMAKE_ROOT}/Modules  ${CMAKE_CURRENT_SOURCE_DIR}/../CMAKE )
+SET(CMAKE_MODULE_PATH  ${CMAKE_CURRENT_SOURCE_DIR}/../CMAKE ${CMAKE_MODULE_PATH} ${CMAKE_ROOT}/Modules   )
 
 
 #-----------------------------------------------------
@@ -168,7 +168,7 @@ ENDIF(AMI_USE_ITK)
 FIND_PACKAGE ( AMIFluid )
 #FIND_PACKAGE ( wxParams )
 FIND_PACKAGE ( OpticFlow )
-FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base )
+FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc )
 
 # put OpenGL before VTK to find the correct library of the system
 FIND_PACKAGE ( OpenGL )
@@ -210,8 +210,6 @@ OPTION(AMI_USE_FLEXBISON "Compile language using Flex and Bison" ON)
 IF(AMI_USE_FLEXBISON)
   FIND_PACKAGE(BISON)
   FIND_PACKAGE(FLEX)
-ELSE(AMI_USE_FLEXBISON)
-  SET(FLEX_INCLUDE_DIR "${AMILAB_SOURCE_DIR}/Language")
 ENDIF(AMI_USE_FLEXBISON)
 
 OPTION(AMI_USE_FASTNLMEANS "Use Fast NLmeans implementation" OFF)
@@ -300,7 +298,8 @@ add_subdirectory (ImageTool)
 add_subdirectory (Graphic)
 add_subdirectory (../wxParams/src binary_dir )
 add_subdirectory (OpenGL)
-add_subdirectory (penguin)
+add_subdirectory (wxSamples/penguin)
+add_subdirectory (wxSamples/stctest)
 add_subdirectory (Voxels)
 add_subdirectory (AMILab)
 
@@ -345,7 +344,9 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/SplineThevenaz
   ${AMILAB_SOURCE_DIR}/Contours
   ${AMILAB_SOURCE_DIR}/DistTransf
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapCommon
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapITK
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapImports
   ${AMILAB_SOURCE_DIR}
   ${AMILAB_SOURCE_DIR}/../Pixmaps
   ${AMILAB_BINARY_DIR}
@@ -375,6 +376,17 @@ SET(amilab_bin_SRCS
   MainFrame.cpp
 )
 
+SET(amilab_bin_HDRS
+	guicon.h
+	MainFrame.h
+	myTreeCtrl.h
+)
+
+SET(amilab_bin_SRCS
+     ${amilab_bin_SRCS}
+     ${amilab_bin_HDRS}
+)
+
 if (WIN32)
 SET(amilab_bin_SRCS
   ${amilab_bin_SRCS}
@@ -400,14 +412,16 @@ add_executable (${AMILAB_BIN} WIN32
 
 SET(amilab_ownlibs
   Language
+  WrapImports
   WrapVTK
   WrapFilters
   WrapSystem
   WrapITK
   WrapAMIFluid
   WrapWII
-  WrapCommon
   WrapInterface
+  WrapCommon
+  WrapWXSamples
   AMILab
   AMImage
   Contours
@@ -421,7 +435,6 @@ SET(amilab_ownlibs
   Line
   Math
   OpenGL
-  penguin
   Graphic
   wxParams
   SplineThevenaz
@@ -429,6 +442,9 @@ SET(amilab_ownlibs
   Vessels
   Common
   Voxels
+# wrapped wxwidgets samples
+  penguin
+  stctest
 )
 
 
@@ -468,12 +484,14 @@ TARGET_LINK_LIBRARIES( ${AMILAB_BIN}
   ${OPENGL_glu_LIBRARY}
   ${PTHREADS_LIBRARY}
   ${wxWidgets_LIBRARIES}
-  ${WX_gl}
+# should be included in wxWdigets_LIBRARIES already ...
+#  ${WX_gl}
   ${Boost_LIBRARIES}
 )
 
+# is it needed or already included by boost?
 IF(AMI_USE_ZLIB)
-  TARGET_LINK_LIBRARIES( ${AMILAB_BIN} ${ZLIB_LIBRARIES})
+#  TARGET_LINK_LIBRARIES( ${AMILAB_BIN} ${ZLIB_LIBRARIES})
 ENDIF(AMI_USE_ZLIB)
 
 IF(AMI_USE_BZIP2)
@@ -488,6 +506,15 @@ TARGET_LINK_LIBRARIES( ${AMILAB_BIN}
   winmm
 )
 endif (WIN32)
+
+
+IF(MSVC)
+  # NEED TO SPECIFY FOR EACH POSSIBLE CONFIGURATION
+  set_target_properties( ${AMILAB_BIN} 
+	PROPERTIES LINK_FLAGS_RELEASE "/NODEFAULTLIB:LIBCMT")
+  set_target_properties( ${AMILAB_BIN} 
+	PROPERTIES LINK_FLAGS_DEBUG "/NODEFAULTLIB:LIBCMTD")
+ENDIF(MSVC)
 
 IF(AMI_USE_FASTNLMEANS)
   TARGET_LINK_LIBRARIES( ${AMILAB_BIN}

@@ -9,10 +9,13 @@
 #include "ami_function.h"
 #include "ami_class.h"
 #include "ami_object.h"
+#include "ami_cpp_object.h"
 #include "FloatMatrix.hpp"
+#include "wrapfunction_class.h"
 
 #include <string>
 
+using namespace std;
 
 extern unsigned char       GB_debug;
 
@@ -51,16 +54,17 @@ void Variable::Init(vartype type, const char* name, void* p)
     case type_void: 
       _pointer = NULL; //new boost::shared_ptr<void>((void*)p); 
     break; //CREATE_CASE(type_void,         void)
-    CREATE_CASE(type_image,        InrImage)
-    CREATE_CASE(type_float,        float)
-    CREATE_CASE(type_int,          int)
-    CREATE_CASE(type_uchar,        unsigned char)
-    CREATE_CASE(type_string,       string)
-    CREATE_CASE(type_surface,      SurfacePoly)
-    CREATE_CASE(type_file,         FILE)
-    CREATE_CASE(type_ami_function, AMIFunction)
-    CREATE_CASE(type_ami_class,    AMIClass)
-    CREATE_CASE(type_ami_object,   AMIObject)
+    CREATE_CASE(type_image,          InrImage)
+    CREATE_CASE(type_float,          float)
+    CREATE_CASE(type_int,            int)
+    CREATE_CASE(type_uchar,          unsigned char)
+    CREATE_CASE(type_string,         string)
+    CREATE_CASE(type_surface,        SurfacePoly)
+    CREATE_CASE(type_file,           FILE)
+    CREATE_CASE(type_ami_function,   AMIFunction)
+    CREATE_CASE(type_ami_class,      AMIClass)
+    CREATE_CASE(type_ami_object,     AMIObject)
+    CREATE_CASE(type_ami_cpp_object, AMICPPObject)
     // don´t call the deleter for now because of a seg. fault
     // issue (29-06-09)
     CREATE_CASE_WXWINDOW(type_paramwin,     ParamBox)
@@ -83,6 +87,8 @@ void Variable::Init(vartype type, const char* name, void* p)
             (Viewer3D*)p,
             Viewer3D::deleter());
     break; 
+
+    CREATE_CASE(type_class_procedure, WrapClassMember);
 
     case type_c_procedure     : 
     case type_c_image_function:
@@ -119,23 +125,25 @@ using namespace boost;
     case type_void: 
       _pointer = NULL; //new boost::shared_ptr<void>((void*)p); 
     break; //CREATE_CASE(type_void,         void)
-    CREATE_CASE(type_image,        InrImage)
-    CREATE_CASE(type_float,        float)
-    CREATE_CASE(type_int,          int)
-    CREATE_CASE(type_uchar,        unsigned char)
-    CREATE_CASE(type_string,       string)
-    CREATE_CASE(type_surface,      SurfacePoly)
-    CREATE_CASE(type_file,         FILE)
-    CREATE_CASE(type_ami_function, AMIFunction)
-    CREATE_CASE(type_ami_class,    AMIClass)
-    CREATE_CASE(type_ami_object,   AMIObject)
-    CREATE_CASE(type_paramwin,     ParamBox)
-    CREATE_CASE(type_parampanel,   ParamPanel)
-    CREATE_CASE(type_matrix,       FloatMatrix)
-    CREATE_CASE(type_gltransform,  GLTransfMatrix)
-    CREATE_CASE(type_array,        VarArray)
-    CREATE_CASE(type_imagedraw,    DessinImage)
-    CREATE_CASE(type_surfdraw,     Viewer3D)
+    CREATE_CASE(type_image,           InrImage)
+    CREATE_CASE(type_float,           float)
+    CREATE_CASE(type_int,             int)
+    CREATE_CASE(type_uchar,           unsigned char)
+    CREATE_CASE(type_string,          string)
+    CREATE_CASE(type_surface,         SurfacePoly)
+    CREATE_CASE(type_file,            FILE)
+    CREATE_CASE(type_ami_function,    AMIFunction)
+    CREATE_CASE(type_ami_class,       AMIClass)
+    CREATE_CASE(type_ami_object,      AMIObject)
+    CREATE_CASE(type_ami_cpp_object,  AMICPPObject)
+    CREATE_CASE(type_paramwin,        ParamBox)
+    CREATE_CASE(type_parampanel,      ParamPanel)
+    CREATE_CASE(type_matrix,          FloatMatrix)
+    CREATE_CASE(type_gltransform,     GLTransfMatrix)
+    CREATE_CASE(type_array,           VarArray)
+    CREATE_CASE(type_imagedraw,       DessinImage)
+    CREATE_CASE(type_surfdraw,        Viewer3D)
+    CREATE_CASE(type_class_procedure, WrapClassMember)
     case type_c_procedure     : 
     case type_c_image_function:
     case type_c_function:
@@ -169,35 +177,37 @@ bool Variable::FreeMemory()
     cerr << "Variable::FreeMemory() " << _name << endl;
   switch(_type) {
     //      case type_void     : printf("void");     break;
-  case type_image        : FreeMemory<InrImage>();       break;
-  case type_float        : FreeMemory<float>();          break;
-  case type_int          : FreeMemory<int>();            break;
-  case type_uchar        : FreeMemory<unsigned char>();  break;
-  case type_string       : FreeMemory<string>();         break;
-  case type_imagedraw    : FreeMemory<DessinImage>();    break;
-  case type_surface      : FreeMemory<SurfacePoly>();    break;
-  case type_surfdraw     : FreeMemory<Viewer3D>();       break;
-  case type_ami_function : FreeMemory<AMIFunction>();    break;
-  case type_ami_class    : FreeMemory<AMIClass>();       break;
-  case type_ami_object   : FreeMemory<AMIObject>();      break;
-  case type_paramwin     : FreeMemory<ParamBox>();       break;
-  case type_parampanel   : FreeMemory<ParamPanel>();     break;
-  case type_matrix       : FreeMemory<FloatMatrix>();    break;
-  case type_gltransform  : FreeMemory<GLTransfMatrix>(); break;
-  case type_array        : FreeMemory<VarArray>();       break;
-  case type_file     :
-        // TODO: create a file class where the destructor closes the file 
-        // for a cleaner implementation ...
-        fclose( (*(boost::shared_ptr<FILE>*) _pointer).get()); 
+    case type_image           : FreeMemory<InrImage>();        break;
+    case type_float           : FreeMemory<float>();           break;
+    case type_int             : FreeMemory<int>();             break;
+    case type_uchar           : FreeMemory<unsigned char>();   break;
+    case type_string          : FreeMemory<string>();          break;
+    case type_imagedraw       : FreeMemory<DessinImage>();     break;
+    case type_surface         : FreeMemory<SurfacePoly>();     break;
+    case type_surfdraw        : FreeMemory<Viewer3D>();        break;
+    case type_ami_function    : FreeMemory<AMIFunction>();     break;
+    case type_ami_class       : FreeMemory<AMIClass>();        break;
+    case type_ami_object      : FreeMemory<AMIObject>();       break;
+    case type_ami_cpp_object  : FreeMemory<AMICPPObject>();    break;
+    case type_paramwin        : FreeMemory<ParamBox>();        break;
+    case type_parampanel      : FreeMemory<ParamPanel>();      break;
+    case type_matrix          : FreeMemory<FloatMatrix>();     break;
+    case type_gltransform     : FreeMemory<GLTransfMatrix>();  break;
+    case type_array           : FreeMemory<VarArray>();        break;
+    case type_class_procedure : FreeMemory<WrapClassMember>(); break;
+    case type_file           :
+          // TODO: create a file class where the destructor closes the file 
+          // for a cleaner implementation ...
+          fclose( (*(boost::shared_ptr<FILE>*) _pointer).get()); 
     break;
     case type_c_procedure     : 
     case type_c_image_function:
     case type_c_function:
       // no specific memory free here, since no smart pointer is used
     break;
-//  case type_c_function   : 
-//    fprintf(stderr, "delete of C function not available \n");
-//    break;
+    //  case type_c_function   : 
+    //    fprintf(stderr, "delete of C function not available \n");
+    //    break;
     default       : 
       CLASS_ERROR(boost::format("unknown type %1%") % _type << endl); 
     break;
@@ -245,6 +255,7 @@ const string Variable::GetTypeName()
     case type_file            : return string( "file"); 
   //  case type_c_function      : return string( "C function ");
     case type_c_procedure     : return string( "C procedure"); 
+    case type_class_procedure : return string( "C++ procedure member"); 
     case type_c_image_function: return string( "C image function");
     case type_c_function      : return string( "C function");
     case type_ami_function    : return string( "AMI function");
@@ -286,6 +297,7 @@ ostream& operator<<(ostream& o, const Variable& v)
     case type_file            : o << "file     "; break;
   //  case type_c_function      : o << ("C function ";       break;
     case type_c_procedure     : o << "C procedure ";       break;
+    case type_class_procedure : o << "C++ procedure member";       break;
     case type_c_image_function: o << "C image function ";  break;
     case type_c_function      : o << "C function ";        break;
     case type_ami_function    : o << "AMI function ";      break;

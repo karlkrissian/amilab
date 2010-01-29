@@ -789,18 +789,12 @@ printf("begin CreateVolume() \n");
 	    Px = (x1*b+x2*a)/(a+b);
 	    Py = (y1*b+y2*a)/(a+b);
 	    // get interpolated vector at (Px,Py)
-	    highpos->FixeVecteurCoord(0);
-	    vxl = highpos->InterpLinIntensite(Px,Py,0);
-	    highpos->FixeVecteurCoord(1);
-	    vyl = highpos->InterpLinIntensite(Px,Py,0);
-	    highpos->FixeVecteurCoord(2);
-	    vzl = highpos->InterpLinIntensite(Px,Py,0);
-	    highpos->FixeVecteurCoord(0);
-	    vxh = highpos->InterpLinIntensite(Px,Py,0);
-	    highpos->FixeVecteurCoord(1);
-	    vyh = highpos->InterpLinIntensite(Px,Py,0);
-	    highpos->FixeVecteurCoord(2);
-	    vzh = highpos->InterpLinIntensite(Px,Py,0);
+	    vxl = highpos->InterpLinIntensite(Px,Py,0,0);
+	    vyl = highpos->InterpLinIntensite(Px,Py,0,1);
+	    vzl = highpos->InterpLinIntensite(Px,Py,0,2);
+	    vxh = highpos->InterpLinIntensite(Px,Py,0,0);
+	    vyh = highpos->InterpLinIntensite(Px,Py,0,1);
+	    vzh = highpos->InterpLinIntensite(Px,Py,0,2);
 	    surf   ->AddPoint((vxl+vxh)/2.0,(vyl+vyh)/2.0,(vzl+vzh)/2.0);
 	    interpolated_points[nb_ipoints]=surf->GetNumberOfPoints()-1;
 	    if (nb_points==0) surf->NewPoly();
@@ -953,10 +947,6 @@ int InitCoordinates( int& i_offset, int& j_offset, TNavig& nav, std::string type
 	Calcula las coordenadas cartesianas 3D de los píxeles de una imagen MSG en función de sus altitudes,
 	usando como origen el centro de la esfera terrestre.
 
-	\param altitudes  Array con las altitudes de los píxeles de la imagen ordenados por filas
-	\param width, height  Ancho y alto de la imagen
-	\param type  Tipo de imagen ("NAtl" o "AfGG")
-	\param Coordenadas  Matriz devuelta con las 3 coordenadas cartesianas {x,y,z} para cada píxel
 */
 int coordenadas_esfera(InrImage* im, std::string type, float* coordenadas)
 //  ------------------
@@ -1079,19 +1069,14 @@ void Func_ElevateMesh(SurfacePoly* surf, InrImage* im)
       pt.pt.z =  im->InterpLinIntensite(x,y);
       break;
     case 2:
-      im->FixeVecteurCoord(0);
-      vx = im->InterpLinIntensite(x,y);
-      im->FixeVecteurCoord(1);
-      vy = im->InterpLinIntensite(x,y);
+      vx = im->InterpLinIntensite(x,y,0,0);
+      vy = im->InterpLinIntensite(x,y,0,1);
       pt.pt.Init( vx,vy,pt.Z());
       break;
     case 3:
-      im->FixeVecteurCoord(0);
-      vx = im->InterpLinIntensite(x,y);
-      im->FixeVecteurCoord(1);
-      vy = im->InterpLinIntensite(x,y);
-      im->FixeVecteurCoord(2);
-      vz = im->InterpLinIntensite(x,y);
+      vx = im->InterpLinIntensite(x,y,0,0);
+      vy = im->InterpLinIntensite(x,y,0,1);
+      vz = im->InterpLinIntensite(x,y,0,2);
       pt.pt.Init( vx,vy,vz);
       break;
       }

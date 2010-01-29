@@ -19,6 +19,7 @@
 #include "CoutwxString.h"
 #include "MainFrame.h"
 #include "ImageStack.h"
+#include "stctest.h"
 
 #include <wx/filename.h>
 
@@ -90,8 +91,8 @@ bool Driver::parse_stream(std::istream& in,
   this->lexer = previous_lexer;
 
   in_console   = in_console_bak;
-
-  return ( res== 0);
+  CLASS_MESSAGE(boost::format(" parsing result = %1%")%res);
+  return ( res==0);
 }
 
 //-----------------------------------------------------------
@@ -129,7 +130,7 @@ bool Driver::parse_commandline(const std::string &input, const std::string& snam
 }
 
 //-----------------------------------------------------------
-void Driver::error(const class location& l,
+int Driver::error(const class location& l,
 		   const std::string& m)
 {
     stringstream tmpstr;
@@ -143,15 +144,15 @@ void Driver::error(const class location& l,
               << endl
             << m 
             << std::endl;
-    err_print(tmpstr.str().c_str());
+    return err_print(tmpstr.str().c_str());
 }
 
 //-----------------------------------------------------------
-void Driver::error(const std::string& m)
+int Driver::error(const std::string& m)
 {
     stringstream tmpstr;
     tmpstr << m << std::endl;
-    err_print(tmpstr.str().c_str());
+    return err_print(tmpstr.str().c_str());
 }
 
 
@@ -437,13 +438,37 @@ void Driver::init_err_output()
 
 
 //--------------------------------------------------
-void Driver::err_print(const char* st) 
+int Driver::err_print(const char* st) 
 //   -----------------
 {
   *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString::FromAscii(st);
   string mess =  (format("Error %s \n") % st).str();
-  wxMessageDialog* err_msg = new wxMessageDialog(NULL,GetwxStr(mess),GetwxStr("Error"),wxOK | wxICON_ERROR);
-  err_msg->ShowModal();
+  if (InConsole()) 
+    mess = mess + " Abort current parsing ?";
+  else 
+    mess = mess + " Abort current parsing and open file?";
+
+  wxMessageDialog* err_msg = new wxMessageDialog(NULL,GetwxStr(mess),GetwxStr("Error"),wxYES_NO |  wxYES_DEFAULT  | wxICON_ERROR);
+
+  int res = err_msg->ShowModal();
+
+  if ((!InConsole())&&(res==wxID_YES)) {
+    // create application frame
+    StcTestFrame*  m_frame = new StcTestFrame ( wxT("AMILab editor"));
+    // open application frame
+    m_frame->Layout ();
+    m_frame->Show (true);
+    m_frame->FileOpen (wxString(this->current_file.c_str(),wxConvUTF8));
+    Edit* editor = m_frame->GetEditor();
+    // TODO: 
+    // - set show line numbers
+    // - set highlight C++
+    // - go to specific line
+    editor->ShowLineNumbers(true);
+    editor->GotoLine(this->yyiplineno-1);
+  }
+
+  return res;
 } // Driver::err_print()
 
 

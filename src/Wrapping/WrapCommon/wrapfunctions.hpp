@@ -16,7 +16,11 @@
 #include "surface.hpp"
 #include "inrimage.hpp"
 #include "paramlist.h"
+//#include "DessinImage.hpp"
 
+/*! \def HelpAndReturnVarPtr
+    \brief Shows help and return an empty smart pointer to a Variable
+*/
 #define HelpAndReturnVarPtr { \
   std::string mess; \
   mess = (boost::format("\n %s ( listofparameters )\n\n ")% functionname).str();\
@@ -27,6 +31,9 @@
   msg->ShowModal();\
   return Variable::ptr(); }
 
+/*! \def HelpAndReturn
+    \brief Shows help and returns
+*/
 #define HelpAndReturn { \
   std::string mess; \
   mess = (boost::format("\n %s ( listofparameters )\n\n ")% functionname).str();\
@@ -37,6 +44,9 @@
   msg->ShowModal();\
   return; } \
 
+/*! \def HelpAndReturnNULL
+    \brief Shows help and returns NULL pointer
+*/
 #define HelpAndReturnNULL { \
   std::string mess; \
   mess = (boost::format("\n %s ( listofparameters )\n\n ")% functionname).str();\
@@ -103,6 +113,11 @@ bool get_intvar_param(int*& arg, ParamList*p, int& num);
  * Function used to parse an image in a list of parameters
  */
 bool get_image_param(InrImage*& arg, ParamList*p, int& num);
+
+/**
+ * Function used to parse an image pointer in a list of parameters
+ */
+bool get_imageptr_param(InrImage::ptr& arg, ParamList*p, int& num);
 
 /**
  * Function used to parse an image in a list of parameters

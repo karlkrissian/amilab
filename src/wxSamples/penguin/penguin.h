@@ -62,7 +62,7 @@ private:
     TestGLCanvas *m_canvas;
 #endif
 
-    DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE();
 };
 
 #if wxUSE_GLCANVAS
@@ -92,7 +92,7 @@ private:
     GLData m_gldata;
     DXFRenderer m_renderer;
 
-    DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE();
 };
 
 #endif // #if wxUSE_GLCANVAS

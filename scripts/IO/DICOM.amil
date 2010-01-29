@@ -1,40 +1,43 @@
+
 if (!exists(DI_defined)) {
   DI_defined=1
-	import_itk
+	ami_import->ITK()
 	
 	proc DI_init() {
 		global_new
 		
 		DI_dicom_folder = "./dicomFolder/"
-    DI_output = "./output/"
+        DI_output = "./output/"
 		
-		DI_Gui()
+		global::DI_Gui()
 	}
 	
-	proc DI_Close() \
+  proc DI_Close() \
   {
-    DI_win.Hide
+    global::DI_win.Hide
     delvars "DI_*_draw"
     delvars "DI_*"
   }
   DI_Close.Comments("Close current script and delete its variables")
   
   proc DI_Run() {
-    itkDICOMReadWrite(DI_dicom_folder,DI_output)
+    itk = &global::itk
+    itk->DICOMReadWrite(global::DI_dicom_folder,global::DI_output)
     
-    global::DI_out=Image(DI_output)  
+    global::DI_out=Image(global::DI_output)  
     show DI_out
-	}
+  }
   
   proc DI_Gui() {
-		global::DI_win = ParamWin("DICOM")
+    global::DI_win = ParamWin("DICOM")
+    DI_win = &global::DI_win
     DI_win.BeginBook
 		
 			DI_win.AddPage("Init")
 			
 			DI_win.BeginBoxPanel("DICOM Folder")
         DI_win.BeginHorizontal
-          DI_win.AddString(DI_dicom_folder,"DICOM Folder")
+          DI_win.AddString(global::DI_dicom_folder,"DICOM Folder")
         DI_win.EndHorizontal
 			DI_win.EndBoxPanel
 			
@@ -42,19 +45,19 @@ if (!exists(DI_defined)) {
 			
 			DI_win.BeginBoxPanel("Output")
         DI_win.BeginHorizontal
-          DI_win.AddString(DI_output,"Output")
+          DI_win.AddString(global::DI_output,"Output")
         DI_win.EndHorizontal
 			DI_win.EndBoxPanel
 			
 			DI_win.AddPage("Run")
 			
 			DI_win.BeginBoxPanel("Processing")
-				DI_win.AddButton("Run", DI_Run)
+				DI_win.AddButton("Run", global::DI_Run)
 			DI_win.EndBoxPanel
 			
 		DI_win.EndBook
 		
-		DI_win.AddButton("Close",DI_Close)
+		DI_win.AddButton("Close",global::DI_Close)
 		
 		DI_win.update
     DI_win.Display

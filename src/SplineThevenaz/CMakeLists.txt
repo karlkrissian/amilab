@@ -7,7 +7,18 @@ include_directories (
   )
 
 SET(SplineThevenaz_SRCS
-  coeff.c interpol.c
+  coeff.c 
+  interpol.c
+)
+
+SET(SplineThevenaz_HDRS
+	coeff.h
+	interpol.h
+)
+
+SET(SplineThevenaz_SRCS
+     ${SplineThevenaz_SRCS}
+     ${SplineThevenaz_HDRS}
 )
 
 my_add_library ( SplineThevenaz)

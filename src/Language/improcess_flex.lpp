@@ -63,7 +63,7 @@ yyip::Parser::token::yytokentype checkvar(
       const char* varname, int context=-1);
 
 bool IsContext( const char* varname);
-Variable* IsObject(  const char* varname);
+Variable* IsObject(  const char* varname, int context=-1);
 
 using namespace std;
 
@@ -411,6 +411,7 @@ Flip              return(token::T_Flip);  /*{Flip,T_Flip}*/// flips image in one
 
 SetCompTransf     return(token::T_SetCompTransf); /*{SetCompTransf,T_SetCompTransf}*/
 
+RestartTime       return(token::T_RestartTime); /*{RestartTime,T_RestartTime}*/
 InitTime          return(token::T_InitTime); /*{InitTime,T_InitTime}*/
 TimeSpent         return(token::T_TimeSpent); /*{TimeSpent,T_TimeSpent}*/
 EndTime           return(token::T_EndTime); /*{EndTime,T_EndTime}*/
@@ -604,8 +605,6 @@ SetOpacityImage     return(token::T_SetOpacityImage); /*{SetOpacityImage,T_SetOp
 SetColorMaterial    return(token::T_SetColorMaterial); /*{SetColorMaterial,T_SetColorMaterial}*/
 SetVisible          return(token::T_SetVisible); /*{SetVisible,T_SetVisible}*/
 
-penguin           return(token::T_penguin); /*{penguin,T_penguin}*/
-
 PrintMatrices     return(token::T_PrintMatrices); /*{PrintMatrices,T_PrintMatrices}*/ // print the matrices of Viewer3D class
 
 AddObject         return(token::T_addobj); /*{AddObject,T_addobj}*/
@@ -727,14 +726,9 @@ PaintCallback     return(token::T_PaintCallback); /*{PaintCallback,T_PaintCallba
 
 CreateEllipsoids  return(token::T_CreateEllipsoids); /*{CreateEllipsoids,T_CreateEllipsoids}*/
 
-import_ami        return(token::T_import_ami);     /*{import_ami,T_import_ami}*/
-
 import_vtk        return(token::T_import_vtk);     /*{import_vtk,T_import_vtk}*/
-import_itk        return(token::T_import_itk);     /*{import_itk,T_import_itk}*/
 import_wii        return(token::T_import_wii);     /*{import_wii,T_import_wii}*/
 import_filters    return(token::T_import_filters); /*{import_filters,T_import_filters}*/
-import_sys        return(token::T_import_sys);     /*{import_sys,T_import_sys}*/
-import_mainframe  return(token::T_import_mainframe);     /*{import_mainframe,T_import_mainframe}*/
 
 amiOFCorr2D       return(token::T_amiOFCorr2D);  /*{amiOFCorr2D,T_amiOFCorr2D}*/
 amiOFVar2D        return(token::T_amiOFVar2D);   /*{amiOFVar2D,T_amiOFVar2D}*/
@@ -816,6 +810,10 @@ emptyargs         return(token::T_emptyargs);    /*{emptyargs,T_emptyargs}*/
 
 <str>\\(.|\n\r) cpp_string->append(1,YYText()[1]);
 
+<str>\# {
+  cpp_string->append(YYText());
+}
+
 <str>[^\\\n\r\"]+ {
   cpp_string->append(YYText());
 /*
@@ -878,8 +876,8 @@ emptyargs         return(token::T_emptyargs);    /*{emptyargs,T_emptyargs}*/
     block_level++;
     BEGIN(block);
   }
-}
 
+/*
 <block>\# {
 //============================ Parse comment ====================
 //
@@ -892,6 +890,8 @@ emptyargs         return(token::T_emptyargs);    /*{emptyargs,T_emptyargs}*/
     comment_caller = block;
     BEGIN(comment);
 //    printf("begin comment in block \n");
+}
+*/
 }
 
 <block>\r\n|[\r\n] {
@@ -1033,12 +1033,50 @@ this::([A-Za-z0-9_])*   {
 }
 
 
+::([A-Za-z0-9_])*->([A-Za-z0-9_])*   {
+// TODO: can all the variable system to return only variable from lex !!!
+// this rule is a hack
+//
+//============================ Parse variable in a given context ====================
+//
+  //cout << "::XX->XX variable in object ?" << endl;
+  string text(YYText());
+  size_t pos = text.find("->");
+  string contextname = text.substr(2,pos-2);
+
+  // TODO: check for context  with :: ??
+  //if (IsContext(contextname.c_str())) 
+  //  cout << "Context found" << endl;
+
+  // check if contextname is really a context
+  //cout << "looking for "<< contextname << endl;
+  Variable* var = IsObject(contextname.c_str(),OBJECT_CONTEXT_NUMBER);
+  if (var!=NULL) 
+  {
+    FILE_MESSAGE("Object found");
+    string varname = text.substr(pos+2);
+
+    AMIObject::ptr object = *(AMIObject::ptr*) var->Pointer();
+
+    Variables::ptr previous_ocontext = Vars.GetObjectContext();
+    Vars.SetObjectContext(object->GetContext());
+
+    yyip::Parser::token::yytokentype result = checkvar(yylval,varname.c_str(),OBJECT_CONTEXT_NUMBER);
+
+    Vars.SetObjectContext(previous_ocontext);
+    return result;
+  } else {
+    std::string error_string =" lex error \t object not found ";
+    GB_driver.yyiperror(error_string.c_str());
+  }
+}
+
 
 ([A-Za-z0-9_])*->([A-Za-z0-9_])*   {
 //
 //============================ Parse variable in a given context ====================
 //
-  cout << "variable in object ?" << endl;
+  //cout << "variable in object ?" << endl;
   string text(YYText());
   size_t pos = text.find("->");
   string contextname = text.substr(0,pos);
@@ -1068,6 +1106,9 @@ this::([A-Za-z0-9_])*   {
     GB_driver.yyiperror(error_string.c_str());
   }
 }
+
+
+
 
 
 ([A-Za-z0-9_])*   {
@@ -1128,12 +1169,12 @@ bool IsContext( const char* varname)
 //       IsObject()
 //--------------------------------------------------
 //
-Variable* IsObject( const char* varname)
+Variable* IsObject( const char* varname, int context)
 //
 {
   Variable* var;
-  if (Vars.GetVar(varname,&var))
-    if (var->Type() == type_ami_object) 
+  if (Vars.GetVar(varname,&var,context))
+    if ((var->Type() == type_ami_object)||(var->Type() == type_ami_cpp_object))
       return var;
     else 
       return NULL;
@@ -1179,6 +1220,8 @@ yyip::Parser::token::yytokentype checkvar(
         /*{$variable_file,VAR_FILE}*/
       case type_c_procedure:      return token::VAR_C_PROCEDURE;
         /*{$variable_c_procedure,VAR_C_PROCEDURE}*/
+      case type_class_procedure:      return token::VAR_CLASS_PROCEDURE;
+        /*{$variable_class_procedure,VAR_CLASS_PROCEDURE}*/
       case type_c_image_function: return token::VAR_C_IMAGE_FUNCTION;
         /*{$variable_c_image_function,VAR_C_IMAGE_FUNCTION}*/
       case type_c_function: return token::VAR_C_FUNCTION;

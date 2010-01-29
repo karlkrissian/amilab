@@ -17,9 +17,27 @@ include_directories (
 
 SET(Images_SRCS
       inrimage.cpp
+      ImageLinearInterpolator.cpp
 #      inrimage_base.cpp
 #      inrimage_compressee.cpp
 #      inrimage_all.cpp
+)
+
+SET(Images_HDRS
+	imageextent.h
+	inrimage.hpp
+  ImageLinearInterpolator.h
+  ImagePositionsBase.h
+  ImagePositions.h
+  ImagePositions.tpp
+  InrImageIteratorBase.h
+  InrImageIterator.h
+  InrImageIterator.tpp
+)
+
+SET(Images_SRCS
+     ${Images_SRCS}
+     ${Images_HDRS}
 )
 
 my_add_library (Images)

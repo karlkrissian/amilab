@@ -4,111 +4,143 @@
 # Data raw data into an image variable
 #
 
-if (exists(RRD_Init)) {
-  printn "RawFloat2Ami_gui.amil script already loaded, close it first"
-} else {
+if (!exists(RawFloat2AmiClass)) {
 
-  proc RRD_Init() {
-    global_new
-      RRD_dimx = INT(512)
-      RRD_dimy = INT(512)
-      RRD_dimz = INT(100)
-      RRD_dimv = INT(1)
-      RRD_typePix = INT(0)  # 0:UCHAR, 1:UINT, 2:INT, 3:FLOAT, 4:DOUBLE
-      RRD_endianess = INT(0)  # 0:Little, 1:Big
-      RRD_voxSizeX = 1
-      RRD_voxSizeY = 1
-      RRD_voxSizeZ = 1
-      RRD_file_name = ""
-      
-      RRD_Gui()
-  }
-  
-  #------------------------------------
-  proc RRD_Close() {
-    RRD_win.Hide
-    delvars "RRD_*_draw"
-    delvars "RRD_*"
+  Class RawFloat2AmiClass{
+
+    #----------------------------
+    proc ::Init() \
+    {
+	    ::class_name ="global::RawFloat2AmiClass"
+	    ::dimx = INT(512)
+      ::dimy = INT(512)
+      ::dimz = INT(100)
+      ::dimv = INT(1)
+      ::typePix = INT(0)  # 0:UCHAR, 1:UINT, 2:INT, 3:FLOAT, 4:DOUBLE
+      ::endianess = INT(0)  # 0:Little, 1:Big
+      ::voxSizeX = 1
+      ::voxSizeY = 1
+      ::voxSizeZ = 1
+      ::file_name = ""      
+      ::Gui()
+    }
+
+#----------------------------
+    proc ::Close() \
+    {
+      ::win.Hide
+      delvars GetObjectName(::Close)
+    }
+    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    
+    #----------------------------
+    proc ::CloseAll() \
+    {
+      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
+      ::Close
+    }
+    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    
+     #------------------------------------
+     proc ::Read() {
+      printn "Read"
+	    if (::typePix == 0) {
+     	 global::i = ReadRawImages(::dimx,::dimy,::dimz,UCHAR,::dimv,::endianess,::file_name)
+    	}
+      if (::typePix == 1) {
+          global::i = ReadRawImages(::dimx,::dimy,::dimz,UINT,::dimv,::endianess,::file_name)
+   	  }
+    	if (::typePix == 2) {
+        global::i = ReadRawImages(::dimx,::dimy,::dimz,INT,::dimv,::endianess,::file_name)
+    	}
+   	  if (::typePix == 3) {
+        global::i = ReadRawImages(::dimx,::dimy,::dimz,FLOAT,::dimv,::endianess,::file_name)
+    	}
+    	if (::typePix == 4) {
+        global::i = ReadRawImages(::dimx,::dimy,::dimz,DOUBLE,::dimv,::endianess,::file_name)
+    	}  
+      i.setvoxelsize(::voxSizeX, ::voxSizeY, ::voxSizeZ)
+
   }
 
-  #------------------------------------
-  proc RRD_Read() {
-  
-    printn "Read"
-    if (RRD_typePix == 0) {
-      global::i = ReadRawImages(RRD_dimx,RRD_dimy,RRD_dimz,UCHAR,RRD_dimv,RRD_endianess,RRD_file_name)
-    }
-    if (RRD_typePix == 1) {
-      global::i = ReadRawImages(RRD_dimx,RRD_dimy,RRD_dimz,UINT,RRD_dimv,RRD_endianess,RRD_file_name)
-    }
-    if (RRD_typePix == 2) {
-      global::i = ReadRawImages(RRD_dimx,RRD_dimy,RRD_dimz,INT,RRD_dimv,RRD_endianess,RRD_file_name)
-    }
-    if (RRD_typePix == 3) {
-      global::i = ReadRawImages(RRD_dimx,RRD_dimy,RRD_dimz,FLOAT,RRD_dimv,RRD_endianess,RRD_file_name)
-    }
-    if (RRD_typePix == 4) {
-      global::i = ReadRawImages(RRD_dimx,RRD_dimy,RRD_dimz,DOUBLE,RRD_dimv,RRD_endianess,RRD_file_name)
-    }
-  
-    i.setvoxelsize(RRD_voxSizeX, RRD_voxSizeY, RRD_voxSizeZ)
-  
-  }
-  
-  proc RRD_Save() {
+
+  proc ::Save() {
     i.save file_name-".raw"+".ami.gz"
   }
   
-  proc RRD_ShowImage() {
+  proc ::ShowImage() {
     global_new
   
     show i
   }
-  
-  proc RRD_Gui( ) {
-    global_new
-  
-    RRD_win = ParamWin("Read Raw")
 
-    RRD_win.BeginBook
-    RRD_win.AddPage("Init")
+proc ::Gui( ) {
   
-      RRD_win.BeginBox("Image dimensions and type")
-        RRD_win.AddInt    (RRD_dimx,0,1024)
-        RRD_win.AddInt    (RRD_dimy,0,1024)
-        RRD_win.AddInt    (RRD_dimz,0,1024)
+    ::win = ParamWin("Read Raw")
+
+    ::win.BeginBook
+    ::win.AddPage("Init")
   
-        pi_typePix = RRD_win.AddEnum   (RRD_typePix)
-          RRD_win.AddEnumChoice(pi_typePix,"UCHAR")
-          RRD_win.AddEnumChoice(pi_typePix,"UINT")
-          RRD_win.AddEnumChoice(pi_typePix,"INT")
-          RRD_win.AddEnumChoice(pi_typePix,"FLOAT")
-          RRD_win.AddEnumChoice(pi_typePix,"DOUBLE")
-        pi_endianess  = RRD_win.AddEnum   (RRD_endianess,2)
-          RRD_win.AddEnumChoice(pi_endianess,"Little")
-          RRD_win.AddEnumChoice(pi_endianess,"Big")
-      RRD_win.EndBox
-      RRD_win.BeginBox("Voxel size")
-        RRD_win.AddFloat    (RRD_voxSizeX,0,10)
-        RRD_win.AddFloat    (RRD_voxSizeY,0,10)
-        RRD_win.AddFloat    (RRD_voxSizeZ,0,10)
-      RRD_win.EndBox
+      ::win.BeginBox("Image dimensions and type")
+        ::win.AddInt    (::dimx,0,1024)
+        ::win.AddInt    (::dimy,0,1024)
+        ::win.AddInt    (::dimz,0,1024)
   
-      RRD_win.AddFilename(RRD_file_name, "Read raw image", ".", "*")
+        global::pi_typePix = ::win.AddEnum   (::typePix)
+          ::win.AddEnumChoice(global::pi_typePix,"UCHAR")
+          ::win.AddEnumChoice(global::pi_typePix,"UINT")
+          ::win.AddEnumChoice(global::pi_typePix,"INT")
+          ::win.AddEnumChoice(global::pi_typePix,"FLOAT")
+          ::win.AddEnumChoice(global::pi_typePix,"DOUBLE")
+        pi_endianess  = ::win.AddEnum   (::endianess,2)
+          ::win.AddEnumChoice(pi_endianess,"Little")
+          ::win.AddEnumChoice(pi_endianess,"Big")
+      ::win.EndBox
+      ::win.BeginBox("Voxel size")
+        ::win.AddFloat    (::voxSizeX,0,10)
+        ::win.AddFloat    (::voxSizeY,0,10)
+        ::win.AddFloat    (::voxSizeZ,0,10)
+      ::win.EndBox
+  
+      ::win.AddFilename(::file_name, "Read raw image", ".", "*")
     
-      RRD_win.BeginHorizontal
-        RRD_win.AddButton("Read",     RRD_Read)
-        RRD_win.AddButton("Show",     RRD_ShowImage)
-      RRD_win.EndHorizontal
-      RRD_win.AddButton("Save as ami.gz", RRD_Save)
-    RRD_win.EndBook
-    RRD_win.AddButton("Close",RRD_Close)
+      ::win.BeginHorizontal
+        ::win.AddButton("Read",     ::Read)
+        ::win.AddButton("Show",     ::ShowImage)
+      ::win.EndHorizontal
+      ::win.AddButton("Save as ami.gz", ::Save)
+    ::win.EndBook
+    ::win.BeginHorizontal
+      ::win.AddButton("Close",      ::Close)
+      ::win.AddButton("Close All",  ::CloseAll)
+    ::win.EndHorizontal
   
-    RRD_win.update
-    RRD_win.Display
+    ::win.update
+    ::win.Display
     
   }
-  
-  RRD_Init()
+  ::Init
 }
-# end else if exists(RRD_Init)
+
+}
+# end if (!exists(RawFloat2Ami_gui)
+
+
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(rrd)) {
+
+  RawFloat2AmiClass rrd
+  
+  if (argc>=1) {
+    printn "reading image"
+    input = Image($1)
+    rrd->image_name = "input"
+    rrd->win.update
+  }
+
+} else {
+  InfoDialog "The script seems to be already loaded."
+}

@@ -1,6 +1,7 @@
 #!/usr/bin/amilab
 
 printn argc
+printn $1
 
 i = Image($1)
 show i

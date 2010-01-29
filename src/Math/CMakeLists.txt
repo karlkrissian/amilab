@@ -11,4 +11,18 @@ SET(Math_SRCS
   math1.cpp
 )
 
+SET(Math_HDRS
+	complex.hpp
+	Coordonnees.hpp
+	CurvaturasPrincipales.hpp
+	Eigen.hpp
+	FloatMatrix.hpp
+	math1.hpp
+)
+
+SET(Math_SRCS
+	 ${Math_SRCS}
+     ${Math_HDRS}
+)
+
 my_add_library (Math )
