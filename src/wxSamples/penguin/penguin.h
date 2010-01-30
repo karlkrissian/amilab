@@ -23,6 +23,8 @@
 #endif
 
 #include "wx/glcanvas.h"
+#include <wx/frame.h>
+
 
 extern "C"
 {

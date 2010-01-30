@@ -124,7 +124,7 @@ public:
   Chaine _nom_classe;
 
   ///
-  Constructeur NomClasse( const Chaine& nom):_nom_classe(nom) {}
+   NomClasse( const Chaine& nom):_nom_classe(nom) {}
 
 };
 
@@ -143,7 +143,7 @@ public:
   Chaine _nom_methode;
 
   ///
-  Constructeur NomMethode( const Chaine& classe="?", 
+   NomMethode( const Chaine& classe="?", 
 			   const Chaine& fichier="?",
 			   const Chaine& methode="?"):
     NomClasse(classe),
@@ -175,7 +175,7 @@ protected:
 public:
 
   /// constructeur
-  Constructeur Exception( const Chaine& mess): _message(mess) 
+   Exception( const Chaine& mess): _message(mess) 
   {
     NomMethode* top;
     top = GB_pile_nom_methode.Top();
@@ -203,7 +203,7 @@ protected:
 public:
 
   /// constructeur
-  Constructeur ExceptionErreur( const Chaine& mess) : Exception( mess) 
+   ExceptionErreur( const Chaine& mess) : Exception( mess) 
   {
   }
 
@@ -228,7 +228,7 @@ protected:
 public:
 
   /// constructeur
-  Constructeur ExceptionWarning( const Chaine& mess) : Exception( mess) 
+   ExceptionWarning( const Chaine& mess) : Exception( mess) 
   {
   }
 
@@ -247,7 +247,7 @@ class WarningDivers: public ExceptionWarning
 public:
 
   ///
-  Constructeur WarningDivers( const Chaine& mess) :   ExceptionWarning(mess)
+   WarningDivers( const Chaine& mess) :   ExceptionWarning(mess)
   {
    _type = WARNING_DIVERS;
     Si GB_AfficheWarning AlorsFait cerr << *this;
@@ -265,7 +265,7 @@ class ErreurDivers: public ExceptionErreur
 public:
 
   ///
-  Constructeur ErreurDivers( const Chaine& mess) : 
+   ErreurDivers( const Chaine& mess) : 
     ExceptionErreur(mess)
   {
     _type = ERREUR_DIVERS; 
@@ -284,7 +284,7 @@ class ErreurParametres: public ExceptionErreur
 public:
 
   ///
-  Constructeur ErreurParametres( const Chaine& mess) : 
+   ErreurParametres( const Chaine& mess) : 
     ExceptionErreur(mess)
   {
     _type = ERREUR_PARAMETRES;
@@ -303,7 +303,7 @@ class ErreurAllocation: public ExceptionErreur
 public:
 
   ///
-  Constructeur ErreurAllocation( const Chaine& mess) : 
+   ErreurAllocation( const Chaine& mess) : 
     ExceptionErreur(mess)
   {
     _type = ERREUR_ALLOCATION;
@@ -322,7 +322,7 @@ class ErreurCalcul: public ExceptionErreur
 public:
 
   ///
-  Constructeur ErreurCalcul( Chaine& mess) : 
+   ErreurCalcul( Chaine& mess) : 
     ExceptionErreur(mess)
   {
      _type = ERREUR_CALCUL;
@@ -354,7 +354,7 @@ class GestionErreurs
 public:
 
   ///
-  Constructeur GestionErreurs( const Chaine nomclasse)
+   GestionErreurs( const Chaine nomclasse)
   //           --------------
 {
   _nom_classe = nomclasse;
@@ -365,7 +365,7 @@ public:
 
 
   ///
-  Destructeur  GestionErreurs();
+  ~ GestionErreurs();
   //
 
   ///

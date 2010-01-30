@@ -35,8 +35,8 @@ void wrap_ImageAddScalar( ParamList* p)
     int mode = 1;
     int n=0;
 
-  if (!get_imageptr_param( input,       p, n)) HelpAndReturn;
-  if (!get_float_param(    val,         p, n)) HelpAndReturn;
+  if (!get_varptr_param<InrImage>( input,       p, n)) HelpAndReturn;
+  if (!get_param<float>(    val,         p, n)) HelpAndReturn;
   if (!get_int_param(      num_threads, p, n)) HelpAndReturn;
   if (!get_int_param(      mode,        p, n)) HelpAndReturn;
 

@@ -50,7 +50,7 @@
 
 #include "style.hpp"
 
-DebutDeclareC
+extern "C" {
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
@@ -58,20 +58,20 @@ DebutDeclareC
 //#include <epidaure.h>
 //#include <epidaure.ee>
 //#include <epi_extrem.ei>
-FinDeclareC
+}
 
 #include "Coordonnees.hpp"
 #include "Voxel.hpp"
 #include "IsoLigne2.hpp"
 #include "CreeCrest.hpp"
-#include "FiltreRec.hpp"
+#include "GeneralGaussianFilter.h"
 
 
 #include "FloatMatrix.hpp"
 
 extern unsigned char   debug;
 extern int          type_filtre;
-extern FiltreRecursif* filtre;
+extern GeneralGaussianFilter* filtre;
 extern InrImage*       image;
 extern CreeCrest* crest_lignes;
 extern CreeCrest* crest_lignes2;
@@ -175,7 +175,7 @@ protected:
 public:
 
   ///
-Constructeur CalculBoule(): GestionErreurs("CalculBoule"), 
+ CalculBoule(): GestionErreurs("CalculBoule"), 
 			    H_3D(3,3), VP_3D(3,3)
   {
     
@@ -195,7 +195,7 @@ Constructeur CalculBoule(): GestionErreurs("CalculBoule"),
   }
 
   ///
-  Destructeur  CalculBoule()
+  ~ CalculBoule()
   {
     
       int i;

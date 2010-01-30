@@ -188,8 +188,8 @@ void wrap_itkWrite(ParamList* p)
   std::string*  fname = NULL;
   int n=0;
   
-  if (!get_image_param(  input,      p, n)) HelpAndReturn;
-  if (!get_string_param( fname, p, n)) HelpAndReturn;
+  if (!get_var_param<InrImage>(  input,      p, n)) HelpAndReturn;
+  if (!get_var_param<string>( fname, p, n)) HelpAndReturn;
 
   itkWrite(input,*fname);
 

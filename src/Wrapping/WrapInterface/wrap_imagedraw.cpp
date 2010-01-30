@@ -70,8 +70,8 @@ void wrap_ImageDraw( ParamList* p)
   DessinImage::ptr imdraw;
   std::string* object_name = NULL;
 
-  if (!get_imagedraw_param( imdraw,      p, n)) HelpAndReturn;
-  if (!get_string_param(    object_name, p, n)) HelpAndReturn;
+  if (!get_varptr_param<DessinImage>( imdraw,      p, n)) HelpAndReturn;
+  if (!get_var_param<string>(    object_name, p, n)) HelpAndReturn;
 
   AddWrapImageDraw(imdraw,*object_name);
 }
@@ -169,10 +169,10 @@ void wrap_ImageDrawDrawLine::CallProc( ParamList* p)
   int update = 0;
   int n=0;
 
-  if (!get_float_param( x1, p, n)) HelpAndReturn;
-  if (!get_float_param( y1, p, n)) HelpAndReturn;
-  if (!get_float_param( x2, p, n)) HelpAndReturn;
-  if (!get_float_param( y2, p, n)) HelpAndReturn;
+  if (!get_param<float>( x1, p, n)) HelpAndReturn;
+  if (!get_param<float>( y1, p, n)) HelpAndReturn;
+  if (!get_param<float>( x2, p, n)) HelpAndReturn;
+  if (!get_param<float>( y2, p, n)) HelpAndReturn;
   if (!get_int_param(   update, p, n)) HelpAndReturn;
 
   //imdraw->FixeParametresLigne( 1, wxDOT, wxCAP_ROUND, wxJOIN_MITER);

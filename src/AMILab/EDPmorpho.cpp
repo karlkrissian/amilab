@@ -157,17 +157,17 @@ float ContinuousMorphology::NormGradient( float* buf_image,
 
   norm = 0;
 
-  SelonQue Schema Vaut
+  switch ( Schema ){
 
-    Valeur SCHEMA_OS:
-    Valeur SCHEMA_BM:
+    case SCHEMA_OS:
+    case SCHEMA_BM:
       norm += Schema1D( dxm, dxp, Vitesse);
       norm += Schema1D( dym, dyp, Vitesse);
       norm += Schema1D( dzm, dzp, Vitesse);
       norm = sqrt(norm);
-    FinValeur
+    break;
 
-    Valeur SCHEMA_AUTRE:
+    case SCHEMA_AUTRE:
       Si Vitesse>0 Alors
         // 6 voisins proches
         norm = 0;
@@ -292,9 +292,9 @@ float ContinuousMorphology::NormGradient( float* buf_image,
 */
       FinSi
 
-    FinValeur
+    break;
 
-  FinSelonQue
+  } // end switch
 
 
   return norm;
@@ -313,22 +313,22 @@ double ContinuousMorphology::Schema1D( float Dm, float Dp, float F)
     double res;
 
   res = 0;
-  SelonQue Schema Vaut
+  switch ( Schema ){
 
-    Valeur SCHEMA_OS:
+    case SCHEMA_OS:
       Si F*Dm < 0 AlorsFait res += Dm*Dm;
       Si F*Dp > 0 AlorsFait res += Dp*Dp;
-    FinValeur
+    break;
 
-    Valeur SCHEMA_BM:
-    Valeur SCHEMA_AUTRE:
+    case SCHEMA_BM:
+    case SCHEMA_AUTRE:
       Si F*Dm < 0 AlorsFait res  = Dm*Dm;
       Si F*Dp > 0 AlorsFait
         Si Dp*Dp > res AlorsFait 
                             res = Dp*Dp;
-    FinValeur
+    break;
 
-  FinSelonQue
+  } // end switch
 
   return res;
 
@@ -348,10 +348,10 @@ void ContinuousMorphology::Iteration( InrImage* image1, InrImage* image2, float 
     float   Vitesse=0;
     unsigned char skip;
 
-  SelonQue type Vaut
-    Valeur DILATE: Vitesse = 1;    FinValeur
-    Valeur ERODE:  Vitesse = -1;   FinValeur
-  FinSelonQue
+  switch ( type ){
+    case DILATE: Vitesse = 1;    break;
+    case ERODE:  Vitesse = -1;   break;
+  } // end switch
 
 
   image2->InitBuffer();
@@ -439,10 +439,10 @@ InrImage* ContinuousMorphology::EDP( InrImage* entree,
 
   dt1 = size / nb_iter;
 
-  SelonQue type Vaut
+  switch ( type ){
 
-    Valeur ERODE:
-    Valeur DILATE:
+    case ERODE:
+    case DILATE:
       (*image_in) = (*entree);
       Pour(n,0,nb_iter-1)
         if (GB_debug) {
@@ -457,9 +457,9 @@ InrImage* ContinuousMorphology::EDP( InrImage* entree,
         Iteration( image_in, image_out, dt1, type);
       FinPour
       if (GB_debug) printf("\n");
-    FinValeur
+    break;
 
-    Valeur OUVERTURE:
+    case OUVERTURE:
       (*image_in) = (*entree);
       Pour(n,0,nb_iter-1)
         if (GB_debug) {
@@ -490,9 +490,9 @@ InrImage* ContinuousMorphology::EDP( InrImage* entree,
       FinPour
       if (GB_debug) printf("\n");
 
-    FinValeur
+    break;
 
-    Valeur FERMETURE:
+    case FERMETURE:
       (*image_in) = (*entree);
       Pour(n,0,nb_iter-1)
         if (GB_debug) {
@@ -522,9 +522,9 @@ InrImage* ContinuousMorphology::EDP( InrImage* entree,
       FinPour
       if (GB_debug) printf("\n");
 
-    FinValeur
+    break;
 
-  FinSelonQue
+  } // end switch
 
   delete image_in;
   return image_out;

@@ -4,6 +4,12 @@
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
   ${AMILAB_SOURCE_DIR}
+  ${AMILAB_SOURCE_DIR}/ImageTool
+  ${AMILAB_SOURCE_DIR}/OpenGL
+  ${AMILAB_SOURCE_DIR}/Crest
+  ${AMILAB_SOURCE_DIR}/Voxels
+  ${AMILAB_SOURCE_DIR}/Coordonnees
+  ${AMILAB_SOURCE_DIR}/Vaisseaux
   ${AMILAB_SOURCE_DIR}/wxSamples/penguin
   ${AMILAB_SOURCE_DIR}/wxSamples/stctest
   ${Boost_INCLUDE_DIR}

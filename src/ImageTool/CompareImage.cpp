@@ -98,8 +98,8 @@ void CompareImage :: InitMinMax( )
 //============================================================================================
 
 //----------------------------------------------------------------
-// Defaut int l=650, int h=400
-CompareImage :: Constructeur CompareImage( wxWindow* parent,
+// default int l=650, int h=400
+CompareImage ::  CompareImage( wxWindow* parent,
                          char* ATitle, InrImage::ptr image, 
                           DessinImage* dessin_image, int l, int h)
                    : DessinImage( parent, ATitle, image, dessin_image->_param,
@@ -107,7 +107,7 @@ CompareImage :: Constructeur CompareImage( wxWindow* parent,
 {
 
   Si GB_debug AlorsFait
-    fprintf(stderr," Constructeur CompareImage() \n");
+    fprintf(stderr,"  CompareImage() \n");
 
   // Les parametres ne sont pas visibles au depart
 //  _param_dialog->FermeDialogue( );
@@ -149,13 +149,13 @@ CompareImage :: Constructeur CompareImage( wxWindow* parent,
   _palette->SetColorsRec(_Maide->PullDown());
 */
   Si GB_debug AlorsFait
-    printf("Fin de CompareImage::Constructeur \n");
+    printf("Fin de CompareImage:: \n");
 
-} // Constructeur
+} // Constructor
 
 
 //----------------------------------------------------------------
-CompareImage :: Destructeur CompareImage()
+CompareImage :: ~CompareImage()
 //                       -----------
 {
 
@@ -164,7 +164,7 @@ CompareImage :: Destructeur CompareImage()
     printf("CompareImage Destructor\n");
   this->FermerFenetre();
 
-} // Destructeur
+} // Destructor
 
 // -------------------------------------------------------------------------
 //

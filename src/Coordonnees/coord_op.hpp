@@ -36,10 +36,10 @@ private:
 public:
 
   ///
-  Constructeur CoordImage( InrImage* inrimage = NULL);
+   CoordImage( InrImage* inrimage = NULL);
   
   ///
-  Destructeur  CoordImage();
+  ~ CoordImage();
 
   ///
   Vect3D<float> CoordImage2Reelles( const Vect3D<float>& v);

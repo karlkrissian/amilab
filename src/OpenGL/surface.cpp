@@ -353,7 +353,7 @@ void GLObject  :: DisplayObject(GLMaterialParam* mat)
 // Surface
 //======================================================================
 
-Surface :: Destructeur Surface()
+Surface :: ~Surface()
 //
 {
 
@@ -808,7 +808,7 @@ int Surface :: BColor( int u, int v)
 
 
 //----------------------------------------------------------------------
-SurfacePoly :: Constructeur SurfacePoly()
+SurfacePoly ::  SurfacePoly()
 //
 {
 
@@ -827,12 +827,12 @@ SurfacePoly :: Constructeur SurfacePoly()
 
   _picked_line = -1;
 
-} // Constructeur SurfacePoly()
+} // Constructor SurfacePoly()
 
 
 #ifndef _WITHOUT_VTK_
 //----------------------------------------------------------------------
-SurfacePoly :: Constructeur SurfacePoly( vtkPolyData* vtkpoly)
+SurfacePoly ::  SurfacePoly( vtkPolyData* vtkpoly)
 //
 {
 
@@ -853,17 +853,17 @@ SurfacePoly :: Constructeur SurfacePoly( vtkPolyData* vtkpoly)
 
   AddVTKPoly(vtkpoly);
 
-} // Constructeur SurfacePoly()
+} // Constructor SurfacePoly()
 #endif // _WITHOUT_VTK_
 
 
 //----------------------------------------------------------------------
-SurfacePoly :: Destructeur SurfacePoly()
+SurfacePoly :: ~SurfacePoly()
 //
 {
  // printf("called ~SurfacePoly() nb points %d\n",
  //NbPoints() );
-} // Destructeur SurfacePoly()
+} // Destructor SurfacePoly()
 
 
 #ifndef _WITHOUT_VTK_

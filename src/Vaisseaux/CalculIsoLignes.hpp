@@ -53,18 +53,18 @@
 
 #include "style.hpp"
 
-DebutDeclareC
+extern "C" {
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
 #include <stdlib.h>
-FinDeclareC
+}
 
 #include "Coordonnees.hpp"
 #include "Voxel.hpp"
 #include "IsoLigne2.hpp"
 #include "CreeCrest.hpp"
-#include "FiltreRec.hpp"
+#include "GeneralGaussianFilter.h"
 
 #include "FloatMatrix.hpp"
 
@@ -80,7 +80,7 @@ class CalculIsoLignes : public GestionErreurs
   ///
   int          type_filtre;
   ///
-  FiltreRecursif* filtre;
+  GeneralGaussianFilter* filtre;
   ///
   InrImage*       image;
   ///
@@ -161,8 +161,8 @@ protected:
 public:
 
   ///
-  Constructeur CalculIsoLignes(  int          p_type_filtre,
-                 FiltreRecursif* p_filtre,
+   CalculIsoLignes(  int          p_type_filtre,
+                 GeneralGaussianFilter* p_filtre,
                  InrImage*       p_image,
                  CreeCrest*      p_crest_lignes):
     GestionErreurs("CalculIsoLignes"),H_3D(3,3), VP_3D(3,3)
@@ -188,7 +188,7 @@ public:
   }
 
   ///
-  Destructeur  CalculIsoLignes()
+  ~ CalculIsoLignes()
   {
     
       int i;

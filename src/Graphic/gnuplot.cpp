@@ -49,7 +49,7 @@
 #include "gnuplot.hpp"
 
 //----------------------------------------------------------------------
-GnuPlot :: Constructeur GnuPlot( )
+GnuPlot ::  GnuPlot( )
 //
 {
 
@@ -77,11 +77,11 @@ GnuPlot :: Constructeur GnuPlot( )
   _auto_sup = true;
   _auto_inf = true;
 
-} // Constructeur
+} // Constructor
 
 
 //----------------------------------------------------------------------
-GnuPlot :: Destructeur GnuPlot()
+GnuPlot :: ~GnuPlot()
 //
 {
 
@@ -102,7 +102,7 @@ GnuPlot :: Destructeur GnuPlot()
   delete [] _nb_points;
 
 
-} // Destructeur
+} // Destructor
 
 
 //----------------------------------------------------------------------
@@ -221,12 +221,12 @@ void GnuPlot :: SaveData( int num_courbe, int type)
     return;
   FinSi
 
-  SelonQue type Vaut  
-    Valeur TYPE_GNUPLOT: nom_donnees = _nom_donnees[num_courbe] + ".dat";
-    FinValeur
-    Valeur TYPE_SECTION: nom_donnees = _nom_donnees[num_courbe] + ".sec";
-    FinValeur
-  FinSelonQue
+  switch ( type ){  
+    case TYPE_GNUPLOT: nom_donnees = _nom_donnees[num_courbe] + ".dat";
+    break;
+    case TYPE_SECTION: nom_donnees = _nom_donnees[num_courbe] + ".sec";
+    break;
+  } // end switch
 
   Si _auto_inf Alors  
     _xmin = _tabx[0][0];
@@ -242,14 +242,14 @@ void GnuPlot :: SaveData( int num_courbe, int type)
       Si _auto_inf Et _tabx[num_courbe][i]<_xmin AlorsFait _xmin = _tabx[num_courbe][i];
       Si _auto_inf Et _taby[num_courbe][i]<_ymin AlorsFait _ymin = _taby[num_courbe][i];
 
-      SelonQue type Vaut  
-        Valeur TYPE_GNUPLOT:
+      switch ( type ){  
+        case TYPE_GNUPLOT:
           fprintf( fic_donnees, "%f\t%f\n", _tabx[num_courbe][i], _taby[num_courbe][i]);
-        FinValeur
-        Valeur TYPE_SECTION:
+        break;
+        case TYPE_SECTION:
           fprintf( fic_donnees, "%f\n", _taby[num_courbe][i]);
-        FinValeur
-      FinSelonQue
+        break;
+      } // end switch
 
     FinPour
     fclose( fic_donnees);

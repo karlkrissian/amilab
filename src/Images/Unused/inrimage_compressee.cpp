@@ -127,32 +127,32 @@ unsigned char InrImageCompressee :: Alloue( )
   printf("allocation de %s \t taille = %d \n", (char*) _nom, 
          _nb_points*TailleFormat[_format]*_vdim);
 
-  SelonQue (WORDTYPE) _format Vaut
+  switch ( (WORDTYPE) _format ){
 
-  //    Valeur WT_DOUBLE:        
-  //   Valeur WT_UNSIGNED_CHAR: 
-  //  Valeur WT_UNSIGNED_SHORT:
-  //  Valeur WT_SIGNED_SHORT:  
-  //  Valeur WT_SIGNED_INT:  
+  //    case WT_DOUBLE:        
+  //   case WT_UNSIGNED_CHAR: 
+  //  case WT_UNSIGNED_SHORT:
+  //  case WT_SIGNED_SHORT:  
+  //  case WT_SIGNED_INT:  
 
-    Valeur WT_FLOAT:         
+    case WT_FLOAT:         
       _valeurs_FLOAT = new FORMAT_FLOAT[_nb_points+1];
       _valeurs_FLOAT[0] = 0;
-    FinValeur
+    break;
 
-  //  Valeur WT_RGB:
+  //  case WT_RGB:
 
-    Valeur WT_FLOAT_VECTOR:
+    case WT_FLOAT_VECTOR:
       _valeurs_FLOAT_VECTOR = new FORMAT_FLOAT_VECTOR[3*(_nb_points+1)];
       _valeurs_FLOAT_VECTOR[0] =
       _valeurs_FLOAT_VECTOR[1] =
       _valeurs_FLOAT_VECTOR[2] = 0.0;
-    FinValeur
+    break;
 
     default:
 	break;
 
-  FinSelonQue
+  } // end switch
 
     _amimage = (amimage*) (*_masque_positions);
   _amimage_allocated = false;
@@ -173,21 +173,21 @@ unsigned char InrImageCompressee :: Desalloue( )
 
   printf("liberation de %s \n", (char*) _nom);
 
-  SelonQue (WORDTYPE) _format Vaut
+  switch ( (WORDTYPE) _format ){
 
-  //    Valeur WT_DOUBLE:        
-  //   Valeur WT_UNSIGNED_CHAR: 
-  //  Valeur WT_UNSIGNED_SHORT:
-  //  Valeur WT_SIGNED_SHORT:  
-  //  Valeur WT_SIGNED_INT:  
-  //  Valeur WT_RGB:
+  //    case WT_DOUBLE:        
+  //   case WT_UNSIGNED_CHAR: 
+  //  case WT_UNSIGNED_SHORT:
+  //  case WT_SIGNED_SHORT:  
+  //  case WT_SIGNED_INT:  
+  //  case WT_RGB:
 
-    Valeur WT_FLOAT:         delete [] _valeurs_FLOAT;         FinValeur
-    Valeur WT_FLOAT_VECTOR:  delete [] _valeurs_FLOAT_VECTOR;  FinValeur
-    Defaut:
+    case WT_FLOAT:         delete [] _valeurs_FLOAT;         break;
+    case WT_FLOAT_VECTOR:  delete [] _valeurs_FLOAT_VECTOR;  break;
+    default:
     fprintf(stderr,"inrimage_compressee, only FLOAT and FLOAT_VECTOR available\n");
 
-  FinSelonQue
+  } // end switch
 
   _amimage_allocated = false;
 //  _inrimage_allouee = false;
@@ -216,9 +216,9 @@ unsigned char InrImageCompressee :: InitPositions( )
 
 
 //--------------------------------------------------------------------------
-// Defaut  char* nom=NULL
+// default  char* nom=NULL
 //
-InrImageCompressee :: Constructeur InrImageCompressee(  WORDTYPE format, 
+InrImageCompressee ::  InrImageCompressee(  WORDTYPE format, 
 //                                 --------  
 					      char* nom, InrImage* image, 
 					      int nb_points)
@@ -260,13 +260,13 @@ InrImageCompressee :: Constructeur InrImageCompressee(  WORDTYPE format,
 
 
 //--------------------------------------------------------------------------
-InrImageCompressee :: Destructeur InrImageCompressee()
+InrImageCompressee :: ~InrImageCompressee()
 //                    -----------
 {
 
   Si _amimage_allocated AlorsFait Desalloue();
 
-} // Destructeur
+} // Destructor
 
 
 //----------------------------------------------------------------
@@ -306,7 +306,7 @@ unsigned char InrImageCompressee :: operator=(InrImage& im)
 //----------------------------------------------------------------
 // Initialisation du buffer correspondant au type de l'image
 // a la position souhait�
-// Defaut int pos = 0
+// default int pos = 0
 void InrImageCompressee :: InitBuffer( int pos )
 //                         ---------
 {

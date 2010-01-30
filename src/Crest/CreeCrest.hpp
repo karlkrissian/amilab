@@ -80,7 +80,7 @@ public:
   float rayon;
   float proba;
 
-  Constructeur pt3DReel() : Point_3D<float>(), rayon(1.0), proba(0.0) {}
+   pt3DReel() : Point_3D<float>(), rayon(1.0), proba(0.0) {}
 
 } pt3DReel;
 
@@ -175,15 +175,15 @@ public:
  */
 //@{
   /**
-   {\em Constructeur}
+   {\em Constructor}
    @param tx dimension en X de l'image
    @param ty dimension en Y de l'image
    @param tz dimension en Z de l'image
    */
-  Constructeur CreeCrest( int tx, int ty, int tz);
+   CreeCrest( int tx, int ty, int tz);
 
   ///
-  Destructeur CreeCrest();
+  ~CreeCrest();
 //@}
 
   /**

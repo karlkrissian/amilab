@@ -39,8 +39,8 @@ InrImage* itkRecursiveGaussianImageFilter2D(ParamList* p)
   InrImage* res = NULL;
   int n=0;
   
-  if (!get_image_param(  input,      p, n)) HelpAndReturnNULL;
-  if (!get_float_param(  sigma,    p, n)) HelpAndReturnNULL;
+  if (!get_var_param<InrImage>(  input,      p, n)) HelpAndReturnNULL;
+  if (!get_param<float>(  sigma,    p, n)) HelpAndReturnNULL;
   if (!get_int_param(  N_A_S,      p, n)) HelpAndReturnNULL;
   if (!get_int_param( order,   p, n)) HelpAndReturnNULL;
  
@@ -155,8 +155,8 @@ InrImage* itkRecursiveGaussianImageFilter3D(ParamList* p)
   InrImage* res = NULL;
   int n=0;
   
-  if (!get_image_param(  input,      p, n)) HelpAndReturnNULL;
-  if (!get_float_param(  sigma,    p, n)) HelpAndReturnNULL;
+  if (!get_var_param<InrImage>(  input,      p, n)) HelpAndReturnNULL;
+  if (!get_param<float>(  sigma,    p, n)) HelpAndReturnNULL;
   if (!get_int_param(  N_A_S,      p, n)) HelpAndReturnNULL;
   if (!get_int_param( order,   p, n)) HelpAndReturnNULL;
  

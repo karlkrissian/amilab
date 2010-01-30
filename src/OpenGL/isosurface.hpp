@@ -98,7 +98,7 @@ public:
   int faces[2];
   int _etat;
 
-  Constructeur Segment()
+   Segment()
     {
       nbre_faces = 0;
       _etat = SEGMENT_NON_TESTE;
@@ -138,7 +138,7 @@ public:
   int points[4];
   int pts_trouves[4];
 
-  Constructeur Face()
+   Face()
   {
     nb_pts_inters = 0;
   }
@@ -180,7 +180,7 @@ public:
   int     pts_voisins[2];
   int     nb_voisins;
 
-  Constructeur PointIntersection() 
+   PointIntersection() 
   {
     ATraiter   = true;
     nb_voisins = 0;
@@ -235,7 +235,7 @@ public:
 
   int pt[3];
 
-  Constructeur Intersection()
+   Intersection()
   {
     pt[0] =
     pt[1] =
@@ -281,9 +281,9 @@ class ImagePoints
 
 public:
 
-  Constructeur ImagePoints( int tx, int ty, int tz);
+   ImagePoints( int tx, int ty, int tz);
 
-  Destructeur ImagePoints();
+  ~ImagePoints();
 
   int AddPoint( int x, int y, int z, Segment& seg, pt3D& pt);
 
@@ -333,7 +333,7 @@ public:
   TableauDyn<TPolygone> tabPoly;
 
 
-  Constructeur IsoSurface(  InrImage::ptr image);
+   IsoSurface(  InrImage::ptr image);
   //
 
   virtual ~IsoSurface();
@@ -406,7 +406,7 @@ class Cube
 public:  
 
   //--------------------------------------------------
-  Constructeur Cube( );
+   Cube( );
 
 
   //--------------------------------------------------

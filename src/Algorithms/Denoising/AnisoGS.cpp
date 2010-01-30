@@ -1066,14 +1066,14 @@ void AnisoGS::ComputeImage_c(InrImage* im)
 //----------------------------------------------------------------------------------
 void AnisoGS::Smooth(InrImage* image, float sigma)
 {
-    FiltreRecursif* filtre;
+    GeneralGaussianFilter* filtre;
 
-  filtre = new FiltreRecursif(image, MODE_3D);
+  filtre = new GeneralGaussianFilter(image, MODE_3D);
 //  filtre->SetScaleUnit(PIXEL_SPACE);
   filtre->Utilise_Image(   true);
   filtre->UtiliseGradient( false);
   filtre->InitDerivees();
-  filtre->FixeFacteurSupport(4);
+  filtre->SetSupportSize(4);
 
   filtre->GammaNormalise(  true);
 
@@ -1104,7 +1104,7 @@ printf("sig1 %f sig2 %f \n",sigma1,sigma2);
     Vect3D<double>  grad;
 //    int             niter;
     InrImage*       image;
-    FiltreRecursif* filtre;
+    GeneralGaussianFilter* filtre;
 //    char            resname[100];
 
   double tmp;
@@ -1139,13 +1139,13 @@ printf("sig1 %f sig2 %f \n",sigma1,sigma2);
 
 
   // Initialisation des images des d�riv�es 
-  filtre = new FiltreRecursif(image, MODE_3D);
+  filtre = new GeneralGaussianFilter(image, MODE_3D);
 //  filtre->SetScaleUnit(PIXEL_SPACE);
   filtre->Utilise_Image(   false);
   filtre->UtiliseGradient( true);
   filtre->InitDerivees();
   filtre->GammaNormalise( true);
-  filtre->FixeFacteurSupport(5);
+  filtre->SetSupportSize(5);
   filtre->InitFiltre( sigma1, MY_FILTRE_CONV);  
   filtre->CalculFiltres( );
 
@@ -4850,7 +4850,7 @@ void AnisoGS::Init(InrImage* in,
   Si use_filtre_rec Alors
     filtre_rec = new FiltrageRec(this->image_lissee);
   Sinon
-    filtre = new FiltreRecursif(image_entree, 
+    filtre = new GeneralGaussianFilter(image_entree, 
         mode);
     filtre->GammaNormalise(false);
     filtre->InitFiltre( sigma, MY_FILTRE_CONV );  

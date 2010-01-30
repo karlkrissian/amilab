@@ -13,16 +13,16 @@
 
 #include "dif_param.hpp"
 
-DebutDeclareC
+extern "C" {
 #include <math.h>
 //#include <epidaure.h>
 //#include <epidaure.ee>
-FinDeclareC
+};
 
 //-------------------------------------------
-Structure t_Hessien 
+struct t_Hessien 
 //        ---------
-DebutStructure
+{
 
   double xx;
   double xy;
@@ -31,12 +31,12 @@ DebutStructure
   double yz;
   double zz;
 
-FinStructure // t_Hessien
+}; // t_Hessien
 
 //-------------------------------------------
-Structure t_Gradient
+struct t_Gradient
 //        ----------
-DebutStructure
+{
 
   double x;
   double y;
@@ -53,7 +53,7 @@ DebutStructure
   double norme;
   double norme2;
 
-FinStructure // t_Gradient
+}; // t_Gradient
 
 //==========================================================================
 class DirPrincipales
@@ -67,10 +67,10 @@ protected:
 
 public:
 
-  Constructeur DirPrincipales() {}
+   DirPrincipales() {}
   //----------
 
-  Destructeur DirPrincipales( ) {}
+  ~DirPrincipales( ) {}
   //---------
 
   void FixeGradient( float gx, float gy, float gz);

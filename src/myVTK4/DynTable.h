@@ -38,7 +38,7 @@ template < class T > class TableauDyn;
 //===========================================================================
 /**
    class tableau de base
-   Les elts sont numérotés en commencant par 0 ...
+   Les elts sont numï¿½rotï¿½s en commencant par 0 ...
  */
 template < class T >
 class TableauDyn
@@ -53,25 +53,25 @@ private:
   /// Taille maximale du tableau
   int _nbelts_alloues;      
 
-  /// Tableau d'éléments
+  /// Tableau d'ï¿½lï¿½ments
   T* _tableau;
 
-  /// Augmentation du nombre d'éléments alloués (x2) et recopie du tableau
+  /// Augmentation du nombre d'ï¿½lï¿½ments allouï¿½s (x2) et recopie du tableau
   Boolean Resize();
   //      ------
 
 public:
 
   /**
-   Changement du nombre d'éléments alloués et recopie du tableau
-   la valeur taille doit etre supérieure a _nbelts_utilises
+   Changement du nombre d'ï¿½lï¿½ments allouï¿½s et recopie du tableau
+   la valeur taille doit etre supï¿½rieure a _nbelts_utilises
   */
   Boolean Resize( int taille);
   //      ------
 
   /**
-    {\em Constructeur}
-    @param n_max nombre d'éléments alloués
+    {\em Constructor}
+    @param n_max nombre d'ï¿½lï¿½ments allouï¿½s
    */
   TableauDyn( int n_max = 2)
   //----------
@@ -84,7 +84,7 @@ public:
 
 
   /**
-    {\em Constructeur de copie}
+    {\em Constructor de copie}
    */
   TableauDyn( const TableauDyn<T>& elt)
   //----------
@@ -101,7 +101,7 @@ public:
       _tableau[i] = elt._tableau[i];
     }
 
-  } // Constructeur de copie
+  } // Constructor de copie
 
 
 
@@ -116,7 +116,7 @@ public:
 
 
   /**
-    Accès à l'élément n
+    Accï¿½s ï¿½ l'ï¿½lï¿½ment n
    */
   T& operator[](int n) const throw(OutOfArray);
   // ----------
@@ -131,21 +131,21 @@ public:
 
   //-------------------------------------------------------
   /**
-    Ajout d'un élément à la fin du tableau
+    Ajout d'un ï¿½lï¿½ment ï¿½ la fin du tableau
     */
   TableauDyn<T>&  operator+=( T elt);
   //              -----------
 
 
   //-------------------------------------------------------
-  /** Insertion d'un élément à la position n
+  /** Insertion d'un ï¿½lï¿½ment ï¿½ la position n
     */
   void Insere( int pos, T elt);
   //   ------
 
 
   //-------------------------------------------------------
-  /** Suppression d'un élément à la position n
+  /** Suppression d'un ï¿½lï¿½ment ï¿½ la position n
     */
   void Supprime( int pos);
   //   --------
@@ -164,7 +164,7 @@ public:
 
 
   //-------------------------------------------------------
-  /** Nombre d'éléments du tableau
+  /** Nombre d'ï¿½lï¿½ments du tableau
    */
   int NbElts() const { return _nbelts_utilises; }
   //     ------
@@ -211,8 +211,8 @@ public:
 //#include "TableauDyn.hpp.template"
 
 //
-// Définition des methode de la classe TableauDyn générique
-// dans ce fichier pour eviter des conflit à la generation de la documentation
+// Dï¿½finition des methode de la classe TableauDyn gï¿½nï¿½rique
+// dans ce fichier pour eviter des conflit ï¿½ la generation de la documentation
 
 
 //--------------------------------------------------------------------------
@@ -235,7 +235,7 @@ template<class T> Boolean TableauDyn<T> :: Resize( )
 
 //---------------------------------------------------------
 //
-//  {\em Constructeur de copie}
+//  {\em Constructor de copie}
 //
 
 //--------------------------------------------------------------------------
@@ -299,7 +299,7 @@ TableauDyn<T>& TableauDyn<T> :: operator=(  TableauDyn<T> elt)
 
 //-------------------------------------------------------
 //
-//    Ajout d'un élément à la fin du tableau
+//    Ajout d'un ï¿½lï¿½ment ï¿½ la fin du tableau
 //  
 template<class T>
 TableauDyn<T>& TableauDyn<T> :: operator+=( T elt)
@@ -316,7 +316,7 @@ TableauDyn<T>& TableauDyn<T> :: operator+=( T elt)
 
 //-------------------------------------------------------
 /**
-   Insertion d'un élément à la position n
+   Insertion d'un ï¿½lï¿½ment ï¿½ la position n
   */
 template<class T>
 void TableauDyn<T> :: Insere( int pos, T elt)
@@ -339,7 +339,7 @@ void TableauDyn<T> :: Insere( int pos, T elt)
 
 
 //-------------------------------------------------------
-/** Suppression d'un élément à la position n
+/** Suppression d'un ï¿½lï¿½ment ï¿½ la position n
   */
 template<class T> void TableauDyn<T> :: Supprime( int pos)
 //                                                --------

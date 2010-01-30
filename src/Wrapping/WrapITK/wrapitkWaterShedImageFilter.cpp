@@ -38,9 +38,9 @@ InrImage* itkWaterShedImageFilter2D(ParamList* p)
   InrImage* res = NULL;
   int n=0;
 	
-	if (!get_image_param(  input,      p, n)) HelpAndReturnNULL;
-	if (!get_float_param(  lowerThreshold,      p, n)) HelpAndReturnNULL;
-	if (!get_float_param(  outputScaleLevel,      p, n)) HelpAndReturnNULL;
+	if (!get_var_param<InrImage>(  input,      p, n)) HelpAndReturnNULL;
+	if (!get_param<float>(  lowerThreshold,      p, n)) HelpAndReturnNULL;
+	if (!get_param<float>(  outputScaleLevel,      p, n)) HelpAndReturnNULL;
 	
 	typedef float               PixelType;
   const   unsigned int        Dimension = 2;
@@ -111,9 +111,9 @@ InrImage* itkWaterShedImageFilter3D(ParamList* p)
   InrImage* res = NULL;
   int n=0;
 	
-	if (!get_image_param(  input,      p, n)) HelpAndReturnNULL;
-	if (!get_float_param(  lowerThreshold,      p, n)) HelpAndReturnNULL;
-	if (!get_float_param(  outputScaleLevel,      p, n)) HelpAndReturnNULL;
+	if (!get_var_param<InrImage>(  input,      p, n)) HelpAndReturnNULL;
+	if (!get_param<float>(  lowerThreshold,      p, n)) HelpAndReturnNULL;
+	if (!get_param<float>(  outputScaleLevel,      p, n)) HelpAndReturnNULL;
 	
 	typedef float               PixelType;
   const   unsigned int        Dimension = 3;

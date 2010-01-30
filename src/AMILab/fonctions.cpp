@@ -28,7 +28,7 @@
 
 #include "fonctions.h"
 
-#include "FiltreRec.hpp"
+#include "GeneralGaussianFilter.h"
 
 #include "Coordonnees.hpp"
 
@@ -180,7 +180,7 @@ InrImage* Func_Filter( InrImage* im, float sigma,
 
   InrImage*       image_entree;
   InrImage*       image_res;
-  FiltreRecursif* filtre;
+  GeneralGaussianFilter* filtre;
   std::string     resname;
   int             mode;
 
@@ -202,7 +202,7 @@ InrImage* Func_Filter( InrImage* im, float sigma,
     mode = MODE_2D; 
   FinSi
 
-  filtre = new FiltreRecursif( image_entree,  mode);
+  filtre = new GeneralGaussianFilter( image_entree,  mode);
 
   filtre->GammaNormalise(false);
   filtre->InitFiltre( sigma, MY_FILTRE_CONV );  
@@ -229,7 +229,7 @@ InrImage* Func_NormGrad( InrImage* im, float sigma,
   InrImage*       image_entree;
   InrImage*       image_der;
   InrImage*       image_res;
-  FiltreRecursif* filtre;
+  GeneralGaussianFilter* filtre;
   std::string     resname;
   int             mode;
   double          tmp;
@@ -255,11 +255,11 @@ InrImage* Func_NormGrad( InrImage* im, float sigma,
     mode = MODE_2D; 
   FinSi
 
-  filtre = new FiltreRecursif( image_entree,  mode);
+  filtre = new GeneralGaussianFilter( image_entree,  mode);
 
   filtre->GammaNormalise(false);
   filtre->InitFiltre( sigma, MY_FILTRE_CONV );  
-  filtre->FixeFacteurSupport(support);
+  filtre->SetSupportSize(support);
 
 
   Si mode == MODE_2D Alors
@@ -652,7 +652,7 @@ InrImage* Func_Gradient( InrImage* im, float sigma )
   InrImage*       image_entree;
   InrImage*       image_der;
   InrImage*       image_res;
-  FiltreRecursif* filtre;
+  GeneralGaussianFilter* filtre;
   std::string     resname;
   int             mode;
 
@@ -680,7 +680,7 @@ InrImage* Func_Gradient( InrImage* im, float sigma )
   image_der = new InrImage(WT_FLOAT, resname.c_str() , im);
 
 
-  filtre = new FiltreRecursif( image_entree,  mode);
+  filtre = new GeneralGaussianFilter( image_entree,  mode);
 
   filtre->GammaNormalise(false);
   filtre->InitFiltre( sigma, MY_FILTRE_CONV );  
@@ -864,7 +864,7 @@ InrImage* Func_SecDerGrad( InrImage* im, float sigma )
   
     InrImage*       image_entree;
     InrImage*       image_res;
-    FiltreRecursif* filtre;
+    GeneralGaussianFilter* filtre;
     int             mode;
     std::string     resname;
     int           x,y,z;
@@ -889,7 +889,7 @@ InrImage* Func_SecDerGrad( InrImage* im, float sigma )
     mode = MODE_2D; 
   FinSi
 
-  filtre = new FiltreRecursif(image_entree,  mode);
+  filtre = new GeneralGaussianFilter(image_entree,  mode);
 
   filtre->Utilise_Image(   false);
   filtre->UtiliseHessien(  true);
@@ -959,7 +959,7 @@ InrImage* Func_SecDerGrad2( InrImage* im, float sigma )
   
     InrImage*       image_entree;
     InrImage*       image_res;
-    FiltreRecursif* filtre;
+    GeneralGaussianFilter* filtre;
     int             mode;
     std::string     resname;
     int           x,y,z;
@@ -984,7 +984,7 @@ InrImage* Func_SecDerGrad2( InrImage* im, float sigma )
     mode = MODE_2D; 
   FinSi
 
-  filtre = new FiltreRecursif(image_entree,  mode);
+  filtre = new GeneralGaussianFilter(image_entree,  mode);
 
   filtre->DontUseVoxelSize();
   filtre->Utilise_Image(   false);
@@ -1055,7 +1055,7 @@ InrImage* Func_SecDerGradOld( InrImage* im, float sigma )
     InrImage*       image_entree;
     InrImage*       image_res;
     InrImage*       image_lissee;
-    FiltreRecursif* filtre;
+    GeneralGaussianFilter* filtre;
     int             mode;
     std::string     resname;
 
@@ -1074,7 +1074,7 @@ InrImage* Func_SecDerGradOld( InrImage* im, float sigma )
     mode = MODE_2D; 
   FinSi
 
-  filtre = new FiltreRecursif( im,  mode);
+  filtre = new GeneralGaussianFilter( im,  mode);
   filtre->GammaNormalise(false);
   filtre->InitFiltre( sigma, MY_FILTRE_CONV );  
 
@@ -1583,8 +1583,8 @@ SurfacePoly* Func_isosurf( InrImage::ptr image, float seuil, InrImage* mask,
   Si coord_system <0 AlorsFait coord_system = 0;
   Si coord_system >2 AlorsFait coord_system = 2;
 
-  SelonQue coord_system Vaut
-    Valeur 0:
+  switch ( coord_system ){
+    case 0:
       Pour( n, 0, isosurface->_image_points->NbPoints()-1)
         pt = isosurface->_image_points->Point(n);
        surf->AddPoint( pt.x*image->_size_x+translation[0], 
@@ -1595,9 +1595,9 @@ SurfacePoly* Func_isosurf( InrImage::ptr image, float seuil, InrImage* mask,
         // The vectors are already normalized ...
         surf->SetNorm( norm.x, norm.y, norm.z);
       FinPour  
-    FinValeur
+    break;
 
-    Valeur 1:
+    case 1:
       Pour( n, 0, isosurface->_image_points->NbPoints()-1)
         pt = isosurface->_image_points->Point(n);
         surf->AddPoint( pt.x+translation[0],
@@ -1610,9 +1610,9 @@ SurfacePoly* Func_isosurf( InrImage::ptr image, float seuil, InrImage* mask,
                norm.y*image->_size_y, 
                norm.z*image->_size_z);
       FinPour  
-    FinValeur
+    break;
 
-    Valeur 2:
+    case 2:
       Pour( n, 0, isosurface->_image_points->NbPoints()-1)
         pt = isosurface->_image_points->Point(n);
 
@@ -1634,9 +1634,9 @@ SurfacePoly* Func_isosurf( InrImage::ptr image, float seuil, InrImage* mask,
         surf->SetNorm( norm.x, norm.y, norm.z);
 
       FinPour  
-    FinValeur
+    break;
 
-  FinSelonQue
+  } // end switch
 
 
   // Write the polygones

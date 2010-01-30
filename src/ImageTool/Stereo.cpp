@@ -65,7 +65,7 @@
 #ifndef WIN32
 #if 0
 //-----------------------------------------------------------------------------------
-Stereo :: Constructeur Stereo( float d_yeux, float d_oeil_ecran, float d_ecran_objet,
+Stereo ::  Stereo( float d_yeux, float d_oeil_ecran, float d_ecran_objet,
 //                  ------------
                                          float pixel_cm)
 {
@@ -79,11 +79,11 @@ Stereo :: Constructeur Stereo( float d_yeux, float d_oeil_ecran, float d_ecran_o
 
   _angle = 2*atan( _dist_yeux/2.0/(_dist_oeil_ecran + _dist_ecran_objet));
 
-} // Constructeur
+} // Constructor
 
 
 //-----------------------------------------------------------------------------------
-Stereo :: Destructeur Stereo()
+Stereo :: ~Stereo()
 //                  -----------
 {
 
@@ -93,7 +93,7 @@ Stereo :: Destructeur Stereo()
     _image_stereo_data = NULL;
   FinSi
 
-} // Destructeur
+} // Destructor
 
 
 //-----------------------------------------------------------------------------------

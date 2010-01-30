@@ -108,7 +108,7 @@ public:
   }
 
   /**
-  * 
+  * Get the pointer of the variable value, points to a smart pointer.
   * @return Pointer of the variable, points to a smart pointer
   */
   void* Pointer() const { return _pointer;}

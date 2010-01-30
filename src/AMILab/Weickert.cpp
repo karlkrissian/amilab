@@ -59,7 +59,7 @@ static InrImage* m22  = NULL;
 
 //static InrImage*       image_coherence = NULL;
 
-static FiltreRecursif*  filtre;
+static GeneralGaussianFilter*  filtre;
 
 //-------- Parameters
 static int     mode;
@@ -189,9 +189,9 @@ void Lissage( InrImage* image, float sigma, InrImage* mask)
 {
 
   
-    FiltreRecursif* filtre;
+    GeneralGaussianFilter* filtre;
 
-  filtre = new FiltreRecursif(image, MODE_3D);
+  filtre = new GeneralGaussianFilter(image, MODE_3D);
   filtre->SetScaleUnit(PIXEL_SPACE);
   filtre->Utilise_Image(   true);
   filtre->UtiliseGradient( false);
@@ -654,7 +654,7 @@ InrImage* Func_InitWeickert(InrImage* in,
   filtre = NULL;
   image_lissee = new InrImage( WT_FLOAT, "image_lissee.inr.gz", in);
 
-  filtre = new FiltreRecursif(image_entree, 
+  filtre = new GeneralGaussianFilter(image_entree, 
 				mode);
   filtre->GammaNormalise(false);
   filtre->InitFiltre( sigma, MY_FILTRE_CONV );  
@@ -713,7 +713,7 @@ InrImage* Func_InitWeickertCoherence(InrImage* in,
   filtre = NULL;
   image_lissee = new InrImage( WT_FLOAT, "image_lissee.inr.gz", in);
 
-  filtre = new FiltreRecursif(image_entree, 
+  filtre = new GeneralGaussianFilter(image_entree, 
 				mode);
   filtre->GammaNormalise(false);
   filtre->InitFiltre( sigma, MY_FILTRE_CONV );  

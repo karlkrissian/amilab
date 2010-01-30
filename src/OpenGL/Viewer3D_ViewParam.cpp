@@ -192,14 +192,14 @@ void Viewer3D_ViewParam::CB_XY_proj( void* cd)
     glGetDoublev(GL_MODELVIEW_MATRIX, (GLdouble*) matrix);
   glc->DepileMatrice();
 
-  SelonQue glc->_mouse_action Vaut
-    Valeur MOUSE_MOVE_OBJECT:
+  switch ( glc->_mouse_action ){
+    case MOUSE_MOVE_OBJECT:
       glc->_Tobject.SetRotation(matrix);
-    FinValeur
-    Valeur MOUSE_MOVE_BASIS:
+    break;
+    case MOUSE_MOVE_BASIS:
       glc->_Tbasis.SetRotation(matrix);
-    FinValeur
-  FinSelonQue
+    break;
+  } // end switch
 
   glc->Paint();
 
@@ -220,14 +220,14 @@ void Viewer3D_ViewParam::CB_XZ_proj( void* cd)
     glGetDoublev(GL_MODELVIEW_MATRIX, (GLdouble*) matrix);
   glc->DepileMatrice();
 
-  SelonQue glc->_mouse_action Vaut
-    Valeur MOUSE_MOVE_OBJECT:
+  switch ( glc->_mouse_action ){
+    case MOUSE_MOVE_OBJECT:
       glc->_Tobject.SetRotation(matrix);
-    FinValeur
-    Valeur MOUSE_MOVE_BASIS:
+    break;
+    case MOUSE_MOVE_BASIS:
       glc->_Tbasis.SetRotation(matrix);
-    FinValeur
-  FinSelonQue
+    break;
+  } // end switch
 
   glc->Paint();
 
@@ -249,14 +249,14 @@ void Viewer3D_ViewParam::CB_YZ_proj( void* cd)
     glGetDoublev(GL_MODELVIEW_MATRIX, (GLdouble*) matrix);
   glc->DepileMatrice();
 
-  SelonQue glc->_mouse_action Vaut
-    Valeur MOUSE_MOVE_OBJECT:
+  switch ( glc->_mouse_action ){
+    case MOUSE_MOVE_OBJECT:
       glc->_Tobject.SetRotation(matrix);
-    FinValeur
-    Valeur MOUSE_MOVE_BASIS:
+    break;
+    case MOUSE_MOVE_BASIS:
       glc->_Tbasis.SetRotation(matrix);
-    FinValeur
-  FinSelonQue
+    break;
+  } // end switch
 
   glc->Paint();
 
@@ -388,33 +388,33 @@ void Viewer3D_ViewParam::CB_SauveImage( void* cd)
 
       glLoadIdentity();
 
-      SelonQue glc->_mouse_action Vaut
-        Valeur MOUSE_MOVE_OBJECT:
+      switch ( glc->_mouse_action ){
+        case MOUSE_MOVE_OBJECT:
           glc->_Tbasis.GLApplyInvRotation();
           glRotatef( var_x, 0.0, 1.0, 0.0);
           glRotatef( var_y, 1.0, 0.0, 0.0);
           glc->_Tbasis.GLApplyRotation();
           glc->_Tobject.GLApplyRotation();
           glGetDoublev(GL_MODELVIEW_MATRIX, (GLdouble*) matrix);
-        FinValeur
-        Valeur MOUSE_MOVE_BASIS:
+        break;
+        case MOUSE_MOVE_BASIS:
           glRotatef( var_x, 0.0, 1.0, 0.0);
           glRotatef( var_y, 1.0, 0.0, 0.0);
           glc->_Tbasis.GLApplyRotation();
           glGetDoublev(GL_MODELVIEW_MATRIX, (GLdouble*) matrix);
-        FinValeur
-      FinSelonQue
+        break;
+      } // end switch
 
     glc->DepileMatrice();
 
-    SelonQue glc->_mouse_action Vaut
-      Valeur MOUSE_MOVE_OBJECT:
+    switch ( glc->_mouse_action ){
+      case MOUSE_MOVE_OBJECT:
         glc->_Tobject.SetRotation(matrix);
-      FinValeur
-      Valeur MOUSE_MOVE_BASIS:
+      break;
+      case MOUSE_MOVE_BASIS:
         glc->_Tbasis.SetRotation(matrix);
-      FinValeur
-    FinSelonQue
+      break;
+    } // end switch
 
    glc->Paint();
 

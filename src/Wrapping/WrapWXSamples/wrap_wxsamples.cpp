@@ -110,7 +110,7 @@ void wrap_stctest( ParamList* p)
   std::string* filename = NULL;
   int line_number = 0;
   
-  if (!get_string_param( filename,    p, n)) HelpAndReturn;
+  if (!get_var_param<string>( filename,    p, n)) HelpAndReturn;
   if (!get_int_param( line_number,    p, n)) HelpAndReturn;
 
   // create application frame

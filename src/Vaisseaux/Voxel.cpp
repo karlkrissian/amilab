@@ -149,9 +149,9 @@ int Voxel :: DetermineSommet( PtFace& pt)
 
 
 //-----------------------------------------------------------------------------------------
-/** <b> Constructeur </b>
+/** <b> Constructor </b>
  */
-Voxel :: Constructeur Voxel( ) 
+Voxel ::  Voxel( ) 
   : GestionErreurs(Chaine("Voxel"))
 //
 {
@@ -180,9 +180,9 @@ Voxel :: Constructeur Voxel( )
 
 
 //-----------------------------------------------------------------------------------------
-/** <b> Destructeur </b>
+/** <b> Destructor </b>
  */
-Voxel :: Destructeur Voxel()
+Voxel :: ~Voxel()
 //
 {
 

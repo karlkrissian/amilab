@@ -32,7 +32,7 @@
 //  class de base permettant de creer une fenetre de dessin
 //  Avec les fonctions de base : dessin de ligne, de polygones, etc ...
 //  
-//  Karl KRISSIAN		Sophia Antipolis, 	le 6-08-96
+//  Karl KRISSIAN   Sophia Antipolis,   le 6-08-96
 //
 
 
@@ -53,7 +53,7 @@
 #include <Xm/DrawingA.h>
 #include <Xm/MainW.h>*/
 //#include <GL/gl.h>
-//#include <GL/glx.h>	      /* this includes the necessary X headers */
+//#include <GL/glx.h>       /* this includes the necessary X headers */
 
 #include <stdio.h>
 //#include <iostream.h>
@@ -94,25 +94,25 @@ class FenetreDessin:  public wxFrame
 
 protected:
 
-  static FenetreDessin* _this;	// Utile pour les actions
+  static FenetreDessin* _this;  // Utile pour les actions
 
   Chaine        _name;
 
   int        _type;
 
-  int	_hauteur;
-  int	_largeur;
+  int _hauteur;
+  int _largeur;
 
   CPalette*     _palette;
   unsigned char       _palette_allouee;
 
-//  Colormap	_color_map;
+//  Colormap  _color_map;
 
-  int	_pos_x;
-  int	_pos_y;
+  int _pos_x;
+  int _pos_y;
 
-  int	_souris_x;
-  int	_souris_y;
+  int _souris_x;
+  int _souris_y;
 
 //  Display* display;
 //  Window   fenetre;
@@ -153,15 +153,15 @@ protected:
 
 public:
 
-//  Widget	_drawing_area;
+//  Widget  _drawing_area;
   wxWindow*     _drawing_window;
 
-  Constructeur FenetreDessin( 
-	  wxWindow* parent, 
-	  const std::string& titre,
-			      int hauteur, int largeur, int type=CREATE_WINDOW);
+   FenetreDessin( 
+    wxWindow* parent, 
+    const std::string& titre,
+            int hauteur, int largeur, int type=CREATE_WINDOW);
 
-  virtual Destructeur FenetreDessin();
+  virtual ~FenetreDessin();
 
   Chaine& GetName() 
   {
@@ -170,8 +170,8 @@ public:
 
 /*
   void AddButton(char* name, char* pixmap_file,
-		 XtCallbackProc callback,
-		 void* data);
+     XtCallbackProc callback,
+     void* data);
 */
 
   void SetButtonPressedCallback(void* cb, void* d)
@@ -217,9 +217,9 @@ public:
                       unsigned char blue);
 
   void  FixeCouleurFond         ( const ClasseCouleur&);
-  void	SetPenColor        ( const wxColour&);
-  void	SetTextBg               ( const wxColour&);
-  void	SetTextFg               ( const wxColour&);
+  void  SetPenColor        ( const wxColour&);
+  void  SetTextBg               ( const wxColour&);
+  void  SetTextFg               ( const wxColour&);
   void  FixeCouleurRemplissage  ( const ClasseCouleur&);
   void  FixeStyleRemplissage    ( const int& style);
   void  FixeParametresLigne( unsigned int largeur, int style, int extremites = -1, int intersection = -1);
@@ -243,18 +243,18 @@ public:
   void  FixeFonctionDessin( int fonction);
 
 
-  void	Ligne( int x1, int y1, int x2, int y2);
+  void  Ligne( int x1, int y1, int x2, int y2);
   void  Cercle( int x1, int y1, int rayon);
 
   void  Ellipse( int x1, int y1, int r1, int r2);
   void  RemplitEllipse(int x1, int y1, int r1, int r2);
 
-  void	Rectangle( int x1, int y1, int x2, int y2);
+  void  Rectangle( int x1, int y1, int x2, int y2);
 //  void  Polygone( int, XPoint*);
   void  Point( int, int);
 
   void  Texte( int x, int y,  const Chaine& chaine,
-	       unsigned char overwrite = false);
+         unsigned char overwrite = false);
 
 //  void  PlaceImage( int pos_x, int pos_y, XImage* ximage);
   void  PutSlice( int pos_x, int pos_y, const wxImage_ptr& slice);

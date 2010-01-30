@@ -21,15 +21,15 @@ using namespace std;
 
 //============================================================================
 //
-Structure vect3D
+struct vect3D
 //        ======
-DebutStructure
+{
 
   float x;
   float y; 
   float z;
 
-FinStructure
+};
 
 //============================================================================
 //
@@ -62,7 +62,7 @@ public:
   Vect3D<float> vecteur;
 
   ///
-  Constructeur Point3D()
+   Point3D()
   //           -------
   {
     x = y = z = 0;
@@ -74,7 +74,7 @@ public:
   }
 
   ///
-  Constructeur Point3D( float x0, float y0, float z0)
+   Point3D( float x0, float y0, float z0)
   //           -------
   {
     x = x0;

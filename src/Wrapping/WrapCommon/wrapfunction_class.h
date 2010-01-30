@@ -16,13 +16,27 @@
 #include "paramlist.h"
 #include "DefineClass.hpp"
 
+/**
+ * Basic class for wrapping class function members.
+ **/
 class WrapClassMember {
 
   DEFINE_CLASS(WrapClassMember);
 
+  protected:
+    std::string functionname;
+    std::string description;
+    std::string parameters;
+
   public:
     virtual ~WrapClassMember() = 0;
     virtual void CallProc(ParamList*) = 0;
+
+    /**
+     * Display the function help in an information dialog.
+     */
+    void ShowHelp();
+
 };
  
 inline WrapClassMember::~WrapClassMember() { }  // defined even though it's pure virtual; it's faster this way; 

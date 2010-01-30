@@ -39,18 +39,11 @@ InrImage* wrap_StructureTensorHessianNew(ParamList* p)
     InrImage::ptr imgrad; // get the smoothed gradient
     int n=0;
 
-
-   if (!(input = p->GetParamPtr<InrImage>(type_image,n++)))
-      HelpAndReturnNULL;
-
-   if (!get_float_param(         sigma,       p, n)) HelpAndReturnNULL;
-   if (!get_float_param(         beta,        p, n)) HelpAndReturnNULL;
-
-   mask = p->GetParamPtr<InrImage>(type_image,n++,false);
-   if (mask==NULL) mask = InrImage::ptr();
-
-   imgrad = p->GetParamPtr<InrImage>(type_image,n++,false);
-   if (imgrad==NULL) imgrad = InrImage::ptr();
+   if (!get_varptr_param<InrImage>( input,  p, n)) HelpAndReturnNULL;
+   if (!get_param<float>(           sigma,  p, n)) HelpAndReturnNULL;
+   if (!get_param<float>(           beta,   p, n)) HelpAndReturnNULL;
+   if (!get_varptr_param<InrImage>( mask,   p, n)) HelpAndReturnNULL;
+   if (!get_varptr_param<InrImage>( imgrad, p, n)) HelpAndReturnNULL;
 
   InrImage* result = Func_StructureTensorHessianNew( input, sigma, beta, mask, imgrad);
 

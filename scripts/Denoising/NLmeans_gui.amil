@@ -77,8 +77,8 @@ if (!exists(NLmeansClass)) {
     #----------------------------
     proc ::CloseAll() \
     {
+      eval boost_format("if (exists(%1%)) { del %1%; };") % ::class_name
       ::Close
-      if (exists(NLmeansClass)) { del NLmeansClass; }
     }
     ::CloseAll.Comments("Call ::Close() method and delete the class variable")
     
@@ -155,7 +155,7 @@ if (!exists(NLmeansClass)) {
     
     #----------------------------
     proc ::Filter() {
-
+printn "*** Filter() ****"
       InitTime
       if (exists(::roi)) {
         ::res0 = ::res[::roi]
@@ -205,6 +205,17 @@ if (!exists(NLmeansClass)) {
         ::res0 = ::res
   
         if (::res0.GetFormat != RGB) {
+
+printn "running ::filters->NLmeans() with"
+printn "t = %1%" % ::t
+printn "f = %1%" % ::f
+printn "h = %1%" % ::h
+printn "noisetype = %1%" % ::noisetype
+printn "threads = %1%" % ::threads
+printn "filter_type = %1%" % ::filter_type
+printn "presmooth_SD = %1%" % ::presmooth_SD
+printn "pattern_weight_param = %1%" % ::pattern_weight_param
+
           ::res = ::filters->NLmeans(::res0,\
                           ::t,::f,::h,\
                           ::noisetype,::threads,\
@@ -417,7 +428,16 @@ if (!exists(NLmeansClass)) {
 
       eval "global::"+::result_image_name+"<<="+"::res;"
     }
+    ::Run.Comments("Run starting from previous result.")
     # end ::Run()
+
+    #----------------------------
+    proc ::ReRun() \
+    {
+      ::Restart()
+      ::Run()
+    }
+    ::ReRun.Comments("Run starting from initial image.")
 
     #----------------------------
     proc ::Display() \
@@ -586,6 +606,7 @@ if (!exists(NLmeansClass)) {
               ::win.EndHorizontal
               ::it_id      = ::win.AddInt(::iterations,"Iter",1,50)
               ::win.AddButton("Run",     ::Run)
+              ::win.AddButton("ReRun",   ::ReRun)
           ::win.EndBoxPanel
   
           ::win.BeginBoxPanel("Result")

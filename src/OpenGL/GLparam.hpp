@@ -172,7 +172,7 @@ public:
   float          _opacity;
 
 
-  Constructeur GLMaterialParam()
+   GLMaterialParam()
   //
   {
 
@@ -196,16 +196,16 @@ public:
 
   }
 
-  Destructeur GLMaterialParam()
+  ~GLMaterialParam()
   {  }
 
   GLenum GLenum_face( int face)
   {
-    SelonQue face Vaut
-      Valeur FACE_FRONT:           return GL_FRONT;
-      Valeur FACE_BACK:            return GL_BACK;
-      Valeur FACE_FRONT_AND_BACK:  return GL_FRONT_AND_BACK;
-    FinSelonQue
+    switch ( face ){
+      case FACE_FRONT:           return GL_FRONT;
+      case FACE_BACK:            return GL_BACK;
+      case FACE_FRONT_AND_BACK:  return GL_FRONT_AND_BACK;
+    } // end switch
 
     return GL_FRONT_AND_BACK;
 
@@ -249,7 +249,7 @@ public:
   unsigned char       _directional;
 
   ///
-  Constructeur GLLightParam( int light=0)
+   GLLightParam( int light=0)
   //
   {
 
@@ -275,7 +275,7 @@ public:
   }
 
   ///
-  virtual Destructeur GLLightParam() {}
+  virtual ~GLLightParam() {}
   //
 
   ///
@@ -421,21 +421,21 @@ public:
 
   GLenum GLenum_mode()
   {
-    SelonQue _GLmode Vaut
-      Valeur GL_MODE_POINT: return GL_POINT;
-      Valeur GL_MODE_LINE:  return GL_LINE;
-      Valeur GL_MODE_FILL:  return GL_FILL;
-    FinSelonQue
+    switch ( _GLmode ){
+      case GL_MODE_POINT: return GL_POINT;
+      case GL_MODE_LINE:  return GL_LINE;
+      case GL_MODE_FILL:  return GL_FILL;
+    } // end switch
 
     return GL_FILL;
   }
 
   GLenum GLenum_shade()
   {
-    SelonQue _shade_model Vaut
-      Valeur SHADE_FLAT:    return GL_FLAT;
-      Valeur SHADE_SMOOTH:  return GL_SMOOTH;
-    FinSelonQue
+    switch ( _shade_model ){
+      case SHADE_FLAT:    return GL_FLAT;
+      case SHADE_SMOOTH:  return GL_SMOOTH;
+    } // end switch
 
     return GL_SMOOTH;
   }
@@ -530,7 +530,7 @@ public:
   }
 
 
-  Constructeur GLParam()
+   GLParam()
   //           -------
   {
 
@@ -586,16 +586,16 @@ public:
 
   GLenum GLenum_mode()
   {
-    SelonQue _GLmode Vaut
-      Valeur GL_MODE_MODELVIEW:   return GL_MODELVIEW;
-      Valeur GL_MODE_PROJECTION:  return GL_PROJECTION;
-    FinSelonQue
+    switch ( _GLmode ){
+      case GL_MODE_MODELVIEW:   return GL_MODELVIEW;
+      case GL_MODE_PROJECTION:  return GL_PROJECTION;
+    } // end switch
 
     return GL_MODELVIEW;
   }
 
 
-  Constructeur GLTransform()
+   GLTransform()
   //           -----------
   {
 
@@ -607,16 +607,16 @@ public:
   //
   {
 
-    SelonQue _GLmode Vaut
-      Valeur GL_MODE_MODELVIEW:
+    switch ( _GLmode ){
+      case GL_MODE_MODELVIEW:
         glGetDoublev(GL_MODELVIEW_MATRIX, (GLdouble*) mat);
-      FinValeur
+      break;
 
-      Valeur GL_MODE_PROJECTION:
+      case GL_MODE_PROJECTION:
         glGetDoublev(GL_PROJECTION_MATRIX, (GLdouble*) mat);
-      FinValeur
+      break;
 
-    FinSelonQue
+    } // end switch
 
   }
 
@@ -647,7 +647,7 @@ public:
   int     _pick_cursorx;
   int     _pick_cursory;
 
-  Constructeur GLProjParam();
+   GLProjParam();
 
   int   ProjectionType() { return type_proj; }
   float EyeDistance() { return eye_distance; }
@@ -694,7 +694,7 @@ public:
   float    _start;
   float    _end;
 
-  Constructeur GLFogParam();
+   GLFogParam();
 
 
   void SetBGColor( ClasseCouleur* col)
@@ -716,11 +716,11 @@ public:
 
   GLenum GLmode()
   {
-    SelonQue _fogmode Vaut
-      Valeur FOG_EXP:      return GL_EXP;
-      Valeur FOG_EXP2:     return GL_EXP2;
-      Valeur FOG_LINEAR:   return GL_LINEAR;
-    FinSelonQue
+    switch ( _fogmode ){
+      case FOG_EXP:      return GL_EXP;
+      case FOG_EXP2:     return GL_EXP2;
+      case FOG_LINEAR:   return GL_LINEAR;
+    } // end switch
 
     return GL_EXP;
   }
@@ -789,7 +789,7 @@ public:
   GLdouble _rotation[4][4];
   GLdouble _scale[3];
 
-  Constructeur GLTransfMatrix()
+   GLTransfMatrix()
   //
   {
 

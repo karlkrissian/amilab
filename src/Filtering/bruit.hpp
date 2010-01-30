@@ -72,9 +72,9 @@ class AjouteBruit
 
 public:
 
-  Constructeur AjouteBruit();
+   AjouteBruit();
 
-  Destructeur AjouteBruit();
+  ~AjouteBruit();
 
   void AjouteBruitGaussien(InrImage* im, float moy, float et);
 

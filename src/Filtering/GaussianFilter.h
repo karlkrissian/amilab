@@ -56,9 +56,8 @@
  *
  ***************************************************************************/
 //  
-//  fichier filtrage.hpp
 //
-//  Karl Krissian    Sophia Antipolis, le 13-12-97
+//  Karl Krissian    
 //
 //  Realisation de differents type de filtrage
 //  basee sur une fenetre centree en chaque point
@@ -101,11 +100,15 @@ enum direction_filtre
 
 
 
-//==========================================================================
-///
-class Filtrage
+/**
+ * Standard separable Gaussian filter for 1D,2D and 3D, up to second order derivatives.
+ **/
+class GaussianFilter
 //     ========
 {
+
+private:
+  int      _facteur_support;
 
 protected:
 
@@ -138,8 +141,6 @@ protected:
   int      _taille_div2; 
   double  _sigma;
 
-  int      _facteur_support;
-
   int      _ordre;
 
   int      _x;
@@ -147,7 +148,7 @@ protected:
   int      _z;
 
 /**
-  Valeur minimale et maximale lorsque l'on depasse les bords de l'image
+  case minimale et maximale lorsque l'on depasse les bords de l'image
  */
 //@{
   double  _minval;
@@ -172,7 +173,7 @@ public:
 
   //------------------------------------------------------------
   ///
-  Constructeur Filtrage()
+   GaussianFilter()
   //----------          
   {
 
@@ -187,24 +188,21 @@ public:
 
   //------------------------------------------------------------
   ///
-  virtual Destructeur  Filtrage()
+  virtual ~ GaussianFilter()
   //        -----------
   {
 
-    Si _tab_coeff != NULL Alors
+    if (_tab_coeff != NULL)
       delete [] _tab_coeff;
-    FinSi
 
   }
 
   //------------------------------------------------------------
   ///
-  void FixeFacteurSupport( int facteur)
+  void SetSupportSize( int facteur)
   //  
   {
-
     _facteur_support = facteur;
-
   }  
 
 
@@ -234,11 +232,11 @@ public:
     x2 = x+0.5;
     gauss2  = 1.0/sqrt(2.0*M_PI)/_sigma*exp( -0.5*(x2/_sigma)*(x2/_sigma));
 
-    SelonQue _ordre Vaut
-        Valeur 1: return ( gauss2 - gauss1);
-        Valeur 2: return ( gauss2*(-1.0*x2/sigma2) - gauss1*(-1.0*x1/sigma2) );
-        Defaut  : throw OrdreNonTraite(); 
-    FinSelonQue
+    switch ( _ordre ){
+        case 1: return ( gauss2 - gauss1);
+        case 2: return ( gauss2*(-1.0*x2/sigma2) - gauss1*(-1.0*x1/sigma2) );
+        default  : throw OrdreNonTraite(); 
+    } // end switch
 
     //    return 0.0;
 
@@ -258,12 +256,12 @@ public:
       gauss  = 1.0/sqrt(2.0*M_PI)/_sigma*exp( -0.5*(x/_sigma)*(x/_sigma));
       sigma2 = _sigma*_sigma;
 
-      SelonQue _ordre Vaut
-        Valeur 0: return gauss;
-        Valeur 1: return gauss*(-1.0*x/sigma2);
-        Valeur 2: return gauss*((x/sigma2)*(x/sigma2)-1/sigma2);
-        Defaut  : throw OrdreNonTraite(); 
-      FinSelonQue
+      switch ( _ordre ){
+        case 0: return gauss;
+        case 1: return gauss*(-1.0*x/sigma2);
+        case 2: return gauss*((x/sigma2)*(x/sigma2)-1/sigma2);
+        default  : throw OrdreNonTraite(); 
+      } // end switch
     Sinon
       return GaussienneInterp(x);
     FinSi
@@ -364,13 +362,13 @@ public:
     entree1 = entree + _taille_div2;
     entree2 = entree - _taille_div2;
 
-    DebutBoucle i = _taille_div2 ItererTantQue i >= 1 Pas i-- Faire
+    for(  i = _taille_div2 ;  i >= 1 ;  i-- Faire
       Si _x+i >= _tx Alors val  = _maxval; Sinon val  = *entree1; FinSi
       Si _x-i <  0   Alors val += _minval; Sinon val += *entree2; FinSi
       resultat += val*_tab_coeff[i];
       entree1--;
       entree2++;
-    FinBoucle
+    } // end for
 
     return resultat;
 
@@ -393,13 +391,13 @@ public:
     entree1 = entree + _taille_div2;
     entree2 = entree - _taille_div2;
 
-    DebutBoucle i = _taille_div2 ItererTantQue i >= 1 Pas i-- Faire
+    for(  i = _taille_div2 ;  i >= 1 ;  i-- Faire
       Si _x+i >= _tx Alors val  = _maxval; Sinon val  = *entree1; FinSi
       Si _x-i <  0   Alors val -= _minval; Sinon val -= *entree2; FinSi
       resultat += val*_tab_coeff[i];
       entree1--;
       entree2++;
-    FinBoucle
+    } // end for
 
     return resultat;
 
@@ -422,13 +420,13 @@ public:
     entree1 = entree + _taille_div2*_pas_y;
     entree2 = entree - _taille_div2*_pas_y;
 
-    DebutBoucle i = _taille_div2 ItererTantQue i >= 1 Pas i-- Faire
+    for(  i = _taille_div2 ;  i >= 1 ;  i-- Faire
       Si _y+i >= _ty Alors val  = _maxval; Sinon val  = *entree1; FinSi
       Si _y-i <  0   Alors val += _minval; Sinon val += *entree2; FinSi
       resultat += val*_tab_coeff[i];
       entree1 -= _pas_y;
       entree2 += _pas_y;
-    FinBoucle
+    } // end for
 
     return resultat;
 
@@ -451,13 +449,13 @@ public:
     entree1 = entree + _taille_div2*_pas_y;
     entree2 = entree - _taille_div2*_pas_y;
 
-    DebutBoucle i = _taille_div2 ItererTantQue i >= 1 Pas i-- Faire
+    for(  i = _taille_div2 ;  i >= 1 ;  i-- Faire
       Si _y+i >= _ty Alors val  = _maxval; Sinon val  = *entree1; FinSi
       Si _y-i <  0   Alors val -= _minval; Sinon val -= *entree2; FinSi
       resultat += val*_tab_coeff[i];
       entree1 -= _pas_y;
       entree2 += _pas_y;
-    FinBoucle
+    } // end for
 
     return resultat;
 
@@ -480,13 +478,13 @@ public:
     entree1 = entree + _taille_div2*_pas_z;
     entree2 = entree - _taille_div2*_pas_z;
 
-    DebutBoucle i = _taille_div2 ItererTantQue i >= 1 Pas i-- Faire
+    for(  i = _taille_div2 ;  i >= 1 ;  i-- Faire
       Si _z+i >= _tz Alors val  = _maxval; Sinon val  = *entree1; FinSi
       Si _z-i <  0   Alors val += _minval; Sinon val += *entree2; FinSi
       resultat += val*_tab_coeff[i];
       entree1 -= _pas_z;
       entree2 += _pas_z;
-    FinBoucle
+    } // end for
 
     return resultat;
 
@@ -509,13 +507,13 @@ public:
     entree1 = entree + _taille_div2*_pas_z;
     entree2 = entree - _taille_div2*_pas_z;
 
-    DebutBoucle i = _taille_div2 ItererTantQue i >= 1 Pas i-- Faire
+    for(  i = _taille_div2 ;  i >= 1 ;  i-- Faire
       Si _z+i >= _tz Alors val  = _maxval; Sinon val  = *entree1; FinSi
       Si _z-i <  0   Alors val -= _minval; Sinon val -= *entree2; FinSi
       resultat += val*_tab_coeff[i];
       entree1 -= _pas_z;
       entree2 += _pas_z;
-    FinBoucle
+    } // end for
 
     return resultat;
 
@@ -525,7 +523,7 @@ public:
   ///
   void Filtre1D( InrImage* entree, InrImage* sortie, InrImage* masque,
   //   --------
-		 direction_filtre dir, double sigma, int ordre)
+     direction_filtre dir, double sigma, int ordre)
     throw (BadImageType, ImagesDiffDim)
 
   {
@@ -573,9 +571,9 @@ public:
       Si (masque==NULL) Ou ((masque != NULL)Et(*masque_buf > 127)) 
       Alors
 
-      SelonQue dir Vaut
+      switch ( dir ){
 
-        Valeur DIR_X:
+        case DIR_X:
           _minval = (*entree)(     0, _y, _z );
           _maxval = (*entree)( _tx-1, _y, _z );
 
@@ -584,9 +582,9 @@ public:
           Sinon              
             *sortie_buf = FiltreDirXImpair( entree_buf);
           FinSi
-        FinValeur
+        break;
 
-        Valeur DIR_Y:
+        case DIR_Y:
           _minval = (*entree)( _x,     0, _z );
           _maxval = (*entree)( _x, _ty-1, _z );
 
@@ -595,9 +593,9 @@ public:
           Sinon              
             *sortie_buf = FiltreDirYImpair( entree_buf);
           FinSi
-        FinValeur
+        break;
 
-        Valeur DIR_Z:
+        case DIR_Z:
           _minval = (*entree)( _x, _y,     0 );
           _maxval = (*entree)( _x, _y, _tz-1 );
 
@@ -606,10 +604,10 @@ public:
           Sinon              
             *sortie_buf = FiltreDirZImpair( entree_buf);
           FinSi 
-	  
-        FinValeur
+    
+        break;
 
-      FinSelonQue
+      } // end switch
 
       Sinon
 
@@ -633,8 +631,8 @@ public:
   ///
   void Filtre1DCompressee( InrImage* entree, 
   //   ------------------
-			   InrImageCompressee* sortie, InrImage* masque,
-			   direction_filtre dir, double sigma, int ordre)
+         InrImageCompressee* sortie, InrImage* masque,
+         direction_filtre dir, double sigma, int ordre)
     throw (BadImageType, ImagesDiffDim)
 
   {
@@ -683,9 +681,9 @@ public:
       Si (masque==NULL) Ou ((masque != NULL)Et(*masque_buf > 127)) 
       Alors
 
-      SelonQue dir Vaut
+      switch ( dir ){
 
-        Valeur DIR_X:
+        case DIR_X:
           _minval = (*entree)(     0, _y, _z );
           _maxval = (*entree)( _tx-1, _y, _z );
 
@@ -694,9 +692,9 @@ public:
           Sinon              
              sortie->FixeValeur(FiltreDirXImpair( entree_buf));
           FinSi
-        FinValeur
+        break;
 
-        Valeur DIR_Y:
+        case DIR_Y:
           _minval = (*entree)( _x,     0, _z );
           _maxval = (*entree)( _x, _ty-1, _z );
 
@@ -705,9 +703,9 @@ public:
           Sinon              
             sortie->FixeValeur(FiltreDirYImpair( entree_buf));
           FinSi
-        FinValeur
+        break;
 
-        Valeur DIR_Z:
+        case DIR_Z:
           _minval = (*entree)( _x, _y,     0 );
           _maxval = (*entree)( _x, _y, _tz-1 );
 
@@ -716,9 +714,9 @@ public:
           Sinon              
             sortie->FixeValeur(FiltreDirZImpair( entree_buf));
           FinSi
-        FinValeur
+        break;
 
-      FinSelonQue
+      } // end switch
 
       Sinon
 
@@ -744,8 +742,8 @@ public:
   */
   double Filtre1DPoint( InrImage* entree, 
   //         -------------
-		 direction_filtre dir,
-		 int x, int y, int z)
+     direction_filtre dir,
+     int x, int y, int z)
     throw (BadImageType, GaussianNotInitialized)
   {
 
@@ -766,9 +764,9 @@ public:
     _y = y;
     _z = z;
 
-    SelonQue dir Vaut
+    switch ( dir ){
 
-      Valeur DIR_X:
+      case DIR_X:
         _minval = (*entree)(     0, _y, _z );
         _maxval = (*entree)( _tx-1, _y, _z );
 
@@ -777,9 +775,9 @@ public:
         Sinon              
           return FiltreDirXImpair( (float*) entree->BufferPtr());
         FinSi
-	//      FinValeur
+  //      break;
 
-      Valeur DIR_Y:
+      case DIR_Y:
         _minval = (*entree)( _x,     0, _z );
         _maxval = (*entree)( _x, _ty-1, _z );
 
@@ -788,9 +786,9 @@ public:
         Sinon              
           return FiltreDirYImpair( (float*) entree->BufferPtr());
         FinSi
-	//FinValeur
+  //break;
 
-      Valeur DIR_Z:
+      case DIR_Z:
         _minval = (*entree)( _x, _y,     0 );
         _maxval = (*entree)( _x, _y, _tz-1 );
 
@@ -799,16 +797,16 @@ public:
         Sinon              
           return FiltreDirZImpair( (float*) entree->BufferPtr());
         FinSi
-	//FinValeur
+  //break;
 
-    FinSelonQue
+    } // end switch
 
     return 0.0;
 
   } // Filtre1DPoint()
 
 
-}; // Filtrage
+}; // GaussianFilter
 
 
 #endif // _FILTRAGE_HPP

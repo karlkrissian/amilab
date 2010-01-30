@@ -107,7 +107,7 @@ class AnisoGS {
   float**    gamma_z;
   
   
-  FiltreRecursif*  filtre;
+  GeneralGaussianFilter*  filtre;
   FiltrageRec*     filtre_rec;
   DeriveesLissees* DerLiss;
   

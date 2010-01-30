@@ -55,10 +55,10 @@
 
 //@Include: /u/broca/0/kkrissia/Sources/Prog/Commun/include/chaine.doc  /user/jmontagn/src/Zinrimage/*.h
 
-DebutDeclareC
+extern "C" {
 #include <math.h>
 #include "Zinrimage.h"
-FinDeclareC
+}
 
 #include "epi_err.hpp"
 
@@ -204,19 +204,19 @@ public:
 
   /** @name 2-Diff�ents constructeurs  et le destructeur */
   //@{
-    Constructeur InrImageBase( ) {}
+     InrImageBase( ) {}
 
-    Constructeur InrImageBase( const char* nom);
+     InrImageBase( const char* nom);
 
     // Pour des fichier d'un autre format
-    Constructeur InrImageBase( const char* nom, int type);
+     InrImageBase( const char* nom, int type);
 
-    Constructeur InrImageBase( int dimx, 
+     InrImageBase( int dimx, 
 			       int dimy, 
 			       int dimz, 
 			       const char* nom=NULL);
 
-    virtual Destructeur  InrImageBase();
+    virtual ~ InrImageBase();
   //@}
 
   ///

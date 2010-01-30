@@ -78,20 +78,20 @@ public:
   /** @name 2-Diff�rents constructeurs  et le destructeur */
   //@{
     ///
-    Constructeur InrImageVectTemplate( const char* nom)
+     InrImageVectTemplate( const char* nom)
       : InrImageTemplate<T>(nom)  {    }
 
     /// Pour des fichier d'un autre format
-    Constructeur InrImageVectTemplate( const char* nom, int type)
+     InrImageVectTemplate( const char* nom, int type)
       : InrImageTemplate<T>(nom, type) {  }
 
     ///
-    Constructeur InrImageVectTemplate( inrimage* image, 
+     InrImageVectTemplate( inrimage* image, 
 				       const char* nom="sansnom.inr")
       : InrImageTemplate<T>( image, nom) {  }
  
     ///
-    Constructeur InrImageVectTemplate( int dimx, 
+     InrImageVectTemplate( int dimx, 
 				   int dimy, 
 				   int dimz, const char* nom=NULL)
     {
@@ -119,7 +119,7 @@ public:
      }
 
     ///
-    Destructeur InrImageVectTemplate( ) {}
+    ~InrImageVectTemplate( ) {}
 
   //@}
 

@@ -89,10 +89,10 @@ InrImage* vtkAnisoGS(ParamList* p)
     int threads = 1;
     int n=0;
 
-  if (!get_image_param(  input,      p, n)) HelpAndReturnNULL;
-  if (!get_float_param(  sd,         p, n)) HelpAndReturnNULL;
-  if (!get_float_param(  threshold,  p, n)) HelpAndReturnNULL;
-  if (!get_float_param(  data_coeff, p, n)) HelpAndReturnNULL;
+  if (!get_var_param<InrImage>(  input,      p, n)) HelpAndReturnNULL;
+  if (!get_param<float>(  sd,         p, n)) HelpAndReturnNULL;
+  if (!get_param<float>(  threshold,  p, n)) HelpAndReturnNULL;
+  if (!get_param<float>(  data_coeff, p, n)) HelpAndReturnNULL;
   if (!get_int_param(    iterations, p, n)) HelpAndReturnNULL;
   if (!get_int_param(    threads   , p, n)) HelpAndReturnNULL;
 
@@ -149,7 +149,7 @@ Variable::ptr Wrap_vtkSkeleton2Lines(ParamList* p)
     InrImage* input;
     int n=0;
 
-  if (!get_image_param(  input,      p, n)) HelpAndReturnVarPtr;
+  if (!get_var_param<InrImage>(  input,      p, n)) HelpAndReturnVarPtr;
 
 
   vtkImageData_ptr                vtk_image;
@@ -203,10 +203,10 @@ Variable::ptr Wrap_vtkSphere( ParamList* p)
     float center[3] = {0,0,0};
     int n=0;
 
-  if (!get_float_param(         radius,      p, n)) HelpAndReturnVarPtr;
+  if (!get_param<float>(         radius,      p, n)) HelpAndReturnVarPtr;
   if (!get_int_param(           thetares,    p, n)) HelpAndReturnVarPtr;
   if (!get_int_param(           phires,      p, n)) HelpAndReturnVarPtr;
-  if (!get_vect3d_float_param(  center,      p, n)) HelpAndReturnVarPtr;
+  if (!get_several_params<float,3>(  center,      p, n)) HelpAndReturnVarPtr;
 
   shared_ptr<vtkSphereSource>   vtk_sphere;
 

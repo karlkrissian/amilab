@@ -103,11 +103,11 @@ private:
 
 public:
   
-  Constructeur CompareImage( wxWindow* parent,
+   CompareImage( wxWindow* parent,
                             char* ATitle, InrImage::ptr image, 
                             DessinImage* dessin_image, int l=650, int h=400);
 
-  Destructeur CompareImage();
+  ~CompareImage();
 
   const char*  NomImage() { return _image_initiale->Nom();}
 

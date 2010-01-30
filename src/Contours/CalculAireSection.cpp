@@ -313,14 +313,14 @@ void CalculAireSection :: AjoutePropage( int i, int j)
 // Membres Publics
 
 //---------------------------------------------------
-  CalculAireSection :: Constructeur CalculAireSection( 
+  CalculAireSection ::  CalculAireSection( 
 				InrImage* image, float resolution)
     //:propage(10000)
 //
 {
 
   Si GB_debug AlorsFait
-    cout << "CalculAireSection Constructeur \n";  
+    cout << "CalculAireSection  \n";  
 
 
   
@@ -346,23 +346,23 @@ void CalculAireSection :: AjoutePropage( int i, int j)
 
   _propage = new PropagePoints(10000);
 
-} // Constructeur()
+} // Constructor()
 
 
 //---------------------------------------------------
-CalculAireSection :: Destructeur CalculAireSection( )
+CalculAireSection :: ~CalculAireSection( )
 //
 {
 
   Si GB_debug AlorsFait
-    cout << "CalculAireSection Destructeur \n";  
+    cout << "CalculAireSection ~\n";  
 
   delete _propage;
 
   DeleteGrille();
   delete _coord_image;
 
-} // Destructeur()
+} // Destructor()
 
 
 //---------------------------------------------------

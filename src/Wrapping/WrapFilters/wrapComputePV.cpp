@@ -28,13 +28,13 @@ InrImage* wrapComputePV(ParamList* p)
               resolution (def:5): integer, represents the subdivision used in each direction, combined with linear interpolation, to estimate the Partial Volume\n\
             ";
 
-    InrImage* input;
+    InrImage* input = NULL;
     int resolution=5;
     int n=0;
 
     InrImage* result;
 
-  if (!get_image_param(  input,        p, n)) HelpAndReturnNULL;
+  if (!get_var_param<InrImage>(  input,        p, n)) HelpAndReturnNULL;
   if (!get_int_param(    resolution,   p, n)) HelpAndReturnNULL;
 
   result = ComputePartialVolume(input,resolution);
@@ -64,7 +64,7 @@ InrImage* wrapComputePV_subdiv(ParamList* p)
 
     InrImage* result;
 
-  if (!get_image_param(  input,         p, n)) HelpAndReturnNULL;
+  if (!get_var_param<InrImage>(  input,         p, n)) HelpAndReturnNULL;
   if (!get_int_param(    subdiv_levels, p, n)) HelpAndReturnNULL;
 
   result = ComputePartialVolumeSubdiv(input,subdiv_levels);

@@ -99,21 +99,21 @@ public:
   /** @name 2-Diff�rents constructeurs  et le destructeur */
   //@{
     ///
-    Constructeur InrImageTemplate( )
+     InrImageTemplate( )
     {    }
 
     ///
-    Constructeur InrImageTemplate( const char* nom)
+     InrImageTemplate( const char* nom)
       : InrImageBase(nom)
     { InitPositions();    }
 
     /// Pour des fichier d'un autre format
-    Constructeur InrImageTemplate( const char* nom, int type)
+     InrImageTemplate( const char* nom, int type)
       : InrImageBase(nom, type)
     { InitPositions();    }
 
     ///
-    Constructeur InrImageTemplate( int dimx, 
+     InrImageTemplate( int dimx, 
 				   int dimy, 
 				   int dimz, const char* nom=NULL)
       : InrImageBase( dimx, dimy, dimz, nom)
@@ -128,7 +128,7 @@ public:
     }
 
     ///
-    Destructeur InrImageTemplate( )
+    ~InrImageTemplate( )
     { EffacePositions();}
   //@}
 
@@ -413,11 +413,11 @@ void InrImageTemplate<T>::MinMax(float* min, float* max)
 
   buf = (T*) _inrimage->data;
   *min = *max = *buf;
-  DebutBoucle n=0 ItererTantQue n < _tx*_ty*_tz Pas n++ Faire
+  for(  n=0 ;  n < _tx*_ty*_tz ;  n++ Faire
     Si *buf < *min AlorsFait *min = *buf;
     Si *buf > *max AlorsFait *max = *buf;
     buf++;
-  FinBoucle // n
+  } // end for // n
 
 }
 

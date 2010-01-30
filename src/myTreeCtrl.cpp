@@ -94,7 +94,7 @@ void myTreeCtrl::OnAbout(wxCommandEvent& event)
 
       case type_class_procedure     : 
         // getting the associated help
-        (*((WrapClassMember::ptr*) _currentmenu_var->Pointer()))->CallProc(NULL);
+        (*((WrapClassMember::ptr*) _currentmenu_var->Pointer()))->ShowHelp();
         return;
       case type_c_image_function:
        ((InrImage* (*)(ParamList*)) _currentmenu_var->Pointer())(NULL);

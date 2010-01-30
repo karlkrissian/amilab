@@ -114,21 +114,21 @@ public:
 
 
   /**
-    {\em Constructeur} par d�faut
+    {\em Constructor} par d�faut
    */
-  Constructeur Point2D() {}
+   Point2D() {}
   //----------
 
   /**
-    {\em Constructeur}
+    {\em Constructor}
    */
-  Constructeur Point2D( T x0, T y0) { x=x0; y=y0;}
+   Point2D( T x0, T y0) { x=x0; y=y0;}
   //----------
 
   /**
-    {\em Destructeur}
+    {\em Destructor}
    */
-  Destructeur Point2D() {}
+  ~Point2D() {}
   //---------
 
   /**
@@ -234,15 +234,15 @@ public:
 
 
   /**
-    {\em Constructeur} par d�faut
+    {\em Constructor} par d�faut
    */
-Constructeur Vect2D() {}
+ Vect2D() {}
   //----------
 
   /**
-    {\em Constructeur}
+    {\em Constructor}
    */
-  Constructeur Vect2D( T x0, T y0) { x=x0; y=y0;}
+   Vect2D( T x0, T y0) { x=x0; y=y0;}
   //----------
 
   /**
@@ -250,9 +250,9 @@ Constructeur Vect2D() {}
   void Init( T x0, T y0) { x=x0; y=y0;}
 
   /**
-    {\em Destructeur}
+    {\em Destructor}
    */
-  Destructeur Vect2D() {}
+  ~Vect2D() {}
   //---------
 
 
@@ -544,21 +544,21 @@ public:
 
 
   /**
-    {\em Constructeur} par d�faut
+    {\em Constructor} par d�faut
    */
-  Constructeur Point_3D() {}
+   Point_3D() {}
   //----------
 
   /**
-    {\em Constructeur}
+    {\em Constructor}
    */
-  Constructeur Point_3D( T x0, T y0, T z0) { x=x0; y=y0; z=z0;}
+   Point_3D( T x0, T y0, T z0) { x=x0; y=y0; z=z0;}
   //----------
 
   /**
-    {\em Destructeur}
+    {\em Destructor}
    */
-  Destructeur Point_3D() {}
+  ~Point_3D() {}
   //---------
 
   /**
@@ -758,15 +758,15 @@ public:
 
 
   /**
-    {\em Constructeur} par d�faut
+    {\em Constructor} par d�faut
    */
-Constructeur Vect3D() {}
+ Vect3D() {}
   //----------
 
   /**
-    {\em Constructeur}
+    {\em Constructor}
    */
-  Constructeur Vect3D( T x0, T y0, T z0) { x=x0; y=y0; z=z0;}
+   Vect3D( T x0, T y0, T z0) { x=x0; y=y0; z=z0;}
   //----------
 
   /**
@@ -774,9 +774,9 @@ Constructeur Vect3D() {}
   void Init( T x0, T y0, T z0) { x=x0; y=y0; z=z0;}
 
   /**
-    {\em Destructeur}
+    {\em Destructor}
    */
-  Destructeur Vect3D() {}
+  ~Vect3D() {}
   //---------
 
 

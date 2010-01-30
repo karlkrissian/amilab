@@ -36,10 +36,10 @@
 
 #include "style.hpp"
 
-DebutDeclareC
+extern "C" {
 #include <math.h>
 #include <stdio.h>
-FinDeclareC
+}
 
 #include "bruit.hpp"
 #include <time.h>
@@ -138,7 +138,7 @@ float bruit_gaussien(int* idum, float moyenne, float ecart_type)
 //======================================================================
 
 //
-AjouteBruit :: Constructeur AjouteBruit()
+AjouteBruit ::  AjouteBruit()
 //
 {
   // initialisation de la sequence
@@ -150,17 +150,17 @@ AjouteBruit :: Constructeur AjouteBruit()
 
   _idnum = new int(-timeinfo->tm_sec);
   ran1(_idnum);
-} // Constructeur AjouteBruit()
+} // Constructor AjouteBruit()
 
 //
-AjouteBruit :: Destructeur AjouteBruit()
+AjouteBruit :: ~AjouteBruit()
 //
 {
 
   delete  _idnum;
   _idnum = NULL;
 
-} // Destructeur AjouteBruit()
+} // Destructor AjouteBruit()
 
 
 //

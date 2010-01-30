@@ -22,28 +22,38 @@
  */
 Variable::ptr wrap_ParamPanel( ParamList* p);
 
-#define ADD_METHOD(methodname) \
-class wrap_ParamPanel##methodname : public WrapClassMember { \
-    ParamPanel::ptr _pp; \
+#define ADD_METHOD(classname,methodname,description_str) \
+/**\
+ * description_str\
+ **/\
+class wrap_##classname##methodname : public WrapClassMember { \
+  protected:\
+    classname::ptr _pp; \
   public: \
-    wrap_ParamPanel##methodname(const ParamPanel::ptr& pp) : _pp(pp) {} \
+    wrap_##classname##methodname(const classname::ptr& pp) : \
+      _pp(pp) { \
+      functionname = #classname;\
+      functionname += "::";\
+      functionname += #methodname; \
+      description=description_str; \
+    } \
     void CallProc(ParamList*); \
 };
 
 
-ADD_METHOD(BeginBook);
-ADD_METHOD(EndBook);
-ADD_METHOD(BeginHorizontal);
-ADD_METHOD(EndHorizontal);
-ADD_METHOD(BeginBoxPanel);
-ADD_METHOD(EndBoxPanel);
+ADD_METHOD(ParamPanel,BeginBook,        "Starts a notebook.");
+ADD_METHOD(ParamPanel,EndBook,          "Ends a notebook.");
+ADD_METHOD(ParamPanel,BeginHorizontal,  "Sets horizontal alignment for widgets.");
+ADD_METHOD(ParamPanel,EndHorizontal,    "Ends horizontal alignment.");
+ADD_METHOD(ParamPanel,BeginBoxPanel,    "Begins a Box around a Panel.");
+ADD_METHOD(ParamPanel,EndBoxPanel,      "Ends a Box around a Panel.");
 
-ADD_METHOD(AddPage);
+ADD_METHOD(ParamPanel,AddPage,          "Begins a notebook page.");
 
-ADD_METHOD(AddFloat);
-ADD_METHOD(AddInt);
+ADD_METHOD(ParamPanel,AddFloat,         "Adds a Float parameter.");
+ADD_METHOD(ParamPanel,AddInt,           "Adds a Integer parameter.");
 
-ADD_METHOD(Display);
+ADD_METHOD(ParamPanel,Display,          "Displays the parameters.");
 
 
 #endif

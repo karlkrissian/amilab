@@ -47,12 +47,12 @@
 
 #include "style.hpp"
 
-DebutDeclareC
+extern "C" {
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
 #include <stdlib.h>
-FinDeclareC
+}
 
 #include "Coordonnees.hpp"
 #include "Voxel.hpp"
@@ -107,7 +107,7 @@ protected:
 public:
 
   ///
-  Constructeur IntersectIsosurf(): GestionErreurs("IntersectIsosurf")
+   IntersectIsosurf(): GestionErreurs("IntersectIsosurf")
   {
     
       int i;
@@ -124,7 +124,7 @@ public:
   }
 
   ///
-  Destructeur  IntersectIsosurf()
+  ~ IntersectIsosurf()
   {
     
       int i;

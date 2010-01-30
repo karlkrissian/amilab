@@ -10,7 +10,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Math
   ${AMILAB_SOURCE_DIR}/AMImage
   ${AMILAB_SOURCE_DIR}/Coordonnees
-  ${AMILAB_SOURCE_DIR}/Filtrage
+  ${AMILAB_SOURCE_DIR}/Filtering
   ${AMILAB_SOURCE_DIR}/Vaisseaux
   ${AMILAB_SOURCE_DIR}/Graphic
   ${AMILAB_SOURCE_DIR}/ImageTool

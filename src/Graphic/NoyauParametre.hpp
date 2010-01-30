@@ -82,11 +82,11 @@ public:
   int        _type_empilement;
 
   //
-  Constructeur NoyauParametre( Widget parent);
+   NoyauParametre( Widget parent);
   //----------
 
   //
-  virtual Destructeur NoyauParametre();
+  virtual ~NoyauParametre();
   //        ---------
 
   //

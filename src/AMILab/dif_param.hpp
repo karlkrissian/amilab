@@ -121,10 +121,10 @@ public:
 
     unsigned char   verbose;
 
-  Constructeur ParamDiff() {}
+   ParamDiff() {}
   //           ---------
   
-  Destructeur  ParamDiff() {}
+  ~ ParamDiff() {}
   //           ---------
 
   void InitDefauts() 

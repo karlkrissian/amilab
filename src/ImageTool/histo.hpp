@@ -93,7 +93,7 @@ public:
   float    min,max;
   int  ni,ptmax;
 
-  Constructeur ParametresHisto() {}
+   ParametresHisto() {}
   //           ---------------
 
   void Initialise()
@@ -229,13 +229,13 @@ private:
 
 public:
   
-  Constructeur Histogramme( Widget AParent, char* ATitle, char* nom_image, 
+   Histogramme( Widget AParent, char* ATitle, char* nom_image, 
                             int type = CREATE_WINDOW);
 
-  Constructeur Histogramme( Widget AParent, char* ATitle, InrImage* image, 
+   Histogramme( Widget AParent, char* ATitle, InrImage* image, 
                             int type = CREATE_WINDOW);
 
-  Destructeur Histogramme();
+  ~Histogramme();
 
   void Paint( unsigned char affiche = true);
 

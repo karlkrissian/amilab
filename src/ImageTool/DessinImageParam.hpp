@@ -168,7 +168,7 @@ public:
 
   float taille_voxel[3];
 
-  Constructeur DessinParam()
+   DessinParam()
   //           -----------
   {
     version_anglaise = true;
@@ -178,7 +178,7 @@ public:
     taille_voxel[0] = taille_voxel[1] = taille_voxel[2] = -1.0;
   }
 
-  Constructeur DessinParam(const DessinParam& p)
+   DessinParam(const DessinParam& p)
   //           -----------
   {
     *this = p;
@@ -229,7 +229,7 @@ public:
 //@}
 
   ///
-  Constructeur ParamMAJ()
+   ParamMAJ()
   //
   {
 
@@ -297,7 +297,7 @@ public:
 //@}
 
   ///
-  Constructeur ParamZoom(){}
+   ParamZoom(){}
 
   ///
   void operator=( const ParamZoom& p)
@@ -410,7 +410,7 @@ public:
 //@}
 
   ///
-  Constructeur ParamMIP() 
+   ParamMIP() 
   //           --------
   {
 
@@ -500,7 +500,7 @@ public:
 
 
   ///
-  Constructeur ParamIntensite() 
+   ParamIntensite() 
   {
     _type_courbe = TYPE_COURBE_PENTE;
     _colorspace  = COLORSPACE_GREY;
@@ -556,7 +556,7 @@ public:
 
 
   ///
-  Constructeur ParamCurseur() 
+   ParamCurseur() 
   //
   {
     _ON      = false;
@@ -613,7 +613,7 @@ public:
 //@}
 
   ///
-  Constructeur ParamDimensions() 
+   ParamDimensions() 
   //
   {
     _voxel_size_x =
@@ -657,7 +657,7 @@ public:
 //@}
 
   ///
-  Constructeur ParamPosition() 
+   ParamPosition() 
   //
   {
     _x = _y = _z = 0;
@@ -757,7 +757,7 @@ public:
 //@}
 
   ///
-  Constructeur DessinImageParametres( )        
+   DessinImageParametres( )        
   //
   {
 

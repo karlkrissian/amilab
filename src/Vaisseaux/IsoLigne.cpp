@@ -305,17 +305,17 @@ int IsoLigne :: RechercheLignes( int num_face, num_valeurs val,
     j = (i+1)%4;
     zero = false;
 
-    SelonQue val Vaut
-      Valeur VALEURS_1:
+    switch ( val ){
+      case VALEURS_1:
         val1 = _valeurs1[_face[num_face][i]];
         val2 = _valeurs1[_face[num_face][j]];
-      FinValeur
+      break;
 
-      Valeur VALEURS_2:
+      case VALEURS_2:
         val1 = _valeurs2[_face[num_face][i]];
         val2 = _valeurs2[_face[num_face][j]];
-      FinValeur
-    FinSelonQue
+      break;
+    } // end switch
 
     Si val1 > EPSILON Alors
       Si val2 < -EPSILON Alors
@@ -443,9 +443,9 @@ unsigned char IsoLigne :: Intersection( PtFace pt1, PtFace pt2,
 
 
 //-----------------------------------------------------------------------------------------
-/** <b> Constructeur </b>
+/** <b> Constructor </b>
  */
-IsoLigne :: Constructeur IsoLigne( double* val1, double* val2) 
+IsoLigne ::  IsoLigne( double* val1, double* val2) 
   : GestionErreurs("IsoLigne")
 //
 {
@@ -477,9 +477,9 @@ IsoLigne :: Constructeur IsoLigne( double* val1, double* val2)
 
 
 //-----------------------------------------------------------------------------------------
-/** <b> Destructeur </b>
+/** <b> Destructor </b>
  */
-IsoLigne :: Destructeur IsoLigne()
+IsoLigne :: ~IsoLigne()
 //
 {
 

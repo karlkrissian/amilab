@@ -54,7 +54,7 @@ class InrView : public DessinImage
 public:
   
   ///
-  Constructeur InrView( Widget AParent, char* ATitle, char* nom_image, DessinParam* param) :
+   InrView( Widget AParent, char* ATitle, char* nom_image, DessinParam* param) :
   //           -------
        DessinImage( AParent, ATitle, nom_image, param, USE_PARENT_WINDOW) 
   {
@@ -78,13 +78,13 @@ public:
   
     int i; 
 
-    DebutBoucle i = 0 ItererTantQue i < _compare_max Pas i++ Faire
+    for(  i = 0 ;  i < _compare_max ;  i++ Faire
       Si _tab_compare_image[i] != NULL Alors
     //((CompareImage*) _tab_compare_image[i])->
         _MAJ_intensite = true;
         ((CompareImage*) _tab_compare_image[i])->Paint();
       FinSi
-    FinBoucle // i 
+    } // end for // i 
 
   } // Comparaisons_Redessine()
 

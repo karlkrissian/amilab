@@ -53,7 +53,7 @@
 
 #include "TGA.h"
 
-DebutDeclareC
+extern "C" {
 
 #include <GL/gl.h>
 //#include <GL/glu.h>
@@ -61,7 +61,7 @@ DebutDeclareC
 
 
 #include <math.h>
-FinDeclareC
+}
 
 
 #include "GLparam.hpp"
@@ -899,10 +899,10 @@ private:
 
 public:
   
-  Constructeur TestGL( Widget AParent, char* ATitle, 
+   TestGL( Widget AParent, char* ATitle, 
                             int type = CREATE_GLWINDOW);
 
-  Destructeur TestGL();
+  ~TestGL();
 
   ///
   void CreeMenu();

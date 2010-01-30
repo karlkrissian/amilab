@@ -46,7 +46,7 @@
 
 
 //----------------------------------------------------------------
-ImageVaisseaux :: Constructeur ImageVaisseaux( char* nom_image)
+ImageVaisseaux ::  ImageVaisseaux( char* nom_image)
 //                          ------------
 {
 
@@ -60,17 +60,17 @@ ImageVaisseaux :: Constructeur ImageVaisseaux( char* nom_image)
   JusquA trouve == false
   FinRepeter
 
-} // Constructeur
+} // Constructor
 
 
 //----------------------------------------------------------------
-ImageVaisseaux :: Destructeur ImageVaisseaux()
+ImageVaisseaux :: ~ImageVaisseaux()
 //                          -----------
 {
 
   delete _image;
 
-} // Destructeur
+} // Destructor
 
 
 //----------------------------------------------------------------

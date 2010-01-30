@@ -10,7 +10,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Math
   ${AMILAB_SOURCE_DIR}/AMImage
   ${AMILAB_SOURCE_DIR}/Coordonnees
-  ${AMILAB_SOURCE_DIR}/Filtrage
+  ${AMILAB_SOURCE_DIR}/Filtering
   ${AMILAB_SOURCE_DIR}/Vaisseaux
   ${AMILAB_SOURCE_DIR}/Graphic
   ${AMILAB_SOURCE_DIR}/ImageTool
@@ -113,9 +113,9 @@ ELSE(AMI_USE_FLEXBISON)
   include_directories(${AMILAB_SOURCE_DIR}/Language/FlexInclude)
 
    SET( FLEXBISON_OUTPUTS
-		${AMILAB_SOURCE_DIR}/Language/GeneratedFlexBison/improcess_bison.tab.cpp
-		${AMILAB_SOURCE_DIR}/Language/GeneratedFlexBison/improcess_flex.cpp
-	)
+    ${AMILAB_SOURCE_DIR}/Language/GeneratedFlexBison/improcess_bison.tab.cpp
+    ${AMILAB_SOURCE_DIR}/Language/GeneratedFlexBison/improcess_flex.cpp
+  )
  
    SET(Language_SRCS
      ${FLEXBISON_OUTPUTS}

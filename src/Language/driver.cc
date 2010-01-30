@@ -253,7 +253,7 @@ void Driver::yyip_call_function( const Variable* v, const ParamList::ptr& param)
           // to a smart pointer !!!
           Vars.AddVarPtr( param->GetType(i),
                           name,
-                          param->GetParam(i)
+                          param->GetParam(i)->Pointer()
                         );
         }
       } // end for

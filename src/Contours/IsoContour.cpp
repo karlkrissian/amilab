@@ -242,7 +242,7 @@ void IsoContour :: CalculTotalPointsLigne()
 
 //----------------------------------------------------------------------
 ///
-IsoContour :: Constructeur IsoContour( InrImage* image0)
+IsoContour ::  IsoContour( InrImage* image0)
 //
 {
 
@@ -280,11 +280,11 @@ IsoContour :: Constructeur IsoContour( InrImage* image0)
     _centre_sphere = (int*) NULL;
     _rayon_sphere  = 0.0;
 
-} // Constructeur
+} // Constructor
 
 //----------------------------------------------------------------------
 ///
-IsoContour :: Destructeur IsoContour()
+IsoContour :: ~IsoContour()
 //
 {
 
@@ -300,7 +300,7 @@ IsoContour :: Destructeur IsoContour()
 
   EffaceTabReel(   _tab_moygrad);
 
-} // Destructeur
+} // Destructor
 
 
 //----------------------------------------------------------------------
@@ -417,14 +417,14 @@ void IsoContour :: ParcoursContour( int x, int y, int z,  int num,  int* taille)
           posx = x1;
           posy = y1;
           posz = z1;
-          SelonQue face Vaut
-  	    Valeur 0: posz -= 1; FinValeur
-  	    Valeur 1: posy -= 1; FinValeur
-  	    Valeur 2: posx -= 1; FinValeur
-  	    Valeur 3: posz += 1; FinValeur
-  	    Valeur 4: posy += 1; FinValeur
-  	    Valeur 5: posx += 1; FinValeur
-          FinSelonQue
+          switch ( face ){
+  	    case 0: posz -= 1; break;
+  	    case 1: posy -= 1; break;
+  	    case 2: posx -= 1; break;
+  	    case 3: posz += 1; break;
+  	    case 4: posy += 1; break;
+  	    case 5: posx += 1; break;
+          } // end switch
 
           Si (CoordOK(posx, posy, posz))
 	     Et

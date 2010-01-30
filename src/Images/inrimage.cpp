@@ -411,18 +411,18 @@ unsigned char InrImage :: ReadVTK( ) throw (ErreurLecture)
     CLASS_MESSAGE(boost::format("Reading Tensor data (size %d)") % _vdim)
   }
 
-  SelonQue (in->GetScalarType()) Vaut
-    Valeur VTK_FLOAT:          _format = WT_FLOAT;
+  switch ( (in->GetScalarType()) ){
+    case VTK_FLOAT:          _format = WT_FLOAT;
     break;
-    Valeur VTK_UNSIGNED_SHORT: _format = WT_UNSIGNED_SHORT;
+    case VTK_UNSIGNED_SHORT: _format = WT_UNSIGNED_SHORT;
     break;
-    Valeur VTK_SHORT:          _format = WT_SIGNED_SHORT;
+    case VTK_SHORT:          _format = WT_SIGNED_SHORT;
     break;
-    Valeur VTK_UNSIGNED_INT:   _format = WT_UNSIGNED_INT;
+    case VTK_UNSIGNED_INT:   _format = WT_UNSIGNED_INT;
     break;
-    Valeur VTK_INT:            _format = WT_SIGNED_INT;
+    case VTK_INT:            _format = WT_SIGNED_INT;
     break;
-    Valeur VTK_UNSIGNED_CHAR:
+    case VTK_UNSIGNED_CHAR:
      switch (_vdim) {
        case 1: _format = WT_UNSIGNED_CHAR; break;
        case 3: _format = WT_RGB; break;
@@ -431,16 +431,16 @@ unsigned char InrImage :: ReadVTK( ) throw (ErreurLecture)
      }
     break;
 
-    Valeur VTK_DOUBLE:
+    case VTK_DOUBLE:
      _format = WT_DOUBLE;
     break;
 
-    Defaut: 
+    default: 
       CLASS_ERROR(boost::format("Scalar type %1% non available")
                            % in->GetScalarType());
     _format = WT_FLOAT;
 
-  FinSelonQue
+  } // end switch
 
   CLASS_MESSAGE("1");
 
@@ -586,28 +586,28 @@ unsigned char InrImage :: ReadVTKImage( ) throw (ErreurLecture)
 
   _vdim = in->GetNumberOfScalarComponents();
 
-  SelonQue (in->GetScalarType()) Vaut
+  switch ( (in->GetScalarType()) ){
 
-    Valeur VTK_FLOAT:
+    case VTK_FLOAT:
      switch (_vdim) {
        case 1: _format = WT_FLOAT; break;
        default: _format = WT_FLOAT_VECTOR; break;
      }
      
     break;
-    Valeur VTK_UNSIGNED_SHORT:
+    case VTK_UNSIGNED_SHORT:
       _format = WT_UNSIGNED_SHORT;
     break;
-    Valeur VTK_SHORT:
+    case VTK_SHORT:
       _format = WT_SIGNED_SHORT;
     break;
-    Valeur VTK_UNSIGNED_INT:
+    case VTK_UNSIGNED_INT:
       _format = WT_UNSIGNED_INT;
     break;
-    Valeur VTK_INT:
+    case VTK_INT:
       _format = WT_SIGNED_INT;
     break;
-    Valeur VTK_UNSIGNED_CHAR:
+    case VTK_UNSIGNED_CHAR:
      switch (_vdim) {
        case 1: _format = WT_UNSIGNED_CHAR; break;
        case 3: _format = WT_RGB; break;
@@ -621,11 +621,11 @@ unsigned char InrImage :: ReadVTKImage( ) throw (ErreurLecture)
      }
     break;
 
-    Defaut:   
+    default:   
       CLASS_ERROR("type not available");
       _format = WT_FLOAT;
 
-  FinSelonQue
+  } // end switch
 
   CLASS_MESSAGE("1");
 
@@ -886,23 +886,23 @@ unsigned char InrImage :: Alloue( ) throw (ErreurAllocation)
 //       << endl;
 
   if ( _vdim == 1 ) {
-    SelonQue (WORDTYPE) _format Vaut
+    switch ( (WORDTYPE) _format ){
 
-      Valeur WT_DOUBLE:        
-      Valeur WT_FLOAT:         
-      Valeur WT_UNSIGNED_CHAR: 
-      Valeur WT_UNSIGNED_SHORT:
-      Valeur WT_SIGNED_SHORT:  
-      Valeur WT_UNSIGNED_INT: 
-      Valeur WT_SIGNED_INT:  _vdim = 1;
+      case WT_DOUBLE:        
+      case WT_FLOAT:         
+      case WT_UNSIGNED_CHAR: 
+      case WT_UNSIGNED_SHORT:
+      case WT_SIGNED_SHORT:  
+      case WT_UNSIGNED_INT: 
+      case WT_SIGNED_INT:  _vdim = 1;
       break;
 
-      Valeur WT_RGB:
+      case WT_RGB:
         _vdim = 3;
       break;
-      Defaut:  _vdim=1;
+      default:  _vdim=1;
 
-    FinSelonQue
+    } // end switch
   } // end if
 
   _amimage = new amimage();
@@ -1406,7 +1406,7 @@ InrImageIteratorBase::ptr InrImage::CreateIterator()
 //==========================================================================
 
 //--------------------------------------------------------------------------
-InrImage :: Constructeur InrImage( )
+InrImage ::  InrImage( )
 //                                 --------
 {
 
@@ -1419,7 +1419,7 @@ InrImage :: Constructeur InrImage( )
 
 
 //--------------------------------------------------------------------------
-InrImage :: Constructeur InrImage( const char* nom)
+InrImage ::  InrImage( const char* nom)
 //                                 --------
 {
 
@@ -1454,7 +1454,7 @@ InrImage :: Constructeur InrImage( const char* nom)
 
 
 //--------------------------------------------------------------------------
-InrImage :: Constructeur InrImage( const char* nom, int type)
+InrImage ::  InrImage( const char* nom, int type)
 //                                 --------
 {
 
@@ -1473,9 +1473,9 @@ InrImage :: Constructeur InrImage( const char* nom, int type)
 
 
 //--------------------------------------------------------------------------
-// Defaut  char* nom=NULL
+// default  char* nom=NULL
 //
-InrImage :: Constructeur InrImage( int dimx, int dimy, 
+InrImage ::  InrImage( int dimx, int dimy, 
 //                                 --------            
                          int dimz, WORDTYPE format, const char* nom)
 {
@@ -1513,9 +1513,9 @@ InrImage :: Constructeur InrImage( int dimx, int dimy,
 
 
 //--------------------------------------------------------------------------
-// Defaut  char* nom=NULL
+// default  char* nom=NULL
 //
-InrImage :: Constructeur InrImage( int dimx, int dimy, 
+InrImage ::  InrImage( int dimx, int dimy, 
 //                                 --------            
                          int dimz, int vdim, WORDTYPE format, const char* nom)
 {
@@ -1548,9 +1548,9 @@ InrImage :: Constructeur InrImage( int dimx, int dimy,
 
 
 //--------------------------------------------------------------------------
-// Defaut  char* nom=NULL
+// default  char* nom=NULL
 //
-InrImage :: Constructeur InrImage(  WORDTYPE format, 
+InrImage ::  InrImage(  WORDTYPE format, 
 //                                 --------  
                           const char* nom,
                           InrImage* image )
@@ -1604,9 +1604,9 @@ InrImage :: Constructeur InrImage(  WORDTYPE format,
 } // Construteur
 
 //--------------------------------------------------------------------------
-// Defaut  char* nom=NULL
+// default  char* nom=NULL
 //
-InrImage :: Constructeur InrImage(  WORDTYPE format, int vdim,
+InrImage ::  InrImage(  WORDTYPE format, int vdim,
 //                                 --------  
                           const char* nom,
                           InrImage* image )
@@ -1647,7 +1647,7 @@ InrImage :: Constructeur InrImage(  WORDTYPE format, int vdim,
 
 #ifdef AMI_USE_VTK
 //--------------------------------------------------------------------------
-InrImage :: Constructeur InrImage( vtkImageData* vtkim)
+InrImage ::  InrImage( vtkImageData* vtkim)
 //                                 --------
 {
     int x,y,z,n;
@@ -1669,30 +1669,30 @@ InrImage :: Constructeur InrImage( vtkImageData* vtkim)
   _vdim = vtkim->GetNumberOfScalarComponents() ;
 
 
-  SelonQue (vtkim->GetScalarType()) Vaut
-    Valeur VTK_DOUBLE:
+  switch ( (vtkim->GetScalarType()) ){
+    case VTK_DOUBLE:
       if ( _vdim==1 ) { 
         _format = WT_DOUBLE;
       } else {
         _format = WT_DOUBLE_VECTOR;
       } // end if
     break;
-    Valeur VTK_FLOAT:
+    case VTK_FLOAT:
         _format = WT_FLOAT;
     break;
-    Valeur VTK_SHORT:
+    case VTK_SHORT:
       _format = WT_SIGNED_SHORT;
     break;
-    Valeur VTK_UNSIGNED_SHORT:
+    case VTK_UNSIGNED_SHORT:
       _format = WT_UNSIGNED_SHORT;
     break;
-    Valeur VTK_INT:
+    case VTK_INT:
       _format = WT_SIGNED_INT;
     break;
-    Valeur VTK_UNSIGNED_INT:
+    case VTK_UNSIGNED_INT:
       _format = WT_UNSIGNED_INT;
     break;
-    Valeur VTK_UNSIGNED_CHAR:
+    case VTK_UNSIGNED_CHAR:
       if ( _vdim==1 ) { 
         _format = WT_UNSIGNED_CHAR;
       } else
@@ -1701,9 +1701,9 @@ InrImage :: Constructeur InrImage( vtkImageData* vtkim)
       } else
         fprintf(stderr,"Vector of unsigned char not available \n");
     break;
-    Defaut: fprintf(stderr,"type non available \n");
+    default: fprintf(stderr,"type non available \n");
     _format = WT_FLOAT;
-  FinSelonQue
+  } // end switch
 
   //  printf("dim: %d %d %d ; %d\n", _tx,_ty,_tz, _vdim);
   //  printf("format: %s \n", FormatName()   );
@@ -1763,19 +1763,19 @@ InrImage :: Constructeur InrImage( vtkImageData* vtkim)
   } // end if
 
     //  InitPositions();
-} // Constructeur
+} // Constructor
 
 #endif // AMI_USE_VTK
 
 //--------------------------------------------------------------------------
-InrImage :: Destructeur InrImage()
+InrImage :: ~InrImage()
 //                    -----------
 {
 
   Desalloue();
   EffacePositions();
 
-} // Destructeur
+} // Destructor
 
 
 ///----------------------------------------------------------------
@@ -2078,21 +2078,21 @@ const string InrImage :: FormatName()
 //
 {
 
-  SelonQue (WORDTYPE) _format Vaut
+  switch ( (WORDTYPE) _format ){
 
-    Valeur WT_DOUBLE        : return "DOUBLE";        
-    Valeur WT_FLOAT         : return "FLOAT";         
-    Valeur WT_UNSIGNED_CHAR : return "UNSIGNED CHAR"; 
-    Valeur WT_UNSIGNED_SHORT: return "UNSIGNED SHORT";
-    Valeur WT_SIGNED_SHORT  : return "SIGNED SHORT";  
-    Valeur WT_SIGNED_INT    : return "SIGNED INT";    
-    Valeur WT_UNSIGNED_INT  : return "UNSIGNED INT";    
-    Valeur WT_RGB           : return "RGB";       
-    Valeur WT_RGBA          : return "RGBA";
-    Valeur WT_FLOAT_VECTOR  : return "FLOAT_VECTOR";  
+    case WT_DOUBLE        : return "DOUBLE";        
+    case WT_FLOAT         : return "FLOAT";         
+    case WT_UNSIGNED_CHAR : return "UNSIGNED CHAR"; 
+    case WT_UNSIGNED_SHORT: return "UNSIGNED SHORT";
+    case WT_SIGNED_SHORT  : return "SIGNED SHORT";  
+    case WT_SIGNED_INT    : return "SIGNED INT";    
+    case WT_UNSIGNED_INT  : return "UNSIGNED INT";    
+    case WT_RGB           : return "RGB";       
+    case WT_RGBA          : return "RGBA";
+    case WT_FLOAT_VECTOR  : return "FLOAT_VECTOR";  
 
-    Defaut: return "UNKNOWN";
-  FinSelonQue  
+    default: return "UNKNOWN";
+  } // end switch  
 
 
 } // FormatName()
@@ -2101,7 +2101,7 @@ const string InrImage :: FormatName()
 //----------------------------------------------------------------
 // Initialisation du buffer correspondant au type de l'image
 // a la position souhait�
-// Defaut int pos = 0
+// default int pos = 0
 void InrImage :: InitBuffer( int pos )
 //                         ---------
 {
@@ -2159,18 +2159,18 @@ InrImage :: operator vtkImageData*()
                this->TrY(),
                this->TrZ());
 
-  SelonQue (WORDTYPE) _format Vaut
-     Valeur WT_DOUBLE        : vtk_image->SetScalarType( VTK_DOUBLE); break;
-     Valeur WT_FLOAT         : 
-     Valeur WT_FLOAT_VECTOR  : vtk_image->SetScalarType(VTK_FLOAT);  break;
-     Valeur WT_UNSIGNED_CHAR : 
-     Valeur WT_RGB           : vtk_image->SetScalarType(VTK_UNSIGNED_CHAR);  break;
-     Valeur WT_UNSIGNED_SHORT: vtk_image->SetScalarType(VTK_UNSIGNED_SHORT); break;
-     Valeur WT_SIGNED_SHORT  : vtk_image->SetScalarType(VTK_SHORT);  break;
-     Valeur WT_UNSIGNED_INT    : vtk_image->SetScalarType(VTK_UNSIGNED_INT);    break;
-     Valeur WT_SIGNED_INT    : vtk_image->SetScalarType(VTK_INT);    break;
-     Defaut: printf("InrImage::operator vtkImageData*()\t format non gere...\n");
-  FinSelonQue
+  switch ( (WORDTYPE) _format ){
+     case WT_DOUBLE        : vtk_image->SetScalarType( VTK_DOUBLE); break;
+     case WT_FLOAT         : 
+     case WT_FLOAT_VECTOR  : vtk_image->SetScalarType(VTK_FLOAT);  break;
+     case WT_UNSIGNED_CHAR : 
+     case WT_RGB           : vtk_image->SetScalarType(VTK_UNSIGNED_CHAR);  break;
+     case WT_UNSIGNED_SHORT: vtk_image->SetScalarType(VTK_UNSIGNED_SHORT); break;
+     case WT_SIGNED_SHORT  : vtk_image->SetScalarType(VTK_SHORT);  break;
+     case WT_UNSIGNED_INT    : vtk_image->SetScalarType(VTK_UNSIGNED_INT);    break;
+     case WT_SIGNED_INT    : vtk_image->SetScalarType(VTK_INT);    break;
+     default: printf("InrImage::operator vtkImageData*()\t format non gere...\n");
+  } // end switch
   
   // interpret 9 components vectors as tensors for now
   if (_vdim==9) {
@@ -2228,7 +2228,7 @@ InrImage :: operator vtkImageData_ptr()
 #endif // AMI_USE_VTK
 
 //--------------------------------------------------------------------------
-// Defaut char* nom = NULL
+// default char* nom = NULL
 unsigned char InrImage :: Sauve( const char* nom )
 //                        -----
 {
@@ -2268,53 +2268,53 @@ InrImage* InrImage :: CreeSousImage( int min_x, int max_x,
   Pour( y, 0, res->_ty-1 )
   Pour( x, 0, res->_tx-1 )
 
-    SelonQue (WORDTYPE) _format Vaut
+    switch ( (WORDTYPE) _format ){
 
-      Valeur WT_DOUBLE:
+      case WT_DOUBLE:
         ((FORMAT_DOUBLE*) res->GetData())[ (z*_ty + y)*_tx + x ] = 
         ((FORMAT_DOUBLE*)      this->GetData())
                   [ ((z+min_z)*_ty + (y+min_y))*_tx + x + min_x];
       break;
 
-      Valeur WT_FLOAT:
+      case WT_FLOAT:
         ((FORMAT_FLOAT*) res->GetData())[ (z*_ty +  y)*_tx + x ] = 
         ((FORMAT_FLOAT*)      this->GetData())
               [ ((z+min_z)*_ty + (y+min_y))*_tx + x + min_x];
       break;
 
-      Valeur WT_UNSIGNED_CHAR:
+      case WT_UNSIGNED_CHAR:
         ((FORMAT_UNSIGNED_CHAR*) res->GetData())[ (z*_ty + y)*_tx + x ] =
         ((FORMAT_UNSIGNED_CHAR*)      this->GetData())
               [ ((z+min_z)*_ty + (y+min_y))*_tx + x + min_x];
       break;
 
-      Valeur WT_UNSIGNED_SHORT:
+      case WT_UNSIGNED_SHORT:
         ((FORMAT_UNSIGNED_SHORT*) res->GetData())[ (z*_ty + y)*_tx + x] = 
         ((FORMAT_UNSIGNED_SHORT*)      this->GetData())
               [ ((z+min_z)*_ty + (y+min_y))*_tx + x + min_x];
       break;
 
-      Valeur WT_SIGNED_SHORT:
+      case WT_SIGNED_SHORT:
         ((FORMAT_SIGNED_SHORT*) res->GetData())[ (z*_ty + y)*_tx + x] = 
         ((FORMAT_SIGNED_SHORT*)      this->GetData())
               [ ((z+min_z)*_ty + (y+min_y))*_tx + x + min_x];
       break;
 
-      Valeur WT_UNSIGNED_INT:
+      case WT_UNSIGNED_INT:
         ((FORMAT_UNSIGNED_INT*) res->GetData())[ (z*_ty + y)*_tx + x] = 
         ((FORMAT_UNSIGNED_INT*)      this->GetData())
               [ ((z+min_z)*_ty + (y+min_y))*_tx + x + min_x];
       break;
 
-      Valeur WT_SIGNED_INT:
+      case WT_SIGNED_INT:
         ((FORMAT_SIGNED_INT*) res->GetData())[ (z*_ty + y)*_tx + x] = 
         ((FORMAT_SIGNED_INT*)      this->GetData())
               [ ((z+min_z)*_ty + (y+min_y))*_tx + x + min_x];
       break;
 
-      Defaut: printf("InrImage::CreeSousImage()\t format non g��..\n");
+      default: printf("InrImage::CreeSousImage()\t format non g��..\n");
 
-    FinSelonQue
+    } // end switch
 
   FinPour // x
   FinPour // y
@@ -2354,12 +2354,12 @@ InrImage* InrImage :: Convert256( float min, float max)
 
   buf_resultat = (FORMAT_UNSIGNED_CHAR*) image_res->Buffer();
 
-  SelonQue (WORDTYPE) _format Vaut
+  switch ( (WORDTYPE) _format ){
 
-    Valeur WT_DOUBLE:
+    case WT_DOUBLE:
     //     --------
       buf_DOUBLE = (FORMAT_DOUBLE*) this->GetData();
-      DebutBoucle n=0 ItererTantQue n < _tx*_ty*_tz Pas n++ Faire
+      for(  n=0 ;  n < _tx*_ty*_tz ;  n++ Faire
 
         if ( fabs(diff) < 1E-5 ) {
           *buf_resultat = 0;      
@@ -2375,13 +2375,13 @@ InrImage* InrImage :: Convert256( float min, float max)
 
         buf_DOUBLE++;
         buf_resultat++;
-      FinBoucle // n
+      } // end for // n
     break;
 
-    Valeur WT_FLOAT:
+    case WT_FLOAT:
     //     --------
       buf_FLOAT = (FORMAT_FLOAT*) this->GetData();
-      DebutBoucle n=0 ItererTantQue n < _tx*_ty*_tz Pas n++ Faire
+      for(  n=0 ;  n < _tx*_ty*_tz ;  n++ Faire
 
         if ( fabs(diff) < 1E-5 ) {
           *buf_resultat = 0;      
@@ -2397,13 +2397,13 @@ InrImage* InrImage :: Convert256( float min, float max)
 
         buf_FLOAT++;
         buf_resultat++;
-      FinBoucle // n
+      } // end for // n
     break;
 
-    Valeur WT_UNSIGNED_SHORT:
+    case WT_UNSIGNED_SHORT:
     //     ----------
       buf_UNSIGNED_SHORT = (FORMAT_UNSIGNED_SHORT*) this->GetData();
-      DebutBoucle n=0 ItererTantQue n < _tx*_ty*_tz Pas n++ Faire
+      for(  n=0 ;  n < _tx*_ty*_tz ;  n++ Faire
         if ( fabs(diff) < 1E-5 ) {
           *buf_resultat = 0;          
         } else    
@@ -2418,13 +2418,13 @@ InrImage* InrImage :: Convert256( float min, float max)
 
         buf_UNSIGNED_SHORT++;
         buf_resultat++;
-      FinBoucle // n
+      } // end for // n
     break;
 
-    Valeur WT_SIGNED_SHORT:
+    case WT_SIGNED_SHORT:
     //     -----------
       buf_SIGNED_SHORT = (FORMAT_SIGNED_SHORT*) this->GetData();
-      DebutBoucle n=0 ItererTantQue n < _tx*_ty*_tz Pas n++ Faire
+      for(  n=0 ;  n < _tx*_ty*_tz ;  n++ Faire
 
         if ( fabs(diff) < 1E-5 ) {
           *buf_resultat = 0;          
@@ -2440,13 +2440,13 @@ InrImage* InrImage :: Convert256( float min, float max)
 
         buf_SIGNED_SHORT++;
         buf_resultat++;
-      FinBoucle // n
+      } // end for // n
     break;
 
-    Valeur WT_SIGNED_INT:
+    case WT_SIGNED_INT:
     //     -----------
       buf_SIGNED_INT = (FORMAT_SIGNED_INT*) this->GetData();
-      DebutBoucle n=0 ItererTantQue n < _tx*_ty*_tz Pas n++ Faire
+      for(  n=0 ;  n < _tx*_ty*_tz ;  n++ Faire
 
         if ( fabs(diff) < 1E-5 ) {
           *buf_resultat = 0;          
@@ -2462,12 +2462,12 @@ InrImage* InrImage :: Convert256( float min, float max)
 
         buf_SIGNED_INT++;
         buf_resultat++;
-      FinBoucle // n
+      } // end for // n
     break;
 
-    Defaut: printf("InrImage::convert256()\t format non g��..\n");
+    default: printf("InrImage::convert256()\t format non g��..\n");
 
-  FinSelonQue
+  } // end switch
 
   return image_res;
 

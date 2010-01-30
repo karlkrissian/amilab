@@ -449,15 +449,15 @@ void DessinImage::ComputeBasicSizes()
   FinSi
 
 #if defined(__WXMOTIF__)
-  SelonQue Param._axes_info Vaut
-    Valeur AXES_VOXEL_POS:
+  switch ( Param._axes_info ){
+    case AXES_VOXEL_POS:
       sprintf(valstr,"%d",macro_max(_image->_tx-1,_image->_tz-1));
-    FinValeur
-    Valeur AXES_SPACE_POS:
+    break;
+    case AXES_SPACE_POS:
       sprintf(valstr,"%2.1f",macro_max(_image->SpacePosX(_image->_tx-1),
                        _image->SpacePosY(_image->_tz-1)));
-    FinValeur
-  FinSelonQue
+    break;
+  } // end switch
 
   XTextExtents(font_str,
            valstr,
@@ -474,15 +474,15 @@ void DessinImage::ComputeBasicSizes()
 
   XFreeFontInfo(NULL,font_str,0);
 #else
-  SelonQue Param._axes_info Vaut
-    Valeur AXES_VOXEL_POS:
+  switch ( Param._axes_info ){
+    case AXES_VOXEL_POS:
       sprintf(valstr,"%d",macro_max(_image->_tx-1,_image->_tz-1));
-    FinValeur
-    Valeur AXES_SPACE_POS:
+    break;
+    case AXES_SPACE_POS:
       sprintf(valstr,"%2.1f",macro_max(_image->SpacePosX(_image->_tx-1),
                        _image->SpacePosY(_image->_tz-1)));
-    FinValeur
-  FinSelonQue
+    break;
+  } // end switch
 
   wxCoord maxCharWidth, maxCharHeight;
 
@@ -565,13 +565,13 @@ void DessinImage::InitVoxelSize()
   // Calcul dans _size_x, _size_y, et _size_z la taille
   // en pixels d'une unit�de longueur
 
-  SelonQue Param._type_taille Vaut
+  switch ( Param._type_taille ){
 
-    Valeur TAILLE_FENETRE:
+    case TAILLE_FENETRE:
 
-      SelonQue Param._type_coupe Vaut
+      switch ( Param._type_coupe ){
 
-        Valeur TYPE_COUPE_XY:
+        case TYPE_COUPE_XY:
           avail_width  = largeur - h_margin[IMAGE_XY];
           avail_height = hauteur - v_margin[IMAGE_XY];
           Si avail_width <1 AlorsFait avail_width  = 10;
@@ -580,9 +580,9 @@ void DessinImage::InitVoxelSize()
           _size_x = (float) avail_width  / (1.0*dim_x);
           _size_y = (float) avail_height / (1.0*dim_y);
           _size_z = _size_x;
-        FinValeur
+        break;
 
-        Valeur TYPE_COUPE_XZ:
+        case TYPE_COUPE_XZ:
           avail_width  = largeur - h_margin[IMAGE_XZ];
           avail_height = hauteur - v_margin[IMAGE_XZ];
           Si avail_width <1 AlorsFait avail_width  = 10;
@@ -591,9 +591,9 @@ void DessinImage::InitVoxelSize()
           _size_x = (float) avail_width / dim_x;
           _size_z = (float) avail_height / dim_z;
           _size_y = _size_x;
-        FinValeur
+        break;
 
-        Valeur TYPE_COUPE_ZY:
+        case TYPE_COUPE_ZY:
           avail_width  = largeur - h_margin[IMAGE_ZY];
           avail_height = hauteur - v_margin[IMAGE_ZY];
           Si avail_width <1 AlorsFait avail_width  = 10;
@@ -602,9 +602,9 @@ void DessinImage::InitVoxelSize()
           _size_z = (float) avail_width / dim_z;
           _size_y = (float) avail_height / dim_y;
           _size_x = _size_y;
-        FinValeur
+        break;
 
-        Valeur TYPE_COUPE_XY_XZ:
+        case TYPE_COUPE_XY_XZ:
 
           avail_width  = largeur - h_margin[IMAGE_XY];
           avail_height = hauteur - v_margin[IMAGE_XY]
@@ -617,9 +617,9 @@ void DessinImage::InitVoxelSize()
           _size_y =
           _size_z = (float) avail_height / ( dim_y + dim_z);
 
-        FinValeur
+        break;
 
-        Valeur TYPE_COUPE_XY_ZY:
+        case TYPE_COUPE_XY_ZY:
 
           avail_width  = largeur - h_margin[IMAGE_XY]
                                   - h_margin[IMAGE_ZY]
@@ -634,10 +634,10 @@ void DessinImage::InitVoxelSize()
           _size_z = (float) avail_width  / ( dim_x + dim_z);
           _size_y = (float) avail_height / dim_y;
 
-        FinValeur
+        break;
 
-        Valeur TYPE_COUPE_XZ_ZY:
-        Valeur TYPE_COUPE_XY_XZ_ZY:
+        case TYPE_COUPE_XZ_ZY:
+        case TYPE_COUPE_XY_XZ_ZY:
 
           avail_width  = largeur - h_margin[IMAGE_XY]
                                   - h_margin[IMAGE_ZY]
@@ -662,20 +662,20 @@ void DessinImage::InitVoxelSize()
                             % _size_x % _size_y % _size_z )
           #endif
 
-        FinValeur
+        break;
 
-      FinSelonQue // Param._type_coupe
-    FinValeur
+      } // end switch // Param._type_coupe
+    break;
 
-    Valeur TAILLE_FACTEUR:
+    case TAILLE_FACTEUR:
       Si _type_facteur == FACTEUR_ENTIER Alors
         _size_x = _size_y = _size_z = _facteur_entier;
       Sinon
         _size_x = _size_y = _size_z = _facteur_reel;
       FinSi
-    FinValeur
+    break;
 
-  FinSelonQue // Param._type_taille
+  } // end switch // Param._type_taille
 
   Si _type_facteur == FACTEUR_ENTIER Alors
     _size_x = (int) _size_x;
@@ -753,9 +753,9 @@ void DessinImage::InitPositionImages( )
   ty = Param._Zoom._dessin_ty;
   tz = Param._Zoom._dessin_tz;
 
-  SelonQue Param._type_coupe Vaut
+  switch ( Param._type_coupe ){
 
-    Valeur TYPE_COUPE_XY:
+    case TYPE_COUPE_XY:
 
       Xneed = tx*_size_x + h_margin[IMAGE_XY];
       Yneed = ty*_size_y + v_margin[IMAGE_XY];
@@ -765,9 +765,9 @@ void DessinImage::InitPositionImages( )
       _tab_ximage_pos_y[IMAGE_XY] = (int) (hauteur-Yneed)/2 +
                                            _top_margin[IMAGE_XY];
 
-    FinValeur
+    break;
 
-    Valeur TYPE_COUPE_XZ:
+    case TYPE_COUPE_XZ:
 
       Xneed = tx*_size_x + h_margin[IMAGE_XZ];
       Yneed = tz*_size_z + v_margin[IMAGE_XZ];
@@ -777,9 +777,9 @@ void DessinImage::InitPositionImages( )
       _tab_ximage_pos_y[IMAGE_XZ] = (int) (hauteur-Yneed)/2+
                                            _top_margin[IMAGE_XZ];
 
-    FinValeur
+    break;
 
-    Valeur TYPE_COUPE_ZY:
+    case TYPE_COUPE_ZY:
 
       Xneed = tz*_size_z + h_margin[IMAGE_ZY];
       Yneed = ty*_size_y + v_margin[IMAGE_ZY];
@@ -788,9 +788,9 @@ void DessinImage::InitPositionImages( )
                                            _left_margin[IMAGE_ZY];
       _tab_ximage_pos_y[IMAGE_ZY] = (int) (hauteur-Yneed)/2 +
                                            _top_margin[IMAGE_ZY];
-    FinValeur
+    break;
 
-    Valeur TYPE_COUPE_XY_XZ:
+    case TYPE_COUPE_XY_XZ:
 
       Xneed = tx*_size_x + h_margin[IMAGE_XY];
       Yneed = ty*_size_y + tz*_size_z +
@@ -811,9 +811,9 @@ void DessinImage::InitPositionImages( )
                                     _distance_coupes +
                                     _top_margin[IMAGE_XY]);
 
-    FinValeur
+    break;
 
-    Valeur TYPE_COUPE_XY_ZY:
+    case TYPE_COUPE_XY_ZY:
 
       Xneed = tx*_size_x + tz*_size_z +
               h_margin[IMAGE_XY] +
@@ -834,10 +834,10 @@ void DessinImage::InitPositionImages( )
                                     _left_margin[IMAGE_XY]);
       _tab_ximage_pos_y[IMAGE_XY] = _tab_ximage_pos_y[IMAGE_ZY];
 
-    FinValeur
+    break;
 
-    Valeur TYPE_COUPE_XZ_ZY:
-    Valeur TYPE_COUPE_XY_XZ_ZY:
+    case TYPE_COUPE_XZ_ZY:
+    case TYPE_COUPE_XY_XZ_ZY:
 
       Xneed = tx*_size_x + tz*_size_z +
               h_margin[IMAGE_XY] +
@@ -869,16 +869,16 @@ void DessinImage::InitPositionImages( )
                     _bottom_margin[IMAGE_XZ] -
                                     tz*_size_z);
 
-    FinValeur
+    break;
 
-    Valeur TYPE_COUPES:
+    case TYPE_COUPES:
 
       _tab_ximage_pos_x[IMAGE_COUPES] = (int) ( 0 );
       _tab_ximage_pos_y[IMAGE_COUPES] = (int) ( 0 );
 
-    FinValeur
+    break;
 
-  FinSelonQue // Param._type_coupe
+  } // end switch // Param._type_coupe
 
   Si _dessine_masque Alors
     _tab_ximage_pos_x[IMAGE_MASQUE_XY] = _tab_ximage_pos_x[IMAGE_XY];
@@ -2374,8 +2374,8 @@ void DessinImage::DessineScrollBar( int image)
   hauteur = _tab_slices[image].image->GetHeight();
 #endif
 
-  SelonQue image Vaut
-    Valeur IMAGE_XY:
+  switch ( image ){
+    case IMAGE_XY:
       val_xmin  = val_ymin = 0;
       val_xmax  = _image->_tx-1;
       val_ymax  = _image->_ty-1;
@@ -2383,9 +2383,9 @@ void DessinImage::DessineScrollBar( int image)
       zoom_xmax = Param._Zoom._xmax;
       zoom_ymin = Param._Zoom._ymin;
       zoom_ymax = Param._Zoom._ymax;
-    FinValeur
+    break;
 
-    Valeur IMAGE_XZ:
+    case IMAGE_XZ:
       val_xmin  = val_ymin = 0;
       val_xmax  = _image->_tx-1;
       val_ymax  = _image->_tz-1;
@@ -2393,9 +2393,9 @@ void DessinImage::DessineScrollBar( int image)
       zoom_xmax = Param._Zoom._xmax;
       zoom_ymin = Param._Zoom._zmin;
       zoom_ymax = Param._Zoom._zmax;
-    FinValeur
+    break;
 
-    Valeur IMAGE_ZY:
+    case IMAGE_ZY:
       val_xmin  = val_ymin = 0;
       val_xmax  = _image->_tz-1;
       val_ymax  = _image->_ty-1;
@@ -2403,9 +2403,9 @@ void DessinImage::DessineScrollBar( int image)
       zoom_xmax = Param._Zoom._zmax;
       zoom_ymin = Param._Zoom._ymin;
       zoom_ymax = Param._Zoom._ymax;
-    FinValeur
+    break;
 
-  FinSelonQue
+  } // end switch
 
   blanc = _tab_intensite_couleur[255];
   noir  = _tab_intensite_couleur[0];
@@ -2440,9 +2440,9 @@ void DessinImage::ProjetteVecteur(  int x, int y, float vx, float vy)
   int x1, y1, x2, y2;
   float   norme_vect,coeff;
 
-  SelonQue _vecteur_type Vaut
+  switch ( _vecteur_type ){
 
-    Valeur VECTEUR_FLECHE:
+    case VECTEUR_FLECHE:
       x1 = (int) (x+_taille_vecteur*vx);
       y1 = (int) (y+_taille_vecteur*vy);
       norme_vect = sqrt(vx*vx+vy*vy);
@@ -2451,17 +2451,17 @@ void DessinImage::ProjetteVecteur(  int x, int y, float vx, float vy)
         Ligne( x1, y1, (int) (x1-6*(vx+vy)/norme_vect), (int) (y1-6*(vy-vx)/norme_vect) );
         Ligne( x1, y1, (int) (x1-6*(vx-vy)/norme_vect), (int) (y1-6*(vy+vx)/norme_vect) );
       FinSi
-    FinValeur
+    break;
 
-    Valeur VECTEUR_DIRECTION:
+    case VECTEUR_DIRECTION:
       x1 = (int) (x-_taille_vecteur*vx);
       y1 = (int) (y-_taille_vecteur*vy);
       x2 = (int) (x+_taille_vecteur*vx);
       y2 = (int) (y+_taille_vecteur*vy);
       Ligne( x1, y1, x2, y2);
-    FinValeur
+    break;
 
-    Valeur VECTEUR_FLECHE_PROP:
+    case VECTEUR_FLECHE_PROP:
       x1 = (int) (x+_taille_vecteur*vx);
       y1 = (int) (y+_taille_vecteur*vy);
       norme_vect = sqrt(vx*vx+vy*vy);
@@ -2471,9 +2471,9 @@ void DessinImage::ProjetteVecteur(  int x, int y, float vx, float vy)
         Ligne( x1, y1, (int) (x1-coeff*(vx+vy)+0.5), (int) (y1-coeff*(vy-vx)+0.5) );
         Ligne( x1, y1, (int) (x1-coeff*(vx-vy)+0.5), (int) (y1-coeff*(vy+vx)+0.5) );
       FinSi
-    FinValeur
+    break;
 
-  FinSelonQue
+  } // end switch
 
 } // ProjetteVecteur()
 
@@ -2744,37 +2744,37 @@ void DessinImage::DessineChampCercles( )
 
   Si (Param._type_coupe+1) & (TYPE_COUPE_XY+1) Alors
 
-  DebutBoucle x = Param._Zoom._xmin  ItererTantQue x <= Param._Zoom._xmax  Pas x += pas_x  Faire
-  DebutBoucle y = Param._Zoom._ymin  ItererTantQue y <= Param._Zoom._ymax  Pas y += pas_y  Faire
+  for(  x = Param._Zoom._xmin  ;  x <= Param._Zoom._xmax  ;  x += pas_x  Faire
+  for(  y = Param._Zoom._ymin  ;  y <= Param._Zoom._ymax  ;  y += pas_y  Faire
 
     DessineCercle( x, y, Param._pos._z, _vector_fields[0].color);
 
-  FinBoucle // y
-  FinBoucle // x
+  } // end for // y
+  } // end for // x
 
   FinSi
 
   Si (Param._type_coupe+1) & (TYPE_COUPE_XZ+1) Alors
 
-  DebutBoucle x = Param._Zoom._xmin  ItererTantQue x <= Param._Zoom._xmax  Pas x += pas_x  Faire
-  DebutBoucle z = Param._Zoom._zmin  ItererTantQue z <= Param._Zoom._zmax  Pas z += pas_z  Faire
+  for(  x = Param._Zoom._xmin  ;  x <= Param._Zoom._xmax  ;  x += pas_x  Faire
+  for(  z = Param._Zoom._zmin  ;  z <= Param._Zoom._zmax  ;  z += pas_z  Faire
 
     DessineCercle( x, Param._pos._y, z, _vector_fields[0].color);
 
-  FinBoucle // z
-  FinBoucle // x
+  } // end for // z
+  } // end for // x
 
   FinSi
 
   Si (Param._type_coupe+1) & (TYPE_COUPE_ZY+1) Alors
 
-  DebutBoucle z = Param._Zoom._zmin  ItererTantQue z <= Param._Zoom._zmax  Pas z += pas_z  Faire
-  DebutBoucle y = Param._Zoom._ymin  ItererTantQue y <= Param._Zoom._ymax  Pas y += pas_y  Faire
+  for(  z = Param._Zoom._zmin  ;  z <= Param._Zoom._zmax  ;  z += pas_z  Faire
+  for(  y = Param._Zoom._ymin  ;  y <= Param._Zoom._ymax  ;  y += pas_y  Faire
 
     DessineCercle( Param._pos._x, y, z, _vector_fields[0].color);
 
-  FinBoucle // y
-  FinBoucle // z
+  } // end for // y
+  } // end for // z
 
   FinSi
 
@@ -2959,9 +2959,9 @@ void DessinImage::InitComparaisons()
   _compare_max = 10;
   _tab_compare_image = new CompareImage*[_compare_max+1];
 
-  DebutBoucle i = 0 ItererTantQue i < _compare_max Pas i++ Faire
+  for(  i = 0 ;  i < _compare_max ;  i++ Faire
     _tab_compare_image[i] = NULL;
-  FinBoucle // i
+  } // end for // i
 
   _nombre_comparaisons = 0;
 
@@ -2980,11 +2980,11 @@ void DessinImage::Comparaisons_UpdateStatusInfo( const Point_3D<int>& imagepos, 
   _comparison_lock = true;
 /* Deprecated ...
 
-  DebutBoucle i = 0 ItererTantQue i < _compare_max Pas i++ Faire
+  for(  i = 0 ;  i < _compare_max ;  i++ Faire
     Si _tab_compare_image[i] != NULL Alors
       ((CompareImage*) _tab_compare_image[i])->MAJ_label(im_x, im_y, im_z, trouve);
     FinSi
-  FinBoucle // i
+  } // end for // i
 */
   if (GB_debug)
     fprintf(stderr,"start testing _tab_compare_image2\n");
@@ -3060,13 +3060,13 @@ void DessinImage::Comparaisons_Paint( )
     DessinImage::ptr di;
 
   _comparison_lock=true;
-  DebutBoucle i = 0 ItererTantQue i < _compare_max Pas i++ Faire
+  for(  i = 0 ;  i < _compare_max ;  i++ Faire
     Si _tab_compare_image[i] != NULL Alors
     printf("comparing image %d \n",i);
       ((CompareImage*) _tab_compare_image[i])->RecupereParametres();
       ((CompareImage*) _tab_compare_image[i])->Paint( true);
     FinSi
-  FinBoucle // i
+  } // end for // i
 
   std::list<compare_info>::iterator Iter;
   for (Iter  = _tab_compare2_image.begin();
@@ -3133,11 +3133,11 @@ void DessinImage::Comparaisons_DessineCurseur( int x, int y, int z)
 {
     int i;
 
-  DebutBoucle i = 0 ItererTantQue i < _compare_max Pas i++ Faire
+  for(  i = 0 ;  i < _compare_max ;  i++ Faire
     Si _tab_compare_image[i] != NULL Alors
       ((CompareImage*) _tab_compare_image[i])->DessineCurseur( x, y, z, Param._curseur._type);
     FinSi
-  FinBoucle // i
+  } // end for // i
 
 
   std::list<compare_info>::iterator Iter;
@@ -3164,7 +3164,7 @@ void DessinImage::Comparaisons_DessineCurseur( int x, int y, int z)
                     cx, cy, cz,
                     Param._curseur._type);
     FinSi
-  FinBoucle // i
+  } // end for // i
 
 
 } // Comparaisons_DessineCurseur()
@@ -3178,11 +3178,11 @@ void DessinImage::Comparaisons_EffaceEcran( unsigned char expose)
 
     int i;
 
-  DebutBoucle i = 0 ItererTantQue i < _compare_max Pas i++ Faire
+  for(  i = 0 ;  i < _compare_max ;  i++ Faire
     Si _tab_compare_image[i] != NULL Alors
       ((CompareImage*) _tab_compare_image[i])->EffaceEcran( expose);
     FinSi
-  FinBoucle // i
+  } // end for // i
 
   std::list<compare_info>::iterator Iter;
   for (Iter  = _tab_compare2_image.begin();
@@ -3204,11 +3204,11 @@ void DessinImage::Comparaisons_MAJ_taille( )
 
   Recupere_fenetre_dimensions(&l, &h);
 
-  DebutBoucle i = 0 ItererTantQue i < _compare_max Pas i++ Faire
+  for(  i = 0 ;  i < _compare_max ;  i++ Faire
     Si _tab_compare_image[i] != NULL Alors
       ((CompareImage*) _tab_compare_image[i])->Fixe_fenetre_dimensions( l, h);
     FinSi
-  FinBoucle // i
+  } // end for // i
 
   std::list<compare_info>::iterator Iter;
   for (Iter  = _tab_compare2_image.begin();
@@ -3227,11 +3227,11 @@ void DessinImage::Comparaisons_MemoriseCoupesXY( unsigned char activation )
 
     int i;
 
-  DebutBoucle i = 0 ItererTantQue i < _compare_max Pas i++ Faire
+  for(  i = 0 ;  i < _compare_max ;  i++ Faire
     Si _tab_compare_image[i] != NULL Alors
       ((CompareImage*) _tab_compare_image[i])->MemoriseCoupesXY( activation);
     FinSi
-  FinBoucle // i
+  } // end for // i
 
   std::list<compare_info>::iterator Iter;
   for (Iter  = _tab_compare2_image.begin();
@@ -3296,9 +3296,9 @@ unsigned char DessinImage::CheckGLWindow()
 
 
 //----------------------------------------------------------------
-// Defaut int type=CREATE_WINDOW
+// default int type=CREATE_WINDOW
 //
-DessinImage::Constructeur DessinImage(
+DessinImage:: DessinImage(
 //                       ------------
     wxWindow* parent,
     const std::string& ATitle, InrImage::ptr image, DessinParam::ptr param,
@@ -3372,16 +3372,16 @@ DessinImage::Constructeur DessinImage(
 
   Show(true);
 
-} // Constructeur
+} // Constructor
 
 
 //----------------------------------------------------------------
-DessinImage::Destructeur DessinImage()
+DessinImage::~DessinImage()
 //                       -----------
 {
     int i;
 
-  Si GB_debug AlorsFait printf("Destructeur DessinImage()  %s \n",
+  Si GB_debug AlorsFait printf("~DessinImage()  %s \n",
                    (char*)_name);
 
 #if defined(__WXMOTIF__)
@@ -3409,10 +3409,10 @@ DessinImage::Destructeur DessinImage()
       m_timer.Stop();
   }
 
-  Si GB_debug AlorsFait printf("Destructeur DessinImage() %s Fin \n",
+  Si GB_debug AlorsFait printf("~DessinImage() %s Fin \n",
                    (char*)_name);
 
-} // Destructeur
+} // Destructor
 
 
 
@@ -3449,16 +3449,16 @@ void DessinImage::InitPalette()
 
   Pour(i,0,MAX_ISOCONTOURS-1)
 
-    SelonQue i Vaut
-      Valeur 0:
+    switch ( i ){
+      case 0:
         _isocontours[i].color.FixeValeur(250,0,0);
-      FinValeur
-      Valeur 1:
+      break;
+      case 1:
         _isocontours[i].color.FixeValeur(0,250,0);
-        FinValeur
-      Defaut:
+        break;
+      default:
         _isocontours[i].color.FixeValeur(0,0,250);
-    FinSelonQue
+    } // end switch
   FinPour
 
   _couleur_fond  .FixeValeur(0,0,0);
@@ -3983,9 +3983,9 @@ unsigned char DessinImage::LitFichierParametres(  char* nom_fichier)
   // Dans le cas des animations, on appelle Paint() avant Animation()
   //  Pour initialiser les images a Comparer
 
-  SelonQue Param._option_traitement Vaut
+  switch ( Param._option_traitement ){
 
-    Valeur OPTION_MIP:
+    case OPTION_MIP:
       Param._MIP._rot_X = MIP_rotX;
       Param._MIP._rot_Y = MIP_rotY;
       Param._MIP._rot_Z = MIP_rotZ;
@@ -4002,20 +4002,20 @@ unsigned char DessinImage::LitFichierParametres(  char* nom_fichier)
       _param_MIP->AfficheDialogue();
 
       Paint();
-    FinValeur
+    break;
 
-    Valeur OPTION_ANIM:
+    case OPTION_ANIM:
       Paint();
       MemoriseCoupesXY(true);
       Comparaisons_MemoriseCoupesXY(true);
       LanceAnimation();
-    FinValeur
+    break;
 
-    Valeur OPTION_COUPE:
+    case OPTION_COUPE:
       Paint();
-    FinValeur
+    break;
 
-  FinSelonQue
+  } // end switch
 
 
   return true;
@@ -4197,9 +4197,9 @@ void DessinImage::SauveImage( char* nom_image)
                      Param._dim._voxel_size_y,
                      Param._dim._voxel_size_z);
 
-  SelonQue format Vaut
+  switch ( format ){
 
-    Valeur WT_UNSIGNED_CHAR:
+    case WT_UNSIGNED_CHAR:
 
       nouvelle_image->InitBuffer();
       _image->InitBuffer();
@@ -4222,16 +4222,16 @@ void DessinImage::SauveImage( char* nom_image)
       FinPour // y
       FinPour // z
 
-    FinValeur
+    break;
 
-    Valeur WT_UNSIGNED_SHORT:
-    Valeur WT_SIGNED_SHORT:
-    Valeur WT_UNSIGNED_INT:
-    Valeur WT_SIGNED_INT:
-    Valeur WT_UNSIGNED_LONG:
-    Valeur WT_SIGNED_LONG:
-    Valeur WT_FLOAT:
-    Valeur WT_DOUBLE:
+    case WT_UNSIGNED_SHORT:
+    case WT_SIGNED_SHORT:
+    case WT_UNSIGNED_INT:
+    case WT_SIGNED_INT:
+    case WT_UNSIGNED_LONG:
+    case WT_SIGNED_LONG:
+    case WT_FLOAT:
+    case WT_DOUBLE:
 
       nouvelle_image->InitBuffer();
       _image->InitBuffer();
@@ -4251,12 +4251,12 @@ void DessinImage::SauveImage( char* nom_image)
       FinPour // x
       FinPour // y
       FinPour // z
-    FinValeur
+    break;
 
-      Defaut:
+      default:
       fprintf(stderr,"DessinImage::SauveImage() format not available \n");
 
-  FinSelonQue
+  } // end switch
 
   nouvelle_image->Sauve();
 
@@ -4280,20 +4280,20 @@ void DessinImage::SauveImagePS( const char* nom_image)
 //  writePS( nom_image, _tab_ximage[ IMAGE_XY], colors, F_GREYSCALE);
 
   Si (Param._option_traitement == OPTION_COUPE) Alors
-    SelonQue Param._type_coupe Vaut
+    switch ( Param._type_coupe ){
 
-      Valeur TYPE_COUPE_XY:  image = _tab_ximage[IMAGE_XY];
-      FinValeur
-      Valeur TYPE_COUPE_XZ:  image = _tab_ximage[IMAGE_XZ];
-      FinValeur
-      Valeur TYPE_COUPE_ZY:  image = _tab_ximage[IMAGE_ZY];
-      FinValeur
-      Valeur TYPE_COUPES:    image = _tab_ximage[IMAGE_COUPES];
-      FinValeur
+      case TYPE_COUPE_XY:  image = _tab_ximage[IMAGE_XY];
+      break;
+      case TYPE_COUPE_XZ:  image = _tab_ximage[IMAGE_XZ];
+      break;
+      case TYPE_COUPE_ZY:  image = _tab_ximage[IMAGE_ZY];
+      break;
+      case TYPE_COUPES:    image = _tab_ximage[IMAGE_COUPES];
+      break;
 
-      Defaut:                image = RecupereImage();
+      default:                image = RecupereImage();
                              image_recuperee = true;
-    FinSelonQue
+    } // end switch
 
   Sinon
     image = RecupereImage();
@@ -4301,14 +4301,14 @@ void DessinImage::SauveImagePS( const char* nom_image)
   FinSi
 
 
-  SelonQue _type_sauvegarde Vaut
-    Valeur SAUVE_PS_GRIS:
+  switch ( _type_sauvegarde ){
+    case SAUVE_PS_GRIS:
         //   writePS( nom_image, image, colors, F_GREYSCALE);
-    FinValeur
-    Valeur SAUVE_PS_COULEUR:
+    break;
+    case SAUVE_PS_COULEUR:
         // writePS( nom_image, image, colors, F_FULLCOLOR);
-    FinValeur
-  FinSelonQue
+    break;
+  } // end switch
 
   Si image_recuperee AlorsFait XDestroyImage(image);
 
@@ -4532,20 +4532,20 @@ void DessinImage::Boutton_Relache()
         _souris_y = _zoom_y2;
 
         CurseurToImage(&x2, &y2, &z2, &etat);
-        SelonQue etat Vaut
-          Valeur IMAGE_XY:
+        switch ( etat ){
+          case IMAGE_XY:
             Param._Zoom._xmin = macro_min(x1,x2);   Param._Zoom._xmax = macro_max(x1,x2);
             Param._Zoom._ymin = macro_min(y1,y2);   Param._Zoom._ymax = macro_max(y1,y2);
-          FinValeur
-          Valeur IMAGE_XZ:
+          break;
+          case IMAGE_XZ:
             Param._Zoom._xmin = macro_min(x1,x2);   Param._Zoom._xmax = macro_max(x1,x2);
             Param._Zoom._zmin = macro_min(z1,z2);   Param._Zoom._zmax = macro_max(z1,z2);
-          FinValeur
-          Valeur IMAGE_ZY:
+          break;
+          case IMAGE_ZY:
             Param._Zoom._zmin = macro_min(z1,z2);   Param._Zoom._zmax = macro_max(z1,z2);
             Param._Zoom._ymin = macro_min(y1,y2);   Param._Zoom._ymax = macro_max(y1,y2);
-          FinValeur
-        FinSelonQue
+          break;
+        } // end switch
      FinSi
 
 
@@ -4672,24 +4672,24 @@ void DessinImage::DeplaceSourisShiftBout1()
 
     dx = dy = dz = 0;
 
-    SelonQue deplace_coupe Vaut
+    switch ( deplace_coupe ){
 
-      Valeur IMAGE_XY:
+      case IMAGE_XY:
         dx = (int) (-dposx/_size_x);
         dy = (int) (-dposy/_size_y);
-      FinValeur
+      break;
 
-      Valeur IMAGE_XZ:
+      case IMAGE_XZ:
         dx = (int) (-dposx/_size_x);
         dz = (int) (-dposy/_size_z);
-      FinValeur
+      break;
 
-      Valeur IMAGE_ZY:
+      case IMAGE_ZY:
         dy = (int) (-dposy/_size_y);
         dz = (int) (-dposx/_size_z);
-      FinValeur
+      break;
 
-    FinSelonQue
+    } // end switch
 
 
     // Deplacement
@@ -5469,19 +5469,19 @@ void DessinImage::PlayAnimation( )
     switch (_type_animation)
     {
 
-      Valeur TYPE_ANIM_FORWARD:
+      case TYPE_ANIM_FORWARD:
       //     -----------------
         Param._pos._z++;
         Si Param._pos._z > Param._Zoom._zmax AlorsFait Param._pos._z = Param._Zoom._zmin;
-      FinValeur
+      break;
 
-      Valeur TYPE_ANIM_BACKWARD:
+      case TYPE_ANIM_BACKWARD:
       //     ------------------
         Param._pos._z--;
         Si Param._pos._z < Param._Zoom._zmin AlorsFait Param._pos._z = Param._Zoom._zmax;
-      FinValeur
+      break;
 
-      Valeur TYPE_ANIM_AUTOREVERSE:
+      case TYPE_ANIM_AUTOREVERSE:
       //     ---------------------
 
         Si _ANIM_forward Alors
@@ -5498,7 +5498,7 @@ void DessinImage::PlayAnimation( )
           FinSi
         FinSi
 
-      FinValeur
+      break;
 
     } // end switch
 
@@ -5531,7 +5531,7 @@ void DessinImage::PlayAnimation( )
     if (m_timer.GetInterval() != (int) (1000.0 / _ANIM_vitesse)) {
       // restart timer with new interval
       m_timer.Stop();
-      m_timer.Start((EntierLongPositif) (1000.0 / _ANIM_vitesse),
+      m_timer.Start((unsigned long) (1000.0 / _ANIM_vitesse),
                     wxTIMER_CONTINUOUS);
     }
 
@@ -5562,7 +5562,7 @@ void DessinImage::LanceAnimation( )
 
   _ANIM_forward = true; // for autoreverse
   _param_Animation->AfficheDialogue();
-  m_timer.Start((EntierLongPositif) (1000.0 / _ANIM_vitesse),
+  m_timer.Start((unsigned long) (1000.0 / _ANIM_vitesse),
                 wxTIMER_CONTINUOUS);
 
 
@@ -5598,7 +5598,7 @@ void DessinImage::LancePetiteAnimationStereo( int n )
 
   _ANIM_timeout = true;
   // 30 images toutes les 4 secondes
-  XtAppAddTimeOut( GB_contexte, (EntierLongPositif) (1000.0 / images_par_sec),
+  XtAppAddTimeOut( GB_contexte, (unsigned long) (1000.0 / images_par_sec),
              DessinImage::CB_TimeOutAnimation  , this);
 
   Pour( k,1,2*n)
@@ -5617,7 +5617,7 @@ void DessinImage::LancePetiteAnimationStereo( int n )
     FinTantQue
 
    _ANIM_timeout = true;
-   XtAppAddTimeOut( GB_contexte, (EntierLongPositif) (1000.0 / images_par_sec),
+   XtAppAddTimeOut( GB_contexte, (unsigned long) (1000.0 / images_par_sec),
             DessinImage::CB_TimeOutAnimation  , this);
 
   FinPour
@@ -5859,13 +5859,13 @@ void DessinImage::CB_sauver_image( wxCommandEvent&)
   // TODO: fix problems of etat variable here !!
 
   Si etat == SORTIE_OK Alors
-    SelonQue di->_type_sauvegarde Vaut
-      Valeur SAUVE_INRIMAGE:   di->SauveImage( (char*)di->_nom_sauve_image.c_str()); FinValeur
-      Valeur SAUVE_PS_GRIS:
-      Valeur SAUVE_PS_COULEUR:
+    switch ( di->_type_sauvegarde ){
+      case SAUVE_INRIMAGE:   di->SauveImage( (char*)di->_nom_sauve_image.c_str()); break;
+      case SAUVE_PS_GRIS:
+      case SAUVE_PS_COULEUR:
         di->SauveImagePS( di->_nom_sauve_image.c_str());
-      FinValeur
-    FinSelonQue
+      break;
+    } // end switch
   FinSi
 */
 
@@ -7544,8 +7544,8 @@ void DessinImage::CB_option_traitement( wxCommandEvent& event)
 //return;
   Si Non(nouvelle_valeur) AlorsRetourne;
 
-  SelonQue di->Param._option_traitement Vaut
-    Valeur OPTION_MIP:
+  switch ( di->Param._option_traitement ){
+    case OPTION_MIP:
       di->MemoriseCoupesXY( false);
       di->Comparaisons_MemoriseCoupesXY( false);
       // on force l'affichage d'une image 2D
@@ -7570,22 +7570,22 @@ void DessinImage::CB_option_traitement( wxCommandEvent& event)
 
       di->_param_MIP->AfficheDialogue();
 
-    FinValeur
+    break;
 
-    Valeur OPTION_ANIM:
+    case OPTION_ANIM:
       di->ChangeImage( di->_image_initiale);
       di->MemoriseCoupesXY( true);
       di->Comparaisons_MemoriseCoupesXY( true);
       di->LanceAnimation();
-    FinValeur
+    break;
 
-    Valeur OPTION_COUPE:
+    case OPTION_COUPE:
       di->MemoriseCoupesXY( false);
       di->Comparaisons_MemoriseCoupesXY( false);
       di->ChangeImage( di->_image_initiale);
-    FinValeur
+    break;
 
-  FinSelonQue
+  } // end switch
 
 /* MIP sub-menu
   Si di->Param._option_traitement == OPTION_MIP Alors
@@ -7677,14 +7677,14 @@ void DessinImage::CB_colorspace( void* cd)
 {
   DessinImage*    di = (DessinImage*) cd;
 
-  SelonQue di->Param._I._colorspace Vaut
+  switch ( di->Param._I._colorspace ){
 
-    Valeur COLORSPACE_GREY:
+    case COLORSPACE_GREY:
         di->_palette->ChangeTypePalette( PALETTE_RGB);
-    FinValeur
+    break;
 
 
-    Valeur COLORSPACE_RAINBOW:
+    case COLORSPACE_RAINBOW:
       unsigned char rainbow[256*3];
       unsigned char pattern[192];
       int i;
@@ -7717,9 +7717,9 @@ void DessinImage::CB_colorspace( void* cd)
       FinPour
 
       di->_palette->TypePaletteTC( rainbow);
-    FinValeur
+    break;
 
-    Valeur COLORSPACE_USER:
+    case COLORSPACE_USER:
     if (di->_user_colormap!=NULL) {
       unsigned char colmap[256*3];
       for(i=0;i<256;i++) {
@@ -7731,9 +7731,9 @@ void DessinImage::CB_colorspace( void* cd)
     }
     else
       fprintf(stderr,"DessinImage::CB_colorspace() \t no user defined colormap ! \n");
-    FinValeur
+    break;
 
-  FinSelonQue
+  } // end switch
 
   di->Param._MAJ._intensite = true;
   di->Param._MAJ.MAJCoupes();
@@ -7775,23 +7775,23 @@ void DessinImage::CB_type_taille(wxCommandEvent& event )
 
   Si Non(nouvelle_valeur) AlorsRetourne;
 
-  SelonQue di->Param._type_taille Vaut
+  switch ( di->Param._type_taille ){
 
-    Valeur TAILLE_FENETRE:
+    case TAILLE_FENETRE:
       di->_param_ZoomFacteur->FermeDialogue( );
       di->Param._MAJ.MAJCoupes();
       di->EffaceTousLesEcrans( false);
       di->Paint();
-    FinValeur
+    break;
 
-    Valeur TAILLE_FACTEUR:
+    case TAILLE_FACTEUR:
       di->_param_ZoomFacteur->AfficheDialogue();
       di->Param._MAJ.MAJCoupes();
       di->EffaceTousLesEcrans( false);
       di->Paint();
-    FinValeur
+    break;
 
-  FinSelonQue
+  } // end switch
 
 } // CB_type_taille()
 

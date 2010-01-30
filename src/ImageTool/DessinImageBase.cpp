@@ -347,7 +347,7 @@ void DessinImageBase :: LibereTabImagesXY( )
 
 
 //----------------------------------------------------------------
-void DessinImageBase :: AlloueImagesXY( EntierPositif largeur, EntierPositif hauteur)
+void DessinImageBase :: AlloueImagesXY( unsigned int largeur, unsigned int hauteur)
 //                                 --------------
 {
 #if defined(__WXMOTIF__)
@@ -485,23 +485,23 @@ void DessinImageBase::UpdateStatusIntensity( int x, int y, int z)
            % (int)(*_image)(x,y,z,2));
   } else {
     float valeur = (*_image)(x,y,z);
-    SelonQue _image->_format Vaut
-      Valeur WT_DOUBLE:
+    switch ( _image->_format ){
+      case WT_DOUBLE:
         intensity_string = str(format("%1%") % (FORMAT_DOUBLE) valeur);
-      FinValeur
-      Valeur WT_FLOAT:
+      break;
+      case WT_FLOAT:
         intensity_string = str(format("%1%") % (FORMAT_FLOAT) valeur);
-      FinValeur
+      break;
 
-      Valeur WT_UNSIGNED_CHAR:
-      Valeur WT_UNSIGNED_SHORT:
-      Valeur WT_SIGNED_SHORT:
-      Valeur WT_SIGNED_INT:
-      Valeur WT_UNSIGNED_INT:
+      case WT_UNSIGNED_CHAR:
+      case WT_UNSIGNED_SHORT:
+      case WT_SIGNED_SHORT:
+      case WT_SIGNED_INT:
+      case WT_UNSIGNED_INT:
         intensity_string = str(format("%1%") % (int) valeur);
-      FinValeur
+      break;
       default: ;
-    FinSelonQue
+    } // end switch
   }
 
   this->SetStatusText(GetwxStr(intensity_string),_intensity_statusid);
@@ -548,7 +548,7 @@ void DessinImageBase::UpdateStatusPosition(int x, int y, int z)
 } // UpdateStatusPosition()
 
 //----------------------------------------------------------------
-// Defaut int pos = 0
+// default int pos = 0
 void DessinImageBase :: InitBuffer( int pos)
 //                                 ---------
 {
@@ -558,27 +558,27 @@ void DessinImageBase :: InitBuffer( int pos)
 
 
 //----------------------------------------------------------------
-// Defaut int pos = 0
+// default int pos = 0
 void DessinImageBase::InitLookUpTable()
 //                    ---------------
 {
-  SelonQue  _image->_format Vaut
+  switch (  _image->_format ){
 
-    Valeur WT_DOUBLE:
-    Valeur WT_FLOAT:
+    case WT_DOUBLE:
+    case WT_FLOAT:
       _rapport_intensite = 255.0 / ( _intensite_float_max - _intensite_float_min );
-    FinValeur
+    break;
 
     default:
       _rapport_intensite = 255.0 / ( _intensite_entier_max - _intensite_entier_min );
-    FinValeur
+    break;
 
-  FinSelonQue
+  } // end switch
 }
 
 
 //----------------------------------------------------------------
-EnLigne void DessinImageBase :: BufferPos( int x, int y, int z)
+inline void DessinImageBase :: BufferPos( int x, int y, int z)
 //                                         ---------
 {
 
@@ -595,23 +595,23 @@ void DessinImageBase::InitCouleurs( )
   if (GB_debug) cerr << "DessinImageBase::InitCouleurs() begin " << endl;
     int i;
 
-  DebutBoucle i = 0 ItererTantQue i<=255 Pas i++ Faire
+  for(  i = 0 ;  i<=255 ;  i++ Faire
 
-    SelonQue _palette->_type_palette Vaut
+    switch ( _palette->_type_palette ){
 
-      Valeur PALETTE_TC:
+      case PALETTE_TC:
         _tab_intensite_couleur[i] = _palette->TC( i);
-      FinValeur
+      break;
 
-      Valeur PALETTE_RGB:
+      case PALETTE_RGB:
         _tab_intensite_couleur[i] = ClasseCouleur(
           (unsigned char)(_couleur_fond.Red()  +1.0*i/255.0*(_couleur_objet.Red()  -_couleur_fond.Red())  ),
           (unsigned char)(_couleur_fond.Green()+1.0*i/255.0*(_couleur_objet.Green()-_couleur_fond.Green())),
           (unsigned char)(_couleur_fond.Blue() +1.0*i/255.0*(_couleur_objet.Blue() -_couleur_fond.Blue()) ));
 
-      FinValeur
+      break;
 
-    FinSelonQue
+    } // end switch
     if (GB_debug)
       cerr << " position " << i
             << " color " << (int) _tab_intensite_couleur[i].Red()
@@ -620,14 +620,14 @@ void DessinImageBase::InitCouleurs( )
             << ": " << (int) _tab_intensite_couleur[i].GetPixel()
             << endl;
 
-  FinBoucle // i
+  } // end for // i
 
-  SelonQue Param._I._type_courbe Vaut
-    Valeur TYPE_COURBE_PENTE:  _couleur_inf = 0; _couleur_sup = 255;  FinValeur
+  switch ( Param._I._type_courbe ){
+    case TYPE_COURBE_PENTE:  _couleur_inf = 0; _couleur_sup = 255;  break;
 
-    Valeur TYPE_COURBE_PLATEAU:
-    Valeur TYPE_COURBE_PENTE2: _couleur_inf = 0; _couleur_sup = 0;    FinValeur
-  FinSelonQue // Param._I._type_courbe
+    case TYPE_COURBE_PLATEAU:
+    case TYPE_COURBE_PENTE2: _couleur_inf = 0; _couleur_sup = 0;    break;
+  } // end switch // Param._I._type_courbe
 
   if (GB_debug) cerr << "DessinImageBase::InitCouleurs() end " << endl;
 } // InitCouleurs()
@@ -638,23 +638,23 @@ unsigned char DessinImageBase :: VerifieMinMax()
 //                                    -------------
 {
 
-  SelonQue  _image->_format Vaut
+  switch (  _image->_format ){
 
-    Valeur WT_DOUBLE:
-    Valeur WT_FLOAT:
+    case WT_DOUBLE:
+    case WT_FLOAT:
       Si fabs(_intensite_float_min - _intensite_float_max) < 1E-6 AlorsRetourne false;
-    FinValeur
+    break;
 
-    Valeur WT_UNSIGNED_CHAR:
-    Valeur WT_UNSIGNED_SHORT:
-    Valeur WT_SIGNED_SHORT:
-    Valeur WT_SIGNED_INT:
+    case WT_UNSIGNED_CHAR:
+    case WT_UNSIGNED_SHORT:
+    case WT_SIGNED_SHORT:
+    case WT_SIGNED_INT:
       Si _intensite_entier_min == _intensite_entier_max  AlorsRetourne false;
-    FinValeur
+    break;
 
     default: ;
 
-  FinSelonQue
+  } // end switch
 
   return true;
 
@@ -784,9 +784,9 @@ void  DessinImageBase::LigneVerticale(  wxDC* dc,
 //============================================================================================
 
 //----------------------------------------------------------------
-// Defaut int type=CREATE_WINDOW
+// default int type=CREATE_WINDOW
 //
-DessinImageBase::Constructeur DessinImageBase(
+DessinImageBase:: DessinImageBase(
 //                            ---------------
                 wxWindow* parent,
                 const std::string& ATitle,
@@ -804,7 +804,7 @@ DessinImageBase::Constructeur DessinImageBase(
   _nom_image_masque = "";
   _image_masque     = NULL;
   _dessine_masque   = false;
-//  printf("DessinImageBase::Constructeur\t _dessine_masque false\n");
+//  printf("DessinImageBase::Constructor\t _dessine_masque false\n");
   _couleur_masque.Set( 0,0,0);
 
 
@@ -859,11 +859,11 @@ DessinImageBase::Constructeur DessinImageBase(
 
   Si GB_debug AlorsFait printf("Fin DessinImageBase::%s\n",method);
 
-} // Constructeur
+} // Constructor
 
 
 //----------------------------------------------------------------
-DessinImageBase :: Destructeur DessinImageBase()
+DessinImageBase :: ~DessinImageBase()
 //                           -----------
 {
 
@@ -915,7 +915,7 @@ DessinImageBase :: Destructeur DessinImageBase()
         "DessinImageBase %s destructeur Fin \n",
         (char*) _name);
 
-} // Destructeur
+} // Destructor
 
 
 //----------------------------------------------------
@@ -1259,14 +1259,14 @@ void DessinImageBase :: DessineCurseur(  int x, int y, int z, int type)
   Si z>=_image->_tz AlorsFait z = _image->_tz-1;
 
 
-  SelonQue type Vaut
-    Valeur TYPE_CURSEUR_equiv:
+  switch ( type ){
+    case TYPE_CURSEUR_equiv:
         drawcontext->SetLogicalFunction( wxEQUIV);
-    FinValeur
-    Valeur TYPE_CURSEUR_copy:
+    break;
+    case TYPE_CURSEUR_copy:
         drawcontext->SetLogicalFunction( wxCOPY);
-    FinValeur
-  FinSelonQue
+    break;
+  } // end switch
 
   _current_pen->SetColour(_couleur_curseur);
   _current_pen->SetWidth(_largeur_lignes+1);
@@ -1809,9 +1809,9 @@ void DessinImageBase::DrawAxis( int orientation, // 0: horiz, 1: vert
           default:num_str = str(format("%1%")%current_value);
         }
         /*
-        SelonQue Param._axes_info Vaut
-          Valeur AXES_VOXEL_POS: num_str = str(format("%d")%y); FinValeur
-          Valeur AXES_SPACE_POS:
+        switch ( Param._axes_info ){
+          case AXES_VOXEL_POS: num_str = str(format("%d")%y); break;
+          case AXES_SPACE_POS:
             switch(axis) {
               case 0: num_str = str(format("%2.1f")%_image->SpacePosX(y));
               break;
@@ -1820,8 +1820,8 @@ void DessinImageBase::DrawAxis( int orientation, // 0: horiz, 1: vert
               case 2: num_str = str(format("%2.1f")%_image->SpacePosZ(y));
               break;
             }
-          FinValeur
-        FinSelonQue
+          break;
+        } // end switch
         */
         _memory_dc->GetTextExtent(wxString::FromAscii(num_str.c_str()),
                         &maxCharWidth,
@@ -2411,18 +2411,18 @@ void DessinImageBase :: DessinePlanY( )
   InitBuffer( );
 
   pz = 0;
-  DebutBoucle z = Param._Zoom._zmin
-  ItererTantQue z  <= Param._Zoom._zmax
-  Pas z++ Faire
+  for(  z = Param._Zoom._zmin
+  ;  z  <= Param._Zoom._zmax
+  ;  z++ Faire
 
     pz1 = pz + _size_z;
 
     Si _dessine_masque AlorsFait _image_masque->BufferPos( Param._Zoom._xmin, Param._pos._y, z);
     BufferPos( Param._Zoom._xmin, Param._pos._y, z);
     px = 0;
-    DebutBoucle x = Param._Zoom._xmin
-    ItererTantQue x <= Param._Zoom._xmax
-    Pas x++ Faire
+    for(  x = Param._Zoom._xmin
+    ;  x <= Param._Zoom._xmax
+    ;  x++ Faire
 
       px1 = px+_size_x;
 
@@ -2448,11 +2448,11 @@ void DessinImageBase :: DessinePlanY( )
       IncBuffer();
       px = px1;
 
-    FinBoucle // x
+    } // end for // x
 
     pz = pz1;
 
-  FinBoucle // z
+  } // end for // z
 
 } // DessinePlanY()
 
@@ -2590,13 +2590,13 @@ void DessinImageBase :: DessineCoupes( )
   //--- Dessin des coupes
   planZ = Param._Zoom._zmin;
 
-  DebutBoucle qy = 0, pos_y = 0
-  ItererTantQue (qy < ny) Et (planZ <= Param._Zoom._zmax)
-  Pas qy++, pos_y += (int) (Param._Zoom._dessin_ty*_size_y + 2) Faire
+  for(  qy = 0, pos_y = 0
+  ;  (qy < ny) Et (planZ <= Param._Zoom._zmax)
+  ;  qy++, pos_y += (int) (Param._Zoom._dessin_ty*_size_y + 2) Faire
 
-    DebutBoucle qx = 0, pos_x = 0
-    ItererTantQue (qx < nx)  Et (planZ <= Param._Zoom._zmax)
-    Pas qx++, pos_x += (int) (Param._Zoom._dessin_tx*_size_x + 2) Faire
+    for(  qx = 0, pos_x = 0
+    ;  (qx < nx)  Et (planZ <= Param._Zoom._zmax)
+    ;  qx++, pos_x += (int) (Param._Zoom._dessin_tx*_size_x + 2) Faire
 
 
     py = 0;
@@ -2634,8 +2634,8 @@ void DessinImageBase :: DessineCoupes( )
 
     planZ++;
 
-    FinBoucle // qx
-  FinBoucle // qy
+    } // end for // qx
+  } // end for // qy
 
 } // DessineCoupes()
 
@@ -2676,18 +2676,18 @@ void DessinImageBase :: DessinePlanMasqueZ( )
   InitBuffer( );
 
   py = 0;
-  DebutBoucle y = Param._Zoom._ymin
-  ItererTantQue y  <= Param._Zoom._ymax
-  Pas y++ Faire
+  for(  y = Param._Zoom._ymin
+  ;  y  <= Param._Zoom._ymax
+  ;  y++ Faire
 
     py1 = py + _size_y;
 
     Si _dessine_masque AlorsFait _image_masque->BufferPos( Param._Zoom._xmin, y, Param._pos._z);
     BufferPos( Param._Zoom._xmin, y, Param._pos._z);
     px = 0;
-    DebutBoucle x = Param._Zoom._xmin
-    ItererTantQue x  <= Param._Zoom._xmax
-    Pas x++ Faire
+    for(  x = Param._Zoom._xmin
+    ;  x  <= Param._Zoom._xmax
+    ;  x++ Faire
 
       px1 = px + _size_x;
 
@@ -2718,11 +2718,11 @@ void DessinImageBase :: DessinePlanMasqueZ( )
       IncBuffer();
       px = px1;
 
-    FinBoucle // x
+    } // end for // x
 
     py = py1;
 
-  FinBoucle // y
+  } // end for // y
 
   //--- Si on memorise les coupes, on precise que cette coupe XY est a jour
   Si _memorise_coupes_XY AlorsFait
@@ -2752,18 +2752,18 @@ void DessinImageBase :: DessinePlanMasqueY( )
   InitBuffer( );
 
   pz = 0;
-  DebutBoucle z = Param._Zoom._zmin
-  ItererTantQue z  <= Param._Zoom._zmax
-  Pas z++ Faire
+  for(  z = Param._Zoom._zmin
+  ;  z  <= Param._Zoom._zmax
+  ;  z++ Faire
 
     pz1 = pz + _size_z;
 
     Si _dessine_masque AlorsFait _image_masque->BufferPos( Param._Zoom._xmin, Param._pos._y, z);
     BufferPos( Param._Zoom._xmin, Param._pos._y, z);
     px = 0;
-    DebutBoucle x = Param._Zoom._xmin
-    ItererTantQue x <= Param._Zoom._xmax
-    Pas x++ Faire
+    for(  x = Param._Zoom._xmin
+    ;  x <= Param._Zoom._xmax
+    ;  x++ Faire
 
       px1 = px + _size_x;
 
@@ -2794,11 +2794,11 @@ void DessinImageBase :: DessinePlanMasqueY( )
       IncBuffer();
       px = px1;
 
-    FinBoucle // x
+    } // end for // x
 
     pz = pz1;
 
-  FinBoucle // z
+  } // end for // z
 
 } // DessinePlanMasqueY()
 
@@ -2824,18 +2824,18 @@ void DessinImageBase :: DessinePlanMasqueX( )
   InitBuffer( );
 
   pz = 0;
-  DebutBoucle z = Param._Zoom._zmin
-  ItererTantQue z <= Param._Zoom._zmax
-  Pas z++ Faire
+  for(  z = Param._Zoom._zmin
+  ;  z <= Param._Zoom._zmax
+  ;  z++ Faire
 
     pz1 = pz + _size_z;
 
     Si _dessine_masque AlorsFait _image_masque->BufferPos( Param._pos._x, Param._Zoom._ymin, z);
     BufferPos( Param._pos._x, Param._Zoom._ymin, z);
     py = 0;
-    DebutBoucle y = Param._Zoom._ymin
-    ItererTantQue y <= Param._Zoom._ymax
-    Pas y++ Faire
+    for(  y = Param._Zoom._ymin
+    ;  y <= Param._Zoom._ymax
+    ;  y++ Faire
 
       py1 = py + _size_y;
 
@@ -2866,10 +2866,10 @@ void DessinImageBase :: DessinePlanMasqueX( )
       IncBuffer( _image->_tx);
       py = py1;
 
-    FinBoucle // y
+    } // end for // y
 
     pz = pz1;
-  FinBoucle // z
+  } // end for // z
 
 } // DessinePlanMasqueX()
 
@@ -2921,13 +2921,13 @@ void DessinImageBase :: DessineMasqueCoupes( )
   //--- Dessin des coupes
   planZ = Param._Zoom._zmin;
 
-  DebutBoucle qy = 0, pos_y = 0
-  ItererTantQue (qy < ny) Et (planZ <= Param._Zoom._zmax)
-  Pas qy++, pos_y += (int) (Param._Zoom._dessin_ty*_size_y + 2) Faire
+  for(  qy = 0, pos_y = 0
+  ;  (qy < ny) Et (planZ <= Param._Zoom._zmax)
+  ;  qy++, pos_y += (int) (Param._Zoom._dessin_ty*_size_y + 2) Faire
 
-    DebutBoucle qx = 0, pos_x = 0
-    ItererTantQue (qx < nx)  Et (planZ <= Param._Zoom._zmax)
-    Pas qx++, pos_x += (int) (Param._Zoom._dessin_tx*_size_x + 2) Faire
+    for(  qx = 0, pos_x = 0
+    ;  (qx < nx)  Et (planZ <= Param._Zoom._zmax)
+    ;  qx++, pos_x += (int) (Param._Zoom._dessin_tx*_size_x + 2) Faire
 
 
     py = 0;
@@ -2972,8 +2972,8 @@ void DessinImageBase :: DessineMasqueCoupes( )
 
     planZ++;
 
-    FinBoucle // qx
-  FinBoucle // qy
+    } // end for // qx
+  } // end for // qy
 
 } // DessineMasqueCoupes()
 
@@ -3282,21 +3282,21 @@ void DessinImageBase::DessinePlanInterpZ( )
      register float          px, py;
      register ClasseCouleur  couleur;
 
-  SelonQue _interpole_subdivision Vaut
-    Valeur INTERP_SUB_2:   n = 2; FinValeur
-    Valeur INTERP_SUB_3:   n = 3; FinValeur
-    Valeur INTERP_SUB_4:   n = 4; FinValeur
-    Valeur INTERP_SUB_8:   n = 8; FinValeur
-    Valeur INTERP_SUB_MAX:
+  switch ( _interpole_subdivision ){
+    case INTERP_SUB_2:   n = 2; break;
+    case INTERP_SUB_3:   n = 3; break;
+    case INTERP_SUB_4:   n = 4; break;
+    case INTERP_SUB_8:   n = 8; break;
+    case INTERP_SUB_MAX:
        n = (int) macro_max(_size_x, _size_y);
        Si n < 1 AlorsFait n = 1;
-    FinValeur
-    Defaut:
+    break;
+    default:
        cerr << "DessinImageBase::DessinePlanInterpZ() \t";
        cerr << " _interpole_subdivision a une valeur inconnue ... : ";
        cerr << _interpole_subdivision  << endl;
        n = 2;
-  FinSelonQue
+  } // end switch
 
   n2 = (int) (n/2);
 
@@ -3390,21 +3390,21 @@ void DessinImageBase :: DessinePlanInterpY( )
      register float          px,pz;
      register ClasseCouleur  couleur;
 
-  SelonQue _interpole_subdivision Vaut
-    Valeur INTERP_SUB_2:   n = 2; FinValeur
-    Valeur INTERP_SUB_3:   n = 3; FinValeur
-    Valeur INTERP_SUB_4:   n = 4; FinValeur
-    Valeur INTERP_SUB_8:   n = 8; FinValeur
-    Valeur INTERP_SUB_MAX:
+  switch ( _interpole_subdivision ){
+    case INTERP_SUB_2:   n = 2; break;
+    case INTERP_SUB_3:   n = 3; break;
+    case INTERP_SUB_4:   n = 4; break;
+    case INTERP_SUB_8:   n = 8; break;
+    case INTERP_SUB_MAX:
        n = (int) macro_max(_size_x, _size_z);
        Si n < 1 AlorsFait n = 1;
-    FinValeur
-    Defaut:
+    break;
+    default:
        cerr << "DessinImageBase::DessinePlanInterpY() \t";
        cerr << " _interpole_subdivision a une valeur inconnue ... : ";
        cerr << _interpole_subdivision  << endl;
        n = 2;
-  FinSelonQue
+  } // end switch
 
   n2 = (int) (n/2);
 
@@ -3477,21 +3477,21 @@ void DessinImageBase::DessinePlanInterpX( )
     register  float             py,pz;
     register  ClasseCouleur     couleur;
 
-  SelonQue _interpole_subdivision Vaut
-    Valeur INTERP_SUB_2:   n = 2; FinValeur
-    Valeur INTERP_SUB_3:   n = 3; FinValeur
-    Valeur INTERP_SUB_4:   n = 4; FinValeur
-    Valeur INTERP_SUB_8:   n = 8; FinValeur
-    Valeur INTERP_SUB_MAX:
+  switch ( _interpole_subdivision ){
+    case INTERP_SUB_2:   n = 2; break;
+    case INTERP_SUB_3:   n = 3; break;
+    case INTERP_SUB_4:   n = 4; break;
+    case INTERP_SUB_8:   n = 8; break;
+    case INTERP_SUB_MAX:
        n = (int) macro_max(_size_z, _size_y);
        Si n < 1 AlorsFait n = 1;
-    FinValeur
-    Defaut:
+    break;
+    default:
        cerr << "DessinImageBase::DessinePlanInterpX() \t";
        cerr << " _interpole_subdivision a une valeur inconnue ... : ";
        cerr << _interpole_subdivision  << endl;
        n = 2;
-  FinSelonQue
+  } // end switch
 
   n2 = (int) (n/2);
 
@@ -3626,28 +3626,28 @@ void DessinImageBase :: IncCoupe()
   CurseurToImage(&pt.x,&pt.y,&pt.z,&etat);
   //  cout << pt << endl;
   Si etat != -1 Alors
-    SelonQue etat Vaut
+    switch ( etat ){
 
-      Valeur IMAGE_XY:
+      case IMAGE_XY:
          Param._pos._z++;
          Si Param._pos._z > Param._Zoom._zmax AlorsFait Param._pos._z = Param._Zoom._zmin;
    //         _param_dialog->UpdateParameter(_id_planZ);
          Param._MAJ._planXY = true;
-      FinValeur
+      break;
 
-      Valeur IMAGE_XZ:
+      case IMAGE_XZ:
          Param._pos._y++;
          Si Param._pos._y > Param._Zoom._ymax AlorsFait Param._pos._y = Param._Zoom._ymin;
          Param._MAJ._planXZ = true;
-      FinValeur
+      break;
 
-      Valeur IMAGE_ZY:
+      case IMAGE_ZY:
          Param._pos._x++;
          Si Param._pos._x > Param._Zoom._xmax AlorsFait Param._pos._x = Param._Zoom._xmin;
          Param._MAJ._planZY = true;
-      FinValeur
+      break;
 
-    FinSelonQue
+    } // end switch
     Paint( false);
   FinSi
 
@@ -3668,27 +3668,27 @@ void DessinImageBase :: DecCoupe()
   CurseurToImage(&pt.x,&pt.y,&pt.z,&etat);
   //  cout << pt << endl;
   Si etat != -1 Alors
-    SelonQue etat Vaut
+    switch ( etat ){
 
-      Valeur IMAGE_XY:
+      case IMAGE_XY:
          Param._pos._z--;
          Si Param._pos._z <  Param._Zoom._zmin AlorsFait Param._pos._z = Param._Zoom._zmax;
          Param._MAJ._planXY = true;
-      FinValeur
+      break;
 
-      Valeur IMAGE_XZ:
+      case IMAGE_XZ:
          Param._pos._y--;
          Si Param._pos._y < Param._Zoom._ymin AlorsFait Param._pos._y = Param._Zoom._ymax;
          Param._MAJ._planXZ = true;
-      FinValeur
+      break;
 
-      Valeur IMAGE_ZY:
+      case IMAGE_ZY:
          Param._pos._x--;
          Si Param._pos._x < Param._Zoom._xmin AlorsFait Param._pos._x = Param._Zoom._xmax;
          Param._MAJ._planZY = true;
-      FinValeur
+      break;
 
-    FinSelonQue
+    } // end switch
     Paint( false);
   FinSi
 
@@ -3817,11 +3817,11 @@ void DessinImageBase::OnChar(wxKeyEvent& event)
 
       /*
       // Touche I
-      Valeur 73:
+      case 73:
         _interpole_image = Non(_interpole_image);
         Param._MAJ.MAJCoupes();
         Paint();
-      FinValeur
+      break;
       */
 
 

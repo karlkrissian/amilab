@@ -163,7 +163,7 @@ class ami_wxGLCanvas;
 class GLObject 
 {
 
-  DEFINE_CLASS(GLObject)
+  DEFINE_CLASS(GLObject);
 
 protected:
 
@@ -319,13 +319,13 @@ class GLListObject : public GLObject
 //
 {
 
-  DEFINE_CLASS(GLListObject)
+  DEFINE_CLASS(GLListObject);
 
 public:
 
-  Constructeur GLListObject() { _obj_type = OBJTYPE_USERLIST; }
+   GLListObject() { _obj_type = OBJTYPE_USERLIST; }
 
-  Destructeur GLListObject() {}
+  ~GLListObject() {}
 
   void SetXMin( float xmin) { _xmin = xmin; }
   void SetXMax( float xmax) { _xmax = xmax; }
@@ -346,15 +346,15 @@ public:
 //======================================================================
 //
 
-Structure point3Dreel
+struct point3Dreel
 //        ===========
-DebutStructure
+{
 
   float x;
   float y; 
   float z;
 
-FinStructure
+};
 
 //======================================================================
 //
@@ -392,7 +392,7 @@ public:
   InrImage* _image_couleurs;
   unsigned char   _image_couleurs_allouee;
 
-  Constructeur Surface()
+   Surface()
   //           -------
   {
 
@@ -411,7 +411,7 @@ public:
 
   }
 
-  Destructeur Surface();
+  ~Surface();
 
   void Alloue( int dimu, int dimv);
 
@@ -458,7 +458,7 @@ public:
   PolyNeighbors _neighbors; // list of polygons which contain this point
   
   
-  Constructeur Point3DPoly()
+   Point3DPoly()
   //
   {
 
@@ -475,7 +475,7 @@ public:
   }
 
 
-  Constructeur Point3DPoly(float x, float y, float z)
+   Point3DPoly(float x, float y, float z)
   //
   {
 
@@ -657,13 +657,13 @@ public:
                                         // connexes a ete realise
 
 
-  Constructeur SurfacePoly();
+   SurfacePoly();
 
 #ifndef _WITHOUT_VTK_
-  Constructeur SurfacePoly( vtkPolyData* vtkpoly);
+   SurfacePoly( vtkPolyData* vtkpoly);
 #endif // _WITHOUT_VTK_
 
-  Destructeur SurfacePoly();
+  ~SurfacePoly();
 
   CompCon& GetCC( int n) { return _tab_cc[n]; }
 

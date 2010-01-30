@@ -64,12 +64,12 @@ InrImage* Func_Chamfer(InrImage* im, float a, float b, float c)
     Si i>12 AlorsFait break;
     n = abs(x)+abs(y)+abs(z);
     neighbor[i]      = (z*im->_ty+y)*im->_tx + x;
-    SelonQue n Vaut
-      Valeur 1: dist_neighbor[i] = a; FinValeur
-      Valeur 2: dist_neighbor[i] = b; FinValeur
-      Valeur 3: dist_neighbor[i] = c; FinValeur
-      Defaut: fprintf(stderr,"Chamfer error \n");
-    FinSelonQue
+    switch ( n ){
+      case 1: dist_neighbor[i] = a; break;
+      case 2: dist_neighbor[i] = b; break;
+      case 3: dist_neighbor[i] = c; break;
+      default: fprintf(stderr,"Chamfer error \n");
+    } // end switch
     i++;
   FinPour
   FinPour
@@ -88,15 +88,15 @@ InrImage* Func_Chamfer(InrImage* im, float a, float b, float c)
       buf = (float*) res->BufferPtr();
       for(x=1;x<im->_tx-1;x++) {
 
-	// check the minimum
-	min = *buf;
-	Pour(i,0,12)
-	  val = *(buf+neighbor[i])+dist_neighbor[i];
+  // check the minimum
+  min = *buf;
+  Pour(i,0,12)
+    val = *(buf+neighbor[i])+dist_neighbor[i];
           Si val<min AlorsFait min = val;
-	FinPour
+  FinPour
 
         *buf = min;
-	buf++;
+  buf++;
       }
     }
 
@@ -110,15 +110,15 @@ InrImage* Func_Chamfer(InrImage* im, float a, float b, float c)
       buf = (float*) res->BufferPtr();
       for(x=im->_tx-2;x>0;x--) {
 
-	// check the minimum
+  // check the minimum
         min = *buf;
-	Pour(i,0,12)
-	  val = *(buf-neighbor[i])+dist_neighbor[i];
+  Pour(i,0,12)
+    val = *(buf-neighbor[i])+dist_neighbor[i];
           Si val<min AlorsFait min = val;
-	FinPour
+  FinPour
 
-	*buf = min;
-	buf--;
+  *buf = min;
+  buf--;
       }
     }
 
@@ -129,36 +129,36 @@ InrImage* Func_Chamfer(InrImage* im, float a, float b, float c)
   for(z=0;z<=im->_tz-1;z++) 
     for(y=0;y<=im->_ty-1;y++)
       for(x=0;x<=im->_tx-1;x++) 
-	if ((x==0)||(x==im->_tx-1)||
+  if ((x==0)||(x==im->_tx-1)||
             (y==0)||(y==im->_ty-1)||
             (z==0)||(z==im->_tz-1)) {
 
-	  min = (*res)(x,y,z);
-	  Pour(i,-1,1)
-	  Pour(j,-1,1)
-	  Pour(k,-1,1)
+    min = (*res)(x,y,z);
+    Pour(i,-1,1)
+    Pour(j,-1,1)
+    Pour(k,-1,1)
             Si res->CoordOK(x+i,y+j,z+k) Alors
               n = abs(i)+abs(j)+abs(k);
-    	      Si n==0 AlorsFait continue;
-              SelonQue n Vaut
-                Valeur 1: val = (*res)(x+i,y+j,z+k)+a; FinValeur
-                Valeur 2: val = (*res)(x+i,y+j,z+k)+b; FinValeur
-                Valeur 3: val = (*res)(x+i,y+j,z+k)+c; FinValeur
-                Defaut: fprintf(stderr,"Chamfer error \n");
-              FinSelonQue
+            Si n==0 AlorsFait continue;
+              switch ( n ){
+                case 1: val = (*res)(x+i,y+j,z+k)+a; break;
+                case 2: val = (*res)(x+i,y+j,z+k)+b; break;
+                case 3: val = (*res)(x+i,y+j,z+k)+c; break;
+                default: fprintf(stderr,"Chamfer error \n");
+              } // end switch
               Si val<min AlorsFait min = val;
             FinSi
           FinPour
           FinPour
           FinPour
 
-	if ((x==127)&&(y==84)&&(z==36)) 
-	  fprintf(stderr,"(127,84,36) min %f \n",min);
+  if ((x==127)&&(y==84)&&(z==36)) 
+    fprintf(stderr,"(127,84,36) min %f \n",min);
 
-	  res->BufferPos(x,y,z);
-	  res->FixeValeur(min);
-	  
-	}
+    res->BufferPos(x,y,z);
+    res->FixeValeur(min);
+    
+  }
 
   duree.Fin();
   
@@ -215,24 +215,24 @@ InrImage* Func_Chamfer2(InrImage* im, float a, float b, float c, float dmax)
     Si i>12 AlorsFait break;
     n = abs(x)+abs(y)+abs(z);
     neighbor[i]      = (z*ty+y)*tx + x;
-    SelonQue n Vaut
-      Valeur 1: 
+    switch ( n ){
+      case 1: 
         dist_neighbor[i] = a; 
         neighbor1[i1] = neighbor[i];
         i1++;
-      FinValeur
-      Valeur 2: 
+      break;
+      case 2: 
         dist_neighbor[i] = b; 
         neighbor2[i2] = neighbor[i];
         i2++;
-      FinValeur
-      Valeur 3: 
+      break;
+      case 3: 
         dist_neighbor[i] = c; 
         neighbor3[i3] = neighbor[i];
         i3++;
-      FinValeur
-      Defaut: fprintf(stderr,"Chamfer error \n");
-    FinSelonQue
+      break;
+      default: fprintf(stderr,"Chamfer error \n");
+    } // end switch
     i++;
   FinPour
   FinPour
@@ -264,33 +264,33 @@ InrImage* Func_Chamfer2(InrImage* im, float a, float b, float c, float dmax)
       for(x=1;x<tx-1;x++) {
 
         if (*buf<dmax) {
-	  // C6 neighbors
-	  val = *buf+a;
-	  
-	  buf1 = buf-neighbor1[0]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf-neighbor1[1]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf-neighbor1[2]; if (val < *buf1) *buf1 = val;
-	  
-	  // C18 neighbors
-	  val = *buf+b;
-	  
-	  buf1 = buf-neighbor2[0]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf-neighbor2[1]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf-neighbor2[2]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf-neighbor2[3]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf-neighbor2[4]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf-neighbor2[5]; if (val < *buf1) *buf1 = val;
-	  
-	  // C26 neighbors
-	  val = *buf+c;
-	  
-	  buf1 = buf-neighbor3[0]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf-neighbor3[1]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf-neighbor3[2]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf-neighbor3[3]; if (val < *buf1) *buf1 = val;
-	}
+    // C6 neighbors
+    val = *buf+a;
+    
+    buf1 = buf-neighbor1[0]; if (val < *buf1) *buf1 = val;
+    buf1 = buf-neighbor1[1]; if (val < *buf1) *buf1 = val;
+    buf1 = buf-neighbor1[2]; if (val < *buf1) *buf1 = val;
+    
+    // C18 neighbors
+    val = *buf+b;
+    
+    buf1 = buf-neighbor2[0]; if (val < *buf1) *buf1 = val;
+    buf1 = buf-neighbor2[1]; if (val < *buf1) *buf1 = val;
+    buf1 = buf-neighbor2[2]; if (val < *buf1) *buf1 = val;
+    buf1 = buf-neighbor2[3]; if (val < *buf1) *buf1 = val;
+    buf1 = buf-neighbor2[4]; if (val < *buf1) *buf1 = val;
+    buf1 = buf-neighbor2[5]; if (val < *buf1) *buf1 = val;
+    
+    // C26 neighbors
+    val = *buf+c;
+    
+    buf1 = buf-neighbor3[0]; if (val < *buf1) *buf1 = val;
+    buf1 = buf-neighbor3[1]; if (val < *buf1) *buf1 = val;
+    buf1 = buf-neighbor3[2]; if (val < *buf1) *buf1 = val;
+    buf1 = buf-neighbor3[3]; if (val < *buf1) *buf1 = val;
+  }
 
-	buf++;
+  buf++;
       }
     }
 
@@ -305,33 +305,33 @@ InrImage* Func_Chamfer2(InrImage* im, float a, float b, float c, float dmax)
 
         if (*buf<dmax) {
 
-	  // C6 neighbors
-	  val = *buf+a;
-	  
-	  buf1 = buf+neighbor1[0]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf+neighbor1[1]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf+neighbor1[2]; if (val < *buf1) *buf1 = val;
-	  
-	  // C18 neighbors
-	  val = *buf+b;
-	  
-	  buf1 = buf+neighbor2[0]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf+neighbor2[1]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf+neighbor2[2]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf+neighbor2[3]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf+neighbor2[4]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf+neighbor2[5]; if (val < *buf1) *buf1 = val;
-	  
-	  // C26 neighbors
-	  val = *buf+c;
-	  
-	  buf1 = buf+neighbor3[0]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf+neighbor3[1]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf+neighbor3[2]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf+neighbor3[3]; if (val < *buf1) *buf1 = val;
-	}
+    // C6 neighbors
+    val = *buf+a;
+    
+    buf1 = buf+neighbor1[0]; if (val < *buf1) *buf1 = val;
+    buf1 = buf+neighbor1[1]; if (val < *buf1) *buf1 = val;
+    buf1 = buf+neighbor1[2]; if (val < *buf1) *buf1 = val;
+    
+    // C18 neighbors
+    val = *buf+b;
+    
+    buf1 = buf+neighbor2[0]; if (val < *buf1) *buf1 = val;
+    buf1 = buf+neighbor2[1]; if (val < *buf1) *buf1 = val;
+    buf1 = buf+neighbor2[2]; if (val < *buf1) *buf1 = val;
+    buf1 = buf+neighbor2[3]; if (val < *buf1) *buf1 = val;
+    buf1 = buf+neighbor2[4]; if (val < *buf1) *buf1 = val;
+    buf1 = buf+neighbor2[5]; if (val < *buf1) *buf1 = val;
+    
+    // C26 neighbors
+    val = *buf+c;
+    
+    buf1 = buf+neighbor3[0]; if (val < *buf1) *buf1 = val;
+    buf1 = buf+neighbor3[1]; if (val < *buf1) *buf1 = val;
+    buf1 = buf+neighbor3[2]; if (val < *buf1) *buf1 = val;
+    buf1 = buf+neighbor3[3]; if (val < *buf1) *buf1 = val;
+  }
 
-	buf--;
+  buf--;
       }
     }
 
@@ -348,63 +348,63 @@ InrImage* Func_Chamfer2(InrImage* im, float a, float b, float c, float dmax)
   for(z=0;z<=tz-1;z++) 
     for(y=0;y<=ty-1;y++)
       for(x=0;x<=tx-1;x++) {
-	if ((x==0)||(x==tx-1)||
+  if ((x==0)||(x==tx-1)||
             (y==0)||(y==ty-1)||
             (z==0)||(z==tz-1)) {
 
-	  min =*buf;
+    min =*buf;
 
-	  if (x==0) imin = 0; else imin = -1;
-	  if (y==0) jmin = 0; else jmin = -1;
-	  if (z==0) kmin = 0; else kmin = -1;
+    if (x==0) imin = 0; else imin = -1;
+    if (y==0) jmin = 0; else jmin = -1;
+    if (z==0) kmin = 0; else kmin = -1;
 
-	  if (x==tx-1) imax = 0; else imax = 1;
-	  if (y==ty-1) jmax = 0; else jmax = 1;
-	  if (z==tz-1) kmax = 0; else kmax = 1;
+    if (x==tx-1) imax = 0; else imax = 1;
+    if (y==ty-1) jmax = 0; else jmax = 1;
+    if (z==tz-1) kmax = 0; else kmax = 1;
 
-	  buf1 = buf + imin;
-	  Pour(i,imin,imax)
-  	    buf2 = buf1;
-  	    if (jmin==-1) buf2 -= tx;
-  	    Pour(j,jmin,jmax)
-  	      buf3 = buf2;
-  	      if (kmin==-1) buf3 -= txy;
-	      Pour(k,kmin,kmax)
+    buf1 = buf + imin;
+    Pour(i,imin,imax)
+        buf2 = buf1;
+        if (jmin==-1) buf2 -= tx;
+        Pour(j,jmin,jmax)
+          buf3 = buf2;
+          if (kmin==-1) buf3 -= txy;
+        Pour(k,kmin,kmax)
                 n = abs(i)+abs(j)+abs(k);
-                SelonQue n Vaut
-		  Valeur 0: continue;
-                  Valeur 1: val = *buf3+a; FinValeur
-                  Valeur 2: val = *buf3+b; FinValeur
-                  Valeur 3: val = *buf3+c; FinValeur
-                  Defaut: fprintf(stderr,"Chamfer error \n");
-                FinSelonQue
+                switch ( n ){
+      case 0: continue;
+                  case 1: val = *buf3+a; break;
+                  case 2: val = *buf3+b; break;
+                  case 3: val = *buf3+c; break;
+                  default: fprintf(stderr,"Chamfer error \n");
+                } // end switch
                 Si val<min AlorsFait min = val;
                 buf3 += txy;
               FinPour
-	      buf2 += tx;
+        buf2 += tx;
             FinPour
-	    buf1++;
+      buf1++;
           FinPour
 
 
-	  *buf = min;
-	  buf++;
-	  
-	}
+    *buf = min;
+    buf++;
+    
+  }
         else
 
-	  // jump directly to the last voxel of the line
-	  if (x==1) {
-	    x   += tx-3;
-	    buf += tx-3;
-	    buf++;
-	  }
-	  else {
-	    fprintf(stderr,"Chamfer2() \t we should not get here !!! \n");
+    // jump directly to the last voxel of the line
+    if (x==1) {
+      x   += tx-3;
+      buf += tx-3;
+      buf++;
+    }
+    else {
+      fprintf(stderr,"Chamfer2() \t we should not get here !!! \n");
 
-	    buf++;
+      buf++;
 
-	  }
+    }
 
       }
 
@@ -416,11 +416,11 @@ InrImage* Func_Chamfer2(InrImage* im, float a, float b, float c, float dmax)
 /* should I use this kind of function ???
  *
 inline void update_neighbors_pos(float* buf1, float val,
-				 float a, float b, float c,
-				 int neighbor1[3],
-				 int neighbor2[6],
-				 int neighbor3[4]
-				 )
+         float a, float b, float c,
+         int neighbor1[3],
+         int neighbor2[6],
+         int neighbor3[4]
+         )
 {
   register float* buf1;
   register float  val;
@@ -431,7 +431,7 @@ inline void update_neighbors_pos(float* buf1, float val,
   buf1 = buf-neighbor1[0]; if (val < *buf1) *buf1 = val;
   buf1 = buf-neighbor1[1]; if (val < *buf1) *buf1 = val;
   buf1 = buf-neighbor1[2]; if (val < *buf1) *buf1 = val;
-	  
+    
   // C18 neighbors
   val = *buf+b;
   
@@ -499,24 +499,24 @@ InrImage* Func_Chamfer2Signed(InrImage* im, float a, float b, float c, float dma
     Si i>12 AlorsFait break;
     n = abs(x)+abs(y)+abs(z);
     neighbor[i]      = (z*ty+y)*tx + x;
-    SelonQue n Vaut
-      Valeur 1: 
+    switch ( n ){
+      case 1: 
         dist_neighbor[i] = a; 
         neighbor1[i1] = neighbor[i];
         i1++;
-      FinValeur
-      Valeur 2: 
+      break;
+      case 2: 
         dist_neighbor[i] = b; 
         neighbor2[i2] = neighbor[i];
         i2++;
-      FinValeur
-      Valeur 3: 
+      break;
+      case 3: 
         dist_neighbor[i] = c; 
         neighbor3[i3] = neighbor[i];
         i3++;
-      FinValeur
-      Defaut: fprintf(stderr,"Chamfer error \n");
-    FinSelonQue
+      break;
+      default: fprintf(stderr,"Chamfer error \n");
+    } // end switch
     i++;
   FinPour
   FinPour
@@ -547,62 +547,62 @@ InrImage* Func_Chamfer2Signed(InrImage* im, float a, float b, float c, float dma
       buf = (float*) res->BufferPtr();
       for(x=1;x<tx-1;x++) {
 
-	if (*buf> dmax) { buf++; continue; }
-	if (*buf<-dmax) { buf++; continue; }
+  if (*buf> dmax) { buf++; continue; }
+  if (*buf<-dmax) { buf++; continue; }
 
-	if (*buf>-a) {
-	  // C6 neighbors
-	  val = *buf+a;
-	  
-	  buf1 = buf-neighbor1[0]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf-neighbor1[1]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf-neighbor1[2]; if (val < *buf1) *buf1 = val;
-	  
-	  // C18 neighbors
-	  val = *buf+b;
-	  
-	  buf1 = buf-neighbor2[0]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf-neighbor2[1]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf-neighbor2[2]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf-neighbor2[3]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf-neighbor2[4]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf-neighbor2[5]; if (val < *buf1) *buf1 = val;
-	  
-	  // C26 neighbors
-	  val = *buf+c;
-	  
-	  buf1 = buf-neighbor3[0]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf-neighbor3[1]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf-neighbor3[2]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf-neighbor3[3]; if (val < *buf1) *buf1 = val;
-	}
-	if (*buf<a) {
-	  // C6 neighbors
-	  val = *buf-a;
-	  
-	  buf1 = buf-neighbor1[0]; if (val > *buf1) *buf1 = val;
-	  buf1 = buf-neighbor1[1]; if (val > *buf1) *buf1 = val;
-	  buf1 = buf-neighbor1[2]; if (val > *buf1) *buf1 = val;
-	  
-	  // C18 neighbors
-	  val = *buf-b;
-	  
-	  buf1 = buf-neighbor2[0]; if (val > *buf1) *buf1 = val;
-	  buf1 = buf-neighbor2[1]; if (val > *buf1) *buf1 = val;
-	  buf1 = buf-neighbor2[2]; if (val > *buf1) *buf1 = val;
-	  buf1 = buf-neighbor2[3]; if (val > *buf1) *buf1 = val;
-	  buf1 = buf-neighbor2[4]; if (val > *buf1) *buf1 = val;
-	  buf1 = buf-neighbor2[5]; if (val > *buf1) *buf1 = val;
-	  
-	  // C26 neighbors
-	  val = *buf-c;
-	  
-	  buf1 = buf-neighbor3[0]; if (val > *buf1) *buf1 = val;
-	  buf1 = buf-neighbor3[1]; if (val > *buf1) *buf1 = val;
-	  buf1 = buf-neighbor3[2]; if (val > *buf1) *buf1 = val;
-	  buf1 = buf-neighbor3[3]; if (val > *buf1) *buf1 = val;
-	}
-	buf++;
+  if (*buf>-a) {
+    // C6 neighbors
+    val = *buf+a;
+    
+    buf1 = buf-neighbor1[0]; if (val < *buf1) *buf1 = val;
+    buf1 = buf-neighbor1[1]; if (val < *buf1) *buf1 = val;
+    buf1 = buf-neighbor1[2]; if (val < *buf1) *buf1 = val;
+    
+    // C18 neighbors
+    val = *buf+b;
+    
+    buf1 = buf-neighbor2[0]; if (val < *buf1) *buf1 = val;
+    buf1 = buf-neighbor2[1]; if (val < *buf1) *buf1 = val;
+    buf1 = buf-neighbor2[2]; if (val < *buf1) *buf1 = val;
+    buf1 = buf-neighbor2[3]; if (val < *buf1) *buf1 = val;
+    buf1 = buf-neighbor2[4]; if (val < *buf1) *buf1 = val;
+    buf1 = buf-neighbor2[5]; if (val < *buf1) *buf1 = val;
+    
+    // C26 neighbors
+    val = *buf+c;
+    
+    buf1 = buf-neighbor3[0]; if (val < *buf1) *buf1 = val;
+    buf1 = buf-neighbor3[1]; if (val < *buf1) *buf1 = val;
+    buf1 = buf-neighbor3[2]; if (val < *buf1) *buf1 = val;
+    buf1 = buf-neighbor3[3]; if (val < *buf1) *buf1 = val;
+  }
+  if (*buf<a) {
+    // C6 neighbors
+    val = *buf-a;
+    
+    buf1 = buf-neighbor1[0]; if (val > *buf1) *buf1 = val;
+    buf1 = buf-neighbor1[1]; if (val > *buf1) *buf1 = val;
+    buf1 = buf-neighbor1[2]; if (val > *buf1) *buf1 = val;
+    
+    // C18 neighbors
+    val = *buf-b;
+    
+    buf1 = buf-neighbor2[0]; if (val > *buf1) *buf1 = val;
+    buf1 = buf-neighbor2[1]; if (val > *buf1) *buf1 = val;
+    buf1 = buf-neighbor2[2]; if (val > *buf1) *buf1 = val;
+    buf1 = buf-neighbor2[3]; if (val > *buf1) *buf1 = val;
+    buf1 = buf-neighbor2[4]; if (val > *buf1) *buf1 = val;
+    buf1 = buf-neighbor2[5]; if (val > *buf1) *buf1 = val;
+    
+    // C26 neighbors
+    val = *buf-c;
+    
+    buf1 = buf-neighbor3[0]; if (val > *buf1) *buf1 = val;
+    buf1 = buf-neighbor3[1]; if (val > *buf1) *buf1 = val;
+    buf1 = buf-neighbor3[2]; if (val > *buf1) *buf1 = val;
+    buf1 = buf-neighbor3[3]; if (val > *buf1) *buf1 = val;
+  }
+  buf++;
       }
     }
 
@@ -615,65 +615,65 @@ InrImage* Func_Chamfer2Signed(InrImage* im, float a, float b, float c, float dma
       buf = (float*) res->BufferPtr();
       for(x=tx-2;x>0;x--) {
 
-	if (*buf> dmax) { buf--; continue; }
-	if (*buf<-dmax) { buf--; continue; }
+  if (*buf> dmax) { buf--; continue; }
+  if (*buf<-dmax) { buf--; continue; }
 
         if (*buf>-a) {
 
-	  // C6 neighbors
-	  val = *buf+a;
-	  
-	  buf1 = buf+neighbor1[0]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf+neighbor1[1]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf+neighbor1[2]; if (val < *buf1) *buf1 = val;
-	  
-	  // C18 neighbors
-	  val = *buf+b;
-	  
-	  buf1 = buf+neighbor2[0]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf+neighbor2[1]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf+neighbor2[2]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf+neighbor2[3]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf+neighbor2[4]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf+neighbor2[5]; if (val < *buf1) *buf1 = val;
-	  
-	  // C26 neighbors
-	  val = *buf+c;
-	  
-	  buf1 = buf+neighbor3[0]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf+neighbor3[1]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf+neighbor3[2]; if (val < *buf1) *buf1 = val;
-	  buf1 = buf+neighbor3[3]; if (val < *buf1) *buf1 = val;
-	}
+    // C6 neighbors
+    val = *buf+a;
+    
+    buf1 = buf+neighbor1[0]; if (val < *buf1) *buf1 = val;
+    buf1 = buf+neighbor1[1]; if (val < *buf1) *buf1 = val;
+    buf1 = buf+neighbor1[2]; if (val < *buf1) *buf1 = val;
+    
+    // C18 neighbors
+    val = *buf+b;
+    
+    buf1 = buf+neighbor2[0]; if (val < *buf1) *buf1 = val;
+    buf1 = buf+neighbor2[1]; if (val < *buf1) *buf1 = val;
+    buf1 = buf+neighbor2[2]; if (val < *buf1) *buf1 = val;
+    buf1 = buf+neighbor2[3]; if (val < *buf1) *buf1 = val;
+    buf1 = buf+neighbor2[4]; if (val < *buf1) *buf1 = val;
+    buf1 = buf+neighbor2[5]; if (val < *buf1) *buf1 = val;
+    
+    // C26 neighbors
+    val = *buf+c;
+    
+    buf1 = buf+neighbor3[0]; if (val < *buf1) *buf1 = val;
+    buf1 = buf+neighbor3[1]; if (val < *buf1) *buf1 = val;
+    buf1 = buf+neighbor3[2]; if (val < *buf1) *buf1 = val;
+    buf1 = buf+neighbor3[3]; if (val < *buf1) *buf1 = val;
+  }
         if (*buf<a) {
 
-	  // C6 neighbors
-	  val = *buf-a;
-	  
-	  buf1 = buf+neighbor1[0]; if (val > *buf1) *buf1 = val;
-	  buf1 = buf+neighbor1[1]; if (val > *buf1) *buf1 = val;
-	  buf1 = buf+neighbor1[2]; if (val > *buf1) *buf1 = val;
-	  
-	  // C18 neighbors
-	  val = *buf-b;
-	  
-	  buf1 = buf+neighbor2[0]; if (val > *buf1) *buf1 = val;
-	  buf1 = buf+neighbor2[1]; if (val > *buf1) *buf1 = val;
-	  buf1 = buf+neighbor2[2]; if (val > *buf1) *buf1 = val;
-	  buf1 = buf+neighbor2[3]; if (val > *buf1) *buf1 = val;
-	  buf1 = buf+neighbor2[4]; if (val > *buf1) *buf1 = val;
-	  buf1 = buf+neighbor2[5]; if (val > *buf1) *buf1 = val;
-	  
-	  // C26 neighbors
-	  val = *buf-c;
-	  
-	  buf1 = buf+neighbor3[0]; if (val > *buf1) *buf1 = val;
-	  buf1 = buf+neighbor3[1]; if (val > *buf1) *buf1 = val;
-	  buf1 = buf+neighbor3[2]; if (val > *buf1) *buf1 = val;
-	  buf1 = buf+neighbor3[3]; if (val > *buf1) *buf1 = val;
-	}
+    // C6 neighbors
+    val = *buf-a;
+    
+    buf1 = buf+neighbor1[0]; if (val > *buf1) *buf1 = val;
+    buf1 = buf+neighbor1[1]; if (val > *buf1) *buf1 = val;
+    buf1 = buf+neighbor1[2]; if (val > *buf1) *buf1 = val;
+    
+    // C18 neighbors
+    val = *buf-b;
+    
+    buf1 = buf+neighbor2[0]; if (val > *buf1) *buf1 = val;
+    buf1 = buf+neighbor2[1]; if (val > *buf1) *buf1 = val;
+    buf1 = buf+neighbor2[2]; if (val > *buf1) *buf1 = val;
+    buf1 = buf+neighbor2[3]; if (val > *buf1) *buf1 = val;
+    buf1 = buf+neighbor2[4]; if (val > *buf1) *buf1 = val;
+    buf1 = buf+neighbor2[5]; if (val > *buf1) *buf1 = val;
+    
+    // C26 neighbors
+    val = *buf-c;
+    
+    buf1 = buf+neighbor3[0]; if (val > *buf1) *buf1 = val;
+    buf1 = buf+neighbor3[1]; if (val > *buf1) *buf1 = val;
+    buf1 = buf+neighbor3[2]; if (val > *buf1) *buf1 = val;
+    buf1 = buf+neighbor3[3]; if (val > *buf1) *buf1 = val;
+  }
 
-	buf--;
+  buf--;
       }
     }
 
@@ -690,63 +690,63 @@ InrImage* Func_Chamfer2Signed(InrImage* im, float a, float b, float c, float dma
   for(z=0;z<=tz-1;z++) 
     for(y=0;y<=ty-1;y++)
       for(x=0;x<=tx-1;x++) {
-	if ((x==0)||(x==tx-1)||
+  if ((x==0)||(x==tx-1)||
             (y==0)||(y==ty-1)||
             (z==0)||(z==tz-1)) {
 
-	  min =*buf;
+    min =*buf;
 
-	  if (x==0) imin = 0; else imin = -1;
-	  if (y==0) jmin = 0; else jmin = -1;
-	  if (z==0) kmin = 0; else kmin = -1;
+    if (x==0) imin = 0; else imin = -1;
+    if (y==0) jmin = 0; else jmin = -1;
+    if (z==0) kmin = 0; else kmin = -1;
 
-	  if (x==tx-1) imax = 0; else imax = 1;
-	  if (y==ty-1) jmax = 0; else jmax = 1;
-	  if (z==tz-1) kmax = 0; else kmax = 1;
+    if (x==tx-1) imax = 0; else imax = 1;
+    if (y==ty-1) jmax = 0; else jmax = 1;
+    if (z==tz-1) kmax = 0; else kmax = 1;
 
-	  buf1 = buf + imin;
-	  Pour(i,imin,imax)
-  	    buf2 = buf1;
-  	    if (jmin==-1) buf2 -= tx;
-  	    Pour(j,jmin,jmax)
-  	      buf3 = buf2;
-  	      if (kmin==-1) buf3 -= txy;
-	      Pour(k,kmin,kmax)
+    buf1 = buf + imin;
+    Pour(i,imin,imax)
+        buf2 = buf1;
+        if (jmin==-1) buf2 -= tx;
+        Pour(j,jmin,jmax)
+          buf3 = buf2;
+          if (kmin==-1) buf3 -= txy;
+        Pour(k,kmin,kmax)
                 n = abs(i)+abs(j)+abs(k);
-                SelonQue n Vaut
-		  Valeur 0: continue;
-                  Valeur 1: val = *buf3+a; FinValeur
-                  Valeur 2: val = *buf3+b; FinValeur
-                  Valeur 3: val = *buf3+c; FinValeur
-                  Defaut: fprintf(stderr,"Chamfer error \n");
-                FinSelonQue
+                switch ( n ){
+      case 0: continue;
+                  case 1: val = *buf3+a; break;
+                  case 2: val = *buf3+b; break;
+                  case 3: val = *buf3+c; break;
+                  default: fprintf(stderr,"Chamfer error \n");
+                } // end switch
                 Si val<min AlorsFait min = val;
                 buf3 += txy;
               FinPour
-	      buf2 += tx;
+        buf2 += tx;
             FinPour
-	    buf1++;
+      buf1++;
           FinPour
 
 
-	  *buf = min;
-	  buf++;
-	  
-	}
+    *buf = min;
+    buf++;
+    
+  }
         else
 
-	  // jump directly to the last voxel of the line
-	  if (x==1) {
-	    x   += tx-3;
-	    buf += tx-3;
-	    buf++;
-	  }
-	  else {
-	    fprintf(stderr,"Chamfer2() \t we should not get here !!! \n");
+    // jump directly to the last voxel of the line
+    if (x==1) {
+      x   += tx-3;
+      buf += tx-3;
+      buf++;
+    }
+    else {
+      fprintf(stderr,"Chamfer2() \t we should not get here !!! \n");
 
-	    buf++;
+      buf++;
 
-	  }
+    }
 
       }
 
@@ -788,19 +788,19 @@ InrImage* Func_Chamfer2_2D(InrImage* im, float a, float b, float dmax)
     Si i>3 AlorsFait break;
     n = abs(x)+abs(y);
     neighbor[i]      = y*im->_tx + x;
-    SelonQue n Vaut
-      Valeur 1: 
+    switch ( n ){
+      case 1: 
         dist_neighbor[i] = a; 
         neighbor1[i1] = neighbor[i];
         i1++;
-      FinValeur
-      Valeur 2: 
+      break;
+      case 2: 
         dist_neighbor[i] = b; 
         neighbor2[i2] = neighbor[i];
         i2++;
-      FinValeur
-      Defaut: fprintf(stderr,"Func_Chamfer2_2D() \t Chamfer error n = %d (%d,%d)\n",n,x,y);
-    FinSelonQue
+      break;
+      default: fprintf(stderr,"Func_Chamfer2_2D() \t Chamfer error n = %d (%d,%d)\n",n,x,y);
+    } // end switch
     i++;
   FinPour
   FinPour
@@ -817,17 +817,17 @@ InrImage* Func_Chamfer2_2D(InrImage* im, float a, float b, float dmax)
     for(x=1;x<im->_tx-1;x++) {
       
       if (*buf<dmax) {
-	// C4 neighbors
-	val = *buf+a;
-	buf1 = buf-neighbor1[0]; if (val < *buf1) *buf1 = val;
-	buf1 = buf-neighbor1[1]; if (val < *buf1) *buf1 = val;
-	
-	// C8 neighbors
-	val = *buf+b;
-	buf1 = buf-neighbor2[0]; if (val < *buf1) *buf1 = val;
-	buf1 = buf-neighbor2[1]; if (val < *buf1) *buf1 = val;
+  // C4 neighbors
+  val = *buf+a;
+  buf1 = buf-neighbor1[0]; if (val < *buf1) *buf1 = val;
+  buf1 = buf-neighbor1[1]; if (val < *buf1) *buf1 = val;
+  
+  // C8 neighbors
+  val = *buf+b;
+  buf1 = buf-neighbor2[0]; if (val < *buf1) *buf1 = val;
+  buf1 = buf-neighbor2[1]; if (val < *buf1) *buf1 = val;
       }
-	
+  
       buf++;
     }
   }
@@ -840,15 +840,15 @@ InrImage* Func_Chamfer2_2D(InrImage* im, float a, float b, float dmax)
     for(x=im->_tx-2;x>0;x--) {
 
       if (*buf<dmax) {
-	// C4 neighbors
-	val = *buf+a;
-	buf1 = buf+neighbor1[0]; if (val < *buf1) *buf1 = val;
-	buf1 = buf+neighbor1[1]; if (val < *buf1) *buf1 = val;
-	
-	// C8 neighbors
-	val = *buf+b;
-	buf1 = buf+neighbor2[0]; if (val < *buf1) *buf1 = val;
-	buf1 = buf+neighbor2[1]; if (val < *buf1) *buf1 = val;
+  // C4 neighbors
+  val = *buf+a;
+  buf1 = buf+neighbor1[0]; if (val < *buf1) *buf1 = val;
+  buf1 = buf+neighbor1[1]; if (val < *buf1) *buf1 = val;
+  
+  // C8 neighbors
+  val = *buf+b;
+  buf1 = buf+neighbor2[0]; if (val < *buf1) *buf1 = val;
+  buf1 = buf+neighbor2[1]; if (val < *buf1) *buf1 = val;
       }
 
       buf--;
@@ -862,33 +862,33 @@ InrImage* Func_Chamfer2_2D(InrImage* im, float a, float b, float dmax)
   for(y=0;y<=im->_ty-1;y++)
     for(x=0;x<=im->_tx-1;x++) {
       if ((x==0)||(x==im->_tx-1)||
-	  (y==0)||(y==im->_ty-1)){
-	
-	if (x==0) imin = 0; else imin = -1;
-	if (y==0) jmin = 0; else jmin = -1;
-	
-	if (x==im->_tx-1) imax = 0; else imax = 1;
-	if (y==im->_ty-1) jmax = 0; else jmax = 1;
+    (y==0)||(y==im->_ty-1)){
+  
+  if (x==0) imin = 0; else imin = -1;
+  if (y==0) jmin = 0; else jmin = -1;
+  
+  if (x==im->_tx-1) imax = 0; else imax = 1;
+  if (y==im->_ty-1) jmax = 0; else jmax = 1;
           
 
-	min = *buf;
+  min = *buf;
 
-	Pour(i,imin,imax)
-	Pour(j,jmin,jmax)
-	  n = abs(i)+abs(j);
-	  Si n==0 AlorsFait continue;
-	  SelonQue n Vaut
-                Valeur 1: val = (*res)(x+i,y+j)+a; FinValeur
-                Valeur 2: val = (*res)(x+i,y+j)+b; FinValeur
-                Defaut: fprintf(stderr,"Func_Chamfer2_2D() \t Chamfer error (%d,%d) \n",x,y);
-          FinSelonQue
+  Pour(i,imin,imax)
+  Pour(j,jmin,jmax)
+    n = abs(i)+abs(j);
+    Si n==0 AlorsFait continue;
+    switch ( n ){
+                case 1: val = (*res)(x+i,y+j)+a; break;
+                case 2: val = (*res)(x+i,y+j)+b; break;
+                default: fprintf(stderr,"Func_Chamfer2_2D() \t Chamfer error (%d,%d) \n",x,y);
+          } // end switch
           Si val<min AlorsFait min = val;
         FinPour
         FinPour
 
-	res->BufferPos(x,y);
-	res->FixeValeur(min);
-	  
+  res->BufferPos(x,y);
+  res->FixeValeur(min);
+    
       }
 
       buf++;
@@ -931,19 +931,19 @@ InrImage* Func_Chamfer2Signed_2D(InrImage* im, float a, float b, float dmax)
     Si i>3 AlorsFait break;
     n = abs(x)+abs(y);
     neighbor[i]      = y*im->_tx + x;
-    SelonQue n Vaut
-      Valeur 1: 
+    switch ( n ){
+      case 1: 
         dist_neighbor[i] = a; 
         neighbor1[i1] = neighbor[i];
         i1++;
-      FinValeur
-      Valeur 2: 
+      break;
+      case 2: 
         dist_neighbor[i] = b; 
         neighbor2[i2] = neighbor[i];
         i2++;
-      FinValeur
-      Defaut: fprintf(stderr,"Func_Chamfer2_2D() \t Chamfer error n = %d (%d,%d)\n",n,x,y);
-    FinSelonQue
+      break;
+      default: fprintf(stderr,"Func_Chamfer2_2D() \t Chamfer error n = %d (%d,%d)\n",n,x,y);
+    } // end switch
     i++;
   FinPour
   FinPour
@@ -963,28 +963,28 @@ InrImage* Func_Chamfer2Signed_2D(InrImage* im, float a, float b, float dmax)
       if (*buf<-dmax) { buf++; continue; }
 
       if (*buf>-a) {
-	// C4 neighbors
-	val = *buf+a;
-	buf1 = buf-neighbor1[0]; if (val < *buf1) *buf1 = val;
-	buf1 = buf-neighbor1[1]; if (val < *buf1) *buf1 = val;
-	
-	// C8 neighbors
-	val = *buf+b;
-	buf1 = buf-neighbor2[0]; if (val < *buf1) *buf1 = val;
-	buf1 = buf-neighbor2[1]; if (val < *buf1) *buf1 = val;
+  // C4 neighbors
+  val = *buf+a;
+  buf1 = buf-neighbor1[0]; if (val < *buf1) *buf1 = val;
+  buf1 = buf-neighbor1[1]; if (val < *buf1) *buf1 = val;
+  
+  // C8 neighbors
+  val = *buf+b;
+  buf1 = buf-neighbor2[0]; if (val < *buf1) *buf1 = val;
+  buf1 = buf-neighbor2[1]; if (val < *buf1) *buf1 = val;
       }
       if (*buf<a) {
-	// C4 neighbors
-	val = *buf-a;
-	buf1 = buf-neighbor1[0]; if (val > *buf1) *buf1 = val;
-	buf1 = buf-neighbor1[1]; if (val > *buf1) *buf1 = val;
-	
-	// C8 neighbors
-	val = *buf-b;
-	buf1 = buf-neighbor2[0]; if (val > *buf1) *buf1 = val;
-	buf1 = buf-neighbor2[1]; if (val > *buf1) *buf1 = val;
+  // C4 neighbors
+  val = *buf-a;
+  buf1 = buf-neighbor1[0]; if (val > *buf1) *buf1 = val;
+  buf1 = buf-neighbor1[1]; if (val > *buf1) *buf1 = val;
+  
+  // C8 neighbors
+  val = *buf-b;
+  buf1 = buf-neighbor2[0]; if (val > *buf1) *buf1 = val;
+  buf1 = buf-neighbor2[1]; if (val > *buf1) *buf1 = val;
       }
-	
+  
       buf++;
     }
   }
@@ -1000,26 +1000,26 @@ InrImage* Func_Chamfer2Signed_2D(InrImage* im, float a, float b, float dmax)
       if (*buf<-dmax) { buf--; continue; }
 
       if (*buf>-a) {
-	// C4 neighbors
-	val = *buf+a;
-	buf1 = buf+neighbor1[0]; if (val < *buf1) *buf1 = val;
-	buf1 = buf+neighbor1[1]; if (val < *buf1) *buf1 = val;
-	
-	// C8 neighbors
-	val = *buf+b;
-	buf1 = buf+neighbor2[0]; if (val < *buf1) *buf1 = val;
-	buf1 = buf+neighbor2[1]; if (val < *buf1) *buf1 = val;
+  // C4 neighbors
+  val = *buf+a;
+  buf1 = buf+neighbor1[0]; if (val < *buf1) *buf1 = val;
+  buf1 = buf+neighbor1[1]; if (val < *buf1) *buf1 = val;
+  
+  // C8 neighbors
+  val = *buf+b;
+  buf1 = buf+neighbor2[0]; if (val < *buf1) *buf1 = val;
+  buf1 = buf+neighbor2[1]; if (val < *buf1) *buf1 = val;
       }
       if (*buf<a) {
-	// C4 neighbors
-	val = *buf-a;
-	buf1 = buf+neighbor1[0]; if (val > *buf1) *buf1 = val;
-	buf1 = buf+neighbor1[1]; if (val > *buf1) *buf1 = val;
-	
-	// C8 neighbors
-	val = *buf-b;
-	buf1 = buf+neighbor2[0]; if (val > *buf1) *buf1 = val;
-	buf1 = buf+neighbor2[1]; if (val > *buf1) *buf1 = val;
+  // C4 neighbors
+  val = *buf-a;
+  buf1 = buf+neighbor1[0]; if (val > *buf1) *buf1 = val;
+  buf1 = buf+neighbor1[1]; if (val > *buf1) *buf1 = val;
+  
+  // C8 neighbors
+  val = *buf-b;
+  buf1 = buf+neighbor2[0]; if (val > *buf1) *buf1 = val;
+  buf1 = buf+neighbor2[1]; if (val > *buf1) *buf1 = val;
       }
 
       buf--;
@@ -1033,33 +1033,33 @@ InrImage* Func_Chamfer2Signed_2D(InrImage* im, float a, float b, float dmax)
   for(y=0;y<=im->_ty-1;y++)
     for(x=0;x<=im->_tx-1;x++) {
       if ((x==0)||(x==im->_tx-1)||
-	  (y==0)||(y==im->_ty-1)){
-	
-	if (x==0) imin = 0; else imin = -1;
-	if (y==0) jmin = 0; else jmin = -1;
-	
-	if (x==im->_tx-1) imax = 0; else imax = 1;
-	if (y==im->_ty-1) jmax = 0; else jmax = 1;
+    (y==0)||(y==im->_ty-1)){
+  
+  if (x==0) imin = 0; else imin = -1;
+  if (y==0) jmin = 0; else jmin = -1;
+  
+  if (x==im->_tx-1) imax = 0; else imax = 1;
+  if (y==im->_ty-1) jmax = 0; else jmax = 1;
           
 
-	min = *buf;
+  min = *buf;
 
-	Pour(i,imin,imax)
-	Pour(j,jmin,jmax)
-	  n = abs(i)+abs(j);
-	  Si n==0 AlorsFait continue;
-	  SelonQue n Vaut
-                Valeur 1: val = (*res)(x+i,y+j)+a; FinValeur
-                Valeur 2: val = (*res)(x+i,y+j)+b; FinValeur
-                Defaut: fprintf(stderr,"Func_Chamfer2_2D() \t Chamfer error (%d,%d) \n",x,y);
-          FinSelonQue
+  Pour(i,imin,imax)
+  Pour(j,jmin,jmax)
+    n = abs(i)+abs(j);
+    Si n==0 AlorsFait continue;
+    switch ( n ){
+                case 1: val = (*res)(x+i,y+j)+a; break;
+                case 2: val = (*res)(x+i,y+j)+b; break;
+                default: fprintf(stderr,"Func_Chamfer2_2D() \t Chamfer error (%d,%d) \n",x,y);
+          } // end switch
           Si val<min AlorsFait min = val;
         FinPour
         FinPour
 
-	res->BufferPos(x,y);
-	res->FixeValeur(min);
-	  
+  res->BufferPos(x,y);
+  res->FixeValeur(min);
+    
       }
 
       buf++;

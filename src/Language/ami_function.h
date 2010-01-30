@@ -41,15 +41,25 @@
 
 using namespace boost;
 
-
+/**
+ * Class that stores the scripting language functions information.
+ **/
 class AMIFunction {
 
   DEFINE_CLASS(AMIFunction)
 
 private:
+
+  /// Declaration of the parameters
   ParamListDecl*            _param;
+
+  /// Body of the function
   AmiInstructionBlock::ptr   _body;
+
+  /// Name of the function
   std::string               _name;
+
+  /// Filename of the function
   std::string               _filename;
 
  public:

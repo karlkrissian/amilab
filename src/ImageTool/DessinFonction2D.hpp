@@ -127,10 +127,10 @@ private:
 
 public:
   
-  Constructeur DessinFonction2D( Widget AParent, char* ATitle, 
+   DessinFonction2D( Widget AParent, char* ATitle, 
                             int type = CREATE_WINDOW);
 
-  Destructeur DessinFonction2D();
+  ~DessinFonction2D();
 
   void SetFunction(const Fonction2D& func);
 

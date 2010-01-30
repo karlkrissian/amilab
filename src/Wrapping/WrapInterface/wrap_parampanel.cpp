@@ -67,7 +67,7 @@ Variable::ptr wrap_ParamPanel( ParamList* p)
 {
     char functionname[] = "ParamPanel";
     char description[]=" \n\
-      Adds wrapping for ParamPanel. \n\
+      New ParamPanel object, for creating GUI. \n\
             ";
     char parameters[] =" \n\
       - title of the tab \n\
@@ -76,7 +76,7 @@ Variable::ptr wrap_ParamPanel( ParamList* p)
   int n = 0;
   std::string* title = NULL;
 
-  if (!get_string_param(    title, p, n)) HelpAndReturnVarPtr;
+  if (!get_var_param<string>(    title, p, n)) HelpAndReturnVarPtr;
 
   ParamPanel::ptr pp;
 
@@ -97,10 +97,6 @@ Variable::ptr wrap_ParamPanel( ParamList* p)
 // set the line parameters on an image drawing window
 void wrap_ParamPanelBeginBook::CallProc( ParamList* p)
 {
-    char functionname[] = "BeginBook";
-    char description[]=" \n\
-      Starts a notebook. \n\
-            ";
     char parameters[] =" \n\
             ";
 
@@ -112,10 +108,6 @@ void wrap_ParamPanelBeginBook::CallProc( ParamList* p)
 //---------------------------------------------------
 void wrap_ParamPanelEndBook::CallProc( ParamList* p)
 {
-    char functionname[] = "EndBook";
-    char description[]=" \n\
-      Ends a notebook. \n\
-            ";
     char parameters[] =" \n\
             ";
   this->_pp->EndBook();
@@ -126,10 +118,6 @@ void wrap_ParamPanelEndBook::CallProc( ParamList* p)
 //---------------------------------------------------
 void wrap_ParamPanelBeginHorizontal::CallProc( ParamList* p)
 {
-    char functionname[] = "BeginHorizontal";
-    char description[]=" \n\
-      . \n\
-            ";
     char parameters[] =" \n\
             ";
   this->_pp->BeginHorizontal();
@@ -139,10 +127,6 @@ void wrap_ParamPanelBeginHorizontal::CallProc( ParamList* p)
 //---------------------------------------------------
 void wrap_ParamPanelEndHorizontal::CallProc( ParamList* p)
 {
-    char functionname[] = "EndHorizontal";
-    char description[]=" \n\
-      . \n\
-            ";
     char parameters[] =" \n\
             ";
   this->_pp->EndHorizontal();
@@ -152,17 +136,13 @@ void wrap_ParamPanelEndHorizontal::CallProc( ParamList* p)
 //---------------------------------------------------
 void wrap_ParamPanelBeginBoxPanel::CallProc( ParamList* p)
 {
-    char functionname[] = "BeginBoxPanel";
-    char description[]=" \n\
-      . \n\
-            ";
     char parameters[] =" \n\
         - string: box panel title\n\
             ";
 
   std::string* label = NULL;
   int n = 0;
-  if (!get_string_param(   label,  p, n)) HelpAndReturn;
+  if (!get_var_param<string>(   label,  p, n)) HelpAndReturn;
 
   this->_pp->BeginBox( label->c_str());
   int id = this->_pp->BeginPanel( label->c_str());
@@ -173,10 +153,6 @@ void wrap_ParamPanelBeginBoxPanel::CallProc( ParamList* p)
 //---------------------------------------------------
 void wrap_ParamPanelEndBoxPanel::CallProc( ParamList* p)
 {
-    char functionname[] = "EndBoxPanel";
-    char description[]=" \n\
-      . \n\
-            ";
     char parameters[] =" \n\
             ";
   this->_pp->EndPanel();
@@ -187,10 +163,6 @@ void wrap_ParamPanelEndBoxPanel::CallProc( ParamList* p)
 //---------------------------------------------------
 void wrap_ParamPanelAddFloat::CallProc( ParamList* p)
 {
-    char functionname[] = "AddFloat";
-    char description[]=" \n\
-      . \n\
-            ";
     char parameters[] =" \n\
         - float variable \n\
         - string: label for the parameter \n\
@@ -204,10 +176,10 @@ void wrap_ParamPanelAddFloat::CallProc( ParamList* p)
   float maxval = 1;
   int   n = 0;
 
-  if (!get_floatvar_param( var,    p, n)) HelpAndReturn;
-  if (!get_string_param(   label,  p, n)) HelpAndReturn;
-  if (!get_float_param(    minval, p, n)) HelpAndReturn;
-  if (!get_float_param(    maxval, p, n)) HelpAndReturn;
+  if (!get_var_param<float>( var,    p, n)) HelpAndReturn;
+  if (!get_var_param<string>(   label,  p, n)) HelpAndReturn;
+  if (!get_param<float>(    minval, p, n)) HelpAndReturn;
+  if (!get_param<float>(    maxval, p, n)) HelpAndReturn;
 
 
   // how to get the variable comments here ...
@@ -224,10 +196,6 @@ void wrap_ParamPanelAddFloat::CallProc( ParamList* p)
 //---------------------------------------------------
 void wrap_ParamPanelAddInt::CallProc( ParamList* p)
 {
-    char functionname[] = "AddInt";
-    char description[]=" \n\
-      . \n\
-            ";
     char parameters[] =" \n\
         - int variable \n\
         - string: label for the parameter \n\
@@ -241,8 +209,8 @@ void wrap_ParamPanelAddInt::CallProc( ParamList* p)
   int  maxval = 100;
   int   n = 0;
 
-  if (!get_intvar_param(   var,    p, n)) HelpAndReturn;
-  if (!get_string_param(   label,  p, n)) HelpAndReturn;
+  if (!get_var_param<int>(   var,    p, n)) HelpAndReturn;
+  if (!get_var_param<string>(   label,  p, n)) HelpAndReturn;
   if (!get_int_param(      minval, p, n)) HelpAndReturn;
   if (!get_int_param(      maxval, p, n)) HelpAndReturn;
 
@@ -258,10 +226,6 @@ void wrap_ParamPanelAddInt::CallProc( ParamList* p)
 //--------------------------------------------------
 void wrap_ParamPanelDisplay::CallProc( ParamList* p)
 {
-    char functionname[] = "_Display";
-    char description[]=" \n\
-      Displays the panel. \n\
-            ";
     char parameters[] =" \n\
             ";
 
@@ -275,10 +239,6 @@ void wrap_ParamPanelDisplay::CallProc( ParamList* p)
 //--------------------------------------------------
 void wrap_ParamPanelAddPage::CallProc( ParamList* p)
 {
-    char functionname[] = "_AddPage";
-    char description[]=" \n\
-      Adds a page to the current book. \n\
-            ";
     char parameters[] =" \n\
       - string: page title. \n\
             ";
@@ -286,7 +246,7 @@ void wrap_ParamPanelAddPage::CallProc( ParamList* p)
   std::string* title = NULL;
   int   n = 0;
 
-  if (!get_string_param( title,  p, n)) HelpAndReturn;
+  if (!get_var_param<string>( title,  p, n)) HelpAndReturn;
   int id = this->_pp->AddPage( title->c_str());
 }
 

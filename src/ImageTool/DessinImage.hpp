@@ -1026,7 +1026,7 @@ protected:
 public:
 
   ///
-  Constructeur DessinImage(  
+   DessinImage(  
       wxWindow* parent,
       const std::string& ATitle, 
       InrImage::ptr image,
@@ -1046,7 +1046,7 @@ public:
         return px;
     }
 
-  Destructeur DessinImage();
+  ~DessinImage();
 
   //
   void     SetVolRenOpacity(InrImage* volren_opacity)
@@ -1762,54 +1762,54 @@ public:
   //   ---------------------------
                                     int* entier_min, int* entier_max)
   {
-    SelonQue _image->_format Vaut
-      Valeur WT_FLOAT:
-      Valeur WT_DOUBLE:
+    switch ( _image->_format ){
+      case WT_FLOAT:
+      case WT_DOUBLE:
         *float_min  = _intensite_float_min; 
         *float_max  = _intensite_float_max;
         *entier_min = (int) _intensite_float_min; 
         *entier_max = (int) _intensite_float_max;
-      FinValeur
+      break;
 
-      Valeur WT_UNSIGNED_CHAR: 
-      Valeur WT_UNSIGNED_SHORT: 
-      Valeur WT_SIGNED_SHORT:
-      Valeur WT_UNSIGNED_INT: 
-      Valeur WT_SIGNED_INT:
+      case WT_UNSIGNED_CHAR: 
+      case WT_UNSIGNED_SHORT: 
+      case WT_SIGNED_SHORT:
+      case WT_UNSIGNED_INT: 
+      case WT_SIGNED_INT:
         *float_min  = _intensite_entier_min;
         *float_max  = _intensite_entier_max;
         *entier_min = _intensite_entier_min;
         *entier_max = _intensite_entier_max; 
-      FinValeur
+      break;
 
     default: ;
     //fprintf(stderr,"Erreur \t dans switch, valeur non gere \n");
 
-    FinSelonQue
+    } // end switch
   }
 
   ///
   void RecupereIntervalleIntensiteNormalise( float* pos_min, float* pos_max)
   //   ------------------------------------
   {
-    SelonQue  _image->_format Vaut
-      Valeur WT_FLOAT:
-      Valeur WT_DOUBLE:
+    switch (  _image->_format ){
+      case WT_FLOAT:
+      case WT_DOUBLE:
         *pos_min  = (_intensite_float_min - _val_min)/(_val_max - _val_min); 
         *pos_max  = (_intensite_float_max - _val_min)/(_val_max - _val_min); 
-      FinValeur
+      break;
 
-      Valeur WT_UNSIGNED_CHAR: 
-      Valeur WT_UNSIGNED_SHORT: 
-      Valeur WT_SIGNED_SHORT:
-      Valeur WT_UNSIGNED_INT: 
-      Valeur WT_SIGNED_INT:
+      case WT_UNSIGNED_CHAR: 
+      case WT_UNSIGNED_SHORT: 
+      case WT_SIGNED_SHORT:
+      case WT_UNSIGNED_INT: 
+      case WT_SIGNED_INT:
         *pos_min  = (_intensite_entier_min - _val_min)/(_val_max - _val_min); 
         *pos_max  = (_intensite_entier_max - _val_min)/(_val_max - _val_min); 
-      FinValeur
+      break;
 
     default: ; // fprintf(stderr,"Erreur \t dans switch, valeur non g�� \n");
-    FinSelonQue
+    } // end switch
   }
 
   ///

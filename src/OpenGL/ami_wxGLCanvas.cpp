@@ -325,7 +325,7 @@ ami_wxGLCanvas::ami_wxGLCanvas(
     { // for help debugging, report any OpenGL errors that occur per frame
         GLenum error;
         while((error = glGetError()) != GL_NO_ERROR)
-            fprintf(stderr, "Constructeur GL error: %s\n",
+            fprintf(stderr, " GL error: %s\n",
             glErrorString(error));
     }
 */
@@ -1381,8 +1381,8 @@ void ami_wxGLCanvas::DisplayObject(GLObject::ptr& obj)
   if (!obj.use_count()) return;
   if (!obj->Visible())  return;
 
-  SelonQue obj->ObjType() Vaut
-    Valeur OBJTYPE_SURFPOLY:
+  switch ( obj->ObjType() ){
+    case OBJTYPE_SURFPOLY:
       { // should lock the smart pointer here !
       SurfacePoly* surf = (SurfacePoly*) (obj.get());
       // absolutely not thread safe ...
@@ -1395,17 +1395,17 @@ void ami_wxGLCanvas::DisplayObject(GLObject::ptr& obj)
       Si _GLParam._display_vect2   AlorsFait
         surf->DisplayVectors2( &_GLParam);
       }
-    FinValeur
+    break;
 
-    Valeur OBJTYPE_USERLIST:
+    case OBJTYPE_USERLIST:
       {
       obj->SetwxGLCanvas(this);
       obj->DisplayObject( &_GLMaterial);
       }
-    FinValeur
-    Defaut: fprintf(stderr,
+    break;
+    default: fprintf(stderr,
         "ami_wxGLCanvas::DisplayObject() \t unknown object type \n");
-  FinSelonQue
+  } // end switch
 
   glReportError();
 
@@ -1747,12 +1747,12 @@ if (!_initialized) return;
   }
 
 
-    SelonQue _mode_affichage Vaut
-      Valeur MODE_SURFACE: DessineSurface2(); FinValeur
-      Valeur MODE_VOXELS:  DessineVoxels3D(); FinValeur
-      Valeur MODE_GLMIP:   DessineGLMIP(); FinValeur
-      Valeur MODE_VOLREN:  DrawVolRen();   FinValeur
-    FinSelonQue
+    switch ( _mode_affichage ){
+      case MODE_SURFACE: DessineSurface2(); break;
+      case MODE_VOXELS:  DessineVoxels3D(); break;
+      case MODE_GLMIP:   DessineGLMIP(); break;
+      case MODE_VOLREN:  DrawVolRen();   break;
+    } // end switch
 
 
   DepileMatrice();
@@ -2000,14 +2000,14 @@ void ami_wxGLCanvas :: TranslationStart()
   _souris_position_initiale_y = _souris_y;
 
 
-  SelonQue _mouse_action Vaut
-    Valeur MOUSE_MOVE_OBJECT:
+  switch ( _mouse_action ){
+    case MOUSE_MOVE_OBJECT:
       _Tobject.GetTranslation(_initial_translation);
-    FinValeur
-    Valeur MOUSE_MOVE_BASIS:
+    break;
+    case MOUSE_MOVE_BASIS:
       _Tbasis.GetTranslation(_initial_translation);
-    FinValeur
-  FinSelonQue
+    break;
+  } // end switch
 
   if (_mode_affichage==MODE_VOLREN)
     _Ttexture.GetTranslation(_initial_translation);
@@ -2037,14 +2037,14 @@ void ami_wxGLCanvas :: TranslationEnd()
 
   SetCurrentContext();
   // First Reset initial values to compute displacements
-  SelonQue _mouse_action Vaut
-    Valeur MOUSE_MOVE_OBJECT:
+  switch ( _mouse_action ){
+    case MOUSE_MOVE_OBJECT:
       _Tobject.SetTranslation(_initial_translation);
-    FinValeur
-    Valeur MOUSE_MOVE_BASIS:
+    break;
+    case MOUSE_MOVE_BASIS:
       _Tbasis.SetTranslation(_initial_translation);
-    FinValeur
-  FinSelonQue
+    break;
+  } // end switch
 
   if (_mode_affichage==MODE_VOLREN)
     _Ttexture.SetTranslation(_initial_translation);
@@ -2077,32 +2077,32 @@ void ami_wxGLCanvas :: TranslationEnd()
 
     glLoadIdentity();
 
-    SelonQue _mouse_action Vaut
+    switch ( _mouse_action ){
 
-      Valeur MOUSE_MOVE_OBJECT:
+      case MOUSE_MOVE_OBJECT:
         _Tobject.GLApplyInvRotation();
         _Tobject.GLApplyInvScale();
         _Tbasis.GLApplyInvMatrix();
         glTranslatef( var_x, -var_y, 0.0);
         _Tbasis.GLApplyMatrix();
         _Tobject.GLApplyMatrix();
-    FinValeur
+    break;
 
-      Valeur MOUSE_MOVE_BASIS:
+      case MOUSE_MOVE_BASIS:
         _Tbasis.GLApplyInvRotation();
         _Tbasis.GLApplyInvScale();
         glTranslatef( var_x, -var_y, 0.0);
         _Tbasis.GLApplyMatrix();
-      FinValeur
+      break;
 
-    FinSelonQue
+    } // end switch
 
     glGetDoublev(GL_MODELVIEW_MATRIX, (GLdouble*) matrix);
 
   DepileMatrice();
 
-  SelonQue _mouse_action Vaut
-    Valeur MOUSE_MOVE_OBJECT:
+  switch ( _mouse_action ){
+    case MOUSE_MOVE_OBJECT:
       /*
       if (GB_debug) cout << "  Setting new translation " <<  matrix[3][0]<< " ; " <<  matrix[3][1] << " ;" <<  matrix[3][2]<< endl;
       */
@@ -2110,13 +2110,13 @@ void ami_wxGLCanvas :: TranslationEnd()
                   matrix[3][1],
                   matrix[3][2]);
       //if (GB_debug) PrintMatrices();
-    FinValeur
-    Valeur MOUSE_MOVE_BASIS:
+    break;
+    case MOUSE_MOVE_BASIS:
       _Tbasis.SetTranslation(matrix[3][0],
                  matrix[3][1],
                  matrix[3][2]);
-    FinValeur
-  FinSelonQue
+    break;
+  } // end switch
 
 //  Paint();
 
@@ -2136,14 +2136,14 @@ void ami_wxGLCanvas :: TranslationMotion()
 
 /*
   SetCurrentContext();
-  SelonQue _mouse_action Vaut
-    Valeur MOUSE_MOVE_OBJECT:
+  switch ( _mouse_action ){
+    case MOUSE_MOVE_OBJECT:
       _Tobject.SetTranslation(_initial_translation);
-    FinValeur
-    Valeur MOUSE_MOVE_BASIS:
+    break;
+    case MOUSE_MOVE_BASIS:
       _Tbasis.SetTranslation(_initial_translation);
-    FinValeur
-  FinSelonQue
+    break;
+  } // end switch
 
   if (_mode_affichage==MODE_VOLREN)
     _Ttexture.SetTranslation(_initial_translation);
@@ -2159,14 +2159,14 @@ void ami_wxGLCanvas :: RotationStart()
   _souris_position_initiale_x = _souris_x;
   _souris_position_initiale_y = _souris_y;
 
-  SelonQue _mouse_action Vaut
-    Valeur MOUSE_MOVE_OBJECT:
+  switch ( _mouse_action ){
+    case MOUSE_MOVE_OBJECT:
       _Tobject.GetRotation(_initial_rotation);
-    FinValeur
-    Valeur MOUSE_MOVE_BASIS:
+    break;
+    case MOUSE_MOVE_BASIS:
       _Tbasis.GetRotation(_initial_rotation);
-    FinValeur
-  FinSelonQue
+    break;
+  } // end switch
 
   if (_mode_affichage==MODE_VOLREN)
     _Ttexture.GetRotation(_initial_rotation);
@@ -2268,8 +2268,8 @@ void ami_wxGLCanvas :: UserRotate( float rotX, float rotY, float rotZ)
 
     glLoadIdentity();
 
-    SelonQue _mouse_action Vaut
-      Valeur MOUSE_MOVE_OBJECT:
+    switch ( _mouse_action ){
+      case MOUSE_MOVE_OBJECT:
         _Tbasis.GLApplyInvRotation();
         glRotatef( rotX, 1.0, 0.0, 0.0);
         glRotatef( rotY, 0.0, 1.0, 0.0);
@@ -2277,26 +2277,26 @@ void ami_wxGLCanvas :: UserRotate( float rotX, float rotY, float rotZ)
         _Tbasis.GLApplyRotation();
         _Tobject.GLApplyRotation();
         glGetDoublev(GL_MODELVIEW_MATRIX, (GLdouble*) matrix);
-      FinValeur
-      Valeur MOUSE_MOVE_BASIS:
+      break;
+      case MOUSE_MOVE_BASIS:
         glRotatef( rotX, 1.0, 0.0, 0.0);
         glRotatef( rotY, 0.0, 1.0, 0.0);
         glRotatef( rotZ, 0.0, 0.0, 1.0);
         _Tbasis.GLApplyRotation();
         glGetDoublev(GL_MODELVIEW_MATRIX, (GLdouble*) matrix);
-      FinValeur
-    FinSelonQue
+      break;
+    } // end switch
 
   DepileMatrice();
 
-  SelonQue _mouse_action Vaut
-    Valeur MOUSE_MOVE_OBJECT:
+  switch ( _mouse_action ){
+    case MOUSE_MOVE_OBJECT:
       _Tobject.SetRotation(matrix);
-    FinValeur
-    Valeur MOUSE_MOVE_BASIS:
+    break;
+    case MOUSE_MOVE_BASIS:
       _Tbasis.SetRotation(matrix);
-    FinValeur
-  FinSelonQue
+    break;
+  } // end switch
 
 } // UserRotate()
 
@@ -2314,14 +2314,14 @@ void ami_wxGLCanvas :: RotationEnd()
   if (_mode_affichage==MODE_VOLREN)
     _Ttexture.SetRotation(_initial_rotation);
 
-  SelonQue _mouse_action Vaut
-    Valeur MOUSE_MOVE_OBJECT:
+  switch ( _mouse_action ){
+    case MOUSE_MOVE_OBJECT:
       _Tobject.SetRotation(_initial_rotation);
-    FinValeur
-    Valeur MOUSE_MOVE_BASIS:
+    break;
+    case MOUSE_MOVE_BASIS:
       _Tbasis.SetRotation(_initial_rotation);
-    FinValeur
-  FinSelonQue
+    break;
+  } // end switch
 
   MAJ_rotation();
 
@@ -2337,14 +2337,14 @@ void ami_wxGLCanvas :: RotationMotion()
   if (_mode_affichage==MODE_VOLREN)
     _Ttexture.SetRotation(_initial_rotation);
 
-  SelonQue _mouse_action Vaut
-    Valeur MOUSE_MOVE_OBJECT:
+  switch ( _mouse_action ){
+    case MOUSE_MOVE_OBJECT:
       _Tobject.SetRotation(_initial_rotation);
-    FinValeur
-    Valeur MOUSE_MOVE_BASIS:
+    break;
+    case MOUSE_MOVE_BASIS:
       _Tbasis.SetRotation(_initial_rotation);
-    FinValeur
-  FinSelonQue
+    break;
+  } // end switch
 
   MAJ_rotation();
 
@@ -2352,14 +2352,14 @@ void ami_wxGLCanvas :: RotationMotion()
   if (_mode_affichage==MODE_VOLREN)
     _Ttexture.SetRotation(_initial_rotation);
 
-  SelonQue _mouse_action Vaut
-    Valeur MOUSE_MOVE_OBJECT:
+  switch ( _mouse_action ){
+    case MOUSE_MOVE_OBJECT:
       _Tobject.SetRotation(_initial_rotation);
-    FinValeur
-    Valeur MOUSE_MOVE_BASIS:
+    break;
+    case MOUSE_MOVE_BASIS:
       _Tbasis.SetRotation(_initial_rotation);
-    FinValeur
-  FinSelonQue
+    break;
+  } // end switch
 */
 
 } // RotationMotion()
@@ -2470,26 +2470,26 @@ void ami_wxGLCanvas::LineInfo( float x, float y, float z)
     printf("Closest line %d ",selected_line);
     printf(" Line Length = %f mm \n", dist);
 
-    SelonQue _line_action Vaut
+    switch ( _line_action ){
 
-      Valeur LINE_INFO:
+      case LINE_INFO:
         lines->SetPickedLine(selected_line);
         lines->PrintPickedLine();
         lines->GLRecomputeList();
-      FinValeur
+      break;
 
-      Valeur LINE_SELECT:
+      case LINE_SELECT:
         lines->SelectLine(selected_line);
         lines->GLRecomputeList();
-      FinValeur
+      break;
 
-      Valeur LINE_REMOVE:
+      case LINE_REMOVE:
         printf("Remove line \n");
         lines->RemoveLine(selected_line);
         lines->GLRecomputeList();
-      FinValeur
+      break;
 
-    FinSelonQue
+    } // end switch
 
   FinSi
 }
@@ -2554,27 +2554,27 @@ void ami_wxGLCanvas :: PointInfo( float x, float y, float z)
 
   Si selected_point >= 0 Alors
 
-    SelonQue _point_action Vaut
+    switch ( _point_action ){
 
-      Valeur POINT_INFO:
+      case POINT_INFO:
       //        lines->SetPickedLine( selected_line);
         lines->SetPickedPoint(selected_point);
         lines->GLRecomputeList();
-      FinValeur
+      break;
 
-      Valeur POINT_SELECT:
+      case POINT_SELECT:
       //        lines->SelectLine( selected_line);
         lines->SelectPoint(selected_point);
         lines->GLRecomputeList();
-      FinValeur
+      break;
 
       // Enligth minimal path from the last selected point
-      Valeur POINT_MINPATH:
+      case POINT_MINPATH:
         lines->SelectMinPath(selected_point);
         lines->GLRecomputeList();
-      FinValeur
+      break;
 
-    FinSelonQue
+    } // end switch
 
   FinSi
 
@@ -2622,21 +2622,21 @@ void ami_wxGLCanvas:: CCInfo( float x, float y, float z)
 
   Si selected_cc >= 0 Alors
 
-    SelonQue _cc_action Vaut
+    switch ( _cc_action ){
 
-      Valeur CC_INFO:
+      case CC_INFO:
       //        surf->SetPickedLine( seleted_cc);
         surf->SetPickedCC(selected_cc);
         surf->GLRecomputeList();
-      FinValeur
+      break;
 
-      Valeur CC_SELECT:
+      case CC_SELECT:
       //        surf->SelectLine( seleted_cc);
         surf->SelectCC(selected_cc);
         surf->GLRecomputeList();
-      FinValeur
+      break;
 
-    FinSelonQue
+    } // end switch
 
   FinSi
 */

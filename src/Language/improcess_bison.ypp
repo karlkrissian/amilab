@@ -205,9 +205,8 @@ static void CB_Button(  void* cd) {
   CB_ParamWin(cd);
 }
 
-void CB_delete_imagedraw( void* var);
+void CB_delete_variable( void* var);
 
-void CB_delete_surfdraw( void* varid);
 
 //------------------------------------------------------
 static void CB_update_imagelist( void* imagelist_gui)
@@ -1919,7 +1918,7 @@ command:
               Variable* newvar = Vars.AddVar(type_imagedraw,titre.c_str(), (void*) di,
                           var_context);
               di->SetCloseFunction(
-                (void*) CB_delete_imagedraw,
+                (void*) CB_delete_variable,
                 (void*) (newvar));
             }
           } // var_context >=0
@@ -1975,7 +1974,7 @@ command:
                           (void*) surfdraw,
                           var_context);
               surfdraw->SetCloseFunction(
-                              (void*) CB_delete_surfdraw,
+                              (void*) CB_delete_variable,
                               (void*) (newvar));
 
               surfdraw->Show(true);
@@ -2784,7 +2783,7 @@ command:
 
               Variable* newvar = Vars.AddVar(type_imagedraw,title, (void*) di);
               di->SetCloseFunction(
-                  (void*) CB_delete_imagedraw,
+                  (void*) CB_delete_variable,
                   (void*) (newvar));
               // get the pointer to the newly created
               // variable
@@ -5440,117 +5439,83 @@ param_list:
         | expr
         {
           ParamList* pl(new ParamList);
+          Variable::ptr newvar(new Variable());
           float_ptr* x = new float_ptr(new float($1));
-          pl->AddParam(type_float, x);
+          newvar->InitPtr(type_float,"Param1",x);
+          pl->AddParam(newvar);
           $$ = pl;
         }
         | param_list T_COMMA expr
         {
           ParamList* pl =  $1;
-          float_ptr* x= new float_ptr(new float($3));
-          pl->AddParam(type_float, x);
+          Variable::ptr newvar(new Variable());
+          float_ptr* x = new float_ptr(new float($3));
+          std::string paramname = (boost::format("Param%1%")%pl->GetNumParam()).str();
+          newvar->InitPtr(type_float,paramname.c_str(),x);
+          pl->AddParam(newvar);
           $$ = pl;
         }
         | expr_string
         {
           ParamList* pl = new ParamList();
+          Variable::ptr newvar(new Variable());
           string_ptr* x = new string_ptr(new string($1));
-          delete [] $1;
-          pl->AddParam(type_string, x);
+          newvar->InitPtr(type_string,"Param1",x);
+          pl->AddParam(newvar);
           $$ = pl;
-         }
+          delete [] $1;
+        }
         | param_list T_COMMA expr_string
         {
           ParamList* pl =  $1;
+          Variable::ptr newvar(new Variable());
           string_ptr* x = new string_ptr(new string($3));
+          std::string paramname = (boost::format("Param%1%")%pl->GetNumParam()).str();
+          newvar->InitPtr(type_string,paramname.c_str(),x);
+          pl->AddParam(newvar);
+          $$ = pl;
           delete [] $3;
-          pl->AddParam(type_string, x);
-          $$ = pl;
-        }
-        | T_AND VAR_FLOAT
-        {
-          ParamList* pl =  new ParamList();
-          // creating reference
-          float_ptr* x = new float_ptr(*((float_ptr*) $2->Pointer()));
-
-          pl->AddParam(type_float, x);
-          $$ = pl;
-        }
-        | param_list T_COMMA T_AND VAR_FLOAT
-        {
-          ParamList* pl = $1;
-          float_ptr*   x = new float_ptr(* ((float_ptr*)$4->Pointer()));
-          pl->AddParam(type_float, x);
-          $$ = pl;
-        }
-        | T_AND VAR_INT
-        {
-          ParamList* pl = new ParamList();
-          int_ptr*   x = new int_ptr(*((int_ptr*)$2->Pointer()));
-          pl->AddParam(type_int, x);
-          $$ = pl;
-        }
-        | param_list T_COMMA T_AND VAR_INT
-        {
-          ParamList* pl = $1;
-          int_ptr*   x = new int_ptr( *((int_ptr*)$4->Pointer()));
-          pl->AddParam(type_int, x);
-          $$ = pl;
         }
         | expr_image
         {
           ParamList* pl = new ParamList();
+          Variable::ptr newvar(new Variable());
           InrImage::ptr* i = new InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
-          pl->AddParam(type_image, i);
+          newvar->InitPtr(type_image,"Param1",i);
+          pl->AddParam(newvar);
           $$ = pl;
         }
         | param_list T_COMMA expr_image
         {
-          ParamList* pl = $1;
+          ParamList* pl =  $1;
+          Variable::ptr newvar(new Variable());
           InrImage::ptr*   i = new InrImage::ptr( (InrImage*) driver.im_stack.GetLastImage());
-          pl->AddParam(type_image, i);
+          std::string paramname = (boost::format("Param%1%")%pl->GetNumParam()).str();
+          newvar->InitPtr(type_image,paramname.c_str(),i);
+          pl->AddParam(newvar);
           $$ = pl;
         }
-        | T_AND var_image
+        | T_AND variable
         {
           ParamList* pl = new ParamList();
-          InrImage::ptr*  i = new InrImage::ptr(*(InrImage::ptr*) $2->Pointer());
-          pl->AddParam(type_image, i);
+          Variable::ptr newvar(new Variable());
+          // copy information from variable, including comments
+          // don't need to care about variable context information
+          (*newvar) = (*(Variable*) $2);
+          // change variable name
+          newvar->Rename("Param1");
+          pl->AddParam(newvar);
           $$ = pl;
         }
-        | param_list T_COMMA T_AND var_image
+        | param_list T_COMMA T_AND variable
         {
-          ParamList* pl = $1;
-          InrImage::ptr* i = new InrImage::ptr(*(InrImage::ptr*) $4->Pointer());
-          pl->AddParam(type_image, i);
-          $$ = pl;
-        }
-        | T_AND var_surface
-        {
-          ParamList* pl = new ParamList();
-          SurfacePoly::ptr*  s = new SurfacePoly::ptr(*(SurfacePoly::ptr*) $2->Pointer());
-          pl->AddParam(type_surface, s);
-          $$ = pl;
-        }
-        | param_list T_COMMA T_AND var_surface
-        {
-          ParamList* pl = $1;
-          SurfacePoly::ptr*  s = new SurfacePoly::ptr(*(SurfacePoly::ptr*) $4->Pointer());
-          pl->AddParam(type_surface, s);
-          $$ = pl;
-        }
-        |  VAR_IMAGEDRAW
-        {
-          ParamList* pl = new ParamList();
-          DessinImage::ptr* i = new DessinImage::ptr(*(DessinImage::ptr*) $1->Pointer());
-          pl->AddParam(type_imagedraw, i);
-          $$ = pl;
-        }
-        | param_list T_COMMA VAR_IMAGEDRAW
-        {
-          ParamList* pl = $1;
-          DessinImage::ptr*  i = new DessinImage::ptr(*(DessinImage::ptr*) $3->Pointer());
-          pl->AddParam(type_imagedraw, i);
+          ParamList* pl =  $1;
+          Variable::ptr newvar(new Variable());
+          // copy information from variable, including comments
+          (*newvar) = (*(Variable*) $4);
+          std::string paramname = (boost::format("Param%1%")%pl->GetNumParam()).str();
+          newvar->Rename(paramname.c_str());
+          pl->AddParam(newvar);
           $$ = pl;
         }
         ;
@@ -5567,70 +5532,70 @@ param_list_decl:
       cout << "param_list_decl: T_NUM IDENTIFIER" << endl;
       cout << ident->GetName().c_str() << endl;
       ParamListDecl* pl = new ParamListDecl;
-      pl->AddParam(ident->GetName().c_str(),type_float);
+      pl->AddParam(ident->GetName(),type_float);
       $$ = pl;
         }
         | T_STRING IDENTIFIER
         {
       IdentifierInfo::ptr ident($2);
       ParamListDecl* pl = new ParamListDecl;
-      pl->AddParam(ident->GetName().c_str(),type_string);
+      pl->AddParam(ident->GetName(),type_string);
       $$ = pl;
         }
     | T_IMAGE IDENTIFIER
         {
       IdentifierInfo::ptr ident($2);
       ParamListDecl* pl = new ParamListDecl;
-      pl->AddParam(ident->GetName().c_str(),type_image);
+      pl->AddParam(ident->GetName(),type_image);
       $$ = pl;
         }
     | T_IMAGEDRAW IDENTIFIER
         {
       IdentifierInfo::ptr ident($2);
       ParamListDecl* pl = new ParamListDecl;
-      pl->AddParam(ident->GetName().c_str(),type_imagedraw);
+      pl->AddParam(ident->GetName(),type_imagedraw);
       $$ = pl;
         }
     | T_SURFACE IDENTIFIER
         {
       IdentifierInfo::ptr ident($2);
       ParamListDecl* pl = new ParamListDecl;
-      pl->AddParam(ident->GetName().c_str(),type_surface);
+      pl->AddParam(ident->GetName(),type_surface);
       $$ = pl;
         }
     | param_list_decl T_COMMA T_NUM IDENTIFIER
         {
       IdentifierInfo::ptr ident($4);
       ParamListDecl* pl = (ParamListDecl*) $1;
-      pl->AddParam(ident->GetName().c_str(),type_float);
+      pl->AddParam(ident->GetName(),type_float);
       $$ = pl;
         }
     | param_list_decl T_COMMA T_STRING IDENTIFIER
         {
       IdentifierInfo::ptr ident($4);
       ParamListDecl* pl = (ParamListDecl*) $1;
-      pl->AddParam(ident->GetName().c_str(),type_string);
+      pl->AddParam(ident->GetName(),type_string);
       $$ = pl;
         }
     | param_list_decl T_COMMA T_IMAGE IDENTIFIER
         {
       IdentifierInfo::ptr ident($4);
       ParamListDecl* pl = (ParamListDecl*) $1;
-      pl->AddParam(ident->GetName().c_str(),type_image);
+      pl->AddParam(ident->GetName(),type_image);
       $$ = pl;
         }
     | param_list_decl T_COMMA T_IMAGEDRAW IDENTIFIER
         {
       IdentifierInfo::ptr ident($4);
       ParamListDecl* pl = (ParamListDecl*) $1;
-      pl->AddParam(ident->GetName().c_str(),type_imagedraw);
+      pl->AddParam(ident->GetName(),type_imagedraw);
       $$ = pl;
         }
     | param_list_decl T_COMMA T_SURFACE IDENTIFIER
         {
       IdentifierInfo::ptr ident($4);
       ParamListDecl* pl = (ParamListDecl*) $1;
-      pl->AddParam(ident->GetName().c_str(),type_surface);
+      pl->AddParam(ident->GetName(),type_surface);
       $$ = pl;
         };
 
@@ -7718,43 +7683,42 @@ image:
           Si i>=im1->GetVDim() AlorsFait i = im1->GetVDim()-1;
           sprintf(imname,"C%d_%s",i,$1->Name().c_str());
 
-         SelonQue im1->_format Vaut
-          Valeur WT_RGB:
-          Valeur WT_RGBA:
-          Valeur WT_UNSIGNED_CHAR:
+         switch ( im1->_format ){
+          case WT_RGB:
+          case WT_RGBA:
+          case WT_UNSIGNED_CHAR:
              im = new InrImage(WT_UNSIGNED_CHAR,1,imname,im1.get());
-          FinValeur
+          break;
 
-          Valeur WT_UNSIGNED_INT:
+          case WT_UNSIGNED_INT:
              im = new InrImage(WT_UNSIGNED_INT,1,imname,im1.get());
-          FinValeur
+          break;
 
-          Valeur WT_SIGNED_INT:
+          case WT_SIGNED_INT:
              im = new InrImage(WT_SIGNED_INT,1,imname,im1.get());
-          FinValeur
+          break;
 
-          Valeur WT_UNSIGNED_SHORT:
+          case WT_UNSIGNED_SHORT:
              im = new InrImage(WT_UNSIGNED_SHORT,1,imname,im1.get());
-          FinValeur
+          break;
 
-          Valeur WT_SIGNED_SHORT:
+          case WT_SIGNED_SHORT:
              im = new InrImage(WT_SIGNED_SHORT,1,imname,im1.get());
-          FinValeur
+          break;
 
-          Valeur WT_FLOAT_VECTOR:
-          Valeur WT_FLOAT:
+          case WT_FLOAT_VECTOR:
+          case WT_FLOAT:
              im = new InrImage(WT_FLOAT,1,imname,im1.get());
-          FinValeur
+          break;
 
-          Valeur WT_DOUBLE:
+          case WT_DOUBLE:
              im = new InrImage(WT_DOUBLE,1,imname,im1.get());
-          FinValeur
+          break;
 
-       Defaut:
+       default:
         driver.yyiperror(" operator [] does not handle this format \n");
         YYABORT;
-         FinSelonQue
-
+      }
          im->InitBuffer();
          im1->InitBuffer();
          Repeter
@@ -7782,7 +7746,7 @@ image:
                 min, max, median
 
         **/
-    InrImage* im = (InrImage*) driver.im_stack.GetLastImage();
+        InrImage* im = (InrImage*) driver.im_stack.GetLastImage();
         InrImage* res = NULL;
         int dim = (int) $5;
         int i,j,k;
@@ -7823,7 +7787,7 @@ image:
               res->FixeValeur(sum);
             }
           break;
-    }
+      } // end switch
     } else
     {
       driver.err_print("sum operator only for scalar images ... \n");
@@ -11868,7 +11832,7 @@ void yyip::Parser::error(const Parser::location_type& l,
     driver.error(l, m);
 }
 
-void CB_delete_imagedraw( void* var)
+void CB_delete_variable( void* var)
 {
   Variable* vartodelete = (Variable*) var;
 
@@ -11876,19 +11840,8 @@ void CB_delete_imagedraw( void* var)
   if (Vars.deleteVar(vartodelete)==0)
     FILE_ERROR("Could not delete variable "); 
 
-// deleting is risky, use smart pointers instead ...
-//  delete name;
 }
 
-void CB_delete_surfdraw( void* varid)
-{
-  fprintf(stderr," CB_delete_surfdraw begin \n");
-  Variable* v = (Variable*) varid;
-  fprintf(stderr," Delete var %s \n", v->Name().c_str());
-  if (Vars.deleteVar( v->Name().c_str())==0)
-    fprintf(stderr,"CB_delete_surfdraw() could not delete variable '%s' !!! \n",v->Name().c_str());
-  fprintf(stderr," CB_delete_surfdraw end \n");
-}
 
 
 //------------------------------------------------------

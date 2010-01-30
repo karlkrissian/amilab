@@ -111,13 +111,13 @@ public:
   //      ------
 
   /**
-    {\em Constructeur}
+    {\em Constructor}
     @param n_max nombre d'�l�ments allou�s
    */
-  Constructeur TableauDyn( int n_max = 2) //: GestionErreurs("TableauDyn<T>")
+   TableauDyn( int n_max = 2) //: GestionErreurs("TableauDyn<T>")
   //----------
   {
-  //    printf("Constructeur TableauDyn( int n_max = 2)\n");
+  //    printf("Constructor TableauDyn( int n_max = 2)\n");
 
     _nbelts_utilises = 0;
     _nbelts_alloues = n_max;
@@ -127,9 +127,9 @@ public:
 
 
   /**
-    {\em Constructeur de copie}
+    {\em Constructor de copie}
    */
-  Constructeur TableauDyn( const TableauDyn<T>& elt) //: GestionErreurs("TableauDyn<T>")
+   TableauDyn( const TableauDyn<T>& elt) //: GestionErreurs("TableauDyn<T>")
   //----------
   {
 
@@ -147,18 +147,18 @@ public:
       _tableau[i] = elt._tableau[i];
     FinPour
 
-  } // Constructeur de copie
+  } // Constructor de copie
 
 
 
   /**
     {\em destructeur}
    */
-  Destructeur TableauDyn()
+  ~TableauDyn()
   //---------
   {
     delete [] _tableau;
-  } // Destructeur
+  } // Destructor
 
 
   /**
@@ -285,7 +285,7 @@ template<class T> unsigned char TableauDyn<T> :: Resize( )
 
 //---------------------------------------------------------
 //
-//  {\em Constructeur de copie}
+//  {\em Constructor de copie}
 //
 
 //--------------------------------------------------------------------------
@@ -387,9 +387,9 @@ void TableauDyn<T> :: Insere( int pos, T elt)
 
     Si _nbelts_utilises >= _nbelts_alloues AlorsFait Resize( 2*_nbelts_utilises);
 
-    DebutBoucle i=_nbelts_utilises ItererTantQue i > pos Pas i-- Faire
+    for(  i=_nbelts_utilises ;  i > pos ;  i-- Faire
       _tableau[i] = _tableau[i-1];
-    FinBoucle
+    } // end for
 
     _tableau[pos] = elt;
     _nbelts_utilises++;

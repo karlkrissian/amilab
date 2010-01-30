@@ -63,8 +63,8 @@ void wrap_MainFrameDrawSetXLimits( ParamList* p)
   float xmax = 10;
   int n=0;
 
-  if (!get_float_param( xmin, p, n)) HelpAndReturn;
-  if (!get_float_param( xmax, p, n)) HelpAndReturn;
+  if (!get_param<float>( xmin, p, n)) HelpAndReturn;
+  if (!get_param<float>( xmax, p, n)) HelpAndReturn;
 
   GB_main_wxFrame->GetDrawingWindow()->SetXLimits(xmin,xmax);
   GB_main_wxFrame->GetDrawingWindow()->Refresh();
@@ -87,8 +87,8 @@ void wrap_MainFrameDrawSetYLimits( ParamList* p)
   float ymax = 10;
   int n=0;
 
-  if (!get_float_param( ymin, p, n)) HelpAndReturn;
-  if (!get_float_param( ymax, p, n)) HelpAndReturn;
+  if (!get_param<float>( ymin, p, n)) HelpAndReturn;
+  if (!get_param<float>( ymax, p, n)) HelpAndReturn;
 
   GB_main_wxFrame->GetDrawingWindow()->SetYLimits(ymin,ymax);
   GB_main_wxFrame->GetDrawingWindow()->Refresh();
@@ -112,7 +112,7 @@ void wrap_MainFrameDrawSetCurve( ParamList* p)
   int pos = 0;
   int n=0;
 
-  if (!get_image_param( input,    p, n)) HelpAndReturn;
+  if (!get_var_param<InrImage>( input,    p, n)) HelpAndReturn;
   if (!get_int_param(   pos,      p, n)) HelpAndReturn;
 
   wxDrawingWindow* dw = GB_main_wxFrame->GetDrawingWindow();
@@ -150,7 +150,7 @@ void wrap_MainFrameDrawSetCurveProperties(  ParamList* p)
   int n                  = 0;
 
   if (!get_int_param(    curve_number, p, n)) HelpAndReturn;
-  if (!get_string_param( color_str,    p, n)) HelpAndReturn;
+  if (!get_var_param<string>( color_str,    p, n)) HelpAndReturn;
   if (!get_int_param(    style,        p, n)) HelpAndReturn;
   if (!get_int_param(    width,        p, n)) HelpAndReturn;
 

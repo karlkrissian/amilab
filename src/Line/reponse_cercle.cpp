@@ -51,7 +51,7 @@ unsigned char  CalculRepCercle :: GradientCorrect( const Vect3D<double>& p)
 
 //----------------------------------------------------------------------
 ///
-CalculRepCercle :: Constructeur CalculRepCercle( InrImage* image, int type_reponse)
+CalculRepCercle ::  CalculRepCercle( InrImage* image, int type_reponse)
 //                           ------------
 {
 
@@ -81,7 +81,7 @@ CalculRepCercle :: Constructeur CalculRepCercle( InrImage* image, int type_repon
 
 //----------------------------------------------------------------------
 ///
-CalculRepCercle :: Destructeur CalculRepCercle()
+CalculRepCercle :: ~CalculRepCercle()
 //                           -----------
 {
   delete [] coeff_cos;

@@ -65,7 +65,7 @@
 #include "fonctions.h"
 #include "VarContexts.hpp"
 #include "inrimage.hpp"
-#include "FiltreRec.hpp"
+#include "GeneralGaussianFilter.h"
 #include "FloatMatrix.hpp"
 #include "Eigen.hpp"
 
@@ -127,7 +127,7 @@ unsigned char      Func_Derivatives( InrImage* image_initiale,
     InrImage*       image_vap2 = NULL;
     InrImage*       image_vap3 = NULL;
     InrImage*       image_grad = NULL;
-    FiltreRecursif* filtre;
+    GeneralGaussianFilter* filtre;
     char            resname[100];
     // int             i;
 
@@ -179,7 +179,7 @@ unsigned char      Func_Derivatives( InrImage* image_initiale,
 
 
   // Initialisation des images des d�riv�es 
-  filtre = new FiltreRecursif(image, dimension);
+  filtre = new GeneralGaussianFilter(image, dimension);
 
   Si (mask != NULL) Alors
     filtre->FixeMasqueGradient( mask);
@@ -345,7 +345,7 @@ printf("Func_HessianMatrix\n");
     InrImage*       image_vap1;
     InrImage*       image_vap2;
     InrImage*       image_vap3;
-    FiltreRecursif* filtre;
+    GeneralGaussianFilter* filtre;
     char            resname[100];
 // int             i;
 
@@ -376,7 +376,7 @@ printf("Func_HessianMatrix\n");
 
 
   // Initialisation des images des d�riv�es 
-  filtre = new FiltreRecursif(image, dimension);
+  filtre = new GeneralGaussianFilter(image, dimension);
 
   Si (mask != NULL) Alors
     filtre->FixeMasqueGradient( mask);
@@ -515,7 +515,7 @@ printf("Func_HessianVap\n");
     double          hessien[9];
     InrImage*       image;
     InrImage*       image_vap;
-    FiltreRecursif* filtre;
+    GeneralGaussianFilter* filtre;
     char            resname[100];
     char            imname[100];
 //int             i;
@@ -541,7 +541,7 @@ printf("Func_HessianVap\n");
 
 
   // Initialisation des images des d�riv�es 
-  filtre = new FiltreRecursif(image, dimension);
+  filtre = new GeneralGaussianFilter(image, dimension);
 
   Si (mask != NULL) Alors
     filtre->FixeMasqueGradient( mask);

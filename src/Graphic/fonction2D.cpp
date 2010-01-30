@@ -46,7 +46,7 @@
 #include "fonction2D.hpp"
 
 //----------------------------------------------------------------------
-Fonction2D :: Constructeur Fonction2D( )
+Fonction2D ::  Fonction2D( )
 //
 {
 
@@ -54,10 +54,10 @@ Fonction2D :: Constructeur Fonction2D( )
   _xmax = _ymax = 0.0;
   _nom = "Fonction2D.dat";
 
-} // Constructeur
+} // Constructor
 
 //----------------------------------------------------------------------
-Fonction2D :: Constructeur Fonction2D( Chaine nom)
+Fonction2D ::  Fonction2D( Chaine nom)
 //
 {
 
@@ -65,11 +65,11 @@ Fonction2D :: Constructeur Fonction2D( Chaine nom)
   _xmax = _ymax = 0.0;
   Read(nom);
 
-} // Constructeur
+} // Constructor
 
 
 //----------------------------------------------------------------------
-Fonction2D :: Constructeur Fonction2D( const Fonction2D& f)
+Fonction2D ::  Fonction2D( const Fonction2D& f)
 //
 {
 
@@ -80,16 +80,16 @@ Fonction2D :: Constructeur Fonction2D( const Fonction2D& f)
   _ymax   = f._ymax;
   _points = f._points;
 
-} // Constructeur
+} // Constructor
 
 
 //----------------------------------------------------------------------
-Fonction2D :: Destructeur Fonction2D( )
+Fonction2D :: ~Fonction2D( )
 //
 {
 
 
-} // Destructeur
+} // Destructor
 
 
 

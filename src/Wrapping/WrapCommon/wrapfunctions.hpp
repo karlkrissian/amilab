@@ -13,7 +13,8 @@
 #ifndef _WRAPFUNCTIONS_HPP_
 #define _WRAPFUNCTIONS_HPP_
 
-#include "surface.hpp"
+
+#include <wx/msgdlg.h>
 #include "inrimage.hpp"
 #include "paramlist.h"
 //#include "DessinImage.hpp"
@@ -65,74 +66,55 @@
 int get_num_param(ParamList* p);
 
 /**
- * Function used to parse a string in a list of parameters
+ * Function used to parse a variable of generic type in a list of parameters, and to give back its value.
  */
-bool get_string_param(string*& arg, ParamList*p, int& num);
+template<class T>
+bool get_param(        T& arg, 
+                          ParamList*p, int& num);
+
 
 /**
- * Function used to parse a float in a list of parameters
+ * Function used to parse a variable of generic type in a list of parameters, and to give back a pointer to its value.
  */
-bool get_float_param(float& arg, ParamList*p, int& num);
+template<class T>
+bool get_var_param(    T*& arg, 
+                          ParamList*p, int& num, 
+                          bool required=false);
 
 /**
- * Function used to parse a float in a list of parameters
+ * Function used to parse a variable of generic type in a list of parameters, and to give back a smart pointer to its value.
  */
-bool get_floatvar_param(float*& arg, ParamList*p, int& num);
+template<class T>
+bool get_varptr_param( boost::shared_ptr<T>& arg, 
+                          ParamList*p, int& num, 
+                          bool required=false);
+
 
 /**
- * Function used to parse a 3d vector of float in a list of parameters
+ * Function used to parse a several variables of the same generic type in a list of parameters, and to give back the values in the arg parameter which should be of type T[nb].
  */
-bool get_vect3d_float_param(float* arg, ParamList*p, int& num);
-
-/**
- * Function used to parse a 2d vector of float in a list of parameters
- */
-bool get_vect2d_float_param(float* arg, ParamList*p, int& num);
-
-/**
- * Function used to parse a 3d vector of int in a list of parameters
- */
-bool get_vect3d_int_param(int* arg, ParamList*p, int& num);
-
-/**
- * Function used to parse a 2d vector of int in a list of parameters
- */
-bool get_vect2d_int_param(int* arg, ParamList*p, int& num);
+template<class T, int nb>
+bool get_several_params(T* arg, ParamList*p, int& num);
 
 /**
  * Function used to parse an integer in a list of parameters
  */
 bool get_int_param(int& arg, ParamList*p, int& num);
 
-/**
- * Function used to parse an integer variable in a list of parameters
- */
-bool get_intvar_param(int*& arg, ParamList*p, int& num);
 
 /**
- * Function used to parse an image in a list of parameters
+ * Function used to parse an array of integers each as a separated parameter
  */
-bool get_image_param(InrImage*& arg, ParamList*p, int& num);
+template<int nb>
+bool get_several_int_params(int* arg, ParamList*p, int& num);
 
-/**
- * Function used to parse an image pointer in a list of parameters
- */
-bool get_imageptr_param(InrImage::ptr& arg, ParamList*p, int& num);
-
-/**
- * Function used to parse an image in a list of parameters
- */
-bool get_optionalimage_param(InrImage*& arg, ParamList*p, int& num);
 
 /**
  * Function used to parse a vectorial image in a list of parameters
  */
 bool get_vectimage_param(InrImage*& arg, ParamList*p, int& num);
 
+#include "wrapfunctions.tpp"
 
-/**
- * Function used to parse a polydata in a list of parameters
- */
-bool get_surface_param(SurfacePoly*& arg, ParamList*p, int& num);
 
 #endif // _WRAPFUNCTIONS_HPP_

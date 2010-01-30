@@ -35,7 +35,7 @@
 
 #include "style.hpp"
 
-DebutDeclareC
+extern "C" {
 #include <stdio.h>
 
 #ifdef HAVE_MALLOC_H
@@ -45,7 +45,7 @@ DebutDeclareC
 #endif
 
 #include <math.h>
-FinDeclareC
+}
 
 #include "chaine.hpp"
 #include "math1.hpp"
@@ -298,7 +298,7 @@ void CompileExpr :: AjouteNombre( float r)
 
 // -------------------------------------------------------------------------
 //
-CompileExpr :: Constructeur CompileExpr()
+CompileExpr ::  CompileExpr()
 //                         ------------ -----------
 {
 
@@ -318,12 +318,12 @@ CompileExpr :: Constructeur CompileExpr()
   Nombre_Pos  = 0;
   Pile_Pos    = 0;
 
-} // CompileExpr Constructeur CompileExpr()
+} // CompileExpr Constructor CompileExpr()
 
 
 // -------------------------------------------------------------------------------
 //
-CompileExpr :: Destructeur CompileExpr()
+CompileExpr :: ~CompileExpr()
 //                         ------------ -----------
 {
 
@@ -331,7 +331,7 @@ CompileExpr :: Destructeur CompileExpr()
   delete[] TabNombre;
   delete[] Pile;
 
-} // CompileExpr Destructeur CompileExpr()
+} // CompileExpr ~CompileExpr()
 
 
 #define InitPile()  Pile_Pos = 0
@@ -351,13 +351,13 @@ float CompileExpr :: Resultat()
 
   InitPile();
 
-  DebutBoucle int pos = 0
-  ItererTantQue pos < Instr_Pos
-  Pas pos++ Faire
+  for(  int pos = 0
+  ;  pos < Instr_Pos
+  ;  pos++ Faire
 
-    SelonQue Instruction[pos] Vaut
+    switch ( Instruction[pos] ){
 
-      Valeur Tok_nombre :
+      case Tok_nombre :
       //     ------------
         Si Pile_Pos == Taille_Pile Alors
           Taille_Pile *=2;
@@ -366,9 +366,9 @@ float CompileExpr :: Resultat()
         FinSi
 	Empile( TabNombre[NombreCourant] );
         NombreCourant++;
-      FinValeur
+      break;
 
-      Valeur Tok_parametre :
+      case Tok_parametre :
       //     ---------------
 	Si Pile_Pos == Taille_Pile Alors
           Taille_Pile *=2;
@@ -377,16 +377,16 @@ float CompileExpr :: Resultat()
         FinSi
 	Empile( ParamValue[ Convertis( int, TabNombre[ NombreCourant])]);
 	NombreCourant++;
-      FinValeur
+      break;
 
-      Valeur Tok_addition :
+      case Tok_addition :
       //     --------------
         term2 = Depile();
         term1 = Depile();
         Empile( term1 + term2 );
-      FinValeur
+      break;
 
-      Valeur Tok_superieur :
+      case Tok_superieur :
       //     -------------
 	term2 = Depile();
         term1 = Depile();
@@ -395,9 +395,9 @@ float CompileExpr :: Resultat()
         Sinon
 	  Empile( 0.0);
         FinSi
-      FinValeur
+      break;
 
-      Valeur Tok_inferieur :
+      case Tok_inferieur :
       //     -------------
 	term2 = Depile();
         term1 = Depile();
@@ -406,9 +406,9 @@ float CompileExpr :: Resultat()
         Sinon
 	  Empile( 0.0);
         FinSi
-      FinValeur
+      break;
 
-      Valeur Tok_egal :
+      case Tok_egal :
       //     ----------
 	term2 = Depile();
         term1 = Depile();
@@ -417,9 +417,9 @@ float CompileExpr :: Resultat()
         Sinon
 	  Empile( 0.0);
         FinSi
-      FinValeur
+      break;
 
-      Valeur Tok_et:
+      case Tok_et:
       //     ------
 	term2 = Depile();
         term1 = Depile();
@@ -428,9 +428,9 @@ float CompileExpr :: Resultat()
         Sinon
 	  Empile( 0.0);
         FinSi
-      FinValeur
+      break;
 
-      Valeur Tok_ou:
+      case Tok_ou:
       //     ------
 	term2 = Depile();
         term1 = Depile();
@@ -439,23 +439,23 @@ float CompileExpr :: Resultat()
         Sinon
 	  Empile( 0.0);
         FinSi
-      FinValeur
+      break;
 
-      Valeur Tok_soustraction :
+      case Tok_soustraction :
       //     ------------------
 	term2 = Depile();
         term1 = Depile();
         Empile( term1 - term2);
-      FinValeur
+      break;
 
-      Valeur Tok_multiplication :
+      case Tok_multiplication :
       //     --------------------
         term2 = Depile();
         term1 = Depile();
         Empile( term1 * term2 );
-      FinValeur
+      break;
 
-      Valeur Tok_division :
+      case Tok_division :
       //     --------------
 	term2 = Depile();
 	term1 = Depile();
@@ -465,21 +465,21 @@ float CompileExpr :: Resultat()
 	  Erreur |= CALCUL_ERROR;
 	  return 0;
 	FinSi
-      FinValeur
+      break;
 
-      Valeur Tok_sinus :
+      case Tok_sinus :
       //     -----------
         term1 = Depile();
 	Empile( sin( term1));
-      FinValeur
+      break;
 
-      Valeur Tok_cosinus :
+      case Tok_cosinus :
       //     -------------
         term1 = cos( Depile() );
         Empile( term1);
-      FinValeur
+      break;
 
-      Valeur Tok_tangente :
+      case Tok_tangente :
       //     --------------
 	term1 = Depile();
 	Si cos(term1) != 0 Alors
@@ -488,15 +488,15 @@ float CompileExpr :: Resultat()
           Erreur |= CALCUL_ERROR;
 	  return 0;
 	FinSi
-      FinValeur
+      break;
 
-      Valeur Tok_arc_tangente :
+      case Tok_arc_tangente :
       //     ------------------
         term1 = Depile();
         Empile( atan( term1));
-      FinValeur
+      break;
 
-      Valeur Tok_arc_sinus :
+      case Tok_arc_sinus :
       //     ---------------
 	term1 = Depile();
 	Si term1 >= -1 Et term1 <=1 Alors
@@ -505,9 +505,9 @@ float CompileExpr :: Resultat()
 	  Erreur |= CALCUL_ERROR;
 	  return 0;
 	FinSi
-      FinValeur
+      break;
 
-      Valeur Tok_arc_cosinus :
+      case Tok_arc_cosinus :
       //     -----------------
 	term1 = Depile();
 	Si term1 >= -1 Et term1 <=1 Alors
@@ -516,15 +516,15 @@ float CompileExpr :: Resultat()
 	  Erreur |= CALCUL_ERROR;
 	  return 0;
 	FinSi
-      FinValeur
+      break;
 
-      Valeur Tok_exponentielle :
+      case Tok_exponentielle :
       //     -------------------
         term1 = Depile();
         Empile( exp( term1));
-      FinValeur
+      break;
 
-      Valeur Tok_logarithme_neperien :
+      case Tok_logarithme_neperien :
       //     -------------------------
 	term1 = Depile();
 	Si term1 > 0 Alors
@@ -533,9 +533,9 @@ float CompileExpr :: Resultat()
 	  Erreur |= CALCUL_ERROR;
 	  return 0;
 	FinSi
-      FinValeur
+      break;
 
-      Valeur Tok_logarithme10 :
+      case Tok_logarithme10 :
       //     ------------------
 	term1 = Depile();
 	Si term1 > 0 Alors
@@ -544,71 +544,71 @@ float CompileExpr :: Resultat()
 	  Erreur |= CALCUL_ERROR;
 	  return 0;
 	FinSi
-      FinValeur
+      break;
 
-      Valeur Tok_round :
+      case Tok_round :
       //     -----------
         term1 = Depile();
         Empile( round( term1));
-      FinValeur
+      break;
 
-      Valeur Tok_cosinus_hyperbolique :
+      case Tok_cosinus_hyperbolique :
       //     --------------------------
 	term1 = Depile();
         Empile( 0.5*(exp(term1)+exp(-1*term1)) );
-      FinValeur
+      break;
 
-      Valeur Tok_sinus_hyperbolique :
+      case Tok_sinus_hyperbolique :
       //     ------------------------
 	term1 = Depile();
         Empile( 0.5*(exp(term1)-exp(-1*term1)) );
-      FinValeur
+      break;
 
-      Valeur Tok_valeur_entiere :
+      case Tok_valeur_entiere :
       //     --------------------
         term1 = Depile();
         Empile( Convertis( int, term1));
-      FinValeur
+      break;
 
-      Valeur Tok_puissance :
+      case Tok_puissance :
       //     ---------------
 	term2 = Depile();
 	term1 = Depile();
         Empile( puis( term1, term2));
-      FinValeur
+      break;
 
-      Valeur Tok_factorielle :
+      case Tok_factorielle :
       //     -----------------
         term1 = Depile();
 	term2 = 1;
-	DebutBoucle  i = 1 ItererTantQue i <= round(term1) Pas i++ Faire
+	for(   i = 1 ;  i <= round(term1) ;  i++ Faire
 	  term2 *= i;
-	FinBoucle
+	} // end for
         Empile( term2);
-      FinValeur
+      break;
 
-      Valeur Tok_degre :
+      case Tok_degre :
       //     -----------
         term1 = Depile();
         Empile( term1/180* PI);
-      FinValeur
+      break;
 
-      Valeur Tok_valeur_absolue :
+      case Tok_valeur_absolue :
       //     --------------------
         term1 = Depile();
 //        Empile( fabsf(term1));
 // pour solaris
         Empile( (float) fabs(term1));
-      FinValeur
+      break;
 
-      Valeur Tok_integrale :
+      case Tok_integrale :
       //     ---------------
 	// non trait� ...
-      FinValeur
+      break;
 
-    FinSelonQue
+    } // end switch
 
-  FinBoucle
+  } // end for
 
   return Depile();
 
@@ -750,15 +750,15 @@ void ExprMath::HigherLevel()
   ch = chaine[pos++];
 
   // Test Pour les param�tres
-  DebutBoucle i = 0
-  ItererTantQue i < NumberOfParameters
-  Pas i++ Faire
+  for(  i = 0
+  ;  i < NumberOfParameters
+  ;  i++ Faire
     Si ch == Parameter[i] Alors
       AjouteNombre( i);
       AjouteInstruction( Tok_parametre);
       return;
     FinSi
-  FinBoucle
+  } // end for
 
   switch (ch[0]) {
 
@@ -1128,10 +1128,10 @@ int ExprMath :: AddParameter( char caract )
 
   Si NumberOfParameters < 10 Et caract >= 'A' Et caract <= 'Z' Alors
     // Teste si le param�tre existe d�j� :
-    DebutBoucle   n = 0
-    ItererTantQue n < NumberOfParameters Et Parameter[n] != caract
-    Pas           n++ Faire
-    FinBoucle
+    for(    n = 0
+    ;  n < NumberOfParameters Et Parameter[n] != caract
+    ;            n++ Faire
+    } // end for
 
     Si n < NumberOfParameters Alors
       return false;
@@ -1157,10 +1157,10 @@ int ExprMath :: SetParamValue( char caract, float valeur )
 
    int n;
 
-  DebutBoucle n = 0
-  ItererTantQue n < NumberOfParameters Et Parameter[n] != caract
-  Pas n++ Faire
-  FinBoucle
+  for(  n = 0
+  ;  n < NumberOfParameters Et Parameter[n] != caract
+  ;  n++ Faire
+  } // end for
 
   Si n < NumberOfParameters Alors
     ParamValue[n] = valeur;

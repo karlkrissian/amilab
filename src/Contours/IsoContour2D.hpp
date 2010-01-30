@@ -56,7 +56,7 @@
 #include <iostream>
 #include "math1.hpp"
 #include "chaine.hpp"
-#include "FiltreRec.hpp"
+#include "GeneralGaussianFilter.h"
 //#include "inrimage.hpp"
 #include "Voxel.hpp"
 #include "Coordonnees.hpp"
@@ -172,7 +172,7 @@ private:
   CalculAireSection* _calcul_aire;
 
   ///
-  FiltreRecursif*    _filtre;
+  GeneralGaussianFilter*    _filtre;
 
   ///
   PropagePoints*     _propage;
@@ -220,14 +220,14 @@ public:
 
   //--------------------------------------------------
   ///
-  Constructeur IsoContour2D( InrImage* image_initiale, 
+   IsoContour2D( InrImage* image_initiale, 
 			     const     Chaine& nom_res,
 			     unsigned char   sauve);
   //
 
   //--------------------------------------------------
   ///
-  Destructeur IsoContour2D();
+  ~IsoContour2D();
   //
  
 

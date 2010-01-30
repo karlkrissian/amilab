@@ -167,7 +167,7 @@ InrImage* Func_Resize( InrImage* in, int newsizex, int newsizey, int newsizez,
 //    double   dx,dy,dz;
 //    double   coeff[2][2][2];
   double   res;
-  EntierLongPositif tx, txy;
+  unsigned long tx, txy;
   char newname[256];
 
   Si(newsizex == 0) Ou(newsizey == 0) Ou(newsizez == 0) Alors

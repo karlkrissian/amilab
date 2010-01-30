@@ -456,8 +456,8 @@ int        _nb_images_XY;
    char**        _tab_ximage_XY_data;
 
  //  XImage**      _tab_ximage_XY;
-   EntierPositif _largeur_XY;
-   EntierPositif _hauteur_XY;
+   unsigned int _largeur_XY;
+   unsigned int _hauteur_XY;
    unsigned char*      _image_XY_a_jour;
 
    unsigned char       _memorise_coupes_XY;
@@ -602,7 +602,7 @@ protected:
   // Libeer le tableau des images de toutes les coupes XY
 
   ///
-  void AlloueImagesXY( EntierPositif largeur, EntierPositif hauteur);
+  void AlloueImagesXY( unsigned int largeur, unsigned int hauteur);
   //   --------------
   // Alloue les XImages
 
@@ -707,14 +707,14 @@ protected:
 public:
 
   ///
-  Constructeur DessinImageBase(
+   DessinImageBase(
           wxWindow* parent,
           const std::string& ATitle,
           int l, int h,
           int type = CREATE_WINDOW);
 
   ///
-  Destructeur DessinImageBase();
+  ~DessinImageBase();
 
   ///
   InrImage::ptr& GetImage() { return _image_initiale;}
@@ -725,36 +725,36 @@ public:
   ///
   float GetMinIntensity()
   {
-     SelonQue  _image->_format Vaut
-       Valeur WT_DOUBLE:
-       Valeur WT_FLOAT:
+     switch (  _image->_format ){
+       case WT_DOUBLE:
+       case WT_FLOAT:
          return _intensite_float_min;
-      Valeur WT_UNSIGNED_CHAR:
-      Valeur WT_UNSIGNED_SHORT:
-      Valeur WT_SIGNED_SHORT:
-      Valeur WT_SIGNED_INT:
+      case WT_UNSIGNED_CHAR:
+      case WT_UNSIGNED_SHORT:
+      case WT_SIGNED_SHORT:
+      case WT_SIGNED_INT:
          return _intensite_entier_min;
-      Defaut:
+      default:
       fprintf(stderr,"DessinImageBase::GetMinIntensity() format not available \n");
-    FinSelonQue
+    } // end switch
     return 0.0;
   }
 
   ///
   float GetMaxIntensity()
   {
-     SelonQue  _image->_format Vaut
-       Valeur WT_DOUBLE:
-       Valeur WT_FLOAT:
+     switch (  _image->_format ){
+       case WT_DOUBLE:
+       case WT_FLOAT:
          return _intensite_float_max;
-      Valeur WT_UNSIGNED_CHAR:
-      Valeur WT_UNSIGNED_SHORT:
-      Valeur WT_SIGNED_SHORT:
-      Valeur WT_SIGNED_INT:
+      case WT_UNSIGNED_CHAR:
+      case WT_UNSIGNED_SHORT:
+      case WT_SIGNED_SHORT:
+      case WT_SIGNED_INT:
          return _intensite_entier_max;
-      Defaut:
+      default:
       fprintf(stderr,"DessinImageBase::GetMaxIntensity() format not available \n");
-    FinSelonQue
+    } // end switch
     return 0.0;
   }
 
@@ -1006,8 +1006,8 @@ public:
 //============================================================================
 
 //----------------------------------------------------------------
-// Defaut int inc=1
-EnLigne void DessinImageBase :: IncBuffer( int inc)
+// default int inc=1
+inline void DessinImageBase :: IncBuffer( int inc)
 //                                         ---------
 {
   _image->IncBuffer( inc);
@@ -1017,7 +1017,7 @@ EnLigne void DessinImageBase :: IncBuffer( int inc)
 /*
 // Momentanee, a enlever plus tard, ne marchera pas pour
 // les images comparees
-EnLigne unsigned char DessinImageBase :: FonctionIntensiteBuffer()
+inline unsigned char DessinImageBase :: FonctionIntensiteBuffer()
 //                                                  -----------------------
 // Fonction en ligne
 {
@@ -1033,7 +1033,7 @@ EnLigne unsigned char DessinImageBase :: FonctionIntensiteBuffer()
 
 // Momentanee, a enlever plus tard, ne marchera pas pour
 // les images comparees
-EnLigne unsigned char DessinImageBase :: FonctionIntensiteBuffer(
+inline unsigned char DessinImageBase :: FonctionIntensiteBuffer(
     float x, float y, float z)
 //                                                  -----------------------
 // Fonction en ligne
@@ -1049,7 +1049,7 @@ EnLigne unsigned char DessinImageBase :: FonctionIntensiteBuffer(
 */
 
 //----------------------------------------------------------------
-EnLigne unsigned char DessinImageBase::IntensiteBuffer( float valeur)
+inline unsigned char DessinImageBase::IntensiteBuffer( float valeur)
 //                                     ---------------
 {
 
@@ -1059,10 +1059,10 @@ EnLigne unsigned char DessinImageBase::IntensiteBuffer( float valeur)
      return _interpole_ligne->FonctionIntensite(valeur);
   */
 
-    SelonQue  _image->_format Vaut
+    switch (  _image->_format ){
 
-      Valeur WT_DOUBLE:
-      Valeur WT_FLOAT:
+      case WT_DOUBLE:
+      case WT_FLOAT:
         Si _intensite_float_min < _intensite_float_max Alors
           Si valeur < _intensite_float_min  AlorsRetourne _couleur_inf;
           Si valeur > _intensite_float_max  AlorsRetourne _couleur_sup;
@@ -1073,11 +1073,11 @@ EnLigne unsigned char DessinImageBase::IntensiteBuffer( float valeur)
         Si Param._I._type_courbe == TYPE_COURBE_PLATEAU AlorsFait return 255;
         return (unsigned char) ( _rapport_intensite * ( valeur - _intensite_float_min ) );
 
-      Valeur WT_UNSIGNED_CHAR:
-      Valeur WT_UNSIGNED_SHORT:
-      Valeur WT_SIGNED_SHORT:
-      Valeur WT_SIGNED_INT:
-      Valeur WT_UNSIGNED_INT:
+      case WT_UNSIGNED_CHAR:
+      case WT_UNSIGNED_SHORT:
+      case WT_SIGNED_SHORT:
+      case WT_SIGNED_INT:
+      case WT_UNSIGNED_INT:
          Si _intensite_entier_min < _intensite_entier_max Alors
           Si valeur < _intensite_entier_min  AlorsRetourne _couleur_inf;
           Si valeur > _intensite_entier_max  AlorsRetourne _couleur_sup;
@@ -1090,7 +1090,7 @@ EnLigne unsigned char DessinImageBase::IntensiteBuffer( float valeur)
 
       default: fprintf(stderr,"Error \t in switch, type not available \n");
 
-    FinSelonQue
+    } // end switch
 
     return 0;
 
@@ -1098,7 +1098,7 @@ EnLigne unsigned char DessinImageBase::IntensiteBuffer( float valeur)
 
 
 //----------------------------------------------------------------
-EnLigne unsigned char DessinImageBase::LookUpTable( const float& valeur,
+inline unsigned char DessinImageBase::LookUpTable( const float& valeur,
 //                                     -----------
                                                     const WORDTYPE& format) const
 {
@@ -1107,10 +1107,10 @@ EnLigne unsigned char DessinImageBase::LookUpTable( const float& valeur,
      return _interpole_ligne->FonctionIntensite(valeur);
   */
 
-    SelonQue  format Vaut
+    switch (  format ){
 
-      Valeur WT_DOUBLE:
-      Valeur WT_FLOAT:
+      case WT_DOUBLE:
+      case WT_FLOAT:
         Si _intensite_float_min < _intensite_float_max Alors
           Si valeur < _intensite_float_min  AlorsRetourne _couleur_inf;
           Si valeur > _intensite_float_max  AlorsRetourne _couleur_sup;
@@ -1121,11 +1121,11 @@ EnLigne unsigned char DessinImageBase::LookUpTable( const float& valeur,
         Si Param._I._type_courbe == TYPE_COURBE_PLATEAU AlorsFait return 255;
         return (unsigned char) ( _rapport_intensite * ( valeur - _intensite_float_min ) );
 
-      Valeur WT_UNSIGNED_CHAR:
-      Valeur WT_UNSIGNED_SHORT:
-      Valeur WT_SIGNED_SHORT:
-      Valeur WT_SIGNED_INT:
-      Valeur WT_UNSIGNED_INT:
+      case WT_UNSIGNED_CHAR:
+      case WT_UNSIGNED_SHORT:
+      case WT_SIGNED_SHORT:
+      case WT_SIGNED_INT:
+      case WT_UNSIGNED_INT:
          Si _intensite_entier_min < _intensite_entier_max Alors
           Si valeur < _intensite_entier_min  AlorsRetourne _couleur_inf;
           Si valeur > _intensite_entier_max  AlorsRetourne _couleur_sup;
@@ -1138,14 +1138,14 @@ EnLigne unsigned char DessinImageBase::LookUpTable( const float& valeur,
 
       default: fprintf(stderr,"Error \t in switch, type not available \n");
 
-    FinSelonQue
+    } // end switch
 
     return 0;
 
 } // LookUpTable()
 
 //----------------------------------------------------------------
-EnLigne void DessinImageBase :: ColorBuffer( float valeur,
+inline void DessinImageBase :: ColorBuffer( float valeur,
               unsigned char& red,
               unsigned char& green,
               unsigned char& blue)
@@ -1160,7 +1160,7 @@ EnLigne void DessinImageBase :: ColorBuffer( float valeur,
 
 
 //----------------------------------------------------------------
-EnLigne unsigned char DessinImageBase::IntensiteBuffer( )
+inline unsigned char DessinImageBase::IntensiteBuffer( )
 //                                     ---------------
 {
 
@@ -1170,7 +1170,7 @@ EnLigne unsigned char DessinImageBase::IntensiteBuffer( )
 
 
 //----------------------------------------------------------------
-EnLigne unsigned char DessinImageBase ::
+inline unsigned char DessinImageBase ::
                  IntensiteBuffer( float x, float y, float z)
 //               ---------------
 {
@@ -1181,7 +1181,7 @@ EnLigne unsigned char DessinImageBase ::
 
 
 //----------------------------------------------------------------
-EnLigne float DessinImageBase :: InterpoleZero( float val1, float val2)
+inline float DessinImageBase :: InterpoleZero( float val1, float val2)
 //                                         -------------
 {
 

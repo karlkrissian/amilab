@@ -138,7 +138,7 @@ void IsoContour2D :: InitFiltre( )
 //
 {
 
-  _filtre = new FiltreRecursif(_image_initiale, MODE_2D);
+  _filtre = new GeneralGaussianFilter(_image_initiale, MODE_2D);
 
   _filtre->FixeSilencieux( true);
 
@@ -176,7 +176,7 @@ void IsoContour2D :: EffaceFiltre( )
 
 //----------------------------------------------------------------------
 ///
-IsoContour2D :: Constructeur IsoContour2D( InrImage* image_initiale,
+IsoContour2D ::  IsoContour2D( InrImage* image_initiale,
 						     const     Chaine& nom_res,
 						     unsigned char   sauve)
 //
@@ -230,11 +230,11 @@ IsoContour2D :: Constructeur IsoContour2D( InrImage* image_initiale,
 
     _propage = (PropagePoints*) NULL;
 
-} // Constructeur
+} // Constructor
 
 //----------------------------------------------------------------------
 ///
-IsoContour2D :: Destructeur IsoContour2D()
+IsoContour2D :: ~IsoContour2D()
 //
 {
 
@@ -256,7 +256,7 @@ IsoContour2D :: Destructeur IsoContour2D()
 
   EffaceFiltre();
 
-} // Destructeur
+} // Destructor
 
 
 //----------------------------------------------------------------------

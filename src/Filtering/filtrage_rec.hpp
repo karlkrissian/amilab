@@ -77,7 +77,7 @@ private:
 public:
 
   //--------------------------------------------------
-  Constructeur FiltrageRec(InrImage* im)
+   FiltrageRec(InrImage* im)
   {
     tx = im->_tx;
     ty = im->_ty;

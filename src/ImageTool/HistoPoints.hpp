@@ -66,13 +66,13 @@
 #include "DrawingArea.hpp"
 
 // ========================================================================
-Structure TPoint2D
+struct TPoint2D
 //        =======
-DebutStructure
+{
 
   float x,y;
 
-FinStructure // TPoint2D
+} // TPoint2D
 
 // ========================================================================
 typedef struct {
@@ -117,9 +117,9 @@ public: // BUG, mettre certaines m�thodes en priv� ...
 
   int     Selection;
 
-  Constructeur Interpole( Widget AParent, char* ATitle, 
+   Interpole( Widget AParent, char* ATitle, 
                           float xmin, float xmax, float ymin, float ymax );
-  virtual Destructeur  Interpole();
+  virtual ~ Interpole();
 
   void SetCallBack( void* callback, void* calldata)
   {
@@ -186,7 +186,7 @@ class InterpoleLigne : public Interpole
 
 public:
 
-  Constructeur InterpoleLigne( Widget AParent, char* ATitle, 
+   InterpoleLigne( Widget AParent, char* ATitle, 
                           float xmin, float xmax, float ymin, float ymax ):
                Interpole(AParent, ATitle, xmin, xmax, ymin, ymax) {}
 

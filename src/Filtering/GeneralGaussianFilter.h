@@ -26,7 +26,7 @@
    The full GNU Lesser General Public License file is in Devel/Sources/Prog/LesserGPL_license.txt
 */
 //  
-//  fichier FiltreRec.hpp
+//  fichier GeneralGaussianFilter.h
 //
 //  Karl Krissian    Sophia Antipolis, le 17-07-98
 //
@@ -37,15 +37,15 @@
 
 #include "style.hpp"
 
-DebutDeclareC
+extern "C" {
 #include <stdio.h>
 //#include <epidaure.h>
 //#include <epidaure.ee>
-FinDeclareC
+}
 
 #include "Coordonnees.hpp"
 #include "inrimage.hpp"
-#include "filtrage.hpp"
+#include "GaussianFilter.h"
 
 #include "chaine.hpp"
 #include "DefineClass.hpp"
@@ -123,18 +123,18 @@ typedef enum {
   REAL_SPACE
 } scale_unit;
 
-//class FiltreRecursif;
-//typedef boost::shared_ptr<FiltreRecursif> FiltreRecursif_ptr;
+//class GeneralGaussianFilter;
+//typedef boost::shared_ptr<GeneralGaussianFilter> FiltreRecursif_ptr;
 
 //===========================================================
 /** 
-Calcul des derivees d'une image jusqu'a l'ordre 2
-par convolution avec une gaussienne
+ * Computation of image derivatives or smoothing up to second order by Gaussian convolution. 
+ * This class is called general since it could call different type of implementations.
  */
-class FiltreRecursif
+class GeneralGaussianFilter
 //    ==============
 {
-  DEFINE_CLASS(FiltreRecursif)
+  DEFINE_CLASS(GeneralGaussianFilter);
 
 public:
 
@@ -175,8 +175,6 @@ protected:
   ///
   int    _type;
 
-  /// Facteur du support du filtre pour le type MY_FILTRE_CONV
-  int    _facteur_support;
 
   ///
   unsigned char   _coeff_int_gauss;
@@ -247,11 +245,11 @@ protected:
   InrImage*   _image_tmp2;
 
   //
-  Filtrage    _filtre_x;
-  Filtrage    _filtre_y;
-  Filtrage    _filtre_z;
+  GaussianFilter    _filtre_x;
+  GaussianFilter    _filtre_y;
+  GaussianFilter    _filtre_z;
 
-  Filtrage    _filtre;
+  GaussianFilter    _filtre;
 
 public:
 
@@ -272,6 +270,9 @@ public:
 
 private:
 
+  /// Facteur du support du filtre pour le type MY_FILTRE_CONV
+  int    _facteur_support;
+
   void InitNomDerivees();
   //   ---------------
 
@@ -282,18 +283,18 @@ private:
 public:
 
   ///
-//  Constructeur FiltreRecursif( PTRINRIMAGE image, int dim = MODE_3D);
+//  Constructor GeneralGaussianFilter( PTRINRIMAGE image, int dim = MODE_3D);
 
   ///
-  Constructeur FiltreRecursif( InrImage* image, int dim = MODE_3D);
+   GeneralGaussianFilter( InrImage* image, int dim = MODE_3D);
 
-  static FiltreRecursif::ptr New(InrImage* image, int dim = MODE_3D)
+  static GeneralGaussianFilter::ptr New(InrImage* image, int dim = MODE_3D)
   {
-    return FiltreRecursif::ptr(new FiltreRecursif(image,dim));
+    return GeneralGaussianFilter::ptr(new GeneralGaussianFilter(image,dim));
   }
 
   ///
-  virtual Destructeur FiltreRecursif();
+  virtual ~GeneralGaussianFilter();
 
 
   ///
@@ -316,7 +317,7 @@ public:
 
 
   ///
-  void FixeFacteurSupport( int facteur)
+  void SetSupportSize( int facteur)
   //
   {
     _facteur_support = facteur;
@@ -503,7 +504,7 @@ public:
   //    -------
     throw (HessianNotComputed);
 
-}; // FiltreRecursif
+}; // GeneralGaussianFilter
 
 
 #endif // _FILTRE_REC_HPP

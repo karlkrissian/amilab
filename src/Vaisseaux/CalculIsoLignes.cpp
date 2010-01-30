@@ -424,9 +424,9 @@ void CalculIsoLignes :: ReEvalue( PtPosition* pt)
   MethodeCourante("ReEvalue", ce_fichier);
   if (GB_debug) fprintf(stderr,"starting ReEvalue()\n");
 
-  SelonQue _face Vaut
+  switch ( _face ){
 
-    Valeur 0: 
+    case 0: 
       // z = 0 
       min1 = min( pt->x, 1-pt->x);
       min2 = min( pt->y, 1-pt->y);
@@ -442,9 +442,9 @@ void CalculIsoLignes :: ReEvalue( PtPosition* pt)
         coeff_arete = pt->x;
         CalculeArete( pt);
       FinSi
-    FinValeur
+    break;
 
-    Valeur 1: 
+    case 1: 
       // y = 0 
       min1 = min( pt->x, 1-pt->x);
       min2 = min( pt->z, 1-pt->z);
@@ -460,9 +460,9 @@ void CalculIsoLignes :: ReEvalue( PtPosition* pt)
         coeff_arete = pt->x;
         CalculeArete( pt);
       FinSi
-    FinValeur
+    break;
 
-    Valeur 2: 
+    case 2: 
       // x = 0 
       min1 = min( pt->y, 1-pt->y);
       min2 = min( pt->z, 1-pt->z);
@@ -478,9 +478,9 @@ void CalculIsoLignes :: ReEvalue( PtPosition* pt)
         coeff_arete = pt->y;
         CalculeArete( pt);
       FinSi
-    FinValeur
+    break;
 
-  FinSelonQue
+  } // end switch
 
   FinMethode();
 
@@ -657,33 +657,33 @@ float CalculIsoLignes :: GradZero(  Vect3D<double> *vep,
             fprintf(stderr," \t adding point %3.3f %3.3f %3.3f at (%d, %d, %d)\n", p1.x,p1.y,p1.z,x,y,z);
         }
 
-        SelonQue _face Vaut
+        switch ( _face ){
 
-        Valeur 0: 
+        case 0: 
           Si z>0 Alors
             this->crest_lignes ->AddPoint( x,y,z-1, p1); 
 //            this->crest_lignes2->AddPoint( x,y,z-1, p1); 
             if (GB_debug) fprintf(stderr," \t \t and at (%d, %d, %d)\n", x,y,z-1);
           FinSi
-        FinValeur
+        break;
 
-        Valeur 1: 
+        case 1: 
               Si y>0 Alors
                 this->crest_lignes->AddPoint( x,y-1,z, p1);
 //                this->crest_lignes2->AddPoint( x,y-1,z, p1);
             if (GB_debug) fprintf(stderr," \t \t and at (%d, %d, %d)\n", x,y-1,z);
               FinSi
-        FinValeur
+        break;
 
-        Valeur 2: 
+        case 2: 
               Si x>0 Alors
                 this->crest_lignes->AddPoint( x-1,y,z, p1);
 //                this->crest_lignes2->AddPoint( x-1,y,z, p1);
             if (GB_debug) fprintf(stderr," \t \t and at (%d, %d, %d)\n", x-1,y,z);
               FinSi
-        FinValeur
+        break;
 
-          FinSelonQue
+          } // end switch
 
         FinPour
 

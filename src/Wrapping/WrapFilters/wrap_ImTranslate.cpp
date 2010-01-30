@@ -30,7 +30,7 @@ InrImage* wrap_ImTranslate(ParamList* p)
               border mode (def:0): if 0 extension of border intensity, if 1 the resulting image is smaller and only contains the translated pixels that fit into the initial image domain. \n\
             ";
 
-    InrImage* input;
+    InrImage* input = NULL;
     int dx=0;
     int dy=0;
     int dz=0;
@@ -38,7 +38,7 @@ InrImage* wrap_ImTranslate(ParamList* p)
     int n=0;
     InrImage* result;
 
-  if (!get_image_param( input,       p, n)) HelpAndReturnNULL;
+  if (!get_var_param<InrImage>( input,       p, n)) HelpAndReturnNULL;
   if (!get_int_param(   dx,          p, n)) HelpAndReturnNULL;
   if (!get_int_param(   dy,          p, n)) HelpAndReturnNULL;
   if (!get_int_param(   dz,          p, n)) HelpAndReturnNULL;

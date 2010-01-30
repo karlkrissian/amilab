@@ -213,11 +213,11 @@ private:
 public:
 
   ///
-  Constructeur CalculAireSection( InrImage* image, float resolution);
+   CalculAireSection( InrImage* image, float resolution);
   //
 
   ///
-  Destructeur CalculAireSection();
+  ~CalculAireSection();
   //
 
   ///

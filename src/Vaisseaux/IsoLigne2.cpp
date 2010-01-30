@@ -37,9 +37,9 @@
 #include "style.hpp"
 #include "IsoLigne2.hpp"
 
-DebutDeclareC
+extern "C" {
 #include <stdio.h>
-FinDeclareC
+}
 
 //============================================================================
 //  MEMBRES PRIVES
@@ -83,10 +83,10 @@ int IsoLigne2 :: RechercheLignes( int num_face, num_valeurs val,
   nb_lignes_trouvees = 0;
   lignes_zero = new LigneFace[4];
 
-  SelonQue val Vaut
-    Valeur VALEURS_1:      valeurs = _valeurs1[num_face];    FinValeur
-    Valeur VALEURS_2:      valeurs = _valeurs2[num_face];    FinValeur
-  FinSelonQue
+  switch ( val ){
+    case VALEURS_1:      valeurs = _valeurs1[num_face];    break;
+    case VALEURS_2:      valeurs = _valeurs2[num_face];    break;
+  } // end switch
 
   // val0 est la valeur au centre pour lever les ambiguites de 4 points detectes
   val0 = valeurs[4];
@@ -325,9 +325,9 @@ unsigned char IsoLigne2 :: Intersection( PtFace pt1, PtFace pt2,
 
 
 //-----------------------------------------------------------------------------------------
-/** <b> Constructeur </b>
+/** <b> Constructor </b>
  */
-IsoLigne2 :: Constructeur IsoLigne2( double** val1, double** val2) 
+IsoLigne2 ::  IsoLigne2( double** val1, double** val2) 
 //
 {
 
@@ -360,9 +360,9 @@ IsoLigne2 :: Constructeur IsoLigne2( double** val1, double** val2)
 
 
 //-----------------------------------------------------------------------------------------
-/** <b> Destructeur </b>
+/** <b> Destructor </b>
  */
-IsoLigne2 :: Destructeur IsoLigne2()
+IsoLigne2 :: ~IsoLigne2()
 //
 {
 

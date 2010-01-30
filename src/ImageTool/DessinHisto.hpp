@@ -86,7 +86,7 @@ public:
   float    min,max;
   int  ni,ptmax;
 
-  Constructeur ParamDessinHisto() {}
+   ParamDessinHisto() {}
   //           ---------------
 
   void Initialise()
@@ -165,11 +165,11 @@ private:
 
 public:
 
-  Constructeur DessinHisto(Widget parent, char* libelle, InrImage* image, 
+   DessinHisto(Widget parent, char* libelle, InrImage* image, 
   //           -----------
                            CPalette* palette, float min, float max);
 
-//  Destructeur DessinHisto();
+//  ~DessinHisto();
 
 
   void Paint();
