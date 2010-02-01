@@ -88,7 +88,7 @@ void Variable::Init(vartype type, const char* name, void* p)
             Viewer3D::deleter());
     break; 
 
-    CREATE_CASE(type_class_procedure, WrapClassMember);
+    CREATE_CASE(type_class_member, WrapClassMember);
 
     case type_c_procedure     : 
     case type_c_image_function:
@@ -143,7 +143,7 @@ using namespace boost;
     CREATE_CASE(type_array,           VarArray)
     CREATE_CASE(type_imagedraw,       DessinImage)
     CREATE_CASE(type_surfdraw,        Viewer3D)
-    CREATE_CASE(type_class_procedure, WrapClassMember)
+    CREATE_CASE(type_class_member, WrapClassMember)
     case type_c_procedure     : 
     case type_c_image_function:
     case type_c_function:
@@ -194,7 +194,7 @@ bool Variable::FreeMemory()
     case type_matrix          : FreeMemory<FloatMatrix>();     break;
     case type_gltransform     : FreeMemory<GLTransfMatrix>();  break;
     case type_array           : FreeMemory<VarArray>();        break;
-    case type_class_procedure : FreeMemory<WrapClassMember>(); break;
+    case type_class_member : FreeMemory<WrapClassMember>(); break;
     case type_file           :
           // TODO: create a file class where the destructor closes the file 
           // for a cleaner implementation ...
@@ -255,7 +255,7 @@ const string Variable::GetTypeName()
     case type_file            : return string( "file"); 
   //  case type_c_function      : return string( "C function ");
     case type_c_procedure     : return string( "C procedure"); 
-    case type_class_procedure : return string( "C++ procedure member"); 
+    case type_class_member : return string( "C++ procedure member"); 
     case type_c_image_function: return string( "C image function");
     case type_c_function      : return string( "C function");
     case type_ami_function    : return string( "AMI function");
@@ -297,7 +297,7 @@ ostream& operator<<(ostream& o, const Variable& v)
     case type_file            : o << "file     "; break;
   //  case type_c_function      : o << ("C function ";       break;
     case type_c_procedure     : o << "C procedure ";       break;
-    case type_class_procedure : o << "C++ procedure member";       break;
+    case type_class_member : o << "C++ procedure member";       break;
     case type_c_image_function: o << "C image function ";  break;
     case type_c_function      : o << "C function ";        break;
     case type_ami_function    : o << "AMI function ";      break;

@@ -383,7 +383,8 @@ public:
   //            ----------------
     int* id,
     string_ptr* nom,
-    const char* libelle);
+    const char* libelle,
+    const std::string& tt="");
 
   ///
   void ContraintesNomFichier( int id, const char* defaut, const char* rep, const char* masque);

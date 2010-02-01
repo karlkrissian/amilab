@@ -21,37 +21,9 @@
  */
 void wrap_ImageDraw( ParamList* p);
 
-///
-class wrap_ImageDrawSetLineColor : public WrapClassMember {
-    DessinImage::ptr _imdraw;
-  public:
-    wrap_ImageDrawSetLineColor(const DessinImage::ptr& imdraw) : _imdraw(imdraw) {}
-    void CallProc(ParamList*);
-};
-
-///
-class wrap_ImageDrawDrawLine : public WrapClassMember {
-    DessinImage::ptr _imdraw;
-  public:
-    wrap_ImageDrawDrawLine(const DessinImage::ptr& imdraw) : _imdraw(imdraw) {}
-    void CallProc(ParamList*);
-};
-
-///
-class wrap_ImageDrawLineParam : public WrapClassMember {
-    DessinImage::ptr _imdraw;
-  public:
-    wrap_ImageDrawLineParam(const DessinImage::ptr& imdraw) : _imdraw(imdraw) {}
-    void CallProc(ParamList*);
-};
-
-///
-class wrap_ImageDrawDisplayDA : public WrapClassMember {
-    DessinImage::ptr _imdraw;
-  public:
-    wrap_ImageDrawDisplayDA(const DessinImage::ptr& imdraw) : _imdraw(imdraw) {}
-    void CallProc(ParamList*);
-};
-
+ADD_METHOD(DessinImage,SetLineColor,  "Sets the color of the line.");
+ADD_METHOD(DessinImage,DrawLine,      "Draws a line on XY plane.");
+ADD_METHOD(DessinImage,LineParam,     "Sets the parameters of the line.");
+ADD_METHOD(DessinImage,DisplayDA,     "Updates the display of the Drawing Area.");
 
 #endif //  _wrap_mainframe_h_

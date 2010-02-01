@@ -251,8 +251,23 @@ Variable* VarContexts::AddVar(Variable* var, int context)
 //--------------------------------------------------
 Variable* VarContexts::AddVar(Variable::ptr var, int context)
 {
-  if (context==-1) 
+
+  if (context==OBJECT_CONTEXT_NUMBER) {
+    CLASS_MESSAGE("object context");
+    if (_object_context.get()) {
+      CLASS_MESSAGE("adding variable reference into object context ");
+      return _object_context->AddVar(var,
+                                    _object_context);
+    }
+    else {
+      CLASS_ERROR("Calling object variable without any object context");
+      return NULL;
+    }
+  }
+
+  if (context==NEWVAR_CONTEXT) 
     context = GetNewVarContext();
+
   CLASS_MESSAGE(boost::format("Context number %d ")% context);
   return _context[context]->AddVar(var);
 }

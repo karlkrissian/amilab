@@ -205,7 +205,7 @@ void Driver::yyip_instanciate_object( const AMIClass::ptr& oclass,
 }
 
 //-----------------------------------------------------------
-void Driver::yyip_call_function( const Variable* v, const ParamList::ptr& param)
+void Driver::yyip_call_function( const AMIFunction::ptr& f, const ParamList::ptr& param)
 //   --------------------------
 {
   int    previous_lineno   = yyiplineno;
@@ -213,19 +213,20 @@ void Driver::yyip_call_function( const Variable* v, const ParamList::ptr& param)
   int    i;
   char*  name;
 
+/*
   // check that v is a function variable
   if (v->Type()!=type_ami_function) {
     error("Variable is not a function");
     return;
   }
-
   // Get the function
   AMIFunction::ptr f;
   f = *(AMIFunction::ptr*) (v->Pointer());
+*/
 
   // Set the object context
   Variables::ptr previous_ocontext = Vars.GetObjectContext();
-  Vars.SetObjectContext(v->GetContext());
+  Vars.SetObjectContext(f->GetContext());
 
   // Set the new context
   Vars.NewContext(f->GetName().c_str());
@@ -257,10 +258,9 @@ void Driver::yyip_call_function( const Variable* v, const ParamList::ptr& param)
                         );
         }
       } // end for
-    } else
-      cerr  << "Driver::yyip_call_function "
-            << "\t Error checking for parameters."
-            << endl;
+    } else {
+      CLASS_ERROR(" Error checking for parameters.");
+    }
   }
 
   // Call the function

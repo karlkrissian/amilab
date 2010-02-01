@@ -92,7 +92,7 @@ void myTreeCtrl::OnAbout(wxCommandEvent& event)
         ((void (*)(ParamList*)) _currentmenu_var->Pointer())(NULL);
         return;
 
-      case type_class_procedure     : 
+      case type_class_member     : 
         // getting the associated help
         (*((WrapClassMember::ptr*) _currentmenu_var->Pointer()))->ShowHelp();
         return;

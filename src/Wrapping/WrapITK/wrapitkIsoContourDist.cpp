@@ -39,9 +39,9 @@ InrImage* itkIsoContourDist(ParamList* p)
   InrImage* res = NULL;
   int n=0;
   
-  if (!get_var_param<InrImage>(  input,      p, n)) HelpAndReturnNULL;
-  if (!get_param<float>(  threshold,  p, n)) HelpAndReturnNULL;
-  if (!get_param<float>(  farvalue,   p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>(  input,      p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>(  threshold,  p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>(  farvalue,   p, n)) HelpAndReturnNULL;
 
   typedef float               PixelType;
   const   unsigned int        Dimension = 3;

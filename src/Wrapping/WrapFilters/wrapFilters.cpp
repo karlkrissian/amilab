@@ -142,7 +142,7 @@ InrImage* NSim(ParamList* p)
 
     InrImage* result;
 
-  if (!get_var_param<InrImage>(  input,      p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>(  input,      p, n)) HelpAndReturnNULL;
   if (!get_int_param(    posx,       p, n)) HelpAndReturnNULL;
   if (!get_int_param(    posy,       p, n)) HelpAndReturnNULL;
   if (!get_int_param(    posz,       p, n)) HelpAndReturnNULL;
@@ -214,9 +214,9 @@ void NSim2(ParamList* p)
 
     //InrImage* result;
 
-  if (!get_var_param<InrImage>(  input,        p, n)) HelpAndReturn;
-  if (!get_var_param<InrImage>(  local_mean,   p, n)) HelpAndReturn;
-  if (!get_var_param<InrImage>(  local_var,    p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(  input,        p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(  local_mean,   p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(  local_var,    p, n)) HelpAndReturn;
   if (!get_int_param(    posx,         p, n)) HelpAndReturn;
   if (!get_int_param(    posy,         p, n)) HelpAndReturn;
   if (!get_int_param(    posz,         p, n)) HelpAndReturn;
@@ -460,10 +460,10 @@ InrImage* NLmeans_fast(ParamList* p)
 //    double *voxel_weights;
     int n=0;
 
-  if (!get_var_param<InrImage>(      input,       p, n)) HelpAndReturnNULL;
-  if (!get_var_param<InrImage>(      input_field, p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>(      input,       p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>(      input_field, p, n)) HelpAndReturnNULL;
   if (!get_int_param(        t,           p, n)) HelpAndReturnNULL;
-  if (!get_param<float>(      h,           p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>(      h,           p, n)) HelpAndReturnNULL;
   if (!get_int_param(        noisetype,   p, n)) HelpAndReturnNULL;
   if (!get_int_param(        num_threads, p, n)) HelpAndReturnNULL;
 
@@ -784,11 +784,11 @@ InrImage* NLmeans_MRI(ParamList* p)
 //    double *voxel_weights;
     int n=0;
 
-  if (!get_var_param<InrImage>(      input,       p, n)) HelpAndReturnNULL;
-  if (!get_var_param<InrImage>(      input_roi,   p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>(      input,       p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>(      input_roi,   p, n)) HelpAndReturnNULL;
   if (!get_int_param(        t,           p, n)) HelpAndReturnNULL;
-  if (!get_param<float>(      h,           p, n)) HelpAndReturnNULL;
-  if (!get_param<float>(      sigma,       p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>(      h,           p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>(      sigma,       p, n)) HelpAndReturnNULL;
   if (!get_int_param(        nb_it,       p, n)) HelpAndReturnNULL;
   if (!get_int_param(        num_threads, p, n)) HelpAndReturnNULL;
 
@@ -930,10 +930,10 @@ InrImage* WrapLeastSquares(ParamList* p)
     InrImage* mask;
     int n=0;
 
-  if (!get_var_param<InrImage>(      input,       p, n)) HelpAndReturnNULL;
-  if (!get_var_param<InrImage>(      basis,       p, n)) HelpAndReturnNULL;
-  if (!get_var_param<InrImage>(      weights,     p, n)) HelpAndReturnNULL;
-  if (!get_var_param<InrImage>(      mask,        p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>(      input,       p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>(      basis,       p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>(      weights,     p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>(      mask,        p, n)) HelpAndReturnNULL;
 
   return Func_LeastSquares( input, basis, weights, mask);
 }
@@ -970,10 +970,10 @@ Variable::ptr Wrap_EigenDecomp(ParamList* p) {
     InrImage* mask=NULL;
     int n=0;
 
-  if (!get_var_param<InrImage>(         input,       p, n)) HelpAndReturnVarPtr;
+  if (!get_val_ptr_param<InrImage>(         input,       p, n)) HelpAndReturnVarPtr;
   if (!get_int_param(           value_flag,  p, n)) HelpAndReturnVarPtr;
   if (!get_int_param(           vector_flag, p, n)) HelpAndReturnVarPtr;
-  if (!get_var_param<InrImage>( mask,        p, n)) HelpAndReturnVarPtr;
+  if (!get_val_ptr_param<InrImage>( mask,        p, n)) HelpAndReturnVarPtr;
 
 
   vector<InrImage::ptr> result;
@@ -1022,8 +1022,8 @@ Variable::ptr Wrap_SmoothLinesToSplines(ParamList* p)
     float samplingstep = 0.1f;
     int n=0;
 
-  if (!get_var_param<SurfacePoly>(  input,        p, n)) HelpAndReturnVarPtr;
-  if (!get_param<float>(    samplingstep, p, n)) HelpAndReturnVarPtr;
+  if (!get_val_ptr_param<SurfacePoly>(  input,        p, n)) HelpAndReturnVarPtr;
+  if (!get_val_param<float>(    samplingstep, p, n)) HelpAndReturnVarPtr;
 
 
   SurfacePoly* surf_result = Func_SmoothLinesToSplines( input, samplingstep );

@@ -60,15 +60,15 @@ InrImage* NLmeans(ParamList* p)
     float pattern_weight_factor = 0.5;
     InrImage::ptr smoothed_image;
 
-  if (!get_var_param<InrImage>(  input,       p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>(  input,       p, n)) HelpAndReturnNULL;
   if (!get_int_param(    t,           p, n)) HelpAndReturnNULL;
   if (!get_int_param(    f,           p, n)) HelpAndReturnNULL;
-  if (!get_param<float>(  h,           p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>(  h,           p, n)) HelpAndReturnNULL;
   if (!get_int_param(    noisetype,   p, n)) HelpAndReturnNULL;
   if (!get_int_param(    num_threads, p, n)) HelpAndReturnNULL;
   if (!get_int_param(    probability_variant,   p, n)) HelpAndReturnNULL;
-  if (!get_param<float>(  presmooth_sd,          p, n)) HelpAndReturnNULL;
-  if (!get_param<float>(  pattern_weight_factor, p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>(  presmooth_sd,          p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>(  pattern_weight_factor, p, n)) HelpAndReturnNULL;
 
   if (fabs(h)<1E-2) {
     fprintf(stderr,"NLmeans error \t the coefficient h cannot be too small, it is set to 10 !\n");

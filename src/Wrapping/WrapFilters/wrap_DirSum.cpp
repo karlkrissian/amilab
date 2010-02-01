@@ -29,7 +29,7 @@ InrImage* wrap_DirSum(ParamList* p)
   InrImage* result = NULL;
   int n=0;
 
-  if (!get_var_param<InrImage>(  input, p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>(  input, p, n)) HelpAndReturnNULL;
   if (!get_int_param(    dir,   p, n)) HelpAndReturnNULL;
 
   switch (dir) {

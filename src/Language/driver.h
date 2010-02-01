@@ -183,7 +183,7 @@ public:
     * @param v function type variable
     * @param param list of parameters
     */
-    void yyip_call_function( const Variable* v, 
+    void yyip_call_function( const AMIFunction::ptr& v, 
               const ParamList::ptr& param = ParamList::ptr() );
 
     /** instanciate an object of a given class

@@ -38,7 +38,7 @@ InrImage* wrap_ImTranslate(ParamList* p)
     int n=0;
     InrImage* result;
 
-  if (!get_var_param<InrImage>( input,       p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>( input,       p, n)) HelpAndReturnNULL;
   if (!get_int_param(   dx,          p, n)) HelpAndReturnNULL;
   if (!get_int_param(   dy,          p, n)) HelpAndReturnNULL;
   if (!get_int_param(   dz,          p, n)) HelpAndReturnNULL;

@@ -37,7 +37,7 @@ InrImage* itkFastMarchingImageFilter2D(ParamList* p)
   InrImage* res = NULL;
   int n=0;
   
-  if (!get_var_param<InrImage>(  input,      p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>(  input,      p, n)) HelpAndReturnNULL;
   if (!get_int_param(  seedX,    p, n)) HelpAndReturnNULL;
   if (!get_int_param(  seedY,      p, n)) HelpAndReturnNULL;
  
@@ -145,7 +145,7 @@ InrImage* itkFastMarchingImageFilter3D(ParamList* p)
   InrImage* res = NULL;
   int n=0;
   
-  if (!get_var_param<InrImage>(  input,      p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>(  input,      p, n)) HelpAndReturnNULL;
   if (!get_int_param(  seedX,    p, n)) HelpAndReturnNULL;
   if (!get_int_param(  seedY,      p, n)) HelpAndReturnNULL;
   if (!get_int_param(  seedZ,      p, n)) HelpAndReturnNULL;

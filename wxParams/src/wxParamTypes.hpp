@@ -311,6 +311,8 @@ class wxFilenameParameter : public wxBoxSizer, public wxGenericWidget
     *(*_parameter) = value; 
   } 
 
+  void SetToolTip( const wxString& tt);
+
 }; // wxFilenameParameter
 
 //============================================================================

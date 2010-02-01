@@ -22,24 +22,6 @@
  */
 Variable::ptr wrap_ParamPanel( ParamList* p);
 
-#define ADD_METHOD(classname,methodname,description_str) \
-/**\
- * description_str\
- **/\
-class wrap_##classname##methodname : public WrapClassMember { \
-  protected:\
-    classname::ptr _pp; \
-  public: \
-    wrap_##classname##methodname(const classname::ptr& pp) : \
-      _pp(pp) { \
-      functionname = #classname;\
-      functionname += "::";\
-      functionname += #methodname; \
-      description=description_str; \
-    } \
-    void CallProc(ParamList*); \
-};
-
 
 ADD_METHOD(ParamPanel,BeginBook,        "Starts a notebook.");
 ADD_METHOD(ParamPanel,EndBook,          "Ends a notebook.");
@@ -51,9 +33,17 @@ ADD_METHOD(ParamPanel,EndBoxPanel,      "Ends a Box around a Panel.");
 ADD_METHOD(ParamPanel,AddPage,          "Begins a notebook page.");
 
 ADD_METHOD(ParamPanel,AddFloat,         "Adds a Float parameter.");
-ADD_METHOD(ParamPanel,AddInt,           "Adds a Integer parameter.");
+ADD_METHOD(ParamPanel,AddInt,           "Adds an Integer parameter.");
+ADD_METHOD(ParamPanel,AddEnum,          "Adds an integer variable as an enumeration to the parameter window.");
+ADD_METHOD(ParamPanel,AddEnumChoice,    "Adds a choice for an enumeration created in the parameter window.");
+ADD_METHOD(ParamPanel,AddFilename,      "Adds a filename selection.");
+ADD_METHOD(ParamPanel,AddButton,        "Adds a button.");
+
 
 ADD_METHOD(ParamPanel,Display,          "Displays the parameters.");
+ADD_METHOD(ParamPanel,Hide,             "Hides the parameters.");
+ADD_METHOD(ParamPanel,Update,           "Updates the display of one or all the parameters.");
+
 
 
 #endif

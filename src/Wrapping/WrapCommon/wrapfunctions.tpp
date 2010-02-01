@@ -24,13 +24,36 @@ vartype GetVarType();
 
 
 
+/**
+ * Function used to parse a variable of generic type in a list of parameters, and to give back a smart pointer to the variable.
+ */
+template<class T>
+bool get_var_param( Variable::ptr& var, 
+                    ParamList*p, int& num)
+{
+  // Getting the Variable and checking its type
+  var = p->GetParam(num++);
+  if (var.get()) {
+    if (var->Type()!=GetVarType<T>()) {
+      FILE_ERROR(boost::format("Parameter %1% is of wrong type (%2% instead of %3%), you may be passing a value instead of a reference.")%num%var->Type()%GetVarType<T>());
+      return false;
+    }
+    return true;
+  }
+  else
+  {
+    FILE_ERROR(boost::format("Parameter %d not found ") % num);
+    return false;
+  }
+
+}
 
 
 /**
  * Function used to parse a variable of generic type in a list of parameters, and to give back its value.
  */
 template<class T>
-bool get_param(T& arg, ParamList*p, int& num)
+bool get_val_param(T& arg, ParamList*p, int& num)
 {
   if (!p) return false;
   // if the parameter number is too high, skip it (use default value)
@@ -41,7 +64,7 @@ bool get_param(T& arg, ParamList*p, int& num)
   Variable::ptr temp = p->GetParam(num++);
   if (temp.get()) {
     if (temp->Type()!=GetVarType<T>()) {
-      FILE_ERROR("Parameter %1% is of wrong type.");
+      FILE_ERROR(boost::format("Parameter %1% is of wrong type.")%num);
       return false;
     }
     arg= * (((boost::shared_ptr<T>*)temp->Pointer())->get());
@@ -58,7 +81,7 @@ bool get_param(T& arg, ParamList*p, int& num)
  * Function used to parse a variable of generic type in a list of parameters, and to give back a pointer to its value.
  */
 template<class T>
-bool get_var_param(T*& arg, ParamList*p, int& num, bool required)
+bool get_val_ptr_param(T*& arg, ParamList*p, int& num, bool required)
 {
   if (!p) return false;
   // if the parameter number is too high, skip it (use default value)
@@ -92,7 +115,7 @@ bool get_var_param(T*& arg, ParamList*p, int& num, bool required)
  * Function used to parse a variable of generic type in a list of parameters, and to give back a smart pointer to its value.
  */
 template<class T>
-bool get_varptr_param(boost::shared_ptr<T>& arg, ParamList*p, int& num, bool required)
+bool get_val_smtptr_param(boost::shared_ptr<T>& arg, ParamList*p, int& num, bool required)
 {
   if (!p) return false;
   // if the parameter number is too high, skip it (use default value)
@@ -108,7 +131,7 @@ bool get_varptr_param(boost::shared_ptr<T>& arg, ParamList*p, int& num, bool req
   Variable::ptr temp = p->GetParam(num++);
   if (temp.get()) {
     if (temp->Type()!=GetVarType<T>()) {
-      FILE_ERROR("Parameter %1% is of wrong type.");
+      FILE_ERROR(boost::format("Parameter %1% is of wrong type.")%num);
       return false;
     }
     arg= *((boost::shared_ptr<T>*)temp->Pointer());
@@ -132,7 +155,7 @@ bool get_several_params(T* arg, ParamList*p, int& num)
   int i;
   bool OK;
   for(i=0;i<nb;i++) {
-    OK = get_param<T>(arg[i],p,num);
+    OK = get_val_param<T>(arg[i],p,num);
     if (!OK) return false;
   }
   return true;

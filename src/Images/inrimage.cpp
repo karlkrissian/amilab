@@ -1395,7 +1395,7 @@ InrImageIteratorBase::ptr InrImage::CreateIterator()
       return InrImageIteratorBase::ptr(
           new InrImageIterator<double>(this));
     default:
-      CLASS_ERROR(" format not processed ... \n");
+      CLASS_ERROR(boost::format(" format not processed ... (%1%) \n")%_format);
   }
   return InrImageIteratorBase::ptr();
 
@@ -1412,8 +1412,10 @@ InrImage ::  InrImage( )
 
   InitParams();
 
+/*
   _Iterator = CreateIterator();
   _linear_interpolator = ImageLinearInterpolator::ptr( new ImageLinearInterpolator(this));
+*/
 
 } // Construteur
 
@@ -1817,7 +1819,7 @@ unsigned char InrImage ::  GetFormatFromAMI(amimage* im, WORDTYPE& type)
        };
        break;
      default:
-       fprintf(stderr,"InrImage::GetFormatFromAMI() format not processed ... \n");
+       CLASS_ERROR(" format not processed ... ");
      }
    return 0;
    
@@ -1900,6 +1902,9 @@ void InrImage :: SetAMImage( amimage* amim)
 
   this->InitPositions();
 
+  _Iterator = CreateIterator();
+  _linear_interpolator = ImageLinearInterpolator::ptr( new ImageLinearInterpolator(this));
+
   if (GB_debug) fprintf(stderr,"SetAMImage() end\n");
 
 } // SetAMImage()
@@ -1951,6 +1956,9 @@ void InrImage :: SetImageData( int dimx, int dimy, int dimz,
 
   InitPositions();
 
+  _Iterator = CreateIterator();
+  _linear_interpolator = ImageLinearInterpolator::ptr( new ImageLinearInterpolator(this));
+
 } // SetImageData()
 
 
@@ -1998,6 +2006,8 @@ void InrImage :: SetImageData( int dimx, int dimy, int dimz, int vdim,
 
   InitPositions();
 
+  _Iterator = CreateIterator();
+  _linear_interpolator = ImageLinearInterpolator::ptr( new ImageLinearInterpolator(this));
 
 } // SetImageData()
 

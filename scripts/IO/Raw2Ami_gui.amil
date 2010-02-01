@@ -1,0 +1,143 @@
+#!/usr/bin/amilab
+
+#
+# Data raw data into an image variable
+#
+
+if (!exists(Raw2AmiClass)) {
+
+  Class Raw2AmiClass{
+
+    #----------------------------
+    proc ::Init() \
+    {
+      ::class_name ="global::Raw2AmiClass"
+      ::dimx = INT(512)
+      ::dimy = INT(512)
+      ::dimz = INT(100)
+      ::dimv = INT(1)
+      ::typePix = INT(0), "Pixel type:  0:UCHAR, 1:UINT, 2:INT, 3:FLOAT, 4:DOUBLE"
+      ::endianess = INT(0), "Endianness,  0:Little, 1:Big "
+      ::voxSizeX = 1, "Voxel size in X"
+      ::voxSizeY = 1, "Voxel size in Y"
+      ::voxSizeZ = 1, "Voxel size in Z"
+      ::input_filename = "", "name of the input raw image" 
+      ::output_varname = "global::raw2ami_res", "name of the image global variable created"
+      ::Gui()
+    }
+
+#----------------------------
+    proc ::Close() \
+    {
+      ::win->_Hide
+      delvars GetObjectName(::Close)
+    }
+    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    
+    #----------------------------
+    proc ::CloseAll() \
+    {
+      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
+      ::Close
+    }
+    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    
+    #------------------------------------
+    proc ::Read() {
+      printn "Read"
+      if (::typePix == 0) { imtype = UCHAR;  }
+      if (::typePix == 1) { imtype = UINT;   }
+      if (::typePix == 2) { imtype = INT;    }
+      if (::typePix == 3) { imtype = FLOAT;  }
+      if (::typePix == 4) { imtype = DOUBLE; }
+      ::im = ReadRawImages(::dimx,::dimy,::dimz,imtype,::dimv,::endianess,::input_filename)
+      ::im.setvoxelsize(::voxSizeX, ::voxSizeY, ::voxSizeZ)
+      eval ::output_varname+"<<= ::im;"
+    }
+    ::Read.Comments("Reads the input raw image and also creates the output image variable (based on ::output_varname).")
+
+
+    proc ::Save() {
+      ::im.save file_name-".raw"+".ami.gz"
+    }
+    
+    proc ::ShowImage() {
+      show ::im
+    }
+
+    proc ::Gui( ) {
+    
+      import = &global::ami_import
+      
+      ::win = import->ParamPanel("Read Raw")
+  
+      ::win->_BeginBook()
+      ::win->_AddPage("IO")
+        ::win->_AddFilename(&::input_filename, "Input", ".", "*")
+  #      ::win->_AddString(&::output_varname)
+  
+      ::win->_AddPage("Header")
+          ::win->_BeginBoxPanel("Image dimensions and type")
+          ::win->_AddInt    (&::dimx,"X dim",0,1024)
+          ::win->_AddInt    (&::dimy,"Y dim",0,1024)
+          ::win->_AddInt    (&::dimz,"Z dim",0,1024)
+    
+          pi_typePix = ::win->_AddEnum(&::typePix,"Pixel Type")
+            ::win->_AddEnumChoice(pi_typePix,"UCHAR")
+            ::win->_AddEnumChoice(pi_typePix,"UINT")
+            ::win->_AddEnumChoice(pi_typePix,"INT")
+            ::win->_AddEnumChoice(pi_typePix,"FLOAT")
+            ::win->_AddEnumChoice(pi_typePix,"DOUBLE")
+          pi_endianess  = ::win->_AddEnum(&::endianess, "Endianness")
+            ::win->_AddEnumChoice(pi_endianess,"Little")
+            ::win->_AddEnumChoice(pi_endianess,"Big")
+        ::win->_EndBoxPanel
+        ::win->_BeginBoxPanel("Voxel size")
+          ::win->_AddFloat    (&::voxSizeX,"X size",0,10)
+          ::win->_AddFloat    (&::voxSizeY,"Y size",0,10)
+          ::win->_AddFloat    (&::voxSizeZ,"Z size",0,10)
+        ::win->_EndBoxPanel
+    
+      ::win->_AddPage("Ctrl")
+        ::win->_BeginHorizontal
+          ::win->_AddButton("Read",     &::Read)
+          ::win->_AddButton("Show",     &::ShowImage)
+        ::win->_EndHorizontal
+        ::win->_AddButton("Save as ami.gz", &::Save)
+      ::win->_EndBook
+  
+      ::win->_BeginHorizontal
+        ::win->_AddButton("Close",      &::Close)
+        ::win->_AddButton("Close All",  &::CloseAll)
+      ::win->_EndHorizontal
+    
+      ::win->_Update(-1)
+      ::win->_Display
+      
+    }
+  
+    ::Init
+  }
+
+}
+# end if (!exists(Raw2Ami_gui)
+
+
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(r2a)) {
+
+  Raw2AmiClass r2a
+  
+  if (argc>=1) {
+    printn "Reading input image"
+    input = Image($1)
+    r2a->image_name = "::imnput"
+    r2a->win.update
+  }
+
+} else {
+  InfoDialog "The script seems to be already loaded."
+}

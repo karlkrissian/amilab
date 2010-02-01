@@ -37,8 +37,8 @@ void wrap_MaxSubImage(ParamList* p)
     int posz=0;
     int n=0;
 
-  if (!get_var_param<InrImage>( input,       p, n)) HelpAndReturn;
-  if (!get_var_param<InrImage>( subimage,    p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>( input,       p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>( subimage,    p, n)) HelpAndReturn;
   if (!get_int_param(   posx,        p, n)) HelpAndReturn;
   if (!get_int_param(   posy,        p, n)) HelpAndReturn;
   if (!get_int_param(   posz,        p, n)) HelpAndReturn;

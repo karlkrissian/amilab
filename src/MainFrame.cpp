@@ -897,34 +897,34 @@ void MainFrame::CreateSettingsPanel(wxWindow* parent)
 
   wxStaticText* scripts_label = new wxStaticText(_settings_panel,wxID_ANY,GetwxStr("Scripts path:"));
 
-  wxDirPickerCtrl* scripts_path = new wxDirPickerCtrl(_settings_panel,
+  scripts_path_picker = boost::shared_ptr<wxDirPickerCtrl>(new wxDirPickerCtrl(_settings_panel,
         wxID_ScriptsPath,
-        GB_scripts_dir, GetwxStr("Scripts path"));
+        GB_scripts_dir, GetwxStr("Scripts path")));
 
   wxStaticText* help_label = new wxStaticText(_settings_panel,wxID_ANY,GetwxStr("Help path:"));
-  wxDirPickerCtrl* help_path = new wxDirPickerCtrl(_settings_panel,
+  help_path_picker = boost::shared_ptr<wxDirPickerCtrl>(new wxDirPickerCtrl(_settings_panel,
         wxID_HelpPath,
-        GB_help_dir, GetwxStr("Help path"));
+        GB_help_dir, GetwxStr("Help path")));
 
   wxBoxSizer* scriptspath_sizer  = new wxBoxSizer(
             wxHORIZONTAL
           );
   scriptspath_sizer->Add(scripts_label,  0, wxEXPAND | wxALL, 5);
-  scriptspath_sizer->Add(scripts_path,   1, wxEXPAND | wxALL, 5);
+  scriptspath_sizer->Add(scripts_path_picker.get(),   1, wxEXPAND | wxALL, 5);
 
   wxBoxSizer* helppath_sizer  = new wxBoxSizer(
             wxHORIZONTAL
           );
-  helppath_sizer->Add(help_label,     0, wxEXPAND | wxALL, 5);
-  helppath_sizer->Add(help_path,      1, wxEXPAND | wxALL, 5);
+  helppath_sizer->Add(help_label,             0, wxEXPAND | wxALL, 5);
+  helppath_sizer->Add(help_path_picker.get(), 1, wxEXPAND | wxALL, 5);
 
   settingspanel_sizer->Add(scriptspath_sizer, 0, wxEXPAND | wxALL, 5);
   settingspanel_sizer->Add(helppath_sizer,    0, wxEXPAND | wxALL, 5);
 
   settingspanel_sizer->Fit(_settings_panel);
 
-  scripts_path->SetPath(GB_scripts_dir);
-  scripts_path->Update();
+  scripts_path_picker->SetPath(GB_scripts_dir);
+  scripts_path_picker->Update();
 
 } // CreateSettingsPanel()
 
@@ -1253,7 +1253,7 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
               new MyTreeItemData(var));
         _var_tree->SetItemFont(itemid,root_font);
       } else
-      if ((var->Type() == type_c_procedure)||(var->Type() == type_class_procedure))
+      if ((var->Type() == type_c_procedure)||(var->Type() == type_class_member))
       {
         itemid = _var_tree->AppendItem(
               vartree_wrapped_procedures,

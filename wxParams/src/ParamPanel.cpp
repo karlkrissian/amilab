@@ -841,7 +841,8 @@ void ParamPanel::ContraintesChaine( int id, char* defaut)
 //------------------------------------------------------------------------------
 unsigned char ParamPanel::AjouteNomFichier( int* id, string_ptr* param, 
 //                   ----------------
-                const char* libelle)
+                const char* libelle,
+                const std::string& tt)
 {
 
   wxFilenameParameter* wxi = new wxFilenameParameter(CurrentParent(), param, libelle);
@@ -849,6 +850,9 @@ unsigned char ParamPanel::AjouteNomFichier( int* id, string_ptr* param,
   ParamInfo pi( TYPE_PARAMETRE_NOM_FICHIER,
                 wxi,
                 AddWidget(wxi));
+
+  if (tt!="") wxi->SetToolTip(GetwxStr(tt.c_str()));
+
   _tab_param.push_back(pi);
   *id = _tab_param.size()-1;
   return( true);

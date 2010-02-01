@@ -119,7 +119,7 @@ InrImage* itkRead_3D_US(ParamList* p)
   InrImage* res = NULL;
   int n=0;
   
-  if (!get_var_param<string>( filename_param, p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<string>( filename_param, p, n)) HelpAndReturnNULL;
 
   res = itkReadClass<unsigned short,3>()(*filename_param,WT_UNSIGNED_SHORT);
 

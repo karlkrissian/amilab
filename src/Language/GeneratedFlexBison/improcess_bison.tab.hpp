@@ -120,7 +120,7 @@ namespace yyip {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 393 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 394 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
 
   IdentifierInfo*         ident;
   Variable*               variable;
@@ -218,7 +218,7 @@ namespace yyip {
      VAR_FILE = 322,
      VAR_C_FUNCTION = 323,
      VAR_C_PROCEDURE = 324,
-     VAR_CLASS_PROCEDURE = 325,
+     VAR_CLASS_MEMBER = 325,
      VAR_C_IMAGE_FUNCTION = 326,
      VAR_AMI_FUNCTION = 327,
      VAR_AMI_CLASS = 328,
@@ -558,7 +558,7 @@ namespace yyip {
      SET = 662,
      SETPOS = 663,
      SHOWCURSOR = 664,
-     UPDATE = 665,
+     T_update = 665,
      COMPARE = 666,
      SETVECTOR = 667,
      T_lininterp = 668,

@@ -436,7 +436,7 @@ void WII_getmotion(ParamList* p)
   int num_calls=1;
   int n=0,c;
 
-  if (!get_var_param<InrImage>(    im1,               p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(    im1,               p, n)) HelpAndReturn;
   if (!get_int_param(    num_calls,         p, n)) HelpAndReturn;
 
   for (c=0;c<num_calls;c++) wiimote_poll(wiimotes, 1);
@@ -479,7 +479,7 @@ void WII_GetRoll(ParamList* p) {
   float* rollp;
   int n=0;
 
-  if (!get_var_param<float>(    rollp,         p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<float>(    rollp,         p, n)) HelpAndReturn;
 
   *rollp = wii_orient.roll;
 }
@@ -494,7 +494,7 @@ void WII_GetPitch(ParamList* p) {
   float* pitchp;
   int n=0;
 
-  if (!get_var_param<float>(    pitchp,         p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<float>(    pitchp,         p, n)) HelpAndReturn;
 
   *pitchp = wii_orient.pitch;
 }
@@ -508,7 +508,7 @@ void WII_GetGForceX(ParamList* p) {
       ";
   float* gforce;
   int n=0;
-  if (!get_var_param<float>(    gforce,         p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<float>(    gforce,         p, n)) HelpAndReturn;
   *gforce = wii_gforce.x;
 }
 
@@ -521,7 +521,7 @@ void WII_GetGForceY(ParamList* p) {
       ";
   float* gforce;
   int n=0;
-  if (!get_var_param<float>(    gforce,         p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<float>(    gforce,         p, n)) HelpAndReturn;
   *gforce = wii_gforce.y;
 }
 
@@ -534,7 +534,7 @@ void WII_GetGForceZ(ParamList* p) {
       ";
   float* gforce;
   int n=0;
-  if (!get_var_param<float>(    gforce,         p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<float>(    gforce,         p, n)) HelpAndReturn;
   *gforce = wii_gforce.z;
 }
 
@@ -547,7 +547,7 @@ void WII_GetButtons(ParamList* p) {
       ";
   int* bts;
   int n=0;
-  if (!get_var_param<int>(    bts,         p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<int>(    bts,         p, n)) HelpAndReturn;
   *bts = wii_btns;
 }
 
@@ -592,7 +592,7 @@ void WII_GetEventCounter(ParamList* p)
       ";
   float* counter;
   int n=0;
-  if (!get_var_param<float>(    counter,         p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<float>(    counter,         p, n)) HelpAndReturn;
   *counter = event_counter;
 }
 
@@ -607,7 +607,7 @@ void WII_SetMotionSensing(ParamList* p)
       ";
   float ms;
   int n=0;
-  if (!get_param<float>(  ms,         p, n)) HelpAndReturn;
+  if (!get_val_param<float>(  ms,         p, n)) HelpAndReturn;
   wiimote_motion_sensing(wiimotes[0], ms);
 
 }

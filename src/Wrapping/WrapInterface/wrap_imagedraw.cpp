@@ -1,5 +1,5 @@
 //
-// C++ Implementation: wrap_imagedraw
+// C++ Implementation: wrap_DessinImage
 //
 // Description: 
 //
@@ -22,7 +22,7 @@
 extern VarContexts  Vars;
 
 
-void AddWrapImageDraw( const DessinImage::ptr& imdraw, const std::string& objname)
+void AddWrapImageDraw( const DessinImage::ptr& objectptr, const std::string& objname)
 {
   // Create new instance of the class
   AMIObject* amiobject = new AMIObject;
@@ -32,17 +32,10 @@ void AddWrapImageDraw( const DessinImage::ptr& imdraw, const std::string& objnam
   Variables::ptr previous_ocontext = Vars.GetObjectContext();
   Vars.SetObjectContext(amiobject->GetContext());
 
-  Vars.AddVar(  type_class_procedure, "DrawLine",  
-                (void*)  new wrap_ImageDrawDrawLine(imdraw),  OBJECT_CONTEXT_NUMBER);
-
-  Vars.AddVar(  type_class_procedure, "DisplayDA",  
-                (void*)  new wrap_ImageDrawDisplayDA(imdraw), OBJECT_CONTEXT_NUMBER);
-
-  Vars.AddVar(  type_class_procedure, "LineParam",  
-                (void*)  new wrap_ImageDrawLineParam(imdraw), OBJECT_CONTEXT_NUMBER);
-
-  Vars.AddVar(  type_class_procedure, "SetLineColor", 
-                (void*)  new wrap_ImageDrawSetLineColor(imdraw), OBJECT_CONTEXT_NUMBER);
+  ADDMEMBER("DrawLine",       DessinImage,DrawLine);
+  ADDMEMBER("DisplayDA",      DessinImage,DisplayDA);
+  ADDMEMBER("LineParam",      DessinImage,LineParam);
+  ADDMEMBER("SetLineColor",   DessinImage,SetLineColor);
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);
@@ -70,35 +63,30 @@ void wrap_ImageDraw( ParamList* p)
   DessinImage::ptr imdraw;
   std::string* object_name = NULL;
 
-  if (!get_varptr_param<DessinImage>( imdraw,      p, n)) HelpAndReturn;
-  if (!get_var_param<string>(    object_name, p, n)) HelpAndReturn;
+  if (!get_val_smtptr_param<DessinImage>( imdraw,      p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<string>(    object_name, p, n)) HelpAndReturn;
 
   AddWrapImageDraw(imdraw,*object_name);
 }
 
 
-
-/**
- * set the line parameters on an image drawing window
- * @param p 
- */
-void wrap_ImageDrawLineParam::CallProc( ParamList* p)
+//---------------------------------------------------------
+// LineParam
+//---------------------------------------------------------
+void wrap_DessinImageLineParam::SetParametersComments()
 {
-    char functionname[] = "LineParam";
-    char description[]=" \n\
-      Sets the parameters of the line. \n\
-            ";
-    char parameters[] =" \n\
-      - thickness (def:1): line thickness \n\
-      - style (def:0): line style, 0 for SOLID, 1 for DOT \n\
-            ";
-
+  ADDPARAMCOMMENT( "thickness (def:1): line thickness.");
+  ADDPARAMCOMMENT( "style (def:0): line style, 0 for SOLID, 1 for DOT.");
+}
+//---------------------------------------------------------
+Variable::ptr wrap_DessinImageLineParam::CallMember( ParamList* p)
+{
   int thickness = 1;
   int style = 0;
   int n=0;
 
-  if (!get_int_param( thickness, p, n)) HelpAndReturn;
-  if (!get_int_param( style, p, n)) HelpAndReturn;
+  if (!get_int_param( thickness, p, n)) ClassHelpAndReturn;
+  if (!get_int_param( style, p, n))     ClassHelpAndReturn;
 
   int wxstyle;
   switch (style) {
@@ -106,96 +94,84 @@ void wrap_ImageDrawLineParam::CallProc( ParamList* p)
     case 1: wxstyle = wxDOT; break;
     default: wxstyle = wxSOLID;
   }
-  this->_imdraw->FixeParametresLigne( thickness, wxstyle, wxCAP_ROUND, wxJOIN_MITER);
+  this->_objectptr->FixeParametresLigne( thickness, wxstyle, wxCAP_ROUND, wxJOIN_MITER);
+  return Variable::ptr();
 
 }
 
 
-/**
- * set the line color on an image drawing window
- * @param p 
- */
-void wrap_ImageDrawSetLineColor::CallProc( ParamList* p)
+//---------------------------------------------------------
+//  SetLineColor
+//---------------------------------------------------------
+void wrap_DessinImageSetLineColor::SetParametersComments()
 {
-    char functionname[] = "SetLineColor";
-    char description[]=" \n\
-      Sets the color of the line. \n\
-            ";
-    char parameters[] =" \n\
-      - red    (0-255) default 10\n\
-      - green  (0-255) default 10\n\
-      - blue   (0-255) default 10\n\
-      - alpha  (0-255) default wxALPHA_OPAQUE \n\
-      \n\
-            ";
-
+  ADDPARAMCOMMENT( "red    (0-255) default 10.");
+  ADDPARAMCOMMENT( "green  (0-255) default 10.");
+  ADDPARAMCOMMENT( "blue   (0-255) default 10.");
+  ADDPARAMCOMMENT( "alpha  (0-255) default 10.");
+}
+//---------------------------------------------------------
+Variable::ptr wrap_DessinImageSetLineColor::CallMember( ParamList* p)
+{
   int red   = 10;
   int green = 10;
   int blue  = 10;
   int alpha = wxALPHA_OPAQUE;
   int n=0;
 
-  if (!get_int_param( red,   p, n)) HelpAndReturn;
-  if (!get_int_param( green, p, n)) HelpAndReturn;
-  if (!get_int_param( blue,  p, n)) HelpAndReturn;
-  if (!get_int_param( alpha, p, n)) HelpAndReturn;
+  if (!get_int_param( red,   p, n)) ClassHelpAndReturn;
+  if (!get_int_param( green, p, n)) ClassHelpAndReturn;
+  if (!get_int_param( blue,  p, n)) ClassHelpAndReturn;
+  if (!get_int_param( alpha, p, n)) ClassHelpAndReturn;
 
-  this->_imdraw->SetPenColor(wxColour((unsigned char)red,
+  this->_objectptr->SetPenColor(wxColour((unsigned char)red,
     (unsigned char)green,
     (unsigned char)blue,
     (unsigned char)alpha));
+  return Variable::ptr();
 }
 
 
-/**
- * Draws a line on an image drawing window
- * @param p 
- */
-void wrap_ImageDrawDrawLine::CallProc( ParamList* p)
+//---------------------------------------------------------
+//  DrawLine
+//---------------------------------------------------------
+void wrap_DessinImageDrawLine::SetParametersComments()
 {
-    char functionname[] = "DrawLine";
-    char description[]=" \n\
-      Draws a line on XY plane. \n\
-            ";
-    char parameters[] =" \n\
-      - number x1  \n\
-      - number y1  \n\
-      - number x2  \n\
-      - number y2  \n\
-      - number update (def:0): 0 does not update display, 1 updates display\n\
-            ";
-
+  ADDPARAMCOMMENT( "number x1.");
+  ADDPARAMCOMMENT( "number y1.");
+  ADDPARAMCOMMENT( "number x2.");
+  ADDPARAMCOMMENT( "number y2.");
+  ADDPARAMCOMMENT( "number update (def:0): 0 does not update display, 1 updates display");
+}
+//---------------------------------------------------------
+Variable::ptr wrap_DessinImageDrawLine::CallMember( ParamList* p)
+{
   float x1 = 0,y1 = 0,x2 = 0,y2 = 0 ;
   int update = 0;
   int n=0;
 
-  if (!get_param<float>( x1, p, n)) HelpAndReturn;
-  if (!get_param<float>( y1, p, n)) HelpAndReturn;
-  if (!get_param<float>( x2, p, n)) HelpAndReturn;
-  if (!get_param<float>( y2, p, n)) HelpAndReturn;
-  if (!get_int_param(   update, p, n)) HelpAndReturn;
+  if (!get_val_param<float>( x1, p, n)) ClassHelpAndReturn;
+  if (!get_val_param<float>( y1, p, n)) ClassHelpAndReturn;
+  if (!get_val_param<float>( x2, p, n)) ClassHelpAndReturn;
+  if (!get_val_param<float>( y2, p, n)) ClassHelpAndReturn;
+  if (!get_int_param(   update, p, n))  ClassHelpAndReturn;
 
   //imdraw->FixeParametresLigne( 1, wxDOT, wxCAP_ROUND, wxJOIN_MITER);
-  this->_imdraw->DrawLineZ(x1,y1,x2,y2);
+  this->_objectptr->DrawLineZ(x1,y1,x2,y2);
   //imdraw->AfficheImage( IMAGE_XY);
-  if (update) this->_imdraw->DrawingAreaDisplay();
+  if (update) this->_objectptr->DrawingAreaDisplay();
+  return Variable::ptr();
 
 }
 
 
-/**
- * Updates the display
- * @param p 
- */
-void wrap_ImageDrawDisplayDA::CallProc( ParamList* p)
+//---------------------------------------------------------
+//  DisplayDA
+//---------------------------------------------------------
+void wrap_DessinImageDisplayDA::SetParametersComments() {}
+//---------------------------------------------------------
+Variable::ptr wrap_DessinImageDisplayDA::CallMember( ParamList* p)
 {
-    char functionname[] = "DisplayDA";
-    char description[]=" \n\
-      Updates the display of the Drawing Area\n\
-            ";
-    char parameters[] =" \n\
-            ";
-
-  this->_imdraw->DrawingAreaDisplay();
-
+  this->_objectptr->DrawingAreaDisplay();
+  return Variable::ptr();
 }

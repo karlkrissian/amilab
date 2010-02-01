@@ -388,7 +388,7 @@ proc TC_CreateWindow() {
         TC_win.AddPage("Response")
         TC_win.BeginBox("Param")
           // Integration mode
-          TC_pairs_mode_id = TC_win.AddEnum(TC_pairs_mode,3)
+          TC_pairs_mode_id = TC_win.AddEnum(TC_pairs_mode)
           TC_pmin_id       = TC_win.AddEnumChoice(TC_pairs_mode_id,"Min")
           TC_pmax_id       = TC_win.AddEnumChoice(TC_pairs_mode_id,"Max")
           TC_pmean_id      = TC_win.AddEnumChoice(TC_pairs_mode_id,"Mean")

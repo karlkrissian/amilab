@@ -131,7 +131,7 @@ Variable* Variables::AddVarPtr( vartype type,
 
 
 //--------------------------------------------------
-Variable* Variables::AddVar( Variable* var)
+Variable* Variables::AddVar( Variable* var, Variables::ptr context )
 {
   CLASS_MESSAGE(boost::format(" %s ") % var->Name());
 
@@ -139,6 +139,7 @@ Variable* Variables::AddVar( Variable* var)
   Variable* newvar = new Variable();
   (*newvar) = (*var);
   newvar->Rename(resname.c_str());
+  newvar->SetContext(context);
   _vars.push_front(newvar);
   delete var; // ok not deleting the smart pointer inside, but not too clean ...
 
@@ -147,7 +148,7 @@ Variable* Variables::AddVar( Variable* var)
 
 
 //--------------------------------------------------
-Variable* Variables::AddVar( const Variable::ptr& var)
+Variable* Variables::AddVar( const Variable::ptr& var, Variables::ptr context )
 {
   CLASS_MESSAGE(boost::format(" %s ") % var->Name());
 
@@ -156,6 +157,7 @@ Variable* Variables::AddVar( const Variable::ptr& var)
   // TODO: vars should use smart pointers to variables ... and we should avoid this kind of "copy", but now the variable inside contains a smart pointer ...
   (*newvar) = (*var);
   newvar->Rename(resname.c_str());
+  newvar->SetContext(context);
   _vars.push_front(newvar);
 
   return newvar;

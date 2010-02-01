@@ -34,7 +34,7 @@ InrImage* wrapComputePV(ParamList* p)
 
     InrImage* result;
 
-  if (!get_var_param<InrImage>(  input,        p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>(  input,        p, n)) HelpAndReturnNULL;
   if (!get_int_param(    resolution,   p, n)) HelpAndReturnNULL;
 
   result = ComputePartialVolume(input,resolution);
@@ -64,7 +64,7 @@ InrImage* wrapComputePV_subdiv(ParamList* p)
 
     InrImage* result;
 
-  if (!get_var_param<InrImage>(  input,         p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>(  input,         p, n)) HelpAndReturnNULL;
   if (!get_int_param(    subdiv_levels, p, n)) HelpAndReturnNULL;
 
   result = ComputePartialVolumeSubdiv(input,subdiv_levels);

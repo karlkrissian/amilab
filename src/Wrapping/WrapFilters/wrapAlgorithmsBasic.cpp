@@ -64,7 +64,7 @@ InrImage* wrapFastLocalSumDir(ParamList* p)
   int stepsize=4;
   InrImage* result;
 
-  if (!get_var_param<InrImage>(  input,      p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>(  input,      p, n)) HelpAndReturnNULL;
   if (!get_int_param(    wsize,      p, n)) HelpAndReturnNULL;
   if (!get_int_param(    axis,       p, n)) HelpAndReturnNULL;
   if (!get_int_param(    mode,       p, n)) HelpAndReturnNULL;

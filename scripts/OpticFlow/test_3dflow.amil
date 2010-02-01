@@ -1383,7 +1383,7 @@ proc InputPredef_gui() {
   
   w_main.BeginBox("Load pre-defined images")
 
-    input_id = w_main.AddEnum(data_id,10)
+    input_id = w_main.AddEnum(data_id)
     w_main.AddEnumChoice(input_id,"New Sphere 128")
     w_main.AddEnumChoice(input_id,"New Sphere 64")
     w_main.AddEnumChoice(input_id,"Sphere")
@@ -1571,7 +1571,7 @@ proc PDE_flow_gui() {
         use_splines_id      = w_main.AddBoolean(use_splines)
         w_main.EndHorizontal
         
-        boundtype_id = w_main.AddEnum(boundarytype,3)
+        boundtype_id = w_main.AddEnum(boundarytype)
         w_main.AddEnumChoice(boundtype_id,"border")
         w_main.AddEnumChoice(boundtype_id,"outside mask")
       

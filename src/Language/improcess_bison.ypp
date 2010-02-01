@@ -188,11 +188,10 @@ class wxScheduleTimer : public wxTimer
 // to delete the wxScheduleTimer when necessary
 static std::list<wxScheduleTimer::ptr> schedule_timers;
 
-static void CB_ParamWin( void* cd ) {
+void CB_ParamWin( void* cd ) {
 
-  Variable* v = (Variable*) (cd);
-
-  GB_driver.yyip_call_function(v);
+  AMIFunction::ptr* func_ptr = (AMIFunction::ptr*) (cd);
+  GB_driver.yyip_call_function(*func_ptr);
 
 } // CB_ParamWin( void* cd )
 
@@ -201,9 +200,11 @@ static void CB_ParamWin( void* cd ) {
 //  CB_ParamWin(cd);
 //}
 
+/*
 static void CB_Button(  void* cd) {
   CB_ParamWin(cd);
 }
+*/
 
 void CB_delete_variable( void* var);
 
@@ -472,7 +473,7 @@ static void CB_update_imagelist( void* imagelist_gui)
 %token VAR_FILE
 %token VAR_C_FUNCTION
 %token VAR_C_PROCEDURE
-%token VAR_CLASS_PROCEDURE
+%token VAR_CLASS_MEMBER
 %token VAR_C_IMAGE_FUNCTION
 %token VAR_AMI_FUNCTION
 %token VAR_AMI_CLASS
@@ -763,7 +764,7 @@ static void CB_update_imagelist( void* imagelist_gui)
 
 %token T_PrintMatrices
 
-%token SET SETPOS SHOWCURSOR UPDATE COMPARE SETVECTOR
+%token SET SETPOS SHOWCURSOR T_update COMPARE SETVECTOR
 %token T_lininterp
 %token T_SetCompareDisplacement
 %token T_DrawVector
@@ -888,7 +889,7 @@ static void CB_update_imagelist( void* imagelist_gui)
 %type <variable>       VAR_FILE
 %type <variable>       VAR_C_FUNCTION
 %type <variable>       VAR_C_PROCEDURE
-%type <variable>       VAR_CLASS_PROCEDURE
+%type <variable>       VAR_CLASS_MEMBER
 %type <variable>       VAR_C_IMAGE_FUNCTION
 %type <variable>       VAR_AMI_FUNCTION
 %type <variable>       VAR_AMI_CLASS
@@ -937,6 +938,7 @@ static void CB_update_imagelist( void* imagelist_gui)
 %destructor { delete  $$; } identifier IDENTIFIER
 %destructor { delete  $$; } instr_block
 %destructor { delete  $$; } image_extent
+%destructor { delete  $$; } exprstringlist
 
 
 
@@ -1137,12 +1139,14 @@ proc_decl:
       amifunc->SetFileName(driver.current_file);
       amifunc->SetParamList($5);
       amifunc->SetBody(     body);
+
       if (GB_debug)
         cout  << ident->GetName()
               << " body = "
               << body->GetBody()  << endl;
 
-      Vars.AddVar( type_ami_function,ident, (void*) amifunc);
+      Variable* newvar = Vars.AddVar( type_ami_function,ident, (void*) amifunc);
+      amifunc->SetContext(newvar->GetContext());
 
       // desactivate the flag procedure_declaration
       // which allows not to accept variables as identifiers
@@ -1178,10 +1182,12 @@ proc_decl:
                     % varname  % body->GetBody());
 
       // add the variable in the same context ...
-      Vars.AddVar(  type_ami_function,
-                    varname.c_str(),
-                    (void*) amifunc,
-                    context);
+      Variable* newvar =
+        Vars.AddVar(  type_ami_function,
+                      varname.c_str(),
+                      (void*) amifunc,
+                      context);
+      amifunc->SetContext(newvar->GetContext());
 
       // desactivate the flag procedure_declaration
       // which allows not to accept variables as identifiers
@@ -1281,19 +1287,29 @@ func_inst :
      }
     | VAR_AMI_FUNCTION  T_OP_PAR param_list T_CL_PAR end_instr
     {
-        Variable*       var   = $1;
+    /**
+      Description:
+        Call a language function with its parameters.
+    **/
+        Variable*         var   = $1;
+        AMIFunction::ptr* func_ptr = (AMIFunction::ptr*) $1->Pointer();
         ParamList::ptr  param($3);
 
-        driver.yyip_call_function(var,param);
+        driver.yyip_call_function(*func_ptr,param);
 
 
         }
         | VAR_AMI_FUNCTION  end_instr
         {
+    /**
+      Description:
+        Call a language function without parameters.
+    **/
           Variable*    var   = $1;
 
+          AMIFunction::ptr* func_ptr = (AMIFunction::ptr*) var->Pointer();
           // Call the function
-          driver.yyip_call_function(var);
+          driver.yyip_call_function(*func_ptr);
         }
 ;
 
@@ -1486,6 +1502,44 @@ command:
           IdentifierInfo::ptr ident($1);
 
           res = ((Variable::ptr (*)(ParamList*)) var->Pointer())(param.get());
+          if (!res.use_count()) {
+            driver.yyiperror(" function returns NULL \n");
+            YYABORT;
+          }
+          res->Rename(ident->GetName().c_str());
+          Vars.AddVar(res,ident->GetCreationContext());
+        }
+        | identifier ASSIGN_OP VAR_CLASS_MEMBER  T_OP_PAR param_list T_CL_PAR
+        {
+        /**
+          Description:
+            Calls a wrapped class member function that returns a smart pointer to a variable, requires a new variable name as a result.
+        **/
+          Variable*      var   = $3;
+          ParamList::ptr param($5);
+          Variable::ptr  res;
+          IdentifierInfo::ptr ident($1);
+
+          res = (*(WrapClassMember::ptr*) var->Pointer())->CallMember(param.get());
+          if (!res.use_count()) {
+            driver.yyiperror(" function returns NULL \n");
+            YYABORT;
+          }
+          res->Rename(ident->GetName().c_str());
+          Vars.AddVar(res,ident->GetCreationContext());
+        }
+        | identifier ASSIGN_OP VAR_CLASS_MEMBER  
+        {
+        /**
+          Description:
+            Calls a wrapped class member function that returns a smart pointer to a variable, requires a new variable name as a result.
+        **/
+          Variable*      var   = $3;
+          ParamList::ptr param((ParamList*)NULL);
+          Variable::ptr  res;
+          IdentifierInfo::ptr ident($1);
+
+          res = (*(WrapClassMember::ptr*) var->Pointer())->CallMember(param.get());
           if (!res.use_count()) {
             driver.yyiperror(" function returns NULL \n");
             YYABORT;
@@ -2554,7 +2608,7 @@ command:
         // call with NULL paramlist pointer to trigger help message
         ((void (*)(ParamList*)) var->Pointer())(NULL);
     }
-    | HELP VAR_CLASS_PROCEDURE
+    | HELP VAR_CLASS_MEMBER
     {
     /**
       Description: 
@@ -2562,7 +2616,7 @@ command:
     **/
        Variable*  var   = $2;
         // call with NULL paramlist pointer to trigger help message
-        (*(WrapClassMember::ptr*) var->Pointer())->CallProc(NULL);
+        (*(WrapClassMember::ptr*) var->Pointer())->ShowHelp();
     }
     | HELP ASTRING
     {
@@ -2737,7 +2791,7 @@ command:
 
           draw->Paint();
         }
-        | VAR_IMAGEDRAW T_POINT UPDATE
+        | VAR_IMAGEDRAW T_POINT T_update
         {
           DessinImage::ptr draw;
           DessinImageParametres* param;
@@ -3128,7 +3182,7 @@ command:
             DessinImage::ptr draw;
 
             draw = *(DessinImage::ptr*) ($1->Pointer());
-            draw->SetPaintCallback( (void*) CB_ParamWin, (void*) $5);
+            draw->SetPaintCallback( (void*) CB_ParamWin, (void*) $5->Pointer() );
             // may be a pb to call Paint() here since it will start another interpreter ??? to check
             //draw->Paint();
         }
@@ -5106,7 +5160,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
           pw->ReAfficheParametres();
         }
         |
-        VAR_PARAMWIN T_POINT UPDATE
+        VAR_PARAMWIN T_POINT T_update
         {
         /**
         Parameters:
@@ -5120,7 +5174,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
             GB_main_wxFrame->GetAuiManager().Update();
         }
         |
-        VAR_PARAMWIN T_POINT UPDATE T_OP_PAR  expr  T_CL_PAR
+        VAR_PARAMWIN T_POINT T_update T_OP_PAR  expr  T_CL_PAR
         {
         /**
         Parameters:
@@ -5155,7 +5209,7 @@ cerr << "Feature not available, needs to be updated ! " << endl;
         {
           ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
           int n = pw->NbParameters();
-            pw->ChangedValueCallback(n-1,(void*) CB_ParamWin, (void*) $5 );
+            pw->ChangedValueCallback(n-1,(void*) CB_ParamWin, (void*) $5->Pointer() );
         }
     |
     VAR_PARAMWIN T_POINT T_SetPositionProp 
@@ -5378,11 +5432,18 @@ cerr << "Feature not available, needs to be updated ! " << endl;
           ((void (*)(ParamList*)) var->Pointer())(param.get());
         }
         |
-        VAR_CLASS_PROCEDURE  T_OP_PAR param_list T_CL_PAR
+        VAR_CLASS_MEMBER  T_OP_PAR param_list T_CL_PAR
         {
           Variable*  var   = $1;
           ParamList::ptr param($3);
-          (*(WrapClassMember::ptr*) var->Pointer())->CallProc(param.get());
+          Variable::ptr tmpvar = (*(WrapClassMember::ptr*) var->Pointer())->CallMember(param.get());
+        }
+        |
+        VAR_CLASS_MEMBER  
+        {
+          Variable*  var   = $1;
+          ParamList::ptr param((ParamList*) NULL);
+          Variable::ptr tmpvar = (*(WrapClassMember::ptr*) var->Pointer())->CallMember(param.get());
         }
         |
         T_Set3DArrowParam T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
@@ -5436,12 +5497,36 @@ param_list:
           ParamList* pl = new ParamList();
           $$ = pl;
         }
+        | T_AND variable
+        {
+          ParamList* pl = new ParamList();
+          Variable::ptr newvar(new Variable());
+          // copy information from variable, including comments
+          // don't need to care about variable context information
+          (*newvar) = (*(Variable*) $2);
+          // don't change variable name
+          //newvar->Rename("Param1");
+          pl->AddParam(newvar);
+          $$ = pl;
+        }
+        | param_list T_COMMA T_AND variable
+        {
+          ParamList* pl =  $1;
+          Variable::ptr newvar(new Variable());
+          // copy information from variable, including comments
+          (*newvar) = (*(Variable*) $4);
+          // don't change variable name
+          //std::string paramname = (boost::format("Param%1%")%pl->GetNumParam()).str();
+          //newvar->Rename(paramname.c_str());
+          pl->AddParam(newvar);
+          $$ = pl;
+        }
         | expr
         {
           ParamList* pl(new ParamList);
           Variable::ptr newvar(new Variable());
           float_ptr* x = new float_ptr(new float($1));
-          newvar->InitPtr(type_float,"Param1",x);
+          newvar->InitPtr(type_float,"Param0",x);
           pl->AddParam(newvar);
           $$ = pl;
         }
@@ -5460,7 +5545,7 @@ param_list:
           ParamList* pl = new ParamList();
           Variable::ptr newvar(new Variable());
           string_ptr* x = new string_ptr(new string($1));
-          newvar->InitPtr(type_string,"Param1",x);
+          newvar->InitPtr(type_string,"Param0",x);
           pl->AddParam(newvar);
           $$ = pl;
           delete [] $1;
@@ -5481,7 +5566,7 @@ param_list:
           ParamList* pl = new ParamList();
           Variable::ptr newvar(new Variable());
           InrImage::ptr* i = new InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
-          newvar->InitPtr(type_image,"Param1",i);
+          newvar->InitPtr(type_image,"Param0",i);
           pl->AddParam(newvar);
           $$ = pl;
         }
@@ -5492,29 +5577,6 @@ param_list:
           InrImage::ptr*   i = new InrImage::ptr( (InrImage*) driver.im_stack.GetLastImage());
           std::string paramname = (boost::format("Param%1%")%pl->GetNumParam()).str();
           newvar->InitPtr(type_image,paramname.c_str(),i);
-          pl->AddParam(newvar);
-          $$ = pl;
-        }
-        | T_AND variable
-        {
-          ParamList* pl = new ParamList();
-          Variable::ptr newvar(new Variable());
-          // copy information from variable, including comments
-          // don't need to care about variable context information
-          (*newvar) = (*(Variable*) $2);
-          // change variable name
-          newvar->Rename("Param1");
-          pl->AddParam(newvar);
-          $$ = pl;
-        }
-        | param_list T_COMMA T_AND variable
-        {
-          ParamList* pl =  $1;
-          Variable::ptr newvar(new Variable());
-          // copy information from variable, including comments
-          (*newvar) = (*(Variable*) $4);
-          std::string paramname = (boost::format("Param%1%")%pl->GetNumParam()).str();
-          newvar->Rename(paramname.c_str());
           pl->AddParam(newvar);
           $$ = pl;
         }
@@ -6687,8 +6749,8 @@ postfix_expr
     ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
     std::string tooltip = (boost::format("%s  (%s)") % $7->GetComments() % $7->Name()).str();
     pw->AddButton( &bid, $5,
-                (void*) CB_Button,
-                (void*) $7,
+                (void*) CB_ParamWin,
+                (void*) $7->Pointer(),
                 tooltip);
     $$ = bid;
     }
@@ -6759,25 +6821,6 @@ postfix_expr
           (void*)CB_update_imagelist,
           EnumOptionMenu,
           tooltip);
-      //pw->EnumerationDefaut( var_id,  *var);
-      $$ = var_id;
-    }
-    |
-    VAR_PARAMWIN T_POINT T_AddEnum T_OP_PAR   VAR_INT T_COMMA expr   T_CL_PAR
-    {
-    /**
-    Parameters:
-      (5) Variable of type INT
-      (7) number of different values of the enumeration
-
-    Description:
-      Adds an integer variable as an enumeration to the parameter window.
-    **/
-      int*   var = ((int_ptr*) $5->Pointer())->get();
-      ParamPanel_ptr pw  = *(ParamPanel_ptr*) $1->Pointer();
-      int size = (int) $7;
-      int var_id;
-      pw->AddEnumeration( &var_id, size, var, (char*)$5->Name().c_str());
       //pw->EnumerationDefaut( var_id,  *var);
       $$ = var_id;
     }
@@ -6903,7 +6946,9 @@ postfix_expr
         string_ptr defmask( new std::string($11));
 
         // passer AjouteNomFichier a std::string !!!!
-        pw->AjouteNomFichier( &var_id, (string_ptr*)$5->Pointer(), label->c_str());
+        pw->AjouteNomFichier( &var_id,
+          (string_ptr*)$5->Pointer(), 
+          label->c_str());
         pw->ContraintesNomFichier(var_id,
                                   defpath->c_str(),
                                   (char*)"",
@@ -7297,7 +7342,6 @@ basic_type:
         $$ = (int) (*(InrImage::ptr*) $1->Pointer())->GetFormat();
       };
 
-
 var_image:
         VAR_IMAGE
         {
@@ -7333,7 +7377,7 @@ image:
      delete [] $3;
        }
        |
-       T_ReadRawImages T_OP_PAR expr T_COMMA expr T_COMMA basic_type T_COMMA
+       T_ReadRawImages T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA
                            expr T_COMMA expr_string T_COMMA expr T_COMMA expr T_CL_PAR
        {
        /**
@@ -7391,7 +7435,7 @@ image:
      }
        }
        |
-       T_ReadRawImages T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA  basic_type T_COMMA
+       T_ReadRawImages T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA
                            expr T_COMMA expr_string  T_CL_PAR
        {
        /**
@@ -7445,7 +7489,7 @@ image:
      }
        }
        |
-       T_ReadRawImages T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA  basic_type T_COMMA expr T_COMMA
+       T_ReadRawImages T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr T_COMMA
                            expr T_COMMA expr_string  T_CL_PAR
        {
        /**
@@ -11747,7 +11791,7 @@ variable:
         | VAR_FILE
         | VAR_C_FUNCTION
         | VAR_C_PROCEDURE
-        | VAR_CLASS_PROCEDURE
+        | VAR_CLASS_MEMBER
         | VAR_C_IMAGE_FUNCTION
         | VAR_AMI_FUNCTION
         | VAR_AMI_CLASS
@@ -11849,7 +11893,7 @@ void wxScheduleTimer::Notify()
 //   -----------------------
 {
   //cout << "Notify()" << endl;
-  CB_ParamWin(var);
+  CB_ParamWin(var->Pointer());
 
   std::list<wxScheduleTimer::ptr>::iterator Iter;
   for (Iter  = schedule_timers.begin();

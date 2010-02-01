@@ -42,12 +42,12 @@ InrImage* Wrap_NewNLmeans(ParamList* p)
   FastNLmeans_params params;
   int n=0;
 
-  if (!get_var_param<InrImage>(  params.input,       p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>(  params.input,       p, n)) HelpAndReturnNULL;
   if (!get_int_param(    params.t,           p, n)) HelpAndReturnNULL;
   if (!get_int_param(    params.f,           p, n)) HelpAndReturnNULL;
-  if (!get_param<float>(  params.h,           p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>(  params.h,           p, n)) HelpAndReturnNULL;
   if (!get_int_param(    params.num_threads, p, n)) HelpAndReturnNULL;
-  if (!get_param<float>(  params.minweight,   p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>(  params.minweight,   p, n)) HelpAndReturnNULL;
   if (!get_int_param(    params.dist_mode,   p, n)) HelpAndReturnNULL;
 
   FastNLmeans fast_nlmeans(params);

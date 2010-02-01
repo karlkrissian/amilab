@@ -38,6 +38,7 @@
 #include <string>
 #include "DefineClass.hpp"
 #include "AmiInstructionBlock.h"
+#include "Variables.hpp"
 
 using namespace boost;
 
@@ -46,7 +47,7 @@ using namespace boost;
  **/
 class AMIFunction {
 
-  DEFINE_CLASS(AMIFunction)
+  DEFINE_CLASS(AMIFunction);
 
 private:
 
@@ -61,6 +62,9 @@ private:
 
   /// Filename of the function
   std::string               _filename;
+
+  /// Smart pointer to the context of the function
+  boost::shared_ptr<Variables>   _context;
 
  public:
 
@@ -105,6 +109,23 @@ private:
   const char* GetString() const
   {
     return  _body->GetBody().c_str();
+  }
+
+  /**
+   * Sets the function context of variables.
+   **/
+  void SetContext(const Variables::ptr& val) 
+  {
+    _context = val;
+  }
+
+  /**
+   * Create a new shared pointer reference to the object.
+   * @return variable's context
+   */
+  Variables::ptr GetContext() const
+  {
+    return _context;
   }
 
 }; // AMIFunction

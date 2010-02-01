@@ -45,6 +45,9 @@
   msg->ShowModal();\
   return; } \
 
+
+
+
 /*! \def HelpAndReturnNULL
     \brief Shows help and returns NULL pointer
 */
@@ -66,28 +69,35 @@
 int get_num_param(ParamList* p);
 
 /**
+ * Function used to parse a variable of generic type in a list of parameters, and to give back a smart pointer to the variable.
+ */
+template<class T>
+bool get_var_param( Variable::ptr& var, 
+                    ParamList*p, int& num);
+
+/**
  * Function used to parse a variable of generic type in a list of parameters, and to give back its value.
  */
 template<class T>
-bool get_param(        T& arg, 
-                          ParamList*p, int& num);
+bool get_val_param( T& arg, 
+                ParamList*p, int& num);
 
 
 /**
  * Function used to parse a variable of generic type in a list of parameters, and to give back a pointer to its value.
  */
 template<class T>
-bool get_var_param(    T*& arg, 
-                          ParamList*p, int& num, 
-                          bool required=false);
+bool get_val_ptr_param( T*& arg, 
+                    ParamList*p, int& num, 
+                    bool required=false);
 
 /**
  * Function used to parse a variable of generic type in a list of parameters, and to give back a smart pointer to its value.
  */
 template<class T>
-bool get_varptr_param( boost::shared_ptr<T>& arg, 
-                          ParamList*p, int& num, 
-                          bool required=false);
+bool get_val_smtptr_param( boost::shared_ptr<T>& arg, 
+                       ParamList*p, int& num, 
+                       bool required=false);
 
 
 /**

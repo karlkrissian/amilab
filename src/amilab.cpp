@@ -120,6 +120,9 @@ class MyApp: public wxApp
   virtual bool OnInitGui();
   virtual bool OnInit();
   virtual int  OnExit();
+private:
+  //MainFrame::ptr mainframe;
+  MainFrame* mainframe;
 };
 
 
@@ -283,24 +286,25 @@ bool MyApp::OnInit()
 //  GB_contexte  = (XtAppContext) this->GetAppContext();
   GB_wxApp = this;
 
-  MainFrame *frame = new MainFrame(
+  mainframe = new MainFrame(
                 GetwxStr("AMILab ")+GetwxStr(AMILAB_VERSION),
 //                _T("AMILab: Image Processing and Visualization"),
                 wxDefaultPosition,
                 wxSize(900,700));
 
 //  #if defined(WIN32) || defined(__APPLE__)
-    frame->SetIcon(wxIcon(amilab_logo_new_32x32_alpha_xpm));
+    mainframe->SetIcon(wxIcon(amilab_logo_new_32x32_alpha_xpm));
 //  #endif
 
 //  printf("frame->Show(true)\n");
 
 
 //  printf("application name = \"%s\" \n",wxGetApp().GetClassName().c_str());
-  GB_main_wxFrame = frame;
+  // TODO: avoid using get() here ...
+  GB_main_wxFrame = mainframe;
 
-  frame->Show(true);
-  SetTopWindow(frame);
+  mainframe->Show(true);
+  SetTopWindow(mainframe);
 //  frame->Fit();
 //  frame->Show(true);
 //  frame->Update();
@@ -375,7 +379,6 @@ bool MyApp::OnInit()
 int MyApp::OnExit()
 {
   cout << "MyApp::OnExit()" << endl;
-  // Clean memory ?
   return 0;
 }
 

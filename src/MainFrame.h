@@ -214,7 +214,8 @@ protected:
   wxPanel*     _html_panel;
   wxPanel*     _drawing_panel;
 
-//  boost::shared_ptr<wxDirPickerCtrl> 
+  boost::shared_ptr<wxDirPickerCtrl> scripts_path_picker;
+  boost::shared_ptr<wxDirPickerCtrl> help_path_picker;
   wxPanel*     _settings_panel;
 
   wxListCtrl*  _var_list;

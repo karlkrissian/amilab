@@ -14,6 +14,7 @@
 #include "DefineClass.hpp"
 #include "amilab_messages.h"
 #include "DessinImage.hpp"
+#include "ami_function.h"
 
 #include <string>
 using namespace std;
@@ -25,6 +26,7 @@ template<> vartype GetVarType<int>         ()    { return type_int;       }
 template<> vartype GetVarType<InrImage>    ()    { return type_image;     }
 template<> vartype GetVarType<SurfacePoly> ()    { return type_surface;   }
 template<> vartype GetVarType<DessinImage> ()    { return type_imagedraw; }
+template<> vartype GetVarType<AMIFunction> ()    { return type_ami_function; }
 
 
 /**
@@ -46,7 +48,7 @@ bool get_int_param(int& arg, ParamList*p, int& num)
   // Get an integer param from a float value ...
   // copy to start with default value
   float val = arg;
-  if (get_param<float>(val,p,num)) {
+  if (get_val_param<float>(val,p,num)) {
     arg = round(val);
     return true;
   }
@@ -64,7 +66,7 @@ bool get_int_param(int& arg, ParamList*p, int& num)
  */
 bool get_vectimage_param(InrImage*& arg, ParamList*p, int& num)
 {
-  if (get_var_param<InrImage>(arg,p,num))
+  if (get_val_ptr_param<InrImage>(arg,p,num))
   {
     if (!arg->VectorialFormat()) {
       FILE_ERROR(boost::format("Param %d must be a vectorial image.") %num);

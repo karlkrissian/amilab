@@ -1027,17 +1027,17 @@ Nscales_id         = wamiOF.AddInt(Nscales,1,5)
 
 gradtype_id        = wamiOF.AddInt(gradtype,0,3)
 
-gradcomputation_id = wamiOF.AddEnum(gradcomputation,3)
+gradcomputation_id = wamiOF.AddEnum(gradcomputation)
 wamiOF.AddEnumChoice(gradcomputation_id,"grad_max")
 wamiOF.AddEnumChoice(gradcomputation_id,"grad_3x3")
 wamiOF.AddEnumChoice(gradcomputation_id,"grad_splines")
 
-boundtype_id = wamiOF.AddEnum(boundarytype,3)
+boundtype_id = wamiOF.AddEnum(boundarytype)
 wamiOF.AddEnumChoice(boundtype_id,"border")
 wamiOF.AddEnumChoice(boundtype_id,"outside mask")
 
 
-smoothfunction_id  = wamiOF.AddEnum(smoothfunction,2)
+smoothfunction_id  = wamiOF.AddEnum(smoothfunction)
 wamiOF.AddEnumChoice(smoothfunction_id,"x^2")
 wamiOF.AddEnumChoice(smoothfunction_id,"sqrt(x^2)")
 

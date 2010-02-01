@@ -66,9 +66,9 @@ protected:
    */
   Variable* AddVarPtr(vartype type, const char* name, void* val, boost::shared_ptr<Variables> context = boost::shared_ptr<Variables>());
 
-  Variable* AddVar(Variable* var);
+  Variable* AddVar(Variable* var, Variables::ptr context = Variables::ptr());
 
-  Variable* AddVar(const Variable::ptr& var);
+  Variable* AddVar(const Variable::ptr& var, Variables::ptr context = Variables::ptr());
 
   bool ExistVar(const char* varname);
 

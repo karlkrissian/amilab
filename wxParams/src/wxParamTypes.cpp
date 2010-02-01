@@ -342,6 +342,12 @@ void wxFilenameParameter::OnStringUpdate( void* data)
   
 }
 
+void wxFilenameParameter::SetToolTip( const wxString& tt)
+{
+   _label  ->SetToolTip(tt);
+   _text   ->SetToolTip(tt);
+}
+
 //==============================================================================
 //          PARAMETRE  wxButtonParameter
 //==============================================================================

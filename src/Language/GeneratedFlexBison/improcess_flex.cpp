@@ -4123,7 +4123,7 @@ return(token::T_LineNumber); /*{LineNumber,T_LineNumber}*/
 case 45:
 YY_RULE_SETUP
 #line 174 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_flex.lpp"
-return(token::UPDATE);            /*{update,UPDATE}*/
+return(token::T_update);            /*{update,T_update}*/
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
@@ -7889,8 +7889,8 @@ yyip::Parser::token::yytokentype checkvar(
         /*{$variable_file,VAR_FILE}*/
       case type_c_procedure:      return token::VAR_C_PROCEDURE;
         /*{$variable_c_procedure,VAR_C_PROCEDURE}*/
-      case type_class_procedure:      return token::VAR_CLASS_PROCEDURE;
-        /*{$variable_class_procedure,VAR_CLASS_PROCEDURE}*/
+      case type_class_member:      return token::VAR_CLASS_MEMBER;
+        /*{$variable_class_procedure,VAR_CLASS_MEMBER}*/
       case type_c_image_function: return token::VAR_C_IMAGE_FUNCTION;
         /*{$variable_c_image_function,VAR_C_IMAGE_FUNCTION}*/
       case type_c_function: return token::VAR_C_FUNCTION;
