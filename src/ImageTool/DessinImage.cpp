@@ -4416,6 +4416,56 @@ unsigned char DessinImage::LoadVectImage( int num, InrImage::ptr im)
 
 
 // --------------------------------------------------------
+void DessinImage::UpdateZoom()
+{
+  // Update current position based on the available new zoom
+  Param._pos._x = macro_max( Param._pos._x, Param._Zoom._xmin);
+  Param._pos._x = macro_min( Param._pos._x, Param._Zoom._xmax);
+  Param._pos._y = macro_max( Param._pos._y, Param._Zoom._ymin);
+  Param._pos._y = macro_min( Param._pos._y, Param._Zoom._ymax);
+  Param._pos._z = macro_max( Param._pos._z, Param._Zoom._zmin);
+  Param._pos._z = macro_min( Param._pos._z, Param._Zoom._zmax);
+
+  Param._Zoom.ComputeSize();
+  Param._MAJ.MAJCoupes();
+  Paint();
+}
+
+// --------------------------------------------------------
+void DessinImage::ApplyZoom( const ParamZoom& initial_zoom, 
+          const int x, const int y, const int z, 
+          const float zoom_factor)
+{
+
+  Si (z < initial_zoom._zmin) Ou (z > initial_zoom._zmax) Alors
+    CLASS_ERROR(boost::format("Wrong Z position for zoom."));
+    return;
+  FinSi
+
+  // Ajouter 0.5 permet de ne pas stagner si une difference est nulle
+  Param._Zoom._xmin = macro_max( 0,
+              (int) (x - 1.0*( x - initial_zoom._xmin + 0.5)/zoom_factor));
+  Param._Zoom._xmax = macro_min( _image->DimX() - 1,
+              (int) (x + 1.0*( initial_zoom._xmax - x    + 0.5)/zoom_factor));
+
+  Param._Zoom._ymin = macro_max( 0,
+              (int) (y - 1.0*
+                    ( y    - initial_zoom._ymin + 0.5)/zoom_factor));
+  Param._Zoom._ymax = min( _image->DimY() - 1,
+              (int) (y + 1.0*
+                    ( initial_zoom._ymax - y    + 0.5)/zoom_factor));
+
+  Param._Zoom._zmin = max( 0,
+              (int) (z - 1.0*
+                    ( z    - initial_zoom._zmin + 0.5)/zoom_factor));
+  Param._Zoom._zmax = min( _image->DimZ() - 1,
+              (int) (z + 1.0*
+                    ( initial_zoom._zmax - z    + 0.5)/zoom_factor));
+
+}
+
+
+// --------------------------------------------------------
 void DessinImage::OnWheel(wxMouseEvent& event) 
 {
   // ici faire zoom??
@@ -4423,9 +4473,24 @@ void DessinImage::OnWheel(wxMouseEvent& event)
 
   int wr = event.GetWheelRotation();
   if (wr != 0) {
-    //cout << "wheel rotation " << wr << endl;
-    float zoom_factor = exp((1.0*wr)/(10.0*event.GetWheelDelta()));
-    CLASS_MESSAGE(boost::format(" computed zoom factor = %1%")%zoom_factor)
+
+    int x1,y1,z1;
+    CursorToImage(_souris_x, _souris_y, x1, y1, z1, _zoom_coupe);
+    // Il faut etre dans une des images ...
+    if (_zoom_coupe == -1) {
+      CLASS_ERROR("Trying to zoom from outside the image.")
+    }
+    _initial_zoom = Param._Zoom;
+
+    float step  = ((float)wr)/(5*(float)event.GetWheelDelta());
+    //cout << " wr = " << wr << " wheeldata = "<< event.GetWheelDelta() << " step = " << step << endl;
+
+    Si step > 7  AlorsFait step = 7;
+    Si step < -7 AlorsFait step = -7;
+    float zoom_factor  = exp( step*log2f(2));
+
+    ApplyZoom(_initial_zoom,x1,y1,z1,zoom_factor);
+    UpdateZoom();
   }
 }
 
@@ -4446,7 +4511,7 @@ void DessinImage::Boutton_Presse()
     Si Param._curseur._ON AlorsFait Paint();
   FinSi
 
-  CurseurToImage(&im.x, &im.y, &im.z, &trouve);
+  CursorToImage(_souris_x, _souris_y, im.x, im.y, im.z, trouve);
   UpdateStatusInfo( im, trouve);
 
   Si Param._fonction_zoom == FUNC_ZOOM_ACTIVE Alors
@@ -4527,11 +4592,11 @@ void DessinImage::Boutton_Relache()
 
         _souris_x = _zoom_x1;
         _souris_y = _zoom_y1;
-        CurseurToImage(&x1, &y1, &z1, &etat);
+        CursorToImage(_souris_x,_souris_y,x1, y1, z1, etat);
         _souris_x = _zoom_x2;
         _souris_y = _zoom_y2;
 
-        CurseurToImage(&x2, &y2, &z2, &etat);
+        CursorToImage(_souris_x, _souris_y,  x2, y2, z2, etat);
         switch ( etat ){
           case IMAGE_XY:
             Param._Zoom._xmin = macro_min(x1,x2);   Param._Zoom._xmax = macro_max(x1,x2);
@@ -4548,7 +4613,7 @@ void DessinImage::Boutton_Relache()
         } // end switch
      FinSi
 
-
+    
      Param._pos._x = macro_max( Param._pos._x, Param._Zoom._xmin);
      Param._pos._x = macro_min( Param._pos._x, Param._Zoom._xmax);
      Param._pos._y = macro_max( Param._pos._y, Param._Zoom._ymin);
@@ -4584,7 +4649,7 @@ void DessinImage::DeplaceSourisBout1()
 
   _shift_deplace = false;
 
-  CurseurToImage(&im.x, &im.y, &im.z, &trouve);
+  CursorToImage(_souris_x, _souris_y, im.x, im.y, im.z, trouve);
   Si GB_debug AlorsFait fprintf(stderr,"DessinImage::DeplaceSourisBout1() 1 \n");
 
   UpdateStatusInfo( im,  trouve);
@@ -4648,7 +4713,7 @@ void DessinImage::DeplaceSourisShiftBout1()
 
     Si Non(_shift_deplace) Alors
 
-      CurseurToImage(&x1, &y1, &z1, &deplace_coupe);
+      CursorToImage(_souris_x, _souris_y, x1, y1, z1, deplace_coupe);
 
       // Il faut etre dans une des images ...
       Si deplace_coupe == -1 AlorsRetourne;
@@ -4656,12 +4721,7 @@ void DessinImage::DeplaceSourisShiftBout1()
       _souris_position_initiale_x = _souris_x;
       _souris_position_initiale_y = _souris_y;
 
-      _xmin_initial = Param._Zoom._xmin;
-      _ymin_initial = Param._Zoom._ymin;
-      _zmin_initial = Param._Zoom._zmin;
-      _xmax_initial = Param._Zoom._xmax;
-      _ymax_initial = Param._Zoom._ymax;
-      _zmax_initial = Param._Zoom._zmax;
+      _initial_zoom = Param._Zoom;
 
     FinSi
 
@@ -4693,33 +4753,23 @@ void DessinImage::DeplaceSourisShiftBout1()
 
 
     // Deplacement
-    // dx >= -_xmin_initial et dx <= _image->_tx - 1 - _xmax_initial
-    dx = max( dx, -_xmin_initial);
-    dx = min( dx, _image->_tx - 1 - _xmax_initial);
-    Param._Zoom._xmin = (int) ( _xmin_initial + dx);
-    Param._Zoom._xmax = (int) ( _xmax_initial + dx);
+    // dx >= -_initial_zoom._xmin et dx <= _image->_tx - 1 - _initial_zoom._xmax
+    dx = max( dx, -_initial_zoom._xmin);
+    dx = min( dx, _image->_tx - 1 - _initial_zoom._xmax);
+    Param._Zoom._xmin = (int) ( _initial_zoom._xmin + dx);
+    Param._Zoom._xmax = (int) ( _initial_zoom._xmax + dx);
 
-    dy = max( dy, - _ymin_initial);
-    dy = min( dy, _image->_ty - 1 - _ymax_initial);
-    Param._Zoom._ymin = (int) ( _ymin_initial + dy);
-    Param._Zoom._ymax = (int) ( _ymax_initial + dy);
+    dy = max( dy, - _initial_zoom._ymin);
+    dy = min( dy, _image->_ty - 1 - _initial_zoom._ymax);
+    Param._Zoom._ymin = (int) ( _initial_zoom._ymin + dy);
+    Param._Zoom._ymax = (int) ( _initial_zoom._ymax + dy);
 
-    dz = max( dz, -_zmin_initial);
-    dz = min( dz, _image->_tz - 1 - _zmax_initial);
-    Param._Zoom._zmin = (int) ( _zmin_initial + dz);
-    Param._Zoom._zmax = (int) ( _zmax_initial + dz);
+    dz = max( dz, -_initial_zoom._zmin);
+    dz = min( dz, _image->_tz - 1 - _initial_zoom._zmax);
+    Param._Zoom._zmin = (int) ( _initial_zoom._zmin + dz);
+    Param._Zoom._zmax = (int) ( _initial_zoom._zmax + dz);
 
-    Param._pos._x = macro_max( Param._pos._x, Param._Zoom._xmin);
-    Param._pos._x = macro_min( Param._pos._x, Param._Zoom._xmax);
-    Param._pos._y = macro_max( Param._pos._y, Param._Zoom._ymin);
-    Param._pos._y = macro_min( Param._pos._y, Param._Zoom._ymax);
-    Param._pos._z = macro_max( Param._pos._z, Param._Zoom._zmin);
-    Param._pos._z = macro_min( Param._pos._z, Param._Zoom._zmax);
-
-    Param._Zoom.ComputeSize();
-
-    Param._MAJ.MAJCoupes();
-    Paint();
+    UpdateZoom();
 
 } // DeplaceSourisShiftBout1()
 
@@ -4749,7 +4799,7 @@ void DessinImage::Boutton2_Presse()
   FinSi
 
   Param._curseur._type = TYPE_CURSEUR_copy;
-  CurseurToImage(&im.x, &im.y, &im.z, &trouve);
+  CursorToImage(_souris_x, _souris_y, im.x, im.y, im.z, trouve);
   UpdateStatusInfo( im, trouve);
 
   Si (trouve != -1) Alors
@@ -4891,46 +4941,34 @@ void DessinImage::DeplaceSourisBout2()
 void DessinImage::DeplaceSourisShiftBout2()
 //                -----------------------
 {
-        float       dy,alpha;
+    float       dy,alpha;
 
-        // Les images changent, mais on se base sur l'image initiale
-        // les variables statiques permettent de memoriser les parametres
-        // de l'image initiale
+    // Les images changent, mais on se base sur l'image initiale
+    // les variables statiques permettent de memoriser les parametres
+    // de l'image initiale
 
-        // Position initiale dans l'image au moment du zoom
-        static int     x1,y1,z1;
-        static int     hauteur_initiale;
+    // Position initiale dans l'image au moment du zoom
+    static int     x1,y1,z1;
+    static int     hauteur_initiale;
 
 
     Si Non(_shift_zoom) Alors
 
-    //      printf("DeplaceSourisShiftBout2()\t _shift_zoom = false ... \n");
-
-      CurseurToImage(&x1, &y1, &z1, &_zoom_coupe);
-
+      CursorToImage(_souris_x, _souris_y, x1, y1, z1, _zoom_coupe);
       // Il faut etre dans une des images ...
       Si _zoom_coupe == -1 AlorsRetourne;
-
       _souris_position_initiale_x = _souris_x;
       _souris_position_initiale_y = _souris_y;
-
-      _xmin_initial = Param._Zoom._xmin;
-      _ymin_initial = Param._Zoom._ymin;
-      _zmin_initial = Param._Zoom._zmin;
-
-      _xmax_initial = Param._Zoom._xmax;
-      _ymax_initial = Param._Zoom._ymax;
-      _zmax_initial = Param._Zoom._zmax;
-
+      _initial_zoom = Param._Zoom;
 
      // Initialisation des variables statiques
      hauteur_initiale = GetImageHeight(_zoom_coupe);
 
     FinSi
 
-    Si (z1 < _zmin_initial) Ou (z1 > _zmax_initial) Alors
-      printf("z1 %d _zmin_initial %d _zmax_initial %d \n",
-         z1,_zmin_initial,_zmax_initial);
+    Si (z1 < _initial_zoom._zmin) Ou (z1 > _initial_zoom._zmax) Alors
+      printf("z1 %d _initial_zoom._zmin %d _initial_zoom._zmax %d \n",
+         z1,_initial_zoom._zmin,_initial_zoom._zmax);
     FinSi
 
     _shift_zoom = true;
@@ -4942,43 +4980,10 @@ void DessinImage::DeplaceSourisShiftBout2()
     Si dy > 7  AlorsFait dy = 7;
     Si dy < -7 AlorsFait dy = -7;
     alpha = exp( dy*log2f(2));
-//    alpha = exp( dy*log(2));
+    //    alpha = exp( dy*log(2));
 
-
-    // Ajouter 0.5 permet de ne pas stagner si une difference est nulle
-    Param._Zoom._xmin = macro_max( 0,
-                 (int) (x1 - 1.0*
-                       ( x1    - _xmin_initial + 0.5)/alpha));
-    Param._Zoom._xmax = macro_min( _image->_tx - 1,
-                 (int) (x1 + 1.0*
-                       ( _xmax_initial - x1    + 0.5)/alpha));
-
-    Param._Zoom._ymin = macro_max( 0,
-                 (int) (y1 - 1.0*
-                       ( y1    - _ymin_initial + 0.5)/alpha));
-    Param._Zoom._ymax = min( _image->_ty - 1,
-                 (int) (y1 + 1.0*
-                       ( _ymax_initial - y1    + 0.5)/alpha));
-
-    Param._Zoom._zmin = max( 0,
-                 (int) (z1 - 1.0*
-                       ( z1    - _zmin_initial + 0.5)/alpha));
-    Param._Zoom._zmax = min( _image->_tz - 1,
-                 (int) (z1 + 1.0*
-                       ( _zmax_initial - z1    + 0.5)/alpha));
-
-    Param._pos._x = macro_max( Param._pos._x, Param._Zoom._xmin);
-    Param._pos._x = macro_min( Param._pos._x, Param._Zoom._xmax);
-    Param._pos._y = macro_max( Param._pos._y, Param._Zoom._ymin);
-    Param._pos._y = macro_min( Param._pos._y, Param._Zoom._ymax);
-    Param._pos._z = macro_max( Param._pos._z, Param._Zoom._zmin);
-    Param._pos._z = macro_min( Param._pos._z, Param._Zoom._zmax);
-
-
-    Param._Zoom.ComputeSize();
-
-    Param._MAJ.MAJCoupes();
-    Paint();
+    ApplyZoom(_initial_zoom,x1,y1,z1,alpha);
+    UpdateZoom();
 
 } // DeplaceSourisShiftBout2()
 
@@ -4992,7 +4997,7 @@ void DessinImage::Boutton3_Presse()
         int     trouve;
 
 
-  CurseurToImage(&im.x, &im.y, &im.z, &trouve);
+  CursorToImage(_souris_x, _souris_y, im.x,im.y, im.z, trouve);
   UpdateStatusInfo( im,  trouve);
 
   Si (trouve != -1) Alors
@@ -5074,7 +5079,7 @@ void DessinImage::DeplaceSourisBout3()
   XDefineCursor( display, fenetre, _vecteur_curseur);
 #endif
 
-  CurseurToImage(&im.x, &im.y, &im.z, &trouve);
+  CursorToImage(_souris_x, _souris_y, im.x, im.y, im.z, trouve);
   UpdateStatusInfo( im, trouve);
 
   Si (trouve != -1) Alors

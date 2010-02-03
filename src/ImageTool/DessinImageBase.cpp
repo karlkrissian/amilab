@@ -662,55 +662,56 @@ unsigned char DessinImageBase :: VerifieMinMax()
 
 
 //----------------------------------------------------------------
-void DessinImageBase :: CurseurToImage(  int* x, int* y, int* z, int* etat)
-//                                 --------------
-//  Renvoie la position dans l'image du curseur,
-//  etat vaut -1 s'il y a une erreur
-//               sinon il indique l'image cliqu� : IMAGE_XY, IMAGE_XZ ou IMAGE_ZY
+void DessinImageBase::CursorToImage(  const int cursor_x, 
+                                      const int cursor_y, 
+                                      int& x, int& y, int& z, 
+                                      int& slice)
 {
+
     int     pos_x, pos_y;
 
-
-  *etat = -1;
-
+  slice = -1;
   // On teste si la souris est dans la coupe XY
-  Si ((Param._type_coupe+1) & (TYPE_COUPE_XY+1)) Alors
+  if ((Param._type_coupe+1) & (TYPE_COUPE_XY+1)) {
 
-    pos_x = _souris_x - _tab_ximage_pos_x[IMAGE_XY];
-    pos_y = _souris_y - _tab_ximage_pos_y[IMAGE_XY];
+    pos_x = cursor_x - _tab_ximage_pos_x[IMAGE_XY];
+    pos_y = cursor_y - _tab_ximage_pos_y[IMAGE_XY];
 
-    Si pos_x >= 0                         Et
-       pos_x <  GetImageWidth(IMAGE_XY)   Et
-       pos_y >= 0                         Et
-       pos_y <  GetImageHeight(IMAGE_XY)  Alors
+    if ((pos_x >= 0 )&&
+        (pos_x <  GetImageWidth(IMAGE_XY)) &&
+        (pos_y >= 0 ) &&
+        (pos_y <  GetImageHeight(IMAGE_XY)))
+    {
 
-      *x = (int) (pos_x/_size_x) + Param._Zoom._xmin;
-      *y = (int) (pos_y/_size_y) + Param._Zoom._ymin;
-      *z = Param._pos._z;
-      *etat = IMAGE_XY;
-    FinSi
-  FinSi
+      x = (int) (pos_x/_size_x) + Param._Zoom._xmin;
+      y = (int) (pos_y/_size_y) + Param._Zoom._ymin;
+      z = Param._pos._z;
+      slice = IMAGE_XY;
+    } // endif
+  } // endif 
 
   // On teste si la souris est dans la coupe XZ
-  Si (*etat == -1) Et ((Param._type_coupe+1) & (TYPE_COUPE_XZ+1)) Alors
+  if ((slice == -1) && ((Param._type_coupe+1) & (TYPE_COUPE_XZ+1)))
+  {
     pos_x = _souris_x - _tab_ximage_pos_x[IMAGE_XZ];
     pos_y = _souris_y - _tab_ximage_pos_y[IMAGE_XZ];
 
-    Si pos_x >= 0                         Et
-       pos_x <  GetImageWidth(IMAGE_XZ)   Et
-       pos_y >= 0                         Et
-       pos_y <  GetImageHeight(IMAGE_XZ) Alors
+    if (  (pos_x >= 0) &&
+          (pos_x <  GetImageWidth(IMAGE_XZ)) &&
+          (pos_y >= 0 ) &&
+          (pos_y <  GetImageHeight(IMAGE_XZ) ) ) 
+    {
 
-      *x = (int) (pos_x/_size_x) + Param._Zoom._xmin;
-      *y = Param._pos._y;
-      *z = (int) (pos_y/_size_z) + Param._Zoom._zmin;
-      *etat = IMAGE_XZ;
-    FinSi
-  FinSi
+      x = (int) (pos_x/_size_x) + Param._Zoom._xmin;
+      y = Param._pos._y;
+      z = (int) (pos_y/_size_z) + Param._Zoom._zmin;
+      slice = IMAGE_XZ;
+    } // endif
+  } // endif
 
 
   // On teste si la souris est dans la coupe ZY
-  Si (*etat == -1) Et ((Param._type_coupe+1) & (TYPE_COUPE_ZY+1)) Alors
+  Si (slice == -1) Et ((Param._type_coupe+1) & (TYPE_COUPE_ZY+1)) Alors
     pos_x = _souris_x - _tab_ximage_pos_x[IMAGE_ZY];
     pos_y = _souris_y - _tab_ximage_pos_y[IMAGE_ZY];
 
@@ -719,14 +720,14 @@ void DessinImageBase :: CurseurToImage(  int* x, int* y, int* z, int* etat)
        pos_y >= 0                         Et
        pos_y <  GetImageHeight(IMAGE_ZY)  Alors
 
-      *x = Param._pos._x;
-      *y = (int) (pos_y/_size_y) + Param._Zoom._ymin;
-      *z = (int) (pos_x/_size_z) + Param._Zoom._zmin;
-      *etat = IMAGE_ZY;
+      x = Param._pos._x;
+      y = (int) (pos_y/_size_y) + Param._Zoom._ymin;
+      z = (int) (pos_x/_size_z) + Param._Zoom._zmin;
+      slice = IMAGE_ZY;
     FinSi
   FinSi
 
-} // CurseurToImage()
+} // CursorToImage()
 
 
 //----------------------------------------------------------------
@@ -3616,14 +3617,14 @@ void DessinImageBase :: SetCoupe( int coupe)
 // -------------------------------------------------------------------------
 //
 void DessinImageBase :: IncCoupe()
-//                                  ---------
+//                      ---------
 {
 
 
     Point_3D<int> pt;
     int etat;
 
-  CurseurToImage(&pt.x,&pt.y,&pt.z,&etat);
+  CursorToImage(_souris_x, _souris_y, pt.x,pt.y,pt.z,etat);
   //  cout << pt << endl;
   Si etat != -1 Alors
     switch ( etat ){
@@ -3661,11 +3662,10 @@ void DessinImageBase :: DecCoupe()
 //                                  ---------
 {
 
-
     Point_3D<int> pt;
     int etat;
 
-  CurseurToImage(&pt.x,&pt.y,&pt.z,&etat);
+  CursorToImage(_souris_x, _souris_y, pt.x,pt.y,pt.z,etat);
   //  cout << pt << endl;
   Si etat != -1 Alors
     switch ( etat ){

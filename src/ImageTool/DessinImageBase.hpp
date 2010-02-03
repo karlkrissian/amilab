@@ -672,11 +672,16 @@ protected:
 
   ///
   void     InitCouleurs();
-  //       ------------
 
-  ///
-  void     CurseurToImage( int* x, int* y, int* z, int* etat);
-  //       --------------
+
+  /**
+   * Computes the 3D image position of the window cursor position.
+   * The cursor position is given by cursor_x,cursor_y.
+   * slice gives the slice number where the cursor position is or -1 if the cursor is out of the current drawn image.
+   */
+  void CursorToImage( const int cursor_x, const int cursor_y, 
+                      int& x, int& y, int& z, int& slice);
+  //   --------------
   //  Renvoie la position dans l'image du curseur,
   //  etat vaut -1 s'il y a une erreur
   //               sinon il indique l'image cliqu� : IMAGE_XY, IMAGE_XZ ou IMAGE_ZY

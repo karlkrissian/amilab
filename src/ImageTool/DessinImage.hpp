@@ -343,9 +343,7 @@ protected:
    int       _zoom_x1, _zoom_y1, _zoom_x2, _zoom_y2;
    int       _zoom_coupe;
    unsigned char      _shift_zoom;
-   int       _xmin_initial, _xmax_initial;
-   int       _ymin_initial, _ymax_initial;
-   int       _zmin_initial, _zmax_initial;
+   ParamZoom  _initial_zoom;
 
    unsigned char      _shift_deplace;
 
@@ -1316,6 +1314,18 @@ public:
 
 
   void ReDimensionne();
+
+  /**
+   * Updates the position information based on a new zoom.
+   **/
+  void UpdateZoom( );
+
+  /**
+   * Apply a 3D (or 2D) zoom based on a center and a zoom factor.
+   **/
+  void ApplyZoom( const ParamZoom& initial_zoom, 
+          const int x, const int y, const int z, 
+          const float zoom_factor);
 
   void OnWheel(wxMouseEvent& event);
 

@@ -100,7 +100,7 @@ public:
         int     i;
         tab_points liste_points;
 
-    CurseurToImage(&im_x, &im_y, &im_z, &trouve);
+    CursorToImage(&im_x, &im_y, &im_z, &trouve);
 
     Si trouve != -1 Alors
 

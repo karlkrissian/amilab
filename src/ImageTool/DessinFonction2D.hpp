@@ -113,7 +113,7 @@ private:
   void     CreeFenetreParametres();
   //       ---------------------
 
-  void     CurseurToImage( int* x, int* y, int* z, int* etat);
+  void     CursorToImage( int* x, int* y, int* z, int* etat);
   //       --------------
   //  Renvoie la position dans l'image du curseur,
   //  etat vaut -1 s'il y a une erreur
