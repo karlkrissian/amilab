@@ -124,7 +124,7 @@ InrImage* Func_SubImage( InrImage* im,
   Si y2<y1 AlorsFait y2=y1;
   Si z2<z1 AlorsFait z2=z1;
 
-  sprintf(imname,"sub-%s",im->Nom());
+  sprintf(imname,"sub-%s",im->GetName());
   subim = new InrImage(x2-x1+1,
 		       y2-y1+1,
 		       z2-z1+1,

@@ -252,8 +252,9 @@ protected:
 //@}
 
 
-/** @name objet permettant la comparaison avec une autre image 
+/* @name objet permettant la comparaison avec une autre image 
 */
+/* deprecated
 //@{
    ///
    CompareImage** _tab_compare_image;
@@ -262,6 +263,7 @@ protected:
    ///
    int          _nombre_comparaisons;
 //@}
+*/
 
 /** @name objet permettant la comparaison avec une autre image 
           utilisant le meme objet DessinImage
@@ -1054,9 +1056,10 @@ public:
 
    wxColour GetLineColor() { return _couleur_lignes; }
 
-  int      ComparisonNumber() { return _nombre_comparaisons;}
+//  int      ComparisonNumber() { return _nombre_comparaisons;}
 
 
+/*
   CompareImage*   GetCompareWindow(int i=0) 
   {
     Si (i>=0)Et(i<_nombre_comparaisons) Alors
@@ -1065,31 +1068,35 @@ public:
       return NULL;
     FinSi
   }
-
+*/
   void InitPalette();
   
   void InitParametres();
 
-  /** Cette methode permet de creer un "clone"
+  /* Cette methode permet de creer un "clone"
      de l'image de dessin avec une autre image de memes dimensions 
      et donc de comparer deux images
      return -1 si erreur, sinon retourne le numero de l'image cree
      dans le tableau _tab_compare_image[]
   */
+/*
   int CreeCompareImage( char* titre, char* nom_image);
   //     ----------------
 
   int CreeCompareImage( char* titre, InrImage::ptr image, 
   //     ----------------
                bool allocated_image=false);
+*/
 
   int CreeCompare2Image( DessinImage::ptr image);
   //     -----------------
 
   void SetCompareDisplacement( DessinImage::ptr compare_win, InrImage::ptr displ);
 
+/*
   void   LibereCompareImage( int num, unsigned char delete_window=1);
   //     ------------------
+*/
 
   ///
   void     UpDateMinMax();

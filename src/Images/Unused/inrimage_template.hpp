@@ -92,7 +92,7 @@ protected:
   unsigned char   InitPositions();
 
   /// initialisation du tableau de positions _positions[z][y]
-  unsigned char   EffacePositions();
+  unsigned char   FreePositions();
 
 public:
 
@@ -129,7 +129,7 @@ public:
 
     ///
     ~InrImageTemplate( )
-    { EffacePositions();}
+    { FreePositions();}
   //@}
 
   virtual WORDTYPE GetFormat();// { return _format;}
@@ -260,7 +260,7 @@ unsigned char InrImageTemplate<T>::InitPositions()
 
 //-----------------------------------------------------------------------
 template <class T>
-unsigned char InrImageTemplate<T>::EffacePositions()
+unsigned char InrImageTemplate<T>::FreePositions()
 {
    
     int z;

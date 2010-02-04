@@ -78,7 +78,7 @@ InrImage* Func_MeanHalfSize( InrImage* in, int dimension)
   FinSi
 
   cout << dimx << ":" << dimy << ":" << dimz << ":\n";
-  sprintf(newname,"%s-div2.ami.gz",in->Nom());
+  sprintf(newname,"%s-div2.ami.gz",in->GetName());
   out = new InrImage( dimx, dimy, dimz, WT_FLOAT, newname);
   out->InitImage( 0.0);
 
@@ -180,7 +180,7 @@ InrImage* Func_Resize( InrImage* in, int newsizex, int newsizey, int newsizez,
   in->GetTranslation(tr_x, tr_y, tr_z);
 
 
-  sprintf(newname, "%s-resized.ami.gz", in->Nom());
+  sprintf(newname, "%s-resized.ami.gz", in->GetName());
   out = new InrImage(newsizex, newsizey, newsizez, in->GetVDim(), in->_format, (char*) newname);
 
 //  Si dimension == UNKNOWN Alors

@@ -131,7 +131,6 @@ wxIntegerParameter::wxIntegerParameter( wxWindow* parent, int* param, const char
     Add(_spinbut_limits, 0,
         wxFIXED_MINSIZE | wxRIGHT |  wxALIGN_CENTRE_VERTICAL, 2);
 
-
     _limits_sizer->Show(false);
 }
 

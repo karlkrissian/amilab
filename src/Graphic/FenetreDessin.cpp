@@ -92,8 +92,8 @@ FenetreDessin::FenetreDessin(
 
   _type = type;
 
-  _palette_allouee = false;
-  _palette = NULL;
+//  _palette_allouee = false;
+//  _palette = NULL;
 
 
   _this = this;
@@ -192,10 +192,9 @@ void FenetreDessin::AfficheFenetre( )
   aff_err("_pixmap_contexte OK \n");
 
   //----- Definition de la palette
-  Si _palette == NULL Alors
+  Si (!_palette.get()) Alors
     aff_err("new palette \n");
-    _palette = new CPalette(_drawing_window);
-    _palette_allouee = true;
+    _palette = boost::shared_ptr<CPalette>(new CPalette(_drawing_window));
     aff_err("new palette OK \n");
   FinSi
 

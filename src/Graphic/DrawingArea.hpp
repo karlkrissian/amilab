@@ -67,7 +67,7 @@ protected:
   Dimension	_hauteur;
   Dimension	_largeur;
 
-  CPalette*     _palette;
+//  CPalette*     _palette;
 
   int	_pos_x;
   int	_pos_y;

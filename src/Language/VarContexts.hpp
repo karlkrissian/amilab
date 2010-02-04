@@ -124,12 +124,14 @@ public:
 
   /** 
    * Adds a new variable based on its type, pointer to value, and indentifier information.
-   * IndentifierInfo contains the name and the context
+   * IndentifierInfo contains the name and the context.
+   * The new variable will create its own smart pointer.
    * @param val  is a pointer to a smart pointer of the variable type
    **/
   Variable* AddVarPtr(vartype type, const IdentifierInfo::ptr& info, void* val);
 
   /**
+   * Adds a new variable based on a pointer to a smart pointer. The new variable will create its own smart pointer.
    * @param val  is a pointer to a smart pointer of the variable type
    **/
   Variable* AddVarPtr(vartype type, const char* name, void* val,
@@ -137,7 +139,13 @@ public:
 
   Variable* AddVar(Variable* var, int context=NEWVAR_CONTEXT);
 
-  Variable* AddVar(Variable::ptr var, int context=NEWVAR_CONTEXT);
+  /**
+   * Adds a new variable based on a smart pointer to a variable and a context id.
+   * @param var 
+   * @param context 
+   * @return 
+   */
+  Variable* AddVarSmtPtr(Variable::ptr var, int context=NEWVAR_CONTEXT);
 
   /**
    * Find a variable based on its name, if context is -1, look for variable in the local context

@@ -170,8 +170,8 @@ InrImageBase* new_image( char* nom)
 //------------------------------------------------------------
 void delete_image( InrImageBase* image)
 {
-  Si (strcmp(image->Nom(),"-")==0) Alors
-    printf("liberation de %s \n", image->Nom() );
+  Si (strcmp(image->GetName(),"-")==0) Alors
+    printf("liberation de %s \n", image->GetName() );
     freeInrimage( (inrimage*) image );
   FinSi
 

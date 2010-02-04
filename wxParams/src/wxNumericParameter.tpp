@@ -175,6 +175,8 @@ wxNumericParameter<T>::wxNumericParameter(
                     wxALIGN_CENTRE_VERTICAL, 1);
 
     _limits_sizer->Show(false);
+    _slider_detached = false;
+    _limits_sizer_detached = true;
 
  }
 
@@ -182,10 +184,21 @@ wxNumericParameter<T>::wxNumericParameter(
 template <class T>
 wxNumericParameter<T>::~wxNumericParameter()
 {
-  // free memory
+
+  // free the detached sizer
+  if (_limits_sizer_detached) 
+    delete this->_limits_sizer;
+
+  if (_slider_detached)
+    delete this->_slider;
+
+/*
+  // free memory ?? does not seem to work well ...
   _sizer2->Remove(_limits_sizer);
   Remove(_sizer2);
   Remove(_limits_sizer);
+*/
+
 }
 
 //-----------------------------------------------------------
@@ -383,6 +396,8 @@ void wxNumericParameter<T>::OnLimitsUpdate( void* data)
     _this->Add(_this->_spinbut_limits, 0,
                   wxFIXED_MINSIZE | wxRIGHT |  wxALIGN_CENTRE_VERTICAL, 2);
     _this->_slider_item->Show(1);
+    _this->_slider_detached = false;
+    _this->_limits_sizer_detached = true;
  } else {
     _this->_slider_item->Show(0);
     _this->Detach(_this->_spinbut_limits);
@@ -392,6 +407,8 @@ void wxNumericParameter<T>::OnLimitsUpdate( void* data)
     _this->Add(_this->_spinbut_limits, 0,
                   wxFIXED_MINSIZE | wxRIGHT |  wxALIGN_CENTRE_VERTICAL, 2);
     _this->_limits_item->Show(1);
+    _this->_slider_detached = true;
+    _this->_limits_sizer_detached = false;
   }
 
 //  _SetSizeHints(_this->_parent);

@@ -647,7 +647,7 @@ InrImage* Func_InitWeickert(InrImage* in,
   (*image_entree) = (*in);
 
   //--- image_resultat
-  sprintf(resname,"%s.Weickert",in->Nom());
+  sprintf(resname,"%s.Weickert",in->GetName());
   image_resultat = new InrImage( WT_FLOAT, resname, in);
   (*image_resultat)=(*in);
 
@@ -706,7 +706,7 @@ InrImage* Func_InitWeickertCoherence(InrImage* in,
   (*image_entree) = (*in);
 
   //--- image_resultat
-  sprintf(resname,"%s.Weickert",in->Nom());
+  sprintf(resname,"%s.Weickert",in->GetName());
   image_resultat = new InrImage( WT_FLOAT, resname, in);
   (*image_resultat)=(*in);
 

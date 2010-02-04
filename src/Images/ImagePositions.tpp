@@ -30,6 +30,7 @@ template<class T>
 bool ImagePositions<T>::InitPositions( )
 //                      -------------
 {
+  //std::cout << "ImagePositions<T>::InitPositions( )" << std::endl;
   T* data = (T*)_image->GetData();
   int txy = _image->DimX()*_image->DimY();
 
@@ -38,9 +39,11 @@ bool ImagePositions<T>::InitPositions( )
   int tz = _image->DimZ();
 
   _positions = new T**[tz];
+  //std::cout << "new T**" << std::endl;
   for(int z=0;z<tz;z++)
   {
     _positions[z] = new T*[ ty];
+    //std::cout << "new T*, z = " << z << std::endl;
     for( int y=0;y<ty;y++) {
       _positions[z][y] = data +_vdim*(z*txy+y*tx);
     }
@@ -56,10 +59,14 @@ template<class T>
 bool ImagePositions<T>::FreePositions( )
 //                      -------------
 {
+  //std::cout << "ImagePositions<T>::FreePositions( )" << std::endl;
   if (!_positions_allocated) return false;
 
-  for(int z=0; z<_image->DimZ()-1;z++) 
+  for(int z=0; z<_image->DimZ();z++) {
+    //std::cout << "delete [] _postions[" << z << "]" << std::endl;
     delete [] _positions[z];
+  }
+  //std::cout << "delete [] _positions" << std::endl;
   delete [] _positions;
 
   _positions_allocated = false;

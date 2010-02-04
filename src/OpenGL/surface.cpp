@@ -2594,7 +2594,7 @@ void SurfacePoly :: DisplayNormals()
 
 
 //--------------------------------------------------    
-unsigned char SurfacePoly :: ReadVRML( char* nom )
+unsigned char SurfacePoly :: ReadVRML( const char* nom )
   //					GLTransfMatrix* transf,
   //					GLMaterialParam* material,
   //					GLLightParam* light)
@@ -2770,7 +2770,7 @@ unsigned char SurfacePoly :: ReadVRML( char* nom )
 
 
 //----------------------------------------------------------------------
-unsigned char SurfacePoly :: ReadVTK( char* nom )
+unsigned char SurfacePoly :: ReadVTK( const char* nom )
 //                               -------
 {
 
@@ -2802,7 +2802,7 @@ unsigned char SurfacePoly :: ReadVTK( char* nom )
 
 
  //----------------------------------------------------------------------
-unsigned char SurfacePoly :: Read( char* nom )
+unsigned char SurfacePoly :: Read( const char* nom )
 //                               ----
 {
   bool result = false;
@@ -2814,7 +2814,7 @@ unsigned char SurfacePoly :: Read( char* nom )
 } // Read()
 
 //----------------------------------------------------------------------
-void SurfacePoly :: WriteVRML( char* nom,
+void SurfacePoly :: WriteVRML( const char* nom,
 					 GLTransfMatrix*  transf,
 					 GLMaterialParam* material,
 					 GLLightParam*    light,
@@ -3156,7 +3156,7 @@ printf("SurfacePoly::WriteVRML()\n");
 
 
 //----------------------------------------------------------------------
-void SurfacePoly :: WriteVTK( char* nom)
+void SurfacePoly :: WriteVTK( const char* nom)
 //                            --------
 {
 
@@ -3189,7 +3189,7 @@ fprintf(stderr,"writing vtk 2 ...\n");
 
 
 //----------------------------------------------------------------------
-void SurfacePoly :: Write( char* nom)
+void SurfacePoly :: Write( const char* nom)
 //                            -----
 {
 

@@ -103,8 +103,8 @@ protected:
   int _hauteur;
   int _largeur;
 
-  CPalette*     _palette;
-  unsigned char       _palette_allouee;
+  boost::shared_ptr<CPalette>     _palette;
+//s  unsigned char       _palette_allouee;
 
 //  Colormap  _color_map;
 

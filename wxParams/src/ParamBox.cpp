@@ -44,6 +44,7 @@
 #include "ParamBox.hpp"
 #include "wxParamTypes.hpp"
 #include "wxColorParameter.h"
+#include "wxNumericParameter.h"
 
 #include <iostream>
 using namespace std;
@@ -367,20 +368,35 @@ void ParamBox::ParamIntGetLimits( int id, int& min, int& max)
 
 
 //------------------------------------------------------------
-unsigned char ParamBox::AddFloat( int* id, float* param,
-//                      --------
-                const char* libelle, int precision)
+bool ParamBox::AddFloat( int* id, float* param,
+                            const char* libelle, int precision,
+                            const std::string& tt)
 {
-  *id = AddFloat(param,libelle,precision);
+  *id = AddFloat(param,libelle,precision,tt);
   return( true);
 } // AddFloat()
 
 
 //-----------------------------------------------------------
-int  ParamBox::AddFloat(  float* param,
+int  ParamBox::AddFloat(  
 //             --------
-                const char* libelle, int precision)
+      float* param,
+      const char* libelle, 
+      int precision,
+      const std::string& tt)
 {
+  wxNumericParameter<float>* wxi = new wxNumericParameter<float>(
+      CurrentParent(), param, libelle);
+  if (tt!="") wxi->SetToolTip(GetwxStr(tt.c_str()));
+
+  wxi->SetDecimate(precision);
+
+  ParamInfo pi( TYPE_PARAMETRE_REEL,
+                wxi,
+                AddWidget(wxi));
+  _tab_param.push_back(pi);
+  return _tab_param.size()-1;
+/*
   wxFloatParameter* wxi = new wxFloatParameter(
       CurrentParent(), param, libelle);
   wxi->SetDecimate(precision);
@@ -390,6 +406,7 @@ int  ParamBox::AddFloat(  float* param,
                 AddWidget(wxi));
   _tab_param.push_back(pi);
   return _tab_param.size()-1;
+*/
 } // AddFloat()
 
 
@@ -413,7 +430,7 @@ void ParamBox::FloatConstraints(
   } // end if
 
   if (_tab_param[id].GetWidget()!=NULL)
-    ((wxFloatParameter*) _tab_param[id].GetWidget())->SetConstraints( min, max, defaut);
+    ((wxNumericParameter<float>*) _tab_param[id].GetWidget())->SetConstraints( min, max, defaut);
 
 } // FloatConstraints()
 
@@ -431,7 +448,7 @@ void ParamBox::ParamFloatGetLimits( int id, float& min, float& max)
   } // end if
   
   if (_tab_param[id].GetWidget()!=NULL)
-      ((wxFloatParameter*) _tab_param[id].GetWidget())->GetLimits( min, max);
+      ((wxNumericParameter<float>*) _tab_param[id].GetWidget())->GetLimits( min, max);
 
 } // ParamIntGetLimits()
 
@@ -449,7 +466,7 @@ void ParamBox::ParamShowSlider( int id, bool show)
   } // end if
   
     if (_tab_param[id].GetWidget()!=NULL)
-      ((wxFloatParameter*) _tab_param[id].GetWidget())->ShowSlider( show);
+      ((wxNumericParameter<float>*) _tab_param[id].GetWidget())->ShowSlider( show);
 } // ParamShowSlider()
 
 

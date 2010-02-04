@@ -455,14 +455,15 @@ Variable::ptr wrap_ParamPanelAddButton::CallMember( ParamList* p)
   int  var_id;
 
   if (!get_val_ptr_param<string>( label, p, n))   ClassHelpAndReturn;
-  if (!get_var_param<AMIFunction>(var, p, n))          ClassHelpAndReturn;
+  if (!get_var_param<AMIFunction>(var, p, n))     ClassHelpAndReturn;
 
   std::string tooltip = (boost::format("%s  (%s)") % var->GetComments() % var->Name()).str();
 
+  //cout << " button pointer  = "<<  ((AMIFunction::ptr*) var->Pointer())->get() << endl;
   this->_objectptr->AddButton( &var_id, 
                 label->c_str(),
                 (void*) CB_ParamWin,
-                (void*) var->Pointer(),
+                (void*) ((AMIFunction::ptr*) var->Pointer())->get(),
                 tooltip);
 
   // create integer variable to return

@@ -249,14 +249,14 @@ Variable* VarContexts::AddVar(Variable* var, int context)
 }
 
 //--------------------------------------------------
-Variable* VarContexts::AddVar(Variable::ptr var, int context)
+Variable* VarContexts::AddVarSmtPtr(Variable::ptr var, int context)
 {
 
   if (context==OBJECT_CONTEXT_NUMBER) {
     CLASS_MESSAGE("object context");
     if (_object_context.get()) {
       CLASS_MESSAGE("adding variable reference into object context ");
-      return _object_context->AddVar(var,
+      return _object_context->AddVarSmtPtr(var,
                                     _object_context);
     }
     else {
@@ -269,7 +269,7 @@ Variable* VarContexts::AddVar(Variable::ptr var, int context)
     context = GetNewVarContext();
 
   CLASS_MESSAGE(boost::format("Context number %d ")% context);
-  return _context[context]->AddVar(var);
+  return _context[context]->AddVarSmtPtr(var);
 }
 
 //--------------------------------------------------

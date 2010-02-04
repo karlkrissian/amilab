@@ -17,7 +17,7 @@
 extern yyip::Driver GB_driver;
 
 
-void ImageStack::AddImage( char* name)
+void ImageStack::AddImage( const char* name)
 {
   // look for the image 
   wxFileName inputname(wxString(name, wxConvUTF8));

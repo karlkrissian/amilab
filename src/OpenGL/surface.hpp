@@ -150,8 +150,7 @@ typedef class TableauDyn<int> CompCon;
 
 // Pb ... BUG ???
 // A mettre dans la classe ...
-static  TableauDyn<CompCon>    
-static_tab_cc;
+static  TableauDyn<CompCon>   static_tab_cc;
 
 #include <boost/shared_ptr.hpp>
 
@@ -297,13 +296,13 @@ public:
   virtual GLuint GenerateGLList() { return 0;}
 
   //--------------------------------------------------
-  virtual unsigned char ReadVRML( char* nom) { return 0; }
+  virtual unsigned char ReadVRML( const char* nom) { return 0; }
 
   //--------------------------------------------------
-  virtual unsigned char Read( char* nom) { return 0; }
+  virtual unsigned char Read( const char* nom) { return 0; }
 
   //--------------------------------------------------
-  virtual void WriteVRML( char* nom, 
+  virtual void WriteVRML( const char* nom, 
               GLTransfMatrix* transf    = NULL,
               GLMaterialParam* material = NULL,
               GLLightParam* light       = NULL,
@@ -897,26 +896,26 @@ public:
   static int CompareCC( const void*, const void*);
 
   //--------------------------------------------------
-  unsigned char ReadVRML( char* nom);
+  unsigned char ReadVRML( const char* nom);
 
   //--------------------------------------------------
-  unsigned char ReadVTK( char* nom);
+  unsigned char ReadVTK( const char* nom);
 
   //--------------------------------------------------
-  unsigned char Read( char* nom);
+  unsigned char Read( const char* nom);
 
   //--------------------------------------------------
-  void WriteVRML( char* nom, 
+  void WriteVRML( const char* nom, 
           GLTransfMatrix* transf    = NULL,
           GLMaterialParam* material = NULL,
           GLLightParam* light       = NULL,
           GLParam* param            = NULL);
   
   //--------------------------------------------------
-  void WriteVTK( char* nom);
+  void WriteVTK( const char* nom);
 
   //--------------------------------------------------
-  void Write( char* nom);
+  void Write( const char* nom);
 
 
 }; // SurfacePoly

@@ -1846,18 +1846,22 @@ void DessinImage::CreeParametresGLMIP()
 
   //-------------- Seuil Bas
   _param_GLMIP->AddFloat( &_id_glmip_seuilbas,
-                &_GLMIP_seuilbas,
-                FrAn("Seuil bas",
-                 "Low Threshold"));
+                          &_GLMIP_seuilbas,
+                          FrAn("Seuil bas",
+                          "Low Threshold"),
+                          2,
+                          "Low intensity level");
   _param_GLMIP->FloatConstraints( _id_glmip_seuilbas,
                  _val_min, _val_max, _val_min);
 
 
   //-------------- Seuil Haut
   _param_GLMIP->AddFloat( &_id_glmip_seuilhaut,
-                &_GLMIP_seuilhaut,
-                FrAn("Seuil haut",
-                 "High Threshold"));
+                          &_GLMIP_seuilhaut,
+                          FrAn("Seuil haut",
+                          "High Threshold"),
+                          2,
+                          "High intensity level");
   _param_GLMIP->FloatConstraints( _id_glmip_seuilhaut,
                  _val_min, _val_max, _val_max);
 
@@ -2181,7 +2185,7 @@ void DessinImage::CreeParametresInfo()
 
   //----- Nom du fichier
   _param_image_info->AddLabel( &_id_info_name, "Name",
-                  _image->Nom(), LabelTexte);
+                  _image->GetName(), LabelTexte);
 
   //----- Nom du fichier
   _param_image_info->AddLabel( &_id_info_format, "Format",
@@ -2953,8 +2957,8 @@ void DessinImage::InitComparaisons()
 //                           ----------------
 {
 
-
-    int i;
+/*
+   int i;
 
   _compare_max = 10;
   _tab_compare_image = new CompareImage*[_compare_max+1];
@@ -2963,8 +2967,9 @@ void DessinImage::InitComparaisons()
     _tab_compare_image[i] = NULL;
   } // end for // i
 
-  _nombre_comparaisons = 0;
-
+*/
+//  _compare_max = 0;
+//  _nombre_comparaisons = 0;
 
 } // InitComparaisons()
 
@@ -3060,6 +3065,8 @@ void DessinImage::Comparaisons_Paint( )
     DessinImage::ptr di;
 
   _comparison_lock=true;
+
+/*
   for(  i = 0 ;  i < _compare_max ;  i++ Faire
     Si _tab_compare_image[i] != NULL Alors
     printf("comparing image %d \n",i);
@@ -3067,6 +3074,7 @@ void DessinImage::Comparaisons_Paint( )
       ((CompareImage*) _tab_compare_image[i])->Paint( true);
     FinSi
   } // end for // i
+*/
 
   std::list<compare_info>::iterator Iter;
   for (Iter  = _tab_compare2_image.begin();
@@ -3133,12 +3141,13 @@ void DessinImage::Comparaisons_DessineCurseur( int x, int y, int z)
 {
     int i;
 
+/*
   for(  i = 0 ;  i < _compare_max ;  i++ Faire
     Si _tab_compare_image[i] != NULL Alors
       ((CompareImage*) _tab_compare_image[i])->DessineCurseur( x, y, z, Param._curseur._type);
     FinSi
   } // end for // i
-
+*/
 
   std::list<compare_info>::iterator Iter;
   for (Iter  = _tab_compare2_image.begin();
@@ -3178,11 +3187,13 @@ void DessinImage::Comparaisons_EffaceEcran( unsigned char expose)
 
     int i;
 
+/*
   for(  i = 0 ;  i < _compare_max ;  i++ Faire
     Si _tab_compare_image[i] != NULL Alors
       ((CompareImage*) _tab_compare_image[i])->EffaceEcran( expose);
     FinSi
   } // end for // i
+*/
 
   std::list<compare_info>::iterator Iter;
   for (Iter  = _tab_compare2_image.begin();
@@ -3204,11 +3215,13 @@ void DessinImage::Comparaisons_MAJ_taille( )
 
   Recupere_fenetre_dimensions(&l, &h);
 
+/*
   for(  i = 0 ;  i < _compare_max ;  i++ Faire
     Si _tab_compare_image[i] != NULL Alors
       ((CompareImage*) _tab_compare_image[i])->Fixe_fenetre_dimensions( l, h);
     FinSi
   } // end for // i
+*/
 
   std::list<compare_info>::iterator Iter;
   for (Iter  = _tab_compare2_image.begin();
@@ -3227,12 +3240,13 @@ void DessinImage::Comparaisons_MemoriseCoupesXY( unsigned char activation )
 
     int i;
 
+/*
   for(  i = 0 ;  i < _compare_max ;  i++ Faire
     Si _tab_compare_image[i] != NULL Alors
       ((CompareImage*) _tab_compare_image[i])->MemoriseCoupesXY( activation);
     FinSi
   } // end for // i
-
+*/
   std::list<compare_info>::iterator Iter;
   for (Iter  = _tab_compare2_image.begin();
        Iter != _tab_compare2_image.end()  ; Iter++ )
@@ -3332,7 +3346,6 @@ DessinImage:: DessinImage(
 
   Si GB_debug AlorsFait printf("DessinImage::DessinImage InitParameters\n");
 
-  _palette = NULL;
   InitParametres();
 
   Si GB_debug AlorsFait printf("DessinImage::DessinImage AfficheFenetre\n");
@@ -3397,12 +3410,13 @@ DessinImage::~DessinImage()
   // TODO move _interpole_ligne to wxwidgets
   // delete _interpole_ligne;
 
+/*
   Pour( i, 0,  _compare_max-1)
     Si _tab_compare_image[i] != NULL Alors
       LibereCompareImage(i,1);
     FinSi
   FinPour // i
-
+*/
   // stop the time if it is running
   if ( m_timer.IsRunning() )
   {
@@ -3586,6 +3600,7 @@ void DessinImage::InitParametres()
 } // InitParametres()
 
 
+/*
 //-------------------------------------------------------------------------
 int  DessinImage::CreeCompareImage( char* titre, char* nom_image)
 //                               ----------------
@@ -3609,9 +3624,10 @@ int  DessinImage::CreeCompareImage( char* titre, char* nom_image)
   return CreeCompareImage(titre,image,true);
 
 } // CreeCompareImage()
+*/
 
 
-
+/*
 //-------------------------------------------------------------------------
 int  DessinImage::CreeCompareImage( char* titre,
 //                               ----------------
@@ -3662,7 +3678,7 @@ int  DessinImage::CreeCompareImage( char* titre,
   return n;
 
 } // CreeCompareImage()
-
+*/
 
 //-------------------------------------------------------------------------
 int  DessinImage::CreeCompare2Image( DessinImage::ptr di)
@@ -3711,6 +3727,7 @@ void DessinImage::SetCompareDisplacement( DessinImage::ptr compare_win, InrImage
 
 }
 
+/*
 //--------------------------------------------------
 void DessinImage::LibereCompareImage( int num, unsigned char delete_window)
 //                            ------------------
@@ -3724,7 +3741,7 @@ void DessinImage::LibereCompareImage( int num, unsigned char delete_window)
   }
 
 }  // LibereCompareImage()
-
+*/
 
 //-------------------------------------------------------------------------
 void DessinImage::ChangeImage( InrImage::ptr image, unsigned char Efface)
@@ -3964,10 +3981,12 @@ unsigned char DessinImage::LitFichierParametres(  char* nom_fichier)
     Par.LitEntier( &ComparePos_y );
     Par.Parcours("\n");
 
-    n = CreeCompareImage( CompareNomImage, CompareNomImage);
+//    n = CreeCompareImage( CompareNomImage, CompareNomImage);
 
+/* deprecated
     Si n != -1 AlorsFait
       ((CompareImage*) _tab_compare_image[n])->Fixe_fenetre_position( ComparePos_x, ComparePos_y);
+*/
   FinPour // i
 
  //--- Mise �jour des principaux parametres
@@ -4040,7 +4059,7 @@ void DessinImage::SauveFichierParametres(  char* nom_fichier)
   pfic = fopen( nom_fichier, "w");
 
   fprintf( pfic, "Nom de l'image: ");
-  fprintf( pfic, "%s", _image_initiale->Nom() );
+  fprintf( pfic, "%s", _image_initiale->GetName() );
   fprintf( pfic, "\n");
 
   fprintf( pfic, "Position: ");
@@ -4145,10 +4164,13 @@ void DessinImage::SauveFichierParametres(  char* nom_fichier)
 
 
   //--- Sauvegarde des images comparees
+/*
   fprintf( pfic, "Nombre de comparaisons = ");
   fprintf( pfic, "%d", _nombre_comparaisons);
+*/
   fprintf( pfic, "\n");
 
+/* deprecated
   Pour( i, 0, _compare_max - 1)
 
     Si _tab_compare_image[i] != NULL Alors
@@ -4166,7 +4188,7 @@ void DessinImage::SauveFichierParametres(  char* nom_fichier)
     FinSi
 
   FinPour // i
-
+*/
   fclose( pfic);
 
 }  // SauveFichierParametres()
@@ -5312,11 +5334,13 @@ void DessinImage::Paint( unsigned char affiche)
        Param._MAJ._planZY Et Param._MAJ._planXZ
     Alors
       MAJ_ImagesXY();
+/* deprecated TODO: adapt to new comparions
       Pour( i, 0,  _compare_max-1)
         Si _tab_compare_image[i] != NULL Alors
           ((CompareImage*) _tab_compare_image[i])->MAJ_ImagesXY();
         FinSi
       FinPour // i
+*/
     FinSi
 
     DrawingAreaClear();
@@ -5649,11 +5673,14 @@ void DessinImage::InitDrawingAreaAll(  )
 
   DrawingAreaInit();
   _comparison_lock=true;
+
+/* deprecated
   Pour( i, 0, _compare_max-1)
     Si _tab_compare_image[i] != NULL Alors
       ((CompareImage*) _tab_compare_image[i])->DrawingAreaInit();
     FinSi
   FinPour // i
+*/
 
   std::list<compare_info>::iterator Iter;
   for (Iter  = _tab_compare2_image.begin();
@@ -5787,7 +5814,7 @@ void DessinImage::CB_relire(  wxCommandEvent& event)
   FinSi
 
   try{
-  image = InrImage::ptr(new InrImage(di->_image_initiale->Nom()));
+  image = InrImage::ptr(new InrImage(di->_image_initiale->GetName()));
   }
   catch(InrImage::ErreurLecture){
     wxMessageBox( wxString::FromAscii("Read Error"),
@@ -6432,6 +6459,7 @@ void DessinImage::CB_UseCompareColors(  void* cd)
 //                -------------------
 {
 
+/* deprecated
 #ifndef _NO_GL_
 
     DessinImage*    di = (DessinImage*) cd;
@@ -6446,7 +6474,7 @@ void DessinImage::CB_UseCompareColors(  void* cd)
                );
   glwin->Paint();
 #endif
-
+*/
 } // CB_UseCompareColors()
 
 
@@ -6770,7 +6798,7 @@ void DessinImage::CB_fichier_crest(  wxCommandEvent& event)
 void DessinImage::CB_MIP_stereo(  wxCommandEvent& )
 //                            -------------
 {
-
+/* deprecated
 
     DessinImage*    di = (DessinImage*) this;
     Chaine          titre;
@@ -6783,8 +6811,10 @@ void DessinImage::CB_MIP_stereo(  wxCommandEvent& )
     di->LibereCompareImage( di->_MIP_num_stereo);
   Sinon
     titre = "stereo:";
-    titre += di->_image_initiale->Nom();
-    numero_image = di->CreeCompareImage( (char*) titre, di->_image_initiale, false);
+    titre += di->_image_initiale->GetName();
+
+//    numero_image = di->CreeCompareImage( (char*) titre, di->_image_initiale, false);
+
     Si numero_image != -1 Alors
       di->_MIP_num_stereo = numero_image;
 
@@ -6798,7 +6828,7 @@ void DessinImage::CB_MIP_stereo(  wxCommandEvent& )
       im_stereo->Paint( );
     FinSi
   FinSi
-
+*/
 } // CB_MIP_stereo()
 
 
@@ -6823,7 +6853,7 @@ void DessinImage::CB_MIP_stereo_lunettes(  wxCommandEvent&)
 //                            ----------------------
 {
 
-
+/* deprecated
     DessinImage*    di = (DessinImage*) this;
     CompareImage*   im_stereo;
     float            voxel_cm;
@@ -6867,7 +6897,7 @@ void DessinImage::CB_MIP_stereo_lunettes(  wxCommandEvent&)
       di->Param._MAJ.MAJCoupes();
       di->Paint();
   FinSi
-
+*/
 
 } // CB_MIP_stereo_lunettes()
 
@@ -6877,7 +6907,7 @@ void DessinImage::CB_MIP_stereo_param( void* cd)
 //                            -------------------
 {
 
-
+/* deprecated
     DessinImage*    di = (DessinImage*) cd;
     CompareImage*   im_stereo;
     float            voxel_cm;
@@ -6905,7 +6935,7 @@ void DessinImage::CB_MIP_stereo_param( void* cd)
   di->Param._MIP._MAJ = true;
   di->Param._MAJ.MAJCoupes();
   di->Paint( );
-
+*/
 } // CB_MIP_stereo_param()
 
 
@@ -6914,7 +6944,7 @@ void DessinImage::CB_MIP_decal_stereo( void* cd)
 //                            -------------------
 {
 
-
+/* deprecated
     DessinImage*    di = (DessinImage*) cd;
     CompareImage*   im_stereo;
 
@@ -6923,7 +6953,7 @@ void DessinImage::CB_MIP_decal_stereo( void* cd)
   im_stereo = (CompareImage*) di->_tab_compare_image[ di->_MIP_num_stereo];
   im_stereo->FixeDecalStereo( di->Param._MIP._decal_stereo);
   im_stereo->Paint( );
-
+*/
 } // CB_MIP_decal_stereo()
 
 

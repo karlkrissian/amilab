@@ -898,7 +898,7 @@ InrImage*    Func_vtkAnisoGS(   InrImage* in, float sigma, float k, float beta, 
 } // Func_vtkAnisoGS()
 
 
-InrImage*    Func_vtkDicomRead( char* directoryname)
+InrImage*    Func_vtkDicomRead( const char* directoryname)
 {
 #ifdef AMI_USE_VTK
   InrImage* res;
@@ -917,7 +917,7 @@ InrImage*    Func_vtkDicomRead( char* directoryname)
 #endif // AMI_USE_VTK
 }
 
-InrImage*    Func_vtkMINCRead( char* filename)
+InrImage*    Func_vtkMINCRead( const char* filename)
 {
 #ifdef AMI_USE_VTK
   InrImage* res;

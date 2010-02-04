@@ -678,7 +678,7 @@ InrImage* Func_SRAD( InrImage* input, float dt, int numit, int mode,
 
 
   //--- image_resultat
-  sprintf(resname,"%s.SRAD",input->Nom());
+  sprintf(resname,"%s.SRAD",input->GetName());
   image_res = new InrImage( WT_FLOAT, resname, input);
 
   image_c = new InrImage( WT_FLOAT, "image_c.ami.gz", input);
@@ -921,7 +921,7 @@ InrImage* Func_SRAD2( InrImage* input, float dt, int numit,
 
 
   //--- image_resultat
-  sprintf(resname,"%s.SRAD",input->Nom());
+  sprintf(resname,"%s.SRAD",input->GetName());
   image_res = new InrImage( WT_FLOAT, resname, input);
 
   image_c = new InrImage( WT_FLOAT, "image_c.ami.gz", input);

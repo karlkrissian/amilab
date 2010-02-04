@@ -428,10 +428,9 @@ void ParamPanel::ParamIntGetLimits( int id, int& min, int& max)
 
 
 //------------------------------------------------------------
-unsigned char ParamPanel::AddFloat( int* id, float* param,
-//                      --------
-                const char* libelle, int precision,
-                const std::string& tt)
+bool ParamPanel::AddFloat(  int* id, float* param,
+                            const char* libelle, int precision,
+                            const std::string& tt)
 {
   *id = AddFloat(param,libelle,precision,tt);
   return( true);

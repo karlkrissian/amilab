@@ -36,9 +36,9 @@ void wrap_ImageAddScalar( ParamList* p)
     int n=0;
 
   if (!get_val_smtptr_param<InrImage>( input,       p, n)) HelpAndReturn;
-  if (!get_val_param<float>(    val,         p, n)) HelpAndReturn;
-  if (!get_int_param(      num_threads, p, n)) HelpAndReturn;
-  if (!get_int_param(      mode,        p, n)) HelpAndReturn;
+  if (!get_val_param<float>          ( val,         p, n)) HelpAndReturn;
+  if (!get_int_param                 ( num_threads, p, n)) HelpAndReturn;
+  if (!get_int_param                 ( mode,        p, n)) HelpAndReturn;
 
   ImageToImageFilterParam param;
   ImageAddScalar add_scalar;

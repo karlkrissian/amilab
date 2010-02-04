@@ -35,6 +35,7 @@ private:
   std::string   _name;
   std::string   _comments;
   void*         _pointer; // TODO remove all pointers!!!
+  bool          _allocated_memory;
   boost::shared_ptr<Variables>   _context; // points to the context
     // that the variable belong to, if any
 
@@ -53,6 +54,7 @@ private:
         default:
           // keep the reference to avoid deleting the object
           _pointer = (void*) new boost::shared_ptr<T>(p);
+          _allocated_memory = true;
         break;
       }
   }
@@ -60,6 +62,7 @@ private:
   template <class T>
   bool FreeMemory()
   {
+    //std::cout << "FreeMemory()" << std::endl;
     if (_pointer==NULL) {
         CLASS_ERROR("pointer is NULL !");
         return false;
@@ -69,6 +72,8 @@ private:
       CLASS_ERROR( format("variable %1% is referenced %2% times")  % _name % ptr->use_count() );
     }
     delete (boost::shared_ptr<T>*) _pointer;
+    //std::cout << "  **  delete " << ptr << endl;
+    _allocated_memory = false;
     _pointer = NULL;
     return true;
   }
@@ -76,28 +81,36 @@ private:
 public:
 
   Variable();
-  virtual ~Variable(){}
+  virtual ~Variable(){ this->Delete(); }
 
   /**
    * Copy of variables
    * @param v 
    */
-  void operator = (const Variable& v) {
+  void operator = (const Variable& v);
+/*
+  {
       _type         = v._type;
       _name         = v._name;
-      _pointer      = v._pointer;
       _comments     = v._comments;
+      // Problem: unsafe to copy pointers here
+      _pointer      = v._pointer;
   }
+*/
 
   /**
    * Copy of variables
    * @param v 
    */
   void operator = (const Variable::ptr& v) {
+     (*this) = (*v);
+      /*
       _type         = v->_type;
       _name         = v->_name;
       _comments     = v->_comments;
+      // Problem: unsafe to copy pointers here
       _pointer      = v->_pointer;
+    */
   }
 
   bool operator == (const Variable& v) {
@@ -141,7 +154,8 @@ public:
 
   vartype Type() const { return _type; }
 
-  void  SetString(string_ptr st);
+//  void  SetString(string_ptr st);
+  void  SetString(const char* st);
 
   /**
    * Rename variable.

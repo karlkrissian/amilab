@@ -302,11 +302,20 @@ public:
   /**
     @param precision nombre de chiffres apr� la virgule
    */
-  unsigned char AddFloat( int* id, float* r, const char* libelle, int precision = 2);
-  //      ----------
+  bool AddFloat( 
+                  int* id,
+                  float* r,
+                  const char* libelle, 
+                  int precision = 2,
+                  const std::string& tooltip=""
+                );
 
-  int AddFloat( float* r, const char* libelle, int precision = 2);
-  //      ----------
+  int AddFloat( 
+                float* r,
+                const char* libelle,
+                int precision = 2,
+                const std::string& tooltip=""
+              );
 
   ///
   void FloatConstraints(

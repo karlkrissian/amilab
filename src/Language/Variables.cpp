@@ -99,10 +99,12 @@ Variable* Variables::AddVar( vartype type,
 		      void* val, 
           boost::shared_ptr<Variables> context)
 {
-  CLASS_MESSAGE(boost::format(" %s ") % name);
+  CLASS_MESSAGE(boost::format(" %1%, in %2% ") % name % GetName());
 
   string resname = this->CheckVarName(name);
   Variable* newvar = new Variable();
+  //std::cout << "  **  newvar =  " << newvar << endl;
+
   newvar->Init(type,resname.c_str(),val);
   newvar->SetContext(context);
   _vars.push_front(newvar);
@@ -148,7 +150,7 @@ Variable* Variables::AddVar( Variable* var, Variables::ptr context )
 
 
 //--------------------------------------------------
-Variable* Variables::AddVar( const Variable::ptr& var, Variables::ptr context )
+Variable* Variables::AddVarSmtPtr( const Variable::ptr& var, Variables::ptr context )
 {
   CLASS_MESSAGE(boost::format(" %s ") % var->Name());
 
@@ -264,14 +266,15 @@ unsigned char Variables::GetVar(const char* varname, int* i)
 //--------------------------------------------------
 bool Variables::deleteVar(const char* varname)
 {
-  CLASS_MESSAGE( format("Variables::deleteVar(%s) ") % varname );
+  CLASS_MESSAGE( format("Variables::deleteVar(%s) for %s") % varname % GetName());
 
   std::list<Variable*>::iterator Iter;
   for (Iter  = _vars.begin();
        Iter != _vars.end()  ; Iter++ )
   {
     if ((*Iter)->HasName(varname)) {
-      (*Iter)->Delete();
+      delete (*Iter);
+      //(*Iter)->Delete();
       Iter = _vars.erase(Iter);
       return true;
     }
@@ -297,7 +300,8 @@ int Variables::deleteVars(const std::string& varmatch)
     wxString wxvarname((*Iter)->Name().c_str(), wxConvUTF8);
     if (wxvarname.Matches(wxvarmatch)) {
       // why seg fault ??
-      (*Iter)->Delete();
+      delete *Iter; // try to delete the variable here
+      //(*Iter)->Delete();
       Iter = _vars.erase(Iter);
       count++;
     } else
@@ -324,7 +328,7 @@ void Variables::display()
 //--------------------------------------------------
 void Variables::EmptyVariables()
 {
-  CLASS_MESSAGE("");
+  CLASS_MESSAGE(boost::format("  in %1% ") % GetName());
   std::list<Variable*>::iterator Iter;
   Iter  = _vars.begin();
   while (Iter != _vars.end() )
@@ -332,6 +336,7 @@ void Variables::EmptyVariables()
     if (((*Iter)->Type() == type_imagedraw)||
         ((*Iter)->Type() == type_surfdraw )) {
       if ((*Iter)->Pointer()!=NULL) {
+        //cout << " in " << GetName()  << " deleting " << (*Iter)->Name() << endl;
         (*Iter)->Delete();
         delete (*Iter);
         Iter = _vars.erase(Iter);
@@ -345,6 +350,7 @@ void Variables::EmptyVariables()
   while ( Iter != _vars.end())
   {
     if ((*Iter)->Pointer()!=NULL) {
+      //cout << " in " << GetName()  << " deleting " << (*Iter)->Name() << endl;
       (*Iter)->Delete();
       delete (*Iter);
       Iter = _vars.erase(Iter);

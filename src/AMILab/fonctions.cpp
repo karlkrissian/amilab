@@ -193,7 +193,7 @@ InrImage* Func_Filter( InrImage* im, float sigma,
     (*image_entree) = (*im);
   FinSi
 
-  resname = (boost::format("%s.filter") % im->Nom()).str();
+  resname = (boost::format("%s.filter") % im->GetName()).str();
   image_res = new InrImage(WT_FLOAT, resname.c_str() , im);
 
   Si image_entree->_tz > 1 Alors
@@ -243,10 +243,10 @@ InrImage* Func_NormGrad( InrImage* im, float sigma,
     (*image_entree) = (*im);
   FinSi
 
-  resname = (boost::format("%s.normgrad") % im->Nom()).str();
+  resname = (boost::format("%s.normgrad") % im->GetName()).str();
   image_res = new InrImage(WT_FLOAT, resname.c_str() , im);
 
-  resname = (boost::format("%s.filter") % im->Nom()).str();
+  resname = (boost::format("%s.filter") % im->GetName()).str();
   image_der = new InrImage(WT_FLOAT, resname.c_str() , im);
 
   Si image_entree->_tz > 1 Alors
@@ -343,7 +343,7 @@ InrImage* Func_DiscNormGrad( InrImage* im )
 
 
 
-  resname = (boost::format("%s.discnormgrad") % im->Nom()).str();
+  resname = (boost::format("%s.discnormgrad") % im->GetName()).str();
   image_res = new InrImage(WT_FLOAT, resname.c_str() , im);
 
   image_res->InitImage(0);
@@ -455,7 +455,7 @@ InrImage* Func_DiscMeanCurvature( InrImage* im )
     register double dxy, dyz, dxz;
  
 
-  resname = (boost::format("%s.discmeancurv") % im->Nom()).str();
+  resname = (boost::format("%s.discmeancurv") % im->GetName()).str();
   image_res = new InrImage(WT_FLOAT, resname.c_str() , im);
 
   image_res->InitImage(0);
@@ -591,7 +591,7 @@ InrImage* Func_Laplacian( InrImage* im )
   double laplacian;
  
 
-  resname = (boost::format("%s.laplacian") % im->Nom()).str();
+  resname = (boost::format("%s.laplacian") % im->GetName()).str();
   image_res = new InrImage(WT_FLOAT, resname.c_str() , im);
 
   image_res->InitImage(0);
@@ -656,7 +656,7 @@ InrImage* Func_Gradient( InrImage* im, float sigma )
   std::string     resname;
   int             mode;
 
-  resname = (boost::format("%1%.normgrad") % im->Nom()).str();
+  resname = (boost::format("%1%.normgrad") % im->GetName()).str();
 
   Si (im->_format == WT_FLOAT) Alors
     image_entree = im;
@@ -675,7 +675,7 @@ InrImage* Func_Gradient( InrImage* im, float sigma )
     image_res = new InrImage(WT_FLOAT, 2,resname.c_str(), im);
   FinSi
 
-  resname = (boost::format("%1%.filter") % im->Nom()).str();
+  resname = (boost::format("%1%.filter") % im->GetName()).str();
 
   image_der = new InrImage(WT_FLOAT, resname.c_str() , im);
 
@@ -901,7 +901,7 @@ InrImage* Func_SecDerGrad( InrImage* im, float sigma )
   filtre->InitFiltre( sigma, MY_FILTRE_CONV );  
   filtre->CalculFiltres( );
 
-  resname = (boost::format("%s.d2grad") % image_entree->Nom()).str();
+  resname = (boost::format("%s.d2grad") % image_entree->GetName()).str();
   image_res = new InrImage(WT_FLOAT, resname.c_str() , image_entree);
   image_res->InitImage(0.0);
 
@@ -997,7 +997,7 @@ InrImage* Func_SecDerGrad2( InrImage* im, float sigma )
   filtre->InitFiltre( sigma, MY_FILTRE_CONV );  
   filtre->CalculFiltres( );
 
-  resname = (boost::format("%s.d2grad") % image_entree->Nom()).str();
+  resname = (boost::format("%s.d2grad") % image_entree->GetName()).str();
   image_res = new InrImage(WT_FLOAT, resname.c_str() , image_entree);
   image_res->InitImage(0.0);
 
@@ -1079,7 +1079,7 @@ InrImage* Func_SecDerGradOld( InrImage* im, float sigma )
   filtre->InitFiltre( sigma, MY_FILTRE_CONV );  
 
 
-  resname = (boost::format("%s.smoothed") % im->Nom()).str();
+  resname = (boost::format("%s.smoothed") % im->GetName()).str();
   image_lissee = new InrImage(WT_FLOAT, resname.c_str() , im);
 
   Si mode == MODE_3D Alors
@@ -1092,7 +1092,7 @@ InrImage* Func_SecDerGradOld( InrImage* im, float sigma )
 
   delete filtre;
 
-  resname = (boost::format("%s.d2grad") % image_entree->Nom()).str();
+  resname = (boost::format("%s.d2grad") % image_entree->GetName()).str();
   image_res = new InrImage(WT_FLOAT, resname.c_str() , image_entree);
   image_res->InitImage(0.0);
 
@@ -1510,7 +1510,7 @@ InrImage* Func_rot2D( InrImage* image,
     int       x1,y1;
     float      x,y;
 
-  res = new InrImage( (int) tx, (int) ty, 1, WT_FLOAT, ((Chaine) image->Nom())+".rot.inr");
+  res = new InrImage( (int) tx, (int) ty, 1, WT_FLOAT, ((Chaine) image->GetName())+".rot.inr");
 
   res->InitBuffer();
 

@@ -329,8 +329,8 @@ protected:
     //  inrimage*   _inrimage;
 
   /// pointer to the data
-  amimage*           _amimage;
-  unsigned char    _amimage_allocated;
+  boost::shared_ptr<amimage>           _amimage;
+  //unsigned char    _amimage_allocated;
 
   ///
   int     _vdim; // image scalar (1), vectorial (2,3,etc...)
@@ -406,7 +406,7 @@ private:
   virtual unsigned char   InitPositions();
 
   /// initialisation du tableau de positions _positions[z][y]
-  virtual unsigned char   EffacePositions();
+  virtual unsigned char   FreePositions();
 
   ///
   WORDTYPE  ZimageFormat( int format);
@@ -534,10 +534,13 @@ public:
     unsigned char GetFormatFromAMI(amimage* im, WORDTYPE& type);
 
     ///
-    unsigned char AMIFromWT( int vdim, WORDTYPE type, amimage* amim);
+    bool AMIFromWT( int vdim, WORDTYPE type, amimage* amim);
 
     ///
-    void SetAMImage( amimage* amim);
+    bool AMIFromWT( int vdim, WORDTYPE type, boost::shared_ptr<amimage>& amim);
+
+    ///
+    void SetAMImage( const amimage::ptr& amim);
     //   ----------
 
     ///
@@ -605,7 +608,7 @@ public:
     //        ----------
 
     ///
-    const char*    Nom() const { return _nom.c_str();}
+    const char*    GetName() const { return _nom.c_str();}
     //            ---
 
     ///

@@ -165,7 +165,7 @@ private:
   unsigned char   InitPositions();
 
   /// initialisation du tableau de positions _positions[z][y]
-  unsigned char   EffacePositions() {  return true;}
+  unsigned char   FreePositions() {  return true;}
 
   ///
   WORDTYPE  ZimageFormat( int format);
@@ -194,7 +194,7 @@ public:
     */
 
     ///
-    char*    Nom() { return _nom;}
+    char*    GetName() { return _nom;}
     //            ---
 
   //@}

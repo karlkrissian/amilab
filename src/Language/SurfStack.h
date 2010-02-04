@@ -31,7 +31,7 @@ class SurfStack{
 
   ~SurfStack()    { }
 
-  void AddSurf( char* name)
+  void AddSurf( const char* name)
   {
     SurfacePoly* surf_tmp;
     unsigned char      res;

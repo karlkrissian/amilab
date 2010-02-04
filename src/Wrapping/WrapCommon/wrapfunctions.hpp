@@ -30,6 +30,7 @@
   wxMessageDialog* msg = new wxMessageDialog(NULL,wxString::FromAscii(mess.c_str()),\
       wxString::FromAscii("Info"),wxOK | wxICON_INFORMATION );\
   msg->ShowModal();\
+  msg->Destroy();\
   return Variable::ptr(); }
 
 /*! \def HelpAndReturn
@@ -43,6 +44,7 @@
   wxMessageDialog* msg = new wxMessageDialog(NULL,wxString::FromAscii(mess.c_str()),\
       wxString::FromAscii("Info"),wxOK | wxICON_INFORMATION  );\
   msg->ShowModal();\
+  msg->Destroy();\
   return; } \
 
 
@@ -59,6 +61,7 @@
   wxMessageDialog* msg = new wxMessageDialog(NULL,wxString::FromAscii(mess.c_str()),\
       wxString::FromAscii("Info"),wxOK | wxICON_INFORMATION  );\
   msg->ShowModal();\
+  msg->Destroy();\
   return NULL; } \
 
 
@@ -84,20 +87,30 @@ bool get_val_param( T& arg,
 
 
 /**
- * Function used to parse a variable of generic type in a list of parameters, and to give back a pointer to its value.
+ *  Function used to parse a variable of generic type in a list of parameters, and to give back a pointer to its value.
+ * @param arg returned argument as a pointer to the type
+ * @param p list of parameters
+ * @param num integer variable containing the argument number, it is incremented by one
+ * @param required  default is true
+ * @return true/false for success/failure
  */
 template<class T>
 bool get_val_ptr_param( T*& arg, 
                     ParamList*p, int& num, 
-                    bool required=false);
+                    bool required=true);
+
 
 /**
- * Function used to parse a variable of generic type in a list of parameters, and to give back a smart pointer to its value.
+ *  Function used to parse a variable of generic type in a list of parameters, and to give back a smart pointer to its value.
+ * @param arg returned argument as a smart pointer to the type
+ * @param p list of parameters
+ * @param num integer variable containing the argument number, it is incremented by one
+ * @param required  default is true
+ * @return true/false for success/failure
  */
-template<class T>
-bool get_val_smtptr_param( boost::shared_ptr<T>& arg, 
+template<class T> bool get_val_smtptr_param( boost::shared_ptr<T>& arg, 
                        ParamList*p, int& num, 
-                       bool required=false);
+                       bool required=true);
 
 
 /**

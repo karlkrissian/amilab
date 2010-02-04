@@ -22,7 +22,7 @@ void            Func_SaveTransform(GLTransfMatrix* glt1, char* name)
   fclose(transf);
 }
 
-GLTransfMatrix* Func_ReadTransform(char* name)
+GLTransfMatrix* Func_ReadTransform(const char* name)
 {
   FILE* transf;
   GLTransfMatrix* newglt = new GLTransfMatrix();

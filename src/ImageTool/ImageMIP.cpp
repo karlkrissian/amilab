@@ -262,7 +262,7 @@ void ImageMIP :: AlloueImage()
 
 
   if (_imageMIP.use_count()==0) {
-    nom = _image->Nom();
+    nom = _image->GetName();
     nom += ".MIP";
     _imageMIP = InrImage::ptr(new InrImage( 
         _taille_MIP, _taille_MIP, 1, 
@@ -304,7 +304,7 @@ void ImageMIP :: AlloueImageMasque()
   
     Chaine nom;
 
-  nom =  _image->Nom();
+  nom =  _image->GetName();
   nom+= ".masque";
   _image_masque = new InrImage( WT_UNSIGNED_CHAR, nom, _image);
   _image_masque->InitImage(1);

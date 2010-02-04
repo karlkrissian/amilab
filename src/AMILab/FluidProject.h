@@ -55,7 +55,7 @@ namespace AMIFluid {
                   float scale,
                   int vector_style=1 );
   
-  InrImage*    Func_ReadFlow( char* name);
+  InrImage*    Func_ReadFlow( const char* name);
   
   
   int InitCoordinates( int& i_offset, int& j_offset, TNavig& nav, std::string type);

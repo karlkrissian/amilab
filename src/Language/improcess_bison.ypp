@@ -190,8 +190,11 @@ static std::list<wxScheduleTimer::ptr> schedule_timers;
 
 void CB_ParamWin( void* cd ) {
 
-  AMIFunction::ptr* func_ptr = (AMIFunction::ptr*) (cd);
-  GB_driver.yyip_call_function(*func_ptr);
+  AMIFunction* func_ptr = (AMIFunction*) (cd);
+
+  cout << "CB_ParamWin pointer is " << func_ptr << endl;
+
+  GB_driver.yyip_call_function(func_ptr);
 
 } // CB_ParamWin( void* cd )
 
@@ -1038,21 +1041,32 @@ loop_inst :
       // create the variable
       string* tmp = new string();
       Variable* var = Vars.AddVar(type_string,ident,(void*)tmp);
+      //cout << " *** Create temporary variable " << ident->GetName() << endl;
 
       std::list<std::string>::iterator sl_it;
       for (sl_it=sl->begin(); sl_it!=sl->end(); sl_it++) {
 
         // assign new value to the variable
-        string_ptr newval( new std::string(*sl_it));
-        var->SetString(newval);
+        //string_ptr newval( new std::string(*sl_it));
+        var->SetString(sl_it->c_str());
 
         driver.yyiplineno = block->GetStartingLine();
         //driver.yyiplineno=previous_lineno;
         driver.parse_block(block);
 
       }
-      Vars.deleteVar(ident->GetName().c_str());
+      // should not delete based on the name !!!
+      bool res = Vars.deleteVar(ident->GetName().c_str());
+      //cout << " *** Delete temporary variable " << ident->GetName() << endl;
+      if (!res) {
+        cout << "**********" << endl;
+        cout << "**** Could not delete variable in loop"  << ident->GetName() << endl;
+        cout << "**********" << endl;
+      }
       driver.yyiplineno=previous_lineno;
+
+      // forced to delete the pointer to the list here
+      delete $4;
 
     }
     |
@@ -1281,10 +1295,11 @@ func_inst :
     |
     T_eval expr_string
     {
-      string_ptr inputstring( new std::string($2));
-      driver.parse_string( *inputstring,
+      boost::shared_array<char> input($2);
+      string inputstring( input.get());
+      driver.parse_string( inputstring,
                           "'eval string' command");
-     }
+    }
     | VAR_AMI_FUNCTION  T_OP_PAR param_list T_CL_PAR end_instr
     {
     /**
@@ -1507,7 +1522,7 @@ command:
             YYABORT;
           }
           res->Rename(ident->GetName().c_str());
-          Vars.AddVar(res,ident->GetCreationContext());
+          Vars.AddVarSmtPtr(res,ident->GetCreationContext());
         }
         | identifier ASSIGN_OP VAR_CLASS_MEMBER  T_OP_PAR param_list T_CL_PAR
         {
@@ -1526,7 +1541,7 @@ command:
             YYABORT;
           }
           res->Rename(ident->GetName().c_str());
-          Vars.AddVar(res,ident->GetCreationContext());
+          Vars.AddVarSmtPtr(res,ident->GetCreationContext());
         }
         | identifier ASSIGN_OP VAR_CLASS_MEMBER  
         {
@@ -1545,7 +1560,7 @@ command:
             YYABORT;
           }
           res->Rename(ident->GetName().c_str());
-          Vars.AddVar(res,ident->GetCreationContext());
+          Vars.AddVarSmtPtr(res,ident->GetCreationContext());
         }
         |
         VAR_ARRAY_IMAGE T_OP_BR expr T_CL_BR ASSIGN_OP expr_image
@@ -1717,11 +1732,11 @@ command:
       **/
         int* varint;
         IdentifierInfo::ptr ident($1);
-
+        boost::shared_array<char> comments( $8);
+  
         varint = new int((int)$5);
         Variable* var=Vars.AddVar(type_int,ident,(void*)varint);
-        string_ptr comments( new std::string($8));
-        var->SetComments(*comments);
+        var->SetComments(comments.get());
       }
       |
       identifier ASSIGN_OP T_UCHAR T_OP_PAR expr T_CL_PAR
@@ -1749,11 +1764,11 @@ command:
       **/
         unsigned char* varuchar;
         IdentifierInfo::ptr ident($1);
+        boost::shared_array<char> comments( $8);
 
         varuchar = new unsigned char((unsigned char)$5);
         Variable* var=Vars.AddVar(type_uchar,ident,(void*)varuchar);
-        string_ptr comments( new std::string($8));
-        var->SetComments(*comments);
+        var->SetComments(comments.get());
       }
       |
         identifier ASSIGN_OP expr
@@ -1782,10 +1797,10 @@ command:
         float* varfloat;
         IdentifierInfo::ptr ident($1);
         varfloat = new float($3);
+        boost::shared_array<char> comments( $5);
 
         Variable* var = Vars.AddVar(type_float,ident,(void*)varfloat);
-        string_ptr comments( new std::string($5));
-        var->SetComments(*comments);
+        var->SetComments(comments.get());
       }
       |
       identifier ASSIGN_OP expr_string
@@ -1794,12 +1809,12 @@ command:
         Description: 
           Creation of a new string variable
       **/
-          string* varstring;
-          varstring = new string($3);
-          IdentifierInfo::ptr ident($1);
+        IdentifierInfo::ptr ident($1);
+        boost::shared_array<char> strval( $3);
+        string* varstring;
+        varstring = new string(strval.get());
 
-          Vars.AddVar(type_string,ident,(void*)varstring);
-          delete [] $3;
+        Vars.AddVar(type_string,ident,(void*)varstring);
       }
       |
       identifier ASSIGN_OP expr_string T_COMMA expr_string
@@ -1812,27 +1827,29 @@ command:
         Description: 
           Creation of a new string variable
       **/
-        string_ptr value( new std::string($3));
+        boost::shared_array<char> value( $3);
         string* varstring;
-        varstring = new string(value->c_str());
+        varstring = new string(value.get());
         IdentifierInfo::ptr ident($1);
 
         Variable* var = Vars.AddVar(type_string,ident,(void*)varstring);
-        string_ptr comments( new std::string($5));
-        var->SetComments(*comments);
+        boost::shared_array<char> comments( $5);
+        var->SetComments(comments.get());
       }
       |
       identifier ASSIGN_OP T_OPEN T_OP_PAR  expr_string T_COMMA ASTRING T_CL_PAR
       {
           FILE* file;
           IdentifierInfo::ptr ident($1);
+          boost::shared_array<char> filename( $5);
+          boost::shared_array<char> rights( $7);
 
-          file = fopen($5,$7);
+          file = fopen(filename.get(),rights.get());
           if (file!=NULL) {
             Vars.AddVar(type_file,ident,(void*)file);
           } else {
             fprintf(stderr,"error opening file '%s' in mode '%s'\n",
-                      $5,$7);
+                      filename.get(),rights.get());
           /*
           switch (errno) {
           case EEXIST: fprintf(stderr,"EEXIST \n"); break;
@@ -1904,10 +1921,10 @@ command:
         - string expression: menu label
         - string expression: script name
    **/
-          string_ptr category( new std::string($3));
-          string_ptr label(    new std::string($5));
-          string_ptr script(   new std::string($7));
-          GB_main_wxFrame->AddMenuScript(*category,*label,*script);
+          boost::shared_array<char> category( $3);
+          boost::shared_array<char> label(    $5);
+          boost::shared_array<char> script(   $7);
+          GB_main_wxFrame->AddMenuScript(category.get(),label.get(),script.get());
     }
     |  T_SetProgress T_OP_PAR expr T_CL_PAR
     {
@@ -1927,8 +1944,8 @@ command:
       Description:
         Set the given text in the status bar
     **/
-        string_ptr text( new std::string($3));
-        GB_main_wxFrame->SetStatusText( (*text) );
+        boost::shared_array<char> text( $3);
+        GB_main_wxFrame->SetStatusText( text.get() );
     }
     |  QUIT  {
           GB_main_wxFrame->Close(true);
@@ -2248,8 +2265,8 @@ command:
         }
         |  VAR_STRING ASSIGN_OP expr_string
         {
-          string_ptr newname( new std::string($3));
-          $1->SetString(newname);
+          boost::shared_array<char> newname( $3);
+          $1->SetString(newname.get());
         }
         | SHOW VARIABLES
         {
@@ -2263,8 +2280,8 @@ command:
               string expression: comments
           Description: Set comments for a variable
         **/
-          string_ptr comments( new std::string($5));
-          $1->SetComments(*comments);
+          boost::shared_array<char> comments( $5);
+          $1->SetComments(comments.get());
         }
         | T_del variable
         {
@@ -2286,8 +2303,8 @@ command:
             Delete all variables that match the expression, where the expression can contain 
             '*' and '?' characters
         **/
-        string_ptr varmatch( new std::string($2));
-         Vars.deleteVars( *varmatch);
+        boost::shared_array<char> varmatch( $2);
+         Vars.deleteVars( varmatch.get());
         }
         | T_del VAR_ARRAY_SURFACE T_OP_BR expr T_CL_BR
         {
@@ -2306,8 +2323,8 @@ command:
         Description:
           calls a command from the system using std::system()
       **/
-        string_ptr cmd( new std::string($2));
-        std::system( cmd->c_str());
+        boost::shared_array<char> cmd( $2);
+        std::system( cmd.get());
       }
       | LS
       {
@@ -2675,17 +2692,17 @@ command:
         | VAR_FILE T_POINT PRINT expr_string
         {
           FILE_ptr file = *(FILE_ptr*) ($1->Pointer());
-          string_ptr text( new std::string($4));
+          boost::shared_array<char> text( $4);
 
-          fprintf(file.get(),"%s",text->c_str());
+          fprintf(file.get(),"%s",text.get());
           fflush(file.get());
         }
         | VAR_FILE T_POINT PRINTN expr_string
         {
           FILE_ptr file = *(FILE_ptr*) ($1->Pointer());
-          string_ptr text( new std::string($4));
+          boost::shared_array<char> text( $4);
 
-          fprintf(file.get(),"%s\n",text->c_str());
+          fprintf(file.get(),"%s\n",text.get());
           fflush(file.get());
         }
         | PRINT expr_string
@@ -2891,6 +2908,8 @@ command:
            expr T_COMMA expr T_COMMA expr T_COMMA expr
          T_CL_PAR
         {
+        driver.yyiperror( "SetCompTransf is not available at the moment");
+/*
         DessinImage::ptr draw;
         FloatMatrix* mat;
 
@@ -2914,7 +2933,7 @@ command:
           draw->GetCompareWindow(0)->SetTransformationMatrix(mat);
         // PB: the matrix is never freed from memory ...
         // TODO use smart pointer management !!!
-
+*/
         }
         | VAR_IMAGEDRAW T_POINT SETVECTOR T_OP_PAR NUMBER T_COMMA var_image T_CL_PAR
         {
@@ -3182,7 +3201,8 @@ command:
             DessinImage::ptr draw;
 
             draw = *(DessinImage::ptr*) ($1->Pointer());
-            draw->SetPaintCallback( (void*) CB_ParamWin, (void*) $5->Pointer() );
+            draw->SetPaintCallback( (void*) CB_ParamWin, 
+                                    (void*) ((AMIFunction::ptr*) $5->Pointer())->get() );
             // may be a pb to call Paint() here since it will start another interpreter ??? to check
             //draw->Paint();
         }
@@ -5209,7 +5229,9 @@ cerr << "Feature not available, needs to be updated ! " << endl;
         {
           ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
           int n = pw->NbParameters();
-            pw->ChangedValueCallback(n-1,(void*) CB_ParamWin, (void*) $5->Pointer() );
+            pw->ChangedValueCallback(n-1,
+                      (void*) CB_ParamWin,
+                      (void*) ((AMIFunction::ptr*) $5->Pointer())->get() );
         }
     |
     VAR_PARAMWIN T_POINT T_SetPositionProp 
@@ -5515,6 +5537,8 @@ param_list:
           Variable::ptr newvar(new Variable());
           // copy information from variable, including comments
           (*newvar) = (*(Variable*) $4);
+          //cout << " initial pointer : " << ((AMIFunction::ptr*) ((Variable*) $4)->Pointer())->get() << endl;
+          //cout << " param pointer   : " << ((AMIFunction::ptr*) newvar          ->Pointer())->get() << endl;
           // don't change variable name
           //std::string paramname = (boost::format("Param%1%")%pl->GetNumParam()).str();
           //newvar->Rename(paramname.c_str());
@@ -5525,8 +5549,8 @@ param_list:
         {
           ParamList* pl(new ParamList);
           Variable::ptr newvar(new Variable());
-          float_ptr* x = new float_ptr(new float($1));
-          newvar->InitPtr(type_float,"Param0",x);
+          float_ptr x(new float($1));
+          newvar->InitPtr(type_float,"Param0",&x);
           pl->AddParam(newvar);
           $$ = pl;
         }
@@ -5534,9 +5558,9 @@ param_list:
         {
           ParamList* pl =  $1;
           Variable::ptr newvar(new Variable());
-          float_ptr* x = new float_ptr(new float($3));
+          float_ptr x(new float($3));
           std::string paramname = (boost::format("Param%1%")%pl->GetNumParam()).str();
-          newvar->InitPtr(type_float,paramname.c_str(),x);
+          newvar->InitPtr(type_float,paramname.c_str(),&x);
           pl->AddParam(newvar);
           $$ = pl;
         }
@@ -5544,8 +5568,8 @@ param_list:
         {
           ParamList* pl = new ParamList();
           Variable::ptr newvar(new Variable());
-          string_ptr* x = new string_ptr(new string($1));
-          newvar->InitPtr(type_string,"Param0",x);
+          string_ptr x(new string($1));
+          newvar->InitPtr(type_string,"Param0",&x);
           pl->AddParam(newvar);
           $$ = pl;
           delete [] $1;
@@ -5554,9 +5578,9 @@ param_list:
         {
           ParamList* pl =  $1;
           Variable::ptr newvar(new Variable());
-          string_ptr* x = new string_ptr(new string($3));
+          string_ptr x(new string($3));
           std::string paramname = (boost::format("Param%1%")%pl->GetNumParam()).str();
-          newvar->InitPtr(type_string,paramname.c_str(),x);
+          newvar->InitPtr(type_string,paramname.c_str(),&x);
           pl->AddParam(newvar);
           $$ = pl;
           delete [] $3;
@@ -5662,21 +5686,21 @@ param_list_decl:
         };
 
 primary_expr_string: ASTRING
-        {
-        $$=$1;
-        }
-        |
-        VAR_STRING
-        {
-      //
-      // TODO: replace string expression to use std::string !!!
-      //
-      char* res;
-
-      res = new char[(*(string_ptr*)$1->Pointer())->length()+1];
-      strcpy(res,((string_ptr*)$1->Pointer())->get()->c_str());
-      $$= res;
-        }
+      {
+      $$=$1;
+      }
+      |
+      VAR_STRING
+      {
+        //
+        // TODO: replace string expression to use std::string !!!
+        //
+        char* res;
+  
+        res = new char[(*(string_ptr*)$1->Pointer())->length()+1];
+        strcpy(res,((string_ptr*)$1->Pointer())->get()->c_str());
+        $$= res;
+      }
 ;
 
 
@@ -5790,7 +5814,7 @@ postfix_expr_string
     }
     |
     var_image T_POINT T_GetName {
-      $$=(char*) (*(InrImage::ptr*) $1->Pointer())->Nom();
+      $$=(char*) (*(InrImage::ptr*) $1->Pointer())->GetName();
     }
     |
     T_GetName T_OP_PAR variable T_CL_PAR {
@@ -5835,17 +5859,18 @@ additive_expr_string
         : postfix_expr_string
         | additive_expr_string T_ADD postfix_expr_string
         {
+          boost::shared_array<char> exp1( $1);
+          boost::shared_array<char> exp2( $3);
           char* res;
-          res = new char[strlen($1)+strlen($3)+1];
-          strcpy(res,$1);
-          strcat(res,$3);
-          delete [] $1;
-          delete [] $3;
+          res = new char[strlen(exp1.get())+strlen(exp2.get())+1];
+          strcpy(res,exp1.get());
+          strcat(res,exp2.get());
           $$=res;
         }
         | additive_expr_string T_SUB postfix_expr_string
         {
-          RemoveEndString($1,$3);
+          boost::shared_array<char> exp2( $3);
+          RemoveEndString($1,exp2.get());
           $$=$1;
         }
         ;
@@ -6695,13 +6720,13 @@ postfix_expr
       **/
 
       float* var = ((float_ptr*)$5->Pointer())->get();
-      string_ptr label( new std::string($7));
+      boost::shared_array<char> label( $7);
       float min_value = (float)$9;
       float max_value = (float)$11;
 
       ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
       std::string tooltip = (boost::format("%s  (%s)") % $5->GetComments() % $5->Name()).str();
-      int var_id = pw->AddFloat( var, label->c_str(),2,tooltip);
+      int var_id = pw->AddFloat( var, label.get(),2,tooltip);
       pw->FloatConstraints( var_id, min_value, max_value, *var );
       $$ = var_id;
     }
@@ -6734,25 +6759,27 @@ postfix_expr
         Description:
           Add interface to set an integer value between a minimal and a maximal value.
       **/
-      string_ptr label( new std::string($7));
+      boost::shared_array<char> label( $7);
       int* var = ((int_ptr*)$5->Pointer())->get();
       ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
       std::string tooltip = (boost::format("%s  (%s)") % $5->GetComments() % $5->Name()).str();
-      int var_id = pw->AddInteger( var, label->c_str(), tooltip);
+      int var_id = pw->AddInteger( var, label.get(), tooltip);
       pw->IntegerConstraints( var_id, (int)$9, (int)$11, *var );
       $$ = var_id;
     }
     |
     VAR_PARAMWIN T_POINT T_AddButton T_OP_PAR  expr_string T_COMMA VAR_AMI_FUNCTION T_CL_PAR
     {
-    int bid;
-    ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
-    std::string tooltip = (boost::format("%s  (%s)") % $7->GetComments() % $7->Name()).str();
-    pw->AddButton( &bid, $5,
-                (void*) CB_ParamWin,
-                (void*) $7->Pointer(),
-                tooltip);
-    $$ = bid;
+      int bid;
+      boost::shared_array<char> label( $5);
+  
+      ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
+      std::string tooltip = (boost::format("%s  (%s)") % $7->GetComments() % $7->Name()).str();
+      pw->AddButton( &bid, label.get(),
+                  (void*) CB_ParamWin,
+                  (void*) ((AMIFunction::ptr*) $7->Pointer())->get(),
+                  tooltip);
+      $$ = bid;
     }
     |
     VAR_PARAMWIN T_POINT T_AddBoolean T_OP_PAR   VAR_UCHAR   T_CL_PAR
@@ -6782,12 +6809,12 @@ postfix_expr
     Description:
       Adds a boolean variable to the parameter window.
     **/
-      string_ptr label( new std::string($7));
+      boost::shared_array<char> label( $7);
       unsigned char*   var = ((uchar_ptr*) $5->Pointer())->get();
       ParamPanel_ptr pw  = *(ParamPanel_ptr*) $1->Pointer();
       int var_id;
       std::string tooltip = (boost::format("%s  (%s)") % $5->GetComments() % $5->Name()).str();
-      pw->AddBoolean( &var_id, var, label->c_str(),CaractereToggle,tooltip);
+      pw->AddBoolean( &var_id, var, label.get(),CaractereToggle,tooltip);
       pw->BooleanDefault( var_id, *var);
       $$ = var_id;
     }
@@ -6802,7 +6829,7 @@ postfix_expr
     Description:
       Allows the user to choose among the current image variables available
     **/
-      string_ptr label( new std::string($7));
+      boost::shared_array<char> label( $7);
       ParamPanel_ptr pw  = *(ParamPanel_ptr*) $1->Pointer();
       boost::shared_ptr<wxArrayString> imagelist;
       int var_id;
@@ -6816,7 +6843,7 @@ postfix_expr
       // Get list of image names
       pw->AddListChoice( &var_id,
           (string_ptr*)$5->Pointer(),
-          label->c_str(),
+          label.get(),
           imagelist,
           (void*)CB_update_imagelist,
           EnumOptionMenu,
@@ -6835,12 +6862,12 @@ postfix_expr
     Description:
       Adds an integer variable as an enumeration to the parameter window.
     **/
-      string_ptr label( new std::string($7));
+      boost::shared_array<char> label( $7);
       int*   var = ((int_ptr*) $5->Pointer())->get();
       ParamPanel_ptr pw  = *(ParamPanel_ptr*) $1->Pointer();
       int var_id;
       std::string tooltip = (boost::format("%s  (%s)") % $5->GetComments() % $5->Name()).str();
-      pw->AddEnumeration( &var_id,  var, label->c_str(),
+      pw->AddEnumeration( &var_id,  var, label.get(),
                           EnumOptionMenu,
                           tooltip);
       //pw->EnumerationDefaut( var_id,  *var);
@@ -6873,11 +6900,11 @@ postfix_expr
     Description:
       Adds a choice for an enumeration created in the parameter window
     **/
-      string_ptr text( new std::string($7));
+      boost::shared_array<char> text( $7);
       ParamPanel_ptr pw  = *(ParamPanel_ptr*) $1->Pointer();
       int id = (int) $5;
       int var_id;
-      pw->AddEnumChoice( id, &var_id, text->c_str());
+      pw->AddEnumChoice( id, &var_id, text.get());
       $$ = var_id;
     }
     |
@@ -6892,13 +6919,13 @@ postfix_expr
     Description:
       Adds a string in the parameter window
     **/
-        string_ptr label( new std::string($7));
+        boost::shared_array<char> label( $7);
         ParamPanel_ptr pw  = *(ParamPanel_ptr*) $1->Pointer();
         int var_id;
         std::string tooltip = (boost::format("%s  (%s)") % $5->GetComments() % $5->Name()).str();
         pw->AjouteChaine( &var_id,
           (string_ptr*)$5->Pointer(),
-          label->c_str(),
+          label.get(),
           tooltip);
         pw->ContraintesChaine(var_id,
           (char*) ((string_ptr*)$5->Pointer())->get()->c_str());
@@ -6917,12 +6944,12 @@ postfix_expr
       Adds a label in the parameter window
     **/
         ParamPanel_ptr pw  = *(ParamPanel_ptr*) $1->Pointer();
-        string_ptr label( new std::string($5));
-        string_ptr value( new std::string($7));
+        boost::shared_array<char> label( $5);
+        boost::shared_array<char> value( $7);
         int var_id;
         pw->AddLabel( &var_id,
-                      label->c_str(),
-                      value->c_str());
+                      label.get(),
+                      value.get());
         $$=var_id;
     }
     |
@@ -6941,18 +6968,18 @@ postfix_expr
     **/
         ParamPanel_ptr pw  = *(ParamPanel_ptr*) $1->Pointer();
         int var_id;
-        string_ptr label( new std::string($7));
-        string_ptr defpath( new std::string($9));
-        string_ptr defmask( new std::string($11));
+        boost::shared_array<char> label( $7);
+        boost::shared_array<char> defpath( $9);
+        boost::shared_array<char> defmask( $11);
 
         // passer AjouteNomFichier a std::string !!!!
         pw->AjouteNomFichier( &var_id,
           (string_ptr*)$5->Pointer(), 
-          label->c_str());
+          label.get());
         pw->ContraintesNomFichier(var_id,
-                                  defpath->c_str(),
+                                  defpath.get(),
                                   (char*)"",
-                                  defmask->c_str());
+                                  defmask.get());
         $$=var_id;
     }
     |
@@ -6964,9 +6991,9 @@ postfix_expr
       Description:
         Adds a box around the parameters, with the given text as label, and returns the id of the created box.
     **/
-      string_ptr label( new std::string($5));
+      boost::shared_array<char> label( $5);
       ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
-      pw->BeginBox( label->c_str());
+      pw->BeginBox( label.get());
       $$= pw->NbBoxes()-1;
     }
     |
@@ -6974,9 +7001,9 @@ postfix_expr
     {
     /**
     **/
-      string_ptr label( new std::string($5));
+      boost::shared_array<char> label( $5);
       ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
-      int id = pw->AddPage( label->c_str());
+      int id = pw->AddPage( label.get());
       $$=id;
     }
     |
@@ -7001,9 +7028,9 @@ postfix_expr
       Description:
         Adds a new panel, return the id of the corresponding panel
     **/
-      string_ptr label( new std::string($5));
+      boost::shared_array<char> label( $5);
       ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
-      int id = pw->BeginPanel( label->c_str());
+      int id = pw->BeginPanel( label.get());
       $$=id;
     }
     |
@@ -7015,10 +7042,10 @@ postfix_expr
       Description:
         Adds a new panel, return the id of the corresponding panel
     **/
-      string_ptr label( new std::string($5));
+      boost::shared_array<char> label( $5);
       ParamPanel_ptr pw = *(ParamPanel_ptr*) $1->Pointer();
-      pw->BeginBox( label->c_str());
-      int id = pw->BeginPanel( label->c_str());
+      pw->BeginBox( label.get());
+      int id = pw->BeginPanel( label.get());
       //$$= pw->NbBoxes()-1;
       $$=id;
     }
@@ -7046,9 +7073,9 @@ postfix_expr
     Description:
       Check for the existence of the given filename
     **/
-      string_ptr name( new std::string($3));
+      boost::shared_array<char> name( $3);
 
-      $$ = wxFileExists(wxString(name->c_str(),wxConvUTF8));
+      $$ = wxFileExists(wxString(name.get(),wxConvUTF8));
     }
     | basic_type
     {
@@ -7063,10 +7090,10 @@ postfix_expr
     **/
         float res;
         FILE_ptr file = *(FILE_ptr*) ($1->Pointer());
-        string_ptr format( new std::string($5));
+        boost::shared_array<char> format( $5);
 
         setlocale(LC_NUMERIC, "C");
-        fscanf(file.get(),format->c_str(),&res);
+        fscanf(file.get(),format.get(),&res);
         $$ =  res;
     }
     | VAR_FILE T_POINT T_read T_OP_PAR VAR_FLOAT T_CL_PAR
@@ -7083,8 +7110,8 @@ postfix_expr
       // not safe, TODO: use iostream or boost for files here ...
       char res[100];
       $$ = fscanf(file.get(),"%s",res);
-      string_ptr var( new std::string(res));
-      $5->SetString(var);
+      //string_ptr var( new std::string(res));
+      $5->SetString(res);
     }
     | var_surface T_POINT T_GetNumberOfLines 
     {
@@ -7225,8 +7252,18 @@ equality_expr
         : relational_expr
         | equality_expr EQ_OP relational_expr  { $$=($1==$3); }
         | equality_expr NE_OP relational_expr  { $$=($1!=$3); }
-        | expr_string   EQ_OP expr_string      { $$=(strcmp($1,$3)==0); }
-        | expr_string   NE_OP expr_string      { $$=(strcmp($1,$3)!=0); }
+        | expr_string   EQ_OP expr_string      
+        { 
+          boost::shared_array<char> st1( $1);
+          boost::shared_array<char> st2( $3);
+          $$=(strcmp(st1.get(),st2.get())==0); 
+        }
+        | expr_string   NE_OP expr_string      
+        { 
+          boost::shared_array<char> st1( $1);
+          boost::shared_array<char> st2( $3);
+          $$=(strcmp(st1.get(),st2.get())!=0); 
+        }
         ;
 
 and_expr
@@ -7365,21 +7402,21 @@ var_image:
 
 
 image:
-       T_Image  expr_string
-       {
-     driver.im_stack.AddImage($2);
-     delete [] $2;
-       }
-       |
-       T_Image T_OP_PAR expr_string T_CL_PAR
-       {
-     driver.im_stack.AddImage($3);
-     delete [] $3;
-       }
-       |
-       T_ReadRawImages T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA
-                           expr T_COMMA expr_string T_COMMA expr T_COMMA expr T_CL_PAR
-       {
+      T_Image  expr_string
+      {
+        boost::shared_array<char> st( $2);
+        driver.im_stack.AddImage(st.get());
+      }
+      |
+      T_Image T_OP_PAR expr_string T_CL_PAR
+      {
+        boost::shared_array<char> st( $3);
+        driver.im_stack.AddImage(st.get());
+      }
+      |
+      T_ReadRawImages T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA
+                          expr T_COMMA expr_string T_COMMA expr T_COMMA expr T_CL_PAR
+      {
        /**
        Parameters:
          (3)  dimension in X
@@ -7400,15 +7437,15 @@ image:
        Example(s):
           i = ReadRawImages(1024,1024,USHORT,0,"AfGG.%d",48,48)
        **/
-     InrImage* im  = new InrImage();
-     amimage* amim = new amimage();
-     int dimx                    = (int)           $3;
-     int dimy                    = (int)           $5;
-     WORDTYPE inr_format         = (WORDTYPE)      $7;
-     int endianness              = (int)           $9;
-     char* file_format           = (char*)         $11;
-     unsigned short first_slice  = (unsigned short)$13;
-     unsigned short last_slice   = (unsigned short)$15;
+      InrImage* im  = new InrImage();
+      boost::shared_ptr<amimage> amim(new amimage());
+      int dimx                    = (int)           $3;
+      int dimy                    = (int)           $5;
+      WORDTYPE inr_format         = (WORDTYPE)      $7;
+      int endianness              = (int)           $9;
+      boost::shared_array<char> file_format( $11);
+      unsigned short first_slice  = (unsigned short)$13;
+      unsigned short last_slice   = (unsigned short)$15;
 
          amim->SetDim(dimx,dimy,1);
      if (endianness)
@@ -7418,8 +7455,7 @@ image:
 
          im->AMIFromWT(1,inr_format,amim);
      amim->datafile    = AMI_DATAEXT;
-     amim->file_format = file_format;
-     delete [] file_format;
+     amim->file_format = file_format.get();
      amim->first_slice = first_slice;
      amim->last_slice  =  last_slice;
 
@@ -7430,14 +7466,13 @@ image:
        // Error message
        driver.err_print("ReadRawImages() failed ... \n");
        driver.im_stack.AddImage((InrImage*)NULL);
-       delete amim;
        delete im;
      }
-       }
-       |
-       T_ReadRawImages T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA
-                           expr T_COMMA expr_string  T_CL_PAR
-       {
+      }
+      |
+      T_ReadRawImages T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA
+                          expr T_COMMA expr_string  T_CL_PAR
+      {
        /**
        Parameters:
          (3)  dimension in X
@@ -7457,14 +7492,14 @@ image:
        Example(s):
           i = ReadRawImages(256,256,256,USHORT,0,"data.raw")
        **/
-     InrImage* im  = new InrImage();
-     amimage* amim = new amimage();
-     int dimx                    = (int)           $3;
-     int dimy                    = (int)           $5;
-     int dimz                    = (int)           $7;
-     WORDTYPE inr_format         = (WORDTYPE)      $9;
-     int endianness              = (int)           $11;
-     char* file_format           = (char*)         $13;
+      InrImage* im  = new InrImage();
+      boost::shared_ptr<amimage> amim(new amimage());
+      int dimx                    = (int)           $3;
+      int dimy                    = (int)           $5;
+      int dimz                    = (int)           $7;
+      WORDTYPE inr_format         = (WORDTYPE)      $9;
+      int endianness              = (int)           $11;
+      boost::shared_array<char> file_format( $13);
 
          amim->SetDim(dimx,dimy,dimz);
      if (endianness)
@@ -7474,8 +7509,7 @@ image:
 
      im->AMIFromWT(1,inr_format,amim);
      amim->datafile    = AMI_DATAEXT;
-     amim->file_format = file_format;
-     delete [] file_format;
+     amim->file_format = file_format.get();
 
      if (amim->readdata3D_ext()) {
        im->SetAMImage(amim);
@@ -7484,7 +7518,6 @@ image:
        // Error message
        driver.err_print("ReadRawImages() failed ... \n");
        driver.im_stack.AddImage((InrImage*)NULL);
-       delete amim;
        delete im;
      }
        }
@@ -7512,15 +7545,15 @@ image:
        Example(s):
           i = ReadRawImages(256,256,256,FLOAT,3,0,"3dvectorfielddata.raw")
        **/
-     InrImage* im  = new InrImage();
-     amimage* amim = new amimage();
-     int dimx                    = (int)           $3;
-     int dimy                    = (int)           $5;
-     int dimz                    = (int)           $7;
-     WORDTYPE inr_format         = (WORDTYPE)      $9;
-     int vdim                    = (int)           $11;
-     int endianness              = (int)           $13;
-     char* file_format           = (char*)         $15;
+      InrImage* im  = new InrImage();
+      boost::shared_ptr<amimage> amim(new amimage());
+      int dimx                    = (int)           $3;
+      int dimy                    = (int)           $5;
+      int dimz                    = (int)           $7;
+      WORDTYPE inr_format         = (WORDTYPE)      $9;
+      int vdim                    = (int)           $11;
+      int endianness              = (int)           $13;
+      boost::shared_array<char> file_format( $15);
 
      amim->SetDim(dimx,dimy,dimz);
      amim->SetVDim(vdim);
@@ -7531,8 +7564,7 @@ image:
 
      im->AMIFromWT(vdim,inr_format,amim);
      amim->datafile    = AMI_DATAEXT;
-     amim->file_format = file_format;
-     delete [] file_format;
+     amim->file_format = file_format.get();
 
      if (amim->readdata3D_ext()) {
        im->SetAMImage(amim);
@@ -7541,7 +7573,6 @@ image:
        // Error message
        driver.err_print("ReadRawImages() failed ... \n");
        driver.im_stack.AddImage((InrImage*)NULL);
-       delete amim;
        delete im;
      }
        }
@@ -7554,30 +7585,31 @@ image:
        Description:
          Reads a dicom file using VTK
        **/
-            InrImage*  res;
+        InrImage*  res;
+        boost::shared_array<char> filename( $3);
 
-            res = Func_vtkDicomRead( (char*) $3);
+        res = Func_vtkDicomRead( filename.get());
 
-            Si res==NULL Alors
-                driver.err_print("vtkDicomRead() error ... \n");
-                driver.im_stack.AddImage((InrImage*)NULL);
-            FinSi
+        Si res==NULL Alors
+            driver.err_print("vtkDicomRead() error ... \n");
+            driver.im_stack.AddImage((InrImage*)NULL);
+        FinSi
 
-            driver.im_stack.AddImage(res);
-            delete [] $3;
-       }
-       | T_vtkMINCRead T_OP_PAR expr_string T_CL_PAR
-       {
-       /**
-       Parameters:
-        (3) STRING EXPRESSION: filename in minc format
+        driver.im_stack.AddImage(res);
+      }
+      | T_vtkMINCRead T_OP_PAR expr_string T_CL_PAR
+      {
+      /**
+      Parameters:
+      (3) STRING EXPRESSION: filename in minc format
 
-       Description:
-         Reads a file in minc format using vtk reader for MINC.
-       **/
-            InrImage*  res;
+      Description:
+        Reads a file in minc format using vtk reader for MINC.
+      **/
+        InrImage*  res;
+        boost::shared_array<char> filename( $3);
 
-            res = Func_vtkMINCRead( (char*) $3);
+            res = Func_vtkMINCRead( filename.get());
 
             Si res==NULL Alors
                 driver.err_print("vtkMINCRead() error ... \n");
@@ -7585,7 +7617,6 @@ image:
             FinSi
 
             driver.im_stack.AddImage(res);
-            delete [] $3;
        }
        | VAR_C_IMAGE_FUNCTION  T_OP_PAR param_list T_CL_PAR
        {
@@ -9401,7 +9432,7 @@ image:
       mean = $5;
       sd   = $7;
 
-      sprintf(resname,"%s.noise",in->Nom());
+      sprintf(resname,"%s.noise",in->GetName());
       res = new InrImage(WT_FLOAT, resname, in.get());
 
       (*res)=(*in);
@@ -10465,9 +10496,9 @@ image:
     | T_ReadFlow T_OP_PAR expr_string   T_CL_PAR
     {
       InrImage* res;
-      res= AMIFluid::Func_ReadFlow((char*)$3);
+      boost::shared_array<char> filename( $3);
+      res= AMIFluid::Func_ReadFlow(filename.get());
       if (res!=NULL) driver.im_stack.AddImage(res);
-      delete [] $3;
     }
     |
     T_slice T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
@@ -10538,11 +10569,12 @@ image:
       returns this image.
     **/
       InrImage*         res;
+      boost::shared_array<char> filename( $5);
 
       SurfacePoly::ptr  surf = *(SurfacePoly::ptr*)
                                   $3->Pointer();
 
-      res = Func_ReadCTALineRadii( surf.get(), $5);
+      res = Func_ReadCTALineRadii( surf.get(), filename.get());
       driver.im_stack.AddImage(res);
     }
     ;
@@ -10726,11 +10758,12 @@ gltransform: VAR_GLTRANSFORM {
          newglt = Func_InterpolateTransform(glt1.get(),glt2.get(),coeff);
          driver.gltransf_stack.AddMatrix(newglt);
        }
-           |
-       T_Transform T_OP_PAR expr_string T_CL_PAR
-           {
+      |
+      T_Transform T_OP_PAR expr_string T_CL_PAR
+      {
+        boost::shared_array<char> filename( $3);
          GLTransfMatrix* newglt;
-         newglt = Func_ReadTransform($3);
+         newglt = Func_ReadTransform(filename.get());
          if (newglt!=NULL)
            driver.gltransf_stack.AddMatrix(newglt);
          else {
@@ -10740,8 +10773,7 @@ gltransform: VAR_GLTRANSFORM {
            //          yyiperror(
            //          YYABORT;
          }
-         delete [] $3;
-           }
+      }
 ;
 
 matrix: T_Matrix T_OP_PAR expr T_COMMA expr T_CL_PAR
@@ -11024,14 +11056,14 @@ surface:
     |
     T_Surface expr_string
     {
-      driver.surf_stack.AddSurf($2);
-      delete [] $2;
+      boost::shared_array<char> filename( $2);
+      driver.surf_stack.AddSurf(filename.get());
     }
     |
     T_Surface T_OP_PAR expr_string T_CL_PAR
     {
-      driver.surf_stack.AddSurf($3);
-      delete [] $3;
+      boost::shared_array<char> filename( $3);
+      driver.surf_stack.AddSurf(filename.get());
     }
     |
     T_Surface
@@ -11069,8 +11101,9 @@ surface:
             Reads a line given described in a text file
             format used in the CTA coronary segmentation challenge
         **/
+      boost::shared_array<char> filename( $3);
           SurfacePoly* surf;
-          surf = Func_ReadCTALine($3);
+          surf = Func_ReadCTALine(filename.get());
           driver.surf_stack.AddSurf(surf);
       }
       |
@@ -11085,8 +11118,10 @@ surface:
             Reads a line given described in a text file
             format used in the CTA coronary segmentation challenge
         **/
-          SurfacePoly* surf;
-          surf = Func_ReadCTALine($3, (int) $5);
+        SurfacePoly* surf;
+        boost::shared_array<char> filename( $3);
+
+          surf = Func_ReadCTALine(filename.get(), (int) $5);
           driver.surf_stack.AddSurf(surf);
       }
       |
@@ -11893,7 +11928,7 @@ void wxScheduleTimer::Notify()
 //   -----------------------
 {
   //cout << "Notify()" << endl;
-  CB_ParamWin(var->Pointer());
+  CB_ParamWin( (void*) ((AMIFunction::ptr*) var->Pointer())->get() );
 
   std::list<wxScheduleTimer::ptr>::iterator Iter;
   for (Iter  = schedule_timers.begin();

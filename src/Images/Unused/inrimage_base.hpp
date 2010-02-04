@@ -154,7 +154,7 @@ protected:
   virtual unsigned char   InitPositions() = 0;
 
   /// initialisation du tableau de positions _positions[z][y]
-  virtual unsigned char   EffacePositions() = 0;
+  virtual unsigned char   FreePositions() = 0;
 
   ///
   WORDTYPE  ZimageFormat( int format);
@@ -240,7 +240,7 @@ public:
     //        ----------
 
     ///
-    char*    Nom() { return _nom;}
+    char*    GetName() { return _nom;}
     //            ---
 
   //@}

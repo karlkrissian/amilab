@@ -23,6 +23,7 @@ class Variables{
   DEFINE_CLASS(Variables);
 
 protected:
+  // TODO: avoid pointers here !!!
   std::list<Variable*>  _vars;
   string                _context_name;
   bool                  _global_new;
@@ -68,7 +69,13 @@ protected:
 
   Variable* AddVar(Variable* var, Variables::ptr context = Variables::ptr());
 
-  Variable* AddVar(const Variable::ptr& var, Variables::ptr context = Variables::ptr());
+  /**
+   *  Add a new variable based on a smart pointer to a variable
+   * @param var 
+   * @param context 
+   * @return 
+   */
+  Variable* AddVarSmtPtr(const Variable::ptr& var, Variables::ptr context = Variables::ptr());
 
   bool ExistVar(const char* varname);
 

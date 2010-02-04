@@ -50,5 +50,6 @@ void WrapClassMember::ShowHelp()
   wxMessageDialog* msg = new wxMessageDialog(NULL,wxString::FromAscii(mess.c_str()),
       wxString::FromAscii("Info"),wxOK | wxICON_INFORMATION  );
   msg->ShowModal();
+  msg->Destroy();
 }
 

@@ -4859,7 +4859,7 @@ void AnisoGS::Init(InrImage* in,
   InitCoefficients();
 
   //--- image_resultat
-    sprintf(resname,"%s.AnisoGS",in->Nom());
+    sprintf(resname,"%s.AnisoGS",in->GetName());
   this->image_resultat = new InrImage( WT_FLOAT, resname, image_entree);
 
   (*this->image_resultat)=(*image_entree);

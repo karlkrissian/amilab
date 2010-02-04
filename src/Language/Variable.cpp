@@ -35,20 +35,89 @@ Variable::Variable()
 {
   _type         = type_void;
   _pointer      = NULL;
+  _allocated_memory = false;
+ // cout << "Variable() with pointer " << this << endl;
 }
+
+
+//------------------------------------------------
+void Variable::operator = (const Variable& v)
+{
+    _comments     = v._comments;
+
+#define CREATE_CASE(_typeid,_type) \
+  case _typeid: \
+    this->InitPtr(_typeid,v._name.c_str(), (shared_ptr<_type>*)v._pointer);  \
+    _allocated_memory = true; \
+  break; 
+
+  switch(v._type) {
+    case type_void: 
+      _pointer = NULL; //new boost::shared_ptr<void>((void*)p); 
+    break; //CREATE_CASE(type_void,         void)
+    CREATE_CASE(type_image,          InrImage)
+    CREATE_CASE(type_float,          float)
+    CREATE_CASE(type_int,            int)
+    CREATE_CASE(type_uchar,          unsigned char)
+    CREATE_CASE(type_string,         string)
+    CREATE_CASE(type_surface,        SurfacePoly)
+    CREATE_CASE(type_file,           FILE)
+    CREATE_CASE(type_ami_function,   AMIFunction)
+    CREATE_CASE(type_ami_class,      AMIClass)
+    CREATE_CASE(type_ami_object,     AMIObject)
+    CREATE_CASE(type_ami_cpp_object, AMICPPObject)
+    CREATE_CASE(type_paramwin,     ParamBox)
+    CREATE_CASE(type_parampanel,   ParamPanel);
+    CREATE_CASE(type_matrix,       FloatMatrix)
+    CREATE_CASE(type_gltransform,  GLTransfMatrix)
+    CREATE_CASE(type_array,        VarArray)
+    CREATE_CASE(type_imagedraw,    DessinImage)
+    CREATE_CASE(type_surfdraw,     Viewer3D)
+    CREATE_CASE(type_class_member, WrapClassMember);
+
+    case type_c_procedure     : 
+    case type_c_image_function:
+    case type_c_function:
+      _pointer = v._pointer; // no smart pointer here
+      _name = v._name;
+    break;
+    default       : 
+      CLASS_ERROR(boost::format("unknown type %1%") % _type << endl); 
+    break;
+  }
+
+    // Problem: unsafe to copy pointers here
+    //_pointer      = v._pointer;
+#undef CREATE_CASE
+}
+
 
 void Variable::Init(vartype type, const char* name, void* p)
 {
+//  cout << boost::format("Variable::Init(%1%,%2%,%3%)")%type%name%p
+//       << " with pointer " << this << endl;
   _type         = type;
   _name         = name;
 
-#define CREATE_CASE(_typeid,_typename) case _typeid: _pointer = new boost::shared_ptr<_typename>((_typename*)p);    break; 
+#define CREATE_CASE(_typeid,_typename) \
+  case _typeid: \
+    _pointer = new boost::shared_ptr<_typename>((_typename*)p);  \
+    _allocated_memory = true; \
+  break; 
 
-#define CREATE_CASE_WXWINDOW(_typeid,_typename) case _typeid: _pointer = new boost::shared_ptr<_typename>((_typename*)p, \
-      wxwindow_nodeleter<_typename>());    break; 
+#define CREATE_CASE_WXWINDOW(_typeid,_typename) \
+  case _typeid: \
+    _pointer = new boost::shared_ptr<_typename>((_typename*)p, \
+        wxwindow_nodeleter<_typename>()); \
+    _allocated_memory = true; \
+  break; 
 
-#define CREATE_CASE_WXWINDOW_DELETER(_typeid,_typename) case _typeid: _pointer = new boost::shared_ptr<_typename>((_typename*)p, \
-      wxwindow_deleter<_typename>());    break; 
+#define CREATE_CASE_WXWINDOW_DELETER(_typeid,_typename) \
+  case _typeid: \
+    _pointer = new boost::shared_ptr<_typename>((_typename*)p, \
+      wxwindow_deleter<_typename>()); \
+    _allocated_memory = true; \
+  break; 
 
   switch(_type) {
     case type_void: 
@@ -80,12 +149,14 @@ void Variable::Init(vartype type, const char* name, void* p)
        _pointer = new DessinImage::ptr(
             (DessinImage*)p,
             DessinImage::deleter());
+      _allocated_memory = true;
     break; 
 
     case type_surfdraw:
        _pointer = new Viewer3D_ptr(
             (Viewer3D*)p,
             Viewer3D::deleter());
+      _allocated_memory = true;
     break; 
 
     CREATE_CASE(type_class_member, WrapClassMember);
@@ -110,6 +181,8 @@ void Variable::InitPtr( vartype type,
                         void* p // is reference a smart pointer to the type
                         )
 {
+//  cout << boost::format("Variable::InitPtr(%1%,%2%,%3%)")%type%name%p
+//       << " with pointer " << this << endl;
   _type         = type;
   _name         = name;
 
@@ -119,6 +192,7 @@ using namespace boost;
     case _typeid: \
       _pointer = new shared_ptr<_type>( \
                         *(shared_ptr<_type>*)p);\
+      _allocated_memory = true; \
     break; 
 
   switch(_type) {
@@ -157,17 +231,34 @@ using namespace boost;
 #undef CREATE_CASE
 } // InitPtr()
 
+/*
 void  Variable::SetString(string_ptr st) 
 {
   // Not good, or OK?
+  // in this case, need to free the pointer
   if (_type==type_string) {
     *((string_ptr*)_pointer)=st;
+  }
+}
+*/
+
+void  Variable::SetString(const char* st) 
+{
+  // replace the value inside the string
+  if (_type==type_string) {
+    *(*((string_ptr*)_pointer))=st;
   }
 }
 
 
 bool Variable::FreeMemory()
 {
+  if (!_allocated_memory) {
+    CLASS_ERROR("No memory allocated for this variable");
+    return false;
+  }
+//  cout << boost::format("Variable::FreeMemory")
+//       << " with pointer " << this << endl;
   if (_pointer==NULL) {
     fprintf(stderr,"Variable::FreeMemory()\t NULL pointer \n");
     return false;
@@ -198,7 +289,8 @@ bool Variable::FreeMemory()
     case type_file           :
           // TODO: create a file class where the destructor closes the file 
           // for a cleaner implementation ...
-          fclose( (*(boost::shared_ptr<FILE>*) _pointer).get()); 
+          fclose( (*(boost::shared_ptr<FILE>*) _pointer).get());
+          _allocated_memory = false;
     break;
     case type_c_procedure     : 
     case type_c_image_function:
@@ -213,14 +305,14 @@ bool Variable::FreeMemory()
     break;
   }
   _pointer = NULL;
+  _allocated_memory = false;
   return true;
 }
 
 
 void Variable::Delete() 
 {
-  
-  if (_pointer==NULL) return;
+  if ((_pointer==NULL)||(!_allocated_memory)) return;
   if (!FreeMemory()) 
   {
     CLASS_MESSAGE(boost::format("Could not completely delete variable %s") % _name);

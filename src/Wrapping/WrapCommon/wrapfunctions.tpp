@@ -31,6 +31,7 @@ template<class T>
 bool get_var_param( Variable::ptr& var, 
                     ParamList*p, int& num)
 {
+  if (!p) return false;
   // Getting the Variable and checking its type
   var = p->GetParam(num++);
   if (var.get()) {
@@ -152,6 +153,7 @@ bool get_val_smtptr_param(boost::shared_ptr<T>& arg, ParamList*p, int& num, bool
 template<class T, int nb>
 bool get_several_params(T* arg, ParamList*p, int& num)
 {
+  if (!p) return false;
   int i;
   bool OK;
   for(i=0;i<nb;i++) {
@@ -169,6 +171,7 @@ bool get_several_params(T* arg, ParamList*p, int& num)
 template<int nb>
 bool get_several_int_params(int* arg, ParamList*p, int& num)
 {
+  if (!p) return false;
   int i;
   float val[nb];
   for(i=0;i<nb;i++) 

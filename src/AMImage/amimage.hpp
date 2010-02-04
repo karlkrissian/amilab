@@ -324,7 +324,11 @@ public:
   void SetTY(float ty) { transl_y=ty; }
   void SetTZ(float tz) { transl_z=tz; }
 
-  unsigned char allocate();
+  /**
+   * Allocate the memory for the image.
+   * @return true is success, false otherwise.
+   */
+  bool allocate();
 
   template <class T>
   T GetValue(char* buf,int offset)

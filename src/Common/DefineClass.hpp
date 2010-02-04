@@ -40,6 +40,7 @@
 #include "boost/format.hpp"
 
 #include <boost/shared_ptr.hpp>
+#include <boost/shared_array.hpp>
 #include <boost/weak_ptr.hpp>
 #include <list>
 #include <vector>

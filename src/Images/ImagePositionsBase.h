@@ -23,7 +23,7 @@ class ImagePositionsBase
 public:
 
   ImagePositionsBase( ) {}
-  virtual ~ImagePositionsBase() {}
+  virtual ~ImagePositionsBase() {};
 
   virtual bool InitPositions( ) = 0;
 

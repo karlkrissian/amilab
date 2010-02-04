@@ -249,13 +249,13 @@ unsigned char InrImage :: ReadAMI( ) throw (ErreurLecture)
   CLASS_MESSAGE(_nom.c_str());
 
   // Read AMImage
-  amimage* im = new amimage();
+  boost::shared_ptr<amimage> im (new amimage());
   res = im->read( (char*) _nom.c_str());
 
   if ( res ) {
 
     //      im.displayinfo();
-    res = GetFormatFromAMI(im,_format);
+    res = GetFormatFromAMI(im.get(),_format);
 
     _translation_x = im->GetTX();
     _translation_y = im->GetTY();
@@ -273,11 +273,12 @@ unsigned char InrImage :: ReadAMI( ) throw (ErreurLecture)
         _taille = (unsigned long) _tx * _ty * _tz;
 
         _amimage = im;
-        _amimage_allocated = true;
+        //_amimage_allocated = true;
 
-    } // end if
+    }    // end if
 
   } // end if
+
 
   return res;
 
@@ -315,12 +316,12 @@ unsigned char InrImage :: ReadMagick( ) throw (ErreurLecture)
     CLASS_MESSAGE(boost::format("tz = %d") % tz);
 
     _vdim = 3;
-    _amimage = new amimage();
+    _amimage = boost::shared_ptr<amimage>(new amimage());
     _amimage->SetDim( image->columns,  image->rows, tz,_vdim);
     _amimage->SetType(AMI_VECTOR);
     _amimage->SetRepres(AMI_UNSIGNED_CHAR);
     _amimage->allocate();
-    _amimage_allocated = true;
+    //_amimage_allocated = true;
 
 // Convert the format ...
     res = GetFormatFromAMI(_amimage,_format);
@@ -453,11 +454,10 @@ unsigned char InrImage :: ReadVTK( ) throw (ErreurLecture)
 
   CLASS_MESSAGE(boost::format(" %d %d %d ") % _tx % _ty % _tz);
 
-    _amimage = new amimage();
+    _amimage = boost::shared_ptr<amimage>(new amimage());
     _amimage->SetDim( _tx, _ty, _tz, _vdim);
-    AMIFromWT(_vdim,_format,_amimage);
+    AMIFromWT(_vdim,_format,_amimage.get());
     if (_amimage->allocate()) {
-      _amimage_allocated = true;
 
 //  _inrimage_allouee = true;
 
@@ -638,11 +638,10 @@ unsigned char InrImage :: ReadVTKImage( ) throw (ErreurLecture)
 
   CLASS_MESSAGE(boost::format(" image size: %d x %d x %d ") % _tx % _ty % _tz);
 
-    _amimage = new amimage();
+    _amimage = boost::shared_ptr<amimage>(new amimage());
     _amimage->SetDim( _tx, _ty, _tz, _vdim);
-    AMIFromWT(_vdim,_format,_amimage);
+    AMIFromWT(_vdim,_format,_amimage.get());
     if (_amimage->allocate()) {
-      _amimage_allocated = true;
 
 //  _inrimage_allouee = true;
 
@@ -789,11 +788,10 @@ unsigned char InrImage :: Read( ) throw (ErreurLecture)
       _txy    = _tx*_ty;
       _taille = (unsigned long) _tx * _ty * _tz;
 
-      _amimage = new amimage();
+      _amimage = boost::shared_ptr<amimage>(new amimage());
       _amimage->SetDim( _tx, _ty, _tz, _vdim);
       AMIFromWT(_vdim,_format,_amimage);
       if (_amimage->allocate()) {
-        _amimage_allocated = true;
         SetVoxelSize(tmpim->VoxSizeX(),tmpim->VoxSizeY(),tmpim->VoxSizeZ());
         SetTranslation(tmpim->TrX(),tmpim->TrY(),tmpim->TrZ());
         (*this) = (*tmpim);
@@ -905,21 +903,20 @@ unsigned char InrImage :: Alloue( ) throw (ErreurAllocation)
     } // end switch
   } // end if
 
-  _amimage = new amimage();
+  _amimage = boost::shared_ptr<amimage>(new amimage());
   _amimage->SetDim(_tx,_ty,_tz, _vdim );
   AMIFromWT(_vdim,_format,_amimage);
   _amimage->SetVoxelSize(_size_x,_size_y,_size_z);
   _amimage->SetTranslation(_translation_x,
                _translation_y,
                _translation_z);
-  _amimage->allocate();
+  bool ok = _amimage->allocate();
 
-  if ( _amimage == NULL ) {
-    cerr << " Probleme d'allocation de l'image " << _nom << endl;
+  if ( !ok ) {
+    CLASS_ERROR( boost::format(" Image allocation problem for image %1%") % _nom );
     throw ErreurAllocation();
   } // end if
 
-  _amimage_allocated = true;
 
   return true;
 
@@ -1141,12 +1138,16 @@ unsigned char InrImage :: Desalloue( )
 //  printf("liberation de %s \n", (char*) _nom);
   CLASS_MESSAGE(boost::format(" freeing image %s ") % (char*) _nom.c_str())
 
+/*
   if ( (_amimage_allocated) && (_amimage != NULL) ) {
     delete _amimage;
     _amimage = NULL;
     _amimage_allocated = false;
     //delete _nom;
   } // end if
+*/
+  // free previous smart pointer
+  _amimage = boost::shared_ptr<amimage>();
 
   return true;
 
@@ -1244,6 +1245,8 @@ unsigned char InrImage :: InitPositions( )
 //                        -------------
 {
 
+  //cout << "InitPositions() for " << GetName() << endl;
+
   // here we will initialize the ImagePositionBase* _positions member
   switch (_format) {
     case WT_RGB: 
@@ -1298,17 +1301,45 @@ unsigned char InrImage :: InitPositions( )
 
 
 //--------------------------------------------------------------------------
-unsigned char InrImage :: EffacePositions( )
+unsigned char InrImage :: FreePositions( )
 //                           ---------------
 {
 
-  delete _positions;
+  //cout << "FreePositions() for " << GetName() << endl;
+
+  // here we will initialize the ImagePositionBase* _positions member
+  switch (_format) {
+    case WT_RGB: 
+    case WT_RGBA: 
+    case WT_UNSIGNED_CHAR: 
+      delete (ImagePositions<unsigned char> *)_positions;     break;
+    case WT_UNSIGNED_SHORT:
+      delete (ImagePositions<unsigned short> *)_positions;    break;
+    case WT_SIGNED_SHORT  :  
+      delete (ImagePositions<short> *)_positions;             break;
+    case WT_UNSIGNED_INT  :  
+      delete (ImagePositions<unsigned int> *)_positions;      break;
+    case WT_SIGNED_INT  :
+      delete (ImagePositions<int> *)_positions;               break;
+    case WT_UNSIGNED_LONG  :  
+      delete (ImagePositions<unsigned long> *)_positions;     break;
+    case WT_SIGNED_LONG  :  
+      delete (ImagePositions<long> *)_positions;              break;
+    case WT_FLOAT : 
+    case WT_FLOAT_VECTOR :
+      delete (ImagePositions<float> *)_positions;             break;
+    case WT_DOUBLE :
+      delete (ImagePositions<double> *)_positions;            break;
+    default:
+      CLASS_ERROR(boost::format(" format not processed %1% ... \n") % _format);
+      return false;
+  }
    
   _positions_allocated = false;
 
   return true;
 
-} // EffacePositions()
+} // FreePositions()
 
 
 //----------------------------------------------------------------------
@@ -1333,11 +1364,11 @@ void InrImage :: InitParams()
   _translation_y =
   _translation_z = 0;
 //  _inrimage = NULL;
-  _amimage = NULL;
+//  _amimage = NULL;
 //_data = NULL;
 
 //  _inrimage_allouee   = false;
-  _amimage_allocated   = false;
+//  _amimage_allocated   = false;
   _positions_allocated = false;
 
   // Identity Matrix
@@ -1710,12 +1741,12 @@ InrImage ::  InrImage( vtkImageData* vtkim)
   //  printf("dim: %d %d %d ; %d\n", _tx,_ty,_tz, _vdim);
   //  printf("format: %s \n", FormatName()   );
 
-  _amimage = new amimage();   
+  _amimage = boost::shared_ptr<amimage>(new amimage());
   AMIFromWT(_vdim,_format,_amimage);
   _amimage->SetDim(_tx,_ty,_tz);
   _amimage->allocate();
    
-  _amimage_allocated = true;
+  //_amimage_allocated = true;
 
   _amimage->SetVX(vtkim->GetSpacing()[0]);
   _amimage->SetVY(vtkim->GetSpacing()[1]);
@@ -1775,7 +1806,7 @@ InrImage :: ~InrImage()
 {
 
   Desalloue();
-  EffacePositions();
+  FreePositions();
 
 } // Destructor
 
@@ -1827,7 +1858,7 @@ unsigned char InrImage ::  GetFormatFromAMI(amimage* im, WORDTYPE& type)
 
 
 ///----------------------------------------------------------------
-unsigned char InrImage ::  AMIFromWT(int vdim, WORDTYPE type, amimage* amim)
+bool InrImage ::  AMIFromWT(int vdim, WORDTYPE type, amimage* amim)
 //                                   ---------
 {
 
@@ -1837,50 +1868,56 @@ unsigned char InrImage ::  AMIFromWT(int vdim, WORDTYPE type, amimage* amim)
       amim->SetType(AMI_VECTOR); 
 
     switch (type) {
-      case WT_UNSIGNED_CHAR :   amim->SetRepres(AMI_UNSIGNED_CHAR);     return 1;
-      case WT_UNSIGNED_SHORT:   amim->SetRepres(AMI_UNSIGNED_SHORT);    return 1;
-      case WT_SIGNED_SHORT  :   amim->SetRepres(AMI_SIGNED_SHORT);      return 1;
-      case WT_UNSIGNED_INT  :   amim->SetRepres(AMI_UNSIGNED_INT);      return 1;
-      case WT_SIGNED_INT    :   amim->SetRepres(AMI_SIGNED_INT);        return 1;
-      case WT_UNSIGNED_LONG :   amim->SetRepres(AMI_UNSIGNED_LONG);     return 1;
-      case WT_SIGNED_LONG   :   amim->SetRepres(AMI_SIGNED_LONG);       return 1;
-      case WT_FLOAT         :   amim->SetRepres(AMI_FLOAT);             return 1;
-      case WT_DOUBLE        :   amim->SetRepres(AMI_DOUBLE);            return 1;
+      case WT_UNSIGNED_CHAR :   amim->SetRepres(AMI_UNSIGNED_CHAR);     return true;
+      case WT_UNSIGNED_SHORT:   amim->SetRepres(AMI_UNSIGNED_SHORT);    return true;
+      case WT_SIGNED_SHORT  :   amim->SetRepres(AMI_SIGNED_SHORT);      return true;
+      case WT_UNSIGNED_INT  :   amim->SetRepres(AMI_UNSIGNED_INT);      return true;
+      case WT_SIGNED_INT    :   amim->SetRepres(AMI_SIGNED_INT);        return true;
+      case WT_UNSIGNED_LONG :   amim->SetRepres(AMI_UNSIGNED_LONG);     return true;
+      case WT_SIGNED_LONG   :   amim->SetRepres(AMI_SIGNED_LONG);       return true;
+      case WT_FLOAT         :   amim->SetRepres(AMI_FLOAT);             return true;
+      case WT_DOUBLE        :   amim->SetRepres(AMI_DOUBLE);            return true;
       case WT_FLOAT_VECTOR  :   amim->SetRepres(AMI_FLOAT);
-      amim->SetType(AMI_VECTOR); 
-      amim->SetVDim(vdim);
-    return 1;
+        amim->SetType(AMI_VECTOR); 
+        amim->SetVDim(vdim);
+        return true;
       case WT_RGBA          : 
         amim->SetRepres(AMI_UNSIGNED_CHAR);   
         amim->SetType(AMI_VECTOR); 
         amim->SetVDim(vdim);
-        return 1;
+        return true;
       case WT_RGB           : 
         amim->SetRepres(AMI_UNSIGNED_CHAR);   
         amim->SetType(AMI_VECTOR); 
         amim->SetVDim(3);
-        return 1;
+        return true;
       default: 
       fprintf(stderr,"repres=%d Format not available \n",
           amim->GetRepres());
-      return 0;
+      return false;
     }
 
 } // AMIFromWT()
 
 
+// ------------------------------------------------------------
+bool InrImage::AMIFromWT( int vdim, WORDTYPE type,  boost::shared_ptr<amimage>& amim)
+{
+  return AMIFromWT(vdim,type,amim.get());
+}
+
 //----------------------------------------------------------------
-void InrImage :: SetAMImage( amimage* amim)
+void InrImage :: SetAMImage( const amimage::ptr& amim)
 //                         ----------
 {
   if (GB_debug) fprintf(stderr,"SetAMImage() begin\n");
 
   this->_amimage = amim;
-  this->_amimage_allocated = true;
+  //this->_amimage_allocated = true;
 
   // Convert to InrImage
    if (GB_debug) fprintf(stderr,"SetAMImage() set format\n");
-  this->GetFormatFromAMI(amim,this->_format);
+  this->GetFormatFromAMI(amim.get(),this->_format);
    if (GB_debug) fprintf(stderr,"SetAMImage() set translation %f %f %f\n",
     amim->GetTX(),amim->GetTY(),amim->GetTZ());
   this->SetTranslation(amim->GetTX(),amim->GetTY(),amim->GetTZ());
@@ -1917,7 +1954,7 @@ void InrImage :: SetImageData( int dimx, int dimy, int dimz,
 {
 
   Desalloue();
-  EffacePositions();
+  FreePositions();
 
   _tx = dimx;
   _ty = dimy;
@@ -1941,14 +1978,14 @@ void InrImage :: SetImageData( int dimx, int dimy, int dimz,
 
 //  _inrimage = initInrimage( _tx, _ty, _tz, 1, (WORDTYPE) _format );
 // ----- Debut init image
-  if ( _amimage == NULL ) {
+  if ( !_amimage.get()  ) {
   //    cout << "*"<< endl;
-    _amimage = new amimage();
-    _amimage_allocated = true;
+    _amimage = boost::shared_ptr<amimage>(new amimage());
+    //_amimage_allocated = true;
   } // end if
 
   _amimage->SetDim(_tx,_ty,_tz,_vdim);
-  AMIFromWT(_vdim,_format,_amimage);
+  AMIFromWT(_vdim,_format,_amimage.get());
 
   // ------ Fin init image 
 
@@ -1969,7 +2006,7 @@ void InrImage :: SetImageData( int dimx, int dimy, int dimz, int vdim,
 {
 
   Desalloue();
-  EffacePositions();
+  FreePositions();
 
   _tx = dimx;
   _ty = dimy;
@@ -1989,13 +2026,13 @@ void InrImage :: SetImageData( int dimx, int dimy, int dimz, int vdim,
 
 //  _inrimage = initInrimage( _tx, _ty, _tz, 1, (WORDTYPE) _format );
 // ----- Debut init image
-  if ( _amimage == NULL ) {
+  if ( !_amimage.get() ) {
   //    cout << "*"<< endl;
-    _amimage = new amimage();
+    _amimage = boost::shared_ptr<amimage>(new amimage());
   } // end if
 
   _amimage->SetDim(_tx,_ty,_tz);
-  AMIFromWT(_vdim,_format,_amimage);
+  AMIFromWT(_vdim,_format,_amimage.get());
 
 // ------ Fin init image 
 
@@ -2142,7 +2179,7 @@ InrImage :: operator amimage*()
 //                    ---------
 {
 
-  return _amimage;
+  return _amimage.get();
 
 } // operator amimage*()
 
