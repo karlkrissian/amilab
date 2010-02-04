@@ -228,81 +228,112 @@ static void CB_update_imagelist( void* imagelist_gui)
   res=operator(val);
 
 
-#define UNARYOP_IMAGE(operator)           \
-  InrImage* im;                           \
+#define UNARYOP_IMAGE(operator)        {   \
+  InrImage::ptr im(driver.im_stack.GetLastImage());     \
+  InrImage::ptr res;                           \
+  if (im.use_count()==1) res = im; \
+  else {\
+    res = InrImage::ptr(new InrImage( im->GetFormat(),\
+                                      im->GetVDim(),\
+                                      (std::string("unaryop_")+im->GetName()).c_str(),\
+                                      im.get()));\
+    (*res) = (*im);\
+  }\
   int       i;                            \
-  im = driver.im_stack.GetLastImage();           \
-  im->InitBuffer();                       \
-  Si im->ScalarFormat() Alors             \
+  res->InitBuffer();                       \
+  Si res->ScalarFormat() Alors             \
     Repeter                                \
-     im->FixeValeur( operator(im->ValeurBuffer()) );   \
-    JusquA Non(im->IncBuffer()) FinRepeter             \
+     res->FixeValeur( operator(res->ValeurBuffer()) );   \
+    JusquA Non(res->IncBuffer()) FinRepeter             \
   Sinon                                                \
-    Pour(i,0,im->GetVDim()-1)                 \
-      im->InitBuffer();                       \
+    Pour(i,0,res->GetVDim()-1)                 \
+      res->InitBuffer();                       \
       Repeter                                 \
-       im->VectFixeValeur( i, operator(im->VectValeurBuffer(i)) );   \
-      JusquA Non(im->IncBuffer()) FinRepeter  \
+       res->VectFixeValeur( i, operator(res->VectValeurBuffer(i)) );   \
+      JusquA Non(res->IncBuffer()) FinRepeter  \
     FinPour                                   \
   FinSi                                       \
-  driver.im_stack.AddImage(im);
+  driver.im_stack.AddImage(res); }
 
-#define IMAGE_OP_EXPR(operator,expr)                     \
-  InrImage* im1;                                         \
+
+#define IMAGE_OP_EXPR(operator,expr)              {       \
+  InrImage::ptr im(driver.im_stack.GetLastImage());            \
+  InrImage::ptr res;                           \
+  if (im.use_count()==1) res = im; \
+  else {\
+    res = InrImage::ptr(new InrImage( im->GetFormat(),\
+                                      im->GetVDim(),\
+                                      (im->GetName()+std::string("_op_expression")).c_str(),\
+                                      im.get()));\
+    (*res) = (*im);\
+  }\
   int       i;                                           \
   double    val = expr;                                  \
-  im1 = driver.im_stack.GetLastImage();                         \
-  im1->InitBuffer();                                     \
-  Si im1->ScalarFormat() Alors                           \
+  res->InitBuffer();                                     \
+  Si res->ScalarFormat() Alors                           \
     Repeter                                              \
-      im1->FixeValeur(im1->ValeurBuffer() operator val); \
-    JusquA Non(im1->IncBuffer()) FinRepeter              \
+      res->FixeValeur(res->ValeurBuffer() operator val); \
+    JusquA Non(res->IncBuffer()) FinRepeter              \
   Sinon                                                  \
     Repeter                                              \
-      Pour(i,0,im1->GetVDim()-1)                         \
-        im1->VectFixeValeur(i,im1->VectValeurBuffer(i) operator val);  \
+      Pour(i,0,res->GetVDim()-1)                         \
+        res->VectFixeValeur(i,res->VectValeurBuffer(i) operator val);  \
       FinPour                                            \
-    JusquA Non(im1->IncBuffer()) FinRepeter              \
+    JusquA Non(res->IncBuffer()) FinRepeter              \
   FinSi                                                  \
-  driver.im_stack.AddImage(im1);
+  driver.im_stack.AddImage(res); }
 
-#define EXPR_OP_IMAGE(operator,expr)                     \
-  InrImage* im1;                                         \
+#define EXPR_OP_IMAGE(operator,expr)    {                 \
+  InrImage::ptr im(driver.im_stack.GetLastImage());            \
+  InrImage::ptr res;                           \
+  if (im.use_count()==1) res = im; \
+  else {\
+    res = InrImage::ptr(new InrImage( im->GetFormat(),\
+                                      im->GetVDim(),\
+                                      (std::string("expr_op_")+im->GetName()).c_str(),\
+                                      im.get()));\
+    (*res) = (*im);\
+  }\
   int       i;                                           \
   double    val = expr;                                  \
-  im1 = driver.im_stack.GetLastImage();                         \
-  im1->InitBuffer();                                     \
-  Si im1->ScalarFormat() Alors                           \
+  res->InitBuffer();                                     \
+  Si res->ScalarFormat() Alors                           \
     Repeter                                              \
-      im1->FixeValeur(val operator im1->ValeurBuffer() ); \
-    JusquA Non(im1->IncBuffer()) FinRepeter              \
+      res->FixeValeur(val operator res->ValeurBuffer() ); \
+    JusquA Non(res->IncBuffer()) FinRepeter              \
   Sinon                                                  \
     Repeter                                              \
-      Pour(i,0,im1->GetVDim()-1)                         \
-        im1->VectFixeValeur(i, val operator im1->VectValeurBuffer(i));  \
+      Pour(i,0,res->GetVDim()-1)                         \
+        res->VectFixeValeur(i, val operator res->VectValeurBuffer(i));  \
       FinPour                                            \
-    JusquA Non(im1->IncBuffer()) FinRepeter              \
+    JusquA Non(res->IncBuffer()) FinRepeter              \
   FinSi                                                  \
-  driver.im_stack.AddImage(im1);
+  driver.im_stack.AddImage(res); }
 
 #define IMAGE_OP_IMAGE(operator)    \
-  InrImage* im1;                    \
-  InrImage* im2;                    \
-  im2 = driver.im_stack.GetLastImage();    \
-  im1 = driver.im_stack.GetLastImage();    \
-  im1->InitBuffer();                \
-  im2->InitBuffer();                \
-  Repeter                           \
-    im1->FixeValeur(im1->ValeurBuffer() operator im2->ValeurBuffer()); \
-    im2->IncBuffer();               \
-  JusquA Non(im1->IncBuffer())      \
-  FinRepeter                        \
-  driver.im_stack.AddImage(im1);           \
-  delete im2;
+  {\
+  InrImage::ptr im2(driver.im_stack.GetLastImage());      \
+  InrImage::ptr im1(driver.im_stack.GetLastImage());      \
+  if (im1->ScalarFormat()&&im2->ScalarFormat()) { \
+    std::string newname = (boost::format("%1%_%2%_%3%")%im1->GetName()%#operator%im2->GetName()).str(); \
+    InrImage::ptr res = InrImage::ptr(new InrImage(im1->_format,newname.c_str(),im1.get()));\
+    im1->InitBuffer();                \
+    im2->InitBuffer();                \
+    res->InitBuffer();                \
+    Repeter                           \
+      res->FixeValeur(im1->ValeurBuffer() operator im2->ValeurBuffer()); \
+      im1->IncBuffer();               \
+      im2->IncBuffer();               \
+    JusquA Non(res->IncBuffer())      \
+    FinRepeter                        \
+    driver.im_stack.AddImage(res);    \
+  } else \
+    driver.err_print((boost::format("Both images should be scalar for operator %1%.") % #operator ).str()); \
+  }
 
-#define IMAGE_OP_IMAGE_2(operator)  \
-  InrImage* im1;                    \
-  InrImage* im2;                    \
+#define IMAGE_OP_IMAGE_2(operator) { \
+  InrImage::ptr im1;                    \
+  InrImage::ptr im2;                    \
   InrImage* res;                    \
   im2 = driver.im_stack.GetLastImage();    \
   im1 = driver.im_stack.GetLastImage();    \
@@ -310,9 +341,8 @@ static void CB_update_imagelist( void* imagelist_gui)
   Si res == NULL Alors              \
     driver.err_print((boost::format("Error in operation %s \t IMAGE_OP_IMAGE_2 \n") % #operator).str().c_str()); \
   FinSi                             \
-  driver.im_stack.AddImage(res);           \
-  delete im1;                       \
-  delete im2;
+  driver.im_stack.AddImagePointer(res); \
+  }
 
 #define UNARYOP_MATRIX(operator)           \
   FloatMatrix* mat;                         \
@@ -1484,24 +1514,51 @@ command:
          |
           identifier ASSIGN_OP expr_image
           {
-          void * imptr;
+          InrImage::ptr imptr;
+          InrImage::ptr res;
           IdentifierInfo::ptr ident($1);
 
-          imptr = (void*)driver.im_stack.GetLastImage();
-          if (imptr != NULL)
-            Vars.AddVar(type_image,ident,imptr);
+          imptr = driver.im_stack.GetLastImage();
+          if (imptr.get()) {
+            // check how many references it has, if only one, move pointer, else create new image
+            if (imptr.use_count()==1) 
+              res = imptr;
+            else {
+              // Create a copy since the image is already in use
+              res = InrImage::ptr(new InrImage( imptr->GetFormat(),
+                                                imptr->GetVDim(),
+                                                ident->GetName().c_str(),
+                                                imptr.get()));
+              (*res) = (*imptr);
+            }
+            // this should be safe to avoid deleting the image, since the variable will copy the shared pointer
+            Vars.AddVarPtr(type_image,ident,(void*)&res);
+          }
           else
             driver.err_print((boost::format("assignment of NULL image for %1%  \n") % $1).str().c_str() );;
         }
          |
           identifier LEFT_ASSIGN expr_image
           {
-          void * imptr;
-          imptr = (void*)driver.im_stack.GetLastImage();
+          InrImage::ptr imptr(driver.im_stack.GetLastImage());
           IdentifierInfo::ptr ident($1);
+          InrImage::ptr res;
 
-          if (imptr != NULL)
-            Vars.AddVar(type_image,ident,imptr);
+          if (imptr.get()) {
+            // check how many references it has, if only one, move pointer, else create new image
+            if (imptr.use_count()==1) 
+              res = imptr;
+            else {
+              // Create a copy since the image is already in use
+              res = InrImage::ptr(new InrImage( imptr->GetFormat(),
+                                                imptr->GetVDim(),
+                                                ident->GetName().c_str(),
+                                                imptr.get()));
+              (*res) = (*imptr);
+            }
+            // this should be safe to avoid deleting the image, since the variable will copy the shared pointer
+            Vars.AddVarPtr(type_image,ident,(void*)&res);
+          }
           else
             driver.err_print((boost::format("assignment of NULL image for %1%  \n") %$1).str().c_str() );;
         }
@@ -1566,20 +1623,20 @@ command:
         VAR_ARRAY_IMAGE T_OP_BR expr T_CL_BR ASSIGN_OP expr_image
         {
           VarArray::ptr array;
-          void * imptr = (void*)driver.im_stack.GetLastImage();
+          InrImage::ptr imptr(driver.im_stack.GetLastImage());
           int  i = (int) $3;
-          char name[256];
+          std::string name;
 
           array = *((VarArray::ptr*) ($1->Pointer()));
-          if (imptr != NULL)
+          if (imptr.get())
             if (array->GetVar(i).Pointer()==NULL) {
-              sprintf(name,"%s[%d]",$1->Name().c_str(),i);
-              array->InitElement(i,imptr,name);
+              name = (boost::format("%s[%d]") % ($1->Name().c_str()) %i).str();
+              // should be OK
+              array->InitElementPtr( type_image, i,(void*)&imptr,name.c_str());
             }
             else
             {
               driver.err_print("array element already assigned\n");
-              delete (InrImage*)imptr;
             }
           else
             driver.err_print("assignment of NULL image\n");
@@ -2068,7 +2125,7 @@ command:
         |  var_image ASSIGN_OP expr_image
         {
           InrImage::ptr i1 = *(InrImage::ptr*) $1->Pointer();
-          InrImage::ptr i2 = InrImage::ptr(driver.im_stack.GetLastImage());
+          InrImage::ptr i2 (driver.im_stack.GetLastImage());
 
           if (i2.get()) {
             // copy option
@@ -2080,7 +2137,7 @@ command:
         |  var_image ADD_ASSIGN expr_image
         {
           InrImage::ptr i1 = *(InrImage::ptr*) $1->Pointer();
-          InrImage::ptr i2 = InrImage::ptr(driver.im_stack.GetLastImage());
+          InrImage::ptr i2 (driver.im_stack.GetLastImage());
 
           if (i2.get()) {
             // copy option
@@ -2097,10 +2154,10 @@ command:
         **/
           Variable* var = $1;
           InrImage::ptr i1 = *(InrImage::ptr*) $1->Pointer();
-          InrImage* imptr  = driver.im_stack.GetLastImage();
+          InrImage::ptr imptr  (driver.im_stack.GetLastImage());
           bool can_skip_allocation = false;
 
-          if (i1.get()!=imptr) {
+          if (i1.get()!=imptr.get()) {
             can_skip_allocation = (i1->GetFormat()==imptr->GetFormat());
             if (can_skip_allocation) {
               // first try the standard data copy
@@ -2111,8 +2168,6 @@ command:
                 i1->SetVoxelSize( imptr->VoxSizeX(), 
                                   imptr->VoxSizeY(),
                                   imptr->VoxSizeZ());
-                // then delete imptr
-                delete imptr;
               }
             }
             if (!can_skip_allocation) {
@@ -2120,9 +2175,10 @@ command:
               // replace the pointer and the information
               if (imptr != NULL) {
                 var->FreeMemory();
-                var->Init(type_image,
+                // should be OK
+                var->InitPtr(type_image,
                           var->Name().c_str(),
-                          (void*)imptr);
+                          &imptr);
               }
               else
                 driver.err_print("assignment of NULL image\n");
@@ -2156,8 +2212,7 @@ command:
           int comp = (int) $3;
 
           InrImage::ptr i1 = *(InrImage::ptr*) $1->Pointer();
-          InrImage::ptr i2 = InrImage::ptr(
-                                driver.im_stack.GetLastImage());
+          InrImage::ptr i2 ( driver.im_stack.GetLastImage());
 
           Si (comp<0) Ou (comp>i1->GetVDim()) Alors
             fprintf(stderr,"image[n]=image error index too high, reset to 0 \n");
@@ -2221,7 +2276,7 @@ command:
 
 
           InrImage::ptr i1 = *(InrImage::ptr*) $1->Pointer();
-          InrImage::ptr i2 = InrImage::ptr(driver.im_stack.GetLastImage());
+          InrImage::ptr i2 (driver.im_stack.GetLastImage());
 
           Func_Pad(i1.get(),i2.get(),stepx,posx,stepy,posy,stepz,posz);
 
@@ -3050,13 +3105,14 @@ command:
         }
         | VAR_IMAGEDRAW T_POINT T_SetColormap T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_CL_PAR
         {
+        /**
+          Description: Set a user-defined colormap.
+         **/
           DessinImage::ptr draw;
-          // TODO: fix this memory problem ...
-          InrImage* colmap=(InrImage*) driver.im_stack.GetLastImage();
+          InrImage::ptr colmap(driver.im_stack.GetLastImage());
 
           draw = *(DessinImage::ptr*) ($1->Pointer());
           draw->SetUserColormap( colmap,  $7,  $9);
-          //      delete colmap;
         }
         | VAR_IMAGEDRAW T_POINT T_setGLwin T_OP_PAR VAR_SURFDRAW T_CL_PAR
         {
@@ -3945,14 +4001,14 @@ command:
     | var_surface T_POINT T_SetColors T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_CL_PAR
     {
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) $1->Pointer());
-      InrImage::ptr i = InrImage::ptr(driver.im_stack.GetLastImage());
+      InrImage::ptr i (driver.im_stack.GetLastImage());
       // TODO: use smart pointer to image in SetColors ...
       s->SetColors( i.get() , $7, $9);
     }
     | var_surface T_POINT T_SetColors T_OP_PAR expr_image  T_CL_PAR
     {
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) $1->Pointer());
-      InrImage::ptr i = InrImage::ptr(driver.im_stack.GetLastImage());
+      InrImage::ptr i (driver.im_stack.GetLastImage());
       s->SetColors( i.get() );
 
     }
@@ -4010,7 +4066,7 @@ command:
     | var_surface T_POINT T_Displace T_OP_PAR expr_image T_CL_PAR
     {
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) $1->Pointer());
-      InrImage::ptr i = InrImage::ptr(driver.im_stack.GetLastImage());
+      InrImage::ptr i (driver.im_stack.GetLastImage());
       s->DisplacePoints( i.get() );
     }
     | var_surface T_POINT T_Translate T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
@@ -4058,7 +4114,7 @@ command:
     **/
 
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) $1->Pointer());
-      InrImage::ptr im = InrImage::ptr(driver.im_stack.GetLastImage());
+      InrImage::ptr im (driver.im_stack.GetLastImage());
 
       s->SelectLines(im.get());
       s->GLRecomputeList();
@@ -4336,9 +4392,8 @@ command:
 
         **/
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) $1->Pointer();
-      InrImage* im = (InrImage*) driver.im_stack.GetLastImage();
-      AMIFluid::Func_ElevateMesh(s.get(),im);
-      delete im;
+      InrImage::ptr im ( driver.im_stack.GetLastImage());
+      AMIFluid::Func_ElevateMesh(s.get(),im.get());
     }
     | VAR_SURFDRAW T_POINT T_rotate T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
     {
@@ -4434,17 +4489,16 @@ command:
     }
         | VAR_SURFDRAW T_POINT T_ShowSection T_OP_PAR expr T_COMMA expr_image T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
-      Viewer3D_ptr draw = *((Viewer3D_ptr*) $1->Pointer());
-      int num = (int) $5;
-          InrImage* im = (InrImage*) driver.im_stack.GetLastImage();
-      int orientation = (int) $9;
+          Viewer3D_ptr draw = *((Viewer3D_ptr*) $1->Pointer());
+          int num = (int) $5;
+          InrImage::ptr im ( driver.im_stack.GetLastImage());
+          int orientation = (int) $9;
           int pos = (int) $11;
           float Imin = $13;
           float Imax = $15;
 
-      draw->GetCanvas()->ShowFreeSection(num,im,orientation,pos,Imin,Imax);
+          draw->GetCanvas()->ShowFreeSection(num,im.get(),orientation,pos,Imin,Imax);
 
-          delete im;
         }
         | VAR_SURFDRAW T_POINT T_HideSection T_OP_PAR expr T_CL_PAR
         {
@@ -4568,13 +4622,12 @@ command:
         |
         T_struct_tensor T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA expr_image T_CL_PAR
         {
-          InrImage* mask = (InrImage*) driver.im_stack.GetLastImage();
+          InrImage::ptr mask ( driver.im_stack.GetLastImage());
 
           Func_StructureTensor(
             ((InrImage::ptr*) $3->Pointer())->get(),
             $3->Name().c_str(),
-            $5, $7, mask);
-          delete mask;
+            $5, $7, mask.get());
         }
         |
         T_StructTensorH T_OP_PAR var_image T_COMMA expr T_COMMA expr T_CL_PAR
@@ -4616,13 +4669,12 @@ command:
             i_STHvap1, i_STHvap2, i_STHvap3
             i_STHvep1, i_STHvep2, i_STHvep3
         **/
-      InrImage* mask = (InrImage*) driver.im_stack.GetLastImage();
+          InrImage::ptr mask ( driver.im_stack.GetLastImage());
 
           Func_StructureTensorHessian(
             ((InrImage::ptr*) $3->Pointer())->get(),
             $3->Name().c_str(),
-            $5, $7, mask);
-          delete mask;
+            $5, $7, mask.get());
         }
         |
         T_StructTensorH T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA expr_image T_COMMA expr T_CL_PAR
@@ -4644,13 +4696,12 @@ command:
             i_STHvep1, i_STHvep2, i_STHvep3
             i_STHgrad
         **/
-      InrImage* mask = (InrImage*) driver.im_stack.GetLastImage();
-      int save_grad = (int) $11;
+          InrImage::ptr mask (driver.im_stack.GetLastImage());
+          int save_grad = (int) $11;
 
           Func_StructureTensorHessian(((InrImage::ptr*) $3->Pointer())->get(),
                    $3->Name().c_str(),
-                   $5, $7, mask, save_grad);
-      delete mask;
+                   $5, $7, mask.get(), save_grad);
         }
         |
         T_HessianMatrix T_OP_PAR var_image T_COMMA expr  T_CL_PAR
@@ -4665,15 +4716,14 @@ command:
         |
         T_HessianMatrix T_OP_PAR var_image T_COMMA expr  T_COMMA expr_image T_CL_PAR
         {
-      InrImage* mask = (InrImage*) driver.im_stack.GetLastImage();
+          InrImage::ptr mask ( driver.im_stack.GetLastImage());
 
           Func_HessianMatrix(((InrImage::ptr*) $3->Pointer())->get(),
                  $3->Name().c_str(),
                  $5,   // sigma
                  0,   // gamma
-                 mask  // mask
+                 mask.get()  // mask
                  );
-      delete mask;
         }
         |
         T_HessianMatrix T_OP_PAR var_image T_COMMA expr T_COMMA expr T_CL_PAR
@@ -4697,15 +4747,14 @@ command:
           - Gamma normalization parameter
           - Mask image
       **/
-      InrImage* mask = (InrImage*) driver.im_stack.GetLastImage();
+      InrImage::ptr mask (driver.im_stack.GetLastImage());
 
           Func_HessianMatrix(((InrImage::ptr*) $3->Pointer())->get(),
                  $3->Name().c_str(),
                  $5,   // sigma
                  $7,   // gamma
-                 mask  // mask
+                 mask.get()  // mask
                  );
-      delete mask;
         }
         |
         T_Derivatives T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr  T_CL_PAR
@@ -4739,34 +4788,32 @@ command:
         |
         T_Derivatives T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr_image T_CL_PAR
         {
-      InrImage* mask = (InrImage*) driver.im_stack.GetLastImage();
+          InrImage::ptr mask (driver.im_stack.GetLastImage());
 
           Func_Derivatives(((InrImage::ptr*) $3->Pointer())->get(),
                $3->Name().c_str(),
                $5,   // sigma
                $7,   // gamma
-               mask,  // mask
+               mask.get(),  // mask
                (int)$9,   // 1st eigenvalue | eigenvector?
                (int)$11,   // 2nd eigenvalue | eigenvector?
                (int)$13,   // 3rd eigenvalue | eigenvector?
                (int)$15   // Gradient vector?
                );
-      delete mask;
         }
         |
         T_HessianEVal T_OP_PAR var_image T_COMMA expr T_COMMA
                       expr  T_COMMA expr_image T_COMMA expr T_CL_PAR
         {
-      InrImage* mask = (InrImage*) driver.im_stack.GetLastImage();
+      InrImage::ptr mask (driver.im_stack.GetLastImage());
 
           Func_HessianVap(((InrImage::ptr*) $3->Pointer())->get(),
               $3->Name().c_str(),
               $5,   // sigma
               $7,   // gamma
-              mask,
+              mask.get(),
               (int) $11 // eigenvalue number
               );
-      delete mask;
         }
         |
         T_curvatures T_OP_PAR var_image T_COMMA expr  T_CL_PAR
@@ -4783,7 +4830,7 @@ command:
                       expr_image
                   T_CL_PAR
         {
-      InrImage* mask = (InrImage*) driver.im_stack.GetLastImage();
+      InrImage::ptr mask ( driver.im_stack.GetLastImage());
 
           Func_Eigen3D(
                (char*) $3,
@@ -4793,9 +4840,8 @@ command:
                ((InrImage::ptr*) $11->Pointer())->get(),
                ((InrImage::ptr*) $13->Pointer())->get(),
                ((InrImage::ptr*) $15->Pointer())->get(),
-               mask  // mask
+               mask.get()  // mask
                );
-      delete mask;
         }
         |
         T_Eigen3D T_OP_PAR ASTRING T_COMMA
@@ -4823,16 +4869,15 @@ command:
                       expr_image
                   T_CL_PAR
         {
-      InrImage* mask = (InrImage*) driver.im_stack.GetLastImage();
+      InrImage::ptr mask ( driver.im_stack.GetLastImage());
 
           Func_Eigen2D(
                (char*) $3,
                ((InrImage::ptr*) $5 ->Pointer())->get(),
                ((InrImage::ptr*) $7 ->Pointer())->get(),
                ((InrImage::ptr*) $9 ->Pointer())->get(),
-               mask  // mask
+               mask.get()  // mask
                );
-      delete mask;
         }
         |
         T_Eigen2D T_OP_PAR ASTRING T_COMMA
@@ -4956,7 +5001,7 @@ command:
         Description:
             Plots a 1D image using gnuplot.
         **/
-      InrImage*   image = (InrImage*) driver.im_stack.GetLastImage();
+      InrImage::ptr   image (driver.im_stack.GetLastImage());
       float* tabx;
       float* taby;
       GnuPlot   gnuplot;
@@ -4981,7 +5026,6 @@ command:
 
       delete [] tabx;
       delete [] taby;
-      delete image;
       delete [] $5;
          }
         | T_DisplayHisto T_OP_PAR var_image  T_CL_PAR
@@ -5589,8 +5633,9 @@ param_list:
         {
           ParamList* pl = new ParamList();
           Variable::ptr newvar(new Variable());
-          InrImage::ptr* i = new InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
-          newvar->InitPtr(type_image,"Param0",i);
+          InrImage::ptr i ( driver.im_stack.GetLastImage());
+          // should be OK, the variable will only use the pointer smart pointer to copy it
+          newvar->InitPtr(type_image,"Param0",(void*)&i);
           pl->AddParam(newvar);
           $$ = pl;
         }
@@ -5598,9 +5643,9 @@ param_list:
         {
           ParamList* pl =  $1;
           Variable::ptr newvar(new Variable());
-          InrImage::ptr*   i = new InrImage::ptr( (InrImage*) driver.im_stack.GetLastImage());
+          InrImage::ptr   i ( driver.im_stack.GetLastImage());
           std::string paramname = (boost::format("Param%1%")%pl->GetNumParam()).str();
-          newvar->InitPtr(type_image,paramname.c_str(),i);
+          newvar->InitPtr(type_image,paramname.c_str(),(void*)&i);
           pl->AddParam(newvar);
           $$ = pl;
         }
@@ -6293,7 +6338,7 @@ postfix_expr
                 max, mean, min, median
 
         **/
-      InrImage::ptr im  = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
+      InrImage::ptr im  (driver.im_stack.GetLastImage());
       $$=Func_count( im.get() );
         }
         |
@@ -6312,7 +6357,7 @@ postfix_expr
                 min, max, median
 
         **/
-      InrImage::ptr im  = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
+      InrImage::ptr im  (driver.im_stack.GetLastImage());
       $$=Func_mean( im.get());
         }
         |
@@ -6331,7 +6376,7 @@ postfix_expr
                 min, mean, median
 
         **/
-      InrImage::ptr im  = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
+      InrImage::ptr im  (driver.im_stack.GetLastImage());
       $$=Func_max( im.get(),NULL);
         }
         |
@@ -6350,7 +6395,7 @@ postfix_expr
                 min, mean, median, max
 
         **/
-      InrImage::ptr im  = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
+      InrImage::ptr im  (driver.im_stack.GetLastImage());
       $$=Func_argmax( im.get());
       }
       |
@@ -6369,7 +6414,7 @@ postfix_expr
               max, mean, median
 
       **/
-      InrImage::ptr im  = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
+      InrImage::ptr im  (driver.im_stack.GetLastImage());
       $$=Func_min( im.get(),NULL);
       }
       |
@@ -6388,8 +6433,8 @@ postfix_expr
               min, max, mean, count
 
       **/
-      InrImage::ptr im  = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
-      $$=Func_med( im.get(),0.5,NULL);
+        InrImage::ptr im  (driver.im_stack.GetLastImage());
+        $$=Func_med( im.get(),0.5,NULL);
         }
         |
         T_MAX T_OP_BR expr_image T_CL_BR T_OP_PAR expr_image  T_CL_PAR
@@ -6410,8 +6455,8 @@ postfix_expr
                 min, max, mean, median, count
 
         **/
-      InrImage::ptr im  = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
-      InrImage::ptr mask  = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
+          InrImage::ptr im  (driver.im_stack.GetLastImage());
+          InrImage::ptr mask  (driver.im_stack.GetLastImage());
           $$=Func_max( im.get(),mask.get());
         }
         |
@@ -6433,7 +6478,7 @@ postfix_expr
                 min, max, mean, median, count
 
         **/
-      InrImage::ptr mask  = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
+          InrImage::ptr mask  (driver.im_stack.GetLastImage());
           $$=Func_min( ((InrImage::ptr*) $6->Pointer())->get(),mask.get());
         }
         |
@@ -6455,16 +6500,14 @@ postfix_expr
                 min, max, mean, median, count
 
         **/
-          InrImage* mask = (InrImage*) driver.im_stack.GetLastImage();
-          $$=Func_med( ((InrImage::ptr*) $6->Pointer())->get(),0.5,mask);
-          delete mask;
+          InrImage::ptr mask ( driver.im_stack.GetLastImage());
+          $$=Func_med( ((InrImage::ptr*) $6->Pointer())->get(),0.5,mask.get());
         }
         |
         T_MEDIAN T_OP_BR expr_image T_CL_BR T_OP_PAR var_image  T_COMMA expr T_CL_PAR
         {
-          InrImage* mask = (InrImage*) driver.im_stack.GetLastImage();
-          $$=Func_med( ((InrImage::ptr*) $6->Pointer())->get(),(float) $8,mask);
-          delete mask;
+          InrImage::ptr mask( driver.im_stack.GetLastImage());
+          $$=Func_med( ((InrImage::ptr*) $6->Pointer())->get(),(float) $8,mask.get());
         }
         |
         T_mean T_OP_BR expr_image T_CL_BR T_OP_PAR expr_image  T_CL_PAR
@@ -6485,8 +6528,8 @@ postfix_expr
                 min, max, mean, median, count
 
         **/
-      InrImage::ptr input  = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
-      InrImage::ptr mask  = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
+      InrImage::ptr input  (driver.im_stack.GetLastImage());
+      InrImage::ptr mask  (driver.im_stack.GetLastImage());
 
           $$=Func_mean( input.get(),mask.get());
         }
@@ -6509,10 +6552,9 @@ postfix_expr
                 min, max, mean, median, count
 
         **/
-          InrImage* mask = (InrImage*) driver.im_stack.GetLastImage();
+          InrImage::ptr mask (driver.im_stack.GetLastImage());
 
-          $$=Func_mean( ((InrImage::ptr*) $3->Pointer())->get(), mask);
-          delete mask;
+          $$=Func_mean( ((InrImage::ptr*) $3->Pointer())->get(), mask.get());
     }
     |  T_atof T_OP_PAR expr_string T_CL_PAR
     {
@@ -7393,9 +7435,9 @@ var_image:
           array = *(VarArray::ptr*) ($1->Pointer());
           if (array->GetVar(i).Pointer()==NULL) {
             // create a small image to avoid problems
-            InrImage* im = new InrImage(1,1,1,WT_UNSIGNED_CHAR);
+            InrImage::ptr im (new InrImage(1,1,1,WT_UNSIGNED_CHAR));
             string name = str(format("%s[%d]") % $1->Name() % i);
-            array->InitElement(i,im,name.c_str());
+            array->InitElementPtr( type_image, i,&im,name.c_str());
           }
           $$=&(array->GetVar(i));
         }
@@ -7405,13 +7447,13 @@ image:
       T_Image  expr_string
       {
         boost::shared_array<char> st( $2);
-        driver.im_stack.AddImage(st.get());
+        driver.im_stack.AddFileImage(st.get());
       }
       |
       T_Image T_OP_PAR expr_string T_CL_PAR
       {
         boost::shared_array<char> st( $3);
-        driver.im_stack.AddImage(st.get());
+        driver.im_stack.AddFileImage(st.get());
       }
       |
       T_ReadRawImages T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA
@@ -7437,7 +7479,7 @@ image:
        Example(s):
           i = ReadRawImages(1024,1024,USHORT,0,"AfGG.%d",48,48)
        **/
-      InrImage* im  = new InrImage();
+      InrImage::ptr im (new InrImage());
       boost::shared_ptr<amimage> amim(new amimage());
       int dimx                    = (int)           $3;
       int dimy                    = (int)           $5;
@@ -7465,8 +7507,7 @@ image:
      } else {
        // Error message
        driver.err_print("ReadRawImages() failed ... \n");
-       driver.im_stack.AddImage((InrImage*)NULL);
-       delete im;
+       driver.im_stack.AddImage(InrImage::ptr());
      }
       }
       |
@@ -7492,7 +7533,7 @@ image:
        Example(s):
           i = ReadRawImages(256,256,256,USHORT,0,"data.raw")
        **/
-      InrImage* im  = new InrImage();
+      InrImage::ptr im ( new InrImage());
       boost::shared_ptr<amimage> amim(new amimage());
       int dimx                    = (int)           $3;
       int dimy                    = (int)           $5;
@@ -7517,8 +7558,7 @@ image:
      } else {
        // Error message
        driver.err_print("ReadRawImages() failed ... \n");
-       driver.im_stack.AddImage((InrImage*)NULL);
-       delete im;
+       driver.im_stack.AddImage(InrImage::ptr());
      }
        }
        |
@@ -7545,7 +7585,7 @@ image:
        Example(s):
           i = ReadRawImages(256,256,256,FLOAT,3,0,"3dvectorfielddata.raw")
        **/
-      InrImage* im  = new InrImage();
+      InrImage::ptr im  = InrImage::ptr(new InrImage());
       boost::shared_ptr<amimage> amim(new amimage());
       int dimx                    = (int)           $3;
       int dimy                    = (int)           $5;
@@ -7572,8 +7612,7 @@ image:
      } else {
        // Error message
        driver.err_print("ReadRawImages() failed ... \n");
-       driver.im_stack.AddImage((InrImage*)NULL);
-       delete im;
+       driver.im_stack.AddImage(InrImage::ptr());
      }
        }
        | T_vtkDicomRead T_OP_PAR expr_string T_CL_PAR
@@ -7585,14 +7624,13 @@ image:
        Description:
          Reads a dicom file using VTK
        **/
-        InrImage*  res;
+        InrImage::ptr  res;
         boost::shared_array<char> filename( $3);
 
-        res = Func_vtkDicomRead( filename.get());
+        res = InrImage::ptr(Func_vtkDicomRead( filename.get()));
 
-        Si res==NULL Alors
+        Si (!res.get()) Alors
             driver.err_print("vtkDicomRead() error ... \n");
-            driver.im_stack.AddImage((InrImage*)NULL);
         FinSi
 
         driver.im_stack.AddImage(res);
@@ -7606,26 +7644,24 @@ image:
       Description:
         Reads a file in minc format using vtk reader for MINC.
       **/
-        InrImage*  res;
         boost::shared_array<char> filename( $3);
 
-            res = Func_vtkMINCRead( filename.get());
+        InrImage::ptr res(Func_vtkMINCRead( filename.get()));
 
-            Si res==NULL Alors
-                driver.err_print("vtkMINCRead() error ... \n");
-                driver.im_stack.AddImage((InrImage*)NULL);
-            FinSi
+        Si (!res.get()) Alors
+            driver.err_print("vtkMINCRead() error ... \n");
+        FinSi
 
-            driver.im_stack.AddImage(res);
+        driver.im_stack.AddImage(res);
        }
        | VAR_C_IMAGE_FUNCTION  T_OP_PAR param_list T_CL_PAR
        {
        Variable*  var   = $1;
        ParamList::ptr param($3);
-       InrImage*  im;
+       InrImage::ptr  im;
 
-       im = ((InrImage* (*)(ParamList*)) var->Pointer())(param.get());
-       if (!im) {
+       im = InrImage::ptr( ((InrImage* (*)(ParamList*)) var->Pointer())(param.get()));
+       if (!im.get()) {
         driver.yyiperror(" image function returns NULL \n");
         YYABORT;
        }
@@ -7643,7 +7679,7 @@ image:
             driver.yyiperror(" Need Image \n");
             YYABORT;
           }
-          driver.im_stack.AddImage((char*)name.c_str());
+          driver.im_stack.AddFileImage((char*)name.c_str());
 
 
           wxFileName filename(GetwxStr(name));
@@ -7663,9 +7699,8 @@ image:
       |
       T_Image T_OP_PAR basic_type T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
       {
-        InrImage* im;
         //printf(" ********** %d %f %f %f\n", $3, $5, $7, $9);
-        im = new InrImage( (int) $5, (int) $7, (int) $9, (WORDTYPE) $3);
+        InrImage::ptr im (new InrImage( (int) $5, (int) $7, (int) $9, (WORDTYPE) $3));
         driver.im_stack.AddImage(im);
       }
       |
@@ -7682,9 +7717,8 @@ image:
     Description:
       Creates a new image
       **/
-    InrImage* im;
     //printf(" ********** %d %f %f %f\n", $3, $5, $7, $9);
-    im = new InrImage( (int) $5, (int) $7, (int) $9, (int) $11, (WORDTYPE) $3);
+    InrImage::ptr im( new InrImage( (int) $5, (int) $7, (int) $9, (int) $11, (WORDTYPE) $3));
     driver.im_stack.AddImage(im);
     }
     |
@@ -7700,7 +7734,6 @@ image:
     Description:
       Creates a new image from a reference image
     **/
-      InrImage* im;
       WORDTYPE imformat = (WORDTYPE) $3;
       int vdim   = (int) $5;
       InrImage::ptr varim=*(InrImage::ptr*) $7->Pointer();
@@ -7709,22 +7742,26 @@ image:
       imname = str(format("newimagefrom_%s.ami.gz")
                   % $7->Name());
 
-      im = new InrImage(imformat,vdim,
-                        imname.c_str(),varim.get());
+      InrImage::ptr im (new InrImage(imformat,vdim,
+                        imname.c_str(),varim.get()));
       driver.im_stack.AddImage(im);
     }
     |
     var_image
-      {
-         InrImage::ptr varim;
-         InrImage* im;
-         char  imname[200];
+    {
+        InrImage::ptr varim;
+        InrImage::ptr im;
+        std::string  imname;
 
-         varim=*(InrImage::ptr*) $1->Pointer();
-         sprintf(imname,"copy_%s",$1->Name().c_str());
-         im = new InrImage(varim->_format,imname,varim.get());
-         (*im)=(*varim);
-          driver.im_stack.AddImage(im);
+        varim=*(InrImage::ptr*) $1->Pointer();
+        // do we need a copy here ???
+        // Yes, it is safer to start with a copy and it simplifies the following operations
+        // otherwise, we need to have a const pointer to avoid modifying the image ...
+        imname = (boost::format("copy_%s") % $1->Name().c_str()).str();
+        im = InrImage::ptr(new InrImage(varim->GetFormat(),varim->GetVDim(),imname.c_str(),varim.get()));
+        (*im)=(*varim);
+        driver.im_stack.AddImage(im);
+        // driver.im_stack.AddImage(varim);
        }
       |
       var_image T_OP_BR expr T_CL_BR
@@ -7747,7 +7784,7 @@ image:
           print i(i.tx/2,i.ty/2,0,0); print "\n"
        **/
          InrImage::ptr im1;
-         InrImage* im;
+         InrImage::ptr im;
           char  imname[200];
          int i;
 
@@ -7761,46 +7798,33 @@ image:
          switch ( im1->_format ){
           case WT_RGB:
           case WT_RGBA:
-          case WT_UNSIGNED_CHAR:
-             im = new InrImage(WT_UNSIGNED_CHAR,1,imname,im1.get());
+             im = InrImage::ptr(new InrImage(WT_UNSIGNED_CHAR,1,imname,im1.get()));
           break;
-
-          case WT_UNSIGNED_INT:
-             im = new InrImage(WT_UNSIGNED_INT,1,imname,im1.get());
-          break;
-
-          case WT_SIGNED_INT:
-             im = new InrImage(WT_SIGNED_INT,1,imname,im1.get());
-          break;
-
-          case WT_UNSIGNED_SHORT:
-             im = new InrImage(WT_UNSIGNED_SHORT,1,imname,im1.get());
-          break;
-
-          case WT_SIGNED_SHORT:
-             im = new InrImage(WT_SIGNED_SHORT,1,imname,im1.get());
-          break;
-
           case WT_FLOAT_VECTOR:
+             im = InrImage::ptr(new InrImage(WT_FLOAT,1,imname,im1.get()));
+          break;
+
+          case WT_UNSIGNED_CHAR:
+          case WT_UNSIGNED_INT:
+          case WT_SIGNED_INT:
+          case WT_UNSIGNED_SHORT:
+          case WT_SIGNED_SHORT:
           case WT_FLOAT:
-             im = new InrImage(WT_FLOAT,1,imname,im1.get());
-          break;
-
           case WT_DOUBLE:
-             im = new InrImage(WT_DOUBLE,1,imname,im1.get());
+             im = InrImage::ptr(new InrImage(im1->_format,1,imname,im1.get()));
           break;
 
-       default:
-        driver.yyiperror(" operator [] does not handle this format \n");
-        YYABORT;
-      }
-         im->InitBuffer();
-         im1->InitBuffer();
-         Repeter
-           im->FixeValeur(im1->VectValeurBuffer(i));
-               im1->IncBuffer();
-         JusquA Non(im->IncBuffer()) FinRepeter
-         driver.im_stack.AddImage(im);
+          default:
+            driver.yyiperror(" operator [] does not handle this format \n");
+            YYABORT;
+          }
+          im->InitBuffer();
+          im1->InitBuffer();
+          Repeter
+            im->FixeValeur(im1->VectValeurBuffer(i));
+                im1->IncBuffer();
+          JusquA Non(im->IncBuffer()) FinRepeter
+          driver.im_stack.AddImage(im);
 
        }
        |
@@ -7821,94 +7845,87 @@ image:
                 min, max, median
 
         **/
-        InrImage* im = (InrImage*) driver.im_stack.GetLastImage();
-        InrImage* res = NULL;
-        int dim = (int) $5;
-        int i,j,k;
-        double sum;
-        // check that the image is scalar
-        if (im->ScalarFormat()) {
-        switch (dim) {
-          case 0:
-            res = new InrImage(1,im->DimY(),im->DimZ(),1,WT_FLOAT,"sumX.ami.gz");
-            for(j=0;j<=im->DimY()-1;j++)
-            for(k=0;k<=im->DimZ()-1;k++) {
-              sum=0;
-              for(i=0;i<=im->DimX()-1;i++)
-        sum += (*im)(i,j,k);
-              res->BufferPos(0,j,k);
-              res->FixeValeur(sum);
-            }
-          break;
-          case 1:
-            res = new InrImage(im->DimX(),1,im->DimZ(),1,WT_FLOAT,"sumY.ami.gz");
-            for(i=0;i<=im->DimX()-1;i++)
-            for(k=0;k<=im->DimZ()-1;k++) {
-              sum=0;
+          InrImage::ptr im ( driver.im_stack.GetLastImage());
+          InrImage* res = NULL;
+          int dim = (int) $5;
+          int i,j,k;
+          double sum;
+          // check that the image is scalar
+          if (im->ScalarFormat()) {
+          switch (dim) {
+            case 0:
+              res = new InrImage(1,im->DimY(),im->DimZ(),1,WT_FLOAT,"sumX.ami.gz");
               for(j=0;j<=im->DimY()-1;j++)
-        sum += (*im)(i,j,k);
-              res->BufferPos(i,0,k);
-              res->FixeValeur(sum);
-            }
-          break;
-          case 2:
-            res = new InrImage(im->DimX(),im->DimY(),1,1,WT_FLOAT,"sumZ.ami.gz");
-            for(i=0;i<=im->DimX()-1;i++)
-            for(j=0;j<=im->DimY()-1;j++) {
-              sum=0;
-              for(k=0;k<=im->DimZ()-1;k++)
-        sum += (*im)(i,j,k);
-              res->BufferPos(i,j,0);
-              res->FixeValeur(sum);
-            }
-          break;
-      } // end switch
-    } else
-    {
-      driver.err_print("sum operator only for scalar images ... \n");
+              for(k=0;k<=im->DimZ()-1;k++) {
+                sum=0;
+                for(i=0;i<=im->DimX()-1;i++)
+                sum += (*im)(i,j,k);
+                res->BufferPos(0,j,k);
+                res->FixeValeur(sum);
+              }
+            break;
+            case 1:
+              res = new InrImage(im->DimX(),1,im->DimZ(),1,WT_FLOAT,"sumY.ami.gz");
+              for(i=0;i<=im->DimX()-1;i++)
+              for(k=0;k<=im->DimZ()-1;k++) {
+                sum=0;
+                for(j=0;j<=im->DimY()-1;j++)
+                sum += (*im)(i,j,k);
+                res->BufferPos(i,0,k);
+                res->FixeValeur(sum);
+              }
+            break;
+            case 2:
+              res = new InrImage(im->DimX(),im->DimY(),1,1,WT_FLOAT,"sumZ.ami.gz");
+              for(i=0;i<=im->DimX()-1;i++)
+              for(j=0;j<=im->DimY()-1;j++) {
+                sum=0;
+                for(k=0;k<=im->DimZ()-1;k++)
+          sum += (*im)(i,j,k);
+                res->BufferPos(i,j,0);
+                res->FixeValeur(sum);
+              }
+            break;
+        } // end switch
+      } else
+      {
+        driver.err_print("sum operator only for scalar images ... \n");
     }
-        driver.im_stack.AddImage(res);
-        delete im;
+      driver.im_stack.AddImagePointer(res);
     }
     |
     T_localmean T_OP_PAR expr_image  T_COMMA expr T_CL_PAR
     {
-      InrImage* im  = (InrImage*) driver.im_stack.GetLastImage();
-      InrImage* res =Func_localmean( im, (int) $5);
-      driver.im_stack.AddImage(res);
-      delete im;
+      InrImage::ptr im ( driver.im_stack.GetLastImage());
+      InrImage* res =Func_localmean( im.get(), (int) $5);
+      driver.im_stack.AddImagePointer(res);
     }
     |
     T_localmean2 T_OP_PAR expr_image  T_COMMA expr T_CL_PAR
     {
-      InrImage* im  = (InrImage*) driver.im_stack.GetLastImage();
-      InrImage* res =Func_localmean2( im, (int) $5);
+      InrImage::ptr im (driver.im_stack.GetLastImage());
+      InrImage* res =Func_localmean2( im.get(), (int) $5);
+      driver.im_stack.AddImagePointer(res);
+    }
+    |
+    T_localSD T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr T_CL_PAR
+    {
+      InrImage::ptr mean    ( driver.im_stack.GetLastImage());
+      InrImage::ptr im      ( driver.im_stack.GetLastImage());
+      InrImage* res     = Func_localSD( im.get(), mean.get(), (int) $7);
+      driver.im_stack.AddImagePointer(res);
+    }
+    |
+    T_localSD2 T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr T_CL_PAR
+    {
+      InrImage::ptr mean  ( driver.im_stack.GetLastImage());
+      InrImage::ptr im    ( driver.im_stack.GetLastImage());
+      InrImage::ptr res(Func_localSD2( im.get(), mean.get(), (int) $7));
       driver.im_stack.AddImage(res);
-      delete im;
-      }
-      |
-      T_localSD T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr T_CL_PAR
-      {
-    InrImage* mean    = (InrImage*) driver.im_stack.GetLastImage();
-    InrImage* im      = (InrImage*) driver.im_stack.GetLastImage();
-    InrImage* res     = Func_localSD( im, mean, (int) $7);
-    driver.im_stack.AddImage(res);
-    delete im;
-    delete mean;
-      }
-      |
-      T_localSD2 T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr T_CL_PAR
-      {
-    InrImage* mean    = (InrImage*) driver.im_stack.GetLastImage();
-    InrImage* im      = (InrImage*) driver.im_stack.GetLastImage();
-    InrImage* res     = Func_localSD2( im, mean, (int) $7);
-    driver.im_stack.AddImage(res);
-    delete im;
-    delete mean;
-      }
-      |
-      T_MAX T_OP_PAR expr_image T_COMMA expr_image T_CL_PAR
-      {
+    }
+    |
+    T_MAX T_OP_PAR expr_image T_COMMA expr_image T_CL_PAR
+    {
       /**
       Description:
       Returns the image corresponding to the pointwise maximum between 2 images.
@@ -7917,12 +7934,10 @@ image:
       See also:
               min, median
         **/
-    InrImage* im1;
-    InrImage* im2;
+    InrImage::ptr im2(driver.im_stack.GetLastImage());
+    InrImage::ptr im1(driver.im_stack.GetLastImage());
         float val1,val2;
 
-    im2 = driver.im_stack.GetLastImage();
-    im1 = driver.im_stack.GetLastImage();
     im1->InitBuffer();
     im2->InitBuffer();
     Repeter
@@ -7933,121 +7948,99 @@ image:
     JusquA Non(im1->IncBuffer())
     FinRepeter
     driver.im_stack.AddImage(im1);
-    delete im2;
 
       }
       |
       OpImage T_OP_PAR var_image T_COMMA ASTRING T_CL_PAR
       {
-    InrImage*  res;
 
-    res = Func_OpImage(((InrImage::ptr*) $3->Pointer())->get(),
-              NULL,
-              NULL,
-              $5);
-    Si res==NULL Alors
-      driver.err_print("OpImage() erreur ... \n");
-      res=((InrImage::ptr*) $3->Pointer())->get();
-    FinSi
-
-    driver.im_stack.AddImage(res);
-    delete [] $3;
+      InrImage::ptr res (Func_OpImage(((InrImage::ptr*) $3->Pointer())->get(),
+                NULL,
+                NULL,
+                $5));
+      Si (!res.get()) Alors
+        driver.err_print("OpImage() erreur ... \n");
+      FinSi
+  
+      driver.im_stack.AddImage(res);
 
       }
       |
       OpImage T_OP_PAR var_image T_COMMA ASTRING T_COMMA basic_type T_CL_PAR
       {
-    InrImage*  res;
 
-    res = Func_OpImage(((InrImage::ptr*) $3->Pointer())->get(),
+    InrImage::ptr res( Func_OpImage(((InrImage::ptr*) $3->Pointer())->get(),
               NULL,
               NULL,
               $5,
-              (WORDTYPE) $7);
-    Si res==NULL Alors
+              (WORDTYPE) $7));
+    Si (!res.get()) Alors
       driver.err_print("OpImage() erreur ... \n");
-      res=((InrImage::ptr*) $3->Pointer())->get();
     FinSi
 
     driver.im_stack.AddImage(res);
 
-    delete [] $5;
 
       }
       |
       OpImage T_OP_PAR var_image T_COMMA var_image T_COMMA ASTRING T_CL_PAR
       {
-    InrImage*  res;
 
-    res = Func_OpImage(((InrImage::ptr*) $3->Pointer())->get(),
+    InrImage::ptr res ( Func_OpImage(((InrImage::ptr*) $3->Pointer())->get(),
               ((InrImage::ptr*) $5->Pointer())->get(),
               NULL,
-              $7);
-    Si res==NULL Alors
+              $7));
+    Si (!res.get()) Alors
       driver.err_print("OpImage() erreur ... \n");
-      res=((InrImage::ptr*) $3->Pointer())->get();
     FinSi
 
     driver.im_stack.AddImage(res);
 
-    delete [] $7;
       }
       |
       OpImage T_OP_PAR var_image T_COMMA var_image T_COMMA ASTRING T_COMMA basic_type T_CL_PAR
       {
-    InrImage*  res;
 
-    res = Func_OpImage(((InrImage::ptr*) $3->Pointer())->get(),
+    InrImage::ptr res (Func_OpImage(((InrImage::ptr*) $3->Pointer())->get(),
               ((InrImage::ptr*) $5->Pointer())->get(),
               NULL,
               $7,
-              $9);
-    Si res==NULL Alors
+              $9));
+    Si (!res.get()) Alors
       driver.err_print("OpImage() erreur ... \n");
-      res=((InrImage::ptr*) $3->Pointer())->get();
     FinSi
 
     driver.im_stack.AddImage(res);
-
-    delete [] $7;
 
       }
       |
       OpImage T_OP_PAR var_image T_COMMA var_image T_COMMA var_image T_COMMA ASTRING T_CL_PAR
       {
-        InrImage*  res;
-
-        res = Func_OpImage(
+        InrImage::ptr  res ( Func_OpImage(
             ((InrImage::ptr*) $3->Pointer())->get(),
             ((InrImage::ptr*) $5->Pointer())->get(),
             ((InrImage::ptr*) $7->Pointer())->get(),
-              $9);
-        Si res==NULL Alors
+              $9));
+        Si (!res.get()) Alors
           driver.err_print("OpImage() erreur ... \n");
-          res=((InrImage::ptr*) $3->Pointer())->get();
         FinSi
-        driver.im_stack.AddImage(res);
 
-        delete [] $9;
+        driver.im_stack.AddImage(res);
       }
       |
       OpImage T_OP_PAR var_image T_COMMA var_image T_COMMA var_image T_COMMA
                   ASTRING T_COMMA basic_type T_CL_PAR
       {
-        InrImage*  res;
-
-        res = Func_OpImage(
+        InrImage::ptr res (Func_OpImage(
             ((InrImage::ptr*) $3->Pointer())->get(),
             ((InrImage::ptr*) $5->Pointer())->get(),
             ((InrImage::ptr*) $7->Pointer())->get(),
               $9,
-              $11);
-        Si res==NULL Alors
+              $11));
+        Si (!res.get()) Alors
           driver.err_print("OpImage() erreur ... \n");
-          res=((InrImage::ptr*) $3->Pointer())->get();
         FinSi
         driver.im_stack.AddImage(res);
-        delete [] $9;
       }
       |
       FILTER
@@ -8073,65 +8066,50 @@ image:
         j = filter(i,1,0,0,0)
 
      **/
-        InrImage*  res;
-        InrImage* im = (InrImage*) driver.im_stack.GetLastImage();
+        InrImage::ptr im (driver.im_stack.GetLastImage());
 
-        res = Func_Filter( im,
+        InrImage::ptr res( Func_Filter( im.get(),
                   $5,
                   (int) $7,
                   (int) $9,
-                  (int) $11);
+                  (int) $11));
 
-        Si res==NULL Alors
+        Si (!res.get()) Alors
           driver.err_print("Filter() erreur ... \n");
-          res=im;
-        Sinon
-          delete im;
         FinSi
         driver.im_stack.AddImage(res);
       }
       | T_itk T_POINT T_CannyEdgeDetector T_OP_PAR var_image T_COMMA expr T_COMMA expr  T_CL_PAR
       {
-        InrImage* res;
         float var           = $7;
         float lowthreshold  = $9;
         //float highthreshold = $11;
-            res = Func_itkCannyEdgeDetector(  ((InrImage::ptr*) $5->Pointer())->get(), var, lowthreshold);
-        Si res==NULL Alors
+        InrImage::ptr res ( Func_itkCannyEdgeDetector(  ((InrImage::ptr*) $5->Pointer())->get(), var, lowthreshold));
+        Si (!res.get()) Alors
           driver.err_print("itk.CannyEdgeDetector() error ... \n");
-          res=((InrImage::ptr*) $5->Pointer())->get();
         FinSi
-
         driver.im_stack.AddImage(res);
       }
       |
       T_vtkDist T_OP_PAR var_image T_CL_PAR
       {
-        InrImage*  res;
+        InrImage::ptr res ( Func_vtkDist( ((InrImage::ptr*) $3->Pointer())->get()));
 
-        res = Func_vtkDist( ((InrImage::ptr*) $3->Pointer())->get());
-
-        Si res==NULL Alors
+        Si (!res.get()) Alors
           driver.err_print("vtkDist() erreur ... \n");
-          res=((InrImage::ptr*) $3->Pointer())->get();
         FinSi
-
         driver.im_stack.AddImage(res);
       }
       |
       T_vtkMedian3D T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
       {
-        InrImage*  res;
-
-        res = Func_vtkMedianFilter3D(
+        InrImage::ptr res (Func_vtkMedianFilter3D(
             ((InrImage::ptr*) $3->Pointer())->get(),
-            (int) $5,(int) $7,(int) $9);
+            (int) $5,(int) $7,(int) $9));
 
-        Si res==NULL Alors
+        Si (!res.get()) Alors
           driver.err_print("vtkMedian3D() erreur ... \n");
-          res=((InrImage::ptr*) $3->Pointer())->get();
         FinSi
-
         driver.im_stack.AddImage(res);
       }
       |
@@ -8160,57 +8138,39 @@ image:
       |
       T_2DFlux T_OP_PAR expr_image T_COMMA  expr T_CL_PAR
       {
-    InrImage*  res;
+    InrImage::ptr res (Func_2DFlux( driver.im_stack.GetLastImage().get(),$5));
 
-    res = Func_2DFlux( driver.im_stack.GetLastImage(),$5);
-
-    Si res==NULL Alors
+    Si (res.get()) Alors
       driver.err_print("2DFlux() error ... \n");
-      res=NULL;
     FinSi
-
     driver.im_stack.AddImage(res);
       }
       |
       T_OutFlux T_OP_PAR var_image T_CL_PAR
       {
-    InrImage*  res;
+    InrImage::ptr res ( Func_OutFlux( ((InrImage::ptr*) $3->Pointer())->get()));
 
-    res = Func_OutFlux( ((InrImage::ptr*) $3->Pointer())->get());
-
-    Si res==NULL Alors
+    Si (!res.get()) Alors
       driver.err_print("OutFlux() erreur ... \n");
-      res=((InrImage::ptr*) $3->Pointer())->get();
     FinSi
-
     driver.im_stack.AddImage(res);
       }
       |
       T_OutFluxScalar T_OP_PAR var_image T_CL_PAR
       {
-    InrImage*  res;
-
-    res = Func_OutFluxScalar( ((InrImage::ptr*) $3->Pointer())->get());
-
-    Si res==NULL Alors
+    InrImage::ptr res ( Func_OutFluxScalar( ((InrImage::ptr*) $3->Pointer())->get()));
+    Si (!res.get()) Alors
       driver.err_print("OutFluxScalar() erreur ... \n");
-      res=((InrImage::ptr*) $3->Pointer())->get();
     FinSi
-
     driver.im_stack.AddImage(res);
       }
       |
       T_OrientationRatio T_OP_PAR var_image T_CL_PAR
       {
-    InrImage*  res;
-
-    res = Func_OrientationRatio2D( ((InrImage::ptr*) $3->Pointer())->get());
-
-    Si res==NULL Alors
+    InrImage::ptr res ( Func_OrientationRatio2D( ((InrImage::ptr*) $3->Pointer())->get()));
+    Si (!res.get()) Alors
       driver.err_print("OrientationRatio() erreur ... \n");
-      res=((InrImage::ptr*) $3->Pointer())->get();
     FinSi
-
     driver.im_stack.AddImage(res);
       }
       |
@@ -8233,75 +8193,58 @@ image:
           threshold shoud be removed automatically and any point
           at distance higher than the maximum should be kept.
       **/
-    InrImage*  res;
-
-    res = Func_Thinning( ((InrImage::ptr*) $3->Pointer())->get(),
+    InrImage::ptr res ( Func_Thinning( ((InrImage::ptr*) $3->Pointer())->get(),
                  ((InrImage::ptr*) $5->Pointer())->get(),
                  $7,
                  $9,
-                 $11);
+                 $11));
 
-    Si res==NULL Alors
+    Si (!res.get()) Alors
       driver.err_print("Skeleton() error ... \n");
-      res=((InrImage::ptr*) $3->Pointer())->get();
     FinSi
-
     driver.im_stack.AddImage(res);
       }
       |
       T_SimplePoints T_OP_PAR var_image  T_CL_PAR
       {
-    InrImage*  res;
+    InrImage::ptr res (Func_SimplePoints( ((InrImage::ptr*) $3->Pointer())->get() ));
 
-    res = Func_SimplePoints( ((InrImage::ptr*) $3->Pointer())->get() );
-
-    Si res==NULL Alors
+    Si !res.get() Alors
       driver.err_print("SimplePoints() error ... \n");
-      res=((InrImage::ptr*) $3->Pointer())->get();
     FinSi
-
     driver.im_stack.AddImage(res);
       }
       |
       T_CircleIntegral T_OP_PAR var_image T_COMMA var_image T_COMMA var_image T_COMMA
                            expr T_COMMA var_image T_CL_PAR
       {
-        InrImage*  res;
-
-        res = Func_CircleIntegration(
+        InrImage::ptr res ( Func_CircleIntegration(
           ((InrImage::ptr*) $3 ->Pointer())->get(), // gradient
           ((InrImage::ptr*) $5 ->Pointer())->get(),  // first  vector
           ((InrImage::ptr*) $7 ->Pointer())->get(),  // second vector
           (float)     $9,              // radius
           CIRCLE_RESPONSE_MEAN,          // integration type
-          ((InrImage::ptr*) $11->Pointer())->get()); // mask
+          ((InrImage::ptr*) $11->Pointer())->get())); // mask
 
-        Si res==NULL Alors
+        Si !res.get() Alors
           driver.err_print("CircleInt() error ... \n");
-          res=((InrImage::ptr*) $3->Pointer())->get();
         FinSi
-
         driver.im_stack.AddImage(res);
       }
       |
       T_CircleIntegralExc T_OP_PAR var_image T_COMMA var_image T_COMMA var_image T_COMMA
                               expr T_COMMA var_image T_CL_PAR
       {
-      InrImage*  res;
-
-      res = Func_CircleIntegration(
+      InrImage::ptr res ( Func_CircleIntegration(
         ((InrImage::ptr*) $3 ->Pointer())->get(),  // gradient
         ((InrImage::ptr*) $5 ->Pointer())->get(),  // first  vector
         ((InrImage::ptr*) $7 ->Pointer())->get(),  // second vector
         (float)     $9,              // radius
         CIRCLE_RESPONSE_MEAN,        // integration type
-        ((InrImage::ptr*) $11->Pointer())->get()); // mask
-
-      Si res==NULL Alors
+        ((InrImage::ptr*) $11->Pointer())->get())); // mask
+      Si !res.get() Alors
         driver.err_print("CircleInt() error ... \n");
-        res=((InrImage::ptr*) $3->Pointer())->get();
       FinSi
-
       driver.im_stack.AddImage(res);
       }
       |
@@ -8324,9 +8267,7 @@ image:
           with constraints on the standard deviation and the excentricity
           (see pub. Krissian et al. EMBS 2003)
         **/
-        InrImage*  res;
-
-        res = Func_CircleIntSdExc(
+        InrImage::ptr res ( Func_CircleIntSdExc(
           ((InrImage::ptr*) $3 ->Pointer())->get(),  // gradient
           ((InrImage::ptr*) $5 ->Pointer())->get(),  // first  vector
           ((InrImage::ptr*) $7 ->Pointer())->get(),  // second vector
@@ -8336,13 +8277,11 @@ image:
           (float) $15,
           2, // pairs mode MEAN
           100, // keeps all points
-          CIRCLE_RESPONSE_MEAN);
+          CIRCLE_RESPONSE_MEAN));
 
-        Si res==NULL Alors
+        Si !res.get() Alors
           driver.err_print("CircleIntSdExc() error ... \n");
-          res=((InrImage::ptr*) $3->Pointer())->get();
         FinSi
-
         driver.im_stack.AddImage(res);
       }
       |
@@ -8370,9 +8309,7 @@ image:
         it integrates half of the circle and takes the
         minimum between opposite values.
       **/
-      InrImage*  res;
-
-      res = Func_CircleIntSdExc(
+      InrImage::ptr res ( Func_CircleIntSdExc(
         ((InrImage::ptr*) $3 ->Pointer())->get(),  // gradient
         ((InrImage::ptr*) $5 ->Pointer())->get(),  // first  vector
         ((InrImage::ptr*) $7 ->Pointer())->get(),  // second vector
@@ -8382,28 +8319,22 @@ image:
         (float) $15,
         (int) $17,
         (int) $19,
-        CIRCLE_RESPONSE_MEAN);
+        CIRCLE_RESPONSE_MEAN));
 
-      Si res==NULL Alors
+      Si !res.get() Alors
         driver.err_print("CircleIntSdExc() error ... \n");
-        res=((InrImage::ptr*) $3->Pointer())->get();
       FinSi
-
       driver.im_stack.AddImage(res);
       }
       |
       T_LocalExtrema T_OP_PAR var_image T_COMMA var_image T_COMMA var_image T_COMMA var_image T_CL_PAR
       {
-    InrImage*  res;
-
-    res = Func_LocalExtrema( ((InrImage::ptr*) $3->Pointer())->get(),  // input image
+    InrImage::ptr res( Func_LocalExtrema( ((InrImage::ptr*) $3->Pointer())->get(),  // input image
                  ((InrImage::ptr*) $5->Pointer())->get(),  // first  vector
                  ((InrImage::ptr*) $7->Pointer())->get(),  // second vector
-                 ((InrImage::ptr*) $9->Pointer())->get()); // mask
-
-    Si res==NULL Alors
+                 ((InrImage::ptr*) $9->Pointer())->get())); // mask
+    Si !res.get() Alors
       driver.err_print("LocalExtrema() error ... \n");
-      res=((InrImage::ptr*) $3->Pointer())->get();
     FinSi
 
     driver.im_stack.AddImage(res);
@@ -8411,62 +8342,47 @@ image:
       |
       T_LocalExtrema T_OP_PAR var_image T_COMMA var_image T_COMMA var_image T_COMMA var_image T_COMMA expr T_CL_PAR
       {
-    InrImage*  res;
     int samples = (int) $11;
 
-    res = Func_LocalExtrema( ((InrImage::ptr*) $3->Pointer())->get(),  // input image
+    InrImage::ptr res( Func_LocalExtrema( ((InrImage::ptr*) $3->Pointer())->get(),  // input image
                  ((InrImage::ptr*) $5->Pointer())->get(),  // first  vector
                  ((InrImage::ptr*) $7->Pointer())->get(),  // second vector
                  ((InrImage::ptr*) $9->Pointer())->get(),  // mask
-                 samples);                   // number of sample points around the circle
+                 samples));                   // number of sample points around the circle
 
-    Si res==NULL Alors
+    Si !res.get() Alors
       driver.err_print("LocalExtrema() error ... \n");
-      res=((InrImage::ptr*) $3->Pointer())->get();
     FinSi
-
     driver.im_stack.AddImage(res);
       }
      |
       T_NormalField T_OP_PAR var_image  T_CL_PAR
       {
-    InrImage*  res;
+    InrImage::ptr res( Func_NormalSmoothField( ((InrImage::ptr*) $3->Pointer())->get() ));
 
-    res = Func_NormalSmoothField( ((InrImage::ptr*) $3->Pointer())->get() );
-
-    Si res==NULL Alors
+    Si !res.get() Alors
       driver.err_print("NormalField() error ... \n");
-      res=((InrImage::ptr*) $3->Pointer())->get();
     FinSi
-
     driver.im_stack.AddImage(res);
       }
       |
       T_NormalField T_OP_PAR var_image T_COMMA var_image T_CL_PAR
       {
-    InrImage*  res;
+    InrImage::ptr res( Func_NormalSmoothField( ((InrImage::ptr*) $3->Pointer())->get() , ((InrImage::ptr*) $5->Pointer())->get() ));
 
-    res = Func_NormalSmoothField( ((InrImage::ptr*) $3->Pointer())->get() , ((InrImage::ptr*) $5->Pointer())->get() );
-
-    Si res==NULL Alors
+    Si !res.get() Alors
       driver.err_print("NormalField() error ... \n");
-      res=((InrImage::ptr*) $3->Pointer())->get();
     FinSi
-
     driver.im_stack.AddImage(res);
       }
       |
       T_DirConnectivity T_OP_PAR var_image T_COMMA var_image T_CL_PAR
       {
-    InrImage*  res;
+    InrImage::ptr res( Func_DirConnectivity( ((InrImage::ptr*) $3->Pointer())->get() , ((InrImage::ptr*) $5->Pointer())->get() ));
 
-    res = Func_DirConnectivity( ((InrImage::ptr*) $3->Pointer())->get() , ((InrImage::ptr*) $5->Pointer())->get() );
-
-    Si res==NULL Alors
+    Si res.get() Alors
       driver.err_print("DirConnectivity() error ... \n");
-      res=((InrImage::ptr*) $3->Pointer())->get();
     FinSi
-
     driver.im_stack.AddImage(res);
       }
      |
@@ -8474,48 +8390,32 @@ image:
       T_OP_PAR expr_image
       T_COMMA expr T_CL_PAR
       {
-    InrImage*  res;
-    InrImage*    input  = (InrImage*) driver.im_stack.GetLastImage();
+    InrImage::ptr input ( driver.im_stack.GetLastImage());
 
-    res = Func_NormGrad( input, $5);
-
-    Si res==NULL Alors
-      driver.err_print("Filter() error ... \n");
-      res=input;
-    Sinon
-      delete input;
+    InrImage::ptr res ( Func_NormGrad( input.get(), $5));
+    Si (!res.get()) Alors
+      driver.err_print("NormGrad() error ... \n");
     FinSi
-
     driver.im_stack.AddImage(res);
       }
       |
       T_DiscNormGrad
       T_OP_PAR var_image  T_CL_PAR
       {
-    InrImage*  res;
-
-    res = Func_DiscNormGrad( ((InrImage::ptr*) $3->Pointer())->get());
-
-    Si res==NULL Alors
+    InrImage::ptr res (Func_DiscNormGrad( ((InrImage::ptr*) $3->Pointer())->get()));
+    Si !res.get() Alors
       driver.err_print("discnormgrad() erreur ... \n");
-      res=((InrImage::ptr*) $3->Pointer())->get();
     FinSi
-
     driver.im_stack.AddImage(res);
       }
       |
       T_DiscMeanCurvature
       T_OP_PAR var_image  T_CL_PAR
       {
-    InrImage*  res;
-
-    res = Func_DiscMeanCurvature( ((InrImage::ptr*) $3->Pointer())->get());
-
-    Si res==NULL Alors
+    InrImage::ptr res (Func_DiscMeanCurvature( ((InrImage::ptr*) $3->Pointer())->get()));
+    Si !res.get() Alors
       driver.err_print("DiscMeanCurvature() erreur ... \n");
-      res=((InrImage::ptr*) $3->Pointer())->get();
     FinSi
-
     driver.im_stack.AddImage(res);
       }
       |
@@ -8523,16 +8423,11 @@ image:
       T_OP_PAR var_image
       T_COMMA expr T_CL_PAR
       {
-    InrImage*  res;
-
-    res = Func_Gradient( ((InrImage::ptr*) $3->Pointer())->get(),
-                 $5);
-
-    Si res==NULL Alors
+    InrImage::ptr res (Func_Gradient( ((InrImage::ptr*) $3->Pointer())->get(),
+                 $5));
+    Si !res.get() Alors
       driver.err_print("Filter() erreur ... \n");
-      res=((InrImage::ptr*) $3->Pointer())->get();
     FinSi
-
     driver.im_stack.AddImage(res);
       }
         |
@@ -8546,14 +8441,10 @@ image:
         Computes a discrete laplacian (sum of second order derivatives),
         in 2D or 3D depending on the image dimension.
     **/
-    InrImage*  res;
-
-    res = Func_Laplacian(((InrImage::ptr*) $3->Pointer())->get());
-    Si res==NULL Alors
+    InrImage::ptr res ( Func_Laplacian(((InrImage::ptr*) $3->Pointer())->get()));
+    Si !res.get() Alors
       driver.err_print("Filter() erreur ... \n");
-      res=((InrImage::ptr*) $3->Pointer())->get();
     FinSi
-
     driver.im_stack.AddImage(res);
         }
       |
@@ -8561,16 +8452,11 @@ image:
       T_OP_PAR var_image
       T_COMMA expr T_CL_PAR
       {
-    InrImage*  res;
-
-    res = Func_SecDerGrad( ((InrImage::ptr*) $3->Pointer())->get(),
-                 $5);
-
-    Si res==NULL Alors
+    InrImage::ptr res (Func_SecDerGrad( ((InrImage::ptr*) $3->Pointer())->get(),
+                 $5));
+    Si !res.get() Alors
       fprintf(stderr,"SecDerGrad() erreur ... \n");
-      res=((InrImage::ptr*) $3->Pointer())->get();
     FinSi
-
     driver.im_stack.AddImage(res);
       }
       |
@@ -8578,33 +8464,22 @@ image:
       T_OP_PAR var_image
       T_COMMA expr T_CL_PAR
       {
-    InrImage*  res;
-
-    res = Func_SecDerGrad2( ((InrImage::ptr*) $3->Pointer())->get(),
-                 $5);
-
-    Si res==NULL Alors
+    InrImage::ptr res ( Func_SecDerGrad2( ((InrImage::ptr*) $3->Pointer())->get(),
+                 $5));
+    Si !res.get() Alors
       fprintf(stderr,"SecDerGrad2() erreur ... \n");
-      res=((InrImage::ptr*) $3->Pointer())->get();
     FinSi
-
     driver.im_stack.AddImage(res);
     }
     | T_AutoCrop T_OP_PAR expr_image T_COMMA expr T_CL_PAR
     {
-
-          InrImage* res;
-          InrImage* im = (InrImage*) driver.im_stack.GetLastImage();
-
-        res = Func_AutoCrop(im,(int)$5);
-
+        InrImage::ptr im ( driver.im_stack.GetLastImage());
+        InrImage::ptr res ( Func_AutoCrop(im.get(),(int)$5));
         driver.im_stack.AddImage(res);
-        delete im;
     }
     |
       var_image T_OP_BR image_extent T_CL_BR
     {
-      InrImage*  res;
       ImageExtent<float>* extent = (ImageExtent<float>*) $3;
   
       //extent->print();
@@ -8613,22 +8488,19 @@ image:
       //extent->print();
       //cout << "xmax = " << (int)  extent->Xmax() << endl;
       //cout << "xmax = " << (int)  round((double)extent->Xmax()) << endl;
-      res = Func_SubImage( ((InrImage::ptr*) $1->Pointer())->get(),
+      InrImage::ptr res ( Func_SubImage( ((InrImage::ptr*) $1->Pointer())->get(),
                   (int)  round((double)extent->Xmin()),
                   (int)  round((double)extent->Ymin()),
                   (int)  round((double)extent->Zmin()),
                   (int)  round((double)extent->Xmax()),
                   (int)  round((double)extent->Ymax()),
                   (int)  round((double)extent->Zmax())
-                  );
+                  ));
       delete extent;
-  
-      Si res==NULL Alors
+      Si !res.get() Alors
         fprintf(stderr,"SubImage() erreur ... \n");
-        res= ((InrImage::ptr*) $1->Pointer())->get();
       FinSi
-  
-      driver.im_stack.AddImage(res);
+        driver.im_stack.AddImage(res);
     }
     |
     var_image
@@ -8637,17 +8509,13 @@ image:
       expr T_COLON expr T_CL_BR
     {
       InrImage::ptr  im = *(InrImage::ptr*) $1->Pointer();
-      InrImage*  res;
-  
-      res = Func_SubImage( im.get(),
+
+      InrImage::ptr res (Func_SubImage( im.get(),
                   0, 0,  (int) round($7),
-                  im->DimX()-1,  im->DimY()-1, (int) round($9));
-  
-      Si res==NULL Alors
+                  im->DimX()-1,  im->DimY()-1, (int) round($9)));
+      Si !res.get() Alors
         fprintf(stderr,"SubImage() erreur ... \n");
-        res=((InrImage::ptr*) $1->Pointer())->get();
       FinSi
-  
       driver.im_stack.AddImage(res);
       }
       |
@@ -8682,75 +8550,60 @@ image:
         putimage, []
 
       **/
-    InrImage*  res;
-
-    res = Func_SubImage( ((InrImage::ptr*) $3->Pointer())->get(),
+    InrImage::ptr res ( Func_SubImage( ((InrImage::ptr*) $3->Pointer())->get(),
                  (int) $5, (int) $7, (int) $9,
-                 (int) $11,(int) $13,(int) $15);
-
-    Si res==NULL Alors
+                 (int) $11,(int) $13,(int) $15));
+    Si !res.get() Alors
       fprintf(stderr,"SubImage() erreur ... \n");
-      res=((InrImage::ptr*) $3->Pointer())->get();
     FinSi
-
     driver.im_stack.AddImage(res);
       }
       |
       T_EDPdilate T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
       {
-    InrImage*  res;
-    res = Func_EDP_dilate( ((InrImage::ptr*) $3->Pointer())->get(),
-                   $5,  $7, (int) $9);
-    Si res==NULL Alors
+    InrImage::ptr res ( Func_EDP_dilate( ((InrImage::ptr*) $3->Pointer())->get(),
+                   $5,  $7, (int) $9));
+    Si !res.get() Alors
       fprintf(stderr,"SubImage() erreur ... \n");
-      res=((InrImage::ptr*) $3->Pointer())->get();
     FinSi
     driver.im_stack.AddImage(res);
       }
       |
       T_EDPdilate T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_CL_PAR
       {
-    InrImage*  res;
-    res = Func_EDP_dilate( ((InrImage::ptr*) $3->Pointer())->get(), $5,  $7);
-    Si res==NULL Alors
+    InrImage::ptr res ( Func_EDP_dilate( ((InrImage::ptr*) $3->Pointer())->get(), $5,  $7));
+    Si !res.get() Alors
       fprintf(stderr,"SubImage() erreur ... \n");
-      res=((InrImage::ptr*) $3->Pointer())->get();
     FinSi
     driver.im_stack.AddImage(res);
       }
       |
       T_EDPdilate T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
       {
-    InrImage*  res;
     float Imin = $9;
     float Imax = $11;
-    res = Func_EDP_dilate( ((InrImage::ptr*) $3->Pointer())->get(), $5,  $7, Imin, Imax);
-    Si res==NULL Alors
+    InrImage::ptr res ( Func_EDP_dilate( ((InrImage::ptr*) $3->Pointer())->get(), $5,  $7, Imin, Imax));
+    Si (!res.get()) Alors
       fprintf(stderr,"SubImage() erreur ... \n");
-      res=((InrImage::ptr*) $3->Pointer())->get();
     FinSi
     driver.im_stack.AddImage(res);
       }
       |
       T_EDPerode T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
       {
-    InrImage*  res;
-    res = Func_EDP_erode( ((InrImage::ptr*) $3->Pointer())->get(),
-                  $5,  $7, (int) $9);
-    Si res==NULL Alors
+    InrImage::ptr res ( Func_EDP_erode( ((InrImage::ptr*) $3->Pointer())->get(),
+                  $5,  $7, (int) $9));
+    Si !res.get() Alors
       fprintf(stderr,"SubImage() erreur ... \n");
-      res=((InrImage::ptr*) $3->Pointer())->get();
     FinSi
     driver.im_stack.AddImage(res);
       }
       |
       T_EDPerode T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_CL_PAR
       {
-    InrImage*  res;
-    res = Func_EDP_erode( ((InrImage::ptr*) $3->Pointer())->get(), $5,  $7);
-    Si res==NULL Alors
+    InrImage::ptr res ( Func_EDP_erode( ((InrImage::ptr*) $3->Pointer())->get(), $5,  $7));
+    Si !res.get() Alors
       fprintf(stderr,"SubImage() erreur ... \n");
-      res=((InrImage::ptr*) $3->Pointer())->get();
     FinSi
     driver.im_stack.AddImage(res);
       }
@@ -8770,13 +8623,11 @@ image:
       size and time step in voxel units
       minimal and maximal intensities allow to speed up the process
     **/
-    InrImage*  res;
     float Imin = $9;
     float Imax = $11;
-    res = Func_EDP_erode( ((InrImage::ptr*) $3->Pointer())->get(), $5,  $7, Imin, Imax);
-    Si res==NULL Alors
+    InrImage::ptr res ( Func_EDP_erode( ((InrImage::ptr*) $3->Pointer())->get(), $5,  $7, Imin, Imax));
+    Si !res.get() Alors
       fprintf(stderr,"SubImage() erreur ... \n");
-      res=((InrImage::ptr*) $3->Pointer())->get();
     FinSi
     driver.im_stack.AddImage(res);
       }
@@ -8795,16 +8646,11 @@ image:
       using Brockett and Maragos scheme with a given
       size and time step in voxel units
     **/
-    InrImage*  res;
-
-    res = Func_EDP_open( ((InrImage::ptr*) $3->Pointer())->get(),
-                    $5,  $7);
-
-    Si res==NULL Alors
+    InrImage::ptr res ( Func_EDP_open( ((InrImage::ptr*) $3->Pointer())->get(),
+                    $5,  $7));
+    Si !res.get() Alors
       fprintf(stderr,"SubImage() erreur ... \n");
-      res=((InrImage::ptr*) $3->Pointer())->get();
     FinSi
-
     driver.im_stack.AddImage(res);
       }
       |
@@ -8825,18 +8671,13 @@ image:
       size and time step in voxel units
       minimal and maximal intensities allow to speed up the process
     **/
-    InrImage*  res;
     float Imin = $9;
     float Imax = $11;
-
-    res = Func_EDP_open( ((InrImage::ptr*) $3->Pointer())->get(),
-                    $5,  $7, Imin, Imax);
-
-    Si res==NULL Alors
+    InrImage::ptr res ( Func_EDP_open( ((InrImage::ptr*) $3->Pointer())->get(),
+                    $5,  $7, Imin, Imax));
+    Si !res.get() Alors
       fprintf(stderr,"SubImage() erreur ... \n");
-      res=((InrImage::ptr*) $3->Pointer())->get();
     FinSi
-
     driver.im_stack.AddImage(res);
       }
       |
@@ -8844,60 +8685,45 @@ image:
       T_OP_PAR var_image
       T_COMMA expr T_COMMA expr T_CL_PAR
       {
-    InrImage*  res;
+    InrImage::ptr res ( Func_EDP_close( ((InrImage::ptr*) $3->Pointer())->get(),
+                   $5,  $7));
 
-    res = Func_EDP_close( ((InrImage::ptr*) $3->Pointer())->get(),
-                   $5,  $7);
-
-    Si res==NULL Alors
+    Si !res.get() Alors
       fprintf(stderr,"SubImage() erreur ... \n");
-      res=((InrImage::ptr*) $3->Pointer())->get();
     FinSi
-
     driver.im_stack.AddImage(res);
       }
       |
       T_EDPclose
       T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
       {
-    InrImage*  res;
     float Imin = $9;
     float Imax = $11;
 
-    res = Func_EDP_close( ((InrImage::ptr*) $3->Pointer())->get(),
-                   $5,  $7, Imin, Imax);
+    InrImage::ptr res ( Func_EDP_close( ((InrImage::ptr*) $3->Pointer())->get(),
+                   $5,  $7, Imin, Imax));
 
-    Si res==NULL Alors
+    Si !res.get() Alors
       fprintf(stderr,"SubImage() erreur ... \n");
-      res=((InrImage::ptr*) $3->Pointer())->get();
     FinSi
-
     driver.im_stack.AddImage(res);
       }
       |
       AnisoGS T_POINT T_GetOutput
       {
-    InrImage*  res;
-
-    res = Func_AnisoGS_GetOutput();
-
-    Si res==NULL Alors
+    InrImage::ptr res ( Func_AnisoGS_GetOutput());
+    Si !res.get() Alors
       fprintf(stderr,"SubImage() erreur ... \n");
     FinSi
-
     driver.im_stack.AddImage(res);
       }
       |
       AnisoGS T_POINT T_GetDiffCoeff
       {
-    InrImage*  res;
-
-    res = Func_AnisoGS_GetDiffusionCoeff();
-
-    Si res==NULL Alors
+    InrImage::ptr res ( Func_AnisoGS_GetDiffusionCoeff());
+    Si !res.get() Alors
       fprintf(stderr,"GetDiffCoeff() erreur ... \n");
     FinSi
-
     driver.im_stack.AddImage(res);
       }
       |
@@ -8908,16 +8734,11 @@ image:
     // 1. input image
     // 2. isosurface threshold on the input image
 
-    InrImage*  res;
-
-    res = Func_LevelSets_Init( ((InrImage::ptr*) $5->Pointer())->get(),
-                   $7);
-
-    Si res==NULL Alors
+    InrImage::ptr res ( Func_LevelSets_Init( ((InrImage::ptr*) $5->Pointer())->get(),
+                   $7));
+    Si !res.get() Alors
       fprintf(stderr,"Func_LevelSets_Init() erreur ... \n");
-      res=((InrImage::ptr*) $5->Pointer())->get();
     FinSi
-
     driver.im_stack.AddImage(res);
       }
       |
@@ -8929,47 +8750,34 @@ image:
     // 2. Initial position of the level set a the zero-crossing of
     //    this image
 
-    InrImage*  res;
-
-    res = Func_LevelSets_Init(
+    InrImage::ptr res ( Func_LevelSets_Init(
            ((InrImage::ptr*) $5->Pointer())->get(),
            ((InrImage::ptr*) $7->Pointer())->get()
-                   );
+                   ));
 
-    Si res==NULL Alors
+    Si !res.get() Alors
       fprintf(stderr,"Func_LevelSets_Init() erreur ... \n");
-      res=((InrImage::ptr*) $5->Pointer())->get();
     FinSi
-
     driver.im_stack.AddImage(res);
     }
     |
     T_LevelSetsCURV T_POINT T_GetOutput
     {
 
-    InrImage*  res;
-
-    res = Func_LevelSets_GetCurrentOutput();
-
-    Si res==NULL Alors
+    InrImage::ptr res ( Func_LevelSets_GetCurrentOutput());
+    Si (!res.get()) Alors
       fprintf(stderr,"Func_LevelSets_GetOutput() error ... \n");
     FinSi
-
     driver.im_stack.AddImage(res);
       }
       |
       T_LevelSetsCURV T_POINT T_GetAttachVect  T_OP_PAR var_image T_CL_PAR
       {
 
-    InrImage*  res;
-
-    res = Func_LevelSets_GetAttachVectors( ((InrImage::ptr*) $5->Pointer())->get());
-
-    Si res==NULL Alors
+    InrImage::ptr res ( Func_LevelSets_GetAttachVectors( ((InrImage::ptr*) $5->Pointer())->get()));
+    Si !res.get() Alors
       fprintf(stderr,"Func_GetAttachVect() erreur ... \n");
-      res=((InrImage::ptr*) $5->Pointer())->get();
     FinSi
-
     driver.im_stack.AddImage(res);
       }
         |
@@ -9000,8 +8808,7 @@ image:
         error = Func_ItereAnisoGS();
       FinPour
 
-      driver.im_stack.AddImage(Func_AnisoGS_GetOutput());
-
+      driver.im_stack.AddImage(InrImage::ptr(Func_AnisoGS_GetOutput()));
       Func_EndAnisoGS();
 
 
@@ -9017,7 +8824,6 @@ image:
       // 4: diffusion coeff
       // 5: number of iterations
       //
-      InrImage*  res;
       int        nb_iter,i;
       float       error;
 
@@ -9032,14 +8838,11 @@ image:
         error = Func_ItereFlux(((InrImage::ptr*) $5->Pointer())->get(),$9);
       FinPour
 
-          res = Func_AnisoGS_GetOutput();
-      Si res==NULL Alors
+      InrImage::ptr res ( Func_AnisoGS_GetOutput());
+      Si !res.get() Alors
         fprintf(stderr,"AnisoGS() erreur ... \n");
-        res=((InrImage::ptr*) $3->Pointer())->get();
       FinSi
-
       Func_EndAnisoGS();
-
       driver.im_stack.AddImage(res);
 
     }
@@ -9068,13 +8871,11 @@ image:
       int        nb_iter    = (int) $11;
       int        nb_threads = (int) $13;
 
-          InrImage*  res = Func_vtkAnisoGS(  in.get(), sigma, k, beta, nb_iter, nb_threads);
+      InrImage::ptr  res ( Func_vtkAnisoGS(  in.get(), sigma, k, beta, nb_iter, nb_threads));
 
-      Si res==NULL Alors
+      Si !res.get() Alors
         fprintf(stderr,"Func_vtkAnisoGS() erreur ... \n");
       FinSi
-
-          //      printf("5 \n");
       driver.im_stack.AddImage(res);
 
     }
@@ -9083,31 +8884,25 @@ image:
         T_OP_PAR var_image
         T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
-      InrImage*  res;
       int        nb_iter,i;
       float       error;
 
-      Func_InitAnisoGS( ((InrImage::ptr*) $3->Pointer())->get(),
-                  $5,  $7, $9);
+      Func_InitAnisoGS( ((InrImage::ptr*) $3->Pointer())->get(), $5,  $7, $9);
 
 
-          Func_SetSmoothedParam(1);
+      Func_SetSmoothedParam(1);
 
-          nb_iter = (int) $11;
+      nb_iter = (int) $11;
       if (nb_iter < 1) nb_iter = 1;
 
       Pour(i,1,nb_iter)
         error = Func_ItereAnisoGS();
       FinPour
-
-          res = Func_AnisoGS_GetOutput();
-      Si res==NULL Alors
+      InrImage::ptr res ( Func_AnisoGS_GetOutput());
+      Si !res.get() Alors
         fprintf(stderr,"AnisoGS() erreur ... \n");
-        res=((InrImage::ptr*) $3->Pointer())->get();
       FinSi
-
       Func_EndAnisoGS();
-
       driver.im_stack.AddImage(res);
 
     }
@@ -9116,16 +8911,12 @@ image:
         T_OP_PAR var_image
         T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
-      InrImage*  res;
+      InrImage::ptr res ( Func_InitWeickert( ((InrImage::ptr*) $5->Pointer())->get(),
+                $7,  $9, $11));
 
-      res = Func_InitWeickert( ((InrImage::ptr*) $5->Pointer())->get(),
-                $7,  $9, $11);
-
-      Si res==NULL Alors
+      Si !res.get() Alors
         fprintf(stderr,"Func_InitWeickert() erreur ... \n");
-        res=((InrImage::ptr*) $5->Pointer())->get();
       FinSi
-
       driver.im_stack.AddImage(res);
         }
         |
@@ -9133,30 +8924,21 @@ image:
         T_OP_PAR var_image
         T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
-      InrImage*  res;
+      InrImage::ptr res ( Func_InitWeickertCoherence( ((InrImage::ptr*) $5->Pointer())->get(),
+                $7,  $9, $11, $13, $15));
 
-      res = Func_InitWeickertCoherence( ((InrImage::ptr*) $5->Pointer())->get(),
-                $7,  $9, $11, $13, $15);
-
-      Si res==NULL Alors
+      Si !res.get() Alors
         fprintf(stderr,"Func_InitWeickert() erreur ... \n");
-        res=((InrImage::ptr*) $5->Pointer())->get();
       FinSi
-
       driver.im_stack.AddImage(res);
         }
         |
         T_SRAD_qcoeff T_OP_PAR var_image T_CL_PAR
         {
-      InrImage*  res;
-
-      res = Func_SRAD_qcoeff( ((InrImage::ptr*) $3->Pointer())->get());
-
-      Si res==NULL Alors
+      InrImage::ptr res ( Func_SRAD_qcoeff( ((InrImage::ptr*) $3->Pointer())->get()));
+      Si !res.get() Alors
         fprintf(stderr,"Func_SRAD_qcoeff() erreur ... \n");
-        res=((InrImage::ptr*) $3->Pointer())->get();
       FinSi
-
       driver.im_stack.AddImage(res);
         }
         |
@@ -9164,90 +8946,79 @@ image:
         T_OP_PAR var_image
         T_COMMA expr T_COMMA expr T_CL_PAR
         {
-      InrImage*  res;
       float dt = (float) $5;
       int numit = (int) $7;
 
-      res = Func_SRAD( ((InrImage::ptr*) $3->Pointer())->get(),dt,numit,
+      InrImage::ptr res ( Func_SRAD( ((InrImage::ptr*) $3->Pointer())->get(),dt,numit,
                0, // Lee mode
                0,  // Yu neighborhood
-               NULL); // no extent
+               NULL)); // no extent
 
-      Si res==NULL Alors
+      Si !res.get() Alors
         fprintf(stderr,"Func_AnisoSRAD() erreur ... \n");
-        res=((InrImage::ptr*) $3->Pointer())->get();
       FinSi
-
       driver.im_stack.AddImage(res);
         }
         |
         T_AnisoSRAD
         T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
         {
-      InrImage*  res;
       float dt = (float) $5;
       int numit = (int) $7;
       ImageExtent<float>* extent = (ImageExtent<float>*) $9;
 
-      res = Func_SRAD( ((InrImage::ptr*) $3->Pointer())->get(),dt,numit,
+      InrImage::ptr res ( Func_SRAD( ((InrImage::ptr*) $3->Pointer())->get(),dt,numit,
                0, // Lee mode
                0, // Yu neighborhood
-               extent);
+               extent));
 
       delete extent;
 
-      Si res==NULL Alors
+      Si !res.get() Alors
         fprintf(stderr,"Func_AnisoSRAD() erreur ... \n");
-        res=((InrImage::ptr*) $3->Pointer())->get();
       FinSi
-
       driver.im_stack.AddImage(res);
         }
         |
         T_AnisoSRAD
         T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
         {
-      InrImage*  res;
       float dt = (float) $5;
       int numit = (int) $7;
       int neighborhood = (int) $9;
       ImageExtent<float>* extent = (ImageExtent<float>*) $11;
 
-      res = Func_SRAD( ((InrImage::ptr*) $3->Pointer())->get(),dt,numit,
+      InrImage::ptr res ( Func_SRAD( ((InrImage::ptr*) $3->Pointer())->get(),dt,numit,
                0, // Lee mode
                neighborhood,
-               extent);
+               extent));
 
       delete extent;
 
-      Si res==NULL Alors
+      Si !res.get() Alors
         fprintf(stderr,"Func_AnisoSRAD() erreur ... \n");
-        res=((InrImage::ptr*) $3->Pointer())->get();
       FinSi
-
       driver.im_stack.AddImage(res);
         }
         |
         T_AnisoSRAD2
         T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
         {
-      InrImage*  res;
       float dt = (float) $5;
       int numit = (int) $7;
       ImageExtent<float>* extent = (ImageExtent<float>*) $9;
 
 
-      res = Func_SRAD2( ((InrImage::ptr*) $3->Pointer())->get(),dt,numit,
+      InrImage::ptr res ( Func_SRAD2( ((InrImage::ptr*) $3->Pointer())->get(),dt,numit,
                 0, // Lee function
                 0, // Yu neighborhood
                 extent
-                );
+                ));
 
       delete extent;
 
-      Si res==NULL Alors
+      Si !res.get() Alors
         fprintf(stderr,"Func_AnisoSRAD() erreur ... \n");
-        res=((InrImage::ptr*) $3->Pointer())->get();
       FinSi
 
       driver.im_stack.AddImage(res);
@@ -9257,22 +9028,20 @@ image:
         T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA
     expr T_COMMA image_extent T_CL_PAR
         {
-      InrImage*  res;
       float dt = (float) $5;
       int numit = (int) $7;
       int neighborhood = (int) $9;
       ImageExtent<float>* extent = (ImageExtent<float>*) $11;
 
-      res = Func_SRAD2( ((InrImage::ptr*) $3->Pointer())->get(),dt,numit,
+      InrImage::ptr res ( Func_SRAD2( ((InrImage::ptr*) $3->Pointer())->get(),dt,numit,
                 0, // Lee function
                 neighborhood, // neighborhood size
                 extent // bounding box
-                );
+                ));
       delete extent;
 
-      Si res==NULL Alors
+      Si !res.get() Alors
         fprintf(stderr,"Func_AnisoSRAD() erreur ... \n");
-        res=((InrImage::ptr*) $3->Pointer())->get();
       FinSi
 
       driver.im_stack.AddImage(res);
@@ -9280,69 +9049,59 @@ image:
         |
         T_AnisoLeeAdd2 T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
         {
-      InrImage*  res;
       float dt = (float) $5;
       int numit = (int) $7;
       ImageExtent<float>* extent = (ImageExtent<float>*) $9;
 
-      res = Func_SRAD2( ((InrImage::ptr*) $3->Pointer())->get(),dt,numit,
+      InrImage::ptr res ( Func_SRAD2( ((InrImage::ptr*) $3->Pointer())->get(),dt,numit,
                 2, // Additive mode
                 0, // Yu neighborhood
                 extent // constant region
-                );
+                ));
       delete extent;
 
-      Si res==NULL Alors
+      Si !res.get() Alors
         fprintf(stderr,"Func_AnisoSRAD() erreur ... \n");
-        res=((InrImage::ptr*) $3->Pointer())->get();
       FinSi
-
       driver.im_stack.AddImage(res);
         }
         |
         T_AnisoDPAD T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
         {
-      InrImage*  res;
       float dt         = (float) $5;
       int numit        = (int) $7;
       int neighborhood = (int) $9;
       ImageExtent<float>* extent = (ImageExtent<float>*) $11;
 
-      res = Func_SRAD( ((InrImage::ptr*) $3->Pointer())->get(),dt,numit,
+      InrImage::ptr res ( Func_SRAD( ((InrImage::ptr*) $3->Pointer())->get(),dt,numit,
                1, // Kuan's function
                neighborhood, // Yu neighborhood
-               extent);
+               extent));
       delete extent;
 
-      Si res==NULL Alors
+      Si !res.get() Alors
         fprintf(stderr,"Func_AnisoSRAD() erreur ... \n");
-        res=((InrImage::ptr*) $3->Pointer())->get();
       FinSi
-
       driver.im_stack.AddImage(res);
     }
     |
     T_AnisoDPAD2
     T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
     {
-      InrImage*  res;
       float dt = (float) $5;
       int numit = (int) $7;
       int neighborhood = (int) $9;
       ImageExtent<float>* extent = (ImageExtent<float>*) $11;
 
-      res = Func_SRAD2( ((InrImage::ptr*) $3->Pointer())->get(),dt,numit,
+      InrImage::ptr res ( Func_SRAD2( ((InrImage::ptr*) $3->Pointer())->get(),dt,numit,
                 1, // Kuan's function
                 neighborhood, // Yu neighborhood
                 extent
-                );
+                ));
       delete extent;
-
-      Si res==NULL Alors
+      Si !res.get() Alors
         fprintf(stderr,"Func_AnisoSRAD() erreur ... \n");
-        res=((InrImage::ptr*) $3->Pointer())->get();
       FinSi
-
       driver.im_stack.AddImage(res);
     }
     |
@@ -9367,25 +9126,22 @@ image:
             stationary noise and MRI is for MRI style noise. In the case of MRI,
             the filter is designed to run on the square of the image intensity.
          **/
-            InrImage*  res;
             int mode = (int) $5;
             float dt = (float) $7;
             int numit = (int) $9;
             int neighborhood = (int) $11;
             ImageExtent<float>* extent = (ImageExtent<float>*) $13;
 
-            res = Func_SRAD2( ((InrImage::ptr*) $3->Pointer())->get(),dt,numit,
+            InrImage::ptr res ( Func_SRAD2( ((InrImage::ptr*) $3->Pointer())->get(),dt,numit,
                         mode, // fiter mode
                         neighborhood, //  neighborhood size
                         extent
-                        );
+                        ));
             delete extent;
 
-            Si res==NULL Alors
+            Si !res.get() Alors
                 fprintf(stderr,"Func_AnisoNRAD() erreur ... \n");
-                res=((InrImage::ptr*) $3->Pointer())->get();
             FinSi
-
             driver.im_stack.AddImage(res);
     }
     |
@@ -9394,22 +9150,20 @@ image:
     T_COMMA expr T_COMMA expr  T_COMMA expr T_COMMA expr T_CL_PAR
     {
       InrImage::ptr  initim = *(InrImage::ptr*) $3->Pointer();
-      InrImage*  res;
       float dt = (float) $5;
       int numit = (int) $7;
       int attach = (int) $9;
       int scheme = (int) $11;
+      InrImage::ptr res;
 
       if (initim->DimZ()==1)
-        res = Func_RudinMultiplicative2D( initim.get(),dt,numit,attach, scheme);
+        res = InrImage::ptr( Func_RudinMultiplicative2D( initim.get(),dt,numit,attach, scheme));
       else
-        res = Func_RudinMultiplicative3D( initim.get(),dt,numit,attach, scheme);
+        res = InrImage::ptr( Func_RudinMultiplicative3D( initim.get(),dt,numit,attach, scheme));
 
-      Si res==NULL Alors
+      Si !res.get() Alors
         fprintf(stderr,"Func_AnisoRudinMult() erreur ... \n");
-        res=((InrImage::ptr*) $3->Pointer())->get();
       FinSi
-
       driver.im_stack.AddImage(res);
     }
     |
@@ -9423,7 +9177,6 @@ image:
       **/
 
         AjouteBruit* addnoise;
-        InrImage*    res;
         InrImage::ptr    in = *(InrImage::ptr*) $3->Pointer();
         float mean;
         float sd;
@@ -9433,14 +9186,12 @@ image:
       sd   = $7;
 
       sprintf(resname,"%s.noise",in->GetName());
-      res = new InrImage(WT_FLOAT, resname, in.get());
+      InrImage::ptr res( new InrImage(WT_FLOAT, resname, in.get()));
 
       (*res)=(*in);
-
       addnoise = new AjouteBruit();
-      addnoise->AjouteBruitGaussien(res,mean,sd);
+      addnoise->AjouteBruitGaussien(res.get(),mean,sd);
       delete addnoise;
-
       driver.im_stack.AddImage(res);
 
     }
@@ -9458,13 +9209,11 @@ image:
         - Performs a 2D rotation of the image
     **/
 
-        InrImage*    res;
-
-          res = Func_rot2D( ((InrImage::ptr*) $3->Pointer())->get(),
+          InrImage::ptr res ( Func_rot2D( ((InrImage::ptr*) $3->Pointer())->get(),
                 $5, $7,   // rotation center
                 $9,       // angle of rotation
                 $11, $13  // dimension of the new image
-                );
+                ));
 
       driver.im_stack.AddImage(res);
         }
@@ -9487,12 +9236,11 @@ image:
                 Ypos, Zpos
        **/
 
-          InrImage*    res;
           int x,y,z;
 
-        res = new InrImage(WT_UNSIGNED_SHORT,1,
+        InrImage::ptr res ( new InrImage(WT_UNSIGNED_SHORT,1,
                    "tmp_X.inr.gz",
-                   ((InrImage::ptr*) $3->Pointer())->get());
+                   ((InrImage::ptr*) $3->Pointer())->get()));
         res->InitBuffer();
         Pour(z,0,res->_tz-1)
         Pour(y,0,res->_ty-1)
@@ -9524,12 +9272,11 @@ image:
                 Xpos, Zpos
        **/
 
-          InrImage*    res;
           int x,y,z;
 
-        res = new InrImage(WT_UNSIGNED_SHORT,1,
+        InrImage::ptr res ( new InrImage(WT_UNSIGNED_SHORT,1,
                    "tmp_X.inr.gz",
-                   ((InrImage::ptr*) $3->Pointer())->get());
+                   ((InrImage::ptr*) $3->Pointer())->get()));
         res->InitBuffer();
         Pour(z,0,res->_tz-1)
         Pour(y,0,res->_ty-1)
@@ -9561,12 +9308,11 @@ image:
                 Xpos, Ypos
        **/
 
-          InrImage*    res;
           int x,y,z;
 
-        res = new InrImage(WT_UNSIGNED_SHORT,1,
+        InrImage::ptr res ( new InrImage(WT_UNSIGNED_SHORT,1,
                    "tmp_X.inr.gz",
-                   ((InrImage::ptr*) $3->Pointer())->get());
+                   ((InrImage::ptr*) $3->Pointer())->get()));
         res->InitBuffer();
         Pour(z,0,res->_tz-1)
         Pour(y,0,res->_ty-1)
@@ -9593,12 +9339,11 @@ image:
                 Xpos, Ypos, Zpos
        **/
 
-          InrImage*    res;
           int x,y,z;
 
-        res = new InrImage(WT_FLOAT,3,
+        InrImage::ptr res ( new InrImage(WT_FLOAT,3,
                    "tmp_spacepos.inr.gz",
-                   ((InrImage::ptr*) $3->Pointer())->get());
+                   ((InrImage::ptr*) $3->Pointer())->get()));
         res->InitBuffer();
         Pour(z,0,res->_tz-1)
         Pour(y,0,res->_ty-1)
@@ -9610,19 +9355,18 @@ image:
         FinPour
         FinPour
         FinPour
-
         driver.im_stack.AddImage(res);
         }
         |
         VAR_SURFDRAW T_POINT T_getimage
         {
-          driver.im_stack.AddImage((*(Viewer3D_ptr*) $1->Pointer())->GetCanvas()->GetGLImage());
+          driver.im_stack.AddImage(InrImage::ptr((*(Viewer3D_ptr*) $1->Pointer())->GetCanvas()->GetGLImage()));
         }
         |
         VAR_SURFDRAW T_POINT T_GetImageFromX
         {
-          fprintf(stderr,"not available in new wxwidgets version of the 3D viewer ! \n");
-          driver.im_stack.AddImage((InrImage*)NULL);
+          driver.yyiperror("Not available in new wxwidgets version of the 3D viewer ! ");
+          driver.im_stack.AddImage(InrImage::ptr());
 /*
           driver.im_stack.AddImage((*(Viewer3D_ptr*) $1->Pointer())->GetInrImage());
 */
@@ -9630,47 +9374,32 @@ image:
     |
     VAR_IMAGEDRAW T_POINT T_getimage
     {
-      driver.im_stack.AddImage((*(DessinImage::ptr*) $1->Pointer())->GetInrImage());
+      driver.im_stack.AddImagePointer((*(DessinImage::ptr*) $1->Pointer())->GetInrImage());
     }
     |
     T_threscross T_OP_PAR var_image T_COMMA expr T_CL_PAR
     {
-
-    InrImage*    res;
-
-      res = Func_ThresholdCrossing( ((InrImage::ptr*) $3->Pointer())->get(), $5);
-
-          driver.im_stack.AddImage(res);
-
+      InrImage::ptr res ( Func_ThresholdCrossing( ((InrImage::ptr*) $3->Pointer())->get(), $5));
+       driver.im_stack.AddImage(res);
     }
     |
     T_IsocontourPoints T_OP_PAR var_image T_COMMA expr T_CL_PAR
     {
-      InrImage*    res;
-
-      res = Func_IsocontourPoints( ((InrImage::ptr*) $3->Pointer())->get(), $5);
-
+      InrImage::ptr res ( Func_IsocontourPoints( ((InrImage::ptr*) $3->Pointer())->get(), $5));
       driver.im_stack.AddImage(res);
-
     }
     |
     T_IsosurfDist T_OP_PAR var_image T_COMMA expr T_CL_PAR
     {
-        InrImage*    res;
-
-      res = Func_IsosurfDist( ((InrImage::ptr*) $3->Pointer())->get(), $5);
-
-          driver.im_stack.AddImage(res);
+      InrImage::ptr res ( Func_IsosurfDist( ((InrImage::ptr*) $3->Pointer())->get(), $5));
+      driver.im_stack.AddImage(res);
 
     }
     |
     T_vtkIsoContourDist T_OP_PAR var_image T_COMMA expr T_CL_PAR
     {
-        InrImage*    res;
-
-      res = Func_vtkIsoContourDist( ((InrImage::ptr*) $3->Pointer())->get(), $5);
-
-          driver.im_stack.AddImage(res);
+      InrImage::ptr res ( Func_vtkIsoContourDist( ((InrImage::ptr*) $3->Pointer())->get(), $5));
+      driver.im_stack.AddImage(res);
     }
     |
     T_vtkFastMarching T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr T_CL_PAR
@@ -9684,14 +9413,12 @@ image:
       Runs the fast marching algorithm
      **/
 
-        InrImage*    init = (InrImage*) driver.im_stack.GetLastImage(); // 2nd param
-        InrImage*    input  = (InrImage*) driver.im_stack.GetLastImage(); // 1st param
-        InrImage*    res = NULL;
-            float   maxtime = (float) $7;
+        InrImage::ptr    init (driver.im_stack.GetLastImage()); // 2nd param
+        InrImage::ptr    input(driver.im_stack.GetLastImage()); // 1st param
+        float   maxtime = (float) $7;
 
-          res = Func_vtkFastMarching( input, init,  maxtime);
-
-          driver.im_stack.AddImage(res);
+        InrImage::ptr res ( Func_vtkFastMarching( input.get(), init.get(),  maxtime));
+        driver.im_stack.AddImage(res);
     }
     |
     T_vtkFastMarchingTarget T_OP_PAR expr_image T_COMMA expr_image
@@ -9710,17 +9437,15 @@ image:
       Runs the fast marching algorithm
      **/
 
-      InrImage::ptr init  = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
-      InrImage::ptr input = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
-      InrImage*     res = NULL;
+      InrImage::ptr init  (driver.im_stack.GetLastImage());
+      InrImage::ptr input (driver.im_stack.GetLastImage());
       float   maxtime = (float) $7;
 
-      res = Func_vtkFastMarchingTarget( input.get(), init.get(),  maxtime,
+      InrImage::ptr res ( Func_vtkFastMarchingTarget( input.get(), init.get(),  maxtime,
               (int) round($9),
               (int) round($11),
               (int) round($13)
-              );
-
+              ));
       driver.im_stack.AddImage(res);
     }
     |
@@ -9738,15 +9463,13 @@ image:
       Runs the fast marching algorithm
      **/
 
-      InrImage::ptr init  = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
-      InrImage::ptr input = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
-      InrImage*    res = NULL;
+      InrImage::ptr init  (driver.im_stack.GetLastImage());
+      InrImage::ptr input (driver.im_stack.GetLastImage());
       float   mean    = (float) $7;
       float   sd      = (float) $9;
       float   maxtime = (float) $11;
 
-      res = Func_vtkFastMarching( input.get(), init.get(), mean, sd, maxtime);
-
+      InrImage::ptr res ( Func_vtkFastMarching( input.get(), init.get(), mean, sd, maxtime));
       driver.im_stack.AddImage(res);
     }
     |
@@ -9766,16 +9489,14 @@ image:
      **/
       /* Version without initialization */
 
-      InrImage::ptr init  = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
-      InrImage::ptr input = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
-      InrImage*    res = NULL;
+      InrImage::ptr init  (driver.im_stack.GetLastImage());
+      InrImage::ptr input (driver.im_stack.GetLastImage());
       float   mean     = (float) $7;
       float   sd       = (float) $9;
       float   maxtime  = (float) $11;
       int     inittype = (int) $13;
 
-      res = Func_vtkFastMarching( input.get(), init.get(), mean, sd, maxtime,inittype);
-
+      InrImage::ptr res ( Func_vtkFastMarching( input.get(), init.get(), mean, sd, maxtime,inittype));
       driver.im_stack.AddImage(res);
     }
     |
@@ -9797,64 +9518,47 @@ image:
      **/
       /* Version without initialization */
 
-      InrImage::ptr init  = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
-      InrImage::ptr input = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
-      InrImage*    res   = NULL;
+      InrImage::ptr init ( driver.im_stack.GetLastImage());
+      InrImage::ptr input( driver.im_stack.GetLastImage());
       float   maxtime    = (float) $9;
       int     inittype   = (int)   $11;
 
-      res = Func_vtkFastMarching(
+      InrImage::ptr res ( Func_vtkFastMarching(
                   input.get(),
                   init.get(),
                   ((InrImage::ptr*) $7->Pointer())->get(),
-                  maxtime,inittype);
-
+                  maxtime,inittype));
       driver.im_stack.AddImage(res);
     }
     |
     T_Convolve T_OP_PAR var_image T_COMMA var_image T_CL_PAR
     {
+      InrImage::ptr res ( Func_Convolve(((InrImage::ptr*) $3->Pointer())->get(),
+                  ((InrImage::ptr*) $5->Pointer())->get()));
+      driver.im_stack.AddImage(res);
 
-      InrImage* res;
-      res = Func_Convolve(((InrImage::ptr*) $3->Pointer())->get(),
-                  ((InrImage::ptr*) $5->Pointer())->get());
+      }
+      |
+      T_ConvolveMask T_OP_PAR var_image T_COMMA var_image T_COMMA expr_image T_CL_PAR
+      {
+        InrImage::ptr mask (driver.im_stack.GetLastImage());
 
-          driver.im_stack.AddImage(res);
-
-        }
-        |
-        T_ConvolveMask T_OP_PAR var_image T_COMMA var_image T_COMMA expr_image T_CL_PAR
-        {
-
-            InrImage* res;
-        InrImage* mask = (InrImage*) driver.im_stack.GetLastImage();
-;
-
-      res = Func_ConvolveMask(((InrImage::ptr*) $3->Pointer())->get(),
+        InrImage::ptr res ( Func_ConvolveMask(((InrImage::ptr*) $3->Pointer())->get(),
                   ((InrImage::ptr*) $5->Pointer())->get(),
-                  mask);
+                  mask.get()));
+        driver.im_stack.AddImage(res);
 
-          driver.im_stack.AddImage(res);
-      delete mask;
-
-        }
-        |
-        T_ChamferDT T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
-        {
-
-            InrImage* res;
-      res = Func_Chamfer(((InrImage::ptr*) $3->Pointer())->get(), $5, $7, $9);
-
-          driver.im_stack.AddImage(res);
-
+      }
+      |
+      T_ChamferDT T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
+      {
+        InrImage::ptr res ( Func_Chamfer(((InrImage::ptr*) $3->Pointer())->get(), $5, $7, $9));
+        driver.im_stack.AddImage(res);
         }
         |
         T_Chamfer2DT T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
-
-            InrImage* res;
-      res = Func_Chamfer2(((InrImage::ptr*) $3->Pointer())->get(), $5, $7, $9);
-
+          InrImage::ptr res ( Func_Chamfer2(((InrImage::ptr*) $3->Pointer())->get(), $5, $7, $9));
           driver.im_stack.AddImage(res);
 
         }
@@ -9862,130 +9566,102 @@ image:
         T_Chamfer2DT T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
 
-            InrImage* res;
         float a = $5;
         float b = $7;
         float c = $9;
         float dmax = $11;
 
-          res = Func_Chamfer2(((InrImage::ptr*) $3->Pointer())->get(), a,b,c,dmax);
-
-          driver.im_stack.AddImage(res);
+        InrImage::ptr res ( Func_Chamfer2(((InrImage::ptr*) $3->Pointer())->get(), a,b,c,dmax));
+        driver.im_stack.AddImage(res);
 
         }
         |
         T_BorgeforsDT T_OP_PAR var_image  T_COMMA expr T_CL_PAR
         {
-
-            InrImage* res;
         float dmax = $5;
 
-      res = Func_Chamfer2(((InrImage::ptr*) $3->Pointer())->get(),
+        InrImage::ptr  res ( Func_Chamfer2(((InrImage::ptr*) $3->Pointer())->get(),
                   0.92644, 1.34065, 1.65849,
-                  dmax);
-
-          driver.im_stack.AddImage(res);
+                  dmax));
+        driver.im_stack.AddImage(res);
 
         }
         |
         T_BorgeforsSDT T_OP_PAR var_image  T_COMMA expr T_CL_PAR
         {
-
-            InrImage* res;
         float dmax = $5;
 
-      res = Func_Chamfer2Signed(((InrImage::ptr*) $3->Pointer())->get(),
+        InrImage::ptr res ( Func_Chamfer2Signed(((InrImage::ptr*) $3->Pointer())->get(),
                     0.92644, 1.34065, 1.65849,
-                    dmax);
-
-          driver.im_stack.AddImage(res);
+                    dmax));
+        driver.im_stack.AddImage(res);
 
         }
         |
         T_vtkSignedBorgefors T_OP_PAR var_image  T_COMMA expr T_CL_PAR
         {
-
-            InrImage* res;
         float dmax = $5;
 
-      res = Func_vtkSignedBorgefors(((InrImage::ptr*) $3->Pointer())->get(),
-                    dmax);
-
-          driver.im_stack.AddImage(res);
-
+        InrImage::ptr res ( Func_vtkSignedBorgefors(((InrImage::ptr*) $3->Pointer())->get(),
+                    dmax));
+        driver.im_stack.AddImage(res);
         }
         |
         T_vtkSignedFMDist T_OP_PAR var_image  T_COMMA expr T_CL_PAR
         {
-
-            InrImage* res;
         float dmax = $5;
 
-      res = Func_vtkSignedFMDist(((InrImage::ptr*) $3->Pointer())->get(),
-                     dmax);
-
-          driver.im_stack.AddImage(res);
+        InrImage::ptr res ( Func_vtkSignedFMDist(((InrImage::ptr*) $3->Pointer())->get(),
+                     dmax));
+        driver.im_stack.AddImage(res);
 
         }
         |
         T_PropagationDist T_OP_PAR var_image  T_COMMA expr T_CL_PAR
         {
-
-            InrImage* res;
         float dmax = $5;
 
-      res = Func_PropagationDistance(((InrImage::ptr*) $3->Pointer())->get(),
-                      dmax);
-
-          driver.im_stack.AddImage(res);
+        InrImage::ptr res ( Func_PropagationDistance(((InrImage::ptr*) $3->Pointer())->get(),
+                      dmax));
+        driver.im_stack.AddImage(res);
         }
         |
         T_PropagationDist2 T_OP_PAR var_image  T_COMMA expr T_CL_PAR
         {
-
-            InrImage* res;
         float dmax = $5;
 
-      res = Func_PropagationDistance2(((InrImage::ptr*) $3->Pointer())->get(),
-                      dmax);
-
-          driver.im_stack.AddImage(res);
+        InrImage::ptr res ( Func_PropagationDistance2(((InrImage::ptr*) $3->Pointer())->get(),
+                      dmax));
+        driver.im_stack.AddImage(res);
         }
         |
         T_PropDanielsson T_OP_PAR var_image  T_COMMA expr T_CL_PAR
         {
-
-            InrImage* res;
         float dmax = $5;
 
-      res = Func_PropagationDanielsson(((InrImage::ptr*) $3->Pointer())->get(),
-                       dmax);
+        InrImage::ptr res ( Func_PropagationDanielsson(((InrImage::ptr*) $3->Pointer())->get(),
+                       dmax));
 
-          driver.im_stack.AddImage(res);
+        driver.im_stack.AddImage(res);
         }
         |
         T_vtkPropDanielsson T_OP_PAR var_image  T_COMMA expr T_CL_PAR
         {
-
-            InrImage* res;
         float dmax = $5;
 
-      res = Func_vtkPropDanielsson(((InrImage::ptr*) $3->Pointer())->get(),
-                       -dmax,dmax);
-          driver.im_stack.AddImage(res);
+        InrImage::ptr res ( Func_vtkPropDanielsson(((InrImage::ptr*) $3->Pointer())->get(),
+                       -dmax,dmax));
+        driver.im_stack.AddImage(res);
         }
         |
         T_vtkPropDanielsson T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_CL_PAR
         {
-
-            InrImage* res;
         float dmin = $5;
         float dmax = $7;
 
-      res = Func_vtkPropDanielsson(((InrImage::ptr*) $3->Pointer())->get(),
-                       dmin,dmax);
-
-          driver.im_stack.AddImage(res);
+        InrImage::ptr res ( Func_vtkPropDanielsson(((InrImage::ptr*) $3->Pointer())->get(),
+                       dmin,dmax));
+        driver.im_stack.AddImage(res);
         }
         |
         T_vtkPropDaniel2 T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
@@ -10003,16 +9679,15 @@ image:
           starting from the object, up to a given distance
           for positive and negative sides.
         **/
-            InrImage* res;
         float threshold = $5;
         float dmin      = $7;
         float dmax      = $9;
 
         printf("threshold = %f \n",threshold);
-      res = Func_vtkPropDaniel2(((InrImage::ptr*) $3->Pointer())->get(),
-                    threshold,dmin,dmax);
+        InrImage::ptr res ( Func_vtkPropDaniel2(((InrImage::ptr*) $3->Pointer())->get(),
+                    threshold,dmin,dmax));
 
-          driver.im_stack.AddImage(res);
+        driver.im_stack.AddImage(res);
         }
          |
         T_CC T_OP_PAR expr_image T_CL_PAR
@@ -10039,15 +9714,11 @@ image:
             To analyze connected component from an isocontour value n for an image i,
             you can call i_cc=CC((FLOAT)i-n)
         **/
-       InrImage* im = (InrImage*) driver.im_stack.GetLastImage();
-           InrImage* res;
-
-      res = Func_CC(im);
-
-          driver.im_stack.AddImage(res);
-      delete im;
-        }
-       |
+      InrImage::ptr im(driver.im_stack.GetLastImage());
+      InrImage::ptr res ( Func_CC(im.get()));
+      driver.im_stack.AddImage(res);
+    }
+    |
     var_image T_OP_PAR expr_image T_CL_PAR
         {
      /**
@@ -10069,17 +9740,16 @@ image:
       // image composition
       // Initialy for applying a RGB colormap to an image
       InrImage::ptr im1;
-      InrImage* im2 = (InrImage*) driver.im_stack.GetLastImage();
-      InrImage* res;
+      InrImage::ptr im2( driver.im_stack.GetLastImage());
       int pos;
 
       im1 = *(InrImage::ptr*) $1->Pointer();
 
-      res = new InrImage(
+      InrImage::ptr res ( new InrImage(
                           im1->_format,
                           im1->GetVDim(),
                           "ImComp.ami.gz",
-                          im2);
+                          im2.get()));
  
       // Several Cases:
       // 1. scalar to scalar
@@ -10161,11 +9831,10 @@ image:
       } else
         fprintf(stderr," Image Composition: type of composition not implemented \n");
 
-          driver.im_stack.AddImage(res);
-      delete im2;
-        }
-        | T_histo T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
-        {
+      driver.im_stack.AddImage(res);
+    }
+    | T_histo T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
+    {
     /**
        Parameters:
          (3) image: image to compute the histogram
@@ -10177,31 +9846,27 @@ image:
          Compute the histogram of an image and returns it
          as a 1D image
     **/
-      InrImage* im = (InrImage*) driver.im_stack.GetLastImage();
+      InrImage::ptr im( driver.im_stack.GetLastImage());
       float vmin  = $5;
       float vmax  = $7;
       int   nint = (int) $9; // number of intervals
 
-      InrImage* res;
-
-      res = Func_Histogram(im,vmin,vmax,nint);
+      InrImage::ptr res ( Func_Histogram(im.get(),vmin,vmax,nint));
       driver.im_stack.AddImage(res);
-      delete im;
     }
     | T_cumhisto T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
     {
-      InrImage* im = (InrImage*) driver.im_stack.GetLastImage();
+      InrImage::ptr im(driver.im_stack.GetLastImage());
       float vmin  = $5;
       float vmax  = $7;
       int   nint = (int) $9; // number of intervals
 
       int* numpts;
       int  n;
-      InrImage* res;
       float v;
       double total = 0;
 
-      res = new InrImage(nint,1,1,WT_SIGNED_INT);
+      InrImage::ptr res ( new InrImage(nint,1,1,WT_SIGNED_INT));
 
       numpts = new int[nint];
       Pour(n,0,nint-1)
@@ -10228,36 +9893,32 @@ image:
       delete [] numpts;
 
       driver.im_stack.AddImage(res);
-      delete im;
     }
     | T_MeanHalfSize T_OP_PAR expr_image T_CL_PAR
     {
-      InrImage* res;
-      InrImage::ptr im = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
-
+      InrImage::ptr im (driver.im_stack.GetLastImage());
+      InrImage::ptr res;
       if (im->DimZ()>1)
-        res = Func_MeanHalfSize(im.get(),3);
+        res = InrImage::ptr( Func_MeanHalfSize(im.get(),3));
       else
-        res = Func_MeanHalfSize(im.get(),2);
+        res = InrImage::ptr( Func_MeanHalfSize(im.get(),2));
 
-      if (res!=NULL) driver.im_stack.AddImage(res);
+      driver.im_stack.AddImage(res);
     }
     | T_MeanHalfSize T_OP_PAR expr_image T_COMMA expr T_CL_PAR
     {
-      InrImage* res;
       int dim = (int) $5;
 
-      InrImage::ptr im = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
-      res = Func_MeanHalfSize(im.get(),dim);
-      if (res!=NULL) driver.im_stack.AddImage(res);
+      InrImage::ptr im (driver.im_stack.GetLastImage());
+      InrImage::ptr res ( Func_MeanHalfSize(im.get(),dim));
+      driver.im_stack.AddImage(res);
     }
     | T_Flip T_OP_PAR expr_image T_COMMA expr  T_CL_PAR
     {
-        InrImage* res;
         int axis=(int) $5;
 
-        InrImage::ptr im = InrImage::ptr((InrImage*) driver.im_stack.GetLastImage());
-        res=Func_Flip(im,axis);
+        InrImage::ptr im (driver.im_stack.GetLastImage());
+        InrImage::ptr res(Func_Flip(im,axis));
         driver.im_stack.AddImage(res);
     }
     | T_Resize T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr T_CL_PAR
@@ -10272,20 +9933,17 @@ image:
         Description:
           Image resize
         **/
-            InrImage* res;
             int sx = (int) $5;
             int sy = (int) $7;
             int sz = (int) $9;
             unsigned char interpolate=(unsigned char) $11;
 
-            InrImage::ptr im = InrImage::ptr(driver.im_stack.GetLastImage());
-            res = Func_Resize(im.get(),sx,sy,sz,interpolate);
-
-            if (res!=NULL) driver.im_stack.AddImage(res);
-        }
-        | T_ReSlice T_OP_PAR var_image T_COMMA var_image T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA  expr T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA  expr T_COMMA expr T_CL_PAR
-        {
-      InrImage* res;
+            InrImage::ptr im (driver.im_stack.GetLastImage());
+            InrImage::ptr res ( Func_Resize(im.get(),sx,sy,sz,interpolate));
+            driver.im_stack.AddImage(res);
+    }
+    | T_ReSlice T_OP_PAR var_image T_COMMA var_image T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA  expr T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA  expr T_COMMA expr T_CL_PAR
+    {
       FloatMatrix m(4,4);
       m[0][0] =  $7;
       m[0][1] =  $9;
@@ -10303,33 +9961,27 @@ image:
       InrImage::ptr im1 = *(InrImage::ptr*) $3->Pointer();
       InrImage::ptr im2 = *(InrImage::ptr*) $5->Pointer();
 
-      res = Func_ReSlice(im1.get(),im2.get(),m);
-
-      if (res!=NULL) driver.im_stack.AddImage(res);
+      InrImage::ptr res ( Func_ReSlice(im1.get(),im2.get(),m));
+      driver.im_stack.AddImage(res);
 
     }
     | T_ConvexHull T_OP_PAR expr_image T_COMMA expr  T_COMMA expr T_CL_PAR
     {
-      InrImage*         res;
       int   order = (int) $5;
       float resolution = $7;
-      InrImage* input=(InrImage*) driver.im_stack.GetLastImage();
+      InrImage::ptr input(driver.im_stack.GetLastImage());
 
-      res = Func_vtkConvexHull(input,
-                   order,resolution);
+      InrImage::ptr res ( Func_vtkConvexHull(input.get(),
+                   order,resolution));
 
-      if (res!=NULL) driver.im_stack.AddImage(res);
-      delete input;
+      driver.im_stack.AddImage(res);
     }
     | var_surface T_POINT T_GetLinesLength T_OP_PAR   T_CL_PAR
     {
-      InrImage*         res;
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) $1->Pointer());
 
-
-      res = s->GetImageLinesLength(  );
-
-      if (res!=NULL) driver.im_stack.AddImage(res);
+      InrImage::ptr res ( s->GetImageLinesLength(  ));
+      driver.im_stack.AddImage(res);
     }
     | var_surface T_POINT T_GetLine T_OP_PAR expr  T_CL_PAR
     {
@@ -10341,7 +9993,7 @@ image:
           Get the points of the given line as a vectorial 1D image of 
           the point positions.
       **/
-      InrImage*         res = NULL;
+      InrImage::ptr         res;
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) $1->Pointer());
       int linenumber = (int) $5;
       
@@ -10349,11 +10001,11 @@ image:
         T_Line line=s->GetLine(linenumber);
         if (line.NbElts()>0) {
           // Create the image
-          res = new InrImage(line.NbElts(),1,1,3,WT_FLOAT,
+          res = InrImage::ptr(new InrImage(line.NbElts(),1,1,3,WT_FLOAT,
             (boost::format("%1%_line%2%") 
               % $1->Name()
               % linenumber
-            ).str().c_str());
+            ).str().c_str()));
           // fill it with the point positions
           for(int n=0;n<line.NbElts();n++) {
             res->BufferPos(n,0,0);
@@ -10378,13 +10030,10 @@ image:
         containing the point id of the 2 extremities of each 
         line
     **/
-      InrImage*         res;
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) $1->Pointer());
 
-
-      res = s->GetImageLinesExtremities(  );
-
-      if (res!=NULL) driver.im_stack.AddImage(res);
+      InrImage::ptr res ( s->GetImageLinesExtremities(  ));
+      driver.im_stack.AddImage(res);
     }
     | var_surface T_POINT T_GetConnections T_OP_PAR   T_CL_PAR
     {
@@ -10396,57 +10045,43 @@ image:
         The result is given as a 1D image of size the total
         number of points of the polydata
     **/
-      InrImage*         res;
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) $1->Pointer());
 
-
-      res = s->GetImageConnections(  );
-
-      if (res!=NULL) driver.im_stack.AddImage(res);
-        }
-        | var_surface T_POINT T_GetIntensities T_OP_PAR var_image  T_CL_PAR
-        {
-      InrImage*         res;
+      InrImage::ptr res ( s->GetImageConnections(  ));
+      driver.im_stack.AddImage(res);
+    }
+    | var_surface T_POINT T_GetIntensities T_OP_PAR var_image  T_CL_PAR
+    {
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) $1->Pointer());
 
+      InrImage::ptr res ( s->GetIntensities( ((InrImage::ptr*) $5->Pointer())->get() ));
+      driver.im_stack.AddImage(res);
+    }
+    | T_Altitude2Position T_OP_PAR expr_image T_COMMA expr  T_CL_PAR
+    {
+      InrImage::ptr im ( driver.im_stack.GetLastImage());
 
-      res = s->GetIntensities( ((InrImage::ptr*) $5->Pointer())->get() );
-
-      if (res!=NULL) driver.im_stack.AddImage(res);
-        }
-        | T_Altitude2Position T_OP_PAR expr_image T_COMMA expr  T_CL_PAR
-        {
-      InrImage* im =  (InrImage*) driver.im_stack.GetLastImage();
-      InrImage* res;
-
-      res = AMIFluid::Func_Altitude2Position(im,(int)$5);
-      if (res!=NULL) driver.im_stack.AddImage(res);
-
-      delete im;
+      InrImage::ptr res ( AMIFluid::Func_Altitude2Position(im.get(),(int)$5));
+      driver.im_stack.AddImage(res);
     }
     | T_Altitude2Position T_OP_PAR expr_image T_CL_PAR
     {
-      InrImage* im =  (InrImage*) driver.im_stack.GetLastImage();
-      InrImage* res;
-      res = AMIFluid::Func_Altitude2Position(im);
-      if (res!=NULL) driver.im_stack.AddImage(res);
-      delete im;
+      InrImage::ptr im (driver.im_stack.GetLastImage());
+      InrImage::ptr res ( AMIFluid::Func_Altitude2Position(im.get()));
+      driver.im_stack.AddImage(res);
     }
     | T_GeoCoordinates T_OP_PAR expr_image  T_COMMA expr T_CL_PAR
     {
-      InrImage* im =  (InrImage*) driver.im_stack.GetLastImage();
-      InrImage* res;
-      res = AMIFluid::Func_GeoCoordinates(im,(int)$5);
-      if (res!=NULL) driver.im_stack.AddImage(res);
-      delete im;
+      InrImage::ptr im( driver.im_stack.GetLastImage());
+      InrImage::ptr res ( AMIFluid::Func_GeoCoordinates(im.get(),(int)$5));
+      driver.im_stack.AddImage(res);
     }
     | T_GeoCoordinates T_OP_PAR expr_image  T_CL_PAR
     {
-      InrImage* im =  (InrImage*) driver.im_stack.GetLastImage();
+      InrImage::ptr im( driver.im_stack.GetLastImage());
       InrImage* res;
-      res = AMIFluid::Func_GeoCoordinates(im);
-      if (res!=NULL) driver.im_stack.AddImage(res);
-      delete im;
+      res = AMIFluid::Func_GeoCoordinates(im.get());
+      if (res!=NULL) driver.im_stack.AddImagePointer(res);
     }
     | T_ComputeAltitudes T_OP_PAR expr_image T_COMMA expr_image  T_CL_PAR
     {
@@ -10465,12 +10100,12 @@ image:
           Fluid
 
         **/
-      InrImage::ptr coeff = InrImage::ptr(driver.im_stack.GetLastImage());
-      InrImage::ptr input = InrImage::ptr(driver.im_stack.GetLastImage());
+      InrImage::ptr coeff (driver.im_stack.GetLastImage());
+      InrImage::ptr input (driver.im_stack.GetLastImage());
       InrImage* res;
 
       res = AMIFluid::Func_ComputeAltitudes(input.get(),coeff.get());
-      if (res!=NULL) driver.im_stack.AddImage(res);
+      driver.im_stack.AddImagePointer(res);
 
     }
     | T_Temp2Altitudes T_OP_PAR expr_image  T_CL_PAR
@@ -10486,19 +10121,16 @@ image:
         in Kelvin.
 
         **/
-      InrImage::ptr input = InrImage::ptr(driver.im_stack.GetLastImage());
-      InrImage* res;
-
-      res = AMIFluid::Func_Temp2Altitudes(input.get());
-      if (res!=NULL) driver.im_stack.AddImage(res);
+      InrImage::ptr input (driver.im_stack.GetLastImage());
+      InrImage::ptr res ( AMIFluid::Func_Temp2Altitudes(input.get()));
+      driver.im_stack.AddImage(res);
 
     }
     | T_ReadFlow T_OP_PAR expr_string   T_CL_PAR
     {
-      InrImage* res;
       boost::shared_array<char> filename( $3);
-      res= AMIFluid::Func_ReadFlow(filename.get());
-      if (res!=NULL) driver.im_stack.AddImage(res);
+      InrImage::ptr res( AMIFluid::Func_ReadFlow(filename.get()));
+      driver.im_stack.AddImage(res);
     }
     |
     T_slice T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
@@ -10518,8 +10150,7 @@ image:
         (17) expected height
 
         **/
-        InrImage::ptr im = InrImage::ptr(driver.im_stack.GetLastImage());
-        InrImage* res;
+        InrImage::ptr im (driver.im_stack.GetLastImage());
 
         if (im->_format==WT_UNSIGNED_CHAR) {
           ImageDraw<unsigned char> imdraw;
@@ -10528,7 +10159,7 @@ image:
           imdraw.SetCursorPosition((int)$9,(int)$11,(int)$13);
           imdraw.Apply((int)$5,(int)$7,(int)$15,(int)$17);
           // copy to RGB image
-          res = new InrImage(imdraw.RGB_width, imdraw.RGB_height, 1, WT_RGB);
+          InrImage::ptr res ( new InrImage(imdraw.RGB_width, imdraw.RGB_height, 1, WT_RGB));
           memcpy(res->GetData(),imdraw.RGB_image,imdraw.RGB_width*imdraw.RGB_height*3);
           driver.im_stack.AddImage(res);
         } else
@@ -10546,15 +10177,13 @@ image:
       Tubular reconstruction based on a set of lines and an estimated radius
       size for each point
     **/
-      InrImage*         res;
-
       SurfacePoly::ptr  surf = *(SurfacePoly::ptr*)
                                   $3->Pointer();
       InrImage::ptr ref = *(InrImage::ptr*) $5->Pointer();
       InrImage::ptr rad = InrImage::ptr(
                                 driver.im_stack.GetLastImage());
 
-      res = LineRecons( surf.get(), ref.get(), rad.get());
+      InrImage::ptr res ( LineRecons( surf.get(), ref.get(), rad.get()));
       driver.im_stack.AddImage(res);
     }
     |
@@ -10568,13 +10197,12 @@ image:
       Reads the radius information and save it to an image,
       returns this image.
     **/
-      InrImage*         res;
       boost::shared_array<char> filename( $5);
 
       SurfacePoly::ptr  surf = *(SurfacePoly::ptr*)
                                   $3->Pointer();
 
-      res = Func_ReadCTALineRadii( surf.get(), filename.get());
+      InrImage::ptr res ( Func_ReadCTALineRadii( surf.get(), filename.get()));
       driver.im_stack.AddImage(res);
     }
     ;
@@ -10602,14 +10230,12 @@ unary_image  :    postfix_image
         | LN   cast_image { UNARYOP_IMAGE(log)             }
         | NORM cast_image
         {
-          InrImage* res;
-
-          InrImage::ptr im1 = InrImage::ptr(driver.im_stack.GetLastImage());
-          res = Norm(*im1);
-          if (res!=NULL)
-            driver.im_stack.AddImage(res);
-          else
+          InrImage::ptr im1 (driver.im_stack.GetLastImage());
+          InrImage::ptr res ( Norm(*im1));
+          if (!res.get())
             fprintf(stderr,"Error computing the norm |image| \n");
+
+          driver.im_stack.AddImage(res);
         }
                ;
 
@@ -10629,9 +10255,8 @@ cast_image:
                   i = Image(FLOAT,10,10,10)
                   j = (RGB) i
         **/
-            InrImage* im;
-            InrImage::ptr im1 = InrImage::ptr(driver.im_stack.GetLastImage());
-            im  = new InrImage( (WORDTYPE) $2, "tmp.inr.gz", im1.get());
+            InrImage::ptr im1 (driver.im_stack.GetLastImage());
+            InrImage::ptr im  ( new InrImage( (WORDTYPE) $2, "tmp.inr.gz", im1.get()));
             (*im) = (*im1);
             driver.im_stack.AddImage(im);
           }
@@ -10932,7 +10557,7 @@ surface:
         T_isosurf T_OP_PAR expr_image T_COMMA expr T_CL_PAR
         {
           SurfacePoly* surf;
-          InrImage::ptr im = InrImage::ptr(driver.im_stack.GetLastImage());
+          InrImage::ptr im (driver.im_stack.GetLastImage());
           surf = Func_isosurf(im,
                   $5,
                   NULL);
@@ -10961,7 +10586,7 @@ surface:
         Computed isosurface of the input image with a given threshold within a region
         defined by the mask image.
     **/
-        InrImage::ptr im = InrImage::ptr(driver.im_stack.GetLastImage());
+        InrImage::ptr im (driver.im_stack.GetLastImage());
         SurfacePoly* surf;
         surf = Func_isosurf(im,
                 $5,
@@ -10984,8 +10609,8 @@ surface:
         of the 2 eigenvectors of the Hessian matrix that
         correspond to the lowest and negative eigenvalues
      **/
-      InrImage::ptr mask = InrImage::ptr(driver.im_stack.GetLastImage());
-      InrImage::ptr im   = InrImage::ptr(driver.im_stack.GetLastImage());
+      InrImage::ptr mask (driver.im_stack.GetLastImage());
+      InrImage::ptr im   (driver.im_stack.GetLastImage());
       vtkPolyData* vtklines;
       CreeCrest* crestlines;
       SurfacePoly* lines;
@@ -11265,7 +10890,7 @@ surface:
       voxels are linked if their intensities are lower than the given threshold
       creates a path between the first and the second points if it exists
     **/
-      InrImage::ptr im = InrImage::ptr(driver.im_stack.GetLastImage());
+      InrImage::ptr im (driver.im_stack.GetLastImage());
       SurfacePoly* surf;
 
       surf = Func_shortestpath_image(  im.get(),$5,
@@ -11295,7 +10920,7 @@ surface:
       and following the (integer) displacements given by the input vector field
       image
     **/
-      InrImage::ptr im = InrImage::ptr(driver.im_stack.GetLastImage());
+      InrImage::ptr im (driver.im_stack.GetLastImage());
       SurfacePoly* surf;
 
       surf = Func_path_from_displ(  im.get(),
@@ -11342,7 +10967,7 @@ surface:
         - the closest voxel to the current location has a negative intensity
         - the current gradient is very low
     **/
-      InrImage::ptr im = InrImage::ptr(driver.im_stack.GetLastImage());
+      InrImage::ptr im (driver.im_stack.GetLastImage());
       SurfacePoly* surf;
 
       double start[3] = {$9,$11,$13};
@@ -11385,7 +11010,7 @@ surface:
         - the closest voxel to the current location has a negative intensity
         - the current gradient is very low
     **/
-      InrImage::ptr im = InrImage::ptr(driver.im_stack.GetLastImage());
+      InrImage::ptr im (driver.im_stack.GetLastImage());
       SurfacePoly* surf;
 
       double start[3] = {$9,$11,$13};
@@ -11426,7 +11051,7 @@ surface:
     }
     | T_CreateFlatMesh T_OP_PAR expr_image T_CL_PAR
     {
-    InrImage::ptr im = InrImage::ptr(driver.im_stack.GetLastImage());
+    InrImage::ptr im (driver.im_stack.GetLastImage());
       SurfacePoly* surf;
 
       surf = AMIFluid::Func_CreateFlatMesh(im.get());
@@ -11449,7 +11074,7 @@ surface:
             other value: following -X^Y
 
           **/
-      InrImage::ptr im = InrImage::ptr(driver.im_stack.GetLastImage());
+      InrImage::ptr im (driver.im_stack.GetLastImage());
           SurfacePoly* surf;
 
       surf = AMIFluid::Func_CreateFlatMesh(im.get(), (int) $5 );
@@ -11459,7 +11084,7 @@ surface:
     }
     | T_CreateFlatMesh T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_CL_PAR
     {
-      InrImage::ptr im = InrImage::ptr(driver.im_stack.GetLastImage());
+      InrImage::ptr im (driver.im_stack.GetLastImage());
       float minth = $5;
       float maxth = $7;
           SurfacePoly* surf;
@@ -11471,17 +11096,16 @@ surface:
     }
     | T_vtkCreateFlatMesh T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_CL_PAR
     {
-      InrImage* im = (InrImage*) driver.im_stack.GetLastImage();
-          SurfacePoly* surf;
+      InrImage::ptr im ( driver.im_stack.GetLastImage());
+      SurfacePoly* surf;
       float minth = $5;
       float maxth = $7;
 
-      surf = AMIFluid::Func_vtkCreateFlatMesh(im,minth,maxth);
+      surf = AMIFluid::Func_vtkCreateFlatMesh(im.get(),minth,maxth);
       Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
-          FinSi
-     delete im;
-        }
+      FinSi
+    }
         |  T_CreateVolume T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_COMMA expr_image T_COMMA expr_image T_CL_PAR
         {
         /**
@@ -11507,9 +11131,9 @@ surface:
          changes the position of the nodes of a 3D mesh
 
         **/
-      InrImage::ptr highpos = InrImage::ptr(driver.im_stack.GetLastImage());
-      InrImage::ptr lowpos  = InrImage::ptr(driver.im_stack.GetLastImage());
-      InrImage::ptr input   = InrImage::ptr(driver.im_stack.GetLastImage());
+      InrImage::ptr highpos (driver.im_stack.GetLastImage());
+      InrImage::ptr lowpos  (driver.im_stack.GetLastImage());
+      InrImage::ptr input   (driver.im_stack.GetLastImage());
       SurfacePoly* surf;
       float minth = $5;
       float maxth = $7;
@@ -11547,10 +11171,10 @@ surface:
          changes the position of the nodes of a 3D mesh
 
         **/
-      InrImage::ptr colors  = InrImage::ptr(driver.im_stack.GetLastImage());
-      InrImage::ptr highpos = InrImage::ptr(driver.im_stack.GetLastImage());
-      InrImage::ptr lowpos  = InrImage::ptr(driver.im_stack.GetLastImage());
-      InrImage::ptr input  = InrImage::ptr(driver.im_stack.GetLastImage());
+      InrImage::ptr colors  (driver.im_stack.GetLastImage());
+      InrImage::ptr highpos (driver.im_stack.GetLastImage());
+      InrImage::ptr lowpos  (driver.im_stack.GetLastImage());
+      InrImage::ptr input  (driver.im_stack.GetLastImage());
       SurfacePoly* surf;
       float minth = $5;
       float maxth = $7;
@@ -11595,9 +11219,9 @@ surface:
                 CreateFlatMesh, ElevateMesh, ComputeAltitudes, Altitudes2Position
       **/
 
-      InrImage::ptr alt2  = InrImage::ptr(driver.im_stack.GetLastImage());
-      InrImage::ptr displ = InrImage::ptr(driver.im_stack.GetLastImage());
-      InrImage::ptr alt1  = InrImage::ptr(driver.im_stack.GetLastImage());
+      InrImage::ptr alt2  (driver.im_stack.GetLastImage());
+      InrImage::ptr displ (driver.im_stack.GetLastImage());
+      InrImage::ptr alt1  (driver.im_stack.GetLastImage());
       int stepx   = (int) $9;
       int stepy   = (int) $11;
       float scale = $13;
@@ -11645,9 +11269,9 @@ surface:
                 CreateFlatMesh, ElevateMesh, ComputeAltitudes, Altitudes2Position
       **/
 
-      InrImage::ptr alt2  = InrImage::ptr(driver.im_stack.GetLastImage());
-      InrImage::ptr displ = InrImage::ptr(driver.im_stack.GetLastImage());
-      InrImage::ptr alt1  = InrImage::ptr(driver.im_stack.GetLastImage());
+      InrImage::ptr alt2  (driver.im_stack.GetLastImage());
+      InrImage::ptr displ (driver.im_stack.GetLastImage());
+      InrImage::ptr alt1  (driver.im_stack.GetLastImage());
       int stepx   = (int) $9;
       int stepy   = (int) $11;
       float scale = $13;
@@ -11692,9 +11316,9 @@ surface:
         See also:
                 CreateFlatMesh, ElevateMesh, ComputeAltitudes, Altitudes2Position
       **/
-      InrImage::ptr alt2  = InrImage::ptr(driver.im_stack.GetLastImage());
-      InrImage::ptr displ = InrImage::ptr(driver.im_stack.GetLastImage());
-      InrImage::ptr alt1  = InrImage::ptr(driver.im_stack.GetLastImage());
+      InrImage::ptr alt2  (driver.im_stack.GetLastImage());
+      InrImage::ptr displ (driver.im_stack.GetLastImage());
+      InrImage::ptr alt1  (driver.im_stack.GetLastImage());
       int stepx   = (int) $9;
       int stepy   = (int) $11;
       float scale = $13;
@@ -11720,7 +11344,7 @@ surface:
         Creates a 3D vector field for visualization.
 
       **/
-      InrImage::ptr displ = InrImage::ptr(driver.im_stack.GetLastImage());
+      InrImage::ptr displ (driver.im_stack.GetLastImage());
       int stepx   = (int) $5;
       int stepy   = (int) $7;
       int stepz   = (int) $9;
@@ -11748,9 +11372,9 @@ surface:
     Description:
         Create 3D ellipsoids based on 3 vector fields
     **/
-      InrImage::ptr v3  = InrImage::ptr(driver.im_stack.GetLastImage());
-      InrImage::ptr v2  = InrImage::ptr(driver.im_stack.GetLastImage());
-      InrImage::ptr v1  = InrImage::ptr(driver.im_stack.GetLastImage());
+      InrImage::ptr v3  (driver.im_stack.GetLastImage());
+      InrImage::ptr v2  (driver.im_stack.GetLastImage());
+      InrImage::ptr v1  (driver.im_stack.GetLastImage());
       int stepx   = (int) $9;
       int stepy   = (int) $11;
       int stepz   = (int) $13;
@@ -11783,11 +11407,11 @@ surface:
     Description:
         Create 3D ellipsoids based on 3 vector fields
     **/
-      InrImage::ptr mask   = InrImage::ptr(driver.im_stack.GetLastImage());
-      InrImage::ptr colors = InrImage::ptr(driver.im_stack.GetLastImage());
-      InrImage::ptr v3     = InrImage::ptr(driver.im_stack.GetLastImage());
-      InrImage::ptr v2     = InrImage::ptr(driver.im_stack.GetLastImage());
-      InrImage::ptr v1     = InrImage::ptr(driver.im_stack.GetLastImage());
+      InrImage::ptr mask   (driver.im_stack.GetLastImage());
+      InrImage::ptr colors (driver.im_stack.GetLastImage());
+      InrImage::ptr v3     (driver.im_stack.GetLastImage());
+      InrImage::ptr v2     (driver.im_stack.GetLastImage());
+      InrImage::ptr v1     (driver.im_stack.GetLastImage());
 
       int stepx   = (int) $9;
       int stepy   = (int) $11;

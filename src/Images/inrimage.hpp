@@ -502,7 +502,8 @@ public:
 
     /**
      *  Creates a new image with the given format 
-     *  using parameters of another image (size, translation, voxel size)
+     *  using parameters of another image (size, translation, voxel size),
+     *  !!! however, the new image is usually scalar !!!
      * @param format 
      * @param vdim 
      * @param nom 
@@ -512,6 +513,17 @@ public:
      InrImage(  WORDTYPE format,
                             const char* nom,
                             InrImage* image);
+
+    /**
+     *  Creates a new image with the given format 
+     *  using parameters of another image (size, translation, voxel size),
+     *  the new image has the given number of components.
+     * @param format 
+     * @param vdim number of components of the new image.
+     * @param nom 
+     * @param image 
+     * @return 
+     */
      InrImage(  WORDTYPE format, int vdim,
                             const char* nom,
                             InrImage* image);

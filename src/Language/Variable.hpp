@@ -163,6 +163,7 @@ public:
    */
   void Rename(const char* newname) 
   {  
+    CLASS_MESSAGE(boost::format("Renaming %1% to %2%")%_name % newname);
     _name=newname;
   }
 
@@ -213,7 +214,16 @@ private:
   virtual ~VarArray();
   int Size() {return _size;}
   void Init( vartype type, int initsize=10);
+
+  /**
+   * Initialize an element of the array based on a pointer to its value. 
+   **/
   void InitElement( int i, void* p,const char* name);
+
+  /**
+   * Initialize an element of the array based on a pointer to a smart pointer. 
+   **/
+  void InitElementPtr( vartype _type, int i, void* p,const char* name);
 
   template <class T>
   void InitElement( int i, 

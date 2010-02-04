@@ -472,6 +472,14 @@ void VarArray::InitElement( int i, void* p,const char* name)
   }
 }
 
+void VarArray::InitElementPtr( vartype _type, int i, void* p,const char* name) 
+{
+  if (i>=_allocated_size) this->Resize(i+1);
+  if ((i>=0)&&(i<_allocated_size)) {
+    _vars[i].InitPtr(_type,name,p);
+  }
+}
+
 /*
 template <class T>
 void VarArray::InitElement( int i, 

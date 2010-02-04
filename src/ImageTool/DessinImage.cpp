@@ -3563,8 +3563,6 @@ void DessinImage::InitParametres()
   _circles_min_radius = -0.99;
   _circles_max_radius = 0.99;
 
-  // User defined colormap
-  _user_colormap = NULL;
 
   // IsoContours parameters
   _all_contours     = false;
@@ -7755,12 +7753,12 @@ void DessinImage::CB_colorspace( void* cd)
     break;
 
     case COLORSPACE_USER:
-    if (di->_user_colormap!=NULL) {
+    if (di->_user_colormap.get()) {
       unsigned char colmap[256*3];
       for(i=0;i<256;i++) {
-    colmap[i]    =(unsigned char)(*di->_user_colormap)(i,0,0,0);
-    colmap[i+256]=(unsigned char)(*di->_user_colormap)(i,0,0,1);
-    colmap[i+512]=(unsigned char)(*di->_user_colormap)(i,0,0,2);
+        colmap[i]    =(unsigned char)(*di->_user_colormap)(i,0,0,0);
+        colmap[i+256]=(unsigned char)(*di->_user_colormap)(i,0,0,1);
+        colmap[i+512]=(unsigned char)(*di->_user_colormap)(i,0,0,2);
       }
       di->_palette->TypePaletteTC( colmap);
     }

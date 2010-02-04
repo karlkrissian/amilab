@@ -990,8 +990,8 @@ Variable::ptr Wrap_EigenDecomp(ParamList* p) {
 
   for(n=0;n<(int)result.size();n++)
     if (result[n]!=NULL)
-      array->InitElement<InrImage>(n,
-           result[n],
+      array->InitElementPtr(type_image, n,
+           (void*) &result[n],
            str(format("eigen_decomp_%d") %n).c_str());
 
   Variable::ptr varres(new Variable());

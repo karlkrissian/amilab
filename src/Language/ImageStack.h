@@ -28,7 +28,7 @@ class ImageStack{
 
   DEFINE_CLASS(ImageStack);
 
-  std::stack<InrImage*> _images;
+  std::stack<InrImage::ptr> _images;
 
  public:
 
@@ -36,17 +36,22 @@ class ImageStack{
 
   ~ImageStack()    { }
 
-  void AddImage( const char* name);
+  void AddFileImage( const char* name);
 
-  void AddImage( InrImage* im)
+  void AddImagePointer(  InrImage* im)
+  {
+    _images.push(InrImage::ptr(im));
+  }
+
+  void AddImage( const InrImage::ptr& im)
   {
     _images.push(im);
   }
 
-  InrImage* GetLastImage()
+  InrImage::ptr GetLastImage()
   {
-    if (_images.empty()) return NULL;
-    InrImage* tmp;
+    if (_images.empty()) return InrImage::ptr();
+    InrImage::ptr tmp;
     tmp=_images.top();
     _images.pop();
     return tmp;

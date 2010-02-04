@@ -910,6 +910,7 @@ unsigned char InrImage :: Alloue( ) throw (ErreurAllocation)
   _amimage->SetTranslation(_translation_x,
                _translation_y,
                _translation_z);
+  CLASS_MESSAGE(boost::format("Allocation of image %1%")%_nom);
   bool ok = _amimage->allocate();
 
   if ( !ok ) {

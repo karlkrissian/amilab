@@ -392,7 +392,7 @@ protected:
 
 /** @name User define colormap
  */
-  InrImage* _user_colormap; // must be RGB image of 256x1x1
+  InrImage::ptr _user_colormap; // must be RGB image of 256x1x1
   float     _colormap_center; // intensity value for 127
   float     _colormap_extent; // extent of the colormap: center-/+extent =0/255
 
@@ -1265,7 +1265,7 @@ public:
 
 
   //
-  void  SetUserColormap(InrImage* image, float center, float extent)
+  void  SetUserColormap(const InrImage::ptr& image, float center, float extent)
   //    ---------------
   {
     if ((image->_format==WT_RGB)&&
