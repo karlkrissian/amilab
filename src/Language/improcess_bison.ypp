@@ -188,15 +188,7 @@ class wxScheduleTimer : public wxTimer
 // to delete the wxScheduleTimer when necessary
 static std::list<wxScheduleTimer::ptr> schedule_timers;
 
-void CB_ParamWin( void* cd ) {
-
-  AMIFunction* func_ptr = (AMIFunction*) (cd);
-
-  cout << "CB_ParamWin pointer is " << func_ptr << endl;
-
-  GB_driver.yyip_call_function(func_ptr);
-
-} // CB_ParamWin( void* cd )
+void CB_ParamWin( void* cd );
 
 
 //static void ( void* cd, long unsigned int *) {
@@ -11534,6 +11526,19 @@ void yyip::Parser::error(const Parser::location_type& l,
 {
     driver.error(l, m);
 }
+
+
+//-------------------------------------------
+void CB_ParamWin(void* cd)
+ {
+
+  AMIFunction* func_ptr = (AMIFunction*) (cd);
+
+  cout << "CB_ParamWin pointer is " << func_ptr << endl;
+
+  GB_driver.yyip_call_function(func_ptr);
+
+} // CB_ParamWin( void* cd )
 
 void CB_delete_variable( void* var)
 {

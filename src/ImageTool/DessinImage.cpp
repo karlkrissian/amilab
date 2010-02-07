@@ -4724,7 +4724,6 @@ void DessinImage::DeplaceSourisShiftBout1()
 //                              -----------------------
 {
 
-
         int       dx,dy,dz;
         int       dposx,dposy;
         static int     deplace_coupe;

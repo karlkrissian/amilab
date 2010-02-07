@@ -7932,7 +7932,7 @@ yyip::Parser::token::yytokentype checkvar(
   }
 
   yylval->ident = new IdentifierInfo;
-  yylval->ident->SetName( string(varname));
+  yylval->ident->SetName( varname);
   yylval->ident->SetCreationContext(context);
   return(token::IDENTIFIER);
 }

@@ -30,7 +30,7 @@ protected:
 public:
   IdentifierInfo( ): creation_context(-1) {}
   virtual ~IdentifierInfo() {}
-  void SetName(const string& n) { name=n; }
+  void SetName(const char* n) { name=n; }
   string GetName() const { return name; }
   void SetCreationContext(int c) { creation_context = c; }
   int  GetCreationContext() const { return creation_context; }

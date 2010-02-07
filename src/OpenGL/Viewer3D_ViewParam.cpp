@@ -336,7 +336,13 @@ void Viewer3D_ViewParam::CB_rotZ_moins( void* cd)
 void Viewer3D_ViewParam::CB_SauveImage( void* cd)
 //                       -------------
 {
-    Viewer3D* tgl = (Viewer3D*) cd;
+  wxMessageDialog* msg = new wxMessageDialog(NULL,
+      wxString::FromAscii("This feature is not available at the moment."),
+      wxString::FromAscii("Info"),wxOK | wxICON_INFORMATION  );
+  msg->ShowModal();
+  msg->Destroy();
+// TODO: check segmentation fault in this code ... and improve its interface
+/*    Viewer3D* tgl = (Viewer3D*) cd;
     ami_wxGLCanvas* glc = tgl->m_canvas;
     int i;
     int var_x, var_y;
@@ -459,7 +465,7 @@ void Viewer3D_ViewParam::CB_SauveImage( void* cd)
 
   delete anim;
   delete anim_r;
-
+*/
 } // CB_SauveImage()
 
 
