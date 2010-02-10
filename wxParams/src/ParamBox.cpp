@@ -304,9 +304,10 @@ void ParamBox::BooleanDefault( int id, unsigned char defaut)
 //--------------------------------------------------------------
 unsigned char ParamBox::AddInteger( int* id, int* param, 
 //                      ------------
-                const char* libelle)
+                const char* libelle,
+                const std::string& tt)
 {
-  *id = AddInteger(param,libelle);
+  *id = AddInteger(param,libelle,tt);
   return( true);
 } // AddInteger()
 
@@ -314,8 +315,20 @@ unsigned char ParamBox::AddInteger( int* id, int* param,
 //--------------------------------------------------------------
 int ParamBox::AddInteger( int* param, 
 //                   ------------
-                const char* libelle)
+                      const char* libelle,
+                      const std::string& tt)
 {
+  wxNumericParameter<int>* wxi = new wxNumericParameter<int>(
+      CurrentParent(), param, libelle);
+  if (tt!="") wxi->SetToolTip(GetwxStr(tt.c_str()));
+
+  ParamInfo pi( TYPE_PARAMETRE_ENTIER,
+                wxi,
+                AddWidget(wxi));
+  _tab_param.push_back(pi);
+  return _tab_param.size()-1;
+
+/*
   wxIntegerParameter* wxi = new wxIntegerParameter(
       CurrentParent(), param, libelle);
 
@@ -324,6 +337,7 @@ int ParamBox::AddInteger( int* param,
                 AddWidget(wxi));
   _tab_param.push_back(pi);
   return _tab_param.size()-1;
+*/
 } // AddInteger()
 
 
@@ -343,7 +357,7 @@ void ParamBox::IntegerConstraints( int id, int min, int max, int defaut)
   } // end if
 
   if (_tab_param[id].GetWidget()!=NULL)
-    ((wxIntegerParameter*) _tab_param[id].GetWidget())->SetConstraints( min, max, defaut);
+    ((wxNumericParameter<int>*) _tab_param[id].GetWidget())->SetConstraints( min, max, defaut);
 
 } // IntegerConstraints()
 
@@ -362,7 +376,7 @@ void ParamBox::ParamIntGetLimits( int id, int& min, int& max)
   } // end if
   
   if (_tab_param[id].GetWidget()!=NULL)
-    ((wxIntegerParameter*) _tab_param[id].GetWidget())->GetLimits( min, max);
+    ((wxNumericParameter<int>*) _tab_param[id].GetWidget())->GetLimits( min, max);
 
 } // ParamIntGetLimits()
 

@@ -283,10 +283,11 @@ public:
 /** @name Type int */
 //@{
   ///
-  unsigned char AddInteger( int* id, int* param, const char* libelle);
+  unsigned char AddInteger( int* id, int* param, const char* libelle,  const std::string& tooltip="");
   //      ------------
 
-  int AddInteger( int* param, const char* libelle);
+  int AddInteger( int* param, const char* libelle,
+                  const std::string& tooltip="");
   //      ------------
 
   ///
