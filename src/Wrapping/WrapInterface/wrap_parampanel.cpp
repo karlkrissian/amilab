@@ -53,7 +53,9 @@ AMIObject* AddWrapParamPanel( const ParamPanel::ptr& objectptr)
   ADDMEMBER("_AddEnum",         ParamPanel,AddEnum);
   ADDMEMBER("_AddEnumChoice",   ParamPanel,AddEnumChoice);
   ADDMEMBER("_AddFilename",     ParamPanel,AddFilename);
+  ADDMEMBER("_AddString",       ParamPanel,AddString);
   ADDMEMBER("_AddButton",       ParamPanel,AddButton);
+  ADDMEMBER("_AddBoolean",      ParamPanel,AddBoolean);
 
   ADDMEMBER("_Display",         ParamPanel,Display);
   ADDMEMBER("_Hide",            ParamPanel,Hide);
@@ -436,6 +438,91 @@ Variable::ptr wrap_ParamPanelAddFilename::CallMember( ParamList* p)
 
   return varres;
 }
+
+
+//--------------------------------------------------
+// AddString
+//--------------------------------------------------
+void wrap_ParamPanelAddString::SetParametersComments()
+{
+  ADDPARAMCOMMENT("String variable to interface");
+  ADDPARAMCOMMENT("string label");
+  return_comments = "Identifier of the new widget (int variable).";
+}
+//---------------------------------------------------
+Variable::ptr wrap_ParamPanelAddString::CallMember( ParamList* p)
+{
+  Variable::ptr var;
+  std::string* label = NULL;
+  int  n = 0;
+  int  var_id;
+
+  if (!get_var_param<string>(var, p, n))          ClassHelpAndReturn;
+  if (!get_val_ptr_param<string>( label, p, n))   ClassHelpAndReturn;
+
+  std::string tooltip = (boost::format("%s  (%s)") % var->GetComments() % var->Name()).str();
+
+  this->_objectptr->AjouteChaine( &var_id,
+    (string_ptr*)var->Pointer(),
+    label->c_str(),
+    tooltip);
+  this->_objectptr->ContraintesChaine(var_id,
+    (char*) ((string_ptr*)var->Pointer())->get()->c_str());
+
+
+  // create integer variable to return
+  Variable::ptr varres(new Variable());
+  std::string varname = (boost::format("%1%_id")%var->Name()).str();
+  int* varint = new int(var_id);
+  varres->Init(type_int,varname.c_str(),(void*) varint);
+
+  return varres;
+}
+
+
+//--------------------------------------------------
+// AddBoolean
+//--------------------------------------------------
+void wrap_ParamPanelAddBoolean::SetParametersComments()
+{
+  ADDPARAMCOMMENT("Variable of type UCHAR.");
+  ADDPARAMCOMMENT("String expression: label.");
+  return_comments = "Identifier of the new widget (int variable).";
+}
+//---------------------------------------------------
+Variable::ptr wrap_ParamPanelAddBoolean::CallMember( ParamList* p)
+{
+  Variable::ptr var;
+  std::string* label = NULL;
+  int  n = 0;
+  int  var_id;
+
+  if (!get_var_param<unsigned char>(var, p, n))     ClassHelpAndReturn;
+  if (!get_val_ptr_param<string>( label, p, n))   ClassHelpAndReturn;
+
+  std::string tooltip = (boost::format("%s  (%s)") % var->GetComments() % var->Name()).str();
+
+  unsigned char* valptr = ((uchar_ptr*) var->Pointer())->get();
+
+  //cout << " button pointer  = "<<  ((AMIFunction::ptr*) var->Pointer())->get() << endl;
+  this->_objectptr->AddBoolean( &var_id,
+                valptr,
+                label->c_str(),
+                CaractereToggle,
+                tooltip);
+  this->_objectptr->BooleanDefault( var_id, *valptr);
+
+  // create integer variable to return
+  Variable::ptr varres(new Variable());
+  std::string varname = (boost::format("%1%_id")%var->Name()).str();
+  int* varint = new int(var_id);
+  varres->Init(type_int,varname.c_str(),(void*) varint);
+
+  return varres;
+
+}
+
+
 
 //--------------------------------------------------
 // AddButton

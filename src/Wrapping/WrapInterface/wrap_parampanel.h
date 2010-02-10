@@ -37,6 +37,8 @@ ADD_METHOD(ParamPanel,AddInt,           "Adds an Integer parameter.");
 ADD_METHOD(ParamPanel,AddEnum,          "Adds an integer variable as an enumeration to the parameter window.");
 ADD_METHOD(ParamPanel,AddEnumChoice,    "Adds a choice for an enumeration created in the parameter window.");
 ADD_METHOD(ParamPanel,AddFilename,      "Adds a filename selection.");
+ADD_METHOD(ParamPanel,AddString,        "Adds a string selection.");
+ADD_METHOD(ParamPanel,AddBoolean,       "Adds a boolean selection.");
 ADD_METHOD(ParamPanel,AddButton,        "Adds a button.");
 
 

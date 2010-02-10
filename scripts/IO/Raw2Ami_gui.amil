@@ -22,7 +22,7 @@ if (!exists(Raw2AmiClass)) {
       ::voxSizeY = 1, "Voxel size in Y"
       ::voxSizeZ = 1, "Voxel size in Z"
       ::input_filename = "", "name of the input raw image" 
-      ::output_varname = "global::raw2ami_res", "name of the image global variable created"
+      ::output_varname = "global::raw2ami_res", "name of the output image variable (global) created"
       ::Gui()
     }
 
@@ -74,7 +74,7 @@ if (!exists(Raw2AmiClass)) {
       ::win->_BeginBook()
       ::win->_AddPage("IO")
         ::win->_AddFilename(&::input_filename, "Input", ".", "*")
-  #      ::win->_AddString(&::output_varname)
+      ::win->_AddString(&::output_varname,"Output name")
   
       ::win->_AddPage("Header")
           ::win->_BeginBoxPanel("Image dimensions and type")
