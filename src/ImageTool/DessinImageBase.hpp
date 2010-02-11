@@ -587,7 +587,7 @@ protected:
   //   ------------
 
   ///
-  void EffaceImage( int id_image);
+//  void EffaceImage( int id_image);
   //   -----------
 
   ///
@@ -612,7 +612,7 @@ protected:
   // toutes les images XY doivent etre mises a jour
 
   ///
-  void EffaceImagesXY( );
+//  void EffaceImagesXY( );
   //   --------------
   // Libere l'espace utilise par les images
 

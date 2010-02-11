@@ -707,17 +707,20 @@ protected:
 
 //@}
 
-/** @name     Saisie d'une image
- */
+/* Deprecated
+** @name     Saisie d'une image
+ *
 //@{
    ParamBox*  _param_nom_image;
    int        _id_nom_image;
    string_ptr _nom_nouvelle_image;
 
 //@}
+*/
 
-/** @name    Sauvegarde d'une image
- */
+/*
+// @name    Sauvegarde d'une image
+ 
 //@{
    ///
    ParamBox* _param_sauve_image;
@@ -768,7 +771,7 @@ protected:
    int               _type_sauvegarde;
 
 //@}
-
+*/
 
  /** @name    Image Information
   */
@@ -797,24 +800,26 @@ protected:
     int               _id_info_sd_mean;
  //@}
 
-
-/** @name  Saisie du fichier de parametres
- */
+/*
+** @name  Saisie du fichier de parametres
+ *
 //@{
    ParamBox*  _param_nom_fichier;
    int        _id_nom_fichier;
    string_ptr _nom_fichier;
 
 //@}
+*/
 
-/** @name  Saisie de la table de couleurs
- */
+/*
+** @name  Saisie de la table de couleurs
+ *
 //@{
    ParamBox*  _param_nom_tc;
    int        _id_nom_tc;
    string_ptr _nom_tc;
 //@}
-
+*/
 
 
   // Callback for the Paint method
@@ -845,6 +850,10 @@ private:
   ///
   void     InitVoxelSize();
   //       -------------
+
+  /// Try to use all the available space within the window by increasing the current zoom, for the moment, only in XY mode
+  void     IncreaseZoomArea();
+  //       ----------------
 
   ///
   void     InitPositionImages();
@@ -1193,7 +1202,7 @@ public:
      - La taille de l'image peut etre modifiee...
         - MAJ des barres de defilement 
            ( solution MIP: action differente du boutton 2 pour les MIP )
-        - MAJ du zoom ( _xmin, _xmax, _dessin_tx, ...),
+        - MAJ du zoom ( _xmin, _xmax, _zoom_size_x, ...),
            ( solution re-initialisation des valeurs )
         - MAJ de la position du curseur (_planX, ...)
            ( solution re-initialisation des valeurs )
@@ -1379,7 +1388,7 @@ public:
   //   -----------
 
   ///
-  void CB_sauver_param( wxCommandEvent&);
+//  void CB_sauver_param( wxCommandEvent&);
   //   ---------------
 
   ///

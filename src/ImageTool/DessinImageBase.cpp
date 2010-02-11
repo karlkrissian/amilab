@@ -147,23 +147,23 @@ static  int corresp_values[7]    = {1,1, 2, 5,10,20, 50};
 void DessinImageBase::FixeImageCourante( int id_image )
 //                    -----------------
 {
-
-#if defined(__WXMOTIF__)
-  _ximage_data = _tab_ximage_data[id_image];
-  _ximage      = _tab_ximage[id_image];
-
-#else
+  CLASS_MESSAGE("begin")
 
   if (_tab_slices[id_image].image.use_count()) {
     if (GB_debug)
-      cout << "Selecting slice number "<< id_image << endl;
-    _current_slice = _tab_slices[id_image].image;
+      CLASS_MESSAGE(boost::format( "Selecting slice number %1%") % id_image);
+      CLASS_MESSAGE(boost::format( "use_count %1%") % _current_slice.use_count());
+      CLASS_MESSAGE(boost::format( "pointer =  %1%") % _current_slice.get());
+      // we should not use = here to increase the counter to the pointer
+      _current_slice = wxImage_ptr(_tab_slices[id_image].image);
+      CLASS_MESSAGE(boost::format( "_tab_slices[id_image].image.get() =  %1%") % _tab_slices[id_image].image.get());
+      CLASS_MESSAGE(boost::format( "pointer =  %1%") % _current_slice.get());
   } else {
-    cerr << "DessinImageBase::FixeImageCourante( " << id_image
+      cerr << "DessinImageBase::FixeImageCourante( " << id_image
           << "\t image not allocated " << endl;
   }
-#endif
 
+  CLASS_MESSAGE("end")
 } // FixeImageCourante()
 
 
@@ -182,16 +182,25 @@ void DessinImageBase :: CreeImage( int id_image, unsigned int largeur, unsigned 
       return;
   }
 
-  _tab_slices[id_image].image  =
-     wxImage_ptr(new wxImage( (int)largeur,
+  CLASS_MESSAGE("allocation");
+
+  // try to avoid the allocation by creating wxImage based on preallocated data of the size of the window ???
+  wxImage_ptr newim(new wxImage( (int)largeur,
                               (int)hauteur,
                               bool(false))
                 );
+
+  CLASS_MESSAGE(boost::format("swapping use_count = %1%")%_tab_slices[id_image].image.use_count());
+  CLASS_MESSAGE(boost::format("newim get = %1%")%newim.get());
+
+  _tab_slices[id_image].image  = newim;
+     
 /*
   _tab_slices[id_image].context = wxMemoryDC_ptr(new wxMemoryDC);
   _tab_slices[id_image].context->SelectObject(
         *_tab_slices[id_image].bitmap);
 */
+  CLASS_MESSAGE("end");
 
 } // CreeImage()
 
@@ -283,23 +292,16 @@ inline void DessinImageBase::FastImagePoint(
 } // FastImageRectangle()
 
 
+/*
 //----------------------------------------------------------------
 void DessinImageBase :: EffaceImage( int id_image)
 //                                 -----------
 {
 
-#if defined(__MOTIF__)
-  Si _tab_ximage[ id_image] != NULL Alors
-     XDestroyImage( _tab_ximage[ id_image]);
-//     delete [] _ximage_data;  // Pas besoin libere par XDestroyImage()
-    _tab_ximage[ id_image] = NULL;
-    _tab_ximage_data[ id_image] = NULL;
-  FinSi
-#endif
 
 } // EffaceImage()
 
-
+*/
 //----------------------------------------------------------------
 void DessinImageBase :: InitTabImagesXY( )
 //                                 ---------------
@@ -326,26 +328,14 @@ void DessinImageBase :: InitTabImagesXY( )
 } // InitTabImagesXY()
 
 
+/*
 //----------------------------------------------------------------
 void DessinImageBase :: LibereTabImagesXY( )
 //                                 -----------------
 {
-#if defined(__WXMOTIF__)
-  Si GB_debug AlorsFait fprintf(stderr,"DessinImageBase::LibereTabImagesXY() \n");
-
-  EffaceImagesXY();
-  Si GB_debug AlorsFait fprintf(stderr,"*\n");
-  delete[] _tab_ximage_XY_data;
-  Si GB_debug AlorsFait fprintf(stderr,"*\n");
-  delete[] _tab_ximage_XY;
-  Si GB_debug AlorsFait fprintf(stderr,"*\n");
-  delete[] _image_XY_a_jour;
-
-  Si GB_debug AlorsFait fprintf(stderr,"DessinImageBase::LibereTabImagesXY() Fin \n");
-#endif
 } // LibereTabImagesXY()
 
-
+*/
 //----------------------------------------------------------------
 void DessinImageBase :: AlloueImagesXY( unsigned int largeur, unsigned int hauteur)
 //                                 --------------
@@ -359,7 +349,7 @@ void DessinImageBase :: AlloueImagesXY( unsigned int largeur, unsigned int haute
 
     _ximage_octets = 4;
 
-    EffaceImagesXY();
+//    EffaceImagesXY();
 
     Pour( n, 0, _nb_images_XY - 1)
 
@@ -403,37 +393,14 @@ void DessinImageBase :: MAJ_ImagesXY( )
 
 
 //----------------------------------------------------------------
+/*
 void DessinImageBase :: EffaceImagesXY( )
 //                                 --------------
 {
 
-#if defined(__MOTIF__)
-    int n;
-
-  Si _tab_ximage_XY[0] != NULL Alors
-  //    printf("Liberation Images XY \n");
-  FinSi
-
-  Pour( n, 0, _nb_images_XY - 1)
-    Si _tab_ximage_XY[n] != NULL Alors
-
-      Si  _tab_ximage_XY[n] == _tab_ximage[ IMAGE_XY] Alors
-        _tab_ximage[ IMAGE_XY] = NULL;
-        _tab_ximage_data[ IMAGE_XY] = NULL;
-        Param._MAJ._planXY = true;
-      FinSi
-      XDestroyImage( _tab_ximage_XY[ n]);
-    FinSi
-    _tab_ximage_XY_data[n] = NULL;
-    _tab_ximage_XY[n] = NULL;
-    _image_XY_a_jour[n] = false;
-  FinPour // n
-
-  _largeur_XY = 0;
-  _hauteur_XY = 0;
-#endif
 
 } // EffaceImagesXY()
+*/
 
 /*
 //----------------------------------------------------------------
@@ -453,6 +420,7 @@ void DessinImageBase :: AfficheImage( int pos_x, int pos_y)
 void DessinImageBase :: AfficheImage( int id_image)
 //                      ------------
 {
+  CLASS_MESSAGE("begin")
   if (!_tab_slices[id_image].image.use_count()) {
     CLASS_ERROR(boost::format(" id_image=%1% not valid...") % id_image);
     return;
@@ -462,6 +430,7 @@ void DessinImageBase :: AfficheImage( int id_image)
             _tab_ximage_pos_y[id_image],
             _tab_slices[id_image].image);
 
+  CLASS_MESSAGE("end")
 } // AfficheImage()
 
 
@@ -886,9 +855,10 @@ DessinImageBase :: ~DessinImageBase()
 
   Si GB_debug AlorsFait fprintf(stderr,"DessinImageBase destructeur  1 \n");
 
-  LibereTabImagesXY();
+ // LibereTabImagesXY();
+/*
   Si GB_debug AlorsFait fprintf(stderr,"DessinImageBase destructeur  1.1 \n");
-  EffaceImage( IMAGE_XY);
+//  EffaceImage( IMAGE_XY);
   Si GB_debug AlorsFait fprintf(stderr,"DessinImageBase destructeur  1.2 \n");
   EffaceImage( IMAGE_XZ);
   Si GB_debug AlorsFait fprintf(stderr,"DessinImageBase destructeur  1.3 \n");
@@ -897,16 +867,12 @@ DessinImageBase :: ~DessinImageBase()
   EffaceImage( IMAGE_MASQUE_XY);
   Si GB_debug AlorsFait fprintf(stderr,"DessinImageBase destructeur  1.5 \n");
   EffaceImage( IMAGE_COUPES);
-
+*/
   Si GB_debug AlorsFait fprintf(stderr,"DessinImageBase destructeur  1.6 \n");
 
   delete [] _tab_ximage_pos_x;
   delete [] _tab_ximage_pos_y;
 
-#if defined(__WXMOTIF__)
-  delete [] _tab_ximage_data;
-  delete [] _tab_ximage;
-#endif
 
   Si GB_debug AlorsFait fprintf(stderr,"DessinImageBase destructeur  2 \n");
 
@@ -936,7 +902,7 @@ void DessinImageBase :: CreateWxMenu()
     menuImage->AppendSeparator();
     wxMenu* save_submenu = new wxMenu;
     save_submenu->Append(ID_MenuImage_Save_param, GetwxStr("Save Parameters"));
-    save_submenu->Append(ID_MenuImage_Save_image, GetwxStr("Save Image"));
+//    save_submenu->Append(ID_MenuImage_Save_image, GetwxStr("Save Image"));
     menuImage->Append( ID_MenuImage_Save,      GetwxStr("&Save"),save_submenu  );
 
     menuImage->AppendSeparator();
@@ -1366,19 +1332,7 @@ void DessinImageBase ::  MemoriseCoupesXY( unsigned char activation )
 
   Si activation == _memorise_coupes_XY AlorsRetourne; // pas de changement
 
-#if defined(__MOTIF__)
-  Si activation Alors
-    _memorise_coupes_XY = true;
-    EffaceImage( IMAGE_XY);
-    DessinePlanZ();
-  Sinon
-    EffaceImagesXY();
-    _memorise_coupes_XY = false;
-    DessinePlanZ();
-  FinSi
-#else
   cerr << "MemoriseCoupesXY() not yet available in this platform" << endl;
-#endif
 
 } // MemoriseCoupesXY()
 
@@ -2090,9 +2044,9 @@ void DessinImageBase::DrawSlice( int slice_id )
   int ciy = iy[slice_id]; // current iy
   int cip = ip[slice_id]; // current ip
 
-  int zoom_dim[3] = {  Param._Zoom._dessin_tx,
-                       Param._Zoom._dessin_ty,
-                       Param._Zoom._dessin_tz};
+  int zoom_dim[3] = {  Param._Zoom._zoom_size_x,
+                       Param._Zoom._zoom_size_y,
+                       Param._Zoom._zoom_size_z};
   int zdx = zoom_dim[cix]; // dim (in pixels/voxels) along displayed X coord
   int zdy = zoom_dim[ciy]; // dim (in pixels/voxels) along displayed Y coord
 
@@ -2144,6 +2098,12 @@ void DessinImageBase::DrawSlice( int slice_id )
 
 
   FixeImageCourante( slice_id);
+
+  if (!_current_slice.get()) {
+    CLASS_ERROR(" Problem with _current_slice smart pointer !");
+    return;
+  }
+
   register rgb_color* image_data  = (rgb_color*)
                                     _current_slice->GetData();
   register int        image_width = _current_slice->GetWidth();
@@ -2292,7 +2252,7 @@ void DessinImageBase::DessinePlanZ( )
   Si _memorise_coupes_XY Alors
 #if defined(__MOTIF__)
     //--- On verifie l'allocation des images avec les bonnes dimensions
-    AlloueImagesXY( (int) (Param._Zoom._dessin_tx*_size_x+1E-4), (int) (Param._Zoom._dessin_ty*_size_y+1E-4));
+    AlloueImagesXY( (int) (Param._Zoom._zoom_size_x*_size_x+1E-4), (int) (Param._Zoom._zoom_size_y*_size_y+1E-4));
     //--- On utilise la coupe deja allouee
     _tab_ximage_data[IMAGE_XY] = _tab_ximage_XY_data[ Param._pos._z];
     _tab_ximage[IMAGE_XY] = _tab_ximage_XY[ Param._pos._z];
@@ -2301,8 +2261,8 @@ void DessinImageBase::DessinePlanZ( )
 #endif
   Sinon
     CreeImage( IMAGE_XY,
-         (int) (Param._Zoom._dessin_tx*_size_x+1E-4),
-         (int) (Param._Zoom._dessin_ty*_size_y+1E-4));
+         (int) (Param._Zoom._zoom_size_x*_size_x+1E-4),
+         (int) (Param._Zoom._zoom_size_y*_size_y+1E-4));
   FinSi
 
   FixeImageCourante( IMAGE_XY);
@@ -2402,8 +2362,8 @@ void DessinImageBase :: DessinePlanY( )
   //    et d'eviter
   //--- un plantage
   CreeImage( IMAGE_XZ,
-       (int) (Param._Zoom._dessin_tx*_size_x+1E-4),
-       (int) (Param._Zoom._dessin_tz*_size_z+1E-4));
+       (int) (Param._Zoom._zoom_size_x*_size_x+1E-4),
+       (int) (Param._Zoom._zoom_size_z*_size_z+1E-4));
 
   FixeImageCourante( IMAGE_XZ);
   register  rgb_color*        image_data  = (rgb_color*) _current_slice->GetData();
@@ -2484,8 +2444,8 @@ void DessinImageBase :: DessinePlanX( )
   //--- On rajoute 1E-4 pour etre sur d'arrondir a la valeur superieure et d'eviter
   //--- un plantage
   CreeImage( IMAGE_ZY,
-       (int) (Param._Zoom._dessin_tz*_size_z+1E-4),
-       (int) (Param._Zoom._dessin_ty*_size_y+1E-4));
+       (int) (Param._Zoom._zoom_size_z*_size_z+1E-4),
+       (int) (Param._Zoom._zoom_size_y*_size_y+1E-4));
 
   FixeImageCourante( IMAGE_ZY);
   register  rgb_color*        image_data  = (rgb_color*) _current_slice->GetData();
@@ -2559,13 +2519,13 @@ void DessinImageBase :: DessineCoupes( )
 
   //--- Calcul de la disposition des coupes ------------------
   // dimensions d'une image, on respecte le rappport dimx/dimy
-  dimx = Param._Zoom._dessin_tx*Param._dim._voxel_size_x;
-  dimy = Param._Zoom._dessin_ty*Param._dim._voxel_size_y;
+  dimx = Param._Zoom._zoom_size_x*Param._dim._voxel_size_x;
+  dimy = Param._Zoom._zoom_size_y*Param._dim._voxel_size_y;
 
-  nx = (int) sqrt(1.0*(_largeur/dimx)/(_hauteur/dimy)*Param._Zoom._dessin_tz);
-  ny = (int) (Param._Zoom._dessin_tz/nx);
-  Si nx*ny < Param._Zoom._dessin_tz AlorsFait nx++;
-  Si nx*ny < Param._Zoom._dessin_tz AlorsFait ny++;
+  nx = (int) sqrt(1.0*(_largeur/dimx)/(_hauteur/dimy)*Param._Zoom._zoom_size_z);
+  ny = (int) (Param._Zoom._zoom_size_z/nx);
+  Si nx*ny < Param._Zoom._zoom_size_z AlorsFait nx++;
+  Si nx*ny < Param._Zoom._zoom_size_z AlorsFait ny++;
 
   _size_x = (1.0 * _largeur / nx - 2.0) / dimx;
   _size_y = (1.0 * _hauteur / ny - 2.0) / dimy;
@@ -2576,7 +2536,7 @@ void DessinImageBase :: DessineCoupes( )
 //  printf("nx %d ny %d sizeX %d sizeY %d \n",nx,ny,(int) _size_x,(int) _size_y);
 
   //--- Initialisation de l'image -------------------------------
-  CreeImage( IMAGE_COUPES, (int) (nx*(2+_size_x*Param._Zoom._dessin_tx)), (int) (ny*(2+_size_y*Param._Zoom._dessin_ty)));
+  CreeImage( IMAGE_COUPES, (int) (nx*(2+_size_x*Param._Zoom._zoom_size_x)), (int) (ny*(2+_size_y*Param._Zoom._zoom_size_y)));
 
   FixeImageCourante( IMAGE_COUPES);
   register  rgb_color*        image_data  = (rgb_color*) _current_slice->GetData();
@@ -2593,11 +2553,11 @@ void DessinImageBase :: DessineCoupes( )
 
   for(  qy = 0, pos_y = 0
   ;  (qy < ny) Et (planZ <= Param._Zoom._zmax)
-  ;  qy++, pos_y += (int) (Param._Zoom._dessin_ty*_size_y + 2) Faire
+  ;  qy++, pos_y += (int) (Param._Zoom._zoom_size_y*_size_y + 2) Faire
 
     for(  qx = 0, pos_x = 0
     ;  (qx < nx)  Et (planZ <= Param._Zoom._zmax)
-    ;  qx++, pos_x += (int) (Param._Zoom._dessin_tx*_size_x + 2) Faire
+    ;  qx++, pos_x += (int) (Param._Zoom._zoom_size_x*_size_x + 2) Faire
 
 
     py = 0;
@@ -2655,8 +2615,8 @@ void DessinImageBase :: DessinePlanMasqueZ( )
   Si _memorise_coupes_XY Alors
 #if defined(__MOTIF__)
     //--- On verifie l'allocation des images avec les bonnes dimensions
-    AlloueImagesXY( (int) (Param._Zoom._dessin_tx*_size_x+1E-4),
-                    (int) (Param._Zoom._dessin_ty*_size_y+1E-4));
+    AlloueImagesXY( (int) (Param._Zoom._zoom_size_x*_size_x+1E-4),
+                    (int) (Param._Zoom._zoom_size_y*_size_y+1E-4));
     //--- On utilise la coupe deja allouee
     _tab_ximage_data[IMAGE_XY]  = _tab_ximage_XY_data[ Param._pos._z];
     _tab_ximage[IMAGE_XY]       = _tab_ximage_XY[ Param._pos._z];
@@ -2664,8 +2624,8 @@ void DessinImageBase :: DessinePlanMasqueZ( )
     Si _image_XY_a_jour[ Param._pos._z] AlorsRetourne;
 #endif
   Sinon
-    CreeImage( IMAGE_XY,(int) (Param._Zoom._dessin_tx*_size_x+1E-4),
-                        (int) (Param._Zoom._dessin_ty*_size_y+1E-4));
+    CreeImage( IMAGE_XY,(int) (Param._Zoom._zoom_size_x*_size_x+1E-4),
+                        (int) (Param._Zoom._zoom_size_y*_size_y+1E-4));
   FinSi
 
   FixeImageCourante( IMAGE_XY);
@@ -2743,7 +2703,7 @@ void DessinImageBase :: DessinePlanMasqueY( )
 
   //--- On rajoute 1E-4 pour etre sur d'arrondir 0.99999 a la valeur superieure et d'eviter
   //--- un plantage
-  CreeImage( IMAGE_XZ, (int) (Param._Zoom._dessin_tx*_size_x+1E-4), (int) (Param._Zoom._dessin_tz*_size_z+1E-4));
+  CreeImage( IMAGE_XZ, (int) (Param._Zoom._zoom_size_x*_size_x+1E-4), (int) (Param._Zoom._zoom_size_z*_size_z+1E-4));
 
   FixeImageCourante( IMAGE_XZ);
   register  rgb_color*        image_data  = (rgb_color*) _current_slice->GetData();
@@ -2815,7 +2775,7 @@ void DessinImageBase :: DessinePlanMasqueX( )
 
   //--- On rajoute 1E-4 pour etre sur d'arrondir a la valeur superieure et d'eviter
   //--- un plantage
-  CreeImage( IMAGE_ZY, (int) (Param._Zoom._dessin_tz*_size_z+1E-4), (int) (Param._Zoom._dessin_ty*_size_y+1E-4));
+  CreeImage( IMAGE_ZY, (int) (Param._Zoom._zoom_size_z*_size_z+1E-4), (int) (Param._Zoom._zoom_size_y*_size_y+1E-4));
 
   FixeImageCourante( IMAGE_ZY);
   register  rgb_color*        image_data  = (rgb_color*) _current_slice->GetData();
@@ -2890,13 +2850,13 @@ void DessinImageBase :: DessineMasqueCoupes( )
 
   //--- Calcul de la disposition des coupes ------------------
   // dimensions d'une image, on respecte le rappport dimx/dimy
-  dimx = Param._Zoom._dessin_tx*Param._dim._voxel_size_x;
-  dimy = Param._Zoom._dessin_ty*Param._dim._voxel_size_y;
+  dimx = Param._Zoom._zoom_size_x*Param._dim._voxel_size_x;
+  dimy = Param._Zoom._zoom_size_y*Param._dim._voxel_size_y;
 
-  nx = (int) sqrt(1.0*(_largeur/dimx)/(_hauteur/dimy)*Param._Zoom._dessin_tz);
-  ny = (int) (Param._Zoom._dessin_tz/nx);
-  Si nx*ny < Param._Zoom._dessin_tz AlorsFait nx++;
-  Si nx*ny < Param._Zoom._dessin_tz AlorsFait ny++;
+  nx = (int) sqrt(1.0*(_largeur/dimx)/(_hauteur/dimy)*Param._Zoom._zoom_size_z);
+  ny = (int) (Param._Zoom._zoom_size_z/nx);
+  Si nx*ny < Param._Zoom._zoom_size_z AlorsFait nx++;
+  Si nx*ny < Param._Zoom._zoom_size_z AlorsFait ny++;
 
   _size_x = (1.0 * _largeur / nx - 2.0) / dimx;
   _size_y = (1.0 * _hauteur / ny - 2.0) / dimy;
@@ -2907,7 +2867,7 @@ void DessinImageBase :: DessineMasqueCoupes( )
 //  printf("nx %d ny %d sizeX %d sizeY %d \n",nx,ny,(int) _size_x,(int) _size_y);
 
   //--- Initialisation de l'image -------------------------------
-  CreeImage( IMAGE_COUPES, (int) (nx*(2+_size_x*Param._Zoom._dessin_tx)), (int) (ny*(2+_size_y*Param._Zoom._dessin_ty)));
+  CreeImage( IMAGE_COUPES, (int) (nx*(2+_size_x*Param._Zoom._zoom_size_x)), (int) (ny*(2+_size_y*Param._Zoom._zoom_size_y)));
 
   FixeImageCourante( IMAGE_COUPES);
   register  rgb_color*        image_data  = (rgb_color*) _current_slice->GetData();
@@ -2924,11 +2884,11 @@ void DessinImageBase :: DessineMasqueCoupes( )
 
   for(  qy = 0, pos_y = 0
   ;  (qy < ny) Et (planZ <= Param._Zoom._zmax)
-  ;  qy++, pos_y += (int) (Param._Zoom._dessin_ty*_size_y + 2) Faire
+  ;  qy++, pos_y += (int) (Param._Zoom._zoom_size_y*_size_y + 2) Faire
 
     for(  qx = 0, pos_x = 0
     ;  (qx < nx)  Et (planZ <= Param._Zoom._zmax)
-    ;  qx++, pos_x += (int) (Param._Zoom._dessin_tx*_size_x + 2) Faire
+    ;  qx++, pos_x += (int) (Param._Zoom._zoom_size_x*_size_x + 2) Faire
 
 
     py = 0;
@@ -3306,8 +3266,8 @@ void DessinImageBase::DessinePlanInterpZ( )
   Si _memorise_coupes_XY Alors
 #if defined(__MOTIF__)
     //--- On verifie l'allocation des images avec les bonnes dimensions
-    AlloueImagesXY( (int) (Param._Zoom._dessin_tx*_size_x+1E-4),
-        (int) (Param._Zoom._dessin_ty*_size_y+1E-4));
+    AlloueImagesXY( (int) (Param._Zoom._zoom_size_x*_size_x+1E-4),
+        (int) (Param._Zoom._zoom_size_y*_size_y+1E-4));
     //--- On utilise la coupe deja allouee
     _tab_ximage_data[IMAGE_XY] = _tab_ximage_XY_data[ Param._pos._z];
     _tab_ximage[IMAGE_XY] = _tab_ximage_XY[ Param._pos._z];
@@ -3316,8 +3276,8 @@ void DessinImageBase::DessinePlanInterpZ( )
 #endif
   Sinon
     CreeImage( IMAGE_XY,
-               (int) (Param._Zoom._dessin_tx*_size_x+1E-4),
-         (int) (Param._Zoom._dessin_ty*_size_y+1E-4));
+               (int) (Param._Zoom._zoom_size_x*_size_x+1E-4),
+         (int) (Param._Zoom._zoom_size_y*_size_y+1E-4));
   FinSi
 
   FixeImageCourante( IMAGE_XY);
@@ -3412,8 +3372,8 @@ void DessinImageBase :: DessinePlanInterpY( )
   //--- On rajoute 1E-4 pour etre sur d'arrondir 0.99999 a la valeur superieure et d'eviter
   //--- un plantage
   CreeImage( IMAGE_XZ,
-       (int) (Param._Zoom._dessin_tx*_size_x+1E-4),
-       (int) (Param._Zoom._dessin_tz*_size_z+1E-4));
+       (int) (Param._Zoom._zoom_size_x*_size_x+1E-4),
+       (int) (Param._Zoom._zoom_size_z*_size_z+1E-4));
 
   FixeImageCourante( IMAGE_XZ);
   register  rgb_color*        image_data  = (rgb_color*) _current_slice->GetData();
@@ -3498,8 +3458,8 @@ void DessinImageBase::DessinePlanInterpX( )
 
   //--- On rajoute 1E-4 pour etre sur d'arrondir a la valeur superieure et d'eviter
   //--- un plantage
-  CreeImage( IMAGE_ZY, (int) (Param._Zoom._dessin_tz*_size_z+1E-4),
-                       (int) (Param._Zoom._dessin_ty*_size_y+1E-4));
+  CreeImage( IMAGE_ZY, (int) (Param._Zoom._zoom_size_z*_size_z+1E-4),
+                       (int) (Param._Zoom._zoom_size_y*_size_y+1E-4));
   FixeImageCourante( IMAGE_ZY);
 
   if (!_current_slice.use_count()) {

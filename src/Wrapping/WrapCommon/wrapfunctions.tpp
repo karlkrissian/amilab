@@ -33,7 +33,7 @@ bool get_var_param( Variable::ptr& var,
 {
   if (!p) return false;
   // Getting the Variable and checking its type
-  var = p->GetParam(num++);
+  var = p->GetParam(num++); // = is like a swap of smart pointers ...
   if (var.get()) {
     if (var->Type()!=GetVarType<T>()) {
       FILE_ERROR(boost::format("Parameter %1% is of wrong type (%2% instead of %3%), you may be passing a value instead of a reference.")%num%var->Type()%GetVarType<T>());

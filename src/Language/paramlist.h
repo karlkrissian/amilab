@@ -85,6 +85,7 @@ private:
 
   bool AddParam( const Variable::ptr& var);
 
+  // cannot use & because may return a empty pointer, should have a static pointer to empty variable at hand
   Variable::ptr GetParam(int i);
 
 };

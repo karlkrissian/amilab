@@ -5561,6 +5561,7 @@ param_list:
           Variable::ptr newvar(new Variable());
           // copy information from variable, including comments
           // don't need to care about variable context information
+          // copy of the variable contents
           (*newvar) = (*(Variable*) $2);
           // don't change variable name
           //newvar->Rename("Param1");

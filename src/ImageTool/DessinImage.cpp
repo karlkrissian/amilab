@@ -378,13 +378,6 @@ void DessinImage::CheckMinMax()
 void DessinImage::ComputeBasicSizes()
 //
 {
-#if defined(__WXMOTIF__)
-    XFontStruct* font_str;
-    int          dir,ascent,descent;
-    XCharStruct  xchar;
-    XCharStruct  xchar_max;
-    XCharStruct  xchar_min;
-#endif
     char         valstr_max[30];
     char         valstr_min[30];
     char         valstr[30];
@@ -393,12 +386,6 @@ void DessinImage::ComputeBasicSizes()
 
   Si (_image->_format != WT_RGB)Et(Param._show_colorbar) Alors
 
-#if defined(__WXMOTIF__)
-    Si _new_font != NULL AlorsFait
-      XSetFont(display,contexte,_new_font->fid);
-
-    font_str = XQueryFont(display, XGContextFromGC(contexte));
-#endif
 
     valmin = _val_min;
     valmax = _val_max;
@@ -415,18 +402,6 @@ void DessinImage::ComputeBasicSizes()
       sprintf(valstr_min,"%1.2f",valmin);
     FinSi
 
-#if defined(__WXMOTIF__)
-    XTextExtents(font_str, valstr_max, strlen(valstr_max),
-         &dir,       &ascent,
-         &descent,   &xchar_max);
-
-    XTextExtents(font_str, valstr_min, strlen(valstr_min),
-         &dir,       &ascent,
-         &descent,   &xchar_min);
-
-    _colorbar_width = 10 + macro_max(xchar_max.width,xchar_min.width) +24;
-    //cout << " _colorbar_width " << _colorbar_width << endl;
-#else
   int maxwidth;
   wxCoord maxCharWidth, maxCharHeight;
   wxCoord minCharWidth, minCharHeight;
@@ -442,38 +417,11 @@ void DessinImage::ComputeBasicSizes()
     _colorbar_width = 10 +
               macro_max(maxCharWidth,minCharWidth) +
               24;
-#endif
 
   Sinon
     _colorbar_width = 0;
   FinSi
 
-#if defined(__WXMOTIF__)
-  switch ( Param._axes_info ){
-    case AXES_VOXEL_POS:
-      sprintf(valstr,"%d",macro_max(_image->_tx-1,_image->_tz-1));
-    break;
-    case AXES_SPACE_POS:
-      sprintf(valstr,"%2.1f",macro_max(_image->SpacePosX(_image->_tx-1),
-                       _image->SpacePosY(_image->_tz-1)));
-    break;
-  } // end switch
-
-  XTextExtents(font_str,
-           valstr,
-           strlen(valstr),
-           &dir,
-           &ascent,
-           &descent,
-           &xchar);
-  _right_axe_width   = 5+2+xchar.width+2;
-
-  _bottom_axe_height = 5+2+
-                       font_str->max_bounds.ascent   +
-                       font_str->max_bounds.descent ;
-
-  XFreeFontInfo(NULL,font_str,0);
-#else
   switch ( Param._axes_info ){
     case AXES_VOXEL_POS:
       sprintf(valstr,"%d",macro_max(_image->_tx-1,_image->_tz-1));
@@ -497,7 +445,6 @@ void DessinImage::ComputeBasicSizes()
 
 //  _right_axe_width   = 0;
 //  _bottom_axe_height = 0;
-#endif
 
 } // ComputeBasicSizes()
 
@@ -522,13 +469,13 @@ void DessinImage::InitVoxelSize()
   Si Param._option_traitement == OPTION_MIP Alors
     // On garde les proportions dans l'image MIP,
     // le changement d'�helle est inclus dans le calcul de l'image projett�
-    dim_x = Param._Zoom._dessin_tx;
-    dim_y = Param._Zoom._dessin_ty;
-    dim_z = Param._Zoom._dessin_tz;
+    dim_x = Param._Zoom._zoom_size_x;
+    dim_y = Param._Zoom._zoom_size_y;
+    dim_z = Param._Zoom._zoom_size_z;
   Sinon
-    dim_x = Param._Zoom._dessin_tx * Param._dim._voxel_size_x;
-    dim_y = Param._Zoom._dessin_ty * Param._dim._voxel_size_y;
-    dim_z = Param._Zoom._dessin_tz * Param._dim._voxel_size_z;
+    dim_x = Param._Zoom._zoom_size_x * Param._dim._voxel_size_x;
+    dim_y = Param._Zoom._zoom_size_y * Param._dim._voxel_size_y;
+    dim_z = Param._Zoom._zoom_size_z * Param._dim._voxel_size_z;
   FinSi
 
   largeur = _largeur - _colorbar_width;
@@ -722,6 +669,59 @@ void DessinImage::InitVoxelSize()
 
 
 //----------------------------------------------------------------
+void DessinImage::IncreaseZoomArea( )
+//
+{
+    int tx,ty,tz;
+    float   Xneed, Yneed;
+    int i;
+    int h_margin[3]; // horizontal margin for each slice view
+    int v_margin[3]; // vertical margin for each slice view
+    int largeur,hauteur;
+    int inc_x, inc_y, inc_z; // possible increases in each dimension
+
+  largeur = _largeur - _colorbar_width;
+  hauteur = _hauteur;
+
+  Pour(i,0,2)
+    h_margin[i] = _right_margin[i]  + _left_margin[i];
+    v_margin[i] = _top_margin[i]    + _bottom_margin[i];
+  FinPour
+
+  tx = Param._Zoom._zoom_size_x;
+  ty = Param._Zoom._zoom_size_y;
+  tz = Param._Zoom._zoom_size_z;
+
+  switch ( Param._type_coupe ){
+
+    case TYPE_COUPE_XY:
+      Xneed = tx*_size_x + h_margin[IMAGE_XY];
+      Yneed = ty*_size_y + v_margin[IMAGE_XY];
+
+      // possible increase in X is (largeur-Xneed)/_size_x
+      inc_x = (int) ((largeur-Xneed)/_size_x);
+      if (inc_x>0) Param._Zoom.IncreaseX(inc_x,_image);
+      // possible increase in Y is (largeur-Yneed)/_size_y
+      inc_y = (int) ((hauteur-Yneed)/_size_y);
+      if (inc_y>0) Param._Zoom.IncreaseY(inc_y,_image);
+      Param._Zoom.Check(_image);
+    break;
+
+    case TYPE_COUPE_XZ:
+    case TYPE_COUPE_ZY:
+    case TYPE_COUPE_XY_XZ:
+    case TYPE_COUPE_XY_ZY:
+    case TYPE_COUPE_XZ_ZY:
+    case TYPE_COUPE_XY_XZ_ZY:
+    case TYPE_COUPES:
+    break;
+
+  } // end switch // Param._type_coupe
+
+}
+
+
+//----------------------------------------------------------------
 void DessinImage::InitPositionImages( )
 //                  ------------------
 {
@@ -749,9 +749,9 @@ void DessinImage::InitPositionImages( )
 
   FinPour
 
-  tx = Param._Zoom._dessin_tx;
-  ty = Param._Zoom._dessin_ty;
-  tz = Param._Zoom._dessin_tz;
+  tx = Param._Zoom._zoom_size_x;
+  ty = Param._Zoom._zoom_size_y;
+  tz = Param._Zoom._zoom_size_z;
 
   switch ( Param._type_coupe ){
 
@@ -897,8 +897,8 @@ BEGIN_EVENT_TABLE(DessinImage, DessinImageBase)
     EVT_MENU(ID_MenuImage_Compare,   DessinImage::CB_comparer)
     EVT_MENU(ID_MenuImage_VoxelSize, DessinImage::CB_voxel)
     EVT_MENU(ID_MenuImage_info,      DessinImage::CB_image_info)
-    EVT_MENU(ID_MenuImage_Save_param,DessinImage::CB_sauver_param)
-    EVT_MENU(ID_MenuImage_Save_image,DessinImage::CB_sauver_image)
+//    EVT_MENU(ID_MenuImage_Save_param,DessinImage::CB_sauver_param)
+//    EVT_MENU(ID_MenuImage_Save_image,DessinImage::CB_sauver_image)
     EVT_MENU(ID_MenuImage_close,     DessinImage::CB_Close)
 
     EVT_MENU(ID_MenuOptions_option_slice,   DessinImage::CB_option_traitement)
@@ -2112,6 +2112,7 @@ void DessinImage::CreeSauveParametres()
 //                           -------------------
 {
 
+/* Deprecated
   //-----
   _param_sauve_image = new ParamBox( this, FrAn(" Nom de l'image"," Image name"));
 
@@ -2168,7 +2169,7 @@ void DessinImage::CreeSauveParametres()
   _param_sauve_image->EnumerationDefaut( _id_image_format, _id_format_uchar);
 
   _param_sauve_image->CreeDialogue();
-
+*/
 } //  CreeSauveParametres()
 
 
@@ -2289,14 +2290,15 @@ void DessinImage::CreeBoitesParametres()
   CreeParametresInfo();
 
   //-----
+/* Deprecated
   _param_nom_image = new ParamBox( this, FrAn(" Nom de l'image"," Image name"));
 
   _param_nom_image->AjouteNomFichier( &_id_nom_image,  &_nom_nouvelle_image, FrAn(" Nom:"," Name:"));
   _param_nom_image->ContraintesNomFichier( _id_nom_image, "", ".", "*.inr*");
 
   _param_nom_image->CreeDialogue();
-
-
+*/
+ /*
   //-----
   _param_nom_fichier = new ParamBox( this, FrAn(" Nom du fichier","File name"));
 
@@ -2304,7 +2306,9 @@ void DessinImage::CreeBoitesParametres()
   _param_nom_fichier->ContraintesNomFichier( _id_nom_fichier, "", ".", "*.fic");
 
   _param_nom_fichier->CreeDialogue();
+*/
 
+/*
   //-----
   _param_nom_tc = new ParamBox( this, " Nom de la table de couleurs");
 
@@ -2312,7 +2316,7 @@ void DessinImage::CreeBoitesParametres()
   _param_nom_tc->ContraintesNomFichier( _id_nom_tc, "", ".", "*.tc");
 
   _param_nom_tc->CreeDialogue();
-
+*/
 
 //  _param_dialog->FermeDialogue( );
 //  Param._parametres_visible = false;
@@ -4197,7 +4201,7 @@ void DessinImage::SauveImage( char* nom_image)
 //                            ----------
 {
 
-
+/* Deprecated
     InrImage*     nouvelle_image;
     int        x, y, z;
     WORDTYPE      format;
@@ -4210,9 +4214,9 @@ void DessinImage::SauveImage( char* nom_image)
 
   format = (WORDTYPE) _format_image;
   printf("format %d\n", format);
-  nouvelle_image = new InrImage( Param._Zoom._dessin_tx,
-                 Param._Zoom._dessin_ty,
-                 Param._Zoom._dessin_tz, format, nom_image);
+  nouvelle_image = new InrImage( Param._Zoom._zoom_size_x,
+                 Param._Zoom._zoom_size_y,
+                 Param._Zoom._zoom_size_z, format, nom_image);
   nouvelle_image->SetVoxelSize(Param._dim._voxel_size_x,
                      Param._dim._voxel_size_y,
                      Param._dim._voxel_size_z);
@@ -4281,7 +4285,7 @@ void DessinImage::SauveImage( char* nom_image)
   nouvelle_image->Sauve();
 
   delete nouvelle_image;
-
+*/
 } // SauveImage()
 
 
@@ -4291,48 +4295,6 @@ void DessinImage::SauveImagePS( const char* nom_image)
 {
 
   cerr << "DessinImage::SauveImagePS()\t not available anymore " << endl;
-
-#if defined(__MOTIF__)
-
-    XImage* image;
-    unsigned char image_recuperee = false;
-
-//  writePS( nom_image, _tab_ximage[ IMAGE_XY], colors, F_GREYSCALE);
-
-  Si (Param._option_traitement == OPTION_COUPE) Alors
-    switch ( Param._type_coupe ){
-
-      case TYPE_COUPE_XY:  image = _tab_ximage[IMAGE_XY];
-      break;
-      case TYPE_COUPE_XZ:  image = _tab_ximage[IMAGE_XZ];
-      break;
-      case TYPE_COUPE_ZY:  image = _tab_ximage[IMAGE_ZY];
-      break;
-      case TYPE_COUPES:    image = _tab_ximage[IMAGE_COUPES];
-      break;
-
-      default:                image = RecupereImage();
-                             image_recuperee = true;
-    } // end switch
-
-  Sinon
-    image = RecupereImage();
-    image_recuperee = true;
-  FinSi
-
-
-  switch ( _type_sauvegarde ){
-    case SAUVE_PS_GRIS:
-        //   writePS( nom_image, image, colors, F_GREYSCALE);
-    break;
-    case SAUVE_PS_COULEUR:
-        // writePS( nom_image, image, colors, F_FULLCOLOR);
-    break;
-  } // end switch
-
-  Si image_recuperee AlorsFait XDestroyImage(image);
-
-#endif
 
 } // SauveImagePS()
 
@@ -5322,6 +5284,9 @@ void DessinImage::Paint( unsigned char affiche)
       Param._MAJ.MAJCoupes();
     FinSi
 
+    // experimental: use the full available area
+    IncreaseZoomArea();
+
     InitPositionImages();
 
     //--- Dans le cas de la memorisation des coupes XY,
@@ -5845,9 +5810,9 @@ void DessinImage::CB_comparer( wxCommandEvent& event)
 //                            -----------
 {
     DessinImage*    di = this;
-
+/* Deprecated
   di->_param_nom_image->AfficheDialogue();
-
+*/
   // TODO: fix problems of etat variable here !!
 /*
   Si etat == SORTIE_OK Alors
@@ -5857,23 +5822,22 @@ void DessinImage::CB_comparer( wxCommandEvent& event)
 } // CB_Comparer()
 
 
+/*
 //----------------------------------------------------------------
-void DessinImage::CB_sauver_param(  wxCommandEvent&)
+void DessinImage::(  wxCommandEvent&)
 //                ---------------
 {
     DessinImage*    di = (DessinImage*) this;
 
   di->_param_nom_fichier->ContraintesNomFichier( di->_id_nom_fichier, "", ".", "*.fic");
   di->_param_nom_fichier->AfficheDialogue();
-
   // TODO: fix problems of etat variable here !!
-/*
 
   Si etat == SORTIE_OK Alors
     di->SauveFichierParametres( (char*)di->_nom_fichier.c_str());
   FinSi
-*/
 } // CB_Sauver_param()
+*/
 
 
 //----------------------------------------------------------------
@@ -5882,7 +5846,7 @@ void DessinImage::CB_sauver_image( wxCommandEvent&)
 {
     DessinImage*    di = (DessinImage*) this;
 
-  di->_param_sauve_image->AfficheDialogue();
+  //di->_param_sauve_image->AfficheDialogue();
 
 /*
   // TODO: fix problems of etat variable here !!

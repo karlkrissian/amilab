@@ -220,12 +220,12 @@ void wxMenuEnum::OnEnumUpdate(wxCommandEvent&)
 //==============================================================================
 
 wxStringParameter::wxStringParameter( wxWindow* parent, string_ptr* param,
-                                      const char* label): wxBoxSizer(wxHORIZONTAL)
+                                      const char* label): wxBoxSizer(wxHORIZONTAL),
+                                      _parameter(*param)
 {
-  this->_parameter = param;
   // allocate a new string if needed
-  if (!(*_parameter).get()) 
-    (*_parameter) = string_ptr(new std::string(""));
+  if (!_parameter.get()) 
+    _parameter = string_ptr(new std::string(""));
 
   this->_parent    = parent;
   this->_label     = new wxStaticText(this->_parent, wxID_ANY, wxString::FromAscii(label));
@@ -260,7 +260,7 @@ void wxStringParameter::OnStringUpdate( void* data)
 void wxStringParameter::Update()
 //   ------
 {
-  this->_text->SetValue(wxString::FromAscii((*this->_parameter)->c_str()));
+  this->_text->SetValue(wxString::FromAscii(this->_parameter->c_str()));
 } // Update()
 
 
@@ -281,12 +281,14 @@ END_EVENT_TABLE()
 wxFilenameParameter::wxFilenameParameter( wxWindow* parent,
                                           string_ptr* param,
                                           const char* label,
-                                          type_label type): wxBoxSizer(wxHORIZONTAL)
+                                          type_label type): wxBoxSizer(wxHORIZONTAL),
+                                          _parameter(*param)
 {
-  this->_parameter = param;
   // allocate a new string if needed
-  if (!(*_parameter).get()) 
-    (*_parameter) = string_ptr(new std::string(""));
+  if (!_parameter.get()) {
+    std::cerr << __func__ << "Parameter not allocated, creating a new one" << std::endl;
+    _parameter = string_ptr(new std::string(""));
+  }
 
   this->_default_path      = wxString::FromAscii("");
   this->_default_filename  = wxString::FromAscii("");

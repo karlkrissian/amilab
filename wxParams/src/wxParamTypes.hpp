@@ -221,7 +221,7 @@ class wxMenuEnum: public wxMenu
 */
 class wxStringParameter : public wxBoxSizer, public wxGenericWidget
 {
-  string_ptr*   _parameter;
+  string_ptr    _parameter;
   wxWindow*     _parent;
   wxStaticText* _label;
   MyTextCtrl*   _text;
@@ -240,9 +240,9 @@ class wxStringParameter : public wxBoxSizer, public wxGenericWidget
   void SetValue( const char* value) 
   { 
     // allocate a new string if needed
-    if (!(*_parameter).get()) 
-      (*_parameter) = string_ptr(new std::string());
-    *(*_parameter) = value; 
+    if (!_parameter.get()) 
+      _parameter = string_ptr(new std::string());
+    *_parameter = value; 
   }
   
   static void OnStringUpdate(void* data);
@@ -263,7 +263,8 @@ class wxStringParameter : public wxBoxSizer, public wxGenericWidget
 */
 class wxFilenameParameter : public wxBoxSizer, public wxGenericWidget
 {
-  string_ptr*   _parameter;
+  /// _parameter is a smart pointer to the string ... needs to be initialized in the constructor !!!
+  string_ptr    _parameter;
   wxWindow*     _parent;
   wxStaticText* _label;
   MyTextCtrl*   _text;
@@ -306,9 +307,11 @@ class wxFilenameParameter : public wxBoxSizer, public wxGenericWidget
   void SetValue( const char* value) 
   { 
     // allocate a new string if needed
-    if (!(*_parameter).get()) 
-      (*_parameter) = string_ptr(new std::string());
-    *(*_parameter) = value; 
+    if (!_parameter.get()) {
+      std::cerr <<"wxFilenameParameter::SetValue() parameter not allocated, creating new one ... !" << endl;
+      _parameter = string_ptr(new std::string());
+    }
+   (*_parameter) = value; 
   } 
 
   void SetToolTip( const wxString& tt);
