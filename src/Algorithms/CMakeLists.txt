@@ -49,6 +49,8 @@ SET(Algorithms_SRCS
   Denoising/Wrap_AnisoGS.cpp
   Denoising/NLmeans.cpp
 
+  Segmentation/RegionGrowingTest.cpp
+
   Others/ComputePartialVolume.cpp
 )
 
@@ -63,6 +65,8 @@ SET(Algorithms_HDRS
   Denoising/AnisoGS.h
   Denoising/Wrap_AnisoGS.h
   Denoising/NLmeans.h
+
+  Segmentation/RegionGrowingTest.h
 
   Others/ComputePartialVolume.h
 )
