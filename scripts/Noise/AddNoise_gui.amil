@@ -59,7 +59,7 @@ if (!exists(AddNoiseClass)){
     }
     if (::type==2) {
       ::res <<= ::input
-      AddRiceNoise(&::res,::stddev)
+      global::AddRiceNoise(&::res,::stddev)
     }
     
     eval ::output_name+" <<= ::res;"
