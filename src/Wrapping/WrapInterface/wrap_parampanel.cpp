@@ -21,11 +21,19 @@
 #include "ami_function.h"
 
 
+#define RETURN_VARINT(val,name)             \
+  Variable::ptr varres(new Variable());\
+  std::string varname = (boost::format("%1%_id")%name).str();\
+  varres->Init(type_int,varname.c_str(),(void*) new int(val));\
+  return varres;
+
+
 extern MainFrame*     GB_main_wxFrame;
 
 extern VarContexts  Vars;
 
 void CB_ParamWin( void* cd );
+void CB_update_imagelist( void* imagelist_gui);
 
 AMIObject* AddWrapParamPanel( const ParamPanel::ptr& objectptr)
 {
@@ -46,16 +54,25 @@ AMIObject* AddWrapParamPanel( const ParamPanel::ptr& objectptr)
   ADDMEMBER("_BeginBoxPanel",   ParamPanel,BeginBoxPanel);
   ADDMEMBER("_EndBoxPanel",     ParamPanel,EndBoxPanel);
 
+  ADDMEMBER("_BeginPanel",      ParamPanel,BeginPanel);
+  ADDMEMBER("_EndPanel",        ParamPanel,EndPanel);
+
   ADDMEMBER("_AddPage",         ParamPanel,AddPage);
+  ADDMEMBER("_SelectPage",      ParamPanel,SelectPage);
 
   ADDMEMBER("_AddFloat",        ParamPanel,AddFloat);
   ADDMEMBER("_AddInt",          ParamPanel,AddInt);
   ADDMEMBER("_AddEnum",         ParamPanel,AddEnum);
   ADDMEMBER("_AddEnumChoice",   ParamPanel,AddEnumChoice);
+  ADDMEMBER("_AddLabel",        ParamPanel,AddLabel);
   ADDMEMBER("_AddFilename",     ParamPanel,AddFilename);
   ADDMEMBER("_AddString",       ParamPanel,AddString);
+  ADDMEMBER("_AddImageChoice",  ParamPanel,AddImageChoice);
   ADDMEMBER("_AddButton",       ParamPanel,AddButton);
   ADDMEMBER("_AddBoolean",      ParamPanel,AddBoolean);
+  ADDMEMBER("_SetCallback",     ParamPanel,SetCallback);
+  ADDMEMBER("_SetDragCallback", ParamPanel,SetDragCallback);
+  ADDMEMBER("_EnablePanel",     ParamPanel,EnablePanel);
 
   ADDMEMBER("_Display",         ParamPanel,Display);
   ADDMEMBER("_Hide",            ParamPanel,Hide);
@@ -106,12 +123,18 @@ Variable::ptr wrap_ParamPanel( ParamList* p)
 //---------------------------------------------------
 //  BeginBook
 //---------------------------------------------------
-void wrap_ParamPanelBeginBook::SetParametersComments() {}
+void wrap_ParamPanelBeginBook::SetParametersComments() 
+{
+  return_comments = "Identifier of the new book (int variable).";
+}
 //---------------------------------------------------
 Variable::ptr wrap_ParamPanelBeginBook::CallMember( ParamList* p)
 {
-  this->_objectptr->BeginBook();
-  return Variable::ptr();
+  int id = this->_objectptr->BeginBook();
+
+  // create integer variable to return
+  string name = (boost::format("book_%1%")%id).str();
+  RETURN_VARINT(id,name.c_str());
 }
 
 
@@ -168,8 +191,9 @@ Variable::ptr wrap_ParamPanelBeginBoxPanel::CallMember( ParamList* p)
 
   this->_objectptr->BeginBox( label->c_str());
   int id = this->_objectptr->BeginPanel( label->c_str());
-  return Variable::ptr();
-  //    $$=id;
+
+  // create integer variable to return
+  RETURN_VARINT(id,label->c_str());
 }
 
 
@@ -187,6 +211,40 @@ Variable::ptr wrap_ParamPanelEndBoxPanel::CallMember( ParamList* p)
 
 
 //---------------------------------------------------
+//  BeginPanel
+//---------------------------------------------------
+void wrap_ParamPanelBeginPanel::SetParametersComments()
+{
+  ADDPARAMCOMMENT("string: panel title.");
+}
+//---------------------------------------------------
+Variable::ptr wrap_ParamPanelBeginPanel::CallMember( ParamList* p)
+{
+  std::string* label = NULL;
+  int n = 0;
+  if (!get_val_ptr_param<string>( label,  p, n)) 
+    ClassHelpAndReturn;
+
+  int id = this->_objectptr->BeginPanel( label->c_str());
+
+  // create integer variable to return
+  RETURN_VARINT(id,label->c_str());
+}
+
+
+//---------------------------------------------------
+//  EndPanel
+//---------------------------------------------------
+void wrap_ParamPanelEndPanel::SetParametersComments(){}
+//---------------------------------------------------
+Variable::ptr wrap_ParamPanelEndPanel::CallMember( ParamList* p)
+{
+  this->_objectptr->EndPanel();
+  return Variable::ptr();
+}
+
+
+//---------------------------------------------------
 //  AddFloat
 //---------------------------------------------------
 void wrap_ParamPanelAddFloat::SetParametersComments()
@@ -195,6 +253,7 @@ void wrap_ParamPanelAddFloat::SetParametersComments()
   ADDPARAMCOMMENT("string: label for the parameter");
   ADDPARAMCOMMENT("minimum value (def:0)");
   ADDPARAMCOMMENT("maximum value (def:1)");
+  return_comments = "Identifier of the new widget (int variable).";
 }
 //---------------------------------------------------
 Variable::ptr wrap_ParamPanelAddFloat::CallMember( ParamList* p)
@@ -217,7 +276,9 @@ Variable::ptr wrap_ParamPanelAddFloat::CallMember( ParamList* p)
   int var_id = this->_objectptr->AddFloat( varval, label->c_str(),2,tooltip);
 
   this->_objectptr->FloatConstraints( var_id, minval, maxval, *varval );
-  return Variable::ptr();
+
+  // create integer variable to return
+  RETURN_VARINT(var_id,var->Name());
 }
 
 //--------------------------------------------------
@@ -229,6 +290,7 @@ void wrap_ParamPanelAddInt::SetParametersComments()
   ADDPARAMCOMMENT("string: label for the parameter");
   ADDPARAMCOMMENT("minimum value (def:0)");
   ADDPARAMCOMMENT("maximum value (def:100)");
+  return_comments = "Identifier of the new widget (int variable).";
 }
 //---------------------------------------------------
 Variable::ptr wrap_ParamPanelAddInt::CallMember( ParamList* p)
@@ -249,8 +311,9 @@ Variable::ptr wrap_ParamPanelAddInt::CallMember( ParamList* p)
   std::string tooltip = (boost::format("%s  (%s)") % var->GetComments() % var->Name()).str();
   int var_id = this->_objectptr->AddInteger( varval, label->c_str(), tooltip);
   this->_objectptr->IntegerConstraints( var_id, minval, maxval, *varval );
-  return Variable::ptr();
-  //    $$ = var_id;
+
+  // create integer variable to return
+  RETURN_VARINT(var_id,var->Name());
 }
 
 
@@ -260,7 +323,7 @@ Variable::ptr wrap_ParamPanelAddInt::CallMember( ParamList* p)
 void wrap_ParamPanelAddEnum::SetParametersComments()
 {
   ADDPARAMCOMMENT("int var: input variable");
-  ADDPARAMCOMMENT("string label");
+  ADDPARAMCOMMENT("string label (def: variable name)");
   return_comments = "Identifier of the new widget (int variable).";
 }
 //---------------------------------------------------
@@ -269,29 +332,32 @@ Variable::ptr wrap_ParamPanelAddEnum::CallMember( ParamList* p)
   Variable::ptr var;
   int* varval;
   std::string* label = NULL;
+  std::string label_val;
   int  n = 0;
   int  var_id;
 
   if (!get_var_param<int>(var, p, n))           ClassHelpAndReturn;
-  if (!get_val_ptr_param<string>( label, p, n)) ClassHelpAndReturn;
+  if (!get_val_ptr_param<string>( label, p, n,false))
+      ClassHelpAndReturn;
+
+  // take care of default label value
+  if (label==NULL)
+    label_val = var->Name();
+  else
+    label_val = *label;
 
   varval = ((boost::shared_ptr<int>*) var->Pointer())->get();
   std::string tooltip = (boost::format("%s  (%s)") % var->GetComments() % var->Name()).str();
   this->_objectptr->AddEnumeration(  
                         &var_id,
                         varval,
-                        label->c_str(),
+                        label_val.c_str(),
                         EnumOptionMenu,
                         tooltip);
   //pw->EnumerationDefaut( var_id,  *var);
 
   // create integer variable to return
-  Variable::ptr varres(new Variable());
-  std::string varname = (boost::format("%1%_id")%var->Name()).str();
-  int* varint = new int(var_id);
-  varres->Init(type_int,varname.c_str(),(void*) varint);
-
-  return varres;
+  RETURN_VARINT(var_id,var->Name());
 }
 
 //--------------------------------------------------
@@ -317,12 +383,7 @@ Variable::ptr wrap_ParamPanelAddEnumChoice::CallMember( ParamList* p)
   this->_objectptr->AddEnumChoice( id, &var_id, label->c_str());
 
   // create integer variable to return
-  Variable::ptr varres(new Variable());
-  std::string varname = (boost::format("%1%_id")%label->c_str()).str();
-  int* varint = new int(var_id);
-  varres->Init(type_int,varname.c_str(),(void*) varint);
-
-  return varres;
+  RETURN_VARINT(var_id,label->c_str())
 }
 
 
@@ -380,6 +441,7 @@ Variable::ptr wrap_ParamPanelUpdate::CallMember( ParamList* p)
 void wrap_ParamPanelAddPage::SetParametersComments()
 {
   ADDPARAMCOMMENT( "string: page title.");
+  return_comments = "Identifier of the new widget (int variable).";
 }
 //--------------------------------------------------
 Variable::ptr wrap_ParamPanelAddPage::CallMember( ParamList* p)
@@ -388,9 +450,65 @@ Variable::ptr wrap_ParamPanelAddPage::CallMember( ParamList* p)
   int   n = 0;
 
   if (!get_val_ptr_param<string>( title,  p, n)) ClassHelpAndReturn;
-  int id = this->_objectptr->AddPage( title->c_str());
-  return Variable::ptr();
+  int var_id = this->_objectptr->AddPage( title->c_str());
+
+  // create integer variable to return
+  RETURN_VARINT(var_id,title->c_str())
 }
+
+
+//--------------------------------------------------
+//  SelectPage
+//--------------------------------------------------
+void wrap_ParamPanelSelectPage::SetParametersComments()
+{
+  ADDPARAMCOMMENT( "integer: book id.");
+  ADDPARAMCOMMENT( "integer: page to select.");
+}
+//--------------------------------------------------
+Variable::ptr wrap_ParamPanelSelectPage::CallMember( ParamList* p)
+{
+  int book_id;
+  int page_id;
+  int   n = 0;
+
+  if (!get_int_param( book_id,  p, n)) ClassHelpAndReturn;
+  if (!get_int_param( page_id,  p, n)) ClassHelpAndReturn;
+
+  this->_objectptr->SelectPage(book_id,page_id);
+}
+
+
+//--------------------------------------------------
+// AddLabel
+//--------------------------------------------------
+void wrap_ParamPanelAddLabel::SetParametersComments()
+{
+  ADDPARAMCOMMENT("string expression: label name");
+  ADDPARAMCOMMENT("string expression: label value");
+  return_comments = "Identifier of the new widget (int variable).";
+}
+//---------------------------------------------------
+Variable::ptr wrap_ParamPanelAddLabel::CallMember( ParamList* p)
+{
+  Variable::ptr var;
+  std::string* label_name = NULL;
+  std::string* label_val = NULL;
+  int  n = 0;
+  int  var_id;
+
+  if (!get_val_ptr_param<string>( label_name, p, n)) ClassHelpAndReturn;
+  if (!get_val_ptr_param<string>( label_val, p, n)) ClassHelpAndReturn;
+
+  this->_objectptr->AddLabel( &var_id,
+                label_name->c_str(),
+                label_val->c_str());
+
+  // create integer variable to return
+  RETURN_VARINT(var_id,label_name->c_str());
+}
+
+
 
 //--------------------------------------------------
 // AddFilename
@@ -431,12 +549,7 @@ Variable::ptr wrap_ParamPanelAddFilename::CallMember( ParamList* p)
                             defmask->c_str());
 
   // create integer variable to return
-  Variable::ptr varres(new Variable());
-  std::string varname = (boost::format("%1%_id")%var->Name()).str();
-  int* varint = new int(var_id);
-  varres->Init(type_int,varname.c_str(),(void*) varint);
-
-  return varres;
+  RETURN_VARINT(var_id,var->Name());
 }
 
 
@@ -471,12 +584,47 @@ Variable::ptr wrap_ParamPanelAddString::CallMember( ParamList* p)
 
 
   // create integer variable to return
-  Variable::ptr varres(new Variable());
-  std::string varname = (boost::format("%1%_id")%var->Name()).str();
-  int* varint = new int(var_id);
-  varres->Init(type_int,varname.c_str(),(void*) varint);
+  RETURN_VARINT(var_id,var->Name());
+}
 
-  return varres;
+
+//--------------------------------------------------
+// AddImageChoice
+//--------------------------------------------------
+void wrap_ParamPanelAddImageChoice::SetParametersComments()
+{
+  ADDPARAMCOMMENT("string variable that will contain the name of the  selected image");
+  ADDPARAMCOMMENT("string label: description of the image to select");
+  return_comments = "Identifier of the new widget (int variable).";
+}
+//---------------------------------------------------
+Variable::ptr wrap_ParamPanelAddImageChoice::CallMember( ParamList* p)
+{
+  Variable::ptr var;
+  std::string* label = NULL;
+  int  n = 0;
+  boost::shared_ptr<wxArrayString> imagelist;
+  int  var_id;
+
+  if (!get_var_param<string>(var, p, n))          ClassHelpAndReturn;
+  if (!get_val_ptr_param<string>( label, p, n))   ClassHelpAndReturn;
+
+  std::string tooltip = (boost::format("%s  (%s)") % var->GetComments() % var->Name()).str();
+
+  imagelist = Vars.SearchVariables(type_image);
+  imagelist->Add(_T("Image"));
+
+  // Get list of image names
+  this->_objectptr->AddListChoice( &var_id,
+      (string_ptr*)var->Pointer(),
+      label->c_str(), // TODO: check param type
+      imagelist,
+      (void*)CB_update_imagelist, // TODO: check declaration
+      EnumOptionMenu,
+      tooltip);
+
+  // create integer variable to return
+  RETURN_VARINT(var_id,var->Name());
 }
 
 
@@ -486,7 +634,7 @@ Variable::ptr wrap_ParamPanelAddString::CallMember( ParamList* p)
 void wrap_ParamPanelAddBoolean::SetParametersComments()
 {
   ADDPARAMCOMMENT("Variable of type UCHAR.");
-  ADDPARAMCOMMENT("String expression: label.");
+  ADDPARAMCOMMENT("String expression: label (def: variable name).");
   return_comments = "Identifier of the new widget (int variable).";
 }
 //---------------------------------------------------
@@ -498,7 +646,14 @@ Variable::ptr wrap_ParamPanelAddBoolean::CallMember( ParamList* p)
   int  var_id;
 
   if (!get_var_param<unsigned char>(var, p, n))     ClassHelpAndReturn;
-  if (!get_val_ptr_param<string>( label, p, n))   ClassHelpAndReturn;
+  if (!get_val_ptr_param<string>( label, p, n,false))   ClassHelpAndReturn;
+
+  // take care of default label value
+  std::string label_val;
+  if (label==NULL)
+    label_val = var->Name();
+  else
+    label_val = *label;
 
   std::string tooltip = (boost::format("%s  (%s)") % var->GetComments() % var->Name()).str();
 
@@ -507,19 +662,13 @@ Variable::ptr wrap_ParamPanelAddBoolean::CallMember( ParamList* p)
   //cout << " button pointer  = "<<  ((AMIFunction::ptr*) var->Pointer())->get() << endl;
   this->_objectptr->AddBoolean( &var_id,
                 valptr,
-                label->c_str(),
+                label_val.c_str(),
                 CaractereToggle,
                 tooltip);
   this->_objectptr->BooleanDefault( var_id, *valptr);
 
   // create integer variable to return
-  Variable::ptr varres(new Variable());
-  std::string varname = (boost::format("%1%_id")%var->Name()).str();
-  int* varint = new int(var_id);
-  varres->Init(type_int,varname.c_str(),(void*) varint);
-
-  return varres;
-
+  RETURN_VARINT(var_id,var->Name());
 }
 
 
@@ -554,13 +703,89 @@ Variable::ptr wrap_ParamPanelAddButton::CallMember( ParamList* p)
                 tooltip);
 
   // create integer variable to return
-  Variable::ptr varres(new Variable());
-  std::string varname = (boost::format("%1%_id")%var->Name()).str();
-  int* varint = new int(var_id);
-  varres->Init(type_int,varname.c_str(),(void*) varint);
-
-  return varres;
-
-
+  RETURN_VARINT(var_id,var->Name());
 }
 
+
+//--------------------------------------------------
+// SetCallback
+//--------------------------------------------------
+void wrap_ParamPanelSetCallback::SetParametersComments()
+{
+  ADDPARAMCOMMENT("Variable of type ami_function.");
+}
+//---------------------------------------------------
+Variable::ptr wrap_ParamPanelSetCallback::CallMember( ParamList* p)
+{
+  Variable::ptr var;
+  int  n = 0;
+
+  if (!get_var_param<AMIFunction>(var, p, n))     ClassHelpAndReturn;
+
+  int nbp = this->_objectptr->NbParameters();
+
+  this->_objectptr->ChangedValueCallback(nbp-1,
+              (void*) CB_ParamWin,
+              (void*) ((AMIFunction::ptr*) var->Pointer())->get() );
+
+  return Variable::ptr();
+}
+
+
+//--------------------------------------------------
+// SetDragCallback
+//--------------------------------------------------
+void wrap_ParamPanelSetDragCallback::SetParametersComments()
+{
+  ADDPARAMCOMMENT("Index of the parameter for which to set the drag callback.");
+  ADDPARAMCOMMENT("Boolean value: activate or desactivate the drag callbacks (def:true).");
+}
+//---------------------------------------------------
+Variable::ptr wrap_ParamPanelSetDragCallback::CallMember( ParamList* p)
+{
+  Variable::ptr var;
+  int paramid = 0;
+  int activate = 1;
+  int  n = 0;
+
+  if (!get_int_param(paramid, p, n))     ClassHelpAndReturn;
+  if (!get_int_param(activate, p, n))    ClassHelpAndReturn;
+
+  int nbp = this->_objectptr->NbParameters();
+
+  if ((paramid>=0)&&(paramid<n))
+    this->_objectptr->SetDragCallback(paramid,activate);
+  else
+    FILE_ERROR(boost::format("bad parameter number %1%") % paramid);
+
+  return Variable::ptr();
+}
+
+
+//--------------------------------------------------
+// SetCallback
+//--------------------------------------------------
+void wrap_ParamPanelEnablePanel::SetParametersComments()
+{
+  ADDPARAMCOMMENT("Index of the panel.");
+  ADDPARAMCOMMENT("Value enable:1 disable:0.");
+}
+//---------------------------------------------------
+Variable::ptr wrap_ParamPanelEnablePanel::CallMember( ParamList* p)
+{
+  Variable::ptr var;
+  int id;
+  int enable=1;
+  int  n = 0;
+
+  if (!get_int_param(id, p, n))          ClassHelpAndReturn;
+  if (!get_int_param(enable, p, n))      ClassHelpAndReturn;
+
+  int nbp = this->_objectptr->NbPanels();
+  if ((id>=0)&&(id<nbp))
+    this->_objectptr->EnablePanel(id,enable);
+  else
+    FILE_ERROR(boost::format("VAR_PARAMWIN.EnablePanel( %d , .. ) \t bad parameter number ")%id);
+
+  return Variable::ptr();
+}
