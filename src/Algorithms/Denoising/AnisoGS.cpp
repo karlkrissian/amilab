@@ -160,7 +160,7 @@ void AnisoGS::ExtendBoundariesVonNeumann( InrImage* input)
 
     input->IncBuffer();
   }
-  input->Sauve("boundary_test.ami.gz");
+//  input->Sauve("boundary_test.ami.gz");
 }
 
 // Compute image_entree
