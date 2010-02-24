@@ -80,6 +80,9 @@ bool Driver::parse_stream(std::istream& in,
   int res = 0;
   try {
     res = parser.parse();
+    if (res!=0) {
+      cout << __func__ << " returned " << res << endl;
+    }
   }
   catch(std::exception const& e) {
     err_print( (boost::format("std::exception catched during parsing \n %1%") % e.what()).str().c_str());
