@@ -42,8 +42,10 @@ InrImage* wrap_StructureTensorHessianNew(ParamList* p)
    if (!get_val_smtptr_param<InrImage>( input,  p, n)) HelpAndReturnNULL;
    if (!get_val_param<float>(           sigma,  p, n)) HelpAndReturnNULL;
    if (!get_val_param<float>(           beta,   p, n)) HelpAndReturnNULL;
-   if (!get_val_smtptr_param<InrImage>( mask,   p, n)) HelpAndReturnNULL;
-   if (!get_val_smtptr_param<InrImage>( imgrad, p, n)) HelpAndReturnNULL;
+   // mask is not required
+   if (!get_val_smtptr_param<InrImage>( mask,   p, n, false)) HelpAndReturnNULL;
+   // gradient image is not required
+   if (!get_val_smtptr_param<InrImage>( imgrad, p, n, false)) HelpAndReturnNULL;
 
   InrImage* result = Func_StructureTensorHessianNew( input, sigma, beta, mask, imgrad);
 
