@@ -49,5 +49,6 @@ Variable::ptr Wrap_EigenDecomp(ParamList*);
 
 Variable::ptr Wrap_SmoothLinesToSplines(ParamList* p);
 
+Variable::ptr Wrap_RegionGrow(ParamList* p);
 
 #endif // _WRAPFILTERS_H_

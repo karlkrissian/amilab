@@ -19,6 +19,7 @@
 #include "wrapFilters.h"
 #include "LeastSquares.h"
 #include "wrap_StructureTensor.h"
+#include "RegionGrowingTest.h"
 #include <pthread.h>
 
 #include "AMILabConfig.h"
@@ -60,6 +61,8 @@ void AddWrapFilters(){
   Vars.AddVar(type_c_function,      "EigenDecomp",      (void*) Wrap_EigenDecomp, OBJECT_CONTEXT_NUMBER);
   Vars.AddVar(type_c_image_function,"StructureTensorH", (void*) wrap_StructureTensorHessianNew, OBJECT_CONTEXT_NUMBER);
   Vars.AddVar(type_c_function,      "SplineResample",   (void*) Wrap_SmoothLinesToSplines, OBJECT_CONTEXT_NUMBER);
+
+  Vars.AddVar(type_c_function,      "RegionGrow",   (void*) Wrap_RegionGrow, OBJECT_CONTEXT_NUMBER);
   
   #ifdef AMI_USE_FASTNLMEANS
     Vars.AddVar(type_c_image_function,"NewNLmeans", (void*) Wrap_NewNLmeans, OBJECT_CONTEXT_NUMBER);
@@ -1035,3 +1038,49 @@ Variable::ptr Wrap_SmoothLinesToSplines(ParamList* p)
 
 
 } // Wrap_SmoothLinesToSplines()
+
+
+// Region Growing
+Variable::ptr Wrap_RegionGrow(ParamList* p)
+{
+
+  char functionname[] = "RegionGrow";
+  char description[]=" \n\
+      ";
+  char parameters[] =" \n\
+          Parameters:\n\
+              input image\n\
+              initial image image\n\
+              min intensity \n\
+              max intensity \n\
+          Return:\n\
+              Resulting state image\n\
+      ";
+
+  Variable::ptr input_var;
+  Variable::ptr init_var;
+  float int_min;
+  float int_max;
+  int n=0;
+
+  if (!get_var_param<InrImage>( input_var, p, n)) HelpAndReturnVarPtr;
+  if (!get_var_param<InrImage>( init_var, p, n)) HelpAndReturnVarPtr;
+  if (!get_val_param<float>( int_min, p, n)) HelpAndReturnVarPtr;
+  if (!get_val_param<float>( int_max, p, n)) HelpAndReturnVarPtr;
+
+  InrImage::ptr input( *((InrImage::ptr*) input_var->Pointer()));
+  InrImage::ptr init ( *((InrImage::ptr*) init_var ->Pointer()));
+
+  IntensityBasedRegionGrowing::ptr regiongrow(
+    new IntensityBasedRegionGrowing(input,init)
+    );
+  regiongrow->SetMin(int_min);
+  regiongrow->SetMax(int_max);
+  regiongrow->Evolve();
+
+  Variable::ptr varres(new Variable());
+  varres->InitPtr(type_image,"RegionGrowingResult",&regiongrow->GetStateImage());
+  return varres;
+
+
+} // Wrap_RegionGrow()
