@@ -39,6 +39,14 @@ bool get_var_param( Variable::ptr& var,
       FILE_ERROR(boost::format("Parameter %1% is of wrong type (%2% instead of %3%), you may be passing a value instead of a reference.")%num%var->Type()%GetVarType<T>());
       return false;
     }
+    // check that the variable is not just local
+    int var_count =
+     ((boost::shared_ptr<T>*)var->Pointer())->use_count();
+    if (var_count==1) {
+      FILE_ERROR(boost::format("Parameter %1% is not passed as a reference ... (%2%)")%num%var->Name());
+      return false;
+    }
+
     return true;
   }
   else
@@ -140,8 +148,11 @@ bool get_val_smtptr_param(boost::shared_ptr<T>& arg, ParamList*p, int& num, bool
   }
   else
   {
-    FILE_ERROR(boost::format("Parameter %d not found ") % num);
-    return false;
+    if (required) {
+      FILE_ERROR(boost::format("Parameter %d not found ") % num);
+      return false;
+    } else
+      return true;
   }
 }
 
