@@ -76,7 +76,7 @@ if (!exists(global::ImageGridClass)) {
           eval boost_format("_in_draw = &%1%_draw;") % ::input_name
           
           # wrapping ${input_name}_draw with new local variable indraw_wrap
-          ::ami_import->ImageDraw(_in_draw,"indraw_wrap");
+          ::ami_import->ImageDraw(&_in_draw,"indraw_wrap");
           indraw_wrap->SetLineColor(::color_r,::color_g,::color_b,::color_a)
           indraw_wrap->LineParam(::thickness,::style)
 
