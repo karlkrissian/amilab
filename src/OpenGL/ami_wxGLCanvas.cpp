@@ -750,7 +750,7 @@ void ami_wxGLCanvas::RemoveSurface( SurfacePoly::ptr surf)
   }
 
   _globject.erase(Iter);
-cout << "_globject.size() = " << _globject.size() << endl;
+  //cout << "_globject.size() = " << _globject.size() << endl;
   if (_current_globject==surf)
     if (_globject.size()>0)
       _current_globject = _globject.front();
