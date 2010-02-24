@@ -285,6 +285,7 @@ step     return(token::STEP); /*{step,STEP}*/
 endfor return(token::ENDFOR); /*{endfor,ENDFOR}*/
 
 repeat return(token::T_REPEAT); /*{repeat,T_REPEAT}*/
+while  return(token::T_WHILE); /*{while,T_WHILE}*/
 until  return(token::T_UNTIL); /*{until,T_UNTIL}*/
 break  return(token::T_BREAK); /*{break,T_BREAK}*/
 

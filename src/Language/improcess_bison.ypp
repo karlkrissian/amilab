@@ -839,6 +839,7 @@ void CB_update_imagelist( void* imagelist_gui)
 
 %token FOR TO STEP ENDFOR T_IN
 %token T_REPEAT T_UNTIL
+%token T_WHILE
 %token T_BREAK
 %token IF THEN ELSE
 
@@ -1117,7 +1118,8 @@ loop_inst :
 
       } while (res);
       driver.yyiplineno = previous_lineno;
-    };
+    }
+    ;
 
 
 cond_inst :
