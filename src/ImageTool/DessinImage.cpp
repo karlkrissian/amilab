@@ -707,12 +707,32 @@ void DessinImage::IncreaseZoomArea( )
       Param._Zoom.Check(_image);
     break;
 
+    case TYPE_COUPE_XZ_ZY:
+    case TYPE_COUPE_XY_XZ_ZY:
+/*
+      Xneed = tx*_size_x + tz*_size_z +
+              h_margin[IMAGE_XY] +
+              h_margin[IMAGE_ZY] +
+              _distance_coupes;
+      Yneed = ty*_size_y + tz*_size_z +
+              v_margin[IMAGE_XY] +
+              v_margin[IMAGE_XZ] +
+              _distance_coupes;
+
+      // possible increase in X is (largeur-Xneed)/_size_x
+      inc_x = (int) ((largeur-Xneed)/_size_x);
+      if (inc_x>0) Param._Zoom.IncreaseX(inc_x,_image);
+      // possible increase in Y is (largeur-Yneed)/_size_y
+      inc_y = (int) ((hauteur-Yneed)/_size_y);
+      if (inc_y>0) Param._Zoom.IncreaseY(inc_y,_image);
+      Param._Zoom.Check(_image);
+*/
+    break;
+
     case TYPE_COUPE_XZ:
     case TYPE_COUPE_ZY:
     case TYPE_COUPE_XY_XZ:
     case TYPE_COUPE_XY_ZY:
-    case TYPE_COUPE_XZ_ZY:
-    case TYPE_COUPE_XY_XZ_ZY:
     case TYPE_COUPES:
     break;
 
