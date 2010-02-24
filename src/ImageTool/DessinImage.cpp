@@ -3143,7 +3143,7 @@ void DessinImage::Comparaisons_Paint( )
 void DessinImage::Comparaisons_DessineCurseur( int x, int y, int z)
 //                           ---------------------------
 {
-    int i;
+//    int i;
 
 /*
   for(  i = 0 ;  i < _compare_max ;  i++ Faire
@@ -3189,7 +3189,7 @@ void DessinImage::Comparaisons_EffaceEcran( unsigned char expose)
 {
 
 
-    int i;
+//    int i;
 
 /*
   for(  i = 0 ;  i < _compare_max ;  i++ Faire
@@ -3214,7 +3214,7 @@ void DessinImage::Comparaisons_EffaceEcran( unsigned char expose)
 void DessinImage::Comparaisons_MAJ_taille( )
 //                           -----------------------
 {
-    int i;
+//    int i;
     int h,l;
 
   Recupere_fenetre_dimensions(&l, &h);
@@ -3242,7 +3242,7 @@ void DessinImage::Comparaisons_MemoriseCoupesXY( unsigned char activation )
 {
 
 
-    int i;
+//    int i;
 
 /*
   for(  i = 0 ;  i < _compare_max ;  i++ Faire
@@ -3396,18 +3396,11 @@ DessinImage:: DessinImage(
 DessinImage::~DessinImage()
 //                       -----------
 {
-    int i;
+//    int i;
 
   Si GB_debug AlorsFait printf("~DessinImage()  %s \n",
                    (char*)_name);
 
-#if defined(__WXMOTIF__)
-  Si _new_font != NULL Alors
-    XUnloadFont(display,_new_font->fid);
-    //    XFreeFont(display,_new_font);
-    _new_font = NULL;
-  FinSi
-#endif
 
 //  delete _MIP_OBJ_stereo;
 
