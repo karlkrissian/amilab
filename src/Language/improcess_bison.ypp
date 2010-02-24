@@ -205,7 +205,7 @@ void CB_delete_variable( void* var);
 
 
 //------------------------------------------------------
-static void CB_update_imagelist( void* imagelist_gui)
+void CB_update_imagelist( void* imagelist_gui)
 //   -------------------
 {
   wxEnumerationParameter* imlist = (wxEnumerationParameter*) imagelist_gui;
@@ -5555,6 +5555,34 @@ param_list:
           ParamList* pl = new ParamList();
           $$ = pl;
         }
+        | VAR_AMI_FUNCTION
+        {
+        /**
+          Description: temporary rule, added to simplify convertion of scripts.
+         **/
+          ParamList* pl = new ParamList();
+          Variable::ptr newvar(new Variable());
+          // copy information from variable, including comments
+          // don't need to care about variable context information
+          // copy of the variable contents
+          (*newvar) = (*(Variable*) $1);
+          // don't change variable name
+          //newvar->Rename("Param1");
+          pl->AddParam(newvar);
+          $$ = pl;
+        }
+        | param_list T_COMMA  VAR_AMI_FUNCTION
+        {
+        /**
+          Description: temporary rule, added to simplify convertion of scripts.
+         **/
+          ParamList* pl =  $1;
+          Variable::ptr newvar(new Variable());
+          // copy information from variable, including comments
+          (*newvar) = (*(Variable*) $3);
+          pl->AddParam(newvar);
+          $$ = pl;
+        }
         | T_AND variable
         {
           ParamList* pl = new ParamList();
@@ -10546,6 +10574,7 @@ var_surface:
           $$=&(array->GetVar(i));
         }
 
+
 surface:
         T_isosurf T_OP_PAR expr_image T_COMMA expr T_CL_PAR
         {
@@ -11454,7 +11483,34 @@ variable:
         | VAR_PARAMWIN
         | VAR_ARRAY_SURFACE
         | VAR_ARRAY_IMAGE
-          ;
+        | VAR_AMI_OBJECT T_POINT identifier
+        {
+          // todo ... 
+          // 1. check if identifier belongs to the object
+          // 2. if so return corresponding variable
+
+          AMIObject::ptr object = *(AMIObject::ptr*) $1->Pointer();
+          IdentifierInfo::ptr ident($3);
+          Variables::ptr previous_ocontext = Vars.GetObjectContext();
+          Vars.SetObjectContext(object->GetContext());
+    
+          // here, need to do our own checking ...
+          Variable* var;
+          bool res = Vars.GetVar(ident->GetName().c_str(),&var,OBJECT_CONTEXT_NUMBER);
+
+          // reset previous object context
+          Vars.SetObjectContext(previous_ocontext);
+    
+          if  ((!GB_driver.procedure_declaration)&&res)   {
+            cout << "returning variable" << endl;
+            var->display();
+            $$=var;
+          } else
+            // error message here
+            driver.yyiperror("Identifier does not belong to object context \n");
+
+        }
+        ;
 
 
 image_extent:
@@ -11535,7 +11591,7 @@ void CB_ParamWin(void* cd)
 
   AMIFunction* func_ptr = (AMIFunction*) (cd);
 
-  cout << "CB_ParamWin pointer is " << func_ptr << endl;
+  //cout << "CB_ParamWin pointer is " << func_ptr << endl;
 
   GB_driver.yyip_call_function(func_ptr);
 
