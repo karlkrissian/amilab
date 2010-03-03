@@ -40,7 +40,7 @@ if (!exists(Corr3DTest)) {
       eval "::input1 <<= (FLOAT)"+::input1_name+";"
       if (::input1_name=="Image") {
         ::input1_name = "::input1"
-        ::win.update
+        ::win->_Update(-1)
       }
     }
 
@@ -50,7 +50,7 @@ if (!exists(Corr3DTest)) {
       eval "::input2 <<= (FLOAT)"+::input2_name+";"
       if (::input2_name=="Image") {
         ::input2_name = "::input2"
-        ::win.update
+        ::win->_Update(-1)
       }
     }
 
@@ -103,6 +103,12 @@ if (!exists(Corr3DTest)) {
     }
 
 
+    proc ::init_displacements() {
+      ::d <<= Image(FLOAT,::input1.tx,::input1.ty,::input1.tz,3)
+      ::d.initvalue(0,0,0);
+      ::v=::d
+    }
+
     #--------------------------------------------------
     proc ::CB_CreateSphere() {
 
@@ -115,15 +121,19 @@ if (!exists(Corr3DTest)) {
       vx=1; vy=1.5; vz=2;
       global::AddBrightSphere(&::input2,center+vx,center+vy,center+vz,::sphere_size)
 
-      ::d <<= Image(FLOAT,::input1.tx,::input1.ty,::input1.tz,3)
-      ::d.initvalue(0,0,0);
-      ::v=::d
+      ::init_displacements()
       ::v.initvalue(vx,vy,vz);
 
+      ::UpdateDisplay()
+    }
+
+    #--------------------------------------------------
+    proc ::UpdateDisplay() \
+    {
       show ::input1
       show ::input2
       ::input1_draw.compare(::input2_draw);
-      
+
       ::input1_draw.setvector(1,::d);
       ::input1_draw.setvector(2,::v);
       
@@ -134,22 +144,23 @@ if (!exists(Corr3DTest)) {
     }
 
     #--------------------------------------------------
-    proc ::UpdateDisplay() \
-    {
-      show ::input1
-    }
-
     proc ::CB_Restart() \
     {
+      ::init_displacements()
       ::d.initvalue(0,0,0);
       ::amicorr3D(::input1,::input2,&::d);
       ::UpdateDisplay()
     }
 
+    #--------------------------------------------------
     proc ::CB_Iterate() \
     {
-      ::amicorr3D(::input1,::input2,&::d);
-      ::UpdateDisplay()
+      if (!exists(::d)) {
+        InfoDialog "displacement is not initialized, use restart first."
+      } else {
+        ::amicorr3D(::input1,::input2,&::d);
+        ::UpdateDisplay()
+      }
     }
 
     #--------------------------------------------------
@@ -167,13 +178,13 @@ if (!exists(Corr3DTest)) {
   
             # set the input1 image
             ::win->_BeginHorizontal
-              ::win->_AddImageChoice(::input1_name, "")
+              ::win->_AddImageChoice(&::input1_name, "")
               ::win->_AddButton("Load",::load_input1)
             ::win->_EndHorizontal
 
             # set the input2 image
             ::win->_BeginHorizontal
-              ::win->_AddImageChoice(::input2_name, "")
+              ::win->_AddImageChoice(&::input2_name, "")
               ::win->_AddButton("Load",::load_input2)
             ::win->_EndHorizontal
 
