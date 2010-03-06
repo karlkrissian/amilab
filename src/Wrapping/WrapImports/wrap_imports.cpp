@@ -24,6 +24,7 @@
 #include "wrapFilters.h"
 #include "wrap_wxsamples.h"
 #include "wrap_parampanel.h"
+#include "wrap_varlist.h"
 
 extern VarContexts  Vars;
 
@@ -43,6 +44,8 @@ void AddWrapImports()
 
   Vars.AddVar(type_c_procedure, "ImageDraw",  (void*)  wrap_ImageDraw, OBJECT_CONTEXT_NUMBER);
   Vars.AddVar(type_c_procedure, "MainFrame",  (void*)  wrap_MainFrame, OBJECT_CONTEXT_NUMBER);
+
+  Vars.AddVar(type_c_function,  "VarList", (void*) wrap_VarList, OBJECT_CONTEXT_NUMBER);
 
   Vars.AddVar(type_c_function,  "ParamPanel", (void*) wrap_ParamPanel, OBJECT_CONTEXT_NUMBER);
 

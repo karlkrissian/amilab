@@ -338,7 +338,7 @@ void Viewer3D_ViewParam::CB_SauveImage( void* cd)
 {
   wxMessageDialog* msg = new wxMessageDialog(NULL,
       wxString::FromAscii("This feature is not available at the moment."),
-      wxString::FromAscii("Info"),wxOK | wxICON_INFORMATION  );
+      wxString::FromAscii("Info"),wxOK | wxICON_INFORMATION | wxSTAY_ON_TOP  );
   msg->ShowModal();
   msg->Destroy();
 // TODO: check segmentation fault in this code ... and improve its interface

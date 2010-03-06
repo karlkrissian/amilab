@@ -87,14 +87,14 @@ std::string Variables::CheckVarName(const char* name)
       Repeter
         resname = (format("%s_%d") % name %i).str();
         i++;
-      JusquA Non(ExistVar(resname.c_str())) FinRepeter
+      JusquA Non(ExistVar(resname.c_str())) FinRepeter;
     }
   }
   return resname;
 }
 
 //--------------------------------------------------
-Variable* Variables::AddVar( vartype type, 
+Variable::ptr Variables::AddVar( vartype type, 
 		      const char* name, 
 		      void* val, 
           boost::shared_ptr<Variables> context)
@@ -102,7 +102,7 @@ Variable* Variables::AddVar( vartype type,
   CLASS_MESSAGE(boost::format(" %1%, in %2% ") % name % GetName());
 
   string resname = this->CheckVarName(name);
-  Variable* newvar = new Variable();
+  Variable::ptr newvar(new Variable());
   //std::cout << "  **  newvar =  " << newvar << endl;
 
   newvar->Init(type,resname.c_str(),val);
@@ -115,7 +115,7 @@ Variable* Variables::AddVar( vartype type,
 //--------------------------------------------------
 // here val is a pointer to a smart pointer
 //
-Variable* Variables::AddVarPtr( vartype type, 
+Variable::ptr Variables::AddVarPtr( vartype type, 
 		      const char* name, 
 		      void* val,
           boost::shared_ptr<Variables> context)
@@ -123,7 +123,7 @@ Variable* Variables::AddVarPtr( vartype type,
   CLASS_MESSAGE(boost::format(" %s ") % name);
 
   string resname = this->CheckVarName(name);
-  Variable* newvar = new Variable();
+  Variable::ptr newvar(new Variable());
   newvar->InitPtr(type,resname.c_str(),val);
   newvar->SetContext(context);
   _vars.push_front(newvar);
@@ -133,12 +133,12 @@ Variable* Variables::AddVarPtr( vartype type,
 
 
 //--------------------------------------------------
-Variable* Variables::AddVar( Variable* var, Variables::ptr context )
+Variable::ptr Variables::AddVar( Variable* var, Variables::ptr context )
 {
   CLASS_MESSAGE(boost::format(" %s ") % var->Name());
 
   string resname = this->CheckVarName(var->Name().c_str());
-  Variable* newvar = new Variable();
+  Variable::ptr newvar (new Variable());
   (*newvar) = (*var);
   newvar->Rename(resname.c_str());
   newvar->SetContext(context);
@@ -150,12 +150,12 @@ Variable* Variables::AddVar( Variable* var, Variables::ptr context )
 
 
 //--------------------------------------------------
-Variable* Variables::AddVarSmtPtr( const Variable::ptr& var, Variables::ptr context )
+Variable::ptr Variables::AddVarSmtPtr( const Variable::ptr& var, Variables::ptr context )
 {
   CLASS_MESSAGE(boost::format(" %s ") % var->Name());
 
   string resname = this->CheckVarName(var->Name().c_str());
-  Variable* newvar = new Variable();
+  Variable::ptr newvar( new Variable());
   // TODO: vars should use smart pointers to variables ... and we should avoid this kind of "copy", but now the variable inside contains a smart pointer ...
   (*newvar) = (*var);
   newvar->Rename(resname.c_str());
@@ -170,7 +170,7 @@ void Variables::SearchCompletions(const wxString& varname,
     boost::shared_ptr<wxArrayString>& completions)
 {
   wxString name;
-  std::list<Variable*>::iterator Iter;
+  std::list<Variable::ptr>::iterator Iter;
 
   for (Iter  = _vars.begin();
        Iter != _vars.end()  ; Iter++ )
@@ -188,7 +188,7 @@ void Variables::SearchVariables( const vartype& type,
                       const std::string& prepend)
 {
   wxString name;
-  std::list<Variable*>::iterator Iter;
+  std::list<Variable::ptr>::iterator Iter;
 
   for (Iter  = _vars.begin();
        Iter != _vars.end()  ; Iter++ )
@@ -204,7 +204,7 @@ void Variables::SearchVariables( const vartype& type,
 //--------------------------------------------------
 bool Variables::ExistVar(const char* varname)
 {
-  std::list<Variable*>::iterator Iter;
+  std::list<Variable::ptr>::iterator Iter;
   for (Iter  = _vars.begin();
        Iter != _vars.end()  ; Iter++ )
   {
@@ -218,7 +218,7 @@ bool Variables::ExistVar(const char* varname)
 //--------------------------------------------------
 bool Variables::ExistVar(Variable* var)
 {
-  std::list<Variable*>::iterator Iter;
+  std::list<Variable::ptr>::iterator Iter;
   for (Iter  = _vars.begin();
        Iter != _vars.end()  ; Iter++ )
   {
@@ -229,18 +229,17 @@ bool Variables::ExistVar(Variable* var)
 
 
 //--------------------------------------------------
-bool Variables::GetVar(const char* varname, Variable** var)
+Variable::ptr Variables::GetVar(const char* varname)
 {
-  std::list<Variable*>::iterator Iter;
+  std::list<Variable::ptr>::iterator Iter;
   for (Iter  = _vars.begin();
        Iter != _vars.end()  ; Iter++ )
   {
     if ((*Iter)->HasName(varname)) {
-      *var= *Iter;
-      return true;
+      return Variable::ptr(*Iter);
     }
   }
-  return false;
+  return Variable::ptr();
 }
 
 /*
@@ -268,13 +267,15 @@ bool Variables::deleteVar(const char* varname)
 {
   CLASS_MESSAGE( format("Variables::deleteVar(%s) for %s") % varname % GetName());
 
-  std::list<Variable*>::iterator Iter;
+  std::list<Variable::ptr>::iterator Iter;
   for (Iter  = _vars.begin();
        Iter != _vars.end()  ; Iter++ )
   {
     if ((*Iter)->HasName(varname)) {
-      delete (*Iter);
+      //delete (*Iter); // not needed anymore
       //(*Iter)->Delete();
+
+      CLASS_MESSAGE( boost::format("removing variable from the list (use_count = %1%)") %  (*Iter).use_count());
       Iter = _vars.erase(Iter);
       return true;
     }
@@ -292,7 +293,7 @@ int Variables::deleteVars(const std::string& varmatch)
   wxString wxvarmatch(varmatch.c_str(), wxConvUTF8);
   int count=0;
 
-  std::list<Variable*>::iterator Iter;
+  std::list<Variable::ptr>::iterator Iter;
   Iter  = _vars.begin();
   while(Iter != _vars.end())
   {
@@ -300,7 +301,7 @@ int Variables::deleteVars(const std::string& varmatch)
     wxString wxvarname((*Iter)->Name().c_str(), wxConvUTF8);
     if (wxvarname.Matches(wxvarmatch)) {
       // why seg fault ??
-      delete *Iter; // try to delete the variable here
+      // delete *Iter; // try to delete the variable here // not needed anymore
       //(*Iter)->Delete();
       Iter = _vars.erase(Iter);
       count++;
@@ -315,7 +316,7 @@ int Variables::deleteVars(const std::string& varmatch)
 void Variables::display()
 {
   printf("VARIABLES:\n");
-  std::list<Variable*>::iterator Iter;
+  std::list<Variable::ptr>::iterator Iter;
   for (Iter  = _vars.begin();
        Iter != _vars.end()  ; Iter++ )
   {
@@ -329,7 +330,7 @@ void Variables::display()
 void Variables::EmptyVariables()
 {
   CLASS_MESSAGE(boost::format("  in %1% ") % GetName());
-  std::list<Variable*>::iterator Iter;
+  std::list<Variable::ptr>::iterator Iter;
   Iter  = _vars.begin();
   while (Iter != _vars.end() )
   {
@@ -337,8 +338,8 @@ void Variables::EmptyVariables()
         ((*Iter)->Type() == type_surfdraw )) {
       if ((*Iter)->Pointer()!=NULL) {
         //cout << " in " << GetName()  << " deleting " << (*Iter)->Name() << endl;
-        (*Iter)->Delete();
-        delete (*Iter);
+        //(*Iter)->Delete();
+        //delete (*Iter); 
         Iter = _vars.erase(Iter);
         continue;
       }
@@ -351,8 +352,8 @@ void Variables::EmptyVariables()
   {
     if ((*Iter)->Pointer()!=NULL) {
       //cout << " in " << GetName()  << " deleting " << (*Iter)->Name() << endl;
-      (*Iter)->Delete();
-      delete (*Iter);
+      //(*Iter)->Delete();
+      //delete (*Iter);
       Iter = _vars.erase(Iter);
       continue;
     }

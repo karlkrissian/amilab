@@ -420,6 +420,7 @@ SET(amilab_ownlibs
   WrapAMIFluid
   WrapWII
   WrapInterface
+  WrapBasicTypes
   WrapCommon
   WrapWXSamples
   AMILab

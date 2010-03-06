@@ -120,10 +120,9 @@ namespace yyip {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 419 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 410 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
 
   IdentifierInfo*         ident;
-  Variable*               variable;
   char*                   astring;
   AmiInstructionBlock*    ablock;
   float                   afloat;
@@ -138,7 +137,7 @@ namespace yyip {
 
 
 /* Line 35 of lalr1.cc  */
-#line 142 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
+#line 141 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -852,7 +851,7 @@ namespace yyip {
 } // yyip
 
 /* Line 35 of lalr1.cc  */
-#line 856 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
+#line 855 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
 
 
 

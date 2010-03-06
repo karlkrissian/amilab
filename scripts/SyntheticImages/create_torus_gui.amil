@@ -131,9 +131,9 @@ printn "deleting windows"
     ::win.EndBook
 
     ::win.BeginHorizontal
-          ::win.AddButton("Close",      ::Close)
-          ::win.AddButton("Close All",  ::CloseAll)
-        ::win.EndHorizontal
+      ::win.AddButton("Close",      ::Close)
+      ::win.AddButton("Close All",  ::CloseAll)
+    ::win.EndHorizontal
   
     ::win.update
     ::win.Display

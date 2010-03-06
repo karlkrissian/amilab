@@ -1,0 +1,207 @@
+
+#
+# Computes the center of mass and inertia tensor for an image
+#
+
+if (!exists(InertiaMoments)) {
+
+  #--------------------------------
+  Class InertiaMoments {
+
+    #--------------------
+    proc ::Init() \
+    {
+      ::class_name ="global::InertiaMoments"
+      ::input_name =  ""
+      ::center_info = ""
+      ::vec1_info = ""
+      ::vec2_info = ""
+      ::vec3_info = ""
+      ::Gui()
+    }
+
+    #----------------------------
+    proc ::Close() \
+    {
+      ::win->_Hide()
+      delvars GetObjectName(::Close)
+    }
+    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    
+    #----------------------------
+    proc ::CloseAll() \
+    {
+      eval boost_format("if (exists(%1%)) { del %1%; };") % ::class_name
+      ::Close
+    }
+    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    
+    #----------------------------
+    proc ::LoadInput() \
+    {
+      printn "evaluation of --> ::input <<="+::input_name+";"
+      eval "::input <<="+::input_name+";"
+      if (::input_name=="Image") {
+        ::input_name = "::input"
+        ::win.update
+      }
+      ::win->_Update(-1)
+      if (exists(::input_draw)) { del ::input_draw; }
+      show ::input
+    }
+    
+    #--------------------
+    proc ::Compute() \
+    {
+      # --- center of mass
+      SetStatusText("Computing center of mass")
+      pos = SpacePos(::input)
+      i1 = pos*::input
+      i1x = i1[0]
+      i1y = i1[1]
+      i1z = i1[2]
+      m = mean(::input)
+      ::cx = mean(i1x)/m
+      ::cy = mean(i1y)/m
+      ::cz = mean(i1z)/m
+
+      # --- inertia matrix
+      SetStatusText("Computing inertia matrix")
+      X = pos[0] - ::cx
+      Y = pos[1] - ::cy
+      Z = pos[2] - ::cz
+
+      I11 = mean((Y*Y+Z*Z)*::input)
+      I22 = mean((X*X+Z*Z)*::input)
+      I33 = mean((X*X+Y*Y)*::input)
+
+      I12 = - mean(X*Y*::input)
+      I13 = - mean(X*Z*::input)
+      I23 = - mean(Y*Z*::input)
+
+      # now get eigen decomposition
+      # stupid for now, but create an image with 1 value ...
+      SetStatusText("Computing eigenvalue decomposition")
+      inertia = Image(FLOAT,1,1,1,6)
+      inertia[0] = I11
+      inertia[1] = I12
+      inertia[2] = I13
+      inertia[3] = I22
+      inertia[4] = I23
+      inertia[5] = I33
+
+      import = &global::ami_import
+      import->Filters()
+      mask = inertia[0]*0+1
+      res = filters->EigenDecomp(&inertia,7,7,&mask)
+      im_eval1 = &res[0]
+      im_eval2 = &res[1]
+      im_eval3 = &res[2]
+      im_evec1 = &res[3]
+      im_evec2 = &res[4]
+      im_evec3 = &res[5]
+      ::eval1 = im_eval1(0,0,0)
+      ::eval2 = im_eval2(0,0,0)
+      ::eval3 = im_eval3(0,0,0)
+      ::evec1x = im_evec1(0,0,0,0)
+      ::evec1y = im_evec1(0,0,0,1)
+      ::evec1z = im_evec1(0,0,0,2)
+      ::evec2x = im_evec2(0,0,0,0)
+      ::evec2y = im_evec2(0,0,0,1)
+      ::evec2z = im_evec2(0,0,0,2)
+      ::evec3x = im_evec3(0,0,0,0)
+      ::evec3y = im_evec3(0,0,0,1)
+      ::evec3z = im_evec3(0,0,0,2)
+      SetStatusText("done...")
+    }
+    
+    # --------------------
+    proc ::Create3DVectors() \
+    {
+      v1im = Image(FLOAT,1,1,1,3)
+      v1im.settranslation(::cx,::cy,::cz)
+
+      v1im.initvalue(::evec1x,::evec1y,::evec1z)
+      if (exists(::vec3D_1)) { del ::vec3D_1; }
+      ::vec3D_1 = CreateVectors(v1im,1,1,1,10,1)
+
+      v1im.initvalue(::evec2x,::evec2y,::evec2z)
+      if (exists(::vec3D_2)) { del ::vec3D_2; }
+      ::vec3D_2 = CreateVectors(v1im,1,1,1,10,1)
+
+      v1im.initvalue(::evec3x,::evec3y,::evec3z)
+      if (exists(::vec3D_3)) { del ::vec3D_3; }
+      ::vec3D_3 = CreateVectors(v1im,1,1,1,10,1)
+    }
+    
+    # --------------------
+    proc ::Print() \
+    {
+      ::center_info = "( %1%, " % ::cx 
+      ::center_info = ::center_info + "%1%, " % ::cy 
+      ::center_info = ::center_info + "%1%  )" % ::cz
+
+      ::vec1_info = "%1%, " % ::evec1x 
+      ::vec1_info = ::vec1_info + "%1%, " % ::evec1y 
+      ::vec1_info = ::vec1_info + "%1%  " % ::evec1z
+      ::vec1_info = ::vec1_info + " --> %1%  " % ::eval1
+
+      ::vec2_info = "%1%, " % ::evec2x 
+      ::vec2_info = ::vec2_info + "%1%, " % ::evec2y 
+      ::vec2_info = ::vec2_info + "%1% " % ::evec2z
+      ::vec2_info = ::vec2_info + " --> %1%  " % ::eval2
+
+      ::vec3_info = "%1%, " % ::evec2x 
+      ::vec3_info = ::vec3_info + "%1%, " % ::evec3y 
+      ::vec3_info = ::vec3_info + "%1% " % ::evec3z
+      ::vec3_info = ::vec3_info + " --> %1%  " % ::eval3
+
+      ::win->_Update(-1)
+    }
+
+    # --------------------
+    proc ::Gui() \
+    {
+      import = &global::ami_import
+      
+      ::win = import->ParamPanel("Inertia")
+  
+      ::win->_BeginBook()
+      ::win->_AddPage("IO")
+          # set the input1 image
+          ::win->_BeginHorizontal
+            ::win->_AddImageChoice(&::input_name, "")
+            ::win->_AddButton("Load",::LoadInput)
+          ::win->_EndHorizontal
+  
+      ::win->_AddPage("Ctrl")
+        ::win->_BeginHorizontal
+          ::win->_AddButton("Compute",     &::Compute)
+          ::win->_AddButton("Print",       &::Print)
+          ::win->_AddButton("Vectors",     &::Create3DVectors)
+        ::win->_EndHorizontal
+        ::win->_AddString(&::center_info,"center")
+        ::win->_AddString(&::vec1_info,"v1")
+        ::win->_AddString(&::vec2_info,"v2")
+        ::win->_AddString(&::vec3_info,"v3")
+      ::win->_EndBook
+  
+      ::win->_BeginHorizontal
+        ::win->_AddButton("Close",      &::Close)
+        ::win->_AddButton("Close All",  &::CloseAll)
+      ::win->_EndHorizontal
+    
+      ::win->_Update(-1)
+      ::win->_Display
+
+    }
+
+    ::Init()
+  }
+}
+
+if (!exists(inertia_moments)) {
+  InertiaMoments inertia_moments
+} else {
+  InfoDialog "The script seems to be already loaded."
+}

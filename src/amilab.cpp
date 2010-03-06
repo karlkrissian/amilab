@@ -347,7 +347,7 @@ bool MyApp::OnInit()
   //GB_driver.trace_parsing=true;
   //GB_driver.trace_scanning=true;
 
-  if (GB_main_wxFrame->GetConsole()!=NULL) {
+  if (GB_main_wxFrame->GetConsole().get()) {
     GB_main_wxFrame->GetConsole()->AddPrompt(false);
     GB_driver.yyiplineno=1;
     GB_driver.current_file="Command line prompt";

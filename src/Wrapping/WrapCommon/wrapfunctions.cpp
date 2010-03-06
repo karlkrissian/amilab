@@ -42,6 +42,34 @@ int get_num_param(ParamList* p)
 
 
 /**
+ * Function used to parse a variable of generic type in a list of parameters, and to give back a smart pointer to the variable.
+ */
+bool get_generic_var_param( Variable::ptr& var, ParamList*p, int& num)
+{
+  if (!p) return false;
+  // Getting the Variable and checking its type
+  var = p->GetParam(num++); // = is like a swap of smart pointers ...
+  if (var.get()) {
+/* TODO: find a solution for this part
+    // check that the variable is not just local
+    int var_count =
+     ((boost::shared_ptr<T>*)var->Pointer())->use_count();
+    if (var_count==1) {
+      FILE_ERROR(boost::format("Parameter %1% is not passed as a reference ... (%2%)")%num%var->Name());
+      return false;
+    }
+*/
+    return true;
+  }
+  else
+  {
+    FILE_ERROR(boost::format("Parameter %d not found ") % num);
+    return false;
+  }
+}
+
+
+/**
  * Function used to parse an integer in a list of parameters
  */
 bool get_int_param(int& arg, ParamList*p, int& num)

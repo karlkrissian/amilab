@@ -974,9 +974,9 @@ Variable::ptr Wrap_EigenDecomp(ParamList* p) {
     int n=0;
 
   if (!get_val_ptr_param<InrImage>(         input,       p, n)) HelpAndReturnVarPtr;
-  if (!get_int_param(           value_flag,  p, n)) HelpAndReturnVarPtr;
-  if (!get_int_param(           vector_flag, p, n)) HelpAndReturnVarPtr;
-  if (!get_val_ptr_param<InrImage>( mask,        p, n)) HelpAndReturnVarPtr;
+  if (!get_int_param(           value_flag,  p, n))             HelpAndReturnVarPtr;
+  if (!get_int_param(           vector_flag, p, n))             HelpAndReturnVarPtr;
+  if (!get_val_ptr_param<InrImage>( mask,        p, n,false))   HelpAndReturnVarPtr;
 
 
   vector<InrImage::ptr> result;

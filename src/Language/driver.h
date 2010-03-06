@@ -20,6 +20,7 @@
 
 //class ImageStack;
 
+#include "VariableStack.h"
 #include "ImageStack.h"
 #include "SurfStack.h"
 #include "MatrixStack.h"
@@ -57,6 +58,7 @@ protected:
 public:
 
     ImageStack        im_stack;
+    VariableStack     var_stack;
     SurfStack         surf_stack;
     MatrixStack       matrix_stack;
     GLTransformStack  gltransf_stack;

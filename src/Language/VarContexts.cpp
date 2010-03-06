@@ -154,7 +154,7 @@ int VarContexts::GetNewVarContext()
 
 
 //--------------------------------------------------
-Variable* VarContexts::AddVar(vartype type, const char* name, 
+Variable::ptr VarContexts::AddVar(vartype type, const char* name, 
                               void* val,
                               int context)
 {
@@ -168,7 +168,7 @@ Variable* VarContexts::AddVar(vartype type, const char* name,
     }
     else {
       CLASS_ERROR("Calling object variable without any object context");
-      return NULL;
+      return Variable::ptr();
     }
   }
 
@@ -180,7 +180,7 @@ Variable* VarContexts::AddVar(vartype type, const char* name,
 
 
 //--------------------------------------------------
-Variable* VarContexts::AddVar(vartype type, 
+Variable::ptr VarContexts::AddVar(vartype type, 
                               const IdentifierInfo::ptr& info, 
                               void* val)
 {
@@ -192,7 +192,7 @@ Variable* VarContexts::AddVar(vartype type,
 } // AddVar()
 
 //--------------------------------------------------
-Variable* VarContexts::AddVarPtr(vartype type, 
+Variable::ptr VarContexts::AddVarPtr(vartype type, 
                               const IdentifierInfo::ptr& info, 
                               void* val)
 {
@@ -206,7 +206,7 @@ Variable* VarContexts::AddVarPtr(vartype type,
 //--------------------------------------------------
 // void* val is a pointer to a smart pointer of the type
 //
-Variable* VarContexts::AddVarPtr( vartype type, const char* name, 
+Variable::ptr VarContexts::AddVarPtr( vartype type, const char* name, 
                                   void* val, int context )
 {
 
@@ -219,7 +219,7 @@ Variable* VarContexts::AddVarPtr( vartype type, const char* name,
     }
     else {
       CLASS_ERROR("Calling object variable without any object context");
-      return NULL;
+      return Variable::ptr();
     }
   }
 
@@ -240,7 +240,7 @@ Variable* VarContexts::AddVarPtr( vartype type, const char* name,
 
 
 //--------------------------------------------------
-Variable* VarContexts::AddVar(Variable* var, int context)
+Variable::ptr VarContexts::AddVar(Variable* var, int context)
 {
   if (context==NEWVAR_CONTEXT) 
     context = GetNewVarContext();
@@ -249,7 +249,7 @@ Variable* VarContexts::AddVar(Variable* var, int context)
 }
 
 //--------------------------------------------------
-Variable* VarContexts::AddVarSmtPtr(Variable::ptr var, int context)
+Variable::ptr VarContexts::AddVarSmtPtr(Variable::ptr var, int context)
 {
 
   if (context==OBJECT_CONTEXT_NUMBER) {
@@ -261,7 +261,7 @@ Variable* VarContexts::AddVarSmtPtr(Variable::ptr var, int context)
     }
     else {
       CLASS_ERROR("Calling object variable without any object context");
-      return NULL;
+      return Variable::ptr();
     }
   }
 
@@ -273,30 +273,25 @@ Variable* VarContexts::AddVarSmtPtr(Variable::ptr var, int context)
 }
 
 //--------------------------------------------------
-bool VarContexts::GetVar(const char* varname, Variable** var,
-                                  int context)
+Variable::ptr VarContexts::GetVar(const char* varname, int context)
 {
   if (context==-1) {
     // TODO: limit to last context, if nothing else is specified !!!
     //for(int i=_context.size()-1;i>=0;i--)
     //  if (_context[i]->GetVar(varname,var)) return true;
-    if (_context[_context.size()-1]->GetVar(varname,var)) return true;
-    return false;
+    return _context[_context.size()-1]->GetVar(varname);
   }
   else 
     if ((context>=0)&&(context<=_current_context))
-      return (_context[context]->GetVar(varname,var));
+      return _context[context]->GetVar(varname);
   else
     if ((context==OBJECT_CONTEXT_NUMBER)&&(_object_context.get())) {
-      bool res = _object_context->GetVar(varname,var);
-      CLASS_MESSAGE(boost::format("Looking in object context for %1% ... %2% ") % varname % res );
+      //CLASS_MESSAGE(boost::format("Looking in object context for %1% ... %2% ") % varname % res );
       //_object_context->display();
-      return res;
+      return _object_context->GetVar(varname);
     }
-  else 
-    return false;
 
-  return false;
+  return Variable::ptr();
 }
 
 

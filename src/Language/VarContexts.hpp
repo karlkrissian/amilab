@@ -113,14 +113,14 @@ public:
   * @param context NEWVAR_CONTEXT (-1) means the current context | OBJECT_CONTEXT_NUMBER (-10) 
   * @return 
   */
-  Variable* AddVar(vartype type, const char* name, void* val,
+  Variable::ptr AddVar(vartype type, const char* name, void* val,
                     int context=NEWVAR_CONTEXT);
 
   /** 
    * Adds a new variable based on its type, pointer to value, and indentifier information.
    * IndentifierInfo contains the name and the context
    **/
-  Variable* AddVar(vartype type, const IdentifierInfo::ptr& info, void* val);
+  Variable::ptr AddVar(vartype type, const IdentifierInfo::ptr& info, void* val);
 
   /** 
    * Adds a new variable based on its type, pointer to value, and indentifier information.
@@ -128,34 +128,32 @@ public:
    * The new variable will create its own smart pointer.
    * @param val  is a pointer to a smart pointer of the variable type
    **/
-  Variable* AddVarPtr(vartype type, const IdentifierInfo::ptr& info, void* val);
+  Variable::ptr AddVarPtr(vartype type, const IdentifierInfo::ptr& info, void* val);
 
   /**
    * Adds a new variable based on a pointer to a smart pointer. The new variable will create its own smart pointer.
    * @param val  is a pointer to a smart pointer of the variable type
    **/
-  Variable* AddVarPtr(vartype type, const char* name, void* val,
+  Variable::ptr AddVarPtr(vartype type, const char* name, void* val,
                     int context=NEWVAR_CONTEXT);
 
-  Variable* AddVar(Variable* var, int context=NEWVAR_CONTEXT);
+  Variable::ptr AddVar(Variable* var, int context=NEWVAR_CONTEXT);
 
   /**
    * Adds a new variable based on a smart pointer to a variable and a context id.
    * @param var 
    * @param context 
-   * @return 
+   * @return smart pointer to the resulting variable
    */
-  Variable* AddVarSmtPtr(Variable::ptr var, int context=NEWVAR_CONTEXT);
+  Variable::ptr AddVarSmtPtr(Variable::ptr var, int context=NEWVAR_CONTEXT);
 
   /**
    * Find a variable based on its name, if context is -1, look for variable in the local context
    * @param varname name of the variable
-   * @param var resulting variable
    * @param context possible values: -1, 0--contexts, OBJECT_CONTEXT_NUMBER
-   * @return true if success, false otherwise
+   * @return resulting smart pointer to the variable if any
    */
-  bool GetVar( const char* varname, Variable** var,
-                        int context=NEWVAR_CONTEXT);
+  Variable::ptr GetVar( const char* varname, int context=NEWVAR_CONTEXT);
 
   bool deleteVar(const char* varname);
 

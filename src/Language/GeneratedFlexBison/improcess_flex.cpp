@@ -3678,7 +3678,7 @@ yyip::Parser::token::yytokentype checkvar(
       const char* varname, int context=-1);
 
 bool IsContext( const char* varname);
-Variable* IsObject(  const char* varname, int context=-1);
+Variable::ptr IsObject(  const char* varname, int context=-1);
 
 using namespace std;
 
@@ -6810,8 +6810,8 @@ YY_RULE_SETUP
 
   // check if contextname is really a context
   //cout << "looking for "<< contextname << endl;
-  Variable* var = IsObject(contextname.c_str(),OBJECT_CONTEXT_NUMBER);
-  if (var!=NULL) 
+  Variable::ptr var = IsObject(contextname.c_str(),OBJECT_CONTEXT_NUMBER);
+  if (var.get()) 
   {
     FILE_MESSAGE("Object found");
     string varname = text.substr(pos+2);
@@ -6848,8 +6848,8 @@ YY_RULE_SETUP
   //  cout << "Context found" << endl;
 
   // check if contextname is really a context
-  Variable* var = IsObject(contextname.c_str());
-  if (var!=NULL) 
+  Variable::ptr var = IsObject(contextname.c_str());
+  if (var.get()) 
   {
     FILE_MESSAGE("Object found");
     string varname = text.substr(pos+2);
@@ -7838,8 +7838,8 @@ void yyipfree (void * ptr )
 bool IsContext( const char* varname)
 //
 {
-  Variable* var;
-  if (Vars.GetVar(varname,&var))
+  Variable::ptr var = Vars.GetVar(varname);
+  if (var.get())
     return (var->Type() == type_context);
   else
     return false;
@@ -7850,18 +7850,18 @@ bool IsContext( const char* varname)
 //       IsObject()
 //--------------------------------------------------
 //
-Variable* IsObject( const char* varname, int context)
+Variable::ptr IsObject( const char* varname, int context)
 //
 {
-  Variable* var;
-  if (Vars.GetVar(varname,&var,context))
+  Variable::ptr var = Vars.GetVar(varname,context);
+  if (var.get())
     if ((var->Type() == type_ami_object)||
         (var->Type() == type_ami_cpp_object))
       return var;
     else 
-      return NULL;
+      return Variable::ptr();
   else
-    return NULL;
+    return Variable::ptr();
 }
 
 
@@ -7877,13 +7877,15 @@ yyip::Parser::token::yytokentype checkvar(
 //
 {
 
-  Variable* var;
-  bool res = Vars.GetVar(varname,&var,context);
+  Variable::ptr var = Vars.GetVar(varname,context);
   //cout << "res = " << res << endl;
-  if  ((!GB_driver.procedure_declaration)&&res)   {
+  if  ((!GB_driver.procedure_declaration) && var.get())   {
 
-    yylval->variable = var;
-    switch(yylval->variable->Type()) {
+    // TODO: avoid the use of Variable* here, maybe using variable stack ..
+    GB_driver.var_stack.AddVarSmrtPtr(var);
+
+    //yylval->variable = var.get();
+    switch(var->Type()) {
       case type_image:            return token::VAR_IMAGE;
         /*{$variable_image,VAR_IMAGE}*/
       case type_imagedraw:        return token::VAR_IMAGEDRAW;
@@ -7927,7 +7929,7 @@ yyip::Parser::token::yytokentype checkvar(
       case type_gltransform:      return token::VAR_GLTRANSFORM;
         /*{$variable_gltransform,VAR_GLTRANSFORM}*/
       case type_array:       {
-         VarArray::ptr array =  *(VarArray::ptr*)yylval->variable->Pointer();
+         VarArray::ptr array =  *(VarArray::ptr*)var->Pointer();
          switch(array->Type()) {
             case type_surface:    return token::VAR_ARRAY_SURFACE;
             /*{$variable_surface_array,VAR_ARRAY_SURFACE}*/
@@ -7940,6 +7942,7 @@ yyip::Parser::token::yytokentype checkvar(
       }
       default:
         GB_driver.err_print("Variable type still not available \n");
+        GB_driver.var_stack.GetLastVar();
     }
 
   }

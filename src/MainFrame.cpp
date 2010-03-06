@@ -636,7 +636,7 @@ void MainFrame::CreateConsoleText( wxWindow* parent)
   _textcontrol_validator = boost::shared_ptr<wxTextValidator>(new wxTextValidator(wxFILTER_ASCII));
   _textcontrol_validator->SetBellOnError(TRUE);
 
-  this->TC = new TextControl( _prompt_panel,
+  this->TC = TextControl::ptr(new TextControl( _prompt_panel,
                         wxID_ANY,
                         GetwxStr("Console"),
                           wxTE_MULTILINE
@@ -644,7 +644,7 @@ void MainFrame::CreateConsoleText( wxWindow* parent)
                         | wxFULL_REPAINT_ON_RESIZE
                         //|wxTE_RICH|wxTE_RICH2
                         , (*_textcontrol_validator)
-                        );
+                        ));
 
 //   wxButton* but_reset = new wxButton(_prompt_panel,
 //           wxID_ConsoleReset,GetwxStr("Reset"));
@@ -661,7 +661,7 @@ void MainFrame::CreateConsoleText( wxWindow* parent)
 //   buttons_sizer->Add(but_reset,   0, wxEXPAND , 5);
 
   sbox_sizer->Add(buttons_sizer, 0, wxEXPAND , 5);
-  sbox_sizer->Add(TC, 1, wxEXPAND | wxALL, 2);
+  sbox_sizer->Add(TC.get(), 1, wxEXPAND | wxALL, 2);
 
 } // CreateConsoleText()
 
@@ -681,7 +681,7 @@ void MainFrame::CreateLogText( wxWindow* parent)
                             | wxFULL_REPAINT_ON_RESIZE
                             );
 
-  if (TC)
+  if (TC.get())
     TC->SetLog(_log_text);
 
 } // CreateLogText()
@@ -1133,11 +1133,10 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
   for(int i=0;i<(int)variables->GetCount();i++) {
     //cout << "set item variable " << i << endl;
 
-    Variable* var;
     wxString type_str;
-    bool varfound = context->GetVar((*variables)[i].mb_str(),&var);
+    Variable::ptr var = context->GetVar((*variables)[i].mb_str());
 
-    if (varfound) {
+    if (var.get()) {
       if (var->Type() == type_image) {
         // create text with image information
         InrImage::ptr im = *((InrImage::ptr*)var->Pointer());

@@ -72,6 +72,7 @@ SET(Language_HDRS
     ami_cpp_object.h
     GLTransformStack.h
     ImageStack.h
+    VariableStack.h
     paramlist.h
     SurfStack.h
     VarContexts.hpp

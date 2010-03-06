@@ -24,9 +24,9 @@ class Variables{
 
 protected:
   // TODO: avoid pointers here !!!
-  std::list<Variable*>  _vars;
-  string                _context_name;
-  bool                  _global_new;
+  std::list<Variable::ptr>  _vars;
+  string                    _context_name;
+  bool                      _global_new;
 
  public:
 
@@ -55,7 +55,7 @@ protected:
    * @param context 
    * @return 
    */
-  Variable* AddVar(vartype type, const char* name, void* val, boost::shared_ptr<Variables> context = boost::shared_ptr<Variables>() );
+  Variable::ptr AddVar(vartype type, const char* name, void* val, boost::shared_ptr<Variables> context = boost::shared_ptr<Variables>() );
 
   /**
    *  Add a new variable based on its type, name, pointer to a smart pointer of the object information, and context.
@@ -65,9 +65,9 @@ protected:
    * @param context 
    * @return 
    */
-  Variable* AddVarPtr(vartype type, const char* name, void* val, boost::shared_ptr<Variables> context = boost::shared_ptr<Variables>());
+  Variable::ptr AddVarPtr(vartype type, const char* name, void* val, boost::shared_ptr<Variables> context = boost::shared_ptr<Variables>());
 
-  Variable* AddVar(Variable* var, Variables::ptr context = Variables::ptr());
+  Variable::ptr AddVar(Variable* var, Variables::ptr context = Variables::ptr());
 
   /**
    *  Add a new variable based on a smart pointer to a variable
@@ -75,7 +75,7 @@ protected:
    * @param context 
    * @return 
    */
-  Variable* AddVarSmtPtr(const Variable::ptr& var, Variables::ptr context = Variables::ptr());
+  Variable::ptr AddVarSmtPtr(const Variable::ptr& var, Variables::ptr context = Variables::ptr());
 
   bool ExistVar(const char* varname);
 
@@ -98,10 +98,9 @@ protected:
   /**
    * Find a variable based on its name.
    * @param varname variable name
-   * @param var resulting pointer to the variable
-   * @return 
+   * @return a smart pointer to the variable if found or an empty smart pointer otherwise
    */
-  bool GetVar(const char* varname, Variable** var);
+  Variable::ptr GetVar(const char* varname);
 
 //  unsigned char GetVar(const char* varname, int* i);
 

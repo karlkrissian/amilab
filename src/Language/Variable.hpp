@@ -205,7 +205,7 @@ private:
   int           _size;
   int           _allocated_size;
   vartype       _type;
-  Variable*     _vars;
+  std::vector<Variable::ptr>     _vars;
   void Resize( int new_size);
 
  public:
@@ -232,11 +232,11 @@ private:
   {
     if (i>=_allocated_size) this->Resize(i+1);
     if ((i>=0)&&(i<_allocated_size)) {
-      _vars[i].Init<T>(_type,name,p);
+      _vars[i]->Init<T>(_type,name,p);
     }
   }
 
-  Variable& GetVar(int i); 
+  Variable::ptr& GetVar(int i); 
   vartype Type() { return _type; }
   void FreeMemory();
 

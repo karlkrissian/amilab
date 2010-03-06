@@ -17,6 +17,8 @@
 
 #include <iostream>
 
+#include "MainFrame.h"
+extern MainFrame*     GB_main_wxFrame;
 
 BEGIN_EVENT_TABLE(myTreeCtrl, wxTreeCtrl)
   EVT_MENU(wxID_ABOUT, myTreeCtrl::OnAbout)
@@ -42,9 +44,9 @@ void myTreeCtrl::ShowMenu(wxTreeItemId id, const wxPoint& pt)
     MyTreeItemData *item = (MyTreeItemData *)GetItemData(id);
     if (item) {
       wxMenu menu(title);
-      Variable* var = item->GetVar();
+      Variable::ptr var = item->GetVar().lock();
      _currentmenu_var = var;
-     if (var) {
+     if (var.get()) {
         std::string com = var->GetComments();
         if (com.compare("")!=0) {
           wxString comments(com.c_str(), wxConvUTF8);
@@ -86,29 +88,30 @@ void myTreeCtrl::OnItemMenu(wxTreeEvent& event)
 void myTreeCtrl::OnAbout(wxCommandEvent& event)
 {
   std::string mess;
-  if (_currentmenu_var) {
-    switch (_currentmenu_var->Type()) {
+  Variable::ptr var = _currentmenu_var.lock();
+  if (var.get()) {
+    switch (var->Type()) {
       case type_c_procedure     : 
-        ((void (*)(ParamList*)) _currentmenu_var->Pointer())(NULL);
+        ((void (*)(ParamList*)) var->Pointer())(NULL);
         return;
 
       case type_class_member     : 
         // getting the associated help
-        (*((WrapClassMember::ptr*) _currentmenu_var->Pointer()))->ShowHelp();
+        (*((WrapClassMember::ptr*) var->Pointer()))->ShowHelp();
         return;
       case type_c_image_function:
-       ((InrImage* (*)(ParamList*)) _currentmenu_var->Pointer())(NULL);
+       ((InrImage* (*)(ParamList*)) var->Pointer())(NULL);
         return;
       case type_c_function:
-        ((Variable::ptr (*)(ParamList*)) _currentmenu_var->Pointer())(NULL);
+        ((Variable::ptr (*)(ParamList*)) var->Pointer())(NULL);
         return;
       default:
-        mess = _currentmenu_var->GetComments();
+        mess = var->GetComments();
     }
   } else {
     mess = "No variable for this item";
   }
-  wxMessageDialog msg(NULL,wxString::FromAscii(mess.c_str()),
+  wxMessageDialog msg(GB_main_wxFrame,wxString::FromAscii(mess.c_str()),
       wxString::FromAscii("Help"),wxOK | wxICON_INFORMATION );
   msg.ShowModal();
 }

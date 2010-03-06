@@ -427,16 +427,7 @@ void Variable::display()
 
 void VarArray::Resize( int new_size)
   {
-    Variable* _tmp_vars;
-    int i;
-    if (new_size<2*_allocated_size) new_size = 2*_allocated_size;
-    //printf("VarArray::Resize %d\n",new_size);
-
-    _tmp_vars = new Variable[new_size];
-    for (i=0;i<_allocated_size;i++)
-      _tmp_vars[i] = _vars[i];
-    delete []_vars;
-    _vars = _tmp_vars;
+    _vars.resize(new_size);
     _allocated_size = new_size;
     // for the moment, set the size to the allocated size ...
     _size = _allocated_size;
@@ -446,7 +437,7 @@ void VarArray::Resize( int new_size)
 VarArray::VarArray()
 {
   _type           = type_void;
-  _vars           = NULL;
+  _vars.clear();
   _size           = 0;
   _allocated_size = 0;
 }
@@ -461,14 +452,15 @@ void VarArray::Init( vartype type, int initsize)
   _type           = type;
   _allocated_size = initsize;
   _size = _allocated_size;
-  _vars           = new Variable[initsize];
+  _vars.resize(initsize);
 }
 
 void VarArray::InitElement( int i, void* p,const char* name) 
 {
   if (i>=_allocated_size) this->Resize(i+1);
   if ((i>=0)&&(i<_allocated_size)) {
-    _vars[i].Init(_type,name,p);
+    if (!_vars[i].get()) _vars[i] = Variable::ptr(new Variable());
+    _vars[i]->Init(_type,name,p);
   }
 }
 
@@ -476,7 +468,8 @@ void VarArray::InitElementPtr( vartype _type, int i, void* p,const char* name)
 {
   if (i>=_allocated_size) this->Resize(i+1);
   if ((i>=0)&&(i<_allocated_size)) {
-    _vars[i].InitPtr(_type,name,p);
+    if (!_vars[i].get()) _vars[i] = Variable::ptr(new Variable());
+    _vars[i]->InitPtr(_type,name,p);
   }
 }
 
@@ -493,12 +486,14 @@ void VarArray::InitElement( int i,
 }
 */
 
-Variable& VarArray::GetVar(int i) {
+Variable::ptr& VarArray::GetVar(int i) {
   if ((i>=0)&&(i<_allocated_size)) {
     return _vars[i];
   }    
-  else
+  else {
+    CLASS_ERROR(boost::format("Wrong index %1%") % i);
     return _vars[0];
+  }
 }
 
 
@@ -508,8 +503,9 @@ ostream& operator<<(ostream& o, const VarArray& v)
 {
   int i;
   for (i=0;i<v._size;i++) 
-    if (v._vars[i].Pointer()!=NULL) 
-      o  << format("\t\t [%1%]\t %2%") % i  % v._vars[i]  << endl;
+    if (v._vars[i].get())
+      if (v._vars[i]->Pointer()!=NULL) 
+        o  << format("\t\t [%1%]\t %2%") % i  % (*v._vars[i])  << endl;
   return o;
 } // operator <<
 
@@ -522,11 +518,6 @@ void VarArray::display()
 
 void VarArray::FreeMemory()
 {
-  int i;
-
-  for (i=0;i<_size;i++)
-    _vars[i].Delete();
-  delete [] _vars;
-  _vars = NULL;
+  _vars.clear();
   _size = 0;
 }

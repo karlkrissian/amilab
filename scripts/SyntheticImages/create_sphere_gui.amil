@@ -29,7 +29,7 @@ if (!exists(CSPHClass)) {
       ::R = 20 
       ::R.Comments("Sphere radius")
       
-      ::image_name = "i"
+      ::image_name = "global::sphere"
       ::image_name.Comments("Output image variable name")
 
       ::Gui
@@ -94,6 +94,7 @@ if (!exists(CSPHClass)) {
         
           ::win.AddFloat(::R,"Radius",0.1,50)
         
+          ::win.AddString(::image_name,"Result name")
           ::win.AddButton("Create", ::Create)
           ::win.AddButton("Show",   ::Show)
       ::win.EndBook

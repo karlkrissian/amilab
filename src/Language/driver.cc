@@ -351,7 +351,7 @@ bool Driver::parse_script(  const char* filename)
 
   if (!newname.IsFileReadable()) {
     string mess =  (format("Error in reading %s \n") % inputname.GetFullPath().mb_str()).str();
-    wxMessageDialog* err_msg = new wxMessageDialog(NULL,GetwxStr(mess),GetwxStr("Error"),wxOK | wxICON_ERROR);
+    wxMessageDialog* err_msg = new wxMessageDialog(GB_main_wxFrame,GetwxStr(mess),GetwxStr("Error"),wxOK | wxICON_ERROR | wxSTAY_ON_TOP );
     err_msg->ShowModal();
     err_msg->Destroy();
     return 0;
@@ -452,7 +452,7 @@ int Driver::err_print(const char* st)
   else 
     mess = mess + " Abort current parsing and open file?";
 
-  wxMessageDialog* err_msg = new wxMessageDialog(NULL,GetwxStr(mess),GetwxStr("Error"),wxYES_NO |  wxYES_DEFAULT  | wxICON_ERROR);
+  wxMessageDialog* err_msg = new wxMessageDialog(GB_main_wxFrame,GetwxStr(mess),GetwxStr("Error"),wxYES_NO |  wxYES_DEFAULT  | wxICON_ERROR | wxSTAY_ON_TOP );
   int res = err_msg->ShowModal();
   err_msg->Destroy();
 
@@ -482,7 +482,7 @@ void Driver::info_print(const char* st)
 {
   *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString::FromAscii(st);
   string mess =  (format("Information: %s \n") % st).str();
-  wxMessageDialog* err_msg = new wxMessageDialog(NULL,GetwxStr(mess),GetwxStr("Info"),wxOK | wxICON_INFORMATION );
+  wxMessageDialog* err_msg = new wxMessageDialog(NULL,GetwxStr(mess),GetwxStr("Info"),wxOK | wxICON_INFORMATION | wxSTAY_ON_TOP );
   err_msg->ShowModal();
   err_msg->Destroy();
 } // Driver::err_print()

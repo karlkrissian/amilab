@@ -41,7 +41,7 @@ void AddWrapImageDraw( const DessinImage::ptr& objectptr, const std::string& obj
   Vars.SetObjectContext(previous_ocontext);
 
   // 3. add the variables to this instance
-  Variable* res = Vars.AddVar( type_ami_object, amiobject->GetName().c_str(), (void*) amiobject);
+  Variable::ptr res = Vars.AddVar( type_ami_object, amiobject->GetName().c_str(), (void*) amiobject);
 }
 
 /**

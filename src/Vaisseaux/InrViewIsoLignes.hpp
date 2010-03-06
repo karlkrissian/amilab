@@ -65,7 +65,7 @@ public:
   //   -------------
   {
     int answer = wxMessageBox("Quit program?", "Confirm",
-                            wxYES_NO | wxCANCEL, NULL);
+                            wxYES_NO | wxCANCEL | wxSTAY_ON_TOP , NULL);
     if (answer == wxYES) this->Close();
 
   } 
