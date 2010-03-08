@@ -127,8 +127,8 @@ MACRO(DBG_MSG _MSG)
     "${CMAKE_CURRENT_LIST_FILE}(${CMAKE_CURRENT_LIST_LINE}): ${_MSG}")
 ENDMACRO(DBG_MSG)
 MACRO(DBG_MSG_V _MSG)
-#  MESSAGE(STATUS
-#    "${CMAKE_CURRENT_LIST_FILE}(${CMAKE_CURRENT_LIST_LINE}): ${_MSG}")
+  MESSAGE(STATUS
+    "${CMAKE_CURRENT_LIST_FILE}(${CMAKE_CURRENT_LIST_LINE}): ${_MSG}")
 ENDMACRO(DBG_MSG_V)
 
 # Clear return values in case the module is loaded more than once.
@@ -180,14 +180,16 @@ ENDIF(EXISTS "${wxWidgets_CURRENT_LIST_DIR}/UsewxWidgets.cmake")
 
 #=====================================================================
 #=====================================================================
-#IF(WIN32 AND NOT CYGWIN AND NOT MSYS)
-#  SET(wxWidgets_FIND_STYLE "win32")
-#ELSE(WIN32 AND NOT CYGWIN AND NOT MSYS)
-#  IF(UNIX OR MSYS)
-    SET(wxWidgets_FIND_STYLE "unix")
-#  ENDIF(UNIX OR MSYS)
-#ENDIF(WIN32 AND NOT CYGWIN AND NOT MSYS)
 
+IF(WIN32 AND NOT CYGWIN AND NOT MSYS)
+  SET(wxWidgets_FIND_STYLE "win32")
+ELSE(WIN32 AND NOT CYGWIN AND NOT MSYS)
+  IF(UNIX OR MSYS)
+    SET(wxWidgets_FIND_STYLE "unix")
+  ENDIF(UNIX OR MSYS)
+ENDIF(WIN32 AND NOT CYGWIN AND NOT MSYS)
+
+MESSAGE(STATUS "*********")
 
 #=====================================================================
 # WIN32_FIND_STYLE

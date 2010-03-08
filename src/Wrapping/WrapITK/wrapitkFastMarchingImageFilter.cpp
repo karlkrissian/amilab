@@ -35,7 +35,6 @@ InrImage* wrap_itkFastMarchingImageFilter2D(ParamList* p)
 	float seedY = 0.0;
 	float alpha = 0.0;
 	float beta = 0.0;
-	float timeThreshold = 0.0;
 	float stoppingTime = 0.0;
   InrImage* res = NULL;
   int n=0;
@@ -46,7 +45,7 @@ InrImage* wrap_itkFastMarchingImageFilter2D(ParamList* p)
 	if (!get_float_param(  alpha,      p, n)) HelpAndReturnNULL;
 	if (!get_float_param(  beta,      p, n)) HelpAndReturnNULL;
 	if (!get_float_param(  stoppingTime,      p, n)) HelpAndReturnNULL; 
- 
+
   typedef float       InternalPixelType;
   const   unsigned int        Dimension = 2;
   typedef itk::Image< InternalPixelType, Dimension >    InternalImageType;
@@ -141,7 +140,6 @@ InrImage* wrap_itkFastMarchingImageFilter3D(ParamList* p)
 	float seedZ = 0.0;
 	float alpha = 0.0;
 	float beta = 0.0;
-	float timeThreshold = 0.0;
 	float stoppingTime = 0.0;
   InrImage* res = NULL;
   int n=0;
@@ -153,7 +151,7 @@ InrImage* wrap_itkFastMarchingImageFilter3D(ParamList* p)
 	if (!get_float_param(  alpha,      p, n)) HelpAndReturnNULL;
 	if (!get_float_param(  beta,      p, n)) HelpAndReturnNULL;
 	if (!get_float_param(  stoppingTime,      p, n)) HelpAndReturnNULL; 
- 
+
   typedef float               InternalPixelType;
   const   unsigned int        Dimension = 3;
   typedef itk::Image< InternalPixelType, Dimension > InternalImageType;

@@ -28,6 +28,7 @@
 #include "wrapitkSigmoidImageFilter.h"
 #include "wrapitkLevelSet.h"
 #include "wrapitkBinaryThresholdImageFilter.h"
+#include "wrapitkBackTrackingMeshFilter.h"
 #include "ami_object.h"
 
 
@@ -69,6 +70,8 @@ void AddWrapITK(){
  Vars.AddVar(type_c_image_function,"LevelSetFilter3D"     , (void*) wrap_itkLevelSetFilter3D, OBJECT_CONTEXT_NUMBER);
  Vars.AddVar(type_c_image_function,"BinaryThresholdImageFilter2D"     , (void*) wrap_itkBinaryThresholdImageFilter2D, OBJECT_CONTEXT_NUMBER);
  Vars.AddVar(type_c_image_function,"BinaryThresholdImageFilter3D"     , (void*) wrap_itkBinaryThresholdImageFilter3D, OBJECT_CONTEXT_NUMBER);
+ Vars.AddVar(type_c_function,"BackTrackingMeshFilter2D"     , (void*) wrap_itkBackTrackingMeshFilter2D, OBJECT_CONTEXT_NUMBER);
+ Vars.AddVar(type_c_function,"BackTrackingMeshFilter3D"     , (void*) wrap_itkBackTrackingMeshFilter3D, OBJECT_CONTEXT_NUMBER);
 
  // Restore the object context
   Vars.SetObjectContext(previous_ocontext);

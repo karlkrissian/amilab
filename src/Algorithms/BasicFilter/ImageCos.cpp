@@ -78,7 +78,7 @@ void ImageCos::TemplateProcess( int threadid)
                         extent.GetMin(0)*incx;
     for(x=extent.GetMin(0);x<=extent.GetMax(0); x++)
     {
-      *in_data1 = cos(*in_data1);
+      *in_data1 = cos((double)*in_data1);
       in_data1++;
     }
   }
