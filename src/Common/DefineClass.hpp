@@ -46,6 +46,7 @@
 #include <vector>
 #include <stdio.h>
 
+// TODO: deal with templates here ...
 #define DEFINE_CLASS(class) \
 public:\
   virtual char const* get_name() const { return #class; } \
@@ -56,6 +57,15 @@ public:\
   typedef std::list<class::ptr>       ptr_list;         \
   typedef std::list<class::wptr>      wptr_list;
 
+#define DEFINE_TEMPLATE_CLASS1(class,t) \
+public:\
+  virtual char const* get_name() const { return (std::string(#class)+"<T>").c_str(); } \
+  typedef boost::shared_ptr<class<t>>    ptr;              \
+  typedef boost::weak_ptr<class<t>>      wptr;             \
+  typedef std::vector<class<t>::ptr>     ptr_vector;       \
+  typedef std::vector<class<t>::wptr>    wptr_vector;      \
+  typedef std::list<class<t>::ptr>       ptr_list;         \
+  typedef std::list<class<t>::wptr>      wptr_list;
 
 template<class T>
 class wxwindow_deleter

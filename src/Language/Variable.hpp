@@ -21,110 +21,40 @@ class VarArray;
 
 /* TODO: Change SetString */
 
-//----------------------------------------------------------------------
 /**
- * Define one variable, which contains a generic pointer (void*) to a smart pointer
- * of the contained object.
- **/
-class Variable {
+  Basic Variable class without template
+**/
+class BasicVariable {
 
-  DEFINE_CLASS(Variable);
+  DEFINE_CLASS(BasicVariable);
 
-private:
+protected:
   vartype       _type;
   std::string   _name;
   std::string   _comments;
-  void*         _pointer; // TODO remove all pointers!!!
-  bool          _allocated_memory;
   boost::shared_ptr<Variables>   _context; // points to the context
     // that the variable belong to, if any
 
-private:
-
-  // keep the shared pointer reference
-  // TODO we should avoid using pointers to shared pointers!
-  template <class T>
-  void Init(vartype type, const char* name, 
-            const boost::shared_ptr<T>& p)
-  {
-      _type         = type;
-      _name         = name;
-      switch(_type) {
-        case type_void:   _pointer = NULL;    break;
-        default:
-          // keep the reference to avoid deleting the object
-          _pointer = (void*) new boost::shared_ptr<T>(p);
-          _allocated_memory = true;
-        break;
-      }
-  }
-
-  template <class T>
-  bool FreeMemory()
-  {
-    //std::cout << "FreeMemory()" << std::endl;
-    if (_pointer==NULL) {
-        CLASS_ERROR("pointer is NULL !");
-        return false;
-    }
-    boost::shared_ptr<T>* ptr = (boost::shared_ptr<T>*) _pointer;
-    if ((ptr->use_count()>1)&&(GB_debug)) {
-      CLASS_ERROR( format("variable %1% is referenced %2% times")  % _name % ptr->use_count() );
-    }
-    delete (boost::shared_ptr<T>*) _pointer;
-    //std::cout << "  **  delete " << ptr << endl;
-    _allocated_memory = false;
-    _pointer = NULL;
-    return true;
-  }
-
 public:
 
-  Variable();
-  virtual ~Variable(){ this->Delete(); }
+  BasicVariable(): _type(type_void), _name(""), _comments("") {}
+  virtual ~BasicVariable(){ this->Delete(); }
 
   /**
    * Copy of variables
    * @param v 
    */
-  void operator = (const Variable& v);
-/*
-  {
-      _type         = v._type;
-      _name         = v._name;
-      _comments     = v._comments;
-      // Problem: unsafe to copy pointers here
-      _pointer      = v._pointer;
-  }
-*/
+  virtual void operator = (const BasicVariable& v) = 0;
 
   /**
    * Copy of variables
    * @param v 
    */
-  void operator = (const Variable::ptr& v) {
+  void operator = (const VariableBasic::ptr& v) {
      (*this) = (*v);
-      /*
-      _type         = v->_type;
-      _name         = v->_name;
-      _comments     = v->_comments;
-      // Problem: unsafe to copy pointers here
-      _pointer      = v->_pointer;
-    */
   }
 
-  bool operator == (const Variable& v) {
-      return ((_type     == v._type) &&
-              (_name     == v._name) &&
-              (_comments == v._comments) &&
-              (_pointer  == v._pointer));
-  }
-
-  /**
-  * Get the pointer of the variable value, points to a smart pointer.
-  * @return Pointer of the variable, points to a smart pointer
-  */
-  void* Pointer() const { return _pointer;}
+  virtual bool operator == (const BasicVariable& v)  = 0;
 
   void SetContext(const boost::shared_ptr<Variables>& val) 
   {
@@ -140,17 +70,6 @@ public:
     return _context;
   }
 
-
-  void Init(vartype type, const char* name, void* p);
-
-  /**
-   * Create a new shared pointer reference to the object.
-   * void* p is a pointer to a smart pointer.
-   * @param type  variable type
-   * @param name  variable name
-   * @param p     pointer to a smart pointer depending on the variable type
-   */
-  void InitPtr(vartype type, const char* name, void* p);
 
   vartype Type() const { return _type; }
 
@@ -172,13 +91,100 @@ public:
   void SetComments(const std::string& comments) { _comments = comments;}
   std::string GetComments() const { return _comments; }
 
-  bool FreeMemory();
+  virtual bool FreeMemory() = 0;
 
-  void Delete();
+  virtual void Delete() = 0;
 
-  int HasName(const char* name);
+  int HasName(const char* name)
+  {
+    if (_type==type_void) return 0;
+    return (strcmp(_name.c_str(), name)==0);
+  }
 
   const string GetTypeName();
+
+  //
+  virtual void display() = 0;
+
+  // allow access to private members of Variable class
+  friend class VarArray;
+
+}; // class BasicVariable
+
+
+//----------------------------------------------------------------------
+/**
+ * Define one variable, which contains a generic pointer (void*) to a smart pointer
+ * of the contained object.
+ **/
+template<class T>
+class Variable : public BasicVariable {
+
+  DEFINE_TEMPLATE_CLASS1(Variable,T);
+
+private:
+  boost::shared_ptr<T>        _pointer; 
+
+private:
+
+  template <class T>
+  bool FreeMemory()
+  {
+    if ((_pointer.use_count()>1)&&(GB_debug)) {
+      CLASS_ERROR( format("variable %1% is referenced %2% times")  % _name % ptr.use_count() );
+    }
+    _pointer.reset();
+    return true;
+  }
+
+public:
+
+  Variable();
+  virtual ~Variable(){ this->Delete(); }
+
+  /**
+   * Copy of variables
+   * @param v 
+   */
+  void operator = (const Variable<T>& v);
+
+  /**
+   * Copy of variables
+   * @param v 
+   */
+  void operator = (const Variable<T>::ptr& v) {
+     (*this) = (*v);
+      /*
+      _type         = v->_type;
+      _name         = v->_name;
+      _comments     = v->_comments;
+      // Problem: unsafe to copy pointers here
+      _pointer      = v->_pointer;
+    */
+  }
+
+  // TODO: copy from basic variable ???
+
+  bool operator == (const Variable<T>& v) {
+      return ((_type     == v._type) &&
+              (_name     == v._name) &&
+              (_comments == v._comments) &&
+              (_pointer.get()  == v._pointer.get()));
+  }
+
+  /**
+  * Get the pointer of the variable value, points to a smart pointer.
+  * @return Pointer of the variable, points to a smart pointer
+  */
+  shared_ptr<T>& Pointer() const { return _pointer;}
+
+
+
+  void Init(vartype type, const char* name, 
+            const boost::shared_ptr<T>& p);
+
+  bool FreeMemory();
+  void Delete();
 
   //
   friend std::ostream& operator<<(std::ostream& o, const Variable& v);

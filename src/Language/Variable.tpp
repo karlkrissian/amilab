@@ -27,76 +27,87 @@ using namespace std;
 
 // TODO: deal with pointers to FILE ...
 
+
+
+//---------------------------------------------
+const string VariableBase::GetTypeName()
+//           ------------
+{
+  if (_type==type_void) { return string("deleted"); }
+  switch(_type) {
+    //      case type_void     : printf("void";     
+    case type_image           : return string( "image"); 
+    case type_float           : return string( "float"); 
+    case type_int             : return string( "int"); 
+    case type_uchar           : return string( "uchar"); 
+    case type_string          : return string( "string"); 
+    case type_imagedraw       : return string( "imagedraw"); 
+    case type_surface         : return string( "surface"); 
+    case type_surfdraw        : return string( "surfdraw"); 
+    case type_file            : return string( "file"); 
+  //  case type_c_function      : return string( "C function ");
+    case type_c_procedure     : return string( "C procedure"); 
+    case type_class_member : return string( "C++ procedure member"); 
+    case type_c_image_function: return string( "C image function");
+    case type_c_function      : return string( "C function");
+    case type_ami_function    : return string( "AMI function");
+    case type_ami_class       : return string( "AMI Class");
+    case type_ami_object      : return string( "AMI Object");
+    case type_paramwin        : return string( "Parameters Window");
+    case type_matrix          : return string( "matrix");
+    case type_gltransform     : return string( "gltransform");
+    case type_array           : 
+    {
+      VarArray::ptr array =  *((VarArray::ptr*) Pointer());
+      return str( format("array \t %d \n") % array->Size());
+    }
+    default                : 
+      return string( "unknown type");
+  }
+
+  return string();
+} // PrintType
+
+
+
 //----------------------------------------------------------------------
 //  Variable
 //----------------------------------------------------------------------
 
-
-Variable::Variable()
+template<class T>
+Variable<T>::Variable()
 {
-  _type         = type_void;
-  _pointer      = NULL;
- // cout << "Variable() with pointer " << this << endl;
+  _pointer = boost::shared_ptr();
 }
 
 
 //------------------------------------------------
-void Variable::operator = (const Variable& v)
+template<class T>
+void Variable<T>::operator = (const Variable<T>& v)
 {
     _comments     = v._comments;
-
-#define CREATE_CASE(_typeid,_type) \
-  case _typeid: \
-    this->InitPtr(_typeid,v._name.c_str(), (shared_ptr<_type>*)v._pointer);  \
-  break; 
-
-  switch(v._type) {
-    case type_void: 
-      _pointer = NULL; //new boost::shared_ptr<void>((void*)p); 
-    break; //CREATE_CASE(type_void,         void)
-    CREATE_CASE(type_image,          InrImage)
-    CREATE_CASE(type_float,          float)
-    CREATE_CASE(type_int,            int)
-    CREATE_CASE(type_uchar,          unsigned char)
-    CREATE_CASE(type_string,         string)
-    CREATE_CASE(type_surface,        SurfacePoly)
-    CREATE_CASE(type_file,           FILE)
-    CREATE_CASE(type_ami_function,   AMIFunction)
-    CREATE_CASE(type_ami_class,      AMIClass)
-    CREATE_CASE(type_ami_object,     AMIObject)
-    CREATE_CASE(type_ami_cpp_object, AMICPPObject)
-    CREATE_CASE(type_paramwin,     ParamBox)
-    CREATE_CASE(type_matrix,       FloatMatrix)
-    CREATE_CASE(type_gltransform,  GLTransfMatrix)
-    CREATE_CASE(type_array,        VarArray)
-    CREATE_CASE(type_imagedraw,    DessinImage)
-    CREATE_CASE(type_surfdraw,     Viewer3D)
-    CREATE_CASE(type_class_member, WrapClassMember);
-
+    this->Init(v._type,v._name.c_str(), v._pointer);
+/*
     case type_c_procedure     : 
     case type_c_image_function:
     case type_c_function:
       _pointer = v._pointer; // no smart pointer here
       _name = v._name;
-    break;
-    default       : 
-      CLASS_ERROR(boost::format("unknown type %1%") % _type << endl); 
-    break;
-  }
-
-    // Problem: unsafe to copy pointers here
-    //_pointer      = v._pointer;
-#undef CREATE_CASE
+*/
 }
 
 
-void Variable::Init(vartype type, const char* name, void* p)
+//------------------------------------------------
+template<class T>
+void Variable<T>::Init(vartype type, const char* name, boost::shared_ptr<T>& p)
 {
 //  cout << boost::format("Variable::Init(%1%,%2%,%3%)")%type%name%p
 //       << " with pointer " << this << endl;
   _type         = type;
   _name         = name;
+  _pointer     = boost::shared_ptr<T>(p); 
 
+/*
 #define CREATE_CASE(_typeid,_typename) \
   case _typeid: \
     _pointer = new boost::shared_ptr<_typename>((_typename*)p);  \
@@ -106,12 +117,6 @@ void Variable::Init(vartype type, const char* name, void* p)
   case _typeid: \
     _pointer = new boost::shared_ptr<_typename>((_typename*)p, \
         wxwindow_nodeleter<_typename>()); \
-  break; 
-
-#define CREATE_CASE_WXWINDOW_DELETER(_typeid,_typename) \
-  case _typeid: \
-    _pointer = new boost::shared_ptr<_typename>((_typename*)p, \
-      wxwindow_deleter<_typename>()); \
   break; 
 
   switch(_type) {
@@ -164,9 +169,11 @@ void Variable::Init(vartype type, const char* name, void* p)
   }
 
 #undef CREATE_CASE
+*/
 }
 
 
+/*
 //----------------------------------------------------------
 void Variable::InitPtr( vartype type, 
                         const char* name, 
@@ -220,6 +227,7 @@ using namespace boost;
 
 #undef CREATE_CASE
 } // InitPtr()
+*/
 
 /*
 void  Variable::SetString(string_ptr st) 
@@ -232,7 +240,8 @@ void  Variable::SetString(string_ptr st)
 }
 */
 
-void  Variable::SetString(const char* st) 
+template<class T>
+void  Variable<T>::SetString(const char* st) 
 {
   // replace the value inside the string
   if (_type==type_string) {
@@ -241,7 +250,9 @@ void  Variable::SetString(const char* st)
 }
 
 
-bool Variable::FreeMemory()
+/*
+template<class T>
+bool Variable<T>::FreeMemory()
 {
 
   if (GB_debug)
@@ -269,7 +280,6 @@ bool Variable::FreeMemory()
           // TODO: create a file class where the destructor closes the file 
           // for a cleaner implementation ...
           fclose( (*(boost::shared_ptr<FILE>*) _pointer).get());
-          _allocated_memory = false;
     break;
     case type_c_procedure     : 
     case type_c_image_function:
@@ -285,65 +295,18 @@ bool Variable::FreeMemory()
   }
   return true;
 }
+*/
 
-
+template<class T>
 void Variable::Delete() 
 {
-  if ((_pointer==NULL)||(!_allocated_memory)) return;
-  if (!FreeMemory()) 
+  if (!FreeMemory<T>()) 
   {
     CLASS_MESSAGE(boost::format("Could not completely delete variable %s") % _name);
   }
-  _pointer=NULL;
   _type = type_void;
 }
 
-int Variable::HasName(const char* name) 
-{
-  //printf("Variable::HasName( %s) \n",name);
-  if (_type==type_void) return 0;
-  return (strcmp(_name.c_str(), name)==0);
-}
-
-
-//---------------------------------------------
-const string Variable::GetTypeName()
-//               -----------
-{
-  if (_type==type_void) { return string("deleted"); }
-  switch(_type) {
-    //      case type_void     : printf("void";     
-    case type_image           : return string( "image"); 
-    case type_float           : return string( "float"); 
-    case type_int             : return string( "int"); 
-    case type_uchar           : return string( "uchar"); 
-    case type_string          : return string( "string"); 
-    case type_imagedraw       : return string( "imagedraw"); 
-    case type_surface         : return string( "surface"); 
-    case type_surfdraw        : return string( "surfdraw"); 
-    case type_file            : return string( "file"); 
-  //  case type_c_function      : return string( "C function ");
-    case type_c_procedure     : return string( "C procedure"); 
-    case type_class_member : return string( "C++ procedure member"); 
-    case type_c_image_function: return string( "C image function");
-    case type_c_function      : return string( "C function");
-    case type_ami_function    : return string( "AMI function");
-    case type_ami_class       : return string( "AMI Class");
-    case type_ami_object      : return string( "AMI Object");
-    case type_paramwin        : return string( "Parameters Window");
-    case type_matrix          : return string( "matrix");
-    case type_gltransform     : return string( "gltransform");
-    case type_array           : 
-    {
-      VarArray::ptr array =  *((VarArray::ptr*) Pointer());
-      return str( format("array \t %d \n") % array->Size());
-    }
-    default                : 
-      return string( "unknown type");
-  }
-
-  return string();
-} // PrintType
 
 
 //---------------------------------------------------
