@@ -665,49 +665,62 @@ GenRead           return(token::T_GenRead); /*{GenRead,T_GenRead}*/
 Matrix            return(token::T_Matrix); /*{Matrix,T_Matrix}*/
 Invert            return(token::T_Invert); /*{Invert,T_Invert}*/
 
-SaveStructuredGrid return(token::T_SaveStructuredGrid); /*{SaveStructuredGrid,T_SaveStructuredGrid}*/
+SaveStructuredGrid {return(token::T_SaveStructuredGrid); /*{SaveStructuredGrid,T_SaveStructuredGrid}*/
 
-ParamWin          {
 //
 //============================== PARAMWIN options ====================
 //
-                  return(token::T_ParamWin);
+
+//ParamWin          {
+//                  return(token::T_ParamWin);
+
+//BeginBook         return(token::T_BeginBook); // BeginBook,T_BeginBook
+// EndBook           return(token::T_EndBook); //EndBook,T_EndBook
+// AddPage           return(token::T_AddPage); / / AddPage,T_AddPage
+// BeginPanel        return(token::T_BeginPanel); // BeginPanel,T_BeginPanel
+// EndPanel          return(token::T_EndPanel); // EndPanel,T_EndPanel}
+// SelectPage        return(token::T_SelectPage); // SelectPage,T_SelectPage
+
+//BeginBoxPanel     return(token::T_BeginBoxPanel); /// BeginBoxPanel,T_BeginBoxPanel
+//EndBoxPanel       return(token::T_EndBoxPanel); /// EndBoxPanel,T_EndBoxPanel
+
+//AddFloat          return(token::T_AddFloat); // AddFloat,T_AddFloat
+// AddInt            return(token::T_AddInt); // AddInt,T_AddInt
+// AddButton         return(token::T_AddButton); // AddButton,T_AddButton
+
+// AddBoolean        return(token::T_AddBoolean); /// AddBoolean,T_AddBoolean
+
+// AddEnum           return(token::T_AddEnum); // AddEnum,T_AddEnum
+// AddEnumChoice     return(token::T_AddEnumChoice); // AddEnumChoice,T_AddEnumChoice
+//AddImageChoice    return(token::T_AddImageChoice); // AddImageChoice,T_AddImageChoice
+// AddString         return(token::T_AddString); // AddString,T_AddString
+// AddFilename       return(token::T_AddFilename); // AddFilename,T_AddFilename
+//AddLabel          return(token::T_AddLabel); //AddLabel,T_AddLabel
+//SetCallback       return(token::T_SetCallback); //SetCallback,T_SetCallback
+//SetDragCallback   return(token::T_SetDragCallback); //SetDragCallback,T_SetDragCallback
+
+//BeginBox          return(token::T_BeginBox); //BeginBox,T_BeginBox
+//EndBox            return(token::T_EndBox); //EndBox,T_EndBox
+
+//BeginHorizontal   return(token::T_BeginHorizontal); //BeginHorizontal,T_BeginHorizontal
+//EndHorizontal     return(token::T_EndHorizontal); //EndHorizontal,T_EndHorizontal
+
+// EnablePanel       return(token::T_EnablePanel);  //EnablePanel,T_EnablePanel
+
+// EnableBox         return(token::T_EnableBox);  // EnableBox,T_EnableBox
+
+// Display           return(token::T_Display); //Display,T_Display
+
+// CreateWin         return(token::T_CreateWin); // CreateWin,T_CreateWin
+// redraw            return(token::T_redraw); // redraw,T_redraw
+
+//SetPositionProp      return(token::T_SetPositionProp); //SetPositionProp,T_SetPositionProp
+// ShowSlider        return(token::T_ShowSlider); // ShowSlider,T_ShowSlider
+// Enable            return(token::T_Enable);  //Enable,T_Enable
+
 } /*{ParamWin,T_ParamWin}*/
-BeginBook         return(token::T_BeginBook); /*{BeginBook,T_BeginBook}*/
-EndBook           return(token::T_EndBook);   /*{EndBook,T_EndBook}*/
-AddPage           return(token::T_AddPage); /*{AddPage,T_AddPage}*/
-BeginPanel        return(token::T_BeginPanel); /*{BeginPanel,T_BeginPanel}*/
-EndPanel          return(token::T_EndPanel); /*{EndPanel,T_EndPanel}*/
-SelectPage        return(token::T_SelectPage); /*{SelectPage,T_SelectPage}*/
 
-BeginBoxPanel     return(token::T_BeginBoxPanel); /*{BeginBoxPanel,T_BeginBoxPanel}*/
-EndBoxPanel       return(token::T_EndBoxPanel); /*{EndBoxPanel,T_EndBoxPanel}*/
 
-AddFloat          return(token::T_AddFloat); /*{AddFloat,T_AddFloat}*/
-AddInt            return(token::T_AddInt); /*{AddInt,T_AddInt}*/
-AddButton         return(token::T_AddButton); /*{AddButton,T_AddButton}*/
-AddBoolean        return(token::T_AddBoolean); /*{AddBoolean,T_AddBoolean}*/
-AddEnum           return(token::T_AddEnum); /*{AddEnum,T_AddEnum}*/
-AddEnumChoice     return(token::T_AddEnumChoice); /*{AddEnumChoice,T_AddEnumChoice}*/
-AddImageChoice    return(token::T_AddImageChoice); /*{AddImageChoice,T_AddImageChoice}*/
-AddString         return(token::T_AddString); /*{AddString,T_AddString}*/
-AddFilename       return(token::T_AddFilename); /*{AddFilename,T_AddFilename}*/
-AddLabel          return(token::T_AddLabel); /*{AddLabel,T_AddLabel}*/
-SetCallback       return(token::T_SetCallback); /*{SetCallback,T_SetCallback}*/
-SetDragCallback   return(token::T_SetDragCallback); /*{SetDragCallback,T_SetDragCallback}*/
-SetPostionProp      return(token::T_SetPositionProp); /*{SetPositionProp,T_SetPositionProp}*/
-ShowSlider        return(token::T_ShowSlider); /*{ShowSlider,T_ShowSlider}*/
-CreateWin         return(token::T_CreateWin); /*{CreateWin,T_CreateWin}*/
-Display           return(token::T_Display); /*{Display,T_Display}*/
-BeginBox          return(token::T_BeginBox); /*{BeginBox,T_BeginBox}*/
-EndBox            return(token::T_EndBox); /*{EndBox,T_EndBox}*/
-BeginHorizontal   return(token::T_BeginHorizontal); /*{BeginHorizontal,T_BeginHorizontal}*/
-EndHorizontal     return(token::T_EndHorizontal); /*{EndHorizontal,T_EndHorizontal}*/
-redraw            return(token::T_redraw); /*{redraw,T_redraw}*/
-
-Enable            return(token::T_Enable);  /*{Enable,T_Enable}*/
-EnableBox         return(token::T_EnableBox);  /*{EnableBox,T_EnableBox}*/
-EnablePanel       return(token::T_EnablePanel);  /*{EnablePanel,T_EnablePanel}*/
 
 CreateFlatMesh    return(token::T_CreateFlatMesh);    /*{CreateFlatMesh,T_CreateFlatMesh}*/
 CreateVolume      return(token::T_CreateVolume);      /*{CreateVolume,T_CreateVolume}*/
@@ -1242,8 +1255,6 @@ yyip::Parser::token::yytokentype checkvar(
         /*{$variable_string,VAR_STRING}*/
       case type_paramwin:         return token::VAR_PARAMWIN;
         /*{$variable_paramwin,VAR_PARAMWIN}*/
-      case type_parampanel:         return token::VAR_PARAMWIN;
-        /*{$variable_parampanel,VAR_PARAMPANEL}*/
       case type_matrix:           return token::VAR_MATRIX;
         /*{$variable_matrix,VAR_MATRIX}*/
       case type_gltransform:      return token::VAR_GLTRANSFORM;

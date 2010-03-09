@@ -1,0 +1,45 @@
+
+i0 = Image($1)
+if (i0.vdim>1) {
+  i = norm(i0)
+} else {
+  i = i0
+}
+
+i = -i
+
+sigma_min = atof($2)
+sigma_max = atof($3)
+sigma_nb  = atof($4)
+
+# force gradient to be weak?
+
+for n=0 to sigma_nb-1 {
+  # Hessian matrix
+  sigma = sigma_min+n/(sigma_nb-1)*(sigma_max-sigma_min)
+  sigma2 = sigma*sigma
+  ixx = filter(i,sigma,2,0,0)
+  ixy = filter(i,sigma,1,1,0)
+  iyy = filter(i,sigma,0,2,0)
+  
+  
+  # equation to solve: X^2-(ixx+iyy)X+ixx*iyy-ixy^2
+  B = (ixx+iyy)/2
+  C = ixx*iyy-ixy*ixy
+  
+  # X^2-2BX+C --> (X-B)^2-(B^2-C) -->  B^2-C always >0 --> B+/- sqrt(B^2-C)
+  
+  tmp = sqrt(B*B-C)
+  lambda1 = B+tmp
+  lambda2 = B-tmp
+
+  lambda1 = lambda1*sigma2
+
+  ng = normgrad(i,sigma)*sigma
+  lambda1 = lambda1*exp(-(ng*ng*4/(lambda1+0.01)/(lambda1+0.01)))
+  if (!exists(lambda_max)) {
+    lambda_max = lambda1
+  } else {
+    lambda_max = max(lambda1,lambda_max)
+  }
+}

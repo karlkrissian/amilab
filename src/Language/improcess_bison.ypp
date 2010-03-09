@@ -511,25 +511,6 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_wait
 %token T_schedule
 
-%token T_ParamWin
-%token T_BeginPanel T_EndPanel
-%token T_BeginBoxPanel T_EndBoxPanel
-%token T_BeginBook T_EndBook T_AddPage
-%token T_SelectPage
-%token T_AddFloat T_AddInt T_CreateWin T_Display
-%token T_AddButton T_AddBoolean
-%token T_AddEnum T_AddEnumChoice
-%token T_AddImageChoice 
-%token T_AddString T_AddFilename
-%token T_AddLabel
-%token T_ShowSlider
-%token T_SetCallback
-%token T_SetDragCallback
-%token T_SetPositionProp
-%token T_BeginBox T_EndBox T_BeginHorizontal T_EndHorizontal
-%token T_redraw
-%token T_Enable T_EnableBox T_EnablePanel
-
 %token RIGHT_ASSIGN LEFT_ASSIGN ADD_ASSIGN
 %token SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN
 %token MOD_ASSIGN AND_ASSIGN XOR_ASSIGN
@@ -1377,9 +1358,10 @@ command:
                 Variable::ptr tmpvar = (*(WrapClassMember::ptr*) var->Pointer())->CallMember(param.get());
                }
               break;
-              default:
-                cout << "display var info" << endl;
-                var->display();
+              default:;
+                // TODO: only do it from the command line ???
+                //cout << "display var info" << endl;
+                //var->display();
             }
           }
 
@@ -5401,318 +5383,6 @@ command:
       cout << "time spent = " << driver.IP_time << endl;
         }
         |
-      identifier ASSIGN_OP T_ParamWin T_OP_PAR  expr_string T_CL_PAR
-        {
-      /**
-        Description:
-          Creates a new tab for controling parameters.
-        Parameters:
-          - identifier: name of the new ParamPanel
-          - expr_string: title of the tab
-       **/
-          void * pwptr;
-          IdentifierInfo::ptr ident($1);
-
-          pwptr = (void*)new ParamPanel(GB_main_wxFrame,  (char*) $5  );
-//          GB_main_wxFrame->AddParamPage((wxWindow*)pwptr,GetwxStr((char*) $5),
-//                                        true // select as current page
-//                                        );
-          //GB_main_wxFrame->GetAuiManager().Update();
-          if (pwptr != NULL)
-        Vars.AddVar(type_parampanel,ident,pwptr);
-          else
-        driver.err_print("assignment of NULL parameter window\n");
-              delete [] $5;
-        }
-    |
-    VAR_PARAMWIN T_POINT T_EndBook
-    {
-    /**
-      Description:
-        Ends a notebook.
-    **/
-      Variable::ptr  varpw(driver.var_stack.GetLastVar());
-      ParamPanel_ptr pw = *(ParamPanel_ptr*) varpw->Pointer();
-      pw->EndBook();
-    }
-    |
-    VAR_PARAMWIN T_POINT T_SelectPage T_OP_PAR expr T_COMMA expr T_CL_PAR
-    {
-    /**
-      Parameters:
-        - num expression: id of the notebook
-        - num expression: position of the page
-      Description:
-        Selects a give page number in a book (notebook)
-    **/
-      Variable::ptr  varpw(driver.var_stack.GetLastVar());
-      int book_id = $5;
-      int pagepos = $7;
-      ParamPanel_ptr pw = *(ParamPanel_ptr*) varpw->Pointer();
-      pw->SelectPage(book_id,pagepos);
-    }
-    |
-    VAR_PARAMWIN T_POINT T_EndPanel
-    {
-      Variable::ptr  varpw(driver.var_stack.GetLastVar());
-      ParamPanel_ptr pw = *(ParamPanel_ptr*) varpw->Pointer();
-      pw->EndPanel();
-    }
-    |
-    VAR_PARAMWIN T_POINT T_EndBoxPanel
-    {
-      Variable::ptr  varpw(driver.var_stack.GetLastVar());
-      ParamPanel_ptr pw = *(ParamPanel_ptr*) varpw->Pointer();
-      pw->EndPanel();
-      pw->EndBox( );
-    }
-    |
-    VAR_PARAMWIN T_POINT T_EndBox
-    {
-      Variable::ptr  varpw(driver.var_stack.GetLastVar());
-      ParamPanel_ptr pw = *(ParamPanel_ptr*) varpw->Pointer();
-      pw->EndBox( );
-    }
-    |
-    VAR_PARAMWIN T_POINT T_BeginHorizontal
-    {
-      Variable::ptr  varpw(driver.var_stack.GetLastVar());
-      ParamPanel_ptr pw = *(ParamPanel_ptr*) varpw->Pointer();
-      pw->BeginHorizontal( );
-    }
-    |
-    VAR_PARAMWIN T_POINT T_EndHorizontal
-    {
-      Variable::ptr  varpw(driver.var_stack.GetLastVar());
-      ParamPanel_ptr pw = *(ParamPanel_ptr*) varpw->Pointer();
-      pw->EndHorizontal( );
-    }
-        |
-        VAR_PARAMWIN T_POINT T_CreateWin
-        {
-          Variable::ptr  varpw(driver.var_stack.GetLastVar());
-          ParamPanel_ptr pw = *(ParamPanel_ptr*) varpw->Pointer();
-          pw->CreeDialogue( );
-        }
-        |
-        VAR_PARAMWIN T_POINT T_Display
-        {
-        /**
-          Description:
-            Displays the given parameter panel, a smart pointer
-            copy is stored
-        **/
-          Variable::ptr  varpw(driver.var_stack.GetLastVar());
-          ParamPanel_ptr pw = *(ParamPanel_ptr*) varpw->Pointer();
-
-          GB_main_wxFrame->AddParamPanelPage(pw,
-                                        pw->GetName(),
-                                        true // select as current page
-                                        );
-        }
-        |
-        VAR_PARAMWIN T_POINT T_HIDE
-        {
-        /**
-          Description:
-            Hides the given parameter panel, the smart pointer copy is released
-        **/
-          Variable::ptr  varpw(driver.var_stack.GetLastVar());
-          ParamPanel_ptr pw = *(ParamPanel_ptr*) varpw->Pointer();
-
-          GB_main_wxFrame->RemoveParamPanelPage(pw);
-        }
-        |
-        VAR_PARAMWIN T_POINT T_redraw
-        {
-          Variable::ptr  varpw(driver.var_stack.GetLastVar());
-          ParamPanel_ptr pw = *(ParamPanel_ptr*) varpw->Pointer();
-          pw->ReAfficheParametres();
-        }
-        |
-        VAR_PARAMWIN T_POINT T_update
-        {
-        /**
-        Parameters:
-          (1) Parameter window
-    
-        Description:
-          update the display of all the parameters
-        **/
-            Variable::ptr  varpw(driver.var_stack.GetLastVar());
-            ParamPanel_ptr pw  = *(ParamPanel_ptr*) varpw->Pointer();
-            pw->MAJ();
-            GB_main_wxFrame->GetAuiManager().Update();
-        }
-        |
-        VAR_PARAMWIN T_POINT T_update T_OP_PAR  expr  T_CL_PAR
-        {
-        /**
-        Parameters:
-          (1) Parameter window
-          (5) parameter id
-    
-        Description:
-          update the display of one parameter
-        **/
-            Variable::ptr  varpw(driver.var_stack.GetLastVar());
-            ParamPanel_ptr pw  = *(ParamPanel_ptr*) varpw->Pointer();
-            pw->UpdateParameter((int)$5);
-        }
-        |
-        VAR_PARAMWIN T_POINT T_ShowSlider T_OP_PAR expr T_COMMA expr T_CL_PAR
-        {
-        /**
-        Parameters:
-          (1) Parameter window
-          (5) parameter id
-          (7) bool: 1/0 for show/hide
-        Description:
-          Show/hide the slider if there is one.
-        **/
-          Variable::ptr  varpw(driver.var_stack.GetLastVar());
-          ParamPanel_ptr pw = *(ParamPanel_ptr*) varpw->Pointer();
-          int n = (int) $5;
-          bool show = (bool) $7;
-
-          pw->ParamShowSlider(n,show );
-        }
-        |
-        VAR_PARAMWIN T_POINT T_SetCallback T_OP_PAR VAR_AMI_FUNCTION T_CL_PAR
-        {
-          Variable::ptr       varamif(driver.var_stack.GetLastVar());
-          Variable::ptr  varpw(driver.var_stack.GetLastVar());
-          ParamPanel_ptr pw = *(ParamPanel_ptr*) varpw->Pointer();
-          int n = pw->NbParameters();
-            pw->ChangedValueCallback(n-1,
-                      (void*) CB_ParamWin,
-                      (void*) ((AMIFunction::ptr*) varamif->Pointer())->get() );
-        }
-    |
-    VAR_PARAMWIN T_POINT T_SetPositionProp 
-      T_OP_PAR 
-        expr  T_COMMA  expr T_COMMA  expr 
-      T_CL_PAR
-    {
-      /**
-      Description:
-        Sets the object position properties of the given widget
-      Parameters:
-        - proportion property (0: not proportional, 
-                               1: standard proportion,
-                               -1: keeps previous value)
-        - border size ( -1 keeps previous value)
-        - flags       ( -1 keeps previous value)
-      **/
-      Variable::ptr  varpw(driver.var_stack.GetLastVar());
-      ParamPanel_ptr pw = *(ParamPanel_ptr*) varpw->Pointer();
-      int n = pw->NbParameters();
-        pw->SetPositionProperties(
-              n-1, (int) $5, (int) $7, (int) $9);
-    }
-    |
-    VAR_PARAMWIN T_POINT T_SetDragCallback T_OP_PAR expr
-        T_CL_PAR
-    {
-    /**
-      Parameters:
-        - index of the parameter for which to set the drag callback
-      Description: activate the drag callback
-    **/
-      Variable::ptr  varpw(driver.var_stack.GetLastVar());
-      ParamPanel_ptr pw = *(ParamPanel_ptr*) varpw->Pointer();
-      int n = pw->NbParameters();
-      int i     = (int) $5;
-      bool drag = true;
-      if ((i>=0)&&(i<n))
-        pw->SetDragCallback(i,drag);
-      else
-        fprintf(stderr,"VAR_PARAMWIN.SetDragCallbackO( %d , .. ) \t bad parameter number \n",i);
-    }
-    |
-    VAR_PARAMWIN T_POINT T_SetDragCallback T_OP_PAR expr
-      T_COMMA expr T_CL_PAR
-    {
-    /**
-      Parameters:
-        - index of the parameter for which to set the drag callback
-        - boolean value: activate or desactivate the drag callbacks
-      Description: activate the drag callback
-    **/
-      Variable::ptr  varpw(driver.var_stack.GetLastVar());
-      ParamPanel_ptr pw = *(ParamPanel_ptr*) varpw->Pointer();
-      int n = pw->NbParameters();
-      int i     = (int) $5;
-      bool drag = (bool) $7;
-      if ((i>=0)&&(i<n))
-        pw->SetDragCallback(i,drag);
-      else
-        fprintf(stderr,"VAR_PARAMWIN.SetDragCallbackO( %d , .. ) \t bad parameter number \n",i);
-        }
-      |
-      VAR_PARAMWIN T_POINT T_Enable T_OP_PAR expr  T_COMMA expr T_CL_PAR
-      {
-      /**
-        Description: 
-          Enable a parameter
-        Parameters:
-          - index of the parameter for which to set the drag callback
-          - value enable:1 disable:0
-      **/
-      Variable::ptr  varpw(driver.var_stack.GetLastVar());
-      ParamPanel_ptr pw = *(ParamPanel_ptr*) varpw->Pointer();
-      int n = pw->NbParameters();
-      int i     = (int) $5;
-      bool val  = (bool) $7;
-      if ((i>=0)&&(i<n))
-        pw->Enable(i,val);
-      else
-        driver.err_print(
-          (boost::format("VAR_PARAMWIN.Enable( %d , .. ) \t bad parameter number ")%i).str().c_str());
-      }
-      |
-      VAR_PARAMWIN T_POINT T_EnableBox T_OP_PAR expr  T_COMMA expr T_CL_PAR
-      {
-      /**
-        Description: 
-          Enable a static box
-        Parameters:
-          - index of the box
-          - value enable:1 disable:0
-      **/
-      Variable::ptr  varpw(driver.var_stack.GetLastVar());
-      ParamPanel_ptr pw = *(ParamPanel_ptr*) varpw->Pointer();
-      int n = pw->NbBoxes();
-      int i     = (int) $5;
-      bool val  = (bool) $7;
-      if ((i>=0)&&(i<n))
-        pw->EnableBox(i,val);
-      else
-        driver.err_print(
-          (boost::format("VAR_PARAMWIN.EnableBox( %d , .. ) \t bad parameter number ")%i).str().c_str());
-      }
-      |
-      VAR_PARAMWIN T_POINT T_EnablePanel T_OP_PAR expr  T_COMMA expr T_CL_PAR
-      {
-      /**
-        Description: 
-          Enable a panel
-        Parameters:
-          - index of the panel
-          - value enable:1 disable:0
-      **/
-      Variable::ptr  varpw(driver.var_stack.GetLastVar());
-      ParamPanel_ptr pw = *(ParamPanel_ptr*) varpw->Pointer();
-      int n = pw->NbPanels();
-      int i     = (int) $5;
-      bool val  = (bool) $7;
-      if ((i>=0)&&(i<n))
-        pw->EnablePanel(i,val);
-      else
-        driver.err_print(
-          (boost::format("VAR_PARAMWIN.EnablePanel( %d , .. ) \t bad parameter number ")%i).str().c_str());
-      }
-        |
         T_SaveStructuredGrid T_OP_PAR var_image T_COMMA expr_string T_CL_PAR
         {
           Variable::ptr  varim(driver.var_stack.GetLastVar());
@@ -6308,8 +5978,8 @@ instr_block: begin_block
 begin_block: ;
 end_block: ;
 
-primary_expr
-    : NUMBER
+primary_expr: 
+    NUMBER
     | T_argc
     {
     /**
@@ -7108,451 +6778,6 @@ postfix_expr
       int i = (int)$3;
       int j = (int)$5;
       $$  =  ((*mat)[i][j] = $8);
-    }
-    |
-    VAR_PARAMWIN T_POINT T_AddFloat T_OP_PAR  VAR_FLOAT T_COMMA expr T_COMMA expr T_CL_PAR
-    {
-      /**
-          Description:
-            Adds an interface for a floating point variable to the window of parameters.
-
-          Parameters:
-            (1) variable of type window of parameters
-            (5) float variable for which we want to create an interface
-            (7) minimal value accepted
-            (9) maximal value accepted
-
-        Keywords:
-
-        See also:
-            ParamWin, AddInt, CreateWin, Display
-
-        Example(s):
-          a=1
-          w1 = ParamWin("test")
-          w1.AddFloat(a,1,100)
-          w1.CreateWin
-          w1.Display
-      **/
-
-      Variable::ptr varfloat(driver.var_stack.GetLastVar());
-      Variable::ptr  varpw(driver.var_stack.GetLastVar());
-      float* var = ((float_ptr*)varfloat->Pointer())->get();
-      float min_value = (float)$7;
-      float max_value = (float)$9;
-
-      ParamPanel_ptr pw = *(ParamPanel_ptr*) varpw->Pointer();
-      int var_id = pw->AddFloat( var, varfloat->Name().c_str(),2,varfloat->Name());
-      pw->FloatConstraints( var_id, min_value, max_value, *var );
-      $$ = var_id;
-    }
-    |
-    VAR_PARAMWIN T_POINT T_AddFloat T_OP_PAR  VAR_FLOAT T_COMMA expr_string T_COMMA expr T_COMMA expr T_CL_PAR
-    {
-      /**
-          Description:
-            Adds an interface for a floating point variable to the window of parameters.
-
-          Parameters:
-            (3) variable of type window of parameters
-            (5) string expression: label
-            (7) float variable for which we want to create an interface
-            (9) minimal value accepted
-            (11) maximal value accepted
-
-        Keywords:
-
-        See also:
-            ParamWin, AddInt, CreateWin, Display
-
-        Example(s):
-          a=1
-          w1 = ParamWin("test")
-          w1.AddFloat(a,1,100)
-          w1.CreateWin
-          w1.Display
-      **/
-
-      Variable::ptr varfloat(driver.var_stack.GetLastVar());
-      Variable::ptr  varpw(driver.var_stack.GetLastVar());
-      float* var = ((float_ptr*)varfloat->Pointer())->get();
-      boost::shared_array<char> label( $7);
-      float min_value = (float)$9;
-      float max_value = (float)$11;
-
-      ParamPanel_ptr pw = *(ParamPanel_ptr*) varpw->Pointer();
-      std::string tooltip = (boost::format("%s  (%s)")  % varfloat->GetComments() 
-                                                        % varfloat->Name()).str();
-      int var_id = pw->AddFloat( var, label.get(),2,tooltip);
-      pw->FloatConstraints( var_id, min_value, max_value, *var );
-      $$ = var_id;
-    }
-    |
-    VAR_PARAMWIN T_POINT T_AddInt T_OP_PAR  VAR_INT  T_COMMA expr T_COMMA expr T_CL_PAR
-    {
-      /**
-        Parameters:
-          - integer variable
-          - minimal scale value
-          - maximal scale value
-        Description:
-          Add interface to set an integer value between a minimal and a maximal value.
-      **/
-      Variable::ptr varint(driver.var_stack.GetLastVar());
-      Variable::ptr  varpw(driver.var_stack.GetLastVar());
-      int* var = ((int_ptr*)varint->Pointer())->get();
-      ParamPanel_ptr pw = *(ParamPanel_ptr*) varpw->Pointer();
-      int var_id = pw->AddInteger( var, (char*)varint->Name().c_str(), (char*)varint->Name().c_str());
-      pw->IntegerConstraints( var_id, (int)$7, (int)$9, *var );
-      $$ = var_id;
-    }
-    |
-    VAR_PARAMWIN T_POINT T_AddInt T_OP_PAR  VAR_INT  T_COMMA expr_string T_COMMA expr T_COMMA expr T_CL_PAR
-    {
-      /**
-        Parameters:
-          - integer variable
-          - string expression: label
-          - minimal scale value
-          - maximal scale value
-        Description:
-          Add interface to set an integer value between a minimal and a maximal value.
-      **/
-      boost::shared_array<char> label( $7);
-      Variable::ptr varint(driver.var_stack.GetLastVar());
-      Variable::ptr  varpw(driver.var_stack.GetLastVar());
-
-      int* var = ((int_ptr*)varint->Pointer())->get();
-      ParamPanel_ptr pw = *(ParamPanel_ptr*) varpw->Pointer();
-      std::string tooltip = (boost::format("%s  (%s)")  % varint->GetComments() 
-                                                        % varint->Name()).str();
-      int var_id = pw->AddInteger( var, label.get(), tooltip);
-      pw->IntegerConstraints( var_id, (int)$9, (int)$11, *var );
-      $$ = var_id;
-    }
-    |
-    VAR_PARAMWIN T_POINT T_AddButton T_OP_PAR  expr_string T_COMMA VAR_AMI_FUNCTION T_CL_PAR
-    {
-      Variable::ptr  varamif(driver.var_stack.GetLastVar());
-      Variable::ptr  varpw(driver.var_stack.GetLastVar());
-      int bid;
-      boost::shared_array<char> label( $5);
-  
-      ParamPanel_ptr pw = *(ParamPanel_ptr*) varpw->Pointer();
-      std::string tooltip = (boost::format("%s  (%s)")  % varamif->GetComments() 
-                                                        % varamif->Name()).str();
-      pw->AddButton( &bid, label.get(),
-                  (void*) CB_ParamWin,
-                  (void*) ((AMIFunction::ptr*) varamif->Pointer())->get(),
-                  tooltip);
-      $$ = bid;
-    }
-    |
-    VAR_PARAMWIN T_POINT T_AddBoolean T_OP_PAR   VAR_UCHAR   T_CL_PAR
-    {
-    /**
-    Parameters:
-      (5) Variable of type UCHAR
-
-    Description:
-      Adds a boolean variable to the parameter window.
-    **/
-      Variable::ptr varuchar(driver.var_stack.GetLastVar());
-      Variable::ptr  varpw(driver.var_stack.GetLastVar());
-
-      unsigned char*   var = ((uchar_ptr*) varuchar->Pointer())->get();
-      ParamPanel_ptr pw  = *(ParamPanel_ptr*) varpw->Pointer();
-      int var_id;
-      pw->AddBoolean( &var_id, var, (char*)varuchar->Name().c_str());
-      pw->BooleanDefault( var_id, *var);
-      $$ = var_id;
-    }
-    |
-    VAR_PARAMWIN T_POINT T_AddBoolean T_OP_PAR   VAR_UCHAR T_COMMA expr_string  T_CL_PAR
-    {
-    /**
-    Parameters:
-      (5) Variable of type UCHAR
-      (7) string expression: label
-
-    Description:
-      Adds a boolean variable to the parameter window.
-    **/
-      boost::shared_array<char> label( $7);
-      Variable::ptr varuchar(driver.var_stack.GetLastVar());
-      Variable::ptr  varpw(driver.var_stack.GetLastVar());
-
-      unsigned char*   var = ((uchar_ptr*) varuchar->Pointer())->get();
-      ParamPanel_ptr pw  = *(ParamPanel_ptr*) varpw->Pointer();
-      int var_id;
-      std::string tooltip = (boost::format("%s  (%s)")  % varuchar->GetComments() 
-                                                        % varuchar->Name()).str();
-      pw->AddBoolean( &var_id, var, label.get(),CaractereToggle,tooltip);
-      pw->BooleanDefault( var_id, *var);
-      $$ = var_id;
-    }
-    |
-    VAR_PARAMWIN T_POINT T_AddImageChoice T_OP_PAR  VAR_STRING  T_COMMA expr_string T_CL_PAR
-    {
-    /**
-    Parameters:
-      - string variable that will contain the name of the
-              selected image
-      - label: description of the image to select
-    Description:
-      Allows the user to choose among the current image variables available
-    **/
-      boost::shared_array<char> label( $7);
-      Variable::ptr varstring(driver.var_stack.GetLastVar());
-      Variable::ptr  varpw(driver.var_stack.GetLastVar());
-
-      ParamPanel_ptr pw  = *(ParamPanel_ptr*) varpw->Pointer();
-      boost::shared_ptr<wxArrayString> imagelist;
-      int var_id;
-
-      imagelist = Vars.SearchVariables(type_image);
-      imagelist->Add(_T("Image"));
-
-      // Get comments as tooltip
-      std::string tooltip = (boost::format("%s  (%s)")  % varstring->GetComments() 
-                                                        % varstring->Name()).str();
-
-      // Get list of image names
-      pw->AddListChoice( &var_id,
-          (string_ptr*)varstring->Pointer(),
-          label.get(),
-          imagelist,
-          (void*)CB_update_imagelist,
-          EnumOptionMenu,
-          tooltip);
-      //pw->EnumerationDefaut( var_id,  *var);
-      $$ = var_id;
-    }
-    |
-    VAR_PARAMWIN T_POINT T_AddEnum T_OP_PAR   VAR_INT T_COMMA expr_string   T_CL_PAR
-    {
-    /**
-    Parameters:
-      (5) Variable of type INT
-      (7) expr_string label
-
-    Description:
-      Adds an integer variable as an enumeration to the parameter window.
-    **/
-      boost::shared_array<char> label( $7);
-      Variable::ptr varint(driver.var_stack.GetLastVar());
-      Variable::ptr  varpw(driver.var_stack.GetLastVar());
-
-      int*   var = ((int_ptr*) varint->Pointer())->get();
-      ParamPanel_ptr pw  = *(ParamPanel_ptr*) varpw->Pointer();
-      int var_id;
-      std::string tooltip = (boost::format("%s  (%s)")  % varint->GetComments() 
-                                                        % varint->Name()).str();
-      pw->AddEnumeration( &var_id,  var, label.get(),
-                          EnumOptionMenu,
-                          tooltip);
-      //pw->EnumerationDefaut( var_id,  *var);
-      $$ = var_id;
-    }
-    |
-    VAR_PARAMWIN T_POINT T_AddEnum T_OP_PAR   VAR_INT   T_CL_PAR
-    {
-    /**
-    Parameters:
-      (5) Variable of type INT
-
-    Description:
-      Adds an integer variable as an enumeration to the parameter window.
-    **/
-      Variable::ptr varint(driver.var_stack.GetLastVar());
-      Variable::ptr  varpw(driver.var_stack.GetLastVar());
-
-      int*   var = ((int_ptr*) varint->Pointer())->get();
-      ParamPanel_ptr pw  = *(ParamPanel_ptr*) varpw->Pointer();
-      int var_id;
-      pw->AddEnumeration( &var_id, var, (char*)varint->Name().c_str());
-      $$ = var_id;
-    }
-    |
-    VAR_PARAMWIN T_POINT T_AddEnumChoice T_OP_PAR  expr T_COMMA expr_string   T_CL_PAR
-    {
-    /**
-    Parameters:
-      (5) expression:        identificator of the enumeration parameter
-      (7) string expression: text associated to this choice
-
-    Description:
-      Adds a choice for an enumeration created in the parameter window
-    **/
-      Variable::ptr  varpw(driver.var_stack.GetLastVar());
-      boost::shared_array<char> text( $7);
-
-      ParamPanel_ptr pw  = *(ParamPanel_ptr*) varpw->Pointer();
-      int id = (int) $5;
-      int var_id;
-      pw->AddEnumChoice( id, &var_id, text.get());
-      $$ = var_id;
-    }
-    |
-    VAR_PARAMWIN T_POINT T_AddString T_OP_PAR  VAR_STRING  T_COMMA expr_string  T_CL_PAR
-    {
-    /**
-    Parameters:
-      (1) Parameter window
-      (5) String variable to interface
-      (7) label
-
-    Description:
-      Adds a string in the parameter window
-    **/
-      Variable::ptr varstring(driver.var_stack.GetLastVar());
-      Variable::ptr  varpw(driver.var_stack.GetLastVar()); 
-
-        boost::shared_array<char> label( $7);
-        ParamPanel_ptr pw  = *(ParamPanel_ptr*) varpw->Pointer();
-        int var_id;
-        std::string tooltip = (boost::format("%s  (%s)")  % varstring->GetComments() 
-                                                          % varstring->Name()).str();
-        pw->AjouteChaine( &var_id,
-          (string_ptr*)varstring->Pointer(),
-          label.get(),
-          tooltip);
-        pw->ContraintesChaine(var_id,
-          (char*) ((string_ptr*)varstring->Pointer())->get()->c_str());
-        $$=var_id;
-    }
-    |
-    VAR_PARAMWIN T_POINT T_AddLabel T_OP_PAR  expr_string  T_COMMA expr_string  T_CL_PAR
-    {
-    /**
-    Parameters:
-      (1) Parameter window
-      (5) label label
-      (7) label value
-
-    Description:
-      Adds a label in the parameter window
-    **/
-      Variable::ptr  varpw(driver.var_stack.GetLastVar());
-
-        ParamPanel_ptr pw  = *(ParamPanel_ptr*) varpw->Pointer();
-        boost::shared_array<char> label( $5);
-        boost::shared_array<char> value( $7);
-        int var_id;
-        pw->AddLabel( &var_id,
-                      label.get(),
-                      value.get());
-        $$=var_id;
-    }
-    |
-    VAR_PARAMWIN T_POINT T_AddFilename T_OP_PAR  VAR_STRING  T_COMMA expr_string  T_COMMA expr_string T_COMMA expr_string T_CL_PAR
-    {
-    /**
-    Parameters:
-      (1) Parameter window
-      (5) String variable to interface
-      (7) label
-      (9) default path
-      (11) default mask
-
-    Description:
-      Adds a filename in the parameter window
-    **/
-      Variable::ptr varstring(driver.var_stack.GetLastVar());
-      Variable::ptr  varpw(driver.var_stack.GetLastVar());
-
-        ParamPanel_ptr pw  = *(ParamPanel_ptr*) varpw->Pointer();
-        int var_id;
-        boost::shared_array<char> label( $7);
-        boost::shared_array<char> defpath( $9);
-        boost::shared_array<char> defmask( $11);
-
-        // passer AjouteNomFichier a std::string !!!!
-        pw->AjouteNomFichier( &var_id,
-          (string_ptr*)varstring->Pointer(), 
-          label.get());
-        pw->ContraintesNomFichier(var_id,
-                                  defpath.get(),
-                                  (char*)"",
-                                  defmask.get());
-        $$=var_id;
-    }
-    |
-    VAR_PARAMWIN T_POINT T_BeginBox T_OP_PAR  expr_string T_CL_PAR
-    {
-    /**
-      Parameters:
-        string expression
-      Description:
-        Adds a box around the parameters, with the given text as label, and returns the id of the created box.
-    **/
-      Variable::ptr  varpw(driver.var_stack.GetLastVar());
-
-      boost::shared_array<char> label( $5);
-      ParamPanel_ptr pw = *(ParamPanel_ptr*) varpw->Pointer();
-      pw->BeginBox( label.get());
-      $$= pw->NbBoxes()-1;
-    }
-    |
-    VAR_PARAMWIN T_POINT T_AddPage T_OP_PAR  expr_string T_CL_PAR
-    {
-    /**
-    **/
-      boost::shared_array<char> label( $5);
-      Variable::ptr  varpw(driver.var_stack.GetLastVar());
-
-      ParamPanel_ptr pw = *(ParamPanel_ptr*) varpw->Pointer();
-      int id = pw->AddPage( label.get());
-      $$=id;
-    }
-    |
-    VAR_PARAMWIN T_POINT T_BeginBook
-    {
-    /**
-      Description:
-        Adds a new NoteBook, return the corresponding id.
-      See also:
-        EndBook, AddPage
-    **/
-      Variable::ptr  varpw(driver.var_stack.GetLastVar());
-
-      ParamPanel_ptr pw = *(ParamPanel_ptr*) varpw->Pointer();
-      int id = pw->BeginBook();
-      $$ = id;
-    }
-    |
-    VAR_PARAMWIN T_POINT T_BeginPanel T_OP_PAR  expr_string T_CL_PAR
-    {
-    /**
-      Parameters:
-        string expr: label of the new panel
-      Description:
-        Adds a new panel, return the id of the corresponding panel
-    **/
-      Variable::ptr  varpw(driver.var_stack.GetLastVar());
-
-      boost::shared_array<char> label( $5);
-      ParamPanel_ptr pw = *(ParamPanel_ptr*) varpw->Pointer();
-      int id = pw->BeginPanel( label.get());
-      $$=id;
-    }
-    |
-    VAR_PARAMWIN T_POINT T_BeginBoxPanel T_OP_PAR  expr_string T_CL_PAR
-    {
-    /**
-      Parameters:
-        string expr: label of the new panel
-      Description:
-        Adds a new panel, return the id of the corresponding panel
-    **/
-      boost::shared_array<char> label( $5);
-      Variable::ptr  varpw(driver.var_stack.GetLastVar());
-
-      ParamPanel_ptr pw = *(ParamPanel_ptr*) varpw->Pointer();
-      pw->BeginBox( label.get());
-      int id = pw->BeginPanel( label.get());
-      //$$= pw->NbBoxes()-1;
-      $$=id;
     }
     | T_exists T_OP_PAR identifier T_CL_PAR
     {
@@ -10971,6 +10196,120 @@ expr_image : assignment_image
 ;
 
 
+
+primary_var:
+  variable 
+  | T_OP_PAR expr_var T_CL_PAR;
+
+postfix_var:
+  primary_var;
+
+unary_var:
+  postfix_var
+  | unary_operator cast_var
+  | T_SUB  cast_var 
+  | T_ADD  cast_var
+  | SIN    cast_var 
+  | COS    cast_var 
+  | SQRT   cast_var
+  | ABS    cast_var
+  | ROUND  cast_var
+  | FLOOR  cast_var
+  | TAN    cast_var
+  | ASIN   cast_var
+  | ACOS   cast_var
+  | ATAN   cast_var
+  | EXP    cast_var
+  | LOG    cast_var
+  | LN     cast_var
+  | NORM   cast_var
+  ;
+
+cast_var:
+  unary_var
+  | T_OP_PAR basic_type T_CL_PAR unary_var
+  ;
+
+multiplicative_var: 
+  cast_var
+  | multiplicative_var T_MULT cast_expr
+  | multiplicative_var T_DIV  cast_expr
+  | multiplicative_var T_MULT cast_var
+  | multiplicative_var T_DIV  cast_var
+  | multiplicative_var T_EXP  cast_var
+  ;
+
+additive_var: 
+  multiplicative_var
+  | additive_var T_ADD multiplicative_var
+  | additive_var T_SUB multiplicative_var
+  | additive_var T_ADD multiplicative_var
+  | additive_var T_SUB multiplicative_var
+  ;
+
+shift_var:
+  additive_var
+  ;
+
+relational_var:
+  shift_var
+  | relational_var T_LT  shift_var
+  | relational_var T_GT  shift_var
+  | relational_var LE_OP shift_var
+  | relational_var GE_OP shift_var
+  | relational_var T_LT  shift_var
+  | relational_var T_GT  shift_var
+  | relational_var LE_OP shift_var
+  | relational_var GE_OP shift_var
+  ;
+
+equality_var:
+  relational_var
+  | equality_var EQ_OP relational_var
+  | equality_var NE_OP relational_var
+  | equality_var EQ_OP shift_var
+  | equality_var NE_OP shift_var
+  ;
+
+and_var:
+  equality_var
+  | and_var T_AND equality_var
+  ;
+
+exclusive_or_var:
+  and_var
+  ;
+
+inclusive_or_var:
+  exclusive_or_var
+  | inclusive_or_var T_OR exclusive_or_var
+  ;
+
+logical_and_var:
+  inclusive_or_var
+  | logical_and_var AND_OP inclusive_or_var
+  ;
+
+logical_or_var:
+  logical_and_var
+  | logical_or_var OR_OP logical_and_var
+  ;
+
+conditional_var:
+  logical_or_var
+  | logical_or_var T_QUEST logical_or_var T_COLON conditional_var
+  ;
+
+assignment_var:
+  conditional_var
+  | unary_var ASSIGN_OP assignment_var
+  ;
+
+expr_var: 
+  assignment_var
+  ;
+
+
 gltransform: VAR_GLTRANSFORM {
             Variable::ptr varglt(driver.var_stack.GetLastVar());
             GLTransfMatrix* newglt;
@@ -12134,7 +11473,7 @@ variable:
           Description: 
             Call to a function, returning a variable
         **/
-          cout << "call to variable T_OP_PAR param_list T_CL_PAR end_instr" << endl;
+          //cout << "call to variable T_OP_PAR param_list T_CL_PAR end_instr" << endl;
           // 1. check the variable type
           Variable::ptr var(driver.var_stack.GetLastVar());
           ParamList::ptr param($3);

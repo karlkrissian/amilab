@@ -29,7 +29,7 @@ if (!exists(Raw2AmiClass)) {
     #----------------------------
     proc ::Close() \
     {
-      ::win._Hide
+      ::win.Hide
       delvars GetObjectName(::Close)
     }
     ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -71,48 +71,48 @@ if (!exists(Raw2AmiClass)) {
       
       ::win = import->ParamPanel("Read Raw")
   
-      ::win._BeginBook()
-      ::win._AddPage("IO")
-        ::win._AddFilename(&::input_filename, "Input", ".", "*")
-      ::win._AddString(&::output_varname,"Output name")
+      ::win.BeginBook()
+      ::win.AddPage("IO")
+        ::win.AddFilename(&::input_filename, "Input", ".", "*")
+      ::win.AddString(&::output_varname,"Output name")
   
-      ::win._AddPage("Header")
-          ::win._BeginBoxPanel("Image dimensions and type")
-          ::win._AddInt    (&::dimx,"X dim",0,1024)
-          ::win._AddInt    (&::dimy,"Y dim",0,1024)
-          ::win._AddInt    (&::dimz,"Z dim",0,1024)
+      ::win.AddPage("Header")
+          ::win.BeginBoxPanel("Image dimensions and type")
+          ::win.AddInt    (&::dimx,"X dim",0,1024)
+          ::win.AddInt    (&::dimy,"Y dim",0,1024)
+          ::win.AddInt    (&::dimz,"Z dim",0,1024)
     
-          pi_typePix = ::win._AddEnum(&::typePix,"Pixel Type")
-            ::win._AddEnumChoice(pi_typePix,"UCHAR")
-            ::win._AddEnumChoice(pi_typePix,"UINT")
-            ::win._AddEnumChoice(pi_typePix,"INT")
-            ::win._AddEnumChoice(pi_typePix,"FLOAT")
-            ::win._AddEnumChoice(pi_typePix,"DOUBLE")
-          pi_endianess  = ::win._AddEnum(&::endianess, "Endianness")
-            ::win._AddEnumChoice(pi_endianess,"Little")
-            ::win._AddEnumChoice(pi_endianess,"Big")
-        ::win._EndBoxPanel
-        ::win._BeginBoxPanel("Voxel size")
-          ::win._AddFloat    (&::voxSizeX,"X size",0,10)
-          ::win._AddFloat    (&::voxSizeY,"Y size",0,10)
-          ::win._AddFloat    (&::voxSizeZ,"Z size",0,10)
-        ::win._EndBoxPanel
+          pi_typePix = ::win.AddEnum(&::typePix,"Pixel Type")
+            ::win.AddEnumChoice(pi_typePix,"UCHAR")
+            ::win.AddEnumChoice(pi_typePix,"UINT")
+            ::win.AddEnumChoice(pi_typePix,"INT")
+            ::win.AddEnumChoice(pi_typePix,"FLOAT")
+            ::win.AddEnumChoice(pi_typePix,"DOUBLE")
+          pi_endianess  = ::win.AddEnum(&::endianess, "Endianness")
+            ::win.AddEnumChoice(pi_endianess,"Little")
+            ::win.AddEnumChoice(pi_endianess,"Big")
+        ::win.EndBoxPanel
+        ::win.BeginBoxPanel("Voxel size")
+          ::win.AddFloat    (&::voxSizeX,"X size",0,10)
+          ::win.AddFloat    (&::voxSizeY,"Y size",0,10)
+          ::win.AddFloat    (&::voxSizeZ,"Z size",0,10)
+        ::win.EndBoxPanel
     
-      ::win._AddPage("Ctrl")
-        ::win._BeginHorizontal
-          ::win._AddButton("Read",     &::Read)
-          ::win._AddButton("Show",     &::ShowImage)
-        ::win._EndHorizontal
-        ::win._AddButton("Save as ami.gz", &::Save)
-      ::win._EndBook
+      ::win.AddPage("Ctrl")
+        ::win.BeginHorizontal
+          ::win.AddButton("Read",     &::Read)
+          ::win.AddButton("Show",     &::ShowImage)
+        ::win.EndHorizontal
+        ::win.AddButton("Save as ami.gz", &::Save)
+      ::win.EndBook
   
-      ::win._BeginHorizontal
-        ::win._AddButton("Close",      &::Close)
-        ::win._AddButton("Close All",  &::CloseAll)
-      ::win._EndHorizontal
+      ::win.BeginHorizontal
+        ::win.AddButton("Close",      &::Close)
+        ::win.AddButton("Close All",  &::CloseAll)
+      ::win.EndHorizontal
     
-      ::win._Update(-1)
-      ::win._Display
+      ::win.Update(-1)
+      ::win.Display
       
     }
   

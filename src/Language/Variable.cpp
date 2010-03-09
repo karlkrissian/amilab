@@ -67,7 +67,6 @@ void Variable::operator = (const Variable& v)
     CREATE_CASE(type_ami_object,     AMIObject)
     CREATE_CASE(type_ami_cpp_object, AMICPPObject)
     CREATE_CASE(type_paramwin,     ParamBox)
-    CREATE_CASE(type_parampanel,   ParamPanel);
     CREATE_CASE(type_matrix,       FloatMatrix)
     CREATE_CASE(type_gltransform,  GLTransfMatrix)
     CREATE_CASE(type_array,        VarArray)
@@ -137,7 +136,6 @@ void Variable::Init(vartype type, const char* name, void* p)
     // don´t call the deleter for now because of a seg. fault
     // issue (29-06-09)
     CREATE_CASE_WXWINDOW(type_paramwin,     ParamBox)
-    CREATE_CASE_WXWINDOW(type_parampanel,   ParamPanel)
     CREATE_CASE(type_matrix,       FloatMatrix)
     CREATE_CASE(type_gltransform,  GLTransfMatrix)
     CREATE_CASE(type_array,        VarArray)
@@ -211,7 +209,6 @@ using namespace boost;
     CREATE_CASE(type_ami_object,      AMIObject)
     CREATE_CASE(type_ami_cpp_object,  AMICPPObject)
     CREATE_CASE(type_paramwin,        ParamBox)
-    CREATE_CASE(type_parampanel,      ParamPanel)
     CREATE_CASE(type_matrix,          FloatMatrix)
     CREATE_CASE(type_gltransform,     GLTransfMatrix)
     CREATE_CASE(type_array,           VarArray)
@@ -281,7 +278,6 @@ bool Variable::FreeMemory()
     case type_ami_object      : FreeMemory<AMIObject>();       break;
     case type_ami_cpp_object  : FreeMemory<AMICPPObject>();    break;
     case type_paramwin        : FreeMemory<ParamBox>();        break;
-    case type_parampanel      : FreeMemory<ParamPanel>();      break;
     case type_matrix          : FreeMemory<FloatMatrix>();     break;
     case type_gltransform     : FreeMemory<GLTransfMatrix>();  break;
     case type_array           : FreeMemory<VarArray>();        break;
@@ -354,7 +350,6 @@ const string Variable::GetTypeName()
     case type_ami_class       : return string( "AMI Class");
     case type_ami_object      : return string( "AMI Object");
     case type_paramwin        : return string( "Parameters Window");
-    case type_parampanel      : return string( "Parameters Panel");
     case type_matrix          : return string( "matrix");
     case type_gltransform     : return string( "gltransform");
     case type_array           : 
@@ -396,7 +391,6 @@ ostream& operator<<(ostream& o, const Variable& v)
     case type_ami_class       : o << "AMI class ";         break;
     case type_ami_object      : o << "AMI Object ";         break;
     case type_paramwin        : o << "Parameters Window";  break;
-    case type_parampanel      : o << "Parameters Panel";  break;
     case type_matrix          : o << "matrix";             break;
     case type_gltransform     : o << "gltransform";        break;
     case type_array           : 

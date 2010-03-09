@@ -32,7 +32,6 @@ typedef enum {
   type_ami_object,       /**< AMI Language object (instance of a class, or namespace) */
   type_ami_cpp_object,   /**< AMI Language C++ object (instance of a class, or namespace) */
   type_paramwin,         /**< Parameter window */
-  type_parampanel,       /**< Parameter panel */
   type_matrix,           /**< matrix */
   type_gltransform,      /**< OpenGL transformation */
   type_array,            /**< Array */

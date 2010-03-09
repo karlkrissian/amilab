@@ -45,38 +45,42 @@ AMIObject* AddWrapParamPanel( const ParamPanel::ptr& objectptr)
   Variables::ptr previous_ocontext = Vars.GetObjectContext();
   Vars.SetObjectContext(amiobject->GetContext());
 
-  ADDMEMBER("_BeginBook",       ParamPanel,BeginBook);
-  ADDMEMBER("_EndBook",         ParamPanel,EndBook);
+  ADDMEMBER("BeginBook",       ParamPanel,BeginBook);
+  ADDMEMBER("EndBook",         ParamPanel,EndBook);
 
-  ADDMEMBER("_BeginHorizontal", ParamPanel,BeginHorizontal);
-  ADDMEMBER("_EndHorizontal",   ParamPanel,EndHorizontal);
+  ADDMEMBER("BeginHorizontal", ParamPanel,BeginHorizontal);
+  ADDMEMBER("EndHorizontal",   ParamPanel,EndHorizontal);
 
-  ADDMEMBER("_BeginBoxPanel",   ParamPanel,BeginBoxPanel);
-  ADDMEMBER("_EndBoxPanel",     ParamPanel,EndBoxPanel);
+  ADDMEMBER("BeginBoxPanel",   ParamPanel,BeginBoxPanel);
+  ADDMEMBER("EndBoxPanel",     ParamPanel,EndBoxPanel);
 
-  ADDMEMBER("_BeginPanel",      ParamPanel,BeginPanel);
-  ADDMEMBER("_EndPanel",        ParamPanel,EndPanel);
+  ADDMEMBER("BeginPanel",      ParamPanel,BeginPanel);
+  ADDMEMBER("EndPanel",        ParamPanel,EndPanel);
 
-  ADDMEMBER("_AddPage",         ParamPanel,AddPage);
-  ADDMEMBER("_SelectPage",      ParamPanel,SelectPage);
+  ADDMEMBER("AddPage",         ParamPanel,AddPage);
+  ADDMEMBER("SelectPage",      ParamPanel,SelectPage);
 
-  ADDMEMBER("_AddFloat",        ParamPanel,AddFloat);
-  ADDMEMBER("_AddInt",          ParamPanel,AddInt);
-  ADDMEMBER("_AddEnum",         ParamPanel,AddEnum);
-  ADDMEMBER("_AddEnumChoice",   ParamPanel,AddEnumChoice);
-  ADDMEMBER("_AddLabel",        ParamPanel,AddLabel);
-  ADDMEMBER("_AddFilename",     ParamPanel,AddFilename);
-  ADDMEMBER("_AddString",       ParamPanel,AddString);
-  ADDMEMBER("_AddImageChoice",  ParamPanel,AddImageChoice);
-  ADDMEMBER("_AddButton",       ParamPanel,AddButton);
-  ADDMEMBER("_AddBoolean",      ParamPanel,AddBoolean);
-  ADDMEMBER("_SetCallback",     ParamPanel,SetCallback);
-  ADDMEMBER("_SetDragCallback", ParamPanel,SetDragCallback);
-  ADDMEMBER("_EnablePanel",     ParamPanel,EnablePanel);
+  ADDMEMBER("AddFloat",        ParamPanel,AddFloat);
+  ADDMEMBER("AddInt",          ParamPanel,AddInt);
+  ADDMEMBER("AddEnum",         ParamPanel,AddEnum);
+  ADDMEMBER("AddEnumChoice",   ParamPanel,AddEnumChoice);
+  ADDMEMBER("AddLabel",        ParamPanel,AddLabel);
+  ADDMEMBER("AddFilename",     ParamPanel,AddFilename);
+  ADDMEMBER("AddString",       ParamPanel,AddString);
+  ADDMEMBER("AddImageChoice",  ParamPanel,AddImageChoice);
+  ADDMEMBER("AddButton",       ParamPanel,AddButton);
+  ADDMEMBER("AddBoolean",      ParamPanel,AddBoolean);
+  ADDMEMBER("SetCallback",     ParamPanel,SetCallback);
+  ADDMEMBER("SetDragCallback", ParamPanel,SetDragCallback);
+  ADDMEMBER("EnablePanel",     ParamPanel,EnablePanel);
 
-  ADDMEMBER("_Display",         ParamPanel,Display);
-  ADDMEMBER("_Hide",            ParamPanel,Hide);
-  ADDMEMBER("_Update",          ParamPanel,Update);
+  ADDMEMBER("Display",         ParamPanel,Display);
+  ADDMEMBER("Hide",            ParamPanel,Hide);
+  ADDMEMBER("Update",          ParamPanel,Update);
+
+  ADDMEMBER("SetPositionProp", ParamPanel,SetPositionProp);
+  ADDMEMBER("ShowSlider",      ParamPanel,ShowSlider);
+  ADDMEMBER("Enable",          ParamPanel,Enable);
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);
@@ -763,7 +767,7 @@ Variable::ptr wrap_ParamPanelSetDragCallback::CallMember( ParamList* p)
 
 
 //--------------------------------------------------
-// SetCallback
+// EnablePanel
 //--------------------------------------------------
 void wrap_ParamPanelEnablePanel::SetParametersComments()
 {
@@ -786,6 +790,94 @@ Variable::ptr wrap_ParamPanelEnablePanel::CallMember( ParamList* p)
     this->_objectptr->EnablePanel(id,enable);
   else
     FILE_ERROR(boost::format("VAR_PARAMWIN.EnablePanel( %d , .. ) \t bad parameter number ")%id);
+
+  return Variable::ptr();
+}
+
+
+//--------------------------------------------------
+// SetPositionProp
+//--------------------------------------------------
+void wrap_ParamPanelSetPositionProp::SetParametersComments()
+{
+  ADDPARAMCOMMENT("proportion property (0: not proportional, \
+                               1: standard proportion,\
+                               -1: keeps previous value)");
+  ADDPARAMCOMMENT("border size ( def:-1 keeps previous value)");
+  ADDPARAMCOMMENT("flags       ( -1 keeps previous value)");
+}
+//---------------------------------------------------
+Variable::ptr wrap_ParamPanelSetPositionProp::CallMember( ParamList* p)
+{
+  Variable::ptr var;
+  int  prop_property = -1;
+  int  border_size = -1;
+  int  flags = -1;
+  int  n = 0;
+
+  if (!get_int_param(prop_property, p, n)) ClassHelpAndReturn;
+  if (!get_int_param(border_size,   p, n)) ClassHelpAndReturn;
+  if (!get_int_param(flags,         p, n)) ClassHelpAndReturn;
+
+  int nbp = this->_objectptr->NbPanels();
+  this->_objectptr->SetPositionProperties(
+              nbp-1, 
+              prop_property, 
+              border_size,
+              flags);
+
+  return Variable::ptr();
+}
+
+//--------------------------------------------------
+// ShowSlider
+//--------------------------------------------------
+void wrap_ParamPanelShowSlider::SetParametersComments()
+{
+  ADDPARAMCOMMENT("Parameter id.");
+  ADDPARAMCOMMENT("Boolean: 1/0 for show/hide.");
+}
+//---------------------------------------------------
+Variable::ptr wrap_ParamPanelShowSlider::CallMember( ParamList* p)
+{
+  Variable::ptr var;
+  int  id;
+  int  show = 1;
+  int  n = 0;
+
+  if (!get_int_param(id,   p, n)) ClassHelpAndReturn;
+  if (!get_int_param(show, p, n)) ClassHelpAndReturn;
+
+  this->_objectptr->ParamShowSlider(id,show );
+
+  return Variable::ptr();
+}
+
+//--------------------------------------------------
+// Enable
+//--------------------------------------------------
+void wrap_ParamPanelEnable::SetParametersComments()
+{
+  ADDPARAMCOMMENT("Parameter id.");
+  ADDPARAMCOMMENT("Boolean: 1/0 for enable/disable.");
+}
+//---------------------------------------------------
+Variable::ptr wrap_ParamPanelEnable::CallMember( ParamList* p)
+{
+  Variable::ptr var;
+  int  id;
+  int  enable = 1;
+  int  n = 0;
+
+  if (!get_int_param(id,     p, n)) ClassHelpAndReturn;
+  if (!get_int_param(enable, p, n)) ClassHelpAndReturn;
+
+  int nb = this->_objectptr->NbParameters();
+
+  if ((id>=0)&&(id<nb))
+    this->_objectptr->Enable(id,enable);
+  else
+    FILE_ERROR(boost::format("VAR_PARAMWIN.Enable( %d , .. ) \t bad parameter number ")%id);
 
   return Variable::ptr();
 }
