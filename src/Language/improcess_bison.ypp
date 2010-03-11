@@ -1604,7 +1604,7 @@ command:
         **/
           Variable::ptr       var(driver.var_stack.GetLastVar());
           ParamList::ptr param($5);
-          Variable::ptr  res;
+          BasicVariable::ptr  res;
           IdentifierInfo::ptr ident($1);
 
           res = (*(WrapClassMember::ptr*) var->Pointer())->CallMember(param.get());
@@ -1613,7 +1613,7 @@ command:
             YYABORT;
           }
           res->Rename(ident->GetName().c_str());
-          Vars.AddVarSmtPtr(res,ident->GetCreationContext());
+          Vars.AddVar(res,ident->GetCreationContext());
         }
         | identifier ASSIGN_OP VAR_CLASS_MEMBER  
         {
@@ -1623,7 +1623,7 @@ command:
         **/
           Variable::ptr       var(driver.var_stack.GetLastVar());
           ParamList::ptr param((ParamList*)NULL);
-          Variable::ptr  res;
+          BasicVariable::ptr  res;
           IdentifierInfo::ptr ident($1);
 
           res = (*(WrapClassMember::ptr*) var->Pointer())->CallMember(param.get());
@@ -1632,7 +1632,7 @@ command:
             YYABORT;
           }
           res->Rename(ident->GetName().c_str());
-          Vars.AddVarSmtPtr(res,ident->GetCreationContext());
+          Vars.AddVar(res,ident->GetCreationContext());
         }
         |
         VAR_ARRAY_IMAGE T_OP_BR expr T_CL_BR ASSIGN_OP expr_image

@@ -92,7 +92,16 @@ public:
     _pointer = boost::shared_ptr<T>(p);
   }
 
+ 
   virtual ~Variable(){ this->Delete(); }
+
+  /**
+    * Virtual Method that creates a new smart pointer to a basic variable with the same type
+    */
+  BasicVariable::ptr New()
+  {
+    // TODO ...
+  }
 
   /**
    * Copy of variables

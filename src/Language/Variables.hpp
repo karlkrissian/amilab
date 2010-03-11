@@ -92,7 +92,7 @@ protected:
    * @param context 
    * @return 
    */
-  BasicVariable::ptr AddVarSmtPtr(const BasicVariable::ptr& var, Variables::ptr context = Variables::ptr());
+  BasicVariable::ptr AddVar(const BasicVariable::ptr& var, Variables::ptr context = Variables::ptr());
 
   bool ExistVar(const char* varname);
 

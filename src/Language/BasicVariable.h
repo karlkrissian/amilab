@@ -54,6 +54,12 @@ public:
   virtual ~BasicVariable(){ this->Delete(); }
 
   /**
+    * Virtual Method that creates a new smart pointer to a basic variable with the same type
+    */
+  virtual BasicVariable::ptr New() = 0;
+
+
+  /**
    * Copy of variables
    * @param v 
    */

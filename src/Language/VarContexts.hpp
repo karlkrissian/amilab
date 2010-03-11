@@ -114,11 +114,13 @@ public:
   * @return 
   */
   template <class T>
-  BasicVariable::ptr AddVar(const char* name, Variable<T>::ptr& val, int context=NEWVAR_CONTEXT)
+  BasicVariable::ptr AddVar(const char* name, boost::shared_ptr<Variable<T> >& val, int context=NEWVAR_CONTEXT)
   {
       if (context==OBJECT_CONTEXT_NUMBER) {
         if (_object_context.get()) {
-          CLASS_MESSAGE(boost::format("adding object of type %1%, name %2% into object context ") % type % name);
+          CLASS_MESSAGE(boost::format("adding object of type %1%, name %2% into object context ")
+                          % val->GetTypeName() 
+                          % name);
           return _object_context->AddVar<T>(name,val, _object_context);
       }
       else {
@@ -135,7 +137,8 @@ public:
    * Adds a new variable based on its type, pointer to value, and indentifier information.
    * IndentifierInfo contains the name and the context
    **/
-  BasicVariable::ptr AddVar(const IdentifierInfo::ptr& info, BasicVariable::ptr& val);
+  template <class T>
+  BasicVariable::ptr AddVar(const IdentifierInfo::ptr& info, boost::shared_ptr<Variable<T> >& val);
 
 
   /**
@@ -144,7 +147,7 @@ public:
    * @param context 
    * @return smart pointer to the resulting variable
    */
-  BasicVariable::ptr AddVarSmtPtr(BasicVariable::ptr var, int context=NEWVAR_CONTEXT);
+  BasicVariable::ptr AddVar(BasicVariable::ptr var, int context=NEWVAR_CONTEXT);
 
   /**
    * Find a variable based on its name, if context is -1, look for variable in the local context
@@ -152,14 +155,14 @@ public:
    * @param context possible values: -1, 0--contexts, OBJECT_CONTEXT_NUMBER
    * @return resulting smart pointer to the variable if any
    */
-  Variable::ptr GetVar( const char* varname, int context=NEWVAR_CONTEXT);
+  BasicVariable::ptr GetVar( const char* varname, int context=NEWVAR_CONTEXT);
 
   bool deleteVar(const char* varname);
 
   int deleteVars(const std::string& varmatch);
 
-  int GetContext(Variable* var);
-  bool deleteVar(Variable* var);
+  int GetContext(BasicVariable* var);
+  bool deleteVar(BasicVariable* var);
 
 };
 

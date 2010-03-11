@@ -115,8 +115,13 @@ BasicVariable::ptr Variables::AddVar( vartype type,
 
 
 //--------------------------------------------------
-Variable::ptr Variables::AddVar( BasicVariable::ptr& var, Variables::ptr context )
+BasicVariable::ptr Variables::AddVar( BasicVariable::ptr& var, Variables::ptr context )
 {
+
+#define CHECK_VARTEMPLATE(c) \
+  Variable<c> res = boost::dynamic_pointer_cast(Variable<c>,BasicVariable); \
+  if (res.get()) newvar = Variable<c>();
+
   CLASS_MESSAGE(boost::format(" %s ") % var->Name());
 
   string resname = this->CheckVarName(var->Name().c_str());
@@ -131,22 +136,6 @@ Variable::ptr Variables::AddVar( BasicVariable::ptr& var, Variables::ptr context
   return newvar;
 }
 
-
-//--------------------------------------------------
-Variable::ptr Variables::AddVarSmtPtr( const Variable::ptr& var, Variables::ptr context )
-{
-  CLASS_MESSAGE(boost::format(" %s ") % var->Name());
-
-  string resname = this->CheckVarName(var->Name().c_str());
-  Variable::ptr newvar( new Variable());
-  // TODO: vars should use smart pointers to variables ... and we should avoid this kind of "copy", but now the variable inside contains a smart pointer ...
-  (*newvar) = (*var);
-  newvar->Rename(resname.c_str());
-  newvar->SetContext(context);
-  _vars.push_front(newvar);
-
-  return newvar;
-}
 
 //--------------------------------------------------
 void Variables::SearchCompletions(const wxString& varname, 
