@@ -54,77 +54,78 @@ static PDEOpticFlowParam ami_optic_flow_param;
 void AddWrapFluid(){
 
   // Create new instance of the class
-  AMIObject* amiobject = new AMIObject;
+  AMIObject::ptr amiobject( new AMIObject);
   amiobject->SetName("AMIFluid");
 
   // Set the object context
   Variables::ptr previous_ocontext = Vars.GetObjectContext();
   Vars.SetObjectContext(amiobject->GetContext());
 
-  Vars.AddVar(type_c_procedure,"amiOFCorr3D",            (void*) amiOpticFlowCorrelation3D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiOFCorr3DNew",         (void*) amiOpticFlowCorrelation3DNew, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiOFExtrapol3D",        (void*) amiOpticFlowExtrapolationV3f, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiOFVar2DZoom",         (void*) amiOpticFlowVariational2DZoom, OBJECT_CONTEXT_NUMBER);
+  ADDOBBJECTVAR_PROC_NAME("amiOFCorr3D",            amiOpticFlowCorrelation3D);
+  ADDOBBJECTVAR_PROC_NAME("amiOFCorr3DNew",         amiOpticFlowCorrelation3DNew);
+  ADDOBBJECTVAR_PROC_NAME("amiOFExtrapol3D",        amiOpticFlowExtrapolationV3f);
+  ADDOBBJECTVAR_PROC_NAME("amiOFVar2DZoom",         amiOpticFlowVariational2DZoom);
   
-  Vars.AddVar(type_c_procedure,"amiOFExtrapolV3f",       (void*)  amiOpticFlowExtrapolationV3f, OBJECT_CONTEXT_NUMBER);
+  ADDOBBJECTVAR_PROC_NAME("amiOFExtrapolV3f",       amiOpticFlowExtrapolationV3f);
   
-  Vars.AddVar(type_c_procedure,"amiOFPDE",               (void*) amiOFPDE, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiOFPDE_Param",         (void*) amiOFPDE_Param, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiOF_2D_T",             (void*) amiOF_2D_T, OBJECT_CONTEXT_NUMBER);
+  ADDOBBJECTVAR_PROC( amiOFPDE);
+  ADDOBBJECTVAR_PROC( amiOFPDE_Param);
+  ADDOBBJECTVAR_PROC( amiOF_2D_T);
       
-  Vars.AddVar(type_c_procedure,"amiNorm2Vect3DError",    (void*) amiNorm2Vect3DError, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiNorm1Vect3DError",    (void*) amiNorm1Vect3DError, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiBoundary3D",          (void*) amiBoundary3D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiBoundaryVect3D",      (void*) amiBoundaryVect3D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiGrad3D",              (void*) amiGrad3D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiNormMaxVect3D",       (void*) amiNormMaxVect3D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiNorm2Vect3D",         (void*) amiNorm2Vect3D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiInterpolation3D",     (void*) amiInterpolation3D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiInterpolationVect3D", (void*) amiInterpolationVect3D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiCopy3D",              (void*) amiCopy3D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiCopyVect3D",          (void*) amiCopyVect3D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiConvolution3D",       (void*) amiConvolution3D, OBJECT_CONTEXT_NUMBER);
+  ADDOBBJECTVAR_PROC( amiNorm2Vect3DError);
+  ADDOBBJECTVAR_PROC( amiNorm1Vect3DError);
+  ADDOBBJECTVAR_PROC( amiBoundary3D);
+  ADDOBBJECTVAR_PROC( amiBoundaryVect3D);
+  ADDOBBJECTVAR_PROC( amiGrad3D);
+  ADDOBBJECTVAR_PROC( amiNormMaxVect3D);
+  ADDOBBJECTVAR_PROC( amiNorm2Vect3D);
+  ADDOBBJECTVAR_PROC( amiInterpolation3D);
+  ADDOBBJECTVAR_PROC( amiInterpolationVect3D);
+  ADDOBBJECTVAR_PROC( amiCopy3D);
+  ADDOBBJECTVAR_PROC( amiCopyVect3D);
+  ADDOBBJECTVAR_PROC( amiConvolution3D);
   
-  Vars.AddVar(type_c_image_function,"amiWarpSplines",    (void*) amiWarpSplines, OBJECT_CONTEXT_NUMBER);
+  ADDOBBJECTVAR_IMFUNC( amiWarpSplines);
   
-  Vars.AddVar(type_c_image_function,"amiZoomDown3D",     (void*) amiZoomDown3D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_image_function,"amiReadUV",         (void*) amiReadUV, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_image_function,"amiReadFlow3D",     (void*) amiReadFlow3D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_image_function,"amiReadBarronData", (void*) amiReadBarronData, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_image_function,"amiInverseFlow",    (void*) amiInverseFlow, OBJECT_CONTEXT_NUMBER);
+  ADDOBBJECTVAR_IMFUNC( amiZoomDown3D);
+  ADDOBBJECTVAR_IMFUNC( amiReadUV);
+  ADDOBBJECTVAR_IMFUNC( amiReadFlow3D);
+  ADDOBBJECTVAR_IMFUNC( amiReadBarronData);
+  ADDOBBJECTVAR_IMFUNC( amiInverseFlow);
       
-  Vars.AddVar(type_c_procedure,"amiZoomUpFilter3D",        (void*) amiZoomUpFilter3D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiZoomUpInterpolation3D", (void*) amiZoomUpInterpolation3D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_image_function,"amiZoomUpFlow3D",     (void*) amiZoomUpFlow3D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiOFExplicit",            (void*) amiHornSchunckOpticFlowExplicit, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiSolenoidalProj3D",      (void*) amiSolenoidalProjection3D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiOFSetGradient",         (void*) amiOFSetGradient, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiOFSetSmoothGradient",   (void*) amiOFSetSmoothGradient, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiPDESetSolenoidal",      (void*) amiPDESetSolenoidal, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiPDESetEnergyConstraint",      (void*) amiPDESetEnergyConstraint, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiOFSetGlobalConstraint", (void*) amiOFSetGlobalConstraint, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiOFSetBoundaryType",     (void*) amiOFSetBoundaryType, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiOFSetInterpolation",    (void*) amiOFSetInterpolation, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiOFSetSymmetric",        (void*) amiOFSetSymmetric, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiOFSetNormalizeAlpha",   (void*) amiOFSetNormalizeAlpha, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiOFSetAlphaNormEpsilon", (void*) amiOFSetAlphaNormEpsilon, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiJavierHornSchunck",     (void*) amiJavierHornSchunck, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiJavierHornSchunckSym",  (void*) amiJavierHornSchunckSym, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiOpticFlow",             (void*) amiOpticFlow, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiReadPDEOFParam",        (void*) amiReadPDEOFParam, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiWritePDEOFParam",       (void*) amiWritePDEOFParam, OBJECT_CONTEXT_NUMBER);
+  ADDOBBJECTVAR_PROC( amiZoomUpFilter3D);
+  ADDOBBJECTVAR_PROC( amiZoomUpInterpolation3D);
+  ADDOBBJECTVAR_IMFUNC( amiZoomUpFlow3D);
+
+  ADDOBBJECTVAR_PROC_NAME("amiOFExplicit",            amiHornSchunckOpticFlowExplicit);
+  ADDOBBJECTVAR_PROC_NAME("amiSolenoidalProj3D",      amiSolenoidalProjection3D);
+  ADDOBBJECTVAR_PROC_NAME("amiOFSetGradient",         amiOFSetGradient);
+  ADDOBBJECTVAR_PROC_NAME("amiOFSetSmoothGradient",   amiOFSetSmoothGradient);
+  ADDOBBJECTVAR_PROC_NAME("amiPDESetSolenoidal",      amiPDESetSolenoidal);
+  ADDOBBJECTVAR_PROC_NAME("amiPDESetEnergyConstraint",      amiPDESetEnergyConstraint);
+  ADDOBBJECTVAR_PROC( amiOFSetGlobalConstraint);
+  ADDOBBJECTVAR_PROC( amiOFSetBoundaryType);
+  ADDOBBJECTVAR_PROC( amiOFSetInterpolation);
+  ADDOBBJECTVAR_PROC( amiOFSetSymmetric);
+  ADDOBBJECTVAR_PROC( amiOFSetNormalizeAlpha);
+  ADDOBBJECTVAR_PROC( amiOFSetAlphaNormEpsilon);
+  ADDOBBJECTVAR_PROC( amiJavierHornSchunck);
+  ADDOBBJECTVAR_PROC( amiJavierHornSchunckSym);
+  ADDOBBJECTVAR_PROC( amiOpticFlow);
+  ADDOBBJECTVAR_PROC( amiReadPDEOFParam);
+  ADDOBBJECTVAR_PROC( amiWritePDEOFParam);
   
-  Vars.AddVar(type_c_procedure,"amiVorticity",          (void*) amiVorticity, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiGradVorticity",      (void*) amiGradVorticity, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiVorticityStandard",  (void*) amiVorticityStandard, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiGenerateSphereFlow",  (void*) amiGenerateSphereFlow, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiGenerate3DPIV",  (void*) amiGenerate3DPIV, OBJECT_CONTEXT_NUMBER);
+  ADDOBBJECTVAR_PROC( amiVorticity);
+  ADDOBBJECTVAR_PROC( amiGradVorticity);
+  ADDOBBJECTVAR_PROC( amiVorticityStandard);
+  ADDOBBJECTVAR_PROC( amiGenerateSphereFlow);
+  ADDOBBJECTVAR_PROC( amiGenerate3DPIV);
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);
 
   // 3. add the variables to this instance
-  Vars.AddVar( type_ami_object, amiobject->GetName().c_str(), (void*) amiobject);
+  Vars.AddVar<AMIObject>( amiobject->GetName().c_str(),  amiobject);
 }
 
 

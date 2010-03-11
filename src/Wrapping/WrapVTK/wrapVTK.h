@@ -24,8 +24,8 @@ void AddWrapVTK();
 
 
 InrImage* vtkAnisoGS                  (ParamList*);
-Variable::ptr Wrap_vtkSkeleton2Lines  (ParamList* p);
-Variable::ptr Wrap_vtkSphere          (ParamList* p);
+BasicVariable::ptr Wrap_vtkSkeleton2Lines  (ParamList* p);
+BasicVariable::ptr Wrap_vtkSphere          (ParamList* p);
 
 
 #endif // _WRAPVTK_H_

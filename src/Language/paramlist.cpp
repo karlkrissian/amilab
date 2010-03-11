@@ -32,16 +32,16 @@ class SurfacePoly;
 class Viewer3D;
 
 
-bool ParamList::AddParam( const Variable::ptr& var) {
+bool ParamList::AddParam( const BasicVariable::ptr& var) {
   params.push_back(var);
 }
 
-Variable::ptr ParamList::GetParam(int i)    
+BasicVariable::ptr ParamList::GetParam(int i)    
 {
   int nbp = GetNumParam();
   if ((i<0)||(i>=nbp)) {
       CLASS_ERROR(boost::format("Wrong parameter number %1% not in [0, %2%]") % i % (nbp-1));
-      return Variable::ptr();
+      return BasicVariable::ptr();
   } else
     return params[i];
 }

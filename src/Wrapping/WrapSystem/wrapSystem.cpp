@@ -27,7 +27,7 @@ extern VarContexts  Vars;
 //---------------------------------------------------------
 void AddWrapSystem(){
   // Create new instance of the class
-  AMIObject* amiobject = new AMIObject;
+  AMIObject::ptr amiobject(new AMIObject);
   amiobject->SetName("op_system");
 
   // Set the object context
@@ -35,20 +35,19 @@ void AddWrapSystem(){
   Vars.SetObjectContext(amiobject->GetContext());
 
 //  Vars.AddVar(type_c_function, "GetFreeMemory",    (void*) wrap_GetFreeMemory , OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_function, "GetFullHostName",     (void*) wrap_GetFullHostName , OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_function, "GetHomeDir",          (void*) wrap_GetHomeDir , OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_function, "GetHostName",         (void*) wrap_GetHostName , OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_function, "GetUserHome",         (void*) wrap_GetUserHome , OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_function, "GetUserId",           (void*) wrap_GetUserId , OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_function, "GetUserName",         (void*) wrap_GetUserName , OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_function, "GetCurrentScriptDir", (void*) wrap_GetCurrentScriptDir , OBJECT_CONTEXT_NUMBER);
+  ADDOBJECTVAR_VARFUNC_NAME("GetFullHostName", wrap_GetFullHostName);
+  ADDOBJECTVAR_VARFUNC_NAME("GetHomeDir",      wrap_GetHomeDir);
+  ADDOBJECTVAR_VARFUNC_NAME("GetHostName",     wrap_GetHostName);
+  ADDOBJECTVAR_VARFUNC_NAME("GetUserHome",     wrap_GetUserHome);
+  ADDOBJECTVAR_VARFUNC_NAME("GetUserId",       wrap_GetUserId);
+  ADDOBJECTVAR_VARFUNC_NAME("GetUserName",     wrap_GetUserName);
+  ADDOBJECTVAR_VARFUNC_NAME("GetCurrentScriptDir", wrap_GetCurrentScriptDir);
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);
 
   // 3. add the variables to this instance
-  Vars.AddVar( type_ami_object, amiobject->GetName().c_str(), (void*) amiobject);
-
+  Vars.AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
 
 }
 
@@ -101,7 +100,7 @@ Variable::ptr wrap_GetFreeMemory(ParamList* p)
 */
 
 //--------------------------------------------------------------------
-Variable::ptr wrap_GetFullHostName(ParamList* p)
+BasicVariable::ptr wrap_GetFullHostName(ParamList* p)
 {
     char functionname[] = "GetFullHostName";
     char description[]=" \n\
@@ -124,7 +123,7 @@ Variable::ptr wrap_GetFullHostName(ParamList* p)
 }
 
 //--------------------------------------------------------------------
-Variable::ptr wrap_GetHomeDir(ParamList* p) {
+BasicVariable::ptr wrap_GetHomeDir(ParamList* p) {
     char functionname[] = "GetHomeDir";
     char description[]=" \n\
         Wraps the wxWidgets function wxGetHomeDir, \n\
@@ -146,7 +145,7 @@ Variable::ptr wrap_GetHomeDir(ParamList* p) {
 }
 
 //--------------------------------------------------------------------
-Variable::ptr wrap_GetUserHome(ParamList* p)
+BasicVariable::ptr wrap_GetUserHome(ParamList* p)
 {
     char functionname[] = "GetUserHome";
     char description[]=" \n\
@@ -169,7 +168,7 @@ Variable::ptr wrap_GetUserHome(ParamList* p)
 }
 
 //--------------------------------------------------------------------
-Variable::ptr wrap_GetUserId(ParamList* p)
+BasicVariable::ptr wrap_GetUserId(ParamList* p)
 {
     char functionname[] = "GetUserId";
     char description[]=" \n\
@@ -192,7 +191,7 @@ Variable::ptr wrap_GetUserId(ParamList* p)
 }
 
 //--------------------------------------------------------------------
-Variable::ptr wrap_GetUserName(ParamList* p)
+BasicVariable::ptr wrap_GetUserName(ParamList* p)
 {
     char functionname[] = "GetUserName";
     char description[]=" \n\
@@ -216,7 +215,7 @@ Variable::ptr wrap_GetUserName(ParamList* p)
 
 //--------------------------------------------------------------------
 
-Variable::ptr wrap_GetHostName(ParamList* p)
+BasicVariable::ptr wrap_GetHostName(ParamList* p)
 {
     char functionname[] = "GetHostName";
     char description[]=" \n\
@@ -240,7 +239,7 @@ Variable::ptr wrap_GetHostName(ParamList* p)
 
 
 //--------------------------------------------------------------------
-Variable::ptr wrap_GetCurrentScriptDir(ParamList* p)
+BasicVariable::ptr wrap_GetCurrentScriptDir(ParamList* p)
 {
     char functionname[] = "GetCurrentScriptDir";
     char description[]=" \n\

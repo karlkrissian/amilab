@@ -42,7 +42,7 @@ extern VarContexts  Vars;
 void AddWrapFilters(){
 
   // Create new instance of the class
-  AMIObject* amiobject = new AMIObject;
+  AMIObject::ptr amiobject (new AMIObject);
   amiobject->SetName("filters");
 
   // Set the object context
@@ -52,48 +52,40 @@ void AddWrapFilters(){
   wrapAlgorithmsBasic();
 
 //  Vars.AddVar(type_c_image_function,"ImTranslation",             (void*) ImTranslation );
-  Vars.AddVar(type_c_image_function,"NSim",             (void*) NSim , OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,     "NSim2",            (void*) NSim2 , OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_image_function,"NLmeans",          (void*) NLmeans, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_image_function,"NLmeans_fast",     (void*) NLmeans_fast, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_image_function,"NLmeans_MRI",      (void*) NLmeans_MRI, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_image_function,"LeastSquares",     (void*) WrapLeastSquares, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_function,      "EigenDecomp",      (void*) Wrap_EigenDecomp, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_image_function,"StructureTensorH", (void*) wrap_StructureTensorHessianNew, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_function,      "SplineResample",   (void*) Wrap_SmoothLinesToSplines, OBJECT_CONTEXT_NUMBER);
+  ADDOBJECTVAR_IMFUNC_NAME("NSim",NSim);
 
-  Vars.AddVar(type_c_function,      "RegionGrow",   (void*) Wrap_RegionGrow, OBJECT_CONTEXT_NUMBER);
+  ADDOBJECTVAR_PROC_NAME("NSim2",NSim2);
+
+  ADDOBJECTVAR_IMFUNC_NAME("NLmeans",     NLmeans);
+  ADDOBJECTVAR_IMFUNC_NAME("NLmeans_fast",NLmeans_fast);
+  ADDOBJECTVAR_IMFUNC_NAME("NLmeans_MRI", NLmeans_MRI);
+  ADDOBJECTVAR_IMFUNC_NAME("LeastSquares",WrapLeastSquares);
+  ADDOBJECTVAR_IMFUNC_NAME("StructureTensorH",wrap_StructureTensorHessianNew);
+
+  ADDOBJECTVAR_VARFUNC_NAME("EigenDecomp",Wrap_EigenDecomp);
+  ADDOBJECTVAR_VARFUNC_NAME("SplineResample",Wrap_SmoothLinesToSplines);
+  ADDOBJECTVAR_VARFUNC_NAME("RegionGrow",Wrap_RegionGrow);
   
   #ifdef AMI_USE_FASTNLMEANS
-    Vars.AddVar(type_c_image_function,"NewNLmeans", (void*) Wrap_NewNLmeans, OBJECT_CONTEXT_NUMBER);
+    ADDOBJECTVAR_IMFUNC_NAME("NewNLmeans",    Wrap_NewNLmeans);
   #endif // AMI_USE_FASTNLMEANS
 
-  Vars.AddVar(type_c_image_function,"ComputePV", 
-                (void*) wrapComputePV, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_image_function,"ComputePV_subdiv", 
-                (void*) wrapComputePV_subdiv, OBJECT_CONTEXT_NUMBER);
+  ADDOBJECTVAR_IMFUNC_NAME("ComputePV",       wrapComputePV);
+  ADDOBJECTVAR_IMFUNC_NAME("ComputePV_subdiv",wrapComputePV_subdiv);
+  ADDOBJECTVAR_IMFUNC_NAME("DirSum",          wrap_DirSum);
+  ADDOBJECTVAR_IMFUNC_NAME("ImTranslate",     wrap_ImTranslate);
 
-  Vars.AddVar(type_c_image_function,"DirSum", 
-                (void*) wrap_DirSum, OBJECT_CONTEXT_NUMBER);
+  ADDOBJECTVAR_PROC_NAME("AddSubImage",wrap_AddSubImage);
+  ADDOBJECTVAR_PROC_NAME("MaxSubImage",wrap_MaxSubImage);
 
-  Vars.AddVar(type_c_image_function,"ImTranslate", 
-                (void*) wrap_ImTranslate, OBJECT_CONTEXT_NUMBER);
-
-  Vars.AddVar(type_c_procedure,"AddSubImage", 
-                (void*) wrap_AddSubImage, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"MaxSubImage", 
-                (void*) wrap_MaxSubImage, OBJECT_CONTEXT_NUMBER);
-
-  Vars.AddVar(type_c_procedure,"ImageAddScalar", 
-                (void*) wrap_ImageAddScalar, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"ImageCos", 
-                (void*) wrap_ImageCos, OBJECT_CONTEXT_NUMBER);
+  ADDOBJECTVAR_PROC_NAME("ImageAddScalar",wrap_ImageAddScalar);
+  ADDOBJECTVAR_PROC_NAME("ImageCos",wrap_ImageCos);
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);
 
   // 3. add the variables to this instance
-  Vars.AddVar( type_ami_object, amiobject->GetName().c_str(), (void*) amiobject);
+  Vars.AddVar<AMIObject>(amiobject->GetName().c_str(), amiobject);
 
 }
 

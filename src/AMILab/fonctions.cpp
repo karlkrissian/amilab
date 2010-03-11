@@ -2619,23 +2619,21 @@ InrImage*    Func_CC(InrImage* im, float background_threshold, int topology)
   isocontour->DefinitInterieur(  1);
   isocontour->SortContours();
 
-  InrImage* reorder_image = isocontour->GetReorderImage();
-  if (reorder_image!=NULL)
-    Vars.AddVar(type_image,"reorder",reorder_image);
+  BasicVariable::ptr var;
 
-  InrImage* inclusion_image = isocontour->GetInclusionImage();
-  if (inclusion_image!=NULL)
-    Vars.AddVar(type_image,"inclusion",inclusion_image);
+  InrImage::ptr reorder_image( isocontour->GetReorderImage());
+  Vars.AddVar<InrImage>("reorder",reorder_image);
 
-  InrImage* sign_image = isocontour->GetSignImage();
-  if (sign_image!=NULL)
-    Vars.AddVar(type_image,"cc_sign",sign_image);
+  InrImage::ptr inclusion_image( isocontour->GetInclusionImage());
+  Vars.AddVar<InrImage>("inclusion",inclusion_image);
 
-  InrImage* size_image = isocontour->GetSizeImage();
-  if (size_image!=NULL)
-    Vars.AddVar(type_image,"cc_size",size_image);
+  InrImage::ptr sign_image( isocontour->GetSignImage());
+  Vars.AddVar<InrImage>("cc_sign",sign_image);
+
+  InrImage::ptr size_image (isocontour->GetSizeImage());
+  Vars.AddVar<InrImage>("cc_size",size_image);
+
   delete isocontour;
-  
 
   return image_num_contour;
 }

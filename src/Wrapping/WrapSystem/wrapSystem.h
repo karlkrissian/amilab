@@ -25,13 +25,13 @@
 void AddWrapSystem();
 void wrap_System(ParamList* p);
 
-Variable::ptr wrap_GetFreeMemory(   ParamList* p);
-Variable::ptr wrap_GetFullHostName( ParamList* p);
-Variable::ptr wrap_GetHomeDir(      ParamList* p);
-Variable::ptr wrap_GetHostName(     ParamList* p);
-Variable::ptr wrap_GetUserHome(     ParamList* p);
-Variable::ptr wrap_GetUserId(       ParamList* p);
-Variable::ptr wrap_GetUserName(     ParamList* p);
+BasicVariable::ptr wrap_GetFreeMemory(   ParamList* p);
+BasicVariable::ptr wrap_GetFullHostName( ParamList* p);
+BasicVariable::ptr wrap_GetHomeDir(      ParamList* p);
+BasicVariable::ptr wrap_GetHostName(     ParamList* p);
+BasicVariable::ptr wrap_GetUserHome(     ParamList* p);
+BasicVariable::ptr wrap_GetUserId(       ParamList* p);
+BasicVariable::ptr wrap_GetUserName(     ParamList* p);
 
 Variable::ptr wrap_GetCurrentScriptDir( ParamList* p);
 

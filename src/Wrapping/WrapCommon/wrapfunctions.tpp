@@ -18,11 +18,6 @@
 #include <string>
 using namespace std;
 
-/// Getting variable type 
-template<class T>
-vartype GetVarType();
-
-
 
 /**
  * Function used to parse a variable of generic type in a list of parameters, and to give back a smart pointer to the variable.

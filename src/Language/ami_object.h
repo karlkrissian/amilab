@@ -61,7 +61,7 @@ private:
 
   // What happens with references here???
   /// Pointer to the language variable containing the object
-  Variable::ptr _var;
+  BasicVariable::ptr _var;
 
   /// Own list of variables
   Variables::ptr  _vars;

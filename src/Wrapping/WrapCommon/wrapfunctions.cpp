@@ -20,14 +20,6 @@
 using namespace std;
 
 
-template<> vartype GetVarType<float>         ()    { return type_float;     }
-template<> vartype GetVarType<string>        ()    { return type_string;    }
-template<> vartype GetVarType<int>           ()    { return type_int;       }
-template<> vartype GetVarType<unsigned char> ()    { return type_uchar;     }
-template<> vartype GetVarType<InrImage>      ()    { return type_image;     }
-template<> vartype GetVarType<SurfacePoly>   ()    { return type_surface;   }
-template<> vartype GetVarType<DessinImage>   ()    { return type_imagedraw; }
-template<> vartype GetVarType<AMIFunction>   ()    { return type_ami_function; }
 
 
 /**

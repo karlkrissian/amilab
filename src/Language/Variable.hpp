@@ -13,7 +13,8 @@
 
 #include "amilab_messages.h"
 #include "vartype.h"
-
+#include "paramlist.h"
+#include "BasicVariable.h"
 
 // forward definition of Variables
 class Variables;
@@ -21,95 +22,28 @@ class VarArray;
 
 /* TODO: Change SetString */
 
-/**
-  Basic Variable class without template
-**/
-class BasicVariable {
+/*
+template<class T>  
+std::ostream& operator<<(std::ostream& o, const Variable<T>& v);
 
-  DEFINE_CLASS(BasicVariable);
-
-protected:
-  vartype       _type;
-  std::string   _name;
-  std::string   _comments;
-  boost::shared_ptr<Variables>   _context; // points to the context
-    // that the variable belong to, if any
-
-public:
-
-  BasicVariable(): _type(type_void), _name(""), _comments("") {}
-  virtual ~BasicVariable(){ this->Delete(); }
-
-  /**
-   * Copy of variables
-   * @param v 
-   */
-  virtual void operator = (const BasicVariable& v) = 0;
-
-  /**
-   * Copy of variables
-   * @param v 
-   */
-  void operator = (const VariableBasic::ptr& v) {
-     (*this) = (*v);
-  }
-
-  virtual bool operator == (const BasicVariable& v)  = 0;
-
-  void SetContext(const boost::shared_ptr<Variables>& val) 
-  {
-    _context = val;
-  }
-
-  /**
-   * Create a new shared pointer reference to the object.
-   * @return variable's context
-   */
-  boost::shared_ptr<Variables> GetContext() const
-  {
-    return _context;
-  }
+template<class T> 
+std::ostream& PrintType(std::ostream& o, const Variable<T>& v);
+*/
 
 
-  vartype Type() const { return _type; }
+/// Getting variable type 
+template<class T> vartype GetVarType();
 
-//  void  SetString(string_ptr st);
-  void  SetString(const char* st);
 
-  /**
-   * Rename variable.
-   * @param newname 
-   */
-  void Rename(const char* newname) 
-  {  
-    CLASS_MESSAGE(boost::format("Renaming %1% to %2%")%_name % newname);
-    _name=newname;
-  }
+/// type: pointer to a C wrapping procedure
+typedef void      (*C_wrap_procedure)(ParamList*);
 
-  std::string Name() const { return _name;}
+/// type: pointer to a C wrapping image function
+typedef InrImage* (*C_wrap_imagefunction)(ParamList*);
 
-  void SetComments(const std::string& comments) { _comments = comments;}
-  std::string GetComments() const { return _comments; }
+/// type: pointer to a C wrapping variable function
+typedef BasicVariable::ptr (*C_wrap_varfunction)(ParamList*);
 
-  virtual bool FreeMemory() = 0;
-
-  virtual void Delete() = 0;
-
-  int HasName(const char* name)
-  {
-    if (_type==type_void) return 0;
-    return (strcmp(_name.c_str(), name)==0);
-  }
-
-  const string GetTypeName();
-
-  //
-  virtual void display() = 0;
-
-  // allow access to private members of Variable class
-  friend class VarArray;
-
-}; // class BasicVariable
 
 
 //----------------------------------------------------------------------
@@ -120,18 +54,27 @@ public:
 template<class T>
 class Variable : public BasicVariable {
 
-  DEFINE_TEMPLATE_CLASS1(Variable,T);
+//  DEFINE_TEMPLATE_CLASS1(Variable,T);
+public:
+  virtual char const* get_name() const { return "Variable<T>"; } 
+  typedef Variable<T> VariableType;
+  typedef typename boost::shared_ptr<VariableType >    ptr;
+  typedef typename boost::weak_ptr<VariableType >      wptr;
+  typedef typename std::vector<VariableType::ptr>     ptr_vector;
+  typedef std::vector<VariableType::wptr>    wptr_vector;
+  typedef std::list<VariableType::ptr>       ptr_list;
+  typedef std::list<VariableType::wptr>      wptr_list;
+
 
 private:
   boost::shared_ptr<T>        _pointer; 
 
 private:
 
-  template <class T>
   bool FreeMemory()
   {
     if ((_pointer.use_count()>1)&&(GB_debug)) {
-      CLASS_ERROR( format("variable %1% is referenced %2% times")  % _name % ptr.use_count() );
+      CLASS_ERROR( format("variable %1% is referenced %2% times")  % _name % _pointer.use_count() );
     }
     _pointer.reset();
     return true;
@@ -140,6 +83,15 @@ private:
 public:
 
   Variable();
+
+  Variable(const std::string& name, 
+           const boost::shared_ptr<T>& p)
+  {
+    _type    = GetVarType<T>();
+    _name    = name;
+    _pointer = boost::shared_ptr<T>(p);
+  }
+
   virtual ~Variable(){ this->Delete(); }
 
   /**
@@ -176,20 +128,25 @@ public:
   * Get the pointer of the variable value, points to a smart pointer.
   * @return Pointer of the variable, points to a smart pointer
   */
-  shared_ptr<T>& Pointer() const { return _pointer;}
+  boost::shared_ptr<T>& Pointer() const { return _pointer;}
 
 
 
-  void Init(vartype type, const char* name, 
+  void Init(const std::string& name, 
             const boost::shared_ptr<T>& p);
 
-  bool FreeMemory();
   void Delete();
 
   //
-  friend std::ostream& operator<<(std::ostream& o, const Variable& v);
+/*
+  friend 
+  std::ostream& operator<< <>(std::ostream& o, const Variable<T>& v);
+*/
 
-  friend std::ostream& PrintType(std::ostream& o, const Variable& v);
+/*
+  friend 
+  std::ostream& PrintType <>(std::ostream& o, const Variable<T>& v);
+*/
 
   //
   void display();
@@ -211,7 +168,7 @@ private:
   int           _size;
   int           _allocated_size;
   vartype       _type;
-  std::vector<Variable::ptr>     _vars;
+  std::vector<BasicVariable::ptr>     _vars;
   void Resize( int new_size);
 
  public:
@@ -238,11 +195,11 @@ private:
   {
     if (i>=_allocated_size) this->Resize(i+1);
     if ((i>=0)&&(i<_allocated_size)) {
-      _vars[i]->Init<T>(_type,name,p);
+      _vars[i] = BasicVariable::ptr(new Variable<T>(_type,name,p));
     }
   }
 
-  Variable::ptr& GetVar(int i); 
+  BasicVariable::ptr GetVar(int i); 
   vartype Type() { return _type; }
   void FreeMemory();
 

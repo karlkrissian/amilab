@@ -25,7 +25,7 @@ extern VarContexts  Vars;
 void AddWrapImageDraw( const DessinImage::ptr& objectptr, const std::string& objname)
 {
   // Create new instance of the class
-  AMIObject* amiobject = new AMIObject;
+  AMIObject::ptr amiobject( new AMIObject);
   amiobject->SetName(objname.c_str());
 
   // Set the object context
@@ -41,7 +41,7 @@ void AddWrapImageDraw( const DessinImage::ptr& objectptr, const std::string& obj
   Vars.SetObjectContext(previous_ocontext);
 
   // 3. add the variables to this instance
-  Variable::ptr res = Vars.AddVar( type_ami_object, amiobject->GetName().c_str(), (void*) amiobject);
+  Vars.AddVar<AMIObject>(amiobject->GetName().c_str(), amiobject);
 }
 
 /**

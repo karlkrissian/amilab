@@ -253,12 +253,7 @@ void Driver::yyip_call_function( AMIFunction* f, const ParamList::ptr& param)
           //  cerr << format("Vars.AddVarPtr( %1%, %2%, %3% )")
           //        % param->GetType(i) % name % param->GetParam(i)
           //      << endl;
-          // LOTS OF CARE HERE, now GetParam is a pointer
-          // to a smart pointer !!!
-          Vars.AddVarPtr( param->GetType(i),
-                          name,
-                          param->GetParam(i)->Pointer()
-                        );
+          Vars.AddVar(name, param->GetParam(i));
         }
       } // end for
     } else {

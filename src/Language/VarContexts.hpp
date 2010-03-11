@@ -113,31 +113,30 @@ public:
   * @param context NEWVAR_CONTEXT (-1) means the current context | OBJECT_CONTEXT_NUMBER (-10) 
   * @return 
   */
-  Variable::ptr AddVar(vartype type, const char* name, void* val,
-                    int context=NEWVAR_CONTEXT);
+  template <class T>
+  BasicVariable::ptr AddVar(const char* name, Variable<T>::ptr& val, int context=NEWVAR_CONTEXT)
+  {
+      if (context==OBJECT_CONTEXT_NUMBER) {
+        if (_object_context.get()) {
+          CLASS_MESSAGE(boost::format("adding object of type %1%, name %2% into object context ") % type % name);
+          return _object_context->AddVar<T>(name,val, _object_context);
+      }
+      else {
+        CLASS_ERROR("Calling object variable without any object context");
+        return BasicVariable::ptr();
+      }
+    }
+  
+    if (context==NEWVAR_CONTEXT) context = GetNewVarContext();
+    return _context[context]->AddVar<T>(name,val);
+  }
 
   /** 
    * Adds a new variable based on its type, pointer to value, and indentifier information.
    * IndentifierInfo contains the name and the context
    **/
-  Variable::ptr AddVar(vartype type, const IdentifierInfo::ptr& info, void* val);
+  BasicVariable::ptr AddVar(const IdentifierInfo::ptr& info, BasicVariable::ptr& val);
 
-  /** 
-   * Adds a new variable based on its type, pointer to value, and indentifier information.
-   * IndentifierInfo contains the name and the context.
-   * The new variable will create its own smart pointer.
-   * @param val  is a pointer to a smart pointer of the variable type
-   **/
-  Variable::ptr AddVarPtr(vartype type, const IdentifierInfo::ptr& info, void* val);
-
-  /**
-   * Adds a new variable based on a pointer to a smart pointer. The new variable will create its own smart pointer.
-   * @param val  is a pointer to a smart pointer of the variable type
-   **/
-  Variable::ptr AddVarPtr(vartype type, const char* name, void* val,
-                    int context=NEWVAR_CONTEXT);
-
-  Variable::ptr AddVar(Variable* var, int context=NEWVAR_CONTEXT);
 
   /**
    * Adds a new variable based on a smart pointer to a variable and a context id.
@@ -145,7 +144,7 @@ public:
    * @param context 
    * @return smart pointer to the resulting variable
    */
-  Variable::ptr AddVarSmtPtr(Variable::ptr var, int context=NEWVAR_CONTEXT);
+  BasicVariable::ptr AddVarSmtPtr(BasicVariable::ptr var, int context=NEWVAR_CONTEXT);
 
   /**
    * Find a variable based on its name, if context is -1, look for variable in the local context

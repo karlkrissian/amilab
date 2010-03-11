@@ -201,20 +201,22 @@ void handle_disconnect(wiimote* wm) {
 
 //---------------------------------------------------------
 void AddWrapWII(){
- Vars.AddVar(type_c_procedure,"WII_start",         (void*) WII_start);
- Vars.AddVar(type_c_procedure,"WII_stop",         (void*) WII_stop);
- Vars.AddVar(type_c_procedure,"WII_getmotion",     (void*) WII_getmotion);
- Vars.AddVar(type_c_procedure,"WII_initcounter",   (void*) WII_initcounter);
- Vars.AddVar(type_c_procedure,"WII_printcounter",  (void*) WII_printcounter);
- Vars.AddVar(type_c_procedure,"WII_eventloop",  (void*)WII_eventloop );
- Vars.AddVar(type_c_procedure,"WII_GetRoll",  (void*)WII_GetRoll );
- Vars.AddVar(type_c_procedure,"WII_GetPitch",  (void*)WII_GetPitch );
- Vars.AddVar(type_c_procedure,"WII_GetGForceX",  (void*)WII_GetGForceX );
- Vars.AddVar(type_c_procedure,"WII_GetGForceY",  (void*)WII_GetGForceY );
- Vars.AddVar(type_c_procedure,"WII_GetGForceZ",  (void*)WII_GetGForceZ );
- Vars.AddVar(type_c_procedure,"WII_GetButtons",  (void*)WII_GetButtons );
- Vars.AddVar(type_c_procedure,"WII_GetEventCounter",  (void*)WII_GetEventCounter );
- Vars.AddVar(type_c_procedure,"WII_SetMotionSensing",  (void*)WII_SetMotionSensing );
+
+
+  ADDVAR_PROC( WII_start);
+  ADDVAR_PROC( WII_stop);
+  ADDVAR_PROC( WII_getmotion);
+  ADDVAR_PROC( WII_initcounter);
+  ADDVAR_PROC( WII_printcounter);
+  ADDVAR_PROC( WII_eventloop );
+  ADDVAR_PROC( WII_GetRoll );
+  ADDVAR_PROC( WII_GetPitch );
+  ADDVAR_PROC( WII_GetGForceX );
+  ADDVAR_PROC( WII_GetGForceY );
+  ADDVAR_PROC( WII_GetGForceZ );
+  ADDVAR_PROC( WII_GetButtons );
+  ADDVAR_PROC( WII_GetEventCounter );
+  ADDVAR_PROC( WII_SetMotionSensing );
 
 }
 

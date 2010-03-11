@@ -42,8 +42,8 @@ class wrap_##classname##methodname : public WrapClassMember { \
     Macro for adding the members to a class.
  */
 #define ADDMEMBER(str_name,classname,proc_name) \
-  Vars.AddVar(  type_class_member, str_name,  \
-                (void*)  new wrap_##classname##proc_name(objectptr), \
+  Vars.AddVar<WrapClassMember>(str_name,  \
+                new wrap_##classname##proc_name(objectptr), \
                 OBJECT_CONTEXT_NUMBER);
 
 /** Shows help and returns 
@@ -76,8 +76,8 @@ class WrapClassMember {
   public:
     virtual ~WrapClassMember() = 0;
     virtual void SetParametersComments()          {};
-    virtual Variable::ptr CallMember(ParamList*)  
-    { return Variable::ptr(); };
+    virtual BasicVariable::ptr CallMember(ParamList*)  
+    { return BasicVariable::ptr(); };
 
     /**
      * Display the function help in an information dialog.

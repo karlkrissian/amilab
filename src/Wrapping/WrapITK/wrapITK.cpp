@@ -50,34 +50,44 @@ extern VarContexts  Vars;
 void AddWrapITK(){
 
   // Create new instance of the class
-  AMIObject* amiobject = new AMIObject;
+  AMIObject::ptr amiobject (new AMIObject);
   amiobject->SetName("itk");
 
   // Set the object context
   Variables::ptr previous_ocontext = Vars.GetObjectContext();
   Vars.SetObjectContext(amiobject->GetContext());
 
-  Vars.AddVar(type_c_image_function,"Read_3D_US", (void*) itkRead_3D_US, OBJECT_CONTEXT_NUMBER);
+  ADDOBJECTVAR_IMFUNC_NAME("Read_3D_US", 
+                           itkRead_3D_US);
   
-  Vars.AddVar(type_c_image_function,"Read", (void*) wrap_itkRead, OBJECT_CONTEXT_NUMBER);
+  ADDOBJECTVAR_IMFUNC_NAME( "Read",
+                            wrap_itkRead);
   
-  Vars.AddVar(type_c_image_function,"IsoContourDist", (void*) itkIsoContourDist, OBJECT_CONTEXT_NUMBER);
+  ADDOBJECTVAR_IMFUNC_NAME( "IsoContourDist",
+                            itkIsoContourDist);
   
   // Vars.AddVar(type_c_image_function,"BasicNLMeans2D", (void*) itkBasicNLMeans2D, OBJECT_CONTEXT_NUMBER);
   // Vars.AddVar(type_c_image_function,"BasicNLMeans3D", (void*) itkBasicNLMeans3D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_image_function,"RecursiveGaussianImageFilter2D", (void*) itkRecursiveGaussianImageFilter2D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_image_function,"RecursiveGaussianImageFilter3D", (void*) itkRecursiveGaussianImageFilter3D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,     "Write"                         , (void*) wrap_itkWrite, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_image_function,"FastMarchingImageFilter2D"     , (void*) itkFastMarchingImageFilter2D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_image_function,"FastMarchingImageFilter3D"     , (void*) itkFastMarchingImageFilter3D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_image_function,"WaterShedImageFilter2D"     , (void*) itkWaterShedImageFilter2D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_image_function,"WaterShedImageFilter3D"     , (void*) itkWaterShedImageFilter3D, OBJECT_CONTEXT_NUMBER);
+  ADDOBJECTVAR_PROC_NAME("Write", wrap_itkWrite);
+
+  ADDOBJECTVAR_IMFUNC_NAME( "RecursiveGaussianImageFilter2D",
+                            itkRecursiveGaussianImageFilter2D);
+  ADDOBJECTVAR_IMFUNC_NAME( "RecursiveGaussianImageFilter3D",
+                            itkRecursiveGaussianImageFilter3D);
+  ADDOBJECTVAR_IMFUNC_NAME( "FastMarchingImageFilter2D",
+                            itkFastMarchingImageFilter2D);
+  ADDOBJECTVAR_IMFUNC_NAME( "FastMarchingImageFilter3D",
+                            itkFastMarchingImageFilter3D);
+  ADDOBJECTVAR_IMFUNC_NAME( "WaterShedImageFilter2D",
+                            itkWaterShedImageFilter2D);
+  ADDOBJECTVAR_IMFUNC_NAME( "WaterShedImageFilter3D",
+                            itkWaterShedImageFilter3D);
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);
 
   // Add the new object (namespace)
-  Vars.AddVar( type_ami_object, amiobject->GetName().c_str(), (void*) amiobject);
+  Vars.AddVar<AMIObject>(amiobject->GetName().c_str(), amiobject);
 }
 
 

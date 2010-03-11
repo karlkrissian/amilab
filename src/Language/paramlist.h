@@ -20,7 +20,8 @@
 #include "inrimage.hpp"
 #include "DefineClass.hpp"
 #include "amilab_messages.h"
-#include "Variable.hpp"
+#include "BasicVariable.h"
+//#include "Variable.hpp"
 
 extern unsigned char GB_debug;
 
@@ -40,7 +41,7 @@ class ParamList {
 private:
   
   // use here a std::list of Variable, no need to care of the order the variables are deleted since they don't have inter-dependance
-  std::vector<Variable::ptr>     params;
+  std::vector<BasicVariable::ptr>     params;
 
   // reference to the variable: should not be deleted
   // not needed because of smart pointers ...
@@ -83,10 +84,10 @@ private:
     return params[i]->Type();
   }
 
-  bool AddParam( const Variable::ptr& var);
+  bool AddParam( const BasicVariable::ptr& var);
 
   // cannot use & because may return a empty pointer, should have a static pointer to empty variable at hand
-  Variable::ptr GetParam(int i);
+  BasicVariable::ptr GetParam(int i);
 
 };
 

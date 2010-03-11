@@ -24,7 +24,7 @@ class VarList
 {
   DEFINE_CLASS(VarList);
 
-  public:
+  protected:
     std::list<Variable::ptr> list;
 };
 

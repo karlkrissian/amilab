@@ -53,10 +53,13 @@ extern VarContexts  Vars;
 
 
 //---------------------------------------------------------
-void AddWrapVTK(){
- Vars.AddVar(type_c_image_function,"vtkAnisoGaussSeidel", (void*) vtkAnisoGS);
- Vars.AddVar(type_c_function,      "vtkSkeleton2Lines",   (void*) Wrap_vtkSkeleton2Lines);
- Vars.AddVar(type_c_function,      "vtkSphere",           (void*) Wrap_vtkSphere);
+void AddWrapVTK()
+{
+
+  ADDVAR_IMAGEFUNC_NAME("vtkAnisoGaussSeidel",  vtkAnisoGS);
+  ADDVAR_VARFUNC_NAME(  "vtkSkeleton2Lines",    Wrap_vtkSkeleton2Lines);
+  ADDVAR_VARFUNC_NAME(  "vtkSphere",            Wrap_vtkSphere);
+
 }
 
 

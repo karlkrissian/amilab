@@ -10,6 +10,8 @@
 //
 //
 
+#ifndef _vartype_h_
+#define _vartype_h_
 
 //! types of variables
 typedef enum {
@@ -35,6 +37,8 @@ typedef enum {
   type_matrix,           /**< matrix */
   type_gltransform,      /**< OpenGL transformation */
   type_array,            /**< Array */
-  type_context           /**< Context */
 } vartype; //! types of variables
  
+
+#endif 
+// _vartype_h_

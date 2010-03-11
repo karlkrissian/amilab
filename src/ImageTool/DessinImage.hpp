@@ -1055,6 +1055,11 @@ public:
         return px;
     }
 
+  static DessinImage::ptr Create_ptr( DessinImage* di)
+    {
+        return DessinImage::ptr(di, DessinImage::deleter());
+    }
+
   ~DessinImage();
 
   //

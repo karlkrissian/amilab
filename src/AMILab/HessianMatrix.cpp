@@ -120,15 +120,15 @@ unsigned char      Func_Derivatives( InrImage* image_initiale,
     int          x,y,z;
     double          hessien[9];
     InrImage*       image;
-    InrImage*       image_vep1 = NULL;
-    InrImage*       image_vep2 = NULL;
-    InrImage*       image_vep3 = NULL;
-    InrImage*       image_vap1 = NULL;
-    InrImage*       image_vap2 = NULL;
-    InrImage*       image_vap3 = NULL;
-    InrImage*       image_grad = NULL;
-    GeneralGaussianFilter* filtre;
-    char            resname[100];
+    InrImage::ptr       image_vep1 = NULL;
+    InrImage::ptr       image_vep2 = NULL;
+    InrImage::ptr       image_vep3 = NULL;
+    InrImage::ptr       image_vap1 = NULL;
+    InrImage::ptr       image_vap2 = NULL;
+    InrImage::ptr       image_vap3 = NULL;
+    InrImage::ptr       image_grad = NULL;
+    GeneralGaussianFilter::ptr filtre;
+    std::string         resname;
     // int             i;
 
   type_filtre = MY_FILTRE_CONV;
@@ -143,43 +143,43 @@ unsigned char      Func_Derivatives( InrImage* image_initiale,
   dimension = MODE_3D;
 
   if (H1&1) {
-    image_vep1 =  new InrImage( WT_FLOAT, 3, "H-vep1.inr.gz", image);
+    image_vep1 = InrImage::ptr( new InrImage( WT_FLOAT, 3, "H-vep1.inr.gz", image));
     image_vep1->InitImage( 0.0, 0.0, 0.0);
   }
 
   if (H1&2) {
-    image_vap1 =  new InrImage( WT_FLOAT,  "H-vap1.inr.gz", image);
+    image_vap1 =  InrImage::ptr(new InrImage( WT_FLOAT,  "H-vap1.inr.gz", image));
     image_vap1->InitImage( 0.0);
   }
 
   if (H2&1) {
-    image_vep2 =  new InrImage( WT_FLOAT, 3, "H-vep2.inr.gz", image);
+    image_vep2 =  InrImage::ptr(new InrImage( WT_FLOAT, 3, "H-vep2.inr.gz", image));
     image_vep2->InitImage( 0.0, 0.0, 0.0);
   }
 
   if (H2&2) {
-    image_vap2 =  new InrImage( WT_FLOAT,  "H-vap2.inr.gz", image);
+    image_vap2 =  InrImage::ptr(new InrImage( WT_FLOAT,  "H-vap2.inr.gz", image));
     image_vap2->InitImage( 0.0);
   }
 
   if (H3&1) {
-    image_vep3 =  new InrImage( WT_FLOAT, 3, "H-vep3.inr.gz", image);
+    image_vep3 =  InrImage::ptr(new InrImage( WT_FLOAT, 3, "H-vep3.inr.gz", image));
     image_vep3->InitImage( 0.0, 0.0, 0.0);
   }
 
   if (H3&2) {
-    image_vap3 =  new InrImage( WT_FLOAT,  "H-vap3.inr.gz", image);
+    image_vap3 =  InrImage::ptr(new InrImage( WT_FLOAT,  "H-vap3.inr.gz", image));
     image_vap3->InitImage( 0.0);
   }
 
   if (_G&1) {
-    image_grad =  new InrImage( WT_FLOAT, 3, "grad.inr.gz", image);
+    image_grad =  InrImage::ptr(new InrImage( WT_FLOAT, 3, "grad.inr.gz", image));
     image_grad->InitImage( 0.0, 0.0, 0.0);
   }
 
 
   // Initialisation des images des d�riv�es 
-  filtre = new GeneralGaussianFilter(image, dimension);
+  filtre = GeneralGaussianFilter::ptr(new GeneralGaussianFilter(image, dimension));
 
   Si (mask != NULL) Alors
     filtre->FixeMasqueGradient( mask);
@@ -187,7 +187,7 @@ unsigned char      Func_Derivatives( InrImage* image_initiale,
 
   filtre->Utilise_Image(   false);
   if (H1||H2||H3)  filtre->UtiliseHessien(  true);
-  if (_G)           filtre->UtiliseGradient( true);
+  if (_G)          filtre->UtiliseGradient( true);
 
   filtre->InitDerivees();
 
@@ -270,41 +270,40 @@ unsigned char      Func_Derivatives( InrImage* image_initiale,
   FinPour
 
   if (H1&1) {
-    sprintf(resname,"%s_Hvep1",varname);
-    Vars.AddVar(type_image,resname,image_vep1);
+    resname = (boost::format("%s_Hvep1") % varname).str();
+    Vars.AddVar<InrImage>(resname,image_vep1);
   }
 
   if (H2&1) {
-    sprintf(resname,"%s_Hvep2",varname);
-    Vars.AddVar(type_image,resname,image_vep2);
+    resname = (boost::format("%s_Hvep2") % varname).str();
+    Vars.AddVar<InrImage>(resname,image_vep2);
   }
 
   if (H3&1) {
-    sprintf(resname,"%s_Hvep3",varname);
-    Vars.AddVar(type_image,resname,image_vep3);
+    resname = (boost::format("%s_Hvep3") % varname).str();
+    Vars.AddVar<InrImage>(resname,image_vep3);
   }
 
   if (_G&1) {
-    sprintf(resname,"%s_grad",varname);
-    Vars.AddVar(type_image,resname,image_grad);
+    resname = (boost::format("%s_grad") % varname).str();
+    Vars.AddVar<InrImage>(resname,image_grad);
   }
 
   if (H1&2) {
-    sprintf(resname,"%s_Hvap1",varname);
-    Vars.AddVar(type_image,resname,image_vap1);
+    resname = (boost::format("%s_Hvap1") % varname).str();
+    Vars.AddVar<InrImage>(resname,image_vap1);
   }
 
   if (H2&2) {
-    sprintf(resname,"%s_Hvap2",varname);
-    Vars.AddVar(type_image,resname,image_vap2);
+    resname = (boost::format("%s_Hvap2") % varname).str();
+    Vars.AddVar<InrImage>(resname,image_vap2);
   }
 
   if (H3&2) {
-    sprintf(resname,"%s_Hvap3",varname);
-    Vars.AddVar(type_image,resname,image_vap3);
+    resname = (boost::format("%s_Hvap3") % varname).str();
+    Vars.AddVar<InrImage>(resname,image_vap3);
   }
 
-  delete filtre;
   if (image!=image_initiale) delete image;
 
   return true;
@@ -339,14 +338,14 @@ printf("Func_HessianMatrix\n");
     int          x,y,z;
     double          hessien[9];
     InrImage*       image;
-    InrImage*       image_vep1;
-    InrImage*       image_vep2;
-    InrImage*       image_vep3;
-    InrImage*       image_vap1;
-    InrImage*       image_vap2;
-    InrImage*       image_vap3;
-    GeneralGaussianFilter* filtre;
-    char            resname[100];
+    InrImage::ptr       image_vep1;
+    InrImage::ptr       image_vep2;
+    InrImage::ptr       image_vep3;
+    InrImage::ptr       image_vap1;
+    InrImage::ptr       image_vap2;
+    InrImage::ptr       image_vap3;
+    GeneralGaussianFilter::ptr filtre;
+    std::string         resname;
 // int             i;
 
   type_filtre = MY_FILTRE_CONV;
@@ -360,23 +359,23 @@ printf("Func_HessianMatrix\n");
 
   dimension = MODE_3D;
 
-  image_vep1 =  new InrImage( WT_FLOAT, 3, "H-vep1.inr.gz", image);
-  image_vep2 =  new InrImage( WT_FLOAT, 3, "H-vep2.inr.gz", image);
-  image_vep3 =  new InrImage( WT_FLOAT, 3, "H-vep3.inr.gz", image);
+  image_vep1 = InrImage::ptr( new InrImage( WT_FLOAT, 3, "H-vep1.inr.gz", image));
+  image_vep2 = InrImage::ptr( new InrImage( WT_FLOAT, 3, "H-vep2.inr.gz", image));
+  image_vep3 = InrImage::ptr( new InrImage( WT_FLOAT, 3, "H-vep3.inr.gz", image));
   image_vep1->InitImage( 0.0, 0.0, 0.0);
   image_vep2->InitImage( 0.0, 0.0, 0.0);
   image_vep3->InitImage( 0.0, 0.0, 0.0);
 
-  image_vap1 =  new InrImage( WT_FLOAT,  "H-vap1.inr.gz", image);
-  image_vap2 =  new InrImage( WT_FLOAT,  "H-vap2.inr.gz", image);
-  image_vap3 =  new InrImage( WT_FLOAT,  "H-vap3.inr.gz", image);
+  image_vap1 = InrImage::ptr( new InrImage( WT_FLOAT,  "H-vap1.inr.gz", image));
+  image_vap2 = InrImage::ptr( new InrImage( WT_FLOAT,  "H-vap2.inr.gz", image));
+  image_vap3 = InrImage::ptr( new InrImage( WT_FLOAT,  "H-vap3.inr.gz", image));
   image_vap1->InitImage( 0.0);
   image_vap2->InitImage( 0.0);
   image_vap3->InitImage( 0.0);
 
 
   // Initialisation des images des d�riv�es 
-  filtre = new GeneralGaussianFilter(image, dimension);
+  filtre = GeneralGaussianFilter::ptr(new GeneralGaussianFilter(image, dimension));
 
   Si (mask != NULL) Alors
     filtre->FixeMasqueGradient( mask);
@@ -459,25 +458,24 @@ printf("Func_HessianMatrix\n");
   FinPour
   FinPour
 
-  sprintf(resname,"%s_Hvep1",varname);
-  Vars.AddVar(type_image,resname,image_vep1);
+  resname = (boost::format("%s_Hvep1") % varname).str();
+  Vars.AddVar<InrImage>(resname,image_vep1);
 
-  sprintf(resname,"%s_Hvep2",varname);
-  Vars.AddVar(type_image,resname,image_vep2);
+  resname = (boost::format("%s_Hvep2") % varname).str();
+  Vars.AddVar<InrImage>(resname,image_vep2);
 
-  sprintf(resname,"%s_Hvep3",varname);
-  Vars.AddVar(type_image,resname,image_vep3);
+  resname = (boost::format("%s_Hvep3") % varname).str();
+  Vars.AddVar<InrImage>(resname,image_vep3);
 
-  sprintf(resname,"%s_Hvap1",varname);
-  Vars.AddVar(type_image,resname,image_vap1);
+  resname = (boost::format("%s_Hvap1") % varname).str();
+  Vars.AddVar<InrImage>(resname,image_vap1);
 
-  sprintf(resname,"%s_Hvap2",varname);
-  Vars.AddVar(type_image,resname,image_vap2);
+  resname = (boost::format("%s_Hvap2") % varname).str();
+  Vars.AddVar<InrImage>(resname,image_vap2);
 
-  sprintf(resname,"%s_Hvap3",varname);
-  Vars.AddVar(type_image,resname,image_vap3);
+  resname = (boost::format("%s_Hvap3") % varname).str();
+  Vars.AddVar<InrImage>(resname,image_vap3);
 
-  delete filtre;
   if (image!=image_initiale) delete image;
 
   return true;
@@ -597,7 +595,7 @@ printf("Func_HessianVap\n");
   FinPour
 
   sprintf(resname,"%s_Hvap%d",varname,vap_num);
-  Vars.AddVar(type_image,resname,image_vap);
+  Vars.AddVar<InrImage>(resname,image_vap);
 
   delete filtre;
   if (image!=image_initiale) delete image;

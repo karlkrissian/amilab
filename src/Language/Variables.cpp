@@ -94,51 +94,34 @@ std::string Variables::CheckVarName(const char* name)
 }
 
 //--------------------------------------------------
-Variable::ptr Variables::AddVar( vartype type, 
+BasicVariable::ptr Variables::AddVar( vartype type, 
 		      const char* name, 
-		      void* val, 
+		      BasicVariable::ptr& val, 
           boost::shared_ptr<Variables> context)
 {
   CLASS_MESSAGE(boost::format(" %1%, in %2% ") % name % GetName());
 
   string resname = this->CheckVarName(name);
-  Variable::ptr newvar(new Variable());
+  BasicVariable::ptr newvar(val);
   //std::cout << "  **  newvar =  " << newvar << endl;
 
-  newvar->Init(type,resname.c_str(),val);
+  newvar->Rename(resname.c_str());
   newvar->SetContext(context);
   _vars.push_front(newvar);
 
   return newvar;
 }
 
-//--------------------------------------------------
-// here val is a pointer to a smart pointer
-//
-Variable::ptr Variables::AddVarPtr( vartype type, 
-		      const char* name, 
-		      void* val,
-          boost::shared_ptr<Variables> context)
-{
-  CLASS_MESSAGE(boost::format(" %s ") % name);
-
-  string resname = this->CheckVarName(name);
-  Variable::ptr newvar(new Variable());
-  newvar->InitPtr(type,resname.c_str(),val);
-  newvar->SetContext(context);
-  _vars.push_front(newvar);
-
-  return newvar;
-} // AddVarPtr()
 
 
 //--------------------------------------------------
-Variable::ptr Variables::AddVar( Variable* var, Variables::ptr context )
+Variable::ptr Variables::AddVar( BasicVariable::ptr& var, Variables::ptr context )
 {
   CLASS_MESSAGE(boost::format(" %s ") % var->Name());
 
   string resname = this->CheckVarName(var->Name().c_str());
-  Variable::ptr newvar (new Variable());
+  // TODO: fix the following code, maybe not so easy ...
+  BasicVariable::ptr newvar();
   (*newvar) = (*var);
   newvar->Rename(resname.c_str());
   newvar->SetContext(context);
@@ -229,17 +212,17 @@ bool Variables::ExistVar(Variable* var)
 
 
 //--------------------------------------------------
-Variable::ptr Variables::GetVar(const char* varname)
+BasicVariable::ptr Variables::GetVar(const char* varname)
 {
-  std::list<Variable::ptr>::iterator Iter;
+  std::list<BasicVariable::ptr>::iterator Iter;
   for (Iter  = _vars.begin();
        Iter != _vars.end()  ; Iter++ )
   {
     if ((*Iter)->HasName(varname)) {
-      return Variable::ptr(*Iter);
+      return BasicVariable::ptr(*Iter);
     }
   }
-  return Variable::ptr();
+  return BasicVariable::ptr();
 }
 
 /*

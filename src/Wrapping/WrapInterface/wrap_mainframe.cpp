@@ -23,10 +23,11 @@ extern MainFrame*    GB_main_wxFrame;
 void AddWrapMainFrame()
 {
 
-  Vars.AddVar(type_c_procedure, "mf_DrawSetCurve",  (void*) wrap_MainFrameDrawSetCurve );
-  Vars.AddVar(type_c_procedure, "mf_DrawSetXLimits",  (void*) wrap_MainFrameDrawSetXLimits );
-  Vars.AddVar(type_c_procedure, "mf_DrawSetYLimits",  (void*) wrap_MainFrameDrawSetYLimits );
-  Vars.AddVar(type_c_procedure, "mf_DrawSetCurveProperties",  (void*) wrap_MainFrameDrawSetCurveProperties );
+  ADDVAR_PROC_NAME("mf_DrawSetCurve",   wrap_MainFrameDrawSetCurve );
+  ADDVAR_PROC_NAME("mf_DrawSetXLimits", wrap_MainFrameDrawSetXLimits );
+  ADDVAR_PROC_NAME("mf_DrawSetYLimits", wrap_MainFrameDrawSetYLimits );
+  ADDVAR_PROC_NAME("mf_DrawSetCurveProperties", 
+                    wrap_MainFrameDrawSetCurveProperties );
 }
 
 

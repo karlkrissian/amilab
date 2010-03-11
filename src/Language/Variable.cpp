@@ -21,6 +21,58 @@ extern unsigned char       GB_debug;
 
 using namespace std;
 
+template<> vartype GetVarType<InrImage>      ()    
+{ return type_image;     }
+
+template<> vartype GetVarType<float>         ()    
+{ return type_float;     }
+
+template<> vartype GetVarType<int>           ()    
+{ return type_int;       }
+
+template<> vartype GetVarType<unsigned char> ()    
+{ return type_uchar;     }
+
+template<> vartype GetVarType<string>        ()    
+{ return type_string;    }
+
+template<> vartype GetVarType<DessinImage>   ()    
+{ return type_imagedraw; }
+
+template<> vartype GetVarType<SurfacePoly>   ()    
+{ return type_surface;   }
+
+template<> vartype GetVarType<Viewer3D>   ()
+{ return type_surfdraw;   }
+
+template<> vartype GetVarType<FILE>   ()
+{ return type_file;   }
+
+template<> vartype GetVarType<C_wrap_procedure>   ()
+{ return type_c_procedure;   }
+
+template<> vartype GetVarType<WrapClassMember>   ()
+{ return type_class_member;   }
+
+template<> vartype GetVarType<C_wrap_imagefunction>   ()
+{ return type_c_image_function;   }
+
+template<> vartype GetVarType<C_wrap_varfunction>   ()
+{ return type_c_function;   }
+
+template<> vartype GetVarType<AMIFunction>   ()
+{ return type_ami_function;   }
+
+template<> vartype GetVarType<AMIClass>      ()
+{ return type_ami_class;   }
+
+template<> vartype GetVarType<AMIObject>     ()
+{ return type_ami_object;   }
+
+template<> vartype GetVarType<AMICPPObject>  ()
+{ return type_ami_cpp_object;   }
+
+
 
 // TODO : make a base non-template class 
 // and a template class !!
@@ -31,8 +83,8 @@ using namespace std;
 //  Variable
 //----------------------------------------------------------------------
 
-
-Variable::Variable()
+template<class T>
+Variable<T>::Variable()
 {
   _type         = type_void;
   _pointer      = NULL;
@@ -41,7 +93,8 @@ Variable::Variable()
 
 
 //------------------------------------------------
-void Variable::operator = (const Variable& v)
+template<class T>
+void Variable<T>::operator = (const Variable& v)
 {
     _comments     = v._comments;
 
@@ -90,7 +143,8 @@ void Variable::operator = (const Variable& v)
 }
 
 
-void Variable::Init(vartype type, const char* name, void* p)
+template<class T>
+void Variable<T>::Init(vartype type, const char* name, void* p)
 {
 //  cout << boost::format("Variable::Init(%1%,%2%,%3%)")%type%name%p
 //       << " with pointer " << this << endl;
@@ -168,7 +222,8 @@ void Variable::Init(vartype type, const char* name, void* p)
 
 
 //----------------------------------------------------------
-void Variable::InitPtr( vartype type, 
+template<class T>
+void Variable<T>::InitPtr( vartype type, 
                         const char* name, 
                         void* p // is reference a smart pointer to the type
                         )
@@ -232,7 +287,8 @@ void  Variable::SetString(string_ptr st)
 }
 */
 
-void  Variable::SetString(const char* st) 
+template<class T>
+void  Variable<T>::SetString(const char* st) 
 {
   // replace the value inside the string
   if (_type==type_string) {
@@ -241,7 +297,8 @@ void  Variable::SetString(const char* st)
 }
 
 
-bool Variable::FreeMemory()
+template<class T>
+bool Variable<T>::FreeMemory()
 {
 
   if (GB_debug)
@@ -287,7 +344,8 @@ bool Variable::FreeMemory()
 }
 
 
-void Variable::Delete() 
+template<class T>
+void Variable<T>::Delete() 
 {
   if ((_pointer==NULL)||(!_allocated_memory)) return;
   if (!FreeMemory()) 
@@ -298,7 +356,8 @@ void Variable::Delete()
   _type = type_void;
 }
 
-int Variable::HasName(const char* name) 
+template<class T>
+int Variable<T>::HasName(const char* name) 
 {
   //printf("Variable::HasName( %s) \n",name);
   if (_type==type_void) return 0;
@@ -461,13 +520,13 @@ void VarArray::InitElement( int i,
 }
 */
 
-Variable::ptr& VarArray::GetVar(int i) {
+BasicVariable::ptr VarArray::GetVar(int i) {
   if ((i>=0)&&(i<_allocated_size)) {
     return _vars[i];
   }    
   else {
     CLASS_ERROR(boost::format("Wrong index %1%") % i);
-    return _vars[0];
+    return BasicVariable::ptr();
   }
 }
 

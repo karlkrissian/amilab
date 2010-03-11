@@ -99,13 +99,11 @@ void Variable<T>::operator = (const Variable<T>& v)
 
 //------------------------------------------------
 template<class T>
-void Variable<T>::Init(vartype type, const char* name, boost::shared_ptr<T>& p)
+void Variable<T>::Init(const std::string& name, boost::shared_ptr<T>& p)
 {
-//  cout << boost::format("Variable::Init(%1%,%2%,%3%)")%type%name%p
-//       << " with pointer " << this << endl;
-  _type         = type;
+  _type         = GetVarType<T>();
   _name         = name;
-  _pointer     = boost::shared_ptr<T>(p); 
+  _pointer      = boost::shared_ptr<T>(p); 
 
 /*
 #define CREATE_CASE(_typeid,_typename) \
@@ -310,11 +308,13 @@ void Variable::Delete()
 
 
 //---------------------------------------------------
-ostream& operator<<(ostream& o, const Variable& v)
+template<class T>
+ostream& operator<<(ostream& o, const Variable<T>& v)
 //       -----------
 {
   if (v._type==type_void) { o << "deleted"; return o;}
   o << format("%s\t") % v._name;
+/* TODO: take care of this functionality
   switch(v._type) {
     //      case type_void     : printf("void";     break;
     case type_image           : o << "image    "; break;
@@ -346,6 +346,7 @@ ostream& operator<<(ostream& o, const Variable& v)
     }
     default                : o << "unknown type ";     break;
   }
+*/
   //      o << ("\n");
   return o;
 } // operator << Variable

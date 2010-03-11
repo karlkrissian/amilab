@@ -76,6 +76,7 @@ SET(Language_HDRS
     paramlist.h
     SurfStack.h
     VarContexts.hpp
+    BasicVariable.h
     Variable.hpp
     Variables.hpp
 )

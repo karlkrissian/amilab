@@ -154,8 +154,8 @@ int VarContexts::GetNewVarContext()
 
 
 //--------------------------------------------------
-Variable::ptr VarContexts::AddVar(vartype type, const char* name, 
-                              void* val,
+BasicVariable::ptr VarContexts::AddVar(const char* name, 
+                              BasicVariable::ptr& val,
                               int context)
 {
   CLASS_MESSAGE("start");
@@ -163,7 +163,7 @@ Variable::ptr VarContexts::AddVar(vartype type, const char* name,
     CLASS_MESSAGE("object context");
     if (_object_context.get()) {
       CLASS_MESSAGE(boost::format("adding object of type %1%, name %2% into object context ") % type % name);
-      return _object_context->AddVar(type,name,val,
+      return _object_context->AddVar(name,val,
                                     _object_context);
     }
     else {
@@ -180,73 +180,17 @@ Variable::ptr VarContexts::AddVar(vartype type, const char* name,
 
 
 //--------------------------------------------------
-Variable::ptr VarContexts::AddVar(vartype type, 
-                              const IdentifierInfo::ptr& info, 
-                              void* val)
+BasicVariable::ptr VarContexts::AddVar(  
+              const IdentifierInfo::ptr& info, 
+              BasicVariable::ptr& val)
 {
   int context;
   context = info->GetCreationContext();
 
-  return AddVar(type,info->GetName().c_str(),val,context);
+  return AddVar(info->GetName().c_str(),val,context);
 
 } // AddVar()
 
-//--------------------------------------------------
-Variable::ptr VarContexts::AddVarPtr(vartype type, 
-                              const IdentifierInfo::ptr& info, 
-                              void* val)
-{
-  int context;
-  context = info->GetCreationContext();
-
-  return AddVarPtr(type,info->GetName().c_str(),val,context);
-
-} // AddVar()
-
-//--------------------------------------------------
-// void* val is a pointer to a smart pointer of the type
-//
-Variable::ptr VarContexts::AddVarPtr( vartype type, const char* name, 
-                                  void* val, int context )
-{
-
-  if (context==OBJECT_CONTEXT_NUMBER) {
-    CLASS_MESSAGE("object context");
-    if (_object_context.get()) {
-      CLASS_MESSAGE(boost::format("adding object of type %1%, name %2% into object context ") % type % name);
-      return _object_context->AddVarPtr(type,name,val,
-                                    _object_context);
-    }
-    else {
-      CLASS_ERROR("Calling object variable without any object context");
-      return Variable::ptr();
-    }
-  }
-
-  if (context==NEWVAR_CONTEXT) 
-    context = GetNewVarContext();
-  CLASS_MESSAGE(boost::format("Context number %d ")% context);
-
-  if (GB_debug) 
-    cerr  << "AddVar " << name 
-          << " in context number  "
-          << context 
-          << " called " << _context[context]->GetName()
-          << endl;
-
-  return _context[context]->AddVarPtr(type,name,val);
-
-} // AddVarPtr()
-
-
-//--------------------------------------------------
-Variable::ptr VarContexts::AddVar(Variable* var, int context)
-{
-  if (context==NEWVAR_CONTEXT) 
-    context = GetNewVarContext();
-  CLASS_MESSAGE(boost::format("Context number %d ")% context);
-  return _context[context]->AddVar(var);
-}
 
 //--------------------------------------------------
 Variable::ptr VarContexts::AddVarSmtPtr(Variable::ptr var, int context)

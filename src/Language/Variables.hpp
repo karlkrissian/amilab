@@ -24,7 +24,7 @@ class Variables{
 
 protected:
   // TODO: avoid pointers here !!!
-  std::list<Variable::ptr>  _vars;
+  std::list<BasicVariable::ptr>  _vars;
   string                    _context_name;
   bool                      _global_new;
 
@@ -53,21 +53,38 @@ protected:
    * @param name 
    * @param val 
    * @param context 
-   * @return 
+   * @return a smart pointer to the new variable (base class)
    */
-  Variable::ptr AddVar(vartype type, const char* name, void* val, boost::shared_ptr<Variables> context = boost::shared_ptr<Variables>() );
+  BasicVariable::ptr AddVar(vartype type, const char* name, BasicVariable::ptr& val, boost::shared_ptr<Variables> context = boost::shared_ptr<Variables>() );
 
   /**
-   *  Add a new variable based on its type, name, pointer to a smart pointer of the object information, and context.
+   *  Add a new variable based on its type, name, pointer to the object information, and context.
    * @param type 
    * @param name 
    * @param val 
    * @param context 
-   * @return 
+   * @return a smart pointer to the new variable (base class)
    */
-  Variable::ptr AddVarPtr(vartype type, const char* name, void* val, boost::shared_ptr<Variables> context = boost::shared_ptr<Variables>());
+  template <class T>
+  BasicVariable::ptr AddVar(
+        const char* name,
+        boost::shared_ptr<BasicVariable>& val,
+        boost::shared_ptr<Variables> context = boost::shared_ptr<Variables>() )
+  {
+    CLASS_MESSAGE(boost::format(" %1%, in %2% ") % name % GetName());
+  
+    string resname = this->CheckVarName(name);
+    BasicVariable::ptr newvar(new Variable<T>(name,val));
+    //std::cout << "  **  newvar =  " << newvar << endl;
+  
+    newvar->Rename(resname.c_str());
+    newvar->SetContext(context);
+    _vars.push_front(newvar);
+  
+    return newvar;
+  }
 
-  Variable::ptr AddVar(Variable* var, Variables::ptr context = Variables::ptr());
+  BasicVariable::ptr AddVar(BasicVariable::ptr& var, Variables::ptr context = Variables::ptr());
 
   /**
    *  Add a new variable based on a smart pointer to a variable
@@ -75,11 +92,11 @@ protected:
    * @param context 
    * @return 
    */
-  Variable::ptr AddVarSmtPtr(const Variable::ptr& var, Variables::ptr context = Variables::ptr());
+  BasicVariable::ptr AddVarSmtPtr(const BasicVariable::ptr& var, Variables::ptr context = Variables::ptr());
 
   bool ExistVar(const char* varname);
 
-  bool ExistVar(Variable* var);
+  bool ExistVar(BasicVariable* var);
 
   void SearchCompletions( const wxString& varname, 
                           boost::shared_ptr<wxArrayString>& completions);
@@ -100,7 +117,7 @@ protected:
    * @param varname variable name
    * @return a smart pointer to the variable if found or an empty smart pointer otherwise
    */
-  Variable::ptr GetVar(const char* varname);
+  BasicVariable::ptr GetVar(const char* varname);
 
 //  unsigned char GetVar(const char* varname, int* i);
 

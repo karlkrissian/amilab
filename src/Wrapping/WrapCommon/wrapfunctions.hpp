@@ -19,6 +19,110 @@
 #include "paramlist.h"
 //#include "DessinImage.hpp"
 
+
+/*! \def ADDVAR_PROC
+    \brief Add a C procedure variable using its name as the variable name
+*/
+#define ADDVAR_PROC(name) \
+  Vars.AddVar<C_wrap_procedure>(\
+    #name,\
+    boost::shared_ptr<C_wrap_procedure>(&name,\
+      smartpointer_nodeleter<C_wrap_procedure>()))
+
+/*! \def ADDVAR_PROC
+    \brief Add a C procedure variable with the given name
+*/
+#define ADDVAR_PROC_NAME(stname,name) \
+  Vars.AddVar<C_wrap_procedure>(\
+    stname,\
+    boost::shared_ptr<C_wrap_procedure>(&name,\
+      smartpointer_nodeleter<C_wrap_procedure>()))
+
+/*! \def ADDOBJECTVAR_PROC
+    \brief Add a C procedure variable with the given name
+*/
+#define ADDOBJECTVAR_PROC(name) \
+  Vars.AddVar<C_wrap_procedure>(\
+    #name,\
+    boost::shared_ptr<C_wrap_procedure>(&name,\
+      smartpointer_nodeleter<C_wrap_procedure>()),\
+    OBJECT_CONTEXT_NUMBER)
+
+/*! \def ADDOBJECTVAR_PROC
+    \brief Add a C procedure variable with the given name
+*/
+#define ADDOBJECTVAR_PROC_NAME(stname,name) \
+  Vars.AddVar<C_wrap_procedure>(\
+    stname,\
+    boost::shared_ptr<C_wrap_procedure>(&name,\
+      smartpointer_nodeleter<C_wrap_procedure>()),\
+    OBJECT_CONTEXT_NUMBER)
+
+/*! \def ADDVAR_IMFUNC
+    \brief Add a C image function variable using its name as the variable name
+*/
+#define ADDVAR_IMFUNC(name) \
+  Vars.AddVar<C_wrap_imagefunction>(\
+    #name,\
+    boost::shared_ptr<C_wrap_imagefunction>(&name,\
+      smartpointer_nodeleter<C_wrap_imagefunction>()))
+
+/*! \def ADDVAR_IMFUNC_NAME
+    \brief Add a C image function variable with the given name
+*/
+#define ADDVAR_IMFUNC_NAME(stname,name) \
+  Vars.AddVar<C_wrap_imagefunction>(\
+    stname,\
+    boost::shared_ptr<C_wrap_imagefunction>(&name,\
+      smartpointer_nodeleter<C_wrap_imagefunction>()))
+
+/*! \def ADDOBJECTVAR_IMFUNC
+    \brief Add a C image function variable with the given name
+*/
+#define ADDOBJECTVAR_IMFUNC(name) \
+  Vars.AddVar<C_wrap_imagefunction>(\
+    #name,\
+    boost::shared_ptr<C_wrap_imagefunction>(&name,\
+      smartpointer_nodeleter<C_wrap_imagefunction>()),\
+    OBJECT_CONTEXT_NUMBER)
+
+/*! \def ADDOBJECTVAR_IMFUNC_NAME
+    \brief Add a C image function variable with the given name
+*/
+#define ADDOBJECTVAR_IMFUNC_NAME(stname,name) \
+  Vars.AddVar<C_wrap_imagefunction>(\
+    stname,\
+    boost::shared_ptr<C_wrap_imagefunction>(&name,\
+      smartpointer_nodeleter<C_wrap_imagefunction>()),\
+    OBJECT_CONTEXT_NUMBER)
+
+/*! \def ADDVAR_VARFUNC
+    \brief Add a C image function variable using its name as the variable name
+*/
+#define ADDVAR_VARFUNC(name) \
+  Vars.AddVar<C_wrap_varfunction>(\
+    #name,\
+    boost::shared_ptr<C_wrap_varfunction>(&name,\
+      smartpointer_nodeleter<C_wrap_varfunction>()))
+
+/*! \def ADDVAR_VARFUNC_NAME
+    \brief Add a C image function variable with the given name
+*/
+#define ADDVAR_VARFUNC_NAME(stname,name) \
+  Vars.AddVar<C_wrap_varfunction>(\
+    stname,\
+    boost::shared_ptr<C_wrap_varfunction>(&name,\
+      smartpointer_nodeleter<C_wrap_varfunction>()))
+
+#define ADDOBJECTVAR_VARFUNC_NAME(stname,name) \
+  Vars.AddVar<C_wrap_varfunction>(\
+    stname,\
+    boost::shared_ptr<C_wrap_varfunction>(&name,\
+      smartpointer_nodeleter<C_wrap_varfunction>()),\
+    OBJECT_CONTEXT_NUMBER)
+
+
+
 /*! \def HelpAndReturnVarPtr
     \brief Shows help and return an empty smart pointer to a Variable
 */

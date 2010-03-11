@@ -110,6 +110,12 @@ public:
         return px;
     }
 
+  static Viewer3D_ptr Create_ptr( Viewer3D* v)
+    {
+        return Viewer3D_ptr(v, Viewer3D::deleter());
+    }
+
+
 
   virtual ~Viewer3D();
 

@@ -25,21 +25,30 @@ extern MainFrame*     GB_main_wxFrame;
 void AddWrapWXSamples()
 {
   // Create new instance of the class
-  AMIObject* amiobject = new AMIObject;
+  AMIObject::ptr amiobject (new AMIObject);
   amiobject->SetName("wxsamples");
 
   // Set the object context
   Variables::ptr previous_ocontext = Vars.GetObjectContext();
   Vars.SetObjectContext(amiobject->GetContext());
 
-  Vars.AddVar(type_c_procedure, "penguin",  (void*)  wrap_penguin, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure, "stctest",  (void*)  wrap_stctest, OBJECT_CONTEXT_NUMBER);
+  Vars.AddVar<C_wrap_procedure>(
+    "penguin",
+    boost::shared_ptr<C_wrap_procedure>(&wrap_penguin,
+      smartpointer_nodeleter<C_wrap_procedure>()),
+    OBJECT_CONTEXT_NUMBER);
+
+  Vars.AddVar<C_wrap_procedure>(
+    "stctest",
+    boost::shared_ptr<C_wrap_procedure>(&wrap_stctest,
+      smartpointer_nodeleter<C_wrap_procedure>()),
+    OBJECT_CONTEXT_NUMBER);
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);
 
   // 3. add the variables to this instance
-  Vars.AddVar( type_ami_object, amiobject->GetName().c_str(), (void*) amiobject);
+  Vars.AddVar<AMIObject>(amiobject->GetName().c_str(), amiobject);
 }
 
 /**

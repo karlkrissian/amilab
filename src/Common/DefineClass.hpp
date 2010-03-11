@@ -60,9 +60,9 @@ public:\
 #define DEFINE_TEMPLATE_CLASS1(class,t) \
 public:\
   virtual char const* get_name() const { return (std::string(#class)+"<T>").c_str(); } \
-  typedef boost::shared_ptr<class<t>>    ptr;              \
-  typedef boost::weak_ptr<class<t>>      wptr;             \
-  typedef std::vector<class<t>::ptr>     ptr_vector;       \
+  typedef typename boost::shared_ptr<class<t> >    ptr;              \
+  typedef typename boost::weak_ptr<class<t> >      wptr;             \
+  typedef typename std::vector<class<t>::ptr>     ptr_vector;       \
   typedef std::vector<class<t>::wptr>    wptr_vector;      \
   typedef std::list<class<t>::ptr>       ptr_list;         \
   typedef std::list<class<t>::wptr>      wptr_list;

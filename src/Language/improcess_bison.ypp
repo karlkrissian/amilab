@@ -506,7 +506,6 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_local
 %token T_global_new
 %token T_local_new
-%token T_context
 
 %token T_wait
 %token T_schedule
@@ -952,16 +951,16 @@ end_instr :
 
 
 loop_inst :
-        FOR identifier ASSIGN_OP expr TO expr
-      instr_block end_instr
-        {
-       int  previous_lineno=driver.yyiplineno;
-       int* varint;
-        AmiInstructionBlock::ptr block($7);
-        IdentifierInfo::ptr ident($2);
+    FOR identifier ASSIGN_OP expr TO expr
+    instr_block end_instr
+    {
+      int  previous_lineno=driver.yyiplineno;
+      AmiInstructionBlock::ptr block($7);
+      IdentifierInfo::ptr ident($2);
 
-      varint = new int;
-      Vars.AddVar(type_int,ident,(void*)varint);
+      int_ptr varint(new int);
+      Vars.AddVar<int>(ident,varint);
+
       for(*varint = (int) $4; *varint <= (int) $6; (*varint)++)
         {
           driver.yyiplineno = block->GetStartingLine();
@@ -970,26 +969,23 @@ loop_inst :
       Vars.deleteVar(ident->GetName().c_str());
       driver.yyiplineno=previous_lineno;
     }
-        |
-        FOR identifier ASSIGN_OP expr TO expr STEP expr
-      instr_block end_instr
-        {
-       int  previous_lineno=driver.yyiplineno;
-       float* var;
-        AmiInstructionBlock::ptr block($9);
-        IdentifierInfo::ptr ident($2);
+    |
+    FOR identifier ASSIGN_OP expr TO expr STEP expr
+    instr_block end_instr
+    {
+      int  previous_lineno=driver.yyiplineno;
+      AmiInstructionBlock::ptr block($9);
+      IdentifierInfo::ptr ident($2);
 
-      var = new float;
-      Vars.AddVar(type_float,ident,(void*)var);
+      float_ptr var(new float);
+      Vars.AddVar<float>(ident,var);
 
       for(*var = $4; *var <= $6; (*var)+=$8)
-        {
-
-          driver.yyiplineno = block->GetStartingLine();
-          //driver.yyiplineno=previous_lineno;
-          driver.parse_block(block);
-
-        }
+      {
+        driver.yyiplineno = block->GetStartingLine();
+        //driver.yyiplineno=previous_lineno;
+        driver.parse_block(block);
+      }
       Vars.deleteVar(ident->GetName().c_str());
       driver.yyiplineno=previous_lineno;
     }
@@ -1009,8 +1005,8 @@ loop_inst :
       IdentifierInfo::ptr ident($2);
 
       // create the variable
-      string* tmp = new string();
-      Variable::ptr var = Vars.AddVar(type_string,ident,(void*)tmp);
+      string_ptr tmp(new string());
+      BasicVariable::ptr var = Vars.AddVar<string>(ident,tmp);
       //cout << " *** Create temporary variable " << ident->GetName() << endl;
 
       std::list<std::string>::iterator sl_it;
@@ -1155,11 +1151,10 @@ proc_decl:
         T_OP_PAR param_list_decl T_CL_PAR
         instr_block end_instr
     {
-      AMIFunction* amifunc;
       AmiInstructionBlock::ptr body($7);
       IdentifierInfo::ptr ident($2);
 
-      amifunc = new AMIFunction;
+      AMIFunction::ptr amifunc(new AMIFunction);
 
       amifunc->SetName(ident->GetName().c_str());
       amifunc->SetFileName(driver.current_file);
@@ -1171,7 +1166,7 @@ proc_decl:
               << " body = "
               << body->GetBody()  << endl;
 
-      Variable::ptr newvar = Vars.AddVar( type_ami_function,ident, (void*) amifunc);
+      BasicVariable::ptr newvar = Vars.AddVar<AMIFunction>( ident, amifunc);
       if (newvar.get())
         amifunc->SetContext(newvar->GetContext());
 
@@ -1188,7 +1183,6 @@ proc_decl:
         T_OP_PAR param_list_decl T_CL_PAR
         instr_block end_instr
     {
-      AMIFunction* amifunc;
       AmiInstructionBlock::ptr body($7);
       Variable::ptr       var(driver.var_stack.GetLastVar());
 
@@ -1199,7 +1193,7 @@ proc_decl:
 
       FILE_MESSAGE(boost::format("Redefining procedure %1%") % varname); 
 
-      amifunc = new AMIFunction;
+      AMIFunction::ptr amifunc( new AMIFunction);
 
       amifunc->SetName(varname.c_str());
       amifunc->SetFileName(driver.current_file);
@@ -1210,9 +1204,9 @@ proc_decl:
 
       // add the variable in the same context ...
       Variable::ptr newvar =
-        Vars.AddVar(  type_ami_function,
+        Vars.AddVar<AMIFunction>(
                       varname.c_str(),
-                      (void*) amifunc,
+                      amifunc,
                       context);
       if (newvar.get())
         amifunc->SetContext(newvar->GetContext());
@@ -1227,18 +1221,17 @@ class_decl:
     T_Class  identifier
         instr_block end_instr
     {
-      AMIClass* amiclass;
       AmiInstructionBlock::ptr body($3);
       IdentifierInfo::ptr ident($2);
 
-      amiclass = new AMIClass;
+      AMIClass::ptr amiclass( new AMIClass);
 
       amiclass->SetName(ident->GetName());
       amiclass->SetFileName(driver.current_file);
       amiclass->SetBody(     body);
       if (GB_debug) printf("%s body = %s\n", ident->GetName().c_str(),body->GetBody().c_str());
 
-      Vars.AddVar( type_ami_class, ident, (void*) amiclass);
+      Vars.AddVar<AMIClass>(ident, amiclass);
 
     };
 
@@ -1251,8 +1244,7 @@ object_decl:
 
       //AMIObject::ptr amiobject;
       //amiobject = AMIObject::ptr(new AMIObject);
-      AMIObject* amiobject;
-      amiobject = new AMIObject;
+      AMIObject::ptr amiobject( new AMIObject);
 
       amiobject->SetName(ident->GetName());
       amiobject->SetClass(ac);
@@ -1260,7 +1252,7 @@ object_decl:
       // execute the code of the class with the variables of the object
       driver.yyip_instanciate_object(ac,amiobject);
 
-      Vars.AddVar( type_ami_object, ident, (void*) amiobject);
+      Vars.AddVar<AMIObject>(ident, amiobject);
 
     };
 
@@ -1480,9 +1472,9 @@ command:
             - new variable name;
             - existing variable name.
         **/
-          Variable::ptr  var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  var(driver.var_stack.GetLastVar());
           IdentifierInfo::ptr ident($1);
-          Vars.AddVarPtr(var->Type(),ident,var->Pointer());
+          Vars.AddVar(ident,var);
       }
       |
       identifier ASSIGN_OP variable
@@ -1494,10 +1486,10 @@ command:
             - new variable name;
             - existing variable name.
         **/
-          Variable::ptr  var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  var(driver.var_stack.GetLastVar());
           if (var.use_count()==1) {
             IdentifierInfo::ptr ident($1);
-            Vars.AddVarPtr(var->Type(),ident,var->Pointer());
+            Vars.AddVar(ident,var);
           } else
           {
             driver.yyiperror("Need to copy variable information into new variable, still not available");
@@ -1506,36 +1498,33 @@ command:
       |
       identifier ASSIGN_OP T_Surface T_OP_BR expr T_CL_BR
       {
-            VarArray* arraysurf;
             IdentifierInfo::ptr ident($1);
 
             int size = (int) $5;
             if (size<1) size = 1;
-            arraysurf = new VarArray();
+            VarArray::ptr arraysurf(new VarArray());
             arraysurf->Init(type_surface,size);
-            Vars.AddVar(type_array,ident,arraysurf);
+            Vars.AddVar<VarArray>(ident,arraysurf);
           }
           |
           identifier LEFT_ASSIGN T_Surface T_OP_BR expr T_CL_BR
           {
-            VarArray* arraysurf;
             IdentifierInfo::ptr ident($1);
             int size = (int) $5;
             if (size<1) size = 1;
-            arraysurf = new VarArray();
+            VarArray::ptr arraysurf( new VarArray());
             arraysurf->Init(type_surface,size);
-            Vars.AddVar(type_array,ident,arraysurf);
+            Vars.AddVar<VarArray>(ident,arraysurf);
           }
           |
           identifier ASSIGN_OP T_Image T_OP_BR expr T_CL_BR
           {
             IdentifierInfo::ptr ident($1);
-            VarArray* array;
             int size = (int) $5;
             if (size<1) size = 1;
-            array = new VarArray();
+            VarArray::ptr array(new VarArray());
             array->Init(type_image,size);
-            Vars.AddVar(type_array,ident,array);
+            Vars.AddVar<VarArray>(ident,array);
           }
          |
           identifier ASSIGN_OP expr_image
@@ -1558,7 +1547,7 @@ command:
               (*res) = (*imptr);
             }
             // this should be safe to avoid deleting the image, since the variable will copy the shared pointer
-            Vars.AddVarPtr(type_image,ident,(void*)&res);
+            Vars.AddVar<InrImage>(ident,res);
           }
           else
             driver.err_print((boost::format("assignment of NULL image for %1%  \n") % $1).str().c_str() );;
@@ -1583,7 +1572,7 @@ command:
               (*res) = (*imptr);
             }
             // this should be safe to avoid deleting the image, since the variable will copy the shared pointer
-            Vars.AddVarPtr(type_image,ident,(void*)&res);
+            Vars.AddVar<InrImage>(ident,res);
           }
           else
             driver.err_print((boost::format("assignment of NULL image for %1%  \n") %$1).str().c_str() );;
@@ -1669,28 +1658,27 @@ command:
           }
           else
             driver.err_print("assignment of NULL image\n");
-        }
-        |
+      }
+      |
       identifier ASSIGN_OP expr_matrix
-            {
-          void * imptr;
-          imptr = (void*) driver.matrix_stack.GetLastMatrix();
+      {
+        IdentifierInfo::ptr ident($1);
+
+        FloatMatrix::ptr mat(driver.matrix_stack.GetLastMatrix());
+        if (mat.get())
+          Vars.AddVar<FloatMatrix>(ident,mat);
+        else
+          driver.err_print("assignment of NULL matrix\n");
+      }
+      |
+      identifier ASSIGN_OP gltransform
+      {
+          GLTransfMatrix::ptr imptr( 
+            driver.gltransf_stack.GetLastMatrix());
           IdentifierInfo::ptr ident($1);
 
-          if (imptr != NULL)
-        Vars.AddVar(type_matrix,ident,imptr);
-          else
-        driver.err_print("assignment of NULL matrix\n");
-        }
-        |
-        identifier ASSIGN_OP gltransform
-        {
-          void * imptr;
-          imptr = (void*)driver.gltransf_stack.GetLastMatrix();
-          IdentifierInfo::ptr ident($1);
-
-          if (imptr != NULL)
-            Vars.AddVar(type_gltransform,ident,imptr);
+          if (imptr.get())
+            Vars.AddVar<GLTransfMatrix>(ident,imptr);
           else
             driver.err_print("assignment of NULL matrix\n");
         }
@@ -1735,23 +1723,14 @@ command:
             driver.err_print("assignment of NULL surface\n");
         }
         |
-        identifier ASSIGN_OP T_context
-        {
-          Variables* contextptr = new Variables();
-          IdentifierInfo::ptr ident($1);
-          contextptr->SetName(ident->GetName());
-
-          Vars.AddVar(type_context,ident,(void*)contextptr);
-        }
-        |
         identifier ASSIGN_OP surface
         {
-          void * surfptr;
-          surfptr = (void*)driver.surf_stack.GetLastSurf();
           IdentifierInfo::ptr ident($1);
+          // TODO: use smart pointers in surf_stack ...
+          SurfacePoly surfptr = driver.surf_stack.GetLastSurf();
 
           if (surfptr != NULL)
-            Vars.AddVar(type_surface,ident,surfptr);
+            Vars.AddVar<SurfacePoly>(ident, SurfacePoly::ptr(surfptr));
           else
             driver.err_print("assignment of NULL surface\n");
         }
@@ -1802,11 +1781,10 @@ command:
         Description: 
           Creates a variable of type int
       **/
-        int* varint;
         IdentifierInfo::ptr ident($1);
 
-        varint = new int((int)$5);
-        Vars.AddVar(type_int,ident,(void*)varint);
+        int_ptr varint (new int((int)$5));
+        Vars.AddVar<int>(ident,varint);
       }
       |
       identifier ASSIGN_OP T_INT T_OP_PAR expr T_CL_PAR T_COMMA expr_string
@@ -1819,12 +1797,11 @@ command:
         Description: 
           Creates a variable of type int
       **/
-        int* varint;
         IdentifierInfo::ptr ident($1);
         boost::shared_array<char> comments( $8);
   
-        varint = new int((int)$5);
-        Variable::ptr var=Vars.AddVar(type_int,ident,(void*)varint);
+        int_ptr varint( new int((int)$5));
+        BasicVariable::ptr var=Vars.AddVar<int>(ident,varint);
         if (var.get())
           var->SetComments(comments.get());
       }
@@ -1835,11 +1812,9 @@ command:
         Description: 
           Creates a variable of type unsigned char (used for boolean type too)
       **/
-        unsigned char* varuchar;
         IdentifierInfo::ptr ident($1);
-
-        varuchar = new unsigned char((unsigned char)$5);
-        Vars.AddVar(type_uchar,ident,(void*)varuchar);
+        uchar_ptr varuchar( new unsigned char((unsigned char)$5));
+        Vars.AddVar<unsigned char>(ident,varuchar);
       }
       |
       identifier ASSIGN_OP T_UCHAR T_OP_PAR expr  T_CL_PAR T_COMMA expr_string
@@ -1852,12 +1827,11 @@ command:
       Description: 
         creates a variable of type unsigned char (used for boolean type too)
       **/
-        unsigned char* varuchar;
         IdentifierInfo::ptr ident($1);
         boost::shared_array<char> comments( $8);
 
-        varuchar = new unsigned char((unsigned char)$5);
-        Variable::ptr var=Vars.AddVar(type_uchar,ident,(void*)varuchar);
+        uchar_ptr varuchar(new unsigned char((unsigned char)$5));
+        BasicVariable::ptr var=Vars.AddVar<unsigned char>(ident,varuchar);
         if (var.get())
           var->SetComments(comments.get());
       }
@@ -1868,11 +1842,10 @@ command:
         Description: 
           Creation of a new floating point number variable
       **/
-          float* varfloat;
           IdentifierInfo::ptr ident($1);
-          varfloat = new float($3);
+          float_ptr varfloat( new float($3));
 
-          Vars.AddVar(type_float,ident,(void*)varfloat);
+          Vars.AddVar<float>(ident,varfloat);
         }
       |
       identifier ASSIGN_OP expr T_COMMA expr_string
@@ -1885,12 +1858,11 @@ command:
         Description: 
           Creation of a new floating point number variable
       **/
-        float* varfloat;
         IdentifierInfo::ptr ident($1);
-        varfloat = new float($3);
         boost::shared_array<char> comments( $5);
+        float_ptr varfloat(new float($3));
 
-        Variable::ptr var = Vars.AddVar(type_float,ident,(void*)varfloat);
+        BasicVariable::ptr var = Vars.AddVar<float>(ident,varfloat);
         if (var.get())
           var->SetComments(comments.get());
       }
@@ -1903,10 +1875,9 @@ command:
       **/
         IdentifierInfo::ptr ident($1);
         boost::shared_array<char> strval( $3);
-        string* varstring;
-        varstring = new string(strval.get());
+        string_ptr varstring(new string(strval.get()));
 
-        Vars.AddVar(type_string,ident,(void*)varstring);
+        Vars.AddVar<string>(ident,varstring);
       }
       |
       identifier ASSIGN_OP expr_string T_COMMA expr_string
@@ -1920,12 +1891,11 @@ command:
           Creation of a new string variable
       **/
         boost::shared_array<char> value( $3);
-        string* varstring;
-        varstring = new string(value.get());
+        boost::shared_array<char> comments( $5);
+        string_ptr varstring( new string(value.get()));
         IdentifierInfo::ptr ident($1);
 
-        Variable::ptr var = Vars.AddVar(type_string,ident,(void*)varstring);
-        boost::shared_array<char> comments( $5);
+        BasicVariable::ptr var = Vars.AddVar<string>(ident,varstring);
         var->SetComments(comments.get());
       }
       |
@@ -1936,9 +1906,9 @@ command:
           boost::shared_array<char> filename( $5);
           boost::shared_array<char> rights( $7);
 
-          file = fopen(filename.get(),rights.get());
-          if (file!=NULL) {
-            Vars.AddVar(type_file,ident,(void*)file);
+          FILE_ptr file(fopen(filename.get(),rights.get()),file_deleter());
+          if (file.get()) {
+            Vars.AddVar<FILE>(ident,file);
           } else {
             fprintf(stderr,"error opening file '%s' in mode '%s'\n",
                       filename.get(),rights.get());
@@ -1973,10 +1943,9 @@ command:
           if (Vars.GetVar(filename.c_str()).get())
               Vars.deleteVar(filename.c_str());
 
-          FILE* file;
-          file = fopen($5,$7);
-          if (file!=NULL) {
-              Vars.AddVar(type_file,filename.c_str(),(void*)file);
+          FILE_ptr file(fopen($5,$7),file_deleter());
+          if (file.get()) {
+              Vars.AddVar<FILE>(filename.c_str(),file);
           } else {
             fprintf(stderr,"error opening file '%s' in mode '%s'\n",
                     $5,$7);
@@ -2074,15 +2043,15 @@ command:
             else
             {
               FILE_MESSAGE(boost::format("SHOW var_image creating title %s ") % titre);
-              DessinImage* di;
+              DessinImage::ptr di;
 
               std::string varname(titre);
 
-              di = CreateIDraw( varname,
-                    *((InrImage::ptr*) imagevar->Pointer()));
+              di = DessinImage::Create_ptr(
+                CreateIDraw( varname, *((InrImage::ptr*) imagevar->Pointer())));
 
-              Variable::ptr newvar = Vars.AddVar(type_imagedraw,titre.c_str(), (void*) di,
-                          var_context);
+              Variable::ptr newvar = 
+                Vars.AddVar<DessinImage>(titre.c_str(), di, var_context);
               di->SetCloseFunction(
                 (void*) CB_delete_variable,
                 (void*) (newvar.get()));
@@ -2119,7 +2088,7 @@ command:
         |  SHOW var_surface
         {
           string    titre;
-          Viewer3D* surfdraw;
+          Viewer3D::ptr surfdraw;
           Variable::ptr surfvar(driver.var_stack.GetLastVar());
           Variable::ptr var;
           int var_context = Vars.GetContext(surfvar.get());
@@ -2135,12 +2104,14 @@ command:
             titre = str(format("%s_draw") % surfvar->Name());
             var = Vars.GetVar(titre.c_str(),var_context);
             if (!var.get()) {
-              surfdraw = new Viewer3D(  GB_main_wxFrame,
-                                        wxString::FromAscii(titre.c_str()));
+              surfdraw = Viewer3D::Create_ptr(
+                            new Viewer3D( GB_main_wxFrame,
+                                          wxString::FromAscii(titre.c_str()))),
 
-              Variable::ptr newvar =  Vars.AddVar(type_surfdraw,titre.c_str(),
-                          (void*) surfdraw,
-                          var_context);
+              Variable::ptr newvar = 
+                Vars.AddVar<Viewer3D>(  titre.c_str(),
+                                        surfdraw,
+                                        var_context);
               surfdraw->SetCloseFunction(
                               (void*) CB_delete_variable,
                               (void*) (newvar.get()));
@@ -2971,11 +2942,12 @@ command:
             }
             else
             {
-              DessinImage* di;
               std::string varname(title);
-              di = CreateIDraw( varname, im);
+              DessinImage::ptr di = 
+                DessinImage::Create_ptr(CreateIDraw( varname, im));
 
-              Variable::ptr newvar = Vars.AddVar(type_imagedraw,title, (void*) di);
+              Variable::ptr newvar = Vars.AddVar<DessinImage>(title, di);
+
               di->SetCloseFunction(
                   (void*) CB_delete_variable,
                   (void*) (newvar.get()));
@@ -4205,36 +4177,43 @@ command:
       SurfacePoly::ptr surf = *(SurfacePoly::ptr*) surfdraw->Pointer();
 
       float        depth = $5;
-      char         name[100];
+      std::string  name;
       int          n;
 
       // param 1: depth (neighborhood)
       //
 
       // Create images for the curvatures and their directions
-      InrImage* Icmin;
-      InrImage* Icmax;
-      InrImage* Idmin;
-      InrImage* Idmax;
+      InrImage::ptr Icmin;
+      InrImage::ptr Icmax;
+      InrImage::ptr Idmin;
+      InrImage::ptr Idmax;
 
       n = surf->GetNumberOfPoints();
 
-      Icmin = new InrImage(n,1,1,WT_FLOAT,"mincurv.ami.gz");
-      Icmax = new InrImage(n,1,1,WT_FLOAT,"maxcurv.ami.gz");
+      Icmin = InrImage::ptr(new InrImage(n,1,1,WT_FLOAT,"mincurv.ami.gz"));
+      Icmax = InrImage::ptr(new InrImage(n,1,1,WT_FLOAT,"maxcurv.ami.gz"));
 
-      Idmin = new InrImage(n,1,1,3,WT_FLOAT,"mincurvdir.ami.gz");
-      Idmax = new InrImage(n,1,1,3,WT_FLOAT,"maxcurvdir.ami.gz");
+      Idmin = InrImage::ptr(new InrImage(n,1,1,3,WT_FLOAT,"mincurvdir.ami.gz"));
+      Idmax = InrImage::ptr(new InrImage(n,1,1,3,WT_FLOAT,"maxcurvdir.ami.gz"));
 
-      surf->ComputeCurvatures(Icmin,Icmax,Idmin,Idmax, (int) depth);
+      surf->ComputeCurvatures(Icmin.get(),Icmax.get(),
+                              Idmin.get(),Idmax.get(), 
+                              (int) depth);
 
-      sprintf(name,"%s_cmin",surfdraw->Name().c_str());
-      Vars.AddVar(type_image,name,Icmin);
-      sprintf(name,"%s_cmax",surfdraw->Name().c_str());
-      Vars.AddVar(type_image,name,Icmax);
-      sprintf(name,"%s_dmin",surfdraw->Name().c_str());
-      Vars.AddVar(type_image,name,Idmin);
-      sprintf(name,"%s_dmax",surfdraw->Name().c_str());
-      Vars.AddVar(type_image,name,Idmax);
+      BasicVariable::ptr var;
+
+      name = (boost::format("%s_cmin") % surfdraw->Name()).str();
+      Vars.AddVar<InrImage>(name,Icmin);
+
+      name = (boost::format("%s_cmax") % surfdraw->Name()).str();
+      Vars.AddVar<InrImage>(name,Icmax);
+
+      name = (boost::format("%s_dmin") % surfdraw->Name()).str();
+      Vars.AddVar<InrImage>(name,Idmin);
+
+      name = (boost::format("%s_dmax") % surfdraw->Name()).str();
+      Vars.AddVar<InrImage>(name,Idmax);
 
     }
     | var_surface T_POINT T_Displace T_OP_PAR expr_image T_CL_PAR

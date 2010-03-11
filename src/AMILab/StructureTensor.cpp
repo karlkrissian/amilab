@@ -134,10 +134,10 @@ unsigned char Func_StructureTensor2D( InrImage* image_initiale,
     Vect3D<double>  grad;
     int             niter;
     InrImage*                   image;
-    InrImage*                   image_vep1;
-    InrImage*                   image_vep2;
-    InrImage*                   image_vap1;
-    InrImage*                   image_vap2;
+    InrImage::ptr                   image_vep1;
+    InrImage::ptr                   image_vep2;
+    InrImage::ptr                   image_vap1;
+    InrImage::ptr                   image_vap2;
     GeneralGaussianFilter::ptr  filtre;
   std::string                 resname;
 
@@ -157,15 +157,15 @@ unsigned char Func_StructureTensor2D( InrImage* image_initiale,
   tenseur_yy = new InrImage( WT_FLOAT, "Tenseur_yy", image);
 
 
-  image_vep1 =  new InrImage( WT_FLOAT, 3,
-                  "ST-vep1.inr.gz", image);
-  image_vep2 =  new InrImage( WT_FLOAT, 3,
-                  "ST-vep2.inr.gz", image);
+  image_vep1 =  InrImage::ptr(new InrImage( WT_FLOAT, 3,
+                  "ST-vep1.inr.gz", image));
+  image_vep2 =  InrImage::ptr(new InrImage( WT_FLOAT, 3,
+                  "ST-vep2.inr.gz", image));
 
-  image_vap1 =  new InrImage( WT_FLOAT, 
-                  "ST-vap1.inr.gz", image);
-  image_vap2 =  new InrImage( WT_FLOAT, 
-                  "ST-vap2.inr.gz", image);
+  image_vap1 =  InrImage::ptr(new InrImage( WT_FLOAT, 
+                  "ST-vap1.inr.gz", image));
+  image_vap2 =  InrImage::ptr(new InrImage( WT_FLOAT, 
+                  "ST-vap2.inr.gz", image));
 
     // Initialisation des images des d�riv�es 
     filtre = GeneralGaussianFilter::New(image, dimension);
@@ -261,17 +261,19 @@ unsigned char Func_StructureTensor2D( InrImage* image_initiale,
   FinPour
   FinPour
 
+  BasicVariable::ptr var;
+
   resname = (boost::format("%s_STvep1") % varname).str();
-  Vars.AddVar(type_image,resname.c_str(),image_vep1);
+  Vars.AddVar<InrImage>(resname,image_vep1);
 
   resname = (boost::format("%s_STvep2") % varname).str();
-  Vars.AddVar(type_image,resname.c_str(),image_vep2);
+  Vars.AddVar<InrImage>(resname,image_vep2);
 
   resname = (boost::format("%s_STvap1") % varname).str();
-  Vars.AddVar(type_image,resname.c_str(),image_vap1);
+  Vars.AddVar<InrImage>(resname,image_vap1);
 
   resname = (boost::format("%s_STvap2") % varname).str();
-  Vars.AddVar(type_image,resname.c_str(),image_vap2);
+  Vars.AddVar<InrImage>(resname,image_vap2);
 
   delete tenseur_xx;
   delete tenseur_xy;
@@ -313,14 +315,14 @@ unsigned char Func_StructureTensor( InrImage* image_initiale,
     int             niter;
     InrImage*       image;
 
-    InrImage*       image_vep1;
-    InrImage*       image_vep2;
-    InrImage*       image_vep3;
+    InrImage::ptr       image_vep1;
+    InrImage::ptr       image_vep2;
+    InrImage::ptr       image_vep3;
 
-    InrImage*       image_vap1;
-    InrImage*       image_vap2;
-    InrImage*       image_vap3;
-    GeneralGaussianFilter* filtre;
+    InrImage::ptr       image_vap1;
+    InrImage::ptr       image_vap2;
+    InrImage::ptr       image_vap3;
+    GeneralGaussianFilter::ptr filtre;
   std::string     resname;
 //    int             i;
 
@@ -345,19 +347,19 @@ unsigned char Func_StructureTensor( InrImage* image_initiale,
   tenseur_zz = new InrImage( WT_FLOAT, "Tenseur_zz", image);
 
 
-  image_vep1 =  new InrImage( WT_FLOAT, 3,
-                  "ST-vep1.inr.gz", image);
-  image_vep2 =  new InrImage( WT_FLOAT, 3,
-                  "ST-vep2.inr.gz", image);
-  image_vep3 =  new InrImage( WT_FLOAT, 3,
-                  "ST-vep3.inr.gz", image);
+  image_vep1 = InrImage::ptr( new InrImage( WT_FLOAT, 3,
+                  "ST-vep1.inr.gz", image));
+  image_vep2 = InrImage::ptr( new InrImage( WT_FLOAT, 3,
+                  "ST-vep2.inr.gz", image));
+  image_vep3 = InrImage::ptr( new InrImage( WT_FLOAT, 3,
+                  "ST-vep3.inr.gz", image));
 
-  image_vap1 =  new InrImage( WT_FLOAT, 
-                  "ST-vap1.inr.gz", image);
-  image_vap2 =  new InrImage( WT_FLOAT, 
-                  "ST-vap2.inr.gz", image);
-  image_vap3 =  new InrImage( WT_FLOAT, 
-                  "ST-vap3.inr.gz", image);
+  image_vap1 = InrImage::ptr( new InrImage( WT_FLOAT, 
+                  "ST-vap1.inr.gz", image));
+  image_vap2 = InrImage::ptr( new InrImage( WT_FLOAT, 
+                  "ST-vap2.inr.gz", image));
+  image_vap3 = InrImage::ptr( new InrImage( WT_FLOAT, 
+                  "ST-vap3.inr.gz", image));
 
 
   // Initialisation des images des d�riv�es 
@@ -522,22 +524,22 @@ printf("smoothing zz\n");
   FinPour
 
   resname = (boost::format("%s_STvep1") % varname).str();
-  Vars.AddVar(type_image,resname.c_str(),image_vep1);
+  Vars.AddVar<InrImage>(resname,image_vep1);
 
   resname = (boost::format("%s_STvep2") % varname).str();
-  Vars.AddVar(type_image,resname.c_str(),image_vep2);
+  Vars.AddVar<InrImage>(resname,image_vep2);
 
   resname = (boost::format("%s_STvep3") % varname).str();
-  Vars.AddVar(type_image,resname.c_str(),image_vep3);
+  Vars.AddVar<InrImage>(resname,image_vep3);
 
   resname = (boost::format("%s_STvap1") % varname).str();
-  Vars.AddVar(type_image,resname.c_str(),image_vap1);
+  Vars.AddVar<InrImage>(resname,image_vap1);
 
   resname = (boost::format("%s_STvap2") % varname).str();
-  Vars.AddVar(type_image,resname.c_str(),image_vap2);
+  Vars.AddVar<InrImage>(resname,image_vap2);
 
   resname = (boost::format("%s_STvap3") % varname).str();
-  Vars.AddVar(type_image,resname.c_str(),image_vap3);
+  Vars.AddVar<InrImage>(resname,image_vap3);
 
   delete tenseur_xx;
   delete tenseur_xy;
@@ -589,17 +591,17 @@ unsigned char Func_StructureTensorHessian( InrImage* image_initiale,
     int             niter;
     InrImage*       image;
 
-    InrImage*       image_vep1;
-    InrImage*       image_vep2;
-    InrImage*       image_vep3;
+    InrImage::ptr       image_vep1;
+    InrImage::ptr       image_vep2;
+    InrImage::ptr       image_vep3;
 
-    InrImage*       image_vap1;
-    InrImage*       image_vap2;
-    InrImage*       image_vap3;
+    InrImage::ptr       image_vap1;
+    InrImage::ptr       image_vap2;
+    InrImage::ptr       image_vap3;
 
-    InrImage*        image_grad = NULL;
+    InrImage::ptr        image_grad = NULL;
 
-    GeneralGaussianFilter* filtre;
+    GeneralGaussianFilter::ptr filtre;
   std::string     resname;
     double          hessien[9];
     int             i,j,k;
@@ -618,7 +620,7 @@ unsigned char Func_StructureTensorHessian( InrImage* image_initiale,
   dimension = MODE_3D;
 
   // Initialisation des images des d�riv�es 
-  filtre = new GeneralGaussianFilter(image, dimension);
+  filtre = GeneralGaussianFilter::ptr(new GeneralGaussianFilter(image, dimension));
 //  filtre->SetScaleUnit(PIXEL_SPACE);
   filtre->FixeMasque(mask);
   filtre->Utilise_Image(   false);
@@ -630,23 +632,23 @@ unsigned char Func_StructureTensorHessian( InrImage* image_initiale,
   filtre->InitFiltre( sigma, type_filtre);  
   filtre->CalculFiltres( );
 
-  image_vep1 =  new InrImage( WT_FLOAT, 3,
-                  "STH-vep1.inr.gz", image);
-  image_vep2 =  new InrImage( WT_FLOAT, 3,
-                  "STH-vep2.inr.gz", image);
-  image_vep3 =  new InrImage( WT_FLOAT, 3,
-                  "STH-vep3.inr.gz", image);
+  image_vep1 = InrImage::ptr( new InrImage( WT_FLOAT, 3,
+                  "STH-vep1.inr.gz", image));
+  image_vep2 = InrImage::ptr( new InrImage( WT_FLOAT, 3,
+                  "STH-vep2.inr.gz", image));
+  image_vep3 = InrImage::ptr( new InrImage( WT_FLOAT, 3,
+                  "STH-vep3.inr.gz", image));
 
-  image_vap1 =  new InrImage( WT_FLOAT, 
-                  "STH-vap1.inr.gz", image);
-  image_vap2 =  new InrImage( WT_FLOAT, 
-                  "STH-vap2.inr.gz", image);
-  image_vap3 =  new InrImage( WT_FLOAT, 
-                  "STH-vap3.inr.gz", image);
+  image_vap1 = InrImage::ptr( new InrImage( WT_FLOAT, 
+                  "STH-vap1.inr.gz", image));
+  image_vap2 = InrImage::ptr( new InrImage( WT_FLOAT, 
+                  "STH-vap2.inr.gz", image));
+  image_vap3 = InrImage::ptr( new InrImage( WT_FLOAT, 
+                  "STH-vap3.inr.gz", image));
 
   if (save_grad)
-     image_grad =  new InrImage( WT_FLOAT, 3,
-                 "STH-grad.inr.gz", image);
+     image_grad = InrImage::ptr( new InrImage( WT_FLOAT, 3,
+                 "STH-grad.inr.gz", image));
 
 
   // Calcul des coefficients du tenseur non liss�
@@ -768,21 +770,26 @@ unsigned char Func_StructureTensorHessian( InrImage* image_initiale,
   delete filtre;
 
   resname = (boost::format("%s_STHvep1")%varname).str();
-  Vars.AddVar(type_image,resname.c_str(),image_vep1);
+  Vars.AddVar<InrImage>(resname,image_vep1);
+
   resname = (boost::format("%s_STHvep2")%varname).str();
-  Vars.AddVar(type_image,resname.c_str(),image_vep2);
+  Vars.AddVar<InrImage>(resname,image_vep2);
+
   resname = (boost::format("%s_STHvep3")%varname).str();
-  Vars.AddVar(type_image,resname.c_str(),image_vep3);
+  Vars.AddVar<InrImage>(resname,image_vep3);
+
   resname = (boost::format("%s_STHvap1")%varname).str();
-  Vars.AddVar(type_image,resname.c_str(),image_vap1);
+  Vars.AddVar<InrImage>(resname,image_vap1);
+
   resname = (boost::format("%s_STHvap2")%varname).str();
-  Vars.AddVar(type_image,resname.c_str(),image_vap2);
+  Vars.AddVar<InrImage>(resname,image_vap2);
+
   resname = (boost::format("%s_STHvap3")%varname).str();
-  Vars.AddVar(type_image,resname.c_str(),image_vap3);
+  Vars.AddVar<InrImage>(resname,image_vap3);
 
   if (save_grad) {
-  resname = (boost::format("%s_STHgrad") %varname).str();
-    Vars.AddVar(type_image,resname.c_str(),image_grad);
+    resname = (boost::format("%s_STHgrad") %varname).str();
+    Vars.AddVar<InrImage>(resname,image_grad);
   }
 
 
