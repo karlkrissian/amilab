@@ -232,7 +232,7 @@ class wxStringParameter : public wxBoxSizer, public wxGenericWidget
   
   public:
   
-  wxStringParameter( wxWindow* parent, string_ptr* value, const char* label);
+  wxStringParameter( wxWindow* parent, string_ptr value, const char* label);
   
   ~wxStringParameter() {}
     
@@ -281,7 +281,7 @@ class wxFilenameParameter : public wxBoxSizer, public wxGenericWidget
 
   public:
   
-  wxFilenameParameter( wxWindow* parent, string_ptr* value, const char* label,  type_label type=LabelLabel );
+  wxFilenameParameter( wxWindow* parent, string_ptr value, const char* label,  type_label type=LabelLabel );
   
   ~wxFilenameParameter() {}
   

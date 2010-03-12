@@ -363,7 +363,7 @@ public:
   unsigned char AjouteChaine(
   //            ------------
     int* id,
-    string_ptr* ch,
+    string_ptr ch,
     const char* libelle,
     const std::string& tooltip=""
     );
@@ -380,7 +380,7 @@ public:
   unsigned char AjouteNomFichier( 
   //            ----------------
     int* id,
-    string_ptr* nom,
+    string_ptr& nom,
     const char* libelle,
     const std::string& tt="");
 
@@ -483,7 +483,7 @@ public:
 
   bool AddListChoice( int* id,  
   //   -------------
-            string_ptr* selection_param,
+            string_ptr selection_param,
             const char* libelle, 
             const boost::shared_ptr<wxArrayString>& choicelist,
             void* update_cb,

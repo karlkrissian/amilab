@@ -732,7 +732,7 @@ void ParamBox::ChangedValueCallback( int id, void* callback, void* calldata)
 
 
 //----------------------------------------------------------------
-unsigned char ParamBox::AjouteChaine( int* id, string_ptr* param, 
+unsigned char ParamBox::AjouteChaine( int* id, string_ptr param, 
 //                      ------------
                 const char* libelle)
 {
@@ -767,7 +767,7 @@ void ParamBox::ContraintesChaine( int id, char* defaut)
 
 
 //------------------------------------------------------------------------------
-unsigned char ParamBox::AjouteNomFichier( int* id, string_ptr* param, 
+unsigned char ParamBox::AjouteNomFichier( int* id, string_ptr& param, 
 //                   ----------------
                 const char* libelle)
 {

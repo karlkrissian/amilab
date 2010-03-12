@@ -84,11 +84,11 @@ wxEnumerationParameter::wxEnumerationParameter( wxWindow* parent,
 
 //---------------------------------------------------------------
 wxEnumerationParameter::wxEnumerationParameter( wxWindow* parent, 
-    string_ptr* selection_param,
+    string_ptr selection_param,
     const char* label,
     const std::string& tooltip
     ):  wxBoxSizer(wxHORIZONTAL), 
-        _selection_param(*selection_param)
+        _selection_param(selection_param)
 {
   this->_parent          = parent;
   this->_parameter       = NULL;

@@ -219,9 +219,9 @@ void wxMenuEnum::OnEnumUpdate(wxCommandEvent&)
 //          String Parameter
 //==============================================================================
 
-wxStringParameter::wxStringParameter( wxWindow* parent, string_ptr* param,
+wxStringParameter::wxStringParameter( wxWindow* parent, string_ptr param,
                                       const char* label): wxBoxSizer(wxHORIZONTAL),
-                                      _parameter(*param)
+                                      _parameter(param)
 {
   // allocate a new string if needed
   if (!_parameter.get()) 
@@ -279,10 +279,10 @@ BEGIN_EVENT_TABLE(myButton, wxButton)
 END_EVENT_TABLE()
 
 wxFilenameParameter::wxFilenameParameter( wxWindow* parent,
-                                          string_ptr* param,
+                                          string_ptr param,
                                           const char* label,
                                           type_label type): wxBoxSizer(wxHORIZONTAL),
-                                          _parameter(*param)
+                                          _parameter(param)
 {
   // allocate a new string if needed
   if (!_parameter.get()) {

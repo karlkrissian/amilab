@@ -351,7 +351,7 @@ public:
 /** @name Type Chaine */
 //@{
   ///
-  unsigned char AjouteChaine( int* id, string_ptr* ch, const char* libelle);
+  unsigned char AjouteChaine( int* id, string_ptr ch, const char* libelle);
   //      ------------
 
   ///
@@ -363,7 +363,7 @@ public:
 /** @name Type NomFichier */
 //@{
   ///
-  unsigned char AjouteNomFichier( int* id, string_ptr* nom, const char* libelle);
+  unsigned char AjouteNomFichier( int* id, string_ptr& nom, const char* libelle);
   //      ----------------
 
   ///
