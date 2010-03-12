@@ -45,10 +45,10 @@ InrImage* NLmeans_MRI(ParamList*);
 
 InrImage* WrapLeastSquares(ParamList*);
 
-Variable::ptr Wrap_EigenDecomp(ParamList*);
+BasicVariable::ptr Wrap_EigenDecomp(ParamList*);
 
-Variable::ptr Wrap_SmoothLinesToSplines(ParamList* p);
+BasicVariable::ptr Wrap_SmoothLinesToSplines(ParamList* p);
 
-Variable::ptr Wrap_RegionGrow(ParamList* p);
+BasicVariable::ptr Wrap_RegionGrow(ParamList* p);
 
 #endif // _WRAPFILTERS_H_

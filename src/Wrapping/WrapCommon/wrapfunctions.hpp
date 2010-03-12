@@ -20,106 +20,28 @@
 //#include "DessinImage.hpp"
 
 
-/*! \def ADDVAR_PROC
-    \brief Add a C procedure variable using its name as the variable name
+/*! \def ADDVAR
+    \brief Add a C procedure variable with the given procedure
 */
-#define ADDVAR_PROC(name) \
-  Vars.AddVar<C_wrap_procedure>(\
-    #name,\
-    boost::shared_ptr<C_wrap_procedure>(&name,\
-      smartpointer_nodeleter<C_wrap_procedure>()))
+#define ADDVAR(type,proc) \
+  boost::shared_ptr<type> newvar(CreateSmartPointer<type>()(&proc)); \
+  Vars.AddVar<type>( #proc, newvar)
 
-/*! \def ADDVAR_PROC
+/*! \def ADDVAR_NAME
     \brief Add a C procedure variable with the given name
 */
-#define ADDVAR_PROC_NAME(stname,name) \
-  Vars.AddVar<C_wrap_procedure>(\
-    stname,\
-    boost::shared_ptr<C_wrap_procedure>(&name,\
-      smartpointer_nodeleter<C_wrap_procedure>()))
+#define ADDVAR_NAME(type,stname,name) \
+  boost::shared_ptr<type> newvar(CreateSmartPointer<type>()(&name)); \
+  Vars.AddVar<type>( stname, newvar)
 
-/*! \def ADDOBJECTVAR_PROC
+
+/*! \def ADDOBJECTVAR_NAME
     \brief Add a C procedure variable with the given name
 */
-#define ADDOBJECTVAR_PROC(name) \
-  Vars.AddVar<C_wrap_procedure>(\
-    #name,\
-    boost::shared_ptr<C_wrap_procedure>(&name,\
-      smartpointer_nodeleter<C_wrap_procedure>()),\
-    OBJECT_CONTEXT_NUMBER)
-
-/*! \def ADDOBJECTVAR_PROC
-    \brief Add a C procedure variable with the given name
-*/
-#define ADDOBJECTVAR_PROC_NAME(stname,name) \
-  Vars.AddVar<C_wrap_procedure>(\
-    stname,\
-    boost::shared_ptr<C_wrap_procedure>(&name,\
-      smartpointer_nodeleter<C_wrap_procedure>()),\
-    OBJECT_CONTEXT_NUMBER)
-
-/*! \def ADDVAR_IMFUNC
-    \brief Add a C image function variable using its name as the variable name
-*/
-#define ADDVAR_IMFUNC(name) \
-  Vars.AddVar<C_wrap_imagefunction>(\
-    #name,\
-    boost::shared_ptr<C_wrap_imagefunction>(&name,\
-      smartpointer_nodeleter<C_wrap_imagefunction>()))
-
-/*! \def ADDVAR_IMFUNC_NAME
-    \brief Add a C image function variable with the given name
-*/
-#define ADDVAR_IMFUNC_NAME(stname,name) \
-  Vars.AddVar<C_wrap_imagefunction>(\
-    stname,\
-    boost::shared_ptr<C_wrap_imagefunction>(&name,\
-      smartpointer_nodeleter<C_wrap_imagefunction>()))
-
-/*! \def ADDOBJECTVAR_IMFUNC
-    \brief Add a C image function variable with the given name
-*/
-#define ADDOBJECTVAR_IMFUNC(name) \
-  Vars.AddVar<C_wrap_imagefunction>(\
-    #name,\
-    boost::shared_ptr<C_wrap_imagefunction>(&name,\
-      smartpointer_nodeleter<C_wrap_imagefunction>()),\
-    OBJECT_CONTEXT_NUMBER)
-
-/*! \def ADDOBJECTVAR_IMFUNC_NAME
-    \brief Add a C image function variable with the given name
-*/
-#define ADDOBJECTVAR_IMFUNC_NAME(stname,name) \
-  Vars.AddVar<C_wrap_imagefunction>(\
-    stname,\
-    boost::shared_ptr<C_wrap_imagefunction>(&name,\
-      smartpointer_nodeleter<C_wrap_imagefunction>()),\
-    OBJECT_CONTEXT_NUMBER)
-
-/*! \def ADDVAR_VARFUNC
-    \brief Add a C image function variable using its name as the variable name
-*/
-#define ADDVAR_VARFUNC(name) \
-  Vars.AddVar<C_wrap_varfunction>(\
-    #name,\
-    boost::shared_ptr<C_wrap_varfunction>(&name,\
-      smartpointer_nodeleter<C_wrap_varfunction>()))
-
-/*! \def ADDVAR_VARFUNC_NAME
-    \brief Add a C image function variable with the given name
-*/
-#define ADDVAR_VARFUNC_NAME(stname,name) \
-  Vars.AddVar<C_wrap_varfunction>(\
-    stname,\
-    boost::shared_ptr<C_wrap_varfunction>(&name,\
-      smartpointer_nodeleter<C_wrap_varfunction>()))
-
-#define ADDOBJECTVAR_VARFUNC_NAME(stname,name) \
-  Vars.AddVar<C_wrap_varfunction>(\
-    stname,\
-    boost::shared_ptr<C_wrap_varfunction>(&name,\
-      smartpointer_nodeleter<C_wrap_varfunction>()),\
-    OBJECT_CONTEXT_NUMBER)
+// C_wrap_procedure
+#define ADDOBJECTVAR_NAME(type,stname,name) \
+  boost::shared_ptr<type> newvar(CreateSmartPointer<type>()(&name)); \
+  Vars.AddVar<type>( stname, newvar, OBJECT_CONTEXT_NUMBER)
 
 
 
@@ -135,7 +57,7 @@
       wxString::FromAscii("Info"),wxOK | wxICON_INFORMATION );\
   msg->ShowModal();\
   msg->Destroy();\
-  return Variable::ptr(); }
+  return BasicVariable::ptr(); }
 
 /*! \def HelpAndReturn
     \brief Shows help and returns
@@ -178,13 +100,13 @@ int get_num_param(ParamList* p);
 /**
  * Function used to parse a variable of generic type in a list of parameters, and to give back a smart pointer to the variable.
  */
-bool get_generic_var_param( Variable::ptr& var, ParamList*p, int& num);
+bool get_generic_var_param( BasicVariable::ptr& var, ParamList*p, int& num);
 
 /**
  * Function used to parse a variable of specified type in a list of parameters, and to give back a smart pointer to the variable.
  */
 template<class T>
-bool get_var_param( Variable::ptr& var, 
+bool get_var_param( BasicVariable::ptr& var, 
                     ParamList*p, int& num);
 
 /**

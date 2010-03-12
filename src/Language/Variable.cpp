@@ -12,6 +12,7 @@
 #include "ami_cpp_object.h"
 #include "FloatMatrix.hpp"
 #include "wrapfunction_class.h"
+#include "amilab_messages.h"
 
 #include <string>
 
@@ -87,194 +88,27 @@ template<class T>
 Variable<T>::Variable()
 {
   _type         = type_void;
-  _pointer      = NULL;
- // cout << "Variable() with pointer " << this << endl;
 }
 
 
 //------------------------------------------------
 template<class T>
-void Variable<T>::operator = (const Variable& v)
+void Variable<T>::operator = (const Variable<T>& v)
 {
     _comments     = v._comments;
-
-#define CREATE_CASE(_typeid,_type) \
-  case _typeid: \
-    this->InitPtr(_typeid,v._name.c_str(), (shared_ptr<_type>*)v._pointer);  \
-  break; 
-
-  switch(v._type) {
-    case type_void: 
-      _pointer = NULL; //new boost::shared_ptr<void>((void*)p); 
-    break; //CREATE_CASE(type_void,         void)
-    CREATE_CASE(type_image,          InrImage)
-    CREATE_CASE(type_float,          float)
-    CREATE_CASE(type_int,            int)
-    CREATE_CASE(type_uchar,          unsigned char)
-    CREATE_CASE(type_string,         string)
-    CREATE_CASE(type_surface,        SurfacePoly)
-    CREATE_CASE(type_file,           FILE)
-    CREATE_CASE(type_ami_function,   AMIFunction)
-    CREATE_CASE(type_ami_class,      AMIClass)
-    CREATE_CASE(type_ami_object,     AMIObject)
-    CREATE_CASE(type_ami_cpp_object, AMICPPObject)
-    CREATE_CASE(type_paramwin,     ParamBox)
-    CREATE_CASE(type_matrix,       FloatMatrix)
-    CREATE_CASE(type_gltransform,  GLTransfMatrix)
-    CREATE_CASE(type_array,        VarArray)
-    CREATE_CASE(type_imagedraw,    DessinImage)
-    CREATE_CASE(type_surfdraw,     Viewer3D)
-    CREATE_CASE(type_class_member, WrapClassMember);
-
-    case type_c_procedure     : 
-    case type_c_image_function:
-    case type_c_function:
-      _pointer = v._pointer; // no smart pointer here
-      _name = v._name;
-    break;
-    default       : 
-      CLASS_ERROR(boost::format("unknown type %1%") % _type << endl); 
-    break;
-  }
-
-    // Problem: unsafe to copy pointers here
-    //_pointer      = v._pointer;
-#undef CREATE_CASE
+    // new copy or new reference ???
 }
 
 
+//------------------------------------------------
 template<class T>
-void Variable<T>::Init(vartype type, const char* name, void* p)
+void Variable<T>::Init(vartype type, const char* name, boost::shared_ptr<T>& p)
 {
-//  cout << boost::format("Variable::Init(%1%,%2%,%3%)")%type%name%p
-//       << " with pointer " << this << endl;
-  _type         = type;
-  _name         = name;
-
-#define CREATE_CASE(_typeid,_typename) \
-  case _typeid: \
-    _pointer = new boost::shared_ptr<_typename>((_typename*)p);  \
-  break; 
-
-#define CREATE_CASE_WXWINDOW(_typeid,_typename) \
-  case _typeid: \
-    _pointer = new boost::shared_ptr<_typename>((_typename*)p, \
-        wxwindow_nodeleter<_typename>()); \
-  break; 
-
-#define CREATE_CASE_WXWINDOW_DELETER(_typeid,_typename) \
-  case _typeid: \
-    _pointer = new boost::shared_ptr<_typename>((_typename*)p, \
-      wxwindow_deleter<_typename>()); \
-  break; 
-
-  switch(_type) {
-    case type_void: 
-      _pointer = NULL; //new boost::shared_ptr<void>((void*)p); 
-    break; //CREATE_CASE(type_void,         void)
-    CREATE_CASE(type_image,          InrImage)
-    CREATE_CASE(type_float,          float)
-    CREATE_CASE(type_int,            int)
-    CREATE_CASE(type_uchar,          unsigned char)
-    CREATE_CASE(type_string,         string)
-    CREATE_CASE(type_surface,        SurfacePoly)
-    CREATE_CASE(type_file,           FILE)
-    CREATE_CASE(type_ami_function,   AMIFunction)
-    CREATE_CASE(type_ami_class,      AMIClass)
-    CREATE_CASE(type_ami_object,     AMIObject)
-    CREATE_CASE(type_ami_cpp_object, AMICPPObject)
-    // don´t call the deleter for now because of a seg. fault
-    // issue (29-06-09)
-    CREATE_CASE_WXWINDOW(type_paramwin,     ParamBox)
-    CREATE_CASE(type_matrix,       FloatMatrix)
-    CREATE_CASE(type_gltransform,  GLTransfMatrix)
-    CREATE_CASE(type_array,        VarArray)
-
-    //CREATE_CASE(type_imagedraw,    DessinImage)
-    //CREATE_CASE(type_surfdraw,     Viewer3D)
-
-    case type_imagedraw:
-       _pointer = new DessinImage::ptr(
-            (DessinImage*)p,
-            DessinImage::deleter());
-    break; 
-
-    case type_surfdraw:
-       _pointer = new Viewer3D_ptr(
-            (Viewer3D*)p,
-            Viewer3D::deleter());
-    break; 
-
-    CREATE_CASE(type_class_member, WrapClassMember);
-
-    case type_c_procedure     : 
-    case type_c_image_function:
-    case type_c_function:
-      _pointer = p; // no smart pointer here
-    break;
-    default       : 
-      CLASS_ERROR(boost::format("unknown type %1%") % _type << endl); 
-    break;
-  }
-
-#undef CREATE_CASE
+  _type    = type;
+  _name    = name;
+  _pointer = boost::shared_ptr<_typename>(p);
 }
 
-
-//----------------------------------------------------------
-template<class T>
-void Variable<T>::InitPtr( vartype type, 
-                        const char* name, 
-                        void* p // is reference a smart pointer to the type
-                        )
-{
-//  cout << boost::format("Variable::InitPtr(%1%,%2%,%3%)")%type%name%p
-//       << " with pointer " << this << endl;
-  _type         = type;
-  _name         = name;
-
-using namespace boost;
-
-#define CREATE_CASE(_typeid,_type) \
-    case _typeid: \
-      _pointer = new shared_ptr<_type>( \
-                        *(shared_ptr<_type>*)p);\
-    break; 
-
-  switch(_type) {
-    case type_void: 
-      _pointer = NULL; //new boost::shared_ptr<void>((void*)p); 
-    break; //CREATE_CASE(type_void,         void)
-    CREATE_CASE(type_image,           InrImage)
-    CREATE_CASE(type_float,           float)
-    CREATE_CASE(type_int,             int)
-    CREATE_CASE(type_uchar,           unsigned char)
-    CREATE_CASE(type_string,          string)
-    CREATE_CASE(type_surface,         SurfacePoly)
-    CREATE_CASE(type_file,            FILE)
-    CREATE_CASE(type_ami_function,    AMIFunction)
-    CREATE_CASE(type_ami_class,       AMIClass)
-    CREATE_CASE(type_ami_object,      AMIObject)
-    CREATE_CASE(type_ami_cpp_object,  AMICPPObject)
-    CREATE_CASE(type_paramwin,        ParamBox)
-    CREATE_CASE(type_matrix,          FloatMatrix)
-    CREATE_CASE(type_gltransform,     GLTransfMatrix)
-    CREATE_CASE(type_array,           VarArray)
-    CREATE_CASE(type_imagedraw,       DessinImage)
-    CREATE_CASE(type_surfdraw,        Viewer3D)
-    CREATE_CASE(type_class_member, WrapClassMember)
-    case type_c_procedure     : 
-    case type_c_image_function:
-    case type_c_function:
-      _pointer = p; // no smart pointer here
-    break;
-    default       : 
-      CLASS_ERROR(boost::format("unknown type %1%") % _type << endl); 
-    break;
-  }
-
-#undef CREATE_CASE
-} // InitPtr()
 
 /*
 void  Variable::SetString(string_ptr st) 
@@ -296,52 +130,6 @@ void  Variable<T>::SetString(const char* st)
   }
 }
 
-
-template<class T>
-bool Variable<T>::FreeMemory()
-{
-
-  if (GB_debug)
-    cerr << "Variable::FreeMemory() " << _name << endl;
-  switch(_type) {
-    //      case type_void     : printf("void");     break;
-    case type_image           : FreeMemory<InrImage>();        break;
-    case type_float           : FreeMemory<float>();           break;
-    case type_int             : FreeMemory<int>();             break;
-    case type_uchar           : FreeMemory<unsigned char>();   break;
-    case type_string          : FreeMemory<string>();          break;
-    case type_imagedraw       : FreeMemory<DessinImage>();     break;
-    case type_surface         : FreeMemory<SurfacePoly>();     break;
-    case type_surfdraw        : FreeMemory<Viewer3D>();        break;
-    case type_ami_function    : FreeMemory<AMIFunction>();     break;
-    case type_ami_class       : FreeMemory<AMIClass>();        break;
-    case type_ami_object      : FreeMemory<AMIObject>();       break;
-    case type_ami_cpp_object  : FreeMemory<AMICPPObject>();    break;
-    case type_paramwin        : FreeMemory<ParamBox>();        break;
-    case type_matrix          : FreeMemory<FloatMatrix>();     break;
-    case type_gltransform     : FreeMemory<GLTransfMatrix>();  break;
-    case type_array           : FreeMemory<VarArray>();        break;
-    case type_class_member : FreeMemory<WrapClassMember>(); break;
-    case type_file           :
-          // TODO: create a file class where the destructor closes the file 
-          // for a cleaner implementation ...
-          fclose( (*(boost::shared_ptr<FILE>*) _pointer).get());
-          _allocated_memory = false;
-    break;
-    case type_c_procedure     : 
-    case type_c_image_function:
-    case type_c_function:
-      // no specific memory free here, since no smart pointer is used
-    break;
-    //  case type_c_function   : 
-    //    fprintf(stderr, "delete of C function not available \n");
-    //    break;
-    default       : 
-      CLASS_ERROR(boost::format("unknown type %1%") % _type << endl); 
-    break;
-  }
-  return true;
-}
 
 
 template<class T>
@@ -454,104 +242,10 @@ void Variable::display()
   cout << *this;
 }
 
-
-//----------------------------------------------------------------------
-//  VarArray
-//----------------------------------------------------------------------
-
-void VarArray::Resize( int new_size)
-  {
-    _vars.resize(new_size);
-    _allocated_size = new_size;
-    // for the moment, set the size to the allocated size ...
-    _size = _allocated_size;
-  }
-
-
-VarArray::VarArray()
+template<> BasicVariable::ptr Variable<FILE>::NewCopy()
 {
-  _type           = type_void;
-  _vars.clear();
-  _size           = 0;
-  _allocated_size = 0;
-}
-
-VarArray::~VarArray()
-{
-  this->FreeMemory();
-}
-
-void VarArray::Init( vartype type, int initsize)
-{
-  _type           = type;
-  _allocated_size = initsize;
-  _size = _allocated_size;
-  _vars.resize(initsize);
-}
-
-void VarArray::InitElement( int i, void* p,const char* name) 
-{
-  if (i>=_allocated_size) this->Resize(i+1);
-  if ((i>=0)&&(i<_allocated_size)) {
-    if (!_vars[i].get()) _vars[i] = Variable::ptr(new Variable());
-    _vars[i]->Init(_type,name,p);
-  }
-}
-
-void VarArray::InitElementPtr( vartype _type, int i, void* p,const char* name) 
-{
-  if (i>=_allocated_size) this->Resize(i+1);
-  if ((i>=0)&&(i<_allocated_size)) {
-    if (!_vars[i].get()) _vars[i] = Variable::ptr(new Variable());
-    _vars[i]->InitPtr(_type,name,p);
-  }
-}
-
-/*
-template <class T>
-void VarArray::InitElement( int i, 
-                            boost::shared_ptr<T>* p,
-                            const char* name) 
-{
-  if (i>=_allocated_size) this->Resize(i+1);
-  if ((i>=0)&&(i<_allocated_size)) {
-    _vars[i].Init<T>(_type,name,p);
-  }
-}
-*/
-
-BasicVariable::ptr VarArray::GetVar(int i) {
-  if ((i>=0)&&(i<_allocated_size)) {
-    return _vars[i];
-  }    
-  else {
-    CLASS_ERROR(boost::format("Wrong index %1%") % i);
-    return BasicVariable::ptr();
-  }
-}
-
-
-//---------------------------------------------------
-ostream& operator<<(ostream& o, const VarArray& v)
-//       -----------
-{
-  int i;
-  for (i=0;i<v._size;i++) 
-    if (v._vars[i].get())
-      if (v._vars[i]->Pointer()!=NULL) 
-        o  << format("\t\t [%1%]\t %2%") % i  % (*v._vars[i])  << endl;
-  return o;
-} // operator <<
-
-
-//---------------------------------------------------
-void VarArray::display() 
-{
-  cout << *this;
-}
-
-void VarArray::FreeMemory()
-{
-  _vars.clear();
-  _size = 0;
+  // don't copy a file, keep a reference ...
+  CLASS_MESSAGE(boost::format("Don't copy a file, keep a reference to it ... for variable %1% ")
+                      % Name());
+  return NewRef();
 }

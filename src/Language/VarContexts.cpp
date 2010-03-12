@@ -179,7 +179,7 @@ BasicVariable::ptr VarContexts::AddVar(BasicVariable::ptr var, int context)
     }
     else {
       CLASS_ERROR("Calling object variable without any object context");
-      return Variable::ptr();
+      return BasicVariable::ptr();
     }
   }
 
@@ -191,7 +191,7 @@ BasicVariable::ptr VarContexts::AddVar(BasicVariable::ptr var, int context)
 }
 
 //--------------------------------------------------
-Variable::ptr VarContexts::GetVar(const char* varname, int context)
+BasicVariable::ptr VarContexts::GetVar(const char* varname, int context)
 {
   if (context==-1) {
     // TODO: limit to last context, if nothing else is specified !!!
@@ -209,7 +209,7 @@ Variable::ptr VarContexts::GetVar(const char* varname, int context)
       return _object_context->GetVar(varname);
     }
 
-  return Variable::ptr();
+  return BasicVariable::ptr();
 }
 
 
@@ -242,7 +242,7 @@ int VarContexts::GetContext(Variable* var)
 
 
 //--------------------------------------------------
-bool VarContexts::deleteVar(Variable* var)
+bool VarContexts::deleteVar(BasicVariable* var)
 {
 
   // Check for object context

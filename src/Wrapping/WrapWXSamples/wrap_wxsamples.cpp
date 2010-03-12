@@ -32,17 +32,8 @@ void AddWrapWXSamples()
   Variables::ptr previous_ocontext = Vars.GetObjectContext();
   Vars.SetObjectContext(amiobject->GetContext());
 
-  Vars.AddVar<C_wrap_procedure>(
-    "penguin",
-    boost::shared_ptr<C_wrap_procedure>(&wrap_penguin,
-      smartpointer_nodeleter<C_wrap_procedure>()),
-    OBJECT_CONTEXT_NUMBER);
-
-  Vars.AddVar<C_wrap_procedure>(
-    "stctest",
-    boost::shared_ptr<C_wrap_procedure>(&wrap_stctest,
-      smartpointer_nodeleter<C_wrap_procedure>()),
-    OBJECT_CONTEXT_NUMBER);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,"penguin",&wrap_penguin);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,"stctest",&wrap_stctest);
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);

@@ -3466,7 +3466,7 @@ yyip::Parser::token::yytokentype checkvar(
       yyip::Parser::semantic_type* yylval,
       const char* varname, int context=-1);
 
-Variable::ptr IsObject(  const char* varname, int context=-1);
+BasicVariable::ptr IsObject(  const char* varname, int context=-1);
 
 using namespace std;
 
@@ -6473,7 +6473,7 @@ YY_RULE_SETUP
 
   // check if contextname is really a context
   //cout << "looking for "<< contextname << endl;
-  Variable::ptr var = IsObject(contextname.c_str(),OBJECT_CONTEXT_NUMBER);
+  BasicVariable::ptr var = IsObject(contextname.c_str(),OBJECT_CONTEXT_NUMBER);
   if (var.get()) 
   {
     FILE_MESSAGE("Object found");
@@ -6508,7 +6508,7 @@ YY_RULE_SETUP
 
 
   // check if contextname is really a context
-  Variable::ptr var = IsObject(contextname.c_str());
+  BasicVariable::ptr var = IsObject(contextname.c_str());
   if (var.get()) 
   {
     FILE_MESSAGE("Object found");
@@ -7496,18 +7496,18 @@ void yyipfree (void * ptr )
 //       IsObject()
 //--------------------------------------------------
 //
-Variable::ptr IsObject( const char* varname, int context)
+BasicVariable::ptr IsObject( const char* varname, int context)
 //
 {
-  Variable::ptr var = Vars.GetVar(varname,context);
+  BasicVariable::ptr var = Vars.GetVar(varname,context);
   if (var.get())
     if ((var->Type() == type_ami_object)||
         (var->Type() == type_ami_cpp_object))
       return var;
     else 
-      return Variable::ptr();
+      return BasicVariable::ptr();
   else
-    return Variable::ptr();
+    return BasicVariable::ptr();
 }
 
 
@@ -7523,7 +7523,7 @@ yyip::Parser::token::yytokentype checkvar(
 //
 {
 
-  Variable::ptr var = Vars.GetVar(varname,context);
+  BasicVariable::ptr var = Vars.GetVar(varname,context);
   //cout << "res = " << res << endl;
   if  ((!GB_driver.procedure_declaration) && var.get())   {
 

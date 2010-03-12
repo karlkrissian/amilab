@@ -84,12 +84,6 @@ class wxwindow_nodeleter
     void operator()(T * p)  {  }
   };
 
-template<class T>
-class smartpointer_nodeleter
-  {
-  public:
-    void operator()(T * p)  {  }
-  };
 
 #define new_wxWindow_ptr(_class,_parent) \
   _class::ptr(new _class(_parent),wxwindow_nodeleter<_class>())
@@ -111,16 +105,6 @@ typedef boost::shared_ptr<std::string>     string_ptr;
 typedef boost::shared_ptr<FILE>            FILE_ptr;
 
 
-class file_deleter
-{
-  public:
-    void operator()(FILE * p)
-    {
-      if (p!=NULL)
-        if (p!=stdout)
-          fclose(p);
-    }
-};
 
 
 namespace MyNS_ForOutput {

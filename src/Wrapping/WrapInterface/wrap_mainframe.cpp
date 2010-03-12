@@ -23,10 +23,10 @@ extern MainFrame*    GB_main_wxFrame;
 void AddWrapMainFrame()
 {
 
-  ADDVAR_PROC_NAME("mf_DrawSetCurve",   wrap_MainFrameDrawSetCurve );
-  ADDVAR_PROC_NAME("mf_DrawSetXLimits", wrap_MainFrameDrawSetXLimits );
-  ADDVAR_PROC_NAME("mf_DrawSetYLimits", wrap_MainFrameDrawSetYLimits );
-  ADDVAR_PROC_NAME("mf_DrawSetCurveProperties", 
+  ADDVAR_NAME(C_wrap_procedure,"mf_DrawSetCurve",   wrap_MainFrameDrawSetCurve );
+  ADDVAR_NAME(C_wrap_procedure,"mf_DrawSetXLimits", wrap_MainFrameDrawSetXLimits );
+  ADDVAR_NAME(C_wrap_procedure,"mf_DrawSetYLimits", wrap_MainFrameDrawSetYLimits );
+  ADDVAR_NAME(C_wrap_procedure,"mf_DrawSetCurveProperties", 
                     wrap_MainFrameDrawSetCurveProperties );
 }
 

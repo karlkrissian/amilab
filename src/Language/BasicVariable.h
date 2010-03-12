@@ -56,8 +56,12 @@ public:
   /**
     * Virtual Method that creates a new smart pointer to a basic variable with the same type
     */
-  virtual BasicVariable::ptr New() = 0;
+  virtual BasicVariable::ptr NewCopy() = 0;
 
+  /**
+    * Virtual Method that creates a new smart pointer to a basic variable with the same type
+    */
+  virtual BasicVariable::ptr NewReference() = 0;
 
   /**
    * Copy of variables

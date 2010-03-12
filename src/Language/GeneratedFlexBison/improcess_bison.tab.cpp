@@ -197,9 +197,9 @@ class wxScheduleTimer : public wxTimer
 {
   DEFINE_CLASS(wxScheduleTimer)
   public:
-    wxScheduleTimer( Variable::ptr callback)
+    wxScheduleTimer( BasicVariable::ptr callback)
     {
-      var = Variable::ptr(callback);
+      var = BasicVariable::ptr(callback);
     }
 
     ~wxScheduleTimer()
@@ -212,7 +212,7 @@ class wxScheduleTimer : public wxTimer
 
   private:
     // variable of type type_ami_function
-    Variable::ptr var;
+    BasicVariable::ptr var;
 };
 
 // create a array of shared pointers
@@ -1018,7 +1018,7 @@ namespace yyip {
       **/
         int  previous_lineno=driver.yyiplineno;
         AmiInstructionBlock::ptr block((yysemantic_stack_[(3) - (3)].ablock));
-        Variable::ptr  var(driver.var_stack.GetLastVar());
+        BasicVariable::ptr  var(driver.var_stack.GetLastVar());
   
         float res;
         if (var->Type() == type_float) 
@@ -1155,7 +1155,7 @@ namespace yyip {
 #line 1185 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       AmiInstructionBlock::ptr body((yysemantic_stack_[(8) - (7)].ablock));
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
 
       // delete previous variable
       std::string varname = var->Name();
@@ -1174,7 +1174,7 @@ namespace yyip {
                     % varname  % body->GetBody());
 
       // add the variable in the same context ...
-      Variable::ptr newvar =
+      BasicVariable::ptr newvar =
         Vars.AddVar<AMIFunction>(
                       varname.c_str(),
                       amifunc,
@@ -1213,7 +1213,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 1240 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       AMIClass::ptr ac = *(AMIClass::ptr*) (var->Pointer());
       IdentifierInfo::ptr ident((yysemantic_stack_[(2) - (2)].ident));
 
@@ -1303,7 +1303,7 @@ namespace yyip {
       Description:
         Call a language function with its parameters.
     **/
-        Variable::ptr       var(driver.var_stack.GetLastVar());
+        BasicVariable::ptr       var(driver.var_stack.GetLastVar());
         AMIFunction::ptr* func_ptr = (AMIFunction::ptr*) var->Pointer();
         ParamList::ptr  param((yysemantic_stack_[(5) - (3)].paramlist));
 
@@ -1322,7 +1322,7 @@ namespace yyip {
       Description:
         Call a language function without parameters.
     **/
-          Variable::ptr       var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       var(driver.var_stack.GetLastVar());
 
           AMIFunction::ptr* func_ptr = (AMIFunction::ptr*) var->Pointer();
           // Call the function
@@ -1339,13 +1339,13 @@ namespace yyip {
             Description:
               Empty instruction.
           **/
-          Variable::ptr       var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       var(driver.var_stack.GetLastVar());
           if (var.get()) {
             switch (var->Type()) {
               // TODO: ad hoc fix to improve here, result should be a usable variable ??
               case type_class_member: {
                 ParamList::ptr param((ParamList*) NULL);
-                Variable::ptr tmpvar = (*(WrapClassMember::ptr*) var->Pointer())->CallMember(param.get());
+                BasicVariable::ptr tmpvar = (*(WrapClassMember::ptr*) var->Pointer())->CallMember(param.get());
                }
               break;
               default:;
@@ -1486,7 +1486,7 @@ namespace yyip {
         **/
 
         int ms = (int) (yysemantic_stack_[(6) - (3)].adouble);
-        Variable::ptr       var(driver.var_stack.GetLastVar());
+        BasicVariable::ptr       var(driver.var_stack.GetLastVar());
 
         wxScheduleTimer::ptr w = wxScheduleTimer::ptr(new wxScheduleTimer( var ));
         // add to the list of schedule timers
@@ -1648,12 +1648,12 @@ namespace yyip {
           Description:
             Calls a wrapped function that returns a smart pointer to a variable, requires a new variable name as a result
         **/
-          Variable::ptr       var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       var(driver.var_stack.GetLastVar());
           ParamList::ptr param((yysemantic_stack_[(6) - (5)].paramlist));
-          Variable::ptr  res;
+          BasicVariable::ptr  res;
           IdentifierInfo::ptr ident((yysemantic_stack_[(6) - (1)].ident));
 
-          res = ((Variable::ptr (*)(ParamList*)) var->Pointer())(param.get());
+          res = ((BasicVariable::ptr (*)(ParamList*)) var->Pointer())(param.get());
           if (!res.use_count()) {
             driver.yyiperror(" function returns NULL \n");
             YYABORT;
@@ -1672,9 +1672,9 @@ namespace yyip {
           Description:
             Calls a wrapped class member function that returns a smart pointer to a variable, requires a new variable name as a result.
         **/
-          Variable::ptr       var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       var(driver.var_stack.GetLastVar());
           ParamList::ptr param((yysemantic_stack_[(6) - (5)].paramlist));
-          Variable::ptr  res;
+          BasicVariable::ptr  res;
           IdentifierInfo::ptr ident((yysemantic_stack_[(6) - (1)].ident));
 
           res = (*(WrapClassMember::ptr*) var->Pointer())->CallMember(param.get());
@@ -1683,7 +1683,7 @@ namespace yyip {
             YYABORT;
           }
           res->Rename(ident->GetName().c_str());
-          Vars.AddVarSmtPtr(res,ident->GetCreationContext());
+          Vars.AddVar(res,ident->GetCreationContext());
         }
     break;
 
@@ -1696,9 +1696,9 @@ namespace yyip {
           Description:
             Calls a wrapped class member function that returns a smart pointer to a variable, requires a new variable name as a result.
         **/
-          Variable::ptr       var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       var(driver.var_stack.GetLastVar());
           ParamList::ptr param((ParamList*)NULL);
-          Variable::ptr  res;
+          BasicVariable::ptr  res;
           IdentifierInfo::ptr ident((yysemantic_stack_[(3) - (1)].ident));
 
           res = (*(WrapClassMember::ptr*) var->Pointer())->CallMember(param.get());
@@ -1707,7 +1707,7 @@ namespace yyip {
             YYABORT;
           }
           res->Rename(ident->GetName().c_str());
-          Vars.AddVarSmtPtr(res,ident->GetCreationContext());
+          Vars.AddVar(res,ident->GetCreationContext());
         }
     break;
 
@@ -1716,7 +1716,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 1639 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr vararray(driver.var_stack.GetLastVar());
+          BasicVariable::ptr vararray(driver.var_stack.GetLastVar());
           VarArray::ptr array;
           InrImage::ptr imptr(driver.im_stack.GetLastImage());
           int  i = (int) (yysemantic_stack_[(6) - (3)].adouble);
@@ -1724,7 +1724,7 @@ namespace yyip {
 
           array = *((VarArray::ptr*) (vararray->Pointer()));
           if (imptr.get()) {
-            Variable::ptr var = array->GetVar(i);
+            BasicVariable::ptr var = array->GetVar(i);
             if (var.get()&&(var->Pointer()!=NULL)) {
                   driver.err_print("array element already assigned\n");
             }
@@ -1776,7 +1776,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 1686 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr varmat(driver.var_stack.GetLastVar());
+          BasicVariable::ptr varmat(driver.var_stack.GetLastVar());
           FloatMatrix::ptr m1 = *((FloatMatrix::ptr*) (varmat->Pointer()));
           (*m1) = (yysemantic_stack_[(3) - (3)].adouble);
        }
@@ -1787,7 +1787,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 1692 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr varmat(driver.var_stack.GetLastVar());
+          BasicVariable::ptr varmat(driver.var_stack.GetLastVar());
           FloatMatrix::ptr m1 = *((FloatMatrix::ptr*) (varmat->Pointer()));
           FloatMatrix* m2 = driver.matrix_stack.GetLastMatrix();
           (*m1) = m2;
@@ -1802,7 +1802,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 1703 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr vararray(driver.var_stack.GetLastVar());
+          BasicVariable::ptr vararray(driver.var_stack.GetLastVar());
           VarArray::ptr array;
           void * surfptr;
           int  i = (int) (yysemantic_stack_[(6) - (3)].adouble);
@@ -1846,7 +1846,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 1739 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr       var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       var(driver.var_stack.GetLastVar());
           void* surfptr  = (void*) driver.surf_stack.GetLastSurf();
 
           // instead of deleting and creating,
@@ -1868,7 +1868,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 1757 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr       var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       var(driver.var_stack.GetLastVar());
           VarArray* arraysurf;
           int size = (int) (yysemantic_stack_[(6) - (5)].adouble);
           if (size<1) size = 1;
@@ -2090,7 +2090,7 @@ namespace yyip {
 #line 1938 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
-          Variable::ptr varfile(driver.var_stack.GetLastVar());
+          BasicVariable::ptr varfile(driver.var_stack.GetLastVar());
           std::string filename(varfile->Name());
 
           if (Vars.GetVar(filename.c_str()).get())
@@ -2111,7 +2111,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 1955 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr varfile(driver.var_stack.GetLastVar());
+          BasicVariable::ptr varfile(driver.var_stack.GetLastVar());
           FILE_ptr file = *(FILE_ptr*) (varfile->Pointer());
           rewind(file.get());
         }
@@ -2220,8 +2220,8 @@ namespace yyip {
 #line 2017 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           std::string titre;
-          Variable::ptr imagevar(driver.var_stack.GetLastVar());
-          Variable::ptr var;
+          BasicVariable::ptr imagevar(driver.var_stack.GetLastVar());
+          BasicVariable::ptr var;
           int var_context = Vars.GetContext(imagevar.get());
 
           Variables::ptr previous_ocontext = Vars.GetObjectContext();
@@ -2254,7 +2254,7 @@ namespace yyip {
               di = DessinImage::Create_ptr(
                 CreateIDraw( varname, *((InrImage::ptr*) imagevar->Pointer())));
 
-              Variable::ptr newvar = 
+              BasicVariable::ptr newvar = 
                 Vars.AddVar<DessinImage>(titre.c_str(), di, var_context);
               di->SetCloseFunction(
                 (void*) CB_delete_variable,
@@ -2275,9 +2275,9 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 2068 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varim(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
           string title;
-          Variable::ptr var;
+          BasicVariable::ptr var;
 
           title = (boost::format("%s_draw") % varim->Name().c_str()).str();
           var = Vars.GetVar(title.c_str());
@@ -2303,8 +2303,8 @@ namespace yyip {
     {
           string    titre;
           Viewer3D::ptr surfdraw;
-          Variable::ptr surfvar(driver.var_stack.GetLastVar());
-          Variable::ptr var;
+          BasicVariable::ptr surfvar(driver.var_stack.GetLastVar());
+          BasicVariable::ptr var;
           int var_context = Vars.GetContext(surfvar.get());
 
           Variables::ptr previous_ocontext = Vars.GetObjectContext();
@@ -2322,7 +2322,7 @@ namespace yyip {
                             new Viewer3D( GB_main_wxFrame,
                                           wxString::FromAscii(titre.c_str()))),
 
-              Variable::ptr newvar = 
+              BasicVariable::ptr newvar = 
                 Vars.AddVar<Viewer3D>(  titre.c_str(),
                                         surfdraw,
                                         var_context);
@@ -2354,7 +2354,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 2137 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varim(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
           InrImage::ptr i1 = *(InrImage::ptr*) varim->Pointer();
           InrImage::ptr i2 (driver.im_stack.GetLastImage());
 
@@ -2372,7 +2372,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 2150 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varim(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
           InrImage::ptr i1 = *(InrImage::ptr*) varim->Pointer();
           InrImage::ptr i2 (driver.im_stack.GetLastImage());
 
@@ -2394,7 +2394,7 @@ namespace yyip {
         Description:
           Replacing the previous image by the new one.
         **/
-          Variable::ptr  var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  var(driver.var_stack.GetLastVar());
           InrImage::ptr i1 = *(InrImage::ptr*) var->Pointer();
           InrImage::ptr imptr  (driver.im_stack.GetLastImage());
           bool can_skip_allocation = false;
@@ -2442,7 +2442,7 @@ namespace yyip {
         Description:
         Sets the whole image to a constant value given by expression.
         **/
-          Variable::ptr  varim(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
           InrImage::ptr i1 = *(InrImage::ptr*) varim->Pointer();
           i1->InitImage((yysemantic_stack_[(3) - (3)].adouble));
         }
@@ -2464,7 +2464,7 @@ namespace yyip {
         **/
           int comp = (int) (yysemantic_stack_[(6) - (3)].adouble);
 
-          Variable::ptr  varim(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
           InrImage::ptr i1 = *(InrImage::ptr*) varim->Pointer();
           InrImage::ptr i2 ( driver.im_stack.GetLastImage());
 
@@ -2502,7 +2502,7 @@ namespace yyip {
         Description:
         assigns the value val to every component 'n' of the input image
         **/
-          Variable::ptr  varim(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
           InrImage::ptr i1 = *(InrImage::ptr*) varim->Pointer();
           int comp = (int) (yysemantic_stack_[(6) - (3)].adouble);
   
@@ -2532,7 +2532,7 @@ namespace yyip {
         /**
           Description: Pads the image ...
         **/
-          Variable::ptr  varim(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
           int posx  = (int) (yysemantic_stack_[(16) - (3)].adouble);
           int stepx = (int) (yysemantic_stack_[(16) - (5)].adouble);
           int posy  = (int) (yysemantic_stack_[(16) - (7)].adouble);
@@ -2555,7 +2555,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 2303 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr var(driver.var_stack.GetLastVar());
           (*(*(float_ptr*) var->Pointer()))++;
         }
     break;
@@ -2565,7 +2565,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 2308 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr var(driver.var_stack.GetLastVar());
           (*(*(float_ptr*) var->Pointer()))--;
         }
     break;
@@ -2575,7 +2575,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 2313 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr var(driver.var_stack.GetLastVar());
           *(*(float_ptr*) var->Pointer()) = (yysemantic_stack_[(3) - (3)].adouble);
         }
     break;
@@ -2585,7 +2585,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 2318 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr var(driver.var_stack.GetLastVar());
           (*(*(int_ptr*) var->Pointer()))++;
         }
     break;
@@ -2595,7 +2595,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 2323 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr var(driver.var_stack.GetLastVar());
           (*(*(int_ptr*) var->Pointer()))--;
         }
     break;
@@ -2605,7 +2605,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 2328 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr var(driver.var_stack.GetLastVar());
           *(*(int_ptr*) var->Pointer()) = (int) (yysemantic_stack_[(3) - (3)].adouble);
         }
     break;
@@ -2615,7 +2615,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 2333 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr var(driver.var_stack.GetLastVar());
           *(*(uchar_ptr*) var->Pointer()) = (unsigned char) (yysemantic_stack_[(3) - (3)].adouble);
         }
     break;
@@ -2625,7 +2625,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 2338 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr var(driver.var_stack.GetLastVar());
           (*(*(uchar_ptr*) var->Pointer()))++;
         }
     break;
@@ -2635,7 +2635,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 2343 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr var(driver.var_stack.GetLastVar());
           (*(*(uchar_ptr*) var->Pointer()))--;
         }
     break;
@@ -2645,7 +2645,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 2348 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr var(driver.var_stack.GetLastVar());
           boost::shared_array<char> newname( (yysemantic_stack_[(3) - (3)].astring));
           var->SetString(newname.get());
         }
@@ -2671,7 +2671,7 @@ namespace yyip {
               string expression: comments
           Description: Set comments for a variable
         **/
-          Variable::ptr  var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  var(driver.var_stack.GetLastVar());
           boost::shared_array<char> comments( (yysemantic_stack_[(6) - (5)].astring));
           var->SetComments(comments.get());
         }
@@ -2691,7 +2691,7 @@ namespace yyip {
          if (Vars.GetVar($2->Name(),&var))
          Vars.deleteVar($2->Name());
          */
-         Variable::ptr       var(driver.var_stack.GetLastVar());
+         BasicVariable::ptr       var(driver.var_stack.GetLastVar());
          Vars.deleteVar(var.get());
         }
     break;
@@ -2716,12 +2716,12 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 2394 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr vararray(driver.var_stack.GetLastVar());
+          BasicVariable::ptr vararray(driver.var_stack.GetLastVar());
           VarArray::ptr array = *(VarArray::ptr*) (vararray->Pointer());;
           int  i = (int) (yysemantic_stack_[(5) - (4)].adouble);
 
           if (array->GetVar(i).get()) {
-            array->GetVar(i) = Variable::ptr();
+            array->GetVar(i) = BasicVariable::ptr();
           }
       }
     break;
@@ -3035,7 +3035,7 @@ namespace yyip {
       Description: 
         Displays the documentation relative to the wrapped image function.
     **/
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       // call with NULL paramlist pointer to trigger help message
       ((InrImage* (*)(ParamList*)) var->Pointer())(NULL);
     }
@@ -3050,9 +3050,9 @@ namespace yyip {
       Description: 
         Displays the documentation relative to the wrapped image function.
     **/
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       // call with NULL paramlist pointer to trigger help message
-      ((Variable::ptr (*)(ParamList*)) var->Pointer())(NULL);
+      ((BasicVariable::ptr (*)(ParamList*)) var->Pointer())(NULL);
     }
     break;
 
@@ -3065,7 +3065,7 @@ namespace yyip {
       Description: 
         Displays the documentation relative to the wrapped image function.
     **/
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       // call with NULL paramlist pointer to trigger help message
       ((void (*)(ParamList*)) var->Pointer())(NULL);
     }
@@ -3080,7 +3080,7 @@ namespace yyip {
       Description: 
         Displays the documentation relative to the wrapped c++ member.
     **/
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       // call with NULL paramlist pointer to trigger help message
       (*(WrapClassMember::ptr*) var->Pointer())->ShowHelp();
     }
@@ -3150,7 +3150,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 2778 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr varfile(driver.var_stack.GetLastVar());
+          BasicVariable::ptr varfile(driver.var_stack.GetLastVar());
           FILE_ptr file = *(FILE_ptr*) (varfile->Pointer());
           boost::shared_array<char> text( (yysemantic_stack_[(4) - (4)].astring));
 
@@ -3164,7 +3164,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 2787 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr varfile(driver.var_stack.GetLastVar());
+          BasicVariable::ptr varfile(driver.var_stack.GetLastVar());
           FILE_ptr file = *(FILE_ptr*) (varfile->Pointer());
           boost::shared_array<char> text( (yysemantic_stack_[(4) - (4)].astring));
 
@@ -3245,7 +3245,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 2838 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr varfile(driver.var_stack.GetLastVar());
+          BasicVariable::ptr varfile(driver.var_stack.GetLastVar());
           FILE_ptr file = *(FILE_ptr*) (varfile->Pointer());
 
           fprintf(file.get(),"%5.10f",(yysemantic_stack_[(4) - (4)].adouble));
@@ -3258,7 +3258,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 2846 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr varuchar(driver.var_stack.GetLastVar());
+          BasicVariable::ptr varuchar(driver.var_stack.GetLastVar());
           printf("Files are not close anymore: delete the variable instead \n");
           //FILE_ptr file = *(FILE_ptr*) ($1->Pointer());
           //fclose(file.get());
@@ -3300,7 +3300,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 2873 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
           DessinImageParametres* param;
 
@@ -3322,7 +3322,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 2890 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
           DessinImageParametres* param;
 
@@ -3340,7 +3340,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 2903 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
           DessinImageParametres* param;
 
@@ -3356,8 +3356,8 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 2914 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
           InrImage::ptr im;
           char title[255];
@@ -3367,7 +3367,7 @@ namespace yyip {
 
             sprintf(title,"%s_draw",varim->Name().c_str());
 
-            Variable::ptr var = Vars.GetCurrentContext()->GetVar(title);
+            BasicVariable::ptr var = Vars.GetCurrentContext()->GetVar(title);
             if (var.get()) {
               DessinImage::ptr di;
               DessinImageParametres* param;
@@ -3390,14 +3390,14 @@ namespace yyip {
               DessinImage::ptr di = 
                 DessinImage::Create_ptr(CreateIDraw( varname, im));
 
-              Variable::ptr newvar = Vars.AddVar<DessinImage>(title, di);
+              BasicVariable::ptr newvar = Vars.AddVar<DessinImage>(title, di);
 
               di->SetCloseFunction(
                   (void*) CB_delete_variable,
                   (void*) (newvar.get()));
               // get the pointer to the newly created
               // variable
-              Variable::ptr var = Vars.GetVar(title);
+              BasicVariable::ptr var = Vars.GetVar(title);
               if (var.get())
                 draw->CreeCompare2Image(*(DessinImage::ptr*)var->Pointer());
               else
@@ -3412,8 +3412,8 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 2965 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varimd2(driver.var_stack.GetLastVar());
-          Variable::ptr  varimd1(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd2(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd1(driver.var_stack.GetLastVar());
           DessinImage::ptr draw1;
           DessinImage::ptr draw2;
 
@@ -3444,9 +3444,9 @@ namespace yyip {
             Defines a displacement to apply to the cursor when
             comparing 2 image drawing windows
         **/
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
-          Variable::ptr  varimd2(driver.var_stack.GetLastVar());
-          Variable::ptr  varimd1(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd2(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd1(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
           DessinImage::ptr draw2;
           InrImage::ptr displ;
@@ -3464,7 +3464,7 @@ namespace yyip {
 #line 3010 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
         driver.yyiperror( "SetCompTransf is not available at the moment");
 /*
         DessinImage::ptr draw;
@@ -3507,8 +3507,8 @@ namespace yyip {
             Description:
                 Assign a vector field to be draw in the given image drawing window.
           **/
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
 
           draw = *(DessinImage::ptr*) (varimd->Pointer());
@@ -3521,7 +3521,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 3058 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
 
           draw = *(DessinImage::ptr*) (varimd->Pointer());
@@ -3534,7 +3534,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 3066 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
 
           draw = *(DessinImage::ptr*) (varimd->Pointer());
@@ -3556,7 +3556,7 @@ namespace yyip {
             Sets the size and spacing of the vector drawing interface in the given
             image drawing window.
           **/
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
           float size    = (yysemantic_stack_[(8) - (5)].adouble);
           int   spacing = (int)(yysemantic_stack_[(8) - (7)].adouble);
@@ -3583,7 +3583,7 @@ namespace yyip {
             the color is set as (R,G,B) components, each component has a value
             between 0 and 255.
           **/
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
           int vectid = (int) (yysemantic_stack_[(12) - (5)].adouble);
           unsigned char red   = (unsigned char) (yysemantic_stack_[(12) - (7)].adouble);
@@ -3600,7 +3600,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 3117 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw= *(DessinImage::ptr*) (varimd->Pointer());
           draw->SetVectType((int)(yysemantic_stack_[(6) - (5)].adouble));
         }
@@ -3611,7 +3611,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 3123 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw= *(DessinImage::ptr*) (varimd->Pointer());
           draw->SetLineThickness((int)(yysemantic_stack_[(6) - (5)].adouble));
         }
@@ -3622,7 +3622,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 3129 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           int xmin = (int)  (yysemantic_stack_[(16) - (5)].adouble);
           int ymin = (int)  (yysemantic_stack_[(16) - (7)].adouble);
           int zmin = (int)  (yysemantic_stack_[(16) - (9)].adouble);
@@ -3641,7 +3641,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 3143 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           int width  = (int) (yysemantic_stack_[(8) - (5)].adouble);
           int height = (int) (yysemantic_stack_[(8) - (7)].adouble);
 
@@ -3659,7 +3659,7 @@ namespace yyip {
 #line 3155 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           DessinImage::ptr draw;
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           ClasseCouleur c;
 
           draw = *(DessinImage::ptr*) (varimd->Pointer());
@@ -3676,7 +3676,7 @@ namespace yyip {
         /**
           Description: Set a user-defined colormap.
          **/
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
           InrImage::ptr colmap(driver.im_stack.GetLastImage());
 
@@ -3690,8 +3690,8 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 3177 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
-          Variable::ptr  varimd(  driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(  driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
 
           draw = *(DessinImage::ptr*) (varimd->Pointer());
@@ -3714,8 +3714,8 @@ namespace yyip {
             Description:
                 Sets the image and intensity value of an isocontour in an 'image_draw' window.
             **/
-            Variable::ptr  varim( driver.var_stack.GetLastVar());
-            Variable::ptr  varimd(driver.var_stack.GetLastVar());
+            BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
+            BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
             DessinImage::ptr draw;
 
             draw = *(DessinImage::ptr*) (varimd->Pointer());
@@ -3737,8 +3737,8 @@ namespace yyip {
             Description:
                 Sets the image and intensity value of the isocontour number 0 in an 'image_draw' window.
             **/
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
 
           draw = *(DessinImage::ptr*) (varimd->Pointer());
@@ -3762,7 +3762,7 @@ namespace yyip {
                 Sets the parameters (line style and thickeness)
                 of an isocontour in an 'image_draw' window.
             **/
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
 
           draw = *(DessinImage::ptr*) (varimd->Pointer());
@@ -3787,7 +3787,7 @@ namespace yyip {
                 Sets the parameters (line style and thickeness)
                 of an isocontour in an 'image_draw' window.
             **/
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
 
           draw = *(DessinImage::ptr*) (varimd->Pointer());
@@ -3809,7 +3809,7 @@ namespace yyip {
             Description:
                 Sets the visibility of an isocontour in an 'image_draw' window.
             **/
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
 
           draw = *(DessinImage::ptr*) (varimd->Pointer());
@@ -3832,7 +3832,7 @@ namespace yyip {
             Description:
                 Sets the color as RGB of an isocontour in an 'image_draw' window.
             **/
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
           draw = *(DessinImage::ptr*) (varimd->Pointer());
           draw->SetIsoContourColor( (int) (yysemantic_stack_[(12) - (5)].adouble), (unsigned char) (yysemantic_stack_[(12) - (7)].adouble),
@@ -3853,7 +3853,7 @@ namespace yyip {
             Description:
                 Activates or desactivates the drawing of a series of isocontours.
             **/
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
           draw = *(DessinImage::ptr*) (varimd->Pointer());
           draw->SetDrawAllContours( (int) (yysemantic_stack_[(6) - (5)].adouble) );
@@ -3873,7 +3873,7 @@ namespace yyip {
             Description:
                 Parameters for drawing a series of isocontours around the main isocontour.
             **/
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
           draw = *(DessinImage::ptr*) (varimd->Pointer());
           draw->AllContoursParam(  (yysemantic_stack_[(8) - (5)].adouble) , (yysemantic_stack_[(8) - (7)].adouble) );
@@ -3885,8 +3885,8 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 3327 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varamif(driver.var_stack.GetLastVar());
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varamif(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
 
           draw = *(DessinImage::ptr*) (varimd->Pointer());
@@ -3907,8 +3907,8 @@ namespace yyip {
             Setting the opacity image for the volume rendering.
             This image should have unsigned char values.
          **/
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
           InrImage::ptr im;
 
@@ -3930,7 +3930,7 @@ namespace yyip {
         Description:
           Set the whole image to the same vector value .
         **/
-          Variable::ptr  varim(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
           (*(InrImage::ptr*) varim->Pointer())->InitImage((yysemantic_stack_[(6) - (5)].adouble));
         }
     break;
@@ -3949,7 +3949,7 @@ namespace yyip {
         Description:
           Set the whole image to the same value.
         **/
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           (*(InrImage::ptr*) varim->Pointer())->InitImage((yysemantic_stack_[(10) - (5)].adouble),(yysemantic_stack_[(10) - (7)].adouble),(yysemantic_stack_[(10) - (9)].adouble));
         }
     break;
@@ -3973,7 +3973,7 @@ namespace yyip {
         See also:
                 setpos
         **/
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           (*(InrImage::ptr*) varim->Pointer())->FixeValeur((yysemantic_stack_[(6) - (5)].adouble));
         }
     break;
@@ -4001,7 +4001,7 @@ namespace yyip {
                 setpos
         **/
 
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           (*(InrImage::ptr*) varim->Pointer())->VectFixeValeurs((yysemantic_stack_[(10) - (5)].adouble),(yysemantic_stack_[(10) - (7)].adouble),(yysemantic_stack_[(10) - (9)].adouble));
         }
     break;
@@ -4024,7 +4024,7 @@ namespace yyip {
         See also:
           set
         **/
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           int x = (int) round((double)(yysemantic_stack_[(10) - (5)].adouble));
           int y = (int) round((double)(yysemantic_stack_[(10) - (7)].adouble));
           int z = (int) round((double)(yysemantic_stack_[(10) - (9)].adouble));
@@ -4062,8 +4062,8 @@ namespace yyip {
           j = Image(FLOAT,5,5,5)
           i.putimage(j,2,2,2)
         **/
-          Variable::ptr  varim2( driver.var_stack.GetLastVar());
-          Variable::ptr  varim1( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim2( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim1( driver.var_stack.GetLastVar());
           InrImage::ptr  i1;
           InrImage::ptr  i2;
     
@@ -4093,8 +4093,8 @@ namespace yyip {
           j = Image(FLOAT,5,5,5)
           i.putimage(j,2,2,2)
         **/
-          Variable::ptr  varim2( driver.var_stack.GetLastVar());
-          Variable::ptr  varim1( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim2( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim1( driver.var_stack.GetLastVar());
           InrImage::ptr  i1;
           InrImage::ptr  i2;
           float tx1,ty1,tz1;
@@ -4116,7 +4116,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 3517 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim( driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
       (*(InrImage::ptr*) varim->Pointer())->FixeNom( (yysemantic_stack_[(6) - (5)].astring));
       delete [] (yysemantic_stack_[(6) - (5)].astring);
     }
@@ -4139,7 +4139,7 @@ namespace yyip {
             Sets parameters for the anisotropic diffusion algorithm using
             Gauss-Seidel scheme.
         **/
-        Variable::ptr  varim( driver.var_stack.GetLastVar());
+        BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
         Func_InitAnisoGS( ((InrImage::ptr*) varim->Pointer())->get(),
                           (yysemantic_stack_[(12) - (7)].adouble),  (yysemantic_stack_[(12) - (9)].adouble), (yysemantic_stack_[(12) - (11)].adouble));
         }
@@ -4186,7 +4186,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 3563 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_AnisoGS_SetMask(((InrImage::ptr*) varim->Pointer())->get());
         }
     break;
@@ -4205,7 +4205,7 @@ namespace yyip {
             Sets the region of interest (region of constant tissue in the image)
             and activates the Oriented Speckle Reducing Anisotropic Diffusion
          **/
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_AnisoGS_SetSRAD_ROI(((InrImage::ptr*) varim->Pointer())->get());
         }
     break;
@@ -4225,7 +4225,7 @@ namespace yyip {
             and activates the Rician Noise Reducing Anisotropic Diffusion
             used to reduce noise in MRI data.
          **/
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_AnisoGS_SetRNRAD_ROI(((InrImage::ptr*) varim->Pointer())->get());
         }
     break;
@@ -4247,7 +4247,7 @@ namespace yyip {
             New version of the filter, using local directional mean and variance
             for the diffusion matrix.
          **/
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_AnisoGS_SetRNRAD_ROI_NEW(((InrImage::ptr*) varim->Pointer())->get());
         }
     break;
@@ -4568,7 +4568,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 3822 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_LevelSetsVelocity(((InrImage::ptr*) varim->Pointer())->get(),(yysemantic_stack_[(8) - (7)].adouble));
         }
     break;
@@ -4595,7 +4595,7 @@ namespace yyip {
               The expansion will then be multiplied by the expansion coefficient during the evolution.
               
           **/
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_LevelSetsExpansionImage( ((InrImage::ptr*) varim->Pointer())->get());
         }
     break;
@@ -4614,7 +4614,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 3852 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_LevelSetsSetCurvWeights( ((InrImage::ptr*) varim->Pointer())->get());
         }
     break;
@@ -4624,9 +4624,9 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 3858 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varim3( driver.var_stack.GetLastVar());
-          Variable::ptr  varim2( driver.var_stack.GetLastVar());
-          Variable::ptr  varim1( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim3( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim2( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim1( driver.var_stack.GetLastVar());
           Func_LevelSetsSetAdvectionField(
                 ((InrImage::ptr*) varim1->Pointer())->get(),
                 ((InrImage::ptr*) varim2->Pointer())->get(),
@@ -4639,7 +4639,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 3869 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_LevelSetsGetCurvatureData( ((InrImage::ptr*) varim->Pointer())->get());
         }
     break;
@@ -4649,7 +4649,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 3875 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_LevelSetsGetDistanceMap( ((InrImage::ptr*) varim->Pointer())->get());
         }
     break;
@@ -4659,7 +4659,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 3881 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_LevelSetsGetAdvectionData( ((InrImage::ptr*) varim->Pointer())->get());
         }
     break;
@@ -4669,7 +4669,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 3887 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_LevelSetsGetSkeleton( ((InrImage::ptr*) varim->Pointer())->get());
         }
     break;
@@ -4679,7 +4679,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 3893 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_LevelSetsGetVelocityData( ((InrImage::ptr*) varim->Pointer())->get());
         }
     break;
@@ -4689,7 +4689,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 3899 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_LevelSetsGetExpansionData( ((InrImage::ptr*) varim->Pointer())->get());
         }
     break;
@@ -4784,7 +4784,7 @@ namespace yyip {
         See also:
           image_cast
         **/
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           (*(InrImage::ptr*) varim->Pointer())->Sauve((yysemantic_stack_[(4) - (4)].astring));
           delete [] (yysemantic_stack_[(4) - (4)].astring);
         }
@@ -4803,7 +4803,7 @@ namespace yyip {
           v1.normalize
 
         **/
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
       Func_Normalize((((InrImage::ptr*) varim->Pointer())->get()));
     }
     break;
@@ -4813,8 +4813,8 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 3981 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varim2( driver.var_stack.GetLastVar());
-          Variable::ptr  varim1( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim2( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim1( driver.var_stack.GetLastVar());
           Func_OrientField( ((InrImage::ptr*) varim1->Pointer())->get() , ((InrImage::ptr*) varim2->Pointer())->get() );
     }
     break;
@@ -4824,8 +4824,8 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 3988 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varim2( driver.var_stack.GetLastVar());
-          Variable::ptr  varim1( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim2( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim1( driver.var_stack.GetLastVar());
        Func_OrientPositive( ((InrImage::ptr*) varim1->Pointer())->get() , 
                             ((InrImage::ptr*) varim2->Pointer())->get() );
     }
@@ -4836,7 +4836,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 3995 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
 
       s->Write((yysemantic_stack_[(4) - (4)].astring));
@@ -4856,7 +4856,7 @@ namespace yyip {
     Description:
         Save the first line of the polydata in text format
     **/
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr surf = *(SurfacePoly::ptr*) surfdraw->Pointer();
 
       Func_WriteCTALine(surf.get(),(yysemantic_stack_[(4) - (4)].astring));
@@ -4870,7 +4870,7 @@ namespace yyip {
 #line 4019 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
 
       s->SetOwnMaterial( (int) (yysemantic_stack_[(6) - (5)].adouble));
@@ -4884,7 +4884,7 @@ namespace yyip {
 #line 4028 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       s->GetMaterial()._ambient.FixeValeur((int) (yysemantic_stack_[(10) - (5)].adouble),(int) (yysemantic_stack_[(10) - (7)].adouble),(int) (yysemantic_stack_[(10) - (9)].adouble));
 
@@ -4897,7 +4897,7 @@ namespace yyip {
 #line 4036 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       s->GetMaterial()._diffuse.FixeValeur((int) (yysemantic_stack_[(10) - (5)].adouble),(int) (yysemantic_stack_[(10) - (7)].adouble),(int) (yysemantic_stack_[(10) - (9)].adouble));
 
@@ -4910,7 +4910,7 @@ namespace yyip {
 #line 4044 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       s->GetMaterial()._specular.FixeValeur((int) (yysemantic_stack_[(10) - (5)].adouble),(int) (yysemantic_stack_[(10) - (7)].adouble),(int) (yysemantic_stack_[(10) - (9)].adouble));
 
@@ -4923,7 +4923,7 @@ namespace yyip {
 #line 4053 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       s->GetMaterial()._shininess= (yysemantic_stack_[(6) - (5)].adouble);
 
@@ -4936,7 +4936,7 @@ namespace yyip {
 #line 4062 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       s->GetMaterial()._opacity= (yysemantic_stack_[(6) - (5)].adouble);
 
@@ -4952,7 +4952,7 @@ namespace yyip {
       Description:
         Sets the object visible or not visible in the scene.
       **/
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       s->SetVisible( (int) (yysemantic_stack_[(6) - (5)].adouble));
     }
@@ -4968,7 +4968,7 @@ namespace yyip {
           Enable/Disable colormaterial for the associated surface.
         **/
 
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       s->GetMaterial()._colormaterial = (unsigned char) ((yysemantic_stack_[(6) - (5)].adouble)>0.5);
 
@@ -4990,7 +4990,7 @@ namespace yyip {
         associated per each vertex (actived with Enable ColorMaterial)
       **/
 
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
 
       s->SetColorOpacity((yysemantic_stack_[(6) - (5)].adouble));
@@ -5004,7 +5004,7 @@ namespace yyip {
 #line 4113 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       int n;
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
 
       Pour(n,0,s->NbPoints()-1)
@@ -5024,8 +5024,8 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4129 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(   driver.var_stack.GetLastVar());
-      Variable::ptr  surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(   driver.var_stack.GetLastVar());
+      BasicVariable::ptr  surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
 
       s->SetPointsColors( ((InrImage::ptr*) varim->Pointer())->get() );
@@ -5038,7 +5038,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4138 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       InrImage::ptr i (driver.im_stack.GetLastImage());
       // TODO: use smart pointer to image in SetColors ...
@@ -5051,7 +5051,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4146 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       InrImage::ptr i (driver.im_stack.GetLastImage());
       s->SetColors( i.get() );
@@ -5064,8 +5064,8 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4154 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
-      Variable::ptr  surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       s->Statistics( ((InrImage::ptr*) varim->Pointer())->get() );
 
@@ -5077,7 +5077,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4162 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       s->MergePoints((yysemantic_stack_[(6) - (5)].adouble));
     }
@@ -5088,7 +5088,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4168 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       s->Triangulate();
     }
@@ -5100,7 +5100,7 @@ namespace yyip {
 #line 4174 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr surf = *(SurfacePoly::ptr*) surfdraw->Pointer();
 
       float        depth = (yysemantic_stack_[(6) - (5)].adouble);
@@ -5150,7 +5150,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4220 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
 
       InrImage::ptr i (driver.im_stack.GetLastImage());
@@ -5163,7 +5163,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4228 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
 
       s->Translate( (yysemantic_stack_[(10) - (5)].adouble),(yysemantic_stack_[(10) - (7)].adouble),(yysemantic_stack_[(10) - (9)].adouble) );
@@ -5176,7 +5176,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4236 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
 
       s->Scale( (yysemantic_stack_[(10) - (5)].adouble),(yysemantic_stack_[(10) - (7)].adouble),(yysemantic_stack_[(10) - (9)].adouble),0 );
@@ -5189,7 +5189,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4244 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       int          w = (int) (yysemantic_stack_[(6) - (5)].adouble);
 
@@ -5206,7 +5206,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4256 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
 
       s->RemoveLine((int)(yysemantic_stack_[(6) - (5)].adouble));
@@ -5229,7 +5229,7 @@ namespace yyip {
         if the value is > 0.5, then select the corresponding line
     **/
 
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       InrImage::ptr im (driver.im_stack.GetLastImage());
 
@@ -5246,7 +5246,7 @@ namespace yyip {
     /**
       Description: Remove selected lines
     **/
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
 
       s->RemoveSelection();
@@ -5259,7 +5259,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4294 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       s->GLRecomputeList();
 
@@ -5271,7 +5271,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4301 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       s->RecomputeNormals();
 
@@ -5283,7 +5283,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4308 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
 
       s->InvertNormals();
@@ -5296,7 +5296,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4316 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
 
       Func_ApplyvtkSmooth(s.get(), (int) (yysemantic_stack_[(6) - (5)].adouble));
@@ -5310,7 +5310,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4325 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
 
       Func_vtkWindowedSinc(s.get(), (int) (yysemantic_stack_[(6) - (5)].adouble));
@@ -5325,7 +5325,7 @@ namespace yyip {
 #line 4334 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       SurfacePoly* surf;
 
@@ -5354,7 +5354,7 @@ namespace yyip {
           Sets a threshold for drawing connected components
           bigger.
         **/
-          Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
           SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
           GLuint _SURFACE;
 
@@ -5375,7 +5375,7 @@ namespace yyip {
         Description:
         Draw one connected component only
         **/
-          Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
           SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
           GLuint _SURFACE;
 
@@ -5398,7 +5398,7 @@ namespace yyip {
         Description:
         Activate/Desactivate Drawing of one connected components
         **/
-          Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
           SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
           GLuint _SURFACE;
 
@@ -5417,7 +5417,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4407 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       s->AddPoint((yysemantic_stack_[(10) - (5)].adouble),(yysemantic_stack_[(10) - (7)].adouble),(yysemantic_stack_[(10) - (9)].adouble));
     }
@@ -5428,7 +5428,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4413 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       s->NewLine();
     }
@@ -5439,7 +5439,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4419 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       s->LineAddPointNumber( (int) (yysemantic_stack_[(6) - (5)].adouble) );
     }
@@ -5450,7 +5450,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4425 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       s->EndLine();
     }
@@ -5474,7 +5474,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4440 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varimd(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
       DessinImage::ptr di = *(DessinImage::ptr*) varimd->Pointer();
       float minlat  = (yysemantic_stack_[(20) - (5)].adouble);
       float maxlat  = (yysemantic_stack_[(20) - (7)].adouble);
@@ -5607,7 +5607,7 @@ namespace yyip {
         changes the position of the nodes of a 3D mesh
 
       **/
-          Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
           SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
           InrImage::ptr im ( driver.im_stack.GetLastImage());
           AMIFluid::Func_ElevateMesh(s.get(),im.get());
@@ -5619,7 +5619,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4575 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
           Viewer3D_ptr sdraw = *((Viewer3D_ptr*) surfdraw->Pointer());
 
           sdraw->GetCanvas()->UserRotate((yysemantic_stack_[(10) - (5)].adouble),(yysemantic_stack_[(10) - (7)].adouble),(yysemantic_stack_[(10) - (9)].adouble));
@@ -5632,7 +5632,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4583 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
 
           Viewer3D_ptr sdraw = *((Viewer3D_ptr*) surfdraw->Pointer());
           SurfacePoly::ptr surf = SurfacePoly::ptr(driver.surf_stack.GetLastSurf());
@@ -5647,8 +5647,8 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4593 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr       surf(    driver.var_stack.GetLastVar());
-          Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       surf(    driver.var_stack.GetLastVar());
+          BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
           Viewer3D_ptr sdraw = *((Viewer3D_ptr*) surfdraw->Pointer());
           sdraw->GetCanvas()->AddSurface(*(SurfacePoly::ptr*) surf->Pointer());
           //sdraw->Paint();
@@ -5660,8 +5660,8 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4601 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr       surf(    driver.var_stack.GetLastVar());
-          Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       surf(    driver.var_stack.GetLastVar());
+          BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
           Viewer3D_ptr sdraw = *((Viewer3D_ptr*) surfdraw->Pointer());
 
           sdraw->GetCanvas()->RemoveSurface(*(SurfacePoly::ptr*) surf->Pointer());
@@ -5677,8 +5677,8 @@ namespace yyip {
           /**
             Description: Removes the surface without swapping the 3D buffer
           **/
-          Variable::ptr       surf(    driver.var_stack.GetLastVar());
-          Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       surf(    driver.var_stack.GetLastVar());
+          BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
           Viewer3D_ptr sdraw = *((Viewer3D_ptr*) surfdraw->Pointer());
 
           sdraw->GetCanvas()->RemoveSurface(*(SurfacePoly::ptr*) surf->Pointer());
@@ -5694,7 +5694,7 @@ namespace yyip {
           /**
             Description:  Swaps the 3D buffer
           **/
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           Viewer3D_ptr sdraw = *((Viewer3D_ptr*) varsurfd->Pointer());
 
           sdraw->GetCanvas()->AfficheBuffer();
@@ -5706,7 +5706,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4632 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           Viewer3D_ptr sdraw = *((Viewer3D_ptr*) varsurfd->Pointer());
 
           sdraw->GetCanvas()->DessineSurfaceCC ( (int) (yysemantic_stack_[(6) - (5)].adouble) );
@@ -5719,7 +5719,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4640 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           Viewer3D_ptr sdraw = *((Viewer3D_ptr*) varsurfd->Pointer());
 
           sdraw->GetCanvas()->DessineSurfaceCC( (int) (yysemantic_stack_[(8) - (5)].adouble), (int) (yysemantic_stack_[(8) - (7)].adouble));
@@ -5732,7 +5732,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4648 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           Viewer3D_ptr sdraw = *((Viewer3D_ptr*) varsurfd->Pointer());
 
           Si sdraw->GetCanvas()->SetCurrentObject( (int) (yysemantic_stack_[(6) - (5)].adouble) ) Alors
@@ -5748,8 +5748,8 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4659 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varsurfd2(driver.var_stack.GetLastVar());
-          Variable::ptr  varsurfd1(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd2(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd1(driver.var_stack.GetLastVar());
 
           Viewer3D_ptr sdraw1 = *((Viewer3D_ptr*) varsurfd1->Pointer());
           Viewer3D_ptr sdraw2 = *((Viewer3D_ptr*) varsurfd2->Pointer());
@@ -5763,8 +5763,8 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4669 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           Viewer3D_ptr draw;
     
           draw = *((Viewer3D_ptr*) varsurfd->Pointer());
@@ -5784,7 +5784,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4685 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           Viewer3D_ptr draw = *((Viewer3D_ptr*) varsurfd->Pointer());
           int num = (int) (yysemantic_stack_[(16) - (5)].adouble);
           InrImage::ptr im ( driver.im_stack.GetLastImage());
@@ -5803,7 +5803,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4699 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           Viewer3D_ptr draw = *((Viewer3D_ptr*) varsurfd->Pointer());
           int num = (int) (yysemantic_stack_[(6) - (5)].adouble);
     
@@ -5817,7 +5817,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4708 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           Viewer3D_ptr glclass=*((Viewer3D_ptr*) varsurfd->Pointer());
           glclass->GetCanvas()->PrintMatrices();
         }
@@ -5828,7 +5828,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4714 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           GLTransfMatrix* tr = (GLTransfMatrix*) driver.gltransf_stack.GetLastMatrix();
           Viewer3D_ptr sdraw = *(Viewer3D_ptr*) varsurfd->Pointer();
           sdraw->GetCanvas()->SetObjectTransform(*tr);
@@ -5842,7 +5842,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4723 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           GLTransfMatrix* tr = (GLTransfMatrix*) driver.gltransf_stack.GetLastMatrix();
           Viewer3D_ptr sdraw = *(Viewer3D_ptr*) varsurfd->Pointer();
           sdraw->GetCanvas()->SetObjectTransform(*tr);
@@ -5856,7 +5856,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4732 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           Viewer3D_ptr sdraw = *(Viewer3D_ptr*) varsurfd->Pointer();
           sdraw->Paint();
           sdraw->Update();
@@ -5873,7 +5873,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4744 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           Viewer3D_ptr sdraw = *(Viewer3D_ptr*) varsurfd->Pointer();
           int lightnumber = (int) (yysemantic_stack_[(12) - (5)].adouble);
           int r = (int) (yysemantic_stack_[(12) - (7)].adouble);
@@ -5891,7 +5891,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4757 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           Viewer3D_ptr sdraw = *(Viewer3D_ptr*) varsurfd->Pointer();
           int lightnumber = (int) (yysemantic_stack_[(12) - (5)].adouble);
           int r = (int) (yysemantic_stack_[(12) - (7)].adouble);
@@ -5909,7 +5909,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4770 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           Viewer3D_ptr sdraw = *(Viewer3D_ptr*) varsurfd->Pointer();
           int lightnumber = (int) (yysemantic_stack_[(12) - (5)].adouble);
           int r = (int) (yysemantic_stack_[(12) - (7)].adouble);
@@ -5927,7 +5927,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4783 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           Viewer3D_ptr sdraw = *(Viewer3D_ptr*) varsurfd->Pointer();
           sdraw->GetCanvas()->SetBG((int)(yysemantic_stack_[(10) - (5)].adouble),(int)(yysemantic_stack_[(10) - (7)].adouble),(int)(yysemantic_stack_[(10) - (9)].adouble));
           sdraw->Paint();
@@ -5943,7 +5943,7 @@ namespace yyip {
           Description:
             Normalizes the 3D view based on the limits in space of the current objects
         **/
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           Viewer3D_ptr sdraw = *(Viewer3D_ptr*) varsurfd->Pointer();
           sdraw->GetCanvas()->Normalize();
         }
@@ -5958,7 +5958,7 @@ namespace yyip {
           Description:
             Centers the 3D view based on the limits in space of the current objects
         **/
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           Viewer3D_ptr sdraw = *(Viewer3D_ptr*) varsurfd->Pointer();
           sdraw->GetCanvas()->Center();
         }
@@ -5969,7 +5969,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4810 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           Viewer3D_ptr sdraw = *(Viewer3D_ptr*) varsurfd->Pointer();
           sdraw->SetSize((int) (yysemantic_stack_[(8) - (5)].adouble), (int) (yysemantic_stack_[(8) - (7)].adouble));
           sdraw->Paint();
@@ -5987,7 +5987,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4824 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_StructureTensor(((InrImage::ptr*) varim->Pointer())->get(),
                    varim->Name().c_str(),
                    (yysemantic_stack_[(8) - (5)].adouble), (yysemantic_stack_[(8) - (7)].adouble), NULL);
@@ -5999,7 +5999,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4832 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           InrImage::ptr mask ( driver.im_stack.GetLastImage());
 
           Func_StructureTensor(
@@ -6028,7 +6028,7 @@ namespace yyip {
             i_STHvap1, i_STHvap2, i_STHvap3
             i_STHvep1, i_STHvep2, i_STHvep3
         **/
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_StructureTensorHessian(
             ((InrImage::ptr*) varim->Pointer())->get(),
             varim->Name().c_str(),
@@ -6056,7 +6056,7 @@ namespace yyip {
             i_STHvap1, i_STHvap2, i_STHvap3
             i_STHvep1, i_STHvep2, i_STHvep3
         **/
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           InrImage::ptr mask ( driver.im_stack.GetLastImage());
 
           Func_StructureTensorHessian(
@@ -6088,7 +6088,7 @@ namespace yyip {
             i_STHvep1, i_STHvep2, i_STHvep3
             i_STHgrad
         **/
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           InrImage::ptr mask (driver.im_stack.GetLastImage());
           int save_grad = (int) (yysemantic_stack_[(12) - (11)].adouble);
 
@@ -6103,7 +6103,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4920 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_HessianMatrix(((InrImage::ptr*) varim->Pointer())->get(),
                  varim->Name().c_str(),
                  (yysemantic_stack_[(6) - (5)].adouble),   // sigma
@@ -6118,7 +6118,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4931 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           InrImage::ptr mask ( driver.im_stack.GetLastImage());
 
           Func_HessianMatrix(((InrImage::ptr*) varim->Pointer())->get(),
@@ -6135,7 +6135,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 4944 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_HessianMatrix(((InrImage::ptr*) varim->Pointer())->get(),
                  varim->Name().c_str(),
                  (yysemantic_stack_[(8) - (5)].adouble),   // sigma
@@ -6159,7 +6159,7 @@ namespace yyip {
           - Gamma normalization parameter
           - Mask image
       **/
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
       InrImage::ptr mask (driver.im_stack.GetLastImage());
 
           Func_HessianMatrix(((InrImage::ptr*) varim->Pointer())->get(),
@@ -6191,7 +6191,7 @@ namespace yyip {
             Compute information for local first and second order derivatives
          **/
 
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_Derivatives(((InrImage::ptr*) varim->Pointer())->get(),
                varim->Name().c_str(),
                (yysemantic_stack_[(16) - (5)].adouble),   // sigma
@@ -6210,7 +6210,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 5007 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           InrImage::ptr mask (driver.im_stack.GetLastImage());
 
           Func_Derivatives(((InrImage::ptr*) varim->Pointer())->get(),
@@ -6232,7 +6232,7 @@ namespace yyip {
 #line 5025 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           InrImage::ptr mask (driver.im_stack.GetLastImage());
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
 
           Func_HessianVap(((InrImage::ptr*) varim->Pointer())->get(),
               varim->Name().c_str(),
@@ -6249,7 +6249,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 5039 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_Curvatures(((InrImage::ptr*) varim->Pointer())->get(),
               varim->Name().c_str(),
               (yysemantic_stack_[(6) - (5)].adouble));
@@ -6261,12 +6261,12 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 5052 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varim6( driver.var_stack.GetLastVar());
-          Variable::ptr  varim5( driver.var_stack.GetLastVar());
-          Variable::ptr  varim4( driver.var_stack.GetLastVar());
-          Variable::ptr  varim3( driver.var_stack.GetLastVar());
-          Variable::ptr  varim2( driver.var_stack.GetLastVar());
-          Variable::ptr  varim1( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim6( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim5( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim4( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim3( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim2( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim1( driver.var_stack.GetLastVar());
           InrImage::ptr mask ( driver.im_stack.GetLastImage());
 
           Func_Eigen3D(
@@ -6288,12 +6288,12 @@ namespace yyip {
 #line 5078 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
-          Variable::ptr  varim6( driver.var_stack.GetLastVar());
-          Variable::ptr  varim5( driver.var_stack.GetLastVar());
-          Variable::ptr  varim4( driver.var_stack.GetLastVar());
-          Variable::ptr  varim3( driver.var_stack.GetLastVar());
-          Variable::ptr  varim2( driver.var_stack.GetLastVar());
-          Variable::ptr  varim1( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim6( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim5( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim4( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim3( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim2( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim1( driver.var_stack.GetLastVar());
 
           Func_Eigen3D(
                (char*) (yysemantic_stack_[(16) - (3)].astring),
@@ -6313,9 +6313,9 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 5104 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varim3( driver.var_stack.GetLastVar());
-          Variable::ptr  varim2( driver.var_stack.GetLastVar());
-          Variable::ptr  varim1( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim3( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim2( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim1( driver.var_stack.GetLastVar());
       InrImage::ptr mask ( driver.im_stack.GetLastImage());
 
           Func_Eigen2D(
@@ -6333,9 +6333,9 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 5123 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varim3( driver.var_stack.GetLastVar());
-          Variable::ptr  varim2( driver.var_stack.GetLastVar());
-          Variable::ptr  varim1( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim3( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim2( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim1( driver.var_stack.GetLastVar());
           Func_Eigen2D(
                (char*) (yysemantic_stack_[(10) - (3)].astring),
                ((InrImage::ptr*) varim1 ->Pointer())->get(),
@@ -6351,7 +6351,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 5137 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim( driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
       (((InrImage::ptr*) varim->Pointer())->get())->SetVoxelSize((yysemantic_stack_[(10) - (5)].adouble), (yysemantic_stack_[(10) - (7)].adouble), (yysemantic_stack_[(10) - (9)].adouble));
     }
     break;
@@ -6361,7 +6361,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 5143 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim( driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
       (*(InrImage::ptr*) varim->Pointer())->SetVoxelSize((yysemantic_stack_[(10) - (5)].adouble), (yysemantic_stack_[(10) - (7)].adouble), (yysemantic_stack_[(10) - (9)].adouble));
     }
     break;
@@ -6371,8 +6371,8 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 5149 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim2( driver.var_stack.GetLastVar());
-      Variable::ptr  varim1( driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2( driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1( driver.var_stack.GetLastVar());
       InrImage::ptr im = *(InrImage::ptr*) varim2->Pointer();
       (*(InrImage::ptr*) varim1->Pointer())->SetVoxelSize(
                                    im->VoxSizeX(),
@@ -6386,7 +6386,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 5160 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim( driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
       (*(InrImage::ptr*) varim->Pointer())->SetTranslation((yysemantic_stack_[(10) - (5)].adouble), (yysemantic_stack_[(10) - (7)].adouble), (yysemantic_stack_[(10) - (9)].adouble));
     }
     break;
@@ -6396,8 +6396,8 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 5166 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim2( driver.var_stack.GetLastVar());
-      Variable::ptr  varim1( driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2( driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1( driver.var_stack.GetLastVar());
       InrImage::ptr im = *(InrImage::ptr*) varim2->Pointer();
       (*(InrImage::ptr*) varim1->Pointer())->SetVoxelSize(
                                    im->TrX(),
@@ -6420,7 +6420,7 @@ namespace yyip {
         If the endianness is different from the one of the architecture, the bytes
         are swapped before writting, and there are swapped back after.
     **/
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       ((amimage*) (*(*(InrImage::ptr*) varim->Pointer())) )->SetEndianness((AMIENDIANNESS)(int)(yysemantic_stack_[(6) - (5)].adouble));
     }
     break;
@@ -6430,8 +6430,8 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 5192 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
       Func_DiscSecDerGrad(
         ((InrImage::ptr*) varim1->Pointer())->get(),
         ((InrImage::ptr*) varim2->Pointer())->get());
@@ -6443,9 +6443,9 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 5201 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim3(driver.var_stack.GetLastVar());
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim3(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
       Func_DiscSecDerGrad(
                 ((InrImage::ptr*) varim1->Pointer())->get(),
                 ((InrImage::ptr*) varim2->Pointer())->get(),
@@ -6550,7 +6550,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 5284 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       cerr << "Feature not available, needs to be updated ! " << endl;
       /*
             InrImage::ptr   image = *(InrImage::ptr*) $3->Pointer();
@@ -6597,8 +6597,8 @@ namespace yyip {
 
       // pad the first image with the second one
       //
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
 
       Func_Pad(
         ((InrImage::ptr*) varim1->Pointer())->get(),
@@ -6652,7 +6652,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 5366 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varim(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
           InrImage::ptr   i = *(InrImage::ptr*) varim->Pointer();
           Func_VectorImage2StructuredGrid(i.get(),(yysemantic_stack_[(6) - (5)].astring));
           delete [] (yysemantic_stack_[(6) - (5)].astring);
@@ -6664,7 +6664,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 5374 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr varglt(driver.var_stack.GetLastVar());
+          BasicVariable::ptr varglt(driver.var_stack.GetLastVar());
           (*(GLTransfMatrix_ptr*) varglt->Pointer())->Print();
         }
     break;
@@ -6674,7 +6674,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 5380 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr varglt(driver.var_stack.GetLastVar());
+          BasicVariable::ptr varglt(driver.var_stack.GetLastVar());
           Func_SaveTransform(((GLTransfMatrix_ptr*) varglt->Pointer())->get(),(yysemantic_stack_[(4) - (4)].astring));
           delete [] (yysemantic_stack_[(4) - (4)].astring);
         }
@@ -6713,13 +6713,13 @@ namespace yyip {
 #line 5408 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
-          Variable::ptr  varim7(driver.var_stack.GetLastVar());
-          Variable::ptr  varim6(driver.var_stack.GetLastVar());
-          Variable::ptr  varim5(driver.var_stack.GetLastVar());
-          Variable::ptr  varim4(driver.var_stack.GetLastVar());
-          Variable::ptr  varim3(driver.var_stack.GetLastVar());
-          Variable::ptr  varim2(driver.var_stack.GetLastVar());
-          Variable::ptr  varim1(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim7(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim6(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim5(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim4(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim3(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
 
           InrImage::ptr im1    = *(InrImage::ptr*) varim1->Pointer();
           InrImage::ptr im2    = *(InrImage::ptr*) varim2->Pointer();
@@ -6754,10 +6754,10 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 5449 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-        Variable::ptr  varim4(driver.var_stack.GetLastVar());
-        Variable::ptr  varim3(driver.var_stack.GetLastVar());
-        Variable::ptr  varim2(driver.var_stack.GetLastVar());
-        Variable::ptr  varim1(driver.var_stack.GetLastVar());
+        BasicVariable::ptr  varim4(driver.var_stack.GetLastVar());
+        BasicVariable::ptr  varim3(driver.var_stack.GetLastVar());
+        BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+        BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
         InrImage::ptr im1 = *(InrImage::ptr*) varim1->Pointer();
         InrImage::ptr im2 = *(InrImage::ptr*) varim2->Pointer();
         float     sigma = (yysemantic_stack_[(24) - (7)].adouble);
@@ -6786,7 +6786,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 5477 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr       var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       var(driver.var_stack.GetLastVar());
           ParamList::ptr param((yysemantic_stack_[(4) - (3)].paramlist));
           ((void (*)(ParamList*)) var->Pointer())(param.get());
         }
@@ -6797,9 +6797,9 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 5484 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr       var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       var(driver.var_stack.GetLastVar());
           ParamList::ptr param((yysemantic_stack_[(4) - (3)].paramlist));
-          Variable::ptr tmpvar = (*(WrapClassMember::ptr*) var->Pointer())->CallMember(param.get());
+          BasicVariable::ptr tmpvar = (*(WrapClassMember::ptr*) var->Pointer())->CallMember(param.get());
         }
     break;
 
@@ -6808,9 +6808,9 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 5491 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr       var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       var(driver.var_stack.GetLastVar());
           ParamList::ptr param((ParamList*) NULL);
-          Variable::ptr tmpvar = (*(WrapClassMember::ptr*) var->Pointer())->CallMember(param.get());
+          BasicVariable::ptr tmpvar = (*(WrapClassMember::ptr*) var->Pointer())->CallMember(param.get());
         }
     break;
 
@@ -6878,9 +6878,9 @@ namespace yyip {
         /**
           Description: temporary rule, added to simplify convertion of scripts.
          **/
-          Variable::ptr       var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       var(driver.var_stack.GetLastVar());
           ParamList* pl = new ParamList();
-          Variable::ptr newvar(new Variable());
+          BasicVariable::ptr newvar(new Variable());
           // copy information from variable, including comments
           // don't need to care about variable context information
           // copy of the variable contents
@@ -6901,8 +6901,8 @@ namespace yyip {
           Description: temporary rule, added to simplify convertion of scripts.
          **/
           ParamList* pl =  (yysemantic_stack_[(3) - (1)].paramlist);
-          Variable::ptr       var(driver.var_stack.GetLastVar());
-          Variable::ptr newvar(new Variable());
+          BasicVariable::ptr       var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr newvar(new Variable());
           // copy information from variable, including comments
           (*newvar) = (*var);
           pl->AddParam(newvar);
@@ -6915,9 +6915,9 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 5579 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr       var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       var(driver.var_stack.GetLastVar());
           ParamList* pl = new ParamList();
-          Variable::ptr newvar(new Variable());
+          BasicVariable::ptr newvar(new Variable());
           // copy information from variable, including comments
           // don't need to care about variable context information
           // copy of the variable contents
@@ -6934,9 +6934,9 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 5593 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr       var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       var(driver.var_stack.GetLastVar());
           ParamList* pl =  (yysemantic_stack_[(4) - (1)].paramlist);
-          Variable::ptr newvar(new Variable());
+          BasicVariable::ptr newvar(new Variable());
           // copy information from variable, including comments
           (*newvar) = (*var);
           //cout << " initial pointer : " << ((AMIFunction::ptr*) ((Variable*) $4)->Pointer())->get() << endl;
@@ -6955,7 +6955,7 @@ namespace yyip {
 #line 5608 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           ParamList* pl(new ParamList);
-          Variable::ptr newvar(new Variable());
+          BasicVariable::ptr newvar(new Variable());
           float_ptr x(new float((yysemantic_stack_[(1) - (1)].adouble)));
           newvar->InitPtr(type_float,"Param0",&x);
           pl->AddParam(newvar);
@@ -6969,7 +6969,7 @@ namespace yyip {
 #line 5617 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           ParamList* pl =  (yysemantic_stack_[(3) - (1)].paramlist);
-          Variable::ptr newvar(new Variable());
+          BasicVariable::ptr newvar(new Variable());
           float_ptr x(new float((yysemantic_stack_[(3) - (3)].adouble)));
           std::string paramname = (boost::format("Param%1%")%pl->GetNumParam()).str();
           newvar->InitPtr(type_float,paramname.c_str(),&x);
@@ -6984,7 +6984,7 @@ namespace yyip {
 #line 5627 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           ParamList* pl = new ParamList();
-          Variable::ptr newvar(new Variable());
+          BasicVariable::ptr newvar(new Variable());
           string_ptr x(new string((yysemantic_stack_[(1) - (1)].astring)));
           newvar->InitPtr(type_string,"Param0",&x);
           pl->AddParam(newvar);
@@ -6999,7 +6999,7 @@ namespace yyip {
 #line 5637 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           ParamList* pl =  (yysemantic_stack_[(3) - (1)].paramlist);
-          Variable::ptr newvar(new Variable());
+          BasicVariable::ptr newvar(new Variable());
           string_ptr x(new string((yysemantic_stack_[(3) - (3)].astring)));
           std::string paramname = (boost::format("Param%1%")%pl->GetNumParam()).str();
           newvar->InitPtr(type_string,paramname.c_str(),&x);
@@ -7015,7 +7015,7 @@ namespace yyip {
 #line 5648 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           ParamList* pl = new ParamList();
-          Variable::ptr newvar(new Variable());
+          BasicVariable::ptr newvar(new Variable());
           InrImage::ptr i ( driver.im_stack.GetLastImage());
           // should be OK, the variable will only use the pointer smart pointer to copy it
           newvar->InitPtr(type_image,"Param0",(void*)&i);
@@ -7030,7 +7030,7 @@ namespace yyip {
 #line 5658 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           ParamList* pl =  (yysemantic_stack_[(3) - (1)].paramlist);
-          Variable::ptr newvar(new Variable());
+          BasicVariable::ptr newvar(new Variable());
           InrImage::ptr   i ( driver.im_stack.GetLastImage());
           std::string paramname = (boost::format("Param%1%")%pl->GetNumParam()).str();
           newvar->InitPtr(type_image,paramname.c_str(),(void*)&i);
@@ -7189,7 +7189,7 @@ namespace yyip {
         //
         // TODO: replace string expression to use std::string !!!
         //
-        Variable::ptr varstring(driver.var_stack.GetLastVar());
+        BasicVariable::ptr varstring(driver.var_stack.GetLastVar());
         char* res;
   
         res = new char[(*(string_ptr*)varstring->Pointer())->length()+1];
@@ -7339,7 +7339,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 5877 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       (yyval.astring)=(char*) (*(InrImage::ptr*) varim->Pointer())->GetName();
     }
     break;
@@ -7353,7 +7353,7 @@ namespace yyip {
       Description:
         Returns the name of the variable as a string
     **/
-      Variable::ptr  var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  var(driver.var_stack.GetLastVar());
       char* resstr = (char*) var->Name().c_str();
       char* res = new char[strlen(resstr)+1];
       strcpy(res,resstr);
@@ -7370,7 +7370,7 @@ namespace yyip {
       Description:
         Returns the name of the object instance to which this variable belongs. If this variable does not belong to an object, returns an empty string.
     **/
-      Variable::ptr  var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  var(driver.var_stack.GetLastVar());
       boost::shared_ptr<Variables> context = var->GetContext();
       if (context.get()) {
         char* res = new char[strlen(context->GetName().c_str())+1];
@@ -7480,7 +7480,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 5988 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr var(driver.var_stack.GetLastVar());
       (yyval.adouble)=*((float_ptr*)var->Pointer())->get();
     }
     break;
@@ -7490,7 +7490,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 5993 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr var(driver.var_stack.GetLastVar());
       (yyval.adouble) = (float) *((int_ptr*)var->Pointer())->get();
     }
     break;
@@ -7500,7 +7500,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 5998 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr var(driver.var_stack.GetLastVar());
       (yyval.adouble) = (float) *((uchar_ptr*)var->Pointer())->get();
     }
     break;
@@ -7531,7 +7531,7 @@ namespace yyip {
         return:
         float value
         **/
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       (yyval.adouble)=(**(InrImage::ptr*) varim->Pointer())((int) (yysemantic_stack_[(4) - (3)].adouble),0);
     }
     break;
@@ -7553,7 +7553,7 @@ namespace yyip {
         return:
         float value
         **/
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       (yyval.adouble)=(**(InrImage::ptr*) varim->Pointer())((int) (yysemantic_stack_[(6) - (3)].adouble),(int) ( (yysemantic_stack_[(6) - (5)].adouble)));
     }
     break;
@@ -7571,7 +7571,7 @@ namespace yyip {
           returns the pixel intensity at the given position
           the position value are rounded to the closest integer
       **/
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       (yyval.adouble)=(**(InrImage::ptr*) varim->Pointer())((int) round((yysemantic_stack_[(8) - (3)].adouble)),
           (int) round( (yysemantic_stack_[(8) - (5)].adouble)), 
           (int) round((yysemantic_stack_[(8) - (7)].adouble)));
@@ -7591,7 +7591,7 @@ namespace yyip {
           returns the pixel intensity at the given position
           the position using linear interpolation
       **/
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       (yyval.adouble)=(*(InrImage::ptr*) varim->Pointer())->InterpLinIntensite(
           (yysemantic_stack_[(10) - (5)].adouble),
           (yysemantic_stack_[(10) - (7)].adouble), 
@@ -7609,7 +7609,7 @@ namespace yyip {
       get image component value at a given 3D voxel position.
       same as image(expr,expr,expr;expr)
       **/
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       InrImage::ptr im = *(InrImage::ptr*) varim->Pointer();
       Si im->CoordOK((int) (yysemantic_stack_[(10) - (3)].adouble), (int) (yysemantic_stack_[(10) - (5)].adouble), (int) (yysemantic_stack_[(10) - (7)].adouble))
           Et ((int) (yysemantic_stack_[(10) - (9)].adouble) >=0) Et ((int)(yysemantic_stack_[(10) - (9)].adouble) <im->GetVDim()) Alors
@@ -7631,7 +7631,7 @@ namespace yyip {
       Description:
       get image component value at a given 3D voxel position.
       **/
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       InrImage::ptr im = *(InrImage::ptr*) varim->Pointer();
       Si im->CoordOK((int) (yysemantic_stack_[(10) - (3)].adouble), (int) (yysemantic_stack_[(10) - (5)].adouble), (int) (yysemantic_stack_[(10) - (7)].adouble))
           Et ((int) (yysemantic_stack_[(10) - (9)].adouble) >=0) Et ((int)(yysemantic_stack_[(10) - (9)].adouble) <im->GetVDim()) Alors
@@ -7653,7 +7653,7 @@ namespace yyip {
       Description:
       get image component value at a given 2D  position. ( z component set to 0)
       **/
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       InrImage::ptr im = *(InrImage::ptr*) varim->Pointer();
       Si (im->CoordOK((int) (yysemantic_stack_[(8) - (3)].adouble),   (int (yysemantic_stack_[(8) - (5)].adouble)),   0  )
         Et ((int) (yysemantic_stack_[(8) - (7)].adouble) >=0) Et ((int)(yysemantic_stack_[(8) - (7)].adouble) <im->GetVDim())) Alors
@@ -7673,7 +7673,7 @@ namespace yyip {
       Description:
       get image component value at a given 1D  position. (y and z components set to 0)
       **/
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       Si (*(InrImage::ptr*) varim->Pointer())->CoordOK((int) (yysemantic_stack_[(6) - (3)].adouble),   0,   0  )
         Et ((int) (yysemantic_stack_[(6) - (5)].adouble) >=0) Et ((int)(yysemantic_stack_[(6) - (5)].adouble) <3) Alors
         (yyval.adouble)=(**(InrImage::ptr*) varim->Pointer())((int) (yysemantic_stack_[(6) - (3)].adouble),0,0, (int) (yysemantic_stack_[(6) - (5)].adouble) );
@@ -7705,7 +7705,7 @@ namespace yyip {
         i.inc
       }
       **/
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       (*(InrImage::ptr*) varim->Pointer())->InitBuffer();
     }
     break;
@@ -7715,7 +7715,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 6162 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       IdentifierInfo::ptr ident((yysemantic_stack_[(3) - (3)].ident));
       if (strcmp(ident->GetName().c_str(),"tx")==0) {
         (yyval.adouble)=(*(InrImage::ptr*) varim->Pointer())->_tx;
@@ -7785,7 +7785,7 @@ namespace yyip {
           Description:
             Prints the image information
         **/
-        Variable::ptr  varim(driver.var_stack.GetLastVar());
+        BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr im;
         im=*(InrImage::ptr*) varim->Pointer();
         std::string tmp_string;
@@ -7816,7 +7816,7 @@ namespace yyip {
         Description:
           Prints the object information
       **/
-      Variable::ptr       varamio(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       varamio(driver.var_stack.GetLastVar());
       AMIObject::ptr o = *(AMIObject::ptr*) varamio->Pointer();
       
       if (o.get()) {
@@ -7840,7 +7840,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 6272 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) var->Pointer();
 
       std::string tmp_string;
@@ -7864,7 +7864,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 6292 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) var->Pointer();
 
       (yyval.adouble) = s->GetNumberOfPoints();
@@ -7876,7 +7876,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 6300 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) var->Pointer();
 
       (yyval.adouble) = s->GetNumberOfPolys();
@@ -7889,8 +7889,8 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 6309 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
       (yyval.adouble)=Func_SNR(((InrImage::ptr*) varim1->Pointer())->get(),
                   ((InrImage::ptr*) varim2->Pointer())->get());
     }
@@ -7901,7 +7901,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 6317 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       (yyval.adouble)=Func_eccentricity(((InrImage::ptr*) varim->Pointer())->get());
     }
     break;
@@ -7921,7 +7921,7 @@ namespace yyip {
       Vect3D<float> v1,v2;
       CalculAireSection* compute_area;
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
 
       compute_area = new CalculAireSection( ((InrImage::ptr*) varim->Pointer())->get(),
                     resolution);
@@ -7946,7 +7946,7 @@ namespace yyip {
 #line 6353 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       (yyval.adouble)=Func_ComputePositiveArea( ((InrImage::ptr*) varim->Pointer())->get() );
     }
     break;
@@ -8152,7 +8152,7 @@ namespace yyip {
                 min, max, mean, median, count
 
         **/
-          Variable::ptr  varim(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
           InrImage::ptr mask  (driver.im_stack.GetLastImage());
           (yyval.adouble)=Func_min( ((InrImage::ptr*) varim->Pointer())->get(),mask.get());
         }
@@ -8179,7 +8179,7 @@ namespace yyip {
                 min, max, mean, median, count
 
         **/
-          Variable::ptr  varim(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
           InrImage::ptr mask ( driver.im_stack.GetLastImage());
           (yyval.adouble)=Func_med( ((InrImage::ptr*) varim->Pointer())->get(),0.5,mask.get());
         }
@@ -8190,7 +8190,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 6554 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varim(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
           InrImage::ptr mask( driver.im_stack.GetLastImage());
           (yyval.adouble)=Func_med( ((InrImage::ptr*) varim->Pointer())->get(),(float) (yysemantic_stack_[(9) - (8)].adouble),mask.get());
         }
@@ -8245,7 +8245,7 @@ namespace yyip {
                 min, max, mean, median, count
 
         **/
-          Variable::ptr  varim(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
           InrImage::ptr mask (driver.im_stack.GetLastImage());
 
           (yyval.adouble)=Func_mean( ((InrImage::ptr*) varim->Pointer())->get(), mask.get());
@@ -8269,7 +8269,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 6616 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varimd(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
       DessinImage::ptr draw;
       DessinImageParametres* param;
 
@@ -8284,7 +8284,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 6627 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varimd(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
       DessinImage::ptr draw;
       DessinImageParametres* param;
 
@@ -8299,7 +8299,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 6638 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varimd(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
       DessinImage::ptr draw;
       DessinImageParametres* param;
 
@@ -8314,7 +8314,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 6649 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varimd(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
       DessinImage::ptr draw;
       DessinImageParametres* param;
 
@@ -8329,7 +8329,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 6660 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varimd(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
       DessinImage::ptr draw;
       DessinImageParametres* param;
 
@@ -8344,7 +8344,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 6671 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varimd(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
       DessinImage::ptr draw;
       DessinImageParametres* param;
 
@@ -8359,7 +8359,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 6682 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varimd(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
       DessinImage::ptr draw;
       DessinImageParametres* param;
       string comment;
@@ -8378,7 +8378,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 6697 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varimd(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
       DessinImage::ptr draw;
       DessinImageParametres* param;
       string comment;
@@ -8400,7 +8400,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 6715 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varimd(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
       DessinImage::ptr draw;
       DessinImageParametres* param;
       string comment;
@@ -8448,7 +8448,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 6746 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr varmat(driver.var_stack.GetLastVar());
+      BasicVariable::ptr varmat(driver.var_stack.GetLastVar());
       FloatMatrix::ptr mat = *(FloatMatrix::ptr*)varmat->Pointer();
       int i = (int)(yysemantic_stack_[(6) - (3)].adouble);
       int j = (int)(yysemantic_stack_[(6) - (5)].adouble);
@@ -8461,7 +8461,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 6754 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr varmat(driver.var_stack.GetLastVar());
+      BasicVariable::ptr varmat(driver.var_stack.GetLastVar());
       FloatMatrix::ptr mat = *(FloatMatrix::ptr*)varmat->Pointer();
       int i = (int)(yysemantic_stack_[(8) - (3)].adouble);
       int j = (int)(yysemantic_stack_[(8) - (5)].adouble);
@@ -8491,7 +8491,7 @@ namespace yyip {
     Description: 
     Check for the existence of a variable, returns 1
     **/
-        Variable::ptr  var(driver.var_stack.GetLastVar());
+        BasicVariable::ptr  var(driver.var_stack.GetLastVar());
         (yyval.adouble)=1;
     }
     break;
@@ -8533,7 +8533,7 @@ namespace yyip {
         given formatting expression.
     **/
         float res;
-        Variable::ptr varfile(driver.var_stack.GetLastVar());
+        BasicVariable::ptr varfile(driver.var_stack.GetLastVar());
         FILE_ptr file = *(FILE_ptr*) (varfile->Pointer());
         boost::shared_array<char> format( (yysemantic_stack_[(6) - (5)].astring));
 
@@ -8548,8 +8548,8 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 6811 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr varfloat(driver.var_stack.GetLastVar());
-      Variable::ptr varfile( driver.var_stack.GetLastVar());
+      BasicVariable::ptr varfloat(driver.var_stack.GetLastVar());
+      BasicVariable::ptr varfile( driver.var_stack.GetLastVar());
 
       float*  var = ((float_ptr*) varfloat->Pointer())->get();
       FILE_ptr file = *(FILE_ptr*) (varfile->Pointer());
@@ -8563,8 +8563,8 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 6821 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr varstring(driver.var_stack.GetLastVar());
-      Variable::ptr varfile(  driver.var_stack.GetLastVar());
+      BasicVariable::ptr varstring(driver.var_stack.GetLastVar());
+      BasicVariable::ptr varfile(  driver.var_stack.GetLastVar());
       FILE_ptr file = *(FILE_ptr*) (varfile->Pointer());
       setlocale(LC_NUMERIC, "C");
       // not safe, TODO: use iostream or boost for files here ...
@@ -8586,7 +8586,7 @@ namespace yyip {
       Description: 
         Returns the number of lines of the polydata structure
     **/
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) var->Pointer());
 
       (yyval.adouble) = s->GetNumberOfLines(  );
@@ -9049,7 +9049,7 @@ namespace yyip {
 #line 7094 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
        //        printf("format %d \n",(int) ( *(InrImage::ptr*) $1->Pointer())->GetFormat());
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         (yyval.aint) = (int) (*(InrImage::ptr*) varim->Pointer())->GetFormat();
       }
     break;
@@ -9059,12 +9059,12 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 7104 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr var(driver.var_stack.GetLastVar());
           VarArray::ptr array;
           int  i = (int) (yysemantic_stack_[(4) - (3)].adouble);
 
           array = *(VarArray::ptr*) (var->Pointer());
-          Variable::ptr arrayvar = array->GetVar(i);
+          BasicVariable::ptr arrayvar = array->GetVar(i);
           if (!array.get()) {
             // create a small image to avoid problems
             InrImage::ptr im (new InrImage(1,1,1,WT_UNSIGNED_CHAR));
@@ -9319,7 +9319,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 7334 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-        Variable::ptr       var(driver.var_stack.GetLastVar());
+        BasicVariable::ptr       var(driver.var_stack.GetLastVar());
         ParamList::ptr param((yysemantic_stack_[(4) - (3)].paramlist));
         InrImage::ptr  im;
   
@@ -9413,7 +9413,7 @@ namespace yyip {
     Description:
       Creates a new image from a reference image
     **/
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       WORDTYPE imformat = (WORDTYPE) (yysemantic_stack_[(8) - (3)].aint);
       int vdim   = (int) (yysemantic_stack_[(8) - (5)].adouble);
       InrImage::ptr varim=*(InrImage::ptr*) var->Pointer();
@@ -9433,7 +9433,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 7428 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-        Variable::ptr       var(driver.var_stack.GetLastVar());
+        BasicVariable::ptr       var(driver.var_stack.GetLastVar());
         InrImage::ptr varim;
         InrImage::ptr im;
         std::string  imname;
@@ -9472,7 +9472,7 @@ namespace yyip {
           print ired(i.tx/2,i.ty/2); print "\n"
           print i(i.tx/2,i.ty/2,0,0); print "\n"
        **/
-        Variable::ptr       var(driver.var_stack.GetLastVar());
+        BasicVariable::ptr       var(driver.var_stack.GetLastVar());
          InrImage::ptr im1;
          InrImage::ptr im;
           char  imname[200];
@@ -9672,7 +9672,7 @@ namespace yyip {
 #line 7634 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       InrImage::ptr res (Func_OpImage(((InrImage::ptr*) varim->Pointer())->get(),
                 NULL,
                 NULL,
@@ -9692,7 +9692,7 @@ namespace yyip {
 #line 7650 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res( Func_OpImage(((InrImage::ptr*) varim->Pointer())->get(),
               NULL,
               NULL,
@@ -9714,8 +9714,8 @@ namespace yyip {
 #line 7668 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
     InrImage::ptr res ( Func_OpImage(
               ((InrImage::ptr*) varim1->Pointer())->get(),
               ((InrImage::ptr*) varim2->Pointer())->get(),
@@ -9736,7 +9736,7 @@ namespace yyip {
 #line 7686 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res (Func_OpImage(((InrImage::ptr*) varim->Pointer())->get(),
               ((InrImage::ptr*) varim->Pointer())->get(),
               NULL,
@@ -9756,9 +9756,9 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 7703 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim3(driver.var_stack.GetLastVar());
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim3(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
         InrImage::ptr  res ( Func_OpImage(
             ((InrImage::ptr*) varim1->Pointer())->get(),
             ((InrImage::ptr*) varim2->Pointer())->get(),
@@ -9777,9 +9777,9 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 7721 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim3(driver.var_stack.GetLastVar());
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim3(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
         InrImage::ptr res (Func_OpImage(
             ((InrImage::ptr*) varim1->Pointer())->get(),
             ((InrImage::ptr*) varim2->Pointer())->get(),
@@ -9839,7 +9839,7 @@ namespace yyip {
         float var           = (yysemantic_stack_[(10) - (7)].adouble);
         float lowthreshold  = (yysemantic_stack_[(10) - (9)].adouble);
         //float highthreshold = $11;
-        Variable::ptr  varim(driver.var_stack.GetLastVar());
+        BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr res ( Func_itkCannyEdgeDetector(  ((InrImage::ptr*) varim->Pointer())->get(), var, lowthreshold));
         Si (!res.get()) Alors
           driver.err_print("itk.CannyEdgeDetector() error ... \n");
@@ -9853,7 +9853,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 7787 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-        Variable::ptr  varim(driver.var_stack.GetLastVar());
+        BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr res ( Func_vtkDist( ((InrImage::ptr*) varim->Pointer())->get()));
 
         Si (!res.get()) Alors
@@ -9868,7 +9868,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 7798 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-        Variable::ptr  varim(driver.var_stack.GetLastVar());
+        BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr res (Func_vtkMedianFilter3D(
             ((InrImage::ptr*) varim->Pointer())->get(),
             (int) (yysemantic_stack_[(10) - (5)].adouble),(int) (yysemantic_stack_[(10) - (7)].adouble),(int) (yysemantic_stack_[(10) - (9)].adouble)));
@@ -9885,7 +9885,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 7811 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-        Variable::ptr  varim(driver.var_stack.GetLastVar());
+        BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         driver.err_print("The function AndreDist() has been removed for licence issues! \n");
 /*
         InrImage::ptr  in = *(InrImage::ptr*) $3->Pointer();
@@ -9927,7 +9927,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 7845 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       InrImage::ptr res ( Func_OutFlux( ((InrImage::ptr*) varim->Pointer())->get()));
 
       Si (!res.get()) Alors
@@ -9942,7 +9942,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 7856 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res ( Func_OutFluxScalar( ((InrImage::ptr*) varim->Pointer())->get()));
     Si (!res.get()) Alors
       driver.err_print("OutFluxScalar() erreur ... \n");
@@ -9956,7 +9956,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 7866 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res ( Func_OrientationRatio2D( ((InrImage::ptr*) varim->Pointer())->get()));
     Si (!res.get()) Alors
       driver.err_print("OrientationRatio() erreur ... \n");
@@ -9987,8 +9987,8 @@ namespace yyip {
           threshold shoud be removed automatically and any point
           at distance higher than the maximum should be kept.
       **/
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
     InrImage::ptr res ( Func_Thinning( ((InrImage::ptr*) varim1->Pointer())->get(),
                  ((InrImage::ptr*) varim2->Pointer())->get(),
                  (yysemantic_stack_[(12) - (7)].adouble),
@@ -10007,7 +10007,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 7909 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res (Func_SimplePoints( ((InrImage::ptr*) varim->Pointer())->get() ));
 
     Si !res.get() Alors
@@ -10022,10 +10022,10 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 7921 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim4(driver.var_stack.GetLastVar());
-      Variable::ptr  varim3(driver.var_stack.GetLastVar());
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim4(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim3(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
         InrImage::ptr res ( Func_CircleIntegration(
           ((InrImage::ptr*) varim1 ->Pointer())->get(), // gradient
           ((InrImage::ptr*) varim2 ->Pointer())->get(),  // first  vector
@@ -10046,10 +10046,10 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 7942 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim4(driver.var_stack.GetLastVar());
-      Variable::ptr  varim3(driver.var_stack.GetLastVar());
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim4(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim3(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
       InrImage::ptr res ( Func_CircleIntegration(
         ((InrImage::ptr*) varim1 ->Pointer())->get(),  // gradient
         ((InrImage::ptr*) varim2 ->Pointer())->get(),  // first  vector
@@ -10085,10 +10085,10 @@ namespace yyip {
           with constraints on the standard deviation and the excentricity
           (see pub. Krissian et al. EMBS 2003)
         **/
-      Variable::ptr  varim4(driver.var_stack.GetLastVar());
-      Variable::ptr  varim3(driver.var_stack.GetLastVar());
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim4(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim3(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
         InrImage::ptr res ( Func_CircleIntSdExc(
           ((InrImage::ptr*) varim1 ->Pointer())->get(),  // gradient
           ((InrImage::ptr*) varim2 ->Pointer())->get(),  // first  vector
@@ -10134,10 +10134,10 @@ namespace yyip {
         it integrates half of the circle and takes the
         minimum between opposite values.
       **/
-      Variable::ptr  varim4(driver.var_stack.GetLastVar());
-      Variable::ptr  varim3(driver.var_stack.GetLastVar());
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim4(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim3(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
 
       InrImage::ptr res ( Func_CircleIntSdExc(
         ((InrImage::ptr*) varim1 ->Pointer())->get(),  // gradient
@@ -10164,10 +10164,10 @@ namespace yyip {
 #line 8049 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
-      Variable::ptr  varim4(driver.var_stack.GetLastVar());
-      Variable::ptr  varim3(driver.var_stack.GetLastVar());
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim4(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim3(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
 
     InrImage::ptr res( Func_LocalExtrema( 
                   ((InrImage::ptr*) varim1->Pointer())->get(),  // input image
@@ -10187,10 +10187,10 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 8069 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim4(driver.var_stack.GetLastVar());
-      Variable::ptr  varim3(driver.var_stack.GetLastVar());
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim4(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim3(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
     int samples = (int) (yysemantic_stack_[(12) - (11)].adouble);
 
     InrImage::ptr res( Func_LocalExtrema( 
@@ -10212,7 +10212,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 8090 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res( Func_NormalSmoothField( ((InrImage::ptr*) varim->Pointer())->get() ));
 
     Si !res.get() Alors
@@ -10227,8 +10227,8 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 8101 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
     InrImage::ptr res( Func_NormalSmoothField( 
                     ((InrImage::ptr*) varim1->Pointer())->get() , 
                     ((InrImage::ptr*) varim2->Pointer())->get() ));
@@ -10245,8 +10245,8 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 8115 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
     InrImage::ptr res( Func_DirConnectivity( 
         ((InrImage::ptr*) varim1->Pointer())->get() ,
         ((InrImage::ptr*) varim2->Pointer())->get() ));
@@ -10278,7 +10278,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 8143 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res (Func_DiscNormGrad( ((InrImage::ptr*) varim->Pointer())->get()));
     Si !res.get() Alors
       driver.err_print("discnormgrad() erreur ... \n");
@@ -10292,7 +10292,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 8154 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res (Func_DiscMeanCurvature( ((InrImage::ptr*) varim->Pointer())->get()));
     Si !res.get() Alors
       driver.err_print("DiscMeanCurvature() erreur ... \n");
@@ -10306,7 +10306,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 8166 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res (Func_Gradient( ((InrImage::ptr*) varim->Pointer())->get(),
                  (yysemantic_stack_[(6) - (5)].adouble)));
     Si !res.get() Alors
@@ -10329,7 +10329,7 @@ namespace yyip {
         Computes a discrete laplacian (sum of second order derivatives),
         in 2D or 3D depending on the image dimension.
     **/
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res ( Func_Laplacian(((InrImage::ptr*) varim->Pointer())->get()));
     Si !res.get() Alors
       driver.err_print("Filter() erreur ... \n");
@@ -10343,7 +10343,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 8197 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res (Func_SecDerGrad( ((InrImage::ptr*) varim->Pointer())->get(),
                  (yysemantic_stack_[(6) - (5)].adouble)));
     Si !res.get() Alors
@@ -10358,7 +10358,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 8210 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res ( Func_SecDerGrad2( ((InrImage::ptr*) varim->Pointer())->get(),
                  (yysemantic_stack_[(6) - (5)].adouble)));
     Si !res.get() Alors
@@ -10384,7 +10384,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 8227 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       ImageExtent<float>* extent = (ImageExtent<float>*) (yysemantic_stack_[(4) - (3)].imageextent);
   
       //extent->print();
@@ -10414,7 +10414,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 8256 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       InrImage::ptr  im = *(InrImage::ptr*) varim->Pointer();
 
       InrImage::ptr res (Func_SubImage( im.get(),
@@ -10458,7 +10458,7 @@ namespace yyip {
         putimage, []
 
       **/
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res ( Func_SubImage( ((InrImage::ptr*) varim->Pointer())->get(),
                  (int) (yysemantic_stack_[(16) - (5)].adouble), (int) (yysemantic_stack_[(16) - (7)].adouble), (int) (yysemantic_stack_[(16) - (9)].adouble),
                  (int) (yysemantic_stack_[(16) - (11)].adouble),(int) (yysemantic_stack_[(16) - (13)].adouble),(int) (yysemantic_stack_[(16) - (15)].adouble)));
@@ -10474,7 +10474,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 8311 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res ( Func_EDP_dilate( ((InrImage::ptr*) varim->Pointer())->get(),
                    (yysemantic_stack_[(10) - (5)].adouble),  (yysemantic_stack_[(10) - (7)].adouble), (int) (yysemantic_stack_[(10) - (9)].adouble)));
     Si !res.get() Alors
@@ -10489,7 +10489,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 8322 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res ( Func_EDP_dilate( ((InrImage::ptr*) varim->Pointer())->get(), (yysemantic_stack_[(8) - (5)].adouble),  (yysemantic_stack_[(8) - (7)].adouble)));
     Si !res.get() Alors
       fprintf(stderr,"SubImage() erreur ... \n");
@@ -10503,7 +10503,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 8332 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     float Imin = (yysemantic_stack_[(12) - (9)].adouble);
     float Imax = (yysemantic_stack_[(12) - (11)].adouble);
     InrImage::ptr res ( Func_EDP_dilate( ((InrImage::ptr*) varim->Pointer())->get(), (yysemantic_stack_[(12) - (5)].adouble),  (yysemantic_stack_[(12) - (7)].adouble), Imin, Imax));
@@ -10519,7 +10519,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 8344 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res ( Func_EDP_erode( ((InrImage::ptr*) varim->Pointer())->get(),
                   (yysemantic_stack_[(10) - (5)].adouble),  (yysemantic_stack_[(10) - (7)].adouble), (int) (yysemantic_stack_[(10) - (9)].adouble)));
     Si !res.get() Alors
@@ -10534,7 +10534,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 8355 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res ( Func_EDP_erode( ((InrImage::ptr*) varim->Pointer())->get(), (yysemantic_stack_[(8) - (5)].adouble),  (yysemantic_stack_[(8) - (7)].adouble)));
     Si !res.get() Alors
       fprintf(stderr,"SubImage() erreur ... \n");
@@ -10561,7 +10561,7 @@ namespace yyip {
       size and time step in voxel units
       minimal and maximal intensities allow to speed up the process
     **/
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     float Imin = (yysemantic_stack_[(12) - (9)].adouble);
     float Imax = (yysemantic_stack_[(12) - (11)].adouble);
     InrImage::ptr res ( Func_EDP_erode( ((InrImage::ptr*) varim->Pointer())->get(), (yysemantic_stack_[(12) - (5)].adouble),  (yysemantic_stack_[(12) - (7)].adouble), Imin, Imax));
@@ -10587,7 +10587,7 @@ namespace yyip {
       using Brockett and Maragos scheme with a given
       size and time step in voxel units
     **/
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res ( Func_EDP_open( ((InrImage::ptr*) varim->Pointer())->get(),
                     (yysemantic_stack_[(8) - (5)].adouble),  (yysemantic_stack_[(8) - (7)].adouble)));
     Si !res.get() Alors
@@ -10615,7 +10615,7 @@ namespace yyip {
       size and time step in voxel units
       minimal and maximal intensities allow to speed up the process
     **/
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     float Imin = (yysemantic_stack_[(12) - (9)].adouble);
     float Imax = (yysemantic_stack_[(12) - (11)].adouble);
     InrImage::ptr res ( Func_EDP_open( ((InrImage::ptr*) varim->Pointer())->get(),
@@ -10632,7 +10632,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 8443 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res ( Func_EDP_close( ((InrImage::ptr*) varim->Pointer())->get(),
                    (yysemantic_stack_[(8) - (5)].adouble),  (yysemantic_stack_[(8) - (7)].adouble)));
 
@@ -10651,7 +10651,7 @@ namespace yyip {
     float Imin = (yysemantic_stack_[(12) - (9)].adouble);
     float Imax = (yysemantic_stack_[(12) - (11)].adouble);
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res ( Func_EDP_close( ((InrImage::ptr*) varim->Pointer())->get(),
                    (yysemantic_stack_[(12) - (5)].adouble),  (yysemantic_stack_[(12) - (7)].adouble), Imin, Imax));
 
@@ -10698,7 +10698,7 @@ namespace yyip {
     // 1. input image
     // 2. isosurface threshold on the input image
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res ( Func_LevelSets_Init( ((InrImage::ptr*) varim->Pointer())->get(),
                    (yysemantic_stack_[(8) - (7)].adouble)));
     Si !res.get() Alors
@@ -10719,8 +10719,8 @@ namespace yyip {
     // 2. Initial position of the level set a the zero-crossing of
     //    this image
 
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
     InrImage::ptr res ( Func_LevelSets_Init(
            ((InrImage::ptr*) varim1->Pointer())->get(),
            ((InrImage::ptr*) varim2->Pointer())->get()
@@ -10753,7 +10753,7 @@ namespace yyip {
 #line 8536 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res ( Func_LevelSets_GetAttachVectors( ((InrImage::ptr*) varim->Pointer())->get()));
     Si !res.get() Alors
       fprintf(stderr,"Func_GetAttachVect() erreur ... \n");
@@ -10779,7 +10779,7 @@ namespace yyip {
       **/
       int        nb_iter,i;
       float       error;
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
 
       Func_InitAnisoGS( ((InrImage::ptr*) varim->Pointer())->get(),
                   (yysemantic_stack_[(12) - (5)].adouble),  (yysemantic_stack_[(12) - (7)].adouble), (yysemantic_stack_[(12) - (9)].adouble));
@@ -10813,8 +10813,8 @@ namespace yyip {
       int        nb_iter,i;
       float       error;
 
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
       Func_InitAnisoGS( ((InrImage::ptr*) varim1->Pointer())->get(),
                   1,  1, (yysemantic_stack_[(12) - (7)].adouble));
 
@@ -10854,7 +10854,7 @@ namespace yyip {
           Anisotropic diffusion filter based on the Flux diffusion paper
           (Krissian, 2002, IEEE TMI).
       **/
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       InrImage::ptr  in      = *(InrImage::ptr*) varim->Pointer();
       float      sigma   = (yysemantic_stack_[(14) - (5)].adouble);
       float      k       = (yysemantic_stack_[(14) - (7)].adouble);
@@ -10880,7 +10880,7 @@ namespace yyip {
       int        nb_iter,i;
       float       error;
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       Func_InitAnisoGS( ((InrImage::ptr*) varim->Pointer())->get(), (yysemantic_stack_[(12) - (5)].adouble),  (yysemantic_stack_[(12) - (7)].adouble), (yysemantic_stack_[(12) - (9)].adouble));
 
 
@@ -10907,7 +10907,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 8680 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       InrImage::ptr res ( Func_InitWeickert( ((InrImage::ptr*) varim->Pointer())->get(),
                 (yysemantic_stack_[(12) - (7)].adouble),  (yysemantic_stack_[(12) - (9)].adouble), (yysemantic_stack_[(12) - (11)].adouble)));
 
@@ -10923,7 +10923,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 8694 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       InrImage::ptr res ( Func_InitWeickertCoherence( ((InrImage::ptr*) varim->Pointer())->get(),
                 (yysemantic_stack_[(16) - (7)].adouble),  (yysemantic_stack_[(16) - (9)].adouble), (yysemantic_stack_[(16) - (11)].adouble), (yysemantic_stack_[(16) - (13)].adouble), (yysemantic_stack_[(16) - (15)].adouble)));
 
@@ -10939,7 +10939,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 8706 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       InrImage::ptr res ( Func_SRAD_qcoeff( ((InrImage::ptr*) varim->Pointer())->get()));
       Si !res.get() Alors
         fprintf(stderr,"Func_SRAD_qcoeff() erreur ... \n");
@@ -10953,7 +10953,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 8718 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       float dt = (float) (yysemantic_stack_[(8) - (5)].adouble);
       int numit = (int) (yysemantic_stack_[(8) - (7)].adouble);
 
@@ -10974,7 +10974,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 8736 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       float dt = (float) (yysemantic_stack_[(10) - (5)].adouble);
       int numit = (int) (yysemantic_stack_[(10) - (7)].adouble);
       ImageExtent<float>* extent = (ImageExtent<float>*) (yysemantic_stack_[(10) - (9)].imageextent);
@@ -10998,7 +10998,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 8757 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       float dt = (float) (yysemantic_stack_[(12) - (5)].adouble);
       int numit = (int) (yysemantic_stack_[(12) - (7)].adouble);
       int neighborhood = (int) (yysemantic_stack_[(12) - (9)].adouble);
@@ -11023,7 +11023,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 8779 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       float dt = (float) (yysemantic_stack_[(10) - (5)].adouble);
       int numit = (int) (yysemantic_stack_[(10) - (7)].adouble);
       ImageExtent<float>* extent = (ImageExtent<float>*) (yysemantic_stack_[(10) - (9)].imageextent);
@@ -11050,7 +11050,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 8804 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       float dt = (float) (yysemantic_stack_[(12) - (5)].adouble);
       int numit = (int) (yysemantic_stack_[(12) - (7)].adouble);
       int neighborhood = (int) (yysemantic_stack_[(12) - (9)].adouble);
@@ -11076,7 +11076,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 8826 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       float dt = (float) (yysemantic_stack_[(10) - (5)].adouble);
       int numit = (int) (yysemantic_stack_[(10) - (7)].adouble);
       ImageExtent<float>* extent = (ImageExtent<float>*) (yysemantic_stack_[(10) - (9)].imageextent);
@@ -11100,7 +11100,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 8846 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       float dt         = (float) (yysemantic_stack_[(12) - (5)].adouble);
       int numit        = (int) (yysemantic_stack_[(12) - (7)].adouble);
       int neighborhood = (int) (yysemantic_stack_[(12) - (9)].adouble);
@@ -11124,7 +11124,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 8867 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       float dt = (float) (yysemantic_stack_[(12) - (5)].adouble);
       int numit = (int) (yysemantic_stack_[(12) - (7)].adouble);
       int neighborhood = (int) (yysemantic_stack_[(12) - (9)].adouble);
@@ -11166,7 +11166,7 @@ namespace yyip {
             stationary noise and MRI is for MRI style noise. In the case of MRI,
             the filter is designed to run on the square of the image intensity.
          **/
-       Variable::ptr  varim(driver.var_stack.GetLastVar());
+       BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
            int mode = (int) (yysemantic_stack_[(14) - (5)].adouble);
             float dt = (float) (yysemantic_stack_[(14) - (7)].adouble);
             int numit = (int) (yysemantic_stack_[(14) - (9)].adouble);
@@ -11192,7 +11192,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 8930 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       InrImage::ptr  initim = *(InrImage::ptr*) varim->Pointer();
       float dt = (float) (yysemantic_stack_[(12) - (5)].adouble);
       int numit = (int) (yysemantic_stack_[(12) - (7)].adouble);
@@ -11222,7 +11222,7 @@ namespace yyip {
           Add Gaussian noise with specified mean and variance.
       **/
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         AjouteBruit* addnoise;
         InrImage::ptr    in = *(InrImage::ptr*) varim->Pointer();
         float mean;
@@ -11259,7 +11259,7 @@ namespace yyip {
         - Performs a 2D rotation of the image
     **/
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
           InrImage::ptr res ( Func_rot2D( ((InrImage::ptr*) varim->Pointer())->get(),
                 (yysemantic_stack_[(14) - (5)].adouble), (yysemantic_stack_[(14) - (7)].adouble),   // rotation center
                 (yysemantic_stack_[(14) - (9)].adouble),       // angle of rotation
@@ -11294,7 +11294,7 @@ namespace yyip {
 
           int x,y,z;
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr res ( new InrImage(WT_UNSIGNED_SHORT,1,
                    "tmp_X.inr.gz",
                    ((InrImage::ptr*) varim->Pointer())->get()));
@@ -11336,7 +11336,7 @@ namespace yyip {
 
           int x,y,z;
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr res ( new InrImage(WT_UNSIGNED_SHORT,1,
                    "tmp_X.inr.gz",
                    ((InrImage::ptr*) varim->Pointer())->get()));
@@ -11378,7 +11378,7 @@ namespace yyip {
 
           int x,y,z;
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr res ( new InrImage(WT_UNSIGNED_SHORT,1,
                    "tmp_X.inr.gz",
                    ((InrImage::ptr*) varim->Pointer())->get()));
@@ -11415,7 +11415,7 @@ namespace yyip {
 
           int x,y,z;
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr res ( new InrImage(WT_FLOAT,3,
                    "tmp_spacepos.inr.gz",
                    ((InrImage::ptr*) varim->Pointer())->get()));
@@ -11439,7 +11439,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 9148 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           driver.im_stack.AddImage(InrImage::ptr((*(Viewer3D_ptr*) varsurfd->Pointer())->GetCanvas()->GetGLImage()));
         }
     break;
@@ -11449,7 +11449,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 9154 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           driver.yyiperror("Not available in new wxwidgets version of the 3D viewer ! ");
           driver.im_stack.AddImage(InrImage::ptr());
 /*
@@ -11463,7 +11463,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 9164 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varimd(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
       driver.im_stack.AddImagePointer((*(DessinImage::ptr*) varimd->Pointer())->GetInrImage());
     }
     break;
@@ -11473,7 +11473,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 9170 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       InrImage::ptr res ( Func_ThresholdCrossing( ((InrImage::ptr*) varim->Pointer())->get(), (yysemantic_stack_[(6) - (5)].adouble)));
        driver.im_stack.AddImage(res);
     }
@@ -11484,7 +11484,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 9177 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       InrImage::ptr res ( Func_IsocontourPoints( ((InrImage::ptr*) varim->Pointer())->get(), (yysemantic_stack_[(6) - (5)].adouble)));
       driver.im_stack.AddImage(res);
     }
@@ -11495,7 +11495,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 9184 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       InrImage::ptr res ( Func_IsosurfDist( ((InrImage::ptr*) varim->Pointer())->get(), (yysemantic_stack_[(6) - (5)].adouble)));
       driver.im_stack.AddImage(res);
 
@@ -11507,7 +11507,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 9192 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       InrImage::ptr res ( Func_vtkIsoContourDist( ((InrImage::ptr*) varim->Pointer())->get(), (yysemantic_stack_[(6) - (5)].adouble)));
       driver.im_stack.AddImage(res);
     }
@@ -11645,7 +11645,7 @@ namespace yyip {
       InrImage::ptr input( driver.im_stack.GetLastImage());
       float   maxtime    = (float) (yysemantic_stack_[(12) - (9)].adouble);
       int     inittype   = (int)   (yysemantic_stack_[(12) - (11)].adouble);
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
 
       InrImage::ptr res ( Func_vtkFastMarching(
                   input.get(),
@@ -11661,8 +11661,8 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 9329 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
       InrImage::ptr res ( Func_Convolve(
                   ((InrImage::ptr*) varim1->Pointer())->get(),
                   ((InrImage::ptr*) varim2->Pointer())->get()));
@@ -11676,8 +11676,8 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 9340 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
         InrImage::ptr mask (driver.im_stack.GetLastImage());
 
         InrImage::ptr res ( Func_ConvolveMask(((InrImage::ptr*) varim1->Pointer())->get(),
@@ -11693,7 +11693,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 9353 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr res ( Func_Chamfer(((InrImage::ptr*) varim->Pointer())->get(), (yysemantic_stack_[(10) - (5)].adouble), (yysemantic_stack_[(10) - (7)].adouble), (yysemantic_stack_[(10) - (9)].adouble)));
         driver.im_stack.AddImage(res);
         }
@@ -11704,7 +11704,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 9360 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
           InrImage::ptr res ( Func_Chamfer2(((InrImage::ptr*) varim->Pointer())->get(), (yysemantic_stack_[(10) - (5)].adouble), (yysemantic_stack_[(10) - (7)].adouble), (yysemantic_stack_[(10) - (9)].adouble)));
           driver.im_stack.AddImage(res);
 
@@ -11722,7 +11722,7 @@ namespace yyip {
         float c = (yysemantic_stack_[(12) - (9)].adouble);
         float dmax = (yysemantic_stack_[(12) - (11)].adouble);
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr res ( Func_Chamfer2(((InrImage::ptr*) varim->Pointer())->get(), a,b,c,dmax));
         driver.im_stack.AddImage(res);
 
@@ -11736,7 +11736,7 @@ namespace yyip {
     {
         float dmax = (yysemantic_stack_[(6) - (5)].adouble);
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr  res ( Func_Chamfer2(((InrImage::ptr*) varim->Pointer())->get(),
                   0.92644, 1.34065, 1.65849,
                   dmax));
@@ -11752,7 +11752,7 @@ namespace yyip {
     {
         float dmax = (yysemantic_stack_[(6) - (5)].adouble);
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr res ( Func_Chamfer2Signed(((InrImage::ptr*) varim->Pointer())->get(),
                     0.92644, 1.34065, 1.65849,
                     dmax));
@@ -11768,7 +11768,7 @@ namespace yyip {
     {
         float dmax = (yysemantic_stack_[(6) - (5)].adouble);
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr res ( Func_vtkSignedBorgefors(((InrImage::ptr*) varim->Pointer())->get(),
                     dmax));
         driver.im_stack.AddImage(res);
@@ -11782,7 +11782,7 @@ namespace yyip {
     {
         float dmax = (yysemantic_stack_[(6) - (5)].adouble);
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr res ( Func_vtkSignedFMDist(((InrImage::ptr*) varim->Pointer())->get(),
                      dmax));
         driver.im_stack.AddImage(res);
@@ -11797,7 +11797,7 @@ namespace yyip {
     {
         float dmax = (yysemantic_stack_[(6) - (5)].adouble);
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr res ( Func_PropagationDistance(((InrImage::ptr*) varim->Pointer())->get(),
                       dmax));
         driver.im_stack.AddImage(res);
@@ -11811,7 +11811,7 @@ namespace yyip {
     {
         float dmax = (yysemantic_stack_[(6) - (5)].adouble);
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr res ( Func_PropagationDistance2(((InrImage::ptr*) varim->Pointer())->get(),
                       dmax));
         driver.im_stack.AddImage(res);
@@ -11825,7 +11825,7 @@ namespace yyip {
     {
         float dmax = (yysemantic_stack_[(6) - (5)].adouble);
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+        BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr res ( Func_PropagationDanielsson(((InrImage::ptr*) varim->Pointer())->get(),
                        dmax));
 
@@ -11840,7 +11840,7 @@ namespace yyip {
     {
         float dmax = (yysemantic_stack_[(6) - (5)].adouble);
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr res ( Func_vtkPropDanielsson(((InrImage::ptr*) varim->Pointer())->get(),
                        -dmax,dmax));
         driver.im_stack.AddImage(res);
@@ -11855,7 +11855,7 @@ namespace yyip {
         float dmin = (yysemantic_stack_[(8) - (5)].adouble);
         float dmax = (yysemantic_stack_[(8) - (7)].adouble);
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr res ( Func_vtkPropDanielsson(((InrImage::ptr*) varim->Pointer())->get(),
                        dmin,dmax));
         driver.im_stack.AddImage(res);
@@ -11880,7 +11880,7 @@ namespace yyip {
           starting from the object, up to a given distance
           for positive and negative sides.
         **/
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         float threshold = (yysemantic_stack_[(10) - (5)].adouble);
         float dmin      = (yysemantic_stack_[(10) - (7)].adouble);
         float dmax      = (yysemantic_stack_[(10) - (9)].adouble);
@@ -11953,7 +11953,7 @@ namespace yyip {
       InrImage::ptr im2( driver.im_stack.GetLastImage());
       int pos;
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       im1 = *(InrImage::ptr*) varim->Pointer();
 
       InrImage::ptr res ( new InrImage(
@@ -12190,8 +12190,8 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 9759 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
 
       FloatMatrix m(4,4);
       m[0][0] =  (yysemantic_stack_[(30) - (7)].adouble);
@@ -12237,7 +12237,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 9796 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) var->Pointer());
 
       InrImage::ptr res ( s->GetImageLinesLength(  ));
@@ -12259,7 +12259,7 @@ namespace yyip {
           the point positions.
       **/
       InrImage::ptr         res;
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) var->Pointer());
       int linenumber = (int) (yysemantic_stack_[(6) - (5)].adouble);
       
@@ -12301,7 +12301,7 @@ namespace yyip {
         containing the point id of the 2 extremities of each 
         line
     **/
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) var->Pointer());
 
       InrImage::ptr res ( s->GetImageLinesExtremities(  ));
@@ -12322,7 +12322,7 @@ namespace yyip {
         The result is given as a 1D image of size the total
         number of points of the polydata
     **/
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) var->Pointer());
 
       InrImage::ptr res ( s->GetImageConnections(  ));
@@ -12335,10 +12335,10 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 9874 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) var->Pointer());
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       InrImage::ptr res ( s->GetIntensities( ((InrImage::ptr*) varim->Pointer())->get() ));
       driver.im_stack.AddImage(res);
     }
@@ -12505,10 +12505,10 @@ namespace yyip {
       Tubular reconstruction based on a set of lines and an estimated radius
       size for each point
     **/
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       SurfacePoly::ptr  surf = *(SurfacePoly::ptr*)
                                   var->Pointer();
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       InrImage::ptr ref = *(InrImage::ptr*) varim->Pointer();
       InrImage::ptr rad = InrImage::ptr(
                                 driver.im_stack.GetLastImage());
@@ -12533,7 +12533,7 @@ namespace yyip {
     **/
       boost::shared_array<char> filename( (yysemantic_stack_[(6) - (5)].astring));
 
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       SurfacePoly::ptr  surf = *(SurfacePoly::ptr*)
                                   var->Pointer();
 
@@ -12830,7 +12830,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 10292 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-            Variable::ptr varglt(driver.var_stack.GetLastVar());
+            BasicVariable::ptr varglt(driver.var_stack.GetLastVar());
             GLTransfMatrix* newglt;
             GLTransfMatrix_ptr glt = *(GLTransfMatrix_ptr*) varglt->Pointer();
 
@@ -12846,7 +12846,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 10304 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           GLTransfMatrix glt;
           GLTransfMatrix* newglt;
   
@@ -12864,8 +12864,8 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 10318 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-        Variable::ptr varglt2(driver.var_stack.GetLastVar());
-        Variable::ptr varglt1(driver.var_stack.GetLastVar());
+        BasicVariable::ptr varglt2(driver.var_stack.GetLastVar());
+        BasicVariable::ptr varglt1(driver.var_stack.GetLastVar());
         GLTransfMatrix* newglt = NULL;
         GLTransfMatrix_ptr glt1 = *(GLTransfMatrix_ptr*) varglt1->Pointer();
         GLTransfMatrix_ptr glt2 = *(GLTransfMatrix_ptr*) varglt2->Pointer();
@@ -12912,7 +12912,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 10355 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr varmat(driver.var_stack.GetLastVar());
+          BasicVariable::ptr varmat(driver.var_stack.GetLastVar());
           FloatMatrix* newmat;
           FloatMatrix::ptr mat = *(FloatMatrix::ptr*) varmat->Pointer();
     
@@ -13112,12 +13112,12 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 10482 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr var(driver.var_stack.GetLastVar());
           VarArray::ptr array;
           int  i = (int) (yysemantic_stack_[(4) - (3)].adouble);
 
           array = *(VarArray::ptr*) (var->Pointer());
-          Variable::ptr arrayvar = array->GetVar(i);
+          BasicVariable::ptr arrayvar = array->GetVar(i);
           if (!arrayvar.get()) {
             // initialize the surface
             SurfacePoly* surf = new SurfacePoly();
@@ -13149,7 +13149,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 10513 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         SurfacePoly* surf;
         surf = Func_isosurf((*(InrImage::ptr*) varim->Pointer()),
                 (yysemantic_stack_[(6) - (5)].adouble),
@@ -13173,7 +13173,7 @@ namespace yyip {
         Computed isosurface of the input image with a given threshold within a region
         defined by the mask image.
     **/
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr im (driver.im_stack.GetLastImage());
         SurfacePoly* surf;
         surf = Func_isosurf(im,
@@ -13227,7 +13227,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 10579 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       SurfacePoly* surf;
       surf = Func_decimate(((SurfacePoly::ptr*) var->Pointer())->get());
       Si surf != NULL Alors
@@ -13241,7 +13241,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 10589 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       SurfacePoly* surf;
       surf = Func_decimate(((SurfacePoly::ptr*) var->Pointer())->get(), (yysemantic_stack_[(6) - (5)].adouble) );
       Si surf != NULL Alors
@@ -13256,7 +13256,7 @@ namespace yyip {
 #line 10599 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           SurfacePoly* surf;
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
           surf = Func_vtkMarchingCubes(((InrImage::ptr*) varim->Pointer())->get(),(yysemantic_stack_[(6) - (5)].adouble));
       Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
@@ -13270,7 +13270,7 @@ namespace yyip {
 #line 10609 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       SurfacePoly* surf;
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       surf = Func_vtkSmooth(((SurfacePoly::ptr*) var->Pointer())->get(), (int) (yysemantic_stack_[(6) - (5)].adouble));
       Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
@@ -13284,7 +13284,7 @@ namespace yyip {
 #line 10619 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         SurfacePoly* surf;
-        Variable::ptr       var(driver.var_stack.GetLastVar());
+        BasicVariable::ptr       var(driver.var_stack.GetLastVar());
         surf = Func_vtkWindowedSinc(((SurfacePoly::ptr*) var->Pointer())->get(), (int) (yysemantic_stack_[(6) - (5)].adouble));
         if (surf==NULL) driver.err_print("vtkWindowedSinc failed!");
         driver.surf_stack.AddSurf(surf);
@@ -13397,7 +13397,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 10705 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-        Variable::ptr       var(driver.var_stack.GetLastVar());
+        BasicVariable::ptr       var(driver.var_stack.GetLastVar());
         SurfacePoly* newsurf;
         SurfacePoly::ptr surf = *(SurfacePoly::ptr*) var->Pointer();
   
@@ -13418,7 +13418,7 @@ namespace yyip {
         **/
           SurfacePoly* surf;
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       surf = Func_Skeleton2lines( ((InrImage::ptr*) varim->Pointer())->get()  );
 
       Si surf==NULL Alors
@@ -13447,7 +13447,7 @@ namespace yyip {
         iterations      10
     **/
       SurfacePoly* surf;
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
 
       surf = Func_SmoothLines( ((SurfacePoly::ptr*) var->Pointer())->get(),
                       0.1,
@@ -13479,7 +13479,7 @@ namespace yyip {
       with data attachment
     **/
       SurfacePoly* surf;
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
 
       surf = Func_SmoothLines( ((SurfacePoly::ptr*) var->Pointer())->get(),
                       (yysemantic_stack_[(10) - (5)].adouble),
@@ -13501,7 +13501,7 @@ namespace yyip {
 #line 10792 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
       SurfacePoly* surf;
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
 
       surf = Func_ResampleLines( ((SurfacePoly::ptr*) var->Pointer())->get(),
                      (yysemantic_stack_[(6) - (5)].adouble));
@@ -13529,7 +13529,7 @@ namespace yyip {
         Finds the shortest path within the lines of the polydata
     **/
       SurfacePoly* surf;
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
 
       surf = Func_shortestpath( ((SurfacePoly::ptr*) var->Pointer())->get(),
                       (yysemantic_stack_[(16) - (5)].adouble), (yysemantic_stack_[(16) - (7)].adouble), (yysemantic_stack_[(16) - (9)].adouble),
@@ -13720,7 +13720,7 @@ namespace yyip {
       Connecting close lines
     **/
       SurfacePoly* surf;
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
 
       surf = Func_ConnectLines( ((SurfacePoly::ptr*) var->Pointer())->get(),
                       (yysemantic_stack_[(8) - (5)].adouble),
@@ -14183,7 +14183,7 @@ namespace yyip {
           // todo ... 
           // 1. check if identifier belongs to the object
           // 2. if so return corresponding variable
-          Variable::ptr var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr var(driver.var_stack.GetLastVar());
 
           AMIObject::ptr object = *(AMIObject::ptr*) var->Pointer();
           IdentifierInfo::ptr ident((yysemantic_stack_[(3) - (3)].ident));
@@ -14191,7 +14191,7 @@ namespace yyip {
           Vars.SetObjectContext(object->GetContext());
     
           // here, need to do our own checking ...
-          Variable::ptr newvar;
+          BasicVariable::ptr newvar;
           newvar = Vars.GetVar(ident->GetName().c_str(),OBJECT_CONTEXT_NUMBER);
 
           // reset previous object context
@@ -14204,7 +14204,7 @@ namespace yyip {
           } else {
             // error message here
             driver.yyiperror("Identifier does not belong to object context \n");
-            driver.var_stack.AddVarSmrtPtr(Variable::ptr());
+            driver.var_stack.AddVarSmrtPtr(BasicVariable::ptr());
           }
         }
     break;
@@ -14220,12 +14220,12 @@ namespace yyip {
         **/
           //cout << "call to variable T_OP_PAR param_list T_CL_PAR end_instr" << endl;
           // 1. check the variable type
-          Variable::ptr var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr var(driver.var_stack.GetLastVar());
           ParamList::ptr param((yysemantic_stack_[(4) - (3)].paramlist));
 
           if (var->Type()==type_class_member) {
 
-            Variable::ptr  res;
+            BasicVariable::ptr  res;
   
             res = (*(WrapClassMember::ptr*) var->Pointer())->CallMember(param.get());
             /*
@@ -14242,7 +14242,7 @@ namespace yyip {
           } else {
             // error message here
             driver.yyiperror("variable is not of type  type_class_member\n");
-            driver.var_stack.AddVarSmrtPtr(Variable::ptr());
+            driver.var_stack.AddVarSmrtPtr(BasicVariable::ptr());
           }
         }
     break;
@@ -14275,7 +14275,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 11502 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-          Variable::ptr  varim(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
           InrImage::ptr im = *(InrImage::ptr*) varim->Pointer();
 
           ImageExtent<float>* extent=new ImageExtent<float>();
@@ -14296,7 +14296,7 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 11519 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
-        Variable::ptr  varimd(driver.var_stack.GetLastVar());
+        BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
         DessinImage::ptr draw = *(DessinImage::ptr*) (varimd->Pointer());
 
         int xmin,xmax;

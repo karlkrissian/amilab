@@ -57,8 +57,8 @@ void AddWrapVTK()
 {
 
   ADDVAR_IMAGEFUNC_NAME("vtkAnisoGaussSeidel",  vtkAnisoGS);
-  ADDVAR_VARFUNC_NAME(  "vtkSkeleton2Lines",    Wrap_vtkSkeleton2Lines);
-  ADDVAR_VARFUNC_NAME(  "vtkSphere",            Wrap_vtkSphere);
+  ADDVAR_NAME(C_wrap_imagefunction,  "vtkSkeleton2Lines",    Wrap_vtkSkeleton2Lines);
+  ADDVAR_NAME(C_wrap_imagefunction,  "vtkSphere",            Wrap_vtkSphere);
 
 }
 
@@ -68,13 +68,13 @@ InrImage* vtkAnisoGS(ParamList* p)
 {
 
 #ifndef _WITHOUT_VTK_
-	char functionname[] = "vtkAnisoGaussSeidel";
-	char description[]=" \n\
-		Runs Anisotropic Diffusion Filter based on the \n\
-		Flux Diffusion and using the Gauss-Seidel\n\
-		numerical scheme\n\
-			";
-	char parameters[] =" \n\
+  char functionname[] = "vtkAnisoGaussSeidel";
+  char description[]=" \n\
+    Runs Anisotropic Diffusion Filter based on the \n\
+    Flux Diffusion and using the Gauss-Seidel\n\
+    numerical scheme\n\
+      ";
+  char parameters[] =" \n\
           Parameters:\n\
               input image\n\
               standard deviation for Gaussian smoothing sigma\n\
@@ -82,7 +82,7 @@ InrImage* vtkAnisoGS(ParamList* p)
               data attachment coefficient\n\
               number of iterations\n\
               number of threads (def: 1)\n\
-			";
+      ";
     
     InrImage* input;
     float sd;
@@ -105,7 +105,7 @@ InrImage* vtkAnisoGS(ParamList* p)
   shared_ptr<vtkAnisoGaussSeidel> vtk_aniso;
   //  printf("1 \n");
   vtk_image = vtk_new<vtkImageData>()((vtkImageData*) (*input));
-  //	  printf("2 \n");
+  //    printf("2 \n");
 
   vtk_aniso = vtk_new<vtkAnisoGaussSeidel>()();
   vtk_aniso->SetInput(              vtk_image.get());
@@ -119,9 +119,9 @@ InrImage* vtkAnisoGS(ParamList* p)
 
   vtk_aniso->Update();
 
-  //	  printf("3 \n");
+  //    printf("3 \n");
   res = new InrImage( vtk_aniso->GetOutput());
-  //	  printf("4 \n");
+  //    printf("4 \n");
   return res;
 
 #else
@@ -133,7 +133,7 @@ InrImage* vtkAnisoGS(ParamList* p)
 
 
 /** Read a 3D Flow from an ASCII file **/
-Variable::ptr Wrap_vtkSkeleton2Lines(ParamList* p)
+BasicVariable::ptr Wrap_vtkSkeleton2Lines(ParamList* p)
 {
 
 #ifndef _WITHOUT_VTK_
@@ -167,7 +167,7 @@ Variable::ptr Wrap_vtkSkeleton2Lines(ParamList* p)
 
   SurfacePoly* surf_result = new SurfacePoly(vtk_skel2lines->GetOutput());
 
-  Variable::ptr varres(new Variable());
+  BasicVariable::ptr varres(new Variable());
   varres->Init(type_surface,"vtkSkeleton2lines_result",surf_result);
 
   return varres;
@@ -181,7 +181,7 @@ Variable::ptr Wrap_vtkSkeleton2Lines(ParamList* p)
 
 
 //---------------------------------------------------------------------------
-Variable::ptr Wrap_vtkSphere( ParamList* p)
+BasicVariable::ptr Wrap_vtkSphere( ParamList* p)
 //            --------------
 {
 #ifndef _WITHOUT_VTK_
@@ -224,7 +224,7 @@ Variable::ptr Wrap_vtkSphere( ParamList* p)
 
   SurfacePoly* surf_result = new SurfacePoly(vtk_sphere->GetOutput());
 
-  Variable::ptr varres(new Variable());
+  BasicVariable::ptr varres(new Variable());
   varres->Init(type_surface,"vtkSphere_result",surf_result);
 
   return varres;

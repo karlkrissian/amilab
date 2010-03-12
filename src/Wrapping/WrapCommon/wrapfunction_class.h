@@ -35,7 +35,7 @@ class wrap_##classname##methodname : public WrapClassMember { \
       SetParametersComments(); \
     } \
     void SetParametersComments(); \
-    Variable::ptr CallMember(ParamList*); \
+    BasicVariable::ptr CallMember(ParamList*); \
 };
 
 /**
@@ -51,7 +51,7 @@ class wrap_##classname##methodname : public WrapClassMember { \
 // TODO:mettre un message plus explicite avec le numero et le nom du paramete ...
 #define ClassHelpAndReturn { \
     this->ShowHelp();\
-    return Variable::ptr();\
+    return BasicVariable::ptr();\
   }
 
 /**

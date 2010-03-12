@@ -23,12 +23,12 @@ using namespace std;
  * Function used to parse a variable of generic type in a list of parameters, and to give back a smart pointer to the variable.
  */
 template<class T>
-bool get_var_param( Variable::ptr& var, 
+bool get_var_param( Variable<T>::ptr& var, 
                     ParamList*p, int& num)
 {
   if (!p) return false;
   // Getting the Variable and checking its type
-  var = p->GetParam(num++); // = is like a swap of smart pointers ...
+  var = boost::dynamic_pointer_cast<Variable<T> >(p->GetParam(num++)); // = is like a swap of smart pointers ...
   if (var.get()) {
     if (var->Type()!=GetVarType<T>()) {
       FILE_ERROR(boost::format("Parameter %1% is of wrong type (%2% instead of %3%), you may be passing a value instead of a reference.")%num%var->Type()%GetVarType<T>());
@@ -65,7 +65,7 @@ bool get_val_param(T& arg, ParamList*p, int& num)
     FILE_MESSAGE( boost::format("Using default value for parameter %1%") % num);
     return true;
   }
-  Variable::ptr temp = p->GetParam(num++);
+  BasicVariable::ptr temp = p->GetParam(num++);
   if (temp.get()) {
     if (temp->Type()!=GetVarType<T>()) {
       FILE_ERROR(boost::format("Parameter %1% is of wrong type.")%num);
@@ -98,7 +98,7 @@ bool get_val_ptr_param(T*& arg, ParamList*p, int& num, bool required)
       return false;
     }
   }
-  Variable::ptr temp = p->GetParam(num++);
+  BasicVariable::ptr temp = p->GetParam(num++);
   if (temp.get()) {
     if (temp->Type()!=GetVarType<T>()) {
       FILE_ERROR(boost::format("Parameter %1% is of wrong type (type is %2% instead of %3%).") % num % temp->Type() % GetVarType<T>());
@@ -132,7 +132,7 @@ bool get_val_smtptr_param(boost::shared_ptr<T>& arg, ParamList*p, int& num, bool
       return false;
     }
   }
-  Variable::ptr temp = p->GetParam(num++);
+  BasicVariable::ptr temp = p->GetParam(num++);
   if (temp.get()) {
     if (temp->Type()!=GetVarType<T>()) {
       FILE_ERROR(boost::format("Parameter %1% is of wrong type.")%num);

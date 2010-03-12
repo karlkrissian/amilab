@@ -52,34 +52,34 @@ void AddWrapFilters(){
   wrapAlgorithmsBasic();
 
 //  Vars.AddVar(type_c_image_function,"ImTranslation",             (void*) ImTranslation );
-  ADDOBJECTVAR_IMFUNC_NAME("NSim",NSim);
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction,"NSim",NSim);
 
-  ADDOBJECTVAR_PROC_NAME("NSim2",NSim2);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,"NSim2",NSim2);
 
-  ADDOBJECTVAR_IMFUNC_NAME("NLmeans",     NLmeans);
-  ADDOBJECTVAR_IMFUNC_NAME("NLmeans_fast",NLmeans_fast);
-  ADDOBJECTVAR_IMFUNC_NAME("NLmeans_MRI", NLmeans_MRI);
-  ADDOBJECTVAR_IMFUNC_NAME("LeastSquares",WrapLeastSquares);
-  ADDOBJECTVAR_IMFUNC_NAME("StructureTensorH",wrap_StructureTensorHessianNew);
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction,"NLmeans",     NLmeans);
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction,"NLmeans_fast",NLmeans_fast);
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction,"NLmeans_MRI", NLmeans_MRI);
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction,"LeastSquares",WrapLeastSquares);
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction,"StructureTensorH",wrap_StructureTensorHessianNew);
 
-  ADDOBJECTVAR_VARFUNC_NAME("EigenDecomp",Wrap_EigenDecomp);
-  ADDOBJECTVAR_VARFUNC_NAME("SplineResample",Wrap_SmoothLinesToSplines);
-  ADDOBJECTVAR_VARFUNC_NAME("RegionGrow",Wrap_RegionGrow);
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"EigenDecomp",Wrap_EigenDecomp);
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"SplineResample",Wrap_SmoothLinesToSplines);
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"RegionGrow",Wrap_RegionGrow);
   
   #ifdef AMI_USE_FASTNLMEANS
-    ADDOBJECTVAR_IMFUNC_NAME("NewNLmeans",    Wrap_NewNLmeans);
+    ADDOBJECTVAR_NAME(C_wrap_imagefunction,"NewNLmeans",    Wrap_NewNLmeans);
   #endif // AMI_USE_FASTNLMEANS
 
-  ADDOBJECTVAR_IMFUNC_NAME("ComputePV",       wrapComputePV);
-  ADDOBJECTVAR_IMFUNC_NAME("ComputePV_subdiv",wrapComputePV_subdiv);
-  ADDOBJECTVAR_IMFUNC_NAME("DirSum",          wrap_DirSum);
-  ADDOBJECTVAR_IMFUNC_NAME("ImTranslate",     wrap_ImTranslate);
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction,"ComputePV",       wrapComputePV);
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction,"ComputePV_subdiv",wrapComputePV_subdiv);
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction,"DirSum",          wrap_DirSum);
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction,"ImTranslate",     wrap_ImTranslate);
 
-  ADDOBJECTVAR_PROC_NAME("AddSubImage",wrap_AddSubImage);
-  ADDOBJECTVAR_PROC_NAME("MaxSubImage",wrap_MaxSubImage);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,"AddSubImage",wrap_AddSubImage);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,"MaxSubImage",wrap_MaxSubImage);
 
-  ADDOBJECTVAR_PROC_NAME("ImageAddScalar",wrap_ImageAddScalar);
-  ADDOBJECTVAR_PROC_NAME("ImageCos",wrap_ImageCos);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,"ImageAddScalar",wrap_ImageAddScalar);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,"ImageCos",wrap_ImageCos);
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);
@@ -942,7 +942,7 @@ InrImage* WrapLeastSquares(ParamList* p)
 // TODO: allow returning a list or something more evolved !!!
 //
 
-Variable::ptr Wrap_EigenDecomp(ParamList* p) {
+BasicVariable::ptr Wrap_EigenDecomp(ParamList* p) {
     char functionname[] = "EigenDecomp";
     char description[]=" \n\
         Eigenvalue and eigenvector decomposition\n\
@@ -989,7 +989,7 @@ Variable::ptr Wrap_EigenDecomp(ParamList* p) {
            (void*) &result[n],
            str(format("eigen_decomp_%d") %n).c_str());
 
-  Variable::ptr varres(new Variable());
+  BasicVariable::ptr varres(new Variable());
   varres->Init(type_array,"EigenDecomp_result",array);
 
   return varres;
@@ -998,7 +998,7 @@ Variable::ptr Wrap_EigenDecomp(ParamList* p) {
 
 
 // Resample lines using splines
-Variable::ptr Wrap_SmoothLinesToSplines(ParamList* p)
+BasicVariable::ptr Wrap_SmoothLinesToSplines(ParamList* p)
 {
 
   char functionname[] = "SplineResample";
@@ -1023,7 +1023,7 @@ Variable::ptr Wrap_SmoothLinesToSplines(ParamList* p)
 
   SurfacePoly* surf_result = Func_SmoothLinesToSplines( input, samplingstep );
 
-  Variable::ptr varres(new Variable());
+  BasicVariable::ptr varres(new Variable());
   varres->Init(type_surface,"interpolatedsplines_result",surf_result);
 
   return varres;
@@ -1033,7 +1033,7 @@ Variable::ptr Wrap_SmoothLinesToSplines(ParamList* p)
 
 
 // Region Growing
-Variable::ptr Wrap_RegionGrow(ParamList* p)
+BasicVariable::ptr Wrap_RegionGrow(ParamList* p)
 {
 
   char functionname[] = "RegionGrow";
@@ -1049,8 +1049,8 @@ Variable::ptr Wrap_RegionGrow(ParamList* p)
               Resulting state image\n\
       ";
 
-  Variable::ptr input_var;
-  Variable::ptr init_var;
+  Variable<InrImage>::ptr input_var;
+  Variable<InrImage>::ptr init_var;
   float int_min;
   float int_max;
   int n=0;
@@ -1060,8 +1060,8 @@ Variable::ptr Wrap_RegionGrow(ParamList* p)
   if (!get_val_param<float>( int_min, p, n)) HelpAndReturnVarPtr;
   if (!get_val_param<float>( int_max, p, n)) HelpAndReturnVarPtr;
 
-  InrImage::ptr input( *((InrImage::ptr*) input_var->Pointer()));
-  InrImage::ptr init ( *((InrImage::ptr*) init_var ->Pointer()));
+  InrImage::ptr input( input_var->Pointer());
+  InrImage::ptr init ( init_var ->Pointer());
 
   IntensityBasedRegionGrowing::ptr regiongrow(
     new IntensityBasedRegionGrowing(input,init)
@@ -1070,7 +1070,7 @@ Variable::ptr Wrap_RegionGrow(ParamList* p)
   regiongrow->SetMax(int_max);
   regiongrow->Evolve();
 
-  Variable::ptr varres(new Variable());
+  BasicVariable::ptr varres(new Variable());
   varres->InitPtr(type_image,"RegionGrowingResult",&regiongrow->GetStateImage());
   return varres;
 

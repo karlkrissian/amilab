@@ -20,7 +20,7 @@
 
 /** function that add wrapping of the Image Drawing window
  */
-Variable::ptr wrap_ParamPanel( ParamList* p);
+BasicVariable::ptr wrap_ParamPanel( ParamList* p);
 
 
 ADD_METHOD(ParamPanel,BeginBook,        "Starts a notebook.");

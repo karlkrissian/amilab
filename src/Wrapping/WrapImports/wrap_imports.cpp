@@ -41,17 +41,17 @@ void AddWrapImports()
   Variables::ptr previous_ocontext = Vars.GetObjectContext();
   Vars.SetObjectContext(amiobject->GetContext());
 
-  ADDOBJECTVAR_PROC_NAME("ImageDraw",  wrap_ImageDraw);
-  ADDOBJECTVAR_PROC_NAME("MainFrame",  wrap_MainFrame);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,"ImageDraw",  wrap_ImageDraw);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,"MainFrame",  wrap_MainFrame);
 
-  ADDOBJECTVAR_VARFUNC_NAME("VarList", wrap_VarList);
-  ADDOBJECTVAR_VARFUNC_NAME("ParamPanel",wrap_ParamPanel);
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"VarList", wrap_VarList);
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"ParamPanel",wrap_ParamPanel);
 
-  ADDOBJECTVAR_PROC_NAME("System",    wrap_System);
-  ADDOBJECTVAR_PROC_NAME("ITK",       wrap_ITK);
-  ADDOBJECTVAR_PROC_NAME("AMIFluid",  wrap_AMIFluid);
-  ADDOBJECTVAR_PROC_NAME("Filters",   wrap_Filters);
-  ADDOBJECTVAR_PROC_NAME("wxsamples", wrap_wxsamples);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,"System",    wrap_System);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,"ITK",       wrap_ITK);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,"AMIFluid",  wrap_AMIFluid);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,"Filters",   wrap_Filters);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,"wxsamples", wrap_wxsamples);
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);

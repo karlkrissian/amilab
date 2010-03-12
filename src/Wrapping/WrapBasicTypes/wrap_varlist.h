@@ -25,12 +25,12 @@ class VarList
   DEFINE_CLASS(VarList);
 
   protected:
-    std::list<Variable::ptr> list;
+    std::list<BasicVariable::ptr> list;
 };
 
 /** function that add wrapping of the Image Drawing window
  */
-Variable::ptr wrap_VarList( ParamList* p);
+BasicVariable::ptr wrap_VarList( ParamList* p);
 
 ADD_METHOD( VarList, push_front,        "Add element at beginning.");
 ADD_METHOD( VarList, push_back,         "Add element at the end.");

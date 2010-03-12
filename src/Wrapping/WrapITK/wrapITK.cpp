@@ -57,30 +57,30 @@ void AddWrapITK(){
   Variables::ptr previous_ocontext = Vars.GetObjectContext();
   Vars.SetObjectContext(amiobject->GetContext());
 
-  ADDOBJECTVAR_IMFUNC_NAME("Read_3D_US", 
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction,"Read_3D_US", 
                            itkRead_3D_US);
   
-  ADDOBJECTVAR_IMFUNC_NAME( "Read",
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction, "Read",
                             wrap_itkRead);
   
-  ADDOBJECTVAR_IMFUNC_NAME( "IsoContourDist",
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction, "IsoContourDist",
                             itkIsoContourDist);
   
   // Vars.AddVar(type_c_image_function,"BasicNLMeans2D", (void*) itkBasicNLMeans2D, OBJECT_CONTEXT_NUMBER);
   // Vars.AddVar(type_c_image_function,"BasicNLMeans3D", (void*) itkBasicNLMeans3D, OBJECT_CONTEXT_NUMBER);
-  ADDOBJECTVAR_PROC_NAME("Write", wrap_itkWrite);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,"Write", wrap_itkWrite);
 
-  ADDOBJECTVAR_IMFUNC_NAME( "RecursiveGaussianImageFilter2D",
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction, "RecursiveGaussianImageFilter2D",
                             itkRecursiveGaussianImageFilter2D);
-  ADDOBJECTVAR_IMFUNC_NAME( "RecursiveGaussianImageFilter3D",
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction, "RecursiveGaussianImageFilter3D",
                             itkRecursiveGaussianImageFilter3D);
-  ADDOBJECTVAR_IMFUNC_NAME( "FastMarchingImageFilter2D",
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction, "FastMarchingImageFilter2D",
                             itkFastMarchingImageFilter2D);
-  ADDOBJECTVAR_IMFUNC_NAME( "FastMarchingImageFilter3D",
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction, "FastMarchingImageFilter3D",
                             itkFastMarchingImageFilter3D);
-  ADDOBJECTVAR_IMFUNC_NAME( "WaterShedImageFilter2D",
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction, "WaterShedImageFilter2D",
                             itkWaterShedImageFilter2D);
-  ADDOBJECTVAR_IMFUNC_NAME( "WaterShedImageFilter3D",
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction, "WaterShedImageFilter3D",
                             itkWaterShedImageFilter3D);
 
   // Restore the object context

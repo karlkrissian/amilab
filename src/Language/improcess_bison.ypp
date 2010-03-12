@@ -166,9 +166,9 @@ class wxScheduleTimer : public wxTimer
 {
   DEFINE_CLASS(wxScheduleTimer)
   public:
-    wxScheduleTimer( Variable::ptr callback)
+    wxScheduleTimer( BasicVariable::ptr callback)
     {
-      var = Variable::ptr(callback);
+      var = BasicVariable::ptr(callback);
     }
 
     ~wxScheduleTimer()
@@ -181,7 +181,7 @@ class wxScheduleTimer : public wxTimer
 
   private:
     // variable of type type_ami_function
-    Variable::ptr var;
+    BasicVariable::ptr var;
 };
 
 // create a array of shared pointers
@@ -1067,17 +1067,17 @@ loop_inst :
       **/
         int  previous_lineno=driver.yyiplineno;
         AmiInstructionBlock::ptr block($3);
-        Variable::ptr  var(driver.var_stack.GetLastVar());
+        BasicVariable::ptr  var(driver.var_stack.GetLastVar());
   
         float res;
         if (var->Type() == type_float) 
-          res = (*(*(float_ptr*) var->Pointer()));
+          res = *(boost::dynamic_pointer_cast<Variable<float> >(var))->Pointer();
         else
         if (var->Type() == type_int) 
-          res = (*(*(int_ptr*) var->Pointer()));
+          res = *(boost::dynamic_pointer_cast<Variable<int> >  (var))->Pointer();
         else
         if (var->Type() == type_uchar) 
-          res = (*(*(uchar_ptr*) var->Pointer()));
+          res = *(boost::dynamic_pointer_cast<Variable<unsigned char> >  (var))->Pointer();
         else {
           res = 0;
           driver.yyiperror(" while needs a numerical variable as condition \n");
@@ -1088,14 +1088,15 @@ loop_inst :
           //driver.yyiplineno=previous_lineno;
           driver.yyiplineno = block->GetStartingLine();
           res=driver.parse_block(block);
+
           if (var->Type() == type_float) 
-            res = (*(*(float_ptr*) var->Pointer()));
+            res = *(boost::dynamic_pointer_cast<Variable<float> >(var))->Pointer();
           else
           if (var->Type() == type_int) 
-            res = (*(*(int_ptr*) var->Pointer()));
+            res = *(boost::dynamic_pointer_cast<Variable<int> >  (var))->Pointer();
           else
           if (var->Type() == type_uchar) 
-            res = (*(*(uchar_ptr*) var->Pointer()));
+            res = *(boost::dynamic_pointer_cast<Variable<unsigned char> >  (var))->Pointer();
           else {
             res = 0;
             driver.yyiperror(" while needs a numerical variable as condition \n");
@@ -1184,7 +1185,7 @@ proc_decl:
         instr_block end_instr
     {
       AmiInstructionBlock::ptr body($7);
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
 
       // delete previous variable
       std::string varname = var->Name();
@@ -1203,7 +1204,7 @@ proc_decl:
                     % varname  % body->GetBody());
 
       // add the variable in the same context ...
-      Variable::ptr newvar =
+      BasicVariable::ptr newvar =
         Vars.AddVar<AMIFunction>(
                       varname.c_str(),
                       amifunc,
@@ -1238,8 +1239,8 @@ class_decl:
 object_decl:
     VAR_AMI_CLASS  identifier
     {
-      Variable::ptr       var(driver.var_stack.GetLastVar());
-      AMIClass::ptr ac = *(AMIClass::ptr*) (var->Pointer());
+      Variable<AMIClass>::ptr var(driver.var_stack.GetLastVar<AMIClass>());
+      AMIClass::ptr ac = var->Pointer();
       IdentifierInfo::ptr ident($2);
 
       //AMIObject::ptr amiobject;
@@ -1312,11 +1313,11 @@ func_inst :
       Description:
         Call a language function with its parameters.
     **/
-        Variable::ptr       var(driver.var_stack.GetLastVar());
-        AMIFunction::ptr* func_ptr = (AMIFunction::ptr*) var->Pointer();
+        Variable<AMIFunction>::ptr var(driver.var_stack.GetLastVar<AMIFunction>());
+        AMIFunction::ptr func_ptr(var->Pointer());
         ParamList::ptr  param($3);
 
-        driver.yyip_call_function(*func_ptr,param);
+        driver.yyip_call_function(func_ptr,param);
 
 
         }
@@ -1326,7 +1327,7 @@ func_inst :
       Description:
         Call a language function without parameters.
     **/
-          Variable::ptr       var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       var(driver.var_stack.GetLastVar());
 
           AMIFunction::ptr* func_ptr = (AMIFunction::ptr*) var->Pointer();
           // Call the function
@@ -1341,13 +1342,13 @@ command:
             Description:
               Empty instruction.
           **/
-          Variable::ptr       var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       var(driver.var_stack.GetLastVar());
           if (var.get()) {
             switch (var->Type()) {
               // TODO: ad hoc fix to improve here, result should be a usable variable ??
               case type_class_member: {
                 ParamList::ptr param((ParamList*) NULL);
-                Variable::ptr tmpvar = (*(WrapClassMember::ptr*) var->Pointer())->CallMember(param.get());
+                BasicVariable::ptr tmpvar = (*(WrapClassMember::ptr*) var->Pointer())->CallMember(param.get());
                }
               break;
               default:;
@@ -1454,7 +1455,7 @@ command:
         **/
 
         int ms = (int) $3;
-        Variable::ptr       var(driver.var_stack.GetLastVar());
+        BasicVariable::ptr       var(driver.var_stack.GetLastVar());
 
         wxScheduleTimer::ptr w = wxScheduleTimer::ptr(new wxScheduleTimer( var ));
         // add to the list of schedule timers
@@ -1583,12 +1584,12 @@ command:
           Description:
             Calls a wrapped function that returns a smart pointer to a variable, requires a new variable name as a result
         **/
-          Variable::ptr       var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       var(driver.var_stack.GetLastVar());
           ParamList::ptr param($5);
-          Variable::ptr  res;
+          BasicVariable::ptr  res;
           IdentifierInfo::ptr ident($1);
 
-          res = ((Variable::ptr (*)(ParamList*)) var->Pointer())(param.get());
+          res = ((BasicVariable::ptr (*)(ParamList*)) var->Pointer())(param.get());
           if (!res.use_count()) {
             driver.yyiperror(" function returns NULL \n");
             YYABORT;
@@ -1602,7 +1603,7 @@ command:
           Description:
             Calls a wrapped class member function that returns a smart pointer to a variable, requires a new variable name as a result.
         **/
-          Variable::ptr       var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       var(driver.var_stack.GetLastVar());
           ParamList::ptr param($5);
           BasicVariable::ptr  res;
           IdentifierInfo::ptr ident($1);
@@ -1621,7 +1622,7 @@ command:
           Description:
             Calls a wrapped class member function that returns a smart pointer to a variable, requires a new variable name as a result.
         **/
-          Variable::ptr       var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       var(driver.var_stack.GetLastVar());
           ParamList::ptr param((ParamList*)NULL);
           BasicVariable::ptr  res;
           IdentifierInfo::ptr ident($1);
@@ -1637,7 +1638,7 @@ command:
         |
         VAR_ARRAY_IMAGE T_OP_BR expr T_CL_BR ASSIGN_OP expr_image
         {
-          Variable::ptr vararray(driver.var_stack.GetLastVar());
+          BasicVariable::ptr vararray(driver.var_stack.GetLastVar());
           VarArray::ptr array;
           InrImage::ptr imptr(driver.im_stack.GetLastImage());
           int  i = (int) $3;
@@ -1645,7 +1646,7 @@ command:
 
           array = *((VarArray::ptr*) (vararray->Pointer()));
           if (imptr.get()) {
-            Variable::ptr var = array->GetVar(i);
+            BasicVariable::ptr var = array->GetVar(i);
             if (var.get()&&(var->Pointer()!=NULL)) {
                   driver.err_print("array element already assigned\n");
             }
@@ -1684,13 +1685,13 @@ command:
         }
        | VAR_MATRIX ASSIGN_OP expr
        {
-          Variable::ptr varmat(driver.var_stack.GetLastVar());
+          BasicVariable::ptr varmat(driver.var_stack.GetLastVar());
           FloatMatrix::ptr m1 = *((FloatMatrix::ptr*) (varmat->Pointer()));
           (*m1) = $3;
        }
        | VAR_MATRIX ASSIGN_OP expr_matrix
        {
-          Variable::ptr varmat(driver.var_stack.GetLastVar());
+          BasicVariable::ptr varmat(driver.var_stack.GetLastVar());
           FloatMatrix::ptr m1 = *((FloatMatrix::ptr*) (varmat->Pointer()));
           FloatMatrix* m2 = driver.matrix_stack.GetLastMatrix();
           (*m1) = m2;
@@ -1701,7 +1702,7 @@ command:
         |
         VAR_ARRAY_SURFACE T_OP_BR expr T_CL_BR ASSIGN_OP surface
         {
-          Variable::ptr vararray(driver.var_stack.GetLastVar());
+          BasicVariable::ptr vararray(driver.var_stack.GetLastVar());
           VarArray::ptr array;
           void * surfptr;
           int  i = (int) $3;
@@ -1737,7 +1738,7 @@ command:
         |
         var_surface LEFT_ASSIGN surface
         {
-          Variable::ptr       var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       var(driver.var_stack.GetLastVar());
           void* surfptr  = (void*) driver.surf_stack.GetLastSurf();
 
           // instead of deleting and creating,
@@ -1755,7 +1756,7 @@ command:
         |
         VAR_ARRAY_SURFACE LEFT_ASSIGN T_Surface T_OP_BR expr T_CL_BR
         {
-          Variable::ptr       var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       var(driver.var_stack.GetLastVar());
           VarArray* arraysurf;
           int size = (int) $5;
           if (size<1) size = 1;
@@ -1937,7 +1938,7 @@ command:
         VAR_FILE ASSIGN_OP T_OPEN T_OP_PAR  expr_string T_COMMA ASTRING T_CL_PAR
         {
 
-          Variable::ptr varfile(driver.var_stack.GetLastVar());
+          BasicVariable::ptr varfile(driver.var_stack.GetLastVar());
           std::string filename(varfile->Name());
 
           if (Vars.GetVar(filename.c_str()).get())
@@ -1953,7 +1954,7 @@ command:
         }
         | VAR_FILE T_POINT T_rewind
         {
-          Variable::ptr varfile(driver.var_stack.GetLastVar());
+          BasicVariable::ptr varfile(driver.var_stack.GetLastVar());
           FILE_ptr file = *(FILE_ptr*) (varfile->Pointer());
           rewind(file.get());
         }
@@ -2016,8 +2017,8 @@ command:
         |  SHOW var_image
         {
           std::string titre;
-          Variable::ptr imagevar(driver.var_stack.GetLastVar());
-          Variable::ptr var;
+          BasicVariable::ptr imagevar(driver.var_stack.GetLastVar());
+          BasicVariable::ptr var;
           int var_context = Vars.GetContext(imagevar.get());
 
           Variables::ptr previous_ocontext = Vars.GetObjectContext();
@@ -2050,7 +2051,7 @@ command:
               di = DessinImage::Create_ptr(
                 CreateIDraw( varname, *((InrImage::ptr*) imagevar->Pointer())));
 
-              Variable::ptr newvar = 
+              BasicVariable::ptr newvar = 
                 Vars.AddVar<DessinImage>(titre.c_str(), di, var_context);
               di->SetCloseFunction(
                 (void*) CB_delete_variable,
@@ -2066,9 +2067,9 @@ command:
         }
         |  T_HIDE var_image
         {
-          Variable::ptr  varim(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
           string title;
-          Variable::ptr var;
+          BasicVariable::ptr var;
 
           title = (boost::format("%s_draw") % varim->Name().c_str()).str();
           var = Vars.GetVar(title.c_str());
@@ -2089,8 +2090,8 @@ command:
         {
           string    titre;
           Viewer3D::ptr surfdraw;
-          Variable::ptr surfvar(driver.var_stack.GetLastVar());
-          Variable::ptr var;
+          BasicVariable::ptr surfvar(driver.var_stack.GetLastVar());
+          BasicVariable::ptr var;
           int var_context = Vars.GetContext(surfvar.get());
 
           Variables::ptr previous_ocontext = Vars.GetObjectContext();
@@ -2108,7 +2109,7 @@ command:
                             new Viewer3D( GB_main_wxFrame,
                                           wxString::FromAscii(titre.c_str()))),
 
-              Variable::ptr newvar = 
+              BasicVariable::ptr newvar = 
                 Vars.AddVar<Viewer3D>(  titre.c_str(),
                                         surfdraw,
                                         var_context);
@@ -2135,7 +2136,7 @@ command:
         }
         |  var_image ASSIGN_OP expr_image
         {
-          Variable::ptr  varim(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
           InrImage::ptr i1 = *(InrImage::ptr*) varim->Pointer();
           InrImage::ptr i2 (driver.im_stack.GetLastImage());
 
@@ -2148,7 +2149,7 @@ command:
         }
         |  var_image ADD_ASSIGN expr_image
         {
-          Variable::ptr  varim(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
           InrImage::ptr i1 = *(InrImage::ptr*) varim->Pointer();
           InrImage::ptr i2 (driver.im_stack.GetLastImage());
 
@@ -2165,7 +2166,7 @@ command:
         Description:
           Replacing the previous image by the new one.
         **/
-          Variable::ptr  var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  var(driver.var_stack.GetLastVar());
           InrImage::ptr i1 = *(InrImage::ptr*) var->Pointer();
           InrImage::ptr imptr  (driver.im_stack.GetLastImage());
           bool can_skip_allocation = false;
@@ -2208,7 +2209,7 @@ command:
         Description:
         Sets the whole image to a constant value given by expression.
         **/
-          Variable::ptr  varim(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
           InrImage::ptr i1 = *(InrImage::ptr*) varim->Pointer();
           i1->InitImage($3);
         }
@@ -2225,7 +2226,7 @@ command:
         **/
           int comp = (int) $3;
 
-          Variable::ptr  varim(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
           InrImage::ptr i1 = *(InrImage::ptr*) varim->Pointer();
           InrImage::ptr i2 ( driver.im_stack.GetLastImage());
 
@@ -2258,7 +2259,7 @@ command:
         Description:
         assigns the value val to every component 'n' of the input image
         **/
-          Variable::ptr  varim(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
           InrImage::ptr i1 = *(InrImage::ptr*) varim->Pointer();
           int comp = (int) $3;
   
@@ -2283,7 +2284,7 @@ command:
         /**
           Description: Pads the image ...
         **/
-          Variable::ptr  varim(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
           int posx  = (int) $3;
           int stepx = (int) $5;
           int posy  = (int) $7;
@@ -2301,52 +2302,52 @@ command:
         }
         |  VAR_FLOAT INC_OP
         {
-          Variable::ptr var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr var(driver.var_stack.GetLastVar());
           (*(*(float_ptr*) var->Pointer()))++;
         }
         |  VAR_FLOAT DEC_OP
         {
-          Variable::ptr var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr var(driver.var_stack.GetLastVar());
           (*(*(float_ptr*) var->Pointer()))--;
         }
         |  VAR_FLOAT ASSIGN_OP expr
         {
-          Variable::ptr var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr var(driver.var_stack.GetLastVar());
           *(*(float_ptr*) var->Pointer()) = $3;
         }
         |  VAR_INT INC_OP
         {
-          Variable::ptr var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr var(driver.var_stack.GetLastVar());
           (*(*(int_ptr*) var->Pointer()))++;
         }
         |  VAR_INT DEC_OP
         {
-          Variable::ptr var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr var(driver.var_stack.GetLastVar());
           (*(*(int_ptr*) var->Pointer()))--;
         }
         |  VAR_INT ASSIGN_OP expr
         {
-          Variable::ptr var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr var(driver.var_stack.GetLastVar());
           *(*(int_ptr*) var->Pointer()) = (int) $3;
         }
         |  VAR_UCHAR ASSIGN_OP expr
         {
-          Variable::ptr var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr var(driver.var_stack.GetLastVar());
           *(*(uchar_ptr*) var->Pointer()) = (unsigned char) $3;
         }
         |  VAR_UCHAR INC_OP
         {
-          Variable::ptr var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr var(driver.var_stack.GetLastVar());
           (*(*(uchar_ptr*) var->Pointer()))++;
         }
         |  VAR_UCHAR DEC_OP
         {
-          Variable::ptr var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr var(driver.var_stack.GetLastVar());
           (*(*(uchar_ptr*) var->Pointer()))--;
         }
         |  VAR_STRING ASSIGN_OP expr_string
         {
-          Variable::ptr var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr var(driver.var_stack.GetLastVar());
           boost::shared_array<char> newname( $3);
           var->SetString(newname.get());
         }
@@ -2362,7 +2363,7 @@ command:
               string expression: comments
           Description: Set comments for a variable
         **/
-          Variable::ptr  var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  var(driver.var_stack.GetLastVar());
           boost::shared_array<char> comments( $5);
           var->SetComments(comments.get());
         }
@@ -2377,7 +2378,7 @@ command:
          if (Vars.GetVar($2->Name(),&var))
          Vars.deleteVar($2->Name());
          */
-         Variable::ptr       var(driver.var_stack.GetLastVar());
+         BasicVariable::ptr       var(driver.var_stack.GetLastVar());
          Vars.deleteVar(var.get());
         }
         | T_delvars expr_string
@@ -2392,12 +2393,12 @@ command:
         }
         | T_del VAR_ARRAY_SURFACE T_OP_BR expr T_CL_BR
         {
-          Variable::ptr vararray(driver.var_stack.GetLastVar());
+          BasicVariable::ptr vararray(driver.var_stack.GetLastVar());
           VarArray::ptr array = *(VarArray::ptr*) (vararray->Pointer());;
           int  i = (int) $4;
 
           if (array->GetVar(i).get()) {
-            array->GetVar(i) = Variable::ptr();
+            array->GetVar(i) = BasicVariable::ptr();
           }
       }
       | ASHELL expr_string
@@ -2686,7 +2687,7 @@ command:
       Description: 
         Displays the documentation relative to the wrapped image function.
     **/
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       // call with NULL paramlist pointer to trigger help message
       ((InrImage* (*)(ParamList*)) var->Pointer())(NULL);
     }
@@ -2696,9 +2697,9 @@ command:
       Description: 
         Displays the documentation relative to the wrapped image function.
     **/
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       // call with NULL paramlist pointer to trigger help message
-      ((Variable::ptr (*)(ParamList*)) var->Pointer())(NULL);
+      ((BasicVariable::ptr (*)(ParamList*)) var->Pointer())(NULL);
     }
     | HELP VAR_C_PROCEDURE
     {
@@ -2706,7 +2707,7 @@ command:
       Description: 
         Displays the documentation relative to the wrapped image function.
     **/
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       // call with NULL paramlist pointer to trigger help message
       ((void (*)(ParamList*)) var->Pointer())(NULL);
     }
@@ -2716,7 +2717,7 @@ command:
       Description: 
         Displays the documentation relative to the wrapped c++ member.
     **/
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       // call with NULL paramlist pointer to trigger help message
       (*(WrapClassMember::ptr*) var->Pointer())->ShowHelp();
     }
@@ -2776,7 +2777,7 @@ command:
         }
         | VAR_FILE T_POINT PRINT expr_string
         {
-          Variable::ptr varfile(driver.var_stack.GetLastVar());
+          BasicVariable::ptr varfile(driver.var_stack.GetLastVar());
           FILE_ptr file = *(FILE_ptr*) (varfile->Pointer());
           boost::shared_array<char> text( $4);
 
@@ -2785,7 +2786,7 @@ command:
         }
         | VAR_FILE T_POINT PRINTN expr_string
         {
-          Variable::ptr varfile(driver.var_stack.GetLastVar());
+          BasicVariable::ptr varfile(driver.var_stack.GetLastVar());
           FILE_ptr file = *(FILE_ptr*) (varfile->Pointer());
           boost::shared_array<char> text( $4);
 
@@ -2836,7 +2837,7 @@ command:
           }
         | VAR_FILE T_POINT PRINT expr
         {
-          Variable::ptr varfile(driver.var_stack.GetLastVar());
+          BasicVariable::ptr varfile(driver.var_stack.GetLastVar());
           FILE_ptr file = *(FILE_ptr*) (varfile->Pointer());
 
           fprintf(file.get(),"%5.10f",$4);
@@ -2844,7 +2845,7 @@ command:
         }
         | VAR_FILE T_POINT T_CLOSE
         {
-          Variable::ptr varuchar(driver.var_stack.GetLastVar());
+          BasicVariable::ptr varuchar(driver.var_stack.GetLastVar());
           printf("Files are not close anymore: delete the variable instead \n");
           //FILE_ptr file = *(FILE_ptr*) ($1->Pointer());
           //fclose(file.get());
@@ -2871,7 +2872,7 @@ command:
         }
         | VAR_IMAGEDRAW T_POINT SETPOS T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
           DessinImageParametres* param;
 
@@ -2888,7 +2889,7 @@ command:
         }
         | VAR_IMAGEDRAW T_POINT SHOWCURSOR T_OP_PAR expr T_CL_PAR
         {
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
           DessinImageParametres* param;
 
@@ -2901,7 +2902,7 @@ command:
         }
         | VAR_IMAGEDRAW T_POINT T_update
         {
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
           DessinImageParametres* param;
 
@@ -2912,8 +2913,8 @@ command:
         }
         | VAR_IMAGEDRAW T_POINT COMPARE T_OP_PAR var_image T_CL_PAR
         {
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
           InrImage::ptr im;
           char title[255];
@@ -2923,7 +2924,7 @@ command:
 
             sprintf(title,"%s_draw",varim->Name().c_str());
 
-            Variable::ptr var = Vars.GetCurrentContext()->GetVar(title);
+            BasicVariable::ptr var = Vars.GetCurrentContext()->GetVar(title);
             if (var.get()) {
               DessinImage::ptr di;
               DessinImageParametres* param;
@@ -2946,14 +2947,14 @@ command:
               DessinImage::ptr di = 
                 DessinImage::Create_ptr(CreateIDraw( varname, im));
 
-              Variable::ptr newvar = Vars.AddVar<DessinImage>(title, di);
+              BasicVariable::ptr newvar = Vars.AddVar<DessinImage>(title, di);
 
               di->SetCloseFunction(
                   (void*) CB_delete_variable,
                   (void*) (newvar.get()));
               // get the pointer to the newly created
               // variable
-              Variable::ptr var = Vars.GetVar(title);
+              BasicVariable::ptr var = Vars.GetVar(title);
               if (var.get())
                 draw->CreeCompare2Image(*(DessinImage::ptr*)var->Pointer());
               else
@@ -2963,8 +2964,8 @@ command:
         }
         | VAR_IMAGEDRAW T_POINT COMPARE T_OP_PAR VAR_IMAGEDRAW T_CL_PAR
         {
-          Variable::ptr  varimd2(driver.var_stack.GetLastVar());
-          Variable::ptr  varimd1(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd2(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd1(driver.var_stack.GetLastVar());
           DessinImage::ptr draw1;
           DessinImage::ptr draw2;
 
@@ -2990,9 +2991,9 @@ command:
             Defines a displacement to apply to the cursor when
             comparing 2 image drawing windows
         **/
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
-          Variable::ptr  varimd2(driver.var_stack.GetLastVar());
-          Variable::ptr  varimd1(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd2(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd1(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
           DessinImage::ptr draw2;
           InrImage::ptr displ;
@@ -3009,7 +3010,7 @@ command:
          T_CL_PAR
         {
 
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
         driver.yyiperror( "SetCompTransf is not available at the moment");
 /*
         DessinImage::ptr draw;
@@ -3047,8 +3048,8 @@ command:
             Description:
                 Assign a vector field to be draw in the given image drawing window.
           **/
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
 
           draw = *(DessinImage::ptr*) (varimd->Pointer());
@@ -3056,7 +3057,7 @@ command:
         }
         | VAR_IMAGEDRAW T_POINT T_DrawVector T_OP_PAR expr T_COMMA expr T_CL_PAR
         {
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
 
           draw = *(DessinImage::ptr*) (varimd->Pointer());
@@ -3064,7 +3065,7 @@ command:
         }
         | VAR_IMAGEDRAW T_POINT T_DisplayVectors
         {
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
 
           draw = *(DessinImage::ptr*) (varimd->Pointer());
@@ -3081,7 +3082,7 @@ command:
             Sets the size and spacing of the vector drawing interface in the given
             image drawing window.
           **/
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
           float size    = $5;
           int   spacing = (int)$7;
@@ -3103,7 +3104,7 @@ command:
             the color is set as (R,G,B) components, each component has a value
             between 0 and 255.
           **/
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
           int vectid = (int) $5;
           unsigned char red   = (unsigned char) $7;
@@ -3115,19 +3116,19 @@ command:
         }
         | VAR_IMAGEDRAW T_POINT T_SetVectStyle T_OP_PAR expr T_CL_PAR
         {
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw= *(DessinImage::ptr*) (varimd->Pointer());
           draw->SetVectType((int)$5);
         }
         | VAR_IMAGEDRAW T_POINT T_SetLineThickness T_OP_PAR expr T_CL_PAR
         {
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw= *(DessinImage::ptr*) (varimd->Pointer());
           draw->SetLineThickness((int)$5);
         }
         | VAR_IMAGEDRAW T_POINT T_SetZoom T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           int xmin = (int)  $5;
           int ymin = (int)  $7;
           int zmin = (int)  $9;
@@ -3141,7 +3142,7 @@ command:
         }
         | VAR_IMAGEDRAW T_POINT T_SetWindowSize T_OP_PAR expr T_COMMA expr T_CL_PAR
         {
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           int width  = (int) $5;
           int height = (int) $7;
 
@@ -3154,7 +3155,7 @@ command:
         | VAR_IMAGEDRAW T_POINT T_drawcircle T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
           DessinImage::ptr draw;
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           ClasseCouleur c;
 
           draw = *(DessinImage::ptr*) (varimd->Pointer());
@@ -3166,7 +3167,7 @@ command:
         /**
           Description: Set a user-defined colormap.
          **/
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
           InrImage::ptr colmap(driver.im_stack.GetLastImage());
 
@@ -3175,8 +3176,8 @@ command:
         }
         | VAR_IMAGEDRAW T_POINT T_setGLwin T_OP_PAR VAR_SURFDRAW T_CL_PAR
         {
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
-          Variable::ptr  varimd(  driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(  driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
 
           draw = *(DessinImage::ptr*) (varimd->Pointer());
@@ -3194,8 +3195,8 @@ command:
             Description:
                 Sets the image and intensity value of an isocontour in an 'image_draw' window.
             **/
-            Variable::ptr  varim( driver.var_stack.GetLastVar());
-            Variable::ptr  varimd(driver.var_stack.GetLastVar());
+            BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
+            BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
             DessinImage::ptr draw;
 
             draw = *(DessinImage::ptr*) (varimd->Pointer());
@@ -3212,8 +3213,8 @@ command:
             Description:
                 Sets the image and intensity value of the isocontour number 0 in an 'image_draw' window.
             **/
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
 
           draw = *(DessinImage::ptr*) (varimd->Pointer());
@@ -3232,7 +3233,7 @@ command:
                 Sets the parameters (line style and thickeness)
                 of an isocontour in an 'image_draw' window.
             **/
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
 
           draw = *(DessinImage::ptr*) (varimd->Pointer());
@@ -3252,7 +3253,7 @@ command:
                 Sets the parameters (line style and thickeness)
                 of an isocontour in an 'image_draw' window.
             **/
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
 
           draw = *(DessinImage::ptr*) (varimd->Pointer());
@@ -3269,7 +3270,7 @@ command:
             Description:
                 Sets the visibility of an isocontour in an 'image_draw' window.
             **/
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
 
           draw = *(DessinImage::ptr*) (varimd->Pointer());
@@ -3287,7 +3288,7 @@ command:
             Description:
                 Sets the color as RGB of an isocontour in an 'image_draw' window.
             **/
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
           draw = *(DessinImage::ptr*) (varimd->Pointer());
           draw->SetIsoContourColor( (int) $5, (unsigned char) $7,
@@ -3303,7 +3304,7 @@ command:
             Description:
                 Activates or desactivates the drawing of a series of isocontours.
             **/
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
           draw = *(DessinImage::ptr*) (varimd->Pointer());
           draw->SetDrawAllContours( (int) $5 );
@@ -3318,15 +3319,15 @@ command:
             Description:
                 Parameters for drawing a series of isocontours around the main isocontour.
             **/
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
           draw = *(DessinImage::ptr*) (varimd->Pointer());
           draw->AllContoursParam(  $5 , $7 );
         }
         | VAR_IMAGEDRAW T_POINT T_PaintCallback T_OP_PAR VAR_AMI_FUNCTION T_CL_PAR
         {
-          Variable::ptr  varamif(driver.var_stack.GetLastVar());
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varamif(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
 
           draw = *(DessinImage::ptr*) (varimd->Pointer());
@@ -3342,8 +3343,8 @@ command:
             Setting the opacity image for the volume rendering.
             This image should have unsigned char values.
          **/
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
-          Variable::ptr  varimd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
           DessinImage::ptr draw;
           InrImage::ptr im;
 
@@ -3360,7 +3361,7 @@ command:
         Description:
           Set the whole image to the same vector value .
         **/
-          Variable::ptr  varim(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
           (*(InrImage::ptr*) varim->Pointer())->InitImage($5);
         }
         | var_image T_POINT T_initvalue T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
@@ -3374,7 +3375,7 @@ command:
         Description:
           Set the whole image to the same value.
         **/
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           (*(InrImage::ptr*) varim->Pointer())->InitImage($5,$7,$9);
         }
         | var_image T_POINT SET T_OP_PAR expr T_CL_PAR
@@ -3393,7 +3394,7 @@ command:
         See also:
                 setpos
         **/
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           (*(InrImage::ptr*) varim->Pointer())->FixeValeur($5);
         }
         | var_image T_POINT SET T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
@@ -3416,7 +3417,7 @@ command:
                 setpos
         **/
 
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           (*(InrImage::ptr*) varim->Pointer())->VectFixeValeurs($5,$7,$9);
         }
         | var_image T_POINT SETPOS T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
@@ -3434,7 +3435,7 @@ command:
         See also:
           set
         **/
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           int x = (int) round((double)$5);
           int y = (int) round((double)$7);
           int z = (int) round((double)$9);
@@ -3470,8 +3471,8 @@ command:
           j = Image(FLOAT,5,5,5)
           i.putimage(j,2,2,2)
         **/
-          Variable::ptr  varim2( driver.var_stack.GetLastVar());
-          Variable::ptr  varim1( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim2( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim1( driver.var_stack.GetLastVar());
           InrImage::ptr  i1;
           InrImage::ptr  i2;
     
@@ -3497,8 +3498,8 @@ command:
           j = Image(FLOAT,5,5,5)
           i.putimage(j,2,2,2)
         **/
-          Variable::ptr  varim2( driver.var_stack.GetLastVar());
-          Variable::ptr  varim1( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim2( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim1( driver.var_stack.GetLastVar());
           InrImage::ptr  i1;
           InrImage::ptr  i2;
           float tx1,ty1,tz1;
@@ -3515,7 +3516,7 @@ command:
     }
     |
     var_image T_POINT T_SetName T_OP_PAR expr_string T_CL_PAR {
-      Variable::ptr  varim( driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
       (*(InrImage::ptr*) varim->Pointer())->FixeNom( $5);
       delete [] $5;
     }
@@ -3534,7 +3535,7 @@ command:
             Sets parameters for the anisotropic diffusion algorithm using
             Gauss-Seidel scheme.
         **/
-        Variable::ptr  varim( driver.var_stack.GetLastVar());
+        BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
         Func_InitAnisoGS( ((InrImage::ptr*) varim->Pointer())->get(),
                           $7,  $9, $11);
         }
@@ -3561,7 +3562,7 @@ command:
         |
         AnisoGS T_POINT T_SetMask T_OP_PAR var_image T_CL_PAR
         {
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_AnisoGS_SetMask(((InrImage::ptr*) varim->Pointer())->get());
         }
         |
@@ -3576,7 +3577,7 @@ command:
             Sets the region of interest (region of constant tissue in the image)
             and activates the Oriented Speckle Reducing Anisotropic Diffusion
          **/
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_AnisoGS_SetSRAD_ROI(((InrImage::ptr*) varim->Pointer())->get());
         }
         |
@@ -3592,7 +3593,7 @@ command:
             and activates the Rician Noise Reducing Anisotropic Diffusion
             used to reduce noise in MRI data.
          **/
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_AnisoGS_SetRNRAD_ROI(((InrImage::ptr*) varim->Pointer())->get());
         }
         |
@@ -3610,7 +3611,7 @@ command:
             New version of the filter, using local directional mean and variance
             for the diffusion matrix.
          **/
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_AnisoGS_SetRNRAD_ROI_NEW(((InrImage::ptr*) varim->Pointer())->get());
         }
         |
@@ -3820,7 +3821,7 @@ command:
         |
         T_LevelSetsCURV T_POINT T_SetVelocity T_OP_PAR var_image T_COMMA expr T_CL_PAR
         {
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_LevelSetsVelocity(((InrImage::ptr*) varim->Pointer())->get(),$7);
         }
         |
@@ -3839,7 +3840,7 @@ command:
               The expansion will then be multiplied by the expansion coefficient during the evolution.
               
           **/
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_LevelSetsExpansionImage( ((InrImage::ptr*) varim->Pointer())->get());
         }
         |
@@ -3850,15 +3851,15 @@ command:
         |
         T_LevelSetsCURV T_POINT T_SetCurvWeights T_OP_PAR var_image T_CL_PAR
         {
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_LevelSetsSetCurvWeights( ((InrImage::ptr*) varim->Pointer())->get());
         }
         |
         T_LevelSetsCURV T_POINT T_SetAdvectionField T_OP_PAR var_image T_COMMA var_image T_COMMA var_image T_CL_PAR
         {
-          Variable::ptr  varim3( driver.var_stack.GetLastVar());
-          Variable::ptr  varim2( driver.var_stack.GetLastVar());
-          Variable::ptr  varim1( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim3( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim2( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim1( driver.var_stack.GetLastVar());
           Func_LevelSetsSetAdvectionField(
                 ((InrImage::ptr*) varim1->Pointer())->get(),
                 ((InrImage::ptr*) varim2->Pointer())->get(),
@@ -3867,37 +3868,37 @@ command:
         |
         T_LevelSetsCURV T_POINT T_GetCurvature T_OP_PAR var_image T_CL_PAR
         {
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_LevelSetsGetCurvatureData( ((InrImage::ptr*) varim->Pointer())->get());
         }
         |
         T_LevelSetsCURV T_POINT T_GetDistMap T_OP_PAR var_image T_CL_PAR
         {
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_LevelSetsGetDistanceMap( ((InrImage::ptr*) varim->Pointer())->get());
         }
         |
         T_LevelSetsCURV T_POINT T_GetAdvection T_OP_PAR var_image T_CL_PAR
         {
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_LevelSetsGetAdvectionData( ((InrImage::ptr*) varim->Pointer())->get());
         }
         |
         T_LevelSetsCURV T_POINT T_GetSkeleton T_OP_PAR var_image T_CL_PAR
         {
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_LevelSetsGetSkeleton( ((InrImage::ptr*) varim->Pointer())->get());
         }
         |
         T_LevelSetsCURV T_POINT T_GetVelocity T_OP_PAR var_image T_CL_PAR
         {
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_LevelSetsGetVelocityData( ((InrImage::ptr*) varim->Pointer())->get());
         }
         |
         T_LevelSetsCURV T_POINT T_GetExpansion T_OP_PAR var_image T_CL_PAR
         {
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_LevelSetsGetExpansionData( ((InrImage::ptr*) varim->Pointer())->get());
         }
         |
@@ -3959,7 +3960,7 @@ command:
         See also:
           image_cast
         **/
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           (*(InrImage::ptr*) varim->Pointer())->Sauve($4);
           delete [] $4;
         }
@@ -3973,27 +3974,27 @@ command:
           v1.normalize
 
         **/
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
       Func_Normalize((((InrImage::ptr*) varim->Pointer())->get()));
     }
     |
     var_image T_POINT T_OrientField T_OP_PAR var_image T_CL_PAR
     {
-          Variable::ptr  varim2( driver.var_stack.GetLastVar());
-          Variable::ptr  varim1( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim2( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim1( driver.var_stack.GetLastVar());
           Func_OrientField( ((InrImage::ptr*) varim1->Pointer())->get() , ((InrImage::ptr*) varim2->Pointer())->get() );
     }
     |
     var_image T_POINT T_OrientPositive T_OP_PAR var_image T_CL_PAR
     {
-          Variable::ptr  varim2( driver.var_stack.GetLastVar());
-          Variable::ptr  varim1( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim2( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim1( driver.var_stack.GetLastVar());
        Func_OrientPositive( ((InrImage::ptr*) varim1->Pointer())->get() , 
                             ((InrImage::ptr*) varim2->Pointer())->get() );
     }
     | var_surface T_POINT T_save expr_string
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
 
       s->Write($4);
@@ -4009,7 +4010,7 @@ command:
     Description:
         Save the first line of the polydata in text format
     **/
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr surf = *(SurfacePoly::ptr*) surfdraw->Pointer();
 
       Func_WriteCTALine(surf.get(),$4);
@@ -4018,7 +4019,7 @@ command:
     | var_surface T_POINT T_OwnMaterial T_OP_PAR expr T_CL_PAR
     {
 
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
 
       s->SetOwnMaterial( (int) $5);
@@ -4027,7 +4028,7 @@ command:
     | var_surface T_POINT T_SetAmbient T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
     {
 
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       s->GetMaterial()._ambient.FixeValeur((int) $5,(int) $7,(int) $9);
 
@@ -4035,7 +4036,7 @@ command:
     | var_surface T_POINT T_SetDiffuse T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
     {
 
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       s->GetMaterial()._diffuse.FixeValeur((int) $5,(int) $7,(int) $9);
 
@@ -4043,7 +4044,7 @@ command:
     | var_surface T_POINT T_SetSpecular T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
     {
 
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       s->GetMaterial()._specular.FixeValeur((int) $5,(int) $7,(int) $9);
 
@@ -4052,7 +4053,7 @@ command:
     var_surface T_POINT T_SetShininess T_OP_PAR expr T_CL_PAR
     {
 
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       s->GetMaterial()._shininess= $5;
 
@@ -4061,7 +4062,7 @@ command:
     var_surface T_POINT T_SetOpacity T_OP_PAR expr T_CL_PAR
     {
 
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       s->GetMaterial()._opacity= $5;
 
@@ -4073,7 +4074,7 @@ command:
       Description:
         Sets the object visible or not visible in the scene.
       **/
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       s->SetVisible( (int) $5);
     }
@@ -4085,7 +4086,7 @@ command:
           Enable/Disable colormaterial for the associated surface.
         **/
 
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       s->GetMaterial()._colormaterial = (unsigned char) ($5>0.5);
 
@@ -4103,7 +4104,7 @@ command:
         associated per each vertex (actived with Enable ColorMaterial)
       **/
 
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
 
       s->SetColorOpacity($5);
@@ -4112,7 +4113,7 @@ command:
     | var_surface T_POINT T_SetColor T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
     {
       int n;
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
 
       Pour(n,0,s->NbPoints()-1)
@@ -4127,8 +4128,8 @@ command:
     }
     | var_surface T_POINT T_SetPointsColors T_OP_PAR var_image  T_CL_PAR
     {
-      Variable::ptr  varim(   driver.var_stack.GetLastVar());
-      Variable::ptr  surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(   driver.var_stack.GetLastVar());
+      BasicVariable::ptr  surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
 
       s->SetPointsColors( ((InrImage::ptr*) varim->Pointer())->get() );
@@ -4136,7 +4137,7 @@ command:
     }
     | var_surface T_POINT T_SetColors T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_CL_PAR
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       InrImage::ptr i (driver.im_stack.GetLastImage());
       // TODO: use smart pointer to image in SetColors ...
@@ -4144,7 +4145,7 @@ command:
     }
     | var_surface T_POINT T_SetColors T_OP_PAR expr_image  T_CL_PAR
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       InrImage::ptr i (driver.im_stack.GetLastImage());
       s->SetColors( i.get() );
@@ -4152,28 +4153,28 @@ command:
     }
     | var_surface T_POINT T_Statistics T_OP_PAR var_image  T_CL_PAR
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
-      Variable::ptr  surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       s->Statistics( ((InrImage::ptr*) varim->Pointer())->get() );
 
     }
     | var_surface T_POINT T_mergepoints T_OP_PAR expr T_CL_PAR
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       s->MergePoints($5);
     }
     | var_surface T_POINT T_Triangulate
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       s->Triangulate();
     }
     | var_surface T_POINT T_curvatures T_OP_PAR expr T_CL_PAR
     {
 
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr surf = *(SurfacePoly::ptr*) surfdraw->Pointer();
 
       float        depth = $5;
@@ -4218,7 +4219,7 @@ command:
     }
     | var_surface T_POINT T_Displace T_OP_PAR expr_image T_CL_PAR
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
 
       InrImage::ptr i (driver.im_stack.GetLastImage());
@@ -4226,7 +4227,7 @@ command:
     }
     | var_surface T_POINT T_Translate T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
 
       s->Translate( $5,$7,$9 );
@@ -4234,7 +4235,7 @@ command:
     }
     | var_surface T_POINT T_Scale T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
 
       s->Scale( $5,$7,$9,0 );
@@ -4242,7 +4243,7 @@ command:
     }
     | var_surface T_POINT T_SetLineWidth T_OP_PAR expr T_CL_PAR
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       int          w = (int) $5;
 
@@ -4254,7 +4255,7 @@ command:
     }
     | var_surface T_POINT  T_RemoveLine T_OP_PAR  expr T_CL_PAR
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
 
       s->RemoveLine((int)$5);
@@ -4272,7 +4273,7 @@ command:
         if the value is > 0.5, then select the corresponding line
     **/
 
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       InrImage::ptr im (driver.im_stack.GetLastImage());
 
@@ -4284,7 +4285,7 @@ command:
     /**
       Description: Remove selected lines
     **/
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
 
       s->RemoveSelection();
@@ -4292,21 +4293,21 @@ command:
     }
     | var_surface T_POINT T_Recompute
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       s->GLRecomputeList();
 
     }
     | var_surface T_POINT T_Normals
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       s->RecomputeNormals();
 
     }
     | var_surface T_POINT T_InvertNormals
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
 
       s->InvertNormals();
@@ -4314,7 +4315,7 @@ command:
     }
     | var_surface T_POINT  T_vtkSmooth T_OP_PAR  expr T_CL_PAR
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
 
       Func_ApplyvtkSmooth(s.get(), (int) $5);
@@ -4323,7 +4324,7 @@ command:
     }
     | var_surface T_POINT  T_vtkWindowedSinc T_OP_PAR  expr T_CL_PAR
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
 
       Func_vtkWindowedSinc(s.get(), (int) $5);
@@ -4333,7 +4334,7 @@ command:
     | var_surface T_POINT  T_vtkDecimate
     {
 
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       SurfacePoly* surf;
 
@@ -4357,7 +4358,7 @@ command:
           Sets a threshold for drawing connected components
           bigger.
         **/
-          Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
           SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
           GLuint _SURFACE;
 
@@ -4373,7 +4374,7 @@ command:
         Description:
         Draw one connected component only
         **/
-          Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
           SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
           GLuint _SURFACE;
 
@@ -4391,7 +4392,7 @@ command:
         Description:
         Activate/Desactivate Drawing of one connected components
         **/
-          Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
           SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
           GLuint _SURFACE;
 
@@ -4405,25 +4406,25 @@ command:
     }
     | var_surface T_POINT T_AddPoint T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       s->AddPoint($5,$7,$9);
     }
     | var_surface T_POINT T_NewLine
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       s->NewLine();
     }
     | var_surface T_POINT T_LineAddPointNumber T_OP_PAR expr T_CL_PAR
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       s->LineAddPointNumber( (int) $5 );
     }
     | var_surface T_POINT T_EndLine
     {
-      Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
       s->EndLine();
     }
@@ -4438,7 +4439,7 @@ command:
     | T_DrawEarthCoord T_OP_PAR VAR_IMAGEDRAW T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA
                                               expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
     {
-      Variable::ptr  varimd(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
       DessinImage::ptr di = *(DessinImage::ptr*) varimd->Pointer();
       float minlat  = $5;
       float maxlat  = $7;
@@ -4566,14 +4567,14 @@ command:
         changes the position of the nodes of a 3D mesh
 
       **/
-          Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
           SurfacePoly::ptr s = *(SurfacePoly::ptr*) surfdraw->Pointer();
           InrImage::ptr im ( driver.im_stack.GetLastImage());
           AMIFluid::Func_ElevateMesh(s.get(),im.get());
         }
         | VAR_SURFDRAW T_POINT T_rotate T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
-          Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
           Viewer3D_ptr sdraw = *((Viewer3D_ptr*) surfdraw->Pointer());
 
           sdraw->GetCanvas()->UserRotate($5,$7,$9);
@@ -4581,7 +4582,7 @@ command:
         }
         | VAR_SURFDRAW T_POINT T_addobj T_OP_PAR surface T_CL_PAR
         {
-          Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
 
           Viewer3D_ptr sdraw = *((Viewer3D_ptr*) surfdraw->Pointer());
           SurfacePoly::ptr surf = SurfacePoly::ptr(driver.surf_stack.GetLastSurf());
@@ -4591,16 +4592,16 @@ command:
         }
         | VAR_SURFDRAW ADD_ASSIGN var_surface
         {
-          Variable::ptr       surf(    driver.var_stack.GetLastVar());
-          Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       surf(    driver.var_stack.GetLastVar());
+          BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
           Viewer3D_ptr sdraw = *((Viewer3D_ptr*) surfdraw->Pointer());
           sdraw->GetCanvas()->AddSurface(*(SurfacePoly::ptr*) surf->Pointer());
           //sdraw->Paint();
         }
         | VAR_SURFDRAW SUB_ASSIGN var_surface
         {
-          Variable::ptr       surf(    driver.var_stack.GetLastVar());
-          Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       surf(    driver.var_stack.GetLastVar());
+          BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
           Viewer3D_ptr sdraw = *((Viewer3D_ptr*) surfdraw->Pointer());
 
           sdraw->GetCanvas()->RemoveSurface(*(SurfacePoly::ptr*) surf->Pointer());
@@ -4611,8 +4612,8 @@ command:
           /**
             Description: Removes the surface without swapping the 3D buffer
           **/
-          Variable::ptr       surf(    driver.var_stack.GetLastVar());
-          Variable::ptr       surfdraw(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       surf(    driver.var_stack.GetLastVar());
+          BasicVariable::ptr       surfdraw(driver.var_stack.GetLastVar());
           Viewer3D_ptr sdraw = *((Viewer3D_ptr*) surfdraw->Pointer());
 
           sdraw->GetCanvas()->RemoveSurface(*(SurfacePoly::ptr*) surf->Pointer());
@@ -4623,14 +4624,14 @@ command:
           /**
             Description:  Swaps the 3D buffer
           **/
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           Viewer3D_ptr sdraw = *((Viewer3D_ptr*) varsurfd->Pointer());
 
           sdraw->GetCanvas()->AfficheBuffer();
         }
         | VAR_SURFDRAW T_POINT T_drawCC T_OP_PAR expr T_CL_PAR
         {
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           Viewer3D_ptr sdraw = *((Viewer3D_ptr*) varsurfd->Pointer());
 
           sdraw->GetCanvas()->DessineSurfaceCC ( (int) $5 );
@@ -4638,7 +4639,7 @@ command:
         }
         | VAR_SURFDRAW T_POINT T_drawCC T_OP_PAR expr T_COMMA expr T_CL_PAR
         {
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           Viewer3D_ptr sdraw = *((Viewer3D_ptr*) varsurfd->Pointer());
 
           sdraw->GetCanvas()->DessineSurfaceCC( (int) $5, (int) $7);
@@ -4646,7 +4647,7 @@ command:
         }
         | VAR_SURFDRAW T_POINT T_setcurrentobj T_OP_PAR expr T_CL_PAR
         {
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           Viewer3D_ptr sdraw = *((Viewer3D_ptr*) varsurfd->Pointer());
 
           Si sdraw->GetCanvas()->SetCurrentObject( (int) $5 ) Alors
@@ -4657,8 +4658,8 @@ command:
         }
         | VAR_SURFDRAW T_POINT COMPARE T_OP_PAR VAR_SURFDRAW T_CL_PAR
         {
-          Variable::ptr  varsurfd2(driver.var_stack.GetLastVar());
-          Variable::ptr  varsurfd1(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd2(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd1(driver.var_stack.GetLastVar());
 
           Viewer3D_ptr sdraw1 = *((Viewer3D_ptr*) varsurfd1->Pointer());
           Viewer3D_ptr sdraw2 = *((Viewer3D_ptr*) varsurfd2->Pointer());
@@ -4667,8 +4668,8 @@ command:
         }
         | VAR_SURFDRAW T_POINT SETVECTOR T_OP_PAR NUMBER T_COMMA var_image T_CL_PAR
         {
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           Viewer3D_ptr draw;
     
           draw = *((Viewer3D_ptr*) varsurfd->Pointer());
@@ -4683,7 +4684,7 @@ command:
         }
         | VAR_SURFDRAW T_POINT T_ShowSection T_OP_PAR expr T_COMMA expr_image T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           Viewer3D_ptr draw = *((Viewer3D_ptr*) varsurfd->Pointer());
           int num = (int) $5;
           InrImage::ptr im ( driver.im_stack.GetLastImage());
@@ -4697,7 +4698,7 @@ command:
         }
         | VAR_SURFDRAW T_POINT T_HideSection T_OP_PAR expr T_CL_PAR
         {
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           Viewer3D_ptr draw = *((Viewer3D_ptr*) varsurfd->Pointer());
           int num = (int) $5;
     
@@ -4706,13 +4707,13 @@ command:
         }
         | VAR_SURFDRAW T_POINT T_PrintMatrices
         {
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           Viewer3D_ptr glclass=*((Viewer3D_ptr*) varsurfd->Pointer());
           glclass->GetCanvas()->PrintMatrices();
         }
         | VAR_SURFDRAW T_POINT T_SetTransform T_OP_PAR gltransform T_CL_PAR
         {
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           GLTransfMatrix* tr = (GLTransfMatrix*) driver.gltransf_stack.GetLastMatrix();
           Viewer3D_ptr sdraw = *(Viewer3D_ptr*) varsurfd->Pointer();
           sdraw->GetCanvas()->SetObjectTransform(*tr);
@@ -4721,7 +4722,7 @@ command:
         }
         | VAR_SURFDRAW T_POINT T_SetTransform T_OP_PAR gltransform T_COMMA expr T_CL_PAR
         {
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           GLTransfMatrix* tr = (GLTransfMatrix*) driver.gltransf_stack.GetLastMatrix();
           Viewer3D_ptr sdraw = *(Viewer3D_ptr*) varsurfd->Pointer();
           sdraw->GetCanvas()->SetObjectTransform(*tr);
@@ -4730,7 +4731,7 @@ command:
         }
         | VAR_SURFDRAW T_POINT T_Paint
         {
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           Viewer3D_ptr sdraw = *(Viewer3D_ptr*) varsurfd->Pointer();
           sdraw->Paint();
           sdraw->Update();
@@ -4742,7 +4743,7 @@ command:
         }
         | VAR_SURFDRAW T_POINT T_SetLightAmbient T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           Viewer3D_ptr sdraw = *(Viewer3D_ptr*) varsurfd->Pointer();
           int lightnumber = (int) $5;
           int r = (int) $7;
@@ -4755,7 +4756,7 @@ command:
         }
         | VAR_SURFDRAW T_POINT T_SetLightDiffuse T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           Viewer3D_ptr sdraw = *(Viewer3D_ptr*) varsurfd->Pointer();
           int lightnumber = (int) $5;
           int r = (int) $7;
@@ -4768,7 +4769,7 @@ command:
         }
         | VAR_SURFDRAW T_POINT T_SetLightSpecular T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           Viewer3D_ptr sdraw = *(Viewer3D_ptr*) varsurfd->Pointer();
           int lightnumber = (int) $5;
           int r = (int) $7;
@@ -4781,7 +4782,7 @@ command:
         }
         | VAR_SURFDRAW T_POINT T_SetBackground T_OP_PAR expr T_COMMA expr T_COMMA expr  T_CL_PAR
         {
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           Viewer3D_ptr sdraw = *(Viewer3D_ptr*) varsurfd->Pointer();
           sdraw->GetCanvas()->SetBG((int)$5,(int)$7,(int)$9);
           sdraw->Paint();
@@ -4792,7 +4793,7 @@ command:
           Description:
             Normalizes the 3D view based on the limits in space of the current objects
         **/
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           Viewer3D_ptr sdraw = *(Viewer3D_ptr*) varsurfd->Pointer();
           sdraw->GetCanvas()->Normalize();
         }
@@ -4802,13 +4803,13 @@ command:
           Description:
             Centers the 3D view based on the limits in space of the current objects
         **/
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           Viewer3D_ptr sdraw = *(Viewer3D_ptr*) varsurfd->Pointer();
           sdraw->GetCanvas()->Center();
         }
         | VAR_SURFDRAW T_POINT T_SetWindowSize T_OP_PAR expr T_COMMA expr   T_CL_PAR
         {
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           Viewer3D_ptr sdraw = *(Viewer3D_ptr*) varsurfd->Pointer();
           sdraw->SetSize((int) $5, (int) $7);
           sdraw->Paint();
@@ -4822,7 +4823,7 @@ command:
         |
         T_struct_tensor T_OP_PAR var_image T_COMMA expr T_COMMA expr T_CL_PAR
         {
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_StructureTensor(((InrImage::ptr*) varim->Pointer())->get(),
                    varim->Name().c_str(),
                    $5, $7, NULL);
@@ -4830,7 +4831,7 @@ command:
         |
         T_struct_tensor T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA expr_image T_CL_PAR
         {
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           InrImage::ptr mask ( driver.im_stack.GetLastImage());
 
           Func_StructureTensor(
@@ -4855,7 +4856,7 @@ command:
             i_STHvap1, i_STHvap2, i_STHvap3
             i_STHvep1, i_STHvep2, i_STHvep3
         **/
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_StructureTensorHessian(
             ((InrImage::ptr*) varim->Pointer())->get(),
             varim->Name().c_str(),
@@ -4879,7 +4880,7 @@ command:
             i_STHvap1, i_STHvap2, i_STHvap3
             i_STHvep1, i_STHvep2, i_STHvep3
         **/
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           InrImage::ptr mask ( driver.im_stack.GetLastImage());
 
           Func_StructureTensorHessian(
@@ -4907,7 +4908,7 @@ command:
             i_STHvep1, i_STHvep2, i_STHvep3
             i_STHgrad
         **/
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           InrImage::ptr mask (driver.im_stack.GetLastImage());
           int save_grad = (int) $11;
 
@@ -4918,7 +4919,7 @@ command:
         |
         T_HessianMatrix T_OP_PAR var_image T_COMMA expr  T_CL_PAR
         {
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_HessianMatrix(((InrImage::ptr*) varim->Pointer())->get(),
                  varim->Name().c_str(),
                  $5,   // sigma
@@ -4929,7 +4930,7 @@ command:
         |
         T_HessianMatrix T_OP_PAR var_image T_COMMA expr  T_COMMA expr_image T_CL_PAR
         {
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           InrImage::ptr mask ( driver.im_stack.GetLastImage());
 
           Func_HessianMatrix(((InrImage::ptr*) varim->Pointer())->get(),
@@ -4942,7 +4943,7 @@ command:
         |
         T_HessianMatrix T_OP_PAR var_image T_COMMA expr T_COMMA expr T_CL_PAR
         {
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_HessianMatrix(((InrImage::ptr*) varim->Pointer())->get(),
                  varim->Name().c_str(),
                  $5,   // sigma
@@ -4962,7 +4963,7 @@ command:
           - Gamma normalization parameter
           - Mask image
       **/
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
       InrImage::ptr mask (driver.im_stack.GetLastImage());
 
           Func_HessianMatrix(((InrImage::ptr*) varim->Pointer())->get(),
@@ -4990,7 +4991,7 @@ command:
             Compute information for local first and second order derivatives
          **/
 
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_Derivatives(((InrImage::ptr*) varim->Pointer())->get(),
                varim->Name().c_str(),
                $5,   // sigma
@@ -5005,7 +5006,7 @@ command:
         |
         T_Derivatives T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr_image T_CL_PAR
         {
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           InrImage::ptr mask (driver.im_stack.GetLastImage());
 
           Func_Derivatives(((InrImage::ptr*) varim->Pointer())->get(),
@@ -5024,7 +5025,7 @@ command:
                       expr  T_COMMA expr_image T_COMMA expr T_CL_PAR
         {
           InrImage::ptr mask (driver.im_stack.GetLastImage());
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
 
           Func_HessianVap(((InrImage::ptr*) varim->Pointer())->get(),
               varim->Name().c_str(),
@@ -5037,7 +5038,7 @@ command:
         |
         T_curvatures T_OP_PAR var_image T_COMMA expr  T_CL_PAR
         {
-          Variable::ptr  varim( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
           Func_Curvatures(((InrImage::ptr*) varim->Pointer())->get(),
               varim->Name().c_str(),
               $5);
@@ -5050,12 +5051,12 @@ command:
                       expr_image
                   T_CL_PAR
         {
-          Variable::ptr  varim6( driver.var_stack.GetLastVar());
-          Variable::ptr  varim5( driver.var_stack.GetLastVar());
-          Variable::ptr  varim4( driver.var_stack.GetLastVar());
-          Variable::ptr  varim3( driver.var_stack.GetLastVar());
-          Variable::ptr  varim2( driver.var_stack.GetLastVar());
-          Variable::ptr  varim1( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim6( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim5( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim4( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim3( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim2( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim1( driver.var_stack.GetLastVar());
           InrImage::ptr mask ( driver.im_stack.GetLastImage());
 
           Func_Eigen3D(
@@ -5077,12 +5078,12 @@ command:
                   T_CL_PAR
         {
 
-          Variable::ptr  varim6( driver.var_stack.GetLastVar());
-          Variable::ptr  varim5( driver.var_stack.GetLastVar());
-          Variable::ptr  varim4( driver.var_stack.GetLastVar());
-          Variable::ptr  varim3( driver.var_stack.GetLastVar());
-          Variable::ptr  varim2( driver.var_stack.GetLastVar());
-          Variable::ptr  varim1( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim6( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim5( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim4( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim3( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim2( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim1( driver.var_stack.GetLastVar());
 
           Func_Eigen3D(
                (char*) $3,
@@ -5102,9 +5103,9 @@ command:
                       expr_image
                   T_CL_PAR
         {
-          Variable::ptr  varim3( driver.var_stack.GetLastVar());
-          Variable::ptr  varim2( driver.var_stack.GetLastVar());
-          Variable::ptr  varim1( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim3( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim2( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim1( driver.var_stack.GetLastVar());
       InrImage::ptr mask ( driver.im_stack.GetLastImage());
 
           Func_Eigen2D(
@@ -5121,9 +5122,9 @@ command:
                   var_image
                   T_CL_PAR
         {
-          Variable::ptr  varim3( driver.var_stack.GetLastVar());
-          Variable::ptr  varim2( driver.var_stack.GetLastVar());
-          Variable::ptr  varim1( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim3( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim2( driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim1( driver.var_stack.GetLastVar());
           Func_Eigen2D(
                (char*) $3,
                ((InrImage::ptr*) varim1 ->Pointer())->get(),
@@ -5135,20 +5136,20 @@ command:
     |
     T_setvoxelsize T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
     {
-      Variable::ptr  varim( driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
       (((InrImage::ptr*) varim->Pointer())->get())->SetVoxelSize($5, $7, $9);
     }
     |
     var_image T_POINT T_setvoxelsize T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
     {
-      Variable::ptr  varim( driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
       (*(InrImage::ptr*) varim->Pointer())->SetVoxelSize($5, $7, $9);
     }
     |
     var_image T_POINT T_setvoxelsize T_OP_PAR var_image T_CL_PAR
     {
-      Variable::ptr  varim2( driver.var_stack.GetLastVar());
-      Variable::ptr  varim1( driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2( driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1( driver.var_stack.GetLastVar());
       InrImage::ptr im = *(InrImage::ptr*) varim2->Pointer();
       (*(InrImage::ptr*) varim1->Pointer())->SetVoxelSize(
                                    im->VoxSizeX(),
@@ -5158,14 +5159,14 @@ command:
     |
     var_image T_POINT T_settranslation T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
     {
-      Variable::ptr  varim( driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim( driver.var_stack.GetLastVar());
       (*(InrImage::ptr*) varim->Pointer())->SetTranslation($5, $7, $9);
     }
     |
     var_image T_POINT T_settranslation T_OP_PAR var_image T_CL_PAR
     {
-      Variable::ptr  varim2( driver.var_stack.GetLastVar());
-      Variable::ptr  varim1( driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2( driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1( driver.var_stack.GetLastVar());
       InrImage::ptr im = *(InrImage::ptr*) varim2->Pointer();
       (*(InrImage::ptr*) varim1->Pointer())->SetVoxelSize(
                                    im->TrX(),
@@ -5184,14 +5185,14 @@ command:
         If the endianness is different from the one of the architecture, the bytes
         are swapped before writting, and there are swapped back after.
     **/
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       ((amimage*) (*(*(InrImage::ptr*) varim->Pointer())) )->SetEndianness((AMIENDIANNESS)(int)$5);
     }
     |
     T_DiscSecDerGrad T_OP_PAR var_image T_COMMA var_image T_CL_PAR
     {
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
       Func_DiscSecDerGrad(
         ((InrImage::ptr*) varim1->Pointer())->get(),
         ((InrImage::ptr*) varim2->Pointer())->get());
@@ -5199,9 +5200,9 @@ command:
     |
     T_DiscSecDerGrad T_OP_PAR var_image T_COMMA var_image T_COMMA var_image T_CL_PAR
     {
-      Variable::ptr  varim3(driver.var_stack.GetLastVar());
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim3(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
       Func_DiscSecDerGrad(
                 ((InrImage::ptr*) varim1->Pointer())->get(),
                 ((InrImage::ptr*) varim2->Pointer())->get(),
@@ -5282,7 +5283,7 @@ command:
     }
     | T_DisplayHisto T_OP_PAR var_image  T_CL_PAR
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       cerr << "Feature not available, needs to be updated ! " << endl;
       /*
             InrImage::ptr   image = *(InrImage::ptr*) $3->Pointer();
@@ -5329,8 +5330,8 @@ command:
 
       // pad the first image with the second one
       //
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
 
       Func_Pad(
         ((InrImage::ptr*) varim1->Pointer())->get(),
@@ -5364,7 +5365,7 @@ command:
         |
         T_SaveStructuredGrid T_OP_PAR var_image T_COMMA expr_string T_CL_PAR
         {
-          Variable::ptr  varim(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
           InrImage::ptr   i = *(InrImage::ptr*) varim->Pointer();
           Func_VectorImage2StructuredGrid(i.get(),$5);
           delete [] $5;
@@ -5372,13 +5373,13 @@ command:
         |
         VAR_GLTRANSFORM T_POINT PRINT
         {
-          Variable::ptr varglt(driver.var_stack.GetLastVar());
+          BasicVariable::ptr varglt(driver.var_stack.GetLastVar());
           (*(GLTransfMatrix_ptr*) varglt->Pointer())->Print();
         }
         |
         VAR_GLTRANSFORM T_POINT T_save expr_string
         {
-          Variable::ptr varglt(driver.var_stack.GetLastVar());
+          BasicVariable::ptr varglt(driver.var_stack.GetLastVar());
           Func_SaveTransform(((GLTransfMatrix_ptr*) varglt->Pointer())->get(),$4);
           delete [] $4;
         }
@@ -5407,13 +5408,13 @@ command:
         expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
 
-          Variable::ptr  varim7(driver.var_stack.GetLastVar());
-          Variable::ptr  varim6(driver.var_stack.GetLastVar());
-          Variable::ptr  varim5(driver.var_stack.GetLastVar());
-          Variable::ptr  varim4(driver.var_stack.GetLastVar());
-          Variable::ptr  varim3(driver.var_stack.GetLastVar());
-          Variable::ptr  varim2(driver.var_stack.GetLastVar());
-          Variable::ptr  varim1(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim7(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim6(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim5(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim4(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim3(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
 
           InrImage::ptr im1    = *(InrImage::ptr*) varim1->Pointer();
           InrImage::ptr im2    = *(InrImage::ptr*) varim2->Pointer();
@@ -5447,10 +5448,10 @@ command:
           expr T_COMMA expr T_COMMA expr T_COMMA
       var_image  T_COMMA var_image T_COMMA  expr  T_CL_PAR
       {
-        Variable::ptr  varim4(driver.var_stack.GetLastVar());
-        Variable::ptr  varim3(driver.var_stack.GetLastVar());
-        Variable::ptr  varim2(driver.var_stack.GetLastVar());
-        Variable::ptr  varim1(driver.var_stack.GetLastVar());
+        BasicVariable::ptr  varim4(driver.var_stack.GetLastVar());
+        BasicVariable::ptr  varim3(driver.var_stack.GetLastVar());
+        BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+        BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
         InrImage::ptr im1 = *(InrImage::ptr*) varim1->Pointer();
         InrImage::ptr im2 = *(InrImage::ptr*) varim2->Pointer();
         float     sigma = $7;
@@ -5475,23 +5476,23 @@ command:
         |
         VAR_C_PROCEDURE  T_OP_PAR param_list T_CL_PAR
         {
-          Variable::ptr       var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       var(driver.var_stack.GetLastVar());
           ParamList::ptr param($3);
           ((void (*)(ParamList*)) var->Pointer())(param.get());
         }
         |
         VAR_CLASS_MEMBER  T_OP_PAR param_list T_CL_PAR
         {
-          Variable::ptr       var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       var(driver.var_stack.GetLastVar());
           ParamList::ptr param($3);
-          Variable::ptr tmpvar = (*(WrapClassMember::ptr*) var->Pointer())->CallMember(param.get());
+          BasicVariable::ptr tmpvar = (*(WrapClassMember::ptr*) var->Pointer())->CallMember(param.get());
         }
         |
         VAR_CLASS_MEMBER  
         {
-          Variable::ptr       var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       var(driver.var_stack.GetLastVar());
           ParamList::ptr param((ParamList*) NULL);
-          Variable::ptr tmpvar = (*(WrapClassMember::ptr*) var->Pointer())->CallMember(param.get());
+          BasicVariable::ptr tmpvar = (*(WrapClassMember::ptr*) var->Pointer())->CallMember(param.get());
         }
         |
         T_Set3DArrowParam T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
@@ -5550,9 +5551,9 @@ param_list:
         /**
           Description: temporary rule, added to simplify convertion of scripts.
          **/
-          Variable::ptr       var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       var(driver.var_stack.GetLastVar());
           ParamList* pl = new ParamList();
-          Variable::ptr newvar(new Variable());
+          BasicVariable::ptr newvar(new Variable());
           // copy information from variable, including comments
           // don't need to care about variable context information
           // copy of the variable contents
@@ -5568,8 +5569,8 @@ param_list:
           Description: temporary rule, added to simplify convertion of scripts.
          **/
           ParamList* pl =  $1;
-          Variable::ptr       var(driver.var_stack.GetLastVar());
-          Variable::ptr newvar(new Variable());
+          BasicVariable::ptr       var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr newvar(new Variable());
           // copy information from variable, including comments
           (*newvar) = (*var);
           pl->AddParam(newvar);
@@ -5577,9 +5578,9 @@ param_list:
         }
         | T_AND variable
         {
-          Variable::ptr       var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       var(driver.var_stack.GetLastVar());
           ParamList* pl = new ParamList();
-          Variable::ptr newvar(new Variable());
+          BasicVariable::ptr newvar(new Variable());
           // copy information from variable, including comments
           // don't need to care about variable context information
           // copy of the variable contents
@@ -5591,9 +5592,9 @@ param_list:
         }
         | param_list T_COMMA T_AND variable
         {
-          Variable::ptr       var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr       var(driver.var_stack.GetLastVar());
           ParamList* pl =  $1;
-          Variable::ptr newvar(new Variable());
+          BasicVariable::ptr newvar(new Variable());
           // copy information from variable, including comments
           (*newvar) = (*var);
           //cout << " initial pointer : " << ((AMIFunction::ptr*) ((Variable*) $4)->Pointer())->get() << endl;
@@ -5607,7 +5608,7 @@ param_list:
         | expr
         {
           ParamList* pl(new ParamList);
-          Variable::ptr newvar(new Variable());
+          BasicVariable::ptr newvar(new Variable());
           float_ptr x(new float($1));
           newvar->InitPtr(type_float,"Param0",&x);
           pl->AddParam(newvar);
@@ -5616,7 +5617,7 @@ param_list:
         | param_list T_COMMA expr
         {
           ParamList* pl =  $1;
-          Variable::ptr newvar(new Variable());
+          BasicVariable::ptr newvar(new Variable());
           float_ptr x(new float($3));
           std::string paramname = (boost::format("Param%1%")%pl->GetNumParam()).str();
           newvar->InitPtr(type_float,paramname.c_str(),&x);
@@ -5626,7 +5627,7 @@ param_list:
         | expr_string
         {
           ParamList* pl = new ParamList();
-          Variable::ptr newvar(new Variable());
+          BasicVariable::ptr newvar(new Variable());
           string_ptr x(new string($1));
           newvar->InitPtr(type_string,"Param0",&x);
           pl->AddParam(newvar);
@@ -5636,7 +5637,7 @@ param_list:
         | param_list T_COMMA expr_string
         {
           ParamList* pl =  $1;
-          Variable::ptr newvar(new Variable());
+          BasicVariable::ptr newvar(new Variable());
           string_ptr x(new string($3));
           std::string paramname = (boost::format("Param%1%")%pl->GetNumParam()).str();
           newvar->InitPtr(type_string,paramname.c_str(),&x);
@@ -5647,7 +5648,7 @@ param_list:
         | expr_image
         {
           ParamList* pl = new ParamList();
-          Variable::ptr newvar(new Variable());
+          BasicVariable::ptr newvar(new Variable());
           InrImage::ptr i ( driver.im_stack.GetLastImage());
           // should be OK, the variable will only use the pointer smart pointer to copy it
           newvar->InitPtr(type_image,"Param0",(void*)&i);
@@ -5657,7 +5658,7 @@ param_list:
         | param_list T_COMMA expr_image
         {
           ParamList* pl =  $1;
-          Variable::ptr newvar(new Variable());
+          BasicVariable::ptr newvar(new Variable());
           InrImage::ptr   i ( driver.im_stack.GetLastImage());
           std::string paramname = (boost::format("Param%1%")%pl->GetNumParam()).str();
           newvar->InitPtr(type_image,paramname.c_str(),(void*)&i);
@@ -5755,7 +5756,7 @@ primary_expr_string: ASTRING
         //
         // TODO: replace string expression to use std::string !!!
         //
-        Variable::ptr varstring(driver.var_stack.GetLastVar());
+        BasicVariable::ptr varstring(driver.var_stack.GetLastVar());
         char* res;
   
         res = new char[(*(string_ptr*)varstring->Pointer())->length()+1];
@@ -5875,7 +5876,7 @@ postfix_expr_string
     }
     |
     var_image T_POINT T_GetName {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       $$=(char*) (*(InrImage::ptr*) varim->Pointer())->GetName();
     }
     |
@@ -5884,7 +5885,7 @@ postfix_expr_string
       Description:
         Returns the name of the variable as a string
     **/
-      Variable::ptr  var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  var(driver.var_stack.GetLastVar());
       char* resstr = (char*) var->Name().c_str();
       char* res = new char[strlen(resstr)+1];
       strcpy(res,resstr);
@@ -5896,7 +5897,7 @@ postfix_expr_string
       Description:
         Returns the name of the object instance to which this variable belongs. If this variable does not belong to an object, returns an empty string.
     **/
-      Variable::ptr  var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  var(driver.var_stack.GetLastVar());
       boost::shared_ptr<Variables> context = var->GetContext();
       if (context.get()) {
         char* res = new char[strlen(context->GetName().c_str())+1];
@@ -5986,17 +5987,17 @@ primary_expr:
     }
     | VAR_FLOAT
     {
-      Variable::ptr var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr var(driver.var_stack.GetLastVar());
       $$=*((float_ptr*)var->Pointer())->get();
     }
     | VAR_INT
     {
-      Variable::ptr var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr var(driver.var_stack.GetLastVar());
       $$ = (float) *((int_ptr*)var->Pointer())->get();
     }
     | VAR_UCHAR
     {
-      Variable::ptr var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr var(driver.var_stack.GetLastVar());
       $$ = (float) *((uchar_ptr*)var->Pointer())->get();
     }
     | T_OP_PAR expr T_CL_PAR
@@ -6021,7 +6022,7 @@ postfix_expr
         return:
         float value
         **/
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       $$=(**(InrImage::ptr*) varim->Pointer())((int) $3,0);
     }
         | var_image T_OP_PAR expr T_COMMA expr  T_CL_PAR
@@ -6038,7 +6039,7 @@ postfix_expr
         return:
         float value
         **/
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       $$=(**(InrImage::ptr*) varim->Pointer())((int) $3,(int) ( $5));
     }
     | var_image T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
@@ -6051,7 +6052,7 @@ postfix_expr
           returns the pixel intensity at the given position
           the position value are rounded to the closest integer
       **/
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       $$=(**(InrImage::ptr*) varim->Pointer())((int) round($3),
           (int) round( $5), 
           (int) round($7));
@@ -6066,7 +6067,7 @@ postfix_expr
           returns the pixel intensity at the given position
           the position using linear interpolation
       **/
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       $$=(*(InrImage::ptr*) varim->Pointer())->InterpLinIntensite(
           $5,
           $7, 
@@ -6079,7 +6080,7 @@ postfix_expr
       get image component value at a given 3D voxel position.
       same as image(expr,expr,expr;expr)
       **/
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       InrImage::ptr im = *(InrImage::ptr*) varim->Pointer();
       Si im->CoordOK((int) $3, (int) $5, (int) $7)
           Et ((int) $9 >=0) Et ((int)$9 <im->GetVDim()) Alors
@@ -6096,7 +6097,7 @@ postfix_expr
       Description:
       get image component value at a given 3D voxel position.
       **/
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       InrImage::ptr im = *(InrImage::ptr*) varim->Pointer();
       Si im->CoordOK((int) $3, (int) $5, (int) $7)
           Et ((int) $9 >=0) Et ((int)$9 <im->GetVDim()) Alors
@@ -6113,7 +6114,7 @@ postfix_expr
       Description:
       get image component value at a given 2D  position. ( z component set to 0)
       **/
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       InrImage::ptr im = *(InrImage::ptr*) varim->Pointer();
       Si (im->CoordOK((int) $3,   (int $5),   0  )
         Et ((int) $7 >=0) Et ((int)$7 <im->GetVDim())) Alors
@@ -6128,7 +6129,7 @@ postfix_expr
       Description:
       get image component value at a given 1D  position. (y and z components set to 0)
       **/
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       Si (*(InrImage::ptr*) varim->Pointer())->CoordOK((int) $3,   0,   0  )
         Et ((int) $5 >=0) Et ((int)$5 <3) Alors
         $$=(**(InrImage::ptr*) varim->Pointer())((int) $3,0,0, (int) $5 );
@@ -6155,12 +6156,12 @@ postfix_expr
         i.inc
       }
       **/
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       (*(InrImage::ptr*) varim->Pointer())->InitBuffer();
     }
     | var_image T_POINT identifier
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       IdentifierInfo::ptr ident($3);
       if (strcmp(ident->GetName().c_str(),"tx")==0) {
         $$=(*(InrImage::ptr*) varim->Pointer())->_tx;
@@ -6225,7 +6226,7 @@ postfix_expr
           Description:
             Prints the image information
         **/
-        Variable::ptr  varim(driver.var_stack.GetLastVar());
+        BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr im;
         im=*(InrImage::ptr*) varim->Pointer();
         std::string tmp_string;
@@ -6251,7 +6252,7 @@ postfix_expr
         Description:
           Prints the object information
       **/
-      Variable::ptr       varamio(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       varamio(driver.var_stack.GetLastVar());
       AMIObject::ptr o = *(AMIObject::ptr*) varamio->Pointer();
       
       if (o.get()) {
@@ -6270,7 +6271,7 @@ postfix_expr
     }
     | var_surface T_POINT T_info
     {
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) var->Pointer();
 
       std::string tmp_string;
@@ -6290,7 +6291,7 @@ postfix_expr
     |
     var_surface T_POINT T_NbPoints
     {
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) var->Pointer();
 
       $$ = s->GetNumberOfPoints();
@@ -6298,7 +6299,7 @@ postfix_expr
     |
     var_surface T_POINT T_NbPolys
     {
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = *(SurfacePoly::ptr*) var->Pointer();
 
       $$ = s->GetNumberOfPolys();
@@ -6307,15 +6308,15 @@ postfix_expr
     |
     T_SNR T_OP_PAR var_image  T_COMMA var_image T_CL_PAR
     {
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
       $$=Func_SNR(((InrImage::ptr*) varim1->Pointer())->get(),
                   ((InrImage::ptr*) varim2->Pointer())->get());
     }
     |
     T_eccentricity T_OP_PAR var_image T_CL_PAR
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       $$=Func_eccentricity(((InrImage::ptr*) varim->Pointer())->get());
     }
     |
@@ -6331,7 +6332,7 @@ postfix_expr
       Vect3D<float> v1,v2;
       CalculAireSection* compute_area;
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
 
       compute_area = new CalculAireSection( ((InrImage::ptr*) varim->Pointer())->get(),
                     resolution);
@@ -6352,7 +6353,7 @@ postfix_expr
     T_posarea T_OP_PAR var_image T_CL_PAR
     {
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       $$=Func_ComputePositiveArea( ((InrImage::ptr*) varim->Pointer())->get() );
     }
     |
@@ -6522,7 +6523,7 @@ postfix_expr
                 min, max, mean, median, count
 
         **/
-          Variable::ptr  varim(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
           InrImage::ptr mask  (driver.im_stack.GetLastImage());
           $$=Func_min( ((InrImage::ptr*) varim->Pointer())->get(),mask.get());
         }
@@ -6545,14 +6546,14 @@ postfix_expr
                 min, max, mean, median, count
 
         **/
-          Variable::ptr  varim(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
           InrImage::ptr mask ( driver.im_stack.GetLastImage());
           $$=Func_med( ((InrImage::ptr*) varim->Pointer())->get(),0.5,mask.get());
         }
         |
         T_MEDIAN T_OP_BR expr_image T_CL_BR T_OP_PAR var_image  T_COMMA expr T_CL_PAR
         {
-          Variable::ptr  varim(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
           InrImage::ptr mask( driver.im_stack.GetLastImage());
           $$=Func_med( ((InrImage::ptr*) varim->Pointer())->get(),(float) $8,mask.get());
         }
@@ -6599,7 +6600,7 @@ postfix_expr
                 min, max, mean, median, count
 
         **/
-          Variable::ptr  varim(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
           InrImage::ptr mask (driver.im_stack.GetLastImage());
 
           $$=Func_mean( ((InrImage::ptr*) varim->Pointer())->get(), mask.get());
@@ -6614,7 +6615,7 @@ postfix_expr
     |
     VAR_IMAGEDRAW T_POINT T_GetXmin
     {
-      Variable::ptr  varimd(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
       DessinImage::ptr draw;
       DessinImageParametres* param;
 
@@ -6625,7 +6626,7 @@ postfix_expr
     |
     VAR_IMAGEDRAW T_POINT T_GetXmax
     {
-      Variable::ptr  varimd(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
       DessinImage::ptr draw;
       DessinImageParametres* param;
 
@@ -6636,7 +6637,7 @@ postfix_expr
     |
     VAR_IMAGEDRAW T_POINT T_GetYmin
     {
-      Variable::ptr  varimd(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
       DessinImage::ptr draw;
       DessinImageParametres* param;
 
@@ -6647,7 +6648,7 @@ postfix_expr
     |
     VAR_IMAGEDRAW T_POINT T_GetYmax
     {
-      Variable::ptr  varimd(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
       DessinImage::ptr draw;
       DessinImageParametres* param;
 
@@ -6658,7 +6659,7 @@ postfix_expr
     |
     VAR_IMAGEDRAW T_POINT T_GetZmin
     {
-      Variable::ptr  varimd(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
       DessinImage::ptr draw;
       DessinImageParametres* param;
 
@@ -6669,7 +6670,7 @@ postfix_expr
     |
     VAR_IMAGEDRAW T_POINT T_GetZmax
     {
-      Variable::ptr  varimd(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
       DessinImage::ptr draw;
       DessinImageParametres* param;
 
@@ -6680,7 +6681,7 @@ postfix_expr
     |
     VAR_IMAGEDRAW T_POINT T_GetXPos
     {
-      Variable::ptr  varimd(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
       DessinImage::ptr draw;
       DessinImageParametres* param;
       string comment;
@@ -6695,7 +6696,7 @@ postfix_expr
     |
     VAR_IMAGEDRAW T_POINT T_GetYPos
     {
-      Variable::ptr  varimd(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
       DessinImage::ptr draw;
       DessinImageParametres* param;
       string comment;
@@ -6713,7 +6714,7 @@ postfix_expr
     |
     VAR_IMAGEDRAW T_POINT T_GetZPos
     {
-      Variable::ptr  varimd(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
       DessinImage::ptr draw;
       DessinImageParametres* param;
       string comment;
@@ -6744,7 +6745,7 @@ postfix_expr
     }
     | VAR_MATRIX T_OP_PAR expr T_COMMA expr T_CL_PAR
     {
-      Variable::ptr varmat(driver.var_stack.GetLastVar());
+      BasicVariable::ptr varmat(driver.var_stack.GetLastVar());
       FloatMatrix::ptr mat = *(FloatMatrix::ptr*)varmat->Pointer();
       int i = (int)$3;
       int j = (int)$5;
@@ -6752,7 +6753,7 @@ postfix_expr
     }
     | VAR_MATRIX T_OP_PAR expr T_COMMA expr T_CL_PAR ASSIGN_OP expr
     {
-      Variable::ptr varmat(driver.var_stack.GetLastVar());
+      BasicVariable::ptr varmat(driver.var_stack.GetLastVar());
       FloatMatrix::ptr mat = *(FloatMatrix::ptr*)varmat->Pointer();
       int i = (int)$3;
       int j = (int)$5;
@@ -6772,7 +6773,7 @@ postfix_expr
     Description: 
     Check for the existence of a variable, returns 1
     **/
-        Variable::ptr  var(driver.var_stack.GetLastVar());
+        BasicVariable::ptr  var(driver.var_stack.GetLastVar());
         $$=1;
     }
     | T_FileExists T_OP_PAR expr_string T_CL_PAR
@@ -6799,7 +6800,7 @@ postfix_expr
         given formatting expression.
     **/
         float res;
-        Variable::ptr varfile(driver.var_stack.GetLastVar());
+        BasicVariable::ptr varfile(driver.var_stack.GetLastVar());
         FILE_ptr file = *(FILE_ptr*) (varfile->Pointer());
         boost::shared_array<char> format( $5);
 
@@ -6809,8 +6810,8 @@ postfix_expr
     }
     | VAR_FILE T_POINT T_read T_OP_PAR VAR_FLOAT T_CL_PAR
     {
-      Variable::ptr varfloat(driver.var_stack.GetLastVar());
-      Variable::ptr varfile( driver.var_stack.GetLastVar());
+      BasicVariable::ptr varfloat(driver.var_stack.GetLastVar());
+      BasicVariable::ptr varfile( driver.var_stack.GetLastVar());
 
       float*  var = ((float_ptr*) varfloat->Pointer())->get();
       FILE_ptr file = *(FILE_ptr*) (varfile->Pointer());
@@ -6819,8 +6820,8 @@ postfix_expr
     }
     | VAR_FILE T_POINT T_read T_OP_PAR VAR_STRING T_CL_PAR
     {
-      Variable::ptr varstring(driver.var_stack.GetLastVar());
-      Variable::ptr varfile(  driver.var_stack.GetLastVar());
+      BasicVariable::ptr varstring(driver.var_stack.GetLastVar());
+      BasicVariable::ptr varfile(  driver.var_stack.GetLastVar());
       FILE_ptr file = *(FILE_ptr*) (varfile->Pointer());
       setlocale(LC_NUMERIC, "C");
       // not safe, TODO: use iostream or boost for files here ...
@@ -6837,7 +6838,7 @@ postfix_expr
       Description: 
         Returns the number of lines of the polydata structure
     **/
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) var->Pointer());
 
       $$ = s->GetNumberOfLines(  );
@@ -7093,7 +7094,7 @@ basic_type:
        | var_image T_POINT T_GetFormat
       {
        //        printf("format %d \n",(int) ( *(InrImage::ptr*) $1->Pointer())->GetFormat());
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         $$ = (int) (*(InrImage::ptr*) varim->Pointer())->GetFormat();
       };
 
@@ -7102,12 +7103,12 @@ var_image:
         |
         VAR_ARRAY_IMAGE T_OP_BR expr T_CL_BR
         {
-          Variable::ptr var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr var(driver.var_stack.GetLastVar());
           VarArray::ptr array;
           int  i = (int) $3;
 
           array = *(VarArray::ptr*) (var->Pointer());
-          Variable::ptr arrayvar = array->GetVar(i);
+          BasicVariable::ptr arrayvar = array->GetVar(i);
           if (!array.get()) {
             // create a small image to avoid problems
             InrImage::ptr im (new InrImage(1,1,1,WT_UNSIGNED_CHAR));
@@ -7332,7 +7333,7 @@ image:
       }
       | VAR_C_IMAGE_FUNCTION  T_OP_PAR param_list T_CL_PAR
       {
-        Variable::ptr       var(driver.var_stack.GetLastVar());
+        BasicVariable::ptr       var(driver.var_stack.GetLastVar());
         ParamList::ptr param($3);
         InrImage::ptr  im;
   
@@ -7410,7 +7411,7 @@ image:
     Description:
       Creates a new image from a reference image
     **/
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       WORDTYPE imformat = (WORDTYPE) $3;
       int vdim   = (int) $5;
       InrImage::ptr varim=*(InrImage::ptr*) var->Pointer();
@@ -7426,7 +7427,7 @@ image:
     |
     var_image
     {
-        Variable::ptr       var(driver.var_stack.GetLastVar());
+        BasicVariable::ptr       var(driver.var_stack.GetLastVar());
         InrImage::ptr varim;
         InrImage::ptr im;
         std::string  imname;
@@ -7461,7 +7462,7 @@ image:
           print ired(i.tx/2,i.ty/2); print "\n"
           print i(i.tx/2,i.ty/2,0,0); print "\n"
        **/
-        Variable::ptr       var(driver.var_stack.GetLastVar());
+        BasicVariable::ptr       var(driver.var_stack.GetLastVar());
          InrImage::ptr im1;
          InrImage::ptr im;
           char  imname[200];
@@ -7633,7 +7634,7 @@ image:
       OpImage T_OP_PAR var_image T_COMMA ASTRING T_CL_PAR
       {
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       InrImage::ptr res (Func_OpImage(((InrImage::ptr*) varim->Pointer())->get(),
                 NULL,
                 NULL,
@@ -7649,7 +7650,7 @@ image:
       OpImage T_OP_PAR var_image T_COMMA ASTRING T_COMMA basic_type T_CL_PAR
       {
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res( Func_OpImage(((InrImage::ptr*) varim->Pointer())->get(),
               NULL,
               NULL,
@@ -7667,8 +7668,8 @@ image:
       OpImage T_OP_PAR var_image T_COMMA var_image T_COMMA ASTRING T_CL_PAR
       {
 
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
     InrImage::ptr res ( Func_OpImage(
               ((InrImage::ptr*) varim1->Pointer())->get(),
               ((InrImage::ptr*) varim2->Pointer())->get(),
@@ -7685,7 +7686,7 @@ image:
       OpImage T_OP_PAR var_image T_COMMA var_image T_COMMA ASTRING T_COMMA basic_type T_CL_PAR
       {
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res (Func_OpImage(((InrImage::ptr*) varim->Pointer())->get(),
               ((InrImage::ptr*) varim->Pointer())->get(),
               NULL,
@@ -7701,9 +7702,9 @@ image:
       |
       OpImage T_OP_PAR var_image T_COMMA var_image T_COMMA var_image T_COMMA ASTRING T_CL_PAR
       {
-      Variable::ptr  varim3(driver.var_stack.GetLastVar());
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim3(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
         InrImage::ptr  res ( Func_OpImage(
             ((InrImage::ptr*) varim1->Pointer())->get(),
             ((InrImage::ptr*) varim2->Pointer())->get(),
@@ -7719,9 +7720,9 @@ image:
       OpImage T_OP_PAR var_image T_COMMA var_image T_COMMA var_image T_COMMA
                   ASTRING T_COMMA basic_type T_CL_PAR
       {
-      Variable::ptr  varim3(driver.var_stack.GetLastVar());
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim3(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
         InrImage::ptr res (Func_OpImage(
             ((InrImage::ptr*) varim1->Pointer())->get(),
             ((InrImage::ptr*) varim2->Pointer())->get(),
@@ -7775,7 +7776,7 @@ image:
         float var           = $7;
         float lowthreshold  = $9;
         //float highthreshold = $11;
-        Variable::ptr  varim(driver.var_stack.GetLastVar());
+        BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr res ( Func_itkCannyEdgeDetector(  ((InrImage::ptr*) varim->Pointer())->get(), var, lowthreshold));
         Si (!res.get()) Alors
           driver.err_print("itk.CannyEdgeDetector() error ... \n");
@@ -7785,7 +7786,7 @@ image:
       |
       T_vtkDist T_OP_PAR var_image T_CL_PAR
       {
-        Variable::ptr  varim(driver.var_stack.GetLastVar());
+        BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr res ( Func_vtkDist( ((InrImage::ptr*) varim->Pointer())->get()));
 
         Si (!res.get()) Alors
@@ -7796,7 +7797,7 @@ image:
       |
       T_vtkMedian3D T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
       {
-        Variable::ptr  varim(driver.var_stack.GetLastVar());
+        BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr res (Func_vtkMedianFilter3D(
             ((InrImage::ptr*) varim->Pointer())->get(),
             (int) $5,(int) $7,(int) $9));
@@ -7809,7 +7810,7 @@ image:
       |
       T_AndreDist T_OP_PAR var_image T_CL_PAR
       {
-        Variable::ptr  varim(driver.var_stack.GetLastVar());
+        BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         driver.err_print("The function AndreDist() has been removed for licence issues! \n");
 /*
         InrImage::ptr  in = *(InrImage::ptr*) $3->Pointer();
@@ -7843,7 +7844,7 @@ image:
       |
       T_OutFlux T_OP_PAR var_image T_CL_PAR
       {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       InrImage::ptr res ( Func_OutFlux( ((InrImage::ptr*) varim->Pointer())->get()));
 
       Si (!res.get()) Alors
@@ -7854,7 +7855,7 @@ image:
       |
       T_OutFluxScalar T_OP_PAR var_image T_CL_PAR
       {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res ( Func_OutFluxScalar( ((InrImage::ptr*) varim->Pointer())->get()));
     Si (!res.get()) Alors
       driver.err_print("OutFluxScalar() erreur ... \n");
@@ -7864,7 +7865,7 @@ image:
       |
       T_OrientationRatio T_OP_PAR var_image T_CL_PAR
       {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res ( Func_OrientationRatio2D( ((InrImage::ptr*) varim->Pointer())->get()));
     Si (!res.get()) Alors
       driver.err_print("OrientationRatio() erreur ... \n");
@@ -7891,8 +7892,8 @@ image:
           threshold shoud be removed automatically and any point
           at distance higher than the maximum should be kept.
       **/
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
     InrImage::ptr res ( Func_Thinning( ((InrImage::ptr*) varim1->Pointer())->get(),
                  ((InrImage::ptr*) varim2->Pointer())->get(),
                  $7,
@@ -7907,7 +7908,7 @@ image:
       |
       T_SimplePoints T_OP_PAR var_image  T_CL_PAR
       {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res (Func_SimplePoints( ((InrImage::ptr*) varim->Pointer())->get() ));
 
     Si !res.get() Alors
@@ -7919,10 +7920,10 @@ image:
       T_CircleIntegral T_OP_PAR var_image T_COMMA var_image T_COMMA var_image T_COMMA
                            expr T_COMMA var_image T_CL_PAR
       {
-      Variable::ptr  varim4(driver.var_stack.GetLastVar());
-      Variable::ptr  varim3(driver.var_stack.GetLastVar());
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim4(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim3(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
         InrImage::ptr res ( Func_CircleIntegration(
           ((InrImage::ptr*) varim1 ->Pointer())->get(), // gradient
           ((InrImage::ptr*) varim2 ->Pointer())->get(),  // first  vector
@@ -7940,10 +7941,10 @@ image:
       T_CircleIntegralExc T_OP_PAR var_image T_COMMA var_image T_COMMA var_image T_COMMA
                               expr T_COMMA var_image T_CL_PAR
       {
-      Variable::ptr  varim4(driver.var_stack.GetLastVar());
-      Variable::ptr  varim3(driver.var_stack.GetLastVar());
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim4(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim3(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
       InrImage::ptr res ( Func_CircleIntegration(
         ((InrImage::ptr*) varim1 ->Pointer())->get(),  // gradient
         ((InrImage::ptr*) varim2 ->Pointer())->get(),  // first  vector
@@ -7976,10 +7977,10 @@ image:
           with constraints on the standard deviation and the excentricity
           (see pub. Krissian et al. EMBS 2003)
         **/
-      Variable::ptr  varim4(driver.var_stack.GetLastVar());
-      Variable::ptr  varim3(driver.var_stack.GetLastVar());
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim4(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim3(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
         InrImage::ptr res ( Func_CircleIntSdExc(
           ((InrImage::ptr*) varim1 ->Pointer())->get(),  // gradient
           ((InrImage::ptr*) varim2 ->Pointer())->get(),  // first  vector
@@ -8022,10 +8023,10 @@ image:
         it integrates half of the circle and takes the
         minimum between opposite values.
       **/
-      Variable::ptr  varim4(driver.var_stack.GetLastVar());
-      Variable::ptr  varim3(driver.var_stack.GetLastVar());
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim4(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim3(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
 
       InrImage::ptr res ( Func_CircleIntSdExc(
         ((InrImage::ptr*) varim1 ->Pointer())->get(),  // gradient
@@ -8048,10 +8049,10 @@ image:
       T_LocalExtrema T_OP_PAR var_image T_COMMA var_image T_COMMA var_image T_COMMA var_image T_CL_PAR
       {
 
-      Variable::ptr  varim4(driver.var_stack.GetLastVar());
-      Variable::ptr  varim3(driver.var_stack.GetLastVar());
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim4(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim3(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
 
     InrImage::ptr res( Func_LocalExtrema( 
                   ((InrImage::ptr*) varim1->Pointer())->get(),  // input image
@@ -8067,10 +8068,10 @@ image:
       |
       T_LocalExtrema T_OP_PAR var_image T_COMMA var_image T_COMMA var_image T_COMMA var_image T_COMMA expr T_CL_PAR
       {
-      Variable::ptr  varim4(driver.var_stack.GetLastVar());
-      Variable::ptr  varim3(driver.var_stack.GetLastVar());
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim4(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim3(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
     int samples = (int) $11;
 
     InrImage::ptr res( Func_LocalExtrema( 
@@ -8088,7 +8089,7 @@ image:
      |
       T_NormalField T_OP_PAR var_image  T_CL_PAR
       {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res( Func_NormalSmoothField( ((InrImage::ptr*) varim->Pointer())->get() ));
 
     Si !res.get() Alors
@@ -8099,8 +8100,8 @@ image:
       |
       T_NormalField T_OP_PAR var_image T_COMMA var_image T_CL_PAR
       {
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
     InrImage::ptr res( Func_NormalSmoothField( 
                     ((InrImage::ptr*) varim1->Pointer())->get() , 
                     ((InrImage::ptr*) varim2->Pointer())->get() ));
@@ -8113,8 +8114,8 @@ image:
       |
       T_DirConnectivity T_OP_PAR var_image T_COMMA var_image T_CL_PAR
       {
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
     InrImage::ptr res( Func_DirConnectivity( 
         ((InrImage::ptr*) varim1->Pointer())->get() ,
         ((InrImage::ptr*) varim2->Pointer())->get() ));
@@ -8141,7 +8142,7 @@ image:
       T_DiscNormGrad
       T_OP_PAR var_image  T_CL_PAR
       {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res (Func_DiscNormGrad( ((InrImage::ptr*) varim->Pointer())->get()));
     Si !res.get() Alors
       driver.err_print("discnormgrad() erreur ... \n");
@@ -8152,7 +8153,7 @@ image:
       T_DiscMeanCurvature
       T_OP_PAR var_image  T_CL_PAR
       {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res (Func_DiscMeanCurvature( ((InrImage::ptr*) varim->Pointer())->get()));
     Si !res.get() Alors
       driver.err_print("DiscMeanCurvature() erreur ... \n");
@@ -8164,7 +8165,7 @@ image:
       T_OP_PAR var_image
       T_COMMA expr T_CL_PAR
       {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res (Func_Gradient( ((InrImage::ptr*) varim->Pointer())->get(),
                  $5));
     Si !res.get() Alors
@@ -8183,7 +8184,7 @@ image:
         Computes a discrete laplacian (sum of second order derivatives),
         in 2D or 3D depending on the image dimension.
     **/
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res ( Func_Laplacian(((InrImage::ptr*) varim->Pointer())->get()));
     Si !res.get() Alors
       driver.err_print("Filter() erreur ... \n");
@@ -8195,7 +8196,7 @@ image:
       T_OP_PAR var_image
       T_COMMA expr T_CL_PAR
       {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res (Func_SecDerGrad( ((InrImage::ptr*) varim->Pointer())->get(),
                  $5));
     Si !res.get() Alors
@@ -8208,7 +8209,7 @@ image:
       T_OP_PAR var_image
       T_COMMA expr T_CL_PAR
       {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res ( Func_SecDerGrad2( ((InrImage::ptr*) varim->Pointer())->get(),
                  $5));
     Si !res.get() Alors
@@ -8225,7 +8226,7 @@ image:
     |
       var_image T_OP_BR image_extent T_CL_BR
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       ImageExtent<float>* extent = (ImageExtent<float>*) $3;
   
       //extent->print();
@@ -8254,7 +8255,7 @@ image:
       T_COLON  T_COMMA
       expr T_COLON expr T_CL_BR
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       InrImage::ptr  im = *(InrImage::ptr*) varim->Pointer();
 
       InrImage::ptr res (Func_SubImage( im.get(),
@@ -8297,7 +8298,7 @@ image:
         putimage, []
 
       **/
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res ( Func_SubImage( ((InrImage::ptr*) varim->Pointer())->get(),
                  (int) $5, (int) $7, (int) $9,
                  (int) $11,(int) $13,(int) $15));
@@ -8309,7 +8310,7 @@ image:
       |
       T_EDPdilate T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
       {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res ( Func_EDP_dilate( ((InrImage::ptr*) varim->Pointer())->get(),
                    $5,  $7, (int) $9));
     Si !res.get() Alors
@@ -8320,7 +8321,7 @@ image:
       |
       T_EDPdilate T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_CL_PAR
       {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res ( Func_EDP_dilate( ((InrImage::ptr*) varim->Pointer())->get(), $5,  $7));
     Si !res.get() Alors
       fprintf(stderr,"SubImage() erreur ... \n");
@@ -8330,7 +8331,7 @@ image:
       |
       T_EDPdilate T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
       {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     float Imin = $9;
     float Imax = $11;
     InrImage::ptr res ( Func_EDP_dilate( ((InrImage::ptr*) varim->Pointer())->get(), $5,  $7, Imin, Imax));
@@ -8342,7 +8343,7 @@ image:
       |
       T_EDPerode T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
       {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res ( Func_EDP_erode( ((InrImage::ptr*) varim->Pointer())->get(),
                   $5,  $7, (int) $9));
     Si !res.get() Alors
@@ -8353,7 +8354,7 @@ image:
       |
       T_EDPerode T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_CL_PAR
       {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res ( Func_EDP_erode( ((InrImage::ptr*) varim->Pointer())->get(), $5,  $7));
     Si !res.get() Alors
       fprintf(stderr,"SubImage() erreur ... \n");
@@ -8376,7 +8377,7 @@ image:
       size and time step in voxel units
       minimal and maximal intensities allow to speed up the process
     **/
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     float Imin = $9;
     float Imax = $11;
     InrImage::ptr res ( Func_EDP_erode( ((InrImage::ptr*) varim->Pointer())->get(), $5,  $7, Imin, Imax));
@@ -8400,7 +8401,7 @@ image:
       using Brockett and Maragos scheme with a given
       size and time step in voxel units
     **/
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res ( Func_EDP_open( ((InrImage::ptr*) varim->Pointer())->get(),
                     $5,  $7));
     Si !res.get() Alors
@@ -8426,7 +8427,7 @@ image:
       size and time step in voxel units
       minimal and maximal intensities allow to speed up the process
     **/
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     float Imin = $9;
     float Imax = $11;
     InrImage::ptr res ( Func_EDP_open( ((InrImage::ptr*) varim->Pointer())->get(),
@@ -8441,7 +8442,7 @@ image:
       T_OP_PAR var_image
       T_COMMA expr T_COMMA expr T_CL_PAR
       {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res ( Func_EDP_close( ((InrImage::ptr*) varim->Pointer())->get(),
                    $5,  $7));
 
@@ -8457,7 +8458,7 @@ image:
     float Imin = $9;
     float Imax = $11;
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res ( Func_EDP_close( ((InrImage::ptr*) varim->Pointer())->get(),
                    $5,  $7, Imin, Imax));
 
@@ -8492,7 +8493,7 @@ image:
     // 1. input image
     // 2. isosurface threshold on the input image
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res ( Func_LevelSets_Init( ((InrImage::ptr*) varim->Pointer())->get(),
                    $7));
     Si !res.get() Alors
@@ -8509,8 +8510,8 @@ image:
     // 2. Initial position of the level set a the zero-crossing of
     //    this image
 
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
     InrImage::ptr res ( Func_LevelSets_Init(
            ((InrImage::ptr*) varim1->Pointer())->get(),
            ((InrImage::ptr*) varim2->Pointer())->get()
@@ -8535,7 +8536,7 @@ image:
       T_LevelSetsCURV T_POINT T_GetAttachVect  T_OP_PAR var_image T_CL_PAR
       {
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
     InrImage::ptr res ( Func_LevelSets_GetAttachVectors( ((InrImage::ptr*) varim->Pointer())->get()));
     Si !res.get() Alors
       fprintf(stderr,"Func_GetAttachVect() erreur ... \n");
@@ -8559,7 +8560,7 @@ image:
       **/
       int        nb_iter,i;
       float       error;
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
 
       Func_InitAnisoGS( ((InrImage::ptr*) varim->Pointer())->get(),
                   $5,  $7, $9);
@@ -8590,8 +8591,8 @@ image:
       int        nb_iter,i;
       float       error;
 
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
       Func_InitAnisoGS( ((InrImage::ptr*) varim1->Pointer())->get(),
                   1,  1, $7);
 
@@ -8629,7 +8630,7 @@ image:
           Anisotropic diffusion filter based on the Flux diffusion paper
           (Krissian, 2002, IEEE TMI).
       **/
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       InrImage::ptr  in      = *(InrImage::ptr*) varim->Pointer();
       float      sigma   = $5;
       float      k       = $7;
@@ -8653,7 +8654,7 @@ image:
       int        nb_iter,i;
       float       error;
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       Func_InitAnisoGS( ((InrImage::ptr*) varim->Pointer())->get(), $5,  $7, $9);
 
 
@@ -8678,7 +8679,7 @@ image:
         T_OP_PAR var_image
         T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       InrImage::ptr res ( Func_InitWeickert( ((InrImage::ptr*) varim->Pointer())->get(),
                 $7,  $9, $11));
 
@@ -8692,7 +8693,7 @@ image:
         T_OP_PAR var_image
         T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       InrImage::ptr res ( Func_InitWeickertCoherence( ((InrImage::ptr*) varim->Pointer())->get(),
                 $7,  $9, $11, $13, $15));
 
@@ -8704,7 +8705,7 @@ image:
         |
         T_SRAD_qcoeff T_OP_PAR var_image T_CL_PAR
         {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       InrImage::ptr res ( Func_SRAD_qcoeff( ((InrImage::ptr*) varim->Pointer())->get()));
       Si !res.get() Alors
         fprintf(stderr,"Func_SRAD_qcoeff() erreur ... \n");
@@ -8716,7 +8717,7 @@ image:
         T_OP_PAR var_image
         T_COMMA expr T_COMMA expr T_CL_PAR
         {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       float dt = (float) $5;
       int numit = (int) $7;
 
@@ -8734,7 +8735,7 @@ image:
         T_AnisoSRAD
         T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
         {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       float dt = (float) $5;
       int numit = (int) $7;
       ImageExtent<float>* extent = (ImageExtent<float>*) $9;
@@ -8755,7 +8756,7 @@ image:
         T_AnisoSRAD
         T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
         {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       float dt = (float) $5;
       int numit = (int) $7;
       int neighborhood = (int) $9;
@@ -8777,7 +8778,7 @@ image:
         T_AnisoSRAD2
         T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
         {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       float dt = (float) $5;
       int numit = (int) $7;
       ImageExtent<float>* extent = (ImageExtent<float>*) $9;
@@ -8802,7 +8803,7 @@ image:
         T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA
     expr T_COMMA image_extent T_CL_PAR
         {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       float dt = (float) $5;
       int numit = (int) $7;
       int neighborhood = (int) $9;
@@ -8824,7 +8825,7 @@ image:
         |
         T_AnisoLeeAdd2 T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
         {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       float dt = (float) $5;
       int numit = (int) $7;
       ImageExtent<float>* extent = (ImageExtent<float>*) $9;
@@ -8844,7 +8845,7 @@ image:
         |
         T_AnisoDPAD T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
         {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       float dt         = (float) $5;
       int numit        = (int) $7;
       int neighborhood = (int) $9;
@@ -8865,7 +8866,7 @@ image:
     T_AnisoDPAD2
     T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       float dt = (float) $5;
       int numit = (int) $7;
       int neighborhood = (int) $9;
@@ -8904,7 +8905,7 @@ image:
             stationary noise and MRI is for MRI style noise. In the case of MRI,
             the filter is designed to run on the square of the image intensity.
          **/
-       Variable::ptr  varim(driver.var_stack.GetLastVar());
+       BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
            int mode = (int) $5;
             float dt = (float) $7;
             int numit = (int) $9;
@@ -8928,7 +8929,7 @@ image:
     T_OP_PAR var_image
     T_COMMA expr T_COMMA expr  T_COMMA expr T_COMMA expr T_CL_PAR
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       InrImage::ptr  initim = *(InrImage::ptr*) varim->Pointer();
       float dt = (float) $5;
       int numit = (int) $7;
@@ -8956,7 +8957,7 @@ image:
           Add Gaussian noise with specified mean and variance.
       **/
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         AjouteBruit* addnoise;
         InrImage::ptr    in = *(InrImage::ptr*) varim->Pointer();
         float mean;
@@ -8990,7 +8991,7 @@ image:
         - Performs a 2D rotation of the image
     **/
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
           InrImage::ptr res ( Func_rot2D( ((InrImage::ptr*) varim->Pointer())->get(),
                 $5, $7,   // rotation center
                 $9,       // angle of rotation
@@ -9020,7 +9021,7 @@ image:
 
           int x,y,z;
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr res ( new InrImage(WT_UNSIGNED_SHORT,1,
                    "tmp_X.inr.gz",
                    ((InrImage::ptr*) varim->Pointer())->get()));
@@ -9057,7 +9058,7 @@ image:
 
           int x,y,z;
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr res ( new InrImage(WT_UNSIGNED_SHORT,1,
                    "tmp_X.inr.gz",
                    ((InrImage::ptr*) varim->Pointer())->get()));
@@ -9094,7 +9095,7 @@ image:
 
           int x,y,z;
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr res ( new InrImage(WT_UNSIGNED_SHORT,1,
                    "tmp_X.inr.gz",
                    ((InrImage::ptr*) varim->Pointer())->get()));
@@ -9126,7 +9127,7 @@ image:
 
           int x,y,z;
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr res ( new InrImage(WT_FLOAT,3,
                    "tmp_spacepos.inr.gz",
                    ((InrImage::ptr*) varim->Pointer())->get()));
@@ -9146,13 +9147,13 @@ image:
         |
         VAR_SURFDRAW T_POINT T_getimage
         {
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           driver.im_stack.AddImage(InrImage::ptr((*(Viewer3D_ptr*) varsurfd->Pointer())->GetCanvas()->GetGLImage()));
         }
         |
         VAR_SURFDRAW T_POINT T_GetImageFromX
         {
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           driver.yyiperror("Not available in new wxwidgets version of the 3D viewer ! ");
           driver.im_stack.AddImage(InrImage::ptr());
 /*
@@ -9162,27 +9163,27 @@ image:
     |
     VAR_IMAGEDRAW T_POINT T_getimage
     {
-      Variable::ptr  varimd(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
       driver.im_stack.AddImagePointer((*(DessinImage::ptr*) varimd->Pointer())->GetInrImage());
     }
     |
     T_threscross T_OP_PAR var_image T_COMMA expr T_CL_PAR
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       InrImage::ptr res ( Func_ThresholdCrossing( ((InrImage::ptr*) varim->Pointer())->get(), $5));
        driver.im_stack.AddImage(res);
     }
     |
     T_IsocontourPoints T_OP_PAR var_image T_COMMA expr T_CL_PAR
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       InrImage::ptr res ( Func_IsocontourPoints( ((InrImage::ptr*) varim->Pointer())->get(), $5));
       driver.im_stack.AddImage(res);
     }
     |
     T_IsosurfDist T_OP_PAR var_image T_COMMA expr T_CL_PAR
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       InrImage::ptr res ( Func_IsosurfDist( ((InrImage::ptr*) varim->Pointer())->get(), $5));
       driver.im_stack.AddImage(res);
 
@@ -9190,7 +9191,7 @@ image:
     |
     T_vtkIsoContourDist T_OP_PAR var_image T_COMMA expr T_CL_PAR
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       InrImage::ptr res ( Func_vtkIsoContourDist( ((InrImage::ptr*) varim->Pointer())->get(), $5));
       driver.im_stack.AddImage(res);
     }
@@ -9315,7 +9316,7 @@ image:
       InrImage::ptr input( driver.im_stack.GetLastImage());
       float   maxtime    = (float) $9;
       int     inittype   = (int)   $11;
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
 
       InrImage::ptr res ( Func_vtkFastMarching(
                   input.get(),
@@ -9327,8 +9328,8 @@ image:
     |
     T_Convolve T_OP_PAR var_image T_COMMA var_image T_CL_PAR
     {
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
       InrImage::ptr res ( Func_Convolve(
                   ((InrImage::ptr*) varim1->Pointer())->get(),
                   ((InrImage::ptr*) varim2->Pointer())->get()));
@@ -9338,8 +9339,8 @@ image:
       |
       T_ConvolveMask T_OP_PAR var_image T_COMMA var_image T_COMMA expr_image T_CL_PAR
       {
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
         InrImage::ptr mask (driver.im_stack.GetLastImage());
 
         InrImage::ptr res ( Func_ConvolveMask(((InrImage::ptr*) varim1->Pointer())->get(),
@@ -9351,14 +9352,14 @@ image:
       |
       T_ChamferDT T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
       {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr res ( Func_Chamfer(((InrImage::ptr*) varim->Pointer())->get(), $5, $7, $9));
         driver.im_stack.AddImage(res);
         }
         |
         T_Chamfer2DT T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
           InrImage::ptr res ( Func_Chamfer2(((InrImage::ptr*) varim->Pointer())->get(), $5, $7, $9));
           driver.im_stack.AddImage(res);
 
@@ -9372,7 +9373,7 @@ image:
         float c = $9;
         float dmax = $11;
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr res ( Func_Chamfer2(((InrImage::ptr*) varim->Pointer())->get(), a,b,c,dmax));
         driver.im_stack.AddImage(res);
 
@@ -9382,7 +9383,7 @@ image:
         {
         float dmax = $5;
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr  res ( Func_Chamfer2(((InrImage::ptr*) varim->Pointer())->get(),
                   0.92644, 1.34065, 1.65849,
                   dmax));
@@ -9394,7 +9395,7 @@ image:
         {
         float dmax = $5;
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr res ( Func_Chamfer2Signed(((InrImage::ptr*) varim->Pointer())->get(),
                     0.92644, 1.34065, 1.65849,
                     dmax));
@@ -9406,7 +9407,7 @@ image:
         {
         float dmax = $5;
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr res ( Func_vtkSignedBorgefors(((InrImage::ptr*) varim->Pointer())->get(),
                     dmax));
         driver.im_stack.AddImage(res);
@@ -9416,7 +9417,7 @@ image:
         {
         float dmax = $5;
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr res ( Func_vtkSignedFMDist(((InrImage::ptr*) varim->Pointer())->get(),
                      dmax));
         driver.im_stack.AddImage(res);
@@ -9427,7 +9428,7 @@ image:
         {
         float dmax = $5;
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr res ( Func_PropagationDistance(((InrImage::ptr*) varim->Pointer())->get(),
                       dmax));
         driver.im_stack.AddImage(res);
@@ -9437,7 +9438,7 @@ image:
         {
         float dmax = $5;
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr res ( Func_PropagationDistance2(((InrImage::ptr*) varim->Pointer())->get(),
                       dmax));
         driver.im_stack.AddImage(res);
@@ -9447,7 +9448,7 @@ image:
         {
         float dmax = $5;
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+        BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr res ( Func_PropagationDanielsson(((InrImage::ptr*) varim->Pointer())->get(),
                        dmax));
 
@@ -9458,7 +9459,7 @@ image:
         {
         float dmax = $5;
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr res ( Func_vtkPropDanielsson(((InrImage::ptr*) varim->Pointer())->get(),
                        -dmax,dmax));
         driver.im_stack.AddImage(res);
@@ -9469,7 +9470,7 @@ image:
         float dmin = $5;
         float dmax = $7;
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr res ( Func_vtkPropDanielsson(((InrImage::ptr*) varim->Pointer())->get(),
                        dmin,dmax));
         driver.im_stack.AddImage(res);
@@ -9490,7 +9491,7 @@ image:
           starting from the object, up to a given distance
           for positive and negative sides.
         **/
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         float threshold = $5;
         float dmin      = $7;
         float dmax      = $9;
@@ -9555,7 +9556,7 @@ image:
       InrImage::ptr im2( driver.im_stack.GetLastImage());
       int pos;
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       im1 = *(InrImage::ptr*) varim->Pointer();
 
       InrImage::ptr res ( new InrImage(
@@ -9757,8 +9758,8 @@ image:
     }
     | T_ReSlice T_OP_PAR var_image T_COMMA var_image T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA  expr T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA  expr T_COMMA expr T_CL_PAR
     {
-      Variable::ptr  varim2(driver.var_stack.GetLastVar());
-      Variable::ptr  varim1(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim2(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim1(driver.var_stack.GetLastVar());
 
       FloatMatrix m(4,4);
       m[0][0] =  $7;
@@ -9794,7 +9795,7 @@ image:
     }
     | var_surface T_POINT T_GetLinesLength T_OP_PAR   T_CL_PAR
     {
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) var->Pointer());
 
       InrImage::ptr res ( s->GetImageLinesLength(  ));
@@ -9811,7 +9812,7 @@ image:
           the point positions.
       **/
       InrImage::ptr         res;
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) var->Pointer());
       int linenumber = (int) $5;
       
@@ -9848,7 +9849,7 @@ image:
         containing the point id of the 2 extremities of each 
         line
     **/
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) var->Pointer());
 
       InrImage::ptr res ( s->GetImageLinesExtremities(  ));
@@ -9864,7 +9865,7 @@ image:
         The result is given as a 1D image of size the total
         number of points of the polydata
     **/
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) var->Pointer());
 
       InrImage::ptr res ( s->GetImageConnections(  ));
@@ -9872,10 +9873,10 @@ image:
     }
     | var_surface T_POINT T_GetIntensities T_OP_PAR var_image  T_CL_PAR
     {
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       SurfacePoly::ptr s = (*(SurfacePoly::ptr*) var->Pointer());
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       InrImage::ptr res ( s->GetIntensities( ((InrImage::ptr*) varim->Pointer())->get() ));
       driver.im_stack.AddImage(res);
     }
@@ -9999,10 +10000,10 @@ image:
       Tubular reconstruction based on a set of lines and an estimated radius
       size for each point
     **/
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       SurfacePoly::ptr  surf = *(SurfacePoly::ptr*)
                                   var->Pointer();
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       InrImage::ptr ref = *(InrImage::ptr*) varim->Pointer();
       InrImage::ptr rad = InrImage::ptr(
                                 driver.im_stack.GetLastImage());
@@ -10023,7 +10024,7 @@ image:
     **/
       boost::shared_array<char> filename( $5);
 
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       SurfacePoly::ptr  surf = *(SurfacePoly::ptr*)
                                   var->Pointer();
 
@@ -10290,7 +10291,7 @@ expr_var:
 
 
 gltransform: VAR_GLTRANSFORM {
-            Variable::ptr varglt(driver.var_stack.GetLastVar());
+            BasicVariable::ptr varglt(driver.var_stack.GetLastVar());
             GLTransfMatrix* newglt;
             GLTransfMatrix_ptr glt = *(GLTransfMatrix_ptr*) varglt->Pointer();
 
@@ -10302,7 +10303,7 @@ gltransform: VAR_GLTRANSFORM {
         |
         VAR_SURFDRAW T_POINT T_GetTransform
         {
-          Variable::ptr  varsurfd(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varsurfd(driver.var_stack.GetLastVar());
           GLTransfMatrix glt;
           GLTransfMatrix* newglt;
   
@@ -10316,8 +10317,8 @@ gltransform: VAR_GLTRANSFORM {
       |
       T_Interpolate T_OP_PAR VAR_GLTRANSFORM T_COMMA VAR_GLTRANSFORM T_COMMA expr T_CL_PAR
       {
-        Variable::ptr varglt2(driver.var_stack.GetLastVar());
-        Variable::ptr varglt1(driver.var_stack.GetLastVar());
+        BasicVariable::ptr varglt2(driver.var_stack.GetLastVar());
+        BasicVariable::ptr varglt1(driver.var_stack.GetLastVar());
         GLTransfMatrix* newglt = NULL;
         GLTransfMatrix_ptr glt1 = *(GLTransfMatrix_ptr*) varglt1->Pointer();
         GLTransfMatrix_ptr glt2 = *(GLTransfMatrix_ptr*) varglt2->Pointer();
@@ -10353,7 +10354,7 @@ matrix: T_Matrix T_OP_PAR expr T_COMMA expr T_CL_PAR
        |
        VAR_MATRIX
        {
-          Variable::ptr varmat(driver.var_stack.GetLastVar());
+          BasicVariable::ptr varmat(driver.var_stack.GetLastVar());
           FloatMatrix* newmat;
           FloatMatrix::ptr mat = *(FloatMatrix::ptr*) varmat->Pointer();
     
@@ -10480,12 +10481,12 @@ var_surface:
         |
         VAR_ARRAY_SURFACE T_OP_BR expr T_CL_BR
         {
-          Variable::ptr var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr var(driver.var_stack.GetLastVar());
           VarArray::ptr array;
           int  i = (int) $3;
 
           array = *(VarArray::ptr*) (var->Pointer());
-          Variable::ptr arrayvar = array->GetVar(i);
+          BasicVariable::ptr arrayvar = array->GetVar(i);
           if (!arrayvar.get()) {
             // initialize the surface
             SurfacePoly* surf = new SurfacePoly();
@@ -10511,7 +10512,7 @@ surface:
     |
     T_isosurf_ras T_OP_PAR var_image T_COMMA expr T_CL_PAR
     {
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         SurfacePoly* surf;
         surf = Func_isosurf((*(InrImage::ptr*) varim->Pointer()),
                 $5,
@@ -10531,7 +10532,7 @@ surface:
         Computed isosurface of the input image with a given threshold within a region
         defined by the mask image.
     **/
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
         InrImage::ptr im (driver.im_stack.GetLastImage());
         SurfacePoly* surf;
         surf = Func_isosurf(im,
@@ -10577,7 +10578,7 @@ surface:
     |
     T_vtkDecimate T_OP_PAR var_surface T_CL_PAR
     {
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       SurfacePoly* surf;
       surf = Func_decimate(((SurfacePoly::ptr*) var->Pointer())->get());
       Si surf != NULL Alors
@@ -10587,7 +10588,7 @@ surface:
     |
     T_vtkDecimate T_OP_PAR var_surface T_COMMA expr T_CL_PAR
     {
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       SurfacePoly* surf;
       surf = Func_decimate(((SurfacePoly::ptr*) var->Pointer())->get(), $5 );
       Si surf != NULL Alors
@@ -10598,7 +10599,7 @@ surface:
     T_vtkMarchingCubes T_OP_PAR var_image T_COMMA expr T_CL_PAR
     {
           SurfacePoly* surf;
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
           surf = Func_vtkMarchingCubes(((InrImage::ptr*) varim->Pointer())->get(),$5);
       Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
@@ -10608,7 +10609,7 @@ surface:
     T_vtkSmooth T_OP_PAR var_surface T_COMMA expr T_CL_PAR
     {
       SurfacePoly* surf;
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
       surf = Func_vtkSmooth(((SurfacePoly::ptr*) var->Pointer())->get(), (int) $5);
       Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
@@ -10618,7 +10619,7 @@ surface:
     T_vtkWindowedSinc T_OP_PAR var_surface T_COMMA expr T_CL_PAR
     {
         SurfacePoly* surf;
-        Variable::ptr       var(driver.var_stack.GetLastVar());
+        BasicVariable::ptr       var(driver.var_stack.GetLastVar());
         surf = Func_vtkWindowedSinc(((SurfacePoly::ptr*) var->Pointer())->get(), (int) $5);
         if (surf==NULL) driver.err_print("vtkWindowedSinc failed!");
         driver.surf_stack.AddSurf(surf);
@@ -10703,7 +10704,7 @@ surface:
       |
       var_surface
       {
-        Variable::ptr       var(driver.var_stack.GetLastVar());
+        BasicVariable::ptr       var(driver.var_stack.GetLastVar());
         SurfacePoly* newsurf;
         SurfacePoly::ptr surf = *(SurfacePoly::ptr*) var->Pointer();
   
@@ -10720,7 +10721,7 @@ surface:
         **/
           SurfacePoly* surf;
 
-      Variable::ptr  varim(driver.var_stack.GetLastVar());
+      BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
       surf = Func_Skeleton2lines( ((InrImage::ptr*) varim->Pointer())->get()  );
 
       Si surf==NULL Alors
@@ -10745,7 +10746,7 @@ surface:
         iterations      10
     **/
       SurfacePoly* surf;
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
 
       surf = Func_SmoothLines( ((SurfacePoly::ptr*) var->Pointer())->get(),
                       0.1,
@@ -10773,7 +10774,7 @@ surface:
       with data attachment
     **/
       SurfacePoly* surf;
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
 
       surf = Func_SmoothLines( ((SurfacePoly::ptr*) var->Pointer())->get(),
                       $5,
@@ -10791,7 +10792,7 @@ surface:
     T_ResampleLines T_OP_PAR var_surface T_COMMA expr  T_CL_PAR
     {
       SurfacePoly* surf;
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
 
       surf = Func_ResampleLines( ((SurfacePoly::ptr*) var->Pointer())->get(),
                      $5);
@@ -10816,7 +10817,7 @@ surface:
         Finds the shortest path within the lines of the polydata
     **/
       SurfacePoly* surf;
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
 
       surf = Func_shortestpath( ((SurfacePoly::ptr*) var->Pointer())->get(),
                       $5, $7, $9,
@@ -10994,7 +10995,7 @@ surface:
       Connecting close lines
     **/
       SurfacePoly* surf;
-      Variable::ptr       var(driver.var_stack.GetLastVar());
+      BasicVariable::ptr       var(driver.var_stack.GetLastVar());
 
       surf = Func_ConnectLines( ((SurfacePoly::ptr*) var->Pointer())->get(),
                       $5,
@@ -11421,7 +11422,7 @@ variable:
           // todo ... 
           // 1. check if identifier belongs to the object
           // 2. if so return corresponding variable
-          Variable::ptr var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr var(driver.var_stack.GetLastVar());
 
           AMIObject::ptr object = *(AMIObject::ptr*) var->Pointer();
           IdentifierInfo::ptr ident($3);
@@ -11429,7 +11430,7 @@ variable:
           Vars.SetObjectContext(object->GetContext());
     
           // here, need to do our own checking ...
-          Variable::ptr newvar;
+          BasicVariable::ptr newvar;
           newvar = Vars.GetVar(ident->GetName().c_str(),OBJECT_CONTEXT_NUMBER);
 
           // reset previous object context
@@ -11442,7 +11443,7 @@ variable:
           } else {
             // error message here
             driver.yyiperror("Identifier does not belong to object context \n");
-            driver.var_stack.AddVarSmrtPtr(Variable::ptr());
+            driver.var_stack.AddVarSmrtPtr(BasicVariable::ptr());
           }
         }
         |
@@ -11454,12 +11455,12 @@ variable:
         **/
           //cout << "call to variable T_OP_PAR param_list T_CL_PAR end_instr" << endl;
           // 1. check the variable type
-          Variable::ptr var(driver.var_stack.GetLastVar());
+          BasicVariable::ptr var(driver.var_stack.GetLastVar());
           ParamList::ptr param($3);
 
           if (var->Type()==type_class_member) {
 
-            Variable::ptr  res;
+            BasicVariable::ptr  res;
   
             res = (*(WrapClassMember::ptr*) var->Pointer())->CallMember(param.get());
             /*
@@ -11476,7 +11477,7 @@ variable:
           } else {
             // error message here
             driver.yyiperror("variable is not of type  type_class_member\n");
-            driver.var_stack.AddVarSmrtPtr(Variable::ptr());
+            driver.var_stack.AddVarSmrtPtr(BasicVariable::ptr());
           }
         }
         ;
@@ -11500,7 +11501,7 @@ image_extent:
         |
         var_image
         {
-          Variable::ptr  varim(driver.var_stack.GetLastVar());
+          BasicVariable::ptr  varim(driver.var_stack.GetLastVar());
           InrImage::ptr im = *(InrImage::ptr*) varim->Pointer();
 
           ImageExtent<float>* extent=new ImageExtent<float>();
@@ -11517,7 +11518,7 @@ image_extent:
        |
        VAR_IMAGEDRAW
        {
-        Variable::ptr  varimd(driver.var_stack.GetLastVar());
+        BasicVariable::ptr  varimd(driver.var_stack.GetLastVar());
         DessinImage::ptr draw = *(DessinImage::ptr*) (varimd->Pointer());
 
         int xmin,xmax;

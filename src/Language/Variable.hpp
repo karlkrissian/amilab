@@ -96,11 +96,26 @@ public:
   virtual ~Variable(){ this->Delete(); }
 
   /**
-    * Virtual Method that creates a new smart pointer to a basic variable with the same type
+    * Virtual Method that creates a new smart pointer to a basic variable coming from the same type
+    * generic copy of variable, can be specialized per variable type
     */
-  BasicVariable::ptr New()
+  BasicVariable::ptr NewCopy()
   {
-    // TODO ...
+    string resname = _name+"_copy";
+    boost::shared_ptr<T> copy(new T(*_pointer));
+    Variable<T>::ptr res(new Variable<T>(resname,copy));
+    return res;
+  }
+
+  /**
+    * Virtual Method that creates a new smart pointer to a basic variable coming from the same type
+    * with a reference to the same value
+    */
+  BasicVariable::ptr NewReference()
+  {
+    string resname = _name+"_ref";
+    Variable<T>::ptr res(new Variable<T>(resname,_pointer));
+    return res;
   }
 
   /**
@@ -140,7 +155,6 @@ public:
   boost::shared_ptr<T>& Pointer() const { return _pointer;}
 
 
-
   void Init(const std::string& name, 
             const boost::shared_ptr<T>& p);
 
@@ -164,63 +178,6 @@ public:
   friend class VarArray;
 
 }; // class Variable
-
-
-
-
-//----------------------------------------------------------------------
-class VarArray {
-
-  DEFINE_CLASS(VarArray)
-
-private:
-  int           _size;
-  int           _allocated_size;
-  vartype       _type;
-  std::vector<BasicVariable::ptr>     _vars;
-  void Resize( int new_size);
-
- public:
-
-  VarArray();
-  virtual ~VarArray();
-  int Size() {return _size;}
-  void Init( vartype type, int initsize=10);
-
-  /**
-   * Initialize an element of the array based on a pointer to its value. 
-   **/
-  void InitElement( int i, void* p,const char* name);
-
-  /**
-   * Initialize an element of the array based on a pointer to a smart pointer. 
-   **/
-  void InitElementPtr( vartype _type, int i, void* p,const char* name);
-
-  template <class T>
-  void InitElement( int i, 
-                    const boost::shared_ptr<T>& p,
-                    const char* name)
-  {
-    if (i>=_allocated_size) this->Resize(i+1);
-    if ((i>=0)&&(i<_allocated_size)) {
-      _vars[i] = BasicVariable::ptr(new Variable<T>(_type,name,p));
-    }
-  }
-
-  BasicVariable::ptr GetVar(int i); 
-  vartype Type() { return _type; }
-  void FreeMemory();
-
-  //
-  void display();
-
-  //
-  friend std::ostream& operator<<(std::ostream& o, const VarArray& v);
-
-}; // VarArray
-
-
 
 
 #endif

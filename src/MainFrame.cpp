@@ -1134,7 +1134,7 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
     //cout << "set item variable " << i << endl;
 
     wxString type_str;
-    Variable::ptr var = context->GetVar((*variables)[i].mb_str());
+    BasicVariable::ptr var = context->GetVar((*variables)[i].mb_str());
 
     if (var.get()) {
       if (var->Type() == type_image) {

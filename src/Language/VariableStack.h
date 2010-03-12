@@ -27,7 +27,7 @@ class VariableStack{
 
   DEFINE_CLASS(VariableStack);
 
-  std::stack<Variable::ptr> _variables;
+  std::stack<BasicVariable::ptr> _variables;
 
  public:
 
@@ -54,13 +54,23 @@ class VariableStack{
     _variables.push(var);
   }
 
-  Variable::ptr GetLastVar()
+  BasicVariable::ptr GetLastBasicVar()
   {
-    if (_variables.empty()) return Variable::ptr();
-    Variable::ptr tmp = _variables.top();
+    if (_variables.empty()) return BasicVariable::ptr();
+    BasicVariable::ptr tmp = _variables.top();
     _variables.pop();
     return tmp;
   }
+
+  template <class T>
+  Variable<T>::ptr GetLastVar()
+  {
+    if (_variables.empty()) return Variable::ptr();
+    Variable<T>::ptr tmp = boost::dynamic_pointer_cast<Variable<T> >(_variables.top());
+    _variables.pop();
+    return tmp;
+  }
+
 }; // VariableStack
 
 #endif // _VariableStack_h_

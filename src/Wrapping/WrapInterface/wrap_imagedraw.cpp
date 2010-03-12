@@ -79,7 +79,7 @@ void wrap_DessinImageLineParam::SetParametersComments()
   ADDPARAMCOMMENT( "style (def:0): line style, 0 for SOLID, 1 for DOT.");
 }
 //---------------------------------------------------------
-Variable::ptr wrap_DessinImageLineParam::CallMember( ParamList* p)
+BasicVariable::ptr wrap_DessinImageLineParam::CallMember( ParamList* p)
 {
   int thickness = 1;
   int style = 0;
@@ -95,7 +95,7 @@ Variable::ptr wrap_DessinImageLineParam::CallMember( ParamList* p)
     default: wxstyle = wxSOLID;
   }
   this->_objectptr->FixeParametresLigne( thickness, wxstyle, wxCAP_ROUND, wxJOIN_MITER);
-  return Variable::ptr();
+  return BasicVariable::ptr();
 
 }
 
@@ -111,7 +111,7 @@ void wrap_DessinImageSetLineColor::SetParametersComments()
   ADDPARAMCOMMENT( "alpha  (0-255) default 10.");
 }
 //---------------------------------------------------------
-Variable::ptr wrap_DessinImageSetLineColor::CallMember( ParamList* p)
+BasicVariable::ptr wrap_DessinImageSetLineColor::CallMember( ParamList* p)
 {
   int red   = 10;
   int green = 10;
@@ -128,7 +128,7 @@ Variable::ptr wrap_DessinImageSetLineColor::CallMember( ParamList* p)
     (unsigned char)green,
     (unsigned char)blue,
     (unsigned char)alpha));
-  return Variable::ptr();
+  return BasicVariable::ptr();
 }
 
 
@@ -144,7 +144,7 @@ void wrap_DessinImageDrawLine::SetParametersComments()
   ADDPARAMCOMMENT( "number update (def:0): 0 does not update display, 1 updates display");
 }
 //---------------------------------------------------------
-Variable::ptr wrap_DessinImageDrawLine::CallMember( ParamList* p)
+BasicVariable::ptr wrap_DessinImageDrawLine::CallMember( ParamList* p)
 {
   float x1 = 0,y1 = 0,x2 = 0,y2 = 0 ;
   int update = 0;
@@ -160,7 +160,7 @@ Variable::ptr wrap_DessinImageDrawLine::CallMember( ParamList* p)
   this->_objectptr->DrawLineZ(x1,y1,x2,y2);
   //imdraw->AfficheImage( IMAGE_XY);
   if (update) this->_objectptr->DrawingAreaDisplay();
-  return Variable::ptr();
+  return BasicVariable::ptr();
 
 }
 
@@ -170,8 +170,8 @@ Variable::ptr wrap_DessinImageDrawLine::CallMember( ParamList* p)
 //---------------------------------------------------------
 void wrap_DessinImageDisplayDA::SetParametersComments() {}
 //---------------------------------------------------------
-Variable::ptr wrap_DessinImageDisplayDA::CallMember( ParamList* p)
+BasicVariable::ptr wrap_DessinImageDisplayDA::CallMember( ParamList* p)
 {
   this->_objectptr->DrawingAreaDisplay();
-  return Variable::ptr();
+  return BasicVariable::ptr();
 }

@@ -20,7 +20,7 @@
 
 
 #define RETURN_VARINT(val,name)             \
-  Variable::ptr varres(new Variable());\
+  BasicVariable::ptr varres(new Variable());\
   std::string varname = (boost::format("%1%_id")%name).str();\
   varres->Init(type_int,varname.c_str(),(void*) new int(val));\
   return varres;
@@ -56,7 +56,7 @@ AMIObject* AddWrapVarList( const VarList::ptr& objectptr)
 }
 
 //---------------------------------------------------
-Variable::ptr wrap_VarList( ParamList* p)
+BasicVariable::ptr wrap_VarList( ParamList* p)
 {
     char functionname[] = "VarList";
     char description[]=" \n\
@@ -69,7 +69,7 @@ Variable::ptr wrap_VarList( ParamList* p)
   VarList::ptr pp(new VarList());
 
   AMIObject* amiobject = AddWrapVarList(pp);
-  Variable::ptr varres(new Variable());
+  BasicVariable::ptr varres(new Variable());
   varres->Init(type_ami_object,"tmp_varlist", (void*) amiobject);
 
   return varres;
@@ -85,10 +85,10 @@ void wrap_VarListpush_front::SetParametersComments()
   ADDPARAMCOMMENT("variable: input variable to add.");
 }
 //---------------------------------------------------
-Variable::ptr wrap_VarListpush_front::CallMember( ParamList* p)
+BasicVariable::ptr wrap_VarListpush_front::CallMember( ParamList* p)
 {
   
-  Variable::ptr var;
+  BasicVariable::ptr var;
   int   n = 0;
 
   if (!get_generic_var_param(var, p, n))         ClassHelpAndReturn;
@@ -97,7 +97,7 @@ Variable::ptr wrap_VarListpush_front::CallMember( ParamList* p)
   // do we want explicit copy or reference of the variable contents ??
   this->_objectptr->list.push_front(var);
 
-  return Variable::ptr();
+  return BasicVariable::ptr();
 }
 
 //---------------------------------------------------
@@ -108,10 +108,10 @@ void wrap_VarListpush_back::SetParametersComments()
   ADDPARAMCOMMENT("variable: input variable to add.");
 }
 //---------------------------------------------------
-Variable::ptr wrap_VarListpush_back::CallMember( ParamList* p)
+BasicVariable::ptr wrap_VarListpush_back::CallMember( ParamList* p)
 {
   
-  Variable::ptr var;
+  BasicVariable::ptr var;
   int   n = 0;
 
   if (!get_generic_var_param(var, p, n))         ClassHelpAndReturn;
@@ -120,7 +120,7 @@ Variable::ptr wrap_VarListpush_back::CallMember( ParamList* p)
   // do we want explicit copy or reference of the variable contents ??
   this->_objectptr->list.push_back(var);
 
-  return Variable::ptr();
+  return BasicVariable::ptr();
 }
 
 
@@ -129,10 +129,10 @@ Variable::ptr wrap_VarListpush_back::CallMember( ParamList* p)
 //---------------------------------------------------
 void wrap_VarListpop_front::SetParametersComments() {}
 //---------------------------------------------------
-Variable::ptr wrap_VarListpop_front::CallMember( ParamList* p)
+BasicVariable::ptr wrap_VarListpop_front::CallMember( ParamList* p)
 {
   this->_objectptr->list.pop_front();
-  return Variable::ptr();
+  return BasicVariable::ptr();
 }
 
 
@@ -141,10 +141,10 @@ Variable::ptr wrap_VarListpop_front::CallMember( ParamList* p)
 //---------------------------------------------------
 void wrap_VarListpop_back::SetParametersComments() {}
 //---------------------------------------------------
-Variable::ptr wrap_VarListpop_back::CallMember( ParamList* p)
+BasicVariable::ptr wrap_VarListpop_back::CallMember( ParamList* p)
 {
   this->_objectptr->list.pop_back();
-  return Variable::ptr();
+  return BasicVariable::ptr();
 }
 
 
@@ -156,7 +156,7 @@ void wrap_VarListsize::SetParametersComments()
   return_comments = "List size (int variable).";
 }
 //---------------------------------------------------
-Variable::ptr wrap_VarListsize::CallMember( ParamList* p)
+BasicVariable::ptr wrap_VarListsize::CallMember( ParamList* p)
 {
   int size = this->_objectptr->list.size();
   // create integer variable to return
@@ -172,10 +172,10 @@ void wrap_VarListfront::SetParametersComments()
   return_comments = "list first element (variable).";
 }
 //---------------------------------------------------
-Variable::ptr wrap_VarListfront::CallMember( ParamList* p)
+BasicVariable::ptr wrap_VarListfront::CallMember( ParamList* p)
 {
   if (this->_objectptr->list.empty()) 
-    return Variable::ptr();
+    return BasicVariable::ptr();
   else
     return this->_objectptr->list.front();
 }
@@ -188,10 +188,10 @@ void wrap_VarListback::SetParametersComments()
   return_comments = "list last element (variable).";
 }
 //---------------------------------------------------
-Variable::ptr wrap_VarListback::CallMember( ParamList* p)
+BasicVariable::ptr wrap_VarListback::CallMember( ParamList* p)
 {
   if (this->_objectptr->list.empty()) 
-    return Variable::ptr();
+    return BasicVariable::ptr();
   else
     return this->_objectptr->list.back();
 }

@@ -44,7 +44,7 @@ void myTreeCtrl::ShowMenu(wxTreeItemId id, const wxPoint& pt)
     MyTreeItemData *item = (MyTreeItemData *)GetItemData(id);
     if (item) {
       wxMenu menu(title);
-      Variable::ptr var = item->GetVar().lock();
+      BasicVariable::ptr var = item->GetVar().lock();
      _currentmenu_var = var;
      if (var.get()) {
         std::string com = var->GetComments();
@@ -88,7 +88,7 @@ void myTreeCtrl::OnItemMenu(wxTreeEvent& event)
 void myTreeCtrl::OnAbout(wxCommandEvent& event)
 {
   std::string mess;
-  Variable::ptr var = _currentmenu_var.lock();
+  BasicVariable::ptr var = _currentmenu_var.lock();
   if (var.get()) {
     switch (var->Type()) {
       case type_c_procedure     : 
@@ -103,7 +103,7 @@ void myTreeCtrl::OnAbout(wxCommandEvent& event)
        ((InrImage* (*)(ParamList*)) var->Pointer())(NULL);
         return;
       case type_c_function:
-        ((Variable::ptr (*)(ParamList*)) var->Pointer())(NULL);
+        ((BasicVariable::ptr (*)(ParamList*)) var->Pointer())(NULL);
         return;
       default:
         mess = var->GetComments();

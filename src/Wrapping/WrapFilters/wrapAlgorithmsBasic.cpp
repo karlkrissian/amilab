@@ -29,7 +29,7 @@ extern VarContexts  Vars;
 void wrapAlgorithmsBasic()
 {
   // adding to the current object context
-   ADDOBJECTVAR_IMFUNC_NAME("FastLocalSumDir", wrapFastLocalSumDir);
+   ADDOBJECTVAR_NAME(C_wrap_imagefunction,"FastLocalSumDir", wrapFastLocalSumDir);
 }
 
 
