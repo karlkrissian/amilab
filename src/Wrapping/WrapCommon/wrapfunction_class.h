@@ -38,6 +38,32 @@ class wrap_##classname##methodname : public WrapClassMember { \
     BasicVariable::ptr CallMember(ParamList*); \
 };
 
+/** Macro for adding a nested class that wraps a method.
+  * requires that the type 'ptr' be defined as
+  * a smart pointer to the parent class
+  * and that the parent class has a method get_name() returning 
+  * the name of the class (both are provided by the macro DEFINE_CLASS).
+  */
+#define ADD_CLASS_METHOD(methodname,description_str) \
+/**\
+ * description_str\
+ **/\
+class wrap_##methodname : public WrapClassMember { \
+  protected:\
+    ptr _objectptr; \
+  public: \
+    wrap_##methodname(const ptr& pp) : \
+     _objectptr(pp) { \
+      functionname = _objectptr->get_name();\
+      functionname += "::";\
+      functionname += #methodname; \
+      description=description_str; \
+      SetParametersComments(); \
+    } \
+    void SetParametersComments(); \
+    BasicVariable::ptr CallMember(ParamList*); \
+};
+
 /**
     Macro for adding the members to a class.
  */
