@@ -24,17 +24,15 @@ class VarVector
 {
   DEFINE_CLASS(VarVector);
 
-  protected:
-    std::vector<Variable::ptr> vector;
+  public:
+    std::vector<BasicVariable::ptr> vector;
 };
 
 /** function that add wrapping of the Image Drawing window
  */
-Variable::ptr wrap_VarVector( ParamList* p);
+BasicVariable::ptr wrap_VarVector( ParamList* p);
 
-ADD_METHOD( VarVector, push_front,        "Add element at beginning.");
 ADD_METHOD( VarVector, push_back,         "Add element at the end.");
-ADD_METHOD( VarVector, pop_front,         "Deletes the element at the beginning of a list.");
 ADD_METHOD( VarVector, pop_back,          "Deletes the element at the end of a list.");
 ADD_METHOD( VarVector, size,              "Return size.");
 ADD_METHOD( VarVector, front,             "Access first element.");

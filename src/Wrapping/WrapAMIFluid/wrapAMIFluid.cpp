@@ -61,65 +61,65 @@ void AddWrapFluid(){
   Variables::ptr previous_ocontext = Vars.GetObjectContext();
   Vars.SetObjectContext(amiobject->GetContext());
 
-  ADDOBBJECTVAR_PROC_NAME("amiOFCorr3D",            amiOpticFlowCorrelation3D);
-  ADDOBBJECTVAR_PROC_NAME("amiOFCorr3DNew",         amiOpticFlowCorrelation3DNew);
-  ADDOBBJECTVAR_PROC_NAME("amiOFExtrapol3D",        amiOpticFlowExtrapolationV3f);
-  ADDOBBJECTVAR_PROC_NAME("amiOFVar2DZoom",         amiOpticFlowVariational2DZoom);
+  ADDOBJECTVAR_NAME( C_wrap_procedure, "amiOFCorr3D",            amiOpticFlowCorrelation3D);
+  ADDOBJECTVAR_NAME( C_wrap_procedure, "amiOFCorr3DNew",         amiOpticFlowCorrelation3DNew);
+  ADDOBJECTVAR_NAME( C_wrap_procedure, "amiOFExtrapol3D",        amiOpticFlowExtrapolationV3f);
+  ADDOBJECTVAR_NAME( C_wrap_procedure, "amiOFVar2DZoom",         amiOpticFlowVariational2DZoom);
   
-  ADDOBBJECTVAR_PROC_NAME("amiOFExtrapolV3f",       amiOpticFlowExtrapolationV3f);
+  ADDOBJECTVAR_NAME( C_wrap_procedure, "amiOFExtrapolV3f",       amiOpticFlowExtrapolationV3f);
   
-  ADDOBBJECTVAR_PROC( amiOFPDE);
-  ADDOBBJECTVAR_PROC( amiOFPDE_Param);
-  ADDOBBJECTVAR_PROC( amiOF_2D_T);
+  ADDOBJECTVAR( C_wrap_procedure,  amiOFPDE);
+  ADDOBJECTVAR( C_wrap_procedure,  amiOFPDE_Param);
+  ADDOBJECTVAR( C_wrap_procedure,  amiOF_2D_T);
       
-  ADDOBBJECTVAR_PROC( amiNorm2Vect3DError);
-  ADDOBBJECTVAR_PROC( amiNorm1Vect3DError);
-  ADDOBBJECTVAR_PROC( amiBoundary3D);
-  ADDOBBJECTVAR_PROC( amiBoundaryVect3D);
-  ADDOBBJECTVAR_PROC( amiGrad3D);
-  ADDOBBJECTVAR_PROC( amiNormMaxVect3D);
-  ADDOBBJECTVAR_PROC( amiNorm2Vect3D);
-  ADDOBBJECTVAR_PROC( amiInterpolation3D);
-  ADDOBBJECTVAR_PROC( amiInterpolationVect3D);
-  ADDOBBJECTVAR_PROC( amiCopy3D);
-  ADDOBBJECTVAR_PROC( amiCopyVect3D);
-  ADDOBBJECTVAR_PROC( amiConvolution3D);
+  ADDOBJECTVAR( C_wrap_procedure,  amiNorm2Vect3DError);
+  ADDOBJECTVAR( C_wrap_procedure,  amiNorm1Vect3DError);
+  ADDOBJECTVAR( C_wrap_procedure,  amiBoundary3D);
+  ADDOBJECTVAR( C_wrap_procedure,  amiBoundaryVect3D);
+  ADDOBJECTVAR( C_wrap_procedure,  amiGrad3D);
+  ADDOBJECTVAR( C_wrap_procedure,  amiNormMaxVect3D);
+  ADDOBJECTVAR( C_wrap_procedure,  amiNorm2Vect3D);
+  ADDOBJECTVAR( C_wrap_procedure,  amiInterpolation3D);
+  ADDOBJECTVAR( C_wrap_procedure,  amiInterpolationVect3D);
+  ADDOBJECTVAR( C_wrap_procedure,  amiCopy3D);
+  ADDOBJECTVAR( C_wrap_procedure,  amiCopyVect3D);
+  ADDOBJECTVAR( C_wrap_procedure,  amiConvolution3D);
   
-  ADDOBBJECTVAR_IMFUNC( amiWarpSplines);
+  ADDOBJECTVAR( C_wrap_imagefunction,  amiWarpSplines);
   
-  ADDOBBJECTVAR_IMFUNC( amiZoomDown3D);
-  ADDOBBJECTVAR_IMFUNC( amiReadUV);
-  ADDOBBJECTVAR_IMFUNC( amiReadFlow3D);
-  ADDOBBJECTVAR_IMFUNC( amiReadBarronData);
-  ADDOBBJECTVAR_IMFUNC( amiInverseFlow);
+  ADDOBJECTVAR( C_wrap_imagefunction,  amiZoomDown3D);
+  ADDOBJECTVAR( C_wrap_imagefunction,  amiReadUV);
+  ADDOBJECTVAR( C_wrap_imagefunction,  amiReadFlow3D);
+  ADDOBJECTVAR( C_wrap_imagefunction,  amiReadBarronData);
+  ADDOBJECTVAR( C_wrap_imagefunction,  amiInverseFlow);
       
-  ADDOBBJECTVAR_PROC( amiZoomUpFilter3D);
-  ADDOBBJECTVAR_PROC( amiZoomUpInterpolation3D);
-  ADDOBBJECTVAR_IMFUNC( amiZoomUpFlow3D);
+  ADDOBJECTVAR( C_wrap_procedure,  amiZoomUpFilter3D);
+  ADDOBJECTVAR( C_wrap_procedure,  amiZoomUpInterpolation3D);
+  ADDOBJECTVAR( C_wrap_imagefunction,  amiZoomUpFlow3D);
 
-  ADDOBBJECTVAR_PROC_NAME("amiOFExplicit",            amiHornSchunckOpticFlowExplicit);
-  ADDOBBJECTVAR_PROC_NAME("amiSolenoidalProj3D",      amiSolenoidalProjection3D);
-  ADDOBBJECTVAR_PROC_NAME("amiOFSetGradient",         amiOFSetGradient);
-  ADDOBBJECTVAR_PROC_NAME("amiOFSetSmoothGradient",   amiOFSetSmoothGradient);
-  ADDOBBJECTVAR_PROC_NAME("amiPDESetSolenoidal",      amiPDESetSolenoidal);
-  ADDOBBJECTVAR_PROC_NAME("amiPDESetEnergyConstraint",      amiPDESetEnergyConstraint);
-  ADDOBBJECTVAR_PROC( amiOFSetGlobalConstraint);
-  ADDOBBJECTVAR_PROC( amiOFSetBoundaryType);
-  ADDOBBJECTVAR_PROC( amiOFSetInterpolation);
-  ADDOBBJECTVAR_PROC( amiOFSetSymmetric);
-  ADDOBBJECTVAR_PROC( amiOFSetNormalizeAlpha);
-  ADDOBBJECTVAR_PROC( amiOFSetAlphaNormEpsilon);
-  ADDOBBJECTVAR_PROC( amiJavierHornSchunck);
-  ADDOBBJECTVAR_PROC( amiJavierHornSchunckSym);
-  ADDOBBJECTVAR_PROC( amiOpticFlow);
-  ADDOBBJECTVAR_PROC( amiReadPDEOFParam);
-  ADDOBBJECTVAR_PROC( amiWritePDEOFParam);
+  ADDOBJECTVAR_NAME( C_wrap_procedure, "amiOFExplicit",            amiHornSchunckOpticFlowExplicit);
+  ADDOBJECTVAR_NAME( C_wrap_procedure, "amiSolenoidalProj3D",      amiSolenoidalProjection3D);
+  ADDOBJECTVAR_NAME( C_wrap_procedure, "amiOFSetGradient",         amiOFSetGradient);
+  ADDOBJECTVAR_NAME( C_wrap_procedure, "amiOFSetSmoothGradient",   amiOFSetSmoothGradient);
+  ADDOBJECTVAR_NAME( C_wrap_procedure, "amiPDESetSolenoidal",      amiPDESetSolenoidal);
+  ADDOBJECTVAR_NAME( C_wrap_procedure, "amiPDESetEnergyConstraint",      amiPDESetEnergyConstraint);
+  ADDOBJECTVAR( C_wrap_procedure,  amiOFSetGlobalConstraint);
+  ADDOBJECTVAR( C_wrap_procedure,  amiOFSetBoundaryType);
+  ADDOBJECTVAR( C_wrap_procedure,  amiOFSetInterpolation);
+  ADDOBJECTVAR( C_wrap_procedure,  amiOFSetSymmetric);
+  ADDOBJECTVAR( C_wrap_procedure,  amiOFSetNormalizeAlpha);
+  ADDOBJECTVAR( C_wrap_procedure,  amiOFSetAlphaNormEpsilon);
+  ADDOBJECTVAR( C_wrap_procedure,  amiJavierHornSchunck);
+  ADDOBJECTVAR( C_wrap_procedure,  amiJavierHornSchunckSym);
+  ADDOBJECTVAR( C_wrap_procedure,  amiOpticFlow);
+  ADDOBJECTVAR( C_wrap_procedure,  amiReadPDEOFParam);
+  ADDOBJECTVAR( C_wrap_procedure,  amiWritePDEOFParam);
   
-  ADDOBBJECTVAR_PROC( amiVorticity);
-  ADDOBBJECTVAR_PROC( amiGradVorticity);
-  ADDOBBJECTVAR_PROC( amiVorticityStandard);
-  ADDOBBJECTVAR_PROC( amiGenerateSphereFlow);
-  ADDOBBJECTVAR_PROC( amiGenerate3DPIV);
+  ADDOBJECTVAR( C_wrap_procedure,  amiVorticity);
+  ADDOBJECTVAR( C_wrap_procedure,  amiGradVorticity);
+  ADDOBJECTVAR( C_wrap_procedure,  amiVorticityStandard);
+  ADDOBJECTVAR( C_wrap_procedure,  amiGenerateSphereFlow);
+  ADDOBJECTVAR( C_wrap_procedure,  amiGenerate3DPIV);
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);

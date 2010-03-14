@@ -20,9 +20,9 @@
 
 
 #define RETURN_VARINT(val,name)             \
-  BasicVariable::ptr varres(new Variable());\
   std::string varname = (boost::format("%1%_id")%name).str();\
-  varres->Init(type_int,varname.c_str(),(void*) new int(val));\
+  int_ptr varint(new int(val));\
+  Variable<int>::ptr varres( new Variable<int>(varname, varint));\
   return varres;
 
 
@@ -68,9 +68,9 @@ BasicVariable::ptr wrap_VarList( ParamList* p)
 
   VarList::ptr pp(new VarList());
 
-  AMIObject* amiobject = AddWrapVarList(pp);
-  BasicVariable::ptr varres(new Variable());
-  varres->Init(type_ami_object,"tmp_varlist", (void*) amiobject);
+  AMIObject::ptr amiobject(AddWrapVarList(pp));
+  Variable<AMIObject>::ptr varres(
+      new Variable<AMIObject>("tmp_varlist",amiobject));
 
   return varres;
 

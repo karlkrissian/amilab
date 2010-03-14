@@ -56,36 +56,7 @@ void VarArray::Init( vartype type, int initsize)
   _vars.resize(initsize);
 }
 
-void VarArray::InitElement( int i, void* p,const char* name) 
-{
-  if (i>=_allocated_size) this->Resize(i+1);
-  if ((i>=0)&&(i<_allocated_size)) {
-    if (!_vars[i].get()) _vars[i] = Variable::ptr(new Variable());
-    _vars[i]->Init(_type,name,p);
-  }
-}
 
-void VarArray::InitElementPtr( vartype _type, int i, void* p,const char* name) 
-{
-  if (i>=_allocated_size) this->Resize(i+1);
-  if ((i>=0)&&(i<_allocated_size)) {
-    if (!_vars[i].get()) _vars[i] = Variable::ptr(new Variable());
-    _vars[i]->InitPtr(_type,name,p);
-  }
-}
-
-/*
-template <class T>
-void VarArray::InitElement( int i, 
-                            boost::shared_ptr<T>* p,
-                            const char* name) 
-{
-  if (i>=_allocated_size) this->Resize(i+1);
-  if ((i>=0)&&(i<_allocated_size)) {
-    _vars[i].Init<T>(_type,name,p);
-  }
-}
-*/
 
 BasicVariable::ptr VarArray::GetVar(int i) {
   if ((i>=0)&&(i<_allocated_size)) {
@@ -105,8 +76,9 @@ ostream& operator<<(ostream& o, const VarArray& v)
   int i;
   for (i=0;i<v._size;i++) 
     if (v._vars[i].get())
-      if (v._vars[i]->Pointer()!=NULL) 
-        o  << format("\t\t [%1%]\t %2%") % i  % (*v._vars[i])  << endl;
+//      if (->Pointer()!=NULL) 
+        o  << v._vars[i] << std::endl;
+//format("\t\t [%1%]\t %2%") % i  % (*v._vars[i])  << endl;
   return o;
 } // operator <<
 

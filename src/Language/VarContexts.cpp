@@ -153,19 +153,17 @@ int VarContexts::GetNewVarContext()
 } // GetNewVarContext()
 
 
+
+
 //--------------------------------------------------
-template <class T>
 BasicVariable::ptr VarContexts::AddVar(  
               const IdentifierInfo::ptr& info, 
-              boost::shared_ptr<Variable<T> >& val)
+              BasicVariable::ptr& val)
 {
   int context;
   context = info->GetCreationContext();
-
-  return AddVar<T>(info->GetName().c_str(),val,context);
-
+  return AddVar(info->GetName().c_str(),val,context);
 } // AddVar()
-
 
 //--------------------------------------------------
 BasicVariable::ptr VarContexts::AddVar(BasicVariable::ptr var, int context)
@@ -228,7 +226,7 @@ bool VarContexts::deleteVar(const char* varname)
 
 
 //--------------------------------------------------
-int VarContexts::GetContext(Variable* var)
+int VarContexts::GetContext(BasicVariable::ptr var)
 {
   // check first for object context
   if (var->GetContext().get()) {
@@ -240,6 +238,27 @@ int VarContexts::GetContext(Variable* var)
   return -1;
 }
 
+
+//--------------------------------------------------
+bool VarContexts::deleteVar(BasicVariable::ptr var)
+{
+
+  // Check for object context
+  if (var->GetContext().get()) {
+    var->GetContext()->deleteVar(var->Name().c_str());
+    return true;
+  }
+
+  for(int i=_current_context;i>=0;i--)
+    if (_context[i]->ExistVar(var)) {
+      if (GB_debug) 
+        cerr << "Deleted Var in context number " << i << endl;
+      // TODO: improve efficiency by not going twice through the variables
+      _context[i]->deleteVar(var->Name().c_str());
+      return true;
+    }
+  return false;
+}
 
 //--------------------------------------------------
 bool VarContexts::deleteVar(BasicVariable* var)

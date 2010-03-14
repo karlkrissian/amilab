@@ -56,9 +56,9 @@ extern VarContexts  Vars;
 void AddWrapVTK()
 {
 
-  ADDVAR_IMAGEFUNC_NAME("vtkAnisoGaussSeidel",  vtkAnisoGS);
-  ADDVAR_NAME(C_wrap_imagefunction,  "vtkSkeleton2Lines",    Wrap_vtkSkeleton2Lines);
-  ADDVAR_NAME(C_wrap_imagefunction,  "vtkSphere",            Wrap_vtkSphere);
+  ADDVAR_NAME( C_wrap_imagefunction, "vtkAnisoGaussSeidel",  vtkAnisoGS);
+  ADDVAR_NAME( C_wrap_varfunction,   "vtkSkeleton2Lines",    Wrap_vtkSkeleton2Lines);
+  ADDVAR_NAME(C_wrap_varfunction,    "vtkSphere",            Wrap_vtkSphere);
 
 }
 
@@ -165,10 +165,10 @@ BasicVariable::ptr Wrap_vtkSkeleton2Lines(ParamList* p)
   vtk_skel2lines->SetInput( vtk_image.get());
   vtk_skel2lines->GetOutput();
 
-  SurfacePoly* surf_result = new SurfacePoly(vtk_skel2lines->GetOutput());
+  SurfacePoly::ptr surf_result( new SurfacePoly(vtk_skel2lines->GetOutput()));
 
-  BasicVariable::ptr varres(new Variable());
-  varres->Init(type_surface,"vtkSkeleton2lines_result",surf_result);
+  Variable<SurfacePoly>::ptr varres(
+    new Variable<SurfacePoly>("vtkSkeleton2lines_result",surf_result));
 
   return varres;
 
@@ -222,16 +222,16 @@ BasicVariable::ptr Wrap_vtkSphere( ParamList* p)
 
   vtk_sphere->Update();
 
-  SurfacePoly* surf_result = new SurfacePoly(vtk_sphere->GetOutput());
+  SurfacePoly::ptr surf_result( new SurfacePoly(vtk_sphere->GetOutput()));
 
-  BasicVariable::ptr varres(new Variable());
-  varres->Init(type_surface,"vtkSphere_result",surf_result);
+  Variable<SurfacePoly>::ptr varres(
+    new Variable<SurfacePoly>("vtkSphere_result",surf_result));
 
   return varres;
 
 #else
   fprintf(stderr," VTK not available, you need to compile with VTK ...\n");
-  return NULL;
+  return BasicVariable::ptr();
 #endif // _WITHOUT_VTK_
 
 } // Wrap_vtkSphere()

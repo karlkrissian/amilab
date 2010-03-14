@@ -12,6 +12,7 @@
 
 #include "ImageStack.h"
 
+#include "Variable.hpp"
 #include "driver.h"
 
 extern yyip::Driver GB_driver;

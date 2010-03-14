@@ -17,22 +17,73 @@
 #include <wx/msgdlg.h>
 #include "inrimage.hpp"
 #include "paramlist.h"
+#include <boost/shared_ptr.hpp>
+#include "Variable.hpp"
 //#include "DessinImage.hpp"
+
+/// Specialization for C_wrap_varfunction
+template<>
+class CreateSmartPointer<C_wrap_varfunction>
+{
+  public:
+  boost::shared_ptr<C_wrap_varfunction> operator() (C_wrap_varfunction* p) 
+  {
+    return boost::shared_ptr<C_wrap_varfunction>
+            (p,smartpointer_nodeleter<C_wrap_varfunction>());
+  }
+};
+
+/// Specialization for C_wrap_procedure
+template<>
+class CreateSmartPointer<C_wrap_procedure>
+{
+  public:
+  boost::shared_ptr<C_wrap_procedure> operator() (C_wrap_procedure* p) 
+  {
+    return boost::shared_ptr<C_wrap_procedure>(p,
+                  smartpointer_nodeleter<C_wrap_procedure>());
+  }
+};
+
+/// Specialization for C_wrap_imagefunction
+template<>
+class CreateSmartPointer<C_wrap_imagefunction>
+{
+  public:
+  boost::shared_ptr<C_wrap_imagefunction> operator() (C_wrap_imagefunction* p) 
+  {
+    return boost::shared_ptr<C_wrap_imagefunction>(p,
+              smartpointer_nodeleter<C_wrap_imagefunction>());
+  }
+};
 
 
 /*! \def ADDVAR
     \brief Add a C procedure variable with the given procedure
 */
 #define ADDVAR(type,proc) \
+  { \
   boost::shared_ptr<type> newvar(CreateSmartPointer<type>()(&proc)); \
-  Vars.AddVar<type>( #proc, newvar)
+  Vars.AddVar<type>( #proc, newvar); \
+  }
 
 /*! \def ADDVAR_NAME
     \brief Add a C procedure variable with the given name
 */
 #define ADDVAR_NAME(type,stname,name) \
+  { \
   boost::shared_ptr<type> newvar(CreateSmartPointer<type>()(&name)); \
-  Vars.AddVar<type>( stname, newvar)
+  Vars.AddVar<type>( stname, newvar); \
+  }
+
+/*! \def ADDOBJECTVAR
+    \brief Adds a variable of a given type with the given variable name
+*/
+#define ADDOBJECTVAR(type,obj) \
+  { \
+  boost::shared_ptr<type> newvar(CreateSmartPointer<type>()(&obj)); \
+  Vars.AddVar<type>( #obj, newvar, OBJECT_CONTEXT_NUMBER); \
+  }
 
 
 /*! \def ADDOBJECTVAR_NAME
@@ -40,9 +91,10 @@
 */
 // C_wrap_procedure
 #define ADDOBJECTVAR_NAME(type,stname,name) \
+  { \
   boost::shared_ptr<type> newvar(CreateSmartPointer<type>()(&name)); \
-  Vars.AddVar<type>( stname, newvar, OBJECT_CONTEXT_NUMBER)
-
+  Vars.AddVar<type>( stname, newvar, OBJECT_CONTEXT_NUMBER); \
+  }
 
 
 /*! \def HelpAndReturnVarPtr

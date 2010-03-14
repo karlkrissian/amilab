@@ -14,13 +14,13 @@
 #define PARAMLIST_H
 
 
-
 #define MAX_PARAM 20
 
 #include "inrimage.hpp"
 #include "DefineClass.hpp"
-#include "amilab_messages.h"
+
 #include "BasicVariable.h"
+#include "amilab_messages.h"
 //#include "Variable.hpp"
 
 extern unsigned char GB_debug;
@@ -28,7 +28,6 @@ extern unsigned char GB_debug;
 #include <string>
 #include <list>
 //using namespace std;
-
 
 
 /**

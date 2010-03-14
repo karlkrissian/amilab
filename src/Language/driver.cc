@@ -253,7 +253,8 @@ void Driver::yyip_call_function( AMIFunction* f, const ParamList::ptr& param)
           //  cerr << format("Vars.AddVarPtr( %1%, %2%, %3% )")
           //        % param->GetType(i) % name % param->GetParam(i)
           //      << endl;
-          Vars.AddVar(name, param->GetParam(i));
+          BasicVariable::ptr paramvar( param->GetParam(i));
+          Vars.AddVar(name, paramvar);
         }
       } // end for
     } else {

@@ -27,13 +27,14 @@
 */
 
 #include "Variables.hpp"
+#include "style.hpp"
 #include <wx/arrstr.h>
-#include "driver.h"
+//#include "driver.h"
 
 #include "amilab_messages.h"
 
 //extern unsigned char       GB_debug;
-extern yyip::Driver GB_driver;
+//extern yyip::Driver GB_driver;
 
 //======================================================================
 // PRIVATE METHODS
@@ -94,14 +95,14 @@ std::string Variables::CheckVarName(const char* name)
 }
 
 //--------------------------------------------------
-BasicVariable::ptr Variables::AddVar( vartype type, 
-          const char* name, 
+BasicVariable::ptr Variables::AddVar( 
+          const std::string& name, 
           BasicVariable::ptr& val, 
           boost::shared_ptr<Variables> context)
 {
   CLASS_MESSAGE(boost::format(" %1%, in %2% ") % name % GetName());
 
-  string resname = this->CheckVarName(name);
+  std::string resname = this->CheckVarName(name.c_str());
   BasicVariable::ptr newvar(val);
   //std::cout << "  **  newvar =  " << newvar << endl;
 
@@ -118,17 +119,15 @@ BasicVariable::ptr Variables::AddVar( vartype type,
 BasicVariable::ptr Variables::AddVar( BasicVariable::ptr& var, Variables::ptr context )
 {
 
-
   CLASS_MESSAGE(boost::format(" %s ") % var->Name());
 
   string resname = this->CheckVarName(var->Name().c_str());
   // TODO: fix the following code, maybe not so easy ...
-  BasicVariable::ptr newvar();
-  (*newvar) = (*var);
+  // should we copy the contents here ??
+  BasicVariable::ptr newvar(var->NewReference());
   newvar->Rename(resname.c_str());
   newvar->SetContext(context);
   _vars.push_front(newvar);
-  delete var; // ok not deleting the smart pointer inside, but not too clean ...
 
   return newvar;
 }
@@ -185,13 +184,25 @@ bool Variables::ExistVar(const char* varname)
 
 
 //--------------------------------------------------
-bool Variables::ExistVar(Variable* var)
+bool Variables::ExistVar(BasicVariable::ptr& var)
 {
   std::list<BasicVariable::ptr>::iterator Iter;
   for (Iter  = _vars.begin();
        Iter != _vars.end()  ; Iter++ )
   {
-    if ( *(*Iter) == (*var)) return true;
+    if ( *(*Iter) == var ) return true;
+  }
+  return false;
+}
+
+//--------------------------------------------------
+bool Variables::ExistVar(BasicVariable* var)
+{
+  std::list<BasicVariable::ptr>::iterator Iter;
+  for (Iter  = _vars.begin();
+       Iter != _vars.end()  ; Iter++ )
+  {
+    if ( *(*Iter) == var ) return true;
   }
   return false;
 }
@@ -305,13 +316,8 @@ void Variables::EmptyVariables()
   {
     if (((*Iter)->Type() == type_imagedraw)||
         ((*Iter)->Type() == type_surfdraw )) {
-      if ((*Iter)->Pointer()!=NULL) {
-        //cout << " in " << GetName()  << " deleting " << (*Iter)->Name() << endl;
-        //(*Iter)->Delete();
-        //delete (*Iter); 
-        Iter = _vars.erase(Iter);
-        continue;
-      }
+      Iter = _vars.erase(Iter);
+      continue;
     }
     Iter++;
   }
@@ -319,14 +325,7 @@ void Variables::EmptyVariables()
   Iter  = _vars.begin();
   while ( Iter != _vars.end())
   {
-    if ((*Iter)->Pointer()!=NULL) {
-      //cout << " in " << GetName()  << " deleting " << (*Iter)->Name() << endl;
-      //(*Iter)->Delete();
-      //delete (*Iter);
-      Iter = _vars.erase(Iter);
-      continue;
-    }
-    Iter++; 
+    Iter = _vars.erase(Iter);
   }
 
 } // Variables::EmptyVariables()

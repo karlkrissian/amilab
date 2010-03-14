@@ -42,9 +42,12 @@ class wrap_##classname##methodname : public WrapClassMember { \
     Macro for adding the members to a class.
  */
 #define ADDMEMBER(str_name,classname,proc_name) \
-  Vars.AddVar<WrapClassMember>(str_name,  \
-                new wrap_##classname##proc_name(objectptr), \
-                OBJECT_CONTEXT_NUMBER);
+  {\
+    boost::shared_ptr<WrapClassMember> tmp( new wrap_##classname##proc_name(objectptr));\
+    Vars.AddVar<WrapClassMember>(str_name,  \
+                tmp, \
+                OBJECT_CONTEXT_NUMBER); \
+  }
 
 /** Shows help and returns 
 */

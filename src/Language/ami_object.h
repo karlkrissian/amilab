@@ -30,12 +30,12 @@
 #define _ami_object_h_
 
 
+#include "Variables.hpp"
 #include <string>
 #include <boost/shared_ptr.hpp>
 #include "DefineClass.hpp"
 #include "AmiInstructionBlock.h"
 #include "ami_class.h"
-#include "Variables.hpp"
 
 using namespace boost;
 
@@ -64,7 +64,7 @@ private:
   BasicVariable::ptr _var;
 
   /// Own list of variables
-  Variables::ptr  _vars;
+  boost::shared_ptr<Variables>  _vars;
 
  public:
 
@@ -74,7 +74,7 @@ private:
   AMIObject()
     {
      // _name     = "";
-      _vars     = Variables::ptr(new Variables);
+      _vars     = boost::shared_ptr<Variables>(new Variables);
 /*
       _vars->SetName("object");
 */
@@ -132,7 +132,7 @@ private:
    * Gets the list of variables 
    * @return object context (contains its variables)
    */
-  Variables::ptr& GetContext() { return _vars;}
+  boost::shared_ptr<Variables>& GetContext() { return _vars;}
 
 }; // AMIObject
 

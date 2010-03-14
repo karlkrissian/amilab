@@ -1139,7 +1139,8 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
     if (var.get()) {
       if (var->Type() == type_image) {
         // create text with image information
-        InrImage::ptr im = *((InrImage::ptr*)var->Pointer());
+        DYNAMIC_CAST_VARIABLE(InrImage,var,varim);
+        InrImage::ptr im (varim->Pointer());
         std::string text = (boost::format("%1% %20t %2% %35t %3%x%4%x%5%  %55t %|6$+5| Mb")
                             % var->Name()
                             % im->FormatName()
@@ -1157,7 +1158,8 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
         total_image_size += im->GetDataSize();
       } else
       if (var->Type() == type_surface) {
-        SurfacePoly::ptr surf = (*(SurfacePoly::ptr*)var->Pointer());
+        DYNAMIC_CAST_VARIABLE(SurfacePoly,var,varsurf);
+        SurfacePoly::ptr surf (varsurf->Pointer());
         std::string text = (boost::format("%1% %15t pts: %2% %25t poly:%3%")
                             % var->Name()
                             % surf->GetNumberOfPoints()
@@ -1177,20 +1179,29 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
         std::string text;
         switch(var->Type()) {
           case type_float:
+            {
+            DYNAMIC_CAST_VARIABLE(int,var,varf);
             text = (boost::format("%1% %20t FLOAT %30t %2%")
                             % var->Name()
-                            % (*(*(float_ptr*) var->Pointer()))).str();
+                            % (*varf->Pointer())).str();
             break;
+            }
           case type_int:
+            {
+            DYNAMIC_CAST_VARIABLE(int,var,varint);
             text = (boost::format("%1% %20t INT %30t %2%")
                             % var->Name()
-                            % (*(*(int_ptr*) var->Pointer()))).str();
+                            % (*varint->Pointer())).str();
             break;
+            }
           case type_uchar:
+            {
+            DYNAMIC_CAST_VARIABLE(unsigned char,var,varuchar);
             text = (boost::format("%1% %20t UCHAR %30t %2%")
                             % var->Name()
-                            % (int) (*(*(uchar_ptr*) var->Pointer()))).str();
+                            % (int) (*varuchar->Pointer())).str();
             break;
+            }
           default:;
         }
         itemid = _var_tree->AppendItem(
@@ -1202,9 +1213,10 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
       } else
       if (var->Type() == type_string)
       {
+        DYNAMIC_CAST_VARIABLE(std::string,var,varstr);
         std::string text = (boost::format("%1% %20t \"%2%\"")
-                        % var->Name()
-                        % (*(*(string_ptr*) var->Pointer()))).str();
+                        % varstr->Name()
+                        % (*varstr->Pointer())).str();
         itemid = _var_tree->AppendItem(
               vartree_strings,
               wxString(text.c_str(), wxConvUTF8),
@@ -1239,7 +1251,8 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
               new MyTreeItemData(var));
         _var_tree->SetItemFont(obj_itemid,root_font);
         // get the pointer to the objet
-        AMIObject::ptr obj = (*(AMIObject::ptr*)var->Pointer());
+        DYNAMIC_CAST_VARIABLE(AMIObject,var,varobj);
+        AMIObject::ptr obj( varobj->Pointer());
         // create the tree by recursive call
         this->UpdateVarTree(obj_itemid, obj->GetContext());
       } else

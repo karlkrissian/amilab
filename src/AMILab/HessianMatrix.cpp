@@ -120,13 +120,13 @@ unsigned char      Func_Derivatives( InrImage* image_initiale,
     int          x,y,z;
     double          hessien[9];
     InrImage*       image;
-    InrImage::ptr       image_vep1 = NULL;
-    InrImage::ptr       image_vep2 = NULL;
-    InrImage::ptr       image_vep3 = NULL;
-    InrImage::ptr       image_vap1 = NULL;
-    InrImage::ptr       image_vap2 = NULL;
-    InrImage::ptr       image_vap3 = NULL;
-    InrImage::ptr       image_grad = NULL;
+    InrImage::ptr       image_vep1;
+    InrImage::ptr       image_vep2;
+    InrImage::ptr       image_vep3;
+    InrImage::ptr       image_vap1;
+    InrImage::ptr       image_vap2;
+    InrImage::ptr       image_vap3;
+    InrImage::ptr       image_grad;
     GeneralGaussianFilter::ptr filtre;
     std::string         resname;
     // int             i;
@@ -512,7 +512,7 @@ printf("Func_HessianVap\n");
     int          x,y,z;
     double          hessien[9];
     InrImage*       image;
-    InrImage*       image_vap;
+    InrImage::ptr       image_vap;
     GeneralGaussianFilter* filtre;
     char            resname[100];
     char            imname[100];
@@ -535,7 +535,7 @@ printf("Func_HessianVap\n");
   dimension = MODE_3D;
 
   sprintf(imname,"H-vap%d.inr.gz",vap_num);
-  image_vap =  new InrImage( WT_FLOAT,  imname, image);
+  image_vap =  InrImage::ptr(new InrImage( WT_FLOAT,  imname, image));
 
 
   // Initialisation des images des d�riv�es 

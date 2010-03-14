@@ -53,10 +53,12 @@ INCLUDE(${wxWidgets_USE_FILE})
 SET(Language_SRCS
     driver.cc
     VarContexts.cpp
+    BasicVariable.cpp
     Variable.cpp
     Variables.cpp
     paramlist.cpp
     ImageStack.cpp
+    VarArray.cpp
 )
 
 SET(Language_HDRS
@@ -76,9 +78,11 @@ SET(Language_HDRS
     paramlist.h
     SurfStack.h
     VarContexts.hpp
+    VarContexts.tpp
     BasicVariable.h
     Variable.hpp
     Variables.hpp
+    VarArray.h
 )
 
 SET(Language_BISONFLEX_SRCS

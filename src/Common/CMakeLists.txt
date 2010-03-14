@@ -29,6 +29,7 @@ SET(Common_HDRS
 	TableauDyn.hpp
 	Timing.hpp
 	Voisins27.hpp
+  amilab_boost.h
 )
 
 SET (Common_SRCS

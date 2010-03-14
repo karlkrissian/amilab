@@ -7,19 +7,19 @@
 //#include "Viewer3D.hpp"
 //#include "paramlist.h"
 #include <string>
+#include <string.h>
 #include <iostream>
 
 #include "DefineClass.hpp"
 
 #include "amilab_messages.h"
 #include "vartype.h"
-#include "paramlist.h"
+//#include "paramlist.h"
 
 // forward definition of Variables
 class Variables;
-class VarArray;
+//class VarArray;
 
-/* TODO: Change SetString */
 
 /*
 template<class T>  
@@ -51,7 +51,7 @@ protected:
 public:
 
   BasicVariable(): _type(type_void), _name(""), _comments("") {}
-  virtual ~BasicVariable(){ this->Delete(); }
+  virtual ~BasicVariable() {};
 
   /**
     * Virtual Method that creates a new smart pointer to a basic variable with the same type
@@ -63,21 +63,15 @@ public:
     */
   virtual BasicVariable::ptr NewReference() = 0;
 
-  /**
-   * Copy of variables
-   * @param v 
-   */
-  virtual void operator = (const BasicVariable& v) = 0;
+//  virtual void operator = (const BasicVariable& v) = 0;
 
-  /**
-   * Copy of variables
-   * @param v 
-   */
-  void operator = (const BasicVariable::ptr& v) {
-     (*this) = (*v);
-  }
+//  void operator = (const BasicVariable::ptr& v) {
+//     (*this) = (*v);
+//  }
 
-  virtual bool operator == (const BasicVariable& v)  = 0;
+  virtual bool operator == (const BasicVariable::ptr& v)  = 0;
+
+  virtual bool operator == (BasicVariable* v)  = 0;
 
   void SetContext(const boost::shared_ptr<Variables>& val) 
   {
@@ -96,8 +90,6 @@ public:
 
   vartype Type() const { return _type; }
 
-//  void  SetString(string_ptr st);
-  void  SetString(const char* st);
 
   /**
    * Rename variable.
@@ -118,19 +110,24 @@ public:
 
   virtual void Delete() = 0;
 
+
   int HasName(const char* name)
   {
     if (_type==type_void) return 0;
     return (strcmp(_name.c_str(), name)==0);
   }
 
-  const string GetTypeName();
+  const std::string GetTypeName();
 
   //
-  virtual void display() = 0;
+  virtual void display()
+  {
+    //cout << *this;
+  }
+
 
   // allow access to private members of Variable class
-  friend class VarArray;
+//  friend class VarArray;
 
 }; // class BasicVariable
 

@@ -114,7 +114,7 @@ private:
   /**
    * Sets the function context of variables.
    **/
-  void SetContext(const Variables::ptr& val) 
+  void SetContext( boost::shared_ptr<Variables> val) 
   {
     _context = val;
   }
@@ -123,7 +123,7 @@ private:
    * Create a new shared pointer reference to the object.
    * @return variable's context
    */
-  Variables::ptr GetContext() const
+  boost::shared_ptr<Variables> GetContext() const
   {
     return _context;
   }

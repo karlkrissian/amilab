@@ -6,11 +6,14 @@
 //#define MAX_VARS     500
 
 #include <list>
+#include "BasicVariable.h"
 #include "Variable.hpp"
 #include "DefineClass.hpp"
 
 class wxString;
 class wxArrayString;
+
+#include "Variable.hpp"
 
 #include <boost/shared_ptr.hpp>
 
@@ -49,13 +52,12 @@ protected:
 
   /**
    *  Add a new variable based on its type, name, pointer to the object information, and context.
-   * @param type 
    * @param name 
    * @param val 
    * @param context 
    * @return a smart pointer to the new variable (base class)
    */
-  BasicVariable::ptr AddVar(vartype type, const char* name, BasicVariable::ptr& val, boost::shared_ptr<Variables> context = boost::shared_ptr<Variables>() );
+  BasicVariable::ptr AddVar( const std::string& name, BasicVariable::ptr& val, boost::shared_ptr<Variables> context = boost::shared_ptr<Variables>() );
 
   /**
    *  Add a new variable based on its type, name, pointer to the object information, and context.
@@ -66,15 +68,41 @@ protected:
    * @return a smart pointer to the new variable (base class)
    */
   template <class T>
-  BasicVariable::ptr AddVar(
-        const char* name,
-        boost::shared_ptr<BasicVariable>& val,
+  boost::shared_ptr<Variable<T> > AddVar(
+        const std::string& name,
+        boost::shared_ptr<Variable<T> >& val,
+        boost::shared_ptr<Variables> context = boost::shared_ptr<Variables>() )
+{
+  CLASS_MESSAGE(boost::format(" %1%, in %2% ") % name % GetName());
+
+  string resname = this->CheckVarName(name.c_str());
+  boost::shared_ptr<Variable<T> > newvar(new Variable<T>(name,val->Pointer()));
+  //std::cout << "  **  newvar =  " << newvar << endl;
+
+  newvar->Rename(resname.c_str());
+  newvar->SetContext(context);
+  _vars.push_front(newvar);
+
+  return newvar;
+}
+
+  template <class T>
+  /**
+   * Adds a variable of type T to the context, based on its name, a smart pointer to its value, and an optional context.
+   * @param name 
+   * @param val 
+   * @param context 
+   * @return smart pointer to the new variable.
+   */
+  boost::shared_ptr<Variable<T> > AddVar(
+        const std::string& name,
+        boost::shared_ptr<T >& val,
         boost::shared_ptr<Variables> context = boost::shared_ptr<Variables>() )
   {
     CLASS_MESSAGE(boost::format(" %1%, in %2% ") % name % GetName());
   
-    string resname = this->CheckVarName(name);
-    BasicVariable::ptr newvar(new Variable<T>(name,val));
+    string resname = this->CheckVarName(name.c_str());
+    boost::shared_ptr<Variable<T> > newvar(new Variable<T>(name,val));
     //std::cout << "  **  newvar =  " << newvar << endl;
   
     newvar->Rename(resname.c_str());
@@ -95,6 +123,8 @@ protected:
   BasicVariable::ptr AddVar(const BasicVariable::ptr& var, Variables::ptr context = Variables::ptr());
 
   bool ExistVar(const char* varname);
+
+  bool ExistVar(BasicVariable::ptr& var);
 
   bool ExistVar(BasicVariable* var);
 
@@ -132,5 +162,29 @@ protected:
   void display();
 
 };
+
+
+
+/*
+#include "Variable.hpp"
+template <class T>
+boost::shared_ptr<Variable<T> > Variables::AddVar(
+      const std::string& name,
+      boost::shared_ptr<Variable<T> >& val,
+      boost::shared_ptr<Variables> context )
+{
+  CLASS_MESSAGE(boost::format(" %1%, in %2% ") % name % GetName());
+
+  string resname = this->CheckVarName(name.c_str());
+  boost::shared_ptr<Variable<T> > newvar(new Variable<T>(name,val->Pointer()));
+  //std::cout << "  **  newvar =  " << newvar << endl;
+
+  newvar->Rename(resname.c_str());
+  newvar->SetContext(context);
+  _vars.push_front(newvar);
+
+  return newvar;
+}
+*/
 
 #endif

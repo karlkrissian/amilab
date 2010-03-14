@@ -92,19 +92,32 @@ void myTreeCtrl::OnAbout(wxCommandEvent& event)
   if (var.get()) {
     switch (var->Type()) {
       case type_c_procedure     : 
-        ((void (*)(ParamList*)) var->Pointer())(NULL);
+        {
+        DYNAMIC_CAST_VARIABLE(C_wrap_procedure, var, varproc);
+        (*varproc->Pointer())(NULL);
         return;
+        }
 
       case type_class_member     : 
+        {
         // getting the associated help
-        (*((WrapClassMember::ptr*) var->Pointer()))->ShowHelp();
+        DYNAMIC_CAST_VARIABLE(WrapClassMember, var, mem);
+        mem->Pointer()->ShowHelp();
         return;
+        }
+
       case type_c_image_function:
-       ((InrImage* (*)(ParamList*)) var->Pointer())(NULL);
+        {
+        DYNAMIC_CAST_VARIABLE(C_wrap_imagefunction, var, func);
+        (*func->Pointer())(NULL);
         return;
+        }
       case type_c_function:
-        ((BasicVariable::ptr (*)(ParamList*)) var->Pointer())(NULL);
+        {
+        DYNAMIC_CAST_VARIABLE(C_wrap_varfunction, var, func);
+        (*func->Pointer())(NULL);
         return;
+        }
       default:
         mess = var->GetComments();
     }

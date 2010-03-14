@@ -36,20 +36,12 @@ class VariableStack{
   ~VariableStack()    { }
 
 
-  /**
-   * Adds a variable to the stack
-   * @param var 
-   */
-  void AddVarPtr(  Variable* var)
-  {
-    _variables.push(Variable::ptr(var));
-  }
 
   /**
    * Adds a variable to the stack
    * @param var 
    */
-  void AddVarSmrtPtr( const Variable::ptr& var)
+  void AddVar( const BasicVariable::ptr& var)
   {
     _variables.push(var);
   }
@@ -63,14 +55,18 @@ class VariableStack{
   }
 
   template <class T>
-  Variable<T>::ptr GetLastVar()
-  {
-    if (_variables.empty()) return Variable::ptr();
-    Variable<T>::ptr tmp = boost::dynamic_pointer_cast<Variable<T> >(_variables.top());
-    _variables.pop();
-    return tmp;
-  }
+  boost::shared_ptr<Variable<T> > GetLastVar();
 
 }; // VariableStack
+
+
+template <class T>
+boost::shared_ptr<Variable<T> > VariableStack::GetLastVar()
+{
+  if (_variables.empty()) return boost::shared_ptr<Variable<T> >();
+  boost::shared_ptr<Variable<T> > tmp( boost::dynamic_pointer_cast<Variable<T> >(_variables.top()));
+  _variables.pop();
+  return tmp;
+}
 
 #endif // _VariableStack_h_

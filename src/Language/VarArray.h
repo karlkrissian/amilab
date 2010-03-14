@@ -19,6 +19,7 @@
 
 /// Array of variable
 /// This class should soon become deprecated with the new wrapping to std::vector<BasicVariable>
+
 class VarArray {
 
   DEFINE_CLASS(VarArray);
@@ -37,24 +38,20 @@ private:
   int Size() {return _size;}
   void Init( vartype type, int initsize=10);
 
-  /**
-   * Initialize an element of the array based on a pointer to its value. 
-   **/
-  void InitElement( int i, void* p,const char* name);
-
-  /**
-   * Initialize an element of the array based on a pointer to a smart pointer. 
-   **/
-  void InitElementPtr( vartype _type, int i, void* p,const char* name);
-
   template <class T>
+  /**
+   * Initialize a value within the array of variables
+   * @param i : array position
+   * @param p : smart pointer to the value
+   * @param name : name of the new created variable
+   */
   void InitElement( int i, 
                     const boost::shared_ptr<T>& p,
                     const char* name)
   {
     if (i>=_allocated_size) this->Resize(i+1);
     if ((i>=0)&&(i<_allocated_size)) {
-      _vars[i] = BasicVariable::ptr(new Variable<T>(_type,name,p));
+      _vars[i] = BasicVariable::ptr(new Variable<T>(name,p));
     }
   }
 

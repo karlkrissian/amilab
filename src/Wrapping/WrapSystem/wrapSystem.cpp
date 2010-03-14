@@ -24,6 +24,8 @@ extern yyip::Driver GB_driver;
 
 extern VarContexts  Vars;
 
+using namespace std;
+
 //---------------------------------------------------------
 void AddWrapSystem(){
   // Create new instance of the class
@@ -114,10 +116,11 @@ BasicVariable::ptr wrap_GetFullHostName(ParamList* p)
 
   if (get_num_param(p)!=0)  HelpAndReturnVarPtr;
   wxString FullHostName = ::wxGetFullHostName();
-  string* value = new string(FullHostName.mb_str());
 
-  BasicVariable::ptr varres(new Variable());
-  varres->Init(type_string,"FullHostName",value);
+  string_ptr value( new string(FullHostName.mb_str()));
+
+  Variable<string>::ptr varres(
+    new Variable<string>("FullHostName",value));
 
   return varres;
 }
@@ -136,10 +139,10 @@ BasicVariable::ptr wrap_GetHomeDir(ParamList* p) {
 
   if (get_num_param(p)!=0)  HelpAndReturnVarPtr;
   wxString HomeDir = ::wxGetHomeDir();
-  string* value = new string(HomeDir.mb_str());
 
-  BasicVariable::ptr varres(new Variable());
-  varres->Init(type_string,"HomeDir",value);
+  string_ptr value( new string(HomeDir.mb_str()));
+  Variable<string>::ptr varres(
+    new Variable<string>("HomeDir",value));
 
   return varres;
 }
@@ -159,10 +162,10 @@ BasicVariable::ptr wrap_GetUserHome(ParamList* p)
 
   if (get_num_param(p)!=0)  HelpAndReturnVarPtr;
   wxString UserHome = ::wxGetUserHome();
-  string* value = new string(UserHome.mb_str());
 
-  BasicVariable::ptr varres(new Variable());
-  varres->Init(type_string,"UserHome",value);
+  string_ptr value( new string(UserHome.mb_str()));
+  Variable<string>::ptr varres(
+    new Variable<string>("UserHome",value));
 
   return varres;
 }
@@ -182,10 +185,10 @@ BasicVariable::ptr wrap_GetUserId(ParamList* p)
 
   if (get_num_param(p)!=0)  HelpAndReturnVarPtr;
   wxString UserId = ::wxGetUserId();
-  string* value = new string(UserId.mb_str());
 
-  BasicVariable::ptr varres(new Variable());
-  varres->Init(type_string,"UserId",value);
+  string_ptr value( new string(UserId.mb_str()));
+  Variable<string>::ptr varres(
+    new Variable<string>("UserId",value));
 
   return varres;
 }
@@ -205,10 +208,10 @@ BasicVariable::ptr wrap_GetUserName(ParamList* p)
 
   if (get_num_param(p)!=0)  HelpAndReturnVarPtr;
   wxString UserName = ::wxGetUserName();
-  string* value = new string(UserName.mb_str());
 
-  BasicVariable::ptr varres(new Variable());
-  varres->Init(type_string,"UserName",value);
+  string_ptr value( new string(UserName.mb_str()));
+  Variable<string>::ptr varres(
+    new Variable<string>("UserName",value));
 
   return varres;
 }
@@ -229,10 +232,10 @@ BasicVariable::ptr wrap_GetHostName(ParamList* p)
 
   if (get_num_param(p)!=0)  HelpAndReturnVarPtr;
   wxString hostname = ::wxGetHostName();
-  string* value = new string(hostname.mb_str());
 
-  BasicVariable::ptr varres(new Variable());
-  varres->Init(type_string,"hostname",value);
+  string_ptr value( new string(hostname.mb_str()));
+  Variable<string>::ptr varres(
+    new Variable<string>("hostname",value));
 
   return varres;
 }
@@ -253,10 +256,10 @@ BasicVariable::ptr wrap_GetCurrentScriptDir(ParamList* p)
   if (get_num_param(p)!=0)  HelpAndReturnVarPtr;
   
   wxString wxvalue = wxFileName(wxString(GB_driver.GetCurrentFilename().c_str(), wxConvUTF8)).GetPath();
-  string* value = new string(wxvalue.mb_str());
+  string_ptr value ( new string(wxvalue.mb_str()));
 
-  BasicVariable::ptr varres(new Variable());
-  varres->Init(type_string,"hostname",value);
+  Variable<string>::ptr varres(
+    new Variable<string>("CurrentScriptDir",value));
 
   return varres;
 }

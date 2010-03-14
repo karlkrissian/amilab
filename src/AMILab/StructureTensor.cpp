@@ -363,7 +363,7 @@ unsigned char Func_StructureTensor( InrImage* image_initiale,
 
 
   // Initialisation des images des d�riv�es 
-  filtre = new GeneralGaussianFilter(image, dimension);
+  filtre = GeneralGaussianFilter::ptr(new GeneralGaussianFilter(image, dimension));
 //  filtre->SetScaleUnit(PIXEL_SPACE);
   filtre->Utilise_Image(   false);
   filtre->UtiliseGradient( true);
@@ -406,7 +406,7 @@ unsigned char Func_StructureTensor( InrImage* image_initiale,
   FinPour
   FinPour
 
-  delete filtre;
+  filtre.reset();
 
 
   // Lissage du tenseur
@@ -599,7 +599,7 @@ unsigned char Func_StructureTensorHessian( InrImage* image_initiale,
     InrImage::ptr       image_vap2;
     InrImage::ptr       image_vap3;
 
-    InrImage::ptr        image_grad = NULL;
+    InrImage::ptr        image_grad;
 
     GeneralGaussianFilter::ptr filtre;
   std::string     resname;
@@ -767,7 +767,8 @@ unsigned char Func_StructureTensorHessian( InrImage* image_initiale,
 
     printf("\n");
     if (GB_debug) printf("deleting filter \n");
-  delete filtre;
+
+  filtre.reset();
 
   resname = (boost::format("%s_STHvep1")%varname).str();
   Vars.AddVar<InrImage>(resname,image_vep1);

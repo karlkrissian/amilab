@@ -13,7 +13,8 @@
 #ifndef _amilab_boost_h_
 #define _amilab_boost_h_
 
-#include "paramlist.h"
+//#include "Variable.hpp"
+//#include "paramlist.h"
 #include <boost/shared_ptr.hpp>
 #include <stdio.h>
 
@@ -28,6 +29,11 @@ class CreateSmartPointer
   }
 };
 
+typedef boost::shared_ptr<float>           float_ptr;
+typedef boost::shared_ptr<int>             int_ptr;
+typedef boost::shared_ptr<unsigned char>   uchar_ptr;
+typedef boost::shared_ptr<std::string>     string_ptr;
+typedef boost::shared_ptr<FILE>            FILE_ptr;
 
 /// FILE deleter
 class file_deleter
@@ -60,6 +66,8 @@ class smartpointer_nodeleter
     void operator()(T * p)  {  }
   };
 
+
+/*
 /// Specialization for C_wrap_varfunction
 template<>
 class CreateSmartPointer<C_wrap_varfunction>
@@ -67,7 +75,8 @@ class CreateSmartPointer<C_wrap_varfunction>
   public:
   boost::shared_ptr<C_wrap_varfunction> operator() (C_wrap_varfunction* p) 
   {
-    return boost::shared_ptr<C_wrap_varfunction>(p,smartpointer_nodeleter());
+    return boost::shared_ptr<C_wrap_varfunction>
+            (p,smartpointer_nodeleter<C_wrap_varfunction>());
   }
 };
 
@@ -78,7 +87,8 @@ class CreateSmartPointer<C_wrap_procedure>
   public:
   boost::shared_ptr<C_wrap_procedure> operator() (C_wrap_procedure* p) 
   {
-    return boost::shared_ptr<C_wrap_procedure>(p,smartpointer_nodeleter());
+    return boost::shared_ptr<C_wrap_procedure>(p,
+                  smartpointer_nodeleter<C_wrap_procedure>());
   }
 };
 
@@ -89,9 +99,11 @@ class CreateSmartPointer<C_wrap_imagefunction>
   public:
   boost::shared_ptr<C_wrap_imagefunction> operator() (C_wrap_imagefunction* p) 
   {
-    return boost::shared_ptr<C_wrap_imagefunction>(p,smartpointer_nodeleter());
+    return boost::shared_ptr<C_wrap_imagefunction>(p,
+              smartpointer_nodeleter<C_wrap_imagefunction>());
   }
 };
+*/
 
 #endif
 // _amilab_boost_h_

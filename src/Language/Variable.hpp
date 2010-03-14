@@ -13,36 +13,45 @@
 
 #include "amilab_messages.h"
 #include "vartype.h"
-#include "paramlist.h"
+//#include "paramlist.h"
 #include "BasicVariable.h"
 
 // forward definition of Variables
-class Variables;
-class VarArray;
+//class Variables;
+//class VarArray;
 
-/* TODO: Change SetString */
+
+/*! \def DYNAMIC_CAST_VARIABLE
+    \brief helper for dynamic cast from BasicVariable to Variable<newtype>
+*/
+#define DYNAMIC_CAST_VARIABLE(newtype,initvar,resvar) \
+    Variable<newtype>::ptr resvar( \
+          boost::dynamic_pointer_cast<Variable<newtype> >(initvar));
+
 
 /*
-template<class T>  
-std::ostream& operator<<(std::ostream& o, const Variable<T>& v);
-
 template<class T> 
 std::ostream& PrintType(std::ostream& o, const Variable<T>& v);
 */
 
+// forward declaration of ParamList;
+class ParamList;
+
+// forward declaration of InrImage;
+class InrImage;
 
 /// Getting variable type 
 template<class T> vartype GetVarType();
 
 
 /// type: pointer to a C wrapping procedure
-typedef void      (*C_wrap_procedure)(ParamList*);
+typedef void      (C_wrap_procedure)(ParamList*);
 
 /// type: pointer to a C wrapping image function
-typedef InrImage* (*C_wrap_imagefunction)(ParamList*);
+typedef InrImage* (C_wrap_imagefunction)(ParamList*);
 
 /// type: pointer to a C wrapping variable function
-typedef BasicVariable::ptr (*C_wrap_varfunction)(ParamList*);
+typedef BasicVariable::ptr (C_wrap_varfunction)(ParamList*);
 
 
 
@@ -55,6 +64,7 @@ template<class T>
 class Variable : public BasicVariable {
 
 //  DEFINE_TEMPLATE_CLASS1(Variable,T);
+
 public:
   virtual char const* get_name() const { return "Variable<T>"; } 
   typedef Variable<T> VariableType;
@@ -101,10 +111,16 @@ public:
     */
   BasicVariable::ptr NewCopy()
   {
-    string resname = _name+"_copy";
+    // don't copy a file, keep a reference ...
+    CLASS_MESSAGE(boost::format("No default copy of variable contents, need to be specialized for this type of variable ... for variable %1% ")
+                        % Name());
+    return NewReference();
+
+/*    std::string resname = _name+"_copy";
     boost::shared_ptr<T> copy(new T(*_pointer));
     Variable<T>::ptr res(new Variable<T>(resname,copy));
     return res;
+*/
   }
 
   /**
@@ -113,8 +129,10 @@ public:
     */
   BasicVariable::ptr NewReference()
   {
-    string resname = _name+"_ref";
+    std::string resname = _name+"_ref";
     Variable<T>::ptr res(new Variable<T>(resname,_pointer));
+    // copy the comments
+    res->SetComments(_comments);
     return res;
   }
 
@@ -139,7 +157,31 @@ public:
     */
   }
 
-  // TODO: copy from basic variable ???
+  bool operator == ( BasicVariable* v) 
+  {
+    if (_type == v->Type()) {
+      // convert pointer
+      Variable<T>* newvar = dynamic_cast<Variable<T>*>(v);
+      return ((_name     == newvar->_name) &&
+              (_comments == newvar->_comments) &&
+              (_pointer.get()  == newvar->_pointer.get()));
+
+    }
+    else return false;
+  }
+
+  bool operator == (const BasicVariable::ptr& v) 
+  {
+    if (_type == v->Type()) {
+      // convert pointer
+      Variable<T>::ptr newvar (boost::dynamic_pointer_cast<Variable<T> >(v));
+      return ((_name     == newvar->_name) &&
+              (_comments == newvar->_comments) &&
+              (_pointer.get()  == newvar->_pointer.get()));
+
+    }
+    else return false;
+  }
 
   bool operator == (const Variable<T>& v) {
       return ((_type     == v._type) &&
@@ -152,11 +194,11 @@ public:
   * Get the pointer of the variable value, points to a smart pointer.
   * @return Pointer of the variable, points to a smart pointer
   */
-  boost::shared_ptr<T>& Pointer() const { return _pointer;}
+  boost::shared_ptr<T> Pointer() const { return _pointer;}
 
 
   void Init(const std::string& name, 
-            const boost::shared_ptr<T>& p);
+            boost::shared_ptr<T>& p);
 
   void Delete();
 
@@ -175,9 +217,14 @@ public:
   void display();
 
   // allow access to private members of Variable class
-  friend class VarArray;
+//  friend class VarArray;
 
 }; // class Variable
 
+template<class T>  
+std::ostream& operator<<(std::ostream& o, const Variable<T>& v);
+
+
+#include "Variable.tpp"
 
 #endif

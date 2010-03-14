@@ -35,6 +35,7 @@
 #include "wrap_ImageAddScalar.h"
 #include "wrap_ImageCos.h"
 #include "ami_object.h"
+#include "VarArray.h"
 
 extern VarContexts  Vars;
 
@@ -979,18 +980,17 @@ BasicVariable::ptr Wrap_EigenDecomp(ParamList* p) {
   result = EigenDecomp( input, value_flag, vector_flag, mask);
 
   // Create the resulting variable array
-  VarArray* array;
-  array = new VarArray();
+  VarArray::ptr array(new VarArray());
   array->Init(type_image,result.size());
 
   for(n=0;n<(int)result.size();n++)
     if (result[n]!=NULL)
-      array->InitElementPtr(type_image, n,
-           (void*) &result[n],
+      array->InitElement<InrImage>( n,
+           result[n],
            str(format("eigen_decomp_%d") %n).c_str());
 
-  BasicVariable::ptr varres(new Variable());
-  varres->Init(type_array,"EigenDecomp_result",array);
+  Variable<VarArray>::ptr varres(
+    new Variable<VarArray>("EigenDecomp_result",array ));
 
   return varres;
 }
@@ -1021,10 +1021,10 @@ BasicVariable::ptr Wrap_SmoothLinesToSplines(ParamList* p)
   if (!get_val_param<float>(    samplingstep, p, n)) HelpAndReturnVarPtr;
 
 
-  SurfacePoly* surf_result = Func_SmoothLinesToSplines( input, samplingstep );
+  SurfacePoly::ptr surf_result (Func_SmoothLinesToSplines( input, samplingstep ));
 
-  BasicVariable::ptr varres(new Variable());
-  varres->Init(type_surface,"interpolatedsplines_result",surf_result);
+  Variable<SurfacePoly>::ptr varres(
+    new Variable<SurfacePoly>("interpolatedsplines_result",surf_result));
 
   return varres;
 
@@ -1070,8 +1070,10 @@ BasicVariable::ptr Wrap_RegionGrow(ParamList* p)
   regiongrow->SetMax(int_max);
   regiongrow->Evolve();
 
-  BasicVariable::ptr varres(new Variable());
-  varres->InitPtr(type_image,"RegionGrowingResult",&regiongrow->GetStateImage());
+  Variable<InrImage>::ptr varres(
+    new Variable<InrImage>( "RegionGrowingResult",
+                            regiongrow->GetStateImage()));
+
   return varres;
 
 

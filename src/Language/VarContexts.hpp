@@ -114,7 +114,7 @@ public:
   * @return 
   */
   template <class T>
-  BasicVariable::ptr AddVar(const char* name, boost::shared_ptr<Variable<T> >& val, int context=NEWVAR_CONTEXT)
+  boost::shared_ptr<Variable<T> > AddVar(const char* name, boost::shared_ptr<Variable<T> >& val, int context=NEWVAR_CONTEXT)
   {
       if (context==OBJECT_CONTEXT_NUMBER) {
         if (_object_context.get()) {
@@ -125,7 +125,7 @@ public:
       }
       else {
         CLASS_ERROR("Calling object variable without any object context");
-        return BasicVariable::ptr();
+        return boost::shared_ptr<Variable<T> >();
       }
     }
   
@@ -133,13 +133,49 @@ public:
     return _context[context]->AddVar<T>(name,val);
   }
 
-  /** 
-   * Adds a new variable based on its type, pointer to value, and indentifier information.
-   * IndentifierInfo contains the name and the context
-   **/
+  ///
   template <class T>
-  BasicVariable::ptr AddVar(const IdentifierInfo::ptr& info, boost::shared_ptr<Variable<T> >& val);
+  boost::shared_ptr<Variable<T> > AddVar(const std::string& name, boost::shared_ptr<T>& val, int context=NEWVAR_CONTEXT)
+  {
+      if (context==OBJECT_CONTEXT_NUMBER) {
+        if (_object_context.get()) {
+          CLASS_MESSAGE(boost::format("adding object name %2% into object context ")
+                          % name);
+          boost::shared_ptr<Variable<T> > newvar ( 
+            new Variable<T>(name,val));
+          return _object_context->AddVar<T>(name,newvar, _object_context);
+      }
+      else {
+        CLASS_ERROR("Calling object variable without any object context");
+        return boost::shared_ptr<Variable<T> >();
+      }
+    }
+  
+    if (context==NEWVAR_CONTEXT) context = GetNewVarContext();
+    boost::shared_ptr<Variable<T> > newvar( new Variable<T>(name,val));
+    return _context[context]->AddVar<T>(name,val);
+  }
 
+
+
+  BasicVariable::ptr AddVar(const char* name, BasicVariable::ptr& val, int context=NEWVAR_CONTEXT)
+  {
+      if (context==OBJECT_CONTEXT_NUMBER) {
+        if (_object_context.get()) {
+          CLASS_MESSAGE(boost::format("adding object of type %1%, name %2% into object context ")
+                          % val->GetTypeName() 
+                          % name);
+          return _object_context->AddVar(name,val, _object_context);
+      }
+      else {
+        CLASS_ERROR("Calling object variable without any object context");
+        return BasicVariable::ptr();
+      }
+    }
+  
+    if (context==NEWVAR_CONTEXT) context = GetNewVarContext();
+    return _context[context]->AddVar(name,val);
+  }
 
   /**
    * Adds a new variable based on a smart pointer to a variable and a context id.
@@ -148,6 +184,20 @@ public:
    * @return smart pointer to the resulting variable
    */
   BasicVariable::ptr AddVar(BasicVariable::ptr var, int context=NEWVAR_CONTEXT);
+
+  template <class T>
+  boost::shared_ptr<Variable<T> > AddVar(  
+                const IdentifierInfo::ptr& info, 
+                boost::shared_ptr<Variable<T> >& val);
+
+  template <class T>
+  boost::shared_ptr<Variable<T> > AddVar(  
+                const IdentifierInfo::ptr& info, 
+                boost::shared_ptr<T >& val);
+
+  BasicVariable::ptr AddVar(  
+              const IdentifierInfo::ptr& info, 
+              BasicVariable::ptr& val);
 
   /**
    * Find a variable based on its name, if context is -1, look for variable in the local context
@@ -161,10 +211,18 @@ public:
 
   int deleteVars(const std::string& varmatch);
 
-  int GetContext(BasicVariable* var);
+  int GetContext(BasicVariable::ptr var);
+
+//  template <class T>
+//  int GetContext(boost::shared_ptr<Variable<T> >& var);
+
+  bool deleteVar(BasicVariable::ptr var);
   bool deleteVar(BasicVariable* var);
 
+  template <class T>
+  bool deleteVar(boost::shared_ptr<Variable<T> >& var);
 };
 
+#include "VarContexts.tpp"
 
 #endif //_AMI_VARCONTEXTS_HPP

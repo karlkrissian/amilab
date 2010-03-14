@@ -144,6 +144,8 @@ class ClasseCouleur;
 #define COLORMATERIALMODE_SPECULAR  3
 #define COLORMATERIALMODE_AMBIENT_AND_DIFFUSE 4
 
+#include "DefineClass.hpp"
+
 
 class GLMaterialParam
 //     ===============
@@ -775,6 +777,7 @@ public:
 class GLTransfMatrix
 //
 {
+  DEFINE_CLASS(GLTransfMatrix);
 
 public:
 

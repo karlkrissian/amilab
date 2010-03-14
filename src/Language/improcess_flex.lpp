@@ -44,6 +44,7 @@ typedef yyip::Parser::token_type token_type;
 #include "improcess_bison.tab.hpp"
 #include "VarContexts.hpp"
 #include "ami_function.h"
+#include "VarArray.h"
 #include <string>
 
 #define LEX_DEBUG(expr) if (GB_debug) {expr}
@@ -1065,7 +1066,8 @@ this::([A-Za-z0-9_])*   {
     FILE_MESSAGE("Object found");
     string varname = text.substr(pos+2);
 
-    AMIObject::ptr object = *(AMIObject::ptr*) var->Pointer();
+    Variable<AMIObject>::ptr objvar( boost::dynamic_pointer_cast<Variable<AMIObject> >(var));
+    AMIObject::ptr object (objvar->Pointer());
 
     Variables::ptr previous_ocontext = Vars.GetObjectContext();
     Vars.SetObjectContext(object->GetContext());
@@ -1098,7 +1100,8 @@ this::([A-Za-z0-9_])*   {
     FILE_MESSAGE("Object found");
     string varname = text.substr(pos+2);
 
-    AMIObject::ptr object = *(AMIObject::ptr*) var->Pointer();
+    Variable<AMIObject>::ptr objvar( boost::dynamic_pointer_cast<Variable<AMIObject> >(var));
+    AMIObject::ptr object ( objvar->Pointer());
 
     Variables::ptr previous_ocontext = Vars.GetObjectContext();
     Vars.SetObjectContext(object->GetContext());
@@ -1192,8 +1195,7 @@ yyip::Parser::token::yytokentype checkvar(
   //cout << "res = " << res << endl;
   if  ((!GB_driver.procedure_declaration) && var.get())   {
 
-    // TODO: avoid the use of Variable* here, maybe using variable stack ..
-    GB_driver.var_stack.AddVarSmrtPtr(var);
+    GB_driver.var_stack.AddVar(var);
 
     //yylval->variable = var.get();
     switch(var->Type()) {
@@ -1231,27 +1233,27 @@ yyip::Parser::token::yytokentype checkvar(
 
       case type_string:           return token::VAR_STRING;
         /*{$variable_string,VAR_STRING}*/
-      case type_paramwin:         return token::VAR_PARAMWIN;
-        /*{$variable_paramwin,VAR_PARAMWIN}*/
       case type_matrix:           return token::VAR_MATRIX;
         /*{$variable_matrix,VAR_MATRIX}*/
       case type_gltransform:      return token::VAR_GLTRANSFORM;
         /*{$variable_gltransform,VAR_GLTRANSFORM}*/
       case type_array:       {
-         VarArray::ptr array =  *(VarArray::ptr*)var->Pointer();
-         switch(array->Type()) {
-            case type_surface:    return token::VAR_ARRAY_SURFACE;
-            /*{$variable_surface_array,VAR_ARRAY_SURFACE}*/
-            case type_image:      return token::VAR_ARRAY_IMAGE;
-            /*{$variable_image_array,VAR_ARRAY_IMAGE}*/
-           default:
-              GB_driver.err_print("Array type not available \n");
-         }
-         break;
+        Variable<VarArray>::ptr vararray( 
+          boost::dynamic_pointer_cast<Variable<VarArray> >(var));
+        VarArray::ptr array (vararray->Pointer());
+        switch(array->Type()) {
+          case type_surface:    return token::VAR_ARRAY_SURFACE;
+          /*{$variable_surface_array,VAR_ARRAY_SURFACE}*/
+          case type_image:      return token::VAR_ARRAY_IMAGE;
+          /*{$variable_image_array,VAR_ARRAY_IMAGE}*/
+          default:
+            GB_driver.err_print("Array type not available \n");
+        }
+        break;
       }
       default:
         GB_driver.err_print("Variable type still not available \n");
-        GB_driver.var_stack.GetLastVar();
+        GB_driver.var_stack.GetLastBasicVar();
     }
 
   }

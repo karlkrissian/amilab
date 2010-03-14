@@ -14,16 +14,17 @@
 #include "DefineClass.hpp"
 #include "amilab_messages.h"
 #include "DessinImage.hpp"
+#include "Variable.hpp"
 
 #include <string>
-using namespace std;
+//using namespace std;
 
 
 /**
  * Function used to parse a variable of generic type in a list of parameters, and to give back a smart pointer to the variable.
  */
 template<class T>
-bool get_var_param( Variable<T>::ptr& var, 
+bool get_var_param( boost::shared_ptr<Variable<T> >& var, 
                     ParamList*p, int& num)
 {
   if (!p) return false;
@@ -35,8 +36,7 @@ bool get_var_param( Variable<T>::ptr& var,
       return false;
     }
     // check that the variable is not just local
-    int var_count =
-     ((boost::shared_ptr<T>*)var->Pointer())->use_count();
+    int var_count = var->Pointer().use_count();
     if (var_count==1) {
       FILE_ERROR(boost::format("Parameter %1% is not passed as a reference ... (%2%)")%num%var->Name());
       return false;
@@ -65,13 +65,15 @@ bool get_val_param(T& arg, ParamList*p, int& num)
     FILE_MESSAGE( boost::format("Using default value for parameter %1%") % num);
     return true;
   }
-  BasicVariable::ptr temp = p->GetParam(num++);
+  BasicVariable::ptr temp( p->GetParam(num++));
   if (temp.get()) {
     if (temp->Type()!=GetVarType<T>()) {
       FILE_ERROR(boost::format("Parameter %1% is of wrong type.")%num);
       return false;
     }
-    arg= * (((boost::shared_ptr<T>*)temp->Pointer())->get());
+    boost::shared_ptr<Variable<T> > temp1(
+      boost::dynamic_pointer_cast<Variable<T> >(temp));
+    arg= * (temp1->Pointer().get());
     return true;
   }
   else
@@ -104,7 +106,9 @@ bool get_val_ptr_param(T*& arg, ParamList*p, int& num, bool required)
       FILE_ERROR(boost::format("Parameter %1% is of wrong type (type is %2% instead of %3%).") % num % temp->Type() % GetVarType<T>());
       return false;
     }
-    arg= ((boost::shared_ptr<T>*)temp->Pointer())->get();
+    boost::shared_ptr<Variable<T> > temp1(
+      boost::dynamic_pointer_cast<Variable<T> >(temp));
+    arg= temp1->Pointer().get();
     return true;
   }
   else
@@ -138,7 +142,9 @@ bool get_val_smtptr_param(boost::shared_ptr<T>& arg, ParamList*p, int& num, bool
       FILE_ERROR(boost::format("Parameter %1% is of wrong type.")%num);
       return false;
     }
-    arg= *((boost::shared_ptr<T>*)temp->Pointer());
+    boost::shared_ptr<Variable<T> > temp1(
+      boost::dynamic_pointer_cast<Variable<T> >(temp));
+    arg= boost::shared_ptr<T>(temp1->Pointer());
     return true;
   }
   else

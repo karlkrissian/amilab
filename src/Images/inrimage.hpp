@@ -313,9 +313,9 @@ public:
     public:
         DepassementLimites( const std::string message)
      {
-       cout << "InrImage "
+       std::cout << "InrImage "
                 << " Out of image limits"
-            << "\t " << message  << endl;
+            << "\t " << message  << std::endl;
      }
     };
   //@}
@@ -628,7 +628,7 @@ public:
     //            -------
 
     ///
-    const string    FormatName();
+    const std::string FormatName();
     //               ----------
 
     //

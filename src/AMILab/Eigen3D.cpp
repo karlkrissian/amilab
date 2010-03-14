@@ -193,7 +193,7 @@ unsigned char      Func_Eigen3D( char* varname,
     InrImage::ptr       image_vap1;
     InrImage::ptr       image_vap2;
     InrImage::ptr       image_vap3;
-    char            resname[100];
+    std::string         resname;
 
 //  verbose = true;
 

@@ -22,9 +22,9 @@
 
 
 #define RETURN_VARINT(val,name)             \
-  BasicVariable::ptr varres(new Variable());\
   std::string varname = (boost::format("%1%_id")%name).str();\
-  varres->Init(type_int,varname.c_str(),(void*) new int(val));\
+  int_ptr varint(new int(val));\
+  Variable<int>::ptr varres( new Variable<int>(varname, varint));\
   return varres;
 
 
@@ -113,11 +113,10 @@ BasicVariable::ptr wrap_ParamPanel( ParamList* p)
       wxwindow_nodeleter<ParamPanel>() // deletion will be done by wxwidgets
     );
 
-  AMIObject* amiobject = AddWrapParamPanel(pp);
+  AMIObject::ptr amiobject (AddWrapParamPanel(pp));
 
-  BasicVariable::ptr varres(new Variable());
-
-  varres->Init(type_ami_object,"tmp_parampanel", (void*) amiobject);
+  Variable<AMIObject>::ptr varres(
+    new Variable<AMIObject>("tmp_parampanel",  amiobject));
 
   return varres;
 
@@ -309,7 +308,7 @@ BasicVariable::ptr wrap_ParamPanelAddInt::CallMember( ParamList* p)
   if (!get_int_param(minval, p, n))            ClassHelpAndReturn;
   if (!get_int_param(maxval, p, n))            ClassHelpAndReturn;
 
-  int_ptr varval( var->Pointer());
+  int* varval =  var->Pointer().get();
   std::string tooltip = (boost::format("%s  (%s)") % var->GetComments() % var->Name()).str();
   int var_id = this->_objectptr->AddInteger( varval, label->c_str(), tooltip);
   this->_objectptr->IntegerConstraints( var_id, minval, maxval, *varval );
@@ -347,7 +346,7 @@ BasicVariable::ptr wrap_ParamPanelAddEnum::CallMember( ParamList* p)
   else
     label_val = *label;
 
-  int_ptr varval( var->Pointer());
+  int* varval =  var->Pointer().get();
   std::string tooltip = (boost::format("%s  (%s)") % var->GetComments() % var->Name()).str();
   this->_objectptr->AddEnumeration(  
                         &var_id,
@@ -538,9 +537,10 @@ BasicVariable::ptr wrap_ParamPanelAddFilename::CallMember( ParamList* p)
   if (!get_val_ptr_param<string>( defmask, p, n)) ClassHelpAndReturn;
 
   std::string tooltip = (boost::format("%s  (%s)") % var->GetComments() % var->Name()).str();
-
+  
+  string_ptr val_ptr(var->Pointer());
   this->_objectptr->AjouteNomFichier( &var_id, 
-                                      var->Pointer(),
+                                      val_ptr,
                                       label->c_str(),
                                       tooltip);
   this->_objectptr->ContraintesNomFichier(var_id,
@@ -784,7 +784,7 @@ BasicVariable::ptr wrap_ParamPanelEnablePanel::CallMember( ParamList* p)
   if ((id>=0)&&(id<nbp))
     this->_objectptr->EnablePanel(id,enable);
   else
-    FILE_ERROR(boost::format("VAR_PARAMWIN.EnablePanel( %d , .. ) \t bad parameter number ")%id);
+    FILE_ERROR(boost::format(" bad parameter number %1% ")%id);
 
   return BasicVariable::ptr();
 }
@@ -872,7 +872,7 @@ BasicVariable::ptr wrap_ParamPanelEnable::CallMember( ParamList* p)
   if ((id>=0)&&(id<nb))
     this->_objectptr->Enable(id,enable);
   else
-    FILE_ERROR(boost::format("VAR_PARAMWIN.Enable( %d , .. ) \t bad parameter number ")%id);
+    FILE_ERROR(boost::format(" %d  \t bad parameter number ")%id);
 
   return BasicVariable::ptr();
 }
