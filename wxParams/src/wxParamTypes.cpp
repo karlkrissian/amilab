@@ -231,7 +231,7 @@ wxStringParameter::wxStringParameter( wxWindow* parent, string_ptr param,
   this->_label     = new wxStaticText(this->_parent, wxID_ANY, wxString::FromAscii(label));
 
   this->_text = new MyTextCtrl( this->_parent, wxID_ANY,
-                              wxString::FromAscii((*param)->c_str()),
+                              wxString::FromAscii(param->c_str()),
                               wxDefaultPosition, 
                               //wxSize(40, wxDefaultCoord),
                               wxDefaultSize,
@@ -302,7 +302,7 @@ wxFilenameParameter::wxFilenameParameter( wxWindow* parent,
 
   this->_text = new MyTextCtrl( this->_parent,
                                 wxID_ANY,
-                                wxString::FromAscii((*param)->c_str()),
+                                wxString::FromAscii(param->c_str()),
                                 wxDefaultPosition, 
                                 wxSize(40, wxDefaultCoord),
                                 wxTE_PROCESS_ENTER);
