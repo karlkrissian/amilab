@@ -1490,7 +1490,8 @@ command:
         **/
           BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
           IdentifierInfo::ptr ident($1);
-          Vars.AddVar(ident,var);
+          BasicVariable::ptr newvar( var->NewReference());
+          Vars.AddVar(ident,newvar);
       }
       |
       identifier ASSIGN_OP variable

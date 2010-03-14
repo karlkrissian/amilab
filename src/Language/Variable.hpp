@@ -26,7 +26,8 @@
 */
 #define DYNAMIC_CAST_VARIABLE(newtype,initvar,resvar) \
     Variable<newtype>::ptr resvar( \
-          boost::dynamic_pointer_cast<Variable<newtype> >(initvar));
+          boost::dynamic_pointer_cast<Variable<newtype> >(initvar)); \
+    if (!resvar.get()) std::cerr << "DYNAMIC_CAST_VARIABLE(" << #newtype << "," << #initvar << "," << # resvar << ") failed ..." << std::endl;
 
 
 /*

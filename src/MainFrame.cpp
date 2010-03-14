@@ -1180,7 +1180,7 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
         switch(var->Type()) {
           case type_float:
             {
-            DYNAMIC_CAST_VARIABLE(int,var,varf);
+            DYNAMIC_CAST_VARIABLE(float,var,varf);
             text = (boost::format("%1% %20t FLOAT %30t %2%")
                             % var->Name()
                             % (*varf->Pointer())).str();

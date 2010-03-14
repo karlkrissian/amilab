@@ -89,7 +89,7 @@ printn "deleting windows"
     ::dimx = 2*(::R+::r)+::margin
     ::dimy = ::dimx
     ::dimz = 2*::r+::margin
-    ::win.update
+    ::win.Update(-1)
   }
 
   proc ::Show() {
@@ -98,33 +98,34 @@ printn "deleting windows"
   }
   
   proc ::Gui() {
-    ::win = ParamWin("CreateTorus")
+    import = &global::ami_import;
+    ::win = import->ParamPanel("CreateTorus")
   
     ::win.BeginBook
       ::win.AddPage("Param")
 
         ::win.BeginBoxPanel("Radii")
-          ::win.AddFloat(::R,"R",0.1,50)
-          ::win.AddFloat(::r,"r",0.1,50)
+          ::win.AddFloat( &::R,"R",0.1,50)
+          ::win.AddFloat( &::r,"r",0.1,50)
         ::win.EndBoxPanel
 
         ::win.BeginBoxPanel("Colors")
-          ::win.AddFloat(::bg,"Bg",0.1,500)
-          ::win.AddFloat(::fg,"Fg",0.1,500)
+          ::win.AddFloat( &::bg,"Bg",0.1,500)
+          ::win.AddFloat( &::fg,"Fg",0.1,500)
         ::win.EndBoxPanel
       
-        ::win.AddString(::image_name,"Result name")
+        ::win.AddString( &::image_name,"Result name")
         ::win.AddButton("Create", ::Create)
         ::win.AddButton("Show",   ::Show)
 
       ::win.AddPage("Dimensions")
         ::win.BeginBoxPanel("Dimensions")
-          ::win.AddInt(::dimx,1,1000)
-          ::win.AddInt(::dimy,1,1000)
-          ::win.AddInt(::dimz,1,1000)
+          ::win.AddInt( &::dimx,  "::dimx", 1,1000)
+          ::win.AddInt( &::dimy,  "::dimy", 1,1000)
+          ::win.AddInt( &::dimz,  "::dimz", 1,1000)
         ::win.EndBoxPanel
         ::win.BeginBoxPanel("Automatic size")
-          ::win.AddInt(::margin,"margin",1,50)
+          ::win.AddInt( &::margin,"margin",1,50)
           ::win.AddButton("Compute Size",::ComputeSize)
         ::win.EndBoxPanel
 
@@ -135,7 +136,7 @@ printn "deleting windows"
       ::win.AddButton("Close All",  ::CloseAll)
     ::win.EndHorizontal
   
-    ::win.update
+    ::win.Update(-1)
     ::win.Display
   }
   
