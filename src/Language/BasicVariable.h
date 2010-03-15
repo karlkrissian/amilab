@@ -125,9 +125,30 @@ public:
     //cout << *this;
   }
 
+  /**
+   * Virtual method to return the value of a variable.
+   * @return a string containing the value of the variable.
+   */
+  virtual std::string GetValueAsString() const = 0;
 
   // allow access to private members of Variable class
 //  friend class VarArray;
+
+  //---------------------------------------------
+  // unary operators
+  //---------------------------------------------
+
+  /// +T
+  virtual BasicVariable::ptr operator +()       { return this->NewReference(); }
+
+  /// -T
+  virtual BasicVariable::ptr operator -()       { return this->NewReference(); }
+
+  /// prefix ++ operator ++T 
+  virtual BasicVariable::ptr operator ++()      { return this->NewReference(); }
+
+  /// postfix ++ operator T++ 
+  virtual BasicVariable::ptr operator ++(int)   { return this->NewReference(); }
 
 }; // class BasicVariable
 

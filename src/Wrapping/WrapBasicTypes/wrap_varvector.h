@@ -20,14 +20,23 @@
 #include <vector>
 
 // varvector type
-class VarVector
+class WrapClass_vector : public WrapClassBase
 {
-  DEFINE_CLASS(VarVector);
+  DEFINE_CLASS(WrapClass_vector);
+
+  // for nested classes
+  typedef WrapClass_vector::ptr _parentclass_ptr;
 
   public:
     std::vector<BasicVariable::ptr> vector;
 
-  ADD_CLASS_METHOD(clear, "Removes all elements from the vector");
+    ADD_CLASS_METHOD( push_back,    "Add element at the end.");
+    ADD_CLASS_METHOD( pop_back,     "Deletes the element at the end of a list.");
+    ADD_CLASS_METHOD( size,         "Return size.");
+    ADD_CLASS_METHOD( front,        "Access first element.");
+    ADD_CLASS_METHOD( back,         "Access last element.");
+    ADD_CLASS_METHOD( at,           "Return the value a the given position.");
+    ADD_CLASS_METHOD( clear,        "Removes all elements from the vector");
 
 };
 
@@ -35,13 +44,6 @@ class VarVector
  */
 BasicVariable::ptr wrap_VarVector( ParamList* p);
 
-ADD_METHOD( VarVector, push_back,         "Add element at the end.");
-ADD_METHOD( VarVector, pop_back,          "Deletes the element at the end of a list.");
-ADD_METHOD( VarVector, size,              "Return size.");
-ADD_METHOD( VarVector, front,             "Access first element.");
-ADD_METHOD( VarVector, back,              "Access last element.");
-
-ADD_METHOD( VarVector, at,                "Return the value a the given position.");
 
 #endif
 // _wrap_varvector_h_

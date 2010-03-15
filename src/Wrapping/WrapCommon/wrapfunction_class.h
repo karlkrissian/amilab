@@ -16,6 +16,8 @@
 #include "paramlist.h"
 #include "DefineClass.hpp"
 
+
+
 /** Macro for adding a class that wraps a method.
   */
 #define ADD_METHOD(classname,methodname,description_str) \
@@ -39,10 +41,11 @@ class wrap_##classname##methodname : public WrapClassMember { \
 };
 
 /** Macro for adding a nested class that wraps a method.
-  * requires that the type 'ptr' be defined as
-  * a smart pointer to the parent class
+  * requires that the type '_parentclass_ptr' be defined as a smart pointer to
+  * the parent class
   * and that the parent class has a method get_name() returning 
-  * the name of the class (both are provided by the macro DEFINE_CLASS).
+  * the name of the class (it is provided by the macro DEFINE_CLASS).
+  * and a AMIObject:ptr amiobject member pointing to the corresponding wrapped object class
   */
 #define ADD_CLASS_METHOD(methodname,description_str) \
 /**\
@@ -50,9 +53,9 @@ class wrap_##classname##methodname : public WrapClassMember { \
  **/\
 class wrap_##methodname : public WrapClassMember { \
   protected:\
-    ptr _objectptr; \
+    _parentclass_ptr _objectptr; \
   public: \
-    wrap_##methodname(const ptr& pp) : \
+    wrap_##methodname(_parentclass_ptr& pp) : \
      _objectptr(pp) { \
       functionname = _objectptr->get_name();\
       functionname += "::";\
@@ -62,7 +65,14 @@ class wrap_##methodname : public WrapClassMember { \
     } \
     void SetParametersComments(); \
     BasicVariable::ptr CallMember(ParamList*); \
-};
+}; \
+\
+void AddVar_##methodname(  _parentclass_ptr& pc, const std::string& newname = #methodname) {\
+  boost::shared_ptr<WrapClassMember> tmp( new wrap_##methodname(pc));\
+  AMIObject::ptr tmpobj(amiobject.lock()); \
+  tmpobj->GetContext()->AddVar<WrapClassMember>(newname, tmp); \
+}
+
 
 /**
     Macro for adding the members to a class.
@@ -74,6 +84,7 @@ class wrap_##methodname : public WrapClassMember { \
                 tmp, \
                 OBJECT_CONTEXT_NUMBER); \
   }
+
 
 /** Shows help and returns 
 */
@@ -88,6 +99,21 @@ class wrap_##methodname : public WrapClassMember { \
  **/
 #define ADDPARAMCOMMENT(c)  this->parameters_comments.push_back(c)
 
+class AMIObject;
+
+class  WrapClassBase
+{
+  DEFINE_CLASS(WrapClassBase);
+
+  public:
+    /// use weak pointer here to prevent blocking the object from being deleted
+    boost::weak_ptr<AMIObject> amiobject;
+
+    void SetAMIObject(boost::shared_ptr<AMIObject> obj) 
+    {
+      amiobject = boost::weak_ptr<AMIObject>(obj);
+    }
+};
 
 /**
  * Basic class for wrapping class function members.

@@ -2785,6 +2785,30 @@ command:
           fprintf(file.get(),"%s\n",text.get());
           fflush(file.get());
         }
+        | PRINT variable
+        {
+         /**
+          Description:
+            Print a value of a variable, if the string conversion is defined, a message otherwise
+          **/
+          BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+          if (var.get())
+            driver.res_print(var->GetValueAsString());
+          else
+            driver.err_print("empty variable");
+        }
+        | PRINTN variable
+        {
+         /**
+          Description:
+            Print a value of a variable + newline, if the string conversion is defined, a message otherwise
+          **/
+          BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+          if (var.get())
+            driver.res_print(var->GetValueAsString()+"\n");
+          else
+            driver.err_print("empty variable");
+        }
         | PRINT expr_string
         {
          /**
@@ -6656,7 +6680,8 @@ postfix_expr
     Description:
     Check for the existence of a variable, returns 0
     **/
-          $$=0;
+        IdentifierInfo::ptr ident($3);
+        $$=0;
     }
     | T_exists T_OP_PAR variable T_CL_PAR
     {
@@ -10081,15 +10106,11 @@ multiplicative_var:
   cast_var
   | multiplicative_var T_MULT cast_expr
   | multiplicative_var T_DIV  cast_expr
-  | multiplicative_var T_MULT cast_var
-  | multiplicative_var T_DIV  cast_var
   | multiplicative_var T_EXP  cast_var
   ;
 
 additive_var: 
   multiplicative_var
-  | additive_var T_ADD multiplicative_var
-  | additive_var T_SUB multiplicative_var
   | additive_var T_ADD multiplicative_var
   | additive_var T_SUB multiplicative_var
   ;

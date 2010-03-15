@@ -254,7 +254,7 @@ BasicVariable::ptr wrap_GetCurrentScriptDir(ParamList* p)
             ";
 
   if (get_num_param(p)!=0)  HelpAndReturnVarPtr;
-  
+  cout << "GB_driver.GetCurrentFilename()=" << GB_driver.GetCurrentFilename() << endl;
   wxString wxvalue = wxFileName(wxString(GB_driver.GetCurrentFilename().c_str(), wxConvUTF8)).GetPath();
   string_ptr value ( new string(wxvalue.mb_str()));
 

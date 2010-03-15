@@ -217,6 +217,13 @@ public:
   //
   void display();
 
+  
+  /**
+   * 
+   * @return A string containing the value of the variable.
+   */
+  std::string GetValueAsString() const;
+
   // allow access to private members of Variable class
 //  friend class VarArray;
 

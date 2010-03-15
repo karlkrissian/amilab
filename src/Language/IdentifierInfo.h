@@ -22,7 +22,7 @@ class IdentifierInfo {
 
 protected:
 
-  string name;
+  std::string name;
   /// if -1, use current context,
   /// otherwise use the specified context
   int creation_context;

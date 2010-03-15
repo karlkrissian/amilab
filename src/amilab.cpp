@@ -88,7 +88,6 @@ unsigned char verbose;
 #include "xmtext.hpp"
 
 
-
 DessinImage* CreateIDraw( const std::string& title, InrImage::ptr image)
 {
   if (GB_debug)

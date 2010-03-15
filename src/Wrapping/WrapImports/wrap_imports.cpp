@@ -25,6 +25,7 @@
 #include "wrap_wxsamples.h"
 #include "wrap_parampanel.h"
 #include "wrap_varlist.h"
+#include "wrap_varvector.h"
 
 extern VarContexts  Vars;
 
@@ -44,7 +45,8 @@ void AddWrapImports()
   ADDOBJECTVAR_NAME(C_wrap_procedure,"ImageDraw",  wrap_ImageDraw);
   ADDOBJECTVAR_NAME(C_wrap_procedure,"MainFrame",  wrap_MainFrame);
 
-  ADDOBJECTVAR_NAME(C_wrap_varfunction,"VarList", wrap_VarList);
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"VarList",   wrap_VarList);
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"VarVector", wrap_VarVector);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"ParamPanel",wrap_ParamPanel);
 
   ADDOBJECTVAR_NAME(C_wrap_procedure,"System",    wrap_System);

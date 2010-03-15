@@ -26,17 +26,10 @@ using namespace std;
 template<> vartype GetVarType<InrImage>      ()    
 { return type_image;     }
 
-template<> vartype GetVarType<float>         ()    
-{ return type_float;     }
-
-template<> vartype GetVarType<int>           ()    
-{ return type_int;       }
 
 template<> vartype GetVarType<unsigned char> ()    
 { return type_uchar;     }
 
-template<> vartype GetVarType<string>        ()    
-{ return type_string;    }
 
 template<> vartype GetVarType<DessinImage>   ()    
 { return type_imagedraw; }
@@ -84,10 +77,47 @@ template<> vartype GetVarType<VarArray>  ()
 { return type_array;   }
 
 
+//------------------------------------------------------
+//------- Variable<float>
+//------------------------------------------------------
 
+//------------------------------------------------
+template<> vartype GetVarType<float>         ()    
+{ return type_float;     }
 
+//------------------------------------------------
+template <>
+std::string Variable<float>::GetValueAsString() const
+{
+  return (boost::format("%1%")%(*this->Pointer())).str();
+}
 
-//----------------------------------------------------------//  Variable
-//----------------------------------------------------------
+//------------------------------------------------------
+//------- Variable<int>
+//------------------------------------------------------
 
+//------------------------------------------------
+template<> vartype GetVarType<int>           ()
+{ return type_int;       }
 
+//------------------------------------------------
+template <>
+std::string Variable<int>::GetValueAsString() const
+{
+  return (boost::format("%1%")%(*this->Pointer())).str();
+}
+
+//------------------------------------------------------
+//------- Variable<string>
+//------------------------------------------------------
+
+//------------------------------------------------
+template<> vartype GetVarType<string>        ()
+{ return type_string;    }
+
+//------------------------------------------------
+template <>
+std::string Variable<string>::GetValueAsString() const
+{
+  return (boost::format("%1%")%(*this->Pointer())).str();
+}

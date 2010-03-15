@@ -56,8 +56,8 @@ ADD_METHOD(ParamPanel,EnablePanel,      "Enable/Disable a panel.");
 
 
 ADD_METHOD(ParamPanel,Display,          "Displays the parameters.");
-ADD_METHOD(ParamPanel,Hide,             "Hides the parameters.");
-ADD_METHOD(ParamPanel,Update,           "Updates the display of one or all the parameters.");
+ADD_METHOD(ParamPanel,HidePanel,        "Hides the panel.");
+ADD_METHOD(ParamPanel,Update,           "Updates  the display of one or all the parameters.");
 
 ADD_METHOD(ParamPanel,SetPositionProp,  "Sets the object position properties of the given widget.");
 ADD_METHOD(ParamPanel,ShowSlider,       "Show/hide the slider if there is one.");

@@ -39,6 +39,10 @@
 
 using namespace boost;
 
+// forward declaration of WrapClassBase
+class  WrapClassBase;
+
+
 /**
   The class AMIObject can be created either with or without a link to a class object.
   If a class object is present, it will create a context of variables by running the code
@@ -52,6 +56,9 @@ private:
 
   /// Smart pointer to the corresponding class if any
   AMIClass::ptr   _class;
+
+  /// Pointer to the class allowing C++ object wrapping
+  boost::shared_ptr<WrapClassBase> _wrapped_object;
 
   // why should object have a name, while a variable has one
 /*
@@ -108,6 +115,16 @@ private:
    * @return 
    */
   AMIClass::ptr& GetClass() { return _class;}
+
+
+  /**
+   * Associates the wrapped object 
+   * @param amiclass 
+   */
+  void SetWrappedObject(boost::shared_ptr<WrapClassBase> wo)
+  {
+    _wrapped_object = boost::shared_ptr<WrapClassBase>(wo);
+  }
 
   /**
    * Sets the object name

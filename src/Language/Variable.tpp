@@ -5,6 +5,7 @@
 
 #include <string>
 #include <ostream>
+#include <sstream>
 
 //------------------------------------------------------------//  Variable
 //------------------------------------------------------------
@@ -98,6 +99,15 @@ template <class T>
 void Variable<T>::display()
 {
   std::cout << (*this);
+}
+
+template <class T>
+std::string Variable<T>::GetValueAsString() const
+{
+  // by default use the << operator to return the variable type
+  std::stringstream tmpstr;
+  tmpstr << "Variable of type " << *this << ", no string conversion available.";
+  return tmpstr.str();
 }
 
 

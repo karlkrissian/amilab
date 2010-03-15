@@ -75,7 +75,7 @@ AMIObject* AddWrapParamPanel( const ParamPanel::ptr& objectptr)
   ADDMEMBER("EnablePanel",     ParamPanel,EnablePanel);
 
   ADDMEMBER("Display",         ParamPanel,Display);
-  ADDMEMBER("Hide",            ParamPanel,Hide);
+  ADDMEMBER("HidePanel",       ParamPanel,HidePanel);
   ADDMEMBER("Update",          ParamPanel,Update);
 
   ADDMEMBER("SetPositionProp", ParamPanel,SetPositionProp);
@@ -402,11 +402,11 @@ BasicVariable::ptr wrap_ParamPanelDisplay::CallMember( ParamList* p)
 }
 
 //--------------------------------------------------
-//  Hide
+//  HidePanel
 //--------------------------------------------------
-void wrap_ParamPanelHide::SetParametersComments() {}
+void wrap_ParamPanelHidePanel::SetParametersComments() {}
 //--------------------------------------------------
-BasicVariable::ptr wrap_ParamPanelHide::CallMember( ParamList* p)
+BasicVariable::ptr wrap_ParamPanelHidePanel::CallMember( ParamList* p)
 {
   GB_main_wxFrame->RemoveParamPanelPage(this->_objectptr);
   return BasicVariable::ptr();
