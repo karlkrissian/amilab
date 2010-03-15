@@ -63,7 +63,7 @@ if (!exists(ParametricSurfaceClass)) {
    
   proc ::Close() \
   {
-    ::win.Hide
+    ::win.HidePanel
     delvars GetObjectName(::Close)
   }
   ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")

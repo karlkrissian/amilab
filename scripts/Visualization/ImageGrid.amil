@@ -31,7 +31,7 @@ if (!exists(global::ImageGridClass)) {
     #----------------------------
     proc ::Close() \
     {
-      ::win.Hide
+      ::win.HidePanel
       delvars GetObjectName(::Close)
     }
     ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -48,7 +48,7 @@ if (!exists(global::ImageGridClass)) {
     #----------------------------
     proc ::UpdateDisplay() \
     {
-      cmd = boost_format("if (exists(%1%_draw)) { %1%_draw.update; };") % ::input_name
+      cmd = boost_format("if (exists(%1%_draw)) { %1%_draw.Update(-1); };") % ::input_name
       eval cmd
     }
 
@@ -104,7 +104,8 @@ if (!exists(global::ImageGridClass)) {
     proc ::CreateWindow() {
     
       # parameters window
-      ::win = ParamWin("ImGrid")
+      import = &global::ami_import;
+      ::win = import->ParamPanel("ImGrid")
       
       ::win.BeginBook
     
@@ -113,29 +114,29 @@ if (!exists(global::ImageGridClass)) {
           # set the input image drawing window
           ::win.BeginBoxPanel("Input")
             ::win.BeginHorizontal
-              ::win.AddImageChoice(::input_name, "")
+              ::win.AddImageChoice( &::input_name, "")
             ::win.EndHorizontal
           ::win.EndBoxPanel
 
-          ::win.AddBoolean(::enable,"Enable")
-          ::win.SetCallback(::UpdateDisplay)
+          ::win.AddBoolean( &::enable,"Enable")
+          ::win.SetCallback( &::UpdateDisplay)
           ::win.AddButton("Draw",::DrawGrid)
           ::win.AddButton("SetCallback",::SetAsCallback)
 
-          ::win.AddInt(::thickness,"thickness",0,5)
-          ::win.SetCallback(::UpdateDisplay)
-          ::win.AddInt(::style,"style",0,1)
-          ::win.SetCallback(::UpdateDisplay)
+          ::win.AddInt( &::thickness,"thickness",0,5)
+          ::win.SetCallback( &::UpdateDisplay)
+          ::win.AddInt( &::style,"style",0,1)
+          ::win.SetCallback( &::UpdateDisplay)
 
           ::win.BeginBoxPanel("Color")
-            ::win.AddInt(::color_r,"red",0,255)
-            ::win.SetCallback(::UpdateDisplay)
-            ::win.AddInt(::color_g,"green",0,255)
-            ::win.SetCallback(::UpdateDisplay)
-            ::win.AddInt(::color_b,"blue",0,255)
-            ::win.SetCallback(::UpdateDisplay)
-            ::win.AddInt(::color_a,"alpha",0,255)
-            ::win.SetCallback(::UpdateDisplay)
+            ::win.AddInt( &::color_r,"red",0,255)
+            ::win.SetCallback( &::UpdateDisplay)
+            ::win.AddInt( &::color_g,"green",0,255)
+            ::win.SetCallback( &::UpdateDisplay)
+            ::win.AddInt( &::color_b,"blue",0,255)
+            ::win.SetCallback( &::UpdateDisplay)
+            ::win.AddInt( &::color_a,"alpha",0,255)
+            ::win.SetCallback( &::UpdateDisplay)
           ::win.EndBoxPanel
   
       ::win.EndBook
@@ -144,7 +145,7 @@ if (!exists(global::ImageGridClass)) {
         ::win.AddButton("Close All", ::CloseAll)
       ::win.EndHorizontal
       
-      ::win.update
+      ::win.Update(-1)
       ::win.Display
    }
 

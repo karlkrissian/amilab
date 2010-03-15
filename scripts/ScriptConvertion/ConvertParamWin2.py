@@ -72,6 +72,7 @@ if __name__ == "__main__":
   commands_with_or_without_par=[
             ("EndBox",           "EndBoxPanel"),
             ("CreateWin",        "Update"),
+            ("Hide",             "HidePanel"),
             ("update",           "Update(-1)"),
             ]
   scripts=[]
@@ -86,6 +87,7 @@ if __name__ == "__main__":
   for inputscript in scripts:
     print "*** Processing file ",inputscript
     f = open(inputscript+".converted", 'w')
+    num_subs = 0
     for line in fileinput.input(inputscript):
       lineno = 0
       # get rid of comments (here html comments, useless)
@@ -104,22 +106,29 @@ if __name__ == "__main__":
       #print "line=",line
       # parse line
       creationline = "(\s*)([:a-zA-Z]+)\s*=\s*ParamWin\s*\("
-      line = re.sub(r""+creationline,r"\1import = &global::ami_import;\n\1\2 = import->ParamPanel(",line)
+      res = re.subn(r""+creationline,r"\1import = &global::ami_import;\n\1\2 = import->ParamPanel(",line)
+      if (res[1]>0):
+        line = res[0]
+        num_subs = num_subs+1
       for cmd1,cmd2 in commands_with_par:
         res = re.subn(cmd1,cmd2,line)
         if (res[1]>0):
           line = res[0]
+          num_subs = num_subs+1
           #sys.stdout.write("("+cmd1+","+cmd2+") -> "+line)
       for cmd1,cmd2 in commands_with_or_without_par:
         res = re.subn(r"\.(\s*)"+cmd1+r"([^a-zA-Z_])",r"."+cmd2+r"\2",line)
         if (res[1]>0):
           line = res[0]
+          num_subs = num_subs+1
           #sys.stdout.write("("+cmd1+","+cmd2+") -> "+line)
       f.write(line)
       if comments!="":
         f.write(comments+"\n")
     f.close()
-
-
+    if (num_subs!=0):
+      print "Number of lines changed =", num_subs, " for file "+inputscript
+    else:
+      os.remove(inputscript+".converted")
 
 

@@ -1,12 +1,18 @@
+
 #-- Saving equation 
+
+# it is run from a class member, so use ::
+
 #---- Main Parameters
-ps->theta_dim = 100
-ps->phi_dim = 100
+::theta_dim = 100
+::phi_dim = 100
+
 #---- Parametric equation expression 
-ps->X = "cos(U*3)*15+cos(V*2)*(cos(U*2)*2)/sqrt(cos(U*2)*cos(U*2)*4+sin(U*3)*sin(U*3)*9)"
-ps->Y = "sin(U*2)*15+cos(V*2)*(sin(U*3)*3)/sqrt(cos(U*2)*cos(U*2)*4+sin(U*3)*sin(U*3)*9)"
-ps->Z = "sin(V*2)+sin(U)*4"
-ps->kmax = 0
-ps->timestep = 100
-# Update interface
-ps->win.update
+::X = "cos(U*3)*15+cos(V*2)*(cos(U*2)*2)/sqrt(cos(U*2)*cos(U*2)*4+sin(U*3)*sin(U*3)*9)"
+::Y = "sin(U*2)*15+cos(V*2)*(sin(U*3)*3)/sqrt(cos(U*2)*cos(U*2)*4+sin(U*3)*sin(U*3)*9)"
+::Z = "sin(V*2)+sin(U)*4"
+::kmax = 0
+::timestep = 100
+
+#---- Update interface
+::win.Update(-1)

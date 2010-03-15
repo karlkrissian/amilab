@@ -193,11 +193,12 @@ proc MSD_stats() {
 proc MSD_gui() {
   global_new
 
-    MSD_win = ParamWin("MSD param")
+    MSD_import = &global::ami_import;
+win = import->ParamPanel("MSD param")
 
-    id = MSD_win.AddInt(MSD_NLevels,1,10)
-    id = MSD_win.AddInt(MSD_NSteps,1,50)
-    id = MSD_win.AddFloat(MSD_sigmaE,0.1,50)
+    id = MSD_win.AddInt( &MSD_NLevels,  "MSD_NLevels", 1,10)
+    id = MSD_win.AddInt( &MSD_NSteps,  "MSD_NSteps", 1,50)
+    id = MSD_win.AddFloat( &MSD_sigmaE,  "MSD_sigmaE", 0.1,50)
 
     MSD_win.BeginHorizontal
     id = MSD_win.AddButton("Run",    MSD_run)
@@ -209,7 +210,7 @@ proc MSD_gui() {
     id = MSD_win.AddButton("Display Error",MSD_display_error)
     MSD_win.EndHorizontal
 
-    MSD_win.CreateWin
+    MSD_win.Update
     MSD_win.Display
 
   local_new

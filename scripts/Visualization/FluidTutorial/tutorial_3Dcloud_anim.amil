@@ -191,19 +191,19 @@ proc CB_Stop() {
 
 w1 = ParamWin("Cloud Evolution")
 
-cm_id=w1.AddInt(colormaterial,0,1)
-w1.SetCallback(ChangeCM)
+cm_id=w1.AddInt( &colormaterial,  "colormaterial", 0,1)
+w1.SetCallback( &ChangeCM)
 
 pa_id=w1.AddButton("Play", CB_Play)
 pa_id=w1.AddButton("Stop", CB_Stop)
 
-time_id=w1.AddInt(time,tmin,tmax)
-w1.SetCallback(ChangeVisible)
+time_id=w1.AddInt( &time,  "time", tmin,tmax)
+w1.SetCallback( &ChangeVisible)
 
-wt_id=w1.AddInt(wait_time,5,1000)
-w1.SetCallback(ChangeVisible)
+wt_id=w1.AddInt( &wait_time,  "wait_time", 5,1000)
+w1.SetCallback( &ChangeVisible)
 
-w1.CreateWin
+w1.Update
 w1.Display
 w1.SetDragCallback(time_id)
 

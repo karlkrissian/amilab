@@ -36,7 +36,7 @@ if (!exists(WaterShedClass)){
   
   #----------------------------
   proc ::Close() {
-    ::win.Hide
+    ::win.HidePanel
     delvars GetObjectName(::Close)
   }
   ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -55,7 +55,7 @@ if (!exists(WaterShedClass)){
     eval "::input <<= (FLOAT)"+::input_name+";"
     if (::input_name=="Image") {
       ::input_name = "::input"
-      ::win.update
+      ::win.Update(-1)
     }
 
     show ::input
@@ -112,7 +112,8 @@ if (!exists(WaterShedClass)){
   #------------------------
   
   proc ::Gui() {
-    ::win = ParamWin("WaterShed")
+    import = &global::ami_import;
+    ::win = import->ParamPanel("WaterShed")
     ::win.BeginBook
     
       ::win.AddPage("Init")
@@ -120,18 +121,18 @@ if (!exists(WaterShedClass)){
         ::win.BeginBoxPanel("Input Image")
           # set the input image
           ::win.BeginHorizontal
-            ::win.AddImageChoice(::input_name, "")
+            ::win.AddImageChoice( &::input_name, "")
             ::win.AddButton("Load",::load_input)
           ::win.EndHorizontal
           ::win.BeginHorizontal
-            dim_id = ::win.AddEnum(::dim,"Dimension")
+            dim_id = ::win.AddEnum( &::dim,"Dimension")
             ::win.AddEnumChoice(dim_id, "2D")
             ::win.AddEnumChoice(dim_id, "3D")
           ::win.EndHorizontal
         ::win.EndBoxPanel
         ::win.BeginBoxPanel("Gradient Mode")
           ::win.BeginHorizontal
-            gradmode_id = ::win.AddEnum(::gradient_mode,"Mode")
+            gradmode_id = ::win.AddEnum( &::gradient_mode,"Mode")
             ::win.AddEnumChoice(gradmode_id, "NormGradient")
           ::win.EndHorizontal
         ::win.EndBoxPanel
@@ -140,11 +141,11 @@ if (!exists(WaterShedClass)){
       ::win.AddPage("Param")
 
         ::win.BeginBoxPanel("Gradient Param")
-          ::win.AddFloat(::stand,"StandDev",0,(::inputmax-::inputmin)/2)
+          ::win.AddFloat( &::stand,"StandDev",0,(::inputmax-::inputmin)/2)
         ::win.EndBoxPanel
         ::win.BeginBoxPanel("WaterShed Param")
-          ::win.AddFloat(::lThreshold,"Threshold",0,::inputmax)
-          ::win.AddFloat(::FloodLevel,"Flood Level",0,1)
+          ::win.AddFloat( &::lThreshold,"Threshold",0,::inputmax)
+          ::win.AddFloat( &::FloodLevel,"Flood Level",0,1)
         ::win.EndBoxPanel
 
       ::win.AddPage("Run")
@@ -168,7 +169,7 @@ if (!exists(WaterShedClass)){
         ::win.AddButton("Close All",  ::CloseAll)
       ::win.EndHorizontal
 
-    ::win.update
+    ::win.Update(-1)
     ::win.Display
   }
   

@@ -29,7 +29,7 @@ if (!exists(Raw2AmiClass)) {
     #----------------------------
     proc ::Close() \
     {
-      ::win.Hide
+      ::win.HidePanel
       delvars GetObjectName(::Close)
     }
     ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -135,7 +135,7 @@ if (!exists(r2a)) {
     printn "Reading input image"
     input = Image($1)
     r2a->image_name = "::imnput"
-    r2a->win.update
+    r2a->win.Update(-1)
   }
 
 } else {

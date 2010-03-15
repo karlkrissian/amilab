@@ -34,7 +34,7 @@ if (!exists(global::RGBscale)) {
       eval "::input <<="+::input_name+";"
       if (::input_name=="Image") {
         ::input_name = "::input"
-        ::win.update
+        ::win.Update(-1)
       }
     }
   
@@ -49,7 +49,7 @@ if (!exists(global::RGBscale)) {
     #----------------------------
     proc ::Close() \
     {
-      ::win.Hide
+      ::win.HidePanel
       delvars GetObjectName(::Close)
     }
     ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -89,7 +89,7 @@ if (!exists(global::RGBscale)) {
       ::R_max = ::All_max
       ::G_max = ::All_max
       ::B_max = ::All_max
-      ::win.update
+      ::win.Update(-1)
       show ::transf_im
     }
 
@@ -130,7 +130,8 @@ if (!exists(global::RGBscale)) {
     proc ::CreateWindow() {
     
       # parameters window
-      ::win = ParamWin("ImGrid")
+      import = &global::ami_import;
+      ::win = import->ParamPanel("ImGrid")
       
       ::win.BeginBook
     
@@ -139,34 +140,34 @@ if (!exists(global::RGBscale)) {
           # set the input image drawing window
           ::win.BeginBoxPanel("Input")
             ::win.BeginHorizontal
-              ::win.AddImageChoice(::input_name, "")
+              ::win.AddImageChoice( &::input_name, "")
               ::win.AddButton( "Reload",::Reload)
             ::win.EndHorizontal
           ::win.EndBoxPanel
 
           ::win.BeginBoxPanel("All Components")
-            ::win.AddInt(::All_min,"min.",0,255)
-            ::win.SetCallback(::UpdateDisplay_All)
-            ::win.AddInt(::All_max,"max.",0,255)
-            ::win.SetCallback(::UpdateDisplay_All)
+            ::win.AddInt( &::All_min,"min.",0,255)
+            ::win.SetCallback( &::UpdateDisplay_All)
+            ::win.AddInt( &::All_max,"max.",0,255)
+            ::win.SetCallback( &::UpdateDisplay_All)
           ::win.EndBoxPanel
           ::win.BeginBoxPanel("Red Component")
-            ::win.AddInt(::R_min,"min.",0,255)
-            ::win.SetCallback(::UpdateDisplay_R)
-            ::win.AddInt(::R_max,"max.",0,255)
-            ::win.SetCallback(::UpdateDisplay_R)
+            ::win.AddInt( &::R_min,"min.",0,255)
+            ::win.SetCallback( &::UpdateDisplay_R)
+            ::win.AddInt( &::R_max,"max.",0,255)
+            ::win.SetCallback( &::UpdateDisplay_R)
           ::win.EndBoxPanel
           ::win.BeginBoxPanel("Green Component")
-            ::win.AddInt(::G_min,"min.",0,255)
-            ::win.SetCallback(::UpdateDisplay_G)
-            ::win.AddInt(::G_max,"max.",0,255)
-            ::win.SetCallback(::UpdateDisplay_G)
+            ::win.AddInt( &::G_min,"min.",0,255)
+            ::win.SetCallback( &::UpdateDisplay_G)
+            ::win.AddInt( &::G_max,"max.",0,255)
+            ::win.SetCallback( &::UpdateDisplay_G)
           ::win.EndBoxPanel
           ::win.BeginBoxPanel("Blue Component")
-            ::win.AddInt(::B_min,"min.",0,255)
-            ::win.SetCallback(::UpdateDisplay_B)
-            ::win.AddInt(::B_max,"max.",0,255)
-            ::win.SetCallback(::UpdateDisplay_B)
+            ::win.AddInt( &::B_min,"min.",0,255)
+            ::win.SetCallback( &::UpdateDisplay_B)
+            ::win.AddInt( &::B_max,"max.",0,255)
+            ::win.SetCallback( &::UpdateDisplay_B)
           ::win.EndBoxPanel
   
       ::win.EndBook
@@ -175,7 +176,7 @@ if (!exists(global::RGBscale)) {
         ::win.AddButton("Close All", ::CloseAll)
       ::win.EndHorizontal
       
-      ::win.update
+      ::win.Update(-1)
       ::win.Display
    }
 
