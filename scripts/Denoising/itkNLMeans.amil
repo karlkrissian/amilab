@@ -1,128 +1,166 @@
-if (!exists(NL_defined)) {
-  NL_defined=1
-	import_itk
-	
-	proc NL_init() {
-		global_new
-		
-		NL_input_name   = "","Name of the input image variable"
-    # t
-		NL_searching_window = INT(7), "Searching window size."
-    # f
-		NL_pattern_window = INT(3), "Pattern window size."
-		NL_threshold = 10, "Threshold for distance."
-		NL_noise = INT(0), "Noise type: additive Gaussian or Rician."
-		NL_dim = INT(1), "The dimension of the image."
-		
-		NL_inputmin = 0, "Minimal Intensity of the image."
-		NL_inputmax = 32000, "Maximal Intensity of the image."
-		
-		NL_nonl_filename = "NonLocalResult"
-    NL_result_filename_ext = ".ami.gz"
-		NL_n = UCHAR(0)
-				
-		NL_Gui()
-	}
+if (!exists(itkNLMeansClass)) {
   
-  proc NL_Close() \
-  {
-    NL_win.Hide
-    delvars "NL_*_draw"
-    delvars "NL_*"
-  }
-  NL_Close.Comments("Close current script and delete its variables")
+  ami_import->ITK()
   
-  proc NL_load_input() {
-
-		eval "global::NL_input <<= (FLOAT)"+NL_input_name+";"
-			if (NL_input_name=="Image") {
-				NL_input_name = "NL_input"
-				NL_win.update
-			}
-		
-		NL_inputmin = min(NL_input)
-    NL_inputmax = max(NL_input)
-		
-    show NL_input
-  }
-  
-    proc NL_Run() {
-		if (NL_dim==0) {
-			global::NL_nlm = itkBasicNLMeans2D(NL_input,NL_searching_window,NL_pattern_window,NL_threshold,NL_noise)
-			NL_n = 1			
-		} else {
-			global::NL_nlm = itkBasicNLMeans3D(NL_input,NL_searching_window,NL_pattern_window,NL_threshold,NL_noise)
-			NL_n = 1
-		}
+  Class itkNLMeansClass {
     
-    show NL_input
-		show NL_nlm
-		NL_input_draw.compare(NL_nlm_draw)
-	}
-  
-	proc NL_Save() {
-		filename=NL_nonl_filename-".gz"-".ami";
-    if (NL_g) {
-      filename = filename + sprint("_standDev%0.0f",NL_stand)
-    } else {
-			print "First you must create the image.\n"
-		}
-    filename = filename + NL_result_filename_ext
-    print "saving file "+filename+"\n"
-    NL_nlm.save filename
-  }
-  
-	proc NL_Gui() {
-		global::NL_win = ParamWin("itkNL-Means")
-    NL_win.BeginBook
+    ::itk=&global::itk
+    
+    proc ::Init() \
+    {
+      ::class_name="global::itkNLMeansClass"
+      ::input_name   = "","Name of the input image variable"
+      # t
+      ::searching_window = INT(7), "Searching window size."
+      # f
+      ::pattern_window = INT(3), "Pattern window size."
+      ::threshold = 10, "Threshold for distance."
+      ::noise = INT(0), "Noise type: additive Gaussian or Rician."
+      ::dim = INT(1), "The dimension of the image."
 		
-			NL_win.AddPage("Init")
-			
-			NL_win.BeginBoxPanel("Input Image")
-          # set the input image
-          NL_win.BeginHorizontal
-            NL_win.AddImageChoice(NL_input_name, "")
-            NL_win.AddButton("Load",NL_load_input)
-          NL_win.EndHorizontal
-					NL_win.BeginHorizontal
-						dim_id = NL_win.AddEnum(NL_dim,"Dimension")
-						NL_win.AddEnumChoice(dim_id, "2D")
-						NL_win.AddEnumChoice(dim_id, "3D")
-					NL_win.EndHorizontal
-			NL_win.EndBoxPanel
-			
-			NL_win.AddPage("Param")
+      ::inputmin = 0, "Minimal Intensity of the image."
+      ::inputmax = 32000, "Maximal Intensity of the image."
+		
+      ::nonl_filename = "NonLocalResult"
+      ::result_filename_ext = ".ami.gz"
+      ::n = UCHAR(0)
+				
+      ::Gui()
+    }
+    
+    proc ::Close() \
+    {
+      ::win.Hide
+      delvars GetObjectName(::Close)
+    }
+    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+  
+    proc ::CloseAll() \
+    {
+      ::Close
+      if (exists(itkNLmeansClass)) { del itkNLmeansClass; }
+    }
+    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    
+    proc ::Load_input() \
+    {
+
+      eval "::input <<= (FLOAT)"+::input_name+";"
+        if (::input_name=="Image") {
+          ::input_name = "input"
+          ::win.update
+        }
+		
+      ::inputmin = min(::input)
+      ::inputmax = max(::input)
+		
+      show ::input
+    }
+    
+    proc ::Run() \
+    {
+      if (::dim==0) {
+        ::nlm = ::itk->BasicNLMeans2D(::input,::searching_window,::pattern_window,::threshold,::noise)
+        ::n = 1			
+      } else {
+        ::nlm = ::itk->BasicNLMeans3D(::input,::searching_window,::pattern_window,::threshold,::noise)
+        ::n = 1
+      }
       
-      NL_win.BeginBoxPanel("NL-Means Param")
-        NL_win.AddInt(NL_searching_window,"Searching Window",1,30)
-        NL_win.AddInt(NL_pattern_window,"Pattern Window",1,10)
-        NL_win.AddFloat(NL_threshold,"Threshold",0.01,200)
-        noise_id = NL_win.AddEnum(NL_noise,"Noise Type")
-				NL_win.AddEnumChoice(noise_id, "Additive Gaussian")
-				NL_win.AddEnumChoice(noise_id, "Rician")
-      NL_win.EndBoxPanel
-			
-			NL_win.AddPage("Run")
-			
-			NL_win.BeginBoxPanel("Processing")
-				NL_win.AddButton("Run", NL_Run)
-			NL_win.EndBoxPanel
-			
-			NL_win.AddPage("Save")
-			
-			NL_win.BeginBoxPanel("Result")
-				NL_win.AddButton("Save", NL_Save)
-			NL_win.EndBoxPanel
-			
-		NL_win.EndBook
-		
-		NL_win.AddButton("Close",NL_Close)
-		
-		NL_win.update
-    NL_win.Display
+      show ::input
+      show ::nlm
+      ::input_draw.compare(::nlm_draw)
+    } 
+    
+    proc ::Save() \
+    {
+      filename=::nonl_filename-".gz"-".ami";
+      if (::g) {
+        filename = filename + sprint("_standDev%0.0f",::stand)
+      } else {
+        print "First you must create the image.\n"
+      }
+      filename = filename + ::result_filename_ext
+      print "saving file "+filename+"\n"
+      ::nlm.save filename
+    }
+  
+    proc ::Gui() \
+    {
+      ::win = ParamWin("itkNL-Means")
+      ::win.BeginBook
+      
+        ::win.AddPage("Init")
+        
+        ::win.BeginBoxPanel("Input Image")
+            # set the input image
+            ::win.BeginHorizontal
+              ::win.AddImageChoice(::input_name, "")
+              ::win.AddButton("Load",::Load_input)
+            ::win.EndHorizontal
+            ::win.BeginHorizontal
+              dim_id = ::win.AddEnum(::dim,"Dimension")
+              ::win.AddEnumChoice(dim_id, "2D")
+              ::win.AddEnumChoice(dim_id, "3D")
+            ::win.EndHorizontal
+        ::win.EndBoxPanel
+        
+        ::win.AddPage("Param")
+        
+        ::win.BeginBoxPanel("NL-Means Param")
+          ::win.AddInt(::searching_window,"Searching Window",1,30)
+          ::win.AddInt(::pattern_window,"Pattern Window",1,10)
+          ::win.AddFloat(::threshold,"Threshold",0.01,200)
+          noise_id = ::win.AddEnum(::noise,"Noise Type")
+          ::win.AddEnumChoice(noise_id, "Additive Gaussian")
+          ::win.AddEnumChoice(noise_id, "Rician")
+        ::win.EndBoxPanel
+        
+        ::win.AddPage("Run")
+        
+        ::win.BeginBoxPanel("Processing")
+          ::win.AddButton("Run", ::Run)
+        ::win.EndBoxPanel
+        
+        ::win.AddPage("Save")
+        
+        ::win.BeginBoxPanel("Result")
+          ::win.AddButton("Save", ::Save)
+        ::win.EndBoxPanel
+        
+      ::win.EndBook
+      
+      ::win.BeginHorizontal
+        ::win.AddButton("Close", ::Close)
+        ::win.AddButton("Close All", ::CloseAll)
+      ::win.EndHorizontal
+      
+      ::win.update
+      ::win.Display
+    }
+	
+    ::Init
+  
 	}
-	
-	NL_init
-	
+  # Class itkNLMeansClass
 }
-# end if (!NL_defined) 
+# end if (!exists(itkNLMeansClass))
+
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(itknlm)) {
+
+  itkNLMeansClass itknlm
+  
+  if (argc>=1) {
+    printn "reading image"
+    input = Image($1)
+    itknlm->image_name = "input"
+    itknlm->win.update
+  }
+
+} else {
+  InfoDialog "The script seems to be already loaded."
+}

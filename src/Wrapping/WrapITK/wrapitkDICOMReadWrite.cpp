@@ -12,33 +12,31 @@
 #include "wrapConversion.tpp"
 #include "wrapitkDICOMReadWrite.h"
 
-void wrap_itkDICOMReadWrite(ParamList* p)
+InrImage* wrap_itkDICOMRead(ParamList* p)
 {
 #ifndef _WITHOUT_ITK_
 
-	char functionname[] = "itkDICOMReadWrite";
+	char functionname[] = "itkDICOMRead";
   char description[]=" \n\
-        Solution for read a DICOM series and save a volume.\n\
+        Solution for read a DICOM series.\n\
       ";
 	  
   char parameters[] =" \n\
           Parameters:\n\
           DicomFolder \n\
-          filename \n\
 			";
 			
 	string* DicomFolder = NULL;
-  string*  fname = NULL;
   InrImage* res = NULL;
   int n=0;
 	
-	if (!get_string_param(  DicomFolder,      p, n)) HelpAndReturn;
-  if (!get_string_param( fname, p, n)) HelpAndReturn;
-
+	if (!get_string_param(  DicomFolder,      p, n)) HelpAndReturnNULL;
+  
   typedef signed short PixelType;
   const unsigned int Dimension = 3;
 
   typedef itk::OrientedImage< PixelType, Dimension > ImageType;
+  ImageType::RegionType region;
 	
 	typedef itk::ImageSeriesReader< ImageType > ReaderType;
   ReaderType::Pointer reader = ReaderType::New();
@@ -78,14 +76,18 @@ void wrap_itkDICOMReadWrite(ParamList* p)
 
 	reader->Update();
 
-  typedef itk::ImageFileWriter< ImageType > WriterType;
-  WriterType::Pointer writer = WriterType::New();
+  res = ITKToInr<PixelType,Dimension>(reader->GetOutput(), reader->GetOutput()->GetLargestPossibleRegion());
+	
+	return res;
+
+  //typedef itk::ImageFileWriter< ImageType > WriterType;
+  //WriterType::Pointer writer = WriterType::New();
     
-  writer->SetFileName( *fname );
+  //writer->SetFileName( *fname );
 
-  writer->SetInput( reader->GetOutput() );
+  //writer->SetInput( reader->GetOutput() );
 
-	writer->Update();
+	//writer->Update();
 			
 #else
   fprintf(stderr," ITK not available, you need to compile with ITK ...\n");

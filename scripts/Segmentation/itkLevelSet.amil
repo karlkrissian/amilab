@@ -1,233 +1,275 @@
-if (!exists(LS_defined)) {
-  LS_defined=1
-	import_itk
+if (!exists(itkLevelSetClass)) {
+  ami_import->ITK()
   
-	proc LS_init() {
-		global_new
-		
-		LS_input_name   = "","Name of the input image variable"
-		LS_gradient_mode = INT(0), "Gradient mode: Computes the norm of the gradient of the image."
-		LS_stand = 0.5, "Standard deviation of the Gaussian kernel."
+  Class itkLevelSetClass {
     
-    LS_min = 0.0
-    LS_max = 1.0
+    ::itk=&global::itk
+  
+    proc ::Init() {
+      
+      ::class_name="global::itkLevelSetClass"
+      
+      ::input_name   = "","Name of the input image variable"
+      ::gradient_mode = INT(0), "Gradient mode: Computes the norm of the gradient of the image."
+      ::stand = 0.5, "Standard deviation of the Gaussian kernel."
+      
+      ::min = 0.0
+      ::max = 1.0
+      
+      ::seed_X = 0, "Seed point in X-axis."
+      ::seed_Y = 0, "Seed point in Y-axis."
+      ::seed_Z = 0, "Seed point in Z-axis."
+      ::alpha = -0.5, "Constant to compute the sigmoid function."
+      ::beta = 3, "Constant to compute the sigmoid function."
+      ::lower = 0, "Set the lower threshold of the BinaryThreshold Filter."
+      ::upper = 0, "Set the upper threshold of the BinaryThreshold Filter."
+      ::stopping_time = 0, "Fast Marching algorithm is terminated when the value of the smallest trial point is greater than the stopping value."
+      ::dim = INT(1), "The dimension of the image."
+      ::curScaling = 0, "Use this parameter to increase the influence of curvature on the movement of the surface."
+      ::proScaling = 0, "Set the scaling of the propagation speed."
+      
+      ::inputmin = 0, "Minimal Intensity of the image."
+      ::inputmax = 32000, "Maximal Intensity of the image."
+      
+      ::level_filename = "LevelSetResult"
+      ::result_filename_ext = ".ami.gz"
+      ::l = UCHAR(0)
+      
+      ::Gui()
+    }
+
+    proc ::Close() \
+    {
+      ::win.Hide
+      delvars GetObjectName(::Close)
+    }
+    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+  
+    proc ::CloseAll() \
+    {
+      ::Close
+      if (exists(NLmeansClass)) { del NLmeansClass; }
+    }
+    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
     
-		LS_seed_X = 0, "Seed point in X-axis."
-		LS_seed_Y = 0, "Seed point in Y-axis."
-    LS_seed_Z = 0, "Seed point in Z-axis."
-    LS_alpha = -0.5, "Constant to compute the sigmoid function."
-    LS_beta = 3, "Constant to compute the sigmoid function."
-    LS_lower = 0, "Set the lower threshold of the BinaryThreshold Filter."
-    LS_upper = 0, "Set the upper threshold of the BinaryThreshold Filter."
-    LS_stopping_time = 0, "Fast Marching algorithm is terminated when the value of the smallest trial point is greater than the stopping value."
-		LS_dim = INT(1), "The dimension of the image."
-    LS_curScaling = 0, "Use this parameter to increase the influence of curvature on the movement of the surface."
-    LS_proScaling = 0, "Set the scaling of the propagation speed."
-		
-		LS_inputmin = 0, "Minimal Intensity of the image."
-		LS_inputmax = 32000, "Maximal Intensity of the image."
-		
-		LS_level_filename = "LevelSetResult"
-    LS_result_filename_ext = ".ami.gz"
-		LS_l = UCHAR(0)
-		
-		LS_Gui()
-	}
+    proc ::Load_input() {
 
-	proc LS_Close() \
-  {
-    LS_win.Hide
-    delvars "LS_*_draw"
-    delvars "LS_*"
-  }
-  LS_Close.Comments("Close current script and delete its variables")
-  
-	proc LS_load_input() {
-
-		eval "global::LS_input <<= (FLOAT)"+LS_input_name+";"
-			if (LS_input_name=="Image") {
-				LS_input_name = "LS_input"
-				LS_win.update
-			}
-		
-		LS_inputmin = min(LS_input)
-    LS_inputmax = max(LS_input)
-		
-    show LS_input
-  }
-  
-  proc LS_Run() {
-		if (LS_gradient_mode==0) {
-			global::LS_grad = normgrad(LS_input,LS_stand)
-		}
-
-    if (LS_dim==0) {
-      global::LS_sigmoid = itkSigmoidImageFilter2D(LS_grad,LS_min,LS_max,LS_alpha,LS_beta)
-      global::LS_fast = itkFastMarchingImageFilter2D(LS_sigmoid,LS_seed_X,LS_seed_Y,LS_alpha,LS_beta,LS_stopping_time)
-      global::LS_level = itkLevelSetFilter2D(LS_fast,LS_sigmoid,LS_curScaling,LS_proScaling)
-      global::LS_thres = itkBinaryThresholdImageFilter2D(LS_level,LS_lower,LS_upper)
-			LS_l = 1			
-		} else {
-      global::LS_sigmoid = itkSigmoidImageFilter3D(LS_grad,LS_min,LS_max,LS_alpha,LS_beta)
-      global::LS_fast = itkFastMarchingImageFilter3D(LS_sigmoid,LS_seed_X,LS_seed_Y,LS_seed_Z,LS_alpha,LS_beta,LS_stopping_time)
-      global::LS_level = itkLevelSetFilter3D(LS_fast,LS_sigmoid,LS_curScaling,LS_proScaling)
-      global::LS_thres = itkBinaryThresholdImageFilter3D(LS_level,LS_lower,LS_upper)
-			LS_l = 1
-		}
+      eval "global::::input <<= (FLOAT)"+::input_name+";"
+        if (::input_name=="Image") {
+          ::input_name = "::input"
+          ::win.update
+        }
+      
+      ::inputmin = min(::input)
+      ::inputmax = max(::input)
+      
+      show ::input
+    }
     
-		show LS_input
-    show LS_thres
-		LS_input_draw.compare(LS_thres_draw)
-	}
-  
-  proc LS_SeedPoint() \
-  {
-    show LS_input
-    if (exists(LS_input_draw)) {
-      if (LS_dim==0) {
-        LS_SetSeedPoint2( \
-                          LS_input_draw.GetXPos, \
-                          LS_input_draw.GetYPos \
-                        )
+    proc ::Run() {
+      if (::gradient_mode==0) {
+        ::grad = normgrad(::input,::stand)
+      }
+
+      if (::dim==0) {
+        ::sigmoid = ::itk->SigmoidImageFilter2D(::grad,::min,::max,::alpha,::beta)
+        ::fast = ::itk->FastMarchingImageFilter2D(::sigmoid,::seed_X,::seed_Y,::alpha,::beta,::stopping_time)
+        ::level = ::itk->LevelSetFilter2D(::fast,::sigmoid,::curScaling,::proScaling)
+        ::thres = ::itk->BinaryThresholdImageFilter2D(::level,::lower,::upper)
+        ::l = 1			
       } else {
-        LS_SetSeedPoint3( \
-                          LS_input_draw.GetXPos, \
-                          LS_input_draw.GetYPos, \
-                          LS_input_draw.GetZPos \
-                        )
+        ::sigmoid = ::itk->SigmoidImageFilter3D(::grad,::min,::max,::alpha,::beta)
+        ::fast = ::itk->FastMarchingImageFilter3D(::sigmoid,::seed_X,::seed_Y,::seed_Z,::alpha,::beta,::stopping_time)
+        ::level = ::itk->LevelSetFilter3D(::fast,::sigmoid,::curScaling,::proScaling)
+        ::thres = ::itk->BinaryThresholdImageFilter3D(::level,::lower,::upper)
+        ::l = 1
+      }
+      
+      show ::input
+      show ::thres
+      ::input_draw.compare(::thres_draw)
+    }
+    
+    proc ::SeedPoint() \
+    {
+      show ::input
+      if (exists(::input_draw)) {
+        if (::dim==0) {
+          ::SetSeedPoint2( \
+                            ::input_draw.GetXPos, \
+                            ::input_draw.GetYPos \
+                          )
+        } else {
+          ::SetSeedPoint3( \
+                            ::input_draw.GetXPos, \
+                            ::input_draw.GetYPos, \
+                            ::input_draw.GetZPos \
+                          )
+        }
       }
     }
-  }
-  
-  proc LS_SetSeedPoint2( NUM x, NUM y) \
-  {
-    printn x
-    printn y
-    LS_seed_X = x
-    LS_seed_Y = y
-    #LS_seed_X = LS_input.trx + x*LS_input.vx
-    #LS_seed_Y = LS_input.try + y*LS_input.vy
-  }
-  
-  proc LS_SetSeedPoint3( NUM x, NUM y, NUM z) \
-  {
-    printn x
-    printn y
-    printn z
-    LS_seed_X = x
-    LS_seed_Y = y
-    LS_seed_Z = z
-    #LS_seed_X = LS_input.trx + x*LS_input.vx
-    #LS_seed_Y = LS_input.try + y*LS_input.vy
-    #LS_seed_Z = LS_input.trz + z*LS_input.vz
-  }
-  
-	proc LS_Save() {
-		filename=LS_level_filename-".gz"-".ami";
-    if (LS_f) {
-      if (LS_dim==0) {
-        filename = filename + sprint("_seedX%0.1f",LS_seed_X) \
-                            + sprint("_seedY%0.1f",LS_seed_Y) \
-                            + sprint("_alpha%0.1f",LS_alpha) \
-                            + sprint("_beta%0.1f",LS_beta) \
-                            + sprint("_lthres%0.0f",LS_lower) \
-                            + sprint("_uthres%0.0f",LS_upper) \
-                            + sprint("_stop%0.0f",LS_stopping_time) \
-                            + sprint("_stop%0.1f",LS_curScaling) \
-                            + sprint("_stop%0.1f",LS_proScaling)
+    
+    proc ::SetSeedPoint2( NUM x, NUM y) \
+    {
+      printn x
+      printn y
+      ::seed_X = x
+      ::seed_Y = y
+      #::seed_X = ::input.trx + x*::input.vx
+      #::seed_Y = ::input.try + y*::input.vy
+    }
+    
+    proc ::SetSeedPoint3( NUM x, NUM y, NUM z) \
+    {
+      printn x
+      printn y
+      printn z
+      ::seed_X = x
+      ::seed_Y = y
+      ::seed_Z = z
+      #::seed_X = ::input.trx + x*::input.vx
+      #::seed_Y = ::input.try + y*::input.vy
+      #::seed_Z = ::input.trz + z*::input.vz
+    }
+    
+    proc ::Save() {
+      filename=::level_filename-".gz"-".ami";
+      if (::f) {
+        if (::dim==0) {
+          filename = filename + sprint("_seedX%0.1f",::seed_X) \
+                              + sprint("_seedY%0.1f",::seed_Y) \
+                              + sprint("_alpha%0.1f",::alpha) \
+                              + sprint("_beta%0.1f",::beta) \
+                              + sprint("_lthres%0.0f",::lower) \
+                              + sprint("_uthres%0.0f",::upper) \
+                              + sprint("_stop%0.0f",::stopping_time) \
+                              + sprint("_stop%0.1f",::curScaling) \
+                              + sprint("_stop%0.1f",::proScaling)
+        } else {
+          filename = filename + sprint("_seedX%0.1f",::seed_X) \
+                              + sprint("_seedY%0.1f",::seed_Y) \
+                              + sprint("_seedZ%0.1f",::seed_Z) \
+                              + sprint("_alpha%0.1f",::alpha) \
+                              + sprint("_beta%0.1f",::beta) \
+                              + sprint("_lthres%0.0f",::lower) \
+                              + sprint("_uthres%0.0f",::upper) \
+                              + sprint("_stop%0.0f",::stopping_time) \
+                              + sprint("_stop%0.1f",::curScaling) \
+                              + sprint("_stop%0.1f",::proScaling)
+        }
       } else {
-        filename = filename + sprint("_seedX%0.1f",LS_seed_X) \
-                            + sprint("_seedY%0.1f",LS_seed_Y) \
-                            + sprint("_seedZ%0.1f",LS_seed_Z) \
-                            + sprint("_alpha%0.1f",LS_alpha) \
-                            + sprint("_beta%0.1f",LS_beta) \
-                            + sprint("_lthres%0.0f",LS_lower) \
-                            + sprint("_uthres%0.0f",LS_upper) \
-                            + sprint("_stop%0.0f",LS_stopping_time) \
-                            + sprint("_stop%0.1f",LS_curScaling) \
-                            + sprint("_stop%0.1f",LS_proScaling)
+        print "First you must create the image.\n"
       }
-    } else {
-			print "First you must create the image.\n"
-		}
-    filename = filename + LS_result_filename_ext
-    print "saving file "+filename+"\n"
-    LS_thres.save filename
-  }
-  
-	proc LS_Gui() {
-		global::LS_win = ParamWin("itkLevelSet")
-    LS_win.BeginBook
-		
-			LS_win.AddPage("Init")
-			
-			LS_win.BeginBoxPanel("Input Image")
-          # set the input image
-          LS_win.BeginHorizontal
-            LS_win.AddImageChoice(LS_input_name, "")
-            LS_win.AddButton("Load",LS_load_input)
-          LS_win.EndHorizontal
-					LS_win.BeginHorizontal
-						dim_id = LS_win.AddEnum(LS_dim,"Dimension")
-						LS_win.AddEnumChoice(dim_id, "2D")
-						LS_win.AddEnumChoice(dim_id, "3D")
-					LS_win.EndHorizontal
-			LS_win.EndBoxPanel
-			LS_win.BeginBoxPanel("Gradient Mode")
-					LS_win.BeginHorizontal
-						gradmode_id = LS_win.AddEnum(LS_gradient_mode,"Mode")
-						LS_win.AddEnumChoice(gradmode_id, "NormGradient")
-					LS_win.EndHorizontal
-			LS_win.EndBoxPanel      
-			
-			LS_win.AddPage("Param")
-			
-      LS_win.BeginBook
-        LS_win.AddPage("Gradient")
-          LS_win.AddFloat(LS_stand,"StandDev",0,(LS_inputmax-LS_inputmin)/2)
+      filename = filename + ::result_filename_ext
+      print "saving file "+filename+"\n"
+      ::thres.save filename
+    }
+    
+    proc ::Gui() {
+      ::win = ParamWin("itkLevelSet")
+      ::win.BeginBook
+      
+        ::win.AddPage("Init")
+        
+        ::win.BeginBoxPanel("Input Image")
+            # set the input image
+            ::win.BeginHorizontal
+              ::win.AddImageChoice(::input_name, "")
+              ::win.AddButton("Load",::Load_input)
+            ::win.EndHorizontal
+            ::win.BeginHorizontal
+              dim_id = ::win.AddEnum(::dim,"Dimension")
+              ::win.AddEnumChoice(dim_id, "2D")
+              ::win.AddEnumChoice(dim_id, "3D")
+            ::win.EndHorizontal
+        ::win.EndBoxPanel
+        ::win.BeginBoxPanel("Gradient Mode")
+            ::win.BeginHorizontal
+              gradmode_id = ::win.AddEnum(::gradient_mode,"Mode")
+              ::win.AddEnumChoice(gradmode_id, "NormGradient")
+            ::win.EndHorizontal
+        ::win.EndBoxPanel      
+        
+        ::win.AddPage("Param")
+        
+        ::win.BeginBook
+          ::win.AddPage("Gradient")
+            ::win.AddFloat(::stand,"StandDev",0,(::inputmax-::inputmin)/2)
+              
+          ::win.AddPage("Sigmoid Param")
+            ::win.AddFloat(::min,"OutputMin",0,::inputmin)
+            ::win.AddFloat(::max,"OutputMax",0,::inputmax)
             
-        LS_win.AddPage("Sigmoid Param")
-          LS_win.AddFloat(LS_min,"OutputMin",0,LS_inputmin)
-          LS_win.AddFloat(LS_max,"OutputMax",0,LS_inputmax)
-          
-        LS_win.AddPage("FastMarching")
-          LS_win.AddButton("Set Seed Point",LS_SeedPoint)             
-          LS_win.AddFloat(LS_alpha,"Alpha",-3,LS_inputmax)
-          LS_win.AddFloat(LS_beta,"Beta",0,LS_inputmax)
-          LS_win.AddFloat(LS_stopping_time,"Stopping Time Value",0,LS_inputmax)
+          ::win.AddPage("FastMarching")
+            ::win.AddButton("Set Seed Point",::SeedPoint)             
+            ::win.AddFloat(::alpha,"Alpha",-3,::inputmax)
+            ::win.AddFloat(::beta,"Beta",0,::inputmax)
+            ::win.AddFloat(::stopping_time,"Stopping Time Value",0,::inputmax)
+        
+          ::win.AddPage("Thresholding")
+            ::win.AddFloat(::lower,"Lower Threshold",-1000,::inputmax)
+            ::win.AddFloat(::upper,"Upper Threshold",0,::inputmax)
+        
+        
+          ::win.AddPage("LevelSet")
+            ::win.AddFloat(::curScaling,"Curvature Scaling",0,1)
+            ::win.AddFloat(::proScaling,"Propagation Scaling",0,1)
+        
+        ::win.EndBook
+        
+        ::win.AddPage("Run")
+        
+        ::win.BeginBoxPanel("Processing")
+          ::win.AddButton("Run", ::Run)
+        ::win.EndBoxPanel
+        
+        ::win.AddPage("Save")
+        
+        ::win.BeginBoxPanel("Result")
+          ::win.AddButton("Save", ::Save)
+        ::win.EndBoxPanel
+        
+      ::win.EndBook
       
-        LS_win.AddPage("Thresholding")
-          LS_win.AddFloat(LS_lower,"Lower Threshold",-1000,LS_inputmax)
-          LS_win.AddFloat(LS_upper,"Upper Threshold",0,LS_inputmax)
+      proc ::Close() \
+      { 
+        ::win.Hide
+        delvars GetObjectName(::Close)
+      }
+      ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+  
+      proc ::CloseAll() \
+      {
+        ::Close
+        if (exists(NLmeansClass)) { del NLmeansClass; }
+      }
+      ::CloseAll.Comments("Call ::Close() method and delete the class variable")
       
-      
-        LS_win.AddPage("LevelSet")
-          LS_win.AddFloat(LS_curScaling,"Curvature Scaling",0,1)
-          LS_win.AddFloat(LS_proScaling,"Propagation Scaling",0,1)
-      
-      LS_win.EndBook
-			
-			LS_win.AddPage("Run")
-			
-			LS_win.BeginBoxPanel("Processing")
-				LS_win.AddButton("Run", LS_Run)
-			LS_win.EndBoxPanel
-			
-			LS_win.AddPage("Save")
-			
-			LS_win.BeginBoxPanel("Result")
-				LS_win.AddButton("Save", LS_Save)
-			LS_win.EndBoxPanel
-			
-		LS_win.EndBook
-		
-		LS_win.AddButton("Close",LS_Close)
-		
-		LS_win.update
-    LS_win.Display
-	}
-	
-	LS_init
-	
+      ::win.update
+      ::win.Display
+    }
+    
+    ::Init
+  }
+# Class itkLevelSetClass
 }
-# end if (!LS_defined) 
+# end if (!exists(itkLevelSetClass))
+
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(itkls)) {
+
+  itkLevelSetClass itkls
+  
+  if (argc>=1) {
+    printn "reading image"
+    input = Image($1)
+    itkls->image_name = "input"
+    itkls->win.update
+  }
+
+} else {
+  InfoDialog "The script seems to be already loaded."
+}

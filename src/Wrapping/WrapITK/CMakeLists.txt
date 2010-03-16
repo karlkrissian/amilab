@@ -23,6 +23,9 @@ MESSAGE( "USE_ITK_FILE = ${USE_ITK_FILE}")
 INCLUDE( ${wxWidgets_USE_FILE})
 MESSAGE( "wxWidgets_USE_FILE = ${wxWidgets_USE_FILE}")
 
+INCLUDE( ${USE_VTK_FILE})
+MESSAGE( "USE_VTK_FILE = ${USE_VTK_FILE}")
+
 SET(  WrapITK_SRCS
     itkCannyEdgeDetector.cpp
     wrapITK.cpp

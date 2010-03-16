@@ -63,7 +63,7 @@ void AddWrapITK(){
  Vars.AddVar(type_c_image_function,"WaterShedImageFilter3D"     , (void*) wrap_itkWaterShedImageFilter3D, OBJECT_CONTEXT_NUMBER);
  Vars.AddVar(type_c_image_function,"MultiScaleVesselnessFilter2D"     , (void*) wrap_itkMultiScaleVesselnessFilter2D, OBJECT_CONTEXT_NUMBER);
  Vars.AddVar(type_c_image_function,"MultiScaleVesselnessFilter3D"     , (void*) wrap_itkMultiScaleVesselnessFilter3D, OBJECT_CONTEXT_NUMBER);
- Vars.AddVar(type_c_procedure,     "DICOMReadWrite"                         , (void*) wrap_itkDICOMReadWrite, OBJECT_CONTEXT_NUMBER);
+ Vars.AddVar(type_c_image_function,     "DICOMRead"                         , (void*) wrap_itkDICOMRead, OBJECT_CONTEXT_NUMBER);
  Vars.AddVar(type_c_image_function,"SigmoidImageFilter2D"     , (void*) wrap_itkSigmoidImageFilter2D, OBJECT_CONTEXT_NUMBER);
  Vars.AddVar(type_c_image_function,"SigmoidImageFilter3D"     , (void*) wrap_itkSigmoidImageFilter3D, OBJECT_CONTEXT_NUMBER);
  Vars.AddVar(type_c_image_function,"LevelSetFilter2D"     , (void*) wrap_itkLevelSetFilter2D, OBJECT_CONTEXT_NUMBER);

@@ -4,13 +4,15 @@
 #include "itkImage.h"
 #include "itkMesh.h"
 #include "itkBackTrackingMeshFilter.h"
+#include "itkPointSet.h"
 #endif // _WITHOUT_ITK_
 
 #ifndef _WITHOUT_VTK_
-//#include "vtkTriangleFilter.h"
+#include <vtkPointData.h>
 #endif // _WITHOUT_VTK_
 
 //#include "vtk_common.h"
+#include "surface.hpp"
 
 #include "wrapfunctions.hpp" 
 #include "wrapConversion.tpp"
@@ -80,18 +82,28 @@ Variable::ptr wrap_itkBackTrackingMeshFilter2D(ParamList* p)
   BackTracking->Setdelta( delta );
   BackTracking->Update();
 
-  //vtkTriangleFilter* triangle_filter=NULL;
- 
-  /*SurfacePoly* surf_result = new SurfacePoly((vtkPolyData*)BackTracking->GetOutput());
+  vtkFloatingPointType triangle[2];
+  typedef itk::PointSet<InternalPixelType,Dimension> PointSetType;
+  PointSetType::PointIdentifier pointID;
+  typedef PointSetType::PointType PointType;
+  PointType pp;
+
+  SurfacePoly* surf;
+  surf = new SurfacePoly;
+  surf->NewSurface();
+
+  for (int i=0;i<BackTracking->GetOutput()->GetNumberOfPoints();i++)
+  {
+    pointID = i;
+    bool pointExists = BackTracking->GetOutput()->GetPoint(pointID,&pp);
+    surf->AddPoint(pp[0],pp[1],0);
+    std::cout << pp << std::endl;
+  }
 
   Variable::ptr varres(new Variable());
-  varres->Init(type_surface,"backTracking_result",surf_result);*/
+  varres->Init(type_surface,"backTracking_result",surf);
 
-  //res = new SurfacePoly((vtkPolyData*)(BackTracking->GetOutput()));
-   
-  //res = BackTracking->GetOutput();
-	
-	///return varres;
+	return varres;
 
 #else
   fprintf(stderr," ITK not available, you need to compile with ITK ...\n");
@@ -100,6 +112,7 @@ Variable::ptr wrap_itkBackTrackingMeshFilter2D(ParamList* p)
 } // wrap_itkBackTrackingMeshFilter2D
 
 
+//Variable::ptr wrap_itkBackTrackingMeshFilter3D(ParamList* p)
 Variable::ptr wrap_itkBackTrackingMeshFilter3D(ParamList* p)
 {
 
@@ -148,9 +161,7 @@ Variable::ptr wrap_itkBackTrackingMeshFilter3D(ParamList* p)
   typedef itk::Mesh<InternalPixelType,Dimension> MeshType;
 
 	MeshType::Pointer output = MeshType::New();
-  /*typedef itk::VTKPolyDataWriter<MeshType> VTKWriterType;
-  VTKWriterType::Pointer writer = VTKWriterType::New();*/
- 
+   
   // Convert from InrImage to ITK
   cout << "Converting image to ITK format " << endl;
   	
@@ -169,19 +180,29 @@ Variable::ptr wrap_itkBackTrackingMeshFilter3D(ParamList* p)
   BackTracking->SetmaxLength( maxLength );
   BackTracking->Setdelta( delta );
   BackTracking->Update();
-  /*writer->SetInput(BackTracking->GetOutput());
-  writer->SetFileName("pes.vtk");
-  writer->Update();*/
 
-  /*SurfacePoly* surf_result = new SurfacePoly((vtkPolyData*)BackTracking->GetOutput());
+  vtkFloatingPointType triangle[3];
+  typedef itk::PointSet<InternalPixelType,Dimension> PointSetType;
+  PointSetType::PointIdentifier pointID;
+  typedef PointSetType::PointType PointType;
+  PointType pp;
 
+  SurfacePoly* surf;
+  surf = new SurfacePoly;
+  surf->NewSurface();
+
+  for (int i=0;i<BackTracking->GetOutput()->GetNumberOfPoints();i++)
+  {
+    pointID = i;
+    bool pointExists = BackTracking->GetOutput()->GetPoint(pointID,&pp);
+    surf->AddPoint(pp[0],pp[1],pp[2]);
+  }
+  
   Variable::ptr varres(new Variable());
-  varres->Init(type_surface,"backTracking_result",surf_result);
+  varres->Init(type_surface,"backTracking_result",surf);
 
-  //res = new SurfacePoly((vtkPolyData*)(BackTracking->GetOutput()));
-   
-  return varres;*/
-
+  return varres;
+ 
 #else
   fprintf(stderr," ITK not available, you need to compile with ITK ...\n");
   return NULL;

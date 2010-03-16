@@ -3,6 +3,6 @@
 
 #include "paramlist.h"
 
-void wrap_itkDICOMReadWrite(ParamList*);
+InrImage* wrap_itkDICOMRead(ParamList*);
 
 #endif // _wrapitkDICOMReadWrite_h_

@@ -1,69 +1,83 @@
-
-if (!exists(DI_defined)) {
-  DI_defined=1
+if (!exists(DICOMClass)) {
+  
 	ami_import->ITK()
 	
-	proc DI_init() {
-		global_new
-		
-		DI_dicom_folder = "./dicomFolder/"
-        DI_output = "./output/"
-		
-		global::DI_Gui()
-	}
-	
-  proc DI_Close() \
-  {
-    global::DI_win.Hide
-    delvars "DI_*_draw"
-    delvars "DI_*"
-  }
-  DI_Close.Comments("Close current script and delete its variables")
+  Class DICOMClass {
   
-  proc DI_Run() {
-    itk = &global::itk
-    itk->DICOMReadWrite(global::DI_dicom_folder,global::DI_output)
+    ::itk=&global::itk
+  
+    proc ::Init() {
+      global_new
+      
+      ::dicom_folder = "./dicomFolder/"
+          
+      ::Gui()
+    }
     
-    global::DI_out=Image(global::DI_output)  
-    show DI_out
-  }
-  
-  proc DI_Gui() {
-    global::DI_win = ParamWin("DICOM")
-    DI_win = &global::DI_win
-    DI_win.BeginBook
-		
-			DI_win.AddPage("Init")
-			
-			DI_win.BeginBoxPanel("DICOM Folder")
-        DI_win.BeginHorizontal
-          DI_win.AddString(global::DI_dicom_folder,"DICOM Folder")
-        DI_win.EndHorizontal
-			DI_win.EndBoxPanel
-			
-			DI_win.AddPage("Output")
-			
-			DI_win.BeginBoxPanel("Output")
-        DI_win.BeginHorizontal
-          DI_win.AddString(global::DI_output,"Output")
-        DI_win.EndHorizontal
-			DI_win.EndBoxPanel
-			
-			DI_win.AddPage("Run")
-			
-			DI_win.BeginBoxPanel("Processing")
-				DI_win.AddButton("Run", global::DI_Run)
-			DI_win.EndBoxPanel
-			
-		DI_win.EndBook
-		
-		DI_win.AddButton("Close",global::DI_Close)
-		
-		DI_win.update
-    DI_win.Display
+    proc ::Close() \
+    {
+      ::win.Hide
+      delvars GetObjectName(::Close)
+    }
+    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    
+    proc ::CloseAll() \
+    {
+      ::Close
+      if (exists(DICOMClass)) { del DICOMClass; }
+    }
+    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    
+    proc ::Run() \
+    {
+      ::out = ::itk->DICOMRead(::dicom_folder)
+      
+      show ::out
+    }
+    
+    proc ::Gui() {
+      ::win = ParamWin("DICOM")
+      ::win.BeginBook
+      
+        ::win.AddPage("Init")
+        
+        ::win.BeginBoxPanel("DICOM Folder")
+          ::win.BeginHorizontal
+            ::win.AddString(::dicom_folder,"DICOM Folder")
+          ::win.EndHorizontal
+        ::win.EndBoxPanel
+        
+        ::win.AddPage("Run")
+        
+        ::win.BeginBoxPanel("Processing")
+          ::win.AddButton("Run", ::Run)
+        ::win.EndBoxPanel
+        
+      ::win.EndBook
+      
+      ::win.BeginHorizontal
+        ::win.AddButton("Close", ::Close)
+        ::win.AddButton("Close All", ::CloseAll)
+      ::win.EndHorizontal
+      
+      ::win.update
+      ::win.Display
+    }
+    
+    ::Init
 	}
-	
-	DI_init
-	
+  # Class DICOMClass
 }
-# end if (!DI_defined) 
+# end if (!exists(DICOMClass))
+
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(DICOM)) {
+
+  DICOMClass DICOM
+
+} else {
+  InfoDialog "The script seems to be already loaded."
+}
