@@ -54,7 +54,7 @@ if (!exists(itkLevelSetClass)) {
     
     proc ::Load_input() {
 
-      eval "global::::input <<= (FLOAT)"+::input_name+";"
+      eval "::input <<= (FLOAT)"+::input_name+";"
         if (::input_name=="Image") {
           ::input_name = "::input"
           ::win.update
@@ -231,19 +231,11 @@ if (!exists(itkLevelSetClass)) {
         
       ::win.EndBook
       
-      proc ::Close() \
-      { 
-        ::win.Hide
-        delvars GetObjectName(::Close)
-      }
-      ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-  
-      proc ::CloseAll() \
-      {
-        ::Close
-        if (exists(NLmeansClass)) { del NLmeansClass; }
-      }
-      ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+      # close
+      ::win.BeginHorizontal
+        ::win.AddButton("Close",      ::Close)
+        ::win.AddButton("Close All",  ::CloseAll)
+      ::win.EndHorizontal
       
       ::win.update
       ::win.Display
