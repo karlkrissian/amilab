@@ -1,7 +1,7 @@
 if (!exists(DICOMClass)) {
   
-	ami_import->ITK()
-	
+  ami_import->ITK()
+  
   Class DICOMClass {
   
     ::itk=&global::itk
@@ -65,7 +65,7 @@ if (!exists(DICOMClass)) {
     }
     
     ::Init
-	}
+  }
   # Class DICOMClass
 }
 # end if (!exists(DICOMClass))
