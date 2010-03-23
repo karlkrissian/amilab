@@ -56,9 +56,14 @@ if (!exists(itkRecursiveGaussianClass)) {
         ::gaussian = ::itk->RecursiveGaussianImageFilter3D(::input,::sigma,::normAcrossScale,::order)
         ::g = 1
       }
+    }
+    
+    proc ::Display() {
+    
       show ::input
       show ::gaussian
       ::input_draw.compare(::gaussian_draw)
+    
     }
     
     proc ::Save() {
@@ -107,17 +112,11 @@ if (!exists(itkRecursiveGaussianClass)) {
           ::win.AddEnumChoice(order_id,"Second Order")
         ::win.EndBoxPanel
         
-        ::win.AddPage("Run")
-        
-        ::win.BeginBoxPanel("Processing")
-          ::win.AddButton("Run", ::Run)
-        ::win.EndBoxPanel
-        
-        ::win.AddPage("Save")
-        
-        ::win.BeginBoxPanel("Result")
-          ::win.AddButton("Save", ::Save)
-        ::win.EndBoxPanel
+        ::win.BeginHorizontal
+          ::win.AddButton("Run",::Run)
+          ::win.AddButton("Display",::Display)
+          ::win.AddButton("Save",::Save)
+        ::win.EndHorizontal
         
       ::win.EndBook
       

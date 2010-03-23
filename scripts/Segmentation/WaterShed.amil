@@ -68,16 +68,21 @@ if (!exists(WaterShedClass)){
       ::g = 1
     }
     
-    if (WS_dim==0) {
-      global::WS_water = ::itk->WaterShedImageFilter2D(WS_grad,WS_lThreshold,WS_FloodLevel)
-      WS_w = 1
+    if (::dim==0) {
+      ::water = ::itk->WaterShedImageFilter2D(::grad,::lThreshold,::FloodLevel)
+      ::w = 1
     } else {
       ::water = ::itk->WaterShedImageFilter3D(::grad,::lThreshold,::FloodLevel)
       ::w = 1
     }
+  }
+  
+  proc ::Display() {
+  
     show ::grad
     show ::water
     ::grad_draw.compare(::water_draw)
+  
   }
   
   #------------------------
@@ -146,21 +151,16 @@ if (!exists(WaterShedClass)){
           ::win.AddFloat(::lThreshold,"Threshold",0,::inputmax)
           ::win.AddFloat(::FloodLevel,"Flood Level",0,1)
         ::win.EndBoxPanel
-
-      ::win.AddPage("Run")
-
-        ::win.BeginBoxPanel("Processing")
-          ::win.AddButton("Run", ::Run)
-        ::win.EndBoxPanel
-
-      ::win.AddPage("Save")
-
-      ::win.BeginBoxPanel("Result")
-        ::win.AddButton("Save", ::SaveR)
-      ::win.EndBoxPanel
-      ::win.BeginBoxPanel("Gradient")
-        ::win.AddButton("Save", ::SaveG)
-      ::win.EndBoxPanel
+        
+        ::win.BeginHorizontal
+          ::win.AddButton("Run",::Run)
+          ::win.AddButton("Display",::Display)
+        ::win.EndHorizontal
+        
+        ::win.BeginHorizontal
+          ::win.AddButton("Save Result",::SaveR)
+          ::win.AddButton("Save Gradient",::SaveG)
+        ::win.EndHorizontal
     ::win.EndBook
 
     ::win.BeginHorizontal

@@ -40,7 +40,7 @@ SET(  WrapITK_SRCS
     wrapitkFastMarchingImageFilter.cpp
     wrapitkWaterShedImageFilter.cpp
     wrapitkMultiScaleVesselnessFilter.cpp
-    wrapitkDICOMReadWrite.cpp
+    wrapitkDICOMRead.cpp
     wrapitkSigmoidImageFilter.cpp
     wrapitkLevelSet.cpp
     wrapitkBinaryThresholdImageFilter.cpp

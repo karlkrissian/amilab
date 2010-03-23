@@ -88,7 +88,7 @@ InrImage* wrap_itkFastMarchingImageFilter2D(ParamList* p)
 
   seeds->Initialize();
   seeds->InsertElement( 0, node );
-
+  
   fastMarching->SetTrialPoints(  seeds  );
 
   fastMarching->SetOutputSize( image->GetBufferedRegion().GetSize() );

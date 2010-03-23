@@ -7,10 +7,11 @@ if (!exists(DICOMClass)) {
     ::itk=&global::itk
   
     proc ::Init() {
-      global_new
       
-      ::dicom_folder = "./dicomFolder/"
-          
+      ::class_name ="global::DICOMClass"
+      ::dicom_folder = "", "Dicom Path Folder"
+      ::image_name = "", "Name of the resulting image variable"
+
       ::Gui()
     }
     
@@ -30,9 +31,14 @@ if (!exists(DICOMClass)) {
     
     proc ::Run() \
     {
+   
       ::out = ::itk->DICOMRead(::dicom_folder)
-      
-      show ::out
+      eval "global::"+::image_name+"<<="+"::out;"
+
+    }
+    
+    proc ::Display() {
+      eval "show "+"global::"+::image_name+";"
     }
     
     proc ::Gui() {
@@ -42,16 +48,17 @@ if (!exists(DICOMClass)) {
         ::win.AddPage("Init")
         
         ::win.BeginBoxPanel("DICOM Folder")
-          ::win.BeginHorizontal
+          #::win.BeginHorizontal
             ::win.AddString(::dicom_folder,"DICOM Folder")
-          ::win.EndHorizontal
+            ::win.AddString(::image_name,"Output Image Name")
+          #::win.EndHorizontal
         ::win.EndBoxPanel
         
-        ::win.AddPage("Run")
-        
-        ::win.BeginBoxPanel("Processing")
-          ::win.AddButton("Run", ::Run)
-        ::win.EndBoxPanel
+        ::win.BeginHorizontal
+          ::win.AddButton("Run",::Run)
+          ::win.AddButton("Display",::Display)
+          ::win.AddButton("Save",::Save)
+        ::win.EndHorizontal
         
       ::win.EndBook
       

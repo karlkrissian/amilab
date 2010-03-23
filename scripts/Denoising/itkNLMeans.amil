@@ -66,11 +66,15 @@ if (!exists(itkNLMeansClass)) {
         ::nlm = ::itk->BasicNLMeans3D(::input,::searching_window,::pattern_window,::threshold,::noise)
         ::n = 1
       }
-      
+    } 
+    
+    proc ::Display() {
+    
       show ::input
       show ::nlm
       ::input_draw.compare(::nlm_draw)
-    } 
+    
+    }
     
     proc ::Save() \
     {
@@ -116,17 +120,11 @@ if (!exists(itkNLMeansClass)) {
           ::win.AddEnumChoice(noise_id, "Rician")
         ::win.EndBoxPanel
         
-        ::win.AddPage("Run")
-        
-        ::win.BeginBoxPanel("Processing")
-          ::win.AddButton("Run", ::Run)
-        ::win.EndBoxPanel
-        
-        ::win.AddPage("Save")
-        
-        ::win.BeginBoxPanel("Result")
-          ::win.AddButton("Save", ::Save)
-        ::win.EndBoxPanel
+        ::win.BeginHorizontal
+          ::win.AddButton("Run",::Run)
+          ::win.AddButton("Display",::Display)
+          ::win.AddButton("Save",::Save)
+        ::win.EndHorizontal
         
       ::win.EndBook
       

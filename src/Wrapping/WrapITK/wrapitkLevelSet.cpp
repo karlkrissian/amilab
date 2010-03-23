@@ -138,7 +138,7 @@ InrImage* wrap_itkLevelSetFilter3D(ParamList* p)
   shapeDetection->SetPropagationScaling(  propagationScaling );
   shapeDetection->SetCurvatureScaling( curvatureScaling ); 
   shapeDetection->SetMaximumRMSError( 0.02 );
-  shapeDetection->SetNumberOfIterations( 200 );
+  shapeDetection->SetNumberOfIterations( 500 );
 
 	shapeDetection->Update();
   
