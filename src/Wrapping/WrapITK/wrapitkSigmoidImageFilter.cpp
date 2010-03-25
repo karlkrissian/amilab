@@ -36,11 +36,11 @@ InrImage* wrap_itkSigmoidImageFilter2D(ParamList* p)
   InrImage* res = NULL;
   int n=0;
   
-  if (!get_image_param(  input,      p, n)) HelpAndReturnNULL;
-  if (!get_float_param(  outputMin,    p, n)) HelpAndReturnNULL;
-  if (!get_float_param(  outputMax,      p, n)) HelpAndReturnNULL;
-	if (!get_float_param(  alpha,      p, n)) HelpAndReturnNULL;
-	if (!get_float_param(  beta,      p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>( input,      p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>(        outputMin,  p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>(        outputMax,  p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>(        alpha,      p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>(        beta,       p, n)) HelpAndReturnNULL;
  
   typedef float       InternalPixelType;
   const   unsigned int        Dimension = 2;
@@ -57,7 +57,7 @@ InrImage* wrap_itkSigmoidImageFilter2D(ParamList* p)
   	
 	image = InrToITK<InternalPixelType,Dimension>(input,region);
 	
-	cout << "Conversión hecha" << endl;
+	cout << "Conversiï¿½n hecha" << endl;
 
   typedef itk::SigmoidImageFilter< InternalImageType, InternalImageType >  SigmoidFilterType;
   SigmoidFilterType::Pointer sigmoidFilter = SigmoidFilterType::New();
@@ -114,11 +114,10 @@ InrImage* wrap_itkSigmoidImageFilter3D(ParamList* p)
   InrImage* res = NULL;
   int n=0;
   
-  if (!get_image_param(  input,      p, n)) HelpAndReturnNULL;
-  if (!get_float_param(  outputMin,    p, n)) HelpAndReturnNULL;
-  if (!get_float_param(  outputMax,      p, n)) HelpAndReturnNULL;
-	if (!get_float_param(  alpha,      p, n)) HelpAndReturnNULL;
-	if (!get_float_param(  beta,      p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>(        outputMin,       p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>(        outputMax,       p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>(        alpha,       p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>(        beta,       p, n)) HelpAndReturnNULL;
  
   typedef float       InternalPixelType;
   const   unsigned int        Dimension = 3;
@@ -135,7 +134,7 @@ InrImage* wrap_itkSigmoidImageFilter3D(ParamList* p)
   	
 	image = InrToITK<InternalPixelType,Dimension>(input,region);
 	
-	cout << "Conversión hecha" << endl;
+	cout << "Conversiï¿½n hecha" << endl;
 
   typedef itk::SigmoidImageFilter< InternalImageType, OutputImageType >  SigmoidFilterType;
   SigmoidFilterType::Pointer sigmoidFilter = SigmoidFilterType::New();

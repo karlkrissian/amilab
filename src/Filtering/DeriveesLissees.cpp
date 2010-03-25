@@ -189,7 +189,7 @@ void Gradiente3D (float *TD, int nx, int ny, int nz, float G[3])
 
 
 //----------------------------------------------------------------------
-DeriveesLissees :: Constructeur DeriveesLissees( InrImage* image_entree, 
+DeriveesLissees ::  DeriveesLissees( InrImage* image_entree, 
 //
 							   float sigma,
 							   int dimension)
@@ -210,18 +210,18 @@ DeriveesLissees :: Constructeur DeriveesLissees( InrImage* image_entree,
   _sigma = sigma;
 
   Si _sigma > 0.1 Alors
-    filtre = new FiltreRecursif(image_entree, dimension);
+    filtre = new GeneralGaussianFilter(image_entree, dimension);
     filtre->DontUseVoxelSize();
     InitImagesDeriveesLissees();
     filtre->GammaNormalise(false);
     filtre->InitFiltre( _sigma, MY_FILTRE_CONV );  
   FinSi
 
-} // Constructeur
+} // Constructor
 
 
 //----------------------------------------------------------------------
-DeriveesLissees :: Destructeur DeriveesLissees()
+DeriveesLissees :: ~DeriveesLissees()
 //
 {
 
@@ -229,7 +229,7 @@ DeriveesLissees :: Destructeur DeriveesLissees()
     LibereImagesDeriveesLissees();
   FinSi
 
-} // Destructeur
+} // Destructor
 
 
 

@@ -64,7 +64,7 @@ Chaine RemovePath(const Chaine& ch);
 */
 
 
-unsigned char CheckEndString( char* st1, const std::string end);
+unsigned char CheckEndString( const char* st1, const std::string end);
 /*
 {
   int l1 = strlen(st1);

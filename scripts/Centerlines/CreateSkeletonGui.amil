@@ -701,7 +701,7 @@ if (!exists(CreateSkeletonClass)) {
         ::win.BeginBox("Connected to point")
           ::win.AddBoolean(::UseInitPoint)
           ::win.AddInt    (::VesselNumber,0,3)
-          pi_id  = ::win.AddEnum   (::PointId,2)
+          pi_id  = ::win.AddEnum   (::PointId)
             ::win.AddEnumChoice(pi_id,"A")
             ::win.AddEnumChoice(pi_id,"B")
         ::win.EndBox
@@ -711,7 +711,7 @@ if (!exists(CreateSkeletonClass)) {
         ::win.AddBoolean(::FillHoles)
         ::win.AddBoolean(::mask_with_gt)
     
-        ept_id = ::win.AddEnum(::endpoint_type,3)
+        ept_id = ::win.AddEnum(::endpoint_type)
           ::win.AddEnumChoice(ept_id,"line")
           ::win.AddEnumChoice(ept_id,"surface")
           ::win.AddEnumChoice(ept_id,"line \& surface")
@@ -730,7 +730,7 @@ if (!exists(CreateSkeletonClass)) {
         ::win.EndBox
       
       ::win.AddPage("Lines")
-        ::id = ::win.AddEnum(::linemethod,2)
+        ::id = ::win.AddEnum(::linemethod)
         ::win.AddEnumChoice(::id,"Skeleton2lines")
         ::win.AddEnumChoice(::id,"vtkSkeleton2Lines")
         ::win.BeginBox("Pruning selection")
@@ -753,12 +753,12 @@ if (!exists(CreateSkeletonClass)) {
     
       ::win.AddPage("Shortest paths")
         ::win.BeginHorizontal
-          SP_start_id  = ::win.AddEnum   (::SP_start,4)
+          SP_start_id  = ::win.AddEnum   (::SP_start)
               ::win.AddEnumChoice(SP_start_id,"A")
               ::win.AddEnumChoice(SP_start_id,"B")
               ::win.AddEnumChoice(SP_start_id,"S")
               ::win.AddEnumChoice(SP_start_id,"E")
-          SP_end_id  = ::win.AddEnum   (::SP_end,4)
+          SP_end_id  = ::win.AddEnum   (::SP_end)
               ::win.AddEnumChoice(SP_end_id,"A")
               ::win.AddEnumChoice(SP_end_id,"B")
               ::win.AddEnumChoice(SP_end_id,"S")
@@ -769,11 +769,11 @@ if (!exists(CreateSkeletonClass)) {
           show_ep_id = ::win.AddBoolean(::show_ending_point)
         ::win.EndHorizontal
     
-        pathmode_id  = ::win.AddEnum   (::path_mode,2)
+        pathmode_id  = ::win.AddEnum   (::path_mode)
           ::win.AddEnumChoice(pathmode_id,"Centerlines")
           ::win.AddEnumChoice(pathmode_id,"Max. response")
     
-        FMmode_id  = ::win.AddEnum   (::fm_mode,2)
+        FMmode_id  = ::win.AddEnum   (::fm_mode)
           ::win.AddEnumChoice(FMmode_id,"Dijkstra")
           ::win.AddEnumChoice(FMmode_id,"Sethian's FM")
     

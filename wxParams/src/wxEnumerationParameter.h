@@ -72,7 +72,7 @@ class wxEnumerationParameter: public wxBoxSizer, public wxGenericWidget
   /// if the result is given as a integer
   int*            _parameter;
   /// if the result is given as a string
-  string_ptr*     _selection_param;
+  string_ptr      _selection_param;
   wxWindow*       _parent;
   wxStaticText*   _label;
   myChoice*       _choice;
@@ -85,7 +85,7 @@ class wxEnumerationParameter: public wxBoxSizer, public wxGenericWidget
     const std::string& tooltip="");
   
   wxEnumerationParameter( wxWindow* parent,
-    string_ptr* selection_param,
+    string_ptr selection_param,
     const char* label,
     const std::string& tooltip="");
   

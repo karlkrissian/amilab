@@ -24,10 +24,12 @@ extern yyip::Driver GB_driver;
 
 extern VarContexts  Vars;
 
+using namespace std;
+
 //---------------------------------------------------------
 void AddWrapSystem(){
   // Create new instance of the class
-  AMIObject* amiobject = new AMIObject;
+  AMIObject::ptr amiobject(new AMIObject);
   amiobject->SetName("op_system");
 
   // Set the object context
@@ -35,20 +37,19 @@ void AddWrapSystem(){
   Vars.SetObjectContext(amiobject->GetContext());
 
 //  Vars.AddVar(type_c_function, "GetFreeMemory",    (void*) wrap_GetFreeMemory , OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_function, "GetFullHostName",     (void*) wrap_GetFullHostName , OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_function, "GetHomeDir",          (void*) wrap_GetHomeDir , OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_function, "GetHostName",         (void*) wrap_GetHostName , OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_function, "GetUserHome",         (void*) wrap_GetUserHome , OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_function, "GetUserId",           (void*) wrap_GetUserId , OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_function, "GetUserName",         (void*) wrap_GetUserName , OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_function, "GetCurrentScriptDir", (void*) wrap_GetCurrentScriptDir , OBJECT_CONTEXT_NUMBER);
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"GetFullHostName", wrap_GetFullHostName);
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"GetHomeDir",      wrap_GetHomeDir);
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"GetHostName",     wrap_GetHostName);
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"GetUserHome",     wrap_GetUserHome);
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"GetUserId",       wrap_GetUserId);
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"GetUserName",     wrap_GetUserName);
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"GetCurrentScriptDir", wrap_GetCurrentScriptDir);
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);
 
   // 3. add the variables to this instance
-  Vars.AddVar( type_ami_object, amiobject->GetName().c_str(), (void*) amiobject);
-
+  Vars.AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
 
 }
 
@@ -72,7 +73,7 @@ void wrap_System(ParamList* p)
 
 /*
 //--------------------------------------------------------------------
-Variable::ptr wrap_GetFreeMemory(ParamList* p)
+BasicVariable::ptr wrap_GetFreeMemory(ParamList* p)
 {
     char functionname[] = "GetFreeMemory";
     char description[]=" \n\
@@ -93,7 +94,7 @@ Variable::ptr wrap_GetFreeMemory(ParamList* p)
   //  float* value = new float(FreeMemory);
   string* value = new string( (boost::format("%1%") % val).str());
 
-  Variable::ptr varres(new Variable());
+  BasicVariable::ptr varres(new Variable());
   varres->Init(type_string,"FreeMemory",value);
 
   return varres;
@@ -101,7 +102,7 @@ Variable::ptr wrap_GetFreeMemory(ParamList* p)
 */
 
 //--------------------------------------------------------------------
-Variable::ptr wrap_GetFullHostName(ParamList* p)
+BasicVariable::ptr wrap_GetFullHostName(ParamList* p)
 {
     char functionname[] = "GetFullHostName";
     char description[]=" \n\
@@ -115,16 +116,17 @@ Variable::ptr wrap_GetFullHostName(ParamList* p)
 
   if (get_num_param(p)!=0)  HelpAndReturnVarPtr;
   wxString FullHostName = ::wxGetFullHostName();
-  string* value = new string(FullHostName.mb_str());
 
-  Variable::ptr varres(new Variable());
-  varres->Init(type_string,"FullHostName",value);
+  string_ptr value( new string(FullHostName.mb_str()));
+
+  Variable<string>::ptr varres(
+    new Variable<string>("FullHostName",value));
 
   return varres;
 }
 
 //--------------------------------------------------------------------
-Variable::ptr wrap_GetHomeDir(ParamList* p) {
+BasicVariable::ptr wrap_GetHomeDir(ParamList* p) {
     char functionname[] = "GetHomeDir";
     char description[]=" \n\
         Wraps the wxWidgets function wxGetHomeDir, \n\
@@ -137,16 +139,16 @@ Variable::ptr wrap_GetHomeDir(ParamList* p) {
 
   if (get_num_param(p)!=0)  HelpAndReturnVarPtr;
   wxString HomeDir = ::wxGetHomeDir();
-  string* value = new string(HomeDir.mb_str());
 
-  Variable::ptr varres(new Variable());
-  varres->Init(type_string,"HomeDir",value);
+  string_ptr value( new string(HomeDir.mb_str()));
+  Variable<string>::ptr varres(
+    new Variable<string>("HomeDir",value));
 
   return varres;
 }
 
 //--------------------------------------------------------------------
-Variable::ptr wrap_GetUserHome(ParamList* p)
+BasicVariable::ptr wrap_GetUserHome(ParamList* p)
 {
     char functionname[] = "GetUserHome";
     char description[]=" \n\
@@ -160,16 +162,16 @@ Variable::ptr wrap_GetUserHome(ParamList* p)
 
   if (get_num_param(p)!=0)  HelpAndReturnVarPtr;
   wxString UserHome = ::wxGetUserHome();
-  string* value = new string(UserHome.mb_str());
 
-  Variable::ptr varres(new Variable());
-  varres->Init(type_string,"UserHome",value);
+  string_ptr value( new string(UserHome.mb_str()));
+  Variable<string>::ptr varres(
+    new Variable<string>("UserHome",value));
 
   return varres;
 }
 
 //--------------------------------------------------------------------
-Variable::ptr wrap_GetUserId(ParamList* p)
+BasicVariable::ptr wrap_GetUserId(ParamList* p)
 {
     char functionname[] = "GetUserId";
     char description[]=" \n\
@@ -183,16 +185,16 @@ Variable::ptr wrap_GetUserId(ParamList* p)
 
   if (get_num_param(p)!=0)  HelpAndReturnVarPtr;
   wxString UserId = ::wxGetUserId();
-  string* value = new string(UserId.mb_str());
 
-  Variable::ptr varres(new Variable());
-  varres->Init(type_string,"UserId",value);
+  string_ptr value( new string(UserId.mb_str()));
+  Variable<string>::ptr varres(
+    new Variable<string>("UserId",value));
 
   return varres;
 }
 
 //--------------------------------------------------------------------
-Variable::ptr wrap_GetUserName(ParamList* p)
+BasicVariable::ptr wrap_GetUserName(ParamList* p)
 {
     char functionname[] = "GetUserName";
     char description[]=" \n\
@@ -206,17 +208,17 @@ Variable::ptr wrap_GetUserName(ParamList* p)
 
   if (get_num_param(p)!=0)  HelpAndReturnVarPtr;
   wxString UserName = ::wxGetUserName();
-  string* value = new string(UserName.mb_str());
 
-  Variable::ptr varres(new Variable());
-  varres->Init(type_string,"UserName",value);
+  string_ptr value( new string(UserName.mb_str()));
+  Variable<string>::ptr varres(
+    new Variable<string>("UserName",value));
 
   return varres;
 }
 
 //--------------------------------------------------------------------
 
-Variable::ptr wrap_GetHostName(ParamList* p)
+BasicVariable::ptr wrap_GetHostName(ParamList* p)
 {
     char functionname[] = "GetHostName";
     char description[]=" \n\
@@ -230,17 +232,17 @@ Variable::ptr wrap_GetHostName(ParamList* p)
 
   if (get_num_param(p)!=0)  HelpAndReturnVarPtr;
   wxString hostname = ::wxGetHostName();
-  string* value = new string(hostname.mb_str());
 
-  Variable::ptr varres(new Variable());
-  varres->Init(type_string,"hostname",value);
+  string_ptr value( new string(hostname.mb_str()));
+  Variable<string>::ptr varres(
+    new Variable<string>("hostname",value));
 
   return varres;
 }
 
 
 //--------------------------------------------------------------------
-Variable::ptr wrap_GetCurrentScriptDir(ParamList* p)
+BasicVariable::ptr wrap_GetCurrentScriptDir(ParamList* p)
 {
     char functionname[] = "GetCurrentScriptDir";
     char description[]=" \n\
@@ -252,12 +254,12 @@ Variable::ptr wrap_GetCurrentScriptDir(ParamList* p)
             ";
 
   if (get_num_param(p)!=0)  HelpAndReturnVarPtr;
-  
+  cout << "GB_driver.GetCurrentFilename()=" << GB_driver.GetCurrentFilename() << endl;
   wxString wxvalue = wxFileName(wxString(GB_driver.GetCurrentFilename().c_str(), wxConvUTF8)).GetPath();
-  string* value = new string(wxvalue.mb_str());
+  string_ptr value ( new string(wxvalue.mb_str()));
 
-  Variable::ptr varres(new Variable());
-  varres->Init(type_string,"hostname",value);
+  Variable<string>::ptr varres(
+    new Variable<string>("CurrentScriptDir",value));
 
   return varres;
 }

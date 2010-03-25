@@ -41,13 +41,13 @@
 #define MAX_POINTS 500
 
 //============================================================================
-Structure Point3D
+struct Point3D
 //        =======
-DebutStructure
+{
 
   float x,y,z;
 
-FinStructure
+};
 
 
 
@@ -62,10 +62,10 @@ class Vaisseau
 
 public:
 
-  Constructeur Vaisseau();
+   Vaisseau();
   //           --------
 
-  Destructeur Vaisseau();
+  ~Vaisseau();
   //          --------
 
   void Construit( Point3D depart);

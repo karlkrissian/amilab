@@ -237,7 +237,7 @@ unsigned char CalculBoule :: CalculVepArete( Vect3D<double> *vep_arete)
 
 
 //---------------------------------------------------------
-EnLigne unsigned char  CalculBoule :: PassageParZero( int& signe, 
+inline unsigned char  CalculBoule :: PassageParZero( int& signe, 
 //                                         --------------
 							   double valeur)
 {
@@ -345,9 +345,9 @@ void CalculBoule :: ReEvalue( PtPosition* pt)
   
     double       min1, min2;
 
-  SelonQue _face Vaut
+  switch ( _face ){
 
-    Valeur 0: 
+    case 0: 
       // z = 0 
       min1 = min( pt->x, 1-pt->x);
       min2 = min( pt->y, 1-pt->y);
@@ -363,9 +363,9 @@ void CalculBoule :: ReEvalue( PtPosition* pt)
         coeff_arete = pt->x;
         CalculeArete( pt);
       FinSi
-    FinValeur
+    break;
 
-    Valeur 1: 
+    case 1: 
       // y = 0 
       min1 = min( pt->x, 1-pt->x);
       min2 = min( pt->z, 1-pt->z);
@@ -381,9 +381,9 @@ void CalculBoule :: ReEvalue( PtPosition* pt)
         coeff_arete = pt->x;
         CalculeArete( pt);
       FinSi
-    FinValeur
+    break;
 
-    Valeur 2: 
+    case 2: 
       // x = 0 
       min1 = min( pt->y, 1-pt->y);
       min2 = min( pt->z, 1-pt->z);
@@ -399,9 +399,9 @@ void CalculBoule :: ReEvalue( PtPosition* pt)
         coeff_arete = pt->y;
         CalculeArete( pt);
       FinSi
-    FinValeur
+    break;
 
-  FinSelonQue
+  } // end switch
 
 } // ReEvalue();
 
@@ -495,17 +495,17 @@ unsigned char CalculBoule :: CalculZeros( int vec1, int vec2,
         p1.proba = 1.0;
         crest ->AddPoint( _x,_y,_z, p1); 
 
-        SelonQue _face Vaut
-	    Valeur 0: 
+        switch ( _face ){
+	    case 0: 
               Si _z>0 AlorsFait crest->AddPoint( _x,   _y,   _z-1, p1);  
-            FinValeur
-	    Valeur 1: 
+            break;
+	    case 1: 
               Si _y>0 AlorsFait crest->AddPoint( _x,   _y-1, _z,   p1);  
-            FinValeur
-	    Valeur 2: 
+            break;
+	    case 2: 
               Si _x>0 AlorsFait crest->AddPoint( _x-1, _y,   _z,   p1);  
-            FinValeur
-        FinSelonQue
+            break;
+        } // end switch
 
       FinPour
 

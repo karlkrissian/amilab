@@ -97,6 +97,12 @@ void wxDrawingArea::OnMouseEvent(wxMouseEvent& event)
 
     _parent_window->SetMousePosition(_mouse_x,_mouse_y);
 
+    if (wr != 0) {
+      //cout << "wheel rotation " << wr << endl;
+      //cout << " mouse "<< _mouse_x << " " << _mouse_y << endl;
+      _parent_window->OnWheel(event);
+    }
+
     if (lu)  _parent_window->Boutton_Relache();
     else
     if (mu)  _parent_window->Boutton2_Relache();

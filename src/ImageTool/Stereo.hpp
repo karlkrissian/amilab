@@ -107,10 +107,10 @@ XImage* _image1;
 
 public:
 
-  Constructeur Stereo( float d_yeux, float d_oeil_ecran, float d_ecran_objet,
+   Stereo( float d_yeux, float d_oeil_ecran, float d_ecran_objet,
                        float pixel_cm);
 
-  Destructeur Stereo();
+  ~Stereo();
 
   void Parametres( float d_yeux, float d_oeil_ecran, float d_ecran_objet,
                        float pixel_cm);

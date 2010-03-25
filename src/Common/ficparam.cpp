@@ -38,17 +38,17 @@
 
 
 // -----------------------------------------------------------
-Parametres :: Constructeur Parametres()
+Parametres ::  Parametres()
 //                        ------------
 {
 
   pfichier = (FILE*) NULL;
 
-} // Constructeur Parametres()
+} // Constructor Parametres()
 
 
 // -----------------------------------------------------------
-Parametres :: Destructeur Parametres()
+Parametres :: ~Parametres()
 //                        -----------
 {
 
@@ -57,7 +57,7 @@ Parametres :: Destructeur Parametres()
    pfichier = (FILE*) NULL;
   FinSi
 
-} // Destructeur Parametres()
+} // Destructor Parametres()
 
 
 // -----------------------------------------------------------

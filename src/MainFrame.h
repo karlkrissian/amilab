@@ -101,7 +101,7 @@ public:
 
   wxAuiManager& GetAuiManager() {return m_mgr; };
 
-  TextControl* GetConsole() { return TC; }
+  TextControl::ptr GetConsole() { return TC; }
 
   bool AddMainPage(wxWindow* page, const wxString& caption,
                     bool select = false, const wxBitmap& bitmap = wxNullBitmap);
@@ -207,14 +207,15 @@ protected:
   wxBoxSizer*  vartreepanel_sizer;
 
   boost::shared_ptr<wxTextValidator> _textcontrol_validator;
-  TextControl* TC;
+  TextControl::ptr TC;
   wxTextCtrl*  _log_text;
   wxPanel*     _keywords_panel;
   wxPanel*     _var_panel;
   wxPanel*     _html_panel;
   wxPanel*     _drawing_panel;
 
-//  boost::shared_ptr<wxDirPickerCtrl> 
+  boost::shared_ptr<wxDirPickerCtrl> scripts_path_picker;
+  boost::shared_ptr<wxDirPickerCtrl> help_path_picker;
   wxPanel*     _settings_panel;
 
   wxListCtrl*  _var_list;

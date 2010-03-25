@@ -292,7 +292,7 @@ add_subdirectory (Images)
 add_subdirectory (Coordonnees)
 add_subdirectory (Contours)
 add_subdirectory (Vaisseaux)
-add_subdirectory (Filtrage)
+add_subdirectory (Filtering)
 add_subdirectory (Crest)
 add_subdirectory (ImageTool)
 add_subdirectory (Graphic)
@@ -339,7 +339,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Crest
   ${AMILAB_SOURCE_DIR}/Graph
   ${AMILAB_SOURCE_DIR}/AMILab
-  ${AMILAB_SOURCE_DIR}/Filtrage
+  ${AMILAB_SOURCE_DIR}/Filtering
   ${AMILAB_SOURCE_DIR}/Line
   ${AMILAB_SOURCE_DIR}/SplineThevenaz
   ${AMILAB_SOURCE_DIR}/Contours
@@ -377,9 +377,9 @@ SET(amilab_bin_SRCS
 )
 
 SET(amilab_bin_HDRS
-	guicon.h
-	MainFrame.h
-	myTreeCtrl.h
+  guicon.h
+  MainFrame.h
+  myTreeCtrl.h
 )
 
 SET(amilab_bin_SRCS
@@ -420,6 +420,7 @@ SET(amilab_ownlibs
   WrapAMIFluid
   WrapWII
   WrapInterface
+  WrapBasicTypes
   WrapCommon
   WrapWXSamples
   AMILab
@@ -511,9 +512,11 @@ endif (WIN32)
 IF(MSVC)
   # NEED TO SPECIFY FOR EACH POSSIBLE CONFIGURATION
   set_target_properties( ${AMILAB_BIN} 
-	PROPERTIES LINK_FLAGS_RELEASE "/NODEFAULTLIB:LIBCMT /NODEFAULTLIB:LIBCMTD")
-  set_target_properties( ${AMILAB_BIN} 
-	PROPERTIES LINK_FLAGS_DEBUG "/NODEFAULTLIB:LIBCMT /NODEFAULTLIB:LIBCMTD")
+    PROPERTIES LINK_FLAGS_RELEASE "/NODEFAULTLIB:LIBCMT /NODEFAULTLIB:LIBCMTD")
+
+set_target_properties( ${AMILAB_BIN} 
+
+    PROPERTIES LINK_FLAGS_DEBUG "/NODEFAULTLIB:LIBCMT /NODEFAULTLIB:LIBCMTD")
 ENDIF(MSVC)
 
 IF(AMI_USE_FASTNLMEANS)

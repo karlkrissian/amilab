@@ -27,16 +27,14 @@
 */
 
 //  
-//  fichier FiltreRec.cpp
+//  fichier GeneralGaussianFilter.cpp
 //
 //  Karl Krissian    Sophia Antipolis, le 17-07-98
 //
 
 
-#include "FiltreRec.hpp"
+#include "GeneralGaussianFilter.h"
 
-//#include "EpiFiltrage.h"
-//#include "filtrage.hpp"
 
 extern unsigned char verbose;
 
@@ -47,7 +45,7 @@ extern unsigned char verbose;
 //======================================================================
 
 //----------------------------------------------------------------------
-void FiltreRecursif ::  InitCoeffDerivees( )
+void GeneralGaussianFilter ::  InitCoeffDerivees( )
 //                                -----------------
 {
 
@@ -94,7 +92,7 @@ void FiltreRecursif ::  InitCoeffDerivees( )
 } // InitCoeffDerivees()
 
 //----------------------------------------------------------------------
-void FiltreRecursif ::  InitNomDerivees( )
+void GeneralGaussianFilter ::  InitNomDerivees( )
 //                                ---------------
 {
 
@@ -118,7 +116,7 @@ void FiltreRecursif ::  InitNomDerivees( )
 
 /*
 ///
-FiltreRecursif ::  Constructeur FiltreRecursif( PTRINRIMAGE image, int dim ) 
+GeneralGaussianFilter ::   GeneralGaussianFilter( PTRINRIMAGE image, int dim ) 
 
 {
 
@@ -134,7 +132,7 @@ FiltreRecursif ::  Constructeur FiltreRecursif( PTRINRIMAGE image, int dim )
     _image_initiale = image;
 
     _InrImage_initiale = new InrImage( _image_initiale, 
-				       "InrImage_initiale.inr.gz");
+               "InrImage_initiale.inr.gz");
 
     _vx = image->vx;
     _vy = image->vy;
@@ -172,7 +170,7 @@ FiltreRecursif ::  Constructeur FiltreRecursif( PTRINRIMAGE image, int dim )
 
 
 ///
-FiltreRecursif ::  Constructeur FiltreRecursif( InrImage* image, int dim ) 
+GeneralGaussianFilter ::   GeneralGaussianFilter( InrImage* image, int dim ) 
 
 {
 
@@ -222,10 +220,10 @@ _vz = image->VoxSizeZ();
 }
 
 
-FiltreRecursif :: Destructeur FiltreRecursif() 
+GeneralGaussianFilter :: ~GeneralGaussianFilter() 
   {
 
-    //    cout << " Destructeur Filtre Rec " << endl;
+    //    cout << " ~Filtre Rec " << endl;
     /*
     Si _InrImage_initiale  != (InrImage*) NULL Alors
       //       cout << "delete _InrImage_initiale;" << endl;
@@ -255,7 +253,7 @@ FiltreRecursif :: Destructeur FiltreRecursif()
       //cout << "LibereDerivees();" << endl;
     LibereDerivees();
 
-    //cout << " Fin Destructeur Filtre Rec \n";
+    //cout << " Fin ~Filtre Rec \n";
 
   }
 
@@ -263,7 +261,7 @@ FiltreRecursif :: Destructeur FiltreRecursif()
 
 
 //------------------------------------------------------
-void FiltreRecursif ::  InitFiltre(float sigma, int type)
+void GeneralGaussianFilter ::  InitFiltre(float sigma, int type)
 //                                ----------
 {
 
@@ -318,14 +316,14 @@ void FiltreRecursif ::  InitFiltre(float sigma, int type)
     _normz = pow(_sigmaz,_gamma);
   FinSi
 
-  SelonQue _type Vaut
+  switch ( _type ){
 
-    Valeur FILTRE_REC:
-    Valeur FILTRE_CONV:
+    case FILTRE_REC:
+    case FILTRE_CONV:
       _type =MY_FILTRE_CONV;
   /*
     //------------------------------
-    Valeur FILTRE_REC:
+    case FILTRE_REC:
     //     ----------
 
       E_ErrorReset();
@@ -351,10 +349,10 @@ void FiltreRecursif ::  InitFiltre(float sigma, int type)
       _param_filtre.deriveY = 0;
       _param_filtre.deriveZ = 0;
 
-    FinValeur
+    break;
 
     //------------------------------
-    Valeur FILTRE_CONV:
+    case FILTRE_CONV:
     //     ----------
     // Filtres Gaussiens : epi_filter.c
       E_DefaultSepFilter( &_param_filtre_conv);
@@ -365,23 +363,23 @@ void FiltreRecursif ::  InitFiltre(float sigma, int type)
       _param_filtre_conv.vSigma.z  = _sigmaz;
 
      printf("%f %f %f \n",_param_filtre_conv.vSigma.x,
-	    _param_filtre_conv.vSigma.y,
-	    _param_filtre_conv.vSigma.z);
+      _param_filtre_conv.vSigma.y,
+      _param_filtre_conv.vSigma.z);
 
 //      T_3Form( _image_initiale->vx, 
 //               _image_initiale->vy, 
 //               _image_initiale->vz, 
-//	       & _param_filtre_conv.vScale );
+//         & _param_filtre_conv.vScale );
 
       T_3IForm( (int) (7.0*_sigmax), 
-		(int) (7.0*_sigmay),
-		(int) (7.0*_sigmaz),
-		&_param_filtre_conv.vSize );
-    FinValeur
+    (int) (7.0*_sigmay),
+    (int) (7.0*_sigmaz),
+    &_param_filtre_conv.vSize );
+    break;
   */
 
     //------------------------------
-    Valeur MY_FILTRE_CONV:
+    case MY_FILTRE_CONV:
     //     --------------
       Si Non(_derivees_compressees) Alors 
        Si (_image_tmp != NULL) Et
@@ -395,7 +393,7 @@ void FiltreRecursif ::  InitFiltre(float sigma, int type)
 
         Si _image_tmp ==  (InrImage*) NULL AlorsFait
           _image_tmp = new InrImage( WT_FLOAT, "image_temp.inr.gz",
-	    			   _InrImage_initiale);
+               _InrImage_initiale);
       Sinon
        Si (_image_tmp1 !=  (InrImage*) NULL) Et
            ((_image_tmp1->_tx != _InrImage_initiale->_tx) Ou 
@@ -406,11 +404,11 @@ void FiltreRecursif ::  InitFiltre(float sigma, int type)
           _image_tmp1 =  (InrImage*) NULL;
         FinSi
 
-	/*
+  /*
         Si _image_tmp1 ==  (InrImage*) NULL AlorsFait
           _image_tmp1 = new InrImage( WT_FLOAT, "image_temp1.inr.gz",
-	    			   _InrImage_initiale);
-	*/
+               _InrImage_initiale);
+  */
 
        Si (_image_tmp2 !=  (InrImage*) NULL) Et
            ((_image_tmp2->_tx != _InrImage_initiale->_tx) Ou 
@@ -421,38 +419,38 @@ void FiltreRecursif ::  InitFiltre(float sigma, int type)
           _image_tmp2 =  (InrImage*) NULL;
         FinSi
 
-	/*
+  /*
         Si _image_tmp2 ==  (InrImage*) NULL AlorsFait
           _image_tmp2 = new InrImage( WT_FLOAT, "image_temp2.inr.gz",
-	    			   _InrImage_initiale);
-	*/
+               _InrImage_initiale);
+  */
       FinSi
 
       _facteur_support = 7;
       _coeff_int_gauss = false;
-    FinValeur
+    break;
 
-    Defaut:
+    default:
       Si Non(_silencieux) AlorsFait
-        cout << " FiltreRecursif::InitFiltre() \t"
+        cout << " GeneralGaussianFilter::InitFiltre() \t"
     << " type de filtrage non gere " << _type << "\n";
 
-  FinSelonQue
+  } // end switch
 
 } // InitFiltre()
 
 
 
 //------------------------------------------------------
-void FiltreRecursif ::  MyFiltre( InrImage* im, 
+void GeneralGaussianFilter ::  MyFiltre( InrImage* im, 
 //                                --------
-					    InrImage* res,
+              InrImage* res,
                int der_x, int der_y, int der_z,
-	       InrImage* ImMasque)
+         InrImage* ImMasque)
 {
 
   
-//    Filtrage  filtre;
+//    GaussianFilter  filtre;
     unsigned char   continuer;
     InrImage* imageIn;
     InrImage* imageOut;
@@ -474,18 +472,18 @@ void FiltreRecursif ::  MyFiltre( InrImage* im,
   Si (_image_tmp == NULL) 
   Alors
     Si Non(_silencieux) AlorsFait
-      cout << " FiltreRecursif::MyFiltre() \t"
+      cout << " GeneralGaussianFilter::MyFiltre() \t"
            << " filtre non initialise \n";
     return;
   FinSi
 
-  _filtre.FixeFacteurSupport( _facteur_support);
+  _filtre.SetSupportSize( _facteur_support);
   Si _coeff_int_gauss AlorsFait _filtre.IntegraleCoeffGaussienne();
 
 
-  SelonQue _type Vaut
+  switch ( _type ){
 
-    Valeur MY_FILTRE_CONV:
+    case MY_FILTRE_CONV:
     //     --------------
 
       try
@@ -500,11 +498,11 @@ void FiltreRecursif ::  MyFiltre( InrImage* im,
  
         Si (der_x >= 0)Et(der_x<=2) Alors
 
-          _filtre.FixeFacteurSupport( Support[der_x]);
+          _filtre.SetSupportSize( Support[der_x]);
           _filtre.Filtre1D( imageIn, imageOut, image_masque, 
-			   DIR_X, (double) _sigmax, der_x );
+         DIR_X, (double) _sigmax, der_x );
 
-	  Si imageOut==res Alors
+    Si imageOut==res Alors
             imageIn = res;        imageOut = _image_tmp;
           Sinon
             imageIn = _image_tmp; imageOut = res;
@@ -516,17 +514,17 @@ void FiltreRecursif ::  MyFiltre( InrImage* im,
 
           Si _dim >= MODE_2D Alors
 
-            _filtre.FixeFacteurSupport( Support[der_y]);
+            _filtre.SetSupportSize( Support[der_y]);
             _filtre.Filtre1D( imageIn, imageOut, image_masque, 
-	  		   DIR_Y, (double) _sigmay, der_y );
+           DIR_Y, (double) _sigmay, der_y );
 
-	    Si imageOut==res Alors
+      Si imageOut==res Alors
               imageIn = res;        imageOut = _image_tmp;
             Sinon
               imageIn = _image_tmp; imageOut = res;
             FinSi
           Sinon
-	    cerr<< "FiltreRecursif::MyFilre()\t Filtrage en Y en mode < 2D.\n";
+      cerr<< "GeneralGaussianFilter::MyFilre()\t GaussianFilter en Y en mode < 2D.\n";
           FinSi
 
         FinSi
@@ -535,29 +533,29 @@ void FiltreRecursif ::  MyFiltre( InrImage* im,
 
           Si _dim == MODE_3D Alors
 
-            _filtre.FixeFacteurSupport( Support[der_z]);
+            _filtre.SetSupportSize( Support[der_z]);
             _filtre.Filtre1D( imageIn, imageOut, image_masque, 
-	 		   DIR_Z, (double) _sigmaz, der_z );
+         DIR_Z, (double) _sigmaz, der_z );
 
-	    Si imageOut==res Alors
+      Si imageOut==res Alors
               imageIn = res;        imageOut = _image_tmp;
             Sinon
               imageIn = _image_tmp; imageOut = res;
             FinSi
 
           Sinon
-//	    cerr<< "FiltreRecursif::MyFilre()\t Filtrage en Z en mode non 3D.\n";
+//      cerr<< "GeneralGaussianFilter::MyFilre()\t GaussianFilter en Z en mode non 3D.\n";
           FinSi
 
         FinSi
 
         Si (imageIn == im)Et(im!=res) Alors
           Si Non(_silencieux) AlorsFait        
-    	    cout << " FiltreRecursif::MyFiltre() \t "
-	         << " aucun filtrage n'a ete realise ... \n";
+          cout << " GeneralGaussianFilter::MyFiltre() \t "
+           << " aucun filtrage n'a ete realise ... \n";
         FinSi
         
-	// imageIn est le pointeur sur l'image contenant le resultat
+  // imageIn est le pointeur sur l'image contenant le resultat
         Si imageIn == _image_tmp Alors
           // copie de num_image_res dans res
           _image_tmp->InitBuffer();
@@ -571,59 +569,59 @@ void FiltreRecursif ::  MyFiltre( InrImage* im,
         FinSi
 
       }
-      catch (Filtrage::OrdreNonTraite )
+      catch (GaussianFilter::OrdreNonTraite )
       {
         Si Non(_silencieux) AlorsFait        
-  	  cout << " FiltreRecursif::MyFiltre() \t "
-	       << " ordre non traite \n";
+      cout << " GeneralGaussianFilter::MyFiltre() \t "
+         << " ordre non traite \n";
       }
-      catch (Filtrage::BadImageType )
+      catch (GaussianFilter::BadImageType )
       {
         Si Non(_silencieux) AlorsFait        
-	  cout << " FiltreRecursif::MyFiltre() \t "
+    cout << " GeneralGaussianFilter::MyFiltre() \t "
                << " mauvais format d'image \n";
       }
-      catch (Filtrage::ImagesDiffDim )
+      catch (GaussianFilter::ImagesDiffDim )
       {
         Si Non(_silencieux) AlorsFait        
-  	  cout << " FiltreRecursif::MyFiltre() \t "
+      cout << " GeneralGaussianFilter::MyFiltre() \t "
                << " images de differentes dimensions \n";
       }
 
-    FinValeur
+    break;
 
-    Defaut:
+    default:
       Si Non(_silencieux) AlorsFait        
-        cout << " FiltreRecursif::MyFiltre() \t"
+        cout << " GeneralGaussianFilter::MyFiltre() \t"
              << " type non traite \n";
 
-  FinSelonQue
+  } // end switch
 
 
 } // MyFiltre()
 
 
 //------------------------------------------------------
-void FiltreRecursif ::  MyFiltre1D( InrImage* entree, 
+void GeneralGaussianFilter ::  MyFiltre1D( InrImage* entree, 
 //                                --------
-					      InrImage* sortie, InrImage* masque,
-					      direction_filtre dir, 
-					      double sigma, int ordre)
+                InrImage* sortie, InrImage* masque,
+                direction_filtre dir, 
+                double sigma, int ordre)
 {
 
   
-  _filtre.FixeFacteurSupport( _facteur_support);
+  _filtre.SetSupportSize( _facteur_support);
   Si _coeff_int_gauss AlorsFait _filtre.IntegraleCoeffGaussienne();
 
   _filtre.Filtre1D( entree, sortie, masque, 
-		    dir, sigma, ordre );
+        dir, sigma, ordre );
 
 
 } // MyFiltre1D()
 
 
 //------------------------------------------------------
-void FiltreRecursif ::  InitDerivees( )
+void GeneralGaussianFilter ::  InitDerivees( )
 //                                ------------
 {
 
@@ -680,9 +678,9 @@ void FiltreRecursif ::  InitDerivees( )
 
 /*
 //------------------------------------------------------
-void FiltreRecursif ::  InitDeriveesCompressees( InrImage* masque, 
+void GeneralGaussianFilter ::  InitDeriveesCompressees( InrImage* masque, 
 //                                -----------------------
-							   int nb_points)
+                 int nb_points)
 {
 
   
@@ -737,7 +735,7 @@ void FiltreRecursif ::  InitDeriveesCompressees( InrImage* masque,
   Pour(i,4,9)
     Si _utilise_Image_sigma[i] Alors
       _InrImage_sigma[i] = new InrImageCompressee( WT_FLOAT,  _ImageNom[i],
-						   masque,    nb_points );
+               masque,    nb_points );
     FinSi
   FinPour
 
@@ -747,7 +745,7 @@ void FiltreRecursif ::  InitDeriveesCompressees( InrImage* masque,
 */
 
 //------------------------------------------------------
-void FiltreRecursif ::  LibereDerivees( )
+void GeneralGaussianFilter ::  LibereDerivees( )
 //                                --------------
 {
 
@@ -771,7 +769,7 @@ void FiltreRecursif ::  LibereDerivees( )
 
 
 //------------------------------------------------------
-void FiltreRecursif ::  CalculMyFiltres2D( InrImage* image_depart)
+void GeneralGaussianFilter ::  CalculMyFiltres2D( InrImage* image_depart)
 //                                -----------------
 {
 
@@ -781,9 +779,9 @@ void FiltreRecursif ::  CalculMyFiltres2D( InrImage* image_depart)
 
      // Calcul Hxx
      Si verbose Et Non(_silencieux) 
-	Alors  printf(" 20 "); fflush(stdout); FinSi
+  Alors  printf(" 20 "); fflush(stdout); FinSi
      MyFiltre( image_depart,
-		 _InrImage_sigma[IMxx_sigma],      2,  0,  -1);
+     _InrImage_sigma[IMxx_sigma],      2,  0,  -1);
 
 
      // Convolution Derivee Gaussienne en X:
@@ -791,19 +789,19 @@ void FiltreRecursif ::  CalculMyFiltres2D( InrImage* image_depart)
      Si verbose Et Non(_silencieux) 
        Alors  printf(" 1. "); fflush(stdout); FinSi
      MyFiltre( image_depart,
-		 _InrImage_sigma[IMxy_sigma],      1, -1, -1);
+     _InrImage_sigma[IMxy_sigma],      1, -1, -1);
 
        // Gaussienne en Y: Gx
        Si verbose Et Non(_silencieux) 
-	 Alors  printf(" 10 "); fflush(stdout); FinSi
+   Alors  printf(" 10 "); fflush(stdout); FinSi
        MyFiltre( _InrImage_sigma[IMxy_sigma],
-		   _InrImage_sigma[IMx_sigma],    -1,  0, -1);
+       _InrImage_sigma[IMx_sigma],    -1,  0, -1);
 
        // Hxy
        Si verbose Et Non(_silencieux) 
-	 Alors  printf(" 11 "); fflush(stdout); FinSi
+   Alors  printf(" 11 "); fflush(stdout); FinSi
        MyFiltre( _InrImage_sigma[IMxy_sigma], 
-		   _InrImage_sigma[IMxy_sigma],   -1,  1, -1);
+       _InrImage_sigma[IMxy_sigma],   -1,  1, -1);
 
      // Convolution Gaussienne en X:
      // Factorisation pour Gy,Gz,Hyy,Hyz,Hzz
@@ -811,13 +809,13 @@ void FiltreRecursif ::  CalculMyFiltres2D( InrImage* image_depart)
      Si verbose Et Non(_silencieux) 
        Alors  printf(" 0. "); fflush(stdout); FinSi
      MyFiltre( image_depart,
-		 _InrImage_sigma[IMyy_sigma],      0, -1, -1);
+     _InrImage_sigma[IMyy_sigma],      0, -1, -1);
 
        // Derivee Gaussienne en Y: Gy
        Si verbose Et Non(_silencieux) 
-	 Alors  printf(" 01 "); fflush(stdout); FinSi
+   Alors  printf(" 01 "); fflush(stdout); FinSi
        MyFiltre( _InrImage_sigma[IMyy_sigma],
-		   _InrImage_sigma[IMy_sigma],    -1,  1, -1);
+       _InrImage_sigma[IMy_sigma],    -1,  1, -1);
 
 
        // Gaussienne en Y: I
@@ -826,15 +824,15 @@ void FiltreRecursif ::  CalculMyFiltres2D( InrImage* image_depart)
          Si _utilise_image Alors
            Si verbose Alors  printf(" *00 "); fflush(stdout); FinSi
            MyFiltre( _InrImage_sigma[IMyy_sigma], 
-	 	     _InrImage_sigma[IM_sigma],  -1, 0,  -1 );
+         _InrImage_sigma[IM_sigma],  -1, 0,  -1 );
          FinSi
 
 
        // Hyy
        Si verbose Et Non(_silencieux) 
-	   Alors  printf(" 02 "); fflush(stdout); FinSi
+     Alors  printf(" 02 "); fflush(stdout); FinSi
        MyFiltre( _InrImage_sigma[IMyy_sigma], 
-		   _InrImage_sigma[IMyy_sigma],   -1,  2,  -1);
+       _InrImage_sigma[IMyy_sigma],   -1,  2,  -1);
 
 
      Si verbose Et Non(_silencieux) AlorsFait
@@ -845,7 +843,7 @@ void FiltreRecursif ::  CalculMyFiltres2D( InrImage* image_depart)
 
 
 //------------------------------------------------------
-void FiltreRecursif ::  CalculMyFiltres( InrImage* image_depart)
+void GeneralGaussianFilter ::  CalculMyFiltres( InrImage* image_depart)
 //                                ---------------
 {
 
@@ -863,47 +861,47 @@ void FiltreRecursif ::  CalculMyFiltres( InrImage* image_depart)
      Si verbose Et Non(_silencieux) 
        Alors  printf(" 200 "); fflush(stdout); FinSi
      MyFiltre( image_depart,
-		 _InrImage_sigma[IMxx_sigma],      2,  0,  -1);
+     _InrImage_sigma[IMxx_sigma],      2,  0,  -1);
 
      MyFiltre( _InrImage_sigma[IMxx_sigma],
-		 _InrImage_sigma[IMxx_sigma],     -1, -1,   0,
-		 _image_masque);
+     _InrImage_sigma[IMxx_sigma],     -1, -1,   0,
+     _image_masque);
 
      // Convolution Derivee Gaussienne en X:
      // Factorisation pour Gx,Hxy,Hxz
      Si verbose Et Non(_silencieux) 
        Alors  printf(" 1.. "); fflush(stdout); FinSi
      MyFiltre( image_depart,
-		 _InrImage_sigma[IMxy_sigma],      1, -1, -1);
+     _InrImage_sigma[IMxy_sigma],      1, -1, -1);
 
        // Gaussienne en Y: Gx, Hxz
        Si verbose Et Non(_silencieux) 
-	 Alors  printf(" 10. "); fflush(stdout); FinSi
+   Alors  printf(" 10. "); fflush(stdout); FinSi
        MyFiltre( _InrImage_sigma[IMxy_sigma],
-		   _InrImage_sigma[IMx_sigma],    -1,  0, -1);
+       _InrImage_sigma[IMx_sigma],    -1,  0, -1);
 
          // Hxz
          Si verbose Et Non(_silencieux) 
-	   Alors  printf(" 101 "); fflush(stdout); FinSi
+     Alors  printf(" 101 "); fflush(stdout); FinSi
          MyFiltre( _InrImage_sigma[IMx_sigma], 
-		     _InrImage_sigma[IMxz_sigma], -1, -1,  1,
-		     _image_masque );
+         _InrImage_sigma[IMxz_sigma], -1, -1,  1,
+         _image_masque );
 
          // Gx
          Si verbose Et Non(_silencieux) 
-	   Alors  printf(" 100 "); fflush(stdout); FinSi
+     Alors  printf(" 100 "); fflush(stdout); FinSi
          MyFiltre( _InrImage_sigma[IMx_sigma], 
-		     _InrImage_sigma[IMx_sigma],  -1, -1,  0,
-		     _image_masque_gradient);
+         _InrImage_sigma[IMx_sigma],  -1, -1,  0,
+         _image_masque_gradient);
 
        // Hxy
        Si verbose Et Non(_silencieux) 
-	 Alors  printf(" 110 "); fflush(stdout); FinSi
+   Alors  printf(" 110 "); fflush(stdout); FinSi
        MyFiltre( _InrImage_sigma[IMxy_sigma], 
-		   _InrImage_sigma[IMxy_sigma],   -1,  1, -1);
+       _InrImage_sigma[IMxy_sigma],   -1,  1, -1);
        MyFiltre( _InrImage_sigma[IMxy_sigma], 
-		   _InrImage_sigma[IMxy_sigma],   -1, -1,  0,
-		   _image_masque);
+       _InrImage_sigma[IMxy_sigma],   -1, -1,  0,
+       _image_masque);
 
 
      // Convolution Gaussienne en X:
@@ -912,65 +910,65 @@ void FiltreRecursif ::  CalculMyFiltres( InrImage* image_depart)
      Si verbose Et Non(_silencieux) 
        Alors  printf(" 0.. "); fflush(stdout); FinSi
      MyFiltre( image_depart,
-		 _InrImage_sigma[IMyy_sigma],      0, -1, -1);
+     _InrImage_sigma[IMyy_sigma],      0, -1, -1);
 
        // Derivee Gaussienne en Y: Gy, Hyz
        Si verbose Et Non(_silencieux) 
-	 Alors  printf(" 01. "); fflush(stdout); FinSi
+   Alors  printf(" 01. "); fflush(stdout); FinSi
        MyFiltre( _InrImage_sigma[IMyy_sigma],
-		   _InrImage_sigma[IMy_sigma],    -1,  1, -1);
+       _InrImage_sigma[IMy_sigma],    -1,  1, -1);
 
          // Hyz
          Si verbose Et Non(_silencieux) 
-	   Alors  printf(" 011 "); fflush(stdout); FinSi
+     Alors  printf(" 011 "); fflush(stdout); FinSi
          MyFiltre( _InrImage_sigma[IMy_sigma], 
-		     _InrImage_sigma[IMyz_sigma], -1, -1,  1, 
-		     _image_masque);
+         _InrImage_sigma[IMyz_sigma], -1, -1,  1, 
+         _image_masque);
 
          // Gy
          Si verbose Et Non(_silencieux) 
-	   Alors  printf(" 010 "); fflush(stdout); FinSi
+     Alors  printf(" 010 "); fflush(stdout); FinSi
          MyFiltre( _InrImage_sigma[IMy_sigma], 
-		     _InrImage_sigma[IMy_sigma],  -1, -1,  0,
-		     _image_masque_gradient);
+         _InrImage_sigma[IMy_sigma],  -1, -1,  0,
+         _image_masque_gradient);
 
        // Gaussienne en Y: Hyz, Gz
        Si verbose Et Non(_silencieux) 
-	 Alors  printf(" 00. "); fflush(stdout); FinSi
+   Alors  printf(" 00. "); fflush(stdout); FinSi
        MyFiltre( _InrImage_sigma[IMyy_sigma],
-		   _InrImage_sigma[IMz_sigma],    -1,  0, -1);
+       _InrImage_sigma[IMz_sigma],    -1,  0, -1);
 
          // I
          Si _utilise_image Alors
            Si verbose Et Non(_silencieux) 
-	     Alors  printf(" *000 "); fflush(stdout); FinSi
+       Alors  printf(" *000 "); fflush(stdout); FinSi
            MyFiltre( _InrImage_sigma[IMz_sigma], 
-	 	     _InrImage_sigma[IM_sigma],  -1, -1,  0 );
+         _InrImage_sigma[IM_sigma],  -1, -1,  0 );
          FinSi
 
          // Hzz
          Si verbose Et Non(_silencieux) 
-	   Alors  printf(" 002 "); fflush(stdout); FinSi
+     Alors  printf(" 002 "); fflush(stdout); FinSi
          MyFiltre( _InrImage_sigma[IMz_sigma], 
-		     _InrImage_sigma[IMzz_sigma], -1, -1,  2,
-		     _image_masque);
+         _InrImage_sigma[IMzz_sigma], -1, -1,  2,
+         _image_masque);
 
          // Gz
          Si verbose Et Non(_silencieux) 
-	   Alors  printf(" 001 "); fflush(stdout); FinSi
+     Alors  printf(" 001 "); fflush(stdout); FinSi
          MyFiltre( _InrImage_sigma[IMz_sigma], 
-		     _InrImage_sigma[IMz_sigma],  -1, -1,  1,
-		     _image_masque_gradient);
+         _InrImage_sigma[IMz_sigma],  -1, -1,  1,
+         _image_masque_gradient);
 
 
        // Hyy
        Si verbose Et Non(_silencieux) 
-	 Alors  printf(" 020 "); fflush(stdout); FinSi
+   Alors  printf(" 020 "); fflush(stdout); FinSi
        MyFiltre( _InrImage_sigma[IMyy_sigma], 
-		   _InrImage_sigma[IMyy_sigma],   -1,  2,  -1);
+       _InrImage_sigma[IMyy_sigma],   -1,  2,  -1);
        MyFiltre( _InrImage_sigma[IMyy_sigma], 
-		   _InrImage_sigma[IMyy_sigma],   -1, -1,   0,
-		   _image_masque);
+       _InrImage_sigma[IMyy_sigma],   -1, -1,   0,
+       _image_masque);
 
 
      Si verbose Et Non(_silencieux) AlorsFait
@@ -982,28 +980,28 @@ void FiltreRecursif ::  CalculMyFiltres( InrImage* image_depart)
 
 /*
 //------------------------------------------------------
-void FiltreRecursif ::  CalculMyFiltresCompressees( InrImage* image_depart)
+void GeneralGaussianFilter ::  CalculMyFiltresCompressees( InrImage* image_depart)
 //                                --------------------------
 {
-  Filtrage  filtre;
+  GaussianFilter  filtre;
 
   Si _image_tmp1 ==  (InrImage*) NULL AlorsFait
     _image_tmp1 = new InrImage( WT_FLOAT, "image_temp1.inr.gz",
-	     			   _InrImage_initiale);
+               _InrImage_initiale);
 
   Si _image_tmp2 ==  (InrImage*) NULL AlorsFait
     _image_tmp2 = new InrImage( WT_FLOAT, "image_temp2.inr.gz",
-	     			   _InrImage_initiale);
+               _InrImage_initiale);
 
   Si (_image_tmp1 == (InrImage*) NULL) Ou 
      (_image_tmp2 == (InrImage*) NULL)  Alors
     Si Non(_silencieux) AlorsFait 
-      cout << " FiltreRecursif::CalculMyFiltresCompressees() \t"
+      cout << " GeneralGaussianFilter::CalculMyFiltresCompressees() \t"
            << " filtre non initialise \n";
     return;
   FinSi
 
-  filtre.FixeFacteurSupport( _facteur_support);
+  filtre.SetSupportSize( _facteur_support);
   Si _coeff_int_gauss AlorsFait filtre.IntegraleCoeffGaussienne();
 
      // Utiliser un masque est tres difficile
@@ -1014,109 +1012,109 @@ void FiltreRecursif ::  CalculMyFiltresCompressees( InrImage* image_depart)
      Si verbose Alors  printf(" 200 "); fflush(stdout); FinSi
 
      filtre.Filtre1D( image_depart, _image_tmp1, (InrImage*) NULL, 
-		      DIR_X, _sigmax, 2 );
+          DIR_X, _sigmax, 2 );
      filtre.Filtre1D( _image_tmp1,   _image_tmp2, (InrImage*) NULL,
-		      DIR_Y, _sigmay, 0 );
+          DIR_Y, _sigmay, 0 );
 
      filtre.Filtre1DCompressee( _image_tmp2, 
-				(InrImageCompressee*) _InrImage_sigma[IMxx_sigma], 
-				_image_masque, 
-				DIR_Z, _sigmaz, 0 );
+        (InrImageCompressee*) _InrImage_sigma[IMxx_sigma], 
+        _image_masque, 
+        DIR_Z, _sigmaz, 0 );
 
      // Convolution Derivee Gaussienne en X:
      // Factorisation pour Gx,Hxy,Hxz
      Si verbose Alors  printf(" 1.. "); fflush(stdout); FinSi
 
      filtre.Filtre1D( image_depart, _image_tmp1, (InrImage*) NULL, 
-		      DIR_X, _sigmax, 1 );
+          DIR_X, _sigmax, 1 );
 
        // Gaussienne en Y: Gx, Hxz
        Si verbose Alors  printf(" 10. "); fflush(stdout); FinSi
        filtre.Filtre1D( _image_tmp1,   _image_tmp2, (InrImage*) NULL,
-	  	        DIR_Y, _sigmay, 0 );
+              DIR_Y, _sigmay, 0 );
 
          // Hxz
          Si verbose Alors  printf(" 101 "); fflush(stdout); FinSi
          filtre.Filtre1DCompressee( _image_tmp2, 
-				    (InrImageCompressee*) _InrImage_sigma[IMxz_sigma], 
-				    _image_masque, 
-				    DIR_Z, _sigmaz, 1 );
+            (InrImageCompressee*) _InrImage_sigma[IMxz_sigma], 
+            _image_masque, 
+            DIR_Z, _sigmaz, 1 );
 
          // Gx
          Si verbose Alors  printf(" 100 "); fflush(stdout); FinSi
          filtre.Filtre1D( _image_tmp2, _InrImage_sigma[IMx_sigma], 
-				    _image_masque_gradient, 
-				    DIR_Z, _sigmaz, 0 );
+            _image_masque_gradient, 
+            DIR_Z, _sigmaz, 0 );
 
        // Hxy
        Si verbose Alors  printf(" 110 "); fflush(stdout); FinSi
        filtre.Filtre1D( _image_tmp1,   _image_tmp2, (InrImage*) NULL,
-	  	        DIR_Y, _sigmay, 1 );
+              DIR_Y, _sigmay, 1 );
 
        filtre.Filtre1DCompressee( _image_tmp2, 
-				  (InrImageCompressee*) _InrImage_sigma[IMxy_sigma], 
-				  _image_masque, 
-				  DIR_Z, _sigmaz, 0 );
+          (InrImageCompressee*) _InrImage_sigma[IMxy_sigma], 
+          _image_masque, 
+          DIR_Z, _sigmaz, 0 );
 
      // Convolution Gaussienne en X:
      // Factorisation pour Gy,Gz,Hyy,Hyz,Hzz
 
      Si verbose Alors  printf(" 0.. "); fflush(stdout); FinSi
      filtre.Filtre1D( image_depart, _image_tmp1, (InrImage*) NULL, 
-		      DIR_X, _sigmax, 0 );
+          DIR_X, _sigmax, 0 );
 
        // Derivee Gaussienne en Y: Gy, Hyz
        Si verbose Alors  printf(" 01. "); fflush(stdout); FinSi
        filtre.Filtre1D( _image_tmp1,   _image_tmp2, (InrImage*) NULL,
-	  	        DIR_Y, _sigmay, 1 );
+              DIR_Y, _sigmay, 1 );
 
          // Hyz
          Si verbose Alors  printf(" 011 "); fflush(stdout); FinSi
          filtre.Filtre1DCompressee( _image_tmp2, 
-				    (InrImageCompressee*) _InrImage_sigma[IMyz_sigma], 
-				    _image_masque, 
-				    DIR_Z, _sigmaz, 1 );
+            (InrImageCompressee*) _InrImage_sigma[IMyz_sigma], 
+            _image_masque, 
+            DIR_Z, _sigmaz, 1 );
 
          // Gy
          Si verbose Alors  printf(" 010 "); fflush(stdout); FinSi
          filtre.Filtre1D( _image_tmp2, _InrImage_sigma[IMy_sigma], 
-				    _image_masque_gradient, 
-				    DIR_Z, _sigmaz, 0 );
+            _image_masque_gradient, 
+            DIR_Z, _sigmaz, 0 );
 
        // Gaussienne en Y: Hyz, Gz
        Si verbose Alors  printf(" 00. "); fflush(stdout); FinSi
        filtre.Filtre1D( _image_tmp1,   _image_tmp2, (InrImage*) NULL,
-	  	        DIR_Y, _sigmay, 0 );
+              DIR_Y, _sigmay, 0 );
 
          // I
          Si _utilise_image Alors
            Si verbose Alors  printf(" *000 "); fflush(stdout); FinSi
            filtre.Filtre1D( _image_tmp2, _InrImage_sigma[IM_sigma], 
-			    (InrImage*) NULL, 
-			    DIR_Z, _sigmaz, 0 );
+          (InrImage*) NULL, 
+          DIR_Z, _sigmaz, 0 );
          FinSi
 
          // Hzz
          Si verbose Alors  printf(" 002 "); fflush(stdout); FinSi
          filtre.Filtre1DCompressee( _image_tmp2, 
-				    (InrImageCompressee*) _InrImage_sigma[IMzz_sigma], 
-				    _image_masque, 
-				    DIR_Z, _sigmaz, 2 );
+            (InrImageCompressee*) _InrImage_sigma[IMzz_sigma], 
+            _image_masque, 
+            DIR_Z, _sigmaz, 2 );
 
          // Gz
          Si verbose Alors  printf(" 001 "); fflush(stdout); FinSi
          filtre.Filtre1D( _image_tmp2, _InrImage_sigma[IMz_sigma], 
-				    _image_masque_gradient, 
-				    DIR_Z, _sigmaz, 1 );
+            _image_masque_gradient, 
+            DIR_Z, _sigmaz, 1 );
 
        // Hyy
        Si verbose Alors  printf(" 020 "); fflush(stdout); FinSi
        filtre.Filtre1D( _image_tmp1,   _image_tmp2, (InrImage*) NULL,
-	  	        DIR_Y, _sigmay, 2 );
+              DIR_Y, _sigmay, 2 );
        filtre.Filtre1DCompressee( _image_tmp2, 
-				  (InrImageCompressee*) _InrImage_sigma[IMyy_sigma], 
-				  _image_masque, 
-				  DIR_Z, _sigmaz, 0 );
+          (InrImageCompressee*) _InrImage_sigma[IMyy_sigma], 
+          _image_masque, 
+          DIR_Z, _sigmaz, 0 );
 
      Si verbose AlorsFait
        printf("\n");
@@ -1126,7 +1124,7 @@ void FiltreRecursif ::  CalculMyFiltresCompressees( InrImage* image_depart)
 
 */
 //------------------------------------------------------
-void FiltreRecursif ::  CalculFiltres( InrImage* mask )
+void GeneralGaussianFilter ::  CalculFiltres( InrImage* mask )
 //                                -------------
 {
 
@@ -1160,25 +1158,25 @@ void FiltreRecursif ::  CalculFiltres( InrImage* mask )
      FinSi
 
 
-      SelonQue _type Vaut
+      switch ( _type ){
   
-        Valeur FILTRE_CONV:
-        Valeur FILTRE_REC :
+        case FILTRE_CONV:
+        case FILTRE_REC :
         //     -----------
-	fprintf(stderr,"FiltreRec::CalculFiltres() options FILTRE_CONV or FILTRE_REC not available anymore ... \n");
-        FinValeur
+  fprintf(stderr,"GeneralGaussianFilter::CalculFiltres() options FILTRE_CONV or FILTRE_REC not available anymore ... \n");
+        break;
 
-       Valeur MY_FILTRE_CONV :
+       case MY_FILTRE_CONV :
        //     --------------
          MyFiltre( _InrImage_initiale, _InrImage_sigma[i],  
-		   _derivees[i][DIM_X], 
-		   _derivees[i][DIM_Y],
-		   _derivees[i][DIM_Z],
-		   mask);
+       _derivees[i][DIM_X], 
+       _derivees[i][DIM_Y],
+       _derivees[i][DIM_Z],
+       mask);
 
-       FinValeur
+       break;
 
-      FinSelonQue
+      } // end switch
     FinSi
   FinPour
   Si verbose  Et Non(_silencieux) AlorsFait printf("\n");
@@ -1189,7 +1187,7 @@ void FiltreRecursif ::  CalculFiltres( InrImage* mask )
 
 
 //------------------------------------------------------
-Vect3D<double> FiltreRecursif :: Gradient( int x, int y, int z)
+Vect3D<double> GeneralGaussianFilter :: Gradient( int x, int y, int z)
 //                                         --------
       throw (GradientNotComputed)
 {
@@ -1202,27 +1200,27 @@ Vect3D<double> FiltreRecursif :: Gradient( int x, int y, int z)
 
   gx = gy = gz = 0.0;
 
-  SelonQue _type Vaut
+  switch ( _type ){
 
-    Valeur FILTRE_REC:
+    case FILTRE_REC:
         gx =  (*(*this)(IMx_sigma))(x,y,z);
         gy =  (*(*this)(IMy_sigma))(x,y,z);
         Si _dim == MODE_3D AlorsFait gz =  (*(*this)(IMz_sigma))(x,y,z);
-    FinValeur
+    break;
 
-    Valeur FILTRE_CONV:
+    case FILTRE_CONV:
         gx =  -(*(*this)(IMx_sigma))(x,y,z);
         gy =  -(*(*this)(IMy_sigma))(x,y,z);
         Si _dim == MODE_3D AlorsFait gz =  -(*(*this)(IMz_sigma))(x,y,z);
-    FinValeur
+    break;
 
-    Valeur MY_FILTRE_CONV:
+    case MY_FILTRE_CONV:
         gx =  (*(*this)(IMx_sigma))(x,y,z);
         gy =  (*(*this)(IMy_sigma))(x,y,z);
         Si _dim == MODE_3D AlorsFait gz =  (*(*this)(IMz_sigma))(x,y,z);
-    FinValeur
+    break;
 
-  FinSelonQue
+  } // end switch
 
   gx /= _vx;
   gy /= _vy;
@@ -1240,7 +1238,7 @@ Vect3D<double> FiltreRecursif :: Gradient( int x, int y, int z)
 
 
 //------------------------------------------------------
-Vect2D<double> FiltreRecursif :: Gradient( int x, int y)
+Vect2D<double> GeneralGaussianFilter :: Gradient( int x, int y)
 //                                         --------
       throw (GradientNotComputed)
 {
@@ -1253,24 +1251,24 @@ Vect2D<double> FiltreRecursif :: Gradient( int x, int y)
 
   gx = gy = 0.0;
 
-  SelonQue _type Vaut
+  switch ( _type ){
 
-    Valeur FILTRE_REC:
+    case FILTRE_REC:
         gx =  (*(*this)(IMx_sigma))(x,y);
         gy =  (*(*this)(IMy_sigma))(x,y);
-    FinValeur
+    break;
 
-    Valeur FILTRE_CONV:
+    case FILTRE_CONV:
         gx =  -(*(*this)(IMx_sigma))(x,y);
         gy =  -(*(*this)(IMy_sigma))(x,y);
-    FinValeur
+    break;
 
-    Valeur MY_FILTRE_CONV:
+    case MY_FILTRE_CONV:
         gx =  (*(*this)(IMx_sigma))(x,y);
         gy =  (*(*this)(IMy_sigma))(x,y);
-    FinValeur
+    break;
 
-  FinSelonQue
+  } // end switch
 
   gx /= _vx;
   gy /= _vy;
@@ -1286,7 +1284,7 @@ Vect2D<double> FiltreRecursif :: Gradient( int x, int y)
 
 
 //------------------------------------------------------
-Vect3D<double> FiltreRecursif :: Gradient( const double& x, const double& y,  const double& z) 
+Vect3D<double> GeneralGaussianFilter :: Gradient( const double& x, const double& y,  const double& z) 
       throw (GradientNotComputed)
 {
 
@@ -1323,7 +1321,7 @@ Vect3D<double> FiltreRecursif :: Gradient( const double& x, const double& y,  co
 
 
 //------------------------------------------------------
-void FiltreRecursif :: InitHessienDepuisGrad( )
+void GeneralGaussianFilter :: InitHessienDepuisGrad( )
 //                               ---------------------
 {
 
@@ -1342,7 +1340,7 @@ void FiltreRecursif :: InitHessienDepuisGrad( )
 // Cette procedure n'est pas equivalente
 // au filtrage initial direct ...
 //
-void FiltreRecursif :: HessienDepuisGrad( 
+void GeneralGaussianFilter :: HessienDepuisGrad( 
 //                               -----------------
        double* hessien, int x, int y, int z
     )
@@ -1389,9 +1387,9 @@ void FiltreRecursif :: HessienDepuisGrad(
 
 
 //------------------------------------------------------
-void FiltreRecursif :: Hessien2D( double* hessien,
+void GeneralGaussianFilter :: Hessien2D( double* hessien,
 //                               ---------
-					  int x, int y)
+            int x, int y)
       throw (HessianNotComputed)
 {
 
@@ -1427,9 +1425,9 @@ void FiltreRecursif :: Hessien2D( double* hessien,
 
 
 //------------------------------------------------------
-void FiltreRecursif :: Hessien( double* hessien,
+void GeneralGaussianFilter :: Hessien( double* hessien,
 //                               -------
-					  int x, int y, int z)
+            int x, int y, int z)
       throw (HessianNotComputed)
 {
 

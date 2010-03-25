@@ -18,7 +18,7 @@
 
 #include "style.hpp"
 
-#include "FiltreRec.hpp"
+#include "GeneralGaussianFilter.h"
 #include "math1.hpp"
 #include "Coordonnees.hpp"
 #include "Point3D.hpp"
@@ -84,7 +84,7 @@ class CalculRepCercle
   // from it otherwise, we use the gradient image
 
   // filter to get the gradient image
-  FiltreRecursif*   _filter;
+  GeneralGaussianFilter*   _filter;
 
   // gradient image
   InrImage*         _grad;
@@ -108,14 +108,14 @@ private:
 public:
 
   ///
-  Constructeur CalculRepCercle( InrImage* image, int type_reponse);
+   CalculRepCercle( InrImage* image, int type_reponse);
   //           ---------------
 
   ///
-  Destructeur CalculRepCercle();
+  ~CalculRepCercle();
   //          ---------------
 
-  void SetFilter(FiltreRecursif* f ) { _filter = f; }
+  void SetFilter(GeneralGaussianFilter* f ) { _filter = f; }
   //   ---------
 
   void SetNoLinearInterp(unsigned char b) { _NoLinearInterp = b; }

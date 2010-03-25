@@ -121,21 +121,21 @@ private:
     @return     true si l'intersection existe, false sinon.
    */
   unsigned char Intersection( PtFace pt1, PtFace pt2, 
-			PtFace pt3, PtFace pt4, PtFace* pt_intersection );
+      PtFace pt3, PtFace pt4, PtFace* pt_intersection );
   
     
 
 public:
 
-  /** {\em Constructeur }
+  /** {\em Constructor }
     @param      val1  valeurs 1 sur les 4 sommets de chaque face.
     @param      val2  valeurs 2 sur les 4 sommets de chaque face.
    */
-  Constructeur IsoLigne2( double** val1, double** val2);
+   IsoLigne2( double** val1, double** val2);
 
-  /** {\em Destructeur }
+  /** {\em Destructor }
    */
-  Destructeur IsoLigne2();
+  ~IsoLigne2();
 
 
   /** Fixe les valeurs 1 et 2 aux sommets de la face num_face

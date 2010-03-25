@@ -86,21 +86,21 @@ unsigned char      Func_Eigen2D( char* varname,
     unsigned char         VapHessien = false;
 
     int          x,y,z;
-    InrImage*       image_vep1;
-    InrImage*       image_vep2;
-    InrImage*       image_vap1;
-    InrImage*       image_vap2;
-    char            resname[100];
+    InrImage::ptr       image_vep1;
+    InrImage::ptr       image_vep2;
+    InrImage::ptr       image_vap1;
+    InrImage::ptr       image_vap2;
+    std::string         resname;
 
 //  verbose = true;
 
-  image_vep1 =  new InrImage( WT_FLOAT,3,  "E-vep1.inr.gz", Mxx);
-  image_vep2 =  new InrImage( WT_FLOAT,3,  "E-vep2.inr.gz", Mxx);
+  image_vep1 = InrImage::ptr( new InrImage( WT_FLOAT,3,  "E-vep1.inr.gz", Mxx));
+  image_vep2 = InrImage::ptr( new InrImage( WT_FLOAT,3,  "E-vep2.inr.gz", Mxx));
   image_vep1->InitImage( 0.0, 0.0, 0.0);
   image_vep2->InitImage( 0.0, 0.0, 0.0);
 
-  image_vap1 =  new InrImage( WT_FLOAT,  "E-vap1.inr.gz", Mxx);
-  image_vap2 =  new InrImage( WT_FLOAT,  "E-vap2.inr.gz", Mxx);
+  image_vap1 = InrImage::ptr( new InrImage( WT_FLOAT,  "E-vap1.inr.gz", Mxx));
+  image_vap2 = InrImage::ptr( new InrImage( WT_FLOAT,  "E-vap2.inr.gz", Mxx));
   image_vap1->InitImage( 0.0);
   image_vap2->InitImage( 0.0);
 
@@ -150,17 +150,19 @@ unsigned char      Func_Eigen2D( char* varname,
   FinPour
   FinPour
 
-  sprintf(resname,"%s_Evep1",varname);
-  Vars.AddVar(type_image,resname,image_vep1);
+  BasicVariable::ptr var;
 
-  sprintf(resname,"%s_Evep2",varname);
-  Vars.AddVar(type_image,resname,image_vep2);
+  resname = (boost::format("%s_Evep1") % varname).str();
+  Vars.AddVar<InrImage>(resname,image_vep1);
 
-  sprintf(resname,"%s_Evap1",varname);
-  Vars.AddVar(type_image,resname,image_vap1);
+  resname = (boost::format("%s_Evep2") % varname).str();
+  Vars.AddVar<InrImage>(resname,image_vep2);
 
-  sprintf(resname,"%s_Evap2",varname);
-  Vars.AddVar(type_image,resname,image_vap2);
+  resname = (boost::format("%s_Evap1") % varname).str();
+  Vars.AddVar<InrImage>(resname,image_vap1);
+
+  resname = (boost::format("%s_Evap2") % varname).str();
+  Vars.AddVar<InrImage>(resname,image_vap2);
 
   return true;
 
@@ -185,28 +187,28 @@ unsigned char      Func_Eigen3D( char* varname,
     unsigned char         VapHessien = false;
 
     int          x,y,z;
-    InrImage*       image_vep1;
-    InrImage*       image_vep2;
-    InrImage*       image_vep3;
-    InrImage*       image_vap1;
-    InrImage*       image_vap2;
-    InrImage*       image_vap3;
-    char            resname[100];
+    InrImage::ptr       image_vep1;
+    InrImage::ptr       image_vep2;
+    InrImage::ptr       image_vep3;
+    InrImage::ptr       image_vap1;
+    InrImage::ptr       image_vap2;
+    InrImage::ptr       image_vap3;
+    std::string         resname;
 
 //  verbose = true;
 
   Si Mxx->_tz == 1 AlorsFait return false;
 
-  image_vep1 =  new InrImage( WT_FLOAT, 3, "E-vep1.inr.gz", Mxx);
-  image_vep2 =  new InrImage( WT_FLOAT, 3, "E-vep2.inr.gz", Mxx);
-  image_vep3 =  new InrImage( WT_FLOAT, 3, "E-vep3.inr.gz", Mxx);
+  image_vep1 =  InrImage::ptr(new InrImage( WT_FLOAT, 3, "E-vep1.inr.gz", Mxx));
+  image_vep2 =  InrImage::ptr(new InrImage( WT_FLOAT, 3, "E-vep2.inr.gz", Mxx));
+  image_vep3 =  InrImage::ptr(new InrImage( WT_FLOAT, 3, "E-vep3.inr.gz", Mxx));
   image_vep1->InitImage( 0.0, 0.0, 0.0);
   image_vep2->InitImage( 0.0, 0.0, 0.0);
   image_vep3->InitImage( 0.0, 0.0, 0.0);
 
-  image_vap1 =  new InrImage( WT_FLOAT,  "E-vap1.inr.gz", Mxx);
-  image_vap2 =  new InrImage( WT_FLOAT,  "E-vap2.inr.gz", Mxx);
-  image_vap3 =  new InrImage( WT_FLOAT,  "E-vap3.inr.gz", Mxx);
+  image_vap1 =  InrImage::ptr(new InrImage( WT_FLOAT,  "E-vap1.inr.gz", Mxx));
+  image_vap2 =  InrImage::ptr(new InrImage( WT_FLOAT,  "E-vap2.inr.gz", Mxx));
+  image_vap3 =  InrImage::ptr(new InrImage( WT_FLOAT,  "E-vap3.inr.gz", Mxx));
   image_vap1->InitImage( 0.0);
   image_vap2->InitImage( 0.0);
   image_vap3->InitImage( 0.0);
@@ -277,24 +279,25 @@ unsigned char      Func_Eigen3D( char* varname,
   FinPour
   FinPour
 
-  sprintf(resname,"%s_Evep1",varname);
-  Vars.AddVar(type_image,resname,image_vep1);
+  BasicVariable::ptr var;
 
-  sprintf(resname,"%s_Evep2",varname);
-  Vars.AddVar(type_image,resname,image_vep2);
+  resname = (boost::format("%s_Evep1") % varname).str();
+  Vars.AddVar<InrImage>(resname,image_vep1);
 
-  sprintf(resname,"%s_Evep3",varname);
-  Vars.AddVar(type_image,resname,image_vep3);
+  resname = (boost::format("%s_Evep2") % varname).str();
+  Vars.AddVar<InrImage>(resname,image_vep2);
 
-  sprintf(resname,"%s_Evap1",varname);
-  Vars.AddVar(type_image,resname,image_vap1);
+  resname = (boost::format("%s_Evep3") % varname).str();
+  Vars.AddVar<InrImage>(resname,image_vep3);
 
-  sprintf(resname,"%s_Evap2",varname);
-  Vars.AddVar(type_image,resname,image_vap2);
+  resname = (boost::format("%s_Evap1") % varname).str();
+  Vars.AddVar<InrImage>(resname,image_vap1);
 
-  sprintf(resname,"%s_Evap3",varname);
-  Vars.AddVar(type_image,resname,image_vap3);
+  resname = (boost::format("%s_Evap2") % varname).str();
+  Vars.AddVar<InrImage>(resname,image_vap2);
 
+  resname = (boost::format("%s_Evap3") % varname).str();
+  Vars.AddVar<InrImage>(resname,image_vap3);
 
   return true;
 

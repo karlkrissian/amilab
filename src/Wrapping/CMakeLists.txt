@@ -4,6 +4,11 @@
 
 # Make sure the compiler can find include files from our Hello library.
 include_directories (
+  ${AMILAB_SOURCE_DIR}/ImageTool
+  ${AMILAB_SOURCE_DIR}/Crest
+  ${AMILAB_SOURCE_DIR}/Voxels
+  ${AMILAB_SOURCE_DIR}/Coordonnees
+  ${AMILAB_SOURCE_DIR}/Vaisseaux
   ${AMILAB_SOURCE_DIR}/Common
   ${AMILAB_SOURCE_DIR}/Images
   ${AMILAB_SOURCE_DIR}/Math
@@ -19,13 +24,14 @@ include_directories (
 
 INCLUDE( ${wxWidgets_USE_FILE})
 
-add_subdirectory ( WrapImports   )
-add_subdirectory ( WrapCommon    )
-add_subdirectory ( WrapAMIFluid  )
-add_subdirectory ( WrapITK       )
-add_subdirectory ( WrapVTK       )
-add_subdirectory ( WrapFilters   )
-add_subdirectory ( WrapSystem    )
-add_subdirectory ( WrapWII       )
-add_subdirectory ( WrapInterface )
-add_subdirectory ( WrapWXSamples )
+add_subdirectory ( WrapImports    )
+add_subdirectory ( WrapCommon     )
+add_subdirectory ( WrapBasicTypes )
+add_subdirectory ( WrapAMIFluid   )
+add_subdirectory ( WrapITK        )
+add_subdirectory ( WrapVTK        )
+add_subdirectory ( WrapFilters    )
+add_subdirectory ( WrapSystem     )
+add_subdirectory ( WrapWII        )
+add_subdirectory ( WrapInterface  )
+add_subdirectory ( WrapWXSamples  )

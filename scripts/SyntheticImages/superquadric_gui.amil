@@ -84,7 +84,7 @@ if (!exists(SuperquadricClass)) {
     
     #----------------------------
     proc ::Close() {
-      ::win.Hide
+      ::win.HidePanel
       delvars GetObjectName(::Close)
     }
     ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -100,36 +100,37 @@ if (!exists(SuperquadricClass)) {
     
     
     proc ::Gui( ) {
-      ::win = ParamWin("SuperQuadrics")
+      import = &global::ami_import;
+      ::win = import->ParamPanel("SuperQuadrics")
       ::win.BeginBook
       ::win.AddPage("Resolution")
 
-     ::win.BeginBox("Image dimensions")
-          ::imx_i  = ::win.AddInt    (::imdimx,0,1024)
-          ::imy_i  = ::win.AddInt    (::imdimy,0,1024)
-          ::imz_i  = ::win.AddInt    (::imdimz,0,1024)
-     ::win.EndBox
+     ::win.BeginBoxPanel("Image dimensions")
+          ::imx_i  = ::win.AddInt( &::imdimx,  "::imdimx", 0,1024)
+          ::imy_i  = ::win.AddInt( &::imdimy,  "::imdimy", 0,1024)
+          ::imz_i  = ::win.AddInt( &::imdimz,  "::imdimz", 0,1024)
+     ::win.EndBoxPanel
 
       ::win.AddPage("Sup.Quad.")
-     ::win.BeginBox("SQ dimensions")
-          ::s1_i  = ::win.AddInt    (::s1,0,1024)
-          ::s2_i  = ::win.AddInt    (::s2,0,1024)
-          ::s3_i  = ::win.AddInt    (::s3,0,1024)
-     ::win.EndBox
+     ::win.BeginBoxPanel("SQ dimensions")
+          ::s1_i  = ::win.AddInt( &::s1,  "::s1", 0,1024)
+          ::s2_i  = ::win.AddInt( &::s2,  "::s2", 0,1024)
+          ::s3_i  = ::win.AddInt( &::s3,  "::s3", 0,1024)
+     ::win.EndBoxPanel
 
-     ::win.BeginBox("Coefficients")
-          ::r_i  = ::win.AddFloat    (::r,0,5)
-          ::s_i  = ::win.AddFloat    (::s,0,5)
-          ::t_i  = ::win.AddFloat    (::t,0,5)
-      ::win.EndBox
+     ::win.BeginBoxPanel("Coefficients")
+          ::r_i  = ::win.AddFloat( &::r,  "::r", 0,5)
+          ::s_i  = ::win.AddFloat( &::s,  "::s", 0,5)
+          ::t_i  = ::win.AddFloat( &::t,  "::t", 0,5)
+      ::win.EndBoxPanel
 
-      ::type_id  = ::win.AddEnum   (::type,3)
+      ::type_id  = ::win.AddEnum( &::type)
         ::win.AddEnumChoice(::type_id,"SPHERICAL")
         ::win.AddEnumChoice(::type_id,"CYLINDRICAL")
         ::win.AddEnumChoice(::type_id,"TOROIDAL")
-      ::win.SetCallback(::UpdateType)
+      ::win.SetCallback( &::UpdateType)
 
-      ::torus_radius_id =  ::win.AddFloat(::torus_radius,0,200)
+      ::torus_radius_id =  ::win.AddFloat( &::torus_radius,  "::torus_radius", 0,200)
       #::win.ShowSlider(::torus_radius_id,::type==2)
 
       ::win.BeginHorizontal
@@ -143,7 +144,7 @@ if (!exists(SuperquadricClass)) {
           ::win.AddButton("Close All",  ::CloseAll)
         ::win.EndHorizontal
       
-      ::win.update
+      ::win.Update(-1)
       ::win.Display
       
     }

@@ -154,13 +154,13 @@ protected:
 public:
 
 //@{
-  /** {\em Constructeur }
+  /** {\em Constructor }
    */
-  Constructeur Voxel( );
+  Voxel( );
 
-  /** {\em Destructeur }
+  /** {\em Destructor }
    */
-  Destructeur Voxel();
+  ~Voxel();
 //@}
 
 //@{

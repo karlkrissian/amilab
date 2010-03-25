@@ -113,7 +113,7 @@ private:
   void     CreeFenetreParametres();
   //       ---------------------
 
-  void     CurseurToImage( int* x, int* y, int* z, int* etat);
+  void     CursorToImage( int* x, int* y, int* z, int* etat);
   //       --------------
   //  Renvoie la position dans l'image du curseur,
   //  etat vaut -1 s'il y a une erreur
@@ -127,10 +127,10 @@ private:
 
 public:
   
-  Constructeur DessinFonction2D( Widget AParent, char* ATitle, 
+   DessinFonction2D( Widget AParent, char* ATitle, 
                             int type = CREATE_WINDOW);
 
-  Destructeur DessinFonction2D();
+  ~DessinFonction2D();
 
   void SetFunction(const Fonction2D& func);
 

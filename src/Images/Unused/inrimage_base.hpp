@@ -55,10 +55,10 @@
 
 //@Include: /u/broca/0/kkrissia/Sources/Prog/Commun/include/chaine.doc  /user/jmontagn/src/Zinrimage/*.h
 
-DebutDeclareC
+extern "C" {
 #include <math.h>
 #include "Zinrimage.h"
-FinDeclareC
+}
 
 #include "epi_err.hpp"
 
@@ -154,7 +154,7 @@ protected:
   virtual unsigned char   InitPositions() = 0;
 
   /// initialisation du tableau de positions _positions[z][y]
-  virtual unsigned char   EffacePositions() = 0;
+  virtual unsigned char   FreePositions() = 0;
 
   ///
   WORDTYPE  ZimageFormat( int format);
@@ -204,19 +204,19 @@ public:
 
   /** @name 2-Diff�ents constructeurs  et le destructeur */
   //@{
-    Constructeur InrImageBase( ) {}
+     InrImageBase( ) {}
 
-    Constructeur InrImageBase( const char* nom);
+     InrImageBase( const char* nom);
 
     // Pour des fichier d'un autre format
-    Constructeur InrImageBase( const char* nom, int type);
+     InrImageBase( const char* nom, int type);
 
-    Constructeur InrImageBase( int dimx, 
+     InrImageBase( int dimx, 
 			       int dimy, 
 			       int dimz, 
 			       const char* nom=NULL);
 
-    virtual Destructeur  InrImageBase();
+    virtual ~ InrImageBase();
   //@}
 
   ///
@@ -240,7 +240,7 @@ public:
     //        ----------
 
     ///
-    char*    Nom() { return _nom;}
+    char*    GetName() { return _nom;}
     //            ---
 
   //@}

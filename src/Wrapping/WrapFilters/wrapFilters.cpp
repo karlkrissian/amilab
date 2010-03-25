@@ -19,6 +19,7 @@
 #include "wrapFilters.h"
 #include "LeastSquares.h"
 #include "wrap_StructureTensor.h"
+#include "RegionGrowingTest.h"
 #include <pthread.h>
 
 #include "AMILabConfig.h"
@@ -34,6 +35,7 @@
 #include "wrap_ImageAddScalar.h"
 #include "wrap_ImageCos.h"
 #include "ami_object.h"
+#include "VarArray.h"
 
 extern VarContexts  Vars;
 
@@ -41,7 +43,7 @@ extern VarContexts  Vars;
 void AddWrapFilters(){
 
   // Create new instance of the class
-  AMIObject* amiobject = new AMIObject;
+  AMIObject::ptr amiobject (new AMIObject);
   amiobject->SetName("filters");
 
   // Set the object context
@@ -51,46 +53,40 @@ void AddWrapFilters(){
   wrapAlgorithmsBasic();
 
 //  Vars.AddVar(type_c_image_function,"ImTranslation",             (void*) ImTranslation );
-  Vars.AddVar(type_c_image_function,"NSim",             (void*) NSim , OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,     "NSim2",            (void*) NSim2 , OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_image_function,"NLmeans",          (void*) NLmeans, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_image_function,"NLmeans_fast",     (void*) NLmeans_fast, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_image_function,"NLmeans_MRI",      (void*) NLmeans_MRI, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_image_function,"LeastSquares",     (void*) WrapLeastSquares, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_function,      "EigenDecomp",      (void*) Wrap_EigenDecomp, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_image_function,"StructureTensorH", (void*) wrap_StructureTensorHessianNew, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_function,      "SplineResample",   (void*) Wrap_SmoothLinesToSplines, OBJECT_CONTEXT_NUMBER);
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction,"NSim",NSim);
+
+  ADDOBJECTVAR_NAME(C_wrap_procedure,"NSim2",NSim2);
+
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction,"NLmeans",     NLmeans);
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction,"NLmeans_fast",NLmeans_fast);
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction,"NLmeans_MRI", NLmeans_MRI);
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction,"LeastSquares",WrapLeastSquares);
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction,"StructureTensorH",wrap_StructureTensorHessianNew);
+
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"EigenDecomp",Wrap_EigenDecomp);
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"SplineResample",Wrap_SmoothLinesToSplines);
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"RegionGrow",Wrap_RegionGrow);
   
   #ifdef AMI_USE_FASTNLMEANS
-    Vars.AddVar(type_c_image_function,"NewNLmeans", (void*) Wrap_NewNLmeans, OBJECT_CONTEXT_NUMBER);
+    ADDOBJECTVAR_NAME(C_wrap_imagefunction,"NewNLmeans",    Wrap_NewNLmeans);
   #endif // AMI_USE_FASTNLMEANS
 
-  Vars.AddVar(type_c_image_function,"ComputePV", 
-                (void*) wrapComputePV, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_image_function,"ComputePV_subdiv", 
-                (void*) wrapComputePV_subdiv, OBJECT_CONTEXT_NUMBER);
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction,"ComputePV",       wrapComputePV);
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction,"ComputePV_subdiv",wrapComputePV_subdiv);
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction,"DirSum",          wrap_DirSum);
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction,"ImTranslate",     wrap_ImTranslate);
 
-  Vars.AddVar(type_c_image_function,"DirSum", 
-                (void*) wrap_DirSum, OBJECT_CONTEXT_NUMBER);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,"AddSubImage",wrap_AddSubImage);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,"MaxSubImage",wrap_MaxSubImage);
 
-  Vars.AddVar(type_c_image_function,"ImTranslate", 
-                (void*) wrap_ImTranslate, OBJECT_CONTEXT_NUMBER);
-
-  Vars.AddVar(type_c_procedure,"AddSubImage", 
-                (void*) wrap_AddSubImage, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"MaxSubImage", 
-                (void*) wrap_MaxSubImage, OBJECT_CONTEXT_NUMBER);
-
-  Vars.AddVar(type_c_procedure,"ImageAddScalar", 
-                (void*) wrap_ImageAddScalar, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"ImageCos", 
-                (void*) wrap_ImageCos, OBJECT_CONTEXT_NUMBER);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,"ImageAddScalar",wrap_ImageAddScalar);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,"ImageCos",wrap_ImageCos);
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);
 
   // 3. add the variables to this instance
-  Vars.AddVar( type_ami_object, amiobject->GetName().c_str(), (void*) amiobject);
+  Vars.AddVar<AMIObject>(amiobject->GetName().c_str(), amiobject);
 
 }
 
@@ -142,7 +138,7 @@ InrImage* NSim(ParamList* p)
 
     InrImage* result;
 
-  if (!get_image_param(  input,      p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>(  input,      p, n)) HelpAndReturnNULL;
   if (!get_int_param(    posx,       p, n)) HelpAndReturnNULL;
   if (!get_int_param(    posy,       p, n)) HelpAndReturnNULL;
   if (!get_int_param(    posz,       p, n)) HelpAndReturnNULL;
@@ -214,9 +210,9 @@ void NSim2(ParamList* p)
 
     //InrImage* result;
 
-  if (!get_image_param(  input,        p, n)) HelpAndReturn;
-  if (!get_image_param(  local_mean,   p, n)) HelpAndReturn;
-  if (!get_image_param(  local_var,    p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(  input,        p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(  local_mean,   p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(  local_var,    p, n)) HelpAndReturn;
   if (!get_int_param(    posx,         p, n)) HelpAndReturn;
   if (!get_int_param(    posy,         p, n)) HelpAndReturn;
   if (!get_int_param(    posz,         p, n)) HelpAndReturn;
@@ -424,7 +420,7 @@ void* thread_NLmeans_fast( void* threadarg)
     }
   } // end for x,y,z
    pthread_exit(NULL);
-	return(NULL);
+  return(NULL);
 }
 
 //------------------------------------------------------------------
@@ -460,10 +456,10 @@ InrImage* NLmeans_fast(ParamList* p)
 //    double *voxel_weights;
     int n=0;
 
-  if (!get_image_param(      input,       p, n)) HelpAndReturnNULL;
-  if (!get_image_param(      input_field, p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>(      input,       p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>(      input_field, p, n)) HelpAndReturnNULL;
   if (!get_int_param(        t,           p, n)) HelpAndReturnNULL;
-  if (!get_float_param(      h,           p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>(      h,           p, n)) HelpAndReturnNULL;
   if (!get_int_param(        noisetype,   p, n)) HelpAndReturnNULL;
   if (!get_int_param(        num_threads, p, n)) HelpAndReturnNULL;
 
@@ -746,7 +742,7 @@ void* thread_NLmeans_MRI( void* threadarg)
 
   } // end for x,y,z
    pthread_exit(NULL);
-	return (NULL);
+  return (NULL);
 } // thread_NLmeans_MRI
 
 //------------------------------------------------------------------
@@ -784,11 +780,11 @@ InrImage* NLmeans_MRI(ParamList* p)
 //    double *voxel_weights;
     int n=0;
 
-  if (!get_image_param(      input,       p, n)) HelpAndReturnNULL;
-  if (!get_image_param(      input_roi,   p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>(      input,       p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>(      input_roi,   p, n)) HelpAndReturnNULL;
   if (!get_int_param(        t,           p, n)) HelpAndReturnNULL;
-  if (!get_float_param(      h,           p, n)) HelpAndReturnNULL;
-  if (!get_float_param(      sigma,       p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>(      h,           p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>(      sigma,       p, n)) HelpAndReturnNULL;
   if (!get_int_param(        nb_it,       p, n)) HelpAndReturnNULL;
   if (!get_int_param(        num_threads, p, n)) HelpAndReturnNULL;
 
@@ -930,10 +926,10 @@ InrImage* WrapLeastSquares(ParamList* p)
     InrImage* mask;
     int n=0;
 
-  if (!get_image_param(      input,       p, n)) HelpAndReturnNULL;
-  if (!get_image_param(      basis,       p, n)) HelpAndReturnNULL;
-  if (!get_image_param(      weights,     p, n)) HelpAndReturnNULL;
-  if (!get_image_param(      mask,        p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>(      input,       p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>(      basis,       p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>(      weights,     p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>(      mask,        p, n)) HelpAndReturnNULL;
 
   return Func_LeastSquares( input, basis, weights, mask);
 }
@@ -947,7 +943,7 @@ InrImage* WrapLeastSquares(ParamList* p)
 // TODO: allow returning a list or something more evolved !!!
 //
 
-Variable::ptr Wrap_EigenDecomp(ParamList* p) {
+BasicVariable::ptr Wrap_EigenDecomp(ParamList* p) {
     char functionname[] = "EigenDecomp";
     char description[]=" \n\
         Eigenvalue and eigenvector decomposition\n\
@@ -970,10 +966,10 @@ Variable::ptr Wrap_EigenDecomp(ParamList* p) {
     InrImage* mask=NULL;
     int n=0;
 
-  if (!get_image_param(         input,       p, n)) HelpAndReturnVarPtr;
-  if (!get_int_param(           value_flag,  p, n)) HelpAndReturnVarPtr;
-  if (!get_int_param(           vector_flag, p, n)) HelpAndReturnVarPtr;
-  if (!get_optionalimage_param( mask,        p, n)) HelpAndReturnVarPtr;
+  if (!get_val_ptr_param<InrImage>(         input,       p, n)) HelpAndReturnVarPtr;
+  if (!get_int_param(           value_flag,  p, n))             HelpAndReturnVarPtr;
+  if (!get_int_param(           vector_flag, p, n))             HelpAndReturnVarPtr;
+  if (!get_val_ptr_param<InrImage>( mask,        p, n,false))   HelpAndReturnVarPtr;
 
 
   vector<InrImage::ptr> result;
@@ -984,18 +980,17 @@ Variable::ptr Wrap_EigenDecomp(ParamList* p) {
   result = EigenDecomp( input, value_flag, vector_flag, mask);
 
   // Create the resulting variable array
-  VarArray* array;
-  array = new VarArray();
+  VarArray::ptr array(new VarArray());
   array->Init(type_image,result.size());
 
   for(n=0;n<(int)result.size();n++)
     if (result[n]!=NULL)
-      array->InitElement<InrImage>(n,
+      array->InitElement<InrImage>( n,
            result[n],
            str(format("eigen_decomp_%d") %n).c_str());
 
-  Variable::ptr varres(new Variable());
-  varres->Init(type_array,"EigenDecomp_result",array);
+  Variable<VarArray>::ptr varres(
+    new Variable<VarArray>("EigenDecomp_result",array ));
 
   return varres;
 }
@@ -1003,7 +998,7 @@ Variable::ptr Wrap_EigenDecomp(ParamList* p) {
 
 
 // Resample lines using splines
-Variable::ptr Wrap_SmoothLinesToSplines(ParamList* p)
+BasicVariable::ptr Wrap_SmoothLinesToSplines(ParamList* p)
 {
 
   char functionname[] = "SplineResample";
@@ -1022,16 +1017,64 @@ Variable::ptr Wrap_SmoothLinesToSplines(ParamList* p)
     float samplingstep = 0.1f;
     int n=0;
 
-  if (!get_surface_param(  input,        p, n)) HelpAndReturnVarPtr;
-  if (!get_float_param(    samplingstep, p, n)) HelpAndReturnVarPtr;
+  if (!get_val_ptr_param<SurfacePoly>(  input,        p, n)) HelpAndReturnVarPtr;
+  if (!get_val_param<float>(    samplingstep, p, n)) HelpAndReturnVarPtr;
 
 
-  SurfacePoly* surf_result = Func_SmoothLinesToSplines( input, samplingstep );
+  SurfacePoly::ptr surf_result (Func_SmoothLinesToSplines( input, samplingstep ));
 
-  Variable::ptr varres(new Variable());
-  varres->Init(type_surface,"interpolatedsplines_result",surf_result);
+  Variable<SurfacePoly>::ptr varres(
+    new Variable<SurfacePoly>("interpolatedsplines_result",surf_result));
 
   return varres;
 
 
 } // Wrap_SmoothLinesToSplines()
+
+
+// Region Growing
+BasicVariable::ptr Wrap_RegionGrow(ParamList* p)
+{
+
+  char functionname[] = "RegionGrow";
+  char description[]=" \n\
+      ";
+  char parameters[] =" \n\
+          Parameters:\n\
+              input image\n\
+              initial image image\n\
+              min intensity \n\
+              max intensity \n\
+          Return:\n\
+              Resulting state image\n\
+      ";
+
+  Variable<InrImage>::ptr input_var;
+  Variable<InrImage>::ptr init_var;
+  float int_min;
+  float int_max;
+  int n=0;
+
+  if (!get_var_param<InrImage>( input_var, p, n)) HelpAndReturnVarPtr;
+  if (!get_var_param<InrImage>( init_var, p, n)) HelpAndReturnVarPtr;
+  if (!get_val_param<float>( int_min, p, n)) HelpAndReturnVarPtr;
+  if (!get_val_param<float>( int_max, p, n)) HelpAndReturnVarPtr;
+
+  InrImage::ptr input( input_var->Pointer());
+  InrImage::ptr init ( init_var ->Pointer());
+
+  IntensityBasedRegionGrowing::ptr regiongrow(
+    new IntensityBasedRegionGrowing(input,init)
+    );
+  regiongrow->SetMin(int_min);
+  regiongrow->SetMax(int_max);
+  regiongrow->Evolve();
+
+  Variable<InrImage>::ptr varres(
+    new Variable<InrImage>( "RegionGrowingResult",
+                            regiongrow->GetStateImage()));
+
+  return varres;
+
+
+} // Wrap_RegionGrow()

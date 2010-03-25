@@ -46,19 +46,19 @@
 
 
 //----------------------------------------------------------------
-Vaisseau :: Constructeur Vaisseau( )
+Vaisseau ::  Vaisseau( )
 //                                 --------
 {
 
-} // Constructeur
+} // Constructor
 
 
 //----------------------------------------------------------------
-Vaisseau :: Destructeur Vaisseau()
+Vaisseau :: ~Vaisseau()
 //                                --------
 {
 
-} // Destructeur
+} // Destructor
 
 
 //----------------------------------------------------------------

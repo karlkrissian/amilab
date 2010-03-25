@@ -173,8 +173,8 @@ protected:
 
 public:
 
-  Constructeur CompileExpr();
-  Destructeur  CompileExpr();
+   CompileExpr();
+  ~ CompileExpr();
   float         Resultat();
 
 }; // CompileExpr

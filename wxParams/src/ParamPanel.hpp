@@ -305,22 +305,20 @@ public:
   /**
     @param precision nombre de chiffres apr� la virgule
    */
-  unsigned char AddFloat( 
-      int* id,
-      float* r,
-      const char* libelle, 
-      int precision = 2,
-      const std::string& tooltip=""
-                        );
-  //      ----------
+  bool AddFloat( 
+                  int* id,
+                  float* r,
+                  const char* libelle, 
+                  int precision = 2,
+                  const std::string& tooltip=""
+                );
 
   int AddFloat( 
-      float* r,
-      const char* libelle,
-      int precision = 2,
-      const std::string& tooltip=""
+                float* r,
+                const char* libelle,
+                int precision = 2,
+                const std::string& tooltip=""
               );
-  //      ----------
 
   ///
   void FloatConstraints( 
@@ -365,7 +363,7 @@ public:
   unsigned char AjouteChaine(
   //            ------------
     int* id,
-    string_ptr* ch,
+    string_ptr ch,
     const char* libelle,
     const std::string& tooltip=""
     );
@@ -382,8 +380,9 @@ public:
   unsigned char AjouteNomFichier( 
   //            ----------------
     int* id,
-    string_ptr* nom,
-    const char* libelle);
+    string_ptr& nom,
+    const char* libelle,
+    const std::string& tt="");
 
   ///
   void ContraintesNomFichier( int id, const char* defaut, const char* rep, const char* masque);
@@ -484,7 +483,7 @@ public:
 
   bool AddListChoice( int* id,  
   //   -------------
-            string_ptr* selection_param,
+            string_ptr selection_param,
             const char* libelle, 
             const boost::shared_ptr<wxArrayString>& choicelist,
             void* update_cb,

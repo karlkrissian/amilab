@@ -165,7 +165,7 @@ void ImageMIP :: FinInterpolLineaire()
 
 
 //--------------------------------------------------------------------------
-EnLigne void ImageMIP :: InterpolePlanX( int pos)
+inline void ImageMIP :: InterpolePlanX( int pos)
 //                                --------------
 {
 
@@ -216,7 +216,7 @@ EnLigne void ImageMIP :: InterpolePlanX( int pos)
 
 
 //--------------------------------------------------------------------------
-EnLigne void ImageMIP :: AppliqueRotation( const float x, const float y, const float z, 
+inline void ImageMIP :: AppliqueRotation( const float x, const float y, const float z, 
 //                                ----------------
                                             float* x1, float* y1, float* z1)
 {
@@ -229,7 +229,7 @@ EnLigne void ImageMIP :: AppliqueRotation( const float x, const float y, const f
 
 
 //--------------------------------------------------------------------------
-EnLigne void ImageMIP :: AppliqueRotation( const Vect3D<float> & v1, Vect3D<float>& v2)  
+inline void ImageMIP :: AppliqueRotation( const Vect3D<float> & v1, Vect3D<float>& v2)  
 //                                ----------------
 {
 
@@ -241,7 +241,7 @@ EnLigne void ImageMIP :: AppliqueRotation( const Vect3D<float> & v1, Vect3D<floa
 
 
 //--------------------------------------------------------------------------
-EnLigne void ImageMIP :: AppliqueRotation(  double x, double y, double z, 
+inline void ImageMIP :: AppliqueRotation(  double x, double y, double z, 
 //                                ----------------
                                             double* x1, double* y1, double* z1)
 {
@@ -262,7 +262,7 @@ void ImageMIP :: AlloueImage()
 
 
   if (_imageMIP.use_count()==0) {
-    nom = _image->Nom();
+    nom = _image->GetName();
     nom += ".MIP";
     _imageMIP = InrImage::ptr(new InrImage( 
         _taille_MIP, _taille_MIP, 1, 
@@ -304,7 +304,7 @@ void ImageMIP :: AlloueImageMasque()
   
     Chaine nom;
 
-  nom =  _image->Nom();
+  nom =  _image->GetName();
   nom+= ".masque";
   _image_masque = new InrImage( WT_UNSIGNED_CHAR, nom, _image);
   _image_masque->InitImage(1);
@@ -349,7 +349,7 @@ void ImageMIP :: InitImage0()
 //==========================================================================
 
 //--------------------------------------------------------------------------
-ImageMIP :: Constructeur ImageMIP( InrImage* image)
+ImageMIP ::  ImageMIP( InrImage* image)
 //                                 --------
 {
 
@@ -386,11 +386,11 @@ ImageMIP :: Constructeur ImageMIP( InrImage* image)
 
   _Rapide = false;
 
-} // Constructeur 
+} // Constructor 
 
 
 //-----------------------------------------------------------------------
-EnLigne void ImageMIP :: Projection( float x, float y, float z,
+inline void ImageMIP :: Projection( float x, float y, float z,
 //                    ------------
                                                float* px, float* py, float* pz)
 {
@@ -425,7 +425,7 @@ EnLigne void ImageMIP :: Projection( float x, float y, float z,
 
 
 //-----------------------------------------------------------------------
-EnLigne void ImageMIP :: Projection( double x, double y, double z,
+inline void ImageMIP :: Projection( double x, double y, double z,
 //                    ------------
                                                double* px, double* py, double* pz)
 {
@@ -785,7 +785,7 @@ InrImage::ptr ImageMIP ::  CreeMIP( )
         Si (val_intensite >  _val_min + 1E-4) Et
            (val_intensite <= _val_max + 1E-4) Alors
 
-          DebutBoucle nz=z1 ItererTantQue nz<z1+_voxel_size_z Pas nz+=0.5 Faire
+          for(  nz=z1 ;  nz<z1+_voxel_size_z ;  nz+=0.5 Faire
 
             // T2 : (x1,y1,z1) -> (x2,y2,z2)
             Projection( x1, y1, nz, &x2, &y2, &z2);
@@ -813,7 +813,7 @@ InrImage::ptr ImageMIP ::  CreeMIP( )
               _imageMIP_posZ->FixeValeur(z);
             FinSi
 
-          FinBoucle
+          } // end for
 
         FinSi
 
@@ -891,7 +891,7 @@ InrImage::ptr ImageMIP ::  CreeMIP2( )
           py2 = py;
           pz2 = pz;
 
-          DebutBoucle nz=z1 ItererTantQue nz<z1+_voxel_size_z Pas nz+=0.5 Faire
+          for(  nz=z1 ;  nz<z1+_voxel_size_z ;  nz+=0.5 Faire
 
             x3 = (int) px2;
             y3 = (int) py2;
@@ -913,7 +913,7 @@ InrImage::ptr ImageMIP ::  CreeMIP2( )
             py2 += dpy2;
             pz2 += dpz2;
 
-          FinBoucle
+          } // end for
 
         FinSi
 
@@ -983,9 +983,9 @@ InrImage::ptr ImageMIP ::  CreeMIP_precise( )
         Si (val_intensite >  _val_min + 1E-4) Et
            (val_intensite <= _val_max + 1E-4) Alors
 
-          DebutBoucle nx=x1 ItererTantQue nx<x1+_voxel_size_x Pas nx+=0.5 Faire
-          DebutBoucle ny=y1 ItererTantQue ny<y1+_voxel_size_y Pas ny+=0.5 Faire
-          DebutBoucle nz=z1 ItererTantQue nz<z1+_voxel_size_z Pas nz+=0.5 Faire
+          for(  nx=x1 ;  nx<x1+_voxel_size_x ;  nx+=0.5 Faire
+          for(  ny=y1 ;  ny<y1+_voxel_size_y ;  ny+=0.5 Faire
+          for(  nz=z1 ;  nz<z1+_voxel_size_z ;  nz+=0.5 Faire
 
             // T2 : (x1,y1,z1) -> (x2,y2,z2)
             Projection( nx, ny, nz, &x2, &y2, &z2);
@@ -1007,9 +1007,9 @@ InrImage::ptr ImageMIP ::  CreeMIP_precise( )
               _imageMIP->FixeValeur( val);
             FinSi
 
-          FinBoucle
-          FinBoucle
-          FinBoucle
+          } // end for
+          } // end for
+          } // end for
 
         FinSi
 
@@ -1075,17 +1075,17 @@ InrImage::ptr ImageMIP ::  CreeMIP_interpol_lineaire( )
       Pour( x, 0, _image->_tx - 1)
 
 
-        DebutBoucle nx=x1, rx=x 
-        ItererTantQue nx<x1+_voxel_size_x - 1E-10
-        Pas nx+=0.5, rx+=dx Faire
+        for(  nx=x1, rx=x 
+        ;  nx<x1+_voxel_size_x - 1E-10
+        ;  nx+=0.5, rx+=dx Faire
 
-        DebutBoucle ny=y1, ry=y 
-        ItererTantQue ny<y1+_voxel_size_y - 1E-10
-        Pas ny+=0.5, ry+=dy Faire
+        for(  ny=y1, ry=y 
+        ;  ny<y1+_voxel_size_y - 1E-10
+        ;  ny+=0.5, ry+=dy Faire
 
-        DebutBoucle nz=z1 , rz=z
-        ItererTantQue nz<z1+_voxel_size_z - 1E-10
-        Pas nz+=0.5, rz+=dz Faire
+        for(  nz=z1 , rz=z
+        ;  nz<z1+_voxel_size_z - 1E-10
+        ;  nz+=0.5, rz+=dz Faire
 
           val_intensite = (*_image)( (int) rx, (int) ry, (int)rz);
           Si (val_intensite >  _val_min + 1E-4) Et
@@ -1116,9 +1116,9 @@ InrImage::ptr ImageMIP ::  CreeMIP_interpol_lineaire( )
 
           FinSi
 
-        FinBoucle
-        FinBoucle
-        FinBoucle
+        } // end for
+        } // end for
+        } // end for
 
         _image->IncBuffer();
         x1 += _voxel_size_x;
@@ -1202,17 +1202,17 @@ InrImage::ptr ImageMIP ::  CreeMIP_interpol_lineaire2( )
         FinPour
         FinPour
 
-        DebutBoucle nx=x1
-        ItererTantQue nx<x1+_voxel_size_x - 1E-10
-        Pas nx+=0.5 Faire
+        for(  nx=x1
+        ;  nx<x1+_voxel_size_x - 1E-10
+        ;  nx+=0.5 Faire
 
-        DebutBoucle ny=y1, posy = 0 
-        ItererTantQue ny<y1+_voxel_size_y - 1E-10
-        Pas ny+=0.5, posy++ Faire
+        for(  ny=y1, posy = 0 
+        ;  ny<y1+_voxel_size_y - 1E-10
+        ;  ny+=0.5, posy++ Faire
 
-        DebutBoucle nz=z1 , posz = 0
-        ItererTantQue nz<z1+_voxel_size_z - 1E-10
-        Pas nz+=0.5, posz++ Faire
+        for(  nz=z1 , posz = 0
+        ;  nz<z1+_voxel_size_z - 1E-10
+        ;  nz+=0.5, posz++ Faire
 
           val_intensite = _Iyz[0][posy][posz];
 
@@ -1245,9 +1245,9 @@ InrImage::ptr ImageMIP ::  CreeMIP_interpol_lineaire2( )
 
           FinSi
 
-        FinBoucle  // nz
-        FinBoucle  // ny
-        FinBoucle  // nx
+        } // end for  // nz
+        } // end for  // ny
+        } // end for  // nx
 
 //        _image->IncBuffer();
         x1 += _voxel_size_x;

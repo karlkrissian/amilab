@@ -59,11 +59,11 @@ class Voisin27
 
 public:
 
-  /// Constructeur par d�faut
-  Constructeur Voisin27(  ) { voisin = 21; } // 21 = 1+4+16 = (0,0,0)
+  /// Constructor par d�faut
+   Voisin27(  ) { voisin = 21; } // 21 = 1+4+16 = (0,0,0)
 
-  /// Constructeur par d�faut
-  Constructeur Voisin27( int x, int y, int z)
+  /// Constructor par d�faut
+   Voisin27( int x, int y, int z)
   { voisin = (x+1) + ((y+1)<<2) + ((z+1)<<4);}
 
   ///

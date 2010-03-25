@@ -94,7 +94,7 @@ public:
   };
 
     Viewer3D(wxFrame *frame, const wxString& title, const wxPoint& pos = wxDefaultPosition,
-        const wxSize& size = wxDefaultSize, long style = wxDEFAULT_FRAME_STYLE);
+        const wxSize& size = wxDefaultSize, long style = wxDEFAULT_FRAME_STYLE | wxFRAME_FLOAT_ON_PARENT );
 
   // Constructor for a shared pointer with the deleter
   static Viewer3D_ptr Create_ptr(
@@ -109,6 +109,12 @@ public:
             Viewer3D::deleter());
         return px;
     }
+
+  static Viewer3D_ptr Create_ptr( Viewer3D* v)
+    {
+        return Viewer3D_ptr(v, Viewer3D::deleter());
+    }
+
 
 
   virtual ~Viewer3D();

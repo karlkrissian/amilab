@@ -283,10 +283,11 @@ public:
 /** @name Type int */
 //@{
   ///
-  unsigned char AddInteger( int* id, int* param, const char* libelle);
+  unsigned char AddInteger( int* id, int* param, const char* libelle,  const std::string& tooltip="");
   //      ------------
 
-  int AddInteger( int* param, const char* libelle);
+  int AddInteger( int* param, const char* libelle,
+                  const std::string& tooltip="");
   //      ------------
 
   ///
@@ -302,11 +303,20 @@ public:
   /**
     @param precision nombre de chiffres apr� la virgule
    */
-  unsigned char AddFloat( int* id, float* r, const char* libelle, int precision = 2);
-  //      ----------
+  bool AddFloat( 
+                  int* id,
+                  float* r,
+                  const char* libelle, 
+                  int precision = 2,
+                  const std::string& tooltip=""
+                );
 
-  int AddFloat( float* r, const char* libelle, int precision = 2);
-  //      ----------
+  int AddFloat( 
+                float* r,
+                const char* libelle,
+                int precision = 2,
+                const std::string& tooltip=""
+              );
 
   ///
   void FloatConstraints(
@@ -341,7 +351,7 @@ public:
 /** @name Type Chaine */
 //@{
   ///
-  unsigned char AjouteChaine( int* id, string_ptr* ch, const char* libelle);
+  unsigned char AjouteChaine( int* id, string_ptr ch, const char* libelle);
   //      ------------
 
   ///
@@ -353,7 +363,7 @@ public:
 /** @name Type NomFichier */
 //@{
   ///
-  unsigned char AjouteNomFichier( int* id, string_ptr* nom, const char* libelle);
+  unsigned char AjouteNomFichier( int* id, string_ptr& nom, const char* libelle);
   //      ----------------
 
   ///

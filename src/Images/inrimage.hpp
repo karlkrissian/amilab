@@ -311,11 +311,11 @@ public:
     class DepassementLimites
     {
     public:
-       Constructeur DepassementLimites( const std::string message)
+        DepassementLimites( const std::string message)
      {
-       cout << "InrImage "
+       std::cout << "InrImage "
                 << " Out of image limits"
-            << "\t " << message  << endl;
+            << "\t " << message  << std::endl;
      }
     };
   //@}
@@ -329,8 +329,8 @@ protected:
     //  inrimage*   _inrimage;
 
   /// pointer to the data
-  amimage*           _amimage;
-  unsigned char    _amimage_allocated;
+  boost::shared_ptr<amimage>           _amimage;
+  //unsigned char    _amimage_allocated;
 
   ///
   int     _vdim; // image scalar (1), vectorial (2,3,etc...)
@@ -406,7 +406,7 @@ private:
   virtual unsigned char   InitPositions();
 
   /// initialisation du tableau de positions _positions[z][y]
-  virtual unsigned char   EffacePositions();
+  virtual unsigned char   FreePositions();
 
   ///
   WORDTYPE  ZimageFormat( int format);
@@ -476,17 +476,17 @@ public:
      * This constructor is used for InrImageCompressee class
      * @return 
      */
-    Constructeur InrImage( );
+     InrImage( );
 
-    Constructeur InrImage( const char* nom);
+     InrImage( const char* nom);
 
     // Pour des fichier d'un autre format
-    Constructeur InrImage( const char* nom, int type);
+     InrImage( const char* nom, int type);
 
-    Constructeur InrImage( int dimx, int dimy,
+     InrImage( int dimx, int dimy,
                            int dimz, WORDTYPE format, const char* nom=(const char*)NULL);
 
-    Constructeur InrImage(
+     InrImage(
                int   dimx,
                int   dimy,
                int   dimz,
@@ -497,22 +497,34 @@ public:
 
 
 #ifndef _WITHOUT_VTK_
-    Constructeur InrImage( vtkImageData* image);
+     InrImage( vtkImageData* image);
 #endif // _WITHOUT_VTK_
 
     /**
      *  Creates a new image with the given format 
-     *  using parameters of another image (size, translation, voxel size)
+     *  using parameters of another image (size, translation, voxel size),
+     *  !!! however, the new image is usually scalar !!!
      * @param format 
      * @param vdim 
      * @param nom 
      * @param image 
      * @return 
      */
-    Constructeur InrImage(  WORDTYPE format,
+     InrImage(  WORDTYPE format,
                             const char* nom,
                             InrImage* image);
-    Constructeur InrImage(  WORDTYPE format, int vdim,
+
+    /**
+     *  Creates a new image with the given format 
+     *  using parameters of another image (size, translation, voxel size),
+     *  the new image has the given number of components.
+     * @param format 
+     * @param vdim number of components of the new image.
+     * @param nom 
+     * @param image 
+     * @return 
+     */
+     InrImage(  WORDTYPE format, int vdim,
                             const char* nom,
                             InrImage* image);
 
@@ -523,7 +535,7 @@ public:
       return InrImage::ptr(new InrImage(format,vdim,nom,image.get()));
     }
 
-    virtual Destructeur  InrImage();
+    virtual ~ InrImage();
   //@}
 
   /** @name 2.1- Initialisation de l'image */
@@ -534,10 +546,13 @@ public:
     unsigned char GetFormatFromAMI(amimage* im, WORDTYPE& type);
 
     ///
-    unsigned char AMIFromWT( int vdim, WORDTYPE type, amimage* amim);
+    bool AMIFromWT( int vdim, WORDTYPE type, amimage* amim);
 
     ///
-    void SetAMImage( amimage* amim);
+    bool AMIFromWT( int vdim, WORDTYPE type, boost::shared_ptr<amimage>& amim);
+
+    ///
+    void SetAMImage( const amimage::ptr& amim);
     //   ----------
 
     ///
@@ -605,7 +620,7 @@ public:
     //        ----------
 
     ///
-    const char*    Nom() const { return _nom.c_str();}
+    const char*    GetName() const { return _nom.c_str();}
     //            ---
 
     ///
@@ -613,7 +628,7 @@ public:
     //            -------
 
     ///
-    const string    FormatName();
+    const std::string FormatName();
     //               ----------
 
     //
@@ -635,7 +650,7 @@ public:
         case WT_SIGNED_SHORT:   return (_vdim==1);
         case WT_UNSIGNED_INT:   return (_vdim==1);
         case WT_SIGNED_INT:     return (_vdim==1);
-        Defaut: printf("InrImage::FormatScalaire()\t format non gere...\n");
+        default: printf("InrImage::FormatScalaire()\t format non gere...\n");
       } // end switch
 
       return false;
@@ -657,7 +672,7 @@ public:
         case WT_SIGNED_SHORT:
         case WT_UNSIGNED_INT:
         case WT_SIGNED_INT:     return (_vdim>1);
-        Defaut: printf("InrImage::FormatScalaire()\t format non gere...\n");
+        default: printf("InrImage::FormatScalaire()\t format non gere...\n");
       } // end switch
 
       return false;
@@ -1300,11 +1315,11 @@ inline void InrImage :: MinMax( float* min, float* max)
 
       buf_DOUBLE = (FORMAT_DOUBLE*) this->GetData();
       *min = *max = (float) (*buf_DOUBLE);
-      DebutBoucle n=0 ItererTantQue n < size Pas n++ Faire
+      for(  n=0 ;  n < size ;  n++ Faire
         Si *buf_DOUBLE < *min AlorsFait *min =(float)  *buf_DOUBLE;
         Si *buf_DOUBLE > *max AlorsFait *max =(float)  *buf_DOUBLE;
         buf_DOUBLE++;
-      FinBoucle // n
+      } // end for // n
 
     break;
 
@@ -1312,11 +1327,11 @@ inline void InrImage :: MinMax( float* min, float* max)
       register  FORMAT_FLOAT*          buf_FLOAT;
       buf_FLOAT = (FORMAT_FLOAT*) this->GetData();
       *min = *max = *buf_FLOAT;
-      DebutBoucle n=0 ItererTantQue n < size Pas n++ Faire
+      for(  n=0 ;  n < size ;  n++ Faire
         Si *buf_FLOAT < *min AlorsFait *min = *buf_FLOAT;
         Si *buf_FLOAT > *max AlorsFait *max = *buf_FLOAT;
         buf_FLOAT++;
-      FinBoucle // n
+      } // end for // n
 
     break;
 
@@ -1325,11 +1340,11 @@ inline void InrImage :: MinMax( float* min, float* max)
 
       buf_UNSIGNED_CHAR = (FORMAT_UNSIGNED_CHAR*) this->GetData();
       *min = *max = (float) *buf_UNSIGNED_CHAR;
-      DebutBoucle n=0 ItererTantQue n < size Pas n++ Faire
+      for(  n=0 ;  n < size ;  n++ Faire
         Si *buf_UNSIGNED_CHAR < *min AlorsFait *min = (float) *buf_UNSIGNED_CHAR;
         Si *buf_UNSIGNED_CHAR > *max AlorsFait *max = (float) *buf_UNSIGNED_CHAR;
         buf_UNSIGNED_CHAR++;
-      FinBoucle // n
+      } // end for // n
 
     break;
 
@@ -1338,11 +1353,11 @@ inline void InrImage :: MinMax( float* min, float* max)
 
       buf_UNSIGNED_SHORT = (FORMAT_UNSIGNED_SHORT*) this->GetData();
       *min = *max = (float) *buf_UNSIGNED_SHORT;
-      DebutBoucle n=0 ItererTantQue n < size Pas n++ Faire
+      for(  n=0 ;  n < size ;  n++ Faire
         Si *buf_UNSIGNED_SHORT < *min AlorsFait *min = (float) *buf_UNSIGNED_SHORT;
         Si *buf_UNSIGNED_SHORT > *max AlorsFait *max = (float) *buf_UNSIGNED_SHORT;
         buf_UNSIGNED_SHORT++;
-      FinBoucle // n
+      } // end for // n
 
     break;
 
@@ -1351,11 +1366,11 @@ inline void InrImage :: MinMax( float* min, float* max)
 
       buf_SIGNED_SHORT = (FORMAT_SIGNED_SHORT*) this->GetData();
       *min = *max = (float) *buf_SIGNED_SHORT;
-      DebutBoucle n=0 ItererTantQue n < size Pas n++ Faire
+      for(  n=0 ;  n < size ;  n++ Faire
         Si *buf_SIGNED_SHORT < *min AlorsFait *min = (float) *buf_SIGNED_SHORT;
         Si *buf_SIGNED_SHORT > *max AlorsFait *max = (float) *buf_SIGNED_SHORT;
         buf_SIGNED_SHORT++;
-      FinBoucle // n
+      } // end for // n
 
     break;
 
@@ -1364,11 +1379,11 @@ inline void InrImage :: MinMax( float* min, float* max)
 
       buf_UNSIGNED_INT = (FORMAT_UNSIGNED_INT*) this->GetData();
       *min = *max = (float) *buf_UNSIGNED_INT;
-      DebutBoucle n=0 ItererTantQue n < size Pas n++ Faire
+      for(  n=0 ;  n < size ;  n++ Faire
         Si *buf_UNSIGNED_INT < *min AlorsFait *min = (float) *buf_UNSIGNED_INT;
         Si *buf_UNSIGNED_INT > *max AlorsFait *max = (float) *buf_UNSIGNED_INT;
         buf_UNSIGNED_INT++;
-      FinBoucle // n
+      } // end for // n
 
     break;
 
@@ -1377,11 +1392,11 @@ inline void InrImage :: MinMax( float* min, float* max)
 
       buf_SIGNED_INT = (FORMAT_SIGNED_INT*) this->GetData();
       *min = *max = (float) (*buf_SIGNED_INT);
-      DebutBoucle n=0 ItererTantQue n < size Pas n++ Faire
+      for(  n=0 ;  n < size ;  n++ Faire
         Si *buf_SIGNED_INT < *min AlorsFait *min = (float) (*buf_SIGNED_INT);
         Si *buf_SIGNED_INT > *max AlorsFait *max = (float) (*buf_SIGNED_INT);
         buf_SIGNED_INT++;
-      FinBoucle // n
+      } // end for // n
 
     break;
 
@@ -1393,7 +1408,7 @@ inline void InrImage :: MinMax( float* min, float* max)
 
     break;
 
-    Defaut: printf("InrImage::MinMax()\t format non gere..\n");
+    default: printf("InrImage::MinMax()\t format non gere..\n");
 
   } // end switch
 

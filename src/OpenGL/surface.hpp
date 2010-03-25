@@ -150,8 +150,7 @@ typedef class TableauDyn<int> CompCon;
 
 // Pb ... BUG ???
 // A mettre dans la classe ...
-static  TableauDyn<CompCon>    
-static_tab_cc;
+static  TableauDyn<CompCon>   static_tab_cc;
 
 #include <boost/shared_ptr.hpp>
 
@@ -163,7 +162,7 @@ class ami_wxGLCanvas;
 class GLObject 
 {
 
-  DEFINE_CLASS(GLObject)
+  DEFINE_CLASS(GLObject);
 
 protected:
 
@@ -297,13 +296,13 @@ public:
   virtual GLuint GenerateGLList() { return 0;}
 
   //--------------------------------------------------
-  virtual unsigned char ReadVRML( char* nom) { return 0; }
+  virtual unsigned char ReadVRML( const char* nom) { return 0; }
 
   //--------------------------------------------------
-  virtual unsigned char Read( char* nom) { return 0; }
+  virtual unsigned char Read( const char* nom) { return 0; }
 
   //--------------------------------------------------
-  virtual void WriteVRML( char* nom, 
+  virtual void WriteVRML( const char* nom, 
               GLTransfMatrix* transf    = NULL,
               GLMaterialParam* material = NULL,
               GLLightParam* light       = NULL,
@@ -319,13 +318,13 @@ class GLListObject : public GLObject
 //
 {
 
-  DEFINE_CLASS(GLListObject)
+  DEFINE_CLASS(GLListObject);
 
 public:
 
-  Constructeur GLListObject() { _obj_type = OBJTYPE_USERLIST; }
+   GLListObject() { _obj_type = OBJTYPE_USERLIST; }
 
-  Destructeur GLListObject() {}
+  ~GLListObject() {}
 
   void SetXMin( float xmin) { _xmin = xmin; }
   void SetXMax( float xmax) { _xmax = xmax; }
@@ -346,15 +345,15 @@ public:
 //======================================================================
 //
 
-Structure point3Dreel
+struct point3Dreel
 //        ===========
-DebutStructure
+{
 
   float x;
   float y; 
   float z;
 
-FinStructure
+};
 
 //======================================================================
 //
@@ -392,7 +391,7 @@ public:
   InrImage* _image_couleurs;
   unsigned char   _image_couleurs_allouee;
 
-  Constructeur Surface()
+   Surface()
   //           -------
   {
 
@@ -411,7 +410,7 @@ public:
 
   }
 
-  Destructeur Surface();
+  ~Surface();
 
   void Alloue( int dimu, int dimv);
 
@@ -458,7 +457,7 @@ public:
   PolyNeighbors _neighbors; // list of polygons which contain this point
   
   
-  Constructeur Point3DPoly()
+   Point3DPoly()
   //
   {
 
@@ -475,7 +474,7 @@ public:
   }
 
 
-  Constructeur Point3DPoly(float x, float y, float z)
+   Point3DPoly(float x, float y, float z)
   //
   {
 
@@ -657,13 +656,13 @@ public:
                                         // connexes a ete realise
 
 
-  Constructeur SurfacePoly();
+   SurfacePoly();
 
 #ifndef _WITHOUT_VTK_
-  Constructeur SurfacePoly( vtkPolyData* vtkpoly);
+   SurfacePoly( vtkPolyData* vtkpoly);
 #endif // _WITHOUT_VTK_
 
-  Destructeur SurfacePoly();
+  ~SurfacePoly();
 
   CompCon& GetCC( int n) { return _tab_cc[n]; }
 
@@ -897,26 +896,26 @@ public:
   static int CompareCC( const void*, const void*);
 
   //--------------------------------------------------
-  unsigned char ReadVRML( char* nom);
+  unsigned char ReadVRML( const char* nom);
 
   //--------------------------------------------------
-  unsigned char ReadVTK( char* nom);
+  unsigned char ReadVTK( const char* nom);
 
   //--------------------------------------------------
-  unsigned char Read( char* nom);
+  unsigned char Read( const char* nom);
 
   //--------------------------------------------------
-  void WriteVRML( char* nom, 
+  void WriteVRML( const char* nom, 
           GLTransfMatrix* transf    = NULL,
           GLMaterialParam* material = NULL,
           GLLightParam* light       = NULL,
           GLParam* param            = NULL);
   
   //--------------------------------------------------
-  void WriteVTK( char* nom);
+  void WriteVTK( const char* nom);
 
   //--------------------------------------------------
-  void Write( char* nom);
+  void Write( const char* nom);
 
 
 }; // SurfacePoly

@@ -38,14 +38,16 @@
 extern    VarContexts  Vars;
 extern    unsigned char GB_debug;
 
-static InrImage*        im_graddir;
-static InrImage*        im_gradnorm;
 
-static InrImage*        im_maxcurv;
-static InrImage*        im_mincurv;
+// TODO: get rid of those static variables !!!
+static InrImage::ptr        im_graddir;
+static InrImage::ptr        im_gradnorm;
 
-static InrImage*        imdir_maxcurv;
-static InrImage*        imdir_mincurv;
+static InrImage::ptr        im_maxcurv;
+static InrImage::ptr        im_mincurv;
+
+static InrImage::ptr        imdir_maxcurv;
+static InrImage::ptr        imdir_mincurv;
 
 //----------------------------------------------------------------------
 void EstimeCourbures( float gradient[3], float hessien[3][3], void* data)
@@ -158,16 +160,16 @@ unsigned char  Func_Curvatures( InrImage* image_initiale, const char* varname,
   DerLiss = new DeriveesLissees(image_entree, sigma,MODE_3D);
 
 
-  im_gradnorm = new InrImage(WT_FLOAT,"curv-gradnorm.inr.gz", image_entree);
-  im_mincurv  = new InrImage(WT_FLOAT, "curv-mincurv.inr.gz", image_entree);
-  im_maxcurv  = new InrImage(WT_FLOAT, "curv-maxcurv.inr.gz", image_entree);
+  im_gradnorm = InrImage::ptr(new InrImage(WT_FLOAT,"curv-gradnorm.inr.gz", image_entree));
+  im_mincurv  = InrImage::ptr(new InrImage(WT_FLOAT, "curv-mincurv.inr.gz", image_entree));
+  im_maxcurv  = InrImage::ptr(new InrImage(WT_FLOAT, "curv-maxcurv.inr.gz", image_entree));
 
-  im_graddir    = new InrImage(WT_FLOAT, 3,"curv-graddir.inr.gz", 
-			       image_entree);
-  imdir_mincurv = new InrImage(WT_FLOAT, 3,"curv-dirmincurv.inr.gz", 
-			       image_entree);
-  imdir_maxcurv = new InrImage(WT_FLOAT, 3,"curv-dirmaxcurv.inr.gz", 
-			       image_entree);
+  im_graddir    = InrImage::ptr(new InrImage(WT_FLOAT, 3,"curv-graddir.inr.gz", 
+			       image_entree));
+  imdir_mincurv = InrImage::ptr(new InrImage(WT_FLOAT, 3,"curv-dirmincurv.inr.gz", 
+			       image_entree));
+  imdir_maxcurv = InrImage::ptr(new InrImage(WT_FLOAT, 3,"curv-dirmaxcurv.inr.gz", 
+			       image_entree));
 
   //
   // Initialisation des buffers et calcul des courbures
@@ -190,22 +192,23 @@ unsigned char  Func_Curvatures( InrImage* image_initiale, const char* varname,
 
   // Creation des nouvelles variables 
   sprintf(resname,"%s_gnorm",varname);
-  Vars.AddVar(type_image,resname,im_gradnorm);
+
+  Vars.AddVar<InrImage>(resname,im_gradnorm);
 
   sprintf(resname,"%s_gdir",varname);
-  Vars.AddVar(type_image,resname,im_graddir);
+  Vars.AddVar<InrImage>(resname,im_graddir);
 
   sprintf(resname,"%s_mcurv",varname);
-  Vars.AddVar(type_image,resname,im_mincurv);
+  Vars.AddVar<InrImage>(resname,im_mincurv);
 
   sprintf(resname,"%s_Mcurv",varname);
-  Vars.AddVar(type_image,resname,im_maxcurv);
+  Vars.AddVar<InrImage>(resname,im_maxcurv);
 
   sprintf(resname,"%s_mcurvdir",varname);
-  Vars.AddVar(type_image,resname,imdir_mincurv);
+  Vars.AddVar<InrImage>(resname,imdir_mincurv);
 
   sprintf(resname,"%s_Mcurvdir",varname);
-  Vars.AddVar(type_image,resname,imdir_maxcurv);
+  Vars.AddVar<InrImage>(resname,imdir_maxcurv);
 
 
   Si image_entree != image_initiale AlorsFait

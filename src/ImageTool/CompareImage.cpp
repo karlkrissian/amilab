@@ -98,8 +98,8 @@ void CompareImage :: InitMinMax( )
 //============================================================================================
 
 //----------------------------------------------------------------
-// Defaut int l=650, int h=400
-CompareImage :: Constructeur CompareImage( wxWindow* parent,
+// default int l=650, int h=400
+CompareImage ::  CompareImage( wxWindow* parent,
                          char* ATitle, InrImage::ptr image, 
                           DessinImage* dessin_image, int l, int h)
                    : DessinImage( parent, ATitle, image, dessin_image->_param,
@@ -107,7 +107,7 @@ CompareImage :: Constructeur CompareImage( wxWindow* parent,
 {
 
   Si GB_debug AlorsFait
-    fprintf(stderr," Constructeur CompareImage() \n");
+    fprintf(stderr,"  CompareImage() \n");
 
   // Les parametres ne sont pas visibles au depart
 //  _param_dialog->FermeDialogue( );
@@ -126,36 +126,15 @@ CompareImage :: Constructeur CompareImage( wxWindow* parent,
 
   Fixe_fenetre_dimensions(l,h,true);
 
-// Reste des problemes: enumerations, ...
-//  _palette->SetColorsRec(_fenetre);
 
-// I don't know why, but I have to run de SetColorsRec on the parent
-// of the pulldown menu, and only once for each menu level ...
-//  _palette->SetColorsRec(XtParent(_Mimages->PullDown()));
-//  _palette->SetColorsRec(XtParent(_Moptions_interpolation->PullDown()));
-
-/*
-  _palette->SetColorsRec(_Mimages_sauver->PullDown());
-
-  _palette->SetColorsRec(_Moptions->PullDown());
-  _palette->SetColorsRec(_Moptions_masque       ->PullDown());
-  _palette->SetColorsRec(_Moptions_curseur      ->PullDown());
-  _palette->SetColorsRec(_Moptions_parametres   ->PullDown());
-
-  _palette->SetColorsRec(_Mmip->PullDown());
-  _palette->SetColorsRec(_Mmip_projection->PullDown());
-  _palette->SetColorsRec(_Mmip_stereo->PullDown());
-
-  _palette->SetColorsRec(_Maide->PullDown());
-*/
   Si GB_debug AlorsFait
-    printf("Fin de CompareImage::Constructeur \n");
+    printf("Fin de CompareImage:: \n");
 
-} // Constructeur
+} // Constructor
 
 
 //----------------------------------------------------------------
-CompareImage :: Destructeur CompareImage()
+CompareImage :: ~CompareImage()
 //                       -----------
 {
 
@@ -164,7 +143,7 @@ CompareImage :: Destructeur CompareImage()
     printf("CompareImage Destructor\n");
   this->FermerFenetre();
 
-} // Destructeur
+} // Destructor
 
 // -------------------------------------------------------------------------
 //
@@ -462,8 +441,10 @@ void CompareImage :: FermerFenetre()
   Si GB_debug AlorsFait
     fprintf(stderr,"CompareImage::FermerFenetre() \n");
 
+/*
   Si Non(Param._MIP._stereo) AlorsFait
     (_dessin_image)->LibereCompareImage(_numero_fenetre,0);
+*/
 
 } // FermerFenetre()
 

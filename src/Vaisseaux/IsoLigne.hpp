@@ -242,15 +242,15 @@ private:
 
 public:
 
-  /** <b> Constructeur </b>
+  /** <b> Constructor </b>
     @param      val1  valeurs 1 sur les 8 sommets du cube.
     @param      val2  valeurs 2 sur les 8 sommets du cube.
    */
-  Constructeur IsoLigne( double* val1, double* val2);
+   IsoLigne( double* val1, double* val2);
 
-  /** <b> Destructeur </b>
+  /** <b> Destructor </b>
    */
-  Destructeur IsoLigne();
+  ~IsoLigne();
 
   /**
     Recherche la ou les lignes ou les deux isosurfaces seuill�es

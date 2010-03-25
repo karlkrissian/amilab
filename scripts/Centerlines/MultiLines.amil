@@ -210,8 +210,9 @@ if (!exists(MultilinesClass)) {
     
     } // ML_ComputeResponse
     
-    proc ML_ComputeResponse_new( NUM sigma, IMAGE _response) {
-      printn "ML_ComputeResponse_new"
+    #-------------------------------------------------------------
+    proc ::ComputeResponse_new( NUM sigma, IMAGE _response) {
+      printn "::ComputeResponse_new"
     
       _response.initvalue(0)
     
@@ -266,7 +267,7 @@ if (!exists(MultilinesClass)) {
         global::::current_v2 <<= eig[4]
       }
     
-    } // ML_ComputeResponse_new
+    } // ::ComputeResponse_new
     #--------------------------------------------------
     #
     # mode is 0: use Hessian matrix
@@ -507,7 +508,8 @@ if (!exists(MultilinesClass)) {
     proc ::Display() {
       show ::input
       if (exists(::result)) {
-        ::input_draw.compare(::result)
+        show ::result
+        ::input_draw.compare(::result_draw)
       }
       if (exists(::roi_contour)) {
         ::input_draw.SetIsoContour(0,::roi_contour,0.5)
@@ -600,9 +602,9 @@ if (!exists(MultilinesClass)) {
 # Main
 #----------------------------
 
-if (!exists(multiobj)) {
+if (!exists(multilines)) {
 
-  MultilinesClass multiobj
+  MultilinesClass multilines
 } else {
   InfoDialog "The script seems to be already loaded."
 }

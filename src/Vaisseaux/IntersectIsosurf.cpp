@@ -53,7 +53,7 @@ static Chaine     ce_fichier = "CalculIsoLignes.cpp";
 
 
 //---------------------------------------------------------
-EnLigne unsigned char  IntersectIsosurf :: PassageParZero( int& signe, 
+inline unsigned char  IntersectIsosurf :: PassageParZero( int& signe, 
 //                                            --------------
 							      double valeur)
 {
@@ -178,30 +178,30 @@ float IntersectIsosurf :: ZeroCrossing(  float* values1, float* values2,
           crest_lignes ->AddPoint( x,y,z, p1); 
           crest_lignes2->AddPoint( x,y,z, p1); 
 
-          SelonQue _face Vaut
+          switch ( _face ){
 
-  	    Valeur 0: 
+  	    case 0: 
               Si z>0 Alors
                 crest_lignes ->AddPoint( x,y,z-1, p1); 
                 crest_lignes2->AddPoint( x,y,z-1, p1); 
               FinSi
-	    FinValeur
+	    break;
 
-  	    Valeur 1: 
+  	    case 1: 
               Si y>0 Alors
                 crest_lignes->AddPoint( x,y-1,z, p1);
                 crest_lignes2->AddPoint( x,y-1,z, p1);
               FinSi
-	    FinValeur
+	    break;
 
-  	    Valeur 2: 
+  	    case 2: 
               Si x>0 Alors
                 crest_lignes->AddPoint( x-1,y,z, p1);
                 crest_lignes2->AddPoint( x-1,y,z, p1);
               FinSi
-	    FinValeur
+	    break;
 
-          FinSelonQue
+          } // end switch
 
         FinPour
 

@@ -25,20 +25,26 @@
 #endif
 
 #include "wx/treectrl.h"
+#include <boost/weak_ptr.hpp>
 
+class BasicVariable;
+
+template <class T>
 class Variable;
+
 //#include "Variable.hpp"
 
 //----------------------------------------------------
 class MyTreeItemData : public wxTreeItemData
 {
 public:
-    MyTreeItemData(Variable* lvar) : _var(lvar) { }
+    MyTreeItemData(boost::shared_ptr<BasicVariable> lvar) : _var(lvar) { }
 
-    Variable* GetVar() const { return _var; }
+    boost::weak_ptr<BasicVariable> GetVar() const { return _var; }
 
 private:
-    Variable* _var;
+    /// weak pointer to the Variable
+    boost::weak_ptr<BasicVariable> _var;
 };
 
 //=======================================================
@@ -61,7 +67,7 @@ protected:
 //  void OnTimerTip(wxTimerEvent &event);
 
 private:
-    Variable* _currentmenu_var;
+    boost::weak_ptr<BasicVariable> _currentmenu_var;
     DECLARE_EVENT_TABLE();
 };
 

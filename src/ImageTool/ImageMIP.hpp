@@ -218,11 +218,11 @@ private:
 public:
 
   ///
-  Constructeur ImageMIP( InrImage* image ); 
+   ImageMIP( InrImage* image ); 
   //           --------
 
   ///
-  Destructeur ImageMIP()
+  ~ImageMIP()
   //
   {
   }  

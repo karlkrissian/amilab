@@ -620,7 +620,7 @@ void CreeCrest :: RegroupeLignes( int l1, int l2)
 
 //---------------------------------------------------------------------
 //
-CreeCrest :: Constructeur CreeCrest( int tx, int ty, int tz) : Crest()
+CreeCrest ::  CreeCrest( int tx, int ty, int tz) : Crest()
 //
 {
 
@@ -651,19 +651,19 @@ CreeCrest :: Constructeur CreeCrest( int tx, int ty, int tz) : Crest()
   _tab_liste_points += (*liste);
   delete liste;
 
-} // Constructeur
+} // Constructor
 
 
 //---------------------------------------------------------------------
 ///
-CreeCrest :: Destructeur CreeCrest()
+CreeCrest :: ~CreeCrest()
 //
 {
 
   delete _image;
   delete _image_lignes;
 
-} // Destructeur
+} // Destructor
 
 
 //---------------------------------------------------------------------

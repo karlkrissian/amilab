@@ -64,7 +64,7 @@
 
 
 //--------------------------------------------------
-ImagePoints ::  Constructeur ImagePoints( int tx, int ty, int tz)
+ImagePoints ::   ImagePoints( int tx, int ty, int tz)
 //
 {
 
@@ -99,11 +99,11 @@ ImagePoints ::  Constructeur ImagePoints( int tx, int ty, int tz)
     FinPour
   FinPour
 
-} // Constructeur
+} // Constructor
 
 
 //--------------------------------------------------
-ImagePoints ::  Destructeur ImagePoints( )
+ImagePoints ::  ~ImagePoints( )
 //
 {
 
@@ -132,11 +132,11 @@ ImagePoints ::  Destructeur ImagePoints( )
   delete [] activation;
  
 
-} // Destructeur
+} // Destructor
 
 
 //--------------------------------------------------
-EnLigne
+inline
 int ImagePoints :: AddPoint( int x, int y, int z, 
                       Segment& seg, pt3D& pt )
 //
@@ -157,13 +157,13 @@ int ImagePoints :: AddPoint( int x, int y, int z,
     ptInters[px][py][pz] = new Intersection();
   FinSi
 
-  SelonQue seg.point[1]-seg.point[0] Vaut
+  switch ( seg.point[1]-seg.point[0] ){
   
-    Valeur 1: ptInters[px][py][pz]->FixeVal(0,n);  FinValeur
-    Valeur 2: ptInters[px][py][pz]->FixeVal(1,n);  FinValeur
-    Valeur 4: ptInters[px][py][pz]->FixeVal(2,n);  FinValeur
+    case 1: ptInters[px][py][pz]->FixeVal(0,n);  break;
+    case 2: ptInters[px][py][pz]->FixeVal(1,n);  break;
+    case 4: ptInters[px][py][pz]->FixeVal(2,n);  break;
 
-  FinSelonQue
+  } // end switch
 
   return n;
 
@@ -212,13 +212,13 @@ int ImagePoints :: Point( int x, int y, int z,
     return -1;
   FinSi
 
-  SelonQue seg.point[1]-seg.point[0] Vaut
+  switch ( seg.point[1]-seg.point[0] ){
   
-    Valeur 1: return ptInters[px][py][pz]->Val(0);
-    Valeur 2: return ptInters[px][py][pz]->Val(1);
-    Valeur 4: return ptInters[px][py][pz]->Val(2);
+    case 1: return ptInters[px][py][pz]->Val(0);
+    case 2: return ptInters[px][py][pz]->Val(1);
+    case 4: return ptInters[px][py][pz]->Val(2);
 
-  FinSelonQue
+  } // end switch
 
   return -1;
 
@@ -230,7 +230,7 @@ int ImagePoints :: Point( int x, int y, int z,
 
 
 //--------------------------------------------------
-Cube :: Constructeur Cube( )
+Cube ::  Cube( )
 //
 {
  
@@ -261,11 +261,11 @@ Cube :: Constructeur Cube( )
     InitSegFace( 4, 5, 7, 11, 6);
     InitSegFace( 5, 3, 7, 10, 4);
 
-} // Constructeur Cube()
+} // Constructor Cube()
 
 
 //--------------------------------------------------
-void Cube :: Constructeur InitVoxel( int x, int y, int z, 
+void Cube ::  InitVoxel( int x, int y, int z, 
                            float* valeurs)
 //
 {
@@ -696,7 +696,7 @@ void Cube :: CreateTriangles( IsoSurface* isosurface)
 
 
 //----------------------------------------------------------------------
-IsoSurface :: Constructeur IsoSurface(  InrImage::ptr image)
+IsoSurface ::  IsoSurface(  InrImage::ptr image)
 //
 {
 
@@ -705,17 +705,17 @@ IsoSurface :: Constructeur IsoSurface(  InrImage::ptr image)
 
   _output_type = OUTPUT_TRIANGLES;
 
-} // Constructeur
+} // Constructor
 
 
 //----------------------------------------------------------------------
-IsoSurface :: Destructeur IsoSurface()
+IsoSurface :: ~IsoSurface()
 //
 {
 
   delete _image_points;  
 
-} // Destructeur
+} // Destructor
 
 
 //----------------------------------------------------------------------

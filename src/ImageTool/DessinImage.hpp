@@ -252,8 +252,9 @@ protected:
 //@}
 
 
-/** @name objet permettant la comparaison avec une autre image 
+/* @name objet permettant la comparaison avec une autre image 
 */
+/* deprecated
 //@{
    ///
    CompareImage** _tab_compare_image;
@@ -262,6 +263,7 @@ protected:
    ///
    int          _nombre_comparaisons;
 //@}
+*/
 
 /** @name objet permettant la comparaison avec une autre image 
           utilisant le meme objet DessinImage
@@ -343,9 +345,7 @@ protected:
    int       _zoom_x1, _zoom_y1, _zoom_x2, _zoom_y2;
    int       _zoom_coupe;
    unsigned char      _shift_zoom;
-   int       _xmin_initial, _xmax_initial;
-   int       _ymin_initial, _ymax_initial;
-   int       _zmin_initial, _zmax_initial;
+   ParamZoom  _initial_zoom;
 
    unsigned char      _shift_deplace;
 
@@ -392,7 +392,7 @@ protected:
 
 /** @name User define colormap
  */
-  InrImage* _user_colormap; // must be RGB image of 256x1x1
+  InrImage::ptr _user_colormap; // must be RGB image of 256x1x1
   float     _colormap_center; // intensity value for 127
   float     _colormap_extent; // extent of the colormap: center-/+extent =0/255
 
@@ -707,17 +707,20 @@ protected:
 
 //@}
 
-/** @name     Saisie d'une image
- */
+/* Deprecated
+** @name     Saisie d'une image
+ *
 //@{
    ParamBox*  _param_nom_image;
    int        _id_nom_image;
    string_ptr _nom_nouvelle_image;
 
 //@}
+*/
 
-/** @name    Sauvegarde d'une image
- */
+/*
+// @name    Sauvegarde d'une image
+ 
 //@{
    ///
    ParamBox* _param_sauve_image;
@@ -768,7 +771,7 @@ protected:
    int               _type_sauvegarde;
 
 //@}
-
+*/
 
  /** @name    Image Information
   */
@@ -797,24 +800,26 @@ protected:
     int               _id_info_sd_mean;
  //@}
 
-
-/** @name  Saisie du fichier de parametres
- */
+/*
+** @name  Saisie du fichier de parametres
+ *
 //@{
    ParamBox*  _param_nom_fichier;
    int        _id_nom_fichier;
    string_ptr _nom_fichier;
 
 //@}
+*/
 
-/** @name  Saisie de la table de couleurs
- */
+/*
+** @name  Saisie de la table de couleurs
+ *
 //@{
    ParamBox*  _param_nom_tc;
    int        _id_nom_tc;
    string_ptr _nom_tc;
 //@}
-
+*/
 
 
   // Callback for the Paint method
@@ -845,6 +850,10 @@ private:
   ///
   void     InitVoxelSize();
   //       -------------
+
+  /// Try to use all the available space within the window by increasing the current zoom, for the moment, only in XY mode
+  void     IncreaseZoomArea();
+  //       ----------------
 
   ///
   void     InitPositionImages();
@@ -1026,7 +1035,7 @@ protected:
 public:
 
   ///
-  Constructeur DessinImage(  
+   DessinImage(  
       wxWindow* parent,
       const std::string& ATitle, 
       InrImage::ptr image,
@@ -1046,7 +1055,12 @@ public:
         return px;
     }
 
-  Destructeur DessinImage();
+  static DessinImage::ptr Create_ptr( DessinImage* di)
+    {
+        return DessinImage::ptr(di, DessinImage::deleter());
+    }
+
+  ~DessinImage();
 
   //
   void     SetVolRenOpacity(InrImage* volren_opacity)
@@ -1056,9 +1070,10 @@ public:
 
    wxColour GetLineColor() { return _couleur_lignes; }
 
-  int      ComparisonNumber() { return _nombre_comparaisons;}
+//  int      ComparisonNumber() { return _nombre_comparaisons;}
 
 
+/*
   CompareImage*   GetCompareWindow(int i=0) 
   {
     Si (i>=0)Et(i<_nombre_comparaisons) Alors
@@ -1067,31 +1082,35 @@ public:
       return NULL;
     FinSi
   }
-
+*/
   void InitPalette();
   
   void InitParametres();
 
-  /** Cette methode permet de creer un "clone"
+  /* Cette methode permet de creer un "clone"
      de l'image de dessin avec une autre image de memes dimensions 
      et donc de comparer deux images
      return -1 si erreur, sinon retourne le numero de l'image cree
      dans le tableau _tab_compare_image[]
   */
+/*
   int CreeCompareImage( char* titre, char* nom_image);
   //     ----------------
 
   int CreeCompareImage( char* titre, InrImage::ptr image, 
   //     ----------------
                bool allocated_image=false);
+*/
 
   int CreeCompare2Image( DessinImage::ptr image);
   //     -----------------
 
   void SetCompareDisplacement( DessinImage::ptr compare_win, InrImage::ptr displ);
 
+/*
   void   LibereCompareImage( int num, unsigned char delete_window=1);
   //     ------------------
+*/
 
   ///
   void     UpDateMinMax();
@@ -1188,7 +1207,7 @@ public:
      - La taille de l'image peut etre modifiee...
         - MAJ des barres de defilement 
            ( solution MIP: action differente du boutton 2 pour les MIP )
-        - MAJ du zoom ( _xmin, _xmax, _dessin_tx, ...),
+        - MAJ du zoom ( _xmin, _xmax, _zoom_size_x, ...),
            ( solution re-initialisation des valeurs )
         - MAJ de la position du curseur (_planX, ...)
            ( solution re-initialisation des valeurs )
@@ -1260,7 +1279,7 @@ public:
 
 
   //
-  void  SetUserColormap(InrImage* image, float center, float extent)
+  void  SetUserColormap(const InrImage::ptr& image, float center, float extent)
   //    ---------------
   {
     if ((image->_format==WT_RGB)&&
@@ -1317,6 +1336,19 @@ public:
 
   void ReDimensionne();
 
+  /**
+   * Updates the position information based on a new zoom.
+   **/
+  void UpdateZoom( );
+
+  /**
+   * Apply a 3D (or 2D) zoom based on a center and a zoom factor.
+   **/
+  void ApplyZoom( const ParamZoom& initial_zoom, 
+          const int x, const int y, const int z, 
+          const float zoom_factor);
+
+  void OnWheel(wxMouseEvent& event);
 
   void Boutton_Presse();
   void Boutton_Relache();
@@ -1361,7 +1393,7 @@ public:
   //   -----------
 
   ///
-  void CB_sauver_param( wxCommandEvent&);
+//  void CB_sauver_param( wxCommandEvent&);
   //   ---------------
 
   ///
@@ -1761,54 +1793,54 @@ public:
   //   ---------------------------
                                     int* entier_min, int* entier_max)
   {
-    SelonQue _image->_format Vaut
-      Valeur WT_FLOAT:
-      Valeur WT_DOUBLE:
+    switch ( _image->_format ){
+      case WT_FLOAT:
+      case WT_DOUBLE:
         *float_min  = _intensite_float_min; 
         *float_max  = _intensite_float_max;
         *entier_min = (int) _intensite_float_min; 
         *entier_max = (int) _intensite_float_max;
-      FinValeur
+      break;
 
-      Valeur WT_UNSIGNED_CHAR: 
-      Valeur WT_UNSIGNED_SHORT: 
-      Valeur WT_SIGNED_SHORT:
-      Valeur WT_UNSIGNED_INT: 
-      Valeur WT_SIGNED_INT:
+      case WT_UNSIGNED_CHAR: 
+      case WT_UNSIGNED_SHORT: 
+      case WT_SIGNED_SHORT:
+      case WT_UNSIGNED_INT: 
+      case WT_SIGNED_INT:
         *float_min  = _intensite_entier_min;
         *float_max  = _intensite_entier_max;
         *entier_min = _intensite_entier_min;
         *entier_max = _intensite_entier_max; 
-      FinValeur
+      break;
 
     default: ;
     //fprintf(stderr,"Erreur \t dans switch, valeur non gere \n");
 
-    FinSelonQue
+    } // end switch
   }
 
   ///
   void RecupereIntervalleIntensiteNormalise( float* pos_min, float* pos_max)
   //   ------------------------------------
   {
-    SelonQue  _image->_format Vaut
-      Valeur WT_FLOAT:
-      Valeur WT_DOUBLE:
+    switch (  _image->_format ){
+      case WT_FLOAT:
+      case WT_DOUBLE:
         *pos_min  = (_intensite_float_min - _val_min)/(_val_max - _val_min); 
         *pos_max  = (_intensite_float_max - _val_min)/(_val_max - _val_min); 
-      FinValeur
+      break;
 
-      Valeur WT_UNSIGNED_CHAR: 
-      Valeur WT_UNSIGNED_SHORT: 
-      Valeur WT_SIGNED_SHORT:
-      Valeur WT_UNSIGNED_INT: 
-      Valeur WT_SIGNED_INT:
+      case WT_UNSIGNED_CHAR: 
+      case WT_UNSIGNED_SHORT: 
+      case WT_SIGNED_SHORT:
+      case WT_UNSIGNED_INT: 
+      case WT_SIGNED_INT:
         *pos_min  = (_intensite_entier_min - _val_min)/(_val_max - _val_min); 
         *pos_max  = (_intensite_entier_max - _val_min)/(_val_max - _val_min); 
-      FinValeur
+      break;
 
     default: ; // fprintf(stderr,"Erreur \t dans switch, valeur non g�� \n");
-    FinSelonQue
+    } // end switch
   }
 
   ///

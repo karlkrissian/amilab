@@ -132,48 +132,48 @@ if (useYZ) { mask = mask+(xpos==currentxpos);}
 
 w1 = ParamWin("test")
 
-w1.AddBoolean(useDragCallbacks)
-w1.BeginBox("Mask")
-  aid=w1.AddFloat(cl_threshold,0,1)
-  aid=w1.AddBoolean(useTumorMask)
-  aid=w1.AddBoolean(useZoom)
-  aid=w1.AddBoolean(useSlices)
+w1.AddBoolean( &useDragCallbacks)
+w1.BeginBoxPanel("Mask")
+  aid=w1.AddFloat( &cl_threshold,  "cl_threshold", 0,1)
+  aid=w1.AddBoolean( &useTumorMask)
+  aid=w1.AddBoolean( &useZoom)
+  aid=w1.AddBoolean( &useSlices)
   w1.BeginHorizontal
-    aid=w1.AddBoolean(useXY)
-    w1.SetCallback(UpdateEllipsoidsDrag)
-    aid=w1.AddBoolean(useXZ)
-    w1.SetCallback(UpdateEllipsoidsDrag)
-    aid=w1.AddBoolean(useYZ)
-    w1.SetCallback(UpdateEllipsoidsDrag)
+    aid=w1.AddBoolean( &useXY)
+    w1.SetCallback( &UpdateEllipsoidsDrag)
+    aid=w1.AddBoolean( &useXZ)
+    w1.SetCallback( &UpdateEllipsoidsDrag)
+    aid=w1.AddBoolean( &useYZ)
+    w1.SetCallback( &UpdateEllipsoidsDrag)
   w1.EndHorizontal 
-  aid=w1.AddInt(currentzpos,0,zpos.tz-1)
-  w1.SetCallback(UpdateEllipsoidsDrag)
-  aid=w1.AddInt(currentypos,0,zpos.ty-1)
-  w1.SetCallback(UpdateEllipsoidsDrag)
-  aid=w1.AddInt(currentxpos,0,zpos.tx-1)
-  w1.SetCallback(UpdateEllipsoidsDrag)
-w1.EndBox
+  aid=w1.AddInt( &currentzpos,  "currentzpos", 0,zpos.tz-1)
+  w1.SetCallback( &UpdateEllipsoidsDrag)
+  aid=w1.AddInt( &currentypos,  "currentypos", 0,zpos.ty-1)
+  w1.SetCallback( &UpdateEllipsoidsDrag)
+  aid=w1.AddInt( &currentxpos,  "currentxpos", 0,zpos.tx-1)
+  w1.SetCallback( &UpdateEllipsoidsDrag)
+w1.EndBoxPanel
 
-w1.BeginBox("Spacing")
+w1.BeginBoxPanel("Spacing")
   #w1.BeginHorizontal
-  aid=w1.AddInt(xspacing,1,4)
-  w1.SetCallback(UpdateEllipsoidsDrag)
-  aid=w1.AddInt(yspacing,1,4)
-  w1.SetCallback(UpdateEllipsoidsDrag)
-  aid=w1.AddInt(zspacing,1,4)
-  w1.SetCallback(UpdateEllipsoidsDrag)
+  aid=w1.AddInt( &xspacing,  "xspacing", 1,4)
+  w1.SetCallback( &UpdateEllipsoidsDrag)
+  aid=w1.AddInt( &yspacing,  "yspacing", 1,4)
+  w1.SetCallback( &UpdateEllipsoidsDrag)
+  aid=w1.AddInt( &zspacing,  "zspacing", 1,4)
+  w1.SetCallback( &UpdateEllipsoidsDrag)
   #w1.EndHorizontal
-w1.EndBox
+w1.EndBoxPanel
 
-aid=w1.AddFloat(scale,0.1,2)
-w1.SetCallback(UpdateEllipsoidsDrag)
+aid=w1.AddFloat( &scale,  "scale", 0.1,2)
+w1.SetCallback( &UpdateEllipsoidsDrag)
 
-aid=w1.AddInt(resolution,2,10)
-w1.SetCallback(UpdateEllipsoidsDrag)
+aid=w1.AddInt( &resolution,  "resolution", 2,10)
+w1.SetCallback( &UpdateEllipsoidsDrag)
 
 w1.AddButton("Update", UpdateEllipsoids)
 
-w1.CreateWin
+w1.Update
 w1.Display
 
 

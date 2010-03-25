@@ -98,10 +98,10 @@ class vtkCellArray;
 
 //----------------------------------------------------------------------
 //
-Const int FIRST=0;
+const int FIRST=0;
 
 //
-Const int LAST=1;
+const int LAST=1;
 
 
 
@@ -121,10 +121,10 @@ public:
   TableauDyn<int> liste_points; // position dans le tableau de points
 
   ///
-  Constructeur LigneCrest() { nb_points = 0; liste_points.VideTableau(); }
+   LigneCrest() { nb_points = 0; liste_points.VideTableau(); }
 
   ///
-  Constructeur LigneCrest( const LigneCrest& lignecrest)
+   LigneCrest( const LigneCrest& lignecrest)
   {
     nb_points = lignecrest.nb_points;
     liste_points = lignecrest.liste_points;
@@ -252,19 +252,19 @@ public:
 
   static LigneCrest _lignecrest_defaut;
 
-  /** @name Constructeurs, Destructeur */
+  /** @name Constructeurs, ~*/
   //@{
 
   ///
-  Constructeur Crest( char* nom_fichier );  
+   Crest( char* nom_fichier );  
   //           ----- 
 
   ///
-  Constructeur Crest( );  
+   Crest( );  
   //           -----
 
   ///
-  Destructeur Crest();
+  ~Crest();
   //          -----
 
   //@}

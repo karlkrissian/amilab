@@ -133,17 +133,22 @@ InrImage::ptr_vector EigenDecomp3D(InrImage* im,
       for(j=0;j<3;j++) {
         if (vdim==6) {
           if (i<=j) {
-            matrice[i][j] = im->VectValeurBuffer(n);
+            double val = im->VectValeurBuffer(n);
+            matrice[i][j] = val;
+            //cout << boost::format("matrice[%1%][%2%] = %3%") % i % j % val << endl;
             n++;
-          } else
+          } else {
             matrice[i][j] = matrice[j][i];
+            //cout << boost::format("matrice[%1%][%2%] = %3% *") % i % j % matrice[j][i] << endl;
+          }
         }
         if (vdim==9) {
           matrice[i][j] = im->VectValeurBuffer(n);
           n++;
         }
       }
-  
+//      matrice.PrintSelf();
+
       // Calcul des vep et des vap dans les images associees
       // use vnl here?
       Diagonale = jacobi2( 
@@ -205,10 +210,14 @@ InrImage::ptr_vector EigenDecomp(InrImage* im,
     return result;
   }
 
-  if (im->DimZ()==1)
+  if ((im->GetVDim()==3)||(im->GetVDim()==4))
     return EigenDecomp2D(im,value_flag,vector_flag,mask);
-  else
+
+  if ((im->GetVDim()==6)||(im->GetVDim()==9))
     return EigenDecomp3D(im,value_flag,vector_flag,mask);
+
+  cerr << "Wrong image type for eigen decomposition" << endl;
+  return result;
 }
 
 

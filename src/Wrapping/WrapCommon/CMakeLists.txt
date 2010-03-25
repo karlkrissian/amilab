@@ -25,12 +25,14 @@ INCLUDE( ${wxWidgets_USE_FILE})
 
 SET(  WrapCommon_SRCS
   wrapfunctions.cpp
-  wrapfunctions_draw.cpp
+#  wrapfunctions_draw.cpp
+  wrapfunction_class.cpp
 )
 
 SET(WrapCommon_HDRS
-	wrapfunctions_draw.h
-	wrapfunctions.hpp
+#	wrapfunctions_draw.h
+  wrapfunctions.hpp
+  wrapfunctions.tpp
   wrapfunction_class.h
 )
 

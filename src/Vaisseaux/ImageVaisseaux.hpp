@@ -68,10 +68,10 @@ class ImageVaisseaux
 
 public:
 
-  Constructeur ImageVaisseaux( char* nom_image);
+   ImageVaisseaux( char* nom_image);
   //           --------------
 
-  Destructeur ImageVaisseaux();
+  ~ImageVaisseaux();
   //          --------------
 
   unsigned char RechercheVaisseau();

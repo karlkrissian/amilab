@@ -269,4 +269,4 @@ void FiltrageRec ::
 
   FinPour
 
-} // FiltreRec()
+} // GeneralGaussianFilter()

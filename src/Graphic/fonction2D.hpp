@@ -46,9 +46,9 @@
 #define _FONCTION2D_HPP
 
 #include "style.hpp"
-DebutDeclareC
+extern "C" {
 #include <stdlib.h>
-FinDeclareC
+}
 #include <stdio.h>
 #include "chaine.hpp"
 #include "Coordonnees.hpp"
@@ -93,19 +93,19 @@ private:
 public:
 
   ///
-  Constructeur Fonction2D( );
+   Fonction2D( );
   //
 
   ///
-  Constructeur Fonction2D( Chaine nom );
+   Fonction2D( Chaine nom );
   //
 
   ///
-  Constructeur Fonction2D( const Fonction2D & );
+   Fonction2D( const Fonction2D & );
   //
 
   ///
-  Destructeur Fonction2D();
+  ~Fonction2D();
   //
    
   ///

@@ -554,7 +554,7 @@ void amimage::close_file(  )
 //
 {
 
-  file_str.reset(new stringstream);
+  file_str.reset(NULL);
 
 
 } // close_file()
@@ -597,7 +597,7 @@ amimage::~amimage()
 
 
 //----------------------------------------------------------------------
-unsigned char amimage::allocate()
+bool amimage::allocate()
 //                     --------
 {
 

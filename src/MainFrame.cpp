@@ -636,7 +636,7 @@ void MainFrame::CreateConsoleText( wxWindow* parent)
   _textcontrol_validator = boost::shared_ptr<wxTextValidator>(new wxTextValidator(wxFILTER_ASCII));
   _textcontrol_validator->SetBellOnError(TRUE);
 
-  this->TC = new TextControl( _prompt_panel,
+  this->TC = TextControl::ptr(new TextControl( _prompt_panel,
                         wxID_ANY,
                         GetwxStr("Console"),
                           wxTE_MULTILINE
@@ -644,7 +644,7 @@ void MainFrame::CreateConsoleText( wxWindow* parent)
                         | wxFULL_REPAINT_ON_RESIZE
                         //|wxTE_RICH|wxTE_RICH2
                         , (*_textcontrol_validator)
-                        );
+                        ));
 
 //   wxButton* but_reset = new wxButton(_prompt_panel,
 //           wxID_ConsoleReset,GetwxStr("Reset"));
@@ -661,7 +661,7 @@ void MainFrame::CreateConsoleText( wxWindow* parent)
 //   buttons_sizer->Add(but_reset,   0, wxEXPAND , 5);
 
   sbox_sizer->Add(buttons_sizer, 0, wxEXPAND , 5);
-  sbox_sizer->Add(TC, 1, wxEXPAND | wxALL, 2);
+  sbox_sizer->Add(TC.get(), 1, wxEXPAND | wxALL, 2);
 
 } // CreateConsoleText()
 
@@ -681,7 +681,7 @@ void MainFrame::CreateLogText( wxWindow* parent)
                             | wxFULL_REPAINT_ON_RESIZE
                             );
 
-  if (TC)
+  if (TC.get())
     TC->SetLog(_log_text);
 
 } // CreateLogText()
@@ -897,34 +897,34 @@ void MainFrame::CreateSettingsPanel(wxWindow* parent)
 
   wxStaticText* scripts_label = new wxStaticText(_settings_panel,wxID_ANY,GetwxStr("Scripts path:"));
 
-  wxDirPickerCtrl* scripts_path = new wxDirPickerCtrl(_settings_panel,
+  scripts_path_picker = boost::shared_ptr<wxDirPickerCtrl>(new wxDirPickerCtrl(_settings_panel,
         wxID_ScriptsPath,
-        GB_scripts_dir, GetwxStr("Scripts path"));
+        GB_scripts_dir, GetwxStr("Scripts path")));
 
   wxStaticText* help_label = new wxStaticText(_settings_panel,wxID_ANY,GetwxStr("Help path:"));
-  wxDirPickerCtrl* help_path = new wxDirPickerCtrl(_settings_panel,
+  help_path_picker = boost::shared_ptr<wxDirPickerCtrl>(new wxDirPickerCtrl(_settings_panel,
         wxID_HelpPath,
-        GB_help_dir, GetwxStr("Help path"));
+        GB_help_dir, GetwxStr("Help path")));
 
   wxBoxSizer* scriptspath_sizer  = new wxBoxSizer(
             wxHORIZONTAL
           );
   scriptspath_sizer->Add(scripts_label,  0, wxEXPAND | wxALL, 5);
-  scriptspath_sizer->Add(scripts_path,   1, wxEXPAND | wxALL, 5);
+  scriptspath_sizer->Add(scripts_path_picker.get(),   1, wxEXPAND | wxALL, 5);
 
   wxBoxSizer* helppath_sizer  = new wxBoxSizer(
             wxHORIZONTAL
           );
-  helppath_sizer->Add(help_label,     0, wxEXPAND | wxALL, 5);
-  helppath_sizer->Add(help_path,      1, wxEXPAND | wxALL, 5);
+  helppath_sizer->Add(help_label,             0, wxEXPAND | wxALL, 5);
+  helppath_sizer->Add(help_path_picker.get(), 1, wxEXPAND | wxALL, 5);
 
   settingspanel_sizer->Add(scriptspath_sizer, 0, wxEXPAND | wxALL, 5);
   settingspanel_sizer->Add(helppath_sizer,    0, wxEXPAND | wxALL, 5);
 
   settingspanel_sizer->Fit(_settings_panel);
 
-  scripts_path->SetPath(GB_scripts_dir);
-  scripts_path->Update();
+  scripts_path_picker->SetPath(GB_scripts_dir);
+  scripts_path_picker->Update();
 
 } // CreateSettingsPanel()
 
@@ -1133,14 +1133,14 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
   for(int i=0;i<(int)variables->GetCount();i++) {
     //cout << "set item variable " << i << endl;
 
-    Variable* var;
     wxString type_str;
-    bool varfound = context->GetVar((*variables)[i].mb_str(),&var);
+    BasicVariable::ptr var = context->GetVar((*variables)[i].mb_str());
 
-    if (varfound) {
+    if (var.get()) {
       if (var->Type() == type_image) {
         // create text with image information
-        InrImage::ptr im = *((InrImage::ptr*)var->Pointer());
+        DYNAMIC_CAST_VARIABLE(InrImage,var,varim);
+        InrImage::ptr im (varim->Pointer());
         std::string text = (boost::format("%1% %20t %2% %35t %3%x%4%x%5%  %55t %|6$+5| Mb")
                             % var->Name()
                             % im->FormatName()
@@ -1158,7 +1158,8 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
         total_image_size += im->GetDataSize();
       } else
       if (var->Type() == type_surface) {
-        SurfacePoly::ptr surf = (*(SurfacePoly::ptr*)var->Pointer());
+        DYNAMIC_CAST_VARIABLE(SurfacePoly,var,varsurf);
+        SurfacePoly::ptr surf (varsurf->Pointer());
         std::string text = (boost::format("%1% %15t pts: %2% %25t poly:%3%")
                             % var->Name()
                             % surf->GetNumberOfPoints()
@@ -1178,20 +1179,29 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
         std::string text;
         switch(var->Type()) {
           case type_float:
+            {
+            DYNAMIC_CAST_VARIABLE(float,var,varf);
             text = (boost::format("%1% %20t FLOAT %30t %2%")
                             % var->Name()
-                            % (*(*(float_ptr*) var->Pointer()))).str();
+                            % (*varf->Pointer())).str();
             break;
+            }
           case type_int:
+            {
+            DYNAMIC_CAST_VARIABLE(int,var,varint);
             text = (boost::format("%1% %20t INT %30t %2%")
                             % var->Name()
-                            % (*(*(int_ptr*) var->Pointer()))).str();
+                            % (*varint->Pointer())).str();
             break;
+            }
           case type_uchar:
+            {
+            DYNAMIC_CAST_VARIABLE(unsigned char,var,varuchar);
             text = (boost::format("%1% %20t UCHAR %30t %2%")
                             % var->Name()
-                            % (int) (*(*(uchar_ptr*) var->Pointer()))).str();
+                            % (int) (*varuchar->Pointer())).str();
             break;
+            }
           default:;
         }
         itemid = _var_tree->AppendItem(
@@ -1203,9 +1213,10 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
       } else
       if (var->Type() == type_string)
       {
+        DYNAMIC_CAST_VARIABLE(std::string,var,varstr);
         std::string text = (boost::format("%1% %20t \"%2%\"")
-                        % var->Name()
-                        % (*(*(string_ptr*) var->Pointer()))).str();
+                        % varstr->Name()
+                        % (*varstr->Pointer())).str();
         itemid = _var_tree->AppendItem(
               vartree_strings,
               wxString(text.c_str(), wxConvUTF8),
@@ -1240,7 +1251,8 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
               new MyTreeItemData(var));
         _var_tree->SetItemFont(obj_itemid,root_font);
         // get the pointer to the objet
-        AMIObject::ptr obj = (*(AMIObject::ptr*)var->Pointer());
+        DYNAMIC_CAST_VARIABLE(AMIObject,var,varobj);
+        AMIObject::ptr obj( varobj->Pointer());
         // create the tree by recursive call
         this->UpdateVarTree(obj_itemid, obj->GetContext());
       } else
@@ -1253,7 +1265,7 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
               new MyTreeItemData(var));
         _var_tree->SetItemFont(itemid,root_font);
       } else
-      if ((var->Type() == type_c_procedure)||(var->Type() == type_class_procedure))
+      if ((var->Type() == type_c_procedure)||(var->Type() == type_class_member))
       {
         itemid = _var_tree->AppendItem(
               vartree_wrapped_procedures,

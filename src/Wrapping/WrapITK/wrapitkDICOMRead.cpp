@@ -214,7 +214,7 @@ InrImage* wrap_itkDICOMRead(ParamList* p)
   std::string*  DicomFolder = NULL;
   int n=0;
   
-  if (!get_string_param( DicomFolder, p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<string>( DicomFolder, p, n)) HelpAndReturnNULL;
 
   return itkDICOMRead(*DicomFolder);
 

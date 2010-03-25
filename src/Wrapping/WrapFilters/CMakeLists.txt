@@ -21,6 +21,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Algorithms/Denoising
   ${AMILAB_SOURCE_DIR}/Algorithms/Others
   ${AMILAB_SOURCE_DIR}/Algorithms/BasicFilter
+  ${AMILAB_SOURCE_DIR}/Algorithms/Segmentation
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapCommon
   ${AMILAB_SOURCE_DIR}
   ${Boost_INCLUDE_DIR}

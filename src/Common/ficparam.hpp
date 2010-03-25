@@ -41,9 +41,9 @@
 #include "style.hpp"
 #include "chaine.hpp"
 
-DebutDeclareC
+extern "C" {
 #include <stdio.h>
-FinDeclareC
+}
 
 class Parametres
 //     ==========
@@ -55,10 +55,10 @@ class Parametres
 
 public:
   
-    Constructeur Parametres();
+     Parametres();
   //------------
 
-    Destructeur Parametres();
+    ~Parametres();
   //-----------
 
   void NomFichier( char*);

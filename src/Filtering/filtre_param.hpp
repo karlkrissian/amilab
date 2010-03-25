@@ -86,7 +86,7 @@ public:
   type_filtre     _type_filtre;
 
   ///
-  Constructeur ParamFiltrage( type_filtre type=FILTRE_GAUSSIEN) 
+   ParamFiltrage( type_filtre type=FILTRE_GAUSSIEN) 
   //           -------------
   {
      InitDefauts(); 
@@ -95,7 +95,7 @@ public:
   
 
   ///
-  Destructeur  ParamFiltrage() {}
+  ~ ParamFiltrage() {}
   //           -------------
 
   ///

@@ -38,10 +38,11 @@ class wxNumericParameter : public wxBoxSizer, public wxGenericWidget
   T*            _parameter;
   boost::format _display_format;
   wxWindow*     _parent;
-  mySlider* _slider;
+  mySlider*     _slider;
+  bool          _slider_detached;
   wxSizerItem*  _slider_item;
-  wxBoxSizer*  _sizer2;
-  wxWindow* _boutton;
+  wxBoxSizer*   _sizer2;
+  wxWindow*     _boutton;
   wxStaticText* _label;
   wxWindow*     _texte;
   MyTextCtrl*   _text;
@@ -49,6 +50,7 @@ class wxNumericParameter : public wxBoxSizer, public wxGenericWidget
   
   // change limits of the slider
   wxBoxSizer*   _limits_sizer;
+  bool          _limits_sizer_detached;
   wxSizerItem*  _limits_item;
   wxStaticText* _label_open_sqb;
   wxStaticText* _label_close_sqb;

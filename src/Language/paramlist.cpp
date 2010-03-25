@@ -31,74 +31,19 @@ class DessinImage;
 class SurfacePoly;
 class Viewer3D;
 
-ParamList::~ParamList()
+
+bool ParamList::AddParam( const BasicVariable::ptr& var) {
+  params.push_back(var);
+}
+
+BasicVariable::ptr ParamList::GetParam(int i)    
 {
-  if (GB_debug)
-    cerr << "Destructor of ParamList" << endl;
-  // deleting the pointers!!!
-  for(int i=0;i<num_param;i++) {
-    switch(type[i]) {
-      case type_image       :FreeMemory<InrImage>(i);       break;
-      case type_float       :FreeMemory<float>(i);          break;
-      case type_int         :FreeMemory<int>(i);            break;
-      case type_uchar       :FreeMemory<unsigned char>(i);  break;
-      case type_string      :FreeMemory<string>(i);         break;
-      case type_imagedraw   :FreeMemory<DessinImage>(i);    break;
-      case type_surface     :FreeMemory<SurfacePoly>(i);    break;
-      case type_surfdraw    :FreeMemory<Viewer3D>(i);       break;
-/* TODO: implement these clases ...
-      case type_ami_function:FreeMemory<AMIFunction>(i);    break;
-      case type_paramwin    :FreeMemory<ParamBox>(i);       break;
-      case type_matrix      :FreeMemory<FloatMatrix>(i);    break;
-      case type_gltransform :FreeMemory<GLTransfMatrix>(i); break;
-      case type_array       : FreeMemory<VarArray>(i);      break;
-      case type_file     :
-        // TODO: create a file class where the destructor closes the file 
-        // for a cleaner implementation ...
-        fclose( (*(boost::shared_ptr<FILE>*) _pointer).get()); 
-        break;
-*/
-      default       : printf("ParamList::~ParamList()\n type not deleted"); break;
-    } // end switch
-  } // end for
-}
-
-
-unsigned char ParamList::AddParam( vartype t, void* paramp, unsigned char ref) {
-    if (num_param<MAX_PARAM-2) {
-        params[num_param]    = paramp;
-        type[num_param]      = t;
-        reference[num_param] = ref;
-        num_param++;
-        return 1;
-    } else {
-        fprintf(stderr,"ParamList::AddParam() \t too many parameters \n");
-        return 0;
-    }
-}
-
-void* ParamList::GetParam(int i)    {
-    if (i<0) {
-        fprintf(stderr,"ParamList:: GetParam() negative param number \n");
-        return params[0];
-    }
-    if (i>=num_param) {
-        fprintf(stderr,"ParamList:: GetParam()  param number too high \n");
-        return params[num_param-1];
-    }
+  int nbp = GetNumParam();
+  if ((i<0)||(i>=nbp)) {
+      CLASS_ERROR(boost::format("Wrong parameter number %1% not in [0, %2%]") % i % (nbp-1));
+      return BasicVariable::ptr();
+  } else
     return params[i];
 }
 
-
-unsigned char ParamList::GetParam( int num, void*& paramp, vartype& t, bool needed ) {
-    if ((num>=0)&&(num<num_param)) {
-        paramp = params[num];
-        t      = type[num];
-        return 1;
-    } else {
-        if (needed)
-          cerr << "ParamList::GetParam()\t bad parameter number\n" << endl;
-        return 0;
-    }
-}
 

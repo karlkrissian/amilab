@@ -12,12 +12,13 @@
 
 #include "ImageStack.h"
 
+#include "Variable.hpp"
 #include "driver.h"
 
 extern yyip::Driver GB_driver;
 
 
-void ImageStack::AddImage( char* name)
+void ImageStack::AddFileImage( const char* name)
 {
   // look for the image 
   wxFileName inputname(wxString(name, wxConvUTF8));
@@ -41,12 +42,12 @@ void ImageStack::AddImage( char* name)
     catch (InrImage::ErreurLecture)
       {
         fprintf(stderr,"Unable to read image %s\n",name);
-        _images.push(NULL);
+        AddImagePointer(NULL);
         return;
       }
-    _images.push(im_tmp);
+    AddImagePointer(im_tmp);
   } else {
     CLASS_ERROR(boost::format("Invalid image filename '%s'") % name);
-    _images.push(NULL);
+    AddImagePointer(NULL);
   }
 }

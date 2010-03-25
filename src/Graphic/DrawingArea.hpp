@@ -67,7 +67,7 @@ protected:
   Dimension	_hauteur;
   Dimension	_largeur;
 
-  CPalette*     _palette;
+//  CPalette*     _palette;
 
   int	_pos_x;
   int	_pos_y;
@@ -96,9 +96,9 @@ public:
   Widget        _frame;
   Widget	_drawing_area;
 
-  Constructeur DrawingArea( Widget parent, char* libelle);
+   DrawingArea( Widget parent, char* libelle);
 
-  virtual Destructeur DrawingArea();
+  virtual ~DrawingArea();
 
   unsigned char WidgetCreated() { return _widget_created; }
 

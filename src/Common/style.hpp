@@ -105,39 +105,15 @@
 // Declarations :
 // --------------
 
-#define Const           const
 
-#define Structure       struct
-#define DebutStructure      {
-#define FinStructure        };
-
-#define Enumeration             enum
-#define DebutEnumeration        {
-#define FinEnumeration          };
-
-
-#define DebutDeclareC           extern "C" {
-#define FinDeclareC             }
 
 // Constantes :
 // ------------
 
-//#define VRAI            1
-//#define FAUX            0
 
 // Types :
 // -------
 
-#define Octet                   unsigned char
-//#define Entier            int
-//#define EntierLong              long
-#define EntierPositif           unsigned int
-#define EntierLongPositif       unsigned long
-//#define Booleen                 unsigned char
-//#define Reel              float
-//#define       char
-//#define Rien                    void
-//#define ReelDouble        double
 
 // Conversions :
 // -------------
@@ -149,19 +125,6 @@
 // Fonctions :
 // -----------
 
-//#define DebutFonction         {
-//#define FinFonction           }
-//#define Retourne      return
-
-
-//#define Externe                 extern
-//#define Local
-//#define Statique                static
-//#define Registre                register
-
-//#define Operateur               operator
-
-#define EnLigne                 inline
 
 // Tests :
 // -------
@@ -183,36 +146,29 @@
 #define Non             !
 
 
-// SelonQue expression Vaut
+// switch ( expression Vaut
 //   Valeur ... :
 //     ...
 //   FinValeur
 //   ...
 // FinSelonQue
 
-#define SelonQue            switch (
-#define Vaut                ){
-#define Valeur              case
-#define FinValeur           break;
-#define FinSelonQue         }
-#define Defaut                  default
+//#define switch (            switch (
+//#define Vaut                ){
+//#define Valeur              case
+//#define FinValeur           break;
+//#define FinSelonQue         }
+//#define Defaut                  default
 
 // Boucles :
 // ---------
 
-// BOUCLE FOR
 
-// DebutBoucle i = 1
-//   ItererTantQue i<=fin
-//   Pas i++ Faire
-//   ...
-// FinBoucle
-
-#define DebutBoucle         for (
-#define ItererTantQue       ;
-#define Pas             ;
+//#define DebutBoucle         for (
+//#define ItererTantQue       ;
+//#define Pas             ;
 // #define Faire        ) {
-#define FinBoucle           } 
+//#define FinBoucle           } 
 
 // POUR
 #define Pour(nombre, min, max)  for(nombre=min; nombre<=max; nombre++) {
@@ -231,32 +187,6 @@
 #define FinRepeter      ));
 
 
-// C++ defines :
-// Programmation par Objets :
-
-//#define Classe            class
-//#define       {
-//#define FinClasse     };
-#define Constructeur
-#define Destructeur     ~
-
-// Erreur d'orthographe : publique est feminin, public est masculin
-//#define MembresPubliques        public:
-//#define MembresPublics          public:
-//#define MembresPrives           private:
-//#define MembresProteges         protected:
-
-//#define Heritage        :
-//#define Public          public
-
-//#define MembrePublique        ::
-//#define MembrePublic            ::
-//#define           ::
-//#define            ::
-
-//#define Virtuelle     virtual
-
-//#define FonctionAmie            friend
 
 #endif // define STYLE_HPP
 

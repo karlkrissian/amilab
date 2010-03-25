@@ -10,14 +10,14 @@ if (!exists(DICOMClass)) {
       
       ::class_name ="global::DICOMClass"
       ::dicom_folder = "", "Dicom Path Folder"
-      ::image_name = "", "Name of the resulting image variable"
+      ::image_name = "global::dicom_image", "Name of the resulting image variable"
 
       ::Gui()
     }
     
     proc ::Close() \
     {
-      ::win.Hide
+      ::win.HidePanel
       delvars GetObjectName(::Close)
     }
     ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -30,27 +30,32 @@ if (!exists(DICOMClass)) {
     ::CloseAll.Comments("Call ::Close() method and delete the class variable")
     
     proc ::Run() \
-    {
-   
+    {   
       ::out = ::itk->DICOMRead(::dicom_folder)
-      eval "global::"+::image_name+"<<="+"::out;"
 
     }
     
+    proc ::Save() \
+    {   
+      eval ::image_name+"<<="+"::out;"
+
+    }
+
     proc ::Display() {
       eval "show "+"global::"+::image_name+";"
     }
     
     proc ::Gui() {
-      ::win = ParamWin("DICOM")
+      import = &global::ami_import;
+      ::win = import->ParamPanel("DICOM")
       ::win.BeginBook
       
         ::win.AddPage("Init")
         
         ::win.BeginBoxPanel("DICOM Folder")
           #::win.BeginHorizontal
-            ::win.AddString(::dicom_folder,"DICOM Folder")
-            ::win.AddString(::image_name,"Output Image Name")
+            ::win.AddString( &::dicom_folder,"DICOM Folder")
+            ::win.AddString( &::image_name,"Output Image Name")
           #::win.EndHorizontal
         ::win.EndBoxPanel
         
@@ -67,7 +72,7 @@ if (!exists(DICOMClass)) {
         ::win.AddButton("Close All", ::CloseAll)
       ::win.EndHorizontal
       
-      ::win.update
+      ::win.Update(-1)
       ::win.Display
     }
     

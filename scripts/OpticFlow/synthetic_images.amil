@@ -168,7 +168,7 @@ proc CB_InitOF() {
 
 
 w1 = ParamWin("Synthetic Images for registration")
-image_type_id=w1.AddEnum(image_type,2)
+image_type_id=w1.AddEnum(image_type)
 w1.AddEnumChoice(image_type_id,"Line")
 w1.AddEnumChoice(image_type_id,"Rectangle")
 w1.AddInt(rangle,-180,180)

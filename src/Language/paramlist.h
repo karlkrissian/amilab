@@ -14,20 +14,20 @@
 #define PARAMLIST_H
 
 
-
 #define MAX_PARAM 20
 
-#include "chaine.hpp"
 #include "inrimage.hpp"
 #include "DefineClass.hpp"
+
+#include "BasicVariable.h"
 #include "amilab_messages.h"
-#include "Variable.hpp"
+//#include "Variable.hpp"
 
 extern unsigned char GB_debug;
 
 #include <string>
-using namespace std;
-
+#include <list>
+//using namespace std;
 
 
 /**
@@ -38,12 +38,13 @@ class ParamList {
   DEFINE_CLASS(ParamList);
 
 private:
-  int       num_param;
-  void*     params[MAX_PARAM];
-  vartype   type[MAX_PARAM];
+  
+  // use here a std::list of Variable, no need to care of the order the variables are deleted since they don't have inter-dependance
+  std::vector<BasicVariable::ptr>     params;
 
   // reference to the variable: should not be deleted
-  unsigned char reference[MAX_PARAM];
+  // not needed because of smart pointers ...
+  // unsigned char reference[MAX_PARAM];
 
  public:
 
@@ -53,34 +54,16 @@ private:
    */
   ParamList()
     {
-      num_param = 0;
     }
 
-  virtual ~ParamList();
+//  ~ParamList();
 
-  template <class T>
-  bool FreeMemory( int i)
-  {
-    if (params[i]==NULL) {
-      cerr << format("%s::FreeMemory<T>\t") % get_name();
-      cerr << "pointer is NULL !\n";
-      return false;
-    }
-    boost::shared_ptr<T>* ptr = (boost::shared_ptr<T>*) params[i];
-    if ((ptr->use_count()>1)&&(GB_debug)) {
-      cerr << format("%s::FreeMemory<T>\t") % get_name();
-      cerr << format("variable %1% is referenced %2% times")  % i % ptr->use_count() << endl;
-    }
-    delete (boost::shared_ptr<T>*) params[i];
-    params[i] = NULL;
-    return true;
-  }
 
   /**
    * 
    * @return the number of parameters
    */
-  int GetNumParam() { return num_param; }
+  int GetNumParam() { return params.size(); }
 
   /**
    * 
@@ -90,68 +73,31 @@ private:
   vartype GetType( int i) { 
     if (i<0) {
       fprintf(stderr,"ParamList:: GetType() negative param number \n");
-      return type[0]; 
+      i=0; 
     }
-    if (i>=num_param) {
+    if (i>=GetNumParam()) {
       fprintf(stderr,"ParamList:: GetType()  param number too high \n");
-      return type[num_param-1]; 
+      i = GetNumParam()-1; 
     }
-    return type[i];
+
+    return params[i]->Type();
   }
 
-  /**
-   * 
-   * @param i 
-   * @return returns if the parameter number i is a reference
-   */
-  unsigned char IsReference( int i) { 
-    if (i<0) {
-      fprintf(stderr,"ParamList:: IsReference() negative param number \n");
-      return reference[0]; 
-    }
-    if (i>=num_param) {
-      fprintf(stderr,"ParamList:: IsReference()  param number too high \n");
-      return reference[num_param-1]; 
-    }
-    return reference[i];
-  }
+  bool AddParam( const BasicVariable::ptr& var);
 
-  unsigned char AddParam( vartype t, void* paramp, unsigned char ref=0);
-
-  void*         GetParam(int i);
-  unsigned char GetParam( int num, void*& paramp, vartype& t, bool needed=true);
-
-  template <class T>
-  boost::shared_ptr<T> GetParamPtr(vartype t, int num, bool needed=true)
-  {
-    unsigned char OK;
-    void* param;
-    vartype type;
-
-    OK = GetParam(num,param,type,needed);
-    if (!OK) {
-      if (needed)
-        cerr << format("ParamList::GetParam<>(%1%)\t Using default value") % num << endl;
-      return boost::shared_ptr<T>();
-    }
-
-    if (type==t)
-        return *((boost::shared_ptr<T>*) param);
-    else
-        return boost::shared_ptr<T>();
-  }
+  // cannot use & because may return a empty pointer, should have a static pointer to empty variable at hand
+  BasicVariable::ptr GetParam(int i);
 
 };
 
 
-//----------------------------------------------------------------------
-//  Declaration of the parameters list
-//
+/**  Declaration of the parameters list
+ **/
 class ParamListDecl {
 
-  int       num_param;
-  Chaine    name[MAX_PARAM];
-  vartype   type[MAX_PARAM];
+  int         num_param;
+  std::string name[MAX_PARAM];
+  vartype     type[MAX_PARAM];
 
  public:
   ParamListDecl()
@@ -180,16 +126,16 @@ class ParamListDecl {
   char* GetName( int i) { 
     if (i<0) {
       fprintf(stderr,"ParamList:: GetName() negative param number \n");
-      return (char*) name[0]; 
+      return (char*) name[0].c_str(); 
     }
     if (i>=num_param) {
       fprintf(stderr,"ParamList:: GetName()  param number too high \n");
-      return (char*) name[num_param-1]; 
+      return (char*) name[num_param-1].c_str(); 
     }
-    return (char*) name[i];
+    return (char*) name[i].c_str();
   }
 
-  unsigned char AddParam( Chaine st, vartype t)
+  unsigned char AddParam( const std::string& st, vartype t)
   {
     if ( num_param<MAX_PARAM-2 )
     {
@@ -205,7 +151,7 @@ class ParamListDecl {
     }
   }
 
-  unsigned char GetParam( int num, Chaine& st, vartype& t, bool needed)
+  unsigned char GetParam( int num, std::string& st, vartype& t, bool needed)
   {
     if ((num>=0)&&(num<num_param)) {
       st = name[num];

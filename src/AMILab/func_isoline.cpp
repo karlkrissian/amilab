@@ -30,12 +30,12 @@
 #include "style.hpp"
 #include "math1.hpp"
 
-DebutDeclareC
+extern "C" {
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
 #include <stdlib.h>
-FinDeclareC
+}
 
 //#include "chaine.hpp"
 #include "inrimage.hpp"
@@ -43,7 +43,7 @@ FinDeclareC
 #include "Voxel.hpp"
 #include "IsoLigne2.hpp"
 #include "CreeCrest.hpp"
-#include "FiltreRec.hpp"
+#include "GeneralGaussianFilter.h"
 #include "CalculIsoLignes.hpp"
 #include "Eigen.hpp"
 #include "FloatMatrix.hpp"
@@ -161,7 +161,7 @@ CreeCrest* Func_IsoLine( InrImage* input, float Sigma, InrImage* image_masque, I
     InrImage*       image;
     CreeCrest*      crest_lignes;
     // Filtrage de l'image et de ses d�riv�es
-    FiltreRecursif* filtre;
+    GeneralGaussianFilter* filtre;
 
 
     // conversion de l'image initiale en float
@@ -184,7 +184,7 @@ CreeCrest* Func_IsoLine( InrImage* input, float Sigma, InrImage* image_masque, I
 
   // Calcul des images des derivees avec filtrage Gaussien
 
-  filtre = new FiltreRecursif( image);
+  filtre = new GeneralGaussianFilter( image);
 
   filtre->UtiliseImage(    false);
   filtre->UtiliseGradient( true);

@@ -11,6 +11,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Crest
   ${AMILAB_SOURCE_DIR}/Vaisseaux
   ${AMILAB_SOURCE_DIR}/Coordonnees
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapBasicTypes
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapInterface
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapSystem
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapITK

@@ -139,7 +139,7 @@ void BasicNLMeansFilter< TInputImage, TOutputImage >
 
   static unsigned int dimen;
   double w;
-  int prc = 0;
+  //int prc = 0;
   
   RealType diff;
   double dist = 0;
@@ -197,13 +197,13 @@ void BasicNLMeansFilter< TInputImage, TOutputImage >
 		i_min = macro_max(i_min,0);
 		
 		i_max = (int)test[0]+(int)m_Searching;
-		i_max = macro_min(i_max,input->GetBufferedRegion().GetSize()[0]-1);
+		i_max = macro_min(i_max,(int)input->GetBufferedRegion().GetSize()[0]-1);
 		
 		j_min = (int)test[1]-(int)m_Searching;
 		j_min = macro_max(j_min,0);
 		
 		j_max = (int)test[1]+(int)m_Searching;
-		j_max = macro_min(j_max,input->GetBufferedRegion().GetSize()[1]-1);
+		j_max = macro_min(j_max,(int)input->GetBufferedRegion().GetSize()[1]-1);
 		
 		if (dimen == 3) // 2ºcambio y funciona
 		{
@@ -211,7 +211,7 @@ void BasicNLMeansFilter< TInputImage, TOutputImage >
 			k_min = macro_max(k_min,0);
 			
 			k_max = (int)test[2]+(int)m_Searching;
-			k_max = macro_min(k_max,input->GetBufferedRegion().GetSize()[2]-1);
+			k_max = macro_min(k_max,(int)input->GetBufferedRegion().GetSize()[2]-1);
 		}
 		
 		inputStart[0] = i_min;
@@ -240,7 +240,7 @@ void BasicNLMeansFilter< TInputImage, TOutputImage >
 			{
 				unsigned int neighborhoodSize = f_it.Size();
 				dist = 0;
-				for (int i=0;i < neighborhoodSize; i++)
+				for (int i=0;i < (int)neighborhoodSize; i++)
 				{
 					diff = static_cast<RealType>(faux_it.GetPixel(i)) - static_cast<RealType>(f_it.GetPixel(i));
 					dist += diff*diff*dist_weights[i];

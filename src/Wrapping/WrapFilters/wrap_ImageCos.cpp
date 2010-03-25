@@ -31,8 +31,8 @@ void wrap_ImageCos( ParamList* p)
     int num_threads = 1;
     int n=0;
 
-  if (!get_imageptr_param( input,       p, n)) HelpAndReturn;
-  if (!get_int_param(      num_threads, p, n)) HelpAndReturn;
+  if (!get_val_smtptr_param<InrImage>( input,       p, n, true)) HelpAndReturn;
+  if (!get_int_param                 ( num_threads, p, n      )) HelpAndReturn;
 
   ImageToImageFilterParam param;
   ImageCos imcos;

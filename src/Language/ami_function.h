@@ -38,19 +38,33 @@
 #include <string>
 #include "DefineClass.hpp"
 #include "AmiInstructionBlock.h"
+#include "Variables.hpp"
 
 using namespace boost;
 
-
+/**
+ * Class that stores the scripting language functions information.
+ **/
 class AMIFunction {
 
-  DEFINE_CLASS(AMIFunction)
+  DEFINE_CLASS(AMIFunction);
 
 private:
+
+  /// Declaration of the parameters
   ParamListDecl*            _param;
+
+  /// Body of the function
   AmiInstructionBlock::ptr   _body;
+
+  /// Name of the function
   std::string               _name;
+
+  /// Filename of the function
   std::string               _filename;
+
+  /// Smart pointer to the context of the function
+  boost::shared_ptr<Variables>   _context;
 
  public:
 
@@ -95,6 +109,23 @@ private:
   const char* GetString() const
   {
     return  _body->GetBody().c_str();
+  }
+
+  /**
+   * Sets the function context of variables.
+   **/
+  void SetContext( boost::shared_ptr<Variables> val) 
+  {
+    _context = val;
+  }
+
+  /**
+   * Create a new shared pointer reference to the object.
+   * @return variable's context
+   */
+  boost::shared_ptr<Variables> GetContext() const
+  {
+    return _context;
   }
 
 }; // AMIFunction

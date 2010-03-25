@@ -167,7 +167,7 @@ if (!exists(AnisoNRADClass)) {
     AnisoGS.SetEigenMode(  ::eigen_mode)
   
     # process iterations
-    ::res0 = AnisoGS.GetOutput
+    ::res0 <<= AnisoGS.GetOutput
     if (::run_on_roi) {
       ::res <<= ::input
       ::res0 = sqrt(::res0)
@@ -197,6 +197,7 @@ if (!exists(AnisoNRADClass)) {
       ProcessXEvents(50)
     }
     EndTime
+    SetProgress(0)
   
   //  AnisoGS.end
   //  hide ::res

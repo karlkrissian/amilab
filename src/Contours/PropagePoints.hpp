@@ -161,7 +161,7 @@ cout << "Resize() \n";
 public:
   
   ///
-  Constructeur PropagePoints( int taille_max = 1000)
+   PropagePoints( int taille_max = 1000)
   //
   {
 
@@ -181,10 +181,10 @@ public:
     posz[0] = 0;  
     point_traite[0] = false;  
   
-  }; // Constructeur
+  }; // Constructor
 
   ///
-  Destructeur PropagePoints() 
+  ~PropagePoints() 
   //
   {
 

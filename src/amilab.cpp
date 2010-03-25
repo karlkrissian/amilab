@@ -86,7 +86,6 @@ unsigned char verbose;
 #include "xmtext.hpp"
 
 
-
 DessinImage* CreateIDraw( const std::string& title, InrImage::ptr image)
 {
   if (GB_debug)
@@ -118,7 +117,45 @@ class MyApp: public wxApp
   virtual bool OnInitGui();
   virtual bool OnInit();
   virtual int  OnExit();
+
+  void OnChar(wxKeyEvent& event)
+  {
+    //std::cout << "MyApp::OnChar()" << endl;
+    switch( event.GetKeyCode() )
+    {
+    case 'h': 
+      if (event.ControlDown()) {
+        std::cout << "should hide window" << endl;
+      }
+      else
+        event.Skip();
+    break;
+    case 'i': 
+      if (event.AltDown()) {
+        std::cout << "should iconize window" << endl;
+        GB_main_wxFrame->Iconize(!GB_main_wxFrame->IsIconized());
+      }
+      else
+        event.Skip();
+    break;
+    default:
+        event.Skip();
+        return;
+    }
+  }
+
+private:
+  //MainFrame::ptr mainframe;
+  MainFrame* mainframe;
+
+private:
+  DECLARE_EVENT_TABLE();
 };
+
+
+BEGIN_EVENT_TABLE(MyApp, wxApp)
+    EVT_CHAR        ( MyApp::OnChar       )
+END_EVENT_TABLE();
 
 
 IMPLEMENT_APP(MyApp)
@@ -281,24 +318,25 @@ bool MyApp::OnInit()
 //  GB_contexte  = (XtAppContext) this->GetAppContext();
   GB_wxApp = this;
 
-  MainFrame *frame = new MainFrame(
+  mainframe = new MainFrame(
                 GetwxStr("AMILab ")+GetwxStr(AMILAB_VERSION),
 //                _T("AMILab: Image Processing and Visualization"),
                 wxDefaultPosition,
                 wxSize(900,700));
 
 //  #if defined(WIN32) || defined(__APPLE__)
-    frame->SetIcon(wxIcon(amilab_logo_new_32x32_alpha_xpm));
+    mainframe->SetIcon(wxIcon(amilab_logo_new_32x32_alpha_xpm));
 //  #endif
 
 //  printf("frame->Show(true)\n");
 
 
 //  printf("application name = \"%s\" \n",wxGetApp().GetClassName().c_str());
-  GB_main_wxFrame = frame;
+  // TODO: avoid using get() here ...
+  GB_main_wxFrame = mainframe;
 
-  frame->Show(true);
-  SetTopWindow(frame);
+  mainframe->Show(true);
+  SetTopWindow(mainframe);
 //  frame->Fit();
 //  frame->Show(true);
 //  frame->Update();
@@ -306,7 +344,7 @@ bool MyApp::OnInit()
   //GB_driver.trace_parsing=true;
   //GB_driver.trace_scanning=true;
 
-  if (GB_main_wxFrame->GetConsole()!=NULL) {
+  if (GB_main_wxFrame->GetConsole().get()) {
     GB_main_wxFrame->GetConsole()->AddPrompt(false);
     GB_driver.yyiplineno=1;
     GB_driver.current_file="Command line prompt";
@@ -373,7 +411,6 @@ bool MyApp::OnInit()
 int MyApp::OnExit()
 {
   cout << "MyApp::OnExit()" << endl;
-  // Clean memory ?
   return 0;
 }
 

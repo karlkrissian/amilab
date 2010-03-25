@@ -2,129 +2,241 @@
 
 ami_import->AMIFluid()
 
-#--------------------------------------------------
-step_x = INT(2)
-step_y = INT(2)
-step_z = INT(2)
+func "SyntheticImages/AddSphere.amil"
 
-winsize_x = INT(3)
-winsize_y = INT(3)
-winsize_z = INT(3)
+if (!exists(Corr3DTest)) {
 
-windef = INT(1)
+  Class Corr3DTest {
 
-sphere_size = 1.5
-image_size = INT(24)
+    #--------------------------------------------------
+    proc ::Init() \
+    {
+      ::class_name = "global::Corr3DTest"
 
-corr_downsample = UCHAR(1)
-corr_threads    = INT(2)
+      ::input1_name = "","Name of the first input image variable"
+      ::input2_name = "","Name of the second input image variable"
 
-#--------------------------------------------------
-proc amicorr3D(IMAGE _im1, IMAGE _im2, IMAGE _res) {
-  wsx = exp(ln(2)*winsize_x)
-  wsy = exp(ln(2)*winsize_y)
-  wsz = exp(ln(2)*winsize_z)
-  InitTime
-  //print sprint("window size (%0.0f",wsx)+","+sprint("%0.0f)\n",wsy)
-  if (corr_downsample) {
-    res1 = Resize(_res,1+(_res.tx-1)/step_x,1+(_res.ty-1)/step_y,1+(_res.tz-1)/step_z,0)
-    AMIFluid->amiOFCorr3DNew(_im1,_im2,&res1,wsx,wsy,wsz,step_x,step_y,step_z,\
-                   0,0,0,corr_threads)
-    Pad(_res,res1,step_x,0,step_y,0,step_z,0)
-    del res1
-  } else {
-    AMIFluid->amiOFCorr3D(_im1,_im2,&_res,wsx,wsy,wsz,windef,step_x,step_y,step_z)
+      ::step_x = INT(2), "grid size in X"
+      ::step_y = INT(2), "grid size in Y"
+      ::step_z = INT(2), "grid size in Z"
+
+      ::winsize_x = INT(3), "window size in X"
+      ::winsize_y = INT(3), "window size in X"
+      ::winsize_z = INT(3), "window size in X"
+
+      ::windef = INT(1)
+
+      ::sphere_size = 1.5
+      ::image_size = INT(24)
+
+      ::corr_downsample = UCHAR(0)
+      ::corr_threads    = INT(2), "Number of threads"
+      ::Gui()
+    }
+
+    #-----------------------------------------------
+    proc ::load_input1() \
+    {
+      eval "::input1 <<= (FLOAT)"+::input1_name+";"
+      if (::input1_name=="Image") {
+        ::input1_name = "::input1"
+        ::win->_Update(-1)
+      }
+    }
+
+    #-----------------------------------------------
+    proc ::load_input2() \
+    {
+      eval "::input2 <<= (FLOAT)"+::input2_name+";"
+      if (::input2_name=="Image") {
+        ::input2_name = "::input2"
+        ::win->_Update(-1)
+      }
+    }
+
+    #----------------------------
+    proc ::Close() \
+    {
+      ::win->_Hide
+      delvars GetObjectName(::Close)
+    }
+    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    
+    #----------------------------
+    proc ::CloseAll() \
+    {
+      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
+      ::Close
+    }
+    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    
+    #--------------------------------------------------
+    proc ::amicorr3D(IMAGE _im1, IMAGE _im2, IMAGE _res) \
+    {
+      AMIFluid = &global::AMIFluid
+      wsx = exp(ln(2)*::winsize_x)
+      wsy = exp(ln(2)*::winsize_y)
+      wsz = exp(ln(2)*::winsize_z)
+      InitTime
+      //print sprint("window size (%0.0f",wsx)+","+sprint("%0.0f)\n",wsy)
+      if (::corr_downsample) {
+        res1 = Resize(_res, 1+(_res.tx-1)/::step_x,\
+                            1+(_res.ty-1)/::step_y,\
+                            1+(_res.tz-1)/::step_z,0)
+        AMIFluid->amiOFCorr3DNew(\
+                _im1,_im2,\
+                &res1,\
+                ::winsize_x,::winsize_y,::winsize_z,\
+                ::step_x,::step_y,::step_z,\
+                0,0,0,::corr_threads)
+        Pad(_res,res1,::step_x,0,::step_y,0,::step_z,0)
+        del res1
+      } else {
+        AMIFluid->amiOFCorr3D(_im1,_im2,\
+                &_res,\
+                ::winsize_x,::winsize_y,::winsize_z,\
+                ::windef,\
+                ::step_x,::step_y,::step_z)
+      }
+      printn  "time spent = "+TimeSpent
+      EndTime
+    }
+
+
+    proc ::init_displacements() {
+      ::d <<= Image(FLOAT,::input1.tx,::input1.ty,::input1.tz,3)
+      ::d.initvalue(0,0,0);
+      ::v=::d
+    }
+
+    #--------------------------------------------------
+    proc ::CB_CreateSphere() {
+
+      if exists(::input1_draw) { del ::input1_draw;}
+      ::input1 <<= Image(FLOAT,::image_size,::image_size,::image_size)
+      ::input1.initvalue(-::sphere_size)
+      center=1.0*::image_size/2
+      global::AddBrightSphere(&::input1,center,center,center,::sphere_size) 
+      ::input2 = ::input1*0-::sphere_size
+      vx=1; vy=1.5; vz=2;
+      global::AddBrightSphere(&::input2,center+vx,center+vy,center+vz,::sphere_size)
+
+      ::init_displacements()
+      ::v.initvalue(vx,vy,vz);
+
+      ::UpdateDisplay()
+    }
+
+    #--------------------------------------------------
+    proc ::UpdateDisplay() \
+    {
+      show ::input1
+      show ::input2
+      ::input1_draw.compare(::input2_draw);
+
+      ::input1_draw.setvector(1,::d);
+      ::input1_draw.setvector(2,::v);
+      
+      ::input1_draw.DrawVector(1,1);
+      ::input1_draw.DrawVector(2,1);
+      
+      ::input1_draw.DisplayVectors;
+    }
+
+    #--------------------------------------------------
+    proc ::CB_Restart() \
+    {
+      ::init_displacements()
+      ::d.initvalue(0,0,0);
+      ::amicorr3D(::input1,::input2,&::d);
+      ::UpdateDisplay()
+    }
+
+    #--------------------------------------------------
+    proc ::CB_Iterate() \
+    {
+      if (!exists(::d)) {
+        InfoDialog "displacement is not initialized, use restart first."
+      } else {
+        ::amicorr3D(::input1,::input2,&::d);
+        ::UpdateDisplay()
+      }
+    }
+
+    #--------------------------------------------------
+    proc ::Gui() \
+    {
+      import = &global::ami_import;
+      ::win = import->ParamPanel("3D Corr")
+
+      ::win->_BeginBook()
+
+        ::win->_AddPage("Init")
+
+
+          ::win->_BeginBoxPanel("Input Images")
+  
+            # set the input1 image
+            ::win->_BeginHorizontal
+              ::win->_AddImageChoice(&::input1_name, "")
+              ::win->_AddButton("Load",::load_input1)
+            ::win->_EndHorizontal
+
+            # set the input2 image
+            ::win->_BeginHorizontal
+              ::win->_AddImageChoice(&::input2_name, "")
+              ::win->_AddButton("Load",::load_input2)
+            ::win->_EndHorizontal
+
+          ::win->_EndBoxPanel
+
+          ::win->_BeginBoxPanel("Synthetic image param")
+            ::win->_AddInt( &::image_size,  "::image_size", 10,100)
+            ::win->_AddFloat( &::sphere_size,  "::sphere_size", 0.1,40)
+          ::win->_EndBoxPanel
+  
+        ::win->_AddPage("Param")
+          ::win->_BeginBoxPanel("Grid size")
+            ::win->_AddInt( &::step_x,  "::step_x", 1,20)
+            ::win->_AddInt( &::step_y,  "::step_y", 1,20)
+            ::win->_AddInt( &::step_z,  "::step_z", 1,20)
+          ::win->_EndBoxPanel
+      
+          ::win->_BeginBoxPanel("Window size")
+            ::win->_AddInt( &::winsize_x,  "::winsize_x", 2,8)
+            ::win->_AddInt( &::winsize_y,  "::winsize_y", 2,8)
+            ::win->_AddInt( &::winsize_z,  "::winsize_z", 2,8)
+          ::win->_EndBoxPanel
+      
+          ::win->_AddInt( &::windef,  "::windef", 0,1)
+          ::win->_AddBoolean( &::corr_downsample)
+          ::win->_AddInt( &::corr_threads,  "::corr_threads", 1,10)
+  
+        ::win->_AddPage("Control")
+          ::win->_AddButton("CreateSphere", ::CB_CreateSphere)
+          ::win->_AddButton("Restart",      ::CB_Restart)
+          ::win->_AddButton("Iterate",      ::CB_Iterate)
+      ::win->_EndBook
+
+      ::win->_BeginHorizontal
+        ::win->_AddButton("Close",      &::Close)
+        ::win->_AddButton("Close All",  &::CloseAll)
+      ::win->_EndHorizontal
+
+      ::win->_Update(-1)
+      ::win->_Display
+    }
+
+    ::Init()
+
   }
-  printn  "time spent = "+TimeSpent
-  EndTime
+  # Corr3DTest
+} # endif !exists(Corr3DTest)
+
+if (!exists(corr3dtest)) {
+  Corr3DTest corr3dtest
+} else {
+  InfoDialog "The script seems to be already loaded"
 }
-
-
-#--------------------------------------------------
-proc CB_CreateSphere() {
-  global_new
-
-  if exists(i_draw) { del i_draw;}
-  if exists(i) { del i;}
-  i = Image(FLOAT,image_size,image_size,image_size)
-  func "SyntheticImages/AddSphere.amil"
-  i.initvalue(-sphere_size)
-  center=1.0*image_size/2
-  AddBrightSphere(&i,center,center,center,sphere_size) 
-  i2 = i*0-sphere_size
-  vx=1; vy=1.5; vz=2;
-  AddBrightSphere(&i2,center+vx,center+vy,center+vz,sphere_size)
-
-  d = Image(FLOAT,i.tx,i.ty,i.tz,3)
-  d.initvalue(0,0,0);
-  v=d
-  v.initvalue(vx,vy,vz);
-
-    show i;
-    i_draw.compare(i2);
-    
-    i_draw.setvector(1,d);
-    i_draw.setvector(2,v);
-    
-    i_draw.DrawVector(1,1);
-    i_draw.DrawVector(2,1);
-    
-    i_draw.DisplayVectors;
-
-  local_new
-
-}
-
-
-#--------------------------------------------------
-#--------------------------------------------------
-
-# BUG??,  needed to create this function to avoid a segmentation fault ...
-proc UpdateDisplay() {
-  global; show i; local  
-}
-
-proc CB_Restart() {
-  d.initvalue(0,0,0);
-  amicorr3D(i,i2,&d);
-  UpdateDisplay()
-}
-
-proc CB_Iterate() {
-  amicorr3D(i,i2,&d);
-  UpdateDisplay()
-}
-
-#--------------------------------------------------
-w1 = ParamWin("3D Correlation parameters:")
-
-w1.BeginBox("Image parameters")
-imagesize_id = w1.AddInt(image_size,10,100)
-spheresize_id = w1.AddFloat(sphere_size,0.1,40)
-w1.EndBox
-
-w1.BeginBox("Correlation parameters")
-step_x_id = w1.AddInt(step_x,1,20)
-step_y_id = w1.AddInt(step_y,1,20)
-step_z_id = w1.AddInt(step_z,1,20)
-
-winsize_x_id =  w1.AddInt(winsize_x,2,8)
-winsize_y_id =  w1.AddInt(winsize_y,2,8)
-winsize_z_id =  w1.AddInt(winsize_z,2,8)
-
-
-windef_id =  w1.AddInt(windef,0,1)
-downsample_id = w1.AddBoolean(corr_downsample)
-threads_id    = w1.AddInt(corr_threads,1,10)
-
-w1.EndBox
-
-restart_id=w1.AddButton("CreateSphere", CB_CreateSphere)
-restart_id=w1.AddButton("Restart", CB_Restart)
-iterate_id=w1.AddButton("Iterate", CB_Iterate)
-
-w1.CreateWin
-w1.Display
-
 
 

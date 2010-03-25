@@ -40,11 +40,13 @@
 #include "boost/format.hpp"
 
 #include <boost/shared_ptr.hpp>
+#include <boost/shared_array.hpp>
 #include <boost/weak_ptr.hpp>
 #include <list>
 #include <vector>
 #include <stdio.h>
 
+// TODO: deal with templates here ...
 #define DEFINE_CLASS(class) \
 public:\
   virtual char const* get_name() const { return #class; } \
@@ -54,6 +56,17 @@ public:\
   typedef std::vector<class::wptr>    wptr_vector;      \
   typedef std::list<class::ptr>       ptr_list;         \
   typedef std::list<class::wptr>      wptr_list;
+
+#define DEFINE_TEMPLATE_CLASS1(_class,_t) \
+public:\
+  virtual char const* get_name() const { return (std::string(#_class)+"<T>").c_str(); }  \
+  typedef _class<_t> ClassType; \
+  typedef typename boost::shared_ptr<ClassType >    ptr; \
+  typedef typename boost::weak_ptr<ClassType >      wptr; \
+  typedef typename std::vector<ClassType::ptr>     ptr_vector; \
+  typedef std::vector<ClassType::wptr>    wptr_vector; \
+  typedef std::list<ClassType::ptr>       ptr_list; \
+  typedef std::list<ClassType::wptr>      wptr_list;
 
 
 template<class T>
@@ -73,12 +86,6 @@ class wxwindow_nodeleter
     void operator()(T * p)  {  }
   };
 
-template<class T>
-class smartpointer_nodeleter
-  {
-  public:
-    void operator()(T * p)  {  }
-  };
 
 #define new_wxWindow_ptr(_class,_parent) \
   _class::ptr(new _class(_parent),wxwindow_nodeleter<_class>())
@@ -91,26 +98,9 @@ class smartpointer_nodeleter
 public:\
   virtual char const* get_name() const { return #class; }
 
+#include "amilab_boost.h"
 
-
-typedef boost::shared_ptr<float>           float_ptr;
-typedef boost::shared_ptr<int>             int_ptr;
-typedef boost::shared_ptr<unsigned char>   uchar_ptr;
-typedef boost::shared_ptr<std::string>     string_ptr;
-typedef boost::shared_ptr<FILE>            FILE_ptr;
-
-
-class file_deleter
-{
-  public:
-    void operator()(FILE * p)
-    {
-      if (p!=NULL)
-        if (p!=stdout)
-          fclose(p);
-    }
-};
-
+ 
 
 namespace MyNS_ForOutput {
   using std::cout; using std::cerr;

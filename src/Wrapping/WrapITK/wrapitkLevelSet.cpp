@@ -34,10 +34,7 @@ InrImage* wrap_itkLevelSetFilter2D(ParamList* p)
   InrImage* res = NULL;
   int n=0;
   
-  if (!get_image_param(  input,      p, n)) HelpAndReturnNULL;
-	if (!get_image_param(  sigmoidI,      p, n)) HelpAndReturnNULL;
-  if (!get_float_param(  curvatureScaling,    p, n)) HelpAndReturnNULL;
-  if (!get_float_param(  propagationScaling,      p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>( curvatureScaling, p, n))          HelpAndReturnNULL;
  
   typedef float       InternalPixelType;
   const   unsigned int        Dimension = 2;
@@ -54,7 +51,7 @@ InrImage* wrap_itkLevelSetFilter2D(ParamList* p)
 	image = InrToITK<InternalPixelType,Dimension>(input,region);
 	imageS = InrToITK<InternalPixelType,Dimension>(sigmoidI,region2);
 	
-	cout << "Conversión hecha" << endl;
+	cout << "Conversiï¿½n hecha" << endl;
   
   typedef  itk::ShapeDetectionLevelSetImageFilter< InternalImageType, InternalImageType > ShapeDetectionFilterType;
   ShapeDetectionFilterType::Pointer shapeDetection = ShapeDetectionFilterType::New();  
@@ -108,10 +105,10 @@ InrImage* wrap_itkLevelSetFilter3D(ParamList* p)
   InrImage* res = NULL;
   int n=0;
   
-  if (!get_image_param(  input,      p, n)) HelpAndReturnNULL;
-	if (!get_image_param(  sigmoidI,      p, n)) HelpAndReturnNULL;
-  if (!get_float_param(  curvatureScaling,    p, n)) HelpAndReturnNULL;
-  if (!get_float_param(  propagationScaling,      p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>( input,      p, n))  HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>( sigmoidI,   p, n))  HelpAndReturnNULL;
+  if (!get_val_param<float>( curvatureScaling, p, n))   HelpAndReturnNULL;
+  if (!get_val_param<float>( propagationScaling, p, n)) HelpAndReturnNULL;
  
   typedef float       InternalPixelType;
   const   unsigned int        Dimension = 3;
@@ -128,7 +125,7 @@ InrImage* wrap_itkLevelSetFilter3D(ParamList* p)
 	image = InrToITK<InternalPixelType,Dimension>(input,region);
 	imageS = InrToITK<InternalPixelType,Dimension>(sigmoidI,region2);
 	
-	cout << "Conversión hecha" << endl;
+	cout << "Conversiï¿½n hecha" << endl;
   
   typedef  itk::ShapeDetectionLevelSetImageFilter< InternalImageType, InternalImageType > ShapeDetectionFilterType;
   ShapeDetectionFilterType::Pointer shapeDetection = ShapeDetectionFilterType::New();  

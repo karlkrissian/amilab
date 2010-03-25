@@ -153,135 +153,61 @@ int VarContexts::GetNewVarContext()
 } // GetNewVarContext()
 
 
-//--------------------------------------------------
-Variable* VarContexts::AddVar(vartype type, const char* name, 
-                              void* val,
-                              int context)
-{
-  CLASS_MESSAGE("start");
-  if (context==OBJECT_CONTEXT_NUMBER) {
-    CLASS_MESSAGE("object context");
-    if (_object_context.get()) {
-      CLASS_MESSAGE(boost::format("adding object of type %1%, name %2% into object context ") % type % name);
-      return _object_context->AddVar(type,name,val,
-                                    _object_context);
-    }
-    else {
-      CLASS_ERROR("Calling object variable without any object context");
-      return NULL;
-    }
-  }
-
-  if (context==NEWVAR_CONTEXT) 
-    context = GetNewVarContext();
-  CLASS_MESSAGE(boost::format("Context number %d ")% context);
-  return _context[context]->AddVar(type,name,val);
-} // AddVar()
 
 
 //--------------------------------------------------
-Variable* VarContexts::AddVar(vartype type, 
-                              const IdentifierInfo::ptr& info, 
-                              void* val)
+BasicVariable::ptr VarContexts::AddVar(  
+              const IdentifierInfo::ptr& info, 
+              BasicVariable::ptr& val)
 {
   int context;
   context = info->GetCreationContext();
-
-  return AddVar(type,info->GetName().c_str(),val,context);
-
+  return AddVar(info->GetName().c_str(),val,context);
 } // AddVar()
 
 //--------------------------------------------------
-Variable* VarContexts::AddVarPtr(vartype type, 
-                              const IdentifierInfo::ptr& info, 
-                              void* val)
-{
-  int context;
-  context = info->GetCreationContext();
-
-  return AddVarPtr(type,info->GetName().c_str(),val,context);
-
-} // AddVar()
-
-//--------------------------------------------------
-// void* val is a pointer to a smart pointer of the type
-//
-Variable* VarContexts::AddVarPtr( vartype type, const char* name, 
-                                  void* val, int context )
+BasicVariable::ptr VarContexts::AddVar(BasicVariable::ptr var, int context)
 {
 
   if (context==OBJECT_CONTEXT_NUMBER) {
     CLASS_MESSAGE("object context");
     if (_object_context.get()) {
-      CLASS_MESSAGE(boost::format("adding object of type %1%, name %2% into object context ") % type % name);
-      return _object_context->AddVarPtr(type,name,val,
-                                    _object_context);
+      CLASS_MESSAGE("adding variable reference into object context ");
+      return _object_context->AddVar(var, _object_context);
     }
     else {
       CLASS_ERROR("Calling object variable without any object context");
-      return NULL;
+      return BasicVariable::ptr();
     }
   }
 
   if (context==NEWVAR_CONTEXT) 
     context = GetNewVarContext();
-  CLASS_MESSAGE(boost::format("Context number %d ")% context);
 
-  if (GB_debug) 
-    cerr  << "AddVar " << name 
-          << " in context number  "
-          << context 
-          << " called " << _context[context]->GetName()
-          << endl;
-
-  return _context[context]->AddVarPtr(type,name,val);
-
-} // AddVarPtr()
-
-
-//--------------------------------------------------
-Variable* VarContexts::AddVar(Variable* var, int context)
-{
-  if (context==NEWVAR_CONTEXT) 
-    context = GetNewVarContext();
   CLASS_MESSAGE(boost::format("Context number %d ")% context);
   return _context[context]->AddVar(var);
 }
 
 //--------------------------------------------------
-Variable* VarContexts::AddVar(Variable::ptr var, int context)
-{
-  if (context==-1) 
-    context = GetNewVarContext();
-  CLASS_MESSAGE(boost::format("Context number %d ")% context);
-  return _context[context]->AddVar(var);
-}
-
-//--------------------------------------------------
-bool VarContexts::GetVar(const char* varname, Variable** var,
-                                  int context)
+BasicVariable::ptr VarContexts::GetVar(const char* varname, int context)
 {
   if (context==-1) {
     // TODO: limit to last context, if nothing else is specified !!!
     //for(int i=_context.size()-1;i>=0;i--)
     //  if (_context[i]->GetVar(varname,var)) return true;
-    if (_context[_context.size()-1]->GetVar(varname,var)) return true;
-    return false;
+    return _context[_context.size()-1]->GetVar(varname);
   }
   else 
     if ((context>=0)&&(context<=_current_context))
-      return (_context[context]->GetVar(varname,var));
+      return _context[context]->GetVar(varname);
   else
     if ((context==OBJECT_CONTEXT_NUMBER)&&(_object_context.get())) {
-      bool res = _object_context->GetVar(varname,var);
-      CLASS_MESSAGE(boost::format("Looking in object context for %1% ... %2% ") % varname % res );
+      //CLASS_MESSAGE(boost::format("Looking in object context for %1% ... %2% ") % varname % res );
       //_object_context->display();
-      return res;
+      return _object_context->GetVar(varname);
     }
-  else 
-    return false;
 
-  return false;
+  return BasicVariable::ptr();
 }
 
 
@@ -300,7 +226,7 @@ bool VarContexts::deleteVar(const char* varname)
 
 
 //--------------------------------------------------
-int VarContexts::GetContext(Variable* var)
+int VarContexts::GetContext(BasicVariable::ptr var)
 {
   // check first for object context
   if (var->GetContext().get()) {
@@ -314,7 +240,28 @@ int VarContexts::GetContext(Variable* var)
 
 
 //--------------------------------------------------
-bool VarContexts::deleteVar(Variable* var)
+bool VarContexts::deleteVar(BasicVariable::ptr var)
+{
+
+  // Check for object context
+  if (var->GetContext().get()) {
+    var->GetContext()->deleteVar(var->Name().c_str());
+    return true;
+  }
+
+  for(int i=_current_context;i>=0;i--)
+    if (_context[i]->ExistVar(var)) {
+      if (GB_debug) 
+        cerr << "Deleted Var in context number " << i << endl;
+      // TODO: improve efficiency by not going twice through the variables
+      _context[i]->deleteVar(var->Name().c_str());
+      return true;
+    }
+  return false;
+}
+
+//--------------------------------------------------
+bool VarContexts::deleteVar(BasicVariable* var)
 {
 
   // Check for object context

@@ -1113,7 +1113,7 @@ void MultiCrest2 :: Fusionne( const int& ligne1,
 
 //---------------------------------------------------------------------
 //
-MultiCrest2 :: Constructeur MultiCrest2( Crest* l,
+MultiCrest2 ::  MultiCrest2( Crest* l,
 						 InrImage* image) : Crest()
 //
 {
@@ -1144,18 +1144,18 @@ MultiCrest2 :: Constructeur MultiCrest2( Crest* l,
 
   MAJImagePoints();
 
-} // Constructeur
+} // Constructor
 
 
 //---------------------------------------------------------------------
 ///
-MultiCrest2 :: Destructeur MultiCrest2()
+MultiCrest2 :: ~MultiCrest2()
 //
 {
 
   delete _image;
 
-} // Destructeur
+} // Destructor
 
   
 

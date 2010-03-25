@@ -70,8 +70,8 @@ InrImage*    Func_vtkSignedFMDist(   InrImage* im, float dmax=10000);
 InrImage*    Func_vtkAnisoGS( InrImage* im, float sigma, float k, float beta, int nb_iter,
                               int nb_threads);
 
-InrImage*    Func_vtkDicomRead( char*);
+InrImage*    Func_vtkDicomRead( const char*);
 
-InrImage*    Func_vtkMINCRead( char*);
+InrImage*    Func_vtkMINCRead( const char*);
 
 #endif // _VTKWRAP_H

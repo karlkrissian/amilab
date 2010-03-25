@@ -168,7 +168,7 @@ public:
 
   float taille_voxel[3];
 
-  Constructeur DessinParam()
+   DessinParam()
   //           -----------
   {
     version_anglaise = true;
@@ -178,7 +178,7 @@ public:
     taille_voxel[0] = taille_voxel[1] = taille_voxel[2] = -1.0;
   }
 
-  Constructeur DessinParam(const DessinParam& p)
+   DessinParam(const DessinParam& p)
   //           -----------
   {
     *this = p;
@@ -229,7 +229,7 @@ public:
 //@}
 
   ///
-  Constructeur ParamMAJ()
+   ParamMAJ()
   //
   {
 
@@ -269,7 +269,8 @@ public:
 
 //======================================================================  
 /**
-  Parametres pour le Zoom
+  Zooming region.
+  We should better use an image extent here ...
  */
 class ParamZoom
 //     ---------
@@ -291,13 +292,13 @@ public:
 /** Taille de la sous-image (apres le zoom)
  */
 //@{
-   int       _dessin_tx;
-   int       _dessin_ty;
-   int       _dessin_tz;
+   int       _zoom_size_x;
+   int       _zoom_size_y;
+   int       _zoom_size_z;
 //@}
 
   ///
-  Constructeur ParamZoom(){}
+   ParamZoom(){}
 
   ///
   void operator=( const ParamZoom& p)
@@ -354,12 +355,55 @@ public:
   void ComputeSize()
   //   ----------------
   {
-    _dessin_tx = _xmax - _xmin + 1;
-    _dessin_ty = _ymax - _ymin + 1;
-    _dessin_tz = _zmax - _zmin + 1;
+    _zoom_size_x = _xmax - _xmin + 1;
+    _zoom_size_y = _ymax - _ymin + 1;
+    _zoom_size_z = _zmax - _zmin + 1;
 
   }
 
+  /// Increases the zooming region in X as much as possible with a maximum of incx.
+  void IncreaseX( int incx, const InrImage::ptr& image)
+  {
+    double available_extension = image->DimX()-_zoom_size_x;
+    if (available_extension>=1) {
+      if (available_extension < incx ) {
+        // we can see the full dimension
+        _xmin = 0;
+        _xmax = image->DimX()-1;
+        ComputeSize();
+      } else {
+        // split the increase on both sides
+        double avail1  = _xmin;
+        double avail2  = image->DimX()-1-_xmax;
+        double inc_ratio = incx/available_extension;
+        _xmin = _xmin - (int)(avail1*inc_ratio);
+        _xmax = _xmax + (int)(avail2*inc_ratio);
+        ComputeSize();
+      }
+    }
+  }
+
+  /// Increases the zooming region in Yas much as possible with a maximum of incy.
+  void IncreaseY( int incy, const InrImage::ptr& image)
+  {
+    double available_extension = image->DimY()-_zoom_size_y;
+    if (available_extension>=1) {
+      if (available_extension < incy ) {
+        // we can see the full dimension
+        _ymin = 0;
+        _ymax = image->DimY()-1;
+        ComputeSize();
+      } else {
+        // split the increase on both sides
+        double avail1  = _ymin;
+        double avail2  = image->DimY()-1-_ymax;
+        double inc_ratio = incy/available_extension;
+        _ymin = _ymin - (int)(avail1*inc_ratio);
+        _ymax = _ymax + (int)(avail2*inc_ratio);
+        ComputeSize();
+      }
+    }
+  }
 
 }; // ParamZoom
 
@@ -410,7 +454,7 @@ public:
 //@}
 
   ///
-  Constructeur ParamMIP() 
+   ParamMIP() 
   //           --------
   {
 
@@ -500,7 +544,7 @@ public:
 
 
   ///
-  Constructeur ParamIntensite() 
+   ParamIntensite() 
   {
     _type_courbe = TYPE_COURBE_PENTE;
     _colorspace  = COLORSPACE_GREY;
@@ -556,7 +600,7 @@ public:
 
 
   ///
-  Constructeur ParamCurseur() 
+   ParamCurseur() 
   //
   {
     _ON      = false;
@@ -613,7 +657,7 @@ public:
 //@}
 
   ///
-  Constructeur ParamDimensions() 
+   ParamDimensions() 
   //
   {
     _voxel_size_x =
@@ -657,7 +701,7 @@ public:
 //@}
 
   ///
-  Constructeur ParamPosition() 
+   ParamPosition() 
   //
   {
     _x = _y = _z = 0;
@@ -757,7 +801,7 @@ public:
 //@}
 
   ///
-  Constructeur DessinImageParametres( )        
+   DessinImageParametres( )        
   //
   {
 

@@ -28,7 +28,7 @@
 
 #include "fonctions.h"
 
-#include "FiltreRec.hpp"
+#include "GeneralGaussianFilter.h"
 
 #include "Coordonnees.hpp"
 
@@ -180,7 +180,7 @@ InrImage* Func_Filter( InrImage* im, float sigma,
 
   InrImage*       image_entree;
   InrImage*       image_res;
-  FiltreRecursif* filtre;
+  GeneralGaussianFilter* filtre;
   std::string     resname;
   int             mode;
 
@@ -193,7 +193,7 @@ InrImage* Func_Filter( InrImage* im, float sigma,
     (*image_entree) = (*im);
   FinSi
 
-  resname = (boost::format("%s.filter") % im->Nom()).str();
+  resname = (boost::format("%s.filter") % im->GetName()).str();
   image_res = new InrImage(WT_FLOAT, resname.c_str() , im);
 
   Si image_entree->_tz > 1 Alors
@@ -202,7 +202,7 @@ InrImage* Func_Filter( InrImage* im, float sigma,
     mode = MODE_2D; 
   FinSi
 
-  filtre = new FiltreRecursif( image_entree,  mode);
+  filtre = new GeneralGaussianFilter( image_entree,  mode);
 
   filtre->GammaNormalise(false);
   filtre->InitFiltre( sigma, MY_FILTRE_CONV );  
@@ -229,7 +229,7 @@ InrImage* Func_NormGrad( InrImage* im, float sigma,
   InrImage*       image_entree;
   InrImage*       image_der;
   InrImage*       image_res;
-  FiltreRecursif* filtre;
+  GeneralGaussianFilter* filtre;
   std::string     resname;
   int             mode;
   double          tmp;
@@ -243,10 +243,10 @@ InrImage* Func_NormGrad( InrImage* im, float sigma,
     (*image_entree) = (*im);
   FinSi
 
-  resname = (boost::format("%s.normgrad") % im->Nom()).str();
+  resname = (boost::format("%s.normgrad") % im->GetName()).str();
   image_res = new InrImage(WT_FLOAT, resname.c_str() , im);
 
-  resname = (boost::format("%s.filter") % im->Nom()).str();
+  resname = (boost::format("%s.filter") % im->GetName()).str();
   image_der = new InrImage(WT_FLOAT, resname.c_str() , im);
 
   Si image_entree->_tz > 1 Alors
@@ -255,11 +255,11 @@ InrImage* Func_NormGrad( InrImage* im, float sigma,
     mode = MODE_2D; 
   FinSi
 
-  filtre = new FiltreRecursif( image_entree,  mode);
+  filtre = new GeneralGaussianFilter( image_entree,  mode);
 
   filtre->GammaNormalise(false);
   filtre->InitFiltre( sigma, MY_FILTRE_CONV );  
-  filtre->FixeFacteurSupport(support);
+  filtre->SetSupportSize(support);
 
 
   Si mode == MODE_2D Alors
@@ -343,7 +343,7 @@ InrImage* Func_DiscNormGrad( InrImage* im )
 
 
 
-  resname = (boost::format("%s.discnormgrad") % im->Nom()).str();
+  resname = (boost::format("%s.discnormgrad") % im->GetName()).str();
   image_res = new InrImage(WT_FLOAT, resname.c_str() , im);
 
   image_res->InitImage(0);
@@ -455,7 +455,7 @@ InrImage* Func_DiscMeanCurvature( InrImage* im )
     register double dxy, dyz, dxz;
  
 
-  resname = (boost::format("%s.discmeancurv") % im->Nom()).str();
+  resname = (boost::format("%s.discmeancurv") % im->GetName()).str();
   image_res = new InrImage(WT_FLOAT, resname.c_str() , im);
 
   image_res->InitImage(0);
@@ -591,7 +591,7 @@ InrImage* Func_Laplacian( InrImage* im )
   double laplacian;
  
 
-  resname = (boost::format("%s.laplacian") % im->Nom()).str();
+  resname = (boost::format("%s.laplacian") % im->GetName()).str();
   image_res = new InrImage(WT_FLOAT, resname.c_str() , im);
 
   image_res->InitImage(0);
@@ -652,11 +652,11 @@ InrImage* Func_Gradient( InrImage* im, float sigma )
   InrImage*       image_entree;
   InrImage*       image_der;
   InrImage*       image_res;
-  FiltreRecursif* filtre;
+  GeneralGaussianFilter* filtre;
   std::string     resname;
   int             mode;
 
-  resname = (boost::format("%1%.normgrad") % im->Nom()).str();
+  resname = (boost::format("%1%.normgrad") % im->GetName()).str();
 
   Si (im->_format == WT_FLOAT) Alors
     image_entree = im;
@@ -675,12 +675,12 @@ InrImage* Func_Gradient( InrImage* im, float sigma )
     image_res = new InrImage(WT_FLOAT, 2,resname.c_str(), im);
   FinSi
 
-  resname = (boost::format("%1%.filter") % im->Nom()).str();
+  resname = (boost::format("%1%.filter") % im->GetName()).str();
 
   image_der = new InrImage(WT_FLOAT, resname.c_str() , im);
 
 
-  filtre = new FiltreRecursif( image_entree,  mode);
+  filtre = new GeneralGaussianFilter( image_entree,  mode);
 
   filtre->GammaNormalise(false);
   filtre->InitFiltre( sigma, MY_FILTRE_CONV );  
@@ -864,7 +864,7 @@ InrImage* Func_SecDerGrad( InrImage* im, float sigma )
   
     InrImage*       image_entree;
     InrImage*       image_res;
-    FiltreRecursif* filtre;
+    GeneralGaussianFilter* filtre;
     int             mode;
     std::string     resname;
     int           x,y,z;
@@ -889,7 +889,7 @@ InrImage* Func_SecDerGrad( InrImage* im, float sigma )
     mode = MODE_2D; 
   FinSi
 
-  filtre = new FiltreRecursif(image_entree,  mode);
+  filtre = new GeneralGaussianFilter(image_entree,  mode);
 
   filtre->Utilise_Image(   false);
   filtre->UtiliseHessien(  true);
@@ -901,7 +901,7 @@ InrImage* Func_SecDerGrad( InrImage* im, float sigma )
   filtre->InitFiltre( sigma, MY_FILTRE_CONV );  
   filtre->CalculFiltres( );
 
-  resname = (boost::format("%s.d2grad") % image_entree->Nom()).str();
+  resname = (boost::format("%s.d2grad") % image_entree->GetName()).str();
   image_res = new InrImage(WT_FLOAT, resname.c_str() , image_entree);
   image_res->InitImage(0.0);
 
@@ -959,7 +959,7 @@ InrImage* Func_SecDerGrad2( InrImage* im, float sigma )
   
     InrImage*       image_entree;
     InrImage*       image_res;
-    FiltreRecursif* filtre;
+    GeneralGaussianFilter* filtre;
     int             mode;
     std::string     resname;
     int           x,y,z;
@@ -984,7 +984,7 @@ InrImage* Func_SecDerGrad2( InrImage* im, float sigma )
     mode = MODE_2D; 
   FinSi
 
-  filtre = new FiltreRecursif(image_entree,  mode);
+  filtre = new GeneralGaussianFilter(image_entree,  mode);
 
   filtre->DontUseVoxelSize();
   filtre->Utilise_Image(   false);
@@ -997,7 +997,7 @@ InrImage* Func_SecDerGrad2( InrImage* im, float sigma )
   filtre->InitFiltre( sigma, MY_FILTRE_CONV );  
   filtre->CalculFiltres( );
 
-  resname = (boost::format("%s.d2grad") % image_entree->Nom()).str();
+  resname = (boost::format("%s.d2grad") % image_entree->GetName()).str();
   image_res = new InrImage(WT_FLOAT, resname.c_str() , image_entree);
   image_res->InitImage(0.0);
 
@@ -1055,7 +1055,7 @@ InrImage* Func_SecDerGradOld( InrImage* im, float sigma )
     InrImage*       image_entree;
     InrImage*       image_res;
     InrImage*       image_lissee;
-    FiltreRecursif* filtre;
+    GeneralGaussianFilter* filtre;
     int             mode;
     std::string     resname;
 
@@ -1074,12 +1074,12 @@ InrImage* Func_SecDerGradOld( InrImage* im, float sigma )
     mode = MODE_2D; 
   FinSi
 
-  filtre = new FiltreRecursif( im,  mode);
+  filtre = new GeneralGaussianFilter( im,  mode);
   filtre->GammaNormalise(false);
   filtre->InitFiltre( sigma, MY_FILTRE_CONV );  
 
 
-  resname = (boost::format("%s.smoothed") % im->Nom()).str();
+  resname = (boost::format("%s.smoothed") % im->GetName()).str();
   image_lissee = new InrImage(WT_FLOAT, resname.c_str() , im);
 
   Si mode == MODE_3D Alors
@@ -1092,7 +1092,7 @@ InrImage* Func_SecDerGradOld( InrImage* im, float sigma )
 
   delete filtre;
 
-  resname = (boost::format("%s.d2grad") % image_entree->Nom()).str();
+  resname = (boost::format("%s.d2grad") % image_entree->GetName()).str();
   image_res = new InrImage(WT_FLOAT, resname.c_str() , image_entree);
   image_res->InitImage(0.0);
 
@@ -1510,7 +1510,7 @@ InrImage* Func_rot2D( InrImage* image,
     int       x1,y1;
     float      x,y;
 
-  res = new InrImage( (int) tx, (int) ty, 1, WT_FLOAT, ((Chaine) image->Nom())+".rot.inr");
+  res = new InrImage( (int) tx, (int) ty, 1, WT_FLOAT, ((Chaine) image->GetName())+".rot.inr");
 
   res->InitBuffer();
 
@@ -1583,8 +1583,8 @@ SurfacePoly* Func_isosurf( InrImage::ptr image, float seuil, InrImage* mask,
   Si coord_system <0 AlorsFait coord_system = 0;
   Si coord_system >2 AlorsFait coord_system = 2;
 
-  SelonQue coord_system Vaut
-    Valeur 0:
+  switch ( coord_system ){
+    case 0:
       Pour( n, 0, isosurface->_image_points->NbPoints()-1)
         pt = isosurface->_image_points->Point(n);
        surf->AddPoint( pt.x*image->_size_x+translation[0], 
@@ -1595,9 +1595,9 @@ SurfacePoly* Func_isosurf( InrImage::ptr image, float seuil, InrImage* mask,
         // The vectors are already normalized ...
         surf->SetNorm( norm.x, norm.y, norm.z);
       FinPour  
-    FinValeur
+    break;
 
-    Valeur 1:
+    case 1:
       Pour( n, 0, isosurface->_image_points->NbPoints()-1)
         pt = isosurface->_image_points->Point(n);
         surf->AddPoint( pt.x+translation[0],
@@ -1610,9 +1610,9 @@ SurfacePoly* Func_isosurf( InrImage::ptr image, float seuil, InrImage* mask,
                norm.y*image->_size_y, 
                norm.z*image->_size_z);
       FinPour  
-    FinValeur
+    break;
 
-    Valeur 2:
+    case 2:
       Pour( n, 0, isosurface->_image_points->NbPoints()-1)
         pt = isosurface->_image_points->Point(n);
 
@@ -1634,9 +1634,9 @@ SurfacePoly* Func_isosurf( InrImage::ptr image, float seuil, InrImage* mask,
         surf->SetNorm( norm.x, norm.y, norm.z);
 
       FinPour  
-    FinValeur
+    break;
 
-  FinSelonQue
+  } // end switch
 
 
   // Write the polygones
@@ -2619,23 +2619,21 @@ InrImage*    Func_CC(InrImage* im, float background_threshold, int topology)
   isocontour->DefinitInterieur(  1);
   isocontour->SortContours();
 
-  InrImage* reorder_image = isocontour->GetReorderImage();
-  if (reorder_image!=NULL)
-    Vars.AddVar(type_image,"reorder",reorder_image);
+  BasicVariable::ptr var;
 
-  InrImage* inclusion_image = isocontour->GetInclusionImage();
-  if (inclusion_image!=NULL)
-    Vars.AddVar(type_image,"inclusion",inclusion_image);
+  InrImage::ptr reorder_image( isocontour->GetReorderImage());
+  Vars.AddVar<InrImage>("reorder",reorder_image);
 
-  InrImage* sign_image = isocontour->GetSignImage();
-  if (sign_image!=NULL)
-    Vars.AddVar(type_image,"cc_sign",sign_image);
+  InrImage::ptr inclusion_image( isocontour->GetInclusionImage());
+  Vars.AddVar<InrImage>("inclusion",inclusion_image);
 
-  InrImage* size_image = isocontour->GetSizeImage();
-  if (size_image!=NULL)
-    Vars.AddVar(type_image,"cc_size",size_image);
+  InrImage::ptr sign_image( isocontour->GetSignImage());
+  Vars.AddVar<InrImage>("cc_sign",sign_image);
+
+  InrImage::ptr size_image (isocontour->GetSizeImage());
+  Vars.AddVar<InrImage>("cc_size",size_image);
+
   delete isocontour;
-  
 
   return image_num_contour;
 }

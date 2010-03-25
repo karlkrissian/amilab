@@ -359,7 +359,7 @@ void Crest ::  LibereLissage( )
 //==========================================================================
 
 //--------------------------------------------------------------------------
-Crest :: Constructeur Crest(char* nom_fichier )
+Crest ::  Crest(char* nom_fichier )
 //                              -----
 {
 
@@ -376,11 +376,11 @@ Crest :: Constructeur Crest(char* nom_fichier )
   _connexion_dist_max    = 12; 
   _connexion_tangent_max = 0.5;
   
-} // Constructeur 
+} // Constructor 
 
 
 //--------------------------------------------------------------------------
-Crest :: Constructeur Crest( )
+Crest ::  Crest( )
 //                              -----
 {
 
@@ -395,11 +395,11 @@ Crest :: Constructeur Crest( )
   _connexion_dist_max    = 12;
   _connexion_tangent_max = 0.5;
   
-} // Constructeur 
+} // Constructor 
 
 
 //--------------------------------------------------------------------------
-Crest :: Destructeur Crest()
+Crest :: ~Crest()
 //                             -----
 {
 
@@ -407,7 +407,7 @@ Crest :: Destructeur Crest()
 
 //  Si _lissage_alloue AlorsFait LibereLissage();
 
-} // Constructeur 
+} // Constructor 
 
 
 //---------------------------------------------------------------------------

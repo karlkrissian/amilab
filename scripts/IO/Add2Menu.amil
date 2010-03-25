@@ -5,5 +5,5 @@
 #
 
 #InfoDialog "Including scripts/OI/..."
-AddMenuScript("&IO","Read &Raw data","IO/RawFloat2Ami_gui.amil")
+AddMenuScript("&IO","Read &Raw data","IO/Raw2Ami_gui.amil")
 AddMenuScript("&IO","&DICOM","IO/DICOM.amil")

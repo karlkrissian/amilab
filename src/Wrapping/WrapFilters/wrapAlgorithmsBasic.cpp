@@ -29,7 +29,7 @@ extern VarContexts  Vars;
 void wrapAlgorithmsBasic()
 {
   // adding to the current object context
-   Vars.AddVar(type_c_image_function,"FastLocalSumDir", (void*) wrapFastLocalSumDir, OBJECT_CONTEXT_NUMBER);
+   ADDOBJECTVAR_NAME(C_wrap_imagefunction,"FastLocalSumDir", wrapFastLocalSumDir);
 }
 
 
@@ -55,7 +55,7 @@ InrImage* wrapFastLocalSumDir(ParamList* p)
               stepsize: (def:4) \n\
             ";
 
-  InrImage* input;
+  InrImage* input = NULL;
   InrImage::ptr input1;
   int wsize=1;
   int n = 0;
@@ -64,7 +64,7 @@ InrImage* wrapFastLocalSumDir(ParamList* p)
   int stepsize=4;
   InrImage* result;
 
-  if (!get_image_param(  input,      p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>(  input,      p, n)) HelpAndReturnNULL;
   if (!get_int_param(    wsize,      p, n)) HelpAndReturnNULL;
   if (!get_int_param(    axis,       p, n)) HelpAndReturnNULL;
   if (!get_int_param(    mode,       p, n)) HelpAndReturnNULL;

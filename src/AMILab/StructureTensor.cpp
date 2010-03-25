@@ -67,7 +67,7 @@
 #include "style.hpp"
 #include "math1.hpp"
 #include "inrimage.hpp"
-#include "FiltreRec.hpp"
+#include "GeneralGaussianFilter.h"
 #include "FloatMatrix.hpp"
 #include "Eigen.hpp"
 //#include "fonctions.h"
@@ -95,14 +95,14 @@ static int dimension;
 void Lissage( InrImage* image, float sigma, InrImage* mask)
 //
 {
-  FiltreRecursif::ptr filtre;
+  GeneralGaussianFilter::ptr filtre;
 
-  filtre = FiltreRecursif::New(image, dimension);
+  filtre = GeneralGaussianFilter::New(image, dimension);
 //  filtre->SetScaleUnit(PIXEL_SPACE);
   filtre->Utilise_Image(   true);
   filtre->UtiliseGradient( false);
   filtre->InitDerivees();
-  filtre->FixeFacteurSupport(4);
+  filtre->SetSupportSize(4);
 
   filtre->GammaNormalise(  true);
 
@@ -134,12 +134,12 @@ unsigned char Func_StructureTensor2D( InrImage* image_initiale,
     Vect3D<double>  grad;
     int             niter;
     InrImage*                   image;
-    InrImage*                   image_vep1;
-    InrImage*                   image_vep2;
-    InrImage*                   image_vap1;
-    InrImage*                   image_vap2;
-    FiltreRecursif::ptr  filtre;
-	std::string                 resname;
+    InrImage::ptr                   image_vep1;
+    InrImage::ptr                   image_vep2;
+    InrImage::ptr                   image_vap1;
+    InrImage::ptr                   image_vap2;
+    GeneralGaussianFilter::ptr  filtre;
+  std::string                 resname;
 
   type_filtre = MY_FILTRE_CONV;
   Si (image_initiale->_format == WT_FLOAT) Alors
@@ -157,18 +157,18 @@ unsigned char Func_StructureTensor2D( InrImage* image_initiale,
   tenseur_yy = new InrImage( WT_FLOAT, "Tenseur_yy", image);
 
 
-  image_vep1 =  new InrImage( WT_FLOAT, 3,
-                  "ST-vep1.inr.gz", image);
-  image_vep2 =  new InrImage( WT_FLOAT, 3,
-                  "ST-vep2.inr.gz", image);
+  image_vep1 =  InrImage::ptr(new InrImage( WT_FLOAT, 3,
+                  "ST-vep1.inr.gz", image));
+  image_vep2 =  InrImage::ptr(new InrImage( WT_FLOAT, 3,
+                  "ST-vep2.inr.gz", image));
 
-  image_vap1 =  new InrImage( WT_FLOAT, 
-                  "ST-vap1.inr.gz", image);
-  image_vap2 =  new InrImage( WT_FLOAT, 
-                  "ST-vap2.inr.gz", image);
+  image_vap1 =  InrImage::ptr(new InrImage( WT_FLOAT, 
+                  "ST-vap1.inr.gz", image));
+  image_vap2 =  InrImage::ptr(new InrImage( WT_FLOAT, 
+                  "ST-vap2.inr.gz", image));
 
     // Initialisation des images des d�riv�es 
-    filtre = FiltreRecursif::New(image, dimension);
+    filtre = GeneralGaussianFilter::New(image, dimension);
     filtre->Utilise_Image(   false);
     filtre->UtiliseGradient( true);
     filtre->InitDerivees();
@@ -261,17 +261,19 @@ unsigned char Func_StructureTensor2D( InrImage* image_initiale,
   FinPour
   FinPour
 
+  BasicVariable::ptr var;
+
   resname = (boost::format("%s_STvep1") % varname).str();
-  Vars.AddVar(type_image,resname.c_str(),image_vep1);
+  Vars.AddVar<InrImage>(resname,image_vep1);
 
   resname = (boost::format("%s_STvep2") % varname).str();
-  Vars.AddVar(type_image,resname.c_str(),image_vep2);
+  Vars.AddVar<InrImage>(resname,image_vep2);
 
   resname = (boost::format("%s_STvap1") % varname).str();
-  Vars.AddVar(type_image,resname.c_str(),image_vap1);
+  Vars.AddVar<InrImage>(resname,image_vap1);
 
   resname = (boost::format("%s_STvap2") % varname).str();
-  Vars.AddVar(type_image,resname.c_str(),image_vap2);
+  Vars.AddVar<InrImage>(resname,image_vap2);
 
   delete tenseur_xx;
   delete tenseur_xy;
@@ -313,15 +315,15 @@ unsigned char Func_StructureTensor( InrImage* image_initiale,
     int             niter;
     InrImage*       image;
 
-    InrImage*       image_vep1;
-    InrImage*       image_vep2;
-    InrImage*       image_vep3;
+    InrImage::ptr       image_vep1;
+    InrImage::ptr       image_vep2;
+    InrImage::ptr       image_vep3;
 
-    InrImage*       image_vap1;
-    InrImage*       image_vap2;
-    InrImage*       image_vap3;
-    FiltreRecursif* filtre;
-	std::string     resname;
+    InrImage::ptr       image_vap1;
+    InrImage::ptr       image_vap2;
+    InrImage::ptr       image_vap3;
+    GeneralGaussianFilter::ptr filtre;
+  std::string     resname;
 //    int             i;
 
 //  verbose = true;
@@ -345,29 +347,29 @@ unsigned char Func_StructureTensor( InrImage* image_initiale,
   tenseur_zz = new InrImage( WT_FLOAT, "Tenseur_zz", image);
 
 
-  image_vep1 =  new InrImage( WT_FLOAT, 3,
-                  "ST-vep1.inr.gz", image);
-  image_vep2 =  new InrImage( WT_FLOAT, 3,
-                  "ST-vep2.inr.gz", image);
-  image_vep3 =  new InrImage( WT_FLOAT, 3,
-                  "ST-vep3.inr.gz", image);
+  image_vep1 = InrImage::ptr( new InrImage( WT_FLOAT, 3,
+                  "ST-vep1.inr.gz", image));
+  image_vep2 = InrImage::ptr( new InrImage( WT_FLOAT, 3,
+                  "ST-vep2.inr.gz", image));
+  image_vep3 = InrImage::ptr( new InrImage( WT_FLOAT, 3,
+                  "ST-vep3.inr.gz", image));
 
-  image_vap1 =  new InrImage( WT_FLOAT, 
-                  "ST-vap1.inr.gz", image);
-  image_vap2 =  new InrImage( WT_FLOAT, 
-                  "ST-vap2.inr.gz", image);
-  image_vap3 =  new InrImage( WT_FLOAT, 
-                  "ST-vap3.inr.gz", image);
+  image_vap1 = InrImage::ptr( new InrImage( WT_FLOAT, 
+                  "ST-vap1.inr.gz", image));
+  image_vap2 = InrImage::ptr( new InrImage( WT_FLOAT, 
+                  "ST-vap2.inr.gz", image));
+  image_vap3 = InrImage::ptr( new InrImage( WT_FLOAT, 
+                  "ST-vap3.inr.gz", image));
 
 
   // Initialisation des images des d�riv�es 
-  filtre = new FiltreRecursif(image, dimension);
+  filtre = GeneralGaussianFilter::ptr(new GeneralGaussianFilter(image, dimension));
 //  filtre->SetScaleUnit(PIXEL_SPACE);
   filtre->Utilise_Image(   false);
   filtre->UtiliseGradient( true);
   filtre->InitDerivees();
   filtre->GammaNormalise( true);
-  filtre->FixeFacteurSupport(5);
+  filtre->SetSupportSize(5);
   filtre->InitFiltre( Sigma1, type_filtre);  
   filtre->CalculFiltres( );
 
@@ -404,7 +406,7 @@ unsigned char Func_StructureTensor( InrImage* image_initiale,
   FinPour
   FinPour
 
-  delete filtre;
+  filtre.reset();
 
 
   // Lissage du tenseur
@@ -522,22 +524,22 @@ printf("smoothing zz\n");
   FinPour
 
   resname = (boost::format("%s_STvep1") % varname).str();
-  Vars.AddVar(type_image,resname.c_str(),image_vep1);
+  Vars.AddVar<InrImage>(resname,image_vep1);
 
   resname = (boost::format("%s_STvep2") % varname).str();
-  Vars.AddVar(type_image,resname.c_str(),image_vep2);
+  Vars.AddVar<InrImage>(resname,image_vep2);
 
   resname = (boost::format("%s_STvep3") % varname).str();
-  Vars.AddVar(type_image,resname.c_str(),image_vep3);
+  Vars.AddVar<InrImage>(resname,image_vep3);
 
   resname = (boost::format("%s_STvap1") % varname).str();
-  Vars.AddVar(type_image,resname.c_str(),image_vap1);
+  Vars.AddVar<InrImage>(resname,image_vap1);
 
   resname = (boost::format("%s_STvap2") % varname).str();
-  Vars.AddVar(type_image,resname.c_str(),image_vap2);
+  Vars.AddVar<InrImage>(resname,image_vap2);
 
   resname = (boost::format("%s_STvap3") % varname).str();
-  Vars.AddVar(type_image,resname.c_str(),image_vap3);
+  Vars.AddVar<InrImage>(resname,image_vap3);
 
   delete tenseur_xx;
   delete tenseur_xy;
@@ -589,18 +591,18 @@ unsigned char Func_StructureTensorHessian( InrImage* image_initiale,
     int             niter;
     InrImage*       image;
 
-    InrImage*       image_vep1;
-    InrImage*       image_vep2;
-    InrImage*       image_vep3;
+    InrImage::ptr       image_vep1;
+    InrImage::ptr       image_vep2;
+    InrImage::ptr       image_vep3;
 
-    InrImage*       image_vap1;
-    InrImage*       image_vap2;
-    InrImage*       image_vap3;
+    InrImage::ptr       image_vap1;
+    InrImage::ptr       image_vap2;
+    InrImage::ptr       image_vap3;
 
-    InrImage*        image_grad = NULL;
+    InrImage::ptr        image_grad;
 
-    FiltreRecursif* filtre;
-	std::string     resname;
+    GeneralGaussianFilter::ptr filtre;
+  std::string     resname;
     double          hessien[9];
     int             i,j,k;
 
@@ -618,7 +620,7 @@ unsigned char Func_StructureTensorHessian( InrImage* image_initiale,
   dimension = MODE_3D;
 
   // Initialisation des images des d�riv�es 
-  filtre = new FiltreRecursif(image, dimension);
+  filtre = GeneralGaussianFilter::ptr(new GeneralGaussianFilter(image, dimension));
 //  filtre->SetScaleUnit(PIXEL_SPACE);
   filtre->FixeMasque(mask);
   filtre->Utilise_Image(   false);
@@ -626,27 +628,27 @@ unsigned char Func_StructureTensorHessian( InrImage* image_initiale,
   filtre->UtiliseGradient( true);
   filtre->InitDerivees();
   filtre->GammaNormalise( true);
-  filtre->FixeFacteurSupport(5);
+  filtre->SetSupportSize(5);
   filtre->InitFiltre( sigma, type_filtre);  
   filtre->CalculFiltres( );
 
-  image_vep1 =  new InrImage( WT_FLOAT, 3,
-                  "STH-vep1.inr.gz", image);
-  image_vep2 =  new InrImage( WT_FLOAT, 3,
-                  "STH-vep2.inr.gz", image);
-  image_vep3 =  new InrImage( WT_FLOAT, 3,
-                  "STH-vep3.inr.gz", image);
+  image_vep1 = InrImage::ptr( new InrImage( WT_FLOAT, 3,
+                  "STH-vep1.inr.gz", image));
+  image_vep2 = InrImage::ptr( new InrImage( WT_FLOAT, 3,
+                  "STH-vep2.inr.gz", image));
+  image_vep3 = InrImage::ptr( new InrImage( WT_FLOAT, 3,
+                  "STH-vep3.inr.gz", image));
 
-  image_vap1 =  new InrImage( WT_FLOAT, 
-                  "STH-vap1.inr.gz", image);
-  image_vap2 =  new InrImage( WT_FLOAT, 
-                  "STH-vap2.inr.gz", image);
-  image_vap3 =  new InrImage( WT_FLOAT, 
-                  "STH-vap3.inr.gz", image);
+  image_vap1 = InrImage::ptr( new InrImage( WT_FLOAT, 
+                  "STH-vap1.inr.gz", image));
+  image_vap2 = InrImage::ptr( new InrImage( WT_FLOAT, 
+                  "STH-vap2.inr.gz", image));
+  image_vap3 = InrImage::ptr( new InrImage( WT_FLOAT, 
+                  "STH-vap3.inr.gz", image));
 
   if (save_grad)
-     image_grad =  new InrImage( WT_FLOAT, 3,
-                 "STH-grad.inr.gz", image);
+     image_grad = InrImage::ptr( new InrImage( WT_FLOAT, 3,
+                 "STH-grad.inr.gz", image));
 
 
   // Calcul des coefficients du tenseur non liss�
@@ -765,24 +767,30 @@ unsigned char Func_StructureTensorHessian( InrImage* image_initiale,
 
     printf("\n");
     if (GB_debug) printf("deleting filter \n");
-  delete filtre;
+
+  filtre.reset();
 
   resname = (boost::format("%s_STHvep1")%varname).str();
-  Vars.AddVar(type_image,resname.c_str(),image_vep1);
+  Vars.AddVar<InrImage>(resname,image_vep1);
+
   resname = (boost::format("%s_STHvep2")%varname).str();
-  Vars.AddVar(type_image,resname.c_str(),image_vep2);
+  Vars.AddVar<InrImage>(resname,image_vep2);
+
   resname = (boost::format("%s_STHvep3")%varname).str();
-  Vars.AddVar(type_image,resname.c_str(),image_vep3);
+  Vars.AddVar<InrImage>(resname,image_vep3);
+
   resname = (boost::format("%s_STHvap1")%varname).str();
-  Vars.AddVar(type_image,resname.c_str(),image_vap1);
+  Vars.AddVar<InrImage>(resname,image_vap1);
+
   resname = (boost::format("%s_STHvap2")%varname).str();
-  Vars.AddVar(type_image,resname.c_str(),image_vap2);
+  Vars.AddVar<InrImage>(resname,image_vap2);
+
   resname = (boost::format("%s_STHvap3")%varname).str();
-  Vars.AddVar(type_image,resname.c_str(),image_vap3);
+  Vars.AddVar<InrImage>(resname,image_vap3);
 
   if (save_grad) {
-	resname = (boost::format("%s_STHgrad") %varname).str();
-    Vars.AddVar(type_image,resname.c_str(),image_grad);
+    resname = (boost::format("%s_STHgrad") %varname).str();
+    Vars.AddVar<InrImage>(resname,image_grad);
   }
 
 
@@ -825,7 +833,7 @@ InrImage* Func_StructureTensorHessianNew( InrImage::ptr image_initiale,
 
     InrImage*           result;
 
-    FiltreRecursif::ptr filtre;
+    GeneralGaussianFilter::ptr filtre;
     double              hessien[9];
     int                 i,j,k;
 
@@ -843,7 +851,7 @@ InrImage* Func_StructureTensorHessianNew( InrImage::ptr image_initiale,
   dimension = MODE_3D;
 
   // Initialisation des images des d�riv�es 
-  filtre = FiltreRecursif::ptr(new FiltreRecursif(image.get(), dimension));
+  filtre = GeneralGaussianFilter::ptr(new GeneralGaussianFilter(image.get(), dimension));
 //  filtre->SetScaleUnit(PIXEL_SPACE);
   if (mask.use_count()) filtre->FixeMasque(mask.get());
   filtre->Utilise_Image(   false);
@@ -851,7 +859,7 @@ InrImage* Func_StructureTensorHessianNew( InrImage::ptr image_initiale,
   filtre->UtiliseGradient( true);
   filtre->InitDerivees();
   filtre->GammaNormalise( true);
-  filtre->FixeFacteurSupport(5);
+  filtre->SetSupportSize(5);
   filtre->InitFiltre( sigma, type_filtre);  
   filtre->CalculFiltres( );
 

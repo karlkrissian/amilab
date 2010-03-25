@@ -83,27 +83,27 @@ InrImageBase* new_image( char* nom)
   FinSi
 
   Si (strcmp(nom,"-")==0) Alors
-    SelonQue ptr_image->type Vaut
-      Valeur WT_UNSIGNED_CHAR :
+    switch ( ptr_image->type ){
+      case WT_UNSIGNED_CHAR :
         return new InrImageTemplate<unsigned char> (ptr_image);
-      Valeur WT_UNSIGNED_SHORT:
+      case WT_UNSIGNED_SHORT:
         return new InrImageTemplate<unsigned short>(ptr_image);
-      Valeur WT_SIGNED_SHORT  :
+      case WT_SIGNED_SHORT  :
         return new InrImageTemplate<signed short>  (ptr_image);
       
-      Valeur WT_UNSIGNED_INT  :
+      case WT_UNSIGNED_INT  :
         return new InrImageTemplate<unsigned int>  (ptr_image);
-      Valeur WT_SIGNED_INT    :
+      case WT_SIGNED_INT    :
         return new InrImageTemplate<signed int>    (ptr_image);
-      Valeur WT_UNSIGNED_LONG :
+      case WT_UNSIGNED_LONG :
         return new InrImageTemplate<unsigned long> (ptr_image);
-      Valeur WT_SIGNED_LONG   :
+      case WT_SIGNED_LONG   :
         return new InrImageTemplate<signed long>   (ptr_image);
       
-      Valeur WT_FLOAT         :
+      case WT_FLOAT         :
         return new InrImageTemplate<float>         (ptr_image);
       
-      Valeur WT_DOUBLE        :
+      case WT_DOUBLE        :
         return new InrImageTemplate<double>        (ptr_image);
 
 
@@ -111,54 +111,54 @@ InrImageBase* new_image( char* nom)
       // Images de Vecteurs
       //------------------------
 
-      Valeur WT_RGB           :
+      case WT_RGB           :
         return new InrImageVectTemplate<unsigned char> (ptr_image);
-      Valeur WT_FLOAT_VECTOR  :
+      case WT_FLOAT_VECTOR  :
         return new InrImageVectTemplate<float>         (ptr_image);
-      Valeur WT_DOUBLE_VECTOR  :
+      case WT_DOUBLE_VECTOR  :
         return new InrImageVectTemplate<double>        (ptr_image);
       default:
 	break;
 
-    FinSelonQue
+    } // end switch
 
   Sinon
 
-    SelonQue ptr_image->type Vaut
-      Valeur WT_UNSIGNED_CHAR :
+    switch ( ptr_image->type ){
+      case WT_UNSIGNED_CHAR :
         return new InrImageTemplate<unsigned char> (nom);
-      Valeur WT_UNSIGNED_SHORT:
+      case WT_UNSIGNED_SHORT:
         return new InrImageTemplate<unsigned short>(nom);
-      Valeur WT_SIGNED_SHORT  :
+      case WT_SIGNED_SHORT  :
         return new InrImageTemplate<signed short>  (nom);
 
-      Valeur WT_UNSIGNED_INT  :
+      case WT_UNSIGNED_INT  :
         return new InrImageTemplate<unsigned int>  (nom);
-      Valeur WT_SIGNED_INT    :
+      case WT_SIGNED_INT    :
         return new InrImageTemplate<signed int>    (nom);
-      Valeur WT_UNSIGNED_LONG :
+      case WT_UNSIGNED_LONG :
         return new InrImageTemplate<unsigned long> (nom);
-      Valeur WT_SIGNED_LONG   :
+      case WT_SIGNED_LONG   :
         return new InrImageTemplate<signed long>   (nom);
 
-      Valeur WT_FLOAT         :
+      case WT_FLOAT         :
         return new InrImageTemplate<float>         (nom);
 
-      Valeur WT_DOUBLE        :
+      case WT_DOUBLE        :
         return new InrImageTemplate<double>        (nom);
 
       //------------------------
       // Images de Vecteurs
       //------------------------
 
-      Valeur WT_RGB           :
+      case WT_RGB           :
         return new InrImageVectTemplate<unsigned char> (nom);
-      Valeur WT_FLOAT_VECTOR  :
+      case WT_FLOAT_VECTOR  :
         return new InrImageVectTemplate<float>         (nom);
-      Valeur WT_DOUBLE_VECTOR  :
+      case WT_DOUBLE_VECTOR  :
         return new InrImageVectTemplate<double>        (nom);
 
-    FinSelonQue
+    } // end switch
 
   FinSi
 
@@ -170,8 +170,8 @@ InrImageBase* new_image( char* nom)
 //------------------------------------------------------------
 void delete_image( InrImageBase* image)
 {
-  Si (strcmp(image->Nom(),"-")==0) Alors
-    printf("liberation de %s \n", image->Nom() );
+  Si (strcmp(image->GetName(),"-")==0) Alors
+    printf("liberation de %s \n", image->GetName() );
     freeInrimage( (inrimage*) image );
   FinSi
 

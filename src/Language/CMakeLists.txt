@@ -10,7 +10,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Math
   ${AMILAB_SOURCE_DIR}/AMImage
   ${AMILAB_SOURCE_DIR}/Coordonnees
-  ${AMILAB_SOURCE_DIR}/Filtrage
+  ${AMILAB_SOURCE_DIR}/Filtering
   ${AMILAB_SOURCE_DIR}/Vaisseaux
   ${AMILAB_SOURCE_DIR}/Graphic
   ${AMILAB_SOURCE_DIR}/ImageTool
@@ -53,10 +53,12 @@ INCLUDE(${wxWidgets_USE_FILE})
 SET(Language_SRCS
     driver.cc
     VarContexts.cpp
+    BasicVariable.cpp
     Variable.cpp
     Variables.cpp
     paramlist.cpp
     ImageStack.cpp
+    VarArray.cpp
 )
 
 SET(Language_HDRS
@@ -72,11 +74,15 @@ SET(Language_HDRS
     ami_cpp_object.h
     GLTransformStack.h
     ImageStack.h
+    VariableStack.h
     paramlist.h
     SurfStack.h
     VarContexts.hpp
+    VarContexts.tpp
+    BasicVariable.h
     Variable.hpp
     Variables.hpp
+    VarArray.h
 )
 
 SET(Language_BISONFLEX_SRCS
@@ -113,9 +119,9 @@ ELSE(AMI_USE_FLEXBISON)
   include_directories(${AMILAB_SOURCE_DIR}/Language/FlexInclude)
 
    SET( FLEXBISON_OUTPUTS
-		${AMILAB_SOURCE_DIR}/Language/GeneratedFlexBison/improcess_bison.tab.cpp
-		${AMILAB_SOURCE_DIR}/Language/GeneratedFlexBison/improcess_flex.cpp
-	)
+    ${AMILAB_SOURCE_DIR}/Language/GeneratedFlexBison/improcess_bison.tab.cpp
+    ${AMILAB_SOURCE_DIR}/Language/GeneratedFlexBison/improcess_flex.cpp
+  )
  
    SET(Language_SRCS
      ${FLEXBISON_OUTPUTS}

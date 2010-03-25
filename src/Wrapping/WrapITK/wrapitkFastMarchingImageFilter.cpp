@@ -1,3 +1,4 @@
+
 #include "AMILabConfig.h"
 
 #ifndef _WITHOUT_ITK_
@@ -39,12 +40,13 @@ InrImage* wrap_itkFastMarchingImageFilter2D(ParamList* p)
   InrImage* res = NULL;
   int n=0;
   
-  if (!get_image_param(  input,      p, n)) HelpAndReturnNULL;
-  if (!get_float_param(  seedX,    p, n)) HelpAndReturnNULL;
-  if (!get_float_param(  seedY,      p, n)) HelpAndReturnNULL;
-	if (!get_float_param(  alpha,      p, n)) HelpAndReturnNULL;
-	if (!get_float_param(  beta,      p, n)) HelpAndReturnNULL;
-	if (!get_float_param(  stoppingTime,      p, n)) HelpAndReturnNULL; 
+  if (!get_val_ptr_param<InrImage>(  input, p, n))  HelpAndReturnNULL;
+  if (!get_val_param<float>( seedX, p, n))          HelpAndReturnNULL;
+  if (!get_val_param<float>( seedY, p, n))          HelpAndReturnNULL;
+  if (!get_val_param<float>( alpha, p, n))          HelpAndReturnNULL;
+  if (!get_val_param<float>( beta, p, n))           HelpAndReturnNULL;
+  if (!get_val_param<float>( stoppingTime, p, n))   HelpAndReturnNULL;
+
 
   typedef float       InternalPixelType;
   const   unsigned int        Dimension = 2;
@@ -61,7 +63,7 @@ InrImage* wrap_itkFastMarchingImageFilter2D(ParamList* p)
   	
 	image = InrToITK<InternalPixelType,Dimension>(input,region);
 	
-	cout << "Conversión hecha" << endl;
+	cout << "Conversiï¿½n hecha" << endl;
 
   typedef  itk::FastMarchingImageFilter< InternalImageType, InternalImageType > FastMarchingFilterType;
 
@@ -144,13 +146,13 @@ InrImage* wrap_itkFastMarchingImageFilter3D(ParamList* p)
   InrImage* res = NULL;
   int n=0;
   
-  if (!get_image_param(  input,      p, n)) HelpAndReturnNULL;
-  if (!get_float_param(  seedX,    p, n)) HelpAndReturnNULL;
-  if (!get_float_param(  seedY,      p, n)) HelpAndReturnNULL;
-	if (!get_float_param(  seedZ,      p, n)) HelpAndReturnNULL;
-	if (!get_float_param(  alpha,      p, n)) HelpAndReturnNULL;
-	if (!get_float_param(  beta,      p, n)) HelpAndReturnNULL;
-	if (!get_float_param(  stoppingTime,      p, n)) HelpAndReturnNULL; 
+  if (!get_val_ptr_param<InrImage>(  input, p, n))  HelpAndReturnNULL;
+  if (!get_val_param<float>( seedX, p, n))          HelpAndReturnNULL;
+  if (!get_val_param<float>( seedY, p, n))          HelpAndReturnNULL;
+  if (!get_val_param<float>( seedZ, p, n))          HelpAndReturnNULL;
+  if (!get_val_param<float>( alpha, p, n))          HelpAndReturnNULL;
+  if (!get_val_param<float>( beta, p, n))           HelpAndReturnNULL;
+  if (!get_val_param<float>( stoppingTime, p, n))   HelpAndReturnNULL;
 
   typedef float               InternalPixelType;
   const   unsigned int        Dimension = 3;
@@ -167,7 +169,7 @@ InrImage* wrap_itkFastMarchingImageFilter3D(ParamList* p)
   	
 	image = InrToITK<InternalPixelType,Dimension>(input,region);
 	
-	cout << "Conversión hecha" << endl;
+	cout << "Conversiï¿½n hecha" << endl;
 
   typedef  itk::FastMarchingImageFilter< InternalImageType, InternalImageType > FastMarchingFilterType;
 
@@ -217,4 +219,6 @@ InrImage* wrap_itkFastMarchingImageFilter3D(ParamList* p)
   fprintf(stderr," ITK not available, you need to compile with ITK ...\n");
   return NULL;
 #endif // _WITHOUT_ITK_	
-} // wrap_itkFastMarchingImageFilter3D
+} 
+// wrap_itkFastMarchingImageFilter3D=======
+

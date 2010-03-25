@@ -1,3 +1,4 @@
+
 #include "AMILabConfig.h"
 
 #ifndef _WITHOUT_ITK_
@@ -31,9 +32,9 @@ InrImage* wrap_itkWaterShedImageFilter2D(ParamList* p)
   InrImage* res = NULL;
   int n=0;
 	
-	if (!get_image_param(  input,      p, n)) HelpAndReturnNULL;
-	if (!get_float_param(  lowerThreshold,      p, n)) HelpAndReturnNULL;
-	if (!get_float_param(  outputScaleLevel,      p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>(  input,      p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>(  lowerThreshold,    p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>(  outputScaleLevel,  p, n)) HelpAndReturnNULL;
 	
 	typedef float               PixelType;
   const   unsigned int        Dimension = 2;
@@ -100,9 +101,9 @@ InrImage* wrap_itkWaterShedImageFilter3D(ParamList* p)
   InrImage* res = NULL;
   int n=0;
 	
-	if (!get_image_param(  input,      p, n)) HelpAndReturnNULL;
-	if (!get_float_param(  lowerThreshold,      p, n)) HelpAndReturnNULL;
-	if (!get_float_param(  outputScaleLevel,      p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>(  input,      p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>(  lowerThreshold,    p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>(  outputScaleLevel,  p, n)) HelpAndReturnNULL;
 	
 	typedef float               PixelType;
   const   unsigned int        Dimension = 3;
@@ -146,4 +147,3 @@ InrImage* wrap_itkWaterShedImageFilter3D(ParamList* p)
 #endif // _WITHOUT_ITK_	
 } // wrap_itkWaterShedImageFilter3D
 
-			

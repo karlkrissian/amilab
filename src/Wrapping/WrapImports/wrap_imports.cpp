@@ -10,8 +10,8 @@
 //
 //
 
-#include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
+#include "VarContexts.hpp"
 #include "wrapfunctions_draw.h"
 #include "wrap_imports.h"
 #include "ami_class.h"
@@ -23,6 +23,9 @@
 #include "wrapAMIFluid.h"
 #include "wrapFilters.h"
 #include "wrap_wxsamples.h"
+#include "wrap_parampanel.h"
+#include "wrap_varlist.h"
+#include "wrap_varvector.h"
 
 extern VarContexts  Vars;
 
@@ -31,8 +34,7 @@ void AddWrapImports()
 {
 
   // Create new instance of the class
-  AMIObject* amiobject;
-  amiobject = new AMIObject;
+  AMIObject::ptr amiobject(new AMIObject);
 
   amiobject->SetName("ami_import");
 
@@ -40,19 +42,24 @@ void AddWrapImports()
   Variables::ptr previous_ocontext = Vars.GetObjectContext();
   Vars.SetObjectContext(amiobject->GetContext());
 
-  Vars.AddVar(type_c_procedure, "ImageDraw",  (void*)  wrap_ImageDraw, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure, "MainFrame",  (void*)  wrap_MainFrame, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure, "System",  (void*)  wrap_System, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure, "ITK",  (void*)  wrap_ITK, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure, "AMIFluid",  (void*)  wrap_AMIFluid, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure, "Filters",  (void*)  wrap_Filters, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure, "wxsamples",  (void*)  wrap_wxsamples, OBJECT_CONTEXT_NUMBER);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,"ImageDraw",  wrap_ImageDraw);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,"MainFrame",  wrap_MainFrame);
+
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"VarList",   wrap_VarList);
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"VarVector", wrap_VarVector);
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"ParamPanel",wrap_ParamPanel);
+
+  ADDOBJECTVAR_NAME(C_wrap_procedure,"System",    wrap_System);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,"ITK",       wrap_ITK);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,"AMIFluid",  wrap_AMIFluid);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,"Filters",   wrap_Filters);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,"wxsamples", wrap_wxsamples);
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);
 
   // 3. add the variables to this instance
-  Vars.AddVar( type_ami_object, amiobject->GetName().c_str(), (void*) amiobject);
+  Vars.AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
 }
 
 

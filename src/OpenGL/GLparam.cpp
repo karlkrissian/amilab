@@ -164,17 +164,17 @@ void GLProjParam::SetProjection()
         gluPickMatrix(_pick_cursorx,viewport[3]-_pick_cursory,5,5,viewport);
     FinSi
     
-    SelonQue type_proj Vaut
-        Valeur PROJ_ORTHO:
+    switch ( type_proj ){
+        case PROJ_ORTHO:
         glOrtho( (GLdouble)  l, 
             (GLdouble)  r, 
             (GLdouble)  b, 
             (GLdouble)  t, 
             (GLdouble)  _near+eye_distance, 
             (GLdouble)  _far+eye_distance);
-        FinValeur
+        break;
     
-        Valeur PROJ_PERSP:
+        case PROJ_PERSP:
         double view_ratio;
         double near_value=_near;
         double far_value=_far;
@@ -191,8 +191,8 @@ void GLProjParam::SetProjection()
             (GLdouble)  t/view_ratio, 
             (GLdouble)  near_value+eye_distance,
             (GLdouble)  far_value+eye_distance);
-        FinValeur
-    FinSelonQue
+        break;
+    } // end switch
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();

@@ -1,9 +1,5 @@
 #!/usr/bin/amilab
-if (!exists(AnisoGSClass)) {
 
-  Class AnisoGSClass {
-
-  #----------------------------
 #
 # Denoising algorithm
 #
@@ -177,14 +173,14 @@ if (!exists(AnisoGSClass)) {
 
 if (!exists(anigsc)) {
 
-  AnisoGSClass anigsc  
+  AnisoGSClass anisogs  
    
   if (argc>=2) {
       printn "reading image"
       input_arg = Image($1)
-      ::input_image = "input_arg"
-      ::result_filename = $2
-      ::win.update
+      anisogs->input_image = "input_arg"
+      anisogs->result_filename = $2
+      anisogs->win.update
   }
 } else {
 InfoDialog "The script seems to be already loaded." 

@@ -31,13 +31,13 @@
 #include "coord_image.hpp"
 
 //--------------------------------------------------------------------------------
-CoordImage :: Constructeur CoordImage( InrImage* inrimage )
+CoordImage ::  CoordImage( InrImage* inrimage )
 //
 {
 
   _inrimage = inrimage;
 
-} // Constructeur
+} // Constructor
 
 
 //--------------------------------------------------------------------------------

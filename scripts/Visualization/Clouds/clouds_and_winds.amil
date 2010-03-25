@@ -703,74 +703,76 @@ proc CB_mask() {
 }
 
 # Arrow Parameters
-win_arrow = ParamWin("Arrow Parameters")
-arrowstyle_id     = win_arrow.AddInt(arrow_style,0,2)
-arrowbasesize_id  = win_arrow.AddFloat(arrow_basesize,0.01,0.4)
-arrowheadsize_id  = win_arrow.AddFloat(arrow_headsize,0.01,0.4)
-arrowheadpos_id   = win_arrow.AddFloat(arrow_headpos, 0.1, 0.95)
+win_import = &global::ami_import;
+arrow = import->ParamPanel("Arrow Parameters")
+arrowstyle_id     = win_arrow.AddInt( &arrow_style,  "arrow_style", 0,2)
+arrowbasesize_id  = win_arrow.AddFloat( &arrow_basesize,  "arrow_basesize", 0.01,0.4)
+arrowheadsize_id  = win_arrow.AddFloat( &arrow_headsize,  "arrow_headsize", 0.01,0.4)
+arrowheadpos_id   = win_arrow.AddFloat( &arrow_headpos,  "arrow_headpos",  0.1, 0.95)
 apdraw_id         = win_arrow.AddButton("Draw Vectors", CB_DrawVectors)
-win_arrow.CreateWin
+win_arrow.Update
 proc CB_ArrowParam() {  win_arrow.Display; }
 
 # Vector Parameters
-win_vectors = ParamWin("Vector Parameters")
-dense_id           =  win_vectors.AddBoolean(densevectors)
-vector_scale_id    =  win_vectors.AddInt(vector_scale,1,20)
-vectorspacingx_id  =  win_vectors.AddInt(vector_spacing_x,1,20)
-vectorspacingy_id  =  win_vectors.AddInt(vector_spacing_y,1,20)
+win_import = &global::ami_import;
+vectors = import->ParamPanel("Vector Parameters")
+dense_id           =  win_vectors.AddBoolean( &densevectors)
+vector_scale_id    =  win_vectors.AddInt( &vector_scale,  "vector_scale", 1,20)
+vectorspacingx_id  =  win_vectors.AddInt( &vector_spacing_x,  "vector_spacing_x", 1,20)
+vectorspacingy_id  =  win_vectors.AddInt( &vector_spacing_y,  "vector_spacing_y", 1,20)
 vpdraw_id          =  win_vectors.AddButton("Draw Vectors", CB_DrawVectors)
-win_vectors.CreateWin
+win_vectors.Update
 proc CB_VectorParam() { win_vectors.Display; }
 
 # Visualization Parameters
 w1 = ParamWin("Visualization Parameters")
 
 w1.BeginHorizontal
-  displayearth_id    = w1.AddBoolean(display_earth)
-  w1.SetCallback(CB_display_earth)
-  displavisual_id    = w1.AddBoolean(display_visual)
-  w1.SetCallback(CB_display_visual)
+  displayearth_id    = w1.AddBoolean( &display_earth)
+  w1.SetCallback( &CB_display_earth)
+  displavisual_id    = w1.AddBoolean( &display_visual)
+  w1.SetCallback( &CB_display_visual)
 w1.EndHorizontal
 
-altfactor_id       =  w1.AddInt(alt_factor,1,40)
-cloudtype_id       =  w1.AddInt(cloud_type,1,3)
+altfactor_id       =  w1.AddInt( &alt_factor,  "alt_factor", 1,40)
+cloudtype_id       =  w1.AddInt( &cloud_type,  "cloud_type", 1,3)
 
 mask_id            =  w1.AddButton("Mask from image zoom", CB_mask)
 
-w1.BeginBox("Display:")
+w1.BeginBoxPanel("Display:")
   w1.BeginHorizontal
-    cloud_visible_id  = w1.AddBoolean(cloud_visible)
-    w1.SetCallback(CB_update_visible)
-    cloud2_visible_id = w1.AddBoolean(cloud2_visible)
-    w1.SetCallback(CB_update_visible)
+    cloud_visible_id  = w1.AddBoolean( &cloud_visible)
+    w1.SetCallback( &CB_update_visible)
+    cloud2_visible_id = w1.AddBoolean( &cloud2_visible)
+    w1.SetCallback( &CB_update_visible)
   w1.EndHorizontal
   w1.BeginHorizontal
-    Hvect_visible_id  = w1.AddBoolean(Hvect_visible)
-    w1.SetCallback(CB_update_visible)
-    Vvect_visible_id  = w1.AddBoolean(Vvect_visible)
-    w1.SetCallback(CB_update_visible)
+    Hvect_visible_id  = w1.AddBoolean( &Hvect_visible)
+    w1.SetCallback( &CB_update_visible)
+    Vvect_visible_id  = w1.AddBoolean( &Vvect_visible)
+    w1.SetCallback( &CB_update_visible)
   w1.EndHorizontal
   w1.BeginHorizontal
-    c0_visible_id = w1.AddBoolean(class0_visible)
-    w1.SetCallback(CB_update_visible)
-    c1_visible_id = w1.AddBoolean(class1_visible)
-    w1.SetCallback(CB_update_visible)
-    c2_visible_id = w1.AddBoolean(class2_visible)
-    w1.SetCallback(CB_update_visible)
+    c0_visible_id = w1.AddBoolean( &class0_visible)
+    w1.SetCallback( &CB_update_visible)
+    c1_visible_id = w1.AddBoolean( &class1_visible)
+    w1.SetCallback( &CB_update_visible)
+    c2_visible_id = w1.AddBoolean( &class2_visible)
+    w1.SetCallback( &CB_update_visible)
   w1.EndHorizontal
-w1.EndBox
+w1.EndBoxPanel
 
-w1.BeginBox("Opacities:")
-  cloud_opacity_id = w1.AddFloat(cloud_opacity,0,1)
-  w1.SetCallback(CB_cloud_opacity)
-  cloud_material_opacity_id = w1.AddFloat(cloud_material_opacity,0,1)
-  cloud2_opacity_id = w1.AddFloat(cloud2_opacity,0,1)
-  w1.SetCallback(CB_cloud2_opacity)
-  HORvect_opacity_id   =  w1.AddFloat(HORvect_opacity,0,1)
-  w1.SetCallback(CB_HORvect_opacity)
-  VERvect_opacity_id   =  w1.AddFloat(VERvect_opacity,0,1)
-  w1.SetCallback(CB_VERvect_opacity)
-w1.EndBox
+w1.BeginBoxPanel("Opacities:")
+  cloud_opacity_id = w1.AddFloat( &cloud_opacity,  "cloud_opacity", 0,1)
+  w1.SetCallback( &CB_cloud_opacity)
+  cloud_material_opacity_id = w1.AddFloat( &cloud_material_opacity,  "cloud_material_opacity", 0,1)
+  cloud2_opacity_id = w1.AddFloat( &cloud2_opacity,  "cloud2_opacity", 0,1)
+  w1.SetCallback( &CB_cloud2_opacity)
+  HORvect_opacity_id   =  w1.AddFloat( &HORvect_opacity,  "HORvect_opacity", 0,1)
+  w1.SetCallback( &CB_HORvect_opacity)
+  VERvect_opacity_id   =  w1.AddFloat( &VERvect_opacity,  "VERvect_opacity", 0,1)
+  w1.SetCallback( &CB_VERvect_opacity)
+w1.EndBoxPanel
 
 
 vectorparambutton_id = w1.AddButton("Vector Parameters", CB_VectorParam)
@@ -781,5 +783,5 @@ w1.BeginHorizontal
   applyall_id = w1.AddButton("Draw All",     CB_DrawAll)
 w1.EndHorizontal
 
-w1.CreateWin
+w1.Update
 w1.Display

@@ -20,6 +20,7 @@
 
 //class ImageStack;
 
+#include "VariableStack.h"
 #include "ImageStack.h"
 #include "SurfStack.h"
 #include "MatrixStack.h"
@@ -57,6 +58,7 @@ protected:
 public:
 
     ImageStack        im_stack;
+    VariableStack     var_stack;
     SurfStack         surf_stack;
     MatrixStack       matrix_stack;
     GLTransformStack  gltransf_stack;
@@ -180,11 +182,17 @@ public:
     bool parse_block( const AmiInstructionBlock::ptr& b );
 
     /** call to a language function
-    * @param v function type variable
+    * @param v pointer to the AMIFunction object, unfortunately, we could not use smart pointers here (a little bit complicate to understand ... but related to button callback)
     * @param param list of parameters
     */
-    void yyip_call_function( const Variable* v, 
+    void yyip_call_function( AMIFunction* v, 
               const ParamList::ptr& param = ParamList::ptr() );
+
+    void yyip_call_function( AMIFunction::ptr& v, 
+              const ParamList::ptr& param = ParamList::ptr() )
+    {
+      yyip_call_function( v.get(), param);
+    }
 
     /** instanciate an object of a given class
     * @param f smart pointer to the function

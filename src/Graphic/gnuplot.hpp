@@ -49,9 +49,9 @@
 #define _GNUPLOT_HPP
 
 #include "style.hpp"
-DebutDeclareC
+extern "C" {
 #include <stdlib.h>
-FinDeclareC
+}
 #include <stdio.h>
 #include "chaine.hpp"
 
@@ -131,11 +131,11 @@ private:
 public:
 
   ///
-  Constructeur GnuPlot( );
+   GnuPlot( );
   //
 
   ///
-  Destructeur GnuPlot();
+  ~GnuPlot();
   //
    
   ///

@@ -83,7 +83,7 @@ public:
   float proba;
 
   ///
-  Constructeur pt3DReel() : Point_3D<float>(), rayon(1.0), proba(0.0) {}
+   pt3DReel() : Point_3D<float>(), rayon(1.0), proba(0.0) {}
 
 } pt3DReel;
 
@@ -109,10 +109,10 @@ public:
   int ligne;
   
   /// constructeur
-  //  Constructeur multiligne(): num(0), ligne(0) {}
+  //  Constructor multiligne(): num(0), ligne(0) {}
 
  /// constructeur
-  Constructeur multiligne(int n=0,int l=0): num(n), ligne(l) {}
+   multiligne(int n=0,int l=0): num(n), ligne(l) {}
   
   ///
   multiligne& operator =( const multiligne& p)
@@ -164,10 +164,10 @@ public:
   int point;
 
   /// constructeur
-  Constructeur multipoint(): num(0), ligne(0), point(0){}
+   multipoint(): num(0), ligne(0), point(0){}
   
   /// constructeur
-  Constructeur multipoint( int n, int l, int p): num(n), ligne(l), 
+   multipoint( int n, int l, int p): num(n), ligne(l), 
     point(p) {}
   
   ///
@@ -210,7 +210,7 @@ public:
   float       coeff;
 
   /// constructeur
-  Constructeur multipoint_ligne(): coeff(0) {}
+   multipoint_ligne(): coeff(0) {}
   
   ///
   multipoint_ligne& operator =( const multipoint_ligne& p)
@@ -596,16 +596,16 @@ public:
  */
 //@{
   /**
-   {\em Constructeur}
+   {\em Constructor}
    @param lignes1 ensemble de lignes 1.
    @param lignes2 ensemble de lignes 2.
    @param lignes3 nouvelles portions de lignes cr��es.
    */
-  Constructeur MultiCrest( Crest* lignes1, Crest* lignes2, Crest* lignes3,
+   MultiCrest( Crest* lignes1, Crest* lignes2, Crest* lignes3,
 			   InrImage* image);
 
   ///
-  Destructeur MultiCrest();
+  ~MultiCrest();
 //@}
 
 

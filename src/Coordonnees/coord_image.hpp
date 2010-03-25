@@ -40,10 +40,10 @@ private:
 public:
 
   ///
-  Constructeur CoordImage( InrImage* inrimage = (InrImage*) NULL);
+   CoordImage( InrImage* inrimage = (InrImage*) NULL);
   
   ///
-  Destructeur  CoordImage() {}
+  ~ CoordImage() {}
 
   ///
   Vect3D<float> CoordImage2Reelles( const Vect3D<float>& v);

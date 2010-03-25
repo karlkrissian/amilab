@@ -54,77 +54,78 @@ static PDEOpticFlowParam ami_optic_flow_param;
 void AddWrapFluid(){
 
   // Create new instance of the class
-  AMIObject* amiobject = new AMIObject;
+  AMIObject::ptr amiobject( new AMIObject);
   amiobject->SetName("AMIFluid");
 
   // Set the object context
   Variables::ptr previous_ocontext = Vars.GetObjectContext();
   Vars.SetObjectContext(amiobject->GetContext());
 
-  Vars.AddVar(type_c_procedure,"amiOFCorr3D",            (void*) amiOpticFlowCorrelation3D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiOFCorr3DNew",         (void*) amiOpticFlowCorrelation3DNew, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiOFExtrapol3D",        (void*) amiOpticFlowExtrapolationV3f, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiOFVar2DZoom",         (void*) amiOpticFlowVariational2DZoom, OBJECT_CONTEXT_NUMBER);
+  ADDOBJECTVAR_NAME( C_wrap_procedure, "amiOFCorr3D",            amiOpticFlowCorrelation3D);
+  ADDOBJECTVAR_NAME( C_wrap_procedure, "amiOFCorr3DNew",         amiOpticFlowCorrelation3DNew);
+  ADDOBJECTVAR_NAME( C_wrap_procedure, "amiOFExtrapol3D",        amiOpticFlowExtrapolationV3f);
+  ADDOBJECTVAR_NAME( C_wrap_procedure, "amiOFVar2DZoom",         amiOpticFlowVariational2DZoom);
   
-  Vars.AddVar(type_c_procedure,"amiOFExtrapolV3f",       (void*)  amiOpticFlowExtrapolationV3f, OBJECT_CONTEXT_NUMBER);
+  ADDOBJECTVAR_NAME( C_wrap_procedure, "amiOFExtrapolV3f",       amiOpticFlowExtrapolationV3f);
   
-  Vars.AddVar(type_c_procedure,"amiOFPDE",               (void*) amiOFPDE, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiOFPDE_Param",         (void*) amiOFPDE_Param, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiOF_2D_T",             (void*) amiOF_2D_T, OBJECT_CONTEXT_NUMBER);
+  ADDOBJECTVAR( C_wrap_procedure,  amiOFPDE);
+  ADDOBJECTVAR( C_wrap_procedure,  amiOFPDE_Param);
+  ADDOBJECTVAR( C_wrap_procedure,  amiOF_2D_T);
       
-  Vars.AddVar(type_c_procedure,"amiNorm2Vect3DError",    (void*) amiNorm2Vect3DError, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiNorm1Vect3DError",    (void*) amiNorm1Vect3DError, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiBoundary3D",          (void*) amiBoundary3D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiBoundaryVect3D",      (void*) amiBoundaryVect3D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiGrad3D",              (void*) amiGrad3D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiNormMaxVect3D",       (void*) amiNormMaxVect3D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiNorm2Vect3D",         (void*) amiNorm2Vect3D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiInterpolation3D",     (void*) amiInterpolation3D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiInterpolationVect3D", (void*) amiInterpolationVect3D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiCopy3D",              (void*) amiCopy3D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiCopyVect3D",          (void*) amiCopyVect3D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiConvolution3D",       (void*) amiConvolution3D, OBJECT_CONTEXT_NUMBER);
+  ADDOBJECTVAR( C_wrap_procedure,  amiNorm2Vect3DError);
+  ADDOBJECTVAR( C_wrap_procedure,  amiNorm1Vect3DError);
+  ADDOBJECTVAR( C_wrap_procedure,  amiBoundary3D);
+  ADDOBJECTVAR( C_wrap_procedure,  amiBoundaryVect3D);
+  ADDOBJECTVAR( C_wrap_procedure,  amiGrad3D);
+  ADDOBJECTVAR( C_wrap_procedure,  amiNormMaxVect3D);
+  ADDOBJECTVAR( C_wrap_procedure,  amiNorm2Vect3D);
+  ADDOBJECTVAR( C_wrap_procedure,  amiInterpolation3D);
+  ADDOBJECTVAR( C_wrap_procedure,  amiInterpolationVect3D);
+  ADDOBJECTVAR( C_wrap_procedure,  amiCopy3D);
+  ADDOBJECTVAR( C_wrap_procedure,  amiCopyVect3D);
+  ADDOBJECTVAR( C_wrap_procedure,  amiConvolution3D);
   
-  Vars.AddVar(type_c_image_function,"amiWarpSplines",    (void*) amiWarpSplines, OBJECT_CONTEXT_NUMBER);
+  ADDOBJECTVAR( C_wrap_imagefunction,  amiWarpSplines);
   
-  Vars.AddVar(type_c_image_function,"amiZoomDown3D",     (void*) amiZoomDown3D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_image_function,"amiReadUV",         (void*) amiReadUV, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_image_function,"amiReadFlow3D",     (void*) amiReadFlow3D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_image_function,"amiReadBarronData", (void*) amiReadBarronData, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_image_function,"amiInverseFlow",    (void*) amiInverseFlow, OBJECT_CONTEXT_NUMBER);
+  ADDOBJECTVAR( C_wrap_imagefunction,  amiZoomDown3D);
+  ADDOBJECTVAR( C_wrap_imagefunction,  amiReadUV);
+  ADDOBJECTVAR( C_wrap_imagefunction,  amiReadFlow3D);
+  ADDOBJECTVAR( C_wrap_imagefunction,  amiReadBarronData);
+  ADDOBJECTVAR( C_wrap_imagefunction,  amiInverseFlow);
       
-  Vars.AddVar(type_c_procedure,"amiZoomUpFilter3D",        (void*) amiZoomUpFilter3D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiZoomUpInterpolation3D", (void*) amiZoomUpInterpolation3D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_image_function,"amiZoomUpFlow3D",     (void*) amiZoomUpFlow3D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiOFExplicit",            (void*) amiHornSchunckOpticFlowExplicit, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiSolenoidalProj3D",      (void*) amiSolenoidalProjection3D, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiOFSetGradient",         (void*) amiOFSetGradient, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiOFSetSmoothGradient",   (void*) amiOFSetSmoothGradient, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiPDESetSolenoidal",      (void*) amiPDESetSolenoidal, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiPDESetEnergyConstraint",      (void*) amiPDESetEnergyConstraint, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiOFSetGlobalConstraint", (void*) amiOFSetGlobalConstraint, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiOFSetBoundaryType",     (void*) amiOFSetBoundaryType, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiOFSetInterpolation",    (void*) amiOFSetInterpolation, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiOFSetSymmetric",        (void*) amiOFSetSymmetric, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiOFSetNormalizeAlpha",   (void*) amiOFSetNormalizeAlpha, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiOFSetAlphaNormEpsilon", (void*) amiOFSetAlphaNormEpsilon, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiJavierHornSchunck",     (void*) amiJavierHornSchunck, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiJavierHornSchunckSym",  (void*) amiJavierHornSchunckSym, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiOpticFlow",             (void*) amiOpticFlow, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiReadPDEOFParam",        (void*) amiReadPDEOFParam, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiWritePDEOFParam",       (void*) amiWritePDEOFParam, OBJECT_CONTEXT_NUMBER);
+  ADDOBJECTVAR( C_wrap_procedure,  amiZoomUpFilter3D);
+  ADDOBJECTVAR( C_wrap_procedure,  amiZoomUpInterpolation3D);
+  ADDOBJECTVAR( C_wrap_imagefunction,  amiZoomUpFlow3D);
+
+  ADDOBJECTVAR_NAME( C_wrap_procedure, "amiOFExplicit",            amiHornSchunckOpticFlowExplicit);
+  ADDOBJECTVAR_NAME( C_wrap_procedure, "amiSolenoidalProj3D",      amiSolenoidalProjection3D);
+  ADDOBJECTVAR_NAME( C_wrap_procedure, "amiOFSetGradient",         amiOFSetGradient);
+  ADDOBJECTVAR_NAME( C_wrap_procedure, "amiOFSetSmoothGradient",   amiOFSetSmoothGradient);
+  ADDOBJECTVAR_NAME( C_wrap_procedure, "amiPDESetSolenoidal",      amiPDESetSolenoidal);
+  ADDOBJECTVAR_NAME( C_wrap_procedure, "amiPDESetEnergyConstraint",      amiPDESetEnergyConstraint);
+  ADDOBJECTVAR( C_wrap_procedure,  amiOFSetGlobalConstraint);
+  ADDOBJECTVAR( C_wrap_procedure,  amiOFSetBoundaryType);
+  ADDOBJECTVAR( C_wrap_procedure,  amiOFSetInterpolation);
+  ADDOBJECTVAR( C_wrap_procedure,  amiOFSetSymmetric);
+  ADDOBJECTVAR( C_wrap_procedure,  amiOFSetNormalizeAlpha);
+  ADDOBJECTVAR( C_wrap_procedure,  amiOFSetAlphaNormEpsilon);
+  ADDOBJECTVAR( C_wrap_procedure,  amiJavierHornSchunck);
+  ADDOBJECTVAR( C_wrap_procedure,  amiJavierHornSchunckSym);
+  ADDOBJECTVAR( C_wrap_procedure,  amiOpticFlow);
+  ADDOBJECTVAR( C_wrap_procedure,  amiReadPDEOFParam);
+  ADDOBJECTVAR( C_wrap_procedure,  amiWritePDEOFParam);
   
-  Vars.AddVar(type_c_procedure,"amiVorticity",          (void*) amiVorticity, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiGradVorticity",      (void*) amiGradVorticity, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiVorticityStandard",  (void*) amiVorticityStandard, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiGenerateSphereFlow",  (void*) amiGenerateSphereFlow, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure,"amiGenerate3DPIV",  (void*) amiGenerate3DPIV, OBJECT_CONTEXT_NUMBER);
+  ADDOBJECTVAR( C_wrap_procedure,  amiVorticity);
+  ADDOBJECTVAR( C_wrap_procedure,  amiGradVorticity);
+  ADDOBJECTVAR( C_wrap_procedure,  amiVorticityStandard);
+  ADDOBJECTVAR( C_wrap_procedure,  amiGenerateSphereFlow);
+  ADDOBJECTVAR( C_wrap_procedure,  amiGenerate3DPIV);
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);
 
   // 3. add the variables to this instance
-  Vars.AddVar( type_ami_object, amiobject->GetName().c_str(), (void*) amiobject);
+  Vars.AddVar<AMIObject>( amiobject->GetName().c_str(),  amiobject);
 }
 
 
@@ -155,8 +156,8 @@ void amiOpticFlowCorrelation2D(
     int xIntervalSize, int yIntervalSize, /* Displacement between points for computing the correlation */
     int sizeCorrWinX, int sizeCorrWinY, /* Size of correlation window (it can be different in each axe) and it has to be a power of 2 */
     int windowDeformation /* Window parameter to control the warping in the correlation window;
-    				windowDeformation = 0 -> image2 is warped using flow in all points of the window,  
-    				windowDedormation = 1 -> image2 is warped using flow in the central point of the window */
+            windowDeformation = 0 -> image2 is warped using flow in all points of the window,  
+            windowDedormation = 1 -> image2 is warped using flow in the central point of the window */
 ) {
 
     int corrWin[2] = { sizeCorrWinX, sizeCorrWinY };
@@ -258,16 +259,16 @@ void amiOpticFlowVariational2DZoom(ParamList* p)
 
   int n=0;
 
-  if (!get_image_param(      im1,      p, n)) HelpAndReturn;
-  if (!get_image_param(      im2,      p, n)) HelpAndReturn;
-  if (!get_float_param(      sigma,    p, n)) HelpAndReturn;
-  if (!get_float_param(      T,        p, n)) HelpAndReturn;
-  if (!get_float_param(      alpha,    p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(      im1,      p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(      im2,      p, n)) HelpAndReturn;
+  if (!get_val_param<float>(      sigma,    p, n)) HelpAndReturn;
+  if (!get_val_param<float>(      T,        p, n)) HelpAndReturn;
+  if (!get_val_param<float>(      alpha,    p, n)) HelpAndReturn;
   if (!get_int_param(        dtype,    p, n)) HelpAndReturn;
-  if (!get_float_param(      quantile, p, n)) HelpAndReturn;
-  if (!get_float_param(      ht,       p, n)) HelpAndReturn;
-  if (!get_image_param(      u,        p, n)) HelpAndReturn;
-  if (!get_image_param(      v,        p, n)) HelpAndReturn;
+  if (!get_val_param<float>(      quantile, p, n)) HelpAndReturn;
+  if (!get_val_param<float>(      ht,       p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(      u,        p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(      v,        p, n)) HelpAndReturn;
   if (!get_int_param(      Niter,      p, n)) HelpAndReturn;
   if (!get_int_param(      NZoom,      p, n)) HelpAndReturn;
 
@@ -357,13 +358,13 @@ void amiOpticFlowCorrelation3D( ParamList* p)
 
   int n=0;
   
-  if (!get_image_param(        im1,    p, n)) HelpAndReturn;
-  if (!get_image_param(        im2,    p, n)) HelpAndReturn; 
+  if (!get_val_ptr_param<InrImage>(        im1,    p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(        im2,    p, n)) HelpAndReturn; 
   if (!get_vectimage_param(    u,      p, n)) HelpAndReturn;
-  if (!get_vect3d_int_param(   cw,     p, n)) HelpAndReturn;
-  if (!get_float_param(        windef, p, n)) HelpAndReturn;
-  if (!get_vect3d_float_param( disp,   p, n)) HelpAndReturn;
-  if (!get_vect3d_float_param( p_init, p, n)) HelpAndReturn;
+  if (!get_several_int_params<3>(   cw,     p, n)) HelpAndReturn;
+  if (!get_val_param<float>(        windef, p, n)) HelpAndReturn;
+  if (!get_several_params<float,3>( disp,   p, n)) HelpAndReturn;
+  if (!get_several_params<float,3>( p_init, p, n)) HelpAndReturn;
   
   float*** image1_pos = im1->create_positions_3D<float>();
   float*** image2_pos = im2->create_positions_3D<float>();
@@ -424,12 +425,12 @@ void amiOpticFlowCorrelation3DNew( ParamList* p)
 
   int n=0;
   
-  if (!get_image_param(        im1,     p, n)) HelpAndReturn;
-  if (!get_image_param(        im2,     p, n)) HelpAndReturn; 
+  if (!get_val_ptr_param<InrImage>(        im1,     p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(        im2,     p, n)) HelpAndReturn; 
   if (!get_vectimage_param(    u,       p, n)) HelpAndReturn;
-  if (!get_vect3d_int_param(   cw,      p, n)) HelpAndReturn;
-  if (!get_vect3d_float_param( disp,    p, n)) HelpAndReturn;
-  if (!get_vect3d_float_param( p_init,  p, n)) HelpAndReturn;
+  if (!get_several_int_params<3>(   cw,      p, n)) HelpAndReturn;
+  if (!get_several_params<float,3>( disp,    p, n)) HelpAndReturn;
+  if (!get_several_params<float,3>( p_init,  p, n)) HelpAndReturn;
   if (!get_int_param(          threads, p, n)) HelpAndReturn;
   
   
@@ -504,8 +505,8 @@ void amiOFPDE( ParamList* p)
   InrImage* u;
   int n=0;
 
-  if (!get_image_param(        im1,             p, n)) HelpAndReturn;
-  if (!get_image_param(        im2,             p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(        im1,             p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(        im2,             p, n)) HelpAndReturn;
   if (!get_vectimage_param(    u,               p, n)) HelpAndReturn;
   
   // get the inputs in the format for processing
@@ -516,7 +517,7 @@ void amiOFPDE( ParamList* p)
     ami_horn_schunck_optic_flow_3d(
         image1_pos,image2_pos,
         flow_pos,
-	ami_optic_flow_param,
+  ami_optic_flow_param,
         im1->DimX(), im1->DimY(), im1->DimZ());
     
     // save and free results
@@ -565,12 +566,12 @@ void amiOFPDE_Param( ParamList* p)
   int smoothing_type=0;
   int n=0;
 
-  if (!get_vect3d_float_param( beta,            p, n)) HelpAndReturn;
-  if (!get_vect3d_int_param(   zoom_factor,     p, n)) HelpAndReturn;
-  if (!get_vect3d_float_param( alfa,            p, n)) HelpAndReturn;
-  if (!get_float_param(        TOL_GaussSeidel, p, n)) HelpAndReturn;
+  if (!get_several_params<float,3>( beta,            p, n)) HelpAndReturn;
+  if (!get_several_int_params<3>(   zoom_factor,     p, n)) HelpAndReturn;
+  if (!get_several_params<float,3>( alfa,            p, n)) HelpAndReturn;
+  if (!get_val_param<float>(        TOL_GaussSeidel, p, n)) HelpAndReturn;
   if (!get_int_param(          Nscales,         p, n)) HelpAndReturn;
-  if (!get_float_param(        TOL_Scales,      p, n)) HelpAndReturn;
+  if (!get_val_param<float>(        TOL_Scales,      p, n)) HelpAndReturn;
   if (!get_int_param(          grad_type,       p, n)) HelpAndReturn;
   if (!get_int_param(          smoothing_type,  p, n)) HelpAndReturn;
   
@@ -628,14 +629,14 @@ void amiOF_2D_T( ParamList* p)
   int smoothing_type=0;
   int n=0;
 
-  if (!get_image_param(        im,             p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(        im,             p, n)) HelpAndReturn;
   if (!get_vectimage_param(    u,               p, n)) HelpAndReturn;
-  if (!get_vect2d_float_param( beta,            p, n)) HelpAndReturn;
-  if (!get_vect2d_int_param(   zoom_factor,     p, n)) HelpAndReturn;
-  if (!get_vect2d_float_param( alfa,            p, n)) HelpAndReturn;
-  if (!get_float_param(        TOL_GaussSeidel, p, n)) HelpAndReturn;
+  if (!get_several_params<float,2>( beta,            p, n)) HelpAndReturn;
+  if (!get_several_int_params<2>(   zoom_factor,     p, n)) HelpAndReturn;
+  if (!get_several_params<float,2>( alfa,            p, n)) HelpAndReturn;
+  if (!get_val_param<float>(        TOL_GaussSeidel, p, n)) HelpAndReturn;
   if (!get_int_param(          Nscales,         p, n)) HelpAndReturn;
-  if (!get_float_param(        TOL_Scales,      p, n)) HelpAndReturn;
+  if (!get_val_param<float>(        TOL_Scales,      p, n)) HelpAndReturn;
   if (!get_int_param(          grad_type,       p, n)) HelpAndReturn;
   if (!get_int_param(          smoothing_type,    p, n)) HelpAndReturn;
   
@@ -652,8 +653,8 @@ void amiOF_2D_T( ParamList* p)
   ami_optic_flow_param.SetGradientType(grad_type);
   
   ami_optic_flow_2d_t(image_pos,flow_pos,
-		      ami_optic_flow_param,
-		      im->DimX(),im->DimY(),im->DimZ());
+          ami_optic_flow_param,
+          im->DimX(),im->DimY(),im->DimZ());
   
     // save and free results
   im->free_positions_3D<float>(image_pos);
@@ -669,41 +670,41 @@ void amiOF_2D_T( ParamList* p)
  */
 void amiOpticFlowExtrapolationV3f(ParamList* p)
 {
-	char functionname[] = "amiOpticFlowExtrapolationV3f";
-	char description[]=" \n\
-			This function extrapolate a 3D vector field in order \n\
-			to make it dense \n\
-			";
-	char parameters[] =" \n\
-			the parameters with their default values are : \n\
-			- VECTOR IMAGE: Vector field (input/output) \n\
-			- Displacement grid \n\
-			deault is (4,4,4) \n\
-			- Initial point \n\
-			default is (0,0,0) \n\
-			- Extrapolation displacement: \n\
-			default is 0.5 \n\
-			";
-	
-	InrImage* u        = NULL;
-	ami_v3f p_disp     = {4,4,4};
-	ami_v3f p_init     = {0,0,0};
-	float displacement = 0.5;
+  char functionname[] = "amiOpticFlowExtrapolationV3f";
+  char description[]=" \n\
+      This function extrapolate a 3D vector field in order \n\
+      to make it dense \n\
+      ";
+  char parameters[] =" \n\
+      the parameters with their default values are : \n\
+      - VECTOR IMAGE: Vector field (input/output) \n\
+      - Displacement grid \n\
+      deault is (4,4,4) \n\
+      - Initial point \n\
+      default is (0,0,0) \n\
+      - Extrapolation displacement: \n\
+      default is 0.5 \n\
+      ";
+  
+  InrImage* u        = NULL;
+  ami_v3f p_disp     = {4,4,4};
+  ami_v3f p_init     = {0,0,0};
+  float displacement = 0.5;
 
-	int n=0;
+  int n=0;
 
   // the list starts by the last one in the list
   if (!get_vectimage_param(    u,            p, n)) HelpAndReturn;
-  if (!get_vect3d_float_param( p_disp,       p, n)) HelpAndReturn; 
-  if (!get_vect3d_float_param( p_init,       p, n)) HelpAndReturn; 
-  if (!get_float_param(        displacement, p, n)) HelpAndReturn;
+  if (!get_several_params<float,3>( p_disp,       p, n)) HelpAndReturn; 
+  if (!get_several_params<float,3>( p_init,       p, n)) HelpAndReturn; 
+  if (!get_val_param<float>(        displacement, p, n)) HelpAndReturn;
   
   ami_v3f*** flow_pos = u  ->create_positions_3D<ami_v3f>();
   
   ami_optic_flow_extrapolation_v3f(flow_pos,
-				   p_init,p_disp,
-				   displacement,
-				   u->DimX(), u->DimY(), u->DimZ());
+           p_init,p_disp,
+           displacement,
+           u->DimX(), u->DimY(), u->DimZ());
   // save and free results
   u  ->free_positions_3D<ami_v3f>(flow_pos);
   
@@ -748,41 +749,41 @@ void amiNorm2Vect3D( ParamList*)
 /** Warping of 3D scalar image using a vector field */
 void amiInterpolation3D( ParamList* p)
 {
-	char functionname[] = "amiInterpolation3D";
-	char description[]=" \n\
-			This function perfomes a warping of a 3D scalar image \n\
-			using a vector field \n\
-			";	
-	char parameters[] =" \n\
-			the parameters with their default values are : \n\
-			- IMAGE: input image \n\
-			- VECTOR IMAGE: vector field \n\
-			- IMAGE: output image \n\
-			";
-	
-	InrImage* im		 = NULL;
-	InrImage* u          = NULL;
-	InrImage* im_out	 = NULL;
-	int n=0;
+  char functionname[] = "amiInterpolation3D";
+  char description[]=" \n\
+      This function perfomes a warping of a 3D scalar image \n\
+      using a vector field \n\
+      ";  
+  char parameters[] =" \n\
+      the parameters with their default values are : \n\
+      - IMAGE: input image \n\
+      - VECTOR IMAGE: vector field \n\
+      - IMAGE: output image \n\
+      ";
+  
+  InrImage* im     = NULL;
+  InrImage* u          = NULL;
+  InrImage* im_out   = NULL;
+  int n=0;
 
   // the list starts by the last one in the list
-	if (!get_image_param(        im,          p, n)) HelpAndReturn;	
-	if (!get_vectimage_param(    u,            p, n)) HelpAndReturn;
-	if (!get_image_param(        im_out,       p, n)) HelpAndReturn;
-	  
-	float*** im_pos = im		->create_positions_3D<float>();
-	ami_v3f*** u_pos = u  		->create_positions_3D<ami_v3f>();
-	float*** im_out_pos = im_out->create_positions_3D<float>();
+  if (!get_val_ptr_param<InrImage>(        im,          p, n)) HelpAndReturn; 
+  if (!get_vectimage_param(    u,            p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(        im_out,       p, n)) HelpAndReturn;
+    
+  float*** im_pos = im    ->create_positions_3D<float>();
+  ami_v3f*** u_pos = u      ->create_positions_3D<ami_v3f>();
+  float*** im_out_pos = im_out->create_positions_3D<float>();
   
-	ami_image_interpolation_3df(im_pos,
-								u_pos,
-								im_out_pos,
-								im->DimX(), im->DimY(), im->DimZ());
-								
+  ami_image_interpolation_3df(im_pos,
+                u_pos,
+                im_out_pos,
+                im->DimX(), im->DimY(), im->DimZ());
+                
   // save and free results
-	im->free_positions_3D<float>(im_pos);
-	u  ->free_positions_3D<ami_v3f>(u_pos);	
-	im_out->free_positions_3D<float>(im_out_pos);	
+  im->free_positions_3D<float>(im_pos);
+  u  ->free_positions_3D<ami_v3f>(u_pos); 
+  im_out->free_positions_3D<float>(im_out_pos); 
 }
 
 /** Warping of 2D images using Splines */
@@ -807,7 +808,7 @@ InrImage* amiWarpSplines( ParamList* p)
     int n=0;
 
     // the list starts by the last one in the list
-    if (!get_image_param(     im,           p, n)) HelpAndReturnNULL; 
+    if (!get_val_ptr_param<InrImage>(     im,           p, n)) HelpAndReturnNULL; 
     if (!get_vectimage_param( u,            p, n)) HelpAndReturnNULL;
     if (!get_int_param(       spline_degree,p, n)) HelpAndReturnNULL;
       
@@ -864,8 +865,8 @@ void amiConvolution3D( ParamList* p)
   float     beta[3]={0.25,0.25,0.25};
   int n=0;
   
-  if (!get_image_param(        im1,    p, n)) HelpAndReturn;
-  if (!get_vect3d_float_param( beta,   p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(        im1,    p, n)) HelpAndReturn;
+  if (!get_several_params<float,3>( beta,   p, n)) HelpAndReturn;
   
   float*** image1_pos = im1->create_positions_3D<float>();
   ami_convolution_3d(image1_pos, beta, im1->DimX(), im1->DimY(), im1->DimZ());
@@ -894,19 +895,19 @@ InrImage* amiZoomDown3D( ParamList* p)
   int       factor[3]={2,2,2};
   int n=0;
   
-  if (!get_image_param(        im1,    p, n)) HelpAndReturnNULL;
-  if (!get_vect3d_float_param( beta,   p, n)) HelpAndReturnNULL;
-  if (!get_vect3d_int_param(   factor, p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>(        im1,    p, n)) HelpAndReturnNULL;
+  if (!get_several_params<float,3>( beta,   p, n)) HelpAndReturnNULL;
+  if (!get_several_int_params<3>(   factor, p, n)) HelpAndReturnNULL;
  
   if (im1->DimX()==1) factor[0]=1;
   if (im1->DimY()==1) factor[1]=1;
   if (im1->DimZ()==1) factor[2]=1;
   
   res = new InrImage((int) im1->DimX()/factor[0],
-		     (int) im1->DimY()/factor[1],
-		     (int) im1->DimZ()/factor[2],
-		     WT_FLOAT);
-		 
+         (int) im1->DimY()/factor[1],
+         (int) im1->DimZ()/factor[2],
+         WT_FLOAT);
+     
   float*** image1_pos = im1->create_positions_3D<float>();
   float*** res_pos    = res->create_positions_3D<float>();
   ami_zoom_down_3d(image1_pos, res_pos, beta, factor,im1->DimX(), im1->DimY(), im1->DimZ());
@@ -930,46 +931,46 @@ void amiZoomUpInterpolation3D( ParamList*){
 /** Zoom up with flow of 3D image */
 InrImage* amiZoomUpFlow3D( ParamList* p)
 {
-	char functionname[] = "amiZoomUpFlow3D";
-	char description[]=" \n\
-			This function upsample a 3D vector field \n\
-			";
-	char parameters[] =" \n\
-			the parameters with their default values are : \n\
-			- IMAGE: input vector field \n\
-			- 3 INT VALUES (def 2,2,2) are the zoom factors, each dimension will be multiplied by the corresponding factor\n\
-			";
+  char functionname[] = "amiZoomUpFlow3D";
+  char description[]=" \n\
+      This function upsample a 3D vector field \n\
+      ";
+  char parameters[] =" \n\
+      the parameters with their default values are : \n\
+      - IMAGE: input vector field \n\
+      - 3 INT VALUES (def 2,2,2) are the zoom factors, each dimension will be multiplied by the corresponding factor\n\
+      ";
   
-	InrImage* im1 = NULL; 
-	InrImage* res = NULL; 
+  InrImage* im1 = NULL; 
+  InrImage* res = NULL; 
   
-	float     beta[3]={0.25,0.25,0.25}; // the function doesn't use this parameter
-	int       factor[3]={2,2,2};
-	int n=0;
+  float     beta[3]={0.25,0.25,0.25}; // the function doesn't use this parameter
+  int       factor[3]={2,2,2};
+  int n=0;
   
-	if (!get_vectimage_param(        im1,    p, n)) HelpAndReturnNULL;
-	if (!get_vect3d_int_param(   factor, p, n)) HelpAndReturnNULL;
+  if (!get_vectimage_param(        im1,    p, n)) HelpAndReturnNULL;
+  if (!get_several_int_params<3>(   factor, p, n)) HelpAndReturnNULL;
  
-	if (im1->DimX()==1) factor[0]=1;
-	if (im1->DimY()==1) factor[1]=1;
-	if (im1->DimZ()==1) factor[2]=1;
+  if (im1->DimX()==1) factor[0]=1;
+  if (im1->DimY()==1) factor[1]=1;
+  if (im1->DimZ()==1) factor[2]=1;
   
-	res = new InrImage((int) im1->DimX()*factor[0],
-						(int) im1->DimY()*factor[1],
-						(int) im1->DimZ()*factor[2],3,
-						WT_FLOAT);
-		 
-	ami_v3f*** image1_pos = im1->create_positions_3D<ami_v3f>();
-	ami_v3f*** res_pos    = res->create_positions_3D<ami_v3f>();
-	ami_zoom_up_v3f_flow(image1_pos, res_pos, beta, factor, im1->DimX(), im1->DimY(), im1->DimZ());
-	
+  res = new InrImage((int) im1->DimX()*factor[0],
+            (int) im1->DimY()*factor[1],
+            (int) im1->DimZ()*factor[2],3,
+            WT_FLOAT);
+     
+  ami_v3f*** image1_pos = im1->create_positions_3D<ami_v3f>();
+  ami_v3f*** res_pos    = res->create_positions_3D<ami_v3f>();
+  ami_zoom_up_v3f_flow(image1_pos, res_pos, beta, factor, im1->DimX(), im1->DimY(), im1->DimZ());
+  
   // save and free results
-	im1->free_positions_3D<ami_v3f>(image1_pos);
-	res->free_positions_3D<ami_v3f>(res_pos);
+  im1->free_positions_3D<ami_v3f>(image1_pos);
+  res->free_positions_3D<ami_v3f>(res_pos);
   
-	return res;
-	
-	
+  return res;
+  
+  
 }
 
 /** Explicit Horn Schunck solution */
@@ -999,15 +1000,15 @@ void amiHornSchunckOpticFlowExplicit( ParamList* p)
   float     dt = 0.1;
   int n=0;
   
-  if (!get_image_param(        im1,    p, n)) HelpAndReturn;
-  if (!get_image_param(        im2,    p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(        im1,    p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(        im2,    p, n)) HelpAndReturn;
   if (!get_vectimage_param(    u,      p, n)) HelpAndReturn;
-  if (!get_vect3d_float_param( alfa,   p, n)) HelpAndReturn;
-  if (!get_float_param(        total_time,   p, n)) HelpAndReturn;
-  if (!get_float_param(        dt,           p, n)) HelpAndReturn;
+  if (!get_several_params<float,3>( alfa,   p, n)) HelpAndReturn;
+  if (!get_val_param<float>(        total_time,   p, n)) HelpAndReturn;
+  if (!get_val_param<float>(        dt,           p, n)) HelpAndReturn;
  
   
-		 
+     
   float***   im1_pos = im1->create_positions_3D<float>();
   float***   im2_pos = im2->create_positions_3D<float>();
   ami_v3f*** u_pos   = u  ->create_positions_3D<ami_v3f>();
@@ -1015,7 +1016,7 @@ void amiHornSchunckOpticFlowExplicit( ParamList* p)
   ami_horn_schunck_optic_flow_explicit(
       im1_pos,im2_pos,u_pos,
       alfa,total_time,dt,im1->DimX(),im1->DimY(),im1->DimZ(),
-	ami_optic_flow_param);
+  ami_optic_flow_param);
   
   // save and free results
   im1->free_positions_3D<float>(  im1_pos);
@@ -1044,7 +1045,7 @@ InrImage* amiReadUV( ParamList* p)
   InrImage* vect = NULL;
   int n=0;
   
-  if (!get_string_param( filename_param, p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<string>( filename_param, p, n)) HelpAndReturnNULL;
 
   filename = *filename_param;
   read_size_uv (nx, ny, filename);
@@ -1197,7 +1198,7 @@ void amiSolenoidalProjection3D( ParamList* p)
       ";
   char parameters[] =" \n\
       the parameters with their default values are : \n\
-	  - VECTOR IMAGE: input/outpu flow\n\
+    - VECTOR IMAGE: input/outpu flow\n\
       - 3 FLOAT VALUES: beta, smoothing coefficients  ( def: 0.25, 0.25, 0.25)\n\
       - 3 FLOAT VALUES: zoom factor in each dimension ( def: 2,2,2)\n\
       - FLOAT:          Gauss-Seidel Tolerance threshold (def: 5E-6)\n\
@@ -1215,17 +1216,17 @@ void amiSolenoidalProjection3D( ParamList* p)
   int n=0;
   
   if (!get_vectimage_param(    u,               p, n)) HelpAndReturn;
-  if (!get_vect3d_float_param( beta,            p, n)) HelpAndReturn;
-  if (!get_vect3d_int_param(   zoom_factor,     p, n)) HelpAndReturn;
-  if (!get_float_param(        TOL_GaussSeidel, p, n)) HelpAndReturn;
-  if (!get_float_param(        A,               p, n)) HelpAndReturn;
+  if (!get_several_params<float,3>( beta,            p, n)) HelpAndReturn;
+  if (!get_several_int_params<3>(   zoom_factor,     p, n)) HelpAndReturn;
+  if (!get_val_param<float>(        TOL_GaussSeidel, p, n)) HelpAndReturn;
+  if (!get_val_param<float>(        A,               p, n)) HelpAndReturn;
   if (!get_int_param(          Nscales,         p, n)) HelpAndReturn;
    
   ami_v3f*** u_pos   = u  ->create_positions_3D<ami_v3f>();
   
   ami_solenoidal_proyeccion_3d(u_pos,beta,zoom_factor, TOL_GaussSeidel,Nscales,
-				A,
-			       u->DimX(),u->DimY(),u->DimZ());
+        A,
+             u->DimX(),u->DimY(),u->DimZ());
 
   // save and free results
   u  ->free_positions_3D<ami_v3f>(u_pos);
@@ -1406,66 +1407,66 @@ void amiOFSetSmoothGradient( ParamList* p)
 /**  FUNCTION TO CHOOSE IF WE APPLY SOLENOIDAL PROJECTION IN THE PDE OPTICAL FLOW */
 void amiPDESetSolenoidal( ParamList* p)
 {
-	char functionname[] = "amiPDESetSolenoidal";
-	char description[]=" \n\
-			Choose if the PDE optical flow should apply the solenoidal projection \n\
-			";
-	char parameters[] =" \n\
-			the parameters with their default values are : \n\
-			- INTEGER:   solenoidal projection (def: 0) \n\
-			0: do not apply \n\
-			1: apply \n\
-			";
+  char functionname[] = "amiPDESetSolenoidal";
+  char description[]=" \n\
+      Choose if the PDE optical flow should apply the solenoidal projection \n\
+      ";
+  char parameters[] =" \n\
+      the parameters with their default values are : \n\
+      - INTEGER:   solenoidal projection (def: 0) \n\
+      0: do not apply \n\
+      1: apply \n\
+      ";
 
-	int sp = 0; 
-	int n=0;
+  int sp = 0; 
+  int n=0;
   
-	if (!get_int_param(          sp,         p, n)) HelpAndReturn;
+  if (!get_int_param(          sp,         p, n)) HelpAndReturn;
   
-	ami_optic_flow_param.SetSolenoidalProjection(sp);
+  ami_optic_flow_param.SetSolenoidalProjection(sp);
 }
 
 /**  FUNCTION TO enable/disable incompressibility constraint in the energy */
 void amiPDESetEnergyConstraint( ParamList* p)
 {
-	char functionname[] = "amiPDESetEnergyConstraint";
-	char description[]=" \n\
-			Choose if the PDE optical flow should include an incompressibility constaint \n\
-			";
-	char parameters[] =" \n\
-			the parameters with their default values are : \n\
-			- INTEGER:   incompressibility constraint (def: 0) \n\
-			0: do not apply \n\
-			1: apply \n\
-			";
+  char functionname[] = "amiPDESetEnergyConstraint";
+  char description[]=" \n\
+      Choose if the PDE optical flow should include an incompressibility constaint \n\
+      ";
+  char parameters[] =" \n\
+      the parameters with their default values are : \n\
+      - INTEGER:   incompressibility constraint (def: 0) \n\
+      0: do not apply \n\
+      1: apply \n\
+      ";
 
-	int ec = 0; 
-	int n=0;
+  int ec = 0; 
+  int n=0;
   
-	if (!get_int_param(          ec,         p, n)) HelpAndReturn;
+  if (!get_int_param(          ec,         p, n)) HelpAndReturn;
   
-	ami_optic_flow_param.SetEnergyConstraint(ec);
+  ami_optic_flow_param.SetEnergyConstraint(ec);
 }
 
 
 /** Epsilon for normalization of alpha for Optical Flow */
 void amiOFSetAlphaNormEpsilon( ParamList* p)
 {
-	char functionname[] = "amiOFSetAlphaNormEpsilon";
-	char description[]=" \n\
-			Choose the value of the epsilon used for the normalization of alpha \n\
-			";
-	char parameters[] =" \n\
-			the parameters with their default values are : \n\
-			- FLOAT:   epsilon (def: 1E-2) \n\
-			";
+  char functionname[] = "amiOFSetAlphaNormEpsilon";
+  char description[]=" \n\
+      Choose the value of the epsilon used for the normalization of alpha \n\
+      ";
+  char parameters[] =" \n\
+      the parameters with their default values are : \n\
+      - FLOAT:   epsilon (def: 1E-2) \n\
+      ";
 
-	float epsilon_alpha = 1E-2; 
-	int n=0;
+  float epsilon_alpha = 1E-2; 
+  int n=0;
   
-	if (!get_float_param(          epsilon_alpha,         p, n)) HelpAndReturn;
+  if (!get_val_param<float>(          epsilon_alpha,         p, n)) HelpAndReturn;
   
-	ami_optic_flow_param.SetAlphaNormEpsilon(epsilon_alpha);
+  ami_optic_flow_param.SetAlphaNormEpsilon(epsilon_alpha);
 }
 
 
@@ -1500,15 +1501,15 @@ void amiJavierHornSchunck( ParamList* p)
   float     Nu=0.5;
   int n=0;
   
-  if (!get_image_param(    im1,               p, n)) HelpAndReturn;
-  if (!get_image_param(    im2,               p, n)) HelpAndReturn;
-  if (!get_image_param(    flow_x,            p, n)) HelpAndReturn;
-  if (!get_image_param(    flow_y,            p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(    im1,               p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(    im2,               p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(    flow_x,            p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(    flow_y,            p, n)) HelpAndReturn;
   if (!get_int_param(      zoom,              p, n)) HelpAndReturn;
-  if (!get_float_param(    alpha,             p, n)) HelpAndReturn;
-  if (!get_float_param(    T,                 p, n)) HelpAndReturn;
-  if (!get_float_param(    dt,                p, n)) HelpAndReturn;
-  if (!get_float_param(    Nu,                p, n)) HelpAndReturn;
+  if (!get_val_param<float>(    alpha,             p, n)) HelpAndReturn;
+  if (!get_val_param<float>(    T,                 p, n)) HelpAndReturn;
+  if (!get_val_param<float>(    dt,                p, n)) HelpAndReturn;
+  if (!get_val_param<float>(    Nu,                p, n)) HelpAndReturn;
   
   // get the inputs in the format for processing
   horn_schunck<float> hs;
@@ -1555,15 +1556,15 @@ void amiJavierHornSchunckSym( ParamList* p)
   float     Nu=0.5;
   int n=0;
   
-  if (!get_image_param(    im1,               p, n)) HelpAndReturn;
-  if (!get_image_param(    im2,               p, n)) HelpAndReturn;
-  if (!get_image_param(    flow_x,            p, n)) HelpAndReturn;
-  if (!get_image_param(    flow_y,            p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(    im1,               p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(    im2,               p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(    flow_x,            p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(    flow_y,            p, n)) HelpAndReturn;
   if (!get_int_param(      zoom,              p, n)) HelpAndReturn;
-  if (!get_float_param(    alpha,             p, n)) HelpAndReturn;
-  if (!get_float_param(    T,                 p, n)) HelpAndReturn;
-  if (!get_float_param(    dt,                p, n)) HelpAndReturn;
-  if (!get_float_param(    Nu,                p, n)) HelpAndReturn;
+  if (!get_val_param<float>(    alpha,             p, n)) HelpAndReturn;
+  if (!get_val_param<float>(    T,                 p, n)) HelpAndReturn;
+  if (!get_val_param<float>(    dt,                p, n)) HelpAndReturn;
+  if (!get_val_param<float>(    Nu,                p, n)) HelpAndReturn;
   
   // get the inputs in the format for processing
   horn_schunck_sym<float> hs;
@@ -1615,17 +1616,17 @@ void amiOpticFlow( ParamList* p)
   float     Nu=0.5;
   int n=0;
   
-  if (!get_image_param(    im,               p, n)) HelpAndReturn;
-  if (!get_image_param(    flow_x,            p, n)) HelpAndReturn;
-  if (!get_image_param(    flow_y,            p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(    im,               p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(    flow_x,            p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(    flow_y,            p, n)) HelpAndReturn;
   if (!get_int_param(      zoom,              p, n)) HelpAndReturn;
-  if (!get_float_param(    alpha,             p, n)) HelpAndReturn;
-  if (!get_float_param(    beta,              p, n)) HelpAndReturn;
-  if (!get_float_param(    gamma,             p, n)) HelpAndReturn;
-  if (!get_float_param(    isotropy,          p, n)) HelpAndReturn;
-  if (!get_float_param(    T,                 p, n)) HelpAndReturn;
-  if (!get_float_param(    dt,                p, n)) HelpAndReturn;
-  if (!get_float_param(    Nu,                p, n)) HelpAndReturn;
+  if (!get_val_param<float>(    alpha,             p, n)) HelpAndReturn;
+  if (!get_val_param<float>(    beta,              p, n)) HelpAndReturn;
+  if (!get_val_param<float>(    gamma,             p, n)) HelpAndReturn;
+  if (!get_val_param<float>(    isotropy,          p, n)) HelpAndReturn;
+  if (!get_val_param<float>(    T,                 p, n)) HelpAndReturn;
+  if (!get_val_param<float>(    dt,                p, n)) HelpAndReturn;
+  if (!get_val_param<float>(    Nu,                p, n)) HelpAndReturn;
   
   // get the inputs in the format for processing
   NM_AMI_METHOD::optic_flow_video<float> of;
@@ -1717,18 +1718,18 @@ void amiVorticity(ParamList* p)
     
   int n=0;
   
-  if (!get_image_param(    im1,                p, n)) HelpAndReturn;
-  if (!get_image_param(    im2,                p, n)) HelpAndReturn;
-  if (!get_image_param(    flow_x,             p, n)) HelpAndReturn;
-  if (!get_image_param(    flow_y,             p, n)) HelpAndReturn;
-  if (!get_image_param(    im2_x,              p, n)) HelpAndReturn;
-  if (!get_image_param(    im2_y,              p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(    im1,                p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(    im2,                p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(    flow_x,             p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(    flow_y,             p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(    im2_x,              p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(    im2_y,              p, n)) HelpAndReturn;
   if (!get_int_param(      zoom,               p, n)) HelpAndReturn;
   if (!get_int_param(      window_radius,      p, n)) HelpAndReturn;
-  if (!get_float_param(    sigma,              p, n)) HelpAndReturn;
-  if (!get_float_param(    alpha,              p, n)) HelpAndReturn;
-  if (!get_float_param(    TOL_iter,           p, n)) HelpAndReturn;
-  if (!get_image_param(    im_vorticity,       p, n)) HelpAndReturn;
+  if (!get_val_param<float>(    sigma,              p, n)) HelpAndReturn;
+  if (!get_val_param<float>(    alpha,              p, n)) HelpAndReturn;
+  if (!get_val_param<float>(    TOL_iter,           p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(    im_vorticity,       p, n)) HelpAndReturn;
    
   float** im1_pos   = im1  ->create_float_positions_2D();
   float** im2_pos   = im2  ->create_float_positions_2D();
@@ -1802,16 +1803,16 @@ void amiGradVorticity(ParamList* p)
     
   int n=0;
   
-  if (!get_image_param(    im1,                p, n)) HelpAndReturn;
-  if (!get_image_param(    im2,                p, n)) HelpAndReturn;
-  if (!get_image_param(    flow_x,             p, n)) HelpAndReturn;
-  if (!get_image_param(    flow_y,             p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(    im1,                p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(    im2,                p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(    flow_x,             p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(    flow_y,             p, n)) HelpAndReturn;
   if (!get_int_param(      zoom,               p, n)) HelpAndReturn;
   if (!get_int_param(      window_radius,      p, n)) HelpAndReturn;
-  if (!get_float_param(    sigma,              p, n)) HelpAndReturn;
-  if (!get_float_param(    alpha,              p, n)) HelpAndReturn;
-  if (!get_float_param(    TOL_iter,           p, n)) HelpAndReturn;
-  if (!get_image_param(    im_vorticity,       p, n)) HelpAndReturn;
+  if (!get_val_param<float>(    sigma,              p, n)) HelpAndReturn;
+  if (!get_val_param<float>(    alpha,              p, n)) HelpAndReturn;
+  if (!get_val_param<float>(    TOL_iter,           p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(    im_vorticity,       p, n)) HelpAndReturn;
    
   float** im1_pos   =  im1          ->create_float_positions_2D();
   float** im2_pos   =  im2          ->create_float_positions_2D();
@@ -1877,9 +1878,9 @@ void amiVorticityStandard(ParamList* p)
   int vort_type=0;
   int n=0;
   
-  if (!get_image_param(    flow_x,             p, n)) HelpAndReturn;
-  if (!get_image_param(    flow_y,             p, n)) HelpAndReturn;
-  if (!get_image_param(    im_vorticity,       p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(    flow_x,             p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(    flow_y,             p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(    im_vorticity,       p, n)) HelpAndReturn;
   if (!get_int_param(      vort_type,          p, n)) HelpAndReturn;
   
   float** flow_x_pos = flow_x->create_float_positions_2D();
@@ -1893,13 +1894,13 @@ void amiVorticityStandard(ParamList* p)
   for(i=1;i<flow_x->DimX()-3;i++){
     for(j=1;j<flow_x->DimY()-3;j++){
       switch (vort_type) {
-	case 0:
+  case 0:
           // WE COMPUTE THE VORTICITY USING A STANDARD ALGORITHM 
-	  vort_pos[i-1][j-1]=ami_vorticity_2d_standard(i,j,flow_x_pos,flow_y_pos,flow_x->DimX(),flow_x->DimY());
-	  break;
-	case 1:
-	  vort_pos[i-1][j-1]=(float)ami_vorticity_2d_chi2_9p_ij(i,j,flow_x_pos,flow_y_pos,flow_x->DimX(),flow_x->DimY());
-	  break;
+    vort_pos[i-1][j-1]=ami_vorticity_2d_standard(i,j,flow_x_pos,flow_y_pos,flow_x->DimX(),flow_x->DimY());
+    break;
+  case 1:
+    vort_pos[i-1][j-1]=(float)ami_vorticity_2d_chi2_9p_ij(i,j,flow_x_pos,flow_y_pos,flow_x->DimX(),flow_x->DimY());
+    break;
       }
       }
   }
@@ -1927,7 +1928,7 @@ void amiReadPDEOFParam(ParamList * p)
   string*  filename = NULL;
   int n=0;
   
-  if (!get_string_param( filename, p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<string>( filename, p, n)) HelpAndReturn;
 
   ami_optic_flow_param.load_parameter_file( *filename);
 }
@@ -1947,13 +1948,13 @@ void amiWritePDEOFParam(ParamList * p)
   string*  filename = NULL;
   int n=0;
   
-  if (!get_string_param( filename, p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<string>( filename, p, n)) HelpAndReturn;
 
   std::ofstream ofs( filename->c_str() );
 
   if ( ofs.is_open() )  {
 
-	ami_optic_flow_param.save_parameter_file( ofs );
+  ami_optic_flow_param.save_parameter_file( ofs );
 
         ofs.close();
   }
@@ -1985,7 +1986,7 @@ InrImage* amiReadBarronData(ParamList* p)
   int by=0;
   int n=0;
   
-  if (!get_string_param( filename, p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<string>( filename, p, n)) HelpAndReturnNULL;
   flow_x = new InrImage(316,252,1,WT_FLOAT);
   flow_y = new InrImage(316,252,1,WT_FLOAT);
 
@@ -2055,13 +2056,13 @@ void amiGenerateSphereFlow(ParamList* p)
 
   int n=0;
 
-  if (!get_image_param(        im1,      p, n)) HelpAndReturn;
-  if (!get_image_param(        im2,      p, n)) HelpAndReturn; 
+  if (!get_val_ptr_param<InrImage>(        im1,      p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(        im2,      p, n)) HelpAndReturn; 
   if (!get_vectimage_param(    flow,     p, n)) HelpAndReturn;
-  if (!get_vect3d_float_param( center,   p, n)) HelpAndReturn;
-  if (!get_float_param(        radius,   p, n)) HelpAndReturn;
-  if (!get_float_param(        velocity, p, n)) HelpAndReturn;
-  if (!get_float_param(        density,  p, n)) HelpAndReturn;
+  if (!get_several_params<float,3>( center,   p, n)) HelpAndReturn;
+  if (!get_val_param<float>(        radius,   p, n)) HelpAndReturn;
+  if (!get_val_param<float>(        velocity, p, n)) HelpAndReturn;
+  if (!get_val_param<float>(        density,  p, n)) HelpAndReturn;
   if (!get_int_param(          symmetric,p, n)) HelpAndReturn;
   
   float*** image1_pos = im1 ->create_positions_3D<float>();
@@ -2116,11 +2117,11 @@ void amiGenerate3DPIV(ParamList* p)
 
   int n=0;
 
-  if (!get_image_param(        im1,      p, n)) HelpAndReturn;
-  if (!get_image_param(        im2,      p, n)) HelpAndReturn; 
+  if (!get_val_ptr_param<InrImage>(        im1,      p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(        im2,      p, n)) HelpAndReturn; 
   if (!get_vectimage_param(    flow,     p, n)) HelpAndReturn;
-  if (!get_image_param(        mask,     p, n)) HelpAndReturn;
-  if (!get_float_param(        density,  p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(        mask,     p, n)) HelpAndReturn;
+  if (!get_val_param<float>(        density,  p, n)) HelpAndReturn;
   if (!get_int_param(          symmetric,p, n)) HelpAndReturn;
   
   float*** image1_pos = im1 ->create_positions_3D<float>();
@@ -2151,52 +2152,52 @@ void amiGenerate3DPIV(ParamList* p)
 /** Read a 3D Flow from an ASCII file **/
 InrImage* amiReadFlow3D(ParamList* p)
 {
-	char functionname[] = "amiReadFlow3D";
-	char description[]=" \n\
-			Reads a 3D flow from an ASCII file specifying the slice you want from the file.\n\
-			Returned image has the exact number of pixels of the lattice \n\
-			";
-	char parameters[] =" \n\
-			the parameters with their default values are : \n\
-			- filename\n\
-			- image dimensions (dim_x,dim_y,dim_z)\n\
-			- image translation\n\
-			    default is (0,0,0)\n\
-			- field offset (pos_u = pos_ASCII+offset)\n\
-			    default is (0,0,0)\n\
-			- Displacement grid \n\
-          		deault is (1,1,1) \n\
-      		- Initial point (respect to translation)\n\
-          		default is (0,0,0) \n\
-			";
+  char functionname[] = "amiReadFlow3D";
+  char description[]=" \n\
+      Reads a 3D flow from an ASCII file specifying the slice you want from the file.\n\
+      Returned image has the exact number of pixels of the lattice \n\
+      ";
+  char parameters[] =" \n\
+      the parameters with their default values are : \n\
+      - filename\n\
+      - image dimensions (dim_x,dim_y,dim_z)\n\
+      - image translation\n\
+          default is (0,0,0)\n\
+      - field offset (pos_u = pos_ASCII+offset)\n\
+          default is (0,0,0)\n\
+      - Displacement grid \n\
+              deault is (1,1,1) \n\
+          - Initial point (respect to translation)\n\
+              default is (0,0,0) \n\
+      ";
 
-	string*  filename = NULL;
-	int dim[3];
-	int trans[3]   = {0,0,0};
-	int offset[3]  = {0,0,0};
-	ami_v3f init = {0,0,0};
-  	ami_v3f disp = {1,1,1}; // displacement	
-	InrImage *u = NULL;
-	ami_v3f ***u_pos;
-	
-	int n=0;
-	
-	if (!get_string_param( filename, p, n)) HelpAndReturnNULL;
-	if (!get_vect3d_int_param( dim, p, n)) HelpAndReturnNULL;
-	if (!get_vect3d_int_param( trans, p, n)) HelpAndReturnNULL;
-	if (!get_vect3d_int_param( offset, p, n)) HelpAndReturnNULL;
-	if (!get_vect3d_float_param( disp, p, n)) HelpAndReturnNULL;
-	if (!get_vect3d_float_param( init, p, n)) HelpAndReturnNULL;
-	u = new InrImage((int)ceil((dim[0]-init[0])/disp[0]),
+  string*  filename = NULL;
+  int dim[3];
+  int trans[3]   = {0,0,0};
+  int offset[3]  = {0,0,0};
+  ami_v3f init = {0,0,0};
+    ami_v3f disp = {1,1,1}; // displacement 
+  InrImage *u = NULL;
+  ami_v3f ***u_pos;
+  
+  int n=0;
+  
+  if (!get_val_ptr_param<string>( filename, p, n)) HelpAndReturnNULL;
+  if (!get_several_int_params<3>( dim, p, n)) HelpAndReturnNULL;
+  if (!get_several_int_params<3>( trans, p, n)) HelpAndReturnNULL;
+  if (!get_several_int_params<3>( offset, p, n)) HelpAndReturnNULL;
+  if (!get_several_params<float,3>( disp, p, n)) HelpAndReturnNULL;
+  if (!get_several_params<float,3>( init, p, n)) HelpAndReturnNULL;
+  u = new InrImage((int)ceil((dim[0]-init[0])/disp[0]),
                      (int)ceil((dim[1]-init[1])/disp[1]),
                      (int)ceil((dim[2]-init[2])/disp[2]),3,WT_FLOAT);
-	//u->InitImage(0);
-	u->SetTranslation(trans[0],trans[1],trans[2]);
-	
-	u_pos = u->create_positions_3D<ami_v3f>();	
-	ami_read_optic_flow_3D(filename->c_str(),u_pos,dim,trans,offset,disp,init);	
-	u->free_positions_3D<ami_v3f>(u_pos);	
+  //u->InitImage(0);
+  u->SetTranslation(trans[0],trans[1],trans[2]);
   
-	return u;
+  u_pos = u->create_positions_3D<ami_v3f>();  
+  ami_read_optic_flow_3D(filename->c_str(),u_pos,dim,trans,offset,disp,init); 
+  u->free_positions_3D<ami_v3f>(u_pos); 
+  
+  return u;
   
 } // amiReadFlow3D()

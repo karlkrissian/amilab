@@ -25,21 +25,21 @@ extern MainFrame*     GB_main_wxFrame;
 void AddWrapWXSamples()
 {
   // Create new instance of the class
-  AMIObject* amiobject = new AMIObject;
+  AMIObject::ptr amiobject (new AMIObject);
   amiobject->SetName("wxsamples");
 
   // Set the object context
   Variables::ptr previous_ocontext = Vars.GetObjectContext();
   Vars.SetObjectContext(amiobject->GetContext());
 
-  Vars.AddVar(type_c_procedure, "penguin",  (void*)  wrap_penguin, OBJECT_CONTEXT_NUMBER);
-  Vars.AddVar(type_c_procedure, "stctest",  (void*)  wrap_stctest, OBJECT_CONTEXT_NUMBER);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,"penguin", wrap_penguin);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,"stctest", wrap_stctest);
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);
 
   // 3. add the variables to this instance
-  Vars.AddVar( type_ami_object, amiobject->GetName().c_str(), (void*) amiobject);
+  Vars.AddVar<AMIObject>(amiobject->GetName().c_str(), amiobject);
 }
 
 /**
@@ -110,7 +110,7 @@ void wrap_stctest( ParamList* p)
   std::string* filename = NULL;
   int line_number = 0;
   
-  if (!get_string_param( filename,    p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<string>( filename,    p, n)) HelpAndReturn;
   if (!get_int_param( line_number,    p, n)) HelpAndReturn;
 
   // create application frame

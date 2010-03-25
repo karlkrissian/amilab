@@ -39,7 +39,7 @@
 
 #include "style.hpp"
 
-#include "FiltreRec.hpp"
+#include "GeneralGaussianFilter.h"
 
 //------------------------------------------------------------------------
 // Creation d'un objet pour obtenir les derivees lissees en chaque point
@@ -52,7 +52,7 @@ class DeriveesLissees
 protected:
 
   ///
-  FiltreRecursif* filtre;
+  GeneralGaussianFilter* filtre;
 
   ///
   InrImage* _image;
@@ -87,10 +87,10 @@ protected:
 
 public:
 
-  Constructeur DeriveesLissees( InrImage* image_entree, float sigma,
+   DeriveesLissees( InrImage* image_entree, float sigma,
 				int dimension);
 
-  Destructeur DeriveesLissees();
+  ~DeriveesLissees();
 
   void SetMask(InrImage* mask)
   {

@@ -12,7 +12,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Vaisseaux
   ${AMILAB_SOURCE_DIR}/Graphic
   ${AMILAB_SOURCE_DIR}/Crest
-  ${AMILAB_SOURCE_DIR}/Filtrage
+  ${AMILAB_SOURCE_DIR}/Filtering
   ${Boost_INCLUDE_DIR}
   )
 
@@ -20,18 +20,18 @@ include_directories (
 SET(Filtering_SRCS
       bruit.cpp
       DeriveesLissees.cpp
-      filtrage.cpp
+      GaussianFilter.cpp
       filtrage_rec.cpp
-      FiltreRec.cpp
+      GeneralGaussianFilter.cpp
 )
 
 SET(Filtering_HDRS
-	bruit.hpp
-	DeriveesLissees.hpp
-	filtrage.hpp
-	filtrage_rec.hpp
-	FiltreRec.hpp
-	filtre_param.hpp
+  bruit.hpp
+  DeriveesLissees.hpp
+  GaussianFilter.h
+  filtrage_rec.hpp
+  GeneralGaussianFilter.h
+  filtre_param.hpp
 )
 
 SET(Filtering_SRCS

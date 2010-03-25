@@ -115,7 +115,7 @@ ostream& operator<<(ostream& os, const ExceptionWarning& w)
 
   /*
 //------------------------------------------------------------------------
-GestionErreurs ::  Constructeur GestionErreurs( const Chaine& nomclasse)
+GestionErreurs ::   GestionErreurs( const Chaine& nomclasse)
 //                           ------------
 {
 
@@ -124,15 +124,15 @@ GestionErreurs ::  Constructeur GestionErreurs( const Chaine& nomclasse)
 
   _debug = false;
 
-} // Constructeur
+} // Constructor
   */
 
 //------------------------------------------------------------------------
-GestionErreurs ::  Destructeur  GestionErreurs()
+GestionErreurs ::  ~ GestionErreurs()
 //                           -----------
 {
 
-} // Destructeur
+} // Destructor
 
 
 //------------------------------------------------------------------------
@@ -148,8 +148,8 @@ void GestionErreurs :: MethodeCourante( const Chaine& nom, const Chaine& fic)
     cerr << "Debut " <<  _nom_methode_courante << endl;
 
   GB_pile_nom_methode += new NomMethode( _nom_classe,
-					 fic,
-					 _nom_methode_courante);
+           fic,
+           _nom_methode_courante);
 
 } // MethodeCourante()
 

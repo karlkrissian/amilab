@@ -292,12 +292,12 @@ public:
 
   //--------------------------------------------------
   ///
-Constructeur IsoContour2( InrImage* image);
+ IsoContour2( InrImage* image);
   //
 
   //--------------------------------------------------
   ///
-  Destructeur IsoContour2();
+  ~IsoContour2();
   //
  
   ///

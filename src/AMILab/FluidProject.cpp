@@ -1619,7 +1619,7 @@ int ami_read_optic_flow_v2(
 }
 
 //----------------------------------------------------------------------
-InrImage*    Func_ReadFlow( char* name)
+InrImage*    Func_ReadFlow( const char* name)
 {
   float *u, *v;
   float *pu,*pv;

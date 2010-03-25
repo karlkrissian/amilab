@@ -129,7 +129,7 @@ proc USML_CreateWindow() {
     USML_rmax_id   = USML_win.AddFloat(USML_rmax, 0.5,20)
     USML_rstep_id  = USML_win.AddFloat(USML_rstep,0.5,20)
 
-    USML_localstruct_id = USML_win.AddEnum(USML_localstruct,2)
+    USML_localstruct_id = USML_win.AddEnum(USML_localstruct)
     USML_H_id    = USML_win.AddEnumChoice(USML_localstruct_id,"Hessian")
     USML_ST_id   = USML_win.AddEnumChoice(USML_localstruct_id,"Struct Tensor")
 

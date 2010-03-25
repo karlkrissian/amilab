@@ -180,7 +180,7 @@ ENDIF(EXISTS "${wxWidgets_CURRENT_LIST_DIR}/UsewxWidgets.cmake")
 
 #=====================================================================
 #=====================================================================
-
+ 
 IF(WIN32 AND NOT CYGWIN AND NOT MSYS)
   SET(wxWidgets_FIND_STYLE "win32")
 ELSE(WIN32 AND NOT CYGWIN AND NOT MSYS)
@@ -189,7 +189,13 @@ ELSE(WIN32 AND NOT CYGWIN AND NOT MSYS)
   ENDIF(UNIX OR MSYS)
 ENDIF(WIN32 AND NOT CYGWIN AND NOT MSYS)
 
-MESSAGE(STATUS "*********")
+#
+# Karl force find style to linux if host is linux, to allow cross-compilation
+#   from linux to windows
+#
+IF( CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux" )
+    SET(wxWidgets_FIND_STYLE "unix")
+ENDIF( CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux" )
 
 #=====================================================================
 # WIN32_FIND_STYLE

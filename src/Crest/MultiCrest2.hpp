@@ -80,7 +80,7 @@ public:
   float proba;
 
   ///
-  Constructeur pt3DReel() : Point_3D<float>(), rayon(1.0), proba(0.0) {}
+   pt3DReel() : Point_3D<float>(), rayon(1.0), proba(0.0) {}
 
 } pt3DReel;
 
@@ -106,10 +106,10 @@ public:
   int point;
 
   /// constructeur
-  Constructeur t_point():  ligne(0), point(0) {}
+   t_point():  ligne(0), point(0) {}
   
   /// constructeur
-  Constructeur t_point( int l, int p): ligne(l), point(p) {}
+   t_point( int l, int p): ligne(l), point(p) {}
   
   ///
   t_point& operator =( const t_point& p)
@@ -147,7 +147,7 @@ public:
   float  coeff;
 
   /// constructeur
-  Constructeur point_ligne(): coeff(0) {}
+   point_ligne(): coeff(0) {}
   
   ///
   point_ligne& operator =( const point_ligne& p)
@@ -491,15 +491,15 @@ public:
  */
 //@{
   /**
-   {\em Constructeur}
+   {\em }
    @param lignes1 ensemble de lignes 1
    @param lignes2 ensemble de lignes 2
    */
-  Constructeur MultiCrest2( Crest* l,
+   MultiCrest2( Crest* l,
                InrImage* image);
 
   ///
-  Destructeur MultiCrest2();
+  ~MultiCrest2();
 //@}
 
 

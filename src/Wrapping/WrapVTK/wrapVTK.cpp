@@ -53,10 +53,13 @@ extern VarContexts  Vars;
 
 
 //---------------------------------------------------------
-void AddWrapVTK(){
- Vars.AddVar(type_c_image_function,"vtkAnisoGaussSeidel", (void*) vtkAnisoGS);
- Vars.AddVar(type_c_function,      "vtkSkeleton2Lines",   (void*) Wrap_vtkSkeleton2Lines);
- Vars.AddVar(type_c_function,      "vtkSphere",           (void*) Wrap_vtkSphere);
+void AddWrapVTK()
+{
+
+  ADDVAR_NAME( C_wrap_imagefunction, "vtkAnisoGaussSeidel",  vtkAnisoGS);
+  ADDVAR_NAME( C_wrap_varfunction,   "vtkSkeleton2Lines",    Wrap_vtkSkeleton2Lines);
+  ADDVAR_NAME(C_wrap_varfunction,    "vtkSphere",            Wrap_vtkSphere);
+
 }
 
 
@@ -65,13 +68,13 @@ InrImage* vtkAnisoGS(ParamList* p)
 {
 
 #ifndef _WITHOUT_VTK_
-	char functionname[] = "vtkAnisoGaussSeidel";
-	char description[]=" \n\
-		Runs Anisotropic Diffusion Filter based on the \n\
-		Flux Diffusion and using the Gauss-Seidel\n\
-		numerical scheme\n\
-			";
-	char parameters[] =" \n\
+  char functionname[] = "vtkAnisoGaussSeidel";
+  char description[]=" \n\
+    Runs Anisotropic Diffusion Filter based on the \n\
+    Flux Diffusion and using the Gauss-Seidel\n\
+    numerical scheme\n\
+      ";
+  char parameters[] =" \n\
           Parameters:\n\
               input image\n\
               standard deviation for Gaussian smoothing sigma\n\
@@ -79,7 +82,7 @@ InrImage* vtkAnisoGS(ParamList* p)
               data attachment coefficient\n\
               number of iterations\n\
               number of threads (def: 1)\n\
-			";
+      ";
     
     InrImage* input;
     float sd;
@@ -89,10 +92,10 @@ InrImage* vtkAnisoGS(ParamList* p)
     int threads = 1;
     int n=0;
 
-  if (!get_image_param(  input,      p, n)) HelpAndReturnNULL;
-  if (!get_float_param(  sd,         p, n)) HelpAndReturnNULL;
-  if (!get_float_param(  threshold,  p, n)) HelpAndReturnNULL;
-  if (!get_float_param(  data_coeff, p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>(  input,      p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>(  sd,         p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>(  threshold,  p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>(  data_coeff, p, n)) HelpAndReturnNULL;
   if (!get_int_param(    iterations, p, n)) HelpAndReturnNULL;
   if (!get_int_param(    threads   , p, n)) HelpAndReturnNULL;
 
@@ -102,7 +105,7 @@ InrImage* vtkAnisoGS(ParamList* p)
   shared_ptr<vtkAnisoGaussSeidel> vtk_aniso;
   //  printf("1 \n");
   vtk_image = vtk_new<vtkImageData>()((vtkImageData*) (*input));
-  //	  printf("2 \n");
+  //    printf("2 \n");
 
   vtk_aniso = vtk_new<vtkAnisoGaussSeidel>()();
   vtk_aniso->SetInput(              vtk_image.get());
@@ -116,9 +119,9 @@ InrImage* vtkAnisoGS(ParamList* p)
 
   vtk_aniso->Update();
 
-  //	  printf("3 \n");
+  //    printf("3 \n");
   res = new InrImage( vtk_aniso->GetOutput());
-  //	  printf("4 \n");
+  //    printf("4 \n");
   return res;
 
 #else
@@ -130,7 +133,7 @@ InrImage* vtkAnisoGS(ParamList* p)
 
 
 /** Read a 3D Flow from an ASCII file **/
-Variable::ptr Wrap_vtkSkeleton2Lines(ParamList* p)
+BasicVariable::ptr Wrap_vtkSkeleton2Lines(ParamList* p)
 {
 
 #ifndef _WITHOUT_VTK_
@@ -149,7 +152,7 @@ Variable::ptr Wrap_vtkSkeleton2Lines(ParamList* p)
     InrImage* input;
     int n=0;
 
-  if (!get_image_param(  input,      p, n)) HelpAndReturnVarPtr;
+  if (!get_val_ptr_param<InrImage>(  input,      p, n)) HelpAndReturnVarPtr;
 
 
   vtkImageData_ptr                vtk_image;
@@ -162,10 +165,10 @@ Variable::ptr Wrap_vtkSkeleton2Lines(ParamList* p)
   vtk_skel2lines->SetInput( vtk_image.get());
   vtk_skel2lines->GetOutput();
 
-  SurfacePoly* surf_result = new SurfacePoly(vtk_skel2lines->GetOutput());
+  SurfacePoly::ptr surf_result( new SurfacePoly(vtk_skel2lines->GetOutput()));
 
-  Variable::ptr varres(new Variable());
-  varres->Init(type_surface,"vtkSkeleton2lines_result",surf_result);
+  Variable<SurfacePoly>::ptr varres(
+    new Variable<SurfacePoly>("vtkSkeleton2lines_result",surf_result));
 
   return varres;
 
@@ -178,7 +181,7 @@ Variable::ptr Wrap_vtkSkeleton2Lines(ParamList* p)
 
 
 //---------------------------------------------------------------------------
-Variable::ptr Wrap_vtkSphere( ParamList* p)
+BasicVariable::ptr Wrap_vtkSphere( ParamList* p)
 //            --------------
 {
 #ifndef _WITHOUT_VTK_
@@ -203,10 +206,10 @@ Variable::ptr Wrap_vtkSphere( ParamList* p)
     float center[3] = {0,0,0};
     int n=0;
 
-  if (!get_float_param(         radius,      p, n)) HelpAndReturnVarPtr;
+  if (!get_val_param<float>(         radius,      p, n)) HelpAndReturnVarPtr;
   if (!get_int_param(           thetares,    p, n)) HelpAndReturnVarPtr;
   if (!get_int_param(           phires,      p, n)) HelpAndReturnVarPtr;
-  if (!get_vect3d_float_param(  center,      p, n)) HelpAndReturnVarPtr;
+  if (!get_several_params<float,3>(  center,      p, n)) HelpAndReturnVarPtr;
 
   shared_ptr<vtkSphereSource>   vtk_sphere;
 
@@ -219,16 +222,16 @@ Variable::ptr Wrap_vtkSphere( ParamList* p)
 
   vtk_sphere->Update();
 
-  SurfacePoly* surf_result = new SurfacePoly(vtk_sphere->GetOutput());
+  SurfacePoly::ptr surf_result( new SurfacePoly(vtk_sphere->GetOutput()));
 
-  Variable::ptr varres(new Variable());
-  varres->Init(type_surface,"vtkSphere_result",surf_result);
+  Variable<SurfacePoly>::ptr varres(
+    new Variable<SurfacePoly>("vtkSphere_result",surf_result));
 
   return varres;
 
 #else
   fprintf(stderr," VTK not available, you need to compile with VTK ...\n");
-  return NULL;
+  return BasicVariable::ptr();
 #endif // _WITHOUT_VTK_
 
 } // Wrap_vtkSphere()

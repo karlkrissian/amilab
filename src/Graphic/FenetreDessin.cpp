@@ -31,7 +31,7 @@
 //  class de base permettant de creer une fenetre de dessin
 //  Avec les fonctions de base : dessin de ligne, de polygones, etc ...
 //  
-//  Karl KRISSIAN		Sophia Antipolis, 	le 5-08-96
+//  Karl KRISSIAN   Sophia Antipolis,   le 5-08-96
 //
 
 #include "FenetreDessin.hpp"
@@ -67,16 +67,16 @@ END_EVENT_TABLE()
 // MEMBRES PUBLICS
 
 //---------------------------------------------------------------------
-// Defaut: int type=CREATE_WINDOW
+// default: int type=CREATE_WINDOW
 //
 FenetreDessin::FenetreDessin(
-							 wxWindow* parent, 
-							 const std::string& titre, 
+               wxWindow* parent, 
+               const std::string& titre, 
 //                                      -------------
-			      int hauteur, int largeur, int type):
+            int hauteur, int largeur, int type):
       wxFrame( parent, -1, 
       wxString::FromAscii((char*)RemovePath(titre.c_str())),
-      wxPoint(50,50), wxSize(largeur,hauteur))
+      wxPoint(50,50), wxSize(largeur,hauteur), wxDEFAULT_FRAME_STYLE | wxFRAME_FLOAT_ON_PARENT )
 {
   #ifdef WIN32
       this->SetIcon(wxIcon(amilab_logo_new_32x32_alpha_xpm));
@@ -88,12 +88,12 @@ FenetreDessin::FenetreDessin(
   WindowTitle = RemovePath(titre.c_str());
   _name = WindowTitle;
 
-  Si GB_debug AlorsFait printf("Constructeur FenetreDessin() \n");
+  Si GB_debug AlorsFait printf(" FenetreDessin() \n");
 
   _type = type;
 
-  _palette_allouee = false;
-  _palette = NULL;
+//  _palette_allouee = false;
+//  _palette = NULL;
 
 
   _this = this;
@@ -115,13 +115,13 @@ FenetreDessin::FenetreDessin(
 
   _message_dialog = NULL;
 
-  Si GB_debug AlorsFait printf("Fin Constructeur FenetreDessin() \n");
+  Si GB_debug AlorsFait printf("Fin  FenetreDessin() \n");
 
-} // Constructeur FenetreDessin()
+} // Constructor FenetreDessin()
 
 
 //---------------------------------------------------------------------
-FenetreDessin :: Destructeur FenetreDessin()
+FenetreDessin :: ~FenetreDessin()
 //                                     -------------
 {
 
@@ -135,7 +135,7 @@ FenetreDessin :: Destructeur FenetreDessin()
 
   Si GB_debug AlorsFait fprintf(stderr,"FenetreDessin::~FenetreDessin() fin \n");
 
-} // Destructeur FenetreDessin()
+} // Destructor FenetreDessin()
 
 
 
@@ -192,10 +192,9 @@ void FenetreDessin::AfficheFenetre( )
   aff_err("_pixmap_contexte OK \n");
 
   //----- Definition de la palette
-  Si _palette == NULL Alors
+  Si (!_palette.get()) Alors
     aff_err("new palette \n");
-    _palette = new CPalette(_drawing_window);
-    _palette_allouee = true;
+    _palette = boost::shared_ptr<CPalette>(new CPalette(_drawing_window));
     aff_err("new palette OK \n");
   FinSi
 
@@ -304,7 +303,7 @@ int* h)
 //
 void FenetreDessin :: Fixe_fenetre_dimensions( int l, int h,
 //                              -----------------------
-							 unsigned char parent)
+               unsigned char parent)
 {
 
   this->SetSize(l,h);
@@ -518,10 +517,10 @@ void FenetreDessin::DrawingAreaDisplay( )
       //dc.DrawBitmap(*_bitmap,0,0,false);
 
       dc.Blit(0,0,
-	      _memory_dc->GetSize().GetWidth(),
-	      _memory_dc->GetSize().GetHeight(),
-	      _memory_dc.get(),
-	      0,0);
+        _memory_dc->GetSize().GetWidth(),
+        _memory_dc->GetSize().GetHeight(),
+        _memory_dc.get(),
+        0,0);
 
     } else 
       cerr  << "FenetreDessin::DrawingAreaDisplay( )\t"
@@ -563,7 +562,7 @@ void FenetreDessin :: FixeFonctionDessin( int fonction)
 //                    ------------------
 {
 #if defined(__WXMOTIF__)
-  XSetFunction(	display, contexte, fonction);
+  XSetFunction( display, contexte, fonction);
 #endif
 } // FixeFonctionDessin( )
 
@@ -582,7 +581,7 @@ void FenetreDessin::Cercle( int x1, int y1, int rayon)
 {
 #if defined(__WXMOTIF__)
   XDrawArc( display, _ecran_dessin, contexte, x1-rayon, y1-rayon, 
-	    2*rayon, 2*rayon, 0, 360*64);
+      2*rayon, 2*rayon, 0, 360*64);
 #else
   _memory_dc->DrawCircle(x1,y1, rayon);
 #endif
@@ -592,12 +591,12 @@ void FenetreDessin::Cercle( int x1, int y1, int rayon)
 //---------------------------------------------------------------------
 void FenetreDessin :: Ellipse( int x1, int y1, 
 //                              ------
-					 int r1, int r2)
+           int r1, int r2)
 {
 
 #if defined(__WXMOTIF__)
   XDrawArc( display, _ecran_dessin, contexte, x1-r1, y1-r2, 
-	    2*r1, 2*r2, 0, 360*64);
+      2*r1, 2*r2, 0, 360*64);
 #endif
 
 } // Ellipse()
@@ -606,12 +605,12 @@ void FenetreDessin :: Ellipse( int x1, int y1,
 //---------------------------------------------------------------------
 void FenetreDessin :: RemplitEllipse( int x1, int y1, 
 //                              --------------
-					 int r1, int r2)
+           int r1, int r2)
 {
 
 #if defined(__WXMOTIF__)
   XFillArc( display, _ecran_dessin, contexte, x1-r1, y1-r2, 
-	    2*r1, 2*r2, 0, 360*64);
+      2*r1, 2*r2, 0, 360*64);
 #endif
 
 } // RemplitEllipse()
@@ -687,7 +686,7 @@ void FenetreDessin::PlaceImage( int pos_x, int pos_y, XImage* ximage )
 {
 
  XPutImage( display, _ecran_dessin, contexte,
-	       ximage, 0, 0, pos_x, pos_y, ximage->width, ximage->height );
+         ximage, 0, 0, pos_x, pos_y, ximage->width, ximage->height );
 
 } // PlaceImage()
 #endif
@@ -737,7 +736,7 @@ void FenetreDessin::EffaceEcran( unsigned char expose)
 //---------------------------------------------------------------------
 void FenetreDessin :: EffaceRegion( int h, int g,
 //                              ------------
-			int b, int d, unsigned char expose)
+      int b, int d, unsigned char expose)
 {
 
 /* Obsolete
@@ -804,6 +803,7 @@ void FenetreDessin::OnClose(wxCloseEvent& event)
         |wxYES_NO
         |wxCANCEL
         |wxICON_INFORMATION
+        | wxSTAY_ON_TOP 
         );
 
         switch ( dialog.ShowModal() )

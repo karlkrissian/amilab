@@ -44,6 +44,7 @@ typedef yyip::Parser::token_type token_type;
 #include "improcess_bison.tab.hpp"
 #include "VarContexts.hpp"
 #include "ami_function.h"
+#include "VarArray.h"
 #include <string>
 
 #define LEX_DEBUG(expr) if (GB_debug) {expr}
@@ -62,8 +63,7 @@ yyip::Parser::token::yytokentype checkvar(
       yyip::Parser::semantic_type* yylval,
       const char* varname, int context=-1);
 
-bool IsContext( const char* varname);
-Variable* IsObject(  const char* varname, int context=-1);
+BasicVariable::ptr IsObject(  const char* varname, int context=-1);
 
 using namespace std;
 
@@ -171,7 +171,7 @@ WS      [ \t]
 
 LineNumber      return(token::T_LineNumber); /*{LineNumber,T_LineNumber}*/
 
-update           return(token::UPDATE);            /*{update,UPDATE}*/
+update           return(token::T_update);            /*{update,T_update}*/
 set              return(token::SET);               /*{set,SET}*/
 setpos           return(token::SETPOS);            /*{setpos,SETPOS}*/
 lininterp        return(token::T_lininterp);      /*{lininterp,T_lininterp}*/
@@ -230,7 +230,6 @@ global        return(token::T_global);     /*{global,T_global}*/
 global_new    return(token::T_global_new); /*{global_new,T_global_new}*/
 local_new     return(token::T_local_new); /*{local_new,T_local_new}*/
 local         return(token::T_local);      /*{local,T_local}*/
-context       return(token::T_context);   /*{context,T_context}*/
 wait          return(token::T_wait);       /*{wait,T_wait}*/
 schedule      return(token::T_schedule);   /*{schedule,T_schedule}*/
 
@@ -285,6 +284,7 @@ step     return(token::STEP); /*{step,STEP}*/
 endfor return(token::ENDFOR); /*{endfor,ENDFOR}*/
 
 repeat return(token::T_REPEAT); /*{repeat,T_REPEAT}*/
+while  return(token::T_WHILE); /*{while,T_WHILE}*/
 until  return(token::T_UNTIL); /*{until,T_UNTIL}*/
 break  return(token::T_BREAK); /*{break,T_BREAK}*/
 
@@ -664,49 +664,62 @@ GenRead           return(token::T_GenRead); /*{GenRead,T_GenRead}*/
 Matrix            return(token::T_Matrix); /*{Matrix,T_Matrix}*/
 Invert            return(token::T_Invert); /*{Invert,T_Invert}*/
 
-SaveStructuredGrid return(token::T_SaveStructuredGrid); /*{SaveStructuredGrid,T_SaveStructuredGrid}*/
+SaveStructuredGrid {return(token::T_SaveStructuredGrid); /*{SaveStructuredGrid,T_SaveStructuredGrid}*/
 
-ParamWin          {
 //
 //============================== PARAMWIN options ====================
 //
-                  return(token::T_ParamWin);
+
+//ParamWin          {
+//                  return(token::T_ParamWin);
+
+//BeginBook         return(token::T_BeginBook); // BeginBook,T_BeginBook
+// EndBook           return(token::T_EndBook); //EndBook,T_EndBook
+// AddPage           return(token::T_AddPage); / / AddPage,T_AddPage
+// BeginPanel        return(token::T_BeginPanel); // BeginPanel,T_BeginPanel
+// EndPanel          return(token::T_EndPanel); // EndPanel,T_EndPanel}
+// SelectPage        return(token::T_SelectPage); // SelectPage,T_SelectPage
+
+//BeginBoxPanel     return(token::T_BeginBoxPanel); /// BeginBoxPanel,T_BeginBoxPanel
+//EndBoxPanel       return(token::T_EndBoxPanel); /// EndBoxPanel,T_EndBoxPanel
+
+//AddFloat          return(token::T_AddFloat); // AddFloat,T_AddFloat
+// AddInt            return(token::T_AddInt); // AddInt,T_AddInt
+// AddButton         return(token::T_AddButton); // AddButton,T_AddButton
+
+// AddBoolean        return(token::T_AddBoolean); /// AddBoolean,T_AddBoolean
+
+// AddEnum           return(token::T_AddEnum); // AddEnum,T_AddEnum
+// AddEnumChoice     return(token::T_AddEnumChoice); // AddEnumChoice,T_AddEnumChoice
+//AddImageChoice    return(token::T_AddImageChoice); // AddImageChoice,T_AddImageChoice
+// AddString         return(token::T_AddString); // AddString,T_AddString
+// AddFilename       return(token::T_AddFilename); // AddFilename,T_AddFilename
+//AddLabel          return(token::T_AddLabel); //AddLabel,T_AddLabel
+//SetCallback       return(token::T_SetCallback); //SetCallback,T_SetCallback
+//SetDragCallback   return(token::T_SetDragCallback); //SetDragCallback,T_SetDragCallback
+
+//BeginBox          return(token::T_BeginBox); //BeginBox,T_BeginBox
+//EndBox            return(token::T_EndBox); //EndBox,T_EndBox
+
+//BeginHorizontal   return(token::T_BeginHorizontal); //BeginHorizontal,T_BeginHorizontal
+//EndHorizontal     return(token::T_EndHorizontal); //EndHorizontal,T_EndHorizontal
+
+// EnablePanel       return(token::T_EnablePanel);  //EnablePanel,T_EnablePanel
+
+// EnableBox         return(token::T_EnableBox);  // EnableBox,T_EnableBox
+
+// Display           return(token::T_Display); //Display,T_Display
+
+// CreateWin         return(token::T_CreateWin); // CreateWin,T_CreateWin
+// redraw            return(token::T_redraw); // redraw,T_redraw
+
+//SetPositionProp      return(token::T_SetPositionProp); //SetPositionProp,T_SetPositionProp
+// ShowSlider        return(token::T_ShowSlider); // ShowSlider,T_ShowSlider
+// Enable            return(token::T_Enable);  //Enable,T_Enable
+
 } /*{ParamWin,T_ParamWin}*/
-BeginBook         return(token::T_BeginBook); /*{BeginBook,T_BeginBook}*/
-EndBook           return(token::T_EndBook);   /*{EndBook,T_EndBook}*/
-AddPage           return(token::T_AddPage); /*{AddPage,T_AddPage}*/
-BeginPanel        return(token::T_BeginPanel); /*{BeginPanel,T_BeginPanel}*/
-EndPanel          return(token::T_EndPanel); /*{EndPanel,T_EndPanel}*/
-SelectPage        return(token::T_SelectPage); /*{SelectPage,T_SelectPage}*/
 
-BeginBoxPanel     return(token::T_BeginBoxPanel); /*{BeginBoxPanel,T_BeginBoxPanel}*/
-EndBoxPanel       return(token::T_EndBoxPanel); /*{EndBoxPanel,T_EndBoxPanel}*/
 
-AddFloat          return(token::T_AddFloat); /*{AddFloat,T_AddFloat}*/
-AddInt            return(token::T_AddInt); /*{AddInt,T_AddInt}*/
-AddButton         return(token::T_AddButton); /*{AddButton,T_AddButton}*/
-AddBoolean        return(token::T_AddBoolean); /*{AddBoolean,T_AddBoolean}*/
-AddEnum           return(token::T_AddEnum); /*{AddEnum,T_AddEnum}*/
-AddEnumChoice     return(token::T_AddEnumChoice); /*{AddEnumChoice,T_AddEnumChoice}*/
-AddImageChoice    return(token::T_AddImageChoice); /*{AddImageChoice,T_AddImageChoice}*/
-AddString         return(token::T_AddString); /*{AddString,T_AddString}*/
-AddFilename       return(token::T_AddFilename); /*{AddFilename,T_AddFilename}*/
-AddLabel          return(token::T_AddLabel); /*{AddLabel,T_AddLabel}*/
-SetCallback       return(token::T_SetCallback); /*{SetCallback,T_SetCallback}*/
-SetDragCallback   return(token::T_SetDragCallback); /*{SetDragCallback,T_SetDragCallback}*/
-SetPostionProp      return(token::T_SetPositionProp); /*{SetPositionProp,T_SetPositionProp}*/
-ShowSlider        return(token::T_ShowSlider); /*{ShowSlider,T_ShowSlider}*/
-CreateWin         return(token::T_CreateWin); /*{CreateWin,T_CreateWin}*/
-Display           return(token::T_Display); /*{Display,T_Display}*/
-BeginBox          return(token::T_BeginBox); /*{BeginBox,T_BeginBox}*/
-EndBox            return(token::T_EndBox); /*{EndBox,T_EndBox}*/
-BeginHorizontal   return(token::T_BeginHorizontal); /*{BeginHorizontal,T_BeginHorizontal}*/
-EndHorizontal     return(token::T_EndHorizontal); /*{EndHorizontal,T_EndHorizontal}*/
-redraw            return(token::T_redraw); /*{redraw,T_redraw}*/
-
-Enable            return(token::T_Enable);  /*{Enable,T_Enable}*/
-EnableBox         return(token::T_EnableBox);  /*{EnableBox,T_EnableBox}*/
-EnablePanel       return(token::T_EnablePanel);  /*{EnablePanel,T_EnablePanel}*/
 
 CreateFlatMesh    return(token::T_CreateFlatMesh);    /*{CreateFlatMesh,T_CreateFlatMesh}*/
 CreateVolume      return(token::T_CreateVolume);      /*{CreateVolume,T_CreateVolume}*/
@@ -1044,19 +1057,17 @@ this::([A-Za-z0-9_])*   {
   size_t pos = text.find("->");
   string contextname = text.substr(2,pos-2);
 
-  // TODO: check for context  with :: ??
-  //if (IsContext(contextname.c_str())) 
-  //  cout << "Context found" << endl;
 
   // check if contextname is really a context
   //cout << "looking for "<< contextname << endl;
-  Variable* var = IsObject(contextname.c_str(),OBJECT_CONTEXT_NUMBER);
-  if (var!=NULL) 
+  BasicVariable::ptr var = IsObject(contextname.c_str(),OBJECT_CONTEXT_NUMBER);
+  if (var.get()) 
   {
     FILE_MESSAGE("Object found");
     string varname = text.substr(pos+2);
 
-    AMIObject::ptr object = *(AMIObject::ptr*) var->Pointer();
+    Variable<AMIObject>::ptr objvar( boost::dynamic_pointer_cast<Variable<AMIObject> >(var));
+    AMIObject::ptr object (objvar->Pointer());
 
     Variables::ptr previous_ocontext = Vars.GetObjectContext();
     Vars.SetObjectContext(object->GetContext());
@@ -1081,18 +1092,16 @@ this::([A-Za-z0-9_])*   {
   size_t pos = text.find("->");
   string contextname = text.substr(0,pos);
 
-  // TODO: check for context  with :: ??
-  //if (IsContext(contextname.c_str())) 
-  //  cout << "Context found" << endl;
 
   // check if contextname is really a context
-  Variable* var = IsObject(contextname.c_str());
-  if (var!=NULL) 
+  BasicVariable::ptr var = IsObject(contextname.c_str());
+  if (var.get()) 
   {
     FILE_MESSAGE("Object found");
     string varname = text.substr(pos+2);
 
-    AMIObject::ptr object = *(AMIObject::ptr*) var->Pointer();
+    Variable<AMIObject>::ptr objvar( boost::dynamic_pointer_cast<Variable<AMIObject> >(var));
+    AMIObject::ptr object ( objvar->Pointer());
 
     Variables::ptr previous_ocontext = Vars.GetObjectContext();
     Vars.SetObjectContext(object->GetContext());
@@ -1150,36 +1159,23 @@ this::([A-Za-z0-9_])*   {
 %%
 
 
-//--------------------------------------------------
-//       IsContext()
-//--------------------------------------------------
-//
-bool IsContext( const char* varname)
-//
-{
-  Variable* var;
-  if (Vars.GetVar(varname,&var))
-    return (var->Type() == type_context);
-  else
-    return false;
-}
-
 
 //--------------------------------------------------
 //       IsObject()
 //--------------------------------------------------
 //
-Variable* IsObject( const char* varname, int context)
+BasicVariable::ptr IsObject( const char* varname, int context)
 //
 {
-  Variable* var;
-  if (Vars.GetVar(varname,&var,context))
-    if ((var->Type() == type_ami_object)||(var->Type() == type_ami_cpp_object))
+  BasicVariable::ptr var = Vars.GetVar(varname,context);
+  if (var.get())
+    if ((var->Type() == type_ami_object)||
+        (var->Type() == type_ami_cpp_object))
       return var;
     else 
-      return NULL;
+      return BasicVariable::ptr();
   else
-    return NULL;
+    return BasicVariable::ptr();
 }
 
 
@@ -1195,13 +1191,14 @@ yyip::Parser::token::yytokentype checkvar(
 //
 {
 
-  Variable* var;
-  bool res = Vars.GetVar(varname,&var,context);
+  BasicVariable::ptr var = Vars.GetVar(varname,context);
   //cout << "res = " << res << endl;
-  if  ((!GB_driver.procedure_declaration)&&res)   {
+  if  ((!GB_driver.procedure_declaration) && var.get())   {
 
-    yylval->variable = var;
-    switch(yylval->variable->Type()) {
+    GB_driver.var_stack.AddVar(var);
+
+    //yylval->variable = var.get();
+    switch(var->Type()) {
       case type_image:            return token::VAR_IMAGE;
         /*{$variable_image,VAR_IMAGE}*/
       case type_imagedraw:        return token::VAR_IMAGEDRAW;
@@ -1220,8 +1217,8 @@ yyip::Parser::token::yytokentype checkvar(
         /*{$variable_file,VAR_FILE}*/
       case type_c_procedure:      return token::VAR_C_PROCEDURE;
         /*{$variable_c_procedure,VAR_C_PROCEDURE}*/
-      case type_class_procedure:      return token::VAR_CLASS_PROCEDURE;
-        /*{$variable_class_procedure,VAR_CLASS_PROCEDURE}*/
+      case type_class_member:      return token::VAR_CLASS_MEMBER;
+        /*{$variable_class_procedure,VAR_CLASS_MEMBER}*/
       case type_c_image_function: return token::VAR_C_IMAGE_FUNCTION;
         /*{$variable_c_image_function,VAR_C_IMAGE_FUNCTION}*/
       case type_c_function: return token::VAR_C_FUNCTION;
@@ -1236,34 +1233,33 @@ yyip::Parser::token::yytokentype checkvar(
 
       case type_string:           return token::VAR_STRING;
         /*{$variable_string,VAR_STRING}*/
-      case type_paramwin:         return token::VAR_PARAMWIN;
-        /*{$variable_paramwin,VAR_PARAMWIN}*/
-      case type_parampanel:         return token::VAR_PARAMWIN;
-        /*{$variable_parampanel,VAR_PARAMPANEL}*/
       case type_matrix:           return token::VAR_MATRIX;
         /*{$variable_matrix,VAR_MATRIX}*/
       case type_gltransform:      return token::VAR_GLTRANSFORM;
         /*{$variable_gltransform,VAR_GLTRANSFORM}*/
       case type_array:       {
-         VarArray::ptr array =  *(VarArray::ptr*)yylval->variable->Pointer();
-         switch(array->Type()) {
-            case type_surface:    return token::VAR_ARRAY_SURFACE;
-            /*{$variable_surface_array,VAR_ARRAY_SURFACE}*/
-            case type_image:      return token::VAR_ARRAY_IMAGE;
-            /*{$variable_image_array,VAR_ARRAY_IMAGE}*/
-           default:
-              GB_driver.err_print("Array type not available \n");
-         }
-         break;
+        Variable<VarArray>::ptr vararray( 
+          boost::dynamic_pointer_cast<Variable<VarArray> >(var));
+        VarArray::ptr array (vararray->Pointer());
+        switch(array->Type()) {
+          case type_surface:    return token::VAR_ARRAY_SURFACE;
+          /*{$variable_surface_array,VAR_ARRAY_SURFACE}*/
+          case type_image:      return token::VAR_ARRAY_IMAGE;
+          /*{$variable_image_array,VAR_ARRAY_IMAGE}*/
+          default:
+            GB_driver.err_print("Array type not available \n");
+        }
+        break;
       }
       default:
         GB_driver.err_print("Variable type still not available \n");
+        GB_driver.var_stack.GetLastBasicVar();
     }
 
   }
 
   yylval->ident = new IdentifierInfo;
-  yylval->ident->SetName( string(varname));
+  yylval->ident->SetName( varname);
   yylval->ident->SetCreationContext(context);
   return(token::IDENTIFIER);
 }

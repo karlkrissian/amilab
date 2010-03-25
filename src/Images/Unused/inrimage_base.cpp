@@ -311,7 +311,7 @@ void InrImageBase::SetVoxelSize( float sx, float sy, float sz)
 
 
 //--------------------------------------------------------------------------
-// Defaut char* nom = NULL
+// default char* nom = NULL
 unsigned char InrImageBase::Sauve(const char* nom )
 //                    -----
 {

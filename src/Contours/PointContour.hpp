@@ -101,7 +101,7 @@ public:
   int z;
 
   ///
-  Constructeur PointContour() 
+   PointContour() 
   //
   {
 
@@ -113,7 +113,7 @@ public:
 
     _image_contours = (InrImage*) NULL;
 
-  } // Constructeur
+  } // Constructor
 
 
   ///

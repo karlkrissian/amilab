@@ -23,6 +23,7 @@ enum {
   wxID_ToConsole = 100
 };
 
+
 BEGIN_EVENT_TABLE(myTreeCtrl, wxTreeCtrl)
   EVT_MENU(wxID_ABOUT,     myTreeCtrl::OnAbout)
   EVT_MENU(wxID_ToConsole, myTreeCtrl::ToConsole)
@@ -48,9 +49,9 @@ void myTreeCtrl::ShowMenu(wxTreeItemId id, const wxPoint& pt)
     MyTreeItemData *item = (MyTreeItemData *)GetItemData(id);
     if (item) {
       wxMenu menu(title);
-      Variable* var = item->GetVar();
+      BasicVariable::ptr var = item->GetVar().lock();
      _currentmenu_var = var;
-     if (var) {
+     if (var.get()) {
         std::string com = var->GetComments();
         if (com.compare("")!=0) {
           wxString comments(com.c_str(), wxConvUTF8);
@@ -93,36 +94,51 @@ void myTreeCtrl::OnItemMenu(wxTreeEvent& event)
 void myTreeCtrl::OnAbout(wxCommandEvent& event)
 {
   std::string mess;
-  if (_currentmenu_var) {
-    switch (_currentmenu_var->Type()) {
+  BasicVariable::ptr var = _currentmenu_var.lock();
+  if (var.get()) {
+    switch (var->Type()) {
       case type_c_procedure     : 
-        ((void (*)(ParamList*)) _currentmenu_var->Pointer())(NULL);
+        {
+        DYNAMIC_CAST_VARIABLE(C_wrap_procedure, var, varproc);
+        (*varproc->Pointer())(NULL);
         return;
+        }
 
-      case type_class_procedure     : 
+      case type_class_member     : 
+        {
         // getting the associated help
-        (*((WrapClassMember::ptr*) _currentmenu_var->Pointer()))->CallProc(NULL);
+        DYNAMIC_CAST_VARIABLE(WrapClassMember, var, mem);
+        mem->Pointer()->ShowHelp();
         return;
+        }
+
       case type_c_image_function:
-       ((InrImage* (*)(ParamList*)) _currentmenu_var->Pointer())(NULL);
+        {
+        DYNAMIC_CAST_VARIABLE(C_wrap_imagefunction, var, func);
+        (*func->Pointer())(NULL);
         return;
+        }
       case type_c_function:
-        ((Variable::ptr (*)(ParamList*)) _currentmenu_var->Pointer())(NULL);
+        {
+        DYNAMIC_CAST_VARIABLE(C_wrap_varfunction, var, func);
+        (*func->Pointer())(NULL);
         return;
+        }
       default:
-        mess = _currentmenu_var->GetComments();
+        mess = var->GetComments();
     }
   } else {
     mess = "No variable for this item";
   }
-  wxMessageDialog* msg = new wxMessageDialog(NULL,wxString::FromAscii(mess.c_str()),
+  wxMessageDialog msg(GB_main_wxFrame,wxString::FromAscii(mess.c_str()),
       wxString::FromAscii("Help"),wxOK | wxICON_INFORMATION );
-  msg->ShowModal();
+  msg.ShowModal();
 }
 
 void myTreeCtrl::ToConsole(wxCommandEvent& event)
 {
-  GB_main_wxFrame->GetConsole()->IncCommand(_currentmenu_var->Name());
+  BasicVariable::ptr var(_currentmenu_var.lock());
+  GB_main_wxFrame->GetConsole()->IncCommand(var->Name());
 }
 
 

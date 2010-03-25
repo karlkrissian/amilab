@@ -83,45 +83,122 @@ if (!exists(LevelSetsClass)){
 
       ::Gui()
   }
+
+    #-----------------------------------------------
+    proc ::SaveParameters() {
+
+      paramfile_name = ::result_filename+"_param.txt"
+      if (FileExists(paramfile_name)) {
+        InfoDialog "file %1% already exists, please rename it." % paramfile_name
+      } else {
+        paramfile = open(paramfile_name,"w")
+  
+        paramfile.print "# AMILab\n"
+        paramfile.print "# parameters used in the Level Set segmentation \n"
+        paramfile.print "#  \n"
+        paramfile.print "::input_name   = %1% \n" % ::input_name
+        paramfile.print "::initial_name = %1% \n" % ::initial_name
+        paramfile.print "::init_mode = %1% \n"    % ::init_mode
+        paramfile.print "::inputmin = %1% \n"     % ::inputmin
+        paramfile.print "::inputmax = %1% \n"     % ::inputmax
+        paramfile.print "::minimal_intensity = %1% \n"     % ::minimal_intensity
+        paramfile.print "::use_expansion = %1% \n"     % ::use_expansion
+        paramfile.print "::use_advection = %1% \n"     % ::use_advection
+        paramfile.print "::use_smoothing = %1% \n"     % ::use_smoothing
+        paramfile.print "::use_velocity = %1% \n"     % ::use_velocity
+        paramfile.print "::use_expansion_image = %1% \n"     % ::use_expansion_image
+        paramfile.print "::expansion_image_name = %1% \n"     % ::expansion_image_name
+        paramfile.print "::Imean = %1% \n"     % ::Imean
+        paramfile.print "::Isd = %1% \n"     % ::Isd
+        paramfile.print "::prob_threshold = %1% \n"     % ::prob_threshold
+        paramfile.print "::sphere_radius = %1% \n"     % ::sphere_radius
+        paramfile.print "::accept_high_intensity = %1% \n"     % ::accept_high_intensity
+        paramfile.print "::expansioncoeff = %1% \n"     % ::expansioncoeff
+        paramfile.print "::dt = %1% \n"     % ::dt
+        paramfile.print "::T = %1% \n"     % ::T
+        paramfile.print "::NBD_method = %1% \n"     % ::NBD_method
+        paramfile.print "::NBD_freq = %1% \n"     % ::NBD_freq
+        paramfile.print "::check_convergence = %1% \n"     % ::check_convergence
+        paramfile.print "::conv_freq = %1% \n"     % ::conv_freq
+        paramfile.print "::stop = %1% \n"     % ::stop
+        paramfile.print "::threads = %1% \n"     % ::threads
+        paramfile.print "::advcoeff = %1% \n"     % ::advcoeff
+        paramfile.print "::curvcoeff = %1% \n"     % ::curvcoeff
+        paramfile.print "::smoothingtype = %1% \n"     % ::smoothingtype
+        paramfile.print "::affinecurv = %1% \n"     % ::affinecurv
+        paramfile.print "::velcoeff = %1% \n"     % ::velcoeff
+        paramfile.print "::downsamplefactor = %1% \n"     % ::downsamplefactor
+        paramfile.close
+      }
+    }
+
     #-----------------------------------------------
     proc ::load_input() {
 
-    eval "::input <<= (FLOAT)"+::input_name+";"
-    if (::input_name=="Image") {
-      ::input_name = "::input"
-      ::win.update
-    }
-
-    ::min          = min(::input)
-    ::max          = max(::input)
-    ::minimal_intensity = ::min
-    ::win.update
-
-    show ::input
-  }
-
-  #-----------------------------------------------
-  proc ::load_initial() {
-
-    if (!exists(::input)) {
-      InfoDialog "::load_initial() \t Need to load input image first!"
-    } else {
-      if (::init_mode==1) {
-        eval "::inls <<= (FLOAT)"+::initial_name+";"
-        if (::initial_name=="Image") {
-          ::initial_name = "::initial_name"
-          ::win.update
-        }
-        ::ComputeIntensityStats
-      } else {
-        ::inls = ::input*0-1
+      eval "::input <<= (FLOAT)"+::input_name+";"
+      if (::input_name=="Image") {
+        ::input_name = "::input"
+        ::win.Update(-1)
       }
   
-      ::inls0 = ::inls
-      ::input_draw.SetIsoContour(1,::inls,0)
-      ::input_draw.DrawIsoContour(1,1)
+      ::min          = min(::input)
+      ::max          = max(::input)
+      ::minimal_intensity = ::min
+      ::win.Update(-1)
+  
+      show ::input
     }
-  }
+    ::load_input.Comments("Copies the input image in a local image member named 'input', and updates the min-max intensities")
+
+    #-----------------------------------------------
+    proc ::load_initial() {
+
+      if (!exists(::input)) {
+        InfoDialog "::load_initial() \t Need to load input image first!"
+      } else {
+        if (::init_mode==1) {
+          eval "::inls <<= (FLOAT)"+::initial_name+";"
+          if (::initial_name=="Image") {
+            ::initial_name = "::initial_name"
+            ::win.Update(-1)
+          }
+          ::ComputeIntensityStats
+        } else {
+          ::inls = ::input*0-1
+        }
+    
+        ::inls0 <<= ::inls
+        ::input_draw.SetIsoContour(1,::inls,0)
+        ::input_draw.DrawIsoContour(1,1)
+      }
+    }
+    ::load_initial.Comments("Copies the initial levelset image in a local image member named 'inls', and draws the corresponding isocontour in the image viewer.")
+
+    #-----------------------------------------------
+    proc ::ref_initial() {
+
+      if (!exists(::input)) {
+        InfoDialog "::load_initial() \t Need to load input image first!"
+      } else {
+        if (::init_mode==1) {
+          # Delete inls is it exists
+          if (exists(::inls0)) { del ::inls0; }
+          eval "::inls0 = &"+::initial_name+";"
+          if (::initial_name=="Image") {
+            ::initial_name = "::initial_name"
+            ::win.Update(-1)
+          }
+          ::ComputeIntensityStats
+        } else {
+          ::inls0 = ::input*0-1
+        }
+    
+        ::inls <<= ::inls0
+        ::input_draw.SetIsoContour(1,::inls,0)
+        ::input_draw.DrawIsoContour(1,1)
+      }
+    }
+    ::ref_initial.Comments("Creates a reference to the initial levelset image in a local image member named 'inls', and draws the corresponding isocontour in the image viewer.")
   
  #-----------------------------------------------
   # reads the expansion image
@@ -131,7 +208,7 @@ if (!exists(LevelSetsClass)){
     eval "::expansion_image <<= (FLOAT)"+::expansion_image_name+";"
     if (::expansion_image_name=="Image") {
       ::expansion_image_name = "::expansion_image"
-      ::win.update
+      ::win.Update(-1)
     }
   }
 
@@ -197,7 +274,7 @@ if (!exists(LevelSetsClass)){
   }
 #----------------------------
   proc ::Close() {
-    ::win.Hide
+    ::win.HidePanel
     delvars GetObjectName(::Close)
   }
   ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -216,7 +293,7 @@ if (!exists(LevelSetsClass)){
   
     ::velfield = vel
     ::velcoeff = coeff
-    ::win.update
+    ::win.Update(-1)
   
   }
   
@@ -244,7 +321,7 @@ if (!exists(LevelSetsClass)){
         InfoDialog "::ComputeIntensityStats() \n No point within initial level set"
       }
       if (exists(::win)) {
-        ::win.update
+        ::win.Update(-1)
       }
     } else {
         InfoDialog "::ComputeIntensityStats() \n ::inls not found"
@@ -269,7 +346,7 @@ if (!exists(LevelSetsClass)){
         InfoDialog "::ComputeIntensityStatsMedian() \n No point within initial level set"
       }
       if (exists(::win)) {
-        ::win.update
+        ::win.Update(-1)
       }
     } else {
         InfoDialog "::ComputeIntensityStatsMedian() \n ::inls not found"
@@ -554,7 +631,8 @@ if (!exists(LevelSetsClass)){
   proc ::Gui() {
   
   #  ::win = ParamWin("Evolve Active Contours using Level Sets")
-    ::win = ParamWin("LevelSets")
+    import = &global::ami_import;
+    ::win = import->ParamPanel("LevelSets")
     ::win.BeginBook
   
       ::win.AddPage("Init")
@@ -562,14 +640,15 @@ if (!exists(LevelSetsClass)){
         ::win.BeginBoxPanel("Input Image")
           # set the input image
           ::win.BeginHorizontal
-            ::win.AddImageChoice(::input_name, "")
+            ::win.AddImageChoice( &::input_name, "")
             ::win.AddButton("Load",::load_input)
+            #::win.AddButton("Ref",::ref_input)
           ::win.EndHorizontal
-          ::win.AddFloat(::minimal_intensity,"Min. intensity",::inputmin,::inputmax)
+          ::win.AddFloat( &::minimal_intensity,"Min. intensity",::inputmin,::inputmax)
         ::win.EndBoxPanel
 
         ::win.BeginBoxPanel("Initial Level Set")
-          initmode_id = ::win.AddEnum(::init_mode,"Mode")
+          initmode_id = ::win.AddEnum( &::init_mode,"Mode")
             ::win.AddEnumChoice(initmode_id,"Manual Spheres")
             ::win.AddEnumChoice(initmode_id,"Initial image")
   
@@ -580,14 +659,15 @@ if (!exists(LevelSetsClass)){
               ::win.AddButton("Undo",  ::Undo)
               ::win.AddButton("Backup",     ::Backup)
             ::win.EndHorizontal
-            ::win.AddFloat(::sphere_radius,"Radius",0.1,10.0)
+            ::win.AddFloat( &::sphere_radius,"Radius",0.1,10.0)
           ::win.EndBoxPanel
 
           # set the initial level set image
           ::win.BeginBoxPanel("Initial Image")
+            ::win.AddImageChoice( &::initial_name, "")
             ::win.BeginHorizontal
-              ::win.AddImageChoice(::initial_name, "")
               ::win.AddButton("Load",::load_initial)
+              ::win.AddButton("Ref",::ref_initial)
             ::win.EndHorizontal
           ::win.EndBoxPanel
   
@@ -595,45 +675,45 @@ if (!exists(LevelSetsClass)){
 
         ::win.AddButton("Compute Intensity stats",::ComputeIntensityStats)
   
-        ::win.AddInt( ::downsamplefactor,"Downsample", 1, 4)
+        ::win.AddInt( &::downsamplefactor,"Downsample", 1, 4)
   
       ::win.AddPage("Param")
-        ::win.AddBoolean(::use_expansion,"Expansion")
-        ::win.SetCallback(::activate_terms)
-        ::win.AddBoolean(::use_advection,"Advection")
-        ::win.SetCallback(::activate_terms)
-        ::win.AddBoolean(::use_smoothing,"Smoothing")
-        ::win.SetCallback(::activate_terms)
+        ::win.AddBoolean( &::use_expansion,"Expansion")
+        ::win.SetCallback( &::activate_terms)
+        ::win.AddBoolean( &::use_advection,"Advection")
+        ::win.SetCallback( &::activate_terms)
+        ::win.AddBoolean( &::use_smoothing,"Smoothing")
+        ::win.SetCallback( &::activate_terms)
         ::win.BeginBook
           ::exp_pid = ::win.AddPage("Exp")
-            ::win.AddFloat(::expansioncoeff,"Weight",0,1)
-            ::win.AddBoolean(::use_expansion_image,"Use expansion image")
-            ::win.AddImageChoice(::expansion_image_name,"Exp. Image:")
+            ::win.AddFloat( &::expansioncoeff,"Weight",0,1)
+            ::win.AddBoolean( &::use_expansion_image,"Use expansion image")
+            ::win.AddImageChoice( &::expansion_image_name,"Exp. Image:")
             ::win.BeginBoxPanel("Intensity-based force")
-              ::win.AddFloat(::Imean,"Mean", ::inputmin,::inputmax)
-              ::win.AddFloat(::Isd,"StandDev",0,(::inputmax-::inputmin)/2)
-              ::win.AddFloat(::prob_threshold,"Threshold",0,1)
-              ::win.AddBoolean(::accept_high_intensity,"Accept high intensities")
+              ::win.AddFloat( &::Imean,"Mean", ::inputmin,::inputmax)
+              ::win.AddFloat( &::Isd,"StandDev",0,(::inputmax-::inputmin)/2)
+              ::win.AddFloat( &::prob_threshold,"Threshold",0,1)
+              ::win.AddBoolean( &::accept_high_intensity,"Accept high intensities")
             ::win.EndBoxPanel
   
           ::adv_pid = ::win.AddPage("Adv")
-            ::win.AddFloat(::advcoeff,"Weight",0,1)
+            ::win.AddFloat( &::advcoeff,"Weight",0,1)
     
           ::smo_pid = ::win.AddPage("Smooth")
-            ::win.AddFloat(::curvcoeff,"Weight",0,1)
-            ::smoothtype_id = ::win.AddEnum(::smoothingtype,"Type")
+            ::win.AddFloat( &::curvcoeff,"Weight",0,1)
+            ::smoothtype_id = ::win.AddEnum( &::smoothingtype,"Type")
               ::win.AddEnumChoice(::smoothtype_id,"min curv")
               ::win.AddEnumChoice(::smoothtype_id,"mean curv")
-            ::win.AddBoolean(::affinecurv,"Affine curv")
+            ::win.AddBoolean( &::affinecurv,"Affine curv")
     
           ::vel_pid = ::win.AddPage("Vel")
-            ::win.AddFloat(::velcoeff,"Weight",0,1)
+            ::win.AddFloat( &::velcoeff,"Weight",0,1)
   
         ::win.EndBook
   
       ::win.AddPage("Band")
         ::win.BeginBoxPanel("Re-Distancing")
-            ::DistType_id = ::win.AddEnum(::NBD_method,"Method")
+            ::DistType_id = ::win.AddEnum( &::NBD_method,"Method")
               ::win.AddEnumChoice(::DistType_id,"Liana")
               ::win.AddEnumChoice(::DistType_id,"Fast Marching")
               ::win.AddEnumChoice(::DistType_id,"Fast Chamfer")
@@ -642,12 +722,12 @@ if (!exists(LevelSetsClass)){
       ::win.AddPage("Evol")
   
         ::win.BeginBoxPanel("Time")
-          ::win.AddFloat(::dt,"dt",0.01,1)
-          ::win.AddFloat(::T,"T",0.01,500)
+          ::win.AddFloat( &::dt,"dt",0.01,1)
+          ::win.AddFloat( &::T,"T",0.01,500)
         ::win.EndBoxPanel
   
         ::win.BeginBoxPanel("Processing")
-          ::win.AddInt(::threads,"Threads",1,10)
+          ::win.AddInt( &::threads,"Threads",1,10)
           ::win.BeginHorizontal
             ::win.AddButton("ReRun",     ::ReRun)
             ::win.AddButton("Continue",  ::Continue)
@@ -659,26 +739,27 @@ if (!exists(LevelSetsClass)){
         ::win.EndBoxPanel
 
         ::win.BeginBoxPanel("Convergence")
-          ::win.AddBoolean(::check_convergence,"Check")
-          ::win.AddInt(::conv_freq,"Freq",5,100)
+          ::win.AddBoolean( &::check_convergence,"Check")
+          ::win.AddInt( &::conv_freq,"Freq",5,100)
         ::win.EndBoxPanel
       ::win.AddPage("Dist")
-        ::win.AddFloat(::DTmin,"min",-100,0)
-        ::win.AddFloat(::DTmax,"max",0,100)
+        ::win.AddFloat( &::DTmin,"min",-100,0)
+        ::win.AddFloat( &::DTmax,"max",0,100)
         ::win.AddButton("Apply",  ::ApplyDT)
   
       ::win.AddPage("Res")
   
         ::win.BeginBoxPanel("Result filename")
-          ::win.AddString(::result_filename,"base name:")
-          ::win.AddString(::result_filename_ext,"extension:")
-          ::win.AddBoolean(::resname_addtime,"Add evol. time")
-          ::win.AddBoolean(::resname_addprob,"Add prob.")
+          ::win.AddString( &::result_filename,"base name:")
+          ::win.AddString( &::result_filename_ext,"extension:")
+          ::win.AddBoolean( &::resname_addtime,"Add evol. time")
+          ::win.AddBoolean( &::resname_addprob,"Add prob.")
         ::win.EndBoxPanel
   
         ::win.BeginBoxPanel("Save")
         ::win.BeginHorizontal
           ::win.AddButton("Result",   ::SaveResult)
+          ::win.AddButton("Parameters", ::SaveParameters)
         ::win.EndHorizontal
   
         ::win.BeginHorizontal
@@ -695,7 +776,7 @@ if (!exists(LevelSetsClass)){
       ::win.AddButton("Close All",          ::CloseAll)
     ::win.EndHorizontal  
 
-    ::win.update
+    ::win.Update(-1)
     ::win.Display
   }
   ::Init
@@ -714,7 +795,7 @@ if (!exists(lsobjetct)) {
     # start with one image
     im     = Image $1
     lsobject->input_name = "global::im"
-    lsobject->win.update
+    lsobject->win.Update(-1)
   }
   
   if (argc==2) {
@@ -723,7 +804,7 @@ if (!exists(lsobjetct)) {
     initim = Image $2
     lsobject->input_name   = "global::im"
     lsobject->initial_name = "global::initim"
-    lsobject->win.update
+    lsobject->win.Update(-1)
   }
   
   if (argc==3) {
@@ -734,7 +815,7 @@ if (!exists(lsobjetct)) {
     initim = initim-th
     lsobject->input_name   = "global::im"
     lsobject->initial_name = "global::initim"
-    lsobject->win.update
+    lsobject->win.Update(-1)
   } 
 } else {
 InfoDialog "The script seems to be already loaded." 

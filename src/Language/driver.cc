@@ -80,6 +80,9 @@ bool Driver::parse_stream(std::istream& in,
   int res = 0;
   try {
     res = parser.parse();
+    if (res!=0) {
+      cout << __func__ << " returned " << res << endl;
+    }
   }
   catch(std::exception const& e) {
     err_print( (boost::format("std::exception catched during parsing \n %1%") % e.what()).str().c_str());
@@ -205,7 +208,7 @@ void Driver::yyip_instanciate_object( const AMIClass::ptr& oclass,
 }
 
 //-----------------------------------------------------------
-void Driver::yyip_call_function( const Variable* v, const ParamList::ptr& param)
+void Driver::yyip_call_function( AMIFunction* f, const ParamList::ptr& param)
 //   --------------------------
 {
   int    previous_lineno   = yyiplineno;
@@ -213,19 +216,20 @@ void Driver::yyip_call_function( const Variable* v, const ParamList::ptr& param)
   int    i;
   char*  name;
 
+/*
   // check that v is a function variable
   if (v->Type()!=type_ami_function) {
     error("Variable is not a function");
     return;
   }
-
   // Get the function
   AMIFunction::ptr f;
   f = *(AMIFunction::ptr*) (v->Pointer());
+*/
 
   // Set the object context
   Variables::ptr previous_ocontext = Vars.GetObjectContext();
-  Vars.SetObjectContext(v->GetContext());
+  Vars.SetObjectContext(f->GetContext());
 
   // Set the new context
   Vars.NewContext(f->GetName().c_str());
@@ -249,18 +253,13 @@ void Driver::yyip_call_function( const Variable* v, const ParamList::ptr& param)
           //  cerr << format("Vars.AddVarPtr( %1%, %2%, %3% )")
           //        % param->GetType(i) % name % param->GetParam(i)
           //      << endl;
-          // LOTS OF CARE HERE, now GetParam is a pointer
-          // to a smart pointer !!!
-          Vars.AddVarPtr( param->GetType(i),
-                          name,
-                          param->GetParam(i)
-                        );
+          BasicVariable::ptr paramvar( param->GetParam(i));
+          Vars.AddVar(name, paramvar);
         }
       } // end for
-    } else
-      cerr  << "Driver::yyip_call_function "
-            << "\t Error checking for parameters."
-            << endl;
+    } else {
+      CLASS_ERROR(" Error checking for parameters.");
+    }
   }
 
   // Call the function
@@ -347,10 +346,11 @@ bool Driver::parse_script(  const char* filename)
   }
 
   if (!newname.IsFileReadable()) {
-   string mess =  (format("Error in reading %s \n") % inputname.GetFullPath().mb_str()).str();
-   wxMessageDialog* err_msg = new wxMessageDialog(NULL,GetwxStr(mess),GetwxStr("Error"),wxOK | wxICON_ERROR);
-   err_msg->ShowModal();
-   return 0;
+    string mess =  (format("Error in reading %s \n") % inputname.GetFullPath().mb_str()).str();
+    wxMessageDialog* err_msg = new wxMessageDialog(GB_main_wxFrame,GetwxStr(mess),GetwxStr("Error"),wxOK | wxICON_ERROR | wxSTAY_ON_TOP );
+    err_msg->ShowModal();
+    err_msg->Destroy();
+    return 0;
   }
 
 /*
@@ -448,9 +448,9 @@ int Driver::err_print(const char* st)
   else 
     mess = mess + " Abort current parsing and open file?";
 
-  wxMessageDialog* err_msg = new wxMessageDialog(NULL,GetwxStr(mess),GetwxStr("Error"),wxYES_NO |  wxYES_DEFAULT  | wxICON_ERROR);
-
+  wxMessageDialog* err_msg = new wxMessageDialog(GB_main_wxFrame,GetwxStr(mess),GetwxStr("Error"),wxYES_NO |  wxYES_DEFAULT  | wxICON_ERROR | wxSTAY_ON_TOP );
   int res = err_msg->ShowModal();
+  err_msg->Destroy();
 
   if ((!InConsole())&&(res==wxID_YES)) {
     // create application frame
@@ -478,8 +478,9 @@ void Driver::info_print(const char* st)
 {
   *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString::FromAscii(st);
   string mess =  (format("Information: %s \n") % st).str();
-  wxMessageDialog* err_msg = new wxMessageDialog(NULL,GetwxStr(mess),GetwxStr("Info"),wxOK | wxICON_INFORMATION );
+  wxMessageDialog* err_msg = new wxMessageDialog(NULL,GetwxStr(mess),GetwxStr("Info"),wxOK | wxICON_INFORMATION | wxSTAY_ON_TOP );
   err_msg->ShowModal();
+  err_msg->Destroy();
 } // Driver::err_print()
 
 

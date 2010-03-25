@@ -37,10 +37,6 @@ InrImage* wrap_itkMultiScaleVesselnessFilter2D(ParamList* p)
 	int numberOfScales = 0;
 	int n=0;
 	
-	if (!get_image_param(  input,      p, n)) HelpAndReturnNULL;
-	if (!get_float_param(  sigmaMin,      p, n)) HelpAndReturnNULL;
-	if (!get_float_param(  sigmaMax,      p, n)) HelpAndReturnNULL;
-	if (!get_int_param(  numberOfScales,      p, n)) HelpAndReturnNULL;
 	
 	const unsigned char Dimension = 2;
 	
@@ -66,7 +62,7 @@ InrImage* wrap_itkMultiScaleVesselnessFilter2D(ParamList* p)
   	
 	image = InrToITK<PixelType,Dimension>(input,region);
 	
-	cout << "Conversión hecha" << endl;
+	cout << "Conversiï¿½n hecha" << endl;
 	
 	MultiScaleEnhancementFilterType::Pointer multiScaleEnhancementFilter = MultiScaleEnhancementFilterType::New();
   multiScaleEnhancementFilter->SetInput(image);
@@ -126,10 +122,11 @@ char functionname[] = "itkMultiScaleVesselnessFilter3D";
 	int numberOfScales = 0;
 	int n=0;
 	
-	if (!get_image_param(  input,      p, n)) HelpAndReturnNULL;
-	if (!get_float_param(  sigmaMin,      p, n)) HelpAndReturnNULL;
-	if (!get_float_param(  sigmaMax,      p, n)) HelpAndReturnNULL;
-	if (!get_int_param(  numberOfScales,      p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>( input,          p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>(        sigmaMin,       p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>(        sigmaMax,       p, n)) HelpAndReturnNULL;
+  if (!get_int_param(               numberOfScales, p, n)) HelpAndReturnNULL;
+
 	
 	const unsigned char Dimension = 3;
 
@@ -155,7 +152,7 @@ char functionname[] = "itkMultiScaleVesselnessFilter3D";
   	
 	image = InrToITK<PixelType,Dimension>(input,region);
 	
-	cout << "Conversión hecha" << endl;
+	cout << "Conversiï¿½n hecha" << endl;
 	
 	// Instantiate the multiscale filter and set the input image
   MultiScaleEnhancementFilterType::Pointer multiScaleEnhancementFilter = MultiScaleEnhancementFilterType::New();

@@ -278,7 +278,7 @@ void IsoContour2 :: CalculTotalPointsLigne()
 
 //----------------------------------------------------------------------
 ///
-IsoContour2 :: Constructeur IsoContour2( InrImage* image0)
+IsoContour2 ::  IsoContour2( InrImage* image0)
 //
 {
 
@@ -345,11 +345,11 @@ IsoContour2 :: Constructeur IsoContour2( InrImage* image0)
     _sauve=0;
     _debug=0;
 
-} // Constructeur
+} // Constructor
 
 //----------------------------------------------------------------------
 ///
-IsoContour2 :: Destructeur IsoContour2()
+IsoContour2 :: ~IsoContour2()
 //
 {
 
@@ -371,7 +371,7 @@ IsoContour2 :: Destructeur IsoContour2()
   EffaceTabReel(   _tab_moygrad);
 */
 
-} // Destructeur
+} // Destructor
 
  
 //----------------------------------------------------------------------

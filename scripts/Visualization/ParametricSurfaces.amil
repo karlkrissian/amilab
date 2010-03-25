@@ -63,7 +63,7 @@ if (!exists(ParametricSurfaceClass)) {
    
   proc ::Close() \
   {
-    ::win.Hide
+    ::win.HidePanel
     delvars GetObjectName(::Close)
   }
   ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -224,7 +224,7 @@ if (!exists(ParametricSurfaceClass)) {
     ::cx = 1
     ::cy = 1
     ::cz = 1
-    ::win.update
+    ::win.Update(-1)
     ::Update()
   } # ::ResetScale()
 
@@ -235,7 +235,7 @@ if (!exists(ParametricSurfaceClass)) {
     ::e_x = 1
     ::e_y = 1
     ::e_z = 1
-    ::win.update
+    ::win.Update(-1)
     ::Update()
   } 
   # ::SetEllipsoid()
@@ -263,7 +263,7 @@ if (!exists(ParametricSurfaceClass)) {
                                 % ::timestep
 
     eq_file.print "// Update interface\n"
-    eq_file.print "::win.update\n"
+    eq_file.print "::win.Update(-1)\n"
 
   }
 
@@ -277,75 +277,76 @@ if (!exists(ParametricSurfaceClass)) {
   #--------------------------------------------------------------
   proc ::Gui(){
   
-    ::win = ParamWin("Param. Surf.")
+    import = &global::ami_import;
+    ::win = import->ParamPanel("Param. Surf.")
 
-    ::type_id  = ::win.AddEnum(::type)
+    ::type_id  = ::win.AddEnum( &::type)
       ::win.AddEnumChoice(::type_id,"SuperQuadric")
       ::win.AddEnumChoice(::type_id,"Torus")
       ::win.AddEnumChoice(::type_id,"Expression")
-    ::win.SetCallback(::NewType)
+    ::win.SetCallback( &::NewType)
 
     ::win.BeginBook
       # Main Page
       ::win.AddPage("Main")
-        ::win.BeginBox("Resolution")
-            ::thetadim_id = ::win.AddInt(::theta_dim,4,500)
-            ::win.SetCallback(::Update)
-            ::phidim_id   = ::win.AddInt(::phi_dim,  4,500)
-            ::win.SetCallback(::Update)
-        ::win.EndBox
-        ::win.BeginBox("Scaling Coeff.")
-            ::cx_id = ::win.AddFloat    (::cx,0.1,5)
-            ::win.SetCallback(::Update)
-            ::cy_id = ::win.AddFloat    (::cy,0.1,5)
-            ::win.SetCallback(::Update)
-            ::cz_id = ::win.AddFloat    (::cz,0.1,5)
-            ::win.SetCallback(::Update)
+        ::win.BeginBoxPanel("Resolution")
+            ::thetadim_id = ::win.AddInt( &::theta_dim,  "::theta_dim", 4,500)
+            ::win.SetCallback( &::Update)
+            ::phidim_id   = ::win.AddInt( &::phi_dim,  "::phi_dim",   4,500)
+            ::win.SetCallback( &::Update)
+        ::win.EndBoxPanel
+        ::win.BeginBoxPanel("Scaling Coeff.")
+            ::cx_id = ::win.AddFloat( &::cx,  "::cx", 0.1,5)
+            ::win.SetCallback( &::Update)
+            ::cy_id = ::win.AddFloat( &::cy,  "::cy", 0.1,5)
+            ::win.SetCallback( &::Update)
+            ::cz_id = ::win.AddFloat( &::cz,  "::cz", 0.1,5)
+            ::win.SetCallback( &::Update)
             ::win.AddButton("Reset",   ::ResetScale)
-        ::win.EndBox
+        ::win.EndBoxPanel
 
 
       # SuperQuadric Page
       ::win.AddPage("SuperQu.")
-        ::win.BeginBox("Exponential Coeff.")
-            ::cx_id = ::win.AddFloat    (::e_x,0.1,5)
-            ::win.SetCallback(::Update)
-            ::cy_id = ::win.AddFloat    (::e_y,0.1,5)
-            ::win.SetCallback(::Update)
-            ::cz_id = ::win.AddFloat    (::e_z,0.1,5)
-            ::win.SetCallback(::Update)
+        ::win.BeginBoxPanel("Exponential Coeff.")
+            ::ex_id = ::win.AddFloat( &::e_x,  "::e_x", 0.1,5)
+            ::win.SetCallback( &::Update)
+            ::ey_id = ::win.AddFloat( &::e_y,  "::e_y", 0.1,5)
+            ::win.SetCallback( &::Update)
+            ::ez_id = ::win.AddFloat( &::e_z,  "::e_z", 0.1,5)
+            ::win.SetCallback( &::Update)
             ::win.AddButton("Set Ellipsoid",   ::SetEllipsoid)
-        ::win.EndBox
+        ::win.EndBoxPanel
 
       # SuperQuadric Torus
       ::win.AddPage("Torus")
-        ::win.BeginBox("Radii")
-            ::R_id = ::win.AddFloat    (::R,0.1,5)
-            ::win.SetCallback(::Update)
-            ::r_id = ::win.AddFloat    (::r,0.1,5)
-            ::win.SetCallback(::Update)
-        ::win.EndBox
+        ::win.BeginBoxPanel("Radii")
+            ::R_id = ::win.AddFloat( &::R,  "::R", 0.1,5)
+            ::win.SetCallback( &::Update)
+            ::r_id = ::win.AddFloat( &::r,  "::r", 0.1,5)
+            ::win.SetCallback( &::Update)
+        ::win.EndBoxPanel
 
       # User Equation Page
       ::win.AddPage("Expr")
-        ::win.BeginBox("Equation (U,V):")
-          ::X_id = ::win.AddString(::X,"X=")
-          ::win.SetCallback(::Update)
-          ::Y_id = ::win.AddString(::Y,"Y=")
-          ::win.SetCallback(::Update)
-          ::Z_id = ::win.AddString(::Z,"Z=")
-          ::win.SetCallback(::Update)
-        ::win.EndBox
-        ::win.BeginBox("Time evolution:")
-          ::win.AddInt(::kmax,0,100)
-          ::win.AddInt(::timestep,0,1000)
+        ::win.BeginBoxPanel("Equation (U,V):")
+          ::X_id = ::win.AddString( &::X,"X=")
+          ::win.SetCallback( &::Update)
+          ::Y_id = ::win.AddString( &::Y,"Y=")
+          ::win.SetCallback( &::Update)
+          ::Z_id = ::win.AddString( &::Z,"Z=")
+          ::win.SetCallback( &::Update)
+        ::win.EndBoxPanel
+        ::win.BeginBoxPanel("Time evolution:")
+          ::win.AddInt( &::kmax,  "::kmax", 0,100)
+          ::win.AddInt( &::timestep,  "::timestep", 0,1000)
           ::win.BeginHorizontal
             ::win.AddButton("Start", ::Start)
             ::win.AddButton("Stop",  ::Stop)
           ::win.EndHorizontal
-        ::win.EndBox
+        ::win.EndBoxPanel
         
-        ::win.AddString(::eq_filename,"Eq. filename")
+        ::win.AddString( &::eq_filename,"Eq. filename")
         ::win.BeginHorizontal
           ::win.AddButton("Save", ::SaveEquation)
           ::win.AddButton("Read", ::ReadEquation)
@@ -357,7 +358,7 @@ if (!exists(ParametricSurfaceClass)) {
           ::win.AddButton("Close",          ::Close)
           ::win.AddButton("Close All",          ::CloseAll)
         ::win.EndHorizontal
-    ::win.update
+    ::win.Update(-1)
     ::win.Display
   }
   

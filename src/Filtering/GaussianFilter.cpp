@@ -46,7 +46,7 @@
 //
 
 
-#include "filtrage.hpp"
+#include "GaussianFilter.h"
 
 // ==========================================================================
 // protected:

@@ -30,14 +30,18 @@
 #define _ami_object_h_
 
 
+#include "Variables.hpp"
 #include <string>
 #include <boost/shared_ptr.hpp>
 #include "DefineClass.hpp"
 #include "AmiInstructionBlock.h"
 #include "ami_class.h"
-#include "Variables.hpp"
 
 using namespace boost;
+
+// forward declaration of WrapClassBase
+class  WrapClassBase;
+
 
 /**
   The class AMIObject can be created either with or without a link to a class object.
@@ -53,11 +57,21 @@ private:
   /// Smart pointer to the corresponding class if any
   AMIClass::ptr   _class;
 
+  /// Pointer to the class allowing C++ object wrapping
+  boost::shared_ptr<WrapClassBase> _wrapped_object;
+
+  // why should object have a name, while a variable has one
+/*
   /// Object name
   std::string     _name;
+*/
+
+  // What happens with references here???
+  /// Pointer to the language variable containing the object
+  BasicVariable::ptr _var;
 
   /// Own list of variables
-  Variables::ptr  _vars;
+  boost::shared_ptr<Variables>  _vars;
 
  public:
 
@@ -66,9 +80,11 @@ private:
    */
   AMIObject()
     {
-      _name     = "";
-      _vars     = Variables::ptr(new Variables);
+     // _name     = "";
+      _vars     = boost::shared_ptr<Variables>(new Variables);
+/*
       _vars->SetName("object");
+*/
     }
 
   /**
@@ -100,13 +116,23 @@ private:
    */
   AMIClass::ptr& GetClass() { return _class;}
 
+
+  /**
+   * Associates the wrapped object 
+   * @param amiclass 
+   */
+  void SetWrappedObject(boost::shared_ptr<WrapClassBase> wo)
+  {
+    _wrapped_object = boost::shared_ptr<WrapClassBase>(wo);
+  }
+
   /**
    * Sets the object name
    * @param fname 
    */
   void SetName( const string& fname) 
   { 
-    _name = fname; 
+//    _name = fname; 
     _vars->SetName(fname);
   }
 
@@ -114,13 +140,16 @@ private:
    * Gets the object name
    * @return object name
    */
-  const string& GetName() const { return _name; }
+  const string GetName() const 
+  { 
+    return _vars->GetName();
+  }
 
   /**
    * Gets the list of variables 
    * @return object context (contains its variables)
    */
-  Variables::ptr& GetContext() { return _vars;}
+  boost::shared_ptr<Variables>& GetContext() { return _vars;}
 
 }; // AMIObject
 
