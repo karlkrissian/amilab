@@ -1,8 +1,8 @@
-#ifndef _wrapitkDICOMReadWrite_h_
-#define _wrapitkDICOMReadWrite_h_
+#ifndef _wrapitkDICOMRead_h_
+#define _wrapitkDICOMRead_h_
 
 #include "paramlist.h"
 
 InrImage* wrap_itkDICOMRead(ParamList*);
 
-#endif // _wrapitkDICOMReadWrite_h_
+#endif // _wrapitkDICOMRead_h_

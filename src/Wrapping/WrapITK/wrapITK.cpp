@@ -24,7 +24,7 @@
 #include "wrapitkFastMarchingImageFilter.h"
 #include "wrapitkWaterShedImageFilter.h"
 #include "wrapitkMultiScaleVesselnessFilter.h"
-#include "wrapitkDICOMReadWrite.h"
+#include "wrapitkDICOMRead.h"
 #include "wrapitkSigmoidImageFilter.h"
 #include "wrapitkLevelSet.h"
 #include "wrapitkBinaryThresholdImageFilter.h"
