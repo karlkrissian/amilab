@@ -21,8 +21,8 @@ InrImage* wrap_itkBinaryThresholdImageFilter2D(ParamList* p)
   char parameters[] =" \n\
           Parameters:\n\
           input image \n\
-					LowerThreshold \n\
-					UpperThreshold \n\
+          LowerThreshold \n\
+          UpperThreshold \n\
       ";
     
 	InrImage* input = NULL;
@@ -90,8 +90,8 @@ InrImage* wrap_itkBinaryThresholdImageFilter3D(ParamList* p)
   char parameters[] =" \n\
           Parameters:\n\
           input image \n\
-					LowerThreshold \n\
-					UpperThreshold \n\
+          LowerThreshold \n\
+          UpperThreshold \n\
       ";
     
 	InrImage* input = NULL;

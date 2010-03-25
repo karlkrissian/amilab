@@ -50,6 +50,7 @@ public:
 protected:
   void OnItemMenu(wxTreeEvent& event);
   void OnAbout(wxCommandEvent& event);
+  void ToConsole(wxCommandEvent& event);
   void ShowMenu(wxTreeItemId id, const wxPoint& pt);
 /*
   void OnEraseBackground( wxEraseEvent& WXUNUSED(event) );

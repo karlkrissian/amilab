@@ -1447,8 +1447,32 @@ void MainFrame::OnFileLoadScript   ( wxCommandEvent& event )
 }
 
 //-----------------------------------------------------
-void MainFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
+void MainFrame::OnQuit(wxCommandEvent& event)
 {
+      // Check if not already displaying a message
+      // to avoid problems
+      wxMessageDialog dialog( 
+        this,
+        _T("Are you sure that you want to close this window ?"),
+        _T("Confirmation"), 
+         wxNO_DEFAULT
+        |wxYES_NO
+        |wxCANCEL
+        |wxICON_INFORMATION
+        );
+
+        switch ( dialog.ShowModal() )
+        {
+        case wxID_NO:
+        case wxID_CANCEL:
+//            event.Veto();
+            return;
+
+        default:;
+        }
+
+
+//  event.Veto();
   Close(true);
 }
 

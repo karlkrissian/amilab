@@ -75,8 +75,6 @@ unsigned char DELETE_IDRAW;
 
 extern VarContexts  Vars;
 
-#include "xmtext.hpp"
-extern TextControl* TC;
 
 int        GB_argc;
 wxChar**   GB_argv;

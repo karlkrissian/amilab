@@ -15,11 +15,17 @@
 #include "paramlist.h"
 #include "wrapfunction_class.h"
 
+#include "MainFrame.h"
+extern MainFrame*    GB_main_wxFrame;
 #include <iostream>
 
+enum {
+  wxID_ToConsole = 100
+};
 
 BEGIN_EVENT_TABLE(myTreeCtrl, wxTreeCtrl)
-  EVT_MENU(wxID_ABOUT, myTreeCtrl::OnAbout)
+  EVT_MENU(wxID_ABOUT,     myTreeCtrl::OnAbout)
+  EVT_MENU(wxID_ToConsole, myTreeCtrl::ToConsole)
 /*
   EVT_ERASE_BACKGROUND(    myTreeCtrl::OnEraseBackground)
   EVT_PAINT(               myTreeCtrl::OnPaint)
@@ -51,7 +57,8 @@ void myTreeCtrl::ShowMenu(wxTreeItemId id, const wxPoint& pt)
           menu.Append(wxID_ANY, comments);
         }
       }
-      menu.Append(wxID_ABOUT, wxT("&About..."));
+     menu.Append(wxID_ToConsole,wxT("Write in console"));
+     menu.Append(wxID_ABOUT, wxT("&About..."));
       PopupMenu(&menu, pt);
     }
   }
@@ -113,6 +120,10 @@ void myTreeCtrl::OnAbout(wxCommandEvent& event)
   msg->ShowModal();
 }
 
+void myTreeCtrl::ToConsole(wxCommandEvent& event)
+{
+  GB_main_wxFrame->GetConsole()->IncCommand(_currentmenu_var->Name());
+}
 
 
 /*
