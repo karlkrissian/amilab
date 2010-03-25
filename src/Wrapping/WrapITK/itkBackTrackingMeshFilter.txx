@@ -29,9 +29,9 @@ void BackTrackingMeshFilter< TInputImage, TOutputMesh, TDimension >
   TOutputMesh::Pointer mesh = TOutputMesh::New();
   TOutputMesh::PointType point;
 
-  typedef TOutputMesh::CellType CellType;
-  typedef itk::LineCell<CellType> LineType;
-  typedef CellType::CellAutoPointer CellAutoPointer;
+  typedef typename TOutputMesh::CellType CellType;
+  typedef typename itk::LineCell<CellType> LineType;
+  typedef typename CellType::CellAutoPointer CellAutoPointer;
   CellAutoPointer line;
 
   line.TakeOwnership( new LineType );
@@ -62,10 +62,10 @@ void BackTrackingMeshFilter< TInputImage, TOutputMesh, TDimension >
   index[1] = vox_p[1];
   if (input->GetImageDimension() == 3) index[2] = vox_p[2];
 
-  typedef  double TInterpolatorPrecisionType;
-  typedef itk::ContinuousIndex<TInterpolatorPrecisionType, TDimension> ContinuousIndexType;
+  typedef typename double TInterpolatorPrecisionType;
+  typedef typename itk::ContinuousIndex<TInterpolatorPrecisionType, TDimension> ContinuousIndexType;
 
-  typedef itk::LinearInterpolateImageFunction< InputImageType, TInterpolatorPrecisionType >  InterpolatorType;
+  typedef typename itk::LinearInterpolateImageFunction< InputImageType, TInterpolatorPrecisionType >  InterpolatorType;
   InterpolatorType::Pointer interpolator = InterpolatorType::New();
 
   ContinuousIndexType coord;
@@ -203,10 +203,10 @@ void BackTrackingMeshFilter< TInputImage, TOutputMesh, TDimension >
     }
     else
     {
-      int xpos = Math::Round(vpx);
-      int ypos = Math::Round(vpy);
+      int xpos = round(vpx);
+      int ypos = round(vpy);
       int zpos;
-      if (input->GetImageDimension() == 3) zpos = Math::Round(vpz);
+      if (input->GetImageDimension() == 3) zpos = round(vpz);
       float valmin = I;
       bool minfound = false;
       int xmin,ymin,zmin;
@@ -253,9 +253,9 @@ void BackTrackingMeshFilter< TInputImage, TOutputMesh, TDimension >
       }
     }
     
-    pos[0] = Math::Round(vox_p[0]);
-    pos[1] = Math::Round(vox_p[1]);
-    if (input->GetImageDimension() == 3) pos[2] = Math::Round(vox_p[2]);
+    pos[0] = round(vox_p[0]);
+    pos[1] = round(vox_p[1]);
+    if (input->GetImageDimension() == 3) pos[2] = round(vox_p[2]);
     closest_point_intensity = input->GetPixel(pos);
        
     distance += m_stepSize;
