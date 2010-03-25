@@ -24,10 +24,10 @@ void BackTrackingMeshFilter< TInputImage, TOutputMesh, TDimension >
   // Allocate output
   typename TInputImage::ConstPointer input  = this->GetInput(0);
   
-  TOutputMesh::Pointer output = this->GetOutput();
+  typename TOutputMesh::Pointer output = this->GetOutput();
 
-  TOutputMesh::Pointer mesh = TOutputMesh::New();
-  TOutputMesh::PointType point;
+  typename TOutputMesh::Pointer mesh = TOutputMesh::New();
+  typename TOutputMesh::PointType point;
 
   typedef typename TOutputMesh::CellType CellType;
   typedef typename itk::LineCell<CellType> LineType;
@@ -50,9 +50,9 @@ void BackTrackingMeshFilter< TInputImage, TOutputMesh, TDimension >
   double I,Ixp,Ixm,Iyp,Iym,Izp,Izm;
   double closest_point_intensity;
 
-  OutputImageType::Pointer image = OutputImageType::New();
-  OutputImageType::IndexType index;
-  OutputImageType::IndexType pos;
+  typename OutputImageType::Pointer image = OutputImageType::New();
+  typename OutputImageType::IndexType index;
+  typename OutputImageType::IndexType pos;
       
   vox_p[0] = (p[0]-input->GetOrigin()[0])/(double)input->GetSpacing()[0];
   vox_p[1] = (p[1]-input->GetOrigin()[1])/input->GetSpacing()[1];
@@ -62,11 +62,11 @@ void BackTrackingMeshFilter< TInputImage, TOutputMesh, TDimension >
   index[1] = vox_p[1];
   if (input->GetImageDimension() == 3) index[2] = vox_p[2];
 
-  typedef typename double TInterpolatorPrecisionType;
+  typedef double TInterpolatorPrecisionType;
   typedef typename itk::ContinuousIndex<TInterpolatorPrecisionType, TDimension> ContinuousIndexType;
 
   typedef typename itk::LinearInterpolateImageFunction< InputImageType, TInterpolatorPrecisionType >  InterpolatorType;
-  InterpolatorType::Pointer interpolator = InterpolatorType::New();
+  typename InterpolatorType::Pointer interpolator = InterpolatorType::New();
 
   ContinuousIndexType coord;
 
