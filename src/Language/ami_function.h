@@ -113,6 +113,8 @@ private:
 
   /**
    * Sets the function context of variables.
+   * It is the context in which the function has been created and not the context holding the variables
+   * created during the execution of the function.
    **/
   void SetContext( boost::shared_ptr<Variables> val) 
   {

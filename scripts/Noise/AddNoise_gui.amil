@@ -25,7 +25,7 @@ if (!exists(AddNoiseClass)){
   
   #----------------------------
   proc ::Close() {
-    ::win.Hide
+    ::win.HidePanel
     delvars GetObjectName(::Close)
   }
   ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -43,7 +43,7 @@ if (!exists(AddNoiseClass)){
     eval "::input <<="+::input_name+";"
     if (::input_name=="Image") {
       ::input_name = "AddNoise_input"
-      ::win.update
+      ::win.Update(-1)
     }
   }
   
@@ -82,21 +82,22 @@ proc ::Display() {
   
   proc ::CreateGui() {  
     # parameters window
-    ::win = ParamWin("Noise")
+    import = &global::ami_import;
+    ::win = import->ParamPanel("Noise")
   
     ::win.BeginBook
       ::win.AddPage("Param")
-        ::win.AddImageChoice(::input_name, "Input")
+        ::win.AddImageChoice( &::input_name, "Input")
       
-        ::win.AddString(::output_name,"Output name")
+        ::win.AddString( &::output_name,"Output name")
       
-        ::type_id = ::win.AddEnum(::type, "Type")
+        ::type_id = ::win.AddEnum( &::type, "Type")
           ::win.AddEnumChoice(::type_id,"Add. Gaussian")
           ::win.AddEnumChoice(::type_id,"Mult. Gaussian")
           ::win.AddEnumChoice(::type_id,"Rician")
         
-        ::win.AddFloat(::mean,"Mean",0.1,  50)
-        ::win.AddFloat(::stddev,"Std dev",0.1,50)
+        ::win.AddFloat( &::mean,"Mean",0.1,  50)
+        ::win.AddFloat( &::stddev,"Std dev",0.1,50)
       
         #::win.SetCallback(::Run)
       
@@ -109,7 +110,7 @@ proc ::Display() {
       ::win.AddButton("Close All",          ::CloseAll)
     ::win.EndHorizontal  
   
-    ::win.update
+    ::win.Update(-1)
     ::win.Display
   }
   

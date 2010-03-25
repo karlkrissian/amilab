@@ -223,6 +223,7 @@ IMAGEDRAW     return(token::T_IMAGEDRAW); /*{IMAGEDRAW,T_IMAGEDRAW}*/
 NUM           return(token::T_NUM); /*{NUM,T_NUM}*/
 STRING        return(token::T_STRING); /*{STRING,T_STRING}*/
 TRANSFORM     return(token::T_TRANSFORM); /*{TRANSFORM,T_TRANSFORM}*/
+OBJECT        return(token::T_OBJECT); /*{OBJECT,T_OBJECT}*/
 
 atof          return(token::T_atof); /*{atof,T_atof}*/
 

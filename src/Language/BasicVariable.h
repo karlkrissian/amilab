@@ -125,6 +125,15 @@ public:
     //cout << *this;
   }
 
+  virtual bool IsNumeric() const
+  {
+    return  (_type==type_float)||
+            (_type==type_int)||
+            (_type==type_uchar);
+  }
+
+  virtual double GetValueAsDouble() const = 0;
+
   /**
    * Virtual method to return the value of a variable.
    * @return a string containing the value of the variable.
@@ -134,24 +143,118 @@ public:
   // allow access to private members of Variable class
 //  friend class VarArray;
 
-  //---------------------------------------------
-  // unary operators
-  //---------------------------------------------
+
+
+#define BASICVAR_UNARYOP(op) \
+  virtual BasicVariable::ptr operator op() \
+  { std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl; \
+    return this->NewReference(); }
+
+#define BASICVAR_OP_VAR(op) \
+  virtual BasicVariable::ptr operator op(const BasicVariable& b) \
+  { std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl; \
+    return this->NewReference(); }
+
+
+#define BASICVAR_COMP_OP_VAR(op) \
+  virtual BasicVariable::ptr operator op(const BasicVariable& b) \
+  { std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl; \
+    return this->NewReference(); }
+
+#define BASICVAR_LOGIC_OP(op) \
+  virtual BasicVariable::ptr operator op() \
+  { std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl; \
+    return this->NewReference(); }
+
+#define BASICVAR_LOGIC_OP_VAR(op) \
+  virtual BasicVariable::ptr operator op(const BasicVariable& b) \
+  { std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl; \
+    return this->NewReference(); }
+
+  /** @name ArithmeticOperators
+   *  Variable Arithmetic Operators.
+   */
+  //@{
+  // -------- Operators ---
 
   /// +T
-  virtual BasicVariable::ptr operator +()       { return this->NewReference(); }
-
-  /// -T
-  virtual BasicVariable::ptr operator -()       { return this->NewReference(); }
+  BASICVAR_UNARYOP(+)
 
   /// prefix ++ operator ++T 
-  virtual BasicVariable::ptr operator ++()      { return this->NewReference(); }
+  BASICVAR_UNARYOP(++)
 
-  /// postfix ++ operator T++ 
-  virtual BasicVariable::ptr operator ++(int)   { return this->NewReference(); }
+  /// prefix ++ operator T-- 
+  BasicVariable::ptr operator ++(int)
+  { return this->NewReference(); }
+
+
+
+  /// a+b
+  // can I keep the const here, no because we return a reference ... ???
+  // question, should we create a new variable ????
+  // in this case yes, and the rule should take care of choosing a+b or a+=b to avoid 
+  // a new allocation
+  BASICVAR_OP_VAR(+);
+  BASICVAR_OP_VAR(+=);
+
+  /// -T
+  BASICVAR_UNARYOP(-)
+
+  /// a-b
+  BASICVAR_OP_VAR(-);
+
+  /// prefix -- operator --T 
+  BASICVAR_UNARYOP(--)
+
+  /// prefix -- operator T-- 
+  BasicVariable::ptr operator --(int)
+  { return this->NewReference(); }
+
+  BASICVAR_OP_VAR(-=);
+  BASICVAR_OP_VAR(*);
+  BASICVAR_OP_VAR(*=);
+  BASICVAR_OP_VAR(/);
+  BASICVAR_OP_VAR(/=);
+  BASICVAR_OP_VAR(%);
+  BASICVAR_OP_VAR(%=);
+
+  //@}
+
+  /** @name ComparisonOperators
+   *  Variable Comparison operators/Relational operators.
+   */
+  //@{
+    BASICVAR_COMP_OP_VAR(<);
+    BASICVAR_COMP_OP_VAR(<=);
+    BASICVAR_COMP_OP_VAR(>);
+    BASICVAR_COMP_OP_VAR(>=);
+    BASICVAR_COMP_OP_VAR(!=);
+    BASICVAR_COMP_OP_VAR(==);
+  //@}
+
+  /** @name LogicalOperators
+   *  Variable Logical operators.
+   */
+  //@{
+    BASICVAR_LOGIC_OP(!);
+    BASICVAR_LOGIC_OP_VAR(&&);
+    BASICVAR_LOGIC_OP_VAR(||);
+  //@}
+
+  /** @name BitwiseOperators
+   *  Variable Bitwise operators.
+   */
+  //@{
+  //@}
+
+  /** @name OtherOperators
+   *  Variable Other operators.
+   */
+  //@{
+  //@}
+
 
 }; // class BasicVariable
-
 
 
 

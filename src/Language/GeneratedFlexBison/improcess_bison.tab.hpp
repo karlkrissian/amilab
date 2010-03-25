@@ -120,7 +120,7 @@ namespace yyip {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 421 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 424 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
 
   IdentifierInfo*         ident;
   char*                   astring;
@@ -609,37 +609,38 @@ namespace yyip {
      T_NUM = 714,
      T_STRING = 715,
      T_TRANSFORM = 716,
-     T_PROC = 717,
-     T_Class = 718,
-     T_MeanHalfSize = 719,
-     T_Resize = 720,
-     T_ReSlice = 721,
-     T_Flip = 722,
-     T_SetCompTransf = 723,
-     T_ConvexHull = 724,
-     T_itk = 725,
-     T_CannyEdgeDetector = 726,
-     T_CreateFlatMesh = 727,
-     T_CreateVolume = 728,
-     T_vtkCreateFlatMesh = 729,
-     T_Altitude2Position = 730,
-     T_GeoCoordinates = 731,
-     T_ElevateMesh = 732,
-     T_CreateVectors = 733,
-     T_Set3DArrowParam = 734,
-     T_CreateEllipsoids = 735,
-     T_ComputeAltitudes = 736,
-     T_Temp2Altitudes = 737,
-     T_ReadFlow = 738,
-     T_SetFluidNavFile = 739,
-     T_DrawEarthCoord = 740,
-     T_PaintCallback = 741,
-     T_SaveStructuredGrid = 742,
-     T_import_vtk = 743,
-     T_import_wii = 744,
-     T_import_filters = 745,
-     T_amiOFCorr2D = 746,
-     T_amiOFVar2D = 747
+     T_OBJECT = 717,
+     T_PROC = 718,
+     T_Class = 719,
+     T_MeanHalfSize = 720,
+     T_Resize = 721,
+     T_ReSlice = 722,
+     T_Flip = 723,
+     T_SetCompTransf = 724,
+     T_ConvexHull = 725,
+     T_itk = 726,
+     T_CannyEdgeDetector = 727,
+     T_CreateFlatMesh = 728,
+     T_CreateVolume = 729,
+     T_vtkCreateFlatMesh = 730,
+     T_Altitude2Position = 731,
+     T_GeoCoordinates = 732,
+     T_ElevateMesh = 733,
+     T_CreateVectors = 734,
+     T_Set3DArrowParam = 735,
+     T_CreateEllipsoids = 736,
+     T_ComputeAltitudes = 737,
+     T_Temp2Altitudes = 738,
+     T_ReadFlow = 739,
+     T_SetFluidNavFile = 740,
+     T_DrawEarthCoord = 741,
+     T_PaintCallback = 742,
+     T_SaveStructuredGrid = 743,
+     T_import_vtk = 744,
+     T_import_wii = 745,
+     T_import_filters = 746,
+     T_amiOFCorr2D = 747,
+     T_amiOFVar2D = 748
    };
 
     };
@@ -816,7 +817,7 @@ namespace yyip {
 } // yyip
 
 /* Line 35 of lalr1.cc  */
-#line 820 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
+#line 821 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
 
 
 
