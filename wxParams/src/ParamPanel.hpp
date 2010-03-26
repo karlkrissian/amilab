@@ -189,6 +189,9 @@ public:
 
   void EndBook();
 
+  int AddPage(wxScrolledWindow* page, const std::string& panel_name);
+  //   -------
+
   int AddPage(const std::string& panel_name);
   //   -------
 

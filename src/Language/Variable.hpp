@@ -15,6 +15,7 @@
 #include "vartype.h"
 //#include "paramlist.h"
 #include "BasicVariable.h"
+#include <limits>
 
 // forward definition of Variables
 //class Variables;
@@ -44,6 +45,8 @@ class InrImage;
 /// Getting variable type 
 template<class T> vartype GetVarType();
 
+/// Check numerical type
+template<class T> bool IsNumerical();
 
 /// type: pointer to a C wrapping procedure
 typedef void      (C_wrap_procedure)(ParamList*);
@@ -94,6 +97,13 @@ private:
 public:
 
   Variable();
+
+  Variable(const boost::shared_ptr<T>& p)
+  {
+    _type    = GetVarType<T>();
+    _name    = "tmpvar";
+    _pointer = boost::shared_ptr<T>(p);
+  }
 
   Variable(const std::string& name, 
            const boost::shared_ptr<T>& p)
@@ -197,6 +207,9 @@ public:
   */
   boost::shared_ptr<T> Pointer() const { return _pointer;}
 
+  const T& Value() const { return *_pointer; }
+
+  T& RefValue() { return *_pointer; }
 
   void Init(const std::string& name, 
             boost::shared_ptr<T>& p);
@@ -217,6 +230,10 @@ public:
   //
   void display();
 
+  double GetValueAsDouble() const {
+      CLASS_ERROR("Variable type is not numeric");
+      return 0.0;
+  }
   
   /**
    * 
@@ -227,10 +244,132 @@ public:
   // allow access to private members of Variable class
 //  friend class VarArray;
 
+
+#define VAR_UNARYOP(op) \
+  BasicVariable::ptr operator op() \
+  { std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl; \
+    return this->NewReference(); }
+
+/*
+#define VAR_OP_VAR(op) \
+  BasicVariable::ptr operator op(const Variable<T>& b) \
+  { std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl; \
+    return this->NewReference(); }
+*/
+
+#define VAR_OP_BASICVAR(op) \
+  BasicVariable::ptr operator op(const BasicVariable& b) \
+  { std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl; \
+    return this->NewReference(); }
+
+/*
+#define VAR_OP_VAR2(op) \
+  BasicVariable::ptr operator op(const Variable<T>& b);
+*/
+
+//#define VAR_OP_VAR2(op) 
+//  template<class U> 
+//  BasicVariable::ptr operator op(const Variable<U>& b); 
+
+#define VAR_COMP_OP_BASICVAR(op) \
+  BasicVariable::ptr operator op(const BasicVariable& b) \
+  { std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl; \
+    return this->NewReference(); }
+
+#define VAR_LOGIC_OP(op) \
+  BasicVariable::ptr operator op() \
+  { std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl; \
+    return this->NewReference(); }
+
+#define VAR_LOGIC_OP_VAR(op) \
+  BasicVariable::ptr operator op(const BasicVariable& b) \
+  { std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl; \
+    return this->NewReference(); }
+
+  /** @name ArithmeticOperators
+   *  Variable Arithmetic Operators.
+   */
+  //@{
+  // -------- Operators ---
+
+  /// +T
+  VAR_UNARYOP(+)
+  /// prefix ++ operator ++T 
+  VAR_UNARYOP(++)
+  /// postfix ++ operator T++ 
+  BasicVariable::ptr operator ++(int)
+  {
+     std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl;
+     return this->NewReference(); 
+  }
+
+  /// -T
+  VAR_UNARYOP(-)
+  /// prefix -- operator --T 
+  VAR_UNARYOP(--)
+  /// postfix -- operator T-- 
+  BasicVariable::ptr operator --(int)
+  {
+     std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl;
+     return this->NewReference(); 
+  }
+
+  /// a+b
+  // can I keep the const here, no because we return a reference ... ???
+  // question, should we create a new variable ????
+  // in this case yes, and the rule should take care of choosing a+b or a+=b to avoid 
+  // a new allocation
+  VAR_OP_BASICVAR(+);
+  VAR_OP_BASICVAR(+=);
+  VAR_OP_BASICVAR(-);
+  VAR_OP_BASICVAR(-=);
+  VAR_OP_BASICVAR(*);
+  VAR_OP_BASICVAR(*=);
+  VAR_OP_BASICVAR(/);
+  VAR_OP_BASICVAR(/=);
+  VAR_OP_BASICVAR(%);
+  VAR_OP_BASICVAR(%=);
+
+  //@}
+
+  /** @name ComparisonOperators
+   *  Variable Comparison operators/Relational operators.
+   */
+  //@{
+    VAR_COMP_OP_BASICVAR(<);
+    VAR_COMP_OP_BASICVAR(<=);
+    VAR_COMP_OP_BASICVAR(>);
+    VAR_COMP_OP_BASICVAR(>=);
+    VAR_COMP_OP_BASICVAR(!=);
+    VAR_COMP_OP_BASICVAR(==);
+  //@}
+
+  /** @name LogicalOperators
+   *  Variable Logical operators.
+   */
+  //@{
+    VAR_LOGIC_OP(!);
+    VAR_LOGIC_OP_VAR(&&);
+    VAR_LOGIC_OP_VAR(||);
+  //@}
+
+  /** @name BitwiseOperators
+   *  Variable Bitwise operators.
+   */
+  //@{
+  //@}
+
+  /** @name OtherOperators
+   *  Variable Other operators.
+   */
+  //@{
+  //@}
+
 }; // class Variable
 
 template<class T>  
 std::ostream& operator<<(std::ostream& o, const Variable<T>& v);
+
 
 
 #include "Variable.tpp"

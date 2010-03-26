@@ -193,10 +193,7 @@ void Driver::yyip_instanciate_object( const AMIClass::ptr& oclass,
   this->current_file = oclass->GetFileName();
   parse_block(oclass->GetBody());
 
-  // Restore the previous context
-  // destroy the context and its variables
-  // removing each parameter is not necessary
-  // cause it will be done by DeleteLastContext()
+  // Remove the previous context from the list
   Vars.DeleteLastContext();
 
   // Restore the object context
@@ -208,8 +205,8 @@ void Driver::yyip_instanciate_object( const AMIClass::ptr& oclass,
 }
 
 //-----------------------------------------------------------
-void Driver::yyip_call_function( AMIFunction* f, const ParamList::ptr& param)
-//   --------------------------
+BasicVariable::ptr Driver::yyip_call_function( AMIFunction* f, const ParamList::ptr& param)
+//                        --------------------------
 {
   int    previous_lineno   = yyiplineno;
   string previous_filename = this->current_file;
@@ -266,6 +263,9 @@ void Driver::yyip_call_function( AMIFunction* f, const ParamList::ptr& param)
   this->current_file = f->GetFileName();
   parse_block(f->GetBody());
 
+  // check for a return variable
+  BasicVariable::ptr return_var = Vars.GetVar("return");
+
   // Restore the previous context
   // destroy the context and its variables
   // removing each parameter is not necessary
@@ -279,6 +279,7 @@ void Driver::yyip_call_function( AMIFunction* f, const ParamList::ptr& param)
   yyiplineno = previous_lineno;
   this->current_file = previous_filename;
 
+  return return_var;
 }
 
 //------------------------------------------------------

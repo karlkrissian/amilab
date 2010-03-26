@@ -100,6 +100,7 @@ ParamPanel::ParamPanel( wxWindow* parent,
                 wxDefaultSize,
                 wxTAB_TRAVERSAL 
                 | wxVSCROLL
+                | wxFULL_REPAINT_ON_RESIZE 
                 ,
                 wxString::FromAscii(titre)
                 ) 
@@ -167,6 +168,42 @@ void ParamPanel::EndBook()
 
 } // ParamPanel::EndBook()
 
+
+//---------------------------------------------------------
+// add a page to the book
+// with a new panel
+// if the book has another page, close it first
+int ParamPanel::AddPage(wxScrolledWindow* panel, const std::string& panel_name)
+//             -------
+{
+  wxBoxSizer* panelsizer;
+
+  if (!GetBookCtrl()) {
+    cerr << "AddPage without any Book ! " << endl;
+    return 0;
+  }
+
+  // closes previous page if any
+  if (GetBookCtrl()->GetPageCount())
+    this->EndPanel();
+
+  panel->SetScrollbars(3,3,10,10);
+  panel->EnableScrolling(true,true);
+  _tab_panels.push_back(panel);
+
+  _panels.push( panel);
+
+  GetBookCtrl()->AddPage( LastPanel(),
+                          wxString::FromAscii(panel_name.c_str()));
+  LastPanel()->SetToolTip(wxString::FromAscii(panel_name.c_str()));
+  panelsizer = dynamic_cast<wxBoxSizer*>(LastPanel()->GetSizer());
+  if (panelsizer==NULL)
+    panelsizer   = new wxBoxSizer( wxVERTICAL );
+  LastPanel()->SetSizer(panelsizer);
+  _current_sizer.push(panelsizer);
+
+  return _tab_panels.size()-1;
+}
 
 //---------------------------------------------------------
 // add a page to the book

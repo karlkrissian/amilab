@@ -91,6 +91,9 @@
 //#include "Duree.hpp"
 
 #include "DefineClass.hpp"
+
+#include "Variable.hpp"
+
 /*
 #include <boost/shared_ptr.hpp>
 //--- string formatting using boost
@@ -839,6 +842,7 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_NUM
 %token T_STRING
 %token T_TRANSFORM
+%token T_OBJECT
 
 %token T_PROC
 %token T_Class
@@ -1318,31 +1322,6 @@ func_inst :
       driver.parse_string( inputstring,
                           "'eval string' command");
     }
-    | VAR_AMI_FUNCTION  T_OP_PAR param_list T_CL_PAR end_instr
-    {
-    /**
-      Description:
-        Call a language function with its parameters.
-    **/
-        Variable<AMIFunction>::ptr var(driver.var_stack.GetLastVar<AMIFunction>());
-        AMIFunction::ptr func_ptr(var->Pointer());
-        ParamList::ptr  param($3);
-
-        driver.yyip_call_function(func_ptr,param);
-
-
-        }
-        | VAR_AMI_FUNCTION  end_instr
-        {
-    /**
-      Description:
-        Call a language function without parameters.
-    **/
-          GET_VARSTACK_VALUE(AMIFunction,func)
-
-          // Call the function
-          driver.yyip_call_function(func);
-        }
 ;
 
 command:
@@ -1356,13 +1335,50 @@ command:
           if (var.get()) {
             switch (var->Type()) {
               // TODO: ad hoc fix to improve here, result should be a usable variable ??
+              /// C++ wrapped member
               case type_class_member: {
-                ParamList::ptr param((ParamList*) NULL);
+                DYNAMIC_CAST_VARIABLE(WrapClassMember,var,m);
+                m->Pointer()->CallMember(NULL);
+               }
+              break;
+              /// language function without parameters.
+              case type_ami_function: {
+                DYNAMIC_CAST_VARIABLE(AMIFunction,var,vf);
+                AMIFunction::ptr f(vf->Pointer());
+                driver.yyip_call_function(f);
+               }
+              break;
+              default:;
+                // TODO: only do it from the command line ???
+                //cout << "display var info" << endl;
+                if (driver.InConsole())
+                  var->display();
+            }
+          }
 
-                Variable<WrapClassMember>::ptr m(
-                boost::dynamic_pointer_cast<Variable<WrapClassMember> >(var));
-
-                BasicVariable::ptr tmpvar = m->Pointer()->CallMember(param.get());
+        }
+        |
+        expr_var 
+        {
+          /**
+            Description:
+              Empty instruction.
+          **/
+          BasicVariable::ptr       var(driver.var_stack.GetLastBasicVar());
+          if (var.get()) {
+            switch (var->Type()) {
+              // TODO: ad hoc fix to improve here, result should be a usable variable ??
+              /// C++ wrapped member
+              case type_class_member: {
+                DYNAMIC_CAST_VARIABLE(WrapClassMember,var,m);
+                m->Pointer()->CallMember(NULL);
+               }
+              break;
+              /// language function without parameters.
+              case type_ami_function: {
+                DYNAMIC_CAST_VARIABLE(AMIFunction,var,vf);
+                AMIFunction::ptr f(vf->Pointer());
+                driver.yyip_call_function(f);
                }
               break;
               default:;
@@ -1494,6 +1510,31 @@ command:
           Vars.AddVar(ident,newvar);
       }
       |
+      identifier ASSIGN_OP expr_var
+      {
+        /**
+          Description:
+            Creates a new variable that is a copy of an existing one.
+          Parameters:
+            - new variable name;
+            - existing variable name.
+        **/
+          BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
+          if (var.use_count()==1) {
+            IdentifierInfo::ptr ident($1);
+            Vars.AddVar(ident,var);
+          } else
+          {
+            if (var.get()) {
+              BasicVariable::ptr copy = var->NewCopy();
+              IdentifierInfo::ptr ident($1);
+              Vars.AddVar(ident,copy);
+            } else {
+              driver.err_print("identifier = variable, no variable value");
+            }
+          }
+      }
+      |
       identifier ASSIGN_OP variable
       {
         /**
@@ -1509,9 +1550,13 @@ command:
             Vars.AddVar(ident,var);
           } else
           {
-            BasicVariable::ptr copy = var->NewCopy();
-            IdentifierInfo::ptr ident($1);
-            Vars.AddVar(ident,copy);
+            if (var.get()) {
+              BasicVariable::ptr copy = var->NewCopy();
+              IdentifierInfo::ptr ident($1);
+              Vars.AddVar(ident,copy);
+            } else {
+              driver.err_print("identifier = variable, no variable value");
+            }
           }
       }
       |
@@ -2785,7 +2830,7 @@ command:
           fprintf(file.get(),"%s\n",text.get());
           fflush(file.get());
         }
-        | PRINT variable
+        | PRINT expr_var
         {
          /**
           Description:
@@ -2797,7 +2842,7 @@ command:
           else
             driver.err_print("empty variable");
         }
-        | PRINTN variable
+        | PRINTN expr_var
         {
          /**
           Description:
@@ -3084,7 +3129,7 @@ command:
         }
         | VAR_IMAGEDRAW T_POINT T_SetVectColor T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
-          /**
+          /** 
             Parameters:
             (5)  expression: vector id
             (7)  expression: red component (0-255)
@@ -5607,16 +5652,23 @@ param_list_decl:
       ParamListDecl* pl = new ParamListDecl;
       pl->AddParam(ident->GetName(),type_float);
       $$ = pl;
-        }
-        | T_STRING IDENTIFIER
-        {
+    }
+    | T_OBJECT IDENTIFIER
+    {
+      IdentifierInfo::ptr ident($2);
+      ParamListDecl* pl = new ParamListDecl;
+      pl->AddParam(ident->GetName(),type_ami_object);
+      $$ = pl;
+    }
+    | T_STRING IDENTIFIER
+    {
       IdentifierInfo::ptr ident($2);
       ParamListDecl* pl = new ParamListDecl;
       pl->AddParam(ident->GetName(),type_string);
       $$ = pl;
-        }
+    }
     | T_IMAGE IDENTIFIER
-        {
+    {
       IdentifierInfo::ptr ident($2);
       ParamListDecl* pl = new ParamListDecl;
       pl->AddParam(ident->GetName(),type_image);
@@ -10070,49 +10122,109 @@ expr_image : assignment_image
 
 
 primary_var:
-  variable 
+   T_COLON variable
+  | T_COLON NUMBER
+  {
+    Variable<float>::ptr var(new Variable<float>(float_ptr(new float($2))));
+    driver.var_stack.AddVar(var);
+  }
   | T_OP_PAR expr_var T_CL_PAR;
 
 postfix_var:
-  primary_var;
+  primary_var
+  | primary_var INC_OP 
+  {
+    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar((*var)++);
+  }
+  | primary_var DEC_OP
+  {
+    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar((*var)--);
+  }
+  ;
 
-unary_var:
+prefix_var:
   postfix_var
-  | unary_operator cast_var
-  | T_SUB  cast_var 
-  | T_ADD  cast_var
-  | SIN    cast_var 
-  | COS    cast_var 
-  | SQRT   cast_var
-  | ABS    cast_var
-  | ROUND  cast_var
-  | FLOOR  cast_var
-  | TAN    cast_var
-  | ASIN   cast_var
-  | ACOS   cast_var
-  | ATAN   cast_var
-  | EXP    cast_var
-  | LOG    cast_var
-  | LN     cast_var
-  | NORM   cast_var
+  | unary_operator postfix_var
+  | T_SUB  postfix_var 
+  {
+    cout << "T_SUB  cast_var  " << endl;
+    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar(-(*var));
+  }
+  | T_ADD  postfix_var
+  {
+    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar(+(*var));
+  }
+  | INC_OP  postfix_var 
+  {
+    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar(++(*var));
+  }
+  | DEC_OP  postfix_var
+  {
+    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar(--(*var));
+  }
+  | T_OP_PAR basic_type T_CL_PAR postfix_var
+  | SIN    postfix_var 
+  | COS    postfix_var 
+  | SQRT   postfix_var
+  | ABS    postfix_var
+  | ROUND  postfix_var
+  | FLOOR  postfix_var
+  | TAN    postfix_var
+  | ASIN   postfix_var
+  | ACOS   postfix_var
+  | ATAN   postfix_var
+  | EXP    postfix_var
+  | LOG    postfix_var
+  | LN     postfix_var
+  | NORM   postfix_var
   ;
 
-cast_var:
-  unary_var
-  | T_OP_PAR basic_type T_CL_PAR unary_var
-  ;
 
 multiplicative_var: 
-  cast_var
-  | multiplicative_var T_MULT cast_expr
-  | multiplicative_var T_DIV  cast_expr
-  | multiplicative_var T_EXP  cast_var
+  prefix_var
+  | multiplicative_var T_MULT prefix_var
+  {
+    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
+    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar((*var1)*(*var2));
+  }
+  | multiplicative_var T_DIV  prefix_var
+  {
+    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
+    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar((*var1)/(*var2));
+  }
+  | multiplicative_var T_MOD  prefix_var
+  {
+    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
+    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar((*var1)%(*var2));
+  }
+  | multiplicative_var T_EXP  prefix_var
   ;
 
 additive_var: 
   multiplicative_var
   | additive_var T_ADD multiplicative_var
+  {
+    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
+    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    BasicVariable::ptr res(*var1+*var2);
+    driver.var_stack.AddVar(res);
+  }
   | additive_var T_SUB multiplicative_var
+  {
+    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
+    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    BasicVariable::ptr res((*var1)-(*var2));
+    driver.var_stack.AddVar(res);
+  }
   ;
 
 shift_var:
@@ -10122,21 +10234,40 @@ shift_var:
 relational_var:
   shift_var
   | relational_var T_LT  shift_var
+  {
+    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
+    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar((*var1)<(*var2));
+  }
   | relational_var T_GT  shift_var
+  {
+    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
+    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar((*var1)>(*var2));
+  }
   | relational_var LE_OP shift_var
+  {
+    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
+    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar((*var1)<=(*var2));
+  }
   | relational_var GE_OP shift_var
-  | relational_var T_LT  shift_var
-  | relational_var T_GT  shift_var
-  | relational_var LE_OP shift_var
-  | relational_var GE_OP shift_var
+  {
+    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
+    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar((*var1)>=(*var2));
+  }
   ;
 
 equality_var:
   relational_var
   | equality_var EQ_OP relational_var
   | equality_var NE_OP relational_var
-  | equality_var EQ_OP shift_var
-  | equality_var NE_OP shift_var
+  {
+    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
+    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar((*var1)!=(*var2));
+  }
   ;
 
 and_var:
@@ -10170,7 +10301,31 @@ conditional_var:
 
 assignment_var:
   conditional_var
-  | unary_var ASSIGN_OP assignment_var
+  | prefix_var ASSIGN_OP assignment_var
+  | prefix_var ADD_ASSIGN assignment_var
+  {
+    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
+    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar((*var1)+=(*var2));
+  }
+  | prefix_var SUB_ASSIGN assignment_var
+  {
+    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
+    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar((*var1)-=(*var2));
+  }
+  | prefix_var MUL_ASSIGN assignment_var
+  {
+    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
+    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar((*var1)*=(*var2));
+  }
+  | prefix_var DIV_ASSIGN assignment_var
+  {
+    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
+    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar((*var1)/=(*var2));
+  }
   ;
 
 expr_var: 
@@ -11284,7 +11439,8 @@ variable:
         | VAR_UCHAR
         | var_image
         | VAR_IMAGEDRAW
-        | VAR_SURFACE
+        | var_surface
+        | VAR_ARRAY_SURFACE
         | VAR_SURFDRAW
         | VAR_FILE
         | VAR_C_FUNCTION
@@ -11297,7 +11453,6 @@ variable:
         | VAR_STRING
         | VAR_MATRIX
         | VAR_GLTRANSFORM
-        | VAR_ARRAY_SURFACE
         | VAR_ARRAY_IMAGE
         | VAR_AMI_OBJECT T_POINT identifier
         {
@@ -11340,24 +11495,23 @@ variable:
           BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
           ParamList::ptr param($3);
 
-          if (var->Type()==type_class_member) {
+          // TODO: run this with overloading from BasicVariable ...
 
-            Variable<WrapClassMember>::ptr var1(
-                boost::dynamic_pointer_cast<Variable<WrapClassMember> >(var));
-            BasicVariable::ptr  res;
-  
-            res = (var1->Pointer())->CallMember(param.get());
-            /*
-            if (!res.use_count()) {
-              driver.yyiperror(" function returns NULL \n");
-              YYABORT;
-            }
-            */
+          if (var->Type()==type_class_member) {
+            ///    Call a wrapped C++ class member.
+            DYNAMIC_CAST_VARIABLE(WrapClassMember,var, var1);
+            BasicVariable::ptr res ((var1->Pointer())->CallMember(param.get()));
             driver.var_stack.AddVar(res);
-            // variable need to stay in memory, how ???
-            // TODO: use VariableStack here
-            //res->Rename(ident->GetName().c_str());
-            //Vars.AddVarSmtPtr(res,ident->GetCreationContext());
+
+          } else
+          if (var->Type()==type_ami_function) 
+          {
+            ///    Call a language function with its parameters.
+            DYNAMIC_CAST_VARIABLE(AMIFunction,var, var1);
+            AMIFunction::ptr f(var1->Pointer());
+            BasicVariable::ptr res(driver.yyip_call_function(f,param));
+            driver.var_stack.AddVar(res);
+
           } else {
             // error message here
             driver.yyiperror("variable is not of type  type_class_member\n");

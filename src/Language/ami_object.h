@@ -127,6 +127,15 @@ private:
   }
 
   /**
+   * Returns a smart pointer to the wrapped object
+   * @return 
+   */
+  boost::shared_ptr<WrapClassBase> GetWrappedObject()
+  {
+    return _wrapped_object;
+  }
+
+  /**
    * Sets the object name
    * @param fname 
    */

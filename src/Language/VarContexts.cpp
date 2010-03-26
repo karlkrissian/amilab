@@ -76,7 +76,7 @@ bool VarContexts::NewContext(const char* name) {
 //--------------------------------------------------
 bool VarContexts::DeleteLastContext() {
 
-  CLASS_MESSAGE("Removing last context")
+  CLASS_MESSAGE("Removing last context");
   if (_context.size()>1) {
     // no need to delete, smart pointer
     //Variables::ptr last_context = _context.back();

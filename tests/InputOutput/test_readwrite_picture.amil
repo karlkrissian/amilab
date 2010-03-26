@@ -1,10 +1,10 @@
 #!/usr/bin/amilab
 
-SetDebugOn
+#SetDebugOn
 #SetVerboseOn
 #import_itk
 
-import_sys
+ami_import->System
 #InfoDialog l_script_dir
 
 image_name ="amilab_logo_rgb8bits"
@@ -13,9 +13,10 @@ image_name2="amilab_logo_rgb8bits2"
 printn "Reading/writing 8 bits RGB test image:"
 
 for extension in ".png", ".jpg", ".tiff" , ".bmp" {
-#for extension in  ".tiff" {
 
-  l_script_dir = GetCurrentScriptDir()
+  if exists(l_script_dir) { del l_script_dir; }
+  l_script_dir = op_system->GetCurrentScriptDir()
+  printn "script dir = "+l_script_dir
   l_exact=(extension==".png") || (extension==".bmp")
 
   # read test

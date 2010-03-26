@@ -2,10 +2,10 @@
 #include "DefineClass.hpp"
 #include "Variable.hpp"
 
-
 #include <string>
 #include <ostream>
 #include <sstream>
+#include <limits>
 
 //------------------------------------------------------------//  Variable
 //------------------------------------------------------------
@@ -110,12 +110,56 @@ std::string Variable<T>::GetValueAsString() const
   return tmpstr.str();
 }
 
+/*
+template <class T, class U>
+BasicVariable::ptr operator +(const boost::shared_ptr<Variable<T> >& a, 
+                              const boost::shared_ptr<Variable<U> >& b)
+{
+  std::cout << "Method a+b ..." << endl;
+  // right now only float operations
+  if ((std::numeric_limits<T>::is_specialized) && (std::numeric_limits<U>::is_specialized))
+  {
+    // TODO: keep the type that is more accurate ..., or always return float or double ???
+    boost::shared_ptr<T> newval(new T(a->Value()+b->Value())); 
+    return boost::shared_ptr<Variable<T> >( new Variable<T>(newval ));
+  }
+  else
+  {
+    cout << "Operation not defined, returning null float variable" << endl;
+    return boost::shared_ptr<Variable<T> >();
+  }
+}
+*/
 
-// Specializations
-class DessinImage;
-class Viewer3D;
+//template BasicVariable::ptr operator +(const Variable<float>::ptr& a, const Variable<float>::ptr& b);
+
+// templated  may not be virtual !!!
+/*
+template <class T>
+template <class U>
+BasicVariable::ptr Variable<T>::operator +(const Variable<U>& b)
+{
+  std::cout << __func__ << endl;
+  // right now only float operations
+  if (std::numeric_limits<T>::is_specialized && std::numeric_limits<U>::is_specialized)
+  {
+    // TODO: keep the type that is more accurate ..., or always return float or double ???
+    boost::shared_ptr<T> newval(new T(Value()+b.Value())); 
+    return Variable<T>::ptr( new Variable<T>(newval ));
+  }
+  else
+  {
+    cout << "Operation not defined, returning null float variable" << endl;
+    return Variable<float>::ptr();
+  }
+}
+
+
+template BasicVariable::ptr Variable<float>::operator +(const Variable<float>& b);
+*/
 
 /*
+
 template<> BasicVariable::ptr Variable<FILE>::NewCopy()
 {
   // don't copy a file, keep a reference ...
