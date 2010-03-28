@@ -57,8 +57,8 @@ std::ostream& operator<<(std::ostream& o, const Variable<T>& v)
   if (v.Type()==type_void) { o << "deleted"; return o;}
   o << format("%s\t") % v.Name();
 // TODO: take care of this functionality
-
-  switch(v.Type()) {
+  o << v.GetTypeName();
+/*  switch(v.Type()) {
     //      case type_void     : printf("void";     break;
     case type_image           : o << "image    "; break;
     case type_float           : o << "float    "; break;
@@ -81,16 +81,16 @@ std::ostream& operator<<(std::ostream& o, const Variable<T>& v)
     case type_gltransform     : o << "gltransform";        break;
     case type_array           : 
     {
-/* TODO ...
-      VarArray::ptr array =  *((VarArray::ptr*) v.Pointer());
-      o << format("array \t %d \n") % array->Size();
-      o << *array;
-*/
+// TODO ...
+//      VarArray::ptr array =  *((VarArray::ptr*) v.Pointer());
+//      o << format("array \t %d \n") % array->Size();
+//      o << *array;
+
       break;
     }
     default                : o << "unknown type ";     break;
   }
-
+*/
   //      o << ("\n");
   return o;
 } // operator << Variable

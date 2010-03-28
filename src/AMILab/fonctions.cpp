@@ -1176,7 +1176,7 @@ void Func_DiscSecDerGrad( InrImage* image_entree, InrImage* dersec, InrImage* no
 } // Func_DiscSecDerGrad()
 
 
-#include "ParamBox.hpp"
+//#include "ParamBox.hpp"
 extern wxFrame*      GB_main_wxFrame;
 
 #include <map>

@@ -42,6 +42,7 @@
 //#include "inrimage.hpp"
 //#include "BarreDefil.hpp"
 #include "ParamBox.hpp"
+#include "ParamPanel.hpp"
 #include "TypeParams.hpp"
 #include "wxParamTypes.hpp"
 #include "ErrorDialog.hpp"
@@ -338,7 +339,7 @@ class TestGL : public FenetreDessin
 */
 //@{
 
-   ParamBox* _param_objets;
+   ParamPanel* _param_objets;
 
    int    _id_boutton_center;
    int    _id_boutton_normalize;

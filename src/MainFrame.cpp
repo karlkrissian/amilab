@@ -904,7 +904,10 @@ void MainFrame::CreateSettingsPanel(wxWindow* parent)
   wxStaticText* help_label = new wxStaticText(_settings_panel,wxID_ANY,GetwxStr("Help path:"));
   help_path_picker = boost::shared_ptr<wxDirPickerCtrl>(new wxDirPickerCtrl(_settings_panel,
         wxID_HelpPath,
-        GB_help_dir, GetwxStr("Help path")));
+        GB_help_dir, GetwxStr("Help path"),
+        wxDefaultPosition, 
+        wxDefaultSize,
+        wxDIRP_DIR_MUST_EXIST | wxDIRP_USE_TEXTCTRL ));
 
   wxBoxSizer* scriptspath_sizer  = new wxBoxSizer(
             wxHORIZONTAL
@@ -1121,7 +1124,8 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
   _var_tree->SetItemFont(vartree_others,root_font);
   _var_tree->SetItemTextColour(vartree_others,vartype_colour);
 
-  root_font.SetStyle(wxFONTSTYLE_NORMAL);
+  root_font.SetStyle(wxFONTFAMILY_MODERN);
+//wxFONTSTYLE_NORMAL);
   root_font.SetWeight(wxNORMAL);
   wxTreeItemId itemid;
 

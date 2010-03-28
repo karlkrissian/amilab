@@ -19,6 +19,7 @@
 #include "wrap_parampanel.h"
 #include "MainFrame.h"
 #include "ami_function.h"
+#include "wrap_wxWindow.h"
 
 
 #define RETURN_VARINT(val,name)             \
@@ -63,6 +64,7 @@ AMIObject::ptr AddWrapParamPanel(  WrapClass_parampanel::ptr& objectptr)
   objectptr->AddVar_AddEnumChoice(    objectptr);
   objectptr->AddVar_AddLabel(         objectptr);
   objectptr->AddVar_AddFilename(      objectptr);
+  objectptr->AddVar_AddDirname(       objectptr);
   objectptr->AddVar_AddString(        objectptr);
   objectptr->AddVar_AddImageChoice(   objectptr);
   objectptr->AddVar_AddButton(        objectptr);
@@ -79,6 +81,9 @@ AMIObject::ptr AddWrapParamPanel(  WrapClass_parampanel::ptr& objectptr)
   objectptr->AddVar_SetPositionProp(  objectptr);
   objectptr->AddVar_ShowSlider(       objectptr);
   objectptr->AddVar_Enable(           objectptr);
+
+  objectptr->AddVar_CurrentParent(    objectptr);
+  objectptr->AddVar_AddWidget(        objectptr);
 
   return amiobject;
 }
@@ -429,21 +434,25 @@ BasicVariable::ptr WrapClass_parampanel::wrap_AddEnumChoice::CallMember( ParamLi
 //  Display
 //--------------------------------------------------
 void WrapClass_parampanel::wrap_Display::SetParametersComments() {
+/*
   ADDPARAMCOMMENT("Another parampanel object to display within other parameters (default: main notebook).");
+*/
 }
 //--------------------------------------------------
 BasicVariable::ptr WrapClass_parampanel::wrap_Display::CallMember( ParamList* p)
 {
-  Variable<AMIObject>::ptr var;
-
   int  n = 0;
 
+/*
+  Variable<AMIObject>::ptr var;
   if (!get_var_param<AMIObject>(var, p, n)) 
   {
+*/
     GB_main_wxFrame->AddParamPanelPage( this->_objectptr->_parampanel,
         this->_objectptr->_parampanel->GetName(),
         true // select as current page
         );
+/*
   } else
   {
     // how to : 1. check the object type 2. get the object pointer
@@ -457,6 +466,7 @@ BasicVariable::ptr WrapClass_parampanel::wrap_Display::CallMember( ParamList* p)
       ClassHelpAndReturn;
     }
   }
+*/
   return BasicVariable::ptr();
 }
 
@@ -569,6 +579,7 @@ BasicVariable::ptr WrapClass_parampanel::wrap_SelectPage::CallMember( ParamList*
   if (!get_int_param( page_id,  p, n)) ClassHelpAndReturn;
 
   this->_objectptr->_parampanel->SelectPage(book_id,page_id);
+  return BasicVariable::ptr();
 }
 
 
@@ -632,7 +643,7 @@ BasicVariable::ptr WrapClass_parampanel::wrap_AddFilename::CallMember( ParamList
   std::string tooltip = (boost::format("%s  (%s)") % var->GetComments() % var->Name()).str();
   
   string_ptr val_ptr(var->Pointer());
-  this->_objectptr->_parampanel->AjouteNomFichier( &var_id, 
+  this->_objectptr->_parampanel->AddFilename( &var_id, 
                                       val_ptr,
                                       label->c_str(),
                                       tooltip);
@@ -641,6 +652,39 @@ BasicVariable::ptr WrapClass_parampanel::wrap_AddFilename::CallMember( ParamList
                             (char*)"",
                             defmask->c_str());
 
+  // create integer variable to return
+  RETURN_VARINT(var_id,var->Name());
+}
+
+
+//--------------------------------------------------
+// AddDirname
+//--------------------------------------------------
+void WrapClass_parampanel::wrap_AddDirname::SetParametersComments()
+{
+  ADDPARAMCOMMENT("String variable to interface");
+  ADDPARAMCOMMENT("string label");
+  return_comments = "Identifier of the new widget (int variable).";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_parampanel::wrap_AddDirname::CallMember( ParamList* p)
+{
+  Variable<string>::ptr var;
+  std::string* label = NULL;
+  std::string* defpath = NULL;
+  int  n = 0;
+  int  var_id;
+
+  if (!get_var_param<string>(var, p, n))          ClassHelpAndReturn;
+  if (!get_val_ptr_param<string>( label, p, n))   ClassHelpAndReturn;
+
+  std::string tooltip = (boost::format("%s  (%s)") % var->GetComments() % var->Name()).str();
+  
+  string_ptr val_ptr(var->Pointer());
+  this->_objectptr->_parampanel->AddDirname( &var_id, 
+                                      val_ptr,
+                                      label->c_str(),
+                                      tooltip);
   // create integer variable to return
   RETURN_VARINT(var_id,var->Name());
 }
@@ -967,5 +1011,74 @@ BasicVariable::ptr WrapClass_parampanel::wrap_Enable::CallMember( ParamList* p)
   else
     FILE_ERROR(boost::format(" %d  \t bad parameter number ")%id);
 
+  return BasicVariable::ptr();
+}
+
+
+//--------------------------------------------------
+// CurrentParent
+//--------------------------------------------------
+void WrapClass_parampanel::wrap_CurrentParent::SetParametersComments()
+{
+  return_comments = "Returns the current parent for new parameters (object variable of type wxWindow).";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_parampanel::wrap_CurrentParent::CallMember( ParamList* p)
+{
+  wxWindow* parent = this->_objectptr->_parampanel->CurrentParent();
+
+  // create the variable
+  // 1. smart pointer to the wxWindow
+  boost::shared_ptr<wxWindow> wxw_ptr(
+      parent,
+      wxwindow_nodeleter<wxWindow>()    );
+
+  // 2. smart pointer to the Wrapped class
+  WrapClass_wxWindow::ptr wp(new WrapClass_wxWindow(wxw_ptr));
+
+  // 3. create the AMIObject with its methods
+  AMIObject::ptr amiobject(AddWrap_wxWindow(wp));
+
+  // 4. create the corresponding variable
+  Variable<AMIObject>::ptr varres(
+      new Variable<AMIObject>( amiobject));
+
+  return varres;
+}
+
+
+//--------------------------------------------------
+// AddWidget
+//--------------------------------------------------
+void WrapClass_parampanel::wrap_AddWidget::SetParametersComments()
+{
+  ADDPARAMCOMMENT("AMIObject variable wrapping a wxWindow.");
+  ADDPARAMCOMMENT("integer: sizer proportion (default is 0).");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_parampanel::wrap_AddWidget::CallMember( ParamList* p)
+{
+  Variable<AMIObject>::ptr var;
+  int proportion=0;
+  int n=0;
+
+  bool getvar = get_var_param<AMIObject>(var, p, n);
+  get_int_param(proportion, p, n, false);
+
+  if (getvar) 
+  {
+    WrapClassBase::ptr object( var->Pointer()->GetWrappedObject());
+    WrapClass_wxWindow::ptr obj( boost::dynamic_pointer_cast<WrapClass_wxWindow>(object));
+    if (obj.get()) {
+
+      this->_objectptr->_parampanel->AddWidget(obj->_win.get(), proportion);
+    } else {
+      FILE_ERROR("Could not cast dynamically the variable to wxWindow.")
+      ClassHelpAndReturn;
+    }
+  }  else {
+    FILE_ERROR("Need a wrapped wxWindow object as parameter.")
+    ClassHelpAndReturn;
+  }
   return BasicVariable::ptr();
 }

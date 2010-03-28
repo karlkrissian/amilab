@@ -19,17 +19,23 @@ include_directories (
 
 INCLUDE( ${wxWidgets_USE_FILE})
 
-SET(  WrapWXSamples_SRCS
+SET(  WrapWxWidgets_SRCS
   wrap_wxsamples.cpp
+  wrap_wxfunctions.cpp
+  wrap_wxWindow.cpp
+  wrap_wxHtmlWindow.cpp
 )
 
-SET(WrapWXSamples_HDRS
-	wrap_wxsamples.h
+SET(WrapWxWidgets_HDRS
+  wrap_wxsamples.h
+  wrap_wxfunctions.h
+  wrap_wxWindow.h
+  wrap_wxHtmlWindow.h
 )
 
-SET(WrapWXSamples_SRCS
-     ${WrapWXSamples_SRCS}
-     ${WrapWXSamples_HDRS}
+SET(WrapWxWidgets_SRCS
+     ${WrapWxWidgets_SRCS}
+     ${WrapWxWidgets_HDRS}
 )
 
-my_add_library ( WrapWXSamples)
+my_add_library ( WrapWxWidgets)

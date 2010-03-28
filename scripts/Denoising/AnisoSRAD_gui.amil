@@ -36,7 +36,7 @@ if (!exists(AnisoSRADClass)) {
   
   #----------------------------
   proc ::Close() {
-    ::win.Hide
+    ::win.HidePanel
     delvars GetObjectName(::Close)
   }
   ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -56,7 +56,7 @@ if (!exists(AnisoSRADClass)) {
       # read image using browser
       ::input << Image
       ::input_name = "::input"
-      ::win.update
+      ::win.Update(-1)
     } else {
       eval "::input <<="+::input_name+";"
     }
@@ -110,38 +110,38 @@ if (!exists(AnisoSRADClass)) {
   proc ::CreateGui() {
   
     # parameters window
-    ::win = ParamWin("SRAD")
+    import = &global::ami_import;
+    ::win = import->ParamPanel("SRAD")
 
-    ::win.BeginBook
-      ::win.AddPage("Param")
-        ::win.AddImageChoice(::input_name, "Input")
-        ::win.AddString(::output_name,"Result name")
+    ::win.BeginBook()      ::win.AddPage("Param")
+        ::win.AddImageChoice( &::input_name, "Input")
+        ::win.AddString( &::output_name,"Result name")
 
-        ::dt_id         = ::win.AddFloat(::dt,"dt",0.01,10)
-        ::T_id          = ::win.AddFloat(::T,"T",0,100)
+        ::dt_id         = ::win.AddFloat( &::dt,"dt",0.01,10)
+        ::T_id          = ::win.AddFloat( &::T,"T",0,100)
         
-        ::mode_id       = ::win.AddEnum(::mode,"Mode")
+        ::mode_id       = ::win.AddEnum( &::mode,"Mode")
           ::win.AddEnumChoice(::mode_id,"Lee")
           ::win.AddEnumChoice(::mode_id,"Kuan")
           ::win.AddEnumChoice(::mode_id,"Additive")
         
-        ::neighborhood_id = ::win.AddInt(::neighborhood,"Neighborhood",0,4)
-        ::scheme_id       = ::win.AddEnum(::scheme,"Scheme")
+        ::neighborhood_id = ::win.AddInt( &::neighborhood,"Neighborhood",0,4)
+        ::scheme_id       = ::win.AddEnum( &::scheme,"Scheme")
           ::win.AddEnumChoice(::scheme_id,"Explicit")
           ::win.AddEnumChoice(::scheme_id,"Semi-implicit")
         
-        ::win.BeginBox("Controls")
+        ::win.BeginBoxPanel("Controls")
           ::win.BeginHorizontal
             ROI_id     = ::win.AddButton("Select ROI", ::CreateRoi)
             iterate_id = ::win.AddButton("Filter",     ::Filter)
             display_id = ::win.AddButton("Display",    ::Display)
           ::win.EndHorizontal
-        ::win.EndBox
+        ::win.EndBoxPanel
 
-        ::win.BeginBox("Save to disk")
-          ::win.AddString(::output_filename,"result filename")
+        ::win.BeginBoxPanel("Save to disk")
+          ::win.AddString( &::output_filename,"result filename")
           display_id = ::win.AddButton("Save",       ::Save)
-        ::win.EndBox
+        ::win.EndBoxPanel
     
     ::win.EndBook
     ::win.BeginHorizontal
@@ -149,9 +149,9 @@ if (!exists(AnisoSRADClass)) {
       ::win.AddButton("Close All",          ::CloseAll)
     ::win.EndHorizontal  
 
-    ::win.CreateWin
+    ::win.Update
     ::win.Display
-    ::win.update
+    ::win.Update(-1)
   }
   
   ::Init
@@ -172,7 +172,7 @@ if (!exists(aniSRAD)) {
     input_arg = Image($1)
     ::input_image = "input_arg"
     ::output_name = $2
-    ::win.update
+    ::win.Update(-1)
   }
 } else {
 InfoDialog "The script seems to be already loaded." 

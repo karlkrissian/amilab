@@ -125,36 +125,7 @@ typedef boost::shared_ptr<std::string>     string_ptr;
 \\
  */
 
-class ParamInfo {
-  int               _type;      // precise le type du n-ieme 
-  wxGenericWidget*  _wxparam;     // list of wxwidgets used
-  wxSizerItem*     _sizeritem; // sizer item
-
-public:
-  ParamInfo():  _type(0),
-                _wxparam(NULL),
-                _sizeritem(NULL)
-  {}
-
-  ParamInfo(int type, wxGenericWidget* w, wxSizerItem* s): 
-                _type(type),
-                _wxparam(w),
-                _sizeritem(s)
-  {}
-
-  void Init(int type, wxGenericWidget* w, wxSizerItem* s)
-  {
-    _type      = type;
-    _wxparam   = w;
-    _sizeritem = s;
-  }
-
-  int GetType()                   { return _type;      }
-  wxGenericWidget* GetWidget()    { return _wxparam;   }
-  wxSizerItem*     GetSizerItem() { return _sizeritem; }
-};
-
-
+#include "ParamInfo.h"
 
 /*!
   \brief ParamBox: a wxDialog to include parameters
@@ -163,7 +134,7 @@ class ParamBox: public  wxDialog
 //    ========
 {
 
-  DECLARE_CLASS(ParamBox)
+  DECLARE_CLASS(ParamBox);
 
 private:
 
@@ -363,7 +334,7 @@ public:
 /** @name Type NomFichier */
 //@{
   ///
-  unsigned char AjouteNomFichier( int* id, string_ptr& nom, const char* libelle);
+  unsigned char AddFilename( int* id, string_ptr& nom, const char* libelle);
   //      ----------------
 
   ///

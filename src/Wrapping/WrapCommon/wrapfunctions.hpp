@@ -77,7 +77,7 @@ class CreateSmartPointer<C_wrap_imagefunction>
   }
 
 /*! \def ADDOBJECTVAR
-    \brief Adds a variable of a given type with the given variable name
+    \brief Adds a variable of a given type with the given variable name to the current object context.
 */
 #define ADDOBJECTVAR(type,obj) \
   { \
@@ -87,13 +87,24 @@ class CreateSmartPointer<C_wrap_imagefunction>
 
 
 /*! \def ADDOBJECTVAR_NAME
-    \brief Add a C procedure variable with the given name
+    \brief Add a C procedure variable with the given name to the current object context.
 */
 // C_wrap_procedure
 #define ADDOBJECTVAR_NAME(type,stname,name) \
   { \
   boost::shared_ptr<type> newvar(CreateSmartPointer<type>()(&name)); \
   Vars.AddVar<type>( stname, newvar, OBJECT_CONTEXT_NUMBER); \
+  }
+
+
+/*! \def ADDLOCAL_OBJECTVAR_NAME
+    \brief Add a C procedure variable with the given name to the context of the given amiobject.
+*/
+// C_wrap_procedure
+#define ADDLOCAL_OBJECTVAR_NAME(obj,type,stname,name) \
+  { \
+  boost::shared_ptr<type> newvar(CreateSmartPointer<type>()(&name)); \
+  obj->GetContext()->AddVar<type>( stname, newvar); \
   }
 
 
@@ -143,6 +154,15 @@ class CreateSmartPointer<C_wrap_imagefunction>
   return NULL; } \
 
 
+/*! \def RETURN_VAR
+    \brief returns a variable of the given type, after creating a new smart pointer to the given value
+*/
+#define RETURN_VAR(type,val)             \
+  boost::shared_ptr<type> var(new type(val));\
+  Variable<type>::ptr varres( new Variable<type>(var));\
+  return varres;
+
+
 /**
  * Function returns the number of parameters of the parameters list
  * if the pointer is NULL, returns -1 to allow display the documentation
@@ -159,7 +179,7 @@ bool get_generic_var_param( BasicVariable::ptr& var, ParamList*p, int& num);
  */
 template<class T>
 bool get_var_param( BasicVariable::ptr& var, 
-                    ParamList*p, int& num);
+                    ParamList*p, int& num, bool required = true);
 
 /**
  * Function used to parse a variable of generic type in a list of parameters, and to give back its value.
@@ -205,7 +225,7 @@ bool get_several_params(T* arg, ParamList*p, int& num);
 /**
  * Function used to parse an integer in a list of parameters
  */
-bool get_int_param(int& arg, ParamList*p, int& num);
+bool get_int_param(int& arg, ParamList*p, int& num, bool required = true);
 
 
 /**

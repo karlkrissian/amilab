@@ -50,6 +50,7 @@ class WrapClass_parampanel : public WrapClassBase
   ADD_CLASS_METHOD(AddEnumChoice,    "Adds a choice for an enumeration created in the parameter window.");
   ADD_CLASS_METHOD(AddLabel,         "Adds a label display.");
   ADD_CLASS_METHOD(AddFilename,      "Adds a filename selection.");
+  ADD_CLASS_METHOD(AddDirname,       "Adds a directory selection.");
   ADD_CLASS_METHOD(AddString,        "Adds a string selection.");
   ADD_CLASS_METHOD(AddImageChoice,   "Allows the user to choose among the current image global variables available.");
   ADD_CLASS_METHOD(AddBoolean,       "Adds a boolean selection.");
@@ -69,6 +70,9 @@ class WrapClass_parampanel : public WrapClassBase
   ADD_CLASS_METHOD(SetPositionProp,  "Sets the object position properties of the given widget.");
   ADD_CLASS_METHOD(ShowSlider,       "Show/hide the slider if there is one.");
   ADD_CLASS_METHOD(Enable,           "Enable/Disable a parameter.");
+
+  ADD_CLASS_METHOD(CurrentParent,    "Get the wxWindow that contains the current parameters.");
+  ADD_CLASS_METHOD(AddWidget,         "Adds a wxWindow to the current sizer");
 
 };
 

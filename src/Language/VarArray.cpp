@@ -2,7 +2,7 @@
 #include "DefineClass.hpp"
 #include "Variable.hpp"
 
-#include "ParamBox.hpp"
+//#include "ParamBox.hpp"
 #include "ParamPanel.hpp"
 #include "DessinImage.hpp"
 #include "Viewer3D.hpp"

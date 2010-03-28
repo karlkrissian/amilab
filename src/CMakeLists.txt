@@ -422,7 +422,7 @@ SET(amilab_ownlibs
   WrapInterface
   WrapBasicTypes
   WrapCommon
-  WrapWXSamples
+  WrapWxWidgets
   AMILab
   AMImage
   Contours

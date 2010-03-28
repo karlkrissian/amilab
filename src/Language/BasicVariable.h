@@ -117,7 +117,7 @@ public:
     return (strcmp(_name.c_str(), name)==0);
   }
 
-  const std::string GetTypeName();
+  const std::string GetTypeName() const;
 
   //
   virtual void display()

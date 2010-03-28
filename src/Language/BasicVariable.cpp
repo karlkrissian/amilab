@@ -13,7 +13,7 @@
 #include "BasicVariable.h"
 
 //---------------------------------------------
-const string BasicVariable::GetTypeName()
+const string BasicVariable::GetTypeName() const
 //           -------------
 {
   if (_type==type_void) { return string("deleted"); }

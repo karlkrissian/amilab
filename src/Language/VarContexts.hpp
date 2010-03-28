@@ -25,7 +25,7 @@
  **/
 class VarContexts {
 
-  DEFINE_CLASS(VarContexts)
+  DEFINE_CLASS(VarContexts);
 
 private:
   /// _current_context is the number of contexts used

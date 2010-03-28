@@ -19,7 +19,6 @@
 #include "driver.h"
 #include "CoutwxString.h"
 #include "MainFrame.h"
-#include "ParamPanel.hpp"
 #include <locale.h>
 #include "fonctions.h"
 #include "func_isoline.hpp"
@@ -11474,7 +11473,7 @@ variable:
           Vars.SetObjectContext(previous_ocontext);
     
           if  ((!GB_driver.procedure_declaration)&& newvar.get())   {
-            cout << "returning variable" << endl;
+            //cout << "returning variable" << endl;
             newvar->display();
             driver.var_stack.AddVar(newvar);
           } else {

@@ -4,7 +4,7 @@
 
 
 //----------------------------------------------------
-Viewer3D_PointParam::Viewer3D_PointParam(Viewer3D* parent): ParamBox(parent, "Point Parameters")
+Viewer3D_PointParam::Viewer3D_PointParam(Viewer3D* parent): ParamPanel(parent, "Point Parameters")
 {
   parent_class = parent;
   CreateParameters();

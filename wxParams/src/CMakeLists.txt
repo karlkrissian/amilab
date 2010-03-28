@@ -23,8 +23,12 @@ SET(  wxParams_SRCS
     mySlider.cpp
     mySpinButton.cpp
     wxParamTypes.cpp
+    wxBooleanParameter.cpp
+    wxStringParameter.cpp
     wxIntegerParameter.cpp
     wxFloatParameter.cpp
+    wxFilenameParameter.cpp
+    wxDirnameParameter.cpp
     CoutwxString.cpp
 )
 
@@ -41,14 +45,20 @@ SET(  wxParams_HDRS
   mySlider.h
   mySpinButton.h
   wxParamTypes.hpp
+  wxBooleanParameter.h
+  wxStringParameter.h
   wxIntegerParameter.h
   wxFloatParameter.h
   wxNumericParameter.h
+  wxFilenameParameter.h
+  wxDirnameParameter.h
   CoutwxString.h
   wxStringSelectionParameter.h
   couleur.hpp
   palette.hpp
-  StructParams.hpp    
+  StructParams.hpp
+  ParamInfo.h
+  myButton.h
 )
 
 

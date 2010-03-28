@@ -326,6 +326,8 @@ void Viewer3D::CreateParameterWindows()
 
   _param_fog             = new_wxWindow_ptr(Viewer3D_FogParam,this);
 
+  _param_lines           ->Hide();
+  _param_points          ->Hide();
   _param_view            ->Hide();
   _param_proj            ->Hide();
   _param_vectors         ->Hide();
@@ -817,6 +819,9 @@ void Viewer3D::CB_vectors_visible(wxCommandEvent& event)
 //------------------------------------------------
 void Viewer3D::CB_lines_visible(wxCommandEvent& event)
 {
+  ToggleParamPanel(_param_lines.get());
+
+/*
   int visible;
   visible =  menuView->IsChecked(ID_MenuView_lines_param);
 
@@ -825,12 +830,15 @@ void Viewer3D::CB_lines_visible(wxCommandEvent& event)
   Sinon
     _param_lines->FermeDialogue( );
   FinSi
+*/
 } // CB_line_visible()
 
 
 //------------------------------------------------
 void Viewer3D::CB_points_visible(wxCommandEvent& event)
 {
+  ToggleParamPanel(_param_points.get());
+/*
   int visible;
   visible =  menuView->IsChecked(ID_MenuView_points_param);
 
@@ -839,6 +847,7 @@ void Viewer3D::CB_points_visible(wxCommandEvent& event)
   Sinon
     _param_points->FermeDialogue( );
   FinSi
+*/
 } // CB_points_visible()
 
 

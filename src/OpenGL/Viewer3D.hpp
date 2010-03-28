@@ -51,7 +51,7 @@
 #include "MyToolBar.h"
 
 #include "ami_wxGLCanvas.hpp"
-#include "ParamBox.hpp"
+//#include "ParamBox.hpp"
 #include "ParamPanel.hpp"
 
 // AMILab includes
