@@ -81,11 +81,11 @@ if (!exists(Functions2DClass)) {
       ::ymax = 10,  "maximal value along Y axis"
       ::resolution = 0.1, "Curve resolution along X"
       ::CurveParamClass ::c1
-      ::c1.Comments("Parameters for curve 1")
+      #::c1->Comments("Parameters for curve 1")
       ::c1->equation = "sin(X)*3"
       ::c1->color_str = "#FF0000"
       ::CurveParamClass ::c2
-      ::c2.Comments("Parameters for curve 2")
+      #::c2->Comments("Parameters for curve 2")
       ::c2->equation = "cos(X)*3"
       ::c2->color_str = "#0000FF"
 

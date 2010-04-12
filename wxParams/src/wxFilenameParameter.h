@@ -17,8 +17,9 @@
 #include "myButton.h"
 #include "myTextCtrl.h"
 #include "StructParams.hpp"
-
+#include <string>
 #include <boost/shared_ptr.hpp>
+#include <iostream.h>
 typedef boost::shared_ptr<std::string>     string_ptr;
 
 /*!

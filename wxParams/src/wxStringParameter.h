@@ -15,6 +15,7 @@
 
 #include "myTextCtrl.h"
 #include "widget.hpp"
+#include <string>
 
 #include <boost/shared_ptr.hpp>
 typedef boost::shared_ptr<std::string>     string_ptr;

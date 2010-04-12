@@ -15,6 +15,7 @@
 
 #include "widget.hpp"
 #include "StructParams.hpp"
+#include <string>
 
 /*!
   \brief wxBooleanParameter: GUI for a boolean parameter

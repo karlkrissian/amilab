@@ -37,6 +37,9 @@
 #include "ami_object.h"
 #include "VarArray.h"
 
+//Basic Edge Detection Filters added
+#include "wrapBasicEdgeDetection.h"
+
 extern VarContexts  Vars;
 
 //---------------------------------------------------------
@@ -82,6 +85,12 @@ void AddWrapFilters(){
   ADDOBJECTVAR_NAME(C_wrap_procedure,"ImageAddScalar",wrap_ImageAddScalar);
   ADDOBJECTVAR_NAME(C_wrap_procedure,"ImageCos",wrap_ImageCos);
 
+	//Basic Edge Detection
+	ADDOBJECTVAR_NAME(C_wrap_imagefunction, "Roberts", wrapRoberts);
+	ADDOBJECTVAR_NAME(C_wrap_imagefunction, "PSF", wrapPSF);
+	ADDOBJECTVAR_NAME(C_wrap_imagefunction, "Gradient", wrapGradient);
+	ADDOBJECTVAR_NAME(C_wrap_imagefunction, "Laplace", wrapLaplace);
+	
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);
 

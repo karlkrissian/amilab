@@ -54,6 +54,7 @@ SET(  WrapFilters_SRCS
   LeastSquares.cpp
   wrap_ImageAddScalar.cpp
   wrap_ImageCos.cpp
+	wrapBasicEdgeDetection.cpp
 )
 
 SET(WrapFilters_HDRS
@@ -70,6 +71,7 @@ SET(WrapFilters_HDRS
   wrap_StructureTensor.h
   wrap_ImageAddScalar.h
   wrap_ImageCos.h
+	wrapBasicEdgeDetection.h
 )
 
 SET(WrapFilters_SRCS

@@ -17,6 +17,9 @@
 #include "BasicVariable.h"
 #include <limits>
 
+#include <vector>
+#include <list>
+
 // forward definition of Variables
 //class Variables;
 //class VarArray;
@@ -71,13 +74,13 @@ class Variable : public BasicVariable {
 
 public:
   virtual char const* get_name() const { return "Variable<T>"; } 
-  typedef Variable<T> VariableType;
-  typedef typename boost::shared_ptr<VariableType >    ptr;
-  typedef typename boost::weak_ptr<VariableType >      wptr;
-  typedef typename std::vector<VariableType::ptr>     ptr_vector;
-  typedef std::vector<VariableType::wptr>    wptr_vector;
-  typedef std::list<VariableType::ptr>       ptr_list;
-  typedef std::list<VariableType::wptr>      wptr_list;
+	//  typedef typename Variable<T> VariableType;
+  typedef typename boost::shared_ptr<Variable<T> >    ptr;
+  typedef typename boost::weak_ptr<Variable<T> >      wptr;
+  typedef typename std::vector<ptr>     ptr_vector;
+  typedef typename std::vector<wptr>    wptr_vector;
+  typedef typename std::list<ptr>       ptr_list;
+  typedef typename std::list<wptr>      wptr_list;
 
 
 private:
@@ -129,7 +132,7 @@ public:
 
 /*    std::string resname = _name+"_copy";
     boost::shared_ptr<T> copy(new T(*_pointer));
-    Variable<T>::ptr res(new Variable<T>(resname,copy));
+    ptr res(new Variable<T>(resname,copy));
     return res;
 */
   }
@@ -141,7 +144,7 @@ public:
   BasicVariable::ptr NewReference()
   {
     std::string resname = _name+"_ref";
-    Variable<T>::ptr res(new Variable<T>(resname,_pointer));
+		ptr res(new Variable<T>(resname,_pointer));
     // copy the comments
     res->SetComments(_comments);
     return res;
@@ -157,7 +160,7 @@ public:
    * Copy of variables
    * @param v 
    */
-  void operator = (const Variable<T>::ptr& v) {
+  void operator = (const ptr& v) {
      (*this) = (*v);
       /*
       _type         = v->_type;
@@ -185,7 +188,7 @@ public:
   {
     if (_type == v->Type()) {
       // convert pointer
-      Variable<T>::ptr newvar (boost::dynamic_pointer_cast<Variable<T> >(v));
+      ptr newvar (boost::dynamic_pointer_cast<Variable<T> >(v));
       return ((_name     == newvar->_name) &&
               (_comments == newvar->_comments) &&
               (_pointer.get()  == newvar->_pointer.get()));
