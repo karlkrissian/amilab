@@ -222,3 +222,4 @@ ${SVNCHECKOUTDIR}/fluid/Karl/scripts, for example, in bash:
 export AMI_SCRIPTS=${SVNCHECKOUTDIR}/fluid/Karl/scripts
 
 
+ 
