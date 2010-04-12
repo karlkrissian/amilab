@@ -129,7 +129,7 @@ if __name__ == "__main__":
           #sys.stdout.write("("+cmd1+","+cmd2+") -> "+line)
       for cmd1,cmd2 in commands_force_par:
         # $ matches the end of the string and avoids adding () where there are already present
-        res = re.subn(r"\.(\s*)"+cmd1+r"(\s*$)",r"."+cmd2,line)
+        res = re.subn(r"\.(\s*)"+cmd1+r"(\s*$)",r"."+cmd2+r"\2",line)
         if (res[1]>0):
           line = res[0]
           num_subs = num_subs+1
