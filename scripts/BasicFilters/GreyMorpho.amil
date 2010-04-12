@@ -36,7 +36,7 @@ if (!exists(GreyMorphoClass)) {
     #----------------------------
     proc ::Close() \
     {
-      ::win.Hide
+      ::win.HidePanel
       delvars GetObjectName(::Close)
     }
     ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -56,9 +56,9 @@ if (!exists(GreyMorphoClass)) {
       eval "::input <<="+::input_name+";"
       if (::input_name=="Image") {
         ::input_name = "::input"
-        ::win.update
+        ::win.Update(-1)
       }
-      ::win.update
+      ::win.Update(-1)
     }
     
     #----------------------------
@@ -157,34 +157,35 @@ if (!exists(GreyMorphoClass)) {
     proc ::CreateWindow() {
     
       # parameters window
-      ::win = ParamWin("GreyMorpho")
+      import = &global::ami_import;
+      ::win = import->ParamPanel("GreyMorpho")
       
-      ::win.BeginBook
+      ::win.BeginBook()
     
         ::win.AddPage("Input/Output")
 
           # set the input image
           ::win.BeginBoxPanel("Input")
             ::win.BeginHorizontal
-              ::win.AddImageChoice(::input_name, "")
+              ::win.AddImageChoice( &::input_name, "")
               ::win.AddButton("Load",::LoadInput)
             ::win.EndHorizontal
           ::win.EndBoxPanel
 
-          ::win.AddString(::result_image_name,"Result image")
+          ::win.AddString( &::result_image_name,"Result image")
 
         ::win.AddPage("Param")
-          operation_id = ::win.AddEnum(::operation,"Method")
+          operation_id = ::win.AddEnum( &::operation,"Method")
             ::win.AddEnumChoice(operation_id,"Dilate")
             ::win.AddEnumChoice(operation_id,"Erode")
             ::win.AddEnumChoice(operation_id,"Close")
             ::win.AddEnumChoice(operation_id,"Open")
 
           ::win.BeginBoxPanel("Parameters")
-            ::win.AddFloat(::step,  "step",  0.01,1)
-            ::win.AddFloat(::size,  "size",  1,   30 )
-            ::win.AddFloat(::Imin,  "Imin",  0,   30 )
-            ::win.AddFloat(::Imax,  "Imax",  0,   30 )
+            ::win.AddFloat( &::step,  "step",  0.01,1)
+            ::win.AddFloat( &::size,  "size",  1,   30 )
+            ::win.AddFloat( &::Imin,  "Imin",  0,   30 )
+            ::win.AddFloat( &::Imax,  "Imax",  0,   30 )
           ::win.EndBoxPanel
     
         ::win.AddPage("Controls")
@@ -196,7 +197,7 @@ if (!exists(GreyMorphoClass)) {
           ::win.EndBoxPanel
   
           ::win.BeginBoxPanel("Result")
-              ::win.AddString(::result_filename,"file")
+              ::win.AddString( &::result_filename,"file")
               ::win.BeginHorizontal
                   display_id = ::win.AddButton("Save",       ::Save)
                   display_id = ::win.AddButton("Display",    ::Display)
@@ -204,7 +205,7 @@ if (!exists(GreyMorphoClass)) {
           ::win.EndBoxPanel
 
           ::win.BeginBoxPanel("Surface display")
-              ::win.AddFloat(::surf_scaling,"surf scale",0.01,10)
+              ::win.AddFloat( &::surf_scaling,"surf scale",0.01,10)
               display_surf_id = ::win.AddButton("Surfaces",    ::DisplaySurfaces)
           ::win.EndBoxPanel
       ::win.EndBook
@@ -213,7 +214,7 @@ if (!exists(GreyMorphoClass)) {
         ::win.AddButton("Close All",  ::CloseAll)
       ::win.EndHorizontal
       
-      ::win.update
+      ::win.Update(-1)
       ::win.Display
     }
 
@@ -236,7 +237,7 @@ if (!exists(gmorpho)) {
     printn "reading image"
     input = Image($1)
     gmorpho->image_name = "input"
-    gmorpho->win.update
+    gmorpho->win.Update(-1)
   }
 
 } else {

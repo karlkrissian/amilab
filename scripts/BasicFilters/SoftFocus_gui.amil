@@ -22,7 +22,7 @@ if (!exists(SoftFocus)) {
 
     #--------------------------------
     proc ::Close() {
-      ::win.Hide
+      ::win.HidePanel
       delvars GetObjectName(::Close)
     }
     ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -32,7 +32,7 @@ if (!exists(SoftFocus)) {
       eval "::input <<="+::input_name+";"
       if (::input_name=="Image") {
         ::input_name = "::input"
-        ::win.update
+        ::win.Update(-1)
       }
     }
     
@@ -87,7 +87,7 @@ if (!exists(SoftFocus)) {
         ::cx = ::input_draw.GetXPos
         ::cy = ::input_draw.GetYPos
         ::cz = ::input_draw.GetZPos
-        ::win.update
+        ::win.Update(-1)
       }
     }
     ::CursorPos.Comments("Set the position parameter from the current cursor position in the input_draw window")
@@ -102,35 +102,36 @@ if (!exists(SoftFocus)) {
     proc ::CreateGui() {
     
       # parameters window
-      ::win = ParamWin("SoftFocus")
+      import = &global::ami_import;
+      ::win = import->ParamPanel("SoftFocus")
     
-      ::win.BeginBook
+      ::win.BeginBook()
         ::win.AddPage("Param")
   
-        ::win.AddImageChoice(::input_name, "Input")
-        ::sigma_id = ::win.AddFloat(::sigma,"std_dev",0.1,100)
-        ::win.SetCallback(::AutoFilter)
+        ::win.AddImageChoice( &::input_name, "Input")
+        ::sigma_id = ::win.AddFloat( &::sigma,"std_dev",0.1,100)
+        ::win.SetCallback( &::AutoFilter)
         ::win.SetDragCallback(::sigma_id,::autodrag)
   
         ::win.BeginBoxPanel("Center position")
-          ::win.AddInt(::cx,"X",0,1000)
-          ::win.AddInt(::cy,"Y",0,1000)
-          ::win.AddInt(::cz,"Z",0,1000)
+          ::win.AddInt( &::cx,"X",0,1000)
+          ::win.AddInt( &::cy,"Y",0,1000)
+          ::win.AddInt( &::cz,"Z",0,1000)
           ::win.AddButton("From Cursor",::CursorPos)
         ::win.EndBoxPanel
   
-        ::win.AddFloat(::radius,"Radius",0.1,1000)
+        ::win.AddFloat( &::radius,"Radius",0.1,1000)
   
         ::win.BeginHorizontal
-          ::win.AddBoolean(::auto,"Auto")
-          ::win.AddBoolean(::autodrag,"Auto drag")
-          ::win.SetCallback(::AutoDrag)
+          ::win.AddBoolean( &::auto,"Auto")
+          ::win.AddBoolean( &::autodrag,"Auto drag")
+          ::win.SetCallback( &::AutoDrag)
         ::win.EndHorizontal
         ::win.AddButton("Apply",::Filter)
       ::win.EndBook
       ::win.AddButton("Close",    ::Close)
     
-      ::win.update
+      ::win.Update(-1)
       ::win.Display
     }
   
