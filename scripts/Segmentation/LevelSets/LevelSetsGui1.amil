@@ -276,7 +276,7 @@ if (!exists(LevelSetsClass)){
     pfile.printn boost_format("::T               = %1%") % ::T
 
   }
-#----------------------------
+  #----------------------------
   proc ::Close() {
     ::win.HidePanel
     delvars GetObjectName(::Close)
@@ -291,8 +291,6 @@ if (!exists(LevelSetsClass)){
   ::CloseAll.Comments("Call ::Close() method and delete the class variable")
       
   #------------------------------------
-  
-   //---------------------------------------------------
   proc ::SetVelocityField( IMAGE vel, NUM coeff ) {
   
     ::velfield = vel
