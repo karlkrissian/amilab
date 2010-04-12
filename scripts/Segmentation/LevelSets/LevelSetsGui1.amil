@@ -628,10 +628,9 @@ if (!exists(LevelSetsClass)){
   
   //---------------------------------------------------
   proc ::LaunchWiki() {
-    import = &global::ami_import;
-    import->WX();
-    wx1 = &global::wx;
-    wx1->LaunchDefaultBrowser(::wiki_help);
+    import = &global::ami_import
+    wx1 = import->WxFunctions()
+    res = wx1->LaunchDefaultBrowser(::wiki_help)
   }
   ::LaunchWiki.Comments("Launch the corresponding wiki tutorial page on the default browser.")
 
