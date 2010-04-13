@@ -50,6 +50,8 @@
 #include "amilab_messages.h"
 
 #include "surface.hpp"
+using namespace amilab;
+
 #include "ami_object.h"
 
 //#include "Bluecurve/32x32/actions/reload.xpm"

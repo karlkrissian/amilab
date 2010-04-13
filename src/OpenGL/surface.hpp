@@ -157,6 +157,8 @@ static  TableauDyn<CompCon>   static_tab_cc;
 
 class ami_wxGLCanvas;
 
+namespace amilab {
+
 //=========================================================
 //
 class GLObject 
@@ -224,15 +226,15 @@ public:
   virtual ~GLObject()
   {
 
-    Si _GL_list != 0 Alors
+    if (_GL_list != 0) {
       glDeleteLists(_GL_list, 1);
       _GL_list = 0;
-    FinSi
+    }
 
-    Si _bounding_box != 0 Alors
+    if  (_bounding_box != 0) {
       glDeleteLists(_bounding_box, 1);
       _bounding_box = 0;
-    FinSi
+    }
   }
 
   void SetwxGLCanvas( ami_wxGLCanvas* wxglc ) 
@@ -609,7 +611,7 @@ class SurfacePoly : public GLObject
 //
 {
 
-  DEFINE_CLASS(SurfacePoly)
+  DEFINE_CLASS(SurfacePoly);
 
 private:
   TableauDyn<Point3DPoly> _tab_pts;
@@ -920,6 +922,7 @@ public:
 
 }; // SurfacePoly
 
+}
 
 #endif // _SURFACE_HPP
 

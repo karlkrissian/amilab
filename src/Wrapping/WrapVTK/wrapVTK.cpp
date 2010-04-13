@@ -11,6 +11,8 @@
 //
 
 #include "surface.hpp"
+using namespace amilab;
+
 #include "VarContexts.hpp"
 #include "wrapfunctions.hpp" 
 #include "wrapVTK.h"

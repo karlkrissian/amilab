@@ -35,7 +35,10 @@
 #endif
 
 #include "style.hpp"
+
 #include "surface.hpp"
+using namespace amilab;
+
 #include "Crest.hpp"
 
 

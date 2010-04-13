@@ -233,16 +233,20 @@ public:
   //
   void display();
 
-  double GetValueAsDouble() const {
+  virtual double GetValueAsDouble() const;
+/*
+  virtual double GetValueAsDouble() const
+  {
       CLASS_ERROR("Variable type is not numeric");
       return 0.0;
   }
+*/
   
   /**
    * 
    * @return A string containing the value of the variable.
    */
-  std::string GetValueAsString() const;
+  virtual std::string GetValueAsString() const;
 
   // allow access to private members of Variable class
 //  friend class VarArray;
@@ -376,5 +380,29 @@ std::ostream& operator<<(std::ostream& o, const Variable<T>& v);
 
 
 #include "Variable.tpp"
+
+//#include "Variable.cpp"
+
+/*
+class InrImage;
+class DessinImage;
+
+namespace amilab {
+class SurfacePoly;
+}
+
+class Viewer3D;
+//class C_wrap_procedure;
+class WrapClassMember;
+//class C_wrap_imagefunction;
+//class C_wrap_varfunction;
+class AMIFunction;
+class AMIClass;
+class AMIObject;
+class AMICPPObject;
+class FloatMatrix;
+class GLTransfMatrix;
+class VarArray;
+*/
 
 #endif

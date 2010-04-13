@@ -11,7 +11,12 @@
 //
 
 #include "LineRecons.h"
+#include "inrimage.hpp"
+#include "surface.hpp"
+using namespace amilab;
+
 #include "Coordonnees.hpp"
+#include <stdio.h>
 
 #define inf(x,y) ((x)<=(y))?(x):(y)
 #define sup(x,y) ((x)>=(y))?(x):(y)

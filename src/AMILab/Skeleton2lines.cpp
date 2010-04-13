@@ -27,6 +27,8 @@
 */
 
 #include "surface.hpp"
+using namespace amilab;
+
 #include "style.hpp"
 #include "inrimage.hpp"
 #include "TableauDyn.hpp"

@@ -7,6 +7,9 @@
 #include <sstream>
 #include <limits>
 
+
+
+
 //------------------------------------------------------------//  Variable
 //------------------------------------------------------------
 template<class T>
@@ -101,6 +104,7 @@ void Variable<T>::display()
   std::cout << (*this);
 }
 
+/*
 template <class T>
 std::string Variable<T>::GetValueAsString() const
 {
@@ -109,6 +113,7 @@ std::string Variable<T>::GetValueAsString() const
   tmpstr << "Variable of type " << *this << ", no string conversion available.";
   return tmpstr.str();
 }
+*/
 
 /*
 template <class T, class U>

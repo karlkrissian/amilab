@@ -85,6 +85,7 @@
 #include "StringUtils.hpp"
 
 #include "surface.hpp"
+using namespace amilab;
 #include "ami_wxGLCanvas.hpp"
 #include "style.hpp"
 

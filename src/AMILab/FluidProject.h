@@ -4,6 +4,8 @@
 #define _FLUIDPROJECT_H_
 
 #include "surface.hpp"
+using namespace amilab;
+
 #include "inrimage.hpp"
 
 namespace AMIFluid {

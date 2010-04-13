@@ -28,7 +28,11 @@
 
 #include "paramlist.h"
 class DessinImage;
+
+namespace amilab {
 class SurfacePoly;
+}
+
 class Viewer3D;
 
 

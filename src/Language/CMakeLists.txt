@@ -55,7 +55,7 @@ SET(Language_SRCS
     VarContexts.cpp
     BasicVariable.cpp
     Variable.cpp
-#    Variable_float.cpp
+    Variable_float.cpp
     Variables.cpp
     paramlist.cpp
     ImageStack.cpp
