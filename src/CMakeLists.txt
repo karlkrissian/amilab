@@ -168,7 +168,8 @@ ENDIF(AMI_USE_ITK)
 FIND_PACKAGE ( AMIFluid )
 #FIND_PACKAGE ( wxParams )
 FIND_PACKAGE ( OpticFlow )
-FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc net xml qa xrc richtext media)
+#FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc net xml qa xrc richtext media)
+FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc)
 
 # put OpenGL before VTK to find the correct library of the system
 FIND_PACKAGE ( OpenGL )

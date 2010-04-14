@@ -5,124 +5,135 @@
 #
 
 
-if (!exists(WLS_defined)) {
-  WLS_defined=1
+if (!exists(WeightedLSCLass)) {
+  
+  Class WeightedLSCLass {
 
-  #--------------------------
-  proc WLS_Init() \
-  {
-    global::WLS_input_name    		= ""
-    global::WLS_weights_name  		= ""
-    global::WLS_output_prefix 		= "WLS_"
-    global::WLS_localstats_winsize  	= INT(5)
-    global::WLS_min_weight  		= 0.01
-    WLS_Gui
-  }
-
-  #--------------------------
-  proc WLS_LoadInput() \
-  {
-    eval "global::WLS_input <<=(FLOAT)"+WLS_input_name+";"
-    if (WLS_input_name=="Image") {
-      WLS_input_name = "WLS_input"
-      WLS_win.update
+    #--------------------------
+    proc ::Init() \
+    {
+      ::input_name = ""
+      ::weights_name = ""
+      ::output_prefix = ""
+      ::localstats_winsize = INT(5)
+      ::min_weight = 0.01
+      ::Gui
     }
-  }
 
-  #--------------------------
-  proc WLS_LoadWeights() \
-  {
-    eval "global::WLS_weights <<=(FLOAT)"+WLS_weights_name+";"
-    if (WLS_weights_name=="Image") {
-      WLS_weights_name = "WLS_weights"
-      WLS_win.update
+    #--------------------------
+    proc ::LoadInput() \
+    {
+      eval "::input <<=(FLOAT)"+::input_name+";"
+      if (::input_name=="Image") {
+        ::input_name = "::input"
+        ::win.update
+      }
     }
+
+    #--------------------------
+    proc ::LoadWeights() \
+    {
+      eval "::weights <<=(FLOAT)"+::weights_name+";"
+      if (::weights_name=="Image") {
+        ::weights_name = "::weights"
+        ::win.update
+      }
+    }
+
+    #--------------------------
+    proc ::Close() \
+    {
+      ::win.Hide
+      delvars GetObjectName(::Close)
+    }
+    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    
+    proc ::CloseAll() \
+    {
+      ::Close
+      if (exists(NLmeansClass)) { del NLmeansClass; }
+    }
+    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+
+    #--------------------------
+    proc ::Apply() \
+    {
+      ::LoadInput
+      ::LoadWeights
+
+      # compute weighted local mean intensity
+      ::lm = localmean2(::input*::weights,::localstats_winsize)
+      ::w_lm    = localmean2(::_eights,::_ocalstats_winsize)
+
+      # set minimal weight, and divide by weights
+      ::w_lm = (::w_lm>::min_weight)*::w_lm+(::w_lm<=::min_weight)*::min_weight
+      ::lm = ::lm/::w_lm
+      ::lm = (::w_lm>2*::min_weight)*::lm
+
+      eval "global::"+::output_prefix+"lm <<= ::lm;"
+
+      # compute weighted local standard deviation of intensity
+      ::var = localmean2(::input*::input*::weights,::localstats_winsize)
+      ::var = ::var/::w_lm 
+      ::var = (::w_lm>2*::min_weight)*::var
+      ::var = ::var-::lm*::lm
+      ::sd = sqrt(::var)
+
+      eval "global::"+::output_prefix+"sd <<= ::sd;"
+
+      # apply Gaussian function
+      ::res = ::input - ::lm
+      ::res = (::res*::res)/(::var*1.5*1.5)
+      ::res = exp(-::res)
+      ::res = (::w_lm>2*::min_weight)*::res
+
+
+      eval "global::"+::output_prefix+"prob <<= ::res;"
+
+      ::Display
+    }
+
+    #--------------------------
+    proc ::_Display() \
+    {
+      show ::input
+      ::input_draw.compare(::weights)
+      eval "::input_draw.compare("+::output_prefix+"lm);"
+      eval "::input_draw.compare("+::output_prefix+"sd);"
+      eval "::input_draw.compare("+::output_prefix+"prob);"
+    }
+    
+    #--------------------------
+    proc ::Gui() \
+    {
+      ::win = ParamWin("Prob")
+
+      ::win.BeginPanel("Parameters")
+        ::win.AddImageChoice(::_input_name,"Input")
+        ::win.AddImageChoice(::_weights_name,"Weights")
+        ::win.AddString(::_output_prefix,"Output Prefix")
+    
+        ::win.AddInt(::_localstats_winsize,1,10)
+        ::win.AddFloat(::_min_weight,0.01,1)
+    
+        ::win.AddButton("Apply",  ::_Apply)
+        ::win.AddButton("Display",::_Display)
+      ::win.EndPanel
+      
+      
+      ::win.BeginHorizontal
+        ::win.AddButton("Close", ::Close)
+        ::win.AddButton("Close All", ::CloseAll)
+      ::win.EndHorizontal
+
+      ::win.update
+      ::win.Display
+    }
+
+    #----------------------------
+    # Main
+    #----------------------------
+    ::Init
   }
-
-  #--------------------------
-  proc WLS_Close() \
-  {
-    WLS_win.Hide
-    del "WLS_*_draw"
-    del "WLS_*"
-    del "wls_*"
-  }
-
-  #--------------------------
-  proc WLS_Apply() \
-  {
-    WLS_LoadInput
-    WLS_LoadWeights
-
-    # compute weighted local mean intensity
-    wls_lm = localmean2(WLS_input*WLS_weights,WLS_localstats_winsize)
-    wls_w_lm    = localmean2(WLS_weights,          WLS_localstats_winsize)
-
-    # set minimal weight, and divide by weights
-    wls_w_lm = (wls_w_lm>WLS_min_weight)*wls_w_lm+(wls_w_lm<=WLS_min_weight)*WLS_min_weight
-    wls_lm = wls_lm/wls_w_lm
-    wls_lm = (wls_w_lm>2*WLS_min_weight)*wls_lm
-
-    eval "global::"+WLS_output_prefix+"lm <<= wls_lm;"
-
-    # compute weighted local standard deviation of intensity
-    wls_var = localmean2(WLS_input*WLS_input*WLS_weights,WLS_localstats_winsize)
-    wls_var = wls_var/wls_w_lm 
-    wls_var = (wls_w_lm>2*WLS_min_weight)*wls_var
-    wls_var = wls_var-wls_lm*wls_lm
-    wls_sd = sqrt(wls_var)
-
-    eval "global::"+WLS_output_prefix+"sd <<= wls_sd;"
-
-    # apply Gaussian function
-    wls_res = WLS_input - wls_lm
-    wls_res = (wls_res*wls_res)/(wls_var*1.5*1.5)
-    wls_res = exp(-wls_res)
-    wls_res = (wls_w_lm>2*WLS_min_weight)*wls_res
-
-
-    eval "global::"+WLS_output_prefix+"prob <<= wls_res;"
-
-    WLS_Display
-  }
-
-  #--------------------------
-  proc WLS_Display() \
-  {
-    global_new
-      show WLS_input
-      WLS_input_draw.compare(WLS_weights)
-      eval "WLS_input_draw.compare("+WLS_output_prefix+"lm);"
-      eval "WLS_input_draw.compare("+WLS_output_prefix+"sd);"
-      eval "WLS_input_draw.compare("+WLS_output_prefix+"prob);"
-  }
-  
-  #--------------------------
-  proc WLS_Gui() \
-  {
-    global::WLS_win = ParamWin("Prob")
-
-    WLS_win.BeginPanel("Parameters")
-      WLS_win.AddImageChoice(WLS_input_name,"Input")
-      WLS_win.AddImageChoice(WLS_weights_name,"Weights")
-      WLS_win.AddString(WLS_output_prefix,"Output Prefix")
-  
-      WLS_win.AddInt(  WLS_localstats_winsize,1,10)
-      WLS_win.AddFloat(WLS_min_weight,0.01,1)
-  
-      WLS_win.AddButton("Apply",  WLS_Apply)
-      WLS_win.AddButton("Display",WLS_Display)
-    WLS_win.EndPanel
-    WLS_win.AddButton("Close",  WLS_Close)
-
-    WLS_win.update
-    WLS_win.Display
-  }
-
-  #----------------------------
-  # Main
-  #----------------------------
-  WLS_Init
-
 } 
-# end if (!exists(WLS_defined)) 
+# end if (!exists(::_defined)) 

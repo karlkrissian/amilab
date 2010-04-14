@@ -13,13 +13,24 @@
 #include <string>
 #include <boost/format.hpp>
 
-#include "wxNumericParameter.h"
-
-#if defined(WIN32)
+#if defined(_MSC_VER) || defined(__MINGW32__)
+#ifndef AMI_ROUND
+#define AMI_ROUND
 inline double round( double d )
 {
 return floor( d + 0.5 );
 }
+#endif
+#endif
+
+
+#include "wxNumericParameter.h"
+
+#if defined(WIN32)
+/*inline double round( double d )
+{
+return floor( d + 0.5 );
+}*/
 #endif
 
 
