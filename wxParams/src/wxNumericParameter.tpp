@@ -15,6 +15,13 @@
 
 #include "wxNumericParameter.h"
 
+#if defined(WIN32)
+inline double round( double d )
+{
+return floor( d + 0.5 );
+}
+#endif
+
 
 //========================================================
 //              wxNumericParameter

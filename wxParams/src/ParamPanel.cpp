@@ -59,12 +59,14 @@ using namespace std;
 
 #include "boost/format.hpp"
 
+/*
 #if defined(_MSC_VER) || defined(__MINGW32__)
 inline double round( double d )
 {
 return floor( d + 0.5 );
 }
 #endif
+*/
 
 #ifdef _MSC_VER
   #define __func__ __FUNCTION__

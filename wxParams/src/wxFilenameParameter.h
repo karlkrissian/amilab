@@ -19,6 +19,7 @@
 #include "StructParams.hpp"
 #include <string>
 #include <boost/shared_ptr.hpp>
+
 #include <iostream>
 typedef boost::shared_ptr<std::string>     string_ptr;
 

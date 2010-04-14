@@ -12,6 +12,11 @@
 
 #include "wxFilenameParameter.h"
 
+#ifdef _MSC_VER
+  #define __func__ __FUNCTION__
+  #define _CRT_SECURE_NO_WARNINGS
+#endif
+
 //================================================================
 //          Filename Parameter
 //================================================================

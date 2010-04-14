@@ -12,6 +12,11 @@
 
 #include "wxDirnameParameter.h"
 
+#ifdef _MSC_VER
+  #define __func__ __FUNCTION__
+  #define _CRT_SECURE_NO_WARNINGS
+#endif
+
 enum {
   wxID_DIRPATH = 1000,
 };

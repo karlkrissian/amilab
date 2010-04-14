@@ -38,6 +38,7 @@ class Viewer3D;
 
 bool ParamList::AddParam( const BasicVariable::ptr& var) {
   params.push_back(var);
+  return true;
 }
 
 BasicVariable::ptr ParamList::GetParam(int i)    

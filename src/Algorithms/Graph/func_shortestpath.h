@@ -14,7 +14,12 @@
 #define _func_shortestpath_h_
 
 #include "surface.hpp"
+<<<<<<< .mine
 using namespace amilab;
+
+=======
+using namespace amilab;
+>>>>>>> .r545
 #include "inrimage.hpp"
 
 //-------------------------------------------------------

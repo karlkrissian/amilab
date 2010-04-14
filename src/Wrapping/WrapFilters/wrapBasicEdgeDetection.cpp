@@ -328,13 +328,14 @@ InrImage* wrapPSF(ParamList* p)
 InrImage* wrapGradient(ParamList* p)
 {
 	//Gradient's masks
-	float gradx[3][3]={	{-(2-sqrt(2))/4.,      0.,     (2-sqrt(2))/4.},
-											{(-2*(sqrt(2)-1))/4.,  0., (2*(sqrt(2)-1))/4.},
-											{-(2-sqrt(2))/4.,      0.,     (2-sqrt(2))/4.}};
+	double sqrt_2 = sqrt(2.0);
+	float gradx[3][3]={	{-(2-sqrt_2)/4.,      0.,     (2-sqrt_2)/4.},
+											{(-2*(sqrt_2-1))/4.,  0., (2*(sqrt_2-1))/4.},
+											{-(2-sqrt_2)/4.,      0.,     (2-sqrt_2)/4.}};
 	
-	float grady[3][3]={	{ -(2-sqrt(2))/4.,  (-2*(sqrt(2)-1))/4., -(2-sqrt(2))/4.},
+	float grady[3][3]={	{ -(2-sqrt_2)/4.,  (-2*(sqrt_2-1))/4., -(2-sqrt_2)/4.},
 											{             0.,                  0.,              0.},
-											{  (2-sqrt(2))/4.,   (2*(sqrt(2)-1))/4.,  (2-sqrt(2))/4.}};
+											{  (2-sqrt_2)/4.,   (2*(sqrt_2-1))/4.,  (2-sqrt_2)/4.}};
 	
 	//Information
 	char functionname[] = "wrapGradient";
