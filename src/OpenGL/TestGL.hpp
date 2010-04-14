@@ -42,6 +42,7 @@
 //#include "inrimage.hpp"
 //#include "BarreDefil.hpp"
 #include "ParamBox.hpp"
+#include "ParamPanel.hpp"
 #include "TypeParams.hpp"
 #include "wxParamTypes.hpp"
 #include "ErrorDialog.hpp"
@@ -66,6 +67,8 @@ extern "C" {
 
 #include "GLparam.hpp"
 #include "surface.hpp"
+using namespace amilab;
+
 #include "DessinImageParam.hpp"
 
 #include "TableauDyn.hpp"
@@ -338,7 +341,7 @@ class TestGL : public FenetreDessin
 */
 //@{
 
-   ParamBox* _param_objets;
+   ParamPanel* _param_objets;
 
    int    _id_boutton_center;
    int    _id_boutton_normalize;

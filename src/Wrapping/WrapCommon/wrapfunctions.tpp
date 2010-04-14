@@ -25,7 +25,7 @@
  */
 template<class T>
 bool get_var_param( boost::shared_ptr<Variable<T> >& var, 
-                    ParamList*p, int& num)
+                    ParamList*p, int& num, bool required = false)
 {
   if (!p) return false;
   // Getting the Variable and checking its type

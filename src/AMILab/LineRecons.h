@@ -13,10 +13,12 @@
 #ifndef _LineRecons_h_
 #define _LineRecons_h_
 
-#include "surface.hpp"
-#include "inrimage.hpp"
+namespace amilab{
+class SurfacePoly;
+}
+class InrImage;
 
-InrImage* LineRecons( SurfacePoly* surf, InrImage* ref,
+InrImage* LineRecons( amilab::SurfacePoly* surf, InrImage* ref,
                       InrImage* radii);
 
 #endif // _LineRecons_h_

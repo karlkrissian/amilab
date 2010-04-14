@@ -4,7 +4,7 @@
 # Adding main Gui scripts to the menu
 #
 
-AddMenuScript("&Segmentation","&Level Set","Segmentation/LevelSetsGui1.amil")
+AddMenuScript("&Segmentation","&Level Set","Segmentation/LevelSets/LevelSetsGui1.amil")
 AddMenuScript("&Segmentation","&itk Level Set","Segmentation/itkLevelSet.amil")
 AddMenuScript("&Segmentation","&Watershed","Segmentation/WaterShed.amil")
 AddMenuScript("&Segmentation","&itkFastMarching","Segmentation/itkFastMarching.amil")

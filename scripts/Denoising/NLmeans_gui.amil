@@ -69,7 +69,7 @@ if (!exists(NLmeansClass)) {
     #----------------------------
     proc ::Close() \
     {
-      ::win.Hide
+      ::win.HidePanel
       delvars GetObjectName(::Close)
     }
     ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -89,9 +89,9 @@ if (!exists(NLmeansClass)) {
       eval "::input <<="+::input_name+";"
       if (::input_name=="Image") {
         ::input_name = "::input"
-        ::win.update
+        ::win.Update(-1)
       }
-      ::win.update
+      ::win.Update(-1)
       if (exists(::input_draw)) { del ::input_draw; }
       show ::input
     }
@@ -506,6 +506,7 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
       ::res <<= ::input
       show ::res
     }
+    ::Restart.Comments("Reloads the input, sets the result equal to it and displays it.")
     
     #----------------------------
     proc ::Save() \
@@ -536,89 +537,89 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
     proc ::CreateWindow() {
     
       # parameters window
-      ::win = ParamWin("NL-means")
+      import = &global::ami_import;
+      ::win = import->ParamPanel("NL-means")
       
-      ::win.BeginBook
-    
-        ::win.AddPage("Input/Output")
+      ::win.BeginBook()    
+        ::win.AddPage("I/O")
 
           # set the input image
           ::win.BeginBoxPanel("Input")
             ::win.BeginHorizontal
-              ::win.AddImageChoice(::input_name, "")
+              ::win.AddImageChoice( &::input_name, "")
               ::win.AddButton("Load",::LoadInput)
             ::win.EndHorizontal
           ::win.EndBoxPanel
 
-          ::win.AddString(::result_image_name,"Result image")
+          ::win.AddString( &::result_image_name,"Result image")
 
         ::win.AddPage("Param")
-          filtermode_id = ::win.AddEnum(::filter_mode,"Method")
+          filtermode_id = ::win.AddEnum( &::filter_mode,"Method")
             ::win.AddEnumChoice(filtermode_id,"Standard")
             ::win.AddEnumChoice(filtermode_id,"MRI")
             ::win.AddEnumChoice(filtermode_id,"Feature")
             ::win.AddEnumChoice(filtermode_id,"Fast")
-          ::win.SetCallback(::FilterModeEvent)
+          ::win.SetCallback( &::FilterModeEvent)
 
           ::win.BeginBoxPanel("Common Parameters")
-            ::win.AddFloat(::h,      "h",      0.01,200)
-            ::win.AddInt(  ::threads,"Threads",1,   10 )
-            ::win.AddInt(  ::t,      "t",      1,   30 )
+            ::win.AddFloat( &::h,      "h",      0.01,200)
+            ::win.AddInt( &::threads,"Threads",1,   10 )
+            ::win.AddInt( &::t,      "t",      1,   30 )
           ::win.EndBoxPanel
     
-          ::param_book = ::win.BeginBook
+          ::param_book = ::win.BeginBook()
             ::standard_param_panel = ::win.AddPage("Stand")
-              ::presmooth_id     = ::win.AddFloat(::presmooth_SD,"pre-smooth",0,3)
-              ::win.AddInt(::f,"f", 1,10)
-              ::noisetype_id = ::win.AddEnum(::noisetype,"Type")
+              ::presmooth_id     = ::win.AddFloat( &::presmooth_SD,"pre-smooth",0,3)
+              ::win.AddInt( &::f,"f", 1,10)
+              ::noisetype_id = ::win.AddEnum( &::noisetype,"Type")
                 ::win.AddEnumChoice(::noisetype_id,"Add. Gaussian")
                 ::win.AddEnumChoice(::noisetype_id,"Rician (MRI)")
-              ::filtertype_id = ::win.AddEnum(::filter_type)
+              ::filtertype_id = ::win.AddEnum( &::filter_type)
                 ::win.AddEnumChoice(::filtertype_id,"Stand.")
                 ::win.AddEnumChoice(::filtertype_id,"Prob.")
                 ::win.AddEnumChoice(::filtertype_id,"Prob. + Smooth.")
-              ::win.AddFloat(::pattern_weight_param,"Weights size",0.1,10)
+              ::win.AddFloat( &::pattern_weight_param,"Weights size",0.1,10)
 
             ::mri_param_panel = ::win.AddPage("MRI")
-              ::win.AddInt(::f,"f", 1,10)
-              ::win.AddFloat(  ::sigma,"Sigma",0.5,10)
+              ::win.AddInt( &::f,"f", 1,10)
+              ::win.AddFloat( &::sigma,"Sigma",0.5,10)
               ::win.AddButton("Select noise ROI", ::GetNoiseROI)
 
             ::feature_param_panel = ::win.AddPage("Feature")
-              ::win.AddFloat(  ::sigma,"Sigma",0.5,10)
-              ::usegrad_id = ::win.AddBoolean(::usegrad,"Use_Grad")
-              ::noisetype_id = ::win.AddEnum(::noisetype,"Type")
-                ::win.AddEnumChoice(::noisetype_id,"Add. Gaussian")
-                ::win.AddEnumChoice(::noisetype_id,"Rician (MRI)")
+              ::win.AddFloat( &::sigma,"Sigma",0.5,10)
+              ::usegrad_id = ::win.AddBoolean( &::usegrad,"Use_Grad")
+              ::noisetype2_id = ::win.AddEnum( &::noisetype,"Type")
+                ::win.AddEnumChoice(::noisetype2_id,"Add. Gaussian")
+                ::win.AddEnumChoice(::noisetype2_id,"Rician (MRI)")
 
             ::fast_param_panel = ::win.AddPage("Fast")
-              ::win.AddInt(::f,"f", 1,10)
-              ::win.AddFloat(::minweight,"Min. weight",1,100)
+              ::win.AddInt( &::f,"f", 1,10)
+              ::win.AddFloat( &::minweight,"Min. weight",1,100)
           ::win.EndBook
 
     
-        ::win.AddPage("Controls")
+        ::win.AddPage("Contr")
           ::win.BeginBoxPanel("Execution")
               ROI_id     = ::win.AddButton("Select ROI", ::GetROI)
               ::win.BeginHorizontal
-                  restart_id = ::win.AddButton("Restart", ::Restart)
-                  display_id = ::win.AddButton("Stop",    ::Stop)
+                ::win.AddButton("Restart", ::Restart)
+                ::win.AddButton("Stop",    ::Stop)
+                ::win.AddButton("Run",     ::Run)
+                ::win.AddButton("ReRun",   ::ReRun)
               ::win.EndHorizontal
-              ::it_id      = ::win.AddInt(::iterations,"Iter",1,50)
-              ::win.AddButton("Run",     ::Run)
-              ::win.AddButton("ReRun",   ::ReRun)
+              ::win.AddInt( &::iterations,"Iter",1,50)
           ::win.EndBoxPanel
   
           ::win.BeginBoxPanel("Result")
-              ::win.AddString(::result_filename,"file")
+              ::win.AddString( &::result_filename,"file")
               ::win.BeginHorizontal
-                  display_id = ::win.AddButton("Save",       ::Save)
-                  display_id = ::win.AddButton("Display",    ::Display)
+                  ::win.AddButton("Save",       ::Save)
+                  ::win.AddButton("Display",    ::Display)
               ::win.EndHorizontal
           ::win.EndBoxPanel
 
           ::win.BeginBoxPanel("Surface display")
-              ::win.AddFloat(::surf_scaling,"surf scale",0.01,10)
+              ::win.AddFloat( &::surf_scaling,"surf scale",0.01,10)
               display_surf_id = ::win.AddButton("Surfaces",    ::DisplaySurfaces)
           ::win.EndBoxPanel
       ::win.EndBook
@@ -627,7 +628,7 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
         ::win.AddButton("Close All",  ::CloseAll)
       ::win.EndHorizontal
       
-      ::win.update
+      ::win.Update(-1)
       ::win.Display
       ::FilterModeEvent
     }
@@ -651,7 +652,7 @@ if (!exists(nlm)) {
     printn "reading image"
     input = Image($1)
     nlm->image_name = "input"
-    nlm->win.update
+    nlm->win.Update(-1)
   }
 
 } else {

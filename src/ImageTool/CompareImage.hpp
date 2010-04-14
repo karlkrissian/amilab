@@ -63,7 +63,7 @@
 #ifndef _COMPARE_IMAGE_HPP
 #define _COMPARE_IMAGE_HPP
 
-#include "ParamBox.hpp"
+//#include "ParamBox.hpp"
 //#include "BarreDefil.hpp"
 #include "DessinImage.hpp"
 

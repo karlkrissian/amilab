@@ -2137,7 +2137,7 @@ void DessinImage::CreeSauveParametres()
   _param_sauve_image = new ParamBox( this, FrAn(" Nom de l'image"," Image name"));
 
   //----- Nom du fichier
-  _param_sauve_image->AjouteNomFichier( &_id_sauve_image,  &_nom_sauve_image,
+  _param_sauve_image->AddFilename( &_id_sauve_image,  &_nom_sauve_image,
                     FrAn(" Nom:"," Name:"));
   _param_sauve_image->ContraintesNomFichier( _id_sauve_image, "", ".", "*.inr*");
 
@@ -2313,7 +2313,7 @@ void DessinImage::CreeBoitesParametres()
 /* Deprecated
   _param_nom_image = new ParamBox( this, FrAn(" Nom de l'image"," Image name"));
 
-  _param_nom_image->AjouteNomFichier( &_id_nom_image,  &_nom_nouvelle_image, FrAn(" Nom:"," Name:"));
+  _param_nom_image->AddFilename( &_id_nom_image,  &_nom_nouvelle_image, FrAn(" Nom:"," Name:"));
   _param_nom_image->ContraintesNomFichier( _id_nom_image, "", ".", "*.inr*");
 
   _param_nom_image->CreeDialogue();
@@ -2322,7 +2322,7 @@ void DessinImage::CreeBoitesParametres()
   //-----
   _param_nom_fichier = new ParamBox( this, FrAn(" Nom du fichier","File name"));
 
-  _param_nom_fichier->AjouteNomFichier( &_id_nom_fichier,  &_nom_fichier, FrAn(" Nom:"," Name:"));
+  _param_nom_fichier->AddFilename( &_id_nom_fichier,  &_nom_fichier, FrAn(" Nom:"," Name:"));
   _param_nom_fichier->ContraintesNomFichier( _id_nom_fichier, "", ".", "*.fic");
 
   _param_nom_fichier->CreeDialogue();
@@ -2332,7 +2332,7 @@ void DessinImage::CreeBoitesParametres()
   //-----
   _param_nom_tc = new ParamBox( this, " Nom de la table de couleurs");
 
-  _param_nom_tc->AjouteNomFichier( &_id_nom_tc,  &_nom_tc, " Nom :");
+  _param_nom_tc->AddFilename( &_id_nom_tc,  &_nom_tc, " Nom :");
   _param_nom_tc->ContraintesNomFichier( _id_nom_tc, "", ".", "*.tc");
 
   _param_nom_tc->CreeDialogue();

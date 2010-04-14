@@ -17,7 +17,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapITK
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapAMIFluid
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapFilters
-  ${AMILAB_SOURCE_DIR}/Wrapping/WrapWXSamples
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets
   ${AMILAB_SOURCE_DIR}
   ${Boost_INCLUDE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}

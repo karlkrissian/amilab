@@ -13,10 +13,14 @@
 #ifndef _RegionGrowingTest_h_
 #define _RegionGrowingTest_h_
 
+#define NOMINMAX
+#include <limits>
+#include <windows.h>
+
 #include "inrimage.hpp"
 #include "DefineClass.hpp"
 #include <list>
-#include <limits>
+
 
 #define UNPROCESSED   0
 #define TOBEPROCESSED 1

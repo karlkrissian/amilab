@@ -75,6 +75,11 @@ if __name__ == "__main__":
             ("Hide",             "HidePanel"),
             ("update",           "Update(-1)"),
             ]
+  
+  commands_force_par=[
+            ("BeginBook",        "BeginBook()"),
+            ]
+  
   scripts=[]
   amilfile=re.compile('\S*amil$')
 
@@ -118,6 +123,13 @@ if __name__ == "__main__":
           #sys.stdout.write("("+cmd1+","+cmd2+") -> "+line)
       for cmd1,cmd2 in commands_with_or_without_par:
         res = re.subn(r"\.(\s*)"+cmd1+r"([^a-zA-Z_])",r"."+cmd2+r"\2",line)
+        if (res[1]>0):
+          line = res[0]
+          num_subs = num_subs+1
+          #sys.stdout.write("("+cmd1+","+cmd2+") -> "+line)
+      for cmd1,cmd2 in commands_force_par:
+        # $ matches the end of the string and avoids adding () where there are already present
+        res = re.subn(r"\.(\s*)"+cmd1+r"(\s*$)",r"."+cmd2+r"\2",line)
         if (res[1]>0):
           line = res[0]
           num_subs = num_subs+1

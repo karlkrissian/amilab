@@ -335,6 +335,8 @@ bool MyApp::OnInit()
   // TODO: avoid using get() here ...
   GB_main_wxFrame = mainframe;
 
+  ::wxInitAllImageHandlers();
+
   mainframe->Show(true);
   SetTopWindow(mainframe);
 //  frame->Fit();

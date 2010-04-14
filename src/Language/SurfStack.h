@@ -15,6 +15,7 @@
 
 #include <stack>
 #include "surface.hpp"
+using namespace amilab;
 
 #include "DefineClass.hpp"
 #include "amilab_messages.h"

@@ -18,12 +18,16 @@ if (!exists(GaussianFilterClass)) {
     ::auto = UCHAR(0), "Apply the filter automatically after changing the standard deviation value"
     ::autodrag = UCHAR(0), "Apply the filter automatically while moving the scale"
     
+    ::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki/doku.php"
+
+    ::html_filename = GetScriptsDir+"/BasicFilters/GaussianFilter/Doc/gaussian_filter/index.html"
+
     ::CreateGui()
   }
     
   #----------------------------
   proc ::Close() {
-    ::win.Hide
+    ::win.HidePanel
     delvars GetObjectName(::Close)
   }
   ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -41,7 +45,7 @@ if (!exists(GaussianFilterClass)) {
     eval "::input <<="+::input_name+";"
     if (::input_name=="Image") {
       ::input_name = "::input"
-      ::win.update
+      ::win.Update(-1)
     }
   }
   
@@ -88,34 +92,77 @@ if (!exists(GaussianFilterClass)) {
     ::res.save resultname
   }
   ::Save.Comments("Save the resulting image")
+
+
+  //---------------------------------------------------
+  proc ::LaunchWiki() {
+    import = &global::ami_import;
+    wx = import->WxFunctions();
+    res = wx->LaunchDefaultBrowser(::wiki_help);
+  }
+  ::LaunchWiki.Comments("Launch the corresponding wiki tutorial page on the default browser.")
+
+  //---------------------------------------------------
+  proc ::HtmlHome() {
+    ::html.LoadFile( ::html_filename)
+  }
+  ::HtmlHome.Comments("Back to the initial page.")
+
+  //---------------------------------------------------
+  proc ::HtmlBack() {
+    res = ::html.HistoryBack()
+  }
+  ::HtmlBack.Comments("Back to the previous page.")
+
+  //---------------------------------------------------
+  proc ::HtmlForward() {
+    res = ::html.HistoryForward()
+  }
+  ::HtmlForward.Comments("Go to the forward page.")
+
+
   #-----------------------------------------
-    
   proc ::CreateGui() {
     # parameters window
-    ::win = ParamWin("GaussFilter")
+    import = &global::ami_import;
+    ::win = import->ParamPanel("GaussFilter")
   
-    ::win.BeginBook
-    ::win.AddPage("Param")
+    ::win.BeginBook()
+      ::win.AddPage("Param")
+  
+        ::win.AddImageChoice( &::input_name, "Input")
+        ::sigma_id = ::win.AddFloat( &::sigma,"std_dev",0.1,10)
+        ::win.SetCallback( &::AutoFilter)
+        ::win.SetDragCallback(::sigma_id,::autodrag)
+    
+        ::win.AddInt( &::derx,"Der_order_X",0,2)
+        ::win.AddInt( &::dery,"Der_order_Y",0,2)
+        ::win.AddInt( &::derz,"Der_order_Z",0,2)
+        ::win.AddBoolean( &::auto,"Auto")
+        ::win.AddBoolean( &::autodrag,"Auto drag")
+        ::win.SetCallback( &::AutoDrag)
+        ::win.AddButton("Apply",::Filter)
+      ::win.AddPage("Help")
+        ::win.BeginHorizontal
+          ::win.AddButton("Wiki",   ::LaunchWiki)
+          ::win.AddButton("Home",   ::HtmlHome)
+          ::win.AddButton("<--",    ::HtmlBack)
+          ::win.AddButton("-->",    ::HtmlForward)
+        ::win.EndHorizontal
+        # add html widget
+        d = ::win.CurrentParent()
+        ::html = import->wxHtmlWindow(&d)
+        ::html.LoadFile( ::html_filename)
+        ::win.AddWidget(&::html,1)
 
-    ::win.AddImageChoice(::input_name, "Input")
-    ::sigma_id = ::win.AddFloat(::sigma,"std_dev",0.1,10)
-    ::win.SetCallback(::AutoFilter)
-    ::win.SetDragCallback(::sigma_id,::autodrag)
-
-    ::win.AddInt(::derx,"Der_order_X",0,2)
-    ::win.AddInt(::dery,"Der_order_Y",0,2)
-    ::win.AddInt(::derz,"Der_order_Z",0,2)
-    ::win.AddBoolean(::auto,"Auto")
-    ::win.AddBoolean(::autodrag,"Auto drag")
-    ::win.SetCallback(::AutoDrag)
-    ::win.AddButton("Apply",::Filter)
     ::win.EndBook
+
     ::win.BeginHorizontal
       ::win.AddButton("Close",          ::Close)
       ::win.AddButton("Close All",          ::CloseAll)
     ::win.EndHorizontal  
   
-    ::win.update
+    ::win.Update(-1)
     ::win.Display
   }
   

@@ -19,7 +19,6 @@
 #include "driver.h"
 #include "CoutwxString.h"
 #include "MainFrame.h"
-#include "ParamPanel.hpp"
 #include <locale.h>
 #include "fonctions.h"
 #include "func_isoline.hpp"
@@ -41,7 +40,7 @@
 #include "wrapWII.h"
 #include "wrapFilters.h"
 #include "wrapSystem.h"
-#include <cstdlib> 
+#include <cstdlib>
 
 //#include "myscan.h"
 #include "ImageDraw.hpp"
@@ -7128,7 +7127,7 @@ image:
       boost::shared_ptr<amimage> amim(new amimage());
       int dimx                    = (int)           $3;
       int dimy                    = (int)           $5;
-      WORDTYPE inr_format         = (WORDTYPE)      $7;
+      WORDTYPE inr_format         = (WORDTYPE)    (int)  $7;
       int endianness              = (int)           $9;
       boost::shared_array<char> file_format( $11);
       unsigned short first_slice  = (unsigned short)$13;
@@ -7183,7 +7182,7 @@ image:
       int dimx                    = (int)           $3;
       int dimy                    = (int)           $5;
       int dimz                    = (int)           $7;
-      WORDTYPE inr_format         = (WORDTYPE)      $9;
+      WORDTYPE inr_format         = (WORDTYPE)   (int)   $9;
       int endianness              = (int)           $11;
       boost::shared_array<char> file_format( $13);
 
@@ -7235,7 +7234,7 @@ image:
       int dimx                    = (int)           $3;
       int dimy                    = (int)           $5;
       int dimz                    = (int)           $7;
-      WORDTYPE inr_format         = (WORDTYPE)      $9;
+      WORDTYPE inr_format         = (WORDTYPE)     (int) $9;
       int vdim                    = (int)           $11;
       int endianness              = (int)           $13;
       boost::shared_array<char> file_format( $15);
@@ -11474,7 +11473,7 @@ variable:
           Vars.SetObjectContext(previous_ocontext);
     
           if  ((!GB_driver.procedure_declaration)&& newvar.get())   {
-            cout << "returning variable" << endl;
+            //cout << "returning variable" << endl;
             newvar->display();
             driver.var_stack.AddVar(newvar);
           } else {

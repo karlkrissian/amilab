@@ -69,6 +69,7 @@
 #include "inrimage.hpp"
 #include "isosurface.hpp"
 #include "surface.hpp"
+using namespace amilab;
 
 
 #include <fstream>

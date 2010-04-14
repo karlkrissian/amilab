@@ -4,7 +4,7 @@
 
 
 //----------------------------------------------------
-Viewer3D_LineParam::Viewer3D_LineParam(Viewer3D* parent): ParamBox(parent, "Line Parameters")
+Viewer3D_LineParam::Viewer3D_LineParam(Viewer3D* parent): ParamPanel(parent, "Line Parameters")
 {
   parent_class = parent;
   CreateParameters();

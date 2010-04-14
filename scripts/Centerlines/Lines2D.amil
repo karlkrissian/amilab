@@ -1,45 +1,142 @@
 
-i0 = Image($1)
-if (i0.vdim>1) {
-  i = norm(i0)
-} else {
-  i = i0
+if (!exists(Lines2D)) {
+
+Class Lines2D \
+{
+  proc ::Init() \
+  {
+    ::class_name = "global::Lines2D"
+    ::input_name   = "", "input image name"
+    ::sigma_min = 0.6, "minimal scale"
+    ::sigma_max = 4, "maximal scale"
+    ::sigma_nb  = INT(10), "number of scales"
+  }
+  
+  #-----------------------------------------------
+  proc ::load_input() {
+
+    eval "::input <<= (FLOAT)"+::input_name+";"
+    if (::input_name=="Image") {
+      ::input_name = "::input"
+      ::win.Update(-1)
+    }
+
+    ::win.Update(-1)
+    show ::input
+  }
+  ::load_input.Comments("Load input image")
+
+  proc ::Run() \
+  {
+    # force gradient to be weak?
+    
+    for n=0 to ::sigma_nb-1 {
+      # Hessian matrix
+      sigma = ::sigma_min+n/(::sigma_nb-1)*(::sigma_max-::sigma_min)
+      sigma2 = sigma*sigma
+      ixx = filter(::input,sigma,2,0,0)
+      ixy = filter(::input,sigma,1,1,0)
+      iyy = filter(::input,sigma,0,2,0)
+      
+      
+      # equation to solve: X^2-(ixx+iyy)X+ixx*iyy-ixy^2
+      B = (ixx+iyy)/2
+      C = ixx*iyy-ixy*ixy
+      
+      # X^2-2BX+C --> (X-B)^2-(B^2-C) -->  B^2-C always >0 --> B+/- sqrt(B^2-C)
+      
+      tmp = sqrt(B*B-C)
+      lambda1 = B+tmp
+      lambda2 = B-tmp
+    
+      lambda1 = lambda1*sigma2
+    
+      ng = normgrad(::input,sigma)*sigma
+      lambda1 = lambda1*exp(-(ng*ng*4/(lambda1+0.01)/(lambda1+0.01)))
+      if (!exists(lambda_max)) {
+        ::lambda_max = lambda1
+      } else {
+        ::lambda_max = max(lambda1,::lambda_max)
+      }
+    }
+    # end for
+  }
+
+  #----------------------------
+  proc ::Display() {
+    show ::input
+    if (exists(::lambda_max)) {
+      show ::lambda_max
+      ::input_draw.compare(::lambda_max_draw)
+    } else {
+      InfoDialog "The algorithm has not been run yet ..."
+    }
+  }
+
+
+  #----------------------------
+  proc ::Close() {
+    ::win.HidePanel
+    delvars GetObjectName(::Close)
+  }
+  ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    
+  #----------------------------
+  proc ::CloseAll() {
+    eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
+    ::Close
+  }
+  ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+      
+
+
+  proc ::Gui() \
+  {
+    import = &global::ami_import;
+    ::win = import->ParamPanel("LevelSets")
+    ::win.BeginBook
+      ::win.AddPage("IO")
+        ::win.BeginBoxPanel("Input Image")
+          # set the input image
+          ::win.BeginHorizontal
+            ::win.AddImageChoice( &::input_name, "")
+            ::win.AddButton("Load",::load_input)
+            #::win.AddButton("Ref",::ref_input)
+          ::win.EndHorizontal
+        ::win.EndBoxPanel
+
+      ::win.AddPage("Params")
+        ::win.BeginBoxPanel("Scales")
+          ::win.AddFloat(&::sigma_min,"min",0.1,3)
+          ::win.AddFloat(&::sigma_max,"max",0.1,10)
+          ::win.AddInt(  &::sigma_nb ,"nb",1,20)
+        ::win.EndBoxPanel()
+        ::win.AddButton("Run",::Run)
+        ::win.AddButton("Display",::Display)
+    ::win.EndBook
+      ::win.BeginHorizontal
+      ::win.AddButton("Close",          ::Close)
+      ::win.AddButton("Close All",          ::CloseAll)
+    ::win.EndHorizontal  
+
+    ::win.Update(-1)
+    ::win.Display()
+  }
+
+  ::Init()
+} 
+# end Class Lines2D
 }
 
-i = -i
+#----------------------------
+# Main
+#----------------------------
 
-sigma_min = atof($2)
-sigma_max = atof($3)
-sigma_nb  = atof($4)
+if (!exists(lines2D)) {
 
-# force gradient to be weak?
+  Lines2D lines2D
+  lines2D->Gui()
 
-for n=0 to sigma_nb-1 {
-  # Hessian matrix
-  sigma = sigma_min+n/(sigma_nb-1)*(sigma_max-sigma_min)
-  sigma2 = sigma*sigma
-  ixx = filter(i,sigma,2,0,0)
-  ixy = filter(i,sigma,1,1,0)
-  iyy = filter(i,sigma,0,2,0)
-  
-  
-  # equation to solve: X^2-(ixx+iyy)X+ixx*iyy-ixy^2
-  B = (ixx+iyy)/2
-  C = ixx*iyy-ixy*ixy
-  
-  # X^2-2BX+C --> (X-B)^2-(B^2-C) -->  B^2-C always >0 --> B+/- sqrt(B^2-C)
-  
-  tmp = sqrt(B*B-C)
-  lambda1 = B+tmp
-  lambda2 = B-tmp
-
-  lambda1 = lambda1*sigma2
-
-  ng = normgrad(i,sigma)*sigma
-  lambda1 = lambda1*exp(-(ng*ng*4/(lambda1+0.01)/(lambda1+0.01)))
-  if (!exists(lambda_max)) {
-    lambda_max = lambda1
-  } else {
-    lambda_max = max(lambda1,lambda_max)
-  }
+} else {
+  InfoDialog "The script seems to be already loaded."
 }

@@ -13,11 +13,12 @@
 #ifndef _Viewer3D_PointParam_h_
 #define _Viewer3D_PointParam_h_
 
+#include "ParamPanel.hpp"
 #include "DefineClass.hpp"
 
 class Viewer3D;
 
-class  Viewer3D_PointParam: public ParamBox
+class  Viewer3D_PointParam: public ParamPanel
 {
   DEFINE_CLASS(Viewer3D_PointParam);
 private:

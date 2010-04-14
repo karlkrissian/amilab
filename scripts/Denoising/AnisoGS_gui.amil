@@ -28,7 +28,7 @@ if (!exists(AnisoGSClass)) {
   
   #----------------------------
   proc ::Close() {
-    ::win.Hide
+    ::win.HidePanel
     delvars GetObjectName(::Close)
   }
   ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -48,7 +48,7 @@ if (!exists(AnisoGSClass)) {
       # read image using browser
       ::input <<= Image
       ::input_name = "::input"
-      ::win.update
+      ::win.Update(-1)
     } else {
       eval "::input <<="+::input_name+";"
     }
@@ -123,42 +123,42 @@ if (!exists(AnisoGSClass)) {
   proc ::CreateWindow() {
 
     # parameters window
-    ::win = ParamWin("AnisoGS")
+    import = &global::ami_import;
+    ::win = import->ParamPanel("AnisoGS")
 
-    ::win.BeginBook
-      ::win.AddPage("Param")
-        ::win.AddImageChoice(::input_name, "Input")
+    ::win.BeginBook()      ::win.AddPage("Param")
+        ::win.AddImageChoice( &::input_name, "Input")
     
-        ::win.AddFloat(::sigma,0.01,10)
-        ::win.AddFloat(::threshold,0,100)
-        ::win.AddFloat(::datacoeff,0.01,10)
-        ::win.AddInt(::niter,0,100)
-        ::win.AddBoolean(::use_zoom,"Use Zoom")
-        ::win.AddString(::result_name,"result name")
-        ::win.AddString(::result_filename,"result filename")
+        ::win.AddFloat( &::sigma,  "::sigma", 0.01,10)
+        ::win.AddFloat( &::threshold,  "::threshold", 0,100)
+        ::win.AddFloat( &::datacoeff,  "::datacoeff", 0.01,10)
+        ::win.AddInt( &::niter,  "::niter", 0,100)
+        ::win.AddBoolean( &::use_zoom,"Use Zoom")
+        ::win.AddString( &::result_name,"result name")
+        ::win.AddString( &::result_filename,"result filename")
         
-        ::win.BeginBox("Controls")
+        ::win.BeginBoxPanel("Controls")
           ::win.BeginHorizontal
             ::win.AddButton("Restart",    ::Restart)
             ::win.AddButton("Filter",     ::Filter)
             ::win.AddButton("Display",    ::Display)
             ::win.AddButton("Save",       ::Save)
           ::win.EndHorizontal
-        ::win.EndBox
+        ::win.EndBoxPanel
       ::win.AddPage("Contour Smoothing")
-        ::win.BeginBox("2D Images")
-        ::win.EndBox
-        ::win.BeginBox("3D Images")
-        ::win.EndBox
+        ::win.BeginBoxPanel("2D Images")
+        ::win.EndBoxPanel
+        ::win.BeginBoxPanel("3D Images")
+        ::win.EndBoxPanel
 
     ::win.EndBook
     ::win.BeginHorizontal
       ::win.AddButton("Close",          ::Close)
       ::win.AddButton("Close All",          ::CloseAll)
     ::win.EndHorizontal  
-    ::win.CreateWin
+    ::win.Update
     ::win.Display
-    ::win.update
+    ::win.Update(-1)
   }
   
   ::Init
@@ -180,7 +180,7 @@ if (!exists(anigsc)) {
       input_arg = Image($1)
       anisogs->input_image = "input_arg"
       anisogs->result_filename = $2
-      anisogs->win.update
+      anisogs->win.Update(-1)
   }
 } else {
 InfoDialog "The script seems to be already loaded." 

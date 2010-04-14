@@ -2,7 +2,8 @@
 #include "DefineClass.hpp"
 #include "Variable.hpp"
 
-#include "ParamBox.hpp"
+//#include "ParamBox.hpp"
+/*
 #include "ParamPanel.hpp"
 #include "DessinImage.hpp"
 #include "Viewer3D.hpp"
@@ -14,6 +15,7 @@
 #include "wrapfunction_class.h"
 #include "amilab_messages.h"
 #include "VarArray.h"
+*/
 
 #include <string>
 
@@ -23,18 +25,39 @@ extern unsigned char       GB_debug;
 
 using namespace std;
 
+// forward class declarations
+class InrImage;
+class DessinImage;
+
+namespace amilab {
+class SurfacePoly;
+}
+
+class Viewer3D;
+//class C_wrap_procedure;
+class WrapClassMember;
+//class C_wrap_imagefunction;
+//class C_wrap_varfunction;
+class AMIFunction;
+class AMIClass;
+class AMIObject;
+class AMICPPObject;
+class FloatMatrix;
+class GLTransfMatrix;
+class VarArray;
+
 #define VARTYPE_PROP(type,name,isnum) \
   template<> vartype GetVarType<type>()  { return name;     } \
-  template<> bool IsNumerical  <type>()  { return isnum; }
+  template<> bool IsNumerical  <type>()  { return isnum;    }
 
 
-VARTYPE_PROP( InrImage,             type_image,           false)
-VARTYPE_PROP( float,                type_float,           true)
-VARTYPE_PROP( int,                  type_int,             true)
+VARTYPE_PROP( InrImage,             type_image,           false);
+VARTYPE_PROP( float,                type_float,           true);
+VARTYPE_PROP( int,                  type_int,             true);
 VARTYPE_PROP( unsigned char,        type_uchar,           true)
 VARTYPE_PROP( std::string,          type_string,          false)
 VARTYPE_PROP( DessinImage,          type_imagedraw,       false)
-VARTYPE_PROP( SurfacePoly,          type_surface,         false)
+VARTYPE_PROP( amilab::SurfacePoly,          type_surface,         false)
 VARTYPE_PROP( Viewer3D,             type_surfdraw,        false)
 VARTYPE_PROP( FILE,                 type_file,            false)
 VARTYPE_PROP( C_wrap_procedure,     type_c_procedure,     false)
@@ -51,72 +74,56 @@ VARTYPE_PROP( VarArray,             type_array,           false)
 
 #undef VARTYPE_PROP
 
+
+#define VARTYPE_STRING_DOUBLE(type,val1,val2) \
+  template <> std::string Variable<type>::GetValueAsString() const { return (boost::format("%1%")%(val1)).str();} \
+  template <> double Variable<type>::GetValueAsDouble() const { return (double) (val2); } 
+
+#define VARTYPE_DEFAULT(type) \
+  template <> std::string Variable<type>::GetValueAsString() const { return (boost::format("%1%")%(#type)).str();} \
+  template <> double Variable<type>::GetValueAsDouble() const { return 0.0; } 
+
+
+VARTYPE_STRING_DOUBLE( float,                Value(),               Value())
+VARTYPE_STRING_DOUBLE( int,                  Value(),               Value())
+VARTYPE_STRING_DOUBLE( unsigned char,        (int)Value(),          Value())
+VARTYPE_STRING_DOUBLE( std::string,          Value(),               0)
+VARTYPE_DEFAULT( InrImage)
+VARTYPE_DEFAULT( DessinImage)
+VARTYPE_DEFAULT( amilab::SurfacePoly)
+VARTYPE_DEFAULT( Viewer3D)
+VARTYPE_DEFAULT( FILE)
+VARTYPE_DEFAULT( C_wrap_procedure)
+VARTYPE_DEFAULT( WrapClassMember)
+VARTYPE_DEFAULT( C_wrap_imagefunction)
+VARTYPE_DEFAULT( C_wrap_varfunction)
+VARTYPE_DEFAULT( AMIFunction)
+VARTYPE_DEFAULT( AMIClass)
+VARTYPE_DEFAULT( AMIObject)
+VARTYPE_DEFAULT( AMICPPObject)
+VARTYPE_DEFAULT( FloatMatrix)
+VARTYPE_DEFAULT( GLTransfMatrix)
+VARTYPE_DEFAULT( VarArray)
+
+#undef VARTYPE_STRING_DOUBLE
+
 //------------------------------------------------------
 //------- Variable<float>
 //------------------------------------------------------
 
-//------------------------------------------------
-template <>
-std::string Variable<float>::GetValueAsString() const
-{
-  return (boost::format("%1%")%(*this->Pointer())).str();
-}
 
-template <>
-double Variable<float>::GetValueAsDouble() const
-{
-  return (double) Value();
-}
-
-#include "Variable_float.cpp"
+//#include "Variable_float.cpp"
 
 //------------------------------------------------------
 //------- Variable<unsigned char>
 //------------------------------------------------------
 
-//------------------------------------------------
-template <>
-std::string Variable<unsigned char>::GetValueAsString() const
-{
- //  CLASS_MESSAGE("...");
- return (boost::format("%1%")%((int)Value())).str();
-}
-
-template <>
-double Variable<unsigned char>::GetValueAsDouble() const
-{
-  return (double) Value();
-}
-
-//------------------------------------------------------
-//------- Variable<int>
-//------------------------------------------------------
-
-//------------------------------------------------
-template <>
-std::string Variable<int>::GetValueAsString() const
-{
-  //CLASS_MESSAGE("...");
-  return (boost::format("%1%")%(Value())).str();
-}
-
-template <>
-double Variable<int>::GetValueAsDouble() const
-{
-  return (double) Value();
-}
 
 //------------------------------------------------------
 //------- Variable<string>
 //------------------------------------------------------
 
 
-//------------------------------------------------
-template <>
-std::string Variable<string>::GetValueAsString() const
-{
-  return (boost::format("%1%")%(*this->Pointer())).str();
-}
 
 // instantiate + operator
 /*

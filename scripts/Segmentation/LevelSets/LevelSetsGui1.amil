@@ -45,7 +45,7 @@ if (!exists(LevelSetsClass)){
       ::dt = 0.5, "Evolution time-step"
       ::T=200, "Total Evolution time"
 
-      ::NBD_method     = INT(2)     // 0:liana s, 1: fast marching 2: fast chamfer
+      ::NBD_method     = INT(2), "Narrow Band Distance computation method, if not for experimental purpose, you should keep the default value: fast chamfer."  # 0:liana s, 1: fast marching 2: fast chamfer
       ::NBD_freq       = INT(6)
 
       ::check_convergence = UCHAR(1)
@@ -80,6 +80,10 @@ if (!exists(LevelSetsClass)){
       ::result_filename_ext = ".ami.gz"
       ::resname_addtime = UCHAR(1)
       ::resname_addprob = UCHAR(1)
+
+      ::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
+
+      ::html_filename = GetScriptsDir+"/Segmentation/LevelSets/Doc/levelset_gui/index.html"
 
       ::Gui()
   }
@@ -272,7 +276,7 @@ if (!exists(LevelSetsClass)){
     pfile.printn boost_format("::T               = %1%") % ::T
 
   }
-#----------------------------
+  #----------------------------
   proc ::Close() {
     ::win.HidePanel
     delvars GetObjectName(::Close)
@@ -287,8 +291,6 @@ if (!exists(LevelSetsClass)){
   ::CloseAll.Comments("Call ::Close() method and delete the class variable")
       
   #------------------------------------
-  
-   //---------------------------------------------------
   proc ::SetVelocityField( IMAGE vel, NUM coeff ) {
   
     ::velfield = vel
@@ -546,7 +548,11 @@ if (!exists(LevelSetsClass)){
   
   //---------------------------------------------------
   proc ::ApplyDT() {
-    ::inls = vtkPropDaniel2(::inls,0,::DTmin,::DTmax)
+    if (exists(::inls)) {
+      ::inls = vtkPropDaniel2(::inls,0,::DTmin,::DTmax)
+    } else {
+      InfoDialog "No Level Set Image."
+    }
   }
   
   //---------------------------------------------------
@@ -621,6 +627,46 @@ if (!exists(LevelSetsClass)){
   }
   
   //---------------------------------------------------
+  proc ::LaunchWiki() {
+    import = &global::ami_import
+    wx1 = import->WxFunctions()
+    res = wx1->LaunchDefaultBrowser(::wiki_help)
+  }
+  ::LaunchWiki.Comments("Launch the corresponding wiki tutorial page on the default browser.")
+
+  //---------------------------------------------------
+  proc ::HtmlHome() {
+    ::html.LoadFile( ::html_filename)
+  }
+  ::HtmlHome.Comments("Back to the initial page.")
+
+  //---------------------------------------------------
+  proc ::HtmlBack() {
+    res = ::html.HistoryBack()
+  }
+  ::HtmlBack.Comments("Back to the previous page.")
+
+  //---------------------------------------------------
+  proc ::HtmlForward() {
+    res = ::html.HistoryForward()
+  }
+  ::HtmlForward.Comments("Go to the forward page.")
+
+  //---------------------------------------------------
+  proc ::InitialLevelSetEvent() {
+    ::win.EnablePanel(::initial_spheres_page , ::init_mode==0)
+    ::win.EnablePanel(::initial_image_page ,   ::init_mode==1)
+    ::win.SelectPage(::init_book,::init_mode)
+  }
+
+  //---------------------------------------------------
+  proc ::ExpansionForceEvent() {
+    ::win.EnablePanel(::intexp_page, !::use_expansion_image)
+    ::win.EnablePanel(::imexp_page,  ::use_expansion_image)
+    ::win.SelectPage(::expansion_book,::use_expansion_image)
+  }
+
+  //---------------------------------------------------
   proc ::activate_terms() {
     ::win.EnablePanel(::exp_pid,::use_expansion)
     ::win.EnablePanel(::adv_pid,::use_advection)
@@ -647,54 +693,62 @@ if (!exists(LevelSetsClass)){
           ::win.AddFloat( &::minimal_intensity,"Min. intensity",::inputmin,::inputmax)
         ::win.EndBoxPanel
 
-        ::win.BeginBoxPanel("Initial Level Set")
+        #::win.BeginBoxPanel("Initial Level Set")
           initmode_id = ::win.AddEnum( &::init_mode,"Mode")
             ::win.AddEnumChoice(initmode_id,"Manual Spheres")
             ::win.AddEnumChoice(initmode_id,"Initial image")
-  
-          ::win.BeginBoxPanel("Spheres")
-            ::win.BeginHorizontal
-              ::win.AddButton("Reset", ::Reset)
-              ::win.AddButton("Add",   ::AddSphere)
-              ::win.AddButton("Undo",  ::Undo)
-              ::win.AddButton("Backup",     ::Backup)
-            ::win.EndHorizontal
-            ::win.AddFloat( &::sphere_radius,"Radius",0.1,10.0)
-          ::win.EndBoxPanel
+          ::win.SetCallback( &::InitialLevelSetEvent)
 
-          # set the initial level set image
-          ::win.BeginBoxPanel("Initial Image")
-            ::win.AddImageChoice( &::initial_name, "")
-            ::win.BeginHorizontal
-              ::win.AddButton("Load",::load_initial)
-              ::win.AddButton("Ref",::ref_initial)
-            ::win.EndHorizontal
-          ::win.EndBoxPanel
-  
-        ::win.EndBoxPanel
+          ::init_book = ::win.BeginBook()
+            ::initial_spheres_page = ::win.AddPage("Spheres")
+              ::win.BeginHorizontal
+                ::win.AddButton("Reset", ::Reset)
+                ::win.AddButton("Add",   ::AddSphere)
+                ::win.AddButton("Undo",  ::Undo)
+                ::win.AddButton("Backup",     ::Backup)
+              ::win.EndHorizontal
+              ::win.AddFloat( &::sphere_radius,"Radius",0.1,10.0)
 
-        ::win.AddButton("Compute Intensity stats",::ComputeIntensityStats)
+            # set the initial level set image
+            ::initial_image_page =::win.AddPage("Image")
+              ::win.BeginHorizontal
+                ::win.AddImageChoice( &::initial_name, "")
+                ::win.AddButton("Load",::load_initial)
+                ::win.AddButton("Ref",::ref_initial)
+              ::win.EndHorizontal
+          ::win.EndBook()
   
-        ::win.AddInt( &::downsamplefactor,"Downsample", 1, 4)
+        #::win.EndBoxPanel
+
+  
+        ::downsample_id = ::win.AddInt( &::downsamplefactor,"Downsample", 1, 4)
+        # disable downsampling since it is not used for now
+        ::win.Enable(::downsample_id,0)
   
       ::win.AddPage("Param")
-        ::win.AddBoolean( &::use_expansion,"Expansion")
-        ::win.SetCallback( &::activate_terms)
-        ::win.AddBoolean( &::use_advection,"Advection")
-        ::win.SetCallback( &::activate_terms)
-        ::win.AddBoolean( &::use_smoothing,"Smoothing")
-        ::win.SetCallback( &::activate_terms)
+        ::win.BeginHorizontal()
+          ::win.AddBoolean( &::use_expansion,"Expan")
+          ::win.SetCallback( &::activate_terms)
+          ::win.AddBoolean( &::use_advection,"Adv")
+          ::win.SetCallback( &::activate_terms)
+          ::win.AddBoolean( &::use_smoothing,"Smooth")
+          ::win.SetCallback( &::activate_terms)
+        ::win.EndHorizontal()
         ::win.BeginBook
           ::exp_pid = ::win.AddPage("Exp")
             ::win.AddFloat( &::expansioncoeff,"Weight",0,1)
             ::win.AddBoolean( &::use_expansion_image,"Use expansion image")
-            ::win.AddImageChoice( &::expansion_image_name,"Exp. Image:")
-            ::win.BeginBoxPanel("Intensity-based force")
-              ::win.AddFloat( &::Imean,"Mean", ::inputmin,::inputmax)
-              ::win.AddFloat( &::Isd,"StandDev",0,(::inputmax-::inputmin)/2)
-              ::win.AddFloat( &::prob_threshold,"Threshold",0,1)
-              ::win.AddBoolean( &::accept_high_intensity,"Accept high intensities")
-            ::win.EndBoxPanel
+            ::win.SetCallback(&::ExpansionForceEvent)
+            ::expansion_book = ::win.BeginBook()
+              ::intexp_page = ::win.AddPage("Intensity-based")
+                ::win.AddButton("Compute stats",::ComputeIntensityStats)
+                ::win.AddFloat( &::Imean,"Mean", ::inputmin,::inputmax)
+                ::win.AddFloat( &::Isd,"StandDev",0,(::inputmax-::inputmin)/2)
+                ::win.AddFloat( &::prob_threshold,"Threshold",0,1)
+                ::win.AddBoolean( &::accept_high_intensity,"Accept high intensities")
+              ::imexp_page = ::win.AddPage("Image")
+                ::win.AddImageChoice( &::expansion_image_name,"Exp. Image:")
+            ::win.EndBook()
   
           ::adv_pid = ::win.AddPage("Adv")
             ::win.AddFloat( &::advcoeff,"Weight",0,1)
@@ -711,13 +765,6 @@ if (!exists(LevelSetsClass)){
   
         ::win.EndBook
   
-      ::win.AddPage("Band")
-        ::win.BeginBoxPanel("Re-Distancing")
-            ::DistType_id = ::win.AddEnum( &::NBD_method,"Method")
-              ::win.AddEnumChoice(::DistType_id,"Liana")
-              ::win.AddEnumChoice(::DistType_id,"Fast Marching")
-              ::win.AddEnumChoice(::DistType_id,"Fast Chamfer")
-        ::win.EndBoxPanel
 
       ::win.AddPage("Evol")
   
@@ -742,13 +789,23 @@ if (!exists(LevelSetsClass)){
           ::win.AddBoolean( &::check_convergence,"Check")
           ::win.AddInt( &::conv_freq,"Freq",5,100)
         ::win.EndBoxPanel
-      ::win.AddPage("Dist")
-        ::win.AddFloat( &::DTmin,"min",-100,0)
-        ::win.AddFloat( &::DTmax,"max",0,100)
-        ::win.AddButton("Apply",  ::ApplyDT)
+
+        ::win.BeginBoxPanel("Re-Distancing")
+            ::DistType_id = ::win.AddEnum( &::NBD_method,"Method")
+              ::win.AddEnumChoice(::DistType_id,"Liana")
+              ::win.AddEnumChoice(::DistType_id,"Fast Marching")
+              ::win.AddEnumChoice(::DistType_id,"Fast Chamfer")
+        ::win.EndBoxPanel
+
   
       ::win.AddPage("Res")
   
+        ::win.BeginBoxPanel("Recompute distance")
+          ::win.AddFloat( &::DTmin,"min",-100,0)
+          ::win.AddFloat( &::DTmax,"max",0,100)
+          ::win.AddButton("Apply",  ::ApplyDT)
+        ::win.EndBoxPanel
+
         ::win.BeginBoxPanel("Result filename")
           ::win.AddString( &::result_filename,"base name:")
           ::win.AddString( &::result_filename_ext,"extension:")
@@ -768,6 +825,19 @@ if (!exists(LevelSetsClass)){
         ::win.EndHorizontal
         ::win.EndBoxPanel
   
+      ::win.AddPage("Help")
+        ::win.BeginHorizontal
+          ::win.AddButton("Wiki",   ::LaunchWiki)
+          ::win.AddButton("Home",   ::HtmlHome)
+          ::win.AddButton("<--",    ::HtmlBack)
+          ::win.AddButton("-->",    ::HtmlForward)
+        ::win.EndHorizontal
+        # add html widget
+        d = ::win.CurrentParent()
+        ::html = import->wxHtmlWindow(&d)
+        ::html.LoadFile( ::html_filename)
+        ::win.AddWidget(&::html,1)
+
   
     ::win.EndBook
   
@@ -777,7 +847,9 @@ if (!exists(LevelSetsClass)){
     ::win.EndHorizontal  
 
     ::win.Update(-1)
-    ::win.Display
+    ::win.Display()
+    ::InitialLevelSetEvent()
+    ::ExpansionForceEvent()
   }
   ::Init
   

@@ -1,0 +1,26 @@
+\begin{thebibliography}{1}
+
+\bibitem{Osher2002}
+S.~Osher and R.~Fedkiw.
+\newblock {\em Level Set Methods and Dynamic Implicit Surfaces}.
+\newblock Springer-Verlag, New York, 2002.
+
+\bibitem{OsherParagios2003}
+S.~Osher and N.~Paragios, editors.
+\newblock {\em Geometric Level Set Methods in Imaging Vision and Graphics}.
+\newblock Springer, 2003.
+
+\bibitem{Sapiro01}
+G.~Sapiro.
+\newblock {\em Geometric Partial Differential Equations and Image Analysis}.
+\newblock Cambridge University Press, 2001.
+
+\bibitem{Sethian99book}
+J.~Sethian.
+\newblock {\em {Level Set Methods and Fast Marching Methods: Evolving
+  Interfaces in Computational Geometry, Fluid Mechanics, Computer Vision and
+  Materials Science}}.
+\newblock Cambridge University Press, 1999.
+\newblock New Edition.
+
+\end{thebibliography}

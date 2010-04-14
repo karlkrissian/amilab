@@ -125,9 +125,11 @@ typedef boost::shared_ptr<std::string>     string_ptr;
 \\
  */
 
-#include "ParamBox.hpp"
+//#include "ParamBox.hpp"
 #include <wx/scrolwin.h>
 #include <wx/toolbar.h>
+
+#include "ParamInfo.h"
 
 /*!
   \brief ParamPanel: a wxPanel to include parameters
@@ -246,14 +248,14 @@ public:
   template <class T>
   wxSizerItem* AddParam(  
       T* w,
-      int proportional  = wxP_DefaultProportion,
+      int proportional  = 0,
       int border        = wxP_DefaultBorder,
       int flag          = wxP_DefaultFlags
     );
   //
 
   //
-  wxSizerItem* AddWidget( wxWindow* w);
+  wxSizerItem* AddWidget( wxWindow* w, int proportion = 0);
   //
 
   //
@@ -377,10 +379,10 @@ public:
 //@}
 
 
-/** @name Type NomFichier */
+/** @name Type Filename */
 //@{
   ///
-  unsigned char AjouteNomFichier( 
+  unsigned char AddFilename( 
   //            ----------------
     int* id,
     string_ptr& nom,
@@ -390,6 +392,18 @@ public:
   ///
   void ContraintesNomFichier( int id, const char* defaut, const char* rep, const char* masque);
   //   ---------------------
+//@}
+
+/** @name Type Dirname */
+//@{
+  ///
+  bool AddDirname( 
+  //   ----------
+                  int* id,
+                  string_ptr& dirname,
+                  const char* label,
+                  const std::string& tt="");
+
 //@}
 
 /** @name Type Boutton */

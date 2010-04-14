@@ -14,6 +14,8 @@
 #define _Func_ReadCTALine_h
 
 #include "surface.hpp"
+using namespace amilab;
+
 #include <string>
 
 SurfacePoly* Func_ReadCTALine( std::string filename, int mode=0);

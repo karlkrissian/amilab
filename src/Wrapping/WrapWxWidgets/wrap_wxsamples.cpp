@@ -26,7 +26,7 @@ void AddWrapWXSamples()
 {
   // Create new instance of the class
   AMIObject::ptr amiobject (new AMIObject);
-  amiobject->SetName("wxsamples");
+  amiobject->SetName("wx");
 
   // Set the object context
   Variables::ptr previous_ocontext = Vars.GetObjectContext();
@@ -48,9 +48,9 @@ void AddWrapWXSamples()
  */
 void wrap_wxsamples( ParamList* p)
 {
-    char functionname[] = "wxsamples";
+    char functionname[] = "wx";
     char description[]=" \n\
-      Adds wrapping for the wxwidgets samples. \n\
+      Adds wrapping for the wxwidgets samples and functions. \n\
             ";
     char parameters[] =" \n\
             ";
@@ -128,5 +128,4 @@ void wrap_stctest( ParamList* p)
   editor->ShowLineNumbers(true);
   editor->GotoLine(line_number);
 }
-
 

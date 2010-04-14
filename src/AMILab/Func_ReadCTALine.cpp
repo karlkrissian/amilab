@@ -20,6 +20,7 @@
 
 #include "Func_ReadCTALine.h"
 #include "surface.hpp"
+using namespace amilab;
 
 
 //--------------------------------------------------------------

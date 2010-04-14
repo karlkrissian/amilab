@@ -64,7 +64,7 @@ if (!exists(AnisoNRADClass)) {
   
   #----------------------------
   proc ::Close() {
-    ::win.Hide
+    ::win.HidePanel
     delvars GetObjectName(::Close)
   }
   ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -83,7 +83,7 @@ if (!exists(AnisoNRADClass)) {
       # read image using browser
       ::input <<== Image
       ::input_name = "::input"
-      ::win.update
+      ::win.Update(-1)
     } else {
       eval "::input <<="+::input_name+";"
     }
@@ -307,27 +307,27 @@ if (!exists(AnisoNRADClass)) {
   
   proc ::CreateWindow() {
     # parameters window
-    ::win = ParamWin("NRAD")
+    import = &global::ami_import;
+    ::win = import->ParamPanel("NRAD")
 
-    ::win.BeginBook
-      ::win.AddPage("Param")
-        ::win.AddImageChoice(::input_name, "Input")
-        ::win.AddFloat(::dt,"dt",0.01,10)
-        ::win.AddFloat(::t,"T",0,100)
+    ::win.BeginBook()      ::win.AddPage("Param")
+        ::win.AddImageChoice( &::input_name, "Input")
+        ::win.AddFloat( &::dt,"dt",0.01,10)
+        ::win.AddFloat( &::t,"T",0,100)
         
-        ::win.AddInt(::neighborhood,"Neighborhood",0,4)
+        ::win.AddInt( &::neighborhood,"Neighborhood",0,4)
     
-        ::scheme_id       = ::win.AddEnum(::scheme,"Scheme")
+        ::scheme_id       = ::win.AddEnum( &::scheme,"Scheme")
           ::win.AddEnumChoice(::scheme_id,"Explicit")
           ::win.AddEnumChoice(::scheme_id,"Semi-implicit")
         
-        ::eq_type_id      = ::win.AddEnum(::equation_type)
+        ::eq_type_id      = ::win.AddEnum( &::equation_type)
           ::win.AddEnumChoice(::eq_type_id,"Scalar")
           ::win.AddEnumChoice(::eq_type_id,"Matrix")
-        ::win.SetCallback(::new_eq_type)
+        ::win.SetCallback( &::new_eq_type)
     
         ::scal_boxid = ::win.BeginBoxPanel("Scalar diffusion parameters")
-          ::scalar_mode_id = ::win.AddEnum(::scalar_mode,"Scalar mode")
+          ::scalar_mode_id = ::win.AddEnum( &::scalar_mode,"Scalar mode")
             ::win.AddEnumChoice(::scalar_mode_id,"Lee")
             ::win.AddEnumChoice(::scalar_mode_id,"Kuan")
             ::win.AddEnumChoice(::scalar_mode_id,"Additive")
@@ -336,23 +336,23 @@ if (!exists(AnisoNRADClass)) {
         ::win.EndBoxPanel
 
         ::mat_boxid = ::win.BeginBoxPanel("Matrix diffusion parameters")
-          ::sigma_id = ::win.AddFloat(::sigma,"sigma",0.01,10)
-          ::matrix_mode_id = ::win.AddEnum(::matrix_mode,"Matrix mode")
+          ::sigma_id = ::win.AddFloat( &::sigma,"sigma",0.01,10)
+          ::matrix_mode_id = ::win.AddEnum( &::matrix_mode,"Matrix mode")
             ::win.AddEnumChoice(::matrix_mode_id,"Grad")
             ::win.AddEnumChoice(::matrix_mode_id,"MRI")
             ::win.AddEnumChoice(::matrix_mode_id,"MRI new")
   
-          ::localstruct_id = ::win.AddEnum(::local_struct,"Local Struct.")
+          ::localstruct_id = ::win.AddEnum( &::local_struct,"Local Struct.")
             ::win.AddEnumChoice(::localstruct_id,"Grad & Curv. Dir.")
             ::win.AddEnumChoice(::localstruct_id,"Struct. Tensor")
       
-          ::eigenmode_id = ::win.AddEnum(::eigen_mode,"Eigen mode")
+          ::eigenmode_id = ::win.AddEnum( &::eigen_mode,"Eigen mode")
             ::win.AddEnumChoice(::eigenmode_id,"Sum")
             ::win.AddEnumChoice(::eigenmode_id,"Max")
         ::win.EndBoxPanel
         
         ::win.AddPage("Controls")
-          ::win.AddBoolean(::run_on_roi,"Run on ROI")
+          ::win.AddBoolean( &::run_on_roi,"Run on ROI")
           ::win.BeginHorizontal
             ::win.AddButton("Reload input", ::ReloadInput)
             ::win.AddButton("Select ROI", ::GetRoi)
@@ -371,9 +371,9 @@ if (!exists(AnisoNRADClass)) {
       ::win.AddButton("Close All",          ::CloseAll)
     ::win.EndHorizontal  
     
-    ::win.CreateWin
+    ::win.Update
     ::win.Display
-    ::win.update
+    ::win.Update(-1)
     ::new_eq_type
   }
   
@@ -397,7 +397,7 @@ if (!exists(aniNRAD)) {
     printn "reading image"
     input_arg = Image($1)
     ::input_image = "input_arg"
-    ::win.update
+    ::win.Update(-1)
     #NRAD_CreateParams( input)
     #NRAD_CreateWindow()
   }

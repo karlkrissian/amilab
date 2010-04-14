@@ -14,10 +14,11 @@
 #define _Viewer3D_LineParam_h_
 
 #include "DefineClass.hpp"
+#include "ParamPanel.hpp"
 
 class Viewer3D;
 
-class  Viewer3D_LineParam: public ParamBox
+class  Viewer3D_LineParam: public ParamPanel
 {
   DEFINE_CLASS(Viewer3D_LineParam);
 private:

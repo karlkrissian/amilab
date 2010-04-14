@@ -64,7 +64,7 @@ bool get_generic_var_param( BasicVariable::ptr& var, ParamList*p, int& num)
 /**
  * Function used to parse an integer in a list of parameters
  */
-bool get_int_param(int& arg, ParamList*p, int& num)
+bool get_int_param(int& arg, ParamList*p, int& num, bool required)
 {
   // Get an integer param from a float value ...
   // copy to start with default value
@@ -75,7 +75,9 @@ bool get_int_param(int& arg, ParamList*p, int& num)
   }
   else 
   {
-    FILE_ERROR("Could not get an integer parameter from a floating point value");
+    if (required) {
+      FILE_ERROR("Could not get an integer parameter from a floating point value");
+    }
     return false;
   }
 }

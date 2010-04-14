@@ -36,6 +36,7 @@
 
 #include "style.hpp"
 #include "surface.hpp"
+using namespace amilab;
 
 
 //----------------------------------------------------------------------

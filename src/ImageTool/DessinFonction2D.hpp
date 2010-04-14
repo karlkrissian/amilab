@@ -57,7 +57,7 @@
 #ifndef _DessinFonction2D_HPP
 #define _DessinFonction2D_HPP
 
-#include "ParamBox.hpp"
+//#include "ParamBox.hpp"
 #include "palette.hpp"
 #include "FenetreDessin.hpp"
 #include "inrimage.hpp"

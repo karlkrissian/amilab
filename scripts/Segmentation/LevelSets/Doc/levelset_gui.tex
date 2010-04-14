@@ -1,0 +1,92 @@
+\documentclass{article}
+\usepackage{html}
+\usepackage[latin1]{inputenc}
+
+\begin{document}
+
+% Title Page
+\title{Level Set Segmentation Gui}
+\author{Karl Krissian}
+\thanks{
+Grupo de Imagen, Tecnolog\'ia M\'edica y Televisi\'on (GIMET)\\
+Universidad de Las Palmas de Gran Canaria\\
+email: krissian@dis.ulpgc.es
+}
+
+
+\maketitle
+
+\begin{abstract}
+This script provides a user interface to segment structures in 2D and 3D images based on an implementation of the level set active contours.
+\end{abstract}
+
+
+\section{Quick Start}
+
+The different steps for obtaining the segmentation are:
+\begin{enumerate}
+  \item Select and load the input image,
+  \item Select the initial level set either from spheres or from the zero-crossing of an image,
+  \item Compute statistics of the intensity statistic within the initial contour,
+  \item optionally tune the equation parameters,
+  \item evolve the equation,
+  \item display the resulting surface.
+\end{enumerate}
+
+
+\section{Equation}
+A introduction to Level Set Equations for image processing can be found in 
+\cite{Sethian99book,Sapiro01,Osher2002,OsherParagios2003}.
+
+The level equation in a very general form is written as:
+\begin{equation}\label{eq:GenLS}
+%\htmlimage{scale=3}
+    \left\{ \begin{array}{lcl} u(0) &=& u_0 \\%
+    \frac{\partial u}{\partial t} &=& F \| \nabla u \| \end{array} \right.
+\end{equation}
+
+where $u$ is the evolving image and $F$ is the force that drives the evolution.
+
+The force $F$ is decomposed in three terms:
+\begin{equation} \label{eq:LS_terms}
+    F = F_s + F_a + F_b 
+\end{equation}
+
+where:
+\begin{itemize}
+   \item $F_s$ is the smoothing term
+   \item $F_a$ is the advection term
+   \item $F_b$ is the balloon term 
+\end{itemize}
+
+
+\section{Interface tabs}
+
+The interface is divided into several pages.
+
+\subsection{\emph{Init} page}
+
+\subsubsection{Initial Image}
+You can choose the initialization parameters.
+First of all, you need to choose an initial image to be segmented, and load it with the {\bf Load} button.
+The {\bf Min. Intensity} parameter allows to set a minimal intensity level for the initial image, it can be useful to prevent strong contours in the background intensities that could interfere with the structures to be segmented.
+
+
+\subsubsection{Initial Level Set}
+
+\subsubsection{Intensity statistics}
+
+\subsection{\emph{Param} page}
+
+\subsection{\emph{Evol} page}
+
+\subsection{\emph{Res} page}
+
+\subsection{\emph{Help} page}
+This help.
+
+\bibliographystyle{abbrv}
+\bibliography{levelset_gui}
+
+
+\end{document}          

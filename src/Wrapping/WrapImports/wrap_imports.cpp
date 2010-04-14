@@ -23,9 +23,13 @@
 #include "wrapAMIFluid.h"
 #include "wrapFilters.h"
 #include "wrap_wxsamples.h"
+#include "wrap_wxfunctions.h"
 #include "wrap_parampanel.h"
 #include "wrap_varlist.h"
 #include "wrap_varvector.h"
+
+#include "wrap_wxWindow.h"
+#include "wrap_wxHtmlWindow.h"
 
 extern VarContexts  Vars;
 
@@ -49,11 +53,15 @@ void AddWrapImports()
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"VarVector", wrap_VarVector);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"ParamPanel",wrap_ParamPanel);
 
-  ADDOBJECTVAR_NAME(C_wrap_procedure,"System",    wrap_System);
-  ADDOBJECTVAR_NAME(C_wrap_procedure,"ITK",       wrap_ITK);
-  ADDOBJECTVAR_NAME(C_wrap_procedure,"AMIFluid",  wrap_AMIFluid);
-  ADDOBJECTVAR_NAME(C_wrap_procedure,"Filters",   wrap_Filters);
-  ADDOBJECTVAR_NAME(C_wrap_procedure,"wxsamples", wrap_wxsamples);
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxWindow",    wrap_wxWindow);
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxHtmlWindow",wrap_wxHtmlWindow);
+
+  ADDOBJECTVAR_NAME(C_wrap_procedure,  "System",    wrap_System);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,  "ITK",       wrap_ITK);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,  "AMIFluid",  wrap_AMIFluid);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,  "Filters",   wrap_Filters);
+  ADDOBJECTVAR_NAME(C_wrap_procedure,  "WxSamples",        wrap_wxsamples);
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"WxFunctions",        wrap_wxfunctions);
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);

@@ -121,7 +121,7 @@
 #define basename(s) s
 #endif
 
-#include "ParamBox.hpp"
+//#include "ParamBox.hpp"
 //#include "boutton.hpp"
 #include "palette.hpp"
 #include "FenetreDessin.hpp"

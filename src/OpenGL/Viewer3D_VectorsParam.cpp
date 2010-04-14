@@ -45,7 +45,7 @@ void Viewer3D_VectorsParam::CreateParameters()
   BeginBox("First Vector Fied");
     /*
       //-------------- Vector Field image
-      AjouteNomFichier( &_id_vect1image, 
+      AddFilename( &_id_vect1image, 
             &mc->_GLParam._vect1_image_name, 
             "Vect. Field");
     
@@ -122,7 +122,7 @@ void Viewer3D_VectorsParam::CreateParameters()
   /*
   
     //-------------- Vector Field image
-    AjouteNomFichier( &_id_vect2image, 
+    AddFilename( &_id_vect2image, 
               &mc->_GLParam._vect2_image_name, 
               "Vect. Field");
   

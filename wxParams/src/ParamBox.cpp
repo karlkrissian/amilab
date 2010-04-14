@@ -45,6 +45,9 @@
 #include "wxParamTypes.hpp"
 #include "wxColorParameter.h"
 #include "wxNumericParameter.h"
+#include "wxBooleanParameter.h"
+#include "wxStringParameter.h"
+#include "wxFilenameParameter.h"
 
 #include <iostream>
 using namespace std;
@@ -137,7 +140,8 @@ void ParamBox::AddPage(const std::string& panel_name)
   wxBoxSizer* panelsizer;
 
   if (!GetBookCtrl()) {
-    cerr << "AddPage without any Book ! " << endl;
+    cerr << "AddPage without any Book ! "
+          << panel_name << endl;
     return;
   }
 
@@ -269,7 +273,7 @@ unsigned char ParamBox::AddBoolean( int* id, unsigned char* param,
   wxBooleanParameter* wxbp = new wxBooleanParameter(
       CurrentParent(), param, libelle);
 
-  ParamInfo pi(  TYPE_PARAMETRE_BOOLEEN,
+  ParamInfo pi(  TYPE_PARAMETER_BOOLEEN,
                  wxbp,
                  AddWidget(wxbp));
 
@@ -290,7 +294,7 @@ void ParamBox::BooleanDefault( int id, unsigned char defaut)
     return;
   } // end if
 
-  if (_tab_param[id].GetType() != TYPE_PARAMETRE_BOOLEEN) {
+  if (_tab_param[id].GetType() != TYPE_PARAMETER_BOOLEEN) {
     printf("ParamBox::BooleanDefault \t Erreur, identificateur non valide\n");
     return;
   } // end if
@@ -322,7 +326,7 @@ int ParamBox::AddInteger( int* param,
       CurrentParent(), param, libelle);
   if (tt!="") wxi->SetToolTip(GetwxStr(tt.c_str()));
 
-  ParamInfo pi( TYPE_PARAMETRE_ENTIER,
+  ParamInfo pi( TYPE_PARAMETER_ENTIER,
                 wxi,
                 AddWidget(wxi));
   _tab_param.push_back(pi);
@@ -332,7 +336,7 @@ int ParamBox::AddInteger( int* param,
   wxIntegerParameter* wxi = new wxIntegerParameter(
       CurrentParent(), param, libelle);
 
-  ParamInfo pi( TYPE_PARAMETRE_ENTIER,
+  ParamInfo pi( TYPE_PARAMETER_ENTIER,
                 wxi,
                 AddWidget(wxi));
   _tab_param.push_back(pi);
@@ -351,7 +355,7 @@ void ParamBox::IntegerConstraints( int id, int min, int max, int defaut)
     return;
   } // end if
 
-  if (_tab_param[id].GetType() != TYPE_PARAMETRE_ENTIER) {
+  if (_tab_param[id].GetType() != TYPE_PARAMETER_ENTIER) {
     printf("ParamBox::IntegerConstraints \t Erreur, identificateur non valide\n");
     return;
   } // end if
@@ -370,7 +374,7 @@ void ParamBox::ParamIntGetLimits( int id, int& min, int& max)
     return;
   } // end if
 
-  if (_tab_param[id].GetType() != TYPE_PARAMETRE_ENTIER) {
+  if (_tab_param[id].GetType() != TYPE_PARAMETER_ENTIER) {
     printf("ParamBox::ParamIntGetLimits \t Erreur, identificateur non valide\n");
     return;
   } // end if
@@ -405,7 +409,7 @@ int  ParamBox::AddFloat(
 
   wxi->SetDecimate(precision);
 
-  ParamInfo pi( TYPE_PARAMETRE_REEL,
+  ParamInfo pi( TYPE_PARAMETER_REEL,
                 wxi,
                 AddWidget(wxi));
   _tab_param.push_back(pi);
@@ -415,7 +419,7 @@ int  ParamBox::AddFloat(
       CurrentParent(), param, libelle);
   wxi->SetDecimate(precision);
 
-  ParamInfo pi( TYPE_PARAMETRE_REEL,
+  ParamInfo pi( TYPE_PARAMETER_REEL,
                 wxi,
                 AddWidget(wxi));
   _tab_param.push_back(pi);
@@ -438,7 +442,7 @@ void ParamBox::FloatConstraints(
     return;
   } // end if
 
-  if (_tab_param[id].GetType() != TYPE_PARAMETRE_REEL) {
+  if (_tab_param[id].GetType() != TYPE_PARAMETER_REEL) {
     printf("ParamBox::FloatConstraints \t Erreur, identificateur non valide\n");
     return;
   } // end if
@@ -456,7 +460,7 @@ void ParamBox::ParamFloatGetLimits( int id, float& min, float& max)
     return;
   } // end if
 
-  if (_tab_param[id].GetType() != TYPE_PARAMETRE_REEL) {
+  if (_tab_param[id].GetType() != TYPE_PARAMETER_REEL) {
     printf("ParamBox::ParamFloatGetLimits \t Erreur, identificateur non valide\n");
     return;
   } // end if
@@ -474,7 +478,7 @@ void ParamBox::ParamShowSlider( int id, bool show)
     return;
   } // end if
 
-  if (_tab_param[id].GetType() != TYPE_PARAMETRE_REEL) {
+  if (_tab_param[id].GetType() != TYPE_PARAMETER_REEL) {
     printf("ParamBox::ParamFloatGetLimits \t Erreur, identificateur non valide\n");
     return;
   } // end if
@@ -493,7 +497,7 @@ unsigned char ParamBox::AddEnumeration( int* id, int taille,
   wxEnumerationParameter* wxe = new wxEnumerationParameter(
       CurrentParent(), param, libelle);
 
-  ParamInfo pi( TYPE_PARAMETRE_ENUMERATION,
+  ParamInfo pi( TYPE_PARAMETER_ENUMERATION,
                 wxe,
                 AddWidget(wxe));
   _tab_param.push_back(pi);
@@ -512,7 +516,7 @@ unsigned char ParamBox::AddEnumeration( int* id,
   wxEnumerationParameter* wxe = new wxEnumerationParameter(
       CurrentParent(), param, libelle);
 
-  ParamInfo pi( TYPE_PARAMETRE_ENUMERATION,
+  ParamInfo pi( TYPE_PARAMETER_ENUMERATION,
                 wxe,
                 AddWidget(wxe));
   _tab_param.push_back(pi);
@@ -534,7 +538,7 @@ unsigned char ParamBox::AddEnumChoice( int id,
     return false;
   } // end if
 
-  if (_tab_param[id].GetType() != TYPE_PARAMETRE_ENUMERATION) {
+  if (_tab_param[id].GetType() != TYPE_PARAMETER_ENUMERATION) {
     printf("ParamBox::AddEnumChoice \t Erreur, identificateur non valide\n");
     return false;
   } // end if
@@ -563,7 +567,7 @@ unsigned char ParamBox::AddEnumChoice( int id,
     return false;
   } // end if
 
-  if (_tab_param[id].GetType() != TYPE_PARAMETRE_ENUMERATION) {
+  if (_tab_param[id].GetType() != TYPE_PARAMETER_ENUMERATION) {
     printf("ParamBox::AddEnumChoice \t Erreur, identificateur non valide\n");
     return false;
   } // end if
@@ -590,7 +594,7 @@ void ParamBox::EnumerationDefaut( int id, int id_defaut)
     return;
   } // end if
 
-  if (_tab_param[id].GetType() != TYPE_PARAMETRE_ENUMERATION) {
+  if (_tab_param[id].GetType() != TYPE_PARAMETER_ENUMERATION) {
     printf("ParamBox::ContraintesEnumeration \t Erreur, identificateur non valide\n");
     return;
   } // end if
@@ -612,7 +616,7 @@ unsigned char ParamBox::AddButton( int* id,  const char* libelle,
   wxButtonParameter* wxbp = new wxButtonParameter(
       CurrentParent(), libelle, callback, data);
 
-  ParamInfo pi( TYPE_PARAMETRE_BOUTTON,
+  ParamInfo pi( TYPE_PARAMETER_BOUTTON,
                 wxbp,
                 AddWidget(wxbp));
   _tab_param.push_back(pi);
@@ -632,7 +636,7 @@ unsigned char ParamBox::AddPixmapButton( int* id,  const char* libelle,
   wxBitmap bm(pixmap_string);
   wxBitmapButtonParameter* wxbp = new wxBitmapButtonParameter(CurrentParent(), libelle, bm, callback, data);
 
-  ParamInfo pi( TYPE_PARAMETRE_BOUTTON,
+  ParamInfo pi( TYPE_PARAMETER_BOUTTON,
                 wxbp,
                 AddWidget(wxbp));
   _tab_param.push_back(pi);
@@ -649,7 +653,7 @@ unsigned char ParamBox::AddColor( int* id,
 {
   wxColorParameter* wxcp = new wxColorParameter(CurrentParent(), libelle, couleur);
 
-  ParamInfo pi( TYPE_PARAMETRE_COULEUR,
+  ParamInfo pi( TYPE_PARAMETER_COULEUR,
                 wxcp,
                 AddWidget(wxcp));
   _tab_param.push_back(pi);
@@ -665,7 +669,7 @@ unsigned char ParamBox::AddLabel( int* id,  const char* libelle,
 {
   wxLabelParameter* wxl = new wxLabelParameter(CurrentParent(), libelle, contenu, type);
 
-  ParamInfo pi( TYPE_PARAMETRE_LABEL,
+  ParamInfo pi( TYPE_PARAMETER_LABEL,
                 wxl,
                 AddWidget(wxl));
   _tab_param.push_back(pi);
@@ -739,7 +743,7 @@ unsigned char ParamBox::AjouteChaine( int* id, string_ptr param,
   wxStringParameter* wsp;
   wsp= new wxStringParameter(CurrentParent(),param,libelle);
 
-  ParamInfo pi( TYPE_PARAMETRE_CHAINE,
+  ParamInfo pi( TYPE_PARAMETER_CHAINE,
                 wsp,
                 AddWidget(wsp));
   _tab_param.push_back(pi);
@@ -758,7 +762,7 @@ void ParamBox::ContraintesChaine( int id, char* defaut)
     return;
   } // end if
 
-  if (_tab_param[id].GetType() != TYPE_PARAMETRE_CHAINE) {
+  if (_tab_param[id].GetType() != TYPE_PARAMETER_CHAINE) {
     printf("ParamBox::ContraintesChaine \t Erreur, identificateur non valide\n");
     return;
   } // end if
@@ -767,20 +771,20 @@ void ParamBox::ContraintesChaine( int id, char* defaut)
 
 
 //------------------------------------------------------------------------------
-unsigned char ParamBox::AjouteNomFichier( int* id, string_ptr& param, 
+unsigned char ParamBox::AddFilename( int* id, string_ptr& param, 
 //                   ----------------
                 const char* libelle)
 {
 
   wxFilenameParameter* wxi = new wxFilenameParameter(CurrentParent(), param, libelle);
 
-  ParamInfo pi( TYPE_PARAMETRE_NOM_FICHIER,
+  ParamInfo pi( TYPE_PARAMETER_ANY,
                 wxi,
                 AddWidget(wxi));
   _tab_param.push_back(pi);
   *id = _tab_param.size()-1;
   return( true);
-} // AjouteNomFichier()
+} // AddFilename()
 
 
 //------------------------------------------------------------------------------
@@ -797,15 +801,15 @@ void ParamBox::ContraintesNomFichier( int id, const char* defaut,
     return;
   } // end if
 
-  if (_tab_param[id].GetType() != TYPE_PARAMETRE_NOM_FICHIER) {
+  wxFilenameParameter* fnp = dynamic_cast<wxFilenameParameter*>
+                                  (_tab_param[id].GetWidget());
+  if (fnp==NULL) {
     printf("ParamBox::ContraintesNomFichier \t Erreur, identificateur non valide\n");
     return;
   } // end if
 
-  
-  ((wxFilenameParameter*)_tab_param[id].GetWidget())->SetDefaultPath(defaut);
-  ((wxFilenameParameter*)_tab_param[id].GetWidget())->SetWildcard(mask);
-  
+  fnp->SetDefaultPath(defaut);
+  fnp->SetWildcard(mask);
 
 } // ContraintesNomFichier()
 

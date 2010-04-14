@@ -168,7 +168,7 @@ ENDIF(AMI_USE_ITK)
 FIND_PACKAGE ( AMIFluid )
 #FIND_PACKAGE ( wxParams )
 FIND_PACKAGE ( OpticFlow )
-FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc )
+FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc net xml qa xrc richtext media)
 
 # put OpenGL before VTK to find the correct library of the system
 FIND_PACKAGE ( OpenGL )
@@ -422,7 +422,7 @@ SET(amilab_ownlibs
   WrapInterface
   WrapBasicTypes
   WrapCommon
-  WrapWXSamples
+  WrapWxWidgets
   AMILab
   AMImage
   Contours
@@ -492,7 +492,8 @@ TARGET_LINK_LIBRARIES( ${AMILAB_BIN}
 
 # is it needed or already included by boost?
 IF(AMI_USE_ZLIB)
-#  TARGET_LINK_LIBRARIES( ${AMILAB_BIN} ${ZLIB_LIBRARIES})
+  # need it to compile on MacOS
+  TARGET_LINK_LIBRARIES( ${AMILAB_BIN} ${ZLIB_LIBRARIES})
 ENDIF(AMI_USE_ZLIB)
 
 IF(AMI_USE_BZIP2)
