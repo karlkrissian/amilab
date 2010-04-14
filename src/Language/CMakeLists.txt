@@ -82,6 +82,7 @@ SET(Language_HDRS
     VarContexts.tpp
     BasicVariable.h
     Variable.hpp
+    Variable_float.h
     Variables.hpp
     VarArray.h
 )

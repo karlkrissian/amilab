@@ -405,4 +405,6 @@ class GLTransfMatrix;
 class VarArray;
 */
 
+#include "Variable_float.h"
+
 #endif

@@ -13,9 +13,13 @@
 #ifndef _RegionGrowingTest_h_
 #define _RegionGrowingTest_h_
 
-#define NOMINMAX
-#include <limits>
-#include <windows.h>
+#if defined(WIN32)
+  #define NOMINMAX
+  #include <limits>
+  #include <windows.h>
+#else
+  #include <limits>
+#endif
 
 #include "inrimage.hpp"
 #include "DefineClass.hpp"
