@@ -2,7 +2,7 @@
 #include "amilab_messages.h"
 #include "DefineClass.hpp"
 #include "Variable.hpp"
-
+#include <math.h>
 
 #define NEW_SMARTPTR(type, var, value) \
   boost::shared_ptr<type> var(new type(value));
@@ -218,3 +218,25 @@ template<> BasicVariable::ptr Variable<float>::operator ||(const BasicVariable& 
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
+
+// Mathematical functions
+#define VAR_IMPL_FUNC(type,fname,func) \
+template<> BasicVariable::ptr Variable<type>::m_##fname() \
+{ \
+    RETURN_VARPTR(float, func(Value())); \
+}
+
+VAR_IMPL_FUNC(float,  sin,  sin)
+VAR_IMPL_FUNC(float,  cos,  cos)
+VAR_IMPL_FUNC(float,  tan,  tan)
+VAR_IMPL_FUNC(float,  asin, asin)
+VAR_IMPL_FUNC(float,  acos, acos)
+VAR_IMPL_FUNC(float,  atan, atan)
+VAR_IMPL_FUNC(float,  fabs, fabs)
+VAR_IMPL_FUNC(float,  round,round)
+VAR_IMPL_FUNC(float,  floor,floor)
+VAR_IMPL_FUNC(float,  exp,  exp)
+VAR_IMPL_FUNC(float,  log,  1.0/log(10.0)*log)
+VAR_IMPL_FUNC(float,  ln,   log)
+VAR_IMPL_FUNC(float,  norm, fabs)
+VAR_IMPL_FUNC(float,  sqrt, sqrt)

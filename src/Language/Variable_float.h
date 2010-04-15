@@ -83,5 +83,24 @@ template<> BasicVariable::ptr Variable<float>::operator &&(const BasicVariable& 
 
 template<> BasicVariable::ptr Variable<float>::operator ||(const BasicVariable& b);
 
+// Mathematical functions
+#define VAR_DECL_FUNC(type,fname) \
+template<> BasicVariable::ptr Variable<type>::m_##fname();
+
+VAR_DECL_FUNC(float,sin)
+VAR_DECL_FUNC(float,cos)
+VAR_DECL_FUNC(float,tan)
+VAR_DECL_FUNC(float,asin)
+VAR_DECL_FUNC(float,acos)
+VAR_DECL_FUNC(float,atan)
+VAR_DECL_FUNC(float,fabs)
+VAR_DECL_FUNC(float,round)
+VAR_DECL_FUNC(float,floor)
+VAR_DECL_FUNC(float,exp)
+VAR_DECL_FUNC(float,log)
+VAR_DECL_FUNC(float,ln)
+VAR_DECL_FUNC(float,norm)
+VAR_DECL_FUNC(float,sqrt)
+
 #endif 
 // _Variable_float_h_

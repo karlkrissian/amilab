@@ -10169,19 +10169,75 @@ prefix_var:
   }
   | T_OP_PAR basic_type T_CL_PAR postfix_var
   | SIN    postfix_var 
+  {
+    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar(var->m_sin());
+  }
   | COS    postfix_var 
+  {
+    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar(var->m_cos());
+  }
   | SQRT   postfix_var
+  {
+    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar(var->m_sqrt());
+  }
   | ABS    postfix_var
+  {
+    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar(var->m_fabs());
+  }
   | ROUND  postfix_var
+  {
+    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar(var->m_round());
+  }
   | FLOOR  postfix_var
+  {
+    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar(var->m_floor());
+  }
   | TAN    postfix_var
+  {
+    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar(var->m_tan());
+  }
   | ASIN   postfix_var
+  {
+    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar(var->m_asin());
+  }
   | ACOS   postfix_var
+  {
+    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar(var->m_acos());
+  }
   | ATAN   postfix_var
+  {
+    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar(var->m_atan());
+  }
   | EXP    postfix_var
+  {
+    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar(var->m_exp());
+  }
   | LOG    postfix_var
+  {
+    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar(var->m_log());
+  }
   | LN     postfix_var
+  {
+    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar(var->m_ln());
+  }
   | NORM   postfix_var
+  {
+    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar(var->m_norm());
+  }
   ;
 
 

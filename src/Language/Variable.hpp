@@ -372,6 +372,31 @@ public:
   //@{
   //@}
 
+#define VAR_FUNC(func) \
+  BasicVariable::ptr m_##func() \
+  { std::cout << get_name() << " " << __func__ << " not defined." << std::endl; \
+    return this->NewReference(); }
+
+  /** @name Mathematical functions
+   *  Mathematical functions.
+   */
+  //@{
+    VAR_FUNC(sin)
+    VAR_FUNC(cos)
+    VAR_FUNC(tan)
+    VAR_FUNC(asin)
+    VAR_FUNC(acos)
+    VAR_FUNC(atan)
+    VAR_FUNC(fabs)
+    VAR_FUNC(round)
+    VAR_FUNC(floor)
+    VAR_FUNC(exp)
+    VAR_FUNC(log)
+    VAR_FUNC(ln)
+    VAR_FUNC(norm)
+    VAR_FUNC(sqrt)
+  //@}
+
 }; // class Variable
 
 template<class T>  

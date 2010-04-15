@@ -254,6 +254,32 @@ public:
   //@}
 
 
+#define BASICVAR_FUNC(func) \
+  virtual BasicVariable::ptr m_##func() \
+  { std::cout << get_name() << " " << __func__ << " not defined." << std::endl; \
+    return this->NewReference(); }
+
+  /** @name Mathematical functions
+   *  Mathematical functions.
+   */
+  //@{
+    BASICVAR_FUNC(sin)
+    BASICVAR_FUNC(cos)
+    BASICVAR_FUNC(tan)
+    BASICVAR_FUNC(asin)
+    BASICVAR_FUNC(acos)
+    BASICVAR_FUNC(atan)
+    BASICVAR_FUNC(fabs)
+    BASICVAR_FUNC(round)
+    BASICVAR_FUNC(floor)
+    BASICVAR_FUNC(exp)
+    BASICVAR_FUNC(log)
+    BASICVAR_FUNC(ln)
+    BASICVAR_FUNC(sqrt)
+    BASICVAR_FUNC(norm)
+  //@}
+
+
 }; // class BasicVariable
 
 
