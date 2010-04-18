@@ -279,6 +279,14 @@ public:
     BASICVAR_FUNC(norm)
   //@}
 
+  /**
+   * Cast to standard predefined types
+   * @param type of type WORDTYPE initially defined for image pixel types
+   * @return the new variable after the cast
+   */
+  virtual BasicVariable::ptr BasicCast(const int& type) = 0;
+
+  virtual BasicVariable::ptr TernaryCondition(const BasicVariable::ptr& v1, const BasicVariable::ptr&v2) = 0;
 
 }; // class BasicVariable
 

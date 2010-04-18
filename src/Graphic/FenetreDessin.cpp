@@ -76,7 +76,9 @@ FenetreDessin::FenetreDessin(
             int hauteur, int largeur, int type):
       wxFrame( parent, -1, 
       wxString::FromAscii((char*)RemovePath(titre.c_str())),
-      wxPoint(50,50), wxSize(largeur,hauteur), wxDEFAULT_FRAME_STYLE | wxFRAME_FLOAT_ON_PARENT )
+      wxPoint(50,50), wxSize(largeur,hauteur), wxDEFAULT_FRAME_STYLE 
+//| wxFRAME_FLOAT_ON_PARENT 
+      )
 {
   #ifdef WIN32
       this->SetIcon(wxIcon(amilab_logo_new_32x32_alpha_xpm));
@@ -117,6 +119,7 @@ FenetreDessin::FenetreDessin(
 
   Si GB_debug AlorsFait printf("Fin  FenetreDessin() \n");
 
+  this->Raise();
 } // Constructor FenetreDessin()
 
 
@@ -805,6 +808,7 @@ void FenetreDessin::OnClose(wxCloseEvent& event)
         |wxICON_INFORMATION
         | wxSTAY_ON_TOP 
         );
+       //dialog.RequestUserAttention();
 
         switch ( dialog.ShowModal() )
         {

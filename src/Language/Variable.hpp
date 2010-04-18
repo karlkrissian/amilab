@@ -397,12 +397,43 @@ public:
     VAR_FUNC(sqrt)
   //@}
 
+
+  BasicVariable::ptr BasicCast(const int& type) 
+  {
+    std::cout << get_name() << " " << __func__ << " not defined." << std::endl; 
+    return this->NewReference(); 
+  }
+
+
+  BasicVariable::ptr TernaryCondition(const BasicVariable::ptr& v1, const BasicVariable::ptr&v2) 
+  {
+    std::cout << get_name() << " " << __func__ << " not defined." << std::endl; 
+    return this->NewReference(); 
+  }
+
 }; // class Variable
 
 template<class T>  
 std::ostream& operator<<(std::ostream& o, const Variable<T>& v);
 
+/*
+/// Variable Cast Operator Class
 
+class CastVariableBase
+{
+  virtual BasicVariable::ptr operator()( const BasicVariable::ptr& varin) = 0;
+};
+
+template<class T, class U>
+class CastVariable: public CastVariableBase
+{
+  BasicVariable::ptr operator()( const BasicVariable::ptr& varin)
+  { 
+    std::cout << "Cast operation not defined ... :(" << std::endl;
+    return varin->NewReference(); 
+  }
+};
+*/
 
 #include "Variable.tpp"
 

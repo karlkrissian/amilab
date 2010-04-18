@@ -219,6 +219,10 @@ void CB_update_imagelist( void* imagelist_gui);
   Variable<type>::ptr newvar(driver.var_stack.GetLastVar<type>()); \
   boost::shared_ptr<type> newval(newvar->Pointer());
 
+#define ADD_VARSTACK_FLOAT(newval) \
+    Variable<float>::ptr new_var(new Variable<float>(float_ptr(new float(newval)))); \
+    driver.var_stack.AddVar(new_var);
+
 
 #define UNARYOP_EXPR(operator,val,res)           \
   res=operator(val);
@@ -443,7 +447,7 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_LT
 %token T_MULT
 %token T_DIV
-%token T_FACT
+%token T_NOT
 %token T_ADD
 %token T_SUB
 %token T_MOD
@@ -829,6 +833,11 @@ void CB_update_imagelist( void* imagelist_gui);
 %token FUNCTION
 %token T_eval
 
+%token T_tx T_ty T_tz
+%token T_trx T_try T_trz
+%token T_vx T_vy T_vz
+%token T_vdim T_inc T_val
+
 %token T_exists
 %token T_FileExists
 %token T_slice
@@ -894,23 +903,10 @@ void CB_update_imagelist( void* imagelist_gui);
 %type <astring>        expr_string
 %type <ablock>         ABLOCK
 %type <ablock>         instr_block
-%type <adouble>         primary_expr
-%type <adouble>         postfix_expr
-%type <adouble>         unary_expr
-%type <adouble>         cast_expr
-%type <adouble>         multiplicative_expr
-%type <adouble>         additive_expr
-%type <adouble>         shift_expr
-%type <adouble>         relational_expr
-%type <adouble>         equality_expr
-%type <adouble>         and_expr
-%type <adouble>         exclusive_or_expr
-%type <adouble>         inclusive_or_expr
-%type <adouble>         logical_or_expr
-%type <adouble>         logical_and_expr
-%type <adouble>         conditional_expr
-%type <adouble>         assignment_expr
 %type <adouble>         expr
+%type <adouble>         multiplicative_expr
+%type <adouble>         shift_expr
+%type <adouble>         prefix_expr
 %type <adouble>         NUMBER
 %type <aint>           command
 %type <paramlist>      param_list
@@ -2096,6 +2092,7 @@ command:
               param = di->GetParam();
               param->_MAJ.MAJCoupes();
               di->Paint();
+              di->Raise();
             }
             else
             {
@@ -3372,6 +3369,92 @@ command:
           GET_VARSTACK_VALUE(DessinImage, imdraw);
 
           imdraw->SetVolRenOpacity( im.get());
+        }
+        | var_image T_POINT TInit
+        {
+          /**
+          Description:
+            Init the image buffer to the first voxel or pixel:
+            at coordinates (0,0,0).
+    
+          See also:
+                  inc val
+    
+          Example(s):
+    
+          i.init
+          for x=0 to i.tx-1 {
+            print "value at x = "; print x; print ": ";
+            print i.val; print "\n";
+            i.inc
+          }
+          **/
+          GET_VARSTACK_VALUE(InrImage, im);
+          im->InitBuffer();
+        }
+        | var_image T_POINT T_info
+        {
+            /**
+              Description:
+                Prints the image information
+            **/
+            GET_VARSTACK_VAR_VAL(InrImage, varim, im);
+            std::string tmp_string;
+            tmp_string = (boost::format(" %s: format=%s  dim=(%d,%d,%d)x%d  vox=(%f,%f,%f) \
+      translation =(%f,%f,%f) \n")
+                % varim->Name()
+                % im->FormatName().c_str()
+                % im->_tx
+                % im->_ty
+                % im->_tz
+                % im->GetVDim()
+                % im->_size_x
+                % im->_size_y
+                % im->_size_z
+                % im->_translation_x
+                % im->_translation_y
+                % im->_translation_z).str();
+            driver.res_print(tmp_string);
+        }
+        | VAR_AMI_OBJECT  T_info
+        {
+          /**
+            Description:
+              Prints the object information
+          **/
+          GET_VARSTACK_VAR_VAL(AMIObject,varamio,o);
+          
+          if (o.get()) {
+            cout << "var   name = " << varamio->Name() <<endl;
+            if (o->GetClass().get()) {
+              cout << "class name = " << o->GetClass()->GetName() <<endl;
+            }
+            o->GetContext()->display();
+          }
+    /*      std::string tmp_string;
+          tmp_string = (boost::format("Object '%1%' instance of class '%2% \n")
+              % $1->Name() % o->GetClass()->GetName() ).str();
+          driver.res_print(tmp_string);
+          o->GetContext()->display();
+    */
+        }
+        | var_surface T_POINT T_info
+        {
+          GET_VARSTACK_VAR_VAL(SurfacePoly,var,s);
+    
+          std::string tmp_string;
+          tmp_string = (boost::format(" %s: %d points %d lines %d polygons  \n")
+            % var->Name()
+            % s->GetNumberOfPoints()
+            % s->GetNumberOfLines()
+            % s->GetNumberOfPolys ()
+            ).str();
+          driver.res_print(tmp_string);
+          tmp_string = (boost::format(" limits X:[%4.2f %4.2f] Y:[%4.2f %4.2f]  Z:[%4.2f %4.2f]  \n")
+            % s->_xmin % s->_xmax
+            % s->_ymin % s->_ymax
+            % s->_zmin % s->_zmax).str();
+          driver.res_print(tmp_string);
         }
         | var_image T_POINT T_initvalue T_OP_PAR expr T_CL_PAR
         {
@@ -4723,6 +4806,7 @@ command:
           Viewer3D_ptr sdraw (varsurfd->Pointer());
           sdraw->Paint();
           sdraw->Update();
+          sdraw->Raise();
           // process all pending events ...
           while (GB_wxApp->Pending()) {
             if (GB_verbose) printf("Dispatching event on GB_wxApp \n");
@@ -5936,15 +6020,19 @@ instr_block: begin_block
 begin_block: ;
 end_block: ;
 
-primary_expr: 
+
+float_variable:
     NUMBER
+    {
+      ADD_VARSTACK_FLOAT($1)
+    }
     | T_argc
     {
     /**
     Description:
       returns the number of arguments in the command line
     **/
-      $$=GB_argc-GB_num_arg_parsed;
+      ADD_VARSTACK_FLOAT(GB_argc-GB_num_arg_parsed)
     }
     | T_LineNumber
     {
@@ -5952,7 +6040,7 @@ primary_expr:
     Description:
       Line number in the current script
     **/
-      $$=driver.yyiplineno;
+      ADD_VARSTACK_FLOAT(driver.yyiplineno)
     }
     | CONST_PI
     {
@@ -5961,34 +6049,29 @@ primary_expr:
         the constant Pi is set to
          3.14159265358979323846
       **/
-      $$= 3.14159265358979323846;
+      ADD_VARSTACK_FLOAT(3.14159265358979323846)
     }
     | VAR_FLOAT
-    {
-      GET_VARSTACK_VALUE(float,n);
-      $$ = (double) *n.get();
-    }
     | VAR_INT
     {
+      /**
+      Description:
+        Temporary solution: convert int variable to float variable
+      **/
       GET_VARSTACK_VALUE(int,n);
-      $$ = (double) *n.get();
+      ADD_VARSTACK_FLOAT((double) *n.get())
     }
     | VAR_UCHAR
     {
+      /**
+      Description:
+        Temporary solution: convert unsigned char variable to float variable
+      **/
       GET_VARSTACK_VALUE(unsigned char,n);
-      $$ = (double) *n.get();
+      ADD_VARSTACK_FLOAT((double) *n.get())
     }
-    | T_OP_PAR expr T_CL_PAR
+    | var_image T_OP_PAR expr T_CL_PAR
     {
-      $$=$2;
-      fflush(stdout);
-    }
-    ;
-
-postfix_expr
-        : primary_expr
-        | var_image T_OP_PAR expr T_CL_PAR
-        {
         /**
         Parameters:
         (1) input_image
@@ -5998,13 +6081,13 @@ postfix_expr
         returns the image value at pixel (x,y=0,z=0).
 
         return:
-        float value
+        float variable
         **/
       GET_VARSTACK_VALUE(InrImage, im);
-      $$=(*im)((int) $3,0);
+      ADD_VARSTACK_FLOAT((*im)((int) $3,0))
     }
-        | var_image T_OP_PAR expr T_COMMA expr  T_CL_PAR
-        {
+    | var_image T_OP_PAR expr T_COMMA expr  T_CL_PAR
+    {
         /**
         Parameters:
         (1) input_image
@@ -6015,10 +6098,10 @@ postfix_expr
         returns the image value at pixel (x,y,z=0) by default
 
         return:
-        float value
+        float variable
         **/
       GET_VARSTACK_VALUE(InrImage, im);
-      $$=(*im)((int) $3,(int) ( $5));
+      ADD_VARSTACK_FLOAT((*im)((int) $3,(int) ( $5)));
     }
     | var_image T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
     {
@@ -6031,9 +6114,10 @@ postfix_expr
           the position value are rounded to the closest integer
       **/
       GET_VARSTACK_VALUE(InrImage, im);
-      $$=(*im)((int) round($3),
+      float val=(*im)((int) round($3),
           (int) round( $5), 
           (int) round($7));
+      ADD_VARSTACK_FLOAT(val);
     }
     | var_image T_POINT T_lininterp T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
     {
@@ -6046,10 +6130,11 @@ postfix_expr
           the position using linear interpolation
       **/
       GET_VARSTACK_VALUE(InrImage, im);
-      $$=im->InterpLinIntensite(
+      float val=im->InterpLinIntensite(
           $5,
           $7, 
           $9);
+      ADD_VARSTACK_FLOAT(val);
     }
     | var_image T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
     {
@@ -6059,14 +6144,16 @@ postfix_expr
       same as image(expr,expr,expr;expr)
       **/
       GET_VARSTACK_VALUE(InrImage, im);
+      float val = 0;
       Si im->CoordOK((int) $3, (int) $5, (int) $7)
           Et ((int) $9 >=0) Et ((int)$9 <im->GetVDim()) Alors
 
-        $$=(*im)((int) $3,(int) $5, (int) $7,
+        val=(*im)((int) $3,(int) $5, (int) $7,
                     (int) $9 );
       Sinon
         driver.err_print("var_image(expr,expr,expr,expr) \t err coord \n");
-          FinSi
+      FinSi
+      ADD_VARSTACK_FLOAT(val);
     }
     | var_image T_OP_PAR expr T_COMMA expr T_COMMA expr T_SEMICOLON expr T_CL_PAR
     {
@@ -6075,14 +6162,16 @@ postfix_expr
       get image component value at a given 3D voxel position.
       **/
       GET_VARSTACK_VALUE(InrImage, im);
+      float val = 0;
       Si im->CoordOK((int) $3, (int) $5, (int) $7)
           Et ((int) $9 >=0) Et ((int)$9 <im->GetVDim()) Alors
 
-        $$=(*im)((int) $3,(int) $5, (int) $7,
+        val=(*im)((int) $3,(int) $5, (int) $7,
                       (int) $9 );
       Sinon
         driver.err_print("var_image(expr,expr,expr;expr) \t err coord \n");
       FinSi
+      ADD_VARSTACK_FLOAT(val);
     }
     | var_image T_OP_PAR expr  T_COMMA expr T_SEMICOLON expr T_CL_PAR
     {
@@ -6091,12 +6180,14 @@ postfix_expr
       get image component value at a given 2D  position. ( z component set to 0)
       **/
       GET_VARSTACK_VALUE(InrImage, im);
+      float val = 0;
       Si (im->CoordOK((int) $3,   (int $5),   0  )
         Et ((int) $7 >=0) Et ((int)$7 <im->GetVDim())) Alors
-        $$=(*im)((int) $3,(int) $5,0, (int) $7 );
+        val=(*im)((int) $3,(int) $5,0, (int) $7 );
       Sinon
         driver.err_print("var_image(expr,expr;expr) \t err coord \n");
-          FinSi
+      FinSi
+      ADD_VARSTACK_FLOAT(val);
     }
     | var_image T_OP_PAR expr  T_SEMICOLON expr T_CL_PAR
     {
@@ -6105,185 +6196,116 @@ postfix_expr
       get image component value at a given 1D  position. (y and z components set to 0)
       **/
       GET_VARSTACK_VALUE(InrImage, im);
+      float val = 0;
       Si im->CoordOK((int) $3,   0,   0  )
         Et ((int) $5 >=0) Et ((int)$5 <3) Alors
-        $$=(*im)((int) $3,0,0, (int) $5 );
+        val=(*im)((int) $3,0,0, (int) $5 );
       Sinon
         driver.err_print("var_image(expr;expr) \t err coord \n");
-          FinSi
+      FinSi
+      ADD_VARSTACK_FLOAT(val);
     }
-    | var_image T_POINT TInit
-    {
-      /**
-      Description:
-      Init the image buffer to the first voxel or pixel:
-      at coordinates (0,0,0).
-
-      See also:
-              inc val
-
-      Example(s):
-
-      i.init
-      for x=0 to i.tx-1 {
-        print "value at x = "; print x; print ": ";
-        print i.val; print "\n";
-        i.inc
-      }
-      **/
-      GET_VARSTACK_VALUE(InrImage, im);
-      im->InitBuffer();
-    }
-    | var_image T_POINT identifier
+    | var_image T_POINT T_tx
     {
       GET_VARSTACK_VAR_VAL(InrImage,varim, im);
-      IdentifierInfo::ptr ident($3);
-      if (strcmp(ident->GetName().c_str(),"tx")==0) {
-        $$=im->_tx;
-      }
-      else
-      if (strcmp(ident->GetName().c_str(),"ty")==0) {
-        $$=im->_ty;
-      }
-      else
-      if (strcmp(ident->GetName().c_str(),"tz")==0) {
-        $$=im->_tz;
-      }
-      else
-      if (strcmp(ident->GetName().c_str(),"trx")==0) {
-        $$=im->_translation_x;
-      }
-      else
-      if (strcmp(ident->GetName().c_str(),"vdim")==0) {
-        $$=im->GetVDim();
-      }
-      else
-      if (strcmp(ident->GetName().c_str(),"try")==0) {
-        $$=im->_translation_y;
-      }
-      else
-      if (strcmp(ident->GetName().c_str(),"trz")==0) {
-        $$=im->_translation_z;
-      }
-      else
-      if (strcmp(ident->GetName().c_str(),"vx")==0) {
-        $$=im->_size_x;
-      }
-      else
-      if (strcmp(ident->GetName().c_str(),"vy")==0) {
-        $$=im->_size_y;
-      }
-      else
-      if (strcmp(ident->GetName().c_str(),"vz")==0) {
-        $$=im->_size_z;
-      }
-      else
-      if (strcmp(ident->GetName().c_str(),"inc")==0) {
-        (im)->IncBuffer();
-      }
-      else
-      if (strcmp(ident->GetName().c_str(),"val")==0) {
-        $$=(im)->ValeurBuffer();
-      }
-      else
-        {
-          char tmp_string[255];
-          sprintf(tmp_string," %s.%s identifier not recognized \n",
-              varim->Name().c_str(), ident->GetName().c_str());
-          strcat(tmp_string," known identifiers {tx, ty, tz, vdim, trx, try, trz, vx, vy, vz, init, inc, val, info} \n");
-          driver.err_print(tmp_string);
-        }
-
-      }
-      | var_image T_POINT T_info
-      {
-        /**
-          Description:
-            Prints the image information
-        **/
-        GET_VARSTACK_VAR_VAL(InrImage, varim, im);
-        std::string tmp_string;
-        tmp_string = (boost::format(" %s: format=%s  dim=(%d,%d,%d)x%d  vox=(%f,%f,%f) \
-  translation =(%f,%f,%f) \n")
-            % varim->Name()
-            % im->FormatName().c_str()
-            % im->_tx
-            % im->_ty
-            % im->_tz
-            % im->GetVDim()
-            % im->_size_x
-            % im->_size_y
-            % im->_size_z
-            % im->_translation_x
-            % im->_translation_y
-            % im->_translation_z).str();
-        driver.res_print(tmp_string);
+      float val = im->DimX();
+      ADD_VARSTACK_FLOAT(val);
     }
-    | VAR_AMI_OBJECT  T_info
+    | var_image T_POINT T_ty
     {
-      /**
-        Description:
-          Prints the object information
-      **/
-      GET_VARSTACK_VAR_VAL(AMIObject,varamio,o);
-      
-      if (o.get()) {
-        cout << "var   name = " << varamio->Name() <<endl;
-        if (o->GetClass().get()) {
-          cout << "class name = " << o->GetClass()->GetName() <<endl;
-        }
-        o->GetContext()->display();
-      }
-/*      std::string tmp_string;
-      tmp_string = (boost::format("Object '%1%' instance of class '%2% \n")
-          % $1->Name() % o->GetClass()->GetName() ).str();
-      driver.res_print(tmp_string);
-      o->GetContext()->display();
-*/
+      GET_VARSTACK_VAR_VAL(InrImage,varim, im);
+      float val = im->DimY();
+      ADD_VARSTACK_FLOAT(val);
     }
-    | var_surface T_POINT T_info
+    | var_image T_POINT T_tz
     {
-      GET_VARSTACK_VAR_VAL(SurfacePoly,var,s);
-
-      std::string tmp_string;
-      tmp_string = (boost::format(" %s: %d points %d lines %d polygons  \n")
-        % var->Name()
-        % s->GetNumberOfPoints()
-        % s->GetNumberOfLines()
-        % s->GetNumberOfPolys ()
-        ).str();
-      driver.res_print(tmp_string);
-      tmp_string = (boost::format(" limits X:[%4.2f %4.2f] Y:[%4.2f %4.2f]  Z:[%4.2f %4.2f]  \n")
-        % s->_xmin % s->_xmax
-        % s->_ymin % s->_ymax
-        % s->_zmin % s->_zmax).str();
-      driver.res_print(tmp_string);
+      GET_VARSTACK_VAR_VAL(InrImage,varim, im);
+      float val = im->DimZ();
+      ADD_VARSTACK_FLOAT(val);
+    }
+    | var_image T_POINT T_trx
+    {
+      GET_VARSTACK_VAR_VAL(InrImage,varim, im);
+      float val = im->TrX();
+      ADD_VARSTACK_FLOAT(val);
+    }
+    | var_image T_POINT T_try
+    {
+      GET_VARSTACK_VAR_VAL(InrImage,varim, im);
+      float val = im->TrY();
+      ADD_VARSTACK_FLOAT(val);
+    }
+    | var_image T_POINT T_trz
+    {
+      GET_VARSTACK_VAR_VAL(InrImage,varim, im);
+      float val = im->TrZ();
+      ADD_VARSTACK_FLOAT(val);
+    }
+    | var_image T_POINT T_vx
+    {
+      GET_VARSTACK_VAR_VAL(InrImage,varim, im);
+      float val = im->VoxSizeX();
+      ADD_VARSTACK_FLOAT(val);
+    }
+    | var_image T_POINT T_vy
+    {
+      GET_VARSTACK_VAR_VAL(InrImage,varim, im);
+      float val = im->VoxSizeY();
+      ADD_VARSTACK_FLOAT(val);
+    }
+    | var_image T_POINT T_vz
+    {
+      GET_VARSTACK_VAR_VAL(InrImage,varim, im);
+      float val = im->VoxSizeZ();
+      ADD_VARSTACK_FLOAT(val);
+    }
+    | var_image T_POINT T_vdim
+    {
+      GET_VARSTACK_VAR_VAL(InrImage,varim, im);
+      float val = im->GetVDim();
+      ADD_VARSTACK_FLOAT(val);
+    }
+    | var_image T_POINT T_inc
+    {
+      GET_VARSTACK_VAR_VAL(InrImage,varim, im);
+      float val = im->IncBuffer();
+      ADD_VARSTACK_FLOAT(val);
+    }
+    | var_image T_POINT T_val
+    {
+      GET_VARSTACK_VAR_VAL(InrImage,varim, im);
+      float val = im->ValeurBuffer();
+      ADD_VARSTACK_FLOAT(val);
     }
     |
     var_surface T_POINT T_NbPoints
     {
       GET_VARSTACK_VALUE(SurfacePoly,s);
-      $$ = s->GetNumberOfPoints();
+      float val = s->GetNumberOfPoints();
+      ADD_VARSTACK_FLOAT(val);
     }
     |
     var_surface T_POINT T_NbPolys
     {
       GET_VARSTACK_VALUE(SurfacePoly,s);
-      $$ = s->GetNumberOfPolys();
+      float val = s->GetNumberOfPolys();
+      ADD_VARSTACK_FLOAT(val);
     }
     |
     T_SNR T_OP_PAR var_image  T_COMMA var_image T_CL_PAR
     {
       Variable<InrImage>::ptr  varim2(driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim1(driver.var_stack.GetLastVar<InrImage>());
-      $$=Func_SNR(varim1->Pointer().get(),
+      float val=Func_SNR(varim1->Pointer().get(),
                   varim2->Pointer().get());
+      ADD_VARSTACK_FLOAT(val);
     }
     |
     T_eccentricity T_OP_PAR var_image T_CL_PAR
     {
       GET_VARSTACK_VALUE(InrImage, im);
-      $$=Func_eccentricity(im.get());
+      float val=Func_eccentricity(im.get());
+      ADD_VARSTACK_FLOAT(val);
     }
     |
     T_isoarea2D T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
@@ -6309,9 +6331,10 @@ postfix_expr
       v2.Init( 0.0, 1.0, 0.0);
       point.Init( cx,cy,0);
 
-      $$=compute_area->Aire( 0, point, v1, v2,
+      float val=compute_area->Aire( 0, point, v1, v2,
                   surf_inf, surf_sup, surf_interp);
 
+      ADD_VARSTACK_FLOAT(val);
       delete compute_area;
 
     }
@@ -6320,7 +6343,8 @@ postfix_expr
     {
 
       GET_VARSTACK_VALUE(InrImage, im);
-      $$=Func_ComputePositiveArea( im.get() );
+      float val=Func_ComputePositiveArea( im.get() );
+      ADD_VARSTACK_FLOAT(val);
     }
     |
     T_posarea T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
@@ -6331,7 +6355,8 @@ postfix_expr
       val[1] = $5;
       val[2] = $7;
       val[3] = $9;
-      $$=Func_PositiveArea(val);
+      float res=Func_PositiveArea(val);
+      ADD_VARSTACK_FLOAT(res);
     }
     |
     T_COUNT T_OP_PAR expr_image  T_CL_PAR
@@ -6350,7 +6375,8 @@ postfix_expr
 
     **/
       InrImage::ptr im  (driver.im_stack.GetLastImage());
-      $$=Func_count( im.get() );
+      float val=Func_count( im.get() );
+      ADD_VARSTACK_FLOAT(val);
     }
     |
     T_mean T_OP_PAR expr_image  T_CL_PAR
@@ -6369,7 +6395,8 @@ postfix_expr
 
         **/
       InrImage::ptr im  (driver.im_stack.GetLastImage());
-      $$=Func_mean( im.get());
+      float val=Func_mean( im.get());
+      ADD_VARSTACK_FLOAT(val);
     }
     |
     T_MAX T_OP_PAR expr_image  T_CL_PAR
@@ -6388,7 +6415,8 @@ postfix_expr
 
         **/
       InrImage::ptr im  (driver.im_stack.GetLastImage());
-      $$=Func_max( im.get(),NULL);
+      float val=Func_max( im.get(),NULL);
+      ADD_VARSTACK_FLOAT(val);
     }
     |
     T_argmax T_OP_PAR expr_image  T_CL_PAR
@@ -6407,7 +6435,8 @@ postfix_expr
 
         **/
       InrImage::ptr im  (driver.im_stack.GetLastImage());
-      $$=Func_argmax( im.get());
+      float val=Func_argmax( im.get());
+      ADD_VARSTACK_FLOAT(val);
     }
     |
     T_MIN T_OP_PAR expr_image  T_CL_PAR
@@ -6426,7 +6455,8 @@ postfix_expr
 
       **/
       InrImage::ptr im  (driver.im_stack.GetLastImage());
-      $$=Func_min( im.get(),NULL);
+      float val=Func_min( im.get(),NULL);
+      ADD_VARSTACK_FLOAT(val);
     }
     |
     T_MEDIAN T_OP_PAR expr_image  T_CL_PAR
@@ -6444,12 +6474,13 @@ postfix_expr
               min, max, mean, count
 
       **/
-        InrImage::ptr im  (driver.im_stack.GetLastImage());
-        $$=Func_med( im.get(),0.5,NULL);
-      }
-      |
-      T_MAX T_OP_BR expr_image T_CL_BR T_OP_PAR expr_image  T_CL_PAR
-      {
+      InrImage::ptr im  (driver.im_stack.GetLastImage());
+      float val=Func_med( im.get(),0.5,NULL);
+      ADD_VARSTACK_FLOAT(val);
+    }
+    |
+    T_MAX T_OP_BR expr_image T_CL_BR T_OP_PAR expr_image  T_CL_PAR
+    {
         /**
              Description:
              returns the maximal value of an image in a region of
@@ -6466,13 +6497,14 @@ postfix_expr
                 min, max, mean, median, count
 
         **/
-          InrImage::ptr im  (driver.im_stack.GetLastImage());
-          InrImage::ptr mask  (driver.im_stack.GetLastImage());
-          $$=Func_max( im.get(),mask.get());
-        }
-        |
-        T_MIN T_OP_BR expr_image T_CL_BR T_OP_PAR var_image  T_CL_PAR
-        {
+      InrImage::ptr im  (driver.im_stack.GetLastImage());
+      InrImage::ptr mask  (driver.im_stack.GetLastImage());
+      float val=Func_max( im.get(),mask.get());
+      ADD_VARSTACK_FLOAT(val);
+    }
+    |
+    T_MIN T_OP_BR expr_image T_CL_BR T_OP_PAR var_image  T_CL_PAR
+    {
         /**
              Description:
              returns the minimal value of an image in a region of
@@ -6489,13 +6521,14 @@ postfix_expr
                 min, max, mean, median, count
 
         **/
-          GET_VARSTACK_VALUE(InrImage, im);
-          InrImage::ptr mask  (driver.im_stack.GetLastImage());
-          $$=Func_min( im.get(),mask.get());
-        }
-        |
-        T_MEDIAN T_OP_BR expr_image T_CL_BR T_OP_PAR var_image  T_CL_PAR
-        {
+      GET_VARSTACK_VALUE(InrImage, im);
+      InrImage::ptr mask  (driver.im_stack.GetLastImage());
+      float val=Func_min( im.get(),mask.get());
+      ADD_VARSTACK_FLOAT(val);
+    }
+    |
+    T_MEDIAN T_OP_BR expr_image T_CL_BR T_OP_PAR var_image  T_CL_PAR
+    {
         /**
              Description:
              returns the median value of an image in a region of
@@ -6512,20 +6545,22 @@ postfix_expr
                 min, max, mean, median, count
 
         **/
-          GET_VARSTACK_VALUE(InrImage, im);
-          InrImage::ptr mask ( driver.im_stack.GetLastImage());
-          $$=Func_med( im.get(),0.5,mask.get());
-        }
-        |
-        T_MEDIAN T_OP_BR expr_image T_CL_BR T_OP_PAR var_image  T_COMMA expr T_CL_PAR
-        {
-          GET_VARSTACK_VALUE(InrImage, im);
-          InrImage::ptr mask( driver.im_stack.GetLastImage());
-          $$=Func_med( im.get(),(float) $8,mask.get());
-        }
-        |
-        T_mean T_OP_BR expr_image T_CL_BR T_OP_PAR expr_image  T_CL_PAR
-        {
+      GET_VARSTACK_VALUE(InrImage, im);
+      InrImage::ptr mask ( driver.im_stack.GetLastImage());
+      float val=Func_med( im.get(),0.5,mask.get());
+      ADD_VARSTACK_FLOAT(val);
+    }
+    |
+    T_MEDIAN T_OP_BR expr_image T_CL_BR T_OP_PAR var_image  T_COMMA expr T_CL_PAR
+    {
+      GET_VARSTACK_VALUE(InrImage, im);
+      InrImage::ptr mask( driver.im_stack.GetLastImage());
+      float val=Func_med( im.get(),(float) $8,mask.get());
+      ADD_VARSTACK_FLOAT(val);
+    }
+    |
+    T_mean T_OP_BR expr_image T_CL_BR T_OP_PAR expr_image  T_CL_PAR
+    {
         /**
              Description:
              returns the average value of an image in a region of
@@ -6544,12 +6579,12 @@ postfix_expr
         **/
       InrImage::ptr input  (driver.im_stack.GetLastImage());
       InrImage::ptr mask  (driver.im_stack.GetLastImage());
-
-          $$=Func_mean( input.get(),mask.get());
-        }
-        |
-        T_mean T_OP_PAR var_image T_COMMA expr_image T_CL_PAR
-        {
+      float val=Func_mean( input.get(),mask.get());
+      ADD_VARSTACK_FLOAT(val);
+    }
+    |
+    T_mean T_OP_PAR var_image T_COMMA expr_image T_CL_PAR
+    {
         /**
              Description:
              returns the maximal value of an image in a region of
@@ -6566,16 +6601,16 @@ postfix_expr
                 min, max, mean, median, count
 
         **/
-          GET_VARSTACK_VALUE(InrImage, im);
-          InrImage::ptr mask (driver.im_stack.GetLastImage());
-
-          $$=Func_mean( im.get(), mask.get());
+      GET_VARSTACK_VALUE(InrImage, im);
+      InrImage::ptr mask (driver.im_stack.GetLastImage());
+      float val=Func_mean( im.get(), mask.get());
+      ADD_VARSTACK_FLOAT(val);
     }
     |  T_atof T_OP_PAR expr_string T_CL_PAR
     {
-//    setlocale(LC_NUMERIC,"C");
       setlocale(LC_NUMERIC, "C");
-      $$=atof($3);
+      float val=atof($3);
+      ADD_VARSTACK_FLOAT(val);
       delete [] $3;
     }
     |
@@ -6587,7 +6622,8 @@ postfix_expr
 
       draw = DessinImage::ptr(varimd->Pointer());
       param = draw->GetParam();
-      $$=param->_Zoom._xmin;
+      float val=param->_Zoom._xmin;
+      ADD_VARSTACK_FLOAT(val);
     }
     |
     VAR_IMAGEDRAW T_POINT T_GetXmax
@@ -6598,7 +6634,8 @@ postfix_expr
 
       draw = DessinImage::ptr(varimd->Pointer());
       param = draw->GetParam();
-      $$=param->_Zoom._xmax;
+      float val=param->_Zoom._xmax;
+      ADD_VARSTACK_FLOAT(val);
     }
     |
     VAR_IMAGEDRAW T_POINT T_GetYmin
@@ -6609,7 +6646,8 @@ postfix_expr
 
       draw = DessinImage::ptr(varimd->Pointer());
       param = draw->GetParam();
-      $$=param->_Zoom._ymin;
+      float val=param->_Zoom._ymin;
+      ADD_VARSTACK_FLOAT(val);
     }
     |
     VAR_IMAGEDRAW T_POINT T_GetYmax
@@ -6620,7 +6658,8 @@ postfix_expr
 
       draw = DessinImage::ptr(varimd->Pointer());
       param = draw->GetParam();
-      $$=param->_Zoom._ymax;
+      float val=param->_Zoom._ymax;
+      ADD_VARSTACK_FLOAT(val);
     }
     |
     VAR_IMAGEDRAW T_POINT T_GetZmin
@@ -6631,7 +6670,8 @@ postfix_expr
 
       draw = DessinImage::ptr(varimd->Pointer());
       param = draw->GetParam();
-      $$=param->_Zoom._zmin;
+      float val=param->_Zoom._zmin;
+      ADD_VARSTACK_FLOAT(val);
     }
     |
     VAR_IMAGEDRAW T_POINT T_GetZmax
@@ -6642,7 +6682,8 @@ postfix_expr
 
       draw = DessinImage::ptr(varimd->Pointer());
       param = draw->GetParam();
-      $$=param->_Zoom._zmax;
+      float val=param->_Zoom._zmax;
+      ADD_VARSTACK_FLOAT(val);
     }
     |
     VAR_IMAGEDRAW T_POINT T_GetXPos
@@ -6653,7 +6694,8 @@ postfix_expr
       string comment;
       draw = DessinImage::ptr(varimd->Pointer());
       param = draw->GetParam();
-      $$=param->_pos._x;
+      float val=param->_pos._x;
+      ADD_VARSTACK_FLOAT(val);
       comment = str(format(" //  xpos=%3d") % param->_pos._x);
       if (driver.InConsole())
         GB_main_wxFrame->GetConsole()
@@ -6669,7 +6711,8 @@ postfix_expr
 
       draw = DessinImage::ptr(varimd->Pointer());
       param = draw->GetParam();
-      $$=param->_pos._y;
+      float val=param->_pos._y;
+      ADD_VARSTACK_FLOAT(val);
 
       comment = str( format(" //  ypos=%3d") % param->_pos._y);
       if (driver.InConsole())
@@ -6687,7 +6730,8 @@ postfix_expr
 
       draw = DessinImage::ptr(varimd->Pointer());
       param = draw->GetParam();
-      $$=param->_pos._z;
+      float val=param->_pos._z;
+      ADD_VARSTACK_FLOAT(val);
 
       comment = str( format(" //  xpos=%3d") % param->_pos._z);
       if (driver.InConsole())
@@ -6697,17 +6741,20 @@ postfix_expr
     |
     AnisoGS T_POINT T_GetNoiseSD
     {
-      $$=Func_AnisoGS_GetNoiseSD();
+      float val=Func_AnisoGS_GetNoiseSD();
+      ADD_VARSTACK_FLOAT(val);
     }
     |
     AnisoGS T_POINT T_GetDAcoeff
     {
-      $$=Func_AnisoGS_GetDAcoeff();
+      float val=Func_AnisoGS_GetDAcoeff();
+      ADD_VARSTACK_FLOAT(val);
     }
     |
     T_LevelSetsCURV T_POINT T_UpdateResult
     {
-      $$ = Func_LevelSets_UpdateResult();
+      float val = Func_LevelSets_UpdateResult();
+      ADD_VARSTACK_FLOAT(val);
     }
     | VAR_MATRIX T_OP_PAR expr T_COMMA expr T_CL_PAR
     {
@@ -6715,7 +6762,8 @@ postfix_expr
       FloatMatrix::ptr mat (varmat->Pointer());
       int i = (int)$3;
       int j = (int)$5;
-      $$ = (*mat)[i][j];
+      float val = (*mat)[i][j];
+      ADD_VARSTACK_FLOAT(val);
     }
     | VAR_MATRIX T_OP_PAR expr T_COMMA expr T_CL_PAR ASSIGN_OP expr
     {
@@ -6723,7 +6771,8 @@ postfix_expr
       FloatMatrix::ptr mat (varmat->Pointer());
       int i = (int)$3;
       int j = (int)$5;
-      $$  =  ((*mat)[i][j] = $8);
+      float val  =  ((*mat)[i][j] = $8);
+      ADD_VARSTACK_FLOAT(val);
     }
     | T_exists T_OP_PAR identifier T_CL_PAR
     {
@@ -6731,8 +6780,9 @@ postfix_expr
     Description:
     Check for the existence of a variable, returns 0
     **/
-        IdentifierInfo::ptr ident($3);
-        $$=0;
+      IdentifierInfo::ptr ident($3);
+      float val=0;
+      ADD_VARSTACK_FLOAT(val);
     }
     | T_exists T_OP_PAR variable T_CL_PAR
     {
@@ -6740,8 +6790,9 @@ postfix_expr
     Description: 
     Check for the existence of a variable, returns 1
     **/
-        BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
-        $$=1;
+      BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
+      float val=1;
+      ADD_VARSTACK_FLOAT(val);
     }
     | T_FileExists T_OP_PAR expr_string T_CL_PAR
     {
@@ -6752,12 +6803,13 @@ postfix_expr
       Check for the existence of the given filename
     **/
       boost::shared_array<char> name( $3);
-
-      $$ = wxFileExists(wxString(name.get(),wxConvUTF8));
+      float val = wxFileExists(wxString(name.get(),wxConvUTF8));
+      ADD_VARSTACK_FLOAT(val);
     }
     | basic_type
     {
-          $$ = (int) $1;
+      float val = (int) $1;
+      ADD_VARSTACK_FLOAT(val);
     }
     | VAR_FILE T_POINT T_scan_float T_OP_PAR expr_string T_CL_PAR
     {
@@ -6766,13 +6818,14 @@ postfix_expr
         Scans a float number in the given file and based on the
         given formatting expression.
     **/
-        float res;
-        GET_VARSTACK_VALUE(FILE,file);
-        boost::shared_array<char> format( $5);
+      float res;
+      GET_VARSTACK_VALUE(FILE,file);
+      boost::shared_array<char> format( $5);
 
-        setlocale(LC_NUMERIC, "C");
-        fscanf(file.get(),format.get(),&res);
-        $$ =  res;
+      setlocale(LC_NUMERIC, "C");
+      fscanf(file.get(),format.get(),&res);
+      float val =  res;
+      ADD_VARSTACK_FLOAT(val);
     }
     | VAR_FILE T_POINT T_read T_OP_PAR VAR_FLOAT T_CL_PAR
     {
@@ -6781,12 +6834,13 @@ postfix_expr
 
       float*  var = val_ptr.get();
       setlocale(LC_NUMERIC, "C");
+      float val = 0;
       if (var!=NULL) {
-        $$ = fscanf(file.get(),"%f",var);
+        val = fscanf(file.get(),"%f",var);
       } else {
         // TODO: error message here ...
-        $$ = 0;
       }
+      ADD_VARSTACK_FLOAT(val);
     }
     | VAR_FILE T_POINT T_read T_OP_PAR VAR_STRING T_CL_PAR
     {
@@ -6795,9 +6849,10 @@ postfix_expr
       setlocale(LC_NUMERIC, "C");
       // not safe, TODO: use iostream or boost for files here ...
       char res[100];
-      $$ = fscanf(file.get(),"%s",res);
+      float val = fscanf(file.get(),"%s",res);
       //string_ptr var( new std::string(res));
       (*st) = res;
+      ADD_VARSTACK_FLOAT(val);
     }
     | var_surface T_POINT T_GetNumberOfLines 
     {
@@ -6808,8 +6863,8 @@ postfix_expr
         Returns the number of lines of the polydata structure
     **/
       GET_VARSTACK_VALUE(SurfacePoly,s);
-
-      $$ = s->GetNumberOfLines(  );
+      float val = s->GetNumberOfLines(  );
+      ADD_VARSTACK_FLOAT(val);
     }
     | T_MAX  T_OP_PAR expr T_COMMA expr T_CL_PAR
     {
@@ -6819,200 +6874,37 @@ postfix_expr
       Description: 
         Returns the maximal value
     **/
-      $$ = macro_max($3,$5);
+      float val = macro_max($3,$5);
+      ADD_VARSTACK_FLOAT(val);
     }
     ;
 
-unary_expr
-        : postfix_expr
-        | unary_operator cast_expr { $$=$2; }
-        | T_FACT cast_expr  { UNARYOP_EXPR(!,              $2,$$) }
-        | T_SUB cast_expr  { UNARYOP_EXPR(-,              $2,$$) }
-        | T_ADD cast_expr  { UNARYOP_EXPR(+,              $2,$$) }
-        | SIN cast_expr  { UNARYOP_EXPR(sin,            $2,$$) }
-        | COS cast_expr  { UNARYOP_EXPR(cos,            $2,$$) }
-        | SQRT cast_expr { UNARYOP_EXPR(sqrt,           $2,$$) }
-        | ABS   cast_expr { UNARYOP_EXPR(fabs,           $2,$$) }
-        | ROUND cast_expr { UNARYOP_EXPR(round,           $2,$$) }
-        | FLOOR cast_expr
+multiplicative_expr: 
+        multiplicative_var
         {
-          /**
-            Description:
-                return the closest integer smaller than the given expression value.
-           **/
-          UNARYOP_EXPR(floor,           $2,$$)
-        }
-        | TAN   cast_expr  { UNARYOP_EXPR(tan,            $2,$$) }
-        | ASIN cast_expr { UNARYOP_EXPR(asin,           $2,$$) }
-        | ACOS cast_expr { UNARYOP_EXPR(acos,           $2,$$) }
-        | ATAN cast_expr { UNARYOP_EXPR(atan,           $2,$$) }
-        | EXP cast_expr  
-        { 
-        /**
-          Parameters:
-            - input expression
-          Description:
-            Returns exponiential of the input (e^input).
-          See also:
-            ln, log
-        **/
-          UNARYOP_EXPR(exp,            $2,$$) 
-        }
-        | LOG cast_expr  
-        { 
-        /**
-          Parameters:
-            - input expression
-          Description:
-            Returns logarithm base 10 of the input.
-          See also:
-            ln, exp
-        **/
-          UNARYOP_EXPR(1.0/log(10.0)*log,$2,$$) 
-        }
-        | LN cast_expr   
-        { 
-        /**
-          Parameters:
-            - input expression
-          Description:
-            Returns natural logarithm of the input.
-          See also:
-            log, exp
-        **/
-            UNARYOP_EXPR(log,            $2,$$) 
-        }
-        ;
+          BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+          $$=var->GetValueAsDouble();
+        };
 
-unary_operator
-        :
-          T_MULT |
-          '~'
-        ;
-
-cast_expr:
-        unary_expr
-        |
-         T_OP_PAR basic_type T_CL_PAR unary_expr
+shift_expr: 
+        shift_var
         {
-      switch((WORDTYPE) $2) {
-      case WT_UNSIGNED_CHAR:  $$=(unsigned char) $4; break;
-      case WT_SIGNED_SHORT:   $$=(short) $4;  break;
-      case WT_UNSIGNED_SHORT: $$=(unsigned short) $4;  break;
-      case WT_SIGNED_INT:     $$=(int) $4;  break;
-      case WT_UNSIGNED_INT:   $$=(unsigned int) $4;  break;
-      case WT_FLOAT:          $$=(float) $4;  break;
-      default:
-        fprintf(stderr,"Conversion not available\n");
-      }
-        }
-        ;
+          BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+          $$=var->GetValueAsDouble();
+        };
 
-multiplicative_expr
-        : cast_expr
-        | multiplicative_expr T_MULT cast_expr { $$=$1*$3; }
-        | multiplicative_expr T_DIV cast_expr { $$=$1/$3; }
-        | multiplicative_expr T_MOD cast_expr { $$= ((int) round($1)) % ((int) round($3)); }
-        ;
-
-additive_expr
-        : multiplicative_expr
-        | additive_expr T_ADD multiplicative_expr {  $$=$1+$3; }
-        | additive_expr T_SUB multiplicative_expr {  $$=$1-$3; }
-        ;
-
-shift_expr
-        : additive_expr
-        ;
-
-
-relational_expr
-        : shift_expr
-        | relational_expr T_LT shift_expr   {  $$=($1<$3);  }
-        | relational_expr T_GT shift_expr   {  $$=($1>$3);  }
-        | relational_expr LE_OP shift_expr {  $$=($1<=$3); }
-        | relational_expr GE_OP shift_expr {  $$=($1>=$3); }
-        ;
-
-equality_expr
-        : relational_expr
-        | equality_expr EQ_OP relational_expr  { $$=($1==$3); }
-        | equality_expr NE_OP relational_expr  { $$=($1!=$3); }
-        | expr_string   EQ_OP expr_string      
-        { 
-          boost::shared_array<char> st1( $1);
-          boost::shared_array<char> st2( $3);
-          $$=(strcmp(st1.get(),st2.get())==0); 
-        }
-        | expr_string   NE_OP expr_string      
-        { 
-          boost::shared_array<char> st1( $1);
-          boost::shared_array<char> st2( $3);
-          $$=(strcmp(st1.get(),st2.get())!=0); 
-        }
-        ;
-
-and_expr
-        : equality_expr
-        | and_expr T_AND equality_expr
+prefix_expr: 
+        prefix_var
         {
-      $$ = ((int)$1) & ((int)$3);
-    }
-        ;
+          BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+          $$=var->GetValueAsDouble();
+        };
 
-
-exclusive_or_expr
-        : and_expr
-        | exclusive_or_expr T_EXP and_expr
-        ;
-
-inclusive_or_expr
-        : exclusive_or_expr
+expr    : expr_var
         {
-          $$=$1;
+          BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+          $$=var->GetValueAsDouble();
         }
-        | inclusive_or_expr T_OR exclusive_or_expr
-        {
-      $$ = ((int)$1) | ((int)$3);
-        }
-        ;
-
-logical_and_expr
-        : inclusive_or_expr
-        {
-           $$=$1;
-        }
-        | logical_and_expr AND_OP inclusive_or_expr
-        {
-          $$=$1&&$3;
-        }
-        ;
-
-logical_or_expr
-        : logical_and_expr
-        {
-      $$=$1;
-    }
-        | logical_or_expr OR_OP logical_and_expr
-        {
-      $$=$1||$3;
-    }
-        ;
-
-conditional_expr
-        : logical_or_expr
-        | logical_or_expr T_QUEST logical_or_expr T_COLON conditional_expr
-        {
-      $$=($1?$3:$5);
-        }
-        ;
-
-assignment_expr
-        : conditional_expr
-        ;
-
-expr
-        : assignment_expr
         ;
 
 
@@ -9981,7 +9873,6 @@ primary_image:  image | T_OP_PAR expr_image T_CL_PAR;
 postfix_image:  primary_image;
 
 unary_image  :    postfix_image
-                | unary_operator cast_image
                 | T_SUB  cast_image { UNARYOP_IMAGE(-)               }
                 | T_ADD  cast_image
         | SIN   cast_image { UNARYOP_IMAGE(sin)             }
@@ -10032,25 +9923,27 @@ cast_image:
 ;
 
 multiplicative_image: cast_image
-                | multiplicative_image T_MULT cast_expr  { IMAGE_OP_EXPR(*,$3) }
-// to allow expressions like Image*(n*n) the parser needs to know the type of (n*n)
-// to resolve the ambiguities
-// probably need to have a common class that can contain either number of images,
-// or any other object that accepts arithmetic operations
-                //|  unary_expr  T_MULT T_MULT multiplicative_image  { IMAGE_OP_EXPR(*,$1) }
-                | multiplicative_image T_DIV cast_expr  { IMAGE_OP_EXPR(/,$3) }
-//                |  unary_expr  T_DIV multiplicative_image  { EXPR_OP_IMAGE(/,$1) }
+        | multiplicative_image T_MULT prefix_expr
+        { 
+          IMAGE_OP_EXPR(*,$3) 
+        }
+        // to allow expressions like Image*(n*n) the parser needs to know the type of (n*n)
+        // to resolve the ambiguities
+        // probably need to have a common class that can contain either number of images,
+        // or any other object that accepts arithmetic operations
+        //|  unary_expr  T_MULT T_MULT multiplicative_image  { IMAGE_OP_EXPR(*,$1) }
+        | multiplicative_image T_DIV prefix_expr
+        { 
+          IMAGE_OP_EXPR(/,$3) 
+        }
+        //                |  unary_expr  T_DIV multiplicative_image  { EXPR_OP_IMAGE(/,$1) }
         | multiplicative_image T_MULT cast_image {  IMAGE_OP_IMAGE_2(*)   }
         | multiplicative_image T_DIV cast_image { IMAGE_OP_IMAGE_2(/)   }
         | multiplicative_image T_EXP cast_image { IMAGE_OP_IMAGE_2(^)   }
 ;
 
-additive_image2: multiplicative_image
-//       | multiplicative_expr T_ADD additive_image2  {  IMAGE_OP_EXPR(+,$1) }
-//       | multiplicative_expr T_SUB additive_image2  {  IMAGE_OP_EXPR(-,$1) }
-;
 
-additive_image: additive_image2
+additive_image: multiplicative_image
        | additive_image T_ADD multiplicative_expr  { IMAGE_OP_EXPR(+,$3) }
        | additive_image T_SUB multiplicative_expr  { IMAGE_OP_EXPR(-,$3) }
        | additive_image T_ADD multiplicative_image { IMAGE_OP_IMAGE_2(+)   }
@@ -10066,8 +9959,8 @@ relational_image:
        | relational_image T_GT shift_image   { IMAGE_OP_IMAGE(>)    }
        | relational_image LE_OP shift_image { IMAGE_OP_IMAGE(<=)   }
        | relational_image GE_OP shift_image { IMAGE_OP_IMAGE(>=)   }
-       | relational_image T_LT shift_expr    { IMAGE_OP_EXPR(<, $3) }
-       | relational_image T_GT shift_expr    { IMAGE_OP_EXPR(>, $3) }
+       | relational_image T_LT  shift_expr    { IMAGE_OP_EXPR(<, $3) }
+       | relational_image T_GT  shift_expr    { IMAGE_OP_EXPR(>, $3) }
        | relational_image LE_OP shift_expr  { IMAGE_OP_EXPR(<=,$3) }
        | relational_image GE_OP shift_expr  { IMAGE_OP_EXPR(>=,$3) }
 ;
@@ -10121,34 +10014,52 @@ expr_image : assignment_image
 
 
 primary_var:
-   T_COLON variable
-  | T_COLON NUMBER
-  {
-    Variable<float>::ptr var(new Variable<float>(float_ptr(new float($2))));
-    driver.var_stack.AddVar(var);
-  }
+   float_variable
   | T_OP_PAR expr_var T_CL_PAR;
 
 postfix_var:
   primary_var
+  | T_NOT primary_var 
+  {
+    /**
+      Description: Logical negation (NOT) operator.
+    **/
+    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar(!(*var));
+  }
   | primary_var INC_OP 
   {
+    /**
+      Description: Postfix increment operator.
+    **/
     BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar((*var)++);
   }
   | primary_var DEC_OP
   {
+    /**
+      Description: Postfix decrement operator.
+    **/
     BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar((*var)--);
+  }
+  |
+  T_OP_PAR basic_type T_CL_PAR primary_var
+  {
+    /**
+      Description: Cast operator.
+    **/
+    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar(var->BasicCast( $2));
+
   }
   ;
 
 prefix_var:
   postfix_var
-  | unary_operator postfix_var
   | T_SUB  postfix_var 
   {
-    cout << "T_SUB  cast_var  " << endl;
+    //cout << "T_SUB  cast_var  " << endl;
     BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar(-(*var));
   }
@@ -10317,11 +10228,31 @@ relational_var:
 equality_var:
   relational_var
   | equality_var EQ_OP relational_var
+  {
+    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
+    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar((*var1)==(*var2));
+  }
   | equality_var NE_OP relational_var
   {
     BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
     BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar((*var1)!=(*var2));
+  }
+  |
+  expr_string   EQ_OP expr_string
+  { 
+    boost::shared_array<char> st1( $1);
+    boost::shared_array<char> st2( $3);
+    float res=(strcmp(st1.get(),st2.get())==0); 
+    ADD_VARSTACK_FLOAT(res)
+  }
+  | expr_string   NE_OP expr_string
+  { 
+    boost::shared_array<char> st1( $1);
+    boost::shared_array<char> st2( $3);
+    float res=(strcmp(st1.get(),st2.get())!=0); 
+    ADD_VARSTACK_FLOAT(res)
   }
   ;
 
@@ -10342,16 +10273,41 @@ inclusive_or_var:
 logical_and_var:
   inclusive_or_var
   | logical_and_var AND_OP inclusive_or_var
+  {
+    /**
+      Descriptiopn: Logical AND operator
+    **/
+    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
+    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar((*var1)&&(*var2));
+  }
   ;
 
 logical_or_var:
   logical_and_var
   | logical_or_var OR_OP logical_and_var
+  {
+    /**
+      Descriptiopn: Logical OR operator
+    **/
+    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
+    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar((*var1)||(*var2));
+  }
   ;
 
 conditional_var:
   logical_or_var
   | logical_or_var T_QUEST logical_or_var T_COLON conditional_var
+  {
+    /**
+      Descriptiopn: Operation (cond?a:b) like in C/C++.
+    **/
+    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
+    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar(var->TernaryCondition(var1,var2));
+  }
   ;
 
 assignment_var:
@@ -10476,7 +10432,6 @@ primary_matrix: matrix | T_OP_PAR expr_matrix T_CL_PAR;
 postfix_matrix: primary_matrix;
 
 unary_matrix  :    postfix_matrix
-                | unary_operator cast_matrix
                 | T_SUB  cast_matrix { UNARYOP_MATRIX(-)               }
                 | T_ADD  cast_matrix
                 | cast_matrix TRANSPOSE_OP
@@ -10499,29 +10454,29 @@ unary_matrix  :    postfix_matrix
         | ACOS  cast_matrix { UNARYOP_MATRIX(acos)            }
         | ATAN  cast_matrix { UNARYOP_MATRIX(atan)            }
         | EXP   cast_matrix { UNARYOP_MATRIX(exp)             }
-                | LOG  cast_matrix { UNARYOP_MATRIX(1.0/log(10.0)*log) }
-                | LN   cast_matrix { UNARYOP_MATRIX(log)             }
-               ;
+        | LOG  cast_matrix { UNARYOP_MATRIX(1.0/log(10.0)*log) }
+        | LN   cast_matrix { UNARYOP_MATRIX(log)             }
+        ;
 
 cast_matrix:
         unary_matrix;
 
 multiplicative_matrix: cast_matrix
-           | multiplicative_matrix T_MULT cast_expr  { MATRIX_OP_EXPR(*,$3) }
-       | multiplicative_matrix POINTWISE_MULT cast_matrix { MATRIX_OP_MATRIX_2(*)   }
-       | multiplicative_matrix T_MULT cast_matrix
-           {
+      | multiplicative_matrix T_MULT expr  { MATRIX_OP_EXPR(*,$3) }
+      | multiplicative_matrix POINTWISE_MULT cast_matrix { MATRIX_OP_MATRIX_2(*)   }
+      | multiplicative_matrix T_MULT cast_matrix
+        {
          FloatMatrix* m2 = driver.matrix_stack.GetLastMatrix();
          FloatMatrix* m1 = driver.matrix_stack.GetLastMatrix();
              FloatMatrix* res = Multiply(m1, m2) ;
          driver.matrix_stack.AddMatrix(res);
          delete m1;
          delete m2;
-           }
+        }
 
 additive_matrix: multiplicative_matrix
-       | additive_matrix T_ADD multiplicative_expr  { MATRIX_OP_EXPR(+,$3) }
-       | additive_matrix T_SUB multiplicative_expr  { MATRIX_OP_EXPR(-,$3) }
+       | additive_matrix T_ADD expr  { MATRIX_OP_EXPR(+,$3) }
+       | additive_matrix T_SUB expr  { MATRIX_OP_EXPR(-,$3) }
        | additive_matrix T_ADD multiplicative_matrix { MATRIX_OP_MATRIX_2(+)   }
        | additive_matrix T_SUB multiplicative_matrix { MATRIX_OP_MATRIX_2(-)   }
 ;

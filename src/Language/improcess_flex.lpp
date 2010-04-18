@@ -147,7 +147,7 @@ WS      [ \t]
 "*"  return(token::T_MULT); /*{*,T_MULT}*/
 ".*"  return(token::POINTWISE_MULT);
 "/"  return(token::T_DIV);  /*{/,T_DIV}*/
-"!"  return(token::T_FACT); /*{!,T_FACT}*/
+"!"  return(token::T_NOT); /*{!,T_NOT}*/
 "+"  return(token::T_ADD); /*{+,T_ADD}*/
 "-"  return(token::T_SUB); /*{-,T_SUB}*/
 "%"  return(token::T_MOD); /*{%,T_MOD}*/
@@ -328,6 +328,20 @@ sprint             return(token::T_SPRINT); /*{sprint,T_SPRINT}*/
 vars               return(token::VARIABLES); /*{vars,VARIABLES}*/
 func               return(token::FUNCTION); /*{func,FUNCTION}*/
 eval               return(token::T_eval); /*{eval,T_eval}*/
+
+tx                  return(token::T_tx); /*{tx,T_tx}*/
+ty                  return(token::T_ty); /*{ty,T_ty}*/
+tz                  return(token::T_tz); /*{tz,T_tz}*/
+trx                 return(token::T_trx); /*{trx,T_trx}*/
+try                 return(token::T_try); /*{try,T_try}*/
+trz                 return(token::T_trz); /*{trz,T_trz}*/
+vx                  return(token::T_vx); /*{vx,T_vx}*/
+vy                  return(token::T_vy); /*{vy,T_vy}*/
+vz                  return(token::T_vz); /*{vz,T_vz}*/
+vdim                return(token::T_vdim); /*{vdim,T_vdim}*/
+inc                 return(token::T_inc); /*{inc,T_inc}*/
+val                 return(token::T_val); /*{val,T_val}*/
+
 filter             return(token::FILTER); /*{filter,FILTER}*/
 vtkMedian3D        return(token::T_vtkMedian3D); /*{vtkMedian3D,T_vtkMedian3D}*/
 normgrad           return(token::NormGrad); /*{normgrad,NormGrad}*/

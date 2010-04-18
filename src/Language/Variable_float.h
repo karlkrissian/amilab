@@ -55,6 +55,12 @@ template<> BasicVariable::ptr Variable<float>::operator /(const BasicVariable& b
 /// a/=b
 template<> BasicVariable::ptr Variable<float>::operator /=(const BasicVariable& b);
 
+/// a%b
+template<> BasicVariable::ptr Variable<float>::operator %(const BasicVariable& b);
+
+/// a%=b
+template<> BasicVariable::ptr Variable<float>::operator %=(const BasicVariable& b);
+
 //  Comparison Operators
 
 /// a<b
@@ -101,6 +107,11 @@ VAR_DECL_FUNC(float,log)
 VAR_DECL_FUNC(float,ln)
 VAR_DECL_FUNC(float,norm)
 VAR_DECL_FUNC(float,sqrt)
+
+template<> BasicVariable::ptr Variable<float>::BasicCast(const int& type);
+
+/// (cond?a:b)
+template<> BasicVariable::ptr Variable<float>::TernaryCondition(const BasicVariable::ptr& v1, const BasicVariable::ptr&v2);
 
 #endif 
 // _Variable_float_h_

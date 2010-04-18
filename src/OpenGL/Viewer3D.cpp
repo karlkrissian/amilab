@@ -223,6 +223,7 @@ Viewer3D::Viewer3D(wxFrame *frame, const wxString& title, const wxPoint& pos,
 
   Centre(wxBOTH);
 
+  this->Raise();
 }
 
 Viewer3D::~Viewer3D()

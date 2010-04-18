@@ -8,10 +8,10 @@
   boost::shared_ptr<type> var(new type(value));
 
 #define RETURN_VARPTR(type,  value) \
-  std::cout << get_name() << "::operator " << __func__  << "!!!"<< std::endl; \
   boost::shared_ptr<type> newval(new type(value)); \
   return Variable<type>::ptr( new Variable<type>(newval));
 
+#include "inrimage.hpp"
 
 //------------------------------------------------------
 //------- Variable<float>
@@ -132,6 +132,26 @@ template<> BasicVariable::ptr Variable<float>::operator /=(const BasicVariable& 
   return this->NewReference(); 
 }
 
+/// a%b
+template<> BasicVariable::ptr Variable<float>::operator %(const BasicVariable& b)
+{
+  if (b.IsNumeric()) {
+    RETURN_VARPTR(float, ((int) round(Value())) % ((int) round(b.GetValueAsDouble())));
+  } else
+    CLASS_ERROR("operation not defined");
+  return this->NewReference(); 
+}
+
+/// a%=b
+template<> BasicVariable::ptr Variable<float>::operator %=(const BasicVariable& b)
+{ 
+  if (b.IsNumeric()) {
+    RefValue() =  ((int) round(Value())) % ((int) round(b.GetValueAsDouble()));
+  } else
+    CLASS_ERROR("operation not defined");
+  return this->NewReference(); 
+}
+
 //  Comparison Operators
 
 /// a<b
@@ -240,3 +260,37 @@ VAR_IMPL_FUNC(float,  log,  1.0/log(10.0)*log)
 VAR_IMPL_FUNC(float,  ln,   log)
 VAR_IMPL_FUNC(float,  norm, fabs)
 VAR_IMPL_FUNC(float,  sqrt, sqrt)
+
+//
+template<> BasicVariable::ptr Variable<float>::BasicCast(const int& type)
+{
+  float res = Value();
+
+  switch((WORDTYPE)type) {
+    case WT_UNSIGNED_CHAR:  res=(unsigned char) res; break;
+    case WT_SIGNED_SHORT:   res=(short) res;  break;
+    case WT_UNSIGNED_SHORT: res=(unsigned short) res;  break;
+    case WT_SIGNED_INT:     res=(int) res;  break;
+    case WT_UNSIGNED_INT:   res=(unsigned int) res;  break;
+    case WT_FLOAT:          res=(float) res;  break;
+    default:
+      std::cerr << boost::format("Conversion to type %1% not available")%((WORDTYPE)type) << std::endl;
+  }
+  RETURN_VARPTR(float, res);
+}
+
+//
+template<>
+BasicVariable::ptr Variable<float>::TernaryCondition(const BasicVariable::ptr& v1, const BasicVariable::ptr&v2)
+{
+
+  if (IsNumeric()) {
+    if (GetValueAsDouble()>0.5) {
+      return v1->NewReference();
+    } else {
+      return v2->NewReference();
+    }
+  } else
+    CLASS_ERROR("operation not defined");
+  return NewReference();
+}
