@@ -111,8 +111,8 @@ if (!exists(NLMweightsClass)) {
       if (exists(::input)) {
         pos_x = ::input_draw.GetXPos
         pos_y = ::input_draw.GetYPos
-        ::current_pos = boost_format("(%1%, ")%pos_x
-        ::current_pos = ::current_pos + boost_format("%1%)")%pos_y
+        ::current_pos = "(%1%, " %pos_x
+        ::current_pos = ::current_pos + "%1%)" %pos_y
         ::win.update
         ::CreateWeights(pos_x,pos_y,::patsize,::thres)
         ::ShowWeights()

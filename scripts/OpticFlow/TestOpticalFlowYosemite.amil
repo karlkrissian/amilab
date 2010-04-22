@@ -301,8 +301,8 @@ proc LoadImagesBarron() {
     displ89_y = displ89[1]
     displ89_x = displ89_x*(displ89_x<99)+(displ89_x>=99)*2
     displ89_y = displ89_y*(displ89_y<99)
-    displ89[0] = displ89_x
-    displ89[1] = displ89_y
+    displ89.SetComponent( 0, displ89_x)
+    displ89.SetComponent( 1, displ89_y)
     displ.putimage(displ89,0,0,8-seqmin)
 
     # set mask to only 8-9 frame
@@ -327,8 +327,8 @@ proc LoadImagesBarron() {
     displ89_y = displ89[1]
     displ89_x = displ89_x*(displ89_x<99)
     displ89_y = displ89_y*(displ89_y<99)
-    displ89[0] = displ89_x
-    displ89[1] = displ89_y
+    displ89.SetComponent( 0, displ89_x)
+    displ89.SetComponent( 1, displ89_y)
     displ.putimage(displ89,0,0,8-seqmin)
     displ.putimage(displ89,0,0,8-seqmin)
 
@@ -431,8 +431,8 @@ proc call_amiOFPDE_JavAgustin(IMAGE _im, IMAGE _res) {
   resx.info
   resy.info
   AMIFluid->amiOpticFlow(_im,&resx,&resy, JA_zoom, JA_alfa, JA_beta, JA_gamma, JA_isotropy, JA_T, JA_dt, JA_Nu)
-  _res[0] = resx;
-  _res[1] = resy;
+  _res.SetComponent( 0, resx;)
+  _res.SetComponent( 1, resy;)
 
   print "End call_amiOFPDE_JavAgustin() \n"
 }
@@ -444,8 +444,8 @@ proc call_amiOFPDE_Javier(IMAGE _im1, IMAGE _im2, IMAGE _res) {
   resx = _res[0]
   resy = _res[1]
   AMIFluid->amiJavierHornSchunck(_im1,_im2,&resx,&resy, zoom, alfa_Javier, T, dt, Nu);
-  _res[0] = resx;
-  _res[1] = resy;
+  _res.SetComponent( 0, resx;)
+  _res.SetComponent( 1, resy;)
 }
 
 
@@ -457,8 +457,8 @@ proc call_amiOFPDE_Zoom(IMAGE _im1,IMAGE _im2, IMAGE _res) {
 
   AMIFluid->amiOFVar2DZoom(_im1,_im2,OFzoom_sigma,OFzoom_T,OFzoom_alpha,OFzoom_dtype,OFzoom_quantile,OFzoom_ht,&_resx,&_resy,OFzoom_nbiter,OFzoom_zoom);
 
-  _res[0]=_resx
-  _res[1]=_resy
+  _res.SetComponent( 0, _resx)
+  _res.SetComponent( 1, _resy)
 
 }
 
@@ -474,8 +474,8 @@ proc call_amiOFPDE_Vorticity(IMAGE _im1,IMAGE _im2, IMAGE _res) {
 
   AMIFluid->amiGradVorticity(_im1,_im2,&_resx,&_resy,vort_grid,vort_winsize,vort_sigma,vort_alpha,vort_TOL,&_vort)
 
-  _res[0]=_resx
-  _res[1]=_resy
+  _res.SetComponent( 0, _resx)
+  _res.SetComponent( 1, _resy)
 
 }
 
@@ -559,8 +559,8 @@ proc call_amiOFPDE_Javier_sym(IMAGE _im1, IMAGE _im2, IMAGE _res) {
   resx = _res[0]
   resy = _res[1]
   AMIFluid->amiJavierHornSchunckSym(_im1,_im2,&resx,&resy, zoom, alfa_Javier, T, dt, Nu);
-  _res[0] = resx;
-  _res[1] = resy;
+  _res.SetComponent( 0, resx;)
+  _res.SetComponent( 1, resy;)
   // inverse flow
   _res = AMIFluid->amiInverseFlow(_res)
 }

@@ -190,7 +190,7 @@ bool Variables::ExistVar(BasicVariable::ptr& var)
   for (Iter  = _vars.begin();
        Iter != _vars.end()  ; Iter++ )
   {
-    if ( *(*Iter) == var ) return true;
+    if ( (*Iter)->Equal(var) ) return true;
   }
   return false;
 }

@@ -69,7 +69,7 @@ public:
 //     (*this) = (*v);
 //  }
 
-  virtual bool operator == (const BasicVariable::ptr& v)  = 0;
+  virtual bool Equal(const BasicVariable::ptr& v)  = 0;
 
   virtual bool operator == (BasicVariable* v)  = 0;
 
@@ -151,13 +151,13 @@ public:
     return this->NewReference(); }
 
 #define BASICVAR_OP_VAR(op) \
-  virtual BasicVariable::ptr operator op(const BasicVariable& b) \
+  virtual BasicVariable::ptr operator op(const BasicVariable::ptr& b) \
   { std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl; \
     return this->NewReference(); }
 
 
 #define BASICVAR_COMP_OP_VAR(op) \
-  virtual BasicVariable::ptr operator op(const BasicVariable& b) \
+  virtual BasicVariable::ptr operator op(const BasicVariable::ptr& b) \
   { std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl; \
     return this->NewReference(); }
 
@@ -167,7 +167,7 @@ public:
     return this->NewReference(); }
 
 #define BASICVAR_LOGIC_OP_VAR(op) \
-  virtual BasicVariable::ptr operator op(const BasicVariable& b) \
+  virtual BasicVariable::ptr operator op(const BasicVariable::ptr& b) \
   { std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl; \
     return this->NewReference(); }
 
@@ -245,12 +245,15 @@ public:
    *  Variable Bitwise operators.
    */
   //@{
+    BASICVAR_LOGIC_OP_VAR(^);
   //@}
 
   /** @name OtherOperators
    *  Variable Other operators.
    */
   //@{
+    /// basic assignment operator
+    BASICVAR_OP_VAR(=);
   //@}
 
 
@@ -285,6 +288,8 @@ public:
    * @return the new variable after the cast
    */
   virtual BasicVariable::ptr BasicCast(const int& type) = 0;
+
+  virtual BasicVariable::ptr operator[](const BasicVariable::ptr& v) = 0;
 
   virtual BasicVariable::ptr TernaryCondition(const BasicVariable::ptr& v1, const BasicVariable::ptr&v2) = 0;
 

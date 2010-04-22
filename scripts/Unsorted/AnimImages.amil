@@ -46,8 +46,8 @@ I1y=Resize(Iy,t1x,t1y,t1z,1)
 I1z=Resize(Iz,t1x,t1y,t1z,1)
 
 I1=Image(RGB,t1x,t1y,t1z,1)
-I1[0]=I1x
-I1[1]=I1y
-I1[2]=I1z
+I1.SetComponent( 0, I1x)
+I1.SetComponent( 1, I1y)
+I1.SetComponent( 2, I1z)
 
 show I1

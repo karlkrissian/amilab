@@ -17,9 +17,9 @@ cp = (nv2-nv3)/Sum
 cs = nv3/Sum
 
 colors = Image(RGB,v1.tx,v1.ty,v1.tz)
-colors[0] = (UCHAR) (cl*255)
-colors[1] = (UCHAR) (cp*255)
-colors[2] = (UCHAR) (cs*255)
+colors.SetComponent( 0, (UCHAR) (cl*255))
+colors.SetComponent( 1, (UCHAR) (cp*255))
+colors.SetComponent( 2, (UCHAR) (cs*255))
 
 show cl
 

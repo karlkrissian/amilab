@@ -295,8 +295,8 @@ proc call_amiOFPDE_Zoom(IMAGE _im1,IMAGE _im2, IMAGE _res) {
 
   AMIFluid->amiOFVar2DZoom(_im1,_im2,OFzoom_sigma,OFzoom_T,OFzoom_alpha,OFzoom_dtype,OFzoom_quantile,OFzoom_ht,&_resx,&_resy,OFzoom_nbiter,OFzoom_zoom);
 
-  _res[0]=_resx
-  _res[1]=_resy
+  _res.SetComponent( 0, _resx)
+  _res.SetComponent( 1, _resy)
 
 }
 
@@ -312,8 +312,8 @@ proc call_amiOFPDE_Vorticity(IMAGE _im1,IMAGE _im2, IMAGE _res) {
 
   AMIFluid->amiGradVorticity(_im1,_im2,&_resx,&_resy,vort_grid,vort_winsize,vort_sigma,vort_alpha,vort_TOL,&_vort)
 
-  _res[0]=_resx
-  _res[1]=_resy
+  _res.SetComponent( 0, _resx)
+  _res.SetComponent( 1, _resy)
 
 }
 
@@ -328,8 +328,8 @@ proc call_amiCorr2D(IMAGE _im1, IMAGE _im2, IMAGE _res) {
   cx = _im1*0
   cy = _im1*0
   AMIFluid->amiOFCorr2D(_im1,_im2,_u,_v,corr,cx,cy,0,0,corr_step_x,corr_step_y,wsx,wsy,1);
-  _res[0]=_u;
-  _res[1]=_v;
+  _res.SetComponent( 0, _u;)
+  _res.SetComponent( 1, _v;)
 }
 
 
@@ -811,7 +811,8 @@ proc CB_RunAlphaTests() {
 #--------------------------------------------------
 # Input Images
 #
-winput = ParamWin("Input images for Optical Flow")
+import = &global::ami_import;
+winput = import->ParamPanel("Input images for Optical Flow")
 winput.BeginBox("Elastography B mode")
 restart_id         = winput.AddButton("Load Pre-Post",       CB_ReLoad)
 restart_id         = winput.AddButton("Load Image Sequence", LoadSequence)
@@ -827,7 +828,8 @@ winput.CreateWin
 #--------------------------------------------------
 # Window of Parameters for 2D cross-correlation code
 #
-wcorr = ParamWin("Cross-Correlation 2D")
+import = &global::ami_import;
+wcorr = import->ParamPanel("Cross-Correlation 2D")
 
 corr_step_x_id = wcorr.AddInt(corr_step_x,1,20)
 corr_step_y_id = wcorr.AddInt(corr_step_y,1,20)
@@ -844,7 +846,8 @@ wcorr.CreateWin
 #--------------------------------------------------
 # Parameters for libami's code
 #
-wamiOF = ParamWin("libamiFluid: PDE Optical Flow Parameters")
+import = &global::ami_import;
+wamiOF = import->ParamPanel("libamiFluid: PDE Optical Flow Parameters")
 
 presmoothing_id    = wamiOF.AddFloat(presmoothing,0,3)
 beta_id            = wamiOF.AddFloat(beta,0.01,5)
@@ -883,7 +886,8 @@ wamiOF.CreateWin
 #--------------------------------------------------
 # Parameters for Vorticity code
 #
-wVort = ParamWin("Vorticity Optical Flow parameters")
+import = &global::ami_import;
+wVort = import->ParamPanel("Vorticity Optical Flow parameters")
 vort_grid_id       = wVort.AddInt(vort_grid,   1,10)
 vort_winsize_id    = wVort.AddInt(vort_winsize,3,10)
 vort_sigma_id      = wVort.AddFloat(vort_sigma,0.1,5)
@@ -894,7 +898,8 @@ wVort.CreateWin
 #--------------------------------------------------
 # Parameters for optic_flow_zoom code
 #
-wOFzoom = ParamWin("Optic Flow PDE 2D parameters")
+import = &global::ami_import;
+wOFzoom = import->ParamPanel("Optic Flow PDE 2D parameters")
 
 OFzoom_sigma_id    = wOFzoom.AddFloat(OFzoom_sigma,0.5,5)
 OFzoom_T_id        = wOFzoom.AddFloat(OFzoom_T,1,1000)
@@ -910,7 +915,8 @@ wOFzoom.CreateWin
 #--------------------------------------------------
 # Parameters for continous Gaussian multiscale
 #
-wGaussSc = ParamWin("Continous Gaussian Scales")
+import = &global::ami_import;
+wGaussSc = import->ParamPanel("Continous Gaussian Scales")
 sigma_min_id      = wGaussSc.AddFloat(sigma_min,0.01,5)
 sigma_max_id      = wGaussSc.AddFloat(sigma_max,0.01,15)
 sigma_N_id        = wGaussSc.AddInt(  sigma_N,  2,20)

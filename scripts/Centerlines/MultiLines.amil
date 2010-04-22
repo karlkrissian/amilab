@@ -92,7 +92,7 @@ if (!exists(MultilinesClass)) {
     
     #----------------------------
     proc ::CloseAll() {
-      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
+      eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
       ::Close
     }
     ::CloseAll.Comments("Call ::Close() method and delete the class variable")
@@ -416,7 +416,7 @@ if (!exists(MultilinesClass)) {
       response.initvalue(0)
     
       for local::i=0 to ::numrad-1 {
-        iteration_mess = boost_format(" Iteration %1%") % i
+        iteration_mess = " Iteration %1%" % i
         SetStatusText( current_proc+iteration_mess )
         ::current_progress = i/::numrad*100
         ::current_step     = 1/::numrad*100

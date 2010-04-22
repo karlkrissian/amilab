@@ -18,14 +18,14 @@ proc UpwindGradient( IMAGE input, IMAGE output) {
   // Compute Gx
   //
   print "Compute Gx\n"
-  _displace[0] = posx-1
-  _displace[1] = posy
-  _displace[2] = posz
+  _displace.SetComponent( 0, posx-1)
+  _displace.SetComponent( 1, posy)
+  _displace.SetComponent( 2, posz)
   D_x = input - input(_displace)
   Gx = (D_x>0)*D_x
   del D_x
 
-  _displace[0] = posx+1
+  _displace.SetComponent( 0, posx+1)
   Dx = input - input(_displace)
   Gx = max(Gx,Dx)
   del Dx
@@ -38,13 +38,13 @@ proc UpwindGradient( IMAGE input, IMAGE output) {
   //
   print "Compute Gy\n"
 
-  _displace[0] = posx
-  _displace[1] = posy-1
+  _displace.SetComponent( 0, posx)
+  _displace.SetComponent( 1, posy-1)
   D_y = input - input(_displace)
   Gy = (D_y>0)*D_y
   del D_y
 
-  _displace[1] = posy+1
+  _displace.SetComponent( 1, posy+1)
   Dy = input - input(_displace)
   Gy = max(Gy,Dy)
   del Dy
@@ -57,13 +57,13 @@ proc UpwindGradient( IMAGE input, IMAGE output) {
   //
   print "Compute Gz\n"
 
-  _displace[1] = posy
-  _displace[2] = posz-1
+  _displace.SetComponent( 1, posy)
+  _displace.SetComponent( 2, posz-1)
   D_z = input - input(_displace)
   Gz = (D_z>0)*D_z
   del D_z
 
-  _displace[2] = posz+1
+  _displace.SetComponent( 2, posz+1)
   Dz = input - input(_displace)
   Gz = max(Gz,Dz)
   del Dz

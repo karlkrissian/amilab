@@ -17,6 +17,14 @@
 //------- Variable<float>
 //------------------------------------------------------
 
+/// Copy contents to new variable
+template<> BasicVariable::ptr Variable<float>::NewCopy()
+{
+  float_ptr newval( new float(Value()));
+  Variable<float>::ptr newvar(new Variable<float>(newval));
+  return newvar;
+}
+
 
 // Arithmetic operators
 
@@ -53,100 +61,100 @@ template<> BasicVariable::ptr Variable<float>::operator --(int)
 
 
 /// a+b
-template<> BasicVariable::ptr Variable<float>::operator +(const BasicVariable& b)
+template<> BasicVariable::ptr Variable<float>::operator +(const BasicVariable::ptr& b)
 {
-  if (b.IsNumeric()) {
-    RETURN_VARPTR(float,Value()+b.GetValueAsDouble());
+  if (b->IsNumeric()) {
+    RETURN_VARPTR(float,Value()+b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
 
 /// a+=b
-template<> BasicVariable::ptr Variable<float>::operator +=(const BasicVariable& b)
+template<> BasicVariable::ptr Variable<float>::operator +=(const BasicVariable::ptr& b)
 { 
-  if (b.IsNumeric()) {
-    RefValue() += b.GetValueAsDouble();
+  if (b->IsNumeric()) {
+    RefValue() += b->GetValueAsDouble();
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
 
 /// a-b
-template<> BasicVariable::ptr Variable<float>::operator -(const BasicVariable& b)
+template<> BasicVariable::ptr Variable<float>::operator -(const BasicVariable::ptr& b)
 {
-  if (b.IsNumeric()) {
-    RETURN_VARPTR(float,Value()-b.GetValueAsDouble());
+  if (b->IsNumeric()) {
+    RETURN_VARPTR(float,Value()-b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
 
 /// a-=b
-template<> BasicVariable::ptr Variable<float>::operator -=(const BasicVariable& b)
+template<> BasicVariable::ptr Variable<float>::operator -=(const BasicVariable::ptr& b)
 { 
-  if (b.IsNumeric()) {
-    RefValue() -= b.GetValueAsDouble();
+  if (b->IsNumeric()) {
+    RefValue() -= b->GetValueAsDouble();
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
 
 /// a*b
-template<> BasicVariable::ptr Variable<float>::operator *(const BasicVariable& b)
+template<> BasicVariable::ptr Variable<float>::operator *(const BasicVariable::ptr& b)
 {
-  if (b.IsNumeric()) {
-    RETURN_VARPTR(float,Value()*b.GetValueAsDouble());
+  if (b->IsNumeric()) {
+    RETURN_VARPTR(float,Value()*b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
 
 /// a*=b
-template<> BasicVariable::ptr Variable<float>::operator *=(const BasicVariable& b)
+template<> BasicVariable::ptr Variable<float>::operator *=(const BasicVariable::ptr& b)
 { 
-  if (b.IsNumeric()) {
-    RefValue() *= b.GetValueAsDouble();
+  if (b->IsNumeric()) {
+    RefValue() *= b->GetValueAsDouble();
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
 
 /// a/b
-template<> BasicVariable::ptr Variable<float>::operator /(const BasicVariable& b)
+template<> BasicVariable::ptr Variable<float>::operator /(const BasicVariable::ptr& b)
 {
-  if (b.IsNumeric()) {
-    RETURN_VARPTR(float,Value()/b.GetValueAsDouble());
+  if (b->IsNumeric()) {
+    RETURN_VARPTR(float,Value()/b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
 
 /// a/=b
-template<> BasicVariable::ptr Variable<float>::operator /=(const BasicVariable& b)
+template<> BasicVariable::ptr Variable<float>::operator /=(const BasicVariable::ptr& b)
 { 
-  if (b.IsNumeric()) {
-    RefValue() /= b.GetValueAsDouble();
+  if (b->IsNumeric()) {
+    RefValue() /= b->GetValueAsDouble();
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
 
 /// a%b
-template<> BasicVariable::ptr Variable<float>::operator %(const BasicVariable& b)
+template<> BasicVariable::ptr Variable<float>::operator %(const BasicVariable::ptr& b)
 {
-  if (b.IsNumeric()) {
-    RETURN_VARPTR(float, ((int) round(Value())) % ((int) round(b.GetValueAsDouble())));
+  if (b->IsNumeric()) {
+    RETURN_VARPTR(float, ((int) round(Value())) % ((int) round(b->GetValueAsDouble())));
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
 
 /// a%=b
-template<> BasicVariable::ptr Variable<float>::operator %=(const BasicVariable& b)
+template<> BasicVariable::ptr Variable<float>::operator %=(const BasicVariable::ptr& b)
 { 
-  if (b.IsNumeric()) {
-    RefValue() =  ((int) round(Value())) % ((int) round(b.GetValueAsDouble()));
+  if (b->IsNumeric()) {
+    RefValue() =  ((int) round(Value())) % ((int) round(b->GetValueAsDouble()));
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
@@ -155,60 +163,62 @@ template<> BasicVariable::ptr Variable<float>::operator %=(const BasicVariable& 
 //  Comparison Operators
 
 /// a<b
-template<> BasicVariable::ptr Variable<float>::operator <(const BasicVariable& b)
+template<> BasicVariable::ptr Variable<float>::operator <(const BasicVariable::ptr& b)
 { 
-  if (b.IsNumeric()) {
-    RETURN_VARPTR(float,Value()<b.GetValueAsDouble());
+  if (b->IsNumeric()) {
+    RETURN_VARPTR(float,Value()<b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
 
 /// a<=b
-template<> BasicVariable::ptr Variable<float>::operator <=(const BasicVariable& b)
+template<> BasicVariable::ptr Variable<float>::operator <=(const BasicVariable::ptr& b)
 { 
-  if (b.IsNumeric()) {
-    RETURN_VARPTR(float,Value()<=b.GetValueAsDouble());
+  if (b->IsNumeric()) {
+    RETURN_VARPTR(float,Value()<=b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
 
 /// a>b
-template<> BasicVariable::ptr Variable<float>::operator >(const BasicVariable& b)
+template<> BasicVariable::ptr Variable<float>::operator >(const BasicVariable::ptr& b)
 { 
-  if (b.IsNumeric()) {
-    RETURN_VARPTR(float,Value()>b.GetValueAsDouble());
+  if (b->IsNumeric()) {
+    RETURN_VARPTR(float,Value()>b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
 
 /// a>=b
-template<> BasicVariable::ptr Variable<float>::operator >=(const BasicVariable& b)
+template<> BasicVariable::ptr Variable<float>::operator >=(const BasicVariable::ptr& b)
 { 
-  if (b.IsNumeric()) {
-    RETURN_VARPTR(float,Value()>=b.GetValueAsDouble());
+  if (b->IsNumeric()) {
+    RETURN_VARPTR(float,Value()>=b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
 
 /// a!=b
-template<> BasicVariable::ptr Variable<float>::operator !=(const BasicVariable& b)
+template<> BasicVariable::ptr Variable<float>::operator !=(const BasicVariable::ptr& b)
 { 
-  if (b.IsNumeric()) {
-    RETURN_VARPTR(float,Value()!=b.GetValueAsDouble());
+  if (b->IsNumeric()) {
+    RETURN_VARPTR(float,Value()!=b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
 
+
 /// a==b
-template<> BasicVariable::ptr Variable<float>::operator ==(const BasicVariable& b)
+template<> BasicVariable::ptr Variable<float>::operator ==(const BasicVariable::ptr& b)
 { 
-  if (b.IsNumeric()) {
-    RETURN_VARPTR(float,Value()==b.GetValueAsDouble());
+  //std::cout << __func__ << std::endl;
+  if (b->IsNumeric()) {
+    RETURN_VARPTR(float,Value()==b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
@@ -221,19 +231,19 @@ template<> BasicVariable::ptr Variable<float>::operator !()
   RETURN_VARPTR(float,!(Value()>0.5));
 }
 
-template<> BasicVariable::ptr Variable<float>::operator &&(const BasicVariable& b) 
+template<> BasicVariable::ptr Variable<float>::operator &&(const BasicVariable::ptr& b) 
 {
-  if (b.IsNumeric()) {
-    RETURN_VARPTR(float,Value()&& (bool) (b.GetValueAsDouble()>0.5));
+  if (b->IsNumeric()) {
+    RETURN_VARPTR(float,Value()&& (bool) (b->GetValueAsDouble()>0.5));
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
 
-template<> BasicVariable::ptr Variable<float>::operator ||(const BasicVariable& b) 
+template<> BasicVariable::ptr Variable<float>::operator ||(const BasicVariable::ptr& b) 
 {
-  if (b.IsNumeric()) {
-    RETURN_VARPTR(float,Value() || (bool) (b.GetValueAsDouble()>0.5));
+  if (b->IsNumeric()) {
+    RETURN_VARPTR(float,Value() || (bool) (b->GetValueAsDouble()>0.5));
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
@@ -290,6 +300,17 @@ BasicVariable::ptr Variable<float>::TernaryCondition(const BasicVariable::ptr& v
     } else {
       return v2->NewReference();
     }
+  } else
+    CLASS_ERROR("operation not defined");
+  return NewReference();
+}
+
+
+template<> 
+BasicVariable::ptr Variable<float>::operator =(const BasicVariable::ptr& b)
+{
+  if (IsNumeric()) {
+    RefValue() = b->GetValueAsDouble();
   } else
     CLASS_ERROR("operation not defined");
   return NewReference();

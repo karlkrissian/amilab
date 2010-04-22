@@ -37,15 +37,15 @@ printn 3
   for l=0 to 2 {
     temp = dir[k]*dir[l]*ldir
     temp = temp*tube
-    t[n] = temp
+t.SetComponent( n, temp)
     n=n+1
   }
   }
 printn "iso"
   // add isotropic component
-  t[0] = t[0]+tube*liso
-  t[4] = t[4]+tube*liso
-  t[8] = t[8]+tube*liso
+t.SetComponent( 0, t[0]+tube*liso)
+t.SetComponent( 4, t[4]+tube*liso)
+t.SetComponent( 8, t[8]+tube*liso)
 }
 
 

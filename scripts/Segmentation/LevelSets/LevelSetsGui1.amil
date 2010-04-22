@@ -260,20 +260,20 @@ if (!exists(LevelSetsClass)){
     #pfile.printn "#"
     pfile.printn " "
     #pfile.printn "# Initialization:"
-    pfile.printn boost_format("::init_mode = %1%") % ::init_mode
-    pfile.printn boost_format("::inputmin  = %1%") % ::inputmin
-    pfile.printn boost_format("::inputmax  = %1%") % ::inputmax
-    pfile.printn boost_format("::minimal_intensity = %1%") % ::minimal_intensity
-    pfile.printn boost_format("::sphere_radius = %1%") % ::sphere_radius
+    pfile.printn "::init_mode = %1%" % ::init_mode
+    pfile.printn "::inputmin  = %1%" % ::inputmin
+    pfile.printn "::inputmax  = %1%" % ::inputmax
+    pfile.printn "::minimal_intensity = %1%" % ::minimal_intensity
+    pfile.printn "::sphere_radius = %1%" % ::sphere_radius
     pfile.printn " "
     #pfile.printn "# Evolution equation:"
-    pfile.printn boost_format("::Imean         = %1%") % ::Imean
-    pfile.printn boost_format("::Isd           = %1%") % ::Isd
-    pfile.printn boost_format("::accept_high_intensity = %1%") % ::accept_high_intensity
+    pfile.printn "::Imean         = %1%" % ::Imean
+    pfile.printn "::Isd           = %1%" % ::Isd
+    pfile.printn "::accept_high_intensity = %1%" % ::accept_high_intensity
 
-    pfile.printn boost_format("::expansion_coeff = %1%") % ::expansioncoeff
-    pfile.printn boost_format("::dt              = %1%") % ::dt
-    pfile.printn boost_format("::T               = %1%") % ::T
+    pfile.printn "::expansion_coeff = %1%" % ::expansioncoeff
+    pfile.printn "::dt              = %1%" % ::dt
+    pfile.printn "::T               = %1%" % ::T
 
   }
   #----------------------------
@@ -285,7 +285,7 @@ if (!exists(LevelSetsClass)){
     
   #----------------------------
   proc ::CloseAll() {
-    eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
+    eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
     ::Close
   }
   ::CloseAll.Comments("Call ::Close() method and delete the class variable")

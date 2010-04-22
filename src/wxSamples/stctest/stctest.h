@@ -53,7 +53,7 @@ class StcTestFrame: public wxFrame {
 
 public:
     //! constructor
-    StcTestFrame (const wxString &title);
+    StcTestFrame (wxWindow* parent, const wxString &title);
 
     //! destructor
     ~StcTestFrame ();

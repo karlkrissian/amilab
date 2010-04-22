@@ -39,7 +39,7 @@ if (!exists(global::ImageGridClass)) {
     #----------------------------
     proc ::CloseAll() \
     {
-      closeclass_cmd = boost_format("if (exists(%1%)) { del %1%; };")%::classname
+      closeclass_cmd = "if (exists(%1%)) { del %1%; };" %::classname
       eval closeclass_cmd
       ::Close
     }
@@ -48,17 +48,17 @@ if (!exists(global::ImageGridClass)) {
     #----------------------------
     proc ::UpdateDisplay() \
     {
-      cmd = boost_format("if (exists(%1%_draw)) { %1%_draw.Update(-1); };") % ::input_name
+      cmd = "if (exists(%1%_draw)) { %1%_draw.Update(-1); };" % ::input_name
       eval cmd
     }
 
     #----------------------------
     proc ::SetAsCallback() \
     {
-      eval boost_format("ok = exists(%1%_draw);")%::input_name
+      eval "ok = exists(%1%_draw);" %::input_name
       if (ok) {
         # get local reference to input image drawing window
-        eval boost_format("_in_draw = &%1%_draw;") % ::input_name
+        eval "_in_draw = &%1%_draw;" % ::input_name
         _in_draw.PaintCallback(::DrawGrid);
       }
     }
@@ -68,12 +68,12 @@ if (!exists(global::ImageGridClass)) {
     proc ::DrawGrid() \
     {
       if (::enable) {
-        eval boost_format("ok = exists(%1%_draw);")%::input_name
+        eval "ok = exists(%1%_draw);" %::input_name
         if (ok) {
           # get local reference to input image
-          eval boost_format("_in = &%1%;") % ::input_name
+          eval "_in = &%1%;" % ::input_name
           # get local reference to input image drawing window
-          eval boost_format("_in_draw = &%1%_draw;") % ::input_name
+          eval "_in_draw = &%1%_draw;" % ::input_name
           
           # wrapping ${input_name}_draw with new local variable indraw_wrap
           ::ami_import->ImageDraw(&_in_draw,"indraw_wrap");

@@ -32,12 +32,12 @@ proc AnisoRGB( IMAGE in, IMAGE res, NUM threshold) {
 
   print "Updating the RGB result\n"
   ir_r1 = (ir_r>0)*(ir_r<255)*(ir_r)+(ir_r>=255)*255
-  res[0] = (UCHAR) ir_r1
+  res.SetComponent( 0, (UCHAR) ir_r1)
 
   ig_r1 = (ig_r>0)*(ig_r<255)*(ig_r)+(ig_r>=255)*255
-  res[1] = (UCHAR) ig_r1
+  res.SetComponent( 1, (UCHAR) ig_r1)
 
   ib_r1 = (ib_r>0)*(ib_r<255)*(ib_r)+(ib_r>=255)*255
-  res[2] = (UCHAR) ib_r1
+  res.SetComponent( 2, (UCHAR) ib_r1)
 
 }

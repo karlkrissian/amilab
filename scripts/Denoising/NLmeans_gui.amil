@@ -77,7 +77,7 @@ if (!exists(NLmeansClass)) {
     #----------------------------
     proc ::CloseAll() \
     {
-      eval boost_format("if (exists(%1%)) { del %1%; };") % ::class_name
+      eval "if (exists(%1%)) { del %1%; };" % ::class_name
       ::Close
     }
     ::CloseAll.Comments("Call ::Close() method and delete the class variable")
@@ -174,20 +174,20 @@ printn "*** Filter() ****"
         } else {
           ::res_roi = ::res0
           ::res_roi.info
-          ::res_roi[0] = ::filters->NLmeans( (FLOAT)::res0[0],\
+          ::res_roi.SetComponent( 0, ::filters->NLmeans( (FLOAT)::res0[0],\)
                                     ::t,::f,::h,\
                                     ::noisetype,\
                                     ::threads,\
                                     ::filter_type,\
                                     ::presmooth_SD,\
                                     ::pattern_weight_param)
-          ::res_roi[1] = ::filters->NLmeans( (FLOAT)::res0[1],\
+          ::res_roi.SetComponent( 1, ::filters->NLmeans( (FLOAT)::res0[1],\)
                                     ::t,::f,::h,\
                                     ::noisetype,::threads,\
                                     ::filter_type,\
                                 ::presmooth_SD,\
                                 ::pattern_weight_param)
-          ::res_roi[2] = ::filters->NLmeans( (FLOAT)::res0[2],\
+          ::res_roi.SetComponent( 2, ::filters->NLmeans( (FLOAT)::res0[2],\)
                                     ::t,::f,::h,\
                                     ::noisetype,::threads,\
                                     ::filter_type,\
@@ -223,15 +223,15 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
                           ::presmooth_SD,\
                           ::pattern_weight_param)
         } else {
-          ::res[0] = ::filters->NLmeans((FLOAT)::res0[0],::t,::f,::h,::noisetype,::threads,\
+          ::res.SetComponent( 0, ::filters->NLmeans((FLOAT)::res0[0],::t,::f,::h,::noisetype,::threads,\)
                                 ::filter_type,\
                                 ::presmooth_SD,\
                                 ::pattern_weight_param)
-          ::res[1] = ::filters->NLmeans((FLOAT)::res0[1],::t,::f,::h,::noisetype,::threads,\
+          ::res.SetComponent( 1, ::filters->NLmeans((FLOAT)::res0[1],::t,::f,::h,::noisetype,::threads,\)
                                 ::filter_type,\
                                 ::presmooth_SD,\
                                 ::pattern_weight_param)
-          ::res[2] = ::filters->NLmeans((FLOAT)::res0[2],::t,::f,::h,::noisetype,::threads,\
+          ::res.SetComponent( 2, ::filters->NLmeans((FLOAT)::res0[2],::t,::f,::h,::noisetype,::threads,\)
                                 ::filter_type,\
                                 ::presmooth_SD,\
                                 ::pattern_weight_param)
@@ -264,24 +264,24 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
                                   num_features,\
                                   ::res);
         current_feature = 0
-        ::matchfield[current_feature] = filter((FLOAT)::res,::sigma,0,0,0)
+        ::matchfield.SetComponent( current_feature, filter((FLOAT)::res,::sigma,0,0,0))
         if (::usegrad) {
           current_feature++
-          ::matchfield[current_feature] = normgrad((FLOAT)::res,::sigma)*::sigma
+          ::matchfield.SetComponent( current_feature, normgrad((FLOAT)::res,::sigma)*::sigma)
         }
         #::matchfield[1] = secdergrad((FLOAT)::res,::sigma) 
         #normgrad((FLOAT)::res,::sigma)
       } else {
         ::matchfield <<=  Image(FLOAT,6,::res)
         tmp <<= (FLOAT)::res[0]
-        ::matchfield[0] = filter(  tmp,::sigma,0,0,0)
-        ::matchfield[1] = normgrad(tmp,::sigma)
+        ::matchfield.SetComponent( 0, filter(  tmp,::sigma,0,0,0))
+        ::matchfield.SetComponent( 1, normgrad(tmp,::sigma))
         tmp <<= (FLOAT)::res[1]
-        ::matchfield[2] = filter(  tmp,::sigma,0,0,0)
-        ::matchfield[3] = normgrad(tmp,::sigma)
+        ::matchfield.SetComponent( 2, filter(  tmp,::sigma,0,0,0))
+        ::matchfield.SetComponent( 3, normgrad(tmp,::sigma))
         tmp <<= (FLOAT)::res[2]
-        ::matchfield[4] = filter(  tmp,::sigma,0,0,0)
-        ::matchfield[5] = normgrad(tmp,::sigma)
+        ::matchfield.SetComponent( 4, filter(  tmp,::sigma,0,0,0))
+        ::matchfield.SetComponent( 5, normgrad(tmp,::sigma))
       }
     
     }
@@ -305,9 +305,9 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
             printn "processing time: "+TimeSpent
           } else {
             ::res_roi = ::res0
-            ::res_roi[0] = ::filters->NLmeans_fast((FLOAT) ::res0[0],::mf0,::t,::h,::noisetype,::threads)
-            ::res_roi[1] = ::filters->NLmeans_fast((FLOAT) ::res0[1],::mf0,::t,::h,::noisetype,::threads)
-            ::res_roi[2] = ::filters->NLmeans_fast((FLOAT) ::res0[2],::mf0,::t,::h,::noisetype,::threads)
+            ::res_roi.SetComponent( 0, ::filters->NLmeans_fast((FLOAT) ::res0[0],::mf0,::t,::h,::noisetype,::threads))
+            ::res_roi.SetComponent( 1, ::filters->NLmeans_fast((FLOAT) ::res0[1],::mf0,::t,::h,::noisetype,::threads))
+            ::res_roi.SetComponent( 2, ::filters->NLmeans_fast((FLOAT) ::res0[2],::mf0,::t,::h,::noisetype,::threads))
           }
           ::res0.info
           ::res_roi.info
@@ -338,9 +338,9 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
                                     ::threads)
           } else {
             ::res = ::res0
-            ::res[0] = ::filters->NLmeans_fast((FLOAT)::res0[0],::matchfield,::t,::h,::noisetype,::threads)
-            ::res[1] = ::filters->NLmeans_fast((FLOAT)::res0[1],::matchfield,::t,::h,::noisetype,::threads)
-            ::res[2] = ::filters->NLmeans_fast((FLOAT)::res0[2],::matchfield,::t,::h,::noisetype,::threads)
+            ::res.SetComponent( 0, ::filters->NLmeans_fast((FLOAT)::res0[0],::matchfield,::t,::h,::noisetype,::threads))
+            ::res.SetComponent( 1, ::filters->NLmeans_fast((FLOAT)::res0[1],::matchfield,::t,::h,::noisetype,::threads))
+            ::res.SetComponent( 2, ::filters->NLmeans_fast((FLOAT)::res0[2],::matchfield,::t,::h,::noisetype,::threads))
           }
     
           _diff = sqrt(mean((::res0-::res)*(::res0-::res)))
@@ -372,7 +372,7 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
       } else {
         for local::k = 0 to ::res.vdim-1 {
           local::c = ::res[k]
-          ::res[k] = ::filters->NewNLmeans(&c,::t,::f,::h,::threads,::minweight)
+          ::res.SetComponent( k, ::filters->NewNLmeans(&c,::t,::f,::h,::threads,::minweight))
         }
       }
       EndTime

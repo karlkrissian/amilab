@@ -40,7 +40,7 @@ if (!exists(CTClass)) {
     
     #----------------------------
     proc ::CloseAll() {
-      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
+      eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
       ::Close
     }
     ::CloseAll.Comments("Call ::Close() method and delete the class variable")
@@ -73,8 +73,12 @@ printn "deleting windows"
     tmp_y = tmp_y-::dimy/2
     tmp_z = tmp_z-::dimz/2
     dxy=sqrt(tmp_x*tmp_x+tmp_y*tmp_y)-::R
+    #dxy.info
+    #tmp_z.info
     res = -(dxy*dxy+tmp_z*tmp_z)+(::r*::r)
   
+    #printn "res.info"
+    #res.info
     # estimate partial volume effect based on linear interpolation
     res = ::filters->ComputePV_subdiv(res)
     res = res*(::fg-::bg)+::bg

@@ -72,7 +72,7 @@ if (!exists(ParametricSurfaceClass)) {
     
   proc ::CloseAll() \
   {
-    eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
+    eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
     ::Close
   }
   ::CloseAll.Comments("Call ::Close() method and delete the class variable")
@@ -132,25 +132,26 @@ if (!exists(ParametricSurfaceClass)) {
       # 0: superquadric
       if (::type==0) {
       
-        ::pos[0] = cos(::theta)*cos(::phi)
-        ::pos[1] = sin(::theta)*cos(::phi)
-        ::pos[2] = sin(::phi)
+        ::pos.SetComponent(0, cos(::theta)*cos(::phi))
+        ::pos.SetComponent(1, sin(::theta)*cos(::phi))
+        ::pos.SetComponent(2, sin(::phi))
 
         # compute the signs
         spos0 = (::pos[0]>0) - (::pos[0]<0)
         spos1 = (::pos[1]>0) - (::pos[1]<0)
         spos2 = (::pos[2]>0) - (::pos[2]<0)
 
-        ::pos[0] = (exp(ln(abs(::pos[0]))/::e_x))*spos0*::cx
-        ::pos[1] = (exp(ln(abs(::pos[1]))/::e_y))*spos1*::cy
-        ::pos[2] = (exp(ln(abs(::pos[2]))/::e_z))*spos2*::cz
+        ::pos.SetComponent(0,exp(ln(abs(::pos[0]))/::e_x)*spos0*::cx)
+        ::pos.SetComponent(1,exp(ln(abs(::pos[1]))/::e_y)*spos1*::cy)
+        ::pos.SetComponent(2,exp(ln(abs(::pos[2]))/::e_z)*spos2*::cz)
       }
+printn "4"
 
       # 1: torus
       if (::type==1) {
-        ::pos[0] = (cos(::phi)*::r+::R)*cos(::theta)
-        ::pos[1] = (cos(::phi)*::r+::R)*sin(::theta)
-        ::pos[2] = sin(::phi)*::r
+        ::pos.SetComponent(0, (cos(::phi)*::r+::R)*cos(::theta))
+        ::pos.SetComponent(1, (cos(::phi)*::r+::R)*sin(::theta)
+        ::pos.SetComponent(2, sin(::phi)*::r)
       }
 
       # 2: User´s equation
@@ -158,11 +159,11 @@ if (!exists(ParametricSurfaceClass)) {
         U = ::theta
         V = ::phi
         k = ::k
-        eval "::pos[0] = "+::X+";"
+        eval "::pos.SetComponent(0, "+::X+");"
         X = ::pos[0]
-        eval "::pos[1] = "+::Y+";"
+        eval "::pos.SetComponent(1, "+::Y+");"
         Y = ::pos[1]
-        eval "::pos[2] = "+::Z+";"
+        eval "::pos.SetComponent(2, "+::Z+");"
       }
 
       if (exists(::s_draw)) {
@@ -170,6 +171,7 @@ if (!exists(ParametricSurfaceClass)) {
         del ::s
       }
 
+printn "5"
       # parameter 0 invert normals
       ::s = CreateFlatMesh(::theta>-1,0)
       ::s.ElevateMesh(::pos)
@@ -180,11 +182,14 @@ if (!exists(ParametricSurfaceClass)) {
       } else {
         show ::s
       }
+printn "6"
       ::s.Normals
       ::s.Recompute
       ::s_draw.Paint
       ::updating = 0
+printn "7"
     }
+printn "8"
   }
 
   #--------------------------------------------------------------
@@ -257,8 +262,8 @@ if (!exists(ParametricSurfaceClass)) {
 
     eq_file.print "//---- Main Parameters\n"
 
-    eq_file.print boost_format("::theta_dim = %1%\n") % ::theta_dim
-    eq_file.print boost_format("::phi_dim = %1%\n") % ::phi_dim
+    eq_file.print "::theta_dim = %1%\n" % ::theta_dim
+    eq_file.print "::phi_dim = %1%\n" % ::phi_dim
 
     eq_file.print "//---- Parametric equation expression \n"
 

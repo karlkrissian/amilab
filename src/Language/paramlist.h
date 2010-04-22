@@ -25,6 +25,7 @@
 
 extern unsigned char GB_debug;
 
+
 #include <string>
 #include <list>
 //using namespace std;

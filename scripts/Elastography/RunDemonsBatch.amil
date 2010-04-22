@@ -18,16 +18,16 @@ printn "2"
   D1.setvoxelsize(imsizeX/D1.tx,imsizeX/D1.ty,1)
   D1u_r = Flip(D1u_r,1)
   D1v_r = Flip(D1v_r,1)
-  D1[0] = D1u_r
-  D1[1] = D1v_r
-  D1[2]  = D1u_r*0
+  D1.SetComponent( 0, D1u_r)
+  D1.SetComponent( 1, D1v_r)
+  D1.SetComponent( 2, D1u_r*0)
   del D1u
   del D1v
 
   MSD_GT = D1
 
-  MSD_GT[0] =  MSD_GT[0]/MSD_GT.vx
-  MSD_GT[1] =  MSD_GT[1]/MSD_GT.vy
+  MSD_GT.SetComponent( 0, MSD_GT[0]/MSD_GT.vx)
+  MSD_GT.SetComponent( 1, MSD_GT[1]/MSD_GT.vy)
 
 //  MSD_GT = Resize(D1,i1_uchar.tx,i1_uchar.ty,i1_uchar.tz,1)
 
@@ -92,9 +92,9 @@ proc MSD_run() {
   resy.save res_name+"_Y.raw"
 
   res = Image(FLOAT,i1.tx,i1.ty,i1.tz,3)
-  res[0] = resx
-  res[1] = resy
-  res[2] = resx*0
+  res.SetComponent( 0, resx)
+  res.SetComponent( 1, resy)
+  res.SetComponent( 2, resx*0)
   res.save res_name+".ami.gz"
 
   EndTime

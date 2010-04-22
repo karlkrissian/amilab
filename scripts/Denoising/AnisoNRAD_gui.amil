@@ -71,7 +71,7 @@ if (!exists(AnisoNRADClass)) {
     
   #----------------------------
   proc ::CloseAll() {
-    eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
+    eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
     ::Close
   }
   ::CloseAll.Comments("Call ::Close() method and delete the class variable")
@@ -310,7 +310,8 @@ if (!exists(AnisoNRADClass)) {
     import = &global::ami_import;
     ::win = import->ParamPanel("NRAD")
 
-    ::win.BeginBook()      ::win.AddPage("Param")
+    ::win.BeginBook()
+      ::win.AddPage("Param")
         ::win.AddImageChoice( &::input_name, "Input")
         ::win.AddFloat( &::dt,"dt",0.01,10)
         ::win.AddFloat( &::t,"T",0,100)

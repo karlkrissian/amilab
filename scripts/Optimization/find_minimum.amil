@@ -33,7 +33,7 @@ if (!exists(MinSearchClass)) {
     
     #----------------------------
     proc ::CloseAll() {
-      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
+      eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
       ::Close
     }
     ::CloseAll.Comments("Call ::Close() method and delete the class variable")
@@ -72,8 +72,8 @@ if (!exists(MinSearchClass)) {
       } 
       # end for _n
     
-      ::result_string = boost_format("%1%")%::xmin
-      ::result_value  = boost_format("%1%")%::valmin
+      ::result_string = "%1%" %::xmin
+      ::result_value  = "%1%" %::valmin
       ::win.update
     
     }
@@ -101,7 +101,7 @@ if (!exists(MinSearchClass)) {
       repeat { 
     
         iterations++;
-        printn boost_format("*********   nb_div = %1%") %nb_div;
+        printn "*********   nb_div = %1%" %nb_div;
         if (nb_div>::P1nbits) { break; }
         # different configurations  
         if (v0<v1) {
@@ -157,9 +157,9 @@ if (!exists(MinSearchClass)) {
       if (v1<resV) { resX = current;       resV = v1; } 
       if (v2<resV) { resX = current+_step; resV = v2; } 
 
-      ::result_string = boost_format("%1% ")%resX
-      ::result_string =  ::result_string + boost_format(" +/- %1%")%_step
-      ::result_value  =  boost_format("%1%")%resV
+      ::result_string = "%1% " %resX
+      ::result_string =  ::result_string + " +/- %1%" %_step
+      ::result_value  =  "%1%" %resV
       ::win.update
 
     }

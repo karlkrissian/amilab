@@ -168,6 +168,8 @@ WS      [ \t]
 
 ";"  return(token::T_SEMICOLON);  /*{;,T_SEMICOLON}*/
 
+SetComponent   return(token::T_SetComponent); /*{SetComponent,T_SetComponent}*/
+GetExtent      return(token::T_GetExtent); /*{SetGetExtent,T_GetExtent}*/
 
 LineNumber      return(token::T_LineNumber); /*{LineNumber,T_LineNumber}*/
 
@@ -744,7 +746,11 @@ Temp2Altitudes    return(token::T_Temp2Altitudes);    /*{Temp2Altitudes,T_Temp2A
 GeoCoordinates    return(token::T_GeoCoordinates);    /*{GeoCoordinates,T_GeoCoordinates}*/
 ElevateMesh       return(token::T_ElevateMesh);       /*{ElevateMesh,T_ElevateMesh}*/
 Set3DArrowParam   return(token::T_Set3DArrowParam); /*{Set3DArrowParam,T_Set3DArrowParam}*/
+
 CreateVectors     return(token::T_CreateVectors); /*{CreateVectors,T_CreateVectors}*/
+
+CreateVectorsFromField  return(token::T_CreateVectorsFromField); /*{CreateVectorsFromField,T_CreateVectorsFromField}*/
+
 ComputeAltitudes  return(token::T_ComputeAltitudes); /*{ComputeAltitudes,T_ComputeAltitudes}*/
 ReadFlow          return(token::T_ReadFlow); /*{ReadFlow,T_ReadFlow}*/
 SetFluidNavFile   return(token::T_SetFluidNavFile); /*{SetFluidNavFile,T_SetFluidNavFile}*/

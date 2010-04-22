@@ -220,8 +220,8 @@ proc call_amiOFPDE_Zoom(IMAGE _im1,IMAGE _im2, IMAGE _res) {
 
   AMIFluid->amiOFVar2DZoom(_im1,_im2,OFzoom_sigma,OFzoom_T,OFzoom_alpha,OFzoom_dtype,OFzoom_quantile,OFzoom_ht,&_resx,&_resy,OFzoom_nbiter,OFzoom_zoom);
 
-  _res[0]=_resx
-  _res[1]=_resy
+  _res.SetComponent( 0, _resx)
+  _res.SetComponent( 1, _resy)
 
 }
 
@@ -237,8 +237,8 @@ proc call_amiOFPDE_Vorticity(IMAGE _im1,IMAGE _im2, IMAGE _res) {
 
   AMIFluid->amiGradVorticity(_im1,_im2,&_resx,&_resy,vort_grid,vort_winsize,vort_sigma,vort_alpha,vort_TOL,&_vort)
 
-  _res[0]=_resx
-  _res[1]=_resy
+  _res.SetComponent( 0, _resx)
+  _res.SetComponent( 1, _resy)
 
 }
 
@@ -253,8 +253,8 @@ proc call_amiCorr2D(IMAGE _im1, IMAGE _im2, IMAGE _res) {
   cx = _im1*0
   cy = _im1*0
   AMIFluid->amiOFCorr2D(_im1,_im2,_u,_v,corr,cx,cy,0,0,corr_step_x,corr_step_y,wsx,wsy,1);
-  _res[0]=_u;
-  _res[1]=_v;
+  _res.SetComponent( 0, _u;)
+  _res.SetComponent( 1, _v;)
 }
 
 

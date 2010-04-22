@@ -18,8 +18,8 @@ proc CheckInitialPoints( IMAGE input, STRING resname, NUM size ) \
   s1_mean= mean[res>0](input)
   s1_sd  = mean[res>0] ( (input-s1_mean)*(input-s1_mean))
   s1_sd  = sqrt(s1_sd)
-  printn boost_format(" Sphere 1, mean = %1%") % s1_mean
-  printn boost_format(" Sphere 1, sd   = %1%") % s1_sd
+  printn " Sphere 1, mean = %1%" % s1_mean
+  printn " Sphere 1, sd   = %1%" % s1_sd
 
   res=-10;
 
@@ -28,8 +28,8 @@ proc CheckInitialPoints( IMAGE input, STRING resname, NUM size ) \
   s2_mean= mean[res>0](input)
   s2_sd  = mean[res>0] ( (input-s2_mean)*(input-s2_mean))
   s2_sd  = sqrt(s2_sd)
-  printn boost_format(" Sphere 2, mean = %1%") % s2_mean
-  printn boost_format(" Sphere 2, sd   = %1%") % s2_sd
+  printn " Sphere 2, mean = %1%" % s2_mean
+  printn " Sphere 2, sd   = %1%" % s2_sd
 
   res=-10;
 
@@ -38,8 +38,8 @@ proc CheckInitialPoints( IMAGE input, STRING resname, NUM size ) \
   s3_mean= mean[res>0](input)
   s3_sd  = mean[res>0] ( (input-s3_mean)*(input-s3_mean))
   s3_sd  = sqrt(s3_sd)
-  printn boost_format(" Sphere 3, mean = %1%") % s3_mean
-  printn boost_format(" Sphere 3, sd   = %1%") % s3_sd
+  printn " Sphere 3, mean = %1%" % s3_mean
+  printn " Sphere 3, sd   = %1%" % s3_sd
 
   # check point intensities
   if ((s1_mean>1150)||((s2_mean+s3_mean)/2<(s1_mean+100))) {

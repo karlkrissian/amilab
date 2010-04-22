@@ -44,7 +44,7 @@ if (!exists(GreyMorphoClass)) {
     #----------------------------
     proc ::CloseAll() \
     {
-      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
+      eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
       ::Close
     }
     ::CloseAll.Comments("Call ::Close() method and delete the class variable")
@@ -89,9 +89,9 @@ if (!exists(GreyMorphoClass)) {
         ::ProcessImage(&::res)
       } else {
         for local::k=0 to ::res.vdim-1 {
-          _c = ::res[k]
+          _c = (FLOAT) ::res[k]
           ::ProcessImage(&_c)
-          ::res[k] = _c
+          ::res.SetComponent( k, _c)
         }
       }
       EndTime
@@ -112,6 +112,19 @@ if (!exists(GreyMorphoClass)) {
         show ::res
         ::input_draw.compare(::res_draw)
         # draw limits of ROI
+      }
+    }
+    
+    #----------------------------
+    proc ::ShowDiff() \
+    {
+      if (exists(::input))&&(exists(::res)) {
+        if (!exists(::input_draw)) {
+          show ::input
+        }
+        ::diff = ::input - ::res
+        show ::diff
+        ::input_draw.compare(::diff_draw)
       }
     }
     
@@ -194,19 +207,20 @@ if (!exists(GreyMorphoClass)) {
                   restart_id = ::win.AddButton("Restart", ::Restart)
               ::win.EndHorizontal
               ::win.AddButton("Run",     ::Process)
+              ::win.AddButton("ShowDiff",::ShowDiff)
           ::win.EndBoxPanel
   
           ::win.BeginBoxPanel("Result")
               ::win.AddString( &::result_filename,"file")
               ::win.BeginHorizontal
-                  display_id = ::win.AddButton("Save",       ::Save)
-                  display_id = ::win.AddButton("Display",    ::Display)
+                  ::win.AddButton("Save",       ::Save)
+                  ::win.AddButton("Display",    ::Display)
               ::win.EndHorizontal
           ::win.EndBoxPanel
 
           ::win.BeginBoxPanel("Surface display")
               ::win.AddFloat( &::surf_scaling,"surf scale",0.01,10)
-              display_surf_id = ::win.AddButton("Surfaces",    ::DisplaySurfaces)
+              ::win.AddButton("Surfaces",    ::DisplaySurfaces)
           ::win.EndBoxPanel
       ::win.EndBook
       ::win.BeginHorizontal

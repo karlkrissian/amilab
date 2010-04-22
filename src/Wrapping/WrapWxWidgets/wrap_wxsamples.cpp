@@ -114,7 +114,7 @@ void wrap_stctest( ParamList* p)
   if (!get_int_param( line_number,    p, n)) HelpAndReturn;
 
   // create application frame
-  StcTestFrame*  m_frame = new StcTestFrame ( wxT("wxWidgets Scintilla Sample"));
+  StcTestFrame*  m_frame = new StcTestFrame ( GB_main_wxFrame, wxT("wxWidgets Scintilla Sample"));
 
   // open application frame
   m_frame->Layout ();

@@ -169,7 +169,7 @@ if (!exists(SPClass)) {
     
     #----------------------------
     proc ::CloseAll() {
-      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
+      eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
       ::Close
     }
     ::CloseAll.Comments("Call ::Close() method and delete the class variable")

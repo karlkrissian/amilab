@@ -455,7 +455,7 @@ int Driver::err_print(const char* st)
 
   if ((!InConsole())&&(res==wxID_YES)) {
     // create application frame
-    StcTestFrame*  m_frame = new StcTestFrame ( wxT("AMILab editor"));
+    StcTestFrame*  m_frame = new StcTestFrame (GB_main_wxFrame, wxT("AMILab editor"));
     // open application frame
     m_frame->Layout ();
     m_frame->Show (true);

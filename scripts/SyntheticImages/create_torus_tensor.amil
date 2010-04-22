@@ -32,9 +32,9 @@ proc CreateTorusTensor( IMAGE t, NUM vx, NUM vy, NUM vz, NUM rad1, NUM rad2) {
   dir.initvalue(vx,vy,vz)
 
   pos = dir
-  pos[0]=ix
-  pos[1]=iy
-  pos[2]=iz
+  pos.SetComponent( 0, ix)
+  pos.SetComponent( 1, iy)
+  pos.SetComponent( 2, iz)
 
   // create vector tangent to the torus
   tangent = pos^dir
@@ -48,15 +48,15 @@ proc CreateTorusTensor( IMAGE t, NUM vx, NUM vy, NUM vz, NUM rad1, NUM rad2) {
   for l=0 to 2 {
     temp = tangent[k]*tangent[l]*ldir
     temp = temp*torus
-    t[n] = temp
+t.SetComponent( n, temp)
     n=n+1
   }
   }
 printn "iso"
   // add isotropic component
-  t[0] = t[0]+torus*liso
-  t[4] = t[4]+torus*liso
-  t[8] = t[8]+torus*liso
+t.SetComponent( 0, t[0]+torus*liso)
+t.SetComponent( 4, t[4]+torus*liso)
+t.SetComponent( 8, t[8]+torus*liso)
 }
 
 

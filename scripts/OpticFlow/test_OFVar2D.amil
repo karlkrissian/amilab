@@ -24,8 +24,8 @@ proc call_amiOFVar2D(IMAGE _im1, IMAGE _im2, IMAGE _res) {
   _u = _res[0];
   _v = _res[1];
   AMIFluid->amiOFVar2DZoom(_im1,_im2,sigma,T,alpha,dtype,quantile,ht,&_u,&_v,nbiter,zoom);
-  _res[0]=_u;
-  _res[1]=_v;
+  _res.SetComponent( 0, _u;)
+  _res.SetComponent( 1, _v;)
 }
 
 i = Image(FLOAT,100,100,1)

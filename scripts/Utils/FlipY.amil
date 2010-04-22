@@ -6,9 +6,9 @@ proc FlipY(IMAGE im) {
 
   pos=Image(FLOAT_VECTOR,im.tx,im.ty,im.tz)
   setvoxelsize(pos,im.vx,im.vy,im.vz)
-  pos[0]=Xpos(im)
-  pos[1]=-Ypos(im)+im.ty-1
-  pos[2]=Zpos(im)
+  pos.SetComponent( 0, Xpos(im))
+  pos.SetComponent( 1, -Ypos(im)+im.ty-1)
+  pos.SetComponent( 2, Zpos(im))
   im = im(pos)
 
 }

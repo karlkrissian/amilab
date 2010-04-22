@@ -45,7 +45,7 @@ if (!exists(SoftFocus)) {
                         0,0,0)
       } else {
         for n=0 to ::input.vdim-1 {
-          ::res[n] = filter( ::input[n],::sigma,\
+          ::res.SetComponent( n, filter( ::input[n],::sigma,\)
                               0,0,0)
         }
       }

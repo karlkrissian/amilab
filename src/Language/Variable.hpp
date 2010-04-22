@@ -19,6 +19,7 @@
 
 #include <vector>
 #include <list>
+#include <boost/pointer_cast.hpp>
 
 // forward definition of Variables
 //class Variables;
@@ -184,7 +185,7 @@ public:
     else return false;
   }
 
-  bool operator == (const BasicVariable::ptr& v) 
+  bool Equal(const BasicVariable::ptr& v) 
   {
     if (_type == v->Type()) {
       // convert pointer
@@ -265,7 +266,7 @@ public:
 */
 
 #define VAR_OP_BASICVAR(op) \
-  BasicVariable::ptr operator op(const BasicVariable& b) \
+  BasicVariable::ptr operator op(const BasicVariable::ptr& b) \
   { std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl; \
     return this->NewReference(); }
 
@@ -279,7 +280,7 @@ public:
 //  BasicVariable::ptr operator op(const Variable<U>& b); 
 
 #define VAR_COMP_OP_BASICVAR(op) \
-  BasicVariable::ptr operator op(const BasicVariable& b) \
+  BasicVariable::ptr operator op(const BasicVariable::ptr& b) \
   { std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl; \
     return this->NewReference(); }
 
@@ -289,7 +290,7 @@ public:
     return this->NewReference(); }
 
 #define VAR_LOGIC_OP_VAR(op) \
-  BasicVariable::ptr operator op(const BasicVariable& b) \
+  BasicVariable::ptr operator op(const BasicVariable::ptr& b) \
   { std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl; \
     return this->NewReference(); }
 
@@ -364,12 +365,14 @@ public:
    *  Variable Bitwise operators.
    */
   //@{
+    VAR_LOGIC_OP_VAR(^);
   //@}
 
   /** @name OtherOperators
    *  Variable Other operators.
    */
   //@{
+    VAR_OP_BASICVAR(=);
   //@}
 
 #define VAR_FUNC(func) \
@@ -399,6 +402,12 @@ public:
 
 
   BasicVariable::ptr BasicCast(const int& type) 
+  {
+    std::cout << get_name() << " " << __func__ << " not defined." << std::endl; 
+    return this->NewReference(); 
+  }
+
+  BasicVariable::ptr operator[](const BasicVariable::ptr& v)
   {
     std::cout << get_name() << " " << __func__ << " not defined." << std::endl; 
     return this->NewReference(); 
@@ -462,5 +471,7 @@ class VarArray;
 */
 
 #include "Variable_float.h"
+#include "Variable_InrImage.h"
+#include "Variable_string.h"
 
 #endif

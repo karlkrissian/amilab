@@ -117,8 +117,8 @@ proc amicorr(IMAGE _im1, IMAGE _im2, IMAGE _res) {
                 _u,_v,_corr,\
                 _cx,_cy, \
                 0,0,step_x,step_y,wsx,wsy,1)
-    _res[0]=_u
-    _res[1]=_v
+    _res.SetComponent( 0, _u)
+    _res.SetComponent( 1, _v)
   } else {
     # 3D
     if (corr_downsample) {

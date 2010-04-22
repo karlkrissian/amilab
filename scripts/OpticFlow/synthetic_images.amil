@@ -106,8 +106,8 @@ print "CreateLine() 1\n"
   posy = i0posy
   // save displacement vector field
   TransformInvCoordinates(&posx,&posy)
-  displ[0] = posx-i0posx
-  displ[1] = posy-i0posy
+  displ.SetComponent( 0, posx-i0posx)
+  displ.SetComponent( 1, posy-i0posy)
 
 print "CreateLine() 2\n"
   posx = i0posx

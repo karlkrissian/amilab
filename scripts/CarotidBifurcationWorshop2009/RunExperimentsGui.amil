@@ -114,8 +114,8 @@ if (!exists(CE_defined)) {
   {
     SetStatusText("Reading data ...")
     # read input image
-    global::CE_datanumber_str = boost_format("%1%") % CE_datacenter 
-    CE_datanumber_str = CE_datanumber_str + boost_format("%02.0f") % CE_datanumber
+    global::CE_datanumber_str = "%1%" % CE_datacenter 
+    CE_datanumber_str = CE_datanumber_str + "%02.0f" % CE_datanumber
     global::CE_current_datadir    = CE_data_dir       +"/challenge"+ CE_datanumber_str
     global::CE_current_resultsdir = CE_results_dir    +"/challenge"+ CE_datanumber_str
     global::CE_current_gtdir      = CE_groundtruth_dir+"/challenge"+ CE_datanumber_str
@@ -323,7 +323,7 @@ if (!exists(CE_defined)) {
         ML_result.putimage(ML_result_bak)
         del ML_result_bak
         ML_result <<= ML_result[CE_input_cropped]
-        message = boost_format("CarotidExperiments_ReadVesselness() \n File %1% wrong dimensions, image has been adapted ") % vfilename 
+        message = "CarotidExperiments_ReadVesselness() \n File %1% wrong dimensions, image has been adapted " % vfilename 
         if (!CE_nointeraction) {
           InfoDialog message
         } else {
@@ -332,7 +332,7 @@ if (!exists(CE_defined)) {
       }
     } else {
       if (!CE_nointeraction) {
-        InfoDialog boost_format("CarotidExperiments_ReadVesselness() \n File %1% does not exists ") % vfilename 
+        InfoDialog "CarotidExperiments_ReadVesselness() \n File %1% does not exists " % vfilename 
       }
     }
 
@@ -352,7 +352,7 @@ if (!exists(CE_defined)) {
         ML_maxima.putimage(ML_maxima_bak)
         del ML_maxima_bak
         ML_maxima <<= ML_maxima[CE_input_cropped]
-        message = boost_format("CarotidExperiments_ReadVesselness() \n File %1% wrong dimensions, image has been adapted ") % vmfilename 
+        message = "CarotidExperiments_ReadVesselness() \n File %1% wrong dimensions, image has been adapted " % vmfilename 
         if (!CE_nointeraction) {
           InfoDialog message
         } else {
@@ -361,7 +361,7 @@ if (!exists(CE_defined)) {
       }
     } else {
       if (!CE_nointeraction) {
-        InfoDialog boost_format("CarotidExperiments_ReadVesselness() \n File %1% does not exists ") % vmfilename 
+        InfoDialog "CarotidExperiments_ReadVesselness() \n File %1% does not exists " % vmfilename 
       }
     }
 
@@ -517,8 +517,8 @@ if (!exists(CE_defined)) {
       yE = lEp(dn1.trx,0,0,1)
       if (yI<yE) {
         mes = "Path to point 3 is lower than path to point 2, setting External to 2"
-        mes = mes + boost_format(" yE=%1%") % yE
-        mes = mes + boost_format(" yI=%1%") % yI
+        mes = mes + " yE=%1%" % yE
+        mes = mes + " yI=%1%" % yI
         if (!CE_nointeraction) {
           InfoDialog mes
         } else {
@@ -599,11 +599,11 @@ if (!exists(CE_defined)) {
       maxz = maxz + 5
       # check for image limits
       if (minz<0) { 
-        InfoDialog boost_format("CheckCCALength()\tCropped image too small, setting minz from %1% to 0") % minz
+        InfoDialog "CheckCCALength()\tCropped image too small, setting minz from %1% to 0" % minz
         minz = 0;
       }
       if (maxz>CE_speed.tz-1) { 
-        InfoDialog boost_format("CheckCCALength()\tCropped image too small, limiting maxz (%1%)") % maxz
+        InfoDialog "CheckCCALength()\tCropped image too small, limiting maxz (%1%)" % maxz
         maxz = CE_speed.tz-1; 
       }
       global::CE_speed2 <<= CE_speed[:,:,minz:maxz]
@@ -725,11 +725,11 @@ if (!exists(CE_defined)) {
       maxz = maxz + 5
       # check for image limits
       if (minz<0) { 
-        InfoDialog boost_format("Cropped image too small, setting minz from %1% to 0") % minz
+        InfoDialog "Cropped image too small, setting minz from %1% to 0" % minz
         minz = 0;
       }
       if (maxz>CE_speed.tz-1) { 
-        InfoDialog boost_format("Cropped image too small, limiting maxz (%1%)") % maxz
+        InfoDialog "Cropped image too small, limiting maxz (%1%)" % maxz
         maxz = CE_speed.tz-1; 
       }
       global::CE_speed2 <<= CE_speed[:,:,minz:maxz]
@@ -844,15 +844,15 @@ if (!exists(CE_defined)) {
       # problem to put comments in string !!!
       #junc_file.printn "# Information about the detected junction point:"
       junc_file.printn ""
-      junc_file.printn boost_format( "global::CE_inverted_paths = %1% ") % CE_inverted_paths
+      junc_file.printn  "global::CE_inverted_paths = %1% " % CE_inverted_paths
       junc_file.printn ""
-      junc_file.printn boost_format( "global::CE_Jx = %1% ") % CE_Jx
-      junc_file.printn boost_format( "global::CE_Jy = %1% ") % CE_Jy
-      junc_file.printn boost_format( "global::CE_Jz = %1% ") % CE_Jz
+      junc_file.printn  "global::CE_Jx = %1% " % CE_Jx
+      junc_file.printn  "global::CE_Jy = %1% " % CE_Jy
+      junc_file.printn  "global::CE_Jz = %1% " % CE_Jz
       junc_file.printn ""
-      junc_file.printn boost_format( "global::CE_covered_distz_C =  %1% ") % CE_covered_distz_C
-      junc_file.printn boost_format( "global::CE_covered_distz_E =  %1% ") % CE_covered_distz_E
-      junc_file.printn boost_format( "global::CE_covered_distz_I =  %1% ") % CE_covered_distz_I
+      junc_file.printn  "global::CE_covered_distz_C =  %1% " % CE_covered_distz_C
+      junc_file.printn  "global::CE_covered_distz_E =  %1% " % CE_covered_distz_E
+      junc_file.printn  "global::CE_covered_distz_I =  %1% " % CE_covered_distz_I
     }
     # save the paths here if they have been inverted
     CarotidExperiments_SavePaths()
@@ -1270,12 +1270,12 @@ if (!exists(CE_defined)) {
       p2y=floor(p1y+(pvim_big.ty-1)*pvim_big.vy/CE_input_cropped.vy+0.5)
       p2z=floor(p1z+(pvim_big.tz-1)*pvim_big.vz/CE_input_cropped.vz+0.5)
     
-      roi_file.print boost_format("%0.0f ")   % p1x
-      roi_file.print boost_format("%0.0f ")   % p1y
-      roi_file.print boost_format("%0.0f\n")  % p1z
-      roi_file.print boost_format("%0.0f ")   % p2x
-      roi_file.print boost_format("%0.0f ")   % p2y
-      roi_file.print boost_format("%0.0f\n")  % p2z
+      roi_file.print "%0.0f " % p1x
+      roi_file.print "%0.0f " % p1y
+      roi_file.print "%0.0f\n" % p1z
+      roi_file.print "%0.0f " % p2x
+      roi_file.print "%0.0f " % p2y
+      roi_file.print "%0.0f\n" % p2z
       if (!CE_nointeraction) { InfoDialog "Result is saved!"; }
     }
   }

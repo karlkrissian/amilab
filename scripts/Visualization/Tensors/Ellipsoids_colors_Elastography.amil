@@ -43,12 +43,12 @@ cp = (nv2-nv3)/Sum
 cs = nv3/Sum
 
 colors = Image(RGB,v1.tx,v1.ty,v1.tz)
-colors[0] = (UCHAR) ((cl*255)*(cl>0))
+colors.SetComponent( 0, (UCHAR) ((cl*255)*(cl>0)))
   //colors[1] = (UCHAR) ((cp*255)*(cp>0)) 
   //se ha quitado pq nv2 y nv3 son muy parecidos y es constante y cercano a 0 q lo hace cambiar bruscamnt de color
-colors[1] = (nv1>2)*255+(nv1<=2)*50 //100-200 otros colores
+colors.SetComponent( 1, (nv1>2)*255+(nv1<=2)*50 )//100-200 otros colores
 //colors[2] = (UCHAR) (cs*255)
-colors[2] = (nv1>2)*200+(nv1<=2)*50 //50-100 otros colores
+colors.SetComponent( 2, (nv1>2)*200+(nv1<=2)*50 )//50-100 otros colores
 //(FactorVol>0.5)*200+(FactorVol<=0.5)*200
 
 show cl

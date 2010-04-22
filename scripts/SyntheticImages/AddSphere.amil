@@ -29,37 +29,46 @@ proc AddSphere( IMAGE im, NUM x, NUM y, NUM z, NUM rad ) {
 //
 proc AddBrightSphere_mm( IMAGE im, NUM x, NUM y, NUM z, NUM rad, NUM _I1, NUM _I2 ) {
 //   ---------------
-  local::_vx = im.vx
-  local::_vy = im.vy
-  local::_vz = im.vz
-  local::_dx = x-(INT)x
-  local::_dy = y-(INT)y
-  local::_dz = z-(INT)z
-  local::radx=(INT) (2*(rad+0.99)/_vx)
-  local::rady=(INT) (2*(rad+0.99)/_vy)
-  local::radz=(INT) (2*(rad+0.99)/_vz)
+
+printn "1"
+  _vx = im.vx
+  _vy = im.vy
+  _vz = im.vz
+printn "2"
+  _dx = x-(INT)x
+  _dy = y-(INT)y
+  _dz = z-(INT)z
+printn "3"
+  radx=(INT) (2*(rad+0.99)/_vx)
+  rady=(INT) (2*(rad+0.99)/_vy)
+  radz=(INT) (2*(rad+0.99)/_vz)
+printn "4"
   if (im.tz>1) {
-    local::sph = im[x-radx:x+radx,y-rady:y+rady,z-radz:z+radz]
-    local::px = (FLOAT) Xpos(sph)-(radx+_dx)
-    local::py = (FLOAT) Ypos(sph)-(rady+_dy)
-    local::pz = (FLOAT) Zpos(sph)-(radz+_dz)
+printn "5"
+    sph = im[x-radx:x+radx,y-rady:y+rady,z-radz:z+radz]
+    px = (FLOAT) Xpos(sph)-(radx+_dx)
+    py = (FLOAT) Ypos(sph)-(rady+_dy)
+    pz = (FLOAT) Zpos(sph)-(radz+_dz)
+printn "6"
     px = px*_vx
     py = py*_vy
     pz = pz*_vz
-    local::_r2 = px*px+py*py+pz*pz;
+printn "7"
+    _r2 = px*px+py*py+pz*pz;
     sph = _r2/(2*rad*rad)
     sph =  exp(-sph*sph)*(_I2-_I1) + _I1
-    // set as max
-    local::sim = im[sph]
+printn "8"
+    # set as max
+    sim = im[sph.GetExtent]
     sim = max(sim,sph)
     im.putimage(sim)
   } else {
-   local::sph = im[x-radx:x+radx,y-rady:y+rady,0:0]
-    local::px = (FLOAT) Xpos(sph)-radx-_dx
-    local::py = (FLOAT) Ypos(sph)-rady-_dy
-    local::px = px*_vx
+   sph = im[x-radx:x+radx,y-rady:y+rady,0:0]
+    px = (FLOAT) Xpos(sph)-radx-_dx
+    py = (FLOAT) Ypos(sph)-rady-_dy
+    px = px*_vx
     py = py*_vy
-    local::_r2 = px*px+py*py;
+    _r2 = px*px+py*py;
     sph = _r2/(2*rad*rad)
     sph =  exp(-sph)*(_I2-_I1) + _I1
     sim = im[sph]

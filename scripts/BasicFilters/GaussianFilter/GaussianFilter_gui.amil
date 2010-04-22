@@ -34,7 +34,7 @@ if (!exists(GaussianFilterClass)) {
     
   #----------------------------
   proc ::CloseAll() {
-    eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
+    eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
     ::Close
   }
   ::CloseAll.Comments("Call ::Close() method and delete the class variable")
@@ -58,7 +58,7 @@ if (!exists(GaussianFilterClass)) {
                       ::derx,::dery,::derz)
     }else {
       for n=0 to ::input.vdim-1 {
-        ::res[n] = filter( ::input[n],::sigma,\
+        ::res.SetComponent( n, filter( ::input[n],::sigma,\)
                             ::derx,::dery,::derz)
       }
      }

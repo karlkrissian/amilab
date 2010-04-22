@@ -83,7 +83,7 @@ Class Lines2D \
     
   #----------------------------
   proc ::CloseAll() {
-    eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
+    eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
     ::Close
   }
   ::CloseAll.Comments("Call ::Close() method and delete the class variable")
@@ -93,7 +93,7 @@ Class Lines2D \
   proc ::Gui() \
   {
     import = &global::ami_import;
-    ::win = import->ParamPanel("LevelSets")
+    ::win = import->ParamPanel("Lines2D")
     ::win.BeginBook
       ::win.AddPage("IO")
         ::win.BeginBoxPanel("Input Image")

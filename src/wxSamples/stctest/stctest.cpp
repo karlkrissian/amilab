@@ -176,8 +176,8 @@ BEGIN_EVENT_TABLE (StcTestFrame, wxFrame)
     EVT_MENU (wxID_ABOUT,            StcTestFrame::OnAbout)
 END_EVENT_TABLE ()
 
-StcTestFrame::StcTestFrame (const wxString &title)
-        : wxFrame ((wxFrame *)NULL, wxID_ANY, title, wxDefaultPosition, wxSize(750,550),
+StcTestFrame::StcTestFrame (wxWindow* parent, const wxString &title)
+        : wxFrame (parent, wxID_ANY, title, wxDefaultPosition, wxSize(750,550),
                     wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE) {
 
     // intitialize important variables

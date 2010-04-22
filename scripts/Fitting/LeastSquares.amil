@@ -35,7 +35,7 @@ if (!exists(LeastSquaresClass)) \
     
     #----------------------------
     proc ::CloseAll() {
-      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
+      eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
       ::Close
     }
     ::CloseAll.Comments("Call ::Close() method and delete the class variable")
@@ -62,9 +62,9 @@ if (!exists(LeastSquaresClass)) \
       sizey = 2*::size_y+1
       numcoeff = 3
       b = Image(FLOAT,sizex,sizey,1,numcoeff)
-      b[0] = ((FLOAT) Ypos(b)-b.ty/2)
-      b[1] = ((FLOAT) Xpos(b)-b.tx/2)
-      b[2] = 1
+b.SetComponent( 0, ((FLOAT) Ypos(b)-b.ty/2))
+b.SetComponent( 1, ((FLOAT) Xpos(b)-b.tx/2))
+b.SetComponent( 2, 1)
       weights = Image(FLOAT,sizex,sizey,1)
       weights.settranslation(-::size_x,-::size_y,0)
       weights = 1

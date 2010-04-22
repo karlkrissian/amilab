@@ -48,7 +48,10 @@ class VariableStack{
 
   BasicVariable::ptr GetLastBasicVar()
   {
-    if (_variables.empty()) return BasicVariable::ptr();
+    if (_variables.empty()) {
+      CLASS_ERROR("Returning null variable !!!");
+      return BasicVariable::ptr();
+    }
     BasicVariable::ptr tmp = _variables.top();
     _variables.pop();
     return tmp;
