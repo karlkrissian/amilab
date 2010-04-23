@@ -748,7 +748,7 @@ BasicVariable::ptr WrapClass_parampanel::wrap_AddImageChoice::CallMember( ParamL
   std::string tooltip = (boost::format("%s  (%s)") % var->GetComments() % var->Name()).str();
 
   imagelist = Vars.SearchVariables(type_image);
-  imagelist->Add(_T("Image"));
+  imagelist->Add(_T("BrowseImage"));
 
   // Get list of image names
   this->_objectptr->_parampanel->AddListChoice( &var_id,

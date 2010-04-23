@@ -373,6 +373,20 @@ public:
    */
   //@{
     VAR_OP_BASICVAR(=);
+
+    /// Transpose
+    BasicVariable::ptr Transpose()
+    {
+       std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl;
+      return this->NewReference();
+    }
+
+    /// Pointwise multiplication 
+    BasicVariable::ptr PointWiseMult(const BasicVariable::ptr& b)
+    {
+       std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl;
+      return this->NewReference();
+    }
   //@}
 
 #define VAR_FUNC(func) \
@@ -473,5 +487,6 @@ class VarArray;
 #include "Variable_float.h"
 #include "Variable_InrImage.h"
 #include "Variable_string.h"
+#include "Variable_FloatMatrix.h"
 
 #endif

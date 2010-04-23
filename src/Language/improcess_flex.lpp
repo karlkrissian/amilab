@@ -311,7 +311,10 @@ SetProgress        return(token::T_SetProgress); /*{SetProgress,T_SetProgress}*/
 SetStatusText      return(token::T_SetStatusText); /*{SetStatusText,T_SetStatusText}*/
 Quit               return(token::QUIT); /*{Quit,QUIT}*/
 quit               return(token::QUIT);
+
 Image              return(token::T_Image); /*{Image,T_Image}*/
+BrowseImage        return(token::T_BrowseImage); /*{BrowseImage,T_BrowseImage}*/
+
 ReadRawImages      return(token::T_ReadRawImages); /*{ReadRawImages,T_ReadRawImages}*/
 Transform          return(token::T_Transform); /*{Transform,T_Transform}*/
 Show               return(token::SHOW); /*{Show,SHOW}*/

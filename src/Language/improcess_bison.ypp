@@ -223,6 +223,12 @@ void CB_update_imagelist( void* imagelist_gui);
     Variable<float>::ptr new_var(new Variable<float>(float_ptr(new float(newval)))); \
     driver.var_stack.AddVar(new_var);
 
+/**
+  newval is a smart pointer to the new value to add
+**/
+#define ADD_VARSTACK_PTR(type,newval) \
+    Variable<type>::ptr new_var(new Variable<type>(newval)); \
+    driver.var_stack.AddVar(new_var);
 
 #define UNARYOP_EXPR(operator,val,res)           \
   res=operator(val);
@@ -482,7 +488,7 @@ void CB_update_imagelist( void* imagelist_gui);
 
 %token END_INSTRUCTION
 
-%token T_Image
+%token T_Image T_BrowseImage
 %token T_ReadRawImages
 %token T_Transform
 %token SHOW HELP QUIT T_HIDE
@@ -1774,6 +1780,7 @@ command:
           else
             driver.err_print("assignment of NULL image\n");
       }
+/* Deprecated
       |
       identifier ASSIGN_OP expr_matrix
       {
@@ -1785,6 +1792,7 @@ command:
         else
           driver.err_print("assignment of NULL matrix\n");
       }
+*/
       |
       identifier ASSIGN_OP gltransform
       {
@@ -1797,6 +1805,7 @@ command:
           else
             driver.err_print("assignment of NULL matrix\n");
         }
+/* Deprecated
        | VAR_MATRIX ASSIGN_OP expr
        {
           Variable<FloatMatrix>::ptr varmat(driver.var_stack.GetLastVar<FloatMatrix>());
@@ -1813,6 +1822,7 @@ command:
           delete m2;
           printf("delete m2 end\n");
        }
+*/
         |
         VAR_ARRAY_SURFACE T_OP_BR expr T_CL_BR ASSIGN_OP surface
         {
@@ -2967,12 +2977,14 @@ command:
         delete [] $2;
       }
 */
+/* Deprecated
       | PRINT expr_matrix
       {
         FloatMatrix* mat=driver.matrix_stack.GetLastMatrix();
         mat->PrintSelf();
         delete mat;
       }
+*/
       | T_InfoDialog expr_string
       {
          /**
@@ -6814,6 +6826,7 @@ float_variable:
       int i = (int)$3;
       int j = (int)$5;
       float val = (*mat)[i][j];
+      // create a reference with a smart pointer without deleter ???
       ADD_VARSTACK_FLOAT(val);
     }
     | VAR_MATRIX T_POINT SET T_OP_PAR expr T_COMMA expr  T_COMMA expr T_CL_PAR
@@ -7291,7 +7304,7 @@ image:
       }
 */
       |
-      T_Image
+      T_BrowseImage
       {
           int res;
           string name;
@@ -10216,6 +10229,8 @@ primary_var:
     |
       string_variable
     |
+      matrix_variable
+    |
     T_MAX T_OP_PAR expr_var T_COMMA expr_var T_CL_PAR
     {
       /**
@@ -10394,6 +10409,14 @@ postfix_var:
     BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar(var->BasicCast( $2));
 
+  }
+  | primary_var TRANSPOSE_OP
+  {
+    /**
+      Description: Transpose operator, usefull for matrices
+    **/
+    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar(var->Transpose());
   }
 /* not included yet because of problems with extents
   |
@@ -10773,37 +10796,37 @@ gltransform: VAR_GLTRANSFORM {
       }
 ;
 
-matrix: T_Matrix T_OP_PAR expr T_COMMA expr T_CL_PAR
-       {
-         FloatMatrix* m;
-         m = new FloatMatrix((int)$3,(int)$5);
-         driver.matrix_stack.AddMatrix(m);
-       }
-       |
-       VAR_MATRIX
-       {
-          GET_VARSTACK_VALUE(FloatMatrix, mat);
-          FloatMatrix* newmat;
-    
-          newmat = new FloatMatrix( (*mat));
-          driver.matrix_stack.AddMatrix(newmat);
-       }
-        |
-        T_Invert T_OP_PAR expr_matrix T_CL_PAR
-        {
+matrix_variable: 
+      T_Matrix T_OP_PAR expr T_COMMA expr T_CL_PAR
+      {
+         FloatMatrix::ptr m( new FloatMatrix((int)$3,(int)$5));
+         ADD_VARSTACK_PTR(FloatMatrix,m);
+      }
+      |
+      VAR_MATRIX
+      |
+      T_Invert T_OP_PAR expr_var T_CL_PAR
+      {
         /**
         Description:
          Inversion of a symmetric matrix
+          TODO: make a real inversion, for now it is a tranpose ...
         **/
-          FloatMatrix* mat;
-          FloatMatrix* res;
-          mat=driver.matrix_stack.GetLastMatrix();
-          res = mat->Transpose();
-          delete mat;
-          driver.matrix_stack.AddMatrix(res);
-        }
-;
 
+        BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+        if (var->Type()==type_matrix)  {
+          DYNAMIC_CAST_VARIABLE(FloatMatrix,var,varmat) 
+          FloatMatrix::ptr res(varmat->Pointer()->Transpose());
+          ADD_VARSTACK_PTR(FloatMatrix,res);
+        } else {
+          driver.err_print("Expecting an matrix variable here ... \n");
+          YYABORT;
+        }
+
+      }
+      ;
+
+/*
 primary_matrix: matrix | T_OP_PAR expr_matrix T_CL_PAR;
 
 postfix_matrix: primary_matrix;
@@ -10900,7 +10923,7 @@ assignment_matrix:
 
 expr_matrix : assignment_matrix
 ;
-
+*/
 
 var_surface:
         VAR_SURFACE
@@ -11827,8 +11850,6 @@ identifier
 */
 
 variable_with_assign:
-         VAR_MATRIX
-        |
          VAR_GLTRANSFORM
         |
          var_surface;
@@ -11892,12 +11913,19 @@ unprocessed_variable:
 processed_variable:
           VAR_INT 
         /* VAR_INT is used in expr_var: variable_float ...*/
-        | VAR_UCHAR
+        |
+         VAR_UCHAR
         /* VAR_UCHAR is used in expr_var: variable_float ...*/
-        | VAR_FLOAT
+        |
+         VAR_FLOAT
         /* VAR_STRING */
-        | VAR_STRING
-        | var_image;
+        |
+         VAR_STRING
+        |
+         VAR_MATRIX
+        |
+         var_image
+        ;
 
 variable:
     unprocessed_variable
@@ -12008,7 +12036,7 @@ void CB_update_imagelist( void* imagelist_gui)
   boost::shared_ptr<wxArrayString> imagelist;
 
   imagelist = Vars.SearchVariables(type_image);
-  imagelist->Add(_T("Image"));
+  imagelist->Add(_T("BrowseImage"));
   imlist->SetChoices(imagelist);
 }
 

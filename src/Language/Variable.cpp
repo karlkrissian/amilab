@@ -2,6 +2,8 @@
 #include "DefineClass.hpp"
 #include "Variable.hpp"
 
+#include "FloatMatrix.hpp"
+
 //#include "ParamBox.hpp"
 /*
 #include "ParamPanel.hpp"
@@ -88,6 +90,14 @@ VARTYPE_STRING_DOUBLE( float,                Value(),               Value())
 VARTYPE_STRING_DOUBLE( int,                  Value(),               Value())
 VARTYPE_STRING_DOUBLE( unsigned char,        (int)Value(),          Value())
 VARTYPE_STRING_DOUBLE( std::string,          Value(),               0)
+
+// FloatMatrix
+template <> std::string Variable<FloatMatrix>::GetValueAsString() const 
+{
+   return Pointer()->PrintToString();
+} 
+template <> double Variable<FloatMatrix>::GetValueAsDouble() const { return 0.0; } 
+
 VARTYPE_DEFAULT( InrImage)
 VARTYPE_DEFAULT( DessinImage)
 VARTYPE_DEFAULT( amilab::SurfacePoly)
@@ -101,7 +111,6 @@ VARTYPE_DEFAULT( AMIFunction)
 VARTYPE_DEFAULT( AMIClass)
 VARTYPE_DEFAULT( AMIObject)
 VARTYPE_DEFAULT( AMICPPObject)
-VARTYPE_DEFAULT( FloatMatrix)
 VARTYPE_DEFAULT( GLTransfMatrix)
 VARTYPE_DEFAULT( VarArray)
 

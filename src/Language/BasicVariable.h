@@ -254,6 +254,17 @@ public:
   //@{
     /// basic assignment operator
     BASICVAR_OP_VAR(=);
+
+    /// Transpose operator
+    virtual BasicVariable::ptr Transpose()
+    { return this->NewReference(); }
+
+    /// PointWise multiplication, included for matrices
+    virtual BasicVariable::ptr PointWiseMult(const BasicVariable::ptr& b) 
+    {
+      std::cout << get_name() << "::operator " << __func__ << " not defined." << std::endl; 
+      return this->NewReference(); 
+    }
   //@}
 
 

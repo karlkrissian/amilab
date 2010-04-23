@@ -36,13 +36,14 @@
 //class FloatMatrix;
 
 #include "DefineClass.hpp"
+#include <string>
 
 //==================================================
 class FloatMatrix 
 //
 {
 
-  DEFINE_CLASS(FloatMatrix)
+  DEFINE_CLASS(FloatMatrix);
 
 protected:
 
@@ -58,9 +59,8 @@ public:
     n2 = dim2;
 
     m = new float*[n1];
-    Pour(i,0,n1-1)
+    for(i=0;i<n1;i++)
       m[i] = new float[n2];
-    FinPour
 
   }
 
@@ -72,12 +72,11 @@ public:
     n2 = m0.n2;
 
     m = new float*[n1];
-    Pour(i,0,n1-1)
+    for(i=0;i<n1;i++) {
       m[i] = new float[n2];
-      Pour(j,0,n2-1)
+      for(j=0;j<n2;j++)
         m[i][j]=m0.m[i][j];
-      FinPour
-    FinPour
+    }
 
   }
 
@@ -120,7 +119,9 @@ public:
 
   FloatMatrix& operator =(FloatMatrix* m);
 
-  void PrintSelf();
+  std::string PrintToString() const;
+
+  void PrintSelf() const;
 
   friend FloatMatrix* Multiply(FloatMatrix*, FloatMatrix*);
 
