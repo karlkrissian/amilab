@@ -53,7 +53,7 @@ if (!exists(WaterShedClass)){
   proc ::load_input() {
 
     eval "::input <<= (FLOAT)"+::input_name+";"
-    if (::input_name=="Image") {
+    if (::input_name=="BrowseImage") {
       ::input_name = "::input"
       ::win.Update(-1)
     }

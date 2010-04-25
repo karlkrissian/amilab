@@ -43,7 +43,7 @@ if (!exists(GaussianFilterClass)) {
   
   proc ::load_input() {
     eval "::input <<="+::input_name+";"
-    if (::input_name=="Image") {
+    if (::input_name=="BrowseImage") {
       ::input_name = "::input"
       ::win.Update(-1)
     }

@@ -140,7 +140,7 @@ if (!exists(LevelSetsClass)){
     proc ::load_input() {
 
       eval "::input <<= (FLOAT)"+::input_name+";"
-      if (::input_name=="Image") {
+      if (::input_name=="BrowseImage") {
         ::input_name = "::input"
         ::win.Update(-1)
       }
@@ -162,7 +162,7 @@ if (!exists(LevelSetsClass)){
       } else {
         if (::init_mode==1) {
           eval "::inls <<= (FLOAT)"+::initial_name+";"
-          if (::initial_name=="Image") {
+          if (::initial_name=="BrowseImage") {
             ::initial_name = "::initial_name"
             ::win.Update(-1)
           }
@@ -188,7 +188,7 @@ if (!exists(LevelSetsClass)){
           # Delete inls is it exists
           if (exists(::inls0)) { del ::inls0; }
           eval "::inls0 = &"+::initial_name+";"
-          if (::initial_name=="Image") {
+          if (::initial_name=="BrowseImage") {
             ::initial_name = "::initial_name"
             ::win.Update(-1)
           }
@@ -210,7 +210,7 @@ if (!exists(LevelSetsClass)){
   proc ::load_expansion() \
   {
     eval "::expansion_image <<= (FLOAT)"+::expansion_image_name+";"
-    if (::expansion_image_name=="Image") {
+    if (::expansion_image_name=="BrowseImage") {
       ::expansion_image_name = "::expansion_image"
       ::win.Update(-1)
     }
