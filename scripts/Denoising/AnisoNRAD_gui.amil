@@ -221,11 +221,11 @@ if (!exists(AnisoNRADClass)) {
           printn "running on squared image"
           local::input1 = ::input*::input
           ::res = AnisoNRAD(input1,::scalar_mode,\
-                      ::dt,numit,::neighborhood,::roi)
+                      ::dt,numit,::neighborhood,::roi.GetExtent)
           ::res = sqrt(::res)
       } else {
           ::res = AnisoNRAD(::input,::scalar_mode,\
-                      ::dt,numit,::neighborhood,::roi)
+                      ::dt,numit,::neighborhood,::roi.GetExtent)
       }
     }
   }
@@ -372,7 +372,6 @@ if (!exists(AnisoNRADClass)) {
       ::win.AddButton("Close All",          ::CloseAll)
     ::win.EndHorizontal  
     
-    ::win.Update
     ::win.Display
     ::win.Update(-1)
     ::new_eq_type

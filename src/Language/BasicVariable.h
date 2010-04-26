@@ -63,6 +63,11 @@ public:
     */
   virtual BasicVariable::ptr NewReference() = 0;
 
+  /**
+   * Return the number of references (value of use_count()) of the smart pointer to the variable value
+  **/
+  virtual int GetPtrCounter() = 0;
+
 //  virtual void operator = (const BasicVariable& v) = 0;
 
 //  void operator = (const BasicVariable::ptr& v) {

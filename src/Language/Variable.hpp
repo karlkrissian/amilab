@@ -151,6 +151,12 @@ public:
     return res;
   }
 
+  int GetPtrCounter()
+  {
+    return _pointer.use_count();
+  }
+
+
   /**
    * Copy of variables
    * @param v 

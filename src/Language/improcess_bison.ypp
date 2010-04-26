@@ -234,163 +234,6 @@ void CB_update_imagelist( void* imagelist_gui);
   res=operator(val);
 
 
-#define UNARYOP_IMAGE(operator)        {   \
-  InrImage::ptr im(driver.im_stack.GetLastImage());     \
-  InrImage::ptr res;                           \
-  if (im.use_count()==1) res = im; \
-  else {\
-    res = InrImage::ptr(new InrImage( im->GetFormat(),\
-                                      im->GetVDim(),\
-                                      (std::string("unaryop_")+im->GetName()).c_str(),\
-                                      im.get()));\
-    (*res) = (*im);\
-  }\
-  int       i;                            \
-  res->InitBuffer();                       \
-  Si res->ScalarFormat() Alors             \
-    Repeter                                \
-     res->FixeValeur( operator(res->ValeurBuffer()) );   \
-    JusquA Non(res->IncBuffer()) FinRepeter             \
-  Sinon                                                \
-    Pour(i,0,res->GetVDim()-1)                 \
-      res->InitBuffer();                       \
-      Repeter                                 \
-       res->VectFixeValeur( i, operator(res->VectValeurBuffer(i)) );   \
-      JusquA Non(res->IncBuffer()) FinRepeter  \
-    FinPour                                   \
-  FinSi                                       \
-  driver.im_stack.AddImage(res); }
-
-
-#define IMAGE_OP_EXPR(operator,expr)              {       \
-  InrImage::ptr im(driver.im_stack.GetLastImage());            \
-  InrImage::ptr res;                           \
-  if (im.use_count()==1) res = im; \
-  else {\
-    res = InrImage::ptr(new InrImage( im->GetFormat(),\
-                                      im->GetVDim(),\
-                                      (im->GetName()+std::string("_op_expression")).c_str(),\
-                                      im.get()));\
-    (*res) = (*im);\
-  }\
-  int       i;                                           \
-  double    val = expr;                                  \
-  res->InitBuffer();                                     \
-  Si res->ScalarFormat() Alors                           \
-    Repeter                                              \
-      res->FixeValeur(res->ValeurBuffer() operator val); \
-    JusquA Non(res->IncBuffer()) FinRepeter              \
-  Sinon                                                  \
-    Repeter                                              \
-      Pour(i,0,res->GetVDim()-1)                         \
-        res->VectFixeValeur(i,res->VectValeurBuffer(i) operator val);  \
-      FinPour                                            \
-    JusquA Non(res->IncBuffer()) FinRepeter              \
-  FinSi                                                  \
-  driver.im_stack.AddImage(res); }
-
-#define EXPR_OP_IMAGE(operator,expr)    {                 \
-  InrImage::ptr im(driver.im_stack.GetLastImage());            \
-  InrImage::ptr res;                           \
-  if (im.use_count()==1) res = im; \
-  else {\
-    res = InrImage::ptr(new InrImage( im->GetFormat(),\
-                                      im->GetVDim(),\
-                                      (std::string("expr_op_")+im->GetName()).c_str(),\
-                                      im.get()));\
-    (*res) = (*im);\
-  }\
-  int       i;                                           \
-  double    val = expr;                                  \
-  res->InitBuffer();                                     \
-  Si res->ScalarFormat() Alors                           \
-    Repeter                                              \
-      res->FixeValeur(val operator res->ValeurBuffer() ); \
-    JusquA Non(res->IncBuffer()) FinRepeter              \
-  Sinon                                                  \
-    Repeter                                              \
-      Pour(i,0,res->GetVDim()-1)                         \
-        res->VectFixeValeur(i, val operator res->VectValeurBuffer(i));  \
-      FinPour                                            \
-    JusquA Non(res->IncBuffer()) FinRepeter              \
-  FinSi                                                  \
-  driver.im_stack.AddImage(res); }
-
-#define IMAGE_OP_IMAGE(operator)    \
-  {\
-  InrImage::ptr im2(driver.im_stack.GetLastImage());      \
-  InrImage::ptr im1(driver.im_stack.GetLastImage());      \
-  if (im1->ScalarFormat()&&im2->ScalarFormat()) { \
-    std::string newname = (boost::format("%1%_%2%_%3%")%im1->GetName()%#operator%im2->GetName()).str(); \
-    InrImage::ptr res = InrImage::ptr(new InrImage(im1->_format,newname.c_str(),im1.get()));\
-    im1->InitBuffer();                \
-    im2->InitBuffer();                \
-    res->InitBuffer();                \
-    Repeter                           \
-      res->FixeValeur(im1->ValeurBuffer() operator im2->ValeurBuffer()); \
-      im1->IncBuffer();               \
-      im2->IncBuffer();               \
-    JusquA Non(res->IncBuffer())      \
-    FinRepeter                        \
-    driver.im_stack.AddImage(res);    \
-  } else \
-    driver.err_print((boost::format("Both images should be scalar for operator %1%.") % #operator ).str()); \
-  }
-
-#define IMAGE_OP_IMAGE_2(operator) { \
-  InrImage::ptr im1;                    \
-  InrImage::ptr im2;                    \
-  InrImage* res;                    \
-  im2 = driver.im_stack.GetLastImage();    \
-  im1 = driver.im_stack.GetLastImage();    \
-  res = (*im1) operator (*im2);     \
-  Si res == NULL Alors              \
-    driver.err_print((boost::format("Error in operation %s \t IMAGE_OP_IMAGE_2 \n") % #operator).str().c_str()); \
-  FinSi                             \
-  driver.im_stack.AddImagePointer(res); \
-  }
-
-#define UNARYOP_MATRIX(operator)           \
-  FloatMatrix* mat;                         \
-  int       i,j;                            \
-  mat = driver.matrix_stack.GetLastMatrix();       \
-  for (i=0;i<mat->Rows();i++)               \
-  for (j=0;j<mat->Cols();j++) {             \
-    (*mat)[i][j]=operator((*mat)[i][j]);               \
-  }                                         \
-  driver.matrix_stack.AddMatrix(mat);
-
-#define MATRIX_OP_EXPR(operator,expr)        \
-  FloatMatrix* mat;                          \
-  int       i,j;                             \
-  float     val = expr;                      \
-  mat = driver.matrix_stack.GetLastMatrix();        \
-  for (i=0;i<mat->Rows();i++)               \
-  for (j=0;j<mat->Cols();j++) {             \
-    (*mat)[i][j]=(*mat)[i][j] operator val;            \
-  }                                         \
-  driver.matrix_stack.AddMatrix(mat);
-
-#define MATRIX_OP_MATRIX_2(operator)        \
-  FloatMatrix* mat1;                          \
-  FloatMatrix* mat2;                          \
-  FloatMatrix* mat;                          \
-  int       i,j;                             \
-  mat2 = driver.matrix_stack.GetLastMatrix();        \
-  mat1 = driver.matrix_stack.GetLastMatrix();        \
-  if ((mat1->Rows()==mat2->Rows())&&(mat1->Cols()==mat2->Cols())) { \
-    mat=new FloatMatrix(mat1->Rows(),mat1->Cols()); \
-    for (i=0;i<mat1->Rows();i++)               \
-    for (j=0;j<mat1->Cols();j++)              \
-      (*mat)[i][j]=(*mat1)[i][j] operator (*mat2)[i][j];            \
-    driver.matrix_stack.AddMatrix(mat);                 \
-    delete mat1;                                    \
-    delete mat2;                                    \
-  }                                              \
-  else {                                         \
-    delete mat2;                                    \
-    driver.matrix_stack.AddMatrix(mat1);                \
-  }
 
 
 %}
@@ -1485,7 +1328,9 @@ command:
             - existing variable name.
         **/
         BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
-        if (var.use_count()==1) {
+        // check counter of the value, not of the variable ...
+        if (var->GetPtrCounter()==1) {
+          cout << "GetPtrCounter == 1" << endl;
           IdentifierInfo::ptr ident($1);
           Vars.AddVar(ident,var);
         } else
@@ -1511,7 +1356,7 @@ command:
         **/
         boost::shared_array<char> comments( $5);
         BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
-        if (var.use_count()==1) {
+        if (var->GetPtrCounter()==1) {
           IdentifierInfo::ptr ident($1);
           Vars.AddVar(ident,var);
         } else
@@ -1556,7 +1401,7 @@ command:
             }
             else
             // general case
-            if (var.use_count()==1) {
+            if (var->GetPtrCounter()==1) {
               IdentifierInfo::ptr ident($1);
               Vars.AddVar(ident,var);
             } else
@@ -1602,34 +1447,6 @@ command:
             Vars.AddVar<VarArray>(ident,array);
           }
 
-/*  processed by identifier ASSIGN_OP expr_var, using specialized NewCopy()
-         |
-          identifier ASSIGN_OP expr_image
-          {
-          InrImage::ptr imptr;
-          InrImage::ptr res;
-          IdentifierInfo::ptr ident($1);
-
-          imptr = driver.im_stack.GetLastImage();
-          if (imptr.get()) {
-            // check how many references it has, if only one, move pointer, else create new image
-            if (imptr.use_count()==1) 
-              res = imptr;
-            else {
-              // Create a copy since the image is already in use
-              res = InrImage::ptr(new InrImage( imptr->GetFormat(),
-                                                imptr->GetVDim(),
-                                                ident->GetName().c_str(),
-                                                imptr.get()));
-              (*res) = (*imptr);
-            }
-            // this should be safe to avoid deleting the image, since the variable will copy the shared pointer
-            Vars.AddVar<InrImage>(ident,res);
-          }
-          else
-            driver.err_print((boost::format("assignment of NULL image for %1%  \n") % $1).str().c_str() );;
-        }
-*/
          |
           identifier LEFT_ASSIGN expr_image
           {
@@ -1656,68 +1473,6 @@ command:
             driver.err_print((boost::format("assignment of NULL image for %1%  \n") %$1).str().c_str() );;
         }
 
-/* Deprecated, processed by identifier ASSIGN_OP expr_var
-        | identifier ASSIGN_OP VAR_C_FUNCTION  T_OP_PAR param_list T_CL_PAR
-        {
-        /**
-          Description:
-            Calls a wrapped function that returns a smart pointer to a variable, requires a new variable name as a result
-        **
-          GET_VARSTACK_VAR_VAL(C_wrap_varfunction, var, func);
-          ParamList::ptr param($5);
-          BasicVariable::ptr  res;
-          IdentifierInfo::ptr ident($1);
-
-          res = (*func)(param.get());
-          if (!res.use_count()) {
-            driver.yyiperror(" function returns NULL \n");
-            YYABORT;
-          }
-          res->Rename(ident->GetName().c_str());
-          Vars.AddVar(res,ident->GetCreationContext());
-        }
-*/
-/* Deprecated, processed by identifier ASSIGN_OP expr_var
-        | identifier ASSIGN_OP VAR_CLASS_MEMBER  T_OP_PAR param_list T_CL_PAR
-        {
-        /**
-          Description:
-            Calls a wrapped class member function that returns a smart pointer to a variable, requires a new variable name as a result.
-        **
-          GET_VARSTACK_VAR_VAL(WrapClassMember, var, m);
-          ParamList::ptr param($5);
-          BasicVariable::ptr  res;
-          IdentifierInfo::ptr ident($1);
-
-          res = m->CallMember(param.get());
-          if (!res.get()) {
-            driver.yyiperror("Class member does not return a variable \n");
-            YYABORT;
-          }
-          res->Rename(ident->GetName().c_str());
-          Vars.AddVar(res,ident->GetCreationContext());
-        }
-*/
-
-/* processed by identifier ASSIGN_OP unprocessed_variable
-        | identifier ASSIGN_OP VAR_CLASS_MEMBER  
-        {
-        /**
-          Description:
-            Calls a wrapped class member function that returns a smart pointer to a variable, requires a new variable name as a result.
-        **
-          GET_VARSTACK_VAR_VAL(WrapClassMember, var, m);
-          ParamList::ptr param((ParamList*)NULL);
-          IdentifierInfo::ptr ident($1);
-          BasicVariable::ptr res( m->CallMember(param.get()));
-          if (!res.get()) {
-            driver.yyiperror("Class member does not return a variable \n");
-            YYABORT;
-          }
-          res->Rename(ident->GetName().c_str());
-          Vars.AddVar(res,ident->GetCreationContext());
-        }
-*/
         |
         VAR_ARRAY_IMAGE T_OP_BR expr T_CL_BR ASSIGN_OP expr_image
         {
@@ -2221,34 +1976,6 @@ command:
           }
 
         }
-/*
-        |  var_image ASSIGN_OP expr_image
-        {
-          GET_VARSTACK_VALUE(InrImage, i1);
-          InrImage::ptr i2 (driver.im_stack.GetLastImage());
-
-          if (i2.get()) {
-            // copy option
-            if (!((*i1)=(*i2))) driver.err_print(" Error in images assignement\n");
-          } else {
-            if (driver.err_print("Error\n")==wxID_YES) YYABORT;
-          }
-        }
-*/
-/*
-        |  var_image ADD_ASSIGN expr_image
-        {
-          GET_VARSTACK_VALUE(InrImage, i1);
-          InrImage::ptr i2 (driver.im_stack.GetLastImage());
-
-          if (i2.get()) {
-            // copy option
-            (*i1)+=(*i2);
-          } else {
-            driver.err_print("Error\n");
-          }
-        }
-*/
         |  var_image LEFT_ASSIGN expr_image
         {
         /**
@@ -7019,8 +6746,8 @@ basic_type:
        }
        | var_image T_POINT T_GetFormat
       {
-       //        printf("format %d \n",(int) ( *(InrImage::ptr*) $1->Pointer())->GetFormat());
-      GET_VARSTACK_VALUE(InrImage, im);
+         //        printf("format %d \n",(int) ( *(InrImage::ptr*) $1->Pointer())->GetFormat());
+        GET_VARSTACK_VALUE(InrImage, im);
         $$ = (int) im->GetFormat();
       };
 
@@ -10680,8 +10407,8 @@ assignment_var:
     cout << "assignment_var" << endl;
     BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
     BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
-    if (var1.use_count()==1) {
-      
+    if (var1->GetPtrCounter()==1) {
+      // TODO: here ...
     }
     driver.var_stack.AddVar((*var1)=var2);
   }

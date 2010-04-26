@@ -160,7 +160,7 @@ printn "*** Filter() ****"
       if (exists(::roi)) {
         ::res0 = ::res[::roi]
   
-        if (::res0.GetFormat != RGB) {
+        if (::res0.GetFormat.val != RGB.val) {
           InitTime
           ::res_roi = ::filters->NLmeans((FLOAT)::res0,\
                                 ::t,::f,::h,\
@@ -174,25 +174,25 @@ printn "*** Filter() ****"
         } else {
           ::res_roi = ::res0
           ::res_roi.info
-          ::res_roi.SetComponent( 0, ::filters->NLmeans( (FLOAT)::res0[0],\)
+          ::res_roi.SetComponent( 0, ::filters->NLmeans( (FLOAT)::res0[0],\
                                     ::t,::f,::h,\
                                     ::noisetype,\
                                     ::threads,\
                                     ::filter_type,\
                                     ::presmooth_SD,\
-                                    ::pattern_weight_param)
-          ::res_roi.SetComponent( 1, ::filters->NLmeans( (FLOAT)::res0[1],\)
+                                    ::pattern_weight_param))
+          ::res_roi.SetComponent( 1, ::filters->NLmeans( (FLOAT)::res0[1],\
                                     ::t,::f,::h,\
                                     ::noisetype,::threads,\
                                     ::filter_type,\
                                 ::presmooth_SD,\
-                                ::pattern_weight_param)
-          ::res_roi.SetComponent( 2, ::filters->NLmeans( (FLOAT)::res0[2],\)
+                                ::pattern_weight_param))
+          ::res_roi.SetComponent( 2, ::filters->NLmeans( (FLOAT)::res0[2],\
                                     ::t,::f,::h,\
                                     ::noisetype,::threads,\
                                     ::filter_type,\
                                 ::presmooth_SD,\
-                                ::pattern_weight_param)
+                                ::pattern_weight_param))
         }
   
         ::res0.info
@@ -204,7 +204,7 @@ printn "*** Filter() ****"
       } else {
         ::res0 = ::res
   
-        if (::res0.GetFormat != RGB) {
+        if (::res0.GetFormat.val != RGB.val) {
 
 printn "running ::filters->NLmeans() with"
 printn "t = %1%" % ::t
@@ -223,18 +223,18 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
                           ::presmooth_SD,\
                           ::pattern_weight_param)
         } else {
-          ::res.SetComponent( 0, ::filters->NLmeans((FLOAT)::res0[0],::t,::f,::h,::noisetype,::threads,\)
+          ::res.SetComponent( 0, ::filters->NLmeans((FLOAT)::res0[0],::t,::f,::h,::noisetype,::threads,\
                                 ::filter_type,\
                                 ::presmooth_SD,\
-                                ::pattern_weight_param)
-          ::res.SetComponent( 1, ::filters->NLmeans((FLOAT)::res0[1],::t,::f,::h,::noisetype,::threads,\)
+                                ::pattern_weight_param))
+          ::res.SetComponent( 1, ::filters->NLmeans((FLOAT)::res0[1],::t,::f,::h,::noisetype,::threads,\
                                 ::filter_type,\
                                 ::presmooth_SD,\
-                                ::pattern_weight_param)
-          ::res.SetComponent( 2, ::filters->NLmeans((FLOAT)::res0[2],::t,::f,::h,::noisetype,::threads,\)
+                                ::pattern_weight_param))
+          ::res.SetComponent( 2, ::filters->NLmeans((FLOAT)::res0[2],::t,::f,::h,::noisetype,::threads,\
                                 ::filter_type,\
                                 ::presmooth_SD,\
-                                ::pattern_weight_param)
+                                ::pattern_weight_param))
         }
   
         diff = sqrt(mean((::res0-::res)*(::res0-::res)))
@@ -257,7 +257,7 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
       printn "ComputeMatchField()"
     
       # Precomputes matching field
-      if (::res.GetFormat != RGB) {
+      if (::res.GetFormat.val != RGB.val) {
         num_features = 1
         if (::usegrad) { num_features++; }
         ::matchfield <<= Image( FLOAT,\
@@ -480,7 +480,7 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
     #----------------------------
     proc ::DisplaySurfaces() \
     {
-      if (::input.tz==1)&&(::input.GetFormat != RGB) {
+      if (::input.tz==1)&&(::input.GetFormat.val != RGB.val) {
         if (exists(::input_surf_draw)) { del ::input_surf_draw; }
         if (exists(::res_surf_draw))   { del ::res_surf_draw; }
         if (exists(::input_surf)) { del ::input_surf; }
