@@ -94,7 +94,7 @@ Class Lines2D \
   {
     import = &global::ami_import;
     ::win = import->ParamPanel("Lines2D")
-    ::win.BeginBook
+    ::win.BeginBook()
       ::win.AddPage("IO")
         ::win.BeginBoxPanel("Input Image")
           # set the input image

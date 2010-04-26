@@ -48,7 +48,7 @@ if (!exists(global::ImageGridClass)) {
     #----------------------------
     proc ::UpdateDisplay() \
     {
-      cmd = "if (exists(%1%_draw)) { %1%_draw.Update(-1); };" % ::input_name
+      cmd = "if (exists(%1%_draw)) { %1%_draw.update; };" % ::input_name
       eval cmd
     }
 

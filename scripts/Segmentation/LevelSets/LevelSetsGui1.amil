@@ -388,15 +388,19 @@ if (!exists(LevelSetsClass)){
     if (::use_smoothing) {
       smo_coeff = ::curvcoeff;
     }
-    //
-    LevelSetsCURV.SetParam(0.7,it,adv_coeff,smo_coeff,::dt,::NBD_freq)
-    LevelSetsCURV.SetDistMethod(::NBD_method)
-    LevelSetsCURV.SetThreads(::threads)
-    LevelSetsCURV.SetMeanCurv(::smoothingtype)
-    LevelSetsCURV.SetAffineCurv(::affinecurv)
+
+    # new level set object
+    import = &global::ami_import;
+    if (exists(::levelset)) { del ::levelset; }
+    ::levelset = import->vtkLevelSets();
+    ::levelset.SetParam(0.7,it,adv_coeff,smo_coeff,::dt,::NBD_freq)
+    ::levelset.SetDistMethod(::NBD_method)
+    ::levelset.SetThreads(::threads)
+    ::levelset.SetMeanCurv(::smoothingtype)
+    ::levelset.SetAffineCurv(::affinecurv)
   
     if (exists(::velfield)) {
-      LevelSetsCURV.SetVelocity(::velfield,::velcoeff)
+      ::levelset.SetVelocity(::velfield,::velcoeff)
     }
   
     print "Compute Expansion Image \n"
@@ -405,35 +409,35 @@ if (!exists(LevelSetsClass)){
     print " SD = ";  print ::Isd;
     print "\n"
   
-    LevelSetsCURV.SetILowTh(::minimal_intensity)
+    ::levelset.SetILowTh(::minimal_intensity)
 
     if (::use_expansion) {
       if (::use_expansion_image) {
         if (!exists(::expansion_image)) {
           ::load_expansion
         }
-        LevelSetsCURV.SetExpansionImage(::expansion_image)
+        ::levelset.SetExpansionImage(::expansion_image)
       } else {
-        LevelSetsCURV.SetNumGaussians(1)
-        LevelSetsCURV.SetGaussian(0,::Imean,::Isd)
-        LevelSetsCURV.SetProbThreshold(::prob_threshold)
+        ::levelset.SetNumGaussians(1)
+        ::levelset.SetGaussian(0,::Imean,::Isd)
+        ::levelset.SetProbThreshold(::prob_threshold)
         if (::accept_high_intensity) {
-          LevelSetsCURV.SetProbHighTh(::Imean+::Isd)
+          ::levelset.SetProbHighTh(::Imean+::Isd)
         }
       } 
       # end else / if (::use_expansion_image)
   
-      LevelSetsCURV.SetExpansion(::expansioncoeff)
+      ::levelset.SetExpansion(::expansioncoeff)
     } else {
-      LevelSetsCURV.SetExpansion(0)
+      ::levelset.SetExpansion(0)
     }
   
     print "Compute Expansion Image OK \n"
   
-    LevelSetsCURV.SetBandTube(3,2)
+    ::levelset.SetBandTube(3,2)
   
-    lres = LevelSetsCURV.init(::input,::inls)
-  #  lres = LevelSetsCURV.init(::input,900)
+    lres = ::levelset.InitWithImage(&::input,&::inls)
+  #  lres = ::levelset.init(::input,900)
   
     if (graphics) {
       show ::input
@@ -446,9 +450,9 @@ if (!exists(LevelSetsClass)){
     }
   
     printn "1"
-    LevelSetsCURV.iterate;
-    LevelSetsCURV.UpdateResult
-    previous_ls = LevelSetsCURV.GetOutput
+    ::levelset.Iterate();
+    ::levelset.UpdateResult()
+    previous_ls = ::levelset.GetOutputImage()
     printn "2"
   
     k = 0
@@ -459,11 +463,11 @@ if (!exists(LevelSetsClass)){
       #print n; print "/"; printn it
       if (!::stop) {
         #print sprint("::T= %0.2f \n",n*::dt)
-        LevelSetsCURV.iterate;
+        ::levelset.Iterate();
         k = k+1
         if (graphics)&&(k==::displ_freq) {
-          LevelSetsCURV.UpdateResult
-          lres = LevelSetsCURV.GetOutput
+          ::levelset.UpdateResult
+          lres = ::levelset.GetOutputImage()
           k = 0
           show ::input
           ProcessXEvents(100)
@@ -472,8 +476,8 @@ if (!exists(LevelSetsClass)){
         if (::check_convergence) {
           if ((n % ::conv_freq) == 0) {
             # check for convergence
-            LevelSetsCURV.UpdateResult
-            lres = LevelSetsCURV.GetOutput
+            ::levelset.UpdateResult
+            lres = ::levelset.GetOutputImage()
             stillmoving = count((previous_ls*lres)<0)
             print "*** Convergence test = "; printn stillmoving
             if (stillmoving==0) { ::stop=1; }
@@ -492,11 +496,11 @@ if (!exists(LevelSetsClass)){
     setvoxelsize( lres,    v_x, v_y, v_z)
   
     // invert before ending to be compatible with input convention
-    LevelSetsCURV.UpdateResult
-    lres = LevelSetsCURV.GetOutput
+    ::levelset.UpdateResult
+    lres = ::levelset.GetOutputImage()
     ::inls = -lres;
   
-    LevelSetsCURV.end
+    ::levelset.End()
     SetProgress(0)
   
     ::input_draw.DrawIsoContour(2,0)
