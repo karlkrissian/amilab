@@ -30,6 +30,7 @@
 
 #include "wrap_wxWindow.h"
 #include "wrap_wxHtmlWindow.h"
+#include "wrap_vtkLevelSets.h"
 
 extern VarContexts  Vars;
 
@@ -52,6 +53,7 @@ void AddWrapImports()
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"VarList",   wrap_VarList);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"VarVector", wrap_VarVector);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"ParamPanel",wrap_ParamPanel);
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"vtkLevelSets",wrap_vtkLevelSets);
 
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxWindow",    wrap_wxWindow);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxHtmlWindow",wrap_wxHtmlWindow);

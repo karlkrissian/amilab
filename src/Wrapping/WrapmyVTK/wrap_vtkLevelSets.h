@@ -16,8 +16,9 @@
 #include "wrapfunction_class.h"
 #include "Variable.hpp"
 #include "paramlist.h"
-#include "vtkLevelSets.h"
 
+//#include "vtkLevelSets.h"
+class vtkLevelSets;
 
 class WrapClass_vtkLevelSets : public WrapClassBase
 {
@@ -27,7 +28,7 @@ class WrapClass_vtkLevelSets : public WrapClassBase
   typedef WrapClass_vtkLevelSets::ptr _parentclass_ptr;
 
   public:
-    vtkLevelSets::ptr _vtkLevelSets;
+    boost::shared_ptr<vtkLevelSets> _vtkLevelSets;
 
     // Stored vtk images ...
     vtkImageData_ptr image_input;
@@ -38,9 +39,12 @@ class WrapClass_vtkLevelSets : public WrapClassBase
 
 
   ADD_CLASS_METHOD(SetParam,          "Initialize the parameters.");
+  ADD_CLASS_METHOD(InitWithImage,     "Sets the input image and the initial contour image.");
+  ADD_CLASS_METHOD(InitWithThreshold, "Sets the input image and a threshold value as initial contour.");
 
-  ADD_CLASS_METHOD(SetLowTh,          "");
-  ADD_CLASS_METHOD(SetHighTh,         "");
+
+  ADD_CLASS_METHOD(SetILowTh,         "");
+  ADD_CLASS_METHOD(SetIHighTh,        "");
   ADD_CLASS_METHOD(SetNumInitPoints,  "");
   ADD_CLASS_METHOD(SetInitPoint,      "");
   ADD_CLASS_METHOD(SetIsoContourBin,  "");
@@ -54,7 +58,8 @@ class WrapClass_vtkLevelSets : public WrapClassBase
   ADD_CLASS_METHOD(GetVelocity,       "");
 
   ADD_CLASS_METHOD(SetBalloonScheme,  "");
-  ADD_CLASS_METHOD(SetExpansionImage, "");
+  ADD_CLASS_METHOD(SetExpansionImage, " Set the expansion to be the given image instead of a combination of Gaussian functions. The expansion will then be multiplied by the expansion coefficient during the evolution.");
+
   ADD_CLASS_METHOD(SetExpansion,      "");
   ADD_CLASS_METHOD(GetExpansion,      "");
   ADD_CLASS_METHOD(SetProbThreshold,  "");
@@ -63,19 +68,22 @@ class WrapClass_vtkLevelSets : public WrapClassBase
   ADD_CLASS_METHOD(SetGaussian,       "");
 
   ADD_CLASS_METHOD(SetAdvectionField, "");
-  ADD_CLASS_METHOD(GetAdvection,      "");
+  ADD_CLASS_METHOD(GetAdvection,      "just copy the values when processing the next iteration the array provided MUST be allocated or NULL for cancelling the action.");
 
   ADD_CLASS_METHOD(SetDistMethod,     "");
   ADD_CLASS_METHOD(SetBandTube,       "");
   ADD_CLASS_METHOD(GetDistMap,        "");
   ADD_CLASS_METHOD(GetSkeleton,       "");
-  ADD_CLASS_METHOD(SetThreads,        "");
+  ADD_CLASS_METHOD(SetThreads,        "Sets the number of threads for the PDE evolution within the narrow band.");
 
   ADD_CLASS_METHOD(SaveDistMap,       "");
   ADD_CLASS_METHOD(SaveSecDerGrad,    "");
 
-  ADD_CLASS_METHOD(Iterate,           "");
-  ADD_CLASS_METHOD(End,               "");
+  ADD_CLASS_METHOD(Iterate,           "Runs one iteration.");
+  ADD_CLASS_METHOD(UpdateResult,      "Updates the resulting image so that it contains the current result.");
+  ADD_CLASS_METHOD(GetOutputImage,    "Returns the image of the current contour.");
+  ADD_CLASS_METHOD(GetAttachVect,     "Returns the advection vector field if advection mode is ADVECTION_UPWIND_VECTORS or ADVECTION_CENTRAL_VECTORS, or a scalar image if advection mode is ADVECTION_MORPHO.");
+  ADD_CLASS_METHOD(End,               "Finishes the current segmentation.");
 };
 
 /** function that add wrapping of the Image Drawing window

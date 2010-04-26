@@ -67,7 +67,7 @@ InrImage* Func_LevelSets_Init(InrImage* in,
 
 InrImage* Func_LevelSets_GetCurrentOutput();
 
-int      Func_LevelSets_UpdateResult();			      
+int       Func_LevelSets_UpdateResult();			      
 
 InrImage* Func_LevelSets_GetAttachVectors( InrImage* in);
 

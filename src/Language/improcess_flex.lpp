@@ -469,49 +469,9 @@ EDPclose          return(token::T_EDPclose); /*{EDPclose,T_EDPclose}*/
 
 AnisoGS           return(token::AnisoGS); /*{AnisoGS,AnisoGS}*/
 
-
-LevelSetsCURV     return(token::T_LevelSetsCURV); /*{LevelSetsCURV,T_LevelSetsCURV}*/
-UpdateResult      return(token::T_UpdateResult); /*{UpdateResult,T_UpdateResult}*/
-SetMeanCurv       return(token::T_SetMeanCurv); /*{SetMeanCurv,T_SetMeanCurv}*/
-SetAffineCurv     return(token::T_SetAffineCurv); /*{SetAffineCurv,T_SetAffineCurv}*/
-SetDistMethod     return(token::T_SetDistMethod); /*{SetDistMethod,T_SetDistMethod}*/
-SetAdvectionField return(token::T_SetAdvectionField); /*{SetAdvectionField,T_SetAdvectionField}*/
-SetCurvWeights    return(token::T_SetCurvWeights); /*{SetCurvWeights,T_SetCurvWeights}*/
-GetAttachVect     return(token::T_GetAttachVect); /*{GetAttachVect,T_GetAttachVect}*/
-SetVelocity       return(token::T_SetVelocity); /*{SetVelocity,T_SetVelocity}*/
-SetExpansion      return(token::T_SetExpansion); /*{SetExpansion,T_SetExpansion}*/
-SetExpansionImage return(token::T_SetExpansionImage); /*{SetExpansionImage,T_SetExpansionImage}*/
-SetParam          return(token::T_SetParam); /*{SetParam,T_SetParam}*/
-SetIsoContourBin  return(token::T_SetIsoContourBin); /*{SetIsoContourBin,T_SetIsoContourBin}*/
-SetBandTube       return(token::T_SetBandTube); /*{SetBandTube,T_SetBandTube}*/
-SetThreads        return(token::T_SetThreads); /*{SetThreads,T_SetThreads}*/
-SetDistMap        return(token::T_SetDistMap); /*{SetDistMap,T_SetDistMap}*/
-SetBalloonScheme  return(token::T_SetBalloonScheme); /*{SetBalloonScheme,T_SetBalloonScheme}*/
-
-
 vtkFastMarching   return(token::T_vtkFastMarching); /*{vtkFastMarching,T_vtkFastMarching}*/
 vtkFastMarchingTarget   return(token::T_vtkFastMarchingTarget); /*{vtkFastMarchingTarget,T_vtkFastMarchingTarget}*/
 
-SetNumGaussians   return(token::T_SetNumGaussians); /*{SetNumGaussians,T_SetNumGaussians}*/
-SetGaussian       return(token::T_SetGaussian); /*{SetGaussian,T_SetGaussian}*/
-SetProbThreshold  return(token::T_SetProbThreshold); /*{SetProbThreshold,T_SetProbThreshold}*/
-
-SetILowTh         return(token::T_SetILowTh); /*{SetILowTh,T_SetILowTh}*/
-SetIHighTh        return(token::T_SetIHighTh); /*{SetIHighTh,T_SetIHighTh}*/
-SetProbHighTh     return(token::T_SetProbHighTh); /*{SetProbHighTh,T_SetProbHighTh}*/
-
-SetNumInitPoints   return(token::T_SetNumInitPoints); /*{SetNumInitPoints,T_SetNumInitPoints}*/
-SetInitPoint       return(token::T_SetInitPoint); /*{SetInitPoint,T_SetInitPoint}*/
-
-GetCurvature      return(token::T_GetCurvature); /*{GetCurvature,T_GetCurvature}*/
-GetAdvection      return(token::T_GetAdvection); /*{GetAdvection,T_GetAdvection}*/
-GetVelocity       return(token::T_GetVelocity); /*{GetVelocity,T_GetVelocity}*/
-GetExpansion      return(token::T_GetExpansion); /*{GetExpansion,T_GetExpansion}*/
-GetSkeleton       return(token::T_GetSkeleton); /*{GetSkeleton,T_GetSkeleton}*/
-GetDistMap        return(token::T_GetDistMap); /*{GetDistMap,T_GetDistMap}*/
-
-SaveDistMap       return(token::T_SaveDistMap); /*{SaveDistMap,T_SaveDistMap}*/
-SaveSecDerGrad    return(token::T_SaveSecDerGrad); /*{SaveSecDerGrad,T_SaveSecDerGrad}*/
 
 FluxDiffusion     return(token::T_FluxDiffusion); /*{FluxDiffusion,T_FluxDiffusion}*/
 vtkAnisoGS        return(token::T_vtkAnisoGS); /*{vtkAnisoGS,T_vtkAnisoGS}*/

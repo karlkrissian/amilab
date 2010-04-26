@@ -415,6 +415,7 @@ SET(amilab_ownlibs
   Language
   WrapImports
   WrapVTK
+  WrapmyVTK
   WrapFilters
   WrapSystem
   WrapITK

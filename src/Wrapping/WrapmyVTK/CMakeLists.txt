@@ -17,6 +17,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/wxParams
   ${AMILAB_SOURCE_DIR}/myVTK4
   ${AMILAB_SOURCE_DIR}/Vaisseaux
+  ${AMILAB_SOURCE_DIR}
   ${Boost_INCLUDE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
 )
@@ -34,8 +35,8 @@ SET(WrapmyVTK_HDRS
 )
 
 SET(WrapmyVTK_SRCS
-     ${WrapVTK_SRCS}
-     ${WrapVTK_HDRS}
+     ${WrapmyVTK_SRCS}
+     ${WrapmyVTK_HDRS}
 )
 
 my_add_library ( WrapmyVTK)
