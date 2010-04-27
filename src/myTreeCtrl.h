@@ -57,6 +57,8 @@ protected:
   void OnItemMenu(wxTreeEvent& event);
   void OnAbout(wxCommandEvent& event);
   void ShowMenu(wxTreeItemId id, const wxPoint& pt);
+  void OnItemRightClick(wxTreeEvent& event);
+
 /*
   void OnEraseBackground( wxEraseEvent& WXUNUSED(event) );
   void OnPaint( wxPaintEvent& event );

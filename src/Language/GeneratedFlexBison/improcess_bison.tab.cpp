@@ -1,23 +1,23 @@
-
-/* A Bison parser, made by GNU Bison 2.4.1.  */
+/* A Bison parser, made by GNU Bison 2.3.  */
 
 /* Skeleton implementation for Bison LALR(1) parsers in C++
-   
-      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008 Free Software
-   Foundation, Inc.
-   
-   This program is free software: you can redistribute it and/or modify
+
+   Copyright (C) 2002, 2003, 2004, 2005, 2006 Free Software Foundation, Inc.
+
+   This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
-   
+   the Free Software Foundation; either version 2, or (at your option)
+   any later version.
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin Street, Fifth Floor,
+   Boston, MA 02110-1301, USA.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -28,257 +28,17 @@
    special exception, which will cause the skeleton and the resulting
    Bison output files to be licensed under the GNU General Public
    License without this special exception.
-   
+
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
 // Take the name prefix into account.
 #define yylex   yyiplex
 
-/* First part of user declarations.  */
-
-/* Line 311 of lalr1.cc  */
-#line 11 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
-
- /*** C/C++ Declarations ***/
-  //#include <stdlib.h>
-  //#include <stdio.h>
-
-// use NOMINMAX to avoid conflicts between windows.h min,max and std::min std::max ...
-#define NOMINMAX
-
-#include "driver.h"
-#include "CoutwxString.h"
-#include "MainFrame.h"
-#include <locale.h>
-#include "fonctions.h"
-#include "func_isoline.hpp"
-
-#include "ami_function.h"
-#include "ami_class.h"
-#include "ami_object.h"
-#include "IdentifierInfo.h"
-
-#include "localstats.h"
-//#include "dist_squared.hpp"
-#include "improcess_bison.tab.hpp"
-#include "wrapAMIFluid.h"
-#include "wrapVTK.h"
-#include "wrapITK.h"
-#include "wrap_mainframe.h"
-#include "wrap_imagedraw.h"
-#include "itkCannyEdgeDetector.h"
-#include "wrapWII.h"
-#include "wrapFilters.h"
-#include "wrapSystem.h"
-#include <cstdlib>
-
-//#include "myscan.h"
-#include "ImageDraw.hpp"
-#include "Func_ReadCTALine.h"
-#include "LineRecons.h"
-//#include "PruneLines.h"
-
-#include "wrapfunction_class.h"
-
-
-#ifndef __FLEX_LEXER_H
-#define yyFlexLexer yyipFlexLexer
-#include "FlexLexer.h"
-#undef yyFlexLexer
-#endif
-
-
-#include "Viewer3D.hpp"
-
-//#include "Erreurs.Main.hpp"
- // #include "Graphique.hpp"
-#include "Viewer3D.hpp"
-#include "DessinImage.hpp"
-#include "CompareImage.hpp"
-#include "bruit.hpp"
-#include "CalculAireSection.hpp"
-#include "reponse_cercle.hpp"
-#include "func_shortestpath.h"
-#include "Wrap_AnisoGS.h"
-#include "LevelSetsCURVES.h"
-#include "vtkwrap.h"
-
-#include "gnuplot.hpp"
-
-#include "xmtext.hpp"
-#include "StringUtils.hpp"
-//#include "histo.hpp"
-
-#ifndef WIN32
-#include <unistd.h>
-#endif
-
-#include <iostream>
-
-#include "VarContexts.hpp"
-#include "VarArray.h"
-//#include "Duree.hpp"
-
-#include "DefineClass.hpp"
-
-#include "Variable.hpp"
-
-/*
-#include <boost/shared_ptr.hpp>
-//--- string formatting using boost
-#include <iostream>
-#include <iomanip>
-#include <cassert>
-#include "boost/format.hpp"
-namespace MyNS_ForOutput {
-  using std::cout; using std::cerr;
-  using std::string;
-  using std::endl; using std::flush;
-
-  using boost::format;
-  using boost::io::group;
-}
-using namespace MyNS_ForOutput;
-*/
-
-//-------
-
-#include "wx/evtloop.h"
-#include "driver.h"
-
-extern VarContexts       Vars;
-
-//Duree            IP_time;
-
-extern MainFrame*   GB_main_wxFrame;
-extern wxApp*       GB_wxApp;
-extern int          GB_argc;
-
-extern int       GB_num_arg_parsed;
-extern wxString  GB_scripts_dir;
-extern wxString  GB_help_dir;
-
-
-namespace AMIFluid {
-extern char* FLUID_NAVIGATION_FILE;
-}
-
-
-DessinImage* CreateIDraw(  const std::string& title, InrImage::ptr image);
-// Creation of a DessinImage pointer
-// this function is distinct if compiling with all amilab
-
-extern yyip::Driver GB_driver;
-
-extern unsigned char        GB_debug;
-extern unsigned char        GB_verbose;
-extern unsigned char        verbose;
-extern unsigned char        GB_nofile;
-
-extern char program[80];
-
-extern unsigned char DELETE_IDRAW;
-
-//-------------------------------------------------------
-class wxWaitTimer : public wxTimer
-//    -----------
-{
-  public:
-    bool finished;
-
-    wxWaitTimer() : finished(false) {}
-    //Called each time the timer's timeout expires
-    void Notify()     { finished = true; }
-};
-
-
-
-//------------------------------------------------------
-class wxScheduleTimer : public wxTimer
-//    ---------------
-{
-  DEFINE_CLASS(wxScheduleTimer)
-  public:
-    wxScheduleTimer( Variable<AMIFunction>::ptr callback)
-    {
-      var = Variable<AMIFunction>::ptr(callback);
-    }
-
-    ~wxScheduleTimer()
-    { 
-      //cout << "~wxScheduleTimer()" << endl; 
-    }
-
-    //Called each time the timer's timeout expires
-    void Notify();
-
-  private:
-    // variable of type type_ami_function
-    Variable<AMIFunction>::ptr var;
-};
-
-// create a array of shared pointers
-// to delete the wxScheduleTimer when necessary
-static std::list<wxScheduleTimer::ptr> schedule_timers;
-
-void CB_ParamWin( void* cd );
-
-
-//static void ( void* cd, long unsigned int *) {
-//  CB_ParamWin(cd);
-//}
-
-/*
-static void CB_Button(  void* cd) {
-  CB_ParamWin(cd);
-}
-*/
-
-void CB_delete_variable( void* var);
-
-
-//------------------------------------------------------
-void CB_update_imagelist( void* imagelist_gui);
-
-
-#define GET_VARSTACK_VALUE(type,newvar) \
-  boost::shared_ptr<type> newvar( \
-    driver.var_stack.GetLastVar<type>()->Pointer());
-
-#define GET_VARSTACK_VAR_VAL(type,newvar, newval) \
-  Variable<type>::ptr newvar(driver.var_stack.GetLastVar<type>()); \
-  boost::shared_ptr<type> newval(newvar->Pointer());
-
-#define ADD_VARSTACK_FLOAT(newval) \
-    Variable<float>::ptr new_var(new Variable<float>(float_ptr(new float(newval)))); \
-    driver.var_stack.AddVar(new_var);
-
-/**
-  newval is a smart pointer to the new value to add
-**/
-#define ADD_VARSTACK_PTR(type,newval) \
-    Variable<type>::ptr new_var(new Variable<type>(newval)); \
-    driver.var_stack.AddVar(new_var);
-
-#define UNARYOP_EXPR(operator,val,res)           \
-  res=operator(val);
-
-
-
-
-
-
-/* Line 311 of lalr1.cc  */
-#line 274 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
-
-
 #include "improcess_bison.tab.hpp"
 
 /* User implementation prologue.  */
-
-/* Line 317 of lalr1.cc  */
-#line 739 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 739 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
 
 
 #include "driver.h"
@@ -292,11 +52,11 @@ void CB_update_imagelist( void* imagelist_gui);
 
 
 
-/* Line 317 of lalr1.cc  */
-#line 297 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
+/* Line 317 of lalr1.cc.  */
+#line 57 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
 
 #ifndef YY_
-# if YYENABLE_NLS
+# if defined YYENABLE_NLS && YYENABLE_NLS
 #  if ENABLE_NLS
 #   include <libintl.h> /* FIXME: INFRINGES ON USER NAME SPACE */
 #   define YY_(msgid) dgettext ("bison-runtime", msgid)
@@ -310,11 +70,13 @@ void CB_update_imagelist( void* imagelist_gui);
 /* Suppress unused-variable warnings by "using" E.  */
 #define YYUSE(e) ((void) (e))
 
+/* A pseudo ostream that takes yydebug_ into account.  */
+# define YYCDEBUG							\
+  for (bool yydebugcond_ = yydebug_; yydebugcond_; yydebugcond_ = false)	\
+    (*yycdebug_)
+
 /* Enable debugging if requested.  */
 #if YYDEBUG
-
-/* A pseudo ostream that takes yydebug_ into account.  */
-# define YYCDEBUG if (yydebug_) (*yycdebug_)
 
 # define YY_SYMBOL_PRINT(Title, Type, Value, Location)	\
 do {							\
@@ -340,29 +102,18 @@ do {					\
 
 #else /* !YYDEBUG */
 
-# define YYCDEBUG if (false) std::cerr
 # define YY_SYMBOL_PRINT(Title, Type, Value, Location)
 # define YY_REDUCE_PRINT(Rule)
 # define YY_STACK_PRINT()
 
 #endif /* !YYDEBUG */
 
-#define yyerrok		(yyerrstatus_ = 0)
-#define yyclearin	(yychar = yyempty_)
-
 #define YYACCEPT	goto yyacceptlab
 #define YYABORT		goto yyabortlab
 #define YYERROR		goto yyerrorlab
-#define YYRECOVERING()  (!!yyerrstatus_)
 
-
-/* Line 380 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
-namespace yyip {
-
-/* Line 380 of lalr1.cc  */
-#line 366 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
+namespace yyip
+{
 #if YYERROR_VERBOSE
 
   /* Return YYSTR after stripping away unnecessary quotes and
@@ -406,11 +157,8 @@ namespace yyip {
 
   /// Build a parser object.
   Parser::Parser (class Driver& driver_yyarg)
-    :
-#if YYDEBUG
-      yydebug_ (false),
+    : yydebug_ (false),
       yycdebug_ (&std::cerr),
-#endif
       driver (driver_yyarg)
   {
   }
@@ -448,7 +196,7 @@ namespace yyip {
     yy_symbol_value_print_ (yytype, yyvaluep, yylocationp);
     *yycdebug_ << ')';
   }
-#endif
+#endif /* ! YYDEBUG */
 
   void
   Parser::yydestruct_ (const char* yymsg,
@@ -463,76 +211,44 @@ namespace yyip {
     switch (yytype)
       {
         case 55: /* "ASTRING" */
-
-/* Line 480 of lalr1.cc  */
-#line 731 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 731 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
 	{ delete [] (yyvaluep->astring); };
-
-/* Line 480 of lalr1.cc  */
-#line 473 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
+#line 217 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
 	break;
       case 58: /* "IDENTIFIER" */
-
-/* Line 480 of lalr1.cc  */
-#line 732 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 732 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
 	{ delete  (yyvaluep->ident); };
-
-/* Line 480 of lalr1.cc  */
-#line 482 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
+#line 222 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
 	break;
       case 491: /* "exprstringlist" */
-
-/* Line 480 of lalr1.cc  */
-#line 735 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 735 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
 	{ delete  (yyvaluep->string_list); };
-
-/* Line 480 of lalr1.cc  */
-#line 491 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
+#line 227 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
 	break;
       case 494: /* "primary_expr_string" */
-
-/* Line 480 of lalr1.cc  */
-#line 731 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 731 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
 	{ delete [] (yyvaluep->astring); };
-
-/* Line 480 of lalr1.cc  */
-#line 500 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
+#line 232 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
 	break;
       case 495: /* "instr_block" */
-
-/* Line 480 of lalr1.cc  */
-#line 733 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 733 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
 	{ delete  (yyvaluep->ablock); };
-
-/* Line 480 of lalr1.cc  */
-#line 509 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
+#line 237 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
 	break;
       case 501: /* "expr_string" */
-
-/* Line 480 of lalr1.cc  */
-#line 731 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 731 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
 	{ delete [] (yyvaluep->astring); };
-
-/* Line 480 of lalr1.cc  */
-#line 518 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
+#line 242 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
 	break;
       case 528: /* "identifier" */
-
-/* Line 480 of lalr1.cc  */
-#line 732 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 732 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
 	{ delete  (yyvaluep->ident); };
-
-/* Line 480 of lalr1.cc  */
-#line 527 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
+#line 247 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
 	break;
       case 535: /* "image_extent" */
-
-/* Line 480 of lalr1.cc  */
-#line 734 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 734 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
 	{ delete  (yyvaluep->imageextent); };
-
-/* Line 480 of lalr1.cc  */
-#line 536 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
+#line 252 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
 	break;
 
 	default:
@@ -548,7 +264,6 @@ namespace yyip {
     yylocation_stack_.pop (n);
   }
 
-#if YYDEBUG
   std::ostream&
   Parser::debug_stream () const
   {
@@ -573,12 +288,12 @@ namespace yyip {
   {
     yydebug_ = l;
   }
-#endif
+
 
   int
   Parser::parse ()
   {
-    /// Lookahead and lookahead in internal form.
+    /// Look-ahead and look-ahead in internal form.
     int yychar = yyempty_;
     int yytoken = 0;
 
@@ -591,12 +306,12 @@ namespace yyip {
     int yynerrs_ = 0;
     int yyerrstatus_ = 0;
 
-    /// Semantic value of the lookahead.
+    /// Semantic value of the look-ahead.
     semantic_type yylval;
-    /// Location of the lookahead.
+    /// Location of the look-ahead.
     location_type yylloc;
     /// The locations where the error started and ended.
-    location_type yyerror_range[2];
+    location yyerror_range[2];
 
     /// $$.
     semantic_type yyval;
@@ -609,17 +324,13 @@ namespace yyip {
 
 
     /* User initialization code.  */
-    
-/* Line 553 of lalr1.cc  */
-#line 262 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+    #line 262 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
 {
     // initialize the initial location object
     yylloc.begin.filename = yylloc.end.filename = &driver.streamname;
 }
-
-/* Line 553 of lalr1.cc  */
-#line 622 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
-
+  /* Line 555 of yacc.c.  */
+#line 334 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
     /* Initialize the stacks.  The initial state will be pushed in
        yynewstate, since the latter expects the semantical and the
        location values to have been already stored, initialize these
@@ -634,22 +345,17 @@ namespace yyip {
   yynewstate:
     yystate_stack_.push (yystate);
     YYCDEBUG << "Entering state " << yystate << std::endl;
-
-    /* Accept?  */
-    if (yystate == yyfinal_)
-      goto yyacceptlab;
-
     goto yybackup;
 
     /* Backup.  */
   yybackup:
 
-    /* Try to take a decision without lookahead.  */
+    /* Try to take a decision without look-ahead.  */
     yyn = yypact_[yystate];
     if (yyn == yypact_ninf_)
       goto yydefault;
 
-    /* Read a lookahead token.  */
+    /* Read a look-ahead token.  */
     if (yychar == yyempty_)
       {
 	YYCDEBUG << "Reading a token: ";
@@ -685,11 +391,16 @@ namespace yyip {
 	goto yyreduce;
       }
 
-    /* Shift the lookahead token.  */
+    /* Accept?  */
+    if (yyn == yyfinal_)
+      goto yyacceptlab;
+
+    /* Shift the look-ahead token.  */
     YY_SYMBOL_PRINT ("Shifting", yytoken, &yylval, &yylloc);
 
-    /* Discard the token being shifted.  */
-    yychar = yyempty_;
+    /* Discard the token being shifted unless it is eof.  */
+    if (yychar != yyeof_)
+      yychar = yyempty_;
 
     yysemantic_stack_.push (yylval);
     yylocation_stack_.push (yylloc);
@@ -735,9 +446,7 @@ namespace yyip {
     switch (yyn)
       {
 	  case 22:
-
-/* Line 678 of lalr1.cc  */
-#line 778 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 778 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       int  previous_lineno=driver.yyiplineno;
       AmiInstructionBlock::ptr block((yysemantic_stack_[(8) - (7)].ablock));
@@ -753,13 +462,11 @@ namespace yyip {
         }
       Vars.deleteVar(ident->GetName().c_str());
       driver.yyiplineno=previous_lineno;
-    }
+    ;}
     break;
 
   case 23:
-
-/* Line 678 of lalr1.cc  */
-#line 797 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 797 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       int  previous_lineno=driver.yyiplineno;
       AmiInstructionBlock::ptr block((yysemantic_stack_[(10) - (9)].ablock));
@@ -776,13 +483,11 @@ namespace yyip {
       }
       Vars.deleteVar(ident->GetName().c_str());
       driver.yyiplineno=previous_lineno;
-    }
+    ;}
     break;
 
   case 24:
-
-/* Line 678 of lalr1.cc  */
-#line 817 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 817 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
       Description: 
@@ -825,13 +530,11 @@ namespace yyip {
       // forced to delete the pointer to the list here
       delete (yysemantic_stack_[(6) - (4)].string_list);
 
-    }
+    ;}
     break;
 
   case 25:
-
-/* Line 678 of lalr1.cc  */
-#line 862 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 862 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
       Description:
@@ -852,13 +555,11 @@ namespace yyip {
   
         } while (res);
         driver.yyiplineno = previous_lineno;
-      }
+      ;}
     break;
 
   case 26:
-
-/* Line 678 of lalr1.cc  */
-#line 885 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 885 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
         Description:
@@ -902,13 +603,11 @@ namespace yyip {
           }
         } 
         driver.yyiplineno = previous_lineno;
-      }
+      ;}
     break;
 
   case 27:
-
-/* Line 678 of lalr1.cc  */
-#line 934 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 934 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       int  previous_lineno;
       AmiInstructionBlock::ptr block((yysemantic_stack_[(4) - (3)].ablock));
@@ -922,13 +621,11 @@ namespace yyip {
           if (!driver.parse_block(block)) YYABORT;
           driver.yyiplineno = previous_lineno;
         }
-    }
+    ;}
     break;
 
   case 28:
-
-/* Line 678 of lalr1.cc  */
-#line 949 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 949 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
        int  previous_lineno = driver.yyiplineno;
 
@@ -946,22 +643,18 @@ namespace yyip {
       if (!res) YYABORT;
       driver.yyiplineno = previous_lineno;
 
-    }
+    ;}
     break;
 
   case 29:
-
-/* Line 678 of lalr1.cc  */
-#line 971 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 971 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GB_driver.procedure_declaration = true;
-    }
+    ;}
     break;
 
   case 30:
-
-/* Line 678 of lalr1.cc  */
-#line 976 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 976 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       AmiInstructionBlock::ptr body((yysemantic_stack_[(8) - (7)].ablock));
       IdentifierInfo::ptr ident((yysemantic_stack_[(8) - (2)].ident));
@@ -985,23 +678,19 @@ namespace yyip {
       // desactivate the flag procedure_declaration
       // which allows not to accept variables as identifiers
       GB_driver.procedure_declaration = false;
-    }
+    ;}
     break;
 
   case 31:
-
-/* Line 678 of lalr1.cc  */
-#line 1002 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1002 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       // allow overriding current functions
       GB_driver.procedure_declaration = true;
-    }
+    ;}
     break;
 
   case 32:
-
-/* Line 678 of lalr1.cc  */
-#line 1008 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1008 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       AmiInstructionBlock::ptr body((yysemantic_stack_[(8) - (7)].ablock));
 
@@ -1035,13 +724,11 @@ namespace yyip {
       // desactivate the flag procedure_declaration
       // which allows not to accept variables as identifiers
       GB_driver.procedure_declaration = false;
-    }
+    ;}
     break;
 
   case 33:
-
-/* Line 678 of lalr1.cc  */
-#line 1047 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1047 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       AmiInstructionBlock::ptr body((yysemantic_stack_[(4) - (3)].ablock));
       IdentifierInfo::ptr ident((yysemantic_stack_[(4) - (2)].ident));
@@ -1055,13 +742,11 @@ namespace yyip {
 
       Vars.AddVar<AMIClass>(ident, amiclass);
 
-    }
+    ;}
     break;
 
   case 34:
-
-/* Line 678 of lalr1.cc  */
-#line 1064 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1064 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<AMIClass>::ptr var(driver.var_stack.GetLastVar<AMIClass>());
       AMIClass::ptr ac = var->Pointer();
@@ -1079,24 +764,20 @@ namespace yyip {
 
       Vars.AddVar<AMIObject>(ident, amiobject);
 
-    }
+    ;}
     break;
 
   case 35:
-
-/* Line 678 of lalr1.cc  */
-#line 1085 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1085 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
        //driver.res_print($2);
        driver.parse_script((yysemantic_stack_[(3) - (2)].astring));
        delete [] (yysemantic_stack_[(3) - (2)].astring);
-     }
+     ;}
     break;
 
   case 36:
-
-/* Line 678 of lalr1.cc  */
-#line 1092 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1092 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           int res;
           string name;
@@ -1129,25 +810,21 @@ namespace yyip {
         if (driver.InConsole())
           GB_main_wxFrame->GetConsole()
                           ->IncCommand(wxString::FromAscii(inc_cmd.c_str()));
-      }
+      ;}
     break;
 
   case 37:
-
-/* Line 678 of lalr1.cc  */
-#line 1127 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1127 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       boost::shared_array<char> input((yysemantic_stack_[(2) - (2)].astring));
       string inputstring( input.get());
       driver.parse_string( inputstring,
                           "'eval string' command");
-    }
+    ;}
     break;
 
   case 38:
-
-/* Line 678 of lalr1.cc  */
-#line 1137 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1137 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           /**
             Description:
@@ -1178,13 +855,11 @@ namespace yyip {
             }
           }
 
-        }
+        ;}
     break;
 
   case 39:
-
-/* Line 678 of lalr1.cc  */
-#line 1170 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1170 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           /**
             Description:
@@ -1215,26 +890,22 @@ namespace yyip {
             }
           }
 
-        }
+        ;}
     break;
 
   case 40:
-
-/* Line 678 of lalr1.cc  */
-#line 1202 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1202 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
          /**
           Description:
             Sets the number of command line arguments to 1 (name of the program)
           **/
           GB_argc = 1;
-         }
+         ;}
     break;
 
   case 41:
-
-/* Line 678 of lalr1.cc  */
-#line 1210 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1210 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           /**
             Description:
@@ -1243,13 +914,11 @@ namespace yyip {
               repeat
           **/
            YYABORT;
-         }
+         ;}
     break;
 
   case 42:
-
-/* Line 678 of lalr1.cc  */
-#line 1221 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1221 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
          /**
          Description:
@@ -1261,13 +930,11 @@ namespace yyip {
           local, global_new
          **/
        Vars.SetGlobalContext();
-         }
+         ;}
     break;
 
   case 43:
-
-/* Line 678 of lalr1.cc  */
-#line 1235 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1235 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
          /**
          Description:
@@ -1279,13 +946,11 @@ namespace yyip {
           local, global
          **/
        Vars.SetGlobalNew(1);
-         }
+         ;}
     break;
 
   case 44:
-
-/* Line 678 of lalr1.cc  */
-#line 1249 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1249 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
          /**
          Description:
@@ -1297,13 +962,11 @@ namespace yyip {
           local, global, global_new
          **/
        Vars.SetGlobalNew(0);
-         }
+         ;}
     break;
 
   case 45:
-
-/* Line 678 of lalr1.cc  */
-#line 1263 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1263 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
          /**
          Description:
@@ -1311,13 +974,11 @@ namespace yyip {
          **/
        Vars.SetLastContext();
        Vars.SetGlobalNew(0);
-         }
+         ;}
     break;
 
   case 46:
-
-/* Line 678 of lalr1.cc  */
-#line 1273 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1273 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Description: waits the time given in milliseconds
@@ -1331,13 +992,11 @@ namespace yyip {
             GB_wxApp->Dispatch();
           }
         } // end while
-      }
+      ;}
     break;
 
   case 47:
-
-/* Line 678 of lalr1.cc  */
-#line 1289 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1289 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -1353,13 +1012,11 @@ namespace yyip {
         schedule_timers.push_back(w);
         w->Start(ms,wxTIMER_ONE_SHOT);
 
-      }
+      ;}
     break;
 
   case 48:
-
-/* Line 678 of lalr1.cc  */
-#line 1307 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1307 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
           Description:
@@ -1372,13 +1029,11 @@ namespace yyip {
           IdentifierInfo::ptr ident((yysemantic_stack_[(4) - (1)].ident));
           BasicVariable::ptr newvar( var->NewReference());
           Vars.AddVar(ident,newvar);
-      }
+      ;}
     break;
 
   case 49:
-
-/* Line 678 of lalr1.cc  */
-#line 1322 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1322 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
           Description:
@@ -1403,13 +1058,11 @@ namespace yyip {
             driver.err_print("identifier = variable, no variable value");
           }
         }
-      }
+      ;}
     break;
 
   case 50:
-
-/* Line 678 of lalr1.cc  */
-#line 1349 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1349 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
           Description:
@@ -1434,13 +1087,11 @@ namespace yyip {
             driver.err_print("identifier = variable, no variable value");
           }
         }
-      }
+      ;}
     break;
 
   case 51:
-
-/* Line 678 of lalr1.cc  */
-#line 1376 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1376 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
           Description:
@@ -1482,13 +1133,11 @@ namespace yyip {
             driver.err_print("identifier = variable, no variable value");
             YYABORT;
           }
-      }
+      ;}
     break;
 
   case 52:
-
-/* Line 678 of lalr1.cc  */
-#line 1420 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1420 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         IdentifierInfo::ptr ident((yysemantic_stack_[(6) - (1)].ident));
 
@@ -1497,13 +1146,11 @@ namespace yyip {
         VarArray::ptr arraysurf(new VarArray());
         arraysurf->Init(type_surface,size);
         Vars.AddVar<VarArray>(ident,arraysurf);
-      }
+      ;}
     break;
 
   case 53:
-
-/* Line 678 of lalr1.cc  */
-#line 1431 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1431 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         IdentifierInfo::ptr ident((yysemantic_stack_[(6) - (1)].ident));
         int size = (int) (yysemantic_stack_[(6) - (5)].adouble);
@@ -1511,13 +1158,11 @@ namespace yyip {
         VarArray::ptr arraysurf( new VarArray());
         arraysurf->Init(type_surface,size);
         Vars.AddVar<VarArray>(ident,arraysurf);
-      }
+      ;}
     break;
 
   case 54:
-
-/* Line 678 of lalr1.cc  */
-#line 1441 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1441 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
             IdentifierInfo::ptr ident((yysemantic_stack_[(6) - (1)].ident));
             int size = (int) (yysemantic_stack_[(6) - (5)].adouble);
@@ -1525,13 +1170,11 @@ namespace yyip {
             VarArray::ptr array(new VarArray());
             array->Init(type_image,size);
             Vars.AddVar<VarArray>(ident,array);
-          }
+          ;}
     break;
 
   case 55:
-
-/* Line 678 of lalr1.cc  */
-#line 1452 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1452 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           InrImage::ptr imptr(driver.im_stack.GetLastImage());
           IdentifierInfo::ptr ident((yysemantic_stack_[(3) - (1)].ident));
@@ -1554,13 +1197,11 @@ namespace yyip {
           }
           else
             driver.err_print((boost::format("assignment of NULL image for %1%  \n") %(yysemantic_stack_[(3) - (1)].ident)).str().c_str() );;
-        }
+        ;}
     break;
 
   case 56:
-
-/* Line 678 of lalr1.cc  */
-#line 1478 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1478 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VAR_VAL(VarArray, vararray, array);
 
@@ -1584,13 +1225,11 @@ namespace yyip {
           }
           else
             driver.err_print("assignment of NULL image\n");
-      }
+      ;}
     break;
 
   case 57:
-
-/* Line 678 of lalr1.cc  */
-#line 1517 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1517 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           GLTransfMatrix::ptr imptr( 
             driver.gltransf_stack.GetLastMatrix());
@@ -1600,13 +1239,11 @@ namespace yyip {
             Vars.AddVar<GLTransfMatrix>(ident,imptr);
           else
             driver.err_print("assignment of NULL matrix\n");
-        }
+        ;}
     break;
 
   case 58:
-
-/* Line 678 of lalr1.cc  */
-#line 1547 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1547 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VAR_VAL(VarArray,vararray,array)
 
@@ -1626,13 +1263,11 @@ namespace yyip {
           }
           else
             driver.err_print("assignment of NULL surface\n");
-        }
+        ;}
     break;
 
   case 59:
-
-/* Line 678 of lalr1.cc  */
-#line 1569 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1569 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           IdentifierInfo::ptr ident((yysemantic_stack_[(3) - (1)].ident));
           // TODO: use smart pointers in surf_stack ...
@@ -1642,13 +1277,11 @@ namespace yyip {
             Vars.AddVar<SurfacePoly>(ident, surfptr);
           else
             driver.err_print("assignment of NULL surface\n");
-        }
+        ;}
     break;
 
   case 60:
-
-/* Line 678 of lalr1.cc  */
-#line 1581 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1581 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VAR_VAL(SurfacePoly,var,val)
 
@@ -1664,13 +1297,11 @@ namespace yyip {
           else
             driver.err_print("assignment of NULL surface\n");
 
-        }
+        ;}
     break;
 
   case 61:
-
-/* Line 678 of lalr1.cc  */
-#line 1599 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1599 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VAR_VAL(VarArray,var,array)
           int size = (int) (yysemantic_stack_[(6) - (5)].adouble);
@@ -1688,13 +1319,11 @@ namespace yyip {
           else
             driver.err_print("not able to create surface array !\n");
 
-      }
+      ;}
     break;
 
   case 62:
-
-/* Line 678 of lalr1.cc  */
-#line 1619 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1619 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
         Description: 
@@ -1704,13 +1333,11 @@ namespace yyip {
 
         int_ptr varint (new int((int)(yysemantic_stack_[(6) - (5)].adouble)));
         Vars.AddVar<int>(ident,varint);
-      }
+      ;}
     break;
 
   case 63:
-
-/* Line 678 of lalr1.cc  */
-#line 1631 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1631 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
       Parameters:
@@ -1727,13 +1354,11 @@ namespace yyip {
         BasicVariable::ptr var=Vars.AddVar<int>(ident,varint);
         if (var.get())
           var->SetComments(comments.get());
-      }
+      ;}
     break;
 
   case 64:
-
-/* Line 678 of lalr1.cc  */
-#line 1650 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1650 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
         Description: 
@@ -1742,13 +1367,11 @@ namespace yyip {
         IdentifierInfo::ptr ident((yysemantic_stack_[(6) - (1)].ident));
         uchar_ptr varuchar( new unsigned char((unsigned char)(yysemantic_stack_[(6) - (5)].adouble)));
         Vars.AddVar<unsigned char>(ident,varuchar);
-      }
+      ;}
     break;
 
   case 65:
-
-/* Line 678 of lalr1.cc  */
-#line 1661 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1661 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
       Parameters:
@@ -1765,13 +1388,11 @@ namespace yyip {
         BasicVariable::ptr var=Vars.AddVar<unsigned char>(ident,varuchar);
         if (var.get())
           var->SetComments(comments.get());
-      }
+      ;}
     break;
 
   case 66:
-
-/* Line 678 of lalr1.cc  */
-#line 1748 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1748 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           IdentifierInfo::ptr ident((yysemantic_stack_[(8) - (1)].ident));
           boost::shared_array<char> filename( (yysemantic_stack_[(8) - (5)].astring));
@@ -1803,13 +1424,11 @@ namespace yyip {
           }
           */
           }
-        }
+        ;}
     break;
 
   case 67:
-
-/* Line 678 of lalr1.cc  */
-#line 1782 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1782 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Variable<FILE>::ptr varfile(driver.var_stack.GetLastVar<FILE>());
           std::string filename(varfile->Name());
@@ -1824,61 +1443,49 @@ namespace yyip {
             fprintf(stderr,"error opening file '%s' in mode '%s'\n",
                     (yysemantic_stack_[(8) - (5)].astring),(yysemantic_stack_[(8) - (7)].astring));
           }
-        }
+        ;}
     break;
 
   case 68:
-
-/* Line 678 of lalr1.cc  */
-#line 1798 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1798 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Variable<FILE>::ptr varfile(driver.var_stack.GetLastVar<FILE>());
           FILE_ptr file(varfile->Pointer());
           rewind(file.get());
-        }
+        ;}
     break;
 
   case 69:
-
-/* Line 678 of lalr1.cc  */
-#line 1804 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1804 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GB_debug = 1;
-        }
+        ;}
     break;
 
   case 70:
-
-/* Line 678 of lalr1.cc  */
-#line 1808 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1808 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GB_debug = 0;
-        }
+        ;}
     break;
 
   case 71:
-
-/* Line 678 of lalr1.cc  */
-#line 1812 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1812 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GB_verbose = 1;
       verbose = 1;
-    }
+    ;}
     break;
 
   case 72:
-
-/* Line 678 of lalr1.cc  */
-#line 1817 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1817 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GB_verbose = 0;
-    }
+    ;}
     break;
 
   case 73:
-
-/* Line 678 of lalr1.cc  */
-#line 1821 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1821 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
       Description:
@@ -1892,13 +1499,11 @@ namespace yyip {
           boost::shared_array<char> label(    (yysemantic_stack_[(8) - (5)].astring));
           boost::shared_array<char> script(   (yysemantic_stack_[(8) - (7)].astring));
           GB_main_wxFrame->AddMenuScript(category.get(),label.get(),script.get());
-    }
+    ;}
     break;
 
   case 74:
-
-/* Line 678 of lalr1.cc  */
-#line 1836 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1836 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
       Parameter:
@@ -1907,13 +1512,11 @@ namespace yyip {
         Sets the Progress bar in the Main window to the given percentage (between 0 and 100).
     **/
           GB_main_wxFrame->SetProgress((int)((yysemantic_stack_[(4) - (3)].adouble)+0.5));
-    }
+    ;}
     break;
 
   case 75:
-
-/* Line 678 of lalr1.cc  */
-#line 1846 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1846 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
       Parameter:
@@ -1923,22 +1526,18 @@ namespace yyip {
     **/
         boost::shared_array<char> text( (yysemantic_stack_[(4) - (3)].astring));
         GB_main_wxFrame->SetStatusText( text.get() );
-    }
+    ;}
     break;
 
   case 76:
-
-/* Line 678 of lalr1.cc  */
-#line 1856 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1856 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           GB_main_wxFrame->Close(true);
-        }
+        ;}
     break;
 
   case 77:
-
-/* Line 678 of lalr1.cc  */
-#line 1860 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1860 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           std::string titre;
           GET_VARSTACK_VAR_VAL(InrImage, imagevar, im);
@@ -1987,13 +1586,11 @@ namespace yyip {
             Vars.SetObjectContext(previous_ocontext);
           }
 
-        }
+        ;}
     break;
 
   case 78:
-
-/* Line 678 of lalr1.cc  */
-#line 1910 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1910 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VAR_VAL(InrImage, varim, im)
           string title;
@@ -2015,13 +1612,11 @@ namespace yyip {
             fprintf(stderr,"Image %s not visible \n",
           varim->Name().c_str());
 
-        }
+        ;}
     break;
 
   case 79:
-
-/* Line 678 of lalr1.cc  */
-#line 1933 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1933 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VAR_VAL(SurfacePoly,surfvar,surf)
           string    titre;
@@ -2067,13 +1662,11 @@ namespace yyip {
             Vars.SetObjectContext(previous_ocontext);
           }
 
-        }
+        ;}
     break;
 
   case 80:
-
-/* Line 678 of lalr1.cc  */
-#line 2008 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 1980 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -2108,13 +1701,11 @@ namespace yyip {
                 driver.err_print("assignment of NULL image\n");
             } // end if (!can_skip_allocation)
           } // end if (i1.get()!=imptr)
-        }
+        ;}
     break;
 
   case 81:
-
-/* Line 678 of lalr1.cc  */
-#line 2059 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2031 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           /**
           Parameters:
@@ -2171,13 +1762,11 @@ namespace yyip {
               YYABORT;
             }
           }
-        }
+        ;}
     break;
 
   case 82:
-
-/* Line 678 of lalr1.cc  */
-#line 2149 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2121 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
           Description: Pads the image ...
@@ -2195,76 +1784,60 @@ namespace yyip {
           Func_Pad(i1.get(),i2.get(),stepx,posx,stepy,posy,stepz,posz);
 
 
-        }
+        ;}
     break;
 
   case 83:
-
-/* Line 678 of lalr1.cc  */
-#line 2182 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2154 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           (*driver.var_stack.GetLastVar<int>()->Pointer())++;
-        }
+        ;}
     break;
 
   case 84:
-
-/* Line 678 of lalr1.cc  */
-#line 2186 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2158 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           (*driver.var_stack.GetLastVar<int>()->Pointer())--;
-        }
+        ;}
     break;
 
   case 85:
-
-/* Line 678 of lalr1.cc  */
-#line 2190 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2162 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           (*driver.var_stack.GetLastVar<int>()->Pointer()) = (int) (yysemantic_stack_[(3) - (3)].adouble);
-        }
+        ;}
     break;
 
   case 86:
-
-/* Line 678 of lalr1.cc  */
-#line 2194 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2166 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           (*driver.var_stack.GetLastVar<unsigned char>()->Pointer())  = (unsigned char) (yysemantic_stack_[(3) - (3)].adouble);
-        }
+        ;}
     break;
 
   case 87:
-
-/* Line 678 of lalr1.cc  */
-#line 2198 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2170 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           (*driver.var_stack.GetLastVar<unsigned char>()->Pointer())++;
-        }
+        ;}
     break;
 
   case 88:
-
-/* Line 678 of lalr1.cc  */
-#line 2202 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2174 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           (*driver.var_stack.GetLastVar<unsigned char>()->Pointer())--;
-        }
+        ;}
     break;
 
   case 89:
-
-/* Line 678 of lalr1.cc  */
-#line 2214 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2186 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Vars.display();
-        }
+        ;}
     break;
 
   case 90:
-
-/* Line 678 of lalr1.cc  */
-#line 2218 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2190 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
           Parameters:
@@ -2275,13 +1848,11 @@ namespace yyip {
           BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
           boost::shared_array<char> comments( (yysemantic_stack_[(6) - (5)].astring));
           var->SetComments(comments.get());
-        }
+        ;}
     break;
 
   case 91:
-
-/* Line 678 of lalr1.cc  */
-#line 2230 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2202 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
           Description: 
@@ -2294,13 +1865,11 @@ namespace yyip {
          */
          BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
          Vars.deleteVar(var);
-        }
+        ;}
     break;
 
   case 92:
-
-/* Line 678 of lalr1.cc  */
-#line 2244 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2216 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
           Description: 
@@ -2309,13 +1878,11 @@ namespace yyip {
         **/
         boost::shared_array<char> varmatch( (yysemantic_stack_[(2) - (2)].astring));
          Vars.deleteVars( varmatch.get());
-        }
+        ;}
     break;
 
   case 93:
-
-/* Line 678 of lalr1.cc  */
-#line 2254 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2226 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Variable<VarArray>::ptr vararray(driver.var_stack.GetLastVar<VarArray>());
           VarArray::ptr array (vararray->Pointer());
@@ -2324,13 +1891,11 @@ namespace yyip {
           if (array->GetVar(i).get()) {
             array->GetVar(i) = BasicVariable::ptr();
           }
-      }
+      ;}
     break;
 
   case 94:
-
-/* Line 678 of lalr1.cc  */
-#line 2264 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2236 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
         Parameters:
@@ -2340,26 +1905,22 @@ namespace yyip {
       **/
         boost::shared_array<char> cmd( (yysemantic_stack_[(2) - (2)].astring));
         std::system( cmd.get());
-      }
+      ;}
     break;
 
   case 95:
-
-/* Line 678 of lalr1.cc  */
-#line 2275 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2247 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
         Description:
         Calls system 'ls' command (for unix systems)
       **/
          std::system("ls");
-           }
+           ;}
     break;
 
   case 96:
-
-/* Line 678 of lalr1.cc  */
-#line 2283 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2255 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         driver.res_print("Topics: \n");
         driver.res_print("\t var:  variables                 \n");
@@ -2370,13 +1931,11 @@ namespace yyip {
         driver.res_print("\t loop: loops                     \n");
         driver.res_print("\t cond: conditions                \n");
             driver.res_print("\t arit: arithmetical expressions  \n");
-      }
+      ;}
     break;
 
   case 97:
-
-/* Line 678 of lalr1.cc  */
-#line 2295 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2267 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           IdentifierInfo::ptr ident((yysemantic_stack_[(2) - (2)].ident));
        if (strcmp(ident->GetName().c_str(),"var")==0) {
@@ -2624,13 +2183,11 @@ namespace yyip {
          driver.res_print("\t\t\t   set var_image a the vector image with number \n");
          driver.res_print("\t\t\t   between 1 and 3 \n");
        }
-     }
+     ;}
     break;
 
   case 98:
-
-/* Line 678 of lalr1.cc  */
-#line 2544 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2516 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
       Description: 
@@ -2639,13 +2196,11 @@ namespace yyip {
       GET_VARSTACK_VALUE(C_wrap_imagefunction, func);
       // call with NULL paramlist pointer to trigger help message
       (*func)(NULL);
-    }
+    ;}
     break;
 
   case 99:
-
-/* Line 678 of lalr1.cc  */
-#line 2554 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2526 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
       Description: 
@@ -2654,13 +2209,11 @@ namespace yyip {
       GET_VARSTACK_VALUE(C_wrap_varfunction, func);
       // call with NULL paramlist pointer to trigger help message
       (*func)(NULL);
-    }
+    ;}
     break;
 
   case 100:
-
-/* Line 678 of lalr1.cc  */
-#line 2564 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2536 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
       Description: 
@@ -2669,13 +2222,11 @@ namespace yyip {
       GET_VARSTACK_VALUE(C_wrap_procedure, proc);
       // call with NULL paramlist pointer to trigger help message
       (*proc)(NULL);
-    }
+    ;}
     break;
 
   case 101:
-
-/* Line 678 of lalr1.cc  */
-#line 2574 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2546 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
       Description: 
@@ -2683,13 +2234,11 @@ namespace yyip {
     **/
       GET_VARSTACK_VALUE(WrapClassMember, m);
       m->ShowHelp();
-    }
+    ;}
     break;
 
   case 102:
-
-/* Line 678 of lalr1.cc  */
-#line 2583 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2555 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       string  help_cmd;
       string  help_file;
@@ -2742,13 +2291,11 @@ namespace yyip {
 
       Si GB_debug AlorsFait fprintf(stderr,"6\n");
 
-        }
+        ;}
     break;
 
   case 103:
-
-/* Line 678 of lalr1.cc  */
-#line 2637 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2609 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Variable<FILE>::ptr varfile(driver.var_stack.GetLastVar<FILE>());
           FILE_ptr file (varfile->Pointer());
@@ -2756,13 +2303,11 @@ namespace yyip {
 
           fprintf(file.get(),"%s",text.get());
           fflush(file.get());
-        }
+        ;}
     break;
 
   case 104:
-
-/* Line 678 of lalr1.cc  */
-#line 2646 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2618 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Variable<FILE>::ptr varfile(driver.var_stack.GetLastVar<FILE>());
           FILE_ptr file (varfile->Pointer());
@@ -2770,13 +2315,11 @@ namespace yyip {
 
           fprintf(file.get(),"%s\n",text.get());
           fflush(file.get());
-        }
+        ;}
     break;
 
   case 105:
-
-/* Line 678 of lalr1.cc  */
-#line 2655 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2627 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
          /**
           Description:
@@ -2787,13 +2330,11 @@ namespace yyip {
             driver.res_print(var->GetValueAsString());
           else
             driver.err_print("empty variable");
-        }
+        ;}
     break;
 
   case 106:
-
-/* Line 678 of lalr1.cc  */
-#line 2667 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2639 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
          /**
           Description:
@@ -2804,13 +2345,11 @@ namespace yyip {
             driver.res_print(var->GetValueAsString()+"\n");
           else
             driver.err_print("empty variable");
-        }
+        ;}
     break;
 
   case 107:
-
-/* Line 678 of lalr1.cc  */
-#line 2708 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2680 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
          /**
           Parameters:
@@ -2820,36 +2359,30 @@ namespace yyip {
           **/
           driver.info_print((yysemantic_stack_[(2) - (2)].astring));
           delete [] (yysemantic_stack_[(2) - (2)].astring);
-      }
+      ;}
     break;
 
   case 108:
-
-/* Line 678 of lalr1.cc  */
-#line 2727 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2699 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Variable<FILE>::ptr varfile(driver.var_stack.GetLastVar<FILE>());
           FILE_ptr file (varfile->Pointer());
 
           fprintf(file.get(),"%5.10f",(yysemantic_stack_[(4) - (4)].adouble));
           fflush(file.get());
-        }
+        ;}
     break;
 
   case 109:
-
-/* Line 678 of lalr1.cc  */
-#line 2735 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2707 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           driver.var_stack.GetLastBasicVar();
           printf("Deprecated: No need to close files explicitly, since we use smart pointers, they will be closed when the variable is deleted. \n");
-        }
+        ;}
     break;
 
   case 110:
-
-/* Line 678 of lalr1.cc  */
-#line 2762 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2734 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
           DessinImage::ptr draw;
@@ -2865,13 +2398,11 @@ namespace yyip {
 
           draw->Paint();
 
-        }
+        ;}
     break;
 
   case 111:
-
-/* Line 678 of lalr1.cc  */
-#line 2779 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2751 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
           DessinImage::ptr draw;
@@ -2883,13 +2414,11 @@ namespace yyip {
           //      param->_MAJ.MAJCoupes();
 
           draw->Paint();
-        }
+        ;}
     break;
 
   case 112:
-
-/* Line 678 of lalr1.cc  */
-#line 2792 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2764 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
           DessinImage::ptr draw;
@@ -2899,13 +2428,11 @@ namespace yyip {
           param = draw->GetParam();
           param->_MAJ.MAJCoupes();
           draw->Paint();
-        }
+        ;}
     break;
 
   case 113:
-
-/* Line 678 of lalr1.cc  */
-#line 2803 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2775 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VAR_VAL(InrImage,    varim,  im);
           GET_VARSTACK_VAR_VAL(DessinImage, varimd, draw);
@@ -2950,25 +2477,21 @@ namespace yyip {
                 fprintf(stderr,"Image comparison: Variable %s not found !\n",title);
             }
 
-        }
+        ;}
     break;
 
   case 114:
-
-/* Line 678 of lalr1.cc  */
-#line 2849 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2821 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VALUE(DessinImage, draw2);
           GET_VARSTACK_VALUE(DessinImage, draw1);
 
           draw1->CreeCompare2Image(draw2);
-        }
+        ;}
     break;
 
   case 115:
-
-/* Line 678 of lalr1.cc  */
-#line 2856 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2828 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -2986,13 +2509,11 @@ namespace yyip {
 
           // TODO: check for SetCompareDisplacement, does it really work?
           draw->SetCompareDisplacement(draw2,displ);
-        }
+        ;}
     break;
 
   case 116:
-
-/* Line 678 of lalr1.cc  */
-#line 2879 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2851 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
 
           Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
@@ -3022,13 +2543,11 @@ namespace yyip {
         // PB: the matrix is never freed from memory ...
         // TODO use smart pointer management !!!
 */
-        }
+        ;}
     break;
 
   case 117:
-
-/* Line 678 of lalr1.cc  */
-#line 2910 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2882 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           /**
             Parameters:
@@ -3042,39 +2561,33 @@ namespace yyip {
           GET_VARSTACK_VALUE(DessinImage, draw);
 
           draw->LoadVectImage( (int) (yysemantic_stack_[(8) - (5)].adouble), im);
-        }
+        ;}
     break;
 
   case 118:
-
-/* Line 678 of lalr1.cc  */
-#line 2925 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2897 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
           DessinImage::ptr draw;
 
           draw = DessinImage::ptr(varimd->Pointer());
           draw->SetVectorVisible( (int) (yysemantic_stack_[(8) - (5)].adouble), (int) (yysemantic_stack_[(8) - (7)].adouble));
-        }
+        ;}
     break;
 
   case 119:
-
-/* Line 678 of lalr1.cc  */
-#line 2933 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2905 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
           DessinImage::ptr draw;
 
           draw = DessinImage::ptr(varimd->Pointer());
           draw->CB_AfficheChampVect(draw.get(),NULL);
-        }
+        ;}
     break;
 
   case 120:
-
-/* Line 678 of lalr1.cc  */
-#line 2941 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2913 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           /**
           Parameters:
@@ -3092,13 +2605,11 @@ namespace yyip {
 
           draw = DessinImage::ptr(varimd->Pointer());
           draw->SetVectParam( size, spacing);
-        }
+        ;}
     break;
 
   case 121:
-
-/* Line 678 of lalr1.cc  */
-#line 2960 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2932 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           /** 
             Parameters:
@@ -3121,35 +2632,29 @@ namespace yyip {
 
           draw = DessinImage::ptr(varimd->Pointer());
           draw->SetVectColor( vectid,red,green,blue);
-        }
+        ;}
     break;
 
   case 122:
-
-/* Line 678 of lalr1.cc  */
-#line 2984 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2956 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
           DessinImage::ptr draw= DessinImage::ptr(varimd->Pointer());
           draw->SetVectType((int)(yysemantic_stack_[(6) - (5)].adouble));
-        }
+        ;}
     break;
 
   case 123:
-
-/* Line 678 of lalr1.cc  */
-#line 2990 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2962 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
           DessinImage::ptr draw= DessinImage::ptr(varimd->Pointer());
           draw->SetLineThickness((int)(yysemantic_stack_[(6) - (5)].adouble));
-        }
+        ;}
     break;
 
   case 124:
-
-/* Line 678 of lalr1.cc  */
-#line 2996 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2968 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
           int xmin = (int)  (yysemantic_stack_[(16) - (5)].adouble);
@@ -3162,13 +2667,11 @@ namespace yyip {
           DessinImage::ptr draw= DessinImage::ptr(varimd->Pointer());
           draw->SetZoom(xmin,ymin,zmin,xmax,ymax,zmax);
 
-        }
+        ;}
     break;
 
   case 125:
-
-/* Line 678 of lalr1.cc  */
-#line 3010 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2982 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
           int width  = (int) (yysemantic_stack_[(8) - (5)].adouble);
@@ -3179,13 +2682,11 @@ namespace yyip {
           draw->Update();
 
 
-        }
+        ;}
     break;
 
   case 126:
-
-/* Line 678 of lalr1.cc  */
-#line 3022 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 2994 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           DessinImage::ptr draw;
           Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
@@ -3194,13 +2695,11 @@ namespace yyip {
           draw = DessinImage::ptr(varimd->Pointer());
           c.FixeValeur((int)(yysemantic_stack_[(16) - (11)].adouble),(int)(yysemantic_stack_[(16) - (13)].adouble),(int)(yysemantic_stack_[(16) - (15)].adouble));
           draw->DessineCercle( (int) (yysemantic_stack_[(16) - (5)].adouble), (int) (yysemantic_stack_[(16) - (7)].adouble), (int) (yysemantic_stack_[(16) - (9)].adouble), c);
-        }
+        ;}
     break;
 
   case 127:
-
-/* Line 678 of lalr1.cc  */
-#line 3032 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3004 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
           Description: Set a user-defined colormap.
@@ -3209,25 +2708,21 @@ namespace yyip {
           InrImage::ptr colmap(driver.im_stack.GetLastImage());
 
           draw->SetUserColormap( colmap,  (yysemantic_stack_[(10) - (7)].adouble),  (yysemantic_stack_[(10) - (9)].adouble));
-        }
+        ;}
     break;
 
   case 128:
-
-/* Line 678 of lalr1.cc  */
-#line 3042 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3014 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VALUE(Viewer3D,    surfd);
           GET_VARSTACK_VALUE(DessinImage, draw);
 
           draw->SetGLWindow(surfd);
-        }
+        ;}
     break;
 
   case 129:
-
-/* Line 678 of lalr1.cc  */
-#line 3049 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3021 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
             /**
             Parameters:
@@ -3243,13 +2738,11 @@ namespace yyip {
 
           draw->InitIsoContour( im, (yysemantic_stack_[(10) - (9)].adouble) , (int) (yysemantic_stack_[(10) - (5)].adouble) );
           draw->DrawIsoContour( (int) (yysemantic_stack_[(10) - (5)].adouble), true );
-        }
+        ;}
     break;
 
   case 130:
-
-/* Line 678 of lalr1.cc  */
-#line 3066 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3038 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
             /**
             Parameters:
@@ -3264,13 +2757,11 @@ namespace yyip {
 
           draw->InitIsoContour( im, (yysemantic_stack_[(8) - (7)].adouble) , 0 );
           draw->DrawIsoContour( 0, true );
-        }
+        ;}
     break;
 
   case 131:
-
-/* Line 678 of lalr1.cc  */
-#line 3082 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3054 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
             /**
             Parameters:
@@ -3287,13 +2778,11 @@ namespace yyip {
 
           draw = DessinImage::ptr(varimd->Pointer());
           draw->SetIsoContourParam( (int)(yysemantic_stack_[(10) - (5)].adouble), (int)(yysemantic_stack_[(10) - (7)].adouble), (int)(yysemantic_stack_[(10) - (9)].adouble) );
-        }
+        ;}
     break;
 
   case 132:
-
-/* Line 678 of lalr1.cc  */
-#line 3100 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3072 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
             /**
             Parameters:
@@ -3313,13 +2802,11 @@ namespace yyip {
           draw = DessinImage::ptr(varimd->Pointer());
           draw->SetIsoContourParam( (int)(yysemantic_stack_[(14) - (5)].adouble), (int)(yysemantic_stack_[(14) - (7)].adouble), (int)(yysemantic_stack_[(14) - (9)].adouble) );
           draw->SetLineAttributes( (int)(yysemantic_stack_[(14) - (11)].adouble), (int)(yysemantic_stack_[(14) - (13)].adouble));
-        }
+        ;}
     break;
 
   case 133:
-
-/* Line 678 of lalr1.cc  */
-#line 3121 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3093 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
             /**
             Parameters:
@@ -3334,13 +2821,11 @@ namespace yyip {
 
           draw = DessinImage::ptr(varimd->Pointer());
           draw->DrawIsoContour( (int) (yysemantic_stack_[(8) - (5)].adouble), (int) (yysemantic_stack_[(8) - (7)].adouble) );
-        }
+        ;}
     break;
 
   case 134:
-
-/* Line 678 of lalr1.cc  */
-#line 3137 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3109 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
             /**
             Parameters:
@@ -3358,13 +2843,11 @@ namespace yyip {
           draw->SetIsoContourColor( (int) (yysemantic_stack_[(12) - (5)].adouble), (unsigned char) (yysemantic_stack_[(12) - (7)].adouble),
                                               (unsigned char) (yysemantic_stack_[(12) - (9)].adouble),
                                               (unsigned char) (yysemantic_stack_[(12) - (11)].adouble));
-        }
+        ;}
     break;
 
   case 135:
-
-/* Line 678 of lalr1.cc  */
-#line 3156 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3128 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
             /**
             Parameters:
@@ -3377,13 +2860,11 @@ namespace yyip {
           DessinImage::ptr draw;
           draw = DessinImage::ptr(varimd->Pointer());
           draw->SetDrawAllContours( (int) (yysemantic_stack_[(6) - (5)].adouble) );
-        }
+        ;}
     break;
 
   case 136:
-
-/* Line 678 of lalr1.cc  */
-#line 3170 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3142 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
             /**
             Parameters:
@@ -3397,13 +2878,11 @@ namespace yyip {
           DessinImage::ptr draw;
           draw = DessinImage::ptr(varimd->Pointer());
           draw->AllContoursParam(  (yysemantic_stack_[(8) - (5)].adouble) , (yysemantic_stack_[(8) - (7)].adouble) );
-        }
+        ;}
     break;
 
   case 137:
-
-/* Line 678 of lalr1.cc  */
-#line 3185 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3157 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VALUE(AMIFunction, func);
           GET_VARSTACK_VALUE(DessinImage, draw);
@@ -3412,13 +2891,11 @@ namespace yyip {
                                   (void*) func.get() );
           // may be a pb to call Paint() here since it will start another interpreter ??? to check
           //draw->Paint();
-        }
+        ;}
     break;
 
   case 138:
-
-/* Line 678 of lalr1.cc  */
-#line 3195 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3167 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
          Description:
@@ -3429,13 +2906,11 @@ namespace yyip {
           GET_VARSTACK_VALUE(DessinImage, imdraw);
 
           imdraw->SetVolRenOpacity( im.get());
-        }
+        ;}
     break;
 
   case 139:
-
-/* Line 678 of lalr1.cc  */
-#line 3207 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3179 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           /**
           Description:
@@ -3456,13 +2931,11 @@ namespace yyip {
           **/
           GET_VARSTACK_VALUE(InrImage, im);
           im->InitBuffer();
-        }
+        ;}
     break;
 
   case 140:
-
-/* Line 678 of lalr1.cc  */
-#line 3229 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3201 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
             /**
               Description:
@@ -3485,13 +2958,11 @@ namespace yyip {
                 % im->_translation_y
                 % im->_translation_z).str();
             driver.res_print(tmp_string);
-        }
+        ;}
     break;
 
   case 141:
-
-/* Line 678 of lalr1.cc  */
-#line 3253 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3225 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           /**
             Description:
@@ -3512,13 +2983,11 @@ namespace yyip {
           driver.res_print(tmp_string);
           o->GetContext()->display();
     */
-        }
+        ;}
     break;
 
   case 142:
-
-/* Line 678 of lalr1.cc  */
-#line 3275 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3247 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VAR_VAL(SurfacePoly,var,s);
     
@@ -3535,13 +3004,11 @@ namespace yyip {
             % s->_ymin % s->_ymax
             % s->_zmin % s->_zmax).str();
           driver.res_print(tmp_string);
-        }
+        ;}
     break;
 
   case 143:
-
-/* Line 678 of lalr1.cc  */
-#line 3293 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3265 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -3552,13 +3019,11 @@ namespace yyip {
         **/
           GET_VARSTACK_VALUE(InrImage, im);
           (im)->InitImage((yysemantic_stack_[(6) - (5)].adouble));
-        }
+        ;}
     break;
 
   case 144:
-
-/* Line 678 of lalr1.cc  */
-#line 3305 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3277 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -3571,13 +3036,11 @@ namespace yyip {
         **/
           GET_VARSTACK_VALUE(InrImage,    im);
           im->InitImage((yysemantic_stack_[(10) - (5)].adouble),(yysemantic_stack_[(10) - (7)].adouble),(yysemantic_stack_[(10) - (9)].adouble));
-        }
+        ;}
     break;
 
   case 145:
-
-/* Line 678 of lalr1.cc  */
-#line 3319 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3291 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -3595,13 +3058,11 @@ namespace yyip {
         **/
           GET_VARSTACK_VALUE(InrImage, im);
           im->FixeValeur((yysemantic_stack_[(6) - (5)].adouble));
-        }
+        ;}
     break;
 
   case 146:
-
-/* Line 678 of lalr1.cc  */
-#line 3338 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3310 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
 
         /**
@@ -3622,13 +3083,11 @@ namespace yyip {
         **/
           GET_VARSTACK_VALUE(InrImage, im);
           im->VectFixeValeurs((yysemantic_stack_[(10) - (5)].adouble),(yysemantic_stack_[(10) - (7)].adouble),(yysemantic_stack_[(10) - (9)].adouble));
-        }
+        ;}
     break;
 
   case 147:
-
-/* Line 678 of lalr1.cc  */
-#line 3360 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3332 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -3655,13 +3114,11 @@ namespace yyip {
             tmp_string = (boost::format("setpos \t coord = (%1% %2% %3%) from (%4% %5% %6%) \n")%x%y%z % (yysemantic_stack_[(10) - (5)].adouble) % (yysemantic_stack_[(10) - (7)].adouble) % (yysemantic_stack_[(10) - (9)].adouble)).str();
           driver.err_print(tmp_string);
           FinSi
-        }
+        ;}
     break;
 
   case 148:
-
-/* Line 678 of lalr1.cc  */
-#line 3391 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3363 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -3686,13 +3143,11 @@ namespace yyip {
           InrImage::ptr  i1(varim1->Pointer());
           InrImage::ptr  i2(varim2->Pointer());
           Func_PutImage( i1.get(), i2.get(), (int) (yysemantic_stack_[(12) - (7)].adouble), (int) (yysemantic_stack_[(12) - (9)].adouble), (int) (yysemantic_stack_[(12) - (11)].adouble));
-        }
+        ;}
     break;
 
   case 149:
-
-/* Line 678 of lalr1.cc  */
-#line 3418 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3390 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -3722,24 +3177,20 @@ namespace yyip {
              (int) round((double)(tx2-tx1)/i1->VoxSizeX()),
              (int) round((double)(ty2-ty1)/i1->VoxSizeY()),
              (int) round((double)(tz2-tz1)/i1->VoxSizeZ()));
-    }
+    ;}
     break;
 
   case 150:
-
-/* Line 678 of lalr1.cc  */
-#line 3450 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3422 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       boost::shared_array<char> name((yysemantic_stack_[(6) - (5)].astring));
       GET_VARSTACK_VALUE(InrImage, im);
       im->FixeNom( name.get());
-    }
+    ;}
     break;
 
   case 151:
-
-/* Line 678 of lalr1.cc  */
-#line 3457 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3429 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -3756,59 +3207,47 @@ namespace yyip {
         GET_VARSTACK_VALUE(InrImage, im);
         Func_InitAnisoGS( im.get(),
                           (yysemantic_stack_[(12) - (7)].adouble),  (yysemantic_stack_[(12) - (9)].adouble), (yysemantic_stack_[(12) - (11)].adouble));
-        }
+        ;}
     break;
 
   case 152:
-
-/* Line 678 of lalr1.cc  */
-#line 3476 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3448 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Func_SetCoeffAnisoGS((yysemantic_stack_[(6) - (5)].adouble));
-        }
+        ;}
     break;
 
   case 153:
-
-/* Line 678 of lalr1.cc  */
-#line 3481 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3453 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Func_AnisoGS_SetDistanceMap((int)(yysemantic_stack_[(6) - (5)].adouble));
-        }
+        ;}
     break;
 
   case 154:
-
-/* Line 678 of lalr1.cc  */
-#line 3486 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3458 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Func_AnisoGS_SetNoiseType((int)(yysemantic_stack_[(6) - (5)].adouble));
-        }
+        ;}
     break;
 
   case 155:
-
-/* Line 678 of lalr1.cc  */
-#line 3491 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3463 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Func_AnisoGS_SetNoiseSD((yysemantic_stack_[(6) - (5)].adouble));
-        }
+        ;}
     break;
 
   case 156:
-
-/* Line 678 of lalr1.cc  */
-#line 3496 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3468 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VALUE(InrImage, im);
           Func_AnisoGS_SetMask(im.get());
-        }
+        ;}
     break;
 
   case 157:
-
-/* Line 678 of lalr1.cc  */
-#line 3502 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3474 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
          Parameters:
@@ -3821,13 +3260,11 @@ namespace yyip {
          **/
           GET_VARSTACK_VALUE(InrImage, im);
           Func_AnisoGS_SetSRAD_ROI(im.get());
-        }
+        ;}
     break;
 
   case 158:
-
-/* Line 678 of lalr1.cc  */
-#line 3517 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3489 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
          Parameters:
@@ -3841,13 +3278,11 @@ namespace yyip {
          **/
           GET_VARSTACK_VALUE(InrImage, im);
           Func_AnisoGS_SetRNRAD_ROI(im.get());
-        }
+        ;}
     break;
 
   case 159:
-
-/* Line 678 of lalr1.cc  */
-#line 3533 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3505 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
          Parameters:
@@ -3863,13 +3298,11 @@ namespace yyip {
          **/
           GET_VARSTACK_VALUE(InrImage, im);
           Func_AnisoGS_SetRNRAD_ROI_NEW(im.get());
-        }
+        ;}
     break;
 
   case 160:
-
-/* Line 678 of lalr1.cc  */
-#line 3551 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3523 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
           Parameters:
@@ -3881,13 +3314,11 @@ namespace yyip {
             Sets the local structure mode.
          **/
       Func_SetLocalStructureMode((int)(yysemantic_stack_[(6) - (5)].adouble));
-        }
+        ;}
     break;
 
   case 161:
-
-/* Line 678 of lalr1.cc  */
-#line 3565 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3537 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
           Parameters:
@@ -3905,105 +3336,85 @@ namespace yyip {
             Choose a way to select the diffusion matrix eigenvalues.
          **/
       Func_SetEigenvaluesMode((int)(yysemantic_stack_[(6) - (5)].adouble));
-        }
+        ;}
     break;
 
   case 162:
-
-/* Line 678 of lalr1.cc  */
-#line 3585 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3557 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Func_AnisoGS_Setdt((yysemantic_stack_[(6) - (5)].adouble));
-        }
+        ;}
     break;
 
   case 163:
-
-/* Line 678 of lalr1.cc  */
-#line 3590 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3562 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Func_AnisoGS_Setneighborhood((int)(yysemantic_stack_[(6) - (5)].adouble));
-        }
+        ;}
     break;
 
   case 164:
-
-/* Line 678 of lalr1.cc  */
-#line 3595 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3567 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
 
       Func_SetCoeffAnisoGS3D((yysemantic_stack_[(8) - (5)].adouble),(yysemantic_stack_[(8) - (7)].adouble));
 
-    }
+    ;}
     break;
 
   case 165:
-
-/* Line 678 of lalr1.cc  */
-#line 3602 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3574 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       float  error;
 
       error = Func_ItereAnisoGS();
 
       //driver.res_print("Error in AnisoGS.Iterate ");
-    }
+    ;}
     break;
 
   case 166:
-
-/* Line 678 of lalr1.cc  */
-#line 3611 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3583 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       int res;
 
       res = Func_EndAnisoGS();
 
-    }
+    ;}
     break;
 
   case 167:
-
-/* Line 678 of lalr1.cc  */
-#line 3619 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3591 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Func_IterateWeickert();
-    }
+    ;}
     break;
 
   case 168:
-
-/* Line 678 of lalr1.cc  */
-#line 3624 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3596 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
 
       Func_EndWeickert();
 
-    }
+    ;}
     break;
 
   case 169:
-
-/* Line 678 of lalr1.cc  */
-#line 3631 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3603 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Func_IterateWeickert();
-    }
+    ;}
     break;
 
   case 170:
-
-/* Line 678 of lalr1.cc  */
-#line 3636 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3608 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Func_EndWeickert();
-    }
+    ;}
     break;
 
   case 171:
-
-/* Line 678 of lalr1.cc  */
-#line 3876 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3848 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters
@@ -4030,13 +3441,11 @@ namespace yyip {
           GET_VARSTACK_VALUE(InrImage, im);
           boost::shared_array<char> filename((yysemantic_stack_[(4) - (4)].astring));
           im->Sauve(filename.get());
-        }
+        ;}
     break;
 
   case 172:
-
-/* Line 678 of lalr1.cc  */
-#line 3904 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3876 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -4048,47 +3457,39 @@ namespace yyip {
         **/
       GET_VARSTACK_VALUE(InrImage, im);
       Func_Normalize((im.get()));
-    }
+    ;}
     break;
 
   case 173:
-
-/* Line 678 of lalr1.cc  */
-#line 3918 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3890 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im2);
       GET_VARSTACK_VALUE(InrImage, im1);
       Func_OrientField( im1.get() , im2.get() );
-    }
+    ;}
     break;
 
   case 174:
-
-/* Line 678 of lalr1.cc  */
-#line 3925 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3897 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im2);
       GET_VARSTACK_VALUE(InrImage, im1);
       Func_OrientPositive( im1.get(), im2.get());
-    }
+    ;}
     break;
 
   case 175:
-
-/* Line 678 of lalr1.cc  */
-#line 3931 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3903 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       boost::shared_array<char> filename((yysemantic_stack_[(4) - (4)].astring));
       GET_VARSTACK_VALUE(SurfacePoly, s);
 
       s->Write(filename.get());
-    }
+    ;}
     break;
 
   case 176:
-
-/* Line 678 of lalr1.cc  */
-#line 3939 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3911 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -4101,84 +3502,70 @@ namespace yyip {
       GET_VARSTACK_VALUE(SurfacePoly, surf);
       Func_WriteCTALine(surf.get(),filename.get());
 
-    }
+    ;}
     break;
 
   case 177:
-
-/* Line 678 of lalr1.cc  */
-#line 3953 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3925 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(SurfacePoly, s);
 
       s->SetOwnMaterial( (int) (yysemantic_stack_[(6) - (5)].adouble));
 
-    }
+    ;}
     break;
 
   case 178:
-
-/* Line 678 of lalr1.cc  */
-#line 3960 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3932 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(SurfacePoly, s);
       s->GetMaterial()._ambient.FixeValeur((int) (yysemantic_stack_[(10) - (5)].adouble),(int) (yysemantic_stack_[(10) - (7)].adouble),(int) (yysemantic_stack_[(10) - (9)].adouble));
 
-    }
+    ;}
     break;
 
   case 179:
-
-/* Line 678 of lalr1.cc  */
-#line 3966 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3938 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
 
       GET_VARSTACK_VALUE(SurfacePoly, s);
       s->GetMaterial()._diffuse.FixeValeur((int) (yysemantic_stack_[(10) - (5)].adouble),(int) (yysemantic_stack_[(10) - (7)].adouble),(int) (yysemantic_stack_[(10) - (9)].adouble));
 
-    }
+    ;}
     break;
 
   case 180:
-
-/* Line 678 of lalr1.cc  */
-#line 3973 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3945 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
 
       GET_VARSTACK_VALUE(SurfacePoly, s);
       s->GetMaterial()._specular.FixeValeur((int) (yysemantic_stack_[(10) - (5)].adouble),(int) (yysemantic_stack_[(10) - (7)].adouble),(int) (yysemantic_stack_[(10) - (9)].adouble));
 
-    }
+    ;}
     break;
 
   case 181:
-
-/* Line 678 of lalr1.cc  */
-#line 3981 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3953 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
 
       GET_VARSTACK_VALUE(SurfacePoly, s);
       s->GetMaterial()._shininess= (yysemantic_stack_[(6) - (5)].adouble);
 
-    }
+    ;}
     break;
 
   case 182:
-
-/* Line 678 of lalr1.cc  */
-#line 3989 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3961 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
 
       GET_VARSTACK_VALUE(SurfacePoly, s);
       s->GetMaterial()._opacity= (yysemantic_stack_[(6) - (5)].adouble);
 
-    }
+    ;}
     break;
 
   case 183:
-
-/* Line 678 of lalr1.cc  */
-#line 3997 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3969 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
       Description:
@@ -4186,13 +3573,11 @@ namespace yyip {
       **/
       GET_VARSTACK_VALUE(SurfacePoly, s);
       s->SetVisible( (int) (yysemantic_stack_[(6) - (5)].adouble));
-    }
+    ;}
     break;
 
   case 184:
-
-/* Line 678 of lalr1.cc  */
-#line 4007 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3979 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -4203,13 +3588,11 @@ namespace yyip {
 
       s->GetMaterial()._colormaterial = (unsigned char) ((yysemantic_stack_[(6) - (5)].adouble)>0.5);
 
-    }
+    ;}
     break;
 
   case 185:
-
-/* Line 678 of lalr1.cc  */
-#line 4020 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 3992 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
       Parameters:
@@ -4225,13 +3608,11 @@ namespace yyip {
 
       s->SetColorOpacity((yysemantic_stack_[(6) - (5)].adouble));
 
-    }
+    ;}
     break;
 
   case 186:
-
-/* Line 678 of lalr1.cc  */
-#line 4037 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4009 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(SurfacePoly, s);
 
@@ -4245,87 +3626,73 @@ namespace yyip {
       s->SetColorMaterial(true);
       s->GLRecomputeList(  );
 
-    }
+    ;}
     break;
 
   case 187:
-
-/* Line 678 of lalr1.cc  */
-#line 4052 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4024 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage,    im);
       GET_VARSTACK_VALUE(SurfacePoly, s);
 
       s->SetPointsColors( im.get() );
 
-    }
+    ;}
     break;
 
   case 188:
-
-/* Line 678 of lalr1.cc  */
-#line 4060 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4032 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
       SurfacePoly::ptr s (surfdraw->Pointer());
       InrImage::ptr i (driver.im_stack.GetLastImage());
       // TODO: use smart pointer to image in SetColors ...
       s->SetColors( i.get() , (yysemantic_stack_[(10) - (7)].adouble), (yysemantic_stack_[(10) - (9)].adouble));
-    }
+    ;}
     break;
 
   case 189:
-
-/* Line 678 of lalr1.cc  */
-#line 4068 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4040 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
       SurfacePoly::ptr s (surfdraw->Pointer());
       InrImage::ptr i (driver.im_stack.GetLastImage());
       s->SetColors( i.get() );
 
-    }
+    ;}
     break;
 
   case 190:
-
-/* Line 678 of lalr1.cc  */
-#line 4076 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4048 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
       SurfacePoly::ptr s (surfdraw->Pointer());
       s->Statistics( im.get() );
 
-    }
+    ;}
     break;
 
   case 191:
-
-/* Line 678 of lalr1.cc  */
-#line 4084 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4056 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
       SurfacePoly::ptr s (surfdraw->Pointer());
       s->MergePoints((yysemantic_stack_[(6) - (5)].adouble));
-    }
+    ;}
     break;
 
   case 192:
-
-/* Line 678 of lalr1.cc  */
-#line 4090 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4062 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
       SurfacePoly::ptr s (surfdraw->Pointer());
       s->Triangulate();
-    }
+    ;}
     break;
 
   case 193:
-
-/* Line 678 of lalr1.cc  */
-#line 4096 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4068 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
 
       Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
@@ -4370,52 +3737,44 @@ namespace yyip {
       name = (boost::format("%s_dmax") % surfdraw->Name()).str();
       Vars.AddVar<InrImage>(name,Idmax);
 
-    }
+    ;}
     break;
 
   case 194:
-
-/* Line 678 of lalr1.cc  */
-#line 4142 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4114 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
       SurfacePoly::ptr s (surfdraw->Pointer());
 
       InrImage::ptr i (driver.im_stack.GetLastImage());
       s->DisplacePoints( i.get() );
-    }
+    ;}
     break;
 
   case 195:
-
-/* Line 678 of lalr1.cc  */
-#line 4150 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4122 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
       SurfacePoly::ptr s (surfdraw->Pointer());
 
       s->Translate( (yysemantic_stack_[(10) - (5)].adouble),(yysemantic_stack_[(10) - (7)].adouble),(yysemantic_stack_[(10) - (9)].adouble) );
 
-    }
+    ;}
     break;
 
   case 196:
-
-/* Line 678 of lalr1.cc  */
-#line 4158 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4130 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
       SurfacePoly::ptr s (surfdraw->Pointer());
 
       s->Scale( (yysemantic_stack_[(10) - (5)].adouble),(yysemantic_stack_[(10) - (7)].adouble),(yysemantic_stack_[(10) - (9)].adouble),0 );
 
-    }
+    ;}
     break;
 
   case 197:
-
-/* Line 678 of lalr1.cc  */
-#line 4166 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4138 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
       SurfacePoly::ptr s (surfdraw->Pointer());
@@ -4426,13 +3785,11 @@ namespace yyip {
 
       s->_line_width = w;
 
-    }
+    ;}
     break;
 
   case 198:
-
-/* Line 678 of lalr1.cc  */
-#line 4178 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4150 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
       SurfacePoly::ptr s (surfdraw->Pointer());
@@ -4440,13 +3797,11 @@ namespace yyip {
       s->RemoveLine((int)(yysemantic_stack_[(6) - (5)].adouble));
       s->GLRecomputeList();
 
-    }
+    ;}
     break;
 
   case 199:
-
-/* Line 678 of lalr1.cc  */
-#line 4187 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4159 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
       Parameters:
@@ -4463,13 +3818,11 @@ namespace yyip {
 
       s->SelectLines(im.get());
       s->GLRecomputeList();
-    }
+    ;}
     break;
 
   case 200:
-
-/* Line 678 of lalr1.cc  */
-#line 4205 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4177 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
       Description: Remove selected lines
@@ -4479,50 +3832,42 @@ namespace yyip {
 
       s->RemoveSelection();
       s->GLRecomputeList();
-    }
+    ;}
     break;
 
   case 201:
-
-/* Line 678 of lalr1.cc  */
-#line 4216 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4188 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
       SurfacePoly::ptr s (surfdraw->Pointer());
       s->GLRecomputeList();
 
-    }
+    ;}
     break;
 
   case 202:
-
-/* Line 678 of lalr1.cc  */
-#line 4223 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4195 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
       SurfacePoly::ptr s (surfdraw->Pointer());
       s->RecomputeNormals();
 
-    }
+    ;}
     break;
 
   case 203:
-
-/* Line 678 of lalr1.cc  */
-#line 4230 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4202 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
       SurfacePoly::ptr s (surfdraw->Pointer());
 
       s->InvertNormals();
 
-    }
+    ;}
     break;
 
   case 204:
-
-/* Line 678 of lalr1.cc  */
-#line 4238 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4210 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
       SurfacePoly::ptr s (surfdraw->Pointer());
@@ -4530,13 +3875,11 @@ namespace yyip {
       Func_ApplyvtkSmooth(s.get(), (int) (yysemantic_stack_[(6) - (5)].adouble));
       //      s->GLRecomputeList();
 
-    }
+    ;}
     break;
 
   case 205:
-
-/* Line 678 of lalr1.cc  */
-#line 4247 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4219 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
       SurfacePoly::ptr s (surfdraw->Pointer());
@@ -4544,13 +3887,11 @@ namespace yyip {
       Func_vtkWindowedSinc(s.get(), (int) (yysemantic_stack_[(6) - (5)].adouble));
       //      s->GLRecomputeList();
 
-    }
+    ;}
     break;
 
   case 206:
-
-/* Line 678 of lalr1.cc  */
-#line 4256 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4228 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
 
       Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
@@ -4569,13 +3910,11 @@ namespace yyip {
           FinSi
 
 
-      }
+      ;}
     break;
 
   case 207:
-
-/* Line 678 of lalr1.cc  */
-#line 4276 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4248 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -4591,13 +3930,11 @@ namespace yyip {
           FinSi
           s->GLSurfaceMinThCC( _SURFACE, (int) (yysemantic_stack_[(6) - (5)].adouble));
 
-        }
+        ;}
     break;
 
   case 208:
-
-/* Line 678 of lalr1.cc  */
-#line 4293 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4265 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -4614,13 +3951,11 @@ namespace yyip {
             s->GLSurfaceDrawOnlyCC( _SURFACE, (int) (yysemantic_stack_[(6) - (5)].adouble));
             //          FinSi
 
-        }
+        ;}
     break;
 
   case 209:
-
-/* Line 678 of lalr1.cc  */
-#line 4311 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4283 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -4637,70 +3972,58 @@ namespace yyip {
             s->GLSurfaceSetDrawCC( _SURFACE, (int) (yysemantic_stack_[(8) - (5)].adouble),(int) (yysemantic_stack_[(8) - (7)].adouble));
         //          FinSi
 
-    }
+    ;}
     break;
 
   case 210:
-
-/* Line 678 of lalr1.cc  */
-#line 4329 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4301 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
       SurfacePoly::ptr s (surfdraw->Pointer());
       s->AddPoint((yysemantic_stack_[(10) - (5)].adouble),(yysemantic_stack_[(10) - (7)].adouble),(yysemantic_stack_[(10) - (9)].adouble));
-    }
+    ;}
     break;
 
   case 211:
-
-/* Line 678 of lalr1.cc  */
-#line 4335 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4307 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
       SurfacePoly::ptr s (surfdraw->Pointer());
       s->NewLine();
-    }
+    ;}
     break;
 
   case 212:
-
-/* Line 678 of lalr1.cc  */
-#line 4341 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4313 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
       SurfacePoly::ptr s (surfdraw->Pointer());
       s->LineAddPointNumber( (int) (yysemantic_stack_[(6) - (5)].adouble) );
-    }
+    ;}
     break;
 
   case 213:
-
-/* Line 678 of lalr1.cc  */
-#line 4347 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4319 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
       SurfacePoly::ptr s (surfdraw->Pointer());
       s->EndLine();
-    }
+    ;}
     break;
 
   case 214:
-
-/* Line 678 of lalr1.cc  */
-#line 4353 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4325 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       if (strlen((yysemantic_stack_[(4) - (3)].astring))<255) {
         strcpy(AMIFluid::FLUID_NAVIGATION_FILE,(yysemantic_stack_[(4) - (3)].astring));
       } else
         fprintf(stderr,"SetFluidNavFile() \t File too long \n");
       delete [] (yysemantic_stack_[(4) - (3)].astring);
-    }
+    ;}
     break;
 
   case 215:
-
-/* Line 678 of lalr1.cc  */
-#line 4362 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4334 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(DessinImage,di);
       float minlat  = (yysemantic_stack_[(20) - (5)].adouble);
@@ -4799,13 +4122,11 @@ namespace yyip {
           }
       }
 
-      }
+      ;}
     break;
 
   case 216:
-
-/* Line 678 of lalr1.cc  */
-#line 4462 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4434 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
       Description:
@@ -4837,64 +4158,54 @@ namespace yyip {
           GET_VARSTACK_VALUE(SurfacePoly,s);
           InrImage::ptr im ( driver.im_stack.GetLastImage());
           AMIFluid::Func_ElevateMesh(s.get(),im.get());
-        }
+        ;}
     break;
 
   case 217:
-
-/* Line 678 of lalr1.cc  */
-#line 4495 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4467 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VALUE(Viewer3D,sdraw);
 
           sdraw->GetCanvas()->UserRotate((yysemantic_stack_[(10) - (5)].adouble),(yysemantic_stack_[(10) - (7)].adouble),(yysemantic_stack_[(10) - (9)].adouble));
           sdraw->Paint();
-        }
+        ;}
     break;
 
   case 218:
-
-/* Line 678 of lalr1.cc  */
-#line 4502 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4474 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VALUE(Viewer3D,sdraw);
           SurfacePoly::ptr surf = SurfacePoly::ptr(driver.surf_stack.GetLastSurf());
 
           sdraw->GetCanvas()->AddSurface(surf);
           sdraw->Paint();
-        }
+        ;}
     break;
 
   case 219:
-
-/* Line 678 of lalr1.cc  */
-#line 4510 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4482 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VALUE(SurfacePoly,surf);
           GET_VARSTACK_VALUE(Viewer3D,   sdraw);
 
           sdraw->GetCanvas()->AddSurface( surf);
           //sdraw->Paint();
-        }
+        ;}
     break;
 
   case 220:
-
-/* Line 678 of lalr1.cc  */
-#line 4518 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4490 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VALUE(SurfacePoly,surf);
           GET_VARSTACK_VALUE(Viewer3D,   sdraw);
 
           sdraw->GetCanvas()->RemoveSurface(surf);
           sdraw->Paint();
-        }
+        ;}
     break;
 
   case 221:
-
-/* Line 678 of lalr1.cc  */
-#line 4526 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4498 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           /**
             Description: Removes the surface without swapping the 3D buffer
@@ -4904,13 +4215,11 @@ namespace yyip {
 
           sdraw->GetCanvas()->RemoveSurface(surf);
           sdraw->Paint(false);
-        }
+        ;}
     break;
 
   case 222:
-
-/* Line 678 of lalr1.cc  */
-#line 4537 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4509 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           /**
             Description:  Swaps the 3D buffer
@@ -4919,39 +4228,33 @@ namespace yyip {
           Viewer3D_ptr sdraw(varsurfd->Pointer());
 
           sdraw->GetCanvas()->AfficheBuffer();
-        }
+        ;}
     break;
 
   case 223:
-
-/* Line 678 of lalr1.cc  */
-#line 4547 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4519 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           Viewer3D_ptr sdraw (varsurfd->Pointer());
 
           sdraw->GetCanvas()->DessineSurfaceCC ( (int) (yysemantic_stack_[(6) - (5)].adouble) );
           sdraw->Paint();
-        }
+        ;}
     break;
 
   case 224:
-
-/* Line 678 of lalr1.cc  */
-#line 4555 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4527 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           Viewer3D_ptr sdraw (varsurfd->Pointer());
 
           sdraw->GetCanvas()->DessineSurfaceCC( (int) (yysemantic_stack_[(8) - (5)].adouble), (int) (yysemantic_stack_[(8) - (7)].adouble));
           sdraw->Paint();
-        }
+        ;}
     break;
 
   case 225:
-
-/* Line 678 of lalr1.cc  */
-#line 4563 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4535 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           Viewer3D_ptr sdraw (varsurfd->Pointer());
@@ -4961,25 +4264,21 @@ namespace yyip {
           Sinon
             fprintf(stderr," Incorrect index \n");
           FinSi
-        }
+        ;}
     break;
 
   case 226:
-
-/* Line 678 of lalr1.cc  */
-#line 4574 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4546 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VALUE(Viewer3D,sdraw2);
           GET_VARSTACK_VALUE(Viewer3D,sdraw1);
 
           sdraw1->AddCompSurf(sdraw2);
-        }
+        ;}
     break;
 
   case 227:
-
-/* Line 678 of lalr1.cc  */
-#line 4581 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4553 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VALUE(InrImage,im);
           GET_VARSTACK_VALUE(Viewer3D,draw);
@@ -4992,13 +4291,11 @@ namespace yyip {
             draw->GetCanvas()->SetVectors2( im);
             break;
           }
-        }
+        ;}
     break;
 
   case 228:
-
-/* Line 678 of lalr1.cc  */
-#line 4595 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4567 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           Viewer3D_ptr draw (varsurfd->Pointer());
@@ -5011,13 +4308,11 @@ namespace yyip {
 
           draw->GetCanvas()->ShowFreeSection(num,im.get(),orientation,pos,Imin,Imax);
 
-        }
+        ;}
     break;
 
   case 229:
-
-/* Line 678 of lalr1.cc  */
-#line 4609 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4581 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           Viewer3D_ptr draw (varsurfd->Pointer());
@@ -5025,23 +4320,19 @@ namespace yyip {
     
           draw->GetCanvas()->HideFreeSection(num);
     
-        }
+        ;}
     break;
 
   case 230:
-
-/* Line 678 of lalr1.cc  */
-#line 4618 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4590 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VALUE(Viewer3D,v);
           v->GetCanvas()->PrintMatrices();
-        }
+        ;}
     break;
 
   case 231:
-
-/* Line 678 of lalr1.cc  */
-#line 4623 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4595 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           GLTransfMatrix* tr = (GLTransfMatrix*) driver.gltransf_stack.GetLastMatrix();
@@ -5049,13 +4340,11 @@ namespace yyip {
           sdraw->GetCanvas()->SetObjectTransform(*tr);
               sdraw->Paint();
           delete tr;
-        }
+        ;}
     break;
 
   case 232:
-
-/* Line 678 of lalr1.cc  */
-#line 4632 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4604 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           GLTransfMatrix* tr = (GLTransfMatrix*) driver.gltransf_stack.GetLastMatrix();
@@ -5063,13 +4352,11 @@ namespace yyip {
           sdraw->GetCanvas()->SetObjectTransform(*tr);
           if ((yysemantic_stack_[(8) - (7)].adouble)>0.5) sdraw->Paint();
           delete tr;
-        }
+        ;}
     break;
 
   case 233:
-
-/* Line 678 of lalr1.cc  */
-#line 4641 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4613 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           Viewer3D_ptr sdraw (varsurfd->Pointer());
@@ -5081,13 +4368,11 @@ namespace yyip {
             if (GB_verbose) printf("Dispatching event on GB_wxApp \n");
             GB_wxApp->Dispatch();
           }
-        }
+        ;}
     break;
 
   case 234:
-
-/* Line 678 of lalr1.cc  */
-#line 4654 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4626 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           Viewer3D_ptr sdraw (varsurfd->Pointer());
@@ -5099,13 +4384,11 @@ namespace yyip {
                 sdraw->GetCanvas()->GetLight(lightnumber)._ambient.FixeValeur(r,g,b);
             sdraw->Paint();
           }
-        }
+        ;}
     break;
 
   case 235:
-
-/* Line 678 of lalr1.cc  */
-#line 4667 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4639 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           Viewer3D_ptr sdraw (varsurfd->Pointer());
@@ -5117,13 +4400,11 @@ namespace yyip {
                 sdraw->GetCanvas()->GetLight(lightnumber)._diffuse.FixeValeur(r,g,b);
             sdraw->Paint();
           }
-        }
+        ;}
     break;
 
   case 236:
-
-/* Line 678 of lalr1.cc  */
-#line 4680 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4652 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           Viewer3D_ptr sdraw (varsurfd->Pointer());
@@ -5135,25 +4416,21 @@ namespace yyip {
                 sdraw->GetCanvas()->GetLight(lightnumber)._specular.FixeValeur(r,g,b);
             sdraw->Paint();
           }
-        }
+        ;}
     break;
 
   case 237:
-
-/* Line 678 of lalr1.cc  */
-#line 4693 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4665 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           Viewer3D_ptr sdraw (varsurfd->Pointer());
           sdraw->GetCanvas()->SetBG((int)(yysemantic_stack_[(10) - (5)].adouble),(int)(yysemantic_stack_[(10) - (7)].adouble),(int)(yysemantic_stack_[(10) - (9)].adouble));
           sdraw->Paint();
-        }
+        ;}
     break;
 
   case 238:
-
-/* Line 678 of lalr1.cc  */
-#line 4700 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4672 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
           Description:
@@ -5162,13 +4439,11 @@ namespace yyip {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           Viewer3D_ptr sdraw (varsurfd->Pointer());
           sdraw->GetCanvas()->Normalize();
-        }
+        ;}
     break;
 
   case 239:
-
-/* Line 678 of lalr1.cc  */
-#line 4710 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4682 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
           Description:
@@ -5177,13 +4452,11 @@ namespace yyip {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           Viewer3D_ptr sdraw (varsurfd->Pointer());
           sdraw->GetCanvas()->Center();
-        }
+        ;}
     break;
 
   case 240:
-
-/* Line 678 of lalr1.cc  */
-#line 4720 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4692 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           Viewer3D_ptr sdraw (varsurfd->Pointer());
@@ -5195,25 +4468,21 @@ namespace yyip {
             if (GB_verbose) printf("Dispatching event on GB_wxApp \n");
             GB_wxApp->Dispatch();
           }
-        }
+        ;}
     break;
 
   case 241:
-
-/* Line 678 of lalr1.cc  */
-#line 4734 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4706 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VAR_VAL(InrImage, varim, im);
           Func_StructureTensor(im.get(),
                    varim->Name().c_str(),
                    (yysemantic_stack_[(8) - (5)].adouble), (yysemantic_stack_[(8) - (7)].adouble), NULL);
-        }
+        ;}
     break;
 
   case 242:
-
-/* Line 678 of lalr1.cc  */
-#line 4742 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4714 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VAR_VAL(InrImage, varim, im);
           InrImage::ptr mask ( driver.im_stack.GetLastImage());
@@ -5222,13 +4491,11 @@ namespace yyip {
             im.get(),
             varim->Name().c_str(),
             (yysemantic_stack_[(10) - (5)].adouble), (yysemantic_stack_[(10) - (7)].adouble), mask.get());
-        }
+        ;}
     break;
 
   case 243:
-
-/* Line 678 of lalr1.cc  */
-#line 4753 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4725 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -5249,13 +4516,11 @@ namespace yyip {
             im.get(),
             varim->Name().c_str(),
             (yysemantic_stack_[(8) - (5)].adouble), (yysemantic_stack_[(8) - (7)].adouble), NULL);
-        }
+        ;}
     break;
 
   case 244:
-
-/* Line 678 of lalr1.cc  */
-#line 4776 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4748 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -5279,13 +4544,11 @@ namespace yyip {
             im.get(),
             varim->Name().c_str(),
             (yysemantic_stack_[(10) - (5)].adouble), (yysemantic_stack_[(10) - (7)].adouble), mask.get());
-        }
+        ;}
     break;
 
   case 245:
-
-/* Line 678 of lalr1.cc  */
-#line 4802 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4774 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -5311,13 +4574,11 @@ namespace yyip {
           Func_StructureTensorHessian(im.get(),
                    varim->Name().c_str(),
                    (yysemantic_stack_[(12) - (5)].adouble), (yysemantic_stack_[(12) - (7)].adouble), mask.get(), save_grad);
-        }
+        ;}
     break;
 
   case 246:
-
-/* Line 678 of lalr1.cc  */
-#line 4830 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4802 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VAR_VAL(InrImage, varim, im);
           Func_HessianMatrix(im.get(),
@@ -5326,13 +4587,11 @@ namespace yyip {
                  0,   // gamma
                  NULL  // mask
                  );
-        }
+        ;}
     break;
 
   case 247:
-
-/* Line 678 of lalr1.cc  */
-#line 4841 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4813 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           /**
             Description:
@@ -5373,13 +4632,11 @@ namespace yyip {
                  0,   // gamma
                  mask.get()  // mask
                  );
-        }
+        ;}
     break;
 
   case 248:
-
-/* Line 678 of lalr1.cc  */
-#line 4884 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4856 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
           Description:
@@ -5399,13 +4656,11 @@ namespace yyip {
                  (yysemantic_stack_[(10) - (7)].adouble),   // gamma
                  mask.get()  // mask
                  );
-        }
+        ;}
     break;
 
   case 249:
-
-/* Line 678 of lalr1.cc  */
-#line 4906 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4878 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -5432,13 +4687,11 @@ namespace yyip {
                (int)(yysemantic_stack_[(16) - (13)].adouble),  // 3rd eigenvalue | eigenvector?
                (int)(yysemantic_stack_[(16) - (15)].adouble)  // Gradient vector?
                );
-        }
+        ;}
     break;
 
   case 250:
-
-/* Line 678 of lalr1.cc  */
-#line 4935 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4907 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VAR_VAL(InrImage,varim,im);
           InrImage::ptr mask (driver.im_stack.GetLastImage());
@@ -5453,13 +4706,11 @@ namespace yyip {
                (int)(yysemantic_stack_[(18) - (13)].adouble),   // 3rd eigenvalue | eigenvector?
                (int)(yysemantic_stack_[(18) - (15)].adouble)   // Gradient vector?
                );
-        }
+        ;}
     break;
 
   case 251:
-
-/* Line 678 of lalr1.cc  */
-#line 4953 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4925 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VAR_VAL(InrImage, varim, im);
           InrImage::ptr mask (driver.im_stack.GetLastImage());
@@ -5471,23 +4722,19 @@ namespace yyip {
               mask.get(),
               (int) (yysemantic_stack_[(12) - (11)].adouble) // eigenvalue number
               );
-        }
+        ;}
     break;
 
   case 252:
-
-/* Line 678 of lalr1.cc  */
-#line 4967 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4939 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VAR_VAL(InrImage, varim, im);
           Func_Curvatures(im.get(), varim->Name().c_str(), (yysemantic_stack_[(6) - (5)].adouble));
-        }
+        ;}
     break;
 
   case 253:
-
-/* Line 678 of lalr1.cc  */
-#line 4978 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4950 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Variable<InrImage>::ptr  varim6( driver.var_stack.GetLastVar<InrImage>());
           Variable<InrImage>::ptr  varim5( driver.var_stack.GetLastVar<InrImage>());
@@ -5507,13 +4754,11 @@ namespace yyip {
                varim6 ->Pointer().get(),
                mask.get()  // mask
                );
-        }
+        ;}
     break;
 
   case 254:
-
-/* Line 678 of lalr1.cc  */
-#line 5004 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 4976 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
 
           Variable<InrImage>::ptr  varim6( driver.var_stack.GetLastVar<InrImage>());
@@ -5533,13 +4778,11 @@ namespace yyip {
                varim6 ->Pointer().get(),
                NULL
                );
-        }
+        ;}
     break;
 
   case 255:
-
-/* Line 678 of lalr1.cc  */
-#line 5030 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5002 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Variable<InrImage>::ptr  varim3( driver.var_stack.GetLastVar<InrImage>());
           Variable<InrImage>::ptr  varim2( driver.var_stack.GetLastVar<InrImage>());
@@ -5553,13 +4796,11 @@ namespace yyip {
                varim3 ->Pointer().get(),
                mask.get()  // mask
                );
-        }
+        ;}
     break;
 
   case 256:
-
-/* Line 678 of lalr1.cc  */
-#line 5049 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5021 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Variable<InrImage>::ptr  varim3( driver.var_stack.GetLastVar<InrImage>());
           Variable<InrImage>::ptr  varim2( driver.var_stack.GetLastVar<InrImage>());
@@ -5571,33 +4812,27 @@ namespace yyip {
                varim3 ->Pointer().get(),
                NULL
                );
-        }
+        ;}
     break;
 
   case 257:
-
-/* Line 678 of lalr1.cc  */
-#line 5063 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5035 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage,im);
       im->SetVoxelSize((yysemantic_stack_[(10) - (5)].adouble), (yysemantic_stack_[(10) - (7)].adouble), (yysemantic_stack_[(10) - (9)].adouble));
-    }
+    ;}
     break;
 
   case 258:
-
-/* Line 678 of lalr1.cc  */
-#line 5069 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5041 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       im->SetVoxelSize((yysemantic_stack_[(10) - (5)].adouble), (yysemantic_stack_[(10) - (7)].adouble), (yysemantic_stack_[(10) - (9)].adouble));
-    }
+    ;}
     break;
 
   case 259:
-
-/* Line 678 of lalr1.cc  */
-#line 5075 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5047 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<InrImage>::ptr  varim2( driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim1( driver.var_stack.GetLastVar<InrImage>());
@@ -5606,35 +4841,29 @@ namespace yyip {
                                    im->VoxSizeX(),
                                    im->VoxSizeY(),
                                    im->VoxSizeZ());
-    }
+    ;}
     break;
 
   case 260:
-
-/* Line 678 of lalr1.cc  */
-#line 5086 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5058 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage,im);
       im->SetTranslation((yysemantic_stack_[(10) - (5)].adouble), (yysemantic_stack_[(10) - (7)].adouble), (yysemantic_stack_[(10) - (9)].adouble));
-    }
+    ;}
     break;
 
   case 261:
-
-/* Line 678 of lalr1.cc  */
-#line 5092 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5064 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<InrImage>::ptr  varim2( driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim1( driver.var_stack.GetLastVar<InrImage>());
       InrImage::ptr im (varim2->Pointer());
       varim1->Pointer()->SetVoxelSize( im->TrX(), im->TrY(), im->TrZ());
-    }
+    ;}
     break;
 
   case 262:
-
-/* Line 678 of lalr1.cc  */
-#line 5100 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5072 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
       Parameters:
@@ -5647,26 +4876,22 @@ namespace yyip {
     **/
       GET_VARSTACK_VALUE(InrImage, im);
       ((amimage*) (*(im)) )->SetEndianness((AMIENDIANNESS)(int)(yysemantic_stack_[(6) - (5)].adouble));
-    }
+    ;}
     break;
 
   case 263:
-
-/* Line 678 of lalr1.cc  */
-#line 5115 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5087 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<InrImage>::ptr  varim2(driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim1(driver.var_stack.GetLastVar<InrImage>());
       Func_DiscSecDerGrad(
         varim1->Pointer().get(),
         varim2->Pointer().get());
-    }
+    ;}
     break;
 
   case 264:
-
-/* Line 678 of lalr1.cc  */
-#line 5124 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5096 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<InrImage>::ptr  varim3(driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim2(driver.var_stack.GetLastVar<InrImage>());
@@ -5675,13 +4900,11 @@ namespace yyip {
                 varim1->Pointer().get(),
                 varim2->Pointer().get(),
                 varim3->Pointer().get());
-    }
+    ;}
     break;
 
   case 265:
-
-/* Line 678 of lalr1.cc  */
-#line 5135 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5107 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
         Description: dispatches the given number of events
@@ -5696,13 +4919,11 @@ namespace yyip {
         nb_event++;
       } // end while
 
-    }
+    ;}
     break;
 
   case 266:
-
-/* Line 678 of lalr1.cc  */
-#line 5152 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5124 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
         Description: dispatch the given number of events
@@ -5717,13 +4938,11 @@ namespace yyip {
         nb_event++;
       } // end while
 
-    }
+    ;}
     break;
 
   case 267:
-
-/* Line 678 of lalr1.cc  */
-#line 5168 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5140 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -5760,13 +4979,11 @@ namespace yyip {
       delete [] tabx;
       delete [] taby;
       delete [] (yysemantic_stack_[(8) - (5)].astring);
-    }
+    ;}
     break;
 
   case 268:
-
-/* Line 678 of lalr1.cc  */
-#line 5206 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5178 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       cerr << "Feature not available, needs to be updated ! " << endl;
@@ -5778,13 +4995,11 @@ namespace yyip {
                         image.get(),
                         CREATE_TOPLEVEL_SHELL);
       */
-      }
+      ;}
     break;
 
   case 269:
-
-/* Line 678 of lalr1.cc  */
-#line 5224 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5196 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -5825,110 +5040,88 @@ namespace yyip {
            pos_x,pos_y,pos_z);
 
 
-        }
+        ;}
     break;
 
   case 270:
-
-/* Line 678 of lalr1.cc  */
-#line 5267 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5239 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       boost::shared_array<char> filename( (yysemantic_stack_[(4) - (3)].astring));
       Func_GenRead(filename.get());
-    }
+    ;}
     break;
 
   case 271:
-
-/* Line 678 of lalr1.cc  */
-#line 5273 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5245 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       driver.IP_time.InitCumul();
-    }
+    ;}
     break;
 
   case 272:
-
-/* Line 678 of lalr1.cc  */
-#line 5278 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5250 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       driver.IP_time.Debut();
-    }
+    ;}
     break;
 
   case 273:
-
-/* Line 678 of lalr1.cc  */
-#line 5283 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5255 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       driver.IP_time.Fin();
       cout << "time spent = " << driver.IP_time << endl;
-    }
+    ;}
     break;
 
   case 274:
-
-/* Line 678 of lalr1.cc  */
-#line 5289 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5261 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           boost::shared_array<char> filename( (yysemantic_stack_[(6) - (5)].astring));
           GET_VARSTACK_VALUE(InrImage, i);
           Func_VectorImage2StructuredGrid(i.get(),filename.get());
-        }
+        ;}
     break;
 
   case 275:
-
-/* Line 678 of lalr1.cc  */
-#line 5296 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5268 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VALUE(GLTransfMatrix, glmat);
           glmat->Print();
-        }
+        ;}
     break;
 
   case 276:
-
-/* Line 678 of lalr1.cc  */
-#line 5302 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5274 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           boost::shared_array<char> filename( (yysemantic_stack_[(4) - (4)].astring));
           GET_VARSTACK_VALUE(GLTransfMatrix, glmat);
           Func_SaveTransform(glmat.get(),filename.get());
-        }
+        ;}
     break;
 
   case 277:
-
-/* Line 678 of lalr1.cc  */
-#line 5309 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5281 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           AddWrapVTK();
-        }
+        ;}
     break;
 
   case 278:
-
-/* Line 678 of lalr1.cc  */
-#line 5314 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5286 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           AddWrapWII();
-        }
+        ;}
     break;
 
   case 279:
-
-/* Line 678 of lalr1.cc  */
-#line 5319 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5291 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           AddWrapFilters();
-        }
+        ;}
     break;
 
   case 280:
-
-/* Line 678 of lalr1.cc  */
-#line 5330 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5302 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Variable<InrImage>::ptr  varim7(driver.var_stack.GetLastVar<InrImage>());
           Variable<InrImage>::ptr  varim6(driver.var_stack.GetLastVar<InrImage>());
@@ -5963,13 +5156,11 @@ namespace yyip {
             conf_y.get(),
             initx,inity,
             displx,disply,sizex,sizey,deform);
-        }
+        ;}
     break;
 
   case 281:
-
-/* Line 678 of lalr1.cc  */
-#line 5370 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5342 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         GET_VARSTACK_VALUE(InrImage,v); // x component of the flow
         GET_VARSTACK_VALUE(InrImage,u); // y component of the flow
@@ -5991,13 +5182,11 @@ namespace yyip {
           v.get(),
           Niter);
 
-        }
+        ;}
     break;
 
   case 282:
-
-/* Line 678 of lalr1.cc  */
-#line 5421 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5393 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -6013,47 +5202,39 @@ namespace yyip {
             - the lower position of the head along the arrow by the 3rd parameter.
         **/
           AMIFluid::Func_SetArrowParameters((float)(yysemantic_stack_[(8) - (3)].adouble),(float)(yysemantic_stack_[(8) - (5)].adouble),(float)(yysemantic_stack_[(8) - (7)].adouble));
-        }
+        ;}
     break;
 
   case 283:
-
-/* Line 678 of lalr1.cc  */
-#line 5443 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5415 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
             std::list<std::string>* sl = new std::list<std::string>();
             sl->push_back(string((yysemantic_stack_[(1) - (1)].astring)));
             delete [] (yysemantic_stack_[(1) - (1)].astring);
             (yyval.string_list) = sl;
-        }
+        ;}
     break;
 
   case 284:
-
-/* Line 678 of lalr1.cc  */
-#line 5451 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5423 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
             std::list<std::string>* sl = (yysemantic_stack_[(3) - (1)].string_list);
             sl->push_back(string((yysemantic_stack_[(3) - (3)].astring)));
             delete [] (yysemantic_stack_[(3) - (3)].astring);
             (yyval.string_list) = sl;
-        }
+        ;}
     break;
 
   case 285:
-
-/* Line 678 of lalr1.cc  */
-#line 5467 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5439 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           ParamList* pl = new ParamList();
           (yyval.paramlist) = pl;
-        }
+        ;}
     break;
 
   case 286:
-
-/* Line 678 of lalr1.cc  */
-#line 5472 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5444 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
           Description: temporary rule, added to simplify convertion of scripts.
@@ -6064,13 +5245,11 @@ namespace yyip {
           BasicVariable::ptr newvar(var->NewReference());
           pl->AddParam(newvar);
           (yyval.paramlist) = pl;
-        }
+        ;}
     break;
 
   case 287:
-
-/* Line 678 of lalr1.cc  */
-#line 5484 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5456 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
           Description: temporary rule, added to simplify convertion of scripts.
@@ -6083,13 +5262,11 @@ namespace yyip {
 
           pl->AddParam(newvar);
           (yyval.paramlist) = pl;
-        }
+        ;}
     break;
 
   case 288:
-
-/* Line 678 of lalr1.cc  */
-#line 5498 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5470 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           BasicVariable::ptr       var(driver.var_stack.GetLastBasicVar());
 
@@ -6100,13 +5277,11 @@ namespace yyip {
 
           pl->AddParam(newvar);
           (yyval.paramlist) = pl;
-        }
+        ;}
     break;
 
   case 289:
-
-/* Line 678 of lalr1.cc  */
-#line 5510 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5482 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           BasicVariable::ptr       var(driver.var_stack.GetLastBasicVar());
           ParamList* pl =  (yysemantic_stack_[(4) - (1)].paramlist);
@@ -6116,13 +5291,11 @@ namespace yyip {
 
           pl->AddParam(newvar);
           (yyval.paramlist) = pl;
-        }
+        ;}
     break;
 
   case 290:
-
-/* Line 678 of lalr1.cc  */
-#line 5521 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5493 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           /**
             Description: it is now a new reference to the variable, so basically similar to &variable (should be removed?)...
@@ -6133,13 +5306,11 @@ namespace yyip {
           newvar->Rename("Param0");
           pl->AddParam(newvar);
           (yyval.paramlist) = pl;
-        }
+        ;}
     break;
 
   case 291:
-
-/* Line 678 of lalr1.cc  */
-#line 5533 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5505 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           /**
             Description: it is now a new reference to the variable, so basically similar to &variable (should be removed?)...
@@ -6151,24 +5322,20 @@ namespace yyip {
           newvar->Rename(paramname.c_str());
           pl->AddParam(newvar);
           (yyval.paramlist) = pl;
-        }
+        ;}
     break;
 
   case 292:
-
-/* Line 678 of lalr1.cc  */
-#line 5548 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5520 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       //      printf("no parameters \n");
       ParamListDecl* pl = new ParamListDecl;
       (yyval.paramlistdecl) = pl;
-    }
+    ;}
     break;
 
   case 293:
-
-/* Line 678 of lalr1.cc  */
-#line 5554 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5526 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       IdentifierInfo::ptr ident((yysemantic_stack_[(2) - (2)].ident));
       cout << "param_list_decl: T_NUM IDENTIFIER" << endl;
@@ -6176,142 +5343,118 @@ namespace yyip {
       ParamListDecl* pl = new ParamListDecl;
       pl->AddParam(ident->GetName(),type_float);
       (yyval.paramlistdecl) = pl;
-    }
+    ;}
     break;
 
   case 294:
-
-/* Line 678 of lalr1.cc  */
-#line 5563 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5535 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       IdentifierInfo::ptr ident((yysemantic_stack_[(2) - (2)].ident));
       ParamListDecl* pl = new ParamListDecl;
       pl->AddParam(ident->GetName(),type_ami_object);
       (yyval.paramlistdecl) = pl;
-    }
+    ;}
     break;
 
   case 295:
-
-/* Line 678 of lalr1.cc  */
-#line 5570 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5542 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       IdentifierInfo::ptr ident((yysemantic_stack_[(2) - (2)].ident));
       ParamListDecl* pl = new ParamListDecl;
       pl->AddParam(ident->GetName(),type_string);
       (yyval.paramlistdecl) = pl;
-    }
+    ;}
     break;
 
   case 296:
-
-/* Line 678 of lalr1.cc  */
-#line 5577 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5549 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       IdentifierInfo::ptr ident((yysemantic_stack_[(2) - (2)].ident));
       ParamListDecl* pl = new ParamListDecl;
       pl->AddParam(ident->GetName(),type_image);
       (yyval.paramlistdecl) = pl;
-        }
+        ;}
     break;
 
   case 297:
-
-/* Line 678 of lalr1.cc  */
-#line 5584 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5556 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       IdentifierInfo::ptr ident((yysemantic_stack_[(2) - (2)].ident));
       ParamListDecl* pl = new ParamListDecl;
       pl->AddParam(ident->GetName(),type_imagedraw);
       (yyval.paramlistdecl) = pl;
-        }
+        ;}
     break;
 
   case 298:
-
-/* Line 678 of lalr1.cc  */
-#line 5591 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5563 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       IdentifierInfo::ptr ident((yysemantic_stack_[(2) - (2)].ident));
       ParamListDecl* pl = new ParamListDecl;
       pl->AddParam(ident->GetName(),type_surface);
       (yyval.paramlistdecl) = pl;
-        }
+        ;}
     break;
 
   case 299:
-
-/* Line 678 of lalr1.cc  */
-#line 5598 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5570 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       IdentifierInfo::ptr ident((yysemantic_stack_[(4) - (4)].ident));
       ParamListDecl* pl = (ParamListDecl*) (yysemantic_stack_[(4) - (1)].paramlistdecl);
       pl->AddParam(ident->GetName(),type_float);
       (yyval.paramlistdecl) = pl;
-        }
+        ;}
     break;
 
   case 300:
-
-/* Line 678 of lalr1.cc  */
-#line 5605 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5577 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       IdentifierInfo::ptr ident((yysemantic_stack_[(4) - (4)].ident));
       ParamListDecl* pl = (ParamListDecl*) (yysemantic_stack_[(4) - (1)].paramlistdecl);
       pl->AddParam(ident->GetName(),type_string);
       (yyval.paramlistdecl) = pl;
-        }
+        ;}
     break;
 
   case 301:
-
-/* Line 678 of lalr1.cc  */
-#line 5612 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5584 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       IdentifierInfo::ptr ident((yysemantic_stack_[(4) - (4)].ident));
       ParamListDecl* pl = (ParamListDecl*) (yysemantic_stack_[(4) - (1)].paramlistdecl);
       pl->AddParam(ident->GetName(),type_image);
       (yyval.paramlistdecl) = pl;
-        }
+        ;}
     break;
 
   case 302:
-
-/* Line 678 of lalr1.cc  */
-#line 5619 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5591 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       IdentifierInfo::ptr ident((yysemantic_stack_[(4) - (4)].ident));
       ParamListDecl* pl = (ParamListDecl*) (yysemantic_stack_[(4) - (1)].paramlistdecl);
       pl->AddParam(ident->GetName(),type_imagedraw);
       (yyval.paramlistdecl) = pl;
-        }
+        ;}
     break;
 
   case 303:
-
-/* Line 678 of lalr1.cc  */
-#line 5626 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5598 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       IdentifierInfo::ptr ident((yysemantic_stack_[(4) - (4)].ident));
       ParamListDecl* pl = (ParamListDecl*) (yysemantic_stack_[(4) - (1)].paramlistdecl);
       pl->AddParam(ident->GetName(),type_surface);
       (yyval.paramlistdecl) = pl;
-        }
+        ;}
     break;
 
   case 304:
-
-/* Line 678 of lalr1.cc  */
-#line 5634 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5606 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       (yyval.astring)=(yysemantic_stack_[(1) - (1)].astring);
-    }
+    ;}
     break;
 
   case 305:
-
-/* Line 678 of lalr1.cc  */
-#line 5639 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5611 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       char* res;
       //printf("expr_string=%s*\n",$3);
@@ -6322,13 +5465,11 @@ namespace yyip {
       delete [] (yysemantic_stack_[(6) - (3)].astring);
       //printf("res=%s*\n",res);
       (yyval.astring)=res;
-    }
+    ;}
     break;
 
   case 306:
-
-/* Line 678 of lalr1.cc  */
-#line 5720 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5692 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       long min,hour;
       float sec;
@@ -6350,23 +5491,19 @@ namespace yyip {
       char* reschar = new char[res.size()+1];
       strcpy(reschar,res.c_str());
       (yyval.astring)= reschar;
-    }
+    ;}
     break;
 
   case 307:
-
-/* Line 678 of lalr1.cc  */
-#line 5743 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5715 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       (yyval.astring)=(char*) (im)->GetName();
-    }
+    ;}
     break;
 
   case 308:
-
-/* Line 678 of lalr1.cc  */
-#line 5749 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5721 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
       Description:
@@ -6377,13 +5514,11 @@ namespace yyip {
       char* res = new char[strlen(resstr)+1];
       strcpy(res,resstr);
       (yyval.astring)= res;
-    }
+    ;}
     break;
 
   case 309:
-
-/* Line 678 of lalr1.cc  */
-#line 5761 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5733 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
       Description:
@@ -6401,72 +5536,60 @@ namespace yyip {
         empty_string[0] = '\0';
         (yyval.astring) = empty_string;
       }
-    }
+    ;}
     break;
 
   case 310:
-
-/* Line 678 of lalr1.cc  */
-#line 5781 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5753 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       char* res = new char[GB_scripts_dir.Len()+1];
       strcpy(res,(const char*)GB_scripts_dir.mb_str(wxConvUTF8));
       (yyval.astring)= res;
-    }
+    ;}
     break;
 
   case 311:
-
-/* Line 678 of lalr1.cc  */
-#line 5814 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5786 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         (yyval.ablock)=(yysemantic_stack_[(3) - (2)].ablock);
         if (GB_debug)
           cerr << format("ablock : %s")
                   % (yysemantic_stack_[(3) - (2)].ablock)->GetBody()
                 << endl;
-          }
+          ;}
     break;
 
   case 314:
-
-/* Line 678 of lalr1.cc  */
-#line 5828 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5800 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       ADD_VARSTACK_FLOAT((yysemantic_stack_[(1) - (1)].adouble))
-    }
+    ;}
     break;
 
   case 315:
-
-/* Line 678 of lalr1.cc  */
-#line 5832 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5804 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
     Description:
       returns the number of arguments in the command line
     **/
       ADD_VARSTACK_FLOAT(GB_argc-GB_num_arg_parsed)
-    }
+    ;}
     break;
 
   case 316:
-
-/* Line 678 of lalr1.cc  */
-#line 5840 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5812 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
     Description:
       Line number in the current script
     **/
       ADD_VARSTACK_FLOAT(driver.yyiplineno)
-    }
+    ;}
     break;
 
   case 317:
-
-/* Line 678 of lalr1.cc  */
-#line 5848 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5820 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
       Description:
@@ -6474,13 +5597,11 @@ namespace yyip {
          3.14159265358979323846
       **/
       ADD_VARSTACK_FLOAT(3.14159265358979323846)
-    }
+    ;}
     break;
 
   case 319:
-
-/* Line 678 of lalr1.cc  */
-#line 5858 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5830 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
       Description:
@@ -6488,13 +5609,11 @@ namespace yyip {
       **/
       GET_VARSTACK_VALUE(int,n);
       ADD_VARSTACK_FLOAT((double) *n.get())
-    }
+    ;}
     break;
 
   case 320:
-
-/* Line 678 of lalr1.cc  */
-#line 5867 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5839 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
       Description:
@@ -6502,13 +5621,11 @@ namespace yyip {
       **/
       GET_VARSTACK_VALUE(unsigned char,n);
       ADD_VARSTACK_FLOAT((double) *n.get())
-    }
+    ;}
     break;
 
   case 321:
-
-/* Line 678 of lalr1.cc  */
-#line 5876 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5848 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -6524,13 +5641,11 @@ namespace yyip {
         **/
       GET_VARSTACK_VALUE(InrImage, im);
       ADD_VARSTACK_FLOAT((*im)((int) (yysemantic_stack_[(6) - (3)].adouble),(int) ( (yysemantic_stack_[(6) - (5)].adouble))));
-    }
+    ;}
     break;
 
   case 322:
-
-/* Line 678 of lalr1.cc  */
-#line 5893 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5865 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
         Parameters:
@@ -6545,13 +5660,11 @@ namespace yyip {
           (int) round( (yysemantic_stack_[(8) - (5)].adouble)), 
           (int) round((yysemantic_stack_[(8) - (7)].adouble)));
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 323:
-
-/* Line 678 of lalr1.cc  */
-#line 5909 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5881 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
         Parameters:
@@ -6567,13 +5680,11 @@ namespace yyip {
           (yysemantic_stack_[(10) - (7)].adouble), 
           (yysemantic_stack_[(10) - (9)].adouble));
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 324:
-
-/* Line 678 of lalr1.cc  */
-#line 5926 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5898 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
       Description:
@@ -6591,13 +5702,11 @@ namespace yyip {
         driver.err_print("var_image(expr,expr,expr,expr) \t err coord \n");
       FinSi
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 325:
-
-/* Line 678 of lalr1.cc  */
-#line 5945 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5917 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
       Description:
@@ -6614,13 +5723,11 @@ namespace yyip {
         driver.err_print("var_image(expr,expr,expr;expr) \t err coord \n");
       FinSi
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 326:
-
-/* Line 678 of lalr1.cc  */
-#line 5963 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5935 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
       Description:
@@ -6635,13 +5742,11 @@ namespace yyip {
         driver.err_print("var_image(expr,expr;expr) \t err coord \n");
       FinSi
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 327:
-
-/* Line 678 of lalr1.cc  */
-#line 5979 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5951 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
       Description:
@@ -6656,191 +5761,157 @@ namespace yyip {
         driver.err_print("var_image(expr;expr) \t err coord \n");
       FinSi
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 328:
-
-/* Line 678 of lalr1.cc  */
-#line 5995 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5967 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VAR_VAL(InrImage,varim, im);
       float val = im->DimX();
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 329:
-
-/* Line 678 of lalr1.cc  */
-#line 6001 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5973 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VAR_VAL(InrImage,varim, im);
       float val = im->DimY();
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 330:
-
-/* Line 678 of lalr1.cc  */
-#line 6007 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5979 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VAR_VAL(InrImage,varim, im);
       float val = im->DimZ();
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 331:
-
-/* Line 678 of lalr1.cc  */
-#line 6013 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5985 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VAR_VAL(InrImage,varim, im);
       float val = im->TrX();
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 332:
-
-/* Line 678 of lalr1.cc  */
-#line 6019 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5991 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VAR_VAL(InrImage,varim, im);
       float val = im->TrY();
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 333:
-
-/* Line 678 of lalr1.cc  */
-#line 6025 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 5997 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VAR_VAL(InrImage,varim, im);
       float val = im->TrZ();
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 334:
-
-/* Line 678 of lalr1.cc  */
-#line 6031 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6003 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VAR_VAL(InrImage,varim, im);
       float val = im->VoxSizeX();
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 335:
-
-/* Line 678 of lalr1.cc  */
-#line 6037 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6009 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VAR_VAL(InrImage,varim, im);
       float val = im->VoxSizeY();
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 336:
-
-/* Line 678 of lalr1.cc  */
-#line 6043 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6015 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VAR_VAL(InrImage,varim, im);
       float val = im->VoxSizeZ();
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 337:
-
-/* Line 678 of lalr1.cc  */
-#line 6049 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6021 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VAR_VAL(InrImage,varim, im);
       float val = im->GetVDim();
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 338:
-
-/* Line 678 of lalr1.cc  */
-#line 6055 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6027 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VAR_VAL(InrImage,varim, im);
       float val = im->IncBuffer();
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 339:
-
-/* Line 678 of lalr1.cc  */
-#line 6061 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6033 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VAR_VAL(InrImage,varim, im);
       float val = im->ValeurBuffer();
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 340:
-
-/* Line 678 of lalr1.cc  */
-#line 6068 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6040 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(SurfacePoly,s);
       float val = s->GetNumberOfPoints();
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 341:
-
-/* Line 678 of lalr1.cc  */
-#line 6075 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6047 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(SurfacePoly,s);
       float val = s->GetNumberOfPolys();
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 342:
-
-/* Line 678 of lalr1.cc  */
-#line 6082 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6054 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<InrImage>::ptr  varim2(driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim1(driver.var_stack.GetLastVar<InrImage>());
       float val=Func_SNR(varim1->Pointer().get(),
                   varim2->Pointer().get());
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 343:
-
-/* Line 678 of lalr1.cc  */
-#line 6091 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6063 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       float val=Func_eccentricity(im.get());
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 344:
-
-/* Line 678 of lalr1.cc  */
-#line 6098 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6070 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       float   resolution = (yysemantic_stack_[(10) - (5)].adouble);
       int     cx = (int) (yysemantic_stack_[(10) - (7)].adouble);
@@ -6869,25 +5940,21 @@ namespace yyip {
       ADD_VARSTACK_FLOAT(val);
       delete compute_area;
 
-    }
+    ;}
     break;
 
   case 345:
-
-/* Line 678 of lalr1.cc  */
-#line 6129 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6101 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
 
       GET_VARSTACK_VALUE(InrImage, im);
       float val=Func_ComputePositiveArea( im.get() );
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 346:
-
-/* Line 678 of lalr1.cc  */
-#line 6137 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6109 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       float val[4];
 
@@ -6897,13 +5964,11 @@ namespace yyip {
       val[3] = (yysemantic_stack_[(10) - (9)].adouble);
       float res=Func_PositiveArea(val);
       ADD_VARSTACK_FLOAT(res);
-    }
+    ;}
     break;
 
   case 347:
-
-/* Line 678 of lalr1.cc  */
-#line 6149 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6121 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
           Description:
@@ -6921,13 +5986,11 @@ namespace yyip {
       InrImage::ptr im  (driver.im_stack.GetLastImage());
       float val=Func_count( im.get() );
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 348:
-
-/* Line 678 of lalr1.cc  */
-#line 6169 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6141 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
              Description:
@@ -6945,13 +6008,11 @@ namespace yyip {
       InrImage::ptr im  (driver.im_stack.GetLastImage());
       float val=Func_mean( im.get());
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 349:
-
-/* Line 678 of lalr1.cc  */
-#line 6189 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6161 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
              Description: 
@@ -6969,13 +6030,11 @@ namespace yyip {
       InrImage::ptr im  (driver.im_stack.GetLastImage());
       float val=Func_max( im.get(),NULL);
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 350:
-
-/* Line 678 of lalr1.cc  */
-#line 6209 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6181 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
              Description:
@@ -6993,13 +6052,11 @@ namespace yyip {
       InrImage::ptr im  (driver.im_stack.GetLastImage());
       float val=Func_argmax( im.get());
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 351:
-
-/* Line 678 of lalr1.cc  */
-#line 6229 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6201 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
             Description:
@@ -7017,13 +6074,11 @@ namespace yyip {
       InrImage::ptr im  (driver.im_stack.GetLastImage());
       float val=Func_min( im.get(),NULL);
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 352:
-
-/* Line 678 of lalr1.cc  */
-#line 6249 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6221 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
             Description:
@@ -7041,13 +6096,11 @@ namespace yyip {
       InrImage::ptr im  (driver.im_stack.GetLastImage());
       float val=Func_med( im.get(),0.5,NULL);
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 353:
-
-/* Line 678 of lalr1.cc  */
-#line 6269 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6241 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
              Description:
@@ -7069,13 +6122,11 @@ namespace yyip {
       InrImage::ptr mask  (driver.im_stack.GetLastImage());
       float val=Func_max( im.get(),mask.get());
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 354:
-
-/* Line 678 of lalr1.cc  */
-#line 6293 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6265 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
              Description:
@@ -7097,13 +6148,11 @@ namespace yyip {
       InrImage::ptr mask  (driver.im_stack.GetLastImage());
       float val=Func_min( im.get(),mask.get());
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 355:
-
-/* Line 678 of lalr1.cc  */
-#line 6317 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6289 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
              Description:
@@ -7125,25 +6174,21 @@ namespace yyip {
       InrImage::ptr mask ( driver.im_stack.GetLastImage());
       float val=Func_med( im.get(),0.5,mask.get());
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 356:
-
-/* Line 678 of lalr1.cc  */
-#line 6341 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6313 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       InrImage::ptr mask( driver.im_stack.GetLastImage());
       float val=Func_med( im.get(),(float) (yysemantic_stack_[(9) - (8)].adouble),mask.get());
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 357:
-
-/* Line 678 of lalr1.cc  */
-#line 6349 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6321 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
              Description:
@@ -7165,13 +6210,11 @@ namespace yyip {
       InrImage::ptr mask  (driver.im_stack.GetLastImage());
       float val=Func_mean( input.get(),mask.get());
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 358:
-
-/* Line 678 of lalr1.cc  */
-#line 6373 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6345 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
              Description:
@@ -7193,25 +6236,21 @@ namespace yyip {
       InrImage::ptr mask (driver.im_stack.GetLastImage());
       float val=Func_mean( im.get(), mask.get());
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 359:
-
-/* Line 678 of lalr1.cc  */
-#line 6396 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6368 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       setlocale(LC_NUMERIC, "C");
       float val=atof((yysemantic_stack_[(4) - (3)].astring));
       ADD_VARSTACK_FLOAT(val);
       delete [] (yysemantic_stack_[(4) - (3)].astring);
-    }
+    ;}
     break;
 
   case 360:
-
-/* Line 678 of lalr1.cc  */
-#line 6404 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6376 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
       DessinImage::ptr draw;
@@ -7221,13 +6260,11 @@ namespace yyip {
       param = draw->GetParam();
       float val=param->_Zoom._xmin;
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 361:
-
-/* Line 678 of lalr1.cc  */
-#line 6416 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6388 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
       DessinImage::ptr draw;
@@ -7237,13 +6274,11 @@ namespace yyip {
       param = draw->GetParam();
       float val=param->_Zoom._xmax;
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 362:
-
-/* Line 678 of lalr1.cc  */
-#line 6428 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6400 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
       DessinImage::ptr draw;
@@ -7253,13 +6288,11 @@ namespace yyip {
       param = draw->GetParam();
       float val=param->_Zoom._ymin;
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 363:
-
-/* Line 678 of lalr1.cc  */
-#line 6440 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6412 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
       DessinImage::ptr draw;
@@ -7269,13 +6302,11 @@ namespace yyip {
       param = draw->GetParam();
       float val=param->_Zoom._ymax;
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 364:
-
-/* Line 678 of lalr1.cc  */
-#line 6452 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6424 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
       DessinImage::ptr draw;
@@ -7285,13 +6316,11 @@ namespace yyip {
       param = draw->GetParam();
       float val=param->_Zoom._zmin;
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 365:
-
-/* Line 678 of lalr1.cc  */
-#line 6464 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6436 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
       DessinImage::ptr draw;
@@ -7301,13 +6330,11 @@ namespace yyip {
       param = draw->GetParam();
       float val=param->_Zoom._zmax;
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 366:
-
-/* Line 678 of lalr1.cc  */
-#line 6476 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6448 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
       DessinImage::ptr draw;
@@ -7321,13 +6348,11 @@ namespace yyip {
       if (driver.InConsole())
         GB_main_wxFrame->GetConsole()
                         ->IncCommand(wxString::FromAscii(comment.c_str()));
-    }
+    ;}
     break;
 
   case 367:
-
-/* Line 678 of lalr1.cc  */
-#line 6492 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6464 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
       DessinImage::ptr draw;
@@ -7344,13 +6369,11 @@ namespace yyip {
         GB_main_wxFrame->GetConsole()
                        ->IncCommand(wxString::FromAscii(comment.c_str()));
 
-    }
+    ;}
     break;
 
   case 368:
-
-/* Line 678 of lalr1.cc  */
-#line 6511 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6483 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
       DessinImage::ptr draw;
@@ -7366,33 +6389,27 @@ namespace yyip {
       if (driver.InConsole())
         GB_main_wxFrame->GetConsole()
                         ->IncCommand(wxString::FromAscii(comment.c_str()));
-    }
+    ;}
     break;
 
   case 369:
-
-/* Line 678 of lalr1.cc  */
-#line 6529 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6501 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       float val=Func_AnisoGS_GetNoiseSD();
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 370:
-
-/* Line 678 of lalr1.cc  */
-#line 6535 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6507 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       float val=Func_AnisoGS_GetDAcoeff();
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 371:
-
-/* Line 678 of lalr1.cc  */
-#line 6548 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6520 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<FloatMatrix>::ptr varmat(driver.var_stack.GetLastVar<FloatMatrix>());
       FloatMatrix::ptr mat (varmat->Pointer());
@@ -7401,13 +6418,11 @@ namespace yyip {
       float val = (*mat)[i][j];
       // create a reference with a smart pointer without deleter ???
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 372:
-
-/* Line 678 of lalr1.cc  */
-#line 6558 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6530 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
         Description
@@ -7418,13 +6433,11 @@ namespace yyip {
       int j = (int)(yysemantic_stack_[(10) - (7)].adouble);
       float val  =  ((*mat)[i][j] = (yysemantic_stack_[(10) - (9)].adouble));
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 373:
-
-/* Line 678 of lalr1.cc  */
-#line 6570 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6542 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
     Description:
@@ -7433,13 +6446,11 @@ namespace yyip {
       IdentifierInfo::ptr ident((yysemantic_stack_[(4) - (3)].ident));
       float val=0;
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 374:
-
-/* Line 678 of lalr1.cc  */
-#line 6580 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6552 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
     Description: 
@@ -7448,13 +6459,11 @@ namespace yyip {
       BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
       float val=1;
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 375:
-
-/* Line 678 of lalr1.cc  */
-#line 6590 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6562 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -7465,26 +6474,22 @@ namespace yyip {
       boost::shared_array<char> name( (yysemantic_stack_[(4) - (3)].astring));
       float val = wxFileExists(wxString(name.get(),wxConvUTF8));
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 376:
-
-/* Line 678 of lalr1.cc  */
-#line 6602 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6574 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
         Description: returns the value of the pixel format type in float format
       **/
       float val = (int) (yysemantic_stack_[(3) - (1)].aint);
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 377:
-
-/* Line 678 of lalr1.cc  */
-#line 6610 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6582 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
       Description:
@@ -7499,13 +6504,11 @@ namespace yyip {
       fscanf(file.get(),format.get(),&res);
       float val =  res;
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 378:
-
-/* Line 678 of lalr1.cc  */
-#line 6626 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6598 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(float,val_ptr);
       GET_VARSTACK_VALUE(FILE,file);
@@ -7519,13 +6522,11 @@ namespace yyip {
         // TODO: error message here ...
       }
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 379:
-
-/* Line 678 of lalr1.cc  */
-#line 6641 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6613 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(std::string,st);
       GET_VARSTACK_VALUE(FILE,file);
@@ -7536,13 +6537,11 @@ namespace yyip {
       //string_ptr var( new std::string(res));
       (*st) = res;
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 380:
-
-/* Line 678 of lalr1.cc  */
-#line 6653 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6625 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
       Parameters:
@@ -7553,13 +6552,11 @@ namespace yyip {
       GET_VARSTACK_VALUE(SurfacePoly,s);
       float val = s->GetNumberOfLines(  );
       ADD_VARSTACK_FLOAT(val);
-    }
+    ;}
     break;
 
   case 381:
-
-/* Line 678 of lalr1.cc  */
-#line 6683 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6655 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
           if (var.get())
@@ -7574,13 +6571,11 @@ namespace yyip {
             driver.err_print("Expression from null variable ...");
             (yyval.adouble) = 0;
           }
-        }
+        ;}
     break;
 
   case 382:
-
-/* Line 678 of lalr1.cc  */
-#line 6701 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6673 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
           if (var->Type()==type_image)  {
@@ -7590,13 +6585,11 @@ namespace yyip {
             driver.err_print("Expecting an image variable here ... \n");
             YYABORT;
           }
-        }
+        ;}
     break;
 
   case 383:
-
-/* Line 678 of lalr1.cc  */
-#line 6714 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6686 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           /**
             Description:  This rule is created to avoid changing a lot of code in the process of converting string operation to operations on Variable\<std::string> ...
@@ -7612,115 +6605,91 @@ namespace yyip {
             driver.err_print("Expecting a string variable here ... \n");
             YYABORT;
           }
-        }
+        ;}
     break;
 
   case 384:
-
-/* Line 678 of lalr1.cc  */
-#line 6735 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6707 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       driver.err_print(" char format is not available: use unsigned char \n");
       (yyval.aint)=WT_UNSIGNED_CHAR;
-    }
+    ;}
     break;
 
   case 385:
-
-/* Line 678 of lalr1.cc  */
-#line 6740 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6712 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           (yyval.aint)=WT_UNSIGNED_CHAR;
-       }
+       ;}
     break;
 
   case 386:
-
-/* Line 678 of lalr1.cc  */
-#line 6744 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6716 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
      (yyval.aint)=WT_SIGNED_SHORT;
-       }
+       ;}
     break;
 
   case 387:
-
-/* Line 678 of lalr1.cc  */
-#line 6748 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6720 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
      (yyval.aint)=WT_UNSIGNED_SHORT;
-       }
+       ;}
     break;
 
   case 388:
-
-/* Line 678 of lalr1.cc  */
-#line 6752 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6724 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
      (yyval.aint)=WT_SIGNED_INT;
-       }
+       ;}
     break;
 
   case 389:
-
-/* Line 678 of lalr1.cc  */
-#line 6756 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6728 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
      (yyval.aint)=WT_UNSIGNED_INT;
-       }
+       ;}
     break;
 
   case 390:
-
-/* Line 678 of lalr1.cc  */
-#line 6760 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6732 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
      (yyval.aint)=WT_FLOAT;
-       }
+       ;}
     break;
 
   case 391:
-
-/* Line 678 of lalr1.cc  */
-#line 6764 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6736 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
      (yyval.aint)=WT_DOUBLE;
-       }
+       ;}
     break;
 
   case 392:
-
-/* Line 678 of lalr1.cc  */
-#line 6768 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6740 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
      (yyval.aint)=WT_RGB;
-       }
+       ;}
     break;
 
   case 393:
-
-/* Line 678 of lalr1.cc  */
-#line 6772 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6744 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
      (yyval.aint)=WT_FLOAT_VECTOR;
-       }
+       ;}
     break;
 
   case 394:
-
-/* Line 678 of lalr1.cc  */
-#line 6776 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6748 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
          //        printf("format %d \n",(int) ( *(InrImage::ptr*) $1->Pointer())->GetFormat());
         GET_VARSTACK_VALUE(InrImage, im);
         (yyval.aint) = (int) im->GetFormat();
-      }
+      ;}
     break;
 
   case 396:
-
-/* Line 678 of lalr1.cc  */
-#line 6786 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6758 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           // TODO: get rid of VAR_ARRAY ...
           GET_VARSTACK_VAR_VAL(VarArray,var,array);
@@ -7735,23 +6704,19 @@ namespace yyip {
           }
           driver.var_stack.AddVar(array->GetVar(i));
           //$$=array->GetVar(i).get();
-        }
+        ;}
     break;
 
   case 397:
-
-/* Line 678 of lalr1.cc  */
-#line 6805 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6777 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         boost::shared_array<char> st( (yysemantic_stack_[(2) - (2)].astring));
         driver.im_stack.AddFileImage(st.get());
-      }
+      ;}
     break;
 
   case 398:
-
-/* Line 678 of lalr1.cc  */
-#line 6820 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6792 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
        /**
        Parameters:
@@ -7803,13 +6768,11 @@ namespace yyip {
        driver.err_print("ReadRawImages() failed ... \n");
        driver.im_stack.AddImage(InrImage::ptr());
      }
-      }
+      ;}
     break;
 
   case 399:
-
-/* Line 678 of lalr1.cc  */
-#line 6875 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6847 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
        /**
        Parameters:
@@ -7857,13 +6820,11 @@ namespace yyip {
        driver.err_print("ReadRawImages() failed ... \n");
        driver.im_stack.AddImage(InrImage::ptr());
      }
-       }
+       ;}
     break;
 
   case 400:
-
-/* Line 678 of lalr1.cc  */
-#line 6926 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6898 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
        /**
        Parameters:
@@ -7914,13 +6875,11 @@ namespace yyip {
        driver.err_print("ReadRawImages() failed ... \n");
        driver.im_stack.AddImage(InrImage::ptr());
      }
-       }
+       ;}
     break;
 
   case 401:
-
-/* Line 678 of lalr1.cc  */
-#line 6978 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6950 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
        /**
        Parameters:
@@ -7939,13 +6898,11 @@ namespace yyip {
         FinSi
 
         driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 402:
-
-/* Line 678 of lalr1.cc  */
-#line 6998 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 6970 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
       Parameters:
@@ -7963,13 +6920,11 @@ namespace yyip {
         FinSi
 
         driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 403:
-
-/* Line 678 of lalr1.cc  */
-#line 7033 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7005 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           int res;
           string name;
@@ -7996,24 +6951,20 @@ namespace yyip {
           if (driver.InConsole())
             GB_main_wxFrame->GetConsole()
                             ->IncCommand(wxString::FromAscii(inc_cmd.c_str()));
-      }
+      ;}
     break;
 
   case 404:
-
-/* Line 678 of lalr1.cc  */
-#line 7062 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7034 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         //printf(" ********** %d %f %f %f\n", $3, $5, $7, $9);
         InrImage::ptr im (new InrImage( (int) (yysemantic_stack_[(10) - (5)].adouble), (int) (yysemantic_stack_[(10) - (7)].adouble), (int) (yysemantic_stack_[(10) - (9)].adouble), (WORDTYPE) (yysemantic_stack_[(10) - (3)].aint)));
         driver.im_stack.AddImage(im);
-      }
+      ;}
     break;
 
   case 405:
-
-/* Line 678 of lalr1.cc  */
-#line 7069 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7041 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
     Parameters:
@@ -8029,13 +6980,11 @@ namespace yyip {
     //printf(" ********** %d %f %f %f\n", $3, $5, $7, $9);
     InrImage::ptr im( new InrImage( (int) (yysemantic_stack_[(12) - (5)].adouble), (int) (yysemantic_stack_[(12) - (7)].adouble), (int) (yysemantic_stack_[(12) - (9)].adouble), (int) (yysemantic_stack_[(12) - (11)].adouble), (WORDTYPE) (yysemantic_stack_[(12) - (3)].aint)));
     driver.im_stack.AddImage(im);
-    }
+    ;}
     break;
 
   case 406:
-
-/* Line 678 of lalr1.cc  */
-#line 7087 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7059 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -8058,13 +7007,11 @@ namespace yyip {
       InrImage::ptr im (new InrImage(imformat,vdim,
                         imname.c_str(),varim.get()));
       driver.im_stack.AddImage(im);
-    }
+    ;}
     break;
 
   case 407:
-
-/* Line 678 of lalr1.cc  */
-#line 7112 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7084 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
         Description: returning a reference to the image here ...
@@ -8088,13 +7035,11 @@ namespace yyip {
       driver.im_stack.AddImage(im);
       // driver.im_stack.AddImage(varim);
 */
-    }
+    ;}
     break;
 
   case 408:
-
-/* Line 678 of lalr1.cc  */
-#line 7138 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7110 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
        /**
         Description:
@@ -8155,13 +7100,11 @@ namespace yyip {
           JusquA Non(im->IncBuffer()) FinRepeter
           driver.im_stack.AddImage(im);
 
-       }
+       ;}
     break;
 
   case 409:
-
-/* Line 678 of lalr1.cc  */
-#line 7201 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7173 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
              Description:
@@ -8225,59 +7168,49 @@ namespace yyip {
         driver.err_print("sum operator only for scalar images ... \n");
     }
       driver.im_stack.AddImagePointer(res);
-    }
+    ;}
     break;
 
   case 410:
-
-/* Line 678 of lalr1.cc  */
-#line 7267 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7239 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       InrImage::ptr im ( driver.im_stack.GetLastImage());
       InrImage* res =Func_localmean( im.get(), (int) (yysemantic_stack_[(6) - (5)].adouble));
       driver.im_stack.AddImagePointer(res);
-    }
+    ;}
     break;
 
   case 411:
-
-/* Line 678 of lalr1.cc  */
-#line 7274 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7246 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       InrImage::ptr im (driver.im_stack.GetLastImage());
       InrImage* res =Func_localmean2( im.get(), (int) (yysemantic_stack_[(6) - (5)].adouble));
       driver.im_stack.AddImagePointer(res);
-    }
+    ;}
     break;
 
   case 412:
-
-/* Line 678 of lalr1.cc  */
-#line 7281 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7253 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       InrImage::ptr mean    ( driver.im_stack.GetLastImage());
       InrImage::ptr im      ( driver.im_stack.GetLastImage());
       InrImage* res     = Func_localSD( im.get(), mean.get(), (int) (yysemantic_stack_[(8) - (7)].adouble));
       driver.im_stack.AddImagePointer(res);
-    }
+    ;}
     break;
 
   case 413:
-
-/* Line 678 of lalr1.cc  */
-#line 7289 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7261 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       InrImage::ptr mean  ( driver.im_stack.GetLastImage());
       InrImage::ptr im    ( driver.im_stack.GetLastImage());
       InrImage::ptr res(Func_localSD2( im.get(), mean.get(), (int) (yysemantic_stack_[(8) - (7)].adouble)));
       driver.im_stack.AddImage(res);
-    }
+    ;}
     break;
 
   case 414:
-
-/* Line 678 of lalr1.cc  */
-#line 7297 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7269 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
 
       GET_VARSTACK_VALUE(InrImage, im);
@@ -8291,13 +7224,11 @@ namespace yyip {
   
       driver.im_stack.AddImage(res);
 
-      }
+      ;}
     break;
 
   case 415:
-
-/* Line 678 of lalr1.cc  */
-#line 7313 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7285 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
 
       GET_VARSTACK_VALUE(InrImage, im);
@@ -8313,13 +7244,11 @@ namespace yyip {
     driver.im_stack.AddImage(res);
 
 
-      }
+      ;}
     break;
 
   case 416:
-
-/* Line 678 of lalr1.cc  */
-#line 7331 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7303 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
 
       Variable<InrImage>::ptr  varim2(driver.var_stack.GetLastVar<InrImage>());
@@ -8335,13 +7264,11 @@ namespace yyip {
 
     driver.im_stack.AddImage(res);
 
-      }
+      ;}
     break;
 
   case 417:
-
-/* Line 678 of lalr1.cc  */
-#line 7349 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7321 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
 
       GET_VARSTACK_VALUE(InrImage, im);
@@ -8356,13 +7283,11 @@ namespace yyip {
 
     driver.im_stack.AddImage(res);
 
-      }
+      ;}
     break;
 
   case 418:
-
-/* Line 678 of lalr1.cc  */
-#line 7366 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7338 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<InrImage>::ptr  varim3(driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim2(driver.var_stack.GetLastVar<InrImage>());
@@ -8377,13 +7302,11 @@ namespace yyip {
         FinSi
 
         driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 419:
-
-/* Line 678 of lalr1.cc  */
-#line 7384 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7356 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<InrImage>::ptr  varim3(driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim2(driver.var_stack.GetLastVar<InrImage>());
@@ -8398,13 +7321,11 @@ namespace yyip {
           driver.err_print("OpImage() erreur ... \n");
         FinSi
         driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 420:
-
-/* Line 678 of lalr1.cc  */
-#line 7404 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7376 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
         Parameters
@@ -8436,13 +7357,11 @@ namespace yyip {
           driver.err_print("Filter() erreur ... \n");
         FinSi
         driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 421:
-
-/* Line 678 of lalr1.cc  */
-#line 7437 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7409 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         float var           = (yysemantic_stack_[(10) - (7)].adouble);
         float lowthreshold  = (yysemantic_stack_[(10) - (9)].adouble);
@@ -8453,13 +7372,11 @@ namespace yyip {
           driver.err_print("itk.CannyEdgeDetector() error ... \n");
         FinSi
         driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 422:
-
-/* Line 678 of lalr1.cc  */
-#line 7450 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7422 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         GET_VARSTACK_VALUE(InrImage, im);
         InrImage::ptr res ( Func_vtkDist( im.get()));
@@ -8468,13 +7385,11 @@ namespace yyip {
           driver.err_print("vtkDist() erreur ... \n");
         FinSi
         driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 423:
-
-/* Line 678 of lalr1.cc  */
-#line 7461 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7433 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         GET_VARSTACK_VALUE(InrImage, im);
         InrImage::ptr res (Func_vtkMedianFilter3D(
@@ -8485,13 +7400,11 @@ namespace yyip {
           driver.err_print("vtkMedian3D() erreur ... \n");
         FinSi
         driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 424:
-
-/* Line 678 of lalr1.cc  */
-#line 7474 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7446 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         GET_VARSTACK_VALUE(InrImage, im);
         driver.err_print("The function AndreDist() has been removed for licence issues! \n");
@@ -8513,13 +7426,11 @@ namespace yyip {
           driver.im_stack.AddImage(res);
         FinSi
 */
-      }
+      ;}
     break;
 
   case 425:
-
-/* Line 678 of lalr1.cc  */
-#line 7498 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7470 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     InrImage::ptr res (Func_2DFlux( driver.im_stack.GetLastImage().get(),(yysemantic_stack_[(6) - (5)].adouble)));
 
@@ -8527,13 +7438,11 @@ namespace yyip {
       driver.err_print("2DFlux() error ... \n");
     FinSi
     driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 426:
-
-/* Line 678 of lalr1.cc  */
-#line 7508 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7480 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       InrImage::ptr res ( Func_OutFlux( im.get()));
@@ -8542,13 +7451,11 @@ namespace yyip {
         driver.err_print("OutFlux() erreur ... \n");
       FinSi
       driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 427:
-
-/* Line 678 of lalr1.cc  */
-#line 7519 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7491 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
     InrImage::ptr res ( Func_OutFluxScalar( im.get()));
@@ -8556,13 +7463,11 @@ namespace yyip {
       driver.err_print("OutFluxScalar() erreur ... \n");
     FinSi
     driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 428:
-
-/* Line 678 of lalr1.cc  */
-#line 7529 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7501 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
     InrImage::ptr res ( Func_OrientationRatio2D( im.get()));
@@ -8570,13 +7475,11 @@ namespace yyip {
       driver.err_print("OrientationRatio() erreur ... \n");
     FinSi
     driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 429:
-
-/* Line 678 of lalr1.cc  */
-#line 7539 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7511 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
         Parameters:
@@ -8607,13 +7510,11 @@ namespace yyip {
       driver.err_print("Skeleton() error ... \n");
     FinSi
     driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 430:
-
-/* Line 678 of lalr1.cc  */
-#line 7572 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7544 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
     InrImage::ptr res (Func_SimplePoints( im.get() ));
@@ -8622,13 +7523,11 @@ namespace yyip {
       driver.err_print("SimplePoints() error ... \n");
     FinSi
     driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 431:
-
-/* Line 678 of lalr1.cc  */
-#line 7584 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7556 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<InrImage>::ptr  varim4(driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim3(driver.var_stack.GetLastVar<InrImage>());
@@ -8646,13 +7545,11 @@ namespace yyip {
           driver.err_print("CircleInt() error ... \n");
         FinSi
         driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 432:
-
-/* Line 678 of lalr1.cc  */
-#line 7605 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7577 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<InrImage>::ptr  varim4(driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim3(driver.var_stack.GetLastVar<InrImage>());
@@ -8669,13 +7566,11 @@ namespace yyip {
         driver.err_print("CircleInt() error ... \n");
       FinSi
       driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 433:
-
-/* Line 678 of lalr1.cc  */
-#line 7625 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7597 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -8713,13 +7608,11 @@ namespace yyip {
           driver.err_print("CircleIntSdExc() error ... \n");
         FinSi
         driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 434:
-
-/* Line 678 of lalr1.cc  */
-#line 7666 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7638 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
       Parameters:
@@ -8763,13 +7656,11 @@ namespace yyip {
         driver.err_print("CircleIntSdExc() error ... \n");
       FinSi
       driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 435:
-
-/* Line 678 of lalr1.cc  */
-#line 7712 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7684 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
 
       Variable<InrImage>::ptr  varim4(driver.var_stack.GetLastVar<InrImage>());
@@ -8787,13 +7678,11 @@ namespace yyip {
     FinSi
 
     driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 436:
-
-/* Line 678 of lalr1.cc  */
-#line 7732 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7704 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<InrImage>::ptr  varim4(driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim3(driver.var_stack.GetLastVar<InrImage>());
@@ -8812,13 +7701,11 @@ namespace yyip {
       driver.err_print("LocalExtrema() error ... \n");
     FinSi
     driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 437:
-
-/* Line 678 of lalr1.cc  */
-#line 7753 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7725 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
     InrImage::ptr res( Func_NormalSmoothField( im.get() ));
@@ -8827,13 +7714,11 @@ namespace yyip {
       driver.err_print("NormalField() error ... \n");
     FinSi
     driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 438:
-
-/* Line 678 of lalr1.cc  */
-#line 7764 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7736 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<InrImage>::ptr  varim2(driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim1(driver.var_stack.GetLastVar<InrImage>());
@@ -8845,13 +7730,11 @@ namespace yyip {
       driver.err_print("NormalField() error ... \n");
     FinSi
     driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 439:
-
-/* Line 678 of lalr1.cc  */
-#line 7778 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7750 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<InrImage>::ptr  varim2(driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim1(driver.var_stack.GetLastVar<InrImage>());
@@ -8863,13 +7746,11 @@ namespace yyip {
       driver.err_print("DirConnectivity() error ... \n");
     FinSi
     driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 440:
-
-/* Line 678 of lalr1.cc  */
-#line 7794 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7766 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     InrImage::ptr input ( driver.im_stack.GetLastImage());
 
@@ -8878,13 +7759,11 @@ namespace yyip {
       driver.err_print("NormGrad() error ... \n");
     FinSi
     driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 441:
-
-/* Line 678 of lalr1.cc  */
-#line 7806 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7778 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
     InrImage::ptr res (Func_DiscNormGrad( im.get()));
@@ -8892,13 +7771,11 @@ namespace yyip {
       driver.err_print("discnormgrad() erreur ... \n");
     FinSi
     driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 442:
-
-/* Line 678 of lalr1.cc  */
-#line 7817 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7789 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
     InrImage::ptr res (Func_DiscMeanCurvature( im.get()));
@@ -8906,13 +7783,11 @@ namespace yyip {
       driver.err_print("DiscMeanCurvature() erreur ... \n");
     FinSi
     driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 443:
-
-/* Line 678 of lalr1.cc  */
-#line 7829 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7801 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
     InrImage::ptr res (Func_Gradient( im.get(),
@@ -8921,13 +7796,11 @@ namespace yyip {
       driver.err_print("Filter() erreur ... \n");
     FinSi
     driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 444:
-
-/* Line 678 of lalr1.cc  */
-#line 7840 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7812 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
         Parameters:
@@ -8943,13 +7816,11 @@ namespace yyip {
       driver.err_print("Filter() erreur ... \n");
     FinSi
     driver.im_stack.AddImage(res);
-        }
+        ;}
     break;
 
   case 445:
-
-/* Line 678 of lalr1.cc  */
-#line 7860 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7832 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         GET_VARSTACK_VALUE(InrImage,im);
         InrImage::ptr res (Func_SecDerGrad( im.get(), (yysemantic_stack_[(6) - (5)].adouble)));
@@ -8957,13 +7828,11 @@ namespace yyip {
           fprintf(stderr,"SecDerGrad() erreur ... \n");
         FinSi
         driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 446:
-
-/* Line 678 of lalr1.cc  */
-#line 7872 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7844 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         GET_VARSTACK_VALUE(InrImage,im);
         InrImage::ptr res ( Func_SecDerGrad2( im.get(),
@@ -8972,24 +7841,20 @@ namespace yyip {
       fprintf(stderr,"SecDerGrad2() erreur ... \n");
     FinSi
     driver.im_stack.AddImage(res);
-    }
+    ;}
     break;
 
   case 447:
-
-/* Line 678 of lalr1.cc  */
-#line 7882 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7854 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         InrImage::ptr im ( driver.im_stack.GetLastImage());
         InrImage::ptr res ( Func_AutoCrop(im.get(),(int)(yysemantic_stack_[(6) - (5)].adouble)));
         driver.im_stack.AddImage(res);
-    }
+    ;}
     break;
 
   case 448:
-
-/* Line 678 of lalr1.cc  */
-#line 7889 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7861 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage,im);
       ImageExtent<float>* extent = (ImageExtent<float>*) (yysemantic_stack_[(4) - (3)].imageextent);
@@ -9013,13 +7878,11 @@ namespace yyip {
         fprintf(stderr,"SubImage() erreur ... \n");
       FinSi
         driver.im_stack.AddImage(res);
-    }
+    ;}
     break;
 
   case 449:
-
-/* Line 678 of lalr1.cc  */
-#line 7918 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7890 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
 
@@ -9030,13 +7893,11 @@ namespace yyip {
           fprintf(stderr,"SubImage() erreur ... \n");
         }
       driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 450:
-
-/* Line 678 of lalr1.cc  */
-#line 7934 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7906 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
       Parameters
@@ -9072,13 +7933,11 @@ namespace yyip {
       fprintf(stderr,"SubImage() erreur ... \n");
     FinSi
     driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 451:
-
-/* Line 678 of lalr1.cc  */
-#line 7972 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7944 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
     InrImage::ptr res ( Func_EDP_dilate( im.get(),
@@ -9087,13 +7946,11 @@ namespace yyip {
       fprintf(stderr,"SubImage() erreur ... \n");
     FinSi
     driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 452:
-
-/* Line 678 of lalr1.cc  */
-#line 7983 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7955 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
     InrImage::ptr res ( Func_EDP_dilate( im.get(), (yysemantic_stack_[(8) - (5)].adouble),  (yysemantic_stack_[(8) - (7)].adouble)));
@@ -9101,13 +7958,11 @@ namespace yyip {
       fprintf(stderr,"SubImage() erreur ... \n");
     FinSi
     driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 453:
-
-/* Line 678 of lalr1.cc  */
-#line 7993 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7965 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
     float Imin = (yysemantic_stack_[(12) - (9)].adouble);
@@ -9117,13 +7972,11 @@ namespace yyip {
       fprintf(stderr,"SubImage() erreur ... \n");
     FinSi
     driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 454:
-
-/* Line 678 of lalr1.cc  */
-#line 8005 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7977 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
     InrImage::ptr res ( Func_EDP_erode( im.get(),
@@ -9132,13 +7985,11 @@ namespace yyip {
       fprintf(stderr,"SubImage() erreur ... \n");
     FinSi
     driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 455:
-
-/* Line 678 of lalr1.cc  */
-#line 8016 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7988 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
     InrImage::ptr res ( Func_EDP_erode( im.get(), (yysemantic_stack_[(8) - (5)].adouble),  (yysemantic_stack_[(8) - (7)].adouble)));
@@ -9146,13 +7997,11 @@ namespace yyip {
       fprintf(stderr,"SubImage() erreur ... \n");
     FinSi
     driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 456:
-
-/* Line 678 of lalr1.cc  */
-#line 8026 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 7998 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -9175,13 +8024,11 @@ namespace yyip {
       fprintf(stderr,"SubImage() erreur ... \n");
     FinSi
     driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 457:
-
-/* Line 678 of lalr1.cc  */
-#line 8053 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8025 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -9200,13 +8047,11 @@ namespace yyip {
       fprintf(stderr,"SubImage() erreur ... \n");
     FinSi
     driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 458:
-
-/* Line 678 of lalr1.cc  */
-#line 8076 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8048 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -9230,13 +8075,11 @@ namespace yyip {
       fprintf(stderr,"SubImage() erreur ... \n");
     FinSi
     driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 459:
-
-/* Line 678 of lalr1.cc  */
-#line 8104 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8076 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         GET_VARSTACK_VALUE(InrImage,im);
     InrImage::ptr res ( Func_EDP_close( im.get(),
@@ -9246,13 +8089,11 @@ namespace yyip {
       fprintf(stderr,"SubImage() erreur ... \n");
     FinSi
     driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 460:
-
-/* Line 678 of lalr1.cc  */
-#line 8117 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8089 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     float Imin = (yysemantic_stack_[(12) - (9)].adouble);
     float Imax = (yysemantic_stack_[(12) - (11)].adouble);
@@ -9265,39 +8106,33 @@ namespace yyip {
       fprintf(stderr,"SubImage() erreur ... \n");
     FinSi
     driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 461:
-
-/* Line 678 of lalr1.cc  */
-#line 8132 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8104 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     InrImage::ptr res ( Func_AnisoGS_GetOutput());
     Si !res.get() Alors
       fprintf(stderr,"SubImage() erreur ... \n");
     FinSi
     driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 462:
-
-/* Line 678 of lalr1.cc  */
-#line 8141 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8113 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     InrImage::ptr res ( Func_AnisoGS_GetDiffusionCoeff());
     Si !res.get() Alors
       fprintf(stderr,"GetDiffCoeff() erreur ... \n");
     FinSi
     driver.im_stack.AddImage(res);
-      }
+      ;}
     break;
 
   case 463:
-
-/* Line 678 of lalr1.cc  */
-#line 8212 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8184 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
       Parameters:
@@ -9327,13 +8162,11 @@ namespace yyip {
       Func_EndAnisoGS();
 
 
-    }
+    ;}
     break;
 
   case 464:
-
-/* Line 678 of lalr1.cc  */
-#line 8245 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8217 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       //
       // param 1: input image
@@ -9365,13 +8198,11 @@ namespace yyip {
       Func_EndAnisoGS();
       driver.im_stack.AddImage(res);
 
-    }
+    ;}
     break;
 
   case 465:
-
-/* Line 678 of lalr1.cc  */
-#line 8281 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8253 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
         Parameters:
@@ -9400,13 +8231,11 @@ namespace yyip {
       FinSi
       driver.im_stack.AddImage(res);
 
-    }
+    ;}
     break;
 
   case 466:
-
-/* Line 678 of lalr1.cc  */
-#line 8314 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8286 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       int        nb_iter,i;
       float       error;
@@ -9430,13 +8259,11 @@ namespace yyip {
       Func_EndAnisoGS();
       driver.im_stack.AddImage(res);
 
-    }
+    ;}
     break;
 
   case 467:
-
-/* Line 678 of lalr1.cc  */
-#line 8342 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8314 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       InrImage::ptr res ( Func_InitWeickert( im.get(),
@@ -9446,13 +8273,11 @@ namespace yyip {
         fprintf(stderr,"Func_InitWeickert() erreur ... \n");
       FinSi
       driver.im_stack.AddImage(res);
-        }
+        ;}
     break;
 
   case 468:
-
-/* Line 678 of lalr1.cc  */
-#line 8356 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8328 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       InrImage::ptr res ( Func_InitWeickertCoherence( im.get(),
@@ -9462,13 +8287,11 @@ namespace yyip {
         fprintf(stderr,"Func_InitWeickert() erreur ... \n");
       FinSi
       driver.im_stack.AddImage(res);
-        }
+        ;}
     break;
 
   case 469:
-
-/* Line 678 of lalr1.cc  */
-#line 8368 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8340 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       InrImage::ptr res ( Func_SRAD_qcoeff( im.get()));
@@ -9476,13 +8299,11 @@ namespace yyip {
         fprintf(stderr,"Func_SRAD_qcoeff() erreur ... \n");
       FinSi
       driver.im_stack.AddImage(res);
-        }
+        ;}
     break;
 
   case 470:
-
-/* Line 678 of lalr1.cc  */
-#line 8380 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8352 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       float dt = (float) (yysemantic_stack_[(8) - (5)].adouble);
@@ -9497,13 +8318,11 @@ namespace yyip {
         fprintf(stderr,"Func_AnisoSRAD() erreur ... \n");
       FinSi
       driver.im_stack.AddImage(res);
-        }
+        ;}
     break;
 
   case 471:
-
-/* Line 678 of lalr1.cc  */
-#line 8398 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8370 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       float dt = (float) (yysemantic_stack_[(10) - (5)].adouble);
@@ -9521,13 +8340,11 @@ namespace yyip {
         fprintf(stderr,"Func_AnisoSRAD() erreur ... \n");
       FinSi
       driver.im_stack.AddImage(res);
-        }
+        ;}
     break;
 
   case 472:
-
-/* Line 678 of lalr1.cc  */
-#line 8419 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8391 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       float dt = (float) (yysemantic_stack_[(12) - (5)].adouble);
@@ -9546,13 +8363,11 @@ namespace yyip {
         fprintf(stderr,"Func_AnisoSRAD() erreur ... \n");
       FinSi
       driver.im_stack.AddImage(res);
-        }
+        ;}
     break;
 
   case 473:
-
-/* Line 678 of lalr1.cc  */
-#line 8441 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8413 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       float dt = (float) (yysemantic_stack_[(10) - (5)].adouble);
@@ -9573,13 +8388,11 @@ namespace yyip {
       FinSi
 
       driver.im_stack.AddImage(res);
-        }
+        ;}
     break;
 
   case 474:
-
-/* Line 678 of lalr1.cc  */
-#line 8466 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8438 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       float dt = (float) (yysemantic_stack_[(12) - (5)].adouble);
@@ -9599,13 +8412,11 @@ namespace yyip {
       FinSi
 
       driver.im_stack.AddImage(res);
-        }
+        ;}
     break;
 
   case 475:
-
-/* Line 678 of lalr1.cc  */
-#line 8488 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8460 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       float dt = (float) (yysemantic_stack_[(10) - (5)].adouble);
@@ -9623,13 +8434,11 @@ namespace yyip {
         fprintf(stderr,"Func_AnisoSRAD() erreur ... \n");
       FinSi
       driver.im_stack.AddImage(res);
-        }
+        ;}
     break;
 
   case 476:
-
-/* Line 678 of lalr1.cc  */
-#line 8508 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8480 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       float dt         = (float) (yysemantic_stack_[(12) - (5)].adouble);
@@ -9647,13 +8456,11 @@ namespace yyip {
         fprintf(stderr,"Func_AnisoSRAD() erreur ... \n");
       FinSi
       driver.im_stack.AddImage(res);
-    }
+    ;}
     break;
 
   case 477:
-
-/* Line 678 of lalr1.cc  */
-#line 8529 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8501 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       float dt = (float) (yysemantic_stack_[(12) - (5)].adouble);
@@ -9671,13 +8478,11 @@ namespace yyip {
         fprintf(stderr,"Func_AnisoSRAD() erreur ... \n");
       FinSi
       driver.im_stack.AddImage(res);
-    }
+    ;}
     break;
 
   case 478:
-
-/* Line 678 of lalr1.cc  */
-#line 8550 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8522 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
          Parameters:
@@ -9715,13 +8520,11 @@ namespace yyip {
                 fprintf(stderr,"Func_AnisoNRAD() erreur ... \n");
             FinSi
             driver.im_stack.AddImage(res);
-    }
+    ;}
     break;
 
   case 479:
-
-/* Line 678 of lalr1.cc  */
-#line 8592 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8564 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, initim);
       float dt = (float) (yysemantic_stack_[(12) - (5)].adouble);
@@ -9739,13 +8542,11 @@ namespace yyip {
         fprintf(stderr,"Func_AnisoRudinMult() erreur ... \n");
       FinSi
       driver.im_stack.AddImage(res);
-    }
+    ;}
     break;
 
   case 480:
-
-/* Line 678 of lalr1.cc  */
-#line 8614 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8586 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
         Description:
@@ -9770,13 +8571,11 @@ namespace yyip {
       delete addnoise;
       driver.im_stack.AddImage(res);
 
-    }
+    ;}
     break;
 
   case 481:
-
-/* Line 678 of lalr1.cc  */
-#line 8642 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8614 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
       Parameters:
@@ -9796,13 +8595,11 @@ namespace yyip {
                 ));
 
       driver.im_stack.AddImage(res);
-        }
+        ;}
     break;
 
   case 482:
-
-/* Line 678 of lalr1.cc  */
-#line 8663 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8635 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -9838,13 +8635,11 @@ namespace yyip {
         FinPour
         cout << "(*res)(10,20,0)=" << (*res)(10,20,0) << endl;
         driver.im_stack.AddImage(res);
-        }
+        ;}
     break;
 
   case 483:
-
-/* Line 678 of lalr1.cc  */
-#line 8700 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8672 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -9880,13 +8675,11 @@ namespace yyip {
             FinPour
 
         driver.im_stack.AddImage(res);
-        }
+        ;}
     break;
 
   case 484:
-
-/* Line 678 of lalr1.cc  */
-#line 8737 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8709 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -9922,13 +8715,11 @@ namespace yyip {
             FinPour
 
         driver.im_stack.AddImage(res);
-        }
+        ;}
     break;
 
   case 485:
-
-/* Line 678 of lalr1.cc  */
-#line 8774 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8746 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -9960,23 +8751,19 @@ namespace yyip {
         FinPour
         FinPour
         driver.im_stack.AddImage(res);
-        }
+        ;}
     break;
 
   case 486:
-
-/* Line 678 of lalr1.cc  */
-#line 8808 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8780 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           driver.im_stack.AddImage(InrImage::ptr(( varsurfd->Pointer())->GetCanvas()->GetGLImage()));
-        }
+        ;}
     break;
 
   case 487:
-
-/* Line 678 of lalr1.cc  */
-#line 8814 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8786 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           driver.yyiperror("Not available in new wxwidgets version of the 3D viewer ! ");
@@ -9984,68 +8771,56 @@ namespace yyip {
 /*
           driver.im_stack.AddImage((*(Viewer3D_ptr*) $1->Pointer())->GetInrImage());
 */
-    }
+    ;}
     break;
 
   case 488:
-
-/* Line 678 of lalr1.cc  */
-#line 8824 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8796 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(DessinImage, imdraw)
       driver.im_stack.AddImagePointer(imdraw->GetInrImage());
-    }
+    ;}
     break;
 
   case 489:
-
-/* Line 678 of lalr1.cc  */
-#line 8830 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8802 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       InrImage::ptr res ( Func_ThresholdCrossing( im.get(), (yysemantic_stack_[(6) - (5)].adouble)));
        driver.im_stack.AddImage(res);
-    }
+    ;}
     break;
 
   case 490:
-
-/* Line 678 of lalr1.cc  */
-#line 8837 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8809 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       InrImage::ptr res ( Func_IsocontourPoints( im.get(), (yysemantic_stack_[(6) - (5)].adouble)));
       driver.im_stack.AddImage(res);
-    }
+    ;}
     break;
 
   case 491:
-
-/* Line 678 of lalr1.cc  */
-#line 8844 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8816 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       InrImage::ptr res ( Func_IsosurfDist( im.get(), (yysemantic_stack_[(6) - (5)].adouble)));
       driver.im_stack.AddImage(res);
 
-    }
+    ;}
     break;
 
   case 492:
-
-/* Line 678 of lalr1.cc  */
-#line 8852 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8824 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       InrImage::ptr res ( Func_vtkIsoContourDist( im.get(), (yysemantic_stack_[(6) - (5)].adouble)));
       driver.im_stack.AddImage(res);
-    }
+    ;}
     break;
 
   case 493:
-
-/* Line 678 of lalr1.cc  */
-#line 8859 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8831 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -10062,13 +8837,11 @@ namespace yyip {
 
         InrImage::ptr res ( Func_vtkFastMarching( input.get(), init.get(),  maxtime));
         driver.im_stack.AddImage(res);
-    }
+    ;}
     break;
 
   case 494:
-
-/* Line 678 of lalr1.cc  */
-#line 8880 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8852 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -10092,13 +8865,11 @@ namespace yyip {
               (int) round((yysemantic_stack_[(14) - (13)].adouble))
               ));
       driver.im_stack.AddImage(res);
-    }
+    ;}
     break;
 
   case 495:
-
-/* Line 678 of lalr1.cc  */
-#line 8907 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8879 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -10119,13 +8890,11 @@ namespace yyip {
 
       InrImage::ptr res ( Func_vtkFastMarching( input.get(), init.get(), mean, sd, maxtime));
       driver.im_stack.AddImage(res);
-    }
+    ;}
     break;
 
   case 496:
-
-/* Line 678 of lalr1.cc  */
-#line 8931 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8903 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -10149,13 +8918,11 @@ namespace yyip {
 
       InrImage::ptr res ( Func_vtkFastMarching( input.get(), init.get(), mean, sd, maxtime,inittype));
       driver.im_stack.AddImage(res);
-    }
+    ;}
     break;
 
   case 497:
-
-/* Line 678 of lalr1.cc  */
-#line 8960 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8932 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -10182,13 +8949,11 @@ namespace yyip {
                   im.get(),
                   maxtime,inittype));
       driver.im_stack.AddImage(res);
-    }
+    ;}
     break;
 
   case 498:
-
-/* Line 678 of lalr1.cc  */
-#line 8989 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8961 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<InrImage>::ptr  varim2(driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim1(driver.var_stack.GetLastVar<InrImage>());
@@ -10197,13 +8962,11 @@ namespace yyip {
                   varim2->Pointer().get()));
       driver.im_stack.AddImage(res);
 
-      }
+      ;}
     break;
 
   case 499:
-
-/* Line 678 of lalr1.cc  */
-#line 9000 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8972 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<InrImage>::ptr  varim2(driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim1(driver.var_stack.GetLastVar<InrImage>());
@@ -10214,36 +8977,30 @@ namespace yyip {
                   mask.get()));
         driver.im_stack.AddImage(res);
 
-      }
+      ;}
     break;
 
   case 500:
-
-/* Line 678 of lalr1.cc  */
-#line 9013 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8985 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
         InrImage::ptr res ( Func_Chamfer(im.get(), (yysemantic_stack_[(10) - (5)].adouble), (yysemantic_stack_[(10) - (7)].adouble), (yysemantic_stack_[(10) - (9)].adouble)));
         driver.im_stack.AddImage(res);
-        }
+        ;}
     break;
 
   case 501:
-
-/* Line 678 of lalr1.cc  */
-#line 9020 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 8992 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
           InrImage::ptr res ( Func_Chamfer2(im.get(), (yysemantic_stack_[(10) - (5)].adouble), (yysemantic_stack_[(10) - (7)].adouble), (yysemantic_stack_[(10) - (9)].adouble)));
           driver.im_stack.AddImage(res);
 
-        }
+        ;}
     break;
 
   case 502:
-
-/* Line 678 of lalr1.cc  */
-#line 9028 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9000 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
 
         float a = (yysemantic_stack_[(12) - (5)].adouble);
@@ -10255,13 +9012,11 @@ namespace yyip {
         InrImage::ptr res ( Func_Chamfer2(im.get(), a,b,c,dmax));
         driver.im_stack.AddImage(res);
 
-        }
+        ;}
     break;
 
   case 503:
-
-/* Line 678 of lalr1.cc  */
-#line 9042 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9014 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         float dmax = (yysemantic_stack_[(6) - (5)].adouble);
 
@@ -10271,13 +9026,11 @@ namespace yyip {
                   dmax));
         driver.im_stack.AddImage(res);
 
-        }
+        ;}
     break;
 
   case 504:
-
-/* Line 678 of lalr1.cc  */
-#line 9054 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9026 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         float dmax = (yysemantic_stack_[(6) - (5)].adouble);
 
@@ -10287,13 +9040,11 @@ namespace yyip {
                     dmax));
         driver.im_stack.AddImage(res);
 
-        }
+        ;}
     break;
 
   case 505:
-
-/* Line 678 of lalr1.cc  */
-#line 9066 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9038 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         float dmax = (yysemantic_stack_[(6) - (5)].adouble);
 
@@ -10301,13 +9052,11 @@ namespace yyip {
         InrImage::ptr res ( Func_vtkSignedBorgefors(im.get(),
                     dmax));
         driver.im_stack.AddImage(res);
-        }
+        ;}
     break;
 
   case 506:
-
-/* Line 678 of lalr1.cc  */
-#line 9076 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9048 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         float dmax = (yysemantic_stack_[(6) - (5)].adouble);
 
@@ -10316,13 +9065,11 @@ namespace yyip {
                      dmax));
         driver.im_stack.AddImage(res);
 
-        }
+        ;}
     break;
 
   case 507:
-
-/* Line 678 of lalr1.cc  */
-#line 9087 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9059 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         float dmax = (yysemantic_stack_[(6) - (5)].adouble);
 
@@ -10330,13 +9077,11 @@ namespace yyip {
         InrImage::ptr res ( Func_PropagationDistance(im.get(),
                       dmax));
         driver.im_stack.AddImage(res);
-        }
+        ;}
     break;
 
   case 508:
-
-/* Line 678 of lalr1.cc  */
-#line 9097 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9069 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         float dmax = (yysemantic_stack_[(6) - (5)].adouble);
 
@@ -10344,13 +9089,11 @@ namespace yyip {
         InrImage::ptr res ( Func_PropagationDistance2(im.get(),
                       dmax));
         driver.im_stack.AddImage(res);
-        }
+        ;}
     break;
 
   case 509:
-
-/* Line 678 of lalr1.cc  */
-#line 9107 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9079 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         float dmax = (yysemantic_stack_[(6) - (5)].adouble);
 
@@ -10359,13 +9102,11 @@ namespace yyip {
                        dmax));
 
         driver.im_stack.AddImage(res);
-        }
+        ;}
     break;
 
   case 510:
-
-/* Line 678 of lalr1.cc  */
-#line 9118 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9090 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         float dmax = (yysemantic_stack_[(6) - (5)].adouble);
 
@@ -10373,13 +9114,11 @@ namespace yyip {
         InrImage::ptr res ( Func_vtkPropDanielsson(im.get(),
                        -dmax,dmax));
         driver.im_stack.AddImage(res);
-        }
+        ;}
     break;
 
   case 511:
-
-/* Line 678 of lalr1.cc  */
-#line 9128 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9100 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         float dmin = (yysemantic_stack_[(8) - (5)].adouble);
         float dmax = (yysemantic_stack_[(8) - (7)].adouble);
@@ -10388,13 +9127,11 @@ namespace yyip {
         InrImage::ptr res ( Func_vtkPropDanielsson(im.get(),
                        dmin,dmax));
         driver.im_stack.AddImage(res);
-        }
+        ;}
     break;
 
   case 512:
-
-/* Line 678 of lalr1.cc  */
-#line 9139 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9111 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -10419,13 +9156,11 @@ namespace yyip {
                     threshold,dmin,dmax));
 
         driver.im_stack.AddImage(res);
-        }
+        ;}
     break;
 
   case 513:
-
-/* Line 678 of lalr1.cc  */
-#line 9166 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9138 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -10452,13 +9187,11 @@ namespace yyip {
       InrImage::ptr im(driver.im_stack.GetLastImage());
       InrImage::ptr res ( Func_CC(im.get()));
       driver.im_stack.AddImage(res);
-    }
+    ;}
     break;
 
   case 514:
-
-/* Line 678 of lalr1.cc  */
-#line 9214 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9186 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
      /**
        Parameters:
@@ -10639,13 +9372,11 @@ namespace yyip {
       }
 
 
-    }
+    ;}
     break;
 
   case 515:
-
-/* Line 678 of lalr1.cc  */
-#line 9396 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9368 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
        Parameters:
@@ -10665,13 +9396,11 @@ namespace yyip {
 
       InrImage::ptr res ( Func_Histogram(im.get(),vmin,vmax,nint));
       driver.im_stack.AddImage(res);
-    }
+    ;}
     break;
 
   case 516:
-
-/* Line 678 of lalr1.cc  */
-#line 9417 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9389 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       InrImage::ptr im(driver.im_stack.GetLastImage());
       float vmin  = (yysemantic_stack_[(10) - (5)].adouble);
@@ -10710,13 +9439,11 @@ namespace yyip {
       delete [] numpts;
 
       driver.im_stack.AddImage(res);
-    }
+    ;}
     break;
 
   case 517:
-
-/* Line 678 of lalr1.cc  */
-#line 9457 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9429 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       InrImage::ptr im (driver.im_stack.GetLastImage());
       InrImage::ptr res;
@@ -10726,39 +9453,33 @@ namespace yyip {
         res = InrImage::ptr( Func_MeanHalfSize(im.get(),2));
 
       driver.im_stack.AddImage(res);
-    }
+    ;}
     break;
 
   case 518:
-
-/* Line 678 of lalr1.cc  */
-#line 9468 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9440 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       int dim = (int) (yysemantic_stack_[(6) - (5)].adouble);
 
       InrImage::ptr im (driver.im_stack.GetLastImage());
       InrImage::ptr res ( Func_MeanHalfSize(im.get(),dim));
       driver.im_stack.AddImage(res);
-    }
+    ;}
     break;
 
   case 519:
-
-/* Line 678 of lalr1.cc  */
-#line 9476 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9448 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         int axis=(int) (yysemantic_stack_[(6) - (5)].adouble);
 
         InrImage::ptr im (driver.im_stack.GetLastImage());
         InrImage::ptr res(Func_Flip(im,axis));
         driver.im_stack.AddImage(res);
-    }
+    ;}
     break;
 
   case 520:
-
-/* Line 678 of lalr1.cc  */
-#line 9484 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9456 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -10778,13 +9499,11 @@ namespace yyip {
             InrImage::ptr im (driver.im_stack.GetLastImage());
             InrImage::ptr res ( Func_Resize(im.get(),sx,sy,sz,interpolate));
             driver.im_stack.AddImage(res);
-    }
+    ;}
     break;
 
   case 521:
-
-/* Line 678 of lalr1.cc  */
-#line 9505 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9477 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       Variable<InrImage>::ptr  varim2(driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim1(driver.var_stack.GetLastVar<InrImage>());
@@ -10809,13 +9528,11 @@ namespace yyip {
       InrImage::ptr res ( Func_ReSlice(im1.get(),im2.get(),m));
       driver.im_stack.AddImage(res);
 
-    }
+    ;}
     break;
 
   case 522:
-
-/* Line 678 of lalr1.cc  */
-#line 9531 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9503 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       int   order = (int) (yysemantic_stack_[(8) - (5)].adouble);
       float resolution = (yysemantic_stack_[(8) - (7)].adouble);
@@ -10825,25 +9542,21 @@ namespace yyip {
                    order,resolution));
 
       driver.im_stack.AddImage(res);
-    }
+    ;}
     break;
 
   case 523:
-
-/* Line 678 of lalr1.cc  */
-#line 9542 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9514 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(SurfacePoly,s);
 
       InrImage::ptr res ( s->GetImageLinesLength(  ));
       driver.im_stack.AddImage(res);
-    }
+    ;}
     break;
 
   case 524:
-
-/* Line 678 of lalr1.cc  */
-#line 9549 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9521 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
         Parameters:
@@ -10879,13 +9592,11 @@ namespace yyip {
         driver.err_print("Invalid line number.");
       }
 
-    }
+    ;}
     break;
 
   case 525:
-
-/* Line 678 of lalr1.cc  */
-#line 9586 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9558 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
       Parameters:
@@ -10899,13 +9610,11 @@ namespace yyip {
 
       InrImage::ptr res ( s->GetImageLinesExtremities(  ));
       driver.im_stack.AddImage(res);
-    }
+    ;}
     break;
 
   case 526:
-
-/* Line 678 of lalr1.cc  */
-#line 9601 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9573 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
       Parameters:
@@ -10919,72 +9628,60 @@ namespace yyip {
       GET_VARSTACK_VALUE(SurfacePoly,s);
       InrImage::ptr res ( s->GetImageConnections(  ));
       driver.im_stack.AddImage(res);
-    }
+    ;}
     break;
 
   case 527:
-
-/* Line 678 of lalr1.cc  */
-#line 9616 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9588 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage,im);
       GET_VARSTACK_VALUE(SurfacePoly,s);
 
       InrImage::ptr res ( s->GetIntensities( im.get() ));
       driver.im_stack.AddImage(res);
-    }
+    ;}
     break;
 
   case 528:
-
-/* Line 678 of lalr1.cc  */
-#line 9624 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9596 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       InrImage::ptr im ( driver.im_stack.GetLastImage());
 
       InrImage::ptr res ( AMIFluid::Func_Altitude2Position(im.get(),(int)(yysemantic_stack_[(6) - (5)].adouble)));
       driver.im_stack.AddImage(res);
-    }
+    ;}
     break;
 
   case 529:
-
-/* Line 678 of lalr1.cc  */
-#line 9631 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9603 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       InrImage::ptr im (driver.im_stack.GetLastImage());
       InrImage::ptr res ( AMIFluid::Func_Altitude2Position(im.get()));
       driver.im_stack.AddImage(res);
-    }
+    ;}
     break;
 
   case 530:
-
-/* Line 678 of lalr1.cc  */
-#line 9637 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9609 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       InrImage::ptr im( driver.im_stack.GetLastImage());
       InrImage::ptr res ( AMIFluid::Func_GeoCoordinates(im.get(),(int)(yysemantic_stack_[(6) - (5)].adouble)));
       driver.im_stack.AddImage(res);
-    }
+    ;}
     break;
 
   case 531:
-
-/* Line 678 of lalr1.cc  */
-#line 9643 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9615 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       InrImage::ptr im( driver.im_stack.GetLastImage());
       InrImage* res;
       res = AMIFluid::Func_GeoCoordinates(im.get());
       if (res!=NULL) driver.im_stack.AddImagePointer(res);
-    }
+    ;}
     break;
 
   case 532:
-
-/* Line 678 of lalr1.cc  */
-#line 9650 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9622 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
 
@@ -11008,13 +9705,11 @@ namespace yyip {
       res = AMIFluid::Func_ComputeAltitudes(input.get(),coeff.get());
       driver.im_stack.AddImagePointer(res);
 
-    }
+    ;}
     break;
 
   case 533:
-
-/* Line 678 of lalr1.cc  */
-#line 9675 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9647 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
 
@@ -11031,24 +9726,20 @@ namespace yyip {
       InrImage::ptr res ( AMIFluid::Func_Temp2Altitudes(input.get()));
       driver.im_stack.AddImage(res);
 
-    }
+    ;}
     break;
 
   case 534:
-
-/* Line 678 of lalr1.cc  */
-#line 9693 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9665 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       boost::shared_array<char> filename( (yysemantic_stack_[(4) - (3)].astring));
       InrImage::ptr res( AMIFluid::Func_ReadFlow(filename.get()));
       driver.im_stack.AddImage(res);
-    }
+    ;}
     break;
 
   case 535:
-
-/* Line 678 of lalr1.cc  */
-#line 9700 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9672 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
 
@@ -11079,13 +9770,11 @@ namespace yyip {
           driver.im_stack.AddImage(res);
         } else
           fprintf(stderr,"only UCHAR format for now \n");
-        }
+        ;}
     break;
 
   case 536:
-
-/* Line 678 of lalr1.cc  */
-#line 9733 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9705 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -11103,13 +9792,11 @@ namespace yyip {
 
       InrImage::ptr res ( LineRecons( surf.get(), ref.get(), rad.get()));
       driver.im_stack.AddImage(res);
-    }
+    ;}
     break;
 
   case 537:
-
-/* Line 678 of lalr1.cc  */
-#line 9753 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9725 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -11124,13 +9811,11 @@ namespace yyip {
 
       InrImage::ptr res ( Func_ReadCTALineRadii( surf.get(), filename.get()));
       driver.im_stack.AddImage(res);
-    }
+    ;}
     break;
 
   case 538:
-
-/* Line 678 of lalr1.cc  */
-#line 9925 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9897 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
       Description: convert the pointer to an image in im_stack to a pointer to a image variable in var_stack
@@ -11139,13 +9824,11 @@ namespace yyip {
     InrImage::ptr im (driver.im_stack.GetLastImage());
     Variable<InrImage>::ptr new_var(new Variable<InrImage>(im));
     driver.var_stack.AddVar(new_var);
-  }
+  ;}
     break;
 
   case 540:
-
-/* Line 678 of lalr1.cc  */
-#line 9940 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9912 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
       Description: 
@@ -11155,13 +9838,11 @@ namespace yyip {
     string_ptr varstr(new std::string((yysemantic_stack_[(1) - (1)].astring)));
     Variable<std::string>::ptr new_var(new Variable<std::string>(varstr));
     driver.var_stack.AddVar(new_var);
-  }
+  ;}
     break;
 
   case 545:
-
-/* Line 678 of lalr1.cc  */
-#line 9962 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9934 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
       Description:
@@ -11221,13 +9902,11 @@ namespace yyip {
           }
         }
 
-      }
+      ;}
     break;
 
   case 546:
-
-/* Line 678 of lalr1.cc  */
-#line 10024 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 9996 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       /**
         Description: 
@@ -11304,52 +9983,44 @@ namespace yyip {
           driver.yyiperror("variable is not of a function type \n");
           driver.var_stack.AddVar(BasicVariable::ptr());
         }
-      }
+      ;}
     break;
 
   case 549:
-
-/* Line 678 of lalr1.cc  */
-#line 10107 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10079 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
       Description: Logical negation (NOT) operator.
     **/
     BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar(!(*var));
-  }
+  ;}
     break;
 
   case 550:
-
-/* Line 678 of lalr1.cc  */
-#line 10115 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10087 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
       Description: Postfix increment operator.
     **/
     BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar((*var)++);
-  }
+  ;}
     break;
 
   case 551:
-
-/* Line 678 of lalr1.cc  */
-#line 10123 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10095 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
       Description: Postfix decrement operator.
     **/
     BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar((*var)--);
-  }
+  ;}
     break;
 
   case 552:
-
-/* Line 678 of lalr1.cc  */
-#line 10132 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10104 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
       Description: Cast operator.
@@ -11357,330 +10028,268 @@ namespace yyip {
     BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar(var->BasicCast( (yysemantic_stack_[(4) - (2)].aint)));
 
-  }
+  ;}
     break;
 
   case 553:
-
-/* Line 678 of lalr1.cc  */
-#line 10141 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10113 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
       Description: Transpose operator, usefull for matrices
     **/
     BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar(var->Transpose());
-  }
+  ;}
     break;
 
   case 555:
-
-/* Line 678 of lalr1.cc  */
-#line 10165 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10137 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     //cout << "T_SUB  cast_var  " << endl;
     BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar(-(*var));
-  }
+  ;}
     break;
 
   case 556:
-
-/* Line 678 of lalr1.cc  */
-#line 10171 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10143 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar(+(*var));
-  }
+  ;}
     break;
 
   case 557:
-
-/* Line 678 of lalr1.cc  */
-#line 10176 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10148 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar(++(*var));
-  }
+  ;}
     break;
 
   case 558:
-
-/* Line 678 of lalr1.cc  */
-#line 10181 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10153 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar(--(*var));
-  }
+  ;}
     break;
 
   case 559:
-
-/* Line 678 of lalr1.cc  */
-#line 10186 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10158 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar(var->m_sin());
-  }
+  ;}
     break;
 
   case 560:
-
-/* Line 678 of lalr1.cc  */
-#line 10191 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10163 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar(var->m_cos());
-  }
+  ;}
     break;
 
   case 561:
-
-/* Line 678 of lalr1.cc  */
-#line 10196 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10168 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar(var->m_sqrt());
-  }
+  ;}
     break;
 
   case 562:
-
-/* Line 678 of lalr1.cc  */
-#line 10201 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10173 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar(var->m_fabs());
-  }
+  ;}
     break;
 
   case 563:
-
-/* Line 678 of lalr1.cc  */
-#line 10206 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10178 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar(var->m_round());
-  }
+  ;}
     break;
 
   case 564:
-
-/* Line 678 of lalr1.cc  */
-#line 10211 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10183 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar(var->m_floor());
-  }
+  ;}
     break;
 
   case 565:
-
-/* Line 678 of lalr1.cc  */
-#line 10216 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10188 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar(var->m_tan());
-  }
+  ;}
     break;
 
   case 566:
-
-/* Line 678 of lalr1.cc  */
-#line 10221 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10193 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar(var->m_asin());
-  }
+  ;}
     break;
 
   case 567:
-
-/* Line 678 of lalr1.cc  */
-#line 10226 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10198 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar(var->m_acos());
-  }
+  ;}
     break;
 
   case 568:
-
-/* Line 678 of lalr1.cc  */
-#line 10231 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10203 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar(var->m_atan());
-  }
+  ;}
     break;
 
   case 569:
-
-/* Line 678 of lalr1.cc  */
-#line 10236 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10208 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar(var->m_exp());
-  }
+  ;}
     break;
 
   case 570:
-
-/* Line 678 of lalr1.cc  */
-#line 10241 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10213 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar(var->m_log());
-  }
+  ;}
     break;
 
   case 571:
-
-/* Line 678 of lalr1.cc  */
-#line 10246 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10218 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar(var->m_ln());
-  }
+  ;}
     break;
 
   case 572:
-
-/* Line 678 of lalr1.cc  */
-#line 10251 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10223 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar(var->m_norm());
-  }
+  ;}
     break;
 
   case 574:
-
-/* Line 678 of lalr1.cc  */
-#line 10261 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10233 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
     BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar((*var1)*var2);
-  }
+  ;}
     break;
 
   case 575:
-
-/* Line 678 of lalr1.cc  */
-#line 10267 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10239 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
     BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar((*var1)/var2);
-  }
+  ;}
     break;
 
   case 576:
-
-/* Line 678 of lalr1.cc  */
-#line 10273 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10245 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
     BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar((*var1)%var2);
-  }
+  ;}
     break;
 
   case 579:
-
-/* Line 678 of lalr1.cc  */
-#line 10284 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10256 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
     BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
     BasicVariable::ptr res(*var1+var2);
     driver.var_stack.AddVar(res);
-  }
+  ;}
     break;
 
   case 580:
-
-/* Line 678 of lalr1.cc  */
-#line 10291 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10263 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
     BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
     BasicVariable::ptr res((*var1)-var2);
     driver.var_stack.AddVar(res);
-  }
+  ;}
     break;
 
   case 583:
-
-/* Line 678 of lalr1.cc  */
-#line 10306 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10278 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
     BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar((*var1)<var2);
-  }
+  ;}
     break;
 
   case 584:
-
-/* Line 678 of lalr1.cc  */
-#line 10312 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10284 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
     BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar((*var1)>var2);
-  }
+  ;}
     break;
 
   case 585:
-
-/* Line 678 of lalr1.cc  */
-#line 10318 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10290 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
     BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar((*var1)<=var2);
-  }
+  ;}
     break;
 
   case 586:
-
-/* Line 678 of lalr1.cc  */
-#line 10324 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10296 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
     BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar((*var1)>=var2);
-  }
+  ;}
     break;
 
   case 588:
-
-/* Line 678 of lalr1.cc  */
-#line 10334 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10306 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
     BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar((*var1)==var2);
-  }
+  ;}
     break;
 
   case 589:
-
-/* Line 678 of lalr1.cc  */
-#line 10340 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10312 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
     BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar((*var1)!=var2);
-  }
+  ;}
     break;
 
   case 596:
-
-/* Line 678 of lalr1.cc  */
-#line 10381 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10353 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
       Descriptiopn: Logical AND operator
@@ -11688,13 +10297,11 @@ namespace yyip {
     BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
     BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar((*var1)&&var2);
-  }
+  ;}
     break;
 
   case 598:
-
-/* Line 678 of lalr1.cc  */
-#line 10394 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10366 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
       Descriptiopn: Logical XOR operator, for vectorial images it defines the pointwise vectorial product.
@@ -11702,13 +10309,11 @@ namespace yyip {
     BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
     BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar((*var1)^var2);
-  }
+  ;}
     break;
 
   case 600:
-
-/* Line 678 of lalr1.cc  */
-#line 10407 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10379 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
       Descriptiopn: Logical OR operator
@@ -11716,13 +10321,11 @@ namespace yyip {
     BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
     BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar((*var1)||var2);
-  }
+  ;}
     break;
 
   case 602:
-
-/* Line 678 of lalr1.cc  */
-#line 10420 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10392 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
       Descriptiopn: Operation (cond?a:b) like in C/C++.
@@ -11731,13 +10334,11 @@ namespace yyip {
     BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
     BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar(var->TernaryCondition(var1,var2));
-  }
+  ;}
     break;
 
   case 604:
-
-/* Line 678 of lalr1.cc  */
-#line 10434 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10406 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     cout << "assignment_var" << endl;
     BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
@@ -11746,57 +10347,47 @@ namespace yyip {
       // TODO: here ...
     }
     driver.var_stack.AddVar((*var1)=var2);
-  }
+  ;}
     break;
 
   case 605:
-
-/* Line 678 of lalr1.cc  */
-#line 10444 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10416 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
     BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar((*var1)+=var2);
-  }
+  ;}
     break;
 
   case 606:
-
-/* Line 678 of lalr1.cc  */
-#line 10450 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10422 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
     BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar((*var1)-=var2);
-  }
+  ;}
     break;
 
   case 607:
-
-/* Line 678 of lalr1.cc  */
-#line 10456 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10428 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
     BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar((*var1)*=var2);
-  }
+  ;}
     break;
 
   case 608:
-
-/* Line 678 of lalr1.cc  */
-#line 10462 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10434 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
     BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar((*var1)/=var2);
-  }
+  ;}
     break;
 
   case 610:
-
-/* Line 678 of lalr1.cc  */
-#line 10474 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10446 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
             GET_VARSTACK_VALUE(GLTransfMatrix,glt);
             GLTransfMatrix* newglt;
@@ -11805,13 +10396,11 @@ namespace yyip {
             (*newglt) = (*glt);
             driver.gltransf_stack.AddMatrix(newglt);
     
-        }
+        ;}
     break;
 
   case 611:
-
-/* Line 678 of lalr1.cc  */
-#line 10485 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10457 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           GLTransfMatrix glt;
@@ -11823,13 +10412,11 @@ namespace yyip {
           (*newglt) = (glt);
           driver.gltransf_stack.AddMatrix(newglt);
           printf("GetTransform \n");
-      }
+      ;}
     break;
 
   case 612:
-
-/* Line 678 of lalr1.cc  */
-#line 10499 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10471 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         GET_VARSTACK_VALUE(GLTransfMatrix,glt2);
         GET_VARSTACK_VALUE(GLTransfMatrix,glt1);
@@ -11838,13 +10425,11 @@ namespace yyip {
 
         newglt = Func_InterpolateTransform(glt1.get(),glt2.get(),coeff);
         driver.gltransf_stack.AddMatrix(newglt);
-      }
+      ;}
     break;
 
   case 613:
-
-/* Line 678 of lalr1.cc  */
-#line 10510 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10482 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         boost::shared_array<char> filename( (yysemantic_stack_[(4) - (3)].astring));
          GLTransfMatrix* newglt;
@@ -11858,23 +10443,19 @@ namespace yyip {
            //          yyiperror(
            //          YYABORT;
          }
-      }
+      ;}
     break;
 
   case 614:
-
-/* Line 678 of lalr1.cc  */
-#line 10528 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10500 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
          FloatMatrix::ptr m( new FloatMatrix((int)(yysemantic_stack_[(6) - (3)].adouble),(int)(yysemantic_stack_[(6) - (5)].adouble)));
          ADD_VARSTACK_PTR(FloatMatrix,m);
-      }
+      ;}
     break;
 
   case 616:
-
-/* Line 678 of lalr1.cc  */
-#line 10536 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10508 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -11892,13 +10473,11 @@ namespace yyip {
           YYABORT;
         }
 
-      }
+      ;}
     break;
 
   case 618:
-
-/* Line 678 of lalr1.cc  */
-#line 10659 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10631 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VAR_VAL(VarArray,var,array);
           int  i = (int) (yysemantic_stack_[(4) - (3)].adouble);
@@ -11912,13 +10491,11 @@ namespace yyip {
           }
 
           driver.var_stack.AddVar(array->GetVar(i));
-        }
+        ;}
     break;
 
   case 619:
-
-/* Line 678 of lalr1.cc  */
-#line 10677 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10649 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           SurfacePoly* surf;
           InrImage::ptr im (driver.im_stack.GetLastImage());
@@ -11927,13 +10504,11 @@ namespace yyip {
                   NULL);
           if (surf==NULL) driver.err_print("Isosurface failed!");
           driver.surf_stack.AddSurf(surf);
-    }
+    ;}
     break;
 
   case 620:
-
-/* Line 678 of lalr1.cc  */
-#line 10688 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10660 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
         SurfacePoly* surf;
@@ -11942,13 +10517,11 @@ namespace yyip {
                 NULL,
                 2);
         driver.surf_stack.AddSurf(surf);
-    }
+    ;}
     break;
 
   case 621:
-
-/* Line 678 of lalr1.cc  */
-#line 10699 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10671 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
       Parameters:
@@ -11967,13 +10540,11 @@ namespace yyip {
                 mask.get());
         if (surf==NULL) driver.err_print("Isosurface failed!");
         driver.surf_stack.AddSurf(surf);
-    }
+    ;}
     break;
 
   case 622:
-
-/* Line 678 of lalr1.cc  */
-#line 10720 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10692 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
      Parameters:
@@ -12005,13 +10576,11 @@ namespace yyip {
       //vtklines->Delete();
       delete crestlines;
 
-    }
+    ;}
     break;
 
   case 623:
-
-/* Line 678 of lalr1.cc  */
-#line 10754 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10726 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(SurfacePoly,varsurf);
       SurfacePoly* surf;
@@ -12019,13 +10588,11 @@ namespace yyip {
       Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
       FinSi
-    }
+    ;}
     break;
 
   case 624:
-
-/* Line 678 of lalr1.cc  */
-#line 10764 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10736 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       SurfacePoly* newsurf;
       GET_VARSTACK_VALUE(SurfacePoly,surf);
@@ -12034,13 +10601,11 @@ namespace yyip {
       Si newsurf != NULL Alors
         driver.surf_stack.AddSurf(newsurf);
       FinSi
-    }
+    ;}
     break;
 
   case 625:
-
-/* Line 678 of lalr1.cc  */
-#line 10775 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10747 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           SurfacePoly* surf;
       GET_VARSTACK_VALUE(InrImage, im);
@@ -12048,13 +10613,11 @@ namespace yyip {
       Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
           FinSi
-    }
+    ;}
     break;
 
   case 626:
-
-/* Line 678 of lalr1.cc  */
-#line 10785 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10757 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       SurfacePoly* newsurf;
       GET_VARSTACK_VALUE(SurfacePoly,surf);
@@ -12063,13 +10626,11 @@ namespace yyip {
       Si newsurf != NULL Alors
         driver.surf_stack.AddSurf(newsurf);
       FinSi
-    }
+    ;}
     break;
 
   case 627:
-
-/* Line 678 of lalr1.cc  */
-#line 10796 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10768 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         GET_VARSTACK_VALUE(SurfacePoly, surf);
         SurfacePoly* newsurf;
@@ -12077,33 +10638,27 @@ namespace yyip {
         newsurf = Func_vtkWindowedSinc( surf.get(), (int) (yysemantic_stack_[(6) - (5)].adouble));
         if (newsurf==NULL) driver.err_print("vtkWindowedSinc failed!");
         driver.surf_stack.AddSurf(newsurf);
-    }
+    ;}
     break;
 
   case 628:
-
-/* Line 678 of lalr1.cc  */
-#line 10806 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10778 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       SurfacePoly* surf = new SurfacePoly();
       driver.surf_stack.AddSurf(surf);
-    }
+    ;}
     break;
 
   case 629:
-
-/* Line 678 of lalr1.cc  */
-#line 10812 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10784 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       boost::shared_array<char> filename( (yysemantic_stack_[(2) - (2)].astring));
       driver.surf_stack.AddSurf(filename.get());
-    }
+    ;}
     break;
 
   case 630:
-
-/* Line 678 of lalr1.cc  */
-#line 10826 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10798 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           int res;
           string name;
@@ -12127,13 +10682,11 @@ namespace yyip {
           inc_cmd = str(format(" \"%1%\"  // from browser ") % newname.mb_str());
           if (driver.InConsole())
             GB_main_wxFrame->GetConsole()->IncCommand(inc_cmd);
-        }
+        ;}
     break;
 
   case 631:
-
-/* Line 678 of lalr1.cc  */
-#line 10852 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10824 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -12146,13 +10699,11 @@ namespace yyip {
           SurfacePoly* surf;
           surf = Func_ReadCTALine(filename.get());
           driver.surf_stack.AddSurf(surf);
-      }
+      ;}
     break;
 
   case 632:
-
-/* Line 678 of lalr1.cc  */
-#line 10867 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10839 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -12168,26 +10719,22 @@ namespace yyip {
 
           surf = Func_ReadCTALine(filename.get(), (int) (yysemantic_stack_[(6) - (5)].adouble));
           driver.surf_stack.AddSurf(surf);
-      }
+      ;}
     break;
 
   case 633:
-
-/* Line 678 of lalr1.cc  */
-#line 10885 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10857 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         GET_VARSTACK_VALUE(SurfacePoly,surf);
         SurfacePoly* newsurf;
   
         newsurf = new SurfacePoly( (*surf) );
         driver.surf_stack.AddSurf(newsurf);
-      }
+      ;}
     break;
 
   case 634:
-
-/* Line 678 of lalr1.cc  */
-#line 10894 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10866 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -12204,13 +10751,11 @@ namespace yyip {
       Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
       FinSi
-    }
+    ;}
     break;
 
   case 635:
-
-/* Line 678 of lalr1.cc  */
-#line 10913 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10885 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -12237,13 +10782,11 @@ namespace yyip {
       Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
       FinSi
-    }
+    ;}
     break;
 
   case 636:
-
-/* Line 678 of lalr1.cc  */
-#line 10942 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10914 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -12269,13 +10812,11 @@ namespace yyip {
       Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
       FinSi
-    }
+    ;}
     break;
 
   case 637:
-
-/* Line 678 of lalr1.cc  */
-#line 10970 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10942 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(SurfacePoly, insurf);
       SurfacePoly* surf;
@@ -12289,13 +10830,11 @@ namespace yyip {
       Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
           FinSi
-    }
+    ;}
     break;
 
   case 638:
-
-/* Line 678 of lalr1.cc  */
-#line 10987 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10959 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
       Parameters:
@@ -12316,13 +10855,11 @@ namespace yyip {
         driver.err_print("Func_shortestpath () error ... \n");
       FinSi
       driver.surf_stack.AddSurf(surf);
-    }
+    ;}
     break;
 
   case 639:
-
-/* Line 678 of lalr1.cc  */
-#line 11011 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 10983 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -12353,13 +10890,11 @@ namespace yyip {
       Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
       FinSi
-    }
+    ;}
     break;
 
   case 640:
-
-/* Line 678 of lalr1.cc  */
-#line 11044 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11016 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -12389,13 +10924,11 @@ namespace yyip {
       Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
       FinSi
-    }
+    ;}
     break;
 
   case 641:
-
-/* Line 678 of lalr1.cc  */
-#line 11080 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11052 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -12436,13 +10969,11 @@ namespace yyip {
       Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
       FinSi
-    }
+    ;}
     break;
 
   case 642:
-
-/* Line 678 of lalr1.cc  */
-#line 11126 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11098 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -12479,13 +11010,11 @@ namespace yyip {
       Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
       FinSi
-    }
+    ;}
     break;
 
   case 643:
-
-/* Line 678 of lalr1.cc  */
-#line 11164 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11136 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -12509,13 +11038,11 @@ namespace yyip {
       Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
       FinSi
-    }
+    ;}
     break;
 
   case 644:
-
-/* Line 678 of lalr1.cc  */
-#line 11189 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11161 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     InrImage::ptr im (driver.im_stack.GetLastImage());
       SurfacePoly* surf;
@@ -12524,13 +11051,11 @@ namespace yyip {
       Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
           FinSi
-    }
+    ;}
     break;
 
   case 645:
-
-/* Line 678 of lalr1.cc  */
-#line 11199 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11171 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           /**
 
@@ -12552,13 +11077,11 @@ namespace yyip {
       Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
       FinSi
-    }
+    ;}
     break;
 
   case 646:
-
-/* Line 678 of lalr1.cc  */
-#line 11222 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11194 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       InrImage::ptr im (driver.im_stack.GetLastImage());
       float minth = (yysemantic_stack_[(8) - (5)].adouble);
@@ -12569,13 +11092,11 @@ namespace yyip {
       Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
       FinSi
-    }
+    ;}
     break;
 
   case 647:
-
-/* Line 678 of lalr1.cc  */
-#line 11234 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11206 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
       InrImage::ptr im ( driver.im_stack.GetLastImage());
       SurfacePoly* surf;
@@ -12586,13 +11107,11 @@ namespace yyip {
       Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
       FinSi
-    }
+    ;}
     break;
 
   case 648:
-
-/* Line 678 of lalr1.cc  */
-#line 11246 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11218 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -12628,13 +11147,11 @@ namespace yyip {
       Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
           FinSi
-    }
+    ;}
     break;
 
   case 649:
-
-/* Line 678 of lalr1.cc  */
-#line 11283 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11255 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -12676,13 +11193,11 @@ namespace yyip {
       Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
       FinSi
-    }
+    ;}
     break;
 
   case 650:
-
-/* Line 678 of lalr1.cc  */
-#line 11326 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11298 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -12729,13 +11244,11 @@ namespace yyip {
       Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
           FinSi
-    }
+    ;}
     break;
 
   case 651:
-
-/* Line 678 of lalr1.cc  */
-#line 11374 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11346 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -12786,13 +11299,11 @@ namespace yyip {
       Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
       FinSi
-    }
+    ;}
     break;
 
   case 652:
-
-/* Line 678 of lalr1.cc  */
-#line 11426 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11398 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -12834,13 +11345,11 @@ namespace yyip {
       Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
       FinSi
-    }
+    ;}
     break;
 
   case 653:
-
-/* Line 678 of lalr1.cc  */
-#line 11469 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11441 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -12867,13 +11376,11 @@ namespace yyip {
        Si surf != NULL Alors
          driver.surf_stack.AddSurf(surf);
        FinSi
-    }
+    ;}
     break;
 
   case 654:
-
-/* Line 678 of lalr1.cc  */
-#line 11497 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11469 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -12905,13 +11412,11 @@ namespace yyip {
       Si surf != NULL Alors
         driver.surf_stack.AddSurf(surf);
       FinSi
-    }
+    ;}
     break;
 
   case 655:
-
-/* Line 678 of lalr1.cc  */
-#line 11530 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11502 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -12949,13 +11454,11 @@ namespace yyip {
       if (surf != NULL) {
         driver.surf_stack.AddSurf(surf);
       }
-    }
+    ;}
     break;
 
   case 664:
-
-/* Line 678 of lalr1.cc  */
-#line 11591 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11563 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           // todo ... 
           // 1. check if identifier belongs to the object
@@ -12983,36 +11486,30 @@ namespace yyip {
             driver.yyiperror("Identifier does not belong to object context \n");
             driver.var_stack.AddVar(BasicVariable::ptr());
           }
-        }
+        ;}
     break;
 
   case 683:
-
-/* Line 678 of lalr1.cc  */
-#line 11664 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11636 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           ImageExtent<float>* extent=new ImageExtent<float>( (float)(yysemantic_stack_[(11) - (1)].adouble),(float)(yysemantic_stack_[(11) - (3)].adouble),(float)(yysemantic_stack_[(11) - (5)].adouble),
                               (float)(yysemantic_stack_[(11) - (7)].adouble),(float)(yysemantic_stack_[(11) - (9)].adouble),(float)(yysemantic_stack_[(11) - (11)].adouble));
           extent->SetMode(1); // relative
           (yyval.imageextent)=extent;
-        }
+        ;}
     break;
 
   case 684:
-
-/* Line 678 of lalr1.cc  */
-#line 11672 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11644 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           ImageExtent<float>* extent=new ImageExtent<float>((float)(yysemantic_stack_[(7) - (1)].adouble),(float)(yysemantic_stack_[(7) - (3)].adouble),(float)(yysemantic_stack_[(7) - (5)].adouble),(float)(yysemantic_stack_[(7) - (7)].adouble));
           extent->SetMode(1); // relative
           (yyval.imageextent)=extent;
-        }
+        ;}
     break;
 
   case 685:
-
-/* Line 678 of lalr1.cc  */
-#line 11679 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11651 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VALUE(InrImage, im);
 
@@ -13026,13 +11523,11 @@ namespace yyip {
           extent->SetZmax( im->SpacePosZ(im->DimZ()-1));
           //extent->print();
           (yyval.imageextent)=extent;
-       }
+       ;}
     break;
 
   case 686:
-
-/* Line 678 of lalr1.cc  */
-#line 11695 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11667 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
     {
         Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
         DessinImage::ptr draw = DessinImage::ptr(varimd->Pointer());
@@ -13052,15 +11547,13 @@ namespace yyip {
         if (driver.InConsole()) GB_main_wxFrame->GetConsole()->IncCommand(comment);
 
         (yyval.imageextent)=extent;
-       }
+       ;}
     break;
 
 
-
-/* Line 678 of lalr1.cc  */
-#line 13062 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
-	default:
-          break;
+    /* Line 675 of lalr1.cc.  */
+#line 11556 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
+	default: break;
       }
     YY_SYMBOL_PRINT ("-> $$ =", yyr1_[yyn], &yyval, &yyloc);
 
@@ -13095,7 +11588,7 @@ namespace yyip {
     yyerror_range[0] = yylloc;
     if (yyerrstatus_ == 3)
       {
-	/* If just tried and failed to reuse lookahead token after an
+	/* If just tried and failed to reuse look-ahead token after an
 	 error, discard it.  */
 
 	if (yychar <= yyeof_)
@@ -13111,7 +11604,7 @@ namespace yyip {
 	  }
       }
 
-    /* Else will try to reuse lookahead token after shifting the error
+    /* Else will try to reuse look-ahead token after shifting the error
        token.  */
     goto yyerrlab1;
 
@@ -13168,16 +11661,19 @@ namespace yyip {
 	YY_STACK_PRINT ();
       }
 
+    if (yyn == yyfinal_)
+      goto yyacceptlab;
+
     yyerror_range[1] = yylloc;
     // Using YYLLOC is tempting, but would change the location of
-    // the lookahead.  YYLOC is available though.
+    // the look-ahead.  YYLOC is available though.
     YYLLOC_DEFAULT (yyloc, (yyerror_range - 1), 2);
     yysemantic_stack_.push (yylval);
     yylocation_stack_.push (yyloc);
 
     /* Shift the error token.  */
     YY_SYMBOL_PRINT ("Shifting", yystos_[yyn],
-		     &yysemantic_stack_[0], &yylocation_stack_[0]);
+		   &yysemantic_stack_[0], &yylocation_stack_[0]);
 
     yystate = yyn;
     goto yynewstate;
@@ -13193,7 +11689,7 @@ namespace yyip {
     goto yyreturn;
 
   yyreturn:
-    if (yychar != yyempty_)
+    if (yychar != yyeof_ && yychar != yyempty_)
       yydestruct_ ("Cleanup: discarding lookahead", yytoken, &yylval, &yylloc);
 
     /* Do not reclaim the symbols of the rule which action triggered
@@ -17132,7 +15628,7 @@ namespace yyip {
   "T_DrawEarthCoord", "T_PaintCallback", "T_SaveStructuredGrid",
   "T_import_vtk", "T_import_wii", "T_import_filters", "T_amiOFCorr2D",
   "T_amiOFVar2D", "$accept", "start", "list_commands", "end_instr",
-  "loop_inst", "cond_inst", "proc_decl", "$@1", "$@2", "class_decl",
+  "loop_inst", "cond_inst", "proc_decl", "@1", "@2", "class_decl",
   "object_decl", "func_inst", "command", "exprstringlist", "param_list",
   "param_list_decl", "primary_expr_string", "instr_block", "begin_block",
   "end_block", "float_variable", "expr", "expr_image", "expr_string",
@@ -17686,67 +16182,67 @@ namespace yyip {
     1348,  1375,  1419,  1430,  1440,  1451,  1477,  1516,  1546,  1568,
     1580,  1598,  1618,  1630,  1649,  1660,  1747,  1781,  1797,  1803,
     1807,  1811,  1816,  1820,  1835,  1845,  1856,  1859,  1909,  1932,
-    2007,  2058,  2148,  2181,  2185,  2189,  2193,  2197,  2201,  2213,
-    2217,  2229,  2243,  2253,  2263,  2274,  2282,  2294,  2543,  2553,
-    2563,  2573,  2582,  2636,  2645,  2654,  2666,  2707,  2726,  2734,
-    2761,  2778,  2791,  2802,  2848,  2855,  2874,  2909,  2924,  2932,
-    2940,  2959,  2983,  2989,  2995,  3009,  3021,  3031,  3041,  3048,
-    3065,  3081,  3099,  3120,  3136,  3155,  3169,  3184,  3194,  3206,
-    3228,  3252,  3274,  3292,  3304,  3318,  3337,  3359,  3388,  3417,
-    3449,  3456,  3475,  3480,  3485,  3490,  3495,  3501,  3516,  3532,
-    3550,  3564,  3584,  3589,  3594,  3601,  3610,  3618,  3623,  3630,
-    3635,  3875,  3903,  3917,  3924,  3930,  3938,  3952,  3959,  3965,
-    3972,  3980,  3988,  3996,  4006,  4019,  4036,  4051,  4059,  4067,
-    4075,  4083,  4089,  4095,  4141,  4149,  4157,  4165,  4177,  4186,
-    4204,  4215,  4222,  4229,  4237,  4246,  4255,  4275,  4292,  4310,
-    4328,  4334,  4340,  4346,  4352,  4360,  4461,  4494,  4501,  4509,
-    4517,  4525,  4536,  4546,  4554,  4562,  4573,  4580,  4594,  4608,
-    4617,  4622,  4631,  4640,  4653,  4666,  4679,  4692,  4699,  4709,
-    4719,  4733,  4741,  4752,  4775,  4801,  4829,  4840,  4883,  4905,
-    4934,  4951,  4966,  4972,  4999,  5025,  5045,  5062,  5068,  5074,
-    5085,  5091,  5099,  5114,  5123,  5134,  5151,  5167,  5205,  5219,
-    5266,  5272,  5277,  5282,  5288,  5295,  5301,  5308,  5313,  5318,
-    5323,  5366,  5420,  5442,  5450,  5467,  5471,  5483,  5497,  5509,
-    5520,  5532,  5548,  5553,  5562,  5569,  5576,  5583,  5590,  5597,
-    5604,  5611,  5618,  5625,  5633,  5638,  5719,  5743,  5748,  5761,
-    5780,  5811,  5822,  5823,  5827,  5831,  5839,  5847,  5856,  5857,
-    5866,  5875,  5892,  5908,  5925,  5944,  5962,  5978,  5994,  6000,
-    6006,  6012,  6018,  6024,  6030,  6036,  6042,  6048,  6054,  6060,
-    6067,  6074,  6081,  6090,  6097,  6128,  6136,  6148,  6168,  6188,
-    6208,  6228,  6248,  6268,  6292,  6316,  6340,  6348,  6372,  6395,
-    6403,  6415,  6427,  6439,  6451,  6463,  6475,  6491,  6510,  6528,
-    6534,  6547,  6557,  6569,  6579,  6589,  6601,  6609,  6625,  6640,
-    6652,  6682,  6700,  6713,  6734,  6739,  6743,  6747,  6751,  6755,
-    6759,  6763,  6767,  6771,  6775,  6783,  6785,  6804,  6818,  6873,
-    6924,  6977,  6997,  7032,  7061,  7068,  7086,  7111,  7137,  7200,
-    7266,  7273,  7280,  7288,  7296,  7312,  7330,  7348,  7365,  7382,
-    7400,  7436,  7449,  7460,  7473,  7497,  7507,  7518,  7528,  7538,
-    7571,  7582,  7603,  7623,  7664,  7711,  7731,  7752,  7763,  7777,
-    7791,  7804,  7815,  7826,  7839,  7857,  7869,  7881,  7888,  7914,
-    7930,  7971,  7982,  7992,  8004,  8015,  8025,  8050,  8073,  8101,
-    8115,  8131,  8140,  8209,  8243,  8278,  8311,  8339,  8353,  8367,
-    8377,  8396,  8417,  8439,  8463,  8487,  8507,  8527,  8548,  8589,
-    8611,  8640,  8662,  8699,  8736,  8773,  8807,  8813,  8823,  8829,
-    8836,  8843,  8851,  8858,  8877,  8905,  8929,  8956,  8988,  8999,
-    9012,  9019,  9027,  9041,  9053,  9065,  9075,  9086,  9096,  9106,
-    9117,  9127,  9138,  9165,  9213,  9395,  9416,  9456,  9467,  9475,
-    9483,  9504,  9530,  9541,  9548,  9585,  9600,  9615,  9623,  9630,
-    9636,  9642,  9649,  9674,  9692,  9699,  9732,  9752,  9924,  9937,
-    9939,  9953,  9955,  9957,  9959,  9961, 10023, 10102, 10105, 10106,
-   10114, 10122, 10131, 10140, 10163, 10164, 10170, 10175, 10180, 10185,
-   10190, 10195, 10200, 10205, 10210, 10215, 10220, 10225, 10230, 10235,
-   10240, 10245, 10250, 10259, 10260, 10266, 10272, 10278, 10282, 10283,
-   10290, 10300, 10304, 10305, 10311, 10317, 10323, 10332, 10333, 10339,
-   10365, 10366, 10370, 10374, 10375, 10379, 10380, 10392, 10393, 10405,
-   10406, 10418, 10419, 10432, 10433, 10443, 10449, 10455, 10461, 10470,
-   10474, 10484, 10498, 10509, 10527, 10533, 10535, 10656, 10658, 10676,
-   10687, 10698, 10719, 10753, 10763, 10774, 10784, 10795, 10805, 10811,
-   10825, 10851, 10866, 10884, 10893, 10912, 10941, 10969, 10985, 11009,
-   11043, 11075, 11122, 11163, 11188, 11198, 11221, 11233, 11245, 11282,
-   11325, 11373, 11425, 11468, 11496, 11529, 11572, 11580, 11582, 11585,
-   11586, 11587, 11588, 11589, 11590, 11622, 11623, 11624, 11625, 11626,
-   11627, 11628, 11629, 11634, 11635, 11641, 11644, 11647, 11650, 11652,
-   11654, 11658, 11660, 11663, 11671, 11678, 11694
+    1979,  2030,  2120,  2153,  2157,  2161,  2165,  2169,  2173,  2185,
+    2189,  2201,  2215,  2225,  2235,  2246,  2254,  2266,  2515,  2525,
+    2535,  2545,  2554,  2608,  2617,  2626,  2638,  2679,  2698,  2706,
+    2733,  2750,  2763,  2774,  2820,  2827,  2846,  2881,  2896,  2904,
+    2912,  2931,  2955,  2961,  2967,  2981,  2993,  3003,  3013,  3020,
+    3037,  3053,  3071,  3092,  3108,  3127,  3141,  3156,  3166,  3178,
+    3200,  3224,  3246,  3264,  3276,  3290,  3309,  3331,  3360,  3389,
+    3421,  3428,  3447,  3452,  3457,  3462,  3467,  3473,  3488,  3504,
+    3522,  3536,  3556,  3561,  3566,  3573,  3582,  3590,  3595,  3602,
+    3607,  3847,  3875,  3889,  3896,  3902,  3910,  3924,  3931,  3937,
+    3944,  3952,  3960,  3968,  3978,  3991,  4008,  4023,  4031,  4039,
+    4047,  4055,  4061,  4067,  4113,  4121,  4129,  4137,  4149,  4158,
+    4176,  4187,  4194,  4201,  4209,  4218,  4227,  4247,  4264,  4282,
+    4300,  4306,  4312,  4318,  4324,  4332,  4433,  4466,  4473,  4481,
+    4489,  4497,  4508,  4518,  4526,  4534,  4545,  4552,  4566,  4580,
+    4589,  4594,  4603,  4612,  4625,  4638,  4651,  4664,  4671,  4681,
+    4691,  4705,  4713,  4724,  4747,  4773,  4801,  4812,  4855,  4877,
+    4906,  4923,  4938,  4944,  4971,  4997,  5017,  5034,  5040,  5046,
+    5057,  5063,  5071,  5086,  5095,  5106,  5123,  5139,  5177,  5191,
+    5238,  5244,  5249,  5254,  5260,  5267,  5273,  5280,  5285,  5290,
+    5295,  5338,  5392,  5414,  5422,  5439,  5443,  5455,  5469,  5481,
+    5492,  5504,  5520,  5525,  5534,  5541,  5548,  5555,  5562,  5569,
+    5576,  5583,  5590,  5597,  5605,  5610,  5691,  5715,  5720,  5733,
+    5752,  5783,  5794,  5795,  5799,  5803,  5811,  5819,  5828,  5829,
+    5838,  5847,  5864,  5880,  5897,  5916,  5934,  5950,  5966,  5972,
+    5978,  5984,  5990,  5996,  6002,  6008,  6014,  6020,  6026,  6032,
+    6039,  6046,  6053,  6062,  6069,  6100,  6108,  6120,  6140,  6160,
+    6180,  6200,  6220,  6240,  6264,  6288,  6312,  6320,  6344,  6367,
+    6375,  6387,  6399,  6411,  6423,  6435,  6447,  6463,  6482,  6500,
+    6506,  6519,  6529,  6541,  6551,  6561,  6573,  6581,  6597,  6612,
+    6624,  6654,  6672,  6685,  6706,  6711,  6715,  6719,  6723,  6727,
+    6731,  6735,  6739,  6743,  6747,  6755,  6757,  6776,  6790,  6845,
+    6896,  6949,  6969,  7004,  7033,  7040,  7058,  7083,  7109,  7172,
+    7238,  7245,  7252,  7260,  7268,  7284,  7302,  7320,  7337,  7354,
+    7372,  7408,  7421,  7432,  7445,  7469,  7479,  7490,  7500,  7510,
+    7543,  7554,  7575,  7595,  7636,  7683,  7703,  7724,  7735,  7749,
+    7763,  7776,  7787,  7798,  7811,  7829,  7841,  7853,  7860,  7886,
+    7902,  7943,  7954,  7964,  7976,  7987,  7997,  8022,  8045,  8073,
+    8087,  8103,  8112,  8181,  8215,  8250,  8283,  8311,  8325,  8339,
+    8349,  8368,  8389,  8411,  8435,  8459,  8479,  8499,  8520,  8561,
+    8583,  8612,  8634,  8671,  8708,  8745,  8779,  8785,  8795,  8801,
+    8808,  8815,  8823,  8830,  8849,  8877,  8901,  8928,  8960,  8971,
+    8984,  8991,  8999,  9013,  9025,  9037,  9047,  9058,  9068,  9078,
+    9089,  9099,  9110,  9137,  9185,  9367,  9388,  9428,  9439,  9447,
+    9455,  9476,  9502,  9513,  9520,  9557,  9572,  9587,  9595,  9602,
+    9608,  9614,  9621,  9646,  9664,  9671,  9704,  9724,  9896,  9909,
+    9911,  9925,  9927,  9929,  9931,  9933,  9995, 10074, 10077, 10078,
+   10086, 10094, 10103, 10112, 10135, 10136, 10142, 10147, 10152, 10157,
+   10162, 10167, 10172, 10177, 10182, 10187, 10192, 10197, 10202, 10207,
+   10212, 10217, 10222, 10231, 10232, 10238, 10244, 10250, 10254, 10255,
+   10262, 10272, 10276, 10277, 10283, 10289, 10295, 10304, 10305, 10311,
+   10337, 10338, 10342, 10346, 10347, 10351, 10352, 10364, 10365, 10377,
+   10378, 10390, 10391, 10404, 10405, 10415, 10421, 10427, 10433, 10442,
+   10446, 10456, 10470, 10481, 10499, 10505, 10507, 10628, 10630, 10648,
+   10659, 10670, 10691, 10725, 10735, 10746, 10756, 10767, 10777, 10783,
+   10797, 10823, 10838, 10856, 10865, 10884, 10913, 10941, 10957, 10981,
+   11015, 11047, 11094, 11135, 11160, 11170, 11193, 11205, 11217, 11254,
+   11297, 11345, 11397, 11440, 11468, 11501, 11544, 11552, 11554, 11557,
+   11558, 11559, 11560, 11561, 11562, 11594, 11595, 11596, 11597, 11598,
+   11599, 11600, 11601, 11606, 11607, 11613, 11616, 11619, 11622, 11624,
+   11626, 11630, 11632, 11635, 11643, 11650, 11666
   };
 
   // Print the state stack on the debug stream.
@@ -17768,7 +16264,7 @@ namespace yyip {
     int yynrhs = yyr2_[yyrule];
     /* Print the symbols being reduced, and their result.  */
     *yycdebug_ << "Reducing stack by rule " << yyrule - 1
-	       << " (line " << yylno << "):" << std::endl;
+	       << " (line " << yylno << "), ";
     /* The symbols being reduced.  */
     for (int yyi = 0; yyi < yynrhs; yyi++)
       YY_SYMBOL_PRINT ("   $" << yyi + 1 << " =",
@@ -17879,18 +16375,9 @@ namespace yyip {
   const unsigned int Parser::yyuser_token_number_max_ = 732;
   const Parser::token_number_type Parser::yyundef_token_ = 2;
 
+} // namespace yyip
 
-/* Line 1054 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
-} // yyip
-
-/* Line 1054 of lalr1.cc  */
-#line 17890 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
-
-
-/* Line 1056 of lalr1.cc  */
-#line 11715 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11687 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
 
 #include <stdio.h>
 

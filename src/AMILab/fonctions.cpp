@@ -38,6 +38,8 @@
 
 #include <wx/textdlg.h>
 
+using namespace amilab;
+
 #define EPSILON_fonctions_cpp 1E-5
 
 extern unsigned char GB_debug;

@@ -17,11 +17,20 @@
 
 #include <iostream>
 
+//icons
+#include "wx/artprov.h"
+
 #include "MainFrame.h"
 extern MainFrame*     GB_main_wxFrame;
 
+//Used for &About menu item
+enum
+{
+  wxID_myABOUT = 1000
+};
+
 BEGIN_EVENT_TABLE(myTreeCtrl, wxTreeCtrl)
-  EVT_MENU(wxID_ABOUT, myTreeCtrl::OnAbout)
+  EVT_MENU(wxID_myABOUT, myTreeCtrl::OnAbout)
 /*
   EVT_ERASE_BACKGROUND(    myTreeCtrl::OnEraseBackground)
   EVT_PAINT(               myTreeCtrl::OnPaint)
@@ -37,6 +46,7 @@ myTreeCtrl::myTreeCtrl(wxWindow* parent, wxWindowID id, const wxPoint& pos, cons
 
 void myTreeCtrl::ShowMenu(wxTreeItemId id, const wxPoint& pt)
 {
+  
   wxString title;
   if ( id.IsOk() )
   {
@@ -53,7 +63,10 @@ void myTreeCtrl::ShowMenu(wxTreeItemId id, const wxPoint& pt)
           menu.Append(wxID_ANY, comments);
         }
       }
-      menu.Append(wxID_ABOUT, wxT("&About..."));
+      //menu.Append(wxID_ABOUT, wxT("&About...")); //In MacOS wxID_ABOUT is special and not show about in menu when rightclick
+      wxMenuItem* item = menu.Append(wxID_myABOUT, wxT("&About..."));
+      //Put a book icon in the &About item
+      item->SetBitmap(wxArtProvider::GetIcon(wxART_HELP_BOOK, "menu", wxDefaultSize));
       PopupMenu(&menu, pt);
     }
   }

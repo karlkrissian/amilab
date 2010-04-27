@@ -38,8 +38,7 @@
 #include "defsext.h"     // additional definitions
 
 #include "edit.h"        // edit module
-
-
+#include "stctest.h"
 //----------------------------------------------------------------------------
 // resources
 //----------------------------------------------------------------------------
@@ -104,6 +103,38 @@ BEGIN_EVENT_TABLE (Edit, wxStyledTextCtrl)
     EVT_STC_CHARADDED (wxID_ANY,       Edit::OnCharAdded)
 END_EVENT_TABLE()
 
+//----------------------------------------------------------------------------
+//My find and replace buttons IDs
+enum 
+{
+  ID_DONE = 1,
+  ID_NEXT = 2,
+  ID_PREV = 3,
+  ID_REPL = 4,
+  ID_REPL_ALL = 5
+};
+
+//Find and replace event table
+BEGIN_EVENT_TABLE(FindAndReplace, wxFrame)
+  //Button events
+  EVT_BUTTON(ID_DONE,     FindAndReplace::OnDoneButtonClick)
+  EVT_BUTTON(ID_NEXT,     FindAndReplace::OnNextButtonClick)
+  EVT_BUTTON(ID_PREV,     FindAndReplace::OnPrevButtonClick)
+  EVT_BUTTON(ID_REPL,     FindAndReplace::OnReplaceButtonClick)
+  EVT_BUTTON(ID_REPL_ALL, FindAndReplace::OnReplaceAllButtonClick)
+  //Key events (control F3 and F2 function keys)
+  EVT_CHAR(FindAndReplace::OnFunKeyDown)
+END_EVENT_TABLE()
+
+//gotoLine event table
+BEGIN_EVENT_TABLE(gotoLine, wxFrame)
+  //Button events
+  EVT_BUTTON(wxID_OK, gotoLine::onOKButtonClick)
+  EVT_BUTTON(wxID_CANCEL, gotoLine::onCancelButtonClick)
+END_EVENT_TABLE()
+//----------------------------------------------------------------------------
+
+
 Edit::Edit (wxWindow *parent, wxWindowID id,
             const wxPoint &pos,
             const wxSize &size,
@@ -158,6 +189,9 @@ Edit::Edit (wxWindow *parent, wxWindowID id,
     m_FoldingMargin = 16;
     CmdKeyClear (wxSTC_KEY_TAB, 0); // this is done by the menu accelerator key
     SetLayoutCache (wxSTC_CACHE_PAGE);
+      
+    //*****21/04/2010
+    //book = new wxListbook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLB_TOP, wxT(""));
 
 }
 
@@ -204,7 +238,387 @@ void Edit::OnEditPaste (wxCommandEvent &WXUNUSED(event)) {
     Paste ();
 }
 
+//----------------------------------------------------------------------------
+//==>FIND AND REPLACE<==
+
+//Boolean internal function. Returns true if the text is found
+bool isFound (Edit* editor, wxString* findText, bool wholeWord, bool matchCase) {
+  int result = 0;
+  int minPos = 0;
+  int maxPos = editor->GetLength();
+  //Must make the appropiate search
+  if (wholeWord) {
+    //The search is case sensitive
+    if (matchCase) {
+      result = editor->FindText(minPos, maxPos, wxT(*findText), wxSTC_FIND_WHOLEWORD | wxSTC_FIND_MATCHCASE);
+    }
+    else {
+      result = editor->FindText(minPos, maxPos, wxT(*findText), wxSTC_FIND_WHOLEWORD);
+    }
+  }
+  //Match case can be checked
+  else {
+    if (matchCase) {
+      result = editor->FindText(minPos, maxPos, wxT(*findText), wxSTC_FIND_MATCHCASE);
+    }
+    else { //Else we only find the text without flags
+      result = editor->FindText(minPos, maxPos, wxT(*findText), NULL);
+    }
+  }
+  if (result != -1) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+//Void function for not found message
+void notFound(wxString* text, bool wholeWord, bool matchCase) {
+  wxString message = wxT("Text \"");
+  message.append(wxT(*text));
+  message.append(wxT("\" not found."));
+  if (wholeWord) {
+    message.append("\n You have whole word active. Maybe isn't a whole word.");
+  }
+  if (matchCase) {
+    message.append("\n You have match case active. Check find text.");
+  }
+  wxMessageDialog* advice = new wxMessageDialog(NULL, wxT(message), wxT("Not found"), wxOK |  wxCENTER | wxICON_ERROR);
+  advice->ShowModal();
+}
+
+//-->Constructor<--
+FindAndReplace::FindAndReplace (Edit* openEditor) : wxFrame(openEditor,wxID_ANY,wxT("Find & Replace"), wxDefaultPosition, wxSize(509,207), wxDEFAULT_FRAME_STYLE, "frame")
+{
+  wxWindowID find_and_replace = NULL;
+  
+  //Find and replace frame size
+  this->SetMinSize(wxSize(509,207));
+  this->CenterOnScreen(wxBOTH);
+  
+  wxPanel* panel   = new wxPanel(this, wxID_ANY);
+  
+  wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
+  wxGridSizer* gs  = new wxGridSizer(2,4,8,8);
+  
+  wxButton* done             = new wxButton(panel, ID_DONE, wxT("Done"));
+  wxButton* next             = new wxButton(panel, ID_NEXT, wxT("Next ->"));
+  wxButton* prev             = new wxButton(panel, ID_PREV, wxT("<- Prev"));
+  wxButton* replace          = new wxButton(panel, ID_REPL, wxT("Replace"));
+  wxButton* replaceAll       = new wxButton(panel, ID_REPL_ALL, wxT("Replace All"));
+  wxStaticText* findLabel    = new wxStaticText(panel, -1, wxT("Text to Find: "));
+  wxStaticText* replaceLabel = new wxStaticText(panel, find_and_replace, wxT("Replacement Text: "));
+  findBox                    = new wxTextCtrl(panel, -1, wxT(""), wxPoint(-1, -1), wxSize(-1, -1), wxTE_RIGHT);
+  replaceBox                 = new wxTextCtrl(panel, -1, wxT(""), wxPoint(-1, -1), wxSize(-1, -1), wxTE_RIGHT);
+  wholeWord                  = new wxCheckBox(panel, find_and_replace, wxT("Whole word"));
+  matchCase                  = new wxCheckBox(panel, find_and_replace, wxT("Match case"));
+  
+  wxBoxSizer* line = new wxBoxSizer(wxHORIZONTAL);
+  line->Add(findLabel, 0, wxRIGHT | wxTOP, 4);
+  line->Add(findBox, 1, wxLEFT | wxTOP, 4);
+  sizer->Add(line, 0, wxEXPAND | wxALL, 4);
+  
+  line = new wxBoxSizer(wxHORIZONTAL);
+  line->Add(replaceLabel, 0, wxRIGHT | wxTOP, 4);
+  line->Add(replaceBox, 1, wxLEFT | wxTOP, 4);
+  sizer->Add(line, 1, wxEXPAND | wxALL, 4);
+  
+  //Fill the gridSizer
+  gs->Add(prev, 0, wxEXPAND);
+  gs->Add(next, 0, wxEXPAND);
+  gs->Add(replace, 0, wxEXPAND);
+  gs->Add(replaceAll, 0, wxEXPAND);
+  
+  gs->Add(wholeWord, 0, wxEXPAND);
+  gs->Add(matchCase, 0, wxEXPAND);
+  gs->Add(NULL, 0, wxEXPAND);
+  gs->Add(done, 0, wxEXPAND);
+  
+  sizer->Add(gs, 2, wxALL | wxEXPAND, 4);
+  panel->SetSizer(sizer);
+  
+  //Initialize reference to editor
+  editor = openEditor;
+  
+  //Set focus on find box, where text to find will be written
+  findBox->SetFocus();
+
+  this->Show(true);
+}
+
+//-->Destructor<--
+FindAndReplace::~FindAndReplace () {}
+
+//Event handlers
+//-->Done button click<--
+void FindAndReplace::OnDoneButtonClick (wxCommandEvent &event) {
+  this->Close(true);
+}
+
+//-->Next button click<--
+void FindAndReplace::OnNextButtonClick (wxCommandEvent &event) {
+  int result;
+  editor->SetCurrentPos(editor->GetAnchor()); //Realocate cursor
+  editor->SearchAnchor();
+  wxString findText = wxT(findBox->GetValue());
+  //If findBox is empty show a message dialog
+  if (findBox->IsEmpty()) {
+    wxMessageDialog* warning = new wxMessageDialog(NULL, wxT("On Next operation: You must insert a find text."), wxT("WARNING"), wxOK | wxCENTER | wxICON_EXCLAMATION);
+    warning->Raise();
+    warning->ShowModal();
+  }
+  else {
+    //Is the word in the document?
+    if (isFound(editor, &findText, wholeWord->IsChecked(), matchCase->IsChecked()) == false) {
+      notFound(&findText, wholeWord->IsChecked(), matchCase->IsChecked());
+      return;
+    }
+    //Search the whole word in the text
+    if (wholeWord->IsChecked()) {
+      //The search is case sensitive
+      if (matchCase->IsChecked()) {
+        result = editor->SearchNext(wxSTC_FIND_WHOLEWORD | wxSTC_FIND_MATCHCASE, findText);
+      }
+      else {
+        result = editor->SearchNext(wxSTC_FIND_WHOLEWORD, findText);
+      }
+    }
+    //Match case can be checked
+    else {
+      if (matchCase->IsChecked()) {
+        result = editor->SearchNext(wxSTC_FIND_MATCHCASE, findText);
+      }
+      else { //Else we only search the text without flags
+        result = editor->SearchNext(NULL, findText);
+      }
+    }
+    int line = editor->LineFromPosition(editor->GetCurrentPos());
+    //If the line is not visible, show it
+    editor->EnsureVisibleEnforcePolicy(line);
+    //End of the document
+    if (result == -1) {
+      //Do you want go on?
+      wxMessageDialog* end = new wxMessageDialog(NULL, wxT("Do you want to go to the beginning?"), wxT("End of document"), wxYES_NO | wxCENTER | wxICON_QUESTION);
+      int answer = end->ShowModal();
+      if(answer == wxID_NO) {
+        return;
+      }
+      else { //Set cursor to the beginning
+        editor->SetCurrentPos(0);
+        editor->SetAnchor(0);
+        editor->SearchAnchor();
+        //And search the next match
+        if (wholeWord->IsChecked()) {
+          if (matchCase->IsChecked()) {
+            result = editor->SearchNext(wxSTC_FIND_WHOLEWORD | wxSTC_FIND_MATCHCASE, findText);
+          }
+          else {
+            result = editor->SearchNext(wxSTC_FIND_WHOLEWORD, findText);
+          }
+        }
+        else {
+          if (matchCase->IsChecked()) {
+            result = editor->SearchNext(wxSTC_FIND_MATCHCASE, findText);
+          }
+          else {
+            result = editor->SearchNext(NULL, findText);
+          }
+        }
+        int line = editor->LineFromPosition(editor->GetCurrentPos());
+        editor->EnsureVisibleEnforcePolicy(line);
+      }
+    }
+  }
+}
+
+//-->Prev button click<--
+void FindAndReplace::OnPrevButtonClick (wxCommandEvent &event) {
+  int result;
+  editor->SearchAnchor();
+  wxString findText = wxT(findBox->GetValue());
+  //If findBox is empty show a message dialog
+  if (findBox->IsEmpty()) {
+    wxMessageDialog* warning = new wxMessageDialog(NULL, wxT("On Prev operation: You must insert a find text."), wxT("WARNING"), wxOK | wxCENTER | wxICON_EXCLAMATION);
+    warning->Raise();
+    warning->ShowModal();
+  }
+  else {
+    //Is the word in the document?
+    if (isFound(editor, &findText, wholeWord->IsChecked(), matchCase->IsChecked()) == false) {
+      notFound(&findText, wholeWord->IsChecked(), matchCase->IsChecked());
+      return;
+    }
+    //Search the whole word in the text
+    if (wholeWord->IsChecked()) {
+      //The search is case sensitive
+      if (matchCase->IsChecked()) {
+        result = editor->SearchPrev(wxSTC_FIND_WHOLEWORD | wxSTC_FIND_MATCHCASE, findText);
+      }
+      else {
+        result = editor->SearchPrev(wxSTC_FIND_WHOLEWORD, findText);
+      }
+    }
+    //Match case can be checked
+    else {
+      if (matchCase->IsChecked()) {
+        result = editor->SearchPrev(wxSTC_FIND_MATCHCASE, findText);
+      }
+      else { //Else we only search the text without flags
+        result = editor->SearchPrev(NULL, findText);
+      }
+    }
+    int line = editor->LineFromPosition(editor->GetCurrentPos());
+    //If the line is not visible, show it
+    editor->EnsureVisibleEnforcePolicy(line);
+    //End of the document
+    if (result == -1) {
+      //Do you want go on?
+      wxMessageDialog* end = new wxMessageDialog(NULL, wxT("Do you want to go to the end?"), wxT("Begin of document"), wxYES_NO | wxCENTER | wxICON_QUESTION);
+      int answer = end->ShowModal();
+      if(answer == wxID_NO) {
+        return;
+      }
+      else { //Set cursor to the beginning
+        editor->SetCurrentPos(editor->GetLength());
+        editor->SetAnchor(editor->GetLength());
+        editor->SearchAnchor();
+        //And search the prev match
+        if (wholeWord->IsChecked()) {
+          if (matchCase->IsChecked()) {
+            result = editor->SearchPrev(wxSTC_FIND_WHOLEWORD | wxSTC_FIND_MATCHCASE, findText);
+          }
+          else {
+            result = editor->SearchPrev(wxSTC_FIND_WHOLEWORD, findText);
+          }
+        }
+        else {
+          if (matchCase->IsChecked()) {
+            result = editor->SearchPrev(wxSTC_FIND_MATCHCASE, findText);
+          }
+          else {
+            result = editor->SearchPrev(NULL, findText);
+          }
+        }
+        int line = editor->LineFromPosition(editor->GetCurrentPos());
+        editor->EnsureVisibleEnforcePolicy(line);
+      }
+    }
+  }
+}
+
+//-->On function key down<--
+void FindAndReplace::OnFunKeyDown (wxKeyEvent &event) {
+  wxCommandEvent e; //We must pass to methods a wxCommandEvent variable
+  long keycode = event.GetKeyCode();
+  //Calls based on keycode value
+  switch (keycode) {
+    case WXK_F3:
+      OnNextButtonClick(e);
+      break;
+    case WXK_F2:
+      OnPrevButtonClick(e);
+      break;
+    default:
+      break;
+  }
+}
+
+//-->Replace button click<--
+void FindAndReplace::OnReplaceButtonClick (wxCommandEvent &event) {
+  wxString findText    = wxT(findBox->GetValue());
+  wxString replaceText = wxT(replaceBox->GetValue());
+  //If findBox is empty show a message dialog
+  if (findBox->IsEmpty()) {
+    wxMessageDialog* warning = new wxMessageDialog(NULL, wxT("On Replace operation: You must insert a find text."), wxT("WARNING"), wxOK | wxCENTER | wxICON_EXCLAMATION);
+    warning->Raise();
+    warning->ShowModal();
+  }
+  else {
+    //Is the word in the document?
+    if (isFound(editor, &findText, wholeWord->IsChecked(), matchCase->IsChecked()) == false) {
+      notFound(&findText, wholeWord->IsChecked(), matchCase->IsChecked());
+      return;
+    }
+    wxString selection = editor->GetSelectedText();
+    if (selection.Length() == 0) //There isn't selected text, we must find it before
+      OnNextButtonClick(event);
+    
+    //Replace selected text
+    editor->ReplaceSelection(replaceText);
+    
+    //And find the next match
+    OnNextButtonClick(event);
+  }
+}
+
+//-->Replace all button click<--
+void FindAndReplace::OnReplaceAllButtonClick( wxCommandEvent &event) {
+  wxString findText    = wxT(findBox->GetValue());
+  wxString replaceText = wxT(replaceBox->GetValue());
+  //If findBox is empty show a message dialog
+  if (findBox->IsEmpty()) {
+    wxMessageDialog* warning = new wxMessageDialog(NULL, wxT("On Replace All operation: You must insert a find text."), wxT("WARNING"), wxOK | wxCENTER | wxICON_EXCLAMATION);
+    warning->Raise();
+    warning->ShowModal();
+  }
+  else {
+    //Is the word in the document?
+    if (isFound(editor, &findText, wholeWord->IsChecked(), matchCase->IsChecked()) == false) {
+      notFound(&findText, wholeWord->IsChecked(), matchCase->IsChecked());
+      return;
+    }
+    //Really do you want replace all????
+    wxMessageDialog* ask = new wxMessageDialog(NULL, wxT("Do you want to replace all matches?"), wxT("Are you sure?"), wxYES_NO | wxCENTER | wxICON_QUESTION);
+    int answer = ask->ShowModal();
+    if (answer == wxID_YES) {
+      int replacements = 0;
+      int result       = 0;
+      editor->SetCurrentPos(0);
+      editor->SetAnchor(0);
+      editor->SearchAnchor();
+      while (result != -1) {
+        //Must make the appropiate search
+        if (wholeWord->IsChecked()) {
+          //The search is case sensitive
+          if (matchCase->IsChecked()) {
+            result = editor->SearchNext(wxSTC_FIND_WHOLEWORD | wxSTC_FIND_MATCHCASE, findText);
+          }
+          else {
+            result = editor->SearchNext(wxSTC_FIND_WHOLEWORD, findText);
+          }
+        }
+        //Match case can be checked
+        else {
+          if (matchCase->IsChecked()) {
+            result = editor->SearchNext(wxSTC_FIND_MATCHCASE, findText);
+          }
+          else { //Else we only search the text without flags
+            result = editor->SearchNext(NULL, findText);
+          }
+        }
+        if (result != -1) {
+          editor->ReplaceSelection(replaceText);
+          replacements++;
+        }
+      }
+      //Show total number of replacements
+      wxString rep = wxString::Format(_T("%d"), replacements);
+      wxString message = wxT("Total number of replacements: ");
+      message.append(rep);
+      wxMessageDialog* totalReplacements = new wxMessageDialog(NULL, message, wxT("Replacements"), wxOK | wxCENTER | wxICON_INFORMATION);
+      totalReplacements->ShowModal();
+    }
+    else {
+      return;
+    }
+  }
+}
+//----------------------------------------------------------------------------
+
 void Edit::OnFind (wxCommandEvent &WXUNUSED(event)) {
+  //Pass to the constructor a reference to editor ('this' pointer)
+  FindAndReplace* findWindow = new FindAndReplace(this);
 }
 
 void Edit::OnFindNext (wxCommandEvent &WXUNUSED(event)) {
@@ -227,7 +641,67 @@ void Edit::OnBraceMatch (wxCommandEvent &WXUNUSED(event)) {
     }
 }
 
+//----------------------------------------------------------------------------
+//==>gotoLine class methods<==
+//Constructor
+gotoLine::gotoLine (Edit* openEditor) : wxFrame(openEditor, wxID_ANY, wxT("Go to Line"), wxDefaultPosition, wxSize(245,151), wxDEFAULT_FRAME_STYLE, "gotoLineFrame") {
+  //GUI members
+  wxPanel* panel      = new wxPanel(this, wxID_ANY);
+  wxGridSizer* grid   = new wxGridSizer(2,2,4,4);
+  wxStaticText* label = new wxStaticText(panel, wxID_ANY, wxT("Line number: "));
+  numberLine          = new wxTextCtrl(panel, -1, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_LEFT);
+  wxButton* OK        = new wxButton(panel, wxID_OK, wxT("OK"));
+  wxButton* Cancel    = new wxButton(panel, wxID_CANCEL, wxT("Cancel"));
+  
+  //Fill the GridSizer
+  grid->Add(label, 0, wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL);
+  grid->Add(numberLine, 0, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+  grid->Add(OK, 0, wxALIGN_CENTER | wxALL);
+  grid->Add(Cancel, 0, wxALIGN_CENTER | wxALL);
+  //Set focus on the text control
+  numberLine->SetFocus();
+  panel->SetSizer(grid);
+  //Pointer to actual editor
+  editor = openEditor;
+  //Block frame size
+  this->SetMinSize(wxSize(245,151));
+  this->SetMaxSize(wxSize(245,151));
+  this->CenterOnScreen(wxBOTH);
+  this->Show(true);
+}
+//destructor
+gotoLine::~gotoLine () {}
+
+//-->onOKButtonClick<--
+void gotoLine::onOKButtonClick (wxCommandEvent &event) {
+  //Get the count of file lines and the number inserted by the user
+  int maxlines = editor->GetLineCount();
+  int num = wxAtoi(numberLine->GetValue());
+  //Is a valid line??
+  if (num > maxlines || num < 1) {
+    //Show a message error, whith number line range
+    wxString message = "Wrong line number: You must insert a line number between 1 and ";
+    message.append(wxString() << maxlines);
+    wxMessageDialog* error = new wxMessageDialog(NULL, wxT(message), wxT("Error line number"), wxOK |  wxCENTER | wxICON_ERROR);
+    error->ShowModal();
+    return;
+  }
+  else {
+    editor->GotoLine(num-1);
+  }
+
+}
+
+//-->onCancelButtonClick<--
+void gotoLine::onCancelButtonClick (wxCommandEvent &event) {
+  //Close the frame
+  this->Close(true);
+}
+//----------------------------------------------------------------------------
+
+
 void Edit::OnGoto (wxCommandEvent &WXUNUSED(event)) {
+  gotoLine* gt = new gotoLine(this);
 }
 
 void Edit::OnEditIndentInc (wxCommandEvent &WXUNUSED(event)) {
@@ -572,7 +1046,7 @@ bool Edit::SaveFile ()
     }
 
     // save file
-    return SaveFile (m_filename);
+    return wxStyledTextCtrl::SaveFile(m_filename);
 #else
     return false;
 #endif // wxUSE_FILEDLG
@@ -581,7 +1055,11 @@ bool Edit::SaveFile ()
 bool Edit::SaveFile (const wxString &filename) {
 
     // return if no change
-    if (!Modified()) return true;
+    //if (!Modified()) return true;
+    //if is the same file
+    if (m_filename == filename) {
+      SaveFile();
+    }
 
 //     // save edit in file and clear undo
 //     if (!filename.empty()) m_filename = filename;
@@ -618,6 +1096,7 @@ EditProperties::EditProperties (Edit *edit,
 
     // sets the application title
     SetTitle (_("Properties"));
+    
     wxString text;
 
     // fullname

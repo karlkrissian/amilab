@@ -86,10 +86,10 @@ void AddWrapFilters(){
   ADDOBJECTVAR_NAME(C_wrap_procedure,"ImageCos",wrap_ImageCos);
 
 	//Basic Edge Detection
-	ADDOBJECTVAR_NAME(C_wrap_imagefunction, "Roberts", wrapRoberts);
-	ADDOBJECTVAR_NAME(C_wrap_imagefunction, "PSF", wrapPSF);
+	ADDOBJECTVAR_NAME(C_wrap_imagefunction, "Roberts",	wrapRoberts);
+	ADDOBJECTVAR_NAME(C_wrap_imagefunction, "PSF",			wrapPSF);
 	ADDOBJECTVAR_NAME(C_wrap_imagefunction, "Gradient", wrapGradient);
-	ADDOBJECTVAR_NAME(C_wrap_imagefunction, "Laplace", wrapLaplace);
+	ADDOBJECTVAR_NAME(C_wrap_imagefunction, "Laplace",	wrapLaplace);
 	
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);

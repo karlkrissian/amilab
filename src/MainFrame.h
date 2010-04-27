@@ -59,6 +59,7 @@
 #include <list>
 #include <map>
 
+class StcTestFrame;
 
 #include "DefineClass.hpp"
 
@@ -97,6 +98,11 @@ public:
      m_mgr.UnInit();
   }
 
+  StcTestFrame*  GetAmilabEditor();
+  void OnCloseAmilabEditor() {
+    amilab_editor = NULL;
+  }
+  
   wxDrawingWindow* GetDrawingWindow() { return _drawing_window; }
 
   wxAuiManager& GetAuiManager() {return m_mgr; };
@@ -177,6 +183,9 @@ public:
 
 protected:
 
+  //
+  StcTestFrame* amilab_editor;
+  
   // menus
   wxMenuBar *menuBar;
   wxMenu *menuFile;

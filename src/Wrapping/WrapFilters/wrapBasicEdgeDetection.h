@@ -9,7 +9,7 @@
  */
 #include "inrimage.hpp"
 #include "paramlist.h"
-//Prototype functions
+//Prototype basic edge detection functions
 InrImage* wrapRoberts(ParamList* p);
 InrImage* wrapPSF(ParamList* p);
 InrImage* wrapGradient(ParamList* p);

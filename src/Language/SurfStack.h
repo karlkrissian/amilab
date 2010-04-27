@@ -14,17 +14,18 @@
 #define _SurfStack_h_
 
 #include <stack>
-#include "surface.hpp"
-using namespace amilab;
 
 #include "DefineClass.hpp"
 #include "amilab_messages.h"
+
+#include "surface.hpp"
+//using namespace amilab;
 
 class SurfStack{
 
   DEFINE_CLASS(SurfStack);
 
-  std::stack<SurfacePoly*> _surf;
+  std::stack<amilab::SurfacePoly*> _surf;
 
  public:
 
@@ -34,9 +35,9 @@ class SurfStack{
 
   void AddSurf( const char* name)
   {
-    SurfacePoly* surf_tmp;
+    amilab::SurfacePoly* surf_tmp;
     unsigned char      res;
-    surf_tmp=new SurfacePoly;
+    surf_tmp=new amilab::SurfacePoly;
     res = surf_tmp->Read(name);
     if (res) {
       _surf.push(surf_tmp);
@@ -46,15 +47,15 @@ class SurfStack{
     }
   }
 
-  void AddSurf( SurfacePoly* surf)
+  void AddSurf( amilab::SurfacePoly* surf)
   {
     _surf.push(surf);
     if (GB_debug) fprintf(stderr,"SurfStack::AddSurf() %p \n",surf);
   }
 
-  SurfacePoly* GetLastSurf()
+  amilab::SurfacePoly* GetLastSurf()
   {
-    SurfacePoly* tmp;
+    amilab::SurfacePoly* tmp;
     tmp=_surf.top();
     _surf.pop();
     return tmp;

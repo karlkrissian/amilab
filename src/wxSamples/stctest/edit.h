@@ -28,7 +28,6 @@
 //! application headers
 #include "prefs.h"       // preferences
 
-
 //============================================================================
 // declarations
 //============================================================================
@@ -124,6 +123,9 @@ private:
     int m_FoldingID;
     int m_FoldingMargin;
     int m_DividerID;
+  
+    //Listbook
+    //wxListbook* book;
 
     DECLARE_EVENT_TABLE()
 };
@@ -170,5 +172,124 @@ private:
 };
 
 #endif // wxUSE_PRINTING_ARCHITECTURE
+
+//----------------------------------------------------------------------------
+/**
+ *  Find and replace class. Allows find text (next and previous search supported), replace once and replace all matches.
+ *  @author Karl Krissian (krissian@dis.ulpgc.es)
+ *  @author Daniel Elías Santana Cedrés (daniel.santana104@estudiantes.ulpgc.es)
+ */
+class FindAndReplace : public wxFrame {
+
+public:
+  /**
+   *  Create a FindAndReplace object.
+   *  @param openEditor is a pointer to open editor.
+   *  @return Show in the screen the find and replace window.
+   */
+  FindAndReplace (Edit* openEditor);
+  //Destructor
+  ~FindAndReplace ();
+  
+  /**
+   *  Close the find and replace window.
+   *  @param event
+   */
+  void OnDoneButtonClick (wxCommandEvent &event);
+  
+  /**
+   *  Search the next match of find text and select it on the editor. When achieve the end of file, lets start from the beginning.
+   *  If there aren't matches shows an advice.
+   *  Requires a find text.
+   *  @param event
+   *  @return Nothing
+   */
+  void OnNextButtonClick (wxCommandEvent &event);
+  
+  /**
+   *  Evaluates a key event. If F3 function key is pressed, calls to OnNextButtonClick. If F2 function key is pressed, calls to OnPrevButtonClick.
+   *  @param event is the key event.
+   *  @return Nothing
+   */
+  void OnFunKeyDown (wxKeyEvent &event);
+  
+  /**
+   *  Search the previous match of find text and select it on the editor. When achieve the begin of file, lets start from the end.
+   *  If there aren't matches shows an advice.
+   *  Requires a find text.
+   *  @param event
+   *  @return Nothing
+   */
+  void OnPrevButtonClick (wxCommandEvent &event);
+  
+  /**
+   *  Replace the selected text with replacement text. If text isn't selected, execute a find next. After replacement shows the next match of find text.
+   *  Requires a find text. Replacement text could be empty.
+   *  @param event
+   *  @return Nothing
+   */
+  void OnReplaceButtonClick (wxCommandEvent &event);
+  
+  /**
+   *  Replace all matches of find text. Previously ask to the user if he's sure to make this operation.
+   *  Shows the total number of replacements on a dialog.
+   *  Requires a find text. Replacement text could be empty.
+   *  @param event
+   *  @return Nothing
+   */
+  void OnReplaceAllButtonClick (wxCommandEvent &event);
+  
+private:
+  /** Text to find. Initially set focus at this member */
+  wxTextCtrl* findBox;
+  /** Replacement text */
+  wxTextCtrl* replaceBox;
+  /** Whole word checkbox. Search exactly the find text like a whole word */
+  wxCheckBox* wholeWord;
+  /** Match case checkbox. The search is case sensitive */
+  wxCheckBox* matchCase;
+  /** Pointer to actual editor window */
+  Edit* editor;
+  
+  DECLARE_EVENT_TABLE()
+};
+//----------------------------------------------------------------------------
+/**
+ *  Go to line class. Lets to the user go to an specific line.
+ *  @author Karl Krissian (krissian@dis.ulpgc.es)
+ *  @author Daniel Elías Santana Cedrés (daniel.santana104@estudiantes.ulpgc.es)
+ */
+class gotoLine : public wxFrame {
+  
+public:
+  /**
+   *  Create a gotoLine object.
+   *  @param openEditor A pointer to the actual open editor.
+   *  @return Show in screen the go to line window.
+   */
+  gotoLine (Edit* openEditor);
+  
+  //destructor
+  ~gotoLine ();
+  
+  /**
+   *  Go to specific line. If is a wrong line, show a message dialog with the correct number line range.
+   *  @param event
+   *  @return Set cursor in the editor line.
+   */
+  void onOKButtonClick (wxCommandEvent &event);
+  
+  /**
+   *  Close go to line window.
+   *  @param event
+   *  @return Nothing
+   */
+  void onCancelButtonClick (wxCommandEvent &event);
+private:
+  wxTextCtrl* numberLine;
+  Edit* editor;
+  
+  DECLARE_EVENT_TABLE()
+};
 
 #endif // _EDIT_H_

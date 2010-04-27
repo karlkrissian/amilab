@@ -348,6 +348,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapCommon
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapITK
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapImports
+  ${AMILAB_SOURCE_DIR}/stctest
   ${AMILAB_SOURCE_DIR}
   ${AMILAB_SOURCE_DIR}/../Pixmaps
   ${AMILAB_BINARY_DIR}
