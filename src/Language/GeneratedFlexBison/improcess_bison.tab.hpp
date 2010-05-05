@@ -1,23 +1,23 @@
-/* A Bison parser, made by GNU Bison 2.3.  */
+
+/* A Bison parser, made by GNU Bison 2.4.1.  */
 
 /* Skeleton interface for Bison LALR(1) parsers in C++
-
-   Copyright (C) 2002, 2003, 2004, 2005, 2006 Free Software Foundation, Inc.
-
-   This program is free software; you can redistribute it and/or modify
+   
+      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008 Free Software
+   Foundation, Inc.
+   
+   This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2, or (at your option)
-   any later version.
-
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+   
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-
+   
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor,
-   Boston, MA 02110-1301, USA.  */
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -28,7 +28,7 @@
    special exception, which will cause the skeleton and the resulting
    Bison output files to be licensed under the GNU General Public
    License without this special exception.
-
+   
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
@@ -37,250 +37,30 @@
 #ifndef PARSER_HEADER_H
 # define PARSER_HEADER_H
 
+
+
 #include <string>
 #include <iostream>
 #include "stack.hh"
 
-namespace yyip
-{
+
+/* Line 35 of lalr1.cc  */
+#line 1 "[Bison:b4_percent_define_default]"
+
+namespace yyip {
+
+/* Line 35 of lalr1.cc  */
+#line 54 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
   class position;
   class location;
-}
 
-/* First part of user declarations.  */
-#line 11 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
+/* Line 35 of lalr1.cc  */
+#line 1 "[Bison:b4_percent_define_default]"
 
- /*** C/C++ Declarations ***/
-  //#include <stdlib.h>
-  //#include <stdio.h>
+} // yyip
 
-// use NOMINMAX to avoid conflicts between windows.h min,max and std::min std::max ...
-#define NOMINMAX
-
-#include "driver.h"
-#include "CoutwxString.h"
-#include "MainFrame.h"
-#include <locale.h>
-#include "fonctions.h"
-#include "func_isoline.hpp"
-
-#include "ami_function.h"
-#include "ami_class.h"
-#include "ami_object.h"
-#include "IdentifierInfo.h"
-
-#include "localstats.h"
-//#include "dist_squared.hpp"
-#include "improcess_bison.tab.hpp"
-#include "wrapAMIFluid.h"
-#include "wrapVTK.h"
-#include "wrapITK.h"
-#include "wrap_mainframe.h"
-#include "wrap_imagedraw.h"
-#include "itkCannyEdgeDetector.h"
-#include "wrapWII.h"
-#include "wrapFilters.h"
-#include "wrapSystem.h"
-#include <cstdlib>
-
-//#include "myscan.h"
-#include "ImageDraw.hpp"
-#include "Func_ReadCTALine.h"
-#include "LineRecons.h"
-//#include "PruneLines.h"
-
-#include "wrapfunction_class.h"
-
-
-#ifndef __FLEX_LEXER_H
-#define yyFlexLexer yyipFlexLexer
-#include "FlexLexer.h"
-#undef yyFlexLexer
-#endif
-
-
-#include "Viewer3D.hpp"
-
-//#include "Erreurs.Main.hpp"
- // #include "Graphique.hpp"
-#include "Viewer3D.hpp"
-#include "DessinImage.hpp"
-#include "CompareImage.hpp"
-#include "bruit.hpp"
-#include "CalculAireSection.hpp"
-#include "reponse_cercle.hpp"
-#include "func_shortestpath.h"
-#include "Wrap_AnisoGS.h"
-#include "LevelSetsCURVES.h"
-#include "vtkwrap.h"
-
-#include "gnuplot.hpp"
-
-#include "xmtext.hpp"
-#include "StringUtils.hpp"
-//#include "histo.hpp"
-
-#ifndef WIN32
-#include <unistd.h>
-#endif
-
-#include <iostream>
-
-#include "VarContexts.hpp"
-#include "VarArray.h"
-//#include "Duree.hpp"
-
-#include "DefineClass.hpp"
-
-#include "Variable.hpp"
-
-/*
-#include <boost/shared_ptr.hpp>
-//--- string formatting using boost
-#include <iostream>
-#include <iomanip>
-#include <cassert>
-#include "boost/format.hpp"
-namespace MyNS_ForOutput {
-  using std::cout; using std::cerr;
-  using std::string;
-  using std::endl; using std::flush;
-
-  using boost::format;
-  using boost::io::group;
-}
-using namespace MyNS_ForOutput;
-*/
-
-//-------
-
-#include "wx/evtloop.h"
-#include "driver.h"
-
-extern VarContexts       Vars;
-
-//Duree            IP_time;
-
-extern MainFrame*   GB_main_wxFrame;
-extern wxApp*       GB_wxApp;
-extern int          GB_argc;
-
-extern int       GB_num_arg_parsed;
-extern wxString  GB_scripts_dir;
-extern wxString  GB_help_dir;
-
-
-namespace AMIFluid {
-extern char* FLUID_NAVIGATION_FILE;
-}
-
-
-DessinImage* CreateIDraw(  const std::string& title, InrImage::ptr image);
-// Creation of a DessinImage pointer
-// this function is distinct if compiling with all amilab
-
-extern yyip::Driver GB_driver;
-
-extern unsigned char        GB_debug;
-extern unsigned char        GB_verbose;
-extern unsigned char        verbose;
-extern unsigned char        GB_nofile;
-
-extern char program[80];
-
-extern unsigned char DELETE_IDRAW;
-
-//-------------------------------------------------------
-class wxWaitTimer : public wxTimer
-//    -----------
-{
-  public:
-    bool finished;
-
-    wxWaitTimer() : finished(false) {}
-    //Called each time the timer's timeout expires
-    void Notify()     { finished = true; }
-};
-
-
-
-//------------------------------------------------------
-class wxScheduleTimer : public wxTimer
-//    ---------------
-{
-  DEFINE_CLASS(wxScheduleTimer)
-  public:
-    wxScheduleTimer( Variable<AMIFunction>::ptr callback)
-    {
-      var = Variable<AMIFunction>::ptr(callback);
-    }
-
-    ~wxScheduleTimer()
-    { 
-      //cout << "~wxScheduleTimer()" << endl; 
-    }
-
-    //Called each time the timer's timeout expires
-    void Notify();
-
-  private:
-    // variable of type type_ami_function
-    Variable<AMIFunction>::ptr var;
-};
-
-// create a array of shared pointers
-// to delete the wxScheduleTimer when necessary
-static std::list<wxScheduleTimer::ptr> schedule_timers;
-
-void CB_ParamWin( void* cd );
-
-
-//static void ( void* cd, long unsigned int *) {
-//  CB_ParamWin(cd);
-//}
-
-/*
-static void CB_Button(  void* cd) {
-  CB_ParamWin(cd);
-}
-*/
-
-void CB_delete_variable( void* var);
-
-
-//------------------------------------------------------
-void CB_update_imagelist( void* imagelist_gui);
-
-
-#define GET_VARSTACK_VALUE(type,newvar) \
-  boost::shared_ptr<type> newvar( \
-    driver.var_stack.GetLastVar<type>()->Pointer());
-
-#define GET_VARSTACK_VAR_VAL(type,newvar, newval) \
-  Variable<type>::ptr newvar(driver.var_stack.GetLastVar<type>()); \
-  boost::shared_ptr<type> newval(newvar->Pointer());
-
-#define ADD_VARSTACK_FLOAT(newval) \
-    Variable<float>::ptr new_var(new Variable<float>(float_ptr(new float(newval)))); \
-    driver.var_stack.AddVar(new_var);
-
-/**
-  newval is a smart pointer to the new value to add
-**/
-#define ADD_VARSTACK_PTR(type,newval) \
-    Variable<type>::ptr new_var(new Variable<type>(newval)); \
-    driver.var_stack.AddVar(new_var);
-
-#define UNARYOP_EXPR(operator,val,res)           \
-  res=operator(val);
-
-
-
-
-
-
-/* Line 303 of lalr1.cc.  */
-#line 284 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
+/* Line 35 of lalr1.cc  */
+#line 64 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
 
 #include "location.hh"
 
@@ -321,8 +101,14 @@ do {							\
 } while (false)
 #endif
 
-namespace yyip
-{
+
+/* Line 35 of lalr1.cc  */
+#line 1 "[Bison:b4_percent_define_default]"
+
+namespace yyip {
+
+/* Line 35 of lalr1.cc  */
+#line 112 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
 
   /// A Bison parser.
   class Parser
@@ -331,8 +117,11 @@ namespace yyip
     /// Symbol semantic values.
 #ifndef YYSTYPE
     union semantic_type
-#line 276 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/improcess_bison.ypp"
-{
+    {
+
+/* Line 35 of lalr1.cc  */
+#line 276 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+
   IdentifierInfo*         ident;
   char*                   astring;
   AmiInstructionBlock*    ablock;
@@ -344,10 +133,12 @@ namespace yyip
   ParamListDecl*          paramlistdecl;
   ImageExtent<float>*     imageextent;
   std::list<std::string>* string_list;
-}
-/* Line 303 of lalr1.cc.  */
-#line 350 "/Users/administrador/Desktop/AMILab_trunk/amilab/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
-	;
+
+
+
+/* Line 35 of lalr1.cc  */
+#line 141 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
+    };
 #else
     typedef YYSTYPE semantic_type;
 #endif
@@ -848,6 +639,7 @@ namespace yyip
     /// \returns  0 iff parsing succeeded.
     virtual int parse ();
 
+#if YYDEBUG
     /// The current debugging stream.
     std::ostream& debug_stream () const;
     /// Set the current debugging stream.
@@ -859,6 +651,7 @@ namespace yyip
     debug_level_type debug_level () const;
     /// Set the current debugging level.
     void set_debug_level (debug_level_type l);
+#endif
 
   private:
     /// Report a syntax error.
@@ -868,7 +661,7 @@ namespace yyip
 
     /// Generate an error message.
     /// \param state   the state where the error occurred.
-    /// \param tok     the look-ahead token.
+    /// \param tok     the lookahead token.
     virtual std::string yysyntax_error_ (int yystate, int tok);
 
 #if YYDEBUG
@@ -886,7 +679,7 @@ namespace yyip
     virtual void yy_symbol_print_ (int yytype,
 				   const semantic_type* yyvaluep,
 				   const location_type* yylocationp);
-#endif /* ! YYDEBUG */
+#endif
 
 
     /// State numbers.
@@ -963,6 +756,10 @@ namespace yyip
     virtual void yy_reduce_print_ (int r);
     /// Print the state stack on the debug stream.
     virtual void yystack_print_ ();
+
+    /* Debugging.  */
+    int yydebug_;
+    std::ostream* yycdebug_;
 #endif
 
     /// Convert a scanner token number \a t to a symbol number.
@@ -994,15 +791,18 @@ namespace yyip
     static const unsigned int yyuser_token_number_max_;
     static const token_number_type yyundef_token_;
 
-    /* Debugging.  */
-    int yydebug_;
-    std::ostream* yycdebug_;
-
-
     /* User arguments.  */
     class Driver& driver;
   };
-}
+
+/* Line 35 of lalr1.cc  */
+#line 1 "[Bison:b4_percent_define_default]"
+
+} // yyip
+
+/* Line 35 of lalr1.cc  */
+#line 805 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
+
 
 
 #endif /* ! defined PARSER_HEADER_H */

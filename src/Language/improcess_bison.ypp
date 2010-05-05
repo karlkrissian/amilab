@@ -8665,7 +8665,7 @@ image:
         FinPour
         FinPour
         FinPour
-        cout << "(*res)(10,20,0)=" << (*res)(10,20,0) << endl;
+        //cout << "(*res)(10,20,0)=" << (*res)(10,20,0) << endl;
         driver.im_stack.AddImage(res);
         }
         | T_Ypos T_OP_PAR var_image  T_CL_PAR

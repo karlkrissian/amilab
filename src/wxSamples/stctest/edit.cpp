@@ -309,8 +309,8 @@ FindAndReplace::FindAndReplace (Edit* openEditor) : wxFrame(openEditor,wxID_ANY,
   wxButton* replaceAll       = new wxButton(panel, ID_REPL_ALL, wxT("Replace All"));
   wxStaticText* findLabel    = new wxStaticText(panel, -1, wxT("Text to Find: "));
   wxStaticText* replaceLabel = new wxStaticText(panel, find_and_replace, wxT("Replacement Text: "));
-  findBox                    = new wxTextCtrl(panel, -1, wxT(""), wxPoint(-1, -1), wxSize(-1, -1), wxTE_RIGHT);
-  replaceBox                 = new wxTextCtrl(panel, -1, wxT(""), wxPoint(-1, -1), wxSize(-1, -1), wxTE_RIGHT);
+  findBox                    = new wxTextCtrl(panel, -1, wxT(""), wxPoint(-1, -1), wxSize(-1, -1), wxTE_LEFT);
+  replaceBox                 = new wxTextCtrl(panel, -1, wxT(""), wxPoint(-1, -1), wxSize(-1, -1), wxTE_LEFT);
   wholeWord                  = new wxCheckBox(panel, find_and_replace, wxT("Whole word"));
   matchCase                  = new wxCheckBox(panel, find_and_replace, wxT("Match case"));
   
@@ -332,7 +332,7 @@ FindAndReplace::FindAndReplace (Edit* openEditor) : wxFrame(openEditor,wxID_ANY,
   
   gs->Add(wholeWord, 0, wxEXPAND);
   gs->Add(matchCase, 0, wxEXPAND);
-  gs->Add(NULL, 0, wxEXPAND);
+  gs->Add(0,0, 0, wxEXPAND);
   gs->Add(done, 0, wxEXPAND);
   
   sizer->Add(gs, 2, wxALL | wxEXPAND, 4);
@@ -509,6 +509,7 @@ void FindAndReplace::OnPrevButtonClick (wxCommandEvent &event) {
 
 //-->On function key down<--
 void FindAndReplace::OnFunKeyDown (wxKeyEvent &event) {
+  std::cout << __func__ << std::endl;
   wxCommandEvent e; //We must pass to methods a wxCommandEvent variable
   long keycode = event.GetKeyCode();
   //Calls based on keycode value
@@ -522,6 +523,7 @@ void FindAndReplace::OnFunKeyDown (wxKeyEvent &event) {
     default:
       break;
   }
+  event.Skip();
 }
 
 //-->Replace button click<--

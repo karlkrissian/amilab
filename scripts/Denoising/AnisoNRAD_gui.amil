@@ -113,8 +113,8 @@ if (!exists(AnisoNRADClass)) {
   {
     if (exists(::input)) {
       delvars "::*_draw"
-      del ::roi
-      del ::imbox
+      if (exists(::roi)) { del ::roi; }
+      if (exists(::imbox)) { del ::imbox; }
     }
     ::load_input
     ::Display()

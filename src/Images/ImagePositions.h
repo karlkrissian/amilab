@@ -16,11 +16,15 @@
 
 #include "ImagePositionsBase.h"
 #include "inrimage.hpp"
-
+#include "DefineClass.hpp"
+#include <exception>
 
 template<class T>
 class ImagePositions : public ImagePositionsBase
 {
+
+  DEFINE_CLASS(ImagePositions)
+
 protected:
   // image format
   // pointer to image data
@@ -36,6 +40,9 @@ protected:
 
 public:
 
+
+public:
+
   ImagePositions( InrImage* im);
 
   ~ImagePositions();
@@ -44,7 +51,11 @@ public:
 
   bool FreePositions( );
 
-  double operator()( int x, int y, int z = 0);
+  double operator()( int x, int y, int z = 0)
+    #ifdef AMI_BUILD_Debug
+      throw (std::range_error)
+    #endif
+    ;
 
   double operator()( int x, int y, int z, int coord);
 

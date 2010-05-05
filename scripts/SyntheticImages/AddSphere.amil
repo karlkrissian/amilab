@@ -44,10 +44,18 @@ printn "3"
   radz=(INT) (2*(rad+0.99)/_vz)
 printn "4"
   if (im.tz>1) {
-printn "5"
+printn "x-radx %1%" % (x-radx)
+printn "x+radx %1%" % (x+radx)
+printn "y-rady %1%" % (y-rady)
+printn "y+rady %1%" % (y+rady)
+printn "z-radz %1%" % (z-radz)
+printn "z+radz %1%" % (z+radz)
     sph = im[x-radx:x+radx,y-rady:y+rady,z-radz:z+radz]
+printn "*"
     px = (FLOAT) Xpos(sph)-(radx+_dx)
+printn "*"
     py = (FLOAT) Ypos(sph)-(rady+_dy)
+printn "*"
     pz = (FLOAT) Zpos(sph)-(radz+_dz)
 printn "6"
     px = px*_vx
@@ -71,7 +79,7 @@ printn "8"
     _r2 = px*px+py*py;
     sph = _r2/(2*rad*rad)
     sph =  exp(-sph)*(_I2-_I1) + _I1
-    sim = im[sph]
+    sim = im[sph.GetExtent]
     sim = max(sim,sph)
     im.putimage(sim)
   }
