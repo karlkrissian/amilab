@@ -18,6 +18,7 @@
 #include "ami_object.h"
 #include "wrap_imagedraw.h"
 #include "wrap_mainframe.h"
+#include "wrap_wxDrawingWindow.h"
 #include "wrapSystem.h"
 #include "wrapITK.h"
 #include "wrapAMIFluid.h"
@@ -49,6 +50,7 @@ void AddWrapImports()
 
   ADDOBJECTVAR_NAME(C_wrap_procedure,"ImageDraw",  wrap_ImageDraw);
   ADDOBJECTVAR_NAME(C_wrap_procedure,"MainFrame",  wrap_MainFrame);
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxDrawingWindow",  wrap_wxDrawingWindow);
 
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"VarList",   wrap_VarList);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"VarVector", wrap_VarVector);

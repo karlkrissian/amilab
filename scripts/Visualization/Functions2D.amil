@@ -327,7 +327,11 @@ if (!exists(Functions2DClass)) {
             ::win.SetCallback( &::OnCurves)
           ::win.EndBoxPanel
 
-  
+          # add Drawing Window
+          d = ::win.CurrentParent()
+          ::dw = import->wxDrawingWindow(&d)
+          ::win.AddWidget(&::dw,1)
+
       ::win.EndBook
       ::win.AddButton("Update",::OnCurves)
       ::win.BeginHorizontal
