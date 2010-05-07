@@ -290,6 +290,19 @@ MainFrame::MainFrame( const wxString& title,
 
   m_mgr.SetManagedWindow(this);
 
+  m_mgr.SetFlags( 
+                  wxAUI_MGR_ALLOW_FLOATING |
+                  // Avoid problem with KDE desktop composing effect
+                  #ifdef __WXGTK__ 
+                    wxAUI_MGR_RECTANGLE_HINT |
+                  #else
+                   wxAUI_MGR_TRANSPARENT_HINT |
+                  #endif
+                  wxAUI_MGR_HINT_FADE |
+                  wxAUI_MGR_NO_VENETIAN_BLINDS_FADE |
+                  wxAUI_MGR_ALLOW_ACTIVE_PANE
+                );
+
      // tell the manager to "commit" all the changes just made
 
   CreateMainBook(this);

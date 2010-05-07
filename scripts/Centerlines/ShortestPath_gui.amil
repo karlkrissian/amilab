@@ -191,7 +191,7 @@ if (!exists(SPClass)) {
     
       # Add Spheres around extremities to facilitate
       # their connections
-      AddBrightSphere_mm( &maxrepim_crop,\
+      global::AddBrightSphere_mm( &maxrepim_crop,\
                           ::startx,::starty,::startz,\
                           3,0.01,0.5)
 
@@ -200,12 +200,12 @@ if (!exists(SPClass)) {
       fminit = (FLOAT) maxrepim_crop*0+::maxcost
 
       if (::end_mode==0) {
-        AddBrightSphere_mm( &maxrepim_crop,\
+        global::AddBrightSphere_mm( &maxrepim_crop,\
                             ::endx,::endy,::endz,\
                             3,0.01,0.5)
         if (::endx<2) { ::endx=2; }
         if (::endy<2) { ::endy=2; }
-        if (::endz<2) { ::endz=2; }
+        if ((::endz<2)&&(::input.tz>1)) { ::endz=2; }
         fminit.setpos(::endx,::endy,::endz)
         fminit.set(-::maxcost)
       } else {

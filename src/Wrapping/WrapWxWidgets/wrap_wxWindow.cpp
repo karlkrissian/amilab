@@ -29,6 +29,7 @@ AMIObject::ptr AddWrap_wxWindow(  WrapClass_wxWindow::ptr& objectptr)
   objectptr->SetAMIObject(amiobject);
 
   objectptr->AddVar_ShowWin(        objectptr);
+  objectptr->AddVar_SetSize(        objectptr);
 
   return amiobject;
 }
@@ -100,4 +101,34 @@ BasicVariable::ptr WrapClass_wxWindow::
   int res = this->_objectptr->_win->Show(show);
 
   RETURN_VAR(int, res);
+}
+
+//---------------------------------------------------
+//  SetSize
+//---------------------------------------------------
+void WrapClass_wxWindow::
+      wrap_SetSize::SetParametersComments() 
+{
+  ADDPARAMCOMMENT("integer: x");
+  ADDPARAMCOMMENT("integer: y");
+  ADDPARAMCOMMENT("integer: width");
+  ADDPARAMCOMMENT("integer: height");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxWindow::
+      wrap_SetSize::CallMember( ParamList* p)
+{
+  int x;
+  int y;
+  int width;
+  int height;
+  int n = 0;
+
+  if (!get_int_param(x, p, n)) ClassHelpAndReturn;
+  if (!get_int_param(y, p, n)) ClassHelpAndReturn;
+  if (!get_int_param(width, p, n)) ClassHelpAndReturn;
+  if (!get_int_param(height, p, n)) ClassHelpAndReturn;
+  this->_objectptr->_win->SetSize(x,y,width,height);
+
+  return BasicVariable::ptr();
 }

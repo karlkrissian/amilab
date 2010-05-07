@@ -29,10 +29,18 @@ AMIObject::ptr AddWrap_wxDrawingWindow(  WrapClass_wxDrawingWindow::ptr& objectp
   amiobject->SetWrappedObject(objectptr);
   objectptr->SetAMIObject(amiobject);
 
+
+  WrapClass_wxWindow::ptr parent_obj(boost::dynamic_pointer_cast<WrapClass_wxWindow>(objectptr));
+  // Add members from wxWindow
+  objectptr->AddVar_ShowWin(   parent_obj   );
+  objectptr->AddVar_SetSize(   parent_obj   );
+
   objectptr->AddVar_SetXLimits(         objectptr);
   objectptr->AddVar_SetYLimits(         objectptr);
   objectptr->AddVar_SetCurve(           objectptr);
   objectptr->AddVar_SetCurveProperties( objectptr);
+
+
 
   return amiobject;
 }

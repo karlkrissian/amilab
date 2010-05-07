@@ -35,6 +35,8 @@ class WrapClass_wxWindow : public WrapClassBase
     {}
 
     ADD_CLASS_METHOD(ShowWin,        "Shows or hides the window.");
+    ADD_CLASS_METHOD(SetSize,        "Sets the size and position of the window in pixels.\n\
+    http://docs.wxwidgets.org/stable/wx_wxwindow.html#wxwindowsetsize");
 
 };
 
