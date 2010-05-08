@@ -4,10 +4,13 @@
 #
 if (!exists(SPClass)) {
   func "SyntheticImages/AddSphere"
+  
   Class SPClass {
+    ::class_name = "global::SPClass"
+    import = &global::ami_import;
+    ::win = import->ParamPanel("Path")
     #----------------------------
     proc ::init() {
-      ::class_name = "global::SPClass"
       # input image name
       ::input_name = ""
       # speed image name
@@ -42,7 +45,7 @@ if (!exists(SPClass)) {
       ::maxlength = 500
       # Path mode 0 or 1
     
-      ::Gui
+      #::Gui
     }
     #-----------------------------------------------
     proc ::load_input() \
@@ -50,7 +53,7 @@ if (!exists(SPClass)) {
       eval "::input <<="+::input_name+";"
       if (::input_name=="Image") {
         ::input_name = "SP_input"
-        ::win.update
+        ::win.Update(-1)
       }
     }
     
@@ -60,7 +63,7 @@ if (!exists(SPClass)) {
       eval "::speed <<="+::speed_name+";"
       if (::speed_name=="Image") {
         ::speed_name = "SP_speed"
-        ::win.update
+        ::win.Update(-1)
       }
     }
     
@@ -70,7 +73,7 @@ if (!exists(SPClass)) {
       eval "::endmask <<="+::endmask_name+";"
       if (::endmask_name=="Image") {
         ::endmask_name = "SP_endmask"
-        ::win.update
+        ::win.Update(-1)
       }
     }
 
@@ -161,16 +164,18 @@ if (!exists(SPClass)) {
       if (exists(::path)) { show ::path; }
     }  
     #----------------------------
-    proc ::Close() {
-      ::win.Hide
+    proc ::Close() \
+    {
+      if (exists(::win)) {
+      ::win.HidePanel
+      }
       delvars GetObjectName(::Close)
     }
     ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-    
-    #----------------------------
+  
     proc ::CloseAll() {
+      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
       ::Close
-      if (exists(SPClass)) { del SPClass; }
     }
     ::CloseAll.Comments("Call ::Close() method and delete the class variable")
         
@@ -249,48 +254,46 @@ if (!exists(SPClass)) {
     #-------------------------------------------
     proc ::Gui() \
     {
-      ::win = ParamWin("Path")
-    
-      ::win.BeginBook
+      ::win.BeginBook()
 
         ::win.AddPage("Init")
           # set the input image
-          ::win.AddImageChoice(::input_name, "Input")
+          ::win.AddImageChoice( &::input_name, "Input")
           # set the speed image
-          ::win.AddImageChoice(::speed_name, "Speed")
+          ::win.AddImageChoice( &::speed_name, "Speed")
         
-          ::win.BeginBox("Extremities")
+          ::win.BeginBoxPanel("Extremities")
             # set the first point
             ::win.AddButton("Set Start Point",::StartPoint)
 
             #
-            stopmode_id = ::win.AddEnum( ::end_mode)
+            stopmode_id = ::win.AddEnum( &::end_mode)
               ::win.AddEnumChoice(stopmode_id,"Point")
               ::win.AddEnumChoice(stopmode_id,"Mask")
 
             # set the second point
             ::win.AddButton("Set End Point",  ::EndPoint)
             # set the end mask
-            ::win.AddImageChoice(::endmask_name,"Stopping mask" )
+            ::win.AddImageChoice( &::endmask_name,"Stopping mask" )
 
-          ::win.EndBox
+          ::win.EndBoxPanel
     
         ::win.AddPage("Param")
         
-          ::win.AddBoolean(::save_FM)
+          ::win.AddBoolean( &::save_FM)
     
-          ::win.AddFloat(::epsilon,0.01,10)
-          ::win.AddFloat(::maxcost,1,100000)
+          ::win.AddFloat( &::epsilon,  "::epsilon", 0.01,10)
+          ::win.AddFloat( &::maxcost,  "::maxcost", 1,100000)
       
-          ::win.BeginBox("Input intensity-based speed")
-            ::win.AddBoolean(::use_input_speed)
-            ::win.AddFloat(::input_Imin,0,10000)
-            ::win.AddFloat(::input_Imax,0,10000)
-            ::win.AddFloat(::input_speed,0,100)
-          ::win.EndBox
+          ::win.BeginBoxPanel("Input intensity-based speed")
+            ::win.AddBoolean( &::use_input_speed)
+            ::win.AddFloat( &::input_Imin,  "::input_Imin", 0,10000)
+            ::win.AddFloat( &::input_Imax,  "::input_Imax", 0,10000)
+            ::win.AddFloat( &::input_speed,  "::input_speed", 0,100)
+          ::win.EndBoxPanel
     
-          ::win.AddFloat(::step_size,0.01,1)
-          ::win.AddFloat(::maxlength,0,1000)
+          ::win.AddFloat( &::step_size,  "::step_size", 0.01,1)
+          ::win.AddFloat( &::maxlength,  "::maxlength", 0,1000)
     
           ::win.BeginHorizontal
             # run
@@ -306,7 +309,7 @@ if (!exists(SPClass)) {
         ::win.AddButton("Close All",  ::CloseAll)
       ::win.EndHorizontal
     
-      ::win.update
+      ::win.Update(-1)
       ::win.Display
     }
     

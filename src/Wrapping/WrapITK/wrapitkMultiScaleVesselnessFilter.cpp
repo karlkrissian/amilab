@@ -37,6 +37,10 @@ InrImage* wrap_itkMultiScaleVesselnessFilter2D(ParamList* p)
 	int numberOfScales = 0;
 	int n=0;
 	
+  if (!get_val_ptr_param<InrImage>( input,          p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>(        sigmaMin,       p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>(        sigmaMax,       p, n)) HelpAndReturnNULL;
+  if (!get_int_param(               numberOfScales, p, n)) HelpAndReturnNULL;
 	
 	const unsigned char Dimension = 2;
 	

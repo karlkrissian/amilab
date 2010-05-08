@@ -35,12 +35,14 @@ if (!exists(MultilinesClass)) {
   }
   
   Class MultilinesClass {
+  
+    
+    ::class_name = "global::MultilinesClass"
 
     ::filters=&global::filters
 
     #----------------------------
     proc ::Init() {
-      ::class_name = "global::MultilinesClass"
       ::input_name   = "", "Input image name"
       ::mask_name    = "", "Mask of the pixels to process, this image must be of type UCHAR and the values > 127 are considered part of the mask"
 
@@ -81,11 +83,14 @@ if (!exists(MultilinesClass)) {
 
       ::output_name="Multilines-maxresponse.ami.gz"
 
-      ::Gui()
+      #::Gui()
     }
   #----------------------------
-    proc ::Close() {
-      ::win.Hide
+    proc ::Close() \
+    {
+      if (exists(::win)) {
+      ::win.HidePanel
+      }
       delvars GetObjectName(::Close)
     }
     ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -110,7 +115,7 @@ if (!exists(MultilinesClass)) {
       } else {
         eval "::mask <<="+::mask_name+";"
       }
-      ::win.update
+      ::win.Update(-1)
     }
     
     #-----------------------------------------------
@@ -521,20 +526,30 @@ if (!exists(MultilinesClass)) {
     proc ::Save() {
       ::result.save ::output_name
     }
+    
+    proc ::SetParentPanel(OBJECT pp) \
+    {
+      ::parent_panel = &pp
+    }
+    
     #-----------------------------------------------
     proc ::Gui() \
     {
-      ::win = ParamWin("MultiLines")
-    
-      ::win.BeginBook
+      import = &global::ami_import;
+      if (exists(::parent_panel)) {
+        ::win = import->ParamPanel("MultiLines",&::parent_panel)
+      } else {
+        ::win = import->ParamPanel("MultiLines")
+      }
+      ::win.BeginBook()
         ::win.AddPage("Main")
           # set the input image
-          ::win.AddImageChoice(::input_name, "Input")
+          ::win.AddImageChoice( &::input_name, "Input")
           # set the mask image
-          ::win.AddImageChoice(::mask_name, "Mask")
+          ::win.AddImageChoice( &::mask_name, "Mask")
         
 
-          modeid = ::win.AddEnum(::mode)
+          modeid = ::win.AddEnum( &::mode)
             ::win.AddEnumChoice(modeid,"Hessian Matrix")
             ::win.AddEnumChoice(modeid,"Structure Tensor")
 
@@ -544,34 +559,33 @@ if (!exists(MultilinesClass)) {
               ::win.AddButton("Run",        ::MultiLines)
               ::win.AddButton("Run new",    ::MultiLines_new)
             ::win.EndHorizontal
-            ::outputname_id = ::win.AddString(  ::output_name, "Output")
+            ::outputname_id = ::win.AddString( &::output_name, "Output")
             ::win.BeginHorizontal
                 display_id = ::win.AddButton("Display",    ::Display)
-                display_id = ::win.AddButton("Save",       ::Save)
             ::win.EndHorizontal
           ::win.EndBoxPanel
         ::win.AddPage("Circle")
 
-          ::win.AddBoolean(::use_SD,"Use StdDev")
-          ::win.AddFloat(::SD_th,"StdDev_thres", 0,10)
-          ::win.AddBoolean(::use_EXC,"Use Exc")
-          ::win.AddFloat(::EXC_th,"Exc_thres",0,10)
-          pairmodeid = ::win.AddEnum(::pairs_mode)
+          ::win.AddBoolean( &::use_SD,"Use StdDev")
+          ::win.AddFloat( &::SD_th,"StdDev_thres", 0,10)
+          ::win.AddBoolean( &::use_EXC,"Use Exc")
+          ::win.AddFloat( &::EXC_th,"Exc_thres",0,10)
+          pairmodeid = ::win.AddEnum( &::pairs_mode)
             ::win.AddEnumChoice(pairmodeid,"Min")
             ::win.AddEnumChoice(pairmodeid,"Max")
             ::win.AddEnumChoice(pairmodeid,"Mean")
-          ::win.AddFloat(::keephighest,0,100)
+          ::win.AddFloat( &::keephighest,  "::keephighest", 0,100)
 
         ::win.AddPage("Scales")
           ::win.BeginBoxPanel("Radii (or scales)")
-            ::win.AddFloat(::radmin,"min.",0.01,10)
-            ::win.AddFloat(::radmax,"max.",0.01,10)
-            ::win.AddInt(  ::numrad,"number",1,20)
+            ::win.AddFloat( &::radmin,"min.",0.01,10)
+            ::win.AddFloat( &::radmax,"max.",0.01,10)
+            ::win.AddInt( &::numrad,"number",1,20)
           ::win.EndBoxPanel
         
-          ::win.AddBoolean(::local_maxima,"Local maxima")
-          ::win.AddBoolean(::keep_orientations,"Orientations")
-          ::win.AddBoolean(::keep_radii,"Radii")
+          ::win.AddBoolean( &::local_maxima,"Local maxima")
+          ::win.AddBoolean( &::keep_orientations,"Orientations")
+          ::win.AddBoolean( &::keep_radii,"Radii")
 
 
       ::win.EndBook
@@ -582,8 +596,11 @@ if (!exists(MultilinesClass)) {
       ::win.EndHorizontal
     
     
-      ::win.update
-      ::win.Display
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
     }
     
     ::Init

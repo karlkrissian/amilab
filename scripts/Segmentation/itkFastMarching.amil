@@ -1,22 +1,150 @@
 if (!exists(itkFastMarchingClass)) {
-  
+ 
   ami_import->ITK()
+  
+#*******************************************************************************************#
+#****************************SIGMOID********************************************************#
+#*******************************************************************************************#
+
+  
+  Class itkSigmoidClass {
+    
+    ::itk=&global::itk
+  
+    proc ::Init() {
+      
+      ::class_name="global::itkSigmoidClass"
+      ::input_name   = "","Name of the input image variable"
+      ::stand = 0.5, "Standard deviation of the Gaussian kernel."
+      
+      ::min = 0.0, "Set the minimum value of the output image."
+      ::max = 1.0, "Set the maximum value of the output image."
+      
+      ::alpha = -0.5, "Constant to compute the sigmoid function and FastMarching solution."
+      ::beta = 3, "Constant to compute the sigmoid function and FastMarching solution."
+      ::dim = INT(1), "The dimension of the image."
+      
+      ::inputmin = 0, "Minimal Intensity of the image."
+      ::inputmax = 32000, "Maximal Intensity of the image."
+      
+    }
+    
+    proc ::SetParentPanel(OBJECT pp) \
+    {
+      ::parent_panel = &pp
+    }
+
+    proc ::Load_input() {
+
+      eval "::input <<= (FLOAT)"+::input_name+";"
+        if (::input_name=="Image") {
+          ::input_name = "::input"
+          ::win.Update(-1)
+        }
+      
+      ::inputmin = min(::input)
+      ::inputmax = max(::input)
+      
+      show ::input
+    }
+    
+    proc ::Run() {
+      ::grad = normgrad(::input,::stand)
+      ::g = 1
+      if (::dim==0) {
+        global::sigmoid = ::itk->SigmoidImageFilter2D(::grad,::min,::max,::alpha,::beta)			
+      } else {
+        global::sigmoid = ::itk->SigmoidImageFilter3D(::grad,::min,::max,::alpha,::beta)
+      }      
+    }
+    
+    proc ::Display() {
+    
+      show ::input
+      show global::sigmoid
+      ::input_draw.compare(global::sigmoid_draw)
+    
+    }
+    
+    proc ::Gui() {
+      import = &global::ami_import;
+      if (exists(::parent_panel)) {
+        ::win = import->ParamPanel("itkSig",&::parent_panel)
+      } else {
+        ::win = import->ParamPanel("itkSig")
+      }
+      ::win.BeginBook()
+      
+        ::win.AddPage("Init")
+        
+        ::win.BeginBoxPanel("Input Image")
+            # set the input image
+            ::win.BeginHorizontal
+              ::win.AddImageChoice( &::input_name, "")
+              ::win.AddButton("Load",::Load_input)
+            ::win.EndHorizontal
+            ::win.BeginHorizontal
+              dim_id = ::win.AddEnum( &::dim,"Dimension")
+              ::win.AddEnumChoice(dim_id, "2D")
+              ::win.AddEnumChoice(dim_id, "3D")
+            ::win.EndHorizontal
+        ::win.EndBoxPanel
+                
+        ::win.AddPage("Param")
+        
+          ::win.AddFloat( &::stand,"StandDev",0,(::inputmax-::inputmin)/2)
+          ::win.AddFloat( &::min,"OutputMin",0,::inputmin)
+          ::win.AddFloat( &::max,"OutputMax",0,::inputmax)
+          ::win.AddFloat( &::alpha,"Alpha",-3,::inputmax)  
+          ::win.AddFloat( &::beta,"Beta",0,::inputmax)        
+
+          ::win.BeginHorizontal
+            ::win.AddButton("Run", ::Run)
+            ::win.AddButton("Display", ::Display)
+          ::win.EndHorizontal
+        
+      #::win.EndBook
+           
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+    }
+    
+    proc ::Close() \
+    {
+      ::win.HidePanel
+      delvars GetObjectName(::Close)
+    }
+    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+  
+    proc ::CloseAll() {
+      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
+      ::Close
+    }
+    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    
+    ::Init()
+  }
+# Class itkSigmoidClass
+
+
+#*******************************************************************************************#
+#****************************FASTMARCHING***************************************************#
+#*******************************************************************************************#
   
   Class itkFastMarchingClass {
     
     ::itk=&global::itk
   
     proc ::Init() {
-      
+    
+      global::itkSigmoidClass ::sig
       ::class_name="global::itkFastMarchingClass"
       ::input_name   = "","Name of the input image variable"
       ::input_velocity_name   = "","Name of the input velocity image variable"
       ::gradient_mode = INT(0), "Gradient mode: Computes the norm of the gradient of the image."
-      ::stand = 0.5, "Standard deviation of the Gaussian kernel."
-      
-      ::min = 0.0, "Set the minimum value of the output image."
-      ::max = 1.0, "Set the maximum value of the output image."
-      
       ::seed_X = 0, "Seed point in X-axis."
       ::seed_Y = 0, "Seed point in Y-axis."
       ::seed_Z = 0, "Seed point in Z-axis."
@@ -29,27 +157,19 @@ if (!exists(itkFastMarchingClass)) {
       
       ::inputmin = 0, "Minimal Intensity of the image."
       ::inputmax = 32000, "Maximal Intensity of the image."
-      
-      ::gradient_filename = "GradientResult"
-      ::fast_filename = "FastMarchingResult"
-      ::result_filename_ext = ".ami.gz"
-      ::f = UCHAR(0)
-      ::g = UCHAR(0)
-      
-      ::Gui()
     }
 
     proc ::Close() \
     {
-      ::win.Hide
+      ::win.HidePanel
       delvars GetObjectName(::Close)
     }
     ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
   
-    proc ::CloseAll() \
-    {
+    proc ::CloseAll() {
+      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
+      ::sig->CloseAll()
       ::Close
-      if (exists(NLmeansClass)) { del NLmeansClass; }
     }
     ::CloseAll.Comments("Call ::Close() method and delete the class variable")
     
@@ -58,7 +178,7 @@ if (!exists(itkFastMarchingClass)) {
       eval "::input <<= (FLOAT)"+::input_name+";"
         if (::input_name=="Image") {
           ::input_name = "::input"
-          ::win.update
+          ::win.Update(-1)
         }
       
       ::inputmin = min(::input)
@@ -72,7 +192,7 @@ if (!exists(itkFastMarchingClass)) {
       eval "::input_velocity <<= (FLOAT)"+::input_velocity_name+";"
         if (::input_velocity_name=="Image") {
           ::input_velocity_name = "::input_velocity"
-          ::win.update
+          ::win.Update(-1)
         }
       
       ::inputmin = min(::input_velocity)
@@ -83,33 +203,26 @@ if (!exists(itkFastMarchingClass)) {
     
     proc ::Run() {
       if (::gradient_mode==0) {
-        ::grad = normgrad(::input,::stand)
-        ::g = 1
         if (::dim==0) {
-          ::sigmoid = ::itk->SigmoidImageFilter2D(::grad,::min,::max,::alpha,::beta)
-          ::fast = ::itk->FastMarchingImageFilter2D(::sigmoid,::seed_X,::seed_Y,::alpha,::beta,::stopping_time)
-          ::thres = ::itk->BinaryThresholdImageFilter2D(::fast,::lower,::upper)
+          global::fast = ::itk->FastMarchingImageFilter2D(::input,::seed_X,::seed_Y,::alpha,::beta,::stopping_time)
+          global::thres = ::itk->BinaryThresholdImageFilter2D(global::fast,::lower,::upper)
           ::f = 1			
         } else {
-          ::sigmoid = ::itk->SigmoidImageFilter3D(::grad,::min,::max,::alpha,::beta)
-          ::fast = ::itk->FastMarchingImageFilter3D(::sigmoid,::seed_X,::seed_Y,::seed_Z,::alpha,::beta,::stopping_time)
-          ::thres = ::itk->BinaryThresholdImageFilter3D(::fast,::lower,::upper)
+          global::fast = ::itk->FastMarchingImageFilter3D(::input,::seed_X,::seed_Y,::seed_Z,::alpha,::beta,::stopping_time)
+          global::thres = ::itk->BinaryThresholdImageFilter3D(global::fast,::lower,::upper)
           ::f = 1
         }
       } else {
         if (::dim==0) {
-          ::fast = ::itk->FastMarchingImageFilter2D(::input_velocity,::seed_X,::seed_Y,::alpha,::beta,::stopping_time)
-          ::thres = ::itk->BinaryThresholdImageFilter2D(::fast,::lower,::upper)
+          global::fast = ::itk->FastMarchingImageFilter2D(::input_velocity,::seed_X,::seed_Y,::alpha,::beta,::stopping_time)
+          global::thres = ::itk->BinaryThresholdImageFilter2D(global::fast,::lower,::upper)
           ::f = 1			
         } else {
-          ::fast = ::itk->FastMarchingImageFilter3D(::input_velocity,::seed_X,::seed_Y,::seed_Z,::alpha,::beta,::stopping_time)
-          ::thres = ::itk->BinaryThresholdImageFilter3D(::fast,::lower,::upper)
+          global::fast = ::itk->FastMarchingImageFilter3D(::input_velocity,::seed_X,::seed_Y,::seed_Z,::alpha,::beta,::stopping_time)
+          global::thres = ::itk->BinaryThresholdImageFilter3D(global::fast,::lower,::upper)
           ::f = 1
         }
       }
-      
-
-      
     }
     
     proc ::SeedPoint() \
@@ -152,118 +265,82 @@ if (!exists(itkFastMarchingClass)) {
     proc ::Display() {
     
       show ::input
-      show ::thres
-      ::input_draw.compare(::thres_draw)
+      show global::thres
+      ::input_draw.compare(global::thres_draw)
     
-    }
-    
-    proc ::Save() {
-      filename=::fast_filename-".gz"-".ami";
-      if (::f) {
-        if (::dim==0) {
-          filename = filename + sprint("_seedX%0.1f",::seed_X) \
-                              + sprint("_seedY%0.1f",::seed_Y) \
-                              + sprint("_alpha%0.1f",::alpha) \
-                              + sprint("_beta%0.1f",::beta) \
-                              + sprint("_thres%0.0f",::threshold) \
-                              + sprint("_stop%0.0f",::stopping_time) \
-                              + sprint("_outmin%0.1f",::min) \
-                              + sprint("_outmax%0.1f",::max) 
-        } else {
-          filename = filename + sprint("_seedX%0.1f",::seed_X) \
-                              + sprint("_seedY%0.1f",::seed_Y) \
-                              + sprint("_seedZ%0.1f",::seed_Z) \
-                              + sprint("_alpha%0.1f",::alpha) \
-                              + sprint("_beta%0.1f",::beta) \
-                              + sprint("_thres%0.0f",::threshold) \
-                              + sprint("_stop%0.0f",::stopping_time)\
-                              + sprint("_outmin%0.1f",::min) \
-                              + sprint("_outmax%0.1f",::max)
-        }
-      } else {
-        print "First you must create the image.\n"
-      }
-      filename = filename + ::result_filename_ext
-      print "saving file "+filename+"\n"
-      ::thres.save filename
     }
     
     proc ::Gui() {
-      ::win = ParamWin("itkFM")
-      ::win.BeginBook
+      import = &global::ami_import;
+      ::win = import->ParamPanel("itkFM")
+      ::win.BeginBook()
+      ::sig->SetParentPanel(&::win)
+      ::sig->Gui()
+      ::win.AddPage("Gradient",&::sig->win)
+      
+      ::win.AddPage("itkFM")
+      ::win.BeginBook()
       
         ::win.AddPage("Init")
         
         ::win.BeginBoxPanel("Input Image")
             # set the input image
             ::win.BeginHorizontal
-              ::win.AddImageChoice(::input_name, "")
+              ::win.AddImageChoice( &::input_name, "")
               ::win.AddButton("Load",::Load_input)
             ::win.EndHorizontal
             ::win.BeginHorizontal
-              dim_id = ::win.AddEnum(::dim,"Dimension")
+              dim_id = ::win.AddEnum( &::dim,"Dimension")
               ::win.AddEnumChoice(dim_id, "2D")
               ::win.AddEnumChoice(dim_id, "3D")
             ::win.EndHorizontal
         ::win.EndBoxPanel
+        
         ::win.BeginBoxPanel("Velocity Image")
           ::win.BeginHorizontal
-            gradmode_id = ::win.AddEnum(::gradient_mode,"Mode")
+            gradmode_id = ::win.AddEnum( &::gradient_mode,"Mode")
             ::win.AddEnumChoice(gradmode_id, "NormGradient")
             ::win.AddEnumChoice(gradmode_id, "User Velocity Image")
           ::win.EndHorizontal
         ::win.EndBoxPanel
         ::win.BeginBoxPanel("Input Velocity Image")
           ::win.BeginHorizontal
-            ::win.AddImageChoice(::input_velocity_name, "")
+            ::win.AddImageChoice( &::input_velocity_name, "")
             ::win.AddButton("Load",::Load_input_velocity)
           ::win.EndHorizontal
         ::win.EndBoxPanel        
         
         ::win.AddPage("Param")
-        
-        ::win.BeginBook
-          ::win.AddPage("PreProcessing")
-            ::win.AddFloat(::stand,"StandDev",0,(::inputmax-::inputmin)/2)
-            ::win.AddFloat(::min,"OutputMin",0,::inputmin)
-            ::win.AddFloat(::max,"OutputMax",0,::inputmax)
-            ::win.AddFloat(::alpha,"Alpha",-3,::inputmax)  
-            ::win.AddFloat(::beta,"Beta",0,::inputmax)        
-
-          ::win.AddPage("itkFM")
-            ::win.AddButton("Set Seed Point",::SeedPoint)             
-            ::win.AddFloat(::stopping_time,"Stopping Time Value",0,::inputmax)
-              
-          ::win.AddPage("PostProcessing")
-            ::win.AddFloat(::lower,"Lower Threshold",0,::inputmax)
-            ::win.AddFloat(::upper,"Upper Threshold",0,::inputmax)
-        
-        ::win.EndBook
           
-        ::win.AddPage("Result")
-        
-        ::win.BeginBoxPanel("Compute")
-          ::win.AddButton("Run", ::Run)
-          ::win.AddButton("Display", ::Display)
-          ::win.AddButton("Save", ::Save)
-        ::win.EndBoxPanel
+          ::win.AddButton("Set Seed Point",::SeedPoint)             
+          ::win.AddFloat( &::stopping_time,"Stopping Time Value",0,::inputmax)
+          ::win.AddFloat( &::lower,"Lower Threshold",0,::inputmax)
+          ::win.AddFloat( &::upper,"Upper Threshold",0,::inputmax)
+          
+          ::win.BeginHorizontal
+            ::win.AddButton("Run", ::Run)
+            ::win.AddButton("Display", ::Display)
+          ::win.EndHorizontal
         
       ::win.EndBook
       
       ::win.BeginHorizontal
-        ::win.AddButton("Close", ::Close)
-        ::win.AddButton("Close All", ::CloseAll)
+        ::win.AddButton("Close",      ::Close)
+        ::win.AddButton("Close All",  ::CloseAll)
       ::win.EndHorizontal
-      
-      ::win.update
-      ::win.Display
+           
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
     }
     
     ::Init
   }
-# Class itkNLMeansClass
+# Class itkFastMarchingClass
 }
-# end if (!exists(itkNLMeansClass))
+# end if (!exists(itkFastMarchingClass))
 
 #----------------------------
 # Main
@@ -272,12 +349,13 @@ if (!exists(itkFastMarchingClass)) {
 if (!exists(itkfm)) {
 
   itkFastMarchingClass itkfm
+  itkfm->Gui()
   
   if (argc>=1) {
     printn "reading image"
     input = Image($1)
     itkfm->image_name = "input"
-    itkfm->win.update
+    itkfm->win.Update(-1)
   }
 
 } else {

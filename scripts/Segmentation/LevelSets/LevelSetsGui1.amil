@@ -7,11 +7,15 @@ if (!exists(LevelSetsClass)){
 
   Class LevelSetsClass {
   #------------------------------------
-    
+  
+  ::class_name  = "global::LevelSetsClass"
+  global::AddSphereClass ::AS
+  import = &global::ami_import;
+  ::win = import->ParamPanel("LevelSets")
+  
   //---------------------------------------------------
   proc ::Init(IMAGE _input, IMAGE _init) {
     
-      ::class_name  = "global::LevelSetsClass"
       ::input_name   = "","Name of the input image variable"
       ::initial_name = "","Name of the initial level set image variable"
       # 0: for spheres 1: for initial image
@@ -85,7 +89,7 @@ if (!exists(LevelSetsClass)){
 
       ::html_filename = GetScriptsDir+"/Segmentation/LevelSets/Doc/levelset_gui/index.html"
 
-      ::Gui()
+      #::Gui()
   }
 
     #-----------------------------------------------
@@ -277,8 +281,11 @@ if (!exists(LevelSetsClass)){
 
   }
   #----------------------------
-  proc ::Close() {
+  proc ::Close() \
+  {
+    if (exists(::win)) {
     ::win.HidePanel
+    }
     delvars GetObjectName(::Close)
   }
   ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -286,6 +293,7 @@ if (!exists(LevelSetsClass)){
   #----------------------------
   proc ::CloseAll() {
     eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
+    ::AS->CloseAll
     ::Close
   }
   ::CloseAll.Comments("Call ::Close() method and delete the class variable")
@@ -517,7 +525,10 @@ if (!exists(LevelSetsClass)){
       printn _y
       printn _z
       ::inls_backup = ::inls
-      global::AddBrightSphere_mm(&::inls,\
+      #global::AddBrightSphere_mm(&::inls,\
+      #      _x,_y,_z,\
+      #      ::sphere_radius,-1,1)
+      ::AS->AddBrightSphere_mm(&::inls,\
             _x,_y,_z,\
             ::sphere_radius,-1,1)
       ::inls0 = ::inls
@@ -678,8 +689,8 @@ if (!exists(LevelSetsClass)){
   
   #  ::win = ParamWin("Evolve Active Contours using Level Sets")
     import = &global::ami_import;
-    ::win = import->ParamPanel("LevelSets")
-    ::win.BeginBook
+    
+    ::win.BeginBook()
   
       ::win.AddPage("Init")
 
@@ -734,7 +745,7 @@ if (!exists(LevelSetsClass)){
           ::win.AddBoolean( &::use_smoothing,"Smooth")
           ::win.SetCallback( &::activate_terms)
         ::win.EndHorizontal()
-        ::win.BeginBook
+        ::win.BeginBook()
           ::exp_pid = ::win.AddPage("Exp")
             ::win.AddFloat( &::expansioncoeff,"Weight",0,1)
             ::win.AddBoolean( &::use_expansion_image,"Use expansion image")

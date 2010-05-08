@@ -45,6 +45,8 @@ SET(  WrapITK_SRCS
     wrapitkLevelSet.cpp
     wrapitkBinaryThresholdImageFilter.cpp
     wrapitkBackTrackingMeshFilter.cpp
+    wrapitkLocalMeanImageFilter.cpp
+    wrapitkTranslateImageFilter.cpp
 )
 
 SET(WrapITK_HDRS
@@ -59,6 +61,8 @@ SET(WrapITK_HDRS
 	wrapitkWaterShedImageFilter.h
 	wrapitkWrite.h
 	wrapitkBackTrackingMeshFilter.h
+	wrapitkLocalMeanImageFilter.h
+	wrapitkTranslateImageFilter.h
 )
 
 SET(WrapITK_SRCS

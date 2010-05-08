@@ -29,6 +29,9 @@
 #include "wrapitkLevelSet.h"
 #include "wrapitkBinaryThresholdImageFilter.h"
 #include "wrapitkBackTrackingMeshFilter.h"
+#include "wrapitkTranslateImageFilter.h"
+#include "wrapitkLocalMeanImageFilter.h"
+
 #include "ami_object.h"
 
 
@@ -58,7 +61,8 @@ void AddWrapITK(){
   ADDOBJECTVAR_NAME(C_wrap_imagefunction, "MultiScaleVesselnessFilter3D",   wrap_itkMultiScaleVesselnessFilter3D);
   ADDOBJECTVAR_NAME(C_wrap_imagefunction, "LevelSetFilter2D",               wrap_itkLevelSetFilter2D);
   ADDOBJECTVAR_NAME(C_wrap_imagefunction, "LevelSetFilter3D",               wrap_itkLevelSetFilter3D);
-  ADDOBJECTVAR_NAME(C_wrap_imagefunction, "IsoContourDist",                 wrap_itkIsoContourDist);
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction, "IsoContourDist2D",               wrap_itkIsoContourDist2D);
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction, "IsoContourDist3D",               wrap_itkIsoContourDist3D);
   ADDOBJECTVAR_NAME(C_wrap_imagefunction, "FastMarchingImageFilter2D",      wrap_itkFastMarchingImageFilter2D);
   ADDOBJECTVAR_NAME(C_wrap_imagefunction, "FastMarchingImageFilter3D",      wrap_itkFastMarchingImageFilter3D);
   ADDOBJECTVAR_NAME(C_wrap_imagefunction, "DICOMRead",                      wrap_itkDICOMRead);
@@ -68,6 +72,10 @@ void AddWrapITK(){
   ADDOBJECTVAR_NAME(C_wrap_imagefunction, "BasicNLMeans3D",                 wrap_itkBasicNLMeans3D);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,   "BackTrackingMeshFilter2D",       wrap_itkBackTrackingMeshFilter2D);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,   "BackTrackingMeshFilter3D",       wrap_itkBackTrackingMeshFilter3D);
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction, "LocalMeanImageFilter2D",         wrap_itkLocalMeanImageFilter2D);
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction, "LocalMeanImageFilter3D",         wrap_itkLocalMeanImageFilter3D);
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction, "TranslateImageFilter2D",         wrap_itkTranslateImageFilter2D);
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction, "TranslateImageFilter3D",         wrap_itkTranslateImageFilter3D);
 
  // Restore the object context
   Vars.SetObjectContext(previous_ocontext);

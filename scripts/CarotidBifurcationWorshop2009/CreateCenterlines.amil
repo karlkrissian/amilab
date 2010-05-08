@@ -96,7 +96,7 @@ CarotidExperiments_Vesselness
   RML_radmin = 0.3
   RML_radmax = 6
   RML_numrad = 7
-  RML_win.update
+  RML_win.Update(-1)
   RML_CB_Filter
   # save the result to a file here ...
   if (CE_mode==1) {

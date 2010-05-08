@@ -4,7 +4,7 @@
 #define NOMINMAX
 
 #include "IdentifierInfo.h"
-#include "Variable.hpp"
+//#include "Variable.hpp"
 #include "imageextent.h"
 #include "AmiInstructionBlock.h"
 #include "driver.h"

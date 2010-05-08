@@ -34,7 +34,10 @@ InrImage* wrap_itkLevelSetFilter2D(ParamList* p)
   InrImage* res = NULL;
   int n=0;
   
-  if (!get_val_param<float>( curvatureScaling, p, n))          HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>( input,      p, n))  HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>( sigmoidI,   p, n))  HelpAndReturnNULL;
+  if (!get_val_param<float>( curvatureScaling, p, n))   HelpAndReturnNULL;
+  if (!get_val_param<float>( propagationScaling, p, n)) HelpAndReturnNULL;
  
   typedef float       InternalPixelType;
   const   unsigned int        Dimension = 2;

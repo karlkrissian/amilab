@@ -13,7 +13,7 @@ proc RML_load_input() {
   } else {
     eval "global::RML_mask <<="+RML_mask_name+";"
   }
-  RML_win.update
+  RML_win.Update(-1)
 
 }
 

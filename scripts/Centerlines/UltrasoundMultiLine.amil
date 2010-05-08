@@ -120,20 +120,21 @@ proc USML_DisplayLines() {
 proc USML_CreateWindow() {
   global
     # parameters window
-    USML_win = ParamWin("Multiscale response filter for centerlines")
+    USML_import = &global::ami_import;
+win = import->ParamPanel("Multiscale response filter for centerlines")
     
-    USML_sigma_id = USML_win.AddFloat(USML_sigma,0.6,3)
-    USML_th_id    = USML_win.AddFloat(USML_th,1,500)
+    USML_sigma_id = USML_win.AddFloat( &USML_sigma,  "USML_sigma", 0.6,3)
+    USML_th_id    = USML_win.AddFloat( &USML_th,  "USML_th", 1,500)
 
-    USML_rmin_id   = USML_win.AddFloat(USML_rmin, 0.5,20)
-    USML_rmax_id   = USML_win.AddFloat(USML_rmax, 0.5,20)
-    USML_rstep_id  = USML_win.AddFloat(USML_rstep,0.5,20)
+    USML_rmin_id   = USML_win.AddFloat( &USML_rmin,  "USML_rmin",  0.5,20)
+    USML_rmax_id   = USML_win.AddFloat( &USML_rmax,  "USML_rmax",  0.5,20)
+    USML_rstep_id  = USML_win.AddFloat( &USML_rstep,  "USML_rstep", 0.5,20)
 
-    USML_localstruct_id = USML_win.AddEnum(USML_localstruct)
+    USML_localstruct_id = USML_win.AddEnum( &USML_localstruct)
     USML_H_id    = USML_win.AddEnumChoice(USML_localstruct_id,"Hessian")
     USML_ST_id   = USML_win.AddEnumChoice(USML_localstruct_id,"Struct Tensor")
 
-    USML_win.BeginBox("Controls")
+    USML_win.BeginBoxPanel("Controls")
         USML_win.BeginHorizontal
             process_id     = USML_win.AddButton("Process", USML_Process)
         USML_win.EndHorizontal
@@ -142,9 +143,9 @@ proc USML_CreateWindow() {
             displayext_id  = USML_win.AddButton("Display Extrema",  USML_DisplayExtrema)
             displayline_id = USML_win.AddButton("Display Lines",    USML_DisplayLines)
         USML_win.EndHorizontal
-    USML_win.EndBox
+    USML_win.EndBoxPanel
     
-    USML_win.CreateWin
+    USML_win.Update
     USML_win.Display
   local
 }

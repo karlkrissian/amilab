@@ -114,9 +114,10 @@ InrImage* wrap_itkSigmoidImageFilter3D(ParamList* p)
   InrImage* res = NULL;
   int n=0;
   
-  if (!get_val_param<float>(        outputMin,       p, n)) HelpAndReturnNULL;
-  if (!get_val_param<float>(        outputMax,       p, n)) HelpAndReturnNULL;
-  if (!get_val_param<float>(        alpha,       p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>( input,      p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>(        outputMin,  p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>(        outputMax,  p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>(        alpha,      p, n)) HelpAndReturnNULL;
   if (!get_val_param<float>(        beta,       p, n)) HelpAndReturnNULL;
  
   typedef float       InternalPixelType;
@@ -136,21 +137,20 @@ InrImage* wrap_itkSigmoidImageFilter3D(ParamList* p)
 	
 	cout << "Conversi�n hecha" << endl;
 
-  typedef itk::SigmoidImageFilter< InternalImageType, OutputImageType >  SigmoidFilterType;
+  typedef itk::SigmoidImageFilter< InternalImageType, InternalImageType >  SigmoidFilterType;
   SigmoidFilterType::Pointer sigmoidFilter = SigmoidFilterType::New();
 
   sigmoidFilter->SetOutputMinimum(   outputMin  );
   sigmoidFilter->SetOutputMaximum(   outputMax  );
 
-  sigmoidFilter->SetInput( image );
-  
   sigmoidFilter->SetAlpha(  alpha  );
   sigmoidFilter->SetBeta(   beta   );
 
+  sigmoidFilter->SetInput( image );
   sigmoidFilter->Update();
 
 	outimage = sigmoidFilter->GetOutput();
-
+  
 	// Convert from ITK to InrImage
   cout << "Converting back to InrImage " << endl;
 

@@ -5,3 +5,5 @@
 #
 
 AddMenuScript("&QualityMeasures","Image &Differences","QualityMeasures/MSE.amil")
+
+

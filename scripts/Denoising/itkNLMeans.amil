@@ -30,15 +30,14 @@ if (!exists(itkNLMeansClass)) {
     
     proc ::Close() \
     {
-      ::win.Hide
+      ::win.HidePanel
       delvars GetObjectName(::Close)
     }
     ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
   
-    proc ::CloseAll() \
-    {
+    proc ::CloseAll() {
+      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
       ::Close
-      if (exists(itkNLmeansClass)) { del itkNLmeansClass; }
     }
     ::CloseAll.Comments("Call ::Close() method and delete the class variable")
     
@@ -48,7 +47,7 @@ if (!exists(itkNLMeansClass)) {
       eval "::input <<= (FLOAT)"+::input_name+";"
         if (::input_name=="Image") {
           ::input_name = "input"
-          ::win.update
+          ::win.Update(-1)
         }
 		
       ::inputmin = min(::input)
@@ -91,19 +90,20 @@ if (!exists(itkNLMeansClass)) {
   
     proc ::Gui() \
     {
-      ::win = ParamWin("itkNL-Means")
-      ::win.BeginBook
+      import = &global::ami_import;
+      ::win = import->ParamPanel("itkNL-Means")
+      ::win.BeginBook()
       
         ::win.AddPage("Init")
         
         ::win.BeginBoxPanel("Input Image")
             # set the input image
             ::win.BeginHorizontal
-              ::win.AddImageChoice(::input_name, "")
+              ::win.AddImageChoice( &::input_name, "")
               ::win.AddButton("Load",::Load_input)
             ::win.EndHorizontal
             ::win.BeginHorizontal
-              dim_id = ::win.AddEnum(::dim,"Dimension")
+              dim_id = ::win.AddEnum( &::dim,"Dimension")
               ::win.AddEnumChoice(dim_id, "2D")
               ::win.AddEnumChoice(dim_id, "3D")
             ::win.EndHorizontal
@@ -112,10 +112,10 @@ if (!exists(itkNLMeansClass)) {
         ::win.AddPage("Param")
         
         ::win.BeginBoxPanel("NL-Means Param")
-          ::win.AddInt(::searching_window,"Searching Window",1,30)
-          ::win.AddInt(::pattern_window,"Pattern Window",1,10)
-          ::win.AddFloat(::threshold,"Threshold",0.01,200)
-          noise_id = ::win.AddEnum(::noise,"Noise Type")
+          ::win.AddInt( &::searching_window,"Searching Window",1,30)
+          ::win.AddInt( &::pattern_window,"Pattern Window",1,10)
+          ::win.AddFloat( &::threshold,"Threshold",0.01,200)
+          noise_id = ::win.AddEnum( &::noise,"Noise Type")
           ::win.AddEnumChoice(noise_id, "Additive Gaussian")
           ::win.AddEnumChoice(noise_id, "Rician")
         ::win.EndBoxPanel
@@ -133,7 +133,7 @@ if (!exists(itkNLMeansClass)) {
         ::win.AddButton("Close All", ::CloseAll)
       ::win.EndHorizontal
       
-      ::win.update
+      ::win.Update(-1)
       ::win.Display
     }
 	
@@ -156,7 +156,7 @@ if (!exists(itknlm)) {
     printn "reading image"
     input = Image($1)
     itknlm->image_name = "input"
-    itknlm->win.update
+    itknlm->win.Update(-1)
   }
 
 } else {

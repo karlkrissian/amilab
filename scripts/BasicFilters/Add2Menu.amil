@@ -10,6 +10,9 @@ filt_dir = "BasicFilters/"
 AddMenuScript(filt_category,"&Gaussian Filter",      filt_dir+"GaussianFilter/GaussianFilter_gui")
 AddMenuScript(filt_category,"&Soft Focus", filt_dir+"SoftFocus_gui")
 AddMenuScript(filt_category,"Grey &Morpho", filt_dir+"GreyMorpho")
+AddMenuScript(filt_category,"&itk Recursive Gaussian", filt_dir+"itkRecursiveGaussian")
+AddMenuScript(filt_category,"Weighted Local Stats",filt_dir+"WeightedLocalStats")
+AddMenuScript(filt_category,"itk Weighted Local Stats",filt_dir+"itkWeightedLocalStats")
 
 del filt_category
 del filt_dir

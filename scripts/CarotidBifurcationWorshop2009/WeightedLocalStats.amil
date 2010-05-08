@@ -26,7 +26,7 @@ if (!exists(WeightedLSCLass)) {
       eval "::input <<=(FLOAT)"+::input_name+";"
       if (::input_name=="Image") {
         ::input_name = "::input"
-        ::win.update
+        ::win.Update(-1)
       }
     }
 
@@ -36,14 +36,14 @@ if (!exists(WeightedLSCLass)) {
       eval "::weights <<=(FLOAT)"+::weights_name+";"
       if (::weights_name=="Image") {
         ::weights_name = "::weights"
-        ::win.update
+        ::win.Update(-1)
       }
     }
 
     #--------------------------
     proc ::Close() \
     {
-      ::win.Hide
+      ::win.HidePanel
       delvars GetObjectName(::Close)
     }
     ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -106,15 +106,16 @@ if (!exists(WeightedLSCLass)) {
     #--------------------------
     proc ::Gui() \
     {
-      ::win = ParamWin("Prob")
+      import = &global::ami_import;
+      ::win = import->ParamPanel("Prob")
 
       ::win.BeginPanel("Parameters")
-        ::win.AddImageChoice(::_input_name,"Input")
-        ::win.AddImageChoice(::_weights_name,"Weights")
-        ::win.AddString(::_output_prefix,"Output Prefix")
+        ::win.AddImageChoice( &::_input_name,"Input")
+        ::win.AddImageChoice( &::_weights_name,"Weights")
+        ::win.AddString( &::_output_prefix,"Output Prefix")
     
-        ::win.AddInt(::_localstats_winsize,1,10)
-        ::win.AddFloat(::_min_weight,0.01,1)
+        ::win.AddInt( &::_localstats_winsize,  "::_localstats_winsize", 1,10)
+        ::win.AddFloat( &::_min_weight,  "::_min_weight", 0.01,1)
     
         ::win.AddButton("Apply",  ::_Apply)
         ::win.AddButton("Display",::_Display)
@@ -126,7 +127,7 @@ if (!exists(WeightedLSCLass)) {
         ::win.AddButton("Close All", ::CloseAll)
       ::win.EndHorizontal
 
-      ::win.update
+      ::win.Update(-1)
       ::win.Display
     }
 

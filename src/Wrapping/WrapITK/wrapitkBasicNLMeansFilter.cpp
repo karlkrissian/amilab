@@ -42,6 +42,10 @@ InrImage* wrap_itkBasicNLMeans2D(ParamList* p)
   InrImage* res = NULL;
   int n=0;
   
+  if (!get_val_ptr_param<InrImage>( input, p, n))    HelpAndReturnNULL;
+  if (!get_int_param              (	searching, p, n))HelpAndReturnNULL;
+  if (!get_int_param              (	pattern, p, n))  HelpAndReturnNULL;
+  if (!get_val_param<float>       ( threshold, p, n))HelpAndReturnNULL;
   if (!get_int_param(	noise,	 	 p, n)) HelpAndReturnNULL;
 
   typedef float               PixelType;
@@ -129,10 +133,10 @@ InrImage* wrap_itkBasicNLMeans3D(ParamList* p)
   InrImage* res = NULL;
   int n=0;
   
-  if (!get_val_ptr_param<InrImage>( input,          p, n)) HelpAndReturnNULL;
-  if (!get_int_param(         searching, p, n)) HelpAndReturnNULL;
-  if (!get_int_param(         pattern,   p, n)) HelpAndReturnNULL;
-  if (!get_val_param<float>(  threshold, p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>( input, p, n))    HelpAndReturnNULL;
+  if (!get_int_param              (	searching, p, n))HelpAndReturnNULL;
+  if (!get_int_param              (	pattern, p, n))  HelpAndReturnNULL;
+  if (!get_val_param<float>       ( threshold, p, n))HelpAndReturnNULL;
   if (!get_int_param(	noise,	 	 p, n)) HelpAndReturnNULL;
 
   typedef float               PixelType;
