@@ -13,6 +13,36 @@
 
 #include "inrimage.hpp"
 
+
+
+#define EXPR_OP_IMAGE(expr,operator,im)      \
+  {       \
+    InrImage::ptr res;                          \
+    if (im.use_count()==1) res = im; \
+    else {\
+      res = InrImage::ptr(new InrImage( im->GetFormat(),\
+                                        im->GetVDim(),\
+                                        (im->GetName()+std::string("_op_expression")).c_str(),\
+                                        im.get()));\
+      (*res) = (*im);\
+    }\
+    int       i;                                           \
+    double    val = expr;                                  \
+    res->InitBuffer();                                     \
+    if( res->ScalarFormat() ){                           \
+      do {                                              \
+        res->FixeValeur(val operator res->ValeurBuffer()); \
+      } while (res->IncBuffer());             \
+    }else{                                                  \
+      do {                                              \
+        for(i=0;i<res->GetVDim();i++) {                         \
+          res->VectFixeValeur(i,val operator res->VectValeurBuffer(i));  \
+        }                                            \
+      } while(res->IncBuffer());              \
+    }                                                  \
+    return Variable<InrImage>::ptr( new Variable<InrImage>(res)); \
+  }
+
 //------------------------------------------------------
 //------- Variable<float>
 //------------------------------------------------------
@@ -65,7 +95,13 @@ template<> BasicVariable::ptr Variable<float>::operator +(const BasicVariable::p
 {
   if (b->IsNumeric()) {
     RETURN_VARPTR(float,Value()+b->GetValueAsDouble());
-  } else
+  }
+  else
+  if (b->Type()==type_image) {
+    DYNAMIC_CAST_VARIABLE(InrImage,b,var_im2);
+    EXPR_OP_IMAGE(Value(), + , var_im2->Pointer());
+  } 
+  else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
@@ -85,7 +121,13 @@ template<> BasicVariable::ptr Variable<float>::operator -(const BasicVariable::p
 {
   if (b->IsNumeric()) {
     RETURN_VARPTR(float,Value()-b->GetValueAsDouble());
-  } else
+  }
+  else
+ if (b->Type()==type_image) {
+    DYNAMIC_CAST_VARIABLE(InrImage,b,var_im2);
+    EXPR_OP_IMAGE(Value(), -, var_im2->Pointer());
+  } 
+  else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
@@ -105,7 +147,13 @@ template<> BasicVariable::ptr Variable<float>::operator *(const BasicVariable::p
 {
   if (b->IsNumeric()) {
     RETURN_VARPTR(float,Value()*b->GetValueAsDouble());
-  } else
+  } 
+  else
+  if (b->Type()==type_image) {
+    DYNAMIC_CAST_VARIABLE(InrImage,b,var_im2);
+    EXPR_OP_IMAGE(Value(), * , var_im2->Pointer());
+  } 
+  else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
@@ -125,7 +173,13 @@ template<> BasicVariable::ptr Variable<float>::operator /(const BasicVariable::p
 {
   if (b->IsNumeric()) {
     RETURN_VARPTR(float,Value()/b->GetValueAsDouble());
-  } else
+  }
+  else
+  if (b->Type()==type_image) {
+    DYNAMIC_CAST_VARIABLE(InrImage,b,var_im2);
+    EXPR_OP_IMAGE(Value(), / , var_im2->Pointer());
+  } 
+  else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }

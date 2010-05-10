@@ -20,6 +20,7 @@
   */
 class dw_Point2D {
 
+  protected:
     //! X position
     double _x;
 
@@ -42,13 +43,13 @@ class dw_Point2D {
      * 
      * @return X position.
      */
-    double GetX() { return _x;}
+    double GetX() const { return _x;}
 
     /**
      * 
      * @return Y position.
      */
-    double GetY() { return _y;}
+    double GetY() const { return _y;}
 
     /**
      * Set the X position.
@@ -61,6 +62,15 @@ class dw_Point2D {
      * @param y 
      */
     void SetY(double y) { _y = y; }
+
+    /**
+     * Copy of points
+     * @param pt 
+     */
+    void operator = (const dw_Point2D& pt) {
+      _x = pt._x;
+      _y = pt._y;
+    }
 };
 
 #endif // _dw_Point2D_h

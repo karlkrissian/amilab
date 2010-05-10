@@ -138,7 +138,7 @@ if (!exists(LevelSetsClass)){
 
     #-----------------------------------------------
     proc ::load_input() {
-
+      printn "*** load_input ***"
       eval "::input <<= (FLOAT)"+::input_name+";"
       if (::input_name=="BrowseImage") {
         ::input_name = "::input"
@@ -149,10 +149,49 @@ if (!exists(LevelSetsClass)){
       ::max          = max(::input)
       ::minimal_intensity = ::min
       ::win.Update(-1)
-  
+
+      ::UpdateHistogram()
+
       show ::input
     }
     ::load_input.Comments("Copies the input image in a local image member named 'input', and updates the min-max intensities")
+
+    #-----------------------------------------------
+    proc ::UpdateHistogram() \
+    {
+      printn "*** UpdateHistogram ***"
+      # display histogram
+      ::h <<= histo(::input,::min,::max,::max-::min+1)
+      ::dw->SetXLimits(::min,::max)
+      ::dw->SetYLimits(min(::h),max(::h))
+      ::dw->SetCurve(::h)
+      ::dw->SetCurveProperties(0,"#F05050")
+    }
+    ::UpdateHistogram.Comments("Updates the display of the Histogram.")
+
+    #-----------------------------------------------
+    proc ::UpdateExpansionCurve() \
+    {
+      if (exists(::input)) {
+        ::exp_curve = Image(FLOAT,::max-::min+1,1,1)
+        ::exp_curve.settranslation(::min,0,0)
+        
+        ::exp_curve = ((FLOAT) Xpos(::exp_curve))-\
+          ::Imean
+        
+        ::exp_curve = \
+          (exp(-::exp_curve*::exp_curve/(2*::Isd*::Isd))\
+            -::prob_threshold)\
+          *max(::h)
+        
+        ::dw->SetCurve(::exp_curve,1)
+        ::dw->SetCurveProperties(1,"#5050F0")
+        ::dw->SetYLimits(-max(-min(::exp_curve),-min(::h)),max(max(::h),max(::exp_curve)))
+      } else {
+        InfoDialog "You need to load the input image first ..."
+      }
+    }
+    ::UpdateExpansionCurve.Comments("Updates the display of the expansion mapping curve.")
 
     #-----------------------------------------------
     proc ::load_initial() {
@@ -319,6 +358,7 @@ if (!exists(LevelSetsClass)){
         ::Isd  = sqrt(::Isd)
         printn sprint("mean %f",::Imean)
         printn sprint("sd   %f",::Isd)
+        ::UpdateExpansionCurve()
       } else  {
         InfoDialog "::ComputeIntensityStats() \n No point within initial level set"
       }
@@ -561,8 +601,8 @@ if (!exists(LevelSetsClass)){
   
   //---------------------------------------------------
   proc ::ReRun() {
-    if (!exists(::input_image)) { ::load_input; }
-    if (!exists(::inls))        { ::load_initial; }
+    if (!exists(::input)) { ::load_input; }
+    if (!exists(::inls))  { ::load_initial; }
     ::inls = ::inls0
     ::Run(1)
     show ::input
@@ -747,9 +787,17 @@ if (!exists(LevelSetsClass)){
               ::intexp_page = ::win.AddPage("Intensity-based")
                 ::win.AddButton("Compute stats",::ComputeIntensityStats)
                 ::win.AddFloat( &::Imean,"Mean", ::inputmin,::inputmax)
+                ::win.SetCallback(::UpdateExpansionCurve)
                 ::win.AddFloat( &::Isd,"StandDev",0,(::inputmax-::inputmin)/2)
+                ::win.SetCallback(::UpdateExpansionCurve)
                 ::win.AddFloat( &::prob_threshold,"Threshold",0,1)
+                ::win.SetCallback(::UpdateExpansionCurve)
                 ::win.AddBoolean( &::accept_high_intensity,"Accept high intensities")
+                # add a Curve Drawing Window
+                ::dw = import->wxDrawingWindow(::win.CurrentParent())
+                ::dw.SetMinSize(import->wxSize(50,100))
+                ::win.AddWidget(&::dw,0)
+
               ::imexp_page = ::win.AddPage("Image")
                 ::win.AddImageChoice( &::expansion_image_name,"Exp. Image:")
             ::win.EndBook()

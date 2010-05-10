@@ -187,7 +187,7 @@ if (!exists(Functions2DClass)) {
         ::X.setvoxelsize(::resolution,1,1)
         _pos = SpacePos(::X)
         ::X = _pos[0]
-        local::X = ::X
+        X = ::X
         eval "::Y1 <<= "+::c1->equation+";"
         ::dw.SetCurve(::Y1,0)
       }
@@ -209,7 +209,7 @@ if (!exists(Functions2DClass)) {
         ::X.setvoxelsize(::resolution,1,1)
         _pos = SpacePos(::X)
         ::X = _pos[0]
-        local::X = ::X
+        X = ::X
         eval "::Y2 <<= "+::c2->equation+";"
         ::dw.SetXLimits(::xmin,::xmax)
         ::dw.SetYLimits(::ymin,::ymax)

@@ -1330,7 +1330,7 @@ command:
         BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
         // check counter of the value, not of the variable ...
         if (var->GetPtrCounter()==1) {
-          cout << "GetPtrCounter == 1" << endl;
+          //cout << "GetPtrCounter == 1" << endl;
           IdentifierInfo::ptr ident($1);
           Vars.AddVar(ident,var);
         } else
@@ -1401,10 +1401,13 @@ command:
             }
             else
             // general case
+            // for now always call new copy here, otherwise a = b would rename b to a, which is bad
+/*
             if (var->GetPtrCounter()==1) {
               IdentifierInfo::ptr ident($1);
               Vars.AddVar(ident,var);
             } else
+*/
             {
                 BasicVariable::ptr copy = var->NewCopy();
                 IdentifierInfo::ptr ident($1);
@@ -1986,31 +1989,31 @@ command:
           InrImage::ptr imptr  (driver.im_stack.GetLastImage());
           bool can_skip_allocation = false;
 
-          if (i1.get()!=imptr.get()) {
-            can_skip_allocation = (i1->GetFormat()==imptr->GetFormat());
-            if (can_skip_allocation) {
-              // first try the standard data copy
-              can_skip_allocation = ((*i1)=(*imptr));
+          if (imptr.get()) {
+            if (i1.get()!=imptr.get()) {
+              can_skip_allocation = (i1->GetFormat()==imptr->GetFormat());
               if (can_skip_allocation) {
-                // copy additional information here
-                i1->SetTranslation(imptr->TrX(), imptr->TrY(), imptr->TrZ());
-                i1->SetVoxelSize( imptr->VoxSizeX(), 
-                                  imptr->VoxSizeY(),
-                                  imptr->VoxSizeZ());
+                // first try the standard data copy
+                can_skip_allocation = ((*i1)=(*imptr));
+                if (can_skip_allocation) {
+                  // copy additional information here
+                  i1->SetTranslation(imptr->TrX(), imptr->TrY(), imptr->TrZ());
+                  i1->SetVoxelSize( imptr->VoxSizeX(), 
+                                    imptr->VoxSizeY(),
+                                    imptr->VoxSizeZ());
+                }
               }
-            }
-            if (!can_skip_allocation) {
-              // instead of deleting and creating,
-              // replace the pointer and the information
-              if (imptr != NULL) {
-                var->Delete();
-                // should be OK
-                var->Init( var->Name().c_str(), imptr);
-              }
-              else
-                driver.err_print("assignment of NULL image\n");
-            } // end if (!can_skip_allocation)
-          } // end if (i1.get()!=imptr)
+              if (!can_skip_allocation) {
+                // instead of deleting and creating,
+                // replace the pointer and the information
+                  var->Delete();
+                  // should be OK
+                  var->Init( var->Name().c_str(), imptr);
+              } // end if (!can_skip_allocation)
+            } // end if (i1.get()!=imptr)
+          }
+          else
+            driver.err_print("assignment of NULL image\n");
         }
 /*
         |  var_image ASSIGN_OP expr
@@ -5826,6 +5829,13 @@ float_variable:
       ADD_VARSTACK_FLOAT(3.14159265358979323846)
     }
     | VAR_FLOAT
+    {
+      /**
+      Description: adds a reference to the variable in the stack
+      **/
+      BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
+      driver.var_stack.AddVar(var->NewReference());
+    }
     | VAR_INT
     {
       /**
@@ -9907,6 +9917,13 @@ image_variable:
 
 string_variable:
   VAR_STRING
+  {
+    /**
+    Description: adds a reference to the variable in the stack
+    **/
+    BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar(var->NewReference());
+  }
   |
   primary_expr_string
   {
@@ -10503,6 +10520,13 @@ matrix_variable:
       }
       |
       VAR_MATRIX
+      {
+        /**
+        Description: adds a reference to the variable in the stack
+        **/
+        BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
+        driver.var_stack.AddVar(var->NewReference());
+      }
       |
       T_Invert T_OP_PAR expr_var T_CL_PAR
       {

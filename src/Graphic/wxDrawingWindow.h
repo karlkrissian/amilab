@@ -23,6 +23,53 @@
 #include "DefineClass.hpp"
 #include "wx/dcclient.h"
 
+
+class dw_ControlPoint
+{
+private:
+  dw_Point2D pos;
+  wxPoint winpos;
+  bool selected;
+  bool has_focus;
+  int  radius;
+
+public:
+  dw_ControlPoint()
+  {
+    selected = false;
+    has_focus = false;
+    radius = 3;
+  }
+
+  dw_ControlPoint(const dw_Point2D& p)
+  {
+    pos = p;
+    selected = false;
+    has_focus = false;
+    radius = 3;
+  }
+
+  void operator = (const dw_Point2D& p )
+  {
+    pos = p;
+  }
+
+  double GetX() const { return pos.GetX(); }
+  double GetY() const { return pos.GetY(); }
+
+  int GetRadius() const { return radius; }
+  void SetRadius(const int& r) { radius = r; }
+
+  void SetPos(double x, double y) { pos.SetX(x); pos.SetY(y); }
+
+  wxPoint GetwxPoint() const { return winpos; }
+  void SetwxPoint(const wxPoint& p) { winpos = p; }
+
+  void SetFocus(bool act) { has_focus = act; }
+  bool HasFocus()         { return has_focus; }
+};
+
+
 /**
   * A wxWindow that draws 2D curves.
   */
@@ -45,6 +92,16 @@ class wxDrawingWindow : public wxScrolledWindow
   //! std::vector of the curves to draw
   std::vector<dw_Curve> _curves;
 
+  //! std:vector of dw_Point2D: list of control points
+  std::vector<dw_ControlPoint> _controlpoints;
+
+  //! index of the control point having the focus if any, -1 otherwise
+  int focus_pointid;
+
+  int _mouse_x;
+  int _mouse_y;
+  bool _left_down;
+
 public:
    wxDrawingWindow(wxWindow *parent, wxWindowID id = wxID_ANY,
         const wxPoint& pos = wxDefaultPosition,
@@ -53,8 +110,10 @@ public:
 
   virtual ~wxDrawingWindow(){};
 
-  void World2Window( wxDC& dc, double x, double y, 
+  void World2Window( double x, double y, 
                       wxCoord& wx, wxCoord& wy);
+
+  void Window2World( wxCoord wx, wxCoord wy, double& x, double& y);
 
   void DrawAxes( wxDC& dc );
 
@@ -108,6 +167,17 @@ public:
    */
   bool SetCurve( int i, InrImage* im);
 
+  /**
+   * Adds a new control point
+   * @param control point
+   */
+  void AddControl( const dw_Point2D& pt);
+
+  /**
+   * Set the new position of a new control point
+   * @param control point
+   */
+  void SetControl( int i, const dw_Point2D& pt);
 
   /**
    * Set the curve number i color from the string, see wxColour for documentation
@@ -137,10 +207,18 @@ public:
    */
   void DrawCurve( int i, wxDC& dc );
 
+  void DrawControls(wxDC& dc);
+
   void OnPaint(          wxPaintEvent& event);
   //void OnSize(           wxSizeEvent& event);
   //void OnChar(           wxKeyEvent&  event);
-  //void OnMouseEvent(     wxMouseEvent& event);
+
+  void OnLeftDown(      wxMouseEvent& event) { _left_down = true;  event.Skip(); }
+  void OnLeftUp(        wxMouseEvent& event) { _left_down = false; event.Skip(); }
+  void OnRightDown(     wxMouseEvent& event);
+  void OnMotion(        wxMouseEvent& event);
+
+  void OnAddControl(wxCommandEvent& event);
 
   DECLARE_EVENT_TABLE();
 };

@@ -14,11 +14,22 @@
 
 #include "amilab_messages.h"
 #include "wx/dcclient.h"
+#include <wx/menu.h>
 
 #define macro_max(a,b) ((a)>(b)?(a):(b))
 
+
+enum {
+  wxID_AddControl = 1000,
+};
+
 BEGIN_EVENT_TABLE(wxDrawingWindow, wxWindow)
-  EVT_PAINT(wxDrawingWindow::OnPaint)
+  EVT_PAINT(        wxDrawingWindow::OnPaint)
+  EVT_RIGHT_DOWN(   wxDrawingWindow::OnRightDown )
+  EVT_LEFT_DOWN(    wxDrawingWindow::OnLeftDown )
+  EVT_LEFT_UP(      wxDrawingWindow::OnLeftUp )
+  EVT_MOTION(       wxDrawingWindow::OnMotion )
+  EVT_MENU(         wxID_AddControl, wxDrawingWindow::OnAddControl)
 END_EVENT_TABLE();
 
 //------------------------------------------------
@@ -36,6 +47,9 @@ wxDrawingWindow::wxDrawingWindow(wxWindow *parent, wxWindowID id,
   this->SetScrollbars(3,3,10,10);
   this->EnableScrolling(true,true);
 
+  focus_pointid = -1;
+  _left_down = false;
+
   // default values
   _xaxis = _yaxis = 0;
   _xmin = _ymin = -10;
@@ -43,7 +57,7 @@ wxDrawingWindow::wxDrawingWindow(wxWindow *parent, wxWindowID id,
 }
 
 //------------------------------------------------
-void wxDrawingWindow::World2Window( wxDC& dc, double x, double y, wxCoord& wx, wxCoord& wy)
+void wxDrawingWindow::World2Window(  double x, double y, wxCoord& wx, wxCoord& wy)
 {
   wxSize _sz = GetClientSize();
   int px = 0,py = 0;
@@ -54,6 +68,16 @@ void wxDrawingWindow::World2Window( wxDC& dc, double x, double y, wxCoord& wx, w
   wy = macro_max(-1,py);
   if (wx>_sz.x) wx = _sz.x;
   if (wy>_sz.y) wy = _sz.y;
+}
+
+
+//------------------------------------------------
+void wxDrawingWindow::Window2World(  wxCoord wx, wxCoord wy, double& x, double& y)
+{
+  wxSize _sz = GetClientSize();
+
+  x = _xmin + ((float) wx)/(_sz.x-1)*(_xmax-_xmin);
+  y = _ymin + ((float) (_sz.y-1-wy) )/(_sz.y-1)*(_ymax-_ymin);
 }
 
 //------------------------------------------------
@@ -97,6 +121,27 @@ bool wxDrawingWindow::SetCurve( int i, InrImage* im)
   return true;
 }
 
+/**
+  * Adds a new control point
+  * @param control point
+  */
+void wxDrawingWindow::AddControl( const dw_Point2D& pt)
+{
+  _controlpoints.push_back(dw_ControlPoint(pt));
+}
+
+/**
+  * Set the new position of a new control point
+  * @param control point
+  */
+void wxDrawingWindow::SetControl( int i, const dw_Point2D& pt)
+{
+  if ((i>=0)&&(i<_controlpoints.size())) {
+    _controlpoints[i] = pt;
+  }
+}
+
+
 //------------------------------------------------
 void wxDrawingWindow::SetCurveColor( int i, std::string color_string)
 {
@@ -133,7 +178,7 @@ void wxDrawingWindow::DrawCurve(int i, wxDC& dc )
   for(it=_points.begin();it!=_points.end();it++)
   {
     // draw line from previous to current point
-    World2Window(dc,it->GetX(),it->GetY(),x2,y2);
+    World2Window(it->GetX(),it->GetY(),x2,y2);
     if (it!=_points.begin()) {
       DrawLine(dc,x1,y1,x2,y2);
     }
@@ -153,8 +198,8 @@ void wxDrawingWindow::DrawAxes( wxDC& dc )
 
   wxCoord x1,y1,x2,y2;
   // from xmin,yaxis to xmax,yaxis
-  World2Window(dc,_xmin,_yaxis,x1,y1);
-  World2Window(dc,_xmax,_yaxis,x2,y2);
+  World2Window(_xmin,_yaxis,x1,y1);
+  World2Window(_xmax,_yaxis,x2,y2);
   DrawLine(dc,x1,y1,x2,y2);
 
   // draw tics
@@ -167,7 +212,7 @@ void wxDrawingWindow::DrawAxes( wxDC& dc )
   //cout << "xmintic = " << xmintic << endl;
   double xpos = xmintic;
   while (xpos<=_xmax) {
-    World2Window(dc,xpos,_yaxis,x1,y1);
+    World2Window(xpos,_yaxis,x1,y1);
     double tmp = xpos/xbigstep;
     //cout << " tmp " << tmp << endl;
     //cout << " tmp -round(tmp)" << tmp - round(tmp) << endl;
@@ -184,8 +229,8 @@ void wxDrawingWindow::DrawAxes( wxDC& dc )
   }
 
   // from xaxis,ymin to xaxis,ymax
-  World2Window(dc,_xaxis,_ymin,x1,y1);
-  World2Window(dc,_xaxis,_ymax,x2,y2);
+  World2Window(_xaxis,_ymin,x1,y1);
+  World2Window(_xaxis,_ymax,x2,y2);
   DrawLine(dc,x1,y1,x2,y2);
 
   // draw tics
@@ -196,7 +241,7 @@ void wxDrawingWindow::DrawAxes( wxDC& dc )
   double ymintic = floor(_ymin/ystep)*ystep;
   double ypos = ymintic;
   while (ypos<=_ymax) {
-    World2Window(dc,_xaxis,ypos,x1,y1);
+    World2Window(_xaxis,ypos,x1,y1);
     double tmp = ypos/ybigstep;
     if ( fabs(tmp - round(tmp))<epsilon ) {
       DrawLine(dc,x1-bigticsize,y1,x1+bigticsize,y1);
@@ -210,6 +255,26 @@ void wxDrawingWindow::DrawAxes( wxDC& dc )
     ypos += ystep;
   }
 
+}
+
+
+//------------------------------------------------
+void wxDrawingWindow::DrawControls(wxDC& dc)
+{
+  scoped_ptr<wxPen> current_pen( new wxPen( *wxBLACK, 1, wxSOLID));
+  dc.SetPen(*current_pen);
+  
+  for(int i = 0; i<_controlpoints.size(); i++) 
+  {
+    if (_controlpoints[i].HasFocus())
+      dc.SetBrush(*wxGREEN_BRUSH);
+    else
+      dc.SetBrush(*wxTRANSPARENT_BRUSH);
+    wxCoord px,py;
+    World2Window(_controlpoints[i].GetX(),_controlpoints[i].GetY(),px,py);
+    _controlpoints[i].SetwxPoint(wxPoint(px,py));
+    dc.DrawCircle(px,py,_controlpoints[i].GetRadius());
+  }
 }
 
 //------------------------------------------------
@@ -283,4 +348,93 @@ void wxDrawingWindow::OnPaint(wxPaintEvent& event)
         DrawCurve(i,dc);
       }
     }
+
+    DrawControls(dc);
 }
+
+//-------------------------------------------------
+void wxDrawingWindow::OnRightDown(wxMouseEvent& event)
+{
+  wxClientDC dc(this);
+
+  _mouse_x = (int)event.GetX();
+  _mouse_y = (int)event.GetY();
+
+  CLASS_MESSAGE(boost::format("At position %1% %2%")%_mouse_x%_mouse_y);
+  double x,y;
+  Window2World(_mouse_x,_mouse_y,x,y);
+  CLASS_MESSAGE(boost::format("world coord %1% %2%")%x%y);
+
+  // create the popup menu here
+  wxMenu menu(_T("Menu"));
+  wxMenuItem* item = menu.Append(wxID_AddControl, wxT("&Add control point"));
+  PopupMenu(&menu, _mouse_x,_mouse_y);
+
+}
+
+//-------------------------------------------------
+void wxDrawingWindow::OnMotion(wxMouseEvent& event)
+{
+  wxClientDC dc(this);
+
+  _mouse_x = (int)event.GetX();
+  _mouse_y = (int)event.GetY();
+
+  //cout << "leftdown " << _left_down << endl;
+  if ((focus_pointid!=-1)&&(_left_down)) {
+    // displace the current point
+    //cout << "Displace ??" << endl;
+    double x,y;
+    Window2World(_mouse_x,_mouse_y,x,y);
+    _controlpoints[focus_pointid].SetPos(x,y);
+    _controlpoints[focus_pointid].SetwxPoint(wxPoint(_mouse_x,_mouse_y));
+    Refresh();
+    return;
+  }
+
+  double mindist = 1000;
+  int closest = -1;
+
+  // search for closest controlpoints
+  for(int i=0;i<_controlpoints.size();i++) {
+    wxPoint p;
+    p = _controlpoints[i].GetwxPoint();
+    _controlpoints[i].SetFocus(false);
+    double tmp = (p.x-_mouse_x)*(p.x-_mouse_x)+(p.y-_mouse_y)*(p.y-_mouse_y);
+    if (tmp<_controlpoints[i].GetRadius()*_controlpoints[i].GetRadius()) {
+      if (closest==-1) {
+        mindist = tmp;
+        closest = i;
+      }
+      else {
+        if (tmp<mindist) {
+          mindist = tmp;
+          closest = i;
+        }
+      }
+    }
+  }
+
+  if (closest!=-1) {
+    _controlpoints[closest].SetFocus(true);
+  }
+  focus_pointid = closest;
+  Refresh();
+  
+/*
+  CLASS_MESSAGE(boost::format("At position %1% %2%")%_mouse_x%_mouse_y);
+  double x,y;
+  Window2World(_mouse_x,_mouse_y,x,y);
+  CLASS_MESSAGE(boost::format("world coord %1% %2%")%x%y);
+*/
+}
+
+//-------------------------------------------------
+void wxDrawingWindow::OnAddControl(wxCommandEvent& event)
+{
+  double x,y;
+  Window2World(_mouse_x,_mouse_y,x,y);
+  AddControl(dw_Point2D(x,y));
+  Refresh();
+}
+

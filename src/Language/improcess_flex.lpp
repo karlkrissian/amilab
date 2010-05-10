@@ -1179,6 +1179,7 @@ yyip::Parser::token::yytokentype checkvar(
   //cout << "res = " << res << endl;
   if  ((!GB_driver.procedure_declaration) && var.get())   {
 
+    // add a new reference to the variable, as a temporary variable
     GB_driver.var_stack.AddVar(var);
 
     //yylval->variable = var.get();
