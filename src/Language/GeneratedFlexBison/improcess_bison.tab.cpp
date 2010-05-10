@@ -65,7 +65,7 @@
 #include "wrapAMIFluid.h"
 #include "wrapVTK.h"
 #include "wrapITK.h"
-#include "wrap_mainframe.h"
+//#include "wrap_mainframe.h"
 #include "wrap_imagedraw.h"
 #include "itkCannyEdgeDetector.h"
 #include "wrapWII.h"

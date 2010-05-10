@@ -52,7 +52,6 @@
 
 #include "ParamPanel.hpp"
 
-#include "wxDrawingWindow.h"
 #include "Variables.hpp"
 
 #include <iostream>
@@ -103,8 +102,6 @@ public:
     amilab_editor = NULL;
   }
   
-  wxDrawingWindow* GetDrawingWindow() { return _drawing_window; }
-
   wxAuiManager& GetAuiManager() {return m_mgr; };
 
   TextControl::ptr GetConsole() { return TC; }
@@ -242,8 +239,6 @@ protected:
   wxTreeItemId _vartree_objects;
   wxTreeItemId _vartree_wrapped_functions;
   wxTreeItemId _vartree_others;
-
-  wxDrawingWindow* _drawing_window;
 
   void CreateMenu();
 

@@ -152,7 +152,7 @@ public:
     }
   
     if (context==NEWVAR_CONTEXT) context = GetNewVarContext();
-    boost::shared_ptr<Variable<T> > newvar( new Variable<T>(name,val));
+    //boost::shared_ptr<Variable<T> > newvar( new Variable<T>(name,val));
     return _context[context]->AddVar<T>(name,val);
   }
 

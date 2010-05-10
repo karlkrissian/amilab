@@ -163,6 +163,28 @@ class CreateSmartPointer<C_wrap_imagefunction>
   return varres;
 
 
+
+/*! \def GET_OBJECT_PARAM
+    \brief try to convert the next parameter to the wrapped given type and gets a smart pointer to this type in the variable 'name'.
+*/
+#define GET_OBJECT_PARAM(type,name,membername) \
+  Variable<AMIObject>::ptr var; \
+  boost::shared_ptr<type> name; \
+  if (get_var_param<AMIObject>(var, p, n))  \
+  { \
+    WrapClassBase::ptr object( var->Pointer()->GetWrappedObject());\
+    WrapClass_##type::ptr obj( boost::dynamic_pointer_cast<WrapClass_##type>(object));\
+    if (obj.get()) {\
+      name = obj->membername;\
+    } else {\
+      FILE_ERROR("Could not cast dynamically the variable.")\
+    }\
+  }  else {\
+    FILE_ERROR("Need a wrapped object as parameter.")\
+  }
+
+
+
 /**
  * Function returns the number of parameters of the parameters list
  * if the pointer is NULL, returns -1 to allow display the documentation

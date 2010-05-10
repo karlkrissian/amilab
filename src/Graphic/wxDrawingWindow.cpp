@@ -15,6 +15,8 @@
 #include "amilab_messages.h"
 #include "wx/dcclient.h"
 
+#define macro_max(a,b) ((a)>(b)?(a):(b))
+
 BEGIN_EVENT_TABLE(wxDrawingWindow, wxWindow)
   EVT_PAINT(wxDrawingWindow::OnPaint)
 END_EVENT_TABLE();
@@ -44,13 +46,14 @@ wxDrawingWindow::wxDrawingWindow(wxWindow *parent, wxWindowID id,
 void wxDrawingWindow::World2Window( wxDC& dc, double x, double y, wxCoord& wx, wxCoord& wy)
 {
   wxSize _sz = GetClientSize();
+  int px = 0,py = 0;
+  px = (int) ((float)(_sz.x-1)/(_xmax-_xmin)*(x-_xmin)+0.5);
+  py = (int) ((float)(_sz.y-1)-(float)(_sz.y-1)/(_ymax-_ymin)*(y-_ymin)+0.5);
 
-  if ((x>=_xmin)&&(x<=_xmax)) {
-    wx = (int) (_sz.x/(_xmax-_xmin)*(x-_xmin)+0.5);
-  }
-  if ((y>=_ymin)&&(y<=_ymax)) {
-    wy = (int) (_sz.y-_sz.y/(_ymax-_ymin)*(y-_ymin)+0.5);
-  }
+  wx = macro_max(-1,px);
+  wy = macro_max(-1,py);
+  if (wx>_sz.x) wx = _sz.x;
+  if (wy>_sz.y) wy = _sz.y;
 }
 
 //------------------------------------------------
@@ -121,7 +124,6 @@ void wxDrawingWindow::SetCurveWidth( int i, int width)
 //------------------------------------------------
 void wxDrawingWindow::DrawCurve(int i, wxDC& dc )
 {
-
   std::vector<dw_Point2D>& _points = _curves[i].GetPoints();
   // iterate through the curves
   std::vector<dw_Point2D>::iterator it;
@@ -133,7 +135,7 @@ void wxDrawingWindow::DrawCurve(int i, wxDC& dc )
     // draw line from previous to current point
     World2Window(dc,it->GetX(),it->GetY(),x2,y2);
     if (it!=_points.begin()) {
-      dc.DrawLine(x1,y1,x2,y2);
+      DrawLine(dc,x1,y1,x2,y2);
     }
     x1 = x2;
     y1 = y2;
@@ -153,7 +155,7 @@ void wxDrawingWindow::DrawAxes( wxDC& dc )
   // from xmin,yaxis to xmax,yaxis
   World2Window(dc,_xmin,_yaxis,x1,y1);
   World2Window(dc,_xmax,_yaxis,x2,y2);
-  dc.DrawLine(x1,y1,x2,y2);
+  DrawLine(dc,x1,y1,x2,y2);
 
   // draw tics
   // automatic step computation
@@ -170,13 +172,13 @@ void wxDrawingWindow::DrawAxes( wxDC& dc )
     //cout << " tmp " << tmp << endl;
     //cout << " tmp -round(tmp)" << tmp - round(tmp) << endl;
     if ( fabs(tmp - round(tmp))<epsilon ) {
-      dc.DrawLine(x1,y1-bigticsize,x1,y1+bigticsize);
+      DrawLine(dc,x1,y1-bigticsize,x1,y1+bigticsize);
     }
     if ( fabs(tmp-0.5 - (round(tmp-0.5)))<epsilon ) {
-      dc.DrawLine(x1,y1-mediumticsize,x1,y1+mediumticsize);
+      DrawLine(dc,x1,y1-mediumticsize,x1,y1+mediumticsize);
     }
     else {
-      dc.DrawLine(x1,y1-smallticsize,x1,y1+smallticsize);
+      DrawLine(dc,x1,y1-smallticsize,x1,y1+smallticsize);
     }
     xpos += xstep;
   }
@@ -184,7 +186,7 @@ void wxDrawingWindow::DrawAxes( wxDC& dc )
   // from xaxis,ymin to xaxis,ymax
   World2Window(dc,_xaxis,_ymin,x1,y1);
   World2Window(dc,_xaxis,_ymax,x2,y2);
-  dc.DrawLine(x1,y1,x2,y2);
+  DrawLine(dc,x1,y1,x2,y2);
 
   // draw tics
   // automatic step computation
@@ -197,14 +199,14 @@ void wxDrawingWindow::DrawAxes( wxDC& dc )
     World2Window(dc,_xaxis,ypos,x1,y1);
     double tmp = ypos/ybigstep;
     if ( fabs(tmp - round(tmp))<epsilon ) {
-      dc.DrawLine(x1-bigticsize,y1,x1+bigticsize,y1);
+      DrawLine(dc,x1-bigticsize,y1,x1+bigticsize,y1);
     }
     else 
     if ( fabs(tmp-0.5 - (round(tmp-0.5)))<epsilon ) {
-      dc.DrawLine(x1-mediumticsize,y1,x1+mediumticsize,y1);
+      DrawLine(dc,x1-mediumticsize,y1,x1+mediumticsize,y1);
     }
     else 
-      dc.DrawLine(x1-smallticsize,y1,x1+smallticsize,y1);
+      DrawLine(dc,x1-smallticsize,y1,x1+smallticsize,y1);
     ypos += ystep;
   }
 
@@ -214,6 +216,11 @@ void wxDrawingWindow::DrawAxes( wxDC& dc )
 void wxDrawingWindow::OnPaint(wxPaintEvent& event)
 {
     wxPaintDC dc(this);
+
+    // Clip the drawing
+    wxRect rect(dc.GetSize());
+    wxDCClipper clip(dc,rect);
+
     scoped_ptr<wxPen> current_pen(
       new wxPen( *wxBLACK, 1, wxSOLID));
 

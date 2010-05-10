@@ -66,7 +66,7 @@ void myTreeCtrl::ShowMenu(wxTreeItemId id, const wxPoint& pt)
       //menu.Append(wxID_ABOUT, wxT("&About...")); //In MacOS wxID_ABOUT is special and not show about in menu when rightclick
       wxMenuItem* item = menu.Append(wxID_myABOUT, wxT("&About..."));
       //Put a book icon in the &About item
-      item->SetBitmap(wxArtProvider::GetIcon(wxART_HELP_BOOK, "menu", wxDefaultSize));
+      item->SetBitmap(wxArtProvider::GetIcon(wxART_HELP_BOOK, _T("menu"), wxDefaultSize));
       PopupMenu(&menu, pt);
     }
   }

@@ -320,15 +320,15 @@ void StcTestFrame::OnExit (wxCommandEvent &WXUNUSED(event)) {
   while (notebook->GetPageCount() > 0) {
     Edit* e          = getActiveEditor();
     wxFileName f     = e->GetFilename();
-    wxString close   = "Close: ";
-    wxString message = "Path: ";
+    wxString close(_T("Close: "));
+    wxString message(_T("Path: "));
     
     message.append(f.GetFullPath());
-    message.append("\n\nText is not saved, save before closing?");
+    message.append(_T("\n\nText is not saved, save before closing?"));
     close.append(f.GetFullName());
     
     if (e->Modified()) {
-      if (wxMessageBox (_(message), _(close),
+      if (wxMessageBox (message, close,
                         wxYES_NO | wxICON_QUESTION) == wxYES) {
           e->SaveFile();
           if (e->Modified()) {
@@ -421,7 +421,7 @@ void StcTestFrame::OnFileSaveAs (wxCommandEvent &WXUNUSED(event)) {
   tabs.addTab(e, p, filename); //Add the new entry
   wxFileName f(filename);
   notebook->RemovePage(size_t(notebook->GetPageIndex(p)));
-  notebook->AddPage(p, wxT(f.GetFullName()), true, wxArtProvider::GetBitmap(wxART_NORMAL_FILE, wxART_OTHER, wxSize(16,16)));
+  notebook->AddPage(p, f.GetFullName(), true, wxArtProvider::GetBitmap(wxART_NORMAL_FILE, wxART_OTHER, wxSize(16,16)));
 #endif // wxUSE_FILEDLG
 }
 
@@ -452,15 +452,15 @@ void StcTestFrame::OnFileClose (wxCommandEvent &WXUNUSED(event)) {
   }
   Edit* e          = getActiveEditor();
   wxFileName f     = e->GetFilename();
-  wxString close   = "Close: ";
-  wxString message = "Path: ";
+  wxString close   = _T("Close: ");
+  wxString message = _T("Path: ");
   
   message.append(f.GetFullPath());
-  message.append("\n\nText is not saved, save before closing?");
+  message.append(_T("\n\nText is not saved, save before closing?"));
   close.append(f.GetFullName());
   
   if (e->Modified()) {
-    if (wxMessageBox (_(message), _(close),
+    if (wxMessageBox (message, close,
                       wxYES_NO | wxICON_QUESTION) == wxYES) {
         e->SaveFile();
         if (e->Modified()) {
@@ -628,15 +628,15 @@ void StcTestFrame::OnCloseTab (wxAuiNotebookEvent & event) {
   }
   Edit* e          = getActiveEditor();
   wxFileName f     = e->GetFilename();
-  wxString close   = "Close: ";
-  wxString message = "Path: ";
+  wxString close   = _T("Close: ");
+  wxString message = _T("Path: ");
   
   message.append(f.GetFullPath());
-  message.append("\n\nText is not saved, save before closing?");
+  message.append(_T("\n\nText is not saved, save before closing?"));
   close.append(f.GetFullName());
   
   if (e->Modified()) {
-      if (wxMessageBox (_(message), _(close),
+      if (wxMessageBox (message, close,
                         wxYES_NO | wxICON_QUESTION) == wxYES) {
           e->SaveFile();
           if (e->Modified()) {
@@ -812,15 +812,15 @@ void StcTestFrame::FileOpen (wxString fname)
   //Is file open already??
   if (w != NULL) {
     //Build the message dialog
-    wxString message = "The file ";
+    wxString message = _T("The file ");
     message.append(fname);
-    message.append(" is already open.\n Do you want to open it again? (WARNING: not controlled)");
-    wxMessageDialog* dialog = new wxMessageDialog(this, message, "WARNING", wxYES_NO | wxCENTER | wxICON_EXCLAMATION);
+    message.append(_T(" is already open.\n Do you want to open it again? (WARNING: not controlled)"));
+    wxMessageDialog* dialog = new wxMessageDialog(this, message, _T("WARNING"), wxYES_NO | wxCENTER | wxICON_EXCLAMATION);
     int answer = dialog->ShowModal();
     
     //Create a new tab and split it on the right side
     if (answer == wxID_YES) {
-      wxPanel* page     = new wxPanel(notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, "");
+      wxPanel* page     = new wxPanel(notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T(""));
       wxBoxSizer* sizer = new wxBoxSizer(wxHORIZONTAL);
       Edit* editor      = new Edit(page, wxID_ANY, wxDefaultPosition, wxSize(730,530), wxSUNKEN_BORDER | wxVSCROLL);
       editor->SetMinSize(wxSize(73,53));
@@ -831,7 +831,7 @@ void StcTestFrame::FileOpen (wxString fname)
       editor->ShowLineNumbers(true);
       editor->SetCaretLineVisible(1);
       editor->SetCaretLineBackground(wxColour(230,230,230,wxALPHA_OPAQUE));
-      notebook->AddPage(page, wxT(f.GetFullName()), true, wxArtProvider::GetBitmap(wxART_NORMAL_FILE, wxART_OTHER, wxSize(16,16)));
+      notebook->AddPage(page, f.GetFullName(), true, wxArtProvider::GetBitmap(wxART_NORMAL_FILE, wxART_OTHER, wxSize(16,16)));
       notebook->Split(size_t(notebook->GetPageIndex(page)), wxRIGHT);
       tabs.addTab(editor, page, fname);
     }
@@ -843,7 +843,7 @@ void StcTestFrame::FileOpen (wxString fname)
   }
   else {
     //Isn't open
-    wxPanel* page     = new wxPanel(notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, "");
+    wxPanel* page     = new wxPanel(notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T(""));
     wxBoxSizer* sizer = new wxBoxSizer(wxHORIZONTAL);
     Edit* editor      = new Edit(page, wxID_ANY, wxDefaultPosition, wxSize(730,530), wxSUNKEN_BORDER | wxVSCROLL);
     editor->SetMinSize(wxSize(73,53));
@@ -857,7 +857,7 @@ void StcTestFrame::FileOpen (wxString fname)
     editor->SetCaretLineBackground(wxColour(230,230,230,wxALPHA_OPAQUE));
     
     //Add the new page to the notebook editor
-    notebook->AddPage(page, wxT(w.GetFullName()), true, wxArtProvider::GetBitmap(wxART_NORMAL_FILE, wxART_OTHER, wxSize(16,16)));
+    notebook->AddPage(page, w.GetFullName(), true, wxArtProvider::GetBitmap(wxART_NORMAL_FILE, wxART_OTHER, wxSize(16,16)));
     //Add editor pointer to tabVector
     tabs.addTab(editor, page, fname);
   }

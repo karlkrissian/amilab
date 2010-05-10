@@ -17,6 +17,8 @@
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+#include "wrap_wxSize.h"
+
 
 //-------------------------------------------------------------------------
 AMIObject::ptr AddWrap_wxWindow(  WrapClass_wxWindow::ptr& objectptr)
@@ -24,12 +26,10 @@ AMIObject::ptr AddWrap_wxWindow(  WrapClass_wxWindow::ptr& objectptr)
   // Create new instance of the class
   AMIObject::ptr amiobject( new AMIObject);
   amiobject->SetName("HtmlWindow");
-
   amiobject->SetWrappedObject(objectptr);
   objectptr->SetAMIObject(amiobject);
 
-  objectptr->AddVar_ShowWin(        objectptr);
-  objectptr->AddVar_SetSize(        objectptr);
+  objectptr->AddMethods(objectptr);
 
   return amiobject;
 }
@@ -48,26 +48,12 @@ BasicVariable::ptr wrap_wxWindow( ParamList* p)
   int n = 0;
   std::string* title = NULL;
 
-  Variable<AMIObject>::ptr var;
-  wxWindow* parent = NULL;
-
-  if (get_var_param<AMIObject>(var, p, n)) 
-  {
-    WrapClassBase::ptr object( var->Pointer()->GetWrappedObject());
-    WrapClass_wxWindow::ptr obj( boost::dynamic_pointer_cast<WrapClass_wxWindow>(object));
-    if (obj.get()) {
-      parent = obj->_win.get();
-    } else {
-      FILE_ERROR("Could not cast dynamically the variable to wxWindow.")
+  GET_OBJECT_PARAM(wxWindow,parent,_win);
+  if (!parent.get()) 
       HelpAndReturnVarPtr;
-    }
-  }  else {
-    FILE_ERROR("Need a wrapped wxWindow object as parameter.")
-    HelpAndReturnVarPtr;
-  }
 
   boost::shared_ptr<wxWindow> wxw_ptr(
-    new wxWindow( parent, wxID_ANY),
+    new wxWindow( parent.get(), wxID_ANY),
       wxwindow_nodeleter<wxWindow>() // deletion will be done by wxwidgets
     );
 
@@ -80,6 +66,41 @@ BasicVariable::ptr wrap_wxWindow( ParamList* p)
   return varres;
 }
 
+
+//---------------------------------------------------
+//  GetMinSize
+//---------------------------------------------------
+void WrapClass_wxWindow::
+      wrap_GetMinSize::SetParametersComments() 
+{
+  return_comments = "wxSize object";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxWindow::
+      wrap_GetMinSize::CallMember( ParamList* p)
+{
+  wxSize size = this->_objectptr->_win->GetMinSize();
+  return CreateVar_wxSize(new wxSize(size));
+}
+
+//---------------------------------------------------
+//  SetMinSize
+//---------------------------------------------------
+void WrapClass_wxWindow::
+      wrap_SetMinSize::SetParametersComments() 
+{
+  ADDPARAMCOMMENT("wxSize object");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxWindow::
+      wrap_SetMinSize::CallMember( ParamList* p)
+{
+  int n=0;
+  GET_OBJECT_PARAM(wxSize,size,_size);
+  if (!size.get()) ClassHelpAndReturn;
+  this->_objectptr->_win->SetMinSize(*size);
+  return BasicVariable::ptr();
+}
 
 //---------------------------------------------------
 //  Show

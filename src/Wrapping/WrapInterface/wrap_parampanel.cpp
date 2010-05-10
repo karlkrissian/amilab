@@ -20,7 +20,7 @@
 #include "MainFrame.h"
 #include "ami_function.h"
 #include "wrap_wxWindow.h"
-
+#include "wrap_wxSizerItem.h"
 
 #define RETURN_VARINT(val,name)             \
   std::string varname = (boost::format("%1%_id")%name).str();\
@@ -1054,11 +1054,13 @@ void WrapClass_parampanel::wrap_AddWidget::SetParametersComments()
 {
   ADDPARAMCOMMENT("AMIObject variable wrapping a wxWindow.");
   ADDPARAMCOMMENT("integer: sizer proportion (default is 0).");
+  return_comments = "Return corresponding wrapped wxSizerItem or empty variable if it fails.";
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_parampanel::wrap_AddWidget::CallMember( ParamList* p)
 {
   Variable<AMIObject>::ptr var;
+  wxSizerItem* res = NULL;
   int proportion=0;
   int n=0;
 
@@ -1071,7 +1073,7 @@ BasicVariable::ptr WrapClass_parampanel::wrap_AddWidget::CallMember( ParamList* 
     WrapClass_wxWindow::ptr obj( boost::dynamic_pointer_cast<WrapClass_wxWindow>(object));
     if (obj.get()) {
 
-      this->_objectptr->_parampanel->AddWidget(obj->_win.get(), proportion);
+      res = this->_objectptr->_parampanel->AddWidget(obj->_win.get(), proportion);
     } else {
       FILE_ERROR("Could not cast dynamically the variable to wxWindow.")
       ClassHelpAndReturn;
@@ -1080,5 +1082,6 @@ BasicVariable::ptr WrapClass_parampanel::wrap_AddWidget::CallMember( ParamList* 
     FILE_ERROR("Need a wrapped wxWindow object as parameter.")
     ClassHelpAndReturn;
   }
-  return BasicVariable::ptr();
+
+  return CreateVar_wxSizerItem(res);
 }

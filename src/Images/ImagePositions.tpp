@@ -89,6 +89,7 @@ double ImagePositions<T>::operator()( int x, int y, int z )
   #ifdef AMI_BUILD_Debug
     if (!_image->CoordOK(x,y,z))
     {
+      cout << "*" << endl;
       std::string message = (boost::format(" image %s ( %d %d %d )") 
             % (char*) _image->GetName() 
             % x %  y % z).str();

@@ -21,6 +21,7 @@
 
 #include "dw_Curve.h"
 #include "DefineClass.hpp"
+#include "wx/dcclient.h"
 
 /**
   * A wxWindow that draws 2D curves.
@@ -65,6 +66,23 @@ public:
   void SetYLimits(double ymin, double ymax)
   {
     _ymin = ymin; _ymax = ymax;
+  }
+
+  /**
+   * Draws the line if all the coordinates are positive
+   * @param dc drawing context 
+   * @param x1 first point
+   * @param y1 
+   * @param x2 second point
+   * @param y2
+   */
+  void DrawLine(wxDC& dc, int x1, int y1, int x2, int y2)
+  {
+    wxCoord w,h;
+    dc.GetSize(&w,&h);
+    wxRect rect(0,0,w,h);
+    if (rect.Contains(x1,y1)&&rect.Contains(x2,y2))
+      dc.DrawLine(x1,y1,x2,y2);
   }
 
   /**

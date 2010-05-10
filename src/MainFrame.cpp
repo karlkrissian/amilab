@@ -449,8 +449,8 @@ void MainFrame::CreateMainBook(wxWindow* parent)
   CreateKeywordsPanel(this);
   _main_book->AddPage( _keywords_panel , wxT("Keywords") );
 
-  CreateDrawingPanel(this);
-  _main_book->AddPage( _drawing_panel , wxT("Drawing") );
+//  CreateDrawingPanel(this);
+//  _main_book->AddPage( _drawing_panel , wxT("Drawing") );
 
   _main_book->Fit();
 
@@ -959,6 +959,7 @@ void MainFrame::CreateSettingsPanel(wxWindow* parent)
 } // CreateSettingsPanel()
 
 
+/*
 //-------------------------------------------------------
 void MainFrame::CreateDrawingPanel(wxWindow* parent)
 //            --------------------
@@ -977,6 +978,7 @@ void MainFrame::CreateDrawingPanel(wxWindow* parent)
           _drawing_panel,
           wxID_ANY,
           GetwxStr("Drawing") );
+
   wxStaticBoxSizer* drawingpanel_sizer  = new wxStaticBoxSizer(
             drawing_box
           , wxVERTICAL
@@ -984,6 +986,7 @@ void MainFrame::CreateDrawingPanel(wxWindow* parent)
           );
 
   _drawing_panel->SetSizer(drawingpanel_sizer);
+
   _drawing_window = new wxDrawingWindow(
       _drawing_panel,
       wxID_ANY,
@@ -996,7 +999,7 @@ void MainFrame::CreateDrawingPanel(wxWindow* parent)
 
 
 } // CreateDrawingPanel()
-
+*/
 
 
 void MainFrame::OnClose(wxCloseEvent& event)

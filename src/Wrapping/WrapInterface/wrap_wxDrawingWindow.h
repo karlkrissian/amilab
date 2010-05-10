@@ -42,6 +42,19 @@ class WrapClass_wxDrawingWindow : public WrapClass_wxWindow
     ADD_CLASS_METHOD(SetCurve,           "Sets the curve to draw in the Main Frame based on the first line of the given image.");
     ADD_CLASS_METHOD(SetCurveProperties, "Sets the properties of the displayed curve: color, style, width.");
 
+
+    void AddMethods(_parentclass_ptr& this_ptr )
+    {
+      // Add members from wxWindow
+      WrapClass_wxWindow::ptr parent_obj(boost::dynamic_pointer_cast<WrapClass_wxWindow>(this_ptr));
+      parent_obj->AddMethods(parent_obj);
+
+      AddVar_SetXLimits(         this_ptr);
+      AddVar_SetYLimits(         this_ptr);
+      AddVar_SetCurve(           this_ptr);
+      AddVar_SetCurveProperties( this_ptr);
+    }
+
 };
 
 /** function that add wrapping of the Image Drawing window

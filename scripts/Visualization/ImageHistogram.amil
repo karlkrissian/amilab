@@ -90,7 +90,9 @@ if (!exists(global::ImageHistoClass)) {
           # add Drawing Window
           d = ::win.CurrentParent()
           ::dw = import->wxDrawingWindow(&d)
-          ::win.AddWidget(&::dw,0)
+          # sets minimal size here
+          ::dw.SetMinSize(import->wxSize(60,60));
+          ::sizer_item = ::win.AddWidget(&::dw,0)
 
       ::win.EndBook
       ::win.BeginHorizontal

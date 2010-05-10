@@ -250,19 +250,19 @@ bool isFound (Edit* editor, wxString* findText, bool wholeWord, bool matchCase) 
   if (wholeWord) {
     //The search is case sensitive
     if (matchCase) {
-      result = editor->FindText(minPos, maxPos, wxT(*findText), wxSTC_FIND_WHOLEWORD | wxSTC_FIND_MATCHCASE);
+      result = editor->FindText(minPos, maxPos, *findText, wxSTC_FIND_WHOLEWORD | wxSTC_FIND_MATCHCASE);
     }
     else {
-      result = editor->FindText(minPos, maxPos, wxT(*findText), wxSTC_FIND_WHOLEWORD);
+      result = editor->FindText(minPos, maxPos, *findText, wxSTC_FIND_WHOLEWORD);
     }
   }
   //Match case can be checked
   else {
     if (matchCase) {
-      result = editor->FindText(minPos, maxPos, wxT(*findText), wxSTC_FIND_MATCHCASE);
+      result = editor->FindText(minPos, maxPos, *findText, wxSTC_FIND_MATCHCASE);
     }
     else { //Else we only find the text without flags
-      result = editor->FindText(minPos, maxPos, wxT(*findText), NULL);
+      result = editor->FindText(minPos, maxPos, *findText, NULL);
     }
   }
   if (result != -1) {
@@ -276,20 +276,20 @@ bool isFound (Edit* editor, wxString* findText, bool wholeWord, bool matchCase) 
 //Void function for not found message
 void notFound(wxString* text, bool wholeWord, bool matchCase) {
   wxString message = wxT("Text \"");
-  message.append(wxT(*text));
+  message.append(*text);
   message.append(wxT("\" not found."));
   if (wholeWord) {
-    message.append("\n You have whole word active. Maybe isn't a whole word.");
+    message.append(_T("\n You have whole word active. Maybe isn't a whole word."));
   }
   if (matchCase) {
-    message.append("\n You have match case active. Check find text.");
+    message.append(_T("\n You have match case active. Check find text."));
   }
-  wxMessageDialog* advice = new wxMessageDialog(NULL, wxT(message), wxT("Not found"), wxOK |  wxCENTER | wxICON_ERROR);
+  wxMessageDialog* advice = new wxMessageDialog(NULL, message, wxT("Not found"), wxOK |  wxCENTER | wxICON_ERROR);
   advice->ShowModal();
 }
 
 //-->Constructor<--
-FindAndReplace::FindAndReplace (Edit* openEditor) : wxFrame(openEditor,wxID_ANY,wxT("Find & Replace"), wxDefaultPosition, wxSize(509,207), wxDEFAULT_FRAME_STYLE, "frame")
+FindAndReplace::FindAndReplace (Edit* openEditor) : wxFrame(openEditor,wxID_ANY,wxT("Find & Replace"), wxDefaultPosition, wxSize(509,207), wxDEFAULT_FRAME_STYLE, _T("frame"))
 {
   wxWindowID find_and_replace = NULL;
   
@@ -361,7 +361,7 @@ void FindAndReplace::OnNextButtonClick (wxCommandEvent &event) {
   int result;
   editor->SetCurrentPos(editor->GetAnchor()); //Realocate cursor
   editor->SearchAnchor();
-  wxString findText = wxT(findBox->GetValue());
+  wxString findText = findBox->GetValue();
   //If findBox is empty show a message dialog
   if (findBox->IsEmpty()) {
     wxMessageDialog* warning = new wxMessageDialog(NULL, wxT("On Next operation: You must insert a find text."), wxT("WARNING"), wxOK | wxCENTER | wxICON_EXCLAMATION);
@@ -436,7 +436,7 @@ void FindAndReplace::OnNextButtonClick (wxCommandEvent &event) {
 void FindAndReplace::OnPrevButtonClick (wxCommandEvent &event) {
   int result;
   editor->SearchAnchor();
-  wxString findText = wxT(findBox->GetValue());
+  wxString findText = findBox->GetValue();
   //If findBox is empty show a message dialog
   if (findBox->IsEmpty()) {
     wxMessageDialog* warning = new wxMessageDialog(NULL, wxT("On Prev operation: You must insert a find text."), wxT("WARNING"), wxOK | wxCENTER | wxICON_EXCLAMATION);
@@ -528,8 +528,8 @@ void FindAndReplace::OnFunKeyDown (wxKeyEvent &event) {
 
 //-->Replace button click<--
 void FindAndReplace::OnReplaceButtonClick (wxCommandEvent &event) {
-  wxString findText    = wxT(findBox->GetValue());
-  wxString replaceText = wxT(replaceBox->GetValue());
+  wxString findText    = findBox->GetValue();
+  wxString replaceText = replaceBox->GetValue();
   //If findBox is empty show a message dialog
   if (findBox->IsEmpty()) {
     wxMessageDialog* warning = new wxMessageDialog(NULL, wxT("On Replace operation: You must insert a find text."), wxT("WARNING"), wxOK | wxCENTER | wxICON_EXCLAMATION);
@@ -556,8 +556,8 @@ void FindAndReplace::OnReplaceButtonClick (wxCommandEvent &event) {
 
 //-->Replace all button click<--
 void FindAndReplace::OnReplaceAllButtonClick( wxCommandEvent &event) {
-  wxString findText    = wxT(findBox->GetValue());
-  wxString replaceText = wxT(replaceBox->GetValue());
+  wxString findText    = findBox->GetValue();
+  wxString replaceText = replaceBox->GetValue();
   //If findBox is empty show a message dialog
   if (findBox->IsEmpty()) {
     wxMessageDialog* warning = new wxMessageDialog(NULL, wxT("On Replace All operation: You must insert a find text."), wxT("WARNING"), wxOK | wxCENTER | wxICON_EXCLAMATION);
@@ -646,7 +646,7 @@ void Edit::OnBraceMatch (wxCommandEvent &WXUNUSED(event)) {
 //----------------------------------------------------------------------------
 //==>gotoLine class methods<==
 //Constructor
-gotoLine::gotoLine (Edit* openEditor) : wxFrame(openEditor, wxID_ANY, wxT("Go to Line"), wxDefaultPosition, wxSize(245,151), wxDEFAULT_FRAME_STYLE, "gotoLineFrame") {
+gotoLine::gotoLine (Edit* openEditor) : wxFrame(openEditor, wxID_ANY, wxT("Go to Line"), wxDefaultPosition, wxSize(245,151), wxDEFAULT_FRAME_STYLE, wxT("gotoLineFrame")) {
   //GUI members
   wxPanel* panel      = new wxPanel(this, wxID_ANY);
   wxGridSizer* grid   = new wxGridSizer(2,2,4,4);
@@ -682,9 +682,9 @@ void gotoLine::onOKButtonClick (wxCommandEvent &event) {
   //Is a valid line??
   if (num > maxlines || num < 1) {
     //Show a message error, whith number line range
-    wxString message = "Wrong line number: You must insert a line number between 1 and ";
+    wxString message = _T("Wrong line number: You must insert a line number between 1 and ");
     message.append(wxString() << maxlines);
-    wxMessageDialog* error = new wxMessageDialog(NULL, wxT(message), wxT("Error line number"), wxOK |  wxCENTER | wxICON_ERROR);
+    wxMessageDialog* error = new wxMessageDialog(NULL, message, wxT("Error line number"), wxOK |  wxCENTER | wxICON_ERROR);
     error->ShowModal();
     return;
   }

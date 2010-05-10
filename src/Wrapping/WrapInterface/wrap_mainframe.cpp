@@ -23,11 +23,13 @@ extern MainFrame*    GB_main_wxFrame;
 void AddWrapMainFrame()
 {
 
+/*
   ADDVAR_NAME(C_wrap_procedure,"mf_DrawSetCurve",   wrap_MainFrameDrawSetCurve );
   ADDVAR_NAME(C_wrap_procedure,"mf_DrawSetXLimits", wrap_MainFrameDrawSetXLimits );
   ADDVAR_NAME(C_wrap_procedure,"mf_DrawSetYLimits", wrap_MainFrameDrawSetYLimits );
   ADDVAR_NAME(C_wrap_procedure,"mf_DrawSetCurveProperties", 
                     wrap_MainFrameDrawSetCurveProperties );
+*/
 }
 
 
@@ -48,6 +50,7 @@ void wrap_MainFrame( ParamList* p)
 }
 
 
+/*
 //--------------------------------------------------
 void wrap_MainFrameDrawSetXLimits( ParamList* p)
 {
@@ -159,3 +162,4 @@ void wrap_MainFrameDrawSetCurveProperties(  ParamList* p)
   GB_main_wxFrame->GetDrawingWindow()->SetCurveStyle(curve_number,style);
   GB_main_wxFrame->GetDrawingWindow()->SetCurveWidth(curve_number,width);
 }
+*/

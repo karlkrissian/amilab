@@ -24,6 +24,8 @@ SET(  WrapWxWidgets_SRCS
   wrap_wxfunctions.cpp
   wrap_wxWindow.cpp
   wrap_wxHtmlWindow.cpp
+  wrap_wxSizerItem.cpp
+  wrap_wxSize.cpp
 )
 
 SET(WrapWxWidgets_HDRS
@@ -31,6 +33,8 @@ SET(WrapWxWidgets_HDRS
   wrap_wxfunctions.h
   wrap_wxWindow.h
   wrap_wxHtmlWindow.h
+  wrap_wxSizerItem.h
+  wrap_wxSize.h
 )
 
 SET(WrapWxWidgets_SRCS
