@@ -28,10 +28,10 @@ class WrapClass_wxWindow : public WrapClassBase
   typedef WrapClass_wxWindow::ptr _parentclass_ptr;
 
   public:
-    boost::shared_ptr<wxWindow> _win;
+    boost::shared_ptr<wxWindow> _obj;
 
     /// Constructor
-    WrapClass_wxWindow(boost::shared_ptr<wxWindow> w): _win(w)
+    WrapClass_wxWindow(boost::shared_ptr<wxWindow> w): _obj(w)
     {}
 
     ADD_CLASS_METHOD(GetMinSize,     "Returns the minimum size of the window, an indication to the sizer layout mechanism that this is the minimum required size. It normally just returns the value set by SetMinSize, but it can be overridden to do the calculation on demand.");
@@ -40,12 +40,15 @@ class WrapClass_wxWindow : public WrapClassBase
     ADD_CLASS_METHOD(SetSize,        "Sets the size and position of the window in pixels.\n\
     http://docs.wxwidgets.org/stable/wx_wxwindow.html#wxwindowsetsize");
 
-    void AddMethods( _parentclass_ptr& this_ptr ) {
+    ADD_CLASS_METHOD(SetBackgroundColour,   "Sets the background colour of the window.");
 
-      AddVar_GetMinSize(     this_ptr);
-      AddVar_SetMinSize(     this_ptr);
-      AddVar_ShowWin(        this_ptr);
-      AddVar_SetSize(        this_ptr);
+
+    void AddMethods( _parentclass_ptr& this_ptr ) {
+      AddVar_GetMinSize(          this_ptr);
+      AddVar_SetMinSize(          this_ptr);
+      AddVar_ShowWin(             this_ptr);
+      AddVar_SetSize(             this_ptr);
+      AddVar_SetBackgroundColour( this_ptr);
     }
 
 };

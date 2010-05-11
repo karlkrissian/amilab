@@ -31,6 +31,7 @@
 
 #include "wrap_wxWindow.h"
 #include "wrap_wxSize.h"
+#include "wrap_wxColour.h"
 #include "wrap_wxHtmlWindow.h"
 #include "wrap_vtkLevelSets.h"
 
@@ -60,6 +61,7 @@ void AddWrapImports()
 
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxWindow",    wrap_wxWindow);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxSize",    wrap_wxSize);
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxColour",    wrap_wxColour);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxHtmlWindow",wrap_wxHtmlWindow);
 
   ADDOBJECTVAR_NAME(C_wrap_procedure,  "System",    wrap_System);

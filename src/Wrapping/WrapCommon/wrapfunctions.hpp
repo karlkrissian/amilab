@@ -158,10 +158,9 @@ class CreateSmartPointer<C_wrap_imagefunction>
     \brief returns a variable of the given type, after creating a new smart pointer to the given value
 */
 #define RETURN_VAR(type,val)             \
-  boost::shared_ptr<type> var(new type(val));\
-  Variable<type>::ptr varres( new Variable<type>(var));\
-  return varres;
-
+  boost::shared_ptr<type> return_var(new type(val));\
+  Variable<type>::ptr varres( new Variable<type>(return_var));\
+  return varres; \
 
 
 /*! \def GET_OBJECT_PARAM

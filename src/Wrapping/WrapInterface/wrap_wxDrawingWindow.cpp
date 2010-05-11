@@ -55,7 +55,7 @@ BasicVariable::ptr wrap_wxDrawingWindow( ParamList* p)
     WrapClassBase::ptr object( var->Pointer()->GetWrappedObject());
     WrapClass_wxWindow::ptr obj( boost::dynamic_pointer_cast<WrapClass_wxWindow>(object));
     if (obj.get()) {
-      parent = obj->_win.get();
+      parent = obj->_obj.get();
     } else {
       FILE_ERROR("Could not cast dynamically the variable to wxWindow.")
       HelpAndReturnVarPtr;

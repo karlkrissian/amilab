@@ -11609,7 +11609,8 @@ function_variable:
           } else {
             // error message here
             driver.yyiperror("Identifier does not belong to object context \n");
-            driver.var_stack.AddVar(BasicVariable::ptr());
+            YYABORT;
+            //driver.var_stack.AddVar(BasicVariable::ptr());
           }
         }
         ;

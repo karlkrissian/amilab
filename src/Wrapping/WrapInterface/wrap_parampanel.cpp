@@ -1073,7 +1073,7 @@ BasicVariable::ptr WrapClass_parampanel::wrap_AddWidget::CallMember( ParamList* 
     WrapClass_wxWindow::ptr obj( boost::dynamic_pointer_cast<WrapClass_wxWindow>(object));
     if (obj.get()) {
 
-      res = this->_objectptr->_parampanel->AddWidget(obj->_win.get(), proportion);
+      res = this->_objectptr->_parampanel->AddWidget(obj->_obj.get(), proportion);
     } else {
       FILE_ERROR("Could not cast dynamically the variable to wxWindow.")
       ClassHelpAndReturn;

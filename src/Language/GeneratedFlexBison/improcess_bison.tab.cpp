@@ -13023,7 +13023,8 @@ namespace yyip {
           } else {
             // error message here
             driver.yyiperror("Identifier does not belong to object context \n");
-            driver.var_stack.AddVar(BasicVariable::ptr());
+            YYABORT;
+            //driver.var_stack.AddVar(BasicVariable::ptr());
           }
         }
     break;
@@ -13031,7 +13032,7 @@ namespace yyip {
   case 683:
 
 /* Line 678 of lalr1.cc  */
-#line 11660 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11661 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           ImageExtent<float>* extent=new ImageExtent<float>( (float)(yysemantic_stack_[(11) - (1)].adouble),(float)(yysemantic_stack_[(11) - (3)].adouble),(float)(yysemantic_stack_[(11) - (5)].adouble),
                               (float)(yysemantic_stack_[(11) - (7)].adouble),(float)(yysemantic_stack_[(11) - (9)].adouble),(float)(yysemantic_stack_[(11) - (11)].adouble));
@@ -13043,7 +13044,7 @@ namespace yyip {
   case 684:
 
 /* Line 678 of lalr1.cc  */
-#line 11668 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11669 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           ImageExtent<float>* extent=new ImageExtent<float>((float)(yysemantic_stack_[(7) - (1)].adouble),(float)(yysemantic_stack_[(7) - (3)].adouble),(float)(yysemantic_stack_[(7) - (5)].adouble),(float)(yysemantic_stack_[(7) - (7)].adouble));
           extent->SetMode(1); // relative
@@ -13054,7 +13055,7 @@ namespace yyip {
   case 685:
 
 /* Line 678 of lalr1.cc  */
-#line 11675 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11676 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VALUE(InrImage, im);
 
@@ -13074,7 +13075,7 @@ namespace yyip {
   case 686:
 
 /* Line 678 of lalr1.cc  */
-#line 11691 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11692 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
         DessinImage::ptr draw = DessinImage::ptr(varimd->Pointer());
@@ -13100,7 +13101,7 @@ namespace yyip {
 
 
 /* Line 678 of lalr1.cc  */
-#line 13104 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
+#line 13105 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
 	default:
           break;
       }
@@ -17786,9 +17787,9 @@ namespace yyip {
    10821, 10847, 10862, 10880, 10889, 10908, 10937, 10965, 10981, 11005,
    11039, 11071, 11118, 11159, 11184, 11194, 11217, 11229, 11241, 11278,
    11321, 11369, 11421, 11464, 11492, 11525, 11568, 11576, 11578, 11581,
-   11582, 11583, 11584, 11585, 11586, 11618, 11619, 11620, 11621, 11622,
-   11623, 11624, 11625, 11630, 11631, 11637, 11640, 11643, 11646, 11648,
-   11650, 11654, 11656, 11659, 11667, 11674, 11690
+   11582, 11583, 11584, 11585, 11586, 11619, 11620, 11621, 11622, 11623,
+   11624, 11625, 11626, 11631, 11632, 11638, 11641, 11644, 11647, 11649,
+   11651, 11655, 11657, 11660, 11668, 11675, 11691
   };
 
   // Print the state stack on the debug stream.
@@ -17928,11 +17929,11 @@ namespace yyip {
 } // yyip
 
 /* Line 1054 of lalr1.cc  */
-#line 17932 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
+#line 17933 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
 
 
 /* Line 1056 of lalr1.cc  */
-#line 11711 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11712 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
 
 #include <stdio.h>
 

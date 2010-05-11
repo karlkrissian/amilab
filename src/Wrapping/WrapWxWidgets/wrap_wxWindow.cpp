@@ -11,6 +11,7 @@
 //
 
 #include "wrap_wxWindow.h"
+#include "wrap_wxColour.h"
 
 #include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
@@ -48,7 +49,7 @@ BasicVariable::ptr wrap_wxWindow( ParamList* p)
   int n = 0;
   std::string* title = NULL;
 
-  GET_OBJECT_PARAM(wxWindow,parent,_win);
+  GET_OBJECT_PARAM(wxWindow,parent,_obj);
   if (!parent.get()) 
       HelpAndReturnVarPtr;
 
@@ -79,7 +80,7 @@ void WrapClass_wxWindow::
 BasicVariable::ptr WrapClass_wxWindow::
       wrap_GetMinSize::CallMember( ParamList* p)
 {
-  wxSize size = this->_objectptr->_win->GetMinSize();
+  wxSize size = this->_objectptr->_obj->GetMinSize();
   return CreateVar_wxSize(new wxSize(size));
 }
 
@@ -96,9 +97,9 @@ BasicVariable::ptr WrapClass_wxWindow::
       wrap_SetMinSize::CallMember( ParamList* p)
 {
   int n=0;
-  GET_OBJECT_PARAM(wxSize,size,_size);
+  GET_OBJECT_PARAM(wxSize,size,_obj);
   if (!size.get()) ClassHelpAndReturn;
-  this->_objectptr->_win->SetMinSize(*size);
+  this->_objectptr->_obj->SetMinSize(*size);
   return BasicVariable::ptr();
 }
 
@@ -119,7 +120,7 @@ BasicVariable::ptr WrapClass_wxWindow::
   int n = 0;
 
   if (!get_int_param(show, p, n)) ClassHelpAndReturn;
-  int res = this->_objectptr->_win->Show(show);
+  int res = this->_objectptr->_obj->Show(show);
 
   RETURN_VAR(int, res);
 }
@@ -149,7 +150,31 @@ BasicVariable::ptr WrapClass_wxWindow::
   if (!get_int_param(y, p, n)) ClassHelpAndReturn;
   if (!get_int_param(width, p, n)) ClassHelpAndReturn;
   if (!get_int_param(height, p, n)) ClassHelpAndReturn;
-  this->_objectptr->_win->SetSize(x,y,width,height);
+  this->_objectptr->_obj->SetSize(x,y,width,height);
 
   return BasicVariable::ptr();
 }
+
+//---------------------------------------------------
+//  SetBackgroundColour
+//---------------------------------------------------
+void WrapClass_wxWindow::
+      wrap_SetBackgroundColour::SetParametersComments() 
+{
+  ADDPARAMCOMMENT("wxColour: The colour to be used as the background colour, pass wxNullColour to reset to the default colour.");
+  return_comments="bool";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxWindow::
+      wrap_SetBackgroundColour::CallMember( ParamList* p)
+{
+  int n = 0;
+
+  GET_OBJECT_PARAM(wxColour,colour,_obj);
+  if (!colour.get()) ClassHelpAndReturn;
+
+  int res = this->_objectptr->_obj->SetBackgroundColour(*colour);
+  RETURN_VAR(int,res);
+}
+
+

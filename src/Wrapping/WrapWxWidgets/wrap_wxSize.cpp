@@ -86,7 +86,7 @@ void WrapClass_wxSize::
 BasicVariable::ptr WrapClass_wxSize::
       wrap_GetWidth::CallMember( ParamList* p)
 {
-  int res = this->_objectptr->_size->GetWidth();
+  int res = this->_objectptr->_obj->GetWidth();
   RETURN_VAR(int,res);
 }
 
@@ -102,7 +102,7 @@ void WrapClass_wxSize::
 BasicVariable::ptr WrapClass_wxSize::
       wrap_GetHeight::CallMember( ParamList* p)
 {
-  int res = this->_objectptr->_size->GetHeight();
+  int res = this->_objectptr->_obj->GetHeight();
   RETURN_VAR(int,res);
 }
 
@@ -124,7 +124,7 @@ BasicVariable::ptr WrapClass_wxSize::
   int n = 0;
   if (!get_int_param(width, p, n)) ClassHelpAndReturn;
   if (!get_int_param(height, p, n)) ClassHelpAndReturn;
-  this->_objectptr->_size->Set(width,height);
+  this->_objectptr->_obj->Set(width,height);
   return BasicVariable::ptr();
 }
 
@@ -143,7 +143,7 @@ BasicVariable::ptr WrapClass_wxSize::
   int width=-1;
   int n = 0;
   if (!get_int_param(width, p, n)) ClassHelpAndReturn;
-  this->_objectptr->_size->SetWidth(width);
+  this->_objectptr->_obj->SetWidth(width);
   return BasicVariable::ptr();
 }
 
@@ -162,6 +162,6 @@ BasicVariable::ptr WrapClass_wxSize::
   int height=-1;
   int n = 0;
   if (!get_int_param(height, p, n)) ClassHelpAndReturn;
-  this->_objectptr->_size->SetHeight(height);
+  this->_objectptr->_obj->SetHeight(height);
   return BasicVariable::ptr();
 }

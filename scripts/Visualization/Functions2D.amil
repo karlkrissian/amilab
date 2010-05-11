@@ -255,7 +255,7 @@ if (!exists(Functions2DClass)) {
       ::dw = import->wxDrawingWindow(&d)
       ::dw.SetMinSize(import->wxSize(50,80))
       ::win.AddWidget(&::dw,0)
-
+      ::dw.SetBackgroundColour(import->wxColour(255,255,255))
       ::win.BeginBook
     
         ::win.AddPage("Param")
@@ -350,6 +350,7 @@ if (!exists(Functions2DClass)) {
       ::win.Update(-1)
       ::win.Display
       ::EqModeEvent
+      ::OnCurves()
    }
 
     ::Init

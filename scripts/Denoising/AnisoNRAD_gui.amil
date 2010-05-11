@@ -142,7 +142,7 @@ if (!exists(AnisoNRADClass)) {
     numit = ::t/::dt
     local::input1 = ::input*::input
     if (::run_on_roi) {
-      input1 <<= input1[::roi]
+      input1 <<= input1[::roi.GetExtent()]
     }
   
     # sigma = 0.7

@@ -49,6 +49,7 @@ wxDrawingWindow::wxDrawingWindow(wxWindow *parent, wxWindowID id,
 
   focus_pointid = -1;
   _left_down = false;
+  _previous_crosshair = false;
 
   // default values
   _xaxis = _yaxis = 0;
@@ -186,6 +187,23 @@ void wxDrawingWindow::DrawCurve(int i, wxDC& dc )
     y1 = y2;
   }
 
+}
+
+//------------------------------------------------
+void wxDrawingWindow::WriteCurrentPosition()
+{
+  wxClientDC dc(this);
+  
+  double x,y;
+  Window2World(_mouse_x,_mouse_y,x,y);
+  wxString text((boost::format("%1$+2.2f, %2$+2.2f")%x%y).str().c_str(),
+                wxConvUTF8);
+  wxSize txtsize = dc.GetTextExtent(text);
+  wxSize dcsize = dc.GetSize();
+  wxSize pos = dcsize-txtsize;
+  dc.SetBackgroundMode(wxSOLID);
+  // fill previous text with background ???
+  dc.DrawText(text,pos.GetWidth()-3,pos.GetHeight()-3);
 }
 
 //------------------------------------------------
@@ -377,18 +395,36 @@ void wxDrawingWindow::OnMotion(wxMouseEvent& event)
 {
   wxClientDC dc(this);
 
+  int oldmouse_x = _mouse_x;
+  int oldmouse_y = _mouse_y;
   _mouse_x = (int)event.GetX();
   _mouse_y = (int)event.GetY();
 
   //cout << "leftdown " << _left_down << endl;
-  if ((focus_pointid!=-1)&&(_left_down)) {
-    // displace the current point
-    //cout << "Displace ??" << endl;
-    double x,y;
-    Window2World(_mouse_x,_mouse_y,x,y);
-    _controlpoints[focus_pointid].SetPos(x,y);
-    _controlpoints[focus_pointid].SetwxPoint(wxPoint(_mouse_x,_mouse_y));
-    Refresh();
+  if (_left_down) {
+    if ((focus_pointid!=-1)&&(_left_down)) {
+      // displace the current point
+      //cout << "Displace ??" << endl;
+      double x,y;
+      Window2World(_mouse_x,_mouse_y,x,y);
+      _controlpoints[focus_pointid].SetPos(x,y);
+      _controlpoints[focus_pointid].SetwxPoint(wxPoint(_mouse_x,_mouse_y));
+      Refresh();
+    }
+    else 
+    {
+      scoped_ptr<wxPen> current_pen(
+        new wxPen( *wxBLACK, 1, wxDOT));
+      dc.SetPen(*current_pen);
+
+      dc.SetLogicalFunction( wxINVERT );
+      if (_previous_crosshair)
+        dc.CrossHair( oldmouse_x, oldmouse_y );
+      dc.CrossHair( _mouse_x, _mouse_y );
+      _previous_crosshair = true;
+      dc.SetLogicalFunction( wxCOPY );
+      WriteCurrentPosition();
+    }
     return;
   }
 

@@ -796,6 +796,8 @@ if (!exists(LevelSetsClass)){
                 # add a Curve Drawing Window
                 ::dw = import->wxDrawingWindow(::win.CurrentParent())
                 ::dw.SetMinSize(import->wxSize(50,100))
+                ::dw.SetBackgroundColour(\
+                    import->wxColour(255,255,255))
                 ::win.AddWidget(&::dw,0)
 
               ::imexp_page = ::win.AddPage("Image")

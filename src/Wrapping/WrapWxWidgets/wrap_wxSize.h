@@ -29,10 +29,10 @@ class WrapClass_wxSize : public WrapClassBase
   typedef WrapClass_wxSize::ptr _parentclass_ptr;
 
   public:
-    boost::shared_ptr<wxSize> _size;
+    boost::shared_ptr<wxSize> _obj;
 
     /// Constructor
-    WrapClass_wxSize(boost::shared_ptr<wxSize> si): _size(si)
+    WrapClass_wxSize(boost::shared_ptr<wxSize> si): _obj(si)
     {}
 
     ADD_CLASS_METHOD(GetWidth,    "Gets the width member.");

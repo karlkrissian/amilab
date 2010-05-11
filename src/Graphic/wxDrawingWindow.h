@@ -101,6 +101,7 @@ class wxDrawingWindow : public wxScrolledWindow
   int _mouse_x;
   int _mouse_y;
   bool _left_down;
+  bool _previous_crosshair;
 
 public:
    wxDrawingWindow(wxWindow *parent, wxWindowID id = wxID_ANY,
@@ -207,14 +208,26 @@ public:
    */
   void DrawCurve( int i, wxDC& dc );
 
+  void WriteCurrentPosition();
+
   void DrawControls(wxDC& dc);
 
   void OnPaint(          wxPaintEvent& event);
   //void OnSize(           wxSizeEvent& event);
   //void OnChar(           wxKeyEvent&  event);
 
-  void OnLeftDown(      wxMouseEvent& event) { _left_down = true;  event.Skip(); }
-  void OnLeftUp(        wxMouseEvent& event) { _left_down = false; event.Skip(); }
+  void OnLeftDown(      wxMouseEvent& event) 
+  {
+    _left_down = true;  event.Skip(); 
+  }
+
+  void OnLeftUp(        wxMouseEvent& event) 
+  {
+    _left_down = false; 
+    _previous_crosshair = false;
+    event.Skip(); 
+  }
+
   void OnRightDown(     wxMouseEvent& event);
   void OnMotion(        wxMouseEvent& event);
 
