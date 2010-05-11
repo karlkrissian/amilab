@@ -23,7 +23,16 @@ template<class T>
 class ImagePositions : public ImagePositionsBase
 {
 
-  DEFINE_CLASS(ImagePositions)
+  //  DEFINE_CLASS(ImagePositions)
+public:
+  virtual char const* get_name() const { return "ImagePositions<T>"; }  
+  typedef ImagePositions<T> ClassType; 
+  typedef typename boost::shared_ptr<ImagePositions<T> >    ptr; 
+  typedef typename boost::weak_ptr<ImagePositions<T> >      wptr; 
+  typedef typename std::vector<ptr>     ptr_vector; 
+  typedef std::vector<wptr>    wptr_vector; 
+  typedef std::list<ptr>       ptr_list; 
+  typedef std::list<wptr>      wptr_list;
 
 protected:
   // image format
