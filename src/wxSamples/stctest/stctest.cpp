@@ -320,11 +320,11 @@ void StcTestFrame::OnExit (wxCommandEvent &WXUNUSED(event)) {
   while (notebook->GetPageCount() > 0) {
     Edit* e          = getActiveEditor();
     wxFileName f     = e->GetFilename();
-    wxString close(_T("Close: "));
-    wxString message(_T("Path: "));
+    wxString close   = wxT("Close: ");
+    wxString message = wxT("Path: ");
     
     message.append(f.GetFullPath());
-    message.append(_T("\n\nText is not saved, save before closing?"));
+    message.append(wxT("\n\nText is not saved, save before closing?"));
     close.append(f.GetFullName());
     
     if (e->Modified()) {
@@ -452,11 +452,11 @@ void StcTestFrame::OnFileClose (wxCommandEvent &WXUNUSED(event)) {
   }
   Edit* e          = getActiveEditor();
   wxFileName f     = e->GetFilename();
-  wxString close   = _T("Close: ");
-  wxString message = _T("Path: ");
+  wxString close   = wxT("Close: ");
+  wxString message = wxT("Path: ");
   
   message.append(f.GetFullPath());
-  message.append(_T("\n\nText is not saved, save before closing?"));
+  message.append(wxT("\n\nText is not saved, save before closing?"));
   close.append(f.GetFullName());
   
   if (e->Modified()) {
@@ -628,11 +628,12 @@ void StcTestFrame::OnCloseTab (wxAuiNotebookEvent & event) {
   }
   Edit* e          = getActiveEditor();
   wxFileName f     = e->GetFilename();
-  wxString close   = _T("Close: ");
-  wxString message = _T("Path: ");
+  wxString close   = wxT("Close: ");
+  wxString message = wxT("Path: ");
+
   
   message.append(f.GetFullPath());
-  message.append(_T("\n\nText is not saved, save before closing?"));
+  message.append(wxT("\n\nText is not saved, save before closing?"));
   close.append(f.GetFullName());
   
   if (e->Modified()) {
@@ -812,15 +813,15 @@ void StcTestFrame::FileOpen (wxString fname)
   //Is file open already??
   if (w != NULL) {
     //Build the message dialog
-    wxString message = _T("The file ");
+    wxString message = wxT("The file ");
     message.append(fname);
-    message.append(_T(" is already open.\n Do you want to open it again? (WARNING: not controlled)"));
-    wxMessageDialog* dialog = new wxMessageDialog(this, message, _T("WARNING"), wxYES_NO | wxCENTER | wxICON_EXCLAMATION);
+    message.append(wxT(" is already open.\n Do you want to open it again? (WARNING: not controlled)"));
+    wxMessageDialog* dialog = new wxMessageDialog(this, message, wxT("WARNING"), wxYES_NO | wxCENTER | wxICON_EXCLAMATION);
     int answer = dialog->ShowModal();
     
     //Create a new tab and split it on the right side
     if (answer == wxID_YES) {
-      wxPanel* page     = new wxPanel(notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T(""));
+      wxPanel* page     = new wxPanel(notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT(""));
       wxBoxSizer* sizer = new wxBoxSizer(wxHORIZONTAL);
       Edit* editor      = new Edit(page, wxID_ANY, wxDefaultPosition, wxSize(730,530), wxSUNKEN_BORDER | wxVSCROLL);
       editor->SetMinSize(wxSize(73,53));
@@ -843,7 +844,7 @@ void StcTestFrame::FileOpen (wxString fname)
   }
   else {
     //Isn't open
-    wxPanel* page     = new wxPanel(notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T(""));
+    wxPanel* page     = new wxPanel(notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT(""));
     wxBoxSizer* sizer = new wxBoxSizer(wxHORIZONTAL);
     Edit* editor      = new Edit(page, wxID_ANY, wxDefaultPosition, wxSize(730,530), wxSUNKEN_BORDER | wxVSCROLL);
     editor->SetMinSize(wxSize(73,53));

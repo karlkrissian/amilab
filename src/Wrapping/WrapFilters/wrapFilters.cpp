@@ -40,6 +40,9 @@
 //Basic Edge Detection Filters added
 #include "wrapBasicEdgeDetection.h"
 
+#include "wrapSubPixel2D.h"
+#include "wrapGenerateRamp.h"
+
 extern VarContexts  Vars;
 
 //---------------------------------------------------------
@@ -90,6 +93,10 @@ void AddWrapFilters(){
 	ADDOBJECTVAR_NAME(C_wrap_imagefunction, "PSF",			wrapPSF);
 	ADDOBJECTVAR_NAME(C_wrap_imagefunction, "Gradient", wrapGradient);
 	ADDOBJECTVAR_NAME(C_wrap_imagefunction, "Laplace",	wrapLaplace);
+  
+  //2D SUBPIXEL METHOD
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction, "SintheticRamp", wrapSintheticRamp);
+  ADDOBJECTVAR_NAME(C_wrap_varfunction, "Subpixel2D", wrapSubpixel2D);
 	
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);

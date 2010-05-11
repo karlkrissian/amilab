@@ -47,7 +47,7 @@ SET(ImageTool_HDRS
 	Stereo.hpp
 )
 
-SET(ImageTool_HDRS
+SET(ImageTool_SRCS
      ${ImageTool_SRCS}
      ${ImageTool_HDRS}
 )

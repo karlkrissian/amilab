@@ -28,6 +28,9 @@
 //! application headers
 #include "prefs.h"       // preferences
 
+//Event up propagation
+#include "wxPropagateEvent.h"
+
 //============================================================================
 // declarations
 //============================================================================
@@ -212,7 +215,7 @@ public:
    *  @return Nothing
    */
   void OnFunKeyDown (wxKeyEvent &event);
-  
+
   /**
    *  Search the previous match of find text and select it on the editor. When achieve the begin of file, lets start from the end.
    *  If there aren't matches shows an advice.
@@ -285,6 +288,8 @@ public:
    *  @return Nothing
    */
   void onCancelButtonClick (wxCommandEvent &event);
+  
+  void OnNumTextEnter (wxCommandEvent &event);
 private:
   wxTextCtrl* numberLine;
   Edit* editor;

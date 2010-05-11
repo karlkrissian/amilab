@@ -111,7 +111,8 @@ enum
   ID_NEXT = 2,
   ID_PREV = 3,
   ID_REPL = 4,
-  ID_REPL_ALL = 5
+  ID_REPL_ALL = 5,
+  ID_LINE_TEXT = 6
 };
 
 //Find and replace event table
@@ -122,7 +123,7 @@ BEGIN_EVENT_TABLE(FindAndReplace, wxFrame)
   EVT_BUTTON(ID_PREV,     FindAndReplace::OnPrevButtonClick)
   EVT_BUTTON(ID_REPL,     FindAndReplace::OnReplaceButtonClick)
   EVT_BUTTON(ID_REPL_ALL, FindAndReplace::OnReplaceAllButtonClick)
-  //Key events (control F3 and F2 function keys)
+  //Key events (control F3 and F2 function keys, enter and escape)
   EVT_CHAR(FindAndReplace::OnFunKeyDown)
 END_EVENT_TABLE()
 
@@ -131,6 +132,8 @@ BEGIN_EVENT_TABLE(gotoLine, wxFrame)
   //Button events
   EVT_BUTTON(wxID_OK, gotoLine::onOKButtonClick)
   EVT_BUTTON(wxID_CANCEL, gotoLine::onCancelButtonClick)
+  //Enter key on text control
+  EVT_TEXT_ENTER(ID_LINE_TEXT, gotoLine::OnNumTextEnter)
 END_EVENT_TABLE()
 //----------------------------------------------------------------------------
 
@@ -279,19 +282,18 @@ void notFound(wxString* text, bool wholeWord, bool matchCase) {
   message.append(*text);
   message.append(wxT("\" not found."));
   if (wholeWord) {
-    message.append(_T("\n You have whole word active. Maybe isn't a whole word."));
+    message.append(wxT("\n You have whole word active. Maybe isn't a whole word."));
   }
   if (matchCase) {
-    message.append(_T("\n You have match case active. Check find text."));
+    message.append(wxT("\n You have match case active. Check find text."));
   }
   wxMessageDialog* advice = new wxMessageDialog(NULL, message, wxT("Not found"), wxOK |  wxCENTER | wxICON_ERROR);
   advice->ShowModal();
 }
-
+// ------------------------------------------------------------------------------------
 //-->Constructor<--
-FindAndReplace::FindAndReplace (Edit* openEditor) : wxFrame(openEditor,wxID_ANY,wxT("Find & Replace"), wxDefaultPosition, wxSize(509,207), wxDEFAULT_FRAME_STYLE, _T("frame"))
+FindAndReplace::FindAndReplace (Edit* openEditor) : wxFrame(openEditor,wxID_ANY, wxT("Find & Replace"), wxDefaultPosition, wxSize(509,207), wxDEFAULT_FRAME_STYLE | wxFRAME_FLOAT_ON_PARENT, wxT("frame"))
 {
-  wxWindowID find_and_replace = NULL;
   
   //Find and replace frame size
   this->SetMinSize(wxSize(509,207));
@@ -308,12 +310,14 @@ FindAndReplace::FindAndReplace (Edit* openEditor) : wxFrame(openEditor,wxID_ANY,
   wxButton* replace          = new wxButton(panel, ID_REPL, wxT("Replace"));
   wxButton* replaceAll       = new wxButton(panel, ID_REPL_ALL, wxT("Replace All"));
   wxStaticText* findLabel    = new wxStaticText(panel, -1, wxT("Text to Find: "));
-  wxStaticText* replaceLabel = new wxStaticText(panel, find_and_replace, wxT("Replacement Text: "));
-  findBox                    = new wxTextCtrl(panel, -1, wxT(""), wxPoint(-1, -1), wxSize(-1, -1), wxTE_LEFT);
-  replaceBox                 = new wxTextCtrl(panel, -1, wxT(""), wxPoint(-1, -1), wxSize(-1, -1), wxTE_LEFT);
-  wholeWord                  = new wxCheckBox(panel, find_and_replace, wxT("Whole word"));
-  matchCase                  = new wxCheckBox(panel, find_and_replace, wxT("Match case"));
-  
+
+  wxStaticText* replaceLabel = new wxStaticText(panel, wxID_ANY, wxT("Replacement Text: "));
+  findBox                    = new wxTextCtrl(panel, wxID_ANY, wxT(""), wxPoint(-1, -1), wxSize(-1, -1), wxTE_LEFT | wxTE_PROCESS_ENTER);
+  replaceBox                 = new wxTextCtrl(panel, wxID_ANY, wxT(""), wxPoint(-1, -1), wxSize(-1, -1), wxTE_LEFT | wxTE_PROCESS_ENTER);
+
+  wholeWord                  = new wxCheckBox(panel, wxID_ANY, wxT("Whole word"));
+  matchCase                  = new wxCheckBox(panel, wxID_ANY, wxT("Match case"));
+
   wxBoxSizer* line = new wxBoxSizer(wxHORIZONTAL);
   line->Add(findLabel, 0, wxRIGHT | wxTOP, 4);
   line->Add(findBox, 1, wxLEFT | wxTOP, 4);
@@ -332,7 +336,7 @@ FindAndReplace::FindAndReplace (Edit* openEditor) : wxFrame(openEditor,wxID_ANY,
   
   gs->Add(wholeWord, 0, wxEXPAND);
   gs->Add(matchCase, 0, wxEXPAND);
-  gs->Add(0,0, 0, wxEXPAND);
+  gs->Add(0, 0, 0, wxEXPAND);
   gs->Add(done, 0, wxEXPAND);
   
   sizer->Add(gs, 2, wxALL | wxEXPAND, 4);
@@ -344,6 +348,10 @@ FindAndReplace::FindAndReplace (Edit* openEditor) : wxFrame(openEditor,wxID_ANY,
   //Set focus on find box, where text to find will be written
   findBox->SetFocus();
 
+  //Propagate events
+  CEventPropagator::registerFor(panel);
+  panel->Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(FindAndReplace::OnFunKeyDown), NULL, this);
+  
   this->Show(true);
 }
 
@@ -354,6 +362,9 @@ FindAndReplace::~FindAndReplace () {}
 //-->Done button click<--
 void FindAndReplace::OnDoneButtonClick (wxCommandEvent &event) {
   this->Close(true);
+  editor->SetFocus();
+  editor->GotoLine(editor->LineFromPosition(editor->GetCurrentPos()));
+  //editor->SetCaretLineVisible(true);
 }
 
 //-->Next button click<--
@@ -517,10 +528,17 @@ void FindAndReplace::OnFunKeyDown (wxKeyEvent &event) {
     case WXK_F3:
       OnNextButtonClick(e);
       break;
+    case WXK_RETURN:
+      OnNextButtonClick(e);
+      break;
     case WXK_F2:
       OnPrevButtonClick(e);
       break;
+    case WXK_ESCAPE:
+      OnDoneButtonClick(e);
+      break;
     default:
+      event.Skip();
       break;
   }
   event.Skip();
@@ -646,12 +664,12 @@ void Edit::OnBraceMatch (wxCommandEvent &WXUNUSED(event)) {
 //----------------------------------------------------------------------------
 //==>gotoLine class methods<==
 //Constructor
-gotoLine::gotoLine (Edit* openEditor) : wxFrame(openEditor, wxID_ANY, wxT("Go to Line"), wxDefaultPosition, wxSize(245,151), wxDEFAULT_FRAME_STYLE, wxT("gotoLineFrame")) {
+gotoLine::gotoLine (Edit* openEditor) : wxFrame(openEditor, wxID_ANY, wxT("Go to Line"), wxDefaultPosition, wxSize(245,151), wxDEFAULT_FRAME_STYLE | wxFRAME_FLOAT_ON_PARENT, wxT("gotoLineFrame")) {
   //GUI members
   wxPanel* panel      = new wxPanel(this, wxID_ANY);
   wxGridSizer* grid   = new wxGridSizer(2,2,4,4);
   wxStaticText* label = new wxStaticText(panel, wxID_ANY, wxT("Line number: "));
-  numberLine          = new wxTextCtrl(panel, -1, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_LEFT);
+  numberLine          = new wxTextCtrl(panel, ID_LINE_TEXT, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_LEFT | wxTE_PROCESS_ENTER);
   wxButton* OK        = new wxButton(panel, wxID_OK, wxT("OK"));
   wxButton* Cancel    = new wxButton(panel, wxID_CANCEL, wxT("Cancel"));
   
@@ -682,7 +700,11 @@ void gotoLine::onOKButtonClick (wxCommandEvent &event) {
   //Is a valid line??
   if (num > maxlines || num < 1) {
     //Show a message error, whith number line range
+<<<<<<< .mine
+    wxString message = wxT("Wrong line number: You must insert a line number between 1 and ");
+=======
     wxString message = _T("Wrong line number: You must insert a line number between 1 and ");
+>>>>>>> .r570
     message.append(wxString() << maxlines);
     wxMessageDialog* error = new wxMessageDialog(NULL, message, wxT("Error line number"), wxOK |  wxCENTER | wxICON_ERROR);
     error->ShowModal();
@@ -698,6 +720,10 @@ void gotoLine::onOKButtonClick (wxCommandEvent &event) {
 void gotoLine::onCancelButtonClick (wxCommandEvent &event) {
   //Close the frame
   this->Close(true);
+}
+
+void gotoLine::OnNumTextEnter (wxCommandEvent &event) {
+  onOKButtonClick(event);
 }
 //----------------------------------------------------------------------------
 
