@@ -700,11 +700,7 @@ void gotoLine::onOKButtonClick (wxCommandEvent &event) {
   //Is a valid line??
   if (num > maxlines || num < 1) {
     //Show a message error, whith number line range
-<<<<<<< .mine
     wxString message = wxT("Wrong line number: You must insert a line number between 1 and ");
-=======
-    wxString message = _T("Wrong line number: You must insert a line number between 1 and ");
->>>>>>> .r570
     message.append(wxString() << maxlines);
     wxMessageDialog* error = new wxMessageDialog(NULL, message, wxT("Error line number"), wxOK |  wxCENTER | wxICON_ERROR);
     error->ShowModal();
