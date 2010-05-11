@@ -431,6 +431,19 @@ public:
     );
 //@}
 
+/** @name Adds Button with wxBitmap*/
+//@{
+  ///
+  unsigned char AddBitmapButton( 
+  //            ---------------
+    int* id,
+    const char* libelle, 
+    void* callback, void* data,
+    const wxBitmap& bm,
+    const std::string& tooltip=""
+    );
+//@}
+
 /** @name Type Couleur */
 //@{
   ///
