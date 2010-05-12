@@ -61,6 +61,8 @@ BasicVariable::ptr wrap_wxImage( ParamList* p)
           name is given as a standard amilab string\n\
           index: Index of the image to load in the case that the image file contains multiple images. This is only used by GIF, ICO and TIFF handlers. The default value (-1) means 'choose the default image' and is interpreted as the first image (index=0) by the GIF and TIFF handler and as the largest and most colourful one by the ICO handler.";
 
+  if (!p) HelpAndReturnVarPtr;
+
   if (p->GetNumParam()==0) 
     return CreateVar_wxImage(new wxImage());
 

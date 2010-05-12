@@ -58,6 +58,9 @@ if (!exists(AnisoNRADClass)) {
   
       ::run_on_roi = UCHAR(0), "Run only on the selected region-of-interest"
 
+      ::result_imagename = "global::AnisoNRAD_result"
+      ::result_filename = "AnisoNRAD_result.ami.gz"
+
       ::CreateWindow()
       # ::ROI 
   }
@@ -289,8 +292,14 @@ if (!exists(AnisoNRADClass)) {
   }
   
   proc ::Save() {
-    ::res.save "::result.ami.gz"
+    ::res.save ::result_filename
   }
+  ::Save.Comments("Save image to disk.")
+
+  proc ::SaveToImage() {
+    eval ::result_imagename+" <<= ::res;"
+  }
+  ::SaveToImage.Comments("Save to global image variable.")
   
   proc ::new_eq_type() {
     ::win.EnablePanel(::mat_boxid, ::equation_type==1)
@@ -360,10 +369,17 @@ if (!exists(AnisoNRADClass)) {
             ::win.AddButton("Filter",     ::Filter)
           ::win.EndHorizontal
           ::win.BeginHorizontal
-            ::win.AddButton("Display",    ::Display)
-            ::win.AddButton("Display Surfaces",  ::DisplaySurfaces)
-            ::win.AddButton("Save",       ::Save)
+            ::win.AddButton("Display",          ::Display)
+            ::win.AddButton("Display Surfaces", ::DisplaySurfaces)
           ::win.EndHorizontal
+          ::win.BeginBoxPanel("Result --> disk")
+            ::win.AddString(&::result_filename,"Filename")
+            ::win.AddButton("Save",       ::Save)
+          ::win.EndBoxPanel
+          ::win.BeginBoxPanel("Result --> global variable")
+            ::win.AddString(&::result_imagename,"Name")
+            ::win.AddButton("SaveImage",  ::SaveToImage)
+          ::win.EndBoxPanel
 
     ::win.EndBook
 

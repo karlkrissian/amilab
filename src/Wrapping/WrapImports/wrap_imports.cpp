@@ -62,7 +62,10 @@ void AddWrapImports()
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"vtkLevelSets",wrap_vtkLevelSets);
 
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxWindow",    wrap_wxWindow);
-  ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxSize",      wrap_wxSize);
+
+  AddVar_wxSize(    amiobject);
+//  ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxSize",      wrap_wxSize);
+
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxColour",    wrap_wxColour);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxImage",     wrap_wxImage);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxBitmap",    wrap_wxBitmap);

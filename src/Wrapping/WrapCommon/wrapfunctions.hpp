@@ -58,6 +58,34 @@ class CreateSmartPointer<C_wrap_imagefunction>
 };
 
 
+class WrapClassMember;
+
+/** Macro for adding a class that wraps a function.
+  * requires:
+  *  a AMIObject:ptr amiobject member pointing to the corresponding wrapped object class
+  */
+#define ADD_CLASS_FUNCTION(methodname,description_str) \
+/**\
+ * description_str\
+ **/ \
+class wrap_##methodname : public WrapClassMember { \
+  public: \
+    wrap_##methodname()  \
+    { \
+      functionname = #methodname; \
+      description=description_str; \
+      SetParametersComments(); \
+    } \
+    void SetParametersComments(); \
+    BasicVariable::ptr CallMember(ParamList*); \
+}; \
+\
+inline void AddVar_##methodname(  AMIObject::ptr& obj, const std::string& newname = #methodname) {\
+  boost::shared_ptr<WrapClassMember> tmp( new wrap_##methodname());\
+  obj->GetContext()->AddVar<WrapClassMember>(newname, tmp); \
+}
+
+
 /*! \def ADDVAR
     \brief Add a C procedure variable with the given procedure
 */
