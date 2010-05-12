@@ -65,6 +65,8 @@ BasicVariable::ptr wrap_wxBitmap( ParamList* p)
         - wxBitmap(const wxImage& img, int depth = -1)\n\
             Creates bitmap object from the image. This has to be done to actually display an image as you cannot draw an image directly on a window. The resulting bitmap will use the provided colour depth (or that of the current system if depth is -1) which entails that a colour reduction has to take place.\n";
 
+  if (!p) HelpAndReturnVarPtr;
+
   if (p->GetNumParam()==0) 
     return CreateVar_wxBitmap(new wxBitmap());
 
