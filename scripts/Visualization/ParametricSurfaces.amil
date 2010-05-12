@@ -110,6 +110,11 @@ if (!exists(ParametricSurfaceClass)) {
     ::Update()
   }
 
+
+  proc ::SetMeshColors( IMAGE mc) {
+    ::mesh_colors <<= mc
+  }
+
 #------------------------------------------------------------
 
   proc ::Update() \
@@ -145,12 +150,12 @@ if (!exists(ParametricSurfaceClass)) {
         ::pos.SetComponent(1,exp(ln(abs(::pos[1]))/::e_y)*spos1*::cy)
         ::pos.SetComponent(2,exp(ln(abs(::pos[2]))/::e_z)*spos2*::cz)
       }
-printn "4"
+#printn "4"
 
       # 1: torus
       if (::type==1) {
         ::pos.SetComponent(0, (cos(::phi)*::r+::R)*cos(::theta))
-        ::pos.SetComponent(1, (cos(::phi)*::r+::R)*sin(::theta)
+        ::pos.SetComponent(1, (cos(::phi)*::r+::R)*sin(::theta))
         ::pos.SetComponent(2, sin(::phi)*::r)
       }
 
@@ -171,9 +176,14 @@ printn "4"
         del ::s
       }
 
-printn "5"
+#printn "5"
       # parameter 0 invert normals
       ::s = CreateFlatMesh(::theta>-1,0)
+      if (exists(::mesh_colors)) {
+        printn "Set Mesh Colors"
+        ::s.SetColors(::mesh_colors)
+        ::s.SetColorMaterial(1)
+      }
       ::s.ElevateMesh(::pos)
       # need to show the surface before computing any opengl operation!!!
 
@@ -182,14 +192,14 @@ printn "5"
       } else {
         show ::s
       }
-printn "6"
+#printn "6"
       ::s.Normals
       ::s.Recompute
       ::s_draw.Paint
       ::updating = 0
-printn "7"
+#printn "7"
     }
-printn "8"
+#printn "8"
   }
 
   #--------------------------------------------------------------
@@ -368,8 +378,16 @@ printn "8"
 
     ::win.EndBook
         ::win.BeginHorizontal
-          ::win.AddButton("Update",         ::Update)
-          ::win.AddButton("Close",          ::Close)
+          scripts_dir = GetScriptsDir
+
+          upim = import->wxImage(scripts_dir+"/Bitmaps/update_icon_32.png")
+          upbmp = import->wxBitmap(upim)
+          ::win.AddBitmapButton("Update", ::Update, upbmp)
+
+          closeim = import->wxImage(scripts_dir+"/Bitmaps/close_icon_32.png")
+          closebmp = import->wxBitmap(closeim)
+          ::win.AddBitmapButton("Close", ::Close, closebmp )
+
           ::win.AddButton("Close All",          ::CloseAll)
         ::win.EndHorizontal
     ::win.Update(-1)
