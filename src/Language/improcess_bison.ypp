@@ -344,8 +344,6 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_SetName
 %token T_GetName
 %token T_GetObjectName
-%token T_GetOutput
-%token T_GetDiffCoeff
 
 %token ASTRING ABLOCK NUMBER
 %token IDENTIFIER
@@ -398,8 +396,7 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_AutoCrop
 %token T_DiscSecDerGrad
 %token T_EDPdilate T_EDPerode T_EDPopen T_EDPclose
-%token AnisoGS AnisoSmoothGS T_vtkAnisoGS
-%token T_SetDistMap
+%token AnisoSmoothGS T_vtkAnisoGS
 %token T_DiscMeanCurvature
 %token T_vtkMedian3D
 
@@ -424,19 +421,7 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_AnisoDPAD2
 %token T_AnisoNRAD
 %token T_AnisoRudinMult
-%token TInit TSetCoeff TIterate TEnd TAddGaussNoise T_SNR
-%token T_SetNoiseType
-%token T_SetNoiseSD
-%token T_GetNoiseSD
-%token T_GetDAcoeff
-%token T_SetMask
-%token T_SetSRADROI
-%token T_SetRNRADROI
-%token T_SetRNRADROI_NEW
-%token T_SetLocalStruct
-%token T_SetEigenMode
-%token T_Setdt
-%token T_Setneighborhood
+%token TInit TIterate TEnd TAddGaussNoise T_SNR
 %token T_info T_NbPoints T_NbPolys
 %token T_save
 %token T_normalize
@@ -2406,19 +2391,6 @@ command:
          driver.res_print("\t\t  expr 3: data attachment coefficient \n");
          driver.res_print("\t\t  expr 4: number of iterations \n");
 
-
-         driver.res_print("\t image = AnisoGS.init( var_image, expr, expr, expr )\n");
-         driver.res_print("\t\t  expr 1:    sigma  \n");
-         driver.res_print("\t\t  expr 2:    theshold  \n");
-         driver.res_print("\t\t  expr 3:    data attachment coeff  \n");
-         driver.res_print("\t AnisoGS.setcoeff( expr )\n");
-         driver.res_print("\t\t  expr 1:    tangential coeff  \n");
-         driver.res_print("\t AnisoGS.setcoeff( expr, expr )\n");
-         driver.res_print("\t\t  expr 1:    min curv coeff  \n");
-         driver.res_print("\t\t  expr 2:    max curv coeff  \n");
-         driver.res_print("\t AnisoGS.iterate\n");
-         driver.res_print("\t AnisoGS.end\n");
-
          driver.res_print("\t image = AnisoWeickert.init( var_image, expr, expr, expr )\n");
          driver.res_print("\t\t  expr 1:    sigma  \n");
          driver.res_print("\t\t  expr 2:    theshold  \n");
@@ -3427,6 +3399,7 @@ command:
       GET_VARSTACK_VALUE(InrImage, im);
       im->FixeNom( name.get());
     }
+/*
     |
     AnisoGS T_POINT TInit  T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
     {
@@ -3441,7 +3414,7 @@ command:
         Description:
             Sets parameters for the anisotropic diffusion algorithm using
             Gauss-Seidel scheme.
-        **/
+        **
         GET_VARSTACK_VALUE(InrImage, im);
         Func_InitAnisoGS( im.get(),
                           $7,  $9, $11);
@@ -3456,22 +3429,30 @@ command:
         {
           Func_AnisoGS_SetDistanceMap((int)$5);
         }
+*/
+/*
         |
         AnisoGS T_POINT T_SetNoiseType T_OP_PAR expr T_CL_PAR
         {
           Func_AnisoGS_SetNoiseType((int)$5);
         }
+*/
+/*
         |
         AnisoGS T_POINT T_SetNoiseSD T_OP_PAR expr T_CL_PAR
         {
           Func_AnisoGS_SetNoiseSD($5);
         }
+*/
+/*
         |
         AnisoGS T_POINT T_SetMask T_OP_PAR var_image T_CL_PAR
         {
           GET_VARSTACK_VALUE(InrImage, im);
           Func_AnisoGS_SetMask(im.get());
         }
+*/
+/*
         |
         AnisoGS T_POINT T_SetSRADROI T_OP_PAR var_image T_CL_PAR
         {
@@ -3483,10 +3464,12 @@ command:
          Description:
             Sets the region of interest (region of constant tissue in the image)
             and activates the Oriented Speckle Reducing Anisotropic Diffusion
-         **/
+         **
           GET_VARSTACK_VALUE(InrImage, im);
           Func_AnisoGS_SetSRAD_ROI(im.get());
         }
+*/
+/*
         |
         AnisoGS T_POINT T_SetRNRADROI T_OP_PAR var_image T_CL_PAR
         {
@@ -3499,10 +3482,12 @@ command:
             Sets the region of interest (region of constant tissue in the image)
             and activates the Rician Noise Reducing Anisotropic Diffusion
             used to reduce noise in MRI data.
-         **/
+         **
           GET_VARSTACK_VALUE(InrImage, im);
           Func_AnisoGS_SetRNRAD_ROI(im.get());
         }
+*/
+/*
         |
         AnisoGS T_POINT T_SetRNRADROI_NEW T_OP_PAR var_image T_CL_PAR
         {
@@ -3517,10 +3502,12 @@ command:
             used to reduce noise in MRI data.
             New version of the filter, using local directional mean and variance
             for the diffusion matrix.
-         **/
+         **
           GET_VARSTACK_VALUE(InrImage, im);
           Func_AnisoGS_SetRNRAD_ROI_NEW(im.get());
         }
+*/
+/*
         |
         AnisoGS T_POINT T_SetLocalStruct T_OP_PAR expr T_CL_PAR
         {
@@ -3532,9 +3519,11 @@ command:
 
           Description:
             Sets the local structure mode.
-         **/
+         **
       Func_SetLocalStructureMode((int)$5);
         }
+*/
+/*
         |
     AnisoGS T_POINT T_SetEigenMode T_OP_PAR expr T_CL_PAR
         {
@@ -3552,19 +3541,25 @@ command:
 
           Description:
             Choose a way to select the diffusion matrix eigenvalues.
-         **/
+         **
       Func_SetEigenvaluesMode((int)$5);
         }
+*/
+/*
         |
     AnisoGS T_POINT T_Setdt T_OP_PAR expr T_CL_PAR
         {
       Func_AnisoGS_Setdt($5);
         }
+*/
+/*
         |
     AnisoGS T_POINT T_Setneighborhood T_OP_PAR expr T_CL_PAR
         {
       Func_AnisoGS_Setneighborhood((int)$5);
         }
+*/
+/*
         |
         AnisoGS T_POINT TSetCoeff T_OP_PAR expr T_COMMA expr T_CL_PAR
         {
@@ -3572,6 +3567,8 @@ command:
       Func_SetCoeffAnisoGS3D($5,$7);
 
     }
+*/
+/*
         |
         AnisoGS T_POINT TIterate
         {
@@ -3581,6 +3578,8 @@ command:
 
       //driver.res_print("Error in AnisoGS.Iterate ");
     }
+*/
+/*
         |
     AnisoGS T_POINT TEnd
         {
@@ -3589,6 +3588,7 @@ command:
       res = Func_EndAnisoGS();
 
     }
+*/
         |
         T_AnisoWeickert T_POINT TIterate
         {
@@ -6506,18 +6506,22 @@ float_variable:
         GB_main_wxFrame->GetConsole()
                         ->IncCommand(wxString::FromAscii(comment.c_str()));
     }
+/*
     |
     AnisoGS T_POINT T_GetNoiseSD
     {
       float val=Func_AnisoGS_GetNoiseSD();
       ADD_VARSTACK_FLOAT(val);
     }
+*/
+/*
     |
     AnisoGS T_POINT T_GetDAcoeff
     {
       float val=Func_AnisoGS_GetDAcoeff();
       ADD_VARSTACK_FLOAT(val);
     }
+*/
 /* Deprecated
     |
     T_LevelSetsCURV T_POINT T_UpdateResult
@@ -8109,6 +8113,7 @@ image:
     FinSi
     driver.im_stack.AddImage(res);
       }
+/*
       |
       AnisoGS T_POINT T_GetOutput
       {
@@ -8118,6 +8123,8 @@ image:
     FinSi
     driver.im_stack.AddImage(res);
       }
+*/
+/*
       |
       AnisoGS T_POINT T_GetDiffCoeff
       {
@@ -8127,6 +8134,7 @@ image:
     FinSi
     driver.im_stack.AddImage(res);
       }
+*/
 /*
       |
       T_LevelSetsCURV T_POINT TInit T_OP_PAR var_image  T_COMMA expr  T_CL_PAR
@@ -8187,6 +8195,7 @@ image:
     driver.im_stack.AddImage(res);
       }
 */
+/*
         |
         AnisoGS
         T_OP_PAR var_image
@@ -8201,7 +8210,7 @@ image:
         (5) number of iterations
       Description:
         Runs an anisotropic diffusion filter using Gauss-Seidel numerical scheme, based on the Flux-diffusion algorithm [Krissian,IEEE TMI 2002].
-      **/
+      **
       int        nb_iter,i;
       float       error;
       GET_VARSTACK_VALUE(InrImage, im);
@@ -8221,6 +8230,7 @@ image:
 
 
     }
+*/
         |
         T_FluxDiffusion
         T_OP_PAR var_image T_COMMA var_image T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
@@ -8254,7 +8264,6 @@ image:
       FinSi
       Func_EndAnisoGS();
       driver.im_stack.AddImage(res);
-
     }
     |
     T_vtkAnisoGS

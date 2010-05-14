@@ -34,6 +34,7 @@
 #include "wrap_MaxSubImage.h"
 #include "wrap_ImageAddScalar.h"
 #include "wrap_ImageCos.h"
+#include "wrap_AnisoGS.h"
 #include "ami_object.h"
 #include "VarArray.h"
 
@@ -97,7 +98,10 @@ void AddWrapFilters(){
   //2D SUBPIXEL METHOD
   ADDOBJECTVAR_NAME(C_wrap_imagefunction, "SintheticRamp", wrapSintheticRamp);
   ADDOBJECTVAR_NAME(C_wrap_varfunction, "Subpixel2D", wrapSubpixel2D);
-	
+
+  // Add AnisoGS
+  AddVar_AnisoGS( amiobject->GetContext());
+
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);
 

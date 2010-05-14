@@ -15,11 +15,16 @@
 
 
 #include <wx/msgdlg.h>
-#include "inrimage.hpp"
+
+class InrImage;
+//#include "inrimage.hpp"
 #include "paramlist.h"
 #include <boost/shared_ptr.hpp>
+
+#include "BasicVariable.h"
 #include "Variable.hpp"
 //#include "DessinImage.hpp"
+//class BasicVariable;
 
 /// Specialization for C_wrap_varfunction
 template<>
@@ -80,9 +85,9 @@ class wrap_##methodname : public WrapClassMember { \
     BasicVariable::ptr CallMember(ParamList*); \
 }; \
 \
-inline void AddVar_##methodname(  AMIObject::ptr& obj, const std::string& newname = #methodname) {\
+inline void AddVar_##methodname(  Variables::ptr& context, const std::string& newname = #methodname) {\
   boost::shared_ptr<WrapClassMember> tmp( new wrap_##methodname());\
-  obj->GetContext()->AddVar<WrapClassMember>(newname, tmp); \
+  context->AddVar<WrapClassMember>(newname, tmp); \
 }
 
 

@@ -72,9 +72,7 @@ void Func_InitAnisoGS(InrImage* in,
 {
 
   if (static_AnisoGS!=NULL) delete static_AnisoGS;
-
   static_AnisoGS=new AnisoGS();
-
   static_AnisoGS->Init(in,p_sigma,p_k,p_beta);
 
 } // Func_InitAnisoGS()
@@ -110,7 +108,6 @@ void      Func_AnisoGS_SetNoiseType( int nt)
 void      Func_AnisoGS_SetDistanceMap( unsigned char dm)
 //
 {
-
   static_AnisoGS->SetDistanceMap(dm);
 }
 
@@ -119,7 +116,6 @@ void Func_AnisoGS_SetMask( InrImage* m  )
 {
   static_AnisoGS->Setmask(m);
 }
-
 
 //----------------------------------------------------------------------
 void      Func_AnisoGS_SetDataCoeff( float datacoeff  )
@@ -136,7 +132,6 @@ void      Func_AnisoGS_SetNoiseSD( float noiseSD  )
   static_AnisoGS->Setnoise_standard_deviation( noiseSD);
 }
 
-
 //----------------------------------------------------------------------
 float      Func_AnisoGS_GetNoiseSD(  )
 //
@@ -144,14 +139,12 @@ float      Func_AnisoGS_GetNoiseSD(  )
   return static_AnisoGS->Getnoise_standard_deviation();
 }
 
-
 //----------------------------------------------------------------------
 float      Func_AnisoGS_GetDAcoeff(  )
 //
 {
   return static_AnisoGS->Getestimated_DA_coeff();
 }
-
 
 //----------------------------------------------------------------------
 void Func_SetSmoothedParam( unsigned char sp  )
@@ -226,9 +219,7 @@ float Func_ItereAnisoGS()
 float AnisoGS::IterateFlux( InrImage* vect, float coeff)
 //   --------------------
 {
-
-  
-    float       erreur;
+  float       erreur;
 
   Si vect== NULL Alors
     fprintf(stderr,"Func_ItereFlux() \t NULL vector \n");
@@ -275,7 +266,6 @@ float Func_ItereFlux( InrImage* vect, float coeff)
 } // Func_ItereAnisoGS()
 
 
-
 //----------------------------------------------------------------------
 int Func_EndAnisoGS()
 {
@@ -286,7 +276,6 @@ int Func_EndAnisoGS()
   return 1;
 
 } // Func_EndAnisoGS()
-
 
 //----------------------------------------------------------------------
 InrImage* Func_AnisoGS_GetOutput()
@@ -312,7 +301,6 @@ InrImage* Func_AnisoGS_GetOutput()
 
 } // Func_GetOutput()
 
-
 //----------------------------------------------------------------------
 InrImage* Func_AnisoGS_GetDiffusionCoeff()
 {
@@ -333,7 +321,6 @@ InrImage* Func_AnisoGS_GetDiffusionCoeff()
     return NULL;
 
 } // Func_GetDiffusionCoeff()
-
 
 
 

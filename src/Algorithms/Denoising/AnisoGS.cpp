@@ -17,6 +17,7 @@
 #include "func_imagebasictools.h"
 #include "Eigen.hpp"
 #include "CurvaturasPrincipales.hpp"
+#include "filtrage_rec.hpp"
 
 #define IncX(I)  ((x<tx-1)?(I+1):I)
 #define Inc2X(I) ((x<tx-2)?(I+1):I)
@@ -128,6 +129,62 @@ void Solve3rdOrder(float _a, float _b, float _c, double w[3], int& nb_solutions)
 } // Solve3rdOrder()
 
 
+// Destructor
+AnisoGS::~AnisoGS()
+{
+
+  DeleteCoefficients();
+  
+  Si filtre     != NULL Alors
+    delete filtre;
+    filtre = NULL;
+  FinSi
+  
+  Si filtre_rec != NULL Alors
+    delete filtre_rec;
+    filtre_rec = NULL;
+  FinSi
+  
+  Si this->image_lissee != NULL Alors
+    delete this->image_lissee;
+    this->image_lissee=NULL;
+  FinSi
+  
+  Si this->im_tmp != NULL Alors
+    delete this->im_tmp;
+    this->im_tmp = NULL;
+  FinSi
+  
+  Si this->image_c != NULL Alors
+    delete this->image_c;
+    this->image_c = NULL;
+  FinSi
+  
+  Si divFim != NULL Alors
+    delete divFim;
+    divFim = NULL;
+  FinSi
+  
+  Si Non(opt_mem) Et (image_entree_allouee) Alors
+    delete image_entree;
+    image_entree=NULL;
+  FinSi
+  mask = NULL;
+      
+  if (tensor_xx!=NULL) { delete tensor_xx;  tensor_xx=NULL; }
+  if (tensor_xy!=NULL) { delete tensor_xy; tensor_xy=NULL; }
+  if (tensor_xz!=NULL) { delete tensor_xz; tensor_xz=NULL; }
+  if (tensor_yy!=NULL) { delete tensor_yy; tensor_yy=NULL; }
+  if (tensor_yz!=NULL) { delete tensor_yz; tensor_yz=NULL; }
+  if (tensor_zz!=NULL) { delete tensor_zz; tensor_zz=NULL; }
+
+  if (eigenvect_xp!=NULL) { delete eigenvect_xp; eigenvect_xp=NULL; }
+  if (eigenvect_yp!=NULL) { delete eigenvect_yp; eigenvect_yp=NULL; }
+  if (eigenvect_zp!=NULL) { delete eigenvect_zp; eigenvect_zp=NULL; }
+
+  delete matrice;
+  delete vec_propre;
+}
 
 // Extend Boundary Conditions
 void AnisoGS::ExtendBoundariesVonNeumann( InrImage* input)

@@ -198,9 +198,6 @@ SetColormap      return(token::T_SetColormap); /*{SetColormap,T_SetColormap}*/
 itk               return(token::T_itk); /*{itk,T_itk}*/
 CannyEdgeDetector return(token::T_CannyEdgeDetector); /*{CannyEdgeDetector,T_CannyEdgeDetector}*/
 
-GetOutput      return(token::T_GetOutput); /*{GetOutput,T_GetOutput}*/
-GetDiffCoeff   return(token::T_GetDiffCoeff); /*{GetDiffCoeff,T_GetDiffCoeff}*/
-
 GetName        return(token::T_GetName); /*{GetName,T_GetName}*/
 GetObjectName  return(token::T_GetObjectName); /*{GetObjectName,T_GetObjectName}*/
 SetName        return(token::T_SetName); /*{SetName,T_SetName}*/
@@ -467,7 +464,6 @@ EDPerode          return(token::T_EDPerode); /*{EDPerode,T_EDPerode}*/
 EDPopen           return(token::T_EDPopen); /*{EDPopen,T_EDPopen}*/
 EDPclose          return(token::T_EDPclose); /*{EDPclose,T_EDPclose}*/
 
-AnisoGS           return(token::AnisoGS); /*{AnisoGS,AnisoGS}*/
 
 vtkFastMarching   return(token::T_vtkFastMarching); /*{vtkFastMarching,T_vtkFastMarching}*/
 vtkFastMarchingTarget   return(token::T_vtkFastMarchingTarget); /*{vtkFastMarchingTarget,T_vtkFastMarchingTarget}*/
@@ -477,20 +473,7 @@ FluxDiffusion     return(token::T_FluxDiffusion); /*{FluxDiffusion,T_FluxDiffusi
 vtkAnisoGS        return(token::T_vtkAnisoGS); /*{vtkAnisoGS,T_vtkAnisoGS}*/
 AnisoSmoothGS     return(token::AnisoSmoothGS); /*{AnisoSmoothGS,AnisoSmoothGS}*/
 init              return(token::TInit); /*{init,TInit}*/
-setcoeff          return(token::TSetCoeff); /*{setcoeff,TSetCoeff}*/
 iterate           return(token::TIterate); /*{iterate,TIterate}*/
-SetNoiseType      return(token::T_SetNoiseType); /*{SetNoiseType,T_SetNoiseType}*/
-SetNoiseSD        return(token::T_SetNoiseSD); /*{SetNoiseSD,T_SetNoiseSD}*/
-GetNoiseSD        return(token::T_GetNoiseSD); /*{GetNoiseSD,T_GetNoiseSD}*/
-GetDAcoeff        return(token::T_GetDAcoeff); /*{GetDAcoeff,T_GetDAcoeff}*/
-SetMask           return(token::T_SetMask); /*{SetMask,T_SetMask}*/
-SetSRADROI        return(token::T_SetSRADROI); /*{SetSRADROI,T_SetSRADROI}*/
-SetRNRADROI       return(token::T_SetRNRADROI); /*{SetRNRADROI,T_SetRNRADROI}*/
-SetRNRADROI_NEW   return(token::T_SetRNRADROI_NEW); /*{SetRNRADROI_NEW,T_SetRNRADROI_NEW}*/
-SetLocalStruct    return(token::T_SetLocalStruct); /*{SetLocalStruct,T_SetLocalStruct}*/
-SetEigenMode      return(token::T_SetEigenMode); /*{SetEigenMode,T_SetEigenMode}*/
-Setdt             return(token::T_Setdt); /*{Setdt,T_Setdt}*/
-Setneighborhood   return(token::T_Setneighborhood); /*{Setneighborhood,T_Setneighborhood}*/
 end               return(token::TEnd); /*{end,TEnd}*/
 
 AnisoWeickert     return(token::T_AnisoWeickert); /*{AnisoWeickert,T_AnisoWeickert}*/

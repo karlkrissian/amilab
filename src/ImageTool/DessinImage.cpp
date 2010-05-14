@@ -4474,6 +4474,7 @@ void DessinImage::OnWheel(wxMouseEvent& event)
     // Il faut etre dans une des images ...
     if (_zoom_coupe == -1) {
       CLASS_ERROR("Trying to zoom from outside the image.")
+      return;
     }
     _initial_zoom = Param._Zoom;
 

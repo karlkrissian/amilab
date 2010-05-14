@@ -17,6 +17,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/wxParams
   ${AMILAB_SOURCE_DIR}/myVTK4
   ${AMILAB_SOURCE_DIR}/Vaisseaux
+  ${AMILAB_SOURCE_DIR}/Filtering
   ${AMILAB_SOURCE_DIR}/Algorithms/Basic
   ${AMILAB_SOURCE_DIR}/Algorithms/Denoising
   ${AMILAB_SOURCE_DIR}/Algorithms/Others
@@ -57,6 +58,7 @@ SET(  WrapFilters_SRCS
 	wrapBasicEdgeDetection.cpp
   wrapSubPixel2D.cpp
   wrapGenerateRamp.cpp
+  wrap_AnisoGS.cpp
 )
 
 SET(WrapFilters_HDRS
@@ -76,6 +78,7 @@ SET(WrapFilters_HDRS
 	wrapBasicEdgeDetection.h
   wrapSubPixel2D.h
   wrapGenerateRamp.h
+  wrap_AnisoGS.h
 )
 
 SET(WrapFilters_SRCS

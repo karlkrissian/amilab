@@ -63,7 +63,8 @@ void AddWrapImports()
 
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxWindow",    wrap_wxWindow);
 
-  AddVar_wxSize(    amiobject);
+  AddVar_wxSize( amiobject->GetContext());
+//  AddVar_wxSize(    Vars.GetBuiltinContext());
 //  ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxSize",      wrap_wxSize);
 
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxColour",    wrap_wxColour);

@@ -17,11 +17,14 @@
 #include "DefineClass.hpp"
 #include "inrimage.hpp"
 #include "math1.hpp"
-#include "DeriveesLissees.hpp"
-#include "filtrage_rec.hpp"
+//#include "DeriveesLissees.hpp"
+//#include "filtrage_rec.hpp"
 #include "DirPrincipales.hpp"
 #include "FloatMatrix.hpp"
 
+class DeriveesLissees;
+class FiltrageRec;
+#include "GeneralGaussianFilter.h"
 
 #define DER_DISCR 1
 #define DER_GAUSS 2
@@ -173,26 +176,28 @@ class AnisoGS {
   AddSetGetVar(maxcurv_coeff, float)
   AddSetGetVar(mincurv_coeff, float)
 
-  // noise Gaussian or Speckle, by default Gaussian
+  /// noise Gaussian or Speckle, by default Gaussian
   AddSetGetVar(noise_type, int)
   AddSetGetVar(noise_standard_deviation, float)
   unsigned char noise_SD_preset;
   double variance;
 
-  // estimated data attachment coeff
+  /// estimated data attachment coeff
   AddSetGetVar(estimated_DA_coeff,float);
   
-  // If true, uses the norm of the smoothed gradient
-  // as parameter of the first diffusion function
-  // otherwise uses the first order derivative of intensity
-  // in the direction of the smoothed gradient.
+  /** If true, uses the norm of the smoothed gradient
+   as parameter of the first diffusion function
+   otherwise uses the first order derivative of intensity
+   in the direction of the smoothed gradient.
+  **/
   AddSetGetVar(SmoothedParam,unsigned char);
 
-  // Computes Euclidian distance maps
+  /// Computes Euclidian distance maps
   AddSetGetVar(DistanceMap,unsigned char);
   
-  // Get the minimal and maximal intensity of the initial image
-  // to limit unstabilities
+  /** Get the minimal and maximal intensity of the initial image
+     to limit unstabilities
+  **/
   float min_intensity;
   float max_intensity;
 
@@ -209,62 +214,7 @@ class AnisoGS {
       InitParam();
     }
 
-  ~AnisoGS()
-    {
-
-      DeleteCoefficients();
-      
-      Si filtre     != NULL Alors
-  delete filtre;
-        filtre = NULL;
-      FinSi
-  
-      Si filtre_rec != NULL Alors
-  delete filtre_rec;
-        filtre_rec = NULL;
-      FinSi
-  
-      Si this->image_lissee != NULL Alors
-  delete this->image_lissee;
-        this->image_lissee=NULL;
-      FinSi
-  
-      Si this->im_tmp != NULL Alors
-  delete this->im_tmp;
-        this->im_tmp = NULL;
-      FinSi
-  
-      Si this->image_c != NULL Alors
-  delete this->image_c;
-        this->image_c = NULL;
-      FinSi
-  
-      Si divFim != NULL Alors
-  delete divFim;
-        divFim = NULL;
-      FinSi
-  
-      Si Non(opt_mem) Et (image_entree_allouee) Alors
-  delete image_entree;
-        image_entree=NULL;
-      FinSi
-      mask = NULL;
-      
-    if (tensor_xx!=NULL) { delete tensor_xx; tensor_xx=NULL; }
-    if (tensor_xy!=NULL) { delete tensor_xy; tensor_xy=NULL; }
-    if (tensor_xz!=NULL) { delete tensor_xz; tensor_xz=NULL; }
-    if (tensor_yy!=NULL) { delete tensor_yy; tensor_yy=NULL; }
-    if (tensor_yz!=NULL) { delete tensor_yz; tensor_yz=NULL; }
-    if (tensor_zz!=NULL) { delete tensor_zz; tensor_zz=NULL; }
-
-    if (eigenvect_xp!=NULL) { delete eigenvect_xp; eigenvect_xp=NULL; }
-    if (eigenvect_yp!=NULL) { delete eigenvect_yp; eigenvect_yp=NULL; }
-    if (eigenvect_zp!=NULL) { delete eigenvect_zp; eigenvect_zp=NULL; }
-
-    delete matrice;
-    delete vec_propre;
-
-    }
+  ~AnisoGS();
 
   void InitParam() {
     image_entree  = NULL;

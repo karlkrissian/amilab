@@ -24,6 +24,8 @@
 
 if (!exists(AnisoNRADClass)) {
 
+  ami_import->Filters()
+
   Class AnisoNRADClass {
 
   #----------------------------
@@ -145,32 +147,34 @@ if (!exists(AnisoNRADClass)) {
     numit = ::t/::dt
     local::input1 = ::input*::input
     if (::run_on_roi) {
-      input1 <<= input1[::roi.GetExtent()]
+      input1 <<= input1[::roi.GetExtent]
     }
   
+    if (exists(::NRADfilter)) { del ::NRADfilter; }
+    ::NRADfilter = global::filters.AnisoGS()
     # sigma = 0.7
     # threshold = 1 // not used
     # data attachment = 0
-    AnisoGS.init(input1,::sigma,1,0)
-    AnisoGS.Setneighborhood(::neighborhood)
-    AnisoGS.Setdt(::dt)
+    ::NRADfilter.Init(input1,::sigma,1,0)
+    ::NRADfilter.Setneighborhood(::neighborhood)
+    ::NRADfilter.Setdt(::dt)
     # diffusion coefficient in minimal and maximal curvature directions
-    AnisoGS.setcoeff(0.5,0.01)
+    ::NRADfilter.setcoeff(0.5,0.01)
   
     if (::matrix_mode==1) {
       # set Rician Noise Reducing Anisotropic Diffusion and the ROI
-      AnisoGS.SetRNRADROI(::roi)
+      ::NRADfilter.SetRNRADROI(::roi)
     }
     if (::matrix_mode==2) {
       # set Rician Noise Reducing Anisotropic Diffusion and the ROI
-      AnisoGS.SetRNRADROI_NEW(::roi)
+      ::NRADfilter.SetRNRADROI_NEW(::roi)
     }
   
-    AnisoGS.SetLocalStruct(::local_struct)
-    AnisoGS.SetEigenMode(  ::eigen_mode)
+    ::NRADfilter.SetLocalStruct(::local_struct)
+    ::NRADfilter.SetEigenMode(  ::eigen_mode)
   
     # process iterations
-    ::res0 <<= AnisoGS.GetOutput
+    ::res0 <<= ::NRADfilter.GetOutput()
     if (::run_on_roi) {
       ::res <<= ::input
       ::res0 = sqrt(::res0)
@@ -183,8 +187,8 @@ if (!exists(AnisoNRADClass)) {
     SetProgress(0)
     InitTime
     for k=1 to numit {
-      AnisoGS.iterate
-      ::res0 = AnisoGS.GetOutput
+      ::NRADfilter.Iterate
+      ::res0 = ::NRADfilter.GetOutput()
       ::res0 = ::res0*(::res0>0)
       if (::run_on_roi) {
         ::res0 = sqrt(::res0)
@@ -202,7 +206,7 @@ if (!exists(AnisoNRADClass)) {
     EndTime
     SetProgress(0)
   
-  //  AnisoGS.end
+  //  ::NRADfilter.end
   //  hide ::res
   }
   
