@@ -1314,19 +1314,19 @@ command:
         **/
         BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
         // check counter of the value, not of the variable ...
-        if (var->GetPtrCounter()==1) {
-          //cout << "GetPtrCounter == 1" << endl;
-          IdentifierInfo::ptr ident($1);
-          Vars.AddVar(ident,var);
-        } else
-        {
-          if (var.get()) {
+        if (var.get()) {
+          if (var->GetPtrCounter()==1) {
+            //cout << "GetPtrCounter == 1" << endl;
+            IdentifierInfo::ptr ident($1);
+            Vars.AddVar(ident,var);
+          } else
+          {
             BasicVariable::ptr copy = var->NewCopy();
             IdentifierInfo::ptr ident($1);
             Vars.AddVar(ident,copy);
-          } else {
-            driver.err_print("identifier = variable, no variable value");
           }
+        } else {
+            driver.err_print("identifier = variable, no variable value");
         }
       }
       |
@@ -11493,6 +11493,9 @@ surface:
       int style = (int) $13;
       SurfacePoly* surf;
 
+      stepx = macro_max(stepx,1);
+      stepy = macro_max(stepy,1);
+      stepz = macro_max(stepz,1);
        surf = AMIFluid::Func_CreateVectors(displ.get(), stepx, stepy, stepz,  scale, style);
        Si surf != NULL Alors
          driver.surf_stack.AddSurf(surf);

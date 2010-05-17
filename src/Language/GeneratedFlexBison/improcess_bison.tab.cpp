@@ -1389,19 +1389,19 @@ namespace yyip {
         **/
         BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
         // check counter of the value, not of the variable ...
-        if (var->GetPtrCounter()==1) {
-          //cout << "GetPtrCounter == 1" << endl;
-          IdentifierInfo::ptr ident((yysemantic_stack_[(3) - (1)].ident));
-          Vars.AddVar(ident,var);
-        } else
-        {
-          if (var.get()) {
+        if (var.get()) {
+          if (var->GetPtrCounter()==1) {
+            //cout << "GetPtrCounter == 1" << endl;
+            IdentifierInfo::ptr ident((yysemantic_stack_[(3) - (1)].ident));
+            Vars.AddVar(ident,var);
+          } else
+          {
             BasicVariable::ptr copy = var->NewCopy();
             IdentifierInfo::ptr ident((yysemantic_stack_[(3) - (1)].ident));
             Vars.AddVar(ident,copy);
-          } else {
-            driver.err_print("identifier = variable, no variable value");
           }
+        } else {
+            driver.err_print("identifier = variable, no variable value");
         }
       }
     break;
@@ -12583,6 +12583,9 @@ namespace yyip {
       int style = (int) (yysemantic_stack_[(14) - (13)].adouble);
       SurfacePoly* surf;
 
+      stepx = macro_max(stepx,1);
+      stepy = macro_max(stepy,1);
+      stepz = macro_max(stepz,1);
        surf = AMIFluid::Func_CreateVectors(displ.get(), stepx, stepy, stepz,  scale, style);
        Si surf != NULL Alors
          driver.surf_stack.AddSurf(surf);
@@ -12593,7 +12596,7 @@ namespace yyip {
   case 633:
 
 /* Line 678 of lalr1.cc  */
-#line 11502 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11505 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -12631,7 +12634,7 @@ namespace yyip {
   case 634:
 
 /* Line 678 of lalr1.cc  */
-#line 11535 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11538 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -12675,7 +12678,7 @@ namespace yyip {
   case 643:
 
 /* Line 678 of lalr1.cc  */
-#line 11596 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11599 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           // todo ... 
           // 1. check if identifier belongs to the object
@@ -12710,7 +12713,7 @@ namespace yyip {
   case 662:
 
 /* Line 678 of lalr1.cc  */
-#line 11670 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11673 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           ImageExtent<float>* extent=new ImageExtent<float>( (float)(yysemantic_stack_[(11) - (1)].adouble),(float)(yysemantic_stack_[(11) - (3)].adouble),(float)(yysemantic_stack_[(11) - (5)].adouble),
                               (float)(yysemantic_stack_[(11) - (7)].adouble),(float)(yysemantic_stack_[(11) - (9)].adouble),(float)(yysemantic_stack_[(11) - (11)].adouble));
@@ -12722,7 +12725,7 @@ namespace yyip {
   case 663:
 
 /* Line 678 of lalr1.cc  */
-#line 11678 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11681 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           ImageExtent<float>* extent=new ImageExtent<float>((float)(yysemantic_stack_[(7) - (1)].adouble),(float)(yysemantic_stack_[(7) - (3)].adouble),(float)(yysemantic_stack_[(7) - (5)].adouble),(float)(yysemantic_stack_[(7) - (7)].adouble));
           extent->SetMode(1); // relative
@@ -12733,7 +12736,7 @@ namespace yyip {
   case 664:
 
 /* Line 678 of lalr1.cc  */
-#line 11685 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11688 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VALUE(InrImage, im);
 
@@ -12753,7 +12756,7 @@ namespace yyip {
   case 665:
 
 /* Line 678 of lalr1.cc  */
-#line 11701 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11704 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
     {
         Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
         DessinImage::ptr draw = DessinImage::ptr(varimd->Pointer());
@@ -12779,7 +12782,7 @@ namespace yyip {
 
 
 /* Line 678 of lalr1.cc  */
-#line 12783 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
+#line 12786 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
 	default:
           break;
       }
@@ -17316,10 +17319,10 @@ namespace yyip {
    10703, 10724, 10758, 10768, 10779, 10789, 10800, 10810, 10816, 10830,
    10856, 10871, 10889, 10898, 10917, 10946, 10974, 10990, 11014, 11048,
    11080, 11127, 11168, 11193, 11203, 11226, 11238, 11250, 11287, 11330,
-   11378, 11430, 11473, 11501, 11534, 11577, 11585, 11587, 11590, 11591,
-   11592, 11593, 11594, 11595, 11628, 11629, 11630, 11631, 11632, 11633,
-   11634, 11635, 11640, 11641, 11647, 11650, 11653, 11656, 11658, 11660,
-   11664, 11666, 11669, 11677, 11684, 11700
+   11378, 11430, 11473, 11504, 11537, 11580, 11588, 11590, 11593, 11594,
+   11595, 11596, 11597, 11598, 11631, 11632, 11633, 11634, 11635, 11636,
+   11637, 11638, 11643, 11644, 11650, 11653, 11656, 11659, 11661, 11663,
+   11667, 11669, 11672, 11680, 11687, 11703
   };
 
   // Print the state stack on the debug stream.
@@ -17457,11 +17460,11 @@ namespace yyip {
 } // yyip
 
 /* Line 1054 of lalr1.cc  */
-#line 17461 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
+#line 17464 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
 
 
 /* Line 1056 of lalr1.cc  */
-#line 11721 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 11724 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
 
 #include <stdio.h>
 
