@@ -198,8 +198,8 @@ BasicVariable::ptr WrapClass_AnisoGS::
       wrap_SetMask::CallMember( ParamList* p)
 {
   int n = 0;
-  InrImage* mask;
-  if (!get_val_ptr_param<InrImage>
+  InrImage::ptr mask;
+  if (!get_val_smtptr_param<InrImage>
                            (  mask,   p, n)) ClassHelpAndReturn;
   this->_objectptr->_obj->Setmask( mask);
   return BasicVariable::ptr();
@@ -218,8 +218,8 @@ BasicVariable::ptr WrapClass_AnisoGS::
       wrap_SetSRADROI::CallMember( ParamList* p)
 {
   int n = 0;
-  InrImage* roi;
-  if (!get_val_ptr_param<InrImage>
+  InrImage::ptr roi;
+  if (!get_val_smtptr_param<InrImage>
                            (  roi,   p, n)) ClassHelpAndReturn;
   this->_objectptr->_obj->SetSRAD_ROI(roi);
   this->_objectptr->_obj->Setcontours_mode( CONTOURS_SRAD);
@@ -239,8 +239,8 @@ BasicVariable::ptr WrapClass_AnisoGS::
       wrap_SetRNRADROI::CallMember( ParamList* p)
 {
   int n = 0;
-  InrImage* roi;
-  if (!get_val_ptr_param<InrImage>
+  InrImage::ptr roi;
+  if (!get_val_smtptr_param<InrImage>
                            (  roi,   p, n)) ClassHelpAndReturn;
   this->_objectptr->_obj->SetSRAD_ROI(roi);
   this->_objectptr->_obj->Setcontours_mode( CONTOURS_RNRAD);
@@ -260,8 +260,8 @@ BasicVariable::ptr WrapClass_AnisoGS::
       wrap_SetRNRADROI_NEW::CallMember( ParamList* p)
 {
   int n = 0;
-  InrImage* roi;
-  if (!get_val_ptr_param<InrImage>
+  InrImage::ptr roi;
+  if (!get_val_smtptr_param<InrImage>
                            (  roi,   p, n)) ClassHelpAndReturn;
   this->_objectptr->_obj->SetSRAD_ROI(roi);
   this->_objectptr->_obj->Setcontours_mode( CONTOURS_RNRAD_NEW);

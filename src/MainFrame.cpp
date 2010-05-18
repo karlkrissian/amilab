@@ -98,6 +98,7 @@ enum {
   wxID_ConsoleReset = 2000,
   wxID_ConsoleClear,
   wxID_UpdateVars,
+  wxID_ToolLoadImage,
   wxID_ToolHelp,
   wxID_ToolQuit,
   wxID_VarList,
@@ -115,6 +116,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_CLOSE(MainFrame::OnClose)
 
 //    EVT_BUTTON(wxID_ConsoleReset, MainFrame::ConsoleReset)
+    EVT_TOOL(         wxID_ToolLoadImage, MainFrame::OnFileOpenImage)
     EVT_TOOL(         wxID_ConsoleClear, MainFrame::ConsoleClear)
 #if (wxCHECK_VERSION(2,9,0))
     EVT_TOOL_RCLICKED(wxID_ConsoleClear, MainFrame::ConsoleReset)
@@ -365,6 +367,11 @@ MainFrame::MainFrame( const wxString& title,
     tb1->SetToolBitmapSize(wxSize(48,48));
 //    tb1->AddTool(wxID_ANY, wxT("Test"), wxArtProvider::GetBitmap(wxART_ERROR));
 //    tb1->AddSeparator();
+    ::wxInitAllImageHandlers();
+    wxImage loadim(wxT("MRA_32_39.png"));
+    tb1->AddTool(wxID_ToolLoadImage, wxT("Load Image"), wxBitmap(loadim),
+        wxT("Load Image"));
+
     tb1->AddTool(wxID_UpdateVars, wxT("Update variables"), wxBitmap(reload),
         wxT("Update variables"));
     tb1->AddSeparator();

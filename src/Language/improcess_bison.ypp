@@ -111,6 +111,8 @@ namespace MyNS_ForOutput {
 using namespace MyNS_ForOutput;
 */
 
+
+
 //-------
 
 #include "wx/evtloop.h"
@@ -222,6 +224,24 @@ void CB_update_imagelist( void* imagelist_gui);
 #define ADD_VARSTACK_FLOAT(newval) \
     Variable<float>::ptr new_var(new Variable<float>(float_ptr(new float(newval)))); \
     driver.var_stack.AddVar(new_var);
+
+/*! \def CHECK_VAR
+    \brief Checks if the smart pointer really points to a variable, if not abort the current parsing
+*/
+#define CHECK_VAR(var) \
+  if (!var.get()) {  \
+    driver.yyiperror(" Empty variable in expression "); \
+    YYABORT; }
+
+/*! \def GET_CHECK_VARSTACK
+    \brief Gets the last variable from the stack and 
+        checks if the smart pointer really points to a variable, if not abort the current parsing
+*/
+#define GET_CHECK_VARSTACK(varname) \
+  BasicVariable::ptr varname(driver.var_stack.GetLastBasicVar()); \
+  if (!varname.get()) {  \
+    driver.yyiperror(" Empty variable in expression "); \
+    YYABORT; }
 
 /**
   newval is a smart pointer to the new value to add
@@ -10026,11 +10046,10 @@ primary_var:
       **/
         //cout << "call to variable T_OP_PAR param_list T_CL_PAR end_instr" << endl;
         // 1. check the variable type
-        BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+        GET_CHECK_VARSTACK(var)
         ParamList::ptr param($3);
 
         // TODO: run this with overloading from BasicVariable ...
-
         if (var->Type()==type_class_member) {
           ///    Call a wrapped C++ class member.
           DYNAMIC_CAST_VARIABLE(WrapClassMember,var, var1);
@@ -10106,7 +10125,7 @@ postfix_var:
     /**
       Description: Logical negation (NOT) operator.
     **/
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(!(*var));
   }
   | primary_var INC_OP 
@@ -10114,7 +10133,7 @@ postfix_var:
     /**
       Description: Postfix increment operator.
     **/
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar((*var)++);
   }
   | primary_var DEC_OP
@@ -10122,7 +10141,7 @@ postfix_var:
     /**
       Description: Postfix decrement operator.
     **/
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar((*var)--);
   }
   |
@@ -10131,7 +10150,7 @@ postfix_var:
     /**
       Description: Cast operator.
     **/
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->BasicCast( $2));
 
   }
@@ -10140,7 +10159,7 @@ postfix_var:
     /**
       Description: Transpose operator, usefull for matrices
     **/
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->Transpose());
   }
 /* not included yet because of problems with extents
@@ -10162,92 +10181,92 @@ prefix_var:
   | T_SUB  postfix_var 
   {
     //cout << "T_SUB  cast_var  " << endl;
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(-(*var));
   }
   | T_ADD  postfix_var
   {
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(+(*var));
   }
   | INC_OP  postfix_var 
   {
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(++(*var));
   }
   | DEC_OP  postfix_var
   {
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(--(*var));
   }
   | SIN    postfix_var 
   {
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_sin());
   }
   | COS    postfix_var 
   {
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_cos());
   }
   | SQRT   postfix_var
   {
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_sqrt());
   }
   | ABS    postfix_var
   {
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_fabs());
   }
   | ROUND  postfix_var
   {
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_round());
   }
   | FLOOR  postfix_var
   {
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_floor());
   }
   | TAN    postfix_var
   {
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_tan());
   }
   | ASIN   postfix_var
   {
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_asin());
   }
   | ACOS   postfix_var
   {
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_acos());
   }
   | ATAN   postfix_var
   {
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_atan());
   }
   | EXP    postfix_var
   {
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_exp());
   }
   | LOG    postfix_var
   {
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_log());
   }
   | LN     postfix_var
   {
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_ln());
   }
   | NORM   postfix_var
   {
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_norm());
   }
   ;
@@ -10257,20 +10276,20 @@ multiplicative_var:
   prefix_var
   | multiplicative_var T_MULT prefix_var
   {
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1)*var2);
   }
   | multiplicative_var T_DIV  prefix_var
   {
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1)/var2);
   }
   | multiplicative_var T_MOD  prefix_var
   {
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1)%var2);
   }
   | multiplicative_var T_EXP  prefix_var
@@ -10280,15 +10299,15 @@ additive_var:
   multiplicative_var
   | additive_var T_ADD multiplicative_var
   {
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     BasicVariable::ptr res(*var1+var2);
     driver.var_stack.AddVar(res);
   }
   | additive_var T_SUB multiplicative_var
   {
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     BasicVariable::ptr res((*var1)-var2);
     driver.var_stack.AddVar(res);
   }
@@ -10302,26 +10321,26 @@ relational_var:
   shift_var
   | relational_var T_LT  shift_var
   {
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1)<var2);
   }
   | relational_var T_GT  shift_var
   {
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1)>var2);
   }
   | relational_var LE_OP shift_var
   {
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1)<=var2);
   }
   | relational_var GE_OP shift_var
   {
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1)>=var2);
   }
   ;
@@ -10330,14 +10349,14 @@ equality_var:
   relational_var
   | equality_var EQ_OP relational_var
   {
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1)==var2);
   }
   | equality_var NE_OP relational_var
   {
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1)!=var2);
   }
 /* Deprecated
@@ -10380,8 +10399,8 @@ logical_and_var:
     /**
       Descriptiopn: Logical AND operator
     **/
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1)&&var2);
   }
   ;
@@ -10393,8 +10412,8 @@ logical_xor_var:
     /**
       Descriptiopn: Logical XOR operator, for vectorial images it defines the pointwise vectorial product.
     **/
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1)^var2);
   }
   ;
@@ -10406,8 +10425,8 @@ logical_or_var:
     /**
       Descriptiopn: Logical OR operator
     **/
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1)||var2);
   }
   ;
@@ -10419,8 +10438,8 @@ conditional_var:
     /**
       Descriptiopn: Operation (cond?a:b) like in C/C++.
     **/
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar(var->TernaryCondition(var1,var2));
   }
@@ -10430,9 +10449,9 @@ assignment_var:
   conditional_var
   | prefix_var ASSIGN_OP assignment_var
   {
-    cout << "assignment_var" << endl;
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    //cout << "assignment_var" << endl;
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     if (var1->GetPtrCounter()==1) {
       // TODO: here ...
     }
@@ -10440,26 +10459,26 @@ assignment_var:
   }
   | prefix_var ADD_ASSIGN assignment_var
   {
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1)+=var2);
   }
   | prefix_var SUB_ASSIGN assignment_var
   {
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1)-=var2);
   }
   | prefix_var MUL_ASSIGN assignment_var
   {
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1)*=var2);
   }
   | prefix_var DIV_ASSIGN assignment_var
   {
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1)/=var2);
   }
   ;

@@ -93,7 +93,7 @@ class AnisoGS {
   AddSetGetVar(neighborhood,int);
 
 
-  AddSetGetVar( mask, InrImage*)
+  AddSetGetVar( mask, InrImage::ptr)
  
   InrImage* divFim        ;
 
@@ -205,7 +205,7 @@ class AnisoGS {
   //  InrImage* SRAD_ROI;
 
   AddSetGetVar( contours_mode,int);
-  AddSetGetVar( SRAD_ROI,     InrImage*);
+  AddSetGetVar( SRAD_ROI,     InrImage::ptr);
   AddSetGetVar( local_structure_mode,  int);
   AddSetGetVar( diffusion_eigenvalues_mode,  int);
 
@@ -231,7 +231,7 @@ class AnisoGS {
     this->eigenvect_xp  = NULL;
     this->eigenvect_yp  = NULL;
     this->eigenvect_zp  = NULL;
-    mask          = NULL;
+//    mask          = NULL;
 
     mode          = MODE_2D;
 
@@ -271,7 +271,7 @@ class AnisoGS {
     DistanceMap = 0;
 
     contours_mode  = CONTOURS_GRAD;
-    this->SRAD_ROI = NULL;
+//    this->SRAD_ROI = NULL;
 
 
     neighborhood = 1;

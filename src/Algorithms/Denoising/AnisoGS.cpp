@@ -54,6 +54,19 @@
   #define macro_max(n1,n2) ((n1)>(n2)?(n1):(n2))
 #endif 
 
+#include <limits>
+
+template<typename T>
+inline bool ispositivevalue(const T& value)
+{
+  return  (value==0) 
+          ||
+          ( (value >= std::numeric_limits<T>::min()) 
+            && 
+            (value <= std::numeric_limits<T>::max()));
+}
+
+
 double CubicRoot(double x) {
   if (x==0) return 0;
   if (x>0) return exp(log(x)/3.0);
@@ -135,41 +148,40 @@ AnisoGS::~AnisoGS()
 
   DeleteCoefficients();
   
-  Si filtre     != NULL Alors
+  if ( filtre     != NULL ) {
     delete filtre;
     filtre = NULL;
-  FinSi
+  } // end if
   
-  Si filtre_rec != NULL Alors
+  if ( filtre_rec != NULL ) {
     delete filtre_rec;
     filtre_rec = NULL;
-  FinSi
+  } // end if
   
-  Si this->image_lissee != NULL Alors
+  if ( this->image_lissee != NULL ) {
     delete this->image_lissee;
     this->image_lissee=NULL;
-  FinSi
+  } // end if
   
-  Si this->im_tmp != NULL Alors
+  if ( this->im_tmp != NULL ) {
     delete this->im_tmp;
     this->im_tmp = NULL;
-  FinSi
+  } // end if
   
-  Si this->image_c != NULL Alors
+  if ( this->image_c != NULL ) {
     delete this->image_c;
     this->image_c = NULL;
-  FinSi
+  } // end if
   
-  Si divFim != NULL Alors
+  if ( divFim != NULL ) {
     delete divFim;
     divFim = NULL;
-  FinSi
+  } // end if
   
-  Si Non(opt_mem) Et (image_entree_allouee) Alors
+  if ( !(opt_mem) && (image_entree_allouee) ) {
     delete image_entree;
     image_entree=NULL;
-  FinSi
-  mask = NULL;
+  } // end if
       
   if (tensor_xx!=NULL) { delete tensor_xx;  tensor_xx=NULL; }
   if (tensor_xy!=NULL) { delete tensor_xy; tensor_xy=NULL; }
@@ -465,7 +477,7 @@ void AnisoGS::EstimateNoiseStandardDeviation( InrImage* im)
       if (im->ValeurBuffer()>1)
   noise_im->FixeValeur(noise_im->ValeurBuffer()/sqrt(im->ValeurBuffer()));
       im->IncBuffer();
-    JusquA Non(noise_im->IncBuffer())
+    JusquA !(noise_im->IncBuffer())
     FinRepeter
     break;
   }
@@ -482,11 +494,11 @@ void AnisoGS::EstimateNoiseStandardDeviation( InrImage* im)
     for(z=0;z<tz;z++)
     for(y=0;y<ty;y++)
       for(x=0;x<tx;x++) {
-  Si x>0 Et x<tx-1 Et y>0 Et y<ty-1 Et z>0 Et z<tz-1 
-  Alors
+  if ( x>0 && x<tx-1 && y>0 && y<ty-1 && z>0 && z<tz-1 
+  ) {
     mean += buf[i];
       nb_points++;
-        FinSi
+        } // end if
   i++;
       }
 
@@ -501,11 +513,11 @@ void AnisoGS::EstimateNoiseStandardDeviation( InrImage* im)
     for(z=0;z<tz;z++)
     for(y=0;y<ty;y++)
       for(x=0;x<tx;x++) {
-  Si x>0 Et x<tx-1 Et y>0 Et y<ty-1 Et z>0 Et z<tz-1 
-  Alors
+  if ( x>0 && x<tx-1 && y>0 && y<ty-1 && z>0 && z<tz-1 
+  ) {
     d  = buf[i]-mean;
     this->variance += d*d;
-        FinSi
+        } // end if
   i++;
       }
     this->variance /= 1.0*nb_points;
@@ -572,27 +584,27 @@ void AnisoGS::InitCoefficients()
   gamma_y = new float[tx];
 
   alpha_x = gamma_x = 0;
-  Pour(x,0,tx-1)
+  for(x=0;x<=tx-1;x++) {
     alpha_y[x] = gamma_y[x] = 0;
-  FinPour
+  } // endfor
 
-  Si mode == MODE_3D Alors
+  if ( mode == MODE_3D ) {
     int y;
 
     alpha_z = new float*[tx];
     gamma_z = new float*[tx];
-    Pour(x,0,tx-1)
+    for(x=0;x<=tx-1;x++) {
       alpha_z[x] = new float[image_entree->_ty];
       gamma_z[x] = new float[image_entree->_ty];
 
 
-      Pour(y,0,ty-1)
+      for(y=0;y<=ty-1;y++) {
   alpha_z[x][y] = gamma_z[x][y] = 0;
-      FinPour
+      } // endfor
 
-    FinPour
+    } // endfor
 
-  FinSi
+  } // end if
 
 } // AnisoGS::InitCoefficients()
 
@@ -607,20 +619,20 @@ void AnisoGS::ResetCoefficients()
 
   alpha_x = gamma_x = 0;
 
-  Pour(x,0,tx-1)
+  for(x=0;x<=tx-1;x++) {
     alpha_y[x] = gamma_y[x] = 0;
-  FinPour
+  } // endfor
 
-  Si mode == MODE_3D Alors
+  if ( mode == MODE_3D ) {
     int y;
 
-    Pour(x,0,tx-1)
-      Pour(y,0,ty-1)
+    for(x=0;x<=tx-1;x++) {
+      for(y=0;y<=ty-1;y++) {
   alpha_z[x][y] = gamma_z[x][y] = 0;
-      FinPour
-    FinPour
+      } // endfor
+    } // endfor
 
-  FinSi
+  } // end if
 } // AnisoGS::ResetCoefficients()
 
 
@@ -629,25 +641,25 @@ void AnisoGS::DeleteCoefficients()
 //
 {
 
-  Si alpha_y != NULL Alors
+  if ( alpha_y != NULL ) {
 
     delete [] alpha_y;
     alpha_y = NULL;
     delete [] gamma_y;
     gamma_y = NULL;
 
-    Si mode == MODE_3D Alors
+    if ( mode == MODE_3D ) {
       int i;
 
-      Pour(i,0,tx-1)
+      for(i=0;i<=tx-1;i++) {
         delete [] alpha_z[i];
         delete [] gamma_z[i];
-      FinPour
+      } // endfor
       delete [] alpha_z;
       delete [] gamma_z;
 
-    FinSi
-  FinSi
+    } // end if
+  } // end if
 
 } // AnisoGS::DeleteCoefficients()
 
@@ -719,7 +731,7 @@ double AnisoGS::Compute_q0_subvol( InrImage* im)
 {
 
   InrImage* subvol;
-  InrImage* im2 = this->SRAD_ROI;
+  InrImage::ptr im2 = this->SRAD_ROI;
   int xmin,xmax,ymin,ymax,zmin,zmax;
   double var;
   double mean;
@@ -794,8 +806,7 @@ double AnisoGS::function_c_Lee(double q_2, double q0_2)
 double AnisoGS::Compute_sigma2_MRI(InrImage* im)
 //
 {
-  InrImage* subvol;
-  InrImage* im2 = this->SRAD_ROI;
+  InrImage::ptr im2 = this->SRAD_ROI;
   int xmin,xmax,ymin,ymax,zmin,zmax;
   double var;
   double mean;
@@ -812,11 +823,11 @@ double AnisoGS::Compute_sigma2_MRI(InrImage* im)
   xmax = (int) ((im2->TrX()-im->TrX())/im2->VoxSizeX()+im2->DimX()-1+0.5);
   ymax = (int) ((im2->TrY()-im->TrY())/im2->VoxSizeY()+im2->DimY()-1+0.5);
   zmax = (int) ((im2->TrZ()-im->TrZ())/im2->VoxSizeZ()+im2->DimZ()-1+0.5);
-  subvol = Func_SubImage( im,
-              xmin,ymin,zmin,
-              xmax,ymax,zmax);
+  InrImage::ptr subvol( Func_SubImage(  im,
+                                        xmin,ymin,zmin,
+                                        xmax,ymax,zmax));
   
-  mean   = Func_mean(subvol);
+  mean   = Func_mean(subvol.get());
 
   subvol->InitBuffer();
   total =0;
@@ -828,9 +839,7 @@ double AnisoGS::Compute_sigma2_MRI(InrImage* im)
   total = total/subvol->Size();
   var=total;
 
-  delete subvol;
- 
-  if (mean*mean<var) {
+  if ((mean*mean)<var) {
     printf("AnisoGS::Compute_sigma2_MRI() mean*mean < var ...\n");
     return mean/2.0;
   } else {
@@ -948,12 +957,14 @@ double AnisoGS::Compute_sigma2_MRI_mode(InrImage* im)
 //----------------------------------------------------------------------
 double AnisoGS::function_c_MRI(double sigma2, double vg, double meang)
 {
+#define var_epsilon 1E-4
   double tmp;
-  if (fabsf(vg)<1E-4) return 0.0;
+  if (fabsf(vg)<var_epsilon) return 0.0;
   if (meang<=sigma2) return 0.0;
   tmp =4.0*sigma2*(meang-sigma2)/vg;
 
   return tmp;
+#undef var_epsilon
 } // function_c_MRI
 
 //----------------------------------------------------------------------
@@ -993,7 +1004,7 @@ void AnisoGS::ComputeImage_c(InrImage* im)
       (this->contours_mode==CONTOURS_RNRAD_NEW))
     {
 
-      Si this->image_c == NULL AlorsFait
+      if ( this->image_c == NULL ) 
       this->image_c = new InrImage(WT_FLOAT, "image_c.ami.gz", im);
 
       // we limit for the moment to Kuan's function with Yu's neighborhood
@@ -1178,13 +1189,13 @@ printf("sig1 %f sig2 %f \n",sigma1,sigma2);
     } while (image->IncBuffer());
   } else 
   {
-    Si (im->_format == WT_FLOAT) Alors
+    if ( (im->_format == WT_FLOAT) ) {
       image = im;
-    Sinon
+    } else {
       // conversion de l'image initiale en float
       image    = new InrImage( WT_FLOAT, "image_reel.inr.gz", im);
       (*image) = (*im);
-    FinSi
+    } // end if
   }
 
   if (tensor_xx==NULL) tensor_xx =  new InrImage( WT_FLOAT, "Tensor_xx", image);
@@ -1215,9 +1226,9 @@ printf("sig1 %f sig2 %f \n",sigma1,sigma2);
   tensor_yz->InitBuffer();
   tensor_zz->InitBuffer();
 
-  Pour( z, 0, image->_tz - 1)
-  Pour( y, 0, image->_ty - 1)
-  Pour( x, 0, image->_tx - 1)
+  for(z= 0;z<= image->_tz - 1;z++) {
+  for(y= 0;y<= image->_ty - 1;y++) {
+  for(x= 0;x<= image->_tx - 1;x++) {
 
     grad = filtre->Gradient(x,y,z);
     tensor_xx->FixeValeur( grad.x*grad.x);
@@ -1234,9 +1245,9 @@ printf("sig1 %f sig2 %f \n",sigma1,sigma2);
     tensor_yz->IncBuffer();
     tensor_zz->IncBuffer();
 
-  FinPour
-  FinPour
-  FinPour
+  } // endfor
+  } // endfor
+  } // endfor
 
   delete filtre;
 
@@ -1386,7 +1397,7 @@ float AnisoGS::Itere2D ( InrImage* im )
   ComputeImage_c ( im );
 
   ResetCoefficients();
-  Si this->im_tmp == NULL AlorsFait
+  if ( this->im_tmp == NULL ) 
   this->im_tmp = new InrImage ( WT_FLOAT, "im_tmp.inr.gz", im );
 
   im->InitBuffer();
@@ -1398,14 +1409,14 @@ float AnisoGS::Itere2D ( InrImage* im )
 
   in = ( float* ) im->Buffer();
 
-  Si use_filtre_rec Alors
+  if ( use_filtre_rec ) {
   ( *this->image_lissee ) = ( *im );
   filtre_rec->Filtre ( sigma,5 );
-  Sinon
+  } else {
   printf ( "MyFiltre \n" );
   filtre->MyFiltre ( im,           this->image_lissee, 0, -1, -1 );
   filtre->MyFiltre ( this->image_lissee, this->image_lissee, -1, 0, -1 );
-  FinSi
+  } // end if
 
   Iconv = ( float* ) this->image_lissee->Buffer();
 
@@ -1422,7 +1433,7 @@ float AnisoGS::Itere2D ( InrImage* im )
   val0 = *in;
   mask_test = ( mask==NULL ) || ( ( mask!=NULL ) && ( ( *mask ) ( x,y,z ) >0.5 ) );
 
-  if (x>0 Et x<tx-1 Et y>0 Et y<ty-1) {
+  if (x>0 && x<tx-1 && y>0 && y<ty-1) {
 
   InitNeighborhood ( Iconv,x,y,z );
 
@@ -1458,11 +1469,11 @@ float AnisoGS::Itere2D ( InrImage* im )
   switch ( contours_mode )
   {
     case CONTOURS_GRAD:
-      Si SmoothedParam Alors
+      if ( SmoothedParam ) {
       phi0_value = phi0 ( norm );
-      Sinon
+      } else {
       phi0_value = phi0 ( u_e0 );
-      FinSi
+      } // end if
       break;
     case CONTOURS_SRAD:
     case CONTOURS_RNRAD:
@@ -1491,13 +1502,13 @@ float AnisoGS::Itere2D ( InrImage* im )
   // Calcul de e0, e1
 
   norm = sqrt ( e0.x*e0.x+e0.y*e0.y );
-  Si norm > 1E-5 Alors
+  if ( norm > 1E-5 ) {
   e0.x /= norm;
   e0.y /= norm;
-  Sinon
+  } else {
   e0.x = 1.0;
   e0.y = 0.0;
-  FinSi
+  } // end if
 
   e1.x = -e0.y;
   e1.y = e0.x;
@@ -1509,11 +1520,11 @@ float AnisoGS::Itere2D ( InrImage* im )
   switch ( contours_mode )
   {
     case CONTOURS_GRAD:
-      Si SmoothedParam Alors
+      if ( SmoothedParam ) {
       phi0_value = phi0 ( norm );
-      Sinon
+      } else {
       phi0_value = phi0 ( u_e0 );
-      FinSi
+      } // end if
       break;
     case CONTOURS_SRAD:
     case CONTOURS_RNRAD:
@@ -1560,19 +1571,19 @@ float AnisoGS::Itere2D ( InrImage* im )
       switch ( contours_mode )
       {
         case CONTOURS_GRAD:
-          Si fabsf ( val1div ) >1E-4 Alors
+          if ( fabsf ( val1div ) >1E-4 ) {
           val1 /= val1div;
-          Sinon
+          } else {
           fprintf ( stderr,"AnisoGaussSeidel.c:Itere3D() \t fabsf(val1div)<1E-4 \n" );
-          FinSi
+          } // end if
           break;
         case CONTOURS_SRAD:
         case CONTOURS_RNRAD:
-          /*    Si fabsf(val1div)>1E-4 Alors
+          /*    if ( fabsf(val1div)>1E-4 ) {
               val1 /= val1div;
-            Sinon
+            } else {
               fprintf(stderr,"AnisoGaussSeidel.c:Itere3D() \t fabsf(val1div)<1E-4 \n");
-            FinSi
+            } // end if
           */
           val1 = ( *in + dt*val1 ) / ( 1+dt*val1div );
           break;
@@ -1617,11 +1628,11 @@ float AnisoGS::Itere2D ( InrImage* im )
 #else
         val1  += beta* ( ( u0*u0 ) / ( u*u )-1 );
 
-        Si fabsf ( val1div ) >1E-4 Alors
+        if ( fabsf ( val1div ) >1E-4 ) {
         val1 /= val1div;
-        Sinon
+        } else {
         fprintf ( stderr,"AnisoGaussSeidel.c:Itere3D() \t fabsf(val1div)<1E-4 \n" );
-        FinSi
+        } // end if
         break;
       }
 
@@ -1638,16 +1649,16 @@ float AnisoGS::Itere2D ( InrImage* im )
   gamma_x    = gamma1_x;
 
 
-  Si fabsf ( val1-val0 ) > epsilon Alors
+  if ( fabsf ( val1-val0 ) > epsilon ) {
   nb_points_instables++;
-  FinSi
+  } // end if
 
-  Si fabsf ( val1-val0 ) > erreur Alors
+  if ( fabsf ( val1-val0 ) > erreur ) {
   erreur = fabsf ( val1-val0 );
   erreur_x = x;
   erreur_y = y;
   erreur_z = z;
-  FinSi
+  } // end if
 
   this->im_tmp->BufferPos ( x,y,z );
   this->im_tmp->FixeValeur ( val1 );
@@ -1664,9 +1675,9 @@ float AnisoGS::Itere2D ( InrImage* im )
   in++;
   Iconv++;
 
-  FinPour
-  FinPour
-  FinPour
+  } // endfor
+  } // endfor
+  } // endfor
 
 
   ( *im ) = ( *this->im_tmp );
@@ -2053,22 +2064,22 @@ void AnisoGS::PrincipalCurvatures(float grad[3], float H[3][3], float norm_grad,
     float lmax;
 
   // Calcul de la base (e0, e1, e2):
-  Si CurvaturasPrincipales(  H, 
+  if ( CurvaturasPrincipales(  H, 
            (float*) grad, 
            (float*) vmax, 
            (float*) vmin, 
            &lmax, &lmin,
-           1E-2) != -1 Alors
+           1E-2) != -1 ) {
     e0.x = grad[0]/norm_grad;
     e0.y = grad[1]/norm_grad;
     e0.z = grad[2]/norm_grad;
     e1.x = vmax[0]; e1.y = vmax[1]; e1.z = vmax[2];
     e2.x = vmin[0]; e2.y = vmin[1]; e2.z = vmin[2];
-  Sinon
+  } else {
     fprintf(stderr,"CurvaturasPrincipales failed \n");
   //    fprintf(stderr,"  %d %d %d \n", x,y,z);
     fprintf(stderr," grad = %f %f %f \n", grad[0], grad[1], grad[2]);
-  FinSi
+  } // end if
 }
 
 //----------------------------------------------------------------------
@@ -2111,7 +2122,7 @@ float AnisoGS::Itere3D( InrImage* im )
     ComputeImage_c(im);
 
   ResetCoefficients();
-  Si this->im_tmp == NULL AlorsFait
+  if ( this->im_tmp == NULL ) 
     this->im_tmp = new InrImage(WT_FLOAT, "im_tmp.inr.gz", im);
 
   im->InitBuffer();
@@ -2122,89 +2133,89 @@ float AnisoGS::Itere3D( InrImage* im )
 
   in = (float*) im->Buffer();
 
-  Si use_filtre_rec Alors
+  if ( use_filtre_rec ) {
     (*this->image_lissee) = (*im);
     filtre_rec->Filtre(sigma,5);
-  Sinon
+  } else {
     filtre->MyFiltre( im, this->image_lissee,           0, -1, -1);
     filtre->MyFiltre( this->image_lissee, this->image_lissee, -1, 0, -1);
     filtre->MyFiltre( this->image_lissee, this->image_lissee, -1, -1, 0);
-  FinSi
+  } // end if
 
   Iconv = (float*) this->image_lissee->Buffer();  
 
   diff = 0;
 
-  Pour(z,0,tz-1)
+  for(z=0;z<=tz-1;z++) {
 
-    Si z==0 Alors
+    if ( z==0 ) {
       printf("z = %3d",z);
       fflush(stdout);
-    Sinon 
+    } else { 
       printf("\b\b\b");
       printf("%3d",z);
       fflush(stdout);
-    FinSi
+    } // end if
 
-  Pour(y,0,ty-1)
-  Pour(x,0,tx-1)
+  for(y=0;y<=ty-1;y++) {
+  for(x=0;x<=tx-1;x++) {
   
     // Calcul du gradient et du Hessien
-    Si x>0 Et x<tx-1 Alors
+    if ( x>0 && x<tx-1 ) {
       gradient[0] = (*(Iconv+1) - *(Iconv-1))/2.0;
       hessien[0][0] = (*(Iconv+1) - 2*(*Iconv) + *(Iconv-1));
 
-      Si y>0 Et y<ty-1 Alors
+      if ( y>0 && y<ty-1 ) {
         hessien[1][0] = hessien[0][1] = 
       ((*(Iconv+1+tx) - *(Iconv-1+tx))
            -
        (*(Iconv+1-tx) - *(Iconv-1-tx)))
       /4.0;
-      Sinon
+      } else {
         hessien[1][0] = hessien[0][1] = 0.0;
-      FinSi
+      } // end if
 
-      Si z>0 Et z<tz-1 Alors
+      if ( z>0 && z<tz-1 ) {
         hessien[2][0] = hessien[0][2] = 
       ((*(Iconv+1+txy) - *(Iconv-1+txy))
            -
        (*(Iconv+1-txy) - *(Iconv-1-txy)))
       /4.0;
-      Sinon
+      } else {
         hessien[2][0] = hessien[0][2] = 0.0;
-      FinSi
+      } // end if
 
-    Sinon
+    } else {
       gradient[0] = 0.0;
       hessien[0][0] = 0.0;
-    FinSi
+    } // end if
 
-    Si y>0 Et y<ty-1 Alors
+    if ( y>0 && y<ty-1 ) {
       gradient[1] = (*(Iconv+tx) - *(Iconv-tx))/2.0;
       hessien[1][1] = (*(Iconv+tx) - 2*(*Iconv) + *(Iconv-tx));
 
-      Si z>0 Et z<tz-1 Alors
+      if ( z>0 && z<tz-1 ) {
         hessien[2][1] = hessien[1][2] = 
       ((*(Iconv+tx+txy) - *(Iconv-tx+txy))
            -
        (*(Iconv+tx-txy) - *(Iconv-tx-txy)))
       /4.0;
-      Sinon
+      } else {
         hessien[2][1] = hessien[1][2] = 0.0;
-      FinSi
+      } // end if
 
-    Sinon
+    } else {
       gradient[1] = 0.0;
       hessien[1][1] = 0.0;
-    FinSi
+    } // end if
 
-    Si z>0 Et z<tz-1 Alors
+    if ( z>0 && z<tz-1 ) {
       gradient[2] = (*(Iconv+txy) - *(Iconv-txy))/2.0;
       hessien[2][2] = (*(Iconv+txy) - 2*(*Iconv) + *(Iconv-txy));
-    Sinon
+    } else {
       gradient[2] = 0.0;
       hessien[2][2] = 0.0;
-    FinSi
+    } // end if
 
     val0 = *in;
 
@@ -2212,15 +2223,15 @@ float AnisoGS::Itere3D( InrImage* im )
 
     norm_grad =  this->Norm(gradient);
 
-  Si norm_grad > 0.1 Alors
+  if ( norm_grad > 0.1 ) {
 
     // Calcul de la base (e0, e1, e2):
-    Si CurvaturasPrincipales(  hessien, 
+    if ( CurvaturasPrincipales(  hessien, 
              (float*) gradient, 
              (float*) vmax, 
              (float*) vmin, 
              &lmax, &lmin,
-             1E-2) != -1 Alors
+             1E-2) != -1 ) {
       e0.x = gradient[0]/norm_grad;
       e0.y = gradient[1]/norm_grad;
       e0.z = gradient[2]/norm_grad;
@@ -2233,7 +2244,7 @@ float AnisoGS::Itere3D( InrImage* im )
       e2.y = vmin[1];
       e2.z = vmin[2];
 
-    Sinon
+    } else {
 
       fprintf(stderr,"CurvaturasPrincipales failed \n");
 
@@ -2248,35 +2259,35 @@ float AnisoGS::Itere3D( InrImage* im )
       e2.y = e0.x;
       e2.z = 0.0;
 
-    FinSi
+    } // end if
 
     //----- Calcul de alpha1_x, gamma1_x
 
     // Gradient en (x+1/2,y,z)
-    Si (x < tx - 1) Et (z > 0) Et (z < tz - 1)  Alors
+    if ( (x < tx - 1) && (z > 0) && (z < tz - 1)  ) {
       grad.z = ( 
            *(in + txy     ) - *(in - txy     )
                  +
                  *(in + txy + 1 ) - *(in - txy + 1 )
                ) / 4.0;
-    Sinon
+    } else {
       grad.z = 0;
-    FinSi
+    } // end if
 
-    Si (x<tx-1) Et (y > 0)Et(y < ty-1) Alors
+    if ( (x<tx-1) && (y > 0)Et(y < ty-1) ) {
       grad.y = ( *(in + tx)     - *(in - tx)    
                  +
                  *(in + tx + 1) - *(in - tx + 1 ) 
                )/ 4.0;
-    Sinon
+    } else {
       grad.y = 0;
-    FinSi
+    } // end if
  
-    Si (x < tx-1)  Alors
+    if ( (x < tx-1)  ) {
       grad.x = *(in+1) - *(in);
-    Sinon
+    } else {
       grad.x = 0;
-    FinSi
+    } // end if
 
     // Derivees directionnelles
     u_e0 = grad.x*e0.x + grad.y*e0.y + grad.z*e0.z;
@@ -2300,31 +2311,31 @@ float AnisoGS::Itere3D( InrImage* im )
     //----- Calcul de alpha1_y, gamma1_y 
    
     // Gradient en (x,y+1/2)
-    Si (y < ty -1) Et (z > 0) Et ( z < tz - 1)  Alors
+    if ( (y < ty -1) && (z > 0) && ( z < tz - 1)  ) {
       grad.z = (
                 *(in + txy      ) - *(in - txy      )
                 +
                 *(in + txy + tx) - *(in - txy + tx)
                ) / 4.0;
-    Sinon
+    } else {
       grad.z = 0;
-    FinSi
+    } // end if
 
-    Si  y < ty -1  Alors
+    if (  y < ty -1  ) {
       grad.y = *(in+tx) - *(in);
-    Sinon
+    } else {
       grad.y  = 0;
-    FinSi
+    } // end if
  
     //  gradient en X
-    Si (y < ty -1) Et (x > 0) Et (x< tx-1)  Alors
+    if ( (y < ty -1) && (x > 0) && (x< tx-1)  ) {
       grad.x = ( *(in + 1      ) - *(in - 1      ) 
                  +
                  *(in + 1 + tx) - *(in - 1 + tx)
                ) / 4.0;
-    Sinon
+    } else {
       grad.x = 0;
-    FinSi
+    } // end if
 
 
     // Derivees directionnelles
@@ -2349,33 +2360,33 @@ float AnisoGS::Itere3D( InrImage* im )
     //----- Calcul de alpha1_z, gamma1_z 
    
     //  gradient en Z
-    Si z < tz -1  Alors
+    if ( z < tz -1  ) {
       grad.z = *(in + txy) - *(in);
-    Sinon
+    } else {
       grad.z = 0;
-    FinSi
+    } // end if
 
     //  gradient en Y
-    Si (z < tz - 1) Et (y > 0) Et ( y < ty - 1 ) Alors
+    if ( (z < tz - 1) && (y > 0) && ( y < ty - 1 ) ) {
       grad.y = (
                 *(in + tx       ) - *(in - tx       )
                 +
                 *(in + tx + txy) - *(in - tx + txy)
                ) / 4.0;
-    Sinon
+    } else {
       grad.y = 0;
-    FinSi
+    } // end if
  
     //  gradient en X
-    Si (z < tz-1) Et (x > 0) Et ( x < tx - 1 ) Alors
+    if ( (z < tz-1) && (x > 0) && ( x < tx - 1 ) ) {
       grad.x = (
           *(in + 1) - *(in - 1)
                 +
           *(in + 1 + txy) - *(in - 1 + txy)
           ) / 4.0;
-    Sinon
+    } else {
       grad.x = 0;
-    FinSi
+    } // end if
 
 
     // Derivees directionnelles
@@ -2401,37 +2412,37 @@ float AnisoGS::Itere3D( InrImage* im )
     val1    =  this->beta*(*image_entree)(x,y,z);
     val1div =  this->beta;
 
-    Si (x>0)Et(x<tx-1) Alors
+    if ( (x>0)Et(x<tx-1) ) {
       val1    += alpha1_x    * (*(in+1  )) +
                  alpha_x     * (*(in-1  )) +
                  gamma1_x  - gamma_x;
 
       val1div += alpha1_x + alpha_x;
-    FinSi
+    } // end if
 
-    Si (y>0)Et(y<ty-1) Alors
+    if ( (y>0)Et(y<ty-1) ) {
       val1    += alpha1_y     * (*(in+tx )) +
                  alpha_y[x]   * (*(in-tx )) +
                  gamma1_y  - gamma_y[x];
 
       val1div += alpha1_y + alpha_y[x];
-    FinSi
+    } // end if
 
-    Si (z>0) Et (z<tz-1) Alors
+    if ( (z>0) && (z<tz-1) ) {
       val1    += alpha1_z      * (*(in+txy  )) +
                  alpha_z[x][y] * (*(in-txy  )) +
                  gamma1_z  - gamma_z[x][y];
 
       val1div += alpha1_z + alpha_z[x][y];
-    FinSi
+    } // end if
 
     switch(contours_mode) {
       case CONTOURS_GRAD:
-        Si fabsf(val1div)>1E-4 Alors
+        if ( fabsf(val1div)>1E-4 ) {
         val1 /= val1div;
-        Sinon
+        } else {
         fprintf(stderr,"AnisoGaussSeidel.c:Itere3D() \t fabsf(val1div)<1E-4 \n");
-        FinSi
+        } // end if
     break;
       case CONTOURS_SRAD:
       case CONTOURS_RNRAD:
@@ -2447,7 +2458,7 @@ float AnisoGS::Itere3D( InrImage* im )
     gamma_y[x]    = gamma1_y;
     gamma_x       = gamma1_x;
 
-  Sinon
+  } else {
 
     val1 = *in;
     
@@ -2458,20 +2469,20 @@ float AnisoGS::Itere3D( InrImage* im )
     gamma_y[x]    = 
     gamma_x       = 0;
 
-  FinSi
+  } // end if
 
 
-    Si fabsf(val1-val0) > epsilon Alors
+    if ( fabsf(val1-val0) > epsilon ) {
       nb_points_instables++;
-    FinSi
+    } // end if
 
     diff += (val1-val0)*(val1-val0);
-    Si fabsf(val1-val0) > erreur Alors
+    if ( fabsf(val1-val0) > erreur ) {
       erreur = fabsf(val1-val0);
       erreur_x = x;
       erreur_y = y;
       erreur_z = z;
-    FinSi
+    } // end if
 
     this->im_tmp->BufferPos(x,y,z);
     this->im_tmp->FixeValeur(val1);
@@ -2479,9 +2490,9 @@ float AnisoGS::Itere3D( InrImage* im )
     in++;
     Iconv++;
 
-  FinPour
-  FinPour
-  FinPour
+  } // endfor
+  } // endfor
+  } // endfor
 
   (*im) = (*this->im_tmp);
 
@@ -2580,25 +2591,25 @@ float AnisoGS::Itere3D_2_new( InrImage* im )
   ResetCoefficients();
   // pb: the coefficients are not good for multi-threading ???
 
-  Si this->im_tmp == NULL AlorsFait
+  if ( this->im_tmp == NULL ) 
     this->im_tmp = new InrImage(WT_FLOAT, "im_tmp.inr.gz", im);
-  Si divFim == NULL Alors
+  if ( divFim == NULL ) {
     divFim = new InrImage(WT_FLOAT, divFname.c_str() , im);
-  FinSi
+  } // end if
 
   divFim->InitImage(0);
   im->InitBuffer();
   erreur = 0;
   nb_points_instables = 0;
   in = (float*) im->Buffer();
-  Si use_filtre_rec Alors
+  if ( use_filtre_rec ) {
     (*this->image_lissee) = (*im);
     filtre_rec->Filtre(sigma,5);
-  Sinon
+  } else {
     filtre->MyFiltre( im, this->image_lissee,           0, -1, -1);
     filtre->MyFiltre( this->image_lissee, this->image_lissee, -1, 0, -1);
     filtre->MyFiltre( this->image_lissee, this->image_lissee, -1, -1, 0);
-  FinSi
+  } // end if
 
   Iconv = (float*) this->image_lissee->Buffer();  
 
@@ -2610,22 +2621,22 @@ float AnisoGS::Itere3D_2_new( InrImage* im )
   nb_calculated_points2 = 0;
   sum_divF2 = 0;
 
-  Pour(z,ROI_zmin,ROI_zmax)
-    Si z==ROI_zmin Alors
+  for(z=ROI_zmin;z<=ROI_zmax;z++) {
+    if ( z==ROI_zmin ) {
       printf("z = %3d",z);
       fflush(stdout);
-    Sinon 
+    } else { 
       printf("\b\b\b");
       printf("%3d",z);
       fflush(stdout);
-    FinSi
+    } // end if
 
   // reset  coefficients
-  Pour(x,0,tx-1)
+  for(x=0;x<=tx-1;x++) {
     alpha_y[x]    = gamma_y[x]    = 0;
-  FinPour
+  } // endfor
 
-  Pour(y,ROI_ymin,ROI_ymax)
+  for(y=ROI_ymin;y<=ROI_ymax;y++) {
   // reset X coefficients
   alpha_x       = gamma_x = 0;
 
@@ -2634,7 +2645,7 @@ float AnisoGS::Itere3D_2_new( InrImage* im )
   image_lissee->BufferPos(ROI_xmin,y,z);
   Iconv = (float*) image_lissee->BufferPtr();
 
-  Pour(x,ROI_xmin,ROI_xmax)
+  for(x=ROI_xmin;x<=ROI_xmax;x++) {
   
     val1 = val0 = *in;
     mask_test = (mask==NULL)||((mask!=NULL)&&((*mask)(x,y,z)>0.5));
@@ -2657,8 +2668,8 @@ float AnisoGS::Itere3D_2_new( InrImage* im )
     if (z==0)    zm=0;
 
 
-    Si x>ROI_xmin Et x<ROI_xmax Et y>ROI_ymin Et y<ROI_ymax Et z>ROI_zmin Et z<ROI_zmax
-    Alors
+    if ( x>ROI_xmin && x<ROI_xmax && y>ROI_ymin && y<ROI_ymax && z>ROI_zmin && z<ROI_zmax
+    ) {
 
       InitNeighborhood(Iconv,x,y,z);
       // Gradient en (x+1/2,y,z)
@@ -2958,11 +2969,11 @@ if (z==ROI_zmax) alpha1_z       = gamma1_z       = 0;
         switch ( contours_mode )
         {
             case CONTOURS_GRAD:
-                Si fabsf ( val1div ) >1E-4 Alors
+                if ( fabsf ( val1div ) >1E-4 ) {
                 val1 /= val1div;
-                Sinon
+                } else {
                 fprintf ( stderr,"AnisoGaussSeidel.c:Itere3D() \t fabsf(val1div)<1E-4 \n" );
-                FinSi
+                } // end if
                 break;
             case CONTOURS_SRAD:
             case CONTOURS_RNRAD:
@@ -3020,11 +3031,11 @@ if (z==ROI_zmax) alpha1_z       = gamma1_z       = 0;
             val1=val1_implicit;
     #else
             val1  += beta* ( ( u0*u0 ) / ( u*u )-1 );
-            Si fabsf ( val1div ) >1E-4 Alors
+            if ( fabsf ( val1div ) >1E-4 ) {
             val1 /= val1div;
-            Sinon
+            } else {
             fprintf ( stderr,"AnisoGaussSeidel.c:Itere3D() \t fabsf(val1div)<1E-4 \n" );
-            FinSi
+            } // end if
     #endif
         }
     
@@ -3051,7 +3062,7 @@ if (z==ROI_zmax) alpha1_z       = gamma1_z       = 0;
       gamma_x       = gamma1_x;
 
 
-    Sinon
+    } else {
 
       val1 = *in;
     
@@ -3062,19 +3073,19 @@ if (z==ROI_zmax) alpha1_z       = gamma1_z       = 0;
       gamma_y[x]    = 
       gamma_x       = 0;
 
-    FinSi
+    } // end if
 
-    Si fabsf(val1-val0) > epsilon Alors
+    if ( fabsf(val1-val0) > epsilon ) {
       nb_points_instables++;
-    FinSi
+    } // end if
 
     diff += (val1-val0)*(val1-val0);
-    Si fabsf(val1-val0) > erreur Alors
+    if ( fabsf(val1-val0) > erreur ) {
       erreur = fabsf(val1-val0);
       erreur_x = x;
       erreur_y = y;
       erreur_z = z;
-    FinSi
+    } // end if
 
     this->im_tmp->BufferPos(x,y,z);
 
@@ -3092,9 +3103,9 @@ if (z==ROI_zmax) alpha1_z       = gamma1_z       = 0;
     in++;
     Iconv++;
 
-  FinPour
-  FinPour
-  FinPour
+  } // endfor
+  } // endfor
+  } // endfor
 
   ExtendBoundariesVonNeumann(im_tmp);
   (*im) = (*this->im_tmp);
@@ -3165,15 +3176,15 @@ float AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
 //
 {
     int x,y,z; //,n,i;
-    float   val0,val1;
-    float   val1_implicit=0;
-    float   val1div;
-    float   u_e0;
-    float   u_e1;
-    float   u_e2;
-    float   alpha1_x, gamma1_x;
-    float   alpha1_y, gamma1_y;
-    float   alpha1_z, gamma1_z;
+    double   val0,val1;
+    double   val1_implicit=0;
+    double   val1div;
+    double   u_e0;
+    double   u_e1;
+    double   u_e2;
+    double   alpha1_x, gamma1_x;
+    double   alpha1_y, gamma1_y;
+    double   alpha1_z, gamma1_z;
     float*  in;
     register float    *Iconv=NULL; 
 //    float gradient[3];
@@ -3260,11 +3271,11 @@ float AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
 
   // pb: the coefficients are not good for multi-threading ???
 
-  Si this->im_tmp == NULL AlorsFait
+  if ( this->im_tmp == NULL ) 
     this->im_tmp = new InrImage(WT_FLOAT, "im_tmp.inr.gz", im);
-  Si divFim == NULL Alors
+  if ( divFim == NULL ) {
     divFim = new InrImage(WT_FLOAT, divFname.c_str() , im);
-  FinSi
+  } // end if
 
   divFim->InitImage(0);
   im->InitBuffer();
@@ -3282,29 +3293,29 @@ float AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
 
 //printf("diff eigen mode : %d\n",diffusion_eigenvalues_mode);
 
-  Pour(z,ROI_zmin,ROI_zmax)
-    Si z==ROI_zmin Alors
+  for(z=ROI_zmin;z<=ROI_zmax;z++) {
+    if ( z==ROI_zmin ) {
       printf("z = %3d",z);
       fflush(stdout);
-    Autrement
-    Si (z-ROI_zmin)%5 == 0 Alors
+    } else 
+    if ( (z-ROI_zmin)%5 == 0 ) {
       printf("\b\b\b");
       printf("%3d",z);
       fflush(stdout);
-    FinSi
+    } // end if
 
   // reset Y coefficients
-  Pour(x,0,tx-1)
+  for(x=0;x<=tx-1;x++) {
     alpha_y[x] = gamma_y[x] = 0;
-  FinPour
+  } // endfor
 
-  Pour(y,ROI_ymin,ROI_ymax)
+  for(y=ROI_ymin;y<=ROI_ymax;y++) {
   // reset X coefficients
   alpha_x = gamma_x = 0;
   im->BufferPos(ROI_xmin,y,z);
   in = (float*) im->BufferPtr();
 
-  Pour(x,ROI_xmin,ROI_xmax)
+  for(x=ROI_xmin;x<=ROI_xmax;x++) {
   
     val1 = val0 = *in;
     mask_test = (mask==NULL)||((mask!=NULL)&&((*mask)(x,y,z)>0.5));
@@ -3583,6 +3594,12 @@ float AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
 
       val1div += alpha1_x + alpha_x;
 
+      if (!ispositivevalue(fabs(val1)))  {
+        cout << "pb 1: " << val1 << endl;
+        cout << boost::format("at %1%,%2%,%3% ") % x % y % z  << endl;
+
+        cout << boost::format(" alpha1_x = %1%, *(in+xp) = %2%, alpha_x = %3%, *(in+xm) = %4%, gamma1_x = %5%, gamma_x = %6%") % alpha1_x % *(in+xp) % alpha_x % *(in+xm  ) % gamma1_x % gamma_x << endl;
+      }
 
       val1    += alpha1_y     * (*(in+yp )) +
                  alpha_y[x]   * (*(in+ym )) +
@@ -3591,12 +3608,19 @@ float AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
       val1div += alpha1_y + alpha_y[x];
 
 
+      if (!ispositivevalue(fabs(val1)))  {
+        cout << "pb 2" << endl;
+      }
+
       val1    += alpha1_z      * (*(in+zp  )) +
                  alpha_z[x][y] * (*(in+zm  )) +
                  gamma1_z  - gamma_z[x][y];
 
       val1div += alpha1_z + alpha_z[x][y];
 
+      if (!ispositivevalue(fabs(val1)))  {
+        cout << "pb 3" << endl;
+      }
 
     switch ( noise_type )
     {
@@ -3615,16 +3639,26 @@ float AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
         switch ( contours_mode )
         {
             case CONTOURS_GRAD:
-                Si fabsf ( val1div ) >1E-4 Alors
+                if ( fabsf ( val1div ) >1E-4 ) {
                 val1 /= val1div;
-                Sinon
+                } else {
                 fprintf ( stderr,"AnisoGaussSeidel.c:Itere3D() \t fabsf(val1div)<1E-4 \n" );
-                FinSi
+                } // end if
                 break;
             case CONTOURS_SRAD:
             case CONTOURS_RNRAD:
             case CONTOURS_RNRAD_NEW:
+                double val1prev = val1;
                 val1 = ( *in + dt*val1 ) / ( 1+dt*val1div );
+if (val1<0)
+if (sqrt(val1)>300) {
+  cout << "beta = " << this->beta << endl;
+  cout << "image_entree (x,y,z) = " << ( *image_entree ) ( x,y,z ) << endl;
+  cout << boost::format("lambda0,1,2 = %1% %2% %3%") % lambda0 % lambda1 % lambda2 << endl;
+  cout << "val1prev = " << val1prev << endl;
+  cout << boost::format("at %1%,%2%,%3%  --> sqrt(in) = %4% dt = %5% val1prev = %6% sqrt(val1) = %7%") % x % y % z 
+    % sqrt(*in) % dt % val1prev % sqrt(val1) << endl;
+}
                 break;
         }
     
@@ -3677,11 +3711,11 @@ float AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
             val1=val1_implicit;
     #else
             val1  += beta* ( ( u0*u0 ) / ( u*u )-1 );
-            Si fabsf ( val1div ) >1E-4 Alors
+            if ( fabsf ( val1div ) >1E-4 ) {
             val1 /= val1div;
-            Sinon
+            } else {
             fprintf ( stderr,"AnisoGaussSeidel.c:Itere3D() \t fabsf(val1div)<1E-4 \n" );
-            FinSi
+            } // end if
     #endif
         }
     
@@ -3708,7 +3742,7 @@ float AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
       gamma_x       = gamma1_x;
 
 /*
-    Sinon
+    } else {
 
       val1 = *in;
     
@@ -3719,29 +3753,29 @@ float AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
       gamma_y[x]    = 
       gamma_x       = 0;
 
-    FinSi
+    } // end if
 */
 
-    Si fabsf(val1-val0) > epsilon Alors
+    if ( fabsf(val1-val0) > epsilon ) {
       nb_points_instables++;
-    FinSi
+    } // end if
 
     diff += (val1-val0)*(val1-val0);
-    Si fabsf(val1-val0) > erreur Alors
+    if ( fabsf(val1-val0) > erreur ) {
       erreur = fabsf(val1-val0);
       erreur_x = x;
       erreur_y = y;
       erreur_z = z;
-    FinSi
+    } // end if
 
     this->im_tmp->BufferPos(x,y,z);
 
     if (val1<min_intensity) {
-      //      fprintf(stderr,"I=%3.2f<min, (%3d,%3d,%3d) \n",val1,x,y,z);
+      fprintf(stderr,"I=%3.2f<min, (%3d,%3d,%3d) \n",val1,x,y,z);
       val1=min_intensity;
     }
     if (val1>max_intensity) {
-      //      fprintf(stderr,"I=%3.2f<max, (%3d,%3d,%3d) \n",val1,x,y,z);
+      fprintf(stderr,"I=%3.2f>max, (%3d,%3d,%3d) \n",val1,x,y,z);
       val1=max_intensity;
     }
 
@@ -3750,9 +3784,9 @@ float AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
     in++;
     Iconv++;
 
-  FinPour
-  FinPour
-  FinPour
+  } // endfor
+  } // endfor
+  } // endfor
 
   // backup previous image in image_c
   ExtendBoundariesVonNeumann(im_tmp);
@@ -3855,7 +3889,7 @@ double norm_grad2,dx2,dy2,dz2;
 
 int xp,xm,yp,ym,zp,zm;
 
-  Si this->im_tmp == NULL AlorsFait
+  if ( this->im_tmp == NULL ) 
     this->im_tmp = new InrImage(WT_FLOAT, "im_tmp.inr.gz", im);
 
   im->InitBuffer();
@@ -3868,23 +3902,23 @@ int xp,xm,yp,ym,zp,zm;
   nb_calculated_points = 0;
   nb_calculated_points2 = 0;
 
-  Pour(z,0,tz-1)
-    Si z==0 Alors
+  for(z=0;z<=tz-1;z++) {
+    if ( z==0 ) {
       printf("z = %3d",z);
       fflush(stdout);
-    Sinon 
+    } else { 
       printf("\b\b\b");
       printf("%3d",z);
       fflush(stdout);
-    FinSi
-  Pour(y,0,ty-1)
-  Pour(x,0,tx-1)
+    } // end if
+  for(y=0;y<=ty-1;y++) {
+  for(x=0;x<=tx-1;x++) {
   
     val1 = val0 = *in;
     mask_test = (mask==NULL)||((mask!=NULL)&&((*mask)(x,y,z)>0.5));
 
-    Si x>0 Et x<tx-1 Et y>0 Et y<ty-1 Et z>0 Et z<tz-1 Et fabs(*in)<4-1E-3
-    Alors
+    if ( x>0 && x<tx-1 && y>0 && y<ty-1 && z>0 && z<tz-1 && fabs(*in)<4-1E-3
+    ) {
 
     xp=1;
     xm=-1;
@@ -3984,24 +4018,24 @@ val1 = *in + 0.1*(dxx+dyy+dzz-meancurv);
         nb_calculated_points2++;
       }
 
-    Sinon
+    } else {
 
       val1 = *in;
     
-    FinSi
+    } // end if
 
 
-    Si fabsf(val1-val0) > epsilon Alors
+    if ( fabsf(val1-val0) > epsilon ) {
       nb_points_instables++;
-    FinSi
+    } // end if
 
     diff += (val1-val0)*(val1-val0);
-    Si fabsf(val1-val0) > erreur Alors
+    if ( fabsf(val1-val0) > erreur ) {
       erreur = fabsf(val1-val0);
       erreur_x = x;
       erreur_y = y;
       erreur_z = z;
-    FinSi
+    } // end if
 
     this->im_tmp->BufferPos(x,y,z);
 
@@ -4010,9 +4044,9 @@ val1 = *in + 0.1*(dxx+dyy+dzz-meancurv);
 
     in++;
 
-  FinPour
-  FinPour
-  FinPour
+  } // endfor
+  } // endfor
+  } // endfor
 
   (*im) = (*this->im_tmp);
 
@@ -4079,11 +4113,11 @@ int xp,xm,yp,ym,zp,zm;
 double maxerr=0.5;
 
   ResetCoefficients();
-  Si this->im_tmp == NULL AlorsFait
+  if ( this->im_tmp == NULL ) 
     this->im_tmp = new InrImage(WT_FLOAT, "im_tmp.inr.gz", im);
-  Si divFim == NULL Alors
+  if ( divFim == NULL ) {
     divFim = new InrImage(WT_FLOAT, divFname.c_str() , im);
-  FinSi
+  } // end if
 
   divFim->InitImage(0);
   im->InitBuffer();
@@ -4099,24 +4133,24 @@ double maxerr=0.5;
   nb_calculated_points2 = 0;
   sum_divF2 = 0;
 
-  Pour(z,0,tz-1)
-    Si z==0 Alors
+  for(z=0;z<=tz-1;z++) {
+    if ( z==0 ) {
       printf("z = %3d",z);
       fflush(stdout);
-    Sinon 
+    } else { 
       printf("\b\b\b");
       printf("%3d",z);
       fflush(stdout);
-    FinSi
-  Pour(y,0,ty-1)
-  Pour(x,0,tx-1)
+    } // end if
+  for(y=0;y<=ty-1;y++) {
+  for(x=0;x<=tx-1;x++) {
   
     val1 = val0 = *in;
     mask_test = (mask==NULL)||((mask!=NULL)&&((*mask)(x,y,z)>0.5));
 
-    Si x>0 Et x<tx-1 Et y>0 Et y<ty-1 Et z>0 Et z<tz-1 
-    // Et fabs(*in)<4-1E-3
-    Alors
+    if ( x>0 && x<tx-1 && y>0 && y<ty-1 && z>0 && z<tz-1 
+    // && fabs(*in)<4-1E-3
+    ) {
 
     xp=1;
     xm=-1;
@@ -4202,12 +4236,12 @@ alpha1_z = 0;
       val1    += this->beta*(*image_entree)(x,y,z);
       val1div += this->beta;
    
-//      Si fabsf(val1div)>1E-3 Alors
+//      if ( fabsf(val1div)>1E-3 ) {
       //val1 /=val1div;
       val1 = *in + 0.05*(val1-val1div*(*in));
-//      Sinon
+//      } else {
 //         fprintf(stderr,"AnisoGaussSeidel.c:Itere3D() \t fabsf(val1div)<1E-4 \n");
-//      FinSi
+//      } // end if
 
 
       if (fabsf(val1-*in)<0.1) {
@@ -4224,7 +4258,7 @@ alpha1_z = 0;
       alpha_y[x]    = alpha1_y;
       alpha_x       = alpha1_x;
 
-    Sinon
+    } else {
 
       val1 = *in;
     
@@ -4232,20 +4266,20 @@ alpha1_z = 0;
       alpha_y[x]    = 
       alpha_x       = 0;
 
-    FinSi
+    } // end if
 
 
-    Si fabsf(val1-val0) > epsilon Alors
+    if ( fabsf(val1-val0) > epsilon ) {
       nb_points_instables++;
-    FinSi
+    } // end if
 
     diff += (val1-val0)*(val1-val0);
-    Si fabsf(val1-val0) > erreur Alors
+    if ( fabsf(val1-val0) > erreur ) {
       erreur = fabsf(val1-val0);
       erreur_x = x;
       erreur_y = y;
       erreur_z = z;
-    FinSi
+    } // end if
 
     this->im_tmp->BufferPos(x,y,z);
 
@@ -4254,9 +4288,9 @@ alpha1_z = 0;
 
     in++;
 
-  FinPour
-  FinPour
-  FinPour
+  } // endfor
+  } // endfor
+  } // endfor
 
   (*im) = (*this->im_tmp);
 
@@ -4304,7 +4338,7 @@ float AnisoGS::Itere3D_Flux( InrImage* im , InrImage* VectField, float coeff)
 
 
   ResetCoefficients();
-  Si this->im_tmp == NULL AlorsFait
+  if ( this->im_tmp == NULL ) 
     this->im_tmp = new InrImage(WT_FLOAT, "im_tmp.inr.gz", im);
 
   im->InitBuffer();
@@ -4317,26 +4351,26 @@ float AnisoGS::Itere3D_Flux( InrImage* im , InrImage* VectField, float coeff)
 
   diff = 0;
 
-  Pour(z,0,tz-1)
+  for(z=0;z<=tz-1;z++) {
 
      /*
-    Si z==0 Alors
+    if ( z==0 ) {
       printf("z = %3d",z);
       fflush(stdout);
-    Sinon 
+    } else { 
       printf("\b\b\b");
       printf("%3d",z);
       fflush(stdout);
-    FinSi
+    } // end if
      */
 
-  Pour(y,0,ty-1)
-  Pour(x,0,tx-1)
+  for(y=0;y<=ty-1;y++) {
+  for(x=0;x<=tx-1;x++) {
   
 
     val1 = val0 = *in;
 
-    Si x>0 Et x<tx-1 Et y>0 Et y<ty-1 Et z>0 Et z<tz-1 Alors
+    if ( x>0 && x<tx-1 && y>0 && y<ty-1 && z>0 && z<tz-1 ) {
 
       // Gradient en (x+1/2,y,z)
       //----- Calcul de alpha1_x, gamma1_x
@@ -4354,15 +4388,15 @@ float AnisoGS::Itere3D_Flux( InrImage* im , InrImage* VectField, float coeff)
   weak_norm = true;
       }
 
-      Si Non(weak_norm) Alors
+      if ( !(weak_norm) ) {
         // Derivees directionnelles
         u_e0 = grad.x*e0.x + grad.y*e0.y + grad.z*e0.z;
         alpha1_x = coeff*e0.x*e0.x; 
         gamma1_x = (grad.y*e0.y + grad.z*e0.z)*coeff*e0.x;
-      Sinon
+      } else {
         alpha1_x = 0;
         gamma1_x = 0;
-      FinSi
+      } // end if
 
       //----- Calcul de alpha1_y, gamma1_y 
    
@@ -4380,15 +4414,15 @@ float AnisoGS::Itere3D_Flux( InrImage* im , InrImage* VectField, float coeff)
   weak_norm = true;
       }
  
-      Si Non(weak_norm) Alors
+      if ( !(weak_norm) ) {
         // Derivees directionnelles
         u_e0 = grad.x*e0.x + grad.y*e0.y + grad.z*e0.z;
         alpha1_y = coeff*e0.y*e0.y;
         gamma1_y = (grad.x*e0.x + grad.z*e0.z)*coeff*e0.y;
-      Sinon
+      } else {
         alpha1_y = 0;
         gamma1_y = 0;
-      FinSi
+      } // end if
 
       //----- Calcul de alpha1_z, gamma1_z 
       grad.x = (*(in+1 ) - *(in-1 ) + *(in+1 +txy) - *(in-1 +txy))/4.0;
@@ -4404,15 +4438,15 @@ float AnisoGS::Itere3D_Flux( InrImage* im , InrImage* VectField, float coeff)
   weak_norm = true;
       }
 
-      Si Non(weak_norm) Alors
+      if ( !(weak_norm) ) {
         // Derivees directionnelles
         u_e0 = grad.x*e0.x + grad.y*e0.y + grad.z*e0.z;
         alpha1_z = coeff*e0.z*e0.z;
         gamma1_z = (grad.x*e0.x + grad.y*e0.y)*coeff*e0.z;
-      Sinon
+      } else {
         alpha1_z = 0;
         gamma1_z = 0;
-      FinSi
+      } // end if
 
 
       //----- Mise a jour de l'image
@@ -4438,11 +4472,11 @@ float AnisoGS::Itere3D_Flux( InrImage* im , InrImage* VectField, float coeff)
 
       val1div += alpha1_z + alpha_z[x][y];
 
-      Si fabsf(val1div)>1E-4 Alors
+      if ( fabsf(val1div)>1E-4 ) {
         val1 /= val1div;
-      Sinon
+      } else {
         fprintf(stderr,"AnisoGaussSeidel.c:Itere3D() \t fabsf(val1div)<1E-4 \n");
-      FinSi
+      } // end if
 
       alpha_z[x][y] = alpha1_z;
       alpha_y[x]    = alpha1_y;
@@ -4452,7 +4486,7 @@ float AnisoGS::Itere3D_Flux( InrImage* im , InrImage* VectField, float coeff)
       gamma_y[x]    = gamma1_y;
       gamma_x       = gamma1_x;
 
-    Sinon
+    } else {
 
       val1 = *in;
     
@@ -4463,29 +4497,29 @@ float AnisoGS::Itere3D_Flux( InrImage* im , InrImage* VectField, float coeff)
       gamma_y[x]    = 
       gamma_x       = 0;
 
-    FinSi
+    } // end if
 
 
-    Si fabsf(val1-val0) > epsilon Alors
+    if ( fabsf(val1-val0) > epsilon ) {
       nb_points_instables++;
-    FinSi
+    } // end if
 
     diff += (val1-val0)*(val1-val0);
-    Si fabsf(val1-val0) > erreur Alors
+    if ( fabsf(val1-val0) > erreur ) {
       erreur = fabsf(val1-val0);
       erreur_x = x;
       erreur_y = y;
       erreur_z = z;
-    FinSi
+    } // end if
 
     this->im_tmp->BufferPos(x,y,z);
     this->im_tmp->FixeValeur(val1);
 
     in++;
 
-  FinPour
-  FinPour
-  FinPour
+  } // endfor
+  } // endfor
+  } // endfor
 
   (*im) = (*this->im_tmp);
 
@@ -4547,7 +4581,7 @@ float  AnisoGS::Itere3D_3( InrImage* im )
 
 
   ResetCoefficients();
-  Si this->im_tmp == NULL AlorsFait
+  if ( this->im_tmp == NULL ) 
     this->im_tmp = new InrImage(WT_FLOAT, "im_tmp.inr.gz", im);
 
   im->InitBuffer();
@@ -4558,37 +4592,37 @@ float  AnisoGS::Itere3D_3( InrImage* im )
 
   in = (float*) im->Buffer();
 
-  Si use_filtre_rec Alors
+  if ( use_filtre_rec ) {
     (*this->image_lissee) = (*im);
     filtre_rec->Filtre(sigma,5);
-  Sinon
+  } else {
     filtre->MyFiltre( im, this->image_lissee,           0, -1, -1);
     filtre->MyFiltre( this->image_lissee, this->image_lissee, -1, 0, -1);
     filtre->MyFiltre( this->image_lissee, this->image_lissee, -1, -1, 0);
-  FinSi
+  } // end if
 
   Iconv = (float*) this->image_lissee->Buffer();  
 
   diff = 0;
 
-  Pour(z,0,tz-1)
+  for(z=0;z<=tz-1;z++) {
 
-    Si z==0 Alors
+    if ( z==0 ) {
       printf("z = %3d",z);
       fflush(stdout);
-    Sinon 
+    } else { 
       printf("\b\b\b");
       printf("%3d",z);
       fflush(stdout);
-    FinSi
+    } // end if
 
-  Pour(y,0,ty-1)
-  Pour(x,0,tx-1)
+  for(y=0;y<=ty-1;y++) {
+  for(x=0;x<=tx-1;x++) {
   
 
     val1 = val0 = *in;
 
-    Si x>1 Et x<tx-2 Et y>1 Et y<ty-2 Et z>1 Et z<tz-2 Alors
+    if ( x>1 && x<tx-2 && y>1 && y<ty-2 && z>1 && z<tz-2 ) {
 
       // Gradient en (x+1/2,y,z)
       //----- Calcul de alpha1_x, gamma1_x
@@ -4616,10 +4650,10 @@ float  AnisoGS::Itere3D_3( InrImage* im )
       norm_grad =  this->Norm(gradient);
       InitFlux(e0,e1,e2);
 
-      Si norm_grad > 0.1 Alors
+      if ( norm_grad > 0.1 ) {
         // Calcul de la base (e0, e1, e2):
         this->PrincipalCurvatures(gradient,hessien,norm_grad,e0,e1,e2);
-      FinSi
+      } // end if
 
       // Derivees directionnelles
       u_e0 = this->ScalarProduct(grad,e0);
@@ -4667,10 +4701,10 @@ float  AnisoGS::Itere3D_3( InrImage* im )
       norm_grad =  this->Norm(gradient);
       InitFlux(e0,e1,e2);
 
-      Si norm_grad > 0.1 Alors
+      if ( norm_grad > 0.1 ) {
         // Calcul de la base (e0, e1, e2):
         this->PrincipalCurvatures(gradient,hessien,norm_grad,e0,e1,e2);
-      FinSi
+      } // end if
 
       // Derivees directionnelles
       u_e0 = this->ScalarProduct(grad,e0);
@@ -4718,10 +4752,10 @@ float  AnisoGS::Itere3D_3( InrImage* im )
       norm_grad =  this->Norm(gradient);
       InitFlux(e0,e1,e2);
 
-      Si norm_grad > 0.1 Alors
+      if ( norm_grad > 0.1 ) {
         // Calcul de la base (e0, e1, e2):
         this->PrincipalCurvatures(gradient,hessien,norm_grad,e0,e1,e2);
-      FinSi
+      } // end if
 
       // Derivees directionnelles
       u_e0 = this->ScalarProduct(grad,e0);
@@ -4763,11 +4797,11 @@ float  AnisoGS::Itere3D_3( InrImage* im )
 
       val1div += alpha1_z + alpha_z[x][y];
 
-      Si fabsf(val1div)>1E-4 Alors
+      if ( fabsf(val1div)>1E-4 ) {
         val1 /= val1div;
-      Sinon
+      } else {
         fprintf(stderr,"AnisoGaussSeidel.c:Itere3D() \t fabsf(val1div)<1E-4 \n");
-      FinSi
+      } // end if
 
       alpha_z[x][y] = alpha1_z;
       alpha_y[x]    = alpha1_y;
@@ -4777,7 +4811,7 @@ float  AnisoGS::Itere3D_3( InrImage* im )
       gamma_y[x]    = gamma1_y;
       gamma_x       = gamma1_x;
 
-    Sinon
+    } else {
 
       val1 = *in;
     
@@ -4788,20 +4822,20 @@ float  AnisoGS::Itere3D_3( InrImage* im )
       gamma_y[x]    = 
       gamma_x       = 0;
 
-    FinSi
+    } // end if
 
 
-    Si fabsf(val1-val0) > epsilon Alors
+    if ( fabsf(val1-val0) > epsilon ) {
       nb_points_instables++;
-    FinSi
+    } // end if
 
     diff += (val1-val0)*(val1-val0);
-    Si fabsf(val1-val0) > erreur Alors
+    if ( fabsf(val1-val0) > erreur ) {
       erreur = fabsf(val1-val0);
       erreur_x = x;
       erreur_y = y;
       erreur_z = z;
-    FinSi
+    } // end if
 
     this->im_tmp->BufferPos(x,y,z);
     this->im_tmp->FixeValeur(val1);
@@ -4809,9 +4843,9 @@ float  AnisoGS::Itere3D_3( InrImage* im )
     in++;
     Iconv++;
 
-  FinPour
-  FinPour
-  FinPour
+  } // endfor
+  } // endfor
+  } // endfor
 
   (*im) = (*this->im_tmp);
 
@@ -4855,21 +4889,21 @@ void AnisoGS::Init(InrImage* in,
 
   in->MinMax(&min_intensity,&max_intensity);
 
-  Si tz>1 Alors mode=MODE_3D; Sinon mode=MODE_2D; FinSi
+  if ( tz>1 ) { mode=MODE_3D; } else { mode=MODE_2D; } // end if
 
-  Si opt_mem Alors
+  if ( opt_mem ) {
     use_filtre_rec = true;
-  FinSi
+  } // end if
 
-/*  Si (opt_mem) Ou (in->_format == WT_FLOAT) Alors
+/*  if ( (opt_mem) || (in->_format == WT_FLOAT) ) {
     image_entree = in;
     image_entree_allouee=false;
-  Sinon
+  } else {
     // conversion de l'image initiale en float
     image_entree = new InrImage( WT_FLOAT, "image_reel.inr.gz", in);
     image_entree_allouee=true;
     (*image_entree) = (*in);
-  FinSi
+  } // end if
 */
   // Creates input image extending boundaries
   this->input_image = in;
@@ -4904,14 +4938,14 @@ void AnisoGS::Init(InrImage* in,
 
   this->image_lissee = new InrImage( WT_FLOAT, "image_lissee.inr.gz", image_entree);
 
-  Si use_filtre_rec Alors
+  if ( use_filtre_rec ) {
     filtre_rec = new FiltrageRec(this->image_lissee);
-  Sinon
+  } else {
     filtre = new GeneralGaussianFilter(image_entree, 
         mode);
     filtre->GammaNormalise(false);
     filtre->InitFiltre( sigma, MY_FILTRE_CONV );  
-  FinSi
+  } // end if
 
   InitCoefficients();
 
@@ -4944,10 +4978,10 @@ float AnisoGS::Iterate()
 
   float       erreur = 0;
 
-  Si this->image_resultat==NULL Alors
+  if ( this->image_resultat==NULL ) {
     cerr << __func__ << " image_resultat==NULL, AnisoGS not initialized " << endl;
     return 0.0;
-  FinSi
+  } // end if
 
   // check if the standard deviation of the noise has been set
   if (iteration==0) {
@@ -4960,14 +4994,14 @@ float AnisoGS::Iterate()
   iteration++;
   printf("\n -- Iter. %d, beta = %03.2f \t", iteration,beta);
 
-  Si ((mode == MODE_2D)||(image_resultat->DimZ()==1)) Alors
+  if ( ((mode == MODE_2D)||(image_resultat->DimZ()==1)) ) {
     erreur = Itere2D(    this->image_resultat);
-  Sinon
+  } else {
     if (DistanceMap)
      erreur = Itere3D_distance(this->image_resultat);
      //      erreur = Itere3D_distance_flux(this->image_resultat);
     else
-//    Si maxcurv_coeff > 1E-5 Alors
+//    if ( maxcurv_coeff > 1E-5 ) {
       printf("local struct mode %d \n",local_structure_mode);
       switch (local_structure_mode) {
         case LOCAL_STRUCT_TENSOR:
@@ -4977,10 +5011,10 @@ float AnisoGS::Iterate()
           erreur = Itere3D_2_new( this->image_resultat);
         break;
       }
-//    Sinon
+//    } else {
 //      erreur = Itere3D(       this->image_resultat);
-//    FinSi
-  FinSi
+//    } // end if
+  } // end if
 
   if (!noise_SD_preset)
     //    EstimateNoiseStandardDeviation(this->image_resultat);
