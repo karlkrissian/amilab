@@ -46,6 +46,7 @@
 
 #include "slick/16x16/actions/reload.xpm"
 #include "gtk-clear.xpm"
+#include "LoadImage_Icon3.xpm"
 
 #include "amilab_messages.h"
 
@@ -368,8 +369,8 @@ MainFrame::MainFrame( const wxString& title,
 //    tb1->AddTool(wxID_ANY, wxT("Test"), wxArtProvider::GetBitmap(wxART_ERROR));
 //    tb1->AddSeparator();
     ::wxInitAllImageHandlers();
-    wxImage loadim(wxT("MRA_32_39.png"));
-    tb1->AddTool(wxID_ToolLoadImage, wxT("Load Image"), wxBitmap(loadim),
+    //wxImage loadim(wxT("MRA_32_39.png"));
+    tb1->AddTool(wxID_ToolLoadImage, wxT("Load Image"), wxBitmap(LoadImage_Icon3_xpm),
         wxT("Load Image"));
 
     tb1->AddTool(wxID_UpdateVars, wxT("Update variables"), wxBitmap(reload),
