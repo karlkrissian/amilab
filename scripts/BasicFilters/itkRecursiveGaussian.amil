@@ -101,7 +101,7 @@ if (!exists(itkRecursiveGaussianClass)) {
         
         ::win.AddPage("Param")
         
-        ::win.BeginBoxPanel("Vesselness Param")
+        ::win.BeginBoxPanel("Recursive Gaussian Param")
           ::win.AddFloat( &::sigma,"Sigma",0.01,10)
           nas_id = ::win.AddEnum( &::normAcrossScale,"Normalize")
           ::win.AddEnumChoice(nas_id,"ON")
