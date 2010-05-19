@@ -433,7 +433,7 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
       } 
       # end for k
 
-      eval "global::"+::result_image_name+"<<="+"::res;"
+      eval ::result_image_name+"<<="+"::res;"
     }
     ::Run.Comments("Run starting from previous result.")
     # end ::Run()
