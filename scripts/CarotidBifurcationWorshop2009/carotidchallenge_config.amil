@@ -1,9 +1,10 @@
+Class config{
+  basedir    = "G:\\Documents and Settings\\Alan\\Desktop\\Datos Workshop\\"
 
-basedir    = "G:\\Documents and Settings\\Alan\\Desktop\\Datos Workshop\\"
-
-global::data_dir              = basedir+"data\\"
-global::groundtruth_dir       = basedir+"groundtruth\\"
-global::results_dir           = basedir+"results\\"
-global::evaluation_bindir     = basedir+"cls2009\\build\\"
-global::evaluation_scriptdir  = basedir+"cls2009\\scripts\\"
+  ::data_dir              = basedir+"data\\"
+  ::groundtruth_dir       = basedir+"groundtruth\\"
+  ::results_dir           = basedir+"results\\"
+  ::evaluation_bindir     = basedir+"cls2009\\build\\"
+  ::evaluation_scriptdir  = basedir+"cls2009\\scripts\\"
+}
 

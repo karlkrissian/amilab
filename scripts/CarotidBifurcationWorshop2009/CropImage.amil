@@ -10,7 +10,7 @@ if (!exists(CropImageFromPointsClass)) {
   Class CropImageFromPointsClass \
   {
     ::class_name = "global::CropImageFromPointsClass"
-    proc ::CropImageFromPoints( IMAGE input, STRING nameresult, NUM marginxy, NUM marginztop, NUM marginzbot ) \
+    proc ::CropImageFromPoints(OBJECT rep, IMAGE input, NUM marginxy, NUM marginztop, NUM marginzbot ) \
     {
       // 1. compute min-max for each coordinates
       xmin = input.trx+(input.tx-1)*input.vx
@@ -19,26 +19,26 @@ if (!exists(CropImageFromPointsClass)) {
       xmax = 0
       ymax = 0
       zmax = 0
-      if (global::p1x<xmin) { xmin = global::p1x; }
-      if (global::p1x>xmax) { xmax = global::p1x; }
-      if (global::p2x<xmin) { xmin = global::p2x; }
-      if (global::p2x>xmax) { xmax = global::p2x; }
-      if (global::p3x<xmin) { xmin = global::p3x; }
-      if (global::p3x>xmax) { xmax = global::p3x; }
+      if (rep->p1x<xmin) { xmin = rep->p1x; }
+      if (rep->p1x>xmax) { xmax = rep->p1x; }
+      if (rep->p2x<xmin) { xmin = rep->p2x; }
+      if (rep->p2x>xmax) { xmax = rep->p2x; }
+      if (rep->p3x<xmin) { xmin = rep->p3x; }
+      if (rep->p3x>xmax) { xmax = rep->p3x; }
 
-      if (global::p1y<ymin) { ymin = global::p1y; }
-      if (global::p1y>ymax) { ymax = global::p1y; }
-      if (global::p2y<ymin) { ymin = global::p2y; }
-      if (global::p2y>ymax) { ymax = global::p2y; }
-      if (global::p3y<ymin) { ymin = global::p3y; }
-      if (global::p3y>ymax) { ymax = global::p3y; }
+      if (rep->p1y<ymin) { ymin = rep->p1y; }
+      if (rep->p1y>ymax) { ymax = rep->p1y; }
+      if (rep->p2y<ymin) { ymin = rep->p2y; }
+      if (rep->p2y>ymax) { ymax = rep->p2y; }
+      if (rep->p3y<ymin) { ymin = rep->p3y; }
+      if (rep->p3y>ymax) { ymax = rep->p3y; }
 
-      if (global::p1z<zmin) { zmin = global::p1z; }
-      if (global::p1z>zmax) { zmax = global::p1z; }
-      if (global::p2z<zmin) { zmin = global::p2z; }
-      if (global::p2z>zmax) { zmax = global::p2z; }
-      if (global::p3z<zmin) { zmin = global::p3z; }
-      if (global::p3z>zmax) { zmax = global::p3z; }
+      if (rep->p1z<zmin) { zmin = rep->p1z; }
+      if (rep->p1z>zmax) { zmax = rep->p1z; }
+      if (rep->p2z<zmin) { zmin = rep->p2z; }
+      if (rep->p2z>zmax) { zmax = rep->p2z; }
+      if (rep->p3z<zmin) { zmin = rep->p3z; }
+      if (rep->p3z>zmax) { zmax = rep->p3z; }
       
       # - add margins
       xmin = xmin-marginxy
@@ -69,7 +69,9 @@ if (!exists(CropImageFromPointsClass)) {
       if (zmax_vox>=input.tz) { zmax_vox = input.tz-1; }
       
       # -- create the cropped image as a global variable with the given name 
-      eval nameresult + " <<= input[xmin_vox:xmax_vox,ymin_vox:ymax_vox,zmin_vox:zmax_vox];"
+      ::input_cropped <<= input[xmin_vox:xmax_vox,ymin_vox:ymax_vox,zmin_vox:zmax_vox]
+      # Para poder utilizar el script del workshop en windows porque sino da problemas de memoria.
+      ::input_cropped <<= Resize(::input_cropped,::input_cropped.tx/2,::input_cropped.ty/2,::input_cropped.tz,1)
 
     }
     

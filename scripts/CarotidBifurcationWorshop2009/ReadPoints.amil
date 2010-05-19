@@ -15,33 +15,33 @@ if (!exists(ReadPointsClass)) {
       ::points = open(points_filename,"r")
 
       # read first point, supposedly CCA
-      if (exists(global::p1x)) { del global::p1x; }
-      if (exists(global::p1y)) { del global::p1y; }
-      if (exists(global::p1z)) { del global::p1z; }
-      global::p1x = 0; global::p1y = 0; global::p1z = 0;
-      ::points.read(global::p1x)
-      ::points.read(global::p1y)
-      ::points.read(global::p1z)
+      if (exists(::p1x)) { del ::p1x; }
+      if (exists(::p1y)) { del ::p1y; }
+      if (exists(::p1z)) { del ::p1z; }
+      ::p1x = 0; ::p1y = 0; ::p1z = 0;
+      ::points.read(::p1x)
+      ::points.read(::p1y)
+      ::points.read(::p1z)
 
       # read second point, supposedly ECA
-      if (exists(global::p2x)) { del global::p2x; }
-      if (exists(global::p2y)) { del global::p2y; }
-      if (exists(global::p2z)) { del global::p2z; }
-      global::p2x = 0; global::p2y = 0; global::p2z = 0;
-      ::points.read(global::p2x)
-      ::points.read(global::p2y)
-      ::points.read(global::p2z)
+      if (exists(::p2x)) { del ::p2x; }
+      if (exists(::p2y)) { del ::p2y; }
+      if (exists(::p2z)) { del ::p2z; }
+      ::p2x = 0; ::p2y = 0; ::p2z = 0;
+      ::points.read(::p2x)
+      ::points.read(::p2y)
+      ::points.read(::p2z)
 
       # read third point, supposedly ICA
-      if (exists(global::p3x)) { del global::p3x; }
-      if (exists(global::p3y)) { del global::p3y; }
-      if (exists(global::p3z)) { del global::p3z; }
-      global::p3x = 0; global::p3y = 0; global::p3z = 0;
-      ::points.read(global::p3x)
-      ::points.read(global::p3y)
-      ::points.read(global::p3z)
+      if (exists(::p3x)) { del ::p3x; }
+      if (exists(::p3y)) { del ::p3y; }
+      if (exists(::p3z)) { del ::p3z; }
+      ::p3x = 0; ::p3y = 0; ::p3z = 0;
+      ::points.read(::p3x)
+      ::points.read(::p3y)
+      ::points.read(::p3z)
       
-      if ((global::p2z<global::p1z)||(global::p3z<global::p1z)) {
+      if ((::p2z<::p1z)||(::p3z<::p1z)) {
         InfoDialog "Looks like the first point is not in the Internal CA !!!"
       }
     }
