@@ -4,24 +4,23 @@
 # given by the global variables p{1,2,3}{x,y,z}
 #
 
-func "SyntheticImages/AddSphere.amil"
-global::AddSphereClass ::AS
-
 if (!exists(CreateInitialSpheresClass)) {
 
+  func "SyntheticImages/AddSphere.amil"
+  
   Class CreateInitialSpheresClass \
   {
-
+    global::AddSphereClass ::ASCIS
     ::class_name ="global::CreateInitialSpheresClass"
 
-    proc CheckInitialPoints( IMAGE input, STRING resname, NUM size ) \
+    proc ::CheckInitialPoints( IMAGE input, NUM size ) \
     {
       # create the resulting image as a global variable, with inital negative values of -10
       res = (FLOAT)input*0-10
 
 
       # add first sphere
-      ::AS->AddBrightSphereGlobal_mm(&res,p1x,p1y,p1z,size,-10,10)
+      ::ASCIS->AddBrightSphereGlobal_mm(&res,global::p1x,global::p1y,global::p1z,size,-10,10)
       s1_mean= mean[res>0](input)
       s1_sd  = mean[res>0] ( (input-s1_mean)*(input-s1_mean))
       s1_sd  = sqrt(s1_sd)
@@ -31,7 +30,7 @@ if (!exists(CreateInitialSpheresClass)) {
       res=-10;
 
       # add second sphere
-      ::AS->AddBrightSphereGlobal_mm(&res,p2x,p2y,p2z,size,-10,10)
+      ::ASCIS->AddBrightSphereGlobal_mm(&res,global::p2x,global::p2y,global::p2z,size,-10,10)
       s2_mean= mean[res>0](input)
       s2_sd  = mean[res>0] ( (input-s2_mean)*(input-s2_mean))
       s2_sd  = sqrt(s2_sd)
@@ -41,7 +40,7 @@ if (!exists(CreateInitialSpheresClass)) {
       res=-10;
 
       # add third sphere
-      ::AS->AddBrightSphereGlobal_mm(&res,p3x,p3y,p3z,size,-10,10)
+      ::ASCIS->AddBrightSphereGlobal_mm(&res,global::p3x,global::p3y,global::p3z,size,-10,10)
       s3_mean= mean[res>0](input)
       s3_sd  = mean[res>0] ( (input-s3_mean)*(input-s3_mean))
       s3_sd  = sqrt(s3_sd)
@@ -50,41 +49,41 @@ if (!exists(CreateInitialSpheresClass)) {
 
       # check point intensities
       if ((s1_mean>1150)||((s2_mean+s3_mean)/2<(s1_mean+100))) {
-        eval "global::"+resname+"_pt1_OK = 1;"
+        eval "global::pt1_OK = 1;"
       }
       if ((s2_mean>1150)||((s1_mean+s3_mean)/2<(s2_mean+100))) {
-        eval "global::"+resname+"_pt2_OK = 1;"
+        eval "global::pt2_OK = 1;"
       }
       if ((s3_mean>1150)||((s2_mean+s1_mean)/2<(s3_mean+100))) {
-        eval "global::"+resname+"_pt3_OK = 1;"
+        eval "global::pt3_OK = 1;"
       }
 
     }
 
 
-    proc CreateInitialSpheres( IMAGE input, STRING resname, NUM size) \
+    proc ::CreateInitialSpheres( IMAGE input, STRING resname, NUM size) \
     {
       # create the resulting image as a global variable, with inital negative values of -10
-      res = (FLOAT)input*0-10
+     res = (FLOAT)input*0-10
 
-      CheckInitialPoints(&input,resname,size)
+      ::CheckInitialPoints(&input,size)
 
       # add spheres
       res=-10
-      eval "pt1_ok = "+resname+"_pt1_OK;"
-      eval "pt2_ok = "+resname+"_pt2_OK;"
-      eval "pt3_ok = "+resname+"_pt3_OK;"
+      eval "pt1_ok = global::pt1_OK;"
+      eval "pt2_ok = global::pt2_OK;"
+      eval "pt3_ok = global::pt3_OK;"
       if (pt1_ok) {
-        ::AS->AddBrightSphereGlobal_mm(&res,p1x,p1y,p1z,size,-10,10)
+        ::ASCIS->AddBrightSphereGlobal_mm(&res,global::p1x,global::p1y,global::p1z,size,-10,10)
       }
       if (pt2_ok) {
-        ::AS->AddBrightSphereGlobal_mm(&res,p2x,p2y,p2z,size,-10,10)
+        ::ASCIS->AddBrightSphereGlobal_mm(&res,global::p2x,global::p2y,global::p2z,size,-10,10)
       }
       if (pt3_ok) {
-        ::AS->AddBrightSphereGlobal_mm(&res,p3x,p3y,p3z,size,-10,10)
+        ::ASCIS->AddBrightSphereGlobal_mm(&res,global::p3x,global::p3y,global::p3z,size,-10,10)
       }
 
-      eval "global::"+resname+"<<=res;"
+      eval "global"+resname+" <<= res;"
     }
     
     proc ::Close() \

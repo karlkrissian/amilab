@@ -3,12 +3,12 @@
 # using a speed image
 #
 if (!exists(SPClass)) {
-  func "SyntheticImages/AddSphere"
-  
+  func "SyntheticImages/AddSphere.amil"
+    
   Class SPClass {
+    global::AddSphereClass ::AS
     ::class_name = "global::SPClass"
-    import = &global::ami_import;
-    ::win = import->ParamPanel("Path")
+    
     #----------------------------
     proc ::init() {
       # input image name
@@ -52,9 +52,26 @@ if (!exists(SPClass)) {
     {
       eval "::input <<="+::input_name+";"
       if (::input_name=="Image") {
-        ::input_name = "SP_input"
+        ::input_name = "::input"
         ::win.Update(-1)
       }
+      show ::input
+    }
+    
+    #-----------------------------------------------
+    proc ::set_input( IMAGE im) \
+    {
+      ::input <<= im
+    }
+    
+    proc ::set_speed( IMAGE im) \
+    {
+      ::speed <<= im
+    }
+    
+    proc ::set_endmask( IMAGE im) \
+    {
+      ::endmask <<= im
     }
     
     #-----------------------------------------------
@@ -62,7 +79,7 @@ if (!exists(SPClass)) {
     {
       eval "::speed <<="+::speed_name+";"
       if (::speed_name=="Image") {
-        ::speed_name = "SP_speed"
+        ::speed_name = "::speed"
         ::win.Update(-1)
       }
     }
@@ -72,7 +89,7 @@ if (!exists(SPClass)) {
     {
       eval "::endmask <<="+::endmask_name+";"
       if (::endmask_name=="Image") {
-        ::endmask_name = "SP_endmask"
+        ::endmask_name = "endmask"
         ::win.Update(-1)
       }
     }
@@ -103,7 +120,7 @@ if (!exists(SPClass)) {
     
     
     #-----------------------------------------------
-    proc ::SetStartPointWorld( NUM x, NUM y, NUM z) \
+    proc ::SetStartPointWorld(NUM x, NUM y, NUM z) \
     {
       ::Px1 = x
       ::Py1 = y
@@ -144,7 +161,7 @@ if (!exists(SPClass)) {
     
     
     #-----------------------------------------------
-    proc ::SetEndPointWorld( NUM x, NUM y, NUM z) \
+    proc ::SetEndPointWorld(NUM x, NUM y, NUM z) \
     {
       ::Px2 = x
       ::Py2 = y
@@ -161,13 +178,13 @@ if (!exists(SPClass)) {
       show ::input
       show ::speed
       ::input_draw.compare(::speed)
-      if (exists(::path)) { show ::path; }
+      if (exists(global::path)) { show global::path; }
     }  
     #----------------------------
     proc ::Close() \
     {
       if (exists(::win)) {
-      ::win.HidePanel
+        ::win.HidePanel
       }
       delvars GetObjectName(::Close)
     }
@@ -178,25 +195,26 @@ if (!exists(SPClass)) {
       ::Close
     }
     ::CloseAll.Comments("Call ::Close() method and delete the class variable")
-        
+    
     #------------------------------------
     #-----------------------------------------------
     proc ::Run() \
     {
-      ::load_input()
-      ::load_speed()
+      #::load_input()
+      #::load_speed()
     
       # force a minimal value of ::epsilon
+      
       maxrepim_crop = ::speed+::epsilon
       if (::use_input_speed) {
         maxrepim_crop = maxrepim_crop + \
-                        (::input>::input_Imin)*\
+                        (::input>::input_Imin)* \
                         (::input<::input_Imax)*::input_speed
       }
     
       # Add Spheres around extremities to facilitate
       # their connections
-      global::AddBrightSphere_mm( &maxrepim_crop,\
+      ::AS->AddBrightSphere_mm( &maxrepim_crop,\
                           ::startx,::starty,::startz,\
                           3,0.01,0.5)
 
@@ -205,7 +223,7 @@ if (!exists(SPClass)) {
       fminit = (FLOAT) maxrepim_crop*0+::maxcost
 
       if (::end_mode==0) {
-        global::AddBrightSphere_mm( &maxrepim_crop,\
+        ::AS->AddBrightSphere_mm( &maxrepim_crop,\
                             ::endx,::endy,::endz,\
                             3,0.01,0.5)
         if (::endx<2) { ::endx=2; }
@@ -215,7 +233,7 @@ if (!exists(SPClass)) {
         fminit.set(-::maxcost)
       } else {
         # load end mask
-        ::load_endmask()
+        #::load_endmask()
         fminit = fminit*(::endmask<=0.5)+(::endmask>=0.5)*-::maxcost
       }
     
@@ -223,37 +241,40 @@ if (!exists(SPClass)) {
       #maxrepim_crop = maxrepim_crop/10
       # running fast marching until the point 1 is reached
       printn "FMT"
-      ::res = vtkFastMarchingTarget(maxrepim_crop,fminit,::maxcost,\
+      res = vtkFastMarchingTarget(maxrepim_crop,fminit,::maxcost,\
                             ::startx+0.5,::starty+0.5,::startz+0.5)
-      ::res.info
+      res.info
     
       if (::save_FM) {
-        ::FM = ::res
+        ::FM <<= res
       }
 
       # reset the maximum to limit gradient and lower side effects of linear interpolation
       epsilon = 0.0001
-      maxdist = max[::res<::maxcost-epsilon](::res)
-      ::res = ::res*(::res<=(maxdist+epsilon))+(::res>(maxdist+epsilon))*(maxdist+epsilon)
+      maxdist = max[res<::maxcost-epsilon](res)
+      res = res*(res<=(maxdist+epsilon))+(res>(maxdist+epsilon))*(maxdist+epsilon)
 
       printn "FMT done"
-      if (exists(::path)) { del ::path; }
+      if (exists(global::path)) { del global::path; }
       if (::end_mode==0) {
-        ::path = PathFromVectField( ::res,\
+        global::path = PathFromVectField( res,\
                                   ::step_size,\
                                   ::maxlength,\
                                   ::Px1,::Py1,::Pz1,\
                                   ::Px2,::Py2,::Pz2)
       } else {
-        ::path = PathFromVectField( ::res,\
-                                  SP_step_size,\
-                                  SP_maxlength,\
-                                  SP_Px1,SP_Py1,SP_Pz1)
+        global::path = PathFromVectField( res,\
+                                  ::step_size,\
+                                  ::maxlength,\
+                                  ::Px1,::Py1,::Pz1)
       }
     }
     #-------------------------------------------
     proc ::Gui() \
     {
+      import = &global::ami_import;
+      ::win = import->ParamPanel("Path")
+    
       ::win.BeginBook()
 
         ::win.AddPage("Init")
@@ -313,7 +334,7 @@ if (!exists(SPClass)) {
       ::win.Display
     }
     
-    ::init
+    #::init
     } #End of class
   
 } # End of if

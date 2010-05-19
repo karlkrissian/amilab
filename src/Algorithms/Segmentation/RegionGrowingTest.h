@@ -15,7 +15,7 @@
 
 #define NOMINMAX
 #include <limits>
-#include <windows.h>
+//#include <windows.h>
 
 #include "inrimage.hpp"
 #include "DefineClass.hpp"

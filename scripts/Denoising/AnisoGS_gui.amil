@@ -73,7 +73,7 @@ if (!exists(AnisoGSClass)) {
       ::load_input
     }
     if (::use_zoom)&&(exists(::input_draw)) {
-      global::::input_roi <<= (FLOAT) ::input[::input_draw.GetXmin:::input_draw.GetXmax,\
+      global::input_roi <<= (FLOAT) ::input[::input_draw.GetXmin:::input_draw.GetXmax,\
                             ::input_draw.GetYmin:::input_draw.GetYmax,\
                             ::input_draw.GetZmin:::input_draw.GetZmax ]
     } else {

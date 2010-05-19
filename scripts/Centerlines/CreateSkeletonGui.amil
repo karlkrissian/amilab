@@ -206,7 +206,7 @@ if (!exists(CreateSkeletonClass)) {
       ::bin <<= (UCHAR) (_i>0)*255
     
       if (::InputIntensity) {
-        global::::idist <<= _i
+        global::idist <<= _i
       } else {
         if (::Ordering==0) {
           if (_i.tz==1) {

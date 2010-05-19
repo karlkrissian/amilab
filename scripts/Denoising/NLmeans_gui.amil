@@ -111,11 +111,11 @@ if (!exists(NLmeansClass)) {
     }
     
     #----------------------------
-    proc ::ComputeMSE( IMAGE global::res) \
+    proc ::ComputeMSE( IMAGE ::res) \
     {
       if exists(::groundtruth) {
         if (::noisetype==1) {
-          res1=global::res*global::res-2*::noisesigma*::noisesigma
+          res1=::res*::res-2*::noisesigma*::noisesigma
           res1 = sqrt(res1*(res1>0))
           mask = res1*0
           if (exists(::roi)) {
@@ -127,14 +127,14 @@ if (!exists(NLmeansClass)) {
           ::mse = mean[mask]((res1-::groundtruth)*(res1-::groundtruth))
           printn sprint("MSE %3.5f \n",::mse)
         } else {
-          mask = global::res*0
+          mask = ::res*0
           if (exists(::roi)) {
             smask = ::roi*0+1
             mask.putimage(smask)
           } else {
             mask = 1
           }
-          ::mse = mean[mask]((global::res-::groundtruth)*(global::res-::groundtruth))
+          ::mse = mean[mask]((::res-::groundtruth)*(::res-::groundtruth))
           printn sprint("MSE %3.5f \n",::mse)
         }
       }
@@ -165,7 +165,7 @@ if (!exists(NLmeansClass)) {
 printn "*** Filter() ****"
       InitTime
       if (exists(::roi)) {
-        ::res0 = global::res[::roi]
+        ::res0 = ::res[::roi]
   
         if (::res0.GetFormat != RGB) {
           InitTime
@@ -207,9 +207,9 @@ printn "*** Filter() ****"
         diff = sqrt(mean((::res0-::res_roi)*\
                         (::res0-::res_roi)))
         print sprint("Diff = %f \n",diff)
-        global::res.putimage(::res_roi)
+        ::res.putimage(::res_roi)
       } else {
-        ::res0 = global::res
+        ::res0 = ::res
   
         if (::res0.GetFormat != RGB) {
 
@@ -223,28 +223,28 @@ printn "filter_type = %1%" % ::filter_type
 printn "presmooth_SD = %1%" % ::presmooth_SD
 printn "pattern_weight_param = %1%" % ::pattern_weight_param
 
-          global::res = ::filters->NLmeans(::res0,\
+          ::res = ::filters->NLmeans(::res0,\
                           ::t,::f,::h,\
                           ::noisetype,::threads,\
                           ::filter_type,\
                           ::presmooth_SD,\
                           ::pattern_weight_param)
         } else {
-          global::res[0] = ::filters->NLmeans((FLOAT)::res0[0],::t,::f,::h,::noisetype,::threads,\
+          ::res[0] = ::filters->NLmeans((FLOAT)::res0[0],::t,::f,::h,::noisetype,::threads,\
                                 ::filter_type,\
                                 ::presmooth_SD,\
                                 ::pattern_weight_param)
-          global::res[1] = ::filters->NLmeans((FLOAT)::res0[1],::t,::f,::h,::noisetype,::threads,\
+          ::res[1] = ::filters->NLmeans((FLOAT)::res0[1],::t,::f,::h,::noisetype,::threads,\
                                 ::filter_type,\
                                 ::presmooth_SD,\
                                 ::pattern_weight_param)
-          global::res[2] = ::filters->NLmeans((FLOAT)::res0[2],::t,::f,::h,::noisetype,::threads,\
+          ::res[2] = ::filters->NLmeans((FLOAT)::res0[2],::t,::f,::h,::noisetype,::threads,\
                                 ::filter_type,\
                                 ::presmooth_SD,\
                                 ::pattern_weight_param)
         }
   
-        diff = sqrt(mean((::res0-global::res)*(::res0-global::res)))
+        diff = sqrt(mean((::res0-::res)*(::res0-::res)))
         print sprint("Diff = %f \n",diff)
       }
       EndTime
@@ -264,29 +264,29 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
       printn "ComputeMatchField()"
     
       # Precomputes matching field
-      if (global::res.GetFormat != RGB) {
+      if (::res.GetFormat != RGB) {
         num_features = 1
         if (::usegrad) { num_features++; }
         ::matchfield <<= Image( FLOAT,\
                                   num_features,\
-                                  global::res);
+                                  ::res);
         current_feature = 0
-        ::matchfield[current_feature] = filter((FLOAT)global::res,::sigma,0,0,0)
+        ::matchfield[current_feature] = filter((FLOAT)::res,::sigma,0,0,0)
         if (::usegrad) {
           current_feature++
-          ::matchfield[current_feature] = normgrad((FLOAT)global::res,::sigma)*::sigma
+          ::matchfield[current_feature] = normgrad((FLOAT)::res,::sigma)*::sigma
         }
-        #::matchfield[1] = secdergrad((FLOAT)global::res,::sigma) 
-        #normgrad((FLOAT)global::res,::sigma)
+        #::matchfield[1] = secdergrad((FLOAT)::res,::sigma) 
+        #normgrad((FLOAT)::res,::sigma)
       } else {
-        ::matchfield <<=  Image(FLOAT,6,global::res)
-        tmp <<= (FLOAT)global::res[0]
+        ::matchfield <<=  Image(FLOAT,6,::res)
+        tmp <<= (FLOAT)::res[0]
         ::matchfield[0] = filter(  tmp,::sigma,0,0,0)
         ::matchfield[1] = normgrad(tmp,::sigma)
-        tmp <<= (FLOAT)global::res[1]
+        tmp <<= (FLOAT)::res[1]
         ::matchfield[2] = filter(  tmp,::sigma,0,0,0)
         ::matchfield[3] = normgrad(tmp,::sigma)
-        tmp <<= (FLOAT)global::res[2]
+        tmp <<= (FLOAT)::res[2]
         ::matchfield[4] = filter(  tmp,::sigma,0,0,0)
         ::matchfield[5] = normgrad(tmp,::sigma)
       }
@@ -300,7 +300,7 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
     
         #InitTime
         if (exists(::roi)) {
-          ::res0 = global::res[::roi]
+          ::res0 = ::res[::roi]
           ::mf0  = ::matchfield[::roi]
           ::matchfield.info
           ::mf0.info
@@ -320,10 +320,10 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
           ::res_roi.info
           diff = sqrt(mean((::res0-::res_roi)*(::res0-::res_roi)))
           print sprint("Diff = %f \n",diff)
-          global::res.putimage(::res_roi)
+          ::res.putimage(::res_roi)
           printn "--- OK --- "
         } else {
-          ::res0 <<= (FLOAT) global::res
+          ::res0 <<= (FLOAT) ::res
           printn "starting !"
           if (::res0.vdim != 3) {
             printn  sprint(" t=%f ",::t)+\
@@ -337,20 +337,20 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
             printn  sprint(" min=%f ",min(::matchfield))+\
                     sprint(" max=%f ",max(::matchfield))
     
-            global::res = ::filters->NLmeans_fast( ::res0,\
+            ::res = ::filters->NLmeans_fast( ::res0,\
                                     ::matchfield,\
                                     ::t,\
                                     ::h,\
                                     ::noisetype,\
                                     ::threads)
           } else {
-            global::res = ::res0
-            global::res[0] = ::filters->NLmeans_fast((FLOAT)::res0[0],::matchfield,::t,::h,::noisetype,::threads)
-            global::res[1] = ::filters->NLmeans_fast((FLOAT)::res0[1],::matchfield,::t,::h,::noisetype,::threads)
-            global::res[2] = ::filters->NLmeans_fast((FLOAT)::res0[2],::matchfield,::t,::h,::noisetype,::threads)
+            ::res = ::res0
+            ::res[0] = ::filters->NLmeans_fast((FLOAT)::res0[0],::matchfield,::t,::h,::noisetype,::threads)
+            ::res[1] = ::filters->NLmeans_fast((FLOAT)::res0[1],::matchfield,::t,::h,::noisetype,::threads)
+            ::res[2] = ::filters->NLmeans_fast((FLOAT)::res0[2],::matchfield,::t,::h,::noisetype,::threads)
           }
     
-          _diff = sqrt(mean((::res0-global::res)*(::res0-global::res)))
+          _diff = sqrt(mean((::res0-::res)*(::res0-::res)))
           print sprint("Diff = %f \n",_diff)
         }
     
@@ -374,12 +374,12 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
     proc ::FastFilter() \
     { 
       InitTime
-      if (global::res.vdim==1) {
-      global::res <<= ::filters->NewNLmeans(&global::res,::t,::f,::h,::threads,::minweight)
+      if (::res.vdim==1) {
+      ::res <<= ::filters->NewNLmeans(&::res,::t,::f,::h,::threads,::minweight)
       } else {
-        for local::k = 0 to global::res.vdim-1 {
-          local::c = global::res[k]
-          global::res[k] = ::filters->NewNLmeans(&c,::t,::f,::h,::threads,::minweight)
+        for local::k = 0 to ::res.vdim-1 {
+          local::c = ::res[k]
+          ::res[k] = ::filters->NewNLmeans(&c,::t,::f,::h,::threads,::minweight)
         }
       }
       EndTime
@@ -393,7 +393,7 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
       InitTime
       if (exists(::noise_roi)) {
     
-          global::res = ::filters->NLmeans_MRI(global::res,::noise_roi,\
+          ::res = ::filters->NLmeans_MRI(::res,::noise_roi,\
                         ::t,::h,::sigma,\
                         ::iterations,::threads)
     
@@ -404,7 +404,7 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
       }
       EndTime
       printn "processing time: "+TimeSpent
-      ::ComputeMSE(global::res)
+      ::ComputeMSE(::res)
     }
     # ::MRIFilter()
     
@@ -414,8 +414,8 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
     {
       if (!exists(::input)) { ::LoadInput; }
       ::stop = 0
-      if (!exists(global::res)) {
-        global::res =  ::input
+      if (!exists(::res)) {
+        ::res =  ::input
       }
       for local::k=1 to ::iterations {
         if (!::stop) {
@@ -429,11 +429,11 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
           ::Display
           ProcessXEvents(50)
         }
-        ::ComputeMSE(global::res)
+        ::ComputeMSE(::res)
       } 
       # end for k
 
-      eval "global::"+::result_image_name+"<<="+"global:res;"
+      eval "global::"+::result_image_name+"<<="+"::res;"
     }
     ::Run.Comments("Run starting from previous result.")
     # end ::Run()
@@ -473,8 +473,8 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
         ::input_draw.DrawIsoContour(1,1)
         show ::input
       }
-      if exists(global::res) {
-        show global::res
+      if exists(::res) {
+        show ::res
         if exists(::roi) {
           ::res_draw.SetIsoContour(0,::imbox,0.5)
           ::res_draw.DrawIsoContour(0,1)
@@ -494,9 +494,9 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
         if (exists(::res_surf))   { del ::res_surf; }
     
         ::input_surf = CreateFlatMesh(::input,0)
-        ::res_surf   = CreateFlatMesh(global::res,0)
+        ::res_surf   = CreateFlatMesh(::res,0)
         ::input_surf.ElevateMesh(::input*::surf_scaling)
-        ::res_surf.ElevateMesh(global::res*::surf_scaling)
+        ::res_surf.ElevateMesh(::res*::surf_scaling)
         ::input_surf.Normals
         ::res_surf.Normals
         show ::input_surf
@@ -510,15 +510,15 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
     proc ::Restart() \
     {
       ::LoadInput
-      global::res <<= ::input
-      show global::res
+      ::res <<= ::input
+      show ::res
     }
     ::Restart.Comments("Reloads the input, sets the result equal to it and displays it.")
     
     #----------------------------
     proc ::Save() \
     {
-      global::res.save ::result_filename
+      ::res.save ::result_filename
     }
     ::Save.Comments("Save image to disk as NLM_result.ami.gz")
     

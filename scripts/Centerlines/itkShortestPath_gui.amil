@@ -2,17 +2,17 @@
 # Find Shortest path between 2 points
 # using a speed image
 #
-if (!exists(SPClass)) {
-  func "SyntheticImages/AddSphere"
+if (!exists(itkSPClass)) {
+  func "SyntheticImages/AddSphere.amil"
   ami_import->ITK()
   
-  Class SPClass {
-    
+  Class itkSPClass {
+    global::AddSphereClass ::AS
+    ::class_name = "global::itkSPClass"
     ::itk=&global::itk
       
     #----------------------------
     proc ::init() {
-      ::class_name = "global::SPClass"
       # input image name
       ::input_name = ""
       # speed image name
@@ -68,10 +68,25 @@ if (!exists(SPClass)) {
       }
     }
     
+    proc ::set_input( IMAGE im) \
+    {
+      ::input <<= im
+    }
+    
+    proc ::set_speed( IMAGE im) \
+    {
+      ::speed <<= im
+    }
+    
+    proc ::set_endmask( IMAGE im) \
+    {
+      ::endmask <<= im
+    }
+    
     #-----------------------------------------------
     proc ::StartPoint() \
     {
-      #::load_input
+      ::load_input
       show ::input
       if (exists(::input_draw)) {
         ::SetStartPoint( \
@@ -107,7 +122,7 @@ if (!exists(SPClass)) {
     #-----------------------------------------------
     proc ::EndPoint() \
     {
-      #::load_input
+      ::load_input
       show ::input
       if (exists(::input_draw)) {
         ::SetEndPoint( \
@@ -147,17 +162,19 @@ if (!exists(SPClass)) {
     #-----------------------------------------------
     proc ::Display() \
     {
-      #::load_input
-      #::load_speed
+      ::load_input
+      ::load_speed
       show ::input
       show ::speed
       ::input_draw.compare(::speed)
-      if (exists(global::back)) { show global::back; }
+      if (exists(global::path)) { show global::path; }
     }  
     #----------------------------
     proc ::Close() \
     {
-      ::win.HidePanel
+      if (exists(::win)) {
+        ::win.HidePanel
+      }
       delvars GetObjectName(::Close)
     }
     ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -175,41 +192,43 @@ if (!exists(SPClass)) {
       #::load_speed()
     
       # force a minimal value of ::epsilon
-      maxrepim_crop = ::speed+::epsilon
+      ::maxrepim_crop = ::speed+::epsilon
       if (::use_input_speed) {
-        maxrepim_crop = maxrepim_crop + \
+        ::maxrepim_crop = ::maxrepim_crop + \
                         (::input>::input_Imin)*\
                         (::input<::input_Imax)*::input_speed
       }
     
       # Add Spheres around extremities to facilitate
       # their connections
-      global::AddBrightSphere_mm( &maxrepim_crop,\
+      ::AS->AddBrightSphere_mm( &::maxrepim_crop,\
                           ::startx,::starty,::startz,\
                           3,0.01,0.5)
 
       # Run a Fast Marching start from End (point or mask) 
       # up to distance 1000
-      fminit = (FLOAT) maxrepim_crop*0+::maxcost
+      ::fminit = (FLOAT) ::maxrepim_crop*0+::maxcost
 
-      global::AddBrightSphere_mm( &maxrepim_crop,\
+      ::AS->AddBrightSphere_mm( &::maxrepim_crop,\
                             ::endx,::endy,::endz,\
                             3,0.01,0.5)
       if (::endx<2) { ::endx=2; }
       if (::endy<2) { ::endy=2; }
       if (::endz<2) { ::endz=2; }
-      fminit.setpos(::endx,::endy,::endz)
-      fminit.set(-::maxcost)
+      ::fminit.setpos(::endx,::endy,::endz)
+      ::fminit.set(-::maxcost)
     
       #maxrepim_crop = maxrepim_crop/10
       # running fast marching until the point 1 is reached
       printn "FMT"
-      ::res = vtkFastMarchingTarget(maxrepim_crop,fminit,::maxcost,\
-                            ::startx+0.5,::starty+0.5,::startz+0.5)
+      ::res = ::itk->FastMarchingImageFilter3D(::maxrepim_crop,::startx+0.5,::starty+0.5,::startz+0.5,::maxcost)
+      ::res = (::res>::maxcost)*::maxcost+(::res<=::maxcost)*::res
+      #::res = ::itk->BinaryThresholdImageFilter3D(fast,0,100)
+      #::res = vtkFastMarchingTarget(::maxrepim_crop,::fminit,::maxcost,::startx+0.5,::starty+0.5,::startz+0.5)
       ::res.info
     
       if (::save_FM) {
-        ::FM = ::res
+        ::FM <<= ::res
       }
 
       # reset the maximum to limit gradient and lower side effects of linear interpolation
@@ -218,8 +237,8 @@ if (!exists(SPClass)) {
       ::res = ::res*(::res<=(maxdist+epsilon))+(::res>(maxdist+epsilon))*(maxdist+epsilon)
 
       printn "FMT done"
-      if (exists(::path)) { del ::path; }
-      global::back = ::itk->BackTrackingMeshFilter3D( ::res,\
+      if (exists(global::path)) { del global::path; }
+      global::path = ::itk->BackTrackingMeshFilter3D( ::res,\
                                   ::Px1,::Py1,::Pz1,\
                                   ::step_size,\
                                   ::maxlength,\
@@ -290,7 +309,7 @@ if (!exists(SPClass)) {
       ::win.Display
     }
     
-    ::init
+    #::init
     } #End of class
   
 } # End of if
@@ -299,8 +318,8 @@ if (!exists(SPClass)) {
 # Main
 #----------------------------
 
-if (!exists(spobj)) {
-  SPClass spobj
+if (!exists(itkspobj)) {
+  itkSPClass itkspobj
 } else {
   InfoDialog "The script seems to be already loaded."
 }

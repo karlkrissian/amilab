@@ -2,6 +2,7 @@
 if (!exists(RunExperimentsClass)){
 
   ami_import->ITK()
+  ami_import->Filters()
   func "ReadPoints.amil"
   func "CropImage.amil"
   func "CreateInitialSpheres.amil"
@@ -15,6 +16,8 @@ if (!exists(RunExperimentsClass)){
   func "Centerlines/CreateSkeletonGui.amil"
   # load the Level Sets Gui script
   func "Segmentation/LevelSets/LevelSetsGui1.amil"
+  func "SyntheticImages/AddSphere.amil"
+  
 
   Class RunExperimentsClass{
   
@@ -27,6 +30,9 @@ if (!exists(RunExperimentsClass)){
     global::CreateInitialSpheresClass ::CIS
     global::CreateSkeletonClass ::CS
     global::LevelSetsClass ::LS
+    global::AddSphereClass ::AS
+    ::itk=&global::itk
+    ::filters=&global::filters
     ::class_name = "global::RunExperimentsClass"
     
     
@@ -34,18 +40,19 @@ if (!exists(RunExperimentsClass)){
     proc ::CarotidExperiments_init() \
     {
       ::config       = INT(0)
-      ::data_dir        = "", "Data dir"
-      ::groundtruth_dir = "", "Groundtruth dir"
-      ::results_dir     = "", "Results dir"
+      global::data_dir        = "", "Data dir"
+      global::groundtruth_dir = "", "Groundtruth dir"
+      global::results_dir     = "", "Results dir"
     
-      ::evaluation_bindir    = "", "Build dir"
-      ::evaluation_scriptdir = "", "Scripts dir"
+      global::evaluation_bindir    = "", "Build dir"
+      global::evaluation_scriptdir = "", "Scripts dir"
       
       ::nointeraction = UCHAR(0)
+      ::advanced = UCHAR(0), "To use the advanced mode. Go to 'Adv' tab."
 
-      ::datacenter     = INT(0)
-      ::datanumber     = INT(0)
-      ::datatype       = INT(0)
+      ::datacenter     = INT(0), "Data Center: Erasmus MC, Hadassah and Louis Pradel"
+      ::datanumber     = INT(0), "Dataset Number"
+      ::datatype       = INT(0), "Three types of Datasets: Training, Testing or On-site"
       ::cropmarginXY   = INT(30)
       ::cropmarginZtop = INT(40)
       ::cropmarginZbot = INT(25)
@@ -57,10 +64,10 @@ if (!exists(RunExperimentsClass)){
       ::sphereradii    = 1
     
       ::ves_downsample  = UCHAR(0)
-      ::mlmax_threshold = 20
+      ::mlmax_threshold = 20, "Multilines Max Threshold"
 
-      ::dist_threshold = 1
-      ::resample_dist  = 0.1
+      ::dist_threshold = 1, "Distance Threshold"
+      ::resample_dist  = 0.1, "Resample Distance"
       #--- evolution range in mm along Z coord for each carotid from the junction
       ::maxdistz_ECA = 20
       ::maxdistz_ICA = 50
@@ -68,8 +75,8 @@ if (!exists(RunExperimentsClass)){
 
       ::inverted_paths = 0
 
-      ::minvesselint = INT(1150)
-      ::maxvesselint = INT(1600)
+      ::minvesselint = INT(1150), "Vessel min intensity range"
+      ::maxvesselint = INT(1600), "Vessel max intensity range"
     }
     
     
@@ -77,7 +84,7 @@ if (!exists(RunExperimentsClass)){
     proc ::CarotidExperiments_Close() \
     {
       if (exists(::win)) {
-      ::win.HidePanel
+        ::win.HidePanel
       }
       delvars GetObjectName(::CarotidExperiments_Close)
     }
@@ -94,6 +101,11 @@ if (!exists(RunExperimentsClass)){
       eval "del global::CreateInitialSpheresClass;"
       eval "del global::CreateSkeletonClass;"
       eval "del global::LevelSetsClass;"
+      eval "del global::data_dir;"
+      eval "del global::groundtruth_dir;"
+      eval "del global::results_dir;"
+      eval "del global::evaluation_bindir;"
+      eval "del global::evaluation_scriptdir;"
       ::lsobject=&global::lsobject
       ::lsobject->CloseAll
       ::skeleton=&global::skeleton
@@ -110,16 +122,24 @@ if (!exists(RunExperimentsClass)){
     }
     ::CarotidExperiments_CloseAll.Comments("Call ::CarotidExperiments_Close() method and delete the class variable")
     
+    proc ::CarotidExperiments_CheckConfigFile() \
+    {
+      config_filename = "carotidchallenge_config.amil"
+      func config_filename
+      ::win.Update(-1)
+    }
+    
     #------------------------------------------
     proc ::CarotidExperiments_ReadData() \
     {
+    
       SetStatusText("Reading data ...")
       # read input image
       ::datanumber_str = boost_format("%1%") % ::datacenter 
       ::datanumber_str = ::datanumber_str + boost_format("%02.0f") % ::datanumber
-      ::current_datadir    = ::data_dir       +"\\challenge"+ ::datanumber_str
-      ::current_resultsdir = ::results_dir    +"\\challenge"+ ::datanumber_str
-      ::current_gtdir      = ::groundtruth_dir+"\\challenge"+ ::datanumber_str
+      ::current_datadir    = global::data_dir       +"\\challenge"+ ::datanumber_str
+      ::current_resultsdir = global::results_dir    +"\\challenge"+ ::datanumber_str
+      ::current_gtdir      = global::groundtruth_dir+"\\challenge"+ ::datanumber_str
    
       if (::datacenter==0) {
         ::cropmarginZtop = 5
@@ -142,7 +162,6 @@ if (!exists(RunExperimentsClass)){
         inputname = ::current_datadir + "\\cta"+::datanumber_str+"r.mhd"
       }
       printn "inputname="+inputname
-      ::itk=&global::itk
       ::input <<= ::itk->Read(inputname)
     
       # read input points
@@ -213,14 +232,14 @@ if (!exists(RunExperimentsClass)){
       ::input_try = ::input.try
       ::input_trz = ::input.trz
       # keep a reduced size input
-      global::input_reduced = (USHORT) MeanHalfSize(::input)
+      ::input_reduced = (USHORT) MeanHalfSize(::input)
       del ::input
     }
     
     #-----------------------------------------
     proc ::CarotidExperiments_ReduceNoise() \
     {
-      ::NLM->input_name = "::input_cropped"
+      ::NLM->input_name = "global::input_cropped"
       ::NLM->f = 2
       ::NLM->t = 2
       ::NLM->h = 10
@@ -231,12 +250,15 @@ if (!exists(RunExperimentsClass)){
     {
     
       # if possible, get result avec denoising
-      if (exists(NLM_res)) {
-        ::CP->input_name = "NLM_res"
+      if (exists(global::NLM_res)) {
+        #::CP->input_name = "global::NLM_res"
+        ::CP->set_input(global::NLM_res)
       } else {
-        ::CP->input_name = "::input_cropped"
+        #::CP->input_name = "global::input_cropped"
+        ::CP->set_input(global::input_cropped)
       }
       ::CP->lsd_erosion = 0
+      ::CP->Apply
     }
     
     #-----------------------------------------
@@ -245,60 +267,64 @@ if (!exists(RunExperimentsClass)){
     
       if (!::ves_downsample) {
         # trunk max intensities to  ::maxvesselint
-        ::vesselness_input <<= ::input_cropped* (::input_cropped<::maxvesselint)+\
-                          (::input_cropped>=::maxvesselint)*::maxvesselint
-        ::mask <<= (UCHAR) ((::input_cropped>::minvesselint)*\
-                                     (::input_cropped<::maxvesselint)*255)
+        global::vesselness_input <<= global::input_cropped* (global::input_cropped<::maxvesselint)+\
+                          (global::input_cropped>=::maxvesselint)*::maxvesselint
+        global::mask <<= (UCHAR) ((global::input_cropped>::minvesselint)*\
+                                     (global::input_cropped<::maxvesselint)*255)
       } else {
         # first downsample in X and Y
-        ::vesselness_input <<= Resize(::input_cropped, \
-            ::input_cropped.tx/2,::input_cropped.ty/2,\
-            ::input_cropped.tz,1)
-        ::mask <<= (UCHAR) ( (::vesselness_input>::minvesselint)*\
-                                      (::vesselness_input<::maxvesselint)*255)
+        global::vesselness_input <<= Resize(global::input_cropped, \
+            global::input_cropped.tx/2,global::input_cropped.ty/2,\
+            global::input_cropped.tz,1)
+        global::mask <<= (UCHAR) ( (global::vesselness_input>::minvesselint)*\
+                                      (global::vesselness_input<::maxvesselint)*255)
     
-        ::vesselness_input = \
-            ::vesselness_input*(::vesselness_input<::maxvesselint)+\
-            (::vesselness_input>=::maxvesselint)*::maxvesselint
+        global::vesselness_input = \
+            global::vesselness_input*(global::vesselness_input<::maxvesselint)+\
+            (global::vesselness_input>=::maxvesselint)*::maxvesselint
       }
-      ::ML->input_name = "::vesselness_input"
-      ::ML->mask_name  = "::mask"
+      #::ML->input_name = "global::vesselness_input"
+      #::ML->mask_name  = "global::mask"
+      ::ML->set_input(global::vesselness_input)
+      ::ML->set_mask(global::mask)
       ::ML->radmin = 0.5
       ::ML->radmax = 7
       ::ML->numrad = 7
+      ::ML->mode = 1
       # Keep the 80% highest values along the boundary
       ::ML->keephighest = 80
       # save multiscale local maxima
       ::ML->local_maxima = 1
+      ::ML->MultiLines_new
     }
     
     #-----------------------------------------
     proc ::CarotidExperiments_SaveVesselness() \
     {
       # 1. Save Level Set resulting image
-      ::ML->result.save ::current_resultsdir+"/vesselness_result.ami.gz"
-      ::ML->maxima.save ::current_resultsdir+"/vesselness_maxima.ami.gz"
+      global::result.save ::current_resultsdir+"\\vesselness_result.ami.gz"
+      global::maxima.save ::current_resultsdir+"\\vesselness_maxima.ami.gz"
     }
     
     #-----------------------------------------
     proc ::CarotidExperiments_ReadVesselness() \
     {
-      vfilename  = ::current_resultsdir+"/vesselness_result.ami.gz"
+      vfilename  = ::current_resultsdir+"\\vesselness_result.ami.gz"
     
       if (FileExists(vfilename)) {
         # 1. Save Level Set resulting image
-        global::ML->result <<= Image vfilename
+        global::result <<= Image vfilename
         // check dimensions
-        if ((::ML->result.tx!=::input_cropped.tx)|| \
-            (::ML->result.ty!=::input_cropped.ty)|| \
-            (::ML->result.tz!=::input_cropped.tz)) {
-          result_bak = ::ML>result
-          ::ML->result <<= Image(FLOAT,::input_tx,::input_ty,::input_tz)
-          ::ML->result.settranslation(::input_trx,::input_try,::input_trz)
-          ::ML->result.setvoxelsize(::input_cropped)
-          ::ML->result.putimage(ML_result_bak)
+        if ((global::result.tx!=global::input_cropped.tx)|| \
+            (global::result.ty!=global::input_cropped.ty)|| \
+            (global::result.tz!=global::input_cropped.tz)) {
+          result_bak = global::result
+          global::result <<= Image(FLOAT,::input_tx,::input_ty,::input_tz)
+          global::result.settranslation(::input_trx,::input_try,::input_trz)
+          global::result.setvoxelsize(global::input_cropped)
+          global::result.putimage(result_bak)
           del result_bak
-          ::ML->result <<= ::ML->result[::input_cropped]
+          global::result <<= global::result[global::input_cropped]
           message = boost_format("CarotidExperiments_ReadVesselness() \n File %1% wrong dimensions, image has been adapted ") % vfilename 
           if (!::nointeraction) {
             InfoDialog message
@@ -312,22 +338,22 @@ if (!exists(RunExperimentsClass)){
         }
       }
 
-      vmfilename  = ::current_resultsdir+"/vesselness_maxima.ami.gz"
+      vmfilename  = ::current_resultsdir+"\\vesselness_maxima.ami.gz"
     
       if (FileExists(vmfilename)) {
         # 1. Save Level Set resulting image
         global::maxima <<= Image vmfilename
         // check dimensions
-        if ((global::maxima.tx!=::input_cropped.tx)|| \
-            (global::maxima.ty!=::input_cropped.ty)|| \
-            (global::maxima.tz!=::input_cropped.tz)) {
+        if ((global::maxima.tx!=global::input_cropped.tx)|| \
+            (global::maxima.ty!=global::input_cropped.ty)|| \
+            (global::maxima.tz!=global::input_cropped.tz)) {
           maxima_bak = global::maxima
           global::maxima <<= Image(FLOAT,::input_tx,::input_ty,::input_tz)
           global::maxima.settranslation(::input_trx,::input_try,::input_trz)
-          global::maxima.setvoxelsize(::input_cropped)
-          global::maxima.putimage(ML_maxima_bak)
+          global::maxima.setvoxelsize(global::input_cropped)
+          global::maxima.putimage(maxima_bak)
           del maxima_bak
-          global::maxima <<= global::maxima[::input_cropped]
+          global::maxima <<= global::maxima[global::input_cropped]
           message = boost_format("CarotidExperiments_ReadVesselness() \n File %1% wrong dimensions, image has been adapted ") % vmfilename 
           if (!::nointeraction) {
             InfoDialog message
@@ -348,18 +374,18 @@ if (!exists(RunExperimentsClass)){
     {
       SetStatusText("Creating paths ...")
       # load the shortest path script
-              
-      ::CIS->CheckInitialPoints(::input_cropped,"CE",::sphereradii)
+      
+      ::CIS->CheckInitialPoints(global::input_cropped,::sphereradii)
       if (!::nointeraction) {
-        if (!exists(::pt1_OK)) { InfoDialog "Discarded point 1"; }
-        if (!exists(::pt2_OK)) { InfoDialog "Discarded point 2"; }
-        if (!exists(::pt3_OK)) { InfoDialog "Discarded point 3"; }
+        if (!exists(global::pt1_OK)) { InfoDialog "Discarded point 1"; }
+        if (!exists(global::pt2_OK)) { InfoDialog "Discarded point 2"; }
+        if (!exists(global::pt3_OK)) { InfoDialog "Discarded point 3"; }
       }
 
       # high vesselness is ok but we limit its strength??
-      #global::::SPspeed = -exp(-(ML_result*ML_result)/(25*25))+1
+      #global::SPspeed = -exp(-(ML_result*ML_result)/(25*25))+1
     
-      if (exists(::ML->result)) {
+      if (exists(global::result)) {
         if (exists(::CP->prob)) {
           # ensure that CP_prob is maximum around local maxima
           if (exists(global::maxima)) {
@@ -368,25 +394,28 @@ if (!exists(RunExperimentsClass)){
             # dilate a little
             maxima_neigh = EDPdilate(maxima_neigh,1,0.25)
 
-            ::speed <<=  max((maxima_neigh>=0.95)*maxima_neigh * ML_result, \
-                                      CP_prob*ML_result)
+            ::speed <<=  max((maxima_neigh>=0.95)*maxima_neigh * global::result, \
+                                      ::CP->prob*global::result)
 
           } else {
-            ::speed <<= ::CP->prob * ML_result
+            ::speed <<= ::CP->prob * global::result
           }
         } else {
           if (!::nointeraction) {
-            InfoDialog "CP_prob not found, path based only on the Vesselness!"
+            InfoDialog "prob not found, path based only on the Vesselness!"
           }
-          ::speed <<= ::ML->result
+          ::speed <<= global::result
         }
       } else {
         InfoDialog "CarotidExperiments_Path1: no Vesselness image found" 
-        ::speed <<= ::input_cropped
+        ::speed <<= global::input_cropped
       }
     
-      ::SP->input_name = "::input_cropped"
-      ::SP->speed_name = "::speed"
+      ::SP->init
+      ::win.Update(-1)
+    
+      #::SP->input_name = "global::input_cropped"
+      #::SP->speed_name = "::speed"
       ::SP->epsilon         = 0.01
       ::SP->maxcost         = 10000
       ::SP->step_size       = 0.01
@@ -395,35 +424,39 @@ if (!exists(RunExperimentsClass)){
       ::SP->input_Imin      = ::minvesselint
       ::SP->input_Imax      = ::maxvesselint
       ::SP->input_speed     = 1
-      ::SP->load_input()
-      ::SP->win.Update(-1)
+      
+      #::SP->load_input()
+      ::SP->set_input(global::input_cropped)
+      ::SP->set_speed(::speed)
+      #::SP->load_speed()
+      ::win.Update(-1)
     
-      ::SP->SetStartPointWorld(p1x,p1y,p1z)
+      ::SP->SetStartPointWorld(global::p1x,global::p1y,global::p1z)
     
-      if (exists(::pt2_OK)) \
+      if (exists(global::pt2_OK)) \
       {
         SetStatusText(" Path from point 1 to point 2 ...")
         # path 1
-        ::SP->SetEndPointWorld(p2x,p2y,p2z)
+        ::SP->SetEndPointWorld(global::p2x,global::p2y,global::p2z)
         ::SP->Run
         # path from Common to Internal Carotid Arteries
-        if (exists(::pathCI)) { del ::pathCI; }
-        global::pathCI = ::SP->path
-        if (exists(::pathCIs)) { del ::pathCIs; }
-        global::pathCIs = ::CS->SmoothLines(::SP->path)
+        if (exists(global::pathCI)) { del global::pathCI; }
+        global::pathCI = global::path
+        if (exists(global::pathCIs)) { del global::pathCIs; }
+        global::pathCIs = SmoothLines(global::path)
       }
     
-      if (exists(::pt3_OK)) \
+      if (exists(global::pt3_OK)) \
       {
         SetStatusText(" Path from point 1 to point 3 ...")
         # path 2
-        ::SP->SetEndPointWorld(p3x,p3y,p3z)
+        ::SP->SetEndPointWorld(global::p3x,global::p3y,global::p3z)
         ::SP->Run
         # path from Common to External Carotid Arteries
-        if (exists(::pathCE)) { del ::pathCE; }
-        global::pathCE = ::SP->path
+        if (exists(global::pathCE)) { del global::pathCE; }
+        global::pathCE = global::path
         if (exists(::pathCEs)) { del ::pathCEs; }
-        global::pathCEs = ::CS->SmoothLines(::SP->path)
+        ::pathCEs = SmoothLines(global::path)
       }
     
       SetStatusText("Creating paths ... done")
@@ -434,13 +467,13 @@ if (!exists(RunExperimentsClass)){
     proc ::CarotidExperiments_SavePaths() \
     {
       # save the result to a file here ...
-      if (exists(::pathCI)) {
-        ::pathCI.save ::current_resultsdir+"/pathCI.vtk"
-        ::pathCIs.save ::current_resultsdir+"/pathCIs.vtk"
+      if (exists(global::pathCI)) {
+        global::pathCI.save ::current_resultsdir+"\\pathCI.vtk"
+        global::pathCIs.save ::current_resultsdir+"\\pathCIs.vtk"
       }
-      if (exists(::pathCE)) {
-        ::pathCE.save ::current_resultsdir+"/pathCE.vtk"
-        ::pathCEs.save ::current_resultsdir+"/pathCEs.vtk"
+      if (exists(global::pathCE)) {
+        global::pathCE.save ::current_resultsdir+"\\pathCE.vtk"
+        ::pathCEs.save ::current_resultsdir+"\\pathCEs.vtk"
       }
     }
     
@@ -448,18 +481,18 @@ if (!exists(RunExperimentsClass)){
     #-----------------------------------------
     proc ::CarotidExperiments_ReadPaths() \
     {
-      if (FileExists(::current_resultsdir+"/pathCIs.vtk")) {
-        if (exists(::pathCIs)) { del ::pathCIs; }
-        global::pathCIs = Surface(::current_resultsdir+"/pathCIs.vtk")
+      if (FileExists(::current_resultsdir+"\\pathCIs.vtk")) {
+        if (exists(global::pathCIs)) { del global::pathCIs; }
+        global::pathCIs = Surface(::current_resultsdir+"\\pathCIs.vtk")
       } else {
-        InfoDialog ::current_resultsdir+"/pathCIs.vtk not found!"
+        InfoDialog ::current_resultsdir+"\\pathCIs.vtk not found!"
       }
     
-      if (FileExists(::current_resultsdir+"/pathCEs.vtk")) {
+      if (FileExists(::current_resultsdir+"\\pathCEs.vtk")) {
         if (exists(::pathCEs)) { del ::pathCEs; }
-        global::pathCEs = Surface(::current_resultsdir+"/pathCEs.vtk")
+        ::pathCEs = Surface(::current_resultsdir+"\\pathCEs.vtk")
       } else {
-        InfoDialog ::current_resultsdir+"/pathCEs.vtk not found!"
+        InfoDialog ::current_resultsdir+"\\pathCEs.vtk not found!"
       }
     }
     
@@ -468,26 +501,26 @@ if (!exists(RunExperimentsClass)){
     proc ::CarotidExperiments_JunctionFromPaths() \
     {
       SetStatusText("Computing Junction from Paths")
-      if (exists(::pathCIs)&&(exists(::pathCEs))) {
-        lI = ResampleLines(::pathCIs,::resample_dist)
+      if (exists(global::pathCIs)&&(exists(::pathCEs))) {
+        lI = ResampleLines(global::pathCIs,::resample_dist)
         lE = ResampleLines(::pathCEs,::resample_dist)
-        lIp = lI.GetLine(0)
-        lEp = lE.GetLine(0)
-        minsize = lIp.tx<lEp.tx?lIp.tx:lEp.tx
-        lIp1 = lIp[0:minsize-1,0:0,0:0]
-        lEp2 = lEp[0:minsize-1,0:0,0:0]
+        global::lIp = lI.GetLine(0)
+        global::lEp = lE.GetLine(0)
+        minsize = global::lIp.tx<global::lEp.tx?global::lIp.tx:global::lEp.tx
+        lIp1 = global::lIp[0:minsize-1,0:0,0:0]
+        lEp2 = global::lEp[0:minsize-1,0:0,0:0]
         d = lIp1-lEp2
         dn = norm(d)
         dn = dn>::dist_threshold
         dn1 = autocrop(dn,0)
         lmean = (lIp1+lEp2)/2
-        global::Jx = lmean(dn1.trx,0,0,0)
-        global::Jy = lmean(dn1.trx,0,0,1)
-        global::Jz = lmean(dn1.trx,0,0,2)
+        ::Jx = lmean(dn1.trx,0,0,0)
+        ::Jy = lmean(dn1.trx,0,0,1)
+        ::Jz = lmean(dn1.trx,0,0,2)
       
         # check for branch order
-        yI = lIp(dn1.trx,0,0,1)
-        yE = lEp(dn1.trx,0,0,1)
+        yI = global::lIp(dn1.trx,0,0,1)
+        yE = global::lEp(dn1.trx,0,0,1)
         if (yI<yE) {
           mes = "Path to point 3 is lower than path to point 2, setting External to 2"
           mes = mes + boost_format(" yE=%1%") % yE
@@ -500,37 +533,37 @@ if (!exists(RunExperimentsClass)){
           ::inverted_paths = 1
 
           # swap paths
-          tmp_path = ::pathCIs
+          tmp_path = global::pathCIs
           global::pathCIs <<= ::pathCEs
-          global::pathCEs <<= tmp_path
+          ::pathCEs <<= tmp_path
           del tmp_path
 
           # swap path line information
-          tmp_lp <<= lIp
-          lIp    <<= lEp
-          lEp    <<= tmp_lp
+          tmp_lp <<= global::lIp
+          global::lIp    <<= global::lEp
+          global::lEp    <<= tmp_lp
 
         } else {
           ::inverted_paths = 0
         }
    
         #--- Estimate remaining distance along Z axis to segment
-        global::covered_distz_C = 0
-        global::covered_distz_I = 0
-        global::covered_distz_E = 0
+        ::covered_distz_C = 0
+        ::covered_distz_I = 0
+        ::covered_distz_E = 0
       
         # both lines start at the same point ...
-        minC_z = p1z
+        minC_z = global::p1z
         ::covered_distz_C = ::Jz-minC_z;
 
-        maxI_z = max(lIp[2])
+        maxI_z = max(global::lIp[2])
         if (maxI_z>::Jz) { ::covered_distz_I = maxI_z-::Jz; }
       
-        maxE_z = max(lEp[2])
+        maxE_z = max(global::lEp[2])
         if (maxE_z>::Jz) { ::covered_distz_E = maxE_z-::Jz; }
       
         ::CarotidExperiments_CheckCCALength()
-        ::arotidExperiments_CheckECALength()
+        ::CarotidExperiments_CheckECALength()
         ::CarotidExperiments_CheckICALength()
       # else if exist both paths
       } else {
@@ -549,21 +582,22 @@ if (!exists(RunExperimentsClass)){
     proc ::CarotidExperiments_CheckCCALength() \
     {
       SetStatusText("Checking CCA length")
-      ::lI = ResampleLines(::pathCIs,::resample_dist)
-      lIp <<= ::lI.GetLine(0)
+      lI = ResampleLines(global::pathCIs,::resample_dist)
+      global::lIp <<= lI.GetLine(0)
 
       # check for remaining distance of CCA
-      remaining_dist = ::mindistz-::covered_distz_C
-
-      if (remaining_dist>0) {
+      ::remaining_dist = ::mindistz-::covered_distz_C
+      eval "printn ::nointeraction;"
+      eval "printn ::remaining_dist;"
+      if (::remaining_dist>0) {
         if (!::nointeraction) {
           InfoDialog "Computing remaining path for CCA"
         }
         # compute the remaining path
         # 1. crop the speed image in Z from selected up to 
         #    the remaining distance
-        maxz = lIp(0,0,0,2)
-        minz = maxz-remaining_dist
+        maxz = global::lIp(0,0,0,2)
+        minz = maxz-::remaining_dist
         # convert to voxel coordinates
         minz = (minz-::speed.trz)/::speed.vz
         maxz = (maxz-::speed.trz)/::speed.vz
@@ -579,38 +613,42 @@ if (!exists(RunExperimentsClass)){
           InfoDialog boost_format("CheckCCALength()\tCropped image too small, limiting maxz (%1%)") % maxz
           maxz = ::speed.tz-1; 
         }
-        global::speed2 <<= ::speed[:,:,minz:maxz]
+        ::speed2 <<= ::speed[:,:,minz:maxz]
 
         # close and reload ShortestPath
         if (exists(::SP->Close())) { ::SP->Close(); }
                 
         # set the parameters and run
-        global::input2 <<= ::input_cropped[::speed2]
-        ::SP->input_name = "::input2"
-        ::SP->speed_name = "::speed2"
+        ::input2 <<= global::input_cropped[::speed2]
+        #::SP->input_name = "::input2"
+        #::SP->speed_name = "::speed2"
 
         # end mask contains the first voxels in Z axis
-        global::endmask <<= ((FLOAT) Zpos(::speed2)<5)
+        ::endmask <<= ((FLOAT) Zpos(::speed2)<5)
 
         ::SP->epsilon         = 0.01
-        ::SP->maxcost         = remaining_dist+5
+        ::SP->maxcost         = ::remaining_dist+5
         ::SP->step_size       = 0.01
-        ::SP->maxlength       = remaining_dist+20
+        ::SP->maxlength       = ::remaining_dist+20
         ::SP->use_input_speed = 1
         ::SP->input_Imin      = ::minvesselint
         ::SP->input_Imax      = ::maxvesselint
         ::SP->input_speed     = 1
         ::SP->end_mode        = 1
-        ::SP->endmask_name    = "::endmask"
-        ::SP->load_input()
-        ::SP->win.Update(-1)
+        #::SP->endmask_name    = "::endmask"
+        #::SP->load_input()
+        ::SP->set_input(::input2)
+        ::SP->set_speed(::speed2)
+        ::SP->set_endmask(::endmask)
+        ::win.Update(-1)
     
-        ::SP->SetStartPointWorld(p1x,p1y,p1z)
+        ::SP->SetStartPointWorld(global::p1x,global::p1y,global::p1z)
         ::SP->Run()
 
         if (exists(::pathCC_rems)) { del ::pathCC_rems; }
         # path from Common to Internal Carotid Arteries
-        global::pathCC_rems = ::CS->SmoothLines(SP_path)
+        ::pathCC_rems = SmoothLines(global::path)
+		SetStatusText("SmoothLines")
 
         # update covered dist
         lC_rem_p = ::pathCC_rems.GetLine(0)
@@ -619,7 +657,7 @@ if (!exists(RunExperimentsClass)){
           ::covered_distz_C = ::Jz-minC_rem_z; 
         }
       } else {
-      # end if remaining_dist>0
+      # end if ::remaining_dist>0
         # here we don´t cut both path at the beginning
       }
       SetStatusText("CCA length: done")
@@ -629,31 +667,31 @@ if (!exists(RunExperimentsClass)){
     #-----------------------------------------
     # possibly cut the ECA path
     #
-    proc CarotidExperiments_CheckECALength() \
+    proc ::CarotidExperiments_CheckECALength() \
     {
       SetStatusText("Checking ECA length")
       lE = ResampleLines(::pathCEs,::resample_dist)
-      lEp <<= lE.GetLine(0)
+      global::lEp <<= lE.GetLine(0)
 
       # cut the ECA at junction -+ a given distance
       zmax = ::Jz+::maxdistz_ECA
       zmin = ::Jz-::mindistz
-      needcut = ((max(lEp[2])>zmax)||(min(lEp[2])<zmin))
+      needcut = ((max(global::lEp[2])>zmax)||(min(global::lEp[2])<zmin))
 
       if (needcut) {
         if (exists(::pathCEs_cut)) { del ::pathCEs_cut; }
-        global::::pathCEs_cut = Surface()
+        ::pathCEs_cut = Surface()
         ::pathCEs_cut.NewLine
         i = 0
         _start=0
         _end=0
-        for n=0 to lEp.tx-1 {
-          posz = lEp(n,0,0,2)
+        for n=0 to global::lEp.tx-1 {
+          posz = global::lEp(n,0,0,2)
           _start = _start||(posz>=zmin);
           if ((_start)&&(!_end)) {
             _end = posz>zmax
             if (!_end) {
-              ::pathCEs_cut.AddPoint(lEp(n,0,0,0),lEp(n,0,0,1),posz)
+              ::pathCEs_cut.AddPoint(global::lEp(n,0,0,0),global::lEp(n,0,0,1),posz)
               ::pathCEs_cut.LineAddPointNumber(i)
               i=i+1
             }
@@ -672,20 +710,20 @@ if (!exists(RunExperimentsClass)){
     proc ::CarotidExperiments_CheckICALength() \
     {
       SetStatusText("Checking ICA length")
-      lI = ResampleLines(::pathCIs,::resample_dist)
-      lIp <<= lI.GetLine(0)
+      lI = ResampleLines(global::pathCIs,::resample_dist)
+      global::lIp <<= lI.GetLine(0)
 
       # check for remaining distance of ICA
-      remaining_dist = ::maxdistz_ICA-::covered_distz_I
-      if (remaining_dist>0) {
+      ::remaining_dist = ::maxdistz_ICA-::covered_distz_I
+      if (::remaining_dist>0) {
         if (!::nointeraction) {
           InfoDialog "Computing remaining path for ICA"
         }
         # compute the remaining path
         # 1. crop the speed image in Z from selected up to 
         #    the remaining distance
-        minz = lIp(lIp.tx-1,0,0,2)
-        maxz = minz+remaining_dist
+        minz = global::lIp(global::lIp.tx-1,0,0,2)
+        maxz = minz+::remaining_dist
         # convert to voxel coordinates
         minz = (minz-::speed.trz)/::speed.vz
         maxz = (maxz-::speed.trz)/::speed.vz
@@ -701,7 +739,7 @@ if (!exists(RunExperimentsClass)){
           InfoDialog boost_format("Cropped image too small, limiting maxz (%1%)") % maxz
           maxz = ::speed.tz-1; 
         }
-        global::speed2 <<= ::speed[:,:,minz:maxz]
+        ::speed2 <<= ::speed[:,:,minz:maxz]
 
         # avoid going into ECA 
           # reconstruct a tube around ICA of 3mm
@@ -730,16 +768,16 @@ if (!exists(RunExperimentsClass)){
         if (exists(::SP->Close())) { ::SP->Close(); }
                 
         # set the parameters and run
-        global::input2 <<= ::input_cropped[::speed2]
-        ::SP->input_name = "::input2"
-        ::SP->speed_name = "::speed2"
+        global::input2 <<= global::input_cropped[::speed2]
+        #::SP->input_name = "::input2"
+        #::SP->speed_name = "::speed2"
 
         # end mask contains the last voxels in Z axis
-        global::endmask <<= ((FLOAT) Zpos(::speed2))>\
+        ::endmask <<= ((FLOAT) Zpos(::speed2))>\
                                         (::speed2.tz-1-5)
 
         ::SP->epsilon         = 0.01
-        ::SP->maxcost         = remaining_dist+5
+        ::SP->maxcost         = ::remaining_dist+5
         ::SP->step_size       = 0.01
         ::SP->maxlength       = 200
         ::SP->use_input_speed = 1
@@ -747,18 +785,21 @@ if (!exists(RunExperimentsClass)){
         ::SP->input_Imax      = ::maxvesselint
         ::SP->input_speed     = 1
         ::SP->end_mode        = 1
-        ::SP->_endmask_name    = "::endmask"
-        ::SP->load_input()
-        ::SP->win.Update(-1)
+        #::SP->endmask_name    = "::endmask"
+        #::SP->load_input()
+        ::SP->set_input(::input2)
+        ::SP->set_speed(::speed2)
+        ::SP->set_endmask(::endmask)
+        ::win.Update(-1)
     
-        ::SP->SetStartPointWorld(lIp(lIp.tx-1,0,0,0),\
-                                lIp(lIp.tx-1,0,0,1),\
-                                lIp(lIp.tx-1,0,0,2))  
+        ::SP->SetStartPointWorld(global::lIp(global::lIp.tx-1,0,0,0),\
+                                global::lIp(global::lIp.tx-1,0,0,1),\
+                                global::lIp(global::lIp.tx-1,0,0,2))  
         ::SP->Run()
 
         if (exists(::pathCI_rems)) { del ::pathCI_rems; }
         # path from Common to Internal Carotid Arteries
-        global::pathCI_rems = ::CS->SmoothLines(SP_path)
+        ::pathCI_rems = SmoothLines(global::path)
 
         # update covered dist
         lI_rem_p = ::pathCI_rems.GetLine(0)
@@ -767,27 +808,27 @@ if (!exists(RunExperimentsClass)){
           ::covered_distz_I = maxI_rem_z-::Jz; 
         }
       }
-      # end if remaining_dist>0
+      # end if ::remaining_dist>0
 
       # check for cutting the path
       zmax = ::Jz+::maxdistz_ICA
       zmin = ::Jz-::mindistz
-      needcut = ((max(lIp[2])>zmax)||(min(lIp[2]<zmin)))
+      needcut = ((max(global::lIp[2])>zmax)||(min(global::lIp[2]<zmin)))
 
       if (needcut) {
         if (exists(::pathCIs_cut)) { del ::pathCIs_cut; }
-        global::pathCIs_cut = Surface()
+        ::pathCIs_cut = Surface()
         ::pathCIs_cut.NewLine
         i=0
         _start=0
         _end=0
-        for n=0 to lIp.tx-1 {
-          posz = lIp(n,0,0,2)
+        for n=0 to global::lIp.tx-1 {
+          posz = global::lIp(n,0,0,2)
           _start = _start||(posz>=zmin);
           if ((_start)&&(!_end)) {
             _end = posz>zmax
             if (!_end) {
-              ::pathCIs_cut.AddPoint(lIp(n,0,0,0),lIp(n,0,0,1),posz)
+              ::pathCIs_cut.AddPoint(global::lIp(n,0,0,0),global::lIp(n,0,0,1),posz)
               ::pathCIs_cut.LineAddPointNumber(i)
               i=i+1
             }
@@ -804,34 +845,34 @@ if (!exists(RunExperimentsClass)){
     proc ::CarotidExperiments_SaveJunction() \
     {
       if (exists(::Jx)) {
-        junc_file = open(::current_resultsdir + "/junction.txt","w")
+        junc_file = open(::current_resultsdir + "\\junction.txt","w")
     
         # problem to put comments in string !!!
         #junc_file.printn "# Information about the detected junction point:"
         junc_file.printn ""
-        junc_file.printn boost_format( "global::::inverted_paths = %1% ") % ::inverted_paths
+        junc_file.printn boost_format( "::inverted_paths = %1% ") % ::inverted_paths
         junc_file.printn ""
-        junc_file.printn boost_format( "global::::Jx = %1% ") % ::Jx
-        junc_file.printn boost_format( "global::::Jy = %1% ") % ::Jy
-        junc_file.printn boost_format( "global::::Jz = %1% ") % ::Jz
+        junc_file.printn boost_format( "::Jx = %1% ") % ::Jx
+        junc_file.printn boost_format( "::Jy = %1% ") % ::Jy
+        junc_file.printn boost_format( "::Jz = %1% ") % ::Jz
         junc_file.printn ""
-        junc_file.printn boost_format( "global::::covered_distz_C =  %1% ") % ::covered_distz_C
-        junc_file.printn boost_format( "global::::covered_distz_E =  %1% ") % ::covered_distz_E
-        junc_file.printn boost_format( "global::::covered_distz_I =  %1% ") % ::covered_distz_I
+        junc_file.printn boost_format( "::covered_distz_C =  %1% ") % ::covered_distz_C
+        junc_file.printn boost_format( "::covered_distz_E =  %1% ") % ::covered_distz_E
+        junc_file.printn boost_format( "::covered_distz_I =  %1% ") % ::covered_distz_I
       }
       # save the paths here if they have been inverted
       ::CarotidExperiments_SavePaths()
       if (exists(::pathCEs_cut)) {
-        ::pathCEs_cut.save ::current_resultsdir+"/pathCEs_cut.vtk"
+        ::pathCEs_cut.save ::current_resultsdir+"\\pathCEs_cut.vtk"
       }
       if (exists(::pathCIs_cut)) {
-        ::pathCIs_cut.save ::current_resultsdir+"/pathCIs_cut.vtk"
+        ::pathCIs_cut.save ::current_resultsdir+"\\pathCIs_cut.vtk"
       }
       if (exists(::pathCC_rems)) {
-        ::pathCC_rems.save ::current_resultsdir+"/pathCC_remaining_smoothed.vtk"
+        ::pathCC_rems.save ::current_resultsdir+"\\pathCC_remaining_smoothed.vtk"
       }
       if (exists(::pathCI_rems)) {
-        ::pathCI_rems.save ::current_resultsdir+"/pathCI_remaining_smoothed.vtk"
+        ::pathCI_rems.save ::current_resultsdir+"\\pathCI_remaining_smoothed.vtk"
       }
     }
     
@@ -845,53 +886,55 @@ if (!exists(RunExperimentsClass)){
       if (!exists(::Jx)) {
         InfoDialog "Find the junction first!"
       } else {
-        global::junction_display_size    = 0.6
+        ::junction_display_size    = 0.6
         if (exists(::junc_sphere)) { del ::junc_sphere; }
-        global::junc_sphere = vtkSphere(::junction_display_size,8,8,::Jx,::Jy,::Jz)
+        ::junc_sphere = vtkSphere(::junction_display_size,8,8,::Jx,::Jy,::Jz)
       
         # create empty surface for display
-        if (exists(::surf)) { delete ::surf; }
+        if (exists(global::surf)) { del global::surf; }
         global::surf = Surface()
-        show ::surf
+        show global::surf
 
-        if (exists(::pathCEs)) { ::surf_draw += ::pathCEs; }
-        if (exists(::pathCIs)) { ::surf_draw += ::pathCIs; }
+        if (exists(::pathCEs)) {global::surf_draw += ::pathCEs; }
+        if (exists(global::pathCIs)) { global::surf_draw += global::pathCIs; }
         if (exists(::pathCC_rems)) {
-          ::surf_draw += ::pathCC_rems
+          global::surf_draw += ::pathCC_rems
           ::pathCC_rems.SetColor(5,250,5)
         }
         if (exists(::pathCI_rems)) {
-          ::surf_draw += ::pathCI_rems
+          global::surf_draw += ::pathCI_rems
           ::pathCI_rems.SetColor(5,250,5)
         }
 
-        ::surf_draw += ::junc_sphere
+        global::surf_draw += ::junc_sphere
         if (exists(::GTiso)) {
-          ::surf_draw += ::GTiso
+          global::surf_draw += ::GTiso
           ::GTiso.SetOpacity(0.5)
         }
         ::junc_sphere.SetDiffuse(5,250,5)
     
         if (exists(::ext)) {
           if (!exists(::ext_surf)) {
-            global::ext_surf = isosurf(::ext,0.5)
+            ::ext_surf = isosurf(::ext,0.5)
           }
-          ::surf_draw += ::ext_surf
+          global::surf_draw += ::ext_surf
           ::ext_surf.SetDiffuse(255,0,0)
           ::ext_surf.SetOpacity(0.5)
         }
         ::pathCEs.SetColor(255,0,0)
-        ::pathCIs.SetColor(0,0,255)
+        global::pathCIs.SetColor(0,0,255)
         if (exists(::pathCEs_cut)) {
-          ::surf_draw += ::pathCEs_cut
+          global::surf_draw += ::pathCEs_cut
           ::pathCEs_cut.SetColor(255,0,0)
           ::pathCEs_cut.SetLineWidth(3)
         }
         if (exists(::pathCIs_cut)) {
-          ::surf_draw += ::pathCIs_cut
+          global::surf_draw += ::pathCIs_cut
           ::pathCIs_cut.SetColor(0,0,255)
           ::pathCIs_cut.SetLineWidth(3)
         }
+        global::surf_draw.Normalize
+        global::surf_draw.Center
       }
     
     }
@@ -906,31 +949,33 @@ if (!exists(RunExperimentsClass)){
       } else {
     
       #--- Sets the parameters
-        global::tube_size     = 0.5
+        ::tube_size     = 0.5
         # stop evolution at n*standard deviation
-        global::ls_prob_limit = 2
+        ::ls_prob_limit = 2
       
         #--- Compute the initial cylindrical tube
         if (exists(::pathCEs_cut)) {
           radii         = Image(FLOAT,::pathCEs_cut.NbPoints,1,1)
           radii         = ::tube_size
-          global::path::lsinit <<= LineRecons(::pathCEs_cut,::input_cropped,radii)
-          ::path::lsinit = ::path::lsinit-255*exp(-0.5)
+          ::pathCE_lsinit <<= LineRecons(::pathCEs_cut,global::input_cropped,radii)
+          ::pathCE_lsinit = ::pathCE_lsinit-255*exp(-0.5)
         } else {
-          pathCEs_res   = ResampleLines(::pathCEs,::resample_dist)
-          radii         = Image(FLOAT,pathCEs_res.NbPoints,1,1)
+          ::pathCEs_res   = ResampleLines(::pathCEs,::resample_dist)
+          radii         = Image(FLOAT,::pathCEs_res.NbPoints,1,1)
           radii         = ::tube_size
-          global::path::lsinit <<= LineRecons(pathCEs_res,::input_cropped,radii)
-          ::path::lsinit = ::path::lsinit-255*exp(-0.5)
+          ::pathCE_lsinit <<= LineRecons(::pathCEs_res,global::input_cropped,radii)
+          ::pathCE_lsinit = ::pathCE_lsinit-255*exp(-0.5)
         }
       
         #--- Initialize the level set evolution
-        if (exists(NLM_res)) {
-          ::LS->input_name   = "NLM_res"
+        if (exists(global::NLM_res)) {
+          #::LS->input_name   = "global::NLM_res"
+          ::LS->Setinput(global::NLM_res)
         } else {
-          ::LS->input_name   = "::input_cropped"
+          #::LS->input_name   = "global::input_cropped"
+          ::LS->Setinput(global::input_cropped)
         }
-        ::LS->initial_name   = "::path::lsinit"
+        #::LS->initial_name   = "::path_lsinit"
         ::LS->init_mode              = 1 
         ::LS->accept_high_intensity  = 0
         ::LS->use_expansion_image    = 1
@@ -938,53 +983,56 @@ if (!exists(RunExperimentsClass)){
         ::LS->threads                = 4
         # estimate running time based on the remaining centerline distance to segment
         if (exists(::covered_distz_E)) {
-          remaining_dist = ::maxdistz_ECA-::covered_distz_E
-          remaining_Tmin = remaining_dist/::input_cropped.vz
+          ::remaining_dist = ::maxdistz_ECA-::covered_distz_E
+          remaining_Tmin = ::remaining_dist/global::input_cropped.vz
           ::LS->T           = max(60,remaining_Tmin*3);
         } else {
           ::LS->T = 60
         }
       
-        ::LS->win.Update(-1)
-        ::LS->load_input()
-        ::LS->load_initial()
+        ::win.Update(-1)
+        #::LS->load_input()
+        ::LS->Setinitial(::pathCE_lsinit)
+        ::win.Update(-1)
 
         #--- Computes the intensity statistics
         ::LS->ComputeIntensityStats()
+        ::win.Update(-1)
       
         #--- Compute the expansion force
         #     -- limit its range along Z axis based on the detected junction
         if (exists(::Jz)) {
           zmax = ::Jz+::maxdistz_ECA
-          zmax = (zmax - LS_input.trz)/LS_input.vz
-          if (zmax>LS_input.tz-1) { zmax=LS_input.tz-1; }
+          zmax = (zmax - ::LS->input.trz)/::LS->input.vz
+          if (zmax>::LS->input.tz-1) { zmax=::LS->input.tz-1; }
           zmin = ::Jz-::mindistz
-          zmin = (zmin - LS_input.trz)/LS_input.vz
+          zmin = (zmin - ::LS->input.trz)/::LS->input.vz
           if (zmin<0) { zmin=0;}
         } else {
           zmin = 0;
           zmax = ::LS->input.tz-1
         }
-        global::path::expforce = LS_input*0-0.5
+        ::pathCE_expforce = ::LS->input*0-0.5
         #     -- compute the force inside the ROI
-        expfor::roi = ::path::expforce[:,:,zmin:zmax]
-        expfor::roi  = (::LS->input[expfor::roi]-::LS->Imean)/::LS->Isd
-        expfor::roi = expfor::roi*expfor::roi
-        expfor::roi = exp(-expfor::roi/2)-exp(-(::ls_prob_limit*::ls_prob_limit)/2)
-        ::path::expforce.putimage(expfor::roi)
+        ::expforce_roi = ::pathCE_expforce[:,:,zmin:zmax]
+        ::expforce_roi  = (::LS->input[::expforce_roi]-::LS->Imean)/::LS->Isd
+        ::expforce_roi = ::expforce_roi*::expforce_roi
+        ::expforce_roi = exp(-::expforce_roi/2)-exp(-(::ls_prob_limit*::ls_prob_limit)/2)
+        ::pathCE_expforce.putimage(::expforce_roi)
       
-        ::LS->expansion_image_name = "::path::expforce"
-        ::LS->win.Update(-1)
-        ::LS->load_expansion()
+        #::LS->expansion_image_name = "::pathCE_expforce"
+        #::LS->load_expansion()
+        ::LS->Setexpansion(::pathCE_expforce)
       
         # Run the evolution
-        ::LS->win.Update(-1)
-        ::LS->ReRun
-        global::path::contours <<= ::LS->inls
+        ::win.Update(-1)
+        ::LS->ReRun()
+        ::pathCE_contours <<= ::LS->inls
       
         # 1. Save Level Set resulting image
-        ::LS->inls.save ::current_resultsdir+"/levelset_CC_CE.ami.gz"
-        ::LS->SaveParams( ::current_resultsdir+"/levelset_CC_CE.amil" )
+        ::LS->inls.save ::current_resultsdir+"\\levelset_CC_CE.ami.gz"
+        ::LS->SaveParams( ::current_resultsdir+"\\levelset_CC_CE.amil" )
+		SetStatusText("ECA levelset done...")
       }
     }
     
@@ -992,56 +1040,58 @@ if (!exists(RunExperimentsClass)){
     #------------------------------------------
     proc ::CarotidExperiments_LevelSetsInternal() \
     {
-      if (!exists(::pathCIs)) {
+      if (!exists(global::pathCIs)) {
         if (!::nointeraction) {
           InfoDialog "no ICA path for levelset"
         }
       } else {
             
         #--- Sets the parameters
-        global::tube_size     = 0.5
+        ::tube_size     = 0.5
         # stop evolution at n*standard deviation
-        global::ls_prob_limit = 2
+        ::ls_prob_limit = 2
       
         #--- Compute the initial cylindrical tube
         if (exists(::pathCIs_cut)) {
           radii         = Image(FLOAT,::pathCIs_cut.NbPoints,1,1)
           radii         = ::tube_size
-          global::pathCI_lsinit <<= LineRecons(::pathCIs_cut,::input_cropped,radii)
+          ::pathCI_lsinit <<= LineRecons(::pathCIs_cut,global::input_cropped,radii)
         } else {
-          pathCIs_res   = ResampleLines(::pathCIs,::resample_dist)
-          radii         = Image(FLOAT,pathCIs_res.NbPoints,1,1)
+          ::pathCIs_res   = ResampleLines(global::pathCIs,::resample_dist)
+          radii         = Image(FLOAT,::pathCIs_res.NbPoints,1,1)
           radii         = ::tube_size
-          global::pathCI_lsinit <<= LineRecons(pathCIs_res,::input_cropped,radii)
+          ::pathCI_lsinit <<= LineRecons(::pathCIs_res,global::input_cropped,radii)
         }
     
         #--- check for computed remaining centerline
         if (exists(::pathCC_rems)) {
-          pathCC_rems_res = ResampleLines(::pathCC_rems,::resample_dist)
-          radii         <<= Image(FLOAT,pathCC_rems_res.NbPoints,1,1)
+          ::pathCC_rems_res = ResampleLines(::pathCC_rems,::resample_dist)
+          radii         <<= Image(FLOAT,::pathCC_rems_res.NbPoints,1,1)
           radii           = ::tube_size
           # reconstructed remaining centerline
-          rem_recons    <<= LineRecons(pathCC_rems_res,::input_cropped,radii)
+          rem_recons    <<= LineRecons(::pathCC_rems_res,global::input_cropped,radii)
           ::pathCI_lsinit = max(::pathCI_lsinit, rem_recons)
         }
         if (exists(::pathCI_rems)) {
-          pathCI_rems_res = ResampleLines(::pathCI_rems,::resample_dist)
-          radii         <<= Image(FLOAT,pathCI_rems_res.NbPoints,1,1)
+          ::pathCI_rems_res = ResampleLines(::pathCI_rems,::resample_dist)
+          radii         <<= Image(FLOAT,::pathCI_rems_res.NbPoints,1,1)
           radii           = ::tube_size
           # reconstructed remaining centerline
-          rem_recons    <<= LineRecons(pathCI_rems_res,::input_cropped,radii)
+          rem_recons    <<= LineRecons(::pathCI_rems_res,global::input_cropped,radii)
           ::pathCI_lsinit = max(::pathCI_lsinit, rem_recons)
         }
       
         ::pathCI_lsinit = ::pathCI_lsinit-255*exp(-0.5)
     
         #--- Initialize the level set evolution
-        if (exists(NLM_res)) {
-          ::LS->input_name   = "NLM_res"
+        if (exists(global::NLM_res)) {
+          #::LS->input_name   = "global::NLM_res"
+          ::LS->Setinput(global::NLM_res)
         } else {
-          ::LS->input_name   = "::input_cropped"
+          #::LS->input_name   = "global::input_cropped"
+          ::LS->Setinput(global::input_cropped)
         }
-        ::LS->initial_name   = "::pathCI_lsinit"
+        #::LS->initial_name   = "::pathCI_lsinit"
         ::LS->init_mode              = 1 
         ::LS->accept_high_intensity  = 0
         ::LS->use_expansion_image    = 1
@@ -1049,18 +1099,21 @@ if (!exists(RunExperimentsClass)){
         ::LS->threads                = 4
         # estimate running time based on the remaining centerline distance to segment
         if (exists(::covered_distz_I)) {
-          remaining_dist = ::maxdistz_ICA-::covered_distz_I
-          remaining_Tmin = remaining_dist/::input_cropped.vz
+          ::remaining_dist = ::maxdistz_ICA-::covered_distz_I
+          remaining_Tmin = ::remaining_dist/global::input_cropped.vz
           ::LS->T           = max(60,remaining_Tmin*3);
+          #eval "printn "+::LS->T+";"
         } else {
           ::LS->T = 60
         }
 
-        ::LS->win.Update(-1)
-        ::LS->load_input()
-        ::LS->load_initial()
+        ::win.Update(-1)
+        #::LS->load_input()
+        ::LS->Setinitial(::pathCI_lsinit)
+        ::win.Update(-1)
         #--- Computes the intensity statistics
         ::LS->ComputeIntensityStats()
+        ::win.Update(-1)
       
         #--- Compute the expansion force
         #     -- limit its range along Z axis based on the detected junction
@@ -1075,33 +1128,28 @@ if (!exists(RunExperimentsClass)){
           zmin = 0
           zmax = ::LS->input.tz-1
         }
-        global::pathCI_expforce = ::LS->input*0-0.5
+        ::pathCI_expforce = ::LS->input*0-0.5
         #     -- compute the force inside the ROI
-        expfor::roi = ::pathCI_expforce[:,:,zmin:zmax]
-        expfor::roi  = (LS_input[expfor::roi]-::LS->Imean)/::LS->Isd
-        expfor::roi = expfor::roi*expfor::roi
-        expfor::roi = exp(-expfor::roi/2)-exp(-(::ls_prob_limit*::ls_prob_limit)/2)
-        ::pathCI_expforce.putimage(expfor::roi)
+        expforce_roi = ::pathCI_expforce[:,:,zmin:zmax]
+        expforce_roi  = (::LS->input[expforce_roi]-::LS->Imean)/::LS->Isd
+        expforce_roi = expforce_roi*expforce_roi
+        expforce_roi = exp(-expforce_roi/2)-exp(-(::ls_prob_limit*::ls_prob_limit)/2)
+        ::pathCI_expforce.putimage(expforce_roi)
       
-        ::LS->expansion_image_name = "::pathCI_expforce"
-        ::LS->win.Update(-1)
-        ::LS->load_expansion
+        #::LS->expansion_image_name = "::pathCI_expforce"
+        ::win.Update(-1)
+        ::LS->Setexpansion(::pathCI_expforce)
       
         # Run the evolution
-        ::LS->win.Update(-1)
-        ::LS->ReRun()
-        global::pathCI_contours <<= ::LS->inls()
+        ::win.Update(-1)
+        ::LS->ReRun
+        ::pathCI_contours <<= ::LS->inls
       
         # 1. Save Level Set resulting image
-        ::LS->inls.save ::current_resultsdir+"/levelset_CC_CI.ami.gz"
-        ::LS->SaveParams( ::current_resultsdir+"/levelset_CC_CI.amil" )
+        ::LS->inls.save ::current_resultsdir+"\\levelset_CC_CI.ami.gz"
+        ::LS->SaveParams( ::current_resultsdir+"\\levelset_CC_CI.amil" )
+		SetStatusText("ICA levelset done...")
       }
-    }
-    
-    
-    #------------------------------------------
-    proc ::CarotidExperiments_LevelSetsPathsDisplay() \
-    {
     }
     
     
@@ -1111,16 +1159,16 @@ if (!exists(RunExperimentsClass)){
       # the LevelSets interface can be closed to free some memory
       ::LS->Close()
 
-      if (exists(::path::contours)&&exists(::pathCI_contours)) {
+      if (exists(::pathCE_contours)&&exists(::pathCI_contours)) {
         # get the maximum between the 2 results and save it
-        ::LS->inls = max(::path::contours,::pathCI_contours)
+        ::inls = max(::pathCE_contours,::pathCI_contours)
       } else {
-        if exists(::path::contours) {
+        if exists(::pathCE_contours) {
           printn "****"
-          ::LS->inls = ::path::contours
+          ::inls = ::pathCE_contours
         } else {
           if exists(::pathCI_contours) {
-            ::LS->inls = ::pathCI_contours
+            ::inls = ::pathCI_contours
           } else {
             InfoDialog "No contour available"
           }
@@ -1135,13 +1183,13 @@ if (!exists(RunExperimentsClass)){
     proc ::CarotidExperiments_InitialSpheres() \
     {
       if (exists(::NLM->res)) {
-        ::LS->input_name   = "NLM_res"
+        ::LS->input_name   = "global::NLM_res"
         #--- add initial spheres
-        ::CIS->CreateInitialSpheres(&NLM_res,"::lsinit",::sphereradii)
+        ::CIS->CreateInitialSpheres(&global::NLM_res,"::lsinit",::sphereradii)
       } else {
-        ::LS->input_name   = "::input_cropped"
+        ::LS->input_name   = "global::input_cropped"
         #--- add initial spheres
-        ::CIS->CreateInitialSpheres(&::input_cropped,"::lsinit",::sphereradii)
+        ::CIS->CreateInitialSpheres(&global::input_cropped,"::lsinit",::sphereradii)
       }
     }
     
@@ -1149,16 +1197,20 @@ if (!exists(RunExperimentsClass)){
     proc ::CarotidExperiments_InitLevelSets() \
     {
       # need cropped data
-      if (exists(::input_cropped)) { 
+      if (exists(global::input_cropped)) { 
         # Initialize the level set segmentation gui
         if (::localstats == 0) {
-          ::LS->input_name   = "::input_lsd"
+          #::LS->input_name   = "::input_lsd"
+          ::LS->Setinput(::input_lsd)
           ::LS->minimal_intensity     = 0
         } else {
+          ::LS->Setinput(global::input_cropped)
           ::CarotidExperiments_InitialSpheres()
           ::LS->minimal_intensity     = 1000
         }
-        ::LS->initial_name = "::lsinit"
+        #::LS->initial_name = "global::lsinit"
+		
+        ::LS->Setinitial(global::lsinit)
         #--- Presets parameters
         ::LS->accept_high_intensity = 0
         # starts from an image
@@ -1167,9 +1219,9 @@ if (!exists(RunExperimentsClass)){
         ::LS->threads    = 4
         ::LS->T          = 600
     
-        ::LS->win.Update(-1)
-        ::LS->load_input()
-        ::LS->load_initial()
+        ::win.Update(-1)
+        #::LS->load_input()
+        #::LS->load_initial()
         #--- Computes the intensity statistics
         ::LS->ComputeIntensityStats()
       }
@@ -1178,51 +1230,49 @@ if (!exists(RunExperimentsClass)){
     #------------------------------------------
     proc ::CarotidExperiments_SaveResults() \
     {
-      ami_import->Filters()
-      if (!exists(LS_inls)) {
+      if (!exists(::inls)) {
         InfoDialog "Need to run the segmentation first: loading level set  ..."
       } else {
         # if segmentation comes from paths, save with diff names 
-        if (exists(::path::contours)) {
-          ::LS->inls.save ::current_resultsdir+"/levelset_result_from_paths.ami.gz"
+        if (exists(::pathCE_contours)) {
+          ::inls.save ::current_resultsdir+"\\levelset_result_from_paths.ami.gz"
         } else {
           # 1. Save Level Set resulting image
-          ::LS->inls.save ::current_resultsdir+"/levelset_result.ami.gz"
-          ::LS->SaveParams( ::current_resultsdir+"/levelset_params.amil" )
+          ::inls.save ::current_resultsdir+"\\levelset_result.ami.gz"
+          ::LS->SaveParams( ::current_resultsdir+"\\levelset_params.amil" )
         }
     
         # create the image with partial volume effect
-        pvim = filters->ComputePV_subdiv(&LS_inls,4)
+        pvim = ::filters->ComputePV_subdiv(::inls,4)
         if (0) {
           # put in bigger image
           pvim_big <<= Image(FLOAT,::input_tx,::input_ty,::input_tz)
           pvim_big.settranslation(::input_trx,::input_try,::input_trz)
-          pvim_big.setvoxelsize(::input_cropped)
+          pvim_big.setvoxelsize(global::input_cropped)
           pvim_big.putimage(pvim)
         } else {
           pvim_big = pvim
         }
         del pvim
-        itk = &global::itk
-        ::itk->Write(&pvim_big,::current_resultsdir+"/pv"+::datanumber_str+".mhd")
+        ::itk->Write(&pvim_big,::current_resultsdir+"\\pv"+::datanumber_str+".mhd")
     
         # 2. Save ROI text file
-        roi_file = open(::current_resultsdir+"/roi"+::datanumber_str+".txt","w")
+        roi_file = open(::current_resultsdir+"\\roi"+::datanumber_str+".txt","w")
         # compute the voxel position of the first point
-        p1x=floor((pvim_big.trx-::input_trx)/::input_cropped.vx+0.5)
-        p1y=floor((pvim_big.try-::input_try)/::input_cropped.vy+0.5)
-        p1z=floor((pvim_big.trz-::input_trz)/::input_cropped.vz+0.5)
+        global::p1x=floor((pvim_big.trx-::input_trx)/global::input_cropped.vx+0.5)
+        global::p1y=floor((pvim_big.try-::input_try)/global::input_cropped.vy+0.5)
+        global::p1z=floor((pvim_big.trz-::input_trz)/global::input_cropped.vz+0.5)
       
-        p2x=floor(p1x+(pvim_big.tx-1)*pvim_big.vx/::input_cropped.vx+0.5)
-        p2y=floor(p1y+(pvim_big.ty-1)*pvim_big.vy/::input_cropped.vy+0.5)
-        p2z=floor(p1z+(pvim_big.tz-1)*pvim_big.vz/::input_cropped.vz+0.5)
+        global::p2x=floor(global::p1x+(pvim_big.tx-1)*pvim_big.vx/global::input_cropped.vx+0.5)
+        global::p2y=floor(global::p1y+(pvim_big.ty-1)*pvim_big.vy/global::input_cropped.vy+0.5)
+        global::p2z=floor(global::p1z+(pvim_big.tz-1)*pvim_big.vz/global::input_cropped.vz+0.5)
       
-        roi_file.print boost_format("%0.0f ")   % p1x
-        roi_file.print boost_format("%0.0f ")   % p1y
-        roi_file.print boost_format("%0.0f\n")  % p1z
-        roi_file.print boost_format("%0.0f ")   % p2x
-        roi_file.print boost_format("%0.0f ")   % p2y
-        roi_file.print boost_format("%0.0f\n")  % p2z
+        roi_file.print boost_format("%0.0f ")   % global::p1x
+        roi_file.print boost_format("%0.0f ")   % global::p1y
+        roi_file.print boost_format("%0.0f\n")  % global::p1z
+        roi_file.print boost_format("%0.0f ")   % global::p2x
+        roi_file.print boost_format("%0.0f ")   % global::p2y
+        roi_file.print boost_format("%0.0f\n")  % global::p2z
         if (!::nointeraction) { InfoDialog "Result is saved!"; }
       }
     }
@@ -1231,12 +1281,12 @@ if (!exists(RunExperimentsClass)){
     #------------------------------------------
     proc ::CarotidExperiments_Evaluation() \
     {
-      cmd = ::evaluation_scriptdir+"lumen.sh " \
-            + ::groundtruth_dir + " " \
-            + ::results_dir + " " \
-            + ::results_dir + " " \
+      global::cmd = global::evaluation_scriptdir+"\\lumen.sh " \
+            + global::groundtruth_dir + " " \
+            + global::results_dir + " " \
+            + global::results_dir + " " \
             + ::datanumber_str
-      sh cmd
+      sh global::cmd
     }
     
     
@@ -1248,15 +1298,14 @@ if (!exists(RunExperimentsClass)){
         ::CarotidExperiments_ReadGT()
       }
       # read the mask image
-      ext_name = ::current_gtdir + "/ext" + ::datanumber_str + ".mhd"
-      itk = &global::itk
+      ext_name = ::current_gtdir + "\\ext" + ::datanumber_str + ".mhd"
       global::ext = ::itk->Read(ext_name)
       # read the level set results
-      imname = ::current_resultsdir+"/levelset_result.ami.gz"
+      imname = ::current_resultsdir+"\\levelset_result.ami.gz"
       printn " reading " + imname
       global::lsres <<= Image imname
     
-      imname = ::current_resultsdir+"/levelset_result_calc.ami.gz"
+      imname = ::current_resultsdir+"\\levelset_result_calc.ami.gz"
       printn " reading " + imname
       global::lsres_calc <<= Image imname
     
@@ -1267,7 +1316,7 @@ if (!exists(RunExperimentsClass)){
       global::lscalc_surf = isosurf(::lsres_calc,0)
     
       ::CarotidExperiments_InitialSpheres()
-      global::spheres_surf = isosurf(::lsinit,0)
+      global::spheres_surf = isosurf(global::lsinit,0)
     
       show ::ls_surf
       ::ls_surf_draw += ::lscalc_surf
@@ -1279,6 +1328,14 @@ if (!exists(RunExperimentsClass)){
       ::spheres_surf.SetDiffuse(5,250,5)
     }
     
+    proc ::CarotidExperiments_DisplayLevel() \
+    {
+      resultl_name = ::current_resultsdir+"\\levelset_result_from_paths.ami.gz"
+      resultl = Image resultl_name
+      ::resultl_iso = isosurf(resultl,0.01)
+      show ::resultl_iso
+    }
+    
     #------------------------------------------
     proc ::CarotidExperiments_Skeleton() \
     {
@@ -1288,11 +1345,10 @@ if (!exists(RunExperimentsClass)){
         ::CarotidExperiments_ReadGT()
       }
       # read the mask image
-      ext_name = ::current_gtdir + "/ext" + ::datanumber_str + ".mhd"
-      itk = &global::itk
+      ext_name = ::current_gtdir + "\\ext" + ::datanumber_str + ".mhd"
       global::ext <<= ::itk->Read(ext_name)
       # read the level set results obtained including calcifications
-      imname = ::current_resultsdir+"/levelset_result_calc.ami.gz"
+      imname = ::current_resultsdir+"\\levelset_result_calc.ami.gz"
       printn " reading " + imname
       global::lsres <<= Image imname
     
@@ -1330,36 +1386,43 @@ if (!exists(RunExperimentsClass)){
     proc ::CarotidExperiments_FindJunctionFromSkeleton() \
     {
               
-      global::path_input <<= (FLOAT) filter(Skel_output,0.5,0,0,0)
-      ::SP->input_name = "::path_input"
-      ::SP->speed_name = "::path_input"
+      ::path_input <<= (FLOAT) filter(Skel_output,0.5,0,0,0)
+      #::SP->input_name = "::path_input"
+      #::SP->speed_name = "::path_input"
       ::SP->epsilon = 0.1
       ::SP->maxcost = 10000
-      ::SP->win.Update(-1)
-      ::SP->load_input()
-      ::SP->load_speed()
-      ::SP->SetStartPointWorld(p1x,p1y,p1z)
-      ::SP->SetEndPointWorld(p2x,p2y,p2z)
+      ::win.Update(-1)
+      ::SP->set_input(::path_input)
+      ::SP->set_speed(::path_input)
+      ::SP->SetStartPointWorld(global::p1x,global::p1y,global::p1z)
+      ::SP->SetEndPointWorld(global::p2x,global::p2y,global::p2z)
       ::SP->Run()
-      if (exists(::path1_result)) { del ::path1_result; }
-      global::path1_result = ::SP->path
+      if (exists(global::path1_result)) { del global::path1_result; }
+      global::path1_result = global::path
     
-      ::SP->SetEndPointWorld(p3x,p3y,p3z)
+      ::SP->SetEndPointWorld(global::p3x,global::p3y,global::p3z)
       ::SP->Run()
-      if (exists(::path2_result)) { del ::path2_result; }
-      global::path2_result = ::SP->path
+      if (exists(global::path2_result)) { del global::path2_result; }
+      global::path2_result = global::path
     
       if (0) {
         if (exists(::CS->res)) {
-          global::path1 = ::SP->ShortestPath(::CS->res,p1x,p1y,p1z,p2x,p2y,p2z)
-          global::path2 = ::SP->ShortestPath(::CS->res,p1x,p1y,p1z,p3x,p3y,p3z)
-          show ::path1
-          ::path1_draw += ::path2
+          global::path1 = ::SP->ShortestPath(::CS->res,global::p1x,global::p1y,global::p1z,global::p2x,global::p2y,global::p2z)
+          global::path2 = ::SP->ShortestPath(::CS->res,global::p1x,global::p1y,global::p1z,global::p3x,global::p3y,global::p3z)
+          show global::path1
+          global::path1_draw += global::path2
           if (exists(::CS->res_draw)) {
-            ::CS->res_draw.compare(::path1_draw)
+            ::CS->res_draw.compare(global::path1_draw)
           }
         }
       }
+    }
+    
+    proc ::ConfigEvent() {
+      ::win.EnablePanel(::config_crop_page, ::advanced==1)
+      ::win.EnablePanel(::config_dir_page, ::advanced==1)
+      ::win.EnablePanel(::config_advanced_page, ::advanced==1)
+      
     }
     
     #------------------------------------------
@@ -1371,78 +1434,74 @@ if (!exists(RunExperimentsClass)){
       ::win.BeginBook()
     
         #----- Input Page
-        ::win.AddPage("Config")
-          ::win.AddBoolean( &::nointeraction)
-          ::win.BeginBoxPanel("Paths")
-            #config_id = ::win.AddEnum( &::config)
+        ::win.AddPage("Input")
+          ::win.BeginBoxPanel("data information")
+          ::win.AddBoolean( &::advanced,"Advanced Mode")
+          ::win.SetCallback(&::ConfigEvent)
+            datacenter_id = ::win.AddEnum( &::datacenter,"Datacenter")
+              ::win.AddEnumChoice(datacenter_id,"Erasmus MC")
+              ::win.AddEnumChoice(datacenter_id,"Hadassah")
+              ::win.AddEnumChoice(datacenter_id,"Louis Pradel")
+            datatype_id = ::win.AddEnum( &::datatype,"Datatype")
+              ::win.AddEnumChoice(datatype_id,"Training")
+              ::win.AddEnumChoice(datatype_id,"Testing")
+              ::win.AddEnumChoice(datatype_id,"On-site")
+            ::win.AddInt( &::datanumber,  "Data Number", 0,35)
+          ::win.EndBoxPanel
+          ::win.BeginHorizontal
+            ::win.AddButton("Read Data",         ::CarotidExperiments_ReadData)
+            ::win.AddButton("Read Ground Truth", ::CarotidExperiments_ReadGT)
+          ::win.EndHorizontal
+          
+          ::config_book = ::win.BeginBook()
+            ::config_crop_page = ::win.AddPage("Crop")
+              ::win.AddInt( &::cropmarginXY,  "::cropmarginXY", 0,200)
+              ::win.AddInt( &::cropmarginZtop,  "::cropmarginZtop", 0,200)
+              ::win.AddInt( &::cropmarginZbot,  "::cropmarginZbot", 0,200)
+              ::win.AddButton("Crop Data",         ::CarotidExperiments_CropData)
+              ::win.AddBoolean( &::crop_created)
+              
+            ::config_dir_page = ::win.AddPage("Dir")  
+              ::win.AddBoolean( &::nointeraction)
+              #config_id = ::win.AddEnum( &::config)
               #::win.AddEnumChoice(config_id,"Karl linux laptop")
               #::win.AddEnumChoice(config_id,"Karl linux desktop")
               #::win.AddEnumChoice(config_id,"Sara winXP lab")
               #::win.AddEnumChoice(config_id,"Sara linux lab")
-            ::win.AddDirname( &::data_dir,"Data")
-            ::win.AddDirname( &::groundtruth_dir,"Ground truth")
-            ::win.AddDirname( &::results_dir,"Results")
+              ::win.BeginBoxPanel("Data paths")
+                ::win.AddDirname( &global::data_dir,"Data ")
+                ::win.AddDirname( &global::groundtruth_dir,"GT ")
+                ::win.AddDirname( &global::results_dir,"Results ")
+              ::win.EndBoxPanel
     
-            ::win.BeginBoxPanel("Evaluation paths")
-              ::win.AddDirname( &::evaluation_bindir,    "binary path")
-              ::win.AddDirname( &::evaluation_scriptdir, "scripts path")
-            ::win.EndBoxPanel
+              ::win.BeginBoxPanel("Evaluation paths")
+                ::win.AddDirname( &global::evaluation_bindir,    "Binary ")
+                ::win.AddDirname( &global::evaluation_scriptdir, "Scripts ")
+              ::win.EndBoxPanel              
+          ::win.EndBook()
+    
+        ::win.AddPage("Prob+Speed")
+          ::win.BeginBoxPanel("LocalStats")
+            ::win.AddButton("Apply",::CarotidExperiments_LocalStats)
           ::win.EndBoxPanel
-    
-        ::win.AddPage("Input")
-          ::win.BeginBoxPanel("data information")
-            datacenter_id = ::win.AddEnum( &::datacenter)
-              ::win.AddEnumChoice(datacenter_id,"Erasmus MC")
-              ::win.AddEnumChoice(datacenter_id,"Hadassah")
-              ::win.AddEnumChoice(datacenter_id,"Louis Pradel")
-            datatype_id = ::win.AddEnum( &::datatype)
-              ::win.AddEnumChoice(datatype_id,"Training")
-              ::win.AddEnumChoice(datatype_id,"Testing")
-              ::win.AddEnumChoice(datatype_id,"On-site")
-            ::win.AddInt( &::datanumber,  "::datanumber", 0,35)
+                      
+          ::win.BeginBoxPanel("Vesselness")
+            ::win.AddBoolean( &::ves_downsample)
+            ::win.AddButton("Vesselness",     ::CarotidExperiments_Vesselness)
+            ::win.AddButton("Save",     ::CarotidExperiments_SaveVesselness)
+            ::win.AddButton("Read",     ::CarotidExperiments_ReadVesselness)
           ::win.EndBoxPanel
-          ::win.AddButton("Read Data",         ::CarotidExperiments_ReadData)
-          ::win.AddButton("Read Ground Truth", ::CarotidExperiments_ReadGT)
-          ::win.BeginBoxPanel("Crop")
-            ::win.AddInt( &::cropmarginXY,  "::cropmarginXY", 0,200)
-            ::win.AddInt( &::cropmarginZtop,  "::cropmarginZtop", 0,200)
-            ::win.AddInt( &::cropmarginZbot,  "::cropmarginZbot", 0,200)
-            ::win.AddButton("Crop Data",         ::CarotidExperiments_CropData)
-            ::win.AddBoolean( &::crop_created)
-          ::win.EndBoxPanel
-    
-        #----- Run Page
-        ::CarotidExperiments_ReduceNoise
-        ::NLM->SetParentPanel(&::win)
-        ::NLM->CreateWindow
-        ::win.AddPage("NLM",&::NLM->win)
-    
-        #----- Run Page
-        ::CarotidExperiments_LocalStats
-        ::CP->SetParentPanel(&::win)
-        ::CP->Gui
-        ::win.AddPage("Local Stats",&::CP->win)
-          
-    
-        #----- Run Page
-        ::win.AddPage("Ves")
-          ::win.AddBoolean( &::ves_downsample)
-          ::win.AddButton("Pre-Vesselness",     ::CarotidExperiments_Vesselness)
-          ::ML->SetParentPanel(&::win)
-          ::ML->Gui
-          ::win.AddPage("Vesselness",&::ML->win)
-          ::win.AddButton("Save",     ::CarotidExperiments_SaveVesselness)
-          ::win.AddButton("Read",     ::CarotidExperiments_ReadVesselness)
+                 
     
         #----- Run Page
         ::win.AddPage("Run")
           ::win.BeginBoxPanel("Vessel intensity range")
-            ::win.AddInt( &::minvesselint,  "::minvesselint", 900,1300)
-            ::win.AddInt( &::maxvesselint,  "::maxvesselint", 900,2000)
+            ::win.AddInt( &::minvesselint,  "Min", 900,1300)
+            ::win.AddInt( &::maxvesselint,  "Max", 900,2000)
           ::win.EndBoxPanel
           ::win.BeginBoxPanel("Paths (Vesselness+Prob)")
             ::win.BeginBoxPanel("Path")
-              ::win.AddFloat( &::mlmax_threshold,  "::mlmax_threshold", 0,100)
+              ::win.AddFloat( &::mlmax_threshold,  "Threshold", 0,100)
               ::win.BeginHorizontal
                 ::win.AddButton("Create",  ::CarotidExperiments_CreatePaths)
                 ::win.AddButton("Save",    ::CarotidExperiments_SavePaths)
@@ -1450,8 +1509,8 @@ if (!exists(RunExperimentsClass)){
               ::win.EndHorizontal
             ::win.EndBoxPanel
             ::win.BeginBoxPanel("Junction")
-              ::win.AddFloat( &::dist_threshold,  "::dist_threshold", 0.01,10)
-              ::win.AddFloat( &::resample_dist,  "::resample_dist", 0.01,10)
+              ::win.AddFloat( &::dist_threshold,  "Threshold", 0.01,10)
+              ::win.AddFloat( &::resample_dist,  "Resample", 0.01,10)
               ::win.BeginHorizontal
                 ::win.AddButton("Junction",  ::CarotidExperiments_JunctionFromPaths)
                ::win.AddButton("Display",    ::CarotidExperiments_PathsDisplay)
@@ -1462,33 +1521,70 @@ if (!exists(RunExperimentsClass)){
               ::win.BeginHorizontal
                 ::win.AddButton("External", ::CarotidExperiments_LevelSetsExternal)
                 ::win.AddButton("Internal", ::CarotidExperiments_LevelSetsInternal)
-                ::win.AddButton("Display",  ::CarotidExperiments_LevelSetsPathsDisplay)
                 ::win.AddButton("Save",     ::CarotidExperiments_LevelSetsPathsSave)
+                ::win.AddButton("Display",  ::CarotidExperiments_DisplayLevel)
               ::win.EndHorizontal
             ::win.EndBoxPanel
           ::win.EndBoxPanel
-          ::win.AddButton("Evaluation",      ::CarotidExperiments_Evaluation)
-          ::win.AddButton("Display Results", ::CarotidExperiments_DisplayResults)
+          ::win.BeginHorizontal
+            ::win.AddButton("Evaluation",      ::CarotidExperiments_Evaluation)
+            ::win.AddButton("Display Results", ::CarotidExperiments_DisplayResults)
+          ::win.EndHorizontal
 
         #----- Other Page
-        ::win.AddPage("Other")
-          ::win.BeginBoxPanel("LevelSets")
-            localstats_id = ::win.AddEnum( &::localstats)
-            ::win.AddEnumChoice(localstats_id,"True")
-            ::win.AddEnumChoice(localstats_id,"False")
-            ::win.AddInt( &::localpar,  "::localpar", 1,10)
-            ::win.BeginHorizontal
-              ::win.AddButton("Init",   ::CarotidExperiments_InitLevelSets)
-              ::win.AddButton("Save",   ::CarotidExperiments_SaveResults)
-            ::win.EndHorizontal
-          ::win.EndBoxPanel
-          ::win.BeginBoxPanel("Paths (Skeleton)")
-            ::win.BeginHorizontal
-              ::win.AddButton("Skeleton",   ::CarotidExperiments_Skeleton)
-              ::win.AddButton("Junction",   ::CarotidExperiments_FindJunctionFromSkeleton)
-            ::win.EndHorizontal
-          ::win.EndBoxPanel
+        
+        #::win.AddPage("Other")
+          #::win.BeginBoxPanel("LevelSets")
+            #localstats_id = ::win.AddEnum( &::localstats)
+            #::win.AddEnumChoice(localstats_id,"True")
+            #::win.AddEnumChoice(localstats_id,"False")
+            #::win.AddInt( &::localpar,  "::localpar", 1,10)
+            #::win.BeginHorizontal
+              #::win.AddButton("Init",   ::CarotidExperiments_InitLevelSets)
+              #::win.AddButton("Save",   ::CarotidExperiments_SaveResults)
+            #::win.EndHorizontal
+          #::win.EndBoxPanel
+          #::win.BeginBoxPanel("Paths (Skeleton)")
+            #::win.BeginHorizontal
+              #::win.AddButton("Skeleton",   ::CarotidExperiments_Skeleton)
+              #::win.AddButton("Junction",   ::CarotidExperiments_FindJunctionFromSkeleton)
+            // ::win.EndHorizontal
+          // ::win.EndBoxPanel
 
+        ::config_advanced_page = ::win.AddPage("Adv")
+          ::win.BeginBook()
+          
+            ::CP->SetParentPanel(&::win)
+            ::CP->Gui
+            ::win.AddPage("Local Stats",&::CP->win)
+          
+            ::CarotidExperiments_ReduceNoise
+            ::NLM->SetParentPanel(&::win)
+            ::NLM->CreateWindow
+            ::win.AddPage("NLM",&::NLM->win)
+            
+            ::ML->SetParentPanel(&::win)
+            ::ML->Gui
+            ::win.AddPage("Vesselness",&::ML->win)
+            
+            #::win.AddPage("LevelSets")
+              // ::win.BeginHorizontal
+                // ::win.AddButton("Init",   ::CarotidExperiments_InitLevelSets)
+                // localstats_id = ::win.AddEnum( &::localstats)
+                // ::win.AddEnumChoice(localstats_id,"True")
+                // ::win.AddEnumChoice(localstats_id,"False")
+              // ::win.EndHorizontal
+            #::win.BeginBook()
+            ::LS->SetParentPanel(&::win)
+            ::LS->Gui
+            ::win.AddPage("LevelSets",&::LS->win)
+            #::win.EndBook()
+            ::win.AddButton("Save",   ::CarotidExperiments_SaveResults)
+            
+          ::win.EndBook()
+          
+        ::win.AddPage("Help")
+          
       ::win.EndBook
     
       ::win.BeginHorizontal
@@ -1497,6 +1593,8 @@ if (!exists(RunExperimentsClass)){
       ::win.EndHorizontal
       ::win.Update(-1)
       ::win.Display
+      
+      ::ConfigEvent
     }
   }
   #------------------------------------------
@@ -1505,5 +1603,6 @@ if (!exists(experiments)) \
   RunExperimentsClass experiments
   experiments->CarotidExperiments_init()
   experiments->CarotidExperiments_gui()
+  experiments->CarotidExperiments_CheckConfigFile()
 }
 }

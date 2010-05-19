@@ -55,23 +55,38 @@ if (!exists(itkSigmoidClass)) {
       ::grad = normgrad(::input,::stand)
       ::g = 1
       if (::dim==0) {
-        ::sigmoid = ::itk->SigmoidImageFilter2D(::grad,::min,::max,::alpha,::beta)			
+        global::sigmoid = ::itk->SigmoidImageFilter2D(::grad,::min,::max,::alpha,::beta)			
       } else {
-        ::sigmoid = ::itk->SigmoidImageFilter3D(::grad,::min,::max,::alpha,::beta)
+        global::sigmoid = ::itk->SigmoidImageFilter3D(::grad,::min,::max,::alpha,::beta)
       }      
+    }
+    
+    proc ::set_input(IMAGE im) \
+    {
+      ::input <<= im
     }
     
     proc ::Display() {
     
       show ::input
-      show ::sigmoid
-      ::input_draw.compare(::sigmoid_draw)
+      show global::sigmoid
+      ::input_draw.compare(global::sigmoid_draw)
     
+    }
+    
+    proc ::SetParentPanel(OBJECT pp) \
+    {
+      ::parent_panel = &pp
     }
     
     proc ::Gui() {
       import = &global::ami_import;
-      ::win = import->ParamPanel("itkSig")
+      
+      if (exists(::parent_panel)) {
+        ::win = import->ParamPanel("itkSig",&::parent_panel)
+      } else {
+        ::win = import->ParamPanel("itkSig")
+      }
       ::win.BeginBook()
       
         ::win.AddPage("Init")
@@ -107,8 +122,11 @@ if (!exists(itkSigmoidClass)) {
         ::win.AddButton("Close All", ::CloseAll)
       ::win.EndHorizontal
       
-      ::win.Update(-1)
-      ::win.Display
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
     }
     
     ::Init
@@ -121,19 +139,19 @@ if (!exists(itkSigmoidClass)) {
 # Main
 #----------------------------
 
-if (!exists(itksig)) {
+// if (!exists(itksig)) {
 
-  itkSigmoidClass itksig
-  itksig->Gui()
+  // itkSigmoidClass itksig
+  // itksig->Gui()
   
-  if (argc>=1) {
+  // if (argc>=1) {
     
-    printn "reading image"
-    input = Image($1)
-    itksig->image_name = "input"
-    itksig->win.Update(-1)
-  }
+    // printn "reading image"
+    // input = Image($1)
+    // itksig->image_name = "input"
+    // itksig->win.Update(-1)
+  // }
 
-} else {
-  InfoDialog "The script seems to be already loaded."
-}
+// } else {
+  // InfoDialog "The script seems to be already loaded."
+// }

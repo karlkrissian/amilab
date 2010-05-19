@@ -10,11 +10,9 @@ if (!exists(LevelSetsClass)){
   
   ::class_name  = "global::LevelSetsClass"
   global::AddSphereClass ::AS
-  import = &global::ami_import;
-  ::win = import->ParamPanel("LevelSets")
-  
+    
   //---------------------------------------------------
-  proc ::Init(IMAGE _input, IMAGE _init) {
+  proc ::Init(IMAGE input, IMAGE _init) {
     
       ::input_name   = "","Name of the input image variable"
       ::initial_name = "","Name of the initial level set image variable"
@@ -152,7 +150,9 @@ if (!exists(LevelSetsClass)){
       ::min          = min(::input)
       ::max          = max(::input)
       ::minimal_intensity = ::min
-      ::win.Update(-1)
+      if (exists(::win)) {
+        ::win.Update(-1)
+      }
   
       show ::input
     }
@@ -180,7 +180,7 @@ if (!exists(LevelSetsClass)){
         ::input_draw.DrawIsoContour(1,1)
       }
     }
-    ::load_initial.Comments("Copies the initial levelset image in a local image member named 'inls', and draws the corresponding isocontour in the image viewer.")
+    ::load_initial.Comments("Copies the initial levelset image in a local image member named '::inls', and draws the corresponding isocontour in the image viewer.")
 
     #-----------------------------------------------
     proc ::ref_initial() {
@@ -189,7 +189,7 @@ if (!exists(LevelSetsClass)){
         InfoDialog "::load_initial() \t Need to load input image first!"
       } else {
         if (::init_mode==1) {
-          # Delete inls is it exists
+          # Delete ::inls is it exists
           if (exists(::inls0)) { del ::inls0; }
           eval "::inls0 = &"+::initial_name+";"
           if (::initial_name=="Image") {
@@ -206,7 +206,7 @@ if (!exists(LevelSetsClass)){
         ::input_draw.DrawIsoContour(1,1)
       }
     }
-    ::ref_initial.Comments("Creates a reference to the initial levelset image in a local image member named 'inls', and draws the corresponding isocontour in the image viewer.")
+    ::ref_initial.Comments("Creates a reference to the initial levelset image in a local image member named '::inls', and draws the corresponding isocontour in the image viewer.")
   
  #-----------------------------------------------
   # reads the expansion image
@@ -221,13 +221,14 @@ if (!exists(LevelSetsClass)){
   }
 
   //--------------------------------------------------
-  proc ::Init1(IMAGE _input) {
-    tmp = ((FLOAT)_input)*0-4
-    ::Init(&_input,&tmp)
+  proc ::Init1(IMAGE input) {
+    tmp = ((FLOAT)input)*0-4
+    ::Init(&input,&tmp)
   }
   
+
   //--------------------------------------------------
-  proc ::Setinput(IMAGE _input) {
+  proc ::Setinput(IMAGE input) {
     
   
     if (exists(::input_draw)) { del ::input_draw; }
@@ -236,7 +237,7 @@ if (!exists(LevelSetsClass)){
     if (exists(::input))      { del ::input; }
     if (exists(::inls_backup))      { del ::inls_backup; }
   
-    ::input = (FLOAT)_input
+    ::input = (FLOAT)input
     show ::input
   
   
@@ -250,6 +251,25 @@ if (!exists(LevelSetsClass)){
     ::input_draw.SetIsoContour(1,::inls,0)
     ::input_draw.DrawIsoContour(1,1)
   
+  }
+  
+  proc ::Setinitial(IMAGE input) {
+   
+    if (exists(::inls))    { del ::inls; }
+    if (exists(::inls0))   { del ::inls0; }
+    if (exists(::inls_backup))      { del ::inls_backup; }
+  
+    ::inls = (FLOAT)input  
+  
+    ::inls0 <<= ::inls
+  
+    ::input_draw.SetIsoContour(1,::inls,0)
+    ::input_draw.DrawIsoContour(1,1)
+  
+  }
+  
+  proc ::Setexpansion(IMAGE input) {
+    ::expansion_image = (FLOAT)input  
   }
   
   #--------------------------
@@ -568,8 +588,8 @@ if (!exists(LevelSetsClass)){
   
   //---------------------------------------------------
   proc ::ReRun() {
-    if (!exists(::input_image)) { ::load_input; }
-    if (!exists(::inls))        { ::load_initial; }
+    #if (!exists(::input_image)) { ::load_input; }
+    #if (!exists(::inls))        { ::load_initial; }
     ::inls = ::inls0
     ::Run(1)
     show ::input
@@ -684,11 +704,42 @@ if (!exists(LevelSetsClass)){
     ::win.EnablePanel(::smo_pid,::use_smoothing)
   }
   
+  proc ::set_input( IMAGE im) \
+  {
+    ::input <<= im
+    #::inls = (FLOAT)::input*0-10
+    #::inls0 <<= ::inls
+    show ::input
+  }
+  
+  proc ::set_initial( IMAGE im) \
+  {
+    ::inls <<= im
+    ::inls0 <<= ::inls
+    show ::inls
+  }
+  
+  proc ::set_expansion( IMAGE im) \
+  {
+    ::expansion_image <<= im
+    #show ::expansion_image
+  }
+  
+  proc ::SetParentPanel(OBJECT pp) \
+  {
+    ::parent_panel = &pp
+  }
+  
   //---------------------------------------------------
   proc ::Gui() {
   
   #  ::win = ParamWin("Evolve Active Contours using Level Sets")
     import = &global::ami_import;
+    if (exists(::parent_panel)) {
+      ::win = import->ParamPanel("LevelSets",&::parent_panel)
+    } else {
+      ::win = import->ParamPanel("LevelSets")
+    }
     
     ::win.BeginBook()
   
@@ -857,8 +908,11 @@ if (!exists(LevelSetsClass)){
       ::win.AddButton("Close All",          ::CloseAll)
     ::win.EndHorizontal  
 
-    ::win.Update(-1)
-    ::win.Display()
+    if (exists(::parent_panel)) {
+      ::win.ShowPanel()
+    } else {
+      ::win.Display()
+    }
     ::InitialLevelSetEvent()
     ::ExpansionForceEvent()
   }

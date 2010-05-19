@@ -26,16 +26,12 @@ InrImage* wrap_itkFastMarchingImageFilter2D(ParamList* p)
           input image \n\
           seedX \n\
           seedY \n\
-					SigmoidAlpha \n\
-					SigmoidBeta \n\
 					StoppingValue \n\
       ";
     
 	InrImage* input = NULL;
 	float seedX = 0.0;
 	float seedY = 0.0;
-	float alpha = 0.0;
-	float beta = 0.0;
 	float stoppingTime = 0.0;
   InrImage* res = NULL;
   int n=0;
@@ -43,8 +39,6 @@ InrImage* wrap_itkFastMarchingImageFilter2D(ParamList* p)
   if (!get_val_ptr_param<InrImage>(  input, p, n))  HelpAndReturnNULL;
   if (!get_val_param<float>( seedX, p, n))          HelpAndReturnNULL;
   if (!get_val_param<float>( seedY, p, n))          HelpAndReturnNULL;
-  if (!get_val_param<float>( alpha, p, n))          HelpAndReturnNULL;
-  if (!get_val_param<float>( beta, p, n))           HelpAndReturnNULL;
   if (!get_val_param<float>( stoppingTime, p, n))   HelpAndReturnNULL;
 
 
@@ -131,8 +125,6 @@ InrImage* wrap_itkFastMarchingImageFilter3D(ParamList* p)
           seedX \n\
           seedY \n\
 					seedZ \n\
-					SigmoidAlpha \n\
-					SigmoidBeta \n\
 					StoppingValue \n\
       ";
     
@@ -140,8 +132,6 @@ InrImage* wrap_itkFastMarchingImageFilter3D(ParamList* p)
 	float seedX = 0.0;
 	float seedY = 0.0;
 	float seedZ = 0.0;
-	float alpha = 0.0;
-	float beta = 0.0;
 	float stoppingTime = 0.0;
   InrImage* res = NULL;
   int n=0;
@@ -150,8 +140,6 @@ InrImage* wrap_itkFastMarchingImageFilter3D(ParamList* p)
   if (!get_val_param<float>( seedX, p, n))          HelpAndReturnNULL;
   if (!get_val_param<float>( seedY, p, n))          HelpAndReturnNULL;
   if (!get_val_param<float>( seedZ, p, n))          HelpAndReturnNULL;
-  if (!get_val_param<float>( alpha, p, n))          HelpAndReturnNULL;
-  if (!get_val_param<float>( beta, p, n))           HelpAndReturnNULL;
   if (!get_val_param<float>( stoppingTime, p, n))   HelpAndReturnNULL;
 
   typedef float               InternalPixelType;

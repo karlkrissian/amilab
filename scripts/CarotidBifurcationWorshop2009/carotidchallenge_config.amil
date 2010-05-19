@@ -1,9 +1,9 @@
 
-basedir    = "/home/karl/projects/data/CarotidChallengeMiccai09"
+basedir    = "G:\\Documents and Settings\\Alan\\Desktop\\Datos Workshop\\"
 
-global::CE_data_dir              = basedir+"/data/"
-global::CE_groundtruth_dir       = basedir+"/groundtruth/"
-global::CE_results_dir           = basedir+"/results/"
-global::CE_evaluation_bindir     = basedir+"/cls2009/build/"
-global::CE_evaluation_scriptdir  = basedir+"/cls2009/scripts/"
+global::data_dir              = basedir+"data\\"
+global::groundtruth_dir       = basedir+"groundtruth\\"
+global::results_dir           = basedir+"results\\"
+global::evaluation_bindir     = basedir+"cls2009\\build\\"
+global::evaluation_scriptdir  = basedir+"cls2009\\scripts\\"
 

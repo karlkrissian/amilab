@@ -90,15 +90,19 @@ BasicVariable::ptr wrap_itkBackTrackingMeshFilter2D(ParamList* p)
 
   SurfacePoly* surf;
   surf = new SurfacePoly;
-  surf->NewSurface();
+  //surf->NewSurface();
+  surf->NewLine();
+  int num_points=0;
 
-  for (int i=0;i<(int)BackTracking->GetOutput()->GetNumberOfPoints();i++)
+  for (int i=0;i<BackTracking->GetOutput()->GetNumberOfPoints();i++)
   {
     pointID = i;
     bool pointExists = BackTracking->GetOutput()->GetPoint(pointID,&pp);
     surf->AddPoint(pp[0],pp[1],0);
-    std::cout << pp << std::endl;
+    surf->LineAddPointNumber(num_points);
+    num_points++;
   }
+  surf->EndLine();
 
   Variable<SurfacePoly>::ptr varres(new Variable<SurfacePoly>("backtrack_mesh",SurfacePoly::ptr(surf)));
 
@@ -188,14 +192,19 @@ BasicVariable::ptr wrap_itkBackTrackingMeshFilter3D(ParamList* p)
 
   SurfacePoly* surf;
   surf = new SurfacePoly;
-  surf->NewSurface();
+  //surf->NewSurface();
+  surf->NewLine();
+  int num_points=0;
 
   for (int i=0;i<BackTracking->GetOutput()->GetNumberOfPoints();i++)
   {
     pointID = i;
     bool pointExists = BackTracking->GetOutput()->GetPoint(pointID,&pp);
     surf->AddPoint(pp[0],pp[1],pp[2]);
+    surf->LineAddPointNumber(num_points);
+    num_points++;
   }
+  surf->EndLine();
   
   Variable<SurfacePoly>::ptr varres(new Variable<SurfacePoly>("backtrack_mesh",SurfacePoly::ptr(surf)));
 
