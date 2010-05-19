@@ -122,8 +122,8 @@ if (!exists(itkSPClass)) {
     #-----------------------------------------------
     proc ::EndPoint() \
     {
-      ::load_input
-      show ::input
+      if (!exists(::input)) { ::load_input; }
+      if (!exists(::input_draw)) { show ::input; }
       if (exists(::input_draw)) {
         ::SetEndPoint( \
                           ::input_draw.GetXPos, \
@@ -221,10 +221,14 @@ if (!exists(itkSPClass)) {
       #maxrepim_crop = maxrepim_crop/10
       # running fast marching until the point 1 is reached
       printn "FMT"
-      ::res = ::itk->FastMarchingImageFilter3D(::maxrepim_crop,::startx+0.5,::starty+0.5,::startz+0.5,::maxcost)
+      ::SetEndPoint(::endx,::endy,::endz)
+      ::res = ::itk->FastMarchingImageFilter3D(::maxrepim_crop,\
+            ::endx,::endy,::endz,\
+            ::maxcost)
+      ::res = ::res+5
       ::res = (::res>::maxcost)*::maxcost+(::res<=::maxcost)*::res
       #::res = ::itk->BinaryThresholdImageFilter3D(fast,0,100)
-      #::res = vtkFastMarchingTarget(::maxrepim_crop,::fminit,::maxcost,::startx+0.5,::starty+0.5,::startz+0.5)
+      ::res2 = vtkFastMarchingTarget(::maxrepim_crop,::fminit,::maxcost,::startx+0.5,::starty+0.5,::startz+0.5)
       ::res.info
     
       if (::save_FM) {
