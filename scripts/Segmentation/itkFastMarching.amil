@@ -358,6 +358,8 @@ if (!exists(itkFastMarchingClass)) {
       } else {
         ::win.Display()
       }
+      ::win.Update(-1)
+
     }
     
     ::Init
