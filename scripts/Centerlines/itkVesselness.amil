@@ -9,7 +9,7 @@ if (!exists(itkVesselnessClass)) {
     proc ::Init() {
       
       ::input_name   = "","Name of the input image variable"
-      ::out = "global::result", "Name of the resulting image variable"
+      ::out = "::result", "Name of the resulting image variable"
       ::sigmaMin = 0.5, "Minimum sigma value"
       ::sigmaMax = 4, "Maximum sigma value"
       ::scalesNumber = INT(10), "Number of scale levels"
@@ -55,11 +55,11 @@ if (!exists(itkVesselnessClass)) {
     
     proc ::Run() {
       if (::dim==0) {
-        global::result <<= ::itk->MultiScaleVesselnessFilter2D(::input,::sigmaMin,::sigmaMax,::scalesNumber)
+        ::result <<= ::itk->MultiScaleVesselnessFilter2D(::input,::sigmaMin,::sigmaMax,::scalesNumber)
         ::v = 1
         
       } else {
-        global::result <<= ::itk->MultiScaleVesselnessFilter3D(::input,::sigmaMin,::sigmaMax,::scalesNumber)
+        ::result <<= ::itk->MultiScaleVesselnessFilter3D(::input,::sigmaMin,::sigmaMax,::scalesNumber)
         ::v = 1
       }
       #::input_draw.compare(vesselness_draw)
@@ -68,7 +68,7 @@ if (!exists(itkVesselnessClass)) {
     proc ::Display() {
     
       show ::input
-      eval ::out+"<<=global::result;"
+      eval ::out+"<<=::result;"
       
       eval "show "+::out+";"
     
@@ -85,7 +85,7 @@ if (!exists(itkVesselnessClass)) {
       }
       filename = filename + ::result_filename_ext
       print "saving file "+filename+"\n"
-      global::result.save filename
+      ::result.save filename
     }
     
     proc ::SetParentPanel(OBJECT pp) \
