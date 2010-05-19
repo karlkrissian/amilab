@@ -228,7 +228,7 @@ if (!exists(itkSPClass)) {
       ::res = ::res+5
       ::res = (::res>::maxcost)*::maxcost+(::res<=::maxcost)*::res
       #::res = ::itk->BinaryThresholdImageFilter3D(fast,0,100)
-      ::res2 = vtkFastMarchingTarget(::maxrepim_crop,::fminit,::maxcost,::startx+0.5,::starty+0.5,::startz+0.5)
+      #::res2 = vtkFastMarchingTarget(::maxrepim_crop,::fminit,::maxcost,::startx+0.5,::starty+0.5,::startz+0.5)
       ::res.info
     
       if (::save_FM) {
