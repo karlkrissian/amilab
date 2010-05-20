@@ -109,18 +109,7 @@ if (!exists(RunExperimentsClass)){
       eval "del global::itkFastMarchingClass;"
       eval "del global::itkSigmoidClass;"
       eval "del global::itkLevelSetClass;"
-      ::lsobject=&global::lsobject
-      ::lsobject->CloseAll
-      ::skeleton=&global::skeleton
-      ::skeleton->CloseAll
-      ::itkspobj=&global::itkspobj
-      ::itkspobj->CloseAll
-      ::itkvs=&global::itkvs
-      ::itkvs->CloseAll
-      ::Probability=&global::Probability
-      ::Probability->CloseAll
-      ::nlm=&global::nlm
-      ::nlm->CloseAll
+      eval "del global::config;"
       ::CarotidExperiments_Close
     }
     ::CarotidExperiments_CloseAll.Comments("Call ::CarotidExperiments_Close() method and delete the class variable")
@@ -313,7 +302,8 @@ if (!exists(RunExperimentsClass)){
     
       if (FileExists(vfilename)) {
         # 1. Save Level Set resulting image
-        ::itkVS->result <<= Image vfilename
+        ::itkVS->set_result(Image vfilename)
+        #::itkVS->result <<= Image vfilename
         // check dimensions
         if ((::itkVS->result.tx!=::CIFP->input_cropped.tx)|| \
             (::itkVS->result.ty!=::CIFP->input_cropped.ty)|| \
@@ -433,7 +423,7 @@ if (!exists(RunExperimentsClass)){
     
       ::itkSP->SetStartPointWorld(::RP->p1x,::RP->p1y,::RP->p1z)
     
-      if (exists(::pt2_OK)) \
+      if (exists(::CIS->pt2_OK)) \
       {
         SetStatusText(" Path from point 1 to point 2 ...")
         # path 1
@@ -441,12 +431,12 @@ if (!exists(RunExperimentsClass)){
         ::itkSP->Run
         # path from Common to Internal Carotid Arteries
         if (exists(::pathCI)) { del ::pathCI; }
-        ::pathCI = ::path
+        ::pathCI = ::itkSP->path
         if (exists(::pathCIs)) { del ::pathCIs; }
-        ::pathCIs = SmoothLines(::path)
+        ::pathCIs = SmoothLines(::itkSP->path)
       }
     
-      if (exists(::pt3_OK)) \
+      if (exists(::CIS->pt3_OK)) \
       {
         SetStatusText(" Path from point 1 to point 3 ...")
         # path 2
@@ -454,9 +444,9 @@ if (!exists(RunExperimentsClass)){
         ::itkSP->Run
         # path from Common to External Carotid Arteries
         if (exists(::pathCE)) { del ::pathCE; }
-        ::pathCE = ::path
+        ::pathCE = ::itkSP->path
         if (exists(::pathCEs)) { del ::pathCEs; }
-        ::pathCEs = SmoothLines(::path)
+        ::pathCEs = SmoothLines(::itkSP->path)
       }
     
       SetStatusText("Creating paths ... done")
@@ -647,7 +637,7 @@ if (!exists(RunExperimentsClass)){
 
         if (exists(::pathCC_rems)) { del ::pathCC_rems; }
         # path from Common to Internal Carotid Arteries
-        ::pathCC_rems = SmoothLines(::path)
+        ::pathCC_rems = SmoothLines(::itkSP->path)
 		SetStatusText("SmoothLines")
 
         # update covered dist
@@ -799,7 +789,7 @@ if (!exists(RunExperimentsClass)){
 
         if (exists(::pathCI_rems)) { del ::pathCI_rems; }
         # path from Common to Internal Carotid Arteries
-        ::pathCI_rems = SmoothLines(::path)
+        ::pathCI_rems = SmoothLines(::itkSP->path)
 
         # update covered dist
         lI_rem_p = ::pathCI_rems.GetLine(0)
@@ -891,50 +881,50 @@ if (!exists(RunExperimentsClass)){
         ::junc_sphere = vtkSphere(::junction_display_size,8,8,::Jx,::Jy,::Jz)
       
         # create empty surface for display
-        if (exists(global::surf)) { del global::surf; }
-        global::surf = Surface()
-        show global::surf
+        if (exists(::surf)) { del ::surf; }
+        ::surf = Surface()
+        show ::surf
 
-        if (exists(::pathCEs)) {global::surf_draw += ::pathCEs; }
-        if (exists(::pathCIs)) { global::surf_draw += ::pathCIs; }
+        if (exists(::pathCEs)) {::surf_draw += ::pathCEs; }
+        if (exists(::pathCIs)) { ::surf_draw += ::pathCIs; }
         if (exists(::pathCC_rems)) {
-          global::surf_draw += ::pathCC_rems
+          ::surf_draw += ::pathCC_rems
           ::pathCC_rems.SetColor(5,250,5)
         }
         if (exists(::pathCI_rems)) {
-          global::surf_draw += ::pathCI_rems
+          ::surf_draw += ::pathCI_rems
           ::pathCI_rems.SetColor(5,250,5)
         }
 
-        global::surf_draw += ::junc_sphere
+        ::surf_draw += ::junc_sphere
         if (exists(::GTiso)) {
-          global::surf_draw += ::GTiso
+          ::surf_draw += ::GTiso
           ::GTiso.SetOpacity(0.5)
         }
         ::junc_sphere.SetDiffuse(5,250,5)
     
         if (exists(::ext)) {
-          if (!exists(::ext_surf)) {
-            ::ext_surf = isosurf(::ext,0.5)
+          if (!exists(ext_surf)) {
+            ext_surf = isosurf(::ext,0.5)
           }
-          global::surf_draw += ::ext_surf
-          ::ext_surf.SetDiffuse(255,0,0)
-          ::ext_surf.SetOpacity(0.5)
+          ::surf_draw += ext_surf
+          ext_surf.SetDiffuse(255,0,0)
+          ext_surf.SetOpacity(0.5)
         }
         ::pathCEs.SetColor(255,0,0)
         ::pathCIs.SetColor(0,0,255)
         if (exists(::pathCEs_cut)) {
-          global::surf_draw += ::pathCEs_cut
+          ::surf_draw += ::pathCEs_cut
           ::pathCEs_cut.SetColor(255,0,0)
           ::pathCEs_cut.SetLineWidth(3)
         }
         if (exists(::pathCIs_cut)) {
-          global::surf_draw += ::pathCIs_cut
+          ::surf_draw += ::pathCIs_cut
           ::pathCIs_cut.SetColor(0,0,255)
           ::pathCIs_cut.SetLineWidth(3)
         }
-        global::surf_draw.Normalize
-        global::surf_draw.Center
+        ::surf_draw.Normalize
+        ::surf_draw.Center
       }
     
     }
@@ -1417,12 +1407,12 @@ if (!exists(RunExperimentsClass)){
       ::itkSP->SetEndPointWorld(::RP->p2x,::RP->p2y,::RP->p2z)
       ::itkSP->Run()
       if (exists(::path1_result)) { del ::path1_result; }
-      ::path1_result = ::path
+      ::path1_result = ::itkSP->path
     
       ::itkSP->SetEndPointWorld(::RP->p3x,::RP->p3y,::RP->p3z)
       ::itkSP->Run()
       if (exists(::path2_result)) { del ::path2_result; }
-      ::path2_result = ::path
+      ::path2_result = ::itkSP->path
     
       if (0) {
         if (exists(::CS->res)) {

@@ -448,6 +448,3 @@ if (!exists(itkLevelSetClass)) {
     ::Init
   }
 } 
-  // itkLevelSetClass l
-  // l->Gui()
-  

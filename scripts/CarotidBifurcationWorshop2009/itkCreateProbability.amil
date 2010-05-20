@@ -163,11 +163,5 @@ if (!exists(itkCreateProbabilityClass)) {
     }
     ::Init
   } 
-
-  #----------------------------
-  # Main
-  #----------------------------
-  itkCreateProbabilityClass Probability
-
 } 
 # end if (!exists(CreateProbability)) 

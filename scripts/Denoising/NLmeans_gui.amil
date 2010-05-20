@@ -654,24 +654,3 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
   # Class NLmeansClass
 } 
 # end if (!exists(NLmeansClass))
-  
-  
-#----------------------------
-# Main
-#----------------------------
-
-if (!exists(nlm)) {
-
-  NLmeansClass nlm
-  
-  if (argc>=1) {
-    printn "reading image"
-    input = Image($1)
-    nlm->image_name = "input"
-    nlm->win.Update(-1)
-  }
-
-} else {
-  InfoDialog "The script seems to be already loaded."
-}
-

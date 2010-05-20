@@ -366,24 +366,3 @@ if (!exists(itkFastMarchingClass)) {
   }
 # Class itkFastMarchingClass
 }
-# end if (!exists(itkFastMarchingClass))
-
-#----------------------------
-# Main
-#----------------------------
-
-// if (!exists(itkfm)) {
-
-  // itkFastMarchingClass itkfm
-  // itkfm->Gui()
-  
-  // if (argc>=1) {
-    // printn "reading image"
-    // input = Image($1)
-    // itkfm->image_name = "input"
-    // itkfm->win.Update(-1)
-  // }
-
-// } else {
-  // InfoDialog "The script seems to be already loaded."
-// }

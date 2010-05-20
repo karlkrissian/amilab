@@ -134,24 +134,3 @@ if (!exists(itkSigmoidClass)) {
 # Class itkSigmoidClass
 }
 # end if (!exists(itkSigmoidClass))
-
-#----------------------------
-# Main
-#----------------------------
-
-// if (!exists(itksig)) {
-
-  // itkSigmoidClass itksig
-  // itksig->Gui()
-  
-  // if (argc>=1) {
-    
-    // printn "reading image"
-    // input = Image($1)
-    // itksig->image_name = "input"
-    // itksig->win.Update(-1)
-  // }
-
-// } else {
-  // InfoDialog "The script seems to be already loaded."
-// }

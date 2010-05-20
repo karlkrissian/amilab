@@ -92,6 +92,11 @@ if (!exists(itkVesselnessClass)) {
     {
       ::parent_panel = &pp
     }
+    
+    proc ::set_result(IMAGE im) \
+    {
+      ::result <<= im
+    }
 
     proc ::Gui() {
       import = &global::ami_import;
@@ -150,22 +155,3 @@ if (!exists(itkVesselnessClass)) {
 # Class itkVesselnessClass
 }
 # end if (!exists(itkVesselnessClass))
-
-#----------------------------
-# Main
-#----------------------------
-
-if (!exists(itkvs)) {
-
-  itkVesselnessClass itkvs
-  
-  if (argc>=1) {
-    printn "reading image"
-    input = Image($1)
-    itkvs->image_name = "input"
-    itkvs->win.Update(-1)
-  }
-
-} else {
-  InfoDialog "The script seems to be already loaded."
-}
