@@ -825,15 +825,4 @@ if (!exists(CreateSkeletonClass)) {
  } #End of class
   
 } # End of if
-
-#----------------------------
-# Main
-#----------------------------
-
-if (!exists(skeleton)) {
-
-  CreateSkeletonClass skeleton
-} else {
-  InfoDialog "The script seems to be already loaded."
-}
       

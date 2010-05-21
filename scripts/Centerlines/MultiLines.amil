@@ -618,15 +618,3 @@ if (!exists(MultilinesClass)) {
   } #End of class
   
 } # End of if
-
-#----------------------------
-# Main
-#----------------------------
-
-if (!exists(multilines)) {
-
-  MultilinesClass multilines
-} else {
-  InfoDialog "The script seems to be already loaded."
-}
-      
