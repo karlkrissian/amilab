@@ -1,41 +1,50 @@
 
+func "ctest/ctest_config.amil"
+epsilon = 0.01
+
 # Create initial image
 func "SyntheticImages/create_torus_gui.amil"
 
-CT_dimx = 100
-CT_dimy = 100
-CT_dimz = 100
-CT_bg = 0
-CT_fg = 100
-CT_R = 20
-CT_r = 4
-CT_image_name = "ls_input"
-CT_Create
+ctobject->dimx = 100
+ctobject->dimy = 100
+ctobject->dimz = 100
+ctobject->bg = 0
+ctobject->fg = 100
+ctobject->R = 20
+ctobject->r = 4
+ctobject->image_name = "global::ls_input"
+ctobject->Create
 
 # Run the level set
-func "Segmentation/LevelSetsGui1.amil"
-LS_input_name  = "ls_input"
-LS_load_input()
+func "Segmentation/LevelSets/LevelSetsGui1.amil"
+lsobject->input_name  = "global::ls_input"
+lsobject->load_input()
 
-LS_init_mode = 1
+lsobject->init_mode = 1
+
 # Create initial sphere
 ls_init = ls_input*0-4
-AddBrightSphere_mm(&ls_init, CT_dimx/2+CT_R, CT_dimy/2,CT_dimz/2, CT_r-2,-1,1)
-LS_initial_name  = "ls_init"
-LS_load_initial()
+AddBrightSphere_mm( &ls_init, \
+                    ls_init.tx/2+ctobject->R, ls_init.ty/2,ls_init.tz/2, \
+                    ctobject->r-2,-1,1)
 
-LS_Imean = max(ls_input)
-LS_Isd = (max(ls_input)-min(ls_input))/2
-LS_T = 150
-LS_win.update
+lsobject->initial_name  = "global::ls_init"
+lsobject->load_initial()
 
-LS_ReRun
+lsobject->Imean = max(ls_input)
+lsobject->Isd = (max(ls_input)-min(ls_input))/2
+lsobject->T = 150
+lsobject->win.Update(-1)
+lsobject->ReRun()
 
 # save result and compare with pre-computed one
-#LS_inls.save "test_levelsets_result.ami.gz"
+#lsobject->inls.save "test_levelsets_result.ami.gz"
 res = Image "test_levelsets_result.ami.gz"
-diff = LS_inls-res
+
+diff = lsobject->inls-res
 print "Root Mean Square Diff = "
 printn sqrt(mean(diff*diff))
 
-#quit
+ctest->PrintTestResult( sqrt(mean(diff*diff)) < epsilon )
+
+quit
