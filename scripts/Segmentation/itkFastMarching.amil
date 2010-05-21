@@ -207,7 +207,17 @@ if (!exists(itkFastMarchingClass)) {
     {
       ::input <<= im
     }
-        
+  
+    proc ::set_fast(IMAGE im) \
+    {
+      ::fast <<= im
+    }
+    
+    proc ::set_sigmoid(IMAGE im) \
+    {
+      ::SIG->set_sigmoid(im)
+    }
+    
     proc ::Run() {
 
       ::SIG->set_input(::input)
@@ -216,22 +226,22 @@ if (!exists(itkFastMarchingClass)) {
       
       if (::gradient_mode==0) {
         if (::dim==0) {
-          global::fast = ::itk->FastMarchingImageFilter2D(global::sigmoid,::seed_X,::seed_Y,::alpha,::beta,::stopping_time)
-          global::thres = ::itk->BinaryThresholdImageFilter2D(global::fast,::lower,::upper)
+          ::fast = ::itk->FastMarchingImageFilter2D(::SIG->sigmoid,::seed_X,::seed_Y,::alpha,::beta,::stopping_time)
+          ::thres = ::itk->BinaryThresholdImageFilter2D(::fast,::lower,::upper)
           ::f = 1			
         } else {
-          global::fast = ::itk->FastMarchingImageFilter3D(global::sigmoid,::seed_X,::seed_Y,::seed_Z,::alpha,::beta,::stopping_time)
-          global::thres = ::itk->BinaryThresholdImageFilter3D(global::fast,::lower,::upper)
+          ::fast = ::itk->FastMarchingImageFilter3D(::SIG->sigmoid,::seed_X,::seed_Y,::seed_Z,::alpha,::beta,::stopping_time)
+          ::thres = ::itk->BinaryThresholdImageFilter3D(::fast,::lower,::upper)
           ::f = 1
         }
       } else {
         if (::dim==0) {
-          global::fast = ::itk->FastMarchingImageFilter2D(::input_velocity,::seed_X,::seed_Y,::alpha,::beta,::stopping_time)
-          global::thres = ::itk->BinaryThresholdImageFilter2D(global::fast,::lower,::upper)
+          ::fast = ::itk->FastMarchingImageFilter2D(::input_velocity,::seed_X,::seed_Y,::alpha,::beta,::stopping_time)
+          ::thres = ::itk->BinaryThresholdImageFilter2D(::fast,::lower,::upper)
           ::f = 1			
         } else {
-          global::fast = ::itk->FastMarchingImageFilter3D(::input_velocity,::seed_X,::seed_Y,::seed_Z,::alpha,::beta,::stopping_time)
-          #global::thres = ::itk->BinaryThresholdImageFilter3D(global::fast,::lower,::upper)
+          ::fast = ::itk->FastMarchingImageFilter3D(::input_velocity,::seed_X,::seed_Y,::seed_Z,::alpha,::beta,::stopping_time)
+          ::thres = ::itk->BinaryThresholdImageFilter3D(::fast,::lower,::upper)
           ::f = 1
         }
       }
@@ -239,6 +249,13 @@ if (!exists(itkFastMarchingClass)) {
     
     proc ::SeedPoint() \
     {
+      #show ::input
+      if (::gradient_mode==0) \
+      {
+        ::input <<= ::SIG->sigmoid
+      } else {
+        ::input <<= ::input_velocity
+      }
       show ::input
       if (exists(::input_draw)) {
         if (::dim==0) {
@@ -277,8 +294,8 @@ if (!exists(itkFastMarchingClass)) {
     proc ::Display() {
     
       show ::input
-      show global::thres
-      ::input_draw.compare(global::thres_draw)
+      show ::thres
+      ::input_draw.compare(::thres_draw)
     
     }
     
@@ -305,18 +322,18 @@ if (!exists(itkFastMarchingClass)) {
       
         ::win.AddPage("Init")
         
-        ::win.BeginBoxPanel("Input Image")
-            # set the input image
-            ::win.BeginHorizontal
-              ::win.AddImageChoice( &::input_name, "")
-              ::win.AddButton("Load",::Load_input)
-            ::win.EndHorizontal
-            ::win.BeginHorizontal
-              dim_id = ::win.AddEnum( &::dim,"Dimension")
-              ::win.AddEnumChoice(dim_id, "2D")
-              ::win.AddEnumChoice(dim_id, "3D")
-            ::win.EndHorizontal
-        ::win.EndBoxPanel
+        // ::win.BeginBoxPanel("Input Image")
+            // # set the input image
+            // ::win.BeginHorizontal
+              // ::win.AddImageChoice( &::input_name, "")
+              // ::win.AddButton("Load",::Load_input)
+            // ::win.EndHorizontal
+            // ::win.BeginHorizontal
+              // dim_id = ::win.AddEnum( &::dim,"Dimension")
+              // ::win.AddEnumChoice(dim_id, "2D")
+              // ::win.AddEnumChoice(dim_id, "3D")
+            // ::win.EndHorizontal
+        // ::win.EndBoxPanel
         
         ::win.BeginBoxPanel("Velocity Image")
           ::win.BeginHorizontal

@@ -377,22 +377,33 @@ if (!exists(itkLevelSetClass)) {
     proc ::CloseAll() {
       eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
       #::sig->CloseAll()
-      ::FAST->CloseAll()
+      #::FAST->CloseAll()
       ::Close
     }
     ::CloseAll.Comments("Call ::Close() method and delete the class variable")
     
+    proc ::set_fast(IMAGE im) \
+    {
+      ::FAST->set_fast(im)
+    }
+    
+    proc ::set_sigmoid(IMAGE im) \
+    {
+      ::FAST->set_sigmoid(im)
+    }
+    
     proc ::Run() {
+      ::sigm = ::FAST->SIG.sigmoid
       if (::FAST->dim==0) {
-        global::level = ::itk->LevelSetFilter2D(global::fast,global::sigmoid,::curScaling,::proScaling)
+        ::level = ::itk->LevelSetFilter2D(::FAST->fast,::sigm,::curScaling,::proScaling)
       } else {
-        global::level = ::itk->LevelSetFilter3D(global::fast,global::sigmoid,::curScaling,::proScaling)
+        ::level = ::itk->LevelSetFilter3D(::FAST->fast,::sigm,::curScaling,::proScaling)
       }
     }
     
     proc ::Display() {
     
-      show global::level    
+      show ::level    
     }
     
     proc ::SetParentPanel(OBJECT pp) \
