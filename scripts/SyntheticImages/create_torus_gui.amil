@@ -96,6 +96,10 @@ printn "deleting windows"
     ::win.Update(-1)
   }
 
+  proc ::GetOutput() {
+    eval "return = "+::image_name+";"
+  }
+
   proc ::Show() {
     
     eval "show "+::image_name+";"
