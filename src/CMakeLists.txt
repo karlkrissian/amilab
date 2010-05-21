@@ -593,4 +593,9 @@ if (UNIX)
           )
 endif(UNIX)
 
+
+
+#Test for amilab.
+INCLUDE(${PROJECT_SOURCE_DIR}/../CTEST/amilab_tests.cmake)
+
 PrintSources(${AMILAB_BIN})

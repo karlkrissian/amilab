@@ -115,6 +115,85 @@ int isExtensionSupported(const char *extension)
   return 0;
 }
 
+//we rather use an own function instead of strstr(..) because
+//this might be dangerous if two extensions begin with the same text
+bool checkExtension( const char* checkFor)
+{
+   char *extensions  = (char*)glGetString(GL_EXTENSIONS);
+   char *endOfStr;  
+
+   if (!extensions) return false;
+   int idx = 0;
+   endOfStr = (char*)checkFor + strlen(checkFor);
+
+   while (checkFor < endOfStr)
+   {
+      idx = strcspn(checkFor, " ");
+
+      if ( (strlen(extensions) == idx) &&
+           (strncmp(extensions, checkFor, idx) == 0))
+         return true;
+
+      checkFor += (idx + 1);
+   }
+
+   return false;
+}
+
+
+VolumeRender::VolumeRender(InrImage* im)
+{
+    float xmin,xmax,ymin,ymax,zmin,zmax;
+
+    _im = im;
+    _size_x = _size_y = _size_z = 0;
+    _tex3ddata = NULL;
+    _operator = OVER;
+    _texture   = GL_TRUE;
+    _power2dim = GL_TRUE;
+    _Tobject = NULL;
+    _Ttexture = NULL;
+    _di = NULL;
+    _opacity_image = NULL;
+    _texture_interpolation = GL_NEAREST;
+
+    // Check if using palette ...
+//    _using_palette = isExtensionSupported("GL_EXT_paletted_texture");
+    _using_palette = checkExtension("GL_EXT_paletted_texture");
+    printf("Using palette = %d \n",_using_palette);
+
+    _tex_internal_format = GL_RGBA;
+    // try GL_INTENSITY_EXT or GL_COLOR_INDEX8_EXT
+
+    _tex_type            = GL_UNSIGNED_BYTE;
+    _tex_format          = GL_RGBA;
+    _tex_name            = 0;
+
+    _level_of_detail = 0;
+    //    _ml.SetLimits(im);
+
+    // Set the transformation to volume coordinates from the geometry (SRT)
+    xmin=im->SpacePosX(0);
+    xmax=im->SpacePosX(im->DimX()-1);
+    ymin=im->SpacePosY(0);
+    ymax=im->SpacePosY(im->DimY()-1);
+    zmin=im->SpacePosZ(0);
+    zmax=im->SpacePosZ(im->DimZ()-1);
+
+
+    _VOL.SetIdentity();
+    // try to set voxel size
+    _VOL.SetScale(im->VoxSizeX(),im->VoxSizeY(),im->VoxSizeZ());
+/*
+    _VOL.SetScale((xmax-xmin)/_ml.xsize,
+      (ymax-ymin)/_ml.ysize,
+      (zmax-zmin)/_ml.zsize);
+    _VOL.SetTranslation(-_ml.xmin,-_ml.ymin,-_ml.zmin);
+*/
+    _planes = im->DimY();
+
+}
+
 
 //----------------------------------------------------------------------
 void VolumeRender::InitRender()

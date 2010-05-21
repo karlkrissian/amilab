@@ -675,7 +675,7 @@ void MainFrame::CreateConsoleText( wxWindow* parent)
                         wxID_ANY,
                         GetwxStr("Console"),
                           wxTE_MULTILINE
-                        | wxHSCROLL
+                        //| wxHSCROLL
                         | wxFULL_REPAINT_ON_RESIZE
                         //|wxTE_RICH|wxTE_RICH2
                         , (*_textcontrol_validator)

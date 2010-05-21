@@ -80,7 +80,7 @@ bool ImagePositions<T>::FreePositions( )
 
 
 template<class T>
-double ImagePositions<T>::operator()( int x, int y, int z ) 
+double ImagePositions<T>::operator()( int x, int y, int z ) const
 #ifdef AMI_BUILD_Debug
   throw (std::range_error)
 #endif
@@ -102,14 +102,14 @@ double ImagePositions<T>::operator()( int x, int y, int z )
 
 
 template<class T>
-double ImagePositions<T>::GetValue( int x, int y, int z, int coord)
+double ImagePositions<T>::GetValue( int x, int y, int z, int coord) const
 //         --------
 {
   return (double)(_positions[z][y][_vdim*x+coord]);
 }
 
 template<class T>
-double ImagePositions<T>::operator()( int x, int y, int z, int coord)
+double ImagePositions<T>::operator()( int x, int y, int z, int coord) const
 {
   return GetValue(x,y,z,coord);
 }

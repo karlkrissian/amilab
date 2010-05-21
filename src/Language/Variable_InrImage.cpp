@@ -31,17 +31,18 @@ extern yyip::Driver GB_driver;
       (*res) = (*im);\
     }\
     int       i;                            \
-    res->InitBuffer();                       \
+    InrImageIteratorBase::ptr res_it(res->CreateIterator());\
+    res_it->InitBuffer();                       \
     if (res->ScalarFormat()) {             \
       do {                                \
-      res->FixeValeur( operator(res->ValeurBuffer()) );   \
-      } while (res->IncBuffer());             \
+      res_it->SetDoubleValue( operator(res_it->GetDoubleValue()) );   \
+      } while ((*res_it)++);             \
     } else {                                                \
       for(i=0;i<res->GetVDim();i++) {                 \
-        res->InitBuffer();                       \
+        res_it->InitBuffer();                       \
         do {                                 \
-        res->VectFixeValeur( i, operator(res->VectValeurBuffer(i)) );   \
-        } while (res->IncBuffer());  \
+        res_it->SetDoubleValue( i, operator(res_it->GetDoubleValue(i)) );   \
+        } while ((*res_it)++);  \
       }                                   \
     }                                       \
     return Variable<InrImage>::ptr( new Variable<InrImage>(res)); \
@@ -61,17 +62,18 @@ extern yyip::Driver GB_driver;
     }\
     int       i;                                           \
     double    val = expr;                                  \
-    res->InitBuffer();                                     \
+    InrImageIteratorBase::ptr res_it(res->CreateIterator());\
+    res_it->InitBuffer();                                     \
     if( res->ScalarFormat() ){                           \
       do {                                              \
-        res->FixeValeur(res->ValeurBuffer() operator val); \
-      } while (res->IncBuffer());             \
+        res_it->SetDoubleValue(res_it->GetDoubleValue() operator val); \
+      } while ((*res_it)++);             \
     }else{                                                  \
       do {                                              \
         for(i=0;i<res->GetVDim();i++) {                         \
-          res->VectFixeValeur(i,res->VectValeurBuffer(i) operator val);  \
+          res_it->SetDoubleValue(i,res_it->GetDoubleValue(i) operator val);  \
         }                                            \
-      } while(res->IncBuffer());              \
+      } while((*res_it)++);              \
     }                                                  \
     return Variable<InrImage>::ptr( new Variable<InrImage>(res)); \
   }
@@ -110,14 +112,17 @@ extern yyip::Driver GB_driver;
     if (im1->ScalarFormat()&&im2->ScalarFormat()) { \
       std::string newname = (boost::format("%1%_%2%_%3%")%im1->GetName()%#operator%im2->GetName()).str(); \
       InrImage::ptr res = InrImage::ptr(new InrImage(im1->_format,newname.c_str(),im1.get()));\
-      im1->InitBuffer();                \
-      im2->InitBuffer();                \
-      res->InitBuffer();                \
+      InrImageIteratorBase::ptr im1_it(res->CreateConstIterator());\
+      InrImageIteratorBase::ptr im2_it(res->CreateConstIterator());\
+      InrImageIteratorBase::ptr res_it(res->CreateIterator());\
+      im1_it->InitBuffer();                \
+      im2_it->InitBuffer();                \
+      res_it->InitBuffer();                \
       do{                           \
-        res->FixeValeur(im1->ValeurBuffer() operator im2->ValeurBuffer()); \
-        im1->IncBuffer();               \
-        im2->IncBuffer();               \
-      } while (res->IncBuffer());      \
+        res_it->SetDoubleValue(im1_it->GetDoubleValue() operator im2_it->GetDoubleValue()); \
+        (*im1_it)++;               \
+        (*im2_it)++;               \
+      } while ((*res_it)++);      \
       return Variable<InrImage>::ptr( new Variable<InrImage>(res)); \
     } else \
       GB_driver.err_print((boost::format("Both images should be scalar for operator %1%.") % #operator ).str()); \

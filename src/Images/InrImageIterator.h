@@ -52,7 +52,7 @@ protected:
 
 public:
 
-  InrImageIterator( InrImage* im);
+  InrImageIterator(  InrImage* im);
 
 
   /**
@@ -83,6 +83,7 @@ public:
   void* PosPointer() { return (void*) _datapos; }
 
   bool operator ++();
+  bool operator ++(int);
 
   /**
    * Increments the current position of d pixels

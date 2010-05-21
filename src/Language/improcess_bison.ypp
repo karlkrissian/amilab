@@ -5589,6 +5589,13 @@ param_list_decl:
       pl->AddParam(ident->GetName(),type_surface);
       $$ = pl;
         }
+    | param_list_decl T_COMMA T_OBJECT IDENTIFIER
+    {
+      IdentifierInfo::ptr ident($4);
+      ParamListDecl* pl = (ParamListDecl*) $1;
+      pl->AddParam(ident->GetName(),type_ami_object);
+      $$ = pl;
+    }
     | param_list_decl T_COMMA T_NUM IDENTIFIER
         {
       IdentifierInfo::ptr ident($4);
@@ -7121,20 +7128,23 @@ image:
       **/
       GET_VARSTACK_VAR_VAL(InrImage,var,im);
 
+
+/*
+      // do we need a copy here ???
+      // Yes, we need a copy until we know that the operators, methods, etc.. cannot change the value of the variable !!!
+      std::string imname = (boost::format("copy_%s") % var->Name().c_str()).str();
+      InrImage::ptr imcopy (new InrImage(im->GetFormat(),im->GetVDim(),imname.c_str(),im.get()));
+      (*imcopy)=(*im);
+      driver.im_stack.AddImage(imcopy);
+*/
       // returning reference here since the smart pointers will take care of everything (hopefully :) !!!)
+      // and we can't return a copy here otherwise a=b won't work !!!
       driver.im_stack.AddImage(im);
-      // driver.im_stack.AddImage(varim);
 /*
       GET_VARSTACK_VAR_VAL(InrImage,var,varim);
       InrImage::ptr im;
       std::string  imname;
 
-      // do we need a copy here ???
-      // Yes, it is safer to start with a copy and it simplifies the following operations
-      // otherwise, we need to have a const pointer to avoid modifying the image ...
-      imname = (boost::format("copy_%s") % var->Name().c_str()).str();
-      im = InrImage::ptr(new InrImage(varim->GetFormat(),varim->GetVDim(),imname.c_str(),varim.get()));
-      (*im)=(*varim);
       driver.im_stack.AddImage(im);
       // driver.im_stack.AddImage(varim);
 */

@@ -29,11 +29,11 @@ public:
 
   virtual bool FreePositions( ) = 0;
 
-  virtual double operator()( int x, int y, int z = 0) = 0;
+  virtual double operator()( int x, int y, int z = 0) const = 0;
 
-  virtual double operator()( int x, int y, int z, int coord) = 0;
+  virtual double operator()( int x, int y, int z, int coord) const = 0;
 
-  virtual double GetValue( int x, int y, int z, int coord) = 0;
+  virtual double GetValue( int x, int y, int z, int coord) const = 0;
 
   virtual void* GetVoidPos(int x,int y, int z=0) = 0;
 
