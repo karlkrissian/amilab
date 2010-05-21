@@ -55,9 +55,9 @@ if (!exists(itkSigmoidClass)) {
       ::grad = normgrad(::input,::stand)
       ::g = 1
       if (::dim==0) {
-        global::sigmoid = ::itk->SigmoidImageFilter2D(::grad,::min,::max,::alpha,::beta)			
+        ::sigmoid = ::itk->SigmoidImageFilter2D(::grad,::min,::max,::alpha,::beta)			
       } else {
-        global::sigmoid = ::itk->SigmoidImageFilter3D(::grad,::min,::max,::alpha,::beta)
+        ::sigmoid = ::itk->SigmoidImageFilter3D(::grad,::min,::max,::alpha,::beta)
       }      
     }
     
@@ -69,9 +69,14 @@ if (!exists(itkSigmoidClass)) {
     proc ::Display() {
     
       show ::input
-      show global::sigmoid
-      ::input_draw.compare(global::sigmoid_draw)
+      show ::sigmoid
+      ::input_draw.compare(::sigmoid_draw)
     
+    }
+    
+    proc ::set_sigmoid(IMAGE im) \
+    {
+      ::sigmoid <<= im
     }
     
     proc ::SetParentPanel(OBJECT pp) \
