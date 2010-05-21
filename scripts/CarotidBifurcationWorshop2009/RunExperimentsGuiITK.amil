@@ -98,18 +98,18 @@ if (!exists(RunExperimentsClass)){
     
     proc ::CarotidExperiments_CloseAll() {
       eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
-      eval "del global::ReadPointsClass;"
-      eval "del global::CropImageFromPointsClass;"
-      eval "del global::NLmeansClass;"
-      eval "del global::itkCreateProbabilityClass;"
-      eval "del global::itkVesselnessClass;"
-      eval "del global::itkSPClass;"
-      eval "del global::CreateInitialSpheresClass;"
-      eval "del global::CreateSkeletonClass;"
-      eval "del global::itkFastMarchingClass;"
-      eval "del global::itkSigmoidClass;"
-      eval "del global::itkLevelSetClass;"
-      eval "del global::config;"
+      // eval "del global::ReadPointsClass;"
+      // eval "del global::CropImageFromPointsClass;"
+      // eval "del global::NLmeansClass;"
+      // eval "del global::itkCreateProbabilityClass;"
+      // eval "del global::itkVesselnessClass;"
+      // eval "del global::itkSPClass;"
+      // eval "del global::CreateInitialSpheresClass;"
+      // eval "del global::CreateSkeletonClass;"
+      // eval "del global::itkFastMarchingClass;"
+      // eval "del global::itkSigmoidClass;"
+      // eval "del global::itkLevelSetClass;"
+      // eval "del global::config;"
       ::CarotidExperiments_Close
     }
     ::CarotidExperiments_CloseAll.Comments("Call ::CarotidExperiments_Close() method and delete the class variable")
@@ -260,25 +260,25 @@ if (!exists(RunExperimentsClass)){
     
       if (!::ves_downsample) {
         # trunk max intensities to  ::maxvesselint
-        ::vesselness_input <<= ::CIFP->input_cropped* (::CIFP->input_cropped<::maxvesselint)+\
+        vesselness_input <<= ::CIFP->input_cropped* (::CIFP->input_cropped<::maxvesselint)+\
                           (::CIFP->input_cropped>=::maxvesselint)*::maxvesselint
         mask <<= (UCHAR) ((::CIFP->input_cropped>::minvesselint)*\
                                      (::CIFP->input_cropped<::maxvesselint)*255)
       } else {
         # first downsample in X and Y
-        ::vesselness_input <<= Resize(::CIFP->input_cropped, \
+        vesselness_input <<= Resize(::CIFP->input_cropped, \
             ::CIFP->input_cropped.tx/2,::CIFP->input_cropped.ty/2,\
             ::CIFP->input_cropped.tz,1)
-        mask <<= (UCHAR) ( (::vesselness_input>::minvesselint)*\
-                                      (::vesselness_input<::maxvesselint)*255)
+        mask <<= (UCHAR) ( (vesselness_input>::minvesselint)*\
+                                      (vesselness_input<::maxvesselint)*255)
     
-        ::vesselness_input = \
-            ::vesselness_input*(::vesselness_input<::maxvesselint)+\
-            (::vesselness_input>=::maxvesselint)*::maxvesselint
+        vesselness_input = \
+            vesselness_input*(vesselness_input<::maxvesselint)+\
+            (vesselness_input>=::maxvesselint)*::maxvesselint
       }
       #::ML->input_name = "global::vesselness_input"
       #::ML->mask_name  = "global::mask"
-      ::itkVS->set_input(::vesselness_input)
+      ::itkVS->set_input(vesselness_input)
       #::itkVS->set_mask(global::mask)
       ::itkVS->sigmaMin = 0.5
       ::itkVS->sigmaMax = 7
@@ -429,6 +429,7 @@ if (!exists(RunExperimentsClass)){
         # path 1
         ::itkSP->SetEndPointWorld(::RP->p2x,::RP->p2y,::RP->p2z)
         ::itkSP->Run
+        ::path1 = ::itkSP->res
         # path from Common to Internal Carotid Arteries
         if (exists(::pathCI)) { del ::pathCI; }
         ::pathCI = ::itkSP->path
@@ -442,6 +443,7 @@ if (!exists(RunExperimentsClass)){
         # path 2
         ::itkSP->SetEndPointWorld(::RP->p3x,::RP->p3y,::RP->p3z)
         ::itkSP->Run
+        ::path2 = ::itkSP->maxrepim_crop
         # path from Common to External Carotid Arteries
         if (exists(::pathCE)) { del ::pathCE; }
         ::pathCE = ::itkSP->path
@@ -985,10 +987,13 @@ if (!exists(RunExperimentsClass)){
         #::LS->use_expansion_image    = 1
         #::LS->conv_freq              = 20
         #::LS->threads                = 4
-        global::fast = ::pathCE_lsinit
-        global::sigmoid = ::pathCE_lsinit
+        #global::fast = ::pathCE_lsinit
+        #global::sigmoid = ::pathCE_lsinit
+        ::sigmoid = ::itk->SigmoidImageFilter3D(::path2,0,100,-0.5,3)
+        ::itkLS->set_sigmoid(::sigmoid)
+        ::itkLS->set_fast(::path2)
         ::itkLS->curScaling = 1
-        ::itkLS->proScaling = 0.1
+        ::itkLS->proScaling = -0.01
         ::itkLS->Run
         # estimate running time based on the remaining centerline distance to segment
         if (exists(::covered_distz_E)) {
@@ -1036,10 +1041,10 @@ if (!exists(RunExperimentsClass)){
         // # Run the evolution
         // ::win.Update(-1)
         // ::LS->ReRun()
-        ::pathCE_contours <<= global::level
+        ::pathCE_contours <<= ::itkLS->level
       
         # 1. Save Level Set resulting image
-        global::level.save ::current_resultsdir+"\\levelset_CC_CE.ami.gz"
+        ::itkLS->level.save ::current_resultsdir+"\\levelset_CC_CE.ami.gz"
         #::itkLS->SaveParams( ::current_resultsdir+"\\levelset_CC_CE.amil" )
 		SetStatusText("ECA levelset done...")
       }
@@ -1537,7 +1542,7 @@ if (!exists(RunExperimentsClass)){
           ::win.EndBoxPanel
           ::win.BeginHorizontal
             ::win.AddButton("Evaluation",      ::CarotidExperiments_Evaluation)
-            ::win.AddButton("Display Results", ::CarotidExperiments_DisplayResults)
+            #::win.AddButton("Display Results", ::CarotidExperiments_DisplayResults)
           ::win.EndHorizontal
 
         #----- Other Page
@@ -1567,10 +1572,10 @@ if (!exists(RunExperimentsClass)){
             ::itkCP->Gui
             ::win.AddPage("Local Stats",&::itkCP->win)
           
-            ::CarotidExperiments_ReduceNoise
-            ::NLM->SetParentPanel(&::win)
-            ::NLM->CreateWindow
-            ::win.AddPage("NLM",&::NLM->win)
+            // ::CarotidExperiments_ReduceNoise
+            // ::NLM->SetParentPanel(&::win)
+            // ::NLM->CreateWindow
+            // ::win.AddPage("NLM",&::NLM->win)
             
             ::itkVS->SetParentPanel(&::win)
             ::itkVS->Gui
@@ -1612,6 +1617,5 @@ if (!exists(experiments)) \
   RunExperimentsClass experiments
   experiments->CarotidExperiments_init()
   experiments->CarotidExperiments_gui()
-  //experiments->CarotidExperiments_CheckConfigFile()
 }
 }

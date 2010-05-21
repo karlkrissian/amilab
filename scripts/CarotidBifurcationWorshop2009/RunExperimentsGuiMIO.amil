@@ -31,6 +31,7 @@ if (!exists(RunExperimentsClass)){
     global::CreateSkeletonClass ::CS
     global::LevelSetsClass ::LS
     global::AddSphereClass ::AS
+    global::config ::CONFIG
     ::itk=&global::itk
     ::filters=&global::filters
     ::class_name = "global::RunExperimentsClass"
@@ -40,12 +41,12 @@ if (!exists(RunExperimentsClass)){
     proc ::CarotidExperiments_init() \
     {
       ::config       = INT(0)
-      global::data_dir        = "", "Data dir"
-      global::groundtruth_dir = "", "Groundtruth dir"
-      global::results_dir     = "", "Results dir"
+      // global::data_dir        = "", "Data dir"
+      // global::groundtruth_dir = "", "Groundtruth dir"
+      // global::results_dir     = "", "Results dir"
     
-      global::evaluation_bindir    = "", "Build dir"
-      global::evaluation_scriptdir = "", "Scripts dir"
+      // global::evaluation_bindir    = "", "Build dir"
+      // global::evaluation_scriptdir = "", "Scripts dir"
       
       ::nointeraction = UCHAR(0)
       ::advanced = UCHAR(0), "To use the advanced mode. Go to 'Adv' tab."
@@ -92,42 +93,30 @@ if (!exists(RunExperimentsClass)){
     
     proc ::CarotidExperiments_CloseAll() {
       eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
-      eval "del global::ReadPointsClass;"
-      eval "del global::CropImageFromPointsClass;"
-      eval "del global::NLmeansClass;"
-      eval "del global::CreateProbabilityClass;"
-      eval "del global::MultilinesClass;"
-      eval "del global::SPClass;"
-      eval "del global::CreateInitialSpheresClass;"
-      eval "del global::CreateSkeletonClass;"
-      eval "del global::LevelSetsClass;"
-      eval "del global::data_dir;"
-      eval "del global::groundtruth_dir;"
-      eval "del global::results_dir;"
-      eval "del global::evaluation_bindir;"
-      eval "del global::evaluation_scriptdir;"
-      ::lsobject=&global::lsobject
-      ::lsobject->CloseAll
-      ::skeleton=&global::skeleton
-      ::skeleton->CloseAll
-      ::spobj=&global::spobj
-      ::spobj->CloseAll
-      ::multilines=&global::multilines
-      ::multilines->CloseAll
-      ::Probability=&global::Probability
-      ::Probability->CloseAll
-      ::nlm=&global::nlm
-      ::nlm->CloseAll
+      // eval "del global::ReadPointsClass;"
+      // eval "del global::CropImageFromPointsClass;"
+      // eval "del global::NLmeansClass;"
+      // eval "del global::CreateProbabilityClass;"
+      // eval "del global::MultilinesClass;"
+      // eval "del global::SPClass;"
+      // eval "del global::CreateInitialSpheresClass;"
+      // eval "del global::CreateSkeletonClass;"
+      // eval "del global::LevelSetsClass;"
+      // eval "del global::data_dir;"
+      // eval "del global::groundtruth_dir;"
+      // eval "del global::results_dir;"
+      // eval "del global::evaluation_bindir;"
+      // eval "del global::evaluation_scriptdir;"
       ::CarotidExperiments_Close
     }
     ::CarotidExperiments_CloseAll.Comments("Call ::CarotidExperiments_Close() method and delete the class variable")
     
-    proc ::CarotidExperiments_CheckConfigFile() \
-    {
-      config_filename = "carotidchallenge_config.amil"
-      func config_filename
-      ::win.Update(-1)
-    }
+    // proc ::CarotidExperiments_CheckConfigFile() \
+    // {
+      // config_filename = "carotidchallenge_config.amil"
+      // func config_filename
+      // ::win.Update(-1)
+    // }
     
     #------------------------------------------
     proc ::CarotidExperiments_ReadData() \
@@ -137,9 +126,9 @@ if (!exists(RunExperimentsClass)){
       # read input image
       ::datanumber_str = boost_format("%1%") % ::datacenter 
       ::datanumber_str = ::datanumber_str + boost_format("%02.0f") % ::datanumber
-      ::current_datadir    = global::data_dir       +"\\challenge"+ ::datanumber_str
-      ::current_resultsdir = global::results_dir    +"\\challenge"+ ::datanumber_str
-      ::current_gtdir      = global::groundtruth_dir+"\\challenge"+ ::datanumber_str
+      ::current_datadir    = ::CONFIG->data_dir       +"\\challenge"+ ::datanumber_str
+      ::current_resultsdir = ::CONFIG->results_dir    +"\\challenge"+ ::datanumber_str
+      ::current_gtdir      = ::CONFIG->groundtruth_dir+"\\challenge"+ ::datanumber_str
    
       if (::datacenter==0) {
         ::cropmarginZtop = 5
@@ -218,7 +207,8 @@ if (!exists(RunExperimentsClass)){
     {
       SetStatusText("Cropping data ...")
       if (!exists(::input)) { ::CarotidExperiments_ReadData(); }
-      ::CIFP->CropImageFromPoints(&::input,"global::input_cropped",\
+      ::CIFP->CropImageFromPoints(&::RP,\
+                                  &::input,\
                                   ::cropmarginXY,\
                                   ::cropmarginZtop,\
                                   ::cropmarginZbot)
@@ -239,7 +229,7 @@ if (!exists(RunExperimentsClass)){
     #-----------------------------------------
     proc ::CarotidExperiments_ReduceNoise() \
     {
-      ::NLM->input_name = "global::input_cropped"
+      ::NLM->input_name = "::CIFP->input_cropped"
       ::NLM->f = 2
       ::NLM->t = 2
       ::NLM->h = 10
@@ -250,12 +240,12 @@ if (!exists(RunExperimentsClass)){
     {
     
       # if possible, get result avec denoising
-      if (exists(global::NLM_res)) {
+      if (exists(::NLM->NLM_res)) {
         #::CP->input_name = "global::NLM_res"
-        ::CP->set_input(global::NLM_res)
+        ::CP->set_input(::NLM->NLM_res)
       } else {
         #::CP->input_name = "global::input_cropped"
-        ::CP->set_input(global::input_cropped)
+        ::CP->set_input(::CIFP->input_cropped)
       }
       ::CP->lsd_erosion = 0
       ::CP->Apply
@@ -267,26 +257,26 @@ if (!exists(RunExperimentsClass)){
     
       if (!::ves_downsample) {
         # trunk max intensities to  ::maxvesselint
-        global::vesselness_input <<= global::input_cropped* (global::input_cropped<::maxvesselint)+\
-                          (global::input_cropped>=::maxvesselint)*::maxvesselint
-        global::mask <<= (UCHAR) ((global::input_cropped>::minvesselint)*\
-                                     (global::input_cropped<::maxvesselint)*255)
+        vesselness_input <<= ::CIFP->input_cropped* (::CIFP->input_cropped<::maxvesselint)+\
+                          (::CIFP->input_cropped>=::maxvesselint)*::maxvesselint
+        mask <<= (UCHAR) ((::CIFP->input_cropped>::minvesselint)*\
+                                     (::CIFP->input_cropped<::maxvesselint)*255)
       } else {
         # first downsample in X and Y
-        global::vesselness_input <<= Resize(global::input_cropped, \
-            global::input_cropped.tx/2,global::input_cropped.ty/2,\
-            global::input_cropped.tz,1)
-        global::mask <<= (UCHAR) ( (global::vesselness_input>::minvesselint)*\
-                                      (global::vesselness_input<::maxvesselint)*255)
+        vesselness_input <<= Resize(::CIFP->input_cropped, \
+            ::CIFP->input_cropped.tx/2,::CIFP->input_cropped.ty/2,\
+            ::CIFP->input_cropped.tz,1)
+        mask <<= (UCHAR) ( (vesselness_input>::minvesselint)*\
+                                      (vesselness_input<::maxvesselint)*255)
     
-        global::vesselness_input = \
-            global::vesselness_input*(global::vesselness_input<::maxvesselint)+\
-            (global::vesselness_input>=::maxvesselint)*::maxvesselint
+        vesselness_input = \
+            vesselness_input*(vesselness_input<::maxvesselint)+\
+            (vesselness_input>=::maxvesselint)*::maxvesselint
       }
       #::ML->input_name = "global::vesselness_input"
       #::ML->mask_name  = "global::mask"
-      ::ML->set_input(global::vesselness_input)
-      ::ML->set_mask(global::mask)
+      ::ML->set_input(vesselness_input)
+      ::ML->set_mask(mask)
       ::ML->radmin = 0.5
       ::ML->radmax = 7
       ::ML->numrad = 7
@@ -302,8 +292,8 @@ if (!exists(RunExperimentsClass)){
     proc ::CarotidExperiments_SaveVesselness() \
     {
       # 1. Save Level Set resulting image
-      global::result.save ::current_resultsdir+"\\vesselness_result.ami.gz"
-      global::maxima.save ::current_resultsdir+"\\vesselness_maxima.ami.gz"
+      ::ML->result.save ::current_resultsdir+"\\vesselness_result.ami.gz"
+      ::ML->maxima.save ::current_resultsdir+"\\vesselness_maxima.ami.gz"
     }
     
     #-----------------------------------------
@@ -313,18 +303,18 @@ if (!exists(RunExperimentsClass)){
     
       if (FileExists(vfilename)) {
         # 1. Save Level Set resulting image
-        global::result <<= Image vfilename
+        ::ML->result <<= Image vfilename
         // check dimensions
-        if ((global::result.tx!=global::input_cropped.tx)|| \
-            (global::result.ty!=global::input_cropped.ty)|| \
-            (global::result.tz!=global::input_cropped.tz)) {
-          result_bak = global::result
-          global::result <<= Image(FLOAT,::input_tx,::input_ty,::input_tz)
-          global::result.settranslation(::input_trx,::input_try,::input_trz)
-          global::result.setvoxelsize(global::input_cropped)
-          global::result.putimage(result_bak)
+        if ((::ML->result.tx!=global::input_cropped.tx)|| \
+            (::ML->result.ty!=global::input_cropped.ty)|| \
+            (::ML->result.tz!=global::input_cropped.tz)) {
+          result_bak = ::ML->result
+          ::ML->result <<= Image(FLOAT,::input_tx,::input_ty,::input_tz)
+          ::ML->result.settranslation(::input_trx,::input_try,::input_trz)
+          ::ML->result.setvoxelsize(global::input_cropped)
+          ::ML->result.putimage(result_bak)
           del result_bak
-          global::result <<= global::result[global::input_cropped]
+          ::ML->result <<= ::ML->result[global::input_cropped]
           message = boost_format("CarotidExperiments_ReadVesselness() \n File %1% wrong dimensions, image has been adapted ") % vfilename 
           if (!::nointeraction) {
             InfoDialog message
@@ -342,18 +332,18 @@ if (!exists(RunExperimentsClass)){
     
       if (FileExists(vmfilename)) {
         # 1. Save Level Set resulting image
-        global::maxima <<= Image vmfilename
+        ::maxima <<= Image vmfilename
         // check dimensions
-        if ((global::maxima.tx!=global::input_cropped.tx)|| \
-            (global::maxima.ty!=global::input_cropped.ty)|| \
-            (global::maxima.tz!=global::input_cropped.tz)) {
-          maxima_bak = global::maxima
-          global::maxima <<= Image(FLOAT,::input_tx,::input_ty,::input_tz)
-          global::maxima.settranslation(::input_trx,::input_try,::input_trz)
-          global::maxima.setvoxelsize(global::input_cropped)
-          global::maxima.putimage(maxima_bak)
+        if ((::maxima.tx!=global::input_cropped.tx)|| \
+            (::maxima.ty!=global::input_cropped.ty)|| \
+            (::maxima.tz!=global::input_cropped.tz)) {
+          maxima_bak = ::maxima
+          ::maxima <<= Image(FLOAT,::input_tx,::input_ty,::input_tz)
+          ::maxima.settranslation(::input_trx,::input_try,::input_trz)
+          ::maxima.setvoxelsize(global::input_cropped)
+          ::maxima.putimage(maxima_bak)
           del maxima_bak
-          global::maxima <<= global::maxima[global::input_cropped]
+          ::maxima <<= ::maxima[global::input_cropped]
           message = boost_format("CarotidExperiments_ReadVesselness() \n File %1% wrong dimensions, image has been adapted ") % vmfilename 
           if (!::nointeraction) {
             InfoDialog message
@@ -375,40 +365,40 @@ if (!exists(RunExperimentsClass)){
       SetStatusText("Creating paths ...")
       # load the shortest path script
       
-      ::CIS->CheckInitialPoints(global::input_cropped,::sphereradii)
+      ::CIS->CheckInitialPoints(::CIFP->input_cropped,::sphereradii)
       if (!::nointeraction) {
-        if (!exists(global::pt1_OK)) { InfoDialog "Discarded point 1"; }
-        if (!exists(global::pt2_OK)) { InfoDialog "Discarded point 2"; }
-        if (!exists(global::pt3_OK)) { InfoDialog "Discarded point 3"; }
+        if (!exists(::CIS->pt1_OK)) { InfoDialog "Discarded point 1"; }
+        if (!exists(::CIS->pt2_OK)) { InfoDialog "Discarded point 2"; }
+        if (!exists(::CIS->pt3_OK)) { InfoDialog "Discarded point 3"; }
       }
 
       # high vesselness is ok but we limit its strength??
       #global::SPspeed = -exp(-(ML_result*ML_result)/(25*25))+1
     
-      if (exists(global::result)) {
+      if (exists(::ML->result)) {
         if (exists(::CP->prob)) {
           # ensure that CP_prob is maximum around local maxima
-          if (exists(global::maxima)) {
+          if (exists(::maxima)) {
             # threshold to get maxima positions
-            maxima_neigh = (global::maxima>::mlmax_threshold)
+            maxima_neigh = (::maxima>::mlmax_threshold)
             # dilate a little
             maxima_neigh = EDPdilate(maxima_neigh,1,0.25)
 
-            ::speed <<=  max((maxima_neigh>=0.95)*maxima_neigh * global::result, \
-                                      ::CP->prob*global::result)
+            ::speed <<=  max((maxima_neigh>=0.95)*maxima_neigh * ::ML->result, \
+                                      ::CP->prob*::ML->result)
 
           } else {
-            ::speed <<= ::CP->prob * global::result
+            ::speed <<= ::CP->prob * ::ML->result
           }
         } else {
           if (!::nointeraction) {
             InfoDialog "prob not found, path based only on the Vesselness!"
           }
-          ::speed <<= global::result
+          ::speed <<= ::ML->result
         }
       } else {
         InfoDialog "CarotidExperiments_Path1: no Vesselness image found" 
-        ::speed <<= global::input_cropped
+        ::speed <<= ::CIFP->input_cropped
       }
     
       ::SP->init
@@ -426,12 +416,12 @@ if (!exists(RunExperimentsClass)){
       ::SP->input_speed     = 1
       
       #::SP->load_input()
-      ::SP->set_input(global::input_cropped)
+      ::SP->set_input(::CIFP->input_cropped)
       ::SP->set_speed(::speed)
       #::SP->load_speed()
       ::win.Update(-1)
     
-      ::SP->SetStartPointWorld(global::p1x,global::p1y,global::p1z)
+      ::SP->SetStartPointWorld(::RP->p1x,::RP->p1y,::RP->p1z)
     
       if (exists(global::pt2_OK)) \
       {
