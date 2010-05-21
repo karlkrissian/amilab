@@ -288,10 +288,11 @@ MainFrame::MainFrame( const wxString& title,
                   amilab_editor(NULL)
 {
 
-  CreateMenu();
 //  CreateToolbar();
 
   m_mgr.SetManagedWindow(this);
+
+  CreateMenu();
 
   m_mgr.SetFlags( 
                   wxAUI_MGR_ALLOW_FLOATING |

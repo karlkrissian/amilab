@@ -339,6 +339,8 @@ void CB_update_imagelist( void* imagelist_gui);
 
 %token T_SetDebugOn
 %token T_SetDebugOff
+%token T_TraceScanning
+%token T_TraceParsing
 %token T_SetVerboseOn
 %token T_SetVerboseOff
 %token T_AddMenuScript
@@ -1815,9 +1817,17 @@ command:
         |  T_SetDebugOff
         {
       GB_debug = 0;
-        }
-        |  T_SetVerboseOn
-        {
+    }
+    |  T_TraceScanning expr
+    {
+      driver.SetTraceScanning($2>0.5);
+    }
+    |  T_TraceParsing expr
+    {
+      driver.SetTraceParsing($2>0.5);
+    }
+    |  T_SetVerboseOn
+    {
       GB_verbose = 1;
       verbose = 1;
     }

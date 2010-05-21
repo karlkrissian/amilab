@@ -238,7 +238,7 @@ public:
 */
 
   //
-  void display();
+  void display() const;
 
   virtual double GetValueAsDouble() const;
 /*

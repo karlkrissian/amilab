@@ -42,7 +42,7 @@ Driver::Driver()
 
   procedure_declaration = false;
 
-  init_debug_stream();
+//  init_debug_stream();
   init_err_output();
   init_res_output();
   init_cmdhistory();
@@ -51,7 +51,7 @@ Driver::Driver()
 
 //------------------------------------------------------
 Driver::~Driver() {
-  close_debug_stream();
+//  close_debug_stream();
 }
 
 //------------------------------------------------------
@@ -76,6 +76,9 @@ bool Driver::parse_stream(std::istream& in,
   parser.set_debug_level(trace_parsing);
   if (language_debug_stream.good()) 
     parser.set_debug_stream(language_debug_stream);
+  else
+    parser.set_debug_stream(std::cout);
+
 
   int res = 0;
   try {

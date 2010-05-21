@@ -48,6 +48,7 @@ class FloatMatrix;
 class GLTransfMatrix;
 class VarArray;
 
+
 #define VARTYPE_PROP(type,name,isnum) \
   template<> vartype GetVarType<type>()  { return name;     } \
   template<> bool IsNumerical  <type>()  { return isnum;    }

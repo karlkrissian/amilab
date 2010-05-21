@@ -125,10 +125,7 @@ public:
   const std::string GetTypeName() const;
 
   //
-  virtual void display()
-  {
-    //cout << *this;
-  }
+  virtual void display() const = 0;
 
   virtual bool IsNumeric() const
   {

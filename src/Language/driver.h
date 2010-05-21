@@ -134,6 +134,8 @@ public:
     /// enable debug output in the bison parser
     bool trace_parsing;
 
+    void SetTraceScanning(bool val) { trace_scanning = val; }
+    void SetTraceParsing(bool val) { trace_parsing = val; }
 
     /**
      * Check if we are running from the command line.

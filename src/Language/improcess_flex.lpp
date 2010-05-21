@@ -300,6 +300,8 @@ return(token::ASHELL);
 
 SetDebugOn         return(token::T_SetDebugOn); /*{SetDebugOn,T_SetDebugOn}*/
 SetDebugOff        return(token::T_SetDebugOff); /*{SetDebugOff,T_SetDebugOff}*/
+TraceScanning      return(token::T_TraceScanning); /*{TraceScanning,T_TraceScanning}*/
+TraceParsing       return(token::T_TraceParsing); /*{TraceParsing,T_TraceParsing}*/
 SetVerboseOn       return(token::T_SetVerboseOn); /*{SetVerboseOn,T_SetVerboseOn}*/
 SetVerboseOff      return(token::T_SetVerboseOff); /*{SetVerboseOff,T_SetVerboseOff}*/
 GetScriptsDir      return(token::T_GetScriptsDir); /*{GetScriptDir,T_GetScriptDir}*/

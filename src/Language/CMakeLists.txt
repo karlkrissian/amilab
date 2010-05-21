@@ -100,7 +100,13 @@ SET(Language_BISONFLEX_SRCS
 
 IF(AMI_USE_FLEXBISON)
 
-  BISON_TARGET_option_extraopts("-t  -dv")
+
+  SET(bison_options "-dv")
+  IF(AMI_BISON_DEBUG)
+    SET(bison_options "-t ${bison_options}")
+  ENDIF(AMI_BISON_DEBUG)
+
+  BISON_TARGET_option_extraopts(${bison_options})
 
   BISON_TARGET(improcessbison
     ${AMILAB_SOURCE_DIR}/Language/improcess_bison.ypp
@@ -120,6 +126,11 @@ IF(AMI_USE_FLEXBISON)
     ${Language_BISONFLEX_SRCS}
     ${Language_HDRS}
   )
+
+  IF(AMI_BISON_DEBUG)
+    SET_SOURCE_FILES_PROPERTIES( ${Language_SRCS}
+    PROPERTIES COMPILE_FLAGS -DYYDEBUG=1)
+  ENDIF(AMI_BISON_DEBUG)
   
 ELSE(AMI_USE_FLEXBISON)
  
