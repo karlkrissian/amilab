@@ -76,7 +76,7 @@ if (argc<1) {
                 (l_dm1 < 0.05)
   }
   printn "\t ******* "+extension+" Write Test Result:  %1%" % l_result
-  resultWrite = (l_d<epsilon)
+  resultWrite = (l_result)
 
 
   ctest.PrintTestResult( resultRead && resultWrite ) 

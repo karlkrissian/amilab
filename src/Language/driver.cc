@@ -179,8 +179,8 @@ void Driver::yyip_instanciate_object( const AMIClass::ptr& oclass,
 
   int    previous_lineno   = yyiplineno;
   string previous_filename = this->current_file;
-  int    i;
-  char*  name;
+ // int    i;
+ // char*  name;
 
   // Set the new local context
   std::string contextname = (boost::format("local_%1%")%object->GetName()).str();

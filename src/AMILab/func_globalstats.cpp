@@ -209,7 +209,6 @@ double     Func_med( InrImage* im, float percent, InrImage* mask)
   double median;
 
   InrImageIteratorBase::ptr im_it   (im  ->CreateConstIterator());
-  InrImageIteratorBase::ptr mask_it (mask->CreateConstIterator());
 
   values = (double*) malloc(im->Size()*sizeof(double));
   num_values = 0;
@@ -223,6 +222,7 @@ double     Func_med( InrImage* im, float percent, InrImage* mask)
       num_values++;
     } while ((*im_it)++);
   } else {
+    InrImageIteratorBase::ptr mask_it (mask->CreateConstIterator());
     im_it->InitBuffer();
     mask_it->InitBuffer();
     do {
