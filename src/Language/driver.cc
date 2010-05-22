@@ -73,12 +73,13 @@ bool Driver::parse_stream(std::istream& in,
 
   // Parse ...
   Parser parser(*this);
-  parser.set_debug_level(trace_parsing);
-  if (language_debug_stream.good()) 
-    parser.set_debug_stream(language_debug_stream);
-  else
-    parser.set_debug_stream(std::cout);
-
+  #ifdef YYDEBUG
+    parser.set_debug_level(trace_parsing);
+    if (language_debug_stream.good()) 
+      parser.set_debug_stream(language_debug_stream);
+    else
+      parser.set_debug_stream(std::cout);
+  #endif
 
   int res = 0;
   try {
