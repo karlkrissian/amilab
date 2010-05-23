@@ -345,13 +345,3 @@ if (!exists(SPClass)) {
     } #End of class
   
 } # End of if
-
-#----------------------------
-# Main
-#----------------------------
-
-if (!exists(spobj)) {
-  SPClass spobj
-} else {
-  InfoDialog "The script seems to be already loaded."
-}

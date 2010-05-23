@@ -98,18 +98,6 @@ if (!exists(RunExperimentsClass)){
     
     proc ::CarotidExperiments_CloseAll() {
       eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
-      // eval "del global::ReadPointsClass;"
-      // eval "del global::CropImageFromPointsClass;"
-      // eval "del global::NLmeansClass;"
-      // eval "del global::itkCreateProbabilityClass;"
-      // eval "del global::itkVesselnessClass;"
-      // eval "del global::itkSPClass;"
-      // eval "del global::CreateInitialSpheresClass;"
-      // eval "del global::CreateSkeletonClass;"
-      // eval "del global::itkFastMarchingClass;"
-      // eval "del global::itkSigmoidClass;"
-      // eval "del global::itkLevelSetClass;"
-      // eval "del global::config;"
       ::CarotidExperiments_Close
     }
     ::CarotidExperiments_CloseAll.Comments("Call ::CarotidExperiments_Close() method and delete the class variable")
@@ -1295,12 +1283,12 @@ if (!exists(RunExperimentsClass)){
     #------------------------------------------
     proc ::CarotidExperiments_Evaluation() \
     {
-      global::cmd = ::CONFIG->evaluation_scriptdir+"\\lumen.sh " \
+      ::cmd = ::CONFIG->evaluation_scriptdir+"\\lumen.sh " \
             + ::CONFIG->groundtruth_dir + " " \
             + ::CONFIG->results_dir + " " \
             + ::CONFIG->results_dir + " " \
             + ::datanumber_str
-      sh global::cmd
+      sh ::cmd
     }
     
     
@@ -1313,24 +1301,24 @@ if (!exists(RunExperimentsClass)){
       }
       # read the mask image
       ext_name = ::current_gtdir + "\\ext" + ::datanumber_str + ".mhd"
-      global::ext = ::itk->Read(ext_name)
+      ::ext = ::itk->Read(ext_name)
       # read the level set results
       imname = ::current_resultsdir+"\\levelset_result.ami.gz"
       printn " reading " + imname
-      global::lsres <<= Image imname
+      ::lsres <<= Image imname
     
       imname = ::current_resultsdir+"\\levelset_result_calc.ami.gz"
       printn " reading " + imname
-      global::lsres_calc <<= Image imname
+      ::lsres_calc <<= Image imname
     
       # Show: the LS, LS with calc, GT, initial spheres
       if (exists(::ls_surf)) { del ::ls_surf; }
-      global::ls_surf = isosurf(::lsres,0)
+      ::ls_surf = isosurf(::lsres,0)
       if (exists(::lscalc_surf)) { del ::lscalc_surf; }
-      global::lscalc_surf = isosurf(::lsres_calc,0)
+      ::lscalc_surf = isosurf(::lsres_calc,0)
     
       ::CarotidExperiments_InitialSpheres()
-      global::spheres_surf = isosurf(global::lsinit,0)
+      ::spheres_surf = isosurf(::lsinit,0)
     
       show ::ls_surf
       ::ls_surf_draw += ::lscalc_surf
@@ -1360,11 +1348,11 @@ if (!exists(RunExperimentsClass)){
       }
       # read the mask image
       ext_name = ::current_gtdir + "\\ext" + ::datanumber_str + ".mhd"
-      global::ext <<= ::itk->Read(ext_name)
+      ::ext <<= ::itk->Read(ext_name)
       # read the level set results obtained including calcifications
       imname = ::current_resultsdir+"\\levelset_result_calc.ami.gz"
       printn " reading " + imname
-      global::lsres <<= Image imname
+      ::lsres <<= Image imname
     
       # add an epsilon to the image
       ::lsres = ::lsres + 0.001

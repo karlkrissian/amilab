@@ -162,7 +162,7 @@ BasicVariable::ptr wrap_itkBackTrackingMeshFilter3D(ParamList* p)
   InternalImageType::Pointer image;
   
   typedef itk::Mesh<InternalPixelType,Dimension> MeshType;
-
+  
   MeshType::Pointer output = MeshType::New();
    
   // Convert from InrImage to ITK
@@ -174,7 +174,7 @@ BasicVariable::ptr wrap_itkBackTrackingMeshFilter3D(ParamList* p)
 
   typedef itk::BackTrackingMeshFilter<InternalImageType,MeshType,Dimension> BackTrackingFilterType;
   BackTrackingFilterType::Pointer BackTracking = BackTrackingFilterType::New();
-
+  
   BackTracking->SetInput(0, image );
   BackTracking->SetstartX( startX );
   BackTracking->SetstartY( startY );

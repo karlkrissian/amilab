@@ -224,8 +224,8 @@ if (!exists(itkSPClass)) {
       ::SetEndPoint(::endx,::endy,::endz)
       ::res = ::itk->FastMarchingImageFilter3D(::maxrepim_crop,\
             ::endx,::endy,::endz,\
-            ::maxcost)
-      ::res = ::res+5
+            ::maxcost,0)
+      //::res = ::res+5
       ::res = (::res>::maxcost)*::maxcost+(::res<=::maxcost)*::res
       #::res = ::itk->BinaryThresholdImageFilter3D(fast,0,100)
       #::res2 = vtkFastMarchingTarget(::maxrepim_crop,::fminit,::maxcost,::startx+0.5,::starty+0.5,::startz+0.5)

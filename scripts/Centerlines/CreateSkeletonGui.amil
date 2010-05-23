@@ -825,4 +825,3 @@ if (!exists(CreateSkeletonClass)) {
  } #End of class
   
 } # End of if
-      

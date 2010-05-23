@@ -27,12 +27,14 @@ InrImage* wrap_itkFastMarchingImageFilter2D(ParamList* p)
           seedX \n\
           seedY \n\
 					StoppingValue \n\
+          seedValue \n\
       ";
     
 	InrImage* input = NULL;
 	float seedX = 0.0;
 	float seedY = 0.0;
 	float stoppingTime = 0.0;
+  float seedValue = 0.0;
   InrImage* res = NULL;
   int n=0;
   
@@ -40,6 +42,7 @@ InrImage* wrap_itkFastMarchingImageFilter2D(ParamList* p)
   if (!get_val_param<float>( seedX, p, n))          HelpAndReturnNULL;
   if (!get_val_param<float>( seedY, p, n))          HelpAndReturnNULL;
   if (!get_val_param<float>( stoppingTime, p, n))   HelpAndReturnNULL;
+  if (!get_val_param<float>( seedValue, p, n))      HelpAndReturnNULL;
 
 
   typedef float       InternalPixelType;
@@ -77,7 +80,7 @@ InrImage* wrap_itkFastMarchingImageFilter2D(ParamList* p)
   std::cout << "seedPosition " << seedPosition << std::endl;
 
   NodeType node;
-  const double seedValue = -5.0;
+  //const double seedValue;
  
   node.SetValue( seedValue );
   node.SetIndex( seedPosition );
@@ -126,6 +129,7 @@ InrImage* wrap_itkFastMarchingImageFilter3D(ParamList* p)
           seedY \n\
 					seedZ \n\
 					StoppingValue \n\
+          seedValue \n\
       ";
     
 	InrImage* input = NULL;
@@ -133,6 +137,7 @@ InrImage* wrap_itkFastMarchingImageFilter3D(ParamList* p)
 	float seedY = 0.0;
 	float seedZ = 0.0;
 	float stoppingTime = 0.0;
+  float seedValue = 0.0;
   InrImage* res = NULL;
   int n=0;
   
@@ -141,6 +146,7 @@ InrImage* wrap_itkFastMarchingImageFilter3D(ParamList* p)
   if (!get_val_param<float>( seedY, p, n))          HelpAndReturnNULL;
   if (!get_val_param<float>( seedZ, p, n))          HelpAndReturnNULL;
   if (!get_val_param<float>( stoppingTime, p, n))   HelpAndReturnNULL;
+  if (!get_val_param<float>( seedValue, p, n))      HelpAndReturnNULL;
 
   typedef float               InternalPixelType;
   const   unsigned int        Dimension = 3;
@@ -178,7 +184,7 @@ InrImage* wrap_itkFastMarchingImageFilter3D(ParamList* p)
   std::cout << "seedPosition " << seedPosition << std::endl;
 
   NodeType node;
-  const double seedValue = -5;
+  //const double seedValue;
    
   node.SetValue( seedValue );
   node.SetIndex( seedPosition );

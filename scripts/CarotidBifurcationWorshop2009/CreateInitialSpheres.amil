@@ -70,9 +70,9 @@ if (!exists(CreateInitialSpheresClass)) {
 
       # add spheres
       res=-10
-      eval "pt1_ok = global::pt1_OK;"
-      eval "pt2_ok = global::pt2_OK;"
-      eval "pt3_ok = global::pt3_OK;"
+      eval "pt1_ok = ::pt1_OK;"
+      eval "pt2_ok = ::pt2_OK;"
+      eval "pt3_ok = ::pt3_OK;"
       if (pt1_ok) {
         ::ASCIS->AddBrightSphereGlobal_mm(&res,global::p1x,global::p1y,global::p1z,size,-10,10)
       }
