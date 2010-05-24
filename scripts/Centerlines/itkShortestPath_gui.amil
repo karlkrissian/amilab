@@ -192,57 +192,65 @@ if (!exists(itkSPClass)) {
       #::load_speed()
     
       # force a minimal value of ::epsilon
-      ::maxrepim_crop = ::speed+::epsilon
+      maxrepim_crop = ::speed+::epsilon
       if (::use_input_speed) {
-        ::maxrepim_crop = ::maxrepim_crop + \
+        maxrepim_crop = maxrepim_crop + \
                         (::input>::input_Imin)*\
                         (::input<::input_Imax)*::input_speed
       }
     
       # Add Spheres around extremities to facilitate
       # their connections
-      ::AS->AddBrightSphere_mm( &::maxrepim_crop,\
+      ::AS->AddBrightSphere_mm( &maxrepim_crop,\
                           ::startx,::starty,::startz,\
                           3,0.01,0.5)
 
       # Run a Fast Marching start from End (point or mask) 
       # up to distance 1000
-      ::fminit = (FLOAT) ::maxrepim_crop*0+::maxcost
-
-      ::AS->AddBrightSphere_mm( &::maxrepim_crop,\
+      fminit <<= (FLOAT) maxrepim_crop*0+::maxcost
+      
+      if (::end_mode==0) {
+        ::AS->AddBrightSphere_mm( &maxrepim_crop,\
                             ::endx,::endy,::endz,\
                             3,0.01,0.5)
-      if (::endx<2) { ::endx=2; }
-      if (::endy<2) { ::endy=2; }
-      if (::endz<2) { ::endz=2; }
-      ::fminit.setpos(::endx,::endy,::endz)
-      ::fminit.set(-::maxcost)
+        if (::endx<2) { ::endx=2; }
+        if (::endy<2) { ::endy=2; }
+        if (::endz<2) { ::endz=2; }
+        fminit.setpos(::endx,::endy,::endz)
+        fminit.set(-::maxcost)
+      } else {
+        fminit = fminit*(::endmask<=0.5)+(::endmask>=0.5)*-::maxcost
+      }
     
       #maxrepim_crop = maxrepim_crop/10
       # running fast marching until the point 1 is reached
       printn "FMT"
-      ::SetEndPoint(::endx,::endy,::endz)
-      ::res = ::itk->FastMarchingImageFilter3D(::maxrepim_crop,\
-            ::endx,::endy,::endz,\
-            ::maxcost,0)
-      //::res = ::res+5
-      ::res = (::res>::maxcost)*::maxcost+(::res<=::maxcost)*::res
-      #::res = ::itk->BinaryThresholdImageFilter3D(fast,0,100)
-      #::res2 = vtkFastMarchingTarget(::maxrepim_crop,::fminit,::maxcost,::startx+0.5,::starty+0.5,::startz+0.5)
-      ::res.info
+      //::SetEndPoint(::endx,::endy,::endz)
+      if (::end_mode == 0){
+        res = ::itk->FastMarchingImageFilter3D(maxrepim_crop,\
+              ::endx,::endy,::endz,\
+              ::maxcost,0)
+        //::res = ::res+5
+        res = (res>::maxcost)*::maxcost+(res<=::maxcost)*res
+        #::res = ::itk->BinaryThresholdImageFilter3D(fast,0,100)
+        #::res2 = vtkFastMarchingTarget(::maxrepim_crop,::fminit,::maxcost,::startx+0.5,::starty+0.5,::startz+0.5)
+        res.info
+      } else {
+        res = vtkFastMarchingTarget(maxrepim_crop,fminit,::maxcost,::startx+0.5,::starty+0.5,::startz+0.5)
+      }
     
       if (::save_FM) {
-        ::FM <<= ::res
+        ::FM = res
       }
 
       # reset the maximum to limit gradient and lower side effects of linear interpolation
       epsilon = 0.0001
-      maxdist = max[::res<::maxcost-epsilon](::res)
-      ::res = ::res*(::res<=(maxdist+epsilon))+(::res>(maxdist+epsilon))*(maxdist+epsilon)
+      maxdist = max[res<::maxcost-epsilon](res)
+      res = res*(res<=(maxdist+epsilon))+(res>(maxdist+epsilon))*(maxdist+epsilon)
 
       printn "FMT done"
       if (exists(::path)) { del ::path; }
-      ::path = ::itk->BackTrackingMeshFilter3D( ::res,\
+      ::path = ::itk->BackTrackingMeshFilter3D( res,\
                                   ::Px1,::Py1,::Pz1,\
                                   ::step_size,\
                                   ::maxlength,\

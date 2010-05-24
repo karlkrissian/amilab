@@ -180,7 +180,7 @@ if (!exists(SPClass)) {
       show ::input
       show ::speed
       ::input_draw.compare(::speed)
-      if (exists(global::path)) { show global::path; }
+      if (exists(::path)) { show ::path; }
     }  
     #----------------------------
     proc ::Close() \
@@ -243,34 +243,34 @@ if (!exists(SPClass)) {
       #maxrepim_crop = maxrepim_crop/10
       # running fast marching until the point 1 is reached
       printn "FMT"
-      ::res = ::itk->FastMarchingImageFilter3D(maxrepim_crop,\
-            ::endx,::endy,::endz,\
-            ::maxcost)
-      ::res = ::res+5
-      ::res = (::res>::maxcost)*::maxcost+(::res<=::maxcost)*::res
-      //#res = vtkFastMarchingTarget(maxrepim_crop,fminit,::maxcost,\
-                            //::startx+0.5,::starty+0.5,::startz+0.5)
-      ::res.info
+      //::res = ::itk->FastMarchingImageFilter3D(maxrepim_crop,\
+            //::endx,::endy,::endz,\
+            //::maxcost)
+      //::res = ::res+5
+      //::res = (::res>::maxcost)*::maxcost+(::res<=::maxcost)*::res
+      res = vtkFastMarchingTarget(maxrepim_crop,fminit,::maxcost,\
+                            ::startx+0.5,::starty+0.5,::startz+0.5)
+      #::res.info
     
       if (::save_FM) {
-        ::FM <<= ::res
+        ::FM = res
       }
 
       # reset the maximum to limit gradient and lower side effects of linear interpolation
       epsilon = 0.0001
-      maxdist = max[::res<::maxcost-epsilon](::res)
-      ::res = ::res*(::res<=(maxdist+epsilon))+(::res>(maxdist+epsilon))*(maxdist+epsilon)
+      maxdist = max[res<::maxcost-epsilon](res)
+      res = res*(res<=(maxdist+epsilon))+(res>(maxdist+epsilon))*(maxdist+epsilon)
 
       printn "FMT done"
-      if (exists(global::path)) { del global::path; }
+      if (exists(::path)) { del ::path; }
       if (::end_mode==0) {
-        global::path = PathFromVectField( ::res,\
+        ::path = PathFromVectField( res,\
                                   ::step_size,\
                                   ::maxlength,\
                                   ::Px1,::Py1,::Pz1,\
                                   ::Px2,::Py2,::Pz2)
       } else {
-        global::path = PathFromVectField( ::res,\
+        ::path = PathFromVectField( res,\
                                   ::step_size,\
                                   ::maxlength,\
                                   ::Px1,::Py1,::Pz1)

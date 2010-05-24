@@ -273,8 +273,8 @@ if (!exists(MultilinesClass)) {
     
       if (::local_maxima) {
         # copy the 2 eigenvectors
-        global::current_v1 <<= eig[3]
-        global::current_v2 <<= eig[4]
+        ::current_v1 <<= eig[3]
+        ::current_v2 <<= eig[4]
       }
     
     } // ::ComputeResponse_new
@@ -347,8 +347,8 @@ if (!exists(MultilinesClass)) {
         if (i==0) {
           max_response=response
           prev_response=response
-          global::maxima = response*0
-          global::maxima = response*0
+          ::maxima = response*0
+          ::maxima = response*0
           v1_max=v1
           v2_max=v2
           v3_max=v3
@@ -357,7 +357,7 @@ if (!exists(MultilinesClass)) {
     
           // Update the maxima
           // only keep the first maxima found
-          global::maxima = (global::maxima!=0)*global::maxima+(global::maxima==0)*(global::maxima>response)*global::maxima
+          ::maxima = (::maxima!=0)*::maxima+(::maxima==0)*(::maxima>response)*::maxima
     
           v1_max = v1_max*(max_response>=response)+v1*(max_response<response)
           v2_max = v2_max*(max_response>=response)+v2*(max_response<response)
@@ -365,8 +365,8 @@ if (!exists(MultilinesClass)) {
           radius = (max_response>=response)*radius+(max_response<response)*rad
           max_response=max(response,max_response)
           // Compute local maxima
-          global::maxima = LocalExtrema(response,v1,v2,mask)
-          global::maxima = global::maxima*(response>prev_response)
+          ::maxima = LocalExtrema(response,v1,v2,mask)
+          ::maxima = ::maxima*(response>prev_response)
           
         }
     
@@ -382,7 +382,7 @@ if (!exists(MultilinesClass)) {
       real_maxima2 = LocalExtrema(max_response,v1_max,v2_max,::mask)
     
       # save maximal response to file
-      global::result    = max_response
+      ::result    = max_response
       maxresult = real_maxima2
       radii     = radius
     
@@ -450,8 +450,8 @@ if (!exists(MultilinesClass)) {
           if (::local_maxima) {
             # 3 more images in memory
             prev_response=response
-            global::maxima = response*0
-            global::maxima <<= response*0
+            ::maxima = response*0
+            ::maxima <<= response*0
             if (::keep_orientations) {
               # check how to get the vectors here, or keep the symmetric matric??
               #v1_max=v1
@@ -468,7 +468,7 @@ if (!exists(MultilinesClass)) {
           if (::local_maxima) {
             # Update the maxima
             # only keep the first maxima found
-            global::maxima = (global::maxima!=0)*global::maxima+(global::maxima==0)*(global::maxima>response)*global::maxima
+            ::maxima = (::maxima!=0)*::maxima+(::maxima==0)*(::maxima>response)*::maxima
             if (::keep_orientations) {
               # to do
               #v1_max = v1_max*(max_response>=response)+v1*(max_response<response)
@@ -479,8 +479,8 @@ if (!exists(MultilinesClass)) {
               radius = (max_response>=response)*radius+(max_response<response)*rad
             }
             # Compute local maxima
-            global::maxima = LocalExtrema(response,global::current_v1,global::current_v2,::mask)
-            global::maxima = global::maxima*(response>prev_response)
+            ::maxima = LocalExtrema(response,::current_v1,::current_v2,::mask)
+            ::maxima = ::maxima*(response>prev_response)
           } 
           # end if (::local_maxima)
         }
@@ -491,12 +491,12 @@ if (!exists(MultilinesClass)) {
 
       # free memory from global images used for the computation
       if (::local_maxima) {
-        del global::current_v1
-        del global::current_v2
+        del ::current_v1
+        del ::current_v2
       }
 
       # set the result image
-      global::result <<= max_response
+      ::result <<= max_response
 
       SetProgress(0)
       SetStatusText( "Finished MultiLines_new" )
@@ -516,9 +516,9 @@ if (!exists(MultilinesClass)) {
     #-----------------------------------------------
     proc ::Display() {
       show ::input
-      if (exists(global::result)) {
-        show global::result
-        ::input_draw.compare(global::result_draw)
+      if (exists(::result)) {
+        show ::result
+        ::input_draw.compare(::result_draw)
       }
       if (exists(::roi_contour)) {
         ::input_draw.SetIsoContour(0,::roi_contour,0.5)
@@ -528,7 +528,7 @@ if (!exists(MultilinesClass)) {
     
     #-----------------------------------------------
     proc ::Save() {
-      global::result.save ::output_name
+      ::result.save ::output_name
     }
     
     proc ::SetParentPanel(OBJECT pp) \
