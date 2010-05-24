@@ -1,7 +1,7 @@
 if (!exists(config)) \
 {
   Class config{
-    basedir    = "C:\\Documents and Settings\\Darkmind\\Escritorio\\workshop\\"
+    basedir    = "G:\\Documents and Settings\\Alan\\Desktop\\Datos Workshop\\"
 
     ::data_dir              = basedir+"data\\"
     ::groundtruth_dir       = basedir+"groundtruth\\"

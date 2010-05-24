@@ -267,6 +267,7 @@ if (!exists(RunExperimentsClass)){
       # save multiscale local maxima
       ::ML->local_maxima = 1
       ::ML->MultiLines_new
+      ::win.Update(-1)
     }
     
     #-----------------------------------------
@@ -346,7 +347,7 @@ if (!exists(RunExperimentsClass)){
       SetStatusText("Creating paths ...")
       # load the shortest path script
       
-      ::CIS->CheckInitialPoints(::CIFP->input_cropped,::sphereradii)
+      ::CIS->CheckInitialPoints(&::RP,::CIFP->input_cropped,::sphereradii)
       if (!::nointeraction) {
         if (!exists(::CIS->pt1_OK)) { InfoDialog "Discarded point 1"; }
         if (!exists(::CIS->pt2_OK)) { InfoDialog "Discarded point 2"; }
@@ -557,10 +558,10 @@ if (!exists(RunExperimentsClass)){
       lIp <<= lI.GetLine(0)
 
       # check for remaining distance of CCA
-      ::remaining_dist = ::mindistz-::covered_distz_C
+      remaining_dist = ::mindistz-::covered_distz_C
       eval "printn ::nointeraction;"
-      eval "printn ::remaining_dist;"
-      if (::remaining_dist>0) {
+      eval "printn remaining_dist;"
+      if (remaining_dist>0) {
         if (!::nointeraction) {
           InfoDialog "Computing remaining path for CCA"
         }
@@ -568,7 +569,7 @@ if (!exists(RunExperimentsClass)){
         # 1. crop the speed image in Z from selected up to 
         #    the remaining distance
         maxz = lIp(0,0,0,2)
-        minz = maxz-::remaining_dist
+        minz = maxz-remaining_dist
         # convert to voxel coordinates
         minz = (minz-::speed.trz)/::speed.vz
         maxz = (maxz-::speed.trz)/::speed.vz
@@ -588,9 +589,9 @@ if (!exists(RunExperimentsClass)){
 
         # close and reload ShortestPath
         if (exists(::SP->Close())) { ::SP->Close(); }
-                
+
         # set the parameters and run
-        ::input2 <<= ::CIFP->input_cropped[::speed2]
+        ::input2 <<= ((FLOAT)::CIFP->input_cropped[::speed2])
         #::SP->input_name = "::input2"
         #::SP->speed_name = "::speed2"
 
@@ -598,9 +599,9 @@ if (!exists(RunExperimentsClass)){
         ::endmask <<= ((FLOAT) Zpos(::speed2)<5)
 
         ::SP->epsilon         = 0.01
-        ::SP->maxcost         = ::remaining_dist+5
+        ::SP->maxcost         = remaining_dist+5
         ::SP->step_size       = 0.01
-        ::SP->maxlength       = ::remaining_dist+20
+        ::SP->maxlength       = remaining_dist+20
         ::SP->use_input_speed = 1
         ::SP->input_Imin      = ::minvesselint
         ::SP->input_Imax      = ::maxvesselint
@@ -611,7 +612,7 @@ if (!exists(RunExperimentsClass)){
         ::SP->set_input(::input2)
         ::SP->set_speed(::speed2)
         ::SP->set_endmask(::endmask)
-        ::win.Update(-1)
+        //::win.Update(-1)
     
         ::SP->SetStartPointWorld(::RP->p1x,::RP->p1y,::RP->p1z)
         ::SP->Run()
@@ -619,7 +620,6 @@ if (!exists(RunExperimentsClass)){
         if (exists(::pathCC_rems)) { del ::pathCC_rems; }
         # path from Common to Internal Carotid Arteries
         ::pathCC_rems = SmoothLines(::SP->path)
-		SetStatusText("SmoothLines")
 
         # update covered dist
         lC_rem_p = ::pathCC_rems.GetLine(0)
@@ -685,8 +685,8 @@ if (!exists(RunExperimentsClass)){
       lIp <<= lI.GetLine(0)
 
       # check for remaining distance of ICA
-      ::remaining_dist = ::maxdistz_ICA-::covered_distz_I
-      if (::remaining_dist>0) {
+      remaining_dist = ::maxdistz_ICA-::covered_distz_I
+      if (remaining_dist>0) {
         if (!::nointeraction) {
           InfoDialog "Computing remaining path for ICA"
         }
@@ -694,7 +694,7 @@ if (!exists(RunExperimentsClass)){
         # 1. crop the speed image in Z from selected up to 
         #    the remaining distance
         minz = lIp(lIp.tx-1,0,0,2)
-        maxz = minz+::remaining_dist
+        maxz = minz+remaining_dist
         # convert to voxel coordinates
         minz = (minz-::speed.trz)/::speed.vz
         maxz = (maxz-::speed.trz)/::speed.vz
@@ -737,9 +737,9 @@ if (!exists(RunExperimentsClass)){
 
         # close and reload ShortestPath
         if (exists(::SP->Close())) { ::SP->Close(); }
-                
+        
         # set the parameters and run
-        ::input2 <<= ::CIFP->input_cropped[::speed2]
+        ::input2 <<= ((FLOAT) ::CIFP->input_cropped[::speed2])
         #::SP->input_name = "::input2"
         #::SP->speed_name = "::speed2"
 
@@ -748,7 +748,7 @@ if (!exists(RunExperimentsClass)){
                                         (::speed2.tz-1-5)
 
         ::SP->epsilon         = 0.01
-        ::SP->maxcost         = ::remaining_dist+5
+        ::SP->maxcost         = remaining_dist+5
         ::SP->step_size       = 0.01
         ::SP->maxlength       = 200
         ::SP->use_input_speed = 1
@@ -761,7 +761,7 @@ if (!exists(RunExperimentsClass)){
         ::SP->set_input(::input2)
         ::SP->set_speed(::speed2)
         ::SP->set_endmask(::endmask)
-        ::win.Update(-1)
+        //::win.Update(-1)
     
         ::SP->SetStartPointWorld(lIp(lIp.tx-1,0,0,0),\
                                 lIp(lIp.tx-1,0,0,1),\
@@ -954,8 +954,8 @@ if (!exists(RunExperimentsClass)){
         ::LS->threads                = 4
         # estimate running time based on the remaining centerline distance to segment
         if (exists(::covered_distz_E)) {
-          ::remaining_dist = ::maxdistz_ECA-::covered_distz_E
-          remaining_Tmin = ::remaining_dist/::CIFP->input_cropped.vz
+          remaining_dist = ::maxdistz_ECA-::covered_distz_E
+          remaining_Tmin = remaining_dist/::CIFP->input_cropped.vz
           ::LS->T           = max(60,remaining_Tmin*3);
         } else {
           ::LS->T = 60
@@ -1031,7 +1031,7 @@ if (!exists(RunExperimentsClass)){
           ::pathCIs_res   = ResampleLines(::pathCIs,::resample_dist)
           radii         = Image(FLOAT,::pathCIs_res.NbPoints,1,1)
           radii         = ::tube_size
-          ::pathCI_lsinit <<= LineRecons(::pathCIs_res,::input_cropped,radii)
+          ::pathCI_lsinit <<= LineRecons(::pathCIs_res,::CIFP->input_cropped,radii)
         }
     
         #--- check for computed remaining centerline
@@ -1070,8 +1070,8 @@ if (!exists(RunExperimentsClass)){
         ::LS->threads                = 4
         # estimate running time based on the remaining centerline distance to segment
         if (exists(::covered_distz_I)) {
-          ::remaining_dist = ::maxdistz_ICA-::covered_distz_I
-          remaining_Tmin = ::remaining_dist/::CIFP->input_cropped.vz
+          remaining_dist = ::maxdistz_ICA-::covered_distz_I
+          remaining_Tmin = remaining_dist/::CIFP->input_cropped.vz
           ::LS->T           = max(60,remaining_Tmin*3);
           #eval "printn "+::LS->T+";"
         } else {

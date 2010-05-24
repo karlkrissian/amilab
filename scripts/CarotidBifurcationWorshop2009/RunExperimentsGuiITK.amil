@@ -15,16 +15,18 @@ if (!exists(RunExperimentsClass)){
   func "Centerlines/itkShortestPath_gui.amil"
   func "Centerlines/CreateSkeletonGui.amil"
   # load the Level Sets Gui script
-  func "Segmentation/LevelSets/LevelSetsGui1.amil"
+  //func "Segmentation/LevelSets/LevelSetsGui1.amil"
   func "SyntheticImages/AddSphere.amil"
   func "BasicFilters/itkSigmoidFilter.amil"
   func "Segmentation/itkFastMarching.amil"
-  func "Segmentation/itkLevelSet.amil"
+  func "Segmentation/LevelSets/LevelSetsGui1.amil"
   func "carotidchallenge_config.amil"  
+  func "Centerlines/MultiLines.amil"
 
   Class RunExperimentsClass{
   
     global::ReadPointsClass ::RP
+    global::MultilinesClass ::ML
     global::CropImageFromPointsClass ::CIFP
     global::NLmeansClass ::NLM
     global::itkCreateProbabilityClass ::itkCP
@@ -32,7 +34,7 @@ if (!exists(RunExperimentsClass)){
     global::itkSPClass ::itkSP
     global::CreateInitialSpheresClass ::CIS
     global::CreateSkeletonClass ::CS
-    global::itkLevelSetClass ::itkLS
+    global::LevelSetsClass ::LS
     global::AddSphereClass ::AS
     global::itkSigmoidClass ::SIG
     global::itkFastMarchingClass ::FAST
@@ -98,17 +100,23 @@ if (!exists(RunExperimentsClass)){
     
     proc ::CarotidExperiments_CloseAll() {
       eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
+      eval "del global::ReadPointsClass;"
+      eval "del global::CropImageFromPointsClass;"
+      eval "del global::NLmeansClass;"
+      eval "del global::itkCreateProbabilityClass;"
+      eval "del global::itkVesselnessClass;"
+      eval "del global::itkSPClass;"
+      eval "del global::CreateInitialSpheresClass;"
+      eval "del global::CreateSkeletonClass;"
+      eval "del global::itkFastMarchingClass;"
+      eval "del global::itkSigmoidClass;"
+      eval "del global::LevelSetsClass;"
+      eval "del global::config;"
+      eval "del global::AddSphereClass;"
       ::CarotidExperiments_Close
     }
     ::CarotidExperiments_CloseAll.Comments("Call ::CarotidExperiments_Close() method and delete the class variable")
-    
-    // proc ::CarotidExperiments_CheckConfigFile() \
-    // {
-      // config_filename = "carotidchallenge_config.amil"
-      // func config_filename
-      // ::win.Update(-1)
-    // }
-    
+        
     #------------------------------------------
     proc ::CarotidExperiments_ReadData() \
     {
@@ -268,11 +276,48 @@ if (!exists(RunExperimentsClass)){
       #::ML->mask_name  = "global::mask"
       ::itkVS->set_input(vesselness_input)
       #::itkVS->set_mask(global::mask)
-      ::itkVS->sigmaMin = 0.5
-      ::itkVS->sigmaMax = 7
+      ::itkVS->sigmaMin = 0.3
+      ::itkVS->sigmaMax = 3
       ::itkVS->scalesNumber = 7
            
       ::itkVS->Run
+    }
+    
+    proc ::CarotidExperiments_Vesselnessk() \
+    {
+    
+      if (!::ves_downsample) {
+        # trunk max intensities to  ::maxvesselint
+        vesselness_input <<= ::CIFP->input_cropped* (::CIFP->input_cropped<::maxvesselint)+\
+                          (::CIFP->input_cropped>=::maxvesselint)*::maxvesselint
+        mask <<= (UCHAR) ((::CIFP->input_cropped>::minvesselint)*\
+                                     (::CIFP->input_cropped<::maxvesselint)*255)
+      } else {
+        # first downsample in X and Y
+        vesselness_input <<= Resize(::CIFP->input_cropped, \
+            ::CIFP->input_cropped.tx/2,::CIFP->input_cropped.ty/2,\
+            ::CIFP->input_cropped.tz,1)
+        mask <<= (UCHAR) ( (vesselness_input>::minvesselint)*\
+                                      (vesselness_input<::maxvesselint)*255)
+    
+        vesselness_input = \
+            vesselness_input*(vesselness_input<::maxvesselint)+\
+            (vesselness_input>=::maxvesselint)*::maxvesselint
+      }
+      #::ML->input_name = "global::vesselness_input"
+      #::ML->mask_name  = "global::mask"
+      ::ML->set_input(vesselness_input)
+      ::ML->set_mask(mask)
+      ::ML->radmin = 0.5
+      ::ML->radmax = 7
+      ::ML->numrad = 7
+      ::ML->mode = 1
+      # Keep the 80% highest values along the boundary
+      ::ML->keephighest = 80
+      # save multiscale local maxima
+      ::ML->local_maxima = 1
+      ::ML->MultiLines_new
+      ::win.Update(-1)
     }
     
     #-----------------------------------------
@@ -366,9 +411,9 @@ if (!exists(RunExperimentsClass)){
       if (exists(::itkVS->result)) {
         if (exists(::itkCP->prob)) {
           # ensure that CP_prob is maximum around local maxima
-          if (exists(::maxima)) {
+          if (exists(::ML->maxima)) {
             # threshold to get maxima positions
-            maxima_neigh = (::maxima>::mlmax_threshold)
+            maxima_neigh = (::ML->maxima>::mlmax_threshold)
             # dilate a little
             maxima_neigh = EDPdilate(maxima_neigh,1,0.25)
 
@@ -417,7 +462,7 @@ if (!exists(RunExperimentsClass)){
         # path 1
         ::itkSP->SetEndPointWorld(::RP->p2x,::RP->p2y,::RP->p2z)
         ::itkSP->Run
-        ::path1 = ::itkSP->res
+        //::path1 = ::itkSP->res
         # path from Common to Internal Carotid Arteries
         if (exists(::pathCI)) { del ::pathCI; }
         ::pathCI = ::itkSP->path
@@ -431,7 +476,7 @@ if (!exists(RunExperimentsClass)){
         # path 2
         ::itkSP->SetEndPointWorld(::RP->p3x,::RP->p3y,::RP->p3z)
         ::itkSP->Run
-        ::path2 = ::itkSP->maxrepim_crop
+        //::path2 = ::itkSP->res
         # path from Common to External Carotid Arteries
         if (exists(::pathCE)) { del ::pathCE; }
         ::pathCE = ::itkSP->path
@@ -566,10 +611,10 @@ if (!exists(RunExperimentsClass)){
       lIp <<= lI.GetLine(0)
 
       # check for remaining distance of CCA
-      ::remaining_dist = ::mindistz-::covered_distz_C
+      remaining_dist = ::mindistz-::covered_distz_C
       eval "printn ::nointeraction;"
-      eval "printn ::remaining_dist;"
-      if (::remaining_dist>0) {
+      eval "printn remaining_dist;"
+      if (remaining_dist>0) {
         if (!::nointeraction) {
           InfoDialog "Computing remaining path for CCA"
         }
@@ -577,7 +622,7 @@ if (!exists(RunExperimentsClass)){
         # 1. crop the speed image in Z from selected up to 
         #    the remaining distance
         maxz = lIp(0,0,0,2)
-        minz = maxz-::remaining_dist
+        minz = maxz-remaining_dist
         # convert to voxel coordinates
         minz = (minz-::speed.trz)/::speed.vz
         maxz = (maxz-::speed.trz)/::speed.vz
@@ -599,17 +644,19 @@ if (!exists(RunExperimentsClass)){
         if (exists(::itkSP->Close())) { ::itkSP->Close(); }
                 
         # set the parameters and run
-        ::input2 <<= ::CIFP->input_cropped[::speed2]
+        ::input2 <<= ((FLOAT)::CIFP->input_cropped[::speed2])
         #::SP->input_name = "::input2"
         #::SP->speed_name = "::speed2"
 
         # end mask contains the first voxels in Z axis
         ::endmask <<= ((FLOAT) Zpos(::speed2)<5)
+        
+        //::itkSP->init
 
         ::itkSP->epsilon         = 0.01
-        ::itkSP->maxcost         = ::remaining_dist+5
+        ::itkSP->maxcost         = remaining_dist+5
         ::itkSP->step_size       = 0.01
-        ::itkSP->maxlength       = ::remaining_dist+20
+        ::itkSP->maxlength       = remaining_dist+20
         ::itkSP->use_input_speed = 1
         ::itkSP->input_Imin      = ::minvesselint
         ::itkSP->input_Imax      = ::maxvesselint
@@ -637,7 +684,7 @@ if (!exists(RunExperimentsClass)){
           ::covered_distz_C = ::Jz-minC_rem_z; 
         }
       } else {
-      # end if ::remaining_dist>0
+      # end if remaining_dist>0
         # here we don´t cut both path at the beginning
       }
       SetStatusText("CCA length: done")
@@ -694,8 +741,8 @@ if (!exists(RunExperimentsClass)){
       lIp <<= lI.GetLine(0)
 
       # check for remaining distance of ICA
-      ::remaining_dist = ::maxdistz_ICA-::covered_distz_I
-      if (::remaining_dist>0) {
+      remaining_dist = ::maxdistz_ICA-::covered_distz_I
+      if (remaining_dist>0) {
         if (!::nointeraction) {
           InfoDialog "Computing remaining path for ICA"
         }
@@ -703,7 +750,7 @@ if (!exists(RunExperimentsClass)){
         # 1. crop the speed image in Z from selected up to 
         #    the remaining distance
         minz = lIp(lIp.tx-1,0,0,2)
-        maxz = minz+::remaining_dist
+        maxz = minz+remaining_dist
         # convert to voxel coordinates
         minz = (minz-::speed.trz)/::speed.vz
         maxz = (maxz-::speed.trz)/::speed.vz
@@ -748,7 +795,7 @@ if (!exists(RunExperimentsClass)){
         if (exists(::itkSP->Close())) { ::itkSP->Close(); }
                 
         # set the parameters and run
-        ::input2 <<= ::CIFP->input_cropped[::speed2]
+        ::input2 <<= ((FLOAT)::CIFP->input_cropped[::speed2])
         #::SP->input_name = "::input2"
         #::SP->speed_name = "::speed2"
 
@@ -756,8 +803,10 @@ if (!exists(RunExperimentsClass)){
         ::endmask <<= ((FLOAT) Zpos(::speed2))>\
                                         (::speed2.tz-1-5)
 
+        //::itkSP->init
+                                        
         ::itkSP->epsilon         = 0.01
-        ::itkSP->maxcost         = ::remaining_dist+5
+        ::itkSP->maxcost         = remaining_dist+5
         ::itkSP->step_size       = 0.01
         ::itkSP->maxlength       = 200
         ::itkSP->use_input_speed = 1
@@ -788,7 +837,7 @@ if (!exists(RunExperimentsClass)){
           ::covered_distz_I = maxI_rem_z-::Jz; 
         }
       }
-      # end if ::remaining_dist>0
+      # end if remaining_dist>0
 
       # check for cutting the path
       zmax = ::Jz+::maxdistz_ICA
@@ -948,92 +997,70 @@ if (!exists(RunExperimentsClass)){
         }
       
         #--- Initialize the level set evolution
-        // if (exists(global::NLM_res)) {
-          // #::LS->input_name   = "global::NLM_res"
-          // ::FAST->set_input(global::NLM_res)
-        // } else {
-          // #::LS->input_name   = "global::input_cropped"
-          // ::FAST->set_input(global::input_cropped)
-        // }
-        // ::SIG->stand = 0.5
-        // ::SIG->min = 0.0
-        // ::SIG->max = 1.0
-        // ::SIG->alpha = -10
-        // ::SIG->beta = 30
-        // ::SIG->dim = 3
-        // ::SIG->Run
-        #::FAST->alpha =  -10
-        #::FAST->beta = 30
-        #::FAST->stopping_time = 100
-        #::FAST->gradient_mode = 0
-        #::FAST->dim = 3
-        #::FAST->set_sigmoid(global::sigmoid)
-        #::FAST->Run
+        if (exists(::NLM_res)) {
+          #::LS->input_name   = "global::NLM_res"
+          ::LS->Setinput(::NLM_res)
+        } else {
+          #::LS->input_name   = "global::input_cropped"
+          ::LS->Setinput(::CIFP->input_cropped)
+        }
         #::LS->initial_name   = "::path_lsinit"
-        #::LS->init_mode              = 1 
-        #::LS->accept_high_intensity  = 0
-        #::LS->use_expansion_image    = 1
-        #::LS->conv_freq              = 20
-        #::LS->threads                = 4
-        #global::fast = ::pathCE_lsinit
-        #global::sigmoid = ::pathCE_lsinit
-        ::sigmoid = ::itk->SigmoidImageFilter3D(::path2,0,100,-0.5,3)
-        ::itkLS->set_sigmoid(::sigmoid)
-        ::itkLS->set_fast(::path2)
-        ::itkLS->curScaling = 1
-        ::itkLS->proScaling = -0.01
-        ::itkLS->Run
+        ::LS->init_mode              = 1 
+        ::LS->accept_high_intensity  = 0
+        ::LS->use_expansion_image    = 1
+        ::LS->conv_freq              = 20
+        ::LS->threads                = 4
         # estimate running time based on the remaining centerline distance to segment
         if (exists(::covered_distz_E)) {
-          ::remaining_dist = ::maxdistz_ECA-::covered_distz_E
-          remaining_Tmin = ::remaining_dist/::CIFP->input_cropped.vz
-          #::LS->T           = max(60,remaining_Tmin*3);
+          remaining_dist = ::maxdistz_ECA-::covered_distz_E
+          remaining_Tmin = remaining_dist/::CIFP->input_cropped.vz
+          ::LS->T           = max(60,remaining_Tmin*3);
         } else {
-          #::LS->T = 60
+          ::LS->T = 60
         }
       
-        #::win.Update(-1)
+        ::win.Update(-1)
         #::LS->load_input()
-        #::LS->Setinitial(::pathCE_lsinit)
-        #::win.Update(-1)
+        ::LS->Setinitial(::pathCE_lsinit)
+        ::win.Update(-1)
 
         #--- Computes the intensity statistics
-        #::LS->ComputeIntensityStats()
+        ::LS->ComputeIntensityStats()
         ::win.Update(-1)
       
         #--- Compute the expansion force
         #     -- limit its range along Z axis based on the detected junction
-        // if (exists(::Jz)) {
-          // zmax = ::Jz+::maxdistz_ECA
-          // zmax = (zmax - ::itkLS->input.trz)/::itkLS->input.vz
-          // if (zmax>::itkLS->input.tz-1) { zmax=::itkLS->input.tz-1; }
-          // zmin = ::Jz-::mindistz
-          // zmin = (zmin - ::itkLS->input.trz)/::itkLS->input.vz
-          // if (zmin<0) { zmin=0;}
-        // } else {
-          // zmin = 0;
-          // zmax = ::itkLS->input.tz-1
-        // }
-        // ::pathCE_expforce = ::itkLS->input*0-0.5
-        // #     -- compute the force inside the ROI
-        // ::expforce_roi = ::pathCE_expforce[:,:,zmin:zmax]
-        // ::expforce_roi  = (::itkLS->input[::expforce_roi]-::itkLS->Imean)/::LS->Isd
-        // ::expforce_roi = ::expforce_roi*::expforce_roi
-        // ::expforce_roi = exp(-::expforce_roi/2)-exp(-(::ls_prob_limit*::ls_prob_limit)/2)
-        // ::pathCE_expforce.putimage(::expforce_roi)
+        if (exists(::Jz)) {
+          zmax = ::Jz+::maxdistz_ECA
+          zmax = (zmax - ::LS->input.trz)/::LS->input.vz
+          if (zmax>::LS->input.tz-1) { zmax=::LS->input.tz-1; }
+          zmin = ::Jz-::mindistz
+          zmin = (zmin - ::LS->input.trz)/::LS->input.vz
+          if (zmin<0) { zmin=0;}
+        } else {
+          zmin = 0;
+          zmax = ::LS->input.tz-1
+        }
+        ::pathCE_expforce = ::LS->input*0-0.5
+        #     -- compute the force inside the ROI
+        ::expforce_roi = ::pathCE_expforce[:,:,zmin:zmax]
+        ::expforce_roi  = (::LS->input[::expforce_roi]-::LS->Imean)/::LS->Isd
+        ::expforce_roi = ::expforce_roi*::expforce_roi
+        ::expforce_roi = exp(-::expforce_roi/2)-exp(-(::ls_prob_limit*::ls_prob_limit)/2)
+        ::pathCE_expforce.putimage(::expforce_roi)
       
-        // #::LS->expansion_image_name = "::pathCE_expforce"
-        // #::LS->load_expansion()
-        // ::LS->Setexpansion(::pathCE_expforce)
+        #::LS->expansion_image_name = "::pathCE_expforce"
+        #::LS->load_expansion()
+        ::LS->Setexpansion(::pathCE_expforce)
       
-        // # Run the evolution
-        // ::win.Update(-1)
-        // ::LS->ReRun()
-        ::pathCE_contours <<= ::itkLS->level
+        # Run the evolution
+        ::win.Update(-1)
+        ::LS->ReRun()
+        ::pathCE_contours <<= ::LS->inls
       
         # 1. Save Level Set resulting image
-        ::itkLS->level.save ::current_resultsdir+"\\levelset_CC_CE.ami.gz"
-        #::itkLS->SaveParams( ::current_resultsdir+"\\levelset_CC_CE.amil" )
+        ::LS->inls.save ::current_resultsdir+"\\levelset_CC_CE.ami.gz"
+        ::LS->SaveParams( ::current_resultsdir+"\\levelset_CC_CE.amil" )
 		SetStatusText("ECA levelset done...")
       }
     }
@@ -1086,9 +1113,9 @@ if (!exists(RunExperimentsClass)){
         ::pathCI_lsinit = ::pathCI_lsinit-255*exp(-0.5)
     
         #--- Initialize the level set evolution
-        if (exists(::NLM->NLM_res)) {
+        if (exists(::NLM_res)) {
           #::LS->input_name   = "global::NLM_res"
-          ::LS->Setinput(::NLM->NLM_res)
+          ::LS->Setinput(::NLM_res)
         } else {
           #::LS->input_name   = "global::input_cropped"
           ::LS->Setinput(::CIFP->input_cropped)
@@ -1101,8 +1128,8 @@ if (!exists(RunExperimentsClass)){
         ::LS->threads                = 4
         # estimate running time based on the remaining centerline distance to segment
         if (exists(::covered_distz_I)) {
-          ::remaining_dist = ::maxdistz_ICA-::covered_distz_I
-          remaining_Tmin = ::remaining_dist/::CIFP->input_cropped.vz
+          remaining_dist = ::maxdistz_ICA-::covered_distz_I
+          remaining_Tmin = remaining_dist/::CIFP->input_cropped.vz
           ::LS->T           = max(60,remaining_Tmin*3);
           #eval "printn "+::LS->T+";"
         } else {
