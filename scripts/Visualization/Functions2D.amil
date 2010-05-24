@@ -253,9 +253,9 @@ if (!exists(Functions2DClass)) {
       # add Drawing Window
       d = ::win.CurrentParent()
       ::dw = import->wxDrawingWindow(&d)
-      ::dw.SetMinSize(import->wxSize(50,80))
+      ::dw.SetMinSize(wx.wxSize(50,80))
       ::win.AddWidget(&::dw,0)
-      ::dw.SetBackgroundColour(import->wxColour(255,255,255))
+      ::dw.SetBackgroundColour(wx.wxColour(255,255,255))
       ::win.BeginBook
     
         ::win.AddPage("Param")

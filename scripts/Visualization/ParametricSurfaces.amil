@@ -380,12 +380,12 @@ if (!exists(ParametricSurfaceClass)) {
         ::win.BeginHorizontal
           scripts_dir = GetScriptsDir
 
-          upim = import->wxImage(scripts_dir+"/Bitmaps/update_icon_32.png")
-          upbmp = import->wxBitmap(upim)
+          upim = wx.wxImage(scripts_dir+"/Bitmaps/update_icon_32.png")
+          upbmp = wx.wxBitmap(upim)
           ::win.AddBitmapButton("Update", ::Update, upbmp)
 
-          closeim = import->wxImage(scripts_dir+"/Bitmaps/close_icon_32.png")
-          closebmp = import->wxBitmap(closeim)
+          closeim = wx.wxImage(scripts_dir+"/Bitmaps/close_icon_32.png")
+          closebmp = wx.wxBitmap(closeim)
           ::win.AddBitmapButton("Close", ::Close, closebmp )
 
           ::win.AddButton("Close All",          ::CloseAll)

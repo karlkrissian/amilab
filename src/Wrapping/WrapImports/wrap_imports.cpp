@@ -43,6 +43,8 @@ extern VarContexts  Vars;
 void AddWrapImports()
 {
 
+  AddWrapWxWidgets();
+
   // Create new instance of the class
   AMIObject::ptr amiobject(new AMIObject);
 
@@ -61,16 +63,6 @@ void AddWrapImports()
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"ParamPanel",wrap_ParamPanel);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"vtkLevelSets",wrap_vtkLevelSets);
 
-  ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxWindow",    wrap_wxWindow);
-
-  AddVar_wxSize( amiobject->GetContext());
-//  AddVar_wxSize(    Vars.GetBuiltinContext());
-//  ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxSize",      wrap_wxSize);
-
-  ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxColour",    wrap_wxColour);
-  ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxImage",     wrap_wxImage);
-  ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxBitmap",    wrap_wxBitmap);
-  ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxHtmlWindow",wrap_wxHtmlWindow);
 
   ADDOBJECTVAR_NAME(C_wrap_procedure,  "System",    wrap_System);
   ADDOBJECTVAR_NAME(C_wrap_procedure,  "ITK",       wrap_ITK);
@@ -86,4 +78,33 @@ void AddWrapImports()
   Vars.AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
 }
 
+void AddWrapWxWidgets()
+{
+
+  // Create new instance of the class
+  AMIObject::ptr amiobject(new AMIObject);
+
+  amiobject->SetName("wx");
+
+  // Set the object context
+  Variables::ptr previous_ocontext = Vars.GetObjectContext();
+  Vars.SetObjectContext(amiobject->GetContext());
+
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxWindow",    wrap_wxWindow);
+
+  AddVar_wxSize( amiobject->GetContext(), "wxSize");
+//  AddVar_wxSize(    Vars.GetBuiltinContext());
+
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxColour",    wrap_wxColour);
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxImage",     wrap_wxImage);
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxBitmap",    wrap_wxBitmap);
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxHtmlWindow",wrap_wxHtmlWindow);
+
+  // Restore the object context
+  Vars.SetObjectContext(previous_ocontext);
+
+  // 3. add the variables to this instance
+  Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+
+}
 

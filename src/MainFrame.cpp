@@ -638,7 +638,9 @@ void MainFrame::CreateVarTreePanel ( wxWindow* parent)
   _var_tree->SetFont( wxFont(10,wxMODERN,wxNORMAL,wxNORMAL)); // try a fixed pitch font
   _var_tree->SetIndent(5);
 
-  _vartree_root      = _var_tree->AddRoot(_T("Variables"));
+  _vartree_root        = _var_tree->AddRoot(_T("Root"));
+  _vartree_global      = _var_tree->AppendItem(_vartree_root,_T("Global"));
+  _vartree_builtin     = _var_tree->AppendItem(_vartree_root,_T("Builtin"));
 
   vartreepanel_sizer->Add(_var_tree, 1, wxEXPAND , 5);
   vartreepanel_sizer->Fit(_vartree_panel);
@@ -1574,10 +1576,16 @@ void MainFrame::UpdateVarsDisplay()
   root_font.SetWeight(wxFONTWEIGHT_BOLD);
   root_font.SetPointSize(10);
   _var_tree->SetItemFont(_vartree_root,root_font);
+  _var_tree->SetItemFont(_vartree_global, root_font);
+  _var_tree->SetItemFont(_vartree_builtin,root_font);
 
-  UpdateVarTree(_vartree_root, Vars.GetCurrentContext());
   _var_tree->Expand(  _vartree_root);
 
+  UpdateVarTree(_vartree_global, Vars.GetCurrentContext());
+  _var_tree->Expand(  _vartree_global);
+
+  UpdateVarTree(_vartree_builtin, Vars.GetBuiltinContext());
+  _var_tree->Expand(  _vartree_builtin);
 
 }
 

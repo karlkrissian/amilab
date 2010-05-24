@@ -129,3 +129,50 @@ BasicVariable::ptr WrapClass_wxImage::
   int res = this->_objectptr->_obj->IsOk();
   RETURN_VAR(int,res);
 }
+
+//---------------------------------------------------
+//  Scale2
+//---------------------------------------------------
+void WrapClass_wxImage::
+      wrap_Scale2::SetParametersComments() 
+{
+  ADDPARAMCOMMENT("width: new width.");
+  ADDPARAMCOMMENT("height: new height.");
+  return_comments="Scaled image.";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxImage::
+      wrap_Scale2::CallMember( ParamList* p)
+{
+  int width=-1;
+  int height=-1;
+  int n = 0;
+  if (!get_int_param(width, p, n)) ClassHelpAndReturn;
+  if (!get_int_param(height, p, n)) ClassHelpAndReturn;
+
+  return CreateVar_wxImage(
+    new wxImage(this->_objectptr->_obj->Scale(width,height)));
+}
+
+
+//---------------------------------------------------
+//  SaveFile
+//---------------------------------------------------
+void WrapClass_wxImage::
+      wrap_SaveFile::SetParametersComments() 
+{
+  ADDPARAMCOMMENT("string: name of the filename to save as.");
+  return_comments="boolean: success information.";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxImage::
+      wrap_SaveFile::CallMember( ParamList* p)
+{
+  std::string* filename = NULL;
+  int n = 0;
+  if (!get_val_ptr_param<string>( filename,  p, n)) 
+    ClassHelpAndReturn;
+
+  int res = this->_objectptr->_obj->SaveFile(*filename);
+  RETURN_VAR(int,res);
+}

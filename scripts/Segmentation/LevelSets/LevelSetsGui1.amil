@@ -795,9 +795,9 @@ if (!exists(LevelSetsClass)){
                 ::win.AddBoolean( &::accept_high_intensity,"Accept high intensities")
                 # add a Curve Drawing Window
                 ::dw = import->wxDrawingWindow(::win.CurrentParent())
-                ::dw.SetMinSize(import->wxSize(50,100))
+                ::dw.SetMinSize(wx.wxSize(50,100))
                 ::dw.SetBackgroundColour(\
-                    import->wxColour(255,255,255))
+                    wx.wxColour(255,255,255))
                 ::win.AddWidget(&::dw,0)
 
               ::imexp_page = ::win.AddPage("Image")
@@ -888,7 +888,7 @@ if (!exists(LevelSetsClass)){
         ::win.EndHorizontal
         # add html widget
         d = ::win.CurrentParent()
-        ::html = import->wxHtmlWindow(&d)
+        ::html = wx.wxHtmlWindow(&d)
         ::html.LoadFile( ::html_filename)
         ::win.AddWidget(&::html,1)
 

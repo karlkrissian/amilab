@@ -20,4 +20,9 @@
  */
 void AddWrapImports();
 
+/**
+ * Adding wrapped classes from wxwidgets library.
+ */
+void AddWrapWxWidgets();
+
 #endif //  _wrap_mainframe_h_

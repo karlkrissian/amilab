@@ -230,6 +230,8 @@ protected:
 
   myTreeCtrl*  _var_tree;
   wxTreeItemId _vartree_root;
+  wxTreeItemId _vartree_global;
+  wxTreeItemId _vartree_builtin;
   wxTreeItemId _vartree_images;
   wxTreeItemId _vartree_surfaces;
   wxTreeItemId _vartree_numbers;

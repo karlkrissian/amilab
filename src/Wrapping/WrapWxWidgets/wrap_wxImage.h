@@ -38,12 +38,16 @@ class WrapClass_wxImage : public WrapClassBase
     ADD_CLASS_METHOD(GetWidth,     "Gets the width of the image in pixels.");
     ADD_CLASS_METHOD(GetHeight,    "Gets the height of the image in pixels.");
     ADD_CLASS_METHOD(IsOk,         "Returns true if image data is present.");
+    ADD_CLASS_METHOD(Scale2,        "Returns a scaled version of the image.");
+    ADD_CLASS_METHOD(SaveFile,     "Saves an image in the named file. File type is determined from the extension of the file name.");
 
 
     void AddMethods( _parentclass_ptr& this_ptr ) {
       AddVar_GetWidth(       this_ptr);
       AddVar_GetHeight(      this_ptr);
-      AddVar_IsOk(        this_ptr);
+      AddVar_IsOk(           this_ptr);
+      AddVar_Scale2(         this_ptr);
+      AddVar_SaveFile(       this_ptr);
     }
 
 };

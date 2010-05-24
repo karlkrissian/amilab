@@ -72,7 +72,7 @@ template<> BasicVariable::ptr Variable<string>::operator /=(const BasicVariable:
 /**
  * The operator string % expr uses boost::format(string) % expr to return a formatted string
  * @param b string or numeric variable
- * @return 
+ * @return formatted string
  */
 template<> BasicVariable::ptr Variable<string>::operator %(const BasicVariable::ptr& b);
 

@@ -4,7 +4,7 @@
 #SetVerboseOn
 #import_itk
 
-ami_import->System
+ami_import->System()
 #InfoDialog l_script_dir
 
 func "ctest/ctest_config.amil"
