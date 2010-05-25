@@ -19,6 +19,7 @@ if (!exists(RunExperimentsClass)){
   func "SyntheticImages/AddSphere.amil"
   func "BasicFilters/itkSigmoidFilter.amil"
   func "Segmentation/itkFastMarching.amil"
+  func "Segmentation/itkLevelSet.amil"
   func "Segmentation/LevelSets/LevelSetsGui1.amil"
   func "carotidchallenge_config.amil"  
   func "Centerlines/MultiLines.amil"
@@ -35,6 +36,7 @@ if (!exists(RunExperimentsClass)){
     global::CreateInitialSpheresClass ::CIS
     global::CreateSkeletonClass ::CS
     global::LevelSetsClass ::LS
+    global::itkLevelSetClass ::itkLS
     global::AddSphereClass ::AS
     global::itkSigmoidClass ::SIG
     global::itkFastMarchingClass ::FAST
@@ -447,6 +449,7 @@ if (!exists(RunExperimentsClass)){
       ::itkSP->input_Imin      = ::minvesselint
       ::itkSP->input_Imax      = ::maxvesselint
       ::itkSP->input_speed     = 1
+      ::itkSP->save_FM         = 1
       
       #::SP->load_input()
       ::itkSP->set_input(::CIFP->input_cropped)
@@ -468,6 +471,7 @@ if (!exists(RunExperimentsClass)){
         ::pathCI = ::itkSP->path
         if (exists(::pathCIs)) { del ::pathCIs; }
         ::pathCIs = SmoothLines(::itkSP->path)
+        ::fastCI = ::itkSP->FM
       }
     
       if (exists(::CIS->pt3_OK)) \
@@ -482,6 +486,7 @@ if (!exists(RunExperimentsClass)){
         ::pathCE = ::itkSP->path
         if (exists(::pathCEs)) { del ::pathCEs; }
         ::pathCEs = SmoothLines(::itkSP->path)
+        ::fastCE = ::itkSP->FM
       }
     
       SetStatusText("Creating paths ... done")
@@ -995,73 +1000,101 @@ if (!exists(RunExperimentsClass)){
           ::pathCE_lsinit <<= LineRecons(::pathCEs_res,::CIFP->input_cropped,radii)
           ::pathCE_lsinit = ::pathCE_lsinit-255*exp(-0.5)
         }
-      
-        #--- Initialize the level set evolution
-        if (exists(::NLM_res)) {
-          #::LS->input_name   = "global::NLM_res"
-          ::LS->Setinput(::NLM_res)
-        } else {
-          #::LS->input_name   = "global::input_cropped"
-          ::LS->Setinput(::CIFP->input_cropped)
-        }
-        #::LS->initial_name   = "::path_lsinit"
-        ::LS->init_mode              = 1 
-        ::LS->accept_high_intensity  = 0
-        ::LS->use_expansion_image    = 1
-        ::LS->conv_freq              = 20
-        ::LS->threads                = 4
-        # estimate running time based on the remaining centerline distance to segment
+        
+        nt_ce = normgrad(::CIFP->input_cropped,1)
+        em_ce = exp(-nt_ce*nt_ce/(25*25*2))
+        
+        // ::SIG->set_input(::CIFP->input_cropped)
+        // ::SIG->alpha = -0.5
+        // ::SIG->beta = 3
+        // ::SIG->Run
+        
+        //::pathCE_lsinit = -::pathCE_lsinit
+        
+        ::itkLS->set_initial(-::pathCE_lsinit)
+        ::itkLS->set_edge(em_ce)
+        ::itkLS->curScaling = 0.05
+        ::itkLS->proScaling = 0.5
+        ::itkLS->advScaling = 0.5
+        ::itkLS->error = 0.02
+        //:itkLS->iterations = 100
         if (exists(::covered_distz_E)) {
           remaining_dist = ::maxdistz_ECA-::covered_distz_E
           remaining_Tmin = remaining_dist/::CIFP->input_cropped.vz
-          ::LS->T           = max(60,remaining_Tmin*3);
+          ::itkLS->iterations = max(60,remaining_Tmin*3);
         } else {
-          ::LS->T = 60
+          ::itkLS->iterarions = 60
         }
+        ::itkLS->RunNew
+        
+        ::pathCE_contours <<= -::itkLS->level
       
-        ::win.Update(-1)
-        #::LS->load_input()
-        ::LS->Setinitial(::pathCE_lsinit)
-        ::win.Update(-1)
+        // #--- Initialize the level set evolution
+        // if (exists(::NLM_res)) {
+          // #::LS->input_name   = "global::NLM_res"
+          // ::LS->Setinput(::NLM_res)
+        // } else {
+          // #::LS->input_name   = "global::input_cropped"
+          // ::LS->Setinput(::CIFP->input_cropped)
+        // }
+        // #::LS->initial_name   = "::path_lsinit"
+        // ::LS->init_mode              = 1 
+        // ::LS->accept_high_intensity  = 0
+        // ::LS->use_expansion_image    = 1
+        // ::LS->conv_freq              = 20
+        // ::LS->threads                = 4
+        // # estimate running time based on the remaining centerline distance to segment
+        // if (exists(::covered_distz_E)) {
+          // remaining_dist = ::maxdistz_ECA-::covered_distz_E
+          // remaining_Tmin = remaining_dist/::CIFP->input_cropped.vz
+          // ::LS->T           = max(60,remaining_Tmin*3);
+        // } else {
+          // ::LS->T = 60
+        // }
+      
+        // ::win.Update(-1)
+        // #::LS->load_input()
+        // ::LS->Setinitial(::pathCE_lsinit)
+        // ::win.Update(-1)
 
-        #--- Computes the intensity statistics
-        ::LS->ComputeIntensityStats()
-        ::win.Update(-1)
+        // #--- Computes the intensity statistics
+        // ::LS->ComputeIntensityStats()
+        // ::win.Update(-1)
       
-        #--- Compute the expansion force
-        #     -- limit its range along Z axis based on the detected junction
-        if (exists(::Jz)) {
-          zmax = ::Jz+::maxdistz_ECA
-          zmax = (zmax - ::LS->input.trz)/::LS->input.vz
-          if (zmax>::LS->input.tz-1) { zmax=::LS->input.tz-1; }
-          zmin = ::Jz-::mindistz
-          zmin = (zmin - ::LS->input.trz)/::LS->input.vz
-          if (zmin<0) { zmin=0;}
-        } else {
-          zmin = 0;
-          zmax = ::LS->input.tz-1
-        }
-        ::pathCE_expforce = ::LS->input*0-0.5
-        #     -- compute the force inside the ROI
-        ::expforce_roi = ::pathCE_expforce[:,:,zmin:zmax]
-        ::expforce_roi  = (::LS->input[::expforce_roi]-::LS->Imean)/::LS->Isd
-        ::expforce_roi = ::expforce_roi*::expforce_roi
-        ::expforce_roi = exp(-::expforce_roi/2)-exp(-(::ls_prob_limit*::ls_prob_limit)/2)
-        ::pathCE_expforce.putimage(::expforce_roi)
+        // #--- Compute the expansion force
+        // #     -- limit its range along Z axis based on the detected junction
+        // if (exists(::Jz)) {
+          // zmax = ::Jz+::maxdistz_ECA
+          // zmax = (zmax - ::LS->input.trz)/::LS->input.vz
+          // if (zmax>::LS->input.tz-1) { zmax=::LS->input.tz-1; }
+          // zmin = ::Jz-::mindistz
+          // zmin = (zmin - ::LS->input.trz)/::LS->input.vz
+          // if (zmin<0) { zmin=0;}
+        // } else {
+          // zmin = 0;
+          // zmax = ::LS->input.tz-1
+        // }
+        // ::pathCE_expforce = ::LS->input*0-0.5
+        // #     -- compute the force inside the ROI
+        // ::expforce_roi = ::pathCE_expforce[:,:,zmin:zmax]
+        // ::expforce_roi  = (::LS->input[::expforce_roi]-::LS->Imean)/::LS->Isd
+        // ::expforce_roi = ::expforce_roi*::expforce_roi
+        // ::expforce_roi = exp(-::expforce_roi/2)-exp(-(::ls_prob_limit*::ls_prob_limit)/2)
+        // ::pathCE_expforce.putimage(::expforce_roi)
       
-        #::LS->expansion_image_name = "::pathCE_expforce"
-        #::LS->load_expansion()
-        ::LS->Setexpansion(::pathCE_expforce)
+        // #::LS->expansion_image_name = "::pathCE_expforce"
+        // #::LS->load_expansion()
+        // ::LS->Setexpansion(::pathCE_expforce)
       
-        # Run the evolution
-        ::win.Update(-1)
-        ::LS->ReRun()
-        ::pathCE_contours <<= ::LS->inls
+        // # Run the evolution
+        // ::win.Update(-1)
+        // ::LS->ReRun()
+        // ::pathCE_contours <<= ::LS->inls
       
-        # 1. Save Level Set resulting image
-        ::LS->inls.save ::current_resultsdir+"\\levelset_CC_CE.ami.gz"
-        ::LS->SaveParams( ::current_resultsdir+"\\levelset_CC_CE.amil" )
-		SetStatusText("ECA levelset done...")
+        // # 1. Save Level Set resulting image
+        // ::LS->inls.save ::current_resultsdir+"\\levelset_CC_CE.ami.gz"
+        // ::LS->SaveParams( ::current_resultsdir+"\\levelset_CC_CE.amil" )
+		// SetStatusText("ECA levelset done...")
       }
     }
     
@@ -1111,74 +1144,102 @@ if (!exists(RunExperimentsClass)){
         }
       
         ::pathCI_lsinit = ::pathCI_lsinit-255*exp(-0.5)
-    
-        #--- Initialize the level set evolution
-        if (exists(::NLM_res)) {
-          #::LS->input_name   = "global::NLM_res"
-          ::LS->Setinput(::NLM_res)
-        } else {
-          #::LS->input_name   = "global::input_cropped"
-          ::LS->Setinput(::CIFP->input_cropped)
-        }
-        #::LS->initial_name   = "::pathCI_lsinit"
-        ::LS->init_mode              = 1 
-        ::LS->accept_high_intensity  = 0
-        ::LS->use_expansion_image    = 1
-        ::LS->conv_freq              = 20
-        ::LS->threads                = 4
-        # estimate running time based on the remaining centerline distance to segment
-        if (exists(::covered_distz_I)) {
-          remaining_dist = ::maxdistz_ICA-::covered_distz_I
+        
+        nt_ci = normgrad(::CIFP->input_cropped,1)
+        em_ci = exp(-nt_ci*nt_ci/(25*25*2))
+        
+        // ::SIG->set_input(::CIFP->input_cropped)
+        // ::SIG->alpha = -0.5
+        // ::SIG->beta = 3
+        // ::SIG->Run
+        
+        //::pathCE_lsinit = -::pathCE_lsinit
+        
+        ::itkLS->set_initial(-::pathCI_lsinit)
+        ::itkLS->set_edge(em_ci)
+        ::itkLS->curScaling = 0.05
+        ::itkLS->proScaling = 0.5
+        ::itkLS->advScaling = 0.5
+        ::itkLS->error = 0.02
+        //::itkLS->iterations = 100
+        if (exists(::covered_distz_E)) {
+          remaining_dist = ::maxdistz_ECA-::covered_distz_E
           remaining_Tmin = remaining_dist/::CIFP->input_cropped.vz
-          ::LS->T           = max(60,remaining_Tmin*3);
-          #eval "printn "+::LS->T+";"
+          ::itkLS->iterations = max(60,remaining_Tmin*3);
         } else {
-          ::LS->T = 60
+          ::itkLS->iterarions = 60
         }
+        ::itkLS->RunNew
+        
+        ::pathCI_contours <<= -::itkLS->level
+    
+        // #--- Initialize the level set evolution
+        // if (exists(::NLM_res)) {
+          // #::LS->input_name   = "global::NLM_res"
+          // ::LS->Setinput(::NLM_res)
+        // } else {
+          // #::LS->input_name   = "global::input_cropped"
+          // ::LS->Setinput(::CIFP->input_cropped)
+        // }
+        // #::LS->initial_name   = "::pathCI_lsinit"
+        // ::LS->init_mode              = 1 
+        // ::LS->accept_high_intensity  = 0
+        // ::LS->use_expansion_image    = 1
+        // ::LS->conv_freq              = 20
+        // ::LS->threads                = 4
+        // # estimate running time based on the remaining centerline distance to segment
+        // if (exists(::covered_distz_I)) {
+          // remaining_dist = ::maxdistz_ICA-::covered_distz_I
+          // remaining_Tmin = remaining_dist/::CIFP->input_cropped.vz
+          // ::LS->T           = max(60,remaining_Tmin*3);
+          // #eval "printn "+::LS->T+";"
+        // } else {
+          // ::LS->T = 60
+        // }
 
-        ::win.Update(-1)
-        #::LS->load_input()
-        ::LS->Setinitial(::pathCI_lsinit)
-        ::win.Update(-1)
-        #--- Computes the intensity statistics
-        ::LS->ComputeIntensityStats()
-        ::win.Update(-1)
+        // ::win.Update(-1)
+        // #::LS->load_input()
+        // ::LS->Setinitial(::pathCI_lsinit)
+        // ::win.Update(-1)
+        // #--- Computes the intensity statistics
+        // ::LS->ComputeIntensityStats()
+        // ::win.Update(-1)
       
-        #--- Compute the expansion force
-        #     -- limit its range along Z axis based on the detected junction
-        if (exists(::Jz)) {
-          zmax = ::Jz+::maxdistz_ICA
-          zmax = (zmax - ::LS->input.trz)/::LS->input.vz
-          if (zmax>::LS->input.tz-1) { zmax=::LS->input.tz-1; }
-          zmin = ::Jz-::mindistz
-          zmin = (zmin - ::LS->input.trz)/::LS->input.vz
-          if (zmin<0) { zmin=0;}
-        } else {
-          zmin = 0
-          zmax = ::LS->input.tz-1
-        }
-        ::pathCI_expforce = ::LS->input*0-0.5
-        #     -- compute the force inside the ROI
-        expforce_roi = ::pathCI_expforce[:,:,zmin:zmax]
-        expforce_roi  = (::LS->input[expforce_roi]-::LS->Imean)/::LS->Isd
-        expforce_roi = expforce_roi*expforce_roi
-        expforce_roi = exp(-expforce_roi/2)-exp(-(::ls_prob_limit*::ls_prob_limit)/2)
-        ::pathCI_expforce.putimage(expforce_roi)
+        // #--- Compute the expansion force
+        // #     -- limit its range along Z axis based on the detected junction
+        // if (exists(::Jz)) {
+          // zmax = ::Jz+::maxdistz_ICA
+          // zmax = (zmax - ::LS->input.trz)/::LS->input.vz
+          // if (zmax>::LS->input.tz-1) { zmax=::LS->input.tz-1; }
+          // zmin = ::Jz-::mindistz
+          // zmin = (zmin - ::LS->input.trz)/::LS->input.vz
+          // if (zmin<0) { zmin=0;}
+        // } else {
+          // zmin = 0
+          // zmax = ::LS->input.tz-1
+        // }
+        // ::pathCI_expforce = ::LS->input*0-0.5
+        // #     -- compute the force inside the ROI
+        // expforce_roi = ::pathCI_expforce[:,:,zmin:zmax]
+        // expforce_roi  = (::LS->input[expforce_roi]-::LS->Imean)/::LS->Isd
+        // expforce_roi = expforce_roi*expforce_roi
+        // expforce_roi = exp(-expforce_roi/2)-exp(-(::ls_prob_limit*::ls_prob_limit)/2)
+        // ::pathCI_expforce.putimage(expforce_roi)
       
-        #::LS->expansion_image_name = "::pathCI_expforce"
-        ::win.Update(-1)
-        ::LS->Setexpansion(::pathCI_expforce)
+        // #::LS->expansion_image_name = "::pathCI_expforce"
+        // ::win.Update(-1)
+        // ::LS->Setexpansion(::pathCI_expforce)
       
-        # Run the evolution
-        ::win.Update(-1)
-        ::LS->ReRun
-        ::pathCI_contours <<= ::LS->inls
+        // # Run the evolution
+        // ::win.Update(-1)
+        // ::LS->ReRun
+        // ::pathCI_contours <<= ::LS->inls
       
-        # 1. Save Level Set resulting image
-        ::LS->inls.save ::current_resultsdir+"\\levelset_CC_CI.ami.gz"
-        ::LS->SaveParams( ::current_resultsdir+"\\levelset_CC_CI.amil" )
-		SetStatusText("ICA levelset done...")
-      }
+        // # 1. Save Level Set resulting image
+        // ::LS->inls.save ::current_resultsdir+"\\levelset_CC_CI.ami.gz"
+        // ::LS->SaveParams( ::current_resultsdir+"\\levelset_CC_CI.amil" )
+		// SetStatusText("ICA levelset done...")
+      // }
     }
     
     
