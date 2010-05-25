@@ -360,6 +360,10 @@ if (!exists(itkLevelSetClass)) {
       ::min = 0.0
       ::max = 1.0
       
+      ::dim = INT(1), "The dimension of the image."
+      ::error = 0.02
+      ::iterations = 200
+      ::advScaling = 0.5
       ::curScaling = 0.5, "Use this parameter to increase the influence of curvature on the movement of the surface."
       ::proScaling = 1, "Set the scaling of the propagation speed."
  
@@ -392,12 +396,33 @@ if (!exists(itkLevelSetClass)) {
       ::FAST->set_sigmoid(im)
     }
     
-    proc ::Run() {
-      ::sigm = ::FAST->SIG.sigmoid
-      if (::FAST->dim==0) {
-        ::level = ::itk->LevelSetFilter2D(::FAST->fast,::sigm,::curScaling,::proScaling)
+    proc ::set_initial(IMAGE im) \
+    {
+      ::initial <<= im
+    }
+    
+    proc ::set_edge(IMAGE im) \
+    {
+      ::em <<= im
+    }
+    
+    proc ::RunNew() {
+      if(exists (level)) {del level;}
+      if (::dim == 0) {
+        ::level <<= ::itk->LevelSetFilter2D(::initial,::em,::curScaling,::proScaling)
       } else {
-        ::level = ::itk->LevelSetFilter3D(::FAST->fast,::sigm,::curScaling,::proScaling)
+        ::level <<= ::itk->LevelSetFilter3D(::initial,::em,::curScaling,::proScaling,::advScaling,::error,::iterations)
+      }
+    }
+    
+    proc ::Run() {
+      if (exists (::sigm)) {del sigm;}
+      ::sigm = ::FAST->SIG.sigmoid
+      if (exists (::level)) {del level;}
+      if (::FAST->dim==0) {
+        ::level <<= ::itk->LevelSetFilter2D(::FAST->fast,::sigm,::curScaling,::proScaling)
+      } else {
+        ::level <<= ::itk->LevelSetFilter3D(::FAST->fast,::sigm,::curScaling,::proScaling,::advScaling,::error,::iterations)
       }
     }
     
