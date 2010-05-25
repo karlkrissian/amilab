@@ -17,7 +17,8 @@
 #include "ami_class.h"
 #include "ami_object.h"
 #include "wrap_imagedraw.h"
-#include "wrap_mainframe.h"
+
+#include "wrap_MainFrame.h"
 #include "wrap_wxDrawingWindow.h"
 #include "wrapSystem.h"
 #include "wrapITK.h"
@@ -37,13 +38,19 @@
 #include "wrap_wxHtmlWindow.h"
 #include "wrap_vtkLevelSets.h"
 
+#include "wrap_wxEditor.h"
+
+#include "MainFrame.h"
+
 extern VarContexts  Vars;
+extern MainFrame*   GB_main_wxFrame;
 
 
 void AddWrapImports()
 {
 
   AddWrapWxWidgets();
+  AddWrapAmilab();
 
   // Create new instance of the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -55,7 +62,6 @@ void AddWrapImports()
   Vars.SetObjectContext(amiobject->GetContext());
 
   ADDOBJECTVAR_NAME(C_wrap_procedure,"ImageDraw",  wrap_ImageDraw);
-  ADDOBJECTVAR_NAME(C_wrap_procedure,"MainFrame",  wrap_MainFrame);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxDrawingWindow",  wrap_wxDrawingWindow);
 
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"VarList",   wrap_VarList);
@@ -99,6 +105,32 @@ void AddWrapWxWidgets()
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxImage",     wrap_wxImage);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxBitmap",    wrap_wxBitmap);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxHtmlWindow",wrap_wxHtmlWindow);
+
+  // Restore the object context
+  Vars.SetObjectContext(previous_ocontext);
+
+  // 3. add the variables to this instance
+  Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+
+}
+
+void AddWrapAmilab()
+{
+
+  // Create new instance of the class
+  AMIObject::ptr amiobject(new AMIObject);
+
+  amiobject->SetName("ami");
+
+  // Set the object context
+  Variables::ptr previous_ocontext = Vars.GetObjectContext();
+  Vars.SetObjectContext(amiobject->GetContext());
+
+  AddVar_wxEditor( amiobject->GetContext());
+
+  // Add the MainFrame as an object
+  AMIObject::ptr obj(AddWrap_MainFrame(GB_main_wxFrame));
+  amiobject->GetContext()->AddVar<AMIObject>("MainFrame", obj);
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);

@@ -44,6 +44,7 @@ void AddWrapSystem(){
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"GetUserId",       wrap_GetUserId);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"GetUserName",     wrap_GetUserName);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"GetCurrentScriptDir", wrap_GetCurrentScriptDir);
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"GetCurrentFilename",  wrap_GetCurrentFilename);
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);
@@ -262,6 +263,30 @@ BasicVariable::ptr wrap_GetCurrentScriptDir(ParamList* p)
 
   Variable<string>::ptr varres(
     new Variable<string>("CurrentScriptDir",value));
+
+  return varres;
+}
+
+//--------------------------------------------------------------------
+BasicVariable::ptr wrap_GetCurrentFilename(ParamList* p)
+{
+    char functionname[] = "GetCurrentFilename";
+    char description[]=" \n\
+        Returns the filename of the current script\n\
+            ";
+    char parameters[] =" \n\
+          Return:\n\
+              the filename of the current script\n\
+            ";
+
+  if (get_num_param(p)!=0)  HelpAndReturnVarPtr;
+  wxFileName filename(wxString(GB_driver.GetCurrentFilename().c_str(), wxConvUTF8));
+  filename.MakeAbsolute();
+  wxString wxvalue = filename.GetFullPath();
+  string_ptr value ( new string(wxvalue.mb_str()));
+
+  Variable<string>::ptr varres(
+    new Variable<string>("CurrentFilename",value));
 
   return varres;
 }

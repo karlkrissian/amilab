@@ -25,4 +25,9 @@ void AddWrapImports();
  */
 void AddWrapWxWidgets();
 
-#endif //  _wrap_mainframe_h_
+/**
+ * Adding wrapped classes from amilab.
+ */
+void AddWrapAmilab();
+
+#endif //  _wrap_MainFrame_h_

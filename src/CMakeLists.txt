@@ -310,7 +310,7 @@ add_subdirectory (Graphic)
 add_subdirectory (../wxParams/src binary_dir )
 add_subdirectory (OpenGL)
 add_subdirectory (wxSamples/penguin)
-add_subdirectory (wxSamples/stctest)
+add_subdirectory (wxStcFrame)
 add_subdirectory (Voxels)
 add_subdirectory (AMILab)
 
@@ -358,7 +358,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapCommon
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapITK
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapImports
-  ${AMILAB_SOURCE_DIR}/wxSamples/stctest
+  ${AMILAB_SOURCE_DIR}/wxStcFrame
   ${AMILAB_SOURCE_DIR}
   ${AMILAB_SOURCE_DIR}/../Pixmaps
   ${AMILAB_BINARY_DIR}
@@ -458,7 +458,7 @@ SET(amilab_ownlibs
   Voxels
 # wrapped wxwidgets samples
   penguin
-  stctest
+  wxStcFrame
 )
 
 

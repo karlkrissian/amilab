@@ -34,7 +34,7 @@
 #include "wrapAMIFluid.h"
 #include "wrapVTK.h"
 #include "wrapITK.h"
-//#include "wrap_mainframe.h"
+//#include "wrap_MainFrame.h"
 #include "wrap_imagedraw.h"
 #include "itkCannyEdgeDetector.h"
 #include "wrapWII.h"
@@ -5479,6 +5479,10 @@ param_list:
           Description: temporary rule, added to simplify convertion of scripts.
          **/
           BasicVariable::ptr       var(driver.var_stack.GetLastBasicVar());
+          if (!var.get()) {
+            driver.error("Empty Variable as parameter !");
+            YYABORT;
+          }
           ParamList* pl = new ParamList();
           // Creating a new variable that points to the same value, and a slightly different name (with added "_ref"), comments are also copied.
           BasicVariable::ptr newvar(var->NewReference());
@@ -5491,6 +5495,10 @@ param_list:
           Description: temporary rule, added to simplify convertion of scripts.
          **/
           BasicVariable::ptr       var(driver.var_stack.GetLastBasicVar());
+          if (!var.get()) {
+            driver.error("Empty Variable as parameter !");
+            YYABORT;
+          }
           ParamList* pl =  $1;
 
           // Creating a new variable that points to the same value, and a slightly different name (with added "_ref"), comments are also copied.
@@ -5502,6 +5510,10 @@ param_list:
         | T_AND variable
         {
           BasicVariable::ptr       var(driver.var_stack.GetLastBasicVar());
+          if (!var.get()) {
+            driver.error("Empty Variable as parameter !");
+            YYABORT;
+          }
 
           ParamList* pl = new ParamList();
 
@@ -5514,6 +5526,10 @@ param_list:
         | param_list T_COMMA T_AND variable
         {
           BasicVariable::ptr       var(driver.var_stack.GetLastBasicVar());
+          if (!var.get()) {
+            driver.error("Empty Variable as parameter !");
+            YYABORT;
+          }
           ParamList* pl =  $1;
 
           // Creating a new variable that points to the same value, and a slightly different name (with added "_ref"), comments are also copied.
@@ -5528,6 +5544,10 @@ param_list:
             Description: it is now a new reference to the variable, so basically similar to &variable (should be removed?)...
           **/
           BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+          if (!var.get()) {
+            driver.error("Empty Variable as parameter !");
+            YYABORT;
+          }
           ParamList* pl(new ParamList);
           BasicVariable::ptr newvar(var->NewCopy());
           newvar->Rename("Param0");
@@ -5540,6 +5560,10 @@ param_list:
             Description: it is now a new reference to the variable, so basically similar to &variable (should be removed?)...
           **/
           BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+          if (!var.get()) {
+            driver.error("Empty Variable as parameter !");
+            YYABORT;
+          }
           ParamList* pl =  $1;
           std::string paramname = (boost::format("Param%1%")%pl->GetNumParam()).str();
           BasicVariable::ptr newvar(var->NewCopy());

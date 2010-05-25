@@ -11,7 +11,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Coordonnees
   ${AMILAB_SOURCE_DIR}/Vaisseaux
   ${AMILAB_SOURCE_DIR}/wxSamples/penguin
-  ${AMILAB_SOURCE_DIR}/wxSamples/stctest
+  ${AMILAB_SOURCE_DIR}/wxStcFrame
   ${Boost_INCLUDE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${PTHREADS_INCLUDE_DIR}

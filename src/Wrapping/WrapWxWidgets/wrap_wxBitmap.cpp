@@ -82,8 +82,10 @@ BasicVariable::ptr wrap_wxBitmap( ParamList* p)
     if (image->IsOk()) {
       return CreateVar_wxBitmap(new wxBitmap( *image, depth));
     }
-    else
+    else {
       FILE_ERROR("Input wxImage is not valid.");
+      return CreateVar_wxBitmap(new wxBitmap());
+    }
   }
   return BasicVariable::ptr();
 }

@@ -54,7 +54,7 @@
 using namespace amilab;
 
 #include "ami_object.h"
-#include "stctest.h"
+#include "wxStcFrame.h"
 
 //#include "Bluecurve/32x32/actions/reload.xpm"
 
@@ -420,10 +420,10 @@ MainFrame::MainFrame( const wxString& title,
 
 
 //------------------------------------------------------------------------
-StcTestFrame* MainFrame::GetAmilabEditor()
+wxStcFrame* MainFrame::GetAmilabEditor()
 {
   if (!GetChildren().Find(amilab_editor)) {
-    amilab_editor = new StcTestFrame ( this, wxT("AMILab Editor"));    
+    amilab_editor = new wxStcFrame ( this, wxT("AMILab Editor"));    
   }
   return amilab_editor;  
 }

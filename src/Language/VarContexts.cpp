@@ -212,7 +212,10 @@ BasicVariable::ptr VarContexts::GetVar(const char* varname, int context)
     // TODO: limit to last context, if nothing else is specified !!!
     //for(int i=_context.size()-1;i>=0;i--)
     //  if (_context[i]->GetVar(varname,var)) return true;
-    BasicVariable::ptr var = _context[_context.size()-1]->GetVar(varname);
+
+    // TODO: all these manipulation within the global variables are not thread-safe, to improve ....
+    BasicVariable::ptr var = _context[GetCurrentContextNumber()]->GetVar(varname);
+//    BasicVariable::ptr var = _context[_context.size()-1]->GetVar(varname);
     if (var.get()) 
       return var;
     else

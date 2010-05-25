@@ -77,7 +77,9 @@ BasicVariable::ptr wrap_wxImage( ParamList* p)
     get_int_param(type,  p, n,false);
     get_int_param(index, p, n,false);
 
-    return CreateVar_wxImage(new wxImage( wxString(name->c_str(), wxConvUTF8),type,index));
+    wxImage* im = new wxImage();
+    bool res = im->LoadFile( wxString(name->c_str(), wxConvUTF8),type,index);
+    return CreateVar_wxImage(im);
   }
   return BasicVariable::ptr();
 }

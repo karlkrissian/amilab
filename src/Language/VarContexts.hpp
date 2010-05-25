@@ -88,6 +88,15 @@ public:
   int GetCurrentContextNumber() {
     return _current_context;
   }
+
+  /**
+   * Sets the current context number
+   * @param  
+   */
+  void SetCurrentContextNumber( int context) {
+    if ((context>=0)&&(context<_context.size()))
+      _current_context = context;
+  }
   
   /**
    * 

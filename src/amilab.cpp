@@ -312,8 +312,6 @@ bool MyApp::OnInit()
   GB_driver.ws_print(cmd_line.c_str());
 
 
-  // Add imports language
-  AddWrapImports();
 
 //  printf("MyApp::OnInit()\n");
 //  wxFont::SetDefaultEncoding(wxFONTENCODING_ISO8859_15);
@@ -336,6 +334,10 @@ bool MyApp::OnInit()
 //  printf("application name = \"%s\" \n",wxGetApp().GetClassName().c_str());
   // TODO: avoid using get() here ...
   GB_main_wxFrame = mainframe;
+
+
+  // Add imports language, needs to do it after initialization of MainFrame
+  AddWrapImports();
 
   ::wxInitAllImageHandlers();
 

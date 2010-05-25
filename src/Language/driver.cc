@@ -19,7 +19,7 @@
 #include "CoutwxString.h"
 #include "MainFrame.h"
 #include "ImageStack.h"
-#include "stctest.h"
+#include "wxStcFrame.h"
 
 #include <wx/filename.h>
 
@@ -138,7 +138,7 @@ bool Driver::parse_commandline(const std::string &input, const std::string& snam
 
 //-----------------------------------------------------------
 int Driver::error(const class location& l,
-		   const std::string& m)
+       const std::string& m)
 {
     stringstream tmpstr;
     tmpstr  << l 
@@ -184,6 +184,8 @@ void Driver::yyip_instanciate_object( const AMIClass::ptr& oclass,
 
   // Set the new local context
   std::string contextname = (boost::format("local_%1%")%object->GetName()).str();
+
+  int previous_context = Vars.GetCurrentContextNumber();
   Vars.NewContext(contextname.c_str());
   Vars.SetLastContext();
 
@@ -199,6 +201,7 @@ void Driver::yyip_instanciate_object( const AMIClass::ptr& oclass,
 
   // Remove the previous context from the list
   Vars.DeleteLastContext();
+  Vars.SetCurrentContextNumber(previous_context);
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);
@@ -232,6 +235,7 @@ BasicVariable::ptr Driver::yyip_call_function( AMIFunction* f, const ParamList::
   Variables::ptr previous_ocontext = Vars.GetObjectContext();
   Vars.SetObjectContext(f->GetContext());
 
+  int previous_context = Vars.GetCurrentContextNumber();
   // Set the new context
   Vars.NewContext(f->GetName().c_str());
   Vars.SetLastContext();
@@ -275,6 +279,7 @@ BasicVariable::ptr Driver::yyip_call_function( AMIFunction* f, const ParamList::
   // removing each parameter is not necessary
   // cause it will be done by DeleteLastContext()
   Vars.DeleteLastContext();
+  Vars.SetCurrentContextNumber(previous_context);
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);
@@ -459,12 +464,12 @@ int Driver::err_print(const char* st)
 
   if ((!InConsole())&&(res==wxID_YES)) {
     // create application frame
-    StcTestFrame*  m_frame =  GB_main_wxFrame->GetAmilabEditor();
+    wxStcFrame*  m_frame =  GB_main_wxFrame->GetAmilabEditor();
     // open application frame
     m_frame->Layout ();
     m_frame->Show (true);
     m_frame->FileOpen (wxString(this->current_file.c_str(),wxConvUTF8));
-    Edit* editor = m_frame->GetEditor();
+    wxEditor* editor = m_frame->GetActiveEditor();
     // TODO: 
     // - set show line numbers
     // - set highlight C++
