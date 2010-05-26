@@ -305,6 +305,8 @@ TraceScanning      return(token::T_TraceScanning); /*{TraceScanning,T_TraceScann
 TraceParsing       return(token::T_TraceParsing); /*{TraceParsing,T_TraceParsing}*/
 SetVerboseOn       return(token::T_SetVerboseOn); /*{SetVerboseOn,T_SetVerboseOn}*/
 SetVerboseOff      return(token::T_SetVerboseOff); /*{SetVerboseOff,T_SetVerboseOff}*/
+NoMessageDialog    return(token::T_NoMessageDialog); /*{NoMessageDialog,T_NoMessageDialog}*/
+
 GetScriptsDir      return(token::T_GetScriptsDir); /*{GetScriptDir,T_GetScriptDir}*/
 AddMenuScript      return(token::T_AddMenuScript); /*{AddMenuScript,T_AddMenuScript}*/
 SetProgress        return(token::T_SetProgress); /*{SetProgress,T_SetProgress}*/

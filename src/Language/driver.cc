@@ -377,9 +377,7 @@ bool Driver::parse_script(  const char* filename)
 
   if (!newname.IsFileReadable()) {
     string mess =  (format("Error in reading %s \n") % inputname.GetFullPath().mb_str()).str();
-    wxMessageDialog* err_msg = new wxMessageDialog(GB_main_wxFrame,GetwxStr(mess),GetwxStr("Error"),wxOK | wxICON_ERROR | wxSTAY_ON_TOP );
-    err_msg->ShowModal();
-    err_msg->Destroy();
+    err_print(mess.c_str());
     return 0;
   }
 
@@ -478,27 +476,30 @@ int Driver::err_print(const char* st)
   else 
     mess = mess + " Abort current parsing and open file?";
 
-  wxMessageDialog* err_msg = new wxMessageDialog(GB_main_wxFrame,GetwxStr(mess),GetwxStr("Error"),wxYES_NO |  wxYES_DEFAULT  | wxICON_ERROR | wxSTAY_ON_TOP );
-  int res = err_msg->ShowModal();
-  err_msg->Destroy();
+  if (!nomessagedialog) {
+    wxMessageDialog* err_msg = new wxMessageDialog(GB_main_wxFrame,GetwxStr(mess),GetwxStr("Error"),wxYES_NO |  wxYES_DEFAULT  | wxICON_ERROR | wxSTAY_ON_TOP );
+    int res = err_msg->ShowModal();
+    err_msg->Destroy();
 
-  if ((!InConsole())&&(res==wxID_YES)) {
-    // create application frame
-    wxStcFrame*  m_frame =  GB_main_wxFrame->GetAmilabEditor();
-    // open application frame
-    m_frame->Layout ();
-    m_frame->Show (true);
-    m_frame->FileOpen (wxString(this->current_file.c_str(),wxConvUTF8));
-    wxEditor* editor = m_frame->GetActiveEditor();
-    // TODO: 
-    // - set show line numbers
-    // - set highlight C++
-    // - go to specific line
-    editor->ShowLineNumbers(true);
-    editor->GotoLine(this->yyiplineno-1);
+    if ((!InConsole())&&(res==wxID_YES)) {
+      // create application frame
+      wxStcFrame*  m_frame =  GB_main_wxFrame->GetAmilabEditor();
+      // open application frame
+      m_frame->Layout ();
+      m_frame->Show (true);
+      m_frame->FileOpen (wxString(this->current_file.c_str(),wxConvUTF8));
+      wxEditor* editor = m_frame->GetActiveEditor();
+      // TODO: 
+      // - set show line numbers
+      // - set highlight C++
+      // - go to specific line
+      editor->ShowLineNumbers(true);
+      editor->GotoLine(this->yyiplineno-1);
+    }
+    return res;
   }
 
-  return res;
+  return wxID_YES;
 } // Driver::err_print()
 
 
@@ -508,9 +509,11 @@ void Driver::info_print(const char* st)
 {
   *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString::FromAscii(st);
   string mess =  (format("Information: %s \n") % st).str();
-  wxMessageDialog* err_msg = new wxMessageDialog(NULL,GetwxStr(mess),GetwxStr("Info"),wxOK | wxICON_INFORMATION | wxSTAY_ON_TOP );
-  err_msg->ShowModal();
-  err_msg->Destroy();
+  if (!nomessagedialog) {
+    wxMessageDialog* err_msg = new wxMessageDialog(NULL,GetwxStr(mess),GetwxStr("Info"),wxOK | wxICON_INFORMATION | wxSTAY_ON_TOP );
+    err_msg->ShowModal();
+    err_msg->Destroy();
+  }
 } // Driver::err_print()
 
 
@@ -546,7 +549,7 @@ void Driver::res_print(const char* st)
 //   -----------------
 {
   *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString::FromAscii(st);
-  printf("%s",st);
+  std::cout << st << endl;
 } // Driver::res_print()
 
 

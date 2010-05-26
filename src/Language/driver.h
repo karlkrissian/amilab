@@ -30,6 +30,31 @@
 
 struct yy_buffer_state;
 
+
+/*
+//------------------------------------------------------
+class wxMessageTimer : public wxTimer
+//    ---------------
+{
+  DEFINE_CLASS(wxMessageTimer);
+
+  public:
+    wxMessageTimer( boost::shared_ptr<wxDialog> dialog)
+    {
+      var = Variable<AMIFunction>::ptr(callback);
+    }
+
+    ~wxMessageTimer()    { }
+
+    //Called each time the timer's timeout expires
+    void Notify();
+
+  private:
+    // variable of type type_ami_function
+    wxDialog var;
+};
+*/
+
 // forward declaration
 //class CalcContext;
 
@@ -55,6 +80,11 @@ protected:
      **/
     bool in_console;
 
+    /**
+     * Disable MessageDialogs
+     **/
+    bool nomessagedialog;
+
 public:
 
     ImageStack        im_stack;
@@ -72,6 +102,9 @@ public:
 
     FILE_ptr       cmdhistory;
     std::string cmdhistory_filename;
+
+    void SetNoMessageDialog(bool b) { nomessagedialog = b; }
+    bool GetNoMessageDialog() { return nomessagedialog; }
 
     void init_debug_stream();
     void close_debug_stream();
