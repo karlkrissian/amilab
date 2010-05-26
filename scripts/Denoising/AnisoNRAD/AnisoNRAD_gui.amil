@@ -22,11 +22,13 @@
 #
 # ::resultname = $2
 
+func "Common/ScriptGui"
+
 if (!exists(AnisoNRADClass)) {
 
   ami_import->Filters()
 
-  Class AnisoNRADClass {
+  Class AnisoNRADClass : public ScriptGui {
 
     #----------------------------
     proc ::Init() \
@@ -63,7 +65,7 @@ if (!exists(AnisoNRADClass)) {
         ::result_filename = "AnisoNRAD_result.ami.gz"
   
   
-        ::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki/doku.php?id=tutorial-nrad"
+        ::wiki_help = ::AmilabWiki("tutorial-nrad") 
   
         ::html_filename = GetScriptsDir+"/Denoising/AnisoNRAD/Doc/AnisoNRAD_gui/index.html"
   
@@ -71,41 +73,6 @@ if (!exists(AnisoNRADClass)) {
         # ::ROI 
     }
     
-    #----------------------------
-    proc ::Close() {
-      ::win.HidePanel
-      delvars GetObjectName(::Close)
-    }
-    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-      
-    #----------------------------
-    proc ::CloseAll() {
-      eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
-      ::Close
-    }
-    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
-      
-    #----------------------------
-    proc ::Reload() {
-      import = &global::ami_import;
-      import->System()
-      ::CloseAll()
-      global
-        func op_system.GetCurrentFilename()
-    }
-    ::Reload.Comments("Reload script from file.")
-      
-    #------------------------------------
-    proc ::EditScript() {
-      # add wxEditor widget
-      import = &global::ami_import
-      import->System()
-      ed = ami->MainFrame.GetAmilabEditor()
-      ed.FileOpen( op_system.GetCurrentFilename())
-      ed.ShowWin()
-    }
-    ::EditScript.Comments("Open AmilabEditor to edit the current script :)")
-
     #----------------------------
     
     proc ::load_input() {
@@ -352,32 +319,6 @@ if (!exists(AnisoNRADClass)) {
       #::win.Enable(::scalar_mode_id,::equation_type!=1)
     }
     
-    //---------------------------------------------------
-    proc ::LaunchWiki() {
-      import = &global::ami_import
-      wx1 = import->WxFunctions()
-      res = wx1->LaunchDefaultBrowser(::wiki_help)
-    }
-    ::LaunchWiki.Comments("Launch the corresponding wiki tutorial page on the default browser.")
-  
-    //---------------------------------------------------
-    proc ::HtmlHome() {
-      ::html.LoadFile( ::html_filename)
-    }
-    ::HtmlHome.Comments("Back to the initial page.")
-  
-    //---------------------------------------------------
-    proc ::HtmlBack() {
-      res = ::html.HistoryBack()
-    }
-    ::HtmlBack.Comments("Back to the previous page.")
-  
-    //---------------------------------------------------
-    proc ::HtmlForward() {
-      res = ::html.HistoryForward()
-    }
-    ::HtmlForward.Comments("Go to the forward page.")
-  
   
     #------------------------------------
     proc ::CreateWindow() {
@@ -446,51 +387,12 @@ if (!exists(AnisoNRADClass)) {
               ::win.AddString(&::result_imagename,"Name")
               ::win.AddButton("SaveImage",  ::SaveToImage)
             ::win.EndBoxPanel
-          ::win.AddPage("Help")
-            ::win.BeginHorizontal
-              # make nice wiki button
-              wikipng = wx.wxImage(GetScriptsDir+"/Bitmaps/dokuwiki-64.png")
-              if (wikipng.IsOk()) {
-                ::win.AddBitmapButton("Wiki", ::LaunchWiki, \
-                wx.wxBitmap(wikipng.Scale2(32,32)))
-              } else {
-                ::win.AddButton("Wiki", ::LaunchWiki)
-              }
-              ::win.AddBitmapButton("Home",   ::HtmlHome, \
-                wx.wxBitmap(wx.wxImage(GetScriptsDir+"/Icons/png/32x32/Home.png")))
-              ::win.AddBitmapButton("<--",    ::HtmlBack, \
-                wx.wxBitmap(wx.wxImage(GetScriptsDir+"/Icons/png/32x32/Back.png")))
-              ::win.AddBitmapButton("-->",    ::HtmlForward, \
-                wx.wxBitmap(wx.wxImage(GetScriptsDir+"/Icons/png/32x32/Forward.png")))
-            ::win.EndHorizontal
-            # add html widget
-            d = ::win.CurrentParent()
-            ::html = wx.wxHtmlWindow(&d)
-            ::html.LoadFile( ::html_filename)
-            ::win.AddWidget(&::html,1)
+
+          ::AddHelpPage(&::win)
   
-          #::win.AddPage("Edit")
-            #d1 = ::win.CurrentParent()
-            #::edit = ami.wxEditor(&d1)
-            #import->System()
-            #::edit.LoadFile( op_system.GetCurrentFilename())
-            #::win.AddWidget(&::edit,1)
       ::win.EndBook
   
-      ::win.BeginHorizontal
-        closeim = wx.wxImage(GetScriptsDir+"/Icons/png/32x32/Close.png")
-        ::win.AddBitmapButton("Close",          ::Close, \
-                wx.wxBitmap(closeim.Scale2(16,16)))
-        delete_im = wx.wxImage(GetScriptsDir+"/Icons/png/32x32/Delete.png")
-        ::win.AddBitmapButton("Close All",      ::CloseAll, \
-                wx.wxBitmap(delete_im.Scale2(16,16)))
-        reload_im = wx.wxImage(GetScriptsDir+"/Icons/png/32x32/Refresh.png")
-        ::win.AddBitmapButton("Close All",      ::Reload, \
-                wx.wxBitmap(reload_im.Scale2(16,16)))
-        edit_im = wx.wxImage(GetScriptsDir+"/Icons/png/32x32/Edit page.png")
-        ::win.AddBitmapButton("Edit",           ::EditScript, \
-                wx.wxBitmap(edit_im.Scale2(16,16)))
-      ::win.EndHorizontal  
+      ::AddStandardButtons(&::win)
       
       ::win.Display
       ::win.Update(-1)

@@ -676,7 +676,7 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_OBJECT
 
 %token T_PROC
-%token T_Class
+%token T_Class T_public
 
 %token T_MeanHalfSize
 %token T_Resize
@@ -1064,6 +1064,27 @@ class_decl:
 
       Vars.AddVar<AMIClass>(ident, amiclass);
 
+    }
+    |
+    T_Class  identifier T_COLON T_public VAR_AMI_CLASS
+        instr_block end_instr
+    {
+      Variable<AMIClass>::ptr var(driver.var_stack.GetLastVar<AMIClass>());
+      AMIClass::ptr parent = var->Pointer();
+
+      AmiInstructionBlock::ptr body($6);
+      IdentifierInfo::ptr ident($2);
+
+      AMIClass::ptr amiclass( new AMIClass);
+
+      amiclass->SetName(ident->GetName());
+      amiclass->SetFileName(driver.current_file);
+      amiclass->Inherit(parent);
+      amiclass->SetBody(     body);
+      if (GB_debug) printf("%s body = %s\n", ident->GetName().c_str(),body->GetBody().c_str());
+
+      Vars.AddVar<AMIClass>(ident, amiclass);
+
     };
 
 object_decl:
@@ -1081,7 +1102,7 @@ object_decl:
       amiobject->SetClass(ac);
 
       // execute the code of the class with the variables of the object
-      driver.yyip_instanciate_object(ac,amiobject.get());
+      driver.yyip_instanciate_object(ac,amiobject);
 
       Vars.AddVar<AMIObject>(ident, amiobject);
 

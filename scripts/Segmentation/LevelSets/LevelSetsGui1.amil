@@ -2,16 +2,17 @@
 
 #SetDebugOn
 
+func "Common/ScriptGui"
+
 if (!exists(LevelSetsClass)){
   func "SyntheticImages/AddSphere.amil"
 
-  Class LevelSetsClass {
+  Class LevelSetsClass : public ScriptGui {
   #------------------------------------
     
   //---------------------------------------------------
   proc ::Init(IMAGE _input, IMAGE _init) {
     
-      ::class_name  = "global::LevelSetsClass"
       ::input_name   = "","Name of the input image variable"
       ::initial_name = "","Name of the initial level set image variable"
       # 0: for spheres 1: for initial image
@@ -315,20 +316,7 @@ if (!exists(LevelSetsClass)){
     pfile.printn "::T               = %1%" % ::T
 
   }
-  #----------------------------
-  proc ::Close() {
-    ::win.HidePanel
-    delvars GetObjectName(::Close)
-  }
-  ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-    
-  #----------------------------
-  proc ::CloseAll() {
-    eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
-    ::Close
-  }
-  ::CloseAll.Comments("Call ::Close() method and delete the class variable")
-      
+
   #------------------------------------
   proc ::SetVelocityField( IMAGE vel, NUM coeff ) {
   
@@ -879,26 +867,12 @@ if (!exists(LevelSetsClass)){
         ::win.EndHorizontal
         ::win.EndBoxPanel
   
-      ::win.AddPage("Help")
-        ::win.BeginHorizontal
-          ::win.AddButton("Wiki",   ::LaunchWiki)
-          ::win.AddButton("Home",   ::HtmlHome)
-          ::win.AddButton("<--",    ::HtmlBack)
-          ::win.AddButton("-->",    ::HtmlForward)
-        ::win.EndHorizontal
-        # add html widget
-        d = ::win.CurrentParent()
-        ::html = wx.wxHtmlWindow(&d)
-        ::html.LoadFile( ::html_filename)
-        ::win.AddWidget(&::html,1)
+      ::AddHelpPage(&::win)
 
   
     ::win.EndBook
   
-    ::win.BeginHorizontal
-      ::win.AddButton("Close",          ::Close)
-      ::win.AddButton("Close All",          ::CloseAll)
-    ::win.EndHorizontal  
+    ::AddStandardButtons(&::win)
 
     ::win.Update(-1)
     ::win.Display()

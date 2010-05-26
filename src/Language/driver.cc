@@ -171,10 +171,21 @@ bool Driver::parse_block( const AmiInstructionBlock::ptr& b )
 
 }
 
+//-----------------------------------------------------------
+void Driver::ParseClassBody(const AMIClass::ptr& oclass)
+{
+  if (oclass.get()) {
+    // recursive call to possible parent
+    this->ParseClassBody(oclass->GetParentClass());
+    // call to its body after setting the current filename
+    this->current_file = oclass->GetFileName();
+    parse_block(oclass->GetBody());
+  }
+}
 
 //-----------------------------------------------------------
 void Driver::yyip_instanciate_object( const AMIClass::ptr& oclass,
-      AMIObject* object)
+      AMIObject::ptr& object)
 {
 
   int    previous_lineno   = yyiplineno;
@@ -193,11 +204,20 @@ void Driver::yyip_instanciate_object( const AMIClass::ptr& oclass,
   Variables::ptr previous_ocontext = Vars.GetObjectContext();
   Vars.SetObjectContext(object->GetContext());
 
-  // TODO: Could execute inherited classes in the future ...
+  // Add some default variables as information
+  // this
+  // classname
+  string_ptr classname(new string(oclass->GetName()));
+  object->GetContext()->AddVar<string>("classname",classname);
+  // classfilename
+  string_ptr classfname(new string(oclass->GetFileName()));
+  object->GetContext()->AddVar<string>("classfilename",classfname);
 
+  // Inheritence need to be recursive
   // Call the class body
-  this->current_file = oclass->GetFileName();
-  parse_block(oclass->GetBody());
+  ParseClassBody(oclass);
+//this->current_file = oclass->GetFileName();
+//  parse_block(oclass->GetBody());
 
   // Remove the previous context from the list
   Vars.DeleteLastContext();

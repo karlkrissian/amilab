@@ -1,0 +1,140 @@
+#
+# This script should define convenient functions to create
+# user interfaces for the different Gui scripts.
+#
+
+if (!exists(ScriptGui)) \
+{
+  Class ScriptGui \
+  {
+
+    # Create the string containing the wiki page link
+    proc ::AmilabWiki( STRING wikipage) {
+      return = "http://www.ctm.ulpgc.es/amilab_dokuwiki"
+      return += "/dokuwiki/doku.php?id=%1%" % wikipage
+    }
+    ::AmilabWiki.Comments("Creates the name of the wiki page")
+  
+    # TODO: Create the link to the documentation
+
+
+    #----------------------------
+    # Closes only the object instance
+    #
+    proc ::Close() {
+      ::win.HidePanel
+      delvars GetObjectName(::Close)
+    }
+    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+      
+    #----------------------------
+    # Closes the class and the instance 
+    #
+    proc ::CloseAll() {
+      global_classname = "global::%1%" % ::classname
+      eval  "if (exists(%1%)) { del %1%; };"  % global_classname 
+      ::Close
+    }
+    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+      
+    #----------------------------
+    # Reloads the script
+    #
+    proc ::Reload() {
+      cmd = "global; func \"%1%\";" % ::classfilename
+      ::CloseAll()
+      eval cmd
+    }
+    ::Reload.Comments("Reload script from file.")
+      
+    #------------------------------------
+    proc ::EditScript() {
+      # add wxEditor widget
+      ed = ami->MainFrame.GetAmilabEditor()
+      ed.FileOpen( ::classfilename)
+      ed.ShowWin()
+    }
+    ::EditScript.Comments("Open AmilabEditor to edit the current script :)")
+
+
+    #------------------------------------
+    proc ::AddStandardButtons( OBJECT ::win) \
+    {
+      ::win.BeginHorizontal
+        closeim = wx.wxImage(GetScriptsDir+"/Icons/png/32x32/Close.png")
+        ::win.AddBitmapButton("Close",          ::Close, \
+                wx.wxBitmap(closeim.Scale2(16,16)))
+        delete_im = wx.wxImage(GetScriptsDir+"/Icons/png/32x32/Delete.png")
+        ::win.AddBitmapButton("Close All",      ::CloseAll, \
+                wx.wxBitmap(delete_im.Scale2(16,16)))
+        reload_im = wx.wxImage(GetScriptsDir+"/Icons/png/32x32/Refresh.png")
+        ::win.AddBitmapButton("Close All",      ::Reload, \
+                wx.wxBitmap(reload_im.Scale2(16,16)))
+        edit_im = wx.wxImage(GetScriptsDir+"/Icons/png/32x32/Edit page.png")
+        ::win.AddBitmapButton("Edit",           ::EditScript, \
+                wx.wxBitmap(edit_im.Scale2(16,16)))
+      ::win.EndHorizontal  
+    }
+
+    #---------------------------------------------------
+    # needs to have the variable ::wiki_help defined
+    #
+    proc ::LaunchWiki() {
+      import = &global::ami_import
+      wx1 = import->WxFunctions()
+      res = wx1->LaunchDefaultBrowser(::wiki_help)
+    }
+    ::LaunchWiki.Comments("Launch the corresponding wiki tutorial page on the default browser.")
+  
+    #---------------------------------------------------
+    # needs ::html and ::html_filename
+    #
+    proc ::HtmlHome() {
+      ::html.LoadFile( ::html_filename)
+    }
+    ::HtmlHome.Comments("Back to the initial page.")
+  
+    #---------------------------------------------------
+    proc ::HtmlBack() {
+      res = ::html.HistoryBack()
+    }
+    ::HtmlBack.Comments("Back to the previous page.")
+  
+    #---------------------------------------------------
+    proc ::HtmlForward() {
+      res = ::html.HistoryForward()
+    }
+    ::HtmlForward.Comments("Go to the forward page.")
+  
+
+    #------------------------------------
+    # Add the standard help page for Gui scripts
+    #
+    proc ::AddHelpPage( OBJECT ::win) \
+    {
+      ::win.AddPage("Help")
+        ::win.BeginHorizontal
+          # make nice wiki button
+          wikipng = wx.wxImage(GetScriptsDir+"/Bitmaps/dokuwiki-64.png")
+          if (wikipng.IsOk()) {
+            ::win.AddBitmapButton("Wiki", ::LaunchWiki, \
+            wx.wxBitmap(wikipng.Scale2(32,32)))
+          } else {
+            ::win.AddButton("Wiki", ::LaunchWiki)
+          }
+          ::win.AddBitmapButton("Home",   ::HtmlHome, \
+            wx.wxBitmap(wx.wxImage(GetScriptsDir+"/Icons/png/32x32/Home.png")))
+          ::win.AddBitmapButton("<--",    ::HtmlBack, \
+            wx.wxBitmap(wx.wxImage(GetScriptsDir+"/Icons/png/32x32/Back.png")))
+          ::win.AddBitmapButton("-->",    ::HtmlForward, \
+            wx.wxBitmap(wx.wxImage(GetScriptsDir+"/Icons/png/32x32/Forward.png")))
+        ::win.EndHorizontal
+        # add html widget
+        d = ::win.CurrentParent()
+        ::html = wx.wxHtmlWindow(&d)
+        ::html.LoadFile( ::html_filename)
+        ::win.AddWidget(&::html,1)
+    }
+
+  }
+}

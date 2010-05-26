@@ -47,6 +47,7 @@ private:
   AmiInstructionBlock::ptr   _body;
   std::string               _name;
   std::string               _filename;
+  AMIClass::ptr             _parent_class;
 
  public:
 
@@ -60,6 +61,8 @@ private:
     {
     }
 
+  void Inherit(const AMIClass::ptr& parent) { _parent_class = parent; }
+  AMIClass::ptr GetParentClass() { return _parent_class; }
 
   void SetName( const string& fname) { _name = fname; }
 

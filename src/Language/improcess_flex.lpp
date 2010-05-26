@@ -271,6 +271,7 @@ rewind     return(token::T_rewind); /*{rewind,T_rewind}*/
 
 proc       return(token::T_PROC);   /*{proc,T_PROC}*/
 Class      return(token::T_Class);  /*{Class,T_Class}*/
+public     return(token::T_public);  /*{public,T_public}*/
 
 for    {
 //

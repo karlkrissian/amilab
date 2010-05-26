@@ -196,11 +196,17 @@ public:
       return yyip_call_function( v.get(), param);
     }
 
+    /**
+     * Recursively calls itself with its parent class if any, anf then executes the body block of the class within the current environment. TODO: take care about potential loops here 
+     * @param oclass 
+     */
+    void ParseClassBody(const AMIClass::ptr& oclass);
+
     /** instanciate an object of a given class
     * @param f smart pointer to the function
     */
     void yyip_instanciate_object( const AMIClass::ptr& oclass,
-      AMIObject* object);
+      AMIObject::ptr& object);
 
     /** switching to a script file
     * @param filename

@@ -580,36 +580,37 @@ namespace yyip {
      T_OBJECT = 685,
      T_PROC = 686,
      T_Class = 687,
-     T_MeanHalfSize = 688,
-     T_Resize = 689,
-     T_ReSlice = 690,
-     T_Flip = 691,
-     T_SetCompTransf = 692,
-     T_ConvexHull = 693,
-     T_itk = 694,
-     T_CannyEdgeDetector = 695,
-     T_CreateFlatMesh = 696,
-     T_CreateVolume = 697,
-     T_vtkCreateFlatMesh = 698,
-     T_Altitude2Position = 699,
-     T_GeoCoordinates = 700,
-     T_ElevateMesh = 701,
-     T_CreateVectors = 702,
-     T_CreateVectorsFromField = 703,
-     T_Set3DArrowParam = 704,
-     T_CreateEllipsoids = 705,
-     T_ComputeAltitudes = 706,
-     T_Temp2Altitudes = 707,
-     T_ReadFlow = 708,
-     T_SetFluidNavFile = 709,
-     T_DrawEarthCoord = 710,
-     T_PaintCallback = 711,
-     T_SaveStructuredGrid = 712,
-     T_import_vtk = 713,
-     T_import_wii = 714,
-     T_import_filters = 715,
-     T_amiOFCorr2D = 716,
-     T_amiOFVar2D = 717
+     T_public = 688,
+     T_MeanHalfSize = 689,
+     T_Resize = 690,
+     T_ReSlice = 691,
+     T_Flip = 692,
+     T_SetCompTransf = 693,
+     T_ConvexHull = 694,
+     T_itk = 695,
+     T_CannyEdgeDetector = 696,
+     T_CreateFlatMesh = 697,
+     T_CreateVolume = 698,
+     T_vtkCreateFlatMesh = 699,
+     T_Altitude2Position = 700,
+     T_GeoCoordinates = 701,
+     T_ElevateMesh = 702,
+     T_CreateVectors = 703,
+     T_CreateVectorsFromField = 704,
+     T_Set3DArrowParam = 705,
+     T_CreateEllipsoids = 706,
+     T_ComputeAltitudes = 707,
+     T_Temp2Altitudes = 708,
+     T_ReadFlow = 709,
+     T_SetFluidNavFile = 710,
+     T_DrawEarthCoord = 711,
+     T_PaintCallback = 712,
+     T_SaveStructuredGrid = 713,
+     T_import_vtk = 714,
+     T_import_wii = 715,
+     T_import_filters = 716,
+     T_amiOFCorr2D = 717,
+     T_amiOFVar2D = 718
    };
 
     };
@@ -786,7 +787,7 @@ namespace yyip {
 } // yyip
 
 /* Line 35 of lalr1.cc  */
-#line 790 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
+#line 791 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
 
 
 
