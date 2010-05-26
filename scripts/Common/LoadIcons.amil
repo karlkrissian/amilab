@@ -1,0 +1,43 @@
+#
+# Loads the different standard icons as wxImage
+#
+
+
+if (!exists(LoadIcons)) \
+{
+  Class LoadIcons {
+  
+    proc ::LoadIconPNG( STRING name ) \
+    {
+      filename = GetScriptsDir+"/Icons/png/32x32/%1%.png" % name
+      # the wxImage variable starts with _ to avoid 
+      # the risk of beeing a language token
+      eval "::_%1% = wx.wxImage(filename);" % name
+    }
+
+    proc ::LoadIconPNG2( STRING iconname, STRING varname ) \
+    {
+      filename = GetScriptsDir+"/Icons/png/32x32/%1%.png" % iconname
+      # the wxImage variable starts with _ to avoid 
+      # the risk of beeing a language token
+      eval "::_%1% = wx.wxImage(filename);" % varname
+    }
+  
+    proc ::Load() \
+    {
+      ::LoadIconPNG("Home")
+      ::LoadIconPNG("Back")
+      ::LoadIconPNG("Forward")
+      ::LoadIconPNG("Apply")
+      ::LoadIconPNG("Close")
+      ::LoadIconPNG("Delete")
+      ::LoadIconPNG("Refresh")
+      ::LoadIconPNG2("Edit page","EditPage")
+  
+      ::_DokuWiki = wx.wxImage(GetScriptsDir+"/Bitmaps/dokuwiki-64.png")
+    }
+
+    ::Load()  
+  }
+}
+

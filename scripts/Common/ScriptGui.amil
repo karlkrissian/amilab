@@ -3,10 +3,21 @@
 # user interfaces for the different Gui scripts.
 #
 
+func "Common/LoadIcons"
+if (!exists(standard_icons)) {
+  LoadIcons standard_icons
+}
+
 if (!exists(ScriptGui)) \
 {
+
   Class ScriptGui \
   {
+
+    # set a local reference to standard_icons
+    if (exists(global::standard_icons)) {
+      ::icons = &global::standard_icons
+    }
 
     # Create the string containing the wiki page link
     proc ::AmilabWiki( STRING wikipage) {
@@ -61,16 +72,16 @@ if (!exists(ScriptGui)) \
     proc ::AddStandardButtons( OBJECT ::win) \
     {
       ::win.BeginHorizontal
-        closeim = wx.wxImage(GetScriptsDir+"/Icons/png/32x32/Close.png")
-        ::win.AddBitmapButton("Close",          ::Close, \
+        closeim   = ::icons._Close
+        ::win.AddBitmapButton("Close",     ::Close, \
                 wx.wxBitmap(closeim.Scale2(16,16)))
-        delete_im = wx.wxImage(GetScriptsDir+"/Icons/png/32x32/Delete.png")
-        ::win.AddBitmapButton("Close All",      ::CloseAll, \
+        delete_im = ::icons._Delete
+        ::win.AddBitmapButton("Close All",  ::CloseAll, \
                 wx.wxBitmap(delete_im.Scale2(16,16)))
-        reload_im = wx.wxImage(GetScriptsDir+"/Icons/png/32x32/Refresh.png")
+        reload_im = ::icons._Refresh
         ::win.AddBitmapButton("Close All",      ::Reload, \
                 wx.wxBitmap(reload_im.Scale2(16,16)))
-        edit_im = wx.wxImage(GetScriptsDir+"/Icons/png/32x32/Edit page.png")
+        edit_im   = ::icons._EditPage
         ::win.AddBitmapButton("Edit",           ::EditScript, \
                 wx.wxBitmap(edit_im.Scale2(16,16)))
       ::win.EndHorizontal  
@@ -115,19 +126,18 @@ if (!exists(ScriptGui)) \
       ::win.AddPage("Help")
         ::win.BeginHorizontal
           # make nice wiki button
-          wikipng = wx.wxImage(GetScriptsDir+"/Bitmaps/dokuwiki-64.png")
+          wikipng = ::icons._DokuWiki
           if (wikipng.IsOk()) {
             ::win.AddBitmapButton("Wiki", ::LaunchWiki, \
             wx.wxBitmap(wikipng.Scale2(32,32)))
           } else {
             ::win.AddButton("Wiki", ::LaunchWiki)
           }
-          ::win.AddBitmapButton("Home",   ::HtmlHome, \
-            wx.wxBitmap(wx.wxImage(GetScriptsDir+"/Icons/png/32x32/Home.png")))
-          ::win.AddBitmapButton("<--",    ::HtmlBack, \
-            wx.wxBitmap(wx.wxImage(GetScriptsDir+"/Icons/png/32x32/Back.png")))
-          ::win.AddBitmapButton("-->",    ::HtmlForward, \
-            wx.wxBitmap(wx.wxImage(GetScriptsDir+"/Icons/png/32x32/Forward.png")))
+          
+          ::win.AddBitmapButton("Home", ::HtmlHome, wx.wxBitmap(::icons._Home))
+          ::win.AddBitmapButton("<--",  ::HtmlBack, wx.wxBitmap(::icons._Back))
+          ::win.AddBitmapButton("-->",  ::HtmlForward, \
+            wx.wxBitmap(::icons._Forward))
         ::win.EndHorizontal
         # add html widget
         d = ::win.CurrentParent()

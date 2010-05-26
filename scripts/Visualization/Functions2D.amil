@@ -7,7 +7,7 @@
 
 comments="Functions2DClass: this class provides an interface for plotting 2D functions."
 
-ami_import->MainFrame()
+#ami_import->MainFrame()
 
 if (!exists(Functions2DClass)) {
   
