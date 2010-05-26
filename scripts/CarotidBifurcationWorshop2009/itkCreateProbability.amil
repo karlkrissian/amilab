@@ -20,14 +20,14 @@ if (!exists(itkCreateProbabilityClass)) {
     proc ::Init() \
     {
       ::input_name  = ""
-      ::localstats_winsize  = INT(1)
+      ::localstats_winsize  = INT(1), "Win size to compute the mean"
       
-      ::lsd_erosion         = 0
+      ::lsd_erosion         = 0, "Dilatation size to morphological greyscale erosion"
 
-      ::localmean_low       = 1050
-      ::localmean_high      = 1600
-      ::localmean_smoothing = 5
-      ::localsd_high        = 30
+      ::localmean_low       = 1050, "Local mean low"
+      ::localmean_high      = 1600, "Local mean max"
+      ::localmean_smoothing = 5, "Standard deviation to smooth the mapping"
+      ::localsd_high        = 30, "Standard deviation of the Gaussian kernel"
       #::Gui()
     }
 
@@ -133,18 +133,18 @@ if (!exists(itkCreateProbabilityClass)) {
         
           #::win.AddString( &::output_name,"Output")
     
-          ::win.AddInt( &::localstats_winsize,  "::localstats_winsize", 1,10)
+          ::win.AddInt( &::localstats_winsize,  "Size", 1,10)
 
-          ::win.AddFloat( &::lsd_erosion,  "::lsd_erosion", 0,5)
+          ::win.AddFloat( &::lsd_erosion,  "Erosion", 0,5)
     
-          ::win.BeginBoxPanel("local mean range")
-            ::win.AddFloat( &::localmean_low,  "::localmean_low", 0,3000)
-            ::win.AddFloat( &::localmean_high,  "::localmean_high", 0,3000)
-            ::win.AddFloat( &::localmean_smoothing,  "::localmean_smoothing", 0,100)
+          ::win.BeginBoxPanel("LM range")
+            ::win.AddFloat( &::localmean_low,  "MeanL", 0,3000)
+            ::win.AddFloat( &::localmean_high,  "MeanH", 0,3000)
+            ::win.AddFloat( &::localmean_smoothing,  "Smoothing", 0,100)
           ::win.EndBoxPanel
     
-          ::win.BeginBoxPanel("local stand. dev. parameter")
-            ::win.AddFloat( &::localsd_high,  "::localsd_high", 0,3000)
+          ::win.BeginBoxPanel("Standard Dev. Param.")
+            ::win.AddFloat( &::localsd_high,  "SD", 0,3000)
           ::win.EndBoxPanel
     
           ::win.AddButton("Apply",::Apply)

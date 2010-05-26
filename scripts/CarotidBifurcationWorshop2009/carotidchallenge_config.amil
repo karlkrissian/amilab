@@ -1,13 +1,13 @@
 if (!exists(config)) \
 {
   Class config{
-    basedir    = "G:\\Documents and Settings\\Alan\\Desktop\\Datos Workshop\\"
+    basedir    = "G:/Documents and Settings/Alan/Desktop/Datos Workshop/"
 
-    ::data_dir              = basedir+"data\\"
-    ::groundtruth_dir       = basedir+"groundtruth\\"
-    ::results_dir           = basedir+"results\\"
-    ::evaluation_bindir     = basedir+"cls2009\\build\\"
-    ::evaluation_scriptdir  = basedir+"cls2009\\scripts\\"
+    ::data_dir              = basedir+"data/"
+    ::groundtruth_dir       = basedir+"groundtruth/"
+    ::results_dir           = basedir+"results/"
+    ::evaluation_bindir     = basedir+"cls2009/build/"
+    ::evaluation_scriptdir  = basedir+"cls2009/scripts/"
   }
 }
 
