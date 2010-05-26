@@ -25,14 +25,20 @@ if (!exists(LoadIcons)) \
   
     proc ::Load() \
     {
-      ::LoadIconPNG("Home")
       ::LoadIconPNG("Back")
-      ::LoadIconPNG("Forward")
       ::LoadIconPNG("Apply")
       ::LoadIconPNG("Close")
+      ::LoadIconPNG("Copy")
       ::LoadIconPNG("Delete")
+      ::LoadIconPNG2("Edit page","Edit_page")
+      ::LoadIconPNG("Export")
+      ::LoadIconPNG("Forward")
+      ::LoadIconPNG("Home")
       ::LoadIconPNG("Refresh")
-      ::LoadIconPNG2("Edit page","EditPage")
+      ::LoadIconPNG("Save")
+      ::LoadIconPNG2("Save image","Save_image")
+      ::LoadIconPNG("Selection")
+      ::LoadIconPNG("Show")
   
       ::_DokuWiki = wx.wxImage(GetScriptsDir+"/Bitmaps/dokuwiki-64.png")
     }

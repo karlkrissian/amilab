@@ -67,24 +67,38 @@ if (!exists(ScriptGui)) \
     }
     ::EditScript.Comments("Open AmilabEditor to edit the current script :)")
 
+    #------------------------------------
+    # Adds a bitmap button after resizing the image to size x size
+    #
+    proc ::AddBitmapButton( OBJECT win, OBJECT icon_im, NUM size, STRING callback_name) \
+    {
+      bmp = wx.wxBitmap(icon_im.Scale2(size,size))
+      eval "win.AddBitmapButton(\"%1%\", ::%1%, bmp);" % callback_name
+    }
 
     #------------------------------------
-    proc ::AddStandardButtons( OBJECT ::win) \
+    # Adds a bitmap button after resizing the image to 16x16
+    #
+    proc ::AddBitmapButton16( OBJECT win, OBJECT icon_im, STRING callback_name) \
     {
-      ::win.BeginHorizontal
-        closeim   = ::icons._Close
-        ::win.AddBitmapButton("Close",     ::Close, \
-                wx.wxBitmap(closeim.Scale2(16,16)))
-        delete_im = ::icons._Delete
-        ::win.AddBitmapButton("Close All",  ::CloseAll, \
-                wx.wxBitmap(delete_im.Scale2(16,16)))
-        reload_im = ::icons._Refresh
-        ::win.AddBitmapButton("Close All",      ::Reload, \
-                wx.wxBitmap(reload_im.Scale2(16,16)))
-        edit_im   = ::icons._EditPage
-        ::win.AddBitmapButton("Edit",           ::EditScript, \
-                wx.wxBitmap(edit_im.Scale2(16,16)))
-      ::win.EndHorizontal  
+      size = 16
+      bmp = wx.wxBitmap(icon_im.Scale2(size,size))
+      eval "win.AddBitmapButton(\"%1%\", ::%1%, bmp);" % callback_name
+    }
+
+    #------------------------------------
+    proc ::AddStandardButtons( OBJECT win) \
+    {
+      win.BeginHorizontal
+        ::AddBitmapButton16(&win, &::icons._Edit_page, "EditScript")
+        win.SetPositionProp(-1,2)
+        ::AddBitmapButton16(&win, &::icons._Refresh, "Reload")
+        win.SetPositionProp(-1,2)
+        ::AddBitmapButton16(&win, &::icons._Close,   "Close")
+        win.SetPositionProp(-1,2)
+        ::AddBitmapButton16(&win, &::icons._Delete,  "CloseAll")
+        win.SetPositionProp(-1,2)
+      win.EndHorizontal  
     }
 
     #---------------------------------------------------
@@ -121,30 +135,35 @@ if (!exists(ScriptGui)) \
     #------------------------------------
     # Add the standard help page for Gui scripts
     #
-    proc ::AddHelpPage( OBJECT ::win) \
+    proc ::AddHelpPage( OBJECT win) \
     {
-      ::win.AddPage("Help")
-        ::win.BeginHorizontal
+      win.AddPage("Help")
+        win.BeginHorizontal
           # make nice wiki button
           wikipng = ::icons._DokuWiki
           if (wikipng.IsOk()) {
-            ::win.AddBitmapButton("Wiki", ::LaunchWiki, \
+            win.AddBitmapButton("Wiki", ::LaunchWiki, \
             wx.wxBitmap(wikipng.Scale2(32,32)))
           } else {
-            ::win.AddButton("Wiki", ::LaunchWiki)
+            win.AddButton("Wiki", ::LaunchWiki)
           }
           
-          ::win.AddBitmapButton("Home", ::HtmlHome, wx.wxBitmap(::icons._Home))
-          ::win.AddBitmapButton("<--",  ::HtmlBack, wx.wxBitmap(::icons._Back))
-          ::win.AddBitmapButton("-->",  ::HtmlForward, \
+          win.AddBitmapButton("Home", ::HtmlHome, wx.wxBitmap(::icons._Home))
+          win.SetPositionProp(-1,2)
+          win.AddBitmapButton("<--",  ::HtmlBack, wx.wxBitmap(::icons._Back))
+          win.SetPositionProp(-1,2)
+          win.AddBitmapButton("-->",  ::HtmlForward, \
             wx.wxBitmap(::icons._Forward))
-        ::win.EndHorizontal
+          win.SetPositionProp(-1,2)
+        win.EndHorizontal
         # add html widget
-        d = ::win.CurrentParent()
+        d = win.CurrentParent()
         ::html = wx.wxHtmlWindow(&d)
         ::html.LoadFile( ::html_filename)
-        ::win.AddWidget(&::html,1)
+        win.AddWidget(&::html,1)
     }
+
+
 
   }
 }

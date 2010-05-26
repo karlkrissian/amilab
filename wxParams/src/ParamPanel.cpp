@@ -117,7 +117,8 @@ ParamPanel::ParamPanel( wxWindow* parent,
 // wxString(_T(titre)))
 {
 
-  this->SetSizeHints(200,150,700,800);
+  this->SetSizeHints(200,150);
+//,700,800);
 
   //SetSheetStyle(wxPROPSHEET_TREEBOOK);
   //SetSheetStyle(style);

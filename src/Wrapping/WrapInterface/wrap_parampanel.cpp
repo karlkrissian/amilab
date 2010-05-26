@@ -993,9 +993,16 @@ BasicVariable::ptr WrapClass_parampanel::wrap_SetPositionProp::CallMember( Param
   if (!get_int_param(border_size,   p, n)) ClassHelpAndReturn;
   if (!get_int_param(flags,         p, n)) ClassHelpAndReturn;
 
+/*
   int nbp = this->_objectptr->_parampanel->NbPanels();
   this->_objectptr->_parampanel->SetPositionProperties(
               nbp-1, 
+              prop_property, 
+              border_size,
+              flags);
+*/
+
+  this->_objectptr->_parampanel->SetLastPositionProperties(
               prop_property, 
               border_size,
               flags);

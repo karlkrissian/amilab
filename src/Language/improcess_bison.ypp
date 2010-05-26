@@ -1388,6 +1388,7 @@ command:
         BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
         if (var->GetPtrCounter()==1) {
           IdentifierInfo::ptr ident($1);
+          var->SetComments(comments.get());
           Vars.AddVar(ident,var);
         } else
         {

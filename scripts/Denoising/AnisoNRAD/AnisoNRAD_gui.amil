@@ -61,8 +61,8 @@ if (!exists(AnisoNRADClass)) {
     
         ::run_on_roi = UCHAR(0), "Run only on the selected region-of-interest"
   
-        ::result_imagename = "global::AnisoNRAD_result"
-        ::result_filename = "AnisoNRAD_result.ami.gz"
+        ::result_imagename = "global::AnisoNRAD_result", "Name of the resulting global variable."
+        ::result_filename = "AnisoNRAD_result.ami.gz", "Disk filename for the resulting image."
   
   
         ::wiki_help = ::AmilabWiki("tutorial-nrad") 
@@ -118,6 +118,7 @@ if (!exists(AnisoNRADClass)) {
       ::load_input
       ::Display()
     }
+    ::ReloadInput.Comments("Reload input image.")
     
     #------------------------------------
     proc ::SetRoiImage( IMAGE _roi) \
@@ -137,6 +138,7 @@ if (!exists(AnisoNRADClass)) {
       }
       ::Display()
     }
+    ::GetRoi.Comments("Select the Region of Interest (ROI) for noise estimation.")
     
     #------------------------------------
     proc ::FilterFlux() \
@@ -265,6 +267,7 @@ if (!exists(AnisoNRADClass)) {
       }
       local_new
     }
+    ::Display.Comments("Display results")
     
     proc ::CompareSurfaces(IMAGE i1, IMAGE i2) {
       
@@ -334,14 +337,16 @@ if (!exists(AnisoNRADClass)) {
           
           ::win.AddInt( &::neighborhood,"Neighborhood",0,4)
       
-          ::scheme_id       = ::win.AddEnum( &::scheme,"Scheme")
-            ::win.AddEnumChoice(::scheme_id,"Explicit")
-            ::win.AddEnumChoice(::scheme_id,"Semi-implicit")
+          ::win.BeginHorizontal()
+            ::scheme_id       = ::win.AddEnum( &::scheme,"Sch.")
+              ::win.AddEnumChoice(::scheme_id,"Expl.")
+              ::win.AddEnumChoice(::scheme_id,"Semi-impl.")
           
-          ::eq_type_id      = ::win.AddEnum( &::equation_type)
-            ::win.AddEnumChoice(::eq_type_id,"Scalar")
-            ::win.AddEnumChoice(::eq_type_id,"Matrix")
-          ::win.SetCallback( &::new_eq_type)
+            ::eq_type_id      = ::win.AddEnum( &::equation_type,"Eq.")
+              ::win.AddEnumChoice(::eq_type_id,"Scalar")
+              ::win.AddEnumChoice(::eq_type_id,"Matrix")
+            ::win.SetCallback( &::new_eq_type)
+          ::win.EndHorizontal()
       
           ::scal_boxid = ::win.BeginBoxPanel("Scalar diffusion parameters")
             ::scalar_mode_id = ::win.AddEnum( &::scalar_mode,"Scalar mode")
@@ -369,23 +374,33 @@ if (!exists(AnisoNRADClass)) {
           ::win.EndBoxPanel
           
           ::win.AddPage("Controls")
+            ::win.BeginHorizontal
+              ::AddBitmapButton(&::win, &::icons._Refresh,   32, "ReloadInput")
+              ::win.SetPositionProp(-1,0)
+              ::AddBitmapButton(&::win, &::icons._Selection, 32, "GetRoi")
+              ::win.SetPositionProp(-1,0)
+              ::AddBitmapButton(&::win, &::icons._Apply,     32, "Filter")
+              ::win.SetPositionProp(-1,0)
+              ::AddBitmapButton(&::win, &::icons._Show,      32, "Display")
+              ::win.SetPositionProp(-1,0)
+            ::win.EndHorizontal
             ::win.AddBoolean( &::run_on_roi,"Run on ROI")
-            ::win.BeginHorizontal
-              ::win.AddButton("Reload input", ::ReloadInput)
-              ::win.AddButton("Select ROI", ::GetRoi)
-              ::win.AddButton("Filter",     ::Filter)
-            ::win.EndHorizontal
-            ::win.BeginHorizontal
-              ::win.AddButton("Display",          ::Display)
-              ::win.AddButton("Display Surfaces", ::DisplaySurfaces)
-            ::win.EndHorizontal
+            ::win.AddButton("Display Surfaces", ::DisplaySurfaces)
             ::win.BeginBoxPanel("Result --> disk")
-              ::win.AddString(&::result_filename,"Filename")
-              ::win.AddButton("Save",       ::Save)
+              ::win.BeginHorizontal()
+                ::win.AddString(&::result_filename,"File")
+                # make it proportional
+                ::win.SetPositionProp(1)
+                ::AddBitmapButton16(&::win, &::icons._Save, "Save")
+              ::win.EndHorizontal()
             ::win.EndBoxPanel
             ::win.BeginBoxPanel("Result --> global variable")
-              ::win.AddString(&::result_imagename,"Name")
-              ::win.AddButton("SaveImage",  ::SaveToImage)
+              ::win.BeginHorizontal()
+                ::win.AddString(&::result_imagename,"Name")
+                # make it proportional
+                ::win.SetPositionProp(1)
+                ::AddBitmapButton16(&::win, &::icons._Copy, "SaveToImage")
+              ::win.EndHorizontal()
             ::win.EndBoxPanel
 
           ::AddHelpPage(&::win)

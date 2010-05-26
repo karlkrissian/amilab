@@ -2,6 +2,14 @@
 # Associate labels original text with physical files.
 
 
+$key = q/sec:Param/;
+$external_labels{$key} = "$URL/" . q|node4.html|; 
+$noresave{$key} = "$nosave";
+
+$key = q/sec:Controls/;
+$external_labels{$key} = "$URL/" . q|node5.html|; 
+$noresave{$key} = "$nosave";
+
 1;
 
 
