@@ -129,6 +129,11 @@ if (!exists(MultilinesClass)) {
       ::input <<= im
     }
     
+    proc ::set_result(IMAGE im) \
+    {
+      ::result <<= im
+    }
+    
     #--------------------------------------------------
     proc ::h(NUM gamma, NUM theta, NUM res) {
     #    ----
@@ -605,6 +610,7 @@ if (!exists(MultilinesClass)) {
       } else {
         ::win.Display()
       }
+      ::win.Update(-1)
     }
     
     ::Init

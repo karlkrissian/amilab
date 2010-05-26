@@ -188,8 +188,8 @@ if (!exists(itkSPClass)) {
     #-----------------------------------------------
     proc ::Run() \
     {
-      #::load_input()
-      #::load_speed()
+      if (!exists (::input)) {::load_input();}
+      if (!exists (::speed)) {::load_speed();}
     
       # force a minimal value of ::epsilon
       maxrepim_crop = ::speed+::epsilon
@@ -222,18 +222,13 @@ if (!exists(itkSPClass)) {
         fminit = fminit*(::endmask<=0.5)+(::endmask>=0.5)*-::maxcost
       }
     
-      #maxrepim_crop = maxrepim_crop/10
       # running fast marching until the point 1 is reached
       printn "FMT"
-      //::SetEndPoint(::endx,::endy,::endz)
       if (::end_mode == 0){
         res = ::itk->FastMarchingImageFilter3D(maxrepim_crop,\
               ::endx,::endy,::endz,\
               ::maxcost,0)
-        //::res = ::res+5
         res = (res>::maxcost)*::maxcost+(res<=::maxcost)*res
-        #::res = ::itk->BinaryThresholdImageFilter3D(fast,0,100)
-        #::res2 = vtkFastMarchingTarget(::maxrepim_crop,::fminit,::maxcost,::startx+0.5,::starty+0.5,::startz+0.5)
         res.info
       } else {
         res = vtkFastMarchingTarget(maxrepim_crop,fminit,::maxcost,::startx+0.5,::starty+0.5,::startz+0.5)
@@ -257,11 +252,20 @@ if (!exists(itkSPClass)) {
                                   ::delta) 
     }
     
+    proc ::SetParentPanel(OBJECT pp) \
+    {
+      ::parent_panel = &pp
+    }
+    
     #-------------------------------------------
     proc ::Gui() \
     {
       import = &global::ami_import;
-      ::win = import->ParamPanel("Path")
+      if (exists(::parent_panel)) {
+        ::win = import->ParamPanel("Path",&::parent_panel)
+      } else {
+        ::win = import->ParamPanel("Path")
+      }
     
       ::win.BeginBook()
 
@@ -317,11 +321,15 @@ if (!exists(itkSPClass)) {
         ::win.AddButton("Close All",  ::CloseAll)
       ::win.EndHorizontal
     
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
       ::win.Update(-1)
-      ::win.Display
     }
     
-    #::init
+    ::init
     } #End of class
   
 } # End of if
