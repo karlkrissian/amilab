@@ -175,6 +175,6 @@ BasicVariable::ptr WrapClass_wxImage::
   if (!get_val_ptr_param<string>( filename,  p, n)) 
     ClassHelpAndReturn;
 
-  int res = this->_objectptr->_obj->SaveFile(*filename);
+  int res = this->_objectptr->_obj->SaveFile(wxString::FromAscii(filename->c_str()));
   RETURN_VAR(int,res);
 }
