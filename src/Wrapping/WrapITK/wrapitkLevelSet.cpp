@@ -2,7 +2,7 @@
 
 #ifndef _WITHOUT_ITK_
 #include "itkImage.h"
-#include "itkShapeDetectionLevelSetImageFilter.h"
+#include "itkGeodesicActiveContourLevelSetImageFilter.h"
 #endif // _WITHOUT_ITK_
 
 #include "wrapfunctions.hpp" 
@@ -14,7 +14,7 @@ InrImage* wrap_itkLevelSetFilter2D(ParamList* p)
 
 #ifndef _WITHOUT_ITK_
 
-	char functionname[] = "itkLevelSetFilter2D";
+	char functionname[] = "itkLevelSetFilter3D";
   char description[]=" \n\
         Filter to compute a level set solution in 2D.\n\
       ";
@@ -25,12 +25,18 @@ InrImage* wrap_itkLevelSetFilter2D(ParamList* p)
 					sigmoid image \n\
           curvatureScaling \n\
           propagationScaling \n\
+          AdvectionScaling \n\
+          MaximumRMSError \n\
+          NumberOfIterations \n\
       ";
     
 	InrImage* input = NULL;
   InrImage* sigmoidI = NULL;
 	float curvatureScaling = 0.0;
 	float propagationScaling = 0.0;
+  float advectionScaling = 0.0;
+  float maximumRMSError = 0.0;
+  int numberOfIteration = 0;
   InrImage* res = NULL;
   int n=0;
   
@@ -38,6 +44,9 @@ InrImage* wrap_itkLevelSetFilter2D(ParamList* p)
   if (!get_val_ptr_param<InrImage>( sigmoidI,   p, n))  HelpAndReturnNULL;
   if (!get_val_param<float>( curvatureScaling, p, n))   HelpAndReturnNULL;
   if (!get_val_param<float>( propagationScaling, p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>( advectionScaling, p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>( maximumRMSError, p, n)) HelpAndReturnNULL;
+  if (!get_int_param( numberOfIteration, p, n)) HelpAndReturnNULL;
  
   typedef float       InternalPixelType;
   const   unsigned int        Dimension = 2;
@@ -56,19 +65,21 @@ InrImage* wrap_itkLevelSetFilter2D(ParamList* p)
 	
 	cout << "Conversi�n hecha" << endl;
   
-  typedef  itk::ShapeDetectionLevelSetImageFilter< InternalImageType, InternalImageType > ShapeDetectionFilterType;
-  ShapeDetectionFilterType::Pointer shapeDetection = ShapeDetectionFilterType::New();  
-    
-	shapeDetection->SetInput( image );
-  shapeDetection->SetFeatureImage( imageS );
-  shapeDetection->SetPropagationScaling(  propagationScaling );
-  shapeDetection->SetCurvatureScaling( curvatureScaling ); 
-  shapeDetection->SetMaximumRMSError( 0.02 );
-  shapeDetection->SetNumberOfIterations( 200 );
-
-	shapeDetection->Update();
+  typedef itk::GeodesicActiveContourLevelSetImageFilter < InternalImageType, InternalImageType > GeodesicFilterType;
+  //typedef  itk::ShapeDetectionLevelSetImageFilter ShapeDetectionFilterType;
+  GeodesicFilterType::Pointer geodesic = GeodesicFilterType::New();  
   
-	outimage = shapeDetection->GetOutput();
+	geodesic->SetInput( image );
+  geodesic->SetFeatureImage( imageS );
+  geodesic->SetPropagationScaling(  propagationScaling );
+  geodesic->SetCurvatureScaling( curvatureScaling ); 
+  geodesic->SetMaximumRMSError( maximumRMSError );
+  geodesic->SetNumberOfIterations( numberOfIteration );
+  geodesic->SetAdvectionScaling(advectionScaling);
+
+	geodesic->Update();
+  
+	outimage = geodesic->GetOutput();
 
 	// Convert from ITK to InrImage
   cout << "Converting back to InrImage " << endl;
@@ -99,12 +110,18 @@ InrImage* wrap_itkLevelSetFilter3D(ParamList* p)
 					sigmoid image \n\
           curvatureScaling \n\
           propagationScaling \n\
+          AdvectionScaling \n\
+          MaximumRMSError \n\
+          NumberOfIterations \n\
       ";
     
 	InrImage* input = NULL;
   InrImage* sigmoidI = NULL;
 	float curvatureScaling = 0.0;
 	float propagationScaling = 0.0;
+  float advectionScaling = 0.0;
+  float maximumRMSError = 0.0;
+  int numberOfIteration = 0;
   InrImage* res = NULL;
   int n=0;
   
@@ -112,6 +129,9 @@ InrImage* wrap_itkLevelSetFilter3D(ParamList* p)
   if (!get_val_ptr_param<InrImage>( sigmoidI,   p, n))  HelpAndReturnNULL;
   if (!get_val_param<float>( curvatureScaling, p, n))   HelpAndReturnNULL;
   if (!get_val_param<float>( propagationScaling, p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>( advectionScaling, p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>( maximumRMSError, p, n)) HelpAndReturnNULL;
+  if (!get_int_param( numberOfIteration, p, n)) HelpAndReturnNULL;
  
   typedef float       InternalPixelType;
   const   unsigned int        Dimension = 3;
@@ -130,19 +150,21 @@ InrImage* wrap_itkLevelSetFilter3D(ParamList* p)
 	
 	cout << "Conversi�n hecha" << endl;
   
-  typedef  itk::ShapeDetectionLevelSetImageFilter< InternalImageType, InternalImageType > ShapeDetectionFilterType;
-  ShapeDetectionFilterType::Pointer shapeDetection = ShapeDetectionFilterType::New();  
+  typedef itk::GeodesicActiveContourLevelSetImageFilter < InternalImageType, InternalImageType > GeodesicFilterType;
+  //typedef  itk::ShapeDetectionLevelSetImageFilter ShapeDetectionFilterType;
+  GeodesicFilterType::Pointer geodesic = GeodesicFilterType::New();  
     
-	shapeDetection->SetInput( image );
-  shapeDetection->SetFeatureImage( imageS );
-  shapeDetection->SetPropagationScaling(  propagationScaling );
-  shapeDetection->SetCurvatureScaling( curvatureScaling ); 
-  shapeDetection->SetMaximumRMSError( 0.02 );
-  shapeDetection->SetNumberOfIterations( 500 );
+	geodesic->SetInput( image );
+  geodesic->SetFeatureImage( imageS );
+  geodesic->SetPropagationScaling(  propagationScaling );
+  geodesic->SetCurvatureScaling( curvatureScaling ); 
+  geodesic->SetMaximumRMSError( maximumRMSError );
+  geodesic->SetNumberOfIterations( numberOfIteration );
+  geodesic->SetAdvectionScaling(advectionScaling);
 
-	shapeDetection->Update();
+	geodesic->Update();
   
-	outimage = shapeDetection->GetOutput();
+	outimage = geodesic->GetOutput();
 
 	// Convert from ITK to InrImage
   cout << "Converting back to InrImage " << endl;
