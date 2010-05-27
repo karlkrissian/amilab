@@ -109,17 +109,17 @@ BasicVariable::ptr WrapClass_wxWindow::
 void WrapClass_wxWindow::
       wrap_ShowWin::SetParametersComments() 
 {
-  ADDPARAMCOMMENT("integer: 1/0 for show/hide");
+  ADDPARAMCOMMENT("integer: 1/0 for show/hide (def:1)");
   return_comments = "Success result (int variable).";
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxWindow::
       wrap_ShowWin::CallMember( ParamList* p)
 {
-  int show;
+  int show = 1;
   int n = 0;
 
-  if (!get_int_param(show, p, n)) ClassHelpAndReturn;
+  get_int_param(show, p, n, false);
   int res = this->_objectptr->_obj->Show(show);
 
   RETURN_VAR(int, res);
