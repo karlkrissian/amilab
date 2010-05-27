@@ -1,7 +1,7 @@
 #!/home/karl/projects/bin/linux/amilab
 
-i47   = ReadRawImages(1024,1024,USHORT,0,"WP01/package_02_LMD/images/AfGG_c0.81.47",0,0)
-t47   = ReadRawImages(1024,1024,USHORT,0,"WP01/package_02_LMD/images/AfGG_c10.8.47",0,0)
+i47   = IO.ReadRawImages2D(1024,1024,USHORT.val,,0,"WP01/package_02_LMD/images/AfGG_c0.81.47",0)
+t47   = IO.ReadRawImages2D(1024,1024,USHORT.val,,0,"WP01/package_02_LMD/images/AfGG_c10.8.47",0)
 coeff = Image "alt_coeff.ami.gz"
 
 alt47 = ComputeAltitudes(t47,coeff)*4
