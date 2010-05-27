@@ -3,7 +3,7 @@
     IMAGE PROCESSING LANGUAGE
 
     Karl Krissian
-    ULPGC
+    ULPGC 
     06 02 2001
  */
 
@@ -5891,7 +5891,7 @@ end_block: ;
 
 
 double_variable:
-    | VAR_DOUBLE
+    VAR_DOUBLE
     {
       /**
       Description: adds a reference to the variable in the stack
