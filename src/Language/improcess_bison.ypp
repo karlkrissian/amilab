@@ -298,6 +298,7 @@ void CB_update_imagelist( void* imagelist_gui);
   char*                   astring;
   AmiInstructionBlock*    ablock;
   float                   afloat;
+  long int                along;  /// New (added: 27/05/2010)
   double                  adouble;
   int                     aint;
   ParamList*              paramlist; // here smart pointer
@@ -372,6 +373,8 @@ void CB_update_imagelist( void* imagelist_gui);
 %token ASTRING ABLOCK NUMBER
 %token IDENTIFIER
 %token VAR_IMAGE   VAR_FLOAT VAR_INT VAR_UCHAR VAR_STRING VAR_IMAGEDRAW
+%token VAR_LONG     /// New (added: 27/05/2010)
+%token VAR_DOUBLE
 %token VAR_SURFACE VAR_SURFDRAW VAR_MATRIX
 %token VAR_FILE
 %token VAR_C_FUNCTION
@@ -622,6 +625,7 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_Xpos T_Ypos T_Zpos T_SpacePos
 
 %token T_CHAR T_UCHAR T_SHORT T_USHORT T_INT T_UINT
+%token T_LONG   /// New (added: 27/05/2010)
 %token T_FLOAT T_DOUBLE
 %token T_RGB  T_FLOAT_VECTOR
 %token T_GetFormat
@@ -1359,7 +1363,7 @@ command:
         **/
         BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
         // check counter of the value, not of the variable ...
-        if (var.get()) {
+        if (var.get() || (var->GetPtrCounter()>0) ) {
           if (var->GetPtrCounter()==1) {
             //cout << "GetPtrCounter == 1" << endl;
             IdentifierInfo::ptr ident($1);
@@ -1371,7 +1375,8 @@ command:
             Vars.AddVar(ident,copy);
           }
         } else {
-            driver.err_print("identifier = variable, no variable value");
+          driver.err_print("identifier = variable, no variable value");
+          YYABORT;
         }
       }
       |
@@ -2194,20 +2199,6 @@ command:
 
 
         }
- /*
-       |  VAR_FLOAT INC_OP
-        {
-          (*driver.var_stack.GetLastVar<float>()->Pointer())++;
-        }
-        |  VAR_FLOAT DEC_OP
-        {
-          (*driver.var_stack.GetLastVar<float>()->Pointer())--;
-        }
-        |  VAR_FLOAT ASSIGN_OP expr
-        {
-          (*driver.var_stack.GetLastVar<float>()->Pointer()) = $3;
-        }
-*/
         |  VAR_INT INC_OP
         {
           (*driver.var_stack.GetLastVar<int>()->Pointer())++;
@@ -2401,7 +2392,7 @@ command:
          driver.res_print("\t\t\t -  open browsing window for choosing the image\n");
          driver.res_print("\t Image(basic_type, size_x , size_y, size_z) \n");
          driver.res_print("\t\t\t - create an image of a basic type and the given dimensions\n");
-         driver.res_print("\t\t\t - basic_type are CHAR UCHAR SHORT USHORT FLOAT DOUBLE RGB FLOAT_VECTOR \n");
+         driver.res_print("\t\t\t - basic_type are CHAR UCHAR SHORT USHORT LONG INT FLOAT DOUBLE RGB FLOAT_VECTOR \n");
          driver.res_print("\t\t\t - size_x, size_y, size_z: float expressions \n");
          driver.res_print(" Functions that return a new image: \n");
          driver.res_print("\t OpImage( var_image, string ) \n");
@@ -5899,6 +5890,16 @@ begin_block: ;
 end_block: ;
 
 
+double_variable:
+    | VAR_DOUBLE
+    {
+      /**
+      Description: adds a reference to the variable in the stack
+      **/
+      BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
+      driver.var_stack.AddVar(var->NewReference());
+    }
+
 float_variable:
     NUMBER
     {
@@ -6843,6 +6844,10 @@ basic_type:
        {
      $$=WT_UNSIGNED_INT;
        }
+       | T_LONG
+       {
+     $$=WT_LONG;
+       }
        | T_FLOAT
        {
      $$=WT_FLOAT;
@@ -6891,7 +6896,8 @@ image:
       T_Image  expr_string
       {
         boost::shared_array<char> st( $2);
-        driver.im_stack.AddFileImage(st.get());
+        bool res = driver.im_stack.AddFileImage(st.get());
+        if (!res) YYABORT;
       }
 /* Deprecated since expr_string accepts parenthesis
       |
@@ -7127,8 +7133,8 @@ image:
             driver.yyiperror(" Need Image \n");
             YYABORT;
           }
-          driver.im_stack.AddFileImage((char*)name.c_str());
-
+          bool res1 = driver.im_stack.AddFileImage((char*)name.c_str());
+          if (!res1) YYABORT;
 
           wxFileName filename(GetwxStr(name));
           filename.Normalize(wxPATH_NORM_ALL,wxEmptyString,wxPATH_UNIX);
@@ -10052,6 +10058,8 @@ string_variable:
 
 
 primary_var:
+      double_variable
+    |
       float_variable
     |
       image_variable
@@ -11757,9 +11765,14 @@ processed_variable:
         /* VAR_UCHAR is used in expr_var: variable_float ...*/
         |
          VAR_FLOAT
-        /* VAR_STRING */
+        |
+         VAR_LONG
+         /* VAR_LONG new (added: 27/05/2010) ...*/
+        |
+         VAR_DOUBLE
         |
          VAR_STRING
+        /* VAR_STRING */
         |
          VAR_MATRIX
         |

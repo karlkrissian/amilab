@@ -469,14 +469,16 @@ void Driver::init_err_output()
 int Driver::err_print(const char* st) 
 //   -----------------
 {
-  *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString::FromAscii(st);
+  if (GB_main_wxFrame)
+    *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString::FromAscii(st);
+  std::cout << "Error: " << st << std::endl;
   string mess =  (format("Error %s \n") % st).str();
   if (InConsole()) 
     mess = mess + " Abort current parsing ?";
   else 
     mess = mess + " Abort current parsing and open file?";
 
-  if (!nomessagedialog) {
+  if ((!nomessagedialog)&&(GB_main_wxFrame)) {
     wxMessageDialog* err_msg = new wxMessageDialog(GB_main_wxFrame,GetwxStr(mess),GetwxStr("Error"),wxYES_NO |  wxYES_DEFAULT  | wxICON_ERROR | wxSTAY_ON_TOP );
     int res = err_msg->ShowModal();
     err_msg->Destroy();
@@ -507,7 +509,8 @@ int Driver::err_print(const char* st)
 void Driver::info_print(const char* st) 
 //   -----------------
 {
-  *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString::FromAscii(st);
+  if (GB_main_wxFrame)
+    *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString::FromAscii(st);
   string mess =  (format("Information: %s \n") % st).str();
   if (!nomessagedialog) {
     wxMessageDialog* err_msg = new wxMessageDialog(NULL,GetwxStr(mess),GetwxStr("Info"),wxOK | wxICON_INFORMATION | wxSTAY_ON_TOP );
@@ -548,7 +551,8 @@ void Driver::init_res_output()
 void Driver::res_print(const char* st) 
 //   -----------------
 {
-  *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString::FromAscii(st);
+  if (GB_main_wxFrame)
+    *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString::FromAscii(st);
   std::cout << st << endl;
 } // Driver::res_print()
 

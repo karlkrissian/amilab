@@ -1,0 +1,64 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_inc_and_dec_operator.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the operations you can perform with the increment and decrement operator.
+#
+# Operations:   VARIABLE ++    VARIABLE --    ++ VARIABLE    -- VARIABLE
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+OK = 1 # The test was successful
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+A=(DOUBLE) 10
+printn  "\n\t\t A=(DOUBLE) 10 --> A=%1% (ASSIGN_OP)" % A
+B=(DOUBLE) 10
+printn  "\t\t B=(DOUBLE) 10 --> B=%1% (ASSIGN_OP)" % B
+
+printn  "\n\t\t Postfix increment and decrement operator:"
+A++
+printn  "\t\t A++ --> A=%1% (INC_OP)" % A
+if(A != 11) {
+  OK = 0
+  printn  "\nERROR: The increment operator is not working properly."
+ }
+
+A--
+printn  "\t\t A-- --> A=%1% (DEC_OP)" % A
+if(A != 10) {
+  OK = 0
+  printn  "\nERROR: The decrement operator is not working properly."
+}
+
+printn  "\n\t\t Prefix increment and decrement operator:"
+++B
+printn  "\t\t ++B --> B=%1% (INC_OP)" % B
+
+if(B != 11) {
+  OK = 0
+  printn  "\nERROR: The increment operator is not working properly."
+}
+
+--B
+printn  "\t\t --B --> B=%1% (DEC_OP)" % B
+if(B != 10) {
+  OK = 0
+  printn  "\nERROR: The decrement operator is not working properly."
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ctest.PrintTestResult( OK ) 
+
+#quit
+

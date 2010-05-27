@@ -55,7 +55,9 @@ SET(Language_SRCS
     VarContexts.cpp
     BasicVariable.cpp
     Variable.cpp
+    Variable_long.cpp
     Variable_float.cpp
+    Variable_double.cpp
     Variable_InrImage.cpp
     Variable_string.cpp
     Variable_FloatMatrix.cpp
@@ -85,7 +87,9 @@ SET(Language_HDRS
     VarContexts.tpp
     BasicVariable.h
     Variable.hpp
+    Variable_long.h
     Variable_float.h
+    Variable_double.h
     Variable_InrImage.h
     Variable_string.h
     Variable_FloatMatrix.h

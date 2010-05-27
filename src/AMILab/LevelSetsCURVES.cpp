@@ -62,7 +62,8 @@ class vtkUpdateProgressBar : public vtkCommand
   virtual void Execute(vtkObject *caller, unsigned long, void* calldata)
   {
     double value = *(double*) calldata;
-    GB_main_wxFrame->SetProgress((int)(value*100+0.5));
+    if (GB_main_wxFrame)
+      GB_main_wxFrame->SetProgress((int)(value*100+0.5));
   }
 };
 

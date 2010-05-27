@@ -1,0 +1,77 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_trigonometric_functions.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the trigonometric functions (sine, cosine, and tangent).
+#
+# Operations:   sin, cos, tan, asin, acos, atan
+#
+# Note: The value of Pi is not in degrees. No used.
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+OK = 1 # The test was successful
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+printn  "\n\t\t Trigonometric functions(sin, cos, tan): angle = 45 (Radians)"
+
+R=sin 45
+printn  "\t\t R=sin 45 --> R=%1% (sin 45 = 0.850903525)" % R
+if(R != 0.850903525) {
+  OK = 0
+  printn "\nERROR: Failed to calculate the sin 45 (%1% != 0.850903525)" % R
+}
+
+R=cos 45
+printn  "\t\t R=cos 45 --> R=%1% (cos 45 = 0.525321989)" % R
+if(R != 0.525321989) {
+  OK = 0
+  printn "\nERROR: Failed to calculate the cos 45 (%1% != 0.525321989)" % R
+}
+
+R=tan 45
+printn  "\t\t R=tan 45 --> R=%1% (tan 45 = 1.619775191)" % R
+if(R != 1.619775191) {
+  OK = 0
+  printn  "\nERROR: Failed to calculate the tan 45 (%1% !=1.619775191)" % R
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+printn  "\n\t\t Trigonometric functions(asin, acos, atan): angle = 0 (Radians)"
+
+R=asin 0
+printn  "\t\t R=asin 0 --> R=%1% (asin 0 = 0)" % R
+if(R != 0) {
+  OK = 0
+  printn  "\nERROR: Failed to calculate the asin 0 (%1% != 0)" % R
+}
+
+R=acos 0
+printn  "\t\t R=acos 0 --> R=%1% (acos 0 = 1.5707963267949 )" % R
+if(R != 1.5707963267949) {
+  OK = 0
+  printn  "\nERROR: Failed to calculate the acos 0 (%1% != 1.5707963267949)" % R
+}
+
+R=atan 0
+printn  "\t\t R=atan 0 --> R=%1% (atan 0 = 0)" % R
+if(R != 0) {
+  OK = 0
+  printn  "\nERROR: Failed to calculate the atan 0 (%1% != 0)" % R
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ctest.PrintTestResult( OK ) 
+
+#quit
+

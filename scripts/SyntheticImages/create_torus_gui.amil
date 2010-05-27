@@ -30,7 +30,7 @@ if (!exists(CTClass)) {
       ::image_name = "global::torus", "Name of the resulting image variable"
       ::Gui
     }
-    
+
     #----------------------------
     proc ::Close() {
       ::win.HidePanel

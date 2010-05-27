@@ -1,0 +1,65 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_round_function.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the round function (round). A round number is considered to be a number
+# that typically ends with one or more zeroes (0), such as 1,000, 1,500,000, etc. A number ending in 5 may be considered in some way more round than one ending in neither 0 nor 5. A number such as 2.5 is #seen as more round than, say, 2.497 (especially if written as 2.500).
+#
+
+
+# Operations:   round
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+OK = 1 # The test was successful
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+A=(DOUBLE) 2.3
+printn  "\n\t\t A=(DOUBLE) 2.3 --> A=%1% " % A
+B=(DOUBLE) 2.4
+printn  "\t\t B=(DOUBLE) 2.4 --> B=%1% " % B
+C=(DOUBLE) 2.499
+printn  "\t\t C=(DOUBLE) 2.499 --> C=%1% " % C
+D=(DOUBLE) 2.5
+printn  "\t\t D=(DOUBLE) 2.5 --> D=%1% " % D
+E=(DOUBLE) 2.7
+printn  "\t\t E=(DOUBLE) 2.7 --> E=%1% " % E
+
+
+R1=round A
+R2=round B
+R3=round C
+R4=round D
+R5=round E
+
+printn "\t\t R1=round A --> R1=%1% " % R1
+printn "\t\t R2=round B --> R2=%1% " % R2
+printn "\t\t R3=round C --> R3=%1% " % R3
+printn "\t\t R4=round D --> R4=%1% " % R4
+printn "\t\t R5=round E --> R5=%1% " % R5
+
+if((R1 >= 3) && (R2 >= 3) && (R3 >= 3))  {
+  OK = 0
+  printn  "\nERROR: The round function is not working properly."
+}
+
+if((R4 < 3) && (R2 <= 3))  {
+  OK = 0
+  printn  "\nERROR: The round function is not working properly."
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ctest.PrintTestResult( OK ) 
+
+#quit
+

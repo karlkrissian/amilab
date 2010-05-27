@@ -18,7 +18,7 @@
 extern yyip::Driver GB_driver;
 
 
-void ImageStack::AddFileImage( const char* name)
+bool ImageStack::AddFileImage( const char* name)
 {
   // look for the image 
   wxFileName inputname(wxString(name, wxConvUTF8));
@@ -42,12 +42,14 @@ void ImageStack::AddFileImage( const char* name)
     catch (InrImage::ErreurLecture)
       {
         fprintf(stderr,"Unable to read image %s\n",name);
-        AddImagePointer(NULL);
-        return;
+        //AddImagePointer(NULL);
+        return false;
       }
     AddImagePointer(im_tmp);
   } else {
     CLASS_ERROR(boost::format("Invalid image filename '%s'") % name);
-    AddImagePointer(NULL);
+    //AddImagePointer(NULL);
+    return false;
   }
+  return true;
 }

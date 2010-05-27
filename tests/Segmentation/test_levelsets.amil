@@ -4,6 +4,7 @@ epsilon = 0.01
 
 # Create initial image
 func "SyntheticImages/create_torus_gui.amil"
+CTClass CT
 
 ctobject->dimx = 100
 ctobject->dimy = 100
@@ -14,6 +15,8 @@ ctobject->R = 20
 ctobject->r = 4
 ctobject->image_name = "global::ls_input"
 ctobject->Create
+
+#ls_input = global::torus
 
 # Run the level set
 func "Segmentation/LevelSets/LevelSetsGui1.amil"

@@ -62,6 +62,7 @@ extern wxString        GB_help_dir;
 extern wxString        GB_scripts_dir;
 extern VarContexts  Vars;
 
+extern MainFrame*    GB_main_wxFrame;
 
 
 // in function.cpp
@@ -1020,6 +1021,7 @@ void MainFrame::OnClose(wxCloseEvent& event)
   // important: clear variables now before the childrens are deleted
   Vars.EmptyVariables();
   Destroy();
+  GB_main_wxFrame = NULL;
 /*  cout << "OnClose " << endl;
 
     if ( event.CanVeto()  )
@@ -1219,6 +1221,8 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
         _var_tree->SetItemFont(itemid,root_font);
       } else
       if ((var->Type() == type_float)||
+          (var->Type() == type_double)|| /// New (added: 24/05/2010)
+          (var->Type() == type_long)||   /// New (added: 27/05/2010)
           (var->Type() == type_int)  ||
           (var->Type() == type_uchar))
       {
@@ -1230,6 +1234,22 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
             text = (boost::format("%1% %20t FLOAT %30t %2%")
                             % var->Name()
                             % (*varf->Pointer())).str();
+            break;
+            }
+          case type_double: /// New (added: 24/05/2010)
+            {
+            DYNAMIC_CAST_VARIABLE(double,var,vardouble);
+            text = (boost::format("%1% %20t DOUBLE %30t %2%")
+                            % var->Name()
+                            % (*vardouble->Pointer())).str();
+            break;
+            }
+          case type_long: /// New (added: 27/05/2010)
+            {
+            DYNAMIC_CAST_VARIABLE(long int,var,varlong);
+            text = (boost::format("%1% %20t LONG INT %30t %2%")
+                            % var->Name()
+                            % (*varlong->Pointer())).str();
             break;
             }
           case type_int:

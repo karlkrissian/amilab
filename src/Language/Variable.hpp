@@ -491,6 +491,8 @@ class VarArray;
 */
 
 #include "Variable_float.h"
+#include "Variable_double.h" /// New (added: 24/05/2010)
+#include "Variable_long.h"   /// New (added: 27/05/2010)
 #include "Variable_InrImage.h"
 #include "Variable_string.h"
 #include "Variable_FloatMatrix.h"

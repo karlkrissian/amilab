@@ -18,6 +18,8 @@ typedef enum {
   type_void,             /**< no type */
   type_image,            /**< image */
   type_float,            /**< floating point number */
+  type_double,           /**< double point number */  /// New (added: 24/05/2010)
+  type_long,             /**< long int point number */ /// New (added: 27/05/2010)
   type_int,              /**< integer number*/
   type_uchar,            /**< unsigned char number */
   type_string,           /**< string */

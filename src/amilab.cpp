@@ -251,11 +251,12 @@ bool MyApp::OnInit()
 #endif
 
 /*    if ( !wxApp::OnInit() )
-        return false;
+    return false;
 */
 
  // this was  main()
   int  n;
+  bool no_interaction = false;
   std::string cmd_line;
 
   GB_debug = false;
@@ -298,6 +299,14 @@ bool MyApp::OnInit()
   Alors
     GB_nofile = true;
     //printf("no file \n");
+    GB_num_arg_parsed++;
+  FinSi
+
+  Si  argc>GB_num_arg_parsed Et
+      strcmp(wxString(argv[GB_num_arg_parsed]).mb_str(wxConvUTF8),"-quit")==0
+  Alors
+    cout << "Quit without console interation" << endl;
+    no_interaction = true;
     GB_num_arg_parsed++;
   FinSi
 
@@ -397,8 +406,13 @@ bool MyApp::OnInit()
         GB_driver.yyip_popup_buffer();
         */
         GB_driver.parse_file(string(input_file.mb_str(wxConvUTF8)));
-        GB_main_wxFrame->GetConsole()->ProcessReturn();
-
+        if (GB_main_wxFrame)
+        {
+          if (no_interaction)
+            GB_main_wxFrame->Close(true);
+          else
+            GB_main_wxFrame->GetConsole()->ProcessReturn();
+        }
       } catch (char * str ) {
         cerr << "Error catched ! " << str << endl;
       }

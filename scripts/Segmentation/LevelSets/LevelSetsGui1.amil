@@ -157,6 +157,11 @@ if (!exists(LevelSetsClass)){
     }
     ::load_input.Comments("Copies the input image in a local image member named 'input', and updates the min-max intensities")
 
+   proc ::set_input(IMAGE im) \
+   {
+	::input <<= im
+   }
+
     #-----------------------------------------------
     proc ::UpdateHistogram() \
     {
