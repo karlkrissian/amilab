@@ -50,7 +50,7 @@
 namespace yyip {
 
 /* Line 35 of lalr1.cc  */
-#line 54 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
+#line 54 "/home/fsantana/proyectos/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
   class position;
   class location;
 
@@ -60,13 +60,13 @@ namespace yyip {
 } // yyip
 
 /* Line 35 of lalr1.cc  */
-#line 64 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
+#line 64 "/home/fsantana/proyectos/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
 
 #include "location.hh"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
-# define YYDEBUG 1
+# define YYDEBUG 0
 #endif
 
 /* Enabling verbose error messages.  */
@@ -108,7 +108,7 @@ do {							\
 namespace yyip {
 
 /* Line 35 of lalr1.cc  */
-#line 112 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
+#line 112 "/home/fsantana/proyectos/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
 
   /// A Bison parser.
   class Parser
@@ -120,7 +120,7 @@ namespace yyip {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 296 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/improcess_bison.ypp"
+#line 296 "/home/fsantana/proyectos/amilab/trunk/src/Language/improcess_bison.ypp"
 
   IdentifierInfo*         ident;
   char*                   astring;
@@ -138,7 +138,7 @@ namespace yyip {
 
 
 /* Line 35 of lalr1.cc  */
-#line 142 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
+#line 142 "/home/fsantana/proyectos/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -792,7 +792,7 @@ namespace yyip {
 } // yyip
 
 /* Line 35 of lalr1.cc  */
-#line 796 "/home/karl/projects/Sourceforge/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
+#line 796 "/home/fsantana/proyectos/amilab/trunk/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
 
 
 
