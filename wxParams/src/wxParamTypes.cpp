@@ -369,8 +369,8 @@ wxLabelParameter::wxLabelParameter( wxWindow* parent,
                                             wxID_ANY,
                                             wxString::FromAscii(value));
       this->_wxvalue->SetEditable(0);
-      this->  Add(this->_wxlabel, 0, wxLEFT | wxALIGN_CENTRE_VERTICAL, 5);
-      this->Add(this->_wxvalue,0, wxLEFT | wxALIGN_CENTRE_VERTICAL, 5);
+      this->Add(this->_wxlabel, 0, wxLEFT | wxALIGN_CENTRE_VERTICAL, 5);
+      this->Add(this->_wxvalue,1, wxLEFT | wxALIGN_CENTRE_VERTICAL, 5);
       break;
     }
 }
@@ -397,4 +397,11 @@ void wxLabelParameter::SetValue( const char* value) {
       this->_wxvalue->SetValue(wxString::FromAscii((char*)this->_label_value.c_str()));
       break;
     }
+}
+
+//-------------------------------------------
+void wxLabelParameter::SetToolTip( const wxString& tt)
+{
+  if (_wxlabel) _wxlabel->SetToolTip(tt);
+  if (_wxvalue) _wxvalue->SetToolTip(tt);
 }
