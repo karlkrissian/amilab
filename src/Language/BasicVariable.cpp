@@ -11,6 +11,13 @@
 //
 
 #include "BasicVariable.h"
+#include "Variables.hpp"
+
+BasicVariable::BasicVariable() : _type(type_void), _name(""), _comments("") 
+{
+    _vars     = boost::shared_ptr<Variables>(new Variables);
+}
+
 
 //---------------------------------------------
 const string BasicVariable::GetTypeName() const

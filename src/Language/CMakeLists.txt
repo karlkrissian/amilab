@@ -155,4 +155,6 @@ ELSE(AMI_USE_FLEXBISON)
 
 ENDIF(AMI_USE_FLEXBISON)
 
+message("\n${Language_SRCS}\n")
+
 my_add_library ( Language)

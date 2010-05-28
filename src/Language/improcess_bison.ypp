@@ -625,7 +625,7 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_Xpos T_Ypos T_Zpos T_SpacePos
 
 %token T_CHAR T_UCHAR T_SHORT T_USHORT T_INT T_UINT
-%token T_LONG   /// New (added: 27/05/2010)
+%token T_LONG   // New (added: 27/05/2010)
 %token T_FLOAT T_DOUBLE
 %token T_RGB  T_FLOAT_VECTOR
 %token T_GetFormat
@@ -11727,7 +11727,7 @@ function_variable:
     
           if  ((!GB_driver.procedure_declaration)&& newvar.get())   {
             //cout << "returning variable" << endl;
-            newvar->display();
+            //newvar->display();
             driver.var_stack.AddVar(newvar);
           } else {
             // error message here

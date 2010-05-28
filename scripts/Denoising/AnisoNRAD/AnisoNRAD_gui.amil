@@ -68,6 +68,7 @@ if (!exists(AnisoNRADClass)) {
         ::wiki_help = ::AmilabWiki("tutorial-nrad") 
   
         ::html_filename = GetScriptsDir+"/Denoising/AnisoNRAD/Doc/AnisoNRAD_gui/index.html"
+#       ::html_filename = GetScriptsDir+"/Denoising/AnisoNRAD/Doc/AnisoNRAD_gui.html"
   
         ::CreateWindow()
         # ::ROI 

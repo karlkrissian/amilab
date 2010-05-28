@@ -48,9 +48,18 @@ protected:
   boost::shared_ptr<Variables>   _context; // points to the context
     // that the variable belong to, if any
 
+  /// Own list of variables
+  boost::shared_ptr<Variables>  _vars;
+
 public:
 
-  BasicVariable(): _type(type_void), _name(""), _comments("") {}
+  BasicVariable();
+/*
+: _type(type_void), _name(""), _comments("") 
+  {
+    _vars     = boost::shared_ptr<Variables>(new Variables);
+  }
+*/
   virtual ~BasicVariable() {};
 
   /**
@@ -77,6 +86,13 @@ public:
   virtual bool Equal(const BasicVariable::ptr& v)  = 0;
 
   virtual bool operator == (BasicVariable* v)  = 0;
+
+  /**
+   * Gets the list of variables 
+   * @return object context (contains its variables)
+   */
+  boost::shared_ptr<Variables>& GetOwnContext() { return _vars;}
+
 
   void SetContext(const boost::shared_ptr<Variables>& val) 
   {

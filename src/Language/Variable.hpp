@@ -116,9 +116,11 @@ public:
     _name    = name;
     _pointer = boost::shared_ptr<T>(p);
   }
-
  
-  virtual ~Variable(){ this->Delete(); }
+  virtual ~Variable()
+  { 
+    this->Delete(); 
+  }
 
   /**
     * Virtual Method that creates a new smart pointer to a basic variable coming from the same type
@@ -150,6 +152,7 @@ public:
     res->SetComments(_comments);
     return res;
   }
+
 
   int GetPtrCounter()
   {
