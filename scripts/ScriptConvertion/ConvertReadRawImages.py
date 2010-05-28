@@ -64,6 +64,14 @@ if __name__ == "__main__":
       if (res[1]>0):
         line = res[0]
         num_subs = num_subs+1
+      res = re.subn(r"ReadRawImages\(([^,]+),([^,]+),([^,]+),\s*"+typeval+"(.val|)\s*,([^,]+),([^,]+)\)",r"IO.ReadRawImage3D(\1,\2,\3,\4.val,\5,\6)",line)
+      if (res[1]>0):
+        line = res[0]
+        num_subs = num_subs+1
+      res = re.subn(r"ReadRawImages\(([^,]+),([^,]+),([^,]+),\s*"+typeval+"(.val|)\s*,([^,]+),([^,]+),([^,]+)\)",r"IO.ReadRawVectImage3D(\1,\2,\3,\4.val,\5,\6,\7)",line)
+      if (res[1]>0):
+        line = res[0]
+        num_subs = num_subs+1
         
       
       f.write(line)

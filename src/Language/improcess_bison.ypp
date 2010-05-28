@@ -6963,7 +6963,6 @@ image:
        driver.im_stack.AddImage(InrImage::ptr());
      }
       }
-*/
       |
       T_ReadRawImages T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA
                           expr T_COMMA expr_string  T_CL_PAR
@@ -6986,7 +6985,7 @@ image:
 
        Example(s):
           i = ReadRawImages(256,256,256,USHORT,0,"data.raw")
-       **/
+       **
       InrImage::ptr im ( new InrImage());
       boost::shared_ptr<amimage> amim(new amimage());
       int dimx                    = (int)           $3;
@@ -7014,7 +7013,7 @@ image:
        driver.err_print("ReadRawImages() failed ... \n");
        driver.im_stack.AddImage(InrImage::ptr());
      }
-       }
+       } 
        |
        T_ReadRawImages T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr T_COMMA
                            expr T_COMMA expr_string  T_CL_PAR
@@ -7038,7 +7037,7 @@ image:
 
        Example(s):
           i = ReadRawImages(256,256,256,FLOAT,3,0,"3dvectorfielddata.raw")
-       **/
+       **
       InrImage::ptr im  = InrImage::ptr(new InrImage());
       boost::shared_ptr<amimage> amim(new amimage());
       int dimx                    = (int)           $3;
@@ -7069,6 +7068,7 @@ image:
        driver.im_stack.AddImage(InrImage::ptr());
      }
        }
+*/
        | T_vtkDicomRead T_OP_PAR expr_string T_CL_PAR
        {
        /**

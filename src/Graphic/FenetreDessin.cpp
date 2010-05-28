@@ -119,7 +119,7 @@ FenetreDessin::FenetreDessin(
 
   Si GB_debug AlorsFait printf("Fin  FenetreDessin() \n");
 
-  this->Raise();
+//  this->Raise();
 } // Constructor FenetreDessin()
 
 

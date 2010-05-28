@@ -3408,6 +3408,7 @@ DessinImage:: DessinImage(
   FinSi
 
   Show(true);
+  Raise();
 
 } // Constructor
 

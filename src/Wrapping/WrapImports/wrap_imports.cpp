@@ -154,7 +154,9 @@ void AddWrapIO()
   Variables::ptr previous_ocontext = Vars.GetObjectContext();
   Vars.SetObjectContext(amiobject->GetContext());
 
-  AddVar_ReadRawImages2D( amiobject->GetContext());
+  AddVar_ReadRawImages2D(     amiobject->GetContext());
+  AddVar_ReadRawImage3D(      amiobject->GetContext());
+  AddVar_ReadRawVectImage3D(  amiobject->GetContext());
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);
