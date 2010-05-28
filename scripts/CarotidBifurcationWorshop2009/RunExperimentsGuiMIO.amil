@@ -15,7 +15,7 @@ if (!exists(RunExperimentsClass)){
   # load the Level Sets Gui script
   func "Segmentation/LevelSets/LevelSetsGui1.amil"
   func "SyntheticImages/AddSphere.amil"
-  func "carotidchallenge_config.amil"
+  func "carotidchallenge_config_old.amil"
   
 
   Class RunExperimentsClass{
@@ -137,7 +137,7 @@ if (!exists(RunExperimentsClass)){
       ::RP->ReadPoints(pointsname)
       ::crop_created = 0
       ::CarotidExperiments_CropData()
-      ::win.Update(-1)
+      //::win.Update(-1)
       SetStatusText("Reading data ... done")
 
     }
@@ -175,7 +175,9 @@ if (!exists(RunExperimentsClass)){
           if (exists(::GTiso)) { del ::GTiso; }
           ::GTiso = Surface(isoname)
         } else  {
-          InfoDialog "Ground Truth not available";
+          if (!::nointeraction) {
+            InfoDialog "Ground Truth not available";
+          }
         }
       }
     }
@@ -247,7 +249,7 @@ if (!exists(RunExperimentsClass)){
       # save multiscale local maxima
       ::ML->local_maxima = 1
       ::ML->MultiLines_new
-      ::win.Update(-1)
+      //::win.Update(-1)
     }
     
     #-----------------------------------------
@@ -356,12 +358,14 @@ if (!exists(RunExperimentsClass)){
           ::speed <<= ::ML->result
         }
       } else {
-        InfoDialog "CarotidExperiments_Path1: no Vesselness image found" 
+        if (!::nointeraction) {
+          InfoDialog "CarotidExperiments_Path1: no Vesselness image found" 
+        }
         ::speed <<= ::CIFP->input_cropped
       }
     
       //::SP->init
-      ::win.Update(-1)
+      //::win.Update(-1)
     
       ::SP->epsilon         = 0.01
       ::SP->maxcost         = 10000
@@ -376,7 +380,7 @@ if (!exists(RunExperimentsClass)){
       ::SP->set_input(::CIFP->input_cropped)
       ::SP->set_speed(::speed)
       #::SP->load_speed()
-      ::win.Update(-1)
+      //::win.Update(-1)
     
       ::SP->SetStartPointWorld(::RP->p1x,::RP->p1y,::RP->p1z)
     
@@ -435,21 +439,27 @@ if (!exists(RunExperimentsClass)){
         if (exists(::pathCIs)) { del ::pathCIs; }
         ::pathCIs = Surface(::current_resultsdir+"/pathCIs.vtk")
       } else {
-        InfoDialog ::current_resultsdir+"/pathCIs.vtk not found!"
+        if (!::nointeraction) {
+          InfoDialog ::current_resultsdir+"/pathCIs.vtk not found!"
+        }
       }
     
       if (FileExists(::current_resultsdir+"/pathCEs.vtk")) {
         if (exists(::pathCEs)) { del ::pathCEs; }
         ::pathCEs = Surface(::current_resultsdir+"/pathCEs.vtk")
       } else {
-        InfoDialog ::current_resultsdir+"/pathCEs.vtk not found!"
+        if (!::nointeraction) {
+          InfoDialog ::current_resultsdir+"/pathCEs.vtk not found!"
+        }
       }
       
       if (FileExists(::current_resultsdir+"/speed.ami.gz")) {
         if (exists(::speed)) { del ::speed; }
         ::speed = Image ::current_resultsdir+"/speed.ami.gz"
       } else {
-        InfoDialog ::current_resultsdir+"/speed.ami.gz not found!"
+        if (!::nointeraction) {
+          InfoDialog ::current_resultsdir+"/speed.ami.gz not found!"
+        }
       }
       //::SP->init
     }
@@ -563,12 +573,16 @@ if (!exists(RunExperimentsClass)){
         minz = minz - 5
         maxz = maxz + 5
         # check for image limits
-        if (minz<0) { 
-          InfoDialog boost_format("CheckCCALength()\tCropped image too small, setting minz from %1% to 0") % minz
+        if (minz<0) {
+          if (!::nointeraction) {
+            InfoDialog boost_format("CheckCCALength()\tCropped image too small, setting minz from %1% to 0") % minz
+          }
           minz = 0;
         }
         if (maxz>::speed.tz-1) { 
-          InfoDialog boost_format("CheckCCALength()\tCropped image too small, limiting maxz (%1%)") % maxz
+          if (!::nointeraction) {
+            InfoDialog boost_format("CheckCCALength()\tCropped image too small, limiting maxz (%1%)") % maxz
+          }
           maxz = ::speed.tz-1; 
         }
         ::speed2 <<= ::speed[:,:,minz:maxz]
@@ -685,11 +699,15 @@ if (!exists(RunExperimentsClass)){
         maxz = maxz + 5
         # check for image limits
         if (minz<0) { 
-          InfoDialog boost_format("Cropped image too small, setting minz from %1% to 0") % minz
+          if (!::nointeraction) {
+            InfoDialog boost_format("Cropped image too small, setting minz from %1% to 0") % minz
+          }
           minz = 0;
         }
         if (maxz>::speed.tz-1) { 
-          InfoDialog boost_format("Cropped image too small, limiting maxz (%1%)") % maxz
+          if (!::nointeraction) {
+            InfoDialog boost_format("Cropped image too small, limiting maxz (%1%)") % maxz
+          }
           maxz = ::speed.tz-1; 
         }
         ::speed2 <<= ::speed[:,:,minz:maxz]
@@ -833,7 +851,9 @@ if (!exists(RunExperimentsClass)){
       ::CarotidExperiments_ReadGT()
     
       if (!exists(::Jx)) {
-        InfoDialog "Find the junction first!"
+        if (!::nointeraction) {
+          InfoDialog "Find the junction first!"
+        }
       } else {
         ::junction_display_size    = 0.6
         if (exists(::junc_sphere)) { del ::junc_sphere; }
@@ -932,13 +952,13 @@ if (!exists(RunExperimentsClass)){
           ::LS->T = 60
         }
       
-        ::win.Update(-1)
+        //::win.Update(-1)
         ::LS->Setinitial(::pathCE_lsinit)
-        ::win.Update(-1)
+        //::win.Update(-1)
 
         #--- Computes the intensity statistics
         ::LS->ComputeIntensityStats()
-        ::win.Update(-1)
+        //::win.Update(-1)
       
         #--- Compute the expansion force
         #     -- limit its range along Z axis based on the detected junction
@@ -964,7 +984,7 @@ if (!exists(RunExperimentsClass)){
         ::LS->Setexpansion(::pathCE_expforce)
       
         # Run the evolution
-        ::win.Update(-1)
+        //::win.Update(-1)
         ::LS->ReRun()
         ::pathCE_contours <<= ::LS->inls
       
@@ -1039,12 +1059,12 @@ if (!exists(RunExperimentsClass)){
           ::LS->T = 60
         }
 
-        ::win.Update(-1)
+        //::win.Update(-1)
         ::LS->Setinitial(::pathCI_lsinit)
-        ::win.Update(-1)
+        //::win.Update(-1)
         #--- Computes the intensity statistics
         ::LS->ComputeIntensityStats()
-        ::win.Update(-1)
+        //::win.Update(-1)
       
         #--- Compute the expansion force
         #     -- limit its range along Z axis based on the detected junction
@@ -1067,11 +1087,11 @@ if (!exists(RunExperimentsClass)){
         expforce_roi = exp(-expforce_roi/2)-exp(-(::ls_prob_limit*::ls_prob_limit)/2)
         ::pathCI_expforce.putimage(expforce_roi)
       
-        ::win.Update(-1)
+        //::win.Update(-1)
         ::LS->Setexpansion(::pathCI_expforce)
       
         # Run the evolution
-        ::win.Update(-1)
+        //::win.Update(-1)
         ::LS->ReRun
         ::pathCI_contours <<= ::LS->inls
       
@@ -1100,7 +1120,9 @@ if (!exists(RunExperimentsClass)){
           if exists(::pathCI_contours) {
             ::inls = ::pathCI_contours
           } else {
-            InfoDialog "No contour available"
+            if (!::nointeraction) {
+              InfoDialog "No contour available"
+            }
           }
         }
       }
@@ -1121,7 +1143,9 @@ if (!exists(RunExperimentsClass)){
     proc ::CarotidExperiments_SaveResults() \
     {
       if (!exists(::inls)) {
-        InfoDialog "Need to run the segmentation first: loading level set  ..."
+        if (!::nointeraction) {
+          InfoDialog "Need to run the segmentation first: loading level set  ..."
+        }
       } else {
         # if segmentation comes from paths, save with diff names 
         if (exists(::pathCE_contours)) {

@@ -139,7 +139,7 @@ if (!exists(RunExperimentsClass)){
       ::RP->ReadPoints(pointsname)
       ::crop_created = 0
       ::CarotidExperiments_CropData()
-      ::win.Update(-1)
+      //::win.Update(-1)
       SetStatusText("Reading data ... done")
 
     }
@@ -178,7 +178,9 @@ if (!exists(RunExperimentsClass)){
           if (exists(::GTiso)) { del ::GTiso; }
           ::GTiso = Surface(isoname)
         } else  {
-          InfoDialog "Ground Truth not available";
+          if (!::nointeraction) {
+            InfoDialog "Ground Truth not available";
+          }
         }
       }
       SetStatusText("Reading ground truth data ... done")
@@ -309,7 +311,9 @@ if (!exists(RunExperimentsClass)){
           ::speed <<= ::itkVS->result
         }
       } else {
-        InfoDialog "CarotidExperiments_Path1: no Vesselness image found" 
+        if (!::nointeraction) {
+          InfoDialog "CarotidExperiments_Path1: no Vesselness image found" 
+        }
         ::speed <<= ::CIFP->input_cropped
       }
     
@@ -331,7 +335,7 @@ if (!exists(RunExperimentsClass)){
       ::itkSP->set_input(::CIFP->input_cropped)
       ::itkSP->set_speed(::speed)
       #::SP->load_speed()
-      ::win.Update(-1)
+      //::win.Update(-1)
     
       ::itkSP->SetStartPointWorld(::RP->p1x,::RP->p1y,::RP->p1z)
     
@@ -392,21 +396,27 @@ if (!exists(RunExperimentsClass)){
         if (exists(::pathCIs)) { del ::pathCIs; }
         ::pathCIs = Surface(::current_resultsdir+"/pathCIs.vtk")
       } else {
-        InfoDialog ::current_resultsdir+"/pathCIs.vtk not found!"
+        if (!::nointeraction) {
+          InfoDialog ::current_resultsdir+"/pathCIs.vtk not found!"
+        }
       }
     
       if (FileExists(::current_resultsdir+"/pathCEs.vtk")) {
         if (exists(::pathCEs)) { del ::pathCEs; }
         ::pathCEs = Surface(::current_resultsdir+"/pathCEs.vtk")
       } else {
-        InfoDialog ::current_resultsdir+"/\pathCEs.vtk not found!"
+        if (!::nointeraction) {
+          InfoDialog ::current_resultsdir+"/\pathCEs.vtk not found!"
+        }
       }
       
       if (FileExists(::current_resultsdir+"/speed.ami.gz")) {
         if (exists(::speed)) { del ::speed; }
         ::speed = Image ::current_resultsdir+"/speed.ami.gz"
       } else {
-        InfoDialog ::current_resultsdir+"/speed.ami.gz not found!"
+        if (!::nointeraction) {
+          InfoDialog ::current_resultsdir+"/speed.ami.gz not found!"
+        }
       }
       //::itkSP->init
       SetStatusText("Read paths done")
@@ -522,11 +532,15 @@ if (!exists(RunExperimentsClass)){
         maxz = maxz + 5
         # check for image limits
         if (minz<0) { 
-          InfoDialog boost_format("CheckCCALength()\tCropped image too small, setting minz from %1% to 0") % minz
+          if (!::nointeraction) {
+            InfoDialog boost_format("CheckCCALength()\tCropped image too small, setting minz from %1% to 0") % minz
+          }
           minz = 0;
         }
         if (maxz>::speed.tz-1) { 
-          InfoDialog boost_format("CheckCCALength()\tCropped image too small, limiting maxz (%1%)") % maxz
+          if (!::nointeraction) {
+            InfoDialog boost_format("CheckCCALength()\tCropped image too small, limiting maxz (%1%)") % maxz
+          }
           maxz = ::speed.tz-1; 
         }
         ::speed2 <<= ::speed[:,:,minz:maxz]
@@ -576,7 +590,7 @@ if (!exists(RunExperimentsClass)){
         }
       } else {
       # end if remaining_dist>0
-        # here we don´t cut both path at the beginning
+        # here we donï¿½t cut both path at the beginning
       }
       SetStatusText("Checking CCA length... done")
     }
@@ -650,11 +664,15 @@ if (!exists(RunExperimentsClass)){
         maxz = maxz + 5
         # check for image limits
         if (minz<0) { 
-          InfoDialog boost_format("Cropped image too small, setting minz from %1% to 0") % minz
+          if (!::nointeraction) {
+            InfoDialog boost_format("Cropped image too small, setting minz from %1% to 0") % minz
+          }
           minz = 0;
         }
         if (maxz>::speed.tz-1) { 
-          InfoDialog boost_format("Cropped image too small, limiting maxz (%1%)") % maxz
+          if (!::nointeraction) {
+            InfoDialog boost_format("Cropped image too small, limiting maxz (%1%)") % maxz
+          }
           maxz = ::speed.tz-1; 
         }
         ::speed2 <<= ::speed[:,:,minz:maxz]
@@ -805,7 +823,9 @@ if (!exists(RunExperimentsClass)){
       ::CarotidExperiments_ReadGT()
     
       if (!exists(::Jx)) {
-        InfoDialog "Find the junction first!"
+        if (!::nointeraction) {
+          InfoDialog "Find the junction first!"
+        }
       } else {
         ::junction_display_size    = 0.6
         if (exists(::junc_sphere)) { del ::junc_sphere; }
@@ -1000,7 +1020,9 @@ if (!exists(RunExperimentsClass)){
           if exists(::pathCI_contours) {
             ::inls = ::pathCI_contours
           } else {
-            InfoDialog "No contour available"
+            if (!::nointeraction) {
+              InfoDialog "No contour available"
+            }
           }
         }
       }
@@ -1013,7 +1035,9 @@ if (!exists(RunExperimentsClass)){
     proc ::CarotidExperiments_SaveResults() \
     {
       if (!exists(::inls)) {
-        InfoDialog "Need to run the segmentation first: loading level set  ..."
+        if (!::nointeraction) {
+          InfoDialog "Need to run the segmentation first: loading level set  ..."
+        }
       } else {
         # if segmentation comes from paths, save with diff names 
         if (exists(::pathCE_contours)) {
