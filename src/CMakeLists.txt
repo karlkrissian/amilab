@@ -3,6 +3,9 @@
 # to the root binary directory of the project as ${HELLO_BINARY_DIR}.
 project (AMILab)
 
+
+MESSAGE( "CMAKE_PROJECT_NAME = ${CMAKE_PROJECT_NAME} ")
+
 cmake_minimum_required(VERSION 2.6)
 
 if(COMMAND cmake_policy)
@@ -152,6 +155,52 @@ IF( AMI_USE_STATIC_LIBS )
      SET(CMAKE_FIND_LIBRARY_SUFFIXES .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
    ENDIF(WIN32)
 ENDIF( AMI_USE_STATIC_LIBS )
+
+
+OPTION(AMI_CHECK_BRANCH "Look for the name of the SVN branch" ON)
+
+IF(AMI_CHECK_BRANCH)
+  FIND_PACKAGE(Subversion)
+
+  IF(Subversion_FOUND)
+    Subversion_WC_INFO(${CMAKE_SOURCE_DIR} SRCDIR)
+    MESSAGE( " *** SUBVERSION INFO ***")
+    MESSAGE( "SRCDIR_WC_URL = ${SRCDIR_WC_URL}")
+    #MESSAGE( "SRCDIR_WC_ROOT = ${SRCDIR_WC_ROOT}")
+    #MESSAGE( "SRCDIR_WC_REVISION = ${SRCDIR_WC_REVISION}")
+  ENDIF(Subversion_FOUND)
+
+  # Get the root dir through info XML
+  EXECUTE_PROCESS(COMMAND ${Subversion_SVN_EXECUTABLE} info --xml ${CMAKE_SOURCE_DIR}
+    OUTPUT_VARIABLE SRCDIR_WC_XML_INFO
+    ERROR_VARIABLE Subversion_svn_info_error
+    RESULT_VARIABLE Subversion_svn_info_result
+    OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+  IF(NOT ${Subversion_svn_info_result} EQUAL 0)
+    MESSAGE(SEND_ERROR "Command \"${Subversion_SVN_EXECUTABLE} info --xml ${CMAKE_SOURCE_DIR}\" failed with output:\n${Subversion_svn_info_error}")
+  ELSE(NOT ${Subversion_svn_info_result} EQUAL 0)
+
+    STRING(REGEX REPLACE ".*<root>(.*)</root>.*"
+      "\\1" SRCDIR_WC_XML_ROOT "${SRCDIR_WC_XML_INFO}")
+    MESSAGE( "SRCDIR_WC_XML_ROOT = ${SRCDIR_WC_XML_ROOT}")
+  ENDIF(NOT ${Subversion_svn_info_result} EQUAL 0)
+
+  
+  STRING(REGEX MATCH "^(.*\n)?${SRCDIR_WC_XML_ROOT}/trunk/src/.*"
+    SRCDIR_WC_TRUNK  "${SRCDIR_WC_URL}")
+
+  IF(NOT SRCDIR_WC_TRUNK)
+    IF(SRCDIR_WC_XML_ROOT AND SRCDIR_WC_URL)
+      SET(PATTERN "^(.*\n)?${SRCDIR_WC_XML_ROOT}([^\n]+).*")
+      MESSAGE("PATTERN = ${PATTERN}")
+      STRING(REGEX REPLACE "^(.*\n)?${SRCDIR_WC_XML_ROOT}/branches/(.+)/src.*"
+        "\\2" SRCDIR_WC_BRANCH "${SRCDIR_WC_URL}")
+      MESSAGE( "SRCDIR_WC_BRANCH = ${SRCDIR_WC_BRANCH} ")
+    ENDIF(SRCDIR_WC_XML_ROOT AND SRCDIR_WC_URL)
+  ENDIF(NOT SRCDIR_WC_TRUNK)
+  
+ENDIF(AMI_CHECK_BRANCH)
 
 
 OPTION(AMI_USE_VTK "Use VTK: recommended" ON)
