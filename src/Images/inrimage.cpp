@@ -1915,10 +1915,9 @@ unsigned char InrImage ::  GetFormatFromAMI(amimage* im, WORDTYPE& type)
 
 
 ///----------------------------------------------------------------
-bool InrImage ::  AMIFromWT(int vdim, WORDTYPE type, amimage* amim)
+bool InrImage::AMIFromWT(int vdim, WORDTYPE type, amimage* amim)
 //                                   ---------
 {
-
     if (vdim==1) 
       amim->SetType(AMI_SCALAR); 
     else
@@ -1949,8 +1948,8 @@ bool InrImage ::  AMIFromWT(int vdim, WORDTYPE type, amimage* amim)
         amim->SetVDim(3);
         return true;
       default: 
-      fprintf(stderr,"repres=%d Format not available \n",
-          amim->GetRepres());
+      fprintf(stderr,"type=%d Format not available \n",
+          type);
       return false;
     }
 

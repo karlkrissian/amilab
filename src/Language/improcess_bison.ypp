@@ -3,7 +3,7 @@
     IMAGE PROCESSING LANGUAGE
 
     Karl Krissian
-    ULPGC
+    ULPGC 
     06 02 2001
  */
 
@@ -5891,7 +5891,7 @@ end_block: ;
 
 
 double_variable:
-    | VAR_DOUBLE
+    VAR_DOUBLE
     {
       /**
       Description: adds a reference to the variable in the stack
@@ -6846,7 +6846,7 @@ basic_type:
        }
        | T_LONG
        {
-     $$=WT_LONG;
+     $$=WT_SIGNED_LONG;
        }
        | T_FLOAT
        {
@@ -6907,6 +6907,7 @@ image:
         driver.im_stack.AddFileImage(st.get());
       }
 */
+/* deprecated
       |
       T_ReadRawImages T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA
                           expr T_COMMA expr_string T_COMMA expr T_COMMA expr T_CL_PAR
@@ -6930,7 +6931,7 @@ image:
 
        Example(s):
           i = ReadRawImages(1024,1024,USHORT,0,"AfGG.%d",48,48)
-       **/
+       **
       InrImage::ptr im (new InrImage());
       boost::shared_ptr<amimage> amim(new amimage());
       int dimx                    = (int)           $3;
@@ -6941,7 +6942,7 @@ image:
       unsigned short first_slice  = (unsigned short)$13;
       unsigned short last_slice   = (unsigned short)$15;
 
-         amim->SetDim(dimx,dimy,1);
+     amim->SetDim(dimx,dimy,1);
      if (endianness)
        amim->endianness = BIG_END;
      else
@@ -6962,6 +6963,7 @@ image:
        driver.im_stack.AddImage(InrImage::ptr());
      }
       }
+*/
       |
       T_ReadRawImages T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA
                           expr T_COMMA expr_string  T_CL_PAR

@@ -14,6 +14,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/wxStcFrame
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapBasicTypes
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapInterface
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapIO
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapSystem
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapITK
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapAMIFluid

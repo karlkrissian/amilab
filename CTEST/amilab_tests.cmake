@@ -2,6 +2,36 @@
 # Tests for AMILab proyect.
 #
 
+
+#-------------------------------------------------------------------------------
+#
+# MACRO: ADD_AMILAB_TESTS.
+# ARGUMENTS:
+#     name-test: Test name. 
+#     amilab-options: Options to invoke AMiLab.
+#     test: Test to run.
+#     test-arg: Arguments for use with the test 
+#     pass-regex: Regular expression to determine whether a test was successful.
+#     fail-regex: Regular expression for when a test fails.
+# DESC
+#-------------------------------------------------------------------------------
+MACRO(ADD_AMILAB_TESTS name-test amilab-options test test-arg)
+#-------------------------------------------------------------------------------
+
+ADD_TEST(${name-test}
+         "${PROJECT_BINARY_DIR}/${AMILAB_BIN}"
+         ${amilab-options}
+         ${test} ${test-arg})
+
+SET_TESTS_PROPERTIES(${name-test}
+                     PROPERTIES PASS_REGULAR_EXPRESSION "${passRegex}"
+                                FAIL_REGULAR_EXPRESSION "${failRegex}"
+                                LABELS "AMILab")
+
+ENDMACRO(ADD_AMILAB_TESTS)
+#-------------------------------------------------------------------------------
+
+message ("\n\n${CMAKE_BUILD_TOOL}\n\n")
 #
 # Enable testing for AMILab proyect.
 #
