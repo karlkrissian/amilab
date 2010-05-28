@@ -30,4 +30,9 @@ void AddWrapWxWidgets();
  */
 void AddWrapAmilab();
 
+/**
+ * Adding wrapped classes and methods for IO.
+ */
+void AddWrapIO();
+
 #endif //  _wrap_MainFrame_h_

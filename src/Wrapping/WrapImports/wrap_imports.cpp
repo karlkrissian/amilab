@@ -42,6 +42,8 @@
 
 #include "MainFrame.h"
 
+#include "wrap_ReadRawImages.h"
+
 extern VarContexts  Vars;
 extern MainFrame*   GB_main_wxFrame;
 
@@ -51,6 +53,7 @@ void AddWrapImports()
 
   AddWrapWxWidgets();
   AddWrapAmilab();
+  AddWrapIO();
 
   // Create new instance of the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -131,6 +134,27 @@ void AddWrapAmilab()
   // Add the MainFrame as an object
   AMIObject::ptr obj(AddWrap_MainFrame(GB_main_wxFrame));
   amiobject->GetContext()->AddVar<AMIObject>("MainFrame", obj);
+
+  // Restore the object context
+  Vars.SetObjectContext(previous_ocontext);
+
+  // 3. add the variables to this instance
+  Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+
+}
+
+void AddWrapIO()
+{
+
+  // Create new instance of the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("IO");
+
+  // Set the object context
+  Variables::ptr previous_ocontext = Vars.GetObjectContext();
+  Vars.SetObjectContext(amiobject->GetContext());
+
+  AddVar_ReadRawImages2D( amiobject->GetContext());
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);

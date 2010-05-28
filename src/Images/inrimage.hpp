@@ -191,7 +191,6 @@ typedef enum {
   WT_RGBA,           /* R, G, B, A, 8 bits each */
   WT_FLOAT_VECTOR,   /* Vector of 32 bit floats */
   WT_DOUBLE_VECTOR,   /* Vector of 64 bit floats */
-  WT_LONG,           /* Long 32 bits */ /// New (added: 27/05/2010) 
   WT_UNKOWN_TYPE,
 } WORDTYPE;
 /* The different size of words for a 3D image */
