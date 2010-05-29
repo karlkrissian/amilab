@@ -45,14 +45,14 @@
   }
 
 //------------------------------------------------------
-//------- Variable<float>
+//------- Variable<unsigned char>
 //------------------------------------------------------
 
 /// Copy contents to new variable
-template<> BasicVariable::ptr Variable<float>::NewCopy() const
+template<> BasicVariable::ptr Variable<unsigned char>::NewCopy() const
 {
-  float_ptr newval( new float(Value()));
-  Variable<float>::ptr newvar(new Variable<float>(newval));
+  uchar_ptr newval( new unsigned char(Value()));
+  Variable<unsigned char>::ptr newvar(new Variable<unsigned char>(newval));
   return newvar;
 }
 
@@ -60,42 +60,40 @@ template<> BasicVariable::ptr Variable<float>::NewCopy() const
 // Arithmetic operators
 
 /// +a
-template<> BasicVariable::ptr Variable<float>::operator +()
-{  RETURN_VARPTR(float,Value());}
+template<> BasicVariable::ptr Variable<unsigned char>::operator +()
+{  RETURN_VARPTR(unsigned char,Value());}
 
 /// prefix ++ operator ++a
-template<> BasicVariable::ptr Variable<float>::operator ++()
+template<> BasicVariable::ptr Variable<unsigned char>::operator ++()
 {
-  std::cout << "**" << endl;
-  RETURN_VARPTR(float,++RefValue());
+  RETURN_VARPTR(unsigned char,++RefValue());
 }
 
 /// postfix ++ operator a++
-template<> BasicVariable::ptr Variable<float>::operator ++(int)
+template<> BasicVariable::ptr Variable<unsigned char>::operator ++(int)
 {
-  std::cout << "**" << endl;
-  RETURN_VARPTR(float,RefValue()++);
+  RETURN_VARPTR(unsigned char,RefValue()++);
 }
 
 /// -a
-template<> BasicVariable::ptr Variable<float>::operator -()
-{   RETURN_VARPTR(float,-Value());}
+template<> BasicVariable::ptr Variable<unsigned char>::operator -()
+{   RETURN_VARPTR(unsigned char,-Value());}
 
 /// prefix -- operator --a
-template<> BasicVariable::ptr Variable<float>::operator --()
-{  RETURN_VARPTR(float,--RefValue()); }
+template<> BasicVariable::ptr Variable<unsigned char>::operator --()
+{  RETURN_VARPTR(unsigned char,--RefValue()); }
 
 /// postfix -- operator a--
-template<> BasicVariable::ptr Variable<float>::operator --(int)
-{  RETURN_VARPTR(float,RefValue()--);  }
+template<> BasicVariable::ptr Variable<unsigned char>::operator --(int)
+{  RETURN_VARPTR(unsigned char,RefValue()--);  }
 
 
 
 /// a+b
-template<> BasicVariable::ptr Variable<float>::operator +(const BasicVariable::ptr& b)
+template<> BasicVariable::ptr Variable<unsigned char>::operator +(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
-    RETURN_VARPTR(float,Value()+b->GetValueAsDouble());
+    RETURN_VARPTR(unsigned char,Value()+b->GetValueAsDouble());
   }
   else
   if (b->Type()==type_image) {
@@ -108,7 +106,7 @@ template<> BasicVariable::ptr Variable<float>::operator +(const BasicVariable::p
 }
 
 /// a+=b
-template<> BasicVariable::ptr Variable<float>::operator +=(const BasicVariable::ptr& b)
+template<> BasicVariable::ptr Variable<unsigned char>::operator +=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RefValue() += b->GetValueAsDouble();
@@ -118,10 +116,10 @@ template<> BasicVariable::ptr Variable<float>::operator +=(const BasicVariable::
 }
 
 /// a-b
-template<> BasicVariable::ptr Variable<float>::operator -(const BasicVariable::ptr& b)
+template<> BasicVariable::ptr Variable<unsigned char>::operator -(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
-    RETURN_VARPTR(float,Value()-b->GetValueAsDouble());
+    RETURN_VARPTR(unsigned char,Value()-b->GetValueAsDouble());
   }
   else
  if (b->Type()==type_image) {
@@ -134,7 +132,7 @@ template<> BasicVariable::ptr Variable<float>::operator -(const BasicVariable::p
 }
 
 /// a-=b
-template<> BasicVariable::ptr Variable<float>::operator -=(const BasicVariable::ptr& b)
+template<> BasicVariable::ptr Variable<unsigned char>::operator -=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RefValue() -= b->GetValueAsDouble();
@@ -144,10 +142,10 @@ template<> BasicVariable::ptr Variable<float>::operator -=(const BasicVariable::
 }
 
 /// a*b
-template<> BasicVariable::ptr Variable<float>::operator *(const BasicVariable::ptr& b)
+template<> BasicVariable::ptr Variable<unsigned char>::operator *(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
-    RETURN_VARPTR(float,Value()*b->GetValueAsDouble());
+    RETURN_VARPTR(unsigned char,Value()*b->GetValueAsDouble());
   } 
   else
   if (b->Type()==type_image) {
@@ -160,7 +158,7 @@ template<> BasicVariable::ptr Variable<float>::operator *(const BasicVariable::p
 }
 
 /// a*=b
-template<> BasicVariable::ptr Variable<float>::operator *=(const BasicVariable::ptr& b)
+template<> BasicVariable::ptr Variable<unsigned char>::operator *=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RefValue() *= b->GetValueAsDouble();
@@ -170,10 +168,10 @@ template<> BasicVariable::ptr Variable<float>::operator *=(const BasicVariable::
 }
 
 /// a/b
-template<> BasicVariable::ptr Variable<float>::operator /(const BasicVariable::ptr& b)
+template<> BasicVariable::ptr Variable<unsigned char>::operator /(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
-    RETURN_VARPTR(float,Value()/b->GetValueAsDouble());
+    RETURN_VARPTR(unsigned char,Value()/b->GetValueAsDouble());
   }
   else
   if (b->Type()==type_image) {
@@ -186,7 +184,7 @@ template<> BasicVariable::ptr Variable<float>::operator /(const BasicVariable::p
 }
 
 /// a/=b
-template<> BasicVariable::ptr Variable<float>::operator /=(const BasicVariable::ptr& b)
+template<> BasicVariable::ptr Variable<unsigned char>::operator /=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RefValue() /= b->GetValueAsDouble();
@@ -196,17 +194,17 @@ template<> BasicVariable::ptr Variable<float>::operator /=(const BasicVariable::
 }
 
 /// a%b
-template<> BasicVariable::ptr Variable<float>::operator %(const BasicVariable::ptr& b)
+template<> BasicVariable::ptr Variable<unsigned char>::operator %(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
-    RETURN_VARPTR(float, ((int) round(Value())) % ((int) round(b->GetValueAsDouble())));
+    RETURN_VARPTR(unsigned char, ((int) round(Value())) % ((int) round(b->GetValueAsDouble())));
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
 
 /// a%=b
-template<> BasicVariable::ptr Variable<float>::operator %=(const BasicVariable::ptr& b)
+template<> BasicVariable::ptr Variable<unsigned char>::operator %=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RefValue() =  ((int) round(Value())) % ((int) round(b->GetValueAsDouble()));
@@ -218,50 +216,50 @@ template<> BasicVariable::ptr Variable<float>::operator %=(const BasicVariable::
 //  Comparison Operators
 
 /// a<b
-template<> BasicVariable::ptr Variable<float>::operator <(const BasicVariable::ptr& b)
+template<> BasicVariable::ptr Variable<unsigned char>::operator <(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
-    RETURN_VARPTR(float,Value()<b->GetValueAsDouble());
+    RETURN_VARPTR(unsigned char,Value()<b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
 
 /// a<=b
-template<> BasicVariable::ptr Variable<float>::operator <=(const BasicVariable::ptr& b)
+template<> BasicVariable::ptr Variable<unsigned char>::operator <=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
-    RETURN_VARPTR(float,Value()<=b->GetValueAsDouble());
+    RETURN_VARPTR(unsigned char,Value()<=b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
 
 /// a>b
-template<> BasicVariable::ptr Variable<float>::operator >(const BasicVariable::ptr& b)
+template<> BasicVariable::ptr Variable<unsigned char>::operator >(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
-    RETURN_VARPTR(float,Value()>b->GetValueAsDouble());
+    RETURN_VARPTR(unsigned char,Value()>b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
 
 /// a>=b
-template<> BasicVariable::ptr Variable<float>::operator >=(const BasicVariable::ptr& b)
+template<> BasicVariable::ptr Variable<unsigned char>::operator >=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
-    RETURN_VARPTR(float,Value()>=b->GetValueAsDouble());
+    RETURN_VARPTR(unsigned char,Value()>=b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
 
 /// a!=b
-template<> BasicVariable::ptr Variable<float>::operator !=(const BasicVariable::ptr& b)
+template<> BasicVariable::ptr Variable<unsigned char>::operator !=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
-    RETURN_VARPTR(float,Value()!=b->GetValueAsDouble());
+    RETURN_VARPTR(unsigned char,Value()!=b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
@@ -269,11 +267,11 @@ template<> BasicVariable::ptr Variable<float>::operator !=(const BasicVariable::
 
 
 /// a==b
-template<> BasicVariable::ptr Variable<float>::operator ==(const BasicVariable::ptr& b)
+template<> BasicVariable::ptr Variable<unsigned char>::operator ==(const BasicVariable::ptr& b)
 { 
   //std::cout << __func__ << std::endl;
   if (b->IsNumeric()) {
-    RETURN_VARPTR(float,Value()==b->GetValueAsDouble());
+    RETURN_VARPTR(unsigned char,Value()==b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
@@ -281,63 +279,77 @@ template<> BasicVariable::ptr Variable<float>::operator ==(const BasicVariable::
 
 // Logical operators
 
-template<> BasicVariable::ptr Variable<float>::operator !() 
+template<> BasicVariable::ptr Variable<unsigned char>::operator !() 
 {
-  RETURN_VARPTR(float,!(Value()>0.5));
+  RETURN_VARPTR(unsigned char,!(Value()>0.5));
 }
 
-template<> BasicVariable::ptr Variable<float>::operator &&(const BasicVariable::ptr& b) 
+template<> BasicVariable::ptr Variable<unsigned char>::operator &&(const BasicVariable::ptr& b) 
 {
   if (b->IsNumeric()) {
-    RETURN_VARPTR(float,(Value()>0.5)&& (bool) (b->GetValueAsDouble()>0.5));
+    RETURN_VARPTR(unsigned char,(Value()>0.5)&& (bool) (b->GetValueAsDouble()>0.5));
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
 
-template<> BasicVariable::ptr Variable<float>::operator ||(const BasicVariable::ptr& b) 
+template<> BasicVariable::ptr Variable<unsigned char>::operator ||(const BasicVariable::ptr& b) 
 {
   if (b->IsNumeric()) {
-    RETURN_VARPTR(float,(Value()>0.5) || (bool) (b->GetValueAsDouble()>0.5));
+    RETURN_VARPTR(unsigned char,(Value()>0.5) || (bool) (b->GetValueAsDouble()>0.5));
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
 
 // Mathematical functions
+// TODO: improve type conversions here ...
 #define VAR_IMPL_FUNC(type,fname,func) \
 template<> BasicVariable::ptr Variable<type>::m_##fname() \
 { \
-    RETURN_VARPTR(float, func(Value())); \
+    RETURN_VARPTR(unsigned char, (int) func((double)Value())); \
 }
 
-VAR_IMPL_FUNC(float,  sin,  sin)
-VAR_IMPL_FUNC(float,  cos,  cos)
-VAR_IMPL_FUNC(float,  tan,  tan)
-VAR_IMPL_FUNC(float,  asin, asin)
-VAR_IMPL_FUNC(float,  acos, acos)
-VAR_IMPL_FUNC(float,  atan, atan)
-VAR_IMPL_FUNC(float,  fabs, fabs)
-VAR_IMPL_FUNC(float,  round,round)
-VAR_IMPL_FUNC(float,  floor,floor)
-VAR_IMPL_FUNC(float,  exp,  exp)
-VAR_IMPL_FUNC(float,  log,  1.0/log(10.0)*log)
-VAR_IMPL_FUNC(float,  ln,   log)
-VAR_IMPL_FUNC(float,  norm, fabs)
-VAR_IMPL_FUNC(float,  sqrt, sqrt)
-
+/*
+VAR_IMPL_FUNC(unsigned char,  sin,  sin)
+VAR_IMPL_FUNC(unsigned char,  cos,  cos)
+VAR_IMPL_FUNC(unsigned char,  tan,  tan)
+VAR_IMPL_FUNC(unsigned char,  asin, asin)
+VAR_IMPL_FUNC(unsigned char,  acos, acos)
+VAR_IMPL_FUNC(unsigned char,  atan, atan)
+*/
+VAR_IMPL_FUNC(unsigned char,  fabs, fabs)
+/*
+VAR_IMPL_FUNC(unsigned char,  round,round)
+VAR_IMPL_FUNC(unsigned char,  floor,floor)
+VAR_IMPL_FUNC(unsigned char,  exp,  exp)
+VAR_IMPL_FUNC(unsigned char,  log,  1.0/log(10.0)*log)
+VAR_IMPL_FUNC(unsigned char,  ln,   log)
+*/
+VAR_IMPL_FUNC(unsigned char,  norm, fabs)
+VAR_IMPL_FUNC(unsigned char,  sqrt, sqrt)
 
 
 //---------------------------------------------------
 template<>
-BasicVariable::ptr Variable<float>::TryCast(
+BasicVariable::ptr Variable<unsigned char>::TryCast(
     const std::string& type_string) const
 {
+  if (type_string==to_string<unsigned char>::value()) 
+    return NewCopy();
   try
   {
     // cast to double
     if (type_string==to_string<double>::value()) {
       RETURN_VARPTR(double, boost::numeric_cast<double>(Value()));
+    } else 
+    // cast to float
+    if (type_string==to_string<float>::value()) {
+      RETURN_VARPTR(unsigned char, boost::numeric_cast<float>(Value()));
+    } else 
+    // cast to long
+    if (type_string==to_string<long>::value()) {
+      RETURN_VARPTR(long, boost::numeric_cast<long>(Value()));
     } else 
     // cast to int
     if (type_string==to_string<int>::value()) {
@@ -345,34 +357,39 @@ BasicVariable::ptr Variable<float>::TryCast(
     } else 
     {
       // make default conversion to double??
-      CLASS_ERROR(boost::format("No convertion available for variable %1% from double to %2%") % _name % type_string);
+      CLASS_ERROR(boost::format("No convertion available for variable %1% from 'unsigned char' to %2%") % _name % type_string);
     }
   } catch (std::bad_cast &e)
   {
-    CLASS_ERROR(boost::format("%1%, for variable %2% from double to %3%") % e.what() % _name % type_string);
+    CLASS_ERROR(boost::format("%1%, for variable %2% from 'unsigned char' to %3%") % e.what() % _name % type_string);
     return BasicVariable::ptr();
   }
 }
 
 
-//
-template<> BasicVariable::ptr Variable<float>::BasicCast(const int& type)
+//---------------------------------------
+template<> BasicVariable::ptr Variable<unsigned char>::BasicCast(const int& type)
 {
-
   try
   {
     switch((WORDTYPE)type) {
-      case WT_FLOAT:  break; // float to float: nothing to do ...
+      case WT_UNSIGNED_CHAR:  break; // uchar to uchar: nothing to do ...
       case WT_SIGNED_INT:
       {
           RETURN_VARPTR(int, boost::numeric_cast<int>(Value()));
+      }
+      case WT_SIGNED_LONG:
+      {
+          RETURN_VARPTR(long, boost::numeric_cast<long>(Value()));
+      }
+      case WT_FLOAT:
+      {
+          RETURN_VARPTR(float, boost::numeric_cast<float>(Value()));
       }
       case WT_DOUBLE: 
       {
           RETURN_VARPTR(double, boost::numeric_cast<double>(Value()));
       }
-      case WT_UNSIGNED_INT:   //res=(unsigned int) res;  break;
-      case WT_UNSIGNED_CHAR:  //res=(unsigned char) res; break;
       case WT_SIGNED_SHORT:   //res=(short) res;  break;
       case WT_UNSIGNED_SHORT: //res=(unsigned short) res;  break;
       default:
@@ -380,17 +397,17 @@ template<> BasicVariable::ptr Variable<float>::BasicCast(const int& type)
     }
   } catch (std::bad_cast &e)
   {
-    CLASS_ERROR(boost::format("%1%, for variable %2% from float to WORDTYPE %3%") % e.what() % _name % (WORDTYPE)type );
+    CLASS_ERROR(boost::format("%1%, for variable %2% from 'unsigned char' to WORDTYPE %3%") % e.what() % _name % (WORDTYPE)type );
     return BasicVariable::ptr();
   }
 
-  RETURN_VARPTR(float, Value());
+  RETURN_VARPTR(unsigned char, Value());
 
 }
 
 //
 template<>
-BasicVariable::ptr Variable<float>::TernaryCondition(const BasicVariable::ptr& v1, const BasicVariable::ptr&v2)
+BasicVariable::ptr Variable<unsigned char>::TernaryCondition(const BasicVariable::ptr& v1, const BasicVariable::ptr&v2)
 {
 
   if (IsNumeric()) {
@@ -406,11 +423,19 @@ BasicVariable::ptr Variable<float>::TernaryCondition(const BasicVariable::ptr& v
 
 
 template<> 
-BasicVariable::ptr Variable<float>::operator =(const BasicVariable::ptr& b)
+BasicVariable::ptr Variable<unsigned char>::operator =(const BasicVariable::ptr& b)
 {
-  if (IsNumeric()) {
-    RefValue() = b->GetValueAsDouble();
-  } else
-    CLASS_ERROR("operation not defined");
+  // TODO: better conversion here !!!
+  try
+  {
+    if (IsNumeric()) {
+      RefValue() = boost::numeric_cast<unsigned char>(b->GetValueAsDouble());
+    } else
+      CLASS_ERROR("operation not defined");
+  }
+  catch (std::bad_cast &e)
+  {
+    CLASS_ERROR(boost::format("%1%, for variable %2% to 'unsigned char'") % e.what() % b->Name() );
+  }
   return NewReference();
 }

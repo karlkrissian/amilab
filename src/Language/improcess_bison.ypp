@@ -49,6 +49,7 @@
 //#include "PruneLines.h"
 
 #include "wrapfunction_class.h"
+#include "wrap_ImageExtent.h"
 
 
 #ifndef __FLEX_LEXER_H
@@ -217,6 +218,25 @@ void CB_update_imagelist( void* imagelist_gui);
   boost::shared_ptr<type> newvar( \
     driver.var_stack.GetLastVar<type>()->Pointer());
 
+
+/*! \def GET_VARSTACK_OBJECT
+    \brief Gets the smart pointer to the wrapped object  (of type WrapClass_type) included in an AMIObject variable, taken from the stack of variables.
+*/
+#define GET_VARSTACK_OBJECT(wtype, type, obj) \
+  Variable<AMIObject>::ptr objvar( \
+    driver.var_stack.GetLastVar<AMIObject>()); \
+  if (!objvar.get()) {  \
+    driver.yyiperror(" Expecting an AMIObject variable."); \
+    YYABORT; \
+  } \
+  WrapClassBase::ptr wrap_base( objvar->Pointer()->GetWrappedObject()); \
+  WrapClass_##wtype::ptr wobj( boost::dynamic_pointer_cast<WrapClass_##wtype>(wrap_base));\
+  if (!wobj.get()) {  \
+    driver.yyiperror((boost::format(" Expecting an AMIObject variable of type %1%.")%(#type)).str().c_str()); \
+    YYABORT; \
+  } \
+  boost::shared_ptr<type > obj(wobj->_obj);
+
 #define GET_VARSTACK_VAR_VAL(type,newvar, newval) \
   Variable<type>::ptr newvar(driver.var_stack.GetLastVar<type>()); \
   boost::shared_ptr<type> newval(newvar->Pointer());
@@ -304,7 +324,6 @@ void CB_update_imagelist( void* imagelist_gui);
   ParamList*              paramlist; // here smart pointer
                             // not allowed in union ...
   ParamListDecl*          paramlistdecl;
-  ImageExtent<float>*     imageextent;
   std::list<std::string>* string_list;
 }
 
@@ -723,6 +742,21 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_amiOFVar2D
 //%token T_amiOFVar2DZoom
 
+
+// Operators precedence
+%right ASSIGN_OP ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN
+%left OR_OP
+%left T_EXP
+%left AND_OP
+%left T_OR
+%left T_AND
+%left NE_OP EQ_OP
+%left GE_OP LE_OP T_GT T_LT
+%left T_SUB T_ADD
+%left T_MOD T_DIV T_MULT
+%left  prefix
+%right postfix
+
 %type <ident>          identifier
 %type <ident>          IDENTIFIER
 %type <aint>           basic_type
@@ -737,14 +771,12 @@ void CB_update_imagelist( void* imagelist_gui);
 %type <adouble>         NUMBER
 %type <paramlist>      param_list
 %type <paramlistdecl>  param_list_decl
-%type <imageextent>    image_extent
 %type <string_list>     stringlist
 %type <string_list>     exprstringlist
 
 %destructor { delete [] $$; } ASTRING primary_expr_string expr_string
 %destructor { delete  $$; } identifier IDENTIFIER
 %destructor { delete  $$; } instr_block
-%destructor { delete  $$; } image_extent
 %destructor { delete  $$; } exprstringlist
 
 
@@ -1337,7 +1369,22 @@ command:
 
       }
       |
-      identifier ASSIGN_OP T_AND variable
+      identifier ASSIGN_OP T_AND unprocessed_variable
+      {
+        /**
+          Description:
+            Creates a new variable that is a reference to an existing one.
+          Parameters:
+            - new variable name;
+            - existing variable name.
+        **/
+          BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
+          IdentifierInfo::ptr ident($1);
+          BasicVariable::ptr newvar( var->NewReference());
+          Vars.AddVar(ident,newvar);
+      }
+      |
+      identifier ASSIGN_OP T_AND expr_var
       {
         /**
           Description:
@@ -1363,7 +1410,7 @@ command:
         **/
         BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
         // check counter of the value, not of the variable ...
-        if (var.get() || (var->GetPtrCounter()>0) ) {
+        if (var.get() && (var->GetPtrCounter()>0) ) {
           if (var->GetPtrCounter()==1) {
             //cout << "GetPtrCounter == 1" << endl;
             IdentifierInfo::ptr ident($1);
@@ -2199,6 +2246,7 @@ command:
 
 
         }
+/*
         |  VAR_INT INC_OP
         {
           (*driver.var_stack.GetLastVar<int>()->Pointer())++;
@@ -2223,6 +2271,8 @@ command:
         {
           (*driver.var_stack.GetLastVar<unsigned char>()->Pointer())--;
         }
+*/
+
 /* deprecated with Variable<string> operations
         |  VAR_STRING ASSIGN_OP expr_string
         {
@@ -5938,12 +5988,13 @@ float_variable:
       BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
       driver.var_stack.AddVar(var->NewReference());
     }
+/*
     | VAR_INT
     {
       /**
       Description:
         Temporary solution: convert int variable to float variable
-      **/
+      **
       GET_VARSTACK_VALUE(int,n);
       ADD_VARSTACK_FLOAT((double) *n.get())
     }
@@ -5952,10 +6003,11 @@ float_variable:
       /**
       Description:
         Temporary solution: convert unsigned char variable to float variable
-      **/
+      **
       GET_VARSTACK_VALUE(unsigned char,n);
       ADD_VARSTACK_FLOAT((double) *n.get())
     }
+*/
     | var_image T_OP_PAR expr T_COMMA expr  T_CL_PAR
     {
         /**
@@ -7231,6 +7283,8 @@ image:
       // driver.im_stack.AddImage(varim);
 */
     }
+
+/*
     |
     var_image T_OP_BR expr T_CL_BR
     {
@@ -7250,7 +7304,7 @@ image:
 
           print ired(i.tx/2,i.ty/2); print "\n"
           print i(i.tx/2,i.ty/2,0,0); print "\n"
-       **/
+       **
         GET_VARSTACK_VAR_VAL(InrImage,var,im1);
         InrImage::ptr im;
         char  imname[200];
@@ -7294,6 +7348,7 @@ image:
           driver.im_stack.AddImage(im);
 
        }
+*/
        |
        T_SUM T_OP_PAR expr_image  T_COMMA expr T_CL_PAR
        {
@@ -7982,12 +8037,13 @@ image:
         InrImage::ptr res ( Func_AutoCrop(im.get(),(int)$5));
         driver.im_stack.AddImage(res);
     }
+/*
     |
-      var_image T_OP_BR image_extent T_CL_BR
+    var_image T_OP_BR image_extent T_CL_BR
     {
+      GET_VARSTACK_OBJECT(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage,im);
-      ImageExtent<float>* extent = (ImageExtent<float>*) $3;
-  
+
       //extent->print();
       extent->SetRelative(im.get());
   
@@ -8002,12 +8058,13 @@ image:
                   (int)  round((double)extent->Ymax()),
                   (int)  round((double)extent->Zmax())
                   ));
-      delete extent;
       Si !res.get() Alors
         fprintf(stderr,"SubImage() erreur ... \n");
       FinSi
         driver.im_stack.AddImage(res);
     }
+*/
+/* Deprecated
     |
     var_image
       T_OP_BR  T_COLON  T_COMMA
@@ -8024,6 +8081,7 @@ image:
         }
       driver.im_stack.AddImage(res);
       }
+*/
       |
       SubImage
       T_OP_PAR var_image
@@ -8494,132 +8552,121 @@ image:
         fprintf(stderr,"Func_AnisoSRAD() erreur ... \n");
       FinSi
       driver.im_stack.AddImage(res);
-        }
-        |
-        T_AnisoSRAD
-        T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
-        {
+    }
+    |
+    T_AnisoSRAD
+    T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
+    {
+      GET_VARSTACK_OBJECT(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
       float dt = (float) $5;
       int numit = (int) $7;
-      ImageExtent<float>* extent = (ImageExtent<float>*) $9;
 
       InrImage::ptr res ( Func_SRAD( im.get(),dt,numit,
                0, // Lee mode
                0, // Yu neighborhood
-               extent));
-
-      delete extent;
+               extent.get()));
 
       Si !res.get() Alors
         fprintf(stderr,"Func_AnisoSRAD() erreur ... \n");
       FinSi
       driver.im_stack.AddImage(res);
-        }
-        |
-        T_AnisoSRAD
-        T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
-        {
+    }
+    |
+    T_AnisoSRAD
+    T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
+    {
+      GET_VARSTACK_OBJECT(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
       float dt = (float) $5;
       int numit = (int) $7;
       int neighborhood = (int) $9;
-      ImageExtent<float>* extent = (ImageExtent<float>*) $11;
 
       InrImage::ptr res ( Func_SRAD( im.get(),dt,numit,
                0, // Lee mode
                neighborhood,
-               extent));
-
-      delete extent;
+               extent.get()));
 
       Si !res.get() Alors
         fprintf(stderr,"Func_AnisoSRAD() erreur ... \n");
       FinSi
       driver.im_stack.AddImage(res);
-        }
-        |
-        T_AnisoSRAD2
-        T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
-        {
+    }
+    |
+    T_AnisoSRAD2
+    T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
+    {
+      GET_VARSTACK_OBJECT(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
       float dt = (float) $5;
       int numit = (int) $7;
-      ImageExtent<float>* extent = (ImageExtent<float>*) $9;
-
 
       InrImage::ptr res ( Func_SRAD2( im.get(),dt,numit,
                 0, // Lee function
                 0, // Yu neighborhood
-                extent
+                extent.get()
                 ));
-
-      delete extent;
 
       Si !res.get() Alors
         fprintf(stderr,"Func_AnisoSRAD() erreur ... \n");
       FinSi
 
       driver.im_stack.AddImage(res);
-        }
-        |
-        T_AnisoSRAD2
-        T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA
-    expr T_COMMA image_extent T_CL_PAR
-        {
+    }
+    |
+      T_AnisoSRAD2
+      T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA
+      expr T_COMMA image_extent T_CL_PAR
+    {
+      GET_VARSTACK_OBJECT(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
       float dt = (float) $5;
       int numit = (int) $7;
       int neighborhood = (int) $9;
-      ImageExtent<float>* extent = (ImageExtent<float>*) $11;
 
       InrImage::ptr res ( Func_SRAD2( im.get(),dt,numit,
                 0, // Lee function
                 neighborhood, // neighborhood size
-                extent // bounding box
+                extent.get() // bounding box
                 ));
-      delete extent;
-
       Si !res.get() Alors
         fprintf(stderr,"Func_AnisoSRAD() erreur ... \n");
       FinSi
 
       driver.im_stack.AddImage(res);
-        }
-        |
-        T_AnisoLeeAdd2 T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
-        {
+    }
+    |
+    T_AnisoLeeAdd2 T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
+    {
+      GET_VARSTACK_OBJECT(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
       float dt = (float) $5;
       int numit = (int) $7;
-      ImageExtent<float>* extent = (ImageExtent<float>*) $9;
 
       InrImage::ptr res ( Func_SRAD2( im.get(),dt,numit,
                 2, // Additive mode
                 0, // Yu neighborhood
-                extent // constant region
+                extent.get() // constant region
                 ));
-      delete extent;
 
       Si !res.get() Alors
         fprintf(stderr,"Func_AnisoSRAD() erreur ... \n");
       FinSi
       driver.im_stack.AddImage(res);
-        }
-        |
-        T_AnisoDPAD T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
-        {
+    }
+    |
+    T_AnisoDPAD T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
+    {
+      GET_VARSTACK_OBJECT(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
       float dt         = (float) $5;
       int numit        = (int) $7;
       int neighborhood = (int) $9;
-      ImageExtent<float>* extent = (ImageExtent<float>*) $11;
 
       InrImage::ptr res ( Func_SRAD( im.get(),dt,numit,
                1, // Kuan's function
                neighborhood, // Yu neighborhood
-               extent));
-      delete extent;
+               extent.get()));
 
       Si !res.get() Alors
         fprintf(stderr,"Func_AnisoSRAD() erreur ... \n");
@@ -8630,18 +8677,17 @@ image:
     T_AnisoDPAD2
     T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
     {
+      GET_VARSTACK_OBJECT(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
       float dt = (float) $5;
       int numit = (int) $7;
       int neighborhood = (int) $9;
-      ImageExtent<float>* extent = (ImageExtent<float>*) $11;
 
       InrImage::ptr res ( Func_SRAD2( im.get(),dt,numit,
                 1, // Kuan's function
                 neighborhood, // Yu neighborhood
-                extent
+                extent.get()
                 ));
-      delete extent;
       Si !res.get() Alors
         fprintf(stderr,"Func_AnisoSRAD() erreur ... \n");
       FinSi
@@ -8651,42 +8697,41 @@ image:
     T_AnisoNRAD
     T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
     {
-        /**
-         Parameters:
-            (3) var_image: input image
-            (5) numerical expression: mode, 0 for Lee Filter, 1: Kuan Filter,
-                 2: additive, 3: MRI denoising
-            (7) numerical expression: dt, time step
-            (9) numerical expression: numit, number of iterations
-            (11) numerical expression: size of the neighborhood n, neighborhood is
-                (2n+1)^N, where N is the dimension of the image domain.
-            (13) image extent: area of interest to calculate the noise
-                 standard deviation, usually a constant area, for MRI denoising: background area
+    /**
+      Parameters:
+        (3) var_image: input image
+        (5) numerical expression: mode, 0 for Lee Filter, 1: Kuan Filter,
+              2: additive, 3: MRI denoising
+        (7) numerical expression: dt, time step
+        (9) numerical expression: numit, number of iterations
+        (11) numerical expression: size of the neighborhood n, neighborhood is
+            (2n+1)^N, where N is the dimension of the image domain.
+        (13) image extent: area of interest to calculate the noise
+              standard deviation, usually a constant area, for MRI denoising: background area
 
-         Description:
-            Runs a noise reducing anisotropic diffusion, Lee and Kuan's mode are
-            for speckle noise in ultrasound images, additive mode is for additive
-            stationary noise and MRI is for MRI style noise. In the case of MRI,
-            the filter is designed to run on the square of the image intensity.
-         **/
-       GET_VARSTACK_VALUE(InrImage, im);
-           int mode = (int) $5;
-            float dt = (float) $7;
-            int numit = (int) $9;
-            int neighborhood = (int) $11;
-            ImageExtent<float>* extent = (ImageExtent<float>*) $13;
+      Description:
+        Runs a noise reducing anisotropic diffusion, Lee and Kuan's mode are
+        for speckle noise in ultrasound images, additive mode is for additive
+        stationary noise and MRI is for MRI style noise. In the case of MRI,
+        the filter is designed to run on the square of the image intensity.
+      **/
+      GET_VARSTACK_OBJECT(ImageExtent, ImageExtent<float>, extent)
+      GET_VARSTACK_VALUE(InrImage, im);
+      int mode = (int) $5;
+      float dt = (float) $7;
+      int numit = (int) $9;
+      int neighborhood = (int) $11;
 
-            InrImage::ptr res ( Func_SRAD2( im.get(),dt,numit,
-                        mode, // fiter mode
-                        neighborhood, //  neighborhood size
-                        extent
-                        ));
-            delete extent;
+      InrImage::ptr res ( Func_SRAD2( im.get(),dt,numit,
+                  mode, // fiter mode
+                  neighborhood, //  neighborhood size
+                  extent.get()
+                  ));
 
-            Si !res.get() Alors
-                fprintf(stderr,"Func_AnisoNRAD() erreur ... \n");
-            FinSi
-            driver.im_stack.AddImage(res);
+      Si !res.get() Alors
+        fprintf(stderr,"Func_AnisoNRAD() erreur ... \n");
+      FinSi
+      driver.im_stack.AddImage(res);
     }
     |
     T_AnisoRudinMult
@@ -10060,6 +10105,12 @@ string_variable:
 
 
 primary_var:
+      VAR_LONG
+    |
+      VAR_INT
+    |
+      VAR_UCHAR
+    |
       double_variable
     |
       float_variable
@@ -10072,7 +10123,7 @@ primary_var:
     |
     T_MAX T_OP_PAR expr_var T_COMMA expr_var T_CL_PAR
     {
-      /**
+      /** 
       Description:
         The 2 parameters can be either images or numbers,
         for 2 images:
@@ -10213,7 +10264,7 @@ primary_var:
       T_OP_PAR expr_var T_CL_PAR;
 
 postfix_var:
-  primary_var
+  primary_var %prec postfix
   | T_NOT primary_var 
   {
     /**
@@ -10222,7 +10273,7 @@ postfix_var:
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(!(*var));
   }
-  | primary_var INC_OP 
+  | primary_var INC_OP %prec postfix
   {
     /**
       Description: Postfix increment operator.
@@ -10230,7 +10281,7 @@ postfix_var:
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar((*var)++);
   }
-  | primary_var DEC_OP
+  | primary_var DEC_OP %prec postfix
   {
     /**
       Description: Postfix decrement operator.
@@ -10239,7 +10290,7 @@ postfix_var:
     driver.var_stack.AddVar((*var)--);
   }
   |
-  T_OP_PAR basic_type T_CL_PAR primary_var
+  T_OP_PAR basic_type T_CL_PAR primary_var 
   {
     /**
       Description: Cast operator.
@@ -10248,7 +10299,7 @@ postfix_var:
     driver.var_stack.AddVar(var->BasicCast( $2));
 
   }
-  | primary_var TRANSPOSE_OP
+  | primary_var TRANSPOSE_OP %prec postfix
   {
     /**
       Description: Transpose operator, usefull for matrices
@@ -10256,109 +10307,107 @@ postfix_var:
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->Transpose());
   }
-/* not included yet because of problems with extents
   |
   postfix_var T_OP_BR  primary_var T_CL_BR
   {
     /**
       Description: Array subscript operator.
-    **
+    **/
     BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
     BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar((*var1)[var2]);
   }
-*/
   ;
 
 prefix_var:
-  postfix_var
-  | T_SUB  postfix_var 
+  postfix_var %prec prefix
+  | T_SUB  postfix_var %prec prefix
   {
     //cout << "T_SUB  cast_var  " << endl;
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(-(*var));
   }
-  | T_ADD  postfix_var
+  | T_ADD  postfix_var %prec prefix
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(+(*var));
   }
-  | INC_OP  postfix_var 
+  | INC_OP  postfix_var  %prec prefix
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(++(*var));
   }
-  | DEC_OP  postfix_var
+  | DEC_OP  postfix_var %prec prefix
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(--(*var));
   }
-  | SIN    postfix_var 
+  | SIN    postfix_var %prec prefix
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_sin());
   }
-  | COS    postfix_var 
+  | COS    postfix_var %prec prefix
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_cos());
   }
-  | SQRT   postfix_var
+  | SQRT   postfix_var %prec prefix
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_sqrt());
   }
-  | ABS    postfix_var
+  | ABS    postfix_var %prec prefix
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_fabs());
   }
-  | ROUND  postfix_var
+  | ROUND  postfix_var %prec prefix
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_round());
   }
-  | FLOOR  postfix_var
+  | FLOOR  postfix_var %prec prefix
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_floor());
   }
-  | TAN    postfix_var
+  | TAN    postfix_var %prec prefix
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_tan());
   }
-  | ASIN   postfix_var
+  | ASIN   postfix_var %prec prefix
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_asin());
   }
-  | ACOS   postfix_var
+  | ACOS   postfix_var %prec prefix
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_acos());
   }
-  | ATAN   postfix_var
+  | ATAN   postfix_var %prec prefix
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_atan());
   }
-  | EXP    postfix_var
+  | EXP    postfix_var %prec prefix
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_exp());
   }
-  | LOG    postfix_var
+  | LOG    postfix_var %prec prefix
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_log());
   }
-  | LN     postfix_var
+  | LN     postfix_var %prec prefix
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_ln());
   }
-  | NORM   postfix_var
+  | NORM   postfix_var %prec prefix
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_norm());
@@ -10367,7 +10416,7 @@ prefix_var:
 
 
 multiplicative_var: 
-  prefix_var
+  prefix_var %prec T_MULT
   | multiplicative_var T_MULT prefix_var
   {
     GET_CHECK_VARSTACK(var2)
@@ -10386,11 +10435,11 @@ multiplicative_var:
     GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1)%var2);
   }
-  | multiplicative_var T_EXP  prefix_var
+//  | multiplicative_var T_EXP  prefix_var
   ;
 
 additive_var: 
-  multiplicative_var
+  multiplicative_var %prec T_ADD
   | additive_var T_ADD multiplicative_var
   {
     GET_CHECK_VARSTACK(var2)
@@ -10412,7 +10461,7 @@ shift_var:
   ;
 
 relational_var:
-  shift_var
+  shift_var %prec T_LT
   | relational_var T_LT  shift_var
   {
     GET_CHECK_VARSTACK(var2)
@@ -10440,7 +10489,7 @@ relational_var:
   ;
 
 equality_var:
-  relational_var
+  relational_var %prec EQ_OP
   | equality_var EQ_OP relational_var
   {
     GET_CHECK_VARSTACK(var2)
@@ -10473,7 +10522,7 @@ equality_var:
   ;
 
 and_var:
-  equality_var
+  equality_var %prec T_AND
   | and_var T_AND equality_var
   ;
 
@@ -10482,12 +10531,12 @@ exclusive_or_var:
   ;
 
 inclusive_or_var:
-  exclusive_or_var
+  exclusive_or_var %prec T_OR
   | inclusive_or_var T_OR exclusive_or_var
   ;
 
 logical_and_var:
-  inclusive_or_var
+  inclusive_or_var %prec AND_OP
   | logical_and_var AND_OP inclusive_or_var
   {
     /**
@@ -10500,7 +10549,7 @@ logical_and_var:
   ;
 
 logical_xor_var:
-  logical_and_var
+  logical_and_var %prec T_EXP
   | logical_xor_var T_EXP logical_and_var
   {
     /**
@@ -10513,7 +10562,7 @@ logical_xor_var:
   ;
 
 logical_or_var:
-  logical_xor_var
+  logical_xor_var %prec OR_OP
   | logical_or_var OR_OP logical_xor_var
   {
     /**
@@ -10540,8 +10589,8 @@ conditional_var:
   ;
 
 assignment_var:
-  conditional_var
-  | prefix_var ASSIGN_OP assignment_var
+  conditional_var %prec ASSIGN_OP
+  | conditional_var ASSIGN_OP assignment_var
   {
     //cout << "assignment_var" << endl;
     GET_CHECK_VARSTACK(var2)
@@ -10551,25 +10600,25 @@ assignment_var:
     }
     driver.var_stack.AddVar((*var1)=var2);
   }
-  | prefix_var ADD_ASSIGN assignment_var
+  | conditional_var ADD_ASSIGN assignment_var
   {
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1)+=var2);
   }
-  | prefix_var SUB_ASSIGN assignment_var
+  | conditional_var SUB_ASSIGN assignment_var
   {
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1)-=var2);
   }
-  | prefix_var MUL_ASSIGN assignment_var
+  | conditional_var MUL_ASSIGN assignment_var
   {
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1)*=var2);
   }
-  | prefix_var DIV_ASSIGN assignment_var
+  | conditional_var DIV_ASSIGN assignment_var
   {
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
@@ -11760,11 +11809,9 @@ unprocessed_variable:
   Variable included in variable expression
 */
 processed_variable:
-          VAR_INT 
-        /* VAR_INT is used in expr_var: variable_float ...*/
+        VAR_INT 
         |
          VAR_UCHAR
-        /* VAR_UCHAR is used in expr_var: variable_float ...*/
         |
          VAR_FLOAT
         |
@@ -11787,58 +11834,80 @@ variable:
     processed_variable;
 
 image_extent:
-        expr T_COLON expr T_COMMA  expr T_COLON expr T_COMMA  expr T_COLON expr
-        {
-          ImageExtent<float>* extent=new ImageExtent<float>( (float)$1,(float)$3,(float)$5,
-                              (float)$7,(float)$9,(float)$11);
-          extent->SetMode(1); // relative
-          $$=extent;
-        }
-        |
-        expr T_COLON expr T_COMMA  expr T_COLON expr
-        {
-          ImageExtent<float>* extent=new ImageExtent<float>((float)$1,(float)$3,(float)$5,(float)$7);
-          extent->SetMode(1); // relative
-          $$=extent;
-        }
-        |
-        var_image T_POINT T_GetExtent
-        {
-          GET_VARSTACK_VALUE(InrImage, im);
+    expr T_COLON expr T_COMMA  expr T_COLON expr T_COMMA  expr T_COLON expr
+    {
+      ImageExtent<float>* extent=new ImageExtent<float>( (float)$1,(float)$3,(float)$5,
+                          (float)$7,(float)$9,(float)$11);
+      extent->SetMode(1); // relative
+      BasicVariable::ptr res(CreateVar_ImageExtent(extent));
+      driver.var_stack.AddVar(res);
+    }
+    |
+    expr T_COLON expr T_COMMA  expr T_COLON expr
+    {
+      ImageExtent<float>* extent=new ImageExtent<float>((float)$1,(float)$3,(float)$5,(float)$7);
+      extent->SetMode(1); // relative
+      BasicVariable::ptr res(CreateVar_ImageExtent(extent));
+      driver.var_stack.AddVar(res);
+    }
+    |
+    T_COLON  T_COMMA T_COLON  T_COMMA expr T_COLON expr
+    {
+      #ifdef min
+        #undef min
+      #endif
+      #ifdef max
+        #undef max
+      #endif
+      float float_max = std::numeric_limits<float>::max();
+      ImageExtent<float>* extent=new ImageExtent<float>(
+          -float_max,float_max,
+          -float_max,float_max,
+          (float)$5,(float)$7);
+      extent->SetMode(1); // relative
+      BasicVariable::ptr res(CreateVar_ImageExtent(extent));
+      driver.var_stack.AddVar(res);
+    }
+    |
+    var_image T_POINT T_GetExtent
+    {
+      GET_VARSTACK_VALUE(InrImage, im);
 
-          ImageExtent<float>* extent=new ImageExtent<float>();
-          extent->SetMode(0); // absolute
-          extent->SetXmin( im->SpacePosX(0));
-          extent->SetXmax( im->SpacePosX(im->DimX()-1));
-          extent->SetYmin( im->SpacePosY(0));
-          extent->SetYmax( im->SpacePosY(im->DimY()-1));
-          extent->SetZmin( im->SpacePosZ(0));
-          extent->SetZmax( im->SpacePosZ(im->DimZ()-1));
-          //extent->print();
-          $$=extent;
-       }
-       |
-       VAR_IMAGEDRAW
-       {
-        Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
-        DessinImage::ptr draw = DessinImage::ptr(varimd->Pointer());
-
-        int xmin,xmax;
-        int ymin,ymax;
-        int zmin,zmax;
-        string comment;
-
-        draw->GetZoom(xmin,ymin,zmin,xmax,ymax,zmax);
-        ImageExtent<float>* extent=new ImageExtent<float>(xmin,xmax,ymin,ymax,zmin,zmax);
-        extent->SetMode(1); // relative extent
-
-        comment = str(format(" //  subvolume [%3d:%3d, %3d:%3d, %3d:%3d] ")
-            % xmin % xmax % ymin % ymax % zmin % zmax);
-        if (GB_debug) cerr << "********* extent ****" << endl;
-        if (driver.InConsole()) GB_main_wxFrame->GetConsole()->IncCommand(comment);
-
-        $$=extent;
-       }
+      ImageExtent<float>* extent=new ImageExtent<float>();
+      extent->SetMode(0); // absolute
+      extent->SetXmin( im->SpacePosX(0));
+      extent->SetXmax( im->SpacePosX(im->DimX()-1));
+      extent->SetYmin( im->SpacePosY(0));
+      extent->SetYmax( im->SpacePosY(im->DimY()-1));
+      extent->SetZmin( im->SpacePosZ(0));
+      extent->SetZmax( im->SpacePosZ(im->DimZ()-1));
+      //extent->print();
+      BasicVariable::ptr res(CreateVar_ImageExtent(extent));
+      driver.var_stack.AddVar(res);
+    }
+    |
+    VAR_IMAGEDRAW
+    {
+      Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
+      DessinImage::ptr draw = DessinImage::ptr(varimd->Pointer());
+  
+      int xmin,xmax;
+      int ymin,ymax;
+      int zmin,zmax;
+      string comment;
+  
+      draw->GetZoom(xmin,ymin,zmin,xmax,ymax,zmax);
+      ImageExtent<float>* extent=new ImageExtent<float>(xmin,xmax,ymin,ymax,zmin,zmax);
+      extent->SetMode(1); // relative extent
+  
+      comment = str(format(" //  subvolume [%3d:%3d, %3d:%3d, %3d:%3d] ")
+          % xmin % xmax % ymin % ymax % zmin % zmax);
+      if (GB_debug) cerr << "********* extent ****" << endl;
+      if (driver.InConsole()) GB_main_wxFrame->GetConsole()->IncCommand(comment);
+  
+      BasicVariable::ptr res(CreateVar_ImageExtent(extent));
+      driver.var_stack.AddVar(res);
+    }
 %%
 #include <stdio.h>
 

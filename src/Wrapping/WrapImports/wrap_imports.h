@@ -35,4 +35,9 @@ void AddWrapAmilab();
  */
 void AddWrapIO();
 
+/**
+ * Adding wrapped classes and methods for Image.
+ */
+void AddWrapImage();
+
 #endif //  _wrap_MainFrame_h_

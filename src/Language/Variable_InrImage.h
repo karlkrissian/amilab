@@ -11,7 +11,7 @@ class InrImage;
 //------------------------------------------------------
 
 /// Copy contents to new variable
-template<> BasicVariable::ptr Variable<InrImage>::NewCopy();
+template<> BasicVariable::ptr Variable<InrImage>::NewCopy() const;
 
 // Arithmetic operators
 

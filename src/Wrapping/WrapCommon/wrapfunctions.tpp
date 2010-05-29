@@ -69,13 +69,25 @@ bool get_val_param(T& arg, ParamList*p, int& num)
   BasicVariable::ptr temp( p->GetParam(num++));
   if (temp.get()) {
     if (temp->Type()!=GetVarType<T>()) {
-      FILE_ERROR(boost::format("Parameter %1% is of wrong type.")%num);
-      return false;
+      // Try to convert to the requested type:
+      BasicVariable::ptr converted = temp->TryCast(to_string<T>::value());
+      if (!converted.get()) {
+        FILE_ERROR(boost::format("Parameter %1% cannot not be converted to type %2%.") %num % to_string<T>::value());
+        return false;
+      } else
+        temp = converted;
     }
     boost::shared_ptr<Variable<T> > temp1(
       boost::dynamic_pointer_cast<Variable<T> >(temp));
-    arg= * (temp1->Pointer().get());
-    return true;
+    if (temp1.get()) {
+      arg= * (temp1->Pointer().get());
+      return true;
+    } 
+    else
+    {
+      FILE_ERROR(boost::format("Parameter %1% Conversion to %2% problem ") % num % to_string<T>::value());
+      return false;
+    }
   }
   else
   {

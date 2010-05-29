@@ -11,7 +11,7 @@ class FloatMatrix;
 //------------------------------------------------------
 
 /// Copy contents to new variable
-template<> BasicVariable::ptr Variable<FloatMatrix>::NewCopy();
+template<> BasicVariable::ptr Variable<FloatMatrix>::NewCopy() const;
 
 // Arithmetic operators
 

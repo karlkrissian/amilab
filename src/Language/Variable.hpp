@@ -34,6 +34,30 @@
           boost::dynamic_pointer_cast<Variable<newtype> >(initvar)); \
     if (!resvar.get()) std::cerr << "DYNAMIC_CAST_VARIABLE(" << #newtype << "," << #initvar << "," << # resvar << ") failed ..." << std::endl;
 
+template<typename> 
+struct to_string {
+    // optionally, add other information, like the size
+    // of the string.
+    static char const* value() { return "unknown"; }
+};
+
+#define TO_STRING(type) \
+  template<> struct to_string<type> { \
+      static char const* value() { return #type; } \
+  }; \
+
+class FloatMatrix;
+class InrImage;
+
+TO_STRING(float);
+TO_STRING(double);
+TO_STRING(long);
+TO_STRING(int);
+TO_STRING(unsigned char);
+TO_STRING(InrImage);
+TO_STRING(std::string);
+TO_STRING(FloatMatrix);
+// TODO: the rest of convertions
 
 /*
 template<class T> 
@@ -126,7 +150,7 @@ public:
     * Virtual Method that creates a new smart pointer to a basic variable coming from the same type
     * generic copy of variable, can be specialized per variable type
     */
-  BasicVariable::ptr NewCopy()
+  BasicVariable::ptr NewCopy() const
   {
     // don't copy a file, keep a reference ...
     CLASS_MESSAGE(boost::format("No default copy of variable contents, need to be specialized for this type of variable ... for variable %1% ")
@@ -144,7 +168,7 @@ public:
     * Virtual Method that creates a new smart pointer to a basic variable coming from the same type
     * with a reference to the same value
     */
-  BasicVariable::ptr NewReference()
+  BasicVariable::ptr NewReference() const
   {
     std::string resname = _name+"_ref";
 		ptr res(new Variable<T>(resname,_pointer));
@@ -240,18 +264,24 @@ public:
   std::ostream& PrintType <>(std::ostream& o, const Variable<T>& v);
 */
 
+  /**
+   * Try to cast the variable to the type given as a string in parameter.
+   * @param type_string : type as a string
+   * @return smart pointer to a variable of the new type if success, empty smart pointer otherwise
+   */
+  virtual BasicVariable::ptr TryCast(const std::string& type_string) const;
+
   //
   void display() const;
 
   virtual double GetValueAsDouble() const;
-/*
-  virtual double GetValueAsDouble() const
-  {
-      CLASS_ERROR("Variable type is not numeric");
-      return 0.0;
-  }
-*/
   
+  /*
+   * 
+   * @return A string containing the type of the variable.
+   */
+//  virtual std::string GetTypeAsString() const;
+
   /**
    * 
    * @return A string containing the value of the variable.
@@ -493,9 +523,12 @@ class GLTransfMatrix;
 class VarArray;
 */
 
+
 #include "Variable_float.h"
 #include "Variable_double.h" /// New (added: 24/05/2010)
 #include "Variable_long.h"   /// New (added: 27/05/2010)
+#include "Variable_int.h"
+#include "Variable_uchar.h"
 #include "Variable_InrImage.h"
 #include "Variable_string.h"
 #include "Variable_FloatMatrix.h"

@@ -96,8 +96,8 @@ void ImageDraw<T>::Apply(int width_dir, int height_dir, int width, int height )
   unit_size_x = width/(pw*this->voxel_size[wo-1]);
   unit_size_y = height/(ph*this->voxel_size[ho-1]);
 
-#define min(a,b) ((a)<(b)?(a):(b))
-  unit_size = min(unit_size_x,unit_size_y);
+#define macro_min(a,b) ((a)<(b)?(a):(b))
+  unit_size = macro_min(unit_size_x,unit_size_y);
   printf("unit size %2.2f \n",unit_size);
 
   size_x = this->voxel_size[wo-1]*unit_size;

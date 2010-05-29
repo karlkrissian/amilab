@@ -50,6 +50,14 @@ void Variable<T>::Delete()
   _type = type_void;
 }
 
+//---------------------------------------------------
+template<class T>
+BasicVariable::ptr Variable<T>::TryCast(const std::string& type_string) const
+{
+  // make default conversion to double??
+  CLASS_ERROR(boost::format("Could not convert variable %1% to type %2%") % _name % type_string);
+  return BasicVariable::ptr();
+}
 
 
 //---------------------------------------------------

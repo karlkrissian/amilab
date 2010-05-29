@@ -120,7 +120,7 @@ namespace yyip {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 296 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 316 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
 
   IdentifierInfo*         ident;
   char*                   astring;
@@ -132,13 +132,12 @@ namespace yyip {
   ParamList*              paramlist; // here smart pointer
                             // not allowed in union ...
   ParamListDecl*          paramlistdecl;
-  ImageExtent<float>*     imageextent;
   std::list<std::string>* string_list;
 
 
 
 /* Line 35 of lalr1.cc  */
-#line 142 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
+#line 141 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -615,7 +614,9 @@ namespace yyip {
      T_import_wii = 719,
      T_import_filters = 720,
      T_amiOFCorr2D = 721,
-     T_amiOFVar2D = 722
+     T_amiOFVar2D = 722,
+     prefix = 723,
+     postfix = 724
    };
 
     };
@@ -792,7 +793,7 @@ namespace yyip {
 } // yyip
 
 /* Line 35 of lalr1.cc  */
-#line 796 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
+#line 797 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
 
 
 

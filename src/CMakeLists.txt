@@ -486,6 +486,7 @@ SET(amilab_ownlibs
   WrapCommon
   WrapWxWidgets
   WrapIO
+  WrapImage
   AMILab
   AMImage
   Contours

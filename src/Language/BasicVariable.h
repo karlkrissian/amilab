@@ -65,12 +65,12 @@ public:
   /**
     * Virtual Method that creates a new smart pointer to a basic variable with the same type
     */
-  virtual BasicVariable::ptr NewCopy() = 0;
+  virtual BasicVariable::ptr NewCopy() const = 0;
 
   /**
     * Virtual Method that creates a new smart pointer to a basic variable with the same type
     */
-  virtual BasicVariable::ptr NewReference() = 0;
+  virtual BasicVariable::ptr NewReference() const = 0;
 
   /**
    * Return the number of references (value of use_count()) of the smart pointer to the variable value
@@ -113,6 +113,13 @@ public:
 
 
   /**
+   * Try to cast the variable to the type given as a string in parameter.
+   * @param type_string : type as a string
+   * @return smart pointer to a variable of the new type if success, empty smart pointer otherwise
+   */
+  virtual BasicVariable::ptr TryCast (const std::string& type_string) const = 0;
+
+  /**
    * Rename variable.
    * @param newname 
    */
@@ -153,6 +160,8 @@ public:
   }
 
   virtual double GetValueAsDouble() const = 0;
+
+//  virtual std::string GetTypeAsString() const = 0;
 
   /**
    * Virtual method to return the value of a variable.

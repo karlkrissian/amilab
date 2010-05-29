@@ -69,7 +69,7 @@ extern yyip::Driver GB_driver;
 //------------------------------------------------------
 
 /// Copy contents to new variable
-template<> BasicVariable::ptr Variable<FloatMatrix>::NewCopy()
+template<> BasicVariable::ptr Variable<FloatMatrix>::NewCopy() const
 {
   FloatMatrix::ptr newval( new FloatMatrix( *Pointer()));
   Variable<FloatMatrix>::ptr newvar(new Variable<FloatMatrix>(newval));

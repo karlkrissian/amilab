@@ -19,7 +19,7 @@
 //------------------------------------------------------
 
 /// Copy contents to new variable
-template<> BasicVariable::ptr Variable<string>::NewCopy()
+template<> BasicVariable::ptr Variable<string>::NewCopy() const
 {
   string_ptr newval( new string(Value()));
   Variable<string>::ptr newvar(new Variable<string>(newval));

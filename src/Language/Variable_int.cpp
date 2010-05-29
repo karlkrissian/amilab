@@ -13,6 +13,7 @@
 
 #include "inrimage.hpp"
 
+#include <boost/numeric/conversion/cast.hpp>  
 
 
 #define EXPR_OP_IMAGE(expr,operator,im)      \
@@ -43,18 +44,15 @@
     return Variable<InrImage>::ptr( new Variable<InrImage>(res)); \
   }
 
-#include <boost/numeric/conversion/cast.hpp>  
-
-
 //------------------------------------------------------
-//------- Variable<double>
+//------- Variable<int>
 //------------------------------------------------------
 
 /// Copy contents to new variable
-template<> BasicVariable::ptr Variable<double>::NewCopy() const
+template<> BasicVariable::ptr Variable<int>::NewCopy() const
 {
-  double_ptr newval( new double(Value()));
-  Variable<double>::ptr newvar(new Variable<double>(newval));
+  int_ptr newval( new int(Value()));
+  Variable<int>::ptr newvar(new Variable<int>(newval));
   return newvar;
 }
 
@@ -62,42 +60,40 @@ template<> BasicVariable::ptr Variable<double>::NewCopy() const
 // Arithmetic operators
 
 /// +a
-template<> BasicVariable::ptr Variable<double>::operator +()
-{  RETURN_VARPTR(double,Value());}
+template<> BasicVariable::ptr Variable<int>::operator +()
+{  RETURN_VARPTR(int,Value());}
 
 /// prefix ++ operator ++a
-template<> BasicVariable::ptr Variable<double>::operator ++()
+template<> BasicVariable::ptr Variable<int>::operator ++()
 {
-  std::cout << "**" << endl;
-  RETURN_VARPTR(double,++RefValue());
+  RETURN_VARPTR(int,++RefValue());
 }
 
 /// postfix ++ operator a++
-template<> BasicVariable::ptr Variable<double>::operator ++(int)
+template<> BasicVariable::ptr Variable<int>::operator ++(int)
 {
-  std::cout << "**" << endl;
-  RETURN_VARPTR(double,RefValue()++);
+  RETURN_VARPTR(int,RefValue()++);
 }
 
 /// -a
-template<> BasicVariable::ptr Variable<double>::operator -()
-{   RETURN_VARPTR(double,-Value());}
+template<> BasicVariable::ptr Variable<int>::operator -()
+{   RETURN_VARPTR(int,-Value());}
 
 /// prefix -- operator --a
-template<> BasicVariable::ptr Variable<double>::operator --()
-{  RETURN_VARPTR(double,--RefValue()); }
+template<> BasicVariable::ptr Variable<int>::operator --()
+{  RETURN_VARPTR(int,--RefValue()); }
 
 /// postfix -- operator a--
-template<> BasicVariable::ptr Variable<double>::operator --(int)
-{  RETURN_VARPTR(double,RefValue()--);  }
+template<> BasicVariable::ptr Variable<int>::operator --(int)
+{  RETURN_VARPTR(int,RefValue()--);  }
 
 
 
 /// a+b
-template<> BasicVariable::ptr Variable<double>::operator +(const BasicVariable::ptr& b)
+template<> BasicVariable::ptr Variable<int>::operator +(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
-    RETURN_VARPTR(double,Value()+b->GetValueAsDouble());
+    RETURN_VARPTR(int,Value()+b->GetValueAsDouble());
   }
   else
   if (b->Type()==type_image) {
@@ -110,7 +106,7 @@ template<> BasicVariable::ptr Variable<double>::operator +(const BasicVariable::
 }
 
 /// a+=b
-template<> BasicVariable::ptr Variable<double>::operator +=(const BasicVariable::ptr& b)
+template<> BasicVariable::ptr Variable<int>::operator +=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RefValue() += b->GetValueAsDouble();
@@ -120,10 +116,10 @@ template<> BasicVariable::ptr Variable<double>::operator +=(const BasicVariable:
 }
 
 /// a-b
-template<> BasicVariable::ptr Variable<double>::operator -(const BasicVariable::ptr& b)
+template<> BasicVariable::ptr Variable<int>::operator -(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
-    RETURN_VARPTR(double,Value()-b->GetValueAsDouble());
+    RETURN_VARPTR(int,Value()-b->GetValueAsDouble());
   }
   else
  if (b->Type()==type_image) {
@@ -136,7 +132,7 @@ template<> BasicVariable::ptr Variable<double>::operator -(const BasicVariable::
 }
 
 /// a-=b
-template<> BasicVariable::ptr Variable<double>::operator -=(const BasicVariable::ptr& b)
+template<> BasicVariable::ptr Variable<int>::operator -=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RefValue() -= b->GetValueAsDouble();
@@ -146,10 +142,10 @@ template<> BasicVariable::ptr Variable<double>::operator -=(const BasicVariable:
 }
 
 /// a*b
-template<> BasicVariable::ptr Variable<double>::operator *(const BasicVariable::ptr& b)
+template<> BasicVariable::ptr Variable<int>::operator *(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
-    RETURN_VARPTR(double,Value()*b->GetValueAsDouble());
+    RETURN_VARPTR(int,Value()*b->GetValueAsDouble());
   } 
   else
   if (b->Type()==type_image) {
@@ -162,7 +158,7 @@ template<> BasicVariable::ptr Variable<double>::operator *(const BasicVariable::
 }
 
 /// a*=b
-template<> BasicVariable::ptr Variable<double>::operator *=(const BasicVariable::ptr& b)
+template<> BasicVariable::ptr Variable<int>::operator *=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RefValue() *= b->GetValueAsDouble();
@@ -172,10 +168,10 @@ template<> BasicVariable::ptr Variable<double>::operator *=(const BasicVariable:
 }
 
 /// a/b
-template<> BasicVariable::ptr Variable<double>::operator /(const BasicVariable::ptr& b)
+template<> BasicVariable::ptr Variable<int>::operator /(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
-    RETURN_VARPTR(double,Value()/b->GetValueAsDouble());
+    RETURN_VARPTR(int,Value()/b->GetValueAsDouble());
   }
   else
   if (b->Type()==type_image) {
@@ -188,7 +184,7 @@ template<> BasicVariable::ptr Variable<double>::operator /(const BasicVariable::
 }
 
 /// a/=b
-template<> BasicVariable::ptr Variable<double>::operator /=(const BasicVariable::ptr& b)
+template<> BasicVariable::ptr Variable<int>::operator /=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RefValue() /= b->GetValueAsDouble();
@@ -198,17 +194,17 @@ template<> BasicVariable::ptr Variable<double>::operator /=(const BasicVariable:
 }
 
 /// a%b
-template<> BasicVariable::ptr Variable<double>::operator %(const BasicVariable::ptr& b)
+template<> BasicVariable::ptr Variable<int>::operator %(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
-    RETURN_VARPTR(double, ((int) round(Value())) % ((int) round(b->GetValueAsDouble())));
+    RETURN_VARPTR(int, ((int) round(Value())) % ((int) round(b->GetValueAsDouble())));
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
 
 /// a%=b
-template<> BasicVariable::ptr Variable<double>::operator %=(const BasicVariable::ptr& b)
+template<> BasicVariable::ptr Variable<int>::operator %=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RefValue() =  ((int) round(Value())) % ((int) round(b->GetValueAsDouble()));
@@ -220,50 +216,50 @@ template<> BasicVariable::ptr Variable<double>::operator %=(const BasicVariable:
 //  Comparison Operators
 
 /// a<b
-template<> BasicVariable::ptr Variable<double>::operator <(const BasicVariable::ptr& b)
+template<> BasicVariable::ptr Variable<int>::operator <(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
-    RETURN_VARPTR(double,Value()<b->GetValueAsDouble());
+    RETURN_VARPTR(int,Value()<b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
 
 /// a<=b
-template<> BasicVariable::ptr Variable<double>::operator <=(const BasicVariable::ptr& b)
+template<> BasicVariable::ptr Variable<int>::operator <=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
-    RETURN_VARPTR(double,Value()<=b->GetValueAsDouble());
+    RETURN_VARPTR(int,Value()<=b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
 
 /// a>b
-template<> BasicVariable::ptr Variable<double>::operator >(const BasicVariable::ptr& b)
+template<> BasicVariable::ptr Variable<int>::operator >(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
-    RETURN_VARPTR(double,Value()>b->GetValueAsDouble());
+    RETURN_VARPTR(int,Value()>b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
 
 /// a>=b
-template<> BasicVariable::ptr Variable<double>::operator >=(const BasicVariable::ptr& b)
+template<> BasicVariable::ptr Variable<int>::operator >=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
-    RETURN_VARPTR(double,Value()>=b->GetValueAsDouble());
+    RETURN_VARPTR(int,Value()>=b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
 
 /// a!=b
-template<> BasicVariable::ptr Variable<double>::operator !=(const BasicVariable::ptr& b)
+template<> BasicVariable::ptr Variable<int>::operator !=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
-    RETURN_VARPTR(double,Value()!=b->GetValueAsDouble());
+    RETURN_VARPTR(int,Value()!=b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
@@ -271,11 +267,11 @@ template<> BasicVariable::ptr Variable<double>::operator !=(const BasicVariable:
 
 
 /// a==b
-template<> BasicVariable::ptr Variable<double>::operator ==(const BasicVariable::ptr& b)
+template<> BasicVariable::ptr Variable<int>::operator ==(const BasicVariable::ptr& b)
 { 
   //std::cout << __func__ << std::endl;
   if (b->IsNumeric()) {
-    RETURN_VARPTR(double,Value()==b->GetValueAsDouble());
+    RETURN_VARPTR(int,Value()==b->GetValueAsDouble());
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
@@ -283,66 +279,77 @@ template<> BasicVariable::ptr Variable<double>::operator ==(const BasicVariable:
 
 // Logical operators
 
-template<> BasicVariable::ptr Variable<double>::operator !() 
+template<> BasicVariable::ptr Variable<int>::operator !() 
 {
-  RETURN_VARPTR(double,!(Value()>0.5));
+  RETURN_VARPTR(int,!(Value()>0.5));
 }
 
-template<> BasicVariable::ptr Variable<double>::operator &&(const BasicVariable::ptr& b) 
+template<> BasicVariable::ptr Variable<int>::operator &&(const BasicVariable::ptr& b) 
 {
   if (b->IsNumeric()) {
-    RETURN_VARPTR(double,Value()&& (bool) (b->GetValueAsDouble()>0.5));
+    RETURN_VARPTR(int,(Value()>0.5)&& (bool) (b->GetValueAsDouble()>0.5));
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
 
-template<> BasicVariable::ptr Variable<double>::operator ||(const BasicVariable::ptr& b) 
+template<> BasicVariable::ptr Variable<int>::operator ||(const BasicVariable::ptr& b) 
 {
   if (b->IsNumeric()) {
-    RETURN_VARPTR(double,Value() || (bool) (b->GetValueAsDouble()>0.5));
+    RETURN_VARPTR(int,(Value()>0.5) || (bool) (b->GetValueAsDouble()>0.5));
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
 
 // Mathematical functions
+// TODO: improve type conversions here ...
 #define VAR_IMPL_FUNC(type,fname,func) \
 template<> BasicVariable::ptr Variable<type>::m_##fname() \
 { \
-    RETURN_VARPTR(double, func(Value())); \
+    RETURN_VARPTR(int, (int) func((double)Value())); \
 }
 
-VAR_IMPL_FUNC(double,  sin,  sin)
-VAR_IMPL_FUNC(double,  cos,  cos)
-VAR_IMPL_FUNC(double,  tan,  tan)
-VAR_IMPL_FUNC(double,  asin, asin)
-VAR_IMPL_FUNC(double,  acos, acos)
-VAR_IMPL_FUNC(double,  atan, atan)
-VAR_IMPL_FUNC(double,  fabs, fabs)
-VAR_IMPL_FUNC(double,  round,round)
-VAR_IMPL_FUNC(double,  floor,floor)
-VAR_IMPL_FUNC(double,  exp,  exp)
-VAR_IMPL_FUNC(double,  log,  1.0/log(10.0)*log)
-VAR_IMPL_FUNC(double,  ln,   log)
-VAR_IMPL_FUNC(double,  norm, fabs)
-VAR_IMPL_FUNC(double,  sqrt, sqrt)
+/*
+VAR_IMPL_FUNC(int,  sin,  sin)
+VAR_IMPL_FUNC(int,  cos,  cos)
+VAR_IMPL_FUNC(int,  tan,  tan)
+VAR_IMPL_FUNC(int,  asin, asin)
+VAR_IMPL_FUNC(int,  acos, acos)
+VAR_IMPL_FUNC(int,  atan, atan)
+*/
+VAR_IMPL_FUNC(int,  fabs, fabs)
+/*
+VAR_IMPL_FUNC(int,  round,round)
+VAR_IMPL_FUNC(int,  floor,floor)
+VAR_IMPL_FUNC(int,  exp,  exp)
+VAR_IMPL_FUNC(int,  log,  1.0/log(10.0)*log)
+VAR_IMPL_FUNC(int,  ln,   log)
+*/
+VAR_IMPL_FUNC(int,  norm, fabs)
+VAR_IMPL_FUNC(int,  sqrt, sqrt)
 
 
 //---------------------------------------------------
 template<>
-BasicVariable::ptr Variable<double>::TryCast(
+BasicVariable::ptr Variable<int>::TryCast(
     const std::string& type_string) const
 {
+  if (type_string==to_string<int>::value()) 
+    return NewCopy();
   try
   {
+    // cast to double
+    if (type_string==to_string<double>::value()) {
+      RETURN_VARPTR(double, boost::numeric_cast<double>(Value()));
+    } else 
     // cast to float
     if (type_string==to_string<float>::value()) {
       RETURN_VARPTR(float, boost::numeric_cast<float>(Value()));
     } else 
-    // cast to int
-    if (type_string==to_string<int>::value()) {
-      RETURN_VARPTR(int, boost::numeric_cast<int>(Value()));
+    // cast to long
+    if (type_string==to_string<long>::value()) {
+      RETURN_VARPTR(long, boost::numeric_cast<long>(Value()));
     } else 
     {
       // make default conversion to double??
@@ -355,28 +362,46 @@ BasicVariable::ptr Variable<double>::TryCast(
   }
 }
 
-//
-template<> BasicVariable::ptr Variable<double>::BasicCast(const int& type)
-{
-  double res = Value();
 
-  switch((WORDTYPE)type) {
-    case WT_UNSIGNED_CHAR:  res=(unsigned char) res; break;
-    case WT_SIGNED_SHORT:   res=(short) res;  break;
-    case WT_UNSIGNED_SHORT: res=(unsigned short) res;  break;
-    case WT_SIGNED_INT:     res=(int) res;  break;
-    case WT_UNSIGNED_INT:   res=(unsigned int) res;  break;
-    case WT_FLOAT:          { RETURN_VARPTR(float, (float) res); }
-    case WT_DOUBLE:         { RETURN_VARPTR(double, res); } /// New (added: 24/05/2010)
-    default:
-      std::cerr << boost::format("Conversion to type %1% not available")%((WORDTYPE)type) << std::endl;
+//---------------------------------------
+template<> BasicVariable::ptr Variable<int>::BasicCast(const int& type)
+{
+  try
+  {
+    switch((WORDTYPE)type) {
+      case WT_SIGNED_INT:  break; // int to int: nothing to do ...
+      case WT_SIGNED_LONG:
+      {
+          RETURN_VARPTR(long, boost::numeric_cast<long>(Value()));
+      }
+      case WT_FLOAT:
+      {
+          RETURN_VARPTR(float, boost::numeric_cast<float>(Value()));
+      }
+      case WT_DOUBLE: 
+      {
+          RETURN_VARPTR(double, boost::numeric_cast<double>(Value()));
+      }
+      case WT_UNSIGNED_CHAR:  //res=(unsigned char) res; break;
+      case WT_UNSIGNED_INT:  //res=(unsigned char) res; break;
+      case WT_SIGNED_SHORT:   //res=(short) res;  break;
+      case WT_UNSIGNED_SHORT: //res=(unsigned short) res;  break;
+      default:
+        CLASS_ERROR(boost::format("Conversion to type %1% not available")%((WORDTYPE)type));
+    }
+  } catch (std::bad_cast &e)
+  {
+    CLASS_ERROR(boost::format("%1%, for variable %2% from float to WORDTYPE %3%") % e.what() % _name % (WORDTYPE)type );
+    return BasicVariable::ptr();
   }
-  RETURN_VARPTR(double, res);
+
+  RETURN_VARPTR(int, Value());
+
 }
 
 //
 template<>
-BasicVariable::ptr Variable<double>::TernaryCondition(const BasicVariable::ptr& v1, const BasicVariable::ptr&v2)
+BasicVariable::ptr Variable<int>::TernaryCondition(const BasicVariable::ptr& v1, const BasicVariable::ptr&v2)
 {
 
   if (IsNumeric()) {
@@ -392,11 +417,19 @@ BasicVariable::ptr Variable<double>::TernaryCondition(const BasicVariable::ptr& 
 
 
 template<> 
-BasicVariable::ptr Variable<double>::operator =(const BasicVariable::ptr& b)
+BasicVariable::ptr Variable<int>::operator =(const BasicVariable::ptr& b)
 {
-  if (IsNumeric()) {
-    RefValue() = b->GetValueAsDouble();
-  } else
-    CLASS_ERROR("operation not defined");
+  // TODO: better conversion here !!!
+  try
+  {
+    if (IsNumeric()) {
+      RefValue() = boost::numeric_cast<int>(b->GetValueAsDouble());
+    } else
+      CLASS_ERROR("operation not defined");
+  }
+  catch (std::bad_cast &e)
+  {
+    CLASS_ERROR(boost::format("%1%, for variable %2% to 'int'") % e.what() % b->Name() );
+  }
   return NewReference();
 }

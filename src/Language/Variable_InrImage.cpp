@@ -144,7 +144,7 @@ extern yyip::Driver GB_driver;
 //------------------------------------------------------
 
 /// Copy contents to new variable
-template<> BasicVariable::ptr Variable<InrImage>::NewCopy()
+template<> BasicVariable::ptr Variable<InrImage>::NewCopy() const
 {
   InrImage::ptr newval( new InrImage( Pointer()->GetFormat(),
                                       Pointer()->GetVDim(),

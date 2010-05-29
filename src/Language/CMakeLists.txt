@@ -39,6 +39,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapAMIFluid
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapWII
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapInterface
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapImage
   ${AMILAB_SOURCE_DIR}/wxSamples/penguin
   ${AMILAB_SOURCE_DIR}/wxStcFrame
   ${AMILAB_SOURCE_DIR}/Algorithms/Basic
@@ -56,6 +57,8 @@ SET(Language_SRCS
     BasicVariable.cpp
     Variable.cpp
     Variable_long.cpp
+    Variable_int.cpp
+    Variable_uchar.cpp
     Variable_float.cpp
     Variable_double.cpp
     Variable_InrImage.cpp
@@ -88,6 +91,8 @@ SET(Language_HDRS
     BasicVariable.h
     Variable.hpp
     Variable_long.h
+    Variable_int.h
+    Variable_uchar.h
     Variable_float.h
     Variable_double.h
     Variable_InrImage.h
