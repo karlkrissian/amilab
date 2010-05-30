@@ -754,8 +754,8 @@ void CB_update_imagelist( void* imagelist_gui);
 %left GE_OP LE_OP T_GT T_LT
 %left T_SUB T_ADD
 %left T_MOD T_DIV T_MULT
-%left  prefix
-%right postfix
+%nonassoc prefix
+%nonassoc postfix
 
 %type <ident>          identifier
 %type <ident>          IDENTIFIER
@@ -2285,7 +2285,7 @@ command:
         {
           Vars.display();
         }
-        | variable T_POINT T_Comments T_OP_PAR expr_string T_CL_PAR
+        | T_Comments T_OP_PAR variable T_COMMA  expr_string T_CL_PAR
         {
         /**
           Parameters:
@@ -2691,6 +2691,7 @@ command:
       Si GB_debug AlorsFait fprintf(stderr,"6\n");
 
         }
+/* deprecated
         | VAR_FILE T_POINT PRINT expr_string
         {
           Variable<FILE>::ptr varfile(driver.var_stack.GetLastVar<FILE>());
@@ -2700,15 +2701,55 @@ command:
           fprintf(file.get(),"%s",text.get());
           fflush(file.get());
         }
-        | VAR_FILE T_POINT PRINTN expr_string
-        {
+*/
+      | VAR_FILE T_POINT PRINT expr_var
+      {
+          BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+          Variable<FILE>::ptr varfile(driver.var_stack.GetLastVar<FILE>());
+          FILE_ptr file (varfile->Pointer());
+
+          if (var.get()) {
+            fprintf(file.get(),var->GetValueAsString().c_str());
+            fflush(file.get());
+          }
+          else
+            driver.err_print("empty variable");
+
+      }
+      | VAR_FILE T_POINT PRINTN expr_var
+      {
+          BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+          Variable<FILE>::ptr varfile(driver.var_stack.GetLastVar<FILE>());
+          FILE_ptr file (varfile->Pointer());
+
+          if (var.get()) {
+            fprintf(file.get(),var->GetValueAsString().c_str());
+            fprintf(file.get(),"\n");
+            fflush(file.get());
+          }
+          else
+            driver.err_print("empty variable");
+
+      }
+/* deprecated
+      | VAR_FILE T_POINT PRINT expr
+      {
+          Variable<FILE>::ptr varfile(driver.var_stack.GetLastVar<FILE>());
+          FILE_ptr file (varfile->Pointer());
+
+          fprintf(file.get(),"%5.10f",$4);
+          fflush(file.get());
+      }
+      | VAR_FILE T_POINT PRINTN expr_string
+      {
           Variable<FILE>::ptr varfile(driver.var_stack.GetLastVar<FILE>());
           FILE_ptr file (varfile->Pointer());
           boost::shared_array<char> text( $4);
 
           fprintf(file.get(),"%s\n",text.get());
           fflush(file.get());
-        }
+      }
+*/
         | PRINT expr_var
         {
          /**
@@ -2781,14 +2822,6 @@ command:
         delete mat;
       }
 */
-      | VAR_FILE T_POINT PRINT expr
-      {
-          Variable<FILE>::ptr varfile(driver.var_stack.GetLastVar<FILE>());
-          FILE_ptr file (varfile->Pointer());
-
-          fprintf(file.get(),"%5.10f",$4);
-          fflush(file.get());
-        }
         | VAR_FILE T_POINT T_CLOSE
         {
           driver.var_stack.GetLastBasicVar();
@@ -5940,15 +5973,6 @@ begin_block: ;
 end_block: ;
 
 
-double_variable:
-    VAR_DOUBLE
-    {
-      /**
-      Description: adds a reference to the variable in the stack
-      **/
-      BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
-      driver.var_stack.AddVar(var->NewReference());
-    }
 
 float_variable:
     NUMBER
@@ -5979,14 +6003,6 @@ float_variable:
          3.14159265358979323846
       **/
       ADD_VARSTACK_FLOAT(3.14159265358979323846)
-    }
-    | VAR_FLOAT
-    {
-      /**
-      Description: adds a reference to the variable in the stack
-      **/
-      BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
-      driver.var_stack.AddVar(var->NewReference());
     }
 /*
     | VAR_INT
@@ -10105,13 +10121,17 @@ string_variable:
 
 
 primary_var:
+      VAR_AMI_OBJECT
+    |
       VAR_LONG
     |
       VAR_INT
     |
       VAR_UCHAR
     |
-      double_variable
+      VAR_DOUBLE
+    |
+      VAR_FLOAT
     |
       float_variable
     |
@@ -10185,10 +10205,10 @@ primary_var:
       |
       function_variable T_OP_PAR param_list T_CL_PAR 
       {
-      /**
-        Description: 
-          Call to a function, returning a variable
-      **/
+        /**
+          Description: 
+            Call to a function, returning a variable
+        **/
         //cout << "call to variable T_OP_PAR param_list T_CL_PAR end_instr" << endl;
         // 1. check the variable type
         GET_CHECK_VARSTACK(var)
@@ -10264,7 +10284,7 @@ primary_var:
       T_OP_PAR expr_var T_CL_PAR;
 
 postfix_var:
-  primary_var %prec postfix
+  primary_var 
   | T_NOT primary_var 
   {
     /**
@@ -10308,6 +10328,46 @@ postfix_var:
     driver.var_stack.AddVar(var->Transpose());
   }
   |
+  // moving var[image_extent] here to limit conflicts
+  postfix_var T_OP_BR  image_extent T_CL_BR
+  {
+    /**
+      Description: 
+        Rule to apply image[image_extent]
+    **/
+    GET_VARSTACK_OBJECT(ImageExtent, ImageExtent<float>, extent)
+    GET_VARSTACK_VALUE(InrImage,im);
+
+    if (!im.get()) {
+      driver.err_print("var[image_extent], input variable is not an image.");
+      YYABORT;
+    }
+
+    //extent->print();
+    extent->SetRelative(im.get());
+
+    //extent->print();
+    //cout << "xmax = " << (int)  extent->Xmax() << endl;
+    //cout << "xmax = " << (int)  round((double)extent->Xmax()) << endl;
+    InrImage::ptr res ( Func_SubImage( im.get(),
+                (int)  round((double)extent->Xmin()),
+                (int)  round((double)extent->Ymin()),
+                (int)  round((double)extent->Zmin()),
+                (int)  round((double)extent->Xmax()),
+                (int)  round((double)extent->Ymax()),
+                (int)  round((double)extent->Zmax())
+                ));
+    if (!res.get()) {
+      driver.err_print("SubImage() Error ... ");
+      YYABORT;
+    }
+    else {
+      Variable<InrImage>::ptr new_var(new Variable<InrImage>(res));
+      driver.var_stack.AddVar(new_var);
+    }
+
+  }
+  |
   postfix_var T_OP_BR  primary_var T_CL_BR
   {
     /**
@@ -10320,7 +10380,7 @@ postfix_var:
   ;
 
 prefix_var:
-  postfix_var %prec prefix
+  postfix_var 
   | T_SUB  postfix_var %prec prefix
   {
     //cout << "T_SUB  cast_var  " << endl;
@@ -10342,72 +10402,72 @@ prefix_var:
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(--(*var));
   }
-  | SIN    postfix_var %prec prefix
+  | SIN    postfix_var 
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_sin());
   }
-  | COS    postfix_var %prec prefix
+  | COS    postfix_var 
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_cos());
   }
-  | SQRT   postfix_var %prec prefix
+  | SQRT   postfix_var 
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_sqrt());
   }
-  | ABS    postfix_var %prec prefix
+  | ABS    postfix_var 
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_fabs());
   }
-  | ROUND  postfix_var %prec prefix
+  | ROUND  postfix_var 
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_round());
   }
-  | FLOOR  postfix_var %prec prefix
+  | FLOOR  postfix_var 
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_floor());
   }
-  | TAN    postfix_var %prec prefix
+  | TAN    postfix_var 
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_tan());
   }
-  | ASIN   postfix_var %prec prefix
+  | ASIN   postfix_var 
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_asin());
   }
-  | ACOS   postfix_var %prec prefix
+  | ACOS   postfix_var 
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_acos());
   }
-  | ATAN   postfix_var %prec prefix
+  | ATAN   postfix_var 
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_atan());
   }
-  | EXP    postfix_var %prec prefix
+  | EXP    postfix_var 
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_exp());
   }
-  | LOG    postfix_var %prec prefix
+  | LOG    postfix_var 
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_log());
   }
-  | LN     postfix_var %prec prefix
+  | LN     postfix_var 
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_ln());
   }
-  | NORM   postfix_var %prec prefix
+  | NORM   postfix_var 
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_norm());
@@ -11796,7 +11856,6 @@ variable_without_assign:
         | VAR_SURFDRAW
         | VAR_FILE
         | VAR_AMI_CLASS
-        | VAR_AMI_OBJECT
         | VAR_ARRAY_IMAGE
         ;
 
@@ -11809,6 +11868,8 @@ unprocessed_variable:
   Variable included in variable expression
 */
 processed_variable:
+         VAR_AMI_OBJECT
+        |
         VAR_INT 
         |
          VAR_UCHAR

@@ -345,7 +345,7 @@ BasicVariable::ptr Variable<unsigned char>::TryCast(
     } else 
     // cast to float
     if (type_string==to_string<float>::value()) {
-      RETURN_VARPTR(unsigned char, boost::numeric_cast<float>(Value()));
+      RETURN_VARPTR(float, boost::numeric_cast<float>(Value()));
     } else 
     // cast to long
     if (type_string==to_string<long>::value()) {

@@ -64,6 +64,7 @@ SET(Language_SRCS
     Variable_InrImage.cpp
     Variable_string.cpp
     Variable_FloatMatrix.cpp
+    Variable_AMIObject.cpp
     Variables.cpp
     paramlist.cpp
     ImageStack.cpp
@@ -98,6 +99,7 @@ SET(Language_HDRS
     Variable_InrImage.h
     Variable_string.h
     Variable_FloatMatrix.h
+    Variable_AMIObject.h
     Variables.hpp
     VarArray.h
 )

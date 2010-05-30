@@ -351,6 +351,10 @@ BasicVariable::ptr Variable<int>::TryCast(
     if (type_string==to_string<long>::value()) {
       RETURN_VARPTR(long, boost::numeric_cast<long>(Value()));
     } else 
+    // cast to unsigned char
+    if (type_string==to_string<unsigned char>::value()) {
+      RETURN_VARPTR(unsigned char, boost::numeric_cast<unsigned char>(Value()));
+    } else 
     {
       // make default conversion to double??
       CLASS_ERROR(boost::format("No convertion available for variable %1% from double to %2%") % _name % type_string);

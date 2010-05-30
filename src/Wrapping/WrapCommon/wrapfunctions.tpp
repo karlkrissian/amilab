@@ -28,6 +28,12 @@ bool get_var_param( boost::shared_ptr<Variable<T> >& var,
                     ParamList*p, int& num, bool required = false)
 {
   if (!p) return false;
+  if (num>=p->GetNumParam()) {
+    if (required) {
+      FILE_ERROR( boost::format("Wrong parameter number for parameter  %1%") % num);
+    }
+    return false;
+  }
   // Getting the Variable and checking its type
   var = boost::dynamic_pointer_cast<Variable<T> >(p->GetParam(num++));
   if (var.get()) {

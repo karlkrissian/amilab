@@ -532,5 +532,6 @@ class VarArray;
 #include "Variable_InrImage.h"
 #include "Variable_string.h"
 #include "Variable_FloatMatrix.h"
+#include "Variable_AMIObject.h"
 
 #endif
