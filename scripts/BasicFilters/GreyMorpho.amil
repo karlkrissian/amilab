@@ -39,7 +39,7 @@ if (!exists(GreyMorphoClass)) {
       ::win.HidePanel
       delvars GetObjectName(::Close)
     }
-    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
     #----------------------------
     proc ::CloseAll() \
@@ -47,7 +47,7 @@ if (!exists(GreyMorphoClass)) {
       eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
       ::Close
     }
-    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
     
     #----------------------------
     proc ::LoadInput() \
@@ -163,7 +163,7 @@ if (!exists(GreyMorphoClass)) {
     {
       ::res.save ::result_filename
     }
-    ::Save.Comments("Save image to disk")
+    Comments( ::Save, "Save image to disk")
     
     
     #----------------------------

@@ -39,14 +39,14 @@ if (!exists(WaterShedClass)){
     ::win.HidePanel
     delvars GetObjectName(::Close)
   }
-  ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+  Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
   #----------------------------
   proc ::CloseAll() {
     eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
     ::Close
   }
-  ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+  Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
       
   #------------------------------------
   #------------------------
@@ -92,7 +92,7 @@ if (!exists(WaterShedClass)){
     print "saving file "+filename+"\n"
     ::grad.save filename
   }
-  ::SaveG.Comments("Saves the gradient image as ${::gradient_filename}_StandDevXX.ami.gz")
+  Comments( ::SaveG, "Saves the gradient image as ${::gradient_filename}_StandDevXX.ami.gz")
 
   #------------------------
   proc ::SaveR() {
@@ -107,7 +107,7 @@ if (!exists(WaterShedClass)){
     print "saving file "+filename+"\n"
     ::water.save filename
   }
-  ::SaveR.Comments("Saves the gradient image as ${::water_filename}_thresXX_lvlXX.ami.gz")
+  Comments( ::SaveR, "Saves the gradient image as ${::water_filename}_thresXX_lvlXX.ami.gz")
 
   #------------------------
   

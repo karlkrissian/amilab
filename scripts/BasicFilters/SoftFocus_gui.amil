@@ -25,7 +25,7 @@ if (!exists(SoftFocus)) {
       ::win.HidePanel
       delvars GetObjectName(::Close)
     }
-    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
     #--------------------------------
     proc ::load_input() {
@@ -58,7 +58,7 @@ if (!exists(SoftFocus)) {
       ::res = ::input*d2 + ::res*(-d2+1)
       ::Display()
     }
-    ::Filter.Comments("Apply Gaussian convolution on each channel of the image.")
+    Comments( ::Filter, "Apply Gaussian convolution on each channel of the image.")
     
     #-----------------------------------------
     proc ::Display() {
@@ -73,13 +73,13 @@ if (!exists(SoftFocus)) {
     proc ::AutoFilter() {
       if (::auto) { ::Filter; }
     }
-    ::AutoFilter.Comments("Apply the filter automatically if this option is enabled")
+    Comments( ::AutoFilter, "Apply the filter automatically if this option is enabled")
   
     #-----------------------------------------
     proc ::AutoDrag() {
       ::win.SetDragCallback(::sigma_id,::autodrag)
     }
-    ::AutoDrag.Comments("Enable/Disable real-time filtering while moving the scale")
+    Comments( ::AutoDrag, "Enable/Disable real-time filtering while moving the scale")
     
     #-----------------------------------------
     proc ::CursorPos() {
@@ -90,13 +90,13 @@ if (!exists(SoftFocus)) {
         ::win.Update(-1)
       }
     }
-    ::CursorPos.Comments("Set the position parameter from the current cursor position in the input_draw window")
+    Comments( ::CursorPos, "Set the position parameter from the current cursor position in the input_draw window")
     
     #-----------------------------------------
     proc ::Save() {
       ::res.save resultname
     }
-    ::Save.Comments("Save the resulting image")
+    Comments( ::Save, "Save the resulting image")
     
     #--------------------------------
     proc ::CreateGui() {

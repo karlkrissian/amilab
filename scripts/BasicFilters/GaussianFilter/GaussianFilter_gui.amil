@@ -30,14 +30,14 @@ if (!exists(GaussianFilterClass)) {
     ::win.HidePanel
     delvars GetObjectName(::Close)
   }
-  ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+  Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
   #----------------------------
   proc ::CloseAll() {
     eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
     ::Close
   }
-  ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+  Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
     
   #----------------------------
   
@@ -64,7 +64,7 @@ if (!exists(GaussianFilterClass)) {
      }
    ::Display()
   }
-  ::Filter.Comments("Apply Gaussian convolution on each channel of the image.")
+  Comments( ::Filter, "Apply Gaussian convolution on each channel of the image.")
   
   proc ::Display() {
     global
@@ -79,19 +79,19 @@ if (!exists(GaussianFilterClass)) {
   proc ::AutoFilter() {
     if (::auto) { ::Filter; }
   }
-  ::AutoFilter.Comments("Apply the filter automatically if this option is enabled")
+  Comments( ::AutoFilter, "Apply the filter automatically if this option is enabled")
 
   #-----------------------------------------
   proc ::AutoDrag() {
     ::win.SetDragCallback(::sigma_id,::autodrag)
   }
-  ::AutoDrag.Comments("Enable/Disable real-time filtering while moving the scale")
+  Comments( ::AutoDrag, "Enable/Disable real-time filtering while moving the scale")
   
   #-----------------------------------------
   proc ::Save() {
     ::res.save resultname
   }
-  ::Save.Comments("Save the resulting image")
+  Comments( ::Save, "Save the resulting image")
 
 
   //---------------------------------------------------
@@ -100,25 +100,25 @@ if (!exists(GaussianFilterClass)) {
     wx = import->WxFunctions();
     res = wx->LaunchDefaultBrowser(::wiki_help);
   }
-  ::LaunchWiki.Comments("Launch the corresponding wiki tutorial page on the default browser.")
+  Comments( ::LaunchWiki, "Launch the corresponding wiki tutorial page on the default browser.")
 
   //---------------------------------------------------
   proc ::HtmlHome() {
     ::html.LoadFile( ::html_filename)
   }
-  ::HtmlHome.Comments("Back to the initial page.")
+  Comments( ::HtmlHome, "Back to the initial page.")
 
   //---------------------------------------------------
   proc ::HtmlBack() {
     res = ::html.HistoryBack()
   }
-  ::HtmlBack.Comments("Back to the previous page.")
+  Comments( ::HtmlBack, "Back to the previous page.")
 
   //---------------------------------------------------
   proc ::HtmlForward() {
     res = ::html.HistoryForward()
   }
-  ::HtmlForward.Comments("Go to the forward page.")
+  Comments( ::HtmlForward, "Go to the forward page.")
 
 
   #-----------------------------------------

@@ -52,7 +52,7 @@ if (!exists(global::RGBscale)) {
       ::win.HidePanel
       delvars GetObjectName(::Close)
     }
-    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
     #----------------------------
     proc ::CloseAll() \
@@ -61,7 +61,7 @@ if (!exists(global::RGBscale)) {
       eval closeclass_cmd
       ::Close
     }
-    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
     
     #----------------------------
     proc ::TransformComp(NUM numcomp, NUM cmin, NUM cmax) \
@@ -124,7 +124,7 @@ if (!exists(global::RGBscale)) {
         _in_draw.PaintCallback(::DrawGrid);
       }
     }
-    ::SetAsCallback.Comments("Set the grid display function as a paint callback of the drawing area")
+    Comments( ::SetAsCallback, "Set the grid display function as a paint callback of the drawing area")
 
     #----------------------------
     proc ::CreateWindow() {
@@ -183,7 +183,7 @@ if (!exists(global::RGBscale)) {
     ::Init
   } 
   # Class RGBscaleClass
-  RGBscaleClass.Comments(comments)
+  Comments( RGBscaleClass, comments)
 } 
 # end if (!exists(Functions2DClass))
   

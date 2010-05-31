@@ -32,7 +32,7 @@ if (!exists(Raw2AmiClass)) {
       ::win.HidePanel
       delvars GetObjectName(::Close)
     }
-    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
     #----------------------------
     proc ::CloseAll() \
@@ -40,7 +40,7 @@ if (!exists(Raw2AmiClass)) {
       eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
       ::Close
     }
-    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
     
     #------------------------------------
     proc ::Read() {
@@ -54,7 +54,7 @@ if (!exists(Raw2AmiClass)) {
       ::im.setvoxelsize(::voxSizeX, ::voxSizeY, ::voxSizeZ)
       eval ::output_varname+"<<= ::im;"
     }
-    ::Read.Comments("Reads the input raw image and also creates the output image variable (based on ::output_varname).")
+    Comments( ::Read, "Reads the input raw image and also creates the output image variable (based on ::output_varname).")
 
 
     proc ::Save() {

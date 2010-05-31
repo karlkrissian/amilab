@@ -40,7 +40,7 @@ if (!exists(PG_Init)) {
     show PG_input
     PG_input_draw.PaintCallback(PG_Draw)
   }
-  PG_Display.Comments("Display the current image")
+  Comments( PG_Display, "Display the current image")
   
   #--------------------------------------------------
   proc PG_Update() {
@@ -71,7 +71,7 @@ if (!exists(PG_Init)) {
   proc PG_Save() {
     PG_res.save resultname
   }
-  PG_Save.Comments("Save the resulting image")
+  Comments( PG_Save, "Save the resulting image")
   
   proc PG_CreateGui() {
   

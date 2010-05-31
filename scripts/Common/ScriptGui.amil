@@ -24,7 +24,7 @@ if (!exists(ScriptGui)) \
       return = "http://www.ctm.ulpgc.es/amilab_dokuwiki"
       return += "/dokuwiki/doku.php?id=%1%" % wikipage
     }
-    ::AmilabWiki.Comments("Creates the name of the wiki page")
+    Comments( ::AmilabWiki, "Creates the name of the wiki page")
   
     # TODO: Create the link to the documentation
 
@@ -36,7 +36,7 @@ if (!exists(ScriptGui)) \
       ::win.HidePanel
       delvars GetObjectName(::Close)
     }
-    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
       
     #----------------------------
     # Closes the class and the instance 
@@ -46,7 +46,7 @@ if (!exists(ScriptGui)) \
       eval  "if (exists(%1%)) { del %1%; };"  % global_classname 
       ::Close
     }
-    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
       
     #----------------------------
     # Reloads the script
@@ -56,7 +56,7 @@ if (!exists(ScriptGui)) \
       ::CloseAll()
       eval cmd
     }
-    ::Reload.Comments("Reload script from file.")
+    Comments( ::Reload, "Reload script from file.")
       
     #------------------------------------
     proc ::EditScript() {
@@ -65,7 +65,7 @@ if (!exists(ScriptGui)) \
       ed.FileOpen( ::classfilename)
       ed.ShowWin()
     }
-    ::EditScript.Comments("Open AmilabEditor to edit the current script :)")
+    Comments( ::EditScript, "Open AmilabEditor to edit the current script :)")
 
     #------------------------------------
     # Adds a bitmap button after resizing the image to size x size
@@ -109,7 +109,7 @@ if (!exists(ScriptGui)) \
       wx1 = import->WxFunctions()
       res = wx1->LaunchDefaultBrowser(::wiki_help)
     }
-    ::LaunchWiki.Comments("Launch the corresponding wiki tutorial page on the default browser.")
+    Comments( ::LaunchWiki, "Launch the corresponding wiki tutorial page on the default browser.")
   
     #---------------------------------------------------
     # needs ::html and ::html_filename
@@ -117,19 +117,19 @@ if (!exists(ScriptGui)) \
     proc ::HtmlHome() {
       ::html.LoadFile( ::html_filename)
     }
-    ::HtmlHome.Comments("Back to the initial page.")
+    Comments( ::HtmlHome, "Back to the initial page.")
   
     #---------------------------------------------------
     proc ::HtmlBack() {
       res = ::html.HistoryBack()
     }
-    ::HtmlBack.Comments("Back to the previous page.")
+    Comments( ::HtmlBack, "Back to the previous page.")
   
     #---------------------------------------------------
     proc ::HtmlForward() {
       res = ::html.HistoryForward()
     }
-    ::HtmlForward.Comments("Go to the forward page.")
+    Comments( ::HtmlForward, "Go to the forward page.")
   
 
     #------------------------------------

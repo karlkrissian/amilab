@@ -119,7 +119,7 @@ if (!exists(AnisoNRADClass)) {
       ::load_input
       ::Display()
     }
-    ::ReloadInput.Comments("Reload input image.")
+    Comments( ::ReloadInput, "Reload input image.")
     
     #------------------------------------
     proc ::SetRoiImage( IMAGE _roi) \
@@ -139,7 +139,7 @@ if (!exists(AnisoNRADClass)) {
       }
       ::Display()
     }
-    ::GetRoi.Comments("Select the Region of Interest (ROI) for noise estimation.")
+    Comments( ::GetRoi, "Select the Region of Interest (ROI) for noise estimation.")
     
     #------------------------------------
     proc ::FilterFlux() \
@@ -241,7 +241,7 @@ if (!exists(AnisoNRADClass)) {
         }
       }
     }
-    ::Filter.Comments("Run the denoising algorithm, using the following criteria:       - if equation_type is 0 (scalar):          - if scalar_mode is 3 (MRI) runs AnisoRNAD on the image squared,          - otherwise, runs AnisoRNAD on the initial image      - otherwise (matrix equation):          - calls ::FilterFlux ")
+    Comments( ::Filter, "Run the denoising algorithm, using the following criteria:       - if equation_type is 0 (scalar):          - if scalar_mode is 3 (MRI) runs AnisoRNAD on the image squared,          - otherwise, runs AnisoRNAD on the initial image      - otherwise (matrix equation):          - calls ::FilterFlux ")
     
     #------------------------------------
     proc ::Display() {
@@ -268,7 +268,7 @@ if (!exists(AnisoNRADClass)) {
       }
       local_new
     }
-    ::Display.Comments("Display results")
+    Comments( ::Display, "Display results")
     
     proc ::CompareSurfaces(IMAGE i1, IMAGE i2) {
       
@@ -305,12 +305,12 @@ if (!exists(AnisoNRADClass)) {
     proc ::Save() {
       ::res.save ::result_filename
     }
-    ::Save.Comments("Save image to disk.")
+    Comments( ::Save, "Save image to disk.")
   
     proc ::SaveToImage() {
       eval ::result_imagename+" <<= ::res;"
     }
-    ::SaveToImage.Comments("Save to global image variable.")
+    Comments( ::SaveToImage, "Save to global image variable.")
     
     proc ::new_eq_type() {
       ::win.EnablePanel(::mat_boxid, ::equation_type==1)

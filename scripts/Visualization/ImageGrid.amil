@@ -34,7 +34,7 @@ if (!exists(global::ImageGridClass)) {
       ::win.HidePanel
       delvars GetObjectName(::Close)
     }
-    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
     #----------------------------
     proc ::CloseAll() \
@@ -43,7 +43,7 @@ if (!exists(global::ImageGridClass)) {
       eval closeclass_cmd
       ::Close
     }
-    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
     
     #----------------------------
     proc ::UpdateDisplay() \
@@ -62,7 +62,7 @@ if (!exists(global::ImageGridClass)) {
         _in_draw.PaintCallback(::DrawGrid);
       }
     }
-    ::SetAsCallback.Comments("Set the grid display function as a paint callback of the drawing area")
+    Comments( ::SetAsCallback, "Set the grid display function as a paint callback of the drawing area")
 
     #----------------------------
     proc ::DrawGrid() \
@@ -152,7 +152,7 @@ if (!exists(global::ImageGridClass)) {
     ::Init
   } 
   # Class ImageGridClass
-  ImageGridClass.Comments(comments)
+  Comments( ImageGridClass, comments)
 } 
 # end if (!exists(Functions2DClass))
   

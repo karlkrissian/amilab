@@ -48,7 +48,7 @@ if (!exists(test_corr2DClass)) {
       ::win.Hide
       delvars GetObjectName(::Close)
     }
-    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
     #----------------------------
     proc ::CloseAll() \
@@ -56,7 +56,7 @@ if (!exists(test_corr2DClass)) {
       ::Close
       if (exists(test_corr2DClass)) { del test_corr2DClass; }
     }
-    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
     
     #
     proc ::init_corr2D() \

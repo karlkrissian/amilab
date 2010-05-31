@@ -46,4 +46,4 @@ proc LSE( IMAGE im, NUM size, IMAGE res, NUM sigma_x) {
   //res = res/(size*(size+1)*(2*size+1)/3)
 }
 
-LSE.Comments(lse_comments)
+Comments( LSE, lse_comments)

@@ -60,7 +60,7 @@ if (!exists(Corr3DTest)) {
       ::win->_Hide
       delvars GetObjectName(::Close)
     }
-    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
     #----------------------------
     proc ::CloseAll() \
@@ -68,7 +68,7 @@ if (!exists(Corr3DTest)) {
       eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
       ::Close
     }
-    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
     
     #--------------------------------------------------
     proc ::amicorr3D(IMAGE _im1, IMAGE _im2, IMAGE _res) \

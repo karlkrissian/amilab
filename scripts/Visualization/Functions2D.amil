@@ -46,7 +46,7 @@ if (!exists(Functions2DClass)) {
           xmax = max(_pos1[0])
         }
       }
-      ::GetXLimits.Comments("Returns limits of the curve in X axis if the input is an image")
+      Comments( ::GetXLimits, "Returns limits of the curve in X axis if the input is an image")
 
       #--------------------------
       proc ::GetYLimits( NUM xmin, NUM xmax, NUM res, NUM ymin, NUM ymax) \
@@ -67,10 +67,10 @@ if (!exists(Functions2DClass)) {
           ymax = max(::input)
         }
       }
-      ::GetYLimits.Comments("Returns limits of the curve in Y axis ")
+      Comments( ::GetYLimits, "Returns limits of the curve in Y axis ")
 
     }
-    ::CurveParamClass.Comments("Parameters for drawing a curve")
+    Comments( ::CurveParamClass, "Parameters for drawing a curve")
 
     #----------------------------
     proc ::Init() \
@@ -101,7 +101,7 @@ if (!exists(Functions2DClass)) {
       ::win.HidePanel
       delvars GetObjectName(::Close)
     }
-    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
     #----------------------------
     proc ::CloseAll() \
@@ -110,7 +110,7 @@ if (!exists(Functions2DClass)) {
       eval closeclass_cmd
       ::Close
     }
-    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
     
     #----------------------------
     proc ::CheckLimits() \

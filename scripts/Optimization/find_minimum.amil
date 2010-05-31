@@ -29,14 +29,14 @@ if (!exists(MinSearchClass)) {
       ::win.Hide
       delvars GetObjectName(::Close)
     }
-    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
     #----------------------------
     proc ::CloseAll() {
       eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
       ::Close
     }
-    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
     
     #
     # Simple procedure to find the minimum of a function
@@ -77,7 +77,7 @@ if (!exists(MinSearchClass)) {
       ::win.update
     
     }
-    ::MinGrid.Comments("Simple procedure to find the minimum of a function by scanning a regular grid")
+    Comments( ::MinGrid, "Simple procedure to find the minimum of a function by scanning a regular grid")
 
 
     #
@@ -163,7 +163,7 @@ if (!exists(MinSearchClass)) {
       ::win.update
 
     }
-    ::MinDichotomy.Comments("Simple procedure to find the minimum of a function by dichotomy.")
+    Comments( ::MinDichotomy, "Simple procedure to find the minimum of a function by dichotomy.")
 
     proc ::CreateWindow() \
     {

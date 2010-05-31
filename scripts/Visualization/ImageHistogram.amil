@@ -42,7 +42,7 @@ if (!exists(global::ImageHistoClass)) {
       ::win.HidePanel
       delvars GetObjectName(::Close)
     }
-    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
     #----------------------------
     proc ::CloseAll() \
@@ -51,7 +51,7 @@ if (!exists(global::ImageHistoClass)) {
       eval closeclass_cmd
       ::Close
     }
-    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
     
     proc ::Update() {
       if (exists(::input)) {
@@ -108,7 +108,7 @@ if (!exists(global::ImageHistoClass)) {
     ::Init()
   } 
   # Class ImageHistoClass
-  ImageHistoClass.Comments(comments)
+  Comments( ImageHistoClass, comments)
 } 
 # end if (!exists(ImageHistoClass))
   

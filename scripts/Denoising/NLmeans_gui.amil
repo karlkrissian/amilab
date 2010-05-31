@@ -72,7 +72,7 @@ if (!exists(NLmeansClass)) {
       ::win.HidePanel
       delvars GetObjectName(::Close)
     }
-    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
     #----------------------------
     proc ::CloseAll() \
@@ -80,7 +80,7 @@ if (!exists(NLmeansClass)) {
       eval "if (exists(%1%)) { del %1%; };" % ::class_name
       ::Close
     }
-    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
     
     #----------------------------
     proc ::LoadInput() \
@@ -377,7 +377,7 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
       }
       EndTime
     }
-    ::FastFilter.Comments("This procedure will call the fast C code, and will run it idependently on each channel (scalar images have only 1 channel) of the image")
+    Comments( ::FastFilter, "This procedure will call the fast C code, and will run it idependently on each channel (scalar images have only 1 channel) of the image")
     # ::FastFilter()
     
     #----------------------------
@@ -428,7 +428,7 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
 
       eval "global::"+::result_image_name+"<<="+"::res;"
     }
-    ::Run.Comments("Run starting from previous result.")
+    Comments( ::Run, "Run starting from previous result.")
     # end ::Run()
 
     #----------------------------
@@ -437,7 +437,7 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
       ::Restart()
       ::Run()
     }
-    ::ReRun.Comments("Run starting from initial image.")
+    Comments( ::ReRun, "Run starting from initial image.")
 
     #----------------------------
     proc ::Display() \
@@ -506,21 +506,21 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
       ::res <<= ::input
       show ::res
     }
-    ::Restart.Comments("Reloads the input, sets the result equal to it and displays it.")
+    Comments( ::Restart, "Reloads the input, sets the result equal to it and displays it.")
     
     #----------------------------
     proc ::Save() \
     {
       ::res.save ::result_filename
     }
-    ::Save.Comments("Save image to disk as NLM_result.ami.gz")
+    Comments( ::Save, "Save image to disk as NLM_result.ami.gz")
     
     #----------------------------
     proc ::Stop() \
     {
       ::stop = 1
     }
-    ::Stop.Comments("Stop the current process")
+    Comments( ::Stop, "Stop the current process")
     
     #--------------------------------
     proc ::FilterModeEvent() \

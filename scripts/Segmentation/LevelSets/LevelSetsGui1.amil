@@ -69,7 +69,7 @@ if (!exists(LevelSetsClass)){
       ::velcoeff  = 0.0
 
       ::downsamplefactor = INT(1)
-      ::downsamplefactor.Comments("Down-sampling factor, unused for the moment")
+      Comments( ::downsamplefactor, "Down-sampling factor, unused for the moment")
 
       #::in_draw.SetIsoContour(0,::inls0,0)
       #::in_draw.DrawIsoContour(0,1)
@@ -156,7 +156,7 @@ if (!exists(LevelSetsClass)){
 
       show ::input
     }
-    ::load_input.Comments("Copies the input image in a local image member named 'input', and updates the min-max intensities")
+    Comments( ::load_input, "Copies the input image in a local image member named 'input', and updates the min-max intensities")
 
    proc ::set_input(IMAGE im) \
    {
@@ -174,7 +174,7 @@ if (!exists(LevelSetsClass)){
       ::dw->SetCurve(::h)
       ::dw->SetCurveProperties(0,"#F05050")
     }
-    ::UpdateHistogram.Comments("Updates the display of the Histogram.")
+    Comments( ::UpdateHistogram, "Updates the display of the Histogram.")
 
     #-----------------------------------------------
     proc ::UpdateExpansionCurve() \
@@ -198,7 +198,7 @@ if (!exists(LevelSetsClass)){
         InfoDialog "You need to load the input image first ..."
       }
     }
-    ::UpdateExpansionCurve.Comments("Updates the display of the expansion mapping curve.")
+    Comments( ::UpdateExpansionCurve, "Updates the display of the expansion mapping curve.")
 
     #-----------------------------------------------
     proc ::load_initial() {
@@ -222,7 +222,7 @@ if (!exists(LevelSetsClass)){
         ::input_draw.DrawIsoContour(1,1)
       }
     }
-    ::load_initial.Comments("Copies the initial levelset image in a local image member named 'inls', and draws the corresponding isocontour in the image viewer.")
+    Comments( ::load_initial, "Copies the initial levelset image in a local image member named 'inls', and draws the corresponding isocontour in the image viewer.")
 
     #-----------------------------------------------
     proc ::ref_initial() {
@@ -248,7 +248,7 @@ if (!exists(LevelSetsClass)){
         ::input_draw.DrawIsoContour(1,1)
       }
     }
-    ::ref_initial.Comments("Creates a reference to the initial levelset image in a local image member named 'inls', and draws the corresponding isocontour in the image viewer.")
+    Comments( ::ref_initial, "Creates a reference to the initial levelset image in a local image member named 'inls', and draws the corresponding isocontour in the image viewer.")
   
  #-----------------------------------------------
   # reads the expansion image
@@ -670,25 +670,25 @@ if (!exists(LevelSetsClass)){
     wx1 = import->WxFunctions()
     res = wx1->LaunchDefaultBrowser(::wiki_help)
   }
-  ::LaunchWiki.Comments("Launch the corresponding wiki tutorial page on the default browser.")
+  Comments( ::LaunchWiki, "Launch the corresponding wiki tutorial page on the default browser.")
 
   //---------------------------------------------------
   proc ::HtmlHome() {
     ::html.LoadFile( ::html_filename)
   }
-  ::HtmlHome.Comments("Back to the initial page.")
+  Comments( ::HtmlHome, "Back to the initial page.")
 
   //---------------------------------------------------
   proc ::HtmlBack() {
     res = ::html.HistoryBack()
   }
-  ::HtmlBack.Comments("Back to the previous page.")
+  Comments( ::HtmlBack, "Back to the previous page.")
 
   //---------------------------------------------------
   proc ::HtmlForward() {
     res = ::html.HistoryForward()
   }
-  ::HtmlForward.Comments("Go to the forward page.")
+  Comments( ::HtmlForward, "Go to the forward page.")
 
   //---------------------------------------------------
   proc ::InitialLevelSetEvent() {

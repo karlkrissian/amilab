@@ -20,7 +20,7 @@ if (!exists(AnisoGSClass)) {
     ::datacoeff=0.05
     ::niter=INT(5)
     ::use_zoom=UCHAR(0)
-    ::use_zoom.Comments("Allow to process only on the Region-Of-Interest defined by the current zoom in the input image display window")
+    Comments( ::use_zoom, "Allow to process only on the Region-Of-Interest defined by the current zoom in the input image display window")
     ::started=0
   
     ::CreateWindow()
@@ -31,14 +31,14 @@ if (!exists(AnisoGSClass)) {
     ::win.HidePanel
     delvars GetObjectName(::Close)
   }
-  ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+  Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
   #----------------------------
   proc ::CloseAll() {
     eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
     ::Close
   }
-  ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+  Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
     
   #----------------------------
   
