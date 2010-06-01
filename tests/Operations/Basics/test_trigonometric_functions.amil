@@ -12,41 +12,50 @@ NoMessageDialog(1)
 #
 # Operations:   sin, cos, tan, asin, acos, atan
 #
-# Note: The value of Pi is not in degrees. No used.
+# Note:
+#       DEGREES=RADIANS*180/Pi
+#       RADIANS=DEGREES*Pi/180
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 func "ctest/ctest_config.amil"
 
 OK = 1 # The test was successful
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-printn  "\n\t\t Trigonometric functions(sin, cos, tan): angle = 45 (Radians)"
-
-R=sin 45
-printn  "\t\t R=sin 45 --> R=%1% (sin 45 = 0.850903525)" % R
-if(R != 0.850903525) {
-  OK = 0
-  printn "\nERROR: Failed to calculate the sin 45 (%1% != 0.850903525)" % R
-}
-
-R=cos 45
-printn  "\t\t R=cos 45 --> R=%1% (cos 45 = 0.525321989)" % R
-if(R != 0.525321989) {
-  OK = 0
-  printn "\nERROR: Failed to calculate the cos 45 (%1% != 0.525321989)" % R
-}
-
-R=tan 45
-printn  "\t\t R=tan 45 --> R=%1% (tan 45 = 1.619775191)" % R
-if(R != 1.619775191) {
-  OK = 0
-  printn  "\nERROR: Failed to calculate the tan 45 (%1% !=1.619775191)" % R
-}
+epsilon = 0.000001
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+printn  "\n\t\t Trigonometric functions(sin, cos, tan): angle = Pi/4"
+ 
+R=sin (Pi/4)
+printn  "\t\t R=sin (Pi/4) --> R=%1% (sin Pi/4 = 0.707107)" % R
+R1=sqrt(2/4)
+P=abs(R-R1)
+if(P > epsilon) {
+  OK = 0
+  printn "\nERROR: Failed to calculate the sin Pi/4 (%1% != 0.707107)" % R
+}
 
-printn  "\n\t\t Trigonometric functions(asin, acos, atan): angle = 0 (Radians)"
+R=cos (Pi/4)
+printn  "\t\t R=cos (Pi/4) --> R=%1% (cos Pi/4 = 0.707107)" % R
+R1=sqrt(2/4)
+P=abs(R-R1)
+if(P > epsilon) {
+  OK = 0
+  printn "\nERROR: Failed to calculate the cos Pi/4 (%1% != 0.525321989)" % R
+}
+
+R=tan (Pi/4)
+printn  "\t\t R=tan Pi/4 --> R=%1% (tan Pi/4 = 1)" % R
+R1=sqrt(2/2)
+P=abs(R-R1)
+if(P > epsilon) {
+  OK = 0
+  printn  "\nERROR: Failed to calculate the tan Pi/4 (%1% !=1)" % R
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+printn  "\n\t\t Trigonometric functions(asin, acos, atan): angle = 0"
 
 R=asin 0
 printn  "\t\t R=asin 0 --> R=%1% (asin 0 = 0)" % R
