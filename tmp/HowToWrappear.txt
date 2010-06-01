@@ -1,0 +1,37 @@
+                                 HowTo Wrappear 
+                                ================
+                      Fecha: 1/06/2010   Revision: 0.1
+
+
+Pasos a seguir:
+
+1. Situarse en la carpeta Wrapping que se encuentra en el directorio src.
+
+$ cd src/Wrapping
+
+2. Crear el directorio que contendrá la implementación del Wrapping.
+
+$ mkdir Wrap<NAME>
+
+   donde <NAME> es el nombre de la nueva clase.
+
+3. Crear los ficheros necesarios para realizar la implementación y posterior
+   compilación de los mismos.
+
+$touch CMakeLists.txt
+$touch wrap_<NAME>.h
+$touch wrap_<NAME>.cpp
+
+   donde <NAME> es el nombre de la nueva clase.
+
+4. Localizar las reglas de la gramática que se van a Wrappear a través de la
+   nueva clase.
+
+5. Comenzar a implementar la nueva clase.
+
+Cosas a tener en cuenta:
+
+1. La clase se define utilizando la macro DEFINE_CLASS que a su vez define, de
+   forma pública, un método y una serie de campos. El método que se define es
+   para obtener el nombre de la clase que se esta definiendo.
+
