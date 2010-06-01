@@ -227,9 +227,9 @@ if (!exists(RunExperimentsClass)){
     {
       SetStatusText("Computing vesselness ...")
       # trunk max intensities to  ::maxvesselint
-      vesselness_input <<= ::CIFP->input_cropped* (::CIFP->input_cropped<::maxvesselint)+\
+      vesselness_input = ::CIFP->input_cropped* (::CIFP->input_cropped<::maxvesselint)+\
                         (::CIFP->input_cropped>=::maxvesselint)*::maxvesselint
-      mask <<= (UCHAR) ((::CIFP->input_cropped>::minvesselint)*\
+      mask = (UCHAR) ((::CIFP->input_cropped>::minvesselint)*\
                           (::CIFP->input_cropped<::maxvesselint)*255)
   
       ::itkVS->set_input(vesselness_input)
@@ -549,7 +549,7 @@ if (!exists(RunExperimentsClass)){
         if (exists(::itkSP->Close())) { ::itkSP->Close(); }
                 
         # set the parameters and run
-        ::input2 <<= ((FLOAT)::CIFP->input_cropped[::speed2])
+        ::input2 <<= ::CIFP->input_cropped[::speed2]
         #::SP->input_name = "::input2"
         #::SP->speed_name = "::speed2"
 
@@ -603,7 +603,7 @@ if (!exists(RunExperimentsClass)){
     {
       SetStatusText("Checking ECA length...")
       lE = ResampleLines(::pathCEs,::resample_dist)
-      lEp <<= lE.GetLine(0)
+      lEp = lE.GetLine(0)
 
       # cut the ECA at junction -+ a given distance
       zmax = ::Jz+::maxdistz_ECA
@@ -643,7 +643,7 @@ if (!exists(RunExperimentsClass)){
     {
       SetStatusText("Checking ICA length...")
       lI = ResampleLines(::pathCIs,::resample_dist)
-      lIp <<= lI.GetLine(0)
+      lIp = lI.GetLine(0)
 
       # check for remaining distance of ICA
       remaining_dist = ::maxdistz_ICA-::covered_distz_I
@@ -704,7 +704,7 @@ if (!exists(RunExperimentsClass)){
         if (exists(::itkSP->Close())) { ::itkSP->Close(); }
                 
         # set the parameters and run
-        ::input2 <<= ((FLOAT)::CIFP->input_cropped[::speed2])
+        ::input2 <<= ::CIFP->input_cropped[::speed2]
         #::SP->input_name = "::input2"
         #::SP->speed_name = "::speed2"
 
@@ -740,7 +740,7 @@ if (!exists(RunExperimentsClass)){
         ::pathCI_rems = SmoothLines(::itkSP->path)
 
         # update covered dist
-        lI_rem_p <<= ::pathCI_rems.GetLine(0)
+        lI_rem_p = ::pathCI_rems.GetLine(0)
         maxI_rem_z = max(lI_rem_p[2])
         if (maxI_rem_z>::Jz) { 
           ::covered_distz_I = maxI_rem_z-::Jz; 
@@ -967,7 +967,7 @@ if (!exists(RunExperimentsClass)){
           radii         <<= Image(FLOAT,::pathCC_rems_res.NbPoints,1,1)
           radii           = ::tube_size
           # reconstructed remaining centerline
-          rem_recons    <<= LineRecons(::pathCC_rems_res,::CIFP->input_cropped,radii)
+          rem_recons    = LineRecons(::pathCC_rems_res,::CIFP->input_cropped,radii)
           ::pathCI_lsinit = max(::pathCI_lsinit, rem_recons)
         }
         if (exists(::pathCI_rems)) {

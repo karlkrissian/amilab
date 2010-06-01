@@ -222,16 +222,16 @@ if (!exists(RunExperimentsClass)){
     
       if (!::ves_downsample) {
         # trunk max intensities to  ::maxvesselint
-        vesselness_input <<= ::CIFP->input_cropped* (::CIFP->input_cropped<::maxvesselint)+\
+        vesselness_input = ::CIFP->input_cropped* (::CIFP->input_cropped<::maxvesselint)+\
                           (::CIFP->input_cropped>=::maxvesselint)*::maxvesselint
-        mask <<= (UCHAR) ((::CIFP->input_cropped>::minvesselint)*\
+        mask = (UCHAR) ((::CIFP->input_cropped>::minvesselint)*\
                                      (::CIFP->input_cropped<::maxvesselint)*255)
       } else {
         # first downsample in X and Y
-        vesselness_input <<= Resize(::CIFP->input_cropped, \
+        vesselness_input = Resize(::CIFP->input_cropped, \
             ::CIFP->input_cropped.tx/2,::CIFP->input_cropped.ty/2,\
             ::CIFP->input_cropped.tz,1)
-        mask <<= (UCHAR) ( (vesselness_input>::minvesselint)*\
+        mask = (UCHAR) ( (vesselness_input>::minvesselint)*\
                                       (vesselness_input<::maxvesselint)*255)
     
         vesselness_input = \
@@ -591,7 +591,7 @@ if (!exists(RunExperimentsClass)){
         if (exists(::SP->Close())) { ::SP->Close(); }
 
         # set the parameters and run
-        ::input2 <<= ((FLOAT)::CIFP->input_cropped[::speed2])
+        ::input2 <<= ::CIFP->input_cropped[::speed2]
 
         # end mask contains the first voxels in Z axis
         ::endmask <<= ((FLOAT) Zpos(::speed2)<5)
@@ -638,7 +638,7 @@ if (!exists(RunExperimentsClass)){
     {
       SetStatusText("Checking ECA length")
       lE = ResampleLines(::pathCEs,::resample_dist)
-      lEp <<= lE.GetLine(0)
+      lEp = lE.GetLine(0)
 
       # cut the ECA at junction -+ a given distance
       zmax = ::Jz+::maxdistz_ECA
@@ -678,7 +678,7 @@ if (!exists(RunExperimentsClass)){
     {
       SetStatusText("Checking ICA length")
       lI = ResampleLines(::pathCIs,::resample_dist)
-      lIp <<= lI.GetLine(0)
+      lIp = lI.GetLine(0)
 
       # check for remaining distance of ICA
       remaining_dist = ::maxdistz_ICA-::covered_distz_I
@@ -739,7 +739,7 @@ if (!exists(RunExperimentsClass)){
         if (exists(::SP->Close())) { ::SP->Close(); }
         
         # set the parameters and run
-        ::input2 <<= ((FLOAT) ::CIFP->input_cropped[::speed2])
+        ::input2 <<= ::CIFP->input_cropped[::speed2]
 
         # end mask contains the last voxels in Z axis
         ::endmask <<= ((FLOAT) Zpos(::speed2))>\
