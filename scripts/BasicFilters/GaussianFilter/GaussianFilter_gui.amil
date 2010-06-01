@@ -3,13 +3,15 @@
 # Example of using the Gaussian Filtering
 # with the command filter
 #
+
+func "Common/ScriptGui"
+
 if (!exists(GaussianFilterClass)) {
 
-  Class GaussianFilterClass {
+  Class GaussianFilterClass : public ScriptGui {
 
   #----------------------------
   proc ::Init() {
-    ::class_name ="global::GaussianFilterClass"
     ::input_name = ""
     ::sigma      = 1, "Gaussian kernel standard devation"
     ::derx = INT(0), "Derivation order in X (0: no derivation)"
@@ -26,21 +28,6 @@ if (!exists(GaussianFilterClass)) {
   }
     
   #----------------------------
-  proc ::Close() {
-    ::win.HidePanel
-    delvars GetObjectName(::Close)
-  }
-  Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-    
-  #----------------------------
-  proc ::CloseAll() {
-    eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
-    ::Close
-  }
-  Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
-    
-  #----------------------------
-  
   proc ::load_input() {
     eval "::input <<="+::input_name+";"
     if (::input_name=="BrowseImage") {
@@ -93,34 +80,6 @@ if (!exists(GaussianFilterClass)) {
   }
   Comments( ::Save, "Save the resulting image")
 
-
-  //---------------------------------------------------
-  proc ::LaunchWiki() {
-    import = &global::ami_import;
-    wx = import->WxFunctions();
-    res = wx->LaunchDefaultBrowser(::wiki_help);
-  }
-  Comments( ::LaunchWiki, "Launch the corresponding wiki tutorial page on the default browser.")
-
-  //---------------------------------------------------
-  proc ::HtmlHome() {
-    ::html.LoadFile( ::html_filename)
-  }
-  Comments( ::HtmlHome, "Back to the initial page.")
-
-  //---------------------------------------------------
-  proc ::HtmlBack() {
-    res = ::html.HistoryBack()
-  }
-  Comments( ::HtmlBack, "Back to the previous page.")
-
-  //---------------------------------------------------
-  proc ::HtmlForward() {
-    res = ::html.HistoryForward()
-  }
-  Comments( ::HtmlForward, "Go to the forward page.")
-
-
   #-----------------------------------------
   proc ::CreateGui() {
     # parameters window
@@ -142,25 +101,12 @@ if (!exists(GaussianFilterClass)) {
         ::win.AddBoolean( &::autodrag,"Auto drag")
         ::win.SetCallback( &::AutoDrag)
         ::win.AddButton("Apply",::Filter)
-      ::win.AddPage("Help")
-        ::win.BeginHorizontal
-          ::win.AddButton("Wiki",   ::LaunchWiki)
-          ::win.AddButton("Home",   ::HtmlHome)
-          ::win.AddButton("<--",    ::HtmlBack)
-          ::win.AddButton("-->",    ::HtmlForward)
-        ::win.EndHorizontal
-        # add html widget
-        d = ::win.CurrentParent()
-        ::html = wx.wxHtmlWindow(&d)
-        ::html.LoadFile( ::html_filename)
-        ::win.AddWidget(&::html,1)
 
+      ::AddHelpPage(&::win)
+  
     ::win.EndBook
-
-    ::win.BeginHorizontal
-      ::win.AddButton("Close",          ::Close)
-      ::win.AddButton("Close All",          ::CloseAll)
-    ::win.EndHorizontal  
+  
+    ::AddStandardButtons(&::win)
   
     ::win.Update(-1)
     ::win.Display

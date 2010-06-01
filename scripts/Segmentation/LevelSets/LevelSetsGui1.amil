@@ -665,32 +665,6 @@ if (!exists(LevelSetsClass)){
   }
   
   //---------------------------------------------------
-  proc ::LaunchWiki() {
-    import = &global::ami_import
-    wx1 = import->WxFunctions()
-    res = wx1->LaunchDefaultBrowser(::wiki_help)
-  }
-  Comments( ::LaunchWiki, "Launch the corresponding wiki tutorial page on the default browser.")
-
-  //---------------------------------------------------
-  proc ::HtmlHome() {
-    ::html.LoadFile( ::html_filename)
-  }
-  Comments( ::HtmlHome, "Back to the initial page.")
-
-  //---------------------------------------------------
-  proc ::HtmlBack() {
-    res = ::html.HistoryBack()
-  }
-  Comments( ::HtmlBack, "Back to the previous page.")
-
-  //---------------------------------------------------
-  proc ::HtmlForward() {
-    res = ::html.HistoryForward()
-  }
-  Comments( ::HtmlForward, "Go to the forward page.")
-
-  //---------------------------------------------------
   proc ::InitialLevelSetEvent() {
     ::win.EnablePanel(::initial_spheres_page , ::init_mode==0)
     ::win.EnablePanel(::initial_image_page ,   ::init_mode==1)
@@ -874,7 +848,6 @@ if (!exists(LevelSetsClass)){
         ::win.EndBoxPanel
   
       ::AddHelpPage(&::win)
-
   
     ::win.EndBook
   
