@@ -120,7 +120,7 @@ namespace yyip {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 316 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 346 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
 
   IdentifierInfo*         ident;
   char*                   astring;

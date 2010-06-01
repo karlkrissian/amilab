@@ -135,7 +135,7 @@ template<> BasicVariable::ptr Variable<AMIObject>::TernaryCondition(const BasicV
 /// Other operators
 /// a=b
 
-/**
+**
  * Basic Assignment operator
  * if b is 
  * - a numerical value, sets the whole image to this value

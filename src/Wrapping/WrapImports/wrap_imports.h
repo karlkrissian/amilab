@@ -40,4 +40,9 @@ void AddWrapIO();
  */
 void AddWrapImage();
 
+/**
+ * Adding wrapped classes and methods for Surfaces.
+ */
+void AddWrapSurface();
+
 #endif //  _wrap_MainFrame_h_

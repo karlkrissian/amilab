@@ -169,7 +169,7 @@ WS      [ \t]
 ";"  return(token::T_SEMICOLON);  /*{;,T_SEMICOLON}*/
 
 SetComponent   return(token::T_SetComponent); /*{SetComponent,T_SetComponent}*/
-GetExtent      return(token::T_GetExtent); /*{SetGetExtent,T_GetExtent}*/
+GetExtent      return(token::T_GetExtent); /*{GetExtent,T_GetExtent}*/
 
 LineNumber      return(token::T_LineNumber); /*{LineNumber,T_LineNumber}*/
 

@@ -212,8 +212,8 @@ public:
   /// prefix ++ operator ++T 
   BASICVAR_UNARYOP(++)
 
-  /// prefix ++ operator T-- 
-  BasicVariable::ptr operator ++(int)
+  /// prefix ++ operator T++ 
+  virtual BasicVariable::ptr operator ++(int)
   { return this->NewReference(); }
 
 
@@ -236,7 +236,7 @@ public:
   BASICVAR_UNARYOP(--)
 
   /// prefix -- operator T-- 
-  BasicVariable::ptr operator --(int)
+  virtual BasicVariable::ptr operator --(int)
   { return this->NewReference(); }
 
   BASICVAR_OP_VAR(-=);
@@ -283,6 +283,13 @@ public:
   //@{
     /// basic assignment operator
     BASICVAR_OP_VAR(=);
+
+    /**
+     * Forces the copy, even if a new object needs to be created.
+     * @param b 
+     * @return 
+     */
+    virtual BasicVariable::ptr left_assign(const BasicVariable::ptr& b) = 0;
 
     /// Transpose operator
     virtual BasicVariable::ptr Transpose()

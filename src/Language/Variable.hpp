@@ -413,6 +413,19 @@ public:
   //@{
     VAR_OP_BASICVAR(=);
 
+    /**
+    * left_assign is operator <<=, force assignation of new variable, even if a new pointer to the object needs to be created
+    * @param b 
+    * @return 
+    */
+    BasicVariable::ptr left_assign(const BasicVariable::ptr& b) 
+    { 
+      std::cout << get_name() << " " 
+                << __func__ << " not defined." << std::endl; 
+      return this->NewReference(); 
+    }
+
+
     /// Transpose
     BasicVariable::ptr Transpose()
     {

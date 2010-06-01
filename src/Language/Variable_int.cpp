@@ -386,7 +386,10 @@ template<> BasicVariable::ptr Variable<int>::BasicCast(const int& type)
       {
           RETURN_VARPTR(double, boost::numeric_cast<double>(Value()));
       }
-      case WT_UNSIGNED_CHAR:  //res=(unsigned char) res; break;
+      case WT_UNSIGNED_CHAR:
+      {
+          RETURN_VARPTR(unsigned char, boost::numeric_cast<unsigned char>(Value()));
+      }
       case WT_UNSIGNED_INT:  //res=(unsigned char) res; break;
       case WT_SIGNED_SHORT:   //res=(short) res;  break;
       case WT_UNSIGNED_SHORT: //res=(unsigned short) res;  break;

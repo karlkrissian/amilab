@@ -3629,7 +3629,7 @@ return(token::T_SetComponent); /*{SetComponent,T_SetComponent}*/
 case 45:
 YY_RULE_SETUP
 #line 172 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_flex.lpp"
-return(token::T_GetExtent); /*{SetGetExtent,T_GetExtent}*/
+return(token::T_GetExtent); /*{GetExtent,T_GetExtent}*/
 	YY_BREAK
 case 46:
 YY_RULE_SETUP

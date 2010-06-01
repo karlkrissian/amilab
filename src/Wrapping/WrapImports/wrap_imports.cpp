@@ -44,6 +44,7 @@
 
 #include "wrap_ReadRawImages.h"
 #include "wrap_ImageExtent.h"
+#include "wrap_SurfacePoly.h"
 
 extern VarContexts  Vars;
 extern MainFrame*   GB_main_wxFrame;
@@ -56,10 +57,10 @@ void AddWrapImports()
   AddWrapAmilab();
   AddWrapIO();
   AddWrapImage();
+  AddWrapSurface();
 
   // Create new instance of the class
   AMIObject::ptr amiobject(new AMIObject);
-
   amiobject->SetName("ami_import");
 
   // Set the object context
@@ -94,7 +95,6 @@ void AddWrapWxWidgets()
 
   // Create new instance of the class
   AMIObject::ptr amiobject(new AMIObject);
-
   amiobject->SetName("wx");
 
   // Set the object context
@@ -121,15 +121,9 @@ void AddWrapWxWidgets()
 
 void AddWrapAmilab()
 {
-
   // Create new instance of the class
   AMIObject::ptr amiobject(new AMIObject);
-
   amiobject->SetName("ami");
-
-  // Set the object context
-  Variables::ptr previous_ocontext = Vars.GetObjectContext();
-  Vars.SetObjectContext(amiobject->GetContext());
 
   AddVar_wxEditor( amiobject->GetContext());
 
@@ -137,55 +131,41 @@ void AddWrapAmilab()
   AMIObject::ptr obj(AddWrap_MainFrame(GB_main_wxFrame));
   amiobject->GetContext()->AddVar<AMIObject>("MainFrame", obj);
 
-  // Restore the object context
-  Vars.SetObjectContext(previous_ocontext);
-
   // 3. add the variables to this instance
   Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
-
 }
 
 void AddWrapIO()
 {
-
   // Create new instance of the class
   AMIObject::ptr amiobject(new AMIObject);
   amiobject->SetName("IO");
-
-  // Set the object context
-  Variables::ptr previous_ocontext = Vars.GetObjectContext();
-  Vars.SetObjectContext(amiobject->GetContext());
 
   AddVar_ReadRawImages2D(     amiobject->GetContext());
   AddVar_ReadRawImage3D(      amiobject->GetContext());
   AddVar_ReadRawVectImage3D(  amiobject->GetContext());
 
-  // Restore the object context
-  Vars.SetObjectContext(previous_ocontext);
-
   // 3. add the variables to this instance
   Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
-
 }
 
+
+//--------------------------------------------
 void AddWrapImage()
 {
-
   // Create new instance of the class
   AMIObject::ptr amiobject(new AMIObject);
   amiobject->SetName("image");
 
-  // Set the object context
-  Variables::ptr previous_ocontext = Vars.GetObjectContext();
-  Vars.SetObjectContext(amiobject->GetContext());
-
   AddVar_ImageExtent(     amiobject->GetContext());
-
-  // Restore the object context
-  Vars.SetObjectContext(previous_ocontext);
 
   // 3. add the variables to this instance
   Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+}
 
+//--------------------------------------------
+void AddWrapSurface()
+{
+  AddVar_SurfacePoly( Vars.GetBuiltinContext());
 }
 

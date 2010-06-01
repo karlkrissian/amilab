@@ -183,5 +183,12 @@ template<> BasicVariable::ptr Variable<InrImage>::TernaryCondition(const BasicVa
  */
 template<> BasicVariable::ptr Variable<InrImage>::operator =(const BasicVariable::ptr& b);
 
+/**
+ * Tries to copy images, if the images don't have the same dimensions, creates a new image.
+ * @param b 
+ * @return 
+ */
+template<> BasicVariable::ptr Variable<InrImage>::left_assign(const BasicVariable::ptr& b);
+
 #endif 
 // _Variable_InrImage_h_

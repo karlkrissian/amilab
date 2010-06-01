@@ -50,6 +50,7 @@
 
 #include "wrapfunction_class.h"
 #include "wrap_ImageExtent.h"
+#include "wrap_SurfacePoly.h"
 
 
 #ifndef __FLEX_LEXER_H
@@ -196,6 +197,8 @@ static std::list<wxScheduleTimer::ptr> schedule_timers;
 
 void CB_ParamWin( void* cd );
 
+InrImage* ReadImage( const char* name);
+
 
 //static void ( void* cd, long unsigned int *) {
 //  CB_ParamWin(cd);
@@ -222,7 +225,26 @@ void CB_update_imagelist( void* imagelist_gui);
 /*! \def GET_VARSTACK_OBJECT
     \brief Gets the smart pointer to the wrapped object  (of type WrapClass_type) included in an AMIObject variable, taken from the stack of variables.
 */
-#define GET_VARSTACK_OBJECT(wtype, type, obj) \
+#define GET_VARSTACK_OBJECT(type, obj) \
+  Variable<AMIObject>::ptr objvar( \
+    driver.var_stack.GetLastVar<AMIObject>()); \
+  if (!objvar.get()) {  \
+    driver.yyiperror(" Expecting an AMIObject variable."); \
+    YYABORT; \
+  } \
+  WrapClassBase::ptr wrap_base( objvar->Pointer()->GetWrappedObject()); \
+  WrapClass_##type::ptr wobj( boost::dynamic_pointer_cast<WrapClass_##type>(wrap_base));\
+  if (!wobj.get()) {  \
+    driver.yyiperror((boost::format(" Expecting an AMIObject variable of type %1%.")%(#type)).str().c_str()); \
+    YYABORT; \
+  } \
+  boost::shared_ptr<type > obj(wobj->_obj);
+
+/*! \def GET_VARSTACK_OBJECT2
+    \brief Gets the smart pointer to the wrapped object  (of type WrapClass_type) included in an AMIObject variable, taken from the stack of variables. 
+    Version where the wrapped typename is different from the type.
+*/
+#define GET_VARSTACK_OBJECT2(wtype, type, obj) \
   Variable<AMIObject>::ptr objvar( \
     driver.var_stack.GetLastVar<AMIObject>()); \
   if (!objvar.get()) {  \
@@ -269,6 +291,14 @@ void CB_update_imagelist( void* imagelist_gui);
 #define ADD_VARSTACK_PTR(type,newval) \
     Variable<type>::ptr new_var(new Variable<type>(newval)); \
     driver.var_stack.AddVar(new_var);
+
+/**
+  newval is a pointer to the new value to add
+**/
+#define ADD_VARSTACK(type,newval) { \
+    boost::shared_ptr<type> newval_ptr(newval); \
+    Variable<type>::ptr new_var(new Variable<type>(newval_ptr)); \
+    driver.var_stack.AddVar(new_var); }
 
 #define UNARYOP_EXPR(operator,val,res)           \
   res=operator(val);
@@ -754,8 +784,8 @@ void CB_update_imagelist( void* imagelist_gui);
 %left GE_OP LE_OP T_GT T_LT
 %left T_SUB T_ADD
 %left T_MOD T_DIV T_MULT
-%nonassoc prefix
-%nonassoc postfix
+%right prefix
+%left postfix
 
 %type <ident>          identifier
 %type <ident>          IDENTIFIER
@@ -1536,7 +1566,7 @@ command:
          |
           identifier LEFT_ASSIGN expr_image
           {
-          InrImage::ptr imptr(driver.im_stack.GetLastImage());
+          GET_VARSTACK_VALUE(InrImage,imptr);
           IdentifierInfo::ptr ident($1);
           InrImage::ptr res;
 
@@ -1564,7 +1594,7 @@ command:
         {
           GET_VARSTACK_VAR_VAL(VarArray, vararray, array);
 
-          InrImage::ptr imptr(driver.im_stack.GetLastImage());
+          GET_VARSTACK_VALUE(InrImage,imptr);
           int  i = (int) $3;
           std::string name;
 
@@ -1631,12 +1661,12 @@ command:
         |
         VAR_ARRAY_SURFACE T_OP_BR expr T_CL_BR ASSIGN_OP surface
         {
+          GET_VARSTACK_OBJECT(SurfacePoly,surfptr)
           GET_VARSTACK_VAR_VAL(VarArray,vararray,array)
 
           int  i = (int) $3;
           char name[256];
 
-          SurfacePoly::ptr surfptr (driver.surf_stack.GetLastSurf());
           if (surfptr.get()) {
             if (!array->GetVar(i).get()) {
               sprintf(name,"%s[%d]",vararray->Name().c_str(),i);
@@ -1647,18 +1677,6 @@ command:
               driver.err_print("array element already assigned\n");
             }
           }
-          else
-            driver.err_print("assignment of NULL surface\n");
-        }
-        |
-        identifier ASSIGN_OP surface
-        {
-          IdentifierInfo::ptr ident($1);
-          // TODO: use smart pointers in surf_stack ...
-          SurfacePoly::ptr surfptr (driver.surf_stack.GetLastSurf());
-
-          if (surfptr != NULL)
-            Vars.AddVar<SurfacePoly>(ident, surfptr);
           else
             driver.err_print("assignment of NULL surface\n");
         }
@@ -2086,57 +2104,6 @@ command:
           }
 
         }
-        |  var_image LEFT_ASSIGN expr_image
-        {
-        /**
-        Description:
-          Replacing the previous image by the new one.
-        **/
-          GET_VARSTACK_VAR_VAL(InrImage, var, i1);
-          InrImage::ptr imptr  (driver.im_stack.GetLastImage());
-          bool can_skip_allocation = false;
-
-          if (imptr.get()) {
-            if (i1.get()!=imptr.get()) {
-              can_skip_allocation = (i1->GetFormat()==imptr->GetFormat());
-              if (can_skip_allocation) {
-                // first try the standard data copy
-                can_skip_allocation = ((*i1)=(*imptr));
-                if (can_skip_allocation) {
-                  // copy additional information here
-                  i1->SetTranslation(imptr->TrX(), imptr->TrY(), imptr->TrZ());
-                  i1->SetVoxelSize( imptr->VoxSizeX(), 
-                                    imptr->VoxSizeY(),
-                                    imptr->VoxSizeZ());
-                }
-              }
-              if (!can_skip_allocation) {
-                // instead of deleting and creating,
-                // replace the pointer and the information
-                  var->Delete();
-                  // should be OK
-                  var->Init( var->Name().c_str(), imptr);
-              } // end if (!can_skip_allocation)
-            } // end if (i1.get()!=imptr)
-          }
-          else
-            driver.err_print("assignment of NULL image\n");
-        }
-/*
-        |  var_image ASSIGN_OP expr
-        {
-        /**
-        Parameters:
-        (1) image
-        (3) expression
-
-        Description:
-        Sets the whole image to a constant value given by expression.
-        **
-          GET_VARSTACK_VALUE(InrImage, i1);
-          i1->InitImage($3);
-        }
-*/
         |  var_image T_POINT T_SetComponent T_OP_PAR expr T_COMMA expr_var T_CL_PAR
         {
           /**
@@ -2232,6 +2199,7 @@ command:
         /**
           Description: Pads the image ...
         **/
+          GET_VARSTACK_VALUE(InrImage, i2);
           GET_VARSTACK_VALUE(InrImage, i1);
           int posx  = (int) $3;
           int stepx = (int) $5;
@@ -2240,10 +2208,7 @@ command:
           int posz  = (int) $11;
           int stepz = (int) $13;
 
-          InrImage::ptr i2 (driver.im_stack.GetLastImage());
-
           Func_Pad(i1.get(),i2.get(),stepx,posx,stepy,posy,stepz,posz);
-
 
         }
 /*
@@ -3124,8 +3089,8 @@ command:
         /**
           Description: Set a user-defined colormap.
          **/
+          GET_VARSTACK_VALUE(InrImage, colmap);
           GET_VARSTACK_VALUE(DessinImage, draw);
-          InrImage::ptr colmap(driver.im_stack.GetLastImage());
 
           draw->SetUserColormap( colmap,  $7,  $9);
         }
@@ -3362,6 +3327,7 @@ command:
           o->GetContext()->display();
     */
         }
+/*
         | var_surface T_POINT T_info
         {
           GET_VARSTACK_VAR_VAL(SurfacePoly,var,s);
@@ -3380,6 +3346,7 @@ command:
             % s->_zmin % s->_zmax).str();
           driver.res_print(tmp_string);
         }
+*/
         | var_image T_POINT T_initvalue T_OP_PAR expr T_CL_PAR
         {
         /**
@@ -4046,428 +4013,6 @@ command:
       GET_VARSTACK_VALUE(InrImage, im1);
       Func_OrientPositive( im1.get(), im2.get());
     }
-    | var_surface T_POINT T_save expr_string
-    {
-      boost::shared_array<char> filename($4);
-      GET_VARSTACK_VALUE(SurfacePoly, s);
-
-      s->Write(filename.get());
-    }
-    |
-    var_surface T_POINT T_WriteCTALine  expr_string
-    {
-    /**
-    Parameters:
-        (1) input polydata
-        (4) filename
-    Description:
-        Save the first line of the polydata in text format
-    **/
-      boost::shared_array<char> filename($4);
-      GET_VARSTACK_VALUE(SurfacePoly, surf);
-      Func_WriteCTALine(surf.get(),filename.get());
-
-    }
-    | var_surface T_POINT T_OwnMaterial T_OP_PAR expr T_CL_PAR
-    {
-      GET_VARSTACK_VALUE(SurfacePoly, s);
-
-      s->SetOwnMaterial( (int) $5);
-
-    }
-    | var_surface T_POINT T_SetAmbient T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
-    {
-      GET_VARSTACK_VALUE(SurfacePoly, s);
-      s->GetMaterial()._ambient.FixeValeur((int) $5,(int) $7,(int) $9);
-
-    }
-    | var_surface T_POINT T_SetDiffuse T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
-    {
-
-      GET_VARSTACK_VALUE(SurfacePoly, s);
-      s->GetMaterial()._diffuse.FixeValeur((int) $5,(int) $7,(int) $9);
-
-    }
-    | var_surface T_POINT T_SetSpecular T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
-    {
-
-      GET_VARSTACK_VALUE(SurfacePoly, s);
-      s->GetMaterial()._specular.FixeValeur((int) $5,(int) $7,(int) $9);
-
-    }
-    |
-    var_surface T_POINT T_SetShininess T_OP_PAR expr T_CL_PAR
-    {
-
-      GET_VARSTACK_VALUE(SurfacePoly, s);
-      s->GetMaterial()._shininess= $5;
-
-    }
-    |
-    var_surface T_POINT T_SetOpacity T_OP_PAR expr T_CL_PAR
-    {
-
-      GET_VARSTACK_VALUE(SurfacePoly, s);
-      s->GetMaterial()._opacity= $5;
-
-    }
-    |
-    var_surface T_POINT T_SetVisible T_OP_PAR expr T_CL_PAR
-    {
-      /**
-      Description:
-        Sets the object visible or not visible in the scene.
-      **/
-      GET_VARSTACK_VALUE(SurfacePoly, s);
-      s->SetVisible( (int) $5);
-    }
-    |
-    var_surface T_POINT T_SetColorMaterial T_OP_PAR expr T_CL_PAR
-    {
-        /**
-        Description:
-          Enable/Disable colormaterial for the associated surface.
-        **/
-
-      GET_VARSTACK_VALUE(SurfacePoly, s);
-
-      s->GetMaterial()._colormaterial = (unsigned char) ($5>0.5);
-
-    }
-    |
-      var_surface T_POINT T_SetColorOpacity T_OP_PAR expr T_CL_PAR
-    {
-      /**
-      Parameters:
-        (1) surface object
-        (5) alpha value
-    
-      Description:
-        to define the transparency to the RGB color
-        associated per each vertex (actived with Enable ColorMaterial)
-      **/
-
-      GET_VARSTACK_VALUE(SurfacePoly, s);
-
-      s->SetColorOpacity($5);
-
-    }
-    | var_surface T_POINT T_SetColor T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
-    {
-      GET_VARSTACK_VALUE(SurfacePoly, s);
-
-      int n;
-      Pour(n,0,s->NbPoints()-1)
-        (*s)[n].SetColor((unsigned char) $5,
-                 (unsigned char) $7,
-                 (unsigned char) $9);
-      FinPour
-
-      s->SetColorMaterial(true);
-      s->GLRecomputeList(  );
-
-    }
-    | var_surface T_POINT T_SetPointsColors T_OP_PAR var_image  T_CL_PAR
-    {
-      GET_VARSTACK_VALUE(InrImage,    im);
-      GET_VARSTACK_VALUE(SurfacePoly, s);
-
-      s->SetPointsColors( im.get() );
-
-    }
-    | var_surface T_POINT T_SetColors T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_CL_PAR
-    {
-      Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
-      SurfacePoly::ptr s (surfdraw->Pointer());
-      InrImage::ptr i (driver.im_stack.GetLastImage());
-      // TODO: use smart pointer to image in SetColors ...
-      s->SetColors( i.get() , $7, $9);
-    }
-    | var_surface T_POINT T_SetColors T_OP_PAR expr_image  T_CL_PAR
-    {
-      Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
-      SurfacePoly::ptr s (surfdraw->Pointer());
-      InrImage::ptr i (driver.im_stack.GetLastImage());
-      s->SetColors( i.get() );
-
-    }
-    | var_surface T_POINT T_Statistics T_OP_PAR var_image  T_CL_PAR
-    {
-      GET_VARSTACK_VALUE(InrImage, im);
-      Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
-      SurfacePoly::ptr s (surfdraw->Pointer());
-      s->Statistics( im.get() );
-
-    }
-    | var_surface T_POINT T_mergepoints T_OP_PAR expr T_CL_PAR
-    {
-      Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
-      SurfacePoly::ptr s (surfdraw->Pointer());
-      s->MergePoints($5);
-    }
-    | var_surface T_POINT T_Triangulate
-    {
-      Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
-      SurfacePoly::ptr s (surfdraw->Pointer());
-      s->Triangulate();
-    }
-    | var_surface T_POINT T_curvatures T_OP_PAR expr T_CL_PAR
-    {
-
-      Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
-      SurfacePoly::ptr surf (surfdraw->Pointer());
-
-      float        depth = $5;
-      std::string  name;
-      int          n;
-
-      // param 1: depth (neighborhood)
-      //
-
-      // Create images for the curvatures and their directions
-      InrImage::ptr Icmin;
-      InrImage::ptr Icmax;
-      InrImage::ptr Idmin;
-      InrImage::ptr Idmax;
-
-      n = surf->GetNumberOfPoints();
-
-      Icmin = InrImage::ptr(new InrImage(n,1,1,WT_FLOAT,"mincurv.ami.gz"));
-      Icmax = InrImage::ptr(new InrImage(n,1,1,WT_FLOAT,"maxcurv.ami.gz"));
-
-      Idmin = InrImage::ptr(new InrImage(n,1,1,3,WT_FLOAT,"mincurvdir.ami.gz"));
-      Idmax = InrImage::ptr(new InrImage(n,1,1,3,WT_FLOAT,"maxcurvdir.ami.gz"));
-
-      surf->ComputeCurvatures(Icmin.get(),Icmax.get(),
-                              Idmin.get(),Idmax.get(), 
-                              (int) depth);
-
-      BasicVariable::ptr var;
-
-      name = (boost::format("%s_cmin") % surfdraw->Name()).str();
-      Vars.AddVar<InrImage>(name,Icmin);
-
-      name = (boost::format("%s_cmax") % surfdraw->Name()).str();
-      Vars.AddVar<InrImage>(name,Icmax);
-
-      name = (boost::format("%s_dmin") % surfdraw->Name()).str();
-      Vars.AddVar<InrImage>(name,Idmin);
-
-      name = (boost::format("%s_dmax") % surfdraw->Name()).str();
-      Vars.AddVar<InrImage>(name,Idmax);
-
-    }
-    | var_surface T_POINT T_Displace T_OP_PAR expr_image T_CL_PAR
-    {
-      Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
-      SurfacePoly::ptr s (surfdraw->Pointer());
-
-      InrImage::ptr i (driver.im_stack.GetLastImage());
-      s->DisplacePoints( i.get() );
-    }
-    | var_surface T_POINT T_Translate T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
-    {
-      Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
-      SurfacePoly::ptr s (surfdraw->Pointer());
-
-      s->Translate( $5,$7,$9 );
-
-    }
-    | var_surface T_POINT T_Scale T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
-    {
-      Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
-      SurfacePoly::ptr s (surfdraw->Pointer());
-
-      s->Scale( $5,$7,$9,0 );
-
-    }
-    | var_surface T_POINT T_SetLineWidth T_OP_PAR expr T_CL_PAR
-    {
-      Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
-      SurfacePoly::ptr s (surfdraw->Pointer());
-      int          w = (int) $5;
-
-      Si w<1  AlorsFait w=1;
-      Si w>10 AlorsFait w=10;
-
-      s->_line_width = w;
-
-    }
-    | var_surface T_POINT  T_RemoveLine T_OP_PAR  expr T_CL_PAR
-    {
-      Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
-      SurfacePoly::ptr s (surfdraw->Pointer());
-
-      s->RemoveLine((int)$5);
-      s->GLRecomputeList();
-
-    }
-    | var_surface T_POINT T_SelectLines T_OP_PAR expr_image T_CL_PAR
-    {
-    /**
-      Parameters:
-        image expression
-      Description:
-        Select lines based on an image
-        The image is 1D of size the number of lines
-        if the value is > 0.5, then select the corresponding line
-    **/
-
-      Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
-      SurfacePoly::ptr s (surfdraw->Pointer());
-      InrImage::ptr im (driver.im_stack.GetLastImage());
-
-      s->SelectLines(im.get());
-      s->GLRecomputeList();
-    }
-    | var_surface T_POINT T_RemoveSelection
-    {
-    /**
-      Description: Remove selected lines
-    **/
-      Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
-      SurfacePoly::ptr s (surfdraw->Pointer());
-
-      s->RemoveSelection();
-      s->GLRecomputeList();
-    }
-    | var_surface T_POINT T_Recompute
-    {
-      Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
-      SurfacePoly::ptr s (surfdraw->Pointer());
-      s->GLRecomputeList();
-
-    }
-    | var_surface T_POINT T_Normals
-    {
-      Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
-      SurfacePoly::ptr s (surfdraw->Pointer());
-      s->RecomputeNormals();
-
-    }
-    | var_surface T_POINT T_InvertNormals
-    {
-      Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
-      SurfacePoly::ptr s (surfdraw->Pointer());
-
-      s->InvertNormals();
-
-    }
-    | var_surface T_POINT  T_vtkSmooth T_OP_PAR  expr T_CL_PAR
-    {
-      Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
-      SurfacePoly::ptr s (surfdraw->Pointer());
-
-      Func_ApplyvtkSmooth(s.get(), (int) $5);
-      //      s->GLRecomputeList();
-
-    }
-    | var_surface T_POINT  T_vtkWindowedSinc T_OP_PAR  expr T_CL_PAR
-    {
-      Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
-      SurfacePoly::ptr s (surfdraw->Pointer());
-
-      Func_vtkWindowedSinc(s.get(), (int) $5);
-      //      s->GLRecomputeList();
-
-    }
-    | var_surface T_POINT  T_vtkDecimate
-    {
-
-      Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
-      SurfacePoly::ptr s (surfdraw->Pointer());
-      SurfacePoly* surf;
-
-      surf = Func_decimate(s.get());
-      Si surf != NULL Alors
-
-        // Non correct: supprimer la variable et la re-creer:
-        // car pb si la variable est deja utilisee ...
-        //          $1->Init(type_surface,$1->Name(), surf);
-        //      delete surf_init;
-      Sinon
-        fprintf(stderr,"improcess.y: var_surface.T_vtkDecimate \t error \n ");
-          FinSi
-
-
-      }
-      | var_surface T_POINT T_setminCC T_OP_PAR expr T_CL_PAR
-      {
-        /**
-        Description:
-          Sets a threshold for drawing connected components
-          bigger.
-        **/
-          Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
-          SurfacePoly::ptr s (surfdraw->Pointer());
-          GLuint _SURFACE;
-
-          Si Non(s->_cc_calculees) Alors
-            s->CalculCC();
-          FinSi
-          s->GLSurfaceMinThCC( _SURFACE, (int) $5);
-
-        }
-        | var_surface T_POINT T_drawCC T_OP_PAR expr T_CL_PAR
-        {
-        /**
-        Description:
-        Draw one connected component only
-        **/
-          Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
-          SurfacePoly::ptr s (surfdraw->Pointer());
-          GLuint _SURFACE;
-
-            //          Si _type_surface == SURFACE_POLY Alors
-            Si Non(s->_cc_calculees) Alors
-              s->CalculCC();
-            FinSi
-            s->GLSurfaceDrawOnlyCC( _SURFACE, (int) $5);
-            //          FinSi
-
-        }
-        | var_surface T_POINT T_drawCC T_OP_PAR expr T_COMMA expr T_CL_PAR
-        {
-        /**
-        Description:
-        Activate/Desactivate Drawing of one connected components
-        **/
-          Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
-          SurfacePoly::ptr s (surfdraw->Pointer());
-          GLuint _SURFACE;
-
-      //          Si _type_surface == SURFACE_POLY Alors
-            Si Non(s->_cc_calculees) Alors
-              s->CalculCC();
-            FinSi
-            s->GLSurfaceSetDrawCC( _SURFACE, (int) $5,(int) $7);
-        //          FinSi
-
-    }
-    | var_surface T_POINT T_AddPoint T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
-    {
-      Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
-      SurfacePoly::ptr s (surfdraw->Pointer());
-      s->AddPoint($5,$7,$9);
-    }
-    | var_surface T_POINT T_NewLine
-    {
-      Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
-      SurfacePoly::ptr s (surfdraw->Pointer());
-      s->NewLine();
-    }
-    | var_surface T_POINT T_LineAddPointNumber T_OP_PAR expr T_CL_PAR
-    {
-      Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
-      SurfacePoly::ptr s (surfdraw->Pointer());
-      s->LineAddPointNumber( (int) $5 );
-    }
-    | var_surface T_POINT T_EndLine
-    {
-      Variable<SurfacePoly>::ptr surfdraw(driver.var_stack.GetLastVar<SurfacePoly>());
-      SurfacePoly::ptr s (surfdraw->Pointer());
-      s->EndLine();
-    }
     | T_SetFluidNavFile T_OP_PAR expr_string T_CL_PAR
     {
       if (strlen($3)<255) {
@@ -4577,39 +4122,6 @@ command:
       }
 
       }
-      | var_surface T_POINT T_ElevateMesh T_OP_PAR expr_image T_CL_PAR
-      {
-      /**
-      Description:
-        ElevateMesh can have different behaviors depending on the type of
-        the input image. In any case, it scans all the points of the mesh,
-        and uses their 2 first coordinates (x,y) to deduce a position in
-        the input image, and interpolate a value.
-          - if the image is scalar, the value of the image at position
-          (x,y) is used to set the elevation of the mesh (z coordinate).
-          - if the image contains 2D vectors, the vectors are used to set
-          the (x,y) coordinates of each vertex of the mesh.
-          - if the image contains 3D vectors, those vectors are used
-          to set new positions (x,y,z) for each vertex of the mesh.
-
-      Parameters:
-      (1) input surface
-      (5) input image
-
-      Example(s):
-        s = CreateFlatMesh(i)
-        ipos = Altitude2Postion(i,1)
-        s.ElevateMesh(ipos)
-
-      See also:
-        CreateFlatMesh, ElevateMesh
-        changes the position of the nodes of a 3D mesh
-
-      **/
-          GET_VARSTACK_VALUE(SurfacePoly,s);
-          InrImage::ptr im ( driver.im_stack.GetLastImage());
-          AMIFluid::Func_ElevateMesh(s.get(),im.get());
-        }
         | VAR_SURFDRAW T_POINT T_rotate T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
           GET_VARSTACK_VALUE(Viewer3D,sdraw);
@@ -4617,17 +4129,17 @@ command:
           sdraw->GetCanvas()->UserRotate($5,$7,$9);
           sdraw->Paint();
         }
-        | VAR_SURFDRAW T_POINT T_addobj T_OP_PAR surface T_CL_PAR
+        | VAR_SURFDRAW T_POINT T_addobj T_OP_PAR var_surface T_CL_PAR
         {
+          GET_VARSTACK_OBJECT(SurfacePoly,surf)
           GET_VARSTACK_VALUE(Viewer3D,sdraw);
-          SurfacePoly::ptr surf = SurfacePoly::ptr(driver.surf_stack.GetLastSurf());
 
           sdraw->GetCanvas()->AddSurface(surf);
           sdraw->Paint();
         }
         | VAR_SURFDRAW ADD_ASSIGN var_surface
         {
-          GET_VARSTACK_VALUE(SurfacePoly,surf);
+          GET_VARSTACK_OBJECT(SurfacePoly,surf)
           GET_VARSTACK_VALUE(Viewer3D,   sdraw);
 
           sdraw->GetCanvas()->AddSurface( surf);
@@ -4635,7 +4147,7 @@ command:
         }
         | VAR_SURFDRAW SUB_ASSIGN var_surface
         {
-          GET_VARSTACK_VALUE(SurfacePoly,surf);
+          GET_VARSTACK_OBJECT(SurfacePoly,surf)
           GET_VARSTACK_VALUE(Viewer3D,   sdraw);
 
           sdraw->GetCanvas()->RemoveSurface(surf);
@@ -4646,7 +4158,7 @@ command:
           /**
             Description: Removes the surface without swapping the 3D buffer
           **/
-          GET_VARSTACK_VALUE(SurfacePoly,surf);
+          GET_VARSTACK_OBJECT(SurfacePoly,surf)
           GET_VARSTACK_VALUE(Viewer3D,   sdraw);
 
           sdraw->GetCanvas()->RemoveSurface(surf);
@@ -4715,7 +4227,7 @@ command:
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           Viewer3D_ptr draw (varsurfd->Pointer());
           int num = (int) $5;
-          InrImage::ptr im ( driver.im_stack.GetLastImage());
+          GET_VARSTACK_VALUE(InrImage,im);
           int orientation = (int) $9;
           int pos = (int) $11;
           float Imin = $13;
@@ -4859,8 +4371,8 @@ command:
         |
         T_struct_tensor T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA expr_image T_CL_PAR
         {
+          GET_VARSTACK_VALUE(InrImage,mask);
           GET_VARSTACK_VAR_VAL(InrImage, varim, im);
-          InrImage::ptr mask ( driver.im_stack.GetLastImage());
 
           Func_StructureTensor(
             im.get(),
@@ -4908,8 +4420,8 @@ command:
             i_STHvap1, i_STHvap2, i_STHvap3
             i_STHvep1, i_STHvep2, i_STHvep3
         **/
+          GET_VARSTACK_VALUE(InrImage,mask);
           GET_VARSTACK_VAR_VAL(InrImage, varim, im);
-          InrImage::ptr mask ( driver.im_stack.GetLastImage());
 
           Func_StructureTensorHessian(
             im.get(),
@@ -4936,8 +4448,8 @@ command:
             i_STHvep1, i_STHvep2, i_STHvep3
             i_STHgrad
         **/
+          GET_VARSTACK_VALUE(InrImage,mask);
           GET_VARSTACK_VAR_VAL(InrImage, varim, im);
-          InrImage::ptr mask (driver.im_stack.GetLastImage());
           int save_grad = (int) $11;
 
           Func_StructureTensorHessian(im.get(),
@@ -5010,8 +4522,8 @@ command:
             - Gamma normalization parameter
             - Mask image
         **/
+          GET_VARSTACK_VALUE(InrImage,mask);
           GET_VARSTACK_VAR_VAL(InrImage, varim, im);
-          InrImage::ptr mask (driver.im_stack.GetLastImage());
 
           Func_HessianMatrix(im.get(),
                  varim->Name().c_str(),
@@ -5052,8 +4564,8 @@ command:
         |
         T_Derivatives T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr_image T_CL_PAR
         {
+          GET_VARSTACK_VALUE(InrImage,mask);
           GET_VARSTACK_VAR_VAL(InrImage,varim,im);
-          InrImage::ptr mask (driver.im_stack.GetLastImage());
 
           Func_Derivatives(im.get(),
                varim->Name().c_str(),
@@ -5070,8 +4582,8 @@ command:
         T_HessianEVal T_OP_PAR var_image T_COMMA expr T_COMMA
                       expr  T_COMMA expr_image T_COMMA expr T_CL_PAR
         {
+          GET_VARSTACK_VALUE(InrImage,mask);
           GET_VARSTACK_VAR_VAL(InrImage, varim, im);
-          InrImage::ptr mask (driver.im_stack.GetLastImage());
 
           Func_HessianVap(im.get(),
               varim->Name().c_str(),
@@ -5095,13 +4607,13 @@ command:
                       expr_image
                   T_CL_PAR
         {
+          GET_VARSTACK_VALUE(InrImage,mask);
           Variable<InrImage>::ptr  varim6( driver.var_stack.GetLastVar<InrImage>());
           Variable<InrImage>::ptr  varim5( driver.var_stack.GetLastVar<InrImage>());
           Variable<InrImage>::ptr  varim4( driver.var_stack.GetLastVar<InrImage>());
           Variable<InrImage>::ptr  varim3( driver.var_stack.GetLastVar<InrImage>());
           Variable<InrImage>::ptr  varim2( driver.var_stack.GetLastVar<InrImage>());
           Variable<InrImage>::ptr  varim1( driver.var_stack.GetLastVar<InrImage>());
-          InrImage::ptr mask ( driver.im_stack.GetLastImage());
 
           Func_Eigen3D(
                (char*) $3,
@@ -5147,10 +4659,10 @@ command:
                       expr_image
                   T_CL_PAR
         {
+          GET_VARSTACK_VALUE(InrImage,mask);
           Variable<InrImage>::ptr  varim3( driver.var_stack.GetLastVar<InrImage>());
           Variable<InrImage>::ptr  varim2( driver.var_stack.GetLastVar<InrImage>());
           Variable<InrImage>::ptr  varim1( driver.var_stack.GetLastVar<InrImage>());
-      InrImage::ptr mask ( driver.im_stack.GetLastImage());
 
           Func_Eigen2D(
                (char*) $3,
@@ -5294,7 +4806,7 @@ command:
         Description:
             Plots a 1D image using gnuplot.
         **/
-      InrImage::ptr   image (driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage, image);
       float* tabx;
       float* taby;
       GnuPlot   gnuplot;
@@ -6215,6 +5727,7 @@ float_variable:
       float val = im->ValeurBuffer();
       ADD_VARSTACK_FLOAT(val);
     }
+/*
     |
     var_surface T_POINT T_NbPoints
     {
@@ -6229,6 +5742,7 @@ float_variable:
       float val = s->GetNumberOfPolys();
       ADD_VARSTACK_FLOAT(val);
     }
+*/
     |
     T_SNR T_OP_PAR var_image  T_COMMA var_image T_CL_PAR
     {
@@ -6312,7 +5826,7 @@ float_variable:
             max, mean, min, median
 
     **/
-      InrImage::ptr im  (driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,im);
       float val=Func_count( im.get() );
       ADD_VARSTACK_FLOAT(val);
     }
@@ -6332,7 +5846,7 @@ float_variable:
                 min, max, median
 
         **/
-      InrImage::ptr im  (driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,im);
       float val=Func_mean( im.get());
       ADD_VARSTACK_FLOAT(val);
     }
@@ -6352,7 +5866,7 @@ float_variable:
                 min, mean, median
 
         **/
-      InrImage::ptr im  (driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,im);
       float val=Func_max( im.get(),NULL);
       ADD_VARSTACK_FLOAT(val);
     }
@@ -6372,7 +5886,7 @@ float_variable:
                 min, mean, median, max
 
         **/
-      InrImage::ptr im  (driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,im);
       float val=Func_argmax( im.get());
       ADD_VARSTACK_FLOAT(val);
     }
@@ -6392,7 +5906,7 @@ float_variable:
               max, mean, median
 
       **/
-      InrImage::ptr im  (driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,im);
       float val=Func_min( im.get(),NULL);
       ADD_VARSTACK_FLOAT(val);
     }
@@ -6412,7 +5926,7 @@ float_variable:
               min, max, mean, count
 
       **/
-      InrImage::ptr im  (driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,im);
       float val=Func_med( im.get(),0.5,NULL);
       ADD_VARSTACK_FLOAT(val);
     }
@@ -6435,8 +5949,8 @@ float_variable:
                 min, max, mean, median, count
 
         **/
-      InrImage::ptr im  (driver.im_stack.GetLastImage());
-      InrImage::ptr mask  (driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,im);
+      GET_VARSTACK_VALUE(InrImage,mask);
       float val=Func_max( im.get(),mask.get());
       ADD_VARSTACK_FLOAT(val);
     }
@@ -6460,7 +5974,7 @@ float_variable:
 
         **/
       GET_VARSTACK_VALUE(InrImage, im);
-      InrImage::ptr mask  (driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,mask);
       float val=Func_min( im.get(),mask.get());
       ADD_VARSTACK_FLOAT(val);
     }
@@ -6484,7 +5998,7 @@ float_variable:
 
         **/
       GET_VARSTACK_VALUE(InrImage, im);
-      InrImage::ptr mask ( driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,mask);
       float val=Func_med( im.get(),0.5,mask.get());
       ADD_VARSTACK_FLOAT(val);
     }
@@ -6492,7 +6006,7 @@ float_variable:
     T_MEDIAN T_OP_BR expr_image T_CL_BR T_OP_PAR var_image  T_COMMA expr T_CL_PAR
     {
       GET_VARSTACK_VALUE(InrImage, im);
-      InrImage::ptr mask( driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage, mask);
       float val=Func_med( im.get(),(float) $8,mask.get());
       ADD_VARSTACK_FLOAT(val);
     }
@@ -6515,8 +6029,8 @@ float_variable:
                 min, max, mean, median, count
 
         **/
-      InrImage::ptr input  (driver.im_stack.GetLastImage());
-      InrImage::ptr mask  (driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,input);
+      GET_VARSTACK_VALUE(InrImage,mask);
       float val=Func_mean( input.get(),mask.get());
       ADD_VARSTACK_FLOAT(val);
     }
@@ -6539,8 +6053,8 @@ float_variable:
                 min, max, mean, median, count
 
         **/
+      GET_VARSTACK_VALUE(InrImage,mask);
       GET_VARSTACK_VALUE(InrImage, im);
-      InrImage::ptr mask (driver.im_stack.GetLastImage());
       float val=Func_mean( im.get(), mask.get());
       ADD_VARSTACK_FLOAT(val);
     }
@@ -6805,6 +6319,7 @@ float_variable:
       (*st) = res;
       ADD_VARSTACK_FLOAT(val);
     }
+/*
     | var_surface T_POINT T_GetNumberOfLines 
     {
     /**
@@ -6812,11 +6327,12 @@ float_variable:
         - input polydata
       Description: 
         Returns the number of lines of the polydata structure
-    **/
+    **
       GET_VARSTACK_VALUE(SurfacePoly,s);
       float val = s->GetNumberOfLines(  );
       ADD_VARSTACK_FLOAT(val);
     }
+*/
     ;
 
 
@@ -6857,8 +6373,7 @@ expr_image    : expr_var
         {
           BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
           if (var->Type()==type_image)  {
-            DYNAMIC_CAST_VARIABLE(InrImage,var,varim) 
-            driver.im_stack.AddImage(varim->Pointer());
+            driver.var_stack.AddVar(var);
           } else {
             driver.err_print("Expecting an image variable here ... \n");
             YYABORT;
@@ -6964,179 +6479,11 @@ image:
       T_Image  expr_string
       {
         boost::shared_array<char> st( $2);
-        bool res = driver.im_stack.AddFileImage(st.get());
+        InrImage* res = ReadImage(st.get());
         if (!res) YYABORT;
+        else
+          ADD_VARSTACK(InrImage,res);
       }
-/* Deprecated since expr_string accepts parenthesis
-      |
-      T_Image T_OP_PAR expr_string T_CL_PAR
-      {
-        boost::shared_array<char> st( $3);
-        driver.im_stack.AddFileImage(st.get());
-      }
-*/
-/* deprecated
-      |
-      T_ReadRawImages T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA
-                          expr T_COMMA expr_string T_COMMA expr T_COMMA expr T_CL_PAR
-      {
-       /**
-       Parameters:
-         (3)  dimension in X
-         (5)  dimension in Y
-         (7)  image type, one of: CHAR, UCHAR, SHORT,
-                                 USHORT, FLOAT, DOUBLE, RGB, FLOAT_VECTOR.
-         (9)  endianess: 0 for little, 1 for big.
-         (11) filename or file format
-         (13) first slice number
-         (15) last slice number
-
-       Description:
-         Read 2D raw data (or a sequence of 2D raw data) as an image.
-         The program can read raw data compressed with gzip:
-         if the file is not found, it looks for the same filename with a '.gz' extention. If
-         it can find it, it will open the file using the 'popen' (pipe open) command and the 'gunzip' program.
-
-       Example(s):
-          i = ReadRawImages(1024,1024,USHORT,0,"AfGG.%d",48,48)
-       **
-      InrImage::ptr im (new InrImage());
-      boost::shared_ptr<amimage> amim(new amimage());
-      int dimx                    = (int)           $3;
-      int dimy                    = (int)           $5;
-      WORDTYPE inr_format         = (WORDTYPE)    (int)  $7;
-      int endianness              = (int)           $9;
-      boost::shared_array<char> file_format( $11);
-      unsigned short first_slice  = (unsigned short)$13;
-      unsigned short last_slice   = (unsigned short)$15;
-
-     amim->SetDim(dimx,dimy,1);
-     if (endianness)
-       amim->endianness = BIG_END;
-     else
-       amim->endianness = LITTLE_END;
-
-         im->AMIFromWT(1,inr_format,amim);
-     amim->datafile    = AMI_DATAEXT;
-     amim->file_format = file_format.get();
-     amim->first_slice = first_slice;
-     amim->last_slice  =  last_slice;
-
-     if (amim->readdata_ext()) {
-       im->SetAMImage(amim);
-       driver.im_stack.AddImage(im);
-     } else {
-       // Error message
-       driver.err_print("ReadRawImages() failed ... \n");
-       driver.im_stack.AddImage(InrImage::ptr());
-     }
-      }
-      |
-      T_ReadRawImages T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA
-                          expr T_COMMA expr_string  T_CL_PAR
-      {
-       /**
-       Parameters:
-         (3)  dimension in X
-         (5)  dimension in Y
-         (7)  dimension in Z
-         (9)  image type, one of: CHAR, UCHAR, SHORT,
-                                 USHORT, FLOAT, DOUBLE, RGB, FLOAT_VECTOR.
-         (11)  endianess: 0 for little, 1 for big.
-         (13) filename or file format
-
-       Description:
-         Read 3D raw data as an image.
-         The program can read raw data compressed with gzip:
-         if the file is not found, it looks for the same filename with a '.gz' extention. If
-         it can find it, it will open the file using the 'popen' (pipe open) command and the 'gunzip' program.
-
-       Example(s):
-          i = ReadRawImages(256,256,256,USHORT,0,"data.raw")
-       **
-      InrImage::ptr im ( new InrImage());
-      boost::shared_ptr<amimage> amim(new amimage());
-      int dimx                    = (int)           $3;
-      int dimy                    = (int)           $5;
-      int dimz                    = (int)           $7;
-      WORDTYPE inr_format         = (WORDTYPE)   (int)   $9;
-      int endianness              = (int)           $11;
-      boost::shared_array<char> file_format( $13);
-
-         amim->SetDim(dimx,dimy,dimz);
-     if (endianness)
-       amim->endianness = BIG_END;
-     else
-       amim->endianness = LITTLE_END;
-
-     im->AMIFromWT(1,inr_format,amim);
-     amim->datafile    = AMI_DATAEXT;
-     amim->file_format = file_format.get();
-
-     if (amim->readdata3D_ext()) {
-       im->SetAMImage(amim);
-       driver.im_stack.AddImage(im);
-     } else {
-       // Error message
-       driver.err_print("ReadRawImages() failed ... \n");
-       driver.im_stack.AddImage(InrImage::ptr());
-     }
-       } 
-       |
-       T_ReadRawImages T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr T_COMMA
-                           expr T_COMMA expr_string  T_CL_PAR
-       {
-       /**
-       Parameters:
-         (3)  dimension in X
-         (5)  dimension in Y
-         (7)  dimension in Z
-         (9)  image type, one of: CHAR, UCHAR, SHORT,
-                                 USHORT, FLOAT, DOUBLE, RGB,
-         (11) Vectorial dimension
-         (13)  endianess: 0 for little, 1 for big.
-         (15) filename or file format
-
-       Description:
-         Read 3D raw data as an image.
-         The program can read raw data compressed with gzip:
-         if the file is not found, it looks for the same filename with a '.gz' extention. If
-         it can find it, it will open the file using the 'popen' (pipe open) command and the 'gunzip' program.
-
-       Example(s):
-          i = ReadRawImages(256,256,256,FLOAT,3,0,"3dvectorfielddata.raw")
-       **
-      InrImage::ptr im  = InrImage::ptr(new InrImage());
-      boost::shared_ptr<amimage> amim(new amimage());
-      int dimx                    = (int)           $3;
-      int dimy                    = (int)           $5;
-      int dimz                    = (int)           $7;
-      WORDTYPE inr_format         = (WORDTYPE)     (int) $9;
-      int vdim                    = (int)           $11;
-      int endianness              = (int)           $13;
-      boost::shared_array<char> file_format( $15);
-
-     amim->SetDim(dimx,dimy,dimz);
-     amim->SetVDim(vdim);
-     if (endianness)
-       amim->endianness = BIG_END;
-     else
-       amim->endianness = LITTLE_END;
-
-     im->AMIFromWT(vdim,inr_format,amim);
-     amim->datafile    = AMI_DATAEXT;
-     amim->file_format = file_format.get();
-
-     if (amim->readdata3D_ext()) {
-       im->SetAMImage(amim);
-       driver.im_stack.AddImage(im);
-     } else {
-       // Error message
-       driver.err_print("ReadRawImages() failed ... \n");
-       driver.im_stack.AddImage(InrImage::ptr());
-     }
-       }
-*/
        | T_vtkDicomRead T_OP_PAR expr_string T_CL_PAR
        {
        /**
@@ -7155,7 +6502,7 @@ image:
             driver.err_print("vtkDicomRead() error ... \n");
         FinSi
 
-        driver.im_stack.AddImage(res);
+        ADD_VARSTACK_PTR(InrImage,res);
       }
       | T_vtkMINCRead T_OP_PAR expr_string T_CL_PAR
       {
@@ -7174,7 +6521,7 @@ image:
             driver.err_print("vtkMINCRead() error ... \n");
         FinSi
 
-        driver.im_stack.AddImage(res);
+        ADD_VARSTACK_PTR(InrImage,res);
       }
 /* Deprecated
       | VAR_C_IMAGE_FUNCTION  T_OP_PAR param_list T_CL_PAR
@@ -7188,7 +6535,7 @@ image:
           driver.yyiperror(" image function returns NULL \n");
           YYABORT;
         }
-        driver.im_stack.AddImage(im);
+        ADD_VARSTACK_PTR(InrImage,im);
       }
 */
       |
@@ -7203,8 +6550,10 @@ image:
             driver.yyiperror(" Need Image \n");
             YYABORT;
           }
-          bool res1 = driver.im_stack.AddFileImage((char*)name.c_str());
+          InrImage* res1 = ReadImage((char*)name.c_str()); 
           if (!res1) YYABORT;
+          else
+            ADD_VARSTACK(InrImage,res1);
 
           wxFileName filename(GetwxStr(name));
           filename.Normalize(wxPATH_NORM_ALL,wxEmptyString,wxPATH_UNIX);
@@ -7225,7 +6574,7 @@ image:
       {
         //printf(" ********** %d %f %f %f\n", $3, $5, $7, $9);
         InrImage::ptr im (new InrImage( (int) $5, (int) $7, (int) $9, (WORDTYPE) $3));
-        driver.im_stack.AddImage(im);
+        ADD_VARSTACK_PTR(InrImage,im);
       }
       |
       T_Image T_OP_PAR basic_type T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
@@ -7243,7 +6592,7 @@ image:
       **/
     //printf(" ********** %d %f %f %f\n", $3, $5, $7, $9);
     InrImage::ptr im( new InrImage( (int) $5, (int) $7, (int) $9, (int) $11, (WORDTYPE) $3));
-    driver.im_stack.AddImage(im);
+    ADD_VARSTACK_PTR(InrImage,im);
     }
     |
     T_Image T_OP_PAR basic_type T_COMMA expr T_COMMA var_image T_CL_PAR
@@ -7268,37 +6617,10 @@ image:
 
       InrImage::ptr im (new InrImage(imformat,vdim,
                         imname.c_str(),varim.get()));
-      driver.im_stack.AddImage(im);
+      ADD_VARSTACK_PTR(InrImage,im);
     }
     |
     var_image
-    {
-      /**
-        Description: returning a reference to the image here ...
-      **/
-      GET_VARSTACK_VAR_VAL(InrImage,var,im);
-
-
-/*
-      // do we need a copy here ???
-      // Yes, we need a copy until we know that the operators, methods, etc.. cannot change the value of the variable !!!
-      std::string imname = (boost::format("copy_%s") % var->Name().c_str()).str();
-      InrImage::ptr imcopy (new InrImage(im->GetFormat(),im->GetVDim(),imname.c_str(),im.get()));
-      (*imcopy)=(*im);
-      driver.im_stack.AddImage(imcopy);
-*/
-      // returning reference here since the smart pointers will take care of everything (hopefully :) !!!)
-      // and we can't return a copy here otherwise a=b won't work !!!
-      driver.im_stack.AddImage(im);
-/*
-      GET_VARSTACK_VAR_VAL(InrImage,var,varim);
-      InrImage::ptr im;
-      std::string  imname;
-
-      driver.im_stack.AddImage(im);
-      // driver.im_stack.AddImage(varim);
-*/
-    }
 
 /*
     |
@@ -7361,7 +6683,7 @@ image:
             im->FixeValeur(im1->VectValeurBuffer(i));
                 im1->IncBuffer();
           JusquA Non(im->IncBuffer()) FinRepeter
-          driver.im_stack.AddImage(im);
+          ADD_VARSTACK_PTR(InrImage,im);
 
        }
 */
@@ -7383,7 +6705,7 @@ image:
                 min, max, median
 
         **/
-          InrImage::ptr im ( driver.im_stack.GetLastImage());
+          GET_VARSTACK_VALUE(InrImage,im);
           InrImage* res = NULL;
           int dim = (int) $5;
           int i,j,k;
@@ -7429,37 +6751,37 @@ image:
       {
         driver.err_print("sum operator only for scalar images ... \n");
     }
-      driver.im_stack.AddImagePointer(res);
+      ADD_VARSTACK(InrImage,res);
     }
     |
     T_localmean T_OP_PAR expr_image  T_COMMA expr T_CL_PAR
     {
-      InrImage::ptr im ( driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,im);
       InrImage* res =Func_localmean( im.get(), (int) $5);
-      driver.im_stack.AddImagePointer(res);
+      ADD_VARSTACK(InrImage,res);
     }
     |
     T_localmean2 T_OP_PAR expr_image  T_COMMA expr T_CL_PAR
     {
-      InrImage::ptr im (driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,im);
       InrImage* res =Func_localmean2( im.get(), (int) $5);
-      driver.im_stack.AddImagePointer(res);
+      ADD_VARSTACK(InrImage,res);
     }
     |
     T_localSD T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr T_CL_PAR
     {
-      InrImage::ptr mean    ( driver.im_stack.GetLastImage());
-      InrImage::ptr im      ( driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage, mean);
+      GET_VARSTACK_VALUE(InrImage, im);
       InrImage* res     = Func_localSD( im.get(), mean.get(), (int) $7);
-      driver.im_stack.AddImagePointer(res);
+      ADD_VARSTACK(InrImage,res);
     }
     |
     T_localSD2 T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr T_CL_PAR
     {
-      InrImage::ptr mean  ( driver.im_stack.GetLastImage());
-      InrImage::ptr im    ( driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage, mean);
+      GET_VARSTACK_VALUE(InrImage, im);
       InrImage::ptr res(Func_localSD2( im.get(), mean.get(), (int) $7));
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
     }
       |
       OpImage T_OP_PAR var_image T_COMMA ASTRING T_CL_PAR
@@ -7474,7 +6796,7 @@ image:
         driver.err_print("OpImage() erreur ... \n");
       FinSi
   
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
 
       }
       |
@@ -7491,7 +6813,7 @@ image:
       driver.err_print("OpImage() erreur ... \n");
     FinSi
 
-    driver.im_stack.AddImage(res);
+    ADD_VARSTACK_PTR(InrImage,res);
 
 
       }
@@ -7510,7 +6832,7 @@ image:
       driver.err_print("OpImage() erreur ... \n");
     FinSi
 
-    driver.im_stack.AddImage(res);
+    ADD_VARSTACK_PTR(InrImage,res);
 
       }
       |
@@ -7527,7 +6849,7 @@ image:
       driver.err_print("OpImage() erreur ... \n");
     FinSi
 
-    driver.im_stack.AddImage(res);
+    ADD_VARSTACK_PTR(InrImage,res);
 
       }
       |
@@ -7545,7 +6867,7 @@ image:
           driver.err_print("OpImage() erreur ... \n");
         FinSi
 
-        driver.im_stack.AddImage(res);
+        ADD_VARSTACK_PTR(InrImage,res);
       }
       |
       OpImage T_OP_PAR var_image T_COMMA var_image T_COMMA var_image T_COMMA
@@ -7563,7 +6885,7 @@ image:
         Si (!res.get()) Alors
           driver.err_print("OpImage() erreur ... \n");
         FinSi
-        driver.im_stack.AddImage(res);
+        ADD_VARSTACK_PTR(InrImage,res);
       }
       |
       FILTER
@@ -7589,7 +6911,7 @@ image:
         j = filter(i,1,0,0,0)
 
      **/
-        InrImage::ptr im (driver.im_stack.GetLastImage());
+        GET_VARSTACK_VALUE(InrImage,im);
 
         InrImage::ptr res( Func_Filter( im.get(),
                   $5,
@@ -7600,7 +6922,7 @@ image:
         Si (!res.get()) Alors
           driver.err_print("Filter() erreur ... \n");
         FinSi
-        driver.im_stack.AddImage(res);
+        ADD_VARSTACK_PTR(InrImage,res);
       }
       | T_itk T_POINT T_CannyEdgeDetector T_OP_PAR var_image T_COMMA expr T_COMMA expr  T_CL_PAR
       {
@@ -7612,7 +6934,7 @@ image:
         Si (!res.get()) Alors
           driver.err_print("itk.CannyEdgeDetector() error ... \n");
         FinSi
-        driver.im_stack.AddImage(res);
+        ADD_VARSTACK_PTR(InrImage,res);
       }
       |
       T_vtkDist T_OP_PAR var_image T_CL_PAR
@@ -7623,7 +6945,7 @@ image:
         Si (!res.get()) Alors
           driver.err_print("vtkDist() erreur ... \n");
         FinSi
-        driver.im_stack.AddImage(res);
+        ADD_VARSTACK_PTR(InrImage,res);
       }
       |
       T_vtkMedian3D T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
@@ -7636,7 +6958,7 @@ image:
         Si (!res.get()) Alors
           driver.err_print("vtkMedian3D() erreur ... \n");
         FinSi
-        driver.im_stack.AddImage(res);
+        ADD_VARSTACK_PTR(InrImage,res);
       }
       |
       T_AndreDist T_OP_PAR var_image T_CL_PAR
@@ -7658,19 +6980,20 @@ image:
           delete res;
           res=NULL;
         Sinon
-          driver.im_stack.AddImage(res);
+          ADD_VARSTACK_PTR(InrImage,res);
         FinSi
 */
-      }
-      |
-      T_2DFlux T_OP_PAR expr_image T_COMMA  expr T_CL_PAR
-      {
-    InrImage::ptr res (Func_2DFlux( driver.im_stack.GetLastImage().get(),$5));
+    }
+    |
+    T_2DFlux T_OP_PAR expr_image T_COMMA  expr T_CL_PAR
+    {
+      GET_VARSTACK_VALUE(InrImage, input);
+        InrImage::ptr res (Func_2DFlux(input.get(),$5));
 
-    Si (res.get()) Alors
-      driver.err_print("2DFlux() error ... \n");
-    FinSi
-    driver.im_stack.AddImage(res);
+      Si (res.get()) Alors
+        driver.err_print("2DFlux() error ... \n");
+      FinSi
+      ADD_VARSTACK_PTR(InrImage,res);
       }
       |
       T_OutFlux T_OP_PAR var_image T_CL_PAR
@@ -7681,7 +7004,7 @@ image:
       Si (!res.get()) Alors
         driver.err_print("OutFlux() erreur ... \n");
       FinSi
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
       }
       |
       T_OutFluxScalar T_OP_PAR var_image T_CL_PAR
@@ -7691,7 +7014,7 @@ image:
     Si (!res.get()) Alors
       driver.err_print("OutFluxScalar() erreur ... \n");
     FinSi
-    driver.im_stack.AddImage(res);
+    ADD_VARSTACK_PTR(InrImage,res);
       }
       |
       T_OrientationRatio T_OP_PAR var_image T_CL_PAR
@@ -7701,7 +7024,7 @@ image:
     Si (!res.get()) Alors
       driver.err_print("OrientationRatio() erreur ... \n");
     FinSi
-    driver.im_stack.AddImage(res);
+    ADD_VARSTACK_PTR(InrImage,res);
       }
       |
       T_Skeleton T_OP_PAR var_image T_COMMA var_image T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
@@ -7734,7 +7057,7 @@ image:
     Si (!res.get()) Alors
       driver.err_print("Skeleton() error ... \n");
     FinSi
-    driver.im_stack.AddImage(res);
+    ADD_VARSTACK_PTR(InrImage,res);
       }
       |
       T_SimplePoints T_OP_PAR var_image  T_CL_PAR
@@ -7745,7 +7068,7 @@ image:
     Si !res.get() Alors
       driver.err_print("SimplePoints() error ... \n");
     FinSi
-    driver.im_stack.AddImage(res);
+    ADD_VARSTACK_PTR(InrImage,res);
       }
       |
       T_CircleIntegral T_OP_PAR var_image T_COMMA var_image T_COMMA var_image T_COMMA
@@ -7766,7 +7089,7 @@ image:
         Si !res.get() Alors
           driver.err_print("CircleInt() error ... \n");
         FinSi
-        driver.im_stack.AddImage(res);
+        ADD_VARSTACK_PTR(InrImage,res);
       }
       |
       T_CircleIntegralExc T_OP_PAR var_image T_COMMA var_image T_COMMA var_image T_COMMA
@@ -7786,7 +7109,7 @@ image:
       Si !res.get() Alors
         driver.err_print("CircleInt() error ... \n");
       FinSi
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
       }
       |
       T_CircleIntSdExc T_OP_PAR var_image T_COMMA var_image T_COMMA var_image T_COMMA
@@ -7827,7 +7150,7 @@ image:
         Si !res.get() Alors
           driver.err_print("CircleIntSdExc() error ... \n");
         FinSi
-        driver.im_stack.AddImage(res);
+        ADD_VARSTACK_PTR(InrImage,res);
       }
       |
       T_CircleMinIntSdExc T_OP_PAR var_image T_COMMA var_image T_COMMA var_image T_COMMA
@@ -7874,7 +7197,7 @@ image:
       Si !res.get() Alors
         driver.err_print("CircleIntSdExc() error ... \n");
       FinSi
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
       }
       |
       T_LocalExtrema T_OP_PAR var_image T_COMMA var_image T_COMMA var_image T_COMMA var_image T_CL_PAR
@@ -7894,7 +7217,7 @@ image:
       driver.err_print("LocalExtrema() error ... \n");
     FinSi
 
-    driver.im_stack.AddImage(res);
+    ADD_VARSTACK_PTR(InrImage,res);
       }
       |
       T_LocalExtrema T_OP_PAR var_image T_COMMA var_image T_COMMA var_image T_COMMA var_image T_COMMA expr T_CL_PAR
@@ -7915,7 +7238,7 @@ image:
     Si !res.get() Alors
       driver.err_print("LocalExtrema() error ... \n");
     FinSi
-    driver.im_stack.AddImage(res);
+    ADD_VARSTACK_PTR(InrImage,res);
       }
      |
       T_NormalField T_OP_PAR var_image  T_CL_PAR
@@ -7926,7 +7249,7 @@ image:
     Si !res.get() Alors
       driver.err_print("NormalField() error ... \n");
     FinSi
-    driver.im_stack.AddImage(res);
+    ADD_VARSTACK_PTR(InrImage,res);
       }
       |
       T_NormalField T_OP_PAR var_image T_COMMA var_image T_CL_PAR
@@ -7940,7 +7263,7 @@ image:
     Si !res.get() Alors
       driver.err_print("NormalField() error ... \n");
     FinSi
-    driver.im_stack.AddImage(res);
+    ADD_VARSTACK_PTR(InrImage,res);
       }
       |
       T_DirConnectivity T_OP_PAR var_image T_COMMA var_image T_CL_PAR
@@ -7954,31 +7277,31 @@ image:
     Si res.get() Alors
       driver.err_print("DirConnectivity() error ... \n");
     FinSi
-    driver.im_stack.AddImage(res);
-      }
-     |
-      NormGrad
-      T_OP_PAR expr_image
-      T_COMMA expr T_CL_PAR
-      {
-    InrImage::ptr input ( driver.im_stack.GetLastImage());
-
-    InrImage::ptr res ( Func_NormGrad( input.get(), $5));
-    Si (!res.get()) Alors
-      driver.err_print("NormGrad() error ... \n");
-    FinSi
-    driver.im_stack.AddImage(res);
-      }
-      |
-      T_DiscNormGrad
-      T_OP_PAR var_image  T_CL_PAR
-      {
+    ADD_VARSTACK_PTR(InrImage,res);
+    }
+    |
+    NormGrad
+    T_OP_PAR expr_image
+    T_COMMA expr T_CL_PAR
+    {
+      GET_VARSTACK_VALUE(InrImage, input);
+  
+      InrImage::ptr res ( Func_NormGrad( input.get(), $5));
+      Si (!res.get()) Alors
+        driver.err_print("NormGrad() error ... \n");
+      FinSi
+      ADD_VARSTACK_PTR(InrImage,res);
+    }
+    |
+    T_DiscNormGrad
+    T_OP_PAR var_image  T_CL_PAR
+    {
       GET_VARSTACK_VALUE(InrImage, im);
     InrImage::ptr res (Func_DiscNormGrad( im.get()));
     Si !res.get() Alors
       driver.err_print("discnormgrad() erreur ... \n");
     FinSi
-    driver.im_stack.AddImage(res);
+    ADD_VARSTACK_PTR(InrImage,res);
       }
       |
       T_DiscMeanCurvature
@@ -7989,7 +7312,7 @@ image:
     Si !res.get() Alors
       driver.err_print("DiscMeanCurvature() erreur ... \n");
     FinSi
-    driver.im_stack.AddImage(res);
+    ADD_VARSTACK_PTR(InrImage,res);
       }
       |
       T_gradient
@@ -8002,7 +7325,7 @@ image:
     Si !res.get() Alors
       driver.err_print("Filter() erreur ... \n");
     FinSi
-    driver.im_stack.AddImage(res);
+    ADD_VARSTACK_PTR(InrImage,res);
       }
         |
         T_Laplacian T_OP_PAR var_image  T_CL_PAR
@@ -8020,7 +7343,7 @@ image:
     Si !res.get() Alors
       driver.err_print("Filter() erreur ... \n");
     FinSi
-    driver.im_stack.AddImage(res);
+    ADD_VARSTACK_PTR(InrImage,res);
         }
       |
       SecDerGrad
@@ -8032,7 +7355,7 @@ image:
         Si !res.get() Alors
           fprintf(stderr,"SecDerGrad() erreur ... \n");
         FinSi
-        driver.im_stack.AddImage(res);
+        ADD_VARSTACK_PTR(InrImage,res);
       }
       |
       SecDerGrad2
@@ -8045,13 +7368,13 @@ image:
     Si !res.get() Alors
       fprintf(stderr,"SecDerGrad2() erreur ... \n");
     FinSi
-    driver.im_stack.AddImage(res);
+    ADD_VARSTACK_PTR(InrImage,res);
     }
     | T_AutoCrop T_OP_PAR expr_image T_COMMA expr T_CL_PAR
     {
-        InrImage::ptr im ( driver.im_stack.GetLastImage());
+        GET_VARSTACK_VALUE(InrImage,im);
         InrImage::ptr res ( Func_AutoCrop(im.get(),(int)$5));
-        driver.im_stack.AddImage(res);
+        ADD_VARSTACK_PTR(InrImage,res);
     }
 /*
     |
@@ -8077,7 +7400,7 @@ image:
       Si !res.get() Alors
         fprintf(stderr,"SubImage() erreur ... \n");
       FinSi
-        driver.im_stack.AddImage(res);
+        ADD_VARSTACK_PTR(InrImage,res);
     }
 */
 /* Deprecated
@@ -8095,7 +7418,7 @@ image:
         if (!res.get()) {
           fprintf(stderr,"SubImage() erreur ... \n");
         }
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
       }
 */
       |
@@ -8137,7 +7460,7 @@ image:
     Si !res.get() Alors
       fprintf(stderr,"SubImage() erreur ... \n");
     FinSi
-    driver.im_stack.AddImage(res);
+    ADD_VARSTACK_PTR(InrImage,res);
       }
       |
       T_EDPdilate T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
@@ -8148,7 +7471,7 @@ image:
     Si !res.get() Alors
       fprintf(stderr,"SubImage() erreur ... \n");
     FinSi
-    driver.im_stack.AddImage(res);
+    ADD_VARSTACK_PTR(InrImage,res);
       }
       |
       T_EDPdilate T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_CL_PAR
@@ -8158,7 +7481,7 @@ image:
     Si !res.get() Alors
       fprintf(stderr,"SubImage() erreur ... \n");
     FinSi
-    driver.im_stack.AddImage(res);
+    ADD_VARSTACK_PTR(InrImage,res);
       }
       |
       T_EDPdilate T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
@@ -8170,7 +7493,7 @@ image:
     Si (!res.get()) Alors
       fprintf(stderr,"SubImage() erreur ... \n");
     FinSi
-    driver.im_stack.AddImage(res);
+    ADD_VARSTACK_PTR(InrImage,res);
       }
       |
       T_EDPerode T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
@@ -8181,7 +7504,7 @@ image:
     Si !res.get() Alors
       fprintf(stderr,"SubImage() erreur ... \n");
     FinSi
-    driver.im_stack.AddImage(res);
+    ADD_VARSTACK_PTR(InrImage,res);
       }
       |
       T_EDPerode T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_CL_PAR
@@ -8191,7 +7514,7 @@ image:
     Si !res.get() Alors
       fprintf(stderr,"SubImage() erreur ... \n");
     FinSi
-    driver.im_stack.AddImage(res);
+    ADD_VARSTACK_PTR(InrImage,res);
       }
       |
       T_EDPerode T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
@@ -8216,7 +7539,7 @@ image:
     Si !res.get() Alors
       fprintf(stderr,"SubImage() erreur ... \n");
     FinSi
-    driver.im_stack.AddImage(res);
+    ADD_VARSTACK_PTR(InrImage,res);
       }
       |
       T_EDPopen
@@ -8239,7 +7562,7 @@ image:
     Si !res.get() Alors
       fprintf(stderr,"SubImage() erreur ... \n");
     FinSi
-    driver.im_stack.AddImage(res);
+    ADD_VARSTACK_PTR(InrImage,res);
       }
       |
       T_EDPopen
@@ -8267,7 +7590,7 @@ image:
     Si !res.get() Alors
       fprintf(stderr,"SubImage() erreur ... \n");
     FinSi
-    driver.im_stack.AddImage(res);
+    ADD_VARSTACK_PTR(InrImage,res);
       }
       |
       T_EDPclose
@@ -8281,7 +7604,7 @@ image:
     Si !res.get() Alors
       fprintf(stderr,"SubImage() erreur ... \n");
     FinSi
-    driver.im_stack.AddImage(res);
+    ADD_VARSTACK_PTR(InrImage,res);
       }
       |
       T_EDPclose
@@ -8297,7 +7620,7 @@ image:
     Si !res.get() Alors
       fprintf(stderr,"SubImage() erreur ... \n");
     FinSi
-    driver.im_stack.AddImage(res);
+    ADD_VARSTACK_PTR(InrImage,res);
       }
 /*
       |
@@ -8307,7 +7630,7 @@ image:
     Si !res.get() Alors
       fprintf(stderr,"SubImage() erreur ... \n");
     FinSi
-    driver.im_stack.AddImage(res);
+    ADD_VARSTACK_PTR(InrImage,res);
       }
 */
 /*
@@ -8318,7 +7641,7 @@ image:
     Si !res.get() Alors
       fprintf(stderr,"GetDiffCoeff() erreur ... \n");
     FinSi
-    driver.im_stack.AddImage(res);
+    ADD_VARSTACK_PTR(InrImage,res);
       }
 */
 /*
@@ -8336,7 +7659,7 @@ image:
     Si !res.get() Alors
       fprintf(stderr,"Func_LevelSets_Init() erreur ... \n");
     FinSi
-    driver.im_stack.AddImage(res);
+    ADD_VARSTACK_PTR(InrImage,res);
       }
       |
       T_LevelSetsCURV T_POINT TInit T_OP_PAR var_image T_COMMA var_image  T_CL_PAR
@@ -8357,7 +7680,7 @@ image:
     Si !res.get() Alors
       fprintf(stderr,"Func_LevelSets_Init() erreur ... \n");
     FinSi
-    driver.im_stack.AddImage(res);
+    ADD_VARSTACK_PTR(InrImage,res);
     }
     |
     T_LevelSetsCURV T_POINT T_GetOutput
@@ -8367,7 +7690,7 @@ image:
     Si (!res.get()) Alors
       fprintf(stderr,"Func_LevelSets_GetOutput() error ... \n");
     FinSi
-    driver.im_stack.AddImage(res);
+    ADD_VARSTACK_PTR(InrImage,res);
       }
       |
       T_LevelSetsCURV T_POINT T_GetAttachVect  T_OP_PAR var_image T_CL_PAR
@@ -8378,7 +7701,7 @@ image:
     Si !res.get() Alors
       fprintf(stderr,"Func_GetAttachVect() erreur ... \n");
     FinSi
-    driver.im_stack.AddImage(res);
+    ADD_VARSTACK_PTR(InrImage,res);
       }
 */
 /*
@@ -8411,7 +7734,7 @@ image:
         error = Func_ItereAnisoGS();
       FinPour
 
-      driver.im_stack.AddImage(InrImage::ptr(Func_AnisoGS_GetOutput()));
+      ADD_VARSTACK(InrImage,InrImage::ptr(Func_AnisoGS_GetOutput()));
       Func_EndAnisoGS();
 
 
@@ -8449,7 +7772,7 @@ image:
         fprintf(stderr,"AnisoGS() erreur ... \n");
       FinSi
       Func_EndAnisoGS();
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
     }
     |
     T_vtkAnisoGS
@@ -8481,7 +7804,7 @@ image:
       Si !res.get() Alors
         fprintf(stderr,"Func_vtkAnisoGS() erreur ... \n");
       FinSi
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
 
     }
         |
@@ -8509,7 +7832,7 @@ image:
         fprintf(stderr,"AnisoGS() erreur ... \n");
       FinSi
       Func_EndAnisoGS();
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
 
     }
         |
@@ -8524,7 +7847,7 @@ image:
       Si !res.get() Alors
         fprintf(stderr,"Func_InitWeickert() erreur ... \n");
       FinSi
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
         }
         |
         T_AnisoCW        T_POINT TInit
@@ -8538,7 +7861,7 @@ image:
       Si !res.get() Alors
         fprintf(stderr,"Func_InitWeickert() erreur ... \n");
       FinSi
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
         }
         |
         T_SRAD_qcoeff T_OP_PAR var_image T_CL_PAR
@@ -8548,7 +7871,7 @@ image:
       Si !res.get() Alors
         fprintf(stderr,"Func_SRAD_qcoeff() erreur ... \n");
       FinSi
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
         }
         |
         T_AnisoSRAD
@@ -8567,13 +7890,13 @@ image:
       Si !res.get() Alors
         fprintf(stderr,"Func_AnisoSRAD() erreur ... \n");
       FinSi
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
     }
     |
     T_AnisoSRAD
     T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
     {
-      GET_VARSTACK_OBJECT(ImageExtent, ImageExtent<float>, extent)
+      GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
       float dt = (float) $5;
       int numit = (int) $7;
@@ -8586,13 +7909,13 @@ image:
       Si !res.get() Alors
         fprintf(stderr,"Func_AnisoSRAD() erreur ... \n");
       FinSi
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
     }
     |
     T_AnisoSRAD
     T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
     {
-      GET_VARSTACK_OBJECT(ImageExtent, ImageExtent<float>, extent)
+      GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
       float dt = (float) $5;
       int numit = (int) $7;
@@ -8606,13 +7929,13 @@ image:
       Si !res.get() Alors
         fprintf(stderr,"Func_AnisoSRAD() erreur ... \n");
       FinSi
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
     }
     |
     T_AnisoSRAD2
     T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
     {
-      GET_VARSTACK_OBJECT(ImageExtent, ImageExtent<float>, extent)
+      GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
       float dt = (float) $5;
       int numit = (int) $7;
@@ -8627,14 +7950,14 @@ image:
         fprintf(stderr,"Func_AnisoSRAD() erreur ... \n");
       FinSi
 
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
     }
     |
       T_AnisoSRAD2
       T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA
       expr T_COMMA image_extent T_CL_PAR
     {
-      GET_VARSTACK_OBJECT(ImageExtent, ImageExtent<float>, extent)
+      GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
       float dt = (float) $5;
       int numit = (int) $7;
@@ -8649,12 +7972,12 @@ image:
         fprintf(stderr,"Func_AnisoSRAD() erreur ... \n");
       FinSi
 
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
     }
     |
     T_AnisoLeeAdd2 T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
     {
-      GET_VARSTACK_OBJECT(ImageExtent, ImageExtent<float>, extent)
+      GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
       float dt = (float) $5;
       int numit = (int) $7;
@@ -8668,12 +7991,12 @@ image:
       Si !res.get() Alors
         fprintf(stderr,"Func_AnisoSRAD() erreur ... \n");
       FinSi
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
     }
     |
     T_AnisoDPAD T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
     {
-      GET_VARSTACK_OBJECT(ImageExtent, ImageExtent<float>, extent)
+      GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
       float dt         = (float) $5;
       int numit        = (int) $7;
@@ -8687,13 +8010,13 @@ image:
       Si !res.get() Alors
         fprintf(stderr,"Func_AnisoSRAD() erreur ... \n");
       FinSi
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
     }
     |
     T_AnisoDPAD2
     T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA image_extent T_CL_PAR
     {
-      GET_VARSTACK_OBJECT(ImageExtent, ImageExtent<float>, extent)
+      GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
       float dt = (float) $5;
       int numit = (int) $7;
@@ -8707,7 +8030,7 @@ image:
       Si !res.get() Alors
         fprintf(stderr,"Func_AnisoSRAD() erreur ... \n");
       FinSi
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
     }
     |
     T_AnisoNRAD
@@ -8731,7 +8054,7 @@ image:
         stationary noise and MRI is for MRI style noise. In the case of MRI,
         the filter is designed to run on the square of the image intensity.
       **/
-      GET_VARSTACK_OBJECT(ImageExtent, ImageExtent<float>, extent)
+      GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
       int mode = (int) $5;
       float dt = (float) $7;
@@ -8747,7 +8070,7 @@ image:
       Si !res.get() Alors
         fprintf(stderr,"Func_AnisoNRAD() erreur ... \n");
       FinSi
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
     }
     |
     T_AnisoRudinMult
@@ -8769,7 +8092,7 @@ image:
       Si !res.get() Alors
         fprintf(stderr,"Func_AnisoRudinMult() erreur ... \n");
       FinSi
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
     }
     |
     TAddGaussNoise
@@ -8797,7 +8120,7 @@ image:
       addnoise = new AjouteBruit();
       addnoise->AjouteBruitGaussien(res.get(),mean,sd);
       delete addnoise;
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
 
     }
         |
@@ -8821,7 +8144,7 @@ image:
                 $11, $13  // dimension of the new image
                 ));
 
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
         }
         | T_Xpos T_OP_PAR var_image  T_CL_PAR
         {
@@ -8858,7 +8181,7 @@ image:
         FinPour
         FinPour
         //cout << "(*res)(10,20,0)=" << (*res)(10,20,0) << endl;
-        driver.im_stack.AddImage(res);
+        ADD_VARSTACK_PTR(InrImage,res);
         }
         | T_Ypos T_OP_PAR var_image  T_CL_PAR
         {
@@ -8895,7 +8218,7 @@ image:
             FinPour
             FinPour
 
-        driver.im_stack.AddImage(res);
+        ADD_VARSTACK_PTR(InrImage,res);
         }
         | T_Zpos T_OP_PAR var_image  T_CL_PAR
         {
@@ -8932,7 +8255,7 @@ image:
             FinPour
             FinPour
 
-        driver.im_stack.AddImage(res);
+        ADD_VARSTACK_PTR(InrImage,res);
         }
         | T_SpacePos T_OP_PAR var_image  T_CL_PAR
         {
@@ -8965,50 +8288,50 @@ image:
         FinPour
         FinPour
         FinPour
-        driver.im_stack.AddImage(res);
+        ADD_VARSTACK_PTR(InrImage,res);
         }
         |
         VAR_SURFDRAW T_POINT T_getimage
         {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
-          driver.im_stack.AddImage(InrImage::ptr(( varsurfd->Pointer())->GetCanvas()->GetGLImage()));
+          ADD_VARSTACK(InrImage,InrImage::ptr(( varsurfd->Pointer())->GetCanvas()->GetGLImage()));
         }
         |
         VAR_SURFDRAW T_POINT T_GetImageFromX
         {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           driver.yyiperror("Not available in new wxwidgets version of the 3D viewer ! ");
-          driver.im_stack.AddImage(InrImage::ptr());
+          YYABORT;
 /*
-          driver.im_stack.AddImage((*(Viewer3D_ptr*) $1->Pointer())->GetInrImage());
+          ADD_VARSTACK(InrImage,(*(Viewer3D_ptr*) $1->Pointer())->GetInrImage());
 */
     }
     |
     VAR_IMAGEDRAW T_POINT T_getimage
     {
       GET_VARSTACK_VALUE(DessinImage, imdraw)
-      driver.im_stack.AddImagePointer(imdraw->GetInrImage());
+      ADD_VARSTACK(InrImage, imdraw->GetInrImage());
     }
     |
     T_threscross T_OP_PAR var_image T_COMMA expr T_CL_PAR
     {
       GET_VARSTACK_VALUE(InrImage, im);
       InrImage::ptr res ( Func_ThresholdCrossing( im.get(), $5));
-       driver.im_stack.AddImage(res);
+       ADD_VARSTACK_PTR(InrImage,res);
     }
     |
     T_IsocontourPoints T_OP_PAR var_image T_COMMA expr T_CL_PAR
     {
       GET_VARSTACK_VALUE(InrImage, im);
       InrImage::ptr res ( Func_IsocontourPoints( im.get(), $5));
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
     }
     |
     T_IsosurfDist T_OP_PAR var_image T_COMMA expr T_CL_PAR
     {
       GET_VARSTACK_VALUE(InrImage, im);
       InrImage::ptr res ( Func_IsosurfDist( im.get(), $5));
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
 
     }
     |
@@ -9016,7 +8339,7 @@ image:
     {
       GET_VARSTACK_VALUE(InrImage, im);
       InrImage::ptr res ( Func_vtkIsoContourDist( im.get(), $5));
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
     }
     |
     T_vtkFastMarching T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr T_CL_PAR
@@ -9030,12 +8353,15 @@ image:
       Runs the fast marching algorithm
      **/
 
-        InrImage::ptr    init (driver.im_stack.GetLastImage()); // 2nd param
-        InrImage::ptr    input(driver.im_stack.GetLastImage()); // 1st param
-        float   maxtime = (float) $7;
+      // 2nd param
+      GET_VARSTACK_VALUE(InrImage, init);
+      // 1st param
+      GET_VARSTACK_VALUE(InrImage, input);
 
-        InrImage::ptr res ( Func_vtkFastMarching( input.get(), init.get(),  maxtime));
-        driver.im_stack.AddImage(res);
+      float   maxtime = (float) $7;
+
+      InrImage::ptr res ( Func_vtkFastMarching( input.get(), init.get(),  maxtime));
+      ADD_VARSTACK_PTR(InrImage,res);
     }
     |
     T_vtkFastMarchingTarget T_OP_PAR expr_image T_COMMA expr_image
@@ -9054,8 +8380,8 @@ image:
       Runs the fast marching algorithm
      **/
 
-      InrImage::ptr init  (driver.im_stack.GetLastImage());
-      InrImage::ptr input (driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,init);
+      GET_VARSTACK_VALUE(InrImage,input);
       float   maxtime = (float) $7;
 
       InrImage::ptr res ( Func_vtkFastMarchingTarget( input.get(), init.get(),  maxtime,
@@ -9063,7 +8389,7 @@ image:
               (int) round($11),
               (int) round($13)
               ));
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
     }
     |
     T_vtkFastMarching T_OP_PAR expr_image T_COMMA expr_image T_COMMA
@@ -9080,14 +8406,14 @@ image:
       Runs the fast marching algorithm
      **/
 
-      InrImage::ptr init  (driver.im_stack.GetLastImage());
-      InrImage::ptr input (driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,init);
+      GET_VARSTACK_VALUE(InrImage,input);
       float   mean    = (float) $7;
       float   sd      = (float) $9;
       float   maxtime = (float) $11;
 
       InrImage::ptr res ( Func_vtkFastMarching( input.get(), init.get(), mean, sd, maxtime));
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
     }
     |
     T_vtkFastMarching T_OP_PAR expr_image T_COMMA expr_image T_COMMA
@@ -9106,15 +8432,15 @@ image:
      **/
       /* Version without initialization */
 
-      InrImage::ptr init  (driver.im_stack.GetLastImage());
-      InrImage::ptr input (driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,init);
+      GET_VARSTACK_VALUE(InrImage,input);
       float   mean     = (float) $7;
       float   sd       = (float) $9;
       float   maxtime  = (float) $11;
       int     inittype = (int) $13;
 
       InrImage::ptr res ( Func_vtkFastMarching( input.get(), init.get(), mean, sd, maxtime,inittype));
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
     }
     |
     T_vtkFastMarching T_OP_PAR expr_image T_COMMA expr_image T_COMMA
@@ -9135,41 +8461,39 @@ image:
      **/
       /* Version without initialization */
 
-      InrImage::ptr init ( driver.im_stack.GetLastImage());
-      InrImage::ptr input( driver.im_stack.GetLastImage());
-      float   maxtime    = (float) $9;
       int     inittype   = (int)   $11;
+      float   maxtime    = (float) $9;
       GET_VARSTACK_VALUE(InrImage, im);
+      GET_VARSTACK_VALUE(InrImage, init);
+      GET_VARSTACK_VALUE(InrImage, input);
 
       InrImage::ptr res ( Func_vtkFastMarching(
                   input.get(),
                   init.get(),
                   im.get(),
                   maxtime,inittype));
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
     }
     |
     T_Convolve T_OP_PAR var_image T_COMMA var_image T_CL_PAR
     {
-      Variable<InrImage>::ptr  varim2(driver.var_stack.GetLastVar<InrImage>());
-      Variable<InrImage>::ptr  varim1(driver.var_stack.GetLastVar<InrImage>());
-      InrImage::ptr res ( Func_Convolve(
-                  varim1->Pointer().get(),
-                  varim2->Pointer().get()));
-      driver.im_stack.AddImage(res);
+      GET_VARSTACK_VALUE(InrImage, im2);
+      GET_VARSTACK_VALUE(InrImage, im1);
+      InrImage::ptr res ( Func_Convolve(im1.get(), im2.get()));
+      ADD_VARSTACK_PTR(InrImage,res);
 
       }
       |
       T_ConvolveMask T_OP_PAR var_image T_COMMA var_image T_COMMA expr_image T_CL_PAR
       {
-      Variable<InrImage>::ptr  varim2(driver.var_stack.GetLastVar<InrImage>());
-      Variable<InrImage>::ptr  varim1(driver.var_stack.GetLastVar<InrImage>());
-        InrImage::ptr mask (driver.im_stack.GetLastImage());
+        GET_VARSTACK_VALUE(InrImage,mask);
+        Variable<InrImage>::ptr  varim2(driver.var_stack.GetLastVar<InrImage>());
+        Variable<InrImage>::ptr  varim1(driver.var_stack.GetLastVar<InrImage>());
 
         InrImage::ptr res ( Func_ConvolveMask(varim1->Pointer().get(),
                   varim2->Pointer().get(),
                   mask.get()));
-        driver.im_stack.AddImage(res);
+        ADD_VARSTACK_PTR(InrImage,res);
 
       }
       |
@@ -9177,14 +8501,14 @@ image:
       {
       GET_VARSTACK_VALUE(InrImage, im);
         InrImage::ptr res ( Func_Chamfer(im.get(), $5, $7, $9));
-        driver.im_stack.AddImage(res);
+        ADD_VARSTACK_PTR(InrImage,res);
         }
         |
         T_Chamfer2DT T_OP_PAR var_image T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
       GET_VARSTACK_VALUE(InrImage, im);
           InrImage::ptr res ( Func_Chamfer2(im.get(), $5, $7, $9));
-          driver.im_stack.AddImage(res);
+          ADD_VARSTACK_PTR(InrImage,res);
 
         }
         |
@@ -9198,7 +8522,7 @@ image:
 
       GET_VARSTACK_VALUE(InrImage, im);
         InrImage::ptr res ( Func_Chamfer2(im.get(), a,b,c,dmax));
-        driver.im_stack.AddImage(res);
+        ADD_VARSTACK_PTR(InrImage,res);
 
         }
         |
@@ -9210,7 +8534,7 @@ image:
         InrImage::ptr  res ( Func_Chamfer2(im.get(),
                   0.92644, 1.34065, 1.65849,
                   dmax));
-        driver.im_stack.AddImage(res);
+        ADD_VARSTACK_PTR(InrImage,res);
 
         }
         |
@@ -9222,7 +8546,7 @@ image:
         InrImage::ptr res ( Func_Chamfer2Signed(im.get(),
                     0.92644, 1.34065, 1.65849,
                     dmax));
-        driver.im_stack.AddImage(res);
+        ADD_VARSTACK_PTR(InrImage,res);
 
         }
         |
@@ -9233,7 +8557,7 @@ image:
       GET_VARSTACK_VALUE(InrImage, im);
         InrImage::ptr res ( Func_vtkSignedBorgefors(im.get(),
                     dmax));
-        driver.im_stack.AddImage(res);
+        ADD_VARSTACK_PTR(InrImage,res);
         }
         |
         T_vtkSignedFMDist T_OP_PAR var_image  T_COMMA expr T_CL_PAR
@@ -9243,7 +8567,7 @@ image:
       GET_VARSTACK_VALUE(InrImage, im);
         InrImage::ptr res ( Func_vtkSignedFMDist(im.get(),
                      dmax));
-        driver.im_stack.AddImage(res);
+        ADD_VARSTACK_PTR(InrImage,res);
 
         }
         |
@@ -9254,7 +8578,7 @@ image:
       GET_VARSTACK_VALUE(InrImage, im);
         InrImage::ptr res ( Func_PropagationDistance(im.get(),
                       dmax));
-        driver.im_stack.AddImage(res);
+        ADD_VARSTACK_PTR(InrImage,res);
         }
         |
         T_PropagationDist2 T_OP_PAR var_image  T_COMMA expr T_CL_PAR
@@ -9264,7 +8588,7 @@ image:
       GET_VARSTACK_VALUE(InrImage, im);
         InrImage::ptr res ( Func_PropagationDistance2(im.get(),
                       dmax));
-        driver.im_stack.AddImage(res);
+        ADD_VARSTACK_PTR(InrImage,res);
         }
         |
         T_PropDanielsson T_OP_PAR var_image  T_COMMA expr T_CL_PAR
@@ -9275,7 +8599,7 @@ image:
         InrImage::ptr res ( Func_PropagationDanielsson(im.get(),
                        dmax));
 
-        driver.im_stack.AddImage(res);
+        ADD_VARSTACK_PTR(InrImage,res);
         }
         |
         T_vtkPropDanielsson T_OP_PAR var_image  T_COMMA expr T_CL_PAR
@@ -9285,7 +8609,7 @@ image:
       GET_VARSTACK_VALUE(InrImage, im);
         InrImage::ptr res ( Func_vtkPropDanielsson(im.get(),
                        -dmax,dmax));
-        driver.im_stack.AddImage(res);
+        ADD_VARSTACK_PTR(InrImage,res);
         }
         |
         T_vtkPropDanielsson T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_CL_PAR
@@ -9296,7 +8620,7 @@ image:
       GET_VARSTACK_VALUE(InrImage, im);
         InrImage::ptr res ( Func_vtkPropDanielsson(im.get(),
                        dmin,dmax));
-        driver.im_stack.AddImage(res);
+        ADD_VARSTACK_PTR(InrImage,res);
         }
         |
         T_vtkPropDaniel2 T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
@@ -9323,7 +8647,7 @@ image:
         InrImage::ptr res ( Func_vtkPropDaniel2(im.get(),
                     threshold,dmin,dmax));
 
-        driver.im_stack.AddImage(res);
+        ADD_VARSTACK_PTR(InrImage,res);
         }
          |
         T_CC T_OP_PAR expr_image T_CL_PAR
@@ -9350,9 +8674,9 @@ image:
             To analyze connected component from an isocontour value n for an image i,
             you can call i_cc=CC((FLOAT)i-n)
         **/
-      InrImage::ptr im(driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,im);
       InrImage::ptr res ( Func_CC(im.get()));
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
     }
 
 /*
@@ -9395,54 +8719,6 @@ image:
           - vectorial to vectorial
       **/
 
-
-/*
-        BasicVariable::ptr param2(driver.var_stack.GetLastBasicVar());
-        BasicVariable::ptr param1(driver.var_stack.GetLastBasicVar());
-
-        if (param1.get()&&param2.get()) {
-          if ((param1->IsNumeric())&&(param2->IsNumeric())) {
-            double val1 = param1->GetValueAsDouble();
-            double val2 = param2->GetValueAsDouble();
-            double res = (val1>val2)?val1:val2;
-            ADD_VARSTACK_FLOAT(res);
-          }
-          else
-          if ((param1->Type()==type_image)&&(param2->Type()==type_image)) {
-            DYNAMIC_CAST_VARIABLE(InrImage,param1,varim1) 
-            DYNAMIC_CAST_VARIABLE(InrImage,param2,varim2) 
-
-            InrImage::ptr im1(varim1->Pointer());
-            InrImage::ptr im2(varim2->Pointer());
-            double val1,val2;
-            InrImage::ptr res;
-            // TODO: take advantage of temporary images here??
-            res = InrImage::ptr(new InrImage( im1->GetFormat(),
-                                              im1->GetVDim(),
-                                              "max_im_op.ami.gz",
-                                              im1.get()));
-            (*res) = (*im1);
-
-            // TODO: use image iterator here
-            res->InitBuffer();
-            im2->InitBuffer();
-            Repeter
-              val1 = res->ValeurBuffer();
-              val2 = im2->ValeurBuffer();
-              Si val2>val1 AlorsFait res->FixeValeur(val2);
-              im2->IncBuffer();
-            JusquA Non(res->IncBuffer())
-            FinRepeter
-            Variable<InrImage>::ptr new_var(new Variable<InrImage>(res));
-            driver.var_stack.AddVar(new_var);
-          }
-          else {
-            driver.err_print("max operator with these types of parameters not available");
-            YYABORT;
-          }
-        }
-*/
-
       BasicVariable::ptr param1(driver.var_stack.GetLastBasicVar());
       GET_VARSTACK_VALUE(InrImage, im1);
 
@@ -9455,7 +8731,9 @@ image:
 
           // image composition
           // Initialy for applying a RGB colormap to an image
-          InrImage::ptr im2( driver.im_stack.GetLastImage());
+          DYNAMIC_CAST_VARIABLE(InrImage,param1,var_im2)
+          //GET_VARSTACK_VALUE(InrImage,ref);
+          InrImage::ptr im2( var_im2->Pointer());
           int pos;
     
           InrImage::ptr res ( new InrImage(
@@ -9543,9 +8821,7 @@ image:
                 JusquA Non(res->IncBuffer()) FinRepeter
           } else
             fprintf(stderr," Image Composition: type of composition not implemented \n");
-    
-          Variable<InrImage>::ptr new_var(new Variable<InrImage>(res));
-          driver.var_stack.AddVar(new_var);
+          ADD_VARSTACK_PTR(InrImage,res);
 
         }
         else {
@@ -9569,17 +8845,17 @@ image:
          Compute the histogram of an image and returns it
          as a 1D image
     **/
-      InrImage::ptr im( driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,im);
       float vmin  = $5;
       float vmax  = $7;
       int   nint = (int) $9; // number of intervals
 
       InrImage::ptr res ( Func_Histogram(im.get(),vmin,vmax,nint));
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
     }
     | T_cumhisto T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
     {
-      InrImage::ptr im(driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,im);
       float vmin  = $5;
       float vmax  = $7;
       int   nint = (int) $9; // number of intervals
@@ -9615,34 +8891,34 @@ image:
 
       delete [] numpts;
 
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
     }
     | T_MeanHalfSize T_OP_PAR expr_image T_CL_PAR
     {
-      InrImage::ptr im (driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,im);
       InrImage::ptr res;
       if (im->DimZ()>1)
         res = InrImage::ptr( Func_MeanHalfSize(im.get(),3));
       else
         res = InrImage::ptr( Func_MeanHalfSize(im.get(),2));
 
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
     }
     | T_MeanHalfSize T_OP_PAR expr_image T_COMMA expr T_CL_PAR
     {
       int dim = (int) $5;
 
-      InrImage::ptr im (driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,im);
       InrImage::ptr res ( Func_MeanHalfSize(im.get(),dim));
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
     }
     | T_Flip T_OP_PAR expr_image T_COMMA expr  T_CL_PAR
     {
         int axis=(int) $5;
 
-        InrImage::ptr im (driver.im_stack.GetLastImage());
+        GET_VARSTACK_VALUE(InrImage,im);
         InrImage::ptr res(Func_Flip(im,axis));
-        driver.im_stack.AddImage(res);
+        ADD_VARSTACK_PTR(InrImage,res);
     }
     | T_Resize T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr T_CL_PAR
     {
@@ -9661,9 +8937,9 @@ image:
             int sz = (int) $9;
             unsigned char interpolate=(unsigned char) $11;
 
-            InrImage::ptr im (driver.im_stack.GetLastImage());
+            GET_VARSTACK_VALUE(InrImage,im);
             InrImage::ptr res ( Func_Resize(im.get(),sx,sy,sz,interpolate));
-            driver.im_stack.AddImage(res);
+            ADD_VARSTACK_PTR(InrImage,res);
     }
     | T_ReSlice T_OP_PAR var_image T_COMMA var_image T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA  expr T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA  expr T_COMMA expr T_CL_PAR
     {
@@ -9688,26 +8964,27 @@ image:
       InrImage::ptr im2 ( varim2->Pointer());
 
       InrImage::ptr res ( Func_ReSlice(im1.get(),im2.get(),m));
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
 
     }
     | T_ConvexHull T_OP_PAR expr_image T_COMMA expr  T_COMMA expr T_CL_PAR
     {
       int   order = (int) $5;
       float resolution = $7;
-      InrImage::ptr input(driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,input);
 
       InrImage::ptr res ( Func_vtkConvexHull(input.get(),
                    order,resolution));
 
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
     }
+/*
     | var_surface T_POINT T_GetLinesLength T_OP_PAR   T_CL_PAR
     {
       GET_VARSTACK_VALUE(SurfacePoly,s);
 
       InrImage::ptr res ( s->GetImageLinesLength(  ));
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
     }
     | var_surface T_POINT T_GetLine T_OP_PAR expr  T_CL_PAR
     {
@@ -9718,7 +8995,7 @@ image:
         Description:
           Get the points of the given line as a vectorial 1D image of 
           the point positions.
-      **/
+      **
       InrImage::ptr         res;
       GET_VARSTACK_VAR_VAL(SurfacePoly,var,s);
       int linenumber = (int) $5;
@@ -9738,7 +9015,7 @@ image:
             Point_3D<float>  pt = s->GetPoint(line[n]).pt;
             res->VectFixeValeurs( pt.X(),pt.Y(),pt.Z());
           }
-          driver.im_stack.AddImage(res);
+          ADD_VARSTACK_PTR(InrImage,res);
         } else
           driver.err_print((boost::format("Line %1% has no point.") % linenumber).str());
       } else {
@@ -9755,11 +9032,11 @@ image:
         Returns an image Mx2 where M is the number of lines and 
         containing the point id of the 2 extremities of each 
         line
-    **/
+    **
       GET_VARSTACK_VALUE(SurfacePoly,s);
 
       InrImage::ptr res ( s->GetImageLinesExtremities(  ));
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
     }
     | var_surface T_POINT T_GetConnections T_OP_PAR   T_CL_PAR
     {
@@ -9770,11 +9047,11 @@ image:
         Get the number of lines connected to each point.
         The result is given as a 1D image of size the total
         number of points of the polydata
-    **/
+    **
 
       GET_VARSTACK_VALUE(SurfacePoly,s);
       InrImage::ptr res ( s->GetImageConnections(  ));
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
     }
     | var_surface T_POINT T_GetIntensities T_OP_PAR var_image  T_CL_PAR
     {
@@ -9782,33 +9059,34 @@ image:
       GET_VARSTACK_VALUE(SurfacePoly,s);
 
       InrImage::ptr res ( s->GetIntensities( im.get() ));
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
     }
+*/
     | T_Altitude2Position T_OP_PAR expr_image T_COMMA expr  T_CL_PAR
     {
-      InrImage::ptr im ( driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,im);
 
       InrImage::ptr res ( AMIFluid::Func_Altitude2Position(im.get(),(int)$5));
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
     }
     | T_Altitude2Position T_OP_PAR expr_image T_CL_PAR
     {
-      InrImage::ptr im (driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,im);
       InrImage::ptr res ( AMIFluid::Func_Altitude2Position(im.get()));
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
     }
     | T_GeoCoordinates T_OP_PAR expr_image  T_COMMA expr T_CL_PAR
     {
-      InrImage::ptr im( driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,im);
       InrImage::ptr res ( AMIFluid::Func_GeoCoordinates(im.get(),(int)$5));
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
     }
     | T_GeoCoordinates T_OP_PAR expr_image  T_CL_PAR
     {
-      InrImage::ptr im( driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,im);
       InrImage* res;
       res = AMIFluid::Func_GeoCoordinates(im.get());
-      if (res!=NULL) driver.im_stack.AddImagePointer(res);
+      ADD_VARSTACK(InrImage,res);
     }
     | T_ComputeAltitudes T_OP_PAR expr_image T_COMMA expr_image  T_CL_PAR
     {
@@ -9827,12 +9105,12 @@ image:
           Fluid
 
         **/
-      InrImage::ptr coeff (driver.im_stack.GetLastImage());
-      InrImage::ptr input (driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,coeff);
+      GET_VARSTACK_VALUE(InrImage,input);
       InrImage* res;
 
       res = AMIFluid::Func_ComputeAltitudes(input.get(),coeff.get());
-      driver.im_stack.AddImagePointer(res);
+      ADD_VARSTACK(InrImage,res);
 
     }
     | T_Temp2Altitudes T_OP_PAR expr_image  T_CL_PAR
@@ -9848,16 +9126,16 @@ image:
         in Kelvin.
 
         **/
-      InrImage::ptr input (driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,input);
       InrImage::ptr res ( AMIFluid::Func_Temp2Altitudes(input.get()));
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
 
     }
     | T_ReadFlow T_OP_PAR expr_string   T_CL_PAR
     {
       boost::shared_array<char> filename( $3);
       InrImage::ptr res( AMIFluid::Func_ReadFlow(filename.get()));
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
     }
     |
     T_slice T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
@@ -9877,7 +9155,7 @@ image:
         (17) expected height
 
         **/
-        InrImage::ptr im (driver.im_stack.GetLastImage());
+        GET_VARSTACK_VALUE(InrImage,im);
 
         if (im->_format==WT_UNSIGNED_CHAR) {
           ImageDraw<unsigned char> imdraw;
@@ -9888,7 +9166,7 @@ image:
           // copy to RGB image
           InrImage::ptr res ( new InrImage(imdraw.RGB_width, imdraw.RGB_height, 1, WT_RGB));
           memcpy(res->GetData(),imdraw.RGB_image,imdraw.RGB_width*imdraw.RGB_height*3);
-          driver.im_stack.AddImage(res);
+          ADD_VARSTACK_PTR(InrImage,res);
         } else
           fprintf(stderr,"only UCHAR format for now \n");
         }
@@ -9904,13 +9182,12 @@ image:
       Tubular reconstruction based on a set of lines and an estimated radius
       size for each point
     **/
+      GET_VARSTACK_VALUE(InrImage,rad);
       GET_VARSTACK_VALUE(InrImage,ref);
-      GET_VARSTACK_VALUE(SurfacePoly,surf);
-      InrImage::ptr rad = InrImage::ptr(
-                                driver.im_stack.GetLastImage());
+      GET_VARSTACK_OBJECT(SurfacePoly,surf)
 
       InrImage::ptr res ( LineRecons( surf.get(), ref.get(), rad.get()));
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
     }
     |
     T_ReadCTALineRadii T_OP_PAR var_surface T_COMMA expr_string T_CL_PAR
@@ -9923,178 +9200,19 @@ image:
       Reads the radius information and save it to an image,
       returns this image.
     **/
-      GET_VARSTACK_VALUE(SurfacePoly,surf);
+      GET_VARSTACK_OBJECT(SurfacePoly,surf)
       boost::shared_array<char> filename( $5);
 
       InrImage::ptr res ( Func_ReadCTALineRadii( surf.get(), filename.get()));
-      driver.im_stack.AddImage(res);
+      ADD_VARSTACK_PTR(InrImage,res);
     }
     ;
 
-//primary_image:  image | T_OP_PAR expr_image T_CL_PAR;
-
-//postfix_image:  primary_image;
-
-//unary_image  :    postfix_image
-//                | T_SUB  cast_image { UNARYOP_IMAGE(-)               }
-//                | T_ADD  cast_image
-//        | SIN   cast_image { UNARYOP_IMAGE(sin)             }
-//        | COS   cast_image { UNARYOP_IMAGE(cos)             }
-//        | SQRT  cast_image { UNARYOP_IMAGE(sqrt)            }
-//        | ABS   cast_image { UNARYOP_IMAGE(fabs)            }
-//        | ROUND cast_image { UNARYOP_IMAGE(round)           }
-//        | FLOOR cast_image { UNARYOP_IMAGE(floor)           }
-//        | TAN   cast_image { UNARYOP_IMAGE(tan)             }
-//        | ASIN  cast_image { UNARYOP_IMAGE(asin)            }
-//        | ACOS  cast_image { UNARYOP_IMAGE(acos)            }
-//        | ATAN  cast_image { UNARYOP_IMAGE(atan)            }
-//        | EXP   cast_image { UNARYOP_IMAGE(exp)             }
-//        | LOG  cast_image { UNARYOP_IMAGE(1.0/log(10.0)*log) }
-//        | LN   cast_image { UNARYOP_IMAGE(log)             }
-//        | NORM cast_image
-//        {
-//          InrImage::ptr im1 (driver.im_stack.GetLastImage());
-//          InrImage::ptr res ( Norm(*im1));
-//          if (!res.get())
-//            fprintf(stderr,"Error computing the norm |image| \n");
-//
-//          driver.im_stack.AddImage(res);
-//        }
-//               ;
-
-/*
-cast_image:
-        unary_image
-        | T_OP_PAR basic_type T_CL_PAR unary_image
-                  {
-        /**
-        Description:
-                  The image conversion is done using the cast operator
-                  where basic_type can be one of the basic type accepted,
-                  currently:
-                  CHAR UCHAR SHORT USHORT FLOAT DOUBLE RGB FLOAT_VECTOR
-
-
-                Example(s):
-                  i = Image(FLOAT,10,10,10)
-                  j = (RGB) i
-        **
-            InrImage::ptr im1 (driver.im_stack.GetLastImage());
-            InrImage::ptr im  ( new InrImage( (WORDTYPE) $2, "tmp.inr.gz", im1.get()));
-            (*im) = (*im1);
-            driver.im_stack.AddImage(im);
-          }
-;
-
-multiplicative_image: cast_image
-        | multiplicative_image T_MULT prefix_expr
-        { 
-          IMAGE_OP_EXPR(*,$3) 
-        }
-        // to allow expressions like Image*(n*n) the parser needs to know the type of (n*n)
-        // to resolve the ambiguities
-        // probably need to have a common class that can contain either number of images,
-        // or any other object that accepts arithmetic operations
-        //|  unary_expr  T_MULT T_MULT multiplicative_image  { IMAGE_OP_EXPR(*,$1) }
-        | multiplicative_image T_DIV prefix_expr
-        { 
-          IMAGE_OP_EXPR(/,$3) 
-        }
-        //                |  unary_expr  T_DIV multiplicative_image  { EXPR_OP_IMAGE(/,$1) }
-        | multiplicative_image T_MULT cast_image {  IMAGE_OP_IMAGE_2(*)   }
-        | multiplicative_image T_DIV cast_image { IMAGE_OP_IMAGE_2(/)   }
-        | multiplicative_image T_EXP cast_image { IMAGE_OP_IMAGE_2(^)   }
-;
-
-
-additive_image: multiplicative_image
-       | additive_image T_ADD multiplicative_expr  { IMAGE_OP_EXPR(+,$3) }
-       | additive_image T_SUB multiplicative_expr  { IMAGE_OP_EXPR(-,$3) }
-       | additive_image T_ADD multiplicative_image { IMAGE_OP_IMAGE_2(+)   }
-       | additive_image T_SUB multiplicative_image { IMAGE_OP_IMAGE_2(-)   }
-;
-
-shift_image: additive_image
-;
-
-relational_image:
-       shift_image
-       | relational_image T_LT shift_image   { IMAGE_OP_IMAGE(<)    }
-       | relational_image T_GT shift_image   { IMAGE_OP_IMAGE(>)    }
-       | relational_image LE_OP shift_image { IMAGE_OP_IMAGE(<=)   }
-       | relational_image GE_OP shift_image { IMAGE_OP_IMAGE(>=)   }
-       | relational_image T_LT  shift_expr    { IMAGE_OP_EXPR(<, $3) }
-       | relational_image T_GT  shift_expr    { IMAGE_OP_EXPR(>, $3) }
-       | relational_image LE_OP shift_expr  { IMAGE_OP_EXPR(<=,$3) }
-       | relational_image GE_OP shift_expr  { IMAGE_OP_EXPR(>=,$3) }
-;
-
-equality_image:
-    relational_image
-        | equality_image EQ_OP relational_image { IMAGE_OP_IMAGE(==)   }
-        | equality_image NE_OP relational_image { IMAGE_OP_IMAGE(!=)   }
-        | equality_image EQ_OP shift_expr { IMAGE_OP_EXPR(==,$3)   }
-        | equality_image NE_OP shift_expr { IMAGE_OP_EXPR(!=,$3)   }
-        ;
-
-and_image:
-    equality_image
-        | and_image T_AND equality_image
-        ;
-
-
-exclusive_or_image:
-    and_image
-    ;
-
-inclusive_or_image:
-    exclusive_or_image
-        | inclusive_or_image T_OR exclusive_or_image
-    ;
-
-logical_and_image:
-    inclusive_or_image
-        | logical_and_image AND_OP inclusive_or_image
-    ;
-
-/*
-  T_EXP is ^ operator ...
-*
-logical_xor_image:
-    logical_and_image
-    | logical_xor_image T_EXP logical_and_image
-    ;
-logical_or_image:
-    logical_xor_image
-        | logical_or_image OR_OP logical_xor_image
-    ;
-
-conditional_image:
-    logical_or_image
-        | logical_or_image T_QUEST logical_or_image T_COLON conditional_image
-    ;
-
-assignment_image:
-    conditional_image
-    | unary_image ASSIGN_OP assignment_image
-    ;
-
-expr_image : assignment_image
-;
-*/
 
 
 image_variable:
   image
-  {
-    /**
-      Description: convert the pointer to an image in im_stack to a pointer to a image variable in var_stack
-      TODO: get completely rid of im_stack later ...
-    **/
-    InrImage::ptr im (driver.im_stack.GetLastImage());
-    Variable<InrImage>::ptr new_var(new Variable<InrImage>(im));
-    driver.var_stack.AddVar(new_var);
-  };
+  ;
 
 
 string_variable:
@@ -10309,16 +9427,6 @@ postfix_var:
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar((*var)--);
   }
-  |
-  T_OP_PAR basic_type T_CL_PAR primary_var 
-  {
-    /**
-      Description: Cast operator.
-    **/
-    GET_CHECK_VARSTACK(var)
-    driver.var_stack.AddVar(var->BasicCast( $2));
-
-  }
   | primary_var TRANSPOSE_OP %prec postfix
   {
     /**
@@ -10335,7 +9443,7 @@ postfix_var:
       Description: 
         Rule to apply image[image_extent]
     **/
-    GET_VARSTACK_OBJECT(ImageExtent, ImageExtent<float>, extent)
+    GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
     GET_VARSTACK_VALUE(InrImage,im);
 
     if (!im.get()) {
@@ -10381,6 +9489,16 @@ postfix_var:
 
 prefix_var:
   postfix_var 
+  |
+  T_OP_PAR basic_type T_CL_PAR prefix_var %prec prefix
+  {
+    /**
+      Description: Cast operator.
+    **/
+    GET_CHECK_VARSTACK(var)
+    driver.var_stack.AddVar(var->BasicCast( $2));
+
+  }
   | T_SUB  postfix_var %prec prefix
   {
     //cout << "T_SUB  cast_var  " << endl;
@@ -10660,6 +9778,13 @@ assignment_var:
     }
     driver.var_stack.AddVar((*var1)=var2);
   }
+  | conditional_var LEFT_ASSIGN assignment_var
+  {
+    //cout << "assignment_var" << endl;
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
+    driver.var_stack.AddVar((*var1).left_assign(var2));
+  }
   | conditional_var ADD_ASSIGN assignment_var
   {
     GET_CHECK_VARSTACK(var2)
@@ -10900,26 +10025,31 @@ var_surface:
 
 
 surface:
-        T_isosurf T_OP_PAR expr_image T_COMMA expr T_CL_PAR
-        {
-          SurfacePoly* surf;
-          InrImage::ptr im (driver.im_stack.GetLastImage());
-          surf = Func_isosurf(im,
-                  $5,
-                  NULL);
-          if (surf==NULL) driver.err_print("Isosurface failed!");
-          driver.surf_stack.AddSurf(surf);
+    T_isosurf T_OP_PAR expr_image T_COMMA expr T_CL_PAR
+    {
+      SurfacePoly* surf;
+      GET_VARSTACK_VALUE(InrImage,im);
+      surf = Func_isosurf(im,
+              $5,
+              NULL);
+      if (surf==NULL) {
+        driver.err_print("Isosurface failed!");
+        YYABORT;
+      }
+      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      driver.var_stack.AddVar(res);
     }
     |
     T_isosurf_ras T_OP_PAR var_image T_COMMA expr T_CL_PAR
     {
       GET_VARSTACK_VALUE(InrImage, im);
-        SurfacePoly* surf;
-        surf = Func_isosurf(im,
-                $5,
-                NULL,
-                2);
-        driver.surf_stack.AddSurf(surf);
+      SurfacePoly* surf;
+      surf = Func_isosurf(im,
+              $5,
+              NULL,
+              2);
+      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      driver.var_stack.AddVar(res);
     }
     |
     T_isosurf T_OP_PAR expr_image T_COMMA expr T_COMMA var_image T_CL_PAR
@@ -10934,13 +10064,14 @@ surface:
         defined by the mask image.
     **/
       GET_VARSTACK_VALUE(InrImage, mask);
-        InrImage::ptr im (driver.im_stack.GetLastImage());
-        SurfacePoly* surf;
-        surf = Func_isosurf(im,
-                $5,
-                mask.get());
-        if (surf==NULL) driver.err_print("Isosurface failed!");
-        driver.surf_stack.AddSurf(surf);
+      GET_VARSTACK_VALUE(InrImage, im);
+      SurfacePoly* surf;
+      surf = Func_isosurf(im,
+              $5,
+              mask.get());
+      if (surf==NULL) driver.err_print("Isosurface failed!");
+      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      driver.var_stack.AddVar(res);
     }
     |
     T_isoline T_OP_PAR expr_image T_COMMA expr T_COMMA expr_image T_CL_PAR
@@ -10957,8 +10088,8 @@ surface:
         of the 2 eigenvectors of the Hessian matrix that
         correspond to the lowest and negative eigenvalues
      **/
-      InrImage::ptr mask (driver.im_stack.GetLastImage());
-      InrImage::ptr im   (driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,mask);
+      GET_VARSTACK_VALUE(InrImage,im);
       vtkPolyData* vtklines;
       CreeCrest* crestlines;
       SurfacePoly* lines;
@@ -10968,112 +10099,84 @@ surface:
       vtklines = (vtkPolyData*) (*crestlines);
 
       lines = new SurfacePoly(vtklines);
-      if (lines == NULL)
+      if (lines == NULL) {
         driver.err_print("IsoLine failed!");
-      driver.surf_stack.AddSurf(lines);
+        YYABORT;
+      }
 
-      //vtklines->Delete();
+      BasicVariable::ptr res(CreateVar_SurfacePoly(lines));
+      driver.var_stack.AddVar(res);
+
       delete crestlines;
-
     }
     |
     T_vtkDecimate T_OP_PAR var_surface T_CL_PAR
     {
-      GET_VARSTACK_VALUE(SurfacePoly,varsurf);
+      GET_VARSTACK_OBJECT(SurfacePoly,varsurf)
       SurfacePoly* surf;
       surf = Func_decimate( varsurf.get());
-      Si surf != NULL Alors
-        driver.surf_stack.AddSurf(surf);
-      FinSi
+      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      driver.var_stack.AddVar(res);
     }
     |
     T_vtkDecimate T_OP_PAR var_surface T_COMMA expr T_CL_PAR
     {
       SurfacePoly* newsurf;
-      GET_VARSTACK_VALUE(SurfacePoly,surf);
+      GET_VARSTACK_OBJECT(SurfacePoly,varsurf)
 
-      newsurf = Func_decimate( surf.get(), $5 );
-      Si newsurf != NULL Alors
-        driver.surf_stack.AddSurf(newsurf);
-      FinSi
+      newsurf = Func_decimate( varsurf.get(), $5 );
+      BasicVariable::ptr res(CreateVar_SurfacePoly(newsurf));
+      driver.var_stack.AddVar(res);
     }
     |
     T_vtkMarchingCubes T_OP_PAR var_image T_COMMA expr T_CL_PAR
     {
-          SurfacePoly* surf;
+      SurfacePoly* surf;
       GET_VARSTACK_VALUE(InrImage, im);
-          surf = Func_vtkMarchingCubes(im.get(),$5);
-      Si surf != NULL Alors
-        driver.surf_stack.AddSurf(surf);
-          FinSi
+      surf = Func_vtkMarchingCubes(im.get(),$5);
+      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      driver.var_stack.AddVar(res);
     }
     |
     T_vtkSmooth T_OP_PAR var_surface T_COMMA expr T_CL_PAR
     {
       SurfacePoly* newsurf;
-      GET_VARSTACK_VALUE(SurfacePoly,surf);
+      GET_VARSTACK_OBJECT(SurfacePoly,surf)
 
       newsurf = Func_vtkSmooth(surf.get(), (int) $5);
-      Si newsurf != NULL Alors
-        driver.surf_stack.AddSurf(newsurf);
-      FinSi
+      BasicVariable::ptr res(CreateVar_SurfacePoly(newsurf));
+      driver.var_stack.AddVar(res);
     }
     |
     T_vtkWindowedSinc T_OP_PAR var_surface T_COMMA expr T_CL_PAR
     {
-        GET_VARSTACK_VALUE(SurfacePoly, surf);
-        SurfacePoly* newsurf;
+      GET_VARSTACK_OBJECT(SurfacePoly,surf)
+      SurfacePoly* newsurf;
 
-        newsurf = Func_vtkWindowedSinc( surf.get(), (int) $5);
-        if (newsurf==NULL) driver.err_print("vtkWindowedSinc failed!");
-        driver.surf_stack.AddSurf(newsurf);
+      newsurf = Func_vtkWindowedSinc( surf.get(), (int) $5);
+      if (newsurf==NULL) {
+        driver.err_print("vtkWindowedSinc failed!");
+        YYABORT;
+      }
+      BasicVariable::ptr res(CreateVar_SurfacePoly(newsurf));
+      driver.var_stack.AddVar(res);
     }
     |
     T_Surface T_OP_PAR T_CL_PAR
     {
       SurfacePoly* surf = new SurfacePoly();
-      driver.surf_stack.AddSurf(surf);
+      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      driver.var_stack.AddVar(res);
     }
     |
     T_Surface expr_string
     {
       boost::shared_array<char> filename( $2);
-      driver.surf_stack.AddSurf(filename.get());
+      SurfacePoly* surf = new SurfacePoly();
+      surf->Read(filename.get());
+      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      driver.var_stack.AddVar(res);
     }
-/* Deprecated
-    |
-    T_Surface T_OP_PAR expr_string T_CL_PAR
-    {
-      boost::shared_array<char> filename( $3);
-      driver.surf_stack.AddSurf(filename.get());
-    }
-*/
-    |
-    T_Surface
-    {
-          int res;
-          string name;
-          string inc_cmd; // increment the command line string
-
-          res=AskSurface(name);
-          if (!res) {
-            driver.yyiperror(" Need Surface \n");
-            YYABORT;
-          }
-          driver.surf_stack.AddSurf((char*)name.c_str());
-
-          wxFileName filename(GetwxStr(name));
-          filename.Normalize(wxPATH_NORM_ALL,wxEmptyString,wxPATH_UNIX);
-          wxString newname(   filename.GetVolume()+filename.GetVolumeSeparator()+
-                              filename.GetPath(wxPATH_GET_VOLUME,wxPATH_UNIX)+
-                              filename.GetPathSeparator(wxPATH_UNIX)+
-                              filename.GetFullName());
-
-
-          inc_cmd = str(format(" \"%1%\"  // from browser ") % newname.mb_str());
-          if (driver.InConsole())
-            GB_main_wxFrame->GetConsole()->IncCommand(inc_cmd);
-        }
         |
         T_ReadCTALine T_OP_PAR expr_string T_CL_PAR
         {
@@ -11084,10 +10187,11 @@ surface:
             Reads a line given described in a text file
             format used in the CTA coronary segmentation challenge
         **/
-      boost::shared_array<char> filename( $3);
-          SurfacePoly* surf;
-          surf = Func_ReadCTALine(filename.get());
-          driver.surf_stack.AddSurf(surf);
+        boost::shared_array<char> filename( $3);
+        SurfacePoly* surf;
+        surf = Func_ReadCTALine(filename.get());
+        BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+        driver.var_stack.AddVar(res);
       }
       |
       T_ReadCTALine T_OP_PAR expr_string T_COMMA expr T_CL_PAR
@@ -11104,17 +10208,9 @@ surface:
         SurfacePoly* surf;
         boost::shared_array<char> filename( $3);
 
-          surf = Func_ReadCTALine(filename.get(), (int) $5);
-          driver.surf_stack.AddSurf(surf);
-      }
-      |
-      var_surface
-      {
-        GET_VARSTACK_VALUE(SurfacePoly,surf);
-        SurfacePoly* newsurf;
-  
-        newsurf = new SurfacePoly( (*surf) );
-        driver.surf_stack.AddSurf(newsurf);
+        surf = Func_ReadCTALine(filename.get(), (int) $5);
+        BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+        driver.var_stack.AddVar(res);
       }
       |
       T_Skeleton2lines T_OP_PAR var_image  T_CL_PAR
@@ -11123,17 +10219,18 @@ surface:
         Description:
           Creates lines from a skeleton image
         **/
-          SurfacePoly* surf;
+        SurfacePoly* surf;
 
-      GET_VARSTACK_VALUE(InrImage, im);
-      surf = Func_Skeleton2lines( im.get()  );
-
-      Si surf==NULL Alors
-        driver.err_print("Skeleton2lines() error ... \n");
-      FinSi
-      Si surf != NULL Alors
-        driver.surf_stack.AddSurf(surf);
-      FinSi
+        GET_VARSTACK_VALUE(InrImage, im);
+        surf = Func_Skeleton2lines( im.get()  );
+  
+        if (surf==NULL) {
+          driver.err_print("Skeleton2lines() error ... \n");
+          YYABORT;
+        } else {
+          BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+          driver.var_stack.AddVar(res);
+        }
     }
     |
     T_SmoothLines T_OP_PAR var_surface  T_CL_PAR
@@ -11149,7 +10246,7 @@ surface:
         data coeff      0.01
         iterations      10
     **/
-      GET_VARSTACK_VALUE(SurfacePoly, insurf);
+      GET_VARSTACK_OBJECT(SurfacePoly,insurf)
       SurfacePoly* surf;
 
       surf = Func_SmoothLines( insurf.get(),
@@ -11157,12 +10254,13 @@ surface:
                       0.01,
                       10);
 
-      Si surf==NULL Alors
+      if (surf==NULL) {
         driver.err_print("SmoothLines() error ... \n");
-      FinSi
-      Si surf != NULL Alors
-        driver.surf_stack.AddSurf(surf);
-      FinSi
+        YYABORT;
+      } else {
+        BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+        driver.var_stack.AddVar(res);
+      }
     }
     |
     T_SmoothLines T_OP_PAR var_surface  T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
@@ -11177,7 +10275,7 @@ surface:
       Smooth lines based on a simple scheme of heat diffusion
       with data attachment
     **/
-      GET_VARSTACK_VALUE(SurfacePoly, insurf);
+      GET_VARSTACK_OBJECT(SurfacePoly,insurf)
       SurfacePoly* surf;
 
       surf = Func_SmoothLines( insurf.get(),
@@ -11185,28 +10283,30 @@ surface:
                       $7,
                       (int) $9);
 
-      Si surf==NULL Alors
+      if (surf==NULL) {
         driver.err_print("SmoothLines() error ... \n");
-      FinSi
-      Si surf != NULL Alors
-        driver.surf_stack.AddSurf(surf);
-      FinSi
+        YYABORT;
+      } else {
+        BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+        driver.var_stack.AddVar(res);
+      }
     }
     |
     T_ResampleLines T_OP_PAR var_surface T_COMMA expr  T_CL_PAR
     {
-      GET_VARSTACK_VALUE(SurfacePoly, insurf);
+      GET_VARSTACK_OBJECT(SurfacePoly,insurf)
       SurfacePoly* surf;
 
       surf = Func_ResampleLines( insurf.get(),
                      $5);
 
-      Si surf==NULL Alors
+      if (surf==NULL) {
         driver.err_print("ResampleLines() error ... \n");
-      FinSi
-      Si surf != NULL Alors
-        driver.surf_stack.AddSurf(surf);
-          FinSi
+        YYABORT;
+      } else {
+        BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+        driver.var_stack.AddVar(res);
+      }
     }
     |
     T_ShortestPath T_OP_PAR var_surface T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA
@@ -11220,7 +10320,7 @@ surface:
       Description:
         Finds the shortest path within the lines of the polydata
     **/
-      GET_VARSTACK_VALUE(SurfacePoly, insurf);
+      GET_VARSTACK_OBJECT(SurfacePoly,insurf)
       SurfacePoly* surf;
 
       surf = Func_shortestpath( insurf.get(),
@@ -11229,8 +10329,10 @@ surface:
 
       Si surf==NULL Alors
         driver.err_print("Func_shortestpath () error ... \n");
+        YYABORT;
       FinSi
-      driver.surf_stack.AddSurf(surf);
+      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      driver.var_stack.AddVar(res);
     }
     |
     T_ShortestPathImage T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA
@@ -11252,7 +10354,7 @@ surface:
       voxels are linked if their intensities are lower than the given threshold
       creates a path between the first and the second points if it exists
     **/
-      InrImage::ptr im (driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,im);
       SurfacePoly* surf;
 
       surf = Func_shortestpath_image(  im.get(),$5,
@@ -11261,10 +10363,10 @@ surface:
 
       Si surf==NULL Alors
         driver.err_print("Func_shortestpath_image () error ... \n");
+        YYABORT;
       FinSi
-      Si surf != NULL Alors
-        driver.surf_stack.AddSurf(surf);
-      FinSi
+      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      driver.var_stack.AddVar(res);
     }
     |
     T_PathFromDispl T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
@@ -11282,7 +10384,7 @@ surface:
       and following the (integer) displacements given by the input vector field
       image
     **/
-      InrImage::ptr im (driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,im);
       SurfacePoly* surf;
 
       surf = Func_path_from_displ(  im.get(),
@@ -11293,10 +10395,10 @@ surface:
 
       Si surf==NULL Alors
         driver.err_print("Func_path_from_displ() error ... \n");
+        YYABORT;
       FinSi
-      Si surf != NULL Alors
-        driver.surf_stack.AddSurf(surf);
-      FinSi
+      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      driver.var_stack.AddVar(res);
     }
     |
     T_PathFromVectField T_OP_PAR     expr_image
@@ -11329,7 +10431,7 @@ surface:
         - the closest voxel to the current location has a negative intensity
         - the current gradient is very low
     **/
-      InrImage::ptr im (driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,im);
       SurfacePoly* surf;
 
       double start[3] = {$9,$11,$13};
@@ -11340,10 +10442,10 @@ surface:
 
       Si surf==NULL Alors
         driver.err_print("Func_path_from_vectfield() error ... \n");
+        YYABORT;
       FinSi
-      Si surf != NULL Alors
-        driver.surf_stack.AddSurf(surf);
-      FinSi
+      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      driver.var_stack.AddVar(res);
     }
     |
     T_PathFromVectField T_OP_PAR     expr_image
@@ -11372,7 +10474,7 @@ surface:
         - the closest voxel to the current location has a negative intensity
         - the current gradient is very low
     **/
-      InrImage::ptr im (driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,im);
       SurfacePoly* surf;
 
       double start[3] = {$9,$11,$13};
@@ -11382,45 +10484,19 @@ surface:
 
       Si surf==NULL Alors
         driver.err_print("Func_path_from_vectfield() error ... \n");
+        YYABORT;
       FinSi
-      Si surf != NULL Alors
-        driver.surf_stack.AddSurf(surf);
-      FinSi
-    }
-    | var_surface T_POINT  T_ConnectLines T_OP_PAR  expr T_COMMA expr T_CL_PAR
-    {
-    /**
-    Parameters:
-      (1) input polydata
-      (5) maximal distance (square distance between extremities)
-      (7) maximal angle (square length of the sum of the
-                         normalized extremity vectors)
-    Description:
-      Connecting close lines
-    **/
-      GET_VARSTACK_VALUE(SurfacePoly, insurf);
-      SurfacePoly* surf;
- 
-      surf = Func_ConnectLines( insurf.get(),
-                      $5,
-                      $7);
-
-      Si surf==NULL Alors
-        driver.err_print("ConnectLines() error ... \n");
-      FinSi
-      Si surf != NULL Alors
-        driver.surf_stack.AddSurf(surf);
-      FinSi
+      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      driver.var_stack.AddVar(res);
     }
     | T_CreateFlatMesh T_OP_PAR expr_image T_CL_PAR
     {
-    InrImage::ptr im (driver.im_stack.GetLastImage());
+    GET_VARSTACK_VALUE(InrImage,im);
       SurfacePoly* surf;
 
       surf = AMIFluid::Func_CreateFlatMesh(im.get());
-      Si surf != NULL Alors
-        driver.surf_stack.AddSurf(surf);
-          FinSi
+      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      driver.var_stack.AddVar(res);
     }
     | T_CreateFlatMesh T_OP_PAR expr_image T_COMMA expr T_CL_PAR
     {
@@ -11437,40 +10513,37 @@ surface:
             other value: following -X^Y
 
           **/
-      InrImage::ptr im (driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,im);
           SurfacePoly* surf;
 
       surf = AMIFluid::Func_CreateFlatMesh(im.get(), (int) $5 );
-      Si surf != NULL Alors
-        driver.surf_stack.AddSurf(surf);
-      FinSi
+      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      driver.var_stack.AddVar(res);
     }
     | T_CreateFlatMesh T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_CL_PAR
     {
-      InrImage::ptr im (driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,im);
       float minth = $5;
       float maxth = $7;
           SurfacePoly* surf;
 
       surf = AMIFluid::Func_CreateFlatMesh(im.get(),minth,maxth);
-      Si surf != NULL Alors
-        driver.surf_stack.AddSurf(surf);
-      FinSi
+      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      driver.var_stack.AddVar(res);
     }
     | T_vtkCreateFlatMesh T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_CL_PAR
     {
-      InrImage::ptr im ( driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,im);
       SurfacePoly* surf;
       float minth = $5;
       float maxth = $7;
 
       surf = AMIFluid::Func_vtkCreateFlatMesh(im.get(),minth,maxth);
-      Si surf != NULL Alors
-        driver.surf_stack.AddSurf(surf);
-      FinSi
+      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      driver.var_stack.AddVar(res);
     }
-        |  T_CreateVolume T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_COMMA expr_image T_COMMA expr_image T_CL_PAR
-        {
+    |  T_CreateVolume T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_COMMA expr_image T_COMMA expr_image T_CL_PAR
+    {
         /**
         Description:
           CreateVolume creates a close surface composed of 2 surfaces:
@@ -11494,17 +10567,16 @@ surface:
          changes the position of the nodes of a 3D mesh
 
         **/
-      InrImage::ptr highpos (driver.im_stack.GetLastImage());
-      InrImage::ptr lowpos  (driver.im_stack.GetLastImage());
-      InrImage::ptr input   (driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,highpos);
+      GET_VARSTACK_VALUE(InrImage,lowpos);
+      GET_VARSTACK_VALUE(InrImage,input);
       SurfacePoly* surf;
       float minth = $5;
       float maxth = $7;
 
       surf = AMIFluid::Func_CreateVolume(input.get(), minth, maxth, lowpos.get(), highpos.get());
-      Si surf != NULL Alors
-        driver.surf_stack.AddSurf(surf);
-          FinSi
+      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      driver.var_stack.AddVar(res);
     }
     |  T_CreateVolume T_OP_PAR expr_image T_COMMA expr T_COMMA expr T_COMMA expr_image T_COMMA expr_image T_COMMA expr_image T_COMMA expr T_CL_PAR
     {
@@ -11534,10 +10606,10 @@ surface:
          changes the position of the nodes of a 3D mesh
 
         **/
-      InrImage::ptr colors  (driver.im_stack.GetLastImage());
-      InrImage::ptr highpos (driver.im_stack.GetLastImage());
-      InrImage::ptr lowpos  (driver.im_stack.GetLastImage());
-      InrImage::ptr input  (driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,colors);
+      GET_VARSTACK_VALUE(InrImage,highpos);
+      GET_VARSTACK_VALUE(InrImage,lowpos);
+      GET_VARSTACK_VALUE(InrImage,input);
       SurfacePoly* surf;
       float minth = $5;
       float maxth = $7;
@@ -11545,9 +10617,8 @@ surface:
 
       surf = AMIFluid::Func_CreateVolume(input.get(), minth, maxth, 
                                           lowpos.get(), highpos.get(), colors.get(), alpha);
-      Si surf != NULL Alors
-        driver.surf_stack.AddSurf(surf);
-      FinSi
+      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      driver.var_stack.AddVar(res);
     }
     | T_CreateVectors T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr_image T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr T_CL_PAR
     {
@@ -11581,10 +10652,9 @@ surface:
         See also:
                 CreateFlatMesh, ElevateMesh, ComputeAltitudes, Altitudes2Position
       **/
-
-      InrImage::ptr alt2  (driver.im_stack.GetLastImage());
-      InrImage::ptr displ (driver.im_stack.GetLastImage());
-      InrImage::ptr alt1  (driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,alt2);
+      GET_VARSTACK_VALUE(InrImage,displ);
+      GET_VARSTACK_VALUE(InrImage,alt1);
       int stepx   = (int) $9;
       int stepy   = (int) $11;
       float scale = $13;
@@ -11593,9 +10663,8 @@ surface:
 
       surf = AMIFluid::Func_CreateVectors(alt1.get(),displ.get(),alt2.get(), 
                                           stepx, stepy, scale, type);
-      Si surf != NULL Alors
-        driver.surf_stack.AddSurf(surf);
-          FinSi
+      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      driver.var_stack.AddVar(res);
     }
     | T_CreateVectors T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr_image T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr T_COMMA expr T_CL_PAR
     {
@@ -11631,23 +10700,21 @@ surface:
         See also:
                 CreateFlatMesh, ElevateMesh, ComputeAltitudes, Altitudes2Position
       **/
-
-      InrImage::ptr alt2  (driver.im_stack.GetLastImage());
-      InrImage::ptr displ (driver.im_stack.GetLastImage());
-      InrImage::ptr alt1  (driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,alt2);
+      GET_VARSTACK_VALUE(InrImage,displ);
+      GET_VARSTACK_VALUE(InrImage,alt1);
       int stepx   = (int) $9;
       int stepy   = (int) $11;
       float scale = $13;
       int   type   = (int) $15;
       int   style  = (int) $17;
-          SurfacePoly* surf;
+      SurfacePoly* surf;
 
       surf = AMIFluid::Func_CreateVectors(alt1.get(),
           displ.get(),
           alt2.get(), stepx, stepy, scale, type,style);
-      Si surf != NULL Alors
-        driver.surf_stack.AddSurf(surf);
-      FinSi
+      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      driver.var_stack.AddVar(res);
     }
     | T_CreateVectors T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr_image T_COMMA expr T_COMMA expr T_COMMA  expr T_CL_PAR
     {
@@ -11679,18 +10746,17 @@ surface:
         See also:
                 CreateFlatMesh, ElevateMesh, ComputeAltitudes, Altitudes2Position
       **/
-      InrImage::ptr alt2  (driver.im_stack.GetLastImage());
-      InrImage::ptr displ (driver.im_stack.GetLastImage());
-      InrImage::ptr alt1  (driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,alt2);
+      GET_VARSTACK_VALUE(InrImage,displ);
+      GET_VARSTACK_VALUE(InrImage,alt1);
       int stepx   = (int) $9;
       int stepy   = (int) $11;
       float scale = $13;
           SurfacePoly* surf;
 
       surf = AMIFluid::Func_CreateVectors(alt1.get(),displ.get(),alt2.get(), stepx, stepy, scale);
-      Si surf != NULL Alors
-        driver.surf_stack.AddSurf(surf);
-      FinSi
+      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      driver.var_stack.AddVar(res);
     }
     | T_CreateVectorsFromField T_OP_PAR expr_image  T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr  T_COMMA expr T_CL_PAR
     {
@@ -11707,7 +10773,7 @@ surface:
         Creates a 3D vector field for visualization.
 
       **/
-      InrImage::ptr displ (driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,displ);
       int stepx   = (int) $5;
       int stepy   = (int) $7;
       int stepz   = (int) $9;
@@ -11718,10 +10784,10 @@ surface:
       stepx = macro_max(stepx,1);
       stepy = macro_max(stepy,1);
       stepz = macro_max(stepz,1);
-       surf = AMIFluid::Func_CreateVectors(displ.get(), stepx, stepy, stepz,  scale, style);
-       Si surf != NULL Alors
-         driver.surf_stack.AddSurf(surf);
-       FinSi
+      surf = AMIFluid::Func_CreateVectors(displ.get(), 
+              stepx, stepy, stepz,  scale, style);
+      BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
+      driver.var_stack.AddVar(res);
     }
     | T_CreateEllipsoids T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr_image T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr T_CL_PAR
     {
@@ -11738,9 +10804,9 @@ surface:
     Description:
         Create 3D ellipsoids based on 3 vector fields
     **/
-      InrImage::ptr v3  (driver.im_stack.GetLastImage());
-      InrImage::ptr v2  (driver.im_stack.GetLastImage());
-      InrImage::ptr v1  (driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,v3);
+      GET_VARSTACK_VALUE(InrImage,v2);
+      GET_VARSTACK_VALUE(InrImage,v1);
       int stepx   = (int) $9;
       int stepy   = (int) $11;
       int stepz   = (int) $13;
@@ -11752,9 +10818,8 @@ surface:
               v2.get(),
               v3.get(),
               stepx,stepy,stepz,res);
-      Si surf != NULL Alors
-        driver.surf_stack.AddSurf(surf);
-      FinSi
+      BasicVariable::ptr varres(CreateVar_SurfacePoly(surf));
+      driver.var_stack.AddVar(varres);
     }
     | T_CreateEllipsoids T_OP_PAR expr_image T_COMMA expr_image T_COMMA expr_image T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA expr T_COMMA expr_image T_COMMA  expr_image T_CL_PAR
     {
@@ -11773,11 +10838,11 @@ surface:
     Description:
         Create 3D ellipsoids based on 3 vector fields
     **/
-      InrImage::ptr mask   (driver.im_stack.GetLastImage());
-      InrImage::ptr colors (driver.im_stack.GetLastImage());
-      InrImage::ptr v3     (driver.im_stack.GetLastImage());
-      InrImage::ptr v2     (driver.im_stack.GetLastImage());
-      InrImage::ptr v1     (driver.im_stack.GetLastImage());
+      GET_VARSTACK_VALUE(InrImage,mask);
+      GET_VARSTACK_VALUE(InrImage,colors);
+      GET_VARSTACK_VALUE(InrImage,v3);
+      GET_VARSTACK_VALUE(InrImage,v2);
+      GET_VARSTACK_VALUE(InrImage,v1);
 
       int stepx   = (int) $9;
       int stepy   = (int) $11;
@@ -11791,9 +10856,8 @@ surface:
                                     v3.get(),stepx,stepy,stepz,res,
                                     colors.get(),
                                     mask.get());
-      if (surf != NULL) {
-        driver.surf_stack.AddSurf(surf);
-      }
+      BasicVariable::ptr varres(CreateVar_SurfacePoly(surf));
+      driver.var_stack.AddVar(varres);
     }
 ;
 
@@ -11807,9 +10871,7 @@ identifier
 */
 
 variable_with_assign:
-         VAR_GLTRANSFORM
-        |
-         var_surface;
+         VAR_GLTRANSFORM;
 
 function_variable:
          VAR_C_FUNCTION
@@ -11868,7 +10930,9 @@ unprocessed_variable:
   Variable included in variable expression
 */
 processed_variable:
-         VAR_AMI_OBJECT
+        var_surface
+        |
+        VAR_AMI_OBJECT
         |
         VAR_INT 
         |
@@ -12044,6 +11108,39 @@ void wxScheduleTimer::Notify()
   }
 } // wxScheduleTimer::Notify()
 
+InrImage* ReadImage( const char* name)
+{
+  // look for the image 
+  wxFileName inputname(wxString(name, wxConvUTF8));
+  wxFileName newname(wxString(name,wxConvUTF8));
+  InrImage* res = NULL;
+
+  if (!inputname.IsFileReadable()) 
+  // add the current script path
+  {
+    newname.Assign(
+            wxFileName(wxString(GB_driver.GetCurrentFilename().c_str(),wxConvUTF8)).GetPath() +
+            inputname.GetPathSeparator()+
+            inputname.GetPath(),
+            inputname.GetFullName());
+  }
+
+  if (newname.IsFileReadable()) {
+    try {
+      res=new InrImage(newname.GetFullPath().mb_str());
+    }
+    catch (InrImage::ErreurLecture)
+    {
+      FILE_ERROR(boost::format("Unable to read image %s") % name);
+      //AddImagePointer(NULL);
+      return NULL;
+    }
+  } else {
+    FILE_ERROR(boost::format("Invalid image filename '%s'") % name);
+    //AddImagePointer(NULL);
+  }
+  return res;
+}
 
 
 

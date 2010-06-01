@@ -87,7 +87,7 @@ protected:
 
 public:
 
-    ImageStack        im_stack;
+    //ImageStack        im_stack;
     VariableStack     var_stack;
     SurfStack         surf_stack;
     MatrixStack       matrix_stack;

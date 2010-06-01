@@ -6,16 +6,18 @@
 #include "driver.h"
 #include <boost/pointer_cast.hpp>
 #include "wrapfunction_class.h"
+#include "wrapfunctions.hpp"
 
 extern yyip::Driver GB_driver;
 
 #define NEW_SMARTPTR(type, var, value) \
   boost::shared_ptr<type> var(new type(value));
 
+/*
 #define RETURN_VARPTR(type,  value) \
   boost::shared_ptr<type> newval(new type(value)); \
   return Variable<type>::ptr( new Variable<type>(newval));
-
+*/
 #include "inrimage.hpp"
 
 

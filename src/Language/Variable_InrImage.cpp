@@ -78,34 +78,6 @@ extern yyip::Driver GB_driver;
     return Variable<InrImage>::ptr( new Variable<InrImage>(res)); \
   }
 
-/*
-#define EXPR_OP_IMAGE(operator,expr)    {                 \
-  InrImage::ptr im(driver.im_stack.GetLastImage());            \
-  InrImage::ptr res;                           \
-  if (im.use_count()==1) res = im; \
-  else {\
-    res = InrImage::ptr(new InrImage( im->GetFormat(),\
-                                      im->GetVDim(),\
-                                      (std::string("expr_op_")+im->GetName()).c_str(),\
-                                      im.get()));\
-    (*res) = (*im);\
-  }\
-  int       i;                                           \
-  double    val = expr;                                  \
-  res->InitBuffer();                                     \
-  Si res->ScalarFormat() Alors                           \
-    Repeter                                              \
-      res->FixeValeur(val operator res->ValeurBuffer() ); \
-    JusquA Non(res->IncBuffer()) FinRepeter              \
-  Sinon                                                  \
-    Repeter                                              \
-      Pour(i,0,res->GetVDim()-1)                         \
-        res->VectFixeValeur(i, val operator res->VectValeurBuffer(i));  \
-      FinPour                                            \
-    JusquA Non(res->IncBuffer()) FinRepeter              \
-  FinSi                                                  \
-  driver.im_stack.AddImage(res); }
-*/
 
 #define IMAGE_OP_IMAGE(im1,im2,operator)    \
   {\
@@ -613,3 +585,50 @@ BasicVariable::ptr Variable<InrImage>::operator =(const BasicVariable::ptr& b)
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
+
+/// operator <<=
+template<> BasicVariable::ptr Variable<InrImage>::left_assign(const BasicVariable::ptr& b)
+{
+  if (b->Type() == type_image) {
+    DYNAMIC_CAST_VARIABLE(InrImage, b, var_im2)
+    InrImage::ptr i1(this->Pointer());
+    InrImage::ptr imptr(var_im2->Pointer());
+    bool can_skip_allocation = false;
+
+    if (imptr.get()) {
+      if (i1.get() != imptr.get()) {
+        can_skip_allocation = (i1->GetFormat() == imptr->GetFormat());
+        if (can_skip_allocation) {
+          // first try the standard data copy
+          can_skip_allocation = ((*i1) = (*imptr));
+          if (can_skip_allocation) {
+            // copy additional information here
+            i1->SetTranslation(imptr->TrX(), imptr->TrY(), imptr->TrZ());
+            i1->SetVoxelSize( imptr->VoxSizeX(),
+                              imptr->VoxSizeY(),
+                              imptr->VoxSizeZ());
+          }
+        }
+        if (!can_skip_allocation) {
+          // should be OK
+          if (b->GetPtrCounter()==1) {
+            _pointer = InrImage::ptr(imptr); 
+          } else {
+            // make a copy first
+            BasicVariable::ptr copy(b->NewCopy());
+            DYNAMIC_CAST_VARIABLE(InrImage, 
+              copy, varim_copy)
+            _pointer = varim_copy->Pointer();
+          }
+          //this->Init( this->Name().c_str(), imptr);
+        } // end if (!can_skip_allocation)
+      } // end if (i1.get()!=imptr)
+    }
+    else
+      GB_driver.err_print("assignment of NULL image\n");
+  }
+  else
+    CLASS_ERROR("operation not defined");
+  return this->NewReference();
+}
+
