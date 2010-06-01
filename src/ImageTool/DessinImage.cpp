@@ -215,7 +215,8 @@ enum myIDs {
   wxID_UNZOOM = 21,
   wxID_XY = 22,
   wxID_XZ = 23,
-  wxID_ZY = 24
+  wxID_ZY = 24,
+  wxID_MANYXY = 25
 };
 
 //----------------------------------------------------------------
@@ -1062,6 +1063,10 @@ BEGIN_EVENT_TABLE(DessinImage, DessinImageBase)
     EVT_TOOL(wxID_VOLREN, DessinImage::CB_VOLREN)
     EVT_TOOL(wxID_SECTIONS3D, DessinImage::CB_sections3D)
     EVT_TOOL(wxID_COLORS, DessinImage::CB_couleurs)
+    EVT_BUTTON(wxID_MANYXY, DessinImage::CB_OnManyXYClick)
+    EVT_CHECKBOX(wxID_XY, DessinImage::CB_OnCheckXYClick)
+    EVT_CHECKBOX(wxID_XZ, DessinImage::CB_OnCheckXZClick)
+    EVT_CHECKBOX(wxID_ZY, DessinImage::CB_OnCheckZYClick)
 
 END_EVENT_TABLE()
 
@@ -5297,10 +5302,10 @@ void DessinImage::CB_voxels3D(  wxCommandEvent&)
     glwin->GetCanvas()->Normalize();
     glwin->GetCanvas()->Center();
   }
-  else
-  {
-    glwin->Close();
-  }
+//  else
+//  {
+//    glwin->Close();
+//  }
 
   glwin->Paint();
 
@@ -5365,10 +5370,10 @@ void DessinImage::CB_GLMIP(  wxCommandEvent&)
     glwin->GetCanvas()->Normalize();
     glwin->GetCanvas()->Center();
   }
-  else
-  {
-    glwin->Close();
-  }
+//  else
+//  {
+//    glwin->Close();
+//  }
  
   glwin->Paint();
 
@@ -5427,10 +5432,10 @@ void DessinImage::CB_VOLREN( wxCommandEvent&)
     glwin->GetCanvas()->Normalize();
     glwin->GetCanvas()->Center();
   }
-  else
-  {
-    glwin->Close();
-  }
+//  else
+//  {
+//    glwin->Close();
+//  }
   
   glwin->Paint();
 
@@ -5482,10 +5487,10 @@ void DessinImage::CB_sections3D(  wxCommandEvent&)
     glwin->GetCanvas()->Normalize();
     glwin->GetCanvas()->Center();
   }
-  else 
-  {
-    glwin->Close();
-  }
+//  else 
+//  {
+//    glwin->Close();
+//  }
 
   
   glwin->Paint();
@@ -5989,21 +5994,69 @@ void DessinImage::CB_redraw( wxCommandEvent& event)
      DessinImage*    di = (DessinImage*) this;
      unsigned char         nouvelle_valeur;
   
-  if (_param_coupesxy->IsShown())
-  {
-    ToggleParamPanel(_param_coupesxy.get());
-  }
-
+//  if (_param_coupesxy->IsShown() && di->Param._type_coup)
+//  {
+//    ToggleParamPanel(_param_coupesxy.get());
+//  } 
+  
   nouvelle_valeur =  di->_wxm_type_coupe->ValueChanged(event);
 
-  Si (di->Param._type_coupe == TYPE_COUPES) Et (di->_image->_tz > 1) Alors
-//    di->_param_CoupesXY->AfficheDialogue();
-    ToggleParamPanel(_param_coupesxy.get());
-  FinSi
+  if ((di->Param._type_coupe == TYPE_COUPES) && (di->_image->_tz > 1)) {
+    //    di->_param_CoupesXY->AfficheDialogue();
+    if (!_param_coupesxy->IsShown())  
+      ToggleParamPanel(_param_coupesxy.get());
+  } else{
+    if (_param_coupesxy->IsShown())  
+      ToggleParamPanel(_param_coupesxy.get());
+  }
   
   di->Param._MAJ.MAJCoupes();
   di->EffaceTousLesEcrans( false);
   di->Paint();
+  
+  //If use menu, update checkboxes
+  if (event.GetEventType() == wxEVT_COMMAND_MENU_SELECTED) {
+    if (menuBar->IsChecked(ID_MenuOptions_sliceXY)) {
+      xyCheck->SetValue(true);
+      xzCheck->SetValue(false);
+      zyCheck->SetValue(false);
+    }
+    if (menuBar->IsChecked(ID_MenuOptions_sliceXZ)) {
+      xyCheck->SetValue(false);
+      xzCheck->SetValue(true);
+      zyCheck->SetValue(false);
+    }
+    if (menuBar->IsChecked(ID_MenuOptions_sliceZY)) {
+      xyCheck->SetValue(false);
+      xzCheck->SetValue(false);
+      zyCheck->SetValue(true);
+    }
+    if (menuBar->IsChecked(ID_MenuOptions_sliceXY_XZ)) {
+      xyCheck->SetValue(true);
+      xzCheck->SetValue(true);
+      zyCheck->SetValue(false);
+    }
+    if (menuBar->IsChecked(ID_MenuOptions_sliceXY_ZY)) {
+      xyCheck->SetValue(true);
+      xzCheck->SetValue(false);
+      zyCheck->SetValue(true);
+    }
+    if (menuBar->IsChecked(ID_MenuOptions_sliceXZ_ZY)) {
+      xyCheck->SetValue(false);
+      xzCheck->SetValue(true);
+      zyCheck->SetValue(true);
+    }
+    if (menuBar->IsChecked(ID_MenuOptions_sliceXY_XZ_ZY)) {
+      xyCheck->SetValue(true);
+      xzCheck->SetValue(true);
+      zyCheck->SetValue(true);
+    }
+    if (menuBar->IsChecked(ID_MenuOptions_XYslices)) {
+      xyCheck->SetValue(false);
+      xzCheck->SetValue(false);
+      zyCheck->SetValue(false);
+    }
+  }
 }
 
 
@@ -6046,7 +6099,7 @@ void DessinImage::CB_option_traitement( wxCommandEvent& event)
       di->Param._MIP._MAJ   = true;
       di->Param.ChangeTypeCoupeMIP();
       di->ChangeImage( di->_image_MIP);
-
+      
 
 //      di->_param_MIP->AfficheDialogue();
       if (_param_animation->IsShown())
@@ -6060,6 +6113,7 @@ void DessinImage::CB_option_traitement( wxCommandEvent& event)
       di->ChangeImage( di->_image_initiale);
       di->MemoriseCoupesXY( true);
       di->Comparaisons_MemoriseCoupesXY( true);
+      
       if (_param_mip->IsShown())
       {
         Set_ANIM_STOP();
@@ -6074,11 +6128,12 @@ void DessinImage::CB_option_traitement( wxCommandEvent& event)
       di->MemoriseCoupesXY( false);
       di->Comparaisons_MemoriseCoupesXY( false);
       di->ChangeImage( di->_image_initiale);
-            
+      
       if (_param_mip->IsShown()) {
         ToggleParamPanel(_param_mip.get());
       }
       if (_param_animation->IsShown()) {
+        Set_ANIM_STOP();
         ToggleParamPanel(_param_animation.get());
       }
     break;
@@ -6321,22 +6376,22 @@ void DessinImage::Create_Toolbar()
   ViewStyle->AddControl(comboView, wxT("Option"));
   ViewStyle->AddSeparator();
   
-  wxCheckBox* xyCheck = new wxCheckBox(ViewStyle, wxID_XY, wxT("XY"),
+  xyCheck = new wxCheckBox(ViewStyle, wxID_XY, wxT("XY"),
                                          wxDefaultPosition, wxDefaultSize, wxCHK_2STATE);
   xyCheck->SetValue(true);
   ViewStyle->AddControl(xyCheck, wxT("XY"));
   
-  wxCheckBox* xzCheck = new wxCheckBox(ViewStyle, wxID_XZ, wxT("XZ"),
+  xzCheck = new wxCheckBox(ViewStyle, wxID_XZ, wxT("XZ"),
                                          wxDefaultPosition, wxDefaultSize, wxCHK_2STATE);
   xzCheck->SetValue(true);
   ViewStyle->AddControl(xzCheck, wxT("XZ"));
   
-  wxCheckBox* zyCheck = new wxCheckBox(ViewStyle, wxID_ZY, wxT("ZY"),
+  zyCheck = new wxCheckBox(ViewStyle, wxID_ZY, wxT("ZY"),
                                          wxDefaultPosition, wxDefaultSize, wxCHK_2STATE);
   zyCheck->SetValue(true);
   ViewStyle->AddControl(zyCheck, wxT("ZY"));
   
-  wxButton* many = new wxButton(ViewStyle, wxID_ANY, wxT("many XY"));
+  wxButton* many = new wxButton(ViewStyle, wxID_MANYXY, wxT("many XY"));
   ViewStyle->AddControl(many, wxT("manyXY"));
   ViewStyle->AddSeparator();
   
@@ -6356,9 +6411,12 @@ void DessinImage::Create_Toolbar()
                          wxArtProvider::GetBitmap(wxART_DEL_BOOKMARK, wxART_OTHER, wxSize(16,16)),
                          wxT("Unzoom"));
   
-  //Confirm all changes in toolbars
+  //Confirm all changes in toolbars  
   ViewParameters->Realize();
   ViewStyle->Realize();
+  ViewParameters->SetSize(ViewParameters->GetEffectiveMinSize());
+  ViewStyle->SetSize(ViewStyle->GetEffectiveMinSize());
+
 } // Create_Toolbar()
   
 
@@ -6463,14 +6521,12 @@ void DessinImage::CB_OnSizeTypeClick (wxCommandEvent &event)
 void DessinImage::CB_OnZoomClick (wxCommandEvent &event)
 {
   DessinImage* di = (DessinImage*) this;
-  if (event.IsChecked()) {
-//    ViewStyle->EnableTool(wxID_UNZOOM, true);
-//    ViewStyle->Realize();
+  if (event.IsChecked())
+  {
     di->Param._fonction_zoom = FUNC_ZOOM_ACTIVE;
   }
-  else {
-//    ViewStyle->EnableTool(wxID_UNZOOM, false);
-//    ViewStyle->Realize();
+  else
+  {
     di->Param._fonction_zoom = FUNC_ZOOM_DESACTIVE;
   }
 
@@ -6487,4 +6543,245 @@ void DessinImage:: CB_OnUnzoomClick (wxCommandEvent &event)
   di->Param._fonction_zoom = aux;
   
 } // On_UnzoomClick()
+  
+  
+//----------------------------------------------------------------
+void DessinImage::CB_OnCheckXYClick (wxCommandEvent &event)
+{
+  DessinImage* di = (DessinImage*) this;
+    
+  if (xyCheck->IsChecked()) {
+    switch (di->Param._type_coupe) {
+      case TYPE_COUPE_ZY:
+        di->Param._type_coupe = TYPE_COUPE_XY_ZY;
+        CB_redraw(event);
+        menuBar->Check(ID_MenuOptions_sliceXZ_ZY, true);
+        break;
+      
+      case TYPE_COUPE_XZ:
+        di->Param._type_coupe = TYPE_COUPE_XY_XZ;
+        CB_redraw(event);
+        menuBar->Check(ID_MenuOptions_sliceXY_XZ, true);
+        break;
+        
+      case TYPE_COUPE_XZ_ZY:
+        di->Param._type_coupe = TYPE_COUPE_XY_XZ_ZY;
+        CB_redraw(event);
+        menuBar->Check(ID_MenuOptions_sliceXY_XZ_ZY, true);
+        break;
+
+      case TYPE_COUPES:
+        di->Param._type_coupe = TYPE_COUPE_XY;
+        CB_redraw(event);
+        menuBar->Check(ID_MenuOptions_sliceXY, true);
+        break;
+
+      default:
+        break;
+    }
+  }
+  else {
+    //Are unchecked all checkboxes??
+    if (!xzCheck->IsChecked() && !zyCheck->IsChecked()) {
+      wxMessageDialog* dialog = new wxMessageDialog(this,
+                                                    wxT("You must check at least one plane checkbox on the toolbar."),
+                                                    wxT("Viewer Error"), 
+                                                    wxOK | wxSTAY_ON_TOP | wxICON_EXCLAMATION);
+      dialog->ShowModal();
+      xyCheck->SetValue(true);
+      di->Param._type_coupe = TYPE_COUPE_XY;
+      CB_redraw(event);
+      menuBar->Check(ID_MenuOptions_sliceXY, true);
+      return;
+    }
+    switch (di->Param._type_coupe) {
+      case TYPE_COUPE_XY_ZY:
+        di->Param._type_coupe = TYPE_COUPE_ZY;
+        CB_redraw(event);
+        menuBar->Check(ID_MenuOptions_sliceZY, true);
+        break;
+        
+      case TYPE_COUPE_XY_XZ:
+        di->Param._type_coupe = TYPE_COUPE_XZ;
+        CB_redraw(event);
+        menuBar->Check(ID_MenuOptions_sliceXZ, true);
+        break;
+        
+      case TYPE_COUPE_XY_XZ_ZY:
+        di->Param._type_coupe = TYPE_COUPE_XZ_ZY;
+        CB_redraw(event);
+        menuBar->Check(ID_MenuOptions_sliceXZ_ZY, true);
+        break;
+
+      default: 
+        break;
+    }
+  }
+//  menuBar->
+}
+
+
+//----------------------------------------------------------------
+void DessinImage::CB_OnCheckXZClick (wxCommandEvent &event)
+{
+  DessinImage* di = (DessinImage*) this;
+  
+  if (xzCheck->IsChecked()) {
+    switch (di->Param._type_coupe) {
+      case TYPE_COUPE_ZY:
+        di->Param._type_coupe = TYPE_COUPE_XZ_ZY;
+        CB_redraw(event);
+        menuBar->Check(ID_MenuOptions_sliceXZ_ZY, true);
+        break;
+      
+      case TYPE_COUPE_XY:
+        di->Param._type_coupe = TYPE_COUPE_XY_XZ;
+        CB_redraw(event);
+        menuBar->Check(ID_MenuOptions_sliceXY_XZ, true);
+        break;
+        
+      case TYPE_COUPE_XY_ZY:
+        di->Param._type_coupe = TYPE_COUPE_XY_XZ_ZY;
+        CB_redraw(event);
+        menuBar->Check(ID_MenuOptions_sliceXY_XZ_ZY, true);
+        break;
+        
+      case TYPE_COUPES:
+        di->Param._type_coupe = TYPE_COUPE_XZ;
+        CB_redraw(event);
+        menuBar->Check(ID_MenuOptions_sliceXZ, true);
+        break;
+
+      default:
+        break;
+    }
+  }
+  else {
+    //Are unchecked all checkboxes??
+    if (!xyCheck->IsChecked() && !zyCheck->IsChecked()) {
+      wxMessageDialog* dialog = new wxMessageDialog(this,
+                                                    wxT("You must check at least one plane checkbox on the toolbar."),
+                                                    wxT("Viewer Error"), 
+                                                    wxOK | wxSTAY_ON_TOP | wxICON_EXCLAMATION);
+      dialog->ShowModal();
+      xzCheck->SetValue(true);
+      di->Param._type_coupe = TYPE_COUPE_XZ;
+      CB_redraw(event);
+      menuBar->Check(ID_MenuOptions_sliceXZ, true);
+      return;
+    }
+    switch (di->Param._type_coupe) {
+      case TYPE_COUPE_XZ_ZY:
+        di->Param._type_coupe = TYPE_COUPE_ZY;
+        CB_redraw(event);
+        menuBar->Check(ID_MenuOptions_sliceZY, true);
+        break;
+        
+      case TYPE_COUPE_XY_XZ:
+        di->Param._type_coupe = TYPE_COUPE_XY;
+        CB_redraw(event);
+        menuBar->Check(ID_MenuOptions_sliceXY, true);
+        break;
+        
+      case TYPE_COUPE_XY_XZ_ZY:
+        di->Param._type_coupe = TYPE_COUPE_XY_ZY;
+        CB_redraw(event);
+        menuBar->Check(ID_MenuOptions_sliceXY_ZY, true);
+        break;
+
+      default: 
+        break;
+    }
+  }
+  
+}
+
+
+//----------------------------------------------------------------
+void DessinImage::CB_OnCheckZYClick (wxCommandEvent &event)
+{
+  DessinImage* di = (DessinImage*) this;
+  
+  if (zyCheck->IsChecked()) {
+    switch (di->Param._type_coupe) {
+      case TYPE_COUPE_XY:
+        di->Param._type_coupe = TYPE_COUPE_XY_ZY;
+        CB_redraw(event);
+        menuBar->Check(ID_MenuOptions_sliceXY_ZY, true);
+        break;
+      
+      case TYPE_COUPE_XZ:
+        di->Param._type_coupe = TYPE_COUPE_XZ_ZY;
+        CB_redraw(event);
+        menuBar->Check(ID_MenuOptions_sliceXZ_ZY, true);
+        break;
+        
+      case TYPE_COUPE_XY_XZ:
+        di->Param._type_coupe = TYPE_COUPE_XY_XZ_ZY;
+        CB_redraw(event);
+        menuBar->Check(ID_MenuOptions_sliceXY_XZ_ZY, true);
+        break;
+        
+      case TYPE_COUPES:
+        di->Param._type_coupe = TYPE_COUPE_ZY;
+        CB_redraw(event);
+        menuBar->Check(ID_MenuOptions_sliceZY, true);
+        break;
+
+      default:
+        break;
+    }
+  }
+  else {
+    //Are unchecked all checkboxes??
+    if (!xyCheck->IsChecked() && !xzCheck->IsChecked()) {
+      wxMessageDialog* dialog = new wxMessageDialog(this,
+                                                    wxT("You must check at least one plane checkbox on the toolbar."),
+                                                    wxT("Viewer Error"), 
+                                                    wxOK | wxSTAY_ON_TOP | wxICON_EXCLAMATION);
+      dialog->ShowModal();
+      zyCheck->SetValue(true);
+      di->Param._type_coupe = TYPE_COUPE_ZY;
+      CB_redraw(event);
+      menuBar->Check(ID_MenuOptions_sliceZY, true);
+      return;
+    }
+    switch (di->Param._type_coupe) {
+      case TYPE_COUPE_XY_ZY:
+        di->Param._type_coupe = TYPE_COUPE_XY;
+        CB_redraw(event);
+        menuBar->Check(ID_MenuOptions_sliceXY, true);
+        break;
+        
+      case TYPE_COUPE_XZ_ZY:
+        di->Param._type_coupe = TYPE_COUPE_XZ;
+        CB_redraw(event);
+        menuBar->Check(ID_MenuOptions_sliceXZ, true);
+        break;
+        
+      case TYPE_COUPE_XY_XZ_ZY:
+        di->Param._type_coupe = TYPE_COUPE_XY_XZ;
+        CB_redraw(event);
+        menuBar->Check(ID_MenuOptions_sliceXY_XZ, true);
+        break;
+
+      default: 
+        break;
+    }
+  }
+  
+}
+
+
+//----------------------------------------------------------------
+void DessinImage::CB_OnManyXYClick  (wxCommandEvent &event)
+{
+  DessinImage* di = (DessinImage*) this;
+  xyCheck->SetValue(false);
+  xzCheck->SetValue(false);
+  zyCheck->SetValue(false);
+  di->Param._type_coupe = TYPE_COUPES;
+  CB_redraw(event);
+  menuBar->Check(ID_MenuOptions_XYslices, true);
+}
 

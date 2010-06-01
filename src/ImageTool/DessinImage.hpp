@@ -377,6 +377,9 @@ protected:
   wxAuiNotebook* _param_book;
   wxAuiToolBar* ViewStyle;
   wxAuiToolBar* ViewParameters;
+  wxCheckBox* xyCheck;
+  wxCheckBox* xzCheck;
+  wxCheckBox* zyCheck;
   //----------------------------------------------------
   //ImageDraw_X parameters
   // Position parameters
@@ -1806,23 +1809,31 @@ public:
   void Create_Toolbar();
   
   //Toolbar callbacks
-  void CB_OnPositionClick (wxCommandEvent &event);
+  void CB_OnPositionClick     (wxCommandEvent &event);
   
-  void CB_OnIntensityClick (wxCommandEvent &event);
+  void CB_OnIntensityClick    (wxCommandEvent &event);
   
-  void CB_OnVectorsClick (wxCommandEvent &event);
+  void CB_OnVectorsClick      (wxCommandEvent &event);
   
-  void CB_OnIsoContoursClick (wxCommandEvent &event);
+  void CB_OnIsoContoursClick  (wxCommandEvent &event);
   
   void CB_OnImageSurfaceClick (wxCommandEvent &event);
   
-  void CB_OnViewTypeClick (wxCommandEvent &event);
+  void CB_OnViewTypeClick     (wxCommandEvent &event);
   
-  void CB_OnSizeTypeClick (wxCommandEvent &event);
+  void CB_OnSizeTypeClick     (wxCommandEvent &event);
   
-  void CB_OnZoomClick (wxCommandEvent &event);
+  void CB_OnZoomClick         (wxCommandEvent &event);
   
-  void CB_OnUnzoomClick (wxCommandEvent &event);
+  void CB_OnUnzoomClick       (wxCommandEvent &event);
+  
+  void CB_OnCheckXYClick      (wxCommandEvent &event);
+  
+  void CB_OnCheckXZClick      (wxCommandEvent &event);
+  
+  void CB_OnCheckZYClick      (wxCommandEvent &event);
+  
+  void CB_OnManyXYClick       (wxCommandEvent &event);
 
 private:
     DECLARE_EVENT_TABLE()
