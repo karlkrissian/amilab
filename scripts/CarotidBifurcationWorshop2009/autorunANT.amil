@@ -1,0 +1,67 @@
+#!/usr/local/bin/amilab
+#
+# automatically run experiments
+if (argc>=2) {
+  AR_center = atof($1)
+  AR_datanumber = atof($2)
+  #printn AR_center
+} else {
+  printn "Needs 3 arguments"
+  printn "  first argument: dataset center"
+  printn "  second argument: dataset number"
+  quit
+}
+
+emptyargs
+
+RestartTime
+InitTime
+
+func "RunExperimentsGuiMIO.amil"
+
+RunExperimentsClass autorun
+
+autorun->CarotidExperiments_init
+# ------- Initialization
+# don't stop for information dialogs
+autorun->nointeraction = 1
+#CarotidExperiments_LoadConfig
+
+autorun->datacenter = AR_center
+autorun->datanumber = AR_datanumber
+#autorun->datatype   = AR_datatype
+
+#printn CE_datacenter
+#CE_win.Update(-1)
+#Read data
+autorun->CarotidExperiments_ReadData
+#Read gt
+#autorun->CarotidExperiments_ReadGT
+
+#Compute local statistics
+autorun->CarotidExperiments_LocalStats
+
+#Compute vesselness
+autorun->CarotidExperiments_Vesselness
+#Save vesselness
+autorun->CarotidExperiments_SaveVesselness
+
+# Create and Save the paths
+autorun->CarotidExperiments_CreatePaths
+autorun->CarotidExperiments_SavePaths
+
+# Find and save the junction
+autorun->CarotidExperiments_JunctionFromPaths
+autorun->CarotidExperiments_SaveJunction
+
+# Compute and save Level Set
+autorun->CarotidExperiments_LevelSetsExternal
+autorun->CarotidExperiments_LevelSetsInternal
+autorun->CarotidExperiments_LevelSetsPathsSave
+
+file = autorun->current_resultsdir+"/time.txt"
+f = open(file,"w")
+f.printn "Time= "+TimeSpent
+del f
+
+quit

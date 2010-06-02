@@ -1,0 +1,141 @@
+\documentclass{article}
+\usepackage{html}
+\usepackage[latin1]{inputenc}
+%Párrafos
+\setlength{\parskip}{1pc}
+%Paquete para hipervínculos
+\usepackage{hyperref}
+%Configuración del coloreado de los hipervínculos
+\hypersetup{
+  colorlinks,
+  citecolor=black,
+  filecolor=black,
+  linkcolor=black,
+  urlcolor=blue %Las url se muestran en azul
+}
+
+\begin{document}
+
+% Title Page
+\title{ITK CarotidBifurcationWorkshop2009 Gui}
+\author{Karl Krissian \& Sara Arencibia}
+\thanks{
+Grupo de Imagen, Tecnolog\'ia M\'edica y Televisi\'on (GIMET)\\
+Universidad de Las Palmas de Gran Canaria\\
+email: krissian@dis.ulpgc.es darkmind@gmail.com
+}
+
+
+\maketitle
+
+\begin{abstract}
+This script provides a user interface to compute Carotid Bifurcation Workshop solution ussing ITK libraries.
+\end{abstract}
+
+
+\section{Quick Start}
+
+The different steps for obtaining the solution are:
+\begin{enumerate}
+  \item
+\end{enumerate}
+
+
+\section{Detailed Description}
+For more references go to \cite{IJ}.
+
+\section{Interface tabs}
+For use this script you need to check the configuration in carotidchallenge\_config.amil. You must to specify:
+\begin{enumerate}
+  \item Data\_dir = data path folder
+  \item Groundtruth\_dir = groundtruth path folder (lumen)
+  \item Results\_dir = results path folfer
+  \item Evaluation\_bindir = evaluation build path folder
+  \item Evaluation\_scriptdir = evaluation scripts path folder
+\end{enumerate}
+
+The interface is divided into several pages.
+
+\subsection{\emph{Input} page}
+\subsubsection{data information}
+If you want to use the advanced mode you need to mark ``Advanced Mode''. Now you can change wherever you want on the Adv tab, modify parameters, try differents cases...
+
+
+When you mark ``Advanced Mode'' some tabs are activated:
+\begin{enumerate}
+  \item Crop, use to crop the input image. The image is cropped by default, but you can change the limits.
+  \item Dir, you can change the different path folder and if you want to run the process without confirm any info dialog you need to mark No\_interaction.
+  \item Adv, see the explanation below.
+\end{enumerate}
+
+Select the Datacenter: Erasmus MC, Hadassah or Louis Pradel.
+
+
+Select the Datatype: Training, Testing or On-site. Note that testing mode not have groundtruth data.
+
+
+Select the Data Number.
+
+
+To read and crop the data use the {\bf Read Data} button.
+
+
+To read the groundtruth use the {\bf Read GT} button.
+
+\subsection{\emph{Prob+Speed} page}
+\subsubsection{LocalStats}
+Use the {\bf Apply} button to compute the LocalStats.
+\subsubsection{Vesselness}
+\subsubsection{Vessel intensity range}
+You can change the Min and Max intensity range to compute Vesselness. Min = 1150 and Max = 1600 are set by default.
+
+Use the {\bf Vesselness} button to compute the Vesselness solution.
+
+
+You can save the result using {\bf Save} button.
+
+
+Then you can read the output vesselness solution using the {\bf Read} button.
+\subsection{\emph{Run} page}
+\subsubsection{Paths(Vesselness+Prob)}
+\subsubsection{Path}
+Use {\bf Create} button to create the paths, external and internal carotid.
+
+
+Use {\bf Save} button to save the results.
+
+
+Use {\bf Read} button to read the results from disk.
+\subsubsection{Junction}
+You can change the parameter Threshold and Resample but there are set by default to work correctly for this Workshop.
+
+
+Select {\bf Junction} button to compute the junction of the carotids.
+
+
+You can see the result using the {\bf Display} button. An image is showed, the green sphere is the junction.
+
+
+Save the result using {\bf Save} button.
+\subsubsection{LevelSets from paths}
+Select {\bf External} button to compute a Level Set solution for the external carotid path.
+
+
+Select {\bf Internal} button to compute a Level Set solution for the internal carotid path.
+
+
+To display the result you need to save it before.
+
+\subsection{\emph{Adv} page}
+To know how to use each tab see the help of each tab.
+
+\subsection{\emph{Help} page}
+This help.
+
+\begin{thebibliography}{1}
+\bibitem{CLS} \href{http://cls2009.bigr.nl/index.php}{Workshop Rules}
+\bibitem{IJ} \href{http://www.insight-journal.org/browse/publication/672}{Insight Journal}
+\end{thebibliography}
+
+\end{document}
+
