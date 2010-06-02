@@ -1,7 +1,7 @@
 if (!exists(itkFastMarchingClass)) {
  
   ami_import->ITK()
-  func "BasicFilters/itkSigmoidFilter.amil"
+  func "BasicFilters/itkSigmoid/itkSigmoidFilter.amil"
   
 #*******************************************************************************************#
 #****************************FASTMARCHING***************************************************#

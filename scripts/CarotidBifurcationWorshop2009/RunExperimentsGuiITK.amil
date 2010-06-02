@@ -9,14 +9,14 @@ if (!exists(RunExperimentsClass)){
   # load the noise reduction script
     func "itkCreateProbability.amil"
   # load the vesselness script
-  func "Centerlines/itkVesselness.amil"
+  func "Centerlines/itkVesselness/itkVesselness.amil"
   # load the shortest path script
-  func "Centerlines/itkShortestPath_gui.amil"
+  func "Centerlines/itkShortestPath/itkShortestPath_gui.amil"
     # load the Level Sets Gui script
   func "SyntheticImages/AddSphere.amil"
-  func "BasicFilters/itkSigmoidFilter.amil"
-  func "Segmentation/itkFastMarching.amil"
-  func "Segmentation/itkLevelSet.amil"
+  func "BasicFilters/itkSigmoid/itkSigmoidFilter.amil"
+  func "Segmentation/itkFastMarching/itkFastMarching.amil"
+  func "Segmentation/itkLevelSet/itkLevelSet.amil"
   func "carotidchallenge_config.amil"  
   
   Class RunExperimentsClass{
@@ -69,6 +69,10 @@ if (!exists(RunExperimentsClass)){
 
       ::minvesselint = INT(1150), "Vessel min intensity range"
       ::maxvesselint = INT(1600), "Vessel max intensity range"
+
+      ::help1 = "http://www.insight-journal.org/browse/publication/672"
+      ::help2 = "http://cls2009.bigr.nl/index.php"
+      ::html_filename = GetScriptsDir+"/CarotidBifurcationWorshop2009/carotid/index.html"
     }
     
     
@@ -1107,6 +1111,33 @@ if (!exists(RunExperimentsClass)){
       ::win.EnablePanel(::config_dir_page, ::advanced==1)
       ::win.EnablePanel(::config_advanced_page, ::advanced==1)
     }
+
+
+    proc ::LaunchHelp() {
+      import = &global::ami_import
+      wx1 = import->WxFunctions()
+      res = wx1->LaunchDefaultBrowser(::help1)
+      wx2 = import->WxFunctions()
+      res2 = wx2->LaunchDefaultBrowser(::help2)
+    }
+    ::LaunchHelp.Comments("Launch the corresponding help tutorial page on the default browser.")
+    
+    proc ::HtmlHome() {
+      ::html.LoadFile( ::html_filename)
+    }
+    ::HtmlHome.Comments("Back to the initial page.")
+
+    //---------------------------------------------------
+    proc ::HtmlBack() {
+      res = ::html.HistoryBack()
+    }
+    ::HtmlBack.Comments("Back to the previous page.")
+
+    //---------------------------------------------------
+    proc ::HtmlForward() {
+      res = ::html.HistoryForward()
+    }
+    ::HtmlForward.Comments("Go to the forward page.")
     
     #------------------------------------------
     proc ::CarotidExperiments_gui() \
@@ -1133,14 +1164,14 @@ if (!exists(RunExperimentsClass)){
           ::win.EndBoxPanel
           ::win.BeginHorizontal
             ::win.AddButton("Read Data",         ::CarotidExperiments_ReadData)
-            ::win.AddButton("Read Ground Truth", ::CarotidExperiments_ReadGT)
+            ::win.AddButton("Read GT", ::CarotidExperiments_ReadGT)
           ::win.EndHorizontal
           
           ::config_book = ::win.BeginBook()
             ::config_crop_page = ::win.AddPage("Crop")
-              ::win.AddInt( &::cropmarginXY,  "::cropmarginXY", 0,200)
-              ::win.AddInt( &::cropmarginZtop,  "::cropmarginZtop", 0,200)
-              ::win.AddInt( &::cropmarginZbot,  "::cropmarginZbot", 0,200)
+              ::win.AddInt( &::cropmarginXY,  "cropXY", 0,200)
+              ::win.AddInt( &::cropmarginZtop,  "cropZtop", 0,200)
+              ::win.AddInt( &::cropmarginZbot,  "cropZbot", 0,200)
               ::win.AddButton("Crop Data",         ::CarotidExperiments_CropData)
               ::win.AddBoolean( &::crop_created)
               
@@ -1164,6 +1195,10 @@ if (!exists(RunExperimentsClass)){
           ::win.EndBoxPanel
                       
           ::win.BeginBoxPanel("Vesselness")
+            ::win.BeginBoxPanel("Vessel intensity range")
+              ::win.AddInt( &::minvesselint,  "Min", 900,1300)
+              ::win.AddInt( &::maxvesselint,  "Max", 900,2000)
+            ::win.EndBoxPanel
             ::win.AddButton("Vesselness",     ::CarotidExperiments_Vesselness)
             ::win.AddButton("Save",     ::CarotidExperiments_SaveVesselness)
             ::win.AddButton("Read",     ::CarotidExperiments_ReadVesselness)
@@ -1172,10 +1207,6 @@ if (!exists(RunExperimentsClass)){
     
         #----- Run Page
         ::win.AddPage("Run")
-          ::win.BeginBoxPanel("Vessel intensity range")
-            ::win.AddInt( &::minvesselint,  "Min", 900,1300)
-            ::win.AddInt( &::maxvesselint,  "Max", 900,2000)
-          ::win.EndBoxPanel
           ::win.BeginBoxPanel("Paths (Vesselness+Prob)")
             ::win.BeginBoxPanel("Path")
               ::win.BeginHorizontal
@@ -1197,6 +1228,8 @@ if (!exists(RunExperimentsClass)){
               ::win.BeginHorizontal
                 ::win.AddButton("External", ::CarotidExperiments_LevelSetsExternal)
                 ::win.AddButton("Internal", ::CarotidExperiments_LevelSetsInternal)
+              ::win.EndHorizontal
+              ::win.BeginHorizontal
                 ::win.AddButton("Save",     ::CarotidExperiments_LevelSetsPathsSave)
                 ::win.AddButton("Display",  ::CarotidExperiments_DisplayLevel)
               ::win.EndHorizontal
@@ -1228,6 +1261,17 @@ if (!exists(RunExperimentsClass)){
           ::win.EndBook()
           
         ::win.AddPage("Help")
+          ::win.BeginHorizontal
+            ::win.AddButton("Help",   ::LaunchHelp)
+            ::win.AddButton("Home",   ::HtmlHome)
+            ::win.AddButton("<--",    ::HtmlBack)
+            ::win.AddButton("-->",    ::HtmlForward)
+          ::win.EndHorizontal
+          # add html widget
+          d = ::win.CurrentParent()
+          ::html = import->wxHtmlWindow(&d)
+          ::html.LoadFile( ::html_filename)
+          ::win.AddWidget(&::html,1)
           
       ::win.EndBook
     
