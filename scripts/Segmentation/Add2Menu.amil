@@ -5,6 +5,6 @@
 #
 
 AddMenuScript("&Segmentation","&Level Set","Segmentation/LevelSets/LevelSetsGui1.amil")
-AddMenuScript("&Segmentation","&itk Level Set","Segmentation/itkLevelSet.amil")
-AddMenuScript("&Segmentation","&itk Watershed","Segmentation/itkWaterShed.amil")
-AddMenuScript("&Segmentation","&itk FastMarching","Segmentation/itkFastMarching.amil")
+AddMenuScript("&Segmentation","&itk Level Set","Segmentation/itkLevelSet/itkLevelSet.amil")
+AddMenuScript("&Segmentation","&itk Watershed","Segmentation/itkWaterShed/itkWaterShed.amil")
+AddMenuScript("&Segmentation","&itk FastMarching","Segmentation/itkFastMarching/itkFastMarching.amil")

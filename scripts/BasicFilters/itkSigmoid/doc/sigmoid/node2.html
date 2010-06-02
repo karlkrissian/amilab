@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<!--Converted with LaTeX2HTML 2002-2-1 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Equation</TITLE>
+<META NAME="description" CONTENT="Equation">
+<META NAME="keywords" CONTENT="sigmoid">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2002-2-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="sigmoid.css">
+
+<LINK REL="next" HREF="node3.html">
+<LINK REL="previous" HREF="node1.html">
+<LINK REL="up" HREF="sigmoid.html">
+<LINK REL="next" HREF="node3.html">
+</HEAD>
+
+<BODY >
+<!--Navigation Panel-->
+<A NAME="tex2html29"
+  HREF="node3.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html27"
+  HREF="sigmoid.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html21"
+  HREF="node1.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html30"
+  HREF="node3.html">Interface tabs</A>
+<B> Up:</B> <A NAME="tex2html28"
+  HREF="sigmoid.html">ITK Sigmoid Filter Gui</A>
+<B> Previous:</B> <A NAME="tex2html22"
+  HREF="node1.html">Quick Start</A>
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<H1><A NAME="SECTION00020000000000000000">
+Equation</A>
+</H1>
+Computes the sigmoid function pixel-wise.
+
+<P>
+A linear transformation is applied first on the argument of the sigmoid fuction. The resulting total transfrom is given by
+<BR><P></P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ \begin{displaymath}
+f(x) = (Max - Min)\cdot\frac1{1+e^-\frac{x-\beta}{\alpha}}
+\end{displaymath}
+ -->
+
+<IMG
+ WIDTH="239" HEIGHT="46" BORDER="0"
+ SRC="img1.png"
+ ALT="\begin{displaymath}f(x) = (Max - Min)\cdot\frac1{1+e^-\frac{x-\beta}{\alpha}} \end{displaymath}">
+</DIV>
+<BR CLEAR="ALL">
+<P></P>
+
+<P>
+Every output pixel is equal to f(x). Where x is the intensity of the homologous input pixel, and alpha and beta are user-provided constants. 
+
+<P>
+<BR><HR>
+<ADDRESS>
+sara
+2010-05-31
+</ADDRESS>
+</BODY>
+</HTML>

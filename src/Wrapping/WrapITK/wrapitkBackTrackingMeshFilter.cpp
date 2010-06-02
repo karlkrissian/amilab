@@ -184,7 +184,7 @@ BasicVariable::ptr wrap_itkBackTrackingMeshFilter3D(ParamList* p)
   BackTracking->Setdelta( delta );
   BackTracking->Update();
 
-  vtkFloatingPointType triangle[3];
+  //vtkFloatingPointType triangle[3];
   typedef itk::PointSet<InternalPixelType,Dimension> PointSetType;
   PointSetType::PointIdentifier pointID;
   typedef PointSetType::PointType PointType;

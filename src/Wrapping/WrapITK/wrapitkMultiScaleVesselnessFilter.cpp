@@ -54,9 +54,11 @@ InrImage* wrap_itkMultiScaleVesselnessFilter2D(ParamList* p)
   //typedef itk::RescaleIntensityImageFilter<ImageType> RescaleFilterType;
  
   // Declare the type of enhancement filter
+  //typedef itk::HessianToObjectnessMeasureImageFilter<ImageType,ImageType> ObjectnessFilterType;
 	typedef itk::HessianToObjectnessMeasureImageFilter<double,Dimension> ObjectnessFilterType;
   
   // Declare the type of multiscale enhancement filter
+  //typedef itk::MultiScaleHessianBasedMeasureImageFilter<ImageType,ObjectnessFilterType,ImageType> MultiScaleEnhancementFilterType;
   typedef itk::MultiScaleHessianBasedMeasureImageFilter<ImageType,ObjectnessFilterType> MultiScaleEnhancementFilterType;
 	
 	// Convert from InrImage to ITK
@@ -75,8 +77,8 @@ InrImage* wrap_itkMultiScaleVesselnessFilter2D(ParamList* p)
   objectnessFilter->SetScaleObjectnessMeasure(false);
   objectnessFilter->SetBrightObject(false);
   objectnessFilter->SetGamma(5.0);
-	
-	multiScaleEnhancementFilter->SetSigmaMin( sigmaMin  );
+
+  multiScaleEnhancementFilter->SetSigmaMin( sigmaMin  );
 	multiScaleEnhancementFilter->SetSigmaMax( sigmaMax );
 	multiScaleEnhancementFilter->SetNumberOfSigmaSteps( numberOfScales );
 	

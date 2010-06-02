@@ -1,0 +1,141 @@
+if (!exists(DICOMClass)) {
+  
+  ami_import->ITK()
+  
+  Class DICOMClass {
+  
+    ::itk=&global::itk
+  
+    proc ::Init() {
+      
+      ::class_name ="global::DICOMClass"
+      ::dicom_folder = "", "Dicom Path Folder"
+      ::image_name = "", "Name of the resulting image variable"
+      ::dicom_save = "", "Dicom Save Path Folder"
+      ::image_save = "", "Name of the save image"
+      
+      ::help1 = "http://www.itk.org/Doxygen316/html/classitk_1_1DICOMImageIO2.html" 
+      ::help2 = "http://www.itk.org/Doxygen316/html/classitk_1_1DICOMSeriesFileNames.html"
+      ::html_filename = GetScriptsDir+"/IO/itkDICOM/doc/dicom/index.html"
+
+      #::Gui()
+    }
+    
+    proc ::Close() \
+    {
+      if (exists(::win)) {
+      ::win.HidePanel
+      }
+      delvars GetObjectName(::Close)
+    }
+    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+  
+    proc ::CloseAll() {
+      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
+      ::Close
+    }
+    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    
+    proc ::Run() \
+    {   
+      ::out = ::itk->DICOMRead(::dicom_folder)
+      eval "global::"+::image_name+"<<= ::out;"
+    }
+    
+    proc ::Save() \
+    {   
+      ::itk->Write(::out, ::dicom_save+"\\"+::image_save)
+    }
+
+    proc ::Display() {
+      eval "show "+"global::"+::image_name+";"
+    }
+    
+    proc ::LaunchHelp() {
+      import = &global::ami_import
+      wx1 = import->WxFunctions()
+      res = wx1->LaunchDefaultBrowser(::help1)
+      wx2 = import->WxFunctions()
+      res2 = wx2->LaunchDefaultBrowser(::help2)
+    }
+    ::LaunchHelp.Comments("Launch the corresponding help tutorial page on the default browser.")
+    
+    proc ::HtmlHome() {
+      ::html.LoadFile( ::html_filename)
+    }
+    ::HtmlHome.Comments("Back to the initial page.")
+
+    //---------------------------------------------------
+    proc ::HtmlBack() {
+      res = ::html.HistoryBack()
+    }
+    ::HtmlBack.Comments("Back to the previous page.")
+
+    //---------------------------------------------------
+    proc ::HtmlForward() {
+      res = ::html.HistoryForward()
+    }
+    ::HtmlForward.Comments("Go to the forward page.")
+    
+    proc ::Gui() {
+      import = &global::ami_import;
+      ::win = import->ParamPanel("DICOM")
+      ::win.BeginBook()
+      
+        ::win.AddPage("Init")
+        
+        ::win.BeginBoxPanel("DICOM Folder")
+          #::win.BeginHorizontal
+            ::win.AddDirname( &::dicom_folder, "Dir")
+            #::win.AddString( &::dicom_folder,"DICOM Folder")
+            ::win.AddString( &::image_name,"Output Image Name")
+          #::win.EndHorizontal
+        ::win.EndBoxPanel
+        
+        ::win.BeginHorizontal
+          ::win.AddButton("Run",::Run)
+          ::win.AddButton("Display",::Display)
+        ::win.EndHorizontal
+        
+        // ::win.AddPage("Save As")
+        
+        // ::win.BeginHorizontal
+          // ::win.AddDirname(&::dicom_save, "Save Folder")
+        // ::win.EndHorizontal
+        
+        // ::win.BeginHorizontal
+          // ::win.AddString( &::image_save,"Output Image Name")
+        // ::win.EndHorizontal
+       
+        // ::win.BeginHorizontal
+          // ::win.AddButton("Save",::Save)
+        // ::win.EndHorizontal
+        ::win.AddPage("Help")
+          ::win.BeginHorizontal
+            ::win.AddButton("Help",   ::LaunchHelp)
+            ::win.AddButton("Home",   ::HtmlHome)
+            ::win.AddButton("<--",    ::HtmlBack)
+            ::win.AddButton("-->",    ::HtmlForward)
+          ::win.EndHorizontal
+          # add html widget
+          d = ::win.CurrentParent()
+          ::html = import->wxHtmlWindow(&d)
+          ::html.LoadFile( ::html_filename)
+          ::win.AddWidget(&::html,1)
+        
+      ::win.EndBook
+      
+      ::win.BeginHorizontal
+        ::win.AddButton("Close", ::Close)
+        ::win.AddButton("Close All", ::CloseAll)
+      ::win.EndHorizontal
+      
+      ::win.Update(-1)
+      ::win.Display
+    }
+    
+    ::Init
+  }
+  # Class DICOMClass
+}
+# end if (!exists(DICOMClass))

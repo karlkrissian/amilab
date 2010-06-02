@@ -10,8 +10,8 @@ cl_dir = "Centerlines/"
 AddMenuScript(cl_category,"&Skeleton",         cl_dir+"CreateSkeletonGui")
 AddMenuScript(cl_category,"&Multi-Line",       cl_dir+"MultiLines")
 AddMenuScript(cl_category,"Shortest &Path",    cl_dir+"ShortestPath_gui")
-AddMenuScript(cl_category,"itk Shortest &Path", cl_dir+"itkShortestPath_gui")
-AddMenuScript(cl_category,"&itk Vesselness",       cl_dir+"itkVesselness")
+AddMenuScript(cl_category,"itk Shortest &Path", cl_dir+"/itkShotestPath/itkShortestPath_gui")
+AddMenuScript(cl_category,"&itk Vesselness",       cl_dir+"/itkVesselness/itkVesselness")
 AddMenuScript(cl_category,"2D &Lines",         cl_dir+"Lines2D")
 
 del cl_category

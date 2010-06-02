@@ -1,7 +1,7 @@
 if (!exists(config)) \
 {
   Class config{
-    basedir    = "/home/sara/Datos/"
+    basedir    = "C:/Documents and Settings/Darkmind/Escritorio/workshop/"
 
     ::data_dir              = basedir+"data/"
     ::groundtruth_dir       = basedir+"lumen/"

@@ -185,7 +185,7 @@ InrImage* wrap_itkFastMarchingImageFilter3D(ParamList* p)
 
   NodeType node;
   //const double seedValue;
-   
+  
   node.SetValue( seedValue );
   node.SetIndex( seedPosition );
 
