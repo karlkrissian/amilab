@@ -46,6 +46,7 @@
 
 #include "slick/16x16/actions/reload.xpm"
 #include "gtk-clear.xpm"
+#include "LoadImage_Icon3.xpm"
 
 #include "amilab_messages.h"
 
@@ -53,7 +54,7 @@
 using namespace amilab;
 
 #include "ami_object.h"
-#include "stctest.h"
+#include "wxStcFrame.h"
 
 //#include "Bluecurve/32x32/actions/reload.xpm"
 
@@ -61,6 +62,7 @@ extern wxString        GB_help_dir;
 extern wxString        GB_scripts_dir;
 extern VarContexts  Vars;
 
+extern MainFrame*    GB_main_wxFrame;
 
 
 // in function.cpp
@@ -98,6 +100,7 @@ enum {
   wxID_ConsoleReset = 2000,
   wxID_ConsoleClear,
   wxID_UpdateVars,
+  wxID_ToolLoadImage,
   wxID_ToolHelp,
   wxID_ToolQuit,
   wxID_VarList,
@@ -115,6 +118,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_CLOSE(MainFrame::OnClose)
 
 //    EVT_BUTTON(wxID_ConsoleReset, MainFrame::ConsoleReset)
+    EVT_TOOL(         wxID_ToolLoadImage, MainFrame::OnFileOpenImage)
     EVT_TOOL(         wxID_ConsoleClear, MainFrame::ConsoleClear)
 #if (wxCHECK_VERSION(2,9,0))
     EVT_TOOL_RCLICKED(wxID_ConsoleClear, MainFrame::ConsoleReset)
@@ -285,10 +289,11 @@ MainFrame::MainFrame( const wxString& title,
                   amilab_editor(NULL)
 {
 
-  CreateMenu();
 //  CreateToolbar();
 
   m_mgr.SetManagedWindow(this);
+
+  CreateMenu();
 
   m_mgr.SetFlags( 
                   wxAUI_MGR_ALLOW_FLOATING |
@@ -365,6 +370,11 @@ MainFrame::MainFrame( const wxString& title,
     tb1->SetToolBitmapSize(wxSize(48,48));
 //    tb1->AddTool(wxID_ANY, wxT("Test"), wxArtProvider::GetBitmap(wxART_ERROR));
 //    tb1->AddSeparator();
+    ::wxInitAllImageHandlers();
+    //wxImage loadim(wxT("MRA_32_39.png"));
+    tb1->AddTool(wxID_ToolLoadImage, wxT("Load Image"), wxBitmap(LoadImage_Icon3_xpm),
+        wxT("Load Image"));
+
     tb1->AddTool(wxID_UpdateVars, wxT("Update variables"), wxBitmap(reload),
         wxT("Update variables"));
     tb1->AddSeparator();
@@ -411,10 +421,10 @@ MainFrame::MainFrame( const wxString& title,
 
 
 //------------------------------------------------------------------------
-StcTestFrame* MainFrame::GetAmilabEditor()
+wxStcFrame* MainFrame::GetAmilabEditor()
 {
   if (!GetChildren().Find(amilab_editor)) {
-    amilab_editor = new StcTestFrame ( this, wxT("AMILab Editor"));    
+    amilab_editor = new wxStcFrame ( this, wxT("AMILab Editor"));    
   }
   return amilab_editor;  
 }
@@ -629,7 +639,9 @@ void MainFrame::CreateVarTreePanel ( wxWindow* parent)
   _var_tree->SetFont( wxFont(10,wxMODERN,wxNORMAL,wxNORMAL)); // try a fixed pitch font
   _var_tree->SetIndent(5);
 
-  _vartree_root      = _var_tree->AddRoot(_T("Variables"));
+  _vartree_root        = _var_tree->AddRoot(_T("Root"));
+  _vartree_global      = _var_tree->AppendItem(_vartree_root,_T("Global"));
+  _vartree_builtin     = _var_tree->AppendItem(_vartree_root,_T("Builtin"));
 
   vartreepanel_sizer->Add(_var_tree, 1, wxEXPAND , 5);
   vartreepanel_sizer->Fit(_vartree_panel);
@@ -667,7 +679,7 @@ void MainFrame::CreateConsoleText( wxWindow* parent)
                         wxID_ANY,
                         GetwxStr("Console"),
                           wxTE_MULTILINE
-                        | wxHSCROLL
+                        //| wxHSCROLL
                         | wxFULL_REPAINT_ON_RESIZE
                         //|wxTE_RICH|wxTE_RICH2
                         , (*_textcontrol_validator)
@@ -1009,6 +1021,7 @@ void MainFrame::OnClose(wxCloseEvent& event)
   // important: clear variables now before the childrens are deleted
   Vars.EmptyVariables();
   Destroy();
+  GB_main_wxFrame = NULL;
 /*  cout << "OnClose " << endl;
 
     if ( event.CanVeto()  )
@@ -1208,6 +1221,8 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
         _var_tree->SetItemFont(itemid,root_font);
       } else
       if ((var->Type() == type_float)||
+          (var->Type() == type_double)|| /// New (added: 24/05/2010)
+          (var->Type() == type_long)||   /// New (added: 27/05/2010)
           (var->Type() == type_int)  ||
           (var->Type() == type_uchar))
       {
@@ -1219,6 +1234,22 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
             text = (boost::format("%1% %20t FLOAT %30t %2%")
                             % var->Name()
                             % (*varf->Pointer())).str();
+            break;
+            }
+          case type_double: /// New (added: 24/05/2010)
+            {
+            DYNAMIC_CAST_VARIABLE(double,var,vardouble);
+            text = (boost::format("%1% %20t DOUBLE %30t %2%")
+                            % var->Name()
+                            % (*vardouble->Pointer())).str();
+            break;
+            }
+          case type_long: /// New (added: 27/05/2010)
+            {
+            DYNAMIC_CAST_VARIABLE(long int,var,varlong);
+            text = (boost::format("%1% %20t LONG INT %30t %2%")
+                            % var->Name()
+                            % (*varlong->Pointer())).str();
             break;
             }
           case type_int:
@@ -1300,7 +1331,7 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
               new MyTreeItemData(var));
         _var_tree->SetItemFont(itemid,root_font);
       } else
-      if ((var->Type() == type_c_procedure)||(var->Type() == type_class_member))
+      if ((var->Type() == type_c_procedure))
       {
         itemid = _var_tree->AppendItem(
               vartree_wrapped_procedures,
@@ -1309,7 +1340,7 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
               new MyTreeItemData(var));
         _var_tree->SetItemFont(itemid,root_font);
       } else
-      if (var->Type() == type_c_function)
+      if ((var->Type() == type_c_function)||(var->Type() == type_class_member))
       {
         itemid = _var_tree->AppendItem(
               vartree_wrapped_var_functions,
@@ -1565,10 +1596,16 @@ void MainFrame::UpdateVarsDisplay()
   root_font.SetWeight(wxFONTWEIGHT_BOLD);
   root_font.SetPointSize(10);
   _var_tree->SetItemFont(_vartree_root,root_font);
+  _var_tree->SetItemFont(_vartree_global, root_font);
+  _var_tree->SetItemFont(_vartree_builtin,root_font);
 
-  UpdateVarTree(_vartree_root, Vars.GetCurrentContext());
   _var_tree->Expand(  _vartree_root);
 
+  UpdateVarTree(_vartree_global, Vars.GetCurrentContext());
+  _var_tree->Expand(  _vartree_global);
+
+  UpdateVarTree(_vartree_builtin, Vars.GetBuiltinContext());
+  _var_tree->Expand(  _vartree_builtin);
 
 }
 

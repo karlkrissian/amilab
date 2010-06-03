@@ -512,7 +512,7 @@ public:
      */
      InrImage(  WORDTYPE format,
                             const char* nom,
-                            InrImage* image);
+                            const InrImage* image);
 
     /**
      *  Creates a new image with the given format 
@@ -526,7 +526,7 @@ public:
      */
      InrImage(  WORDTYPE format, int vdim,
                             const char* nom,
-                            InrImage* image);
+                            const InrImage* image);
 
     static InrImage::ptr New( WORDTYPE format, int vdim,
                               const char* nom,
@@ -605,6 +605,11 @@ public:
      **/
     InrImageIteratorBase::ptr CreateIterator();
 
+    /**
+     * Creates an interator to the image data
+     **/
+    InrImageIteratorBase::ptr CreateConstIterator() const;
+
 
     /**
       @return pointeur sur les donnees
@@ -614,6 +619,9 @@ public:
 
     void*     GetData() { return _amimage->GetData(); }
     //        -------
+
+    void const *     GetConstData() const { return _amimage->GetData(); }
+    //               ------------
 
     ///
     void      FixeBuffer( void* buf) { _amimage->data = (char*) buf; }
@@ -679,6 +687,7 @@ public:
     }
 
     ImagePositionsBase* GetPositions() { return _positions; }
+    ImagePositionsBase const* GetPositionsConst() const { return _positions; }
 
   //@}
 
@@ -702,7 +711,7 @@ public:
                  (z>=0) Et (z<_tz) );
     } // CoordOK()
 
-    int GetVDim() {return _vdim;}
+    int GetVDim() const {return _vdim;}
 
 
     void SetTranslation( float tx, float ty, float tz)
@@ -853,22 +862,24 @@ public:
        Fonction en ligne
        Incr�entation du buffer
     */
+/*
     int operator ++()
     //     -----------
     {
       return IncBuffer();
     } // operator ++()
-
+*/
     /**
        Fonction en ligne
        Incr�entation du buffer
     */
+/*
     int operator +=(int n)
     //     -----------
     {
       return IncBuffer(n);
     } // operator +=()
-
+*/
 
     /**
        Renvoie la case de l'image �la position courante du buffer
@@ -1175,7 +1186,7 @@ InrImage* operator+(  InrImage& i1,  InrImage& i2);
 InrImage& operator +=(  InrImage& i1,  InrImage& i2);
 
 
-InrImage* operator*(  InrImage& i1,  InrImage& i2);
+InrImage* operator*( const InrImage& i1, const InrImage& i2);
 //
 
 InrImage* operator/(  InrImage& i1,  InrImage& i2);

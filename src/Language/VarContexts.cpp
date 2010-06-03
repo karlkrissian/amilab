@@ -42,6 +42,7 @@ VarContexts::VarContexts() {
   _context.push_back(Variables::ptr(new Variables()));
   _context[0]->SetName("Global context");
   _current_context = 0;
+  _builtin_context = Variables::ptr(new Variables());
 }
 
 //--------------------------------------------------
@@ -95,6 +96,12 @@ bool VarContexts::DeleteLastContext() {
 //--------------------------------------------------
 void VarContexts::display() {
 
+  cout  << "\n"
+        << "Builtin Context "
+        << "\n ------------- \n",
+  _builtin_context->display();
+
+
   for (int i=_context.size()-1; i>=0; i--)
   {
     cout  << "\n"
@@ -110,8 +117,11 @@ void VarContexts::display() {
 //--------------------------------------------------
 bool VarContexts::ExistVar(const char* varname) 
 {
+
   for (int i=_context.size()-1; i>=0; i--)
     if (_context[i]->ExistVar(varname)) return true;
+  if(_builtin_context->ExistVar(varname)) return true;
+
   return false;
 }
 
@@ -124,6 +134,9 @@ boost::shared_ptr<wxArrayString> VarContexts::SearchCompletions(const wxString& 
 
   for (int i=_context.size()-1; i>=0; i--)
     _context[i]->SearchCompletions(varname,completions);
+
+  _builtin_context->SearchCompletions(varname,completions);
+
   return completions;
 }
 
@@ -139,6 +152,10 @@ boost::shared_ptr<wxArrayString> VarContexts::SearchVariables(const vartype& typ
 
   // global context, prepend "global::"
   _context[0]->SearchVariables(type,completions,"global::");
+
+  // global context, prepend "global::"
+  _builtin_context->SearchVariables(type,completions);
+
   return completions;
 }
 
@@ -195,7 +212,14 @@ BasicVariable::ptr VarContexts::GetVar(const char* varname, int context)
     // TODO: limit to last context, if nothing else is specified !!!
     //for(int i=_context.size()-1;i>=0;i--)
     //  if (_context[i]->GetVar(varname,var)) return true;
-    return _context[_context.size()-1]->GetVar(varname);
+
+    // TODO: all these manipulation within the global variables are not thread-safe, to improve ....
+    BasicVariable::ptr var = _context[GetCurrentContextNumber()]->GetVar(varname);
+//    BasicVariable::ptr var = _context[_context.size()-1]->GetVar(varname);
+    if (var.get()) 
+      return var;
+    else
+      return _builtin_context->GetVar(varname);
   }
   else 
     if ((context>=0)&&(context<=_current_context))

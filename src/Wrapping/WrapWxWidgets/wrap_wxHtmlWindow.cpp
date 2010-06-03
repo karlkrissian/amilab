@@ -98,14 +98,13 @@ void WrapClass_wxHtmlWindow::
 BasicVariable::ptr WrapClass_wxHtmlWindow::
       wrap_LoadFile::CallMember( ParamList* p)
 {
-
   std::string* filename = NULL;
   int n = 0;
   if (!get_val_ptr_param<string>( filename,  p, n)) 
     ClassHelpAndReturn;
 
   wxFileName wxfilename(wxString::FromAscii(filename->c_str())); 
-  int res = this->_objectptr->_htmlwin->LoadFile(wxfilename);
+  int res = this->_objectptr->_obj->LoadFile(wxfilename);
 
   RETURN_VAR(int, res);
 }
@@ -122,7 +121,7 @@ void WrapClass_wxHtmlWindow::
 BasicVariable::ptr WrapClass_wxHtmlWindow::
       wrap_HistoryBack::CallMember( ParamList* p)
 {
-  int res = this->_objectptr->_htmlwin->HistoryBack();
+  int res = this->_objectptr->_obj->HistoryBack();
   RETURN_VAR(int, res);
 }
 
@@ -138,6 +137,6 @@ void WrapClass_wxHtmlWindow::
 BasicVariable::ptr WrapClass_wxHtmlWindow::
       wrap_HistoryForward::CallMember( ParamList* p)
 {
-  int res = this->_objectptr->_htmlwin->HistoryForward();
+  int res = this->_objectptr->_obj->HistoryForward();
   RETURN_VAR(int, res);
 }

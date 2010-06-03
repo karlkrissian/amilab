@@ -40,19 +40,19 @@
 //------- AnisoGS
 
 void Func_InitAnisoGS(InrImage* in, 
-		      float p_sigma, 
-		      float p_k,
-		      float p_beta
-		      );
+          float p_sigma, 
+          float p_k,
+          float p_beta
+          );
 
 void      Func_SetCoeffAnisoGS(
-			       float p_tang
-			       );
+             float p_tang
+             );
 
 void      Func_SetCoeffAnisoGS3D(
-				 float cmin,
-				 float cmax
-				 );
+         float cmin,
+         float cmax
+         );
 
 void      Func_SetSmoothedParam( unsigned char sp  );
 

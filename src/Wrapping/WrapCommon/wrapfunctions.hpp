@@ -15,11 +15,16 @@
 
 
 #include <wx/msgdlg.h>
-#include "inrimage.hpp"
+
+class InrImage;
+//#include "inrimage.hpp"
 #include "paramlist.h"
 #include <boost/shared_ptr.hpp>
+
+#include "BasicVariable.h"
 #include "Variable.hpp"
 //#include "DessinImage.hpp"
+//class BasicVariable;
 
 /// Specialization for C_wrap_varfunction
 template<>
@@ -56,6 +61,34 @@ class CreateSmartPointer<C_wrap_imagefunction>
               smartpointer_nodeleter<C_wrap_imagefunction>());
   }
 };
+
+
+class WrapClassMember;
+
+/** Macro for adding a class that wraps a function.
+  * requires:
+  *  a AMIObject:ptr amiobject member pointing to the corresponding wrapped object class
+  */
+#define ADD_CLASS_FUNCTION(methodname,description_str) \
+/**\
+ * description_str\
+ **/ \
+class wrap_##methodname : public WrapClassMember { \
+  public: \
+    wrap_##methodname()  \
+    { \
+      functionname = #methodname; \
+      description=description_str; \
+      SetParametersComments(); \
+    } \
+    void SetParametersComments(); \
+    BasicVariable::ptr CallMember(ParamList*); \
+}; \
+\
+inline void AddVar_##methodname(  Variables::ptr& context, const std::string& newname = #methodname) {\
+  boost::shared_ptr<WrapClassMember> tmp( new wrap_##methodname());\
+  context->AddVar<WrapClassMember>(newname, tmp); \
+}
 
 
 /*! \def ADDVAR
@@ -182,6 +215,24 @@ class CreateSmartPointer<C_wrap_imagefunction>
     FILE_ERROR("Need a wrapped object as parameter.")\
   }
 
+/*! \def CLASS_GET_OBJECT_PARAM
+    \brief try to convert the next parameter to the wrapped given type and gets a smart pointer to this type in the variable 'name', macro working within a class member
+*/
+#define CLASS_GET_OBJECT_PARAM(type,name) \
+  Variable<AMIObject>::ptr var; \
+  boost::shared_ptr<type> name; \
+  if (get_var_param<AMIObject>(var, p, n))  \
+  { \
+    WrapClassBase::ptr object( var->Pointer()->GetWrappedObject());\
+    WrapClass_##type::ptr obj( boost::dynamic_pointer_cast<WrapClass_##type>(object));\
+    if (obj.get()) {\
+      name = obj->_obj;\
+    } else {\
+      CLASS_ERROR("Could not cast dynamically the variable.")\
+    }\
+  }  else {\
+    CLASS_ERROR("Need a wrapped object as parameter.")\
+  }
 
 
 /**

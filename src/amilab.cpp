@@ -251,11 +251,12 @@ bool MyApp::OnInit()
 #endif
 
 /*    if ( !wxApp::OnInit() )
-        return false;
+    return false;
 */
 
  // this was  main()
   int  n;
+  bool no_interaction = false;
   std::string cmd_line;
 
   GB_debug = false;
@@ -301,6 +302,14 @@ bool MyApp::OnInit()
     GB_num_arg_parsed++;
   FinSi
 
+  Si  argc>GB_num_arg_parsed Et
+      strcmp(wxString(argv[GB_num_arg_parsed]).mb_str(wxConvUTF8),"-quit")==0
+  Alors
+    cout << "Quit without console interation" << endl;
+    no_interaction = true;
+    GB_num_arg_parsed++;
+  FinSi
+
   // Get environment variables
   CheckEnvDir( _T("AMI_HELP"),    GB_help_dir,    _T("tokens.html"));
   CheckEnvDir( _T("AMI_SCRIPTS"), GB_scripts_dir, _T("scripts.amil"));
@@ -312,8 +321,6 @@ bool MyApp::OnInit()
   GB_driver.ws_print(cmd_line.c_str());
 
 
-  // Add imports language
-  AddWrapImports();
 
 //  printf("MyApp::OnInit()\n");
 //  wxFont::SetDefaultEncoding(wxFONTENCODING_ISO8859_15);
@@ -336,6 +343,10 @@ bool MyApp::OnInit()
 //  printf("application name = \"%s\" \n",wxGetApp().GetClassName().c_str());
   // TODO: avoid using get() here ...
   GB_main_wxFrame = mainframe;
+
+
+  // Add imports language, needs to do it after initialization of MainFrame
+  AddWrapImports();
 
   ::wxInitAllImageHandlers();
 
@@ -395,8 +406,13 @@ bool MyApp::OnInit()
         GB_driver.yyip_popup_buffer();
         */
         GB_driver.parse_file(string(input_file.mb_str(wxConvUTF8)));
-        GB_main_wxFrame->GetConsole()->ProcessReturn();
-
+        if (GB_main_wxFrame)
+        {
+          if (no_interaction)
+            GB_main_wxFrame->Close(true);
+          else
+            GB_main_wxFrame->GetConsole()->ProcessReturn();
+        }
       } catch (char * str ) {
         cerr << "Error catched ! " << str << endl;
       }

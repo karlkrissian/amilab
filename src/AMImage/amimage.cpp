@@ -941,7 +941,13 @@ unsigned char  amimage::readdata_ext( )
     else
     {
       // use file format ...
-      fname = (boost::format(file_format) %(first_slice+z)).str();
+      try {
+        fname = (boost::format(file_format) %(first_slice+z)).str();
+      }
+      catch(std::exception)
+      {
+        fname = file_format;
+      }
       // check existence of the file
       if( !bf::exists(bf::path(fname)) ) {
         // try compressed file

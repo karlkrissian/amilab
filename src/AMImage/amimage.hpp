@@ -270,6 +270,7 @@ public:
 
   unsigned long  GetDataSize() {return data_size; }
   void*          GetData() { return data; }
+  void const*    GetConstData() const { return data; }
   void           SetData( void* d);
 
   void SetVoxelSize( float vx, float vy, float vz)

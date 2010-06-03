@@ -60,15 +60,15 @@ public:
 
   bool FreePositions( );
 
-  double operator()( int x, int y, int z = 0)
+  double operator()( int x, int y, int z = 0) const
     #ifdef AMI_BUILD_Debug
       throw (std::range_error)
     #endif
     ;
 
-  double operator()( int x, int y, int z, int coord);
+  double operator()( int x, int y, int z, int coord) const;
 
-  double GetValue( int x, int y, int z, int coord);
+  double GetValue( int x, int y, int z, int coord) const;
 
   T* GetPos(int x, int y, int z=0);
 

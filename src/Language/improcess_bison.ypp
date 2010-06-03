@@ -3,7 +3,7 @@
     IMAGE PROCESSING LANGUAGE
 
     Karl Krissian
-    ULPGC
+    ULPGC 
     06 02 2001
  */
 
@@ -34,7 +34,7 @@
 #include "wrapAMIFluid.h"
 #include "wrapVTK.h"
 #include "wrapITK.h"
-//#include "wrap_mainframe.h"
+//#include "wrap_MainFrame.h"
 #include "wrap_imagedraw.h"
 #include "itkCannyEdgeDetector.h"
 #include "wrapWII.h"
@@ -110,6 +110,8 @@ namespace MyNS_ForOutput {
 }
 using namespace MyNS_ForOutput;
 */
+
+
 
 //-------
 
@@ -223,6 +225,24 @@ void CB_update_imagelist( void* imagelist_gui);
     Variable<float>::ptr new_var(new Variable<float>(float_ptr(new float(newval)))); \
     driver.var_stack.AddVar(new_var);
 
+/*! \def CHECK_VAR
+    \brief Checks if the smart pointer really points to a variable, if not abort the current parsing
+*/
+#define CHECK_VAR(var) \
+  if (!var.get()) {  \
+    driver.yyiperror(" Empty variable in expression "); \
+    YYABORT; }
+
+/*! \def GET_CHECK_VARSTACK
+    \brief Gets the last variable from the stack and 
+        checks if the smart pointer really points to a variable, if not abort the current parsing
+*/
+#define GET_CHECK_VARSTACK(varname) \
+  BasicVariable::ptr varname(driver.var_stack.GetLastBasicVar()); \
+  if (!varname.get()) {  \
+    driver.yyiperror(" Empty variable in expression "); \
+    YYABORT; }
+
 /**
   newval is a smart pointer to the new value to add
 **/
@@ -278,6 +298,7 @@ void CB_update_imagelist( void* imagelist_gui);
   char*                   astring;
   AmiInstructionBlock*    ablock;
   float                   afloat;
+  long int                along;  /// New (added: 27/05/2010)
   double                  adouble;
   int                     aint;
   ParamList*              paramlist; // here smart pointer
@@ -319,8 +340,12 @@ void CB_update_imagelist( void* imagelist_gui);
 
 %token T_SetDebugOn
 %token T_SetDebugOff
+%token T_TraceScanning
+%token T_TraceParsing
+%token T_NoMessageDialog
 %token T_SetVerboseOn
 %token T_SetVerboseOff
+
 %token T_AddMenuScript
 %token T_SetProgress
 %token T_SetStatusText
@@ -344,12 +369,12 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_SetName
 %token T_GetName
 %token T_GetObjectName
-%token T_GetOutput
-%token T_GetDiffCoeff
 
 %token ASTRING ABLOCK NUMBER
 %token IDENTIFIER
 %token VAR_IMAGE   VAR_FLOAT VAR_INT VAR_UCHAR VAR_STRING VAR_IMAGEDRAW
+%token VAR_LONG     /// New (added: 27/05/2010)
+%token VAR_DOUBLE
 %token VAR_SURFACE VAR_SURFDRAW VAR_MATRIX
 %token VAR_FILE
 %token VAR_C_FUNCTION
@@ -398,8 +423,7 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_AutoCrop
 %token T_DiscSecDerGrad
 %token T_EDPdilate T_EDPerode T_EDPopen T_EDPclose
-%token AnisoGS AnisoSmoothGS T_vtkAnisoGS
-%token T_SetDistMap
+%token AnisoSmoothGS T_vtkAnisoGS
 %token T_DiscMeanCurvature
 %token T_vtkMedian3D
 
@@ -424,19 +448,7 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_AnisoDPAD2
 %token T_AnisoNRAD
 %token T_AnisoRudinMult
-%token TInit TSetCoeff TIterate TEnd TAddGaussNoise T_SNR
-%token T_SetNoiseType
-%token T_SetNoiseSD
-%token T_GetNoiseSD
-%token T_GetDAcoeff
-%token T_SetMask
-%token T_SetSRADROI
-%token T_SetRNRADROI
-%token T_SetRNRADROI_NEW
-%token T_SetLocalStruct
-%token T_SetEigenMode
-%token T_Setdt
-%token T_Setneighborhood
+%token TInit TIterate TEnd TAddGaussNoise T_SNR
 %token T_info T_NbPoints T_NbPolys
 %token T_save
 %token T_normalize
@@ -613,6 +625,7 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_Xpos T_Ypos T_Zpos T_SpacePos
 
 %token T_CHAR T_UCHAR T_SHORT T_USHORT T_INT T_UINT
+%token T_LONG   // New (added: 27/05/2010)
 %token T_FLOAT T_DOUBLE
 %token T_RGB  T_FLOAT_VECTOR
 %token T_GetFormat
@@ -669,7 +682,7 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_OBJECT
 
 %token T_PROC
-%token T_Class
+%token T_Class T_public
 
 %token T_MeanHalfSize
 %token T_Resize
@@ -1057,6 +1070,27 @@ class_decl:
 
       Vars.AddVar<AMIClass>(ident, amiclass);
 
+    }
+    |
+    T_Class  identifier T_COLON T_public VAR_AMI_CLASS
+        instr_block end_instr
+    {
+      Variable<AMIClass>::ptr var(driver.var_stack.GetLastVar<AMIClass>());
+      AMIClass::ptr parent = var->Pointer();
+
+      AmiInstructionBlock::ptr body($6);
+      IdentifierInfo::ptr ident($2);
+
+      AMIClass::ptr amiclass( new AMIClass);
+
+      amiclass->SetName(ident->GetName());
+      amiclass->SetFileName(driver.current_file);
+      amiclass->Inherit(parent);
+      amiclass->SetBody(     body);
+      if (GB_debug) printf("%s body = %s\n", ident->GetName().c_str(),body->GetBody().c_str());
+
+      Vars.AddVar<AMIClass>(ident, amiclass);
+
     };
 
 object_decl:
@@ -1074,7 +1108,7 @@ object_decl:
       amiobject->SetClass(ac);
 
       // execute the code of the class with the variables of the object
-      driver.yyip_instanciate_object(ac,amiobject.get());
+      driver.yyip_instanciate_object(ac,amiobject);
 
       Vars.AddVar<AMIObject>(ident, amiobject);
 
@@ -1329,19 +1363,20 @@ command:
         **/
         BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
         // check counter of the value, not of the variable ...
-        if (var->GetPtrCounter()==1) {
-          //cout << "GetPtrCounter == 1" << endl;
-          IdentifierInfo::ptr ident($1);
-          Vars.AddVar(ident,var);
-        } else
-        {
-          if (var.get()) {
+        if (var.get() || (var->GetPtrCounter()>0) ) {
+          if (var->GetPtrCounter()==1) {
+            //cout << "GetPtrCounter == 1" << endl;
+            IdentifierInfo::ptr ident($1);
+            Vars.AddVar(ident,var);
+          } else
+          {
             BasicVariable::ptr copy = var->NewCopy();
             IdentifierInfo::ptr ident($1);
             Vars.AddVar(ident,copy);
-          } else {
-            driver.err_print("identifier = variable, no variable value");
           }
+        } else {
+          driver.err_print("identifier = variable, no variable value");
+          YYABORT;
         }
       }
       |
@@ -1358,6 +1393,7 @@ command:
         BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
         if (var->GetPtrCounter()==1) {
           IdentifierInfo::ptr ident($1);
+          var->SetComments(comments.get());
           Vars.AddVar(ident,var);
         } else
         {
@@ -1810,15 +1846,39 @@ command:
         |  T_SetDebugOff
         {
       GB_debug = 0;
-        }
-        |  T_SetVerboseOn
-        {
+    }
+    |  T_TraceScanning expr
+    {
+      driver.SetTraceScanning($2>0.5);
+    }
+    |  T_TraceParsing expr
+    {
+      /**
+       Description: 
+          Activate the debugging of the parser.
+       Parameters:
+          bool: 1:activate 0: desactivate
+       **/
+      driver.SetTraceParsing($2>0.5);
+    }
+    |  T_SetVerboseOn
+    {
       GB_verbose = 1;
       verbose = 1;
     }
     |  T_SetVerboseOff
     {
       GB_verbose = 0;
+    }
+    |  T_NoMessageDialog expr
+    {
+      /**
+       Description:
+          Activate/Desactivate the display of message dialog in the language driver.
+       Parameters:
+          bool: 1:activate 0: desactivate
+       **/
+      driver.SetNoMessageDialog($2>0.5);
     }
     |  T_AddMenuScript T_OP_PAR expr_string T_COMMA expr_string T_COMMA expr_string T_CL_PAR
     {
@@ -2139,20 +2199,6 @@ command:
 
 
         }
- /*
-       |  VAR_FLOAT INC_OP
-        {
-          (*driver.var_stack.GetLastVar<float>()->Pointer())++;
-        }
-        |  VAR_FLOAT DEC_OP
-        {
-          (*driver.var_stack.GetLastVar<float>()->Pointer())--;
-        }
-        |  VAR_FLOAT ASSIGN_OP expr
-        {
-          (*driver.var_stack.GetLastVar<float>()->Pointer()) = $3;
-        }
-*/
         |  VAR_INT INC_OP
         {
           (*driver.var_stack.GetLastVar<int>()->Pointer())++;
@@ -2346,7 +2392,7 @@ command:
          driver.res_print("\t\t\t -  open browsing window for choosing the image\n");
          driver.res_print("\t Image(basic_type, size_x , size_y, size_z) \n");
          driver.res_print("\t\t\t - create an image of a basic type and the given dimensions\n");
-         driver.res_print("\t\t\t - basic_type are CHAR UCHAR SHORT USHORT FLOAT DOUBLE RGB FLOAT_VECTOR \n");
+         driver.res_print("\t\t\t - basic_type are CHAR UCHAR SHORT USHORT LONG INT FLOAT DOUBLE RGB FLOAT_VECTOR \n");
          driver.res_print("\t\t\t - size_x, size_y, size_z: float expressions \n");
          driver.res_print(" Functions that return a new image: \n");
          driver.res_print("\t OpImage( var_image, string ) \n");
@@ -2405,19 +2451,6 @@ command:
          driver.res_print("\t\t  expr 2: threshold \n");
          driver.res_print("\t\t  expr 3: data attachment coefficient \n");
          driver.res_print("\t\t  expr 4: number of iterations \n");
-
-
-         driver.res_print("\t image = AnisoGS.init( var_image, expr, expr, expr )\n");
-         driver.res_print("\t\t  expr 1:    sigma  \n");
-         driver.res_print("\t\t  expr 2:    theshold  \n");
-         driver.res_print("\t\t  expr 3:    data attachment coeff  \n");
-         driver.res_print("\t AnisoGS.setcoeff( expr )\n");
-         driver.res_print("\t\t  expr 1:    tangential coeff  \n");
-         driver.res_print("\t AnisoGS.setcoeff( expr, expr )\n");
-         driver.res_print("\t\t  expr 1:    min curv coeff  \n");
-         driver.res_print("\t\t  expr 2:    max curv coeff  \n");
-         driver.res_print("\t AnisoGS.iterate\n");
-         driver.res_print("\t AnisoGS.end\n");
 
          driver.res_print("\t image = AnisoWeickert.init( var_image, expr, expr, expr )\n");
          driver.res_print("\t\t  expr 1:    sigma  \n");
@@ -3427,6 +3460,7 @@ command:
       GET_VARSTACK_VALUE(InrImage, im);
       im->FixeNom( name.get());
     }
+/*
     |
     AnisoGS T_POINT TInit  T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
     {
@@ -3441,7 +3475,7 @@ command:
         Description:
             Sets parameters for the anisotropic diffusion algorithm using
             Gauss-Seidel scheme.
-        **/
+        **
         GET_VARSTACK_VALUE(InrImage, im);
         Func_InitAnisoGS( im.get(),
                           $7,  $9, $11);
@@ -3456,22 +3490,30 @@ command:
         {
           Func_AnisoGS_SetDistanceMap((int)$5);
         }
+*/
+/*
         |
         AnisoGS T_POINT T_SetNoiseType T_OP_PAR expr T_CL_PAR
         {
           Func_AnisoGS_SetNoiseType((int)$5);
         }
+*/
+/*
         |
         AnisoGS T_POINT T_SetNoiseSD T_OP_PAR expr T_CL_PAR
         {
           Func_AnisoGS_SetNoiseSD($5);
         }
+*/
+/*
         |
         AnisoGS T_POINT T_SetMask T_OP_PAR var_image T_CL_PAR
         {
           GET_VARSTACK_VALUE(InrImage, im);
           Func_AnisoGS_SetMask(im.get());
         }
+*/
+/*
         |
         AnisoGS T_POINT T_SetSRADROI T_OP_PAR var_image T_CL_PAR
         {
@@ -3483,10 +3525,12 @@ command:
          Description:
             Sets the region of interest (region of constant tissue in the image)
             and activates the Oriented Speckle Reducing Anisotropic Diffusion
-         **/
+         **
           GET_VARSTACK_VALUE(InrImage, im);
           Func_AnisoGS_SetSRAD_ROI(im.get());
         }
+*/
+/*
         |
         AnisoGS T_POINT T_SetRNRADROI T_OP_PAR var_image T_CL_PAR
         {
@@ -3499,10 +3543,12 @@ command:
             Sets the region of interest (region of constant tissue in the image)
             and activates the Rician Noise Reducing Anisotropic Diffusion
             used to reduce noise in MRI data.
-         **/
+         **
           GET_VARSTACK_VALUE(InrImage, im);
           Func_AnisoGS_SetRNRAD_ROI(im.get());
         }
+*/
+/*
         |
         AnisoGS T_POINT T_SetRNRADROI_NEW T_OP_PAR var_image T_CL_PAR
         {
@@ -3517,10 +3563,12 @@ command:
             used to reduce noise in MRI data.
             New version of the filter, using local directional mean and variance
             for the diffusion matrix.
-         **/
+         **
           GET_VARSTACK_VALUE(InrImage, im);
           Func_AnisoGS_SetRNRAD_ROI_NEW(im.get());
         }
+*/
+/*
         |
         AnisoGS T_POINT T_SetLocalStruct T_OP_PAR expr T_CL_PAR
         {
@@ -3532,9 +3580,11 @@ command:
 
           Description:
             Sets the local structure mode.
-         **/
+         **
       Func_SetLocalStructureMode((int)$5);
         }
+*/
+/*
         |
     AnisoGS T_POINT T_SetEigenMode T_OP_PAR expr T_CL_PAR
         {
@@ -3552,19 +3602,25 @@ command:
 
           Description:
             Choose a way to select the diffusion matrix eigenvalues.
-         **/
+         **
       Func_SetEigenvaluesMode((int)$5);
         }
+*/
+/*
         |
     AnisoGS T_POINT T_Setdt T_OP_PAR expr T_CL_PAR
         {
       Func_AnisoGS_Setdt($5);
         }
+*/
+/*
         |
     AnisoGS T_POINT T_Setneighborhood T_OP_PAR expr T_CL_PAR
         {
       Func_AnisoGS_Setneighborhood((int)$5);
         }
+*/
+/*
         |
         AnisoGS T_POINT TSetCoeff T_OP_PAR expr T_COMMA expr T_CL_PAR
         {
@@ -3572,6 +3628,8 @@ command:
       Func_SetCoeffAnisoGS3D($5,$7);
 
     }
+*/
+/*
         |
         AnisoGS T_POINT TIterate
         {
@@ -3581,6 +3639,8 @@ command:
 
       //driver.res_print("Error in AnisoGS.Iterate ");
     }
+*/
+/*
         |
     AnisoGS T_POINT TEnd
         {
@@ -3589,6 +3649,7 @@ command:
       res = Func_EndAnisoGS();
 
     }
+*/
         |
         T_AnisoWeickert T_POINT TIterate
         {
@@ -5449,6 +5510,10 @@ param_list:
           Description: temporary rule, added to simplify convertion of scripts.
          **/
           BasicVariable::ptr       var(driver.var_stack.GetLastBasicVar());
+          if (!var.get()) {
+            driver.error("Empty Variable as parameter !");
+            YYABORT;
+          }
           ParamList* pl = new ParamList();
           // Creating a new variable that points to the same value, and a slightly different name (with added "_ref"), comments are also copied.
           BasicVariable::ptr newvar(var->NewReference());
@@ -5461,6 +5526,10 @@ param_list:
           Description: temporary rule, added to simplify convertion of scripts.
          **/
           BasicVariable::ptr       var(driver.var_stack.GetLastBasicVar());
+          if (!var.get()) {
+            driver.error("Empty Variable as parameter !");
+            YYABORT;
+          }
           ParamList* pl =  $1;
 
           // Creating a new variable that points to the same value, and a slightly different name (with added "_ref"), comments are also copied.
@@ -5472,6 +5541,10 @@ param_list:
         | T_AND variable
         {
           BasicVariable::ptr       var(driver.var_stack.GetLastBasicVar());
+          if (!var.get()) {
+            driver.error("Empty Variable as parameter !");
+            YYABORT;
+          }
 
           ParamList* pl = new ParamList();
 
@@ -5484,6 +5557,10 @@ param_list:
         | param_list T_COMMA T_AND variable
         {
           BasicVariable::ptr       var(driver.var_stack.GetLastBasicVar());
+          if (!var.get()) {
+            driver.error("Empty Variable as parameter !");
+            YYABORT;
+          }
           ParamList* pl =  $1;
 
           // Creating a new variable that points to the same value, and a slightly different name (with added "_ref"), comments are also copied.
@@ -5498,6 +5575,10 @@ param_list:
             Description: it is now a new reference to the variable, so basically similar to &variable (should be removed?)...
           **/
           BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+          if (!var.get()) {
+            driver.error("Empty Variable as parameter !");
+            YYABORT;
+          }
           ParamList* pl(new ParamList);
           BasicVariable::ptr newvar(var->NewCopy());
           newvar->Rename("Param0");
@@ -5510,6 +5591,10 @@ param_list:
             Description: it is now a new reference to the variable, so basically similar to &variable (should be removed?)...
           **/
           BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+          if (!var.get()) {
+            driver.error("Empty Variable as parameter !");
+            YYABORT;
+          }
           ParamList* pl =  $1;
           std::string paramname = (boost::format("Param%1%")%pl->GetNumParam()).str();
           BasicVariable::ptr newvar(var->NewCopy());
@@ -5569,6 +5654,13 @@ param_list_decl:
       pl->AddParam(ident->GetName(),type_surface);
       $$ = pl;
         }
+    | param_list_decl T_COMMA T_OBJECT IDENTIFIER
+    {
+      IdentifierInfo::ptr ident($4);
+      ParamListDecl* pl = (ParamListDecl*) $1;
+      pl->AddParam(ident->GetName(),type_ami_object);
+      $$ = pl;
+    }
     | param_list_decl T_COMMA T_NUM IDENTIFIER
         {
       IdentifierInfo::ptr ident($4);
@@ -5797,6 +5889,16 @@ instr_block: begin_block
 begin_block: ;
 end_block: ;
 
+
+double_variable:
+    VAR_DOUBLE
+    {
+      /**
+      Description: adds a reference to the variable in the stack
+      **/
+      BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
+      driver.var_stack.AddVar(var->NewReference());
+    }
 
 float_variable:
     NUMBER
@@ -6506,18 +6608,22 @@ float_variable:
         GB_main_wxFrame->GetConsole()
                         ->IncCommand(wxString::FromAscii(comment.c_str()));
     }
+/*
     |
     AnisoGS T_POINT T_GetNoiseSD
     {
       float val=Func_AnisoGS_GetNoiseSD();
       ADD_VARSTACK_FLOAT(val);
     }
+*/
+/*
     |
     AnisoGS T_POINT T_GetDAcoeff
     {
       float val=Func_AnisoGS_GetDAcoeff();
       ADD_VARSTACK_FLOAT(val);
     }
+*/
 /* Deprecated
     |
     T_LevelSetsCURV T_POINT T_UpdateResult
@@ -6738,6 +6844,10 @@ basic_type:
        {
      $$=WT_UNSIGNED_INT;
        }
+       | T_LONG
+       {
+     $$=WT_SIGNED_LONG;
+       }
        | T_FLOAT
        {
      $$=WT_FLOAT;
@@ -6786,7 +6896,8 @@ image:
       T_Image  expr_string
       {
         boost::shared_array<char> st( $2);
-        driver.im_stack.AddFileImage(st.get());
+        bool res = driver.im_stack.AddFileImage(st.get());
+        if (!res) YYABORT;
       }
 /* Deprecated since expr_string accepts parenthesis
       |
@@ -6796,6 +6907,7 @@ image:
         driver.im_stack.AddFileImage(st.get());
       }
 */
+/* deprecated
       |
       T_ReadRawImages T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA
                           expr T_COMMA expr_string T_COMMA expr T_COMMA expr T_CL_PAR
@@ -6819,7 +6931,7 @@ image:
 
        Example(s):
           i = ReadRawImages(1024,1024,USHORT,0,"AfGG.%d",48,48)
-       **/
+       **
       InrImage::ptr im (new InrImage());
       boost::shared_ptr<amimage> amim(new amimage());
       int dimx                    = (int)           $3;
@@ -6830,7 +6942,7 @@ image:
       unsigned short first_slice  = (unsigned short)$13;
       unsigned short last_slice   = (unsigned short)$15;
 
-         amim->SetDim(dimx,dimy,1);
+     amim->SetDim(dimx,dimy,1);
      if (endianness)
        amim->endianness = BIG_END;
      else
@@ -6851,6 +6963,7 @@ image:
        driver.im_stack.AddImage(InrImage::ptr());
      }
       }
+*/
       |
       T_ReadRawImages T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA  expr T_COMMA
                           expr T_COMMA expr_string  T_CL_PAR
@@ -7022,8 +7135,8 @@ image:
             driver.yyiperror(" Need Image \n");
             YYABORT;
           }
-          driver.im_stack.AddFileImage((char*)name.c_str());
-
+          bool res1 = driver.im_stack.AddFileImage((char*)name.c_str());
+          if (!res1) YYABORT;
 
           wxFileName filename(GetwxStr(name));
           filename.Normalize(wxPATH_NORM_ALL,wxEmptyString,wxPATH_UNIX);
@@ -7097,20 +7210,23 @@ image:
       **/
       GET_VARSTACK_VAR_VAL(InrImage,var,im);
 
+
+/*
+      // do we need a copy here ???
+      // Yes, we need a copy until we know that the operators, methods, etc.. cannot change the value of the variable !!!
+      std::string imname = (boost::format("copy_%s") % var->Name().c_str()).str();
+      InrImage::ptr imcopy (new InrImage(im->GetFormat(),im->GetVDim(),imname.c_str(),im.get()));
+      (*imcopy)=(*im);
+      driver.im_stack.AddImage(imcopy);
+*/
       // returning reference here since the smart pointers will take care of everything (hopefully :) !!!)
+      // and we can't return a copy here otherwise a=b won't work !!!
       driver.im_stack.AddImage(im);
-      // driver.im_stack.AddImage(varim);
 /*
       GET_VARSTACK_VAR_VAL(InrImage,var,varim);
       InrImage::ptr im;
       std::string  imname;
 
-      // do we need a copy here ???
-      // Yes, it is safer to start with a copy and it simplifies the following operations
-      // otherwise, we need to have a const pointer to avoid modifying the image ...
-      imname = (boost::format("copy_%s") % var->Name().c_str()).str();
-      im = InrImage::ptr(new InrImage(varim->GetFormat(),varim->GetVDim(),imname.c_str(),varim.get()));
-      (*im)=(*varim);
       driver.im_stack.AddImage(im);
       // driver.im_stack.AddImage(varim);
 */
@@ -8109,6 +8225,7 @@ image:
     FinSi
     driver.im_stack.AddImage(res);
       }
+/*
       |
       AnisoGS T_POINT T_GetOutput
       {
@@ -8118,6 +8235,8 @@ image:
     FinSi
     driver.im_stack.AddImage(res);
       }
+*/
+/*
       |
       AnisoGS T_POINT T_GetDiffCoeff
       {
@@ -8127,6 +8246,7 @@ image:
     FinSi
     driver.im_stack.AddImage(res);
       }
+*/
 /*
       |
       T_LevelSetsCURV T_POINT TInit T_OP_PAR var_image  T_COMMA expr  T_CL_PAR
@@ -8187,6 +8307,7 @@ image:
     driver.im_stack.AddImage(res);
       }
 */
+/*
         |
         AnisoGS
         T_OP_PAR var_image
@@ -8201,7 +8322,7 @@ image:
         (5) number of iterations
       Description:
         Runs an anisotropic diffusion filter using Gauss-Seidel numerical scheme, based on the Flux-diffusion algorithm [Krissian,IEEE TMI 2002].
-      **/
+      **
       int        nb_iter,i;
       float       error;
       GET_VARSTACK_VALUE(InrImage, im);
@@ -8221,6 +8342,7 @@ image:
 
 
     }
+*/
         |
         T_FluxDiffusion
         T_OP_PAR var_image T_COMMA var_image T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
@@ -8254,7 +8376,6 @@ image:
       FinSi
       Func_EndAnisoGS();
       driver.im_stack.AddImage(res);
-
     }
     |
     T_vtkAnisoGS
@@ -9939,6 +10060,8 @@ string_variable:
 
 
 primary_var:
+      double_variable
+    |
       float_variable
     |
       image_variable
@@ -10017,11 +10140,10 @@ primary_var:
       **/
         //cout << "call to variable T_OP_PAR param_list T_CL_PAR end_instr" << endl;
         // 1. check the variable type
-        BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+        GET_CHECK_VARSTACK(var)
         ParamList::ptr param($3);
 
         // TODO: run this with overloading from BasicVariable ...
-
         if (var->Type()==type_class_member) {
           ///    Call a wrapped C++ class member.
           DYNAMIC_CAST_VARIABLE(WrapClassMember,var, var1);
@@ -10097,7 +10219,7 @@ postfix_var:
     /**
       Description: Logical negation (NOT) operator.
     **/
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(!(*var));
   }
   | primary_var INC_OP 
@@ -10105,7 +10227,7 @@ postfix_var:
     /**
       Description: Postfix increment operator.
     **/
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar((*var)++);
   }
   | primary_var DEC_OP
@@ -10113,7 +10235,7 @@ postfix_var:
     /**
       Description: Postfix decrement operator.
     **/
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar((*var)--);
   }
   |
@@ -10122,7 +10244,7 @@ postfix_var:
     /**
       Description: Cast operator.
     **/
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->BasicCast( $2));
 
   }
@@ -10131,7 +10253,7 @@ postfix_var:
     /**
       Description: Transpose operator, usefull for matrices
     **/
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->Transpose());
   }
 /* not included yet because of problems with extents
@@ -10153,92 +10275,92 @@ prefix_var:
   | T_SUB  postfix_var 
   {
     //cout << "T_SUB  cast_var  " << endl;
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(-(*var));
   }
   | T_ADD  postfix_var
   {
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(+(*var));
   }
   | INC_OP  postfix_var 
   {
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(++(*var));
   }
   | DEC_OP  postfix_var
   {
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(--(*var));
   }
   | SIN    postfix_var 
   {
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_sin());
   }
   | COS    postfix_var 
   {
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_cos());
   }
   | SQRT   postfix_var
   {
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_sqrt());
   }
   | ABS    postfix_var
   {
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_fabs());
   }
   | ROUND  postfix_var
   {
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_round());
   }
   | FLOOR  postfix_var
   {
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_floor());
   }
   | TAN    postfix_var
   {
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_tan());
   }
   | ASIN   postfix_var
   {
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_asin());
   }
   | ACOS   postfix_var
   {
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_acos());
   }
   | ATAN   postfix_var
   {
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_atan());
   }
   | EXP    postfix_var
   {
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_exp());
   }
   | LOG    postfix_var
   {
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_log());
   }
   | LN     postfix_var
   {
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_ln());
   }
   | NORM   postfix_var
   {
-    BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_norm());
   }
   ;
@@ -10248,20 +10370,20 @@ multiplicative_var:
   prefix_var
   | multiplicative_var T_MULT prefix_var
   {
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1)*var2);
   }
   | multiplicative_var T_DIV  prefix_var
   {
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1)/var2);
   }
   | multiplicative_var T_MOD  prefix_var
   {
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1)%var2);
   }
   | multiplicative_var T_EXP  prefix_var
@@ -10271,15 +10393,15 @@ additive_var:
   multiplicative_var
   | additive_var T_ADD multiplicative_var
   {
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     BasicVariable::ptr res(*var1+var2);
     driver.var_stack.AddVar(res);
   }
   | additive_var T_SUB multiplicative_var
   {
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     BasicVariable::ptr res((*var1)-var2);
     driver.var_stack.AddVar(res);
   }
@@ -10293,26 +10415,26 @@ relational_var:
   shift_var
   | relational_var T_LT  shift_var
   {
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1)<var2);
   }
   | relational_var T_GT  shift_var
   {
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1)>var2);
   }
   | relational_var LE_OP shift_var
   {
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1)<=var2);
   }
   | relational_var GE_OP shift_var
   {
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1)>=var2);
   }
   ;
@@ -10321,14 +10443,14 @@ equality_var:
   relational_var
   | equality_var EQ_OP relational_var
   {
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1)==var2);
   }
   | equality_var NE_OP relational_var
   {
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1)!=var2);
   }
 /* Deprecated
@@ -10371,8 +10493,8 @@ logical_and_var:
     /**
       Descriptiopn: Logical AND operator
     **/
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1)&&var2);
   }
   ;
@@ -10384,8 +10506,8 @@ logical_xor_var:
     /**
       Descriptiopn: Logical XOR operator, for vectorial images it defines the pointwise vectorial product.
     **/
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1)^var2);
   }
   ;
@@ -10397,8 +10519,8 @@ logical_or_var:
     /**
       Descriptiopn: Logical OR operator
     **/
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1)||var2);
   }
   ;
@@ -10410,8 +10532,8 @@ conditional_var:
     /**
       Descriptiopn: Operation (cond?a:b) like in C/C++.
     **/
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar(var->TernaryCondition(var1,var2));
   }
@@ -10421,9 +10543,9 @@ assignment_var:
   conditional_var
   | prefix_var ASSIGN_OP assignment_var
   {
-    cout << "assignment_var" << endl;
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    //cout << "assignment_var" << endl;
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     if (var1->GetPtrCounter()==1) {
       // TODO: here ...
     }
@@ -10431,26 +10553,26 @@ assignment_var:
   }
   | prefix_var ADD_ASSIGN assignment_var
   {
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1)+=var2);
   }
   | prefix_var SUB_ASSIGN assignment_var
   {
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1)-=var2);
   }
   | prefix_var MUL_ASSIGN assignment_var
   {
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1)*=var2);
   }
   | prefix_var DIV_ASSIGN assignment_var
   {
-    BasicVariable::ptr var2(driver.var_stack.GetLastBasicVar());
-    BasicVariable::ptr var1(driver.var_stack.GetLastBasicVar());
+    GET_CHECK_VARSTACK(var2)
+    GET_CHECK_VARSTACK(var1)
     driver.var_stack.AddVar((*var1)/=var2);
   }
   ;
@@ -11484,6 +11606,9 @@ surface:
       int style = (int) $13;
       SurfacePoly* surf;
 
+      stepx = macro_max(stepx,1);
+      stepy = macro_max(stepy,1);
+      stepz = macro_max(stepz,1);
        surf = AMIFluid::Func_CreateVectors(displ.get(), stepx, stepy, stepz,  scale, style);
        Si surf != NULL Alors
          driver.surf_stack.AddSurf(surf);
@@ -11604,7 +11729,7 @@ function_variable:
     
           if  ((!GB_driver.procedure_declaration)&& newvar.get())   {
             //cout << "returning variable" << endl;
-            newvar->display();
+            //newvar->display();
             driver.var_stack.AddVar(newvar);
           } else {
             // error message here
@@ -11642,9 +11767,14 @@ processed_variable:
         /* VAR_UCHAR is used in expr_var: variable_float ...*/
         |
          VAR_FLOAT
-        /* VAR_STRING */
+        |
+         VAR_LONG
+         /* VAR_LONG new (added: 27/05/2010) ...*/
+        |
+         VAR_DOUBLE
         |
          VAR_STRING
+        /* VAR_STRING */
         |
          VAR_MATRIX
         |

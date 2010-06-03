@@ -35,9 +35,17 @@ public:
 
   /**
    * this is the prefix ++ operator
+   * increment the iterator by 1 position, same as prefix operator
    * @return 
    */
   virtual bool operator ++()                      = 0;
+
+  /**
+   * this is the postfix ++ operator, 
+   * increment the iterator by 1 position, same as postfix operator
+   * @return 
+   */
+  virtual bool operator ++(int)                      = 0;
   virtual bool Inc( const int& d)                 = 0;
   virtual void ValueInc( const int& d)            = 0;
   virtual double GetDoubleValue( int field = 0)   = 0;

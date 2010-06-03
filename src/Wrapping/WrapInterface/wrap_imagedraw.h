@@ -26,4 +26,4 @@ ADD_METHOD(DessinImage,DrawLine,      "Draws a line on XY plane.");
 ADD_METHOD(DessinImage,LineParam,     "Sets the parameters of the line.");
 ADD_METHOD(DessinImage,DisplayDA,     "Updates the display of the Drawing Area.");
 
-#endif //  _wrap_mainframe_h_
+#endif //  _wrap_imagedraw_h_

@@ -337,6 +337,10 @@ template<> BasicVariable::ptr Variable<float>::BasicCast(const int& type)
     case WT_SIGNED_INT:     res=(int) res;  break;
     case WT_UNSIGNED_INT:   res=(unsigned int) res;  break;
     case WT_FLOAT:          res=(float) res;  break;
+    case WT_DOUBLE: {
+        res=(double) res;
+        RETURN_VARPTR(double, res);
+    }
     default:
       std::cerr << boost::format("Conversion to type %1% not available")%((WORDTYPE)type) << std::endl;
   }

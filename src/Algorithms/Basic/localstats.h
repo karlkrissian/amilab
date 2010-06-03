@@ -74,7 +74,7 @@ InrImage*     Func_localdirectionalSD( InrImage* im, InrImage* directions,
 //  im     is the squared of the original image
 //  im_ROI defined the region of interest: area without background
 //
-double        Func_Compute_sigma2_MRI_mode(InrImage* im, InrImage* im_ROI, int neigh_size=2);
+double        Func_Compute_sigma2_MRI_mode(InrImage* im, InrImage::ptr im_ROI, int neigh_size=2);
 
 #include "localstats.tpp"
 

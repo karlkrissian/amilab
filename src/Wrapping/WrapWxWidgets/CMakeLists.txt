@@ -11,7 +11,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Coordonnees
   ${AMILAB_SOURCE_DIR}/Vaisseaux
   ${AMILAB_SOURCE_DIR}/wxSamples/penguin
-  ${AMILAB_SOURCE_DIR}/wxSamples/stctest
+  ${AMILAB_SOURCE_DIR}/wxStcFrame
   ${Boost_INCLUDE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${PTHREADS_INCLUDE_DIR}
@@ -27,6 +27,8 @@ SET(  WrapWxWidgets_SRCS
   wrap_wxSizerItem.cpp
   wrap_wxSize.cpp
   wrap_wxColour.cpp
+  wrap_wxImage.cpp
+  wrap_wxBitmap.cpp
 )
 
 SET(WrapWxWidgets_HDRS
@@ -37,6 +39,8 @@ SET(WrapWxWidgets_HDRS
   wrap_wxSizerItem.h
   wrap_wxSize.h
   wrap_wxColour.h
+  wrap_wxImage.h
+  wrap_wxBitmap.h
 )
 
 SET(WrapWxWidgets_SRCS

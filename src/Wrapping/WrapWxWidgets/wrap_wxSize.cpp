@@ -52,25 +52,26 @@ Variable<AMIObject>::ptr CreateVar_wxSize( wxSize* si)
 }
 
 //---------------------------------------------------
-BasicVariable::ptr wrap_wxSize( ParamList* p)
+//  wxSize Constructor
+//---------------------------------------------------
+void  wrap_wxSize::SetParametersComments() 
 {
-    char functionname[] = "wxSize";
-    char description[]=" \n\
-      Wrapped wxWindow class. \n\
-            ";
-    char parameters[] =" \n\
-      - integer width (def:-1)\n\
-      - integer height (def:-1)\n\
-            ";
-
+  ADDPARAMCOMMENT("width (def:-1)");
+  ADDPARAMCOMMENT("height (def:-1)");
+  return_comments = "A wrapped wxSize object.";
+}
+//---------------------------------------------------
+BasicVariable::ptr wrap_wxSize::CallMember( ParamList* p)
+{
+  if (!p) ClassHelpAndReturn;
   if (p->GetNumParam()==0) 
     return CreateVar_wxSize(new wxSize());
 
   int n = 0;
   int width = -1;
   int height = -1;
-  if (!get_int_param(width, p, n))  HelpAndReturnVarPtr;
-  if (!get_int_param(height, p, n)) HelpAndReturnVarPtr;
+  if (!get_int_param(width, p, n))  ClassHelpAndReturn;
+  if (!get_int_param(height, p, n)) ClassHelpAndReturn;
   return CreateVar_wxSize(new wxSize( width,height));
 }
 

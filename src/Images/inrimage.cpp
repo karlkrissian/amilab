@@ -109,11 +109,16 @@ extern "C" {
 #endif // AMI_USE_VTK
 
 
+
 #include <boost/scoped_array.hpp>
 using namespace boost;
 
 #include "style.hpp"
 #include "inrimage.hpp"
+
+#include "InrImageIterator.h"
+#include "InrImageConstIterator.h"
+
 #include "amimage.hpp"
 #include "StringUtils.hpp"
 
@@ -339,7 +344,7 @@ unsigned char InrImage :: ReadMagick( ) throw (ErreurLecture)
     while (image->previous != (Image *) NULL)
       image=image->previous;
 
-    Pour(z,0,tz-1)
+    for(z=0;z<=tz-1;z++) {
 
       if ( (image != (const Image *) NULL) ) {
 
@@ -351,19 +356,19 @@ unsigned char InrImage :: ReadMagick( ) throw (ErreurLecture)
 
         //
         InitBuffer(z*_txy);
-        Pour(i,0,_txy-1)
+        for(i=0;i<=_txy-1;i++) {
           VectFixeValeurs( 255*red_pixels[i],
                255*green_pixels[i], 
                255*blue_pixels[i]
                );
           IncBuffer();
-        FinPour
+        } // endfor
 
         image = image->next;
 
       } // end if
 
-    FinPour
+    } // endfor
 
     //
     delete [] red_pixels;
@@ -494,33 +499,33 @@ unsigned char InrImage :: ReadVTK( ) throw (ErreurLecture)
       int inPtId;
 
       InitBuffer();
-      Pour(z,0,_tz-1)
+      for(z=0;z<=_tz-1;z++) {
         pos[2]=z;
         //printf("Converting VTK to ami z = %d \n",z);
-      Pour(y,0,_ty-1)
+      for(y=0;y<=_ty-1;y++) {
         pos[1]=y; // Flip in Y ???
-      Pour(x,0,_tx-1)
+      for(x=0;x<=_tx-1;x++) {
         pos[0] = x;
         inPtId = in->ComputePointId(pos);
         if (tensor!=NULL) {
           tensor->GetTuple(inPtId, t);
-          Pour(n,0,_vdim-1)
+          for(n=0;n<=_vdim-1;n++) {
             VectFixeValeur(n,t[n]);
-          FinPour
+          } // endfor
         } else 
         if (_vdim==1) {
           scalars->GetTuple(inPtId, val.get());
           FixeValeur(*val.get());
         } else {
           scalars->GetTuple(inPtId, val.get());
-          Pour(n,0,_vdim-1)
+          for(n=0;n<=_vdim-1;n++) {
             VectFixeValeur(n,val[n]);
-          FinPour
+          } // endfor
         }
         IncBuffer();
-      FinPour
-      FinPour
-      FinPour
+      } // endfor
+      } // endfor
+      } // endfor
     }
     else {
       CLASS_ERROR("Allocation problem");
@@ -680,12 +685,12 @@ unsigned char InrImage :: ReadVTKImage( ) throw (ErreurLecture)
       int inPtId;
 
       InitBuffer();
-      Pour(z,0,_tz-1)
+      for(z=0;z<=_tz-1;z++) {
         pos[2]=z;
         //printf("Converting VTK to ami z = %d \n",z);
-      Pour(y,0,_ty-1)
+      for(y=0;y<=_ty-1;y++) {
         pos[1]=_ty-1-y; //    flip in Y
-      Pour(x,0,_tx-1)
+      for(x=0;x<=_tx-1;x++) {
         pos[0] = x;
         inPtId = in->ComputePointId(pos);
         if (_vdim==1) {
@@ -693,22 +698,22 @@ unsigned char InrImage :: ReadVTKImage( ) throw (ErreurLecture)
           FixeValeur(*val.get());
         } else {
           scalars->GetTuple(inPtId, val.get());
-          Pour(n,0,_vdim-1)
+          for(n=0;n<=_vdim-1;n++) {
             VectFixeValeur(n,val[n]);
-          FinPour
+          } // endfor
         }
         IncBuffer();
-      FinPour
-      FinPour
-      FinPour
+      } // endfor
+      } // endfor
+      } // endfor
     }
     else {
       CLASS_ERROR("allocation problem");
       return false;
     }
 
-  if ( GB_debug AlorsFait fprintf(stderr,"InrImage::ReadVTKImage()  3 \n");
-  if ( GB_debug AlorsFait fprintf(stderr,"InrImage::ReadVTKImage()  end \n");
+  if ( GB_debug )  fprintf(stderr,"InrImage::ReadVTKImage()  3 \n");
+  if ( GB_debug )  fprintf(stderr,"InrImage::ReadVTKImage()  end \n");
 
   return true;
 
@@ -733,7 +738,7 @@ unsigned char InrImage :: Read( ) throw (ErreurLecture)
   res = ReadAMI();
 
 /*
-  if ( Non(res) ) {
+  if ( !(res) ) {
     if ( (_nom == "<") ) {
       // entree standard
       ptr = readZInrimage( NULL);
@@ -1055,12 +1060,12 @@ unsigned char InrImage :: Alloue( ) throw (ErreurAllocation)
     if ( _tz == 1 ) {
       if ( _format == WT_RGB ) {
         InitBuffer();
-        Pour(n,0,_txy-1)
+        for(n=0;n<=_txy-1;n++) {
       r[n] = VectValeurBuffer(0)/255.0;
       g[n] = VectValeurBuffer(1)/255.0;
       b[n] = VectValeurBuffer(2)/255.0;
           IncBuffer();
-        FinPour
+        } // endfor
       } else {
         fprintf(stderr,"InrImage::Ecrit() \t Magick seulement pour RGB \n");
         delete r;
@@ -1076,14 +1081,14 @@ unsigned char InrImage :: Alloue( ) throw (ErreurAllocation)
         int  pos1,pos2;
 
       if ( _format == WT_RGB ) {
-        Pour(z,0,_tz-1)
+        for(z=0;z<=_tz-1;z++) {
           BufferPos(0,0,z);
-          Pour(n,0,_txy-1)
+          for(n=0;n<=_txy-1;n++) {
         r[n] = VectValeurBuffer(0)/255.0;
         g[n] = VectValeurBuffer(1)/255.0;
         b[n] = VectValeurBuffer(2)/255.0;
             IncBuffer();
-          FinPour
+          } // endfor
           
           sprintf(num,"%03d",z);
           pos1 = pos2 =0;
@@ -1109,7 +1114,7 @@ unsigned char InrImage :: Alloue( ) throw (ErreurAllocation)
             delete b;
             throw ImageWriteError();
       }
-        FinPour
+        } // endfor
       } else {
         fprintf(stderr,"InrImage::Ecrit() \t Magick seulement pour RGB \n");
         delete r;
@@ -1198,10 +1203,10 @@ unsigned char InrImage :: LitMaple( const char* nom )
   Alloue();
 
   // Lecture
-  Pour(x,0,_tx-1)
+  for(x=0;x<=_tx-1;x++) {
     fscanf(fic,"%f\t",&r);
     ((FORMAT_FLOAT*)_amimage->data)[x]=r;
-  FinPour
+  } // endfor
 
   fclose(fic);
 
@@ -1229,10 +1234,10 @@ unsigned char InrImage :: EcritMaple(const char* nom )
   fprintf(fic,"Type:\tImage1D\n");
   fprintf(fic,"Dimension:\t%d\n",_tx);
 
-  Pour(x,0,_tx-1)
+  for(x=0;x<=_tx-1;x++) {
     r = ((FORMAT_FLOAT*)_amimage->data)[x];
     fprintf(fic,"%f\t",r);
-  FinPour
+  } // endfor
 
   fclose(fic);
 
@@ -1383,7 +1388,7 @@ void InrImage :: InitParams()
 
 
 //----------------------------------------------------------------------
-InrImageIteratorBase::ptr InrImage::CreateIterator()
+InrImageIteratorBase::ptr InrImage::CreateIterator() 
 {
 
   // here we will initialize the ImagePositionBase* _positions member
@@ -1426,6 +1431,57 @@ InrImageIteratorBase::ptr InrImage::CreateIterator()
     case WT_DOUBLE :
       return InrImageIteratorBase::ptr(
           new InrImageIterator<double>(this));
+    default:
+      CLASS_ERROR(boost::format(" format not processed ... (%1%) \n")%_format);
+  }
+  return InrImageIteratorBase::ptr();
+
+}
+
+//----------------------------------------------------------------------
+InrImageIteratorBase::ptr InrImage::CreateConstIterator() const
+{
+
+  // here we will initialize the ImagePositionBase* _positions member
+  switch (_format) {
+    case WT_RGB: 
+    case WT_RGBA: 
+    case WT_UNSIGNED_CHAR: 
+      return InrImageIteratorBase::ptr(
+          new InrImageConstIterator<unsigned char>(this));
+    break;
+    case WT_UNSIGNED_SHORT:
+      return InrImageIteratorBase::ptr(
+          new InrImageConstIterator<unsigned short>(this));
+    break;
+    case WT_SIGNED_SHORT  : 
+      return InrImageIteratorBase::ptr(
+          new InrImageConstIterator<short>(this));
+    break;
+    case WT_UNSIGNED_INT  :
+      return InrImageIteratorBase::ptr(
+          new InrImageConstIterator<unsigned int>(this));
+    break;
+    case WT_SIGNED_INT  : 
+      return InrImageIteratorBase::ptr(
+          new InrImageConstIterator<int>(this));
+    break;
+    case WT_UNSIGNED_LONG  :
+      return InrImageIteratorBase::ptr(
+          new InrImageConstIterator<unsigned long>(this));
+    break;
+    case WT_SIGNED_LONG  : 
+      return InrImageIteratorBase::ptr(
+          new InrImageConstIterator<long>(this));
+    break;
+    case WT_FLOAT : 
+    case WT_FLOAT_VECTOR :
+      return InrImageIteratorBase::ptr(
+          new InrImageConstIterator<float>(this));
+    break;
+    case WT_DOUBLE :
+      return InrImageIteratorBase::ptr(
+          new InrImageConstIterator<double>(this));
     default:
       CLASS_ERROR(boost::format(" format not processed ... (%1%) \n")%_format);
   }
@@ -1587,7 +1643,7 @@ InrImage ::  InrImage( int dimx, int dimy,
 InrImage ::  InrImage(  WORDTYPE format, 
 //                                 --------  
                           const char* nom,
-                          InrImage* image )
+                          const InrImage* image )
 {
 
   InitParams();
@@ -1598,9 +1654,9 @@ InrImage ::  InrImage(  WORDTYPE format,
     _nom = nom;
   } // end if
 
-  _tx = image->_tx;
-  _ty = image->_ty;
-  _tz = image->_tz;
+  _tx = image->DimX();
+  _ty = image->DimY();
+  _tz = image->DimZ();
   _vdim = image->GetVDim();
   if ((format==WT_DOUBLE_VECTOR)||(format==WT_FLOAT_VECTOR)) {
     if (_tz>1) _vdim=3;
@@ -1643,7 +1699,7 @@ InrImage ::  InrImage(  WORDTYPE format,
 InrImage ::  InrImage(  WORDTYPE format, int vdim,
 //                                 --------  
                           const char* nom,
-                          InrImage* image )
+                          const InrImage* image )
 {
 
   InitParams();
@@ -1782,18 +1838,18 @@ InrImage ::  InrImage( vtkImageData* vtkim)
     memcpy(Buffer(), vtkim->GetScalarPointer(), _taille*TailleFormat[_format]*_vdim);    
   } else {
     InitBuffer();
-    Pour(z,0,_tz-1)
-    Pour(y,0,_ty-1)
-    Pour(x,0,_tx-1)
-      Pour(n,0,_vdim-1)
+    for(z=0;z<=_tz-1;z++) {
+    for(y=0;y<=_ty-1;y++) {
+    for(x=0;x<=_tx-1;x++) {
+      for(n=0;n<=_vdim-1;n++) {
         val = vtkim->GetScalarComponentAsDouble(x,y,z,n);
 //        printf("val = %f \n",val);
         VectFixeValeur(n,val);
-      FinPour
+      } // endfor
       IncBuffer();
-    FinPour
-    FinPour
-    FinPour
+    } // endfor
+    } // endfor
+    } // endfor
   } // end if
 
     //  InitPositions();
@@ -1859,10 +1915,9 @@ unsigned char InrImage ::  GetFormatFromAMI(amimage* im, WORDTYPE& type)
 
 
 ///----------------------------------------------------------------
-bool InrImage ::  AMIFromWT(int vdim, WORDTYPE type, amimage* amim)
+bool InrImage::AMIFromWT(int vdim, WORDTYPE type, amimage* amim)
 //                                   ---------
 {
-
     if (vdim==1) 
       amim->SetType(AMI_SCALAR); 
     else
@@ -1893,8 +1948,8 @@ bool InrImage ::  AMIFromWT(int vdim, WORDTYPE type, amimage* amim)
         amim->SetVDim(3);
         return true;
       default: 
-      fprintf(stderr,"repres=%d Format not available \n",
-          amim->GetRepres());
+      fprintf(stderr,"type=%d Format not available \n",
+          type);
       return false;
     }
 
@@ -2074,9 +2129,9 @@ void InrImage :: InitImage( double val)
 {
 
   InitBuffer();
-  Repeter
+  do {
     FixeValeur( val);
-  JusquA Non(IncBuffer()) FinRepeter
+  } while (IncBuffer());
 } // InitImage()
 
 
@@ -2094,9 +2149,9 @@ void InrImage :: InitImage( double val0, double val1, double val2)
 //                         ---------
 {
   InitBuffer();
-  Repeter
+  do {
     VectFixeValeurs( val0, val1, val2);
-  JusquA Non(IncBuffer()) FinRepeter
+  } while (IncBuffer());
   
 } // InitImage()
 
@@ -2113,10 +2168,10 @@ void InrImage::InitImage( double* val, int size)
   dim = (GetVDim()>size?GetVDim():size);
 
   InitBuffer();
-  Repeter
+  do {
     for(n=0;n<dim;n++) 
       VectFixeValeur( n,val[n]);
-  JusquA Non(IncBuffer()) FinRepeter
+  } while (IncBuffer());
 } // InitImage()
 
 
@@ -2163,11 +2218,11 @@ void InrImage::BufferPos( int x, int y, int z) throw (DepassementLimites)
 //             ---------
 {
   #ifdef _debug_
-  Si x<0 Ou x>=_tx Ou y<0 Ou y>=_ty Ou z<0 Ou z>=_tz Alors
+  if ( x<0 || x>=_tx || y<0 || y>=_ty || z<0 || z>=_tz ) {
     char message[100];
     sprintf(message, " image %s ( %d %d %d )", (char*)_nom, x, y, z);
     throw DepassementLimites( message);
-  FinSi
+  } // end if
   #endif
 
   _Iterator->BufferPos(x,y,z);
@@ -2227,12 +2282,12 @@ InrImage :: operator vtkImageData*()
     mat->SetNumberOfComponents(9);
 
     InitBuffer();
-    Repeter
+    do {
       mat->InsertNextTuple9 ( 
         VectValeurBuffer(0), VectValeurBuffer(1), VectValeurBuffer(2),
         VectValeurBuffer(3), VectValeurBuffer(4), VectValeurBuffer(5),
         VectValeurBuffer(6), VectValeurBuffer(7), VectValeurBuffer(8) );
-    JusquA Non(IncBuffer()) FinRepeter
+    } while (IncBuffer());
 
 
     vtk_image->GetPointData()->SetTensors(mat);
@@ -2254,9 +2309,9 @@ InrImage :: operator vtkImageData*()
       if ( _vdim == 1 ) {
         vtk_scalars->SetTuple1(i,ValeurBuffer());
       } else {
-      Pour(n,0,_vdim-1)
+      for(n=0;n<=_vdim-1;n++) {
         vtk_scalars->SetComponent(i,n,VectValeurBuffer(n));
-      FinPour
+      } // endfor
       } // end if
       i++;
     }
@@ -2312,9 +2367,9 @@ InrImage* InrImage :: CreeSousImage( int min_x, int max_x,
   res = new InrImage( max_x - min_x + 1, max_y - min_y + 1, max_z - min_z +1, _format);
   res->SetVoxelSize( _size_x, _size_y, _size_z );
 
-  Pour( z, 0, res->_tz-1 )
-  Pour( y, 0, res->_ty-1 )
-  Pour( x, 0, res->_tx-1 )
+  for(z= 0;z<= res->_tz-1 ;z++) {
+  for(y= 0;y<= res->_ty-1 ;y++) {
+  for(x= 0;x<= res->_tx-1 ;x++) {
 
     switch ( (WORDTYPE) _format ){
 
@@ -2364,9 +2419,9 @@ InrImage* InrImage :: CreeSousImage( int min_x, int max_x,
 
     } // end switch
 
-  FinPour // x
-  FinPour // y
-  FinPour // z
+  } // endfor // x
+  } // endfor // y
+  } // endfor // z
   
   return( res);
 
@@ -2407,7 +2462,7 @@ InrImage* InrImage :: Convert256( float min, float max)
     case WT_DOUBLE:
     //     --------
       buf_DOUBLE = (FORMAT_DOUBLE*) this->GetData();
-      for(  n=0 ;  n < _tx*_ty*_tz ;  n++ Faire
+      for(  n=0 ;  n < _tx*_ty*_tz ;  n++ ) {
 
         if ( fabs(diff) < 1E-5 ) {
           *buf_resultat = 0;      
@@ -2429,7 +2484,7 @@ InrImage* InrImage :: Convert256( float min, float max)
     case WT_FLOAT:
     //     --------
       buf_FLOAT = (FORMAT_FLOAT*) this->GetData();
-      for(  n=0 ;  n < _tx*_ty*_tz ;  n++ Faire
+      for(  n=0 ;  n < _tx*_ty*_tz ;  n++ ) {
 
         if ( fabs(diff) < 1E-5 ) {
           *buf_resultat = 0;      
@@ -2451,7 +2506,7 @@ InrImage* InrImage :: Convert256( float min, float max)
     case WT_UNSIGNED_SHORT:
     //     ----------
       buf_UNSIGNED_SHORT = (FORMAT_UNSIGNED_SHORT*) this->GetData();
-      for(  n=0 ;  n < _tx*_ty*_tz ;  n++ Faire
+      for(  n=0 ;  n < _tx*_ty*_tz ;  n++ ) {
         if ( fabs(diff) < 1E-5 ) {
           *buf_resultat = 0;          
         } else    
@@ -2472,7 +2527,7 @@ InrImage* InrImage :: Convert256( float min, float max)
     case WT_SIGNED_SHORT:
     //     -----------
       buf_SIGNED_SHORT = (FORMAT_SIGNED_SHORT*) this->GetData();
-      for(  n=0 ;  n < _tx*_ty*_tz ;  n++ Faire
+      for(  n=0 ;  n < _tx*_ty*_tz ;  n++ ) {
 
         if ( fabs(diff) < 1E-5 ) {
           *buf_resultat = 0;          
@@ -2494,7 +2549,7 @@ InrImage* InrImage :: Convert256( float min, float max)
     case WT_SIGNED_INT:
     //     -----------
       buf_SIGNED_INT = (FORMAT_SIGNED_INT*) this->GetData();
-      for(  n=0 ;  n < _tx*_ty*_tz ;  n++ Faire
+      for(  n=0 ;  n < _tx*_ty*_tz ;  n++ ) {
 
         if ( fabs(diff) < 1E-5 ) {
           *buf_resultat = 0;          
@@ -2576,12 +2631,12 @@ InrImage* operator -(  InrImage& i1,  InrImage& i2)
     res->InitBuffer();
     i1.InitBuffer();                
     i2.InitBuffer();                
-    Repeter                           
+    do {                           
       res->FixeValeur(i1.ValeurBuffer() - i2.ValeurBuffer()); 
       i1.IncBuffer();               
       i2.IncBuffer();               
-    JusquA Non(res->IncBuffer())      
-    FinRepeter                        
+    } while (!( !(res->IncBuffer())      
+    ));                        
 
     return res;
 
@@ -2592,13 +2647,13 @@ InrImage* operator -(  InrImage& i1,  InrImage& i2)
     res->InitBuffer();
     i1.InitBuffer();                
     i2.InitBuffer();                
-    Repeter                          
+    do {                          
       for(int i=0;i<vdim;i++) 
       res->VectFixeValeur(i,i1.VectValeurBuffer(i) - i2.VectValeurBuffer(i));
       i1.IncBuffer();               
       i2.IncBuffer();               
-    JusquA Non(res->IncBuffer())      
-    FinRepeter                        
+    } while (!( !(res->IncBuffer())      
+    ));                        
 
     return res;
 
@@ -2611,49 +2666,63 @@ InrImage* operator -(  InrImage& i1,  InrImage& i2)
 
 
 //--------------------------------------------------
-InrImage* operator -(  InrImage& i1,  double r)
+InrImage* operator - ( InrImage& i1,  double r )
 //        -----------
 {
 
   InrImage* res;
   WORDTYPE format;
 
-  if (i1.GetFormat()==WT_DOUBLE)
+  if ( i1.GetFormat() ==WT_DOUBLE )
     format = WT_DOUBLE;
-  else 
+  else
     format = WT_FLOAT;
 
-  if ( i1.ScalarFormat()  ) {
+  if ( i1.ScalarFormat() )
+  {
 
-    res = new InrImage(format,"minusop.inr.gz",&i1);
-    res->InitBuffer();
-    i1.InitBuffer();
-    Repeter                           
-      res->FixeValeur(i1.ValeurBuffer() - r); 
-      i1.IncBuffer();               
-    JusquA Non(res->IncBuffer())      
-    FinRepeter                        
+    res = new InrImage ( format,"minusop.inr.gz",&i1 );
 
-    return res;
-
-  } else
-  if ( i1.VectorialFormat() ) {
-
-    res = new InrImage(i1._format,"minusop.inr.gz",&i1);
-    res->InitBuffer();
-    i1.InitBuffer();                
-    Repeter                           
-      for(int i=0;i<i1.GetVDim();i++)
-        res->VectFixeValeur(i,i1.VectValeurBuffer(i) - r);
-      i1.IncBuffer();               
-    JusquA Non(res->IncBuffer())      
-    FinRepeter                        
+    InrImageIteratorBase::ptr res_it(res->CreateIterator());
+    InrImageIteratorBase::ptr i1_it(i1.CreateConstIterator());
+    i1_it->InitBuffer(); 
+    res_it->InitBuffer();
+    do
+    {
+      res_it->SetDoubleValue( i1_it->GetDoubleValue() - r );
+      (*i1_it)++;
+    }
+    while (  (*res_it)++  );
 
     return res;
 
-  } else {
-    fprintf(stderr,"operator - (InrImage*, double) \t Error: scalar and vectorial types \n");
-  } // end if
+  }
+  else
+    if ( i1.VectorialFormat() )
+    {
+
+      res = new InrImage ( i1._format,"minusop.inr.gz",&i1 );
+
+      InrImageIteratorBase::ptr res_it(res->CreateIterator());
+      InrImageIteratorBase::ptr i1_it(i1.CreateConstIterator());
+      i1_it->InitBuffer(); 
+      res_it->InitBuffer();
+
+      do
+      {
+        for ( int i=0;i<i1.GetVDim();i++ )
+          res_it->SetDoubleValue( i,i1_it->GetDoubleValue( i ) - r );
+        (*i1_it)++;
+      }
+      while (  (*res_it)++  );
+
+      return res;
+
+    }
+    else
+    {
+      fprintf ( stderr,"operator - (InrImage*, double) \t Error: scalar and vectorial types \n" );
+    } // end if
 
   return NULL;
 }
@@ -2674,21 +2743,29 @@ InrImage* operator +(  InrImage& i1,  InrImage& i2)
   else 
     format = WT_FLOAT;
 
-  if ( i1._tx != i2._tx AlorsFait return NULL;
-  if ( i1._ty != i2._ty AlorsFait return NULL;
-  if ( i1._tz != i2._tz AlorsFait return NULL;
+  if ( i1._tx != i2._tx )  return NULL;
+  if ( i1._ty != i2._ty )  return NULL;
+  if ( i1._tz != i2._tz )  return NULL;
 
   if ( i1.ScalarFormat() && i2.ScalarFormat() ) {
     res = new InrImage(format,"plusop.inr.gz",&i1);
-    res->InitBuffer();
-    i1.InitBuffer();                
-    i2.InitBuffer();
+
+    InrImageIteratorBase::ptr res_it(res->CreateIterator());
+    InrImageIteratorBase::ptr i1_it(i1.CreateConstIterator());
+    InrImageIteratorBase::ptr i2_it(i2.CreateConstIterator());
+
+    i1_it->InitBuffer(); 
+    i2_it->InitBuffer();
+    res_it->InitBuffer();
+
     long size = i1.Size();
     long i;
     for(i=0;i<size;i++) {
-      res->FixeValeur( i1.ValeurBuffer(i) +
-                       i2.ValeurBuffer(i)); 
-      res->IncScalarBufferFast();
+      res_it->SetDoubleValue( i1_it->GetDoubleValue() +
+                              i2_it->GetDoubleValue()); 
+      res_it->IncScalarBufferFast();
+      i1_it->IncScalarBufferFast();
+      i2_it->IncScalarBufferFast();
     }
 
     return res;
@@ -2702,18 +2779,23 @@ InrImage* operator +(  InrImage& i1,  InrImage& i2)
     } // end if
 
     res = new InrImage(i1._format,"plusop.inr.gz",&i1);
-    res->InitBuffer();
-    i1.InitBuffer();                
-    i2.InitBuffer();                
-    Repeter                           
-      Pour(i,0,i1.GetVDim()-1)
-        val = i1.VectValeurBuffer(i)+i2.VectValeurBuffer(i);
-        res->VectFixeValeur(i,val);
-      FinPour
-      i1.IncBuffer();               
-      i2.IncBuffer();               
-    JusquA Non(res->IncBuffer())      
-    FinRepeter                        
+
+    InrImageIteratorBase::ptr res_it(res->CreateIterator());
+    InrImageIteratorBase::ptr i1_it(i1.CreateConstIterator());
+    InrImageIteratorBase::ptr i2_it(i2.CreateConstIterator());
+
+    i1_it->InitBuffer(); 
+    i2_it->InitBuffer();
+    res_it->InitBuffer();
+
+    do {
+      for(i=0;i<=i1.GetVDim()-1;i++) {
+        val = i1_it->GetDoubleValue(i)+i2_it->GetDoubleValue(i);
+        res_it->SetDoubleValue(i,val);
+      } // endfor
+      (*i1_it)++; 
+      (*i2_it)++;
+    } while (!( !((*res_it)++)  ));
 
     return res;
 
@@ -2739,19 +2821,23 @@ InrImage& operator +=(  InrImage& i1,  InrImage& i2)
   else 
     format = WT_FLOAT;
 
-  if ( i1.DimX() != i2.DimX() AlorsFait return i1;
-  if ( i1.DimY() != i2.DimY() AlorsFait return i1;
-  if ( i1.DimZ() != i2.DimZ() AlorsFait return i1;
+  if ( i1.DimX() != i2.DimX() )  return i1;
+  if ( i1.DimY() != i2.DimY() )  return i1;
+  if ( i1.DimZ() != i2.DimZ() )  return i1;
 
   if ( i1.ScalarFormat() && i2.ScalarFormat() ) {
-    i1.InitBuffer();                
-    i2.InitBuffer();
+    InrImageIteratorBase::ptr i1_it( i1.CreateIterator());
+    InrImageIteratorBase::ptr i2_it( i2.CreateConstIterator());
+
+    i1_it->InitBuffer();
+    i2_it->InitBuffer();
     long size = i1.Size();
     long i;
     for(i=0;i<size;i++) {
-      i1.FixeValeur( i1.ValeurBuffer() +
-                      i2.ValeurBuffer(i)); 
-      i1.IncScalarBufferFast();
+      i1_it->SetDoubleValue(  i1_it->GetDoubleValue() +
+                              i2_it->GetDoubleValue()); 
+      i1_it->IncScalarBufferFast();
+      i2_it->IncScalarBufferFast();
     }
 
     return i1;
@@ -2764,16 +2850,18 @@ InrImage& operator +=(  InrImage& i1,  InrImage& i2)
       return i1;
     } // end if
 
-    i1.InitBuffer();                
-    i2.InitBuffer();                
-    Repeter                           
-      Pour(i,0,i1.GetVDim()-1)
-        val = i1.VectValeurBuffer(i)+i2.VectValeurBuffer(i);
-        i1.VectFixeValeur(i,val);
-      FinPour
-      i2.IncBuffer();               
-    JusquA Non(i1.IncBuffer())      
-    FinRepeter                        
+    InrImageIteratorBase::ptr i1_it( i1.CreateIterator());
+    InrImageIteratorBase::ptr i2_it( i2.CreateConstIterator());
+    i1_it->InitBuffer(); 
+    i2_it->InitBuffer();
+    do { 
+      for(i=0;i<=i1.GetVDim()-1;i++) {
+        val = i1_it->GetDoubleValue(i)+i2_it->GetDoubleValue(i);
+        i1_it->SetDoubleValue(i,val);
+      } // endfor
+      (*i2_it)++;
+    } while (!( !((*i1_it)++)
+    )); 
 
     return i1;
 
@@ -2786,7 +2874,7 @@ InrImage& operator +=(  InrImage& i1,  InrImage& i2)
 
 
 //--------------------------------------------------
-InrImage* operator *(  InrImage& i1,  InrImage& i2)
+InrImage* operator *(  const InrImage& i1,  const InrImage& i2)
 //        -----------
 {
 
@@ -2796,9 +2884,10 @@ InrImage* operator *(  InrImage& i1,  InrImage& i2)
   double val2;
   long   i;
 
-  if ( i1._tx != i2._tx AlorsFait return NULL;
-  if ( i1._ty != i2._ty AlorsFait return NULL;
-  if ( i1._tz != i2._tz AlorsFait return NULL;
+  if ( i1.DimX() != i2.DimX() )  return NULL;
+  if ( i1.DimY() != i2.DimY() )  return NULL;
+  if ( i1.DimZ() != i2.DimZ() )  return NULL;
+
 
   WORDTYPE format;
   if ((i1.GetFormat()==WT_DOUBLE)||(i2.GetFormat()==WT_DOUBLE))
@@ -2806,16 +2895,21 @@ InrImage* operator *(  InrImage& i1,  InrImage& i2)
   else 
     format = WT_FLOAT;
 
+  InrImageIteratorBase::ptr i1_it(i1.CreateConstIterator());
+  InrImageIteratorBase::ptr i2_it(i2.CreateConstIterator());
+
   if ( i1.ScalarFormat() && i2.ScalarFormat() ) {
 
     res = new InrImage(format,1,"multop.inr.gz",&i1);
-    res->InitBuffer();
-    i1.InitBuffer();                
-    i2.InitBuffer();                
-    Pour(i,0,i1.Size()-1)
-      res->FixeValeur(i1.ValeurBuffer(i) * i2.ValeurBuffer(i)); 
-      res->IncScalarBufferFast();
-    FinPour
+    InrImageIteratorBase::ptr res_it(res->CreateIterator());
+
+    res_it->InitBuffer();
+    i1_it->InitBuffer();
+    i2_it->InitBuffer();
+    for(i=0;i<=i1.Size()-1;i++) {
+      res_it->SetDoubleValue(i1_it->GetValueIncDoubleValue(i) * i2_it->GetValueIncDoubleValue(i)); 
+      res_it->IncScalarBufferFast();
+    } // endfor
 
     return res;
 
@@ -2828,19 +2922,21 @@ InrImage* operator *(  InrImage& i1,  InrImage& i2)
       return NULL;
     } // end if
     res = new InrImage(format,1,"scalar.inr.gz",&i1);
-    res->InitBuffer();
-    i1.InitBuffer();                
-    i2.InitBuffer();                
-    Repeter
+
+    InrImageIteratorBase::ptr res_it(res->CreateIterator());
+    res_it->InitBuffer();
+    i1_it->InitBuffer();
+    i2_it->InitBuffer();
+    do {
       val = 0;
-      Pour(i,0,i1.GetVDim()-1)
-        val += i1.VectValeurBuffer(i)*i2.VectValeurBuffer(i);
-      FinPour
-      res->FixeValeur(val);
-      i1.IncBuffer();               
-      i2.IncBuffer();               
-    JusquA Non(res->IncBuffer())      
-    FinRepeter                        
+      for(i=0;i<=i1.GetVDim()-1;i++) {
+        val += i1_it->GetDoubleValue(i)*i2_it->GetDoubleValue(i);
+      } // endfor
+      res_it->SetDoubleValue(val);
+      ++(*i1_it);
+      ++(*i2_it);
+    } while (!( !((*res_it)++)
+    ));
 
     return res;
 
@@ -2848,38 +2944,40 @@ InrImage* operator *(  InrImage& i1,  InrImage& i2)
     // i1 vectorial and i2 scalar
     if ( i1.VectorialFormat() ) {
       res = new InrImage(format,i1.GetVDim(),"prod.inr.gz",&i1);
-      res->InitBuffer();
-      i1.InitBuffer();                
-      i2.InitBuffer();                
-      Repeter                           
-    val2 = i2.ValeurBuffer();
-        Pour(i,0,i1.GetVDim()-1)
-      val = i1.VectValeurBuffer(i)*val2;
-      res->VectFixeValeur(i,val);
-        FinPour
-        i1.IncBuffer();
-        i2.IncBuffer();               
-      JusquA Non(res->IncBuffer())      
-      FinRepeter
+      InrImageIteratorBase::ptr res_it(res->CreateIterator());
+      res_it->InitBuffer();
+      i1_it->InitBuffer();
+      i2_it->InitBuffer();
+      do {
+        val2 = i2_it->GetDoubleValue();
+        for(i=0;i<=i1.GetVDim()-1;i++) {
+          val = i1_it->GetDoubleValue(i)*val2;
+          res_it->SetDoubleValue(i,val);
+        } // endfor
+        (*i1_it)++;
+        (*i2_it)++;
+      } while (!( !((*res_it)++)
+      ));
 
       return res;
 
     } else {
     // i2 vectorial and i1 scalar
       res = new InrImage(format,i2.GetVDim(),"prod.inr.gz",&i2);
-      res->InitBuffer();
-      i1.InitBuffer();                
-      i2.InitBuffer();                
-      Repeter                           
-    val1 = i1.ValeurBuffer();
-        Pour(i,0,i2.GetVDim()-1)
-      val = i2.VectValeurBuffer(i)*val1;
-      res->VectFixeValeur(i,val);
-        FinPour
-        i1.IncBuffer();
-        i2.IncBuffer();               
-      JusquA Non(res->IncBuffer())      
-      FinRepeter                        
+      InrImageIteratorBase::ptr res_it(res->CreateIterator());
+      res_it->InitBuffer();
+      i1_it->InitBuffer();
+      i2_it->InitBuffer();
+      do {
+        val1 = i1_it->GetDoubleValue();
+        for(i=0;i<=i2.GetVDim()-1;i++) {
+          val = i2_it->GetDoubleValue(i)*val1;
+          res_it->SetDoubleValue(i,val);
+        } // endfor
+        (*i1_it)++;
+        (*i2_it)++;
+      } while (!( !((*res_it)++)
+      ));
 
       return res;
 
@@ -2893,7 +2991,7 @@ InrImage* operator *(  InrImage& i1,  InrImage& i2)
 
 
 //--------------------------------------------------
-InrImage* operator /(  InrImage& i1,  InrImage& i2)
+InrImage* operator / ( InrImage& i1,  InrImage& i2 )
 //        -----------
 {
 
@@ -2903,83 +3001,113 @@ InrImage* operator /(  InrImage& i1,  InrImage& i2)
   float val2;
   long   i;
 
-  if ( i1._tx != i2._tx AlorsFait return NULL;
-  if ( i1._ty != i2._ty AlorsFait return NULL;
-  if ( i1._tz != i2._tz AlorsFait return NULL;
+  if ( i1._tx != i2._tx )  return NULL;
+  if ( i1._ty != i2._ty )  return NULL;
+  if ( i1._tz != i2._tz )  return NULL;
 
   WORDTYPE format;
-  if ((i1.GetFormat()==WT_DOUBLE)||(i2.GetFormat()==WT_DOUBLE))
+  if ( ( i1.GetFormat() ==WT_DOUBLE ) || ( i2.GetFormat() ==WT_DOUBLE ) )
     format = WT_DOUBLE;
-  else 
+  else
     format = WT_FLOAT;
 
-  if ( i1.ScalarFormat() && i2.ScalarFormat() ) {
+  if ( i1.ScalarFormat() && i2.ScalarFormat() )
+  {
 
-    res = new InrImage(format,"multop.inr.gz",&i1);
-    res->InitBuffer();
-    i1.InitBuffer();                
-    i2.InitBuffer();                
-    Pour(i,0,i1.Size()-1)
-      if (fabsf(i2.ValeurBuffer(i))>0)
-    res->FixeValeur(i1.ValeurBuffer(i) / i2.ValeurBuffer(i)); 
-      res->IncBuffer();
-    FinPour
+    res = new InrImage ( format,"multop.inr.gz",&i1 );
+
+    InrImageIteratorBase::ptr i1_it (  i1.CreateConstIterator());
+    InrImageIteratorBase::ptr i2_it (  i2.CreateConstIterator());
+    InrImageIteratorBase::ptr res_it(res->CreateIterator()     );
+    res_it->InitBuffer();
+    i1_it ->InitBuffer();
+    i2_it ->InitBuffer();
+
+    for ( i=0;i<=i1.Size()-1;i++ )
+    {
+      if ( fabsf ( i2_it->GetDoubleValue() ) >0 )
+        res_it->SetDoubleValue( i1_it->GetDoubleValue() / i2_it->GetDoubleValue() );
+      (*res_it)++;
+      (*i1_it)++;
+      (*i2_it)++;
+    } // endfor
 
     return res;
 
-  } else
-  if ( i1.VectorialFormat() && i2.VectorialFormat() ) {
-    fprintf(stderr,"InrImage/InrImage \t no vector/vector operation \n");
-    return NULL;
+  }
+  else
+    if ( i1.VectorialFormat() && i2.VectorialFormat() )
+    {
+      fprintf ( stderr,"InrImage/InrImage \t no vector/vector operation \n" );
+      return NULL;
 
-  } else {
-    // i1 vectorial and i2 scalar
-    if ( i1.VectorialFormat() ) {
-      res = new InrImage(format,i1.GetVDim(),"prod.inr.gz",&i1);
-      res->InitBuffer();
-      i1.InitBuffer();                
-      i2.InitBuffer();                
-      Repeter                           
-    val2 = i2.ValeurBuffer();
-        Pour(i,0,i1.GetVDim()-1)
-      if (fabsf(val2)>0)
-        val = i1.VectValeurBuffer(i)/val2;
+    }
+    else
+    {
+      // i1 vectorial and i2 scalar
+      if ( i1.VectorialFormat() )
+      {
+        res = new InrImage ( format,i1.GetVDim(),"prod.inr.gz",&i1 );
+
+        InrImageIteratorBase::ptr i1_it (  i1.CreateConstIterator());
+        InrImageIteratorBase::ptr i2_it (  i2.CreateConstIterator());
+        InrImageIteratorBase::ptr res_it(res->CreateIterator()     );
+        res_it->InitBuffer();
+        i1_it ->InitBuffer();
+        i2_it ->InitBuffer();
+
+        do
+        {
+          val2 = i2_it->GetDoubleValue();
+          for ( i=0;i<=i1.GetVDim()-1;i++ )
+          {
+            if ( fabsf ( val2 ) >0 )
+              val = i1_it->GetDoubleValue( i ) /val2;
+            else
+              val = 0;
+            res_it->SetDoubleValue( i,val );
+          } // endfor
+          (*i1_it)++;
+          (*i2_it)++;
+        }
+        while (  (*res_it)++  );
+
+        return res;
+
+      }
       else
-        val = 0;
-      res->VectFixeValeur(i,val);
-        FinPour
-        i1.IncBuffer();
-        i2.IncBuffer();               
-      JusquA Non(res->IncBuffer())      
-      FinRepeter
+      {
+        // i2 vectorial and i1 scalar
+        res = new InrImage ( format,i2.GetVDim(),"prod.inr.gz",&i2 );
 
-      return res;
+        InrImageIteratorBase::ptr i1_it (  i1.CreateConstIterator());
+        InrImageIteratorBase::ptr i2_it (  i2.CreateConstIterator());
+        InrImageIteratorBase::ptr res_it(res->CreateIterator()     );
+        res_it->InitBuffer();
+        i1_it ->InitBuffer();
+        i2_it ->InitBuffer();
 
-    } else {
-    // i2 vectorial and i1 scalar
-      res = new InrImage(format,i2.GetVDim(),"prod.inr.gz",&i2);
-      res->InitBuffer();
-      i1.InitBuffer();                
-      i2.InitBuffer();                
-      Repeter                           
-    val1 = i1.ValeurBuffer();
-        Pour(i,0,i2.GetVDim()-1)
-      if (fabsf(val1)>0)
-        val = i2.VectValeurBuffer(i)/val1;
-      else
-        val = 0;
-      res->VectFixeValeur(i,val);
-        FinPour
-        i1.IncBuffer();
-        i2.IncBuffer();               
-      JusquA Non(res->IncBuffer())      
-      FinRepeter                        
+        do
+        {
+          val1 = i1_it->GetDoubleValue();
+          for ( i=0;i<=i2.GetVDim()-1;i++ )
+          {
+            if ( fabsf ( val1 ) >0 )
+              val = i2_it->GetDoubleValue( i ) /val1;
+            else
+              val = 0;
+            res_it->SetDoubleValue( i,val );
+          } // endfor
+          (*i1_it)++;
+          (*i2_it)++;
+        }
+        while (  (*res_it)++  );
 
-      return res;
+        return res;
+
+      } // end if
 
     } // end if
-
-  } // end if
 
   return NULL;
 
@@ -2987,60 +3115,70 @@ InrImage* operator /(  InrImage& i1,  InrImage& i2)
 
 
 //--------------------------------------------------
-InrImage* operator ^(  InrImage& i1,  InrImage& i2)
+InrImage* operator ^ ( InrImage& i1,  InrImage& i2 )
 //        -----------
 {
 
   InrImage* res;
   register float ux,uy,uz,vx,vy,vz;
 
-  if ( i1._tx != i2._tx AlorsFait return NULL;
-  if ( i1._ty != i2._ty AlorsFait return NULL;
-  if ( i1._tz != i2._tz AlorsFait return NULL;
+  if ( i1._tx != i2._tx )  return NULL;
+  if ( i1._ty != i2._ty )  return NULL;
+  if ( i1._tz != i2._tz )  return NULL;
 
   WORDTYPE format;
-  if ((i1.GetFormat()==WT_DOUBLE)||(i2.GetFormat()==WT_DOUBLE))
+  if ( ( i1.GetFormat() ==WT_DOUBLE ) || ( i2.GetFormat() ==WT_DOUBLE ) )
     format = WT_DOUBLE;
-  else 
+  else
     format = WT_FLOAT;
 
-  if ( i1.ScalarFormat() || i2.ScalarFormat() ) {
+  if ( i1.ScalarFormat() || i2.ScalarFormat() )
+  {
 
     return NULL;
 
-  } else
-  if ( i1.VectorialFormat() && i2.VectorialFormat() ) {
+  }
+  else
+    if ( i1.VectorialFormat() && i2.VectorialFormat() )
+    {
 
-    if ( i1.GetVDim()!=3 || i2.GetVDim()!=3 ) {
-      fprintf(stderr,"operator^(InrImage,InrImage) \t only for dimension 3 vectors \n");
-      return NULL;
+      if ( i1.GetVDim() !=3 || i2.GetVDim() !=3 )
+      {
+        fprintf ( stderr,"operator^(InrImage,InrImage) \t only for dimension 3 vectors \n" );
+        return NULL;
+      } // end if
+
+      res = new InrImage ( format,3,"vect_prod.ami.gz",&i1 );
+
+      InrImageIteratorBase::ptr i1_it (  i1.CreateConstIterator());
+      InrImageIteratorBase::ptr i2_it (  i2.CreateConstIterator());
+      InrImageIteratorBase::ptr res_it(res->CreateIterator()     );
+      res_it->InitBuffer();
+      i1_it ->InitBuffer();
+      i2_it ->InitBuffer();
+
+      do
+      {
+        ux = i1_it->GetDoubleValue( 0 );
+        uy = i1_it->GetDoubleValue( 1 );
+        uz = i1_it->GetDoubleValue( 2 );
+
+        vx = i2_it->GetDoubleValue( 0 );
+        vy = i2_it->GetDoubleValue( 1 );
+        vz = i2_it->GetDoubleValue( 2 );
+
+        res_it->SetDoubleVectorValues( uy*vz-uz*vy,
+                               uz*vx-ux*vz,
+                               ux*vy-uy*vx );
+
+        (*i1_it)++;
+        (*i2_it)++;
+      }
+      while (  (*res_it)++  );
+
+      return res;
+
     } // end if
-
-    res = new InrImage(format,3,"vect_prod.ami.gz",&i1);
-    res->InitBuffer();
-    i1.InitBuffer();                
-    i2.InitBuffer();                
-    Repeter
-      ux = i1.VectValeurBuffer(0);
-      uy = i1.VectValeurBuffer(1);
-      uz = i1.VectValeurBuffer(2);
-
-      vx = i2.VectValeurBuffer(0);
-      vy = i2.VectValeurBuffer(1);
-      vz = i2.VectValeurBuffer(2);
-
-      res->VectFixeValeurs(uy*vz-uz*vy,
-               uz*vx-ux*vz,
-               ux*vy-uy*vx);
-
-      i1.IncBuffer();               
-      i2.IncBuffer();               
-    JusquA Non(res->IncBuffer())      
-    FinRepeter                        
-
-    return res;
-
-  } // end if
 
   return NULL;
 
@@ -3049,48 +3187,62 @@ InrImage* operator ^(  InrImage& i1,  InrImage& i2)
 
 
 // Norm (for vectorial images) or absolute value for scalars
-InrImage* Norm(  InrImage& i1)
+InrImage* Norm ( InrImage& i1 )
 {
 
   InrImage* res;
 
-  if ( i1.ScalarFormat() ) {
+  if ( i1.ScalarFormat() )
+  {
 
-    res = new InrImage(WT_FLOAT,"norm.ami.gz",&i1);
-    res->InitBuffer();
-    i1.InitBuffer();                
-    Repeter
-      res->FixeValeur(fabsf(i1.ValeurBuffer()));
-      i1.IncBuffer();               
-    JusquA Non(res->IncBuffer())      
-    FinRepeter                        
+    res = new InrImage ( WT_FLOAT,"norm.ami.gz",&i1 );
+
+    InrImageIteratorBase::ptr i1_it ( i1.CreateConstIterator() );
+    InrImageIteratorBase::ptr res_it ( res->CreateIterator() );
+    res_it->InitBuffer();
+    i1_it ->InitBuffer();
+
+    do
+    {
+      res_it->SetDoubleValue ( fabsf ( i1_it->GetDoubleValue() ) );
+      ( *i1_it ) ++;
+    }
+    while ( ( *res_it ) ++ );
     return res;
 
-  } else
-  if ( i1.VectorialFormat() ) {
+  }
+  else
+    if ( i1.VectorialFormat() )
+    {
 
-    double n2,tmp; 
-    int i;
+      double n2,tmp;
+      int i;
 
-    res = new InrImage(WT_FLOAT,1,"norm.ami.gz",&i1);
-    res->InitBuffer();
-    i1.InitBuffer();                
-    Repeter
-      n2 = 0;
-      for(i=0;i<i1.GetVDim();i++) { 
-        tmp = i1.VectValeurBuffer(i);
-        n2 += tmp*tmp;
+      res = new InrImage ( WT_FLOAT,1,"norm.ami.gz",&i1 );
+
+      InrImageIteratorBase::ptr i1_it ( i1.CreateConstIterator() );
+      InrImageIteratorBase::ptr res_it ( res->CreateIterator() );
+      res_it->InitBuffer();
+      i1_it ->InitBuffer();
+
+      do
+      {
+        n2 = 0;
+        for ( i=0;i<i1.GetVDim();i++ )
+        {
+          tmp = i1_it->GetDoubleValue ( i );
+          n2 += tmp*tmp;
+        }
+
+        res_it->SetDoubleValue ( sqrt ( n2 ) );
+
+        ( *i1_it ) ++;
       }
+      while (  ( *res_it ) ++  );
 
-      res->FixeValeur(sqrt(n2));
+      return res;
 
-      i1.IncBuffer();               
-    JusquA Non(res->IncBuffer())      
-    FinRepeter                        
-
-    return res;
-
-  } // end if
+    } // end if
 
   return NULL;
 

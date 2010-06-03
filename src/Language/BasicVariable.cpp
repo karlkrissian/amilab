@@ -11,6 +11,13 @@
 //
 
 #include "BasicVariable.h"
+#include "Variables.hpp"
+
+BasicVariable::BasicVariable() : _type(type_void), _name(""), _comments("") 
+{
+    _vars     = boost::shared_ptr<Variables>(new Variables);
+}
+
 
 //---------------------------------------------
 const string BasicVariable::GetTypeName() const
@@ -21,6 +28,8 @@ const string BasicVariable::GetTypeName() const
     //      case type_void     : printf("void";     
     case type_image           : return string( "image"); 
     case type_float           : return string( "float"); 
+    case type_double          : return string( "double"); /// New (added: 24/05/2010)
+    case type_long            : return string( "long int");  /// New (added: 27/05/2010)
     case type_int             : return string( "int"); 
     case type_uchar           : return string( "uchar"); 
     case type_string          : return string( "string"); 

@@ -198,9 +198,6 @@ SetColormap      return(token::T_SetColormap); /*{SetColormap,T_SetColormap}*/
 itk               return(token::T_itk); /*{itk,T_itk}*/
 CannyEdgeDetector return(token::T_CannyEdgeDetector); /*{CannyEdgeDetector,T_CannyEdgeDetector}*/
 
-GetOutput      return(token::T_GetOutput); /*{GetOutput,T_GetOutput}*/
-GetDiffCoeff   return(token::T_GetDiffCoeff); /*{GetDiffCoeff,T_GetDiffCoeff}*/
-
 GetName        return(token::T_GetName); /*{GetName,T_GetName}*/
 GetObjectName  return(token::T_GetObjectName); /*{GetObjectName,T_GetObjectName}*/
 SetName        return(token::T_SetName); /*{SetName,T_SetName}*/
@@ -213,6 +210,7 @@ USHORT        return(token::T_USHORT); /*{USHORT,T_USHORT}*/
 INT           return(token::T_INT); /*{INT,T_INT}*/
 UINT          return(token::T_UINT); /*{UINT,T_UINT}*/
 FLOAT         return(token::T_FLOAT); /*{FLOAT,T_FLOAT}*/
+LONG          return(token::T_LONG); /*{LONG,T_LONG}*/ /// New (added: 27/05/2010)
 DOUBLE        return(token::T_DOUBLE); /*{DOUBLE,T_DOUBLE}*/
 RGB           return(token::T_RGB); /*{RGB,T_RGB}*/
 FLOAT_VECTOR  return(token::T_FLOAT_VECTOR); /*{FLOAT_VECTOR,T_FLOAT_VECTOR}*/
@@ -274,6 +272,7 @@ rewind     return(token::T_rewind); /*{rewind,T_rewind}*/
 
 proc       return(token::T_PROC);   /*{proc,T_PROC}*/
 Class      return(token::T_Class);  /*{Class,T_Class}*/
+public     return(token::T_public);  /*{public,T_public}*/
 
 for    {
 //
@@ -303,8 +302,12 @@ return(token::ASHELL);
 
 SetDebugOn         return(token::T_SetDebugOn); /*{SetDebugOn,T_SetDebugOn}*/
 SetDebugOff        return(token::T_SetDebugOff); /*{SetDebugOff,T_SetDebugOff}*/
+TraceScanning      return(token::T_TraceScanning); /*{TraceScanning,T_TraceScanning}*/
+TraceParsing       return(token::T_TraceParsing); /*{TraceParsing,T_TraceParsing}*/
 SetVerboseOn       return(token::T_SetVerboseOn); /*{SetVerboseOn,T_SetVerboseOn}*/
 SetVerboseOff      return(token::T_SetVerboseOff); /*{SetVerboseOff,T_SetVerboseOff}*/
+NoMessageDialog    return(token::T_NoMessageDialog); /*{NoMessageDialog,T_NoMessageDialog}*/
+
 GetScriptsDir      return(token::T_GetScriptsDir); /*{GetScriptDir,T_GetScriptDir}*/
 AddMenuScript      return(token::T_AddMenuScript); /*{AddMenuScript,T_AddMenuScript}*/
 SetProgress        return(token::T_SetProgress); /*{SetProgress,T_SetProgress}*/
@@ -467,7 +470,6 @@ EDPerode          return(token::T_EDPerode); /*{EDPerode,T_EDPerode}*/
 EDPopen           return(token::T_EDPopen); /*{EDPopen,T_EDPopen}*/
 EDPclose          return(token::T_EDPclose); /*{EDPclose,T_EDPclose}*/
 
-AnisoGS           return(token::AnisoGS); /*{AnisoGS,AnisoGS}*/
 
 vtkFastMarching   return(token::T_vtkFastMarching); /*{vtkFastMarching,T_vtkFastMarching}*/
 vtkFastMarchingTarget   return(token::T_vtkFastMarchingTarget); /*{vtkFastMarchingTarget,T_vtkFastMarchingTarget}*/
@@ -477,20 +479,7 @@ FluxDiffusion     return(token::T_FluxDiffusion); /*{FluxDiffusion,T_FluxDiffusi
 vtkAnisoGS        return(token::T_vtkAnisoGS); /*{vtkAnisoGS,T_vtkAnisoGS}*/
 AnisoSmoothGS     return(token::AnisoSmoothGS); /*{AnisoSmoothGS,AnisoSmoothGS}*/
 init              return(token::TInit); /*{init,TInit}*/
-setcoeff          return(token::TSetCoeff); /*{setcoeff,TSetCoeff}*/
 iterate           return(token::TIterate); /*{iterate,TIterate}*/
-SetNoiseType      return(token::T_SetNoiseType); /*{SetNoiseType,T_SetNoiseType}*/
-SetNoiseSD        return(token::T_SetNoiseSD); /*{SetNoiseSD,T_SetNoiseSD}*/
-GetNoiseSD        return(token::T_GetNoiseSD); /*{GetNoiseSD,T_GetNoiseSD}*/
-GetDAcoeff        return(token::T_GetDAcoeff); /*{GetDAcoeff,T_GetDAcoeff}*/
-SetMask           return(token::T_SetMask); /*{SetMask,T_SetMask}*/
-SetSRADROI        return(token::T_SetSRADROI); /*{SetSRADROI,T_SetSRADROI}*/
-SetRNRADROI       return(token::T_SetRNRADROI); /*{SetRNRADROI,T_SetRNRADROI}*/
-SetRNRADROI_NEW   return(token::T_SetRNRADROI_NEW); /*{SetRNRADROI_NEW,T_SetRNRADROI_NEW}*/
-SetLocalStruct    return(token::T_SetLocalStruct); /*{SetLocalStruct,T_SetLocalStruct}*/
-SetEigenMode      return(token::T_SetEigenMode); /*{SetEigenMode,T_SetEigenMode}*/
-Setdt             return(token::T_Setdt); /*{Setdt,T_Setdt}*/
-Setneighborhood   return(token::T_Setneighborhood); /*{Setneighborhood,T_Setneighborhood}*/
 end               return(token::TEnd); /*{end,TEnd}*/
 
 AnisoWeickert     return(token::T_AnisoWeickert); /*{AnisoWeickert,T_AnisoWeickert}*/
@@ -1190,6 +1179,10 @@ yyip::Parser::token::yytokentype checkvar(
         /*{$variable_imagedraw,VAR_IMAGEDRAW}*/
       case type_float:            return token::VAR_FLOAT;
         /*{$variable_float,VAR_FLOAT}*/
+      case type_long:            return token::VAR_LONG;  /// New (added: 27/05/2010)
+        /*{$variable_long,VAR_LONG}*/
+      case type_double:           return token::VAR_DOUBLE;
+        /*{$variable_double,VAR_DOUBLE}*/
       case type_int:              return token::VAR_INT;
         /*{$variable_int,VAR_INT}*/
       case type_uchar:            return token::VAR_UCHAR;

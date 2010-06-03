@@ -6412,9 +6412,18 @@ void DessinImage::Create_Toolbar()
   strings.Add(wxT("Slice"));
   strings.Add(wxT("MIP"));
   strings.Add(wxT("Anim."));
+  wxClientDC dc(this);
+  wxCoord w = 0,wmax=0,h;
+  for (int i=0; i<strings.Count(); i++ ) {
+    dc.GetTextExtent(strings[i],&w,&h);
+    wmax = ((w>wmax)?w:wmax);
+  }
+
   comboView = new wxComboBox(ViewStyle, wxID_VIEW_TYPE, wxT("Slice"),
-                                         wxDefaultPosition, wxDefaultSize, strings, wxCB_READONLY); 
+                                         wxDefaultPosition,wxSize(wmax+40,-1) , strings, wxCB_READONLY); 
   comboView->SetSize(comboView->GetEffectiveMinSize());
+  comboView->SetToolTip(wxT("Option"));
+
   ViewStyle->AddControl(comboView, wxT("Option"));
   ViewStyle->AddSeparator();
   
@@ -6441,9 +6450,16 @@ void DessinImage::Create_Toolbar()
   strings.Clear();
   strings.Add(wxT("Win Size"));
   strings.Add(wxT("Usr Size"));
+  wmax=0;
+  for (int i=0; i<strings.Count(); i++ ) {
+    dc.GetTextExtent(strings[i],&w,&h);
+    wmax = ((w>wmax)?w:wmax);
+  }
+
   comboSize = new wxComboBox(ViewStyle, wxID_SIZE_TYPE, wxT("Win Size"),
-                                        wxDefaultPosition, wxDefaultSize, strings, wxCB_READONLY);
+                                        wxDefaultPosition, wxSize(wmax+40,-1), strings, wxCB_READONLY);
   comboSize->SetSize(comboSize->GetEffectiveMinSize());
+  comboSize->SetToolTip(wxT("Select image sizing mode: window size or user size."));
   ViewStyle->AddControl(comboSize, wxT("Size"));
   ViewStyle->AddSeparator();
 

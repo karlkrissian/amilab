@@ -55,6 +55,7 @@ class WrapClass_parampanel : public WrapClassBase
   ADD_CLASS_METHOD(AddImageChoice,   "Allows the user to choose among the current image global variables available.");
   ADD_CLASS_METHOD(AddBoolean,       "Adds a boolean selection.");
   ADD_CLASS_METHOD(AddButton,        "Adds a button.");
+  ADD_CLASS_METHOD(AddBitmapButton,  "Adds a bitmap button.");
   ADD_CLASS_METHOD(SetCallback,      "Sets a callback on the last parameter.");
   ADD_CLASS_METHOD(SetDragCallback,  "Activate/Desactivate the drag callback.");
   ADD_CLASS_METHOD(EnablePanel,      "Enable/Disable a panel.");

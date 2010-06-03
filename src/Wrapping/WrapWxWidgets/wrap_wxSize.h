@@ -14,6 +14,7 @@
 #define _wrap_wxSize_h_
 
 #include "wrapfunction_class.h"
+#include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
@@ -57,9 +58,9 @@ AMIObject::ptr AddWrap_wxSize(  WrapClass_wxSize::ptr& objectptr);
  */
 Variable<AMIObject>::ptr CreateVar_wxSize( wxSize* si);
 
-/** function that add wrapping of the Image Drawing window
+/** Method that adds wrapping of wxSize 
  */
-BasicVariable::ptr wrap_wxSize( ParamList* p);
+ADD_CLASS_FUNCTION( wxSize, "Wrapping of wxSize." );
 
 
 #endif // _wrap_wxSize_h_

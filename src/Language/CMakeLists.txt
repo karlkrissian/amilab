@@ -40,7 +40,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapWII
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapInterface
   ${AMILAB_SOURCE_DIR}/wxSamples/penguin
-  ${AMILAB_SOURCE_DIR}/wxSamples/stctest
+  ${AMILAB_SOURCE_DIR}/wxStcFrame
   ${AMILAB_SOURCE_DIR}/Algorithms/Basic
   ${AMILAB_SOURCE_DIR}/Algorithms/Graph
   ${AMILAB_SOURCE_DIR}/Algorithms/Denoising
@@ -55,7 +55,9 @@ SET(Language_SRCS
     VarContexts.cpp
     BasicVariable.cpp
     Variable.cpp
+    Variable_long.cpp
     Variable_float.cpp
+    Variable_double.cpp
     Variable_InrImage.cpp
     Variable_string.cpp
     Variable_FloatMatrix.cpp
@@ -85,7 +87,9 @@ SET(Language_HDRS
     VarContexts.tpp
     BasicVariable.h
     Variable.hpp
+    Variable_long.h
     Variable_float.h
+    Variable_double.h
     Variable_InrImage.h
     Variable_string.h
     Variable_FloatMatrix.h
@@ -100,7 +104,13 @@ SET(Language_BISONFLEX_SRCS
 
 IF(AMI_USE_FLEXBISON)
 
-  BISON_TARGET_option_extraopts("-t  -dv")
+
+  SET(bison_options "-dv")
+  IF(AMI_BISON_DEBUG)
+    SET(bison_options "-t ${bison_options}")
+  ENDIF(AMI_BISON_DEBUG)
+
+  BISON_TARGET_option_extraopts(${bison_options})
 
   BISON_TARGET(improcessbison
     ${AMILAB_SOURCE_DIR}/Language/improcess_bison.ypp
@@ -120,6 +130,11 @@ IF(AMI_USE_FLEXBISON)
     ${Language_BISONFLEX_SRCS}
     ${Language_HDRS}
   )
+
+  IF(AMI_BISON_DEBUG)
+    SET_SOURCE_FILES_PROPERTIES( ${Language_SRCS}
+    PROPERTIES COMPILE_FLAGS -DYYDEBUG=1)
+  ENDIF(AMI_BISON_DEBUG)
   
 ELSE(AMI_USE_FLEXBISON)
  

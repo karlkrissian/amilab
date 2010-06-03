@@ -34,6 +34,9 @@ private:
   /// A context is an array of variables
   std::vector<Variables::ptr> _context;
 
+  /// built-in context for variable accessible everywhere
+  Variables::ptr _builtin_context;
+
   /// points to the current object context
   Variables::ptr _object_context;
 
@@ -66,6 +69,14 @@ public:
   }
 
   /**
+   * @return The builtin context
+   */
+  Variables::ptr& GetBuiltinContext() 
+  { 
+    return _builtin_context;
+  }
+
+  /**
    * Activate/Desactivate the creation of new variables as global
    * @param gn 
    */
@@ -76,6 +87,15 @@ public:
    */
   int GetCurrentContextNumber() {
     return _current_context;
+  }
+
+  /**
+   * Sets the current context number
+   * @param  
+   */
+  void SetCurrentContextNumber( int context) {
+    if ((context>=0)&&(context<_context.size()))
+      _current_context = context;
   }
   
   /**

@@ -20,4 +20,19 @@
  */
 void AddWrapImports();
 
-#endif //  _wrap_mainframe_h_
+/**
+ * Adding wrapped classes from wxwidgets library.
+ */
+void AddWrapWxWidgets();
+
+/**
+ * Adding wrapped classes from amilab.
+ */
+void AddWrapAmilab();
+
+/**
+ * Adding wrapped classes and methods for IO.
+ */
+void AddWrapIO();
+
+#endif //  _wrap_MainFrame_h_

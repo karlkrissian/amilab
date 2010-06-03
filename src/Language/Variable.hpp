@@ -116,9 +116,11 @@ public:
     _name    = name;
     _pointer = boost::shared_ptr<T>(p);
   }
-
  
-  virtual ~Variable(){ this->Delete(); }
+  virtual ~Variable()
+  { 
+    this->Delete(); 
+  }
 
   /**
     * Virtual Method that creates a new smart pointer to a basic variable coming from the same type
@@ -150,6 +152,7 @@ public:
     res->SetComments(_comments);
     return res;
   }
+
 
   int GetPtrCounter()
   {
@@ -238,7 +241,7 @@ public:
 */
 
   //
-  void display();
+  void display() const;
 
   virtual double GetValueAsDouble() const;
 /*
@@ -491,6 +494,8 @@ class VarArray;
 */
 
 #include "Variable_float.h"
+#include "Variable_double.h" /// New (added: 24/05/2010)
+#include "Variable_long.h"   /// New (added: 27/05/2010)
 #include "Variable_InrImage.h"
 #include "Variable_string.h"
 #include "Variable_FloatMatrix.h"

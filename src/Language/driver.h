@@ -30,6 +30,31 @@
 
 struct yy_buffer_state;
 
+
+/*
+//------------------------------------------------------
+class wxMessageTimer : public wxTimer
+//    ---------------
+{
+  DEFINE_CLASS(wxMessageTimer);
+
+  public:
+    wxMessageTimer( boost::shared_ptr<wxDialog> dialog)
+    {
+      var = Variable<AMIFunction>::ptr(callback);
+    }
+
+    ~wxMessageTimer()    { }
+
+    //Called each time the timer's timeout expires
+    void Notify();
+
+  private:
+    // variable of type type_ami_function
+    wxDialog var;
+};
+*/
+
 // forward declaration
 //class CalcContext;
 
@@ -55,6 +80,11 @@ protected:
      **/
     bool in_console;
 
+    /**
+     * Disable MessageDialogs
+     **/
+    bool nomessagedialog;
+
 public:
 
     ImageStack        im_stack;
@@ -72,6 +102,9 @@ public:
 
     FILE_ptr       cmdhistory;
     std::string cmdhistory_filename;
+
+    void SetNoMessageDialog(bool b) { nomessagedialog = b; }
+    bool GetNoMessageDialog() { return nomessagedialog; }
 
     void init_debug_stream();
     void close_debug_stream();
@@ -134,6 +167,8 @@ public:
     /// enable debug output in the bison parser
     bool trace_parsing;
 
+    void SetTraceScanning(bool val) { trace_scanning = val; }
+    void SetTraceParsing(bool val) { trace_parsing = val; }
 
     /**
      * Check if we are running from the command line.
@@ -194,11 +229,17 @@ public:
       return yyip_call_function( v.get(), param);
     }
 
+    /**
+     * Recursively calls itself with its parent class if any, anf then executes the body block of the class within the current environment. TODO: take care about potential loops here 
+     * @param oclass 
+     */
+    void ParseClassBody(const AMIClass::ptr& oclass);
+
     /** instanciate an object of a given class
     * @param f smart pointer to the function
     */
     void yyip_instanciate_object( const AMIClass::ptr& oclass,
-      AMIObject* object);
+      AMIObject::ptr& object);
 
     /** switching to a script file
     * @param filename

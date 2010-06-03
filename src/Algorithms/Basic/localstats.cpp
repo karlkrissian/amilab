@@ -280,17 +280,19 @@ return NULL;
 }
 
 //----------------------------------------------------------------------
-double Func_Compute_sigma2_MRI_mode(InrImage* im, InrImage* im_ROI, int neigh_size)
+double Func_Compute_sigma2_MRI_mode(InrImage* im, InrImage::ptr im_ROI, int neigh_size)
 //
 {
-  InrImage* im2 = im_ROI;
-  int xmin,xmax,ymin,ymax,zmin,zmax;
 
-  if (im_ROI==NULL)
+  if (!im_ROI.get())
     {
       fprintf(stderr,"Func_Compute_sigma2_MRI_mode() \t im_ROI==NULL\n");
       return 0.0;
     }
+
+  InrImage::ptr im2 = im_ROI;
+  int xmin,xmax,ymin,ymax,zmin,zmax;
+
   xmin = (int) (im->SpaceToVoxelX(im2->SpacePosX(0))+0.5);
   ymin = (int) (im->SpaceToVoxelY(im2->SpacePosY(0))+0.5);
   zmin = (int) (im->SpaceToVoxelZ(im2->SpacePosZ(0))+0.5);

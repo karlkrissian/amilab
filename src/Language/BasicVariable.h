@@ -48,9 +48,18 @@ protected:
   boost::shared_ptr<Variables>   _context; // points to the context
     // that the variable belong to, if any
 
+  /// Own list of variables
+  boost::shared_ptr<Variables>  _vars;
+
 public:
 
-  BasicVariable(): _type(type_void), _name(""), _comments("") {}
+  BasicVariable();
+/*
+: _type(type_void), _name(""), _comments("") 
+  {
+    _vars     = boost::shared_ptr<Variables>(new Variables);
+  }
+*/
   virtual ~BasicVariable() {};
 
   /**
@@ -77,6 +86,13 @@ public:
   virtual bool Equal(const BasicVariable::ptr& v)  = 0;
 
   virtual bool operator == (BasicVariable* v)  = 0;
+
+  /**
+   * Gets the list of variables 
+   * @return object context (contains its variables)
+   */
+  boost::shared_ptr<Variables>& GetOwnContext() { return _vars;}
+
 
   void SetContext(const boost::shared_ptr<Variables>& val) 
   {
@@ -125,14 +141,13 @@ public:
   const std::string GetTypeName() const;
 
   //
-  virtual void display()
-  {
-    //cout << *this;
-  }
+  virtual void display() const = 0;
 
   virtual bool IsNumeric() const
   {
     return  (_type==type_float)||
+            (_type==type_double)|| /// New (added: 24/05/2010)
+            (_type==type_long)||   /// New (added: 27/05/2010)
             (_type==type_int)||
             (_type==type_uchar);
   }

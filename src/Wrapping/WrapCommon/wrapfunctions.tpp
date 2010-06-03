@@ -29,7 +29,7 @@ bool get_var_param( boost::shared_ptr<Variable<T> >& var,
 {
   if (!p) return false;
   // Getting the Variable and checking its type
-  var = boost::dynamic_pointer_cast<Variable<T> >(p->GetParam(num++)); // = is like a swap of smart pointers ...
+  var = boost::dynamic_pointer_cast<Variable<T> >(p->GetParam(num++));
   if (var.get()) {
     if (var->Type()!=GetVarType<T>()) {
       FILE_ERROR(boost::format("Parameter %1% is of wrong type (%2% instead of %3%), you may be passing a value instead of a reference.")%num%var->Type()%GetVarType<T>());
@@ -46,7 +46,8 @@ bool get_var_param( boost::shared_ptr<Variable<T> >& var,
   }
   else
   {
-    FILE_ERROR(boost::format("Parameter %d not found ") % num);
+    if (required)
+      FILE_ERROR(boost::format("Parameter %d not found ") % num);
     return false;
   }
 

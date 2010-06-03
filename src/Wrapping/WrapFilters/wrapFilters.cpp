@@ -34,6 +34,7 @@
 #include "wrap_MaxSubImage.h"
 #include "wrap_ImageAddScalar.h"
 #include "wrap_ImageCos.h"
+#include "wrap_AnisoGS.h"
 #include "ami_object.h"
 #include "VarArray.h"
 
@@ -97,7 +98,10 @@ void AddWrapFilters(){
   //2D SUBPIXEL METHOD
   ADDOBJECTVAR_NAME(C_wrap_imagefunction, "SintheticRamp", wrapSintheticRamp);
   ADDOBJECTVAR_NAME(C_wrap_varfunction, "Subpixel2D", wrapSubpixel2D);
-	
+
+  // Add AnisoGS
+  AddVar_AnisoGS( amiobject->GetContext());
+
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);
 
@@ -784,7 +788,7 @@ InrImage* NLmeans_MRI(ParamList* p)
 
     InrImage* input;
     InrImage* noise_reduction;
-    InrImage* input_roi;
+    InrImage::ptr input_roi;
     InrImage* input_float = NULL;
     InrImage* result = NULL;
     int   t=7;
@@ -797,7 +801,7 @@ InrImage* NLmeans_MRI(ParamList* p)
     int n=0;
 
   if (!get_val_ptr_param<InrImage>(      input,       p, n)) HelpAndReturnNULL;
-  if (!get_val_ptr_param<InrImage>(      input_roi,   p, n)) HelpAndReturnNULL;
+  if (!get_val_smtptr_param<InrImage>(   input_roi,   p, n)) HelpAndReturnNULL;
   if (!get_int_param(        t,           p, n)) HelpAndReturnNULL;
   if (!get_val_param<float>(      h,           p, n)) HelpAndReturnNULL;
   if (!get_val_param<float>(      sigma,       p, n)) HelpAndReturnNULL;

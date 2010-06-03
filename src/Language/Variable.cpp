@@ -48,6 +48,7 @@ class FloatMatrix;
 class GLTransfMatrix;
 class VarArray;
 
+
 #define VARTYPE_PROP(type,name,isnum) \
   template<> vartype GetVarType<type>()  { return name;     } \
   template<> bool IsNumerical  <type>()  { return isnum;    }
@@ -55,6 +56,8 @@ class VarArray;
 
 VARTYPE_PROP( InrImage,             type_image,           false);
 VARTYPE_PROP( float,                type_float,           true);
+VARTYPE_PROP( double,               type_double,          true); /// New (added: 24/05/2010)
+VARTYPE_PROP( long,                 type_long,            true); /// New (added: 27/05/2010)
 VARTYPE_PROP( int,                  type_int,             true);
 VARTYPE_PROP( unsigned char,        type_uchar,           true)
 VARTYPE_PROP( std::string,          type_string,          false)
@@ -87,6 +90,8 @@ VARTYPE_PROP( VarArray,             type_array,           false)
 
 
 VARTYPE_STRING_DOUBLE( float,                Value(),               Value())
+VARTYPE_STRING_DOUBLE( double,               Value(),               Value())
+VARTYPE_STRING_DOUBLE( long,                 Value(),               Value()) /// New (added: 27/05/2010)
 VARTYPE_STRING_DOUBLE( int,                  Value(),               Value())
 VARTYPE_STRING_DOUBLE( unsigned char,        (int)Value(),          Value())
 VARTYPE_STRING_DOUBLE( std::string,          Value(),               0)

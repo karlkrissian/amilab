@@ -29,10 +29,10 @@ class WrapClass_wxHtmlWindow : public WrapClass_wxWindow
   typedef WrapClass_wxHtmlWindow::ptr _parentclass_ptr;
 
   public:
-    boost::shared_ptr<wxHtmlWindow> _htmlwin;
+    boost::shared_ptr<wxHtmlWindow> _obj;
 
     /// Constructor
-    WrapClass_wxHtmlWindow(boost::shared_ptr<wxHtmlWindow> w): WrapClass_wxWindow(w), _htmlwin(w)
+    WrapClass_wxHtmlWindow(boost::shared_ptr<wxHtmlWindow> w): WrapClass_wxWindow(w), _obj(w)
     {}
 
 

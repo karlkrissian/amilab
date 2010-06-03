@@ -58,7 +58,7 @@
 #include <list>
 #include <map>
 
-class StcTestFrame;
+class wxStcFrame;
 
 #include "DefineClass.hpp"
 
@@ -97,7 +97,7 @@ public:
      m_mgr.UnInit();
   }
 
-  StcTestFrame*  GetAmilabEditor();
+  wxStcFrame*  GetAmilabEditor();
   void OnCloseAmilabEditor() {
     amilab_editor = NULL;
   }
@@ -181,7 +181,7 @@ public:
 protected:
 
   //
-  StcTestFrame* amilab_editor;
+  wxStcFrame* amilab_editor;
   
   // menus
   wxMenuBar *menuBar;
@@ -230,6 +230,8 @@ protected:
 
   myTreeCtrl*  _var_tree;
   wxTreeItemId _vartree_root;
+  wxTreeItemId _vartree_global;
+  wxTreeItemId _vartree_builtin;
   wxTreeItemId _vartree_images;
   wxTreeItemId _vartree_surfaces;
   wxTreeItemId _vartree_numbers;
