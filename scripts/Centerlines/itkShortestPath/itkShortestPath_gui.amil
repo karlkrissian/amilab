@@ -45,7 +45,7 @@ if (!exists(itkSPClass)) {
     
       ::step_size = 0.1, "Time step for the evolution"
       ::maxlength = 500, "Maximal Euclidean distance of the path"
-      ::delta = 0.05
+      ::delta = 0.05, "Small increment to estimate the derivatives"
       
       ::dim = INT(1), "The dimension of the image."
       

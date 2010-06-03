@@ -1,3 +1,33 @@
+/*
+    ==================================================
+    Software : AMILab
+    Authors  : Karl Krissian
+               Sara Arencibia
+    Email    : karl@bwh.harvard.edu
+               darkmind@gmail.com
+
+    AMILab is a language for image processing
+    ==================================================
+    Copyright (C) 1996-2005  Karl Krissian
+
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2.1 of the License, or (at your option) any later version.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+    ================================================== 
+   The full GNU Lesser General Public License file is in Devel/Sources/Prog/LesserGPL_license.txt
+*/
+
 #include "AMILabConfig.h"
 
 #ifndef _WITHOUT_ITK_
@@ -39,24 +69,25 @@ BasicVariable::ptr wrap_itkBackTrackingMeshFilter2D(ParamList* p)
       ";
     
   InrImage* input = NULL;
-  float startX = 0.0;
-  float startY = 0.0;
-  float stepSize = 0.0;
-  float maxLength = 0.0;
-  float delta = 0.0;
-  //SurfacePoly* res = NULL;
+  float     startX = 0.0;
+  float     startY = 0.0;
+  float     stepSize = 0.0;
+  float     maxLength = 0.0;
+  float     delta = 0.0;
+  
   int n=0;
   
   if (!get_val_ptr_param<InrImage>(  input,      p, n)) HelpAndReturnVarPtr;
-  if (!get_val_param<float>(  startX,    p, n)) HelpAndReturnVarPtr;
-  if (!get_val_param<float>(  startY,      p, n)) HelpAndReturnVarPtr;
-  if (!get_val_param<float>(  stepSize,      p, n)) HelpAndReturnVarPtr;
-  if (!get_val_param<float>(  maxLength,      p, n)) HelpAndReturnVarPtr;
-  if (!get_val_param<float>(  delta,      p, n)) HelpAndReturnVarPtr; 
+  if (!get_val_param<float>       (  startX,     p, n)) HelpAndReturnVarPtr;
+  if (!get_val_param<float>       (  startY,     p, n)) HelpAndReturnVarPtr;
+  if (!get_val_param<float>       (  stepSize,   p, n)) HelpAndReturnVarPtr;
+  if (!get_val_param<float>       (  maxLength,  p, n)) HelpAndReturnVarPtr;
+  if (!get_val_param<float>       (  delta,      p, n)) HelpAndReturnVarPtr; 
 
-  typedef double       InternalPixelType;
-  const   unsigned int        Dimension = 2;
-  typedef itk::Image< InternalPixelType, Dimension >    InternalImageType;
+  typedef double        InternalPixelType;
+  const unsigned int    Dimension = 2;
+  
+  typedef itk::Image< InternalPixelType, Dimension > InternalImageType;
   InternalImageType::RegionType region;
   InternalImageType::Pointer image;
   
@@ -69,7 +100,7 @@ BasicVariable::ptr wrap_itkBackTrackingMeshFilter2D(ParamList* p)
     
   image = InrToITK<InternalPixelType,Dimension>(input,region);
   
-  cout << "Conversi�n hecha" << endl;
+  cout << "Conversion done" << endl;
 
   typedef itk::BackTrackingMeshFilter<InternalImageType,MeshType,Dimension> BackTrackingFilterType;
   BackTrackingFilterType::Pointer BackTracking = BackTrackingFilterType::New();
@@ -82,7 +113,6 @@ BasicVariable::ptr wrap_itkBackTrackingMeshFilter2D(ParamList* p)
   BackTracking->Setdelta( delta );
   BackTracking->Update();
 
-  //vtkFloatingPointType triangle[2];
   typedef itk::PointSet<InternalPixelType,Dimension> PointSetType;
   PointSetType::PointIdentifier pointID;
   typedef PointSetType::PointType PointType;
@@ -90,10 +120,10 @@ BasicVariable::ptr wrap_itkBackTrackingMeshFilter2D(ParamList* p)
 
   SurfacePoly* surf;
   surf = new SurfacePoly;
-  //surf->NewSurface();
   surf->NewLine();
   int num_points=0;
 
+  // Conversion to amilab type to show it
   for (int i=0;i<BackTracking->GetOutput()->GetNumberOfPoints();i++)
   {
     pointID = i;
@@ -138,26 +168,27 @@ BasicVariable::ptr wrap_itkBackTrackingMeshFilter3D(ParamList* p)
       ";
     
   InrImage* input = NULL;
-  float startX = 0.0;
-  float startY = 0.0;
-  float startZ = 0.0;
-  float stepSize = 0.0;
-  float maxLength = 0.0;
-  float delta = 0.0;
-  SurfacePoly* res = NULL;
+  float     startX = 0.0;
+  float     startY = 0.0;
+  float     startZ = 0.0;
+  float     stepSize = 0.0;
+  float     maxLength = 0.0;
+  float     delta = 0.0;
+  
   int n=0;
   
   if (!get_val_ptr_param<InrImage>(  input,      p, n)) HelpAndReturnVarPtr;
-  if (!get_val_param<float>(  startX,    p, n)) HelpAndReturnVarPtr;
-  if (!get_val_param<float>(  startY,      p, n)) HelpAndReturnVarPtr;
-  if (!get_val_param<float>(  startZ,      p, n)) HelpAndReturnVarPtr;
-  if (!get_val_param<float>(  stepSize,      p, n)) HelpAndReturnVarPtr;
-  if (!get_val_param<float>(  maxLength,      p, n)) HelpAndReturnVarPtr;
-  if (!get_val_param<float>(  delta,      p, n)) HelpAndReturnVarPtr; 
+  if (!get_val_param<float>       (  startX,     p, n)) HelpAndReturnVarPtr;
+  if (!get_val_param<float>       (  startY,     p, n)) HelpAndReturnVarPtr;
+  if (!get_val_param<float>       (  startZ,     p, n)) HelpAndReturnVarPtr;
+  if (!get_val_param<float>       (  stepSize,   p, n)) HelpAndReturnVarPtr;
+  if (!get_val_param<float>       (  maxLength,  p, n)) HelpAndReturnVarPtr;
+  if (!get_val_param<float>       (  delta,      p, n)) HelpAndReturnVarPtr; 
 
   typedef double       InternalPixelType;
-  const   unsigned int        Dimension = 3;
-  typedef itk::Image< InternalPixelType, Dimension >    InternalImageType;
+  const unsigned int   Dimension = 3;
+  
+  typedef itk::Image< InternalPixelType, Dimension > InternalImageType;
   InternalImageType::RegionType region;
   InternalImageType::Pointer image;
   
@@ -170,7 +201,7 @@ BasicVariable::ptr wrap_itkBackTrackingMeshFilter3D(ParamList* p)
     
   image = InrToITK<InternalPixelType,Dimension>(input,region);
   
-  cout << "Conversi�n hecha" << endl;
+  cout << "Conversion done" << endl;
 
   typedef itk::BackTrackingMeshFilter<InternalImageType,MeshType,Dimension> BackTrackingFilterType;
   BackTrackingFilterType::Pointer BackTracking = BackTrackingFilterType::New();
@@ -192,7 +223,6 @@ BasicVariable::ptr wrap_itkBackTrackingMeshFilter3D(ParamList* p)
 
   SurfacePoly* surf;
   surf = new SurfacePoly;
-  //surf->NewSurface();
   surf->NewLine();
   int num_points=0;
 

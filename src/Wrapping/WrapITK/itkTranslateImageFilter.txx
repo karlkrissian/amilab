@@ -14,13 +14,12 @@ template< class TInputImage, class TOutputImage >
 void TranslateImageFilter< TInputImage, TOutputImage >
 ::ThreadedGenerateData(const OutputImageRegionType& outputRegionForThread,int threadId)
 {
-  //float *add;
-  //add = new float[2*m_Window+1];
+
   float ant=0.0;
 
   ImageLinearConstIteratorWithIndex<TInputImage> in;
-  ImageLinearIteratorWithIndex<TOutputImage> out;
-  ImageLinearIteratorWithIndex<TOutputImage> ax;
+  ImageLinearIteratorWithIndex<TOutputImage>     out;
+  ImageLinearIteratorWithIndex<TOutputImage>     ax;
   
   // Allocate output
   typename TOutputImage::Pointer output = this->GetOutput();
@@ -30,7 +29,8 @@ void TranslateImageFilter< TInputImage, TOutputImage >
   in = ImageLinearConstIteratorWithIndex<TInputImage>(input, outputRegionForThread);
   out = ImageLinearIteratorWithIndex<TOutputImage>(output, outputRegionForThread);
   ax = ImageLinearIteratorWithIndex<TOutputImage>(tmp, outputRegionForThread);
-    
+  
+  // Copy the input image
   for (in.GoToBegin(),ax.GoToBegin();!in.IsAtEnd();in.NextLine(),ax.NextLine())
   {
     in.GoToBeginOfLine();
@@ -42,7 +42,9 @@ void TranslateImageFilter< TInputImage, TOutputImage >
       ++ax;
     }
   }
-
+  
+  // Translate the image in each axis.
+  // X-axis
   ax.SetDirection(0);
   out.SetDirection(0);
   for (int i=0;i<m_DisplaceX;i++)
@@ -61,6 +63,7 @@ void TranslateImageFilter< TInputImage, TOutputImage >
     }
   }
   
+  // Save the output image
   for (ax.GoToBegin(),out.GoToBegin();!ax.IsAtEnd();ax.NextLine(),out.NextLine())
   {
     ax.GoToBeginOfLine();
@@ -73,6 +76,7 @@ void TranslateImageFilter< TInputImage, TOutputImage >
     }
   }
   
+  // Y-axis
   ax.SetDirection(1);
   out.SetDirection(1);
   ant = 0.0;
@@ -105,6 +109,7 @@ void TranslateImageFilter< TInputImage, TOutputImage >
     }
   }
   
+  // Z-axis
   ax.SetDirection(2);
   out.SetDirection(2);
   ant = 0.0;
@@ -126,6 +131,7 @@ void TranslateImageFilter< TInputImage, TOutputImage >
   }
 }
 
+// Using for debugging
 template< class TInputImage, class TOutputImage >
 void
 TranslateImageFilter<TInputImage, TOutputImage>

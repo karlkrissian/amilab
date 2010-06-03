@@ -1,3 +1,33 @@
+/*
+    ==================================================
+    Software : AMILab
+    Authors  : Karl Krissian
+               Sara Arencibia
+    Email    : karl@bwh.harvard.edu
+               darkmind@gmail.com
+
+    AMILab is a language for image processing
+    ==================================================
+    Copyright (C) 1996-2005  Karl Krissian
+
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2.1 of the License, or (at your option) any later version.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+    ================================================== 
+   The full GNU Lesser General Public License file is in Devel/Sources/Prog/LesserGPL_license.txt
+*/
+
 #include "AMILabConfig.h"
 
 #ifdef AMI_USE_ITK
@@ -38,14 +68,14 @@ InrImage* wrap_itkRecursiveGaussianImageFilter2D(ParamList* p)
   InrImage* res = NULL;
   int n=0;
   
-  if (!get_val_ptr_param<InrImage>(  input,      p, n)) HelpAndReturnNULL;
-  if (!get_val_param<float>(  sigma,    p, n)) HelpAndReturnNULL;
-  if (!get_int_param(  N_A_S,      p, n)) HelpAndReturnNULL;
-  if (!get_int_param( order,   p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>( input, p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>       ( sigma, p, n)) HelpAndReturnNULL;
+  if (!get_int_param              ( N_A_S, p, n)) HelpAndReturnNULL;
+  if (!get_int_param              ( order, p, n)) HelpAndReturnNULL;
  
   typedef float               PixelType;
   const   unsigned int        Dimension = 2;
-  typedef itk::Image< PixelType, Dimension >    ImageType;
+  typedef itk::Image< PixelType, Dimension > ImageType;
   ImageType::RegionType region;
   ImageType::Pointer image;
   
@@ -129,7 +159,7 @@ InrImage* wrap_itkRecursiveGaussianImageFilter3D(ParamList* p)
 
 #ifdef AMI_USE_ITK
 
-  char functionname[] = "itkRecursiGaussianImageFilter2d";
+  char functionname[] = "itkRecursiGaussianImageFilter3D";
   char description[]=" \n\
         Filter to compute IIR convolution with an approximation of a Gaussian kernel.\n\
       ";
@@ -149,14 +179,14 @@ InrImage* wrap_itkRecursiveGaussianImageFilter3D(ParamList* p)
   InrImage* res = NULL;
   int n=0;
   
-  if (!get_val_ptr_param<InrImage>(  input,      p, n)) HelpAndReturnNULL;
-  if (!get_val_param<float>(  sigma,    p, n)) HelpAndReturnNULL;
-  if (!get_int_param(  N_A_S,      p, n)) HelpAndReturnNULL;
-  if (!get_int_param( order,   p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>( input, p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>       ( sigma, p, n)) HelpAndReturnNULL;
+  if (!get_int_param              ( N_A_S, p, n)) HelpAndReturnNULL;
+  if (!get_int_param              ( order,  p, n)) HelpAndReturnNULL;
  
   typedef float               PixelType;
   const   unsigned int        Dimension = 3;
-  typedef itk::Image< PixelType, Dimension >    ImageType;
+  typedef itk::Image< PixelType, Dimension > ImageType;
   ImageType::RegionType region;
   ImageType::Pointer image;
   

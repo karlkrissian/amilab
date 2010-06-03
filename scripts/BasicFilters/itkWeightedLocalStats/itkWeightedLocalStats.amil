@@ -91,6 +91,7 @@ if (!exists(itkWeightedLSCLass)) {
         # apply Gaussian function
         ::res = ::input - ::lm
         ::res = (::res*::res)/(::var*1.5*1.5)
+        ::res = (::res>0)*::res
         ::res = exp(-::res)
         ::res = (::w_lm>2*::min_weight)*::res
 

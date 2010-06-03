@@ -1,3 +1,33 @@
+/*
+    ==================================================
+    Software : AMILab
+    Authors  : Karl Krissian
+               Sara Arencibia
+    Email    : karl@bwh.harvard.edu
+               darkmind@gmail.com
+
+    AMILab is a language for image processing
+    ==================================================
+    Copyright (C) 1996-2005  Karl Krissian
+
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2.1 of the License, or (at your option) any later version.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+    ================================================== 
+   The full GNU Lesser General Public License file is in Devel/Sources/Prog/LesserGPL_license.txt
+*/
+
 #ifndef __itkBackTrackingImageFilter_txx
 #define __itkBackTrackingImageFilter_txx
 
@@ -21,14 +51,16 @@ template< class TInputImage, class TOutputMesh, unsigned int TDimension>
 void BackTrackingMeshFilter< TInputImage, TOutputMesh, TDimension >
 ::GenerateData()
 {
-  // Allocate output
+  
   typename TInputImage::ConstPointer input  = this->GetInput(0);
   
+  // Allocate mesh output
   typename TOutputMesh::Pointer output = this->GetOutput();
 
   typename TOutputMesh::Pointer mesh = TOutputMesh::New();
   typename TOutputMesh::PointType point;
 
+  // Use to create the path adding points to a line
   typedef typename TOutputMesh::CellType CellType;
   typedef typename itk::LineCell<CellType> LineType;
   typedef typename CellType::CellAutoPointer CellAutoPointer;
@@ -37,23 +69,25 @@ void BackTrackingMeshFilter< TInputImage, TOutputMesh, TDimension >
   line.TakeOwnership( new LineType );
 
   double p[TDimension];
-  p[0] = m_startX;
-  p[1] = m_startY;
-  if (input->GetImageDimension() == 3) p[2] = m_startZ;
   double q[TDimension];
   double vox_p[TDimension];
-  bool end_reached = false;
+  bool   end_reached = false;
   double distance = 0.0;
   double step;
   double vx,vy,vz,nv;
   double vpx,vpy,vpz;
   double I,Ixp,Ixm,Iyp,Iym,Izp,Izm;
   double closest_point_intensity;
+  
+  p[0] = m_startX;
+  p[1] = m_startY;
+  if (input->GetImageDimension() == 3) p[2] = m_startZ;
 
-  typename OutputImageType::Pointer image = OutputImageType::New();
+  //typename OutputImageType::Pointer image = OutputImageType::New();
   typename OutputImageType::IndexType index;
   typename OutputImageType::IndexType pos;
-      
+
+  // SpaceToVoxel in X, Y and Z.
   vox_p[0] = (p[0]-input->GetOrigin()[0])/(double)input->GetSpacing()[0];
   vox_p[1] = (p[1]-input->GetOrigin()[1])/input->GetSpacing()[1];
   if (input->GetImageDimension() == 3) vox_p[2] = (p[2]-input->GetOrigin()[2])/input->GetSpacing()[2];
@@ -62,14 +96,17 @@ void BackTrackingMeshFilter< TInputImage, TOutputMesh, TDimension >
   index[1] = vox_p[1];
   if (input->GetImageDimension() == 3) index[2] = vox_p[2];
 
-  typedef double TInterpolatorPrecisionType;
-  typedef typename itk::ContinuousIndex<TInterpolatorPrecisionType, TDimension> ContinuousIndexType;
+  // Linear interpolator to compute downwind gradient
+  typedef double    TInterpolatorPrecisionType;
+  typedef typename  itk::ContinuousIndex<TInterpolatorPrecisionType, TDimension> ContinuousIndexType;
 
-  typedef typename itk::LinearInterpolateImageFunction< InputImageType, TInterpolatorPrecisionType >  InterpolatorType;
-  typename InterpolatorType::Pointer interpolator = InterpolatorType::New();
+  typedef typename  itk::LinearInterpolateImageFunction< InputImageType, TInterpolatorPrecisionType >  InterpolatorType;
+  typename          InterpolatorType::Pointer interpolator = InterpolatorType::New();
 
+  // Need to pass the coordinates to the interpolator filter
   ContinuousIndexType coord;
 
+  // Is the initial point inside the image domain ?
   if (!input->GetLargestPossibleRegion().IsInside(index))
   {
     std::cout << "Initial point not within image domain" << std::endl;
@@ -78,7 +115,8 @@ void BackTrackingMeshFilter< TInputImage, TOutputMesh, TDimension >
   if (input->GetImageDimension() == 3) for(int i=0;i<2;i++) q[i] = p[i];
 
   int numpoints = 0;
-    
+  
+  // Until not reach the end point continue iterating.
   while (!end_reached)
   {
     point[0] = p[0];
@@ -99,6 +137,7 @@ void BackTrackingMeshFilter< TInputImage, TOutputMesh, TDimension >
     vpy = vox_p[1];
     if (input->GetImageDimension() == 3) vpz = vox_p[2];
     
+    // Compute downwind gradient to ensure evolution toward lower intensities
     coord[0] = vpx;
     coord[1] = vpy;
     if (input->GetImageDimension() == 3) coord[2] = vpz;
@@ -165,6 +204,9 @@ void BackTrackingMeshFilter< TInputImage, TOutputMesh, TDimension >
         std::cout << "point not within image domain" << std::endl;
     }
     
+    
+    // Go in the oposite direction of the gradient and towards lower values
+    // Need to multiply the step value to the VoxSize
     if ((Ixp<=Ixm)&&(Ixp<I))
       vx = (I-Ixp)/(step*input->GetSpacing()[0]);
     else
@@ -194,7 +236,8 @@ void BackTrackingMeshFilter< TInputImage, TOutputMesh, TDimension >
     
     nv = sqrt(vx*vx+vy*vy);
     if (input->GetImageDimension() == 3) nv = sqrt(vx*vx+vy*vy+vz*vz);
-        
+
+    // If the gradient is stong enough, normalize it
     if (nv>1E-4)
     {
       vx /= nv;
@@ -203,6 +246,7 @@ void BackTrackingMeshFilter< TInputImage, TOutputMesh, TDimension >
     }
     else
     {
+      // Look fot the minimal over the neighbors
       int xpos = round(vpx);
       int ypos = round(vpy);
       int zpos;
@@ -235,6 +279,7 @@ void BackTrackingMeshFilter< TInputImage, TOutputMesh, TDimension >
       }
       if (minfound)
       {
+        // Move toward the neighbor point with lower intensity
         vx = (xmin-vpx)*input->GetSpacing()[0];
         vy = (ymin-vpy)*input->GetSpacing()[1];
         vz = (zmin-vpz)*input->GetSpacing()[2];
@@ -273,16 +318,18 @@ void BackTrackingMeshFilter< TInputImage, TOutputMesh, TDimension >
     if (input->GetImageDimension() == 3) pos[2] = vox_p[2];
     
     end_reached = !input->GetLargestPossibleRegion().IsInside(pos) || (nv<1E-5) || (distance>m_maxLength) || (closest_point_intensity<0);
+    // Small fix for stopping vessel int CTA challenge
     end_reached = end_reached || (vox_p[0]<0) || (vox_p[1]<0) || (vox_p[2]<0);
   }
 }
 
+// Using for debugging
 template< class TInputImage, class TOutputMesh, unsigned int TDimension >
 void
 BackTrackingMeshFilter<TInputImage, TOutputMesh, TDimension>
 ::PrintSelf(std::ostream& os, Indent indent) const
 {
-	Superclass::PrintSelf(os,indent);
+  Superclass::PrintSelf(os,indent);
 
   os << indent << "startX: " << m_startX << std::endl;
   os << indent << "startY: " << m_startY << std::endl;

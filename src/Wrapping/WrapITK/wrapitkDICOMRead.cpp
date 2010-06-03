@@ -1,3 +1,33 @@
+/*
+    ==================================================
+    Software : AMILab
+    Authors  : Karl Krissian
+               Sara Arencibia
+    Email    : karl@bwh.harvard.edu
+               darkmind@gmail.com
+
+    AMILab is a language for image processing
+    ==================================================
+    Copyright (C) 1996-2005  Karl Krissian
+
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2.1 of the License, or (at your option) any later version.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+    ================================================== 
+   The full GNU Lesser General Public License file is in Devel/Sources/Prog/LesserGPL_license.txt
+*/
+
 #include "AMILabConfig.h"
 
 #ifndef _WITHOUT_ITK_
@@ -107,10 +137,8 @@ InrImage* itkDICOMRead(const std::string& DicomFolder)
   comptype image_component_type = itk::ImageIOBase::UNKNOWNCOMPONENTTYPE;
   typedef   itk::ImageIOBase::IOPixelType ptype;
   ptype image_pixel_type = itk::ImageIOBase::UNKNOWNPIXELTYPE;
-  //typedef itk::GDCMImageIO ImageIOType;
   typedef itk::DICOMImageIO2 ImageIOType;
   ImageIOType::Pointer dicomIO = ImageIOType::New();
-  //typedef itk::GDCMSeriesFileNames NamesGeneratorType;
   typedef itk::DICOMSeriesFileNames NamesGeneratorType;
   NamesGeneratorType::Pointer nameGenerator = NamesGeneratorType::New();
   typedef std::vector< std::string > SeriesIdContainer;
