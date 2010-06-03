@@ -380,6 +380,10 @@ protected:
   wxCheckBox* xyCheck;
   wxCheckBox* xzCheck;
   wxCheckBox* zyCheck;
+  wxComboBox* comboSize;
+  wxComboBox* comboView;
+  wxCheckBox* zoomCheck;
+  int lastView;
   //----------------------------------------------------
   //ImageDraw_X parameters
   // Position parameters
@@ -1807,6 +1811,8 @@ public:
   
   //Create toolbar
   void Create_Toolbar();
+  
+  void RestoreView(wxCommandEvent &event);
   
   //Toolbar callbacks
   void CB_OnPositionClick     (wxCommandEvent &event);
