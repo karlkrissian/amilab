@@ -3,15 +3,16 @@
 # with the command filter
 #
 
+func "Noise/AddRiceNoise.amil"
+
 if (!exists(AddNoiseClass)){
   Class AddNoiseClass {
   #------------------------------------
-  func "Noise/AddRiceNoise.amil"
   
   proc ::Init() {
     ::class_name ="global::AddNoiseClass"
     ::input_name  = "",  "name of input image"
-    ::output_name = "AddNoise_output", "name of output image variable"
+    ::output_name = "global::AddNoise_output", "name of output image variable"
   
     # 0: Additive Gaussian Noise
     # 1: Multiplicative Gaussian Noise

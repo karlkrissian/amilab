@@ -35,7 +35,7 @@ if (!exists(MSEClass)) {
     #----------------------------
     proc ::Close() \
     {
-      ::win.Hide
+      ::win.HidePanel
       delvars GetObjectName(::Close)
     }
     ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -54,9 +54,9 @@ if (!exists(MSEClass)) {
       eval "::input <<="+::input_name+";"
       if (::input_name=="Image") {
         ::input_name = "::input"
-        ::win.update
+        ::win.Update(-1)
       }
-      ::win.update
+      ::win.Update(-1)
       ::CheckInputs()
     }
     
@@ -67,9 +67,9 @@ if (!exists(MSEClass)) {
       eval "::gt <<="+::groundtruth_name+";"
       if (::groundtruth_name=="Image") {
         ::groundtruth_name = "::gt"
-        ::win.update
+        ::win.Update(-1)
       }
-      ::win.update
+      ::win.Update(-1)
       ::CheckInputs()
     }
 
@@ -128,7 +128,7 @@ if (!exists(MSEClass)) {
         ::PSNR = 10*(2*log(255)-log(::MSE))
         ::PSNR_string = "%1%" %::PSNR
 
-        ::win.update
+        ::win.Update(-1)
       } else {
         InfoDialog "You need to load the input and ground truth first"
       }
@@ -154,16 +154,17 @@ if (!exists(MSEClass)) {
     proc ::CreateWindow() {
     
       # parameters window
-      ::win = ParamWin("Quality")
+      import = &global::ami_import;
+      ::win = import->ParamPanel("Quality")
       
-      ::win.BeginBook
+      ::win.BeginBook()
     
         ::win.AddPage("Inputs")
 
           # set the input image
           ::win.BeginBoxPanel("Input")
             ::win.BeginHorizontal
-              ::win.AddImageChoice(::input_name, "")
+              ::win.AddImageChoice( &::input_name, "")
               ::win.AddButton("Load",::LoadInput)
             ::win.EndHorizontal
           ::win.EndBoxPanel
@@ -171,25 +172,25 @@ if (!exists(MSEClass)) {
           # set the input image
           ::win.BeginBoxPanel("Ground truth")
             ::win.BeginHorizontal
-              ::win.AddImageChoice(::groundtruth_name, "")
+              ::win.AddImageChoice( &::groundtruth_name, "")
               ::win.AddButton("Load",::LoadGroundTruth)
             ::win.EndHorizontal
           ::win.EndBoxPanel
 
         ::win.AddPage("Param")
-          ::win.AddInt(::border,"Border",0,20) 
+          ::win.AddInt( &::border,"Border",0,20) 
 
           ::results_panel = ::win.BeginBoxPanel("Results")
             ::runbutton_id = ::win.AddButton("Run",     ::Run)
-            ::win.AddString(::MSE_string, "MSE =")
-            ::win.AddString(::MAE_string, "MAE =")
-            ::win.AddString(::PSNR_string,"PSNR =")
+            ::win.AddString( &::MSE_string, "MSE =")
+            ::win.AddString( &::MAE_string, "MAE =")
+            ::win.AddString( &::PSNR_string,"PSNR =")
           ::win.EndBoxPanel
 
           ::display_panel = ::win.BeginBoxPanel("Display")
             ::win.AddButton("Display images",::Display)
-            ::win.AddBoolean(::display_error_image, "Error Image")
-            ::win.SetCallback(::DisplayErrorImage)
+            ::win.AddBoolean( &::display_error_image, "Error Image")
+            ::win.SetCallback( &::DisplayErrorImage)
           ::win.EndBoxPanel
 
       ::win.EndBook
@@ -199,7 +200,7 @@ if (!exists(MSEClass)) {
         ::win.AddButton("Close All", ::CloseAll)
       ::win.EndHorizontal
       
-      ::win.update
+      ::win.Update(-1)
       ::win.Display
       ::CheckInputs
     }
@@ -223,7 +224,7 @@ if (!exists(mse)) {
     printn "reading image"
     input = Image($1)
     mse->image_name = "input"
-    mse->win.update
+    mse->win.Update(-1)
   }
 
 } else {

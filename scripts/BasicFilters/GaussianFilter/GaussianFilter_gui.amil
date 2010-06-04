@@ -151,7 +151,7 @@ if (!exists(GaussianFilterClass)) {
         ::win.EndHorizontal
         # add html widget
         d = ::win.CurrentParent()
-        ::html = import->wxHtmlWindow(&d)
+        ::html = wx.wxHtmlWindow(&d)
         ::html.LoadFile( ::html_filename)
         ::win.AddWidget(&::html,1)
 

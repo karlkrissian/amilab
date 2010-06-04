@@ -2,16 +2,17 @@
 
 #SetDebugOn
 
+func "Common/ScriptGui"
+
 if (!exists(LevelSetsClass)){
   func "SyntheticImages/AddSphere.amil"
 
-  Class LevelSetsClass {
+  Class LevelSetsClass : public ScriptGui {
   #------------------------------------
     
   //---------------------------------------------------
   proc ::Init(IMAGE _input, IMAGE _init) {
     
-      ::class_name  = "global::LevelSetsClass"
       ::input_name   = "","Name of the input image variable"
       ::initial_name = "","Name of the initial level set image variable"
       # 0: for spheres 1: for initial image
@@ -84,6 +85,7 @@ if (!exists(LevelSetsClass)){
       ::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki/doku.php?id=tutorial-mainalgorithms-levelset#level_set_segmentation"
 
       ::html_filename = GetScriptsDir+"/Segmentation/LevelSets/Doc/levelset_gui/index.html"
+#      ::html_filename = GetScriptsDir+"/Segmentation/LevelSets/Doc/levelset_gui.html"
 
       ::Gui()
   }
@@ -155,6 +157,11 @@ if (!exists(LevelSetsClass)){
       show ::input
     }
     ::load_input.Comments("Copies the input image in a local image member named 'input', and updates the min-max intensities")
+
+   proc ::set_input(IMAGE im) \
+   {
+	::input <<= im
+   }
 
     #-----------------------------------------------
     proc ::UpdateHistogram() \
@@ -315,20 +322,7 @@ if (!exists(LevelSetsClass)){
     pfile.printn "::T               = %1%" % ::T
 
   }
-  #----------------------------
-  proc ::Close() {
-    ::win.HidePanel
-    delvars GetObjectName(::Close)
-  }
-  ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-    
-  #----------------------------
-  proc ::CloseAll() {
-    eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
-    ::Close
-  }
-  ::CloseAll.Comments("Call ::Close() method and delete the class variable")
-      
+
   #------------------------------------
   proc ::SetVelocityField( IMAGE vel, NUM coeff ) {
   
@@ -795,9 +789,9 @@ if (!exists(LevelSetsClass)){
                 ::win.AddBoolean( &::accept_high_intensity,"Accept high intensities")
                 # add a Curve Drawing Window
                 ::dw = import->wxDrawingWindow(::win.CurrentParent())
-                ::dw.SetMinSize(import->wxSize(50,100))
+                ::dw.SetMinSize(wx.wxSize(50,100))
                 ::dw.SetBackgroundColour(\
-                    import->wxColour(255,255,255))
+                    wx.wxColour(255,255,255))
                 ::win.AddWidget(&::dw,0)
 
               ::imexp_page = ::win.AddPage("Image")
@@ -879,26 +873,12 @@ if (!exists(LevelSetsClass)){
         ::win.EndHorizontal
         ::win.EndBoxPanel
   
-      ::win.AddPage("Help")
-        ::win.BeginHorizontal
-          ::win.AddButton("Wiki",   ::LaunchWiki)
-          ::win.AddButton("Home",   ::HtmlHome)
-          ::win.AddButton("<--",    ::HtmlBack)
-          ::win.AddButton("-->",    ::HtmlForward)
-        ::win.EndHorizontal
-        # add html widget
-        d = ::win.CurrentParent()
-        ::html = import->wxHtmlWindow(&d)
-        ::html.LoadFile( ::html_filename)
-        ::win.AddWidget(&::html,1)
+      ::AddHelpPage(&::win)
 
   
     ::win.EndBook
   
-    ::win.BeginHorizontal
-      ::win.AddButton("Close",          ::Close)
-      ::win.AddButton("Close All",          ::CloseAll)
-    ::win.EndHorizontal  
+    ::AddStandardButtons(&::win)
 
     ::win.Update(-1)
     ::win.Display()

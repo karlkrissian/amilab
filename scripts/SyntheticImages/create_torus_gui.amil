@@ -30,7 +30,7 @@ if (!exists(CTClass)) {
       ::image_name = "global::torus", "Name of the resulting image variable"
       ::Gui
     }
-    
+
     #----------------------------
     proc ::Close() {
       ::win.HidePanel
@@ -94,6 +94,10 @@ printn "deleting windows"
     ::dimy = ::dimx
     ::dimz = 2*::r+::margin
     ::win.Update(-1)
+  }
+
+  proc ::GetOutput() {
+    eval "return = "+::image_name+";"
   }
 
   proc ::Show() {
