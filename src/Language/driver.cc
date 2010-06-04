@@ -409,13 +409,16 @@ void Driver::yyiperror(const char *s)
 //           ---------
 {
   string tmpstr;
-  if (yyiplineno) {
-    tmpstr = str(format("%s:%d\t %s \n\t ==> at '%s'  \n")
-      %this->current_file.c_str()
-      %this->yyiplineno
-      %s
-      %this->lexer->YYText()
-    );
+  if ((yyiplineno)&&(this->lexer)) {
+    const char* text = this->lexer->YYText();
+    if (text) {
+      tmpstr = str(format("%s:%d\t %s \n\t ==> at '%s'  \n")
+        %this->current_file.c_str()
+        %this->yyiplineno
+        %s
+        %text
+      );
+    } else tmpstr = str(format("%s \n")%s);
     err_print(tmpstr.c_str());
   } else {
     tmpstr = str(format("%s \n")%s);

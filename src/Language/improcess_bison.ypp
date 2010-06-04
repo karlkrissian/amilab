@@ -1443,10 +1443,13 @@ command:
         BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
         // check counter of the value, not of the variable ...
         if (var.get() && (var->GetPtrCounter()>0) ) {
+          cout << "GetPtrCounter == " <<  var->GetPtrCounter()<< endl;
+          cout << "use_count() == " <<  var.use_count() << endl;
           if (var->GetPtrCounter()==1) {
-            //cout << "GetPtrCounter == 1" << endl;
             IdentifierInfo::ptr ident($1);
-            Vars.AddVar(ident,var);
+            BasicVariable::ptr ref = var->NewReference();
+            // need to run on reference to avoid renaming the own variable !!!
+            Vars.AddVar(ident,ref);
           } else
           {
             BasicVariable::ptr copy = var->NewCopy();
@@ -2060,8 +2063,11 @@ command:
           varim->Name().c_str());
 
         }
-        |  SHOW var_surface
+        |  SHOW VAR_AMI_OBJECT
         {
+          /**
+            Description: rule to show a surface, since surface has moved to object wrapping
+          **/
           GET_VARSTACK_VAR_OBJECT(SurfacePoly,surfvar,surf)
           string    titre;
           Viewer3D::ptr surfdraw;
@@ -4112,7 +4118,7 @@ command:
           sdraw->GetCanvas()->UserRotate($5,$7,$9);
           sdraw->Paint();
         }
-        | VAR_SURFDRAW T_POINT T_addobj T_OP_PAR var_surface T_CL_PAR
+        | VAR_SURFDRAW T_POINT T_addobj T_OP_PAR VAR_AMI_OBJECT T_CL_PAR
         {
           GET_VARSTACK_OBJECT(SurfacePoly,surf)
           GET_VARSTACK_VALUE(Viewer3D,sdraw);
@@ -4120,7 +4126,7 @@ command:
           sdraw->GetCanvas()->AddSurface(surf);
           sdraw->Paint();
         }
-        | VAR_SURFDRAW ADD_ASSIGN var_surface
+        | VAR_SURFDRAW ADD_ASSIGN VAR_AMI_OBJECT
         {
           GET_VARSTACK_OBJECT(SurfacePoly,surf)
           GET_VARSTACK_VALUE(Viewer3D,   sdraw);
@@ -4128,7 +4134,7 @@ command:
           sdraw->GetCanvas()->AddSurface( surf);
           //sdraw->Paint();
         }
-        | VAR_SURFDRAW SUB_ASSIGN var_surface
+        | VAR_SURFDRAW SUB_ASSIGN VAR_AMI_OBJECT
         {
           GET_VARSTACK_OBJECT(SurfacePoly,surf)
           GET_VARSTACK_VALUE(Viewer3D,   sdraw);
@@ -4136,7 +4142,7 @@ command:
           sdraw->GetCanvas()->RemoveSurface(surf);
           sdraw->Paint();
         }
-        | VAR_SURFDRAW T_POINT T_Remove T_OP_PAR var_surface T_CL_PAR
+        | VAR_SURFDRAW T_POINT T_Remove T_OP_PAR VAR_AMI_OBJECT T_CL_PAR
         {
           /**
             Description: Removes the surface without swapping the 3D buffer
@@ -9040,7 +9046,7 @@ image:
           fprintf(stderr,"only UCHAR format for now \n");
         }
     |
-    T_LineRecons T_OP_PAR var_surface T_COMMA var_image T_COMMA expr_image T_CL_PAR
+    T_LineRecons T_OP_PAR VAR_AMI_OBJECT T_COMMA var_image T_COMMA expr_image T_CL_PAR
     {
     /**
     Parameters:
@@ -9059,7 +9065,7 @@ image:
       ADD_VARSTACK_PTR(InrImage,res);
     }
     |
-    T_ReadCTALineRadii T_OP_PAR var_surface T_COMMA expr_string T_CL_PAR
+    T_ReadCTALineRadii T_OP_PAR VAR_AMI_OBJECT T_COMMA expr_string T_CL_PAR
     {
     /**
     Parameters:
@@ -9081,11 +9087,29 @@ image:
 
 image_variable:
   image
+/*
+  {
+    /**
+      Description: convert the pointer to an image in im_stack to a pointer to a image variable in var_stack
+      TODO: get completely rid of im_stack later ...
+    **
+    // IT IS IMPORTANT TO KEEP CREATING A NEW VARIABLE HERE, TO INCREASE THE SMT PTR COUNTER FOR ASSIGNMENT RULE !!!
+    BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar(var->NewReference());
+  }
+*/
   ;
 
 surface_variable:
   var_surface
-  ;
+  {
+    /**
+      Description:
+    **/
+    // IT IS IMPORTANT TO KEEP CREATING A NEW VARIABLE HERE, TO INCREASE THE SMT PTR COUNTER FOR ASSIGNMENT RULE !!!
+    BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
+    driver.var_stack.AddVar(var->NewReference());
+  };
 
 string_variable:
   VAR_STRING
@@ -9987,7 +10011,7 @@ surface:
       delete crestlines;
     }
     |
-    T_vtkDecimate T_OP_PAR var_surface T_CL_PAR
+    T_vtkDecimate T_OP_PAR VAR_AMI_OBJECT T_CL_PAR
     {
       GET_VARSTACK_OBJECT(SurfacePoly,varsurf)
       SurfacePoly* surf;
@@ -9996,7 +10020,7 @@ surface:
       driver.var_stack.AddVar(res);
     }
     |
-    T_vtkDecimate T_OP_PAR var_surface T_COMMA expr T_CL_PAR
+    T_vtkDecimate T_OP_PAR VAR_AMI_OBJECT T_COMMA expr T_CL_PAR
     {
       SurfacePoly* newsurf;
       GET_VARSTACK_OBJECT(SurfacePoly,varsurf)
@@ -10015,7 +10039,7 @@ surface:
       driver.var_stack.AddVar(res);
     }
     |
-    T_vtkSmooth T_OP_PAR var_surface T_COMMA expr T_CL_PAR
+    T_vtkSmooth T_OP_PAR VAR_AMI_OBJECT T_COMMA expr T_CL_PAR
     {
       SurfacePoly* newsurf;
       GET_VARSTACK_OBJECT(SurfacePoly,surf)
@@ -10025,7 +10049,7 @@ surface:
       driver.var_stack.AddVar(res);
     }
     |
-    T_vtkWindowedSinc T_OP_PAR var_surface T_COMMA expr T_CL_PAR
+    T_vtkWindowedSinc T_OP_PAR VAR_AMI_OBJECT T_COMMA expr T_CL_PAR
     {
       GET_VARSTACK_OBJECT(SurfacePoly,surf)
       SurfacePoly* newsurf;
@@ -10110,7 +10134,7 @@ surface:
         }
     }
     |
-    T_SmoothLines T_OP_PAR var_surface  T_CL_PAR
+    T_SmoothLines T_OP_PAR VAR_AMI_OBJECT T_CL_PAR
     {
     /**
     Parameters:
@@ -10140,7 +10164,7 @@ surface:
       }
     }
     |
-    T_SmoothLines T_OP_PAR var_surface  T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
+    T_SmoothLines T_OP_PAR VAR_AMI_OBJECT  T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
     {
     /**
     Parameters:
@@ -10169,7 +10193,7 @@ surface:
       }
     }
     |
-    T_ResampleLines T_OP_PAR var_surface T_COMMA expr  T_CL_PAR
+    T_ResampleLines T_OP_PAR VAR_AMI_OBJECT T_COMMA expr  T_CL_PAR
     {
       GET_VARSTACK_OBJECT(SurfacePoly,insurf)
       SurfacePoly* surf;
@@ -10186,7 +10210,7 @@ surface:
       }
     }
     |
-    T_ShortestPath T_OP_PAR var_surface T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA
+    T_ShortestPath T_OP_PAR VAR_AMI_OBJECT T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA
                                        expr T_COMMA expr T_COMMA expr T_CL_PAR
     {
     /**

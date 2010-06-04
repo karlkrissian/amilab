@@ -8,14 +8,15 @@
 # type:
 #  0: superquadric
 #
+func "Common/ScriptGui"
+
 if (!exists(ParametricSurfaceClass)) {
-  Class ParametricSurfaceClass {
+  Class ParametricSurfaceClass  : public ScriptGui{
 
   #---------------------------------------------
   proc ::Init() \
   {
     
-    ::class_name = "global::ParametricSurfaceClass"
     # resolution
     ::theta_dim = INT(100)
     ::phi_dim   = INT(100)
@@ -59,23 +60,6 @@ if (!exists(ParametricSurfaceClass)) {
     
   }
 
-    #----------------------------------------------------------
-   
-  proc ::Close() \
-  {
-    ::win.HidePanel
-    delvars GetObjectName(::Close)
-  }
-  Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-    
-    #----------------------------
-    
-  proc ::CloseAll() \
-  {
-    eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
-    ::Close
-  }
-  Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
     
   #------------------------------------
 
@@ -119,6 +103,7 @@ if (!exists(ParametricSurfaceClass)) {
 
   proc ::Update() \
   {
+  
     if (::updating==0) {
       ::updating = 1
       if (!exists(::pos)) {
@@ -161,7 +146,12 @@ if (!exists(ParametricSurfaceClass)) {
 
       # 2: User´s equation
       if (::type==2) {
+        printn "max(::theta) = %1%" % max(::theta)
+        printn "exists U = %1%" % exists(U) 
+        TraceParsing 1
         U = ::theta
+        TraceParsing 0
+        printn "max(::theta) = %1%" % max(::theta)
         V = ::phi
         k = ::k
         eval "::pos.SetComponent(0, "+::X+");"
@@ -178,7 +168,13 @@ if (!exists(ParametricSurfaceClass)) {
 
 #printn "5"
       # parameter 0 invert normals
-      ::s = CreateFlatMesh(::theta>-1,0)
+        printn max(::theta)
+      ::s = \
+        CreateFlatMesh\
+        (\
+          ::theta>-1,\
+          0\
+          )
       if (exists(::mesh_colors)) {
         printn "Set Mesh Colors"
         ::s.SetColors(::mesh_colors)
@@ -377,19 +373,22 @@ if (!exists(ParametricSurfaceClass)) {
         ::win.EndHorizontal
 
     ::win.EndBook
-        ::win.BeginHorizontal
-          scripts_dir = GetScriptsDir
 
-          upim = wx.wxImage(scripts_dir+"/Bitmaps/update_icon_32.png")
-          upbmp = wx.wxBitmap(upim)
-          ::win.AddBitmapButton("Update", ::Update, upbmp)
+    ::AddStandardButtons(&::win)
 
-          closeim = wx.wxImage(scripts_dir+"/Bitmaps/close_icon_32.png")
-          closebmp = wx.wxBitmap(closeim)
-          ::win.AddBitmapButton("Close", ::Close, closebmp )
+#        ::win.BeginHorizontal
+#          scripts_dir = GetScriptsDir
 
-          ::win.AddButton("Close All",          ::CloseAll)
-        ::win.EndHorizontal
+#          upim = wx.wxImage(scripts_dir+"/Bitmaps/update_icon_32.png")
+#          upbmp = wx.wxBitmap(upim)
+#          ::win.AddBitmapButton("Update", ::Update, upbmp)
+
+#          closeim = wx.wxImage(scripts_dir+"/Bitmaps/close_icon_32.png")
+#          closebmp = wx.wxBitmap(closeim)
+#          ::win.AddBitmapButton("Close", ::Close, closebmp )
+
+#          ::win.AddButton("Close All",          ::CloseAll)
+#        ::win.EndHorizontal
     ::win.Update(-1)
     ::win.Display
   }
