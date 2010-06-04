@@ -226,17 +226,43 @@ void CB_update_imagelist( void* imagelist_gui);
     \brief Gets the smart pointer to the wrapped object  (of type WrapClass_type) included in an AMIObject variable, taken from the stack of variables.
 */
 #define GET_VARSTACK_OBJECT(type, obj) \
-  Variable<AMIObject>::ptr objvar( \
+  boost::shared_ptr<type > obj; \
+  {\
+    Variable<AMIObject>::ptr objvar( \
+      driver.var_stack.GetLastVar<AMIObject>()); \
+    if (!objvar.get()) {  \
+      driver.yyiperror(" Expecting an AMIObject variable."); \
+      YYABORT; \
+    } \
+    WrapClassBase::ptr wrap_base( objvar->Pointer()->GetWrappedObject()); \
+    WrapClass_##type::ptr wobj( boost::dynamic_pointer_cast<WrapClass_##type>(wrap_base));\
+    if (!wobj.get()) {  \
+      driver.yyiperror((boost::format(" Expecting an AMIObject variable of type %1%.")%(#type)).str().c_str()); \
+      YYABORT; \
+    } \
+    obj = wobj->_obj; \
+  }
+
+
+/*! \def GET_VARSTACK_VAR_OBJECT
+    \brief Gets the smart pointer to the wrapped object  (of type WrapClass_type) included in an AMIObject variable, taken from the stack of variables, and also the smart pointer to the variable.
+*/
+#define GET_VARSTACK_VAR_OBJECT(type, varname, obj) \
+  Variable<AMIObject>::ptr varname( \
     driver.var_stack.GetLastVar<AMIObject>()); \
-  if (!objvar.get()) {  \
+  if (!varname.get()) {  \
     driver.yyiperror(" Expecting an AMIObject variable."); \
     YYABORT; \
   } \
-  WrapClassBase::ptr wrap_base( objvar->Pointer()->GetWrappedObject()); \
-  WrapClass_##type::ptr wobj( boost::dynamic_pointer_cast<WrapClass_##type>(wrap_base));\
-  if (!wobj.get()) {  \
-    driver.yyiperror((boost::format(" Expecting an AMIObject variable of type %1%.")%(#type)).str().c_str()); \
-    YYABORT; \
+  WrapClass_##type::ptr wobj;\
+  {\
+    WrapClassBase::ptr wrap_base( varname->Pointer()->GetWrappedObject()); \
+    wobj =  boost::dynamic_pointer_cast \
+                <WrapClass_##type>(wrap_base);\
+    if (!wobj.get()) {  \
+      driver.yyiperror((boost::format(" Expecting an AMIObject variable of type %1%.")%(#type)).str().c_str()); \
+      YYABORT; \
+    } \
   } \
   boost::shared_ptr<type > obj(wobj->_obj);
 
@@ -251,11 +277,14 @@ void CB_update_imagelist( void* imagelist_gui);
     driver.yyiperror(" Expecting an AMIObject variable."); \
     YYABORT; \
   } \
-  WrapClassBase::ptr wrap_base( objvar->Pointer()->GetWrappedObject()); \
-  WrapClass_##wtype::ptr wobj( boost::dynamic_pointer_cast<WrapClass_##wtype>(wrap_base));\
-  if (!wobj.get()) {  \
-    driver.yyiperror((boost::format(" Expecting an AMIObject variable of type %1%.")%(#type)).str().c_str()); \
-    YYABORT; \
+  WrapClass_##wtype::ptr wobj; \
+  { \
+    WrapClassBase::ptr wrap_base( objvar->Pointer()->GetWrappedObject()); \
+    wobj =  boost::dynamic_pointer_cast<WrapClass_##wtype>(wrap_base);\
+    if (!wobj.get()) {  \
+      driver.yyiperror((boost::format(" Expecting an AMIObject variable of type %1%.")%(#type)).str().c_str()); \
+      YYABORT; \
+    } \
   } \
   boost::shared_ptr<type > obj(wobj->_obj);
 
@@ -498,7 +527,7 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_AnisoNRAD
 %token T_AnisoRudinMult
 %token TInit TIterate TEnd TAddGaussNoise T_SNR
-%token T_info T_NbPoints T_NbPolys
+%token T_info
 %token T_save
 %token T_normalize
 %token T_OrientField
@@ -538,8 +567,6 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_Skeleton2lines
 %token T_SmoothLines
 %token T_ResampleLines
-%token T_RemoveLine
-%token T_ConnectLines
 %token T_threscross
 %token T_IsocontourPoints
 %token T_IsosurfDist
@@ -549,12 +576,9 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_PathFromDispl
 %token T_PathFromVectField
 %token T_LineRecons
-%token T_GetNumberOfLines
-%token T_GetLine
 
 %token T_ReadCTALine
 %token T_ReadCTALineRadii
-%token T_WriteCTALine
 
 %token T_SetIsoContour
 %token T_SetIsoContourParam
@@ -599,7 +623,7 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_isoarea2D T_posarea
 
 %token T_isosurf T_isosurf_inv T_isosurf_ijk T_isosurf_ras
-%token T_vtkDecimate T_vtkMarchingCubes T_vtkSmooth T_Recompute
+%token T_vtkDecimate T_vtkMarchingCubes T_vtkSmooth 
 %token T_vtkWindowedSinc
 
 %token T_isoline
@@ -609,11 +633,9 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_getimage
 %token T_GetImageFromX
 %token T_rotate
-%token T_computeCC T_drawCC T_setminCC
+%token T_computeCC T_drawCC
 %token T_addobj T_setcurrentobj
 %token T_writeVRML T_writeVTK
-%token T_OwnMaterial T_SetColor T_SetColors
-%token T_SetColorOpacity
 %token T_Paint
 %token T_SetLight T_SetLightPos
 %token T_SetLightAmbient T_SetLightDiffuse T_SetLightSpecular
@@ -623,27 +645,8 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_Remove
 %token T_SwapBuffers
 
-%token T_SetAmbient
-%token T_SetDiffuse
-%token T_SetSpecular
-%token T_SetShininess
-%token T_SetOpacity
 %token T_SetOpacityImage
-%token T_SetVisible
-%token T_SetColorMaterial
 
-%token T_Statistics T_GetIntensities
-%token T_GetLinesLength
-%token T_GetLinesExtremities
-%token T_GetConnections
-%token T_SelectLines
-%token T_RemoveSelection
-%token T_mergepoints T_Triangulate T_Displace T_Normals T_InvertNormals
-%token T_Translate
-%token T_Scale
-%token T_SetPointsColors
-%token T_SetLineWidth
-%token T_AddPoint T_NewLine T_EndLine T_LineAddPointNumber
 %token T_GetTransform T_SetTransform
 %token T_Interpolate
 
@@ -750,7 +753,6 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_vtkCreateFlatMesh
 %token T_Altitude2Position
 %token T_GeoCoordinates
-%token T_ElevateMesh
 %token T_CreateVectors
 %token T_CreateVectorsFromField
 %token T_Set3DArrowParam
@@ -1680,12 +1682,12 @@ command:
           else
             driver.err_print("assignment of NULL surface\n");
         }
+/*
         |
         var_surface LEFT_ASSIGN surface
         {
-          GET_VARSTACK_VAR_VAL(SurfacePoly,var,val)
-
-          SurfacePoly::ptr surfptr( driver.surf_stack.GetLastSurf());
+          GET_VARSTACK_OBJECT(SurfacePoly,surfptr)
+          GET_VARSTACK_VAR_OBJECT(SurfacePoly,var,val)
 
           // instead of deleting and creating,
           // replace the pointer and the information
@@ -1698,6 +1700,7 @@ command:
             driver.err_print("assignment of NULL surface\n");
 
         }
+*/
         |
         VAR_ARRAY_SURFACE LEFT_ASSIGN T_Surface T_OP_BR expr T_CL_BR
         {
@@ -2059,7 +2062,7 @@ command:
         }
         |  SHOW var_surface
         {
-          GET_VARSTACK_VAR_VAL(SurfacePoly,surfvar,surf)
+          GET_VARSTACK_VAR_OBJECT(SurfacePoly,surfvar,surf)
           string    titre;
           Viewer3D::ptr surfdraw;
           BasicVariable::ptr var;
@@ -3327,26 +3330,6 @@ command:
           o->GetContext()->display();
     */
         }
-/*
-        | var_surface T_POINT T_info
-        {
-          GET_VARSTACK_VAR_VAL(SurfacePoly,var,s);
-    
-          std::string tmp_string;
-          tmp_string = (boost::format(" %s: %d points %d lines %d polygons  \n")
-            % var->Name()
-            % s->GetNumberOfPoints()
-            % s->GetNumberOfLines()
-            % s->GetNumberOfPolys ()
-            ).str();
-          driver.res_print(tmp_string);
-          tmp_string = (boost::format(" limits X:[%4.2f %4.2f] Y:[%4.2f %4.2f]  Z:[%4.2f %4.2f]  \n")
-            % s->_xmin % s->_xmax
-            % s->_ymin % s->_ymax
-            % s->_zmin % s->_zmax).str();
-          driver.res_print(tmp_string);
-        }
-*/
         | var_image T_POINT T_initvalue T_OP_PAR expr T_CL_PAR
         {
         /**
@@ -5727,22 +5710,6 @@ float_variable:
       float val = im->ValeurBuffer();
       ADD_VARSTACK_FLOAT(val);
     }
-/*
-    |
-    var_surface T_POINT T_NbPoints
-    {
-      GET_VARSTACK_VALUE(SurfacePoly,s);
-      float val = s->GetNumberOfPoints();
-      ADD_VARSTACK_FLOAT(val);
-    }
-    |
-    var_surface T_POINT T_NbPolys
-    {
-      GET_VARSTACK_VALUE(SurfacePoly,s);
-      float val = s->GetNumberOfPolys();
-      ADD_VARSTACK_FLOAT(val);
-    }
-*/
     |
     T_SNR T_OP_PAR var_image  T_COMMA var_image T_CL_PAR
     {
@@ -6319,20 +6286,6 @@ float_variable:
       (*st) = res;
       ADD_VARSTACK_FLOAT(val);
     }
-/*
-    | var_surface T_POINT T_GetNumberOfLines 
-    {
-    /**
-      Parameters:
-        - input polydata
-      Description: 
-        Returns the number of lines of the polydata structure
-    **
-      GET_VARSTACK_VALUE(SurfacePoly,s);
-      float val = s->GetNumberOfLines(  );
-      ADD_VARSTACK_FLOAT(val);
-    }
-*/
     ;
 
 
@@ -8978,90 +8931,6 @@ image:
 
       ADD_VARSTACK_PTR(InrImage,res);
     }
-/*
-    | var_surface T_POINT T_GetLinesLength T_OP_PAR   T_CL_PAR
-    {
-      GET_VARSTACK_VALUE(SurfacePoly,s);
-
-      InrImage::ptr res ( s->GetImageLinesLength(  ));
-      ADD_VARSTACK_PTR(InrImage,res);
-    }
-    | var_surface T_POINT T_GetLine T_OP_PAR expr  T_CL_PAR
-    {
-      /**
-        Parameters:
-          - input polydata
-          - line number
-        Description:
-          Get the points of the given line as a vectorial 1D image of 
-          the point positions.
-      **
-      InrImage::ptr         res;
-      GET_VARSTACK_VAR_VAL(SurfacePoly,var,s);
-      int linenumber = (int) $5;
-      
-      if ((linenumber>=0)&&(linenumber<s->GetNumberOfLines())) {
-        T_Line line=s->GetLine(linenumber);
-        if (line.NbElts()>0) {
-          // Create the image
-          res = InrImage::ptr(new InrImage(line.NbElts(),1,1,3,WT_FLOAT,
-            (boost::format("%1%_line%2%") 
-              % var->Name()
-              % linenumber
-            ).str().c_str()));
-          // fill it with the point positions
-          for(int n=0;n<line.NbElts();n++) {
-            res->BufferPos(n,0,0);
-            Point_3D<float>  pt = s->GetPoint(line[n]).pt;
-            res->VectFixeValeurs( pt.X(),pt.Y(),pt.Z());
-          }
-          ADD_VARSTACK_PTR(InrImage,res);
-        } else
-          driver.err_print((boost::format("Line %1% has no point.") % linenumber).str());
-      } else {
-        driver.err_print("Invalid line number.");
-      }
-
-    }
-    | var_surface T_POINT T_GetLinesExtremities T_OP_PAR   T_CL_PAR
-    {
-    /**
-      Parameters:
-        - input polydata containing lines
-      Description:
-        Returns an image Mx2 where M is the number of lines and 
-        containing the point id of the 2 extremities of each 
-        line
-    **
-      GET_VARSTACK_VALUE(SurfacePoly,s);
-
-      InrImage::ptr res ( s->GetImageLinesExtremities(  ));
-      ADD_VARSTACK_PTR(InrImage,res);
-    }
-    | var_surface T_POINT T_GetConnections T_OP_PAR   T_CL_PAR
-    {
-    /**
-      Parameters:
-        - input polydata containing lines
-      Description:
-        Get the number of lines connected to each point.
-        The result is given as a 1D image of size the total
-        number of points of the polydata
-    **
-
-      GET_VARSTACK_VALUE(SurfacePoly,s);
-      InrImage::ptr res ( s->GetImageConnections(  ));
-      ADD_VARSTACK_PTR(InrImage,res);
-    }
-    | var_surface T_POINT T_GetIntensities T_OP_PAR var_image  T_CL_PAR
-    {
-      GET_VARSTACK_VALUE(InrImage,im);
-      GET_VARSTACK_VALUE(SurfacePoly,s);
-
-      InrImage::ptr res ( s->GetIntensities( im.get() ));
-      ADD_VARSTACK_PTR(InrImage,res);
-    }
-*/
     | T_Altitude2Position T_OP_PAR expr_image T_COMMA expr  T_CL_PAR
     {
       GET_VARSTACK_VALUE(InrImage,im);
@@ -9214,6 +9083,9 @@ image_variable:
   image
   ;
 
+surface_variable:
+  var_surface
+  ;
 
 string_variable:
   VAR_STRING
@@ -9254,6 +9126,8 @@ primary_var:
       float_variable
     |
       image_variable
+    |
+      surface_variable
     |
       string_variable
     |
@@ -10022,6 +9896,9 @@ var_surface:
 
           driver.var_stack.AddVar(array->GetVar(i));
         }
+        |
+        surface
+        ;
 
 
 surface:

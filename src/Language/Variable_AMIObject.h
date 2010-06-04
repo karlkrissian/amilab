@@ -146,5 +146,12 @@ template<> BasicVariable::ptr Variable<AMIObject>::TernaryCondition(const BasicV
 template<> BasicVariable::ptr Variable<AMIObject>::operator =(const BasicVariable::ptr& b);
 */
 
+/**
+ * Defines operator <<= for each object type, normally, it tries to force the assignation.
+ * @param b 
+ * @return 
+ */
+template<> BasicVariable::ptr Variable<AMIObject>::left_assign(const BasicVariable::ptr& b);
+
 #endif 
 // _Variable_AMIObject_h_

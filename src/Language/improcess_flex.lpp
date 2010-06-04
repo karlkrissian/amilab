@@ -453,8 +453,6 @@ median            return(token::T_MEDIAN); /*{median,T_MEDIAN}*/
 sum               return(token::T_SUM); /*{sum,T_SUM}*/
 
 info              return(token::T_info); /*{info,T_info}*/
-NbPoints          return(token::T_NbPoints); /*{NbPoints,T_NbPoints}*/
-NbPolys           return(token::T_NbPolys); /*{NbPolys,T_NbPolys}*/
 
 
 Xpos              return(token::T_Xpos); /*{Xpos,T_Xpos}*/
@@ -511,7 +509,6 @@ posarea           return(token::T_posarea); /*{posarea,T_posarea}*/
 
 ReadCTALine      return(token::T_ReadCTALine); /*{ReadCTALine,T_ReadCTALine}*/
 ReadCTALineRadii return(token::T_ReadCTALineRadii); /*{ReadCTALineRadii,T_ReadCTALineRadii}*/
-WriteCTALine     return(token::T_WriteCTALine); /*{WriteCTALine,T_WriteCTALine}*/
 
 isosurf           return(token::T_isosurf); /*{isosurf,T_isosurf}*/
 isosurf_inv       return(token::T_isosurf_inv); /*{isosurf_inv,T_isosurf_inv}*/
@@ -525,11 +522,6 @@ vtkWindowedSinc   return(token::T_vtkWindowedSinc); /*{vtkWindowedSinc,T_vtkWind
 
 isoline           return(token::T_isoline); /*{isoline,T_isoline}*/
 
-AddPoint           return(token::T_AddPoint); /*{AddPoint,T_AddPoint}*/
-NewLine            return(token::T_NewLine); /*{NewLine,T_NewLine}*/
-EndLine            return(token::T_EndLine); /*{EndLine,T_EndLine}*/
-LineAddPointNumber return(token::T_LineAddPointNumber); /*{LineAddPointNumber,T_LineAddPointNumber}*/
-
 vtkDist           return(token::T_vtkDist); /*{vtkDist,T_vtkDist}*/
 AndreDist         return(token::T_AndreDist); /*{AndreDist,T_AndreDist}*/
 
@@ -540,7 +532,6 @@ OrientationRatio  return(token::T_OrientationRatio); /*{OrientationRatio,T_Orien
 
 computeCC         return(token::T_computeCC); /*{computeCC,T_computeCC}*/
 drawCC            return(token::T_drawCC); /*{drawCC,T_drawCC}*/
-setminCC          return(token::T_setminCC); /*{setminCC,T_setminCC}*/
 Paint             return(token::T_Paint); /*{Paint,T_Paint}*/
 SetLight          return(token::T_SetLight); /*{SetLight,T_SetLight}*/
 SetLightPos       return(token::T_SetLightPos); /*{SetLightPos,T_SetLightPos}*/
@@ -552,43 +543,14 @@ SetBackground     return(token::T_SetBackground); /*{SetBackground,T_SetBackgrou
 Normalize         return(token::T_Normalize); /*{Normalize,T_Normalize}*/
 Center            return(token::T_Center);    /*{Center,T_Center}*/
 
-OwnMaterial         return(token::T_OwnMaterial); /*{OwnMaterial,T_OwnMaterial}*/
-SetColor            return(token::T_SetColor); /*{SetColor,T_SetColor}*/
-SetColorOpacity     return(token::T_SetColorOpacity); /*{SetColorOpacity,T_SetColorOpacity}*/
-SetColors           return(token::T_SetColors); /*{SetColors,T_SetColors}*/
-SetPointsColors     return(token::T_SetPointsColors); /*{SetPointsColors,T_SetPointsColors}*/
-GetLinesLength      return(token::T_GetLinesLength); /*{GetLinesLength,T_GetLinesLength}*/
-GetLinesExtremities return(token::T_GetLinesExtremities); /*{GetLinesExtremities,T_GetLinesExtremities}*/
-GetConnections      return(token::T_GetConnections); /*{GetConnections,T_GetConnections}*/
-SelectLines         return(token::T_SelectLines); /*{SelectLines,T_SelectLines}*/
-RemoveSelection     return(token::T_RemoveSelection); /*{RemoveSelection,T_RemoveSelection}*/
-GetIntensities      return(token::T_GetIntensities); /*{GetIntensities,T_GetIntensities}*/
-Statistics          return(token::T_Statistics); /*{Statistics,T_Statistics}*/
-
-SetAmbient          return(token::T_SetAmbient); /*{SetAmbient,T_SetAmbient}*/
-SetDiffuse          return(token::T_SetDiffuse); /*{SetDiffuse,T_SetDiffuse}*/
-SetSpecular         return(token::T_SetSpecular); /*{SetSpecular,T_SetSpecular}*/
-SetShininess        return(token::T_SetShininess); /*{SetShininess,T_SetShininess}*/
-SetOpacity          return(token::T_SetOpacity); /*{SetOpacity,T_SetOpacity}*/
 SetOpacityImage     return(token::T_SetOpacityImage); /*{SetOpacityImage,T_SetOpacityImage}*/
-SetColorMaterial    return(token::T_SetColorMaterial); /*{SetColorMaterial,T_SetColorMaterial}*/
-SetVisible          return(token::T_SetVisible); /*{SetVisible,T_SetVisible}*/
 
 PrintMatrices     return(token::T_PrintMatrices); /*{PrintMatrices,T_PrintMatrices}*/ // print the matrices of Viewer3D class
 
 AddObject         return(token::T_addobj); /*{AddObject,T_addobj}*/
 SetCurrentObj     return(token::T_setcurrentobj); /*{SetCurrentObj,T_setcurrentobj}*/
 
-SetLineWidth      return(token::T_SetLineWidth); /*{SetLineWidth,T_SetLineWidth}*/
 
-MergePoints       return(token::T_mergepoints); /*{MergePoints,T_mergepoints}*/
-Triangulate       return(token::T_Triangulate); /*{Triangulate,T_Triangulate}*/
-Displace          return(token::T_Displace); /*{Displace,T_Displace}*/
-Translate         return(token::T_Translate); /*{Translate,T_Translate}*/
-Scale             return(token::T_Scale); /*{Scale,T_Scale}*/
-Normals           return(token::T_Normals); /*{Normals,T_Normals}*/
-InvertNormals     return(token::T_InvertNormals); /*{InvertNormals,T_InvertNormals}*/
-Recompute         return(token::T_Recompute); /*{Recompute,T_Recompute}*/
 GetTransform      return(token::T_GetTransform); /*{GetTransform,T_GetTransform}*/
 SetTransform      return(token::T_SetTransform); /*{SetTransform,T_SetTransform}*/
 
@@ -604,10 +566,6 @@ OrientPositive    return(token::T_OrientPositive); /*{OrientPositive,T_OrientPos
 
 Skeleton2lines    return(token::T_Skeleton2lines); /*{Skeleton2lines,T_Skeleton2lines}*/
 SmoothLines       return(token::T_SmoothLines);  /*{SmoothLines,T_SmoothLines}*/
-RemoveLine        return(token::T_RemoveLine);   /*{RemoveLine,T_RemoveLine}*/
-GetNumberOfLines  return(token::T_GetNumberOfLines); /*{GetNumberOfLines,T_GetNumberOfLines}*/
-GetLine           return(token::T_GetLine); /*{GetLine,T_GetLine}*/
-ConnectLines      return(token::T_ConnectLines); /*{ConnectLines,T_ConnectLines}*/
 ResampleLines     return(token::T_ResampleLines); /*{ResampleLines,T_ResampleLines}*/
 ShortestPath      return(token::T_ShortestPath); /*{ShortestPath,T_ShortestPath}*/
 ShortestPathImage return(token::T_ShortestPathImage); /*{ShortestPathImage,T_ShortestPathImage}*/
@@ -696,7 +654,6 @@ vtkCreateFlatMesh return(token::T_vtkCreateFlatMesh); /*{vtkCreateFlatMesh,T_vtk
 Altitude2Position return(token::T_Altitude2Position); /*{Altitude2Position,T_Altitude2Position}*/
 Temp2Altitudes    return(token::T_Temp2Altitudes);    /*{Temp2Altitudes,T_Temp2Altitudes}*/
 GeoCoordinates    return(token::T_GeoCoordinates);    /*{GeoCoordinates,T_GeoCoordinates}*/
-ElevateMesh       return(token::T_ElevateMesh);       /*{ElevateMesh,T_ElevateMesh}*/
 Set3DArrowParam   return(token::T_Set3DArrowParam); /*{Set3DArrowParam,T_Set3DArrowParam}*/
 
 CreateVectors     return(token::T_CreateVectors); /*{CreateVectors,T_CreateVectors}*/

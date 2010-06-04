@@ -99,8 +99,14 @@ class WrapClass_SurfacePoly : public WrapClassBase
     ADD_CLASS_METHOD(GetIntensities,   "Get the intensities of an image at the position of the polydata vertices.");
     ADD_CLASS_METHOD(ConnectLines,     "Connects close lines based on several criteria.");
 
+
+    ADD_CLASS_METHOD(left_assign,     "Operator <<=, forces assignation of a new surface.");
+
     void AddMethods(_parentclass_ptr& this_ptr )
     {
+      AddVar_info(   this_ptr, "_info"); // avoid pb with token 'info'
+      AddVar_save(   this_ptr, "_save"); // avoid pb with token 'save'
+
       AddVar_Read(         this_ptr);
       AddVar_WriteCTALine( this_ptr);
       AddVar_OwnMaterial(  this_ptr);
@@ -118,7 +124,7 @@ class WrapClass_SurfacePoly : public WrapClassBase
       AddVar_Statistics(       this_ptr);
       AddVar_MergePoints(      this_ptr);
       AddVar_Triangulate(      this_ptr);
-      AddVar_Curvatures(       this_ptr);
+      AddVar_Curvatures(       this_ptr, "_Curvatures");
       AddVar_Displace(         this_ptr);
       AddVar_Translate(        this_ptr);
       AddVar_Scale(            this_ptr);
@@ -129,11 +135,11 @@ class WrapClass_SurfacePoly : public WrapClassBase
       AddVar_Recompute(        this_ptr);
       AddVar_Normals(          this_ptr);
       AddVar_InvertNormals(    this_ptr);
-      AddVar_vtkSmooth(        this_ptr);
-      AddVar_vtkWindowedSinc(  this_ptr);
-      AddVar_vtkDecimate(      this_ptr);
+      AddVar_vtkSmooth(        this_ptr, "_vtkSmooth");
+      AddVar_vtkWindowedSinc(  this_ptr, "_vtkWindowedSinc");
+      AddVar_vtkDecimate(      this_ptr, "_vtkDecimate");
       AddVar_setminCC(         this_ptr);
-      AddVar_drawCC(           this_ptr);
+      AddVar_drawCC(           this_ptr, "_drawCC");
       AddVar_AddPoint(         this_ptr);
       AddVar_NewLine(          this_ptr);
       AddVar_LineAddPointNumber( this_ptr);
@@ -149,8 +155,9 @@ class WrapClass_SurfacePoly : public WrapClassBase
       AddVar_GetIntensities(      this_ptr);
       AddVar_ConnectLines(        this_ptr);
 
-      AddVar_info(   this_ptr, "_info"); // avoid pb with token 'info'
-      AddVar_save(   this_ptr, "_save"); // avoid pb with token 'save'
+      // Operators
+      AddVar_left_assign(        this_ptr);
+
     }
 };
 
