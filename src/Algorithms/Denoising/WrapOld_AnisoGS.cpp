@@ -42,7 +42,7 @@
 #include "math1.hpp"
 #include "DeriveesLissees.hpp"
 #include "filtrage_rec.hpp"
-#include "Wrap_AnisoGS.h"
+#include "WrapOld_AnisoGS.h"
 #include "stdio.h"
 //#include "fonctions.h"
 
