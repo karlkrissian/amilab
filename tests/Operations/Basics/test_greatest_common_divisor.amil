@@ -1,0 +1,46 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_greatest_common_divisor.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Shows the greatest common divisor of of two positive integers a and b. The
+# greatest common divisor of two positive integers a and b is the largest
+# divisor common to a and b.
+#
+# For example:
+#
+#   GCD(12,60)=12
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+x=12
+y=60
+
+x = (x < 0) ? -x:x
+y = (y < 0) ? -y:y
+t = (x < y) ? x:y
+
+Condition=( (x % t) || (y % t) ) 
+
+while Condition {
+    --t
+}
+
+printn "\n\t GCD ---> X =  %1%" % x
+printn "\t GCD ---> Y =  %1%" % y
+printn "\t GCD ---> Result =  %1%\n" % t
+
+#
+# Verify that the result is 12 (GCD(12,60)).
+#
+ctest.PrintTestResult( (t == 12) ) 
+
+#quit
+
