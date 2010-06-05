@@ -382,7 +382,7 @@ protected:
   wxCheckBox* zyCheck;
   wxComboBox* comboSize;
   wxComboBox* comboView;
-  wxCheckBox* zoomCheck;
+//  wxCheckBox* zoomCheck;
   int lastView;
   //----------------------------------------------------
   //ImageDraw_X parameters

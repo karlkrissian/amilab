@@ -39,6 +39,10 @@
 
 #include "wxEditor.h"        // edit module
 #include "wxStcFrame.h"
+
+#include <iostream>
+using namespace std;
+
 //----------------------------------------------------------------------------
 // resources
 //----------------------------------------------------------------------------
