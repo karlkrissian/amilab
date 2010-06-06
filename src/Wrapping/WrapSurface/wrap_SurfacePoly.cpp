@@ -1170,3 +1170,30 @@ BasicVariable::ptr WrapClass_SurfacePoly::
   return BasicVariable::ptr();
 }
 
+//---------------------------------------------------
+//  assign
+//---------------------------------------------------
+void WrapClass_SurfacePoly::
+      wrap_assign::SetParametersComments() 
+{
+  ADDPARAMCOMMENT("Variable of type Surface Poly");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_SurfacePoly::
+      wrap_assign::CallMember( ParamList* p)
+{
+  SurfacePoly::ptr s(this->_objectptr->_obj);
+  if ((!p)||p->GetNumParam()==0) 
+    return BasicVariable::ptr();
+
+  BasicVariable::ptr var(p->GetParam(0));
+  DYNAMIC_CAST_VARIABLE(SurfacePoly, var, varsurf);
+
+  if (varsurf.get()) {
+    // should be OK
+    // default copy 
+    (*this->_objectptr->_obj) = (*varsurf->Pointer()); 
+  }
+  return BasicVariable::ptr();
+}
+

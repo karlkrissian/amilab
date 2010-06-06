@@ -53,6 +53,10 @@ protected:
 
 public:
 
+  // static empty variable to use for returning references or simply empty variable result.
+  static BasicVariable::ptr empty_variable;
+
+
   BasicVariable();
 /*
 : _type(type_void), _name(""), _comments("") 

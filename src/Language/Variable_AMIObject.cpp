@@ -481,11 +481,11 @@ template<>  BasicVariable::ptr Variable<AMIObject>::operator[](const BasicVariab
       return res;
     } else {
       GB_driver.yyiperror(" operator[], class member 'at' of this type is not available. \n");
-      return this->NewReference(); 
+      return BasicVariable::empty_variable; 
     }
   } else
   {
-    return BasicVariable::ptr();
+    return BasicVariable::empty_variable;
   }
 }
 
@@ -531,6 +531,37 @@ BasicVariable::ptr Variable<AMIObject>::operator =(const BasicVariable::ptr& b)
   return this->NewReference(); 
 }
 */
+
+
+template<> BasicVariable::ptr Variable<AMIObject>::operator =(const BasicVariable::ptr& b)
+{
+  AMIObject::ptr object(this->Pointer());
+
+  // looking for function member named at
+  BasicVariable::ptr member = object->GetContext()->GetVar("assign");
+
+  if (member.get()) {
+    // Create a paramlist from the parameter
+    ParamList::ptr param(new ParamList());
+    BasicVariable::ptr newvar(b->NewReference());
+    param->AddParam(newvar);
+
+    // check the type of the member variable
+    if (member->Type()==type_class_member) {
+      ///    Call a wrapped C++ class member.
+      DYNAMIC_CAST_VARIABLE(WrapClassMember,member, var1);
+      BasicVariable::ptr res ((var1->Pointer())->CallMember(param.get()));
+      return res;
+    } else {
+      GB_driver.yyiperror(" operator <<=, class member 'assign' of this type is not available. \n");
+      return this->NewReference(); 
+    }
+  } else
+  {
+    return BasicVariable::ptr();
+  }
+}
+
 
 // TODO: put this code within a macro???
 template<> BasicVariable::ptr Variable<AMIObject>::left_assign(const BasicVariable::ptr& b)

@@ -58,6 +58,7 @@ void AddWrapImports()
   AddWrapIO();
   AddWrapImage();
   AddWrapSurface();
+  AddWrapBasicTypes();
 
   // Create new instance of the class
   AMIObject::ptr amiobject(new AMIObject);
@@ -70,8 +71,6 @@ void AddWrapImports()
   ADDOBJECTVAR_NAME(C_wrap_procedure,"ImageDraw",  wrap_ImageDraw);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxDrawingWindow",  wrap_wxDrawingWindow);
 
-  ADDOBJECTVAR_NAME(C_wrap_varfunction,"VarList",   wrap_VarList);
-  ADDOBJECTVAR_NAME(C_wrap_varfunction,"VarVector", wrap_VarVector);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"ParamPanel",wrap_ParamPanel);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"vtkLevelSets",wrap_vtkLevelSets);
 
@@ -167,5 +166,14 @@ void AddWrapImage()
 void AddWrapSurface()
 {
   AddVar_SurfacePoly( Vars.GetBuiltinContext());
+}
+
+//--------------------------------------------
+void AddWrapBasicTypes()
+{
+//  ADDOBJECTVAR_NAME(C_wrap_varfunction,"VarList",   wrap_VarList);
+//  ADDOBJECTVAR_NAME(C_wrap_varfunction,"VarVector", wrap_VarVector);
+  AddVar_VarVector( Vars.GetBuiltinContext());
+//  AddVar_VarList( Vars.GetBuiltinContext());
 }
 

@@ -32,6 +32,7 @@ if (!exists(ParametricSurfaceClass)) {
 
     # 0: superquadric
     # 1: torus
+    # 2: user
     ::type = INT(0)
 
     # torus param
@@ -90,6 +91,17 @@ if (!exists(ParametricSurfaceClass)) {
 
 #----------------------------------------------------------
   proc ::NewType() {
+    if (exists(::page_vec)) { del ::page_vec; }
+    ::page_vec = VarVector();
+    ::page_vec.push_back(::page_superquad)
+    ::page_vec.push_back(::page_torus)
+    ::page_vec.push_back(::page_expr)
+
+    for n=0 to 2 {
+      ::win.EnablePanel(::page_vec[n], ::type==n)
+    }
+    ::win.SelectPage(::book,::type+1)
+
     ::UpdateResolution()
     ::Update()
   }
@@ -306,49 +318,49 @@ if (!exists(ParametricSurfaceClass)) {
       ::win.AddEnumChoice(::type_id,"Expression")
     ::win.SetCallback( &::NewType)
 
-    ::win.BeginBook
+    ::book = ::win.BeginBook
       # Main Page
-      ::win.AddPage("Main")
+      ::page_main = ::win.AddPage("Main")
         ::win.BeginBoxPanel("Resolution")
-            ::thetadim_id = ::win.AddInt( &::theta_dim,  "::theta_dim", 4,500)
+            ::thetadim_id = ::win.AddInt( &::theta_dim,  "theta", 4,500)
             ::win.SetCallback( &::Update)
-            ::phidim_id   = ::win.AddInt( &::phi_dim,  "::phi_dim",   4,500)
+            ::phidim_id   = ::win.AddInt( &::phi_dim,  "phi",   4,500)
             ::win.SetCallback( &::Update)
         ::win.EndBoxPanel
         ::win.BeginBoxPanel("Scaling Coeff.")
-            ::cx_id = ::win.AddFloat( &::cx,  "::cx", 0.1,5)
+            ::cx_id = ::win.AddFloat( &::cx,  "x", 0.1,5)
             ::win.SetCallback( &::Update)
-            ::cy_id = ::win.AddFloat( &::cy,  "::cy", 0.1,5)
+            ::cy_id = ::win.AddFloat( &::cy,  "y", 0.1,5)
             ::win.SetCallback( &::Update)
-            ::cz_id = ::win.AddFloat( &::cz,  "::cz", 0.1,5)
+            ::cz_id = ::win.AddFloat( &::cz,  "z", 0.1,5)
             ::win.SetCallback( &::Update)
             ::win.AddButton("Reset",   ::ResetScale)
         ::win.EndBoxPanel
 
 
       # SuperQuadric Page
-      ::win.AddPage("SuperQu.")
+      ::page_superquad = ::win.AddPage("SuperQu.")
         ::win.BeginBoxPanel("Exponential Coeff.")
-            ::ex_id = ::win.AddFloat( &::e_x,  "::e_x", 0.1,5)
+            ::ex_id = ::win.AddFloat( &::e_x,  "e_x", 0.1,5)
             ::win.SetCallback( &::Update)
-            ::ey_id = ::win.AddFloat( &::e_y,  "::e_y", 0.1,5)
+            ::ey_id = ::win.AddFloat( &::e_y,  "e_y", 0.1,5)
             ::win.SetCallback( &::Update)
-            ::ez_id = ::win.AddFloat( &::e_z,  "::e_z", 0.1,5)
+            ::ez_id = ::win.AddFloat( &::e_z,  "e_z", 0.1,5)
             ::win.SetCallback( &::Update)
             ::win.AddButton("Set Ellipsoid",   ::SetEllipsoid)
         ::win.EndBoxPanel
 
       # SuperQuadric Torus
-      ::win.AddPage("Torus")
+      ::page_torus = ::win.AddPage("Torus")
         ::win.BeginBoxPanel("Radii")
-            ::R_id = ::win.AddFloat( &::R,  "::R", 0.1,5)
+            ::R_id = ::win.AddFloat( &::R,  "R", 0.1,5)
             ::win.SetCallback( &::Update)
-            ::r_id = ::win.AddFloat( &::r,  "::r", 0.1,5)
+            ::r_id = ::win.AddFloat( &::r,  "r", 0.1,5)
             ::win.SetCallback( &::Update)
         ::win.EndBoxPanel
 
       # User Equation Page
-      ::win.AddPage("Expr")
+      ::page_expr = ::win.AddPage("Expr")
         ::win.BeginBoxPanel("Equation (U,V):")
           ::X_id = ::win.AddString( &::X,"X=")
           ::win.SetCallback( &::Update)
@@ -358,8 +370,8 @@ if (!exists(ParametricSurfaceClass)) {
           ::win.SetCallback( &::Update)
         ::win.EndBoxPanel
         ::win.BeginBoxPanel("Time evolution:")
-          ::win.AddInt( &::kmax,  "::kmax", 0,100)
-          ::win.AddInt( &::timestep,  "::timestep", 0,1000)
+          ::win.AddInt( &::kmax,  "kmax", 0,100)
+          ::win.AddInt( &::timestep,  "timestep", 0,1000)
           ::win.BeginHorizontal
             ::win.AddButton("Start", ::Start)
             ::win.AddButton("Stop",  ::Stop)

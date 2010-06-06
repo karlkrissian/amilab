@@ -13,6 +13,8 @@
 #include "BasicVariable.h"
 #include "Variables.hpp"
 
+BasicVariable::ptr BasicVariable::empty_variable;
+
 BasicVariable::BasicVariable() : _type(type_void), _name(""), _comments("") 
 {
     _vars     = boost::shared_ptr<Variables>(new Variables);

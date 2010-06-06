@@ -476,7 +476,7 @@ public:
   BasicVariable::ptr operator[](const BasicVariable::ptr& v)
   {
     std::cout << get_name() << " " << __func__ << " not defined." << std::endl; 
-    return this->NewReference(); 
+    return BasicVariable::empty_variable; 
   }
 
 

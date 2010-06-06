@@ -526,7 +526,7 @@ template<>  BasicVariable::ptr Variable<InrImage>::operator[](const BasicVariabl
 
         default:
           GB_driver.yyiperror(" operator [] does not handle this format \n");
-          return this->NewReference(); 
+          return BasicVariable::empty_variable; 
     }
 
     im->InitBuffer();
@@ -540,7 +540,7 @@ template<>  BasicVariable::ptr Variable<InrImage>::operator[](const BasicVariabl
   } 
   else
     CLASS_ERROR("operation not defined");
-  return this->NewReference(); 
+  return BasicVariable::empty_variable; 
 }
 
 

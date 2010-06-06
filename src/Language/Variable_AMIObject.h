@@ -131,20 +131,16 @@ template<>  BasicVariable::ptr Variable<AMIObject>::operator[](const BasicVariab
 /// (cond?a:b)
 template<> BasicVariable::ptr Variable<AMIObject>::TernaryCondition(const BasicVariable::ptr& v1, const BasicVariable::ptr&v2);
 *
+*/
 
 /// Other operators
 /// a=b
 
-**
- * Basic Assignment operator
- * if b is 
- * - a numerical value, sets the whole image to this value
- * - another image: copy image contents
- * @param b 
+/**
+ * Assignment operator
  * @return 
- *
+ **/
 template<> BasicVariable::ptr Variable<AMIObject>::operator =(const BasicVariable::ptr& b);
-*/
 
 /**
  * Defines operator <<= for each object type, normally, it tries to force the assignation.

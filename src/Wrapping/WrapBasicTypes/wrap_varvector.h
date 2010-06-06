@@ -19,16 +19,23 @@
 #include "DefineClass.hpp"
 #include <vector>
 
+
+typedef std::vector<BasicVariable::ptr> VarVector;
+
 // varvector type
-class WrapClass_vector : public WrapClassBase
+class WrapClass_VarVector : public WrapClassBase
 {
-  DEFINE_CLASS(WrapClass_vector);
+  DEFINE_CLASS(WrapClass_VarVector);
 
   // for nested classes
-  typedef WrapClass_vector::ptr _parentclass_ptr;
+  typedef WrapClass_VarVector::ptr _parentclass_ptr;
 
   public:
-    std::vector<BasicVariable::ptr> vector;
+    VarVector _obj;
+
+    /// Constructor
+    WrapClass_VarVector(const VarVector& vv): _obj(vv)
+    {}
 
     ADD_CLASS_METHOD( push_back,    "Add element at the end.");
     ADD_CLASS_METHOD( pop_back,     "Deletes the element at the end of a list.");
@@ -37,12 +44,40 @@ class WrapClass_vector : public WrapClassBase
     ADD_CLASS_METHOD( back,         "Access last element.");
     ADD_CLASS_METHOD( at,           "Return the value a the given position.");
     ADD_CLASS_METHOD( clear,        "Removes all elements from the vector");
+    ADD_CLASS_METHOD( setelement,   "Sets the variable at the given position");
+
+    void AddMethods(_parentclass_ptr& this_ptr )
+    {
+      AddVar_push_back(  this_ptr);
+      AddVar_pop_back(   this_ptr);
+      AddVar_size(       this_ptr);
+      AddVar_front(      this_ptr);
+      AddVar_back(       this_ptr);
+      AddVar_at(         this_ptr);
+      AddVar_clear(      this_ptr);
+      AddVar_setelement( this_ptr);
+    }
 
 };
 
-/** function that add wrapping of the Image Drawing window
+/**
+ * Create a Wrapped object around VarVector
+ * @param this_ptr input smart pointer to a WrapClass_VarVector
+ * @return smart pointer to an AMIObject class
  */
-BasicVariable::ptr wrap_VarVector( ParamList* p);
+AMIObject::ptr AddWrap_VarVector(  WrapClass_VarVector::ptr& this_ptr);
+
+/**
+ * Create a Wrapped object around VarVector
+ * @param si_ptr input smart pointer to a VarVector
+ * @return smart pointer to an AMIObject class
+ */
+Variable<AMIObject>::ptr CreateVar_VarVector( std::vector<BasicVariable::ptr>* si);
+
+/** Method that adds wrapping of VarVector 
+ */
+ADD_CLASS_FUNCTION( VarVector, "Wrapping of std::vector<BasicVariable::ptr>." );
+
 
 
 #endif

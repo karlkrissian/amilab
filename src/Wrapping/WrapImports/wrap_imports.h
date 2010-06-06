@@ -45,4 +45,9 @@ void AddWrapImage();
  */
 void AddWrapSurface();
 
+/**
+ * Adding wrapped classes and methods for basic types (VarVector, VarList, etc ..).
+ */
+void AddWrapBasicTypes();
+
 #endif //  _wrap_MainFrame_h_

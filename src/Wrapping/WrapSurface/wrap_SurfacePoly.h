@@ -101,6 +101,7 @@ class WrapClass_SurfacePoly : public WrapClassBase
 
 
     ADD_CLASS_METHOD(left_assign,     "Operator <<=, forces assignation of a new surface.");
+    ADD_CLASS_METHOD(assign,          "Operator =, copy assignment.");
 
     void AddMethods(_parentclass_ptr& this_ptr )
     {
