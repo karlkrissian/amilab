@@ -785,10 +785,12 @@ unsigned char ParamPanel::AddColor( int* id,
 //----------------------------------------------------------------
 unsigned char ParamPanel::AddLabel( int* id, const char* libelle,
 //                      --------
-                          const char* contenu, type_label type)
+                          const char* contenu, type_label type,
+                                   const std::string& tt)
 {
   wxLabelParameter* wxl = new wxLabelParameter(CurrentParent(), 
                                               libelle, contenu, type);
+  if (tt!="") wxl->SetToolTip(GetwxStr(tt.c_str()));
 
   ParamInfo pi( TYPE_PARAMETER_LABEL,
                 wxl,

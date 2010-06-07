@@ -179,6 +179,29 @@ using namespace std;
 
 #include <list>
 
+#include "wx/aui/aui.h"
+
+
+#include "ParamPanel.hpp"
+// AMILab includes
+#include "ImageDraw_PositionParam.h"
+#include "ImageDraw_IntensityParam.h"
+#include "ImageDraw_VectorsParam.h"
+#include "ImageDraw_IsoContourParam.h"
+#include "ImageDraw_ImageSurfaceParam.h"
+#include "ImageDraw_ColorsParam.h"
+#include "ImageDraw_Sections3DParam.h"
+#include "ImageDraw_VolRenParam.h"
+#include "ImageDraw_GLMIPParam.h"
+#include "ImageDraw_Voxels3DParam.h"
+#include "ImageDraw_CirclesParam.h"
+#include "ImageDraw_ZoomFactorParam.h"
+#include "ImageDraw_MIPParam.h"
+#include "ImageDraw_AnimationParam.h"
+#include "ImageDraw_VoxelSizeParam.h"
+#include "ImageDraw_InfoParam.h"
+#include "ImageDraw_CoupesXYParam.h"
+
 class CompareImage;
 
 class compare_info; // defined at the end ...
@@ -238,8 +261,166 @@ public:
       }  
   };
 
+  //----------------------------------------------------
+  //For new classes ImageDraw_X
+  //ImageDraw_PositionParam
+  InrImage::ptr& Get_image()                              { return _image; }
+  
+  //ImageDraw_Intensity
+  float* Get_intensite_float_min()                        { return &_intensite_float_min; }
+  void Set_intensite_float_min(float newMin)              { _intensite_float_min = newMin; }
+  
+  float* Get_intensite_float_max()                        { return &_intensite_float_max; }
+  void Set_intensite_float_max(float newMax)              { _intensite_float_max = newMax; }
+  
+  int* Get_intensite_entier_min()                         { return &_intensite_entier_min; }
+  void Set_intensite_entier_min(int newMin)               { _intensite_entier_min = newMin; }
+  
+  int* Get_intensite_entier_max()                         { return &_intensite_entier_max; }
+  void Set_intensite_entier_max(int newMax)               { _intensite_entier_max = newMax; }
+  
+  float* Get_val_min()                                    { return &_val_min; }
+  float* Get_val_max()                                    { return &_val_max; }
+  
+  void SetPaletteGrey(int newPalette)                     { _palette->ChangeTypePalette(newPalette); }
+  void SetPaletteRU(unsigned char* newPalette)            { _palette->TypePaletteTC(newPalette); }
+  InrImage::ptr& Get_user_colormap()                      { return _user_colormap; }
+  bool VerifyMinMax()                                     { return VerifieMinMax(); }
+  
+  void MinMaxChecker()                                    { CheckMinMax(); }
 
+  //ImageDraw_VectorsParam
+  unsigned char* Get_display_vectors()                    { return &_display_vectors; }
+  int* Get_vector_distance_unit()                         { return &_vector_distance_unit; }
+  float* Get_taille_vecteur()                             { return &_taille_vecteur; }
+  int* Get_espacement_vecteur()                           { return &_espacement_vecteur; }
+  int* Get_vecteur_type()                                 { return &_vecteur_type; }
+  int* Get_id_vecteur_direction()                         { return &_id_vecteur_direction; }
+  std::vector<vectorfield_info>* Get_vector_fields()      { return &_vector_fields; }
+  
+  void Set_PosPoint(int x, int y, int x0, int y0, int z0) { _MIP->PosPoint(x, y, x0, y0, z0); }
+  void Call_DessineChampVecteurs( )                       { DessineChampVecteurs(); }
+  
+  //ImageDraw_IsoContourParam
+  std::vector<isocontour_info>* Get_isocontours()         { return &_isocontours; }
+  unsigned char* Get_all_contours()                       { return &_all_contours; }
+  float* Get_step_contours()                              { return &_step_contours; }
+  float* Get_contours_winsize()                           { return &_contours_winsize; }
+  bool Call_CheckGLWindow()                               { return CheckGLWindow(); }
+  Viewer3D_ptr Lock_GLWindow()                            { return _GLWindow.lock(); }
+  
+  //ImageDraw_ImageSurfaceParam
+  float* Get_imsurf_zscale()                              { return &_imsurf_zscale; }
+  
+  //ImageDraw_ColorsParam
+  ClasseCouleur* Get_couleur_fond()                       { return &_couleur_fond; }
+  ClasseCouleur* Get_couleur_objet()                      { return &_couleur_objet; }
+  ClasseCouleur* Get_couleur_lignes()                     { return &_couleur_lignes; }
+  void Set_Couleur ()                                     { _couleur_curseur = _couleur_lignes; }
+  
+  //ImageDraw_Sections3DParam
+  unsigned char* Get_sectionXY_visible()                  { return &_sectionXY_visible; }
+  unsigned char* Get_sectionXZ_visible()                  { return &_sectionXZ_visible; }
+  unsigned char* Get_sectionYZ_visible()                  { return &_sectionYZ_visible; }
+  
+  //ImageDraw_VolRenParam
+  int* Get_volren_mode()                                  { return &_volren_mode; }
+  int* Get_volren_planes()                                { return &_volren_planes; }
+  unsigned char* Get_volren_texture()                     { return &_volren_texture; }
+  unsigned char* Get_volren_power2dim()                   { return &_volren_power2dim; }
+  InrImage* Get_volren_opacity()                          { return _volren_opacity; }
+  
+  //ImageDraw__GLMIPParam
+  float* Get_GLMIP_seuilbas()                             { return &_GLMIP_seuilbas; }
+  float* Get_GLMIP_seuilhaut()                            { return &_GLMIP_seuilhaut; }
+  int* Get_GLMIP_maxquads()                               { return &_GLMIP_maxquads; }
+  
+  //ImageDraw_Voxels3DParam
+  float* Get_voxels3D_seuilbas()                          { return &_voxels3D_seuilbas; }
+  float* Get_voxels3D_seuilhaut()                         { return &_voxels3D_seuilhaut; }
+  
+  //ImageDraw_CirclesParam
+  float* Get_circles_min_radius()                         { return &_circles_min_radius; }
+  float* Get_circles_max_radius()                         { return &_circles_max_radius; }
+  unsigned char* Get_circles_fill()                       { return &_circles_fill; }
+  ClasseCouleur* Get_circles_positive_color()             { return &_circles_positive_color; }
+  ClasseCouleur* Get_circles_negative_color()             { return &_circles_negative_color; }
+  unsigned char* Get_circles_ON()                         { return &_circles_ON; }
+  
+  //ImageDraw_ZoomFactorParam
+  int* Get_type_facteur()                                 { return &_type_facteur; }
+  int* Get_facteur_entier()                               { return &_facteur_entier; }
+  float* Get_facteur_reel()                               { return &_facteur_reel; }
+  
+  //ImageDraw_MIPParam
+  InrImage::ptr& Get_image_MIP()                          { return _image_MIP; }
+  ImageMIP* Get_MIP()                                     { return _MIP; }
+  void Set_MIP_parametres_visibles()                      { _MIP_parametres_visibles = false; }
+  void Call_ToggleParamPanel()                            { ToggleParamPanel(_param_mip.get()); }
+  
+  //ImageDraw_AnimationParam
+  int* Get_ANIM_vitesse()                                 { return &_ANIM_vitesse; }
+  int* Get_type_animation()                               { return &_type_animation; }
+  void Set_ANIM_PLAY()                                    { _ANIM_etat = ANIM_PLAY; }
+  void Set_ANIM_STOP()                                    { _ANIM_etat = ANIM_STOP; }
+  
+  //ImageDraw_VoxelSizeParam
+  void Call_ChangeImage()                                 { ChangeImage(_image_MIP); }
+  
+  //ImageDraw_InfoParam
+  InrImage* Get_image_masque()                            { return _image_masque; }
+  unsigned char* Get_dessine_masque()                     { return &_dessine_masque; }
+  
 protected:
+  
+  wxAuiManager manager;
+  wxAuiNotebook* _param_book;
+  wxAuiToolBar* ViewStyle;
+  wxAuiToolBar* ViewParameters;
+  wxCheckBox* xyCheck;
+  wxCheckBox* xzCheck;
+  wxCheckBox* zyCheck;
+  wxComboBox* comboSize;
+  wxComboBox* comboView;
+//  wxCheckBox* zoomCheck;
+  int lastView;
+  //----------------------------------------------------
+  //ImageDraw_X parameters
+  // Position parameters
+  ImageDraw_PositionParam::ptr     _param_position;
+  //Intensity parameters
+  ImageDraw_IntensityParam::ptr    _param_intensity;
+  //Vectors parameters
+  ImageDraw_VectorsParam::ptr      _param_vectors;
+  //IsoContour parameters
+  ImageDraw_IsoContourParam::ptr   _param_isocontour;
+  //ImageSurface parameters
+  ImageDraw_ImageSurfaceParam::ptr _param_imagesurface;
+  //Colors parameters
+  ImageDraw_ColorsParam::ptr       _param_colors;
+  //Sections3d parameters
+  ImageDraw_Sections3DParam::ptr   _param_sections3D;
+  //VolRen parameters
+  ImageDraw_VolRenParam::ptr       _param_volren;
+  //GLMIP parameters
+  ImageDraw_GLMIPParam::ptr        _param_glmip;
+  //Voxels3D parameters
+  ImageDraw_Voxels3DParam::ptr     _param_voxels3D;
+  //Circles parameters
+  ImageDraw_CirclesParam::ptr      _param_circles;
+  //ZoomFactor parameters
+  ImageDraw_ZoomFactorParam::ptr   _param_zoomfactor;
+  //MIP parameters
+  ImageDraw_MIPParam::ptr          _param_mip;
+  //Animation parameters
+  ImageDraw_AnimationParam::ptr    _param_animation;
+  //VoxelSize parameters
+  ImageDraw_VoxelSizeParam::ptr    _param_voxel;
+  //ImageInfo parameters
+  ImageDraw_InfoParam::ptr         _param_image_info;
+  //CoupesXY parameters
+  ImageDraw_CoupesXYParam::ptr     _param_coupesxy;
+
 
 /** @name Gestion des Animations
  */
@@ -414,33 +595,9 @@ protected:
 */
 //@{
 
-   ParamBox* _param_dialog;
-
 //   DessinHisto* _dessin_histo;
 
-   int       _id_show_axes; 
-   int       _id_axes_info;
-   int         _id_voxel_pos;
-   int         _id_space_pos;
-
-   int       _id_planX, _id_planY, _id_planZ;
 // TODO   int       _id_interpole;
-
-   int       _id_show_colorbar;
-   int       _id_colorspace;
-   int         _id_colorspace_grey;
-   int         _id_colorspace_rainbow;
-   int         _id_colorspace_user;
-
-   int       _id_min, _id_max;
-
-   int       _id_type_courbe;
-   int          _id_courbe_pente;
-   int          _id_courbe_plateau;
-   int          _id_courbe_pente2;
-   int          _id_courbe_plateau2;
-   int          _id_courbe_interpole;
-
 
    int       _id_boutton_fermer;
 
@@ -451,37 +608,19 @@ protected:
 /** @name     Taille Voxel
 */
 //@{
-   ParamBox* _param_voxel;
 
    int _etat_voxel;
 
-   int _id_voxel_size_x;
-   int _id_voxel_size_y;
-   int _id_voxel_size_z;
 
 //@}
 
 /** @name     Champ de vecteurs
 */
 //@{
-//   ParamBox* _param_vecteurs;
 
    int _etat_vecteurs;
 
-   int        _id_display_vectors;
-   int       _id_print_vectors;
-
-   int       _id_vector_distance_unit;
-   int         _id_vector_screen_pixels;
-   int         _id_vector_image_pixels;
-   
-   int       _id_vecteurs_taille;
-   int       _id_vecteurs_espacement;
-
-   int       _id_vecteur_type;
-   int         _id_vecteur_fleche;
    int         _id_vecteur_direction;
-   int         _id_vecteur_fleche_prop;
 
 
 //@}
@@ -489,51 +628,27 @@ protected:
 /** @name     Champ de cercles
 */
 //@{
-   ParamBox* _param_circles;
 
    int _state_circles;
 
-   int    _id_circles_ON;
-   int    _id_circles_min_radius;
-   int    _id_circles_max_radius;
-   int    _id_circles_fill;
-   int    _id_circles_positive_color;
-   int    _id_circles_negative_color;
 
 //@}
 
 /** @name     Param�res affichage des coupes XY
 */
 //@{
-   ParamBox* _param_CoupesXY;
 
    int _etat_CoupesXY;
 
-   int    _id_zmin;
-   int    _id_zmax;
 
 //@}
 
 /** @name     Param�res de traitement des MIP
 */
 //@{
-   ParamBox* _param_MIP;
 
    int _etat_MIP;
 
-   int _id_boutton_XY;
-   int _id_boutton_XZ;
-   int _id_boutton_YZ;
-
-   int    _id_decal_stereo;
-
-   int    _id_rot_X;
-   int    _id_rot_Y;
-   int    _id_rot_Z;
-
-   int    _id_depth_cue;
-
-   int    _id_boutton_fermer_MIP;
 
 //@}
 
@@ -554,41 +669,20 @@ protected:
 /** @name     Param�res de traitement des Animations
  */
 //@{
-   ParamBox* _param_Animation;
 
    int _etat_Animation;
 
-   int    _id_play_button;
-   int    _id_stop_button;
-
-   int    _id_type_animation;
-   int      _id_forward;
-   int      _id_backward;
-   int      _id_autoreverse;
-
-   int    _id_vitesse;
 
 //@}
 
 /** @name     Param�res des IsoContours
  */
 //@{
-//   ParamBox* _param_IsoContour;
-
     wxPanel* _panel_isocontours;
    int _etat_IsoContour;
 
   // to do: fix these variables using a std::vector ??
-   int _id_dessine_contour[3];
-   int _id_seuil_contour  [3];
-   int _id_couleur_contour[3];
 
-   int _id_all_contours;
-   int _id_step_contours;
-   int _id_contours_winsize;
-
-   int _id_isosurface;
-   int _id_use_compareimage_colors;
 
    int _id_close_isocontour;
 //@}
@@ -596,9 +690,6 @@ protected:
 
 /** @name     Param�res des ImageSurface
  */
-   int _id_imsurf_zscale;
-
-   int _id_imagesurface;
 
   float _imsurf_zscale;
 
@@ -606,49 +697,27 @@ protected:
 /** @name     Param�res Voxels3D
  */
 //@{
-   ParamBox* _param_Voxels3D;
 
    int _etat_Voxels3D;
 
-   int _id_voxels_seuilbas;
-   int _id_voxels_seuilhaut;
-
-   int _id_dessine_voxels3D;
 
 //@}
 
 /** @name     Param�res GLMIP
  */
 //@{
-   ParamBox* _param_GLMIP;
 
    int _etat_GLMIP;
 
-   int _id_glmip_seuilbas;
-   int _id_glmip_seuilhaut;
-
-   int _id_glmip_maxquads;
-
-   int _id_dessine_GLMIP;
 
 //@}
 
 /** @name     Param�res VOLREN
  */
 //@{
-   ParamBox* _param_VOLREN;
 
    int _etat_VOLREN;
 
-   int _id_volren_mode;
-   int   _id_volren_RGBA;
-   int   _id_volren_Intensity;
-   int   _id_volren_IntensityAlpha;
-   int _id_volren_planes;
-
-   int _id_volren_texture;
-   int _id_volren_power2dim;
-   int _id_dessine_VOLREN;
 
 //@}
 
@@ -663,13 +732,9 @@ protected:
 /** @name     Param�res Sections3D
  */
 //@{
-   ParamBox* _param_Sections3D;
 
    int _etat_Sections3D;
 
-   int _id_sectionXY_visible;
-   int _id_sectionXZ_visible;
-   int _id_sectionYZ_visible;
 
 //@}
 
@@ -680,16 +745,9 @@ protected:
 /** @name     Param�res de Zoom Facteur
 */
 //@{
-   ParamBox* _param_ZoomFacteur;
 
    int _etat_ZoomFacteur;
 
-   int       _id_type_facteur;
-   int         _id_facteur_reel;
-   int         _id_facteur_entier;
-
-   int       _id_facteur_valreel;
-   int       _id_facteur_valentier;
 
 //@}
 
@@ -697,13 +755,9 @@ protected:
 /** @name      Param�res de choix de couleurs
  */
 //@{
-   ParamBox* _param_couleurs;
 
    int _etat_couleurs;
 
-   int _id_couleur_fond;
-   int _id_couleur_objet;
-   int _id_couleur_lignes;
 
 //@}
 
@@ -777,27 +831,7 @@ protected:
   */
  //@{
     ///
-    ParamBox*    _param_image_info;
-    ///
-    int     _id_info_name;
-    /// 
-    int               _id_info_format;
-    /// 
-    int               _id_info_dim;
-    /// 
-    int               _id_info_voxelsize;
-    /// 
-    int               _id_info_stat;
-    ///
-    int               _id_info_numpoints;
-    /// 
-    int               _id_info_min_max;
-    /// 
-    int               _id_info_mean;
-    /// Standard Deviation
-    int               _id_info_sd;
-    /// SD/Mean
-    int               _id_info_sd_mean;
+
  //@}
 
 /*
@@ -865,11 +899,13 @@ private:
   //       -------------------
 
   ///
-  void     CreeParametresVecteurs(ParamBox* pb);
+  //void     CreeParametresVecteurs(ParamBox* pb);
+  void     CreeParametresVecteurs();
   //       ----------------------
 
   ///
-  void     CreeParametresIsoContour(ParamBox* pb);
+  //void     CreeParametresIsoContour(ParamBox* pb);
+  void     CreeParametresIsoContour();
   //       ------------------------
 
   ///
@@ -893,7 +929,8 @@ private:
   //       -----------------------
 
   ///
-  void     CreeParametresImageSurface(ParamBox* pb);
+  //void     CreeParametresImageSurface(ParamBox* pb);
+  void     CreeParametresImageSurface();
   //       --------------------------
 
   ///
@@ -921,7 +958,8 @@ private:
   //       ----------------------
 
   ///
-  void     CreeFenetreParametres(ParamBox* pb);
+  //void     CreeFenetreParametres(ParamBox* pb);
+  void     CreeFenetreParametres();
   //       ---------------------
 
   ///
@@ -1028,6 +1066,18 @@ private:
   ///
   unsigned char CheckGLWindow();
   //
+  
+  // Displays or Hides a Paremeter Panel
+  void ToggleParamPanel(ParamPanel* p);
+  // Create a wxAuiNotebook
+  void CreateParamBook(wxWindow* parent);
+  // Add page to notebook
+  bool AddParamPage(wxWindow* page, const wxString& caption,
+                    bool select = false, const wxBitmap& bitmap = wxNullBitmap);
+  //Remove a page from notebook
+  bool RemoveParamPage(wxWindow* page);
+  //Are parameters displayed?
+  bool ParamIsDisplayed(wxWindow* page); 
 
 protected:
 
@@ -1407,21 +1457,7 @@ public:
 
 
   ///
-  static void CB_info_stat( void* cd);
   //          ------------
-
-  ///
-  static void CB_imagesurface( void* cd);
-  //          ---------------
-
-  ///
-  static void CB_isosurface( void* cd);
-  //          -------------
-
-  ///
-  static void CB_UseCompareColors( void* cd);
-  //          -------------------
-
   /// Lancement du dessin des voxels depuis le menu
   //
   void CB_voxels3D( wxCommandEvent&);
@@ -1442,33 +1478,20 @@ public:
   //===== Voxels3D
   // MAJ des voxels affiches
   //
-  static void CB_DessineVoxels3D( void* cd);
   //          ------------------
 
   //===== GLMIP
-  // 
-  //
-  static void CB_DessineGLMIP( void* cd);
   //          ---------------
 
-  //
-  static void CB_DessineVOLREN( void* cd);
-  //          ----------------
-
-  //
-  static void CB_ResetVOLREN( void* cd);
-  //          --------------
 
   static void CB_DessineSections3D( void* cd);
   //          ------------------
 
   //===== IsoContour
   //
-  static void CB_DessineIsoContour( void* cd);
   //          --------------------
 
   //
-  static void CB_IsoContourVisible( void* cd);
   //          --------------------
 
   ///
@@ -1480,28 +1503,12 @@ public:
   //   ----------------
 
   ///
-  static void CB_PlanX(  void* cd );
-
-  ///
-  static void CB_PlanY(  void* cd );
-
-  ///
-  static void CB_PlanZ(  void* cd );
-
-  //===== Coupes XY
-  //
-  static void CB_CoupesXY( void* cd);
-  //          -----------
-
-  ///
   static void CB_redessine( void* cd );
 
   ///
   void CB_redraw( wxCommandEvent& );
 
   ///
-  static void CB_voxel_size( void* cd );
-
   ///
   void CB_option_traitement( wxCommandEvent& );
 
@@ -1513,7 +1520,6 @@ public:
   void CB_UpdateMinMax( wxCommandEvent& event);
 
   ///
-  static void CB_facteur( void* cd);
 
   ///
   void CB_fonction_zoom( wxCommandEvent& );
@@ -1540,15 +1546,12 @@ public:
 
 
   ///
-  static void CB_AfficheVecteurs( void* cd);
   //          -------------------
 
   ///
-  static void CB_type_vecteur( void* cd);
   //          ----------------
 
   ///
-  static void CB_taille_vecteurs( void* cd );
 
 //@}
 
@@ -1567,14 +1570,6 @@ public:
   ///
   void CB_couleurs( wxCommandEvent&);
   //   -----------
-
-  ///
-  static void CB_maj_couleurs( void* cd);
-  //          ---------------
-
-  ///
-  static void CB_maj_couleur_lignes(  void* cd);
-  //          ---------------------
 //@}
 
 /** @name CallBacks: projections MIP
@@ -1582,15 +1577,12 @@ public:
 //@{
 
   ///
-  static void CB_projette_XY( void*);
   //          --------------
 
   ///
-  static void CB_projette_YZ( void*);
   //          --------------
 
   ///
-  static void CB_projette_XZ( void*);
   //          --------------
 
   ///
@@ -1639,25 +1631,10 @@ public:
   static void CB_MIP_stereo_param( void* cd);
   //          -------------------
 
-  ///
-  static void CB_MIP_decal_stereo( void* cd);
-  //          -------------------
-
-  ///
-  static void CB_projette_MIP( void* cd );
-  //          ---------------
-
-  ///
-  static void CB_MIP_depth_cue( void* cd );
-  //          ----------------
 
   ///
   void CB_parametresMIP_visibles( wxCommandEvent&);
   //   -------------------------
-
-  ///
-  static void CB_Fermer_parametresMIP(void* cd);
-  //          -----------------------
 
 //@}
 
@@ -1665,22 +1642,6 @@ public:
 /** @name  CallBacks Animation
  */
 //@{
-
-  ///
-  static void CB_Anim_Play( void*);
-  //          ------------
-
-  ///
-  static void CB_Anim_Stop( void*);
-  //          ------------
-
-  ///
-  static void CB_Anim_vitesse( void* cd );
-  //          ---------------
-
-  ///
-  static void CB_type_animation( void* cd );
-  //          -----------------
 
   ///
   void OnTimer(wxTimerEvent& WXUNUSED(event)) { 
@@ -1698,17 +1659,6 @@ public:
   ///
   static void CB_fonction_intensite( void* cd);
 
-  ///
-  static void CB_barre_min( void* cd );
-
-  ///
-  static void CB_barre_max( void* cd );
-
-  ///
-  static void CB_type_courbe( void* cd);
-
-  ///
-  static void CB_colorspace( void* cd);
 //@}
 
 
@@ -1858,6 +1808,38 @@ public:
   }
 
 //@}
+  
+  //Create toolbar
+  void Create_Toolbar();
+  
+  void RestoreView(wxCommandEvent &event);
+  
+  //Toolbar callbacks
+  void CB_OnPositionClick     (wxCommandEvent &event);
+  
+  void CB_OnIntensityClick    (wxCommandEvent &event);
+  
+  void CB_OnVectorsClick      (wxCommandEvent &event);
+  
+  void CB_OnIsoContoursClick  (wxCommandEvent &event);
+  
+  void CB_OnImageSurfaceClick (wxCommandEvent &event);
+  
+  void CB_OnViewTypeClick     (wxCommandEvent &event);
+  
+  void CB_OnSizeTypeClick     (wxCommandEvent &event);
+  
+  void CB_OnZoomClick         (wxCommandEvent &event);
+  
+  void CB_OnUnzoomClick       (wxCommandEvent &event);
+  
+  void CB_OnCheckXYClick      (wxCommandEvent &event);
+  
+  void CB_OnCheckXZClick      (wxCommandEvent &event);
+  
+  void CB_OnCheckZYClick      (wxCommandEvent &event);
+  
+  void CB_OnManyXYClick       (wxCommandEvent &event);
 
 private:
     DECLARE_EVENT_TABLE()
