@@ -20,8 +20,10 @@
 #include "ami_object.h"
 
 #include "DessinImage.hpp"
+//#include "wrap_wxWindow.h"
 
 class WrapClass_DessinImage : public WrapClassBase
+//: public WrapClass_wxWindow
 {
   DEFINE_CLASS(WrapClass_DessinImage);
 
@@ -471,41 +473,42 @@ class WrapClass_DessinImage : public WrapClassBase
 
     void AddMethods(_parentclass_ptr& this_ptr )
     {
+
       AddVar_setpos(                this_ptr, "_setpos");
-      AddVar_showcursor(            this_ptr, "_showcursor");
-      AddVar_update(                this_ptr, "_update");
+      AddVar_showcursor(            this_ptr);
+      AddVar_update(                this_ptr);
       AddVar_compare(               this_ptr, "_compare");
-      AddVar_SetCompareDisplacement(this_ptr, "_SetCompareDisplacement");
-      AddVar_SetCompTransf(         this_ptr, "_SetCompTransf");
+      AddVar_SetCompareDisplacement(this_ptr);
+      AddVar_SetCompTransf(         this_ptr);
       AddVar_setvector(             this_ptr, "_setvector");
-      AddVar_DrawVector(            this_ptr, "_DrawVector");
-      AddVar_DisplayVectors(        this_ptr, "_DisplayVectors");
-      AddVar_SetVectParam(          this_ptr, "_SetVectParam");
-      AddVar_SetVectColor(          this_ptr, "_SetVectColor");
-      AddVar_SetVectStyle(          this_ptr, "_SetVectStyle");
-      AddVar_SetLineThickness(      this_ptr, "_SetLineThickness");
-      AddVar_SetZoom(               this_ptr, "_SetZoom");
+      AddVar_DrawVector(            this_ptr);
+      AddVar_DisplayVectors(        this_ptr);
+      AddVar_SetVectParam(          this_ptr);
+      AddVar_SetVectColor(          this_ptr);
+      AddVar_SetVectStyle(          this_ptr);
+      AddVar_SetLineThickness(      this_ptr);
+      AddVar_SetZoom(               this_ptr);
       AddVar_SetWindowSize(         this_ptr, "_SetWindowSize");
-      AddVar_drawcircle(            this_ptr, "_drawcircle");
-      AddVar_SetColormap(           this_ptr, "_SetColormap");
-      AddVar_setGLwin(              this_ptr, "_setGLwin");
-      AddVar_SetIsoContour(         this_ptr, "_SetIsoContour");
-      AddVar_SetIsoContourParam(    this_ptr, "_SetIsoContourParam");
-      AddVar_DrawIsoContour(        this_ptr, "_DrawIsoContour");
-      AddVar_SetIsoContourColor(    this_ptr, "_SetIsoContourColor");
-      AddVar_DrawAllContours(       this_ptr, "_DrawAllContours");
-      AddVar_AllContoursParam(      this_ptr, "_AllContoursParam");
-      AddVar_PaintCallback(         this_ptr, "_PaintCallback");
-      AddVar_SetOpacityImage(       this_ptr, "_SetOpacityImage");
-      AddVar_GetXmin(               this_ptr, "_GetXmin");
-      AddVar_GetXmax(               this_ptr, "_GetXmax");
-      AddVar_GetYmin(               this_ptr, "_GetYmin");
-      AddVar_GetYmax(               this_ptr, "_GetYmax");
-      AddVar_GetZmin(               this_ptr, "_GetZmin");
-      AddVar_GetZmax(               this_ptr, "_GetZmax");
-      AddVar_GetXPos(               this_ptr, "_GetXPos");
-      AddVar_GetYPos(               this_ptr, "_GetYPos");
-      AddVar_GetZPos(               this_ptr, "_GetZPos");
+      AddVar_drawcircle(            this_ptr);
+      AddVar_SetColormap(           this_ptr);
+      AddVar_setGLwin(              this_ptr);
+      AddVar_SetIsoContour(         this_ptr);
+      AddVar_SetIsoContourParam(    this_ptr);
+      AddVar_DrawIsoContour(        this_ptr);
+      AddVar_SetIsoContourColor(    this_ptr);
+      AddVar_DrawAllContours(       this_ptr);
+      AddVar_AllContoursParam(      this_ptr);
+      AddVar_PaintCallback(         this_ptr);
+      AddVar_SetOpacityImage(       this_ptr);
+      AddVar_GetXmin(               this_ptr);
+      AddVar_GetXmax(               this_ptr);
+      AddVar_GetYmin(               this_ptr);
+      AddVar_GetYmax(               this_ptr);
+      AddVar_GetZmin(               this_ptr);
+      AddVar_GetZmax(               this_ptr);
+      AddVar_GetXPos(               this_ptr);
+      AddVar_GetYPos(               this_ptr);
+      AddVar_GetZPos(               this_ptr);
       AddVar_getimage(              this_ptr, "_getimage");
     };
 };

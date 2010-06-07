@@ -579,22 +579,22 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_ReadCTALine
 %token T_ReadCTALineRadii
 
-%token T_SetIsoContour
-%token T_SetIsoContourParam
-%token T_DrawIsoContour
-%token T_SetIsoContourColor
-%token T_DrawAllContours
-%token T_AllContoursParam
+//%token T_SetIsoContour
+//%token T_SetIsoContourParam
+//%token T_DrawIsoContour
+//%token T_SetIsoContourColor
+//%token T_DrawAllContours
+//%token T_AllContoursParam
 
-%token T_GetZmin
-%token T_GetZmax
-%token T_GetYmin
-%token T_GetYmax
-%token T_GetXmin
-%token T_GetXmax
-%token T_GetXPos
-%token T_GetYPos
-%token T_GetZPos
+//%token T_GetZmin
+//%token T_GetZmax
+//%token T_GetYmin
+//%token T_GetYmax
+//%token T_GetXmin
+//%token T_GetXmax
+//%token T_GetXPos
+//%token T_GetYPos
+//%token T_GetZPos
 
 %token T_vtkDicomRead T_vtkMINCRead
 
@@ -644,7 +644,7 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_Remove
 %token T_SwapBuffers
 
-%token T_SetOpacityImage
+//%token T_SetOpacityImage
 
 %token T_GetTransform T_SetTransform
 %token T_Interpolate
@@ -654,20 +654,22 @@ void CB_update_imagelist( void* imagelist_gui);
 
 %token T_PrintMatrices
 
-%token SET SETPOS SHOWCURSOR T_update COMPARE SETVECTOR
+//%token SET SETPOS SHOWCURSOR T_update COMPARE SETVECTOR
+%token SET SETPOS COMPARE SETVECTOR
+
 %token T_lininterp
-%token T_SetCompareDisplacement
-%token T_DrawVector
-%token T_DisplayVectors
-%token T_SetVectParam
-%token T_SetVectColor
-%token T_SetVectStyle
-%token T_SetLineThickness
-%token T_SetZoom
+//%token T_SetCompareDisplacement
+//%token T_DrawVector
+//%token T_DisplayVectors
+//%token T_SetVectParam
+//%token T_SetVectColor
+//%token T_SetVectStyle
+//%token T_SetLineThickness
+//%token T_SetZoom
 %token T_SetWindowSize
-%token T_SetColormap
-%token T_drawcircle
-%token T_setGLwin
+//%token T_SetColormap
+//%token T_drawcircle
+//%token T_setGLwin
 %token T_initvalue
 %token T_ShowSection
 %token T_HideSection
@@ -761,7 +763,7 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_ReadFlow
 %token T_SetFluidNavFile
 %token T_DrawEarthCoord
-%token T_PaintCallback
+//%token T_PaintCallback
 
 %token T_SaveStructuredGrid
 
@@ -2839,7 +2841,7 @@ command:
           draw->Paint();
 
         }
-        | VAR_IMAGEDRAW T_POINT SHOWCURSOR T_OP_PAR expr T_CL_PAR
+/*        | VAR_IMAGEDRAW T_POINT SHOWCURSOR T_OP_PAR expr T_CL_PAR
         {
           Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
           DessinImage::ptr draw;
@@ -2885,7 +2887,7 @@ command:
               di->SetCloseFunction(
                   (void*) CB_delete_imagedraw,
                   (void*) varname);
-              */
+              * /
               draw->CreeCompare2Image(di);
             }
             else
@@ -2927,7 +2929,7 @@ command:
         Description:
             Defines a displacement to apply to the cursor when
             comparing 2 image drawing windows
-        **/
+        ** /
           GET_VARSTACK_VALUE(InrImage,    displ);
           GET_VARSTACK_VALUE(DessinImage, draw2);
           GET_VARSTACK_VALUE(DessinImage, draw);
@@ -2968,7 +2970,7 @@ command:
           draw->GetCompareWindow(0)->SetTransformationMatrix(mat);
         // PB: the matrix is never freed from memory ...
         // TODO use smart pointer management !!!
-*/
+* /
         }
         | VAR_IMAGEDRAW T_POINT SETVECTOR T_OP_PAR NUMBER T_COMMA var_image T_CL_PAR
         {
@@ -2979,7 +2981,7 @@ command:
                 (7) Vector field image
             Description:
                 Assign a vector field to be draw in the given image drawing window.
-          **/
+          ** /
           GET_VARSTACK_VALUE(InrImage,    im);
           GET_VARSTACK_VALUE(DessinImage, draw);
 
@@ -3011,7 +3013,7 @@ command:
           Description:
             Sets the size and spacing of the vector drawing interface in the given
             image drawing window.
-          **/
+          ** /
           Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
           DessinImage::ptr draw;
           float size    = $5;
@@ -3033,7 +3035,7 @@ command:
             Sets the color of the given vector field (given by vector id),
             the color is set as (R,G,B) components, each component has a value
             between 0 and 255.
-          **/
+          ** /
           Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
           DessinImage::ptr draw;
           int vectid = (int) $5;
@@ -3096,7 +3098,7 @@ command:
         {
         /**
           Description: Set a user-defined colormap.
-         **/
+         ** /
           GET_VARSTACK_VALUE(InrImage, colmap);
           GET_VARSTACK_VALUE(DessinImage, draw);
 
@@ -3119,7 +3121,7 @@ command:
 
             Description:
                 Sets the image and intensity value of an isocontour in an 'image_draw' window.
-            **/
+            ** /
           GET_VARSTACK_VALUE(InrImage,    im);
           GET_VARSTACK_VALUE(DessinImage, draw);
 
@@ -3135,7 +3137,7 @@ command:
 
             Description:
                 Sets the image and intensity value of the isocontour number 0 in an 'image_draw' window.
-            **/
+            ** /
           GET_VARSTACK_VALUE(InrImage,    im);
           GET_VARSTACK_VALUE(DessinImage, draw);
 
@@ -3153,7 +3155,7 @@ command:
             Description:
                 Sets the parameters (line style and thickeness)
                 of an isocontour in an 'image_draw' window.
-            **/
+            ** /
           Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
           DessinImage::ptr draw;
 
@@ -3173,7 +3175,7 @@ command:
             Description:
                 Sets the parameters (line style and thickeness)
                 of an isocontour in an 'image_draw' window.
-            **/
+            ** /
           Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
           DessinImage::ptr draw;
 
@@ -3190,7 +3192,7 @@ command:
 
             Description:
                 Sets the visibility of an isocontour in an 'image_draw' window.
-            **/
+            ** /
           Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
           DessinImage::ptr draw;
 
@@ -3208,7 +3210,7 @@ command:
 
             Description:
                 Sets the color as RGB of an isocontour in an 'image_draw' window.
-            **/
+            ** /
           Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
           DessinImage::ptr draw;
           draw = DessinImage::ptr(varimd->Pointer());
@@ -3224,7 +3226,7 @@ command:
 
             Description:
                 Activates or desactivates the drawing of a series of isocontours.
-            **/
+            ** /
           Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
           DessinImage::ptr draw;
           draw = DessinImage::ptr(varimd->Pointer());
@@ -3239,7 +3241,7 @@ command:
 
             Description:
                 Parameters for drawing a series of isocontours around the main isocontour.
-            **/
+            ** /
           Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
           DessinImage::ptr draw;
           draw = DessinImage::ptr(varimd->Pointer());
@@ -3261,12 +3263,12 @@ command:
          Description:
             Setting the opacity image for the volume rendering.
             This image should have unsigned char values.
-         **/
+         ** /
           GET_VARSTACK_VALUE(InrImage,    im);
           GET_VARSTACK_VALUE(DessinImage, imdraw);
 
           imdraw->SetVolRenOpacity( im.get());
-        }
+        }*/
         | var_image T_POINT TInit
         {
           /**
@@ -6038,7 +6040,7 @@ float_variable:
       delete [] $3;
     }
     |
-    VAR_IMAGEDRAW T_POINT T_GetXmin
+/*    VAR_IMAGEDRAW T_POINT T_GetXmin
     {
       Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
       DessinImage::ptr draw;
@@ -6161,7 +6163,7 @@ float_variable:
       if (driver.InConsole())
         GB_main_wxFrame->GetConsole()
                         ->IncCommand(wxString::FromAscii(comment.c_str()));
-    }
+    }*/
 /*
     |
     AnisoGS T_POINT T_GetNoiseSD
@@ -8267,6 +8269,7 @@ image:
     |
     VAR_IMAGEDRAW T_POINT T_getimage
     {
+      //GET_VARSTACK_OBJECT(DessinImage, imdraw)
       GET_VARSTACK_VALUE(DessinImage, imdraw)
       ADD_VARSTACK(InrImage, imdraw->GetInrImage());
     }

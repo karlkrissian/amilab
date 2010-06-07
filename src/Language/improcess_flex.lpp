@@ -173,27 +173,18 @@ GetExtent      return(token::T_GetExtent); /*{GetExtent,T_GetExtent}*/
 
 LineNumber      return(token::T_LineNumber); /*{LineNumber,T_LineNumber}*/
 
-update           return(token::T_update);            /*{update,T_update}*/
 set              return(token::SET);               /*{set,SET}*/
 setpos           return(token::SETPOS);            /*{setpos,SETPOS}*/
 lininterp        return(token::T_lininterp);      /*{lininterp,T_lininterp}*/
 initvalue        return(token::T_initvalue);       /*{initvalue,T_initvalue}*/
-showcursor       return(token::SHOWCURSOR);        /*{showcursor,SHOWCURSOR}*/
+
 compare          return(token::COMPARE);           /*{compare,COMPARE}*/
-SetCompareDisplacement return(token::T_SetCompareDisplacement); /*{SetCompareDisplacement,T_SetCompareDisplacement}*/
+
 setvector        return(token::SETVECTOR);         /*{setvector,SETVECTOR}*/
-DrawVector       return(token::T_DrawVector);      /*{DrawVector,T_DrawVector}*/
-DisplayVectors   return(token::T_DisplayVectors);  /*{DisplayVectors,T_DisplayVectors}*/
-SetVectParam     return(token::T_SetVectParam);    /*{SetVectParam,T_SetVectParam}*/
-SetVectColor     return(token::T_SetVectColor);    /*{SetVectColor,T_SetVectColor}*/
-SetVectStyle     return(token::T_SetVectStyle);    /*{SetVectStyle,T_SetVectStyle}*/
-SetLineThickness return(token::T_SetLineThickness); /*{SetLineThickness,T_SetLineThickness}*/
 normalize        return(token::T_normalize); /*{normalize,T_normalize}*/
-setGLwin         return(token::T_setGLwin); /*{setGLwin,T_setGLwin}*/
-drawcircle       return(token::T_drawcircle); /*{drawcircle,T_drawcircle}*/
 ShowSection      return(token::T_ShowSection); /*{ShowSection,T_ShowSection}*/
 HideSection      return(token::T_HideSection); /*{HideSection,T_HideSection}*/
-SetColormap      return(token::T_SetColormap); /*{SetColormap,T_SetColormap}*/
+
 
 itk               return(token::T_itk); /*{itk,T_itk}*/
 CannyEdgeDetector return(token::T_CannyEdgeDetector); /*{CannyEdgeDetector,T_CannyEdgeDetector}*/
@@ -386,25 +377,6 @@ IsocontourPoints   return(token::T_IsocontourPoints); /*{IsocontourPoints,T_Isoc
 IsosurfDist        return(token::T_IsosurfDist); /*{IsosurfDist,T_IsosurfDist}*/
 vtkIsoContourDist  return(token::T_vtkIsoContourDist); /*{vtkIsoContourDist,T_vtkIsoContourDist}*/
 
-SetIsoContour      return(token::T_SetIsoContour); /*{SetIsoContour,T_SetIsoContour}*/
-SetIsoContourParam return(token::T_SetIsoContourParam); /*{SetIsoContourParam,T_SetIsoContourParam}*/
-DrawIsoContour     return(token::T_DrawIsoContour); /*{DrawIsoContour,T_DrawIsoContour}*/
-SetIsoContourColor return(token::T_SetIsoContourColor);  /*{SetIsoContourColor,T_SetIsoContourColor}*/
-DrawAllContours    return(token::T_DrawAllContours);     /*{DrawAllContours,T_DrawAllContours}*/
-AllContoursParam   return(token::T_AllContoursParam);    /*{AllContoursParam,T_AllContoursParam}*/
-
-GetZmin            return(token::T_GetZmin); /*{GetZmin,T_GetZmin}*/
-GetZmax            return(token::T_GetZmax); /*{GetZmax,T_GetZmax}*/
-GetYmin            return(token::T_GetYmin); /*{GetYmin,T_GetYmin}*/
-GetYmax            return(token::T_GetYmax); /*{GetYmax,T_GetYmax}*/
-GetXmin            return(token::T_GetXmin); /*{GetXmin,T_GetXmin}*/
-GetXmax            return(token::T_GetXmax); /*{GetXmax,T_GetXmax}*/
-
-GetXPos            return(token::T_GetXPos); /*{GetXPos,T_GetXPos}*/
-GetYPos            return(token::T_GetYPos); /*{GetYPos,T_GetYPos}*/
-GetZPos            return(token::T_GetZPos); /*{GetZPos,T_GetZPos}*/
-
-SetZoom            return(token::T_SetZoom); /*{SetZoom,T_SetZoom}*/
 SetWindowSize      return(token::T_SetWindowSize); /*{SetWindowSize,T_SetWindowSize}*/
 
 Convolve           return(token::T_Convolve); /*{Convolve,T_Convolve}*/
@@ -432,7 +404,6 @@ Resize            return(token::T_Resize); /*{Resize,T_Resize}*/
 ReSlice           return(token::T_ReSlice); /*{ReSlice,T_ReSlice}*/
 Flip              return(token::T_Flip);  /*{Flip,T_Flip}*/// flips image in one of the main axis direction
 
-SetCompTransf     return(token::T_SetCompTransf); /*{SetCompTransf,T_SetCompTransf}*/
 
 RestartTime       return(token::T_RestartTime); /*{RestartTime,T_RestartTime}*/
 InitTime          return(token::T_InitTime); /*{InitTime,T_InitTime}*/
@@ -543,7 +514,7 @@ SetBackground     return(token::T_SetBackground); /*{SetBackground,T_SetBackgrou
 Normalize         return(token::T_Normalize); /*{Normalize,T_Normalize}*/
 Center            return(token::T_Center);    /*{Center,T_Center}*/
 
-SetOpacityImage     return(token::T_SetOpacityImage); /*{SetOpacityImage,T_SetOpacityImage}*/
+
 
 PrintMatrices     return(token::T_PrintMatrices); /*{PrintMatrices,T_PrintMatrices}*/ // print the matrices of Viewer3D class
 
@@ -664,8 +635,6 @@ ComputeAltitudes  return(token::T_ComputeAltitudes); /*{ComputeAltitudes,T_Compu
 ReadFlow          return(token::T_ReadFlow); /*{ReadFlow,T_ReadFlow}*/
 SetFluidNavFile   return(token::T_SetFluidNavFile); /*{SetFluidNavFile,T_SetFluidNavFile}*/
 DrawEarthCoord    return(token::T_DrawEarthCoord); /*{DrawEarthCoord,T_DrawEarthCoord}*/
-
-PaintCallback     return(token::T_PaintCallback); /*{PaintCallback,T_PaintCallback}*/
 
 CreateEllipsoids  return(token::T_CreateEllipsoids); /*{CreateEllipsoids,T_CreateEllipsoids}*/
 
