@@ -50,7 +50,7 @@
 namespace yyip {
 
 /* Line 38 of location.cc  */
-#line 54 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/GeneratedFlexBison/position.hh"
+#line 54 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/GeneratedFlexBison/position.hh"
   /// Abstract a position.
   class position
   {
@@ -163,5 +163,5 @@ namespace yyip {
 } // yyip
 
 /* Line 144 of location.cc  */
-#line 167 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/GeneratedFlexBison/position.hh"
+#line 167 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/GeneratedFlexBison/position.hh"
 #endif // not BISON_POSITION_HH

@@ -24,7 +24,6 @@ typedef enum {
   type_uchar,            /**< unsigned char number */
   type_string,           /**< string */
   type_imagedraw,        /**< image drawing window */
-  type_surface,          /**< polydata structure, surface and/or lines */
   type_surfdraw,         /**< polydata drawing window */
   type_file,             /**< file */
   type_c_procedure,      /**< C wrapped procedure */

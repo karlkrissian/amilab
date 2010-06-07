@@ -221,13 +221,13 @@ BasicVariable::ptr WrapClass_DessinImage::
 
   if (!get_var_param<InrImage>(varim,p,n)) {
     n=0;
-    CLASS_GET_OBJECT_PARAM(DessinImage,varimd);
-    if (!varimd.get()) ClassHelpAndReturn;
+    CLASS_GET_OBJECT_PARAM(DessinImage,varimd,objimd);
+    if (!objimd.get()) ClassHelpAndReturn;
 
     //DessinImage::ptr di_2(varimd->Pointer());
 
-    if(varimd.get())
-      di->CreeCompare2Image(varimd);
+    if(objimd.get())
+      di->CreeCompare2Image(objimd);
     else
     {
       GB_driver.err_print("WrapClass_DessinImage::wrap_compare empty imagedraw.");
@@ -290,25 +290,11 @@ BasicVariable::ptr WrapClass_DessinImage::
   if (!p) ClassHelpAndReturn;
   int n=0;
   if (!get_var_param<InrImage>(varim,p,n)) ClassHelpAndReturn;
-  CLASS_GET_OBJECT_PARAM(DessinImage,varimd);
-  if (!varimd.get()) ClassHelpAndReturn;
-
-  InrImage::ptr image(varim->Pointer());
-
-  if (!image.get()) {
-    GB_driver.err_print("WrapClass_DessinImage::wrap_SetCompareDisplacement empty image.");
-    return BasicVariable::ptr();
-  }
-
-  //DessinImage::ptr di_2(varimd->Pointer());
-
-  if (!varimd.get()) {
-    GB_driver.err_print("WrapClass_DessinImage::wrap_SetCompareDisplacement empty imagedraw.");
-    return BasicVariable::ptr();
-  }
+  CLASS_GET_OBJECT_PARAM(DessinImage,varimd,objimd);
+  if (!objimd.get()) ClassHelpAndReturn;
 
   // TODO: check for SetCompareDisplacement, does it really work?
-  di->SetCompareDisplacement(varimd,image);
+  di->SetCompareDisplacement(objimd,varim->Pointer());
 
   return BasicVariable::ptr();
 }

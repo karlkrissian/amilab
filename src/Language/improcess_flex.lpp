@@ -1134,18 +1134,12 @@ yyip::Parser::token::yytokentype checkvar(
         /*{$variable_image,VAR_IMAGE}*/
       case type_imagedraw:        return token::VAR_IMAGEDRAW;
         /*{$variable_imagedraw,VAR_IMAGEDRAW}*/
-      case type_float:            return token::VAR_FLOAT;
-        /*{$variable_float,VAR_FLOAT}*/
-      case type_long:            return token::VAR_LONG;  /// New (added: 27/05/2010)
-        /*{$variable_long,VAR_LONG}*/
-      case type_double:           return token::VAR_DOUBLE;
-        /*{$variable_double,VAR_DOUBLE}*/
-      case type_int:              return token::VAR_INT;
-        /*{$variable_int,VAR_INT}*/
-      case type_uchar:            return token::VAR_UCHAR;
-        /*{$variable_uchar,VAR_UCHAR}*/
-      case type_surface:          return token::VAR_SURFACE;
-        /*{$variable_surface,VAR_SURFACE}*/
+      case type_float:
+      case type_long:
+      case type_double:
+      case type_int:
+      case type_uchar:
+        return token::PROCESSED_VAR; /*{$PROCESSED_VAR,PROCESSED_VAR}*/
       case type_surfdraw:         return token::VAR_SURFDRAW;
         /*{$variable_surfdraw,VAR_SURFDRAW}*/
       case type_file:             return token::VAR_FILE;
@@ -1177,8 +1171,6 @@ yyip::Parser::token::yytokentype checkvar(
           boost::dynamic_pointer_cast<Variable<VarArray> >(var));
         VarArray::ptr array (vararray->Pointer());
         switch(array->Type()) {
-          case type_surface:    return token::VAR_ARRAY_SURFACE;
-          /*{$variable_surface_array,VAR_ARRAY_SURFACE}*/
           case type_image:      return token::VAR_ARRAY_IMAGE;
           /*{$variable_image_array,VAR_ARRAY_IMAGE}*/
           default:
