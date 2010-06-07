@@ -22,6 +22,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapImage
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapSurface
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapDessinImage
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapmyVTK
   ${AMILAB_SOURCE_DIR}
   ${Boost_INCLUDE_DIR}

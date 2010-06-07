@@ -33,6 +33,7 @@
 #endif
 
 #include "token_list.h"
+#include "amilab_messages.h"
 
 #ifdef __APPLE__
   #include <ApplicationServices/ApplicationServices.h>
@@ -107,6 +108,28 @@ DessinImage* CreateIDraw( const std::string& title, InrImage::ptr image)
 
 }
 
+//-------------------------------------------
+void CB_ParamWin(void* cd)
+ {
+
+  AMIFunction* func_ptr = (AMIFunction*) (cd);
+
+  //cout << "CB_ParamWin pointer is " << func_ptr << endl;
+
+  GB_driver.yyip_call_function(func_ptr);
+
+} // CB_ParamWin( void* cd )
+
+//-----------------------------------------
+void CB_delete_variable( void* var)
+{
+  BasicVariable* vartodelete = (BasicVariable*) var;
+
+  FILE_MESSAGE(boost::format("deleting %1%") % vartodelete->Name());
+  if (!Vars.deleteVar(vartodelete))
+    FILE_ERROR("Could not delete variable "); 
+
+}
 
 
 

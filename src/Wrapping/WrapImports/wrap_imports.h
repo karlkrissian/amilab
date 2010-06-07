@@ -46,6 +46,11 @@ void AddWrapImage();
 void AddWrapSurface();
 
 /**
+ * Adding wrapped classes and methods for DessinImage.
+ */
+void AddWrapDessinImage();
+
+/**
  * Adding wrapped classes and methods for basic types (VarVector, VarList, etc ..).
  */
 void AddWrapBasicTypes();

@@ -195,8 +195,6 @@ class wxScheduleTimer : public wxTimer
 // to delete the wxScheduleTimer when necessary
 static std::list<wxScheduleTimer::ptr> schedule_timers;
 
-void CB_ParamWin( void* cd );
-
 InrImage* ReadImage( const char* name);
 
 
@@ -210,8 +208,9 @@ static void CB_Button(  void* cd) {
 }
 */
 
-void CB_delete_variable( void* var);
+extern void CB_delete_variable( void* var);
 
+extern void CB_ParamWin( void* cd );
 
 //------------------------------------------------------
 void CB_update_imagelist( void* imagelist_gui);
@@ -10953,29 +10952,6 @@ void yyip::Parser::error(const Parser::location_type& l,
     driver.error(l, m);
 }
 
-
-//-------------------------------------------
-void CB_ParamWin(void* cd)
- {
-
-  AMIFunction* func_ptr = (AMIFunction*) (cd);
-
-  //cout << "CB_ParamWin pointer is " << func_ptr << endl;
-
-  GB_driver.yyip_call_function(func_ptr);
-
-} // CB_ParamWin( void* cd )
-
-//-----------------------------------------
-void CB_delete_variable( void* var)
-{
-  BasicVariable* vartodelete = (BasicVariable*) var;
-
-  FILE_MESSAGE(boost::format("deleting %1%") % vartodelete->Name());
-  if (!Vars.deleteVar(vartodelete))
-    FILE_ERROR("Could not delete variable "); 
-
-}
 
 //------------------------------------------------------
 void CB_update_imagelist( void* imagelist_gui)
