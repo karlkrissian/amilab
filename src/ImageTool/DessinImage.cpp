@@ -987,35 +987,35 @@ void DessinImage::InitPositionImages( )
 //-----------------------------------------------------------------------
 BEGIN_EVENT_TABLE(DessinImage, DessinImageBase)
 //    EVT_MENU(ID_MenuImage_Display,   DessinImage::OnQuit)
-    EVT_MENU(ID_MenuImage_Reload,    DessinImage::CB_relire)
+//    EVT_MENU(ID_MenuImage_Reload,    DessinImage::CB_relire)
     EVT_MENU(ID_MenuImage_Compare,   DessinImage::CB_comparer)
-    EVT_MENU(ID_MenuImage_VoxelSize, DessinImage::CB_voxel)
-    EVT_MENU(ID_MenuImage_info,      DessinImage::CB_image_info)
+//    EVT_MENU(ID_MenuImage_VoxelSize, DessinImage::CB_voxel)
+//    EVT_MENU(ID_MenuImage_info,      DessinImage::CB_image_info)
 //    EVT_MENU(ID_MenuImage_Save_param,DessinImage::CB_sauver_param)
 //    EVT_MENU(ID_MenuImage_Save_image,DessinImage::CB_sauver_image)
     EVT_MENU(ID_MenuImage_close,     DessinImage::CB_Close)
 
-    EVT_MENU(ID_MenuOptions_option_slice,   DessinImage::CB_option_traitement)
-    EVT_MENU(ID_MenuOptions_option_mip,     DessinImage::CB_option_traitement)
-    EVT_MENU(ID_MenuOptions_option_anim,    DessinImage::CB_option_traitement)
+//    EVT_MENU(ID_MenuOptions_option_slice,   DessinImage::CB_option_traitement)
+//    EVT_MENU(ID_MenuOptions_option_mip,     DessinImage::CB_option_traitement)
+//    EVT_MENU(ID_MenuOptions_option_anim,    DessinImage::CB_option_traitement)
 
-    EVT_MENU(ID_MenuOptions_sliceXY,        DessinImage::CB_redraw)
-    EVT_MENU(ID_MenuOptions_sliceXZ,        DessinImage::CB_redraw)
-    EVT_MENU(ID_MenuOptions_sliceXY_XZ,     DessinImage::CB_redraw)
-    EVT_MENU(ID_MenuOptions_sliceZY,        DessinImage::CB_redraw)
-    EVT_MENU(ID_MenuOptions_sliceXY_ZY,     DessinImage::CB_redraw)
-    EVT_MENU(ID_MenuOptions_sliceXZ_ZY,     DessinImage::CB_redraw)
-    EVT_MENU(ID_MenuOptions_sliceXY_XZ_ZY,  DessinImage::CB_redraw)
-    EVT_MENU(ID_MenuOptions_XYslices,       DessinImage::CB_redraw)
+//    EVT_MENU(ID_MenuOptions_sliceXY,        DessinImage::CB_redraw)
+//    EVT_MENU(ID_MenuOptions_sliceXZ,        DessinImage::CB_redraw)
+//    EVT_MENU(ID_MenuOptions_sliceXY_XZ,     DessinImage::CB_redraw)
+//    EVT_MENU(ID_MenuOptions_sliceZY,        DessinImage::CB_redraw)
+//    EVT_MENU(ID_MenuOptions_sliceXY_ZY,     DessinImage::CB_redraw)
+//    EVT_MENU(ID_MenuOptions_sliceXZ_ZY,     DessinImage::CB_redraw)
+//    EVT_MENU(ID_MenuOptions_sliceXY_XZ_ZY,  DessinImage::CB_redraw)
+//    EVT_MENU(ID_MenuOptions_XYslices,       DessinImage::CB_redraw)
 
-    EVT_MENU(ID_MenuOptions_window_size,    DessinImage::CB_type_taille)
-    EVT_MENU(ID_MenuOptions_fixed_size,     DessinImage::CB_type_taille)
+//    EVT_MENU(ID_MenuOptions_window_size,    DessinImage::CB_type_taille)
+//    EVT_MENU(ID_MenuOptions_fixed_size,     DessinImage::CB_type_taille)
 
     EVT_MENU(ID_MenuImage_original_size,    DessinImage::CB_image_size)
 
-    EVT_MENU(ID_MenuImage_zoom_activated,    DessinImage::CB_fonction_zoom)
-    EVT_MENU(ID_MenuImage_zoom_desactivated, DessinImage::CB_fonction_zoom)
-    EVT_MENU(ID_MenuImage_unzoom,            DessinImage::CB_fonction_zoom)
+//    EVT_MENU(ID_MenuImage_zoom_activated,    DessinImage::CB_fonction_zoom)
+//    EVT_MENU(ID_MenuImage_zoom_desactivated, DessinImage::CB_fonction_zoom)
+//    EVT_MENU(ID_MenuImage_unzoom,            DessinImage::CB_fonction_zoom)
 
     EVT_MENU(ID_MenuOptions_Interp_Active,   DessinImage::CB_interpole)
 
@@ -1025,12 +1025,12 @@ BEGIN_EVENT_TABLE(DessinImage, DessinImageBase)
     EVT_MENU(ID_MenuOptions_interp_sub8,     DessinImage::CB_interpole)
     EVT_MENU(ID_MenuOptions_interp_submax,   DessinImage::CB_interpole)
 
-    EVT_MENU(ID_MenuOptions_circlefield,     DessinImage::CB_circles)
-    EVT_MENU(ID_MenuOptions_voxels3D,        DessinImage::CB_voxels3D)
-    EVT_MENU(ID_MenuOptions_OpenGLMIP,       DessinImage::CB_GLMIP)
-    EVT_MENU(ID_MenuOptions_VolRen,          DessinImage::CB_VOLREN)
-    EVT_MENU(ID_MenuOptions_Sections3D,      DessinImage::CB_sections3D)
-    EVT_MENU(ID_MenuOptions_Colors,          DessinImage::CB_couleurs)
+//    EVT_MENU(ID_MenuOptions_circlefield,     DessinImage::CB_circles)
+//    EVT_MENU(ID_MenuOptions_voxels3D,        DessinImage::CB_voxels3D)
+//    EVT_MENU(ID_MenuOptions_OpenGLMIP,       DessinImage::CB_GLMIP)
+//    EVT_MENU(ID_MenuOptions_VolRen,          DessinImage::CB_VOLREN)
+//    EVT_MENU(ID_MenuOptions_Sections3D,      DessinImage::CB_sections3D)
+//    EVT_MENU(ID_MenuOptions_Colors,          DessinImage::CB_couleurs)
 
     EVT_MENU(ID_MenuOptions_linewidth1,      DessinImage::CB_largeur_lignes)
     EVT_MENU(ID_MenuOptions_linewidth2,      DessinImage::CB_largeur_lignes)
@@ -1039,7 +1039,7 @@ BEGIN_EVENT_TABLE(DessinImage, DessinImageBase)
 
     EVT_MENU(ID_MenuOptions_display_mask,    DessinImage::CB_MasqueVisible)
     EVT_MENU(ID_MenuOptions_display_cursor,  DessinImage::CB_curseur_visible)
-    EVT_MENU(ID_MenuOptions_paramwin,        DessinImage::CB_parametres_visibles)
+//    EVT_MENU(ID_MenuOptions_paramwin,        DessinImage::CB_parametres_visibles)
 
     EVT_MENU(ID_MenuMIP_param,               DessinImage::CB_parametresMIP_visibles)
     EVT_MENU(ID_MenuMIP_minmax,              DessinImage::CB_MIP_min_max)
@@ -5292,6 +5292,11 @@ void DessinImage::CB_voxels3D(  wxCommandEvent&)
 
 //  di->_param_Voxels3D->AfficheDialogue();
   ToggleParamPanel(_param_voxels3D.get());
+  
+  //If _param_voxels3D isn't shown, dont show a GL window
+  if (! _param_voxels3D->IsShown()) {
+    return;
+  }
 
   if (!(di->CheckGLWindow()))
   {
@@ -5364,6 +5369,10 @@ void DessinImage::CB_GLMIP(  wxCommandEvent&)
 //  di->_param_GLMIP->AfficheDialogue();
   ToggleParamPanel(_param_glmip.get());
 
+  if (!_param_glmip->IsShown()) {
+    return;
+  }
+  
   if (!(di->CheckGLWindow()))
   {
     di->CreateGLWindow();
@@ -5429,6 +5438,10 @@ void DessinImage::CB_VOLREN( wxCommandEvent&)
 //  di->_param_VOLREN->AfficheDialogue();
   ToggleParamPanel(_param_volren.get());
   
+  if (! _param_volren->IsShown()) {
+    return;
+  }
+  
   if (!(di->CheckGLWindow()))
   {
     di->CreateGLWindow();
@@ -5492,6 +5505,10 @@ void DessinImage::CB_sections3D(  wxCommandEvent&)
 //  di->_param_Sections3D->AfficheDialogue();
   ToggleParamPanel(_param_sections3D.get());
 
+  if (! _param_sections3D->IsShown()) {
+    return;
+  }
+  
   if (!(di->CheckGLWindow()))
   {
     di->CreateGLWindow();
@@ -6013,9 +6030,9 @@ void DessinImage::CB_redraw( wxCommandEvent& event)
 {
 
      DessinImage*    di = (DessinImage*) this;
-     unsigned char         nouvelle_valeur;
+//     unsigned char         nouvelle_valeur;
   
-  nouvelle_valeur =  di->_wxm_type_coupe->ValueChanged(event);
+//  nouvelle_valeur =  di->_wxm_type_coupe->ValueChanged(event);
 
 //  if ((di->Param._type_coupe == TYPE_COUPES) && (di->_image->_tz > 1)) {
 //    //    di->_param_CoupesXY->AfficheDialogue();
@@ -6040,14 +6057,14 @@ void DessinImage::CB_option_traitement( wxCommandEvent& event)
 
 
      DessinImage*    di = (DessinImage*) this;
-     unsigned char         nouvelle_valeur;
+//     unsigned char         nouvelle_valeur;
 
 
-  nouvelle_valeur =  di->_wxm_mode->ValueChanged(event);
+//  nouvelle_valeur =  di->_wxm_mode->ValueChanged(event);
 
 //  nouvelle_valeur =  di->_Moptions_mode->ValueChanged();
 //return;
-  Si Non(nouvelle_valeur) AlorsRetourne;
+//  Si Non(nouvelle_valeur) AlorsRetourne;
 
   switch ( di->Param._option_traitement ){
     case OPTION_MIP:
@@ -6074,11 +6091,11 @@ void DessinImage::CB_option_traitement( wxCommandEvent& event)
       di->Param.ChangeTypeCoupeMIP();
       di->ChangeImage( di->_image_MIP);
       
-
 //      di->_param_MIP->AfficheDialogue();
+      
       if (_param_animation->IsShown())
         ToggleParamPanel(_param_animation.get());
-
+      
       ToggleParamPanel(_param_mip.get());
 
     break;
@@ -6093,30 +6110,31 @@ void DessinImage::CB_option_traitement( wxCommandEvent& event)
         ToggleParamPanel(_param_mip.get());
         RestoreView(event);
       }
-      if (_param_coupesxy->IsShown()) {
-        RestoreView(event);
-      }
       
+      if (!(di->_image->_tz > 1)) {
+        wxMessageDialog* message = new wxMessageDialog(this, wxT("You are showing a two-dimensional image."),
+                                                       wxT("Viewer Error"), wxOK | wxICON_EXCLAMATION);
+        message->ShowModal();
+        return;
+      }
       ToggleParamPanel(_param_animation.get());
       di->LanceAnimation();
     break;
 
     case OPTION_COUPE:
-      di->MemoriseCoupesXY( false);
-      di->Comparaisons_MemoriseCoupesXY( false);
-      di->ChangeImage( di->_image_initiale);
-      RestoreView(event);
       if (_param_mip->IsShown()) {
         ToggleParamPanel(_param_mip.get());
         RestoreView(event);
       }
-      if (_param_coupesxy->IsShown()) {
-        RestoreView(event);
-      }
+
       if (_param_animation->IsShown()) {
         Set_ANIM_STOP();
         ToggleParamPanel(_param_animation.get());
+        RestoreView(event);
       }
+      di->MemoriseCoupesXY( false);
+      di->Comparaisons_MemoriseCoupesXY( false);
+      di->ChangeImage( di->_image_initiale);
     break;
 
   } // end switch
@@ -6129,7 +6147,7 @@ void DessinImage::CB_option_traitement( wxCommandEvent& event)
       XtUnmanageChild((Widget)(*di->_Mmip));
   FinSi
 */
-  
+
 } // CB_option_traitement()
 
 
@@ -6180,7 +6198,7 @@ void DessinImage::CB_fonction_zoom( wxCommandEvent& event)
 
      DessinImage*    di = (DessinImage*) this;
 
-  if (di->_wxm_zoom->ValueChanged(event))
+//  if (di->_wxm_zoom->ValueChanged(event))
     Si di->Param._fonction_zoom == FUNC_UNZOOM Alors
       di->Param._Zoom.InitLimites( di->_image.get());
       di->Param._MAJ.MAJCoupes();
@@ -6199,11 +6217,11 @@ void DessinImage::CB_type_taille(wxCommandEvent& event )
 
 
      DessinImage*    di = (DessinImage*) this;
-     unsigned char         nouvelle_valeur;
+//     unsigned char         nouvelle_valeur;
 
-  nouvelle_valeur =  di->_wxm_type_taille->ValueChanged(event);
+//  nouvelle_valeur =  di->_wxm_type_taille->ValueChanged(event);
 
-  Si Non(nouvelle_valeur) AlorsRetourne;
+//  Si Non(nouvelle_valeur) AlorsRetourne;
 
   switch ( di->Param._type_taille ){
 
@@ -6362,7 +6380,6 @@ void DessinImage::Create_Toolbar()
 
   comboView = new wxComboBox(ViewStyle, wxID_VIEW_TYPE, wxT("Slice"),
                                          wxDefaultPosition,wxSize(wmax+40,-1) , strings, wxCB_READONLY); 
-  comboView->SetSize(comboView->GetEffectiveMinSize());
   comboView->SetToolTip(wxT("Type of view: Slice, maximun intensity projection or animation"));
 
   ViewStyle->AddControl(comboView, wxT("Option"));
@@ -6371,16 +6388,29 @@ void DessinImage::Create_Toolbar()
   xyCheck = new wxCheckBox(ViewStyle, wxID_XY, wxT("XY"),
                                          wxDefaultPosition, wxDefaultSize, wxCHK_2STATE);
   xyCheck->SetValue(true);
+  xyCheck->SetToolTip(wxT("Show/Hide XY plane"));
   ViewStyle->AddControl(xyCheck, wxT("XY"));
   
   xzCheck = new wxCheckBox(ViewStyle, wxID_XZ, wxT("XZ"),
                                          wxDefaultPosition, wxDefaultSize, wxCHK_2STATE);
-  xzCheck->SetValue(true);
+  if (this->_image->_tz > 1) {
+    xzCheck->SetValue(true);
+  }
+  else {
+    xzCheck->SetValue(false);
+  }
+  xzCheck->SetToolTip(wxT("Show/Hide XZ plane"));
   ViewStyle->AddControl(xzCheck, wxT("XZ"));
   
   zyCheck = new wxCheckBox(ViewStyle, wxID_ZY, wxT("ZY"),
                                          wxDefaultPosition, wxDefaultSize, wxCHK_2STATE);
-  zyCheck->SetValue(true);
+  if (this->_image->_tz > 1) {
+    zyCheck->SetValue(true);
+  }
+  else {
+    zyCheck->SetValue(false);
+  }
+  zyCheck->SetToolTip(wxT("Show/Hide ZY plane"));
   ViewStyle->AddControl(zyCheck, wxT("ZY"));
   ViewStyle->AddSeparator();
   
@@ -6389,7 +6419,7 @@ void DessinImage::Create_Toolbar()
 //  ViewStyle->AddControl(many, wxT("manyXY"));
   ViewStyle->AddTool(wxID_MANYXY, wxT("ManyXY"),
                          wxBitmap(wxImage(New_imagelist_xpm).Rescale(16,16)),
-                         wxT("ManyXY. Show Z layers"), wxITEM_CHECK);
+                         wxT("Show XY slices."), wxITEM_CHECK);
   ViewStyle->AddSeparator();
   
   strings.Clear();
@@ -6403,7 +6433,6 @@ void DessinImage::Create_Toolbar()
 
   comboSize = new wxComboBox(ViewStyle, wxID_SIZE_TYPE, wxT("Win Size"),
                                         wxDefaultPosition, wxSize(wmax+40,-1), strings, wxCB_READONLY);
-  comboSize->SetSize(comboSize->GetEffectiveMinSize());
   comboSize->SetToolTip(wxT("Select image sizing mode: window size or user size."));
   ViewStyle->AddControl(comboSize, wxT("Size"));
   ViewStyle->AddSeparator();
@@ -6434,8 +6463,8 @@ void DessinImage::RestoreView(wxCommandEvent &event)
   DessinImage* di = (DessinImage*) this;
   di->Param._type_coupe = lastView;
   CB_redraw(event);
-  
-  //Checking chekboxes and menu bar
+
+  //Checking chekboxes
   switch (lastView) {
     case TYPE_COUPE_XY:
       xyCheck->SetValue(true); xzCheck->SetValue(false); zyCheck->SetValue(false);
@@ -6464,6 +6493,7 @@ void DessinImage::RestoreView(wxCommandEvent &event)
     default:
       break;
   }
+
 }
 
   
@@ -6517,11 +6547,14 @@ void DessinImage::CB_OnImageSurfaceClick (wxCommandEvent &event)
 
 //----------------------------------------------------------------
 void DessinImage::CB_OnViewTypeClick (wxCommandEvent &event)
-{
+{ 
   DessinImage*    di = (DessinImage*) this;
   
   switch (event.GetSelection()) {
     case 0:
+      if (di->Param._option_traitement == OPTION_COUPE) {
+        return;
+      }
       di->Param._option_traitement = OPTION_COUPE;
       CB_option_traitement(event);
       break;
@@ -6806,12 +6839,22 @@ void DessinImage::CB_OnCheckZYClick (wxCommandEvent &event)
 void DessinImage::CB_OnManyXYClick  (wxCommandEvent &event)
 {
   DessinImage* di = (DessinImage*) this;
-  
-  if (!_param_mip->IsShown() && !_param_coupesxy->IsShown()) {
-    lastView = di->Param._type_coupe;
+
+  if (_param_mip->IsShown()) {
+    ToggleParamPanel(_param_mip.get());
+    RestoreView(event);
   }
-  
-  if (di->_image->_tz > 1) {
+
+  if (!(di->_image->_tz > 1)) {
+    wxMessageDialog* message = new wxMessageDialog(this, wxT("You are showing a two-dimensional image."),
+                                                   wxT("Viewer Error"), wxOK | wxICON_EXCLAMATION);
+    message->ShowModal();
+    return;
+  }
+  else {
+   if (!_param_mip->IsShown() && !_param_coupesxy->IsShown()) {
+      lastView = di->Param._type_coupe;
+    }
     if (di->Param._type_coupe != TYPE_COUPES) {
       di->Param._type_coupe = TYPE_COUPES;
       xyCheck->Disable();
@@ -6829,13 +6872,6 @@ void DessinImage::CB_OnManyXYClick  (wxCommandEvent &event)
       comboView->Enable(true);
       RestoreView(event);
     }
-
-  }
-  else {
-    wxMessageDialog* message = new wxMessageDialog(this, wxT("You are showing a two-dimensional image."),
-                                                   wxT("Viewer Error"), wxOK | wxICON_EXCLAMATION);
-    message->ShowModal();
-    return;
   }
 
 }
