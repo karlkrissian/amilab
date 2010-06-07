@@ -207,6 +207,7 @@ extern unsigned char      GB_debug;
 #include "../../Pixmaps/free_design_icons/Transparent_background_xpm.xpm"
 #include "../../Pixmaps/free_design_icons/New_imagelist_xpm.xpm"
 #include "../../Pixmaps/free_design_icons/Clear_xpm.xpm"
+#include "../../Pixmaps/free_design_icons/Selection_xpm.xpm"
 #include "../../Pixmaps/free_design_icons/Zoom_out_xpm.xpm"
 
 enum myIDs {
@@ -6397,7 +6398,7 @@ void DessinImage::Create_Toolbar()
     xzCheck->SetValue(true);
   }
   else {
-    xzCheck->SetValue(false);
+    xzCheck->Disable();
   }
   xzCheck->SetToolTip(wxT("Show/Hide XZ plane"));
   ViewStyle->AddControl(xzCheck, wxT("XZ"));
@@ -6408,7 +6409,7 @@ void DessinImage::Create_Toolbar()
     zyCheck->SetValue(true);
   }
   else {
-    zyCheck->SetValue(false);
+    zyCheck->Disable();
   }
   zyCheck->SetToolTip(wxT("Show/Hide ZY plane"));
   ViewStyle->AddControl(zyCheck, wxT("ZY"));
@@ -6420,6 +6421,9 @@ void DessinImage::Create_Toolbar()
   ViewStyle->AddTool(wxID_MANYXY, wxT("ManyXY"),
                          wxBitmap(wxImage(New_imagelist_xpm).Rescale(16,16)),
                          wxT("Show XY slices."), wxITEM_CHECK);
+  if (!(this->_image->_tz > 1)) {
+    ViewStyle->EnableTool(wxID_MANYXY, false);
+  }
   ViewStyle->AddSeparator();
   
   strings.Clear();
@@ -6442,7 +6446,7 @@ void DessinImage::Create_Toolbar()
 //                                         wxDefaultPosition, wxDefaultSize, wxCHK_2STATE);
 //  ViewStyle->AddControl(zoomCheck, wxT("Zoom"));
   ViewStyle->AddTool(wxID_CHECK_ZOOM, wxT("Zoom"),
-                         wxBitmap(wxImage(Clear_xpm).Rescale(16,16)),
+                         wxBitmap(wxImage(Selection_xpm).Rescale(16,16)),
                          wxT("Zoom inside a region"), wxITEM_CHECK);
   ViewStyle->AddTool(wxID_UNZOOM, wxT("Unzoom"),
                          wxBitmap(wxImage(Zoom_out_xpm).Rescale(16,16)),
