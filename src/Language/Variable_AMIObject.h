@@ -6,14 +6,14 @@
 
 class AMIObject;
 
-/*
 //------------------------------------------------------
 //------- Variable<AMIObject>
 //------------------------------------------------------
 
-/// Copy contents to new variable
+// Copy contents to new variable
 template<> BasicVariable::ptr Variable<AMIObject>::NewCopy() const;
 
+/*
 // Arithmetic operators
 
 /// +a

@@ -1,7 +1,7 @@
 #!/home/karl/projects/bin/linux/amilab
 
-i47   = IO.ReadRawImages2D(1024,1024,USHORT.val,,0,"WP01/package_02_LMD/images/AfGG_c0.81.47",0)
-t47   = IO.ReadRawImages2D(1024,1024,USHORT.val,,0,"WP01/package_02_LMD/images/AfGG_c10.8.47",0)
+i47   = IO.ReadRawImages2D(1024,1024,USHORT.val,0,"WP01/package_02_LMD/images/AfGG_c0.81.47",0)
+t47   = IO.ReadRawImages2D(1024,1024,USHORT.val,0,"WP01/package_02_LMD/images/AfGG_c10.8.47",0)
 coeff = Image "alt_coeff.ami.gz"
 
 alt47 = ComputeAltitudes(t47,coeff)*4
@@ -31,6 +31,6 @@ searth.ElevateMesh(pos)
 searth. SetColorMaterial(1)
 searth.Normals
 searth.Recompute
-sshow earth
+show searth
 searth_draw.rotate(0,-90,0)
 searth_draw.rotate(0,0,-90)

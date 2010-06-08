@@ -620,7 +620,7 @@ void Driver::init_cmdhistory()
 
   if (!cmdhistory) {
     cerr << format("Error in opening %s\n") % filename;
-    FILE_ptr stdout_ptr = FILE_ptr(stdout);
+    FILE_ptr stdout_ptr = CreateSmartPointer<FILE>()(stdout);
     cmdhistory.swap(stdout_ptr);
   } else
     cmdhistory_filename = filename;

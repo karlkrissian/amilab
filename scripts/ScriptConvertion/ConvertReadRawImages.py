@@ -60,15 +60,15 @@ if __name__ == "__main__":
       #print "line=",line
       # parse line
       typeval = r"(CHAR|UCHAR|SHORT|USHORT|INT|UINT|LONG|FLOAT|DOUBLE|RGB|FLOAT_VECTOR)"
-      res = re.subn(r"ReadRawImages\(([^,]+),([^,]+),\s*"+typeval+"(\.val|)\s*,([^,]+),([^,]+),([^,]+),([^\)]+)\)",r"IO.ReadRawImages2D(\1,\2,\3.val,\4,\5,\6,\7)",line)
+      res = re.subn(r"ReadRawImages\(([^,]+),([^,]+),\s*"+typeval+"(\.val|)\s*,([^,]+),([^,]+),([^,]+),([^\)]+)\)",r"IO.ReadRawImages2D( \1, \2, \3.val, \5, \6, \7, \8 )",line)
       if (res[1]>0):
         line = res[0]
         num_subs = num_subs+1
-      res = re.subn(r"ReadRawImages\(([^,]+),([^,]+),([^,]+),\s*"+typeval+"(.val|)\s*,([^,]+),([^,]+)\)",r"IO.ReadRawImage3D(\1,\2,\3,\4.val,\5,\6)",line)
+      res = re.subn(r"ReadRawImages\(([^,]+),([^,]+),([^,]+),\s*"+typeval+"(.val|)\s*,([^,]+),([^,]+)\)",r"IO.ReadRawImage3D(\1,\2,\3,\4.val,\6,\7)",line)
       if (res[1]>0):
         line = res[0]
         num_subs = num_subs+1
-      res = re.subn(r"ReadRawImages\(([^,]+),([^,]+),([^,]+),\s*"+typeval+"(.val|)\s*,([^,]+),([^,]+),([^,]+)\)",r"IO.ReadRawVectImage3D(\1,\2,\3,\4.val,\5,\6,\7)",line)
+      res = re.subn(r"ReadRawImages\(([^,]+),([^,]+),([^,]+),\s*"+typeval+"(.val|)\s*,([^,]+),([^,]+),([^,]+)\)",r"IO.ReadRawVectImage3D(\1,\2,\3,\4.val,\6,\7,\8)",line)
       if (res[1]>0):
         line = res[0]
         num_subs = num_subs+1

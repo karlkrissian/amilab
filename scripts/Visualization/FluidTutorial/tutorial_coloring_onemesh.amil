@@ -1,7 +1,7 @@
 # command line: improcess 
-i48 = IO.ReadRawImages2D(1024,1024,USHORT.val,,0,"WP01/package_02_LMD/images/AfGG_c0.81.48",0)
-c48 = IO.ReadRawImages2D(1024,1024,UCHAR.val,,0,"WP01/package_02_LMD/misc/AfGG_CLA_scene_analysis.48",0)
-t48 = IO.ReadRawImages2D(1024,1024,USHORT.val,,0,"WP01/package_02_LMD/images/AfGG_c10.8.48",0)
+i48 = IO.ReadRawImages2D(1024,1024,USHORT.val,0,"WP01/package_02_LMD/images/AfGG_c0.81.48",0,0)
+c48 = IO.ReadRawImages2D(1024,1024,UCHAR.val,0,"WP01/package_02_LMD/misc/AfGG_CLA_scene_analysis.48",0,0)
+t48 = IO.ReadRawImages2D(1024,1024,USHORT.val,0,"WP01/package_02_LMD/images/AfGG_c10.8.48",0,0)
 coeff = Image "alt_coeff.ami.gz"
 
 epsilon=0.5-0.2

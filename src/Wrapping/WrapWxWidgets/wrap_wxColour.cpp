@@ -224,3 +224,18 @@ BasicVariable::ptr WrapClass_wxColour::
   return BasicVariable::ptr();
 }
 
+//---------------------------------------------------
+//  copy
+//---------------------------------------------------
+void WrapClass_wxColour::
+      wrap_copy::SetParametersComments() 
+{
+  return_comments = "Copy of the colour within a new variable.";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxColour::
+      wrap_copy::CallMember( ParamList* p)
+{
+  return CreateVar_wxColour( new wxColour(*(_objectptr->_obj)));
+}
+

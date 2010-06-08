@@ -52,6 +52,8 @@ class WrapClass_wxColour : public WrapClassBase
 
     ADD_CLASS_METHOD(Set,    "Sets the RGB intensity values using the given values (first overload), extracting them from the packed long (second overload), using the given string (third overloard). When using third form, Set() accepts: colour names (those listed in wxTheColourDatabase), the CSS-like \"RGB(r,g,b)\" syntax (case insensitive) and the HTML-like syntax (i.e. \"#\" followed by 6 hexadecimal digits for red, green, blue components).Returns true if the conversion was successful, false otherwise.");
 
+    ADD_CLASS_METHOD(copy, "Copy constructor.")
+
     void AddMethods( _parentclass_ptr& this_ptr ) {
       AddVar_Alpha(       this_ptr);
       AddVar_Blue(        this_ptr);
@@ -61,6 +63,7 @@ class WrapClass_wxColour : public WrapClassBase
       AddVar_IsOk(        this_ptr);
       AddVar_Red(         this_ptr);
       AddVar_Set(         this_ptr);
+      AddVar_copy(        this_ptr);
     }
 
 };

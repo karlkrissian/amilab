@@ -101,11 +101,9 @@ global_mask.putimage(sgm)
 del sgm
 
 #i48 = ReadRawImages(1024,1024,USHORT,0,dir+,0,0)
-c48_0 = ReadRawImages(1024,1024,UCHAR, 0, \
-                      dir+image_series+"scene_analysis."+image_number,0,0)
+c48_0 = IO.ReadRawImages2D( 1024, 1024, UCHAR.val,  0,  dir+image_series+"scene_analysis."+image_number, 0, 0 )
 c48=c48_0[i48]
-t48_0 = ReadRawImages(1024,1024,SHORT,0, \
-                      dir+ image_series+"cloud_top_temp."+image_number,0,0)
+t48_0 = IO.ReadRawImages2D( 1024, 1024, SHORT.val, 0,  dir+ image_series+"cloud_top_temp."+image_number, 0, 0 )
 t48=t48_0[i48]
 
 
@@ -185,7 +183,7 @@ proc ComputeColors( NUM classnum) {
                               sprint("_Layer%0.0f",minclass(classnum+1))+\
                               sprint("-%0.0f",maxclass(classnum+1))+".P_Mask.pgm.motionUp";
     print " ComputeColors()  read image \n"
-    verticaldispl  = ReadRawImages(512,512,1,FLOAT,0,filename)
+    verticaldispl  = IO.ReadRawImage3D(512,512,1,FLOAT.val,0,filename)
     print " ComputeColors()  compute color image \n"
     absd = abs(verticaldispl)
     maxv = max(absd)
@@ -482,7 +480,7 @@ proc CreateVerticalVectors(NUM c1, NUM c2) {
                                sprint("_Layer%0.0f",minclass(c2))+\
                                sprint("-%0.0f",maxclass(c2))+".P_Mask.pgm.motionUp";
     print "Reading file "+filename+"\n"
-    verticaldispl  = ReadRawImages(512,512,1,FLOAT,0,filename)
+    verticaldispl  = IO.ReadRawImage3D(512,512,1,FLOAT.val,0,filename)
     # get rid of small displacement (smaller than 0.01 the largest displacement)
     vd1 = abs(verticaldispl)
     verticaldispl = verticaldispl*(vd1>max(vd1)/100)

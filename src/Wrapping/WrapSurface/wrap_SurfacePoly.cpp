@@ -1193,8 +1193,22 @@ BasicVariable::ptr WrapClass_SurfacePoly::
   if (varsurf.get()) {
     // should be OK
     // default copy 
-    (*this->_objectptr->_obj) = (*surf); 
+    (*s) = (*surf); 
   }
   return BasicVariable::ptr();
 }
 
+//---------------------------------------------------
+//  copy
+//---------------------------------------------------
+void WrapClass_SurfacePoly::
+      wrap_copy::SetParametersComments() 
+{
+  return_comments="A copy of the SurfacePoly object within a new variable.";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_SurfacePoly::wrap_copy::CallMember( ParamList* p)
+{
+  SurfacePoly::ptr s(this->_objectptr->_obj);
+  return CreateVar_SurfacePoly( new SurfacePoly(*s));
+}

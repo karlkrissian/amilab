@@ -100,6 +100,7 @@ class WrapClass_SurfacePoly : public WrapClassBase
     ADD_CLASS_METHOD(ConnectLines,     "Connects close lines based on several criteria.");
 
 
+    ADD_CLASS_METHOD(copy,            "Copy of the Surface.");
     ADD_CLASS_METHOD(left_assign,     "Operator <<=, forces assignation of a new surface.");
     ADD_CLASS_METHOD(assign,          "Operator =, copy assignment.");
 
@@ -157,6 +158,7 @@ class WrapClass_SurfacePoly : public WrapClassBase
       AddVar_ConnectLines(        this_ptr);
 
       // Operators
+      AddVar_copy(                this_ptr);
       AddVar_left_assign(         this_ptr);
       AddVar_assign(              this_ptr);
 

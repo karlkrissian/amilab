@@ -16,28 +16,57 @@ extern yyip::Driver GB_driver;
 #include "inrimage.hpp"
 
 
+/**
+ * \def APPLY_MEMBER_PARAM0
+ * \brief applies the given variable member with no parameter
+ **/
+#define APPLY_MEMBER_NOPARAM(member_name, resvar) \
+  AMIObject::ptr object(this->Pointer()); \
+  BasicVariable::ptr member = object->GetContext()->GetVar(member_name); \
+  BasicVariable::ptr resvar; \
+  if (member.get()) { \
+    if (member->Type()==type_class_member) { \
+      DYNAMIC_CAST_VARIABLE(WrapClassMember,member, var1); \
+      resvar = (var1->Pointer())->CallMember(NULL); \
+    } else { \
+      GB_driver.yyiperror((boost::format("Class member '%1%' for this type is not available. ")).str().c_str()); \
+    } \
+  }
+
+/**
+ * \def APPLY_MEMBER_PARAM1
+ * \brief applies the given variable member with 1 parameter
+ **/
+#define APPLY_MEMBER_PARAM1(member_name, varparam, resvar) \
+  AMIObject::ptr object(this->Pointer()); \
+  BasicVariable::ptr member = object->GetContext()->GetVar(member_name); \
+  BasicVariable::ptr resvar; \
+  if (member.get()) { \
+    ParamList::ptr param(new ParamList()); \
+    BasicVariable::ptr newvar(varparam->NewReference()); \
+    param->AddParam(newvar); \
+    if (member->Type()==type_class_member) { \
+      DYNAMIC_CAST_VARIABLE(WrapClassMember,member, var1); \
+      resvar = (var1->Pointer())->CallMember(param.get()); \
+    } else { \
+      GB_driver.yyiperror((boost::format("Class member '%1%' for this type is not available. ")).str().c_str()); \
+    } \
+  }
 
 
 //------------------------------------------------------
 //------- Variable<AMIObject>
 //------------------------------------------------------
 
-/*
 /// Copy contents to new variable
 template<> BasicVariable::ptr Variable<AMIObject>::NewCopy() const
 {
-  // TODO copy constructor here
-  return NewReference();
-
-  AMIObject::ptr newval( new AMIObject( Pointer()->GetFormat(),
-                                      Pointer()->GetVDim(),
-                                      Pointer()->GetName(),
-                                      Pointer().get()));
-  (*newval) = (*Pointer());
-  Variable<AMIObject>::ptr newvar(new Variable<AMIObject>(newval));
-  return newvar;
+  APPLY_MEMBER_NOPARAM("copy", varres)
+  if (varres.get())
+    return varres;
+  else
+    return BasicVariable::ptr();
 }
-*/
 
 
 // Arithmetic operators
@@ -531,61 +560,20 @@ BasicVariable::ptr Variable<AMIObject>::operator =(const BasicVariable::ptr& b)
 template<> BasicVariable::ptr Variable<AMIObject>::operator =(const BasicVariable::ptr& b)
 {
   CLASS_MESSAGE("start");
-  AMIObject::ptr object(this->Pointer());
-
-  // looking for function member named at
-  BasicVariable::ptr member = object->GetContext()->GetVar("assign");
-
-  if (member.get()) {
-    // Create a paramlist from the parameter
-    ParamList::ptr param(new ParamList());
-    BasicVariable::ptr newvar(b->NewReference());
-    param->AddParam(newvar);
-
-    // check the type of the member variable
-    if (member->Type()==type_class_member) {
-      ///    Call a wrapped C++ class member.
-      DYNAMIC_CAST_VARIABLE(WrapClassMember,member, var1);
-      BasicVariable::ptr res ((var1->Pointer())->CallMember(param.get()));
-      return res;
-    } else {
-      GB_driver.yyiperror(" operator <<=, class member 'assign' of this type is not available. \n");
-      return this->NewReference(); 
-    }
-  } else
-  {
+  APPLY_MEMBER_PARAM1("assign", b, varres)
+  if (varres.get())
+    return varres;
+  else
     return BasicVariable::ptr();
-  }
 }
 
 
 // TODO: put this code within a macro???
 template<> BasicVariable::ptr Variable<AMIObject>::left_assign(const BasicVariable::ptr& b)
 {
-  AMIObject::ptr object(this->Pointer());
-
-  // looking for function member named at
-  BasicVariable::ptr member = object->GetContext()->GetVar("left_assign");
-
-  if (member.get()) {
-    // Create a paramlist from the parameter
-    ParamList::ptr param(new ParamList());
-    BasicVariable::ptr newvar(b->NewReference());
-    param->AddParam(newvar);
-
-    // check the type of the member variable
-    if (member->Type()==type_class_member) {
-      ///    Call a wrapped C++ class member.
-      DYNAMIC_CAST_VARIABLE(WrapClassMember,member, var1);
-      BasicVariable::ptr res ((var1->Pointer())->CallMember(param.get()));
-      return res;
-    } else {
-      GB_driver.yyiperror(" operator <<=, class member 'left_assign' of this type is not available. \n");
-      return this->NewReference(); 
-    }
-  } else
-  {
+  APPLY_MEMBER_PARAM1("left_assign", b, varres)
+  if (varres.get())
+    return varres;
+  else
     return BasicVariable::ptr();
-  }
-
 }

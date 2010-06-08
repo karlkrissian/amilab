@@ -778,7 +778,7 @@ void CB_update_imagelist( void* imagelist_gui);
 
 // Operators precedence
 %nonassoc SHIFT_THERE
-%nonassoc INC_OP DEC_OP TRANSPOSE_OP T_OP_BR T_ADD T_SUB T_QUEST
+%nonassoc INC_OP DEC_OP TRANSPOSE_OP T_OP_BR T_ADD T_SUB T_QUEST T_POINT
 %nonassoc T_OP_PAR
 %right ASSIGN_OP ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN LEFT_ASSIGN
 %left OR_OP
@@ -1243,27 +1243,10 @@ command:
           **/
           BasicVariable::ptr       var(driver.var_stack.GetLastBasicVar());
           if (var.get()) {
-            switch (var->Type()) {
-              // TODO: ad hoc fix to improve here, result should be a usable variable ??
-              /// C++ wrapped member
-              case type_class_member: {
-                DYNAMIC_CAST_VARIABLE(WrapClassMember,var,m);
-                m->Pointer()->CallMember(NULL);
-               }
-              break;
-              /// language function without parameters.
-              case type_ami_function: {
-                DYNAMIC_CAST_VARIABLE(AMIFunction,var,vf);
-                AMIFunction::ptr f(vf->Pointer());
-                driver.yyip_call_function(f);
-               }
-              break;
-              default:;
-                // TODO: only do it from the command line ???
-                //cout << "display var info" << endl;
-                if (driver.InConsole())
-                  var->display();
-            }
+            // TODO: only do it from the command line ???
+            //cout << "display var info" << endl;
+            if (driver.InConsole())
+              var->display();
           }
 
         }
@@ -4095,7 +4078,7 @@ command:
           sdraw->GetCanvas()->UserRotate($5,$7,$9);
           sdraw->Paint();
         }
-        | VAR_SURFDRAW T_POINT T_addobj T_OP_PAR VAR_AMI_OBJECT T_CL_PAR
+        | VAR_SURFDRAW T_POINT T_addobj T_OP_PAR expr_var T_CL_PAR
         {
           GET_VARSTACK_OBJECT(SurfacePoly,surf)
           GET_VARSTACK_VALUE(Viewer3D,sdraw);
@@ -4103,7 +4086,7 @@ command:
           sdraw->GetCanvas()->AddSurface(surf);
           sdraw->Paint();
         }
-        | VAR_SURFDRAW ADD_ASSIGN VAR_AMI_OBJECT
+        | VAR_SURFDRAW ADD_ASSIGN expr_var
         {
           GET_VARSTACK_OBJECT(SurfacePoly,surf)
           GET_VARSTACK_VALUE(Viewer3D,   sdraw);
@@ -4111,7 +4094,7 @@ command:
           sdraw->GetCanvas()->AddSurface( surf);
           //sdraw->Paint();
         }
-        | VAR_SURFDRAW SUB_ASSIGN VAR_AMI_OBJECT
+        | VAR_SURFDRAW SUB_ASSIGN expr_var
         {
           GET_VARSTACK_OBJECT(SurfacePoly,surf)
           GET_VARSTACK_VALUE(Viewer3D,   sdraw);
@@ -4119,7 +4102,7 @@ command:
           sdraw->GetCanvas()->RemoveSurface(surf);
           sdraw->Paint();
         }
-        | VAR_SURFDRAW T_POINT T_Remove T_OP_PAR VAR_AMI_OBJECT T_CL_PAR
+        | VAR_SURFDRAW T_POINT T_Remove T_OP_PAR expr_var T_CL_PAR
         {
           /**
             Description: Removes the surface without swapping the 3D buffer
@@ -5099,7 +5082,7 @@ param_list:
           pl->AddParam(newvar);
           $$ = pl;
         }
-        | T_AND variable
+        | T_AND expr_var
         {
           BasicVariable::ptr       var(driver.var_stack.GetLastBasicVar());
           if (!var.get()) {
@@ -5108,14 +5091,13 @@ param_list:
           }
 
           ParamList* pl = new ParamList();
-
           // Creating a new variable that points to the same value, and a slightly different name (with added "_ref"), comments are also copied.
           BasicVariable::ptr newvar(var->NewReference());
 
           pl->AddParam(newvar);
           $$ = pl;
         }
-        | param_list T_COMMA T_AND variable
+        | param_list T_COMMA T_AND expr_var
         {
           BasicVariable::ptr       var(driver.var_stack.GetLastBasicVar());
           if (!var.get()) {
@@ -5142,9 +5124,14 @@ param_list:
           }
           ParamList* pl(new ParamList);
           BasicVariable::ptr newvar(var->NewCopy());
-          newvar->Rename("Param0");
-          pl->AddParam(newvar);
-          $$ = pl;
+          if (newvar.get()) {
+            newvar->Rename("Param0");
+            pl->AddParam(newvar);
+            $$ = pl;
+          } else {
+            driver.error(boost::format("Could not copy parameter 0 variable expression !").str().c_str());
+            YYABORT;
+          }
         }
         | param_list T_COMMA expr_var
         {
@@ -5159,9 +5146,14 @@ param_list:
           ParamList* pl =  $1;
           std::string paramname = (boost::format("Param%1%")%pl->GetNumParam()).str();
           BasicVariable::ptr newvar(var->NewCopy());
-          newvar->Rename(paramname.c_str());
-          pl->AddParam(newvar);
-          $$ = pl;
+          if (newvar.get()) {
+            newvar->Rename(paramname.c_str());
+            pl->AddParam(newvar);
+            $$ = pl;
+          } else {
+            driver.error((boost::format("Could not copy parameter %1% variable expression !") % pl->GetNumParam()).str().c_str());
+            YYABORT;
+          }
         }
         ;
 
@@ -9103,6 +9095,8 @@ string_variable:
 
 
 primary_var:
+      function_variable
+    |
       VAR_AMI_OBJECT
     |
       PROCESSED_VAR
@@ -9199,13 +9193,14 @@ primary_var:
         }
 
       }
+/*
       |
       function_variable T_OP_PAR param_list T_CL_PAR 
       {
         /**
           Description: 
             Call to a function, returning a variable
-        **/
+        ** /
         //cout << "call to variable T_OP_PAR param_list T_CL_PAR end_instr" << endl;
         // 1. check the variable type
         GET_CHECK_VARSTACK(var)
@@ -9221,7 +9216,7 @@ primary_var:
             driver.yyiperror("Class member does not return a variable \n");
             YYABORT;
           }
-          */
+          * /
           driver.var_stack.AddVar(res);
 
         } else
@@ -9236,7 +9231,7 @@ primary_var:
             driver.yyiperror("Ami function does not return a variable \n");
             YYABORT;
           }
-          */
+          * /
           driver.var_stack.AddVar(res);
 
         } else
@@ -9250,7 +9245,7 @@ primary_var:
             driver.yyiperror(" function returns NULL \n");
             YYABORT;
           }
-          */
+          * /
           driver.var_stack.AddVar(res);
         } else
         if (var->Type()==type_c_procedure) 
@@ -9277,11 +9272,46 @@ primary_var:
           driver.var_stack.AddVar(BasicVariable::ptr());
         }
       }
+*/
       |
       T_OP_PAR expr_var T_CL_PAR;
 
 postfix_var:
-     primary_var %prec SHIFT_THERE
+      primary_var %prec SHIFT_THERE
+      | postfix_var T_POINT identifier
+      {
+          // todo ... 
+          // 1. check if identifier belongs to the object
+          // 2. if so return corresponding variable
+          Variable<AMIObject>::ptr var(driver.var_stack.GetLastVar<AMIObject>());
+          if (!var.get()) {
+            driver.err_print("operator . (Element selection) is only available for variables of type AMIObject");
+            YYABORT;
+          }
+          AMIObject::ptr object(var->Pointer());
+          IdentifierInfo::ptr ident($3);
+          Variables::ptr previous_ocontext (Vars.GetObjectContext());
+          Vars.SetObjectContext(object->GetContext());
+    
+          // here, need to do our own checking ...
+          BasicVariable::ptr newvar( 
+            Vars.GetVar(ident->GetName().c_str(),
+            OBJECT_CONTEXT_NUMBER));
+
+          // reset previous object context
+          Vars.SetObjectContext(previous_ocontext);
+    
+          if  ((!GB_driver.procedure_declaration)&& newvar.get())   {
+            //cout << "returning variable" << endl;
+            //newvar->display();
+            driver.var_stack.AddVar(newvar);
+          } else {
+            // error message here
+            driver.yyiperror("Identifier does not belong to object context \n");
+            YYABORT;
+            //driver.var_stack.AddVar(BasicVariable::ptr());
+          }
+        }
       |
       postfix_var T_OP_PAR param_list T_CL_PAR 
       {
@@ -9394,7 +9424,8 @@ postfix_var:
   }
   |
   // moving var[image_extent] here to limit conflicts
-  postfix_var T_OP_BR  image_extent T_CL_BR
+  // this rule should be removed in the future
+  image_variable T_OP_BR  image_extent T_CL_BR
   {
     /**
       Description: 
@@ -9433,7 +9464,7 @@ postfix_var:
 
   }
   |
-  postfix_var T_OP_BR  primary_var T_CL_BR
+  postfix_var T_OP_BR  expr_var T_CL_BR
   {
     /**
       Description: Array subscript operator.
@@ -10840,41 +10871,12 @@ function_variable:
         | VAR_C_IMAGE_FUNCTION
         | VAR_CLASS_MEMBER
         | VAR_AMI_FUNCTION
-        | VAR_AMI_OBJECT T_POINT identifier
-        {
-          // todo ... 
-          // 1. check if identifier belongs to the object
-          // 2. if so return corresponding variable
-          Variable<AMIObject>::ptr var(driver.var_stack.GetLastVar<AMIObject>());
-          AMIObject::ptr object(var->Pointer());
-          IdentifierInfo::ptr ident($3);
-          Variables::ptr previous_ocontext (Vars.GetObjectContext());
-          Vars.SetObjectContext(object->GetContext());
-    
-          // here, need to do our own checking ...
-          BasicVariable::ptr newvar( 
-            Vars.GetVar(ident->GetName().c_str(),
-            OBJECT_CONTEXT_NUMBER));
-
-          // reset previous object context
-          Vars.SetObjectContext(previous_ocontext);
-    
-          if  ((!GB_driver.procedure_declaration)&& newvar.get())   {
-            //cout << "returning variable" << endl;
-            //newvar->display();
-            driver.var_stack.AddVar(newvar);
-          } else {
-            // error message here
-            driver.yyiperror("Identifier does not belong to object context \n");
-            YYABORT;
-            //driver.var_stack.AddVar(BasicVariable::ptr());
-          }
-        }
         ;
 
 variable_without_assign:
-        function_variable
-        | VAR_IMAGEDRAW
+//        function_variable
+//        | 
+        VAR_IMAGEDRAW
         | VAR_SURFDRAW
         | VAR_FILE
         | VAR_AMI_CLASS
@@ -10905,7 +10907,10 @@ processed_variable:
 variable:
     unprocessed_variable
     |
-    processed_variable;
+    processed_variable
+    |
+    function_variable
+    ;
 
 image_extent:
     expr T_COLON expr T_COMMA  expr T_COLON expr T_COMMA  expr T_COLON expr
