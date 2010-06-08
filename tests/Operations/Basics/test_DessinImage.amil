@@ -22,7 +22,22 @@ OK = 1 # The test was successful
 func "SyntheticImages/create_torus_gui.amil"
 CTClass CT
 
-printn "\t\t Create synthetic imaged.\n"
+DIMX=100
+DIMY=100
+DIMZ=100
+BG=0
+FG=0
+R=20
+r=4
+
+printn "\t\t Create synthetic imaged:"
+printn "\t\t\t dimx=%1%" % DIMX
+printn "\t\t\t dimy=%1%" % DIMY
+printn "\t\t\t dimz=%1%" % DIMZ
+printn "\t\t\t bg=%1%" % BG
+printn "\t\t\t fg=%1%" % FG
+printn "\t\t\t R=%1%"  % R
+printn "\t\t\t r=%1%"  % r
 
 ctobject->dimx = 100
 ctobject->dimy = 100
@@ -31,7 +46,6 @@ ctobject->bg = 0
 ctobject->fg = 100
 ctobject->R = 20
 ctobject->r = 4
-#ctobject->image_name = "global::ls_input"
 ctobject->Create
 
 printn "\t\t Create an object of class DessinImage.\n"
@@ -67,7 +81,21 @@ printn "\t\t\t\t X (GetXPos)=%1% " % torus_draw.GetXPos()
 printn "\t\t\t\t Y (GetYPos)=%1% " % torus_draw.GetYPos()
 printn "\t\t\t\t Y (GetZPos)=%1% " % torus_draw.GetZPos()
 
-OK = 0
+width=500
+height=500
+printn "\n\t\t Change the window size:\n"
+printn "\t\t\t\t Width=%1% " % width
+printn "\t\t\t\t Height=%1% " % height
+torus_draw._SetWindowSize(width,height)
+
+printn "\n\t\t Display the cursor of a imagedraw window:\n"
+torus_draw.showcursor(1)
+
+printn "\n\t\t Update the image that is drawn in the specified window:\n"
+torus_draw.update()
+
+printn "\n\t\t Hide the cursor of a imagedraw window:\n"
+torus_draw.showcursor(0)
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

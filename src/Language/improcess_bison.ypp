@@ -2824,6 +2824,7 @@ command:
           driver.res_print(st.c_str());
         }
 */
+/*
         | VAR_IMAGEDRAW T_POINT SETPOS T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
           Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
@@ -2841,7 +2842,7 @@ command:
           draw->Paint();
 
         }
-/*        | VAR_IMAGEDRAW T_POINT SHOWCURSOR T_OP_PAR expr T_CL_PAR
+        | VAR_IMAGEDRAW T_POINT SHOWCURSOR T_OP_PAR expr T_CL_PAR
         {
           Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
           DessinImage::ptr draw;
@@ -8267,13 +8268,13 @@ image:
 */
     }
     |
-    VAR_IMAGEDRAW T_POINT T_getimage
+/*    VAR_IMAGEDRAW T_POINT T_getimage
     {
       //GET_VARSTACK_OBJECT(DessinImage, imdraw)
       GET_VARSTACK_VALUE(DessinImage, imdraw)
       ADD_VARSTACK(InrImage, imdraw->GetInrImage());
     }
-    |
+    |*/
     T_threscross T_OP_PAR var_image T_COMMA expr T_CL_PAR
     {
       GET_VARSTACK_VALUE(InrImage, im);
@@ -10816,7 +10817,7 @@ function_variable:
 
 variable_without_assign:
         function_variable
-        | VAR_IMAGEDRAW
+//        | VAR_IMAGEDRAW
         | VAR_ARRAY_SURFACE
         | VAR_SURFDRAW
         | VAR_FILE
@@ -10918,7 +10919,7 @@ image_extent:
     {
       Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
       DessinImage::ptr draw = DessinImage::ptr(varimd->Pointer());
-  
+
       int xmin,xmax;
       int ymin,ymax;
       int zmin,zmax;
