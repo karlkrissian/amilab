@@ -1,0 +1,51 @@
+\BOOKMARK [1][-]{section.0.1}{Proyecto fin de carrera}{}
+\BOOKMARK [1][-]{section.0.2}{Agradecimientos}{}
+\BOOKMARK [0][-]{chapter.1}{Introducci\363n}{}
+\BOOKMARK [0][-]{chapter.2}{Estado actual del tema}{}
+\BOOKMARK [1][-]{section.2.1}{MITK}{chapter.2}
+\BOOKMARK [1][-]{section.2.2}{ITK \(librer\355a elegida\)}{chapter.2}
+\BOOKMARK [1][-]{section.2.3}{VTK}{chapter.2}
+\BOOKMARK [1][-]{section.2.4}{IGSTK}{chapter.2}
+\BOOKMARK [1][-]{section.2.5}{VTKEdge}{chapter.2}
+\BOOKMARK [0][-]{chapter.3}{Objetivos}{}
+\BOOKMARK [0][-]{chapter.4}{Metodolog\355a}{}
+\BOOKMARK [0][-]{chapter.5}{Recursos necesarios}{}
+\BOOKMARK [0][-]{chapter.6}{Plan de trabajo y temporizaci\363n}{}
+\BOOKMARK [1][-]{section.6.1}{An\341lisis}{chapter.6}
+\BOOKMARK [1][-]{section.6.2}{Dise\361o}{chapter.6}
+\BOOKMARK [1][-]{section.6.3}{Implementaci\363n}{chapter.6}
+\BOOKMARK [1][-]{section.6.4}{Validaci\363n y publicidad del PFC}{chapter.6}
+\BOOKMARK [0][-]{chapter.7}{An\341lisis}{}
+\BOOKMARK [1][-]{section.7.1}{Herramientas}{chapter.7}
+\BOOKMARK [2][-]{subsection.7.1.1}{Insight Toolkit}{section.7.1}
+\BOOKMARK [2][-]{subsection.7.1.2}{CMake}{section.7.1}
+\BOOKMARK [2][-]{subsection.7.1.3}{AMILab}{section.7.1}
+\BOOKMARK [2][-]{subsection.7.1.4}{Profiling}{section.7.1}
+\BOOKMARK [1][-]{section.7.2}{Actividad 2 An\341lisis}{chapter.7}
+\BOOKMARK [2][-]{subsection.7.2.1}{\277C\363mo implementar un filtro?}{section.7.2}
+\BOOKMARK [2][-]{subsection.7.2.2}{Filtro NLMeans B\341sico}{section.7.2}
+\BOOKMARK [2][-]{subsection.7.2.3}{Segmentaci\363n de la car\363tida}{section.7.2}
+\BOOKMARK [1][-]{section.7.3}{Actividad 3 An\341lisis}{chapter.7}
+\BOOKMARK [0][-]{chapter.8}{Dise\361o}{}
+\BOOKMARK [1][-]{section.8.1}{Actividad 1 Dise\361o}{chapter.8}
+\BOOKMARK [2][-]{subsection.8.1.1}{Multihilos}{section.8.1}
+\BOOKMARK [2][-]{subsection.8.1.2}{Wrapping en AMILab}{section.8.1}
+\BOOKMARK [2][-]{subsection.8.1.3}{Filtro Non Local Means B\341sico}{section.8.1}
+\BOOKMARK [2][-]{subsection.8.1.4}{Segmentaci\363n de la car\363tida}{section.8.1}
+\BOOKMARK [0][-]{chapter.9}{Implementaci\363n}{}
+\BOOKMARK [1][-]{section.9.1}{Filtro Non Local Means B\341sico con iteradores de vecindades}{chapter.9}
+\BOOKMARK [1][-]{section.9.2}{Nuevas funcionalidades de AMILab}{chapter.9}
+\BOOKMARK [2][-]{subsection.9.2.1}{wrapITKWrite}{section.9.2}
+\BOOKMARK [2][-]{subsection.9.2.2}{wrapITKBackTrackingMeshFilter}{section.9.2}
+\BOOKMARK [2][-]{subsection.9.2.3}{wrapITKBasicNLMeansFilter}{section.9.2}
+\BOOKMARK [2][-]{subsection.9.2.4}{wrapITKBinaryThresholdImageFilter}{section.9.2}
+\BOOKMARK [2][-]{subsection.9.2.5}{wrapITKDICOMRead}{section.9.2}
+\BOOKMARK [2][-]{subsection.9.2.6}{wrapITKFastMarchingImageFilter}{section.9.2}
+\BOOKMARK [2][-]{subsection.9.2.7}{wrapITKLevelSet}{section.9.2}
+\BOOKMARK [2][-]{subsection.9.2.8}{wrapITKMultiScaleVesselnessFilter}{section.9.2}
+\BOOKMARK [2][-]{subsection.9.2.9}{wrapITKRecursiveGaussianImageFilter}{section.9.2}
+\BOOKMARK [2][-]{subsection.9.2.10}{wrapITKSigmoidImageFilter}{section.9.2}
+\BOOKMARK [2][-]{subsection.9.2.11}{wrapITKWaterShedImageFilter}{section.9.2}
+\BOOKMARK [1][-]{section.9.3}{Script Proceso Completo}{chapter.9}
+\BOOKMARK [0][-]{chapter.10}{Validaci\363n}{}
+\BOOKMARK [0][-]{chapter.11}{Resultados y conclusiones}{}
