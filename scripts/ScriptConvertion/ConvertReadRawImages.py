@@ -60,7 +60,7 @@ if __name__ == "__main__":
       #print "line=",line
       # parse line
       typeval = r"(CHAR|UCHAR|SHORT|USHORT|INT|UINT|LONG|FLOAT|DOUBLE|RGB|FLOAT_VECTOR)"
-      res = re.subn(r"ReadRawImages\(([^,]+),([^,]+),\s*"+typeval+"(.val|)\s*,([^,]+),([^,]+),([^,]+),([^\)]+)\)",r"IO.ReadRawImages2D(\1,\2,\3.val,\4,\5,\6,\7)",line)
+      res = re.subn(r"ReadRawImages\(([^,]+),([^,]+),\s*"+typeval+"(\.val|)\s*,([^,]+),([^,]+),([^,]+),([^\)]+)\)",r"IO.ReadRawImages2D(\1,\2,\3.val,\4,\5,\6,\7)",line)
       if (res[1]>0):
         line = res[0]
         num_subs = num_subs+1

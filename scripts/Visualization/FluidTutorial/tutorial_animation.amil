@@ -29,10 +29,10 @@ alt_factor = 4
 
 imdir   ="WP01/package_02_LMD/images/"
 clouddir="WP01/package_02_LMD/misc/"
-i48 = IO.ReadRawImages2D(1024,1024,USHORT.val,,0,imdir+"AfGG_c0.81.48",0)
+i48 = IO.ReadRawImages2D(1024,1024,USHORT.val,0,imdir+"AfGG_c0.81.48",0)
 # Without filtering
-c48  =  IO.ReadRawImages2D(1024,1024,UCHAR.val,,0,clouddir+"AfGG_CLA_scene_analysis.48",0)
-t48 = IO.ReadRawImages2D(1024,1024,USHORT.val,,0,imdir+"AfGG_c10.8.49",0)
+c48  =  IO.ReadRawImages2D(1024,1024,UCHAR.val,0,clouddir+"AfGG_CLA_scene_analysis.48",0)
+t48 = IO.ReadRawImages2D(1024,1024,USHORT.val,0,imdir+"AfGG_c10.8.49",0)
 
 i48min=min(i48)
 i48max=max(i48)
@@ -54,7 +54,7 @@ clouds[4] = CreateFlatMesh(c48,110-epsilon,200)
 
 
 #------------------------------------------------------------
-proc ProcessMesh(SURFACE _s,IMAGE _j1, NUM _j1min, NUM _j1max, IMAGE _pos) {
+proc ProcessMesh(OBJECT _s,IMAGE _j1, NUM _j1min, NUM _j1max, IMAGE _pos) {
 #    -----------
   _s.SetColors(_j1,_j1min,_j1max)
   _s.ElevateMesh(_pos)
