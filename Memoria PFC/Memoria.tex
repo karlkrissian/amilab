@@ -17,7 +17,7 @@
 \renewcommand{\chaptername}{Cap\'{\i}tulo}
 %Para incluir figuras .bmp, .jpeg, .png....
 \usepackage[pdftex]{graphicx} % PDFLaTeX
-\DeclareGraphicsExtensions{.png,.pdf,.jpg}
+\DeclareGraphicsExtensions{.png,.pdf,.jpg,.gif}
 %Paquete para hipervínculos
 \usepackage{hyperref}
 %Configuración del coloreado
@@ -208,7 +208,7 @@ Una vez comentados estos puntos pasaremos a numerar el software y el hardware us
 	\item Hardware
 \begin{itemize}
 	\item Disco Duro cómo mínimo de 200GB
-	\item Portátil Centrino Duo con 1GB de RAM
+	\item Un sobremesa Quadcore con 4Gb de RAM para la fase de validación y obtención de resultados. Un portátil Centrino Duo con 1GB de RAM para el resto de las etapas. Esto es debido al tamaño de las imágenes utilizadas y a las limitaciones de Windows.
 \end{itemize}
 \end{itemize}
 
@@ -930,26 +930,50 @@ Para poder inicializar nuestra clase, tenemos un método que se encarga de fijar 
 \item enum
 \item float
 \item string
-\item filename
 \end{itemize}
 Una vez sabemos los tipos que se pueden utilizar, es importante tener en cuenta los siguientes puntos:
 \begin{itemize}
 \item Al declarar una variable como int o enum se debe inicializar como INT(``\textit{valor}'').
 \item Cuando declaras un tipo float no hace falta especificar al inicializarlo que es tipo float, porque por defecto ya sabe que lo es.
 \item Una variable de tipo boolean debe ser inicializada con el tipo UCHAR(``\textit{valor}'').
-\item Al inicializar una variable de tipo string o filename basta con asignarle el valor que queramos que tenga.
+\item Al inicializar una variable de tipo string basta con asignarle el valor que queramos que tenga.
 \end{itemize}
-Otro método importante en un script es el que se encarga de crear la interfaz propiamente dicha. Esta puede estar formada por:
+Otro método importante en un script es el que se encarga de crear la interfaz propiamente dicha. Normalmente y para tener un ``convenio'' este método se llama ``Gui''. Esta puede estar formada por:
 \begin{itemize}
-\item AddInt $\rightarrow$ f
+\item AddInt $\rightarrow$ Añadirá un slider que permitirá inicializar la variable dentro de un rango especificado.
+\item AddFloat $\rightarrow$ Añadirá un slider que permitirá inicializar la variable dentro de un rango especificado.
+\item AddEnum $\rightarrow$ Añadirá un combobox que permite elegir una de las opciones disponibles.
+\item AddBoolean $\rightarrow$ Añadirá un checkbox que activará o desactivará una opción.
+\item AddString $\rightarrow$ Añadirá un textbox en el que se puede introducir una string.
+\item AddDirname $\rightarrow$ Permitirá seleccionar un directorio o un archivo en concreto.
+\item AddButton $\rightarrow$ Añadirá un botón que permite hacer una llamada a uno de los métodos de la clase.
 \end{itemize}
+Todas estas opciones están asociadas a la ventana de parámetros que se crea utilizando ``ParamPanel'', una vez creada esta se pueden utilizar.
+
+Para darle formato a la interfaz existen una serie de comandos que ayudan a ordenarla:
+\begin{itemize}
+\item BeginBoxPanel \& EndBoxPanel $\rightarrow$ permiten formar un marco.
+\item BeginBook \& EndBook $\rightarrow$ creará un ``libro'' en el que se podrán añadir las ``páginas'' (pestañas) que se deseen.
+\item AddPage $\rightarrow$ se utiliza para crear las ``páginas'' que estarán dentro del ``libro''.
+\item BeginHorizontal \& EndHorizontal $\rightarrow$ permite ordenar las opciones que se quieran de manera horizontal. Sino se especifica las opciones se colocarán de manera vertical, una detrás de otra.
+\end{itemize}
+Por último se debe llamar al comando Update(-1) y a continuación de Display() para que la interfaz se muestre actualizada con los valores que hemos fijado en el constructor.
 \subsubsection{¿Cómo añadir un filtro en AMILab?}
+Como ya se ha visto AMILab es un software libre lo que nos permite añadir funcionalidades siempre que se necesiten. Para ello, basta con añadir los ficheros necesarios en la sección correspondiente de AMILab, siempre para mantener un orden y una lógica.
+
+En nuestro caso, las posibles funcionalidades creadas se añadirán a la sección ``Wrapping/WrapITK''. Para que estén disponibles en AMILab se deben declarar como variables mediante ``ADDOBJECTVAR\_NAME''. También será posible especificar si la nueva funcionalidad es una función o un procedimiento permitiendo definir el tipo que devolverá.
+
 \subsubsection{Ejecución de scripts}
+Una vez se ha creado el script deseado se puede cargar en AMILab para ver el resultado, comprobar que todo funciona correctamente y utilizarlo.
 
-\subsection{Profiling}
+Para cargar un script en AMILab se puede hacer de varias formas:
+\begin{enumerate}
+\item Accediendo a la barra de menú y seleccionando el script que se desee.
+\item Cargando el script mediante el comando func ``nombre del script''.
+\end{enumerate}
+Para la primera opción si queremos cargar un script que hemos creado nosotros tendremos que añadirlo al fichero ``Add2Menu.amil'' en el directorio correspondiente. De esta forma se incluirá en la lista que se despliega cuando vamos a Script en la barra de menú.
 
-\section{Actividad 2 Análisis}
-\subsection{¿Cómo implementar un filtro?}
+\section{¿Cómo implementar un filtro?}
 Los filtros se definen en base al tipo de datos de entrada y en base al tipo de datos de salida. La clave para escribir un filtro en Insight Toolkit es identificar el número y tipo de las entradas y salidas. Una vez hecho esto, hay superclases que simplifican la tarea a través de la derivación. Por ejemplo, la mayoría de los filtros en Insight Toolkit toman una imagen como entrada y producen una única imagen como salida. La superclase itk::ImageToImageFilter es la clase más adecuada para este filtro.
 \begin{itemize}
 	\item ``ImageToImageFilter'' $\rightarrow$ es el filtro más común utilizado para algoritmos de segmentación. Toma una imagen y produce una nueva imagen, por defecto con el mismo tamaño.
@@ -1010,7 +1034,7 @@ Por último, la implementación del código template debe ser incluida y catalogada
 
 \textit{$\#$endif}
 
-\subsection{Filtro NLMeans Básico}
+\section{Filtro NLMeans Básico}
 Dada una imagen con ruido el valor estimado para un punto se calcula como una media ponderada de todos los píxeles de la imagen, donde los pesos dependerán de la similitud entre dos píxeles dados.
 
 
@@ -1042,14 +1066,49 @@ Gracias al estudio realizado en una primera fase de las librerías ITK se ha toma
 	\item Es necesario leer la imagen de entrada y poder escribir la imagen resultante, para ello se utilizarán las siguientes clases, ``itkImageFileReader.h'' e ``itkImageFileWriter.h''. Utilizando el tipo de datos de la imagen se puede instanciar la clase encargada de leer la imagen. El tipo de la imagen es utilizado como un parámetro template para definir cómo los datos serán representados una vez sean cargados en memoria. Este tipo no tiene porque corresponder exactamente con el tipo almacenado en el fichero. Se puede realizar una conversión de un tipo a otro, siempre y cuando el tipo elegido para representar los datos en el disco admita dicha conversión.
 \end{itemize}
 
-\subsection{Segmentación de la carótida}
-\subsubsection{Clase BackTracking}
+\section{Segmentación de la carótida}
+\begin{figure}
+\centering
+\includegraphics[scale=0.7]{image016.png}%ext=pdf,jpg,png
+\caption{Región de interés}
+\label{fig:ROI}
+\end{figure}
+La arteria carótida común y la arteria carótida interna son clínicamente las arterias más relevantes en la bifurcación de las carótidas. Por tanto, será en estas dos arterias en las que nos centraremos principalmente. Se incluirá también una pequeña parte de la arteria carótida externa para evitar problemas a la hora de la evaluación en el lugar dónde la arteria carótida externa se bifurca de la arteria carótida interna. Esto permite incluir una bifurcación que dificultará el método.
 
-\section{Actividad 3 Análisis}
+El objetivo principal a conseguir es segmentar con precisión el interior de las bifurcaciones de las carótidas en un conjunto de imágenes de tomografía computarizada. Se partirá de tres puntos iniciales proporcionados por el usuario.
+La región a segmentar está definida alrededor de la bifurcación, que se define como la primera parte dónde el interior de la arteria carótida común se divide en dos partes, la de la arteria carótida interna y la de la arteria carótida externa. La segmentación debe contener la arteria carótida común, comenzando por lo menos a 20mm de la bifurcación, la arteria carótida interna, con un máximo de 40mm desde la bifurcación y la arteria carótida externa, hasta entre 10 y 20mm desde la bifurcación \ref{fig:ROI}
+
+Las medidas de rendimiento serán determinadas únicamente sobre la región de interés especificada anteriormente. Sin embargo, la ubicación de la bifurcación no se especifica. Por tanto, se debe estar seguro que la parte segmentada la contiene. La definición de la bifurcación y las regiones especificadas deberían ser suficientes para determinar la región adecuada de interés para la segmentación.
+
+Para la arteria carótida externa, el interior segmentado debe ser cortado entre 10 y 20mm desde la bifurcación. Para permitir un poco más de flexibilidad a la hora del corte de la arteria carótida externa, la región alrededor de la arteria carótida externa entre 10 y 20mm desde la bifurcación es una ``máscara'' dónde la evaluación de las medidas de rendimiento no serán consideradas.
+
+Los datos de entrada serán:
+\begin{itemize}
+\item El conjunto de datos de imágenes de tomografía computarizada (incluyendo en las cabeceras de los ficheros el tamaño de voxel y el sistema de coordenadas) y tres puntos iniciales:
+\begin{itemize}
+\item Un punto en la arteria carótida común, a la altura del lado craneal de la glándula tiroidea. 
+\item Un punto en la arteria carótida interna, justo antes de que la arteria entre en la base craneal.
+\item Un punto en la arteria carótida externa, donde la arteria se encuentra más cercana a la mandíbula.
+\end{itemize}
+\end{itemize}
+
+\section{Vesselness}
+El algoritmo Vesselnes se basa en un esquema de difusión anisotrópico guiado por posibilidad de igualdad de vasos a nivel de pixel. Es básicamente un filtro de suavizado, dónde la fuerza y la dirección de difusión vienen determinados por una medida llamadas ``vesselness''. La medida de vesselness es analizada mediante el sistema de autovectores de la matriz Hessiana. Se han propuesto varias funciones de vesselness. El algoritmo de Vesselness de Manniesing´s está basado en la función de vesselness de Frangi. 
+Para incrementar la magnitud de los autovalores de la matriz Hessiana
+\begin{equation}
+|\lambda_{1}| \leq |\lambda_{2}| \leq |\lambda_{3}|
+\label{eqn:eigen}
+\end{equation}
+la función de vesselness de Frangi está formada por tres componentes formulados para discriminar las estructuras tubulares de las estructuras similares a manchas o placas como se puede ver en la ecuación \ref{eqn:Ff}
+\begin{equation}
+V_F(\lambda)=\cases{0 &if $\lambda_{2} > 0$ or $\lambda_{3} > 0$ \cr (1-e^{-\frac{R_A^2}{2\alpha ^2}})\cdot(e^{-\frac{R_B^2}{2\beta ^2}})\cdot(1-e^{-\frac{S^2}{2\gamma ^2}}) &$otherwise$}
+\label{eqn:Ff}
+\end{equation}
+ \cite{Vesselness}.
+\section{Level Sets}
 
 \chapter{Diseño}
-\section{Actividad 1 Diseño}
-\subsection{Multihilos}
+\section{Multihilos}
 Insight Toolkit está diseñado para trabajar en entornos multiprocesador. Muchos de los filtros de Insight Toolkit usan multihilos. Cuando un filtro que usa multihilos se ejecuta, este automáticamente divide el trabajo entre los procesadores haciendo uso de la memoria compartida, esto se llama ``Filter Level Multithreading''.
 
 
@@ -1069,7 +1128,7 @@ Un filtro que utiliza multihilos proporciona una implementación del método ``Thr
 
 La imagen de salida es un único bloque contiguo de memoria que es utilizado por todos los hilos. Cada hilo tiene asignado una serie de pixeles para los que tiene que generar los valores correspondientes. Todos los hilos escriben en el mismo bloque de memoria pero a cada hilo se le permite escribir sólo un conjunto de píxeles.
 
-\subsection{Wrapping en AMILab}
+\section{Wrapping en AMILab}
 Se ha propuesto realizar una mejora en la distribución de los filtros ITK en AMILab. Lo que se ha buscado es que cada filtro que se añada a AMILab esté contenido en un fichero diferente para así facilitar el entendimiento del código.
 
 
@@ -1081,7 +1140,7 @@ A día de hoy, lo que se ha buscado es que cada nueva funcionalidad venga engloba
 
 Por tanto, tendremos dos ficheros por cada nueva funcionalidad y dos ficheros que se irán incrementando encargados de añadir dichas funcionalidades a AMILab.
 
-\subsection{Filtro Non Local Means Básico}
+\section{Filtro Non Local Means Básico}
 El diseño principal de nuestro filtro ``Basic NL-Means'' viene determinado por las consideraciones especificadas por Insight Toolkit a la hora de programar un filtro, por tanto, la realización del mismo se ha basado en estas restricciones.
 
 
@@ -1197,8 +1256,14 @@ Debemos tener en cuenta que como utilizamos multihilos la imagen se dividirá en 
 \label{fig:Pipeline}
 \end{figure}
 
-\subsection{Segmentación de la carótida}
-\subsubsection{Clase BackTracking}
+\section{Segmentación de la carótida}
+\begin{figure}
+\centering
+\includegraphics[scale=0.7]{sshot-3.PNG}%ext=pdf,jpg,png
+\caption{Pipeline}
+\label{fig:Pipeline}
+\end{figure}
+\subsection{Clase BackTracking}
 \subsubsection{Diagrama de clases}
 \subsubsection{Casos de uso}
 
@@ -1307,6 +1372,20 @@ Por tanto, la nueva funcionalidad implementada toma una imagen de formato InrIma
 \bibitem{AMILab} AMILab {\em \href{http://www.ctm.ulpgc.es/amilab\_dokuwiki/dokuwiki/doku.php}{http://www.ctm.ulpgc.es/amilab\_dokuwiki/dokuwiki/doku.php}}
 \bibitem{Lex} Lex {\em \href{http://es.wikipedia.org/wiki/Herramienta\_de\_programaci\%C3\%B3n\_lex}{http://es.wikipedia.org/wiki/Herramienta\_de\_programaci\%C3\%B3n\_lex}}
 \bibitem{Yacc} Yacc {\em \href{http://es.wikipedia.org/wiki/Yacc}{http://es.wikipedia.org/wiki/Yacc}}
+\bibitem{WorkshopRules} R.Hameeteman M.Zuluaga L.Joskowicz M.Freiman T. von Walsum {\em ``Carotid Lumen Segmentation and Stenosis Grading Challenge''} 2009
+\bibitem{Template} Template {\em \href{http://en.wikipedia.org/wiki/Template\_(programming)\#Advantages\_and\_disadvantages}{http://en.wikipedia.org/wiki/Template\_(programming)\#Advantages\_and\_disadvantages}}
+\bibitem{ProgG} Programación genérica {\em \href{http://es.wikipedia.org/wiki/Programaci\%C3\%B3n\_gen\%C3\%A9rica}{http://es.wikipedia.org/wiki/Programaci\%C3\%B3n\_gen\%C3\%A9rica}}
+\bibitem{ITK} ITK {\em \href {http://www.itk.org/}{http://www.itk.org/}}
+\bibitem{MITK} MITK {\em \href{http://www.mitk.org/}{http://www.mitk.org/}}
+\bibitem{VTKEdge} VTKEdge {\em \href {http://www.vtkedge.org/}{http://www.vtkedge.org/}}
+\bibitem{VTK} VTK {\em \href {http://www.vtk.org/}{http://www.vtk.org/}}
+\bibitem{IGSTK} IGSTK {\em \href {http://www.igstk.org/}{http://www.igstk.org/}}
+\bibitem{CT} Tomografía computarizada {\em \href{http://en.wikipedia.org/wiki/Computed\_tomography\#Diagnostic\_use}{http://en.wikipedia.org/wiki/Computed\_tomography\#Diagnostic\_use}}
+\bibitem{CT2} Tomografía computarizada {\em \href{http://www.imaginis.com/ct-scan/why-is-ct-performed-2}{http://www.imaginis.com/ct-scan/why-is-ct-performed-2}}
+\bibitem{CT3} Tomografía computarizada {\em \href{http://www.radiologyinfo.org/en/info.cfm?PG=bodyct\#part\_one}{http://www.radiologyinfo.org/en/info.cfm?PG=bodyct\#part\_one}}
+\bibitem{P06} R.S.Pressman {\em ``Ingeniería del Software''} Editorial McGraw-Hill, 6ª Edición, 2006
+\bibitem{Workshop} Artículo Workshop09 {\em \href{http://www.insight-journal.org/browse/publication/672}{http://www.insight-journal.org/browse/publication/672}}
+\bibitem{Vesselness} Vesselness {\em \href{http://www.insight-journal.org/browse/publication/163}{http://www.insight-journal.org/browse/publication/163}}
 \end{thebibliography}
 \end{document}
 
