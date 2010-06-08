@@ -31,9 +31,6 @@ using namespace std;
 class InrImage;
 class DessinImage;
 
-namespace amilab {
-class SurfacePoly;
-}
 
 class Viewer3D;
 //class C_wrap_procedure;
@@ -49,6 +46,7 @@ class GLTransfMatrix;
 class VarArray;
 
 
+
 #define VARTYPE_PROP(type,name,isnum) \
   template<> vartype GetVarType<type>()  { return name;     } \
   template<> bool IsNumerical  <type>()  { return isnum;    }
@@ -62,7 +60,6 @@ VARTYPE_PROP( int,                  type_int,             true);
 VARTYPE_PROP( unsigned char,        type_uchar,           true)
 VARTYPE_PROP( std::string,          type_string,          false)
 VARTYPE_PROP( DessinImage,          type_imagedraw,       false)
-VARTYPE_PROP( amilab::SurfacePoly,          type_surface,         false)
 VARTYPE_PROP( Viewer3D,             type_surfdraw,        false)
 VARTYPE_PROP( FILE,                 type_file,            false)
 VARTYPE_PROP( C_wrap_procedure,     type_c_procedure,     false)
@@ -105,7 +102,6 @@ template <> double Variable<FloatMatrix>::GetValueAsDouble() const { return 0.0;
 
 VARTYPE_DEFAULT( InrImage)
 VARTYPE_DEFAULT( DessinImage)
-VARTYPE_DEFAULT( amilab::SurfacePoly)
 VARTYPE_DEFAULT( Viewer3D)
 VARTYPE_DEFAULT( FILE)
 VARTYPE_DEFAULT( C_wrap_procedure)

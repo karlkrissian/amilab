@@ -1151,20 +1151,21 @@ BasicVariable::ptr WrapClass_SurfacePoly::
   if ((!p)||p->GetNumParam()==0) 
     return BasicVariable::ptr();
 
-  BasicVariable::ptr var(p->GetParam(0));
-  DYNAMIC_CAST_VARIABLE(SurfacePoly, var, varsurf);
+  int n=0;
+  CLASS_GET_OBJECT_PARAM(SurfacePoly, varsurf, surf);
+//  BasicVariable::ptr var(p->GetParam(0));
+//  DYNAMIC_CAST_VARIABLE(SurfacePoly, var, varsurf);
 
   if (varsurf.get()) {
     // should be OK
     if (varsurf->GetPtrCounter()==1) {
       CLASS_MESSAGE("GetPtrCounter()==1");
-      this->_objectptr->_obj = varsurf->Pointer(); 
+      this->_objectptr->_obj = surf; 
     } else {
       // make a copy first
       BasicVariable::ptr copy(varsurf->NewCopy());
-      DYNAMIC_CAST_VARIABLE(SurfacePoly, 
-        copy, varsurf_copy)
-      this->_objectptr->_obj = varsurf_copy->Pointer();
+      GET_WRAPPED_OBJECT(SurfacePoly, copy, surf);
+      this->_objectptr->_obj = surf;
     }
   }
   return BasicVariable::ptr();
@@ -1186,13 +1187,13 @@ BasicVariable::ptr WrapClass_SurfacePoly::
   if ((!p)||p->GetNumParam()==0) 
     return BasicVariable::ptr();
 
-  BasicVariable::ptr var(p->GetParam(0));
-  DYNAMIC_CAST_VARIABLE(SurfacePoly, var, varsurf);
+  int n=0;
+  CLASS_GET_OBJECT_PARAM(SurfacePoly, varsurf,surf);
 
   if (varsurf.get()) {
     // should be OK
     // default copy 
-    (*this->_objectptr->_obj) = (*varsurf->Pointer()); 
+    (*this->_objectptr->_obj) = (*surf); 
   }
   return BasicVariable::ptr();
 }

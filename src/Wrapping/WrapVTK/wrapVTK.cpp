@@ -18,6 +18,8 @@ using namespace amilab;
 #include "wrapVTK.h"
 #include "vtk_common.h"
 
+#include "wrap_SurfacePoly.h"
+
 extern VarContexts  Vars;
 
 #ifndef _WITHOUT_VTK_
@@ -138,8 +140,6 @@ InrImage* vtkAnisoGS(ParamList* p)
 BasicVariable::ptr Wrap_vtkSkeleton2Lines(ParamList* p)
 {
 
-#ifndef _WITHOUT_VTK_
-
   char functionname[] = "vtkSkeleton2Lines";
   char description[]=" \n\
       Creates lines from a skeleton\n\
@@ -167,17 +167,18 @@ BasicVariable::ptr Wrap_vtkSkeleton2Lines(ParamList* p)
   vtk_skel2lines->SetInput( vtk_image.get());
   vtk_skel2lines->GetOutput();
 
+
+  return CreateVar_SurfacePoly(new SurfacePoly(vtk_skel2lines->GetOutput()));
+
+/*
   SurfacePoly::ptr surf_result( new SurfacePoly(vtk_skel2lines->GetOutput()));
 
   Variable<SurfacePoly>::ptr varres(
     new Variable<SurfacePoly>("vtkSkeleton2lines_result",surf_result));
 
   return varres;
+*/
 
-#else
-  fprintf(stderr," VTK not available, you need to compile with VTK ...\n");
-  return NULL;
-#endif // _WITHOUT_VTK_
 
 } // Wrap_vtkSkeleton2Lines()
 
@@ -186,7 +187,6 @@ BasicVariable::ptr Wrap_vtkSkeleton2Lines(ParamList* p)
 BasicVariable::ptr Wrap_vtkSphere( ParamList* p)
 //            --------------
 {
-#ifndef _WITHOUT_VTK_
 
   char functionname[] = "vtkSphere";
   char description[]=" \n\
@@ -224,17 +224,8 @@ BasicVariable::ptr Wrap_vtkSphere( ParamList* p)
 
   vtk_sphere->Update();
 
-  SurfacePoly::ptr surf_result( new SurfacePoly(vtk_sphere->GetOutput()));
+  return CreateVar_SurfacePoly(new SurfacePoly(vtk_sphere->GetOutput()));
 
-  Variable<SurfacePoly>::ptr varres(
-    new Variable<SurfacePoly>("vtkSphere_result",surf_result));
-
-  return varres;
-
-#else
-  fprintf(stderr," VTK not available, you need to compile with VTK ...\n");
-  return BasicVariable::ptr();
-#endif // _WITHOUT_VTK_
 
 } // Wrap_vtkSphere()
 

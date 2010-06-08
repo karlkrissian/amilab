@@ -41,6 +41,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapInterface
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapImage
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapSurface
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapBasicTypes
   ${AMILAB_SOURCE_DIR}/wxSamples/penguin
   ${AMILAB_SOURCE_DIR}/wxStcFrame
   ${AMILAB_SOURCE_DIR}/Algorithms/Basic
@@ -87,7 +88,7 @@ SET(Language_HDRS
     ImageStack.h
     VariableStack.h
     paramlist.h
-    SurfStack.h
+#    SurfStack.h
     VarContexts.hpp
     VarContexts.tpp
     BasicVariable.h

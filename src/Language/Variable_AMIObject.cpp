@@ -13,11 +13,6 @@ extern yyip::Driver GB_driver;
 #define NEW_SMARTPTR(type, var, value) \
   boost::shared_ptr<type> var(new type(value));
 
-/*
-#define RETURN_VARPTR(type,  value) \
-  boost::shared_ptr<type> newval(new type(value)); \
-  return Variable<type>::ptr( new Variable<type>(newval));
-*/
 #include "inrimage.hpp"
 
 
@@ -535,6 +530,7 @@ BasicVariable::ptr Variable<AMIObject>::operator =(const BasicVariable::ptr& b)
 
 template<> BasicVariable::ptr Variable<AMIObject>::operator =(const BasicVariable::ptr& b)
 {
+  CLASS_MESSAGE("start");
   AMIObject::ptr object(this->Pointer());
 
   // looking for function member named at

@@ -95,6 +95,10 @@
 
 #include "Variable.hpp"
 
+//typedef std::vector<BasicVariable::ptr> VarVector;
+
+#include "wrap_varvector.h"
+
 /*
 #include <boost/shared_ptr.hpp>
 //--- string formatting using boost
@@ -263,7 +267,7 @@ void CB_update_imagelist( void* imagelist_gui);
       YYABORT; \
     } \
   } \
-  boost::shared_ptr<type > obj(wobj->_obj);
+  boost::shared_ptr<type> obj(wobj->_obj);
 
 /*! \def GET_VARSTACK_OBJECT2
     \brief Gets the smart pointer to the wrapped object  (of type WrapClass_type) included in an AMIObject variable, taken from the stack of variables. 
@@ -449,10 +453,9 @@ void CB_update_imagelist( void* imagelist_gui);
 
 %token ASTRING ABLOCK NUMBER
 %token IDENTIFIER
-%token VAR_IMAGE   VAR_FLOAT VAR_INT VAR_UCHAR VAR_STRING VAR_IMAGEDRAW
-%token VAR_LONG     /// New (added: 27/05/2010)
-%token VAR_DOUBLE
-%token VAR_SURFACE VAR_SURFDRAW VAR_MATRIX
+%token PROCESSED_VAR
+%token VAR_IMAGE  VAR_STRING VAR_IMAGEDRAW
+%token VAR_SURFDRAW VAR_MATRIX
 %token VAR_FILE
 %token VAR_C_FUNCTION
 %token VAR_C_PROCEDURE
@@ -462,7 +465,6 @@ void CB_update_imagelist( void* imagelist_gui);
 %token VAR_AMI_CLASS
 %token VAR_AMI_OBJECT
 %token VAR_GLTRANSFORM
-%token VAR_ARRAY_SURFACE
 %token VAR_ARRAY_IMAGE
 %token T_del
 %token T_delvars
@@ -777,7 +779,10 @@ void CB_update_imagelist( void* imagelist_gui);
 
 
 // Operators precedence
-%right ASSIGN_OP ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN
+%nonassoc SHIFT_THERE
+%nonassoc INC_OP DEC_OP TRANSPOSE_OP T_OP_BR T_ADD T_SUB T_QUEST
+%nonassoc T_OP_PAR
+%right ASSIGN_OP ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN LEFT_ASSIGN
 %left OR_OP
 %left T_EXP
 %left AND_OP
@@ -785,10 +790,10 @@ void CB_update_imagelist( void* imagelist_gui);
 %left T_AND
 %left NE_OP EQ_OP
 %left GE_OP LE_OP T_GT T_LT
-%left T_SUB T_ADD
+//%left T_SUB T_ADD
 %left T_MOD T_DIV T_MULT
 %right prefix
-%left postfix
+%nonassoc postfix
 
 %type <ident>          identifier
 %type <ident>          IDENTIFIER
@@ -1537,6 +1542,7 @@ command:
             YYABORT;
           }
       }
+/* Deprecated
       |
       identifier ASSIGN_OP T_Surface T_OP_BR expr T_CL_BR
       {
@@ -1551,6 +1557,9 @@ command:
       |
       identifier LEFT_ASSIGN T_Surface T_OP_BR expr T_CL_BR
       {
+        /**
+         * Keeping this rule ???
+         **
         IdentifierInfo::ptr ident($1);
         int size = (int) $5;
         if (size<1) size = 1;
@@ -1558,6 +1567,7 @@ command:
         arraysurf->Init(type_surface,size);
         Vars.AddVar<VarArray>(ident,arraysurf);
       }
+*/
       |
       identifier ASSIGN_OP T_Image T_OP_BR expr T_CL_BR
       {
@@ -1664,6 +1674,7 @@ command:
           printf("delete m2 end\n");
        }
 */
+/* Deprecated
         |
         VAR_ARRAY_SURFACE T_OP_BR expr T_CL_BR ASSIGN_OP surface
         {
@@ -1686,6 +1697,7 @@ command:
           else
             driver.err_print("assignment of NULL surface\n");
         }
+*/
 /*
         |
         var_surface LEFT_ASSIGN surface
@@ -1705,6 +1717,7 @@ command:
 
         }
 */
+/* deprecated now using <<= operator of VarVector 
         |
         VAR_ARRAY_SURFACE LEFT_ASSIGN T_Surface T_OP_BR expr T_CL_BR
         {
@@ -1725,6 +1738,7 @@ command:
             driver.err_print("not able to create surface array !\n");
 
       }
+*/
       |
       identifier ASSIGN_OP T_INT T_OP_PAR expr T_CL_PAR
       {
@@ -2221,32 +2235,6 @@ command:
           Func_Pad(i1.get(),i2.get(),stepx,posx,stepy,posy,stepz,posz);
 
         }
-/*
-        |  VAR_INT INC_OP
-        {
-          (*driver.var_stack.GetLastVar<int>()->Pointer())++;
-        }
-        |  VAR_INT DEC_OP
-        {
-          (*driver.var_stack.GetLastVar<int>()->Pointer())--;
-        }
-        |  VAR_INT ASSIGN_OP expr
-        {
-          (*driver.var_stack.GetLastVar<int>()->Pointer()) = (int) $3;
-        }
-        |  VAR_UCHAR ASSIGN_OP expr
-        {
-          (*driver.var_stack.GetLastVar<unsigned char>()->Pointer())  = (unsigned char) $3;
-        }
-        |  VAR_UCHAR INC_OP
-        {
-          (*driver.var_stack.GetLastVar<unsigned char>()->Pointer())++;
-        }
-        |  VAR_UCHAR DEC_OP
-        {
-          (*driver.var_stack.GetLastVar<unsigned char>()->Pointer())--;
-        }
-*/
 
 /* deprecated with Variable<string> operations
         |  VAR_STRING ASSIGN_OP expr_string
@@ -2296,16 +2284,6 @@ command:
         boost::shared_array<char> varmatch( $2);
          Vars.deleteVars( varmatch.get());
         }
-        | T_del VAR_ARRAY_SURFACE T_OP_BR expr T_CL_BR
-        {
-          Variable<VarArray>::ptr vararray(driver.var_stack.GetLastVar<VarArray>());
-          VarArray::ptr array (vararray->Pointer());
-          int  i = (int) $4;
-
-          if (array->GetVar(i).get()) {
-            array->GetVar(i) = BasicVariable::ptr();
-          }
-      }
       | ASHELL expr_string
       {
       /**
@@ -5191,7 +5169,7 @@ param_list:
         ;
 
 param_list_decl:
-        {
+    {
       //      printf("no parameters \n");
       ParamListDecl* pl = new ParamListDecl;
       $$ = pl;
@@ -5225,21 +5203,23 @@ param_list_decl:
       ParamListDecl* pl = new ParamListDecl;
       pl->AddParam(ident->GetName(),type_image);
       $$ = pl;
-        }
+    }
     | T_IMAGEDRAW IDENTIFIER
-        {
+    {
       IdentifierInfo::ptr ident($2);
       ParamListDecl* pl = new ParamListDecl;
       pl->AddParam(ident->GetName(),type_imagedraw);
       $$ = pl;
-        }
+    }
+/* Deprecated
     | T_SURFACE IDENTIFIER
-        {
+    {
       IdentifierInfo::ptr ident($2);
       ParamListDecl* pl = new ParamListDecl;
       pl->AddParam(ident->GetName(),type_surface);
       $$ = pl;
-        }
+    }
+*/
     | param_list_decl T_COMMA T_OBJECT IDENTIFIER
     {
       IdentifierInfo::ptr ident($4);
@@ -5248,40 +5228,43 @@ param_list_decl:
       $$ = pl;
     }
     | param_list_decl T_COMMA T_NUM IDENTIFIER
-        {
+    {
       IdentifierInfo::ptr ident($4);
       ParamListDecl* pl = (ParamListDecl*) $1;
       pl->AddParam(ident->GetName(),type_float);
       $$ = pl;
-        }
+    }
     | param_list_decl T_COMMA T_STRING IDENTIFIER
-        {
+    {
       IdentifierInfo::ptr ident($4);
       ParamListDecl* pl = (ParamListDecl*) $1;
       pl->AddParam(ident->GetName(),type_string);
       $$ = pl;
-        }
+    }
     | param_list_decl T_COMMA T_IMAGE IDENTIFIER
-        {
+    {
       IdentifierInfo::ptr ident($4);
       ParamListDecl* pl = (ParamListDecl*) $1;
       pl->AddParam(ident->GetName(),type_image);
       $$ = pl;
-        }
+    }
     | param_list_decl T_COMMA T_IMAGEDRAW IDENTIFIER
-        {
+    {
       IdentifierInfo::ptr ident($4);
       ParamListDecl* pl = (ParamListDecl*) $1;
       pl->AddParam(ident->GetName(),type_imagedraw);
       $$ = pl;
-        }
+    }
+/* Deprecated
     | param_list_decl T_COMMA T_SURFACE IDENTIFIER
-        {
+    {
       IdentifierInfo::ptr ident($4);
       ParamListDecl* pl = (ParamListDecl*) $1;
       pl->AddParam(ident->GetName(),type_surface);
       $$ = pl;
-        };
+    }
+*/
+      ;
 
 primary_expr_string: ASTRING
     {
@@ -5507,26 +5490,6 @@ float_variable:
       **/
       ADD_VARSTACK_FLOAT(3.14159265358979323846)
     }
-/*
-    | VAR_INT
-    {
-      /**
-      Description:
-        Temporary solution: convert int variable to float variable
-      **
-      GET_VARSTACK_VALUE(int,n);
-      ADD_VARSTACK_FLOAT((double) *n.get())
-    }
-    | VAR_UCHAR
-    {
-      /**
-      Description:
-        Temporary solution: convert unsigned char variable to float variable
-      **
-      GET_VARSTACK_VALUE(unsigned char,n);
-      ADD_VARSTACK_FLOAT((double) *n.get())
-    }
-*/
     | var_image T_OP_PAR expr T_COMMA expr  T_CL_PAR
     {
         /**
@@ -6040,8 +6003,9 @@ float_variable:
       ADD_VARSTACK_FLOAT(val);
       delete [] $3;
     }
+/*
     |
-/*    VAR_IMAGEDRAW T_POINT T_GetXmin
+    VAR_IMAGEDRAW T_POINT T_GetXmin
     {
       Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
       DessinImage::ptr draw;
@@ -6189,7 +6153,7 @@ float_variable:
       ADD_VARSTACK_FLOAT(val);
     }
 */
-    | VAR_MATRIX T_OP_PAR expr T_COMMA expr T_CL_PAR
+    | matrix_variable T_OP_PAR expr T_COMMA expr T_CL_PAR
     {
       Variable<FloatMatrix>::ptr varmat(driver.var_stack.GetLastVar<FloatMatrix>());
       FloatMatrix::ptr mat (varmat->Pointer());
@@ -6199,7 +6163,7 @@ float_variable:
       // create a reference with a smart pointer without deleter ???
       ADD_VARSTACK_FLOAT(val);
     }
-    | VAR_MATRIX T_POINT SET T_OP_PAR expr T_COMMA expr  T_COMMA expr T_CL_PAR
+    | matrix_variable T_POINT SET T_OP_PAR expr T_COMMA expr  T_COMMA expr T_CL_PAR
     {
       /**
         Description
@@ -6267,9 +6231,13 @@ float_variable:
       float val =  res;
       ADD_VARSTACK_FLOAT(val);
     }
-    | VAR_FILE T_POINT T_read T_OP_PAR VAR_FLOAT T_CL_PAR
+    | VAR_FILE T_POINT T_read T_OP_PAR PROCESSED_VAR T_CL_PAR
     {
       GET_VARSTACK_VALUE(float,val_ptr);
+      if (!val_ptr.get()) {
+        driver.err_print("needs float variable");
+        YYABORT;
+      }
       GET_VARSTACK_VALUE(FILE,file);
 
       float*  var = val_ptr.get();
@@ -6437,6 +6405,8 @@ var_image:
 
 
 image:
+    var_image %prec SHIFT_THERE
+    |
       T_Image  expr_string
       {
         boost::shared_array<char> st( $2);
@@ -6580,8 +6550,6 @@ image:
                         imname.c_str(),varim.get()));
       ADD_VARSTACK_PTR(InrImage,im);
     }
-    |
-    var_image
 
 /*
     |
@@ -9103,16 +9071,18 @@ image_variable:
 */
   ;
 
+/*
 surface_variable:
   var_surface
   {
     /**
       Description:
-    **/
+    **
     // IT IS IMPORTANT TO KEEP CREATING A NEW VARIABLE HERE, TO INCREASE THE SMT PTR COUNTER FOR ASSIGNMENT RULE !!!
     BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
     driver.var_stack.AddVar(var->NewReference());
   };
+*/
 
 string_variable:
   VAR_STRING
@@ -9140,25 +9110,38 @@ string_variable:
 primary_var:
       VAR_AMI_OBJECT
     |
-      VAR_LONG
-    |
-      VAR_INT
-    |
-      VAR_UCHAR
-    |
-      VAR_DOUBLE
-    |
-      VAR_FLOAT
+      PROCESSED_VAR
     |
       float_variable
     |
       image_variable
     |
-      surface_variable
+      surface
     |
       string_variable
     |
-      matrix_variable
+     matrix_variable %prec SHIFT_THERE
+    |
+    T_Surface T_OP_BR expr T_CL_BR
+    {
+      /**
+        Description:
+          Returns an AMIObject of type WrapClass_VarVector
+          containing 4 SurfacePoly variables.
+          Kept for compatibility.
+       **/
+      int initial_size = $3;
+      BasicVariable::ptr v = CreateVar_SurfacePoly( new SurfacePoly());
+
+      // Now create the vector 
+      VarVector* vv = new VarVector();
+      if ((initial_size>0)&&(v.get()))  {
+        for (int i=0; i<initial_size; i++)
+          vv->push_back(v->NewCopy());
+      }
+      BasicVariable::ptr new_var = CreateVar_VarVector(vv);
+      driver.var_stack.AddVar(new_var);
+    }
     |
     T_MAX T_OP_PAR expr_var T_COMMA expr_var T_CL_PAR
     {
@@ -9303,7 +9286,85 @@ primary_var:
       T_OP_PAR expr_var T_CL_PAR;
 
 postfix_var:
-  primary_var 
+     primary_var %prec SHIFT_THERE
+      |
+      postfix_var T_OP_PAR param_list T_CL_PAR 
+      {
+        /**
+          Description: 
+            Call to a function, returning a variable
+        **/
+        //cout << "call to variable T_OP_PAR param_list T_CL_PAR end_instr" << endl;
+        // 1. check the variable type
+        GET_CHECK_VARSTACK(var)
+        ParamList::ptr param($3);
+
+        // TODO: run this with overloading from BasicVariable ...
+        if (var->Type()==type_class_member) {
+          ///    Call a wrapped C++ class member.
+          DYNAMIC_CAST_VARIABLE(WrapClassMember,var, var1);
+          BasicVariable::ptr res ((var1->Pointer())->CallMember(param.get()));
+          /*
+          if (!res.get()) {
+            driver.yyiperror("Class member does not return a variable \n");
+            YYABORT;
+          }
+          */
+          driver.var_stack.AddVar(res);
+
+        } else
+        if (var->Type()==type_ami_function) 
+        {
+          ///    Call a language function with its parameters.
+          DYNAMIC_CAST_VARIABLE(AMIFunction,var, var1);
+          AMIFunction::ptr f(var1->Pointer());
+          BasicVariable::ptr res(driver.yyip_call_function(f,param));
+          /* don't be so strict ...
+          if (!res.get()) {
+            driver.yyiperror("Ami function does not return a variable \n");
+            YYABORT;
+          }
+          */
+          driver.var_stack.AddVar(res);
+
+        } else
+        if (var->Type()==type_c_function) 
+        {
+          DYNAMIC_CAST_VARIABLE(C_wrap_varfunction,var, func);
+          BasicVariable::ptr  res;
+          res = (*func->Pointer())(param.get());
+          /*
+          if (!res.get()) {
+            driver.yyiperror(" function returns NULL \n");
+            YYABORT;
+          }
+          */
+          driver.var_stack.AddVar(res);
+        } else
+        if (var->Type()==type_c_procedure) 
+        {
+          DYNAMIC_CAST_VARIABLE(C_wrap_procedure,var, func);
+          BasicVariable::ptr  res;
+          (*func->Pointer())(param.get());
+          driver.var_stack.AddVar(res);
+        } else
+        if (var->Type()==type_c_image_function) 
+        {
+          DYNAMIC_CAST_VARIABLE(C_wrap_imagefunction,var, func);
+          InrImage::ptr  im((*func->Pointer())(param.get()));
+          if (!im.get()) {
+            driver.yyiperror(" image function returns NULL \n");
+            YYABORT;
+          }
+          Variable<InrImage>::ptr res(new Variable<InrImage>(im));
+          driver.var_stack.AddVar(res);
+        } else
+        {
+          // error message here
+          driver.yyiperror("variable is not of a function type \n");
+          driver.var_stack.AddVar(BasicVariable::ptr());
+        }
+      }
   | T_NOT primary_var 
   {
     /**
@@ -9312,7 +9373,7 @@ postfix_var:
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(!(*var));
   }
-  | primary_var INC_OP %prec postfix
+  | postfix_var INC_OP %prec postfix
   {
     /**
       Description: Postfix increment operator.
@@ -9320,7 +9381,7 @@ postfix_var:
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar((*var)++);
   }
-  | primary_var DEC_OP %prec postfix
+  | postfix_var DEC_OP %prec postfix
   {
     /**
       Description: Postfix decrement operator.
@@ -9328,7 +9389,7 @@ postfix_var:
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar((*var)--);
   }
-  | primary_var TRANSPOSE_OP %prec postfix
+  | postfix_var TRANSPOSE_OP %prec postfix
   {
     /**
       Description: Transpose operator, usefull for matrices
@@ -9389,7 +9450,7 @@ postfix_var:
   ;
 
 prefix_var:
-  postfix_var 
+  postfix_var %prec SHIFT_THERE
   |
   T_OP_PAR basic_type T_CL_PAR prefix_var %prec prefix
   {
@@ -9400,13 +9461,13 @@ prefix_var:
     driver.var_stack.AddVar(var->BasicCast( $2));
 
   }
-  | T_SUB  postfix_var %prec prefix
+  | T_SUB  prefix_var %prec prefix
   {
     //cout << "T_SUB  cast_var  " << endl;
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(-(*var));
   }
-  | T_ADD  postfix_var %prec prefix
+  | T_ADD  prefix_var %prec prefix
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(+(*var));
@@ -9416,77 +9477,77 @@ prefix_var:
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(++(*var));
   }
-  | DEC_OP  postfix_var %prec prefix
+  | DEC_OP  prefix_var %prec prefix
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(--(*var));
   }
-  | SIN    postfix_var 
+  | SIN    prefix_var %prec prefix
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_sin());
   }
-  | COS    postfix_var 
+  | COS    prefix_var %prec prefix
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_cos());
   }
-  | SQRT   postfix_var 
+  | SQRT   prefix_var %prec prefix
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_sqrt());
   }
-  | ABS    postfix_var 
+  | ABS    prefix_var %prec prefix
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_fabs());
   }
-  | ROUND  postfix_var 
+  | ROUND  prefix_var %prec prefix
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_round());
   }
-  | FLOOR  postfix_var 
+  | FLOOR  prefix_var %prec prefix
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_floor());
   }
-  | TAN    postfix_var 
+  | TAN    prefix_var %prec prefix
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_tan());
   }
-  | ASIN   postfix_var 
+  | ASIN   prefix_var %prec prefix
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_asin());
   }
-  | ACOS   postfix_var 
+  | ACOS   prefix_var %prec prefix
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_acos());
   }
-  | ATAN   postfix_var 
+  | ATAN   prefix_var %prec prefix
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_atan());
   }
-  | EXP    postfix_var 
+  | EXP    prefix_var %prec prefix
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_exp());
   }
-  | LOG    postfix_var 
+  | LOG    prefix_var %prec prefix
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_log());
   }
-  | LN     postfix_var 
+  | LN     prefix_var %prec prefix
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_ln());
   }
-  | NORM   postfix_var 
+  | NORM   prefix_var %prec prefix
   {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_norm());
@@ -9518,7 +9579,7 @@ multiplicative_var:
   ;
 
 additive_var: 
-  multiplicative_var %prec T_ADD
+  multiplicative_var %prec SHIFT_THERE
   | additive_var T_ADD multiplicative_var
   {
     GET_CHECK_VARSTACK(var2)
@@ -9536,11 +9597,11 @@ additive_var:
   ;
 
 shift_var:
-  additive_var
+  additive_var %prec SHIFT_THERE
   ;
 
 relational_var:
-  shift_var %prec T_LT
+  shift_var %prec SHIFT_THERE
   | relational_var T_LT  shift_var
   {
     GET_CHECK_VARSTACK(var2)
@@ -9568,7 +9629,7 @@ relational_var:
   ;
 
 equality_var:
-  relational_var %prec EQ_OP
+  relational_var %prec SHIFT_THERE
   | equality_var EQ_OP relational_var
   {
     GET_CHECK_VARSTACK(var2)
@@ -9601,21 +9662,21 @@ equality_var:
   ;
 
 and_var:
-  equality_var %prec T_AND
+  equality_var %prec SHIFT_THERE
   | and_var T_AND equality_var
   ;
 
 exclusive_or_var:
-  and_var
+  and_var %prec SHIFT_THERE
   ;
 
 inclusive_or_var:
-  exclusive_or_var %prec T_OR
+  exclusive_or_var %prec SHIFT_THERE
   | inclusive_or_var T_OR exclusive_or_var
   ;
 
 logical_and_var:
-  inclusive_or_var %prec AND_OP
+  inclusive_or_var %prec SHIFT_THERE
   | logical_and_var AND_OP inclusive_or_var
   {
     /**
@@ -9628,7 +9689,7 @@ logical_and_var:
   ;
 
 logical_xor_var:
-  logical_and_var %prec T_EXP
+  logical_and_var %prec SHIFT_THERE
   | logical_xor_var T_EXP logical_and_var
   {
     /**
@@ -9641,7 +9702,7 @@ logical_xor_var:
   ;
 
 logical_or_var:
-  logical_xor_var %prec OR_OP
+  logical_xor_var %prec SHIFT_THERE
   | logical_or_var OR_OP logical_xor_var
   {
     /**
@@ -9654,7 +9715,7 @@ logical_or_var:
   ;
 
 conditional_var:
-  logical_or_var
+  logical_or_var %prec SHIFT_THERE
   | logical_or_var T_QUEST logical_or_var T_COLON conditional_var
   {
     /**
@@ -9668,7 +9729,7 @@ conditional_var:
   ;
 
 assignment_var:
-  conditional_var %prec ASSIGN_OP
+  conditional_var %prec SHIFT_THERE
   | conditional_var ASSIGN_OP assignment_var
   {
     //cout << "assignment_var" << endl;
@@ -9905,9 +9966,9 @@ expr_matrix : assignment_matrix
 ;
 */
 
+/* Deprecated
 var_surface:
-        VAR_SURFACE
-        |
+       |
         VAR_ARRAY_SURFACE T_OP_BR expr T_CL_BR
         {
           GET_VARSTACK_VAR_VAL(VarArray,var,array);
@@ -9926,6 +9987,7 @@ var_surface:
         |
         surface
         ;
+*/
 
 
 surface:
@@ -10818,7 +10880,6 @@ function_variable:
 variable_without_assign:
         function_variable
 //        | VAR_IMAGEDRAW
-        | VAR_ARRAY_SURFACE
         | VAR_SURFDRAW
         | VAR_FILE
         | VAR_AMI_CLASS
@@ -10834,20 +10895,9 @@ unprocessed_variable:
   Variable included in variable expression
 */
 processed_variable:
-        var_surface
+         VAR_AMI_OBJECT
         |
-        VAR_AMI_OBJECT
-        |
-        VAR_INT 
-        |
-         VAR_UCHAR
-        |
-         VAR_FLOAT
-        |
-         VAR_LONG
-         /* VAR_LONG new (added: 27/05/2010) ...*/
-        |
-         VAR_DOUBLE
+         PROCESSED_VAR
         |
          VAR_STRING
         /* VAR_STRING */

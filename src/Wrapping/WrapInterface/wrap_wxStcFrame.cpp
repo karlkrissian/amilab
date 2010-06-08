@@ -67,7 +67,7 @@ BasicVariable::ptr wrap_wxStcFrame::CallMember( ParamList* p)
 
   std::string* title = NULL;
   int n=0;
-  CLASS_GET_OBJECT_PARAM(wxWindow,parent);
+  CLASS_GET_OBJECT_PARAM(wxWindow,var,parent);
   if (!get_val_ptr_param<string>( title, p, n))   ClassHelpAndReturn;
 
   if (parent.get() && title!=NULL)

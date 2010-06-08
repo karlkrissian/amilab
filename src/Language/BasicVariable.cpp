@@ -36,7 +36,6 @@ const string BasicVariable::GetTypeName() const
     case type_uchar           : return string( "uchar"); 
     case type_string          : return string( "string"); 
     case type_imagedraw       : return string( "imagedraw"); 
-    case type_surface         : return string( "surface"); 
     case type_surfdraw        : return string( "surfdraw"); 
     case type_file            : return string( "file"); 
   //  case type_c_function      : return string( "C function ");

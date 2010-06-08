@@ -34,6 +34,21 @@
           boost::dynamic_pointer_cast<Variable<newtype> >(initvar)); \
     if (!resvar.get()) std::cerr << "DYNAMIC_CAST_VARIABLE(" << #newtype << "," << #initvar << "," << # resvar << ") failed ..." << std::endl;
 
+
+/*! \def GET_WRAPPED_OBJECT
+    \brief gets the smart pointer to the object wrapped, from a smart pointer to a basic variable
+*/
+#define GET_WRAPPED_OBJECT(type,var,objname) \
+    DYNAMIC_CAST_VARIABLE(AMIObject, var, varobj) \
+    boost::shared_ptr<type> objname; \
+    if (varobj.get()) { \
+      WrapClassBase::ptr wrapped_base(varobj->Pointer()->GetWrappedObject()); \
+      WrapClass_##type::ptr wrapped_obj( \
+        boost::dynamic_pointer_cast<WrapClass_##type>(wrapped_base)); \
+      objname = wrapped_obj->_obj; \
+    }
+
+
 template<typename> 
 struct to_string {
     // optionally, add other information, like the size
@@ -518,9 +533,6 @@ class CastVariable: public CastVariableBase
 class InrImage;
 class DessinImage;
 
-namespace amilab {
-class SurfacePoly;
-}
 
 class Viewer3D;
 //class C_wrap_procedure;
@@ -546,5 +558,7 @@ class VarArray;
 #include "Variable_string.h"
 #include "Variable_FloatMatrix.h"
 #include "Variable_AMIObject.h"
+
+
 
 #endif

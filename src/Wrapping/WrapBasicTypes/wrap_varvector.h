@@ -31,10 +31,10 @@ class WrapClass_VarVector : public WrapClassBase
   typedef WrapClass_VarVector::ptr _parentclass_ptr;
 
   public:
-    VarVector _obj;
+    boost::shared_ptr<VarVector> _obj;
 
     /// Constructor
-    WrapClass_VarVector(const VarVector& vv): _obj(vv)
+    WrapClass_VarVector( boost::shared_ptr<VarVector>& vv): _obj(vv)
     {}
 
     ADD_CLASS_METHOD( push_back,    "Add element at the end.");
@@ -46,6 +46,10 @@ class WrapClass_VarVector : public WrapClassBase
     ADD_CLASS_METHOD( clear,        "Removes all elements from the vector");
     ADD_CLASS_METHOD( setelement,   "Sets the variable at the given position");
 
+    /// <<= operator
+    ADD_CLASS_METHOD( left_assign,  "Reassign operator <<=");
+    ADD_CLASS_METHOD( assign,       "Assign operator =");
+
     void AddMethods(_parentclass_ptr& this_ptr )
     {
       AddVar_push_back(  this_ptr);
@@ -56,6 +60,10 @@ class WrapClass_VarVector : public WrapClassBase
       AddVar_at(         this_ptr);
       AddVar_clear(      this_ptr);
       AddVar_setelement( this_ptr);
+
+      // operators
+      AddVar_left_assign( this_ptr);
+      AddVar_assign(      this_ptr);
     }
 
 };
@@ -72,7 +80,7 @@ AMIObject::ptr AddWrap_VarVector(  WrapClass_VarVector::ptr& this_ptr);
  * @param si_ptr input smart pointer to a VarVector
  * @return smart pointer to an AMIObject class
  */
-Variable<AMIObject>::ptr CreateVar_VarVector( std::vector<BasicVariable::ptr>* si);
+Variable<AMIObject>::ptr CreateVar_VarVector( VarVector* si);
 
 /** Method that adds wrapping of VarVector 
  */

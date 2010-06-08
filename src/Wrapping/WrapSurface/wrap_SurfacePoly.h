@@ -157,7 +157,8 @@ class WrapClass_SurfacePoly : public WrapClassBase
       AddVar_ConnectLines(        this_ptr);
 
       // Operators
-      AddVar_left_assign(        this_ptr);
+      AddVar_left_assign(         this_ptr);
+      AddVar_assign(              this_ptr);
 
     }
 };

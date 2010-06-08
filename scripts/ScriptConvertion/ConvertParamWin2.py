@@ -110,7 +110,7 @@ if __name__ == "__main__":
       
       #print "line=",line
       # parse line
-      creationline = "(\s*)([:a-zA-Z]+)\s*=\s*ParamWin\s*\("
+      creationline = "(\s*)([:a-zA-Z_]+)\s*=\s*ParamWin\s*\("
       res = re.subn(r""+creationline,r"\1import = &global::ami_import;\n\1\2 = import->ParamPanel(",line)
       if (res[1]>0):
         line = res[0]

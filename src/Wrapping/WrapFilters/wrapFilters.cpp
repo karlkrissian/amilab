@@ -43,6 +43,7 @@
 
 #include "wrapSubPixel2D.h"
 #include "wrapGenerateRamp.h"
+#include "wrap_SurfacePoly.h"
 
 extern VarContexts  Vars;
 
@@ -1037,16 +1038,19 @@ BasicVariable::ptr Wrap_SmoothLinesToSplines(ParamList* p)
     float samplingstep = 0.1f;
     int n=0;
 
-  if (!get_val_ptr_param<SurfacePoly>(  input,        p, n)) HelpAndReturnVarPtr;
+  FUNC_GET_OBJECT_PARAM(SurfacePoly,varsurf,objsurf);
+  if (!objsurf.get()) HelpAndReturnVarPtr;
   if (!get_val_param<float>(    samplingstep, p, n)) HelpAndReturnVarPtr;
 
 
-  SurfacePoly::ptr surf_result (Func_SmoothLinesToSplines( input, samplingstep ));
+//  SurfacePoly::ptr surf_result (Func_SmoothLinesToSplines( input, samplingstep ));
 
-  Variable<SurfacePoly>::ptr varres(
-    new Variable<SurfacePoly>("interpolatedsplines_result",surf_result));
+  return CreateVar_SurfacePoly(Func_SmoothLinesToSplines( objsurf.get(),
+                                  samplingstep ));
+//Variable<SurfacePoly>::ptr varres(
+//    new Variable<SurfacePoly>("interpolatedsplines_result",surf_result));
 
-  return varres;
+//  return varres;
 
 
 } // Wrap_SmoothLinesToSplines()

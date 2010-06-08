@@ -81,8 +81,8 @@ s2d = isosurf(rep,rep_threshold)
 show s1d
 s1d_draw += s2d
 
-s1d              .SetDiffuse( 255,   0,   0)
-s2d              .SetDiffuse( 127, 127,   0)
+s1d.SetDiffuse( 255,   0,   0)
+s2d.SetDiffuse( 127, 127,   0)
 
 
 #i0_draw.setGLwin(s1d_draw)
@@ -104,7 +104,7 @@ snap_name  = snapdir+"combination.png"
 
 
 proc CR_AddCC() {
-  global_new
+  global
 
   // run de connected components in the response image
   rep_cc = CC((FLOAT)rep-rep_threshold)
@@ -155,7 +155,11 @@ proc CR_AddCC() {
 
 
 proc CR_AddEstimatedPaths() {
-  global::vpath <<= Surface[4]
+  global
+
+  vpath = Surface[4]
+
+
   for _n = 0 to 3 {
     vpath[_n] = ReadCTALine(sprint( "vessel%0.0f/result.txt",_n),1)
     s1d_draw += vpath[_n]
@@ -228,45 +232,44 @@ proc CR_CreateWin() {
   global
 
     # parameters window
-    CR_win = ParamWin("Comparing results")
+    import = &global::ami_import;
+    CR_win = import->ParamPanel("Comparing results")
 
-    CR_win.BeginHorizontal
-
-    CR_win.BeginBook
+    CR_win.BeginBook()
       CR_win.AddPage("Main")
-        CR_repth = CR_win.AddFloat(rep_threshold,0.01,100)
+        CR_repth = CR_win.AddFloat( &rep_threshold,  "rep_threshold", 0.01,100)
         CR_acc   = CR_win.AddButton("Add Connected Components",CR_AddCC)
         CR_aep   = CR_win.AddButton("Add Paths",CR_AddEstimatedPaths)
     
-        CR_nviews_id   = CR_win.AddInt(CR_nviews,1,10)
-        CR_rotation_id = CR_win.AddInt(CR_rotation,1,180)
+        CR_nviews_id   = CR_win.AddInt( &CR_nviews,  "CR_nviews", 1,10)
+        CR_rotation_id = CR_win.AddInt( &CR_rotation,  "CR_rotation", 1,180)
         CR_snap_id = CR_win.AddButton("combine",SaveCombine)
     
         CR_showimages_id = CR_win.AddButton("Show Images",CR_ShowImages)
   
       # Add the snapshots
       CR_win.AddPage("Snapshots")
-        CR_win.BeginBox("Snapshot 1")
-          CR_snap1_name_id = CR_win.AddString(snap1_name,"file")
+        CR_win.BeginBoxPanel("Snapshot 1")
+          CR_snap1_name_id = CR_win.AddString( &snap1_name,"file")
           CR_snap1_but_id  = CR_win.AddButton("Save",SaveConfig1)
-        CR_win.EndBox
+        CR_win.EndBoxPanel
     
-        CR_win.BeginBox("Snapshot 2")
-          CR_snap2_name_id = CR_win.AddString(snap2_name,"file")
+        CR_win.BeginBoxPanel("Snapshot 2")
+          CR_snap2_name_id = CR_win.AddString( &snap2_name,"file")
           CR_snap2_but_id  = CR_win.AddButton("Save",SaveConfig2)
-        CR_win.EndBox
+        CR_win.EndBoxPanel
     
-        CR_win.BeginBox("Snapshot 3")
-          CR_snap3_name_id = CR_win.AddString(snap3_name,"file")
+        CR_win.BeginBoxPanel("Snapshot 3")
+          CR_snap3_name_id = CR_win.AddString( &snap3_name,"file")
           CR_snap3_but_id  = CR_win.AddButton("Save",SaveConfig3)
-        CR_win.EndBox
+        CR_win.EndBoxPanel
     CR_win.EndHorizontal
 
     CR_win.EndBook
 
 
-    CR_win.CreateWin
-    CR_win.Display
+    CR_win.Update(-1)
+    CR_win.Display()
   local
 }
 

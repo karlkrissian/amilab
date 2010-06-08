@@ -1205,6 +1205,7 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
         _var_tree->SetItemFont(itemid,root_font);
         total_image_size += im->GetDataSize();
       } else
+/* TODO: arrange tree display for type_ami_object
       if (var->Type() == type_surface) {
         DYNAMIC_CAST_VARIABLE(SurfacePoly,var,varsurf);
         SurfacePoly::ptr surf (varsurf->Pointer());
@@ -1220,6 +1221,7 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
               new MyTreeItemData(var));
         _var_tree->SetItemFont(itemid,root_font);
       } else
+*/
       if ((var->Type() == type_float)||
           (var->Type() == type_double)|| /// New (added: 24/05/2010)
           (var->Type() == type_long)||   /// New (added: 27/05/2010)
