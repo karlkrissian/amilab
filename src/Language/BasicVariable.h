@@ -79,7 +79,12 @@ public:
   /**
    * Return the number of references (value of use_count()) of the smart pointer to the variable value
   **/
-  virtual int GetPtrCounter() = 0;
+  virtual int GetPtrCounter() const = 0;
+
+  /**
+   * Return the availability of the pointer (value of get()) of the smart pointer to the variable value
+  **/
+  virtual bool HasPointer() const = 0;
 
 //  virtual void operator = (const BasicVariable& v) = 0;
 

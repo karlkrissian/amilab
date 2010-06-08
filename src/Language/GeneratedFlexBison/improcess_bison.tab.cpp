@@ -1525,7 +1525,7 @@ namespace yyip {
         **/
         BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
         // check counter of the value, not of the variable ...
-        if (var.get() && (var->GetPtrCounter()>0) ) {
+        if (var.get() && (var->HasPointer())  ) {
           cout << "GetPtrCounter == " <<  var->GetPtrCounter()<< endl;
           cout << "use_count() == " <<  var.use_count() << endl;
           if (var->GetPtrCounter()==1) {

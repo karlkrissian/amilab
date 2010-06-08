@@ -139,7 +139,7 @@ BasicVariable::ptr WrapClass_DessinImage::
   param->_pos._x = posX;
   param->_pos._y = posY;
   param->_pos._z = posZ;
-  //      param->_pos.Check();
+  param->CheckPosition( draw->GetDisplayedImage());
   param->_MAJ.MAJCoupes();
 
   draw->Paint();
@@ -1169,7 +1169,7 @@ BasicVariable::ptr WrapClass_DessinImage::
   param = di->GetParam();
   float val=param->_pos._z;
   string comment;
-  comment = str( format(" //  xpos=%3d") % param->_pos._z);
+  comment = str( format(" //  zpos=%3d") % param->_pos._z);
   if(GB_driver.InConsole())
     GB_main_wxFrame->GetConsole()
                     ->IncCommand(wxString::FromAscii(comment.c_str()));
