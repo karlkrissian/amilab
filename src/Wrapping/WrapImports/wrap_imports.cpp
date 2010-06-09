@@ -12,7 +12,7 @@
 
 #include "wrapfunctions.hpp"
 #include "VarContexts.hpp"
-#include "wrapfunctions_draw.h"
+//#include "wrapfunctions_draw.h"
 #include "wrap_imports.h"
 #include "ami_class.h"
 #include "ami_object.h"
@@ -130,10 +130,11 @@ void AddWrapAmilab()
 
   // Add the MainFrame as an object
   AMIObject::ptr obj(AddWrap_MainFrame(GB_main_wxFrame));
-  amiobject->GetContext()->AddVar<AMIObject>("MainFrame", obj);
+  amiobject->GetContext()->AddVar<AMIObject>("MainFrame", obj, amiobject->GetContext());
 
   // 3. add the variables to this instance
-  Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), 
+      amiobject,Vars.GetBuiltinContext());
 }
 
 void AddWrapIO()
@@ -147,7 +148,9 @@ void AddWrapIO()
   AddVar_ReadRawVectImage3D(  amiobject->GetContext());
 
   // 3. add the variables to this instance
-  Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), 
+    amiobject,
+    Vars.GetBuiltinContext());
 }
 
 
@@ -161,7 +164,9 @@ void AddWrapImage()
   AddVar_ImageExtent(     amiobject->GetContext());
 
   // 3. add the variables to this instance
-  Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), 
+    amiobject,
+    Vars.GetBuiltinContext());
 }
 
 //--------------------------------------------

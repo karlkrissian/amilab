@@ -12,7 +12,7 @@
 
 #include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
-#include "wrapfunctions_draw.h"
+//#include "wrapfunctions_draw.h"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ParamPanel.hpp"

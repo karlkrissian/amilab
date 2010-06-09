@@ -51,7 +51,7 @@
 #include "wrapfunction_class.h"
 #include "wrap_ImageExtent.h"
 #include "wrap_SurfacePoly.h"
-
+#include "wrap_DessinImage.h"
 
 #ifndef __FLEX_LEXER_H
 #define yyFlexLexer yyipFlexLexer
@@ -581,22 +581,22 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_ReadCTALine
 %token T_ReadCTALineRadii
 
-%token T_SetIsoContour
-%token T_SetIsoContourParam
-%token T_DrawIsoContour
-%token T_SetIsoContourColor
-%token T_DrawAllContours
-%token T_AllContoursParam
+//%token T_SetIsoContour
+//%token T_SetIsoContourParam
+//%token T_DrawIsoContour
+//%token T_SetIsoContourColor
+//%token T_DrawAllContours
+//%token T_AllContoursParam
 
-%token T_GetZmin
-%token T_GetZmax
-%token T_GetYmin
-%token T_GetYmax
-%token T_GetXmin
-%token T_GetXmax
-%token T_GetXPos
-%token T_GetYPos
-%token T_GetZPos
+//%token T_GetZmin
+//%token T_GetZmax
+//%token T_GetYmin
+//%token T_GetYmax
+//%token T_GetXmin
+//%token T_GetXmax
+//%token T_GetXPos
+//%token T_GetYPos
+//%token T_GetZPos
 
 %token T_vtkDicomRead T_vtkMINCRead
 
@@ -646,7 +646,7 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_Remove
 %token T_SwapBuffers
 
-%token T_SetOpacityImage
+//%token T_SetOpacityImage
 
 %token T_GetTransform T_SetTransform
 %token T_Interpolate
@@ -656,20 +656,22 @@ void CB_update_imagelist( void* imagelist_gui);
 
 %token T_PrintMatrices
 
-%token SET SETPOS SHOWCURSOR T_update COMPARE SETVECTOR
+//%token SET SETPOS SHOWCURSOR T_update COMPARE SETVECTOR
+%token SET SETPOS COMPARE SETVECTOR
+
 %token T_lininterp
-%token T_SetCompareDisplacement
-%token T_DrawVector
-%token T_DisplayVectors
-%token T_SetVectParam
-%token T_SetVectColor
-%token T_SetVectStyle
-%token T_SetLineThickness
-%token T_SetZoom
+//%token T_SetCompareDisplacement
+//%token T_DrawVector
+//%token T_DisplayVectors
+//%token T_SetVectParam
+//%token T_SetVectColor
+//%token T_SetVectStyle
+//%token T_SetLineThickness
+//%token T_SetZoom
 %token T_SetWindowSize
-%token T_SetColormap
-%token T_drawcircle
-%token T_setGLwin
+//%token T_SetColormap
+//%token T_drawcircle
+//%token T_setGLwin
 %token T_initvalue
 %token T_ShowSection
 %token T_HideSection
@@ -763,7 +765,7 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_ReadFlow
 %token T_SetFluidNavFile
 %token T_DrawEarthCoord
-%token T_PaintCallback
+//%token T_PaintCallback
 
 %token T_SaveStructuredGrid
 
@@ -1429,7 +1431,7 @@ command:
         **/
         BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
         // check counter of the value, not of the variable ...
-        if (var.get() && (var->GetPtrCounter()>0) ) {
+        if (var.get() && (var->HasPointer())  ) {
           cout << "GetPtrCounter == " <<  var->GetPtrCounter()<< endl;
           cout << "use_count() == " <<  var.use_count() << endl;
           if (var->GetPtrCounter()==1) {
@@ -1990,50 +1992,61 @@ command:
         {
           std::string titre;
           GET_VARSTACK_VAR_VAL(InrImage, imagevar, im);
-          Variable<DessinImage>::ptr var;
+          BasicVariable::ptr var;
           int var_context = Vars.GetContext(imagevar);
+          Variables::ptr context = imagevar->GetContext();
 
+/*
           Variables::ptr previous_ocontext = Vars.GetObjectContext();
           if (var_context==OBJECT_CONTEXT_NUMBER) {
             // set new object context
             Vars.SetObjectContext(imagevar->GetContext());
           }
-
-          if ((var_context>=0)||
-              (var_context==OBJECT_CONTEXT_NUMBER)) {
-            titre = (boost::format("%s_draw") % imagevar->Name().c_str()).str();
-            FILE_MESSAGE(boost::format("SHOW var_image  title %s") % titre);
-            //if (Vars.GetCurrentContext()->GetVar(titre,&var)) {
-            var = boost::dynamic_pointer_cast<Variable<DessinImage> >(Vars.GetVar(titre.c_str(),var_context));
-            if (var.get()) {
+*/
+          
+          titre = (boost::format("%s_draw") % imagevar->Name().c_str()).str();
+          FILE_MESSAGE(boost::format("SHOW var_image  title %s") % titre);
+          //if (Vars.GetCurrentContext()->GetVar(titre,&var)) {
+          var = context->GetVar(titre.c_str());
+          if (var.get()) {
+            GET_WRAPPED_OBJECT(DessinImage, var, di)
+            if (di.get()) {
               DessinImageParametres* param;
-              DessinImage::ptr di( var->Pointer());
               param = di->GetParam();
               param->_MAJ.MAJCoupes();
               di->Paint();
               di->Raise();
+            } else {
+              driver.err_print(
+                (boost::format
+                  ("Unable to convert variable %1% to a wrapped DessinImage") % titre).str().c_str());
+              YYABORT;
             }
-            else
-            {
-              FILE_MESSAGE(boost::format("SHOW var_image creating title %s ") % titre);
-              DessinImage::ptr di;
-
-              std::string varname(titre);
-
-              di = DessinImage::Create_ptr( CreateIDraw( varname,  im));
-
-              BasicVariable::ptr newvar = 
-                Vars.AddVar<DessinImage>(titre.c_str(), di, var_context);
+          }
+          else
+          {
+            FILE_MESSAGE(boost::format("SHOW var_image creating title %s ") % titre);
+            std::string varname(titre);
+            DessinImage* di = CreateIDraw( varname,  im);
+            if (di!=NULL) {
+              BasicVariable::ptr newvar = CreateVar_DessinImage(di);
               di->SetCloseFunction(
                 (void*) CB_delete_variable,
                 (void*) (newvar.get()));
+              newvar->Rename(varname.c_str());
+              context->AddVar(newvar);
+            } else {
+              driver.err_print("Failed to create image viewer.");
+              YYABORT;
             }
-          } // var_context >=0
+          }
 
+/*
           if (var_context==OBJECT_CONTEXT_NUMBER) {
             // Restore the object context
             Vars.SetObjectContext(previous_ocontext);
           }
+*/
 
         }
         |  T_HIDE var_image
@@ -2041,6 +2054,7 @@ command:
           GET_VARSTACK_VAR_VAL(InrImage, varim, im)
           string title;
           BasicVariable::ptr var;
+          Variables::ptr context = varim->GetContext();
 
           title = (boost::format("%s_draw") % varim->Name().c_str()).str();
           var = Vars.GetVar(title.c_str());
@@ -2783,6 +2797,7 @@ command:
           driver.res_print(st.c_str());
         }
 */
+/*
         | VAR_IMAGEDRAW T_POINT SETPOS T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
           Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
@@ -2846,7 +2861,7 @@ command:
               di->SetCloseFunction(
                   (void*) CB_delete_imagedraw,
                   (void*) varname);
-              */
+              * /
               draw->CreeCompare2Image(di);
             }
             else
@@ -2888,7 +2903,7 @@ command:
         Description:
             Defines a displacement to apply to the cursor when
             comparing 2 image drawing windows
-        **/
+        ** /
           GET_VARSTACK_VALUE(InrImage,    displ);
           GET_VARSTACK_VALUE(DessinImage, draw2);
           GET_VARSTACK_VALUE(DessinImage, draw);
@@ -2929,7 +2944,7 @@ command:
           draw->GetCompareWindow(0)->SetTransformationMatrix(mat);
         // PB: the matrix is never freed from memory ...
         // TODO use smart pointer management !!!
-*/
+* /
         }
         | VAR_IMAGEDRAW T_POINT SETVECTOR T_OP_PAR NUMBER T_COMMA var_image T_CL_PAR
         {
@@ -2940,7 +2955,7 @@ command:
                 (7) Vector field image
             Description:
                 Assign a vector field to be draw in the given image drawing window.
-          **/
+          ** /
           GET_VARSTACK_VALUE(InrImage,    im);
           GET_VARSTACK_VALUE(DessinImage, draw);
 
@@ -2972,7 +2987,7 @@ command:
           Description:
             Sets the size and spacing of the vector drawing interface in the given
             image drawing window.
-          **/
+          ** /
           Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
           DessinImage::ptr draw;
           float size    = $5;
@@ -2994,7 +3009,7 @@ command:
             Sets the color of the given vector field (given by vector id),
             the color is set as (R,G,B) components, each component has a value
             between 0 and 255.
-          **/
+          ** /
           Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
           DessinImage::ptr draw;
           int vectid = (int) $5;
@@ -3057,7 +3072,7 @@ command:
         {
         /**
           Description: Set a user-defined colormap.
-         **/
+         ** /
           GET_VARSTACK_VALUE(InrImage, colmap);
           GET_VARSTACK_VALUE(DessinImage, draw);
 
@@ -3080,7 +3095,7 @@ command:
 
             Description:
                 Sets the image and intensity value of an isocontour in an 'image_draw' window.
-            **/
+            ** /
           GET_VARSTACK_VALUE(InrImage,    im);
           GET_VARSTACK_VALUE(DessinImage, draw);
 
@@ -3096,7 +3111,7 @@ command:
 
             Description:
                 Sets the image and intensity value of the isocontour number 0 in an 'image_draw' window.
-            **/
+            ** /
           GET_VARSTACK_VALUE(InrImage,    im);
           GET_VARSTACK_VALUE(DessinImage, draw);
 
@@ -3114,7 +3129,7 @@ command:
             Description:
                 Sets the parameters (line style and thickeness)
                 of an isocontour in an 'image_draw' window.
-            **/
+            ** /
           Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
           DessinImage::ptr draw;
 
@@ -3134,7 +3149,7 @@ command:
             Description:
                 Sets the parameters (line style and thickeness)
                 of an isocontour in an 'image_draw' window.
-            **/
+            ** /
           Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
           DessinImage::ptr draw;
 
@@ -3151,7 +3166,7 @@ command:
 
             Description:
                 Sets the visibility of an isocontour in an 'image_draw' window.
-            **/
+            ** /
           Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
           DessinImage::ptr draw;
 
@@ -3169,7 +3184,7 @@ command:
 
             Description:
                 Sets the color as RGB of an isocontour in an 'image_draw' window.
-            **/
+            ** /
           Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
           DessinImage::ptr draw;
           draw = DessinImage::ptr(varimd->Pointer());
@@ -3185,7 +3200,7 @@ command:
 
             Description:
                 Activates or desactivates the drawing of a series of isocontours.
-            **/
+            ** /
           Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
           DessinImage::ptr draw;
           draw = DessinImage::ptr(varimd->Pointer());
@@ -3200,7 +3215,7 @@ command:
 
             Description:
                 Parameters for drawing a series of isocontours around the main isocontour.
-            **/
+            ** /
           Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
           DessinImage::ptr draw;
           draw = DessinImage::ptr(varimd->Pointer());
@@ -3222,12 +3237,12 @@ command:
          Description:
             Setting the opacity image for the volume rendering.
             This image should have unsigned char values.
-         **/
+         ** /
           GET_VARSTACK_VALUE(InrImage,    im);
           GET_VARSTACK_VALUE(DessinImage, imdraw);
 
           imdraw->SetVolRenOpacity( im.get());
-        }
+        }*/
         | var_image T_POINT TInit
         {
           /**
@@ -5992,6 +6007,7 @@ float_variable:
       ADD_VARSTACK_FLOAT(val);
       delete [] $3;
     }
+/*
     |
     VAR_IMAGEDRAW T_POINT T_GetXmin
     {
@@ -6116,7 +6132,7 @@ float_variable:
       if (driver.InConsole())
         GB_main_wxFrame->GetConsole()
                         ->IncCommand(wxString::FromAscii(comment.c_str()));
-    }
+    }*/
 /*
     |
     AnisoGS T_POINT T_GetNoiseSD
@@ -8224,12 +8240,13 @@ image:
 */
     }
     |
-    VAR_IMAGEDRAW T_POINT T_getimage
+/*    VAR_IMAGEDRAW T_POINT T_getimage
     {
+      //GET_VARSTACK_OBJECT(DessinImage, imdraw)
       GET_VARSTACK_VALUE(DessinImage, imdraw)
       ADD_VARSTACK(InrImage, imdraw->GetInrImage());
     }
-    |
+    |*/
     T_threscross T_OP_PAR var_image T_COMMA expr T_CL_PAR
     {
       GET_VARSTACK_VALUE(InrImage, im);
@@ -10875,9 +10892,9 @@ function_variable:
 
 variable_without_assign:
 //        function_variable
-//        | 
-        VAR_IMAGEDRAW
-        | VAR_SURFDRAW
+//        | VAR_IMAGEDRAW
+//        |
+         VAR_SURFDRAW
         | VAR_FILE
         | VAR_AMI_CLASS
         | VAR_ARRAY_IMAGE
@@ -10969,7 +10986,7 @@ image_extent:
     {
       Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
       DessinImage::ptr draw = DessinImage::ptr(varimd->Pointer());
-  
+
       int xmin,xmax;
       int ymin,ymax;
       int zmin,zmax;

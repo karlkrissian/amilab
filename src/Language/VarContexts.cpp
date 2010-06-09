@@ -202,7 +202,7 @@ BasicVariable::ptr VarContexts::AddVar(BasicVariable::ptr var, int context)
     context = GetNewVarContext();
 
   CLASS_MESSAGE(boost::format("Context number %d ")% context);
-  return _context[context]->AddVar(var);
+  return _context[context]->AddVar(var,_context[context]);
 }
 
 //--------------------------------------------------

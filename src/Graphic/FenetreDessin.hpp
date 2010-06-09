@@ -92,6 +92,8 @@ class FenetreDessin:  public wxFrame
 //    =============
 {
 
+  DEFINE_CLASS(FenetreDessin);
+
 protected:
 
   static FenetreDessin* _this;  // Utile pour les actions

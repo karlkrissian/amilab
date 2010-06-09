@@ -193,11 +193,15 @@ public:
   }
 
 
-  int GetPtrCounter()
+  int GetPtrCounter() const
   {
     return _pointer.use_count();
   }
 
+  bool HasPointer() const
+  {
+    return (_pointer.get()!=NULL);
+  }
 
   /**
    * Copy of variables
