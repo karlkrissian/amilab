@@ -51,7 +51,7 @@
 #include "wrapfunction_class.h"
 #include "wrap_ImageExtent.h"
 #include "wrap_SurfacePoly.h"
-
+#include "wrap_DessinImage.h"
 
 #ifndef __FLEX_LEXER_H
 #define yyFlexLexer yyipFlexLexer
@@ -2009,50 +2009,61 @@ command:
         {
           std::string titre;
           GET_VARSTACK_VAR_VAL(InrImage, imagevar, im);
-          Variable<DessinImage>::ptr var;
+          BasicVariable::ptr var;
           int var_context = Vars.GetContext(imagevar);
+          Variables::ptr context = imagevar->GetContext();
 
+/*
           Variables::ptr previous_ocontext = Vars.GetObjectContext();
           if (var_context==OBJECT_CONTEXT_NUMBER) {
             // set new object context
             Vars.SetObjectContext(imagevar->GetContext());
           }
-
-          if ((var_context>=0)||
-              (var_context==OBJECT_CONTEXT_NUMBER)) {
-            titre = (boost::format("%s_draw") % imagevar->Name().c_str()).str();
-            FILE_MESSAGE(boost::format("SHOW var_image  title %s") % titre);
-            //if (Vars.GetCurrentContext()->GetVar(titre,&var)) {
-            var = boost::dynamic_pointer_cast<Variable<DessinImage> >(Vars.GetVar(titre.c_str(),var_context));
-            if (var.get()) {
+*/
+          
+          titre = (boost::format("%s_draw") % imagevar->Name().c_str()).str();
+          FILE_MESSAGE(boost::format("SHOW var_image  title %s") % titre);
+          //if (Vars.GetCurrentContext()->GetVar(titre,&var)) {
+          var = context->GetVar(titre.c_str());
+          if (var.get()) {
+            GET_WRAPPED_OBJECT(DessinImage, var, di)
+            if (di.get()) {
               DessinImageParametres* param;
-              DessinImage::ptr di( var->Pointer());
               param = di->GetParam();
               param->_MAJ.MAJCoupes();
               di->Paint();
               di->Raise();
+            } else {
+              driver.err_print(
+                (boost::format
+                  ("Unable to convert variable %1% to a wrapped DessinImage") % titre).str().c_str());
+              YYABORT;
             }
-            else
-            {
-              FILE_MESSAGE(boost::format("SHOW var_image creating title %s ") % titre);
-              DessinImage::ptr di;
-
-              std::string varname(titre);
-
-              di = DessinImage::Create_ptr( CreateIDraw( varname,  im));
-
-              BasicVariable::ptr newvar = 
-                Vars.AddVar<DessinImage>(titre.c_str(), di, var_context);
+          }
+          else
+          {
+            FILE_MESSAGE(boost::format("SHOW var_image creating title %s ") % titre);
+            std::string varname(titre);
+            DessinImage* di = CreateIDraw( varname,  im);
+            if (di!=NULL) {
+              BasicVariable::ptr newvar = CreateVar_DessinImage(di);
               di->SetCloseFunction(
                 (void*) CB_delete_variable,
                 (void*) (newvar.get()));
+              newvar->Rename(varname.c_str());
+              context->AddVar(newvar);
+            } else {
+              driver.err_print("Failed to create image viewer.");
+              YYABORT;
             }
-          } // var_context >=0
+          }
 
+/*
           if (var_context==OBJECT_CONTEXT_NUMBER) {
             // Restore the object context
             Vars.SetObjectContext(previous_ocontext);
           }
+*/
 
         }
         |  T_HIDE var_image
@@ -2060,6 +2071,7 @@ command:
           GET_VARSTACK_VAR_VAL(InrImage, varim, im)
           string title;
           BasicVariable::ptr var;
+          Variables::ptr context = varim->GetContext();
 
           title = (boost::format("%s_draw") % varim->Name().c_str()).str();
           var = Vars.GetVar(title.c_str());

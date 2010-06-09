@@ -10,6 +10,7 @@ NoMessageDialog(1)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Check the following methods:
 #                              - SetLineThickness
+#                              - SetIsoContour
 #                              - SetIsoContourColor
 #                              - DrawIsoContour
 #                              - SetIsoContourParam
@@ -62,6 +63,13 @@ printn "\t\t\t Thickness=%1% "  % LineThickness
 torus_draw.SetLineThickness(LineThickness)
 
 IndexIsoContour=0
+IntensityIsoContour=3
+printn "\n\t\t Sets the image and intensity value of an isocontour in an image_draw window (SetIsoContour)\n"
+printn "\t\t\t Isocontour index (0,1 or 2)=%1% "  % IndexIsoContour
+printn "\t\t\t Image to use for the isocontour= torus"
+printn "\t\t\t Intensity value of the isocontour=%1% "  % IntensityIsoContour
+torus_draw.SetIsoContour(IndexIsoContour, torus, IntensityIsoContour)
+
 RedComponent=0
 GreenComponent=255
 BlueComponent=0

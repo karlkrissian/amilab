@@ -543,10 +543,10 @@ BasicVariable::ptr WrapClass_SurfacePoly::
   amiobject->SetName("surf");
 
   // add the 4 images as variables
-  amiobject->GetContext()->AddVar<InrImage>("cmin",Icmin);
-  amiobject->GetContext()->AddVar<InrImage>("cmax",Icmax);
-  amiobject->GetContext()->AddVar<InrImage>("dmin",Idmin);
-  amiobject->GetContext()->AddVar<InrImage>("dmax",Idmax);
+  amiobject->GetContext()->AddVar<InrImage>("cmin",Icmin, amiobject->GetContext());
+  amiobject->GetContext()->AddVar<InrImage>("cmax",Icmax, amiobject->GetContext());
+  amiobject->GetContext()->AddVar<InrImage>("dmin",Idmin, amiobject->GetContext());
+  amiobject->GetContext()->AddVar<InrImage>("dmax",Idmax, amiobject->GetContext());
 
   // return the variable
   Variable<AMIObject>::ptr varres(

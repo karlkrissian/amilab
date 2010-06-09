@@ -224,12 +224,17 @@ class WrapClass_DessinImage : public WrapClassBase
      * commande <-- drawcircle(expr,expr,expr,expr,expr,expr) 
      *
      * parameters
-     *   #1 ... #6 expr:  expression
+     *   #1 expr:  X-coordinate.
+     *   #2 expr:  Y-coordinate.
+     *   #3 expr:  Z-coordinate.
+     *   #4 expr:  red component (0-255)
+     *   #5 expr:  green component (0-255)
+     *   #6 expr:  blue component (0-255)
      * description:
-     *   TODO.
+     *   Draw a circle at coordinates: X, Y and Z with a specific color.
      *
      **/
-    ADD_CLASS_METHOD(drawcircle,             "TODO");
+    ADD_CLASS_METHOD(drawcircle,             "Draw a circle at coordinates: X, Y and Z with a specific color.");
 
     /**
      * commande <-- $variable_imagedraw.SetColormap(expr_image,expr,expr) 
@@ -365,10 +370,10 @@ class WrapClass_DessinImage : public WrapClassBase
      * parameters
      *   None
      * description:
-     *   TODO.
+     *   Gets the minimum dimension of the coordinate X.
      *
      **/
-    ADD_CLASS_METHOD(GetXmin,             "TODO");
+    ADD_CLASS_METHOD(GetXmin,             "Gets the minimum dimension of the coordinate X.");
 
     /**
      * command <-- $variable_imagedraw.GetXmax
@@ -376,10 +381,10 @@ class WrapClass_DessinImage : public WrapClassBase
      * parameters
      *   None
      * description:
-     *   TODO.
+     *   Gets the maximum dimension of the coordinate X.
      *
      **/
-    ADD_CLASS_METHOD(GetXmax,             "TODO");
+    ADD_CLASS_METHOD(GetXmax,             "Gets the maximum dimension of the coordinate X.");
 
     /**
      * command <-- $variable_imagedraw.GetYmin
@@ -387,10 +392,10 @@ class WrapClass_DessinImage : public WrapClassBase
      * parameters
      *   None
      * description:
-     *   TODO.
+     *   Gets the minimum dimension of the coordinate Y.
      *
      **/
-    ADD_CLASS_METHOD(GetYmin,             "TODO");
+    ADD_CLASS_METHOD(GetYmin,             "Gets the minimum dimension of the coordinate Y.");
 
     /**
      * command <-- $variable_imagedraw.GetYmax
@@ -398,10 +403,10 @@ class WrapClass_DessinImage : public WrapClassBase
      * parameters
      *   None
      * description:
-     *   TODO.
+     *   Gets the maximum dimension of the coordinate Y.
      *
      **/
-    ADD_CLASS_METHOD(GetYmax,             "TODO");
+    ADD_CLASS_METHOD(GetYmax,             "Gets the maximum dimension of the coordinate Y.");
 
     /**
      * command <-- $variable_imagedraw.GetZmin
@@ -409,10 +414,10 @@ class WrapClass_DessinImage : public WrapClassBase
      * parameters
      *   None
      * description:
-     *   TODO.
+     *   Gets the minimum dimension of the coordinate Z.
      *
      **/
-    ADD_CLASS_METHOD(GetZmin,             "TODO");
+    ADD_CLASS_METHOD(GetZmin,             "Gets the minimum dimension of the coordinate Z.");
 
     /**
      * command <-- $variable_imagedraw.GetZmax
@@ -420,10 +425,10 @@ class WrapClass_DessinImage : public WrapClassBase
      * parameters
      *   None
      * description:
-     *   TODO.
+     *   Gets the maximum dimension of the coordinate Z.
      *
      **/
-    ADD_CLASS_METHOD(GetZmax,             "TODO");
+    ADD_CLASS_METHOD(GetZmax,             "Gets the maximum dimension of the coordinate Z.");
 
     /**
      * command <-- $variable_imagedraw.GetXPos
@@ -431,10 +436,10 @@ class WrapClass_DessinImage : public WrapClassBase
      * parameters
      *   None
      * description:
-     *   TODO.
+     *   Gets the position of the coordinate X.
      *
      **/
-    ADD_CLASS_METHOD(GetXPos,             "TODO");
+    ADD_CLASS_METHOD(GetXPos,             "Gets the position of the coordinate X.");
 
     /**
      * command <-- $variable_imagedraw.GetYPos
@@ -442,10 +447,10 @@ class WrapClass_DessinImage : public WrapClassBase
      * parameters
      *   None
      * description:
-     *   TODO.
+     *   Gets the position of the coordinate Y.
      *
      **/
-    ADD_CLASS_METHOD(GetYPos,             "TODO");
+    ADD_CLASS_METHOD(GetYPos,             "Gets the position of the coordinate Y.");
 
     /**
      * command <-- $variable_imagedraw.GetZPos
@@ -453,10 +458,10 @@ class WrapClass_DessinImage : public WrapClassBase
      * parameters
      *   None
      * description:
-     *   TODO.
+     *   Gets the position of the coordinate Z.
      *
      **/
-    ADD_CLASS_METHOD(GetZPos,             "TODO");
+    ADD_CLASS_METHOD(GetZPos,             "Gets the position of the coordinate Z.");
 
     /**
      * image <-- VAR_IMAGEDRAW '.' T_getimage

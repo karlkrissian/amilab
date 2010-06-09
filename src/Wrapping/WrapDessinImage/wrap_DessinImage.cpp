@@ -560,13 +560,12 @@ BasicVariable::ptr WrapClass_DessinImage::
 void WrapClass_DessinImage::
       wrap_drawcircle::SetParametersComments() 
 {
-  //TODO
-  ADDPARAMCOMMENT("TODO");
-  ADDPARAMCOMMENT("TODO");
-  ADDPARAMCOMMENT("TODO");
-  ADDPARAMCOMMENT("TODO");
-  ADDPARAMCOMMENT("TODO");
-  ADDPARAMCOMMENT("TODO");
+  ADDPARAMCOMMENT("X-coordinate.");
+  ADDPARAMCOMMENT("Y-coordinate.");
+  ADDPARAMCOMMENT("Z-coordinate.");
+  ADDPARAMCOMMENT("red component (0-255)");
+  ADDPARAMCOMMENT("green component (0-255)");
+  ADDPARAMCOMMENT("blue component (0-255)");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -579,14 +578,16 @@ BasicVariable::ptr WrapClass_DessinImage::
   GET_PARAM(int,x,0);
   GET_PARAM(int,y,0);
   GET_PARAM(int,z,0);
-  GET_PARAM(int,cx,0);
-  GET_PARAM(int,cy,0);
-  GET_PARAM(int,cz,0);
+  GET_PARAM(unsigned char,red,0);
+  GET_PARAM(unsigned char,green,0);
+  GET_PARAM(unsigned char,blue,0);
 
   ClasseCouleur c;
 
-  c.FixeValeur(cx,cy,cz);
+  c.FixeValeur(red,green,blue);
+  di->Paint();
   di->DessineCercle(x,y,z,c);
+  di->DrawingAreaDisplay();
 
   return BasicVariable::ptr();
 }
@@ -970,7 +971,7 @@ void WrapClass_DessinImage::
       wrap_GetXmin::SetParametersComments() 
 {
   //TODO
-  return_comments = "TODO";
+  return_comments = "The minimum dimension of the coordinate X";
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -992,7 +993,7 @@ void WrapClass_DessinImage::
       wrap_GetXmax::SetParametersComments() 
 {
   //TODO
-  return_comments = "TODO";
+  return_comments = "The maximum dimension of the coordinate X";
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -1015,7 +1016,7 @@ void WrapClass_DessinImage::
       wrap_GetYmin::SetParametersComments() 
 {
   //TODO
-  return_comments = "TODO";
+  return_comments = "The minimum dimension of the coordinate Y";
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -1037,7 +1038,7 @@ void WrapClass_DessinImage::
       wrap_GetYmax::SetParametersComments() 
 {
   //TODO
-  return_comments = "TODO";
+  return_comments = "The maximum dimension of the coordinate Y";
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -1059,7 +1060,7 @@ void WrapClass_DessinImage::
       wrap_GetZmin::SetParametersComments() 
 {
   //TODO
-  return_comments = "TODO";
+  return_comments = "The minimum dimension of the coordinate Z";
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -1081,7 +1082,7 @@ void WrapClass_DessinImage::
       wrap_GetZmax::SetParametersComments() 
 {
   //TODO
-  return_comments = "TODO";
+  return_comments = "The maximum dimension of the coordinate Z";
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -1103,7 +1104,7 @@ void WrapClass_DessinImage::
       wrap_GetXPos::SetParametersComments() 
 {
   //TODO
-  return_comments = "TODO";
+  return_comments = "The position of the coordinate X";
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -1130,7 +1131,7 @@ void WrapClass_DessinImage::
       wrap_GetYPos::SetParametersComments() 
 {
   //TODO
-  return_comments = "TODO";
+  return_comments = "The position of the coordinate Y";
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -1157,7 +1158,7 @@ void WrapClass_DessinImage::
       wrap_GetZPos::SetParametersComments() 
 {
   //TODO
-  return_comments = "TODO";
+  return_comments = "The position of the coordinate Z";
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -1184,7 +1185,7 @@ void WrapClass_DessinImage::
       wrap_getimage::SetParametersComments() 
 {
   //TODO
-  return_comments = "TODO";
+  return_comments = "A snapshot as a 2D image of format RGB";
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::

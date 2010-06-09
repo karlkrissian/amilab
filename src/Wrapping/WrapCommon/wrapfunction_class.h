@@ -70,7 +70,7 @@ class wrap_##methodname : public WrapClassMember { \
 void AddVar_##methodname(  _parentclass_ptr& pc, const std::string& newname = #methodname) {\
   boost::shared_ptr<WrapClassMember> tmp( new wrap_##methodname(pc));\
   AMIObject::ptr tmpobj(amiobject.lock()); \
-  tmpobj->GetContext()->AddVar<WrapClassMember>(newname, tmp); \
+  tmpobj->GetContext()->AddVar<WrapClassMember>(newname, tmp,tmpobj->GetContext()); \
 }
 
 

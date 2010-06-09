@@ -208,10 +208,10 @@ void Driver::yyip_instanciate_object( const AMIClass::ptr& oclass,
   // this
   // classname
   string_ptr classname(new string(oclass->GetName()));
-  object->GetContext()->AddVar<string>("classname",classname);
+  object->GetContext()->AddVar<string>("classname",classname,object->GetContext());
   // classfilename
   string_ptr classfname(new string(oclass->GetFileName()));
-  object->GetContext()->AddVar<string>("classfilename",classfname);
+  object->GetContext()->AddVar<string>("classfilename",classfname,object->GetContext());
 
   // Inheritence need to be recursive
   // Call the class body

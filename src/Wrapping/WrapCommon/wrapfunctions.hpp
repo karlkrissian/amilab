@@ -87,7 +87,7 @@ class wrap_##methodname : public WrapClassMember { \
 \
 inline void AddVar_##methodname(  Variables::ptr& context, const std::string& newname = #methodname) {\
   boost::shared_ptr<WrapClassMember> tmp( new wrap_##methodname());\
-  context->AddVar<WrapClassMember>(newname, tmp); \
+  context->AddVar<WrapClassMember>(newname, tmp, context); \
 }
 
 
@@ -137,7 +137,7 @@ inline void AddVar_##methodname(  Variables::ptr& context, const std::string& ne
 #define ADDLOCAL_OBJECTVAR_NAME(obj,type,stname,name) \
   { \
   boost::shared_ptr<type> newvar(CreateSmartPointer<type>()(&name)); \
-  obj->GetContext()->AddVar<type>( stname, newvar); \
+  obj->GetContext()->AddVar<type>( stname, newvar, obj->GetContext()); \
   }
 
 

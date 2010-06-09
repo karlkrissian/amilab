@@ -36,6 +36,7 @@
 
 #include "FenetreDessin.hpp"
 #include "StringUtils.hpp"
+#include "amilab_messages.h"
 
 // TODO: get rid of the need of the X11 display
 
@@ -432,6 +433,11 @@ void FenetreDessin ::  FixeParametresLigne( unsigned int largeur,
                         int extremites, 
                         int intersection)
 {
+  if (!_current_pen.get())
+  {
+    CLASS_ERROR("Pen not initialized");
+    return;
+  }
   _current_pen->SetWidth(largeur);
   /// @cond wxCHECK
 
@@ -582,12 +588,7 @@ void FenetreDessin::Ligne( int x1, int y1, int x2, int y2)
 void FenetreDessin::Cercle( int x1, int y1, int rayon)
 //                              ------
 {
-#if defined(__WXMOTIF__)
-  XDrawArc( display, _ecran_dessin, contexte, x1-rayon, y1-rayon, 
-      2*rayon, 2*rayon, 0, 360*64);
-#else
   _memory_dc->DrawCircle(x1,y1, rayon);
-#endif
 } // Cercle()
 
 
@@ -596,12 +597,7 @@ void FenetreDessin :: Ellipse( int x1, int y1,
 //                              ------
            int r1, int r2)
 {
-
-#if defined(__WXMOTIF__)
-  XDrawArc( display, _ecran_dessin, contexte, x1-r1, y1-r2, 
-      2*r1, 2*r2, 0, 360*64);
-#endif
-
+  _memory_dc->DrawEllipse((wxCoord)x1, (wxCoord) y1, r1,r2);
 } // Ellipse()
 
 
