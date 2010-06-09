@@ -399,7 +399,7 @@ Por ejemplo, en una aplicación particular, un usuario de Insight Toolkit puede q
 
 En la práctica, las fábricas de objetos serán usadas principalmente por clases de entrada$/$salida de Insight Toolkit. Para la gran mayoría de los usuarios, el mayor impacto es usar el método New() para crear una clase.
 
-\subsubsection{Punteros elegantes y manejo de memoria}
+\subsubsection{Punteros inteligentes y manejo de memoria}
 Por naturaleza, los sistemas orientados a objetos representan y operan con datos a través de una gran variedad de tipos objetos o clases. Cuando una clase en particular es instanciada para producir una instancia de esa clase, se produce una reserva de memoria, de manera que la instancia pueda guardar los valores de los atributos y los punteros de los métodos. Este objeto puede ser referenciado por otras clases o por estructuras de datos durante operaciones normales del programa. Normalmente, mientras el programa está en ejecución todas las referencias a la instancia pueden desaparecer, es en este punto cuando la instancia debe ser borrada para recuperar recursos. Saber cuándo se debe borrar una instancia no es fácil. Borrar la instancia muy pronto provoca errores en el programa; borrarla muy tarde provoca consumo de memoria innecesario. Este proceso de reservar y liberación de memoria se conoce como manejo de la memoria.
 
 
@@ -428,7 +428,6 @@ Los multihilos son normalmente empleados por un algoritmo durante su fase de eje
 La filosofía de Insight Toolkit en lo que concierne a la seguridad de los hilos es que el acceso a diferentes instancias de una clase (y sus métodos) es una operación de hilos segura. Invocar métodos en la misma instancia en diferentes hilos está prohibido.
 
 \subsubsection{Visión general del sistema}
-\subsubsection{Numérico}
 Insight Toolkit usa la librería numérica VNL para proporcionar recursos para la programación numérica combinando la facilidad de uso de paquetes como Mathematica y Matlab con la rapidez de C y la elegancia de C++.
 
 
@@ -442,346 +441,6 @@ La librería numérica VNL incluye clases para:
 	\item Funciones estándar y constantes.
 \end{itemize}
 Insight Toolkit también proporciona funcionalidades numéricas adicionales, como funciones estadísticas.
-
-\subsubsection{Representación de datos}
-Hay dos tipos principales para representar datos en Insight Toolkit: imágenes y mallas. Estas funcionalidades se implementan en las clases Image y Mesh, siendo ambas subclases de itk::DataObject.
-
-
-Itk::Image representa un muestro de datos n-dimensional y regular. La dirección del muestro es paralela a cada eje de coordenadas. El origen del muestreo, el espacio entre píxeles y el número de muestras en cada dirección (por ejemplo, la dimensión) puede ser especificado. El tipo del muestreo o del pixel en Insight Toolkit puede ser aleatorio (un parámetro template TPixel especifica el tipo una vez instanciado el template). La dimensión de la imagen deberá ser especificada cuando la clase imagen es instanciada. La clave es que el tipo del pixel debe soportar ciertas operaciones (por ejemplo, suma o resta) si el código es compilado en todos los casos (por ejemplo, para ser procesado por un filtro en particular que usa estas operaciones). En la práctica los usuarios de Insight Toolkit usan tipos simples de C++ (por ejemplo, int o float) o tipos de pixel predefinidos y raramente crearán un nuevo tipo de pixel.
-
-
-Uno de los conceptos más importantes en Insight Toolkit en lo que a las imágenes se refiere es que los trozos rectangulares y continuos de una imagen se conocen como regiones. Las regiones son usadas para especificar que parte de la imagen se va a procesar, por ejemplo en multihilos, o que parte se guarda en memoria. En Insight Toolkit hay tres tipos básicos de regiones:
-\begin{enumerate}
-	\item LargestPossibleRegion: la imagen en su totalidad.
-	\item BufferedRegion: la parte de la imagen guardada en memoria.
-	\item RequestedRegion: la parte de la región solicitada por un filtro o por otra clase cuando se opera en la imagen.
-\end{enumerate}
-
-\subsubsection{Procesamiento de datos en el pipeline}
-Mientras los objetos de datos (por ejemplo, imágenes y mallas) son usados para representar datos, los objetos de procesos son clases que operan en los objetos de datos y pueden producir nuevos objetos de datos. Los objetos de procesos son clases como sources, objetos de filtros o mappers. Sources (tal que los lectores) producen datos, los objetos de filtros toman datos y los procesan para producir nuevos datos y los mappers aceptan datos desde el exterior o de un archivo o de otro sistema. A veces el término filtro es usado en líneas generales para referirse a los tres tipos.
-
-
-El procesamiento de datos en el pipeline vincula los objetos de datos con los objetos de procesos. El pipeline suporta un mecanismo automático de actualización que causa que se ejecute un filtro si y sólo si su entrada o su estado interno ha cambiado. Además, el pipeline de datos soporta streaming, la habilidad de automáticamente dividir los datos en partes más pequeñas, procesar cada parte y juntar los datos procesados en un resultado final.
-
-
-Normalmente los objetos de datos y los objetos de procesos están conectados entre sí usando los métodos ``SetInput()'' y ``GetOutput()''.
-
-
-Cuando el método ``Update()'' es invocado en el escritor, el procesamiento de datos del pipeline provoca en cada uno de los filtros la finalización, escribiendo los datos finales en un archivo en disco.
-
-\subsubsection{Clases principales a utilizar}
-En este apartado se comentarán aquellas clases más relevantes a la hora de desarrollar este proyecto. A medida que se avanza en el mismo, podrán ir surgiendo nuevas clases de interés a utilizar.
-
-\subsubsection{Clase Image}
-La clase itk::Image sigue el espíritu de la programación genérica, donde los tipos están separados del comportamiento algorítmico de la clase. Insight Toolkit soporta imágenes formadas por cualquier tipo de pixel y de cualquier dimensión espacial.
-
-
-A continuación se detalla cómo realizar una serie de operaciones sobre imágenes que nos pueden ser de ayuda:
-
-\subsubsection{Crear una imagen}
-Lo primero que debemos hacer para crear una clase imagen es incluir el fichero cabecera ``itkImage.h''. Después decidiremos de qué tipo serán los píxeles de nuestra imagen y qué dimensión tendrá. Con estos dos parámetros ya podemos instanciar la clase imagen. La imagen puede entonces ser creada invocando al operador ``New()'' del tipo de imagen correspondiente y asignando el resultado a un puntero inteligente.
-
-
-En Insight Toolkit, las imágenes existen por la combinación de una o más regiones. Una región es un subconjunto de la imagen e indica la parte de la imagen que puede ser procesada por otras clases en el sistema. 
-
-
-En Insight Toolkit, la creación manual de una imagen requiere que la imagen sea instanciada como hemos explicado anteriormente y que las regiones que describen la imagen sean entonces asociadas con ella.
-
-
-Una región se define por dos clases: itk::Index e itk::Size. El origen de una región dentro de la imagen con la que está asociado se define mediante ``Index''. La extensión, o el tamaño, de la región viene dado por ``Size'', el cual vendrá representado por un array dónde los componentes del mismo son enteros que indican la extensión en pixeles de la imagen a lo largo de todas las dimensiones. ``Index'' se representa por un vector n-dimensional donde cada componente es un entero (en coordenadas de la image) que indica el pixel inicial de la imagen. Cuando una imagen es creada manualmente, el usuario es responsable de la definición del tamaño de la misma y del índice en el cual la imagen comienza. Estos dos parámetros hacen posible el proceso de selección de regiones.
-
-
-Teniendo definido el comienzo y el tamaño de la imagen, estos dos parámetros serán usados para crear un objeto de tipo ``ImageRegion'' el cual encapsula estos dos conceptos. La región será inicializada con el índice y el tamaño.
-
-
-Por último, la región será pasada al objeto imagen con el fin de definir su extensión y origen, esto se realiza mediante el método ``SetRegions()''. Por último se llamará al método ``Allocate()'' para tomar memoria dónde almacenar los datos de los pixeles de la imagen.
-
-
-En la práctica es raro reservar memoria e inicializar una imagen directamente. Las imágenes se leen normalmente de un recurso, como un archivo o de sistema de adquisición.
-
-\subsubsection{Leer una imagen de un archivo}
-El primer requisito para leer una imagen desde un archivo es incluir el fichero cabecera ``itkImageFileReader.h''.
-Después, el tipo de la imagen debe ser definido especificando el tipo utilizado para representar los pixeles. También se deberá indicar la dimensión de la imagen.
-
-
-Usando el tipo de la imagen, es posible instanciar la clase encargada de leer la imagen. El tipo de la imagen es usado como parámetro template para definir como los datos serán representados una vez sean cargados en memoria. Este tipo no tiene porque corresponder con el tipo guardado en el archivo. De todos modos, se utiliza una conversión como la utilizada por C en la conversión entre tipos. Los lectores no aplican ninguna transformación a los datos de los pixeles a excepción de la conversión realizada entre el tipo del pixel del archivo y el tipo del pixel del lector. Una vez tengamos instanciado el tipo del lector podremos usarlo para crear un objeto lector (ImageFileReader). Un puntero inteligente será usado para recibir la referencia al nuevo lector creado. El método ``New()'' será invocado para crear una instancia del lector.
-
-
-La información mínima que necesita un lector es la ruta del archivo que va a ser cargado en memoria. Esto se obtiene a través del método ``SetFileName()''.
-
-
-Los objetos lectores son referidos como los objetos recursos del pipeline; ellos responden a las peticiones de actualización del pipeline e inicializan el flujo de datos del pipeline. El mecanismo de actualización del pipeline se asegura de que el lector sólo se ejecuta cuando una petición de datos es hecha al lector y este no esté leyendo ninguna información. El método ``Update()'' puede ser invocado explícita o implícitamente. Si se realiza explícitamente puede ser porque la salida del lector no está conectada al resto de los filtros. Normalmente la salida del lector está conectada a la entrada de un filtro y la actualización en el filtro produce una actualización en el lector.
-
-
-Para acceder a la imagen leída basta con llamar al método ``GetOutput()'' del lector. Este método se puede ejecutar incluso antes de que se realice la actualización del lector, lo que pasará será que la referencia a la imagen será válida aunque la imagen estará vacía hasta que el lector actual se ejecute.
-
-
-Cualquier intento de acceder a los datos de la imagen antes de que el lector se ejecute producirá una imagen sin datos en los pixeles.
-
-\subsubsection{Definiendo el origen y el espacio}
-Aunque Insight Toolkit se puede usar para trabajar con tareas de procesamiento de imágenes generales, el objetivo principal del sistema es el procesado de imágenes médicas. En este sentido, cierta información adicional acerca de las imágenes es necesaria. En particular la información asociada con el espacio físico entre los píxeles y la posición de la imagen en el espacio respecto a un sistema de coordenadas son muy importantes.
-
-
-El origen y el espacio de una imagen son fundamentales para muchas aplicaciones. Las imágenes médicas sin información espacial no podrán ser usadas ni para diagnóstico médico, análisis de imágenes, extracción de características, terapias de radiación asistida o cirugía guiada por imágenes. En otras palabras, las imágenes médicas carentes de información espacial no sólo son inútiles sino que además son peligrosas.
-
-\begin{figure}
-\centering
-\includegraphics[scale=0.7]{image003.PNG}%ext=pdf,jpg,png
-\caption{Origen y espacio \cite{ITK05}}
-\label{contexto:figura}
-\end{figure}
-
-\subsubsection{Imágenes RGB}
-El espacio RGB ha sido construido como una representación de las respuestas fisiológicas a la luz por los tres tipos de conos del ojo humano. RGB no es un espacio de vectores.  Por ejemplo, los números negativos no son apropiados en un espacio de colores porque serían el equivalente a una estimulación negativa en el ojo humano. En el contexto de la colorimetría, los valores de colores negativos se usan como una construcción artificial para la comparación de colores 
-\begin{equation} Color A = Color B - Color C \end{equation}
-
-Es sólo una forma de decir que podemos producir el Color B mediante la combinación del Color A y el Color C. Sin embargo, debemos ser conscientes de que (por lo menos en la emisión de luz) no es posible restar luz.
-
-
-Cuando tratamos con color impreso y con pinturas, en contraposición con la luz emitida en las pantallas de los ordenadores, el comportamiento físico del color permite la resta. Esto es porque estamos hablando estrictamente de objetos que lo que vemos como rojo es aquello que ha absorbido todas las frecuencias de luces excepto aquellas que en su espectro posean el rojo.
-
-
-El concepto de suma y resta en los colores debe ser interpretado cuidadosamente. De hecho, RGB tiene una definición diferente en lo que respecta a si estamos hablamos acerca de los canales asociados a los tres colores de los sensores del ojo humano, o a los tres fósforos encontrados en la mayoría de los monitos o a las tintas de color utilizadas en las impresoras. El espacio de colores no suele ser linear  y a veces ni siquiera es de un grupo. Por ejemplo, no todos los colores que vemos pueden ser representados en el espacio RGB.
-
-
-Insight Toolkit introduce el tipo itk::RBGPixel como soporte para la representación de los valores de un espacio de color RGB. Como tal, la clase ``RGBPixel'' expresa un concepto diferente de la de itk::Vector en el espacio. Por esta razón, ``RGBPixel'' carece de muchos de los operadores que cabrían esperar de él. En particular, no están definidas las operaciones de resta y suma.
-Cuando pensamos en la realización de la media en un tipo RGB estamos presuponiendo que en el espacio de colores proporcionado, la acción de encontrar un color en el centro de dos colores, puede ser calculada utilizando una operación linear entre sus representaciones numéricas. Este no es, por desgracia, el caso de los colores en el espacio debido a que están basados en las respuestas fisiológicas del ser humano.
-
-
-Si se decide interpretar las imágenes RGB simplemente como tres canales independiente se tendrá que usar bastante el tipo itk::Vector como tipo para los píxeles. En este sentido, se tendrá acceso a todo el conjunto de operaciones definidas para los espacios de vectores. La implementación actual de ``RGBPixel'' en Insight Toolkit supone que las imágenes de color RGB están previstas para ser usadas en aplicaciones donde se requiera una interpretación formal del color, de ahí que sólo las operaciones que son válidas en los espacios de colores estarán disponibles para la clase ``RBGPixel''.
-
-
-Gracias a la flexibilidad ofrecida por el estilo de programación genérica en el que Insight Toolkit está basado, es posible instanciar imágenes en las que sus píxeles sean de cualquier tipo. 
-
-
-Existe una clase en Insight Toolkit prevista para soportar píxeles del tipo RGB, por lo que si queremos tener una imagen con colores RGB podremos hacerlo. Para usar esta clase (itk::RGBPixel) debemos incluir el fichero cabecera ``itkRGBPixel.h''. El acceso a los componentes de color de los píxeles  puede ser realizado con los métodos proporcionados por la clase ``RGBPixel''.
-
-\subsubsection{Clase Iterator}
-La programación genérica parte de los contenedores y de los algoritmos. Los contenedores almacenan datos y los algoritmos operan con estos datos. Para acceder a los datos en los contenedores, los algoritmos usan tres tipos de objetos llamados iteradores. Un iterador es una es una abstracción de un puntero de memoria. Todos los tipos contenedor definen sus propios tipos iterador, pero todos los iteradores están escritos para proporcionar una interfaz común de tal manera que el algoritmo puede referenciar los datos de una forma genérica y mantener cierta independencia funcional con los contenedores.
-
-
-El iterador se llama así porque se es usado para el acceso secuencial e iterativo a los valores de un contenedor. Los iteradores aparecen en las estructuras for y while. Un puntero en C es, por ejemplo, un tipo de iterador. Puede ser incrementado o decrementado a través de la memoria para referenciar secuencialmente los elementos de un vector. Muchas implementaciones de los iteradores tienen una interfaz similar a la de un puntero en C.
-
-
-En Insight Toolkit se usan los iteradores para escribir código de procesamiento de imágenes genéricas. Con ello se permite instanciar imágenes formadas por combinaciones diferentes de tipos de píxeles,  por tipos contenedor de píxeles y por dimensiones variadas. Debido a que los iteradores de imágenes están especialmente diseñados para trabajar con contenedores de imágenes, su interfaz e implementación están optimizadas para tareas de procesamiento de imágenes. El uso de un iterador de Insight Toolkit en vez del acceso directo a los datos a través de la interfaz itk::Image proporciona muchas ventajas. El código es mucho más compacto, los algoritmos son mucho más rápidos y los iteradores simplifican tareas como multihilos y procesamiento de imágenes basado en vecindades.
-
-
-A continuación se detallarán algunas operaciones fundamentales para el uso de los iteradores:
-
-\subsubsection{Crear un iterador}
-Todos los iteradores de imágenes tienen al menos un parámetro template que es el tipo de la imagen sobre el cual van a iterar. No hay ninguna restricción sobre la dimensión de la imagen o sobre el tipo de píxeles que contiene la misma.
-
-  
-Un constructor de iteradores necesita al menos dos argumentos, un puntero inteligente a la imagen que tiene que recorrer y una región de una imagen. La región de la imagen, llamada región de iteración, es un área rectangular en la cual se producirá el recorrido. La región de iteración debe estar totalmente contenida dentro de la imagen. Más específicamente, una región de iteración válida es cualquier subregión de una imagen (BufferedRegion).
-
-
-Hay versiones constantes y no constantes para la gran mayoría de los iteradores de imágenes en Insight Toolkit. Un iterador no constante no puede ser instanciado apuntando a una imagen que sea constante. La versión constante de un iterador puede leer pero no puede escribir los valores de los píxeles.
-
-\subsubsection{Mover un iterador}
-Un iterador se va moviendo por su región de iteración. En cada momento, el iterador apuntará, punto a punto, a la ubicación de un pixel en una imagen N-dimensional. La iteración hacia adelantes va desde el comienzo de la región de iteración hasta el final de la misma. La iteración hacia atrás va desde pasado el último píxel de la región hasta el comienzo ce la misma. Por tanto, hay dos puntos de comienzo para los iteradores, el principio y el final de una imagen. Un iterador puede ser movido directamente a una de estas dos posiciones utilizando los siguientes métodos:
-\begin{itemize}
-	\item ``GoToBegin()'' $\rightarrow$ Fija el iterador en el primer elemento válido de la región.
-	\item ``GoToEnd()'' $\rightarrow$ Fija el iterador en la siguiente posición al último elemento de la región.
-\end{itemize}
-
-\begin{figure}
-\centering
-\includegraphics[scale=0.7]{image005.PNG}%ext=pdf,jpg,png
-\caption{Recorrido de un iterador \cite{ITK05}}
-\label{fig:iterador}
-\end{figure}
-
-Se debe recordar que la posición a la que apunta GoToEnd() no está dentro de la región de iteración. Este hecho se debe recordar ya que si se intenta liberar el iterador en este punto obtendremos resultados indefinidos.
-
-
-Los iteradores de Insight Toolkit son movidos usando los operadores de incremento y decremento:
-\begin{itemize}
-	\item ``Operator++()'' $\rightarrow$ incrementa el iterador una posición en dirección positiva.
-	\item ``Operator++()'' $\rightarrow$ decrementa el iterador una posición en dirección negativa.
-\end{itemize}
-
-En la figura \ref{fig:iterador} se puede ver cómo actúa un iterador en una región de una imagen. Un iterador primero se mueve a través de las columnas, después por filas, después capa a capa y así sucesivamente.
-Además de la iteración secuencial a través de la imagen, algunos iteradores pueden definir operadores de acceso aleatorio. A diferencia de los operadores incrementales, los operadores de acceso aleatorio pueden no estar optimizados para ser rápidos y requieren algunos conocimientos de la dimensión de la imagen y de la extensión de la región de iteración para poder ser usados correctamente.
-\begin{itemize}
-	\item ``Operator+=(OffsetType)'' $\rightarrow$ mueve el iterador a la ubicación del pixel que surja como resultado de sumar el índice actual al desplazamiento dado.
-	\item ``Operator-=(OffsetType)'' $\rightarrow$ mueve el iterador a la ubicación del pixel que surja como resultado de restar el índice actual al desplazamiento dado.
-\end{itemize}
-
-
-El método ``SetPosition()'' puede ser extremadamente lento para los iteradores más complicados. En general, sólo se utiliza para fijar la posición de comienzo, tal y como hacen los métodos ``GoToBegin()'' y ``GoToEnd()''.
-Muchos iteradores no siguen la ruta que se espera que sigan a través de sus regiones de iteración y no tienen establecido la posición de comienzo o de fin. Los iteradores aleatorios, por ejemplo, incrementan y decrementan de manera aleatoria la posición del iterador. De esta forma pueden visitar una posición más de una vez.
-A un iterador se le puedo preguntar si está al comienzo o al final de una región de iteración: 
-\begin{itemize}
-	\item ``bool IsAtEnd()'' $\rightarrow$ devuelve verdadero si el iterador apunta a la siguiente posición del último pixel de la región de iteración.
-	\item ``bool IsAtbegin()'' $\rightarrow$ devuelve verdadero si el iterador apunta a la primera posición de la región de iteración. Este método se utiliza para comprobar si estamos en el final de una iteración al revés.
-\end{itemize}
-
-Un iterador también puede informar de su posición actual en la imagen:
-\begin{itemize}
-	\item ``IndexType GetIndex()'' $\rightarrow$ devuelve el índice de la posición actual del iterador.
-\end{itemize}
-
-
-Por eficiencia, la mayoría de los iteradores de imágenes en Insight Toolkit no realizan comprobación de límites. Por lo que es posible mover un iterador fuera de su región válida de iteración.
-
-\subsubsection{Clase Image Iterator}
-A continuación se describirán aquellos iteradores que recorren regiones de imágenes rectilíneas y apuntan a una posición en concreto en cada momento. itk::ImageRegionIterator es el iterador de imágenes más común en Insight Toolkit y suele ser la primera elección para la gran mayoría de las aplicaciones. El resto de los iteradores que se explicarán son especializaciones de ``ImageRegionIterator''. Estos se han diseñado para realizar tareas básicas de procesamiento de imágenes de manera más eficiente o para facilitar la implementación.
-
-\subsubsection{ImageRegionIterator}
-itk::ImageRegionIterator está optimizado para iterar de forma rápida y es la primera elección para operaciones iterativas en lo que respecta a píxeles cuando la posición en la imagen no es importante. ``ImageRegionIterator'' es el iterador menos especializado de las clases iterador de imágenes de Insight Toolkit.
-
-\subsubsection{ImageRegionIteratorWithIndex}
-La familia de iteradores ``WithIndex'' están diseñados para algoritmos que usan tanto el valor como la posición del pixel para sus cálculos. A diferencia de itk::ImageRegionIterator, el cual calcula el índice sólo si se requiere, itk::ImageRegionIteratorWithIndex guarda la posición del índice como variable miembro la cual será actualizada mientras se incrementa o decrementa la iteración. La rapidez con la que se realiza la iteración es más lenta pero las peticiones de la posición del índice son más eficientes.
-
-\subsubsection{ImageLinearIteratorWithIndex}
-itk::ImageLinearIteratorWithIndex está diseñado para ir procesando línea por línea una imagen. Este iterador recorre de forma linear la imagen en dirección paralela a uno de los ejes de coordenadas. Conceptualmente, este iterador divide la imagen en una serie de líneas paralelas que se extienden a lo largo del tamaño de la imagen.
-
-
-Como todos los iteradores de imágenes, el movimiento de ``ImageLinearIteratorWithIndex'' está limitado dentro de la región de la imagen R. La línea ``l'' a través de la cual se mueve el iterador está definida seleccionando una dirección y un origen. La línea l se extiende desde el origen hasta el límite superior de R. El origen puede ser movido a cualquier posición a lo largo de los límites inferiores de R.
-
-
-Existen varios métodos adicionales para este iterador que controlan el movimiento del mismo a lo largo de la línea l y el desplazamiento del origen de l:
-\begin{itemize}
-	\item ``NextLine()'' $\rightarrow$ mueve el iterador a la primera posición de la siguiente línea de la imagen. 
-	\item ``PreviousLine()'' $\rightarrow$ mueve el iterador a la última posición válida de la línea anterior.
-	\item ``GoToBeginOfLine()'' $\rightarrow$ mueve el iterador a la primera posición de la línea actual.
-	\item ``GoToEndOfLine()'' $\rightarrow$ mueve el iterador una posición más allá de la última posición válida de la línea actual.
-	\item ``IsAtReverseEndOfLine()'' $\rightarrow$ devuelve verdadero si el iterador apunta a una posición anterior a la primera posición de la línea actual.
-	\item ``IsAtEndOfLine()'' $\rightarrow$ devuelve verdadero si el iterador apunta a una posición más allá de la última posición válida de la línea actual.
-\end{itemize}
-
-\subsubsection{ImageSliceIteratorWithIndex}
-La clase itk::ImageSliceIteratorWithIndex es una extensión de itk::ImageLinearIteratorWithIndex, pasando de iterar a lo de largo de las líneas a iterar tanto a lo largo de las líneas como de los planos de la imagen. Una capa es un plano 2D abarcado por dos vectores apuntando a lo largo del eje de coordenadas ortogonal. La orientación de la capa está definida por la especificación de sus dos ejes de expansión.
-\begin{itemize}
-	\item ``SetFirstDirection()'' $\rightarrow$ especifica la primera dirección del eje de coordenadas de la capa.
-	\item ``SetSecondDirection()'' $\rightarrow$ especifica la segunda dirección del eje de coordenadas de la capa.
-\end{itemize}
-
-Varios métodos controlan el movimiento de una capa a otra:
-\begin{itemize}
-	\item ``NextSlice()'' $\rightarrow$ mueve el iterador a la primera posición de la siguiente capa en la imagen.
-	\item ``PreviousSlice()'' $\rightarrow$ mueve el iterador a la última posición válida en la capa anterior.
-	\item ``IsAtReverseEndOfSlice()'' $\rightarrow$ devuelve verdadero si el iterador apunta a una posición anterior a la primera posición de la capa actual.
-	\item ``IsAtEndOfSlice()'' $\rightarrow$ devuelve verdadero si el iterador apunta a una posición más allá de la última posición válida de la capa actual.
-\end{itemize}
-
-El iterador de capas se mueve línea a línea utilizando NextLine() y PreviousLine(). La dirección de la línea es paralela a la dirección del segundo eje de coordenadas del plano de la capa.
-
-\subsubsection{ImageRandomConstIteratorWithIndex}
-itk::ImageRandomConstIteratorWithIndex fue desarrollado para elegir aleatoriamente valores de una muestra. Cuando incrementamos o decrementamos el iterador este salta a una posición aleatoria en la región de la imagen.
-
-
-El usuario debe especificar el tamaño de la muestra cuando se crea el iterador. ``IsAtEnd()'' devuelve verdadero cuando el número actual de la muestra es igual al tamaño de la muestra. ``IsAtBegin()'' devuelve verdadero cuando el número actual de la muestra es igual a cero. Una diferencia importante es que a diferencia de los otros iteradores, este iterador puede visitar la posición más de una vez.
-
-
-Este iterador puede ser usado para calcular datos estadísticos de una imagen, como por ejemplo la media.
-
-\subsubsection{Clase Neighborhood Iterators}
-En Insight Toolkit la vecindad de un pixel está definida como un conjunto pequeño de píxeles localmente adyacentes unos a otros en una imagen. El tamaño y la forma de la vecindad, también la conectividad entre los pixeles de una vecindad, puede variar con la aplicación.
-
-\begin{figure}
-\centering
-\includegraphics[scale=0.7]{image007.PNG}%ext=pdf,jpg,png
-\caption{Neighborhood Iterator \cite{ITK05}}
-\label{fig:iteradorV}
-\end{figure}
-
-Muchos algoritmos de procesamiento de imágenes están basados en vecindades, es decir, el resultado de un pixel i se calcula a partir de los valores de los pixeles en la vecindad ND de i. Un ejemplo común en el que se usan vecindades son las operaciones que incluyen convoluciones.
-
-
-Por tanto, en este apartado se describirán aquellos iteradores que están diseñados para trabajar con las vecindades de los pixeles. En Insight Toolkit los iteradores de vecindades recorren la región de la imagen como un iterador normal, pero en vez de referenciar sólo a un único pixel en cada paso, apunta simultáneamente a toda la vecindad ND. Como ampliación de los iteradores normales podemos tener acceso de lectura y escritura a todos los pixeles vecinos e información sobre el tamaño, extensión y posición de la vecindad.
-
-
-En la figura \ref{fig:iteradorV} podemos ver un iterador de vecindades moviéndose a través de una región de iteración. Este iterador define una vecindad de 3x3 alrededor de cada pixel que visita. El centro de la vecindad está siempre posicionado en el índice actual y el resto de los índices de los pixeles serán referenciados mediante el desplazamiento desde el centro.
-
-
-\color{red}Además de un puntero a la imagen y a la región de iteración, el constructor del iterador de vecindades necesita un argumento que especifique la extensión de la vecindad a cubrir. La extensión de la vecindad es simétrica y viene dada por un vector de N distancias que se denomina radius.
-
-
-Neighborhood extent is symmetric across its center in each axis and is given as an array of N
-distances that are collectively called the radius. Each element d of the radius, where 0 $<$ d $<$ N
-and N is the dimensionality of the neighborhood, gives the extent of the neighborhood in pixels
-for dimension N. The length of each face of the resulting ND hypercube is 2d +1 pixels, a
-distance of d on either side of the single pixel at the neighbor center. 
-
-\color{black}
-
-El radio de un iterador de vecindades puede ser consultado. Otros métodos proporcionan información útil acerca del iterador y de su imagen:
-
-\begin{itemize}
-	\item ``SizeType GetRadius()'' $\rightarrow$ devuelve el radio ND de una vecindad como un itk::Size.
-	\item ``Const ImageType *GetImagePointer()'' $\rightarrow$ devuelve un puntero a la imagen referenciada por el iterador.
-	\item ``Unsigned long Size()'' $\rightarrow$ devuelve el tamaño en número de pixeles de la vecindad.
-	\item
-\end{itemize}
-
-El iterador de vecindades extiende el concepto de obtener y fijar los valores de un pixel con respecto al iterador normal. La vecindad de un pixel se puede ver como un vector linear donde cada pixel tiene un único índice entero. El pixel central está siempre en la posición n/2, donde n es el tamaño del vector.
-\begin{itemize}
-	\item ``PixelType GetPixel(const unsigned int i)'' $\rightarrow$ devuelve el valor del pixel que se encuentra  en la posición i de la vecindad.
-	\item ``Void SetPixel(const unsigned int i, PixelType p)'' $\rightarrow$ cambia el valor del pixel en la posición i por el valor p.	
-\end{itemize}
-
-
-Otra forma de pensar en la posición de un pixel en una vecindad es como desplazamientos ND desde el centro de la vecindad. La esquina superior izquierda de una vecindad 3x3x3, por ejemplo, puede ser descrita mediante el desplazamiento (-1,-1,-1). La esquina inferior derecha de la misma vecindad tendrá el desplazamiento (1,1,1).
-\begin{itemize}
-	\item ``PixelType GetPixel(const OffsetType $\&$o)'' $\rightarrow$ toma el valor del pixel que se encuentra en la posición dada por el desplazamiento o medido desde el centro de la vecindad.
-	\item ``void SetPixel(const OffsetType $\&$o, PixelType p)'' $\rightarrow$ cambia el valor que se encuentra en la posición dada por el desplazamiento o medido desde el centro de la vecindad por el valor p.
-\end{itemize}
-
-
-Los iteradores de vecindades también proporcionan formas de obtener y fijar el valor del pixel central de una vecindad.
-\begin{itemize}
-	\item ``PixelType GetCenterPixel()'' $\rightarrow$ toma el valor del pixel central de la vecindad.
-	\item ``void  SetCenterPixel(PixelType p)'' $\rightarrow$ cambia el valor del pixel central de la vecindad por el valor p.
-\end{itemize}
-
-
-Hay otras formas de obtener y fijar valores de pixeles que están a cierta distancia del centro de la vecindad.
-\begin{itemize}
-	\item ``PixelType GetNext(unsigned int d)'' $\rightarrow$ toma el valor adyacente al pixel central de la vecindad en la dirección positiva del eje d.
-	\item ``void  SetNext(unsigned int d, PixelType p)'' $\rightarrow$ cambia el valor adyacente al pixel central de la vecindad en la dirección positiva del eje d por el valor p.
-	\item ``PixelType GetPrevios(unsigned int d)'' $\rightarrow$ toma el valor adyacente al pixel central de la vecindad en la dirección negativa del eje d.
-	\item ``void SetPrevious(unsigned int d, PixelType p)'' $\rightarrow$ cambia el valor adyacente la pixel central de la vecindad en la dirección negativa del eje d por el valor p.
-	\item ``PixelType GetNext(unsigned int d, unsigned int s)'' $\rightarrow$ toma el valor del pixel que se encuentra a s pixeles del pixel central de la vecindad en la dirección positiva del eje d.
-	\item ``void SetNext(unsigned int d, unsigned s, PixelType p)'' $\rightarrow$ cambia el valor del pixel que se encuentra a s pixeles del pixel central de la vecindad en la dirección positiva del eje d por el valor p.
-	\item ``PixelType GetPrevious(unsigned int d, unsigned int s)'' $\rightarrow$ toma el valor del pixel que se encuentra a s pixeles del pixel central de la vecindad en la dirección negativa del eje d.
-	\item ``void SetPrevious(unsigned int d,unsigned int s, PixelType p)'' $\rightarrow$ cambia el valor del pixel que se encuentra a s pixeles del pixel central de la vecindad en la dirección negativa del eje d por el valor p.
-\end{itemize}
-
-
-Es posible extraer un conjunto de valores de una vecindad en una sola vez. Esto puede ser útil en algoritmos que realizan un gran número de operaciones en una vecindad y que requieren un gran número de referencias a los mismos pixeles.
-\begin{itemize}
-	\item ``NeighborhoodType GetNeighborhood()'' $\rightarrow$ devuelve un itk::Neighbordhood del mismo tamaño y forma que el iterador de vecindades y contiene todos los valores del iterador en esa posición.
-	\item ``void  SetNeighborhood(NeighborhoodType $\&$N)'' $\rightarrow$ cambia todos los valores de una vecindad a los valores contenidos en la vecindad N, la cual debe ser del mismo tamaño y forma.
-\end{itemize}
-
-
-Varios métodos están definidos para proporcionar información acerca de la vecindad.
-\begin{itemize}
-	\item ``IndexType GetIndex()'' $\rightarrow$ devuelve el índice del pixel central de la vecindad.
-	\item ``IndexType  GetIndex(OffsetType o)'' $\rightarrow$ devuelve el índice del pixel que se encuentra en la posición indicada por el desplazamiento o medida desde el centro de la vecindad.
-	\item ``IndexType GetIndex(unsigned int i)'' $\rightarrow$ devuelve el índice del pixel que se encuentra en la posición i del vector.
-	\item ``OffsetType GetOffset(unsigned int i)'' $\rightarrow$ devuelve el desplazamiento desde el centro de la vecindad que se encuentra en la posición i del vector.
-	\item ``unsigned long GetNeighborhoodIndex(OffsetType o)'' $\rightarrow$ devuelve la posición del vector con desplazamiento o desde el centro de la vecindad.
-	\item ``std::slice GetSlice(unsigned int n)'' $\rightarrow$ devuelve un std::slice a través del iterador de vecindades a lo largo del eje n.
-\end{itemize}
-
-
-Un cálculo basado en vecindades en una vecindad cercana a los límites de la imagen puede requerir que los datos estén por fuera de los límites. Cuando la extensión de una vecindad cae fuera de los límites de una imagen, los valores para los vecinos perdidos son facilitados según una regla, normalmente elegidos para satisfacer las necesidades numéricas del algoritmo. Una regla para facilitar los valores fuera de los límites de llama condición límite.
-
-
-Los iteradores de vecindades en Insight Toolkit detectan las referencias fuera de los límites devolviendo valores acordes a las condiciones límites. El tipo de la condición límite viene especificada el segundo parámetro del iterador (opcional). Por defecto, los iteradores de vecindades usan la condición de Neumann donde la primera derivada a través del límite es cero. La regla de Neumann devuelve los valores de los pixeles más cercanos a aquellos que se han solicitado y que están fuera de los límites. Existen varios métodos de condiciones límite en Insight Toolkit. Uno de estos es la condición periódica que devuelve el valor del pixel que se encuentra en el lado contrario, o la condición de valores constantes que devuelve un conjunto de valores para todos los pixeles que están fuera de los límites. Esto es como si rellenásemos la imagen con los valores.
-
-
-El chequeo de límites es una operación con un alto coste computacional porque se realiza cada vez que el iterador es incrementado. Para aumentar la eficiencia, los iteradores de vecindades automáticamente deshabilitan esta opción cuando detectan que no es necesario. El usuario debería también especificar si desea tener el chequeo de límites habilitado o no.
-\begin{itemize}
-	\item ``void NeedToUseBoundaryConditionOn()'' $\rightarrow$ se activa el chequeo de límites.
-	\item ``void  NeedToUseBoundaryConditionOff()'' $\rightarrow$ se desactiva el chequeo de límites.
-	\item ``void  NeedToUseBoundaryConditionOff() $\rightarrow$ se desactiva el chequeo de límites.
-	\item ``void OverrideBoundaryCondition(BoundaryConditionType *b)'' $\rightarrow$ cambia la condición límite por la condición límite b. Este método se puede utilizar para cambiar en tiempo de ejecución el comportamiento del iterador.
-	\item ``void ResetBoundaryCondition()'' $\rightarrow$ se deja de utilizar cualquier condición de límite especificada (en tiempo de ejecución) y se vuelve a utilizar la condición de base.
-	\item ``void SetPixel(unsigned int i, PixelType p, bool status)'' $\rightarrow$ se cambia el valor de una posición i del vector de vecindades por el valor p. Si la posición i está fuera de los límites, status contendrá false, en caso contrario contendrá true.
-\end{itemize}
 
 \subsubsection{DART}
 Una de las características únicas de Insight Toolkit es el uso de DART (sistemas de pruebas de regresión). En pocas palabras, lo que hace DART es proporcionar información cuantificable a los desarrolladores que comprueban código nuevo y hacen cambios.
@@ -1104,17 +763,98 @@ la función de vesselness de Frangi está formada por tres componentes formulados 
 V_F(\lambda)=\cases{0 &if $\lambda_{2} > 0$ or $\lambda_{3} > 0$ \cr (1-e^{-\frac{R_A^2}{2\alpha ^2}})\cdot(e^{-\frac{R_B^2}{2\beta ^2}})\cdot(1-e^{-\frac{S^2}{2\gamma ^2}}) &$otherwise$}
 \label{eqn:Ff}
 \end{equation}
- \cite{Vesselness}.
+donde
+\begin{equation}
+R_A=\frac{|\lambda _2|}{|\lambda _3|}
+\label{eqn:RA}
+\end{equation}
+\begin{equation}
+R_B=\frac{|\lambda _1|}{\sqrt{|\lambda _2\lambda _3|}}
+\label{eqn:RB}
+\end{equation}
+\begin{equation}
+S=\sqrt{\lambda _1^2+\lambda _2^2+ \lambda _3^2}
+\label{eqn:S}
+\end{equation}
+$\alpha$, $\beta$, $\gamma$ son umbrales que controlan la sensibilidad de la medida de vesselness.
+
+Sin embargo, la función de vesselness de Frangi no es continúa y no puede ser utilizada en el proceso de difusión. Por tanto, Manniesing y otros propusieron una versión suavizada de la versión de la función de vesselness de Frangi como se ve a continuación.
+\begin{equation}
+V_S(\lambda)=\cases{0 &if $\lambda _2 \geq 0$ or $\lambda _3 \geq 0$ \cr (1-e^{-\frac{R_A^2}{2\alpha ^2}})\cdot(e^{-\frac{R_B^2}{2\beta ^2}})\cdot(1-e^{-\frac{S^2}{2\gamma ^2}})\cdot(e^{-\frac{2c^2}{|\lambda _2||\lambda _3^2|}}) &$otherwise$}
+\label{sqn:SmoothV}
+\end{equation}
+Para un análisis multiescala, la función de vesselness es calculada para un rango de escalas y se selecciona la máxima respuesta.
+\begin{equation}
+V=max_{\alpha _{min} \leq \alpha \leq \alpha _{max}} V_s(\lambda)
+\label{eqn:maxV}
+\end{equation}
+A continuación, se define un tensor de difusión de tal manera que la difusión se promueve a lo largo del vaso, pero no de forma perpendicular a los mismos.
+\begin{equation}
+D=Q\lambda'Q^T
+\label{eqn:difusion}
+\end{equation}
+Donde $Q$ es una matriz que contiene los autovectores de la matriz Hessiana y $\lambda'$ es la matriz diagonal que contiene los siguientes elementos:
+\begin{equation}
+\lambda_1' = 1+(w-1)V^{\frac{1}{S}}
+\label{eqn:DiaM}
+\end{equation}
+\begin{equation}
+\lambda_2'=\lambda_3' = 1+(\varepsilon-1)\cdot V^{\frac{1}{S}}
+\label{eqn:DiaM2}
+\end{equation}
+Donde $\varepsilon$, $w$ y $S$ son parámetros del algoritmo.
+
+Utilizando esta definición de tensor, la ecuación de difusión quedaría de la siguiente forma:
+\begin{equation}
+L_t = \nabla\cdot(D\nabla L)
+\label{eqn:TDE}
+\end{equation}
+Las estructuras vasculares se mejorarán por la evolución de la imagen de acuerdo a la ecuación \ref{eqn:TDE}.\cite{Vesselness}
 \section{Level Sets}
+\begin{figure}
+\centering
+\includegraphics[scale=0.7]{level.png}%ext=pdf,jpg,png
+\caption{Concepto de ``zero set'' en un Level Set}
+\label{fig:LS}
+\end{figure}
+El paradigma de Level Set es un método numérico para el seguimiento de la evolución de contornos y superficies. En lugar de manipular el contorno directamente, el contorno se incrusta como el ``zero level set'' de la función dimensional mayor llamada función de {\em Level Set}, $\Psi(X,t)$. La función de Level Set entonces evoluciona bajo el control de una ecuación diferencial. En cada momento, la evolución del contorno se puede obtener extrayendo el ``zero level set'' $\Gamma((X),t)=\{\Psi(X,t)=0\}$ de la salida. La principal ventaja de utilizar Level Set es que la complejidad aleatoria de las formas puede ser modelada y los cambios topológicos como las mezclas y las divisiones se manejan de forma implícita.
+
+Level Set puede ser utilizado para la segmentación de imágenes basándose en características como la media de la intensidad, el gradiente y los bordes en la ecuación diferencial que lo rige. En un enfoque típico, un contorno se inicializa por un usuario y después este evoluciona hasta que se adapta a la forma de una estructura anatómica en la imagen. Existen muchas implementaciones diferentes y variantes de este concepto básico.
+
+ITK posee diferentes filtros de segmentación mediante Level Set pero todos tienen en común una serie de características. Cada filtro hace uso de una ecuación genérica de Level Set para calcular la actualización de la solución $\Psi$ de la ecuación diferencial parcial.
+\begin{equation}
+\frac{d}{dt}\Psi = -\alpha A(x)\cdot\nabla\Psi -\beta P(x)|\nabla\Psi | +\gamma Z(x)\kappa |\nabla\Psi|
+\label{eqn:diferencial}
+\end{equation}
+donde $A$ es el término de advección (atrae al Level Set a los límites del objeto), $P$ es el término de propagación (expansión), y $Z$ es un término modificador espacial para la curvatura media $\kappa$. Las constantes escalares $\alpha$, $\beta$ y $\gamma$ miden el peso de la influencia relativa de cada una de los términos en el movimiento de la interfaz. Un filtro de segmentación puede utilizar todo estos términos para sus cálculos, o puede omitir el uso de uno o más términos. Si se deja un término fuera de la ecuación, los ajustes en el peso de su correspondiente constante escalar no tendrán efecto.
+
+Todos los filtros de segmentación basados en Level Set deben trabajar con valores reales (float) para producir resultados correctos. Por defecto, se utilizan valores reales en los filtros, pero si se quiere mayor precisión se tendrá que hacer uso de valores tipo ``double''. 
+
+Como entrada necesitaremos dos imágenes, un modelo inicial $\Psi(X,t=0)$ y una imagen ``característica'' (feature image), que es, o bien la imagen que se desea segmentar o una imagen preprocesada. Se debe especificar el ``isovalue'' que representa a la superficie $\Gamma$ en tu modelo inicial. La única imagen de salida es la función $\Psi$ en el último momento. Se debe tener en cuenta que el contorno que representa la superficie $\Gamma$ es el ``zero level set'' de la imagen de salida y no el ``isovalue'' especificado por el modelo inicial. Para representar $\Gamma$ utilizando el ``isovalue'' original, sólo se tiene que añadir el valor de nuevo a la salida.
+
+La solución $\Gamma$ se calcula con una precisión subpixel. La mejor aproximación discreta de la superficie es, por tanto, el conjunto de posiciones de la rejilla cercanas al paso por cero en la imagen, como se puede ver en \ref{fig:gridLS}. El filtro de paso por cero opera buscando exactamente estas posiciones de rejilla y puede ser utilizado para extraer la superficie.
+
+Hay dos detalles importantes cuando analizamos el tiempo de procesamiento de la segmentación mediante Level Set:
+\begin{itemize}
+\item El área de la superficie.
+\item La distancia total que la superficie recorre.
+\end{itemize}
+Debido a que la ecuación de Level Set suele resolverse sólo en los píxeles cercanos a la superficie, el tiempo empleado en cada iteración dependerá del número de puntos de la superficie. Esto significa que a medida que la superficie crece, el tiempo de resolución aumentará proporcionalmente, debido a que la superficie debe evolucionar de manera más lenta para prevenir inestabilidades numéricas en la solución. La distancia que la superficie debe recorrer en la imagen determina el número total de iteraciones necesarias.\cite{ITK05}
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.7]{grid.PNG}%ext=pdf,jpg,png
+\caption{La superficie del Level Set implícito $\Gamma$ es la línea negra  superpuesta encima de la rejilla. La ubicación de la superficie es interpolada en los valores de pixel de la imagen. Los píxeles cercanos a la superficie implícita se muestran en gris.\cite{ITK05}}
+\label{fig:gridLS}
+\end{figure}
+
 
 \chapter{Diseño}
+
 \section{Multihilos}
 Insight Toolkit está diseñado para trabajar en entornos multiprocesador. Muchos de los filtros de Insight Toolkit usan multihilos. Cuando un filtro que usa multihilos se ejecuta, este automáticamente divide el trabajo entre los procesadores haciendo uso de la memoria compartida, esto se llama ``Filter Level Multithreading''.
 
-
 Las aplicaciones compiladas con Insight Toolkit pueden también manejar la ejecución de sus propios hilos. Por ejemplo, una aplicación podría utilizar un hilo para procesar información y otro hilo para la interfaz de usuario, esto se llama ``Application Level Multithreading''.
-
-
 
 \begin{figure}
 \centering
@@ -1139,6 +879,367 @@ A día de hoy, lo que se ha buscado es que cada nueva funcionalidad venga engloba
 
 
 Por tanto, tendremos dos ficheros por cada nueva funcionalidad y dos ficheros que se irán incrementando encargados de añadir dichas funcionalidades a AMILab.
+
+\section{Representación de datos}
+Hay dos tipos principales para representar datos en Insight Toolkit: imágenes y mallas. Estas funcionalidades se implementan en las clases Image y Mesh, siendo ambas subclases de itk::DataObject.
+
+
+Itk::Image representa un muestro de datos n-dimensional y regular. La dirección del muestro es paralela a cada eje de coordenadas. El origen del muestreo, el espacio entre píxeles y el número de muestras en cada dirección (por ejemplo, la dimensión) puede ser especificado. El tipo del muestreo o del pixel en Insight Toolkit puede ser aleatorio (un parámetro template TPixel especifica el tipo una vez instanciado el template). La dimensión de la imagen deberá ser especificada cuando la clase imagen es instanciada. La clave es que el tipo del pixel debe soportar ciertas operaciones (por ejemplo, suma o resta) si el código es compilado en todos los casos (por ejemplo, para ser procesado por un filtro en particular que usa estas operaciones). En la práctica los usuarios de Insight Toolkit usan tipos simples de C++ (por ejemplo, int o float) o tipos de pixel predefinidos y raramente crearán un nuevo tipo de pixel.
+
+
+Uno de los conceptos más importantes en Insight Toolkit en lo que a las imágenes se refiere es que los trozos rectangulares y continuos de una imagen se conocen como regiones. Las regiones son usadas para especificar que parte de la imagen se va a procesar, por ejemplo en multihilos, o que parte se guarda en memoria. En Insight Toolkit hay tres tipos básicos de regiones:
+\begin{enumerate}
+	\item LargestPossibleRegion: la imagen en su totalidad.
+	\item BufferedRegion: la parte de la imagen guardada en memoria.
+	\item RequestedRegion: la parte de la región solicitada por un filtro o por otra clase cuando se opera en la imagen.
+\end{enumerate}
+
+\section{Procesamiento de datos en el pipeline}
+Mientras los objetos de datos (por ejemplo, imágenes y mallas) son usados para representar datos, los objetos de procesos son clases que operan en los objetos de datos y pueden producir nuevos objetos de datos. Los objetos de procesos son clases como sources, objetos de filtros o mappers. Sources (tal que los lectores) producen datos, los objetos de filtros toman datos y los procesan para producir nuevos datos y los mappers aceptan datos desde el exterior o de un archivo o de otro sistema. A veces el término filtro es usado en líneas generales para referirse a los tres tipos.
+
+
+El procesamiento de datos en el pipeline vincula los objetos de datos con los objetos de procesos. El pipeline suporta un mecanismo automático de actualización que causa que se ejecute un filtro si y sólo si su entrada o su estado interno ha cambiado. Además, el pipeline de datos soporta streaming, la habilidad de automáticamente dividir los datos en partes más pequeñas, procesar cada parte y juntar los datos procesados en un resultado final.
+
+
+Normalmente los objetos de datos y los objetos de procesos están conectados entre sí usando los métodos ``SetInput()'' y ``GetOutput()''.
+
+
+Cuando el método ``Update()'' es invocado en el escritor, el procesamiento de datos del pipeline provoca en cada uno de los filtros la finalización, escribiendo los datos finales en un archivo en disco.
+
+\section{Clases principales a utilizar}
+En este apartado se comentarán aquellas clases más relevantes a la hora de desarrollar este proyecto. A medida que se avanza en el mismo, podrán ir surgiendo nuevas clases de interés a utilizar.
+
+\subsection{Clase Image}
+La clase itk::Image sigue el espíritu de la programación genérica, donde los tipos están separados del comportamiento algorítmico de la clase. Insight Toolkit soporta imágenes formadas por cualquier tipo de pixel y de cualquier dimensión espacial.
+
+
+A continuación se detalla cómo realizar una serie de operaciones sobre imágenes que nos pueden ser de ayuda:
+
+\subsubsection{Crear una imagen}
+Lo primero que debemos hacer para crear una clase imagen es incluir el fichero cabecera ``itkImage.h''. Después decidiremos de qué tipo serán los píxeles de nuestra imagen y qué dimensión tendrá. Con estos dos parámetros ya podemos instanciar la clase imagen. La imagen puede entonces ser creada invocando al operador ``New()'' del tipo de imagen correspondiente y asignando el resultado a un puntero inteligente.
+
+
+En Insight Toolkit, las imágenes existen por la combinación de una o más regiones. Una región es un subconjunto de la imagen e indica la parte de la imagen que puede ser procesada por otras clases en el sistema. 
+
+
+En Insight Toolkit, la creación manual de una imagen requiere que la imagen sea instanciada como hemos explicado anteriormente y que las regiones que describen la imagen sean entonces asociadas con ella.
+
+
+Una región se define por dos clases: itk::Index e itk::Size. El origen de una región dentro de la imagen con la que está asociado se define mediante ``Index''. La extensión, o el tamaño, de la región viene dado por ``Size'', el cual vendrá representado por un array dónde los componentes del mismo son enteros que indican la extensión en pixeles de la imagen a lo largo de todas las dimensiones. ``Index'' se representa por un vector n-dimensional donde cada componente es un entero (en coordenadas de la image) que indica el pixel inicial de la imagen. Cuando una imagen es creada manualmente, el usuario es responsable de la definición del tamaño de la misma y del índice en el cual la imagen comienza. Estos dos parámetros hacen posible el proceso de selección de regiones.
+
+
+Teniendo definido el comienzo y el tamaño de la imagen, estos dos parámetros serán usados para crear un objeto de tipo ``ImageRegion'' el cual encapsula estos dos conceptos. La región será inicializada con el índice y el tamaño.
+
+
+Por último, la región será pasada al objeto imagen con el fin de definir su extensión y origen, esto se realiza mediante el método ``SetRegions()''. Por último se llamará al método ``Allocate()'' para tomar memoria dónde almacenar los datos de los pixeles de la imagen.
+
+
+En la práctica es raro reservar memoria e inicializar una imagen directamente. Las imágenes se leen normalmente de un recurso, como un archivo o de sistema de adquisición.
+
+\subsubsection{Leer una imagen de un archivo}
+El primer requisito para leer una imagen desde un archivo es incluir el fichero cabecera ``itkImageFileReader.h''.
+Después, el tipo de la imagen debe ser definido especificando el tipo utilizado para representar los pixeles. También se deberá indicar la dimensión de la imagen.
+
+
+Usando el tipo de la imagen, es posible instanciar la clase encargada de leer la imagen. El tipo de la imagen es usado como parámetro template para definir como los datos serán representados una vez sean cargados en memoria. Este tipo no tiene porque corresponder con el tipo guardado en el archivo. De todos modos, se utiliza una conversión como la utilizada por C en la conversión entre tipos. Los lectores no aplican ninguna transformación a los datos de los pixeles a excepción de la conversión realizada entre el tipo del pixel del archivo y el tipo del pixel del lector. Una vez tengamos instanciado el tipo del lector podremos usarlo para crear un objeto lector (ImageFileReader). Un puntero inteligente será usado para recibir la referencia al nuevo lector creado. El método ``New()'' será invocado para crear una instancia del lector.
+
+
+La información mínima que necesita un lector es la ruta del archivo que va a ser cargado en memoria. Esto se obtiene a través del método ``SetFileName()''.
+
+
+Los objetos lectores son referidos como los objetos recursos del pipeline; ellos responden a las peticiones de actualización del pipeline e inicializan el flujo de datos del pipeline. El mecanismo de actualización del pipeline se asegura de que el lector sólo se ejecuta cuando una petición de datos es hecha al lector y este no esté leyendo ninguna información. El método ``Update()'' puede ser invocado explícita o implícitamente. Si se realiza explícitamente puede ser porque la salida del lector no está conectada al resto de los filtros. Normalmente la salida del lector está conectada a la entrada de un filtro y la actualización en el filtro produce una actualización en el lector.
+
+
+Para acceder a la imagen leída basta con llamar al método ``GetOutput()'' del lector. Este método se puede ejecutar incluso antes de que se realice la actualización del lector, lo que pasará será que la referencia a la imagen será válida aunque la imagen estará vacía hasta que el lector actual se ejecute.
+
+
+Cualquier intento de acceder a los datos de la imagen antes de que el lector se ejecute producirá una imagen sin datos en los pixeles.
+
+\subsubsection{Definiendo el origen y el espacio}
+Aunque Insight Toolkit se puede usar para trabajar con tareas de procesamiento de imágenes generales, el objetivo principal del sistema es el procesado de imágenes médicas. En este sentido, cierta información adicional acerca de las imágenes es necesaria. En particular la información asociada con el espacio físico entre los píxeles y la posición de la imagen en el espacio respecto a un sistema de coordenadas son muy importantes.
+
+
+El origen y el espacio de una imagen son fundamentales para muchas aplicaciones. Las imágenes médicas sin información espacial no podrán ser usadas ni para diagnóstico médico, análisis de imágenes, extracción de características, terapias de radiación asistida o cirugía guiada por imágenes. En otras palabras, las imágenes médicas carentes de información espacial no sólo son inútiles sino que además son peligrosas.
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.7]{image003.PNG}%ext=pdf,jpg,png
+\caption{Origen y espacio \cite{ITK05}}
+\label{contexto:figura}
+\end{figure}
+
+\subsubsection{Imágenes RGB}
+El espacio RGB ha sido construido como una representación de las respuestas fisiológicas a la luz por los tres tipos de conos del ojo humano. RGB no es un espacio de vectores.  Por ejemplo, los números negativos no son apropiados en un espacio de colores porque serían el equivalente a una estimulación negativa en el ojo humano. En el contexto de la colorimetría, los valores de colores negativos se usan como una construcción artificial para la comparación de colores 
+\begin{equation} Color A = Color B - Color C \end{equation}
+
+Es sólo una forma de decir que podemos producir el Color B mediante la combinación del Color A y el Color C. Sin embargo, debemos ser conscientes de que (por lo menos en la emisión de luz) no es posible restar luz.
+
+
+Cuando tratamos con color impreso y con pinturas, en contraposición con la luz emitida en las pantallas de los ordenadores, el comportamiento físico del color permite la resta. Esto es porque estamos hablando estrictamente de objetos que lo que vemos como rojo es aquello que ha absorbido todas las frecuencias de luces excepto aquellas que en su espectro posean el rojo.
+
+
+El concepto de suma y resta en los colores debe ser interpretado cuidadosamente. De hecho, RGB tiene una definición diferente en lo que respecta a si estamos hablamos acerca de los canales asociados a los tres colores de los sensores del ojo humano, o a los tres fósforos encontrados en la mayoría de los monitos o a las tintas de color utilizadas en las impresoras. El espacio de colores no suele ser linear  y a veces ni siquiera es de un grupo. Por ejemplo, no todos los colores que vemos pueden ser representados en el espacio RGB.
+
+
+Insight Toolkit introduce el tipo itk::RBGPixel como soporte para la representación de los valores de un espacio de color RGB. Como tal, la clase ``RGBPixel'' expresa un concepto diferente de la de itk::Vector en el espacio. Por esta razón, ``RGBPixel'' carece de muchos de los operadores que cabrían esperar de él. En particular, no están definidas las operaciones de resta y suma.
+Cuando pensamos en la realización de la media en un tipo RGB estamos presuponiendo que en el espacio de colores proporcionado, la acción de encontrar un color en el centro de dos colores, puede ser calculada utilizando una operación linear entre sus representaciones numéricas. Este no es, por desgracia, el caso de los colores en el espacio debido a que están basados en las respuestas fisiológicas del ser humano.
+
+
+Si se decide interpretar las imágenes RGB simplemente como tres canales independiente se tendrá que usar bastante el tipo itk::Vector como tipo para los píxeles. En este sentido, se tendrá acceso a todo el conjunto de operaciones definidas para los espacios de vectores. La implementación actual de ``RGBPixel'' en Insight Toolkit supone que las imágenes de color RGB están previstas para ser usadas en aplicaciones donde se requiera una interpretación formal del color, de ahí que sólo las operaciones que son válidas en los espacios de colores estarán disponibles para la clase ``RBGPixel''.
+
+
+Gracias a la flexibilidad ofrecida por el estilo de programación genérica en el que Insight Toolkit está basado, es posible instanciar imágenes en las que sus píxeles sean de cualquier tipo. 
+
+
+Existe una clase en Insight Toolkit prevista para soportar píxeles del tipo RGB, por lo que si queremos tener una imagen con colores RGB podremos hacerlo. Para usar esta clase (itk::RGBPixel) debemos incluir el fichero cabecera ``itkRGBPixel.h''. El acceso a los componentes de color de los píxeles  puede ser realizado con los métodos proporcionados por la clase ``RGBPixel''.
+
+\subsection{Clase Iterator}
+La programación genérica parte de los contenedores y de los algoritmos. Los contenedores almacenan datos y los algoritmos operan con estos datos. Para acceder a los datos en los contenedores, los algoritmos usan tres tipos de objetos llamados iteradores. Un iterador es una es una abstracción de un puntero de memoria. Todos los tipos contenedor definen sus propios tipos iterador, pero todos los iteradores están escritos para proporcionar una interfaz común de tal manera que el algoritmo puede referenciar los datos de una forma genérica y mantener cierta independencia funcional con los contenedores.
+
+
+El iterador se llama así porque se es usado para el acceso secuencial e iterativo a los valores de un contenedor. Los iteradores aparecen en las estructuras for y while. Un puntero en C es, por ejemplo, un tipo de iterador. Puede ser incrementado o decrementado a través de la memoria para referenciar secuencialmente los elementos de un vector. Muchas implementaciones de los iteradores tienen una interfaz similar a la de un puntero en C.
+
+
+En Insight Toolkit se usan los iteradores para escribir código de procesamiento de imágenes genéricas. Con ello se permite instanciar imágenes formadas por combinaciones diferentes de tipos de píxeles,  por tipos contenedor de píxeles y por dimensiones variadas. Debido a que los iteradores de imágenes están especialmente diseñados para trabajar con contenedores de imágenes, su interfaz e implementación están optimizadas para tareas de procesamiento de imágenes. El uso de un iterador de Insight Toolkit en vez del acceso directo a los datos a través de la interfaz itk::Image proporciona muchas ventajas. El código es mucho más compacto, los algoritmos son mucho más rápidos y los iteradores simplifican tareas como multihilos y procesamiento de imágenes basado en vecindades.
+
+
+A continuación se detallarán algunas operaciones fundamentales para el uso de los iteradores:
+
+\subsubsection{Crear un iterador}
+Todos los iteradores de imágenes tienen al menos un parámetro template que es el tipo de la imagen sobre el cual van a iterar. No hay ninguna restricción sobre la dimensión de la imagen o sobre el tipo de píxeles que contiene la misma.
+
+  
+Un constructor de iteradores necesita al menos dos argumentos, un puntero inteligente a la imagen que tiene que recorrer y una región de una imagen. La región de la imagen, llamada región de iteración, es un área rectangular en la cual se producirá el recorrido. La región de iteración debe estar totalmente contenida dentro de la imagen. Más específicamente, una región de iteración válida es cualquier subregión de una imagen (BufferedRegion).
+
+
+Hay versiones constantes y no constantes para la gran mayoría de los iteradores de imágenes en Insight Toolkit. Un iterador no constante no puede ser instanciado apuntando a una imagen que sea constante. La versión constante de un iterador puede leer pero no puede escribir los valores de los píxeles.
+
+\subsubsection{Mover un iterador}
+Un iterador se va moviendo por su región de iteración. En cada momento, el iterador apuntará, punto a punto, a la ubicación de un pixel en una imagen N-dimensional. La iteración hacia adelantes va desde el comienzo de la región de iteración hasta el final de la misma. La iteración hacia atrás va desde pasado el último píxel de la región hasta el comienzo ce la misma. Por tanto, hay dos puntos de comienzo para los iteradores, el principio y el final de una imagen. Un iterador puede ser movido directamente a una de estas dos posiciones utilizando los siguientes métodos:
+\begin{itemize}
+	\item ``GoToBegin()'' $\rightarrow$ Fija el iterador en el primer elemento válido de la región.
+	\item ``GoToEnd()'' $\rightarrow$ Fija el iterador en la siguiente posición al último elemento de la región.
+\end{itemize}
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.7]{image005.PNG}%ext=pdf,jpg,png
+\caption{Recorrido de un iterador \cite{ITK05}}
+\label{fig:iterador}
+\end{figure}
+
+Se debe recordar que la posición a la que apunta GoToEnd() no está dentro de la región de iteración. Este hecho se debe recordar ya que si se intenta liberar el iterador en este punto obtendremos resultados indefinidos.
+
+
+Los iteradores de Insight Toolkit son movidos usando los operadores de incremento y decremento:
+\begin{itemize}
+	\item ``Operator++()'' $\rightarrow$ incrementa el iterador una posición en dirección positiva.
+	\item ``Operator++()'' $\rightarrow$ decrementa el iterador una posición en dirección negativa.
+\end{itemize}
+
+En la figura \ref{fig:iterador} se puede ver cómo actúa un iterador en una región de una imagen. Un iterador primero se mueve a través de las columnas, después por filas, después capa a capa y así sucesivamente.
+Además de la iteración secuencial a través de la imagen, algunos iteradores pueden definir operadores de acceso aleatorio. A diferencia de los operadores incrementales, los operadores de acceso aleatorio pueden no estar optimizados para ser rápidos y requieren algunos conocimientos de la dimensión de la imagen y de la extensión de la región de iteración para poder ser usados correctamente.
+\begin{itemize}
+	\item ``Operator+=(OffsetType)'' $\rightarrow$ mueve el iterador a la ubicación del pixel que surja como resultado de sumar el índice actual al desplazamiento dado.
+	\item ``Operator-=(OffsetType)'' $\rightarrow$ mueve el iterador a la ubicación del pixel que surja como resultado de restar el índice actual al desplazamiento dado.
+\end{itemize}
+
+
+El método ``SetPosition()'' puede ser extremadamente lento para los iteradores más complicados. En general, sólo se utiliza para fijar la posición de comienzo, tal y como hacen los métodos ``GoToBegin()'' y ``GoToEnd()''.
+Muchos iteradores no siguen la ruta que se espera que sigan a través de sus regiones de iteración y no tienen establecido la posición de comienzo o de fin. Los iteradores aleatorios, por ejemplo, incrementan y decrementan de manera aleatoria la posición del iterador. De esta forma pueden visitar una posición más de una vez.
+A un iterador se le puedo preguntar si está al comienzo o al final de una región de iteración: 
+\begin{itemize}
+	\item ``bool IsAtEnd()'' $\rightarrow$ devuelve verdadero si el iterador apunta a la siguiente posición del último pixel de la región de iteración.
+	\item ``bool IsAtbegin()'' $\rightarrow$ devuelve verdadero si el iterador apunta a la primera posición de la región de iteración. Este método se utiliza para comprobar si estamos en el final de una iteración al revés.
+\end{itemize}
+
+Un iterador también puede informar de su posición actual en la imagen:
+\begin{itemize}
+	\item ``IndexType GetIndex()'' $\rightarrow$ devuelve el índice de la posición actual del iterador.
+\end{itemize}
+
+
+Por eficiencia, la mayoría de los iteradores de imágenes en Insight Toolkit no realizan comprobación de límites. Por lo que es posible mover un iterador fuera de su región válida de iteración.
+
+\subsection{Clase Image Iterator}
+A continuación se describirán aquellos iteradores que recorren regiones de imágenes rectilíneas y apuntan a una posición en concreto en cada momento. itk::ImageRegionIterator es el iterador de imágenes más común en Insight Toolkit y suele ser la primera elección para la gran mayoría de las aplicaciones. El resto de los iteradores que se explicarán son especializaciones de ``ImageRegionIterator''. Estos se han diseñado para realizar tareas básicas de procesamiento de imágenes de manera más eficiente o para facilitar la implementación.
+
+\subsubsection{ImageRegionIterator}
+itk::ImageRegionIterator está optimizado para iterar de forma rápida y es la primera elección para operaciones iterativas en lo que respecta a píxeles cuando la posición en la imagen no es importante. ``ImageRegionIterator'' es el iterador menos especializado de las clases iterador de imágenes de Insight Toolkit.
+
+\subsubsection{ImageRegionIteratorWithIndex}
+La familia de iteradores ``WithIndex'' están diseñados para algoritmos que usan tanto el valor como la posición del pixel para sus cálculos. A diferencia de itk::ImageRegionIterator, el cual calcula el índice sólo si se requiere, itk::ImageRegionIteratorWithIndex guarda la posición del índice como variable miembro la cual será actualizada mientras se incrementa o decrementa la iteración. La rapidez con la que se realiza la iteración es más lenta pero las peticiones de la posición del índice son más eficientes.
+
+\subsubsection{ImageLinearIteratorWithIndex}
+itk::ImageLinearIteratorWithIndex está diseñado para ir procesando línea por línea una imagen. Este iterador recorre de forma linear la imagen en dirección paralela a uno de los ejes de coordenadas. Conceptualmente, este iterador divide la imagen en una serie de líneas paralelas que se extienden a lo largo del tamaño de la imagen.
+
+
+Como todos los iteradores de imágenes, el movimiento de ``ImageLinearIteratorWithIndex'' está limitado dentro de la región de la imagen R. La línea ``l'' a través de la cual se mueve el iterador está definida seleccionando una dirección y un origen. La línea l se extiende desde el origen hasta el límite superior de R. El origen puede ser movido a cualquier posición a lo largo de los límites inferiores de R.
+
+
+Existen varios métodos adicionales para este iterador que controlan el movimiento del mismo a lo largo de la línea l y el desplazamiento del origen de l:
+\begin{itemize}
+	\item ``NextLine()'' $\rightarrow$ mueve el iterador a la primera posición de la siguiente línea de la imagen. 
+	\item ``PreviousLine()'' $\rightarrow$ mueve el iterador a la última posición válida de la línea anterior.
+	\item ``GoToBeginOfLine()'' $\rightarrow$ mueve el iterador a la primera posición de la línea actual.
+	\item ``GoToEndOfLine()'' $\rightarrow$ mueve el iterador una posición más allá de la última posición válida de la línea actual.
+	\item ``IsAtReverseEndOfLine()'' $\rightarrow$ devuelve verdadero si el iterador apunta a una posición anterior a la primera posición de la línea actual.
+	\item ``IsAtEndOfLine()'' $\rightarrow$ devuelve verdadero si el iterador apunta a una posición más allá de la última posición válida de la línea actual.
+\end{itemize}
+
+\subsubsection{ImageSliceIteratorWithIndex}
+La clase itk::ImageSliceIteratorWithIndex es una extensión de itk::ImageLinearIteratorWithIndex, pasando de iterar a lo de largo de las líneas a iterar tanto a lo largo de las líneas como de los planos de la imagen. Una capa es un plano 2D abarcado por dos vectores apuntando a lo largo del eje de coordenadas ortogonal. La orientación de la capa está definida por la especificación de sus dos ejes de expansión.
+\begin{itemize}
+	\item ``SetFirstDirection()'' $\rightarrow$ especifica la primera dirección del eje de coordenadas de la capa.
+	\item ``SetSecondDirection()'' $\rightarrow$ especifica la segunda dirección del eje de coordenadas de la capa.
+\end{itemize}
+
+Varios métodos controlan el movimiento de una capa a otra:
+\begin{itemize}
+	\item ``NextSlice()'' $\rightarrow$ mueve el iterador a la primera posición de la siguiente capa en la imagen.
+	\item ``PreviousSlice()'' $\rightarrow$ mueve el iterador a la última posición válida en la capa anterior.
+	\item ``IsAtReverseEndOfSlice()'' $\rightarrow$ devuelve verdadero si el iterador apunta a una posición anterior a la primera posición de la capa actual.
+	\item ``IsAtEndOfSlice()'' $\rightarrow$ devuelve verdadero si el iterador apunta a una posición más allá de la última posición válida de la capa actual.
+\end{itemize}
+
+El iterador de capas se mueve línea a línea utilizando NextLine() y PreviousLine(). La dirección de la línea es paralela a la dirección del segundo eje de coordenadas del plano de la capa.
+
+\subsubsection{ImageRandomConstIteratorWithIndex}
+itk::ImageRandomConstIteratorWithIndex fue desarrollado para elegir aleatoriamente valores de una muestra. Cuando incrementamos o decrementamos el iterador este salta a una posición aleatoria en la región de la imagen.
+
+
+El usuario debe especificar el tamaño de la muestra cuando se crea el iterador. ``IsAtEnd()'' devuelve verdadero cuando el número actual de la muestra es igual al tamaño de la muestra. ``IsAtBegin()'' devuelve verdadero cuando el número actual de la muestra es igual a cero. Una diferencia importante es que a diferencia de los otros iteradores, este iterador puede visitar la posición más de una vez.
+
+
+Este iterador puede ser usado para calcular datos estadísticos de una imagen, como por ejemplo la media.
+
+\subsection{Clase Neighborhood Iterators}
+En Insight Toolkit la vecindad de un pixel está definida como un conjunto pequeño de píxeles localmente adyacentes unos a otros en una imagen. El tamaño y la forma de la vecindad, también la conectividad entre los pixeles de una vecindad, puede variar con la aplicación.
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.7]{image007.PNG}%ext=pdf,jpg,png
+\caption{Neighborhood Iterator \cite{ITK05}}
+\label{fig:iteradorV}
+\end{figure}
+
+Muchos algoritmos de procesamiento de imágenes están basados en vecindades, es decir, el resultado de un pixel i se calcula a partir de los valores de los pixeles en la vecindad ND de i. Un ejemplo común en el que se usan vecindades son las operaciones que incluyen convoluciones.
+
+
+Por tanto, en este apartado se describirán aquellos iteradores que están diseñados para trabajar con las vecindades de los pixeles. En Insight Toolkit los iteradores de vecindades recorren la región de la imagen como un iterador normal, pero en vez de referenciar sólo a un único pixel en cada paso, apunta simultáneamente a toda la vecindad ND. Como ampliación de los iteradores normales podemos tener acceso de lectura y escritura a todos los pixeles vecinos e información sobre el tamaño, extensión y posición de la vecindad.
+
+
+En la figura \ref{fig:iteradorV} podemos ver un iterador de vecindades moviéndose a través de una región de iteración. Este iterador define una vecindad de 3x3 alrededor de cada pixel que visita. El centro de la vecindad está siempre posicionado en el índice actual y el resto de los índices de los pixeles serán referenciados mediante el desplazamiento desde el centro.
+
+
+\color{red}Además de un puntero a la imagen y a la región de iteración, el constructor del iterador de vecindades necesita un argumento que especifique la extensión de la vecindad a cubrir. La extensión de la vecindad es simétrica y viene dada por un vector de N distancias que se denomina radius.
+
+
+Neighborhood extent is symmetric across its center in each axis and is given as an array of N
+distances that are collectively called the radius. Each element d of the radius, where 0 $<$ d $<$ N
+and N is the dimensionality of the neighborhood, gives the extent of the neighborhood in pixels
+for dimension N. The length of each face of the resulting ND hypercube is 2d +1 pixels, a
+distance of d on either side of the single pixel at the neighbor center. 
+
+\color{black}
+
+El radio de un iterador de vecindades puede ser consultado. Otros métodos proporcionan información útil acerca del iterador y de su imagen:
+
+\begin{itemize}
+	\item ``SizeType GetRadius()'' $\rightarrow$ devuelve el radio ND de una vecindad como un itk::Size.
+	\item ``Const ImageType *GetImagePointer()'' $\rightarrow$ devuelve un puntero a la imagen referenciada por el iterador.
+	\item ``Unsigned long Size()'' $\rightarrow$ devuelve el tamaño en número de pixeles de la vecindad.
+	\item
+\end{itemize}
+
+El iterador de vecindades extiende el concepto de obtener y fijar los valores de un pixel con respecto al iterador normal. La vecindad de un pixel se puede ver como un vector linear donde cada pixel tiene un único índice entero. El pixel central está siempre en la posición n/2, donde n es el tamaño del vector.
+\begin{itemize}
+	\item ``PixelType GetPixel(const unsigned int i)'' $\rightarrow$ devuelve el valor del pixel que se encuentra  en la posición i de la vecindad.
+	\item ``Void SetPixel(const unsigned int i, PixelType p)'' $\rightarrow$ cambia el valor del pixel en la posición i por el valor p.	
+\end{itemize}
+
+
+Otra forma de pensar en la posición de un pixel en una vecindad es como desplazamientos ND desde el centro de la vecindad. La esquina superior izquierda de una vecindad 3x3x3, por ejemplo, puede ser descrita mediante el desplazamiento (-1,-1,-1). La esquina inferior derecha de la misma vecindad tendrá el desplazamiento (1,1,1).
+\begin{itemize}
+	\item ``PixelType GetPixel(const OffsetType $\&$o)'' $\rightarrow$ toma el valor del pixel que se encuentra en la posición dada por el desplazamiento o medido desde el centro de la vecindad.
+	\item ``void SetPixel(const OffsetType $\&$o, PixelType p)'' $\rightarrow$ cambia el valor que se encuentra en la posición dada por el desplazamiento o medido desde el centro de la vecindad por el valor p.
+\end{itemize}
+
+
+Los iteradores de vecindades también proporcionan formas de obtener y fijar el valor del pixel central de una vecindad.
+\begin{itemize}
+	\item ``PixelType GetCenterPixel()'' $\rightarrow$ toma el valor del pixel central de la vecindad.
+	\item ``void  SetCenterPixel(PixelType p)'' $\rightarrow$ cambia el valor del pixel central de la vecindad por el valor p.
+\end{itemize}
+
+
+Hay otras formas de obtener y fijar valores de pixeles que están a cierta distancia del centro de la vecindad.
+\begin{itemize}
+	\item ``PixelType GetNext(unsigned int d)'' $\rightarrow$ toma el valor adyacente al pixel central de la vecindad en la dirección positiva del eje d.
+	\item ``void  SetNext(unsigned int d, PixelType p)'' $\rightarrow$ cambia el valor adyacente al pixel central de la vecindad en la dirección positiva del eje d por el valor p.
+	\item ``PixelType GetPrevios(unsigned int d)'' $\rightarrow$ toma el valor adyacente al pixel central de la vecindad en la dirección negativa del eje d.
+	\item ``void SetPrevious(unsigned int d, PixelType p)'' $\rightarrow$ cambia el valor adyacente la pixel central de la vecindad en la dirección negativa del eje d por el valor p.
+	\item ``PixelType GetNext(unsigned int d, unsigned int s)'' $\rightarrow$ toma el valor del pixel que se encuentra a s pixeles del pixel central de la vecindad en la dirección positiva del eje d.
+	\item ``void SetNext(unsigned int d, unsigned s, PixelType p)'' $\rightarrow$ cambia el valor del pixel que se encuentra a s pixeles del pixel central de la vecindad en la dirección positiva del eje d por el valor p.
+	\item ``PixelType GetPrevious(unsigned int d, unsigned int s)'' $\rightarrow$ toma el valor del pixel que se encuentra a s pixeles del pixel central de la vecindad en la dirección negativa del eje d.
+	\item ``void SetPrevious(unsigned int d,unsigned int s, PixelType p)'' $\rightarrow$ cambia el valor del pixel que se encuentra a s pixeles del pixel central de la vecindad en la dirección negativa del eje d por el valor p.
+\end{itemize}
+
+
+Es posible extraer un conjunto de valores de una vecindad en una sola vez. Esto puede ser útil en algoritmos que realizan un gran número de operaciones en una vecindad y que requieren un gran número de referencias a los mismos pixeles.
+\begin{itemize}
+	\item ``NeighborhoodType GetNeighborhood()'' $\rightarrow$ devuelve un itk::Neighbordhood del mismo tamaño y forma que el iterador de vecindades y contiene todos los valores del iterador en esa posición.
+	\item ``void  SetNeighborhood(NeighborhoodType $\&$N)'' $\rightarrow$ cambia todos los valores de una vecindad a los valores contenidos en la vecindad N, la cual debe ser del mismo tamaño y forma.
+\end{itemize}
+
+
+Varios métodos están definidos para proporcionar información acerca de la vecindad.
+\begin{itemize}
+	\item ``IndexType GetIndex()'' $\rightarrow$ devuelve el índice del pixel central de la vecindad.
+	\item ``IndexType  GetIndex(OffsetType o)'' $\rightarrow$ devuelve el índice del pixel que se encuentra en la posición indicada por el desplazamiento o medida desde el centro de la vecindad.
+	\item ``IndexType GetIndex(unsigned int i)'' $\rightarrow$ devuelve el índice del pixel que se encuentra en la posición i del vector.
+	\item ``OffsetType GetOffset(unsigned int i)'' $\rightarrow$ devuelve el desplazamiento desde el centro de la vecindad que se encuentra en la posición i del vector.
+	\item ``unsigned long GetNeighborhoodIndex(OffsetType o)'' $\rightarrow$ devuelve la posición del vector con desplazamiento o desde el centro de la vecindad.
+	\item ``std::slice GetSlice(unsigned int n)'' $\rightarrow$ devuelve un std::slice a través del iterador de vecindades a lo largo del eje n.
+\end{itemize}
+
+
+Un cálculo basado en vecindades en una vecindad cercana a los límites de la imagen puede requerir que los datos estén por fuera de los límites. Cuando la extensión de una vecindad cae fuera de los límites de una imagen, los valores para los vecinos perdidos son facilitados según una regla, normalmente elegidos para satisfacer las necesidades numéricas del algoritmo. Una regla para facilitar los valores fuera de los límites de llama condición límite.
+
+
+Los iteradores de vecindades en Insight Toolkit detectan las referencias fuera de los límites devolviendo valores acordes a las condiciones límites. El tipo de la condición límite viene especificada el segundo parámetro del iterador (opcional). Por defecto, los iteradores de vecindades usan la condición de Neumann donde la primera derivada a través del límite es cero. La regla de Neumann devuelve los valores de los pixeles más cercanos a aquellos que se han solicitado y que están fuera de los límites. Existen varios métodos de condiciones límite en Insight Toolkit. Uno de estos es la condición periódica que devuelve el valor del pixel que se encuentra en el lado contrario, o la condición de valores constantes que devuelve un conjunto de valores para todos los pixeles que están fuera de los límites. Esto es como si rellenásemos la imagen con los valores.
+
+
+El chequeo de límites es una operación con un alto coste computacional porque se realiza cada vez que el iterador es incrementado. Para aumentar la eficiencia, los iteradores de vecindades automáticamente deshabilitan esta opción cuando detectan que no es necesario. El usuario debería también especificar si desea tener el chequeo de límites habilitado o no.
+\begin{itemize}
+	\item ``void NeedToUseBoundaryConditionOn()'' $\rightarrow$ se activa el chequeo de límites.
+	\item ``void  NeedToUseBoundaryConditionOff()'' $\rightarrow$ se desactiva el chequeo de límites.
+	\item ``void  NeedToUseBoundaryConditionOff() $\rightarrow$ se desactiva el chequeo de límites.
+	\item ``void OverrideBoundaryCondition(BoundaryConditionType *b)'' $\rightarrow$ cambia la condición límite por la condición límite b. Este método se puede utilizar para cambiar en tiempo de ejecución el comportamiento del iterador.
+	\item ``void ResetBoundaryCondition()'' $\rightarrow$ se deja de utilizar cualquier condición de límite especificada (en tiempo de ejecución) y se vuelve a utilizar la condición de base.
+	\item ``void SetPixel(unsigned int i, PixelType p, bool status)'' $\rightarrow$ se cambia el valor de una posición i del vector de vecindades por el valor p. Si la posición i está fuera de los límites, status contendrá false, en caso contrario contendrá true.
+\end{itemize}
+
+\subsection{Clase Mesh}
+\subsubsection{Crear una malla}
+Esta clase representa formas en el espacio. Deriva de la clase ``PointSet'' y por tanto hereda todas las funcionalidades relacionadas con los puntos y el acceso a la información de los píxeles asociados a estos puntos. Como todas las clases en Insight Toolkit, la clase Mesh permite utilizar cualquier dimensión.
+
+En la práctica la clase Mesh puede ser vista como un conjuntos de puntos en el que las células de diferentes dimensiones y tamaños han sido añadidas. Las células en la malla se definen en términos de los puntos existentes utilizando los identificadores de los puntos.
+
+Existen dos tipos de mallas disponibles, estáticas y dinámicas. La primera de ellas se utiliza cuando el número de células en el conjunto es conocido a priori y se espera que no cambie debido a las manipulaciones realizadas en el conjunto. Si utilizamos mallas dinámicas las usaremos para insertar y quitar células de manera eficiente. La razón de hacer la distinción entre los dos estilos es facilitar el ajuste de su comportamiento con el fin de optimizar el rendimiento y la gestión de memoria.
+
+Debido a que las mallas suelen ocupar mucha memoria se las referencia utilizando un contador de objetos y se manejan usando punteros inteligentes.
+
+Los puntos que forman la malla pueden ser añadidos mediante el método {\em SetPoint()}. Los puntos se copiarán dentro de la estructura de la malla. Esto significa que las instancias locales de los puntos pueden ser modificadas sin afectar al contenido de la malla.
+
+El número actual de puntos de una malla se obtiene mediante el método {\em GetNumberOfPoints()}
+
+Se puede acceder a los puntos de manera eficiente utilizando un iterador.
+
+\subsubsection{Insertar una célula}
+Las mallas pueden contener diferentes tipos de células. Las células más comunes son {\em LineCell}, {\em TriangleCell}, {\em QuadrilateralCell} y {\em TetrahedronCell}. En el caso de las células se tiene mayor flexibilidad a la hora de manejarlas a costa de tener un poco más de complejidad.
+
+La principal diferencia entre cómo se manejan las células y los puntos en la malla es que los puntos se guardan por copia mientras que las células se guardan utilizando punteros.
 
 \section{Filtro Non Local Means Básico}
 El diseño principal de nuestro filtro ``Basic NL-Means'' viene determinado por las consideraciones especificadas por Insight Toolkit a la hora de programar un filtro, por tanto, la realización del mismo se ha basado en estas restricciones.
@@ -1257,15 +1358,9 @@ Debemos tener en cuenta que como utilizamos multihilos la imagen se dividirá en 
 \end{figure}
 
 \section{Segmentación de la carótida}
-\begin{figure}
-\centering
-\includegraphics[scale=0.7]{sshot-3.PNG}%ext=pdf,jpg,png
-\caption{Pipeline}
-\label{fig:Pipeline}
-\end{figure}
+
 \subsection{Clase BackTracking}
-\subsubsection{Diagrama de clases}
-\subsubsection{Casos de uso}
+
 
 \chapter{Implementación}
 \section{Filtro Non Local Means Básico con iteradores de vecindades}
