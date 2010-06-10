@@ -51,6 +51,14 @@ ctobject->Create
 printn "\t\t Create an object of class DessinImage (torus_draw).\n"
 torus_draw=DessinImage(&torus)
 
+printn "\n\t\t Extreme maximum and minimum (BEFORE):\n"
+printn "\t\t\t X min (GetXmin)=%1% "  % torus_draw.GetXmin()
+printn "\t\t\t Y min (GetYmin)=%1% "  % torus_draw.GetYmin()
+printn "\t\t\t Y min (GetZmin)=%1%\n" % torus_draw.GetZmin()
+printn "\t\t\t X max (GetXmax)=%1% " % torus_draw.GetXmax()
+printn "\t\t\t Y max (GetYmax)=%1% " % torus_draw.GetYmax()
+printn "\t\t\t Y max (GetZmax)=%1% " % torus_draw.GetZmax()
+
 Xmin=50
 Ymin=50
 Zmin=50
@@ -65,6 +73,18 @@ printn "\t\t\t Xmax=%1% " % Xmax
 printn "\t\t\t Ymax=%1% " % Ymax
 printn "\t\t\t Ymax=%1% " % Zmax
 torus_draw.SetZoom(Xmin,Ymin,Zmin,Xmax,Ymax,Zmax)
+
+printn "\n\t\t Extreme maximum and minimum (AFTER):\n"
+printn "\t\t\t X min (GetXmin)=%1% "  % torus_draw.GetXmin()
+printn "\t\t\t Y min (GetYmin)=%1% "  % torus_draw.GetYmin()
+printn "\t\t\t Y min (GetZmin)=%1%\n" % torus_draw.GetZmin()
+printn "\t\t\t X max (GetXmax)=%1% " % torus_draw.GetXmax()
+printn "\t\t\t Y max (GetYmax)=%1% " % torus_draw.GetYmax()
+printn "\t\t\t Y max (GetZmax)=%1% " % torus_draw.GetZmax()
+
+OK=(Xmin==torus_draw.GetXmin())&&(Ymin==torus_draw.GetYmin()) && \
+   (Zmin==torus_draw.GetZmin())&&(Xmax==torus_draw.GetXmax()) && \
+   (Ymax==torus_draw.GetYmax())&&(Zmax==torus_draw.GetZmax())
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
