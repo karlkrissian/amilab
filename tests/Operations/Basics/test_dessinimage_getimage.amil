@@ -18,6 +18,16 @@ OK = 1 # The test was successful
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+printn "\t\t ******************************************"
+printn "\t\t *                 WARNING                *"
+printn "\t\t ******************************************"
+printn "\t\t *                                        *"
+printn "\t\t *           This test will fail          *"
+printn "\t\t *           ^^^^^^^^^^^^^^^^^^^          *"
+printn "\t\t *                                        *"
+printn "\t\t * DessinImage::getimage not implemented. *"
+printn "\t\t ******************************************\n"
+
 # Create initial image
 func "SyntheticImages/create_torus_gui.amil"
 CTClass CT
