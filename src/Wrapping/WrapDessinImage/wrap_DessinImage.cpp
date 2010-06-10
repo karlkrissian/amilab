@@ -104,11 +104,14 @@ BasicVariable::ptr wrap_DessinImage::CallMember( ParamList* p)
                                               400,
                                               CREATE_TOPLEVEL_SHELL);
 
+  BasicVariable::ptr res = CreateVar_DessinImage(oDessinImage);
+
+  // Problem here: we don't dont in which variable the smart pointer will end up, can we manage it with the NewReference method ?
   oDessinImage->SetCloseFunction(
     (void*) CB_delete_variable,
-    (void*) varim.get());
+    (void*) res.get());
 
-  return CreateVar_DessinImage(oDessinImage);
+  return res;
 }
 
 //---------------------------------------------------
@@ -236,6 +239,8 @@ BasicVariable::ptr WrapClass_DessinImage::
 
   } else {
     //var_image parameter.
+    // TODO: fix this code ...
+/*
 
     InrImage::ptr image(varim->Pointer());
     std::string sTitle = (boost::format("%s_draw") % varim->Name().c_str()).str();
@@ -262,9 +267,10 @@ BasicVariable::ptr WrapClass_DessinImage::
 
     di_2->SetCloseFunction(
       (void*) CB_delete_variable,
-      (void*) varim.get());
+      (void*) di_2.get());
 
     di->CreeCompare2Image(di_2);
+*/
   }
 
   return BasicVariable::ptr();

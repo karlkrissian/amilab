@@ -1981,7 +1981,7 @@ namespace yyip {
 #line 1988 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           GB_main_wxFrame->Close(true);
-        }
+    }
     break;
 
   case 76:
@@ -1989,11 +1989,11 @@ namespace yyip {
 /* Line 678 of lalr1.cc  */
 #line 1992 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
-          std::string titre;
-          GET_VARSTACK_VAR_VAL(InrImage, imagevar, im);
-          BasicVariable::ptr var;
-          int var_context = Vars.GetContext(imagevar);
-          Variables::ptr context = imagevar->GetContext();
+      std::string titre;
+      GET_VARSTACK_VAR_VAL(InrImage, imagevar, im);
+      BasicVariable::ptr var;
+      int var_context = Vars.GetContext(imagevar);
+      Variables::ptr context = imagevar->GetContext();
 
 /*
           Variables::ptr previous_ocontext = Vars.GetObjectContext();
@@ -2002,43 +2002,43 @@ namespace yyip {
             Vars.SetObjectContext(imagevar->GetContext());
           }
 */
-          
-          titre = (boost::format("%s_draw") % imagevar->Name().c_str()).str();
-          FILE_MESSAGE(boost::format("SHOW var_image  title %s") % titre);
-          //if (Vars.GetCurrentContext()->GetVar(titre,&var)) {
-          var = context->GetVar(titre.c_str());
-          if (var.get()) {
-            GET_WRAPPED_OBJECT(DessinImage, var, di)
-            if (di.get()) {
-              DessinImageParametres* param;
-              param = di->GetParam();
-              param->_MAJ.MAJCoupes();
-              di->Paint();
-              di->Raise();
-            } else {
-              driver.err_print(
-                (boost::format
-                  ("Unable to convert variable %1% to a wrapped DessinImage") % titre).str().c_str());
-              YYABORT;
-            }
-          }
-          else
-          {
-            FILE_MESSAGE(boost::format("SHOW var_image creating title %s ") % titre);
-            std::string varname(titre);
-            DessinImage* di = CreateIDraw( varname,  im);
-            if (di!=NULL) {
-              BasicVariable::ptr newvar = CreateVar_DessinImage(di);
-              di->SetCloseFunction(
-                (void*) CB_delete_variable,
-                (void*) (newvar.get()));
-              newvar->Rename(varname.c_str());
-              context->AddVar(newvar);
-            } else {
-              driver.err_print("Failed to create image viewer.");
-              YYABORT;
-            }
-          }
+      
+      titre = (boost::format("%s_draw") % imagevar->Name().c_str()).str();
+      FILE_MESSAGE(boost::format("SHOW var_image  title %s") % titre);
+      //if (Vars.GetCurrentContext()->GetVar(titre,&var)) {
+      var = context->GetVar(titre.c_str());
+      if (var.get()) {
+        GET_WRAPPED_OBJECT(DessinImage, var, di)
+        if (di.get()) {
+          DessinImageParametres* param;
+          param = di->GetParam();
+          param->_MAJ.MAJCoupes();
+          di->Paint();
+          di->Raise();
+        } else {
+          driver.err_print(
+            (boost::format
+              ("Unable to convert variable %1% to a wrapped DessinImage") % titre).str().c_str());
+          YYABORT;
+        }
+      }
+      else
+      {
+        FILE_MESSAGE(boost::format("SHOW var_image creating title %s ") % titre);
+        std::string varname(titre);
+        DessinImage* di = CreateIDraw( varname,  im);
+        if (di!=NULL) {
+          BasicVariable::ptr newvar = CreateVar_DessinImage(di);
+          di->SetCloseFunction(
+            (void*) CB_delete_variable,
+            (void*) (newvar.get()));
+          newvar->Rename(varname.c_str());
+          context->AddVar(newvar, context);
+        } else {
+          driver.err_print("Failed to create image viewer.");
+          YYABORT;
+        }
+      }
 
 /*
           if (var_context==OBJECT_CONTEXT_NUMBER) {

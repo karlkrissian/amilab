@@ -43,8 +43,7 @@ extern yyip::Driver GB_driver;
   BasicVariable::ptr resvar; \
   if (member.get()) { \
     ParamList::ptr param(new ParamList()); \
-    BasicVariable::ptr newvar(varparam->NewReference()); \
-    param->AddParam(newvar); \
+    param->AddParam(varparam); \
     if (member->Type()==type_class_member) { \
       DYNAMIC_CAST_VARIABLE(WrapClassMember,member, var1); \
       resvar = (var1->Pointer())->CallMember(param.get()); \
@@ -68,6 +67,22 @@ template<> BasicVariable::ptr Variable<AMIObject>::NewCopy() const
     return BasicVariable::ptr();
 }
 
+
+
+/// Copy contents to new variable
+template<> BasicVariable::ptr Variable<AMIObject>::NewReference() const
+{
+  std::string resname = _name+"_ref";
+  ptr ref(new Variable<AMIObject>(resname,_pointer));
+  // copy the comments
+  ref->SetComments(_comments);
+  // give the oportunity to deal with this new reference
+// TODO: find a solution, are there too many variable references ???
+// could this slow down considerably amilab??
+// should we have a boolean saying that the reference needs special treatment?
+//  APPLY_MEMBER_PARAM1("reference", ref, varres);
+  return ref;
+}
 
 // Arithmetic operators
 

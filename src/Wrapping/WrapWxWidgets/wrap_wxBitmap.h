@@ -40,11 +40,13 @@ class WrapClass_wxBitmap : public WrapClassBase
     ADD_CLASS_METHOD(GetHeight,    "Gets the height of the bitmap in pixels.");
     ADD_CLASS_METHOD(IsOk,         "Returns true if bitmap data is present.");
 
+    ADD_CLASS_METHOD(copy,         "Bitmap copy constructor.");
 
     void AddMethods( _parentclass_ptr& this_ptr ) {
       AddVar_GetWidth(       this_ptr);
       AddVar_GetHeight(      this_ptr);
       AddVar_IsOk(        this_ptr);
+      AddVar_copy(        this_ptr);
     }
 
 };

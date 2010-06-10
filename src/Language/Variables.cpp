@@ -124,6 +124,7 @@ BasicVariable::ptr Variables::AddVar( BasicVariable::ptr& var, Variables::ptr co
   string resname = this->CheckVarName(var->Name().c_str());
   // TODO: fix the following code, maybe not so easy ...
   // should we copy the contents here ??
+  // why do we create a reference here ???
   BasicVariable::ptr newvar(var->NewReference());
   newvar->Rename(resname.c_str());
   newvar->SetContext(context);

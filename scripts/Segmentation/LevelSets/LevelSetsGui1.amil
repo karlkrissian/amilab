@@ -762,10 +762,10 @@ if (!exists(LevelSetsClass)){
                 ::win.SetCallback(::UpdateExpansionCurve)
                 ::win.AddBoolean( &::accept_high_intensity,"Accept high intensities")
                 # add a Curve Drawing Window
-                ::dw = import->wxDrawingWindow(::win.CurrentParent())
-                ::dw.SetMinSize(wx.wxSize(50,100))
+                ::dw = import->wxDrawingWindow(&::win.CurrentParent())
+                ::dw.SetMinSize(&wx.wxSize(50,100))
                 ::dw.SetBackgroundColour(\
-                    wx.wxColour(255,255,255))
+                    &wx.wxColour(255,255,255))
                 ::win.AddWidget(&::dw,0)
 
               ::imexp_page = ::win.AddPage("Image")
