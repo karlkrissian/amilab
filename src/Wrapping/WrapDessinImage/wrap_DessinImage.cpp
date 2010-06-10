@@ -40,6 +40,7 @@ extern yyip::Driver GB_driver;
 extern MainFrame* GB_main_wxFrame;
 
 extern void CB_delete_variable( void* var);
+extern void CB_delete_varlist( void* var);
 
 extern void CB_ParamWin( void* cd );
 
@@ -106,10 +107,14 @@ BasicVariable::ptr wrap_DessinImage::CallMember( ParamList* p)
 
   BasicVariable::ptr res = CreateVar_DessinImage(oDessinImage);
 
+  // Create a list of weak pointers to the variables that are refering to the drawing window
+  std::list<BasicVariable::wptr>* refvarlist = new std::list<BasicVariable::wptr>;
+  refvarlist->push_back(BasicVariable::wptr(res));
+
   // Problem here: we don't dont in which variable the smart pointer will end up, can we manage it with the NewReference method ?
   oDessinImage->SetCloseFunction(
-    (void*) CB_delete_variable,
-    (void*) res.get());
+    (void*) CB_delete_varlist,
+    (void*) refvarlist);
 
   return res;
 }
@@ -240,37 +245,25 @@ BasicVariable::ptr WrapClass_DessinImage::
   } else {
     //var_image parameter.
     // TODO: fix this code ...
-/*
-
-    InrImage::ptr image(varim->Pointer());
-    std::string sTitle = (boost::format("%s_draw") % varim->Name().c_str()).str();
-    DessinParam::ptr parametres;
-
-    if (!image.get()) {
-      GB_driver.err_print("WrapClass_DessinImage::wrap_compare empty image.");
+    // Call constructor from DessinImage constructor function
+    std::string title = (boost::format("%s_draw") % varim->Name()).str();
+    ParamList* p = new ParamList();
+    p->AddParam(varim);
+    BasicVariable::ptr newvar = wrap_DessinImage().CallMember(p);
+    FILE_MESSAGE(boost::format("SHOW var_image creating title %s ") % title);
+    Variables::ptr context = varim->GetContext();
+    if ( newvar.get() && context.get()) {
+      newvar->Rename(title.c_str());
+      context->AddVar(newvar, context);
+    } else {
+      GB_driver.err_print("Failed to create image viewer.");
       return BasicVariable::ptr();
     }
 
-    DessinImage* oDessinImage = new DessinImage(GB_main_wxFrame,
-                                                sTitle,
-                                                image,//.get(),
-                                                parametres,
-                                                400,
-                                                400,
-                                                CREATE_TOPLEVEL_SHELL);
-
-    DessinImage::ptr di_2 = DessinImage::Create_ptr(oDessinImage);
-    DessinImageParametres* param;
-    param = di_2->GetParam();
-    param->_MAJ.MAJCoupes();
-    di_2->Paint();
-
-    di_2->SetCloseFunction(
-      (void*) CB_delete_variable,
-      (void*) di_2.get());
-
-    di->CreeCompare2Image(di_2);
-*/
+    GET_WRAPPED_OBJECT(DessinImage,newvar,di_2);
+    if (di_2.get())
+      di->CreeCompare2Image(di_2);
+    return newvar;
   }
 
   return BasicVariable::ptr();

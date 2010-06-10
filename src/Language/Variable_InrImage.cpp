@@ -6,7 +6,11 @@
 #include "driver.h"
 #include <boost/pointer_cast.hpp>
 
-extern yyip::Driver GB_driver;
+#include "MainFrame.h"
+#include "func_imagebasictools.h"
+
+extern yyip::Driver  GB_driver;
+extern MainFrame*    GB_main_wxFrame;
 
 #define NEW_SMARTPTR(type, var, value) \
   boost::shared_ptr<type> var(new type(value));
@@ -16,7 +20,10 @@ extern yyip::Driver GB_driver;
   return Variable<type>::ptr( new Variable<type>(newval));
 
 #include "inrimage.hpp"
-
+#include "wrap_ImageExtent.h"
+#include "wrap_DessinImage.h"
+#include "wrapfunctions.hpp"
+#include "imageextent.h"
 
 // TODO: should be defined as functions ...
 #define UNARYOP_IMAGE(im,operator)      \
@@ -490,20 +497,17 @@ template<> BasicVariable::ptr Variable<InrImage>::BasicCast(const int& type)
   return Variable<InrImage>::ptr( new Variable<InrImage>(res)); 
 }
 
+
 /**
- * Array subscript operator
- * @param v 
- * @return 
- */
-template<>  BasicVariable::ptr Variable<InrImage>::operator[](const BasicVariable::ptr& v)
+ * operation Image[number]
+ **/
+BasicVariable::ptr Image_Brackets( Variable<InrImage> * const _this, int pos)
 {
-  if (v->IsNumeric()) {
-    int pos = (int) v->GetValueAsDouble();
-    InrImage::ptr im(Pointer());
+    InrImage::ptr im(_this->Pointer());
     InrImage::ptr res;
     if (pos<0) pos = 0;
     if (pos>=im->GetVDim()) pos = im->GetVDim()-1;
-    std::string imname  = (boost::format("C%d_%s") % pos % this->Name()).str();
+    std::string imname  = (boost::format("C%d_%s") % pos % _this->Name()).str();
 
     switch ( im->GetFormat() ){
         case WT_RGB:
@@ -536,10 +540,80 @@ template<>  BasicVariable::ptr Variable<InrImage>::operator[](const BasicVariabl
       im->IncBuffer();
     } while (res->IncBuffer());
     return Variable<InrImage>::ptr( new Variable<InrImage>(res)); 
+}
 
+/**
+ * Array subscript operator
+ * @param v 
+ * @return 
+ */
+template<>  BasicVariable::ptr Variable<InrImage>::operator[](const BasicVariable::ptr& v)
+{
+  if (v->IsNumeric()) {
+    int pos = (int) v->GetValueAsDouble();
+    return Image_Brackets(this,pos);
   } 
-  else
-    CLASS_ERROR("operation not defined");
+  else {
+    // try to get an image extent
+    GET_WRAPPED_TEMPLATE_OBJECT(ImageExtent, float ,v,extent);
+    if (extent.get()) {
+      InrImage::ptr im(Pointer());
+      extent->SetRelative(im.get());
+      InrImage::ptr res ( Func_SubImage( im.get(),
+                  (int)  round((double)extent->Xmin()),
+                  (int)  round((double)extent->Ymin()),
+                  (int)  round((double)extent->Zmin()),
+                  (int)  round((double)extent->Xmax()),
+                  (int)  round((double)extent->Ymax()),
+                  (int)  round((double)extent->Zmax())
+                  ));
+      if (!res.get()) {
+        CLASS_ERROR("SubImage() failed ... ");
+        return BasicVariable::ptr();
+      }
+      return Variable<InrImage>::ptr( new Variable<InrImage>(res)); 
+    }
+    else 
+    {
+      // try to get an image extent
+      GET_WRAPPED_OBJECT(DessinImage,v,draw);
+      if (draw.get()) {
+
+        //DessinImage::ptr draw = DessinImage::ptr(varimd->Pointer());
+  
+        int xmin,xmax;
+        int ymin,ymax;
+        int zmin,zmax;
+        string comment;
+    
+        draw->GetZoom(xmin,ymin,zmin,xmax,ymax,zmax);
+        ImageExtent<float>* extent=new ImageExtent<float>(xmin,xmax,ymin,ymax,zmin,zmax);
+        extent->SetMode(1); // relative extent
+    
+        comment = str(format(" //  subvolume [%3d:%3d, %3d:%3d, %3d:%3d] ")
+            % xmin % xmax % ymin % ymax % zmin % zmax);
+        if (GB_driver.InConsole()) GB_main_wxFrame->GetConsole()->IncCommand(comment);
+
+        InrImage::ptr im(Pointer());
+        extent->SetRelative(im.get());
+        InrImage::ptr res ( Func_SubImage( im.get(),
+                    (int)  round((double)extent->Xmin()),
+                    (int)  round((double)extent->Ymin()),
+                    (int)  round((double)extent->Zmin()),
+                    (int)  round((double)extent->Xmax()),
+                    (int)  round((double)extent->Ymax()),
+                    (int)  round((double)extent->Zmax())
+                    ));
+        if (!res.get()) {
+          CLASS_ERROR("SubImage() failed ... ");
+          return BasicVariable::ptr();
+        }
+        return Variable<InrImage>::ptr( new Variable<InrImage>(res)); 
+      } 
+      else
+        CLASS_ERROR("operation not defined");
+    }
+  }
   return BasicVariable::empty_variable; 
 }
 

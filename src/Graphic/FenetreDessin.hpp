@@ -318,6 +318,11 @@ public:
      CloseData = data;
   }
 
+  void* GetCloseData()
+  {
+    return CloseData;
+  }
+
   virtual void CloseWindow();
   ///
  

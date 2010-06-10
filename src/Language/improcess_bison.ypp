@@ -213,6 +213,7 @@ static void CB_Button(  void* cd) {
 */
 
 extern void CB_delete_variable( void* var);
+extern void CB_delete_varlist( void* var);
 
 extern void CB_ParamWin( void* cd );
 
@@ -1414,10 +1415,20 @@ command:
             - new variable name;
             - existing variable name.
         **/
-          BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
-          IdentifierInfo::ptr ident($1);
-          BasicVariable::ptr newvar( var->NewReference());
-          Vars.AddVar(ident,newvar);
+        BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
+        IdentifierInfo::ptr ident($1);
+        if (var.get() && (var->HasPointer())  ) {
+          if ((var->GetPtrCounter()==1)&&(var.use_count()==1)) {
+            IdentifierInfo::ptr ident($1);
+            Vars.AddVar(ident,var);
+          } else {
+            BasicVariable::ptr newvar( var->NewReference());
+            Vars.AddVar(ident,newvar);
+          }
+        } else {
+          driver.err_print("identifier = &expr_var, no variable value");
+          YYABORT;
+        }
       }
       |
       identifier ASSIGN_OP expr_var
@@ -1434,19 +1445,26 @@ command:
         if (var.get() && (var->HasPointer())  ) {
           cout << "GetPtrCounter == " <<  var->GetPtrCounter()<< endl;
           cout << "use_count() == " <<  var.use_count() << endl;
-          if (var->GetPtrCounter()==1) {
+          // only if both reference counters are equal to 1, we can avoid copy the variable
+          if ((var->GetPtrCounter()==1)&&(var.use_count()==1)) {
             IdentifierInfo::ptr ident($1);
-            BasicVariable::ptr ref = var->NewReference();
+            //BasicVariable::ptr ref = var->NewReference();
             // need to run on reference to avoid renaming the own variable !!!
-            Vars.AddVar(ident,ref);
+            //Vars.AddVar(ident,ref);
+            Vars.AddVar(ident,var);
           } else
           {
             BasicVariable::ptr copy = var->NewCopy();
-            IdentifierInfo::ptr ident($1);
-            Vars.AddVar(ident,copy);
+            if (copy.get()) {
+              IdentifierInfo::ptr ident($1);
+              Vars.AddVar(ident,copy);
+            } else {
+              driver.err_print("Copy failed for the variable in rule id = expr_var");
+              YYABORT;
+            }
           }
         } else {
-          driver.err_print("identifier = variable, no variable value");
+          driver.err_print("identifier = expr_var, no variable value");
           YYABORT;
         }
       }
@@ -2025,15 +2043,13 @@ command:
       }
       else
       {
+        // Call constructor from DessinImage constructor function
+        ParamList* p = new ParamList();
+        p->AddParam(imagevar);
+        BasicVariable::ptr newvar = wrap_DessinImage().CallMember(p);
         FILE_MESSAGE(boost::format("SHOW var_image creating title %s ") % titre);
-        std::string varname(titre);
-        DessinImage* di = CreateIDraw( varname,  im);
-        if (di!=NULL) {
-          BasicVariable::ptr newvar = CreateVar_DessinImage(di);
-          di->SetCloseFunction(
-            (void*) CB_delete_variable,
-            (void*) (newvar.get()));
-          newvar->Rename(varname.c_str());
+        if (newvar.get()) {
+          newvar->Rename(titre.c_str());
           context->AddVar(newvar, context);
         } else {
           driver.err_print("Failed to create image viewer.");
@@ -8079,7 +8095,7 @@ image:
 
       ADD_VARSTACK_PTR(InrImage,res);
         }
-        | T_Xpos T_OP_PAR var_image  T_CL_PAR
+        | T_Xpos T_OP_PAR expr_var  T_CL_PAR
         {
         /**
         Description:
@@ -8116,7 +8132,7 @@ image:
         //cout << "(*res)(10,20,0)=" << (*res)(10,20,0) << endl;
         ADD_VARSTACK_PTR(InrImage,res);
         }
-        | T_Ypos T_OP_PAR var_image  T_CL_PAR
+        | T_Ypos T_OP_PAR expr_var  T_CL_PAR
         {
         /**
         Description:
@@ -8153,7 +8169,7 @@ image:
 
         ADD_VARSTACK_PTR(InrImage,res);
         }
-        | T_Zpos T_OP_PAR var_image  T_CL_PAR
+        | T_Zpos T_OP_PAR expr_var  T_CL_PAR
         {
         /**
         Description:
@@ -8190,7 +8206,7 @@ image:
 
         ADD_VARSTACK_PTR(InrImage,res);
         }
-        | T_SpacePos T_OP_PAR var_image  T_CL_PAR
+        | T_SpacePos T_OP_PAR expr_var  T_CL_PAR
         {
         /**
         Description:
@@ -9295,7 +9311,10 @@ primary_var:
 
 postfix_var:
       primary_var %prec SHIFT_THERE
-      | postfix_var T_POINT identifier
+      |
+        image_extent
+      |
+        postfix_var T_POINT identifier
       {
           // todo ... 
           // 1. check if identifier belongs to the object
@@ -9439,6 +9458,7 @@ postfix_var:
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->Transpose());
   }
+/*
   |
   // moving var[image_extent] here to limit conflicts
   // this rule should be removed in the future
@@ -9447,7 +9467,7 @@ postfix_var:
     /**
       Description: 
         Rule to apply image[image_extent]
-    **/
+    ** /
     GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
     GET_VARSTACK_VALUE(InrImage,im);
 
@@ -9480,6 +9500,7 @@ postfix_var:
     }
 
   }
+*/
   |
   postfix_var T_OP_BR  expr_var T_CL_BR
   {
@@ -10930,18 +10951,40 @@ variable:
     ;
 
 image_extent:
-    expr T_COLON expr T_COMMA  expr T_COLON expr T_COMMA  expr T_COLON expr
+    primary_var T_COLON primary_var T_COMMA  
+    primary_var T_COLON primary_var T_COMMA  
+    primary_var T_COLON primary_var 
     {
-      ImageExtent<float>* extent=new ImageExtent<float>( (float)$1,(float)$3,(float)$5,
-                          (float)$7,(float)$9,(float)$11);
+      /**
+        Description: creates an image extent based on the limits in voxel coordinates in X,Y and Z
+        Parameters: xmin, xmax, ymin, ymax, zmin, zmax
+      **/
+      GET_VARSTACK_VALUE(float,zmax)
+      GET_VARSTACK_VALUE(float,zmin)
+      GET_VARSTACK_VALUE(float,ymax)
+      GET_VARSTACK_VALUE(float,ymin)
+      GET_VARSTACK_VALUE(float,xmax)
+      GET_VARSTACK_VALUE(float,xmin)
+      ImageExtent<float>* extent=new ImageExtent<float>(  *xmin, *xmax, 
+                                                          *ymin, *ymax, 
+                                                          *zmin, *zmax);
       extent->SetMode(1); // relative
       BasicVariable::ptr res(CreateVar_ImageExtent(extent));
       driver.var_stack.AddVar(res);
     }
     |
-    expr T_COLON expr T_COMMA  expr T_COLON expr
+    primary_var T_COLON primary_var T_COMMA  primary_var T_COLON primary_var
     {
-      ImageExtent<float>* extent=new ImageExtent<float>((float)$1,(float)$3,(float)$5,(float)$7);
+      /**
+        Description: creates an image extent based on the limits in pixel coordinates in X,Y 
+        Parameters: xmin, xmax, ymin, ymax
+      **/
+      GET_VARSTACK_VALUE(float,ymax)
+      GET_VARSTACK_VALUE(float,ymin)
+      GET_VARSTACK_VALUE(float,xmax)
+      GET_VARSTACK_VALUE(float,xmin)
+
+      ImageExtent<float>* extent=new ImageExtent<float>( *xmin, *xmax, *ymin, *ymax);
       extent->SetMode(1); // relative
       BasicVariable::ptr res(CreateVar_ImageExtent(extent));
       driver.var_stack.AddVar(res);
@@ -10981,6 +11024,7 @@ image_extent:
       BasicVariable::ptr res(CreateVar_ImageExtent(extent));
       driver.var_stack.AddVar(res);
     }
+/*
     |
     VAR_IMAGEDRAW
     {
@@ -11004,6 +11048,7 @@ image_extent:
       BasicVariable::ptr res(CreateVar_ImageExtent(extent));
       driver.var_stack.AddVar(res);
     }
+*/
 %%
 #include <stdio.h>
 

@@ -131,7 +131,36 @@ void CB_delete_variable( void* var)
 
 }
 
+//-----------------------------------------
+void CB_delete_varlist( void* var)
+{
+  if (!var) return;
 
+  std::list<BasicVariable::wptr>* varlist = (std::list<BasicVariable::wptr>*) var;
+
+  if (varlist) {
+    // iterate over the list
+    std::list<BasicVariable::wptr>::iterator it;
+    for(it=varlist->begin(); it!=varlist->end(); it++) {
+      BasicVariable::wptr vartodelete = *it;
+      if (BasicVariable::ptr lockedvar = vartodelete.lock()) 
+      {
+        bool deleted=false;
+        std::string name = lockedvar->Name();
+        FILE_MESSAGE(boost::format("deleting %1%") % name);
+        Variables::ptr context = lockedvar->GetContext();
+        if (context.get()) {
+          deleted = context->deleteVar(name.c_str());
+        }
+        if (!deleted)
+          FILE_ERROR(boost::format("Could not delete variable %1%") % name); 
+      }
+    }
+
+    // should be safe to delete varlist if the window is now closed!!!
+    delete varlist;
+  }
+}
 
 //----------------------------------------------------------------------
 // wxWidget specific ...

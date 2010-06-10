@@ -115,7 +115,7 @@ protected:
   BasicVariable::ptr AddVar(BasicVariable::ptr& var, Variables::ptr context = Variables::ptr());
 
   /**
-   *  Add a new variable based on a smart pointer to a variable
+   *  Adds a new variable to the context based on a smart pointer to a variable
    * @param var 
    * @param context 
    * @return 

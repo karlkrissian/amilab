@@ -752,16 +752,21 @@ void FenetreDessin::CloseWindow()
 //   -------------
 { 
   if (GB_debug) fprintf(stderr,"FenetreDessin::CloseWindow() \n");
-  Si CloseFunction != NULL Alors
+  if (CloseFunction != NULL)
+  {
     if (GB_debug) cerr << "calling closing function " << endl;
 
     void (*func)( void*) = (void (*)( void*)) CloseFunction;
     func( (void*) CloseData);
-  Sinon
+    // apply close only once !!!
+    //CloseFunction = NULL;
+    // The Close Function must be able to deal with a NULL pointer as parameter !!!
+    CloseData = NULL;
+  } else 
     // Call destructor
     //this->~FenetreDessin();
     Close(true);
-  FinSi
+
 }
 
 

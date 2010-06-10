@@ -48,6 +48,19 @@
       objname = wrapped_obj->_obj; \
     }
 
+// TODO: improve this way of wrapping template objects ...
+/*! \def GET_WRAPPED_TEMPLATE_OBJECT
+    \brief gets the smart pointer to the object wrapped, from a smart pointer to a basic variable where the object comes from a template class
+*/
+#define GET_WRAPPED_TEMPLATE_OBJECT(type, templ, var,objname) \
+    DYNAMIC_CAST_VARIABLE(AMIObject, var, varobj) \
+    boost::shared_ptr<type<templ> > objname; \
+    if (varobj.get()) { \
+      WrapClassBase::ptr wrapped_base(varobj->Pointer()->GetWrappedObject()); \
+      WrapClass_##type::ptr wrapped_obj( \
+        boost::dynamic_pointer_cast<WrapClass_##type >(wrapped_base)); \
+      objname = wrapped_obj->_obj; \
+    }
 
 template<typename> 
 struct to_string {

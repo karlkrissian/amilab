@@ -21,6 +21,8 @@
 
 #include "imageextent.h"
 
+
+
 class WrapClass_ImageExtent : public WrapClassBase
 {
   DEFINE_CLASS(WrapClass_ImageExtent);
