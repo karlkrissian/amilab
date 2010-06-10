@@ -1,0 +1,74 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_dessinimage_zoom.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the following methods:
+#                              - SetZoom.
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+OK = 1 # The test was successful
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# Create initial image
+func "SyntheticImages/create_torus_gui.amil"
+CTClass CT
+
+DIMX=100
+DIMY=100
+DIMZ=100
+BG=0
+FG=0
+R=20
+r=4
+
+printn "\t\t Create synthetic imaged:"
+printn "\t\t\t dimx=%1%" % DIMX
+printn "\t\t\t dimy=%1%" % DIMY
+printn "\t\t\t dimz=%1%" % DIMZ
+printn "\t\t\t bg=%1%" % BG
+printn "\t\t\t fg=%1%" % FG
+printn "\t\t\t R=%1%"  % R
+printn "\t\t\t r=%1%"  % r
+
+ctobject->dimx = 100
+ctobject->dimy = 100
+ctobject->dimz = 100
+ctobject->bg = 0
+ctobject->fg = 100
+ctobject->R = 20
+ctobject->r = 4
+ctobject->Create
+
+printn "\t\t Create an object of class DessinImage (torus_draw).\n"
+torus_draw=DessinImage(&torus)
+
+Xmin=50
+Ymin=50
+Zmin=50
+Xmax=70
+Ymax=70
+Zmax=70
+printn "\t\t Make a Zoom (SetZoom).\n"
+printn "\t\t\t Xmin=%1% "  % Xmin
+printn "\t\t\t Ymin=%1% "  % Ymin
+printn "\t\t\t Ymin=%1%\n" % Zmin
+printn "\t\t\t Xmax=%1% " % Xmax
+printn "\t\t\t Ymax=%1% " % Ymax
+printn "\t\t\t Ymax=%1% " % Zmax
+torus_draw.SetZoom(Xmin,Ymin,Zmin,Xmax,Ymax,Zmax)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ctest.PrintTestResult( OK ) 
+
+#quit
+
