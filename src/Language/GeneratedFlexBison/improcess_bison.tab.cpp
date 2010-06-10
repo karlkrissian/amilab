@@ -38,7 +38,7 @@
 /* First part of user declarations.  */
 
 /* Line 311 of lalr1.cc  */
-#line 11 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 11 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
 
  /*** C/C++ Declarations ***/
   //#include <stdlib.h>
@@ -372,7 +372,7 @@ void CB_update_imagelist( void* imagelist_gui);
 
 
 /* Line 311 of lalr1.cc  */
-#line 376 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
+#line 376 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
 
 
 #include "improcess_bison.tab.hpp"
@@ -380,7 +380,7 @@ void CB_update_imagelist( void* imagelist_gui);
 /* User implementation prologue.  */
 
 /* Line 317 of lalr1.cc  */
-#line 822 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 822 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
 
 
 #include "driver.h"
@@ -395,7 +395,7 @@ void CB_update_imagelist( void* imagelist_gui);
 
 
 /* Line 317 of lalr1.cc  */
-#line 399 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
+#line 399 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
 
 #ifndef YY_
 # if YYENABLE_NLS
@@ -464,7 +464,7 @@ do {					\
 namespace yyip {
 
 /* Line 380 of lalr1.cc  */
-#line 468 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
+#line 468 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
 #if YYERROR_VERBOSE
 
   /* Return YYSTR after stripping away unnecessary quotes and
@@ -567,65 +567,65 @@ namespace yyip {
         case 56: /* "ASTRING" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 815 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
 	{ delete [] (yyvaluep->astring); };
 
 /* Line 480 of lalr1.cc  */
-#line 575 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
+#line 575 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
 	break;
       case 59: /* "IDENTIFIER" */
 
 /* Line 480 of lalr1.cc  */
-#line 816 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 816 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
 	{ delete  (yyvaluep->ident); };
 
 /* Line 480 of lalr1.cc  */
-#line 584 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
+#line 584 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
 	break;
       case 407: /* "exprstringlist" */
 
 /* Line 480 of lalr1.cc  */
-#line 818 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 818 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
 	{ delete  (yyvaluep->string_list); };
 
 /* Line 480 of lalr1.cc  */
-#line 593 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
+#line 593 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
 	break;
       case 410: /* "primary_expr_string" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 815 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
 	{ delete [] (yyvaluep->astring); };
 
 /* Line 480 of lalr1.cc  */
-#line 602 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
+#line 602 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
 	break;
       case 411: /* "instr_block" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 817 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
 	{ delete  (yyvaluep->ablock); };
 
 /* Line 480 of lalr1.cc  */
-#line 611 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
+#line 611 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
 	break;
       case 417: /* "expr_string" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 815 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
 	{ delete [] (yyvaluep->astring); };
 
 /* Line 480 of lalr1.cc  */
-#line 620 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
+#line 620 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
 	break;
       case 443: /* "identifier" */
 
 /* Line 480 of lalr1.cc  */
-#line 816 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 816 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
 	{ delete  (yyvaluep->ident); };
 
 /* Line 480 of lalr1.cc  */
-#line 629 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
+#line 629 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
 	break;
 
 	default:
@@ -704,14 +704,14 @@ namespace yyip {
     /* User initialization code.  */
     
 /* Line 553 of lalr1.cc  */
-#line 364 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 364 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
 {
     // initialize the initial location object
     yylloc.begin.filename = yylloc.end.filename = &driver.streamname;
 }
 
 /* Line 553 of lalr1.cc  */
-#line 715 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
+#line 715 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
 
     /* Initialize the stacks.  The initial state will be pushed in
        yynewstate, since the latter expects the semantical and the
@@ -830,7 +830,7 @@ namespace yyip {
 	  case 22:
 
 /* Line 678 of lalr1.cc  */
-#line 861 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 861 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       int  previous_lineno=driver.yyiplineno;
       AmiInstructionBlock::ptr block((yysemantic_stack_[(8) - (7)].ablock));
@@ -852,7 +852,7 @@ namespace yyip {
   case 23:
 
 /* Line 678 of lalr1.cc  */
-#line 880 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 880 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       int  previous_lineno=driver.yyiplineno;
       AmiInstructionBlock::ptr block((yysemantic_stack_[(10) - (9)].ablock));
@@ -875,7 +875,7 @@ namespace yyip {
   case 24:
 
 /* Line 678 of lalr1.cc  */
-#line 900 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 900 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
       Description: 
@@ -924,7 +924,7 @@ namespace yyip {
   case 25:
 
 /* Line 678 of lalr1.cc  */
-#line 945 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 945 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
       Description:
@@ -951,7 +951,7 @@ namespace yyip {
   case 26:
 
 /* Line 678 of lalr1.cc  */
-#line 968 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 968 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       /**
         Description:
@@ -1001,7 +1001,7 @@ namespace yyip {
   case 27:
 
 /* Line 678 of lalr1.cc  */
-#line 1017 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1017 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       int  previous_lineno;
       AmiInstructionBlock::ptr block((yysemantic_stack_[(4) - (3)].ablock));
@@ -1021,7 +1021,7 @@ namespace yyip {
   case 28:
 
 /* Line 678 of lalr1.cc  */
-#line 1032 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1032 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
        int  previous_lineno = driver.yyiplineno;
 
@@ -1045,7 +1045,7 @@ namespace yyip {
   case 29:
 
 /* Line 678 of lalr1.cc  */
-#line 1054 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1054 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GB_driver.procedure_declaration = true;
     }
@@ -1054,7 +1054,7 @@ namespace yyip {
   case 30:
 
 /* Line 678 of lalr1.cc  */
-#line 1059 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1059 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       AmiInstructionBlock::ptr body((yysemantic_stack_[(8) - (7)].ablock));
       IdentifierInfo::ptr ident((yysemantic_stack_[(8) - (2)].ident));
@@ -1084,7 +1084,7 @@ namespace yyip {
   case 31:
 
 /* Line 678 of lalr1.cc  */
-#line 1085 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1085 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       // allow overriding current functions
       GB_driver.procedure_declaration = true;
@@ -1094,7 +1094,7 @@ namespace yyip {
   case 32:
 
 /* Line 678 of lalr1.cc  */
-#line 1091 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1091 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       AmiInstructionBlock::ptr body((yysemantic_stack_[(8) - (7)].ablock));
 
@@ -1134,7 +1134,7 @@ namespace yyip {
   case 33:
 
 /* Line 678 of lalr1.cc  */
-#line 1130 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1130 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       AmiInstructionBlock::ptr body((yysemantic_stack_[(4) - (3)].ablock));
       IdentifierInfo::ptr ident((yysemantic_stack_[(4) - (2)].ident));
@@ -1154,7 +1154,7 @@ namespace yyip {
   case 34:
 
 /* Line 678 of lalr1.cc  */
-#line 1147 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1147 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       Variable<AMIClass>::ptr var(driver.var_stack.GetLastVar<AMIClass>());
       AMIClass::ptr parent = var->Pointer();
@@ -1178,7 +1178,7 @@ namespace yyip {
   case 35:
 
 /* Line 678 of lalr1.cc  */
-#line 1168 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1168 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       Variable<AMIClass>::ptr var(driver.var_stack.GetLastVar<AMIClass>());
       AMIClass::ptr ac = var->Pointer();
@@ -1202,7 +1202,7 @@ namespace yyip {
   case 36:
 
 /* Line 678 of lalr1.cc  */
-#line 1189 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1189 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
        //driver.res_print($2);
        driver.parse_script((yysemantic_stack_[(3) - (2)].astring));
@@ -1213,7 +1213,7 @@ namespace yyip {
   case 37:
 
 /* Line 678 of lalr1.cc  */
-#line 1196 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1196 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           int res;
           string name;
@@ -1252,7 +1252,7 @@ namespace yyip {
   case 38:
 
 /* Line 678 of lalr1.cc  */
-#line 1231 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1231 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       boost::shared_array<char> input((yysemantic_stack_[(2) - (2)].astring));
       string inputstring( input.get());
@@ -1264,7 +1264,7 @@ namespace yyip {
   case 39:
 
 /* Line 678 of lalr1.cc  */
-#line 1241 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1241 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           /**
             Description:
@@ -1284,7 +1284,7 @@ namespace yyip {
   case 40:
 
 /* Line 678 of lalr1.cc  */
-#line 1257 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1257 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           /**
             Description:
@@ -1321,7 +1321,7 @@ namespace yyip {
   case 41:
 
 /* Line 678 of lalr1.cc  */
-#line 1289 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1289 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
          /**
           Description:
@@ -1334,7 +1334,7 @@ namespace yyip {
   case 42:
 
 /* Line 678 of lalr1.cc  */
-#line 1297 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1297 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           /**
             Description:
@@ -1349,7 +1349,7 @@ namespace yyip {
   case 43:
 
 /* Line 678 of lalr1.cc  */
-#line 1308 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1308 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
          /**
          Description:
@@ -1367,7 +1367,7 @@ namespace yyip {
   case 44:
 
 /* Line 678 of lalr1.cc  */
-#line 1322 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1322 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
          /**
          Description:
@@ -1385,7 +1385,7 @@ namespace yyip {
   case 45:
 
 /* Line 678 of lalr1.cc  */
-#line 1336 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1336 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
          /**
          Description:
@@ -1403,7 +1403,7 @@ namespace yyip {
   case 46:
 
 /* Line 678 of lalr1.cc  */
-#line 1350 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1350 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
          /**
          Description:
@@ -1417,7 +1417,7 @@ namespace yyip {
   case 47:
 
 /* Line 678 of lalr1.cc  */
-#line 1360 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1360 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
         Description: waits the time given in milliseconds
@@ -1437,7 +1437,7 @@ namespace yyip {
   case 48:
 
 /* Line 678 of lalr1.cc  */
-#line 1376 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1376 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -1459,7 +1459,7 @@ namespace yyip {
   case 49:
 
 /* Line 678 of lalr1.cc  */
-#line 1394 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1394 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
           Description:
@@ -1478,7 +1478,7 @@ namespace yyip {
   case 50:
 
 /* Line 678 of lalr1.cc  */
-#line 1409 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1409 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
           Description:
@@ -1497,7 +1497,7 @@ namespace yyip {
   case 51:
 
 /* Line 678 of lalr1.cc  */
-#line 1424 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1424 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
           Description:
@@ -1532,7 +1532,7 @@ namespace yyip {
   case 52:
 
 /* Line 678 of lalr1.cc  */
-#line 1455 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1455 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
           Description:
@@ -1564,7 +1564,7 @@ namespace yyip {
   case 53:
 
 /* Line 678 of lalr1.cc  */
-#line 1483 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1483 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
           Description:
@@ -1615,7 +1615,7 @@ namespace yyip {
   case 54:
 
 /* Line 678 of lalr1.cc  */
-#line 1556 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1556 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
             IdentifierInfo::ptr ident((yysemantic_stack_[(6) - (1)].ident));
             int size = (int) (yysemantic_stack_[(6) - (5)].adouble);
@@ -1629,7 +1629,7 @@ namespace yyip {
   case 55:
 
 /* Line 678 of lalr1.cc  */
-#line 1567 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1567 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VALUE(InrImage,imptr);
           IdentifierInfo::ptr ident((yysemantic_stack_[(3) - (1)].ident));
@@ -1658,7 +1658,7 @@ namespace yyip {
   case 56:
 
 /* Line 678 of lalr1.cc  */
-#line 1593 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1593 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VAR_VAL(VarArray, vararray, array);
 
@@ -1688,7 +1688,7 @@ namespace yyip {
   case 57:
 
 /* Line 678 of lalr1.cc  */
-#line 1632 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1632 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           GLTransfMatrix::ptr imptr( 
             driver.gltransf_stack.GetLastMatrix());
@@ -1704,7 +1704,7 @@ namespace yyip {
   case 58:
 
 /* Line 678 of lalr1.cc  */
-#line 1727 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1727 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       /**
         Description: 
@@ -1720,7 +1720,7 @@ namespace yyip {
   case 59:
 
 /* Line 678 of lalr1.cc  */
-#line 1739 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1739 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       /**
       Parameters:
@@ -1743,7 +1743,7 @@ namespace yyip {
   case 60:
 
 /* Line 678 of lalr1.cc  */
-#line 1758 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1758 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       /**
         Description: 
@@ -1758,7 +1758,7 @@ namespace yyip {
   case 61:
 
 /* Line 678 of lalr1.cc  */
-#line 1769 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1769 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       /**
       Parameters:
@@ -1781,7 +1781,7 @@ namespace yyip {
   case 62:
 
 /* Line 678 of lalr1.cc  */
-#line 1856 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1856 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           IdentifierInfo::ptr ident((yysemantic_stack_[(8) - (1)].ident));
           boost::shared_array<char> filename( (yysemantic_stack_[(8) - (5)].astring));
@@ -1819,7 +1819,7 @@ namespace yyip {
   case 63:
 
 /* Line 678 of lalr1.cc  */
-#line 1890 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1890 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           Variable<FILE>::ptr varfile(driver.var_stack.GetLastVar<FILE>());
           std::string filename(varfile->Name());
@@ -1840,7 +1840,7 @@ namespace yyip {
   case 64:
 
 /* Line 678 of lalr1.cc  */
-#line 1906 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1906 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           Variable<FILE>::ptr varfile(driver.var_stack.GetLastVar<FILE>());
           FILE_ptr file(varfile->Pointer());
@@ -1851,7 +1851,7 @@ namespace yyip {
   case 65:
 
 /* Line 678 of lalr1.cc  */
-#line 1912 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1912 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GB_debug = 1;
         }
@@ -1860,7 +1860,7 @@ namespace yyip {
   case 66:
 
 /* Line 678 of lalr1.cc  */
-#line 1916 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1916 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GB_debug = 0;
     }
@@ -1869,7 +1869,7 @@ namespace yyip {
   case 67:
 
 /* Line 678 of lalr1.cc  */
-#line 1920 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1920 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       driver.SetTraceScanning((yysemantic_stack_[(2) - (2)].adouble)>0.5);
     }
@@ -1878,7 +1878,7 @@ namespace yyip {
   case 68:
 
 /* Line 678 of lalr1.cc  */
-#line 1924 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1924 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       /**
        Description: 
@@ -1893,7 +1893,7 @@ namespace yyip {
   case 69:
 
 /* Line 678 of lalr1.cc  */
-#line 1934 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1934 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GB_verbose = 1;
       verbose = 1;
@@ -1903,7 +1903,7 @@ namespace yyip {
   case 70:
 
 /* Line 678 of lalr1.cc  */
-#line 1939 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1939 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GB_verbose = 0;
     }
@@ -1912,7 +1912,7 @@ namespace yyip {
   case 71:
 
 /* Line 678 of lalr1.cc  */
-#line 1943 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1943 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       /**
        Description:
@@ -1927,7 +1927,7 @@ namespace yyip {
   case 72:
 
 /* Line 678 of lalr1.cc  */
-#line 1953 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1953 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
       Description:
@@ -1947,7 +1947,7 @@ namespace yyip {
   case 73:
 
 /* Line 678 of lalr1.cc  */
-#line 1968 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1968 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
       Parameter:
@@ -1962,7 +1962,7 @@ namespace yyip {
   case 74:
 
 /* Line 678 of lalr1.cc  */
-#line 1978 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1978 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
       Parameter:
@@ -1978,7 +1978,7 @@ namespace yyip {
   case 75:
 
 /* Line 678 of lalr1.cc  */
-#line 1988 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1988 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           GB_main_wxFrame->Close(true);
     }
@@ -1987,7 +1987,7 @@ namespace yyip {
   case 76:
 
 /* Line 678 of lalr1.cc  */
-#line 1992 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 1992 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       std::string titre;
       GET_VARSTACK_VAR_VAL(InrImage, imagevar, im);
@@ -2053,7 +2053,7 @@ namespace yyip {
   case 77:
 
 /* Line 678 of lalr1.cc  */
-#line 2053 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 2053 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VAR_VAL(InrImage, varim, im)
           string title;
@@ -2082,7 +2082,7 @@ namespace yyip {
   case 78:
 
 /* Line 678 of lalr1.cc  */
-#line 2077 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 2077 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           /**
             Description: rule to show a surface, since surface has moved to object wrapping
@@ -2137,7 +2137,7 @@ namespace yyip {
   case 79:
 
 /* Line 678 of lalr1.cc  */
-#line 2127 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 2127 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           /**
           Parameters:
@@ -2200,7 +2200,7 @@ namespace yyip {
   case 80:
 
 /* Line 678 of lalr1.cc  */
-#line 2217 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 2217 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
           Description: Pads the image ...
@@ -2222,7 +2222,7 @@ namespace yyip {
   case 81:
 
 /* Line 678 of lalr1.cc  */
-#line 2243 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 2243 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           Vars.display();
         }
@@ -2231,7 +2231,7 @@ namespace yyip {
   case 82:
 
 /* Line 678 of lalr1.cc  */
-#line 2247 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 2247 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
           Parameters:
@@ -2248,7 +2248,7 @@ namespace yyip {
   case 83:
 
 /* Line 678 of lalr1.cc  */
-#line 2259 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 2259 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
           Description: 
@@ -2267,7 +2267,7 @@ namespace yyip {
   case 84:
 
 /* Line 678 of lalr1.cc  */
-#line 2273 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 2273 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
           Description: 
@@ -2282,7 +2282,7 @@ namespace yyip {
   case 85:
 
 /* Line 678 of lalr1.cc  */
-#line 2283 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 2283 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       /**
         Parameters:
@@ -2298,7 +2298,7 @@ namespace yyip {
   case 86:
 
 /* Line 678 of lalr1.cc  */
-#line 2294 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 2294 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       /**
         Description:
@@ -2311,7 +2311,7 @@ namespace yyip {
   case 87:
 
 /* Line 678 of lalr1.cc  */
-#line 2302 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 2302 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         driver.res_print("Topics: \n");
         driver.res_print("\t var:  variables                 \n");
@@ -2328,7 +2328,7 @@ namespace yyip {
   case 88:
 
 /* Line 678 of lalr1.cc  */
-#line 2314 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 2314 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           IdentifierInfo::ptr ident((yysemantic_stack_[(2) - (2)].ident));
        if (strcmp(ident->GetName().c_str(),"var")==0) {
@@ -2569,7 +2569,7 @@ namespace yyip {
   case 89:
 
 /* Line 678 of lalr1.cc  */
-#line 2550 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 2550 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
       Description: 
@@ -2584,7 +2584,7 @@ namespace yyip {
   case 90:
 
 /* Line 678 of lalr1.cc  */
-#line 2560 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 2560 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
       Description: 
@@ -2599,7 +2599,7 @@ namespace yyip {
   case 91:
 
 /* Line 678 of lalr1.cc  */
-#line 2570 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 2570 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
       Description: 
@@ -2614,7 +2614,7 @@ namespace yyip {
   case 92:
 
 /* Line 678 of lalr1.cc  */
-#line 2580 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 2580 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
       Description: 
@@ -2628,7 +2628,7 @@ namespace yyip {
   case 93:
 
 /* Line 678 of lalr1.cc  */
-#line 2589 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 2589 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       string  help_cmd;
       string  help_file;
@@ -2687,7 +2687,7 @@ namespace yyip {
   case 94:
 
 /* Line 678 of lalr1.cc  */
-#line 2654 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 2654 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
           Variable<FILE>::ptr varfile(driver.var_stack.GetLastVar<FILE>());
@@ -2706,7 +2706,7 @@ namespace yyip {
   case 95:
 
 /* Line 678 of lalr1.cc  */
-#line 2668 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 2668 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
           Variable<FILE>::ptr varfile(driver.var_stack.GetLastVar<FILE>());
@@ -2726,7 +2726,7 @@ namespace yyip {
   case 96:
 
 /* Line 678 of lalr1.cc  */
-#line 2702 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 2702 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
          /**
           Description:
@@ -2743,7 +2743,7 @@ namespace yyip {
   case 97:
 
 /* Line 678 of lalr1.cc  */
-#line 2714 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 2714 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
          /**
           Description:
@@ -2760,7 +2760,7 @@ namespace yyip {
   case 98:
 
 /* Line 678 of lalr1.cc  */
-#line 2755 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 2755 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
          /**
           Parameters:
@@ -2776,7 +2776,7 @@ namespace yyip {
   case 99:
 
 /* Line 678 of lalr1.cc  */
-#line 2774 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 2774 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           driver.var_stack.GetLastBasicVar();
           printf("Deprecated: No need to close files explicitly, since we use smart pointers, they will be closed when the variable is deleted. \n");
@@ -2786,7 +2786,7 @@ namespace yyip {
   case 100:
 
 /* Line 678 of lalr1.cc  */
-#line 3247 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 3247 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           /**
           Description:
@@ -2813,7 +2813,7 @@ namespace yyip {
   case 101:
 
 /* Line 678 of lalr1.cc  */
-#line 3269 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 3269 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
             /**
               Description:
@@ -2842,7 +2842,7 @@ namespace yyip {
   case 102:
 
 /* Line 678 of lalr1.cc  */
-#line 3293 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 3293 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           /**
             Description:
@@ -2869,7 +2869,7 @@ namespace yyip {
   case 103:
 
 /* Line 678 of lalr1.cc  */
-#line 3315 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 3315 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -2886,7 +2886,7 @@ namespace yyip {
   case 104:
 
 /* Line 678 of lalr1.cc  */
-#line 3327 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 3327 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -2905,7 +2905,7 @@ namespace yyip {
   case 105:
 
 /* Line 678 of lalr1.cc  */
-#line 3341 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 3341 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -2929,7 +2929,7 @@ namespace yyip {
   case 106:
 
 /* Line 678 of lalr1.cc  */
-#line 3360 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 3360 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
 
         /**
@@ -2956,7 +2956,7 @@ namespace yyip {
   case 107:
 
 /* Line 678 of lalr1.cc  */
-#line 3382 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 3382 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -2989,7 +2989,7 @@ namespace yyip {
   case 108:
 
 /* Line 678 of lalr1.cc  */
-#line 3413 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 3413 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -3020,7 +3020,7 @@ namespace yyip {
   case 109:
 
 /* Line 678 of lalr1.cc  */
-#line 3440 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 3440 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -3056,7 +3056,7 @@ namespace yyip {
   case 110:
 
 /* Line 678 of lalr1.cc  */
-#line 3472 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 3472 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       boost::shared_array<char> name((yysemantic_stack_[(6) - (5)].astring));
       GET_VARSTACK_VALUE(InrImage, im);
@@ -3067,7 +3067,7 @@ namespace yyip {
   case 111:
 
 /* Line 678 of lalr1.cc  */
-#line 3669 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 3669 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       Func_IterateWeickert();
     }
@@ -3076,7 +3076,7 @@ namespace yyip {
   case 112:
 
 /* Line 678 of lalr1.cc  */
-#line 3674 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 3674 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
 
       Func_EndWeickert();
@@ -3087,7 +3087,7 @@ namespace yyip {
   case 113:
 
 /* Line 678 of lalr1.cc  */
-#line 3681 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 3681 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       Func_IterateWeickert();
     }
@@ -3096,7 +3096,7 @@ namespace yyip {
   case 114:
 
 /* Line 678 of lalr1.cc  */
-#line 3686 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 3686 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       Func_EndWeickert();
     }
@@ -3105,7 +3105,7 @@ namespace yyip {
   case 115:
 
 /* Line 678 of lalr1.cc  */
-#line 3926 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 3926 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters
@@ -3138,7 +3138,7 @@ namespace yyip {
   case 116:
 
 /* Line 678 of lalr1.cc  */
-#line 3954 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 3954 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -3156,7 +3156,7 @@ namespace yyip {
   case 117:
 
 /* Line 678 of lalr1.cc  */
-#line 3968 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 3968 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im2);
       GET_VARSTACK_VALUE(InrImage, im1);
@@ -3167,7 +3167,7 @@ namespace yyip {
   case 118:
 
 /* Line 678 of lalr1.cc  */
-#line 3975 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 3975 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im2);
       GET_VARSTACK_VALUE(InrImage, im1);
@@ -3178,7 +3178,7 @@ namespace yyip {
   case 119:
 
 /* Line 678 of lalr1.cc  */
-#line 3981 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 3981 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       if (strlen((yysemantic_stack_[(4) - (3)].astring))<255) {
         strcpy(AMIFluid::FLUID_NAVIGATION_FILE,(yysemantic_stack_[(4) - (3)].astring));
@@ -3191,7 +3191,7 @@ namespace yyip {
   case 120:
 
 /* Line 678 of lalr1.cc  */
-#line 3990 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 3990 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(DessinImage,di);
       float minlat  = (yysemantic_stack_[(20) - (5)].adouble);
@@ -3296,7 +3296,7 @@ namespace yyip {
   case 121:
 
 /* Line 678 of lalr1.cc  */
-#line 4090 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4090 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VALUE(Viewer3D,sdraw);
 
@@ -3308,7 +3308,7 @@ namespace yyip {
   case 122:
 
 /* Line 678 of lalr1.cc  */
-#line 4097 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4097 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_OBJECT(SurfacePoly,surf)
           GET_VARSTACK_VALUE(Viewer3D,sdraw);
@@ -3321,7 +3321,7 @@ namespace yyip {
   case 123:
 
 /* Line 678 of lalr1.cc  */
-#line 4105 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4105 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_OBJECT(SurfacePoly,surf)
           GET_VARSTACK_VALUE(Viewer3D,   sdraw);
@@ -3334,7 +3334,7 @@ namespace yyip {
   case 124:
 
 /* Line 678 of lalr1.cc  */
-#line 4113 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4113 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_OBJECT(SurfacePoly,surf)
           GET_VARSTACK_VALUE(Viewer3D,   sdraw);
@@ -3347,7 +3347,7 @@ namespace yyip {
   case 125:
 
 /* Line 678 of lalr1.cc  */
-#line 4121 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4121 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           /**
             Description: Removes the surface without swapping the 3D buffer
@@ -3363,7 +3363,7 @@ namespace yyip {
   case 126:
 
 /* Line 678 of lalr1.cc  */
-#line 4132 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4132 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           /**
             Description:  Swaps the 3D buffer
@@ -3378,7 +3378,7 @@ namespace yyip {
   case 127:
 
 /* Line 678 of lalr1.cc  */
-#line 4142 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4142 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           Viewer3D_ptr sdraw (varsurfd->Pointer());
@@ -3391,7 +3391,7 @@ namespace yyip {
   case 128:
 
 /* Line 678 of lalr1.cc  */
-#line 4150 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4150 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           Viewer3D_ptr sdraw (varsurfd->Pointer());
@@ -3404,7 +3404,7 @@ namespace yyip {
   case 129:
 
 /* Line 678 of lalr1.cc  */
-#line 4158 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4158 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           Viewer3D_ptr sdraw (varsurfd->Pointer());
@@ -3420,7 +3420,7 @@ namespace yyip {
   case 130:
 
 /* Line 678 of lalr1.cc  */
-#line 4169 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4169 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VALUE(Viewer3D,sdraw2);
           GET_VARSTACK_VALUE(Viewer3D,sdraw1);
@@ -3432,7 +3432,7 @@ namespace yyip {
   case 131:
 
 /* Line 678 of lalr1.cc  */
-#line 4176 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4176 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VALUE(InrImage,im);
           GET_VARSTACK_VALUE(Viewer3D,draw);
@@ -3451,7 +3451,7 @@ namespace yyip {
   case 132:
 
 /* Line 678 of lalr1.cc  */
-#line 4190 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4190 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           Viewer3D_ptr draw (varsurfd->Pointer());
@@ -3470,7 +3470,7 @@ namespace yyip {
   case 133:
 
 /* Line 678 of lalr1.cc  */
-#line 4204 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4204 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           Viewer3D_ptr draw (varsurfd->Pointer());
@@ -3484,7 +3484,7 @@ namespace yyip {
   case 134:
 
 /* Line 678 of lalr1.cc  */
-#line 4213 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4213 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VALUE(Viewer3D,v);
           v->GetCanvas()->PrintMatrices();
@@ -3494,7 +3494,7 @@ namespace yyip {
   case 135:
 
 /* Line 678 of lalr1.cc  */
-#line 4218 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4218 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           GLTransfMatrix* tr = (GLTransfMatrix*) driver.gltransf_stack.GetLastMatrix();
@@ -3508,7 +3508,7 @@ namespace yyip {
   case 136:
 
 /* Line 678 of lalr1.cc  */
-#line 4227 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4227 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           GLTransfMatrix* tr = (GLTransfMatrix*) driver.gltransf_stack.GetLastMatrix();
@@ -3522,7 +3522,7 @@ namespace yyip {
   case 137:
 
 /* Line 678 of lalr1.cc  */
-#line 4236 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4236 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           Viewer3D_ptr sdraw (varsurfd->Pointer());
@@ -3540,7 +3540,7 @@ namespace yyip {
   case 138:
 
 /* Line 678 of lalr1.cc  */
-#line 4249 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4249 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           Viewer3D_ptr sdraw (varsurfd->Pointer());
@@ -3558,7 +3558,7 @@ namespace yyip {
   case 139:
 
 /* Line 678 of lalr1.cc  */
-#line 4262 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4262 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           Viewer3D_ptr sdraw (varsurfd->Pointer());
@@ -3576,7 +3576,7 @@ namespace yyip {
   case 140:
 
 /* Line 678 of lalr1.cc  */
-#line 4275 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4275 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           Viewer3D_ptr sdraw (varsurfd->Pointer());
@@ -3594,7 +3594,7 @@ namespace yyip {
   case 141:
 
 /* Line 678 of lalr1.cc  */
-#line 4288 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4288 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           Viewer3D_ptr sdraw (varsurfd->Pointer());
@@ -3606,7 +3606,7 @@ namespace yyip {
   case 142:
 
 /* Line 678 of lalr1.cc  */
-#line 4295 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4295 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
           Description:
@@ -3621,7 +3621,7 @@ namespace yyip {
   case 143:
 
 /* Line 678 of lalr1.cc  */
-#line 4305 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4305 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
           Description:
@@ -3636,7 +3636,7 @@ namespace yyip {
   case 144:
 
 /* Line 678 of lalr1.cc  */
-#line 4315 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4315 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           Viewer3D_ptr sdraw (varsurfd->Pointer());
@@ -3654,7 +3654,7 @@ namespace yyip {
   case 145:
 
 /* Line 678 of lalr1.cc  */
-#line 4329 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4329 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VAR_VAL(InrImage, varim, im);
           Func_StructureTensor(im.get(),
@@ -3666,7 +3666,7 @@ namespace yyip {
   case 146:
 
 /* Line 678 of lalr1.cc  */
-#line 4337 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4337 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VALUE(InrImage,mask);
           GET_VARSTACK_VAR_VAL(InrImage, varim, im);
@@ -3681,7 +3681,7 @@ namespace yyip {
   case 147:
 
 /* Line 678 of lalr1.cc  */
-#line 4348 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4348 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -3708,7 +3708,7 @@ namespace yyip {
   case 148:
 
 /* Line 678 of lalr1.cc  */
-#line 4371 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4371 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -3738,7 +3738,7 @@ namespace yyip {
   case 149:
 
 /* Line 678 of lalr1.cc  */
-#line 4397 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4397 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -3770,7 +3770,7 @@ namespace yyip {
   case 150:
 
 /* Line 678 of lalr1.cc  */
-#line 4425 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4425 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VAR_VAL(InrImage, varim, im);
           Func_HessianMatrix(im.get(),
@@ -3785,7 +3785,7 @@ namespace yyip {
   case 151:
 
 /* Line 678 of lalr1.cc  */
-#line 4436 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4436 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           /**
             Description:
@@ -3832,7 +3832,7 @@ namespace yyip {
   case 152:
 
 /* Line 678 of lalr1.cc  */
-#line 4479 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4479 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
           Description:
@@ -3858,7 +3858,7 @@ namespace yyip {
   case 153:
 
 /* Line 678 of lalr1.cc  */
-#line 4501 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4501 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -3891,7 +3891,7 @@ namespace yyip {
   case 154:
 
 /* Line 678 of lalr1.cc  */
-#line 4530 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4530 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VALUE(InrImage,mask);
           GET_VARSTACK_VAR_VAL(InrImage,varim,im);
@@ -3912,7 +3912,7 @@ namespace yyip {
   case 155:
 
 /* Line 678 of lalr1.cc  */
-#line 4548 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4548 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VALUE(InrImage,mask);
           GET_VARSTACK_VAR_VAL(InrImage, varim, im);
@@ -3930,7 +3930,7 @@ namespace yyip {
   case 156:
 
 /* Line 678 of lalr1.cc  */
-#line 4562 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4562 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VAR_VAL(InrImage, varim, im);
           Func_Curvatures(im.get(), varim->Name().c_str(), (yysemantic_stack_[(6) - (5)].adouble));
@@ -3940,7 +3940,7 @@ namespace yyip {
   case 157:
 
 /* Line 678 of lalr1.cc  */
-#line 4573 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4573 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VALUE(InrImage,mask);
           Variable<InrImage>::ptr  varim6( driver.var_stack.GetLastVar<InrImage>());
@@ -3966,7 +3966,7 @@ namespace yyip {
   case 158:
 
 /* Line 678 of lalr1.cc  */
-#line 4599 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4599 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
 
           Variable<InrImage>::ptr  varim6( driver.var_stack.GetLastVar<InrImage>());
@@ -3992,7 +3992,7 @@ namespace yyip {
   case 159:
 
 /* Line 678 of lalr1.cc  */
-#line 4625 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4625 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VALUE(InrImage,mask);
           Variable<InrImage>::ptr  varim3( driver.var_stack.GetLastVar<InrImage>());
@@ -4012,7 +4012,7 @@ namespace yyip {
   case 160:
 
 /* Line 678 of lalr1.cc  */
-#line 4644 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4644 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           Variable<InrImage>::ptr  varim3( driver.var_stack.GetLastVar<InrImage>());
           Variable<InrImage>::ptr  varim2( driver.var_stack.GetLastVar<InrImage>());
@@ -4030,7 +4030,7 @@ namespace yyip {
   case 161:
 
 /* Line 678 of lalr1.cc  */
-#line 4658 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4658 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage,im);
       im->SetVoxelSize((yysemantic_stack_[(10) - (5)].adouble), (yysemantic_stack_[(10) - (7)].adouble), (yysemantic_stack_[(10) - (9)].adouble));
@@ -4040,7 +4040,7 @@ namespace yyip {
   case 162:
 
 /* Line 678 of lalr1.cc  */
-#line 4664 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4664 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       im->SetVoxelSize((yysemantic_stack_[(10) - (5)].adouble), (yysemantic_stack_[(10) - (7)].adouble), (yysemantic_stack_[(10) - (9)].adouble));
@@ -4050,7 +4050,7 @@ namespace yyip {
   case 163:
 
 /* Line 678 of lalr1.cc  */
-#line 4670 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4670 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       Variable<InrImage>::ptr  varim2( driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim1( driver.var_stack.GetLastVar<InrImage>());
@@ -4065,7 +4065,7 @@ namespace yyip {
   case 164:
 
 /* Line 678 of lalr1.cc  */
-#line 4681 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4681 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage,im);
       im->SetTranslation((yysemantic_stack_[(10) - (5)].adouble), (yysemantic_stack_[(10) - (7)].adouble), (yysemantic_stack_[(10) - (9)].adouble));
@@ -4075,7 +4075,7 @@ namespace yyip {
   case 165:
 
 /* Line 678 of lalr1.cc  */
-#line 4687 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4687 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       Variable<InrImage>::ptr  varim2( driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim1( driver.var_stack.GetLastVar<InrImage>());
@@ -4087,7 +4087,7 @@ namespace yyip {
   case 166:
 
 /* Line 678 of lalr1.cc  */
-#line 4695 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4695 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
       Parameters:
@@ -4106,7 +4106,7 @@ namespace yyip {
   case 167:
 
 /* Line 678 of lalr1.cc  */
-#line 4710 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4710 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       Variable<InrImage>::ptr  varim2(driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim1(driver.var_stack.GetLastVar<InrImage>());
@@ -4119,7 +4119,7 @@ namespace yyip {
   case 168:
 
 /* Line 678 of lalr1.cc  */
-#line 4719 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4719 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       Variable<InrImage>::ptr  varim3(driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim2(driver.var_stack.GetLastVar<InrImage>());
@@ -4134,7 +4134,7 @@ namespace yyip {
   case 169:
 
 /* Line 678 of lalr1.cc  */
-#line 4730 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4730 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       /**
         Description: dispatches the given number of events
@@ -4155,7 +4155,7 @@ namespace yyip {
   case 170:
 
 /* Line 678 of lalr1.cc  */
-#line 4747 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4747 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       /**
         Description: dispatch the given number of events
@@ -4176,7 +4176,7 @@ namespace yyip {
   case 171:
 
 /* Line 678 of lalr1.cc  */
-#line 4763 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4763 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -4219,7 +4219,7 @@ namespace yyip {
   case 172:
 
 /* Line 678 of lalr1.cc  */
-#line 4801 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4801 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       cerr << "Feature not available, needs to be updated ! " << endl;
@@ -4237,7 +4237,7 @@ namespace yyip {
   case 173:
 
 /* Line 678 of lalr1.cc  */
-#line 4819 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4819 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -4284,7 +4284,7 @@ namespace yyip {
   case 174:
 
 /* Line 678 of lalr1.cc  */
-#line 4862 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4862 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       boost::shared_array<char> filename( (yysemantic_stack_[(4) - (3)].astring));
       Func_GenRead(filename.get());
@@ -4294,7 +4294,7 @@ namespace yyip {
   case 175:
 
 /* Line 678 of lalr1.cc  */
-#line 4868 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4868 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       driver.IP_time.InitCumul();
     }
@@ -4303,7 +4303,7 @@ namespace yyip {
   case 176:
 
 /* Line 678 of lalr1.cc  */
-#line 4873 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4873 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       driver.IP_time.Debut();
     }
@@ -4312,7 +4312,7 @@ namespace yyip {
   case 177:
 
 /* Line 678 of lalr1.cc  */
-#line 4878 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4878 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       driver.IP_time.Fin();
       cout << "time spent = " << driver.IP_time << endl;
@@ -4322,7 +4322,7 @@ namespace yyip {
   case 178:
 
 /* Line 678 of lalr1.cc  */
-#line 4884 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4884 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           boost::shared_array<char> filename( (yysemantic_stack_[(6) - (5)].astring));
           GET_VARSTACK_VALUE(InrImage, i);
@@ -4333,7 +4333,7 @@ namespace yyip {
   case 179:
 
 /* Line 678 of lalr1.cc  */
-#line 4891 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4891 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           GET_VARSTACK_VALUE(GLTransfMatrix, glmat);
           glmat->Print();
@@ -4343,7 +4343,7 @@ namespace yyip {
   case 180:
 
 /* Line 678 of lalr1.cc  */
-#line 4897 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4897 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           boost::shared_array<char> filename( (yysemantic_stack_[(4) - (4)].astring));
           GET_VARSTACK_VALUE(GLTransfMatrix, glmat);
@@ -4354,7 +4354,7 @@ namespace yyip {
   case 181:
 
 /* Line 678 of lalr1.cc  */
-#line 4904 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4904 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           AddWrapVTK();
         }
@@ -4363,7 +4363,7 @@ namespace yyip {
   case 182:
 
 /* Line 678 of lalr1.cc  */
-#line 4909 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4909 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           AddWrapWII();
         }
@@ -4372,7 +4372,7 @@ namespace yyip {
   case 183:
 
 /* Line 678 of lalr1.cc  */
-#line 4914 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4914 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           AddWrapFilters();
         }
@@ -4381,7 +4381,7 @@ namespace yyip {
   case 184:
 
 /* Line 678 of lalr1.cc  */
-#line 4925 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4925 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           Variable<InrImage>::ptr  varim7(driver.var_stack.GetLastVar<InrImage>());
           Variable<InrImage>::ptr  varim6(driver.var_stack.GetLastVar<InrImage>());
@@ -4422,7 +4422,7 @@ namespace yyip {
   case 185:
 
 /* Line 678 of lalr1.cc  */
-#line 4965 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 4965 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         GET_VARSTACK_VALUE(InrImage,v); // x component of the flow
         GET_VARSTACK_VALUE(InrImage,u); // y component of the flow
@@ -4450,7 +4450,7 @@ namespace yyip {
   case 186:
 
 /* Line 678 of lalr1.cc  */
-#line 5016 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5016 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -4472,7 +4472,7 @@ namespace yyip {
   case 187:
 
 /* Line 678 of lalr1.cc  */
-#line 5038 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5038 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
             std::list<std::string>* sl = new std::list<std::string>();
             sl->push_back(string((yysemantic_stack_[(1) - (1)].astring)));
@@ -4484,7 +4484,7 @@ namespace yyip {
   case 188:
 
 /* Line 678 of lalr1.cc  */
-#line 5046 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5046 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
             std::list<std::string>* sl = (yysemantic_stack_[(3) - (1)].string_list);
             sl->push_back(string((yysemantic_stack_[(3) - (3)].astring)));
@@ -4496,7 +4496,7 @@ namespace yyip {
   case 189:
 
 /* Line 678 of lalr1.cc  */
-#line 5062 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5062 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           ParamList* pl = new ParamList();
           (yyval.paramlist) = pl;
@@ -4506,7 +4506,7 @@ namespace yyip {
   case 190:
 
 /* Line 678 of lalr1.cc  */
-#line 5067 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5067 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
           Description: temporary rule, added to simplify convertion of scripts.
@@ -4527,7 +4527,7 @@ namespace yyip {
   case 191:
 
 /* Line 678 of lalr1.cc  */
-#line 5083 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5083 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
           Description: temporary rule, added to simplify convertion of scripts.
@@ -4550,7 +4550,7 @@ namespace yyip {
   case 192:
 
 /* Line 678 of lalr1.cc  */
-#line 5101 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5101 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           BasicVariable::ptr       var(driver.var_stack.GetLastBasicVar());
           if (!var.get()) {
@@ -4570,7 +4570,7 @@ namespace yyip {
   case 193:
 
 /* Line 678 of lalr1.cc  */
-#line 5116 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5116 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           BasicVariable::ptr       var(driver.var_stack.GetLastBasicVar());
           if (!var.get()) {
@@ -4590,7 +4590,7 @@ namespace yyip {
   case 194:
 
 /* Line 678 of lalr1.cc  */
-#line 5131 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5131 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           /**
             Description: it is now a new reference to the variable, so basically similar to &variable (should be removed?)...
@@ -4616,7 +4616,7 @@ namespace yyip {
   case 195:
 
 /* Line 678 of lalr1.cc  */
-#line 5152 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5152 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           /**
             Description: it is now a new reference to the variable, so basically similar to &variable (should be removed?)...
@@ -4643,7 +4643,7 @@ namespace yyip {
   case 196:
 
 /* Line 678 of lalr1.cc  */
-#line 5176 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5176 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       //      printf("no parameters \n");
       ParamListDecl* pl = new ParamListDecl;
@@ -4654,7 +4654,7 @@ namespace yyip {
   case 197:
 
 /* Line 678 of lalr1.cc  */
-#line 5182 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5182 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       IdentifierInfo::ptr ident((yysemantic_stack_[(2) - (2)].ident));
       cout << "param_list_decl: T_NUM IDENTIFIER" << endl;
@@ -4668,7 +4668,7 @@ namespace yyip {
   case 198:
 
 /* Line 678 of lalr1.cc  */
-#line 5191 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5191 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       IdentifierInfo::ptr ident((yysemantic_stack_[(2) - (2)].ident));
       ParamListDecl* pl = new ParamListDecl;
@@ -4680,7 +4680,7 @@ namespace yyip {
   case 199:
 
 /* Line 678 of lalr1.cc  */
-#line 5198 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5198 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       IdentifierInfo::ptr ident((yysemantic_stack_[(2) - (2)].ident));
       ParamListDecl* pl = new ParamListDecl;
@@ -4692,7 +4692,7 @@ namespace yyip {
   case 200:
 
 /* Line 678 of lalr1.cc  */
-#line 5205 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5205 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       IdentifierInfo::ptr ident((yysemantic_stack_[(2) - (2)].ident));
       ParamListDecl* pl = new ParamListDecl;
@@ -4704,7 +4704,7 @@ namespace yyip {
   case 201:
 
 /* Line 678 of lalr1.cc  */
-#line 5212 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5212 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       IdentifierInfo::ptr ident((yysemantic_stack_[(2) - (2)].ident));
       ParamListDecl* pl = new ParamListDecl;
@@ -4716,7 +4716,7 @@ namespace yyip {
   case 202:
 
 /* Line 678 of lalr1.cc  */
-#line 5228 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5228 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       IdentifierInfo::ptr ident((yysemantic_stack_[(4) - (4)].ident));
       ParamListDecl* pl = (ParamListDecl*) (yysemantic_stack_[(4) - (1)].paramlistdecl);
@@ -4728,7 +4728,7 @@ namespace yyip {
   case 203:
 
 /* Line 678 of lalr1.cc  */
-#line 5235 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5235 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       IdentifierInfo::ptr ident((yysemantic_stack_[(4) - (4)].ident));
       ParamListDecl* pl = (ParamListDecl*) (yysemantic_stack_[(4) - (1)].paramlistdecl);
@@ -4740,7 +4740,7 @@ namespace yyip {
   case 204:
 
 /* Line 678 of lalr1.cc  */
-#line 5242 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5242 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       IdentifierInfo::ptr ident((yysemantic_stack_[(4) - (4)].ident));
       ParamListDecl* pl = (ParamListDecl*) (yysemantic_stack_[(4) - (1)].paramlistdecl);
@@ -4752,7 +4752,7 @@ namespace yyip {
   case 205:
 
 /* Line 678 of lalr1.cc  */
-#line 5249 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5249 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       IdentifierInfo::ptr ident((yysemantic_stack_[(4) - (4)].ident));
       ParamListDecl* pl = (ParamListDecl*) (yysemantic_stack_[(4) - (1)].paramlistdecl);
@@ -4764,7 +4764,7 @@ namespace yyip {
   case 206:
 
 /* Line 678 of lalr1.cc  */
-#line 5256 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5256 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       IdentifierInfo::ptr ident((yysemantic_stack_[(4) - (4)].ident));
       ParamListDecl* pl = (ParamListDecl*) (yysemantic_stack_[(4) - (1)].paramlistdecl);
@@ -4776,7 +4776,7 @@ namespace yyip {
   case 207:
 
 /* Line 678 of lalr1.cc  */
-#line 5274 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5274 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       (yyval.astring)=(yysemantic_stack_[(1) - (1)].astring);
     }
@@ -4785,7 +4785,7 @@ namespace yyip {
   case 208:
 
 /* Line 678 of lalr1.cc  */
-#line 5279 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5279 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       char* res;
       //printf("expr_string=%s*\n",$3);
@@ -4802,7 +4802,7 @@ namespace yyip {
   case 209:
 
 /* Line 678 of lalr1.cc  */
-#line 5360 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5360 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       long min,hour;
       float sec;
@@ -4830,7 +4830,7 @@ namespace yyip {
   case 210:
 
 /* Line 678 of lalr1.cc  */
-#line 5383 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5383 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       (yyval.astring)=(char*) (im)->GetName();
@@ -4840,7 +4840,7 @@ namespace yyip {
   case 211:
 
 /* Line 678 of lalr1.cc  */
-#line 5389 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5389 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
       Description:
@@ -4857,7 +4857,7 @@ namespace yyip {
   case 212:
 
 /* Line 678 of lalr1.cc  */
-#line 5401 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5401 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
       Description:
@@ -4881,7 +4881,7 @@ namespace yyip {
   case 213:
 
 /* Line 678 of lalr1.cc  */
-#line 5421 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5421 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       char* res = new char[GB_scripts_dir.Len()+1];
       strcpy(res,(const char*)GB_scripts_dir.mb_str(wxConvUTF8));
@@ -4892,7 +4892,7 @@ namespace yyip {
   case 214:
 
 /* Line 678 of lalr1.cc  */
-#line 5454 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5454 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         (yyval.ablock)=(yysemantic_stack_[(3) - (2)].ablock);
         if (GB_debug)
@@ -4905,7 +4905,7 @@ namespace yyip {
   case 217:
 
 /* Line 678 of lalr1.cc  */
-#line 5469 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5469 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       ADD_VARSTACK_FLOAT((yysemantic_stack_[(1) - (1)].adouble))
     }
@@ -4914,7 +4914,7 @@ namespace yyip {
   case 218:
 
 /* Line 678 of lalr1.cc  */
-#line 5473 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5473 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
     Description:
@@ -4927,7 +4927,7 @@ namespace yyip {
   case 219:
 
 /* Line 678 of lalr1.cc  */
-#line 5481 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5481 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
     Description:
@@ -4940,7 +4940,7 @@ namespace yyip {
   case 220:
 
 /* Line 678 of lalr1.cc  */
-#line 5489 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5489 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       /**
       Description:
@@ -4954,7 +4954,7 @@ namespace yyip {
   case 221:
 
 /* Line 678 of lalr1.cc  */
-#line 5498 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5498 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -4976,7 +4976,7 @@ namespace yyip {
   case 222:
 
 /* Line 678 of lalr1.cc  */
-#line 5515 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5515 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       /**
         Parameters:
@@ -4997,7 +4997,7 @@ namespace yyip {
   case 223:
 
 /* Line 678 of lalr1.cc  */
-#line 5531 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5531 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       /**
         Parameters:
@@ -5019,7 +5019,7 @@ namespace yyip {
   case 224:
 
 /* Line 678 of lalr1.cc  */
-#line 5548 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5548 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       /**
       Description:
@@ -5043,7 +5043,7 @@ namespace yyip {
   case 225:
 
 /* Line 678 of lalr1.cc  */
-#line 5567 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5567 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       /**
       Description:
@@ -5066,7 +5066,7 @@ namespace yyip {
   case 226:
 
 /* Line 678 of lalr1.cc  */
-#line 5585 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5585 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       /**
       Description:
@@ -5087,7 +5087,7 @@ namespace yyip {
   case 227:
 
 /* Line 678 of lalr1.cc  */
-#line 5601 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5601 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       /**
       Description:
@@ -5108,7 +5108,7 @@ namespace yyip {
   case 228:
 
 /* Line 678 of lalr1.cc  */
-#line 5617 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5617 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VAR_VAL(InrImage,varim, im);
       float val = im->DimX();
@@ -5119,7 +5119,7 @@ namespace yyip {
   case 229:
 
 /* Line 678 of lalr1.cc  */
-#line 5623 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5623 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VAR_VAL(InrImage,varim, im);
       float val = im->DimY();
@@ -5130,7 +5130,7 @@ namespace yyip {
   case 230:
 
 /* Line 678 of lalr1.cc  */
-#line 5629 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5629 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VAR_VAL(InrImage,varim, im);
       float val = im->DimZ();
@@ -5141,7 +5141,7 @@ namespace yyip {
   case 231:
 
 /* Line 678 of lalr1.cc  */
-#line 5635 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5635 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VAR_VAL(InrImage,varim, im);
       float val = im->TrX();
@@ -5152,7 +5152,7 @@ namespace yyip {
   case 232:
 
 /* Line 678 of lalr1.cc  */
-#line 5641 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5641 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VAR_VAL(InrImage,varim, im);
       float val = im->TrY();
@@ -5163,7 +5163,7 @@ namespace yyip {
   case 233:
 
 /* Line 678 of lalr1.cc  */
-#line 5647 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5647 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VAR_VAL(InrImage,varim, im);
       float val = im->TrZ();
@@ -5174,7 +5174,7 @@ namespace yyip {
   case 234:
 
 /* Line 678 of lalr1.cc  */
-#line 5653 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5653 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VAR_VAL(InrImage,varim, im);
       float val = im->VoxSizeX();
@@ -5185,7 +5185,7 @@ namespace yyip {
   case 235:
 
 /* Line 678 of lalr1.cc  */
-#line 5659 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5659 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VAR_VAL(InrImage,varim, im);
       float val = im->VoxSizeY();
@@ -5196,7 +5196,7 @@ namespace yyip {
   case 236:
 
 /* Line 678 of lalr1.cc  */
-#line 5665 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5665 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VAR_VAL(InrImage,varim, im);
       float val = im->VoxSizeZ();
@@ -5207,7 +5207,7 @@ namespace yyip {
   case 237:
 
 /* Line 678 of lalr1.cc  */
-#line 5671 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5671 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VAR_VAL(InrImage,varim, im);
       float val = im->GetVDim();
@@ -5218,7 +5218,7 @@ namespace yyip {
   case 238:
 
 /* Line 678 of lalr1.cc  */
-#line 5677 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5677 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VAR_VAL(InrImage,varim, im);
       float val = im->IncBuffer();
@@ -5229,7 +5229,7 @@ namespace yyip {
   case 239:
 
 /* Line 678 of lalr1.cc  */
-#line 5683 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5683 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VAR_VAL(InrImage,varim, im);
       float val = im->ValeurBuffer();
@@ -5240,7 +5240,7 @@ namespace yyip {
   case 240:
 
 /* Line 678 of lalr1.cc  */
-#line 5690 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5690 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       Variable<InrImage>::ptr  varim2(driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim1(driver.var_stack.GetLastVar<InrImage>());
@@ -5253,7 +5253,7 @@ namespace yyip {
   case 241:
 
 /* Line 678 of lalr1.cc  */
-#line 5699 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5699 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       float val=Func_eccentricity(im.get());
@@ -5264,7 +5264,7 @@ namespace yyip {
   case 242:
 
 /* Line 678 of lalr1.cc  */
-#line 5706 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5706 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       float   resolution = (yysemantic_stack_[(10) - (5)].adouble);
       int     cx = (int) (yysemantic_stack_[(10) - (7)].adouble);
@@ -5299,7 +5299,7 @@ namespace yyip {
   case 243:
 
 /* Line 678 of lalr1.cc  */
-#line 5737 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5737 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
 
       GET_VARSTACK_VALUE(InrImage, im);
@@ -5311,7 +5311,7 @@ namespace yyip {
   case 244:
 
 /* Line 678 of lalr1.cc  */
-#line 5745 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5745 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       float val[4];
 
@@ -5327,7 +5327,7 @@ namespace yyip {
   case 245:
 
 /* Line 678 of lalr1.cc  */
-#line 5757 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5757 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
           Description:
@@ -5351,7 +5351,7 @@ namespace yyip {
   case 246:
 
 /* Line 678 of lalr1.cc  */
-#line 5777 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5777 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
              Description:
@@ -5375,7 +5375,7 @@ namespace yyip {
   case 247:
 
 /* Line 678 of lalr1.cc  */
-#line 5797 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5797 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
              Description: 
@@ -5399,7 +5399,7 @@ namespace yyip {
   case 248:
 
 /* Line 678 of lalr1.cc  */
-#line 5817 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5817 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
              Description:
@@ -5423,7 +5423,7 @@ namespace yyip {
   case 249:
 
 /* Line 678 of lalr1.cc  */
-#line 5837 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5837 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       /**
             Description:
@@ -5447,7 +5447,7 @@ namespace yyip {
   case 250:
 
 /* Line 678 of lalr1.cc  */
-#line 5857 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5857 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       /**
             Description:
@@ -5471,7 +5471,7 @@ namespace yyip {
   case 251:
 
 /* Line 678 of lalr1.cc  */
-#line 5877 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5877 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
              Description:
@@ -5499,7 +5499,7 @@ namespace yyip {
   case 252:
 
 /* Line 678 of lalr1.cc  */
-#line 5901 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5901 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
              Description:
@@ -5527,7 +5527,7 @@ namespace yyip {
   case 253:
 
 /* Line 678 of lalr1.cc  */
-#line 5925 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5925 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
              Description:
@@ -5555,7 +5555,7 @@ namespace yyip {
   case 254:
 
 /* Line 678 of lalr1.cc  */
-#line 5949 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5949 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       GET_VARSTACK_VALUE(InrImage, mask);
@@ -5567,7 +5567,7 @@ namespace yyip {
   case 255:
 
 /* Line 678 of lalr1.cc  */
-#line 5957 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5957 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
              Description:
@@ -5595,7 +5595,7 @@ namespace yyip {
   case 256:
 
 /* Line 678 of lalr1.cc  */
-#line 5981 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 5981 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
              Description:
@@ -5623,7 +5623,7 @@ namespace yyip {
   case 257:
 
 /* Line 678 of lalr1.cc  */
-#line 6004 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6004 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       setlocale(LC_NUMERIC, "C");
       float val=atof((yysemantic_stack_[(4) - (3)].astring));
@@ -5635,7 +5635,7 @@ namespace yyip {
   case 258:
 
 /* Line 678 of lalr1.cc  */
-#line 6161 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6161 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       Variable<FloatMatrix>::ptr varmat(driver.var_stack.GetLastVar<FloatMatrix>());
       FloatMatrix::ptr mat (varmat->Pointer());
@@ -5650,7 +5650,7 @@ namespace yyip {
   case 259:
 
 /* Line 678 of lalr1.cc  */
-#line 6171 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6171 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       /**
         Description
@@ -5667,7 +5667,7 @@ namespace yyip {
   case 260:
 
 /* Line 678 of lalr1.cc  */
-#line 6183 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6183 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
     Description:
@@ -5682,7 +5682,7 @@ namespace yyip {
   case 261:
 
 /* Line 678 of lalr1.cc  */
-#line 6193 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6193 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
     Description: 
@@ -5697,7 +5697,7 @@ namespace yyip {
   case 262:
 
 /* Line 678 of lalr1.cc  */
-#line 6203 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6203 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -5714,7 +5714,7 @@ namespace yyip {
   case 263:
 
 /* Line 678 of lalr1.cc  */
-#line 6215 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6215 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       /**
         Description: returns the value of the pixel format type in float format
@@ -5727,7 +5727,7 @@ namespace yyip {
   case 264:
 
 /* Line 678 of lalr1.cc  */
-#line 6223 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6223 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
       Description:
@@ -5748,7 +5748,7 @@ namespace yyip {
   case 265:
 
 /* Line 678 of lalr1.cc  */
-#line 6239 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6239 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(float,val_ptr);
       if (!val_ptr.get()) {
@@ -5772,7 +5772,7 @@ namespace yyip {
   case 266:
 
 /* Line 678 of lalr1.cc  */
-#line 6258 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6258 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(std::string,st);
       GET_VARSTACK_VALUE(FILE,file);
@@ -5789,7 +5789,7 @@ namespace yyip {
   case 267:
 
 /* Line 678 of lalr1.cc  */
-#line 6288 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6288 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
           if (var.get())
@@ -5810,7 +5810,7 @@ namespace yyip {
   case 268:
 
 /* Line 678 of lalr1.cc  */
-#line 6306 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6306 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
           if (var->Type()==type_image)  {
@@ -5825,7 +5825,7 @@ namespace yyip {
   case 269:
 
 /* Line 678 of lalr1.cc  */
-#line 6318 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6318 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           /**
             Description:  This rule is created to avoid changing a lot of code in the process of converting string operation to operations on Variable\<std::string> ...
@@ -5847,7 +5847,7 @@ namespace yyip {
   case 270:
 
 /* Line 678 of lalr1.cc  */
-#line 6339 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6339 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       driver.err_print(" char format is not available: use unsigned char \n");
       (yyval.aint)=WT_UNSIGNED_CHAR;
@@ -5857,7 +5857,7 @@ namespace yyip {
   case 271:
 
 /* Line 678 of lalr1.cc  */
-#line 6344 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6344 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           (yyval.aint)=WT_UNSIGNED_CHAR;
        }
@@ -5866,7 +5866,7 @@ namespace yyip {
   case 272:
 
 /* Line 678 of lalr1.cc  */
-#line 6348 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6348 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
      (yyval.aint)=WT_SIGNED_SHORT;
        }
@@ -5875,7 +5875,7 @@ namespace yyip {
   case 273:
 
 /* Line 678 of lalr1.cc  */
-#line 6352 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6352 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
      (yyval.aint)=WT_UNSIGNED_SHORT;
        }
@@ -5884,7 +5884,7 @@ namespace yyip {
   case 274:
 
 /* Line 678 of lalr1.cc  */
-#line 6356 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6356 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
      (yyval.aint)=WT_SIGNED_INT;
        }
@@ -5893,7 +5893,7 @@ namespace yyip {
   case 275:
 
 /* Line 678 of lalr1.cc  */
-#line 6360 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6360 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
      (yyval.aint)=WT_UNSIGNED_INT;
        }
@@ -5902,7 +5902,7 @@ namespace yyip {
   case 276:
 
 /* Line 678 of lalr1.cc  */
-#line 6364 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6364 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
      (yyval.aint)=WT_SIGNED_LONG;
        }
@@ -5911,7 +5911,7 @@ namespace yyip {
   case 277:
 
 /* Line 678 of lalr1.cc  */
-#line 6368 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6368 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
      (yyval.aint)=WT_FLOAT;
        }
@@ -5920,7 +5920,7 @@ namespace yyip {
   case 278:
 
 /* Line 678 of lalr1.cc  */
-#line 6372 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6372 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
      (yyval.aint)=WT_DOUBLE;
        }
@@ -5929,7 +5929,7 @@ namespace yyip {
   case 279:
 
 /* Line 678 of lalr1.cc  */
-#line 6376 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6376 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
      (yyval.aint)=WT_RGB;
        }
@@ -5938,7 +5938,7 @@ namespace yyip {
   case 280:
 
 /* Line 678 of lalr1.cc  */
-#line 6380 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6380 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
      (yyval.aint)=WT_FLOAT_VECTOR;
        }
@@ -5947,7 +5947,7 @@ namespace yyip {
   case 281:
 
 /* Line 678 of lalr1.cc  */
-#line 6384 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6384 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
          //        printf("format %d \n",(int) ( *(InrImage::ptr*) $1->Pointer())->GetFormat());
         GET_VARSTACK_VALUE(InrImage, im);
@@ -5958,7 +5958,7 @@ namespace yyip {
   case 283:
 
 /* Line 678 of lalr1.cc  */
-#line 6394 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6394 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           // TODO: get rid of VAR_ARRAY ...
           GET_VARSTACK_VAR_VAL(VarArray,var,array);
@@ -5979,7 +5979,7 @@ namespace yyip {
   case 285:
 
 /* Line 678 of lalr1.cc  */
-#line 6415 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6415 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         boost::shared_array<char> st( (yysemantic_stack_[(2) - (2)].astring));
         InrImage* res = ReadImage(st.get());
@@ -5992,7 +5992,7 @@ namespace yyip {
   case 286:
 
 /* Line 678 of lalr1.cc  */
-#line 6423 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6423 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
        /**
        Parameters:
@@ -6017,7 +6017,7 @@ namespace yyip {
   case 287:
 
 /* Line 678 of lalr1.cc  */
-#line 6443 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6443 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       /**
       Parameters:
@@ -6041,7 +6041,7 @@ namespace yyip {
   case 288:
 
 /* Line 678 of lalr1.cc  */
-#line 6478 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6478 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           int res;
           string name;
@@ -6076,7 +6076,7 @@ namespace yyip {
   case 289:
 
 /* Line 678 of lalr1.cc  */
-#line 6509 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6509 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         //printf(" ********** %d %f %f %f\n", $3, $5, $7, $9);
         InrImage::ptr im (new InrImage( (int) (yysemantic_stack_[(10) - (5)].adouble), (int) (yysemantic_stack_[(10) - (7)].adouble), (int) (yysemantic_stack_[(10) - (9)].adouble), (WORDTYPE) (yysemantic_stack_[(10) - (3)].aint)));
@@ -6087,7 +6087,7 @@ namespace yyip {
   case 290:
 
 /* Line 678 of lalr1.cc  */
-#line 6516 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6516 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       /**
     Parameters:
@@ -6109,7 +6109,7 @@ namespace yyip {
   case 291:
 
 /* Line 678 of lalr1.cc  */
-#line 6534 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6534 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -6138,7 +6138,7 @@ namespace yyip {
   case 292:
 
 /* Line 678 of lalr1.cc  */
-#line 6625 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6625 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
              Description:
@@ -6208,7 +6208,7 @@ namespace yyip {
   case 293:
 
 /* Line 678 of lalr1.cc  */
-#line 6691 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6691 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage,im);
       InrImage* res =Func_localmean( im.get(), (int) (yysemantic_stack_[(6) - (5)].adouble));
@@ -6219,7 +6219,7 @@ namespace yyip {
   case 294:
 
 /* Line 678 of lalr1.cc  */
-#line 6698 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6698 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage,im);
       InrImage* res =Func_localmean2( im.get(), (int) (yysemantic_stack_[(6) - (5)].adouble));
@@ -6230,7 +6230,7 @@ namespace yyip {
   case 295:
 
 /* Line 678 of lalr1.cc  */
-#line 6705 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6705 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, mean);
       GET_VARSTACK_VALUE(InrImage, im);
@@ -6242,7 +6242,7 @@ namespace yyip {
   case 296:
 
 /* Line 678 of lalr1.cc  */
-#line 6713 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6713 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, mean);
       GET_VARSTACK_VALUE(InrImage, im);
@@ -6254,7 +6254,7 @@ namespace yyip {
   case 297:
 
 /* Line 678 of lalr1.cc  */
-#line 6721 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6721 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
 
       GET_VARSTACK_VALUE(InrImage, im);
@@ -6274,7 +6274,7 @@ namespace yyip {
   case 298:
 
 /* Line 678 of lalr1.cc  */
-#line 6737 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6737 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
 
       GET_VARSTACK_VALUE(InrImage, im);
@@ -6296,7 +6296,7 @@ namespace yyip {
   case 299:
 
 /* Line 678 of lalr1.cc  */
-#line 6755 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6755 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
 
       Variable<InrImage>::ptr  varim2(driver.var_stack.GetLastVar<InrImage>());
@@ -6318,7 +6318,7 @@ namespace yyip {
   case 300:
 
 /* Line 678 of lalr1.cc  */
-#line 6773 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6773 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
 
       GET_VARSTACK_VALUE(InrImage, im);
@@ -6339,7 +6339,7 @@ namespace yyip {
   case 301:
 
 /* Line 678 of lalr1.cc  */
-#line 6790 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6790 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       Variable<InrImage>::ptr  varim3(driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim2(driver.var_stack.GetLastVar<InrImage>());
@@ -6360,7 +6360,7 @@ namespace yyip {
   case 302:
 
 /* Line 678 of lalr1.cc  */
-#line 6808 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6808 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       Variable<InrImage>::ptr  varim3(driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim2(driver.var_stack.GetLastVar<InrImage>());
@@ -6381,7 +6381,7 @@ namespace yyip {
   case 303:
 
 /* Line 678 of lalr1.cc  */
-#line 6828 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6828 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       /**
         Parameters
@@ -6419,7 +6419,7 @@ namespace yyip {
   case 304:
 
 /* Line 678 of lalr1.cc  */
-#line 6861 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6861 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         float var           = (yysemantic_stack_[(10) - (7)].adouble);
         float lowthreshold  = (yysemantic_stack_[(10) - (9)].adouble);
@@ -6436,7 +6436,7 @@ namespace yyip {
   case 305:
 
 /* Line 678 of lalr1.cc  */
-#line 6874 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6874 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         GET_VARSTACK_VALUE(InrImage, im);
         InrImage::ptr res ( Func_vtkDist( im.get()));
@@ -6451,7 +6451,7 @@ namespace yyip {
   case 306:
 
 /* Line 678 of lalr1.cc  */
-#line 6885 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6885 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         GET_VARSTACK_VALUE(InrImage, im);
         InrImage::ptr res (Func_vtkMedianFilter3D(
@@ -6468,7 +6468,7 @@ namespace yyip {
   case 307:
 
 /* Line 678 of lalr1.cc  */
-#line 6898 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6898 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         GET_VARSTACK_VALUE(InrImage, im);
         driver.err_print("The function AndreDist() has been removed for licence issues! \n");
@@ -6496,7 +6496,7 @@ namespace yyip {
   case 308:
 
 /* Line 678 of lalr1.cc  */
-#line 6922 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6922 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, input);
         InrImage::ptr res (Func_2DFlux(input.get(),(yysemantic_stack_[(6) - (5)].adouble)));
@@ -6511,7 +6511,7 @@ namespace yyip {
   case 309:
 
 /* Line 678 of lalr1.cc  */
-#line 6933 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6933 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       InrImage::ptr res ( Func_OutFlux( im.get()));
@@ -6526,7 +6526,7 @@ namespace yyip {
   case 310:
 
 /* Line 678 of lalr1.cc  */
-#line 6944 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6944 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
     InrImage::ptr res ( Func_OutFluxScalar( im.get()));
@@ -6540,7 +6540,7 @@ namespace yyip {
   case 311:
 
 /* Line 678 of lalr1.cc  */
-#line 6954 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6954 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
     InrImage::ptr res ( Func_OrientationRatio2D( im.get()));
@@ -6554,7 +6554,7 @@ namespace yyip {
   case 312:
 
 /* Line 678 of lalr1.cc  */
-#line 6964 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6964 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       /**
         Parameters:
@@ -6591,7 +6591,7 @@ namespace yyip {
   case 313:
 
 /* Line 678 of lalr1.cc  */
-#line 6997 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 6997 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
     InrImage::ptr res (Func_SimplePoints( im.get() ));
@@ -6606,7 +6606,7 @@ namespace yyip {
   case 314:
 
 /* Line 678 of lalr1.cc  */
-#line 7009 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7009 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       Variable<InrImage>::ptr  varim4(driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim3(driver.var_stack.GetLastVar<InrImage>());
@@ -6630,7 +6630,7 @@ namespace yyip {
   case 315:
 
 /* Line 678 of lalr1.cc  */
-#line 7030 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7030 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       Variable<InrImage>::ptr  varim4(driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim3(driver.var_stack.GetLastVar<InrImage>());
@@ -6653,7 +6653,7 @@ namespace yyip {
   case 316:
 
 /* Line 678 of lalr1.cc  */
-#line 7050 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7050 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -6697,7 +6697,7 @@ namespace yyip {
   case 317:
 
 /* Line 678 of lalr1.cc  */
-#line 7091 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7091 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       /**
       Parameters:
@@ -6747,7 +6747,7 @@ namespace yyip {
   case 318:
 
 /* Line 678 of lalr1.cc  */
-#line 7137 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7137 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
 
       Variable<InrImage>::ptr  varim4(driver.var_stack.GetLastVar<InrImage>());
@@ -6771,7 +6771,7 @@ namespace yyip {
   case 319:
 
 /* Line 678 of lalr1.cc  */
-#line 7157 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7157 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       Variable<InrImage>::ptr  varim4(driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim3(driver.var_stack.GetLastVar<InrImage>());
@@ -6796,7 +6796,7 @@ namespace yyip {
   case 320:
 
 /* Line 678 of lalr1.cc  */
-#line 7178 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7178 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
     InrImage::ptr res( Func_NormalSmoothField( im.get() ));
@@ -6811,7 +6811,7 @@ namespace yyip {
   case 321:
 
 /* Line 678 of lalr1.cc  */
-#line 7189 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7189 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       Variable<InrImage>::ptr  varim2(driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim1(driver.var_stack.GetLastVar<InrImage>());
@@ -6829,7 +6829,7 @@ namespace yyip {
   case 322:
 
 /* Line 678 of lalr1.cc  */
-#line 7203 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7203 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       Variable<InrImage>::ptr  varim2(driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim1(driver.var_stack.GetLastVar<InrImage>());
@@ -6847,7 +6847,7 @@ namespace yyip {
   case 323:
 
 /* Line 678 of lalr1.cc  */
-#line 7219 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7219 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, input);
   
@@ -6862,7 +6862,7 @@ namespace yyip {
   case 324:
 
 /* Line 678 of lalr1.cc  */
-#line 7231 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7231 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
     InrImage::ptr res (Func_DiscNormGrad( im.get()));
@@ -6876,7 +6876,7 @@ namespace yyip {
   case 325:
 
 /* Line 678 of lalr1.cc  */
-#line 7242 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7242 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
     InrImage::ptr res (Func_DiscMeanCurvature( im.get()));
@@ -6890,7 +6890,7 @@ namespace yyip {
   case 326:
 
 /* Line 678 of lalr1.cc  */
-#line 7254 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7254 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
     InrImage::ptr res (Func_Gradient( im.get(),
@@ -6905,7 +6905,7 @@ namespace yyip {
   case 327:
 
 /* Line 678 of lalr1.cc  */
-#line 7265 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7265 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
         Parameters:
@@ -6927,7 +6927,7 @@ namespace yyip {
   case 328:
 
 /* Line 678 of lalr1.cc  */
-#line 7285 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7285 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         GET_VARSTACK_VALUE(InrImage,im);
         InrImage::ptr res (Func_SecDerGrad( im.get(), (yysemantic_stack_[(6) - (5)].adouble)));
@@ -6941,7 +6941,7 @@ namespace yyip {
   case 329:
 
 /* Line 678 of lalr1.cc  */
-#line 7297 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7297 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         GET_VARSTACK_VALUE(InrImage,im);
         InrImage::ptr res ( Func_SecDerGrad2( im.get(),
@@ -6956,7 +6956,7 @@ namespace yyip {
   case 330:
 
 /* Line 678 of lalr1.cc  */
-#line 7307 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7307 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         GET_VARSTACK_VALUE(InrImage,im);
         InrImage::ptr res ( Func_AutoCrop(im.get(),(int)(yysemantic_stack_[(6) - (5)].adouble)));
@@ -6967,7 +6967,7 @@ namespace yyip {
   case 331:
 
 /* Line 678 of lalr1.cc  */
-#line 7362 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7362 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       /**
       Parameters
@@ -7009,7 +7009,7 @@ namespace yyip {
   case 332:
 
 /* Line 678 of lalr1.cc  */
-#line 7400 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7400 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
     InrImage::ptr res ( Func_EDP_dilate( im.get(),
@@ -7024,7 +7024,7 @@ namespace yyip {
   case 333:
 
 /* Line 678 of lalr1.cc  */
-#line 7411 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7411 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
     InrImage::ptr res ( Func_EDP_dilate( im.get(), (yysemantic_stack_[(8) - (5)].adouble),  (yysemantic_stack_[(8) - (7)].adouble)));
@@ -7038,7 +7038,7 @@ namespace yyip {
   case 334:
 
 /* Line 678 of lalr1.cc  */
-#line 7421 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7421 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
     float Imin = (yysemantic_stack_[(12) - (9)].adouble);
@@ -7054,7 +7054,7 @@ namespace yyip {
   case 335:
 
 /* Line 678 of lalr1.cc  */
-#line 7433 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7433 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
     InrImage::ptr res ( Func_EDP_erode( im.get(),
@@ -7069,7 +7069,7 @@ namespace yyip {
   case 336:
 
 /* Line 678 of lalr1.cc  */
-#line 7444 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7444 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
     InrImage::ptr res ( Func_EDP_erode( im.get(), (yysemantic_stack_[(8) - (5)].adouble),  (yysemantic_stack_[(8) - (7)].adouble)));
@@ -7083,7 +7083,7 @@ namespace yyip {
   case 337:
 
 /* Line 678 of lalr1.cc  */
-#line 7454 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7454 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -7112,7 +7112,7 @@ namespace yyip {
   case 338:
 
 /* Line 678 of lalr1.cc  */
-#line 7481 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7481 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -7137,7 +7137,7 @@ namespace yyip {
   case 339:
 
 /* Line 678 of lalr1.cc  */
-#line 7504 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7504 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -7167,7 +7167,7 @@ namespace yyip {
   case 340:
 
 /* Line 678 of lalr1.cc  */
-#line 7532 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7532 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         GET_VARSTACK_VALUE(InrImage,im);
     InrImage::ptr res ( Func_EDP_close( im.get(),
@@ -7183,7 +7183,7 @@ namespace yyip {
   case 341:
 
 /* Line 678 of lalr1.cc  */
-#line 7545 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7545 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     float Imin = (yysemantic_stack_[(12) - (9)].adouble);
     float Imax = (yysemantic_stack_[(12) - (11)].adouble);
@@ -7202,7 +7202,7 @@ namespace yyip {
   case 342:
 
 /* Line 678 of lalr1.cc  */
-#line 7679 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7679 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       //
       // param 1: input image
@@ -7239,7 +7239,7 @@ namespace yyip {
   case 343:
 
 /* Line 678 of lalr1.cc  */
-#line 7714 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7714 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       /**
         Parameters:
@@ -7274,7 +7274,7 @@ namespace yyip {
   case 344:
 
 /* Line 678 of lalr1.cc  */
-#line 7747 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7747 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       int        nb_iter,i;
       float       error;
@@ -7304,7 +7304,7 @@ namespace yyip {
   case 345:
 
 /* Line 678 of lalr1.cc  */
-#line 7775 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7775 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       InrImage::ptr res ( Func_InitWeickert( im.get(),
@@ -7320,7 +7320,7 @@ namespace yyip {
   case 346:
 
 /* Line 678 of lalr1.cc  */
-#line 7789 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7789 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       InrImage::ptr res ( Func_InitWeickertCoherence( im.get(),
@@ -7336,7 +7336,7 @@ namespace yyip {
   case 347:
 
 /* Line 678 of lalr1.cc  */
-#line 7801 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7801 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       InrImage::ptr res ( Func_SRAD_qcoeff( im.get()));
@@ -7350,7 +7350,7 @@ namespace yyip {
   case 348:
 
 /* Line 678 of lalr1.cc  */
-#line 7813 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7813 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       float dt = (float) (yysemantic_stack_[(8) - (5)].adouble);
@@ -7371,7 +7371,7 @@ namespace yyip {
   case 349:
 
 /* Line 678 of lalr1.cc  */
-#line 7831 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7831 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
@@ -7393,7 +7393,7 @@ namespace yyip {
   case 350:
 
 /* Line 678 of lalr1.cc  */
-#line 7850 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7850 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
@@ -7416,7 +7416,7 @@ namespace yyip {
   case 351:
 
 /* Line 678 of lalr1.cc  */
-#line 7870 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7870 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
@@ -7440,7 +7440,7 @@ namespace yyip {
   case 352:
 
 /* Line 678 of lalr1.cc  */
-#line 7892 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7892 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
@@ -7464,7 +7464,7 @@ namespace yyip {
   case 353:
 
 /* Line 678 of lalr1.cc  */
-#line 7912 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7912 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
@@ -7487,7 +7487,7 @@ namespace yyip {
   case 354:
 
 /* Line 678 of lalr1.cc  */
-#line 7931 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7931 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
@@ -7510,7 +7510,7 @@ namespace yyip {
   case 355:
 
 /* Line 678 of lalr1.cc  */
-#line 7951 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7951 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
@@ -7533,7 +7533,7 @@ namespace yyip {
   case 356:
 
 /* Line 678 of lalr1.cc  */
-#line 7971 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 7971 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
       Parameters:
@@ -7576,7 +7576,7 @@ namespace yyip {
   case 357:
 
 /* Line 678 of lalr1.cc  */
-#line 8012 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8012 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, initim);
       float dt = (float) (yysemantic_stack_[(12) - (5)].adouble);
@@ -7600,7 +7600,7 @@ namespace yyip {
   case 358:
 
 /* Line 678 of lalr1.cc  */
-#line 8034 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8034 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       /**
         Description:
@@ -7631,7 +7631,7 @@ namespace yyip {
   case 359:
 
 /* Line 678 of lalr1.cc  */
-#line 8062 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8062 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
       Parameters:
@@ -7657,7 +7657,7 @@ namespace yyip {
   case 360:
 
 /* Line 678 of lalr1.cc  */
-#line 8083 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8083 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -7699,7 +7699,7 @@ namespace yyip {
   case 361:
 
 /* Line 678 of lalr1.cc  */
-#line 8120 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8120 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -7741,7 +7741,7 @@ namespace yyip {
   case 362:
 
 /* Line 678 of lalr1.cc  */
-#line 8157 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8157 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -7783,7 +7783,7 @@ namespace yyip {
   case 363:
 
 /* Line 678 of lalr1.cc  */
-#line 8194 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8194 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -7821,7 +7821,7 @@ namespace yyip {
   case 364:
 
 /* Line 678 of lalr1.cc  */
-#line 8228 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8228 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           ADD_VARSTACK(InrImage,InrImage::ptr(( varsurfd->Pointer())->GetCanvas()->GetGLImage()));
@@ -7831,7 +7831,7 @@ namespace yyip {
   case 365:
 
 /* Line 678 of lalr1.cc  */
-#line 8234 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8234 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           driver.yyiperror("Not available in new wxwidgets version of the 3D viewer ! ");
@@ -7845,7 +7845,7 @@ namespace yyip {
   case 366:
 
 /* Line 678 of lalr1.cc  */
-#line 8251 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8251 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       InrImage::ptr res ( Func_ThresholdCrossing( im.get(), (yysemantic_stack_[(6) - (5)].adouble)));
@@ -7856,7 +7856,7 @@ namespace yyip {
   case 367:
 
 /* Line 678 of lalr1.cc  */
-#line 8258 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8258 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       InrImage::ptr res ( Func_IsocontourPoints( im.get(), (yysemantic_stack_[(6) - (5)].adouble)));
@@ -7867,7 +7867,7 @@ namespace yyip {
   case 368:
 
 /* Line 678 of lalr1.cc  */
-#line 8265 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8265 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       InrImage::ptr res ( Func_IsosurfDist( im.get(), (yysemantic_stack_[(6) - (5)].adouble)));
@@ -7879,7 +7879,7 @@ namespace yyip {
   case 369:
 
 /* Line 678 of lalr1.cc  */
-#line 8273 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8273 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       InrImage::ptr res ( Func_vtkIsoContourDist( im.get(), (yysemantic_stack_[(6) - (5)].adouble)));
@@ -7890,7 +7890,7 @@ namespace yyip {
   case 370:
 
 /* Line 678 of lalr1.cc  */
-#line 8280 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8280 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -7916,7 +7916,7 @@ namespace yyip {
   case 371:
 
 /* Line 678 of lalr1.cc  */
-#line 8304 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8304 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -7946,7 +7946,7 @@ namespace yyip {
   case 372:
 
 /* Line 678 of lalr1.cc  */
-#line 8331 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8331 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -7973,7 +7973,7 @@ namespace yyip {
   case 373:
 
 /* Line 678 of lalr1.cc  */
-#line 8355 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8355 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -8003,7 +8003,7 @@ namespace yyip {
   case 374:
 
 /* Line 678 of lalr1.cc  */
-#line 8384 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8384 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -8036,7 +8036,7 @@ namespace yyip {
   case 375:
 
 /* Line 678 of lalr1.cc  */
-#line 8413 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8413 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im2);
       GET_VARSTACK_VALUE(InrImage, im1);
@@ -8049,7 +8049,7 @@ namespace yyip {
   case 376:
 
 /* Line 678 of lalr1.cc  */
-#line 8422 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8422 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         GET_VARSTACK_VALUE(InrImage,mask);
         Variable<InrImage>::ptr  varim2(driver.var_stack.GetLastVar<InrImage>());
@@ -8066,7 +8066,7 @@ namespace yyip {
   case 377:
 
 /* Line 678 of lalr1.cc  */
-#line 8435 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8435 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
         InrImage::ptr res ( Func_Chamfer(im.get(), (yysemantic_stack_[(10) - (5)].adouble), (yysemantic_stack_[(10) - (7)].adouble), (yysemantic_stack_[(10) - (9)].adouble)));
@@ -8077,7 +8077,7 @@ namespace yyip {
   case 378:
 
 /* Line 678 of lalr1.cc  */
-#line 8442 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8442 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
           InrImage::ptr res ( Func_Chamfer2(im.get(), (yysemantic_stack_[(10) - (5)].adouble), (yysemantic_stack_[(10) - (7)].adouble), (yysemantic_stack_[(10) - (9)].adouble)));
@@ -8089,7 +8089,7 @@ namespace yyip {
   case 379:
 
 /* Line 678 of lalr1.cc  */
-#line 8450 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8450 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
 
         float a = (yysemantic_stack_[(12) - (5)].adouble);
@@ -8107,7 +8107,7 @@ namespace yyip {
   case 380:
 
 /* Line 678 of lalr1.cc  */
-#line 8464 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8464 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         float dmax = (yysemantic_stack_[(6) - (5)].adouble);
 
@@ -8123,7 +8123,7 @@ namespace yyip {
   case 381:
 
 /* Line 678 of lalr1.cc  */
-#line 8476 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8476 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         float dmax = (yysemantic_stack_[(6) - (5)].adouble);
 
@@ -8139,7 +8139,7 @@ namespace yyip {
   case 382:
 
 /* Line 678 of lalr1.cc  */
-#line 8488 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8488 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         float dmax = (yysemantic_stack_[(6) - (5)].adouble);
 
@@ -8153,7 +8153,7 @@ namespace yyip {
   case 383:
 
 /* Line 678 of lalr1.cc  */
-#line 8498 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8498 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         float dmax = (yysemantic_stack_[(6) - (5)].adouble);
 
@@ -8168,7 +8168,7 @@ namespace yyip {
   case 384:
 
 /* Line 678 of lalr1.cc  */
-#line 8509 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8509 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         float dmax = (yysemantic_stack_[(6) - (5)].adouble);
 
@@ -8182,7 +8182,7 @@ namespace yyip {
   case 385:
 
 /* Line 678 of lalr1.cc  */
-#line 8519 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8519 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         float dmax = (yysemantic_stack_[(6) - (5)].adouble);
 
@@ -8196,7 +8196,7 @@ namespace yyip {
   case 386:
 
 /* Line 678 of lalr1.cc  */
-#line 8529 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8529 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         float dmax = (yysemantic_stack_[(6) - (5)].adouble);
 
@@ -8211,7 +8211,7 @@ namespace yyip {
   case 387:
 
 /* Line 678 of lalr1.cc  */
-#line 8540 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8540 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         float dmax = (yysemantic_stack_[(6) - (5)].adouble);
 
@@ -8225,7 +8225,7 @@ namespace yyip {
   case 388:
 
 /* Line 678 of lalr1.cc  */
-#line 8550 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8550 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         float dmin = (yysemantic_stack_[(8) - (5)].adouble);
         float dmax = (yysemantic_stack_[(8) - (7)].adouble);
@@ -8240,7 +8240,7 @@ namespace yyip {
   case 389:
 
 /* Line 678 of lalr1.cc  */
-#line 8561 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8561 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -8271,7 +8271,7 @@ namespace yyip {
   case 390:
 
 /* Line 678 of lalr1.cc  */
-#line 8588 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8588 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -8304,7 +8304,7 @@ namespace yyip {
   case 391:
 
 /* Line 678 of lalr1.cc  */
-#line 8636 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8636 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
      /**
        Parameters:
@@ -8443,7 +8443,7 @@ namespace yyip {
   case 392:
 
 /* Line 678 of lalr1.cc  */
-#line 8770 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8770 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
        Parameters:
@@ -8469,7 +8469,7 @@ namespace yyip {
   case 393:
 
 /* Line 678 of lalr1.cc  */
-#line 8791 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8791 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage,im);
       float vmin  = (yysemantic_stack_[(10) - (5)].adouble);
@@ -8514,7 +8514,7 @@ namespace yyip {
   case 394:
 
 /* Line 678 of lalr1.cc  */
-#line 8831 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8831 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage,im);
       InrImage::ptr res;
@@ -8530,7 +8530,7 @@ namespace yyip {
   case 395:
 
 /* Line 678 of lalr1.cc  */
-#line 8842 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8842 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       int dim = (int) (yysemantic_stack_[(6) - (5)].adouble);
 
@@ -8543,7 +8543,7 @@ namespace yyip {
   case 396:
 
 /* Line 678 of lalr1.cc  */
-#line 8850 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8850 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         int axis=(int) (yysemantic_stack_[(6) - (5)].adouble);
 
@@ -8556,7 +8556,7 @@ namespace yyip {
   case 397:
 
 /* Line 678 of lalr1.cc  */
-#line 8858 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8858 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -8582,7 +8582,7 @@ namespace yyip {
   case 398:
 
 /* Line 678 of lalr1.cc  */
-#line 8879 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8879 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       Variable<InrImage>::ptr  varim2(driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim1(driver.var_stack.GetLastVar<InrImage>());
@@ -8613,7 +8613,7 @@ namespace yyip {
   case 399:
 
 /* Line 678 of lalr1.cc  */
-#line 8905 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8905 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       int   order = (int) (yysemantic_stack_[(8) - (5)].adouble);
       float resolution = (yysemantic_stack_[(8) - (7)].adouble);
@@ -8629,7 +8629,7 @@ namespace yyip {
   case 400:
 
 /* Line 678 of lalr1.cc  */
-#line 8916 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8916 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage,im);
 
@@ -8641,7 +8641,7 @@ namespace yyip {
   case 401:
 
 /* Line 678 of lalr1.cc  */
-#line 8923 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8923 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage,im);
       InrImage::ptr res ( AMIFluid::Func_Altitude2Position(im.get()));
@@ -8652,7 +8652,7 @@ namespace yyip {
   case 402:
 
 /* Line 678 of lalr1.cc  */
-#line 8929 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8929 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage,im);
       InrImage::ptr res ( AMIFluid::Func_GeoCoordinates(im.get(),(int)(yysemantic_stack_[(6) - (5)].adouble)));
@@ -8663,7 +8663,7 @@ namespace yyip {
   case 403:
 
 /* Line 678 of lalr1.cc  */
-#line 8935 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8935 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage,im);
       InrImage* res;
@@ -8675,7 +8675,7 @@ namespace yyip {
   case 404:
 
 /* Line 678 of lalr1.cc  */
-#line 8942 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8942 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
 
@@ -8705,7 +8705,7 @@ namespace yyip {
   case 405:
 
 /* Line 678 of lalr1.cc  */
-#line 8967 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8967 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
 
@@ -8728,7 +8728,7 @@ namespace yyip {
   case 406:
 
 /* Line 678 of lalr1.cc  */
-#line 8985 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8985 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       boost::shared_array<char> filename( (yysemantic_stack_[(4) - (3)].astring));
       InrImage::ptr res( AMIFluid::Func_ReadFlow(filename.get()));
@@ -8739,7 +8739,7 @@ namespace yyip {
   case 407:
 
 /* Line 678 of lalr1.cc  */
-#line 8992 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 8992 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
 
@@ -8776,7 +8776,7 @@ namespace yyip {
   case 408:
 
 /* Line 678 of lalr1.cc  */
-#line 9025 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9025 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -8799,7 +8799,7 @@ namespace yyip {
   case 409:
 
 /* Line 678 of lalr1.cc  */
-#line 9044 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9044 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -8820,7 +8820,7 @@ namespace yyip {
   case 411:
 
 /* Line 678 of lalr1.cc  */
-#line 9093 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9093 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
     Description: adds a reference to the variable in the stack
@@ -8833,7 +8833,7 @@ namespace yyip {
   case 412:
 
 /* Line 678 of lalr1.cc  */
-#line 9102 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9102 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
       Description: 
@@ -8849,7 +8849,7 @@ namespace yyip {
   case 421:
 
 /* Line 678 of lalr1.cc  */
-#line 9132 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9132 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       /**
         Description:
@@ -8874,7 +8874,7 @@ namespace yyip {
   case 422:
 
 /* Line 678 of lalr1.cc  */
-#line 9153 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9153 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       /** 
       Description:
@@ -8940,7 +8940,7 @@ namespace yyip {
   case 425:
 
 /* Line 678 of lalr1.cc  */
-#line 9299 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9299 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           // todo ... 
           // 1. check if identifier belongs to the object
@@ -8979,7 +8979,7 @@ namespace yyip {
   case 426:
 
 /* Line 678 of lalr1.cc  */
-#line 9334 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9334 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
           Description: 
@@ -9061,7 +9061,7 @@ namespace yyip {
   case 427:
 
 /* Line 678 of lalr1.cc  */
-#line 9411 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9411 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
       Description: Logical negation (NOT) operator.
@@ -9074,7 +9074,7 @@ namespace yyip {
   case 428:
 
 /* Line 678 of lalr1.cc  */
-#line 9419 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9419 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
       Description: Postfix increment operator.
@@ -9087,7 +9087,7 @@ namespace yyip {
   case 429:
 
 /* Line 678 of lalr1.cc  */
-#line 9427 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9427 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
       Description: Postfix decrement operator.
@@ -9100,7 +9100,7 @@ namespace yyip {
   case 430:
 
 /* Line 678 of lalr1.cc  */
-#line 9435 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9435 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
       Description: Transpose operator, usefull for matrices
@@ -9113,7 +9113,7 @@ namespace yyip {
   case 431:
 
 /* Line 678 of lalr1.cc  */
-#line 9446 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9446 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
       Description: 
@@ -9156,7 +9156,7 @@ namespace yyip {
   case 432:
 
 /* Line 678 of lalr1.cc  */
-#line 9485 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9485 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
       Description: Array subscript operator.
@@ -9170,7 +9170,7 @@ namespace yyip {
   case 434:
 
 /* Line 678 of lalr1.cc  */
-#line 9499 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9499 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
       Description: Cast operator.
@@ -9184,7 +9184,7 @@ namespace yyip {
   case 435:
 
 /* Line 678 of lalr1.cc  */
-#line 9508 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9508 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     //cout << "T_SUB  cast_var  " << endl;
     GET_CHECK_VARSTACK(var)
@@ -9195,7 +9195,7 @@ namespace yyip {
   case 436:
 
 /* Line 678 of lalr1.cc  */
-#line 9514 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9514 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(+(*var));
@@ -9205,7 +9205,7 @@ namespace yyip {
   case 437:
 
 /* Line 678 of lalr1.cc  */
-#line 9519 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9519 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(++(*var));
@@ -9215,7 +9215,7 @@ namespace yyip {
   case 438:
 
 /* Line 678 of lalr1.cc  */
-#line 9524 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9524 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(--(*var));
@@ -9225,7 +9225,7 @@ namespace yyip {
   case 439:
 
 /* Line 678 of lalr1.cc  */
-#line 9529 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9529 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_sin());
@@ -9235,7 +9235,7 @@ namespace yyip {
   case 440:
 
 /* Line 678 of lalr1.cc  */
-#line 9534 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9534 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_cos());
@@ -9245,7 +9245,7 @@ namespace yyip {
   case 441:
 
 /* Line 678 of lalr1.cc  */
-#line 9539 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9539 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_sqrt());
@@ -9255,7 +9255,7 @@ namespace yyip {
   case 442:
 
 /* Line 678 of lalr1.cc  */
-#line 9544 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9544 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_fabs());
@@ -9265,7 +9265,7 @@ namespace yyip {
   case 443:
 
 /* Line 678 of lalr1.cc  */
-#line 9549 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9549 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_round());
@@ -9275,7 +9275,7 @@ namespace yyip {
   case 444:
 
 /* Line 678 of lalr1.cc  */
-#line 9554 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9554 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_floor());
@@ -9285,7 +9285,7 @@ namespace yyip {
   case 445:
 
 /* Line 678 of lalr1.cc  */
-#line 9559 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9559 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_tan());
@@ -9295,7 +9295,7 @@ namespace yyip {
   case 446:
 
 /* Line 678 of lalr1.cc  */
-#line 9564 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9564 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_asin());
@@ -9305,7 +9305,7 @@ namespace yyip {
   case 447:
 
 /* Line 678 of lalr1.cc  */
-#line 9569 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9569 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_acos());
@@ -9315,7 +9315,7 @@ namespace yyip {
   case 448:
 
 /* Line 678 of lalr1.cc  */
-#line 9574 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9574 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_atan());
@@ -9325,7 +9325,7 @@ namespace yyip {
   case 449:
 
 /* Line 678 of lalr1.cc  */
-#line 9579 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9579 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_exp());
@@ -9335,7 +9335,7 @@ namespace yyip {
   case 450:
 
 /* Line 678 of lalr1.cc  */
-#line 9584 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9584 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_log());
@@ -9345,7 +9345,7 @@ namespace yyip {
   case 451:
 
 /* Line 678 of lalr1.cc  */
-#line 9589 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9589 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_ln());
@@ -9355,7 +9355,7 @@ namespace yyip {
   case 452:
 
 /* Line 678 of lalr1.cc  */
-#line 9594 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9594 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_norm());
@@ -9365,7 +9365,7 @@ namespace yyip {
   case 454:
 
 /* Line 678 of lalr1.cc  */
-#line 9604 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9604 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
@@ -9376,7 +9376,7 @@ namespace yyip {
   case 455:
 
 /* Line 678 of lalr1.cc  */
-#line 9610 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9610 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
@@ -9387,7 +9387,7 @@ namespace yyip {
   case 456:
 
 /* Line 678 of lalr1.cc  */
-#line 9616 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9616 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
@@ -9398,7 +9398,7 @@ namespace yyip {
   case 458:
 
 /* Line 678 of lalr1.cc  */
-#line 9627 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9627 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
@@ -9410,7 +9410,7 @@ namespace yyip {
   case 459:
 
 /* Line 678 of lalr1.cc  */
-#line 9634 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9634 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
@@ -9422,7 +9422,7 @@ namespace yyip {
   case 462:
 
 /* Line 678 of lalr1.cc  */
-#line 9649 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9649 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
@@ -9433,7 +9433,7 @@ namespace yyip {
   case 463:
 
 /* Line 678 of lalr1.cc  */
-#line 9655 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9655 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
@@ -9444,7 +9444,7 @@ namespace yyip {
   case 464:
 
 /* Line 678 of lalr1.cc  */
-#line 9661 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9661 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
@@ -9455,7 +9455,7 @@ namespace yyip {
   case 465:
 
 /* Line 678 of lalr1.cc  */
-#line 9667 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9667 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
@@ -9466,7 +9466,7 @@ namespace yyip {
   case 467:
 
 /* Line 678 of lalr1.cc  */
-#line 9677 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9677 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
@@ -9477,7 +9477,7 @@ namespace yyip {
   case 468:
 
 /* Line 678 of lalr1.cc  */
-#line 9683 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9683 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
@@ -9488,7 +9488,7 @@ namespace yyip {
   case 475:
 
 /* Line 678 of lalr1.cc  */
-#line 9724 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9724 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
       Descriptiopn: Logical AND operator
@@ -9502,7 +9502,7 @@ namespace yyip {
   case 477:
 
 /* Line 678 of lalr1.cc  */
-#line 9737 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9737 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
       Descriptiopn: Logical XOR operator, for vectorial images it defines the pointwise vectorial product.
@@ -9516,7 +9516,7 @@ namespace yyip {
   case 479:
 
 /* Line 678 of lalr1.cc  */
-#line 9750 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9750 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
       Descriptiopn: Logical OR operator
@@ -9530,7 +9530,7 @@ namespace yyip {
   case 481:
 
 /* Line 678 of lalr1.cc  */
-#line 9763 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9763 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
       Descriptiopn: Operation (cond?a:b) like in C/C++.
@@ -9545,7 +9545,7 @@ namespace yyip {
   case 483:
 
 /* Line 678 of lalr1.cc  */
-#line 9777 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9777 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     //cout << "assignment_var" << endl;
     GET_CHECK_VARSTACK(var2)
@@ -9560,7 +9560,7 @@ namespace yyip {
   case 484:
 
 /* Line 678 of lalr1.cc  */
-#line 9787 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9787 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     //cout << "assignment_var" << endl;
     GET_CHECK_VARSTACK(var2)
@@ -9572,7 +9572,7 @@ namespace yyip {
   case 485:
 
 /* Line 678 of lalr1.cc  */
-#line 9794 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9794 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
@@ -9583,7 +9583,7 @@ namespace yyip {
   case 486:
 
 /* Line 678 of lalr1.cc  */
-#line 9800 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9800 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
@@ -9594,7 +9594,7 @@ namespace yyip {
   case 487:
 
 /* Line 678 of lalr1.cc  */
-#line 9806 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9806 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
@@ -9605,7 +9605,7 @@ namespace yyip {
   case 488:
 
 /* Line 678 of lalr1.cc  */
-#line 9812 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9812 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
@@ -9616,7 +9616,7 @@ namespace yyip {
   case 490:
 
 /* Line 678 of lalr1.cc  */
-#line 9824 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9824 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
             GET_VARSTACK_VALUE(GLTransfMatrix,glt);
             GLTransfMatrix* newglt;
@@ -9631,7 +9631,7 @@ namespace yyip {
   case 491:
 
 /* Line 678 of lalr1.cc  */
-#line 9835 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9835 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           GLTransfMatrix glt;
@@ -9649,7 +9649,7 @@ namespace yyip {
   case 492:
 
 /* Line 678 of lalr1.cc  */
-#line 9849 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9849 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         GET_VARSTACK_VALUE(GLTransfMatrix,glt2);
         GET_VARSTACK_VALUE(GLTransfMatrix,glt1);
@@ -9664,7 +9664,7 @@ namespace yyip {
   case 493:
 
 /* Line 678 of lalr1.cc  */
-#line 9860 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9860 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         boost::shared_array<char> filename( (yysemantic_stack_[(4) - (3)].astring));
          GLTransfMatrix* newglt;
@@ -9684,7 +9684,7 @@ namespace yyip {
   case 494:
 
 /* Line 678 of lalr1.cc  */
-#line 9878 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9878 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
          FloatMatrix::ptr m( new FloatMatrix((int)(yysemantic_stack_[(6) - (3)].adouble),(int)(yysemantic_stack_[(6) - (5)].adouble)));
          ADD_VARSTACK_PTR(FloatMatrix,m);
@@ -9694,7 +9694,7 @@ namespace yyip {
   case 495:
 
 /* Line 678 of lalr1.cc  */
-#line 9884 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9884 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
         Description: adds a reference to the variable in the stack
@@ -9707,7 +9707,7 @@ namespace yyip {
   case 496:
 
 /* Line 678 of lalr1.cc  */
-#line 9893 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 9893 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -9731,7 +9731,7 @@ namespace yyip {
   case 497:
 
 /* Line 678 of lalr1.cc  */
-#line 10038 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10038 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       SurfacePoly* surf;
       GET_VARSTACK_VALUE(InrImage,im);
@@ -9750,7 +9750,7 @@ namespace yyip {
   case 498:
 
 /* Line 678 of lalr1.cc  */
-#line 10053 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10053 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       SurfacePoly* surf;
@@ -9766,7 +9766,7 @@ namespace yyip {
   case 499:
 
 /* Line 678 of lalr1.cc  */
-#line 10065 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10065 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
       Parameters:
@@ -9792,7 +9792,7 @@ namespace yyip {
   case 500:
 
 /* Line 678 of lalr1.cc  */
-#line 10087 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10087 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
      Parameters:
@@ -9832,7 +9832,7 @@ namespace yyip {
   case 501:
 
 /* Line 678 of lalr1.cc  */
-#line 10123 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10123 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_OBJECT(SurfacePoly,varsurf)
       SurfacePoly* surf;
@@ -9845,7 +9845,7 @@ namespace yyip {
   case 502:
 
 /* Line 678 of lalr1.cc  */
-#line 10132 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10132 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       SurfacePoly* newsurf;
       GET_VARSTACK_OBJECT(SurfacePoly,varsurf)
@@ -9859,7 +9859,7 @@ namespace yyip {
   case 503:
 
 /* Line 678 of lalr1.cc  */
-#line 10142 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10142 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       SurfacePoly* surf;
       GET_VARSTACK_VALUE(InrImage, im);
@@ -9872,7 +9872,7 @@ namespace yyip {
   case 504:
 
 /* Line 678 of lalr1.cc  */
-#line 10151 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10151 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       SurfacePoly* newsurf;
       GET_VARSTACK_OBJECT(SurfacePoly,surf)
@@ -9886,7 +9886,7 @@ namespace yyip {
   case 505:
 
 /* Line 678 of lalr1.cc  */
-#line 10161 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10161 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_OBJECT(SurfacePoly,surf)
       SurfacePoly* newsurf;
@@ -9904,7 +9904,7 @@ namespace yyip {
   case 506:
 
 /* Line 678 of lalr1.cc  */
-#line 10175 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10175 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       SurfacePoly* surf = new SurfacePoly();
       BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
@@ -9915,7 +9915,7 @@ namespace yyip {
   case 507:
 
 /* Line 678 of lalr1.cc  */
-#line 10182 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10182 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       boost::shared_array<char> filename( (yysemantic_stack_[(2) - (2)].astring));
       SurfacePoly* surf = new SurfacePoly();
@@ -9928,7 +9928,7 @@ namespace yyip {
   case 508:
 
 /* Line 678 of lalr1.cc  */
-#line 10191 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10191 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -9948,7 +9948,7 @@ namespace yyip {
   case 509:
 
 /* Line 678 of lalr1.cc  */
-#line 10207 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10207 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -9971,7 +9971,7 @@ namespace yyip {
   case 510:
 
 /* Line 678 of lalr1.cc  */
-#line 10226 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10226 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -9995,7 +9995,7 @@ namespace yyip {
   case 511:
 
 /* Line 678 of lalr1.cc  */
-#line 10246 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10246 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -10029,7 +10029,7 @@ namespace yyip {
   case 512:
 
 /* Line 678 of lalr1.cc  */
-#line 10276 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10276 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -10062,7 +10062,7 @@ namespace yyip {
   case 513:
 
 /* Line 678 of lalr1.cc  */
-#line 10305 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10305 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_OBJECT(SurfacePoly,insurf)
       SurfacePoly* surf;
@@ -10083,7 +10083,7 @@ namespace yyip {
   case 514:
 
 /* Line 678 of lalr1.cc  */
-#line 10323 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10323 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
       Parameters:
@@ -10112,7 +10112,7 @@ namespace yyip {
   case 515:
 
 /* Line 678 of lalr1.cc  */
-#line 10349 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10349 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -10149,7 +10149,7 @@ namespace yyip {
   case 516:
 
 /* Line 678 of lalr1.cc  */
-#line 10382 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10382 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -10185,7 +10185,7 @@ namespace yyip {
   case 517:
 
 /* Line 678 of lalr1.cc  */
-#line 10418 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10418 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -10232,7 +10232,7 @@ namespace yyip {
   case 518:
 
 /* Line 678 of lalr1.cc  */
-#line 10464 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10464 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -10275,7 +10275,7 @@ namespace yyip {
   case 519:
 
 /* Line 678 of lalr1.cc  */
-#line 10502 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10502 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     GET_VARSTACK_VALUE(InrImage,im);
       SurfacePoly* surf;
@@ -10289,7 +10289,7 @@ namespace yyip {
   case 520:
 
 /* Line 678 of lalr1.cc  */
-#line 10511 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10511 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
           /**
 
@@ -10316,7 +10316,7 @@ namespace yyip {
   case 521:
 
 /* Line 678 of lalr1.cc  */
-#line 10533 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10533 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage,im);
       float minth = (yysemantic_stack_[(8) - (5)].adouble);
@@ -10332,7 +10332,7 @@ namespace yyip {
   case 522:
 
 /* Line 678 of lalr1.cc  */
-#line 10544 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10544 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage,im);
       SurfacePoly* surf;
@@ -10348,7 +10348,7 @@ namespace yyip {
   case 523:
 
 /* Line 678 of lalr1.cc  */
-#line 10555 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10555 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -10389,7 +10389,7 @@ namespace yyip {
   case 524:
 
 /* Line 678 of lalr1.cc  */
-#line 10591 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10591 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -10436,7 +10436,7 @@ namespace yyip {
   case 525:
 
 /* Line 678 of lalr1.cc  */
-#line 10633 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10633 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -10487,7 +10487,7 @@ namespace yyip {
   case 526:
 
 /* Line 678 of lalr1.cc  */
-#line 10679 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10679 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -10542,7 +10542,7 @@ namespace yyip {
   case 527:
 
 /* Line 678 of lalr1.cc  */
-#line 10729 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10729 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -10589,7 +10589,7 @@ namespace yyip {
   case 528:
 
 /* Line 678 of lalr1.cc  */
-#line 10771 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10771 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -10625,7 +10625,7 @@ namespace yyip {
   case 529:
 
 /* Line 678 of lalr1.cc  */
-#line 10802 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10802 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -10662,7 +10662,7 @@ namespace yyip {
   case 530:
 
 /* Line 678 of lalr1.cc  */
-#line 10834 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10834 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -10705,7 +10705,7 @@ namespace yyip {
   case 552:
 
 /* Line 678 of lalr1.cc  */
-#line 10934 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10934 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       ImageExtent<float>* extent=new ImageExtent<float>( (float)(yysemantic_stack_[(11) - (1)].adouble),(float)(yysemantic_stack_[(11) - (3)].adouble),(float)(yysemantic_stack_[(11) - (5)].adouble),
                           (float)(yysemantic_stack_[(11) - (7)].adouble),(float)(yysemantic_stack_[(11) - (9)].adouble),(float)(yysemantic_stack_[(11) - (11)].adouble));
@@ -10718,7 +10718,7 @@ namespace yyip {
   case 553:
 
 /* Line 678 of lalr1.cc  */
-#line 10943 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10943 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       ImageExtent<float>* extent=new ImageExtent<float>((float)(yysemantic_stack_[(7) - (1)].adouble),(float)(yysemantic_stack_[(7) - (3)].adouble),(float)(yysemantic_stack_[(7) - (5)].adouble),(float)(yysemantic_stack_[(7) - (7)].adouble));
       extent->SetMode(1); // relative
@@ -10730,7 +10730,7 @@ namespace yyip {
   case 554:
 
 /* Line 678 of lalr1.cc  */
-#line 10951 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10951 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       #ifdef min
         #undef min
@@ -10752,7 +10752,7 @@ namespace yyip {
   case 555:
 
 /* Line 678 of lalr1.cc  */
-#line 10969 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10969 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
 
@@ -10773,7 +10773,7 @@ namespace yyip {
   case 556:
 
 /* Line 678 of lalr1.cc  */
-#line 10986 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 10986 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
     {
       Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
       DessinImage::ptr draw = DessinImage::ptr(varimd->Pointer());
@@ -10800,7 +10800,7 @@ namespace yyip {
 
 
 /* Line 678 of lalr1.cc  */
-#line 10804 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
+#line 10804 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
 	default:
           break;
       }
@@ -14611,11 +14611,11 @@ namespace yyip {
 } // yyip
 
 /* Line 1054 of lalr1.cc  */
-#line 14615 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
+#line 14615 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
 
 
 /* Line 1056 of lalr1.cc  */
-#line 11007 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 11007 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
 
 #include <stdio.h>
 

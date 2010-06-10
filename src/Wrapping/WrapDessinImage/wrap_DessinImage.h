@@ -105,10 +105,10 @@ class WrapClass_DessinImage : public WrapClassBase
      * parameters
      *   #1 ... #12 expr:  expression.
      * description:
-     *    TODO.
+     *    SetCompTransf is not available at the moment.
      *
      **/
-    ADD_CLASS_METHOD(SetCompTransf,             "TODO");
+    ADD_CLASS_METHOD(SetCompTransf,             "SetCompTransf is not available at the moment.");
 
     /**
      * commande -> VAR_IMAGEDRAW '.' SETVECTOR '(' number ',' VAR_IMAGE ')'
@@ -133,7 +133,7 @@ class WrapClass_DessinImage : public WrapClassBase
      *    TODO.
      *
      **/
-    ADD_CLASS_METHOD(DrawVector,             "TODO");
+    ADD_CLASS_METHOD(DrawVector,             "Draw the vector.");
 
     /**
      * commande -> $variable_imagedraw.DisplayVectors
@@ -144,7 +144,7 @@ class WrapClass_DessinImage : public WrapClassBase
      *    TODO.
      *
      **/
-    ADD_CLASS_METHOD(DisplayVectors,             "TODO");
+    ADD_CLASS_METHOD(DisplayVectors,             "Display the vectors.");
 
     /**
      * commande -> $variable_imagedraw.SetVectParam(expr,expr)
@@ -181,10 +181,10 @@ class WrapClass_DessinImage : public WrapClassBase
      * parameters
      *   #1 expr:  expression
      * description:
-     *    TODO.
+     *    Specifies the type of vector..
      *
      **/
-    ADD_CLASS_METHOD(SetVectStyle,             "TODO");
+    ADD_CLASS_METHOD(SetVectStyle,             "Specifies the type of vector.");
 
     /**
      * commande -> $variable_imagedraw.SetLineThickness(expr)
@@ -195,7 +195,7 @@ class WrapClass_DessinImage : public WrapClassBase
      *    TODO.
      *
      **/
-    ADD_CLASS_METHOD(SetLineThickness,             "TODO");
+    ADD_CLASS_METHOD(SetLineThickness,             "Specifies the line thickness");
 
     /**
      * commande -> $variable_imagedraw.SetZoom(expr,expr,expr,expr,expr,expr) 
@@ -206,7 +206,7 @@ class WrapClass_DessinImage : public WrapClassBase
      *    TODO.
      *
      **/
-    ADD_CLASS_METHOD(SetZoom,             "TODO");
+    ADD_CLASS_METHOD(SetZoom,             "Zooms in on an area of the image.");
 
     /**
      * commande <-- VAR_IMAGEDRAW '.' T_SetWindowSize '(' expr ',' expr ')'
@@ -243,10 +243,10 @@ class WrapClass_DessinImage : public WrapClassBase
      *   #1 expr_image: image's expression
      *   #2 ... #3 expr:  expression
      * description:
-     *   TODO.
+     *   Set color map of an imagen.
      *
      **/
-    ADD_CLASS_METHOD(SetColormap,             "TODO");
+    ADD_CLASS_METHOD(SetColormap,             "Set color map of an imagen");
 
     /**
      * commande <-- $variable_imagedraw.setGLwin($variable_surfdraw)
@@ -254,10 +254,10 @@ class WrapClass_DessinImage : public WrapClassBase
      * parameters
      *   #1 $variable_surfdraw: variable of type surfdraw.
      * description:
-     *   TODO.
+     *   Associates a viewer 3D to an image of surface type.
      *
      **/
-    ADD_CLASS_METHOD(setGLwin,             "TODO");
+    ADD_CLASS_METHOD(setGLwin,             "Associates a viewer 3D to an image of surface type.");
 
     /**
      * commande <-- $variable_imagedraw.SetIsoContour(expr,var_image,expr)
@@ -347,10 +347,10 @@ class WrapClass_DessinImage : public WrapClassBase
      * parameters
      *   #1 $variable_ami_function:  variable of type function.
      * description:
-     *   TODO.
+     *   Specifies the routine to be used to paint the imagen.
      *
      **/
-    ADD_CLASS_METHOD(PaintCallback,             "TODO");
+    ADD_CLASS_METHOD(PaintCallback,             "Specifies the routine to be used to paint the imagen.");
 
     /**
      * command <-- $variable_imagedraw.SetOpacityImage(var_image)

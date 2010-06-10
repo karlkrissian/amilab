@@ -362,8 +362,8 @@ void WrapClass_DessinImage::
       wrap_DrawVector::SetParametersComments() 
 {
   //TODO
-  ADDPARAMCOMMENT("TODO");
-  ADDPARAMCOMMENT("TODO");
+  ADDPARAMCOMMENT("Vector size");
+  ADDPARAMCOMMENT("Visible or not (0 or 1)");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -459,7 +459,7 @@ void WrapClass_DessinImage::
       wrap_SetVectStyle::SetParametersComments() 
 {
   //TODO
-  ADDPARAMCOMMENT("TODO");
+  ADDPARAMCOMMENT("Vector type (Integer)");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -483,7 +483,7 @@ void WrapClass_DessinImage::
       wrap_SetLineThickness::SetParametersComments() 
 {
   //TODO
-  ADDPARAMCOMMENT("TODO");
+  ADDPARAMCOMMENT("Line thickness (Integer)");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -507,12 +507,12 @@ void WrapClass_DessinImage::
       wrap_SetZoom::SetParametersComments() 
 {
   //TODO
-  ADDPARAMCOMMENT("TODO");
-  ADDPARAMCOMMENT("TODO");
-  ADDPARAMCOMMENT("TODO");
-  ADDPARAMCOMMENT("TODO");
-  ADDPARAMCOMMENT("TODO");
-  ADDPARAMCOMMENT("TODO");
+  ADDPARAMCOMMENT("Lower limit X-coordinate");
+  ADDPARAMCOMMENT("Lower limit Y-coordinate");
+  ADDPARAMCOMMENT("Lower limit Z-coordinate");
+  ADDPARAMCOMMENT("Higher limit X-coordinate");
+  ADDPARAMCOMMENT("Higher limit Y-coordinate");
+  ADDPARAMCOMMENT("Higher limit Z-coordinate");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -605,9 +605,9 @@ void WrapClass_DessinImage::
       wrap_SetColormap::SetParametersComments() 
 {
   //TODO
-  ADDPARAMCOMMENT("TODO");
-  ADDPARAMCOMMENT("TODO");
-  ADDPARAMCOMMENT("TODO");
+  ADDPARAMCOMMENT("image to use");
+  ADDPARAMCOMMENT("Center (Float)");
+  ADDPARAMCOMMENT("Extent (Float)");
 
 }
 //---------------------------------------------------
@@ -644,7 +644,7 @@ void WrapClass_DessinImage::
       wrap_setGLwin::SetParametersComments() 
 {
   //TODO
-  ADDPARAMCOMMENT("TODO");
+  ADDPARAMCOMMENT("Viewer 3D");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -661,7 +661,7 @@ BasicVariable::ptr WrapClass_DessinImage::
   Viewer3D::ptr surfd(varsurfd->Pointer());
 
   if (!surfd.get()) {
-    GB_driver.err_print("WrapClass_DessinImage::SetColormap empty image.");
+    GB_driver.err_print("WrapClass_DessinImage::setGLwin empty image.");
     return BasicVariable::ptr();
   }
 
@@ -909,7 +909,7 @@ void WrapClass_DessinImage::
       wrap_PaintCallback::SetParametersComments() 
 {
   //TODO
-  ADDPARAMCOMMENT("TODO");
+  ADDPARAMCOMMENT("Callback function (AMIFunction)");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -944,7 +944,7 @@ void WrapClass_DessinImage::
       wrap_SetOpacityImage::SetParametersComments() 
 {
   //TODO
-  ADDPARAMCOMMENT("TODO");
+  ADDPARAMCOMMENT("Image to use");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
