@@ -87,6 +87,7 @@ ENDFOREACH(option)
 SET(options "test_dessinimage_compare.amil"    "test_dessinimage_isocontour.amil"  "test_dessinimage_update.amil"
             "test_dessinimage_drawcircle.amil" "test_dessinimage_window_size.amil" "test_dessinimage_position.amil"
             "test_dessinimage_zoom.amil"       "test_dessinimage_getimage.amil"    "test_dessinimage_setCompTransf.amil"
+            "test_dessinimage_vect.amil"
    )
 
 FOREACH(option ${options})
