@@ -99,9 +99,9 @@ if (!exists(test_corr2DClass)) {
       #i_draw.compare(cx);
       #i_draw.compare(cy);
       if (exists(::d)) {
-        ::input_draw.setvector(1,::d);
+        ::input_draw._setvector(1,::d);
         ::input_draw.DrawVector(1,1);
-        ::input_draw.DisplayVectors;
+        ::input_draw.DisplayVectors();
       }
     }
   

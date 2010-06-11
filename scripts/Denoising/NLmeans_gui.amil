@@ -472,7 +472,7 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
           ::res_draw.SetIsoContour(0,::imbox,0.5)
           ::res_draw.DrawIsoContour(0,1)
         }
-        ::input_draw.compare(::res_draw)
+        ::input_draw._compare(::res_draw)
         # draw limits of ROI
       }
     }

@@ -73,9 +73,9 @@ if (!exists(AnisoGSClass)) {
       ::load_input
     }
     if (::use_zoom)&&(exists(::input_draw)) {
-      global::::input_roi <<= (FLOAT) ::input[::input_draw.GetXmin:::input_draw.GetXmax,\
-                            ::input_draw.GetYmin:::input_draw.GetYmax,\
-                            ::input_draw.GetZmin:::input_draw.GetZmax ]
+      global::::input_roi <<= (FLOAT) ::input[::input_draw.GetXmin():::input_draw.GetXmax(),\
+                            ::input_draw.GetYmin():::input_draw.GetYmax(),\
+                            ::input_draw.GetZmin():::input_draw.GetZmax() ]
     } else {
       ::input_roi <<= (FLOAT) ::input
     }
@@ -109,7 +109,7 @@ if (!exists(AnisoGSClass)) {
     show ::input
     if exists(::res) {
         show ::res
-        ::input_draw.compare(::res_draw)
+        ::input_draw._compare(::res_draw)
     }
   }
   

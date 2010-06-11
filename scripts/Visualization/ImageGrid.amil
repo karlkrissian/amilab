@@ -48,7 +48,7 @@ if (!exists(global::ImageGridClass)) {
     #----------------------------
     proc ::UpdateDisplay() \
     {
-      cmd = "if (exists(%1%_draw)) { %1%_draw.update; };" % ::input_name
+      cmd = "if (exists(%1%_draw)) { %1%_draw.update(); };" % ::input_name
       eval cmd
     }
 
@@ -81,10 +81,10 @@ if (!exists(global::ImageGridClass)) {
           indraw_wrap->LineParam(::thickness,::style)
 
           # draw vertical
-          _xmin = _in_draw.GetXmin
-          _xmax = _in_draw.GetXmax
-          _ymin = _in_draw.GetYmin
-          _ymax = _in_draw.GetYmax
+          _xmin = _in_draw.GetXmin()
+          _xmax = _in_draw.GetXmax()
+          _ymin = _in_draw.GetYmin()
+          _ymax = _in_draw.GetYmax()
           for c=_xmin+1 to _xmax { 
             indraw_wrap->DrawLine(c-0.5,_ymin-0.5,c-0.5,_ymax+0.5); 
           }

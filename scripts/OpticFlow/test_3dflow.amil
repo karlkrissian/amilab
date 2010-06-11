@@ -209,8 +209,8 @@ proc DisplayData() {
   global
   show i1;
   #i1_draw.compare(i2);
-  i1_draw.setvector(1,u);
-  i1_draw.setvector(2,u_o);
+  i1_draw._setvector(1,u);
+  i1_draw._setvector(2,u_o);
   i1_draw.DrawVector(1,1);
   i1_draw.DrawVector(2,1);
   #i1_draw.DisplayVectors;
@@ -221,8 +221,8 @@ proc DisplayErrors() {
 #    -----------
   global
   show i1;
-  i1_draw.compare(ang_error);
-  i1_draw.compare(eucl_error);
+  i1_draw._compare(ang_error);
+  i1_draw._compare(eucl_error);
   local
 }
 
@@ -704,12 +704,12 @@ proc CB_ApplyZoom() {
 
   if (exists(i1_draw)) {
     // get the zoom
-    _xmin=i1_draw.GetXmin
-    _xmax=i1_draw.GetXmax
-    _ymin=i1_draw.GetYmin
-    _ymax=i1_draw.GetYmax
-    _zmin=i1_draw.GetZmin
-    _zmax=i1_draw.GetZmax
+    _xmin=i1_draw.GetXmin()
+    _xmax=i1_draw.GetXmax()
+    _ymin=i1_draw.GetYmin()
+    _ymax=i1_draw.GetYmax()
+    _zmin=i1_draw.GetZmin()
+    _zmax=i1_draw.GetZmax()
     // check if dimensions are multiples of 8
     _xmax = _xmin+(floor((_xmax-_xmin)/8)-1)*8-1
     _ymax = _ymin+(floor((_ymax-_ymin)/8)-1)*8-1

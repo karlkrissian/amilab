@@ -43,7 +43,7 @@ if (!exists(InertiaMoments)) {
       eval "::input <<="+::input_name+";"
       if (::input_name=="Image") {
         ::input_name = "::input"
-        ::win.update
+        ::win.update()
       }
       ::win->_Update(-1)
       if (exists(::input_draw)) { del ::input_draw; }

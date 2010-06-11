@@ -140,11 +140,11 @@ proc DisplayData() {
   global
   show i1;
   #i1_draw.compare(i2);
-  i1_draw.setvector(1,u);
+  i1_draw._setvector(1,u);
   #i1_draw.setvector(2,u_o);
   i1_draw.DrawVector(1,1);
   i1_draw.DrawVector(2,1);
-  i1_draw.DisplayVectors;
+  i1_draw.DisplayVectors();
   local
 }
 
@@ -320,7 +320,7 @@ proc CB_LoadJohanData() {
   } else { u = Image(FLOAT_VECTOR,i1.tx,i1.ty,i1.tz); }
   u.settranslation(i1.trx,i1.try,i1.trz)
   u.initvalue(0,0,0);
-  i1_draw.setvector(1,u);
+  i1_draw._setvector(1,u);
   #last_u = u;
   u.save "last_u.ami.gz"
   last_error = 999999999999;  
@@ -425,7 +425,7 @@ proc CB_RunSequenceConv() {
 		setvoxelsize(u,step_x,step_y,step_z)		
 	    u.settranslation(i1.trx,i1.try,i1.trz)
   	 	u.initvalue(0,0,0);
-  		i1_draw.setvector(1,u);	
+  		i1_draw._setvector(1,u);	
 	}
 	_error = 0;
 	ComputeError(&_error);

@@ -133,9 +133,9 @@ proc CB_Display() {
   global
   zi1 = zi[:,:,0:(zi.tz-2)]
   show zi1;
-  zi1_draw.setvector(1,zd);
+  zi1_draw._setvector(1,zd);
   zi1_draw.DrawVector(1,1);
-  zi1_draw.setvector(2,zd1);
+  zi1_draw._setvector(2,zd1);
   zi1_draw.DrawVector(2,1);
   local
 }

@@ -65,7 +65,7 @@ if (!exists(SoftFocus)) {
       show ::input
       if (exists(::res)) {
         show ::res
-        ::input_draw.compare(::res)
+        ::input_draw._compare(::res)
       }
     }
     

@@ -158,10 +158,10 @@ proc CB_Iterate() {
 proc CB_Display() {
   global
   show zi;
-  zi_draw.setvector(1,zd);
-  zi_draw.setvector(2,zd1);
+  zi_draw._setvector(1,zd);
+  zi_draw._setvector(2,zd1);
   zi_draw.DrawVector(1,1);
-  zi_draw.setvector(2,zd1);
+  zi_draw._setvector(2,zd1);
   zi_draw.DrawVector(2,1);
   local
 }

@@ -144,8 +144,8 @@ print "CreateLine() 3\n"
 print "CreateLine() 4\n"
   global
   show i0
-  i0_draw.compare(i1)
-  i0_draw.setvector(1,displ)
+  i0_draw._compare(i1)
+  i0_draw._setvector(1,displ)
 
 #  global
 #    i1 = MeanHalfSize(i0)

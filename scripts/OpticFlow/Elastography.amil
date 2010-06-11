@@ -515,8 +515,8 @@ proc CB_Iterate() {
 proc CB_Display() {
   global
   show im1;
-  im1_draw.setvector(1,displ_res);
-  im1_draw.setvector(2,displ);
+  im1_draw._setvector(1,displ_res);
+  im1_draw._setvector(2,displ);
   local
 }
 

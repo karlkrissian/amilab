@@ -114,7 +114,7 @@ proc RML_CB_Display() {
   global_new
   show RML_input
   if (exists(RML_result)) {
-    RML_input_draw.compare(RML_result)
+    RML_input_draw._compare(RML_result)
   }
   if (exists(RML_ROI_contour)) {
     RML_input_draw.SetIsoContour(0,RML_ROI_contour,0.5)

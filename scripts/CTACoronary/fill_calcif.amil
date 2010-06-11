@@ -76,7 +76,7 @@ result.save $1-".gz"-".ami"-".vtk"+"_CalcOut.ami.gz"
 
 if (KeepGui) {
   show input
-  input_draw.compare(result)
+  input_draw._compare(result)
 } else {
   quit
 }

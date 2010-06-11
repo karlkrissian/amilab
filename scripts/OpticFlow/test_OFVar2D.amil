@@ -90,10 +90,10 @@ w1.Display
 
 
 show i;
-i_draw.compare(i2);
-i_draw.setvector(1,d0);
+i_draw._compare(i2);
+i_draw._setvector(1,d0);
 i_draw.DrawVector(1,1);
-i_draw.setvector(2,d);
+i_draw._setvector(2,d);
 i_draw.DrawVector(2,1);
-i_draw.DisplayVectors;
+i_draw.DisplayVectors();
 

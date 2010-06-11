@@ -21,6 +21,6 @@ del i_sth
 sp = abs(recons_eig[5] * i_eig[5])
 
 show i
-i_draw.setvector(1,recons_eig[5])
-i_draw.setvector(2,i_eig[5])
-i_draw.compare(sp)
+i_draw._setvector(1,recons_eig[5])
+i_draw._setvector(2,i_eig[5])
+i_draw._compare(sp)

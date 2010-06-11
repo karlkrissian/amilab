@@ -76,7 +76,7 @@ Class Lines2D \
     show ::input
     if (exists(::lambda_max)) {
       show ::lambda_max
-      ::input_draw.compare(::lambda_max_draw)
+      ::input_draw._compare(::lambda_max_draw)
     } else {
       InfoDialog "The algorithm has not been run yet ..."
     }

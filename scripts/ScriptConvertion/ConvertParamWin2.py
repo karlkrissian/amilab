@@ -7,6 +7,7 @@
 import string
 import os
 import sys
+import shutil
 
 
 #
@@ -70,13 +71,13 @@ if __name__ == "__main__":
       ]
 
   commands_with_or_without_par=[
-            ("EndBox",           "EndBoxPanel"),
-            ("CreateWin",        "Update"),
-            ("Hide",             "HidePanel"),
-            ("update",           "Update(-1)"),
             ]
   
   commands_force_par=[
+            ("EndBox",           "EndBoxPanel()"),
+            ("CreateWin",        "Update()"),
+            ("Hide",             "HidePanel()"),
+            ("update",           "Update(-1)"),
             ("BeginBook",        "BeginBook()"),
             ]
   
@@ -90,7 +91,7 @@ if __name__ == "__main__":
         scripts.append(root+"/"+f)
 
   for inputscript in scripts:
-    print "*** Processing file ",inputscript
+    #print "*** Processing file ",inputscript
     f = open(inputscript+".converted", 'w')
     num_subs = 0
     for line in fileinput.input(inputscript):
@@ -140,6 +141,12 @@ if __name__ == "__main__":
     f.close()
     if (num_subs!=0):
       print "Number of lines changed =", num_subs, " for file "+inputscript
+      cmd = 'diff '+inputscript+ " " +inputscript+".converted"
+      os.system(cmd)
+      applychanges=raw_input('Apply the changed ? (Y/N):')
+      if applychanges=="Y":
+        shutil.move(inputscript,inputscript+".bak")
+        shutil.move(inputscript+".converted",inputscript)
     else:
       os.remove(inputscript+".converted")
 

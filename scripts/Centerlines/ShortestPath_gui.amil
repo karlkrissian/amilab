@@ -157,7 +157,7 @@ if (!exists(SPClass)) {
       ::load_speed
       show ::input
       show ::speed
-      ::input_draw.compare(::speed)
+      ::input_draw._compare(::speed)
       if (exists(::path)) { show ::path; }
     }  
     #----------------------------

@@ -77,7 +77,7 @@ if (!exists(WaterShedClass)){
     }
     show ::grad
     show ::water
-    ::grad_draw.compare(::water_draw)
+    ::grad_draw._compare(::water_draw)
   }
   
   #------------------------
