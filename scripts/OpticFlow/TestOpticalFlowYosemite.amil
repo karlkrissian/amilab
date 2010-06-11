@@ -164,7 +164,7 @@ print "1\n"
     // get rid of last line
     tmp = i
     del i
-    i = tmp[0:tmp.tx-1,7:tmp.ty-2,0:0]
+    i = tmp[0:(tmp.tx-1),7:(tmp.ty-2),0:0]
     del tmp
   }
   del I
@@ -189,7 +189,7 @@ print "1\n"
       // get rid of last line
       tmp = i
       del i
-      i = tmp[0:tmp.tx-1,7:tmp.ty-2,0:0]
+      i = tmp[0:(tmp.tx-1),7:(tmp.ty-2),0:0]
       del tmp
     }
     del I
@@ -202,7 +202,7 @@ print "1\n"
       // get rid of last line
       tmp = d1
       del d1
-      d1 = tmp[0:tmp.tx-1,7:tmp.ty-2,0:0]
+      d1 = tmp[0:(tmp.tx-1),7:(tmp.ty-2),0:0]
       del tmp
     }
     displ.putimage(d1,0,0,seq-seqmin)
@@ -218,7 +218,7 @@ print "1\n"
       // get rid of last line
       tmp = m
       del m
-      m = tmp[0:tmp.tx-1,7:tmp.ty-2,0:0]
+      m = tmp[0:(tmp.tx-1),7:(tmp.ty-2),0:0]
       del tmp
     }
     mask.putimage(m,0,0,seq-seqmin)
@@ -228,7 +228,7 @@ print "1\n"
 //  del i; del m; del d1
 
   displ_res= displ*0
-  im1 = im[:,:,0:seqmax-seqmin-1]
+  im1 = im[:,:,0:(seqmax-seqmin-1)]
 
   ang_error = (FLOAT) displ[0]*0
 
@@ -259,7 +259,7 @@ proc LoadImagesBarron() {
     // get rid of last line
     tmp = i
     del i
-    i = tmp[0:tmp.tx-1,7:tmp.ty-2,0:0]
+    i = tmp[0:(tmp.tx-1),7:(tmp.ty-2),0:0]
     del tmp
   }
   del I
@@ -285,7 +285,7 @@ proc LoadImagesBarron() {
       // get rid of last line
       tmp = i
       del i
-      i = tmp[0:tmp.tx-1,7:tmp.ty-2,0:0]
+      i = tmp[0:(tmp.tx-1),7:(tmp.ty-2),0:0]
       del tmp
     }
     del I
@@ -306,7 +306,7 @@ proc LoadImagesBarron() {
     displ.putimage(displ89,0,0,8-seqmin)
 
     # set mask to only 8-9 frame
-    mask89 = mask[:,:,8-seqmin:8-seqmin]
+    mask89 = mask[:,:,(8-seqmin):(8-seqmin)]
     mask89.initvalue(255)
     mask.putimage(mask89)
 
@@ -318,7 +318,7 @@ proc LoadImagesBarron() {
     displ89 = AMIFluid->amiReadBarronData("YosemiteBarron/yos_noclouds.F")
 
     # set mask to only 8-9 frame
-    mask89 = mask[:,:,8-seqmin:8-seqmin]
+    mask89 = mask[:,:,(8-seqmin):(8-seqmin)]
     mask89 = (displ89[0]<99)*255
     mask.putimage(mask89)
 
@@ -339,7 +339,7 @@ proc LoadImagesBarron() {
   }
 
   displ_res= displ*0
-  im1 = im[:,:,0:seqmax-seqmin-1]
+  im1 = im[:,:,0:(seqmax-seqmin-1)]
 
   ang_error = (FLOAT) displ[0]*0
 
@@ -372,7 +372,7 @@ proc LoadImages2() {
   displ_res= displ*0
   seqmin=0
   seqmax=1
-  im1 = im[:,:,0:seqmax-seqmin-1]
+  im1 = im[:,:,0:(seqmax-seqmin-1)]
 
   ang_error = (FLOAT) displ[0]*0
 
@@ -590,7 +590,7 @@ proc angular_error(IMAGE _d1, IMAGE _d0, IMAGE _err){
 
 #--------------------------------------------------
 proc RemoveBorder(IMAGE _m, NUM _size) {
-  umask = _m[_size:_m.tx-1-_size,_size:_m.ty-1-_size,0:_m.tz-1]
+  umask = _m[_size:(_m.tx-1-_size),_size:(_m.ty-1-_size),0:(_m.tz-1)]
   _m.initvalue(0)
   _m.putimage(umask)
   del umask
@@ -713,7 +713,7 @@ proc CB_IterateStandard() {
     print "1\t"; print seqn; print "\n"
     i  = im[:,:,seqn:seqn]
     print "2\t";
-    i2 = im[:,:,seqn+1:seqn+1]
+    i2 = im[:,:,(seqn+1):(seqn+1)]
     print "3\t";
     d  = displ_res[:,:,seqn:seqn]
     if (symmetric==0) {

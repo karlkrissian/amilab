@@ -13,7 +13,7 @@ proc CorrectBiaisZ( IMAGE i, IMAGE res, NUM minthreshold, NUM maxthreshold ) {
 
   for z=0 to i.tz-1 {
 
-     sub  = i[0:i.tx-1,0:i.ty-1,z:z]
+     sub  = i[0:(i.tx-1),0:(i.ty-1),z:z]
      mask = (sub>minthreshold)*(sub<maxthreshold)
      m = mean(sub,mask)
      i_means.setpos(0,0,z)
@@ -27,7 +27,7 @@ proc CorrectBiaisZ( IMAGE i, IMAGE res, NUM minthreshold, NUM maxthreshold ) {
   del sub
 
   for z=0 to i.tz-1 {
-   sub  = (FLOAT) i[0:i.tx-1,0:i.ty-1,z:z]
+   sub  = (FLOAT) i[0:(i.tx-1),0:(i.ty-1),z:z]
    subr = sub*mean_total/i_means(0,0,z)
    ir.putimage(subr,0,0,z)
    del sub

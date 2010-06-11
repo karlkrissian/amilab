@@ -6,7 +6,7 @@ proc AddSphere( IMAGE im, NUM x, NUM y, NUM z, NUM rad ) {
 //   ---------
   rad2=2*rad
   if (im.tz>1) {
-    sph = im[x-rad2:x+rad2,y-rad2:y+rad2,z-rad2:z+rad2]
+    sph = im[(x-rad2):(x+rad2),(y-rad2):(y+rad2),(z-rad2):(z+rad2)]
     px = (FLOAT) Xpos(sph)-rad2
     py = (FLOAT) Ypos(sph)-rad2
     pz = (FLOAT) Zpos(sph)-rad2
@@ -14,7 +14,7 @@ proc AddSphere( IMAGE im, NUM x, NUM y, NUM z, NUM rad ) {
     sph = (sph<rad)*sph+(sph>=rad)*rad
     im.putimage(sph)
   } else {
-   sph = im[x-rad2:x+rad2,y-rad2:y+rad2,0:0]
+   sph = im[(x-rad2):(x+rad2),(y-rad2):(y+rad2),0:0]
     px = (FLOAT) Xpos(sph)-rad2
     py = (FLOAT) Ypos(sph)-rad2
     sph = sqrt(px*px+py*py)-rad
@@ -50,7 +50,7 @@ printn "y-rady %1%" % (y-rady)
 printn "y+rady %1%" % (y+rady)
 printn "z-radz %1%" % (z-radz)
 printn "z+radz %1%" % (z+radz)
-    sph = im[x-radx:x+radx,y-rady:y+rady,z-radz:z+radz]
+    sph = im[(x-radx):(x+radx),(y-rady):(y+rady),(z-radz):(z+radz)]
 printn "*"
     px = (FLOAT) Xpos(sph)-(radx+_dx)
 printn "*"
@@ -71,7 +71,7 @@ printn "8"
     sim = max(sim,sph)
     im.putimage(sim)
   } else {
-   sph = im[x-radx:x+radx,y-rady:y+rady,0:0]
+   sph = im[(x-radx):(x+radx),(y-rady):(y+rady),0:0]
     px = (FLOAT) Xpos(sph)-radx-_dx
     py = (FLOAT) Ypos(sph)-rady-_dy
     px = px*_vx
@@ -109,7 +109,7 @@ proc AddBrightSphere( IMAGE im, NUM x, NUM y, NUM z, NUM rad ) {
   _dz = z-(INT)z
   rad2=2*rad
   if (im.tz>1) {
-    sph = im[x-rad2:x+rad2,y-rad2:y+rad2,z-rad2:z+rad2]
+    sph = im[(x-rad2):(x+rad2),(y-rad2):(y+rad2),(z-rad2):(z+rad2)]
     px = ((FLOAT) Xpos(sph))-(rad2+_dx)
     py = ((FLOAT) Ypos(sph))-(rad2+_dy)
     pz = ((FLOAT) Zpos(sph))-(rad2+_dz)
@@ -118,7 +118,7 @@ proc AddBrightSphere( IMAGE im, NUM x, NUM y, NUM z, NUM rad ) {
     sph=-sph
     im.putimage(sph)
   } else {
-   sph = im[x-rad2:x+rad2,y-rad2:y+rad2,0:0]
+   sph = im[(x-rad2):(x+rad2),(y-rad2):(y+rad2),0:0]
     px = ((FLOAT) Xpos(sph))-(rad2+_dx)
     py = ((FLOAT) Ypos(sph))-(rad2+_dy)
     sph = sqrt(px*px+py*py)-rad
@@ -137,7 +137,7 @@ proc AddSphereCursor( IMAGE im, IMAGEDRAW imdraw, NUM rad ) {
   z=imdraw.GetZPos
   rad2=2*rad
   if (im.tz>1) {
-    sph = im[x-rad2:x+rad2,y-rad2:y+rad2,z-rad2:z+rad2]
+    sph = im[(x-rad2):(x+rad2),(y-rad2):(y+rad2),(z-rad2):(z+rad2)]
     px = (FLOAT) Xpos(sph)-rad2
     py = (FLOAT) Ypos(sph)-rad2
     pz = (FLOAT) Zpos(sph)-rad2
@@ -146,7 +146,7 @@ proc AddSphereCursor( IMAGE im, IMAGEDRAW imdraw, NUM rad ) {
     sph=-sph
     im.putimage(sph)
   } else {
-   sph = im[x-rad2:x+rad2,y-rad2:y+rad2,0:0]
+   sph = im[(x-rad2):(x+rad2),(y-rad2):(y+rad2),0:0]
     px = (FLOAT) Xpos(sph)-rad2
     py = (FLOAT) Ypos(sph)-rad2
     sph = sqrt(px*px+py*py)-rad
@@ -164,7 +164,7 @@ proc AddBlackSphere( IMAGE im, NUM x, NUM y, NUM z, NUM rad ) {
 //   --------------
   rad2=2*rad
   if (im.tz>1) {
-    im0 = im[x-rad2:x+rad2,y-rad2:y+rad2,z-rad2:z+rad2]
+    im0 = im[(x-rad2):(x+rad2),(y-rad2):(y+rad2),(z-rad2):(z+rad2)]
     px = (FLOAT) Xpos(im0)-rad2
     py = (FLOAT) Ypos(im0)-rad2
     pz = (FLOAT) Zpos(im0)-rad2
@@ -172,7 +172,7 @@ proc AddBlackSphere( IMAGE im, NUM x, NUM y, NUM z, NUM rad ) {
     im0 = im0*(sph>0)
     im.putimage(im0)
   } else {
-    im0 = im[x-rad2:x+rad2,y-rad2:y+rad2,0:0]
+    im0 = im[(x-rad2):(x+rad2),(y-rad2):(y+rad2),0:0]
     px = (FLOAT) Xpos(im0)-rad2
     py = (FLOAT) Ypos(im0)-rad2
     sph = sqrt(px*px+py*py)-rad

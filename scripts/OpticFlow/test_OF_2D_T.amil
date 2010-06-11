@@ -111,7 +111,7 @@ print "call_amiOF_2D_T end\n"
 # BUG??,  needed to create this function to avoid a segmentation fault ...
 proc UpdateDisplay() {
   global;  
-  zi1 = zi[:,:,0:zi.tz-2]
+  zi1 = zi[:,:,0:(zi.tz-2)]
   show zi1
   local  
 }
@@ -131,7 +131,7 @@ proc CB_Iterate() {
 
 proc CB_Display() {
   global
-  zi1 = zi[:,:,0:zi.tz-2]
+  zi1 = zi[:,:,0:(zi.tz-2)]
   show zi1;
   zi1_draw.setvector(1,zd);
   zi1_draw.DrawVector(1,1);

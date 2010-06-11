@@ -183,6 +183,6 @@ for n=1 to total_vectors {
 total_final = 20
 for n=1 to total_final {  AnimAddImage(im1);}
 # Only keep the real number of images that have been used
-ssanim = anim[:,:,0:anim_current-1]
+ssanim = anim[:,:,0:(anim_current-1)]
 show ssanim
 

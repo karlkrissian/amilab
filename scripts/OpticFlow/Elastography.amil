@@ -123,8 +123,8 @@ proc LoadImages() {
     dimx = floor(i1_0.tx/8)*8
     dimy = floor(i1_0.ty/8)*8
     
-    i1 = i1_0[0:dimx-1,0:dimy-1]
-    i2 = i2_0[0:dimx-1,0:dimy-1]
+    i1 = i1_0[0:(dimx-1),0:(dimy-1)]
+    i2 = i2_0[0:(dimx-1),0:(dimy-1)]
     
     im = Image(FLOAT,i1.tx,i1.ty,2)
     im.putimage(i1,0,0,0)
@@ -157,7 +157,7 @@ proc LoadRFImage() {
   dimx = floor(i0.tx/8)*8
   dimy = floor(i0.ty/8)*8
     
-  im = i0[0:dimx-1,0:dimy-1,0:i0.tz-1]
+  im = i0[0:(dimx-1),0:(dimy-1),0:(i0.tz-1)]
     
   displ = Image(FLOAT_VECTOR,im.tx,im.ty,im.tz-1)
   displ.initvalue(0,0,0)
@@ -165,7 +165,7 @@ proc LoadRFImage() {
   mask = mask*0+255
     
     displ_res= displ*0
-    im1 = im[:,:,0:im.tz-2]
+    im1 = im[:,:,0:(im.tz-2)]
     ang_error = (FLOAT) displ[0]*0
 
   local
@@ -353,7 +353,7 @@ proc angular_error(IMAGE _d1, IMAGE _d0, IMAGE _err){
 
 #--------------------------------------------------
 proc RemoveBorder(IMAGE _m, NUM _size) {
-  umask = _m[_size:_m.tx-1-_size,_size:_m.ty-1-_size,0:_m.tz-1]
+  umask = _m[_size:(_m.tx-1-_size),_size:(_m.ty-1-_size),0:(_m.tz-1)]
   _m.initvalue(0)
   _m.putimage(umask)
   del umask
@@ -466,7 +466,7 @@ proc CB_IterateStandard() {
     print "1\t"; print seqn; print "\n"
     i  = im[:,:,seqn:seqn]
     print "2\t";
-    i2 = im[:,:,seqn+1:seqn+1]
+    i2 = im[:,:,(seqn+1):(seqn+1)]
     print "3\t";
     d  = displ_res[:,:,seqn:seqn]
     if (symmetric==0) {

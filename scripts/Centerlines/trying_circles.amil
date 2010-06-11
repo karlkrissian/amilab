@@ -273,11 +273,11 @@ proc TC_Run() {
 #printn sprint("margin_max = %f \n",margin_max) 
 #printn sprint("max = %f \n",dimz-1-margin_max) 
 #TC_rmax1.info
-        TC_rmax2 = TC_rmax1[:,:,margin_min:TC_rmax1.tz-1-margin_max]
+        TC_rmax2 = TC_rmax1[:,:,margin_min:(TC_rmax1.tz-1-margin_max)]
         TC_rmax.putimage(TC_rmax2)
         printn "del TC_rmax2"
         del TC_rmax2
-        TC_lextr2 = TC_lextr1[:,:,margin_min:TC_rmax1.tz-1-margin_max]
+        TC_lextr2 = TC_lextr1[:,:,margin_min:(TC_rmax1.tz-1-margin_max)]
         TC_lextr.putimage(TC_lextr2)
         printn "del TC_rmax2"
         del TC_lextr2

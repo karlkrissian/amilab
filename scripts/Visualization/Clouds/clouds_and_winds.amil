@@ -245,7 +245,7 @@ proc CreateCloudsType3( NUM classnum) {
   alt = cloud_alt_image[:,:,classnum:classnum]
   highalt=Altitude2Position(alt,image_type)
   if (classnum>0) {
-    alt = cloud_alt_image[:,:,classnum-1:classnum-1]
+    alt = cloud_alt_image[:,:,(classnum-1):(classnum-1)]
   } else {
     alt = alt*0
   }
@@ -426,7 +426,7 @@ proc GenerateVectors( ) {
         # between 2 classes of clouds
         alth = cloud_alt_image[:,:,classnum:classnum]
         if (classnum>0) {
-          altl = cloud_alt_image[:,:,classnum-1:classnum-1]
+          altl = cloud_alt_image[:,:,(classnum-1):(classnum-1)]
         } else {
           altl = alth*0
         }

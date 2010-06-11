@@ -501,8 +501,8 @@ if (!exists(CE_defined)) {
       lIp = lI.GetLine(0)
       lEp = lE.GetLine(0)
       minsize = lIp.tx<lEp.tx?lIp.tx:lEp.tx
-      lIp1 = lIp[0:minsize-1,0:0,0:0]
-      lEp2 = lEp[0:minsize-1,0:0,0:0]
+      lIp1 = lIp[0:(minsize-1),0:0,0:0]
+      lEp2 = lEp[0:(minsize-1),0:0,0:0]
       d = lIp1-lEp2
       dn = norm(d)
       dn = dn>CE_dist_threshold

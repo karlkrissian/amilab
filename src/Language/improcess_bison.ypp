@@ -781,9 +781,9 @@ void CB_update_imagelist( void* imagelist_gui);
 
 // Operators precedence
 %nonassoc SHIFT_THERE
-%nonassoc INC_OP DEC_OP TRANSPOSE_OP T_OP_BR T_ADD T_SUB T_QUEST T_POINT
 %nonassoc T_OP_PAR
 %right ASSIGN_OP ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN LEFT_ASSIGN
+%nonassoc T_COLON
 %left OR_OP
 %left T_EXP
 %left AND_OP
@@ -794,6 +794,8 @@ void CB_update_imagelist( void* imagelist_gui);
 //%left T_SUB T_ADD
 %left T_MOD T_DIV T_MULT
 %right prefix
+//%nonassoc INC_OP DEC_OP TRANSPOSE_OP T_OP_BR T_ADD T_SUB T_QUEST T_POINT
+%nonassoc INC_OP DEC_OP TRANSPOSE_OP T_OP_BR  T_QUEST T_POINT
 %nonassoc postfix
 
 %type <ident>          identifier
@@ -976,37 +978,18 @@ loop_inst :
         BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
   
         float res;
-        if (var->Type() == type_float) 
-          res = *(boost::dynamic_pointer_cast<Variable<float> >(var))->Pointer();
-        else
-        if (var->Type() == type_int) 
-          res = *(boost::dynamic_pointer_cast<Variable<int> >  (var))->Pointer();
-        else
-        if (var->Type() == type_uchar) 
-          res = *(boost::dynamic_pointer_cast<Variable<unsigned char> >  (var))->Pointer();
+        if (var->IsNumeric()) 
+          res = var->GetValueAsDouble();
         else {
           res = 0;
           driver.yyiperror(" while needs a numerical variable as condition \n");
         }
   
         while (res) {
-  
           //driver.yyiplineno=previous_lineno;
           driver.yyiplineno = block->GetStartingLine();
           res=driver.parse_block(block);
-
-          if (var->Type() == type_float) 
-            res = *(boost::dynamic_pointer_cast<Variable<float> >(var))->Pointer();
-          else
-          if (var->Type() == type_int) 
-            res = *(boost::dynamic_pointer_cast<Variable<int> >  (var))->Pointer();
-          else
-          if (var->Type() == type_uchar) 
-            res = *(boost::dynamic_pointer_cast<Variable<unsigned char> >  (var))->Pointer();
-          else {
-            res = 0;
-            driver.yyiperror(" while needs a numerical variable as condition \n");
-          }
+          res = var->GetValueAsDouble();
         } 
         driver.yyiplineno = previous_lineno;
       }
@@ -1421,8 +1404,9 @@ command:
         IdentifierInfo::ptr ident($1);
         if (var.get() && (var->HasPointer())  ) {
           if ((var->GetPtrCounter()==1)&&(var.use_count()==1)) {
-            IdentifierInfo::ptr ident($1);
+            //cout << "var.use_count() = " << var.use_count() << endl;
             Vars.AddVar(ident,var);
+            //cout << "var.use_count() = " << var.use_count() << endl;
           } else {
             BasicVariable::ptr newvar( var->NewReference());
             Vars.AddVar(ident,newvar);
@@ -1443,13 +1427,13 @@ command:
             - existing variable name.
         **/
         BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
+        IdentifierInfo::ptr ident($1);
         // check counter of the value, not of the variable ...
         if (var.get() && (var->HasPointer())  ) {
           //cout << "GetPtrCounter == " <<  var->GetPtrCounter()<< endl;
           //cout << "use_count() == " <<  var.use_count() << endl;
           // only if both reference counters are equal to 1, we can avoid copy the variable
           if ((var->GetPtrCounter()==1)&&(var.use_count()==1)) {
-            IdentifierInfo::ptr ident($1);
             //BasicVariable::ptr ref = var->NewReference();
             // need to run on reference to avoid renaming the own variable !!!
             //Vars.AddVar(ident,ref);
@@ -1458,7 +1442,6 @@ command:
           {
             BasicVariable::ptr copy = var->NewCopy();
             if (copy.get()) {
-              IdentifierInfo::ptr ident($1);
               Vars.AddVar(ident,copy);
             } else {
               driver.err_print("Copy failed for the variable in rule id = expr_var");
@@ -1482,15 +1465,14 @@ command:
         **/
         boost::shared_array<char> comments( $5);
         BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
+        IdentifierInfo::ptr ident($1);
         if (var->GetPtrCounter()==1) {
-          IdentifierInfo::ptr ident($1);
           var->SetComments(comments.get());
           Vars.AddVar(ident,var);
         } else
         {
           if (var.get()) {
             BasicVariable::ptr copy = var->NewCopy();
-            IdentifierInfo::ptr ident($1);
             copy->SetComments(comments.get());
             Vars.AddVar(ident,copy);
           } else {
@@ -1510,12 +1492,12 @@ command:
         **/
 
           BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
+          IdentifierInfo::ptr ident($1);
 
           // first process exception cases
           if (var.get()) {
             if (var->Type()==type_class_member) {
                 /// C++ wrapped member
-                IdentifierInfo::ptr ident($1);
                 DYNAMIC_CAST_VARIABLE(WrapClassMember,var,m);
                 ParamList::ptr param((ParamList*)NULL);
                 BasicVariable::ptr res(m->Pointer()->CallMember(param.get()));
@@ -1537,7 +1519,6 @@ command:
 */
             {
                 BasicVariable::ptr copy = var->NewCopy();
-                IdentifierInfo::ptr ident($1);
                 Vars.AddVar(ident,copy);
             }
           } else {
@@ -2328,10 +2309,10 @@ command:
         driver.res_print("\t cond: conditions                \n");
             driver.res_print("\t arit: arithmetical expressions  \n");
       }
-        | HELP identifier
-         {
+      | HELP identifier
+      {
           IdentifierInfo::ptr ident($2);
-       if (strcmp(ident->GetName().c_str(),"var")==0) {
+         if (strcmp(ident->GetName().c_str(),"var")==0) {
          driver.res_print("var types: void image float int string imagedraw surface surfacedraw \n");
          driver.res_print("\t del varname\n");
          driver.res_print("\t\t\t - deletes a variable and frees its contents from memory \n");
@@ -9321,13 +9302,13 @@ postfix_var:
           // todo ... 
           // 1. check if identifier belongs to the object
           // 2. if so return corresponding variable
+          IdentifierInfo::ptr ident($3);
           Variable<AMIObject>::ptr var(driver.var_stack.GetLastVar<AMIObject>());
           if (!var.get()) {
             driver.err_print("operator . (Element selection) is only available for variables of type AMIObject");
             YYABORT;
           }
           AMIObject::ptr object(var->Pointer());
-          IdentifierInfo::ptr ident($3);
           Variables::ptr previous_ocontext (Vars.GetObjectContext());
           Vars.SetObjectContext(object->GetContext());
     
@@ -9782,7 +9763,7 @@ logical_or_var:
 
 conditional_var:
   logical_or_var %prec SHIFT_THERE
-  | logical_or_var T_QUEST logical_or_var T_COLON conditional_var
+  | logical_or_var T_QUEST primary_var T_COLON primary_var
   {
     /**
       Descriptiopn: Operation (cond?a:b) like in C/C++.

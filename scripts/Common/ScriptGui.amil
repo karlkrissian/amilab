@@ -140,15 +140,16 @@ if (!exists(ScriptGui)) \
       win.AddPage("Help")
         win.BeginHorizontal
           # make nice wiki button
-          wikipng = ::icons._DokuWiki
+          wikipng = &::icons._DokuWiki
+
           if (wikipng.IsOk()) {
-            win.AddBitmapButton("Wiki", ::LaunchWiki, \
+            win.AddBitmapButton("Wiki", &::LaunchWiki, \
             &wx.wxBitmap(&wikipng.Scale2(32,32)))
           } else {
-            win.AddButton("Wiki", ::LaunchWiki)
+            win.AddButton("Wiki", &::LaunchWiki)
           }
           
-          win.AddBitmapButton("Home", ::HtmlHome, &wx.wxBitmap(&::icons._Home))
+          win.AddBitmapButton("Home", &::HtmlHome, &wx.wxBitmap(&::icons._Home))
           win.SetPositionProp(-1,2)
           win.AddBitmapButton("<--",  ::HtmlBack, &wx.wxBitmap(&::icons._Back))
           win.SetPositionProp(-1,2)

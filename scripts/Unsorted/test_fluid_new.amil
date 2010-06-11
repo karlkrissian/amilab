@@ -295,7 +295,7 @@ for n=1 to total_final {
 #GenerateViews("view5_2.txt","view1.txt",&anim,total_view)
 
 
-ssanim = anim[:,:,0:anim_current-1]
+ssanim = anim[:,:,0:(anim_current-1)]
 
 show ssanim
 

@@ -326,8 +326,8 @@ printn 1
   dimy = floor(i1_0.ty/8)*8
   dimz = floor(i1_0.tz/8)*8
 
-  i1 = i1_0[0:dimx-1,0:dimy-1,0:dimz-1]
-  i2 = i2_0[0:dimx-1,0:dimy-1,0:dimz-1]
+  i1 = i1_0[0:(dimx-1),0:(dimy-1),0:(dimz-1)]
+  i2 = i2_0[0:(dimx-1),0:(dimy-1),0:(dimz-1)]
 
 
   mask = (UCHAR) (i1*0+255)
@@ -371,8 +371,8 @@ proc CB_LoadElast2D() {
   dimy = floor(i1_0.ty/8)*8
   dimz = 1
 
-  i1 = i1_0[0:dimx-1,0:dimy-1,0:dimz-1]
-  i2 = i2_0[0:dimx-1,0:dimy-1,0:dimz-1]
+  i1 = i1_0[0:(dimx-1),0:(dimy-1),0:(dimz-1)]
+  i2 = i2_0[0:(dimx-1),0:(dimy-1),0:(dimz-1)]
 
   mask = (UCHAR) (i1*0+255)
 
@@ -411,8 +411,8 @@ proc CB_LoadArguments( NUM nargs ) {
     dimy = floor(i1_0.ty/8)*8
     dimz = 1
   
-    i1 = i1_0[0:dimx-1,0:dimy-1,0:dimz-1]
-    i2 = i2_0[0:dimx-1,0:dimy-1,0:dimz-1]
+    i1 = i1_0[0:(dimx-1),0:(dimy-1),0:(dimz-1)]
+    i2 = i2_0[0:(dimx-1),0:(dimy-1),0:(dimz-1)]
   
     mask = (UCHAR) (i1*0+255)
   
