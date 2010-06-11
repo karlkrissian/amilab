@@ -50,7 +50,7 @@
 namespace yyip {
 
 /* Line 35 of lalr1.cc  */
-#line 54 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
+#line 54 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
   class position;
   class location;
 
@@ -60,13 +60,13 @@ namespace yyip {
 } // yyip
 
 /* Line 35 of lalr1.cc  */
-#line 64 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
+#line 64 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
 
 #include "location.hh"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
-# define YYDEBUG 1
+# define YYDEBUG 0
 #endif
 
 /* Enabling verbose error messages.  */
@@ -108,7 +108,7 @@ do {							\
 namespace yyip {
 
 /* Line 35 of lalr1.cc  */
-#line 112 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
+#line 112 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
 
   /// A Bison parser.
   class Parser
@@ -120,7 +120,7 @@ namespace yyip {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 379 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/improcess_bison.ypp"
+#line 379 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/improcess_bison.ypp"
 
   IdentifierInfo*         ident;
   char*                   astring;
@@ -137,7 +137,7 @@ namespace yyip {
 
 
 /* Line 35 of lalr1.cc  */
-#line 141 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
+#line 141 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -717,7 +717,7 @@ namespace yyip {
 } // yyip
 
 /* Line 35 of lalr1.cc  */
-#line 721 "/home/karl/projects/Sourceforge/amilab/branches/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
+#line 721 "/home/fsantana/proyectos/amilab/Karl_Grammar/src/Language/GeneratedFlexBison/improcess_bison.tab.hpp"
 
 
 

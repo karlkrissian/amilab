@@ -356,7 +356,7 @@ void WrapClass_DessinImage::
       wrap_DrawVector::SetParametersComments() 
 {
   //TODO
-  ADDPARAMCOMMENT("Vector size");
+  ADDPARAMCOMMENT("Index of the vector field to be drawned (1,2 or 3).");
   ADDPARAMCOMMENT("Visible or not (0 or 1)");
 }
 //---------------------------------------------------
