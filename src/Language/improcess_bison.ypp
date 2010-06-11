@@ -1094,30 +1094,32 @@ proc_decl:
 
       GET_VARSTACK_VAR_VAL(AMIFunction, var, func);
 
+      // Why delete and recreate previous variable ???
       // delete previous variable
-      std::string varname = var->Name();
-      int context = Vars.GetContext(boost::static_pointer_cast<BasicVariable>(var));
-      Vars.deleteVar(var);
+//      std::string varname = var->Name();
+//      int context = Vars.GetContext(boost::static_pointer_cast<BasicVariable>(var));
+//      Vars.deleteVar(var);
 
-      FILE_MESSAGE(boost::format("Redefining procedure %1%") % varname); 
+      FILE_MESSAGE(boost::format("Redefining procedure %1%") % var->Name()); 
 
-      AMIFunction::ptr amifunc( new AMIFunction);
+//      AMIFunction::ptr amifunc( new AMIFunction);
+      AMIFunction::ptr amifunc(func);
 
-      amifunc->SetName(varname.c_str());
+//      amifunc->SetName(varname.c_str());
       amifunc->SetFileName(driver.current_file);
       amifunc->SetParamList($5);
       amifunc->SetBody(     body);
       FILE_MESSAGE(boost::format("%1%: body = %2%")
-                    % varname  % body->GetBody());
+                    % var->Name()  % body->GetBody());
 
       // add the variable in the same context ...
-      BasicVariable::ptr newvar =
-        Vars.AddVar<AMIFunction>(
-                      varname,
-                      amifunc,
-                      context);
-      if (newvar.get())
-        amifunc->SetContext(newvar->GetContext());
+//      BasicVariable::ptr newvar =
+//        Vars.AddVar<AMIFunction>(
+//                      varname,
+//                     amifunc,
+//                      context);
+//      if (newvar.get())
+//        amifunc->SetContext(newvar->GetContext());
 
       // desactivate the flag procedure_declaration
       // which allows not to accept variables as identifiers
@@ -1443,8 +1445,8 @@ command:
         BasicVariable::ptr  var(driver.var_stack.GetLastBasicVar());
         // check counter of the value, not of the variable ...
         if (var.get() && (var->HasPointer())  ) {
-          cout << "GetPtrCounter == " <<  var->GetPtrCounter()<< endl;
-          cout << "use_count() == " <<  var.use_count() << endl;
+          //cout << "GetPtrCounter == " <<  var->GetPtrCounter()<< endl;
+          //cout << "use_count() == " <<  var.use_count() << endl;
           // only if both reference counters are equal to 1, we can avoid copy the variable
           if ((var->GetPtrCounter()==1)&&(var.use_count()==1)) {
             IdentifierInfo::ptr ident($1);

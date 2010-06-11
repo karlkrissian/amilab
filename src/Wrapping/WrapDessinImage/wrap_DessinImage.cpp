@@ -251,6 +251,7 @@ BasicVariable::ptr WrapClass_DessinImage::
     p->AddParam(varim);
     BasicVariable::ptr newvar = wrap_DessinImage().CallMember(p);
     FILE_MESSAGE(boost::format("SHOW var_image creating title %s ") % title);
+    // TODO: change the way amilab deals with the parameters to avoid creating new variables from the start
     Variables::ptr context = varim->GetContext();
     if ( newvar.get() && context.get()) {
       newvar->Rename(title.c_str());
@@ -288,9 +289,9 @@ BasicVariable::ptr WrapClass_DessinImage::
 
   if (!p) ClassHelpAndReturn;
   int n=0;
-  if (!get_var_param<InrImage>(varim,p,n)) ClassHelpAndReturn;
   CLASS_GET_OBJECT_PARAM(DessinImage,varimd,objimd);
   if (!objimd.get()) ClassHelpAndReturn;
+  if (!get_var_param<InrImage>(varim,p,n)) ClassHelpAndReturn;
 
   // TODO: check for SetCompareDisplacement, does it really work?
   di->SetCompareDisplacement(objimd,varim->Pointer());
@@ -1195,4 +1196,31 @@ BasicVariable::ptr WrapClass_DessinImage::
   return Variable<InrImage>::ptr( 
     new Variable<InrImage>(InrImage::ptr(di->GetInrImage()))
   );
+}
+
+
+//---------------------------------------------------
+//  reference
+//---------------------------------------------------
+void WrapClass_DessinImage::
+      wrap_reference::SetParametersComments() 
+{
+  ADDPARAMCOMMENT("New reference variable as parameter for processing.");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_DessinImage::
+      wrap_reference::CallMember( ParamList* p)
+{
+  DessinImage::ptr di(this->_objectptr->_obj);
+  if (p) {
+    BasicVariable::ptr var = p->GetParam(0);
+    if (var.get() && di.get()) {
+      std::list<BasicVariable::wptr>* varlist =
+        (std::list<BasicVariable::wptr>*) di->GetCloseData();
+      if (varlist)
+        varlist->push_back(BasicVariable::wptr(var));
+    }
+  }
+
+  return BasicVariable::ptr();
 }

@@ -69,7 +69,7 @@ template<> BasicVariable::ptr Variable<AMIObject>::NewCopy() const
 
 
 
-/// Copy contents to new variable
+/// new variable as a reference to the current variable
 template<> BasicVariable::ptr Variable<AMIObject>::NewReference() const
 {
   std::string resname = _name+"_ref";
@@ -80,7 +80,7 @@ template<> BasicVariable::ptr Variable<AMIObject>::NewReference() const
 // TODO: find a solution, are there too many variable references ???
 // could this slow down considerably amilab??
 // should we have a boolean saying that the reference needs special treatment?
-//  APPLY_MEMBER_PARAM1("reference", ref, varres);
+  APPLY_MEMBER_PARAM1("reference", ref, varres);
   return ref;
 }
 

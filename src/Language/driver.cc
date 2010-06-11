@@ -283,7 +283,7 @@ BasicVariable::ptr Driver::yyip_call_function( AMIFunction* f, const ParamList::
         }
       } // end for
     } else {
-      CLASS_ERROR(" Error checking for parameters.");
+      err_print("Error checking for parameters: check parameters types in function call (NUM is float, IMAGE is image variable, etc ...).");
     }
   }
 

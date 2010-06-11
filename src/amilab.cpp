@@ -149,6 +149,9 @@ void CB_delete_varlist( void* var)
         std::string name = lockedvar->Name();
         FILE_MESSAGE(boost::format("deleting %1%") % name);
         Variables::ptr context = lockedvar->GetContext();
+
+        // free lock first
+        lockedvar.reset();
         if (context.get()) {
           deleted = context->deleteVar(name.c_str());
         }

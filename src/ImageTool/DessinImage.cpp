@@ -3067,6 +3067,9 @@ void DessinImage::UpdateStatusInfo( const Point_3D<int>& imagepos,  int trouve)
   Si (trouve != -1) Alors
     UpdateStatusIntensity( imagepos.x, imagepos.y, imagepos.z);
     UpdateStatusPosition(  imagepos.x, imagepos.y, imagepos.z);
+
+    Comparaisons_UpdateStatusInfo( imagepos, trouve);
+
   Sinon
     _status_text = "Out of limits";
     SetStatusText(wxString::FromAscii(_status_text.c_str()),_intensity_statusid);
@@ -3074,7 +3077,6 @@ void DessinImage::UpdateStatusInfo( const Point_3D<int>& imagepos,  int trouve)
     SetStatusText(wxString::FromAscii("---"),               _spatialpos_statusid);
   FinSi
 
-  Comparaisons_UpdateStatusInfo( imagepos, trouve);
 
   CLASS_MESSAGE("End");
 

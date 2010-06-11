@@ -94,6 +94,7 @@ std::string Variables::CheckVarName(const char* name)
   return resname;
 }
 
+
 //--------------------------------------------------
 BasicVariable::ptr Variables::AddVar( 
           const std::string& name, 

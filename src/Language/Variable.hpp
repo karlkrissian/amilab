@@ -45,7 +45,8 @@
       WrapClassBase::ptr wrapped_base(varobj->Pointer()->GetWrappedObject()); \
       WrapClass_##type::ptr wrapped_obj( \
         boost::dynamic_pointer_cast<WrapClass_##type>(wrapped_base)); \
-      objname = wrapped_obj->_obj; \
+      if (wrapped_obj.get()) \
+        objname = wrapped_obj->_obj; \
     }
 
 // TODO: improve this way of wrapping template objects ...
@@ -59,7 +60,8 @@
       WrapClassBase::ptr wrapped_base(varobj->Pointer()->GetWrappedObject()); \
       WrapClass_##type::ptr wrapped_obj( \
         boost::dynamic_pointer_cast<WrapClass_##type >(wrapped_base)); \
-      objname = wrapped_obj->_obj; \
+      if (wrapped_obj.get()) \
+        objname = wrapped_obj->_obj; \
     }
 
 template<typename> 

@@ -18,6 +18,7 @@ BasicVariable::ptr BasicVariable::empty_variable;
 BasicVariable::BasicVariable() : _type(type_void), _name(""), _comments("") 
 {
     _vars     = boost::shared_ptr<Variables>(new Variables);
+    _vars->SetName("variable own context");
 }
 
 
@@ -61,4 +62,13 @@ const string BasicVariable::GetTypeName() const
 
   return string();
 } // PrintType
+
+
+void BasicVariable::Rename(const char* newname)
+{  
+  CLASS_MESSAGE(boost::format("Renaming %1% to %2%")%_name % newname);
+  _name=newname;
+  if (_vars.get())
+    _vars->SetName(newname);
+}
 

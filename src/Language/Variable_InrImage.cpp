@@ -556,6 +556,18 @@ template<>  BasicVariable::ptr Variable<InrImage>::operator[](const BasicVariabl
   else {
     // try to get an image extent
     GET_WRAPPED_TEMPLATE_OBJECT(ImageExtent, float ,v,extent);
+
+/*
+    DYNAMIC_CAST_VARIABLE(AMIObject, v, varobj) 
+    boost::shared_ptr<ImageExtent<float> > extent; 
+    if (varobj.get()) { 
+      WrapClassBase::ptr wrapped_base(varobj->Pointer()->GetWrappedObject()); 
+      WrapClass_ImageExtent::ptr wrapped_obj( 
+        boost::dynamic_pointer_cast<WrapClass_ImageExtent >(wrapped_base)); 
+      if (wrapped_obj.get())
+        extent = wrapped_obj->_obj; 
+    }
+*/
     if (extent.get()) {
       InrImage::ptr im(Pointer());
       extent->SetRelative(im.get());

@@ -132,11 +132,7 @@ public:
    * Rename variable.
    * @param newname 
    */
-  void Rename(const char* newname) 
-  {  
-    CLASS_MESSAGE(boost::format("Renaming %1% to %2%")%_name % newname);
-    _name=newname;
-  }
+  void Rename(const char* newname);
 
   std::string Name() const { return _name;}
 

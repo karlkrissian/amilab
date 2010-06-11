@@ -97,7 +97,7 @@ class WrapClass_DessinImage : public WrapClassBase
      * drawing windows.
      *
      **/
-    ADD_CLASS_METHOD(SetCompareDisplacement,             "Defines a displacement to apply to the cursor when comparing 2 image drawing windows");
+    ADD_CLASS_METHOD(SetCompareDisplacement,             "Defines a displacement to apply to the cursor of the window in parameter, when comparing 2 image drawing windows");
 
     /**
      * command <-- $variable_imagedraw.SetCompTransf(expr,expr,expr,expr,expr,expr,expr,expr,expr,expr,expr,expr) 
@@ -476,6 +476,9 @@ class WrapClass_DessinImage : public WrapClassBase
      **/
     ADD_CLASS_METHOD(getimage,             "Save the snapshot as a 2D image of format RGB. In the case of an image, the snapshot is taken from X11 and it includes potential colorbar and axes, in the case of a surface, it is taken from OpenGL");
 
+
+    ADD_CLASS_METHOD(reference,       "Called each time a new reference of the variable is created: increases the list of variable to delete from their contexts when closing the window.");
+
     void AddMethods(_parentclass_ptr& this_ptr )
     {
 
@@ -515,6 +518,7 @@ class WrapClass_DessinImage : public WrapClassBase
       AddVar_GetYPos(               this_ptr);
       AddVar_GetZPos(               this_ptr);
       AddVar_getimage(              this_ptr, "_getimage");
+      AddVar_reference(             this_ptr);
     };
 };
 

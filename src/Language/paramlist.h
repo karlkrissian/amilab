@@ -166,7 +166,7 @@ class ParamListDecl {
     }
   }
 
-  int CheckParam( ParamList* pl) 
+  bool CheckParam( ParamList* pl) 
   {
     int       i;
     //void*     p;
@@ -175,8 +175,10 @@ class ParamListDecl {
     if ( pl->GetNumParam() != GetNumParam() )
     {
       fprintf ( stderr,"Bad number of parameters \n" );
-      return 0;
+      return false;
     }
+
+    // Can't be that strict since there can be automatic convertion ...
     for ( i=0;i<GetNumParam();i++ )
     {
       //  pl->GetParam( i, p, t);
@@ -184,11 +186,12 @@ class ParamListDecl {
       if ( pl->GetType ( i ) !=GetType ( i ) )
       {
         fprintf ( stderr,"Parameter %d has incorrect type \n",i );
-        return 0;
+        return false;
       }
     }
+
   
-    return 1;
+    return true;
   }
 
 
