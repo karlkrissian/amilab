@@ -17,7 +17,7 @@
 \renewcommand{\chaptername}{Cap\'{\i}tulo}
 %Para incluir figuras .bmp, .jpeg, .png....
 \usepackage[pdftex]{graphicx} % PDFLaTeX
-\DeclareGraphicsExtensions{.png,.pdf,.jpg,.gif}
+\DeclareGraphicsExtensions{.png,.pdf,.jpg,.gif,.bmp}
 %Paquete para hipervínculos
 \usepackage{hyperref}
 %Configuración del coloreado
@@ -694,6 +694,17 @@ Por último, la implementación del código template debe ser incluida y catalogada
 \textit{$\#$endif}
 
 \section{Filtro NLMeans Básico}
+El filtro Non Local Means básico ha sido utilizado como método de estudio de las funcionalidades que proporciona Insight Toolkit, pero en la práctica no ha sido utilizado debido a motivos de implementación. 
+
+A efectos prácticos no es utilizado en la implementación final del método de segmentación de carótidas. Esto es debido a diferentes motivos:
+\begin{itemize}
+\item El principal motivo es que en el método que se iba a utilizar en un principio se hacía necesario su uso, pero en el que al final se utiliza no es del todo necesario. Este cambio de método se ha debido a la participación en el workshop de Miccai09, se ha visto más correcto utilizar el nuevo método ya que había un mayor conocimiento del mismo.
+\item En el método final de segmentación de carótidas no se utiliza debido a que en ciertos casos ayuda a la segmentación pero en otros la entorpece.
+\item En la práctica el filtro Non Local Means necesita demasiado tiempo para su ejecución debido a la arquitectura interna de Insight Toolkit.
+\end{itemize}
+
+Se ha mantenido en el contenido del proyecto ya que ha sido de gran ayuda a la hora de asimilar conocimientos sobre la utilización de Insight Toolkit.
+
 Dada una imagen con ruido el valor estimado para un punto se calcula como una media ponderada de todos los píxeles de la imagen, donde los pesos dependerán de la similitud entre dos píxeles dados.
 
 
@@ -906,8 +917,8 @@ Normalmente los objetos de datos y los objetos de procesos están conectados entr
 
 Cuando el método ``Update()'' es invocado en el escritor, el procesamiento de datos del pipeline provoca en cada uno de los filtros la finalización, escribiendo los datos finales en un archivo en disco.
 
-\section{Clases principales a utilizar}
-En este apartado se comentarán aquellas clases más relevantes a la hora de desarrollar este proyecto. A medida que se avanza en el mismo, podrán ir surgiendo nuevas clases de interés a utilizar.
+\section{Clases básicas a utilizar}
+En este apartado se comentarán aquellas clases básicas que se han utilizado a la hora de desarrollar este proyecto.
 
 \subsection{Clase Image}
 La clase itk::Image sigue el espíritu de la programación genérica, donde los tipos están separados del comportamiento algorítmico de la clase. Insight Toolkit soporta imágenes formadas por cualquier tipo de pixel y de cualquier dimensión espacial.
@@ -1343,10 +1354,12 @@ En cuanto al fichero ``.txx'' deberemos incluir aquellas funciones necesarias pa
 
 Debemos tener en cuenta que como utilizamos multihilos la imagen se dividirá en tantos procesadores como tengamos, por lo que la ejecución del filtro se llevará a cabo en un tiempo menor.
 
+En la figura {\ref{fig:Pipeline} y {\ref{fig:Pipeline2} se pueden ver el flujo de ejecución y el estado del pipeline del filtro Non Local Means Básico, respectivamente.
+
 \begin{figure}
 \centering
 \includegraphics[scale=0.7]{sshot-2.PNG}%ext=pdf,jpg,png
-\caption{Pipeline}
+\caption{Flujo de ejecución}
 \label{fig:Pipeline}
 \end{figure}
 
@@ -1354,12 +1367,56 @@ Debemos tener en cuenta que como utilizamos multihilos la imagen se dividirá en 
 \centering
 \includegraphics[scale=0.7]{sshot-3.PNG}%ext=pdf,jpg,png
 \caption{Pipeline}
-\label{fig:Pipeline}
+\label{fig:Pipeline2}
 \end{figure}
 
 \section{Segmentación de la carótida}
+El proceso de segmentación de la carótida, tanto externa como interna, se divide en varias etapas:
+\begin{itemize}
+\item Selección de la región a segmentar (ROI).
+\item Cálculos de probabilidad, media local.
+\item Cálculo de la medida de Vesselness.
+\item Cálculo de los caminos mínimos de cada carótida.
+\item Cálculo de la bifurcación entre las dos carótidas.
+\item Cálculo del Level Sets de cada una de las carótidas partiendo de los caminos calculados previamente.
+\end{itemize}
 
+Una vez visto el proceso general de la segmentación de las carótidas pasaremos a detallar cada paso y a comentar qué clases serán necesarias para su posterior implementación.
+
+\subsection{Clase LocalMeanImageFilter}
+Se ha visto la necesidad de crear una nueva clase que calcule la media local, debido a que en las herramientas proporcionadas por Insight Toolkit no existía una que realizase lo que se buscaba. 
+
+A continuación, en la figura {\ref{fig:lmif} se puede ver la clase con sus principales atributos y métodos. Basta con saber el tamaño de la ventana dónde se va a realizar la media local. A continuación se hará una media por ejes de coordenadas, es decir, primero en $x$, después en $y$ y por último en $z$ si la imagen fuese en 3D.
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.7]{localmeanimagefilter.PNG}%ext=pdf,jpg,png
+\caption{Diagrama de Clases de la clase LocalMeanImageFilter}
+\label{fig:lmif}
+\end{figure}
+
+\subsection{Clase Vesselness}
+En cuanto al cálculo de la medida de vesselness se ha hecho uso de la clases proporcionadas por Insight Toolkit. Ha sido necesario utilizar: 
+\begin{itemize}
+\item Hessian3DToVesselnessMeasureImageFilter $\rightarrow$ Es un filtro lineal que proporciona una medida vesselness para objetos tubulares partiendo de la matriz Hessiana. El filtro toma como entrada una imagen y mantiene aquellos píxeles que sus autovalores $\lambda_3$ estén cercanos a 0 y $\lambda_2$ y $\lambda_1$ sean valores negativos.
+\begin{equation}
+\lambda_1 < \lambda_2 < \lambda_3
+\label{eqn:hessian}
+\end{equation}
+El filtro tiene en cuenta que los autovalores juegan un papel crucial en la discriminación de formas y orientación de estructuras.
+
+Las estructuras tubulares brillantes tendrán valores pequeños de $\lambda_1$ y valores negativos en $\lambda_2$ y $\lambda_3$. Mientras que las estructuras tubulares oscuras tendrán valores bajos de $\lambda_1$ y valores positivos de $\lambda_2$ y $\lambda_3$.
+\item MultiScaleHessianBasedMeasureImageFilter $\rightarrow$ Es un filtro que intensifica las estructuras utilizando sistema Hessiano basado 
+\item HessianObjectnessMeasureImageFilter
+\end{itemize}
 \subsection{Clase BackTracking}
+\begin{figure}
+\centering
+\includegraphics[scale=0.7]{backtrackingmeshfilter.PNG}%ext=pdf,jpg,png
+\caption{Diagrama de Clases de la clase BackTrackingMeshFilter}
+\label{fig:btmf}
+\end{figure}
+\subsection{Clase Level Sets}
 
 
 \chapter{Implementación}
@@ -1452,6 +1509,13 @@ Por tanto, la nueva funcionalidad implementada toma una imagen de formato InrIma
 \subsection{wrapITKWaterShedImageFilter}
 
 \section{Script Proceso Completo}
+\begin{figure}
+\centering
+\includegraphics[scale=0.7]{scriptRE.png}%ext=pdf,jpg,png
+\caption{Diagrama de Clases Script RunExperiments}
+\label{fig:scriptRE}
+\end{figure}
+
 
 \chapter{Validación}
 \chapter{Resultados y conclusiones}

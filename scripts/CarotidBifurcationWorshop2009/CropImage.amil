@@ -71,7 +71,7 @@ if (!exists(CropImageFromPointsClass)) {
       # -- create the cropped image as a global variable with the given name 
       ::input_cropped <<= input[xmin_vox:xmax_vox,ymin_vox:ymax_vox,zmin_vox:zmax_vox]
       # Para poder utilizar el script del workshop en windows porque sino da problemas de memoria.
-      //::input_cropped <<= Resize(::input_cropped,::input_cropped.tx/2,::input_cropped.ty/2,::input_cropped.tz,1)
+      ::input_cropped <<= Resize(::input_cropped,::input_cropped.tx/2,::input_cropped.ty/2,::input_cropped.tz,1)
 
     }
     
