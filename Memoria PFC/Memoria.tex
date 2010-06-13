@@ -1398,7 +1398,7 @@ A continuación, en la figura {\ref{fig:lmif} se puede ver la clase con sus princ
 \subsection{Clase Vesselness}
 En cuanto al cálculo de la medida de vesselness se ha hecho uso de la clases proporcionadas por Insight Toolkit. Ha sido necesario utilizar: 
 \begin{itemize}
-\item Hessian3DToVesselnessMeasureImageFilter $\rightarrow$ Es un filtro lineal que proporciona una medida vesselness para objetos tubulares partiendo de la matriz Hessiana. El filtro toma como entrada una imagen y mantiene aquellos píxeles que sus autovalores $\lambda_3$ estén cercanos a 0 y $\lambda_2$ y $\lambda_1$ sean valores negativos.
+\item {\em Hessian3DToVesselnessMeasureImageFilter} $\rightarrow$ Es un filtro lineal que proporciona una medida vesselness para objetos tubulares partiendo de la matriz Hessiana. El filtro toma como entrada una imagen y mantiene aquellos píxeles que sus autovalores $\lambda_3$ estén cercanos a 0 y $\lambda_2$ y $\lambda_1$ sean valores negativos.
 \begin{equation}
 \lambda_1 < \lambda_2 < \lambda_3
 \label{eqn:hessian}
@@ -1406,18 +1406,56 @@ En cuanto al cálculo de la medida de vesselness se ha hecho uso de la clases pro
 El filtro tiene en cuenta que los autovalores juegan un papel crucial en la discriminación de formas y orientación de estructuras.
 
 Las estructuras tubulares brillantes tendrán valores pequeños de $\lambda_1$ y valores negativos en $\lambda_2$ y $\lambda_3$. Mientras que las estructuras tubulares oscuras tendrán valores bajos de $\lambda_1$ y valores positivos de $\lambda_2$ y $\lambda_3$.
-\item MultiScaleHessianBasedMeasureImageFilter $\rightarrow$ Es un filtro que intensifica las estructuras utilizando sistema Hessiano basado 
-\item HessianObjectnessMeasureImageFilter
+\item {\em MultiScaleHessianBasedMeasureImageFilter} $\rightarrow$ Es un filtro que intensifica las estructuras utilizando un sistema Hessiano basado en medidas en un framework multiescala.
+
+El filtro evalúa las medidas de intensificación basadas en la matriz Hessiana, como la medida vesselness, en diferentes escalas. La medida basada en la matriz Hessiana calcula en cada escala la matriz Hessiana y se selecciona la mejor respuesta.
+
+El valor mínimo y máximo de sigma se fija utilizando los métodos {\em SetMinSigma} y {\em SetMaxSigma}. Mientras que el número de escalas vendrá determinado por el método {\em SetNumberOfSigmaSteps}. Con estos valores se calculará de manera exponencial las diferentes escalas partiendo del valor mínimo de sigma y llegando al máximo.
+\item {\em HessianObjectnessMeasureImageFilter} $\rightarrow$ Es un filtro que intensifica objetos en imágenes de cualquier dimensión. Este filtro se ha utilizado para hacer el cálculo de la medida de vesselness en imágenes 2D.
+La medida de objectness es una generalización de la medida de vesselness de Frangi, la cuál está basada en el análisis del sistema de autovalores y autovectores de la matriz Hessiana. Este filtro es capaz de intensificar casi cualquier tipo de estructura.
 \end{itemize}
 \subsection{Clase BackTracking}
+Para el cálculo de los caminos mínimos entre dos puntos dados se hace necesario la creación de una clase que lo realice ya que en Insight Toolkit no está esta funcionalidad.
+
+Se ha partido de la implementación realizada en AMILab para adaptarla y convertirla en un filtro de Insight Toolkit. Este nuevo filtro será del tipo ImageToMeshFilter. En la figura {\ref{fig:btmf} podemos ver la nueva clase con sus atributos y métodos. Mientras que en la figura {\ref{fig:btmf2} se muestra la clase de la cuál la nueva clase heredará sus atributos y métodos.
 \begin{figure}
 \centering
 \includegraphics[scale=0.7]{backtrackingmeshfilter.PNG}%ext=pdf,jpg,png
 \caption{Diagrama de Clases de la clase BackTrackingMeshFilter}
 \label{fig:btmf}
 \end{figure}
-\subsection{Clase Level Sets}
 
+\begin{figure}
+\centering
+\includegraphics[scale=0.7]{ImageToMeshFilter.PNG}%ext=pdf,jpg,png
+\caption{Diagrama de Clases ImageToMeshFilter}
+\label{fig:btmf2}
+\end{figure}
+
+\subsection{Clase Level Sets}
+Para la segmentación de las carótidas se utiliza en última instancia la clase Level Sets que creará la segmentación final partiendo de unos finos tubos iniciales creados alrededor de los caminos obtenidos en la fase de BackTracking.
+
+En este caso se ha hecho uso de la clase {\em GeodesicActiveContourLevelSetImageFilter} que proporciona una segmentación similar a la deseada.
+
+Este filtro segmenta estructuras en imágenes basándose en una imagen proporcionada por el usuario que es un mapa de bordes. Un contorno inicial se propoga hacia el exterior o hacia el interior hasta que pega los límites de la forma. Esto es posible gracias a una función de velocidad basada en un mapa de bordes proporcionado por el usuario.
+
+El filtro necesita dos entradas. La primera entrada es un Level Set inicial. El Level Set inicial es una imagen real que contiene el contorno o superficie inicial. El contorno inicial no tiene porque estar totalmente dentro de la forma a segmentar. El término de advección atrae el contorno hasta el límite de la forma a segmentar.
+La segunda entrada es una imagen de características, para este filtro es el mapa de bordes. Una de las características generales del mapa de bordes es que tiene valores cercanos a cero en las regiones próximas a los bordes y valores cercanos a uno dentro de la propia forma. Normalmente, el mapa de bordes se calcula utilizando el gradiente, por ejemplo:
+
+\begin{equation}
+g(I) = 1 / ( 1 + | (\nabla * G)(I)| )
+\label{eqn:gradiente}
+\end{equation}
+\begin{equation}
+g(I) = \exp^{-|(\nabla * G)(I)|}
+\label{eqn:gradiente2}
+\end{equation}
+
+donde $I$ es la intensidad de la imagen y $(\nabla * G)$ es la derivada del operador gaussiano.
+
+Como resto de parámetros tenemos la escala de propagación que se puede utilizar para cambiar el tipo de propagación, si es positiva será una propagación hacia el exterior mientras que si es negativa será hacia el interior. Además también tenemos los términos curvatura y advección. El término de curvatura se utiliza para suavizar el resultado de los contornos. Mientras que el término de advección sirve para atraer el contorno hasta el límite de la forma.
+
+El resultado del filtro será una imagen escalar y de valores reales. Los valores negativos en la imagen de salida representan el interior de la región segmentada y valores positivos en la imagen representan la parte exterior de la región segmentada.
 
 \chapter{Implementación}
 \section{Filtro Non Local Means Básico con iteradores de vecindades}
@@ -1516,8 +1554,6 @@ Por tanto, la nueva funcionalidad implementada toma una imagen de formato InrIma
 \label{fig:scriptRE}
 \end{figure}
 
-
-\chapter{Validación}
 \chapter{Resultados y conclusiones}
 \begin{thebibliography}{1}
 \bibitem{ITK05} L. Ibáñez, W. Schroeder, L. Ng, J. Cates.{\em ``The ITK Software Guide''} 2005
