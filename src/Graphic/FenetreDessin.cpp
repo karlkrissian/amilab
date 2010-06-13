@@ -427,7 +427,7 @@ void FenetreDessin::SetTextFg(  const wxColour& color)
 
 
 //---------------------------------------------------------------------
-void FenetreDessin ::  FixeParametresLigne( unsigned int largeur, 
+void FenetreDessin ::  SetLineParameters( unsigned int largeur, 
 //                               -------------------
                         int style, 
                         int extremites, 
@@ -454,7 +454,7 @@ void FenetreDessin ::  FixeParametresLigne( unsigned int largeur,
   #endif
   /// @endcond
   _memory_dc->SetPen(*_current_pen);
-} // FixeParametresLigne()
+} // SetLineParameters()
 
 
 
@@ -712,7 +712,7 @@ void  FenetreDessin::PutSlice(  int pos_x, int pos_y,
   // Draw a rectangle outside?
   SetPenColor( *wxBLACK);
   FixeStyleRemplissage(wxTRANSPARENT);
-  FixeParametresLigne(1,wxSOLID);
+  SetLineParameters(1,wxSOLID);
   Rectangle((wxCoord)pos_x,(wxCoord)pos_y,
             (wxCoord)pos_x+bitmap.GetWidth(),
             (wxCoord)pos_y+bitmap.GetHeight());

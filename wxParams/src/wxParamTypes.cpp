@@ -284,9 +284,7 @@ wxBitmapButtonParameter :: ~ wxBitmapButtonParameter()
 //------------------------------------------------------------------------------
 void wxBitmapButtonParameter::OnButton(wxCommandEvent& event)
 {
-
 //  printf("wxBitmapButtonParameter::OnLeftButton()\n");
-
   this->Callback();
   event.Skip();
 }

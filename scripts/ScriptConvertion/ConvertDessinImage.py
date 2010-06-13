@@ -38,9 +38,9 @@ if __name__ == "__main__":
   # the third parameter: a boolean, is True if we need to ask confirmation from the user ...
   commands_force_par=[
             ("getimage",       "_getimage",  True ),
-            ("GetZpos",        "GetZPos",    False ),
-            ("GetYpos",        "GetYPos",    False ),
-            ("GetXpos",        "GetXPos",    False ),
+            ("GetZPos",        "GetZPos",    False ),
+            ("GetYPos",        "GetYPos",    False ),
+            ("GetXPos",        "GetXPos",    False ),
             ("GetXmin",        "GetXmin",    False ),
             ("GetXmax",        "GetXmax",    False ),
             ("GetYmin",        "GetYmin",    False ),
@@ -87,7 +87,7 @@ if __name__ == "__main__":
       for cmd1,cmd2,ask in commands_force_par:
         # $ matches the end of the string and avoids adding () where there are already present
         # if no parenthesis, add it
-        res = re.subn(r"_draw\s*\.(\s*)"+cmd1+r"(\s*[^\(])",r"_draw."+cmd2+r"()\2",line)
+        res = re.subn(r"_draw\s*\.(\s*)"+cmd1+r"(\s*[^\(]|\s*$)",r"_draw."+cmd2+r"()\2",line)
         if (res[1]>0):
           if ask:
             message = " Conversion of DessinImage methods from: \n"
@@ -98,10 +98,11 @@ if __name__ == "__main__":
               line = res[0]
               num_subs = num_subs+1
           else:
-            line = res[0]
-            num_subs = num_subs+1
+            if (res[0]!=line):
+              line = res[0]
+              num_subs = num_subs+1
         # if parenthesis, just replace name
-        res = re.subn(r"_draw\s*\.(\s*)"+cmd1+r"(\s*[\(])",r"_draw."+cmd2+r"\2",line)
+        res = re.subn(r"_draw\s*\.(\s*)"+cmd1+r"(\s*[\(]|\s*$)",r"_draw."+cmd2+r"\2",line)
         if (res[1]>0):
           if ask:
             message = " Conversion of DessinImage methods from: \n"
@@ -112,10 +113,18 @@ if __name__ == "__main__":
               line = res[0]
               num_subs = num_subs+1
           else:
-            line = res[0]
-            num_subs = num_subs+1
+            if (res[0]!=line):
+              line = res[0]
+              num_subs = num_subs+1
           #sys.stdout.write("("+cmd1+","+cmd2+") -> "+line)
       
+        # convert IMAGEDRAW to OBJECT in parameter declaration
+        res = re.subn(r"(,|\()\s*IMAGEDRAW(\s+|,|\))",r"\1 OBJECT\2",line)
+        if (res[1]>0):
+          if (res[0]!=line):
+            line = res[0]
+            num_subs = num_subs+1
+            
       f.write(line)
       if comments!="":
         f.write(comments+"\n")

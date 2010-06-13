@@ -36,7 +36,7 @@ if (!exists(GreyMorphoClass)) {
     #----------------------------
     proc ::Close() \
     {
-      ::win.HidePanel
+      ::win.HidePanel()
       delvars GetObjectName(::Close)
     }
     Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -142,8 +142,8 @@ if (!exists(GreyMorphoClass)) {
         ::res_surf   = CreateFlatMesh(::res,0)
         ::input_surf.ElevateMesh(::input*::surf_scaling)
         ::res_surf.ElevateMesh(::res*::surf_scaling)
-        ::input_surf.Normals
-        ::res_surf.Normals
+        ::input_surf.Normals()
+        ::res_surf.Normals()
         show ::input_surf
         ::input_surf_draw += ::res_surf
       }
@@ -179,11 +179,11 @@ if (!exists(GreyMorphoClass)) {
 
           # set the input image
           ::win.BeginBoxPanel("Input")
-            ::win.BeginHorizontal
+            ::win.BeginHorizontal()
               ::win.AddImageChoice( &::input_name, "")
               ::win.AddButton("Load",::LoadInput)
-            ::win.EndHorizontal
-          ::win.EndBoxPanel
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
 
           ::win.AddString( &::result_image_name,"Result image")
 
@@ -199,37 +199,37 @@ if (!exists(GreyMorphoClass)) {
             ::win.AddFloat( &::size,  "size",  1,   30 )
             ::win.AddFloat( &::Imin,  "Imin",  0,   30 )
             ::win.AddFloat( &::Imax,  "Imax",  0,   30 )
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
     
         ::win.AddPage("Controls")
           ::win.BeginBoxPanel("Execution")
-              ::win.BeginHorizontal
+              ::win.BeginHorizontal()
                   restart_id = ::win.AddButton("Restart", ::Restart)
-              ::win.EndHorizontal
+              ::win.EndHorizontal()
               ::win.AddButton("Run",     ::Process)
               ::win.AddButton("ShowDiff",::ShowDiff)
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
   
           ::win.BeginBoxPanel("Result")
               ::win.AddString( &::result_filename,"file")
-              ::win.BeginHorizontal
+              ::win.BeginHorizontal()
                   ::win.AddButton("Save",       ::Save)
                   ::win.AddButton("Display",    ::Display)
-              ::win.EndHorizontal
-          ::win.EndBoxPanel
+              ::win.EndHorizontal()
+          ::win.EndBoxPanel()
 
           ::win.BeginBoxPanel("Surface display")
               ::win.AddFloat( &::surf_scaling,"surf scale",0.01,10)
               ::win.AddButton("Surfaces",    ::DisplaySurfaces)
-          ::win.EndBoxPanel
-      ::win.EndBook
-      ::win.BeginHorizontal
+          ::win.EndBoxPanel()
+      ::win.EndBook()
+      ::win.BeginHorizontal()
         ::win.AddButton("Close",      ::Close)
         ::win.AddButton("Close All",  ::CloseAll)
-      ::win.EndHorizontal
+      ::win.EndHorizontal()
       
       ::win.Update(-1)
-      ::win.Display
+      ::win.Display()
     }
 
     ::Init

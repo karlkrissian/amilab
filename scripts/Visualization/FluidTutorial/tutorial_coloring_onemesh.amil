@@ -22,7 +22,7 @@ alt48 = ComputeAltitudes(t48,coeff)
 alt48 = alt48*alt_factor
 pos=Altitude2Position(alt48,1)
 earth.ElevateMesh(pos)
-earth.Normals
+earth.Normals()
 earth.SetColorMaterial(1)
 
 show earth

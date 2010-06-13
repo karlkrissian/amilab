@@ -26,7 +26,7 @@ if (!exists(AddNoiseClass)){
   
   #----------------------------
   proc ::Close() {
-    ::win.HidePanel
+    ::win.HidePanel()
     delvars GetObjectName(::Close)
   }
   Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -86,7 +86,7 @@ proc ::Display() {
     import = &global::ami_import;
     ::win = import->ParamPanel("Noise")
   
-    ::win.BeginBook
+    ::win.BeginBook()
       ::win.AddPage("Param")
         ::win.AddImageChoice( &::input_name, "Input")
       
@@ -104,15 +104,15 @@ proc ::Display() {
       
         ::win.AddButton("Run",        ::Run)
         ::win.AddButton("Display",    ::Display)
-    ::win.EndBook
+    ::win.EndBook()
   
-    ::win.BeginHorizontal
+    ::win.BeginHorizontal()
       ::win.AddButton("Close",          ::Close)
       ::win.AddButton("Close All",          ::CloseAll)
-    ::win.EndHorizontal  
+    ::win.EndHorizontal()  
   
     ::win.Update(-1)
-    ::win.Display
+    ::win.Display()
   }
   
   ::Init

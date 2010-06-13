@@ -123,7 +123,7 @@ if (!exists(CreateSkeletonClass)) {
     
     #--------------------------
     proc ::Close() {
-      ::win.HidePanel
+      ::win.HidePanel()
       delvars GetObjectName(::Close)
     }
     Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -286,7 +286,7 @@ if (!exists(CreateSkeletonClass)) {
     #---------------------------------------------------
     proc ::RemovePrune() {
       if (exists(::res)) {
-        ::res.RemoveSelection
+        ::res.RemoveSelection()
         if (exists(::res_draw)) {
           ::res_draw.Paint
         }
@@ -705,7 +705,7 @@ if (!exists(CreateSkeletonClass)) {
           pi_id  = ::win.AddEnum( &::PointId)
             ::win.AddEnumChoice(pi_id,"A")
             ::win.AddEnumChoice(pi_id,"B")
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
     
         # TODO: set the limits after reading the input image
         ::win.AddFloat( &::Threshold,  "::Threshold",  -1000,1000)
@@ -728,7 +728,7 @@ if (!exists(CreateSkeletonClass)) {
           ::win.AddFloat( &::DTmin,  "::DTmin", -100,0)
           ::win.AddFloat( &::DTmax,  "::DTmax", 0,100)
           flux_id = ::win.AddBoolean( &::UseFlux)
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
       
       ::win.AddPage("Lines")
         ::id = ::win.AddEnum( &::linemethod)
@@ -736,16 +736,16 @@ if (!exists(CreateSkeletonClass)) {
         ::win.AddEnumChoice(::id,"vtkSkeleton2Lines")
         ::win.BeginBoxPanel("Pruning selection")
           prunesize_id = ::win.AddFloat( &::prunesize,  "::prunesize", 0.1,20)
-          ::win.BeginHorizontal
+          ::win.BeginHorizontal()
             prunesel_id  = ::win.AddButton( "Select", ::SelectPrune)
             prunerem_id  = ::win.AddButton( "Remove", ::RemovePrune)
-          ::win.EndHorizontal
+          ::win.EndHorizontal()
           ::win.BeginBoxPanel("Connection")
             ::win.AddFloat( &::connect_dist,  "::connect_dist", 0,5)
             ::win.AddFloat( &::connect_dir,  "::connect_dir", -2,2)
             ::win.AddButton("Connect Lines",  ::ConnectLines)
-          ::win.EndBoxPanel
-        ::win.EndBoxPanel
+          ::win.EndBoxPanel()
+        ::win.EndBoxPanel()
         ::win.AddButton("Smooth Lines",  ::SmoothLines)
     
       ::win.AddPage("Cor CTA")
@@ -753,7 +753,7 @@ if (!exists(CreateSkeletonClass)) {
         ::win.AddButton("View CTA",                ::ViewCTA)
     
       ::win.AddPage("Shortest paths")
-        ::win.BeginHorizontal
+        ::win.BeginHorizontal()
           SP_start_id  = ::win.AddEnum( &::SP_start)
               ::win.AddEnumChoice(SP_start_id,"A")
               ::win.AddEnumChoice(SP_start_id,"B")
@@ -764,11 +764,11 @@ if (!exists(CreateSkeletonClass)) {
               ::win.AddEnumChoice(SP_end_id,"B")
               ::win.AddEnumChoice(SP_end_id,"S")
               ::win.AddEnumChoice(SP_end_id,"E")
-        ::win.EndHorizontal
-        ::win.BeginHorizontal
+        ::win.EndHorizontal()
+        ::win.BeginHorizontal()
           show_sp_id = ::win.AddBoolean( &::show_starting_point)
           show_ep_id = ::win.AddBoolean( &::show_ending_point)
-        ::win.EndHorizontal
+        ::win.EndHorizontal()
     
         pathmode_id  = ::win.AddEnum( &::path_mode)
           ::win.AddEnumChoice(pathmode_id,"Centerlines")
@@ -783,28 +783,28 @@ if (!exists(CreateSkeletonClass)) {
           ::win.AddFloat( &::smooth_coeff,  "::smooth_coeff", 0.01,1)
           ::win.AddFloat( &::smooth_data,  "::smooth_data", 0.01,1)
           ::win.AddInt( &::smooth_it,  "::smooth_it", 1,100)
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
     
-        ::win.BeginHorizontal
+        ::win.BeginHorizontal()
           ::win.AddButton("Create paths",  ::ShortestPaths)
           ::win.AddButton("Save paths",    ::SavePaths)
           ::win.AddButton("Print scores",  ::PrintScores)
-        ::win.EndHorizontal
+        ::win.EndHorizontal()
     
-      ::win.EndBook
+      ::win.EndBook()
     
-      ::win.BeginHorizontal
+      ::win.BeginHorizontal()
         flux_id = ::win.AddButton("Run",         ::Execute)
         #flux_id = ::win.AddButton("CreateLines", ::Lines)
         flux_id = ::win.AddButton("Display",     ::Display)
-      ::win.EndHorizontal
-      ::win.BeginHorizontal
+      ::win.EndHorizontal()
+      ::win.BeginHorizontal()
         ::win.AddButton("Close",      ::Close)
         ::win.AddButton("Close All",  ::CloseAll)
-      ::win.EndHorizontal
+      ::win.EndHorizontal()
     
       ::win.Update(-1)
-      ::win.Display
+      ::win.Display()
     }
     ::Init
     

@@ -228,7 +228,7 @@ inline void AddVar_##methodname(  Variables::ptr& context, const std::string& ne
     WrapClassBase::ptr object( varname->Pointer()->GetWrappedObject());\
     WrapClass_##type::ptr obj( boost::dynamic_pointer_cast<WrapClass_##type>(object));\
     if (obj.get()) {\
-      objname = obj->_obj;\
+      objname = obj->GetObj();\
     } else {\
       CLASS_ERROR("Could not cast dynamically the variable.")\
     }\
@@ -247,7 +247,7 @@ inline void AddVar_##methodname(  Variables::ptr& context, const std::string& ne
     WrapClassBase::ptr object( varname->Pointer()->GetWrappedObject());\
     WrapClass_##type::ptr obj( boost::dynamic_pointer_cast<WrapClass_##type>(object));\
     if (obj.get()) {\
-      objname = obj->_obj;\
+      objname = obj->GetObj();\
     } else {\
       FILE_ERROR("Could not cast dynamically the variable.")\
     }\

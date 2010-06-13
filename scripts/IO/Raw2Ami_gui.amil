@@ -29,7 +29,7 @@ if (!exists(Raw2AmiClass)) {
     #----------------------------
     proc ::Close() \
     {
-      ::win.HidePanel
+      ::win.HidePanel()
       delvars GetObjectName(::Close)
     }
     Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -91,28 +91,28 @@ if (!exists(Raw2AmiClass)) {
           pi_endianess  = ::win.AddEnum(&::endianess, "Endianness")
             ::win.AddEnumChoice(pi_endianess,"Little")
             ::win.AddEnumChoice(pi_endianess,"Big")
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
         ::win.BeginBoxPanel("Voxel size")
           ::win.AddFloat    (&::voxSizeX,"X size",0,10)
           ::win.AddFloat    (&::voxSizeY,"Y size",0,10)
           ::win.AddFloat    (&::voxSizeZ,"Z size",0,10)
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
     
       ::win.AddPage("Ctrl")
-        ::win.BeginHorizontal
+        ::win.BeginHorizontal()
           ::win.AddButton("Read",     &::Read)
           ::win.AddButton("Show",     &::ShowImage)
-        ::win.EndHorizontal
+        ::win.EndHorizontal()
         ::win.AddButton("Save as ami.gz", &::Save)
-      ::win.EndBook
+      ::win.EndBook()
   
-      ::win.BeginHorizontal
+      ::win.BeginHorizontal()
         ::win.AddButton("Close",      &::Close)
         ::win.AddButton("Close All",  &::CloseAll)
-      ::win.EndHorizontal
+      ::win.EndHorizontal()
     
       ::win.Update(-1)
-      ::win.Display
+      ::win.Display()
       
     }
   

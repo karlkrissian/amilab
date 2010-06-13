@@ -23,10 +23,10 @@ proc AddSphere( IMAGE im, NUM x, NUM y, NUM z, NUM rad ) {
   }
 }
 
-//
-// take into account the voxel size and create a sphere
-// with the radius in mm
-//
+#
+# take into account the voxel size and create a sphere
+# with the radius in mm
+#
 proc AddBrightSphere_mm( IMAGE im, NUM x, NUM y, NUM z, NUM rad, NUM _I1, NUM _I2 ) {
 //   ---------------
 
@@ -129,7 +129,7 @@ proc AddBrightSphere( IMAGE im, NUM x, NUM y, NUM z, NUM rad ) {
 }
 
 
-proc AddSphereCursor( IMAGE im, IMAGEDRAW imdraw, NUM rad ) {
+proc AddSphereCursor( IMAGE im, OBJECT imdraw, NUM rad ) {
 //   ---------------
   print "*\n"
   x=imdraw.GetXPos

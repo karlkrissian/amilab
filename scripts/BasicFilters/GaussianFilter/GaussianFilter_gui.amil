@@ -104,12 +104,12 @@ if (!exists(GaussianFilterClass)) {
 
       ::AddHelpPage(&::win)
   
-    ::win.EndBook
+    ::win.EndBook()
   
     ::AddStandardButtons(&::win)
   
     ::win.Update(-1)
-    ::win.Display
+    ::win.Display()
   }
   
   ::Init

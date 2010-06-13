@@ -16,7 +16,7 @@
 
 #define MAX_PARAM 20
 
-#include "inrimage.hpp"
+//#include "inrimage.hpp"
 #include "DefineClass.hpp"
 
 #include "BasicVariable.h"

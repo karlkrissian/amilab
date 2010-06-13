@@ -97,7 +97,17 @@ void AddVar_##methodname(  _parentclass_ptr& pc, const std::string& newname = #m
 /**
  * Add the comments for the next parameter for a wrapped class member.
  **/
-#define ADDPARAMCOMMENT(c)  this->parameters_comments.push_back(c)
+#define ADDPARAMCOMMENT(c) \
+   this->parameters_comments.push_back(c); \
+   this->paramtypes.push_back("var");
+
+/**
+ * Add the comments for the next parameter for a wrapped class member.
+ **/
+#define ADDPARAMCOMMENT_TYPE(type,c) \
+   this->parameters_comments.push_back(c); \
+   this->paramtypes.push_back(to_string<type>::value());
+
 
 class AMIObject;
 
@@ -126,9 +136,11 @@ class WrapClassMember {
     std::string functionname;
     std::string description;
     std::vector<std::string> parameters_comments;
+    std::vector<std::string> paramtypes;
     std::string return_comments;
 
   public:
+    std::string GetDescription() { return description; }
     virtual ~WrapClassMember() = 0;
     virtual void SetParametersComments()          {};
     virtual BasicVariable::ptr CallMember(ParamList*)  

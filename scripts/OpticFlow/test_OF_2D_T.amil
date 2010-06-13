@@ -133,34 +133,34 @@ proc CB_Display() {
   global
   zi1 = zi[:,:,0:(zi.tz-2)]
   show zi1;
-  zi1_draw._setvector(1,zd);
+  zi1_draw._setvector(0,zd);
+  zi1_draw.DrawVector(0,1);
+  zi1_draw._setvector(1,zd1);
   zi1_draw.DrawVector(1,1);
-  zi1_draw._setvector(2,zd1);
-  zi1_draw.DrawVector(2,1);
   local
 }
 
 #--------------------------------------------------�print "*2\n"
 w1 = ParamWin("libamiFluid: PDE Optical Flow")
 
-beta_id            = w1.AddFloat(beta,0.01,5)
-alfa_id            = w1.AddFloat(alfa,0.01,20)
-Nscales_id         = w1.AddInt(Nscales,1,5)
+beta_id            = w1.AddFloat( &beta,  "beta", 0.01,5)
+alfa_id            = w1.AddFloat( &alfa,  "alfa", 0.01,20)
+Nscales_id         = w1.AddInt( &Nscales,  "Nscales", 1,5)
 
-gradtype_id        = w1.AddInt(gradtype,0,7)
-smoothfunction_id  = w1.AddInt(smoothfunction,0,1)
-zoomdown_id        = w1.AddInt(zoomdown,0,5)
+gradtype_id        = w1.AddInt( &gradtype,  "gradtype", 0,7)
+smoothfunction_id  = w1.AddInt( &smoothfunction,  "smoothfunction", 0,1)
+zoomdown_id        = w1.AddInt( &zoomdown,  "zoomdown", 0,5)
 
-Conv_GS_exp_id     = w1.AddInt(Conv_GS_exp,-10,0)
-Conv_Scales_exp_id = w1.AddInt(Conv_Scales_exp,-5,0)
+Conv_GS_exp_id     = w1.AddInt( &Conv_GS_exp,  "Conv_GS_exp", -10,0)
+Conv_Scales_exp_id = w1.AddInt( &Conv_Scales_exp,  "Conv_Scales_exp", -5,0)
 
 
 restart_id=w1.AddButton("Restart", CB_Restart)
 iterate_id=w1.AddButton("Iterate", CB_Iterate)
 display_id=w1.AddButton("Display", CB_Display)
 
-w1.CreateWin
-w1.Display
+w1.Update()
+w1.Display()
 
 print "*3\n"
 

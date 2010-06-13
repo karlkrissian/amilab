@@ -49,7 +49,7 @@ if (!exists(global::RGBscale)) {
     #----------------------------
     proc ::Close() \
     {
-      ::win.HidePanel
+      ::win.HidePanel()
       delvars GetObjectName(::Close)
     }
     Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -133,51 +133,51 @@ if (!exists(global::RGBscale)) {
       import = &global::ami_import;
       ::win = import->ParamPanel("ImGrid")
       
-      ::win.BeginBook
+      ::win.BeginBook()
     
         ::win.AddPage("Param")
 
           # set the input image drawing window
           ::win.BeginBoxPanel("Input")
-            ::win.BeginHorizontal
+            ::win.BeginHorizontal()
               ::win.AddImageChoice( &::input_name, "")
               ::win.AddButton( "Reload",::Reload)
-            ::win.EndHorizontal
-          ::win.EndBoxPanel
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
 
           ::win.BeginBoxPanel("All Components")
             ::win.AddInt( &::All_min,"min.",0,255)
             ::win.SetCallback( &::UpdateDisplay_All)
             ::win.AddInt( &::All_max,"max.",0,255)
             ::win.SetCallback( &::UpdateDisplay_All)
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
           ::win.BeginBoxPanel("Red Component")
             ::win.AddInt( &::R_min,"min.",0,255)
             ::win.SetCallback( &::UpdateDisplay_R)
             ::win.AddInt( &::R_max,"max.",0,255)
             ::win.SetCallback( &::UpdateDisplay_R)
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
           ::win.BeginBoxPanel("Green Component")
             ::win.AddInt( &::G_min,"min.",0,255)
             ::win.SetCallback( &::UpdateDisplay_G)
             ::win.AddInt( &::G_max,"max.",0,255)
             ::win.SetCallback( &::UpdateDisplay_G)
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
           ::win.BeginBoxPanel("Blue Component")
             ::win.AddInt( &::B_min,"min.",0,255)
             ::win.SetCallback( &::UpdateDisplay_B)
             ::win.AddInt( &::B_max,"max.",0,255)
             ::win.SetCallback( &::UpdateDisplay_B)
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
   
-      ::win.EndBook
-      ::win.BeginHorizontal
+      ::win.EndBook()
+      ::win.BeginHorizontal()
         ::win.AddButton("Close", ::Close)
         ::win.AddButton("Close All", ::CloseAll)
-      ::win.EndHorizontal
+      ::win.EndHorizontal()
       
       ::win.Update(-1)
-      ::win.Display
+      ::win.Display()
    }
 
     ::Init

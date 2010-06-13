@@ -26,9 +26,9 @@ if (!exists(test_corr2DClass)) {
       eval "::input1 <<="+::input1_name+";"
       if (::input1_name=="Image") {
         ::input1_name = "::input1"
-        ::win.update
+        ::win.Update(-1)
       }
-      ::win.update
+      ::win.Update(-1)
     }
 
     #----------------------------
@@ -37,15 +37,15 @@ if (!exists(test_corr2DClass)) {
       eval "::input2 <<="+::input2_name+";"
       if (::input2_name=="Image") {
         ::input2_name = "::input2"
-        ::win.update
+        ::win.Update(-1)
       }
-      ::win.update
+      ::win.Update(-1)
     }
 
     #----------------------------
     proc ::Close() \
     {
-      ::win.Hide
+      ::win.HidePanel()
       delvars GetObjectName(::Close)
     }
     Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -99,8 +99,8 @@ if (!exists(test_corr2DClass)) {
       #i_draw.compare(cx);
       #i_draw.compare(cy);
       if (exists(::d)) {
-        ::input_draw._setvector(1,::d);
-        ::input_draw.DrawVector(1,1);
+        ::input_draw._setvector(0,::d);
+        ::input_draw.DrawVector(0,1);
         ::input_draw.DisplayVectors();
       }
     }
@@ -121,50 +121,51 @@ if (!exists(test_corr2DClass)) {
     
     #--------------------------------------------------
     proc ::InitGui() {
-      ::win = ParamWin("Test Corr 2D")
+      import = &global::ami_import;
+      ::win = import->ParamPanel("Test Corr 2D")
       
-      ::win.BeginBook
+      ::win.BeginBook()
         ::win.AddPage("Inputs")
           # set the input1 image
           ::win.BeginBoxPanel("Input1")
-            ::win.BeginHorizontal
-              ::win.AddImageChoice(::input1_name, "")
+            ::win.BeginHorizontal()
+              ::win.AddImageChoice( &::input1_name, "")
               ::win.AddButton("Load",::LoadInput1)
-            ::win.EndHorizontal
-          ::win.EndBoxPanel
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
   
           # set the input2 image
           ::win.BeginBoxPanel("Input2")
-            ::win.BeginHorizontal
-              ::win.AddImageChoice(::input2_name, "")
+            ::win.BeginHorizontal()
+              ::win.AddImageChoice( &::input2_name, "")
               ::win.AddButton("Load",::LoadInput2)
-            ::win.EndHorizontal
-          ::win.EndBoxPanel
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
   
 
         ::win.AddPage("Params")
 
-          ::win.AddInt(::step_x,"step x",1,20)
-          ::win.AddInt(::step_y,"step y",1,20)
+          ::win.AddInt( &::step_x,"step x",1,20)
+          ::win.AddInt( &::step_y,"step y",1,20)
           
-          ::win.AddInt(::winsize_x,"winsize x",2,8)
-          ::win.AddInt(::winsize_y,"winsize y",2,8)
+          ::win.AddInt( &::winsize_x,"winsize x",2,8)
+          ::win.AddInt( &::winsize_y,"winsize y",2,8)
         
-          ::win.AddFloat(::coeff,"coeff",0,1)
-          ::win.SetCallback(::Display)
+          ::win.AddFloat( &::coeff,"coeff",0,1)
+          ::win.SetCallback( &::Display)
 
           ::win.AddButton("Display", ::Display)
           ::win.AddButton("Restart", ::Restart)
           ::win.AddButton("Iterate", ::Iterate)
       
-      ::win.EndBook
-      ::win.BeginHorizontal
+      ::win.EndBook()
+      ::win.BeginHorizontal()
         ::win.AddButton("Close",      ::Close)
         ::win.AddButton("Close All",  ::CloseAll)
-      ::win.EndHorizontal
+      ::win.EndHorizontal()
 
-      ::win.update
-      ::win.Display
+      ::win.Update(-1)
+      ::win.Display()
     }
 
     # Call constructor
@@ -183,7 +184,7 @@ if (!exists(test_corr2D)) {
     input2 = Image($2)
     test_corr2D->input1_name = "input1"
     test_corr2D->input2_name = "input2"
-    test_corr2D->win.update
+    test_corr2D->win.Update(-1)
   }
 
 } else {

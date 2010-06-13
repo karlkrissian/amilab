@@ -633,11 +633,28 @@ void MainFrame::CreateVarTreePanel ( wxWindow* parent)
                               ) 
                               //^ (wxTR_NO_LINES )
                             );
-  _var_tree->SetWindowStyle(_var_tree->GetWindowStyle() ^ wxTR_NO_LINES);
+
+  _vartree_col_main = _var_tree->GetColumnCount();
+  _var_tree->AddColumn (_T("Name"), 140, wxALIGN_LEFT);
+  _var_tree->SetColumnEditable (_vartree_col_main, false);
+
+  _vartree_col_type = _var_tree->GetColumnCount();
+  _var_tree->AddColumn (_T("Type"), 30, wxALIGN_CENTER);
+  _var_tree->SetColumnEditable (_vartree_col_type, false);
+
+  _vartree_col_val = _var_tree->GetColumnCount();
+  _var_tree->AddColumn (_T("Val"), 30, wxALIGN_CENTER);
+  _var_tree->SetColumnEditable (_vartree_col_val, false);
+
+  _vartree_col_desc = _var_tree->GetColumnCount();
+  _var_tree->AddColumn (_T("Details"), 120, wxALIGN_CENTER);
+  _var_tree->SetColumnEditable (_vartree_col_desc, false);
+
+  _var_tree->SetWindowStyle(_var_tree->GetWindowStyle() ^ wxTR_NO_LINES ^ wxTR_COLUMN_LINES);
   //_var_tree->SetToolTip(_T("Tree Control for current variables"));
 
   _var_tree->SetFont( wxFont(10,wxMODERN,wxNORMAL,wxNORMAL)); // try a fixed pitch font
-  _var_tree->SetIndent(5);
+  _var_tree->SetIndent(2);
 
   _vartree_root        = _var_tree->AddRoot(_T("Root"));
   _vartree_global      = _var_tree->AppendItem(_vartree_root,_T("Global"));
@@ -1183,13 +1200,16 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
     wxString type_str;
     BasicVariable::ptr var = context->GetVar((*variables)[i].mb_str());
 
+    wxTreeItemId append_id;
+    std::string text;
+    std::string valtext;
+
     if (var.get()) {
       if (var->Type() == type_image) {
         // create text with image information
         DYNAMIC_CAST_VARIABLE(InrImage,var,varim);
         InrImage::ptr im (varim->Pointer());
-        std::string text = (boost::format("%1% %20t %2% %35t (%3%x%4%x%5%)x%6%  %55t %|7$+5| Mb")
-                            % var->Name()
+        text = (boost::format("%1% (%2%x%3%x%4%)x%5% %|6$+5| Mb")
                             % im->FormatName()
                             % im->DimX()
                             % im->DimY()
@@ -1197,12 +1217,7 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
                             % im->GetVDim()
                             % (im->GetDataSize()/1000000)).str();
         //cout << text << endl;
-        itemid = _var_tree->AppendItem(
-              vartree_images,
-              wxString(text.c_str(), wxConvUTF8),
-              -1,-1,
-              new MyTreeItemData(var));
-        _var_tree->SetItemFont(itemid,root_font);
+        append_id = vartree_images;
         total_image_size += im->GetDataSize();
       } else
 /* TODO: arrange tree display for type_ami_object
@@ -1222,142 +1237,81 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
         _var_tree->SetItemFont(itemid,root_font);
       } else
 */
-      if ((var->Type() == type_float)||
-          (var->Type() == type_double)|| /// New (added: 24/05/2010)
-          (var->Type() == type_long)||   /// New (added: 27/05/2010)
-          (var->Type() == type_int)  ||
-          (var->Type() == type_uchar))
+      if (var->IsNumeric())
       {
-        std::string text;
-        switch(var->Type()) {
-          case type_float:
-            {
-            DYNAMIC_CAST_VARIABLE(float,var,varf);
-            text = (boost::format("%1% %20t FLOAT %30t %2%")
-                            % var->Name()
-                            % (*varf->Pointer())).str();
-            break;
-            }
-          case type_double: /// New (added: 24/05/2010)
-            {
-            DYNAMIC_CAST_VARIABLE(double,var,vardouble);
-            text = (boost::format("%1% %20t DOUBLE %30t %2%")
-                            % var->Name()
-                            % (*vardouble->Pointer())).str();
-            break;
-            }
-          case type_long: /// New (added: 27/05/2010)
-            {
-            DYNAMIC_CAST_VARIABLE(long int,var,varlong);
-            text = (boost::format("%1% %20t LONG INT %30t %2%")
-                            % var->Name()
-                            % (*varlong->Pointer())).str();
-            break;
-            }
-          case type_int:
-            {
-            DYNAMIC_CAST_VARIABLE(int,var,varint);
-            text = (boost::format("%1% %20t INT %30t %2%")
-                            % var->Name()
-                            % (*varint->Pointer())).str();
-            break;
-            }
-          case type_uchar:
-            {
-            DYNAMIC_CAST_VARIABLE(unsigned char,var,varuchar);
-            text = (boost::format("%1% %20t UCHAR %30t %2%")
-                            % var->Name()
-                            % (int) (*varuchar->Pointer())).str();
-            break;
-            }
-          default:;
-        }
-        itemid = _var_tree->AppendItem(
-              vartree_numbers,
-              wxString(text.c_str(), wxConvUTF8),
-              -1,-1,
-              new MyTreeItemData(var));
-        _var_tree->SetItemFont(itemid,root_font);
+        text = var->TreeCtrlInfo();
+        valtext = var->GetValueAsString();
+        append_id = vartree_numbers;
       } else
       if (var->Type() == type_string)
       {
-        DYNAMIC_CAST_VARIABLE(std::string,var,varstr);
-        std::string text = (boost::format("%1% %20t \"%2%\"")
-                        % varstr->Name()
-                        % (*varstr->Pointer())).str();
-        itemid = _var_tree->AppendItem(
-              vartree_strings,
-              wxString(text.c_str(), wxConvUTF8),
-              -1,-1,
-              new MyTreeItemData(var));
-        _var_tree->SetItemFont(itemid,root_font);
+        text = var->TreeCtrlInfo();
+        valtext = (boost::format("'%1%'") %var->GetValueAsString()).str();
+        append_id = vartree_strings;
       } else
       if (var->Type() == type_ami_function)
       {
-        itemid = _var_tree->AppendItem(
-              vartree_functions,
-              (*variables)[i],
-              -1,-1,
-              new MyTreeItemData(var));
-        _var_tree->SetItemFont(itemid,root_font);
+        text = var->TreeCtrlInfo();
+        append_id = vartree_functions;
       } else
       if (var->Type() == type_ami_class)
       {
-        itemid = _var_tree->AppendItem(
-              vartree_classes,
-              (*variables)[i],
-              -1,-1,
-              new MyTreeItemData(var));
-        _var_tree->SetItemFont(itemid,root_font);
+        text = var->TreeCtrlInfo();
+        append_id = vartree_classes;
       } else
-      if ((var->Type() == type_ami_object)||(var->Type() == type_ami_cpp_object))
+      if ((var->Type() == type_ami_object))
       {
-        wxTreeItemId obj_itemid = _var_tree->AppendItem(
-              vartree_objects,
-              (*variables)[i],
-              -1,-1,
-              new MyTreeItemData(var));
-        _var_tree->SetItemFont(obj_itemid,root_font);
+        text = var->TreeCtrlInfo();
+        append_id = vartree_objects;
+      } else
+      if (var->Type() == type_c_image_function)
+      {
+        text = var->TreeCtrlInfo();
+        append_id = vartree_wrapped_functions;
+      } else
+      if ((var->Type() == type_c_procedure))
+      {
+        text = var->TreeCtrlInfo();
+        append_id = vartree_wrapped_procedures;
+      } else
+      if ((var->Type() == type_c_function)||(var->Type() == type_class_member))
+      {
+        text = var->TreeCtrlInfo();
+        append_id = vartree_wrapped_var_functions;
+      } else {
+        text = var->TreeCtrlInfo();
+        append_id = vartree_others;
+      }
+
+      itemid = _var_tree->AppendItem(
+            append_id,
+            wxString(var->Name().c_str(), wxConvUTF8),
+            -1,-1,
+            new MyTreeItemData(var));
+
+      _var_tree->SetItemText(itemid,_vartree_col_type,
+          wxString(var->GetTypeName().c_str(), wxConvUTF8));
+
+      //_var_tree->SetItemToolTip(itemid,
+      //    wxString(var->GetTypeName().c_str(), wxConvUTF8));
+
+      _var_tree->SetItemText(itemid,_vartree_col_val,
+          wxString(valtext.c_str(), wxConvUTF8));
+
+      _var_tree->SetItemText(itemid,_vartree_col_desc,
+          wxString(text.c_str(), wxConvUTF8));
+
+      _var_tree->SetItemFont(itemid,root_font);
+
+      if ((var->Type() == type_ami_object)) {
         // get the pointer to the objet
         DYNAMIC_CAST_VARIABLE(AMIObject,var,varobj);
         AMIObject::ptr obj( varobj->Pointer());
         // create the tree by recursive call
-        this->UpdateVarTree(obj_itemid, obj->GetContext());
-      } else
-      if (var->Type() == type_c_image_function)
-      {
-        itemid = _var_tree->AppendItem(
-              vartree_wrapped_functions,
-              (*variables)[i],
-              -1,-1,
-              new MyTreeItemData(var));
-        _var_tree->SetItemFont(itemid,root_font);
-      } else
-      if ((var->Type() == type_c_procedure))
-      {
-        itemid = _var_tree->AppendItem(
-              vartree_wrapped_procedures,
-              (*variables)[i],
-              -1,-1,
-              new MyTreeItemData(var));
-        _var_tree->SetItemFont(itemid,root_font);
-      } else
-      if ((var->Type() == type_c_function)||(var->Type() == type_class_member))
-      {
-        itemid = _var_tree->AppendItem(
-              vartree_wrapped_var_functions,
-              (*variables)[i],
-              -1,-1,
-              new MyTreeItemData(var));
-        _var_tree->SetItemFont(itemid,root_font);
-      } else
-        itemid = _var_tree->AppendItem(
-              vartree_others,
-              (*variables)[i],
-              -1,-1,
-              new MyTreeItemData(var));
-        _var_tree->SetItemFont(itemid,root_font);
-    }
+        this->UpdateVarTree(itemid, obj->GetContext());
+      }
+    } // end if var.get()
+
   } // end for
 
   // Display the total size of images in Mb
@@ -1368,6 +1322,7 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
   }
 
   // delete empty branches
+/*
   if (!_var_tree->ItemHasChildren(vartree_images)) 
     _var_tree->Delete(vartree_images);
   if (!_var_tree->ItemHasChildren(vartree_surfaces)) 
@@ -1390,7 +1345,29 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
     _var_tree->Delete(vartree_wrapped_var_functions);
   if (!_var_tree->ItemHasChildren(vartree_others)) 
     _var_tree->Delete(vartree_others);
-
+*/
+  if (_var_tree->GetChildrenCount(vartree_images)==0) 
+    _var_tree->Delete(vartree_images);
+  if (_var_tree->GetChildrenCount(vartree_surfaces)==0) 
+    _var_tree->Delete(vartree_surfaces);
+  if (_var_tree->GetChildrenCount(vartree_numbers)==0) 
+    _var_tree->Delete(vartree_numbers);
+  if (_var_tree->GetChildrenCount(vartree_strings)==0) 
+    _var_tree->Delete(vartree_strings);
+  if (_var_tree->GetChildrenCount(vartree_functions)==0) 
+    _var_tree->Delete(vartree_functions);
+  if (_var_tree->GetChildrenCount(vartree_classes)==0) 
+    _var_tree->Delete(vartree_classes);
+  if (_var_tree->GetChildrenCount(vartree_objects)==0) 
+    _var_tree->Delete(vartree_objects);
+  if (_var_tree->GetChildrenCount(vartree_wrapped_functions)==0) 
+    _var_tree->Delete(vartree_wrapped_functions);
+  if (_var_tree->GetChildrenCount(vartree_wrapped_procedures)==0) 
+    _var_tree->Delete(vartree_wrapped_procedures);
+  if (_var_tree->GetChildrenCount(vartree_wrapped_var_functions)==0) 
+    _var_tree->Delete(vartree_wrapped_var_functions);
+  if (_var_tree->GetChildrenCount(vartree_others)==0) 
+    _var_tree->Delete(vartree_others);
   //_var_list->Show();
 }
 

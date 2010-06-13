@@ -14,8 +14,8 @@ pos=Altitude2Position(alt47,1)
 earth.SetColors(i47,min(i47),max(i47))
 earth.ElevateMesh(pos)
 earth. SetColorMaterial(1)
-earth.Normals
-earth.Recompute
+earth.Normals()
+earth.Recompute()
 show earth
 earth_draw.rotate(0,-90,0)
 earth_draw.rotate(0,0,-90)
@@ -29,8 +29,8 @@ spos=Altitude2Position(salt47,1)
 searth.SetColors(si47,min(si47),max(si47))
 searth.ElevateMesh(pos)
 searth. SetColorMaterial(1)
-searth.Normals
-searth.Recompute
+searth.Normals()
+searth.Recompute()
 show searth
 searth_draw.rotate(0,-90,0)
 searth_draw.rotate(0,0,-90)

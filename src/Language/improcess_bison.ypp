@@ -35,7 +35,7 @@
 #include "wrapVTK.h"
 #include "wrapITK.h"
 //#include "wrap_MainFrame.h"
-#include "wrap_imagedraw.h"
+//#include "wrap_imagedraw.h"
 #include "itkCannyEdgeDetector.h"
 #include "wrapWII.h"
 #include "wrapFilters.h"
@@ -215,7 +215,6 @@ static void CB_Button(  void* cd) {
 extern void CB_delete_variable( void* var);
 extern void CB_delete_varlist( void* var);
 
-extern void CB_ParamWin( void* cd );
 
 //------------------------------------------------------
 void CB_update_imagelist( void* imagelist_gui);
@@ -244,7 +243,7 @@ void CB_update_imagelist( void* imagelist_gui);
       driver.yyiperror((boost::format(" Expecting an AMIObject variable of type %1%.")%(#type)).str().c_str()); \
       YYABORT; \
     } \
-    obj = wobj->_obj; \
+    obj = wobj->GetObj(); \
   }
 
 
@@ -455,7 +454,7 @@ void CB_update_imagelist( void* imagelist_gui);
 %token ASTRING ABLOCK NUMBER
 %token IDENTIFIER
 %token PROCESSED_VAR
-%token VAR_IMAGE  VAR_STRING VAR_IMAGEDRAW
+%token VAR_IMAGE  VAR_STRING
 %token VAR_SURFDRAW VAR_MATRIX
 %token VAR_FILE
 %token VAR_C_FUNCTION
@@ -730,8 +729,6 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_GenRead
 
 %token T_IMAGE
-%token T_IMAGEDRAW
-%token T_SURFACE
 %token T_NUM
 %token T_STRING
 %token T_TRANSFORM
@@ -2055,21 +2052,19 @@ command:
           BasicVariable::ptr var;
           Variables::ptr context = varim->GetContext();
 
-          title = (boost::format("%s_draw") % varim->Name().c_str()).str();
+          title = (boost::format("%s_draw") % varim->Name()).str();
           var = Vars.GetVar(title.c_str());
           if (var.get()) {
-            if (var->Type() == type_imagedraw) {
-                Variable<DessinImage>::ptr vard (boost::dynamic_pointer_cast<Variable<DessinImage> >(var));
-                driver.err_print("Hide window \n");
-                
-                vard->Pointer()->Hide();
+            GET_WRAPPED_OBJECT(DessinImage, var, di)
+            if (di.get()) {
+              di->Hide();
             }
             else
               fprintf(stderr,"Variable %s_draw not of type imagedraw \n",
                 varim->Name().c_str());
           } else
-            fprintf(stderr,"Image %s not visible \n",
-          varim->Name().c_str());
+            fprintf(stderr,"Variable %s not visible \n",
+          title.c_str());
 
         }
         |  SHOW VAR_AMI_OBJECT
@@ -3220,16 +3215,6 @@ command:
           draw = DessinImage::ptr(varimd->Pointer());
           draw->AllContoursParam(  $5 , $7 );
         }
-        | VAR_IMAGEDRAW T_POINT T_PaintCallback T_OP_PAR VAR_AMI_FUNCTION T_CL_PAR
-        {
-          GET_VARSTACK_VALUE(AMIFunction, func);
-          GET_VARSTACK_VALUE(DessinImage, draw);
-
-          draw->SetPaintCallback( (void*) CB_ParamWin, 
-                                  (void*) func.get() );
-          // may be a pb to call Paint() here since it will start another interpreter ??? to check
-          //draw->Paint();
-        }
         | VAR_IMAGEDRAW T_POINT T_SetOpacityImage T_OP_PAR var_image T_CL_PAR
         {
         /**
@@ -3984,10 +3969,12 @@ command:
         fprintf(stderr,"SetFluidNavFile() \t File too long \n");
       delete [] $3;
     }
-    | T_DrawEarthCoord T_OP_PAR VAR_IMAGEDRAW T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA expr T_COMMA
-                                              expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
+    | T_DrawEarthCoord T_OP_PAR expr_var T_COMMA expr 
+        T_COMMA expr T_COMMA expr T_COMMA expr 
+        T_COMMA expr T_COMMA expr T_COMMA expr 
+        T_COMMA expr T_CL_PAR
     {
-      GET_VARSTACK_VALUE(DessinImage,di);
+      GET_VARSTACK_OBJECT(DessinImage,di);
       float minlat  = $5;
       float maxlat  = $7;
       float latstep = $9;
@@ -4008,7 +3995,7 @@ command:
       int    type=1; // Africa
       char typestring[2][255] = {"NAtl","AfGG"};
 
-      InrImage::ptr           im    = di->GetImage();
+      InrImage::ptr           im   = di->GetImage();
       DessinImageParametres* param = di->GetParam();
 
       AMIFluid::InitCoordinates(i_offset,j_offset,nav_params, typestring[type]);
@@ -4039,9 +4026,9 @@ command:
                   (posy2>=param->_Zoom._ymin)&&(posy2<=param->_Zoom._ymax));
           if (pos1_OK&&pos2_OK) {
             if (fabsf(lat)>1E-5)
-              di->FixeParametresLigne( 1, wxSOLID, wxCAP_ROUND, wxJOIN_MITER);
+              di->SetLineParameters( 1, wxSOLID, wxCAP_ROUND, wxJOIN_MITER);
             else
-              di->FixeParametresLigne( 1, wxDOT, wxCAP_ROUND, wxJOIN_MITER);
+              di->SetLineParameters( 1, wxDOT, wxCAP_ROUND, wxJOIN_MITER);
             di->DrawLineZ(posx1,posy1,posx2,posy2);
           }
         }
@@ -4070,9 +4057,9 @@ command:
                   (posy2>=param->_Zoom._ymin)&&(posy2<=param->_Zoom._ymax));
           if (pos1_OK&&pos2_OK) {
             if (fabsf(lon)>1E-5)
-              di->FixeParametresLigne( 1, wxSOLID, wxCAP_ROUND, wxJOIN_MITER);
+              di->SetLineParameters( 1, wxSOLID, wxCAP_ROUND, wxJOIN_MITER);
             else
-              di->FixeParametresLigne( 1, wxDOT, wxCAP_ROUND, wxJOIN_MITER);
+              di->SetLineParameters( 1, wxDOT, wxCAP_ROUND, wxJOIN_MITER);
             di->DrawLineZ(posx1,posy1,posx2,posy2);
           }
         }
@@ -5207,6 +5194,7 @@ param_list_decl:
       pl->AddParam(ident->GetName(),type_image);
       $$ = pl;
     }
+/* Deprecated
     | T_IMAGEDRAW IDENTIFIER
     {
       IdentifierInfo::ptr ident($2);
@@ -5214,7 +5202,6 @@ param_list_decl:
       pl->AddParam(ident->GetName(),type_imagedraw);
       $$ = pl;
     }
-/* Deprecated
     | T_SURFACE IDENTIFIER
     {
       IdentifierInfo::ptr ident($2);
@@ -5251,6 +5238,7 @@ param_list_decl:
       pl->AddParam(ident->GetName(),type_image);
       $$ = pl;
     }
+/* Deprecated
     | param_list_decl T_COMMA T_IMAGEDRAW IDENTIFIER
     {
       IdentifierInfo::ptr ident($4);
@@ -5258,7 +5246,6 @@ param_list_decl:
       pl->AddParam(ident->GetName(),type_imagedraw);
       $$ = pl;
     }
-/* Deprecated
     | param_list_decl T_COMMA T_SURFACE IDENTIFIER
     {
       IdentifierInfo::ptr ident($4);
@@ -6006,132 +5993,6 @@ float_variable:
       ADD_VARSTACK_FLOAT(val);
       delete [] $3;
     }
-/*
-    |
-    VAR_IMAGEDRAW T_POINT T_GetXmin
-    {
-      Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
-      DessinImage::ptr draw;
-      DessinImageParametres* param;
-
-      draw = DessinImage::ptr(varimd->Pointer());
-      param = draw->GetParam();
-      float val=param->_Zoom._xmin;
-      ADD_VARSTACK_FLOAT(val);
-    }
-    |
-    VAR_IMAGEDRAW T_POINT T_GetXmax
-    {
-      Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
-      DessinImage::ptr draw;
-      DessinImageParametres* param;
-
-      draw = DessinImage::ptr(varimd->Pointer());
-      param = draw->GetParam();
-      float val=param->_Zoom._xmax;
-      ADD_VARSTACK_FLOAT(val);
-    }
-    |
-    VAR_IMAGEDRAW T_POINT T_GetYmin
-    {
-      Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
-      DessinImage::ptr draw;
-      DessinImageParametres* param;
-
-      draw = DessinImage::ptr(varimd->Pointer());
-      param = draw->GetParam();
-      float val=param->_Zoom._ymin;
-      ADD_VARSTACK_FLOAT(val);
-    }
-    |
-    VAR_IMAGEDRAW T_POINT T_GetYmax
-    {
-      Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
-      DessinImage::ptr draw;
-      DessinImageParametres* param;
-
-      draw = DessinImage::ptr(varimd->Pointer());
-      param = draw->GetParam();
-      float val=param->_Zoom._ymax;
-      ADD_VARSTACK_FLOAT(val);
-    }
-    |
-    VAR_IMAGEDRAW T_POINT T_GetZmin
-    {
-      Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
-      DessinImage::ptr draw;
-      DessinImageParametres* param;
-
-      draw = DessinImage::ptr(varimd->Pointer());
-      param = draw->GetParam();
-      float val=param->_Zoom._zmin;
-      ADD_VARSTACK_FLOAT(val);
-    }
-    |
-    VAR_IMAGEDRAW T_POINT T_GetZmax
-    {
-      Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
-      DessinImage::ptr draw;
-      DessinImageParametres* param;
-
-      draw = DessinImage::ptr(varimd->Pointer());
-      param = draw->GetParam();
-      float val=param->_Zoom._zmax;
-      ADD_VARSTACK_FLOAT(val);
-    }
-    |
-    VAR_IMAGEDRAW T_POINT T_GetXPos
-    {
-      Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
-      DessinImage::ptr draw;
-      DessinImageParametres* param;
-      string comment;
-      draw = DessinImage::ptr(varimd->Pointer());
-      param = draw->GetParam();
-      float val=param->_pos._x;
-      ADD_VARSTACK_FLOAT(val);
-      comment = str(format(" //  xpos=%3d") % param->_pos._x);
-      if (driver.InConsole())
-        GB_main_wxFrame->GetConsole()
-                        ->IncCommand(wxString::FromAscii(comment.c_str()));
-    }
-    |
-    VAR_IMAGEDRAW T_POINT T_GetYPos
-    {
-      Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
-      DessinImage::ptr draw;
-      DessinImageParametres* param;
-      string comment;
-
-      draw = DessinImage::ptr(varimd->Pointer());
-      param = draw->GetParam();
-      float val=param->_pos._y;
-      ADD_VARSTACK_FLOAT(val);
-
-      comment = str( format(" //  ypos=%3d") % param->_pos._y);
-      if (driver.InConsole())
-        GB_main_wxFrame->GetConsole()
-                       ->IncCommand(wxString::FromAscii(comment.c_str()));
-
-    }
-    |
-    VAR_IMAGEDRAW T_POINT T_GetZPos
-    {
-      Variable<DessinImage>::ptr  varimd(driver.var_stack.GetLastVar<DessinImage>());
-      DessinImage::ptr draw;
-      DessinImageParametres* param;
-      string comment;
-
-      draw = DessinImage::ptr(varimd->Pointer());
-      param = draw->GetParam();
-      float val=param->_pos._z;
-      ADD_VARSTACK_FLOAT(val);
-
-      comment = str( format(" //  xpos=%3d") % param->_pos._z);
-      if (driver.InConsole())
-        GB_main_wxFrame->GetConsole()
-                        ->IncCommand(wxString::FromAscii(comment.c_str()));
-    }*/
 /*
     |
     AnisoGS T_POINT T_GetNoiseSD
@@ -9309,16 +9170,10 @@ postfix_var:
             YYABORT;
           }
           AMIObject::ptr object(var->Pointer());
-          Variables::ptr previous_ocontext (Vars.GetObjectContext());
-          Vars.SetObjectContext(object->GetContext());
-    
+
           // here, need to do our own checking ...
           BasicVariable::ptr newvar( 
-            Vars.GetVar(ident->GetName().c_str(),
-            OBJECT_CONTEXT_NUMBER));
-
-          // reset previous object context
-          Vars.SetObjectContext(previous_ocontext);
+            object->GetContext()->GetVar(ident->GetName().c_str()));
     
           if  ((!GB_driver.procedure_declaration)&& newvar.get())   {
             //cout << "returning variable" << endl;
@@ -9603,7 +9458,7 @@ prefix_var:
 
 
 multiplicative_var: 
-  prefix_var %prec T_MULT
+  prefix_var %prec SHIFT_THERE
   | multiplicative_var T_MULT prefix_var
   {
     GET_CHECK_VARSTACK(var2)
@@ -11070,7 +10925,7 @@ void wxScheduleTimer::Notify()
 //   -----------------------
 {
   //cout << "Notify()" << endl;
-  CB_ParamWin( var->Pointer().get() );
+  GB_driver.yyip_call_function(var->Pointer().get());
 
   std::list<wxScheduleTimer::ptr>::iterator Iter;
   for (Iter  = schedule_timers.begin();

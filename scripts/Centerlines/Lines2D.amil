@@ -85,7 +85,7 @@ Class Lines2D \
 
   #----------------------------
   proc ::Close() {
-    ::win.HidePanel
+    ::win.HidePanel()
     delvars GetObjectName(::Close)
   }
   Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -107,12 +107,12 @@ Class Lines2D \
       ::win.AddPage("IO")
         ::win.BeginBoxPanel("Input Image")
           # set the input image
-          ::win.BeginHorizontal
+          ::win.BeginHorizontal()
             ::win.AddImageChoice( &::input_name, "")
             ::win.AddButton("Load",::load_input)
             #::win.AddButton("Ref",::ref_input)
-          ::win.EndHorizontal
-        ::win.EndBoxPanel
+          ::win.EndHorizontal()
+        ::win.EndBoxPanel()
 
       ::win.AddPage("Params")
         ::win.BeginBoxPanel("Scales")
@@ -123,11 +123,11 @@ Class Lines2D \
         ::win.EndBoxPanel()
         ::win.AddButton("Run",::Run)
         ::win.AddButton("Display",::Display)
-    ::win.EndBook
-      ::win.BeginHorizontal
+    ::win.EndBook()
+      ::win.BeginHorizontal()
       ::win.AddButton("Close",          ::Close)
       ::win.AddButton("Close All",          ::CloseAll)
-    ::win.EndHorizontal  
+    ::win.EndHorizontal()  
 
     ::win.Update(-1)
     ::win.Display()

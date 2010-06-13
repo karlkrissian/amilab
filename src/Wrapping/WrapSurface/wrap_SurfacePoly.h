@@ -19,20 +19,28 @@
 #include "paramlist.h"
 #include "ami_object.h"
 
-#include "surface.hpp"
+//#include "surface.hpp"
+namespace amilab {
+class SurfacePoly;
+};
+
+using namespace amilab;
 
 class WrapClass_SurfacePoly : public WrapClassBase
 {
   DEFINE_CLASS(WrapClass_SurfacePoly);
 
-  // for nested classes
-  typedef WrapClass_SurfacePoly::ptr _parentclass_ptr;
+  protected:
+    // for nested classes
+    typedef WrapClass_SurfacePoly::ptr _parentclass_ptr;
+    typedef amilab::SurfacePoly _obj_type;
 
   public:
-    boost::shared_ptr<SurfacePoly> _obj;
+    boost::shared_ptr<_obj_type> _obj;
+    const boost::shared_ptr<_obj_type>& GetObj() const { return _obj; }
 
     /// Constructor
-    WrapClass_SurfacePoly(boost::shared_ptr<SurfacePoly > si): _obj(si)
+    WrapClass_SurfacePoly(boost::shared_ptr<amilab::SurfacePoly > si): _obj(si)
     {}
 
     ADD_CLASS_METHOD(info,             "Prints information about the polygonal surface");
@@ -177,7 +185,7 @@ AMIObject::ptr AddWrap_SurfacePoly(  WrapClass_SurfacePoly::ptr& objectptr);
  * @param si_ptr input smart pointer to a SurfacePoly
  * @return smart pointer to an AMIObject class
  */
-Variable<AMIObject>::ptr CreateVar_SurfacePoly( SurfacePoly* si);
+Variable<AMIObject>::ptr CreateVar_SurfacePoly( amilab::SurfacePoly* si);
 
 /** Method that adds wrapping of SurfacePoly 
  */

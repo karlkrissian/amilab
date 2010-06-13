@@ -37,7 +37,7 @@ if (!exists(CSPHClass)) {
     
     #----------------------------
     proc ::Close() {
-      ::win.HidePanel
+      ::win.HidePanel()
       delvars GetObjectName(::Close)
     }
     Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -80,7 +80,7 @@ if (!exists(CSPHClass)) {
       import = &global::ami_import;
       ::win = import->ParamPanel("CreateSphere")
     
-      ::win.BeginBook
+      ::win.BeginBook()
         ::win.AddPage("Param")
           ::win.AddInt( &::dimx,"X_dim",1,1000)
           ::win.AddInt( &::dimy,"Y_dim",1,1000)
@@ -91,21 +91,21 @@ if (!exists(CSPHClass)) {
             ::win.AddFloat( &::bg,"Background",0.1,500)
             ::win.AddFloat( &::fg,"Foreground",0.1,500)
           ::win.EndPanel
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
         
           ::win.AddFloat( &::R,"Radius",0.1,50)
         
           ::win.AddString( &::image_name,"Result name")
           ::win.AddButton("Create", ::Create)
           ::win.AddButton("Show",   ::Show)
-      ::win.EndBook
-      ::win.BeginHorizontal
+      ::win.EndBook()
+      ::win.BeginHorizontal()
           ::win.AddButton("Close",      ::Close)
           ::win.AddButton("Close All",  ::CloseAll)
-        ::win.EndHorizontal
+        ::win.EndHorizontal()
     
       ::win.Update(-1)
-      ::win.Display
+      ::win.Display()
     }
     
     ::Init

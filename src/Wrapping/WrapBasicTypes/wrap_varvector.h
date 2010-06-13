@@ -29,9 +29,12 @@ class WrapClass_VarVector : public WrapClassBase
 
   // for nested classes
   typedef WrapClass_VarVector::ptr _parentclass_ptr;
+  typedef VarVector _obj_type;
 
   public:
-    boost::shared_ptr<VarVector> _obj;
+    boost::shared_ptr<_obj_type> _obj;
+    const boost::shared_ptr<_obj_type>& GetObj() const { return _obj; }
+    
 
     /// Constructor
     WrapClass_VarVector( boost::shared_ptr<VarVector>& vv): _obj(vv)

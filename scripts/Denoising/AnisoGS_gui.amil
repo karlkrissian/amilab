@@ -28,7 +28,7 @@ if (!exists(AnisoGSClass)) {
   
   #----------------------------
   proc ::Close() {
-    ::win.HidePanel
+    ::win.HidePanel()
     delvars GetObjectName(::Close)
   }
   Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -138,26 +138,26 @@ if (!exists(AnisoGSClass)) {
         ::win.AddString( &::result_filename,"result filename")
         
         ::win.BeginBoxPanel("Controls")
-          ::win.BeginHorizontal
+          ::win.BeginHorizontal()
             ::win.AddButton("Restart",    ::Restart)
             ::win.AddButton("Filter",     ::Filter)
             ::win.AddButton("Display",    ::Display)
             ::win.AddButton("Save",       ::Save)
-          ::win.EndHorizontal
-        ::win.EndBoxPanel
+          ::win.EndHorizontal()
+        ::win.EndBoxPanel()
       ::win.AddPage("Contour Smoothing")
         ::win.BeginBoxPanel("2D Images")
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
         ::win.BeginBoxPanel("3D Images")
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
 
-    ::win.EndBook
-    ::win.BeginHorizontal
+    ::win.EndBook()
+    ::win.BeginHorizontal()
       ::win.AddButton("Close",          ::Close)
       ::win.AddButton("Close All",          ::CloseAll)
-    ::win.EndHorizontal  
-    ::win.Update
-    ::win.Display
+    ::win.EndHorizontal()  
+    ::win.Update()
+    ::win.Display()
     ::win.Update(-1)
   }
   

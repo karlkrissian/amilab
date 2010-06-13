@@ -102,7 +102,7 @@ proc RunLSUS( IMAGE im, IMAGE initial, NUM Imean, NUM Isd, NUM it, NUM graphics)
 
 func "AddSphere"
 
-proc FollowContour( IMAGE im, IMAGE res, IMAGEDRAW imdraw) {
+proc FollowContour( IMAGE im, IMAGE res, OBJECT imdraw) {
   print "1\n"
   posz=imdraw.GetZPos
   print "2\n"

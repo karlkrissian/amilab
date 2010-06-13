@@ -21,7 +21,7 @@ pos=Altitude2Position(alt48,1)
 earth.SetColors(i48,min(i48),max(i48))
 pos=pos/1000
 earth.ElevateMesh(pos)
-earth.Normals
+earth.Normals()
 earth.SetColorMaterial(1)
 
 printn "clouds[3]"
@@ -30,7 +30,7 @@ clouds[3]._info
 show earth
 for n=0 to 4 { 
   clouds[n].ElevateMesh(pos)
-  clouds[n].Normals
+  clouds[n].Normals()
   earth_draw += clouds[n]
 }
 

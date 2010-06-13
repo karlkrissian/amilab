@@ -26,7 +26,7 @@ if (!exists(MinSearchClass)) {
     #----------------------------
     proc ::Close() \
     {
-      ::win.Hide
+      ::win.HidePanel()
       delvars GetObjectName(::Close)
     }
     Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -74,7 +74,7 @@ if (!exists(MinSearchClass)) {
     
       ::result_string = "%1%" %::xmin
       ::result_value  = "%1%" %::valmin
-      ::win.update
+      ::win.Update(-1)
     
     }
     Comments( ::MinGrid, "Simple procedure to find the minimum of a function by scanning a regular grid")
@@ -160,7 +160,7 @@ if (!exists(MinSearchClass)) {
       ::result_string = "%1% " %resX
       ::result_string =  ::result_string + " +/- %1%" %_step
       ::result_value  =  "%1%" %resV
-      ::win.update
+      ::win.Update(-1)
 
     }
     Comments( ::MinDichotomy, "Simple procedure to find the minimum of a function by dichotomy.")
@@ -168,42 +168,43 @@ if (!exists(MinSearchClass)) {
     proc ::CreateWindow() \
     {
       # parameters window
-      ::win = ParamWin("MinSearch")
+      import = &global::ami_import;
+      ::win = import->ParamPanel("MinSearch")
       
-      ::win.BeginBook
+      ::win.BeginBook()
         ::win.AddPage("Parameters")
-          ::win.AddString(::eval_string,"E")
+          ::win.AddString( &::eval_string,"E")
 
-          ::win.BeginBook
+          ::win.BeginBook()
             ::win.AddPage("P1")
               ::win.BeginBoxPanel("1st parameter")
-                ::win.AddFloat(::P1min,"min",0,100)
-                ::win.AddFloat(::P1max,"max",0,100)
-                ::win.AddFloat(::P1inc,"inc",0,100)
-                ::win.AddInt(::P1nbits,"iter",1,10)
-              ::win.EndBoxPanel
+                ::win.AddFloat( &::P1min,"min",0,100)
+                ::win.AddFloat( &::P1max,"max",0,100)
+                ::win.AddFloat( &::P1inc,"inc",0,100)
+                ::win.AddInt( &::P1nbits,"iter",1,10)
+              ::win.EndBoxPanel()
   
             ::win.AddPage("P2")
               ::win.BeginBoxPanel("2nd parameter")
-                ::win.AddFloat(::P2min,"min",0,100)
-                ::win.AddFloat(::P2max,"max",0,100)
-                ::win.AddFloat(::P2inc,"inc",0,100)
-                ::win.AddInt(::P2nbits,"iter",1,10)
-              ::win.EndBoxPanel
-          ::win.EndBook
+                ::win.AddFloat( &::P2min,"min",0,100)
+                ::win.AddFloat( &::P2max,"max",0,100)
+                ::win.AddFloat( &::P2inc,"inc",0,100)
+                ::win.AddInt( &::P2nbits,"iter",1,10)
+              ::win.EndBoxPanel()
+          ::win.EndBook()
 
-          ::win.AddString(::result_string,"res")
-          ::win.AddString(::result_value,"val")
+          ::win.AddString( &::result_string,"res")
+          ::win.AddString( &::result_value,"val")
           ::win.AddButton("Dichotomy",::MinDichotomy)
           ::win.AddButton("Grid",     ::MinGrid)
-      ::win.EndBook
-      ::win.BeginHorizontal
+      ::win.EndBook()
+      ::win.BeginHorizontal()
         ::win.AddButton("Close",      ::Close)
         ::win.AddButton("Close All",  ::CloseAll)
-      ::win.EndHorizontal
+      ::win.EndHorizontal()
       
-      ::win.update
-      ::win.Display
+      ::win.Update(-1)
+      ::win.Display()
     }
 
     ::Init
@@ -223,7 +224,7 @@ if (!exists(minsearch)) {
   if (argc>=1) {
     printn "reading image"
     minsearch->eval_string = $1
-    minsearch->win.update
+    minsearch->win.Update(-1)
   }
 
 } else {

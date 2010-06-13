@@ -46,7 +46,7 @@
       WrapClass_##type::ptr wrapped_obj( \
         boost::dynamic_pointer_cast<WrapClass_##type>(wrapped_base)); \
       if (wrapped_obj.get()) \
-        objname = wrapped_obj->_obj; \
+        objname = wrapped_obj->GetObj(); \
     }
 
 // TODO: improve this way of wrapping template objects ...
@@ -61,7 +61,7 @@
       WrapClass_##type::ptr wrapped_obj( \
         boost::dynamic_pointer_cast<WrapClass_##type >(wrapped_base)); \
       if (wrapped_obj.get()) \
-        objname = wrapped_obj->_obj; \
+        objname = wrapped_obj->GetObj(); \
     }
 
 template<typename> 
@@ -71,22 +71,7 @@ struct to_string {
     static char const* value() { return "unknown"; }
 };
 
-#define TO_STRING(type) \
-  template<> struct to_string<type> { \
-      static char const* value() { return #type; } \
-  }; \
 
-class FloatMatrix;
-class InrImage;
-
-TO_STRING(float);
-TO_STRING(double);
-TO_STRING(long);
-TO_STRING(int);
-TO_STRING(unsigned char);
-TO_STRING(InrImage);
-TO_STRING(std::string);
-TO_STRING(FloatMatrix);
 // TODO: the rest of convertions
 
 /*
@@ -117,6 +102,39 @@ typedef BasicVariable::ptr (C_wrap_varfunction)(ParamList*);
 
 
 
+#define TO_STRING(type) \
+  template<> struct to_string<type> { \
+      static char const* value() { return #type; } \
+  }; \
+
+TO_STRING(float);
+TO_STRING(double);
+TO_STRING(long);
+TO_STRING(int);
+TO_STRING(unsigned char);
+class InrImage;
+TO_STRING(InrImage);
+TO_STRING(std::string);
+class FloatMatrix;
+TO_STRING(FloatMatrix);
+TO_STRING(FILE);
+TO_STRING(C_wrap_procedure);
+class WrapClassMember;
+TO_STRING(WrapClassMember);
+TO_STRING(C_wrap_imagefunction);
+TO_STRING(C_wrap_varfunction);
+class AMIFunction;
+TO_STRING(AMIFunction);
+class AMIClass;
+TO_STRING(AMIClass);
+class AMIObject;
+TO_STRING(AMIObject);
+class GLTransfMatrix;
+TO_STRING( GLTransfMatrix);
+class VarArray;
+TO_STRING( VarArray);
+
+
 //----------------------------------------------------------------------
 /**
  * Define one variable, which contains a generic pointer (void*) to a smart pointer
@@ -133,9 +151,7 @@ public:
   typedef typename boost::shared_ptr<Variable<T> >    ptr;
   typedef typename boost::weak_ptr<Variable<T> >      wptr;
   typedef typename std::vector<ptr>     ptr_vector;
-  typedef typename std::vector<wptr>    wptr_vector;
   typedef typename std::list<ptr>       ptr_list;
-  typedef typename std::list<wptr>      wptr_list;
 
 
 private:
@@ -217,6 +233,17 @@ public:
   {
     return (_pointer.get()!=NULL);
   }
+
+  virtual const std::string GetTypeName() const
+  {
+    return to_string<T>::value();
+  };
+
+
+  virtual std::string TreeCtrlInfo() const 
+  {
+    return _comments;
+  };
 
   /**
    * Copy of variables
@@ -578,6 +605,12 @@ class VarArray;
 #include "Variable_FloatMatrix.h"
 #include "Variable_AMIObject.h"
 
+template<> std::string Variable<WrapClassMember>::TreeCtrlInfo() const;
+/*
+{
+  return Pointer()->GetDescription();
+};
+*/
 
 
 #endif

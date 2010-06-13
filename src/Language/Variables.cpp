@@ -314,6 +314,7 @@ void Variables::EmptyVariables()
 {
   CLASS_MESSAGE(boost::format("  in %1% ") % GetName());
   std::list<BasicVariable::ptr>::iterator Iter;
+/* useless now ???
   Iter  = _vars.begin();
   while (Iter != _vars.end() )
   {
@@ -324,7 +325,7 @@ void Variables::EmptyVariables()
     }
     Iter++;
   }
-
+*/
   Iter  = _vars.begin();
   while ( Iter != _vars.end())
   {

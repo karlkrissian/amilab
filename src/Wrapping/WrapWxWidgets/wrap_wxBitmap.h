@@ -17,7 +17,6 @@
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
-#include <wx/html/htmlwin.h>
 
 #include <wx/bitmap.h>
 
@@ -28,9 +27,11 @@ class WrapClass_wxBitmap : public WrapClassBase
 
   // for nested classes
   typedef WrapClass_wxBitmap::ptr _parentclass_ptr;
+  typedef wxBitmap _obj_type;
 
   public:
-    boost::shared_ptr<wxBitmap> _obj;
+    boost::shared_ptr<_obj_type> _obj;
+    const boost::shared_ptr<_obj_type>& GetObj() const { return _obj; }
 
     /// Constructor
     WrapClass_wxBitmap(boost::shared_ptr<wxBitmap> val): _obj(val)

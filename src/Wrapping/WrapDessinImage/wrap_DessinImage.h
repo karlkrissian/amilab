@@ -20,23 +20,28 @@
 #include "ami_object.h"
 
 #include "DessinImage.hpp"
-//#include "wrap_wxWindow.h"
+#include "wrap_FenetreDessin.h"
 
-class WrapClass_DessinImage : public WrapClassBase
+class WrapClass_DessinImage  : public WrapClass_FenetreDessin
 //: public WrapClass_wxWindow
 {
   DEFINE_CLASS(WrapClass_DessinImage);
 
-  // for nested classes
-  typedef WrapClass_DessinImage::ptr _parentclass_ptr;
+  protected:
+    // for nested classes
+    typedef WrapClass_DessinImage::ptr _parentclass_ptr;
+    typedef DessinImage _obj_type;
 
   public:
     /// Stores a pointer to an object of type DessinImage.
-    boost::shared_ptr<DessinImage> _obj;
+    boost::shared_ptr<_obj_type> _obj;
+    const boost::shared_ptr<_obj_type>& GetObj() const { return _obj; }
 
     /// Constructor
-    WrapClass_DessinImage(boost::shared_ptr<DessinImage > si): _obj(si)
+    WrapClass_DessinImage(boost::shared_ptr<DessinImage > si): WrapClass_FenetreDessin(si),  _obj(si)
     {}
+
+    ADD_CLASS_METHOD(reference,       "Called each time a new reference of the variable is created: increases the list of variable to delete from their contexts when closing the window.");
 
     ADD_CLASS_METHOD(setpos,                 "Set the cursor position on a imagedraw window");
     ADD_CLASS_METHOD(showcursor,             "Displays or hides the cursor of a imagedraw window");
@@ -70,59 +75,21 @@ class WrapClass_DessinImage : public WrapClassBase
     ADD_CLASS_METHOD(GetYmax,               "Gets the maximum dimension of the coordinate Y.");
     ADD_CLASS_METHOD(GetZmin,               "Gets the minimum dimension of the coordinate Z.");
     ADD_CLASS_METHOD(GetZmax,               "Gets the maximum dimension of the coordinate Z.");
-
-    /**
-     * command <-- $variable_imagedraw.GetXPos
-     *
-     * parameters
-     *   None
-     * description:
-     *   Gets the position of the coordinate X.
-     *
-     **/
     ADD_CLASS_METHOD(GetXPos,             "Gets the position of the coordinate X.");
-
-    /**
-     * command <-- $variable_imagedraw.GetYPos
-     *
-     * parameters
-     *   None
-     * description:
-     *   Gets the position of the coordinate Y.
-     *
-     **/
     ADD_CLASS_METHOD(GetYPos,             "Gets the position of the coordinate Y.");
-
-    /**
-     * command <-- $variable_imagedraw.GetZPos
-     *
-     * parameters
-     *   None
-     * description:
-     *   Gets the position of the coordinate Z.
-     *
-     **/
     ADD_CLASS_METHOD(GetZPos,             "Gets the position of the coordinate Z.");
 
-    /**
-     * image <-- VAR_IMAGEDRAW '.' T_getimage
-     *
-     * parameters
-     *   None
-     * description:
-     *   Save the snapshot as a 2D image of format RGB. In the case of an image,
-     * the snapshot is taken from X11 and it includes potential colorbar and
-     * axes, in the case of a surface, it is taken from OpenGL.
-     *
-     **/
     ADD_CLASS_METHOD(getimage,             "Save the snapshot as a 2D image of format RGB. In the case of an image, the snapshot is taken from X11 and it includes potential colorbar and axes, in the case of a surface, it is taken from OpenGL");
 
-
-    ADD_CLASS_METHOD(reference,       "Called each time a new reference of the variable is created: increases the list of variable to delete from their contexts when closing the window.");
+    ADD_CLASS_METHOD(DrawLineZ,  "Draws a line on XY plane.");
 
     void AddMethods(_parentclass_ptr& this_ptr )
     {
+      // Add members from wxWindow
+      WrapClass_FenetreDessin::ptr parent_obj(boost::dynamic_pointer_cast<WrapClass_FenetreDessin>(this_ptr));
+      parent_obj->AddMethods(parent_obj);
 
+      AddVar_reference(             this_ptr);
       AddVar_setpos(                this_ptr, "_setpos");
       AddVar_showcursor(            this_ptr);
       AddVar_update(                this_ptr);
@@ -159,7 +126,7 @@ class WrapClass_DessinImage : public WrapClassBase
       AddVar_GetYPos(               this_ptr);
       AddVar_GetZPos(               this_ptr);
       AddVar_getimage(              this_ptr, "_getimage");
-      AddVar_reference(             this_ptr);
+      AddVar_DrawLineZ(             this_ptr);
     };
 };
 

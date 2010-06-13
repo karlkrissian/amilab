@@ -201,8 +201,8 @@ if (!exists(ParametricSurfaceClass)) {
         show ::s
       }
 #printn "6"
-      ::s.Normals
-      ::s.Recompute
+      ::s.Normals()
+      ::s.Recompute()
       ::s_draw.Paint
       ::updating = 0
 #printn "7"
@@ -318,7 +318,7 @@ if (!exists(ParametricSurfaceClass)) {
       ::win.AddEnumChoice(::type_id,"Expression")
     ::win.SetCallback( &::NewType)
 
-    ::book = ::win.BeginBook
+    ::book = ::win.BeginBook()
       # Main Page
       ::page_main = ::win.AddPage("Main")
         ::win.BeginBoxPanel("Resolution")
@@ -326,7 +326,7 @@ if (!exists(ParametricSurfaceClass)) {
             ::win.SetCallback( &::Update)
             ::phidim_id   = ::win.AddInt( &::phi_dim,  "phi",   4,500)
             ::win.SetCallback( &::Update)
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
         ::win.BeginBoxPanel("Scaling Coeff.")
             ::cx_id = ::win.AddFloat( &::cx,  "x", 0.1,5)
             ::win.SetCallback( &::Update)
@@ -335,7 +335,7 @@ if (!exists(ParametricSurfaceClass)) {
             ::cz_id = ::win.AddFloat( &::cz,  "z", 0.1,5)
             ::win.SetCallback( &::Update)
             ::win.AddButton("Reset",   ::ResetScale)
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
 
 
       # SuperQuadric Page
@@ -348,7 +348,7 @@ if (!exists(ParametricSurfaceClass)) {
             ::ez_id = ::win.AddFloat( &::e_z,  "e_z", 0.1,5)
             ::win.SetCallback( &::Update)
             ::win.AddButton("Set Ellipsoid",   ::SetEllipsoid)
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
 
       # SuperQuadric Torus
       ::page_torus = ::win.AddPage("Torus")
@@ -357,7 +357,7 @@ if (!exists(ParametricSurfaceClass)) {
             ::win.SetCallback( &::Update)
             ::r_id = ::win.AddFloat( &::r,  "r", 0.1,5)
             ::win.SetCallback( &::Update)
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
 
       # User Equation Page
       ::page_expr = ::win.AddPage("Expr")
@@ -368,23 +368,23 @@ if (!exists(ParametricSurfaceClass)) {
           ::win.SetCallback( &::Update)
           ::Z_id = ::win.AddString( &::Z,"Z=")
           ::win.SetCallback( &::Update)
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
         ::win.BeginBoxPanel("Time evolution:")
           ::win.AddInt( &::kmax,  "kmax", 0,100)
           ::win.AddInt( &::timestep,  "timestep", 0,1000)
-          ::win.BeginHorizontal
+          ::win.BeginHorizontal()
             ::win.AddButton("Start", ::Start)
             ::win.AddButton("Stop",  ::Stop)
-          ::win.EndHorizontal
-        ::win.EndBoxPanel
+          ::win.EndHorizontal()
+        ::win.EndBoxPanel()
         
         ::win.AddString( &::eq_filename,"Eq. filename")
-        ::win.BeginHorizontal
+        ::win.BeginHorizontal()
           ::win.AddButton("Save", ::SaveEquation)
           ::win.AddButton("Read", ::ReadEquation)
-        ::win.EndHorizontal
+        ::win.EndHorizontal()
 
-    ::win.EndBook
+    ::win.EndBook()
 
     ::AddStandardButtons(&::win)
 
@@ -402,7 +402,7 @@ if (!exists(ParametricSurfaceClass)) {
 #          ::win.AddButton("Close All",          ::CloseAll)
 #        ::win.EndHorizontal
     ::win.Update(-1)
-    ::win.Display
+    ::win.Display()
   }
   
   ::Init

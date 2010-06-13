@@ -278,8 +278,8 @@ if (!exists(AnisoNRADClass)) {
         ::res_surf   = CreateFlatMesh(i2,0)
         ::input_surf.ElevateMesh(i1/10)
         ::res_surf.ElevateMesh(i2/10)
-        ::input_surf.Normals
-        ::res_surf.Normals
+        ::input_surf.Normals()
+        ::res_surf.Normals()
         show ::input_surf
         show ::res_surf
         ::input_surf_draw.compare(::res_surf_draw)
@@ -291,7 +291,7 @@ if (!exists(AnisoNRADClass)) {
       } else {
         if (exists(::input_draw)) {
           InfoDialog "Taking the current slice from input image viewer"
-          zpos = ::input_draw.GetZPos
+          zpos = ::input_draw.GetZPos()
         } else {
           InfoDialog "Taking the middle slice of the image"
           zpos = ::input.tz/2 
@@ -356,7 +356,7 @@ if (!exists(AnisoNRADClass)) {
               ::win.AddEnumChoice(::scalar_mode_id,"Additive")
               ::win.AddEnumChoice(::scalar_mode_id,"MRI")
               ::win.AddEnumChoice(::scalar_mode_id,"MRI new")
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
   
           ::mat_boxid = ::win.BeginBoxPanel("Matrix diffusion parameters")
             ::sigma_id = ::win.AddFloat( &::sigma,"sigma",0.01,10)
@@ -372,10 +372,10 @@ if (!exists(AnisoNRADClass)) {
             ::eigenmode_id = ::win.AddEnum( &::eigen_mode,"Eigen mode")
               ::win.AddEnumChoice(::eigenmode_id,"Sum")
               ::win.AddEnumChoice(::eigenmode_id,"Max")
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
           
           ::win.AddPage("Controls")
-            ::win.BeginHorizontal
+            ::win.BeginHorizontal()
               ::AddBitmapButton(&::win, &::icons._Refresh,   32, "ReloadInput")
               ::win.SetPositionProp(-1,0)
               ::AddBitmapButton(&::win, &::icons._Selection, 32, "GetRoi")
@@ -384,7 +384,7 @@ if (!exists(AnisoNRADClass)) {
               ::win.SetPositionProp(-1,0)
               ::AddBitmapButton(&::win, &::icons._Show,      32, "Display")
               ::win.SetPositionProp(-1,0)
-            ::win.EndHorizontal
+            ::win.EndHorizontal()
             ::win.AddBoolean( &::run_on_roi,"Run on ROI")
             ::win.AddButton("Display Surfaces", ::DisplaySurfaces)
             ::win.BeginBoxPanel("Result --> disk")
@@ -394,7 +394,7 @@ if (!exists(AnisoNRADClass)) {
                 ::win.SetPositionProp(1)
                 ::AddBitmapButton16(&::win, &::icons._Save, "Save")
               ::win.EndHorizontal()
-            ::win.EndBoxPanel
+            ::win.EndBoxPanel()
             ::win.BeginBoxPanel("Result --> global variable")
               ::win.BeginHorizontal()
                 ::win.AddString(&::result_imagename,"Name")
@@ -402,15 +402,15 @@ if (!exists(AnisoNRADClass)) {
                 ::win.SetPositionProp(1)
                 ::AddBitmapButton16(&::win, &::icons._Copy, "SaveToImage")
               ::win.EndHorizontal()
-            ::win.EndBoxPanel
+            ::win.EndBoxPanel()
 
           ::AddHelpPage(&::win)
   
-      ::win.EndBook
+      ::win.EndBook()
   
       ::AddStandardButtons(&::win)
       
-      ::win.Display
+      ::win.Display()
       ::win.Update(-1)
       ::new_eq_type
     }

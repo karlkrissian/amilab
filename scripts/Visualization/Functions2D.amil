@@ -98,7 +98,7 @@ if (!exists(Functions2DClass)) {
     #----------------------------
     proc ::Close() \
     {
-      ::win.HidePanel
+      ::win.HidePanel()
       delvars GetObjectName(::Close)
     }
     Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -253,10 +253,10 @@ if (!exists(Functions2DClass)) {
       # add Drawing Window
       d = ::win.CurrentParent()
       ::dw = import->wxDrawingWindow(&d)
-      ::dw.SetMinSize(wx.wxSize(50,80))
+      ::dw.SetMinSize(&wx.wxSize(50,80))
       ::win.AddWidget(&::dw,0)
-      ::dw.SetBackgroundColour(wx.wxColour(255,255,255))
-      ::win.BeginBook
+      ::dw.SetBackgroundColour(&wx.wxColour(255,255,255))
+      ::win.BeginBook()
     
         ::win.AddPage("Param")
 
@@ -272,7 +272,7 @@ if (!exists(Functions2DClass)) {
             ::win.AddFloat( &::ymax,"ymax",-30,30)
             ::win.SetCallback( &::OnCurves)
             ::win.AddButton("Auto Y", ::AutoY)
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
 
           ::res_id = ::win.AddFloat( &::resolution,"res.",0.01,10)
           ::win.SetCallback( &::OnCurves)
@@ -289,15 +289,15 @@ if (!exists(Functions2DClass)) {
           ::c1_eq_panel = ::win.BeginBoxPanel("Equation")
             ::win.AddString( &::c1->equation,"Y=")
             ::win.SetCallback( &::OnCurves)
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
 
           # set the input image
           ::c1_input_panel = ::win.BeginBoxPanel("Input")
-            ::win.BeginHorizontal
+            ::win.BeginHorizontal()
               ::win.AddImageChoice( &::c1->input_name, "")
               ::win.AddButton("Load",::c1->LoadInput)
-            ::win.EndHorizontal
-          ::win.EndBoxPanel
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
 
           # Line Parameters
           ::win.BeginBoxPanel("Line param.")
@@ -307,7 +307,7 @@ if (!exists(Functions2DClass)) {
             ::win.SetCallback( &::OnCurves)
             ::win.AddInt( &::c1->_width,"width",0,4)
             ::win.SetCallback( &::OnCurves)
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
 
         #---------------- Curve 2 -------------------------------
         ::win.AddPage("Curve 2")
@@ -320,15 +320,15 @@ if (!exists(Functions2DClass)) {
           ::c2_eq_panel = ::win.BeginBoxPanel("Equation")
             ::win.AddString( &::c2->equation,"Y=")
             ::win.SetCallback( &::OnCurves)
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
 
           # set the input image
           ::c2_input_panel = ::win.BeginBoxPanel("Input")
-            ::win.BeginHorizontal
+            ::win.BeginHorizontal()
               ::win.AddImageChoice( &::c2->input_name, "")
               ::win.AddButton("Load",::c2->LoadInput)
-            ::win.EndHorizontal
-          ::win.EndBoxPanel
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
 
           # Line Parameters
           ::win.BeginBoxPanel("Line param.")
@@ -338,17 +338,17 @@ if (!exists(Functions2DClass)) {
             ::win.SetCallback( &::OnCurves)
             ::win.AddInt( &::c2->_width,"width",0,4)
             ::win.SetCallback( &::OnCurves)
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
 
-      ::win.EndBook
+      ::win.EndBook()
       ::win.AddButton("Update",::OnCurves)
-      ::win.BeginHorizontal
+      ::win.BeginHorizontal()
         ::win.AddButton("Close", ::Close)
         ::win.AddButton("Close All", ::CloseAll)
-      ::win.EndHorizontal
+      ::win.EndHorizontal()
       
       ::win.Update(-1)
-      ::win.Display
+      ::win.Display()
       ::EqModeEvent
       ::OnCurves()
    }

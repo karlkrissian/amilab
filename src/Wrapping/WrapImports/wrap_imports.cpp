@@ -16,7 +16,7 @@
 #include "wrap_imports.h"
 #include "ami_class.h"
 #include "ami_object.h"
-#include "wrap_imagedraw.h"
+//#include "wrap_imagedraw.h"
 
 #include "wrap_MainFrame.h"
 #include "wrap_wxDrawingWindow.h"
@@ -70,7 +70,7 @@ void AddWrapImports()
   Variables::ptr previous_ocontext = Vars.GetObjectContext();
   Vars.SetObjectContext(amiobject->GetContext());
 
-  ADDOBJECTVAR_NAME(C_wrap_procedure,"ImageDraw",  wrap_ImageDraw);
+//  ADDOBJECTVAR_NAME(C_wrap_procedure,"ImageDraw",  wrap_ImageDraw);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxDrawingWindow",  wrap_wxDrawingWindow);
 
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"ParamPanel",wrap_ParamPanel);

@@ -134,11 +134,11 @@ if (!exists(Corr3DTest)) {
       show ::input2
       ::input1_draw._compare(::input2_draw);
 
-      ::input1_draw._setvector(1,::d);
-      ::input1_draw._setvector(2,::v);
+      ::input1_draw._setvector(0,::d);
+      ::input1_draw._setvector(1,::v);
       
+      ::input1_draw.DrawVector(0,1);
       ::input1_draw.DrawVector(1,1);
-      ::input1_draw.DrawVector(2,1);
       
       ::input1_draw.DisplayVectors();
     }

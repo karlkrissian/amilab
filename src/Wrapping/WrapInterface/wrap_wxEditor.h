@@ -28,9 +28,11 @@ class WrapClass_wxEditor : public WrapClass_wxWindow
 
   // for nested classes
   typedef WrapClass_wxEditor::ptr _parentclass_ptr;
+  typedef wxEditor _obj_type;
 
   public:
-    boost::shared_ptr<wxEditor> _obj;
+    boost::shared_ptr<_obj_type> _obj;
+    const boost::shared_ptr<_obj_type>& GetObj() const { return _obj; }
 
     /// Constructor
     WrapClass_wxEditor(boost::shared_ptr<wxEditor> si):  WrapClass_wxWindow(si), _obj(si)

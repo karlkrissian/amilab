@@ -27,9 +27,11 @@ class WrapClass_wxImage : public WrapClassBase
 
   // for nested classes
   typedef WrapClass_wxImage::ptr _parentclass_ptr;
+  typedef wxImage _obj_type;
 
   public:
-    boost::shared_ptr<wxImage> _obj;
+    boost::shared_ptr<_obj_type> _obj;
+    const boost::shared_ptr<_obj_type>& GetObj() const { return _obj; }
 
     /// Constructor
     WrapClass_wxImage(boost::shared_ptr<wxImage> val): _obj(val)

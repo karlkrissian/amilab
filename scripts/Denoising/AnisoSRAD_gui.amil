@@ -36,7 +36,7 @@ if (!exists(AnisoSRADClass)) {
   
   #----------------------------
   proc ::Close() {
-    ::win.HidePanel
+    ::win.HidePanel()
     delvars GetObjectName(::Close)
   }
   Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -131,26 +131,26 @@ if (!exists(AnisoSRADClass)) {
           ::win.AddEnumChoice(::scheme_id,"Semi-implicit")
         
         ::win.BeginBoxPanel("Controls")
-          ::win.BeginHorizontal
+          ::win.BeginHorizontal()
             ROI_id     = ::win.AddButton("Select ROI", ::CreateRoi)
             iterate_id = ::win.AddButton("Filter",     ::Filter)
             display_id = ::win.AddButton("Display",    ::Display)
-          ::win.EndHorizontal
-        ::win.EndBoxPanel
+          ::win.EndHorizontal()
+        ::win.EndBoxPanel()
 
         ::win.BeginBoxPanel("Save to disk")
           ::win.AddString( &::output_filename,"result filename")
           display_id = ::win.AddButton("Save",       ::Save)
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
     
-    ::win.EndBook
-    ::win.BeginHorizontal
+    ::win.EndBook()
+    ::win.BeginHorizontal()
       ::win.AddButton("Close",          ::Close)
       ::win.AddButton("Close All",          ::CloseAll)
-    ::win.EndHorizontal  
+    ::win.EndHorizontal()  
 
-    ::win.Update
-    ::win.Display
+    ::win.Update()
+    ::win.Display()
     ::win.Update(-1)
   }
   

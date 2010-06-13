@@ -2,7 +2,7 @@
 #
 # Select the lines to prune
 #
-proc SelectPrune(SURFACE _s, NUM threshold) {
+proc SelectPrune( OBJECT _s, NUM threshold) {
 #    -----------
   _s.info
   _i = _s.GetLinesLength()

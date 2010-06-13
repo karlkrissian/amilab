@@ -11,6 +11,7 @@
 //
 
 #include "wrap_SurfacePoly.h"
+#include "surface.hpp"
 
 #include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
@@ -97,7 +98,7 @@ BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_info::CallMember( ParamList* p)
 {
   // TODO: create info command for variables??
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
 
   // we don't have the variable name here ...
   std::string tmp_string;
@@ -129,7 +130,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_save::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   std::string filename;
   int n=0;
   if (!get_val_param<string>( filename, p, n)) ClassHelpAndReturn;
@@ -151,7 +152,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_Read::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   int n=0;
   GET_PARAM(std::string,filename, "");
   int res = s->Read(filename.c_str());
@@ -170,7 +171,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_WriteCTALine::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   std::string filename;
   int n=0;
   if (!get_val_param<string>( filename, p, n)) ClassHelpAndReturn;
@@ -191,7 +192,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_OwnMaterial::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   int ownmat;
   int n=0;
   if (!get_val_param<int>( ownmat, p, n)) ClassHelpAndReturn;
@@ -214,7 +215,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_SetAmbient::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   int n=0;
   GET_PARAM(unsigned char,red,  0);
   GET_PARAM(unsigned char,green,0);
@@ -239,7 +240,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_SetDiffuse::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   int n=0;
   GET_PARAM(unsigned char,red,  0);
   GET_PARAM(unsigned char,green,0);
@@ -264,7 +265,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_SetSpecular::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   int n=0;
   GET_PARAM(unsigned char,red,  0);
   GET_PARAM(unsigned char,green,0);
@@ -287,7 +288,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_SetShininess::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   float shininess  = 0;
   int n=0;
   if (!get_val_param<float>( shininess, p, n)) ClassHelpAndReturn;
@@ -309,7 +310,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_SetOpacity::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   int n=0;
   float opacity  = 0;
   if (!get_val_param<float>( opacity, p, n)) ClassHelpAndReturn;
@@ -331,7 +332,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_SetVisible::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   int n=0;
   GET_PARAM(int,visible,1);
   s->SetVisible(visible);
@@ -350,7 +351,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_SetColorMaterial::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   int n=0;
   GET_PARAM(int,cm,1);
   s->GetMaterial()._colormaterial = (cm>0);
@@ -369,7 +370,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_SetColorOpacity::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   int n=0;
   GET_PARAM(float,val,1);
   s->SetColorOpacity(val);
@@ -390,7 +391,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_SetColor::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   int n=0;
   GET_PARAM(unsigned char,red,  0);
   GET_PARAM(unsigned char,green,0);
@@ -416,7 +417,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_SetPointsColors::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   int n=0;
   GET_SMTPTR_PARAM(InrImage,im);
   s->SetPointsColors( im.get());
@@ -437,7 +438,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_SetColors::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   int n=0;
   GET_SMTPTR_PARAM( InrImage, im);
   GET_PARAM(        float,    Imin, 0);
@@ -458,7 +459,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_Statistics::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   int n=0;
   GET_SMTPTR_PARAM(InrImage,im);
   s->Statistics( im.get() );
@@ -477,7 +478,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_MergePoints::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   int n=0;
   GET_PARAM( float, maxdist,0.1);
   s->MergePoints(maxdist);
@@ -495,7 +496,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_Triangulate::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   s->Triangulate();
   return BasicVariable::ptr();
 }
@@ -513,7 +514,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_Curvatures::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   int n=0;
   GET_PARAM( int, depth, 1);
 
@@ -566,7 +567,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_Displace::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   int n=0;
   GET_SMTPTR_PARAM(InrImage,im);
   s->DisplacePoints( im.get() );
@@ -587,7 +588,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_Translate::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   int n=0;
   GET_PARAM( float, tr_x,0);
   GET_PARAM( float, tr_y,0);
@@ -610,7 +611,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_Scale::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   int n=0;
   GET_PARAM( float, sc_x,1);
   GET_PARAM( float, sc_y,1);
@@ -631,7 +632,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_SetLineWidth::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   int n=0;
   GET_PARAM( int, lw,1);
   if (lw<1)  lw=1;
@@ -652,7 +653,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_RemoveLine::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   int n=0;
   GET_PARAM( int, ln, 0);
   s->RemoveLine(ln);
@@ -672,7 +673,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_SelectLines::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   int n=0;
   GET_SMTPTR_PARAM(InrImage,im);
   s->SelectLines(im.get());
@@ -690,7 +691,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_RemoveSelection::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   s->RemoveSelection();
   s->GLRecomputeList();
   return BasicVariable::ptr();
@@ -706,7 +707,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_Recompute::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   s->GLRecomputeList();
   return BasicVariable::ptr();
 }
@@ -721,7 +722,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_Normals::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   s->RecomputeNormals();
   return BasicVariable::ptr();
 }
@@ -736,7 +737,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_InvertNormals::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   s->InvertNormals();
   return BasicVariable::ptr();
 }
@@ -753,7 +754,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_vtkSmooth::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   int n=0;
   GET_PARAM( int, it, 30);
   Func_ApplyvtkSmooth(s.get(), it);
@@ -772,7 +773,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_vtkWindowedSinc::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   int n=0;
   GET_PARAM( int, it, 30);
   Func_vtkWindowedSinc(s.get(), it);
@@ -791,7 +792,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_vtkDecimate::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   SurfacePoly* surf = Func_decimate(s.get());
   return CreateVar_SurfacePoly(surf);
 }
@@ -809,7 +810,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_setminCC::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   int n=0;
   GET_PARAM( int, minsize, 10);
   // TODO: check the use of _SURFACE, seems strange
@@ -834,7 +835,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_drawCC::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   int n=0;
   GET_PARAM( int, cc,    0);
   GET_PARAM( int, draw, -1);
@@ -864,7 +865,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_AddPoint::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   int n=0;
   GET_PARAM( float, posx, 0);
   GET_PARAM( float, posy, 0);
@@ -883,7 +884,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_NewLine::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   s->NewLine();
   return BasicVariable::ptr();
 }
@@ -900,7 +901,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_LineAddPointNumber::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   int n=0;
   GET_PARAM( int, pid, 0);
   s->LineAddPointNumber( pid );
@@ -917,7 +918,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_EndLine::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   s->EndLine();
   return BasicVariable::ptr();
 }
@@ -934,7 +935,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_ElevateMesh::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   int n=0;
   GET_SMTPTR_PARAM(InrImage,im);
   AMIFluid::Func_ElevateMesh(s.get(),im.get());
@@ -953,7 +954,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_NbPoints::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   int val = s->GetNumberOfPoints();
   RETURN_VAR(int,val);
 }
@@ -970,7 +971,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_NbPolys::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   int val = s->GetNumberOfPolys();
   RETURN_VAR(int,val);
 }
@@ -987,7 +988,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_GetNumberOfLines::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   int val = s->GetNumberOfLines();
   RETURN_VAR(int,val);
 }
@@ -1004,7 +1005,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_GetLinesLength::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   InrImage::ptr res(s->GetImageLinesLength());
   return Variable<InrImage>::ptr( 
     new Variable<InrImage>(res));
@@ -1023,7 +1024,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_GetLine::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   int n=0;
   GET_PARAM( int, linenumber, 0);
 
@@ -1067,7 +1068,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_GetLinesExtremities::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   InrImage::ptr res(s->GetImageLinesExtremities());
   return Variable<InrImage>::ptr( 
         new Variable<InrImage>(res));
@@ -1085,7 +1086,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_GetConnections::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   InrImage::ptr res ( s->GetImageConnections());
   return Variable<InrImage>::ptr( 
         new Variable<InrImage>(res));
@@ -1104,7 +1105,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_GetIntensities::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   int n=0;
   GET_SMTPTR_PARAM(InrImage,im);
   InrImage::ptr res( s->GetIntensities( im.get() ));
@@ -1126,7 +1127,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_ConnectLines::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   int n=0;
   GET_PARAM( float, maxdist,  0.5);
   GET_PARAM( float, maxangle, 0.1);
@@ -1147,7 +1148,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_left_assign::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   if ((!p)||p->GetNumParam()==0) 
     return BasicVariable::ptr();
 
@@ -1183,7 +1184,7 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::
       wrap_assign::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   if ((!p)||p->GetNumParam()==0) 
     return BasicVariable::ptr();
 
@@ -1209,6 +1210,6 @@ void WrapClass_SurfacePoly::
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_SurfacePoly::wrap_copy::CallMember( ParamList* p)
 {
-  SurfacePoly::ptr s(this->_objectptr->_obj);
+  SurfacePoly::ptr s(this->_objectptr->GetObj());
   return CreateVar_SurfacePoly( new SurfacePoly(*s));
 }

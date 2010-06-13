@@ -58,8 +58,8 @@ proc ProcessMesh(OBJECT _s,IMAGE _j1, NUM _j1min, NUM _j1max, IMAGE _pos) {
 #    -----------
   _s.SetColors(_j1,_j1min,_j1max)
   _s.ElevateMesh(_pos)
-  _s.Normals
-  _s.Recompute
+  _s.Normals()
+  _s.Recompute()
 }
 #------------------------------------------------------------
 coeff=Image "alt_coeff.ami.gz"

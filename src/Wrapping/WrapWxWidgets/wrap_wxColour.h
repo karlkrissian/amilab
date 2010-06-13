@@ -17,9 +17,8 @@
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
-#include <wx/html/htmlwin.h>
 
-#include <wx/sizer.h>
+#include <wx/colour.h>
 
 class WrapClass_wxColour : public WrapClassBase
 {
@@ -27,9 +26,11 @@ class WrapClass_wxColour : public WrapClassBase
 
   // for nested classes
   typedef WrapClass_wxColour::ptr _parentclass_ptr;
+  typedef wxColour _obj_type;
 
   public:
-    boost::shared_ptr<wxColour> _obj;
+    boost::shared_ptr<_obj_type> _obj;
+    const boost::shared_ptr<_obj_type>& GetObj() const { return _obj; }
 
     /// Constructor
     WrapClass_wxColour(boost::shared_ptr<wxColour> val): _obj(val)

@@ -43,8 +43,10 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapSurface
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapBasicTypes
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapDessinImage
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets
   ${AMILAB_SOURCE_DIR}/wxSamples/penguin
   ${AMILAB_SOURCE_DIR}/wxStcFrame
+  ${AMILAB_SOURCE_DIR}/wxCode/wxTreeListCtrl
   ${AMILAB_SOURCE_DIR}/Algorithms/Basic
   ${AMILAB_SOURCE_DIR}/Algorithms/Graph
   ${AMILAB_SOURCE_DIR}/Algorithms/Denoising
@@ -56,6 +58,7 @@ INCLUDE(${wxWidgets_USE_FILE})
 
 SET(Language_SRCS
     driver.cc
+    CallBackAMIFunction.cpp
     VarContexts.cpp
     BasicVariable.cpp
     Variable.cpp
@@ -83,8 +86,8 @@ SET(Language_HDRS
     scanner.h
     vartype.h
     ami_function.h
+    CallBackAMIFunction.h
     ami_object.h
-    ami_cpp_object.h
     GLTransformStack.h
     ImageStack.h
     VariableStack.h

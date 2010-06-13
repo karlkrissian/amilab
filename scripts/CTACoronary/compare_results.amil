@@ -252,20 +252,20 @@ proc CR_CreateWin() {
         CR_win.BeginBoxPanel("Snapshot 1")
           CR_snap1_name_id = CR_win.AddString( &snap1_name,"file")
           CR_snap1_but_id  = CR_win.AddButton("Save",SaveConfig1)
-        CR_win.EndBoxPanel
+        CR_win.EndBoxPanel()
     
         CR_win.BeginBoxPanel("Snapshot 2")
           CR_snap2_name_id = CR_win.AddString( &snap2_name,"file")
           CR_snap2_but_id  = CR_win.AddButton("Save",SaveConfig2)
-        CR_win.EndBoxPanel
+        CR_win.EndBoxPanel()
     
         CR_win.BeginBoxPanel("Snapshot 3")
           CR_snap3_name_id = CR_win.AddString( &snap3_name,"file")
           CR_snap3_but_id  = CR_win.AddButton("Save",SaveConfig3)
-        CR_win.EndBoxPanel
-    CR_win.EndHorizontal
+        CR_win.EndBoxPanel()
+    CR_win.EndHorizontal()
 
-    CR_win.EndBook
+    CR_win.EndBook()
 
 
     CR_win.Update(-1)

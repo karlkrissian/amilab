@@ -95,20 +95,20 @@ if (!exists(SuperquadricClass)) {
             ::imx_i  = ::win.AddInt( &::imdimx, "imdimx", 0,1024)
             ::imy_i  = ::win.AddInt( &::imdimy, "imdimy", 0,1024)
             ::imz_i  = ::win.AddInt( &::imdimz, "imdimz", 0,1024)
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
 
         ::win.AddPage("Sup.Quad.")
           ::win.BeginBoxPanel("SQ dimensions")
             ::s1_i  = ::win.AddFloat( &::s1, "s1", 0,200)
             ::s2_i  = ::win.AddFloat( &::s2, "s2", 0,200)
             ::s3_i  = ::win.AddFloat( &::s3, "s3", 0,200)
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
 
           ::win.BeginBoxPanel("Coefficients")
             ::r_i  = ::win.AddFloat( &::r,  "r", 0,5)
             ::s_i  = ::win.AddFloat( &::s,  "s", 0,5)
             ::t_i  = ::win.AddFloat( &::t,  "t", 0,5)
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
 
           ::type_id  = ::win.AddEnum( &::type)
           ::win.AddEnumChoice(::type_id,"SPHERICAL")
@@ -119,17 +119,17 @@ if (!exists(SuperquadricClass)) {
           ::torus_radius_id =  ::win.AddFloat( &::torus_radius,  "torus_radius", 0,200)
           #::win.ShowSlider(::torus_radius_id,::type==2)
 
-          ::win.BeginHorizontal
+          ::win.BeginHorizontal()
             ::win.AddButton("Image",              ::CreateImage)
             ::win.AddButton("IsoSurface",           ::ShowIsoSurface)
-          ::win.EndHorizontal
+          ::win.EndHorizontal()
           ::win.AddButton("Parametric Surf.", ::CreateParamSurface)
       
       ::win.EndBook()
 
       ::AddStandardButtons(&::win)
       ::win.Update(-1)
-      ::win.Display
+      ::win.Display()
       
     }
 

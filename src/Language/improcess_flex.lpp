@@ -208,9 +208,7 @@ FLOAT_VECTOR  return(token::T_FLOAT_VECTOR); /*{FLOAT_VECTOR,T_FLOAT_VECTOR}*/
 GetFormat     return(token::T_GetFormat); /*{GetFormat,T_GetFormat}*/
 Comments      return(token::T_Comments); /*{Comments,T_Comments}*/
 
-SURFACE       return(token::T_SURFACE); /*{SURFACE,T_SURFACE}*/
 IMAGE         return(token::T_IMAGE); /*{IMAGE,T_IMAGE}*/
-IMAGEDRAW     return(token::T_IMAGEDRAW); /*{IMAGEDRAW,T_IMAGEDRAW}*/
 NUM           return(token::T_NUM); /*{NUM,T_NUM}*/
 STRING        return(token::T_STRING); /*{STRING,T_STRING}*/
 TRANSFORM     return(token::T_TRANSFORM); /*{TRANSFORM,T_TRANSFORM}*/
@@ -1068,8 +1066,7 @@ BasicVariable::ptr IsObject( const char* varname, int context)
 {
   BasicVariable::ptr var = Vars.GetVar(varname,context);
   if (var.get())
-    if ((var->Type() == type_ami_object)||
-        (var->Type() == type_ami_cpp_object))
+    if ((var->Type() == type_ami_object))
       return var;
     else 
       return BasicVariable::ptr();
@@ -1101,8 +1098,6 @@ yyip::Parser::token::yytokentype checkvar(
     switch(var->Type()) {
       case type_image:            return token::VAR_IMAGE;
         /*{$variable_image,VAR_IMAGE}*/
-      case type_imagedraw:        return token::VAR_IMAGEDRAW;
-        /*{$variable_imagedraw,VAR_IMAGEDRAW}*/
       case type_float:
       case type_long:
       case type_double:

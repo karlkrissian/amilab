@@ -22,7 +22,7 @@ if (!exists(SoftFocus)) {
 
     #--------------------------------
     proc ::Close() {
-      ::win.HidePanel
+      ::win.HidePanel()
       delvars GetObjectName(::Close)
     }
     Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -84,9 +84,9 @@ if (!exists(SoftFocus)) {
     #-----------------------------------------
     proc ::CursorPos() {
       if (exists(::input_draw)) {
-        ::cx = ::input_draw.GetXPos
-        ::cy = ::input_draw.GetYPos
-        ::cz = ::input_draw.GetZPos
+        ::cx = ::input_draw.GetXPos()
+        ::cy = ::input_draw.GetYPos()
+        ::cz = ::input_draw.GetZPos()
         ::win.Update(-1)
       }
     }
@@ -118,21 +118,21 @@ if (!exists(SoftFocus)) {
           ::win.AddInt( &::cy,"Y",0,1000)
           ::win.AddInt( &::cz,"Z",0,1000)
           ::win.AddButton("From Cursor",::CursorPos)
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
   
         ::win.AddFloat( &::radius,"Radius",0.1,1000)
   
-        ::win.BeginHorizontal
+        ::win.BeginHorizontal()
           ::win.AddBoolean( &::auto,"Auto")
           ::win.AddBoolean( &::autodrag,"Auto drag")
           ::win.SetCallback( &::AutoDrag)
-        ::win.EndHorizontal
+        ::win.EndHorizontal()
         ::win.AddButton("Apply",::Filter)
-      ::win.EndBook
+      ::win.EndBook()
       ::win.AddButton("Close",    ::Close)
     
       ::win.Update(-1)
-      ::win.Display
+      ::win.Display()
     }
   
   

@@ -136,6 +136,8 @@ public:
 
   std::string Name() const { return _name;}
 
+  virtual std::string TreeCtrlInfo() const = 0;
+
   void SetComments(const std::string& comments) { _comments = comments;}
   std::string GetComments() const { return _comments; }
 
@@ -150,7 +152,7 @@ public:
     return (strcmp(_name.c_str(), name)==0);
   }
 
-  const std::string GetTypeName() const;
+  virtual const std::string GetTypeName() const = 0;
 
   //
   virtual void display() const = 0;

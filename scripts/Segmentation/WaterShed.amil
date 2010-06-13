@@ -36,7 +36,7 @@ if (!exists(WaterShedClass)){
   
   #----------------------------
   proc ::Close() {
-    ::win.HidePanel
+    ::win.HidePanel()
     delvars GetObjectName(::Close)
   }
   Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -114,63 +114,63 @@ if (!exists(WaterShedClass)){
   proc ::Gui() {
     import = &global::ami_import;
     ::win = import->ParamPanel("WaterShed")
-    ::win.BeginBook
+    ::win.BeginBook()
     
       ::win.AddPage("Init")
 
         ::win.BeginBoxPanel("Input Image")
           # set the input image
-          ::win.BeginHorizontal
+          ::win.BeginHorizontal()
             ::win.AddImageChoice( &::input_name, "")
             ::win.AddButton("Load",::load_input)
-          ::win.EndHorizontal
-          ::win.BeginHorizontal
+          ::win.EndHorizontal()
+          ::win.BeginHorizontal()
             dim_id = ::win.AddEnum( &::dim,"Dimension")
             ::win.AddEnumChoice(dim_id, "2D")
             ::win.AddEnumChoice(dim_id, "3D")
-          ::win.EndHorizontal
-        ::win.EndBoxPanel
+          ::win.EndHorizontal()
+        ::win.EndBoxPanel()
         ::win.BeginBoxPanel("Gradient Mode")
-          ::win.BeginHorizontal
+          ::win.BeginHorizontal()
             gradmode_id = ::win.AddEnum( &::gradient_mode,"Mode")
             ::win.AddEnumChoice(gradmode_id, "NormGradient")
-          ::win.EndHorizontal
-        ::win.EndBoxPanel
+          ::win.EndHorizontal()
+        ::win.EndBoxPanel()
 
 
       ::win.AddPage("Param")
 
         ::win.BeginBoxPanel("Gradient Param")
           ::win.AddFloat( &::stand,"StandDev",0,(::inputmax-::inputmin)/2)
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
         ::win.BeginBoxPanel("WaterShed Param")
           ::win.AddFloat( &::lThreshold,"Threshold",0,::inputmax)
           ::win.AddFloat( &::FloodLevel,"Flood Level",0,1)
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
 
       ::win.AddPage("Run")
 
         ::win.BeginBoxPanel("Processing")
           ::win.AddButton("Run", ::Run)
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
 
       ::win.AddPage("Save")
 
       ::win.BeginBoxPanel("Result")
         ::win.AddButton("Save", ::SaveR)
-      ::win.EndBoxPanel
+      ::win.EndBoxPanel()
       ::win.BeginBoxPanel("Gradient")
         ::win.AddButton("Save", ::SaveG)
-      ::win.EndBoxPanel
-    ::win.EndBook
+      ::win.EndBoxPanel()
+    ::win.EndBook()
 
-    ::win.BeginHorizontal
+    ::win.BeginHorizontal()
         ::win.AddButton("Close",      ::Close)
         ::win.AddButton("Close All",  ::CloseAll)
-      ::win.EndHorizontal
+      ::win.EndHorizontal()
 
     ::win.Update(-1)
-    ::win.Display
+    ::win.Display()
   }
   
   ::init

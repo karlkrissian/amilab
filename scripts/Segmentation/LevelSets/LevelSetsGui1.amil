@@ -218,7 +218,7 @@ if (!exists(LevelSetsClass)){
         }
     
         ::inls0 <<= ::inls
-        ::input_draw.SetIsoContour(1,::inls,0)
+        ::input_draw.SetIsoContour(1,&::inls,0)
         ::input_draw.DrawIsoContour(1,1)
       }
     }
@@ -244,7 +244,7 @@ if (!exists(LevelSetsClass)){
         }
     
         ::inls <<= ::inls0
-        ::input_draw.SetIsoContour(1,::inls,0)
+        ::input_draw.SetIsoContour(1,&::inls,0)
         ::input_draw.DrawIsoContour(1,1)
       }
     }
@@ -289,7 +289,7 @@ if (!exists(LevelSetsClass)){
     ::inls = (FLOAT)::input*0-10
     ::inls0 = ::inls
   
-    ::input_draw.SetIsoContour(1,::inls,0)
+    ::input_draw.SetIsoContour(1,&::inls,0)
     ::input_draw.DrawIsoContour(1,1)
   
   }
@@ -476,10 +476,10 @@ if (!exists(LevelSetsClass)){
     if (graphics) {
       show ::input
       // sets the isocontour number 0 to the image 'initial' with threshold 0
-      ::input_draw.SetIsoContour(1,::inls,0)
+      ::input_draw.SetIsoContour(1,&::inls,0)
       // sets the isocontour number 0 to be active
       ::input_draw.DrawIsoContour(1,1)
-      ::input_draw.SetIsoContour(2,lres,0)
+      ::input_draw.SetIsoContour(2,&lres,0)
       ::input_draw.DrawIsoContour(2,1)
     }
   
@@ -500,7 +500,7 @@ if (!exists(LevelSetsClass)){
         ::levelset.Iterate();
         k = k+1
         if (graphics)&&(k==::displ_freq) {
-          ::levelset.UpdateResult
+          ::levelset.UpdateResult()
           lres = ::levelset.GetOutputImage()
           k = 0
           show ::input
@@ -510,7 +510,7 @@ if (!exists(LevelSetsClass)){
         if (::check_convergence) {
           if ((n % ::conv_freq) == 0) {
             # check for convergence
-            ::levelset.UpdateResult
+            ::levelset.UpdateResult()
             lres = ::levelset.GetOutputImage()
             stillmoving = count((previous_ls*lres)<0)
             print "*** Convergence test = "; printn stillmoving
@@ -530,7 +530,7 @@ if (!exists(LevelSetsClass)){
     setvoxelsize( lres,    v_x, v_y, v_z)
   
     // invert before ending to be compatible with input convention
-    ::levelset.UpdateResult
+    ::levelset.UpdateResult()
     lres = ::levelset.GetOutputImage()
     ::inls = -lres;
   
@@ -547,9 +547,9 @@ if (!exists(LevelSetsClass)){
   {
     if (!exists(::inls))        { ::load_initial; }
     if (exists(::input_draw)) {
-      _x = ::input_draw.GetXPos
-      _y = ::input_draw.GetYPos
-      _z = ::input_draw.GetZPos
+      _x = ::input_draw.GetXPos() 
+      _y = ::input_draw.GetYPos()
+      _z = ::input_draw.GetZPos()
       printn "cursor is at "
       printn _x
       printn _y
@@ -691,19 +691,19 @@ if (!exists(LevelSetsClass)){
   #  ::win = ParamWin("Evolve Active Contours using Level Sets")
     import = &global::ami_import;
     ::win = import->ParamPanel("LevelSets")
-    ::win.BeginBook
+    ::win.BeginBook()
   
       ::win.AddPage("Init")
 
         ::win.BeginBoxPanel("Input Image")
           # set the input image
-          ::win.BeginHorizontal
+          ::win.BeginHorizontal()
             ::win.AddImageChoice( &::input_name, "")
             ::win.AddButton("Load",::load_input)
             #::win.AddButton("Ref",::ref_input)
-          ::win.EndHorizontal
+          ::win.EndHorizontal()
           ::win.AddFloat( &::minimal_intensity,"Min. intensity",::inputmin,::inputmax)
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
 
         #::win.BeginBoxPanel("Initial Level Set")
           initmode_id = ::win.AddEnum( &::init_mode,"Mode")
@@ -713,21 +713,21 @@ if (!exists(LevelSetsClass)){
 
           ::init_book = ::win.BeginBook()
             ::initial_spheres_page = ::win.AddPage("Spheres")
-              ::win.BeginHorizontal
+              ::win.BeginHorizontal()
                 ::win.AddButton("Reset", ::Reset)
                 ::win.AddButton("Add",   ::AddSphere)
                 ::win.AddButton("Undo",  ::Undo)
                 ::win.AddButton("Backup",     ::Backup)
-              ::win.EndHorizontal
+              ::win.EndHorizontal()
               ::win.AddFloat( &::sphere_radius,"Radius",0.1,10.0)
 
             # set the initial level set image
             ::initial_image_page =::win.AddPage("Image")
-              ::win.BeginHorizontal
+              ::win.BeginHorizontal()
                 ::win.AddImageChoice( &::initial_name, "")
                 ::win.AddButton("Load",::load_initial)
                 ::win.AddButton("Ref",::ref_initial)
-              ::win.EndHorizontal
+              ::win.EndHorizontal()
           ::win.EndBook()
   
         #::win.EndBoxPanel
@@ -746,7 +746,7 @@ if (!exists(LevelSetsClass)){
           ::win.AddBoolean( &::use_smoothing,"Smooth")
           ::win.SetCallback( &::activate_terms)
         ::win.EndHorizontal()
-        ::win.BeginBook
+        ::win.BeginBook()
           ::exp_pid = ::win.AddPage("Exp")
             ::win.AddFloat( &::expansioncoeff,"Weight",0,1)
             ::win.AddBoolean( &::use_expansion_image,"Use expansion image")
@@ -755,11 +755,11 @@ if (!exists(LevelSetsClass)){
               ::intexp_page = ::win.AddPage("Intensity-based")
                 ::win.AddButton("Compute stats",::ComputeIntensityStats)
                 ::win.AddFloat( &::Imean,"Mean", ::inputmin,::inputmax)
-                ::win.SetCallback(::UpdateExpansionCurve)
+                ::win.SetCallback( &::UpdateExpansionCurve)
                 ::win.AddFloat( &::Isd,"StandDev",0,(::inputmax-::inputmin)/2)
-                ::win.SetCallback(::UpdateExpansionCurve)
+                ::win.SetCallback( &::UpdateExpansionCurve)
                 ::win.AddFloat( &::prob_threshold,"Threshold",0,1)
-                ::win.SetCallback(::UpdateExpansionCurve)
+                ::win.SetCallback( &::UpdateExpansionCurve)
                 ::win.AddBoolean( &::accept_high_intensity,"Accept high intensities")
                 # add a Curve Drawing Window
                 ::dw = import->wxDrawingWindow(&::win.CurrentParent())
@@ -785,7 +785,7 @@ if (!exists(LevelSetsClass)){
           ::vel_pid = ::win.AddPage("Vel")
             ::win.AddFloat( &::velcoeff,"Weight",0,1)
   
-        ::win.EndBook
+        ::win.EndBook()
   
 
       ::win.AddPage("Evol")
@@ -793,31 +793,31 @@ if (!exists(LevelSetsClass)){
         ::win.BeginBoxPanel("Time")
           ::win.AddFloat( &::dt,"dt",0.01,1)
           ::win.AddFloat( &::T,"T",0.01,500)
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
   
         ::win.BeginBoxPanel("Processing")
           ::win.AddInt( &::threads,"Threads",1,10)
-          ::win.BeginHorizontal
+          ::win.BeginHorizontal()
             ::win.AddButton("ReRun",     ::ReRun)
             ::win.AddButton("Continue",  ::Continue)
-          ::win.EndHorizontal
-          ::win.BeginHorizontal
+          ::win.EndHorizontal()
+          ::win.BeginHorizontal()
             ::win.AddButton("Stop",      ::Stop)
             ::win.AddButton("Surface",   ::Surface)
-          ::win.EndHorizontal
-        ::win.EndBoxPanel
+          ::win.EndHorizontal()
+        ::win.EndBoxPanel()
 
         ::win.BeginBoxPanel("Convergence")
           ::win.AddBoolean( &::check_convergence,"Check")
           ::win.AddInt( &::conv_freq,"Freq",5,100)
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
 
         ::win.BeginBoxPanel("Re-Distancing")
             ::DistType_id = ::win.AddEnum( &::NBD_method,"Method")
               ::win.AddEnumChoice(::DistType_id,"Liana")
               ::win.AddEnumChoice(::DistType_id,"Fast Marching")
               ::win.AddEnumChoice(::DistType_id,"Fast Chamfer")
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
 
   
       ::win.AddPage("Res")
@@ -826,30 +826,30 @@ if (!exists(LevelSetsClass)){
           ::win.AddFloat( &::DTmin,"min",-100,0)
           ::win.AddFloat( &::DTmax,"max",0,100)
           ::win.AddButton("Apply",  ::ApplyDT)
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
 
         ::win.BeginBoxPanel("Result filename")
           ::win.AddString( &::result_filename,"base name:")
           ::win.AddString( &::result_filename_ext,"extension:")
           ::win.AddBoolean( &::resname_addtime,"Add evol. time")
           ::win.AddBoolean( &::resname_addprob,"Add prob.")
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
   
         ::win.BeginBoxPanel("Save")
-        ::win.BeginHorizontal
+        ::win.BeginHorizontal()
           ::win.AddButton("Result",   ::SaveResult)
           ::win.AddButton("Parameters", ::SaveParameters)
-        ::win.EndHorizontal
+        ::win.EndHorizontal()
   
-        ::win.BeginHorizontal
+        ::win.BeginHorizontal()
           ::win.AddButton("Inside model",   ::SaveInsideModel)
           ::win.AddButton("Outside model",  ::SaveOutsideModel)
-        ::win.EndHorizontal
-        ::win.EndBoxPanel
+        ::win.EndHorizontal()
+        ::win.EndBoxPanel()
   
       ::AddHelpPage(&::win)
   
-    ::win.EndBook
+    ::win.EndBook()
   
     ::AddStandardButtons(&::win)
 

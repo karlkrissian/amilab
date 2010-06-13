@@ -35,14 +35,13 @@
 
 #include "driver.h"
 #include "MainFrame.h"
+#include "CallBackAMIFunction.h"
 
 extern yyip::Driver GB_driver;
 extern MainFrame* GB_main_wxFrame;
 
 extern void CB_delete_variable( void* var);
 extern void CB_delete_varlist( void* var);
-
-extern void CB_ParamWin( void* cd );
 
 
 //-------------------------------------------------------------------------
@@ -76,7 +75,7 @@ Variable<AMIObject>::ptr CreateVar_DessinImage( DessinImage* si)
 
 void  wrap_DessinImage::SetParametersComments() 
 {
-  ADDPARAMCOMMENT("Input image.");
+  ADDPARAMCOMMENT_TYPE(InrImage,"Input image.");
   return_comments = "A wrapped DessinImage object.";
 }
 
@@ -120,14 +119,40 @@ BasicVariable::ptr wrap_DessinImage::CallMember( ParamList* p)
 }
 
 //---------------------------------------------------
+//  reference
+//---------------------------------------------------
+void WrapClass_DessinImage::
+      wrap_reference::SetParametersComments() 
+{
+  ADDPARAMCOMMENT("New reference variable as parameter for processing.");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_DessinImage::
+      wrap_reference::CallMember( ParamList* p)
+{
+  DessinImage::ptr di(this->_objectptr->_obj);
+  if (p) {
+    BasicVariable::ptr var = p->GetParam(0);
+    if (var.get() && di.get()) {
+      std::list<BasicVariable::wptr>* varlist =
+        (std::list<BasicVariable::wptr>*) di->GetCloseData();
+      if (varlist)
+        varlist->push_back(BasicVariable::wptr(var));
+    }
+  }
+
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
 //  setpos
 //---------------------------------------------------
 void WrapClass_DessinImage::
       wrap_setpos::SetParametersComments() 
 {
-  ADDPARAMCOMMENT("X pos of the cursor");
-  ADDPARAMCOMMENT("Y pos of the cursor");
-  ADDPARAMCOMMENT("Z pos of the cursor");
+  ADDPARAMCOMMENT_TYPE(int,"X pos of the cursor");
+  ADDPARAMCOMMENT_TYPE(int,"Y pos of the cursor");
+  ADDPARAMCOMMENT_TYPE(int,"Z pos of the cursor");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -161,7 +186,7 @@ BasicVariable::ptr WrapClass_DessinImage::
 void WrapClass_DessinImage::
       wrap_showcursor::SetParametersComments() 
 {
-  ADDPARAMCOMMENT("integer 0 or 1");
+  ADDPARAMCOMMENT_TYPE(int," 0 or 1: Shows/Hides the cursor.");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -214,7 +239,7 @@ BasicVariable::ptr WrapClass_DessinImage::
 void WrapClass_DessinImage::
       wrap_compare::SetParametersComments() 
 {
-  ADDPARAMCOMMENT("image to compare");
+  ADDPARAMCOMMENT_TYPE(DessinImage,"Image viewer to compare to.");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -276,8 +301,8 @@ BasicVariable::ptr WrapClass_DessinImage::
 void WrapClass_DessinImage::
       wrap_SetCompareDisplacement::SetParametersComments() 
 {
-  ADDPARAMCOMMENT("comparison window");
-  ADDPARAMCOMMENT("Vectorial image");
+  ADDPARAMCOMMENT_TYPE(DessinImage,"comparison window");
+  ADDPARAMCOMMENT_TYPE(InrImage,"Vectorial image");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -320,8 +345,8 @@ BasicVariable::ptr WrapClass_DessinImage::
 void WrapClass_DessinImage::
       wrap_setvector::SetParametersComments() 
 {
-  ADDPARAMCOMMENT("index of the vector field to be drawned (1,2 or 3).");
-  ADDPARAMCOMMENT("vector field image.");
+  ADDPARAMCOMMENT_TYPE(int,"index of the vector field to be drawned (in the interval [0,2].");
+  ADDPARAMCOMMENT_TYPE(InrImage,"vector field image.");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -356,8 +381,8 @@ void WrapClass_DessinImage::
       wrap_DrawVector::SetParametersComments() 
 {
   //TODO
-  ADDPARAMCOMMENT("Index of the vector field to be drawned (1,2 or 3).");
-  ADDPARAMCOMMENT("Visible or not (0 or 1)");
+  ADDPARAMCOMMENT_TYPE(int,"Index of the vector field to be drawned (1,2 or 3).");
+  ADDPARAMCOMMENT_TYPE(int,"Visible or not (0 or 1)");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -398,8 +423,8 @@ BasicVariable::ptr WrapClass_DessinImage::
 void WrapClass_DessinImage::
       wrap_SetVectParam::SetParametersComments() 
 {
-  ADDPARAMCOMMENT("vector size");
-  ADDPARAMCOMMENT("vector spacing");
+  ADDPARAMCOMMENT_TYPE(float,"vector size");
+  ADDPARAMCOMMENT_TYPE(int,"vector spacing");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -423,10 +448,10 @@ BasicVariable::ptr WrapClass_DessinImage::
 void WrapClass_DessinImage::
       wrap_SetVectColor::SetParametersComments() 
 {
-  ADDPARAMCOMMENT("vector id");
-  ADDPARAMCOMMENT("red component (0-255)");
-  ADDPARAMCOMMENT("green component (0-255)");
-  ADDPARAMCOMMENT("blue component (0-255)");
+  ADDPARAMCOMMENT_TYPE(int,"vector id");
+  ADDPARAMCOMMENT_TYPE(unsigned char,"red component (0-255)");
+  ADDPARAMCOMMENT_TYPE(unsigned char,"green component (0-255)");
+  ADDPARAMCOMMENT_TYPE(unsigned char,"blue component (0-255)");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -453,7 +478,7 @@ void WrapClass_DessinImage::
       wrap_SetVectStyle::SetParametersComments() 
 {
   //TODO
-  ADDPARAMCOMMENT("Vector type (Integer)");
+  ADDPARAMCOMMENT_TYPE(int,"Vector type (Integer)");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -477,7 +502,7 @@ void WrapClass_DessinImage::
       wrap_SetLineThickness::SetParametersComments() 
 {
   //TODO
-  ADDPARAMCOMMENT("Line thickness (Integer)");
+  ADDPARAMCOMMENT_TYPE(int,"Line thickness (Integer)");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -501,12 +526,12 @@ void WrapClass_DessinImage::
       wrap_SetZoom::SetParametersComments() 
 {
   //TODO
-  ADDPARAMCOMMENT("Lower limit X-coordinate");
-  ADDPARAMCOMMENT("Lower limit Y-coordinate");
-  ADDPARAMCOMMENT("Lower limit Z-coordinate");
-  ADDPARAMCOMMENT("Higher limit X-coordinate");
-  ADDPARAMCOMMENT("Higher limit Y-coordinate");
-  ADDPARAMCOMMENT("Higher limit Z-coordinate");
+  ADDPARAMCOMMENT_TYPE(int,"Lower limit X-coordinate");
+  ADDPARAMCOMMENT_TYPE(int,"Lower limit Y-coordinate");
+  ADDPARAMCOMMENT_TYPE(int,"Lower limit Z-coordinate");
+  ADDPARAMCOMMENT_TYPE(int,"Higher limit X-coordinate");
+  ADDPARAMCOMMENT_TYPE(int,"Higher limit Y-coordinate");
+  ADDPARAMCOMMENT_TYPE(int,"Higher limit Z-coordinate");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -920,8 +945,8 @@ BasicVariable::ptr WrapClass_DessinImage::
 
   AMIFunction::ptr func(varfunc->Pointer());
 
-  di->SetPaintCallback( (void*) CB_ParamWin,
-                        (void*) func.get() );
+  CallBackAMIFunction::ptr cb(new CallBackAMIFunction(func));
+  di->SetPaintCallback( cb );
 
   // may be a pb to call Paint() here since it will start another interpreter ??? to check
   //di->Paint();
@@ -1198,29 +1223,32 @@ BasicVariable::ptr WrapClass_DessinImage::
   );
 }
 
-
 //---------------------------------------------------
-//  reference
+//  DrawLineZ
 //---------------------------------------------------
 void WrapClass_DessinImage::
-      wrap_reference::SetParametersComments() 
+      wrap_DrawLineZ::SetParametersComments() 
 {
-  ADDPARAMCOMMENT("New reference variable as parameter for processing.");
+  ADDPARAMCOMMENT( "number x1.");
+  ADDPARAMCOMMENT( "number y1.");
+  ADDPARAMCOMMENT( "number x2.");
+  ADDPARAMCOMMENT( "number y2.");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
-      wrap_reference::CallMember( ParamList* p)
+      wrap_DrawLineZ::CallMember( ParamList* p)
 {
-  DessinImage::ptr di(this->_objectptr->_obj);
-  if (p) {
-    BasicVariable::ptr var = p->GetParam(0);
-    if (var.get() && di.get()) {
-      std::list<BasicVariable::wptr>* varlist =
-        (std::list<BasicVariable::wptr>*) di->GetCloseData();
-      if (varlist)
-        varlist->push_back(BasicVariable::wptr(var));
-    }
-  }
+  DessinImage::ptr di(this->_objectptr->GetObj());
+  float x1 = 0,y1 = 0,x2 = 0,y2 = 0 ;
+  int n=0;
 
+  if (!get_val_param<float>( x1, p, n)) ClassHelpAndReturn;
+  if (!get_val_param<float>( y1, p, n)) ClassHelpAndReturn;
+  if (!get_val_param<float>( x2, p, n)) ClassHelpAndReturn;
+  if (!get_val_param<float>( y2, p, n)) ClassHelpAndReturn;
+
+  di->DrawLineZ(x1,y1,x2,y2);
   return BasicVariable::ptr();
 }
+
+

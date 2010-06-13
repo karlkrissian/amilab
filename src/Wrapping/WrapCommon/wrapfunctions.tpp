@@ -13,7 +13,7 @@
 #include "wrapfunctions.hpp"
 #include "DefineClass.hpp"
 #include "amilab_messages.h"
-#include "DessinImage.hpp"
+//#include "DessinImage.hpp"
 #include "Variable.hpp"
 
 #include <string>
