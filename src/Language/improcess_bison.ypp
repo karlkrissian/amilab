@@ -71,7 +71,7 @@
 #include "CalculAireSection.hpp"
 #include "reponse_cercle.hpp"
 #include "func_shortestpath.h"
-#include "Wrap_AnisoGS.h"
+#include "WrapOld_AnisoGS.h"
 #include "LevelSetsCURVES.h"
 #include "vtkwrap.h"
 
@@ -6276,6 +6276,8 @@ image:
         boost::shared_array<char> st( $2);
         InrImage* res = ReadImage(st.get());
         if (!res) YYABORT;
+/* deprecated
+*/
         else
           ADD_VARSTACK(InrImage,res);
       }

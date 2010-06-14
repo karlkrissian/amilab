@@ -45,7 +45,7 @@
 #include <list>
 #include <vector>
 #include <stdio.h>
-
+ 
 // TODO: deal with templates here ...
 #define DEFINE_CLASS(class) \
 public:\

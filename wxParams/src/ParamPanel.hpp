@@ -464,7 +464,8 @@ public:
     int* id,
     const char* libelle,
     const char* contenu,
-    type_label type=LabelLabel);
+    type_label type=LabelLabel,
+    const std::string& tt="");
 //@}
   
   void SetLabelValue(int id, char* value);

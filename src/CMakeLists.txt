@@ -203,6 +203,7 @@ IF(AMI_CHECK_BRANCH)
 ENDIF(AMI_CHECK_BRANCH)
 
 
+
 OPTION(AMI_USE_VTK "Use VTK: recommended" ON)
 
 IF(AMI_USE_VTK)
@@ -658,7 +659,6 @@ if (UNIX)
           PERMISSIONS OWNER_READ GROUP_READ
           )
 endif(UNIX)
-
 
 
 #Test for amilab.

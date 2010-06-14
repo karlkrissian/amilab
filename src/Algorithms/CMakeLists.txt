@@ -46,7 +46,7 @@ SET(Algorithms_SRCS
   Graph/func_shortestpath.cpp
 
   Denoising/AnisoGS.cpp
-  Denoising/Wrap_AnisoGS.cpp
+  Denoising/WrapOld_AnisoGS.cpp
   Denoising/NLmeans.cpp
 
   Segmentation/RegionGrowingTest.cpp
@@ -63,7 +63,7 @@ SET(Algorithms_HDRS
   Graph/func_shortestpath.h
 
   Denoising/AnisoGS.h
-  Denoising/Wrap_AnisoGS.h
+  Denoising/WrapOld_AnisoGS.h
   Denoising/NLmeans.h
 
   Segmentation/RegionGrowingTest.h
