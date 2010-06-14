@@ -1,0 +1,120 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_image_conversion_int.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the conversion between images.
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+OK = 1 # The test was successful
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+dimx=10
+dimy=10
+dimz=1
+printn "\t\t Dimensions:\n"
+printn "\t\t\t X (dimx)=%1% " % dimx
+printn "\t\t\t Y (dimy)=%1% " % dimy
+printn "\t\t\t Z (dimz)=%1% " % dimz
+
+printn "\t\t Create a scalar image 2D of type INT.\n"
+imgINT = Image(INT,dimx,dimy,dimz)
+
+printn "\t\t Show info of scalar image 2D of type INT.\n"
+imgINT.info
+
+printn "\t\t Initialized to 10.\n"
+imgINT=10
+
+printn "\t\t Conversion: imgDOUBLE = (DOUBLE) imgINT \n"
+imgDOUBLE = (DOUBLE) imgINT
+imgDOUBLE.info
+
+printn "\t\t Conversion: imgFLOAT = (FLOAT) imgINT \n"
+imgFLOAT = (FLOAT) imgINT
+imgFLOAT.info
+
+printn "\t\t Conversion: imgUINT = (UINT) imgINT \n"
+imgUINT = (UINT) imgINT
+imgUINT.info
+
+printn "\t\t Conversion: imgUSHORT = (USHORT) imgINT \n"
+imgUSHORT = (USHORT) imgINT
+imgUSHORT.info
+
+printn "\t\t Conversion: imgSHORT = (SHORT) imgINT \n"
+imgSHORT = (SHORT) imgINT
+imgSHORT.info
+
+printn "\t\t Conversion: imgUCHAR = (UCHAR) imgINT \n"
+imgUCHAR = (UCHAR) imgINT
+imgUCHAR.info
+
+printn "\t\t Conversion: imgCHAR = (CHAR) imgINT \n"
+imgCHAR = (CHAR) imgINT
+imgCHAR.info
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+dimx=10
+dimy=10
+dimz=1
+dimv=10
+printn "\t\t Dimensions:\n"
+printn "\t\t\t X (dimx)=%1% " % dimx
+printn "\t\t\t Y (dimy)=%1% " % dimy
+printn "\t\t\t Z (dimz)=%1% " % dimz
+printn "\t\t\t V (dimv)=%1% " % dimv
+
+printn "\t\t Create a vectorial image 2D of type INT.\n"
+imgINT = Image(INT,dimx,dimy,dimz,dimv)
+
+printn "\t\t Show info of vectorial image 2D of type INT.\n"
+imgINT.info
+
+printn "\t\t Initialized to 10.\n"
+imgINT=10
+
+printn "\t\t Conversion: imgDOUBLE = (DOUBLE) imgINT \n"
+imgDOUBLE = (DOUBLE) imgINT
+imgDOUBLE.info
+
+printn "\t\t Conversion: imgFLOAT = (FLOAT) imgINT \n"
+imgFLOAT = (FLOAT) imgINT
+imgFLOAT.info
+
+printn "\t\t Conversion: imgUINT = (UINT) imgINT \n"
+imgUINT = (UINT) imgINT
+imgUINT.info
+
+printn "\t\t Conversion: imgUSHORT = (USHORT) imgINT \n"
+imgUSHORT = (USHORT) imgINT
+imgUSHORT.info
+
+printn "\t\t Conversion: imgSHORT = (SHORT) imgINT \n"
+imgSHORT = (SHORT) imgINT
+imgSHORT.info
+
+printn "\t\t Conversion: imgUCHAR = (UCHAR) imgINT \n"
+imgUCHAR = (UCHAR) imgINT
+imgUCHAR.info
+
+printn "\t\t Conversion: imgCHAR = (CHAR) imgINT \n"
+imgCHAR = (CHAR) imgINT
+imgCHAR.info
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ctest.PrintTestResult( OK ) 
+
+#quit
+
