@@ -28,17 +28,17 @@ if (!exists(LeastSquaresClass)) \
     #----------------------------
     proc ::Close() \
     {
-      ::win.HidePanel
+      ::win.HidePanel()
       delvars GetObjectName(::Close)
     }
-    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
     #----------------------------
     proc ::CloseAll() {
       eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
       ::Close
     }
-    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
         
     #------------------------------------
     proc ::LoadInput() \
@@ -82,7 +82,7 @@ b.SetComponent( 2, 1)
     proc ::Display() {
       show ::input
       show ::res
-      ::input_draw.compare(::res_draw)
+      ::input_draw._compare(::res_draw)
     }
 
     #-------------------
@@ -98,11 +98,11 @@ b.SetComponent( 2, 1)
 
           # set the input image
           ::win.BeginBoxPanel("Input")
-            ::win.BeginHorizontal
+            ::win.BeginHorizontal()
               ::win.AddImageChoice( &::input_name, "")
               ::win.AddButton("Load",::LoadInput)
-            ::win.EndHorizontal
-          ::win.EndBoxPanel
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
 
 
         ::win.AddPage("Param")
@@ -113,23 +113,23 @@ b.SetComponent( 2, 1)
             ::win.AddBoolean( &::use_constant,"constant")
             ::win.AddBoolean( &::use_X,"X")
             ::win.AddBoolean( &::use_Y,"Y")
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
     
         ::win.AddPage("Controls")
           ::win.AddButton("Run",     ::Run)
   
           ::win.BeginBoxPanel("Result")
             ::win.AddButton("Display",    ::Display)
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
 
-      ::win.EndBook
-      ::win.BeginHorizontal
+      ::win.EndBook()
+      ::win.BeginHorizontal()
         ::win.AddButton("Close",      ::Close)
         ::win.AddButton("Close All",  ::CloseAll)
-      ::win.EndHorizontal
+      ::win.EndHorizontal()
       
       ::win.Update(-1)
-      ::win.Display
+      ::win.Display()
     }
   
     ::Init()

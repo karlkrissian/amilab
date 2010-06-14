@@ -162,6 +162,7 @@
 //#include "CrestView.hpp"
 
 #include "DefineClass.hpp"
+#include "CallBackBase.h"
 
 #include <iostream>
 using namespace std;
@@ -203,9 +204,7 @@ using namespace std;
 #include "ImageDraw_CoupesXYParam.h"
 
 class CompareImage;
-
 class compare_info; // defined at the end ...
-
 
 class vectorfield_info {
 public:
@@ -683,7 +682,6 @@ protected:
 
   // to do: fix these variables using a std::vector ??
 
-
    int _id_close_isocontour;
 //@}
 
@@ -857,8 +855,9 @@ protected:
 
 
   // Callback for the Paint method
-  void* _paint_callback;
-  void* _paint_callback_data;
+  CallBackBase::ptr _paint_callback;
+  //void* _paint_callback;
+  //void* _paint_callback_data;
 
   // avoid the Paint() member to execute several times at the same time
   unsigned char _in_paint;
@@ -1304,10 +1303,13 @@ public:
   // chargement d'un champ de vecteurs
 */
 
+  /**
+   * Loads a vector field
+   * num is the vector field index between 0 and 3
+   * im is the vector field image
+   **/
   unsigned char LoadVectImage( int num, InrImage::ptr im);
-  //      -------------
-  // chargement d'un champ de vecteurs
-  // num est le numero du champ de vecteurs dans (1..3)
+
 
   ///
   void     DessineCercle( int x, int y, int z, ClasseCouleur& c);
@@ -1360,9 +1362,12 @@ public:
 
   void Paint( unsigned char affiche = true );
  
-  void SetPaintCallback( void* paint_cb, void* paint_cb_data) {
+  void SetPaintCallback( CallBackBase::ptr callback) {
+    this->_paint_callback = callback;
+    /*
     this->_paint_callback = paint_cb;
     this->_paint_callback_data = paint_cb_data;
+    */
   }
 
   void PlayAnimation();

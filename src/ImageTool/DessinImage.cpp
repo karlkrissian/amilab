@@ -1742,7 +1742,7 @@ void DessinImage::DrawVectors(  int x, int y, int z,
 //  Dessine la valeur du vecteur pour le champ de vecteurs donn�// au point (x,y,z)  sur toutes les coupes
 {
   int i;
-  FixeParametresLigne( _largeur_lignes+1, wxSOLID, wxCAP_ROUND, wxJOIN_MITER);
+  SetLineParameters( _largeur_lignes+1, wxSOLID, wxCAP_ROUND, wxJOIN_MITER);
 
   i=0;
   std::vector<vectorfield_info>::iterator Iter;
@@ -1778,7 +1778,7 @@ void DessinImage::DessineChampVecteurs( )
   Si pas_y == 0 AlorsFait pas_y = 1;
   Si pas_z == 0 AlorsFait pas_z = 1;
 
-  FixeParametresLigne( _largeur_lignes+1, wxSOLID, wxCAP_ROUND, wxJOIN_MITER);
+  SetLineParameters( _largeur_lignes+1, wxSOLID, wxCAP_ROUND, wxJOIN_MITER);
 
   // Tests selon le type de Coupe
   int i=0;
@@ -1827,7 +1827,7 @@ void DessinImage::DessineCercle(  int x, int y, int z, ClasseCouleur& c)
     ClasseCouleur coul;
 
 
-  FixeParametresLigne( _largeur_lignes+1, wxSOLID, wxCAP_ROUND, wxJOIN_MITER);
+  SetLineParameters( _largeur_lignes+1, wxSOLID, wxCAP_ROUND, wxJOIN_MITER);
 
   Si Param._option_traitement == OPTION_MIP Alors
     _MIP->PosPoint( x, y, x0, y0, z0);
@@ -1982,12 +1982,12 @@ void DessinImage::DessineLigneDansMIP(
             (y - Param._Zoom._ymin + 0.5)*_size_y);
 
   Si pointilles AlorsFait
-    FixeParametresLigne( 1, wxDOT, wxCAP_ROUND, wxJOIN_MITER);
+    SetLineParameters( 1, wxDOT, wxCAP_ROUND, wxJOIN_MITER);
 
   Ligne( pos_x0, pos_y0, pos_x, pos_y);
 
   Si pointilles AlorsFait
-    FixeParametresLigne( 1,  wxSOLID, wxCAP_ROUND, wxJOIN_MITER);
+    SetLineParameters( 1,  wxSOLID, wxCAP_ROUND, wxJOIN_MITER);
 
 } // DessineLigneDansMIP()
 
@@ -2010,7 +2010,7 @@ void DessinImage::DessineBoundingBox( )
   ymax = _image_initiale->_ty -1;
   zmax = _image_initiale->_tz -1;
 
-  FixeParametresLigne( 1,  wxSOLID, wxCAP_ROUND, wxJOIN_MITER);
+  SetLineParameters( 1,  wxSOLID, wxCAP_ROUND, wxJOIN_MITER);
   SetPenColor( _couleur_curseur);
 
   // Initialisation des 8 sommets du cube
@@ -2218,6 +2218,9 @@ void DessinImage::UpdateStatusInfo( const Point_3D<int>& imagepos,  int trouve)
   Si (trouve != -1) Alors
     UpdateStatusIntensity( imagepos.x, imagepos.y, imagepos.z);
     UpdateStatusPosition(  imagepos.x, imagepos.y, imagepos.z);
+
+    Comparaisons_UpdateStatusInfo( imagepos, trouve);
+
   Sinon
     _status_text = "Out of limits";
     SetStatusText(wxString::FromAscii(_status_text.c_str()),_intensity_statusid);
@@ -2225,7 +2228,6 @@ void DessinImage::UpdateStatusInfo( const Point_3D<int>& imagepos,  int trouve)
     SetStatusText(wxString::FromAscii("---"),               _spatialpos_statusid);
   FinSi
 
-  Comparaisons_UpdateStatusInfo( imagepos, trouve);
 
   CLASS_MESSAGE("End");
 
@@ -2740,12 +2742,8 @@ void DessinImage::InitPalette()
 //  _visual = w_attrib.visual;
 
   _couleur_curseur.FixeValeur(255,0,0);
-
   _vector_fields[0].color.FixeValeur( 0, 200, 0);
-
   _vector_fields[1].color.FixeValeur( 0, 0, 200);
-
-
   for(n=2;n<_vector_fields.size();n++) {
     _vector_fields[n].color.FixeValeur( 0, 200, 200);
   }
@@ -2875,9 +2873,6 @@ void DessinImage::InitParametres()
   _GLMIP_maxquads  = 3;
 
   _shift_deplace = _shift_zoom = false;
-
-  _paint_callback      = (void*) NULL;
-  _paint_callback_data = (void*) NULL;
 
   Si GB_debug AlorsFait
     printf("InitParametres() %f %f \n",
@@ -3670,10 +3665,10 @@ unsigned char DessinImage::ChargeImageVecteur( int index, char* nom)
 unsigned char DessinImage::LoadVectImage( int num, InrImage::ptr im)
 //                           -------------
 // chargement d'un champ de vecteurs
-// num est le numero du champ de vecteurs dans (1..3)
+// num est le numero du champ de vecteurs dans (0..2)
 {
 
-  if ((num<1)||(num>(int)_vector_fields.size())) {
+  if ((num<0)||(num>=(int)_vector_fields.size())) {
     fprintf(stderr,"DessinImage::LoadVectImage() \t bad vect number \n");
     return false;
   }
@@ -3695,8 +3690,8 @@ unsigned char DessinImage::LoadVectImage( int num, InrImage::ptr im)
         (im->SpacePosY(im->DimY()-1)>=_image->SpacePosY(0)               )&&
         (im->SpacePosZ(0)           <=_image->SpacePosZ(_image->DimZ()-1))&&
         (im->SpacePosZ(im->DimZ()-1)>=_image->SpacePosZ(0)               )) {
-      _vector_fields[num-1].vector      = im;
-      _vector_fields[num-1].interpolate = true;
+      _vector_fields[num].vector      = im;
+      _vector_fields[num].interpolate = true;
     }
     else {
       printf("Erreur, DessinImage::LoadVectImage() \t");
@@ -3704,8 +3699,8 @@ unsigned char DessinImage::LoadVectImage( int num, InrImage::ptr im)
       return false;
     }
   Sinon
-    _vector_fields[num-1].vector        = im;
-    _vector_fields[num-1].interpolate = false;
+    _vector_fields[num].vector        = im;
+    _vector_fields[num].interpolate = false;
   FinSi
 
   return true;
@@ -4451,8 +4446,8 @@ void DessinImage::DrawContour( int i, int size, int style)
   if (style==-1) style = _isocontours[i].style;
 
   // Previous motif version
-  //FixeParametresLigne( size, style, LineSolid, _cap_style, _join_style);
-  FixeParametresLigne( size, style, wxSOLID);
+  //SetLineParameters( size, style, LineSolid, _cap_style, _join_style);
+  SetLineParameters( size, style, wxSOLID);
 
   SetPenColor( _isocontours[i].color);
 
@@ -4734,9 +4729,9 @@ void DessinImage::Paint( unsigned char affiche)
 
   // Check if a Paint callback was set,
   // if so, call the function with its parameters
-  if (this->_paint_callback != NULL) {
-     void (*pf)( void*) = (void (*)(void*)) _paint_callback;
-    pf(_paint_callback_data);
+  if (_paint_callback.get()) {
+    bool ok = (*_paint_callback)();
+    if (!ok) _paint_callback.reset();
   }
 
   Si _display_vectors Alors
@@ -6274,7 +6269,7 @@ void DessinImage::CB_largeur_lignes( wxCommandEvent& event)
   nouvelle_valeur =  di->_wxm_linewidth->ValueChanged(event);
   Si Non(nouvelle_valeur) AlorsRetourne;
 
-  di->FixeParametresLigne( di->_largeur_lignes+1,  wxSOLID, wxCAP_ROUND, wxJOIN_MITER);
+  di->SetLineParameters( di->_largeur_lignes+1,  wxSOLID, wxCAP_ROUND, wxJOIN_MITER);
   di->EffaceTousLesEcrans( false);
   di->Paint();
 

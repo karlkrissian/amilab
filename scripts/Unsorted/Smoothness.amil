@@ -1,6 +1,6 @@
 
-proc ComputeSmoothness(SURFACE s, NUM n, NUM res1, NUM res2, NUM res3) {
-  s.Curvatures(n)
+proc ComputeSmoothness( OBJECT s, NUM n, NUM res1, NUM res2, NUM res3) {
+  s._Curvatures(n)
   s_cmin2 = s_cmin*s_cmin
   s_cmin2= s_cmin2*(s_cmin2<9)+(s_cmin2>=9)*9
   s_cmax2 = s_cmax*s_cmax

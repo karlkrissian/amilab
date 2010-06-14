@@ -1,0 +1,109 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_image_translation_vectorial.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the translation operation for vectorial images.
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+OK = 1 # The test was successful
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+dimx=10
+dimy=10
+dimz=1
+dimv=10
+printn "\t\t Dimensions:\n"
+printn "\t\t\t X (dimx)=%1% " % dimx
+printn "\t\t\t Y (dimy)=%1% " % dimy
+printn "\t\t\t Z (dimz)=%1% " % dimz
+printn "\t\t\t V (dimv)=%1% " % dimv
+
+printn "\t\t Create a vectorial image 2D of type FLOAT.\n"
+imgFLOAT = Image(FLOAT,dimx,dimy,dimz,dimv)
+
+printn "\t\t Show info of vectorial image 2D of type FLOAT.\n"
+imgFLOAT.info
+
+txx=10
+tyy=10
+tzz=1
+printn "\t\t Coordenates:\n"
+printn "\t\t\t X (txx)=%1% " % txx
+printn "\t\t\t Y (tyy)=%1% " % tyy
+printn "\t\t\t Z (tzz)=%1% " % tzz
+
+printn "\t\t Set translation:\n"
+imgFLOAT.settranslation(txx,tyy,tzz)
+
+printn "\t\t Show info of vectorial image 2D of type FLOAT.\n"
+imgFLOAT.info
+
+printn "\t\t Verification:\n"
+x=imgFLOAT.trx
+y=imgFLOAT.try
+z=imgFLOAT.trz
+printn "\t\t\t imgFLOAT.trx=%1% " % x
+printn "\t\t\t imgFLOAT.try=%1% " % y
+printn "\t\t\t imgFLOAT.trz=%1% " % z
+
+if (txx!=x)||(tyy!=y)||(tzz!=z) {
+  OK = 0
+  printn  "\nERROR: Failed the trx, try and trz operations."
+}
+
+dimz=10
+printn "\t\t Dimensions:\n"
+printn "\t\t\t X (dimx)=%1% " % dimx
+printn "\t\t\t Y (dimy)=%1% " % dimy
+printn "\t\t\t Z (dimz)=%1% " % dimz
+printn "\t\t\t V (dimv)=%1% " % dimv
+
+printn "\t\t Create a vectorial image 3D of type FLOAT.\n"
+imgFLOAT3D = Image(FLOAT,dimx,dimy,dimz,dimv)
+
+printn "\t\t Show info of vectorial image 3D of type FLOAT.\n"
+imgFLOAT3D.info
+
+txx=10
+tyy=10
+tzz=10
+printn "\t\t Coordenates:\n"
+printn "\t\t\t X (txx)=%1% " % txx
+printn "\t\t\t Y (tyy)=%1% " % tyy
+printn "\t\t\t Z (tzz)=%1% " % tzz
+
+printn "\t\t Set translation:\n"
+imgFLOAT3D.settranslation(txx,tyy,tzz)
+
+printn "\t\t Show info of vectorial image 3D of type FLOAT.\n"
+imgFLOAT3D.info
+
+printn "\t\t Verification:\n"
+x=imgFLOAT3D.trx
+y=imgFLOAT3D.try
+z=imgFLOAT3D.trz
+printn "\t\t\t imgFLOAT3D.trx=%1% " % x
+printn "\t\t\t imgFLOAT3D.try=%1% " % y
+printn "\t\t\t imgFLOAT3D.trz=%1% " % z
+
+if (txx!=x)||(tyy!=y)||(tzz!=z) {
+  OK = 0
+  printn  "\nERROR: Failed the trx, try and trz operations."
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ctest.PrintTestResult( OK ) 
+
+#quit
+

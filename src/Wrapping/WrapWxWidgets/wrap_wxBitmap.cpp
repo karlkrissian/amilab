@@ -15,9 +15,7 @@
 
 #include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
-#include "ami_class.h"
 #include "ami_object.h"
-#include "ami_function.h"
 
 
 //-------------------------------------------------------------------------
@@ -136,4 +134,21 @@ BasicVariable::ptr WrapClass_wxBitmap::
 {
   int res = this->_objectptr->_obj->IsOk();
   RETURN_VAR(int,res);
+}
+
+
+//---------------------------------------------------
+//  copy
+//---------------------------------------------------
+void WrapClass_wxBitmap::
+      wrap_copy::SetParametersComments() 
+{
+  return_comments="A copy of the bitmap.";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxBitmap::
+      wrap_copy::CallMember( ParamList* p)
+{
+  // not a real copy ...
+  return CreateVar_wxBitmap( new wxBitmap(*(_objectptr->_obj)));
 }

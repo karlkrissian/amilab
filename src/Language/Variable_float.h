@@ -10,7 +10,7 @@
 //------------------------------------------------------
 
 /// Copy contents to new variable
-template<> BasicVariable::ptr Variable<float>::NewCopy();
+template<> BasicVariable::ptr Variable<float>::NewCopy() const;
 
 // Arithmetic operators
 
@@ -109,6 +109,11 @@ VAR_DECL_FUNC(float,log)
 VAR_DECL_FUNC(float,ln)
 VAR_DECL_FUNC(float,norm)
 VAR_DECL_FUNC(float,sqrt)
+
+/// Cast to a type based on its name as a string
+template<>
+BasicVariable::ptr Variable<float>::TryCast(const std::string&) const;
+
 
 template<> BasicVariable::ptr Variable<float>::BasicCast(const int& type);
 

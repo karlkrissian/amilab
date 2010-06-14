@@ -2,5 +2,5 @@
 
 
 s = Surface($1)
-s.save $1-".vtk"+".wrl"
+s._save($1-".vtk"+".wrl")
 quit

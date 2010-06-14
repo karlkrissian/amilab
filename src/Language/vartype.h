@@ -23,8 +23,7 @@ typedef enum {
   type_int,              /**< integer number*/
   type_uchar,            /**< unsigned char number */
   type_string,           /**< string */
-  type_imagedraw,        /**< image drawing window */
-  type_surface,          /**< polydata structure, surface and/or lines */
+//  type_imagedraw,        /**< image drawing window */
   type_surfdraw,         /**< polydata drawing window */
   type_file,             /**< file */
   type_c_procedure,      /**< C wrapped procedure */
@@ -34,7 +33,6 @@ typedef enum {
   type_ami_function,     /**< AMI Language function */
   type_ami_class,        /**< AMI Language class */
   type_ami_object,       /**< AMI Language object (instance of a class, or namespace) */
-  type_ami_cpp_object,   /**< AMI Language C++ object (instance of a class, or namespace) */
   type_paramwin,         /**< Parameter window */
   type_matrix,           /**< matrix */
   type_gltransform,      /**< OpenGL transformation */

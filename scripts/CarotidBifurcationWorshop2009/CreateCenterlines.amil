@@ -96,7 +96,7 @@ CarotidExperiments_Vesselness
   RML_radmin = 0.3
   RML_radmax = 6
   RML_numrad = 7
-  RML_win.update
+  RML_win.Update(-1)
   RML_CB_Filter
   # save the result to a file here ...
   if (CE_mode==1) {
@@ -120,14 +120,14 @@ CarotidExperiments_Path1
   SP_speed_name = "CC_vesselness"
   SP_Run
   line1 = SP_path
-  line1.save result_dir+"/line1.vtk"
+  line1._save(result_dir+"/line1.vtk")
 
 CarotidExperiments_Path2
   SP_input_name = "CE_input_cropped"
   SP_speed_name = "CC_vesselness"
   SP_Run
   line2 = SP_path
-  line2.save result_dir+"/line2.vtk"
+  line2._save(result_dir+"/line2.vtk")
 
 # View the results
   show CE_GTiso

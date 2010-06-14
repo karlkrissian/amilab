@@ -15,7 +15,7 @@ proc LSE( IMAGE im, NUM size, IMAGE res, NUM sigma_x) {
   for y=size to im.ty-1-size {
     printn y
     // get subvolume
-    im_y    = im[0:im.tx-1,y-size:y+size,0:im.tz-1]
+    im_y    = im[0:(im.tx-1),(y-size):(y+size),0:(im.tz-1)]
 
     if (sigma_x>0.1) {
       im_y = filter(im_y,sigma_x,0,-1,-1)

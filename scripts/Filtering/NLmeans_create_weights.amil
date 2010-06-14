@@ -28,10 +28,10 @@ if (!exists(NLMweightsClass)) {
     #----------------------------
     proc ::Close() \
     {
-      ::win.Hide
+      ::win.HidePanel()
       delvars GetObjectName(::Close)
     }
-    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
     #----------------------------
     proc ::CloseAll() \
@@ -39,7 +39,7 @@ if (!exists(NLMweightsClass)) {
       ::Close
       if (exists(NLMweightsClass)) { del NLMweightsClass; }
     }
-    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
     
     #----------------------------
     proc ::LoadInput() \
@@ -48,9 +48,9 @@ if (!exists(NLMweightsClass)) {
       eval "::input <<="+::input_name+";"
       if (::input_name=="Image") {
         ::input_name = "::input"
-        ::win.update
+        ::win.Update(-1)
       }
-      ::win.update
+      ::win.Update(-1)
       if (exists(::input_draw)) { del ::input_draw; }
       ::Reset()
     }
@@ -103,17 +103,17 @@ if (!exists(NLMweightsClass)) {
         show ::weights;
         ::weights_draw.SetIsoContour(0,::cont,0.5)
         ::weights_draw.DrawIsoContour(0,1)
-        ::input_draw.compare(::weights_draw)
+        ::input_draw._compare(::weights_draw)
     }
     
     proc ::DrawWeights() {
     
       if (exists(::input)) {
-        pos_x = ::input_draw.GetXPos
-        pos_y = ::input_draw.GetYPos
+        pos_x = ::input_draw.GetXPos()
+        pos_y = ::input_draw.GetYPos()
         ::current_pos = "(%1%, " %pos_x
         ::current_pos = ::current_pos + "%1%)" %pos_y
-        ::win.update
+        ::win.Update(-1)
         ::CreateWeights(pos_x,pos_y,::patsize,::thres)
         ::ShowWeights()
       }
@@ -146,49 +146,50 @@ if (!exists(NLMweightsClass)) {
     
     proc ::CreateWindow() {
 
-      ::win        = ParamWin("Weights for NLM")
-      ::win.BeginBook
+      import = &global::ami_import;
+      ::win = import->ParamPanel("Weights for NLM")
+      ::win.BeginBook()
     
         ::win.AddPage("Input/Output")
           # set the input image
           ::win.BeginBoxPanel("Input")
-            ::win.BeginHorizontal
-              ::win.AddImageChoice(::input_name, "")
+            ::win.BeginHorizontal()
+              ::win.AddImageChoice( &::input_name, "")
               ::win.AddButton("Load",::LoadInput)
-            ::win.EndHorizontal
-          ::win.EndBoxPanel
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
 
         ::win.AddPage("Parameters")
-          ::win.AddFloat( ::smoothing,"smoothing",0.01,2)
-          ::win.AddInt(   ::patsize,"patsize",1,10)
-          ::win.AddInt(   ::winsize,"winsize",1,20)
-          ::win.AddFloat( ::thres,"thres",0.01,1)
+          ::win.AddFloat( &::smoothing,"smoothing",0.01,2)
+          ::win.AddInt( &::patsize,"patsize",1,10)
+          ::win.AddInt( &::winsize,"winsize",1,20)
+          ::win.AddFloat( &::thres,"thres",0.01,1)
 
           ::win.BeginBoxPanel("Add Noise")
-            ::win.AddInt(   ::noise,"noise",0,70)
+            ::win.AddInt( &::noise,"noise",0,70)
             ::win.AddButton("Apply", ::AddRicianNoise)
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
         
           ::win.BeginBoxPanel("Controls")
-            ::win.AddString(::current_pos,"pos:")
-            ::win.AddBoolean(::apply_exp,"Apply exp.")
-            ::win.BeginHorizontal
+            ::win.AddString( &::current_pos,"pos:")
+            ::win.AddBoolean( &::apply_exp,"Apply exp.")
+            ::win.BeginHorizontal()
               ::win.AddButton("Reset",            ::Reset)
               ::win.AddButton("Draw Weights",     ::DrawWeights)
-            ::win.EndHorizontal
-            ::win.BeginHorizontal
+            ::win.EndHorizontal()
+            ::win.BeginHorizontal()
               ::win.AddButton("Preset 1",   ::Preset1)
               ::win.AddButton("Preset 2",   ::Preset2)
-            ::win.EndHorizontal
-          ::win.EndBoxPanel
-      ::win.EndBook
-      ::win.BeginHorizontal
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+      ::win.EndBook()
+      ::win.BeginHorizontal()
         ::win.AddButton("Close", ::Close)
         ::win.AddButton("Close All", ::CloseAll)
-      ::win.EndHorizontal
+      ::win.EndHorizontal()
         
-      ::win.update
-      ::win.Display
+      ::win.Update(-1)
+      ::win.Display()
     
     }
     
@@ -209,7 +210,7 @@ if (!exists(nlmw)) {
     printn "reading image"
     input = Image($1)
     nlmw->image_name = "input"
-    nlmw->win.update
+    nlmw->win.Update(-1)
   }
 
 } else {

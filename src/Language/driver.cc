@@ -208,10 +208,10 @@ void Driver::yyip_instanciate_object( const AMIClass::ptr& oclass,
   // this
   // classname
   string_ptr classname(new string(oclass->GetName()));
-  object->GetContext()->AddVar<string>("classname",classname);
+  object->GetContext()->AddVar<string>("classname",classname,object->GetContext());
   // classfilename
   string_ptr classfname(new string(oclass->GetFileName()));
-  object->GetContext()->AddVar<string>("classfilename",classfname);
+  object->GetContext()->AddVar<string>("classfilename",classfname,object->GetContext());
 
   // Inheritence need to be recursive
   // Call the class body
@@ -283,7 +283,7 @@ BasicVariable::ptr Driver::yyip_call_function( AMIFunction* f, const ParamList::
         }
       } // end for
     } else {
-      CLASS_ERROR(" Error checking for parameters.");
+      err_print("Error checking for parameters: check parameters types in function call (NUM is float, IMAGE is image variable, etc ...).");
     }
   }
 
@@ -409,13 +409,16 @@ void Driver::yyiperror(const char *s)
 //           ---------
 {
   string tmpstr;
-  if (yyiplineno) {
-    tmpstr = str(format("%s:%d\t %s \n\t ==> at '%s'  \n")
-      %this->current_file.c_str()
-      %this->yyiplineno
-      %s
-      %this->lexer->YYText()
-    );
+  if ((yyiplineno)&&(this->lexer)) {
+    const char* text = this->lexer->YYText();
+    if (text) {
+      tmpstr = str(format("%s:%d\t %s \n\t ==> at '%s'  \n")
+        %this->current_file.c_str()
+        %this->yyiplineno
+        %s
+        %text
+      );
+    } else tmpstr = str(format("%s \n")%s);
     err_print(tmpstr.c_str());
   } else {
     tmpstr = str(format("%s \n")%s);
@@ -513,7 +516,7 @@ void Driver::info_print(const char* st)
     *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString::FromAscii(st);
   string mess =  (format("Information: %s \n") % st).str();
   if (!nomessagedialog) {
-    wxMessageDialog* err_msg = new wxMessageDialog(NULL,GetwxStr(mess),GetwxStr("Info"),wxOK | wxICON_INFORMATION | wxSTAY_ON_TOP );
+    wxMessageDialog* err_msg = new wxMessageDialog(GB_main_wxFrame,GetwxStr(mess),GetwxStr("Info"),wxOK | wxICON_INFORMATION | wxSTAY_ON_TOP );
     err_msg->ShowModal();
     err_msg->Destroy();
   }
@@ -617,7 +620,7 @@ void Driver::init_cmdhistory()
 
   if (!cmdhistory) {
     cerr << format("Error in opening %s\n") % filename;
-    FILE_ptr stdout_ptr = FILE_ptr(stdout);
+    FILE_ptr stdout_ptr = CreateSmartPointer<FILE>()(stdout);
     cmdhistory.swap(stdout_ptr);
   } else
     cmdhistory_filename = filename;

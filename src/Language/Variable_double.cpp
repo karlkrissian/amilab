@@ -43,12 +43,15 @@
     return Variable<InrImage>::ptr( new Variable<InrImage>(res)); \
   }
 
+#include <boost/numeric/conversion/cast.hpp>  
+
+
 //------------------------------------------------------
 //------- Variable<double>
 //------------------------------------------------------
 
 /// Copy contents to new variable
-template<> BasicVariable::ptr Variable<double>::NewCopy()
+template<> BasicVariable::ptr Variable<double>::NewCopy() const
 {
   double_ptr newval( new double(Value()));
   Variable<double>::ptr newvar(new Variable<double>(newval));
@@ -324,6 +327,37 @@ VAR_IMPL_FUNC(double,  log,  1.0/log(10.0)*log)
 VAR_IMPL_FUNC(double,  ln,   log)
 VAR_IMPL_FUNC(double,  norm, fabs)
 VAR_IMPL_FUNC(double,  sqrt, sqrt)
+
+
+//---------------------------------------------------
+template<>
+BasicVariable::ptr Variable<double>::TryCast(
+    const std::string& type_string) const
+{
+  try
+  {
+    // cast to float
+    if (type_string==to_string<float>::value()) {
+      RETURN_VARPTR(float, boost::numeric_cast<float>(Value()));
+    } else 
+    // cast to int
+    if (type_string==to_string<int>::value()) {
+      RETURN_VARPTR(int, boost::numeric_cast<int>(Value()));
+    } else 
+    // cast to unsigned char
+    if (type_string==to_string<unsigned char>::value()) {
+      RETURN_VARPTR(unsigned char, boost::numeric_cast<unsigned char>(Value()));
+    } else 
+    {
+      // make default conversion to double??
+      CLASS_ERROR(boost::format("No convertion available for variable %1% from double to %2%") % _name % type_string);
+    }
+  } catch (std::bad_cast &e)
+  {
+    CLASS_ERROR(boost::format("%1%, for variable %2% from double to %3%") % e.what() % _name % type_string);
+    return BasicVariable::ptr();
+  }
+}
 
 //
 template<> BasicVariable::ptr Variable<double>::BasicCast(const int& type)

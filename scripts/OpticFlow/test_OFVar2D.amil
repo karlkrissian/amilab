@@ -72,28 +72,28 @@ proc CB_Iterate() {
 #--------------------------------------------------
 w1 = ParamWin("Test Optic Flow PDE 2D")
 
-sigma_id  = w1.AddFloat(sigma,0.5,5)
-T_id      = w1.AddFloat(T,1,20)
-nbiter_id = w1.AddInt(nbiter,1,200)
+sigma_id  = w1.AddFloat( &sigma,  "sigma", 0.5,5)
+T_id      = w1.AddFloat( &T,  "T", 1,20)
+nbiter_id = w1.AddInt( &nbiter,  "nbiter", 1,200)
 
-dtype_id  = w1.AddInt(dtype,0,3)
-alpha_id  = w1.AddFloat(alpha,0.01,5)
-ht_id     = w1.AddFloat(ht,0.01,10)
-quantile_id = w1.AddFloat(quantile,0.01,10)
-zoom_id     = w1.AddInt(zoom,1,6)
+dtype_id  = w1.AddInt( &dtype,  "dtype", 0,3)
+alpha_id  = w1.AddFloat( &alpha,  "alpha", 0.01,5)
+ht_id     = w1.AddFloat( &ht,  "ht", 0.01,10)
+quantile_id = w1.AddFloat( &quantile,  "quantile", 0.01,10)
+zoom_id     = w1.AddInt( &zoom,  "zoom", 1,6)
 
 restart_id=w1.AddButton("Restart", CB_Restart)
 iterate_id=w1.AddButton("Iterate", CB_Iterate)
 
-w1.CreateWin
-w1.Display
+w1.Update()
+w1.Display()
 
 
 show i;
-i_draw.compare(i2);
-i_draw.setvector(1,d0);
+i_draw._compare(i2);
+i_draw._setvector(0,d0);
+i_draw.DrawVector(0,1);
+i_draw._setvector(1,d);
 i_draw.DrawVector(1,1);
-i_draw.setvector(2,d);
-i_draw.DrawVector(2,1);
-i_draw.DisplayVectors;
+i_draw.DisplayVectors();
 

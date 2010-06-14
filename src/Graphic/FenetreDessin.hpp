@@ -92,6 +92,8 @@ class FenetreDessin:  public wxFrame
 //    =============
 {
 
+  DEFINE_CLASS(FenetreDessin);
+
 protected:
 
   static FenetreDessin* _this;  // Utile pour les actions
@@ -222,7 +224,7 @@ public:
   void  SetTextFg               ( const wxColour&);
   void  FixeCouleurRemplissage  ( const ClasseCouleur&);
   void  FixeStyleRemplissage    ( const int& style);
-  void  FixeParametresLigne( unsigned int largeur, int style, int extremites = -1, int intersection = -1);
+  void  SetLineParameters( unsigned int largeur, int style, int extremites = -1, int intersection = -1);
 
   void  Recupere_fenetre_dimensions( int* l, int* h);
   void  Fixe_fenetre_dimensions( int l, int h, unsigned char parent=false );
@@ -314,6 +316,11 @@ public:
   { 
      CloseFunction = function;
      CloseData = data;
+  }
+
+  void* GetCloseData()
+  {
+    return CloseData;
   }
 
   virtual void CloseWindow();

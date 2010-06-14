@@ -21,5 +21,5 @@ MultiLines(i,&result0,&maxres0,minr,maxr,10,m,0)
 MultiLines(i,&result1,&maxres1,minr,maxr,10,m,1)
 
 show i;
-i_draw.compare(maxres0)
-i_draw.compare(maxres1)
+i_draw._compare(maxres0)
+i_draw._compare(maxres1)

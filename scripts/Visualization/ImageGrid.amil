@@ -5,18 +5,19 @@
 # or lines from an image
 #
 
+func "Common/ScriptGui"
+
 comments="ImageGridClass: this class allows to draw a grid around the pixels on an 2D image display (draw on XY slice for 3D images)."
 
 
-if (!exists(global::ImageGridClass)) {
+if (!exists(ImageGridClass)) {
 
-  Class global::ImageGridClass {
+  Class ImageGridClass : public ScriptGui {
 
     ::ami_import = &global::ami_import
     #----------------------------
     proc ::Init() \
     {
-      ::classname  = "global::ImageGridClass"
       ::input_name =  "", "name of the input image, the drawing window of this image will be used"
       ::enable = UCHAR(1), "Enable/Disable grid"
       ::thickness = INT(1), "line thickness"
@@ -29,26 +30,9 @@ if (!exists(global::ImageGridClass)) {
     }
     
     #----------------------------
-    proc ::Close() \
-    {
-      ::win.HidePanel
-      delvars GetObjectName(::Close)
-    }
-    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-    
-    #----------------------------
-    proc ::CloseAll() \
-    {
-      closeclass_cmd = "if (exists(%1%)) { del %1%; };" %::classname
-      eval closeclass_cmd
-      ::Close
-    }
-    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
-    
-    #----------------------------
     proc ::UpdateDisplay() \
     {
-      cmd = "if (exists(%1%_draw)) { %1%_draw.update; };" % ::input_name
+      cmd = "if (exists(%1%_draw)) { %1%_draw.update(); };" % ::input_name
       eval cmd
     }
 
@@ -62,7 +46,7 @@ if (!exists(global::ImageGridClass)) {
         _in_draw.PaintCallback(::DrawGrid);
       }
     }
-    ::SetAsCallback.Comments("Set the grid display function as a paint callback of the drawing area")
+    Comments( ::SetAsCallback, "Set the grid display function as a paint callback of the drawing area")
 
     #----------------------------
     proc ::DrawGrid() \
@@ -76,25 +60,24 @@ if (!exists(global::ImageGridClass)) {
           eval "_in_draw = &%1%_draw;" % ::input_name
           
           # wrapping ${input_name}_draw with new local variable indraw_wrap
-          ::ami_import->ImageDraw(&_in_draw,"indraw_wrap");
-          indraw_wrap->SetLineColor(::color_r,::color_g,::color_b,::color_a)
-          indraw_wrap->LineParam(::thickness,::style)
+          _in_draw.SetPenColor(wx.wxColour(::color_r,::color_g,::color_b,::color_a))
+          _in_draw.SetLineParameters(::thickness,::style)
 
           # draw vertical
-          _xmin = _in_draw.GetXmin
-          _xmax = _in_draw.GetXmax
-          _ymin = _in_draw.GetYmin
-          _ymax = _in_draw.GetYmax
+          _xmin = _in_draw.GetXmin()
+          _xmax = _in_draw.GetXmax()
+          _ymin = _in_draw.GetYmin()
+          _ymax = _in_draw.GetYmax()
           for c=_xmin+1 to _xmax { 
-            indraw_wrap->DrawLine(c-0.5,_ymin-0.5,c-0.5,_ymax+0.5); 
+            _in_draw.DrawLineZ(c-0.5,_ymin-0.5,c-0.5,_ymax+0.5); 
           }
 
           # draw horizontal
           for l=_ymin+1 to _ymax { 
-            indraw_wrap->DrawLine(_xmin-0.5,l-0.5,_xmax+0.5,l-0.5); 
+            _in_draw.DrawLineZ(_xmin-0.5,l-0.5,_xmax+0.5,l-0.5); 
           }
 
-          indraw_wrap->DisplayDA()
+          _in_draw->DrawingAreaDisplay()
         }
       }
       # end if enable
@@ -107,16 +90,16 @@ if (!exists(global::ImageGridClass)) {
       import = &global::ami_import;
       ::win = import->ParamPanel("ImGrid")
       
-      ::win.BeginBook
+      ::win.BeginBook()
     
         ::win.AddPage("Param")
 
           # set the input image drawing window
           ::win.BeginBoxPanel("Input")
-            ::win.BeginHorizontal
+            ::win.BeginHorizontal()
               ::win.AddImageChoice( &::input_name, "")
-            ::win.EndHorizontal
-          ::win.EndBoxPanel
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
 
           ::win.AddBoolean( &::enable,"Enable")
           ::win.SetCallback( &::UpdateDisplay)
@@ -137,22 +120,20 @@ if (!exists(global::ImageGridClass)) {
             ::win.SetCallback( &::UpdateDisplay)
             ::win.AddInt( &::color_a,"alpha",0,255)
             ::win.SetCallback( &::UpdateDisplay)
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
   
-      ::win.EndBook
-      ::win.BeginHorizontal
-        ::win.AddButton("Close", ::Close)
-        ::win.AddButton("Close All", ::CloseAll)
-      ::win.EndHorizontal
+      ::win.EndBook()
       
+      ::AddStandardButtons(&::win)
+
       ::win.Update(-1)
-      ::win.Display
+      ::win.Display()
    }
 
     ::Init
   } 
   # Class ImageGridClass
-  ImageGridClass.Comments(comments)
+  Comments( ImageGridClass, comments)
 } 
 # end if (!exists(Functions2DClass))
   

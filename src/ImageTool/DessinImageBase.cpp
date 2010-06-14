@@ -1479,7 +1479,7 @@ void DessinImageBase::DessineIsoContour( int n)
   size = _isocontours[n].thickness
   if (size==0)  size = _largeur_lignes;
   style = _isocontours[n].style;
-  FixeParametresLigne( size, style, _cap_style, _join_style);
+  SetLineParameters( size, style, _cap_style, _join_style);
   SetPenColor( isocontours[n].color.RetourneCouleur());
 
   if ((_isocontours[n].image.expired()) ||
@@ -1587,7 +1587,7 @@ void DessinImageBase::DrawAxis( int orientation, // 0: horiz, 1: vert
   }
 
   SetPenColor( *wxBLACK);
-  FixeParametresLigne( 1, wxSOLID);
+  SetLineParameters( 1, wxSOLID);
 
   wxCoord maxCharWidth,maxCharHeight;
   _memory_dc->GetTextExtent(wxString::FromAscii("X"),
@@ -1966,7 +1966,7 @@ void DessinImageBase :: DrawColorBar( )
 
   vpos2 = b;
 
-  FixeParametresLigne(0,wxTRANSPARENT);
+  SetLineParameters(0,wxTRANSPARENT);
 
   val = valmin;
   val_step = (valmax-valmin)/255.0;
@@ -1996,7 +1996,7 @@ void DessinImageBase :: DrawColorBar( )
 
      SetTextFg( *wxBLACK);
      //Texte(r+2,(int)(vpos2+step+char_ymax/2),Istring);
-     FixeParametresLigne(1,wxSHORT_DASH);
+     SetLineParameters(1,wxSHORT_DASH);
      SetPenColor(*wxBLACK);
      //cout << "drawing line for " << Istring
      //     << " at " << (int) (vpos2+step/2) << endl;
@@ -2006,7 +2006,7 @@ void DessinImageBase :: DrawColorBar( )
             r,
             (int) (vpos2+step/2)
           );
-     FixeParametresLigne(0,wxTRANSPARENT);
+     SetLineParameters(0,wxTRANSPARENT);
      Texte(r+2,(int)(vpos2-char_ymax/2),Istring);
    FinSi
 
@@ -2016,7 +2016,7 @@ void DessinImageBase :: DrawColorBar( )
   SetPenColor( *wxBLACK);
   FixeStyleRemplissage(wxTRANSPARENT);
 //wxBRUSHSTYLE_TRANSPARENT);
-  FixeParametresLigne(1,wxSOLID);
+  SetLineParameters(1,wxSOLID);
   Rectangle(l,(int)t,r,(int) b+1);
   FixeStyleRemplissage(wxSOLID);
 //wxBRUSHSTYLE_SOLID);
@@ -3534,7 +3534,7 @@ void DessinImageBase :: DrawLineZ( float x1, float y1,
      register float          pos_x1, pos_y1;
      register float          pos_x2, pos_y2;
 
-     //  FixeParametresLigne( size, style, _cap_style, _join_style);
+     //  SetLineParameters( size, style, _cap_style, _join_style);
      //SetPenColor( _couleur_masque);
      //     printf(" DrawLineZ(%3.1f,%3.1f,%3.1f,%3.1f)\n",x1,y1,x2,y2);
     // TODO: check why we need +/- 0.5 and create coordinate conversion functions

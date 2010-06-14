@@ -57,7 +57,7 @@ if (!exists(CE_defined)) {
   #--------------------------
   proc CarotidExperiments_Close() \
   {
-    CE_win.Hide
+    CE_win.HidePanel()
     delvars "CE_*_draw"
     delvars "CE_*"
     delvars "CarotidExperiments_*"
@@ -69,7 +69,7 @@ if (!exists(CE_defined)) {
   {
     config_filename = "carotidchallenge_config.amil"
     func config_filename
-    CE_win.update
+    CE_win.Update(-1)
   }
 
   #------------------------------------------
@@ -105,7 +105,7 @@ if (!exists(CE_defined)) {
       CE_evaluation_scriptdir = "/home/sara/Workshop/cls2009/scripts/"
     } 
       
-    CE_win.update
+    CE_win.Update(-1)
   
   }
   
@@ -149,7 +149,7 @@ if (!exists(CE_defined)) {
     ReadPoints(pointsname)
     CE_crop_created = 0
     CarotidExperiments_CropData()
-    CE_win.update
+    CE_win.Update(-1)
     SetStatusText("Reading data ... done")
 
   }
@@ -232,9 +232,9 @@ if (!exists(CE_defined)) {
     NLM_f = 2
     NLM_t = 2
     NLM_h = 10
-    NLM_win.update
-    NLM_win.Display
-    NLM_win.update
+    NLM_win.Update(-1)
+    NLM_win.Display()
+    NLM_win.Update(-1)
     SetStatusText("Denoising ... done")
   }
   
@@ -253,7 +253,7 @@ if (!exists(CE_defined)) {
       CP_input_name = "CE_input_cropped"
     }
     CP_lsd_erosion = 0
-    CP_win.update
+    CP_win.Update(-1)
   }
   
   #-----------------------------------------
@@ -292,8 +292,8 @@ if (!exists(CE_defined)) {
     ML_keephighest = 80
     # save multiscale local maxima
     ML_local_maxima = 1
-    ML_win.update
-    ML_win.Display
+    ML_win.Update(-1)
+    ML_win.Display()
   }
   
   #-----------------------------------------
@@ -423,7 +423,7 @@ if (!exists(CE_defined)) {
     SP_input_Imax      = CE_maxvesselint
     SP_input_speed     = 1
     SP_load_input()
-    SP_win.update
+    SP_win.Update(-1)
   
     SP_SetStartPointWorld(p1x,p1y,p1z)
   
@@ -462,12 +462,12 @@ if (!exists(CE_defined)) {
   {
     # save the result to a file here ...
     if (exists(CE_pathCI)) {
-      CE_pathCI.save CE_current_resultsdir+"/pathCI.vtk"
-      CE_pathCIs.save CE_current_resultsdir+"/pathCIs.vtk"
+      CE_pathCI._save(CE_current_resultsdir+"/pathCI.vtk")
+      CE_pathCIs._save(CE_current_resultsdir+"/pathCIs.vtk")
     }
     if (exists(CE_pathCE)) {
-      CE_pathCE.save CE_current_resultsdir+"/pathCE.vtk"
-      CE_pathCEs.save CE_current_resultsdir+"/pathCEs.vtk"
+      CE_pathCE._save(CE_current_resultsdir+"/pathCE.vtk")
+      CE_pathCEs._save(CE_current_resultsdir+"/pathCEs.vtk")
     }
   }
   
@@ -501,8 +501,8 @@ if (!exists(CE_defined)) {
       lIp = lI.GetLine(0)
       lEp = lE.GetLine(0)
       minsize = lIp.tx<lEp.tx?lIp.tx:lEp.tx
-      lIp1 = lIp[0:minsize-1,0:0,0:0]
-      lEp2 = lEp[0:minsize-1,0:0,0:0]
+      lIp1 = lIp[0:(minsize-1),0:0,0:0]
+      lEp2 = lEp[0:(minsize-1),0:0,0:0]
       d = lIp1-lEp2
       dn = norm(d)
       dn = dn>CE_dist_threshold
@@ -634,7 +634,7 @@ if (!exists(CE_defined)) {
       SP_end_mode        = 1
       SP_endmask_name    = "CE_endmask"
       SP_load_input()
-      SP_win.update
+      SP_win.Update(-1)
   
       SP_SetStartPointWorld(p1x,p1y,p1z)
       SP_Run
@@ -674,7 +674,7 @@ if (!exists(CE_defined)) {
     if (needcut) {
       if (exists(CE_pathCEs_cut)) { del CE_pathCEs_cut; }
       global::CE_pathCEs_cut = Surface()
-      CE_pathCEs_cut.NewLine
+      CE_pathCEs_cut.NewLine()
       local::i = 0
       local::_start=0
       local::_end=0
@@ -690,7 +690,7 @@ if (!exists(CE_defined)) {
           }
         }
       }
-      CE_pathCEs_cut.EndLine
+      CE_pathCEs_cut.EndLine()
     }
     SetStatusText("ECA length: done")
   }
@@ -736,17 +736,17 @@ if (!exists(CE_defined)) {
 
       # avoid going into ECA 
         # reconstruct a tube around ICA of 3mm
-        radii <<= Image(FLOAT,lI.NbPoints,1,1)
+        radii <<= Image(FLOAT,lI.NbPoints(),1,1)
         radii  = 3
         ica_tube <<= LineRecons(lI,CE_speed2,radii)
 
         # reconstruct a tube around ECA of 3mm
         if (exists(CE_pathCEs_cut)) {
-          radii <<= Image(FLOAT,CE_pathCEs_cut.NbPoints,1,1)
+          radii <<= Image(FLOAT,CE_pathCEs_cut.NbPoints(),1,1)
           radii  = 3
           eca_tube <<= LineRecons(CE_pathCEs_cut,CE_speed2,radii)
         } else {
-          radii <<= Image(FLOAT,lE.NbPoints,1,1)
+          radii <<= Image(FLOAT,lE.NbPoints(),1,1)
           radii  = 3
           eca_tube <<= LineRecons(lE,CE_speed2,radii)
         }
@@ -784,7 +784,7 @@ if (!exists(CE_defined)) {
       SP_end_mode        = 1
       SP_endmask_name    = "CE_endmask"
       SP_load_input()
-      SP_win.update
+      SP_win.Update(-1)
   
       SP_SetStartPointWorld(lIp(lIp.tx-1,0,0,0),\
                             lIp(lIp.tx-1,0,0,1),\
@@ -812,7 +812,7 @@ if (!exists(CE_defined)) {
     if (needcut) {
       if (exists(CE_pathCIs_cut)) { del CE_pathCIs_cut; }
       global::CE_pathCIs_cut = Surface()
-      CE_pathCIs_cut.NewLine
+      CE_pathCIs_cut.NewLine()
       local::i=0
       local::_start=0
       local::_end=0
@@ -828,7 +828,7 @@ if (!exists(CE_defined)) {
           }
         }
       }
-      CE_pathCIs_cut.EndLine
+      CE_pathCIs_cut.EndLine()
     }
 
     SetStatusText("ICA length: done")
@@ -857,16 +857,18 @@ if (!exists(CE_defined)) {
     # save the paths here if they have been inverted
     CarotidExperiments_SavePaths()
     if (exists(CE_pathCEs_cut)) {
-      CE_pathCEs_cut.save CE_current_resultsdir+"/pathCEs_cut.vtk"
+      CE_pathCEs_cut._save( CE_current_resultsdir+"/pathCEs_cut.vtk")
     }
     if (exists(CE_pathCIs_cut)) {
-      CE_pathCIs_cut.save CE_current_resultsdir+"/pathCIs_cut.vtk"
+      CE_pathCIs_cut._save( CE_current_resultsdir+\
+                            "/pathCIs_cut.vtk")
     }
     if (exists(CE_pathCC_rems)) {
-      CE_pathCC_rems.save CE_current_resultsdir+"/pathCC_remaining_smoothed.vtk"
+      CE_pathCC_rems._save( CE_current_resultsdir+\
+                            "/pathCC_remaining_smoothed.vtk")
     }
     if (exists(CE_pathCI_rems)) {
-      CE_pathCI_rems.save CE_current_resultsdir+"/pathCI_remaining_smoothed.vtk"
+      CE_pathCI_rems._save( CE_current_resultsdir+"/pathCI_remaining_smoothed.vtk")
     }
   }
   
@@ -952,13 +954,13 @@ if (!exists(CE_defined)) {
     
       #--- Compute the initial cylindrical tube
       if (exists(CE_pathCEs_cut)) {
-        radii         = Image(FLOAT,CE_pathCEs_cut.NbPoints,1,1)
+        radii         = Image(FLOAT,CE_pathCEs_cut.NbPoints(),1,1)
         radii         = CE_tube_size
         global::CE_pathCE_lsinit <<= LineRecons(CE_pathCEs_cut,CE_input_cropped,radii)
         CE_pathCE_lsinit = CE_pathCE_lsinit-255*exp(-0.5)
       } else {
         pathCEs_res   = ResampleLines(CE_pathCEs,CE_resample_dist)
-        radii         = Image(FLOAT,pathCEs_res.NbPoints,1,1)
+        radii         = Image(FLOAT,pathCEs_res.NbPoints(),1,1)
         radii         = CE_tube_size
         global::CE_pathCE_lsinit <<= LineRecons(pathCEs_res,CE_input_cropped,radii)
         CE_pathCE_lsinit = CE_pathCE_lsinit-255*exp(-0.5)
@@ -985,7 +987,7 @@ if (!exists(CE_defined)) {
         LS_T = 60
       }
     
-      LS_win.update
+      LS_win.Update(-1)
       LS_load_input
       LS_load_initial
 
@@ -1014,11 +1016,11 @@ if (!exists(CE_defined)) {
       CE_pathCE_expforce.putimage(expforce_roi)
     
       LS_expansion_image_name = "CE_pathCE_expforce"
-      LS_win.update
+      LS_win.Update(-1)
       LS_load_expansion
     
       # Run the evolution
-      LS_win.update
+      LS_win.Update(-1)
       LS_ReRun
       global::CE_pathCE_contours <<= LS_inls
     
@@ -1049,12 +1051,12 @@ if (!exists(CE_defined)) {
     
       #--- Compute the initial cylindrical tube
       if (exists(CE_pathCIs_cut)) {
-        radii         = Image(FLOAT,CE_pathCIs_cut.NbPoints,1,1)
+        radii         = Image(FLOAT,CE_pathCIs_cut.NbPoints(),1,1)
         radii         = CE_tube_size
         global::CE_pathCI_lsinit <<= LineRecons(CE_pathCIs_cut,CE_input_cropped,radii)
       } else {
         pathCIs_res   = ResampleLines(CE_pathCIs,CE_resample_dist)
-        radii         = Image(FLOAT,pathCIs_res.NbPoints,1,1)
+        radii         = Image(FLOAT,pathCIs_res.NbPoints(),1,1)
         radii         = CE_tube_size
         global::CE_pathCI_lsinit <<= LineRecons(pathCIs_res,CE_input_cropped,radii)
       }
@@ -1062,7 +1064,7 @@ if (!exists(CE_defined)) {
       #--- check for computed remaining centerline
       if (exists(CE_pathCC_rems)) {
         pathCC_rems_res = ResampleLines(CE_pathCC_rems,CE_resample_dist)
-        radii         <<= Image(FLOAT,pathCC_rems_res.NbPoints,1,1)
+        radii         <<= Image(FLOAT,pathCC_rems_res.NbPoints(),1,1)
         radii           = CE_tube_size
         # reconstructed remaining centerline
         rem_recons    <<= LineRecons(pathCC_rems_res,CE_input_cropped,radii)
@@ -1070,7 +1072,7 @@ if (!exists(CE_defined)) {
       }
       if (exists(CE_pathCI_rems)) {
         pathCI_rems_res = ResampleLines(CE_pathCI_rems,CE_resample_dist)
-        radii         <<= Image(FLOAT,pathCI_rems_res.NbPoints,1,1)
+        radii         <<= Image(FLOAT,pathCI_rems_res.NbPoints(),1,1)
         radii           = CE_tube_size
         # reconstructed remaining centerline
         rem_recons    <<= LineRecons(pathCI_rems_res,CE_input_cropped,radii)
@@ -1100,7 +1102,7 @@ if (!exists(CE_defined)) {
         LS_T = 60
       }
 
-      LS_win.update
+      LS_win.Update(-1)
       LS_load_input
       LS_load_initial
       #--- Computes the intensity statistics
@@ -1128,11 +1130,11 @@ if (!exists(CE_defined)) {
       CE_pathCI_expforce.putimage(expforce_roi)
     
       LS_expansion_image_name = "CE_pathCI_expforce"
-      LS_win.update
+      LS_win.Update(-1)
       LS_load_expansion
     
       # Run the evolution
-      LS_win.update
+      LS_win.Update(-1)
       LS_ReRun
       global::CE_pathCI_contours <<= LS_inls
     
@@ -1216,7 +1218,7 @@ if (!exists(CE_defined)) {
       LS_threads    = 4
       LS_T          = 600
   
-      LS_win.update
+      LS_win.Update(-1)
       LS_load_input
       LS_load_initial
       #--- Computes the intensity statistics
@@ -1364,7 +1366,7 @@ if (!exists(CE_defined)) {
     Skel_Ordering   = 0 
     Skel_DTmax = -1
     Skel_DTmax = 15
-    Skel_win.update
+    Skel_win.Update(-1)
     # run skeletonization
     Skel_Execute
     # prune
@@ -1395,7 +1397,7 @@ if (!exists(CE_defined)) {
     global::SP_speed_name = "CE_path_input"
     SP_epsilon = 0.1
     SP_maxcost = 10000
-    SP_win.update
+    SP_win.Update(-1)
     SP_load_input
     SP_load_speed
     SP_SetStartPointWorld(p1x,p1y,p1z)
@@ -1416,7 +1418,7 @@ if (!exists(CE_defined)) {
         show CE_path1
         CE_path1_draw += CE_path2
         if (exists(Skel_res_draw)) {
-          Skel_res_draw.compare(CE_path1_draw)
+          Skel_res_draw._compare(CE_path1_draw)
         }
       }
     }
@@ -1426,50 +1428,51 @@ if (!exists(CE_defined)) {
   proc CarotidExperiments_gui() \
   {
   printn "1"
-    global::CE_win = ParamWin("Carotid09")
-    CE_win.BeginBook
+    import = &global::ami_import;
+    global::CE_win = import->ParamPanel("Carotid09")
+    CE_win.BeginBook()
   
       #----- Input Page
       CE_win.AddPage("Config")
-        CE_win.AddBoolean(CE_nointeraction)
-        CE_win.BeginBox("Paths")
-          config_id = CE_win.AddEnum(CE_config)
+        CE_win.AddBoolean( &CE_nointeraction)
+        CE_win.BeginBoxPanel("Paths")
+          config_id = CE_win.AddEnum( &CE_config)
             CE_win.AddEnumChoice(config_id,"Karl linux laptop")
             CE_win.AddEnumChoice(config_id,"Karl linux desktop")
             CE_win.AddEnumChoice(config_id,"Sara winXP lab")
             CE_win.AddEnumChoice(config_id,"Sara linux lab")
         CE_win.AddButton("Load config",         CarotidExperiments_LoadConfig)
-          CE_win.AddString(CE_data_dir,"Data")
-          CE_win.AddString(CE_groundtruth_dir,"Ground truth")
-          CE_win.AddString(CE_results_dir,"Results")
+          CE_win.AddString( &CE_data_dir,"Data")
+          CE_win.AddString( &CE_groundtruth_dir,"Ground truth")
+          CE_win.AddString( &CE_results_dir,"Results")
   
-          CE_win.BeginBox("Evaluation paths")
-            CE_win.AddString(CE_evaluation_bindir,    "binary path")
-            CE_win.AddString(CE_evaluation_scriptdir, "scripts path")
-          CE_win.EndBox
-        CE_win.EndBox
+          CE_win.BeginBoxPanel("Evaluation paths")
+            CE_win.AddString( &CE_evaluation_bindir,    "binary path")
+            CE_win.AddString( &CE_evaluation_scriptdir, "scripts path")
+          CE_win.EndBoxPanel()
+        CE_win.EndBoxPanel()
   
       CE_win.AddPage("Input")
-        CE_win.BeginBox("data information")
-          datacenter_id = CE_win.AddEnum(CE_datacenter)
+        CE_win.BeginBoxPanel("data information")
+          datacenter_id = CE_win.AddEnum( &CE_datacenter)
             CE_win.AddEnumChoice(datacenter_id,"Erasmus MC")
             CE_win.AddEnumChoice(datacenter_id,"Hadassah")
             CE_win.AddEnumChoice(datacenter_id,"Louis Pradel")
-          datatype_id = CE_win.AddEnum(CE_datatype)
+          datatype_id = CE_win.AddEnum( &CE_datatype)
             CE_win.AddEnumChoice(datatype_id,"Training")
             CE_win.AddEnumChoice(datatype_id,"Testing")
             CE_win.AddEnumChoice(datatype_id,"On-site")
-          CE_win.AddInt(CE_datanumber,0,35)
-        CE_win.EndBox
+          CE_win.AddInt( &CE_datanumber,  "CE_datanumber", 0,35)
+        CE_win.EndBoxPanel()
         CE_win.AddButton("Read Data",         CarotidExperiments_ReadData)
         CE_win.AddButton("Read Ground Truth", CarotidExperiments_ReadGT)
-        CE_win.BeginBox("Crop")
-          CE_win.AddInt(CE_cropmarginXY,0,200)
-          CE_win.AddInt(CE_cropmarginZtop,0,200)
-          CE_win.AddInt(CE_cropmarginZbot,0,200)
+        CE_win.BeginBoxPanel("Crop")
+          CE_win.AddInt( &CE_cropmarginXY,  "CE_cropmarginXY", 0,200)
+          CE_win.AddInt( &CE_cropmarginZtop,  "CE_cropmarginZtop", 0,200)
+          CE_win.AddInt( &CE_cropmarginZbot,  "CE_cropmarginZbot", 0,200)
           CE_win.AddButton("Crop Data",         CarotidExperiments_CropData)
-          CE_win.AddBoolean(CE_crop_created)
-        CE_win.EndBox
+          CE_win.AddBoolean( &CE_crop_created)
+        CE_win.EndBoxPanel()
   
       #----- Run Page
       CE_win.AddPage("Den")
@@ -1477,77 +1480,77 @@ if (!exists(CE_defined)) {
   
       #----- Run Page
       CE_win.AddPage("lst")
-        CE_win.BeginBox("local statistics")
-          localstats_id = CE_win.AddEnum(CE_localstats)
+        CE_win.BeginBoxPanel("local statistics")
+          localstats_id = CE_win.AddEnum( &CE_localstats)
             CE_win.AddEnumChoice(localstats_id,"True")
             CE_win.AddEnumChoice(localstats_id,"False")
-          CE_win.AddInt(CE_localpar,1,10)
-        CE_win.EndBox
+          CE_win.AddInt( &CE_localpar,  "CE_localpar", 1,10)
+        CE_win.EndBoxPanel()
         CE_win.AddButton("Local Stats",    CarotidExperiments_LocalStats)
   
       #----- Run Page
       CE_win.AddPage("Ves")
-        CE_win.AddBoolean(CE_ves_downsample)
+        CE_win.AddBoolean( &CE_ves_downsample)
         CE_win.AddButton("Vesselness",CarotidExperiments_Vesselness)
         CE_win.AddButton("Save",     CarotidExperiments_SaveVesselness)
         CE_win.AddButton("Read",     CarotidExperiments_ReadVesselness)
   
       #----- Run Page
       CE_win.AddPage("Run")
-        CE_win.BeginBox("Vessel intensity range")
-          CE_win.AddInt(CE_minvesselint,900,1300)
-          CE_win.AddInt(CE_maxvesselint,900,2000)
-        CE_win.EndBox
-        CE_win.BeginBox("Paths (Vesselness+Prob)")
-          CE_win.BeginBox("Path")
-            CE_win.AddFloat(CE_mlmax_threshold,0,100)
-            CE_win.BeginHorizontal
+        CE_win.BeginBoxPanel("Vessel intensity range")
+          CE_win.AddInt( &CE_minvesselint,  "CE_minvesselint", 900,1300)
+          CE_win.AddInt( &CE_maxvesselint,  "CE_maxvesselint", 900,2000)
+        CE_win.EndBoxPanel()
+        CE_win.BeginBoxPanel("Paths (Vesselness+Prob)")
+          CE_win.BeginBoxPanel("Path")
+            CE_win.AddFloat( &CE_mlmax_threshold,  "CE_mlmax_threshold", 0,100)
+            CE_win.BeginHorizontal()
               CE_win.AddButton("Create",  CarotidExperiments_CreatePaths)
               CE_win.AddButton("Save",    CarotidExperiments_SavePaths)
               CE_win.AddButton("Read",    CarotidExperiments_ReadPaths)
-            CE_win.EndHorizontal
-          CE_win.EndBox
-          CE_win.BeginBox("Junction")
-            CE_win.AddFloat(CE_dist_threshold,0.01,10)
-            CE_win.AddFloat(CE_resample_dist,0.01,10)
-            CE_win.BeginHorizontal
+            CE_win.EndHorizontal()
+          CE_win.EndBoxPanel()
+          CE_win.BeginBoxPanel("Junction")
+            CE_win.AddFloat( &CE_dist_threshold,  "CE_dist_threshold", 0.01,10)
+            CE_win.AddFloat( &CE_resample_dist,  "CE_resample_dist", 0.01,10)
+            CE_win.BeginHorizontal()
               CE_win.AddButton("Junction",  CarotidExperiments_JunctionFromPaths)
              CE_win.AddButton("Display",    CarotidExperiments_PathsDisplay)
               CE_win.AddButton("Save",      CarotidExperiments_SaveJunction)
-            CE_win.EndHorizontal
-          CE_win.EndBox
-          CE_win.BeginBox("LevelSets from paths")
-            CE_win.BeginHorizontal
+            CE_win.EndHorizontal()
+          CE_win.EndBoxPanel()
+          CE_win.BeginBoxPanel("LevelSets from paths")
+            CE_win.BeginHorizontal()
               CE_win.AddButton("External", CarotidExperiments_LevelSetsExternal)
               CE_win.AddButton("Internal", CarotidExperiments_LevelSetsInternal)
               CE_win.AddButton("Display",  CarotidExperiments_LevelSetsPathsDisplay)
               CE_win.AddButton("Save",     CarotidExperiments_LevelSetsPathsSave)
-            CE_win.EndHorizontal
-          CE_win.EndBox
-        CE_win.EndBox
+            CE_win.EndHorizontal()
+          CE_win.EndBoxPanel()
+        CE_win.EndBoxPanel()
         CE_win.AddButton("Evaluation",      CarotidExperiments_Evaluation)
         CE_win.AddButton("Display Results", CarotidExperiments_DisplayResults)
 
       #----- Other Page
       CE_win.AddPage("Other")
-        CE_win.BeginBox("LevelSets")
-          CE_win.BeginHorizontal
+        CE_win.BeginBoxPanel("LevelSets")
+          CE_win.BeginHorizontal()
             CE_win.AddButton("Init",   CarotidExperiments_InitLevelSets)
             CE_win.AddButton("Save",   CarotidExperiments_SaveResults)
-          CE_win.EndHorizontal
-        CE_win.EndBox
-        CE_win.BeginBox("Paths (Skeleton)")
-          CE_win.BeginHorizontal
+          CE_win.EndHorizontal()
+        CE_win.EndBoxPanel()
+        CE_win.BeginBoxPanel("Paths (Skeleton)")
+          CE_win.BeginHorizontal()
             CE_win.AddButton("Skeleton",   CarotidExperiments_Skeleton)
             CE_win.AddButton("Junction",   CarotidExperiments_FindJunctionFromSkeleton)
-          CE_win.EndHorizontal
-        CE_win.EndBox
+          CE_win.EndHorizontal()
+        CE_win.EndBoxPanel()
 
-    CE_win.EndBook
+    CE_win.EndBook()
   
     CE_win.AddButton("Close",CarotidExperiments_Close)
-    CE_win.update
-    CE_win.Display
+    CE_win.Update(-1)
+    CE_win.Display()
   }
   
   #------------------------------------------

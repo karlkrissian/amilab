@@ -14,9 +14,7 @@
 
 #include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
-#include "ami_class.h"
 #include "ami_object.h"
-#include "ami_function.h"
 
 //-------------------------------------------------------------------------
 AMIObject::ptr AddWrap_wxColour(  WrapClass_wxColour::ptr& objectptr)
@@ -59,6 +57,8 @@ See http://docs.wxwidgets.org/stable/wx_wxcolour.html for details \n\
         - wxColour(): default constructor\n\
         - wxColour(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha=wxALPHA_OPAQUE) \n";
 
+
+  if (!p) HelpAndReturnVarPtr;
   if (p->GetNumParam()==0) 
     return CreateVar_wxColour(new wxColour());
 
@@ -222,5 +222,20 @@ BasicVariable::ptr WrapClass_wxColour::
   }
 
   return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  copy
+//---------------------------------------------------
+void WrapClass_wxColour::
+      wrap_copy::SetParametersComments() 
+{
+  return_comments = "Copy of the colour within a new variable.";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxColour::
+      wrap_copy::CallMember( ParamList* p)
+{
+  return CreateVar_wxColour( new wxColour(*(_objectptr->_obj)));
 }
 

@@ -53,9 +53,7 @@ public:\
   typedef boost::shared_ptr<class>    ptr;              \
   typedef boost::weak_ptr<class>      wptr;             \
   typedef std::vector<class::ptr>     ptr_vector;       \
-  typedef std::vector<class::wptr>    wptr_vector;      \
-  typedef std::list<class::ptr>       ptr_list;         \
-  typedef std::list<class::wptr>      wptr_list;
+  typedef std::list<class::ptr>       ptr_list;         
 
 #define DEFINE_TEMPLATE_CLASS1(_class,_t) \
 public:\
@@ -64,9 +62,7 @@ public:\
   typedef typename boost::shared_ptr<ClassType >    ptr; \
   typedef typename boost::weak_ptr<ClassType >      wptr; \
   typedef typename std::vector<ClassType::ptr>     ptr_vector; \
-  typedef std::vector<ClassType::wptr>    wptr_vector; \
   typedef std::list<ClassType::ptr>       ptr_list; \
-  typedef std::list<ClassType::wptr>      wptr_list;
 
 
 template<class T>

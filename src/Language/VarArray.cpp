@@ -9,7 +9,7 @@
 #include "ami_function.h"
 #include "ami_class.h"
 #include "ami_object.h"
-#include "ami_cpp_object.h"
+//#include "ami_cpp_object.h"
 #include "FloatMatrix.hpp"
 #include "wrapfunction_class.h"
 

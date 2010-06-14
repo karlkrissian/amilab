@@ -121,7 +121,7 @@ proc ShapeLevelSets( IMAGE im, IMAGE initial, NUM sigma, NUM it, NUM dist_freq, 
     im_draw.DrawIsoContour(0,1)
     im_draw.SetIsoContour(1,lres,0)
     im_draw.DrawIsoContour(1,1)
-    im_draw.compare(expansion_im)
+    im_draw._compare(expansion_im)
   }
 
 

@@ -40,6 +40,7 @@ typedef float real;
 #include "wrapfunctions.hpp" 
 #include "wrapAMIFluid.h"
 #include "ami_object.h"
+#include "inrimage.hpp"
 
 #include <string>
 using namespace std;

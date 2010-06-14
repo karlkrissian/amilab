@@ -62,7 +62,7 @@ BasicVariable::ptr wrap_wxEditor::CallMember( ParamList* p)
 {
   if (!p) ClassHelpAndReturn;
   int n=0;
-  CLASS_GET_OBJECT_PARAM(wxWindow,parent);
+  CLASS_GET_OBJECT_PARAM(wxWindow,var,parent);
   if (parent.get())
     return CreateVar_wxEditor(new wxEditor(parent.get()));
   else

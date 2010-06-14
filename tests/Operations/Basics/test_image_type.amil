@@ -1,0 +1,234 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_image_type.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the operations you can perform with the image type.
+#
+# Permitted operations:   =, +, -, *, /, %, & 
+#                         +=, -=, *=, /=, %=, &=, ^=, |=,      
+#                         ++, --, &&, ||,  (, ),
+#                         <, >, ==, !=, <=, >=,
+#                         sin, cos, sqrt, abs, round, floor,
+#                         tan, asin, acos, atan, exp, log, ln, norm
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+dimx=10
+dimy=10
+dimz=1
+printn "\t\t Dimensions:\n"
+printn "\t\t\t X (dimx)=%1% " % dimx
+printn "\t\t\t Y (dimy)=%1% " % dimy
+printn "\t\t\t Z (dimz)=%1% " % dimz
+
+printn  "\t\t imgA = Image(FLOAT,dimx,dimy,dimz) (ASSIGN_OP)\n"
+imgA = Image(FLOAT,dimx,dimy,dimz)
+printn  "\t\t imgB = Image(FLOAT,dimx,dimy,dimz) (ASSIGN_OP)\n"
+imgB = Image(FLOAT,dimx,dimy,dimz)
+
+printn "\t\t Initialized to 10 imageA(ASSIGN_OP).\n"
+imgA=10
+
+printn "\t\t Initialized to 10 imageB(ASSIGN_OP).\n"
+imgB=10
+
+C=imgA+imgB
+printn  "\t\t C=imgA+imgB (T_ADD)"
+C=imgA-imgB
+printn  "\t\t C=imgA-imgB (T_SUB)"
+C=imgA*imgB
+printn  "\t\t C=imgA*imgB (T_MULT)"
+C=imgA/imgB
+printn  "\t\t C=imgA/imgB (T_DIV)"
+C=imgA%imgB
+printn  "\t\t C=imgA%%imgB (T_MOD)"
+
+C=imgA<imgB
+printn  "\t\t C=imgA<imgB (T_LT)"
+C=imgA>imgB
+printn  "\t\t C=imgA>imgB (T_GT)"
+C=!imgA
+printn  "\t\t C=!imgA (T_NOT)"
+C=imgA&imgB
+printn  "\t\t C=imgA&imgB (T_AND)"
+C=imgA|imgB
+printn  "\t\t C=imgA|imgB (T_OR)"
+C+=imgA
+printn  "\t\t C+=imgA (ADD_ASSIGN)"
+C-=imgB
+printn  "\t\t C-=imgB (SUB_ASSIGN)"
+C*=imgA
+printn  "\t\t C*=imgA (MUL_ASSIGN)"
+C/=imgB
+printn  "\t\t C/=imgB (DIV_ASSIGN)"
+
+imgA++
+printn  "\t\t imgA++ --> (INC_OP)"
+imgB--
+printn  "\t\t imgB-- DEC_OP)"
+++imgA
+printn  "\t\t ++imgA (INC_OP)"
+--imgB
+printn  "\t\t --imgB (DEC_OP)"
+
+C=imgA&&imgB
+printn  "\t\t C=imgA&&imgB (AND_OP)"
+C=imgA||imgB
+printn  "\t\t C=imgA||imgB (OR_OP)"
+C=imgA<=imgB
+printn  "\t\t C=imgA<=imgB (LE_OP)"
+C=imgA>=imgB
+printn  "\t\t C=imgA>=imgB (GE_OP)"
+C=imgA==imgB
+printn  "\t\t C=imgA==imgB (EQ_OP)"
+C=imgA!=imgB
+printn  "\t\t C=imgA!=imgB (NE_OP)"
+
+C=sin imgA
+printn  "\t\t C=sin imgA (SIN)"
+C=cos imgA
+printn  "\t\t C=cos imgA (COS)"
+C=tan imgA
+printn  "\t\t C=tan imgA (TAN)"
+C=asin imgA
+printn  "\t\t C=asin imgA (ASIN)"
+C=acos imgA
+printn  "\t\t C=acos imgA (ACOS)"
+C=atan imgA
+printn  "\t\t C=atan imgA (ATAN)"
+
+C=exp imgB 
+printn  "\t\t C=exp imgB (EXP)"
+C=ln imgB
+printn  "\t\t C=ln imgB (LN)"
+C=log imgB
+printn  "\t\t C=log imgB (LOG)"
+C=sqrt imgB
+printn  "\t\t C=sqrt imgB (SQRT)"
+
+C=abs imgA
+printn  "\t\t C=abs imgA (ABS)"
+C=norm imgB
+printn  "\t\t C=norm imgB (NORM)"
+C=round imgB
+printn  "\t\t C=round imgB (ROUND)"
+C=floor imgB
+printn  "\t\t C=floor imgB (FLOOR)"
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+dimv=10
+printn "\t\t Dimensions:\n"
+printn "\t\t\t X (dimx)=%1% " % dimx
+printn "\t\t\t Y (dimy)=%1% " % dimy
+printn "\t\t\t Z (dimz)=%1% " % dimz
+printn "\t\t\t V (dimv)=%1% " % dimv
+
+printn  "\t\t imgA = Image(FLOAT,dimx,dimy,dimz,dimv) (ASSIGN_OP)\n"
+imgA = Image(FLOAT,dimx,dimy,dimz,dimv)
+printn  "\t\t imgB = Image(FLOAT,dimx,dimy,dimz,dimv) (ASSIGN_OP)\n"
+imgB = Image(FLOAT,dimx,dimy,dimz,dimv)
+
+printn "\t\t Initialized to 10 imageA(ASSIGN_OP).\n"
+imgA=10
+
+printn "\t\t Initialized to 10 imageB(ASSIGN_OP).\n"
+imgB=10
+
+C=imgA+imgB
+printn  "\t\t C=imgA+imgB (T_ADD)"
+C=imgA-imgB
+printn  "\t\t C=imgA-imgB (T_SUB)"
+C=imgA*imgB
+printn  "\t\t C=imgA*imgB (T_MULT)"
+C=imgA/imgB
+printn  "\t\t C=imgA/imgB (T_DIV)"
+C=imgA%imgB
+printn  "\t\t C=imgA%%imgB (T_MOD)"
+
+C=imgA<imgB
+printn  "\t\t C=imgA<imgB (T_LT)"
+C=imgA>imgB
+printn  "\t\t C=imgA>imgB (T_GT)"
+C=!imgA
+printn  "\t\t C=!imgA (T_NOT)"
+C=imgA&imgB
+printn  "\t\t C=imgA&imgB (T_AND)"
+C=imgA|imgB
+printn  "\t\t C=imgA|imgB (T_OR)"
+C+=imgA
+printn  "\t\t C+=imgA (ADD_ASSIGN)"
+C-=imgB
+printn  "\t\t C-=imgB (SUB_ASSIGN)"
+C*=imgA
+printn  "\t\t C*=imgA (MUL_ASSIGN)"
+C/=imgB
+printn  "\t\t C/=imgB (DIV_ASSIGN)"
+
+imgA++
+printn  "\t\t imgA++ --> (INC_OP)"
+imgB--
+printn  "\t\t imgB-- DEC_OP)"
+++imgA
+printn  "\t\t ++imgA (INC_OP)"
+--imgB
+printn  "\t\t --imgB (DEC_OP)"
+
+C=imgA&&imgB
+printn  "\t\t C=imgA&&imgB (AND_OP)"
+C=imgA||imgB
+printn  "\t\t C=imgA||imgB (OR_OP)"
+C=imgA<=imgB
+printn  "\t\t C=imgA<=imgB (LE_OP)"
+C=imgA>=imgB
+printn  "\t\t C=imgA>=imgB (GE_OP)"
+C=imgA==imgB
+printn  "\t\t C=imgA==imgB (EQ_OP)"
+C=imgA!=imgB
+printn  "\t\t C=imgA!=imgB (NE_OP)"
+
+C=sin imgA
+printn  "\t\t C=sin imgA (SIN)"
+C=cos imgA
+printn  "\t\t C=cos imgA (COS)"
+C=tan imgA
+printn  "\t\t C=tan imgA (TAN)"
+C=asin imgA
+printn  "\t\t C=asin imgA (ASIN)"
+C=acos imgA
+printn  "\t\t C=acos imgA (ACOS)"
+C=atan imgA
+printn  "\t\t C=atan imgA (ATAN)"
+
+C=exp imgB 
+printn  "\t\t C=exp imgB (EXP)"
+C=ln imgB
+printn  "\t\t C=ln imgB (LN)"
+C=log imgB
+printn  "\t\t C=log imgB (LOG)"
+C=sqrt imgB
+printn  "\t\t C=sqrt imgB (SQRT)"
+
+C=abs imgA
+printn  "\t\t C=abs imgA (ABS)"
+C=norm imgB
+printn  "\t\t C=norm imgB (NORM)"
+C=round imgB
+printn  "\t\t C=round imgB (ROUND)"
+C=floor imgB
+printn  "\t\t C=floor imgB (FLOOR)"
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+OK=1
+
+ctest.PrintTestResult( OK ) 
+

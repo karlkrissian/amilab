@@ -102,7 +102,7 @@ proc RunLSUS( IMAGE im, IMAGE initial, NUM Imean, NUM Isd, NUM it, NUM graphics)
 
 func "AddSphere"
 
-proc FollowContour( IMAGE im, IMAGE res, IMAGEDRAW imdraw) {
+proc FollowContour( IMAGE im, IMAGE res, OBJECT imdraw) {
   print "1\n"
   posz=imdraw.GetZPos
   print "2\n"
@@ -131,10 +131,10 @@ proc FollowContour( IMAGE im, IMAGE res, IMAGEDRAW imdraw) {
     print "_z ="; print _z; print "\n"
     del ls_iz0
     del ls_iz
-    ls_iz = res[:,:,_z-1:_z-1]
+    ls_iz = res[:,:,(_z-1):(_z-1)]
     ls_iz0 = autocrop(ls_iz,30)
     del iz
-    iz = im[ls_iz0.trx:ls_iz0.trx+ls_iz0.tx-1,ls_iz0.try:ls_iz0.try+ls_iz0.ty-1,_z:_z]
+    iz = im[(ls_iz0.trx):(ls_iz0.trx+ls_iz0.tx-1),(ls_iz0.try):(ls_iz0.try+ls_iz0.ty-1),_z:_z]
     del ls_iz
     ls_iz = res[iz]
     ls_iz=ls_iz0

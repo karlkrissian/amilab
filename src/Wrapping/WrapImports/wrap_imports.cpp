@@ -12,11 +12,11 @@
 
 #include "wrapfunctions.hpp"
 #include "VarContexts.hpp"
-#include "wrapfunctions_draw.h"
+//#include "wrapfunctions_draw.h"
 #include "wrap_imports.h"
 #include "ami_class.h"
 #include "ami_object.h"
-#include "wrap_imagedraw.h"
+//#include "wrap_imagedraw.h"
 
 #include "wrap_MainFrame.h"
 #include "wrap_wxDrawingWindow.h"
@@ -43,6 +43,9 @@
 #include "MainFrame.h"
 
 #include "wrap_ReadRawImages.h"
+#include "wrap_ImageExtent.h"
+#include "wrap_SurfacePoly.h"
+#include "wrap_DessinImage.h"
 
 extern VarContexts  Vars;
 extern MainFrame*   GB_main_wxFrame;
@@ -54,21 +57,22 @@ void AddWrapImports()
   AddWrapWxWidgets();
   AddWrapAmilab();
   AddWrapIO();
+  AddWrapImage();
+  AddWrapSurface();
+  AddWrapDessinImage();
+  AddWrapBasicTypes();
 
   // Create new instance of the class
   AMIObject::ptr amiobject(new AMIObject);
-
   amiobject->SetName("ami_import");
 
   // Set the object context
   Variables::ptr previous_ocontext = Vars.GetObjectContext();
   Vars.SetObjectContext(amiobject->GetContext());
 
-  ADDOBJECTVAR_NAME(C_wrap_procedure,"ImageDraw",  wrap_ImageDraw);
+//  ADDOBJECTVAR_NAME(C_wrap_procedure,"ImageDraw",  wrap_ImageDraw);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxDrawingWindow",  wrap_wxDrawingWindow);
 
-  ADDOBJECTVAR_NAME(C_wrap_varfunction,"VarList",   wrap_VarList);
-  ADDOBJECTVAR_NAME(C_wrap_varfunction,"VarVector", wrap_VarVector);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"ParamPanel",wrap_ParamPanel);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"vtkLevelSets",wrap_vtkLevelSets);
 
@@ -92,7 +96,6 @@ void AddWrapWxWidgets()
 
   // Create new instance of the class
   AMIObject::ptr amiobject(new AMIObject);
-
   amiobject->SetName("wx");
 
   // Set the object context
@@ -119,48 +122,71 @@ void AddWrapWxWidgets()
 
 void AddWrapAmilab()
 {
-
   // Create new instance of the class
   AMIObject::ptr amiobject(new AMIObject);
-
   amiobject->SetName("ami");
-
-  // Set the object context
-  Variables::ptr previous_ocontext = Vars.GetObjectContext();
-  Vars.SetObjectContext(amiobject->GetContext());
 
   AddVar_wxEditor( amiobject->GetContext());
 
   // Add the MainFrame as an object
   AMIObject::ptr obj(AddWrap_MainFrame(GB_main_wxFrame));
-  amiobject->GetContext()->AddVar<AMIObject>("MainFrame", obj);
-
-  // Restore the object context
-  Vars.SetObjectContext(previous_ocontext);
+  amiobject->GetContext()->AddVar<AMIObject>("MainFrame", obj, amiobject->GetContext());
 
   // 3. add the variables to this instance
-  Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
-
+  Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), 
+      amiobject,Vars.GetBuiltinContext());
 }
 
 void AddWrapIO()
 {
-
   // Create new instance of the class
   AMIObject::ptr amiobject(new AMIObject);
   amiobject->SetName("IO");
 
-  // Set the object context
-  Variables::ptr previous_ocontext = Vars.GetObjectContext();
-  Vars.SetObjectContext(amiobject->GetContext());
-
-  AddVar_ReadRawImages2D( amiobject->GetContext());
-
-  // Restore the object context
-  Vars.SetObjectContext(previous_ocontext);
+  AddVar_ReadRawImages2D(     amiobject->GetContext());
+  AddVar_ReadRawImage3D(      amiobject->GetContext());
+  AddVar_ReadRawVectImage3D(  amiobject->GetContext());
 
   // 3. add the variables to this instance
-  Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject);
+  Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), 
+    amiobject,
+    Vars.GetBuiltinContext());
+}
 
+
+//--------------------------------------------
+void AddWrapImage()
+{
+  // Create new instance of the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("image");
+
+  AddVar_ImageExtent(     amiobject->GetContext());
+
+  // 3. add the variables to this instance
+  Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), 
+    amiobject,
+    Vars.GetBuiltinContext());
+}
+
+//--------------------------------------------
+void AddWrapSurface()
+{
+  AddVar_SurfacePoly( Vars.GetBuiltinContext());
+}
+
+//--------------------------------------------
+void AddWrapDessinImage()
+{
+  AddVar_DessinImage( Vars.GetBuiltinContext());
+}
+
+//--------------------------------------------
+void AddWrapBasicTypes()
+{
+//  ADDOBJECTVAR_NAME(C_wrap_varfunction,"VarList",   wrap_VarList);
+//  ADDOBJECTVAR_NAME(C_wrap_varfunction,"VarVector", wrap_VarVector);
+  AddVar_VarVector( Vars.GetBuiltinContext());
+//  AddVar_VarList( Vars.GetBuiltinContext());
 }
 

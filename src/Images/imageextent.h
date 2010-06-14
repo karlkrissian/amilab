@@ -82,20 +82,46 @@ class ImageExtent {
   void SetMode(unsigned char val) {mode = val;}
 
   void SetRelative( InrImage* im) {
+    T minval = -std::numeric_limits<T>::max();
+    T maxval =  std::numeric_limits<T>::max();
     if (this->GetMode()==0) {
-      
-      extent[0][0] =  (int) (im->SpaceToVoxelX(extent[0][0])+0.5);
-      extent[0][1] =  (int) (im->SpaceToVoxelX(extent[0][1])+0.5);
+      // dealing with numerical limits -infty and +infty
+      if (extent[0][0]==minval)
+        extent[0][0] = 0;
+      else
+        extent[0][0] =  (int) (im->SpaceToVoxelX(extent[0][0])+0.5);
+
+      if (extent[0][1]==maxval)
+        extent[0][1] = im->DimX()-1;
+      else
+        extent[0][1] =  (int) (im->SpaceToVoxelX(extent[0][1])+0.5);
+
       if (extent[0][0]<0) extent[0][0]=0;
       if (extent[0][1]>im->DimX()-1) extent[0][1]=im->DimX()-1;
 
-      extent[1][0] =  (int) (im->SpaceToVoxelY(extent[1][0])+0.5);
-      extent[1][1] =  (int) (im->SpaceToVoxelY(extent[1][1])+0.5);
+      if (extent[1][0]==minval)
+        extent[1][0] = 0;
+      else
+        extent[1][0] =  (int) (im->SpaceToVoxelY(extent[1][0])+0.5);
+
+      if (extent[1][1]==maxval)
+        extent[1][1] = im->DimY()-1;
+      else
+        extent[1][1] =  (int) (im->SpaceToVoxelY(extent[1][1])+0.5);
+ 
       if (extent[1][0]<0) extent[1][0]=0;
       if (extent[1][1]>im->DimY()-1) extent[1][1]=im->DimY()-1;
 
-      extent[2][0] =  (int) (im->SpaceToVoxelZ(extent[2][0])+0.5);
-      extent[2][1] =  (int) (im->SpaceToVoxelZ(extent[2][1])+0.5);
+      if (extent[2][0]==minval)
+        extent[2][0] = 0;
+      else
+        extent[2][0] =  (int) (im->SpaceToVoxelZ(extent[2][0])+0.5);
+
+      if (extent[2][1]==maxval)
+        extent[2][1] = im->DimZ()-1;
+      else
+        extent[2][1] =  (int) (im->SpaceToVoxelZ(extent[2][1])+0.5);
+
       if (extent[2][0]<0) extent[2][0]=0;
       if (extent[2][1]>im->DimZ()-1) extent[2][1]=im->DimZ()-1;
 
@@ -110,6 +136,15 @@ class ImageExtent {
             (float)extent[2][0],(float)extent[2][1]);
 */
      mode = 1; // relative mode
+    }
+    else {
+      // still check for possible full ranges ...
+      if (extent[0][0]==minval) extent[0][0] = 0;
+      if (extent[0][1]==maxval) extent[0][1] = im->DimX()-1;
+      if (extent[1][0]==minval) extent[1][0] = 0;
+      if (extent[1][1]==maxval) extent[1][1] = im->DimY()-1;
+      if (extent[2][0]==minval) extent[2][0] = 0;
+      if (extent[2][1]==maxval) extent[2][1] = im->DimZ()-1;
     }
   }
 

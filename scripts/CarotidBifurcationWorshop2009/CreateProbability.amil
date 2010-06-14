@@ -30,14 +30,14 @@ if (!exists(CP_defined)) {
     eval "global::CP_input <<="+CP_input_name+";"
     if (CP_input_name=="Image") {
       CP_input_name = "CP_input"
-      CP_win.update
+      CP_win.Update(-1)
     }
   }
 
   #--------------------------
   proc CP_Close() \
   {
-    CP_win.Hide
+    CP_win.HidePanel()
     delvars "CP_*_draw"
     delvars "CP_*"
   }
@@ -79,33 +79,34 @@ if (!exists(CP_defined)) {
   #--------------------------
   proc CP_Gui() \
   {
-    global::CP_win = ParamWin("Prob")
+    import = &global::ami_import;
+    global::CP_win = import->ParamPanel("Prob")
 
     CP_win.BeginPanel("Param")
-      CP_win.AddImageChoice(CP_input_name,"Input")
-      CP_win.AddString(CP_output_name,"Output")
+      CP_win.AddImageChoice( &CP_input_name,"Input")
+      CP_win.AddString( &CP_output_name,"Output")
   
-      CP_win.AddInt(CP_localstats_winsize,1,10)
+      CP_win.AddInt( &CP_localstats_winsize,  "CP_localstats_winsize", 1,10)
 
-      CP_win.AddFloat(CP_lsd_erosion,0,5)
+      CP_win.AddFloat( &CP_lsd_erosion,  "CP_lsd_erosion", 0,5)
   
-      CP_win.BeginBox("local mean range")
-        CP_win.AddFloat(CP_localmean_low,0,3000)
-        CP_win.AddFloat(CP_localmean_high,0,3000)
-        CP_win.AddFloat(CP_localmean_smoothing,0,100)
-      CP_win.EndBox
+      CP_win.BeginBoxPanel("local mean range")
+        CP_win.AddFloat( &CP_localmean_low,  "CP_localmean_low", 0,3000)
+        CP_win.AddFloat( &CP_localmean_high,  "CP_localmean_high", 0,3000)
+        CP_win.AddFloat( &CP_localmean_smoothing,  "CP_localmean_smoothing", 0,100)
+      CP_win.EndBoxPanel()
   
-      CP_win.BeginBox("local stand. dev. parameter")
-        CP_win.AddFloat(CP_localsd_high,0,3000)
-      CP_win.EndBox
+      CP_win.BeginBoxPanel("local stand. dev. parameter")
+        CP_win.AddFloat( &CP_localsd_high,  "CP_localsd_high", 0,3000)
+      CP_win.EndBoxPanel()
   
       CP_win.AddButton("Apply",CP_Apply)
     CP_win.EndPanel
 
     CP_win.AddButton("Close",CP_Close)
 
-    CP_win.update
-    CP_win.Display
+    CP_win.Update(-1)
+    CP_win.Display()
   }
 
   #----------------------------

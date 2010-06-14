@@ -150,7 +150,7 @@ public:
     }
   
     if (context==NEWVAR_CONTEXT) context = GetNewVarContext();
-    return _context[context]->AddVar<T>(name,val);
+    return _context[context]->AddVar<T>(name,val,_context[context]);
   }
 
   ///
@@ -159,7 +159,7 @@ public:
   {
       if (context==OBJECT_CONTEXT_NUMBER) {
         if (_object_context.get()) {
-          CLASS_MESSAGE(boost::format("adding object name %2% into object context ")
+          CLASS_MESSAGE(boost::format("adding object name %1% into object context ")
                           % name);
           boost::shared_ptr<Variable<T> > newvar ( 
             new Variable<T>(name,val));
@@ -173,7 +173,7 @@ public:
   
     if (context==NEWVAR_CONTEXT) context = GetNewVarContext();
     //boost::shared_ptr<Variable<T> > newvar( new Variable<T>(name,val));
-    return _context[context]->AddVar<T>(name,val);
+    return _context[context]->AddVar<T>(name,val,_context[context]);
   }
 
 
@@ -194,7 +194,7 @@ public:
     }
   
     if (context==NEWVAR_CONTEXT) context = GetNewVarContext();
-    return _context[context]->AddVar(name,val);
+    return _context[context]->AddVar(name,val,_context[context]);
   }
 
   /**

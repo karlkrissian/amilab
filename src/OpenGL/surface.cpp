@@ -2955,7 +2955,7 @@ printf("SurfacePoly::WriteVRML()\n");
 
     scale[0] = transf->_scale[0];
     scale[1] = transf->_scale[1];
-    scale[2] =  transf->_scale[2];
+    scale[2] = transf->_scale[2];
     transform->setScale(  scale);
 
 //    transform->setRotation(   transf->_rotation);

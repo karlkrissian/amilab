@@ -39,10 +39,10 @@ if (!exists(global::ImageHistoClass)) {
     #----------------------------
     proc ::Close() \
     {
-      ::win.HidePanel
+      ::win.HidePanel()
       delvars GetObjectName(::Close)
     }
-    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
     #----------------------------
     proc ::CloseAll() \
@@ -51,7 +51,7 @@ if (!exists(global::ImageHistoClass)) {
       eval closeclass_cmd
       ::Close
     }
-    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
     
     proc ::Update() {
       if (exists(::input)) {
@@ -69,17 +69,17 @@ if (!exists(global::ImageHistoClass)) {
       import = &global::ami_import;
       ::win = import->ParamPanel("ImHist")
       
-      ::win.BeginBook
+      ::win.BeginBook()
     
         ::win.AddPage("Param")
 
           # set the input image drawing window
           ::win.BeginBoxPanel("Input")
-            ::win.BeginHorizontal
+            ::win.BeginHorizontal()
               ::win.AddImageChoice( &::input_name, "")
               ::win.AddButton("Load",::LoadInput)
-            ::win.EndHorizontal
-          ::win.EndBoxPanel
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
 
 
           ::win.AddFloat(&::minval,"min",0,255)
@@ -95,20 +95,20 @@ if (!exists(global::ImageHistoClass)) {
           ::dw.SetBackgroundColour(wx.wxColour(255,255,255))
           ::sizer_item = ::win.AddWidget(&::dw,0)
 
-      ::win.EndBook
-      ::win.BeginHorizontal
+      ::win.EndBook()
+      ::win.BeginHorizontal()
         ::win.AddButton("Close", ::Close)
         ::win.AddButton("Close All", ::CloseAll)
-      ::win.EndHorizontal
+      ::win.EndHorizontal()
       
       ::win.Update(-1)
-      ::win.Display
+      ::win.Display()
    }
 
     ::Init()
   } 
   # Class ImageHistoClass
-  ImageHistoClass.Comments(comments)
+  Comments( ImageHistoClass, comments)
 } 
 # end if (!exists(ImageHistoClass))
   

@@ -53,6 +53,10 @@ protected:
 
 public:
 
+  // static empty variable to use for returning references or simply empty variable result.
+  static BasicVariable::ptr empty_variable;
+
+
   BasicVariable();
 /*
 : _type(type_void), _name(""), _comments("") 
@@ -65,17 +69,22 @@ public:
   /**
     * Virtual Method that creates a new smart pointer to a basic variable with the same type
     */
-  virtual BasicVariable::ptr NewCopy() = 0;
+  virtual BasicVariable::ptr NewCopy() const = 0;
 
   /**
     * Virtual Method that creates a new smart pointer to a basic variable with the same type
     */
-  virtual BasicVariable::ptr NewReference() = 0;
+  virtual BasicVariable::ptr NewReference() const = 0;
 
   /**
    * Return the number of references (value of use_count()) of the smart pointer to the variable value
   **/
-  virtual int GetPtrCounter() = 0;
+  virtual int GetPtrCounter() const = 0;
+
+  /**
+   * Return the availability of the pointer (value of get()) of the smart pointer to the variable value
+  **/
+  virtual bool HasPointer() const = 0;
 
 //  virtual void operator = (const BasicVariable& v) = 0;
 
@@ -113,16 +122,21 @@ public:
 
 
   /**
+   * Try to cast the variable to the type given as a string in parameter.
+   * @param type_string : type as a string
+   * @return smart pointer to a variable of the new type if success, empty smart pointer otherwise
+   */
+  virtual BasicVariable::ptr TryCast (const std::string& type_string) const = 0;
+
+  /**
    * Rename variable.
    * @param newname 
    */
-  void Rename(const char* newname) 
-  {  
-    CLASS_MESSAGE(boost::format("Renaming %1% to %2%")%_name % newname);
-    _name=newname;
-  }
+  void Rename(const char* newname);
 
   std::string Name() const { return _name;}
+
+  virtual std::string TreeCtrlInfo() const = 0;
 
   void SetComments(const std::string& comments) { _comments = comments;}
   std::string GetComments() const { return _comments; }
@@ -138,7 +152,7 @@ public:
     return (strcmp(_name.c_str(), name)==0);
   }
 
-  const std::string GetTypeName() const;
+  virtual const std::string GetTypeName() const = 0;
 
   //
   virtual void display() const = 0;
@@ -153,6 +167,8 @@ public:
   }
 
   virtual double GetValueAsDouble() const = 0;
+
+//  virtual std::string GetTypeAsString() const = 0;
 
   /**
    * Virtual method to return the value of a variable.
@@ -203,8 +219,8 @@ public:
   /// prefix ++ operator ++T 
   BASICVAR_UNARYOP(++)
 
-  /// prefix ++ operator T-- 
-  BasicVariable::ptr operator ++(int)
+  /// prefix ++ operator T++ 
+  virtual BasicVariable::ptr operator ++(int)
   { return this->NewReference(); }
 
 
@@ -227,7 +243,7 @@ public:
   BASICVAR_UNARYOP(--)
 
   /// prefix -- operator T-- 
-  BasicVariable::ptr operator --(int)
+  virtual BasicVariable::ptr operator --(int)
   { return this->NewReference(); }
 
   BASICVAR_OP_VAR(-=);
@@ -274,6 +290,13 @@ public:
   //@{
     /// basic assignment operator
     BASICVAR_OP_VAR(=);
+
+    /**
+     * Forces the copy, even if a new object needs to be created.
+     * @param b 
+     * @return 
+     */
+    virtual BasicVariable::ptr left_assign(const BasicVariable::ptr& b) = 0;
 
     /// Transpose operator
     virtual BasicVariable::ptr Transpose()
