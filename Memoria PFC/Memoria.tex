@@ -166,6 +166,22 @@ Las enfermedades de los vasos coronarios es una de las causas de muerte más frec
 A día de hoy el método escogido para la obtención de la línea media de los vasos coronarios compite con otros 13 métodos.
 A parte de lo comentado anteriormente, es de vital importancia tener un software de visualización de imágenes que ayude al diagnóstico de las posibles enfermedades existentes. Es por ello que se ha creado un software para el tratamiento de imágenes, denominado AMILab.
 
+Existe un amplio abanico de programas que proporcionan funcionalidades para el tratamiento y procesamiento de imágenes. A continuación citaremos algunos que se utilizan en el ámbito médico.
+
+\section{OsiriX}
+OsiriX es un software de procesamiento de imágenes dedicado principalmente a imágenes en formato DICOM. Ha sido específicamente diseñado para la navegación y visualización de imágenes en varias dimensiones: visor 2D, 3D, 4D y 5D. El visor 3D ofrece todos los modos actuales de renderizado, como son, la reconstrucción multiplanar, el renderizado de superficies, el renderizado volumétrico y la proyección de la intensidad máxima.
+
+Al mismo tiempo OsiriX es un software de procesamiento de imágenes para investigación médica.\cite{osirix}
+
+\section{Slicer}
+Slicer es un software de código abierto y libre que se utiliza para la visualización y análisis de imágenes. Se diseño pensando en que fuese multiplataforma.\cite{slicer}
+
+Permite el registro de imágenes, el procesamiento DTI, posee una interfaz para los dispositivos externos para el apoyo de guía por imagen, permite el renderizado volumétrico.
+Cuenta con una organización modular que permite la fácil incorporación de nuevas funcionalidades y proporciona una serie de características genéricas que no están disponibles en las herramientas de la competencia.
+
+Las capacidades de visualización de Slicer permiten mostrar cortes de imágenes, crear superficies a través de las imágenes y un alto rendimiento de renderizado volumétrico.\cite{slicer2}
+
+
 \chapter{Objetivos}
 El proyecto que se plantea viene motivado por la necesidad de implementar un algoritmo de segmentación de vasos coronarios para código libre.
 
@@ -1342,9 +1358,9 @@ Una vez planteadas estas consideraciones, pasaremos a analizar más en profundida
 
 Nuestro filtro está diseñado de manera que se ha creado una clase formada por una zona pública, otra privada y otra protegida. En cada una de ellas irán los métodos y atributos correspondientes. A continuación de comentará lo que se ha establecido en cada una de estas ``zonas'':
 \begin{itemize}
-	\item Zona pública   contendrá los tipos públicos de la propia clase, de la superclase que utiliza y de los punteros inteligentes constantes o no. También tendrá todas aquellas macros utilizadas para poder agregar ``parámetros'' a nuestro filtro usando el mecanismo de ``object factory'' proporcionado por Insight Toolkit.
-	\item Zona protegida   el constructor por defecto irá aquí y proporcionará por defecto valores para todos los parámetros. También declararemos aquí el destructor y las funciones propias de nuestro filtro, las cuales harán uso de la opción multihilos. Por último, deberemos agregar la cabecera de la función de testeo de Insight Toolkit.
-	\item Zona privada   la copia del constructor y del operador de asignación deben ser declarados como privados y no deben ser implementados para prevenir la instanciación del filtro sin los métodos de ``object factory''. Dentro de la zona privada deben figurar todos aquellos parámetros necesarios para la aplicación de nuestro filtro. Los valores de los mismos serán establecidos mediantes las macros definidas en la zona protegida de la clase.
+	\item Zona pública $\rightarrow$ contendrá los tipos públicos de la propia clase, de la superclase que utiliza y de los punteros inteligentes constantes o no. También tendrá todas aquellas macros utilizadas para poder agregar ``parámetros'' a nuestro filtro usando el mecanismo de ``object factory'' proporcionado por Insight Toolkit.
+	\item Zona protegida $\rightarrow$ el constructor por defecto irá aquí y proporcionará por defecto valores para todos los parámetros. También declararemos aquí el destructor y las funciones propias de nuestro filtro, las cuales harán uso de la opción multihilos. Por último, deberemos agregar la cabecera de la función de testeo de Insight Toolkit.
+	\item Zona privada $\rightarrow$ la copia del constructor y del operador de asignación deben ser declarados como privados y no deben ser implementados para prevenir la instanciación del filtro sin los métodos de ``object factory''. Dentro de la zona privada deben figurar todos aquellos parámetros necesarios para la aplicación de nuestro filtro. Los valores de los mismos serán establecidos mediantes las macros definidas en la zona protegida de la clase.
 \end{itemize}
 Por último, el nombre del fichero el cual contiene la implementación del código template (fichero ``.txx'') debe ser incluido. Por tanto, lo expuesto anteriormente concierne al fichero con extensión ``.h''.
 
@@ -1370,6 +1386,34 @@ En la figura {\ref{fig:Pipeline} y {\ref{fig:Pipeline2} se pueden ver el flujo d
 \label{fig:Pipeline2}
 \end{figure}
 
+Por último se muestra en la figura {\ref{fig:itif} que este filtro hereda de la clase ImageToImageFilter, al igual que lo hace la clase LocalMeanImageFilter y TranslateImageFilter (clase implementada para un algoritmo que debido a problemas de patentes no se describirá).
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.7]{imagetoimagefilter.PNG}%ext=pdf,jpg,png
+\caption{Herencia de ImageToImageFilter}
+\label{fig:itif}
+\end{figure}
+
+Este filtro necesita como parámetros de entrada:
+\begin{itemize}
+\item La imagen de entrada.
+\item El tamaño de la ventana de búsqueda.
+\item El tamaño de la ventana patrón.
+\item El valor del umbral.
+\item El tipo de ruido.
+\end{itemize}
+
+En la figura {\ref{fig:nlmb} se puede ver la clase con sus atributos y métodos.
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.7]{basicnlmeansfilter.PNG}%ext=pdf,jpg,png
+\caption{Clase Non Local Means Básica}
+\label{fig:nlmb}
+\end{figure}
+
+
 \section{Segmentación de la carótida}
 El proceso de segmentación de la carótida, tanto externa como interna, se divide en varias etapas:
 \begin{itemize}
@@ -1386,7 +1430,8 @@ Una vez visto el proceso general de la segmentación de las carótidas pasaremos a
 \subsection{Clase LocalMeanImageFilter}
 Se ha visto la necesidad de crear una nueva clase que calcule la media local, debido a que en las herramientas proporcionadas por Insight Toolkit no existía una que realizase lo que se buscaba. 
 
-A continuación, en la figura {\ref{fig:lmif} se puede ver la clase con sus principales atributos y métodos. Basta con saber el tamaño de la ventana dónde se va a realizar la media local. A continuación se hará una media por ejes de coordenadas, es decir, primero en $x$, después en $y$ y por último en $z$ si la imagen fuese en 3D.
+A continuación, en la figura {\ref{fig:lmif} se puede ver la clase con sus principales atributos y métodos. Los únicos parámetros necesarios son la imagen de entrada y el tamaño de la ventana dónde se va a realizar la media local. A continuación se hará una media por ejes de coordenadas, es decir, primero en $x$, después en $y$ y por último en $z$ si la imagen fuese en 3D.
+Como resultado obtendremos una única imagen con la media local computada.
 
 \begin{figure}
 \centering
@@ -1394,6 +1439,8 @@ A continuación, en la figura {\ref{fig:lmif} se puede ver la clase con sus princ
 \caption{Diagrama de Clases de la clase LocalMeanImageFilter}
 \label{fig:lmif}
 \end{figure}
+
+Por último, decir que esta clase hereda de la clase {\em ImageToImageFilter} como se puede ver en la figura {\ref{fig:itif}.
 
 \subsection{Clase Vesselness}
 En cuanto al cálculo de la medida de vesselness se ha hecho uso de la clases proporcionadas por Insight Toolkit. Ha sido necesario utilizar: 
@@ -1417,7 +1464,15 @@ La medida de objectness es una generalización de la medida de vesselness de Fran
 \subsection{Clase BackTracking}
 Para el cálculo de los caminos mínimos entre dos puntos dados se hace necesario la creación de una clase que lo realice ya que en Insight Toolkit no está esta funcionalidad.
 
+Este filtro crea un camino empezando en un punto y siguiendo los desplazamientos dados por el vector de la imagen de entrada ({\em the input vector field image}). Si la entrada es escalar se calcula el correspondiente vector a partir de su gradiente por interpolación lineal. El seguimiento del camino se para por alguno de estos motivos:
+\begin{itemize}
+\item Se ha alcanzado la distancia máxima.
+\item Los valores cercanos a la posición actual tienen intensidad negativa.
+\item El gradiente actual es muy pequeño.
+\end{itemize}
+
 Se ha partido de la implementación realizada en AMILab para adaptarla y convertirla en un filtro de Insight Toolkit. Este nuevo filtro será del tipo ImageToMeshFilter. En la figura {\ref{fig:btmf} podemos ver la nueva clase con sus atributos y métodos. Mientras que en la figura {\ref{fig:btmf2} se muestra la clase de la cuál la nueva clase heredará sus atributos y métodos.
+
 \begin{figure}
 \centering
 \includegraphics[scale=0.7]{backtrackingmeshfilter.PNG}%ext=pdf,jpg,png
@@ -1431,6 +1486,17 @@ Se ha partido de la implementación realizada en AMILab para adaptarla y converti
 \caption{Diagrama de Clases ImageToMeshFilter}
 \label{fig:btmf2}
 \end{figure}
+
+La clase BackTracking necesita una serie de parámetros:
+\begin{itemize}
+\item La imagen de entrada que provendrá de la salida del filtro Fast Marching. Para poder hacer mejor los cálculos entre los diferentes pasos hasta llegar a la solución final conviene que la imagen de entrada sea de tipo {\em double}.
+\item Las coordenadas del punto dónde va a comenzar el camino.
+\item El intervalo de tiempo utilizado para la evolución.
+\item La distancia máxima euclídea del camino.
+\item Un valor delta que es un incremento pequeño utilizado para estimar las derivadas basadas en interpolación lineal.
+\end{itemize}
+
+La salida de este filtro será una malla que representa el camino obtenido.
 
 \subsection{Clase Level Sets}
 Para la segmentación de las carótidas se utiliza en última instancia la clase Level Sets que creará la segmentación final partiendo de unos finos tubos iniciales creados alrededor de los caminos obtenidos en la fase de BackTracking.
@@ -1581,6 +1647,9 @@ Por tanto, la nueva funcionalidad implementada toma una imagen de formato InrIma
 \bibitem{P06} R.S.Pressman {\em ``Ingeniería del Software''} Editorial McGraw-Hill, 6ª Edición, 2006
 \bibitem{Workshop} Artículo Workshop09 {\em \href{http://www.insight-journal.org/browse/publication/672}{http://www.insight-journal.org/browse/publication/672}}
 \bibitem{Vesselness} Vesselness {\em \href{http://www.insight-journal.org/browse/publication/163}{http://www.insight-journal.org/browse/publication/163}}
+\bibitem{osirix} OsiriX {\em \href{http://www.osirix-viewer.com/}{http://www.osirix-viewer.com/}}
+\bibitem{slicer} Slicer {\em \href{http://www.slicer.org/}{http://www.slicer.org/}}
+\bibitem{slicer2} Slicer {\em \href{http://wiki.slicer.org/slicerWiki/index.php/Documentation-3.6\#Main\_GUI}{http://wiki.slicer.org/slicerWiki/index.php/Documentation-3.6\#Main\_GUI}}
 \end{thebibliography}
 \end{document}
 

@@ -40,9 +40,9 @@ namespace itk
 
 /** \class BackTrackingImageFilter
  *  This filter creates a path starting at a point and following the displacements
- *  given by the input vector field image if the input is scalar the corresponding 
- *  vector field is computed from its gradient by local linear interpolation 
- *  the tracking stops in one of the following cases: 
+ *  given by the input vector field image. If the input is scalar the corresponding 
+ *  vector field is computed from its gradient by local linear interpolation.
+ *  The tracking stops in one of the following cases: 
  *      - the maximal distance is reached 
  *      - the closest voxel to the current location has a negative intensity 
  *      - the current gradient is very low 
