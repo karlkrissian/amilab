@@ -130,9 +130,9 @@ void FastLocalDiffX( InrImage* in, InrImage* out,
   T* in_data  = (T*) in ->GetData();
   T* out_data = (T*) out->GetData();
 
-  amilab::FVector<float,short> vmin( dim[0]);
-  amilab::FVector<float,short> vmax( dim[0]);
-  amilab::FVector<float,short> vres( dim[0]);
+  amilab::ami_FVector<float,short> vmin( dim[0]);
+  amilab::ami_FVector<float,short> vmax( dim[0]);
+  amilab::ami_FVector<float,short> vres( dim[0]);
 
   // along dir0
   for ( p0=p0_min; p0<=p0_max; p0++ )
