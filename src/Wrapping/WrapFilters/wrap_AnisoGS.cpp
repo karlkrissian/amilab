@@ -496,6 +496,7 @@ BasicVariable::ptr WrapClass_AnisoGS::
   }
   else {
     CLASS_ERROR("image_c == NULL ");
+    return BasicVariable::ptr();
   }
 }
 

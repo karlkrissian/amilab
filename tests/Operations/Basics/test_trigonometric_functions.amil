@@ -25,14 +25,14 @@ epsilon = 0.000001
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 printn  "\n\t\t Trigonometric functions(sin, cos, tan): angle = Pi/4"
-
+ 
 R=sin (Pi/4)
 printn  "\t\t R=sin (Pi/4) --> R=%1% (sin Pi/4 = 0.707107)" % R
 R1=sqrt(2/4)
 P=abs(R-R1)
 if(P > epsilon) {
   OK = 0
-  printn "\nERROR: Failed to calculate the sin Pi/4 (%1% != 0.850903525)" % R
+  printn "\nERROR: Failed to calculate the sin Pi/4 (%1% != 0.707107)" % R
 }
 
 R=cos (Pi/4)

@@ -35,6 +35,45 @@
     if (!resvar.get()) std::cerr << "DYNAMIC_CAST_VARIABLE(" << #newtype << "," << #initvar << "," << # resvar << ") failed ..." << std::endl;
 
 
+/*! \def GET_WRAPPED_OBJECT
+    \brief gets the smart pointer to the object wrapped, from a smart pointer to a basic variable
+*/
+#define GET_WRAPPED_OBJECT(type,var,objname) \
+    DYNAMIC_CAST_VARIABLE(AMIObject, var, varobj) \
+    boost::shared_ptr<type> objname; \
+    if (varobj.get()) { \
+      WrapClassBase::ptr wrapped_base(varobj->Pointer()->GetWrappedObject()); \
+      WrapClass_##type::ptr wrapped_obj( \
+        boost::dynamic_pointer_cast<WrapClass_##type>(wrapped_base)); \
+      if (wrapped_obj.get()) \
+        objname = wrapped_obj->GetObj(); \
+    }
+
+// TODO: improve this way of wrapping template objects ...
+/*! \def GET_WRAPPED_TEMPLATE_OBJECT
+    \brief gets the smart pointer to the object wrapped, from a smart pointer to a basic variable where the object comes from a template class
+*/
+#define GET_WRAPPED_TEMPLATE_OBJECT(type, templ, var,objname) \
+    DYNAMIC_CAST_VARIABLE(AMIObject, var, varobj) \
+    boost::shared_ptr<type<templ> > objname; \
+    if (varobj.get()) { \
+      WrapClassBase::ptr wrapped_base(varobj->Pointer()->GetWrappedObject()); \
+      WrapClass_##type::ptr wrapped_obj( \
+        boost::dynamic_pointer_cast<WrapClass_##type >(wrapped_base)); \
+      if (wrapped_obj.get()) \
+        objname = wrapped_obj->GetObj(); \
+    }
+
+template<typename> 
+struct to_string {
+    // optionally, add other information, like the size
+    // of the string.
+    static char const* value() { return "unknown"; }
+};
+
+
+// TODO: the rest of convertions
+
 /*
 template<class T> 
 std::ostream& PrintType(std::ostream& o, const Variable<T>& v);
@@ -63,6 +102,39 @@ typedef BasicVariable::ptr (C_wrap_varfunction)(ParamList*);
 
 
 
+#define TO_STRING(type) \
+  template<> struct to_string<type> { \
+      static char const* value() { return #type; } \
+  }; \
+
+TO_STRING(float);
+TO_STRING(double);
+TO_STRING(long);
+TO_STRING(int);
+TO_STRING(unsigned char);
+class InrImage;
+TO_STRING(InrImage);
+TO_STRING(std::string);
+class FloatMatrix;
+TO_STRING(FloatMatrix);
+TO_STRING(FILE);
+TO_STRING(C_wrap_procedure);
+class WrapClassMember;
+TO_STRING(WrapClassMember);
+TO_STRING(C_wrap_imagefunction);
+TO_STRING(C_wrap_varfunction);
+class AMIFunction;
+TO_STRING(AMIFunction);
+class AMIClass;
+TO_STRING(AMIClass);
+class AMIObject;
+TO_STRING(AMIObject);
+class GLTransfMatrix;
+TO_STRING( GLTransfMatrix);
+class VarArray;
+TO_STRING( VarArray);
+
+
 //----------------------------------------------------------------------
 /**
  * Define one variable, which contains a generic pointer (void*) to a smart pointer
@@ -79,9 +151,7 @@ public:
   typedef typename boost::shared_ptr<Variable<T> >    ptr;
   typedef typename boost::weak_ptr<Variable<T> >      wptr;
   typedef typename std::vector<ptr>     ptr_vector;
-  typedef typename std::vector<wptr>    wptr_vector;
   typedef typename std::list<ptr>       ptr_list;
-  typedef typename std::list<wptr>      wptr_list;
 
 
 private:
@@ -126,7 +196,7 @@ public:
     * Virtual Method that creates a new smart pointer to a basic variable coming from the same type
     * generic copy of variable, can be specialized per variable type
     */
-  BasicVariable::ptr NewCopy()
+  BasicVariable::ptr NewCopy() const
   {
     // don't copy a file, keep a reference ...
     CLASS_MESSAGE(boost::format("No default copy of variable contents, need to be specialized for this type of variable ... for variable %1% ")
@@ -144,7 +214,7 @@ public:
     * Virtual Method that creates a new smart pointer to a basic variable coming from the same type
     * with a reference to the same value
     */
-  BasicVariable::ptr NewReference()
+  BasicVariable::ptr NewReference() const
   {
     std::string resname = _name+"_ref";
 		ptr res(new Variable<T>(resname,_pointer));
@@ -154,11 +224,26 @@ public:
   }
 
 
-  int GetPtrCounter()
+  int GetPtrCounter() const
   {
     return _pointer.use_count();
   }
 
+  bool HasPointer() const
+  {
+    return (_pointer.get()!=NULL);
+  }
+
+  virtual const std::string GetTypeName() const
+  {
+    return to_string<T>::value();
+  };
+
+
+  virtual std::string TreeCtrlInfo() const 
+  {
+    return _comments;
+  };
 
   /**
    * Copy of variables
@@ -240,18 +325,24 @@ public:
   std::ostream& PrintType <>(std::ostream& o, const Variable<T>& v);
 */
 
+  /**
+   * Try to cast the variable to the type given as a string in parameter.
+   * @param type_string : type as a string
+   * @return smart pointer to a variable of the new type if success, empty smart pointer otherwise
+   */
+  virtual BasicVariable::ptr TryCast(const std::string& type_string) const;
+
   //
   void display() const;
 
   virtual double GetValueAsDouble() const;
-/*
-  virtual double GetValueAsDouble() const
-  {
-      CLASS_ERROR("Variable type is not numeric");
-      return 0.0;
-  }
-*/
   
+  /*
+   * 
+   * @return A string containing the type of the variable.
+   */
+//  virtual std::string GetTypeAsString() const;
+
   /**
    * 
    * @return A string containing the value of the variable.
@@ -383,6 +474,19 @@ public:
   //@{
     VAR_OP_BASICVAR(=);
 
+    /**
+    * left_assign is operator <<=, force assignation of new variable, even if a new pointer to the object needs to be created
+    * @param b 
+    * @return 
+    */
+    BasicVariable::ptr left_assign(const BasicVariable::ptr& b) 
+    { 
+      std::cout << get_name() << " " 
+                << __func__ << " not defined." << std::endl; 
+      return this->NewReference(); 
+    }
+
+
     /// Transpose
     BasicVariable::ptr Transpose()
     {
@@ -433,7 +537,7 @@ public:
   BasicVariable::ptr operator[](const BasicVariable::ptr& v)
   {
     std::cout << get_name() << " " << __func__ << " not defined." << std::endl; 
-    return this->NewReference(); 
+    return BasicVariable::empty_variable; 
   }
 
 
@@ -475,9 +579,6 @@ class CastVariable: public CastVariableBase
 class InrImage;
 class DessinImage;
 
-namespace amilab {
-class SurfacePoly;
-}
 
 class Viewer3D;
 //class C_wrap_procedure;
@@ -493,11 +594,23 @@ class GLTransfMatrix;
 class VarArray;
 */
 
+
 #include "Variable_float.h"
 #include "Variable_double.h" /// New (added: 24/05/2010)
 #include "Variable_long.h"   /// New (added: 27/05/2010)
+#include "Variable_int.h"
+#include "Variable_uchar.h"
 #include "Variable_InrImage.h"
 #include "Variable_string.h"
 #include "Variable_FloatMatrix.h"
+#include "Variable_AMIObject.h"
+
+template<> std::string Variable<WrapClassMember>::TreeCtrlInfo() const;
+/*
+{
+  return Pointer()->GetDescription();
+};
+*/
+
 
 #endif

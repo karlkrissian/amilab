@@ -2,7 +2,7 @@
 proc AddDisk( IMAGE im, NUM x0, NUM y0,NUM rad, NUM intensity) {
 //   -------
   rad2=rad+1
-  im0 = im[x0-rad2:x0+rad2,y0-rad2:y0+rad2,0:0]
+  im0 = im[(x0-rad2):(x0+rad2),(y0-rad2):(y0+rad2),0:0]
   px = ((FLOAT) Xpos(im0))-rad2
   py = ((FLOAT) Ypos(im0))-rad2
   sph = sqrt(px*px+py*py)-rad
@@ -13,7 +13,7 @@ proc AddDisk( IMAGE im, NUM x0, NUM y0,NUM rad, NUM intensity) {
 
 proc AddRectangle( IMAGE im, NUM x0, NUM y0, NUM radx, NUM rady, NUM intensity) {
 //   ------------
-  im0 = im[x0-radx:x0+radx,y0-rady:y0+rady,0:0]
+  im0 = im[(x0-radx):(x0+radx),(y0-rady):(y0+rady),0:0]
   im0.initvalue(intensity)
   im.putimage(im0)
 }

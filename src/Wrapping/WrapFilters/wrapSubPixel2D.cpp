@@ -22,7 +22,7 @@ using namespace std;
 // primitiva del circulo
 #define P(x) (yc*(x) + 0.5*r*r*asin((x-xc)/r) + 0.5*(x-xc)*sqrt(r*r-(x-xc)*(x-xc)))
 
-// parciales en 2D (MIRAR BIEN ESTO para la estructura InrImage)
+// parciales en 2D
 //data[(y)*nx+(x)]
 double imval(InrImage* input, int x,int y, int z){
   if (input->CoordOK(x,y,z)) 

@@ -6,16 +6,18 @@
 #include "driver.h"
 #include <boost/pointer_cast.hpp>
 #include "FloatMatrix.hpp"
+#include "wrapfunctions.hpp"
 
 extern yyip::Driver GB_driver;
 
 #define NEW_SMARTPTR(type, var, value) \
   boost::shared_ptr<type> var(new type(value));
 
+/*
 #define RETURN_VARPTR(type,  value) \
   boost::shared_ptr<type> newval(new type(value)); \
   return Variable<type>::ptr( new Variable<type>(newval));
-
+*/
 
 /// Macros to facilitate the matrix operations
 
@@ -69,7 +71,7 @@ extern yyip::Driver GB_driver;
 //------------------------------------------------------
 
 /// Copy contents to new variable
-template<> BasicVariable::ptr Variable<FloatMatrix>::NewCopy()
+template<> BasicVariable::ptr Variable<FloatMatrix>::NewCopy() const
 {
   FloatMatrix::ptr newval( new FloatMatrix( *Pointer()));
   Variable<FloatMatrix>::ptr newvar(new Variable<FloatMatrix>(newval));

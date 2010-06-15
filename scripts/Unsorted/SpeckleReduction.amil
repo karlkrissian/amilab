@@ -38,7 +38,7 @@ if (update_noise) {
 }
 
 ir=AnisoGS.GetOutput;show ir;
-ir_draw.compare(i);
+ir_draw._compare(i);
 
 # for 2D
 AnisoGS.setcoeff(0.5)
@@ -71,8 +71,8 @@ for n=1 to numit {
     maxy = miny+i0.ty
     minz = i0.trz
     maxz = minz+i0.tz
-    i0_1 = i0[minx+2:maxx-3,miny+2:maxy-3,minz+2:maxz-3] 
-    ir_1 = ir[minx+2:maxx-3,miny+2:maxy-3,minz+2:maxz-3]
+    i0_1 = i0[(minx+2):(maxx-3),(miny+2):(maxy-3),(minz+2):(maxz-3)] 
+    ir_1 = ir[(minx+2):(maxx-3),(miny+2):(maxy-3),(minz+2):(maxz-3)]
     snr = SNR(ir_1,i0_1)
     snr_file.print sprint("%02.0f \t ",n)
     snr_file.print sprint("%3.3f\n ",snr)

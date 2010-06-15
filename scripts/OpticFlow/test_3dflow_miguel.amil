@@ -140,11 +140,11 @@ proc DisplayData() {
   global
   show i1;
   #i1_draw.compare(i2);
-  i1_draw.setvector(1,u);
+  i1_draw._setvector(0,u);
   #i1_draw.setvector(2,u_o);
+  i1_draw.DrawVector(0,1);
   i1_draw.DrawVector(1,1);
-  i1_draw.DrawVector(2,1);
-  i1_draw.DisplayVectors;
+  i1_draw.DisplayVectors();
   local
 }
 
@@ -320,7 +320,7 @@ proc CB_LoadJohanData() {
   } else { u = Image(FLOAT_VECTOR,i1.tx,i1.ty,i1.tz); }
   u.settranslation(i1.trx,i1.try,i1.trz)
   u.initvalue(0,0,0);
-  i1_draw.setvector(1,u);
+  i1_draw._setvector(0,u);
   #last_u = u;
   u.save "last_u.ami.gz"
   last_error = 999999999999;  
@@ -425,7 +425,7 @@ proc CB_RunSequenceConv() {
 		setvoxelsize(u,step_x,step_y,step_z)		
 	    u.settranslation(i1.trx,i1.try,i1.trz)
   	 	u.initvalue(0,0,0);
-  		i1_draw.setvector(1,u);	
+  		i1_draw._setvector(0,u);	
 	}
 	_error = 0;
 	ComputeError(&_error);
@@ -454,7 +454,7 @@ proc CB_RunSequenceConv() {
 		}		
 
 		// Refresh windows:
-		w1.Display;
+		w1.Display();
 		ProcessXEvents(500);
 
 		// Ending loop:
@@ -479,7 +479,7 @@ proc CB_Iterate_pde() {
 
 proc CB_AlphaTests() {
   global
-  alphatests_win.Display
+  alphatests_win.Display()
   local
 }
 
@@ -675,28 +675,28 @@ proc CB_AlphaFindMin() {
 
 w1 = ParamWin("3D Correlation parameters")
 
-step_x_id = w1.AddInt(step_x,1,20)
-step_y_id = w1.AddInt(step_y,1,20)
-step_z_id = w1.AddInt(step_z,1,20)
+step_x_id = w1.AddInt( &step_x,  "step_x", 1,20)
+step_y_id = w1.AddInt( &step_y,  "step_y", 1,20)
+step_z_id = w1.AddInt( &step_z,  "step_z", 1,20)
 
-winsize_x_id = w1.AddInt(winsize_x,2,8)
-winsize_y_id = w1.AddInt(winsize_y,2,8)
-winsize_z_id = w1.AddInt(winsize_z,2,8)
+winsize_x_id = w1.AddInt( &winsize_x,  "winsize_x", 2,8)
+winsize_y_id = w1.AddInt( &winsize_y,  "winsize_y", 2,8)
+winsize_z_id = w1.AddInt( &winsize_z,  "winsize_z", 2,8)
 
-windef_id         = w1.AddInt(windef,0,1)
-solenoidal_cor_id = w1.AddBoolean(solenoidal_cor)
-nbiterations_id   = w1.AddInt(nbiterations,1,20)
-Conv_Cor_exp_id   = w1.AddInt(Conv_Cor_exp,-10,0)
+windef_id         = w1.AddInt( &windef,  "windef", 0,1)
+solenoidal_cor_id = w1.AddBoolean( &solenoidal_cor)
+nbiterations_id   = w1.AddInt( &nbiterations,  "nbiterations", 1,20)
+Conv_Cor_exp_id   = w1.AddInt( &Conv_Cor_exp,  "Conv_Cor_exp", -10,0)
 
 restart_id  = w1.AddButton("Restart", CB_Restart_corr)
 iterate_id  = w1.AddButton("Iterate", CB_Iterate_corr)
 #sequence_id = w1.AddButton("Sequence 16x2,8x2,4x2", CB_RunSequence)
 sequence_id = w1.AddButton("Convergence Sequence", CB_RunSequenceConv)
 
-w1.CreateWin
+w1.Update()
 
 proc CB_CorrInterf() {
- w1.Display
+ w1.Display()
 }
 
 
@@ -704,28 +704,28 @@ proc CB_CorrInterf() {
 
 w2 = ParamWin("PDE Optical Flow")
 
-beta_id         = w2.AddFloat(beta,0.01,5)
-alfa_id         = w2.AddFloat(alfa,0.01,40)
-alfa_norm_id    = w2.AddBoolean(alpha_normalization)
-alfa_epsilon_id = w2.AddInt(alpha_norm_epsilon,-3,0)
-Conv_GS_exp_id  = w2.AddInt(Conv_GS_exp,-10,0)
+beta_id         = w2.AddFloat( &beta,  "beta", 0.01,5)
+alfa_id         = w2.AddFloat( &alfa,  "alfa", 0.01,40)
+alfa_norm_id    = w2.AddBoolean( &alpha_normalization)
+alfa_epsilon_id = w2.AddInt( &alpha_norm_epsilon,  "alpha_norm_epsilon", -3,0)
+Conv_GS_exp_id  = w2.AddInt( &Conv_GS_exp,  "Conv_GS_exp", -10,0)
 
-Nscales_id           = w2.AddInt(Nscales,1,5)
-Conv_Scales_exp_id   = w2.AddInt(Conv_Scales_exp,-5,0)
-gradtype_id          = w2.AddInt(gradtype,0,3)
-solenoidal_pde_id    = w2.AddBoolean(solenoidal_pde)
-global_constraint_id = w2.AddBoolean(global_constraint)
-smoothgrad_id        = w2.AddBoolean(smoothgradient)
-sym_id               = w2.AddBoolean(symmetric)
+Nscales_id           = w2.AddInt( &Nscales,  "Nscales", 1,5)
+Conv_Scales_exp_id   = w2.AddInt( &Conv_Scales_exp,  "Conv_Scales_exp", -5,0)
+gradtype_id          = w2.AddInt( &gradtype,  "gradtype", 0,3)
+solenoidal_pde_id    = w2.AddBoolean( &solenoidal_pde)
+global_constraint_id = w2.AddBoolean( &global_constraint)
+smoothgrad_id        = w2.AddBoolean( &smoothgradient)
+sym_id               = w2.AddBoolean( &symmetric)
 
 restart_id   = w2.AddButton("Restart", CB_Restart_pde)
 iterate_id   = w2.AddButton("Iterate", CB_Iterate_pde)
 alfatests_id = w2.AddButton("Alpha Test", CB_AlphaTests)
 
-w2.CreateWin
+w2.Update()
 
 proc CB_OFInterf () {
-  w2.Display
+  w2.Display()
 }
 
 #-------------- different tests for the paper
@@ -875,51 +875,53 @@ proc CB_JohanCorrVarTest() {
 
 #-------------- MAIN INTERFACE -----------------------
 
-w_main=ParamWin(" Flow Motion Estimation ")
+import = &global::ami_import;
+w_main = import->ParamPanel(" Flow Motion Estimation ")
 
 load_sphere_id     = w_main.AddButton("Load New Sphere 128",    CB_LoadNewSphereData)
 load_sphere64_id   = w_main.AddButton("Load New Sphere 64",     CB_LoadSphere64)
 load_newsphere_id  = w_main.AddButton("Load Sphere",            CB_LoadSphereData)
-zoom_id            = w_main.AddBoolean(zoom)
+zoom_id            = w_main.AddBoolean( &zoom)
 load_Johan_id      = w_main.AddButton("Load 3D Volume",             CB_LoadJohanData)
 corr_interf_id     = w_main.AddButton("Correlation Interface",  CB_CorrInterf)
 optical_flwo_id    = w_main.AddButton("Optical Flow Interface", CB_OFInterf  )
 
-w_main.BeginBox("Paper Tests for the Sphere")
-w_main.BeginHorizontal
+w_main.BeginBoxPanel("Paper Tests for the Sphere")
+w_main.BeginHorizontal()
 
 paper_corr_test_id     = w_main.AddButton("Corr", CB_CorrTest)
 paper_var_test_id      = w_main.AddButton("Var", CB_VarTest )
 paper_corrvar_test_id  = w_main.AddButton("Corr+Var", CB_CorrVarTest )
 
-w_main.EndHorizontal
-w_main.EndBox
+w_main.EndHorizontal()
+w_main.EndBoxPanel()
 
-w_main.BeginBox("Paper Tests for Johan's data")
-w_main.BeginHorizontal
+w_main.BeginBoxPanel("Paper Tests for Johan's data")
+w_main.BeginHorizontal()
 
 paper_corr_test_id     = w_main.AddButton("Corr", CB_JohanCorrTest)
 paper_var_test_id      = w_main.AddButton("Var", CB_JohanVarTest )
 paper_corrvar_test_id  = w_main.AddButton("Corr+Var", CB_JohanCorrVarTest )
 
-w_main.EndHorizontal
-w_main.EndBox
+w_main.EndHorizontal()
+w_main.EndBoxPanel()
 
-w_main.CreateWin
-w_main.Display
+w_main.Update()
+w_main.Display()
 
 #-------------------------------------------------
 # Creating parameter window for test on alpha
 #-------------------------------------------------
-alphatests_win = ParamWin("test sequence on alpha")
-alfa_min_id        = alphatests_win.AddFloat(alfa_min,0.01,20)
-alfa_max_id        = alphatests_win.AddFloat(alfa_max,0.01,40)
-alfa_step_id       = alphatests_win.AddFloat(alfa_step,0.01,2)
-alfa_findmin_it_id = alphatests_win.AddInt(  alfa_findmin_it,1,20)
-alfa_tests_init_id = alphatests_win.AddBoolean(alfa_init_zero)
+import = &global::ami_import;
+alphatests_win = import->ParamPanel("test sequence on alpha")
+alfa_min_id        = alphatests_win.AddFloat( &alfa_min,  "alfa_min", 0.01,20)
+alfa_max_id        = alphatests_win.AddFloat( &alfa_max,  "alfa_max", 0.01,40)
+alfa_step_id       = alphatests_win.AddFloat( &alfa_step,  "alfa_step", 0.01,2)
+alfa_findmin_it_id = alphatests_win.AddInt( &alfa_findmin_it,  "alfa_findmin_it", 1,20)
+alfa_tests_init_id = alphatests_win.AddBoolean( &alfa_init_zero)
 alfa_start_id      = alphatests_win.AddButton("Run Alpha Test", CB_RunAlphaTests)
 alfa_findmin_id    = alphatests_win.AddButton("Find Minimum",   CB_AlphaFindMin)
-alphatests_win.CreateWin
+alphatests_win.Update()
 
 
 # ------------ MAIN -----------------------

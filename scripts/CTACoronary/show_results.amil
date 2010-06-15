@@ -102,22 +102,22 @@ for i=0 to 3 {
 
 # Reconstruction of the vessels
 printn "Reconstructing vessel 1"
-v_rad = Image(FLOAT,vessels[0].NbPoints,1,1)
+v_rad = Image(FLOAT,vessels[0].NbPoints(),1,1)
 v_rad = 1
 recons = LineRecons(vessels[0],i0,v_rad)
 
 printn "Reconstructing vessel 2"
-v_rad <<= Image(FLOAT,vessels[1].NbPoints,1,1)
+v_rad <<= Image(FLOAT,vessels[1].NbPoints(),1,1)
 v_rad = 1
 recons = max(recons,LineRecons(vessels[1],i0,v_rad))
 
 printn "Reconstructing vessel 3"
-v_rad <<= Image(FLOAT,vessels[2].NbPoints,1,1)
+v_rad <<= Image(FLOAT,vessels[2].NbPoints(),1,1)
 v_rad = 1
 recons = max(recons,LineRecons(vessels[2],i0,v_rad))
 
 printn "Reconstructing vessel 4"
-v_rad <<= Image(FLOAT,vessels[3].NbPoints,1,1)
+v_rad <<= Image(FLOAT,vessels[3].NbPoints(),1,1)
 v_rad = 1
 recons = max(recons,LineRecons(vessels[3],i0,v_rad))
 

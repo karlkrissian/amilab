@@ -7,6 +7,7 @@
 
 #include "itkImageFileReader.h"
 #include "itkImage.h"
+#include "inrimage.hpp"
 
 #endif // AMI_USE_ITK
 

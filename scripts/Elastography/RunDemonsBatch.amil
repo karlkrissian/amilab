@@ -193,7 +193,7 @@ for i=1 to 40 {
     res_lse.save sprint("LeastSquares_%0.0f.ami.gz",i)
 
     margin_SNR=86
-    res_lse_1 = res_lse[margin_SNR:res_lse.tx-1-margin_SNR,margin_SNR:res_lse.ty-1-margin_SNR,0:0]
+    res_lse_1 = res_lse[margin_SNR:(res_lse.tx-1-margin_SNR),margin_SNR:(res_lse.ty-1-margin_SNR),0:0]
     sigmadiff=res_lse_1-mean(res_lse_1)
     sigma_SNR=sqrt(mean(sigmadiff*sigmadiff))
     _SNR=mean(res_lse_1)/sigma_SNR

@@ -31,9 +31,6 @@ using namespace std;
 class InrImage;
 class DessinImage;
 
-namespace amilab {
-class SurfacePoly;
-}
 
 class Viewer3D;
 //class C_wrap_procedure;
@@ -43,10 +40,10 @@ class WrapClassMember;
 class AMIFunction;
 class AMIClass;
 class AMIObject;
-class AMICPPObject;
 class FloatMatrix;
 class GLTransfMatrix;
 class VarArray;
+
 
 
 #define VARTYPE_PROP(type,name,isnum) \
@@ -61,8 +58,6 @@ VARTYPE_PROP( long,                 type_long,            true); /// New (added:
 VARTYPE_PROP( int,                  type_int,             true);
 VARTYPE_PROP( unsigned char,        type_uchar,           true)
 VARTYPE_PROP( std::string,          type_string,          false)
-VARTYPE_PROP( DessinImage,          type_imagedraw,       false)
-VARTYPE_PROP( amilab::SurfacePoly,          type_surface,         false)
 VARTYPE_PROP( Viewer3D,             type_surfdraw,        false)
 VARTYPE_PROP( FILE,                 type_file,            false)
 VARTYPE_PROP( C_wrap_procedure,     type_c_procedure,     false)
@@ -72,7 +67,7 @@ VARTYPE_PROP( C_wrap_varfunction,   type_c_function,      false)
 VARTYPE_PROP( AMIFunction,          type_ami_function,    false)
 VARTYPE_PROP( AMIClass,             type_ami_class,       false)
 VARTYPE_PROP( AMIObject,            type_ami_object,      false)
-VARTYPE_PROP( AMICPPObject,         type_ami_cpp_object,  false)
+//VARTYPE_PROP( ,         type_ami_cpp_object,  false)
 VARTYPE_PROP( FloatMatrix,          type_matrix,          false)
 VARTYPE_PROP( GLTransfMatrix,       type_gltransform,     false)
 VARTYPE_PROP( VarArray,             type_array,           false)
@@ -105,7 +100,6 @@ template <> double Variable<FloatMatrix>::GetValueAsDouble() const { return 0.0;
 
 VARTYPE_DEFAULT( InrImage)
 VARTYPE_DEFAULT( DessinImage)
-VARTYPE_DEFAULT( amilab::SurfacePoly)
 VARTYPE_DEFAULT( Viewer3D)
 VARTYPE_DEFAULT( FILE)
 VARTYPE_DEFAULT( C_wrap_procedure)
@@ -115,11 +109,21 @@ VARTYPE_DEFAULT( C_wrap_varfunction)
 VARTYPE_DEFAULT( AMIFunction)
 VARTYPE_DEFAULT( AMIClass)
 VARTYPE_DEFAULT( AMIObject)
-VARTYPE_DEFAULT( AMICPPObject)
 VARTYPE_DEFAULT( GLTransfMatrix)
 VARTYPE_DEFAULT( VarArray)
 
 #undef VARTYPE_STRING_DOUBLE
+
+//------------------------------------------------------
+//------- Variable<WrapClassMember>
+//------------------------------------------------------
+
+#include "wrapfunction_class.h"
+template<> std::string Variable<WrapClassMember>::TreeCtrlInfo() const
+{
+  // limit size of description here ???
+  return Pointer()->GetDescription();
+};
 
 //------------------------------------------------------
 //------- Variable<float>

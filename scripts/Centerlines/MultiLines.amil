@@ -85,17 +85,17 @@ if (!exists(MultilinesClass)) {
     }
   #----------------------------
     proc ::Close() {
-      ::win.HidePanel
+      ::win.HidePanel()
       delvars GetObjectName(::Close)
     }
-    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
     #----------------------------
     proc ::CloseAll() {
       eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
       ::Close
     }
-    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
         
     #------------------------------------
     proc ::load_input() {  
@@ -509,7 +509,7 @@ if (!exists(MultilinesClass)) {
       show ::input
       if (exists(::result)) {
         show ::result
-        ::input_draw.compare(::result_draw)
+        ::input_draw._compare(::result_draw)
       }
       if (exists(::roi_contour)) {
         ::input_draw.SetIsoContour(0,::roi_contour,0.5)
@@ -540,17 +540,17 @@ if (!exists(MultilinesClass)) {
             ::win.AddEnumChoice(modeid,"Structure Tensor")
 
           ::win.BeginBoxPanel("Controls")
-            ::win.BeginHorizontal
+            ::win.BeginHorizontal()
               ::win.AddButton("Select ROI", ::CB_ROI)
               ::win.AddButton("Run",        ::MultiLines)
               ::win.AddButton("Run new",    ::MultiLines_new)
-            ::win.EndHorizontal
+            ::win.EndHorizontal()
             ::outputname_id = ::win.AddString( &::output_name, "Output")
-            ::win.BeginHorizontal
+            ::win.BeginHorizontal()
                 display_id = ::win.AddButton("Display",    ::Display)
                 display_id = ::win.AddButton("Save",       ::Save)
-            ::win.EndHorizontal
-          ::win.EndBoxPanel
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
         ::win.AddPage("Circle")
 
           ::win.AddBoolean( &::use_SD,"Use StdDev")
@@ -568,23 +568,23 @@ if (!exists(MultilinesClass)) {
             ::win.AddFloat( &::radmin,"min.",0.01,10)
             ::win.AddFloat( &::radmax,"max.",0.01,10)
             ::win.AddInt( &::numrad,"number",1,20)
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
         
           ::win.AddBoolean( &::local_maxima,"Local maxima")
           ::win.AddBoolean( &::keep_orientations,"Orientations")
           ::win.AddBoolean( &::keep_radii,"Radii")
 
 
-      ::win.EndBook
+      ::win.EndBook()
     
-      ::win.BeginHorizontal
+      ::win.BeginHorizontal()
         ::win.AddButton("Close",      ::Close)
         ::win.AddButton("Close All",  ::CloseAll)
-      ::win.EndHorizontal
+      ::win.EndHorizontal()
     
     
       ::win.Update(-1)
-      ::win.Display
+      ::win.Display()
     }
     
     ::Init

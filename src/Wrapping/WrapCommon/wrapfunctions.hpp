@@ -87,7 +87,7 @@ class wrap_##methodname : public WrapClassMember { \
 \
 inline void AddVar_##methodname(  Variables::ptr& context, const std::string& newname = #methodname) {\
   boost::shared_ptr<WrapClassMember> tmp( new wrap_##methodname());\
-  context->AddVar<WrapClassMember>(newname, tmp); \
+  context->AddVar<WrapClassMember>(newname, tmp, context); \
 }
 
 
@@ -137,7 +137,7 @@ inline void AddVar_##methodname(  Variables::ptr& context, const std::string& ne
 #define ADDLOCAL_OBJECTVAR_NAME(obj,type,stname,name) \
   { \
   boost::shared_ptr<type> newvar(CreateSmartPointer<type>()(&name)); \
-  obj->GetContext()->AddVar<type>( stname, newvar); \
+  obj->GetContext()->AddVar<type>( stname, newvar, obj->GetContext()); \
   }
 
 
@@ -215,23 +215,44 @@ inline void AddVar_##methodname(  Variables::ptr& context, const std::string& ne
     FILE_ERROR("Need a wrapped object as parameter.")\
   }
 
+
+
 /*! \def CLASS_GET_OBJECT_PARAM
     \brief try to convert the next parameter to the wrapped given type and gets a smart pointer to this type in the variable 'name', macro working within a class member
 */
-#define CLASS_GET_OBJECT_PARAM(type,name) \
-  Variable<AMIObject>::ptr var; \
-  boost::shared_ptr<type> name; \
-  if (get_var_param<AMIObject>(var, p, n))  \
+#define CLASS_GET_OBJECT_PARAM(type,varname,objname) \
+  Variable<AMIObject>::ptr varname; \
+  boost::shared_ptr<type> objname; \
+  if (get_var_param<AMIObject>(varname, p, n))  \
   { \
-    WrapClassBase::ptr object( var->Pointer()->GetWrappedObject());\
+    WrapClassBase::ptr object( varname->Pointer()->GetWrappedObject());\
     WrapClass_##type::ptr obj( boost::dynamic_pointer_cast<WrapClass_##type>(object));\
     if (obj.get()) {\
-      name = obj->_obj;\
+      objname = obj->GetObj();\
     } else {\
       CLASS_ERROR("Could not cast dynamically the variable.")\
     }\
   }  else {\
     CLASS_ERROR("Need a wrapped object as parameter.")\
+  }
+
+/*! \def FUNC_GET_OBJECT_PARAM
+    \brief try to convert the next parameter to the wrapped given type and gets a smart pointer to this type in the variable 'name', macro working within a class member
+*/
+#define FUNC_GET_OBJECT_PARAM(type,varname,objname) \
+  Variable<AMIObject>::ptr varname; \
+  boost::shared_ptr<type> objname; \
+  if (get_var_param<AMIObject>(varname, p, n))  \
+  { \
+    WrapClassBase::ptr object( varname->Pointer()->GetWrappedObject());\
+    WrapClass_##type::ptr obj( boost::dynamic_pointer_cast<WrapClass_##type>(object));\
+    if (obj.get()) {\
+      objname = obj->GetObj();\
+    } else {\
+      FILE_ERROR("Could not cast dynamically the variable.")\
+    }\
+  }  else {\
+    FILE_ERROR("Need a wrapped object as parameter.")\
   }
 
 

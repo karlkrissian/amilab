@@ -48,7 +48,7 @@
 //------------------------------------------------------
 
 /// Copy contents to new variable
-template<> BasicVariable::ptr Variable<long int>::NewCopy()
+template<> BasicVariable::ptr Variable<long int>::NewCopy() const
 {
   long_ptr newval( new long int(Value()));
   Variable<long int>::ptr newvar(new Variable<long int>(newval));

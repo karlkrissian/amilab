@@ -126,8 +126,8 @@ using namespace boost;
 
 
 #ifdef AMI_USE_ITK
-  #include "wrapitkRead.h"
-  #include "wrapitkWrite.h"
+  #include "ami_itkRead.h"
+  #include "ami_itkWrite.h"
 #endif // AMI_USE_ITK
 
 #if defined(_MSC_VER) 

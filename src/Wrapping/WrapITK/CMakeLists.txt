@@ -27,8 +27,10 @@ SET(  WrapITK_SRCS
     itkCannyEdgeDetector.cpp
     wrapITK.cpp
     wrapitkRecursiveGaussianImageFilter.cpp
-    wrapitkRead_3D_US.cpp
+    #wrapitkRead_3D_US.cpp
+    ami_itkRead.cpp
     wrapitkRead.cpp
+    ami_itkWrite.cpp
     wrapitkWrite.cpp
     wrapitkIsoContourDist.cpp
     #wrapitkBasicNLMeansFilter.cpp
@@ -43,10 +45,12 @@ SET(WrapITK_HDRS
 	wrapITK.h
 	wrapitkFastMarchingImageFilter.h
 	wrapitkIsoContourDist.h
+  ami_itkRead.h
 	wrapitkRead.h
-	wrapitkRead_3D_US.h
+	#wrapitkRead_3D_US.h
 	wrapitkRecursiveGaussianImageFilter.h
 	wrapitkWaterShedImageFilter.h
+  ami_itkWrite.h
 	wrapitkWrite.h
 )
 

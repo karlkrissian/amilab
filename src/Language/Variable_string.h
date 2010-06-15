@@ -9,8 +9,9 @@
 //------- Variable<string>
 //------------------------------------------------------
 
+
 /// Copy contents to new variable
-template<> BasicVariable::ptr Variable<string>::NewCopy();
+template<> BasicVariable::ptr Variable<string>::NewCopy() const;
 
 // Arithmetic operators
 

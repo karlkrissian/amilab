@@ -6,7 +6,11 @@
 #include "driver.h"
 #include <boost/pointer_cast.hpp>
 
-extern yyip::Driver GB_driver;
+#include "MainFrame.h"
+#include "func_imagebasictools.h"
+
+extern yyip::Driver  GB_driver;
+extern MainFrame*    GB_main_wxFrame;
 
 #define NEW_SMARTPTR(type, var, value) \
   boost::shared_ptr<type> var(new type(value));
@@ -16,7 +20,10 @@ extern yyip::Driver GB_driver;
   return Variable<type>::ptr( new Variable<type>(newval));
 
 #include "inrimage.hpp"
-
+#include "wrap_ImageExtent.h"
+#include "wrap_DessinImage.h"
+#include "wrapfunctions.hpp"
+#include "imageextent.h"
 
 // TODO: should be defined as functions ...
 #define UNARYOP_IMAGE(im,operator)      \
@@ -78,34 +85,6 @@ extern yyip::Driver GB_driver;
     return Variable<InrImage>::ptr( new Variable<InrImage>(res)); \
   }
 
-/*
-#define EXPR_OP_IMAGE(operator,expr)    {                 \
-  InrImage::ptr im(driver.im_stack.GetLastImage());            \
-  InrImage::ptr res;                           \
-  if (im.use_count()==1) res = im; \
-  else {\
-    res = InrImage::ptr(new InrImage( im->GetFormat(),\
-                                      im->GetVDim(),\
-                                      (std::string("expr_op_")+im->GetName()).c_str(),\
-                                      im.get()));\
-    (*res) = (*im);\
-  }\
-  int       i;                                           \
-  double    val = expr;                                  \
-  res->InitBuffer();                                     \
-  Si res->ScalarFormat() Alors                           \
-    Repeter                                              \
-      res->FixeValeur(val operator res->ValeurBuffer() ); \
-    JusquA Non(res->IncBuffer()) FinRepeter              \
-  Sinon                                                  \
-    Repeter                                              \
-      Pour(i,0,res->GetVDim()-1)                         \
-        res->VectFixeValeur(i, val operator res->VectValeurBuffer(i));  \
-      FinPour                                            \
-    JusquA Non(res->IncBuffer()) FinRepeter              \
-  FinSi                                                  \
-  driver.im_stack.AddImage(res); }
-*/
 
 #define IMAGE_OP_IMAGE(im1,im2,operator)    \
   {\
@@ -144,7 +123,7 @@ extern yyip::Driver GB_driver;
 //------------------------------------------------------
 
 /// Copy contents to new variable
-template<> BasicVariable::ptr Variable<InrImage>::NewCopy()
+template<> BasicVariable::ptr Variable<InrImage>::NewCopy() const
 {
   InrImage::ptr newval( new InrImage( Pointer()->GetFormat(),
                                       Pointer()->GetVDim(),
@@ -518,20 +497,17 @@ template<> BasicVariable::ptr Variable<InrImage>::BasicCast(const int& type)
   return Variable<InrImage>::ptr( new Variable<InrImage>(res)); 
 }
 
+
 /**
- * Array subscript operator
- * @param v 
- * @return 
- */
-template<>  BasicVariable::ptr Variable<InrImage>::operator[](const BasicVariable::ptr& v)
+ * operation Image[number]
+ **/
+BasicVariable::ptr Image_Brackets( Variable<InrImage> * const _this, int pos)
 {
-  if (v->IsNumeric()) {
-    int pos = (int) v->GetValueAsDouble();
-    InrImage::ptr im(Pointer());
+    InrImage::ptr im(_this->Pointer());
     InrImage::ptr res;
     if (pos<0) pos = 0;
     if (pos>=im->GetVDim()) pos = im->GetVDim()-1;
-    std::string imname  = (boost::format("C%d_%s") % pos % this->Name()).str();
+    std::string imname  = (boost::format("C%d_%s") % pos % _this->Name()).str();
 
     switch ( im->GetFormat() ){
         case WT_RGB:
@@ -554,7 +530,7 @@ template<>  BasicVariable::ptr Variable<InrImage>::operator[](const BasicVariabl
 
         default:
           GB_driver.yyiperror(" operator [] does not handle this format \n");
-          return this->NewReference(); 
+          return BasicVariable::empty_variable; 
     }
 
     im->InitBuffer();
@@ -564,11 +540,93 @@ template<>  BasicVariable::ptr Variable<InrImage>::operator[](const BasicVariabl
       im->IncBuffer();
     } while (res->IncBuffer());
     return Variable<InrImage>::ptr( new Variable<InrImage>(res)); 
+}
 
+/**
+ * Array subscript operator
+ * @param v 
+ * @return 
+ */
+template<>  BasicVariable::ptr Variable<InrImage>::operator[](const BasicVariable::ptr& v)
+{
+  if (v->IsNumeric()) {
+    int pos = (int) v->GetValueAsDouble();
+    return Image_Brackets(this,pos);
   } 
-  else
-    CLASS_ERROR("operation not defined");
-  return this->NewReference(); 
+  else {
+    // try to get an image extent
+    GET_WRAPPED_TEMPLATE_OBJECT(ImageExtent, float ,v,extent);
+
+/*
+    DYNAMIC_CAST_VARIABLE(AMIObject, v, varobj) 
+    boost::shared_ptr<ImageExtent<float> > extent; 
+    if (varobj.get()) { 
+      WrapClassBase::ptr wrapped_base(varobj->Pointer()->GetWrappedObject()); 
+      WrapClass_ImageExtent::ptr wrapped_obj( 
+        boost::dynamic_pointer_cast<WrapClass_ImageExtent >(wrapped_base)); 
+      if (wrapped_obj.get())
+        extent = wrapped_obj->_obj; 
+    }
+*/
+    if (extent.get()) {
+      InrImage::ptr im(Pointer());
+      extent->SetRelative(im.get());
+      InrImage::ptr res ( Func_SubImage( im.get(),
+                  (int)  round((double)extent->Xmin()),
+                  (int)  round((double)extent->Ymin()),
+                  (int)  round((double)extent->Zmin()),
+                  (int)  round((double)extent->Xmax()),
+                  (int)  round((double)extent->Ymax()),
+                  (int)  round((double)extent->Zmax())
+                  ));
+      if (!res.get()) {
+        CLASS_ERROR("SubImage() failed ... ");
+        return BasicVariable::ptr();
+      }
+      return Variable<InrImage>::ptr( new Variable<InrImage>(res)); 
+    }
+    else 
+    {
+      // try to get an image extent
+      GET_WRAPPED_OBJECT(DessinImage,v,draw);
+      if (draw.get()) {
+
+        //DessinImage::ptr draw = DessinImage::ptr(varimd->Pointer());
+  
+        int xmin,xmax;
+        int ymin,ymax;
+        int zmin,zmax;
+        string comment;
+    
+        draw->GetZoom(xmin,ymin,zmin,xmax,ymax,zmax);
+        ImageExtent<float>* extent=new ImageExtent<float>(xmin,xmax,ymin,ymax,zmin,zmax);
+        extent->SetMode(1); // relative extent
+    
+        comment = str(format(" //  subvolume [%3d:%3d, %3d:%3d, %3d:%3d] ")
+            % xmin % xmax % ymin % ymax % zmin % zmax);
+        if (GB_driver.InConsole()) GB_main_wxFrame->GetConsole()->IncCommand(comment);
+
+        InrImage::ptr im(Pointer());
+        extent->SetRelative(im.get());
+        InrImage::ptr res ( Func_SubImage( im.get(),
+                    (int)  round((double)extent->Xmin()),
+                    (int)  round((double)extent->Ymin()),
+                    (int)  round((double)extent->Zmin()),
+                    (int)  round((double)extent->Xmax()),
+                    (int)  round((double)extent->Ymax()),
+                    (int)  round((double)extent->Zmax())
+                    ));
+        if (!res.get()) {
+          CLASS_ERROR("SubImage() failed ... ");
+          return BasicVariable::ptr();
+        }
+        return Variable<InrImage>::ptr( new Variable<InrImage>(res)); 
+      } 
+      else
+        CLASS_ERROR("operation not defined");
+    }
+  }
+  return BasicVariable::empty_variable; 
 }
 
 
@@ -613,3 +671,50 @@ BasicVariable::ptr Variable<InrImage>::operator =(const BasicVariable::ptr& b)
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
+
+/// operator <<=
+template<> BasicVariable::ptr Variable<InrImage>::left_assign(const BasicVariable::ptr& b)
+{
+  if (b->Type() == type_image) {
+    DYNAMIC_CAST_VARIABLE(InrImage, b, var_im2)
+    InrImage::ptr i1(this->Pointer());
+    InrImage::ptr imptr(var_im2->Pointer());
+    bool can_skip_allocation = false;
+
+    if (imptr.get()) {
+      if (i1.get() != imptr.get()) {
+        can_skip_allocation = (i1->GetFormat() == imptr->GetFormat());
+        if (can_skip_allocation) {
+          // first try the standard data copy
+          can_skip_allocation = ((*i1) = (*imptr));
+          if (can_skip_allocation) {
+            // copy additional information here
+            i1->SetTranslation(imptr->TrX(), imptr->TrY(), imptr->TrZ());
+            i1->SetVoxelSize( imptr->VoxSizeX(),
+                              imptr->VoxSizeY(),
+                              imptr->VoxSizeZ());
+          }
+        }
+        if (!can_skip_allocation) {
+          // should be OK
+          if (b->GetPtrCounter()==1) {
+            _pointer = InrImage::ptr(imptr); 
+          } else {
+            // make a copy first
+            BasicVariable::ptr copy(b->NewCopy());
+            DYNAMIC_CAST_VARIABLE(InrImage, 
+              copy, varim_copy)
+            _pointer = varim_copy->Pointer();
+          }
+          //this->Init( this->Name().c_str(), imptr);
+        } // end if (!can_skip_allocation)
+      } // end if (i1.get()!=imptr)
+    }
+    else
+      GB_driver.err_print("assignment of NULL image\n");
+  }
+  else
+    CLASS_ERROR("operation not defined");
+  return this->NewReference();
+}
+

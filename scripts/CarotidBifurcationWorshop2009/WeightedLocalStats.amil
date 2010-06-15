@@ -25,7 +25,7 @@ if (!exists(WLS_defined)) {
     eval "global::WLS_input <<=(FLOAT)"+WLS_input_name+";"
     if (WLS_input_name=="Image") {
       WLS_input_name = "WLS_input"
-      WLS_win.update
+      WLS_win.Update(-1)
     }
   }
 
@@ -35,14 +35,14 @@ if (!exists(WLS_defined)) {
     eval "global::WLS_weights <<=(FLOAT)"+WLS_weights_name+";"
     if (WLS_weights_name=="Image") {
       WLS_weights_name = "WLS_weights"
-      WLS_win.update
+      WLS_win.Update(-1)
     }
   }
 
   #--------------------------
   proc WLS_Close() \
   {
-    WLS_win.Hide
+    WLS_win.HidePanel()
     del "WLS_*_draw"
     del "WLS_*"
     del "wls_*"
@@ -91,32 +91,33 @@ if (!exists(WLS_defined)) {
   {
     global_new
       show WLS_input
-      WLS_input_draw.compare(WLS_weights)
-      eval "WLS_input_draw.compare("+WLS_output_prefix+"lm);"
-      eval "WLS_input_draw.compare("+WLS_output_prefix+"sd);"
-      eval "WLS_input_draw.compare("+WLS_output_prefix+"prob);"
+      WLS_input_draw._compare(WLS_weights)
+      eval "WLS_input_draw._compare("+WLS_output_prefix+"lm);"
+      eval "WLS_input_draw._compare("+WLS_output_prefix+"sd);"
+      eval "WLS_input_draw._compare("+WLS_output_prefix+"prob);"
   }
   
   #--------------------------
   proc WLS_Gui() \
   {
-    global::WLS_win = ParamWin("Prob")
+    import = &global::ami_import;
+    global::WLS_win = import->ParamPanel("Prob")
 
     WLS_win.BeginPanel("Parameters")
-      WLS_win.AddImageChoice(WLS_input_name,"Input")
-      WLS_win.AddImageChoice(WLS_weights_name,"Weights")
-      WLS_win.AddString(WLS_output_prefix,"Output Prefix")
+      WLS_win.AddImageChoice( &WLS_input_name,"Input")
+      WLS_win.AddImageChoice( &WLS_weights_name,"Weights")
+      WLS_win.AddString( &WLS_output_prefix,"Output Prefix")
   
-      WLS_win.AddInt(  WLS_localstats_winsize,1,10)
-      WLS_win.AddFloat(WLS_min_weight,0.01,1)
+      WLS_win.AddInt( &WLS_localstats_winsize,  "WLS_localstats_winsize", 1,10)
+      WLS_win.AddFloat( &WLS_min_weight,  "WLS_min_weight", 0.01,1)
   
       WLS_win.AddButton("Apply",  WLS_Apply)
       WLS_win.AddButton("Display",WLS_Display)
     WLS_win.EndPanel
     WLS_win.AddButton("Close",  WLS_Close)
 
-    WLS_win.update
-    WLS_win.Display
+    WLS_win.Update(-1)
+    WLS_win.Display()
   }
 
   #----------------------------

@@ -17,6 +17,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/wxParams
   ${AMILAB_SOURCE_DIR}/myVTK4
   ${AMILAB_SOURCE_DIR}/Vaisseaux
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapSurface
   ${Boost_INCLUDE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
 )

@@ -11,7 +11,7 @@ class InrImage;
 //------------------------------------------------------
 
 /// Copy contents to new variable
-template<> BasicVariable::ptr Variable<InrImage>::NewCopy();
+template<> BasicVariable::ptr Variable<InrImage>::NewCopy() const;
 
 // Arithmetic operators
 
@@ -182,6 +182,13 @@ template<> BasicVariable::ptr Variable<InrImage>::TernaryCondition(const BasicVa
  * @return 
  */
 template<> BasicVariable::ptr Variable<InrImage>::operator =(const BasicVariable::ptr& b);
+
+/**
+ * Tries to copy images, if the images don't have the same dimensions, creates a new image.
+ * @param b 
+ * @return 
+ */
+template<> BasicVariable::ptr Variable<InrImage>::left_assign(const BasicVariable::ptr& b);
 
 #endif 
 // _Variable_InrImage_h_

@@ -40,14 +40,14 @@ for _z=0 to 1 {
 
 
 
-  _si = _in[roi_minx+margin_xmin:roi_maxx+margin_xmax,roi_miny+margin_ymin:roi_maxy+margin_ymax,roi_minz+margin_zmin:roi_maxz+margin_zmax]
+  _si = _in[(roi_minx+margin_xmin):(roi_maxx+margin_xmax),(roi_miny+margin_ymin):(roi_maxy+margin_ymax),(roi_minz+margin_zmin):(roi_maxz+margin_zmax)]
 
   sres = (FLOAT) _si
   CreateSkeleton(_si,_th,&sres)
 
   sres.settranslation(_si.trx,_si.try,_si.trz)  
   
-  sres1=sres[-margin_xmin:sres.tx-1-margin_xmax,-margin_ymin:sres.ty-1-margin_ymax,-margin_zmin:sres.tz-1-margin_zmax]
+  sres1=sres[(-margin_xmin):(sres.tx-1-margin_xmax),(-margin_ymin):(sres.ty-1-margin_ymax),(-margin_zmin):(sres.tz-1-margin_zmax)]
 
   sres1.settranslation(sres.trx-margin_xmin,sres.try-margin_ymin,sres.trz-margin_zmin)
 

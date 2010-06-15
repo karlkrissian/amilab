@@ -1,0 +1,123 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_dessinimage_isocontour.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the following methods:
+#                              - SetLineThickness
+#                              - SetIsoContour
+#                              - SetIsoContourColor
+#                              - DrawIsoContour
+#                              - SetIsoContourParam
+#                              - AllContoursParam
+#                              - DrawAllContours
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+OK = 1 # The test was successful
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# Create initial image
+func "SyntheticImages/create_torus_gui.amil"
+CTClass CT
+
+DIMX=100
+DIMY=100
+DIMZ=100
+BG=0
+FG=0
+R=20
+r=4
+
+printn "\t\t Create synthetic imaged:"
+printn "\t\t\t dimx=%1%" % DIMX
+printn "\t\t\t dimy=%1%" % DIMY
+printn "\t\t\t dimz=%1%" % DIMZ
+printn "\t\t\t bg=%1%" % BG
+printn "\t\t\t fg=%1%" % FG
+printn "\t\t\t R=%1%"  % R
+printn "\t\t\t r=%1%"  % r
+
+ctobject->dimx = 100
+ctobject->dimy = 100
+ctobject->dimz = 100
+ctobject->bg = 0
+ctobject->fg = 100
+ctobject->R = 20
+ctobject->r = 4
+ctobject->Create
+
+printn "\t\t Create an object of class DessinImage (torus_draw).\n"
+torus_draw=DessinImage(&torus)
+
+LineThickness=4
+printn "\n\t\t Set line thicknes (SetLineThickness)\n"
+printn "\t\t\t Thickness=%1% "  % LineThickness
+torus_draw.SetLineThickness(LineThickness)
+
+IndexIsoContour=0
+IntensityIsoContour=3
+printn "\n\t\t Sets the image and intensity value of an isocontour in an image_draw window (SetIsoContour)\n"
+printn "\t\t\t Isocontour index (0,1 or 2)=%1% "  % IndexIsoContour
+printn "\t\t\t Image to use for the isocontour= torus"
+printn "\t\t\t Intensity value of the isocontour=%1% "  % IntensityIsoContour
+torus_draw.SetIsoContour(IndexIsoContour, torus, IntensityIsoContour)
+
+RedComponent=0
+GreenComponent=255
+BlueComponent=0
+printn "\n\t\t Sets the color as RGB of an isocontour in an image_draw window (SetIsoContourColor)\n"
+printn "\t\t\t Isocontour index (0,1 or 2)=%1% "  % IndexIsoContour
+printn "\t\t\t Red component in [0,255]=%1% "  % RedComponent
+printn "\t\t\t Green component in [0,255]=%1% "  % GreenComponent
+printn "\t\t\t Blue component in [0,255]=%1% "  % BlueComponent
+torus_draw.SetIsoContourColor(IndexIsoContour,RedComponent,GreenComponent,BlueComponent)
+
+VisibleParameter=1
+printn "\n\t\t Sets the visibility of an isocontour in an 'image_draw' window (DrawIsoContour):\n"
+printn "\t\t\t Isocontour index (0,1 or 2)=%1% "  % IndexIsoContour
+printn "\t\t\t Visible or not (0 or 1)=%1% "  % VisibleParameter
+torus_draw.DrawIsoContour(IndexIsoContour, VisibleParameter)
+
+IsoContourThickness=1
+IsoContourStyle=0
+printn "\n\t\t Sets the parameters (line style and thickeness) of an isocontour in an 'image_draw' window (SetIsoContourParam):\n"
+printn "\t\t\t Isocontour index (0,1 or 2)=%1% "  % IndexIsoContour
+printn "\t\t\t Isocontour thickness=%1% "  % LineThickness
+printn "\t\t\t Isocontour style (0,1,2 for LineSolid, LineOnOffDash, or LineDoubleDash)=%1% "  % IsoContourStyle
+torus_draw.SetIsoContourParam(IndexIsoContour,LineThickness,IsoContourStyle)
+
+CapStyle=3
+JoinStyle=1
+printn "\n\t\t Sets the parameters (line style and thickeness) of an isocontour in an 'image_draw' window (SetIsoContourParam):\n"
+printn "\t\t\t Isocontour index (0,1 or 2)=%1% "  % IndexIsoContour
+printn "\t\t\t Isocontour thickness=%1% "  % IsoContourThickness
+printn "\t\t\t Cap_style (0:CapNotLast, 1:CapButt, 2:CapRound, or 3:CapProjecting)=%1% "  % CapStyle
+printn "\t\t\t Join_style (0:JoinMiter, 1:JoinRound, or 2:JoinBevel)=%1% "  % JoinStyle
+torus_draw.SetIsoContourParam(IndexIsoContour,IsoContourThickness,IsoContourStyle,CapStyle,JoinStyle)
+
+Intensity=3;
+Half=20;
+printn "\n\t\t Parameters for drawing a series of isocontours around the main isocontour (AllContoursParam):\n"
+printn "\t\t\t Intensity step between isocontours=%1% "  % Intensity
+printn "\t\t\t Half size of the intensity range where to draw isocontours=%1% "  % Half
+torus_draw.AllContoursParam(Intensity, Half)
+
+BooleanParameter=1
+printn "\n\t\t Activates or desactivates the drawing of a series of isocontours (DrawAllContours):\n"
+printn "\t\t\t Boolean parameter=%1% "  % BooleanParameter
+torus_draw.DrawAllContours(BooleanParameter)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ctest.PrintTestResult( OK ) 
+
+#quit
+

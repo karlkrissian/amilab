@@ -28,9 +28,11 @@ class WrapClass_AnisoGS : public WrapClassBase
 
   // for nested classes
   typedef WrapClass_AnisoGS::ptr _parentclass_ptr;
+  typedef AnisoGS _obj_type;
 
   public:
-    boost::shared_ptr<AnisoGS> _obj;
+    boost::shared_ptr<_obj_type> _obj;
+    const boost::shared_ptr<_obj_type>& GetObj() const { return _obj; }
 
     /// Constructor
     WrapClass_AnisoGS(boost::shared_ptr<AnisoGS> si): _obj(si)

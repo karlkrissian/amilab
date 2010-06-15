@@ -164,7 +164,7 @@ print "1\n"
     // get rid of last line
     tmp = i
     del i
-    i = tmp[0:tmp.tx-1,7:tmp.ty-2,0:0]
+    i = tmp[0:(tmp.tx-1),7:(tmp.ty-2),0:0]
     del tmp
   }
   del I
@@ -189,7 +189,7 @@ print "1\n"
       // get rid of last line
       tmp = i
       del i
-      i = tmp[0:tmp.tx-1,7:tmp.ty-2,0:0]
+      i = tmp[0:(tmp.tx-1),7:(tmp.ty-2),0:0]
       del tmp
     }
     del I
@@ -202,7 +202,7 @@ print "1\n"
       // get rid of last line
       tmp = d1
       del d1
-      d1 = tmp[0:tmp.tx-1,7:tmp.ty-2,0:0]
+      d1 = tmp[0:(tmp.tx-1),7:(tmp.ty-2),0:0]
       del tmp
     }
     displ.putimage(d1,0,0,seq-seqmin)
@@ -218,7 +218,7 @@ print "1\n"
       // get rid of last line
       tmp = m
       del m
-      m = tmp[0:tmp.tx-1,7:tmp.ty-2,0:0]
+      m = tmp[0:(tmp.tx-1),7:(tmp.ty-2),0:0]
       del tmp
     }
     mask.putimage(m,0,0,seq-seqmin)
@@ -228,7 +228,7 @@ print "1\n"
 //  del i; del m; del d1
 
   displ_res= displ*0
-  im1 = im[:,:,0:seqmax-seqmin-1]
+  im1 = im[:,:,0:(seqmax-seqmin-1)]
 
   ang_error = (FLOAT) displ[0]*0
 
@@ -259,7 +259,7 @@ proc LoadImagesBarron() {
     // get rid of last line
     tmp = i
     del i
-    i = tmp[0:tmp.tx-1,7:tmp.ty-2,0:0]
+    i = tmp[0:(tmp.tx-1),7:(tmp.ty-2),0:0]
     del tmp
   }
   del I
@@ -285,7 +285,7 @@ proc LoadImagesBarron() {
       // get rid of last line
       tmp = i
       del i
-      i = tmp[0:tmp.tx-1,7:tmp.ty-2,0:0]
+      i = tmp[0:(tmp.tx-1),7:(tmp.ty-2),0:0]
       del tmp
     }
     del I
@@ -306,7 +306,7 @@ proc LoadImagesBarron() {
     displ.putimage(displ89,0,0,8-seqmin)
 
     # set mask to only 8-9 frame
-    mask89 = mask[:,:,8-seqmin:8-seqmin]
+    mask89 = mask[:,:,(8-seqmin):(8-seqmin)]
     mask89.initvalue(255)
     mask.putimage(mask89)
 
@@ -318,7 +318,7 @@ proc LoadImagesBarron() {
     displ89 = AMIFluid->amiReadBarronData("YosemiteBarron/yos_noclouds.F")
 
     # set mask to only 8-9 frame
-    mask89 = mask[:,:,8-seqmin:8-seqmin]
+    mask89 = mask[:,:,(8-seqmin):(8-seqmin)]
     mask89 = (displ89[0]<99)*255
     mask.putimage(mask89)
 
@@ -339,7 +339,7 @@ proc LoadImagesBarron() {
   }
 
   displ_res= displ*0
-  im1 = im[:,:,0:seqmax-seqmin-1]
+  im1 = im[:,:,0:(seqmax-seqmin-1)]
 
   ang_error = (FLOAT) displ[0]*0
 
@@ -372,7 +372,7 @@ proc LoadImages2() {
   displ_res= displ*0
   seqmin=0
   seqmax=1
-  im1 = im[:,:,0:seqmax-seqmin-1]
+  im1 = im[:,:,0:(seqmax-seqmin-1)]
 
   ang_error = (FLOAT) displ[0]*0
 
@@ -590,7 +590,7 @@ proc angular_error(IMAGE _d1, IMAGE _d0, IMAGE _err){
 
 #--------------------------------------------------
 proc RemoveBorder(IMAGE _m, NUM _size) {
-  umask = _m[_size:_m.tx-1-_size,_size:_m.ty-1-_size,0:_m.tz-1]
+  umask = _m[_size:(_m.tx-1-_size),_size:(_m.ty-1-_size),0:(_m.tz-1)]
   _m.initvalue(0)
   _m.putimage(umask)
   del umask
@@ -713,7 +713,7 @@ proc CB_IterateStandard() {
     print "1\t"; print seqn; print "\n"
     i  = im[:,:,seqn:seqn]
     print "2\t";
-    i2 = im[:,:,seqn+1:seqn+1]
+    i2 = im[:,:,(seqn+1):(seqn+1)]
     print "3\t";
     d  = displ_res[:,:,seqn:seqn]
     if (symmetric==0) {
@@ -762,57 +762,57 @@ proc CB_Iterate() {
 proc CB_Display() {
   global
   show im1;
-  im1_draw.setvector(1,displ_res);
-  im1_draw.setvector(2,displ);
+  im1_draw._setvector(0,displ_res);
+  im1_draw._setvector(1,displ);
   local
 }
 
 proc CB_InputImages() {
   global
-  winput.Display
+  winput.Display()
   local
 }
 
 proc CB_AlphaTests() {
   global
-  w2.Display
+  w2.Display()
   local
 }
 
 proc CB_amiOF_param() {
   global
-  wamiOF.Display
+  wamiOF.Display()
   local
 }
 
 
 proc CB_JavOF_param() {
   global
-  wJavOF.Display
+  wJavOF.Display()
   local
 }
 
 proc CB_JAOF_param() {
   global
-  wJAOF.Display
+  wJAOF.Display()
   local
 }
 
 proc CB_Vort_param() {
   global
-  wVort.Display
+  wVort.Display()
   local
 }
 
 proc CB_OFzoom_param() {
   global
-  wOFzoom.Display
+  wOFzoom.Display()
   local
 }
 
 proc CB_GaussianScales_param() {
   global
-  wGaussSc.Display
+  wGaussSc.Display()
   local
 }
 
@@ -993,126 +993,133 @@ proc CB_RunAlphaTests() {
 #--------------------------------------------------
 # Input Images
 #
-winput = ParamWin("Input")
-winput.BeginBox("Yosemite sequence from M. Black")
-use_clouds_id      = winput.AddBoolean(use_clouds)
-removelastline_id  = winput.AddBoolean(removelastline)
-seqmin_id          = winput.AddInt(seqmin,0,14)
-seqmax_id          = winput.AddInt(seqmax,0,14)
+import = &global::ami_import;
+winput = import->ParamPanel("Input")
+winput.BeginBoxPanel("Yosemite sequence from M. Black")
+use_clouds_id      = winput.AddBoolean( &use_clouds)
+removelastline_id  = winput.AddBoolean( &removelastline)
+seqmin_id          = winput.AddInt( &seqmin,  "seqmin", 0,14)
+seqmax_id          = winput.AddInt( &seqmax,  "seqmax", 0,14)
 restart_id         = winput.AddButton("ReLoad", CB_ReLoad)
-winput.EndBox
-winput.BeginBox("Yosemite sequence from Barron")
-use_clouds_id      = winput.AddBoolean(use_clouds)
-removelastline_id  = winput.AddBoolean(removelastline)
-seqmin_id          = winput.AddInt(seqmin,1,15)
-seqmax_id          = winput.AddInt(seqmax,1,15)
+winput.EndBoxPanel()
+winput.BeginBoxPanel("Yosemite sequence from Barron")
+use_clouds_id      = winput.AddBoolean( &use_clouds)
+removelastline_id  = winput.AddBoolean( &removelastline)
+seqmin_id          = winput.AddInt( &seqmin,  "seqmin", 1,15)
+seqmax_id          = winput.AddInt( &seqmax,  "seqmax", 1,15)
 restart_id         = winput.AddButton("ReLoad", CB_ReLoadBarron)
-winput.EndBox
-winput.BeginBox("Image from parameters")
+winput.EndBoxPanel()
+winput.BeginBoxPanel("Image from parameters")
 loadimparam_id     = winput.AddButton("Load", LoadImages2)
-winput.EndBox
-winput.CreateWin
+winput.EndBoxPanel()
+winput.Update()
 
 
 
 #--------------------------------------------------
 # Parameters for libami's code
 #
-wamiOF = ParamWin("PDE Param")
+import = &global::ami_import;
+wamiOF = import->ParamPanel("PDE Param")
 
-presmoothing_id    = wamiOF.AddFloat(presmoothing,0,3)
-beta_id            = wamiOF.AddFloat(beta,0.01,5)
-alfa_id            = wamiOF.AddFloat(alfa,0.01,20)
-Nscales_id         = wamiOF.AddInt(Nscales,1,5)
+presmoothing_id    = wamiOF.AddFloat( &presmoothing,  "presmoothing", 0,3)
+beta_id            = wamiOF.AddFloat( &beta,  "beta", 0.01,5)
+alfa_id            = wamiOF.AddFloat( &alfa,  "alfa", 0.01,20)
+Nscales_id         = wamiOF.AddInt( &Nscales,  "Nscales", 1,5)
 
-gradtype_id        = wamiOF.AddInt(gradtype,0,3)
+gradtype_id        = wamiOF.AddInt( &gradtype,  "gradtype", 0,3)
 
-gradcomputation_id = wamiOF.AddEnum(gradcomputation)
+gradcomputation_id = wamiOF.AddEnum( &gradcomputation)
 wamiOF.AddEnumChoice(gradcomputation_id,"grad_max")
 wamiOF.AddEnumChoice(gradcomputation_id,"grad_3x3")
 wamiOF.AddEnumChoice(gradcomputation_id,"grad_splines")
 
-boundtype_id = wamiOF.AddEnum(boundarytype)
+boundtype_id = wamiOF.AddEnum( &boundarytype)
 wamiOF.AddEnumChoice(boundtype_id,"border")
 wamiOF.AddEnumChoice(boundtype_id,"outside mask")
 
 
-smoothfunction_id  = wamiOF.AddEnum(smoothfunction)
+smoothfunction_id  = wamiOF.AddEnum( &smoothfunction)
 wamiOF.AddEnumChoice(smoothfunction_id,"x^2")
 wamiOF.AddEnumChoice(smoothfunction_id,"sqrt(x^2)")
 
-smoothgradient_id      = wamiOF.AddBoolean(smoothgradient) 
-alpha_normalization_id = wamiOF.AddBoolean(alpha_normalization)
-alpha_norm_epsilon_id  = wamiOF.AddInt(alpha_norm_epsilon,-5,0)
+smoothgradient_id      = wamiOF.AddBoolean( &smoothgradient) 
+alpha_normalization_id = wamiOF.AddBoolean( &alpha_normalization)
+alpha_norm_epsilon_id  = wamiOF.AddInt( &alpha_norm_epsilon,  "alpha_norm_epsilon", -5,0)
 
-wamiOF.BeginBox("Convergence")
+wamiOF.BeginBoxPanel("Convergence")
 #wamiOF.BeginHorizontal
-Conv_GS_exp_id     = wamiOF.AddInt(Conv_GS_exp,-10,0)
-Conv_Scales_exp_id = wamiOF.AddInt(Conv_Scales_exp,-5,0)
+Conv_GS_exp_id     = wamiOF.AddInt( &Conv_GS_exp,  "Conv_GS_exp", -10,0)
+Conv_Scales_exp_id = wamiOF.AddInt( &Conv_Scales_exp,  "Conv_Scales_exp", -5,0)
 #wamiOF.EndHorizontal
-wamiOF.EndBox
-wamiOF.CreateWin
+wamiOF.EndBoxPanel()
+wamiOF.Update()
 
 #--------------------------------------------------
 # Parameters for Javier's code
 #
-wJavOF = ParamWin("Javier PDE Param")
-zoom_id            = wJavOF.AddInt(  zoom,       0,5)
-alphaJ_id          = wJavOF.AddFloat(alfa_Javier,0.01,20)
-T_id               = wJavOF.AddFloat(T,          0.01,2000)
-dt_id              = wJavOF.AddFloat(dt,         0.01,20)
-Nu_id              = wJavOF.AddFloat(Nu,         0.01,10)
-wJavOF.CreateWin
+import = &global::ami_import;
+wJavOF = import->ParamPanel("Javier PDE Param")
+zoom_id            = wJavOF.AddInt( &zoom,  "zoom",        0,5)
+alphaJ_id          = wJavOF.AddFloat( &alfa_Javier,  "alfa_Javier", 0.01,20)
+T_id               = wJavOF.AddFloat( &T,  "T",           0.01,2000)
+dt_id              = wJavOF.AddFloat( &dt,  "dt",          0.01,20)
+Nu_id              = wJavOF.AddFloat( &Nu,  "Nu",          0.01,10)
+wJavOF.Update()
 
 #--------------------------------------------------
 # Parameters for Javier and Agustin's code
 #
-wJAOF = ParamWin("Javier and Agustin PDE Param")
-JA_zoom_id         = wJAOF.AddInt  ( JA_zoom,    0,   5)
-JA_alpha_id        = wJAOF.AddFloat( JA_alfa,    0.01,5)
-JA_beta_id         = wJAOF.AddFloat( JA_beta,    0.01,5)
-JA_gamma_id        = wJAOF.AddFloat( JA_gamma,   0.01,5)
-JA_isotropy_id     = wJAOF.AddFloat( JA_isotropy,0.01,5)
-JA_T_id            = wJAOF.AddFloat( JA_T,       0.01,2000)
-JA_dt_id           = wJAOF.AddFloat( JA_dt,      0.01,20)
-JA_Nu_id           = wJAOF.AddFloat( JA_Nu,      0.01,10)
-wJAOF.CreateWin
+import = &global::ami_import;
+wJAOF = import->ParamPanel("Javier and Agustin PDE Param")
+JA_zoom_id         = wJAOF.AddInt( &JA_zoom,  "JA_zoom",     0,   5)
+JA_alpha_id        = wJAOF.AddFloat( &JA_alfa,  "JA_alfa",     0.01,5)
+JA_beta_id         = wJAOF.AddFloat( &JA_beta,  "JA_beta",     0.01,5)
+JA_gamma_id        = wJAOF.AddFloat( &JA_gamma,  "JA_gamma",    0.01,5)
+JA_isotropy_id     = wJAOF.AddFloat( &JA_isotropy,  "JA_isotropy", 0.01,5)
+JA_T_id            = wJAOF.AddFloat( &JA_T,  "JA_T",        0.01,2000)
+JA_dt_id           = wJAOF.AddFloat( &JA_dt,  "JA_dt",       0.01,20)
+JA_Nu_id           = wJAOF.AddFloat( &JA_Nu,  "JA_Nu",       0.01,10)
+wJAOF.Update()
 
 #--------------------------------------------------
 # Parameters for Vorticity code
 #
-wVort = ParamWin("Vorticity OF param")
-vort_grid_id       = wVort.AddInt(vort_grid,   1,10)
-vort_winsize_id    = wVort.AddInt(vort_winsize,3,10)
-vort_sigma_id      = wVort.AddFloat(vort_sigma,0.1,5)
-vort_alpha_log_id  = wVort.AddFloat(vort_alpha_log,-1,10)
-vort_TOL_log_id    = wVort.AddFloat(vort_TOL_log,-10,-3)
-wVort.CreateWin
+import = &global::ami_import;
+wVort = import->ParamPanel("Vorticity OF param")
+vort_grid_id       = wVort.AddInt( &vort_grid,  "vort_grid",    1,10)
+vort_winsize_id    = wVort.AddInt( &vort_winsize,  "vort_winsize", 3,10)
+vort_sigma_id      = wVort.AddFloat( &vort_sigma,  "vort_sigma", 0.1,5)
+vort_alpha_log_id  = wVort.AddFloat( &vort_alpha_log,  "vort_alpha_log", -1,10)
+vort_TOL_log_id    = wVort.AddFloat( &vort_TOL_log,  "vort_TOL_log", -10,-3)
+wVort.Update()
 
 #--------------------------------------------------
 # Parameters for optic_flow_zoom code
 #
-wOFzoom = ParamWin("Optic Flow PDE 2D parameters")
+import = &global::ami_import;
+wOFzoom = import->ParamPanel("Optic Flow PDE 2D parameters")
 
-OFzoom_sigma_id    = wOFzoom.AddFloat(OFzoom_sigma,0.5,5)
-OFzoom_T_id        = wOFzoom.AddFloat(OFzoom_T,1,1000)
-OFzoom_nbiter_id   = wOFzoom.AddInt(OFzoom_nbiter,1,200)
+OFzoom_sigma_id    = wOFzoom.AddFloat( &OFzoom_sigma,  "OFzoom_sigma", 0.5,5)
+OFzoom_T_id        = wOFzoom.AddFloat( &OFzoom_T,  "OFzoom_T", 1,1000)
+OFzoom_nbiter_id   = wOFzoom.AddInt( &OFzoom_nbiter,  "OFzoom_nbiter", 1,200)
 
-OFzoom_dtype_id    = wOFzoom.AddInt(OFzoom_dtype,0,3)
-OFzoom_alpha_id    = wOFzoom.AddFloat(OFzoom_alpha,0.01,5)
-OFzoom_ht_id       = wOFzoom.AddFloat(OFzoom_ht,0.01,10)
-OFzoom_quantile_id = wOFzoom.AddFloat(OFzoom_quantile,0.01,10)
-OFzoom_zoom_id     = wOFzoom.AddInt(OFzoom_zoom,1,6)
-wOFzoom.CreateWin
+OFzoom_dtype_id    = wOFzoom.AddInt( &OFzoom_dtype,  "OFzoom_dtype", 0,3)
+OFzoom_alpha_id    = wOFzoom.AddFloat( &OFzoom_alpha,  "OFzoom_alpha", 0.01,5)
+OFzoom_ht_id       = wOFzoom.AddFloat( &OFzoom_ht,  "OFzoom_ht", 0.01,10)
+OFzoom_quantile_id = wOFzoom.AddFloat( &OFzoom_quantile,  "OFzoom_quantile", 0.01,10)
+OFzoom_zoom_id     = wOFzoom.AddInt( &OFzoom_zoom,  "OFzoom_zoom", 1,6)
+wOFzoom.Update()
 
 #--------------------------------------------------
 # Parameters for continous Gaussian multiscale
 #
-wGaussSc = ParamWin("Continous Gaussian Scales")
-sigma_min_id      = wGaussSc.AddFloat(sigma_min,0.01,5)
-sigma_max_id      = wGaussSc.AddFloat(sigma_max,0.01,15)
-sigma_N_id        = wGaussSc.AddInt(  sigma_N,  2,20)
-wGaussSc.CreateWin
+import = &global::ami_import;
+wGaussSc = import->ParamPanel("Continous Gaussian Scales")
+sigma_min_id      = wGaussSc.AddFloat( &sigma_min,  "sigma_min", 0.01,5)
+sigma_max_id      = wGaussSc.AddFloat( &sigma_max,  "sigma_max", 0.01,15)
+sigma_N_id        = wGaussSc.AddInt( &sigma_N,  "sigma_N",   2,20)
+wGaussSc.Update()
 
 #--------------------------------------------------
 # Main Parameters
@@ -1128,19 +1135,19 @@ GCPOF_id  = w1.AddButton("Gaussian Continuous Pyramid",        CB_GaussianScales
 ZoomOF_id = w1.AddButton("Parameters for optic_flow_zoom code",CB_OFzoom_param)
 Vort_id   = w1.AddButton("Parameters for Vorticity code",      CB_Vort_param)
 
-Jav_id              = w1.AddBoolean(use_Javier)
-JavAgustin_id       = w1.AddBoolean(use_JavAgustin)
-Zoom_id             = w1.AddBoolean(use_Zoom)
-Vort_id             = w1.AddBoolean(use_Vorticity)
-sym_id              = w1.AddBoolean(symmetric)
-invup_id            = w1.AddInt(inverse_upsample,1,10)
-temp_id             = w1.AddBoolean(temporal)
-global_smoothing_id = w1.AddBoolean(global_smoothing)
-use_splines_id      = w1.AddBoolean(use_splines)
-Gaussian_scales_id  = w1.AddBoolean(Gaussian_scales)
+Jav_id              = w1.AddBoolean( &use_Javier)
+JavAgustin_id       = w1.AddBoolean( &use_JavAgustin)
+Zoom_id             = w1.AddBoolean( &use_Zoom)
+Vort_id             = w1.AddBoolean( &use_Vorticity)
+sym_id              = w1.AddBoolean( &symmetric)
+invup_id            = w1.AddInt( &inverse_upsample,  "inverse_upsample", 1,10)
+temp_id             = w1.AddBoolean( &temporal)
+global_smoothing_id = w1.AddBoolean( &global_smoothing)
+use_splines_id      = w1.AddBoolean( &use_splines)
+Gaussian_scales_id  = w1.AddBoolean( &Gaussian_scales)
 
-w1.BeginBox("Controls")
-w1.BeginHorizontal
+w1.BeginBoxPanel("Controls")
+w1.BeginHorizontal()
 restart_id=w1.AddButton("Restart", CB_Restart)
 iterate_id=w1.AddButton("Iterate", CB_Iterate)
 
@@ -1149,23 +1156,23 @@ iterate_id=w1.AddButton("Iterate", CB_Iterate)
 
 display_id=w1.AddButton("Display", CB_Display)
 stat_id   =w1.AddButton("Statistics", CB_Stats)
-w1.EndHorizontal
+w1.EndHorizontal()
 alfatests_id = w1.AddButton("Alpha Test", CB_AlphaTests)
-w1.EndBox
+w1.EndBoxPanel()
 
 
-w1.CreateWin
-w1.Display
+w1.Update()
+w1.Display()
 
 #-------------------------------------------------
 # Creating parameter window for test on alpha
 #-------------------------------------------------
 w2 = ParamWin("test sequence on alpha")
-alfa_min_id     = w2.AddFloat(alfa_min,0.01,10)
-alfa_max_id     = w2.AddFloat(alfa_max,0.01,20)
-alfa_step_id    = w2.AddFloat(alfa_step,0.01,1)
+alfa_min_id     = w2.AddFloat( &alfa_min,  "alfa_min", 0.01,10)
+alfa_max_id     = w2.AddFloat( &alfa_max,  "alfa_max", 0.01,20)
+alfa_step_id    = w2.AddFloat( &alfa_step,  "alfa_step", 0.01,1)
 alfa_start_id   = w2.AddButton("Run Alpha Test", CB_RunAlphaTests)
-w2.CreateWin
+w2.Update()
 
 
 #LoadImages()

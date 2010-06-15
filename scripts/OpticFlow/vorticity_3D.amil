@@ -108,7 +108,7 @@ proc DrawVorticity( IMAGE _w, NUM _th) {
   vortsurf.SetColors(colors,0,255)
   show vortsurf
   vortsurf.SetColorMaterial(1)
-  vortsurf.Recompute
+  vortsurf.Recompute()
 
   local_new
 }

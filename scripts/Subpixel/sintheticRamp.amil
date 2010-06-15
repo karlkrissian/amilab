@@ -26,10 +26,10 @@ if (!exists(sintheticRampClass)) {
     #-----------------------
 
     proc ::Close() {
-      ::win.HidePanel
+      ::win.HidePanel()
       delvars GetObjectName(::Close)
     }
-    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
     #-----------------------
     
@@ -37,7 +37,7 @@ if (!exists(sintheticRampClass)) {
       eval "if (exists(%1%)) { del %1%; };" % ::class_name 
       ::Close
     }
-    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
 
     #-----------------------
     
@@ -62,7 +62,7 @@ if (!exists(sintheticRampClass)) {
         ::Run
       }
     }
-    ::AutoRun.Comments("Generate the ramp automatically when parameters change.")
+    Comments( ::AutoRun, "Generate the ramp automatically when parameters change.")
     
     #-----------------------
     
@@ -92,20 +92,20 @@ if (!exists(sintheticRampClass)) {
           ::win.SetCallback(&::AutoRun)
           ::win.AddFloat(&::dispy, "y-axis displacement", -50, 50)
           ::win.SetCallback(&::AutoRun)
-          ::win.BeginHorizontal
+          ::win.BeginHorizontal()
           	::win.AddBoolean(&::reload, "Reload")
             ::win.AddButton("Generate",     ::Run)
-          ::win.EndHorizontal
+          ::win.EndHorizontal()
       ::win.EndBook()
       #Save and close buttons
-      ::win.BeginHorizontal
+      ::win.BeginHorizontal()
         ::win.AddButton("Save",      ::Save)
         ::win.AddButton("Close",     ::Close)
         ::win.AddButton("Close All", ::CloseAll)
-      ::win.EndHorizontal
+      ::win.EndHorizontal()
       
       ::win.Update(-1)
-      ::win.Display
+      ::win.Display()
     }
     
     ::Init

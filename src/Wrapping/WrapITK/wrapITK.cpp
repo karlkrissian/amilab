@@ -33,7 +33,7 @@
 #include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "wrapITK.h"
-#include "wrapitkRead_3D_US.h"
+//#include "wrapitkRead_3D_US.h"
 #include "wrapitkRead.h"
 #include "wrapitkRecursiveGaussianImageFilter.h"
 #include "wrapitkIsoContourDist.h"
@@ -57,8 +57,8 @@ void AddWrapITK(){
   Variables::ptr previous_ocontext = Vars.GetObjectContext();
   Vars.SetObjectContext(amiobject->GetContext());
 
-  ADDOBJECTVAR_NAME(C_wrap_imagefunction,"Read_3D_US", 
-                           itkRead_3D_US);
+//  ADDOBJECTVAR_NAME(C_wrap_imagefunction,"", 
+//                           itkRead_3D_US);
   
   ADDOBJECTVAR_NAME(C_wrap_imagefunction, "Read",
                             wrap_itkRead);

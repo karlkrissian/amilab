@@ -1,0 +1,109 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_image_setvoxelsize_vectorial.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the voxel dimensions for vectorial images.
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+OK = 1 # The test was successful
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+dimx=10
+dimy=10
+dimz=1
+dimv=10
+printn "\t\t Dimensions:\n"
+printn "\t\t\t X (dimx)=%1% " % dimx
+printn "\t\t\t Y (dimy)=%1% " % dimy
+printn "\t\t\t Z (dimz)=%1% " % dimz
+printn "\t\t\t V (dimv)=%1% " % dimv
+
+printn "\t\t Create a vectorial image 2D of type FLOAT.\n"
+imgFLOAT = Image(FLOAT,dimx,dimy,dimz,dimv)
+
+printn "\t\t Show info of vectorial image 2D of type FLOAT.\n"
+imgFLOAT.info
+
+vxx=10
+vyy=10
+vzz=1
+printn "\t\t Coordenates:\n"
+printn "\t\t\t X (vxx)=%1% " % vxx
+printn "\t\t\t Y (vyy)=%1% " % vyy
+printn "\t\t\t Z (vzz)=%1% " % vzz
+
+printn "\t\t Set the voxel dimensions:\n"
+imgFLOAT.setvoxelsize(vxx,vyy,vzz)
+
+printn "\t\t Show info of vectorial image 2D of type FLOAT.\n"
+imgFLOAT.info
+
+printn "\t\t Verification:\n"
+x=imgFLOAT.vx
+y=imgFLOAT.vy
+z=imgFLOAT.vz
+printn "\t\t\t imgFLOAT.vx=%1% " % x
+printn "\t\t\t imgFLOAT.vy=%1% " % y
+printn "\t\t\t imgFLOAT.vz=%1% " % z
+
+if (vxx!=x)||(vyy!=y)||(vzz!=z) {
+  OK = 0
+  printn  "\nERROR: Failed the vx, vy and vz operations."
+}
+
+dimz=10
+printn "\t\t Dimensions:\n"
+printn "\t\t\t X (dimx)=%1% " % dimx
+printn "\t\t\t Y (dimy)=%1% " % dimy
+printn "\t\t\t Z (dimz)=%1% " % dimz
+printn "\t\t\t V (dimv)=%1% " % dimv
+
+printn "\t\t Create a vectorial image 3D of type FLOAT.\n"
+imgFLOAT3D = Image(FLOAT,dimx,dimy,dimz,dimv)
+
+printn "\t\t Show info of vectorial image 3D of type FLOAT.\n"
+imgFLOAT3D.info
+
+vxx=10
+vyy=10
+vzz=10
+printn "\t\t Coordenates:\n"
+printn "\t\t\t X (vxx)=%1% " % vxx
+printn "\t\t\t Y (vyy)=%1% " % vyy
+printn "\t\t\t Z (vzz)=%1% " % vzz
+
+printn "\t\t Set the voxel dimensions:\n"
+imgFLOAT3D.setvoxelsize(vxx,vyy,vzz)
+
+printn "\t\t Show info of vectorial image 3D of type FLOAT.\n"
+imgFLOAT3D.info
+
+printn "\t\t Verification:\n"
+x=imgFLOAT3D.vx
+y=imgFLOAT3D.vy
+z=imgFLOAT3D.vz
+printn "\t\t\t imgFLOAT3D.vx=%1% " % x
+printn "\t\t\t imgFLOAT3D.vy=%1% " % y
+printn "\t\t\t imgFLOAT3D.vz=%1% " % z
+
+if (vxx!=x)||(vyy!=y)||(vzz!=z) {
+  OK = 0
+  printn  "\nERROR: Failed the vx, vy and vz operations."
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ctest.PrintTestResult( OK ) 
+
+#quit
+

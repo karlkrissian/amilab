@@ -219,6 +219,10 @@ printn  "\t\t C=B!=A --> C=%1% (NE_OP)" % C
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 #printn  "\n\t\t Pending operations to implement (AMILAB-2.1.0): "
+printn  "\t\t C=sinh A --> Not implemented" 
+printn  "\t\t C=cosh A --> Not implemented"
+printn  "\t\t C=sinh A --> Not implemented" 
+printn  "\t\t C=cosh A --> Not implemented"
 
 #A=(DOUBLE) Pi
 #printn  "\n\t\t A=(DOUBLE) Pi --> A=%1% (ASSIGN_OP)" % A

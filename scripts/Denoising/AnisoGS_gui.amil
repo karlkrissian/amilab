@@ -20,7 +20,7 @@ if (!exists(AnisoGSClass)) {
     ::datacoeff=0.05
     ::niter=INT(5)
     ::use_zoom=UCHAR(0)
-    ::use_zoom.Comments("Allow to process only on the Region-Of-Interest defined by the current zoom in the input image display window")
+    Comments( ::use_zoom, "Allow to process only on the Region-Of-Interest defined by the current zoom in the input image display window")
     ::started=0
   
     ::CreateWindow()
@@ -28,17 +28,17 @@ if (!exists(AnisoGSClass)) {
   
   #----------------------------
   proc ::Close() {
-    ::win.HidePanel
+    ::win.HidePanel()
     delvars GetObjectName(::Close)
   }
-  ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+  Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
   #----------------------------
   proc ::CloseAll() {
     eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
     ::Close
   }
-  ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+  Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
     
   #----------------------------
   
@@ -73,9 +73,9 @@ if (!exists(AnisoGSClass)) {
       ::load_input
     }
     if (::use_zoom)&&(exists(::input_draw)) {
-      global::::input_roi <<= (FLOAT) ::input[::input_draw.GetXmin:::input_draw.GetXmax,\
-                            ::input_draw.GetYmin:::input_draw.GetYmax,\
-                            ::input_draw.GetZmin:::input_draw.GetZmax ]
+      global::::input_roi <<= (FLOAT) ::input[::input_draw.GetXmin():::input_draw.GetXmax(),\
+                            ::input_draw.GetYmin():::input_draw.GetYmax(),\
+                            ::input_draw.GetZmin():::input_draw.GetZmax() ]
     } else {
       ::input_roi <<= (FLOAT) ::input
     }
@@ -109,7 +109,7 @@ if (!exists(AnisoGSClass)) {
     show ::input
     if exists(::res) {
         show ::res
-        ::input_draw.compare(::res_draw)
+        ::input_draw._compare(::res_draw)
     }
   }
   
@@ -138,26 +138,26 @@ if (!exists(AnisoGSClass)) {
         ::win.AddString( &::result_filename,"result filename")
         
         ::win.BeginBoxPanel("Controls")
-          ::win.BeginHorizontal
+          ::win.BeginHorizontal()
             ::win.AddButton("Restart",    ::Restart)
             ::win.AddButton("Filter",     ::Filter)
             ::win.AddButton("Display",    ::Display)
             ::win.AddButton("Save",       ::Save)
-          ::win.EndHorizontal
-        ::win.EndBoxPanel
+          ::win.EndHorizontal()
+        ::win.EndBoxPanel()
       ::win.AddPage("Contour Smoothing")
         ::win.BeginBoxPanel("2D Images")
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
         ::win.BeginBoxPanel("3D Images")
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
 
-    ::win.EndBook
-    ::win.BeginHorizontal
+    ::win.EndBook()
+    ::win.BeginHorizontal()
       ::win.AddButton("Close",          ::Close)
       ::win.AddButton("Close All",          ::CloseAll)
-    ::win.EndHorizontal  
-    ::win.Update
-    ::win.Display
+    ::win.EndHorizontal()  
+    ::win.Update()
+    ::win.Display()
     ::win.Update(-1)
   }
   

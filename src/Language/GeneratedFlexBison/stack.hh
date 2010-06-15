@@ -44,7 +44,7 @@
 namespace yyip {
 
 /* Line 1067 of lalr1.cc  */
-#line 48 "/home/fsantana/proyectos/amilab/trunk/src/Language/GeneratedFlexBison/stack.hh"
+#line 48 "/home/fsantana/proyectos/amilab/branch/src/Language/GeneratedFlexBison/stack.hh"
   template <class T, class S = std::deque<T> >
   class stack
   {
@@ -137,7 +137,7 @@ namespace yyip {
 } // yyip
 
 /* Line 1153 of lalr1.cc  */
-#line 141 "/home/fsantana/proyectos/amilab/trunk/src/Language/GeneratedFlexBison/stack.hh"
+#line 141 "/home/fsantana/proyectos/amilab/branch/src/Language/GeneratedFlexBison/stack.hh"
 
 #endif // not BISON_STACK_HH[]dnl
 

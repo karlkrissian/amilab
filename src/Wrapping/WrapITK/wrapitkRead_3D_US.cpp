@@ -10,6 +10,7 @@
 #endif // AMI_USE_ITK
 
 #include "wrapfunctions.hpp" 
+#include "inrimage.hpp"
 
 
 /** Read a 3D Flow from an ASCII file **/

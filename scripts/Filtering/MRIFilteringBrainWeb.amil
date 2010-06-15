@@ -221,26 +221,27 @@ proc CB_BW_Stats_Fuzzy_Ref() {
 # Add a Gui to compute statistics of the results
 
 proc CB_BW_FilterGui() {
-  NRAD_win.Display
+  NRAD_win.Display()
 }
 
 proc BrainWeb_CreateWindow() {
     global
 print "1\n"
     # parameters window
-    BW_win = ParamWin("Computing Statistics for Filtering MRI BrainWeb Simulation")
+    import = &global::ami_import;
+    BW_win = import->ParamPanel("Computing Statistics for Filtering MRI BrainWeb Simulation")
     
-    BW_win.BeginBox("Controls")
+    BW_win.BeginBoxPanel("Controls")
         #BW_win.BeginHorizontal
             BW_stats_id     = BW_win.AddButton("Compute Statistics", CB_BW_Stats)
             BW_stats_fuzzy_id = BW_win.AddButton("Compute Statistics on Fuzzy Models", CB_BW_Stats_Fuzzy)
             BW_stats_fuzzy_id = BW_win.AddButton("Compute Statistics on Fuzzy Models & Ref", CB_BW_Stats_Fuzzy_Ref)
             BW_filter_id    = BW_win.AddButton("Filter Gui", CB_BW_FilterGui)
         #BW_win.EndHorizontal
-    BW_win.EndBox
+    BW_win.EndBoxPanel()
     
-    BW_win.CreateWin
-    BW_win.Display
+    BW_win.Update()
+    BW_win.Display()
   local
 print "2\n"
 }

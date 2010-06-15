@@ -25,6 +25,8 @@
 #endif
 
 #include "wx/treectrl.h"
+#include "treelistctrl.h"
+
 #include <boost/weak_ptr.hpp>
 
 class BasicVariable;
@@ -48,7 +50,8 @@ private:
 };
 
 //=======================================================
-class myTreeCtrl: public wxTreeCtrl
+//class myTreeCtrl: public wxTreeCtrl
+class myTreeCtrl: public wxTreeListCtrl
 {
 public: 
   myTreeCtrl(wxWindow* parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxTR_HAS_BUTTONS, const wxValidator& validator = wxDefaultValidator, const wxString& name = _T("treeCtrl"));
