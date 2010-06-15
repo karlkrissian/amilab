@@ -55,6 +55,12 @@
 #endif 
 
 #include <limits>
+#ifdef min
+  #undef min
+#endif
+#ifdef max
+  #undef max
+#endif
 
 template<typename T>
 inline bool ispositivevalue(const T& value)

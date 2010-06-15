@@ -58,7 +58,7 @@ extern yyip::Driver GB_driver;
 //------------------------------------------------------
 
 /// Copy contents to new variable
-template<> BasicVariable::ptr Variable<AMIObject>::NewCopy() const
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::NewCopy() const
 {
   APPLY_MEMBER_NOPARAM("copy", varres)
   if (varres.get())
@@ -70,7 +70,7 @@ template<> BasicVariable::ptr Variable<AMIObject>::NewCopy() const
 
 
 /// new variable as a reference to the current variable
-template<> BasicVariable::ptr Variable<AMIObject>::NewReference() const
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::NewReference() const
 {
   std::string resname = _name+"_ref";
   ptr ref(new Variable<AMIObject>(resname,_pointer));
@@ -88,43 +88,43 @@ template<> BasicVariable::ptr Variable<AMIObject>::NewReference() const
 
 /*
 /// +a
-template<> BasicVariable::ptr Variable<AMIObject>::operator +()
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator +()
 {
   return NewReference();
 }
 
 /// prefix ++ operator ++a
-template<> BasicVariable::ptr Variable<AMIObject>::operator ++()
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator ++()
 {
   std::cout << "**" << endl;
   RETURN_VARPTR(AMIObject,++RefValue());
 }
 
 /// postfix ++ operator a++
-template<> BasicVariable::ptr Variable<AMIObject>::operator ++(int)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator ++(int)
 {
   std::cout << "**" << endl;
   RETURN_VARPTR(AMIObject,RefValue()++);
 }
 
 /// -a
-template<> BasicVariable::ptr Variable<AMIObject>::operator -()
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator -()
 {
   UNARYOP_IMAGE(this->Pointer(), -); 
 }
 
 /// prefix -- operator --a
-template<> BasicVariable::ptr Variable<AMIObject>::operator --()
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator --()
 {  RETURN_VARPTR(AMIObject,--RefValue()); }
 
 /// postfix -- operator a--
-template<> BasicVariable::ptr Variable<AMIObject>::operator --(int)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator --(int)
 {  RETURN_VARPTR(AMIObject,RefValue()--);  }
 
 
 
 /// a+b
-template<> BasicVariable::ptr Variable<AMIObject>::operator +(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator +(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
     IMAGE_OP_EXPR(Pointer(),+,b->GetValueAsDouble());
@@ -140,7 +140,7 @@ template<> BasicVariable::ptr Variable<AMIObject>::operator +(const BasicVariabl
 }
 
 /// a+=b
-template<> BasicVariable::ptr Variable<AMIObject>::operator +=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator +=(const BasicVariable::ptr& b)
 { 
 //  if (b->IsNumeric()) {
 //    RefValue() += b->GetValueAsDouble();
@@ -159,7 +159,7 @@ template<> BasicVariable::ptr Variable<AMIObject>::operator +=(const BasicVariab
 }
 
 /// a-b
-template<> BasicVariable::ptr Variable<AMIObject>::operator -(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator -(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
     IMAGE_OP_EXPR(Pointer(),-,b->GetValueAsDouble());
@@ -176,7 +176,7 @@ template<> BasicVariable::ptr Variable<AMIObject>::operator -(const BasicVariabl
 
 /*
 /// a-=b
-template<> BasicVariable::ptr Variable<AMIObject>::operator -=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator -=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RefValue() -= b->GetValueAsDouble();
@@ -186,7 +186,7 @@ template<> BasicVariable::ptr Variable<AMIObject>::operator -=(const BasicVariab
 }
 
 /// a*b
-template<> BasicVariable::ptr Variable<AMIObject>::operator *(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator *(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
     IMAGE_OP_EXPR(Pointer(),*,b->GetValueAsDouble());
@@ -202,7 +202,7 @@ template<> BasicVariable::ptr Variable<AMIObject>::operator *(const BasicVariabl
 }
 
 /// a*=b
-template<> BasicVariable::ptr Variable<AMIObject>::operator *=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator *=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RefValue() *= b->GetValueAsDouble();
@@ -212,7 +212,7 @@ template<> BasicVariable::ptr Variable<AMIObject>::operator *=(const BasicVariab
 }
 
 /// a/b
-template<> BasicVariable::ptr Variable<AMIObject>::operator /(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator /(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
     IMAGE_OP_EXPR(Pointer(),/,b->GetValueAsDouble());
@@ -228,7 +228,7 @@ template<> BasicVariable::ptr Variable<AMIObject>::operator /(const BasicVariabl
 }
 
 /// a/=b
-template<> BasicVariable::ptr Variable<AMIObject>::operator /=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator /=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RefValue() /= b->GetValueAsDouble();
@@ -238,7 +238,7 @@ template<> BasicVariable::ptr Variable<AMIObject>::operator /=(const BasicVariab
 }
 
 /// a%b
-template<> BasicVariable::ptr Variable<AMIObject>::operator %(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator %(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
     RETURN_VARPTR(AMIObject, ((int) round(Value())) % ((int) round(b->GetValueAsDouble())));
@@ -248,7 +248,7 @@ template<> BasicVariable::ptr Variable<AMIObject>::operator %(const BasicVariabl
 }
 
 /// a%=b
-template<> BasicVariable::ptr Variable<AMIObject>::operator %=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator %=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RefValue() =  ((int) round(Value())) % ((int) round(b->GetValueAsDouble()));
@@ -260,7 +260,7 @@ template<> BasicVariable::ptr Variable<AMIObject>::operator %=(const BasicVariab
 //  Comparison Operators
 
 /// a<b
-template<> BasicVariable::ptr Variable<AMIObject>::operator <(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator <(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     IMAGE_OP_EXPR(Pointer(),<,b->GetValueAsDouble());
@@ -276,7 +276,7 @@ template<> BasicVariable::ptr Variable<AMIObject>::operator <(const BasicVariabl
 }
 
 /// a<=b
-template<> BasicVariable::ptr Variable<AMIObject>::operator <=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator <=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     IMAGE_OP_EXPR(Pointer(),<=,b->GetValueAsDouble());
@@ -292,7 +292,7 @@ template<> BasicVariable::ptr Variable<AMIObject>::operator <=(const BasicVariab
 }
 
 /// a>b
-template<> BasicVariable::ptr Variable<AMIObject>::operator >(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator >(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     IMAGE_OP_EXPR(Pointer(),>,b->GetValueAsDouble());
@@ -308,7 +308,7 @@ template<> BasicVariable::ptr Variable<AMIObject>::operator >(const BasicVariabl
 }
 
 /// a>=b
-template<> BasicVariable::ptr Variable<AMIObject>::operator >=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator >=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     IMAGE_OP_EXPR(Pointer(),>=,b->GetValueAsDouble());
@@ -324,7 +324,7 @@ template<> BasicVariable::ptr Variable<AMIObject>::operator >=(const BasicVariab
 }
 
 /// a!=b
-template<> BasicVariable::ptr Variable<AMIObject>::operator !=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator !=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     IMAGE_OP_EXPR(Pointer(),!=,b->GetValueAsDouble());
@@ -340,7 +340,7 @@ template<> BasicVariable::ptr Variable<AMIObject>::operator !=(const BasicVariab
 }
 
 /// a==b
-template<> BasicVariable::ptr Variable<AMIObject>::operator ==(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator ==(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     IMAGE_OP_EXPR(Pointer(),==,b->GetValueAsDouble());
@@ -359,12 +359,12 @@ template<> BasicVariable::ptr Variable<AMIObject>::operator ==(const BasicVariab
 // Logical operators
 
 /*
-template<> BasicVariable::ptr Variable<AMIObject>::operator !() 
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator !() 
 {
   RETURN_VARPTR(AMIObject,!(Value()>0.5));
 }
 
-template<> BasicVariable::ptr Variable<AMIObject>::operator &&(const BasicVariable::ptr& b) 
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator &&(const BasicVariable::ptr& b) 
 {
   if (b->IsNumeric()) {
     IMAGE_OP_EXPR(Pointer(),==,b->GetValueAsDouble());
@@ -374,7 +374,7 @@ template<> BasicVariable::ptr Variable<AMIObject>::operator &&(const BasicVariab
   return this->NewReference(); 
 }
 
-template<> BasicVariable::ptr Variable<AMIObject>::operator ||(const BasicVariable::ptr& b) 
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator ||(const BasicVariable::ptr& b) 
 {
   if (b->IsNumeric()) {
     RETURN_VARPTR(AMIObject,Value() || (bool) (b->GetValueAsDouble()>0.5));
@@ -384,7 +384,7 @@ template<> BasicVariable::ptr Variable<AMIObject>::operator ||(const BasicVariab
 }
 
 /// a^b
-template<> BasicVariable::ptr Variable<AMIObject>::operator ^(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator ^(const BasicVariable::ptr& b)
 { 
   if (b->Type()==type_image) {
     DYNAMIC_CAST_VARIABLE(AMIObject,b,var_im2);
@@ -398,7 +398,7 @@ template<> BasicVariable::ptr Variable<AMIObject>::operator ^(const BasicVariabl
 // Mathematical functions
 
 #define VAR_IMPL_FUNC(type,fname,func) \
-template<> BasicVariable::ptr Variable<type>::m_##fname() \
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<type>::m_##fname() \
 { \
   UNARYOP_IMAGE(this->Pointer(), func); \
 }
@@ -418,7 +418,7 @@ VAR_IMPL_FUNC(AMIObject,  ln,   log)
 VAR_IMPL_FUNC(AMIObject,  sqrt, sqrt)
 
 //  norm(image)
-template<> BasicVariable::ptr Variable<AMIObject>::m_norm() 
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::m_norm() 
 { 
   AMIObject::ptr res ( Norm(*Pointer()));
   if (!res.get())
@@ -428,7 +428,7 @@ template<> BasicVariable::ptr Variable<AMIObject>::m_norm()
 //VAR_IMPL_FUNC(AMIObject,  norm, fabs)
 
 // Image Pixel Type Cast
-template<> BasicVariable::ptr Variable<AMIObject>::BasicCast(const int& type)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::BasicCast(const int& type)
 {
   AMIObject::ptr res  ( new AMIObject( (WORDTYPE) type, "castimage.ami.gz", Pointer().get()));
   (*res) = (*Pointer());
@@ -572,7 +572,7 @@ BasicVariable::ptr Variable<AMIObject>::operator =(const BasicVariable::ptr& b)
 */
 
 
-template<> BasicVariable::ptr Variable<AMIObject>::operator =(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator =(const BasicVariable::ptr& b)
 {
   CLASS_MESSAGE("start");
   APPLY_MEMBER_PARAM1("assign", b, varres)
@@ -584,7 +584,7 @@ template<> BasicVariable::ptr Variable<AMIObject>::operator =(const BasicVariabl
 
 
 // TODO: put this code within a macro???
-template<> BasicVariable::ptr Variable<AMIObject>::left_assign(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::left_assign(const BasicVariable::ptr& b)
 {
   APPLY_MEMBER_PARAM1("left_assign", b, varres)
   if (varres.get())

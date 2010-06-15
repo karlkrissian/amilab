@@ -494,6 +494,7 @@ SET(amilab_ownlibs
   WrapWII
   WrapITK
   AMILab
+  Language
   AMImage
   Contours
   Coordinates

@@ -1184,7 +1184,7 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
   _var_tree->SetItemFont(vartree_others,root_font);
   _var_tree->SetItemTextColour(vartree_others,vartype_colour);
 
-  root_font.SetStyle(wxFONTFAMILY_MODERN);
+  root_font.SetFamily(wxFONTFAMILY_MODERN);
 //wxFONTSTYLE_NORMAL);
   root_font.SetWeight(wxNORMAL);
   wxTreeItemId itemid;

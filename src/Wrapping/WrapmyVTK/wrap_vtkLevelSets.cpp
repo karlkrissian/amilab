@@ -250,7 +250,7 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_InitWithThreshold::CallMember( P
 
   boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->_vtkLevelSets);
 
-  InrImage* out;
+  //InrImage* out;
   //float tr_x,tr_y,tr_z;
 
   // Initialize the evolution

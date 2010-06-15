@@ -119,7 +119,7 @@ VAR_DECL_FUNC(int,sqrt)
 
 /// Cast to a type based on its name as a string
 template<>
-BasicVariable::ptr Variable<double>::TryCast(const std::string&) const;
+BasicVariable::ptr Variable<unsigned char>::TryCast(const std::string&) const;
 
 template<> BasicVariable::ptr Variable<unsigned char>::BasicCast(const int& type);
 

@@ -28,7 +28,7 @@
 #include <stdio.h>
 #include <math.h>
 #define ABS(x) ((x)>0?(x):-(x))
-
+#include "CurvaturasPrincipales.hpp"
 
 /********************************************************************/
 /*** CALCULO DEL autovector0 DE AUTOVALOR 0 de UNA MATRIZ 2x2   ******/

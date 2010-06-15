@@ -2630,12 +2630,12 @@ DessinImage:: DessinImage(
   
   //Add toolbars to manager
   manager.AddPane(ViewStyle, wxAuiPaneInfo().
-                  Name(wxT("ViewerToolbar")).Caption(wxT("Viewer style toolbar")).
+                  Name(wxT("ViewerToolbar1")).Caption(wxT("Viewer style toolbar")).
                   ToolbarPane().Top().Row(2).
                   LeftDockable(false).RightDockable(false));
   
   manager.AddPane(ViewParameters, wxAuiPaneInfo().
-                  Name(wxT("ViewerToolbar")).Caption(wxT("Viewer parameters toolbar")).
+                  Name(wxT("ViewerToolbar2")).Caption(wxT("Viewer parameters toolbar")).
                   ToolbarPane().Top().Row(1).
                   LeftDockable(false).RightDockable(false));
     

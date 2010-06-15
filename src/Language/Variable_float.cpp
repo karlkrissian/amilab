@@ -49,7 +49,7 @@
 //------------------------------------------------------
 
 /// Copy contents to new variable
-template<> BasicVariable::ptr Variable<float>::NewCopy() const
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<float>::NewCopy() const
 {
   float_ptr newval( new float(Value()));
   Variable<float>::ptr newvar(new Variable<float>(newval));
@@ -60,39 +60,39 @@ template<> BasicVariable::ptr Variable<float>::NewCopy() const
 // Arithmetic operators
 
 /// +a
-template<> BasicVariable::ptr Variable<float>::operator +()
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<float>::operator +()
 {  RETURN_VARPTR(float,Value());}
 
 /// prefix ++ operator ++a
-template<> BasicVariable::ptr Variable<float>::operator ++()
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<float>::operator ++()
 {
   std::cout << "**" << endl;
   RETURN_VARPTR(float,++RefValue());
 }
 
 /// postfix ++ operator a++
-template<> BasicVariable::ptr Variable<float>::operator ++(int)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<float>::operator ++(int)
 {
   std::cout << "**" << endl;
   RETURN_VARPTR(float,RefValue()++);
 }
 
 /// -a
-template<> BasicVariable::ptr Variable<float>::operator -()
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<float>::operator -()
 {   RETURN_VARPTR(float,-Value());}
 
 /// prefix -- operator --a
-template<> BasicVariable::ptr Variable<float>::operator --()
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<float>::operator --()
 {  RETURN_VARPTR(float,--RefValue()); }
 
 /// postfix -- operator a--
-template<> BasicVariable::ptr Variable<float>::operator --(int)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<float>::operator --(int)
 {  RETURN_VARPTR(float,RefValue()--);  }
 
 
 
 /// a+b
-template<> BasicVariable::ptr Variable<float>::operator +(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<float>::operator +(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
     RETURN_VARPTR(float,Value()+b->GetValueAsDouble());
@@ -108,7 +108,7 @@ template<> BasicVariable::ptr Variable<float>::operator +(const BasicVariable::p
 }
 
 /// a+=b
-template<> BasicVariable::ptr Variable<float>::operator +=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<float>::operator +=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RefValue() += b->GetValueAsDouble();
@@ -118,7 +118,7 @@ template<> BasicVariable::ptr Variable<float>::operator +=(const BasicVariable::
 }
 
 /// a-b
-template<> BasicVariable::ptr Variable<float>::operator -(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<float>::operator -(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
     RETURN_VARPTR(float,Value()-b->GetValueAsDouble());
@@ -134,7 +134,7 @@ template<> BasicVariable::ptr Variable<float>::operator -(const BasicVariable::p
 }
 
 /// a-=b
-template<> BasicVariable::ptr Variable<float>::operator -=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<float>::operator -=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RefValue() -= b->GetValueAsDouble();
@@ -144,7 +144,7 @@ template<> BasicVariable::ptr Variable<float>::operator -=(const BasicVariable::
 }
 
 /// a*b
-template<> BasicVariable::ptr Variable<float>::operator *(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<float>::operator *(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
     RETURN_VARPTR(float,Value()*b->GetValueAsDouble());
@@ -160,7 +160,7 @@ template<> BasicVariable::ptr Variable<float>::operator *(const BasicVariable::p
 }
 
 /// a*=b
-template<> BasicVariable::ptr Variable<float>::operator *=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<float>::operator *=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RefValue() *= b->GetValueAsDouble();
@@ -170,7 +170,7 @@ template<> BasicVariable::ptr Variable<float>::operator *=(const BasicVariable::
 }
 
 /// a/b
-template<> BasicVariable::ptr Variable<float>::operator /(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<float>::operator /(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
     RETURN_VARPTR(float,Value()/b->GetValueAsDouble());
@@ -186,7 +186,7 @@ template<> BasicVariable::ptr Variable<float>::operator /(const BasicVariable::p
 }
 
 /// a/=b
-template<> BasicVariable::ptr Variable<float>::operator /=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<float>::operator /=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RefValue() /= b->GetValueAsDouble();
@@ -196,7 +196,7 @@ template<> BasicVariable::ptr Variable<float>::operator /=(const BasicVariable::
 }
 
 /// a%b
-template<> BasicVariable::ptr Variable<float>::operator %(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<float>::operator %(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
     RETURN_VARPTR(float, ((int) round(Value())) % ((int) round(b->GetValueAsDouble())));
@@ -206,7 +206,7 @@ template<> BasicVariable::ptr Variable<float>::operator %(const BasicVariable::p
 }
 
 /// a%=b
-template<> BasicVariable::ptr Variable<float>::operator %=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<float>::operator %=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RefValue() =  ((int) round(Value())) % ((int) round(b->GetValueAsDouble()));
@@ -218,7 +218,7 @@ template<> BasicVariable::ptr Variable<float>::operator %=(const BasicVariable::
 //  Comparison Operators
 
 /// a<b
-template<> BasicVariable::ptr Variable<float>::operator <(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<float>::operator <(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RETURN_VARPTR(float,Value()<b->GetValueAsDouble());
@@ -228,7 +228,7 @@ template<> BasicVariable::ptr Variable<float>::operator <(const BasicVariable::p
 }
 
 /// a<=b
-template<> BasicVariable::ptr Variable<float>::operator <=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<float>::operator <=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RETURN_VARPTR(float,Value()<=b->GetValueAsDouble());
@@ -238,7 +238,7 @@ template<> BasicVariable::ptr Variable<float>::operator <=(const BasicVariable::
 }
 
 /// a>b
-template<> BasicVariable::ptr Variable<float>::operator >(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<float>::operator >(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RETURN_VARPTR(float,Value()>b->GetValueAsDouble());
@@ -248,7 +248,7 @@ template<> BasicVariable::ptr Variable<float>::operator >(const BasicVariable::p
 }
 
 /// a>=b
-template<> BasicVariable::ptr Variable<float>::operator >=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<float>::operator >=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RETURN_VARPTR(float,Value()>=b->GetValueAsDouble());
@@ -258,7 +258,7 @@ template<> BasicVariable::ptr Variable<float>::operator >=(const BasicVariable::
 }
 
 /// a!=b
-template<> BasicVariable::ptr Variable<float>::operator !=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<float>::operator !=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RETURN_VARPTR(float,Value()!=b->GetValueAsDouble());
@@ -269,7 +269,7 @@ template<> BasicVariable::ptr Variable<float>::operator !=(const BasicVariable::
 
 
 /// a==b
-template<> BasicVariable::ptr Variable<float>::operator ==(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<float>::operator ==(const BasicVariable::ptr& b)
 { 
   //std::cout << __func__ << std::endl;
   if (b->IsNumeric()) {
@@ -281,12 +281,12 @@ template<> BasicVariable::ptr Variable<float>::operator ==(const BasicVariable::
 
 // Logical operators
 
-template<> BasicVariable::ptr Variable<float>::operator !() 
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<float>::operator !() 
 {
   RETURN_VARPTR(float,!(Value()>0.5));
 }
 
-template<> BasicVariable::ptr Variable<float>::operator &&(const BasicVariable::ptr& b) 
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<float>::operator &&(const BasicVariable::ptr& b) 
 {
   if (b->IsNumeric()) {
     RETURN_VARPTR(float,(Value()>0.5)&& (bool) (b->GetValueAsDouble()>0.5));
@@ -295,7 +295,7 @@ template<> BasicVariable::ptr Variable<float>::operator &&(const BasicVariable::
   return this->NewReference(); 
 }
 
-template<> BasicVariable::ptr Variable<float>::operator ||(const BasicVariable::ptr& b) 
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<float>::operator ||(const BasicVariable::ptr& b) 
 {
   if (b->IsNumeric()) {
     RETURN_VARPTR(float,(Value()>0.5) || (bool) (b->GetValueAsDouble()>0.5));
@@ -306,7 +306,7 @@ template<> BasicVariable::ptr Variable<float>::operator ||(const BasicVariable::
 
 // Mathematical functions
 #define VAR_IMPL_FUNC(type,fname,func) \
-template<> BasicVariable::ptr Variable<type>::m_##fname() \
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<type>::m_##fname() \
 { \
     RETURN_VARPTR(float, func(Value())); \
 }
@@ -329,7 +329,7 @@ VAR_IMPL_FUNC(float,  sqrt, sqrt)
 
 
 //---------------------------------------------------
-template<>
+template<> AMI_DLLEXPORT
 BasicVariable::ptr Variable<float>::TryCast(
     const std::string& type_string) const
 {
@@ -360,7 +360,7 @@ BasicVariable::ptr Variable<float>::TryCast(
 
 
 //
-template<> BasicVariable::ptr Variable<float>::BasicCast(const int& type)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<float>::BasicCast(const int& type)
 {
 
   try
@@ -393,7 +393,7 @@ template<> BasicVariable::ptr Variable<float>::BasicCast(const int& type)
 }
 
 //
-template<>
+template<> AMI_DLLEXPORT
 BasicVariable::ptr Variable<float>::TernaryCondition(const BasicVariable::ptr& v1, const BasicVariable::ptr&v2)
 {
 
@@ -409,7 +409,7 @@ BasicVariable::ptr Variable<float>::TernaryCondition(const BasicVariable::ptr& v
 }
 
 
-template<> 
+template<> AMI_DLLEXPORT 
 BasicVariable::ptr Variable<float>::operator =(const BasicVariable::ptr& b)
 {
   if (IsNumeric()) {
