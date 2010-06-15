@@ -17,6 +17,7 @@
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "DefineClass.hpp"
+#include "ami_object.h"
 #include <vector>
 
 

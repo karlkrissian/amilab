@@ -1038,6 +1038,7 @@ BasicVariable::ptr Wrap_SmoothLinesToSplines(ParamList* p)
     float samplingstep = 0.1f;
     int n=0;
 
+  using namespace amilab;
   FUNC_GET_OBJECT_PARAM(SurfacePoly,varsurf,objsurf);
   if (!objsurf.get()) HelpAndReturnVarPtr;
   if (!get_val_param<float>(    samplingstep, p, n)) HelpAndReturnVarPtr;

@@ -519,7 +519,8 @@ void FindAndReplace::OnPrevButtonClick (wxCommandEvent &event) {
     }
   }
 }
-
+#include <iostream>
+using namespace std;
 //-->On function key down<--
 void FindAndReplace::OnFunKeyDown (wxKeyEvent &event) {
   //std::cout << __func__ << std::endl;
