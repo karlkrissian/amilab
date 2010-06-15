@@ -25,7 +25,7 @@
 #include "wx/wx.h"
 #endif
 
-#include "wx/msw/winundef.h"
+//#include "wx/msw/winundef.h"
 #include "wx/window.h"
 #include <wx/scrolwin.h>
 

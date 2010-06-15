@@ -14,6 +14,7 @@
 #define _wrap_varvector_h_
 
 #include "wrapfunction_class.h"
+#include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "DefineClass.hpp"
@@ -86,9 +87,33 @@ AMIObject::ptr AddWrap_VarVector(  WrapClass_VarVector::ptr& this_ptr);
  */
 Variable<AMIObject>::ptr CreateVar_VarVector( VarVector* si);
 
+
+/*
+#define ADD_CLASS_FUNCTION2(methodname,description_str) \
+/**\
+ * description_str\
+ ** / \
+class wrap_##methodname : public WrapClassMember { \
+  public: \
+    wrap_##methodname()  \
+    { \
+      functionname = #methodname; \
+      description=description_str; \
+      SetParametersComments(); \
+    } \
+    void SetParametersComments(); \
+    BasicVariable::ptr CallMember(ParamList*); \
+}; \
+\
+inline void AddVar_##methodname(  Variables::ptr& _context, const std::string& newname = #methodname) {\
+  boost::shared_ptr<WrapClassMember> tmp( new wrap_##methodname());\
+  _context->AddVar<WrapClassMember>(newname, tmp, _context); \
+}
+*/
+
 /** Method that adds wrapping of VarVector 
  */
-ADD_CLASS_FUNCTION( VarVector, "Wrapping of std::vector<BasicVariable::ptr>." );
+ADD_CLASS_FUNCTION(VarVector,"Wrapping of std::vector<BasicVariable::ptr>." );
 
 
 

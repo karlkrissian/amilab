@@ -85,9 +85,9 @@ class wrap_##methodname : public WrapClassMember { \
     BasicVariable::ptr CallMember(ParamList*); \
 }; \
 \
-inline void AddVar_##methodname(  Variables::ptr& context, const std::string& newname = #methodname) {\
+inline void AddVar_##methodname(  Variables::ptr& _context, const std::string& newname = #methodname) {\
   boost::shared_ptr<WrapClassMember> tmp( new wrap_##methodname());\
-  context->AddVar<WrapClassMember>(newname, tmp, context); \
+  _context->AddVar<WrapClassMember>(newname, tmp, _context); \
 }
 
 
