@@ -15,6 +15,15 @@
 
 #include "inrimage.hpp"
 
+// TODO deal with this problem once and for all
+#include <limits>
+#ifdef min
+  #undef min
+#endif
+#ifdef max
+  #undef max
+#endif
+
 //
 // image extent can work in float or in integer limits
 //

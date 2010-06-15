@@ -49,7 +49,7 @@
 //------------------------------------------------------
 
 /// Copy contents to new variable
-template<> BasicVariable::ptr Variable<unsigned char>::NewCopy() const
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::NewCopy() const
 {
   uchar_ptr newval( new unsigned char(Value()));
   Variable<unsigned char>::ptr newvar(new Variable<unsigned char>(newval));
@@ -60,37 +60,37 @@ template<> BasicVariable::ptr Variable<unsigned char>::NewCopy() const
 // Arithmetic operators
 
 /// +a
-template<> BasicVariable::ptr Variable<unsigned char>::operator +()
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator +()
 {  RETURN_VARPTR(unsigned char,Value());}
 
 /// prefix ++ operator ++a
-template<> BasicVariable::ptr Variable<unsigned char>::operator ++()
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator ++()
 {
   RETURN_VARPTR(unsigned char,++RefValue());
 }
 
 /// postfix ++ operator a++
-template<> BasicVariable::ptr Variable<unsigned char>::operator ++(int)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator ++(int)
 {
   RETURN_VARPTR(unsigned char,RefValue()++);
 }
 
 /// -a
-template<> BasicVariable::ptr Variable<unsigned char>::operator -()
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator -()
 {   RETURN_VARPTR(unsigned char,-Value());}
 
 /// prefix -- operator --a
-template<> BasicVariable::ptr Variable<unsigned char>::operator --()
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator --()
 {  RETURN_VARPTR(unsigned char,--RefValue()); }
 
 /// postfix -- operator a--
-template<> BasicVariable::ptr Variable<unsigned char>::operator --(int)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator --(int)
 {  RETURN_VARPTR(unsigned char,RefValue()--);  }
 
 
 
 /// a+b
-template<> BasicVariable::ptr Variable<unsigned char>::operator +(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator +(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
     RETURN_VARPTR(unsigned char,Value()+b->GetValueAsDouble());
@@ -106,7 +106,7 @@ template<> BasicVariable::ptr Variable<unsigned char>::operator +(const BasicVar
 }
 
 /// a+=b
-template<> BasicVariable::ptr Variable<unsigned char>::operator +=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator +=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RefValue() += b->GetValueAsDouble();
@@ -116,7 +116,7 @@ template<> BasicVariable::ptr Variable<unsigned char>::operator +=(const BasicVa
 }
 
 /// a-b
-template<> BasicVariable::ptr Variable<unsigned char>::operator -(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator -(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
     RETURN_VARPTR(unsigned char,Value()-b->GetValueAsDouble());
@@ -132,7 +132,7 @@ template<> BasicVariable::ptr Variable<unsigned char>::operator -(const BasicVar
 }
 
 /// a-=b
-template<> BasicVariable::ptr Variable<unsigned char>::operator -=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator -=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RefValue() -= b->GetValueAsDouble();
@@ -142,7 +142,7 @@ template<> BasicVariable::ptr Variable<unsigned char>::operator -=(const BasicVa
 }
 
 /// a*b
-template<> BasicVariable::ptr Variable<unsigned char>::operator *(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator *(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
     RETURN_VARPTR(unsigned char,Value()*b->GetValueAsDouble());
@@ -158,7 +158,7 @@ template<> BasicVariable::ptr Variable<unsigned char>::operator *(const BasicVar
 }
 
 /// a*=b
-template<> BasicVariable::ptr Variable<unsigned char>::operator *=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator *=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RefValue() *= b->GetValueAsDouble();
@@ -168,7 +168,7 @@ template<> BasicVariable::ptr Variable<unsigned char>::operator *=(const BasicVa
 }
 
 /// a/b
-template<> BasicVariable::ptr Variable<unsigned char>::operator /(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator /(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
     RETURN_VARPTR(unsigned char,Value()/b->GetValueAsDouble());
@@ -184,7 +184,7 @@ template<> BasicVariable::ptr Variable<unsigned char>::operator /(const BasicVar
 }
 
 /// a/=b
-template<> BasicVariable::ptr Variable<unsigned char>::operator /=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator /=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RefValue() /= b->GetValueAsDouble();
@@ -194,7 +194,7 @@ template<> BasicVariable::ptr Variable<unsigned char>::operator /=(const BasicVa
 }
 
 /// a%b
-template<> BasicVariable::ptr Variable<unsigned char>::operator %(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator %(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
     RETURN_VARPTR(unsigned char, ((int) round(Value())) % ((int) round(b->GetValueAsDouble())));
@@ -204,7 +204,7 @@ template<> BasicVariable::ptr Variable<unsigned char>::operator %(const BasicVar
 }
 
 /// a%=b
-template<> BasicVariable::ptr Variable<unsigned char>::operator %=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator %=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RefValue() =  ((int) round(Value())) % ((int) round(b->GetValueAsDouble()));
@@ -216,7 +216,7 @@ template<> BasicVariable::ptr Variable<unsigned char>::operator %=(const BasicVa
 //  Comparison Operators
 
 /// a<b
-template<> BasicVariable::ptr Variable<unsigned char>::operator <(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator <(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RETURN_VARPTR(unsigned char,Value()<b->GetValueAsDouble());
@@ -226,7 +226,7 @@ template<> BasicVariable::ptr Variable<unsigned char>::operator <(const BasicVar
 }
 
 /// a<=b
-template<> BasicVariable::ptr Variable<unsigned char>::operator <=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator <=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RETURN_VARPTR(unsigned char,Value()<=b->GetValueAsDouble());
@@ -236,7 +236,7 @@ template<> BasicVariable::ptr Variable<unsigned char>::operator <=(const BasicVa
 }
 
 /// a>b
-template<> BasicVariable::ptr Variable<unsigned char>::operator >(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator >(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RETURN_VARPTR(unsigned char,Value()>b->GetValueAsDouble());
@@ -246,7 +246,7 @@ template<> BasicVariable::ptr Variable<unsigned char>::operator >(const BasicVar
 }
 
 /// a>=b
-template<> BasicVariable::ptr Variable<unsigned char>::operator >=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator >=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RETURN_VARPTR(unsigned char,Value()>=b->GetValueAsDouble());
@@ -256,7 +256,7 @@ template<> BasicVariable::ptr Variable<unsigned char>::operator >=(const BasicVa
 }
 
 /// a!=b
-template<> BasicVariable::ptr Variable<unsigned char>::operator !=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator !=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RETURN_VARPTR(unsigned char,Value()!=b->GetValueAsDouble());
@@ -267,7 +267,7 @@ template<> BasicVariable::ptr Variable<unsigned char>::operator !=(const BasicVa
 
 
 /// a==b
-template<> BasicVariable::ptr Variable<unsigned char>::operator ==(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator ==(const BasicVariable::ptr& b)
 { 
   //std::cout << __func__ << std::endl;
   if (b->IsNumeric()) {
@@ -279,12 +279,12 @@ template<> BasicVariable::ptr Variable<unsigned char>::operator ==(const BasicVa
 
 // Logical operators
 
-template<> BasicVariable::ptr Variable<unsigned char>::operator !() 
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator !() 
 {
   RETURN_VARPTR(unsigned char,!(Value()>0.5));
 }
 
-template<> BasicVariable::ptr Variable<unsigned char>::operator &&(const BasicVariable::ptr& b) 
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator &&(const BasicVariable::ptr& b) 
 {
   if (b->IsNumeric()) {
     RETURN_VARPTR(unsigned char,(Value()>0.5)&& (bool) (b->GetValueAsDouble()>0.5));
@@ -293,7 +293,7 @@ template<> BasicVariable::ptr Variable<unsigned char>::operator &&(const BasicVa
   return this->NewReference(); 
 }
 
-template<> BasicVariable::ptr Variable<unsigned char>::operator ||(const BasicVariable::ptr& b) 
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::operator ||(const BasicVariable::ptr& b) 
 {
   if (b->IsNumeric()) {
     RETURN_VARPTR(unsigned char,(Value()>0.5) || (bool) (b->GetValueAsDouble()>0.5));
@@ -305,7 +305,7 @@ template<> BasicVariable::ptr Variable<unsigned char>::operator ||(const BasicVa
 // Mathematical functions
 // TODO: improve type conversions here ...
 #define VAR_IMPL_FUNC(type,fname,func) \
-template<> BasicVariable::ptr Variable<type>::m_##fname() \
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<type>::m_##fname() \
 { \
     RETURN_VARPTR(unsigned char, (int) func((double)Value())); \
 }
@@ -331,7 +331,7 @@ VAR_IMPL_FUNC(unsigned char,  sqrt, sqrt)
 
 
 //---------------------------------------------------
-template<>
+template<> AMI_DLLEXPORT
 BasicVariable::ptr Variable<unsigned char>::TryCast(
     const std::string& type_string) const
 {
@@ -368,7 +368,7 @@ BasicVariable::ptr Variable<unsigned char>::TryCast(
 
 
 //---------------------------------------
-template<> BasicVariable::ptr Variable<unsigned char>::BasicCast(const int& type)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<unsigned char>::BasicCast(const int& type)
 {
   try
   {

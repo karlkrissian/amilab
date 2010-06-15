@@ -30,8 +30,8 @@
 //
 //
 
-#ifndef _LINKCLASS_HPP
-#define _LINKCLASS_HPP
+#ifndef _DefineClass_hpp_
+#define _DefineClass_hpp_
 
 //--- string formatting using boost
 #include <iostream>
@@ -108,6 +108,11 @@ namespace MyNS_ForOutput {
 }
 using namespace MyNS_ForOutput;
 
+#ifdef  _MSC_VER
+  #define AMI_DLLEXPORT __declspec( dllexport )
+#else 
+  #define AMI_DLLEXPORT 
+#endif
 
 
-#endif // _LINKCLASS_HPP
+#endif // _DefineClass_hpp_

@@ -47,8 +47,8 @@ class VarArray;
 
 
 #define VARTYPE_PROP(type,name,isnum) \
-  template<> vartype GetVarType<type>()  { return name;     } \
-  template<> bool IsNumerical  <type>()  { return isnum;    }
+  template<> AMI_DLLEXPORT vartype GetVarType<type>()  { return name;     } \
+  template<> AMI_DLLEXPORT bool IsNumerical  <type>()  { return isnum;    }
 
 
 VARTYPE_PROP( InrImage,             type_image,           false);
@@ -119,7 +119,7 @@ VARTYPE_DEFAULT( VarArray)
 //------------------------------------------------------
 
 #include "wrapfunction_class.h"
-template<> std::string Variable<WrapClassMember>::TreeCtrlInfo() const
+template<> AMI_DLLEXPORT std::string Variable<WrapClassMember>::TreeCtrlInfo() const
 {
   // limit size of description here ???
   return Pointer()->GetDescription();
@@ -145,7 +145,7 @@ template<> std::string Variable<WrapClassMember>::TreeCtrlInfo() const
 
 // instantiate + operator
 /*
-template<>
+template<> AMI_DLLEXPORT
 BasicVariable::ptr operator +(const boost::shared_ptr<Variable<float> >& a, 
                               const boost::shared_ptr<Variable<float> >& b);
 */

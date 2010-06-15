@@ -65,6 +65,7 @@ static const std::string glErrorString( GLenum err)
       #endif
       default: return (boost::format("Unknown error number %1%") % err).str();
     }
+  else return std::string("");
 }
 
 

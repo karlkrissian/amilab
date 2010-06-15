@@ -94,7 +94,7 @@ public:
    * @param  
    */
   void SetCurrentContextNumber( int context) {
-    if ((context>=0)&&(context<_context.size()))
+    if ((context>=0)&&(context<(int)_context.size()))
       _current_context = context;
   }
   

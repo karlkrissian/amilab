@@ -13,14 +13,23 @@
 #ifndef _wxDrawingWindow_h_
 #define _wxDrawingWindow_h_
 
-
-#include "wx/window.h"
-#include <wx/scrolwin.h>
 #include <vector>
 #include "inrimage.hpp"
+#include "DefineClass.hpp"
+
+#include "wx/wxprec.h"
+#ifdef __BORLANDC__
+#pragma hdrstop
+#endif
+#ifndef WX_PRECOMP
+#include "wx/wx.h"
+#endif
+
+#include "wx/msw/winundef.h"
+#include "wx/window.h"
+#include <wx/scrolwin.h>
 
 #include "dw_Curve.h"
-#include "DefineClass.hpp"
 #include "wx/dcclient.h"
 
 

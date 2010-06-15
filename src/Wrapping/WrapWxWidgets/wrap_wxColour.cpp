@@ -80,7 +80,8 @@ See http://docs.wxwidgets.org/stable/wx_wxcolour.html for details \n\
       (unsigned char)green,
       (unsigned char)blue,
       (unsigned char)alpha));
-  }
+  } else
+    HelpAndReturnVarPtr;
 }
 
 //---------------------------------------------------
