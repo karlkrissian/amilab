@@ -559,8 +559,8 @@ BasicVariable::ptr WrapClass_DessinImage::
 void WrapClass_DessinImage::
       wrap_SetWindowSize::SetParametersComments() 
 {
-  ADDPARAMCOMMENT("width");
-  ADDPARAMCOMMENT("height");
+  ADDPARAMCOMMENT_TYPE(int,"width");
+  ADDPARAMCOMMENT_TYPE(int,"height");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -585,12 +585,12 @@ BasicVariable::ptr WrapClass_DessinImage::
 void WrapClass_DessinImage::
       wrap_drawcircle::SetParametersComments() 
 {
-  ADDPARAMCOMMENT("X-coordinate.");
-  ADDPARAMCOMMENT("Y-coordinate.");
-  ADDPARAMCOMMENT("Z-coordinate.");
-  ADDPARAMCOMMENT("red component (0-255)");
-  ADDPARAMCOMMENT("green component (0-255)");
-  ADDPARAMCOMMENT("blue component (0-255)");
+  ADDPARAMCOMMENT_TYPE(int,"X-coordinate.");
+  ADDPARAMCOMMENT_TYPE(int,"Y-coordinate.");
+  ADDPARAMCOMMENT_TYPE(int,"Z-coordinate.");
+  ADDPARAMCOMMENT_TYPE(unsigned char,"red component (0-255)");
+  ADDPARAMCOMMENT_TYPE(unsigned char,"green component (0-255)");
+  ADDPARAMCOMMENT_TYPE(unsigned char,"blue component (0-255)");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -624,9 +624,9 @@ void WrapClass_DessinImage::
       wrap_SetColormap::SetParametersComments() 
 {
   //TODO
-  ADDPARAMCOMMENT("image to use");
-  ADDPARAMCOMMENT("Center (Float)");
-  ADDPARAMCOMMENT("Extent (Float)");
+  ADDPARAMCOMMENT_TYPE(InrImage,"image to use");
+  ADDPARAMCOMMENT_TYPE(float,"Center (Float)");
+  ADDPARAMCOMMENT_TYPE(float,"Extent (Float)");
 
 }
 //---------------------------------------------------
@@ -663,7 +663,7 @@ void WrapClass_DessinImage::
       wrap_setGLwin::SetParametersComments() 
 {
   //TODO
-  ADDPARAMCOMMENT("Viewer 3D");
+  ADDPARAMCOMMENT_TYPE(Viewer3D,"Viewer 3D");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -696,17 +696,9 @@ void WrapClass_DessinImage::
       wrap_SetIsoContour::SetParametersComments() 
 {
   //TODO
-
-  /*************************************************************************
-   * This method is overloaded:                                            *
-   * ^^^^^^^^^^^^^^^^^^^^^^^^^                                             *
-   * commande <-- $variable_imagedraw.SetIsoContour(expr,var_image,expr)   *
-   * commande <-- $variable_imagedraw.SetIsoContour(var_image,expr)        *
-   *************************************************************************/
-  ADDPARAMCOMMENT("isocontour index (0,1 or 2)");
-  ADDPARAMCOMMENT("image to use for the isocontour");
-  ADDPARAMCOMMENT("intensity value of the isocontour");
-
+  ADDPARAMCOMMENT_TYPE(int,"isocontour index (0,1 or 2)");
+  ADDPARAMCOMMENT_TYPE(InrImage,"image to use for the isocontour");
+  ADDPARAMCOMMENT_TYPE(float,"intensity value of the isocontour");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -769,18 +761,11 @@ void WrapClass_DessinImage::
       wrap_SetIsoContourParam::SetParametersComments() 
 {
   //TODO
-  /*************************************************************************
-   * This method is overloaded:                                            *
-   * ^^^^^^^^^^^^^^^^^^^^^^^^^                                             *
-   * commande <-- $variable_imagedraw.SetIsoContourParam(expr,expr,expr)   *
-   * commande <-- $variable_imagedraw.SetIsoContourParam(expr,expr,expr,   *
-   *                                                     expr,expr)        *
-   *************************************************************************/
-  ADDPARAMCOMMENT("isocontour index (0,1 or 2) def:0");
-  ADDPARAMCOMMENT("isocontour thickness def:1");
-  ADDPARAMCOMMENT("isocontour style: 0,1,2 for LineSolid, LineOnOffDash, or LineDoubleDash (def:0)");
-  ADDPARAMCOMMENT("cap_style: 0:CapNotLast, 1:CapButt, 2:CapRound, or 3:CapProjecting (def:0)");
-  ADDPARAMCOMMENT("join_style: 0:JoinMiter, 1:JoinRound, or 2:JoinBevel (def:0)");
+  ADDPARAMCOMMENT_TYPE(int,"isocontour index (0,1 or 2) def:0");
+  ADDPARAMCOMMENT_TYPE(int,"isocontour thickness def:1");
+  ADDPARAMCOMMENT_TYPE(int,"isocontour style: 0,1,2 for LineSolid, LineOnOffDash, or LineDoubleDash (def:0)");
+  ADDPARAMCOMMENT_TYPE(int,"cap_style: 0:CapNotLast, 1:CapButt, 2:CapRound, or 3:CapProjecting (def:0)");
+  ADDPARAMCOMMENT_TYPE(int,"join_style: 0:JoinMiter, 1:JoinRound, or 2:JoinBevel (def:0)");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -817,8 +802,8 @@ BasicVariable::ptr WrapClass_DessinImage::
 void WrapClass_DessinImage::
       wrap_DrawIsoContour::SetParametersComments() 
 {
-  ADDPARAMCOMMENT("isocontour index (0,1 or 2)");
-  ADDPARAMCOMMENT("visible or not (0 or 1)");
+  ADDPARAMCOMMENT_TYPE(int,"isocontour index (0,1 or 2)");
+  ADDPARAMCOMMENT_TYPE(int,"visible or not (0 or 1)");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -844,10 +829,10 @@ BasicVariable::ptr WrapClass_DessinImage::
 void WrapClass_DessinImage::
       wrap_SetIsoContourColor::SetParametersComments() 
 {
-  ADDPARAMCOMMENT("isocontour index (0,1 or 2)");
-  ADDPARAMCOMMENT("Red component in [0,255]");
-  ADDPARAMCOMMENT("Green component in [0,255]");
-  ADDPARAMCOMMENT("Blue component in [0,255]");
+  ADDPARAMCOMMENT_TYPE(int,"isocontour index (0,1 or 2)");
+  ADDPARAMCOMMENT_TYPE(unsigned char,"red component (0-255)");
+  ADDPARAMCOMMENT_TYPE(unsigned char,"green component (0-255)");
+  ADDPARAMCOMMENT_TYPE(unsigned char,"blue component (0-255)");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -875,7 +860,7 @@ BasicVariable::ptr WrapClass_DessinImage::
 void WrapClass_DessinImage::
       wrap_DrawAllContours::SetParametersComments() 
 {
-  ADDPARAMCOMMENT("boolean parameter");
+  ADDPARAMCOMMENT_TYPE(unsigned char,"boolean parameter");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -900,8 +885,8 @@ BasicVariable::ptr WrapClass_DessinImage::
 void WrapClass_DessinImage::
       wrap_AllContoursParam::SetParametersComments() 
 {
-  ADDPARAMCOMMENT("intensity step between isocontours");
-  ADDPARAMCOMMENT("half size of the intensity range where to draw isocontours");
+  ADDPARAMCOMMENT_TYPE(float,"intensity step between isocontours");
+  ADDPARAMCOMMENT_TYPE(float,"half size of the intensity range where to draw isocontours");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -928,7 +913,7 @@ void WrapClass_DessinImage::
       wrap_PaintCallback::SetParametersComments() 
 {
   //TODO
-  ADDPARAMCOMMENT("Callback function (AMIFunction)");
+  ADDPARAMCOMMENT_TYPE(AMIFunction,"Callback function (AMIFunction)");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -963,7 +948,7 @@ void WrapClass_DessinImage::
       wrap_SetOpacityImage::SetParametersComments() 
 {
   //TODO
-  ADDPARAMCOMMENT("Image to use");
+  ADDPARAMCOMMENT_TYPE(InrImage,"Image to use");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
@@ -1229,10 +1214,10 @@ BasicVariable::ptr WrapClass_DessinImage::
 void WrapClass_DessinImage::
       wrap_DrawLineZ::SetParametersComments() 
 {
-  ADDPARAMCOMMENT( "number x1.");
-  ADDPARAMCOMMENT( "number y1.");
-  ADDPARAMCOMMENT( "number x2.");
-  ADDPARAMCOMMENT( "number y2.");
+  ADDPARAMCOMMENT_TYPE(float, "number x1.");
+  ADDPARAMCOMMENT_TYPE(float, "number y1.");
+  ADDPARAMCOMMENT_TYPE(float, "number x2.");
+  ADDPARAMCOMMENT_TYPE(float, "number y2.");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
