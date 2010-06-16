@@ -75,11 +75,10 @@ if (!exists(AnisoNRADClass)) {
     }
     
     #----------------------------
-    
     proc ::load_input() {
-      if (::input_name=="Image") {
+      if (::input_name=="BrowseImage") {
         # read image using browser
-        ::input <<== Image
+        ::input <<= BrowseImage
         ::input_name = "::input"
         ::win.Update(-1)
       } else {
@@ -266,7 +265,6 @@ if (!exists(AnisoNRADClass)) {
         show ::res
         ::input_draw._compare(::res_draw)
       }
-      local_new
     }
     Comments( ::Display, "Display results")
     
