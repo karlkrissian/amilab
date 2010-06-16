@@ -294,12 +294,8 @@ if (!exists(RunExperimentsClass)){
         if (!exists(::CIS->pt3_OK)) { InfoDialog "Discarded point 3"; }
       }
 
-      # high vesselness is ok but we limit its strength??
-      #global::SPspeed = -exp(-(ML_result*ML_result)/(25*25))+1
-    
       if (exists(::itkVS->result)) {
         if (exists(::itkCP->prob)) {
-          # ensure that CP_prob is maximum around local maxima
           ::speed <<= ::itkCP->prob * ::itkVS->result
         } else {
           if (!::nointeraction) {

@@ -6,18 +6,9 @@
 %\usepackage{graphicx}
 \usepackage[latin1]{inputenc} % Caracteres con acentos.
 \usepackage[spanish]{babel} % Caracteres con acentos.
-\renewcommand{\contentsname}{Contenido}
-\renewcommand{\partname}{Parte}
-\renewcommand{\indexname}{Lista Alfab\'etica}
-\renewcommand{\appendixname}{Ap\'endice}
-\renewcommand{\figurename}{Figura}
-\renewcommand{\listfigurename}{Lista de Figuras}
-\renewcommand{\tablename}{Tabla}
-\renewcommand{\listtablename}{Lista de Tablas}
-\renewcommand{\chaptername}{Cap\'{\i}tulo}
 %Para incluir figuras .bmp, .jpeg, .png....
 \usepackage[pdftex]{graphicx} % PDFLaTeX
-\DeclareGraphicsExtensions{.png,.pdf,.jpg,.gif,.bmp}
+\DeclareGraphicsExtensions{.png,.pdf,.jpg,.gif}
 %Paquete para hipervínculos
 \usepackage{hyperref}
 %Configuración del coloreado
@@ -36,8 +27,13 @@
 \setlength{\parskip}{1pc}
 %Minimizar las divisiones de las palabras
 \sloppy
+%Permitir poner páginas en horizontal
+\usepackage{pdflscape}
 
 \begin{document}
+\renewcommand{\tablename}{Tabla}
+\renewcommand{\listtablename}{Índice de Tablas}
+%\renewcommand{\chaptername}{Cap\'{\i}tulo}
 \title{ADAPTACIÓN, PARA LA LIBRERÍA DE CÓDIGO LIBRE INSIGHT TOOLKIT, DE UN MÉTODO AUTOMÁTICO DE SEGMETACIÓN DE VASOS CORONARIOS EN IMÁGENES DE TOMOGRAFÍA COMPUTARIZADA}
 \author{Sara Arencibia García}
 \date{Facultad de Informática.\\
@@ -52,7 +48,7 @@
 % Definimos página con datos sobre el proyecto 
 \newpage
 \thispagestyle{empty}
-\section{Proyecto fin de carrera}
+\section*{Proyecto fin de carrera}
   
 \bigskip
 \noindent {\bf Título: } Adaptación, para la librería de código libre Insight Toolkit, de un método automático de segmentación de vasos coronarios en imágenes de tomografía computarizada\\
@@ -74,7 +70,7 @@ Esclarín Monreal, Julio \\
 % Definimos una  pagina para los agradecimientos
 \newpage
 \thispagestyle{empty}
-\section {Agradecimientos}
+\section*{Agradecimientos}
   Aqui ponemos los agradecimientos
 
 % Definimos página posterior 
@@ -84,6 +80,8 @@ Esclarín Monreal, Julio \\
 \newpage
 \setcounter{page}{1}
 \tableofcontents
+\listoffigures
+\listoftables
 
 % Definimos página posterior 
 \newpage
@@ -1390,7 +1388,7 @@ Por último se muestra en la figura {\ref{fig:itif} que este filtro hereda de la 
 
 \begin{figure}
 \centering
-\includegraphics[scale=0.7]{imagetoimagefilter.PNG}%ext=pdf,jpg,png
+\includegraphics[scale=0.7]{imagetoimagefilter.pdf}%ext=pdf,jpg,png
 \caption{Herencia de ImageToImageFilter}
 \label{fig:itif}
 \end{figure}
@@ -1408,7 +1406,7 @@ En la figura {\ref{fig:nlmb} se puede ver la clase con sus atributos y métodos.
 
 \begin{figure}
 \centering
-\includegraphics[scale=0.7]{basicnlmeansfilter.PNG}%ext=pdf,jpg,png
+\includegraphics[scale=0.7]{basicnlmeansfilter.pdf}%ext=pdf,jpg,png
 \caption{Clase Non Local Means Básica}
 \label{fig:nlmb}
 \end{figure}
@@ -1435,7 +1433,7 @@ Como resultado obtendremos una única imagen con la media local computada.
 
 \begin{figure}
 \centering
-\includegraphics[scale=0.7]{localmeanimagefilter.PNG}%ext=pdf,jpg,png
+\includegraphics[scale=0.7]{localmeanimagefilter.pdf}%ext=pdf,jpg,png
 \caption{Diagrama de Clases de la clase LocalMeanImageFilter}
 \label{fig:lmif}
 \end{figure}
@@ -1475,14 +1473,14 @@ Se ha partido de la implementación realizada en AMILab para adaptarla y converti
 
 \begin{figure}
 \centering
-\includegraphics[scale=0.7]{backtrackingmeshfilter.PNG}%ext=pdf,jpg,png
+\includegraphics[scale=0.7]{backtrackingmeshfilter.pdf}%ext=pdf,jpg,png
 \caption{Diagrama de Clases de la clase BackTrackingMeshFilter}
 \label{fig:btmf}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics[scale=0.7]{ImageToMeshFilter.PNG}%ext=pdf,jpg,png
+\includegraphics[scale=0.7]{ImageToMeshFilter.pdf}%ext=pdf,jpg,png
 \caption{Diagrama de Clases ImageToMeshFilter}
 \label{fig:btmf2}
 \end{figure}
@@ -1546,52 +1544,46 @@ Por último, cabe destacar que los dos métodos implementados son de tipo template
 \section{Nuevas funcionalidades de AMILab}
 El primer detalle a tener en cuenta es que hemos cambiado la organización de las funciones implementadas utilizando ITK, hemos pasado de tener todo en un solo archivo a tenerlo en archivos separados. Ahora por cada función nueva se crea un nuevo archivo que formará parte del conjunto WrapITK en el cuál se engloban todas aquellas funciones que AMILAB utiliza y que se implementan usando librerías ITK.
 
-Se parte del fichero ``wrapITK.cpp'' en el que se declara un procedimiento propio de AMILAB que sirve para añadir nuevas variables al programa. Gracias a este procedimiento podemos incluir, siempre que queramos, funcionalidades implementadas en ITK. Para ello debemos hacer uso de la adición de una variable en la que se especificará el tipo de la funcionalidad a incluir:
-\color{red}
+Se parte del fichero ``wrapITK.cpp'' en el que se declara un procedimiento propio de AMILAB que sirve para añadir nuevas variables al programa. Gracias a este procedimiento podemos incluir, siempre que queramos, funcionalidades implementadas en ITK. Esto se hará mediante el procedimiento {\em ADDOBJECTVAR\_NAME} al que se le pasa el tipo de la funcionalidad a añadir:
 \begin{itemize}
-	\item Type$\_$void
-	\item Type$\_$image
-	\item Type$\_$float
-	\item Type$\_$int
-	\item Type$\_$uchar
-	\item Type$\_$string
-	\item Type$\_$imagedraw
-	\item Type$\_$surface
-	\item Type$\_$surfdraw
-	\item Type$\_$file
-	\item Type$\_$c$\_$procedure
-	\item Type$\_$c$\_$image$\_$function
-	\item Type$\_$c$\_$function
-	\item Type$\_$ami$\_$function
-	\item Type$\_$ami$\_$class
-	\item Type$\_$ami$\_$object
-	\item Type$\_$paramwin
-	\item Type$\_$parampanel
-	\item Type$\_$matrix
-	\item Type$\_$gltransform
-	\item Type$\_$array
+	\item C\_wrap\_procedure
+	\item C\_wrap\_imagefunction
+	\item C\_wrap\_varfunction
 \end{itemize}
+A continuación se especifica el nombre de la funcionalidad a incluir, que será el que usemos a la hora de invocarla. Y por último el nombre del procedimiento o función que implementa la nueva funcionalidad. Gracias a estos sencillos pasos hemos logrado incluir nuestra nueva función en AMILAB.
 
-A continuación se especifica el nombre de la funcionalidad a incluir, que será el que usemos a la hora de invocarla. Gracias a estos sencillos pasos hemos logrado incluir nuestra nueva función en AMILAB, digamos que tenemos el cuerpo de la misma, ahora bastará con añadir la implementación para poder utilizarla.
-
-\color{black}
 Cada nueva funcionalidad será implementada en un fichero a parte permitiendo de esta forma un mayor entendimiento del código, acceso al mismo (posibles modificaciones) y facilidad de uso.
 
-Un paso importante que se ha dado es la creación de dos funciones de tipo template encargadas de transformar una imagen ITK en el tipo de imagen propio de AMILAB (InrImage) y viceversa. De esta forma cuando se invoca una funcionalidad desde AMILAB se le pasará una imagen del tipo InrImage que deberá ser transformada en el formato de ITK, para una vez aplicado el filtro o el tratamiento a esta imagen reconvertirla en el formato InrImage pudiendola utilizar por AMILAB.
+Un paso importante que se ha dado es la creación de dos funciones de tipo template encargadas de transformar una imagen ITK en el tipo de imagen propio de AMILAB (InrImage) y viceversa. De esta forma cuando se invoca una funcionalidad desde AMILAB se le pasará una imagen del tipo InrImage que deberá ser transformada en el formato de ITK, para una vez aplicado el filtro o el tratamiento a esta imagen reconvertirla en el formato InrImage pudiéndola utilizar por AMILAB.
 
 Gracias a esta pequeña modificación en el código logramos que no exista código repetido, lo que provoca implementaciones poco legibles y pesadas de entender.
 
-Las dos funciones de tipo template implementadas están englobadas en el archivo wrapConversion.tpp. El hecho de que sean de tipo template nos permite que sean utilizadas con cualquier tipo de imagen que se necesite.
+Las dos funciones de tipo template implementadas están englobadas en el archivo wrapConversion.tpp. El hecho de que sean de tipo template nos permite que sean utilizadas con cualquier tipo de imagen que se necesite,tanto en 2D como en 3D.
+
+Para todas las nuevas funcionalidades, se deben recoger los parámetros de entrada de alguna manera para después poder ejecutarlas. Esto se hace mediante una serie de funciones, a continuación se mostrarán las más relevantes y utilizadas en el desarrollo del proyecto:
+
+\begin{itemize}
+\item get\_val\_ptr\_param$<$string$>$ $\rightarrow$ función utilizada para analizar una variable de tipo string en una lista de parámetros y devolver un puntero a su valor.
+\item get\_val\_ptr\_param$<$InrImage$>$ $\rightarrow$ función utilizada para analizar una variable de tipo InrImage (tipo de imagen propia de AMILab) en una lista de parámetros y devolver un puntero a su valor.
+\item get\_val\_param$<$float$>$ $\rightarrow$ función utilizada para analizar una variable de tipo float en una lista de parámetros y devolver su valor.
+\item get\_int\_param $\rightarrow$ función utilizada para analizar un entero en una lista de parámetros.
+\end{itemize}
+
+Gracias a estas funciones se recorrerá la lista de parámetros y se irán cogiendo uno a uno para su posterior uso.
+
+El tipo de datos utilizado en cada nueva funcionalidad, a no ser que se especifique lo contrario, será de tipo float. Esto es así debido a los cálculos que se realizan en cada filtro.
+
+A continuación se citarán las diferentes funcionalidades agregadas a AMILab, aunque no se utilicen directamente para el desarrollo final del proyecto han ayudado a la comprensión y estudio de ITK, es por eso que son nombradas en este apartado.
 
 \subsection{wrapITKWrite}
 Esta nueva funcionalidad permite guardar imágenes, para posteriormente poder utilizarlas en otros filtros, por ejemplo. Los parámetros de entrada serán una imagen en 2D o 3D, de tipo:
 \begin{itemize}
-	\item Unsigned$\_$char
-	\item Unsigned$\_$short
-	\item Signed$\_$short
-	\item Unsigned$\_$int
-	\item Signed$\_$int
-	\item Unsigned$\_$long
+	\item Unsigned\_char
+	\item Unsigned\_short
+	\item Signed\_short
+	\item Unsigned\_int
+	\item Signed\_int
+	\item Unsigned\_long
 	\item Float
 	\item Double
 \end{itemize}
@@ -1599,28 +1591,141 @@ y la ruta dónde queremos que se guarde la imagen.
 
 El mecanismo mediante el cual se guarda la imagen viene dado por la creación de la clase itkWriteClass en la que se hace uso de la clase itkImageFileWriter  proporcionada por ITK. Esta clase permite guardar una imagen, tan sólo se le debe pasar por parámetro la ruta dónde se va a guardar la imagen y la imagen a guardar.
 
-Por tanto, la nueva funcionalidad implementada toma una imagen de formato InrImage, la transforma en formato legible por ITK y la guarda en la ruta indicada.
+Por tanto, la nueva funcionalidad implementada toma una imagen y la guarda en la ruta indicada.
 
 \subsection{wrapITKBackTrackingMeshFilter}
+Para esta nueva funcionalidad ha sido necesario, como ya se ha comentado anteriormente, crear una nueva clase en ITK. La nueva clase creada es {\em BackTrackingImageFilter}, que viene definida por dos archivos, el ``.h'' y el ``.txx''. Dentro del fichero ``itkBackTrackingMeshFilter.h'' encontramos la declaración de los métodos y atributos necesarios mientras que en el fichero ``itkBackTrackingMeshFilter.txx'' se implementa la nueva clase. El algoritmo principal está centrado en el método {\em GenerateData} dentro del cuál se realizan todas las operaciones necesarias. 
+
+Para poder ir creando el camino a lo largo del vaso se ha hecho uso de algunas clases proporcionadas por ITK, como son
+
+\begin{itemize}
+\item itkLinearInterpolateImageFunction $\rightarrow$ necesaria para el cálculo del gradiente que asegura que la evolución del camino va a través de valores de intensidades bajas.
+\item itkMesh $\rightarrow$ esta clase proporciona la ayuda necesaria para poder utilizar mallas. Gracias a esto, se puede ir creando el camino y guardarlo como una malla. Para poder guardarlo como tal es necesario partir de un nivel inferior, en este caso sería una línea formada por puntos. Estos se irán agregando a la línea a medida que se avanza en la evolución.
+\item itkLineCell $\rightarrow$ nos permitirá ir añadiendo puntos a la línea final que será el camino buscado.
+\end{itemize}
+
+Una vez tenemos la clase, podemos incluirla en el fichero encargado de instanciarla, en este caso en el fichero ``wrapitkBackTrackingMeshFilter.cpp''.
+
+Un detalle a tener en cuenta es que una vez obtenido el camino entre dos puntos dados vendrá devuelto como una malla de ITK. Para poder utilizarla en AMILab se debe convertir a un tipo que sea legible, en este caso {\em SurfacePoly}. Esta superficie será rellenada con los puntos de la malla, de esta manera se podrá utilizar desde AMILab.
+
 \subsection{wrapITKBasicNLMeansFilter}
+En esta funcionalidad se ha hecho necesario la creación de una nueva clase. Esta clase es ``Non Local Means Básica'', formada por ``itkBasicNLMeansFilter.h'' y ``itkBasicNLMeansFilter.txx''. Al igual que con otras clases está también posee sus atributos y métodos propios. Se han utilizado dos métodos principales para su implementación, ``BeforeThreadedGenerateData()'' y ``ThreadedGenerateData''. El primero se encarga de realiza una serie de cálculos previos al algoritmo principal. Mientras que el segundo ejecuta el método de reducción de ruido basado en vecindades.
+
+Un detalle a tener en cuenta en esta clase es que se ha hecho uso de la tecnología multihilos que proporciona ITK, permitiendo aprovechar todos los procesadores del ordenador utilizado.
+
+Debido a la complejidad de la arquitectura de ITK, no se ha logrado una implementación eficiente y rápida, impidiendo que esta clase sea viable de utilizar, sobretodo en imágenes 3D. El principal problema es el tipo de iterador empleado, el iterador de vecindades provoca que se realicen muchas comprobaciones que verifican que se está dentro de los límites permitidos.
+
+El archivo dónde se instancia esta clase es ``wrapitkBasicNLMeansFilter.cpp'', en el que se recogen los parámetros necesarios y se hace la llamada al filtro para que se ejecute.
+
 \subsection{wrapITKBinaryThresholdImageFilter}
+Para esta funcionalidad basta con utilizar la clase proporcionada por ITK que consta de ``itkBinaryThresholdImageFilter.h'' y ``itkBinaryThresholdImageFilter.txx''. Esta funcionalidad en concreto no ha sido implementada para el desarrollo final del proyecto pero ha ayudado a la evolución del mismo. 
+
 \subsection{wrapITKDICOMRead}
+El permitir la lectura de imágenes en formato DICOM es una funcionalidad importante que se ha añadido a AMILab, es un detalle que poseen muchos otros programas de tratamiento de imágenes médicas, ya que este formato es muy utilizado en esta disciplina.
+
+Debido a que en el tratamiento de imágenes médicas se utiliza un número ``reducido'' de tipos de imágenes y dimensiones se ha tomado la decisión de soportar imágenes en 2D y 3D con los siguientes tipos de datos:
+
+\begin{itemize}
+\item {\em unsigned char}
+\item {\em unsigned short}
+\item {\em signed short}
+\end{itemize}
+
+Esta funcionalidad utiliza las herramientas disponibles en ITK para la lectura y escritura de imágenes de tipo DICOM.
+
 \subsection{wrapITKFastMarchingImageFilter}
+Para realizar el filtro Fast Marching se ha usado la clase proporcionada por ITK que se compone de los ficheros ``itkFastMarchingImageFilter.h'' y ``itkFastMarchingImageFilter.txx''.
+
+La nueva funcionalidad se podrá encontrar en ``wrapitkFastMarchingImageFilter.cpp''.
+
 \subsection{wrapITKLevelSet}
+ITK proporciona una serie de clases que permiten la segmentación utilizando Level Sets. En nuestro caso, la clase que utilizaremos será la formada por los ficheros ``itkGeodesicActiveContourLevelSetImageFilter.h'' y ``itkGeodesicActiveContourLevelSetImageFilter.txx''
+
 \subsection{wrapITKMultiScaleVesselnessFilter}
+En el caso del cálculo de medida de Vesselness se ha hecho uso de los ficheros proporcionados por la publicación \cite{Vesselness}, debido a que en su momento ITK no proporcionaba esta funcionalidad.
+
 \subsection{wrapITKRecursiveGaussianImageFilter}
-\subsection{wrapITKSigmoidImageFilter}
-\subsection{wrapITKWaterShedImageFilter}
+Esta funcionalidad viene proporcionada por ITK y la clase se compone de los ficheros ``itkRecursiveGaussianImageFilter.h'' y ``itkRecursiveGaussianImageFilter.txx''. 
+
+\subsection{wrapitkLocalMeanImageFilter}
+Aunque ITK proporciona esta funcionalidad se ha decidido implementarla de nuevo porque se necesitaba velocidad, cosa que en ITK no se conseguía. La nueva clase se compone, como el resto, de dos ficheros que son ``itkLocalMeanImageFilter.h'' y ``itkLocalMeanImageFilter.txx''
+
 
 \section{Script Proceso Completo}
+Esta sección se intentará hacer un recorrido por todas las diferentes etapas que se siguen para el desarrollo del proceso completo de segmentación de carótidas.
+
+Lo primero y más importante es destacar que el proceso completo está implementado mediante scripts que corren sobre AMILab, es por esto que el método está distribuido en varios scripts. Cada script que se utiliza es una clase en el lenguaje interpretado, pero que a efectos de programación y diseño es muy similar a una clase implementada en un lenguaje de alto nivel.
+
+Se debe tener en cuenta que existen diferentes scripts para desarrollar el proceso completo de segmentación de carótidas. Cada uno de ellos es una clase en lenguaje interpretado que tiene sus propios métodos y atributos. Uno de estos métodos, común a muchas de las clases utilizadas, será el que se encargue de tomar una imagen e introducirla en la clase.
+
+A continuación se detallarán las diferentes etapas. En las siguientes secciones se hablará de clases haciendo referencia a las creadas en los scripts mediante lenguaje interpretado, por tanto, se hace mención a un script diferente al script del proceso global.
+
+\subsection{Preprocesado}
+En primer lugar se debe configurar el script que contiene las rutas de los datos, tanto imágenes como software de evaluación del método. Este fichero se encuentra en la misma ruta que se encuentra el script del proceso global. Es una clase, que contiene los siguientes atributos:
+\begin{itemize}
+\item {\em ::data\_dir} $\rightarrow$ Especifica la ruta dónde están las imágenes de entrada, tanto las de Training como las de Testing.
+\item {\em ::groundtruth\_dir} $\rightarrow$ Indica la ruta dónde podemos encontrar el ``groundtruth'' (resultados originales de la segmentación) de aquellas imágenes tipo Training.
+\item {\em ::results\_dir} $\rightarrow$ Indica la ruta dónde se irán almacenando los resultados del proceso de segmentación. Aquí, no sólo se guardará el resultado final, sino que también se incluirán aquellos obtenidos en los pasos intermedios del proceso.
+\item {\em ::evaluation\_bindir} y {\em ::evaluation\_scriptdir} $\rightarrow$ Indican las rutas dónde se encuentran los programas que validan el método y lo evalúan.
+\end{itemize}
+
+Una vez hecha esta primera etapa, ya se puede ejecutar el script del proceso completo. 
+
+Lo primero que se hace en el script es leer la imagen, leer los tres puntos proporcionados por el usuario para la segmentación y después se recorta. Existen zonas de esta que no nos interesan ni serán relevantes para la segmentación de las carótidas, por eso se eliminan. De esta forma el tiempo de procesamiento será menor, ya que las imágenes médicas en 3D (TAC) ocupan bastante espacio.
+
+La lectura de los tres puntos iniciales se realiza mediantes la clase ``ReadPointsClass'', en concreto utilizando el método ``ReadPoints''. Después, para realizar el corte de la imagen se utiliza la clase ``CropImageFromPointsClass'', en concreto el método ``CropImageFromPoints'' \ref{fig:scriptRE} obteniendo una región de interés (ROI).
+
+A continuación se lee el groundtruth, sólo en el caso de las imágenes de Training ya que las imágenes de Testing no poseen groundtruth. Sino se quiere no hace falta leer estos datos ya que no se utilizan para los cálculos que se realizan.
+
+\subsection{Local Stats}
+Una vez tenemos todos los datos de entrada pasaremos a realizar el algoritmo en cuestión de segmentación de carótidas. En primer lugar se hará un cálculo de la media local de la imagen. El resultado obtenido se utilizará posteriormente junto con el resultado de la medida de Vesselness para obtener la imagen de velocidad que será la entrada del proceso de {\em BackTracking}.
+
+En este caso la principal clase utilizada será ``itkCreateProbabilityClass'', que como su nombre indica realiza la media local usando la nueva funcionalidad implementada en ITK \ref{fig:scriptRE}, ``itkLocalMeanImageFilter''.
+
+\subsection{Vesselness}
+El cálculo de la medida de vesselness se realiza partiendo de la imagen de entrada recortada (ROI). Para ello se utiliza la clase ``itkVesselnessClass'' \ref{fig:scriptRE}. En este caso, necesitamos que la clase tenga la imagen a procesar, esto lo haremos mediante el método ``set\_input(IMAGE im)''. El método encargado de realizar el cálculo es ``Run'' que llamará a la funcionalidad ``itkMultiScaleVesselnessFilter'', implementada en ITK.
+
+\subsection{BackTracking}
+En el cálculo de los caminos, se realiza primero el de la arteria interna y después el de la arteria externa. Para ambos, el método es el mismo.
+Lo primero que se debe hacer es fijar las esferas iniciales que serán los tres puntos dados por el usuario. Esto se hace mediante la clase ``CreateInitialSpheresClass'' en concreto con el método ``CheckInitialPoints'', este a su vez hace uso de la clase ``AddSphereClass'' y del método ``AddBrightSphereGlobal\_mm''. Después se comprobarán una serie de medidas en estos puntos, las cuales servirán para determinar si los tres puntos dados son válidos y asi poder continuar con el proceso de BackTraking.
+
+A continuación, partiendo del resultado de Local Stats y de la media de vesselness, se obtiene la imagen que daremos como entrada al proceso de BackTracking. La clase que lo implementa es ``itkSPClass'' \ref{fig:scriptRE}, tomando como entrada la imagen de la región de interés y la imagen calculada previamente. Ambas, serán pasadas a la clase mediante los métodos ``set\_input(IMAGE im)'' y ``set\_speed(IMAGE im)'' respectivamente. También es necesario indicarle a la clase los tres puntos que indican el comienzo y los finales de las arterias. Esto se hará mediante los métodos ``SetStartPointWorld'' y ``SetEndPointWorld'' respectivamente.
+
+Ahora se puede pasar al cálculo de los caminos. Basta con utilizar el método ``Run''.
+
+\subsection{Bifurcación}
+Se realiza el cálculo de la bifurcación entre las dos arterias, interna y externa. Por último se comprueba si la longitud de los caminos es la adecuada, en caso contrario se hace crecer de nuevo el camino.
+
+\subsection{Level Sets}
+La última etapa es la segmentación de las arterias utilizando Level Sets. Al igual que en la etapa del cálculo de los caminos, primero se realizará una arteria y después la otra, siendo el proceso exactamente el mismo. Para ello utilizaremos la clase ``itkLevelSetClass'' \ref{fig:scriptRE}. Partiremos de un cilindro formado alrededor del camino calculado previamente, esto hará que la segmentación sea más controlada y precisa.
+
+Como métodos principales existen ``set\_initial'' y ``set\_edge'' que definirán las imágenes de entrada y por último el método encargado de ejecutar el proceso, en este caso ``Run''. ``Run'' hará uso de la funcionalidad implementada en ITK para la segmentación mediante Level Sets.
+
+\subsection{Resultado Final}
+El resultado final vendrá dado por la unión de la segmentación de la arteria interna y de la arteria externa.
+
+
+En la figura {\ref{fig:scriptRE} podemos ver el diagrama de clases que representa todas las clases necesarias para la segmentación de carótidas. Por otro lado, en la figura {\ref{fig:peRE} se muestra el proceso de ejecución que se sigue para llegar al resultado.
 \begin{figure}
 \centering
-\includegraphics[scale=0.7]{scriptRE.png}%ext=pdf,jpg,png
+\includegraphics[scale=0.7]{scriptRE.pdf}%ext=pdf,jpg,png
 \caption{Diagrama de Clases Script RunExperiments}
 \label{fig:scriptRE}
 \end{figure}
 
+\begin{landscape}
+\newpage
+%\thispagestyle{empty}
+\begin{figure}
+\centering
+\includegraphics[scale=0.7]{pescript.pdf}%ext=pdf,jpg,png
+\caption{Proceso de Ejecución Script RunExperiments}
+\label{fig:peRE}
+\end{figure}
+\end{landscape}
+
 \chapter{Resultados y conclusiones}
+\chapter{Anexo I - Manuales de usuario}
 \begin{thebibliography}{1}
 \bibitem{ITK05} L. Ibáñez, W. Schroeder, L. Ng, J. Cates.{\em ``The ITK Software Guide''} 2005
 \bibitem{VTK01} W. Schroeder {\em ``The VTK User´s Guide''} Kitware,Inc. 2001

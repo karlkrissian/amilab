@@ -33,16 +33,10 @@
 
 #include "itkBackTrackingMeshFilter.h"
 #include "itkLinearInterpolateImageFunction.h"
-#include "itkLineSpatialObject.h"
 #include "itkImage.h"
-#include "itkPoint.h"
 #include "math.h"
-#include "itkImageRegionIterator.h"
-#include "itkContinuousIndex.h"
-#include "itkSpatialObjectWriter.h"
 #include "itkMesh.h"
 #include "itkLineCell.h"
-
 
 namespace itk
 {
