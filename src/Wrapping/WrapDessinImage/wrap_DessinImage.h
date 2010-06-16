@@ -22,6 +22,9 @@
 #include "DessinImage.hpp"
 #include "wrap_FenetreDessin.h"
 
+TO_STRING(DessinImage);
+TO_STRING(Viewer3D);
+
 class WrapClass_DessinImage  : public WrapClass_FenetreDessin
 //: public WrapClass_wxWindow
 {

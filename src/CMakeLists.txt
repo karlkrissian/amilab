@@ -628,6 +628,10 @@ install(DIRECTORY ${AMILAB_SOURCE_DIR}/../scripts
 #        COMPONENT scripts
         FILES_MATCHING PATTERN "*.amil"
          PATTERN "*.sh"
+         PATTERN "*.py"
+         PATTERN "*.png"
+          PATTERN "*.txt"
+        PATTERN "*.sh"
          PATTERN "*.html"
         PATTERN ".svn" EXCLUDE
         PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ

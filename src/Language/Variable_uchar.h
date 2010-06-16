@@ -105,7 +105,7 @@ VAR_DECL_FUNC(int,asin)
 VAR_DECL_FUNC(int,acos)
 VAR_DECL_FUNC(int,atan)
 */
-VAR_DECL_FUNC(int,fabs)
+VAR_DECL_FUNC(unsigned char,fabs)
 /* no rounding or exp
 VAR_DECL_FUNC(int,round)
 VAR_DECL_FUNC(int,floor)
@@ -113,8 +113,8 @@ VAR_DECL_FUNC(int,exp)
 VAR_DECL_FUNC(int,log)
 VAR_DECL_FUNC(int,ln)
 */
-VAR_DECL_FUNC(int,norm)
-VAR_DECL_FUNC(int,sqrt)
+VAR_DECL_FUNC(unsigned char,norm)
+VAR_DECL_FUNC(unsigned char,sqrt)
 
 
 /// Cast to a type based on its name as a string

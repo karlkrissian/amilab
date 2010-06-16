@@ -16,10 +16,33 @@
 // use NOMINMAX to avoid conflicts between windows.h min,max and std::min std::max ...
 #define NOMINMAX
 
+#ifndef WIN32
+#include <unistd.h>
+#endif
+
+#include <iostream>
+#include <locale.h>
+#include <cstdlib>
+
+#include "VarContexts.hpp"
+#include "VarArray.h"
+//#include "Duree.hpp"
+
+#include "DefineClass.hpp"
+
+#include "Variable.hpp"
+
+//typedef std::vector<BasicVariable::ptr> VarVector;
+
+#include "wrap_varvector.h"
+
+//-------
+
+#include "wx/evtloop.h"
 #include "driver.h"
+
 #include "CoutwxString.h"
 #include "MainFrame.h"
-#include <locale.h>
 #include "fonctions.h"
 #include "func_isoline.hpp"
 
@@ -40,7 +63,6 @@
 #include "wrapWII.h"
 #include "wrapFilters.h"
 #include "wrapSystem.h"
-#include <cstdlib>
 
 //#include "myscan.h"
 #include "ImageDraw.hpp"
@@ -81,48 +103,6 @@
 #include "StringUtils.hpp"
 //#include "histo.hpp"
 
-#ifndef WIN32
-#include <unistd.h>
-#endif
-
-#include <iostream>
-
-#include "VarContexts.hpp"
-#include "VarArray.h"
-//#include "Duree.hpp"
-
-#include "DefineClass.hpp"
-
-#include "Variable.hpp"
-
-//typedef std::vector<BasicVariable::ptr> VarVector;
-
-#include "wrap_varvector.h"
-
-/*
-#include <boost/shared_ptr.hpp>
-//--- string formatting using boost
-#include <iostream>
-#include <iomanip>
-#include <cassert>
-#include "boost/format.hpp"
-namespace MyNS_ForOutput {
-  using std::cout; using std::cerr;
-  using std::string;
-  using std::endl; using std::flush;
-
-  using boost::format;
-  using boost::io::group;
-}
-using namespace MyNS_ForOutput;
-*/
-
-
-
-//-------
-
-#include "wx/evtloop.h"
-#include "driver.h"
 
 extern VarContexts       Vars;
 
