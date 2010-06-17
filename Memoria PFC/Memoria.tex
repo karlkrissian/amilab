@@ -29,6 +29,8 @@
 \sloppy
 %Permitir poner páginas en horizontal
 \usepackage{pdflscape}
+%Para usar apéndice
+\usepackage{appendix}
 
 \begin{document}
 \renewcommand{\tablename}{Tabla}
@@ -184,7 +186,7 @@ Las capacidades de visualización de Slicer permiten mostrar cortes de imágenes, 
 El proyecto que se plantea viene motivado por la necesidad de implementar un algoritmo de segmentación de vasos coronarios para código libre.
 
 
-Para la realización de este objetivo se partirá de un método de segmentación de vasos coronarios (Minimally Interactive Knowledge-based Coronary Tracking in CTA using a Minimal Cost Path), de las librerías de código abierto Insight Toolkit y del software para tratamiento de imágenes AMILab.
+Para la realización de este objetivo se partirá de un método de segmentación de vasos coronarios ({\em A Minimal Cost Path and Level Set Evolution Approach for Carotid Bifurcation Segmentation}), de las librerías de código abierto Insight Toolkit y del software para tratamiento de imágenes AMILab.
 
 
 Lo que se plantea es el paso de la totalidad o parte del método de segmentación de vasos coronarios seleccionado a las librerías de código abierto Insight Toolkit, permitiendo de esta forma la divulgación de este método a través de estas librerías de programación. Una vez realizada la implementación del método seleccionado se pretende incluir dicha herramienta en el software de tratamiento de imágenes AMILab.
@@ -192,30 +194,43 @@ Lo que se plantea es el paso de la totalidad o parte del método de segmentación 
 
 Por tanto, como objetivos principales de este proyecto se pretende:
 \begin{itemize}
-	\item Adaptación de la totalidad o parte del método de segmentación de vasos coronarios a las librerías de código abierto Insight Toolkit.
-	\item Inclusión de la herramienta desarrollada en el software de tratamiento de imágenes AMILab.
+\item Adaptación de la totalidad o parte del método de segmentación de vasos coronarios a las librerías de código abierto Insight Toolkit.
+\item Inclusión de la herramienta desarrollada en el software de tratamiento de imágenes AMILab.
+\item Entender el funcionamiento global de los algoritmos actuales, sin necesariamente entrar en los detalles.
 \end{itemize}
+
 \chapter{Metodología}
+Dado el carácter de este proyecto se ha tomado la decisión de optar por una metodología de desarrollo en espiral combinada con un desarrollo basado en componentes.
+
+El desarrollo en espiral se basa en un conjunto de iteraciones, en las que en cada una de ellas se van incrementando las funcionalidades del sistema partiendo de lo ya implementado. Por tanto, el sistema va creciendo poco a poco y se va probando a medida que una nueva funcionalidad es creada. Al final se consigue un sistema global formado por múltiples funcionalidades individuales.
+
+La ingeniería de sistemas basada en componentes abarca dos actividades de ingeniería paralelas: la ingeniería de dominios y el desarrollo basado en componentes. La ingeniería de dominios explora un dominio de aplicación con la intención específica de encontrar componentes funcionales, de comportamiento y de datos que sean candidatos para la reutilización. El desarrollo basado en componentes:
+\begin{itemize}
+\item Selecciona componentes potenciales para la reutilización.
+\item Califica los componentes para asegurarse de que encajan adecuadamente en la arquitectura para el sistema.
+\item Adapta los componentes si se deben hacer modificaciones para integrarlos adecuadamente.
+\item Integra componentes para formar subsistemas y la aplicación como un todo.
+\end{itemize}
+
+Por tanto, combinando estás dos metodologías se ha conseguido dasarrollar un sistema poco a poco y con la reutilización de componentes ya existentes, tanto de ITK como de AMILab.
+
+En cada iteración, se ha establecido una fase de análisis, diseño, implementación y prueba.
+
 \chapter{Recursos necesarios}
-En el desarrollo de este proyecto se pretende, en la medida de lo posible, la utilización de software libre. Por lo que, para la implementación del mismo se utilizará como S.O. Linux, en su distribución Ubuntu y Fedora. Por tanto, los programas utilizados serán todos de software libre.
-
-
-Está elección viene motivada por el carácter que se pretende dar al desarrollo del proyecto, que en todo momento será orientado al software libre.
-
+AMILab es un software que puede ser utilizado en cualquier plataforma, es por esto que se ha decidido usar Windows XP para el desarrollo de este proyecto. Esto ha propiciado que AMILab sea más robusto y estable bajo este S.O., ya que al tener que utilizarlo para el desarrollo del proyecto ha ayudado a su mejora.
 
 Otro detalle a tener en cuenta serán los recursos hardware necesarios para la fluidez del desarrollo del proyecto y la validación del mismo. Debemos recordar que los algoritmos implementados serán aplicados sobre imágenes de tomografía computarizada que ocupan un gran espacio en disco duro. Por lo que será necesaria la presencia de un dispositivo de almacenamiento de gran capacidad y un ordenador que sea capaz de procesar de manera eficiente y potente todo este material. 
-Otro detalle a tener en cuenta es la proveniencia del material utilizado para la validación de los algoritmos implementados. Se utilizará una base de datos de 32 pacientes creada por el workshop "3D Segmentation in the Clinic: A Grand Challenge II", teniendo especial cuidado en cumplir todas las bases legales para su utilización.
 
+Por último, se ha de tener especial cuidado con los datos a utilizar, ya que están sujetos a unas reglas de utilización y distribución. Los datos a utilizar provienen del ``Challenge MICCAI'2009 workshop'' y serán 14 datos distintos pertenecientes a diferentes departamentos de radiología.
 
 Una vez comentados estos puntos pasaremos a numerar el software y el hardware usado para este proyecto:
 \begin{itemize}
 	\item Software
 \begin{itemize}
 	\item Cmake
+	\item Microsoft Visual Studio 2008
 	\item Librerías Insight Toolkit
-	\item Compilador de C++
 	\item AMILab
-	\item VTK
 	\item Subversion	
 \end{itemize}
 \newpage
@@ -227,7 +242,10 @@ Una vez comentados estos puntos pasaremos a numerar el software y el hardware us
 \end{itemize}
 
 \chapter{Plan de trabajo y temporización}
-A continuación se plantea la temporización del proyecto desglosada en etapas y en horas. Se debe tener en cuenta que este plan de trabajo es una estimación, por lo que podrá sufrir variaciones a lo largo del desarrollo del proyecto.
+A continuación se define el plan de trabajo a seguir. Debido a la metodología de desarrollo elegida las etapas aquí descritas se repetirán en cada iteración hasta llegar al sistema completo.
+
+Por tanto, en cada etapa se describirán los pasos seguidos a la hora de desarrollar este proyecto.
+
 \section{Análisis}
 En una primera etapa se hará una fase de análisis sobre las herramientas a utilizar, profundizando de manera exhaustiva en el manual de las librerías a utilizar (Insight Toolkit). Esto permitirá mayor soltura a la hora del diseño e implementación de las nuevas clases requeridas. Para la realización de esta etapa se desarrollarán varias tareas que ayudarán a una mejor asimilación de los conceptos, como son:
 \begin{itemize}
@@ -235,64 +253,26 @@ En una primera etapa se hará una fase de análisis sobre las herramientas a utili
 	\item Análisis de ejemplos complejos.
 \end{itemize}
 
-
 A continuación, se podrá realizar un estudio del software de tratamiento de imágenes AMILab. Para conocerlo a fondo se seguirán los tutoriales disponibles y se ejecutarán los scripts, comprobando y entendiendo en todo caso los resultados obtenidos.
 
+Como segunda etapa de esta fase se realizará un análisis de las necesidades de las clases a implementar. Para ello se deberá hacer un estudio de las relaciones existentes entre clases.
 
-Como segunda etapa de esta fase se realizará un análisis de las necesidades de las clases a implementar. Para ello se deberá estudiar las relaciones que existirán entre clases, tanto entre las creadas como entre las nuevas y las creadas.
-Para toda esta fase de análisis se necesitarán las siguientes horas de trabajo:
-\begin{itemize}
-	\item Familiarización con la librería Insight Toolkit $\rightarrow$ 63h
-	\item Familiarización con los algoritmos existentes y AMILab $\rightarrow$ 60h
-	\item Análisis de Ejemplos Complejos $\rightarrow$ 60h
-	\item Generación de la documentación $\rightarrow$ 20h
-	\item Primera fase de análisis $\rightarrow$ 60h
-	\item Generación de la documentación de esta primera fase $\rightarrow$ 20h
-	\item Segunda fase de análisis $\rightarrow$ 60h
-	\item Generación de la documentación de esta segunda fase $\rightarrow$ 20h
-\end{itemize}
-
+Como tercera etapa de esta fase se debe hacer un estudio de los diferentes métodos que intervienen en el algoritmo completo de segmentación de carótidas.
 \section{Diseño}
 En esta fase se pretende determinar el diseño de las nuevas clases a implementar, teniendo en cuenta la fase de análisis previa y el diseño por defecto de las librerías Insight Toolkit.
-
-
-Las horas de trabajo vendrán determinadas por:
-\begin{itemize}
-	\item Primera fase de diseño $\rightarrow$ 60h
-	\item Generación de documentación de esta primera fase $\rightarrow$ 20h
-	\item Segunda fase de diseño $\rightarrow$ 60h
-	\item Generación de documentación de esta segunda fase $\rightarrow$ 20h
-\end{itemize}
 
 \section{Implementación}
 Durante la fase de implementación se desarrollarán las clases propiamente dichas. Esta fase vendrá regida por las fases de análisis y diseño estudiadas anteriormente.
 
-
-Las horas de trabajo fijadas son:
-\begin{itemize}
-	\item Primera fase de implementación $\rightarrow$ 60h
-	\item Generación de documentación de esta primera fase $\rightarrow$ 20h
-	\item Segunda fase de implementación $\rightarrow$ 60h
-	\item Generación de documentación de esta segunda fase $\rightarrow$ 20h
-\end{itemize}
-
-\section{Validación y publicidad del PFC}
-La última fase del proyecto es una de las más importantes ya que en ella se realizarán los test que validarán las clases implementadas. Además se creará una página web para la difusión del material desarrollado.
+\section{Validación}
+La última fase del proyecto es una de las más importantes ya que en ella se realizarán los test que validarán las clases implementadas.
 
 \newpage
-Dentro de los test de validación tendremos varias partes, siendo las siguientes:
+Dentro de los test de validación tendremos varias partes:
 \begin{itemize}
 	\item Definición de los test de validación.
 	\item Aplicación de los test de validación.
 	\item Análisis de los resultados obtenidos, los cuales serán cotejados con los ya existentes. Estos provienen del método del que se parte para la realización de este proyecto.
-\end{itemize}
-
-
-Por tanto, la planificación de esta fase queda de la siguiente forma:
-\begin{itemize}
-	\item Test de validación $\rightarrow$ 90h
-	\item Generación de la documentación $\rightarrow$ 20h
-	\item Confección de manuales y desarrollo de la página web $\rightarrow$ 80h
 \end{itemize}
 
 \chapter{Análisis}
@@ -1423,9 +1403,24 @@ El proceso de segmentación de la carótida, tanto externa como interna, se divide
 \item Cálculo del Level Sets de cada una de las carótidas partiendo de los caminos calculados previamente.
 \end{itemize}
 
+Para empezar, se crea una región de interés (ROI) que contiene los tres puntos dados. La creación de la región de interés permite reducir el tiempo total de cómputo antes de la detección del lugar de la bifurcación. Dentro de esta región de interés, se crea una imagen de velocidad combinando los resultados de la medida de vesselness y una imagen de probabilidad basada en las estadísticas locales de intensidad de la imagen. Partiendo de la imagen de velocidad, se crea un recorrido entre la arteria carótida común y cada una de las otras dos arterías, permitiendo identificar la posición de la bifurcación y a qué arteria pertenece cada recorrido. 
+
 Una vez visto el proceso general de la segmentación de las carótidas pasaremos a detallar cada paso y a comentar qué clases serán necesarias para su posterior implementación.
 
 \subsection{Clase LocalMeanImageFilter}
+Debido a que las regiones de interés pueden contener muchas estructuras tubulares que no necesariamente tienen porque pertenecer a las arterias carótidas principales, y ya que la respuesta de vesselness es sensible a la presencia de calcificaciones, utilizaremos una imagen adicional basada en las estadísticas locales de intensidad para crear la imagen de velocidad utilizada para calcular el recorrido de coste mínimo (BackTracking).
+
+Se crean dos imágenes, una con la media local de la intensidad denominada $I_{lm}$ y otra con la deviación estándar local de la intensidad denominada $I_{sdm}$. Basándonos en estas dos imágenes se crea una nueva imagen denominada imagen de probabilidad utilizando la expresión siguiente:
+\begin{equation}
+I_p = f(I_{lm})*g(I_{sdm})
+\label{eqn:prop}
+\end{equation}
+dónde f es una versión suavizada de una función que es igual a 1 dentro del rango de intensidades [1050, 1600] y 0 en otros lugares, y g se define como la expresión:
+\begin{equation}
+g(x) = e^{-\frac{x^2}{2.3^2}}
+\label{eqn:prop2}
+\end{equation}
+
 Se ha visto la necesidad de crear una nueva clase que calcule la media local, debido a que en las herramientas proporcionadas por Insight Toolkit no existía una que realizase lo que se buscaba. 
 
 A continuación, en la figura {\ref{fig:lmif} se puede ver la clase con sus principales atributos y métodos. Los únicos parámetros necesarios son la imagen de entrada y el tamaño de la ventana dónde se va a realizar la media local. A continuación se hará una media por ejes de coordenadas, es decir, primero en $x$, después en $y$ y por último en $z$ si la imagen fuese en 3D.
@@ -1459,7 +1454,15 @@ El valor mínimo y máximo de sigma se fija utilizando los métodos {\em SetMinSigm
 \item {\em HessianObjectnessMeasureImageFilter} $\rightarrow$ Es un filtro que intensifica objetos en imágenes de cualquier dimensión. Este filtro se ha utilizado para hacer el cálculo de la medida de vesselness en imágenes 2D.
 La medida de objectness es una generalización de la medida de vesselness de Frangi, la cuál está basada en el análisis del sistema de autovalores y autovectores de la matriz Hessiana. Este filtro es capaz de intensificar casi cualquier tipo de estructura.
 \end{itemize}
+
 \subsection{Clase BackTracking}
+Se extraen dos recorridos, uno entre la arteria carotida cómun y la arteria carótida externa y otro entre la arteria carotida común y la arteria carótida interna, intentando maximizar la probabilidad de estar dentro y en el centro del vaso buscado.
+
+Los recorridos son creados utilizando el método de BackTracking, partiendo de el resultado del filtro Fast Marching.
+
+Una vez ambos recorridos han sido detectados, el punto de bifurcación se define como el punto dónde la distancia entre los dos recorridos llega a ser mayor de 1mm, empezando en su extremo común en la arteria carótida común. En el punto de bifurcación, el recorrido con mayor valor en el eje de las Y se selecciona como recorrido de la arteria carótida interna, y el otro recorrido se selecciona como arteria carótida externa. 
+Una vez que la bifurcación y ambos recorridos han sido detectados e identificados, el recorrido será cortado o extendido dependiendo de su actual distancia a la bifurcación o de si cumple los requisitos de longitud. La extensión de los recorridos se obtiene mediante la ejecución de un algoritmo de recorrido de coste mínimo.
+
 Para el cálculo de los caminos mínimos entre dos puntos dados se hace necesario la creación de una clase que lo realice ya que en Insight Toolkit no está esta funcionalidad.
 
 Este filtro crea un camino empezando en un punto y siguiendo los desplazamientos dados por el vector de la imagen de entrada ({\em the input vector field image}). Si la entrada es escalar se calcula el correspondiente vector a partir de su gradiente por interpolación lineal. El seguimiento del camino se para por alguno de estos motivos:
@@ -1725,7 +1728,199 @@ En la figura {\ref{fig:scriptRE} podemos ver el diagrama de clases que represent
 \end{landscape}
 
 \chapter{Resultados y conclusiones}
-\chapter{Anexo I - Manuales de usuario}
+\begin{table}
+\begin{tabular}{|c|c|c|c|c|}
+\hline  &  &  &  &  \\ 
+\hline  &  &  &  &  \\ 
+\hline  &  &  &  &  \\ 
+\hline  &  &  &  &  \\ 
+\hline  &  &  &  &  \\ 
+\hline  &  &  &  &  \\ 
+\hline  &  &  &  &  \\ 
+\hline  &  &  &  &  \\ 
+\hline  &  &  &  &  \\ 
+\hline  &  &  &  &  \\ 
+\hline  &  &  &  &  \\ 
+\hline  &  &  &  &  \\ 
+\hline  &  &  &  &  \\ 
+\hline  &  &  &  &  \\ 
+\hline 
+\end{tabular}
+\caption{Resultados}
+\label{tresultados}
+\end{table}
+
+\appendix
+\chapter{Manuales de usuario}
+
+\section{Script Segmentación de Carótidas}
+\begin{landscape}
+\begin{figure}
+\centering
+\includegraphics[scale=0.7]{e1.png}%ext=pdf,jpg,png
+\caption{Script Segmentación de Carótidas}
+\label{fig:e1}
+\end{figure}
+\end{landscape}
+
+\begin{landscape}
+\begin{figure}
+\centering
+\includegraphics[scale=0.7]{e2.png}%ext=pdf,jpg,png
+\caption{Script Segmentación de Carótidas}
+\label{fig:e2}
+\end{figure}
+\end{landscape}
+
+\begin{landscape}
+\begin{figure}
+\centering
+\includegraphics[scale=0.7]{e3.png}%ext=pdf,jpg,png
+\caption{Script Segmentación de Carótidas}
+\label{fig:e3}
+\end{figure}
+\end{landscape}
+
+\begin{landscape}
+\begin{figure}
+\centering
+\includegraphics[scale=0.7]{e4.png}%ext=pdf,jpg,png
+\caption{Script Segmentación de Carótidas}
+\label{fig:e4}
+\end{figure}
+\end{landscape}
+
+\begin{landscape}
+\begin{figure}
+\centering
+\includegraphics[scale=0.7]{e5.png}%ext=pdf,jpg,png
+\caption{Script Segmentación de Carótidas}
+\label{fig:e5}
+\end{figure}
+\end{landscape}
+
+\section{Script Vesselness}
+\begin{landscape}
+\begin{figure}
+\centering
+\includegraphics[scale=0.7]{ve1.png}%ext=pdf,jpg,png
+\caption{Script Vesselness}
+\label{fig:ve1}
+\end{figure}
+\end{landscape}
+
+\begin{landscape}
+\begin{figure}
+\centering
+\includegraphics[scale=0.7]{ve2.png}%ext=pdf,jpg,png
+\caption{Script Vesselness}
+\label{fig:ve2}
+\end{figure}
+\end{landscape}
+
+\begin{landscape}
+\begin{figure}
+\centering
+\includegraphics[scale=0.7]{ve3.png}%ext=pdf,jpg,png
+\caption{Script Vesselness}
+\label{fig:ve3}
+\end{figure}
+\end{landscape}
+
+\section{Script Fast Marching}
+\begin{landscape}
+\begin{figure}
+\centering
+\includegraphics[scale=0.7]{fast1.png}%ext=pdf,jpg,png
+\caption{Script Fast Marching}
+\label{fig:fast1}
+\end{figure}
+\end{landscape}
+
+\begin{landscape}
+\begin{figure}
+\centering
+\includegraphics[scale=0.7]{fast2.png}%ext=pdf,jpg,png
+\caption{Script Fast Marching}
+\label{fig:fast2}
+\end{figure}
+\end{landscape}
+
+\begin{landscape}
+\begin{figure}
+\centering
+\includegraphics[scale=0.7]{fast3.png}%ext=pdf,jpg,png
+\caption{Script Fast Marching}
+\label{fig:fast3}
+\end{figure}
+\end{landscape}
+
+\begin{landscape}
+\begin{figure}
+\centering
+\includegraphics[scale=0.7]{fast4.png}%ext=pdf,jpg,png
+\caption{Script Fast Marching}
+\label{fig:fast4}
+\end{figure}
+\end{landscape}
+
+\section{Script BackTracking}
+\begin{landscape}
+\begin{figure}
+\centering
+\includegraphics[scale=0.7]{back1.png}%ext=pdf,jpg,png
+\caption{Script BackTracking}
+\label{fig:back1}
+\end{figure}
+\end{landscape}
+
+\begin{landscape}
+\begin{figure}
+\centering
+\includegraphics[scale=0.7]{back2.png}%ext=pdf,jpg,png
+\caption{Script BackTracking}
+\label{fig:back2}
+\end{figure}
+\end{landscape}
+
+\begin{landscape}
+\begin{figure}
+\centering
+\includegraphics[scale=0.7]{back3.png}%ext=pdf,jpg,png
+\caption{Script BackTracking}
+\label{fig:back3}
+\end{figure}
+\end{landscape}
+
+\section{Script Level Sets}
+\begin{landscape}
+\begin{figure}
+\centering
+\includegraphics[scale=0.7]{level1.png}%ext=pdf,jpg,png
+\caption{Script Level Sets}
+\label{fig:level1}
+\end{figure}
+\end{landscape}
+
+\begin{landscape}
+\begin{figure}
+\centering
+\includegraphics[scale=0.7]{level2.png}%ext=pdf,jpg,png
+\caption{Script Level Sets}
+\label{fig:level2}
+\end{figure}
+\end{landscape}
+
+\begin{landscape}
+\begin{figure}
+\centering
+\includegraphics[scale=0.7]{level3.png}%ext=pdf,jpg,png
+\caption{Script Level Sets}
+\label{fig:level3}
+\end{figure}
+\end{landscape}
+
+
 \begin{thebibliography}{1}
 \bibitem{ITK05} L. Ibáñez, W. Schroeder, L. Ng, J. Cates.{\em ``The ITK Software Guide''} 2005
 \bibitem{VTK01} W. Schroeder {\em ``The VTK User´s Guide''} Kitware,Inc. 2001
