@@ -204,6 +204,7 @@ IF(AMI_CHECK_BRANCH)
 ENDIF(AMI_CHECK_BRANCH)
 
 
+
 OPTION(AMI_USE_VTK "Use VTK: recommended" ON)
 
 IF(AMI_USE_VTK)
@@ -361,6 +362,7 @@ add_subdirectory (../wxParams/src binary_dir )
 add_subdirectory (OpenGL)
 add_subdirectory (wxSamples/penguin)
 add_subdirectory (wxStcFrame)
+add_subdirectory (wxCode/wxTreeListCtrl)
 add_subdirectory (Voxels)
 add_subdirectory (AMILab)
 
@@ -409,6 +411,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapITK
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapImports
   ${AMILAB_SOURCE_DIR}/wxStcFrame
+  ${AMILAB_SOURCE_DIR}/wxCode/wxTreeListCtrl
   ${AMILAB_SOURCE_DIR}
   ${AMILAB_SOURCE_DIR}/../Pixmaps
   ${AMILAB_BINARY_DIR}
@@ -473,21 +476,25 @@ add_executable (${AMILAB_BIN} WIN32
 
 
 SET(amilab_ownlibs
-  Language
   WrapImports
-  WrapVTK
   WrapmyVTK
   WrapFilters
   WrapSystem
-  WrapITK
   WrapAMIFluid
-  WrapWII
+  WrapSurface
+  WrapDessinImage
   WrapInterface
+  WrapWxWidgets
   WrapBasicTypes
   WrapCommon
-  WrapWxWidgets
   WrapIO
+  WrapImage
+  Language
+  WrapVTK
+  WrapWII
+  WrapITK
   AMILab
+  Language
   AMImage
   Contours
   Coordinates
@@ -510,6 +517,7 @@ SET(amilab_ownlibs
 # wrapped wxwidgets samples
   penguin
   wxStcFrame
+  wxTreeListCtrl
 )
 
 
@@ -620,6 +628,10 @@ install(DIRECTORY ${AMILAB_SOURCE_DIR}/../scripts
 #        COMPONENT scripts
         FILES_MATCHING PATTERN "*.amil"
          PATTERN "*.sh"
+         PATTERN "*.py"
+         PATTERN "*.png"
+          PATTERN "*.txt"
+        PATTERN "*.sh"
          PATTERN "*.html"
         PATTERN ".svn" EXCLUDE
         PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
@@ -654,6 +666,9 @@ if (UNIX)
           )
 endif(UNIX)
 
+
+#Test for amilab.
+#INCLUDE(${PROJECT_SOURCE_DIR}/../CTEST/amilab_tests.cmake)
 
 
 #Test for amilab.

@@ -1,6 +1,10 @@
 /*
  *  subPixel2D.cpp
  */
+#ifdef WIN32
+  #include <float.h>
+  #define isnan _isnan
+#endif
 
 #include "wrapSubPixel2D.h"
 #include <cmath>

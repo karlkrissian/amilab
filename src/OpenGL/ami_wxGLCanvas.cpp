@@ -65,6 +65,7 @@ static const std::string glErrorString( GLenum err)
       #endif
       default: return (boost::format("Unknown error number %1%") % err).str();
     }
+  else return std::string("");
 }
 
 
@@ -1899,11 +1900,11 @@ InrImage* ami_wxGLCanvas::GetGLImage()
     n = 0;
     Pour ( y,0,height-inity-1 )
     Pour ( x,0,width-initx-1 )
-    im  ->BufferPos ( x,h-1-y,0 );
-    im  ->VectFixeValeurs ( pixels_r[n],
-                            pixels_g[n],
-                            pixels_b[n] );
-    n++;
+      im  ->BufferPos ( x,h-1-y,0 );
+      im  ->VectFixeValeurs ( pixels_r[n],
+                              pixels_g[n],
+                              pixels_b[n] );
+      n++;
     FinPour
     FinPour
 

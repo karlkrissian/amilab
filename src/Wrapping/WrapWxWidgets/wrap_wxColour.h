@@ -17,9 +17,8 @@
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
-#include <wx/html/htmlwin.h>
 
-#include <wx/sizer.h>
+#include <wx/colour.h>
 
 class WrapClass_wxColour : public WrapClassBase
 {
@@ -27,9 +26,11 @@ class WrapClass_wxColour : public WrapClassBase
 
   // for nested classes
   typedef WrapClass_wxColour::ptr _parentclass_ptr;
+  typedef wxColour _obj_type;
 
   public:
-    boost::shared_ptr<wxColour> _obj;
+    boost::shared_ptr<_obj_type> _obj;
+    const boost::shared_ptr<_obj_type>& GetObj() const { return _obj; }
 
     /// Constructor
     WrapClass_wxColour(boost::shared_ptr<wxColour> val): _obj(val)
@@ -52,6 +53,8 @@ class WrapClass_wxColour : public WrapClassBase
 
     ADD_CLASS_METHOD(Set,    "Sets the RGB intensity values using the given values (first overload), extracting them from the packed long (second overload), using the given string (third overloard). When using third form, Set() accepts: colour names (those listed in wxTheColourDatabase), the CSS-like \"RGB(r,g,b)\" syntax (case insensitive) and the HTML-like syntax (i.e. \"#\" followed by 6 hexadecimal digits for red, green, blue components).Returns true if the conversion was successful, false otherwise.");
 
+    ADD_CLASS_METHOD(copy, "Copy constructor.")
+
     void AddMethods( _parentclass_ptr& this_ptr ) {
       AddVar_Alpha(       this_ptr);
       AddVar_Blue(        this_ptr);
@@ -61,6 +64,7 @@ class WrapClass_wxColour : public WrapClassBase
       AddVar_IsOk(        this_ptr);
       AddVar_Red(         this_ptr);
       AddVar_Set(         this_ptr);
+      AddVar_copy(        this_ptr);
     }
 
 };

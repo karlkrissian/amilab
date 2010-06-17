@@ -22,4 +22,8 @@ InrImage* wrapComputePV(ParamList*);
 // Wrapping functions:
 InrImage* wrapComputePV_subdiv(ParamList*);
 
+InrImage* wrapComputeAnalyticPV(ParamList* p);
+
+InrImage* wrapComputeAnalyticPS(ParamList* p);
+
 #endif // _wrapComputePV_h_

@@ -43,6 +43,7 @@
 
 #include "wrapSubPixel2D.h"
 #include "wrapGenerateRamp.h"
+#include "wrap_SurfacePoly.h"
 
 extern VarContexts  Vars;
 
@@ -80,6 +81,9 @@ void AddWrapFilters(){
 
   ADDOBJECTVAR_NAME(C_wrap_imagefunction,"ComputePV",       wrapComputePV);
   ADDOBJECTVAR_NAME(C_wrap_imagefunction,"ComputePV_subdiv",wrapComputePV_subdiv);
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction,"ComputeAnalyticPV",wrapComputeAnalyticPV);
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction,"ComputeAnalyticPS",wrapComputeAnalyticPS);
+
   ADDOBJECTVAR_NAME(C_wrap_imagefunction,"DirSum",          wrap_DirSum);
   ADDOBJECTVAR_NAME(C_wrap_imagefunction,"ImTranslate",     wrap_ImTranslate);
 
@@ -1037,16 +1041,20 @@ BasicVariable::ptr Wrap_SmoothLinesToSplines(ParamList* p)
     float samplingstep = 0.1f;
     int n=0;
 
-  if (!get_val_ptr_param<SurfacePoly>(  input,        p, n)) HelpAndReturnVarPtr;
+  //using namespace amilab;
+  FUNC_GET_OBJECT_PARAM(SurfacePoly,varsurf,objsurf);
+  if (!objsurf.get()) HelpAndReturnVarPtr;
   if (!get_val_param<float>(    samplingstep, p, n)) HelpAndReturnVarPtr;
 
 
-  SurfacePoly::ptr surf_result (Func_SmoothLinesToSplines( input, samplingstep ));
+//  SurfacePoly::ptr surf_result (Func_SmoothLinesToSplines( input, samplingstep ));
 
-  Variable<SurfacePoly>::ptr varres(
-    new Variable<SurfacePoly>("interpolatedsplines_result",surf_result));
+  return CreateVar_SurfacePoly(Func_SmoothLinesToSplines( objsurf.get(),
+                                  samplingstep ));
+//Variable<SurfacePoly>::ptr varres(
+//    new Variable<SurfacePoly>("interpolatedsplines_result",surf_result));
 
-  return varres;
+//  return varres;
 
 
 } // Wrap_SmoothLinesToSplines()

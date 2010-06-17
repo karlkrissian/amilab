@@ -48,12 +48,10 @@ SET_TESTS_PROPERTIES(${name-test}
 
 ENDMACRO(ADD_AMILAB_TESTS)
 #-------------------------------------------------------------------------------
-
 #
 # Test: Segmentation.
 #
 ADD_AMILAB_TESTS(test_levelsets "-quit" "${PROJECT_SOURCE_DIR}/../tests/Segmentation/test_levelsets.amil")
-
 #
 # test: InputOutput.
 #
@@ -76,11 +74,34 @@ SET(options "FirstParam" "SecondParam" "ThirdParam" "FourthParam" "FifthParam")
 
 ADD_AMILAB_TESTS(test_parameter "-quit" "${PROJECT_SOURCE_DIR}/../tests/Operations/Basics/test_parameter.amil" ${options})
 
-SET(options "test_fibonacci.amil" "test_prime_number.amil" "test_factorial.amil" "test_greatest_common_divisor.amil"
-            "test_float_type.amil" "test_double_type.amil" "test_inc_and_dec_operator.amil" "test_abs_function.amil"
-            "test_round_function.amil" "test_area_of_circle.amil" "test_trigonometric_functions.amil")
+SET(options "test_fibonacci.amil"    "test_prime_number.amil"   "test_factorial.amil"      "test_greatest_common_divisor.amil"
+            "test_float_type.amil"   "test_double_type.amil"    "test_int_type.amil"       "test_inc_and_dec_operator.amil" 
+            "test_abs_function.amil" "test_round_function.amil" "test_area_of_circle.amil" "test_trigonometric_functions.amil")
 
 FOREACH(option ${options})
   ADD_AMILAB_TESTS(${option} "-quit" "${PROJECT_SOURCE_DIR}/../tests/Operations/Basics/${option}")
 ENDFOREACH(option)
 
+SET(options "test_dessinimage_compare.amil"    "test_dessinimage_isocontour.amil"  "test_dessinimage_update.amil"
+            "test_dessinimage_drawcircle.amil" "test_dessinimage_window_size.amil" "test_dessinimage_position.amil"
+            "test_dessinimage_zoom.amil"       "test_dessinimage_getimage.amil"    "test_dessinimage_setCompTransf.amil"
+            "test_dessinimage_vect.amil"
+   )
+
+FOREACH(option ${options})
+  ADD_AMILAB_TESTS(${option} "-quit" "${PROJECT_SOURCE_DIR}/../tests/Operations/Basics/${option}")
+ENDFOREACH(option)
+SET(options "test_image_creation_scalar.amil"     "test_image_creation_vectorial.amil"
+            "test_image_translation_scalar.amil"  "test_image_translation_vectorial.amil"
+            "test_image_txtytz_vectorial.amil"    "test_image_txtytz_scalar.amil"
+            "test_image_setvoxelsize_scalar.amil" "test_image_setvoxelsize_vectorial.amil"
+            "test_image_conversion_double.amil"   "test_image_conversion_float.amil"
+            "test_image_conversion_uint.amil"     "test_image_conversion_int.amil"
+            "test_image_conversion_ushort.amil"   "test_image_conversion_short.amil"
+            "test_image_conversion_uchar.amil"    "test_image_conversion_char.amil"
+            "test_image_vdim.amil"                "test_image_type.amil"
+   )
+
+FOREACH(option ${options})
+  ADD_AMILAB_TESTS(${option} "-quit" "${PROJECT_SOURCE_DIR}/../tests/Operations/Basics/${option}")
+ENDFOREACH(option)

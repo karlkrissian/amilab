@@ -11,7 +11,7 @@
 namespace amilab {
 
 template <class VType, class SizeType>
-class FVector 
+class ami_FVector 
 {
     VType* data;
     bool data_allocated;
@@ -20,7 +20,7 @@ class FVector
     typedef  SizeType sizetype;
 
   public:
-    FVector( SizeType s, const std::string& name="") 
+    ami_FVector( SizeType s, const std::string& name="") 
     {
       std::cout << __func__ << " size = " << s << std::endl;
       data = (VType*) _mm_malloc (sizeof(VType)*s,16);
@@ -35,7 +35,7 @@ class FVector
       size = s;
     }
 
-    FVector(VType* d, SizeType s, const std::string& name="", bool align = true) 
+    ami_FVector(VType* d, SizeType s, const std::string& name="", bool align = true) 
     {
       size = s;
       data = d;
@@ -48,7 +48,7 @@ class FVector
       }
     }
 
-    ~FVector() {
+    ~ami_FVector() {
       if (allocated_size>0)
         _mm_free(data);
     }
@@ -78,18 +78,18 @@ class FVector
 /*
 #define DECL_FVECTOR_POINT_OPERATION(op) \
   template <class VT, class ST> \
-  void FVector_##op( FVector<VT,ST>& v1, FVector<VT,ST>& v2, \
-                    FVector<VT,ST>& res);
+  void FVector_##op( ami_FVector<VT,ST>& v1, ami_FVector<VT,ST>& v2, \
+                    ami_FVector<VT,ST>& res);
 
 #define DECL_FVECTOR_POINT_OPERATION_SSE(type,op) \
   template <class VT, class ST> \
-  void FVector_##op##_##type##_sse( FVector<VT,ST>& v1, FVector<VT,ST>& v2, \
-                               FVector<VT,ST>& res);
+  void FVector_##op##_##type##_sse( ami_FVector<VT,ST>& v1, ami_FVector<VT,ST>& v2, \
+                               ami_FVector<VT,ST>& res);
 
 #define DECL_FVECTOR_POINT_OPERATION_SSE_UNALIGNED(type,op) \
   template <class VT, class ST> \
-  void FVector_##op##_##type##_sse_unaligned( FVector<VT,ST>& v1, FVector<VT,ST>& v2, \
-                               FVector<VT,ST>& res);
+  void FVector_##op##_##type##_sse_unaligned( ami_FVector<VT,ST>& v1, ami_FVector<VT,ST>& v2, \
+                               ami_FVector<VT,ST>& res);
 
 DECL_FVECTOR_POINT_OPERATION(add)
 DECL_FVECTOR_POINT_OPERATION(sub)

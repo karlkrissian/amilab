@@ -209,10 +209,10 @@ proc DisplayData() {
   global
   show i1;
   #i1_draw.compare(i2);
-  i1_draw.setvector(1,u);
-  i1_draw.setvector(2,u_o);
+  i1_draw._setvector(0,u);
+  i1_draw._setvector(1,u_o);
+  i1_draw.DrawVector(0,1);
   i1_draw.DrawVector(1,1);
-  i1_draw.DrawVector(2,1);
   #i1_draw.DisplayVectors;
   local
 }
@@ -221,8 +221,8 @@ proc DisplayErrors() {
 #    -----------
   global
   show i1;
-  i1_draw.compare(ang_error);
-  i1_draw.compare(eucl_error);
+  i1_draw._compare(ang_error);
+  i1_draw._compare(eucl_error);
   local
 }
 
@@ -326,8 +326,8 @@ printn 1
   dimy = floor(i1_0.ty/8)*8
   dimz = floor(i1_0.tz/8)*8
 
-  i1 = i1_0[0:dimx-1,0:dimy-1,0:dimz-1]
-  i2 = i2_0[0:dimx-1,0:dimy-1,0:dimz-1]
+  i1 = i1_0[0:(dimx-1),0:(dimy-1),0:(dimz-1)]
+  i2 = i2_0[0:(dimx-1),0:(dimy-1),0:(dimz-1)]
 
 
   mask = (UCHAR) (i1*0+255)
@@ -371,8 +371,8 @@ proc CB_LoadElast2D() {
   dimy = floor(i1_0.ty/8)*8
   dimz = 1
 
-  i1 = i1_0[0:dimx-1,0:dimy-1,0:dimz-1]
-  i2 = i2_0[0:dimx-1,0:dimy-1,0:dimz-1]
+  i1 = i1_0[0:(dimx-1),0:(dimy-1),0:(dimz-1)]
+  i2 = i2_0[0:(dimx-1),0:(dimy-1),0:(dimz-1)]
 
   mask = (UCHAR) (i1*0+255)
 
@@ -411,8 +411,8 @@ proc CB_LoadArguments( NUM nargs ) {
     dimy = floor(i1_0.ty/8)*8
     dimz = 1
   
-    i1 = i1_0[0:dimx-1,0:dimy-1,0:dimz-1]
-    i2 = i2_0[0:dimx-1,0:dimy-1,0:dimz-1]
+    i1 = i1_0[0:(dimx-1),0:(dimy-1),0:(dimz-1)]
+    i2 = i2_0[0:(dimx-1),0:(dimy-1),0:(dimz-1)]
   
     mask = (UCHAR) (i1*0+255)
   
@@ -704,12 +704,12 @@ proc CB_ApplyZoom() {
 
   if (exists(i1_draw)) {
     // get the zoom
-    _xmin=i1_draw.GetXmin
-    _xmax=i1_draw.GetXmax
-    _ymin=i1_draw.GetYmin
-    _ymax=i1_draw.GetYmax
-    _zmin=i1_draw.GetZmin
-    _zmax=i1_draw.GetZmax
+    _xmin=i1_draw.GetXmin()
+    _xmax=i1_draw.GetXmax()
+    _ymin=i1_draw.GetYmin()
+    _ymax=i1_draw.GetYmax()
+    _zmin=i1_draw.GetZmin()
+    _zmax=i1_draw.GetZmax()
     // check if dimensions are multiples of 8
     _xmax = _xmin+(floor((_xmax-_xmin)/8)-1)*8-1
     _ymax = _ymin+(floor((_ymax-_ymin)/8)-1)*8-1
@@ -1381,9 +1381,9 @@ proc InputPredef_gui() {
 
   w_main.AddPage("Pre-defined")
   
-  w_main.BeginBox("Load pre-defined images")
+  w_main.BeginBoxPanel("Load pre-defined images")
 
-    input_id = w_main.AddEnum(data_id)
+    input_id = w_main.AddEnum( &data_id)
     w_main.AddEnumChoice(input_id,"New Sphere 128")
     w_main.AddEnumChoice(input_id,"New Sphere 64")
     w_main.AddEnumChoice(input_id,"Sphere")
@@ -1395,24 +1395,24 @@ proc InputPredef_gui() {
     w_main.AddEnumChoice(input_id,"Elastography_3D")
     w_main.AddEnumChoice(input_id,"Elastography 2D")
     
-    zoom_id            = w_main.AddBoolean(zoom)
-    sw_id              = w_main.AddBoolean(symmetric_warp)
+    zoom_id            = w_main.AddBoolean( &zoom)
+    sw_id              = w_main.AddBoolean( &symmetric_warp)
   
     w_main.AddButton("Load",    CB_LoadData)
-    w_main.BeginBox("Zoom")
-      w_main.BeginHorizontal
+    w_main.BeginBoxPanel("Zoom")
+      w_main.BeginHorizontal()
       w_main.AddButton("Apply",    CB_ApplyZoom)
       w_main.AddButton("Apply PIV",    CB_ApplyZoomPIV)
       w_main.AddButton("UnZoom",    CB_UnZoom)
-      w_main.EndHorizontal
-    w_main.EndBox
+      w_main.EndHorizontal()
+    w_main.EndBoxPanel()
 
-    w_main.BeginBox("Intensity range")
+    w_main.BeginBoxPanel("Intensity range")
       w_main.AddButton("Apply min. threshold",  CB_ApplyMinThreshold)
-      w_main.AddFloat(minthreshold,-50,1000)
-    w_main.EndBox
+      w_main.AddFloat( &minthreshold,  "minthreshold", -50,1000)
+    w_main.EndBoxPanel()
   
-  w_main.EndBox
+  w_main.EndBoxPanel()
   ## w_main.EndPanel
 
   local_new
@@ -1425,16 +1425,16 @@ proc InputManual_gui() {
 
   w_main.AddPage("Manual")
   
-  w_main.BeginBox("Manual Selection of input files")
-    w_main.AddString(   filedir,"input directory")
-    w_main.AddFilename( i1_fname,  "image 1",filedir,"*.ami*")
-    w_main.AddFilename( i2_fname,  "image 2",filedir,"*.ami*")
-    w_main.AddBoolean(load_mask)
-    w_main.AddFilename( mask_fname,"mask",   filedir,"*.ami*")
+  w_main.BeginBoxPanel("Manual Selection of input files")
+    w_main.AddString( &filedir,"input directory")
+    w_main.AddFilename( &i1_fname,  "image 1",filedir,"*.ami*")
+    w_main.AddFilename( &i2_fname,  "image 2",filedir,"*.ami*")
+    w_main.AddBoolean( &load_mask)
+    w_main.AddFilename( &mask_fname,"mask",   filedir,"*.ami*")
     
-    w_main.AddFilename( flow_fname,"flow",   filedir,"*.ami*")
+    w_main.AddFilename( &flow_fname,"flow",   filedir,"*.ami*")
     w_main.AddButton("Load data",CB_LoadInputData)
-  w_main.EndBox
+  w_main.EndBoxPanel()
   ## w_main.EndPanel
   
   local_new
@@ -1446,13 +1446,13 @@ proc Input_gui() {
   global_new
 
   w_main.AddPage("Input")
-  w_main.BeginBook
+  w_main.BeginBook()
     // predefined inputs
     InputPredef_gui()
   
     // Create Input Panel
     InputManual_gui()
-  w_main.EndBook
+  w_main.EndBook()
   ## w_main.EndPanel
 
   local_new
@@ -1464,46 +1464,46 @@ proc Correlation_gui() {
   global_new
 
   w_main.AddPage("Correl")
-  w_main.BeginBook
+  w_main.BeginBook()
   
     w_main.AddPage("Main")
-    w_main.BeginBox("Cross-correlation")
-      corr_presmooth_id = w_main.AddFloat(corr_presmooth,0,10)
+    w_main.BeginBoxPanel("Cross-correlation")
+      corr_presmooth_id = w_main.AddFloat( &corr_presmooth,  "corr_presmooth", 0,10)
       
-      w_main.BeginBox("Spacing")
-      step_x_id = w_main.AddInt(step_x,1,20)
-      step_y_id = w_main.AddInt(step_y,1,20)
-      step_z_id = w_main.AddInt(step_z,1,20)
-      w_main.EndBox
+      w_main.BeginBoxPanel("Spacing")
+      step_x_id = w_main.AddInt( &step_x,  "step_x", 1,20)
+      step_y_id = w_main.AddInt( &step_y,  "step_y", 1,20)
+      step_z_id = w_main.AddInt( &step_z,  "step_z", 1,20)
+      w_main.EndBoxPanel()
       
-      w_main.BeginBox("Window")
-      winsize_x_id = w_main.AddInt(winsize_x,2,8)
-      winsize_y_id = w_main.AddInt(winsize_y,2,8)
-      winsize_z_id = w_main.AddInt(winsize_z,2,8)
-      w_main.EndBox
+      w_main.BeginBoxPanel("Window")
+      winsize_x_id = w_main.AddInt( &winsize_x,  "winsize_x", 2,8)
+      winsize_y_id = w_main.AddInt( &winsize_y,  "winsize_y", 2,8)
+      winsize_z_id = w_main.AddInt( &winsize_z,  "winsize_z", 2,8)
+      w_main.EndBoxPanel()
       
-      windef_id         = w_main.AddInt(windef,0,1)
-      solenoidal_cor_id = w_main.AddBoolean(solenoidal_cor)
-    w_main.EndBox
+      windef_id         = w_main.AddInt( &windef,  "windef", 0,1)
+      solenoidal_cor_id = w_main.AddBoolean( &solenoidal_cor)
+    w_main.EndBoxPanel()
     ## w_main.EndPanel
     
   
     w_main.AddPage("Control")
-    w_main.BeginBox("Cross-correlation Control")
-      nbiterations_id   = w_main.AddInt(nbiterations,1,20)
+    w_main.BeginBoxPanel("Cross-correlation Control")
+      nbiterations_id   = w_main.AddInt( &nbiterations,  "nbiterations", 1,20)
       sequence_id = w_main.AddButton("Sequence 16x2,8x2,4x2", CB_RunSequence)
       
-      corrdownsample_id = w_main.AddBoolean(corr_downsample)
-      numthreads_id     = w_main.AddInt(num_threads,1,10)
-    w_main.EndBox
+      corrdownsample_id = w_main.AddBoolean( &corr_downsample)
+      numthreads_id     = w_main.AddInt( &num_threads,  "num_threads", 1,10)
+    w_main.EndBoxPanel()
     ## w_main.EndPanel
 
-  w_main.EndBook
+  w_main.EndBook()
 
-    w_main.BeginHorizontal
+    w_main.BeginHorizontal()
       restart_id  = w_main.AddButton("Restart", CB_Restart_corr)
       iterate_id  = w_main.AddButton("Iterate", CB_Iterate_corr)
-    w_main.EndHorizontal
+    w_main.EndHorizontal()
 
   ## w_main.EndPanel
   
@@ -1519,15 +1519,15 @@ proc Alphatests_gui() {
 
   w_main.AddPage("Optim.")
 
-    w_main.BeginBox("Optimization of the smoothing parameter")
-    alfa_min_id        = w_main.AddFloat(alfa_min,0.01,20)
-    alfa_max_id        = w_main.AddFloat(alfa_max,0.01,40)
-    alfa_step_id       = w_main.AddFloat(alfa_step,0.01,2)
-    alfa_findmin_it_id = w_main.AddInt(  alfa_findmin_it,1,20)
-    alfa_tests_init_id = w_main.AddBoolean(alfa_init_zero)
+    w_main.BeginBoxPanel("Optimization of the smoothing parameter")
+    alfa_min_id        = w_main.AddFloat( &alfa_min,  "alfa_min", 0.01,20)
+    alfa_max_id        = w_main.AddFloat( &alfa_max,  "alfa_max", 0.01,40)
+    alfa_step_id       = w_main.AddFloat( &alfa_step,  "alfa_step", 0.01,2)
+    alfa_findmin_it_id = w_main.AddInt( &alfa_findmin_it,  "alfa_findmin_it", 1,20)
+    alfa_tests_init_id = w_main.AddBoolean( &alfa_init_zero)
     alfa_start_id      = w_main.AddButton("Run Alpha Test", CB_RunAlphaTests)
     alfa_findmin_id    = w_main.AddButton("Find Minimum",   CB_AlphaFindMin)
-    w_main.EndBox  
+    w_main.EndBoxPanel()  
   ## w_main.EndPanel
 
   local_new
@@ -1538,65 +1538,65 @@ proc PDE_flow_gui() {
 
   w_main.AddPage("VarOF")
   
-    w_main.BeginBook
+    w_main.BeginBook()
   
       w_main.AddPage("Main")
-        var_presmooth_id = w_main.AddFloat(var_presmooth,0,10)
+        var_presmooth_id = w_main.AddFloat( &var_presmooth,  "var_presmooth", 0,10)
 
-        beta_id         = w_main.AddFloat(beta,0.01,5)
-        alfa_id         = w_main.AddFloat(alfa,0.01,40)
-        alfa_norm_id    = w_main.AddBoolean(alpha_normalization)
-        alfa_epsilon_id = w_main.AddInt(alpha_norm_epsilon,-3,0)
+        beta_id         = w_main.AddFloat( &beta,  "beta", 0.01,5)
+        alfa_id         = w_main.AddFloat( &alfa,  "alfa", 0.01,40)
+        alfa_norm_id    = w_main.AddBoolean( &alpha_normalization)
+        alfa_epsilon_id = w_main.AddInt( &alpha_norm_epsilon,  "alpha_norm_epsilon", -3,0)
         
-        Nscales_id           = w_main.AddInt(Nscales,1,5)
-        gradtype_id          = w_main.AddInt(gradtype,0,3)
+        Nscales_id           = w_main.AddInt( &Nscales,  "Nscales", 1,5)
+        gradtype_id          = w_main.AddInt( &gradtype,  "gradtype", 0,3)
       
-        w_main.BeginBox("Convergence")
-        Conv_Scales_exp_id   = w_main.AddInt(Conv_Scales_exp,-5,0)
-        Conv_GS_exp_id  = w_main.AddInt(Conv_GS_exp,-10,0)
-        w_main.EndBox
+        w_main.BeginBoxPanel("Convergence")
+        Conv_Scales_exp_id   = w_main.AddInt( &Conv_Scales_exp,  "Conv_Scales_exp", -5,0)
+        Conv_GS_exp_id  = w_main.AddInt( &Conv_GS_exp,  "Conv_GS_exp", -10,0)
+        w_main.EndBoxPanel()
       
       # w_main.EndPanel
       w_main.AddPage("Options")
-        w_main.BeginHorizontal
-        incomp_constraint_id = w_main.AddBoolean(incompressibility_constraint)
-        solenoidal_pde_id    = w_main.AddBoolean(solenoidal_pde)
-        w_main.EndHorizontal
-        w_main.BeginHorizontal
-        global_constraint_id = w_main.AddBoolean(global_constraint)
-        smoothgrad_id        = w_main.AddBoolean(smoothgradient)
-        w_main.EndHorizontal
-        w_main.BeginHorizontal
-        sym_id               = w_main.AddBoolean(symmetric)
-        use_splines_id      = w_main.AddBoolean(use_splines)
-        w_main.EndHorizontal
+        w_main.BeginHorizontal()
+        incomp_constraint_id = w_main.AddBoolean( &incompressibility_constraint)
+        solenoidal_pde_id    = w_main.AddBoolean( &solenoidal_pde)
+        w_main.EndHorizontal()
+        w_main.BeginHorizontal()
+        global_constraint_id = w_main.AddBoolean( &global_constraint)
+        smoothgrad_id        = w_main.AddBoolean( &smoothgradient)
+        w_main.EndHorizontal()
+        w_main.BeginHorizontal()
+        sym_id               = w_main.AddBoolean( &symmetric)
+        use_splines_id      = w_main.AddBoolean( &use_splines)
+        w_main.EndHorizontal()
         
-        boundtype_id = w_main.AddEnum(boundarytype)
+        boundtype_id = w_main.AddEnum( &boundarytype)
         w_main.AddEnumChoice(boundtype_id,"border")
         w_main.AddEnumChoice(boundtype_id,"outside mask")
       
       # w_main.EndPanel
       w_main.AddPage("Parameters")
-          w_main.BeginBox("Param File")
-            pdeparam_id =  w_main.AddFilename(pde_param_file, "OF_pde_param.txt",filedir,"*.*")
-            w_main.BeginHorizontal
+          w_main.BeginBoxPanel("Param File")
+            pdeparam_id =  w_main.AddFilename( &pde_param_file, "OF_pde_param.txt",filedir,"*.*")
+            w_main.BeginHorizontal()
             setparam_id  = w_main.AddButton("Set Param", CB_PDE_SetParam)
             saveparam_id = w_main.AddButton("Save Param",CB_SaveParam)
             readparam_id = w_main.AddButton("Read Param",CB_ReadParam)
-            w_main.EndHorizontal
-          w_main.EndBox
+            w_main.EndHorizontal()
+          w_main.EndBoxPanel()
       # w_main.EndPanel
   
       // Test with parameter alpha
       Alphatests_gui()
   
-    w_main.EndBook
+    w_main.EndBook()
   
     #w_main.AddPage("Control")
-      w_main.BeginHorizontal
+      w_main.BeginHorizontal()
       restart_id   = w_main.AddButton("Restart", CB_Restart_pde)
       iterate_id   = w_main.AddButton("Iterate", CB_Iterate_pde)
-      w_main.EndHorizontal
+      w_main.EndHorizontal()
     ## w_main.EndPanel
 
   # w_main.EndPanel
@@ -1609,25 +1609,25 @@ proc FluidPapers_gui() {
 
   w_main.AddPage("Fluid Papers")
   
-  w_main.BeginBox("Paper Tests for the Sphere")
-  w_main.BeginHorizontal
+  w_main.BeginBoxPanel("Paper Tests for the Sphere")
+  w_main.BeginHorizontal()
   paper_varparam_test_id      = w_main.AddButton("Var Param",   CB_VarParamTest )
   paper_corr_test_id     = w_main.AddButton("Corr", CB_CorrTest)
   paper_var_test_id      = w_main.AddButton("Var", CB_VarTest )
   paper_corrvar_test_id  = w_main.AddButton("Corr+Var", CB_CorrVarTest )
-  w_main.EndHorizontal
-  w_main.EndBox
+  w_main.EndHorizontal()
+  w_main.EndBoxPanel()
   
-  w_main.BeginBox("Paper Tests for Johan's data")
-  w_main.BeginHorizontal
+  w_main.BeginBoxPanel("Paper Tests for Johan's data")
+  w_main.BeginHorizontal()
   paper_corrparam_test_id      = w_main.AddButton("Corr Param",   CB_JohanCorrParamTest )
   paper_varparam_test_id      = w_main.AddButton("Var Param",   CB_JohanVarParamTest )
   paper_corr_test_id     = w_main.AddButton("Corr", CB_JohanCorrTest)
   paper_var_test_id      = w_main.AddButton("Var", CB_JohanVarTest )
   paper_corrvar_test_id  = w_main.AddButton("Corr+Var", CB_JohanCorrVarTest )
   
-  w_main.EndHorizontal
-  w_main.EndBox
+  w_main.EndHorizontal()
+  w_main.EndBoxPanel()
 }
 
 
@@ -1636,8 +1636,8 @@ proc Stats_gui() {
 
   printn "Stats_gui begin"
   w_main.AddPage("Stats")
-    log_vectnewcomp_id = w_main.AddInt(log_vectnewcomp,-5,0)
-    mask_nonzero_id = w_main.AddBoolean(mask_nonzero)
+    log_vectnewcomp_id = w_main.AddInt( &log_vectnewcomp,  "log_vectnewcomp", -5,0)
+    mask_nonzero_id = w_main.AddBoolean( &mask_nonzero)
   printn "Stats_gui end"
 }
 
@@ -1646,8 +1646,9 @@ proc Stats_gui() {
 proc Main_gui() {
   global_new
 
-  w_main=ParamWin("Flow Motion")
-  w_main.BeginBook
+  import = &global::ami_import;
+  w_main = import->ParamPanel("Flow Motion")
+  w_main.BeginBook()
 
     // Loading input files
     Input_gui()
@@ -1664,21 +1665,21 @@ proc Main_gui() {
     // Statistics parameters
     Stats_gui()
 
-  w_main.EndBook
+  w_main.EndBook()
 
   #w_main.AddPage("Results")
     #w_main.BeginBox("Results Visualization and Processing")
-    w_main.BeginHorizontal
+    w_main.BeginHorizontal()
     w_main.AddButton("Display",DisplayData)
     w_main.AddButton("Stats",CB_Stats)
     w_main.AddButton("Err Images",DisplayErrors)
-    w_main.EndHorizontal
+    w_main.EndHorizontal()
     #w_main.EndBox
   ## w_main.EndPanel
 
-  w_main.CreateWin
-  w_main.Display
-  w_main.update
+  w_main.Update()
+  w_main.Display()
+  w_main.Update(-1)
 
   local_new
 }

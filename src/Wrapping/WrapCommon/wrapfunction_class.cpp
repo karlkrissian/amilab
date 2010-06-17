@@ -22,7 +22,9 @@ void WrapClassMember::ShowHelp()
   
 
   for(int n=0;n<nb_param;n++) {
-    paramlist_str += (boost::format("p%1%") % n).str(); 
+    //if ()
+    paramlist_str += (boost::format("%1% p%2%") % paramtypes[n] %n).str(); 
+    
     if (n<nb_param-1) paramlist_str += ", ";
   }
 

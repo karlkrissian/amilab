@@ -25,7 +25,7 @@ Class Lines2D \
     ::win.Update(-1)
     show ::input
   }
-  ::load_input.Comments("Load input image")
+  Comments( ::load_input, "Load input image")
 
   proc ::Run() \
   {
@@ -76,7 +76,7 @@ Class Lines2D \
     show ::input
     if (exists(::lambda_max)) {
       show ::lambda_max
-      ::input_draw.compare(::lambda_max_draw)
+      ::input_draw._compare(::lambda_max_draw)
     } else {
       InfoDialog "The algorithm has not been run yet ..."
     }
@@ -85,17 +85,17 @@ Class Lines2D \
 
   #----------------------------
   proc ::Close() {
-    ::win.HidePanel
+    ::win.HidePanel()
     delvars GetObjectName(::Close)
   }
-  ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+  Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
   #----------------------------
   proc ::CloseAll() {
     eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
     ::Close
   }
-  ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+  Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
       
 
 
@@ -107,12 +107,12 @@ Class Lines2D \
       ::win.AddPage("IO")
         ::win.BeginBoxPanel("Input Image")
           # set the input image
-          ::win.BeginHorizontal
+          ::win.BeginHorizontal()
             ::win.AddImageChoice( &::input_name, "")
             ::win.AddButton("Load",::load_input)
             #::win.AddButton("Ref",::ref_input)
-          ::win.EndHorizontal
-        ::win.EndBoxPanel
+          ::win.EndHorizontal()
+        ::win.EndBoxPanel()
 
       ::win.AddPage("Params")
         ::win.BeginBoxPanel("Scales")
@@ -123,11 +123,11 @@ Class Lines2D \
         ::win.EndBoxPanel()
         ::win.AddButton("Run",::Run)
         ::win.AddButton("Display",::Display)
-    ::win.EndBook
-      ::win.BeginHorizontal
+    ::win.EndBook()
+      ::win.BeginHorizontal()
       ::win.AddButton("Close",          ::Close)
       ::win.AddButton("Close All",          ::CloseAll)
-    ::win.EndHorizontal  
+    ::win.EndHorizontal()  
 
     ::win.Update(-1)
     ::win.Display()

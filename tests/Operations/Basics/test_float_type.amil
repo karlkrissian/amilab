@@ -132,13 +132,16 @@ printn  "\t\t C=floor B --> C=%1% (FLOOR)" % C
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 printn  "\n\t\t Pending operations to implement (AMILAB-2.1.0): "
+printn  "\n\t\t Pending operations to implement (AMILAB-2.1.0): "
+printn  "\t\t C=sinh A --> Not implemented" 
+printn  "\t\t C=cosh A --> Not implemented"
 
-A=(FLOAT) Pi
-printn  "\n\t\t A=(FLOAT) Pi --> A=%1% (ASSIGN_OP)" % A
-C=sinh A 
-printn  "\t\t C=sinh A --> C=%1% (SINH)" % C
-C=cosh A
-printn  "\t\t C=cosh A --> C=%1% (COSH)" % C
+#A=(FLOAT) Pi
+#printn  "\n\t\t A=(FLOAT) Pi --> A=%1% (ASSIGN_OP)" % A
+#C=sinh A 
+#printn  "\t\t C=sinh A --> C=%1% (SINH)" % C
+#C=cosh A
+#printn  "\t\t C=cosh A --> C=%1% (COSH)" % C
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

@@ -6,16 +6,18 @@
 #include "driver.h"
 #include <boost/pointer_cast.hpp>
 #include "FloatMatrix.hpp"
+#include "wrapfunctions.hpp"
 
 extern yyip::Driver GB_driver;
 
 #define NEW_SMARTPTR(type, var, value) \
   boost::shared_ptr<type> var(new type(value));
 
+/*
 #define RETURN_VARPTR(type,  value) \
   boost::shared_ptr<type> newval(new type(value)); \
   return Variable<type>::ptr( new Variable<type>(newval));
-
+*/
 
 /// Macros to facilitate the matrix operations
 
@@ -69,7 +71,7 @@ extern yyip::Driver GB_driver;
 //------------------------------------------------------
 
 /// Copy contents to new variable
-template<> BasicVariable::ptr Variable<FloatMatrix>::NewCopy()
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<FloatMatrix>::NewCopy() const
 {
   FloatMatrix::ptr newval( new FloatMatrix( *Pointer()));
   Variable<FloatMatrix>::ptr newvar(new Variable<FloatMatrix>(newval));
@@ -81,20 +83,20 @@ template<> BasicVariable::ptr Variable<FloatMatrix>::NewCopy()
 
 /*
 /// +a
-template<> BasicVariable::ptr Variable<FloatMatrix>::operator +()
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<FloatMatrix>::operator +()
 {
   return NewReference();
 }
 
 /// prefix ++ operator ++a
-template<> BasicVariable::ptr Variable<FloatMatrix>::operator ++()
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<FloatMatrix>::operator ++()
 {
   std::cout << "**" << endl;
   RETURN_VARPTR(FloatMatrix,++RefValue());
 }
 
 /// postfix ++ operator a++
-template<> BasicVariable::ptr Variable<FloatMatrix>::operator ++(int)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<FloatMatrix>::operator ++(int)
 {
   std::cout << "**" << endl;
   RETURN_VARPTR(FloatMatrix,RefValue()++);
@@ -102,25 +104,25 @@ template<> BasicVariable::ptr Variable<FloatMatrix>::operator ++(int)
 */
 
 /// -a
-template<> BasicVariable::ptr Variable<FloatMatrix>::operator -()
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<FloatMatrix>::operator -()
 {
   UNARYOP_MATRIX(this->Pointer(), -); 
 }
 
 /*
 /// prefix -- operator --a
-template<> BasicVariable::ptr Variable<FloatMatrix>::operator --()
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<FloatMatrix>::operator --()
 {  RETURN_VARPTR(FloatMatrix,--RefValue()); }
 
 /// postfix -- operator a--
-template<> BasicVariable::ptr Variable<FloatMatrix>::operator --(int)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<FloatMatrix>::operator --(int)
 {  RETURN_VARPTR(FloatMatrix,RefValue()--);  }
 */
 
 
 
 /// a+b
-template<> BasicVariable::ptr Variable<FloatMatrix>::operator +(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<FloatMatrix>::operator +(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
     MATRIX_OP_EXPR(Pointer(),+,b->GetValueAsDouble());
@@ -137,7 +139,7 @@ template<> BasicVariable::ptr Variable<FloatMatrix>::operator +(const BasicVaria
 
 /*
 /// a+=b
-template<> BasicVariable::ptr Variable<FloatMatrix>::operator +=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<FloatMatrix>::operator +=(const BasicVariable::ptr& b)
 { 
 //  if (b->IsNumeric()) {
 //    RefValue() += b->GetValueAsDouble();
@@ -157,7 +159,7 @@ template<> BasicVariable::ptr Variable<FloatMatrix>::operator +=(const BasicVari
 */
 
 /// a-b
-template<> BasicVariable::ptr Variable<FloatMatrix>::operator -(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<FloatMatrix>::operator -(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
     MATRIX_OP_EXPR(Pointer(),-,b->GetValueAsDouble());
@@ -174,7 +176,7 @@ template<> BasicVariable::ptr Variable<FloatMatrix>::operator -(const BasicVaria
 
 /*
 /// a-=b
-template<> BasicVariable::ptr Variable<FloatMatrix>::operator -=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<FloatMatrix>::operator -=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RefValue() -= b->GetValueAsDouble();
@@ -185,7 +187,7 @@ template<> BasicVariable::ptr Variable<FloatMatrix>::operator -=(const BasicVari
 */
 
 /// a*b
-template<> BasicVariable::ptr Variable<FloatMatrix>::operator *(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<FloatMatrix>::operator *(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
     MATRIX_OP_EXPR(Pointer(),*,b->GetValueAsDouble());
@@ -203,7 +205,7 @@ template<> BasicVariable::ptr Variable<FloatMatrix>::operator *(const BasicVaria
 
 /*
 /// a*=b
-template<> BasicVariable::ptr Variable<FloatMatrix>::operator *=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<FloatMatrix>::operator *=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RefValue() *= b->GetValueAsDouble();
@@ -214,7 +216,7 @@ template<> BasicVariable::ptr Variable<FloatMatrix>::operator *=(const BasicVari
 */
 
 /// a/b
-template<> BasicVariable::ptr Variable<FloatMatrix>::operator /(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<FloatMatrix>::operator /(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
     MATRIX_OP_EXPR(Pointer(),/,b->GetValueAsDouble());
@@ -231,7 +233,7 @@ template<> BasicVariable::ptr Variable<FloatMatrix>::operator /(const BasicVaria
 
 /*
 /// a/=b
-template<> BasicVariable::ptr Variable<FloatMatrix>::operator /=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<FloatMatrix>::operator /=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RefValue() /= b->GetValueAsDouble();
@@ -243,7 +245,7 @@ template<> BasicVariable::ptr Variable<FloatMatrix>::operator /=(const BasicVari
 
 /*
 /// a%b
-template<> BasicVariable::ptr Variable<FloatMatrix>::operator %(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<FloatMatrix>::operator %(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
     RETURN_VARPTR(FloatMatrix, ((int) round(Value())) % ((int) round(b->GetValueAsDouble())));
@@ -253,7 +255,7 @@ template<> BasicVariable::ptr Variable<FloatMatrix>::operator %(const BasicVaria
 }
 
 /// a%=b
-template<> BasicVariable::ptr Variable<FloatMatrix>::operator %=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<FloatMatrix>::operator %=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     RefValue() =  ((int) round(Value())) % ((int) round(b->GetValueAsDouble()));
@@ -266,7 +268,7 @@ template<> BasicVariable::ptr Variable<FloatMatrix>::operator %=(const BasicVari
 //  Comparison Operators
 
 /// a<b
-template<> BasicVariable::ptr Variable<FloatMatrix>::operator <(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<FloatMatrix>::operator <(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     MATRIX_OP_EXPR(Pointer(),<,b->GetValueAsDouble());
@@ -282,7 +284,7 @@ template<> BasicVariable::ptr Variable<FloatMatrix>::operator <(const BasicVaria
 }
 
 /// a<=b
-template<> BasicVariable::ptr Variable<FloatMatrix>::operator <=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<FloatMatrix>::operator <=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     MATRIX_OP_EXPR(Pointer(),<=,b->GetValueAsDouble());
@@ -298,7 +300,7 @@ template<> BasicVariable::ptr Variable<FloatMatrix>::operator <=(const BasicVari
 }
 
 /// a>b
-template<> BasicVariable::ptr Variable<FloatMatrix>::operator >(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<FloatMatrix>::operator >(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     MATRIX_OP_EXPR(Pointer(),>,b->GetValueAsDouble());
@@ -314,7 +316,7 @@ template<> BasicVariable::ptr Variable<FloatMatrix>::operator >(const BasicVaria
 }
 
 /// a>=b
-template<> BasicVariable::ptr Variable<FloatMatrix>::operator >=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<FloatMatrix>::operator >=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     MATRIX_OP_EXPR(Pointer(),>=,b->GetValueAsDouble());
@@ -330,7 +332,7 @@ template<> BasicVariable::ptr Variable<FloatMatrix>::operator >=(const BasicVari
 }
 
 /// a!=b
-template<> BasicVariable::ptr Variable<FloatMatrix>::operator !=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<FloatMatrix>::operator !=(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     MATRIX_OP_EXPR(Pointer(),!=,b->GetValueAsDouble());
@@ -346,7 +348,7 @@ template<> BasicVariable::ptr Variable<FloatMatrix>::operator !=(const BasicVari
 }
 
 /// a==b
-template<> BasicVariable::ptr Variable<FloatMatrix>::operator ==(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<FloatMatrix>::operator ==(const BasicVariable::ptr& b)
 { 
   if (b->IsNumeric()) {
     MATRIX_OP_EXPR(Pointer(),==,b->GetValueAsDouble());
@@ -365,12 +367,12 @@ template<> BasicVariable::ptr Variable<FloatMatrix>::operator ==(const BasicVari
 // Logical operators
 
 /*
-template<> BasicVariable::ptr Variable<FloatMatrix>::operator !() 
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<FloatMatrix>::operator !() 
 {
   RETURN_VARPTR(FloatMatrix,!(Value()>0.5));
 }
 
-template<> BasicVariable::ptr Variable<FloatMatrix>::operator &&(const BasicVariable::ptr& b) 
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<FloatMatrix>::operator &&(const BasicVariable::ptr& b) 
 {
   if (b->IsNumeric()) {
     MATRIX_OP_EXPR(Pointer(),==,b->GetValueAsDouble());
@@ -380,7 +382,7 @@ template<> BasicVariable::ptr Variable<FloatMatrix>::operator &&(const BasicVari
   return this->NewReference(); 
 }
 
-template<> BasicVariable::ptr Variable<FloatMatrix>::operator ||(const BasicVariable::ptr& b) 
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<FloatMatrix>::operator ||(const BasicVariable::ptr& b) 
 {
   if (b->IsNumeric()) {
     RETURN_VARPTR(FloatMatrix,Value() || (bool) (b->GetValueAsDouble()>0.5));
@@ -392,7 +394,7 @@ template<> BasicVariable::ptr Variable<FloatMatrix>::operator ||(const BasicVari
 
 /*
 /// a^b
-template<> BasicVariable::ptr Variable<FloatMatrix>::operator ^(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<FloatMatrix>::operator ^(const BasicVariable::ptr& b)
 { 
   if (b->Type()==type_matrix) {
     DYNAMIC_CAST_VARIABLE(FloatMatrix,b,var_mat2);
@@ -407,7 +409,7 @@ template<> BasicVariable::ptr Variable<FloatMatrix>::operator ^(const BasicVaria
 // Mathematical functions
 
 #define VAR_IMPL_FUNC(type,fname,func) \
-template<> BasicVariable::ptr Variable<type>::m_##fname() \
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<type>::m_##fname() \
 { \
   UNARYOP_MATRIX(this->Pointer(), func); \
 }
@@ -428,7 +430,7 @@ VAR_IMPL_FUNC(FloatMatrix,  sqrt, sqrt)
 
 /*
 //  norm(matrix)
-template<> BasicVariable::ptr Variable<FloatMatrix>::m_norm() 
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<FloatMatrix>::m_norm() 
 { 
   FloatMatrix::ptr res ( Norm(*Pointer()));
   if (!res.get())
@@ -440,7 +442,7 @@ template<> BasicVariable::ptr Variable<FloatMatrix>::m_norm()
 
 /*
 // Image Pixel Type Cast
-template<> BasicVariable::ptr Variable<FloatMatrix>::BasicCast(const int& type)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<FloatMatrix>::BasicCast(const int& type)
 {
   FloatMatrix::ptr res  ( new FloatMatrix( (WORDTYPE) type, "castimage.ami.gz", Pointer().get()));
   (*res) = (*Pointer());
@@ -454,7 +456,7 @@ template<> BasicVariable::ptr Variable<FloatMatrix>::BasicCast(const int& type)
  * @return 
  */
 /*
-template<>  BasicVariable::ptr Variable<FloatMatrix>::operator[](const BasicVariable::ptr& v)
+template<> AMI_DLLEXPORT  BasicVariable::ptr Variable<FloatMatrix>::operator[](const BasicVariable::ptr& v)
 {
   if (v->IsNumeric()) {
     int pos = (int) v->GetValueAsDouble();
@@ -505,7 +507,7 @@ template<>  BasicVariable::ptr Variable<FloatMatrix>::operator[](const BasicVari
 
 /*
 //
-template<>
+template<> AMI_DLLEXPORT
 BasicVariable::ptr Variable<FloatMatrix>::TernaryCondition(const BasicVariable::ptr& v1, const BasicVariable::ptr&v2)
 {
 
@@ -523,7 +525,7 @@ BasicVariable::ptr Variable<FloatMatrix>::TernaryCondition(const BasicVariable::
 
 /// Other operators
 /// a=b
-template<> 
+template<> AMI_DLLEXPORT 
 BasicVariable::ptr Variable<FloatMatrix>::operator =(const BasicVariable::ptr& b)
 {
   CLASS_MESSAGE("begin");
@@ -537,7 +539,7 @@ BasicVariable::ptr Variable<FloatMatrix>::operator =(const BasicVariable::ptr& b
       // copy option
       if (! ((*Pointer())=(var_mat2->Pointer().get()))) GB_driver.err_print(" Error in images assignement\n");
     } else {
-      if (GB_driver.err_print("Error, empty variable as parameter of assignment operator\n"));
+      GB_driver.err_print("Error, empty variable as parameter of assignment operator\n");
     }
   } 
   else
@@ -546,14 +548,14 @@ BasicVariable::ptr Variable<FloatMatrix>::operator =(const BasicVariable::ptr& b
 }
 
 /// Transpose
-template<> BasicVariable::ptr Variable<FloatMatrix>::Transpose()
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<FloatMatrix>::Transpose()
 {
   FloatMatrix::ptr res( Pointer()->Transpose());
   return Variable<FloatMatrix>::ptr( new Variable<FloatMatrix>(res)); 
 }
 
 /// Pointwise multiplication 
-template<> BasicVariable::ptr Variable<FloatMatrix>::PointWiseMult(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<FloatMatrix>::PointWiseMult(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
     MATRIX_OP_EXPR(Pointer(),*,b->GetValueAsDouble());

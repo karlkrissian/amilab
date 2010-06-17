@@ -1,0 +1,56 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_image_txtytz_vectorial.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the tx, ty and tz operations.
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+OK = 1 # The test was successful
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+dimx=10
+dimy=10
+dimz=1
+dimv=10
+printn "\t\t Dimensions:\n"
+printn "\t\t\t X (dimx)=%1% " % dimx
+printn "\t\t\t Y (dimy)=%1% " % dimy
+printn "\t\t\t Z (dimz)=%1% " % dimz
+printn "\t\t\t V (dimv)=%1% " % dimv
+
+printn "\t\t Create a vectorial image 2D of type FLOAT.\n"
+imgFLOAT = Image(FLOAT,dimx,dimy,dimz,dimv)
+
+printn "\t\t Show info of vectorial image 2D of type FLOAT.\n"
+imgFLOAT.info
+
+printn "\t\t Operations:\n"
+x=imgFLOAT.tx
+y=imgFLOAT.ty
+z=imgFLOAT.tz
+printn "\t\t\t imgFLOAT.tx=%1% " % x
+printn "\t\t\t imgFLOAT.ty=%1% " % y
+printn "\t\t\t imgFLOAT.tz=%1% " % z
+
+if((dimx != x) || (dimy != y) || (dimz != z)) {
+  OK = 0
+  printn  "\nERROR: Failed the tx, ty and tz operations."
+}
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ctest.PrintTestResult( OK ) 
+
+#quit
+

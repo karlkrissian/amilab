@@ -41,7 +41,6 @@
 #include "wxStcFrame.h"
 
 #include <iostream>
-using namespace std;
 
 //----------------------------------------------------------------------------
 // resources
@@ -524,7 +523,7 @@ void FindAndReplace::OnPrevButtonClick (wxCommandEvent &event) {
 
 //-->On function key down<--
 void FindAndReplace::OnFunKeyDown (wxKeyEvent &event) {
-  std::cout << __func__ << std::endl;
+  //std::cout << __func__ << std::endl;
   wxCommandEvent e; //We must pass to methods a wxCommandEvent variable
   long keycode = event.GetKeyCode();
   //Calls based on keycode value

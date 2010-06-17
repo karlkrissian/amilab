@@ -2,9 +2,9 @@
 
 ami_import->ITK()
 
-i = itk->Read_3D_US($1)
+i = Image($1)
 
-// Don't compress with gzip since it doesn't gain much
-// and it is much slower
+# Don't compress with gzip since it doesn't gain much
+# and it is much slower
 i.save $1 - ".mhd" + ".ami"
 quit

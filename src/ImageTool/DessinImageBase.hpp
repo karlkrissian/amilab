@@ -725,6 +725,9 @@ public:
   InrImage::ptr& GetImage() { return _image_initiale;}
 
   ///
+  InrImage::ptr& GetDisplayedImage() { return _image;}
+
+  ///
   DessinImageParametres* GetParam() { return &Param; }
 
   ///

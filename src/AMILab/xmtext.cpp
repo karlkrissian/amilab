@@ -469,16 +469,17 @@ void TextControl::OnChar(wxKeyEvent& event)
                   res=AskFilename(name);
                   if (!res) {
                     GB_driver.yyiperror(" No filename given! \n");
+                  } else {
+  
+                    wxFileName filename(wxString(name.c_str(), wxConvUTF8));
+                    filename.Normalize(wxPATH_NORM_ALL,wxEmptyString,wxPATH_UNIX);
+                    wxString newname(   filename.GetVolume()+filename.GetVolumeSeparator()+
+                                        filename.GetPath(wxPATH_GET_VOLUME,wxPATH_UNIX)+
+                                        filename.GetPathSeparator(wxPATH_UNIX)+
+                                        filename.GetFullName());
+                    inc_cmd = str(format(" \"%1%\" ") % newname.mb_str());
+                    this->IncCommand(wxString::FromAscii(inc_cmd.c_str()));
                   }
-
-                  wxFileName filename(wxString(name.c_str(), wxConvUTF8));
-                  filename.Normalize(wxPATH_NORM_ALL,wxEmptyString,wxPATH_UNIX);
-                  wxString newname(   filename.GetVolume()+filename.GetVolumeSeparator()+
-                                      filename.GetPath(wxPATH_GET_VOLUME,wxPATH_UNIX)+
-                                      filename.GetPathSeparator(wxPATH_UNIX)+
-                                      filename.GetFullName());
-                  inc_cmd = str(format(" \"%1%\" ") % newname.mb_str());
-                  this->IncCommand(wxString::FromAscii(inc_cmd.c_str()));
                 }
               }
               else

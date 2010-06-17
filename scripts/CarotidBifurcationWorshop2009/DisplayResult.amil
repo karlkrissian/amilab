@@ -162,7 +162,8 @@ proc DR_Save() \
 {
 }
 
-DR_win = ParamWin("Visual Inspection")
+import = &global::ami_import;
+DR_win = import->ParamPanel("Visual Inspection")
   DR_win.AddLabel("Data = ",DR_datanum_str)
   DR_win.AddLabel("Side = ",DR_side)
 
@@ -172,13 +173,13 @@ DR_win = ParamWin("Visual Inspection")
     DR_win.AddLabel("Inverted paths = ","NO")
   }
 
-  DR_win.AddBoolean(DR_paths_OK)
-  DR_win.AddBoolean(DR_junction_OK)
-  DR_win.AddBoolean(DR_contours_OK)
-  DR_win.BeginHorizontal
+  DR_win.AddBoolean( &DR_paths_OK)
+  DR_win.AddBoolean( &DR_junction_OK)
+  DR_win.AddBoolean( &DR_contours_OK)
+  DR_win.BeginHorizontal()
     DR_win.AddButton("View1",DR_SetView1)
     DR_win.AddButton("View2",DR_SetView2)
     DR_win.AddButton("View3",DR_SetView3)
-  DR_win.EndHorizontal
+  DR_win.EndHorizontal()
   DR_win.AddButton("Save Evaluation",DR_Save)
-DR_win.Display
+DR_win.Display()

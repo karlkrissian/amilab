@@ -12,6 +12,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Vaisseaux
   ${AMILAB_SOURCE_DIR}/wxSamples/penguin
   ${AMILAB_SOURCE_DIR}/wxStcFrame
+  ${AMILAB_SOURCE_DIR}/wxCode/wxTreeListCtrl
   ${Boost_INCLUDE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${PTHREADS_INCLUDE_DIR}

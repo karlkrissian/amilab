@@ -13,12 +13,15 @@
 #include "BasicVariable.h"
 #include "Variables.hpp"
 
+BasicVariable::ptr BasicVariable::empty_variable;
+
 BasicVariable::BasicVariable() : _type(type_void), _name(""), _comments("") 
 {
     _vars     = boost::shared_ptr<Variables>(new Variables);
+    _vars->SetName("variable own context");
 }
 
-
+/*
 //---------------------------------------------
 const string BasicVariable::GetTypeName() const
 //           -------------
@@ -33,8 +36,6 @@ const string BasicVariable::GetTypeName() const
     case type_int             : return string( "int"); 
     case type_uchar           : return string( "uchar"); 
     case type_string          : return string( "string"); 
-    case type_imagedraw       : return string( "imagedraw"); 
-    case type_surface         : return string( "surface"); 
     case type_surfdraw        : return string( "surfdraw"); 
     case type_file            : return string( "file"); 
   //  case type_c_function      : return string( "C function ");
@@ -52,7 +53,7 @@ const string BasicVariable::GetTypeName() const
 /* TODO
       VarArray::ptr array =  *((VarArray::ptr*) Pointer());
       return str( format("array \t %d \n") % array->Size());
-*/
+* /
     }
     default                : 
       return string( "unknown type");
@@ -60,4 +61,13 @@ const string BasicVariable::GetTypeName() const
 
   return string();
 } // PrintType
+*/
+
+void BasicVariable::Rename(const char* newname)
+{  
+  CLASS_MESSAGE(boost::format("Renaming %1% to %2%")%_name % newname);
+  _name=newname;
+  if (_vars.get())
+    _vars->SetName(newname);
+}
 

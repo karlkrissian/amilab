@@ -35,17 +35,17 @@ if (!exists(MSEClass)) {
     #----------------------------
     proc ::Close() \
     {
-      ::win.HidePanel
+      ::win.HidePanel()
       delvars GetObjectName(::Close)
     }
-    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
      #----------------------------
     proc ::CloseAll() {
       eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
       ::Close
     }
-    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
      
     #----------------------------
     proc ::LoadInput() \
@@ -80,7 +80,7 @@ if (!exists(MSEClass)) {
       show ::input
       if (exists(::gt_draw)) { del ::gt_draw; }
       show ::gt
-      ::input_draw.compare(::gt_draw)
+      ::input_draw._compare(::gt_draw)
     }
     
 
@@ -142,7 +142,7 @@ if (!exists(MSEClass)) {
         show ::input
         ::errors <<= abs(::input-::gt)
         show ::errors
-        ::input_draw.compare(::errors)
+        ::input_draw._compare(::errors)
       } else {
         if (exists(::errors_draw)) {
           del ::errors_draw
@@ -163,19 +163,19 @@ if (!exists(MSEClass)) {
 
           # set the input image
           ::win.BeginBoxPanel("Input")
-            ::win.BeginHorizontal
+            ::win.BeginHorizontal()
               ::win.AddImageChoice( &::input_name, "")
               ::win.AddButton("Load",::LoadInput)
-            ::win.EndHorizontal
-          ::win.EndBoxPanel
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
 
           # set the input image
           ::win.BeginBoxPanel("Ground truth")
-            ::win.BeginHorizontal
+            ::win.BeginHorizontal()
               ::win.AddImageChoice( &::groundtruth_name, "")
               ::win.AddButton("Load",::LoadGroundTruth)
-            ::win.EndHorizontal
-          ::win.EndBoxPanel
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
 
         ::win.AddPage("Param")
           ::win.AddInt( &::border,"Border",0,20) 
@@ -185,23 +185,23 @@ if (!exists(MSEClass)) {
             ::win.AddString( &::MSE_string, "MSE =")
             ::win.AddString( &::MAE_string, "MAE =")
             ::win.AddString( &::PSNR_string,"PSNR =")
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
 
           ::display_panel = ::win.BeginBoxPanel("Display")
             ::win.AddButton("Display images",::Display)
             ::win.AddBoolean( &::display_error_image, "Error Image")
             ::win.SetCallback( &::DisplayErrorImage)
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
 
-      ::win.EndBook
+      ::win.EndBook()
 
-      ::win.BeginHorizontal
+      ::win.BeginHorizontal()
         ::win.AddButton("Close", ::Close)
         ::win.AddButton("Close All", ::CloseAll)
-      ::win.EndHorizontal
+      ::win.EndHorizontal()
       
       ::win.Update(-1)
-      ::win.Display
+      ::win.Display()
       ::CheckInputs
     }
 

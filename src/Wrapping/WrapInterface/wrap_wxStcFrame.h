@@ -28,9 +28,11 @@ class WrapClass_wxStcFrame : public WrapClass_wxWindow
 
   // for nested classes
   typedef WrapClass_wxStcFrame::ptr _parentclass_ptr;
+  typedef wxStcFrame _obj_type;
 
   public:
-    boost::shared_ptr<wxStcFrame> _obj;
+    boost::shared_ptr<_obj_type> _obj;
+    const boost::shared_ptr<_obj_type>& GetObj() const { return _obj; }
 
     /// Constructor
     WrapClass_wxStcFrame(boost::shared_ptr<wxStcFrame> si):  WrapClass_wxWindow(si), _obj(si)

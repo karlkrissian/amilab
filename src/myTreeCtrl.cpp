@@ -29,7 +29,8 @@ enum
   wxID_myABOUT = 1000
 };
 
-BEGIN_EVENT_TABLE(myTreeCtrl, wxTreeCtrl)
+//BEGIN_EVENT_TABLE(myTreeCtrl, wxTreeCtrl)
+BEGIN_EVENT_TABLE(myTreeCtrl, wxTreeListCtrl)
   EVT_MENU(wxID_myABOUT, myTreeCtrl::OnAbout)
 /*
   EVT_ERASE_BACKGROUND(    myTreeCtrl::OnEraseBackground)
@@ -39,7 +40,8 @@ BEGIN_EVENT_TABLE(myTreeCtrl, wxTreeCtrl)
 //  EVT_TIMER(ID_TIMER_TIPWINDOW myTreeCtrl::OnTimerTip)
 END_EVENT_TABLE()
 
-myTreeCtrl::myTreeCtrl(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size , long style , const wxValidator& validator , const wxString& name ) : wxTreeCtrl(parent,id,pos,size,style,validator,name)
+myTreeCtrl::myTreeCtrl(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size , long style , const wxValidator& validator , const wxString& name ) : //wxTreeCtrl(parent,id,pos,size,style,validator,name)
+wxTreeListCtrl(parent,id,pos,size,style,validator,name)
 {
     Connect(wxEVT_COMMAND_TREE_ITEM_MENU,wxTreeEventHandler(myTreeCtrl::OnItemMenu));
 }
@@ -137,7 +139,7 @@ void myTreeCtrl::OnAbout(wxCommandEvent& event)
   } else {
     mess = "No variable for this item";
   }
-  wxMessageDialog msg(GB_main_wxFrame,wxString::FromAscii(mess.c_str()),
+  wxMessageDialog msg(NULL,wxString::FromAscii(mess.c_str()),
       wxString::FromAscii("Help"),wxOK | wxICON_INFORMATION );
   msg.ShowModal();
 }

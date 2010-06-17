@@ -554,7 +554,7 @@ void amimage::close_file(  )
 //
 {
 
-  file_str.reset(NULL);
+  file_str.reset(new stringstream);
 
 
 } // close_file()
@@ -688,8 +688,8 @@ unsigned char  amimage::readheader( const char* filename)
     string uint_expr  ="(\\d+)";
     string float_expr ="([-+]?\\d*\\.?\\d+)"; // no exponential here?
     string enum_expr  ="(\\w*)";
-    string fileprefix_expr="([\\w\\d\\s\\\\:/_.]+)";
-    string fileformat_expr="([\\w\\d\\s\\\\:/_.%]+)";
+    string fileprefix_expr="([\\w\\d\\s\\\\:/_.-]+)";
+    string fileformat_expr="([\\w\\d\\s\\\\:/_.%-]+)";
 
     bool end_header=false;
     bool XD_found=false,YD_found=false,ZD_found=false;

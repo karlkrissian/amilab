@@ -22,10 +22,10 @@ if (!exists(SoftFocus)) {
 
     #--------------------------------
     proc ::Close() {
-      ::win.HidePanel
+      ::win.HidePanel()
       delvars GetObjectName(::Close)
     }
-    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
     #--------------------------------
     proc ::load_input() {
@@ -58,14 +58,14 @@ if (!exists(SoftFocus)) {
       ::res = ::input*d2 + ::res*(-d2+1)
       ::Display()
     }
-    ::Filter.Comments("Apply Gaussian convolution on each channel of the image.")
+    Comments( ::Filter, "Apply Gaussian convolution on each channel of the image.")
     
     #-----------------------------------------
     proc ::Display() {
       show ::input
       if (exists(::res)) {
         show ::res
-        ::input_draw.compare(::res)
+        ::input_draw._compare(::res)
       }
     }
     
@@ -73,30 +73,30 @@ if (!exists(SoftFocus)) {
     proc ::AutoFilter() {
       if (::auto) { ::Filter; }
     }
-    ::AutoFilter.Comments("Apply the filter automatically if this option is enabled")
+    Comments( ::AutoFilter, "Apply the filter automatically if this option is enabled")
   
     #-----------------------------------------
     proc ::AutoDrag() {
       ::win.SetDragCallback(::sigma_id,::autodrag)
     }
-    ::AutoDrag.Comments("Enable/Disable real-time filtering while moving the scale")
+    Comments( ::AutoDrag, "Enable/Disable real-time filtering while moving the scale")
     
     #-----------------------------------------
     proc ::CursorPos() {
       if (exists(::input_draw)) {
-        ::cx = ::input_draw.GetXPos
-        ::cy = ::input_draw.GetYPos
-        ::cz = ::input_draw.GetZPos
+        ::cx = ::input_draw.GetXPos()
+        ::cy = ::input_draw.GetYPos()
+        ::cz = ::input_draw.GetZPos()
         ::win.Update(-1)
       }
     }
-    ::CursorPos.Comments("Set the position parameter from the current cursor position in the input_draw window")
+    Comments( ::CursorPos, "Set the position parameter from the current cursor position in the input_draw window")
     
     #-----------------------------------------
     proc ::Save() {
       ::res.save resultname
     }
-    ::Save.Comments("Save the resulting image")
+    Comments( ::Save, "Save the resulting image")
     
     #--------------------------------
     proc ::CreateGui() {
@@ -118,21 +118,21 @@ if (!exists(SoftFocus)) {
           ::win.AddInt( &::cy,"Y",0,1000)
           ::win.AddInt( &::cz,"Z",0,1000)
           ::win.AddButton("From Cursor",::CursorPos)
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
   
         ::win.AddFloat( &::radius,"Radius",0.1,1000)
   
-        ::win.BeginHorizontal
+        ::win.BeginHorizontal()
           ::win.AddBoolean( &::auto,"Auto")
           ::win.AddBoolean( &::autodrag,"Auto drag")
           ::win.SetCallback( &::AutoDrag)
-        ::win.EndHorizontal
+        ::win.EndHorizontal()
         ::win.AddButton("Apply",::Filter)
-      ::win.EndBook
+      ::win.EndBook()
       ::win.AddButton("Close",    ::Close)
     
       ::win.Update(-1)
-      ::win.Display
+      ::win.Display()
     }
   
   

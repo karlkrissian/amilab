@@ -8,8 +8,8 @@
 // and aligned !!!
 #define FVECTOR_POINT_OPERATION_SSE(type,op) \
   template <class VT, class ST> \
-  void FVector_##op##_##type##_sse( FVector<VT,ST>& v1, FVector<VT,ST>& v2, \
-                               FVector<VT,ST>& res) \
+  void FVector_##op##_##type##_sse( ami_FVector<VT,ST>& v1, ami_FVector<VT,ST>& v2, \
+                               ami_FVector<VT,ST>& res) \
   { \
     ST  nLoop = v1.GetSize()/ 4; \
     __m128* pSrc1 = (__m128*) v1.GetData(); \
@@ -22,8 +22,8 @@
 
 #define FVECTOR_POINT_OPERATION_SSE_UUA(type,op) \
   template <class VT, class ST> \
-  void FVector_##op##_##type##_sse_uua( FVector<VT,ST>& v1, FVector<VT,ST>& v2, \
-                               FVector<VT,ST>& res) \
+  void FVector_##op##_##type##_sse_uua( ami_FVector<VT,ST>& v1, ami_FVector<VT,ST>& v2, \
+                               ami_FVector<VT,ST>& res) \
   { \
     ST  nLoop = v1.GetSize()/ 4; \
     VT* pSrc1 = v1.GetData(); \
@@ -39,8 +39,8 @@
 
 #define FVECTOR_POINT_OPERATION_SSE_AUA(type,op) \
   template <class VT, class ST> \
-  void FVector_##op##_##type##_sse_aua( FVector<VT,ST>& v1, FVector<VT,ST>& v2, \
-                               FVector<VT,ST>& res) \
+  void FVector_##op##_##type##_sse_aua( ami_FVector<VT,ST>& v1, ami_FVector<VT,ST>& v2, \
+                               ami_FVector<VT,ST>& res) \
   { \
     ST  nLoop = v1.GetSize()/ 4; \
     __m128* pSrc1 = (__m128*) v1.GetData(); \
@@ -58,8 +58,8 @@
 // size is multiple of 4 ...
 #define FVECTOR_POINT_OPERATION(opname,op) \
   template <class VT, class ST> \
-  void FVector_##opname( FVector<VT,ST>& v1, FVector<VT,ST>& v2, \
-                    FVector<VT,ST>& res) \
+  void FVector_##opname( ami_FVector<VT,ST>& v1, ami_FVector<VT,ST>& v2, \
+                    ami_FVector<VT,ST>& res) \
   { \
     ST  nLoop = v1.GetSize(); \
     VT* pSrc1 =  v1.GetData(); \

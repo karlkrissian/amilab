@@ -229,6 +229,10 @@ protected:
   wxHtmlWindow* _htmltext;
 
   myTreeCtrl*  _var_tree;
+  int _vartree_col_main;
+  int _vartree_col_type;
+  int _vartree_col_val;
+  int _vartree_col_desc;
   wxTreeItemId _vartree_root;
   wxTreeItemId _vartree_global;
   wxTreeItemId _vartree_builtin;

@@ -94,6 +94,7 @@ std::string Variables::CheckVarName(const char* name)
   return resname;
 }
 
+
 //--------------------------------------------------
 BasicVariable::ptr Variables::AddVar( 
           const std::string& name, 
@@ -124,7 +125,9 @@ BasicVariable::ptr Variables::AddVar( BasicVariable::ptr& var, Variables::ptr co
   string resname = this->CheckVarName(var->Name().c_str());
   // TODO: fix the following code, maybe not so easy ...
   // should we copy the contents here ??
-  BasicVariable::ptr newvar(var->NewReference());
+  // why do we create a reference here ???
+  BasicVariable::ptr newvar(var);
+//  BasicVariable::ptr newvar(var->NewReference());
   newvar->Rename(resname.c_str());
   newvar->SetContext(context);
   _vars.push_front(newvar);
@@ -311,6 +314,7 @@ void Variables::EmptyVariables()
 {
   CLASS_MESSAGE(boost::format("  in %1% ") % GetName());
   std::list<BasicVariable::ptr>::iterator Iter;
+/* useless now ???
   Iter  = _vars.begin();
   while (Iter != _vars.end() )
   {
@@ -321,7 +325,7 @@ void Variables::EmptyVariables()
     }
     Iter++;
   }
-
+*/
   Iter  = _vars.begin();
   while ( Iter != _vars.end())
   {

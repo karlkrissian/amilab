@@ -56,9 +56,9 @@ CreateTubeTensor(&t2, 0,1,0,radius)
 t3 = t1
 CreateTubeTensor(&t3, 0,0,1,radius)
 
-t1.save "tube_tensor1.vtk"
+t1._save( "tube_tensor1.vtk")
 t2 = t2+t1
-t2.save "tube_tensor2.vtk"
+t2._save( "tube_tensor2.vtk")
 t3 = t3+t2
-t3.save "tube_tensor3.vtk"
+t3._save( "tube_tensor3.vtk")
 

@@ -68,7 +68,7 @@ CreateTorusTensor(&t2,0,1,0,7,2)
 
 t3 = t1+t2
 
-t1.save "torus_tensor.vtk"
-t3.save "torus_tensor2.vtk"
+t1._save( "torus_tensor.vtk")
+t3._save( "torus_tensor2.vtk")
 
 quit

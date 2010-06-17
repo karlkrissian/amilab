@@ -4,6 +4,8 @@
 #include "Variable.hpp"
 #include <math.h>
 
+
+
 #define NEW_SMARTPTR(type, var, value) \
   boost::shared_ptr<type> var(new type(value));
 
@@ -18,8 +20,10 @@
 //------- Variable<string>
 //------------------------------------------------------
 
+
+
 /// Copy contents to new variable
-template<> BasicVariable::ptr Variable<string>::NewCopy()
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<string>::NewCopy() const
 {
   string_ptr newval( new string(Value()));
   Variable<string>::ptr newvar(new Variable<string>(newval));
@@ -32,7 +36,7 @@ template<> BasicVariable::ptr Variable<string>::NewCopy()
 
 
 /// a+b
-template<> BasicVariable::ptr Variable<string>::operator +(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<string>::operator +(const BasicVariable::ptr& b)
 {
   if (b->Type()==type_string) {
     DYNAMIC_CAST_VARIABLE(std::string,b,var_st2);
@@ -43,7 +47,7 @@ template<> BasicVariable::ptr Variable<string>::operator +(const BasicVariable::
 }
 
 /// a+=b
-template<> BasicVariable::ptr Variable<string>::operator +=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<string>::operator +=(const BasicVariable::ptr& b)
 { 
   if (b->Type()==type_string) {
     DYNAMIC_CAST_VARIABLE(std::string,b,var_st2);
@@ -54,7 +58,7 @@ template<> BasicVariable::ptr Variable<string>::operator +=(const BasicVariable:
 }
 
 /// a-b
-template<> BasicVariable::ptr Variable<string>::operator -(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<string>::operator -(const BasicVariable::ptr& b)
 {
   if (b->Type()==type_string) {
     DYNAMIC_CAST_VARIABLE(std::string,b,var_st2);
@@ -70,7 +74,7 @@ template<> BasicVariable::ptr Variable<string>::operator -(const BasicVariable::
 }
 
 /// a-=b
-template<> BasicVariable::ptr Variable<string>::operator -=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<string>::operator -=(const BasicVariable::ptr& b)
 { 
   if (b->Type()==type_string) {
     DYNAMIC_CAST_VARIABLE(std::string,b,var_st2);
@@ -87,7 +91,7 @@ template<> BasicVariable::ptr Variable<string>::operator -=(const BasicVariable:
 
 
 /// a%b
-template<> BasicVariable::ptr Variable<string>::operator %(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<string>::operator %(const BasicVariable::ptr& b)
 {
   if (b->IsNumeric()) {
     std::string res = (boost::format(Value())%b->GetValueAsDouble()).str();
@@ -106,7 +110,7 @@ template<> BasicVariable::ptr Variable<string>::operator %(const BasicVariable::
 //  Comparison Operators
 
 /// a<b
-template<> BasicVariable::ptr Variable<string>::operator <(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<string>::operator <(const BasicVariable::ptr& b)
 { 
   if (b->Type()==type_string) {
     DYNAMIC_CAST_VARIABLE(std::string,b,var_st2);
@@ -117,7 +121,7 @@ template<> BasicVariable::ptr Variable<string>::operator <(const BasicVariable::
 }
 
 /// a<=b
-template<> BasicVariable::ptr Variable<string>::operator <=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<string>::operator <=(const BasicVariable::ptr& b)
 { 
   if (b->Type()==type_string) {
     DYNAMIC_CAST_VARIABLE(std::string,b,var_st2);
@@ -128,7 +132,7 @@ template<> BasicVariable::ptr Variable<string>::operator <=(const BasicVariable:
 }
 
 /// a>b
-template<> BasicVariable::ptr Variable<string>::operator >(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<string>::operator >(const BasicVariable::ptr& b)
 { 
   if (b->Type()==type_string) {
     DYNAMIC_CAST_VARIABLE(std::string,b,var_st2);
@@ -139,7 +143,7 @@ template<> BasicVariable::ptr Variable<string>::operator >(const BasicVariable::
 }
 
 /// a>=b
-template<> BasicVariable::ptr Variable<string>::operator >=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<string>::operator >=(const BasicVariable::ptr& b)
 { 
   if (b->Type()==type_string) {
     DYNAMIC_CAST_VARIABLE(std::string,b,var_st2);
@@ -150,7 +154,7 @@ template<> BasicVariable::ptr Variable<string>::operator >=(const BasicVariable:
 }
 
 /// a!=b
-template<> BasicVariable::ptr Variable<string>::operator !=(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<string>::operator !=(const BasicVariable::ptr& b)
 { 
   if (b->Type()==type_string) {
     DYNAMIC_CAST_VARIABLE(std::string,b,var_st2);
@@ -162,7 +166,7 @@ template<> BasicVariable::ptr Variable<string>::operator !=(const BasicVariable:
 
 
 /// a==b
-template<> BasicVariable::ptr Variable<string>::operator ==(const BasicVariable::ptr& b)
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<string>::operator ==(const BasicVariable::ptr& b)
 { 
   if (b->Type()==type_string) {
     DYNAMIC_CAST_VARIABLE(std::string,b,var_st2);
@@ -175,7 +179,7 @@ template<> BasicVariable::ptr Variable<string>::operator ==(const BasicVariable:
 
 
 
-template<> 
+template<> AMI_DLLEXPORT 
 BasicVariable::ptr Variable<string>::operator =(const BasicVariable::ptr& b)
 {
   if (b->Type()==type_string) {
@@ -185,3 +189,4 @@ BasicVariable::ptr Variable<string>::operator =(const BasicVariable::ptr& b)
     CLASS_ERROR("operation not defined");
   return NewReference();
 }
+

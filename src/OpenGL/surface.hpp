@@ -719,6 +719,9 @@ public:
   void PolyAddPointNumber(int num);
   void EndPoly();
 
+  /**
+   * Adds a new line to the polydata.
+   */
   void NewLine();
   void LineAddPointNumber(int num);
   void EndLine();
@@ -761,8 +764,10 @@ public:
   // Undo last operation
   void UndoLast();
 
-  // Merge the points which distance is smaller than dist
-  // and returns a new object of type "SurfacePoly"
+  /**
+   * Merges the points which distance is smaller than dist
+   * @param dist 
+   */
   void MergePoints(  float dist);
   //   -----------
 
@@ -802,8 +807,11 @@ public:
   //   ---------
 
 
-  // Displaces each point in the normal direction
-  // with a distance given by the image
+  /**
+   * Displaces each point in the normal direction
+   * with a distance given by the image
+   * @param Idist 
+   */
   void DisplacePoints( InrImage* Idist );
   //   --------------
 
@@ -861,20 +869,41 @@ public:
   void HideSelectedCC();
   void HideNonSelectedCC();
 
-  //
+
+  /**
+   * Statistics of the input image at the position of the vertices.
+   * @param image 
+   */
   void Statistics( InrImage* image);
 
-  //
+  /**
+   * Sets the colors of the surface based on the colors of a 3D image, looking at the color in the image at the position of each vertex.
+   * @param image 3D input RGB or greyscale image
+   * @param min for greyscale image: minimal value (black)
+   * @param max for greyscale image: maximal value (white)
+   * @param alpha opacity value for all vertices.
+   * @return 
+   */
   GLuint SetColors( InrImage* image, float min=0, float max=255, float alpha=1.0);
   
   GLuint SetColorOpacity( float alpha);
-  //
+  /**
+   * Sets the colors of the surface based on the colors of a 1D image of length the number of vertices of the polydata.
+   * @param image 3D input RGB or greyscale image
+   * @param min for greyscale image: minimal value (black)
+   * @param max for greyscale image: maximal value (white)
+   * @return 
+   */
   GLuint SetPointsColors( InrImage* image, float min=0, float max=255);
 
   // Choose if drawing a particular connex component
   void GLSurfaceSetDrawCC(  GLuint& surf, int cc, unsigned char draw);
 
-  // Choose to draw only the specified connex component
+  /**
+   * Choose to draw only the specified connex component
+   * @param surf 
+   * @param cc if -1 draws all connected components, otherwise only draws the one selected.
+   */
   void GLSurfaceDrawOnlyCC( GLuint& surf, int cc);
 
   // Choose to draw the connext component with more than n points

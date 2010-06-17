@@ -12,7 +12,7 @@
 
 #include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
-#include "wrapfunctions_draw.h"
+//#include "wrapfunctions_draw.h"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "vtkLevelSets.h"
@@ -250,7 +250,7 @@ BasicVariable::ptr WrapClass_vtkLevelSets::wrap_InitWithThreshold::CallMember( P
 
   boost::shared_ptr<vtkLevelSets> curv(this->_objectptr->_vtkLevelSets);
 
-  InrImage* out;
+  //InrImage* out;
   //float tr_x,tr_y,tr_z;
 
   // Initialize the evolution

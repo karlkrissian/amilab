@@ -117,7 +117,7 @@ public:
   void  FixeCouleurFond( const ClasseCouleur&);
   void	SetPenColor( const ClasseCouleur&);
   void  FixeCouleurRemplissage( const ClasseCouleur&);
-  void  FixeParametresLigne( unsigned int largeur, int style, int extremites, int intersection);
+  void  SetLineParameters( unsigned int largeur, int style, int extremites, int intersection);
 
   void	 Fixe_drawing_bg( const ClasseCouleur&);
 
