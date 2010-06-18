@@ -611,20 +611,21 @@ void CB_update_imagelist( void* imagelist_gui);
 
 %token T_vtkDist T_AndreDist
 %token T_Surface
-%token T_getimage
-%token T_GetImageFromX
-%token T_rotate
-%token T_computeCC T_drawCC
-%token T_addobj T_setcurrentobj
+//%token T_getimage
+//%token T_GetImageFromX
+//%token T_rotate
+//%token T_computeCC T_drawCC
+%token T_computeCC
+//%token T_addobj T_setcurrentobj
 %token T_writeVRML T_writeVTK
-%token T_Paint
+//%token T_Paint
 %token T_SetLight T_SetLightPos
-%token T_SetLightAmbient T_SetLightDiffuse T_SetLightSpecular
-%token T_SetBackground
-%token T_Normalize T_Center
+//%token T_SetLightAmbient T_SetLightDiffuse T_SetLightSpecular
+//%token T_SetBackground
+//%token T_Normalize T_Center
 
-%token T_Remove
-%token T_SwapBuffers
+//%token T_Remove
+//%token T_SwapBuffers
 
 //%token T_SetOpacityImage
 
@@ -634,10 +635,11 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_Matrix
 %token T_Invert
 
-%token T_PrintMatrices
+//%token T_PrintMatrices
 
 //%token SET SETPOS SHOWCURSOR T_update COMPARE SETVECTOR
-%token SET SETPOS COMPARE SETVECTOR
+//%token SET SETPOS COMPARE SETVECTOR
+%token SET SETPOS
 
 %token T_lininterp
 //%token T_SetCompareDisplacement
@@ -648,13 +650,13 @@ void CB_update_imagelist( void* imagelist_gui);
 //%token T_SetVectStyle
 //%token T_SetLineThickness
 //%token T_SetZoom
-%token T_SetWindowSize
+//%token T_SetWindowSize
 //%token T_SetColormap
 //%token T_drawcircle
 //%token T_setGLwin
 %token T_initvalue
-%token T_ShowSection
-%token T_HideSection
+//%token T_ShowSection
+//%token T_HideSection
 
 
 %token T_Xpos T_Ypos T_Zpos T_SpacePos
@@ -4052,6 +4054,7 @@ command:
       }
 
       }
+/*
         | VAR_SURFDRAW T_POINT T_rotate T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
           GET_VARSTACK_VALUE(Viewer3D,sdraw);
@@ -4059,6 +4062,7 @@ command:
           sdraw->GetCanvas()->UserRotate($5,$7,$9);
           sdraw->Paint();
         }
+
         | VAR_SURFDRAW T_POINT T_addobj T_OP_PAR expr_var T_CL_PAR
         {
           GET_VARSTACK_OBJECT(SurfacePoly,surf)
@@ -4087,7 +4091,7 @@ command:
         {
           /**
             Description: Removes the surface without swapping the 3D buffer
-          **/
+          ** /
           GET_VARSTACK_OBJECT(SurfacePoly,surf)
           GET_VARSTACK_VALUE(Viewer3D,   sdraw);
 
@@ -4098,7 +4102,7 @@ command:
         {
           /**
             Description:  Swaps the 3D buffer
-          **/
+          ** /
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           Viewer3D_ptr sdraw(varsurfd->Pointer());
 
@@ -4180,6 +4184,7 @@ command:
           GET_VARSTACK_VALUE(Viewer3D,v);
           v->GetCanvas()->PrintMatrices();
         }
+*/
         | VAR_SURFDRAW T_POINT T_SetTransform T_OP_PAR gltransform T_CL_PAR
         {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
@@ -4198,6 +4203,7 @@ command:
           if ($7>0.5) sdraw->Paint();
           delete tr;
         }
+/*
         | VAR_SURFDRAW T_POINT T_Paint
         {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
@@ -4262,7 +4268,7 @@ command:
         /**
           Description:
             Normalizes the 3D view based on the limits in space of the current objects
-        **/
+        ** /
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           Viewer3D_ptr sdraw (varsurfd->Pointer());
           sdraw->GetCanvas()->Normalize();
@@ -4272,7 +4278,7 @@ command:
         /**
           Description:
             Centers the 3D view based on the limits in space of the current objects
-        **/
+        ** /
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           Viewer3D_ptr sdraw (varsurfd->Pointer());
           sdraw->GetCanvas()->Center();
@@ -4290,6 +4296,7 @@ command:
             GB_wxApp->Dispatch();
           }
         }
+*/
         |
         T_struct_tensor T_OP_PAR var_image T_COMMA expr T_COMMA expr T_CL_PAR
         {
@@ -8065,6 +8072,7 @@ image:
         FinPour
         ADD_VARSTACK_PTR(InrImage,res);
         }
+/*
         |
         VAR_SURFDRAW T_POINT T_getimage
         {
@@ -8079,7 +8087,7 @@ image:
           YYABORT;
 /*
           ADD_VARSTACK(InrImage,(*(Viewer3D_ptr*) $1->Pointer())->GetInrImage());
-*/
+* /
     }
     |
 /*    VAR_IMAGEDRAW T_POINT T_getimage
@@ -8087,8 +8095,8 @@ image:
       //GET_VARSTACK_OBJECT(DessinImage, imdraw)
       GET_VARSTACK_VALUE(DessinImage, imdraw)
       ADD_VARSTACK(InrImage, imdraw->GetInrImage());
-    }
-    |*/
+    }*/
+    |
     T_threscross T_OP_PAR var_image T_COMMA expr T_CL_PAR
     {
       GET_VARSTACK_VALUE(InrImage, im);

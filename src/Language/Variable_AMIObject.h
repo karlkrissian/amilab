@@ -39,16 +39,16 @@ template<> BasicVariable::ptr Variable<AMIObject>::operator --(int);
 
 /// a+b
 template<> BasicVariable::ptr Variable<AMIObject>::operator +(const BasicVariable::ptr& b);
-
+*/
 /// a+=b
 template<> BasicVariable::ptr Variable<AMIObject>::operator +=(const BasicVariable::ptr& b);
-
+/*
 /// a-b
 template<> BasicVariable::ptr Variable<AMIObject>::operator -(const BasicVariable::ptr& b);
-
+*/
 /// a-=b
 template<> BasicVariable::ptr Variable<AMIObject>::operator -=(const BasicVariable::ptr& b);
-
+/*
 /// a*b
 template<> BasicVariable::ptr Variable<AMIObject>::operator *(const BasicVariable::ptr& b);
 
@@ -151,5 +151,5 @@ template<> BasicVariable::ptr Variable<AMIObject>::operator =(const BasicVariabl
  */
 template<> BasicVariable::ptr Variable<AMIObject>::left_assign(const BasicVariable::ptr& b);
 
-#endif 
+#endif
 // _Variable_AMIObject_h_

@@ -483,6 +483,7 @@ SET(amilab_ownlibs
   WrapAMIFluid
   WrapSurface
   WrapDessinImage
+  WrapViewer3D
   WrapInterface
   WrapWxWidgets
   WrapBasicTypes

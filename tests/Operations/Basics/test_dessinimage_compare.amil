@@ -9,7 +9,7 @@ NoMessageDialog(1)
 # test_dessinimage_compare.amil
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Check the following methods:
-#                              - _compare.
+#                              - compare.
 #                              - showcursor
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -67,8 +67,8 @@ printn "\n\t\t Display the cursor of a imagedraw window (showcursor(1))"
 torus_draw.showcursor(1)
 torus_draw2.showcursor(1)
 
-printn "\t\t Execute: torus_draw._compare(&torus_draw2)"
-torus_draw._compare(&torus_draw2)
+printn "\t\t Execute: torus_draw.compare(&torus_draw2)"
+torus_draw.compare(&torus_draw2)
 
 printn "\n\t\t Changing position on the object torus_draw ( _setpos(GetXmin,GetYmin,GetZmin) )"
 torus_draw._setpos(torus_draw.GetXmin(), torus_draw.GetYmin(), torus_draw.GetZmin())

@@ -135,7 +135,7 @@ BasicVariable::ptr WrapClass_DessinImage::
     BasicVariable::ptr var = p->GetParam(0);
     if (var.get() && di.get()) {
       std::list<BasicVariable::wptr>* varlist =
-        (std::list<BasicVariable::wptr>*) di->GetCloseData();
+        static_cast<std::list<BasicVariable::wptr>*>(di->GetCloseData());
       if (varlist)
         varlist->push_back(BasicVariable::wptr(var));
     }

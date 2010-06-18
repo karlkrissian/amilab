@@ -138,10 +138,18 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator +(cons
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
+*/
 
 /// a+=b
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator +=(const BasicVariable::ptr& b)
 { 
+  //Modified: Added (17-06-2010)
+  APPLY_MEMBER_PARAM1("add_assign", b, varres)
+  if (varres.get())
+    return varres;
+  else
+    return BasicVariable::ptr();
+/*
 //  if (b->IsNumeric()) {
 //    RefValue() += b->GetValueAsDouble();
 
@@ -156,8 +164,9 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator +=(con
   } else
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
+*/
 }
-
+/*
 /// a-b
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator -(const BasicVariable::ptr& b)
 {
@@ -173,18 +182,27 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator -(cons
     CLASS_ERROR("operation not defined");
   return this->NewReference(); 
 }
+*/
 
-/*
 /// a-=b
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator -=(const BasicVariable::ptr& b)
 { 
+  //Modified: Added (17-06-2010)
+  APPLY_MEMBER_PARAM1("subtraction_assign", b, varres)
+  if (varres.get())
+    return varres;
+  else
+    return BasicVariable::ptr();
+/*
   if (b->IsNumeric()) {
     RefValue() -= b->GetValueAsDouble();
   } else
     CLASS_ERROR("operation not defined");
-  return this->NewReference(); 
+  return this->NewReference();
+*/
 }
 
+/*
 /// a*b
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator *(const BasicVariable::ptr& b)
 {

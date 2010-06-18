@@ -9,7 +9,7 @@ NoMessageDialog(1)
 # test_dessinimage_window_size.amil
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Check the following methods:
-#                              - _SetWindowSize
+#                              - SetWindowSize
 #
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -55,21 +55,21 @@ height=250
 printn "\n\t\t Change the window size:\n"
 printn "\t\t\t\t Width=%1% " % width
 printn "\t\t\t\t Height=%1% " % height
-torus_draw._SetWindowSize(width,height)
+torus_draw.SetWindowSize(width,height)
 
 width=-100
 height=100
 printn "\n\t\t Change the window size:\n"
 printn "\t\t\t\t Width=%1% " % width
 printn "\t\t\t\t Height=%1% " % height
-torus_draw._SetWindowSize(width,height)
+torus_draw.SetWindowSize(width,height)
 
 width=151000
 height=25000
 printn "\n\t\t Change the window size:\n"
 printn "\t\t\t\t Width=%1% " % width
 printn "\t\t\t\t Height=%1% " % height
-torus_draw._SetWindowSize(width,height)
+torus_draw.SetWindowSize(width,height)
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

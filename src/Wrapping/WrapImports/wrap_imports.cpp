@@ -46,6 +46,7 @@
 #include "wrap_ImageExtent.h"
 #include "wrap_SurfacePoly.h"
 #include "wrap_DessinImage.h"
+#include "wrap_Viewer3D.h"
 
 extern VarContexts  Vars;
 extern MainFrame*   GB_main_wxFrame;
@@ -60,6 +61,7 @@ void AddWrapImports()
   AddWrapImage();
   AddWrapSurface();
   AddWrapDessinImage();
+  AddWrapViewer3D();
   AddWrapBasicTypes();
 
   // Create new instance of the class
@@ -180,6 +182,13 @@ void AddWrapDessinImage()
 {
   AddVar_DessinImage( Vars.GetBuiltinContext());
 }
+
+//--------------------------------------------
+void AddWrapViewer3D()
+{
+  AddVar_Viewer3D( Vars.GetBuiltinContext());
+}
+
 
 //--------------------------------------------
 void AddWrapBasicTypes()

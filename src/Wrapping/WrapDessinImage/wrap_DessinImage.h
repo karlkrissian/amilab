@@ -23,7 +23,6 @@
 #include "wrap_FenetreDessin.h"
 
 TO_STRING(DessinImage);
-TO_STRING(Viewer3D);
 
 class WrapClass_DessinImage  : public WrapClass_FenetreDessin
 //: public WrapClass_wxWindow
@@ -96,10 +95,10 @@ class WrapClass_DessinImage  : public WrapClass_FenetreDessin
       AddVar_setpos(                this_ptr, "_setpos");
       AddVar_showcursor(            this_ptr);
       AddVar_update(                this_ptr);
-      AddVar_compare(               this_ptr, "_compare");
+      AddVar_compare(               this_ptr);
       AddVar_SetCompareDisplacement(this_ptr);
       AddVar_SetCompTransf(         this_ptr);
-      AddVar_setvector(             this_ptr, "_setvector");
+      AddVar_setvector(             this_ptr);
       AddVar_DrawVector(            this_ptr);
       AddVar_DisplayVectors(        this_ptr);
       AddVar_SetVectParam(          this_ptr);
@@ -107,7 +106,7 @@ class WrapClass_DessinImage  : public WrapClass_FenetreDessin
       AddVar_SetVectStyle(          this_ptr);
       AddVar_SetLineThickness(      this_ptr);
       AddVar_SetZoom(               this_ptr);
-      AddVar_SetWindowSize(         this_ptr, "_SetWindowSize");
+      AddVar_SetWindowSize(         this_ptr);
       AddVar_drawcircle(            this_ptr);
       AddVar_SetColormap(           this_ptr);
       AddVar_setGLwin(              this_ptr);
@@ -128,7 +127,7 @@ class WrapClass_DessinImage  : public WrapClass_FenetreDessin
       AddVar_GetXPos(               this_ptr);
       AddVar_GetYPos(               this_ptr);
       AddVar_GetZPos(               this_ptr);
-      AddVar_getimage(              this_ptr, "_getimage");
+      AddVar_getimage(              this_ptr);
       AddVar_DrawLineZ(             this_ptr);
     };
 };

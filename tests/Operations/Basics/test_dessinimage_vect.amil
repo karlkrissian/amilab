@@ -65,10 +65,10 @@ img= Image(FLOAT,ImageDimX,ImageDimY,ImageDimZ,ImageDimV)
 img.initvalue(10,10,10)
 
 VectorIndex=1
-printn "\n\t\t Set one of the vector fields (_setvector):\n"
+printn "\n\t\t Set one of the vector fields (setvector):\n"
 printn "\t\t\t Index of the vector field to be drawned (1,2 or 3)=%1% " % VectorIndex
 printn "\t\t\t Vector field image= img "
-torus_draw._setvector(VectorIndex,img)
+torus_draw.setvector(VectorIndex,img)
 
 VectorSize=1
 VectorSpacing=2

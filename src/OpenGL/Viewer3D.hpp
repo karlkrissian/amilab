@@ -136,7 +136,12 @@ public:
      CloseFunction = function;
      CloseData = data;
   }
-
+/*
+  void* GetCloseData() //New: added(17-06-2010)
+  {
+    return CloseData;
+  }
+*/
   void CreateParamBook(wxWindow* parent);
   bool AddParamPage(wxWindow* page, const wxString& caption,
                     bool select = false, const wxBitmap& bitmap = wxNullBitmap);
@@ -206,6 +211,10 @@ public:
     void Paint( bool display=true) { m_canvas->Paint( display); }
     void CompSurfPaint();
 
+    void* GetCloseData() //New: added(17-06-2010)
+    {
+      return CloseData;
+    }
 
 private:
 

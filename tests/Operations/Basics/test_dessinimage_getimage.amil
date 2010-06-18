@@ -9,7 +9,7 @@ NoMessageDialog(1)
 # test_dessinimage_getimage.amil
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Check the following methods:
-#                              - _getimage.
+#                              - getimage.
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 func "ctest/ctest_config.amil"
@@ -61,8 +61,8 @@ ctobject->Create
 printn "\t\t Create an object of class DessinImage (torus_draw).\n"
 torus_draw=DessinImage(&torus)
 
-printn "\t\t Get the image (_getimage): NewImage = torus_draw._getimage()\n"
-NewImage=torus_draw._getimage()
+printn "\t\t Get the image (getimage): NewImage = torus_draw.getimage()\n"
+NewImage=torus_draw.getimage()
 
 printn "\n\t\t Show the image: show NewImage\n"
 show NewImage
