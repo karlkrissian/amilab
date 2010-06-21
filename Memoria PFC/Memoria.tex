@@ -73,7 +73,29 @@ Esclarín Monreal, Julio \\
 \newpage
 \thispagestyle{empty}
 \section*{Agradecimientos}
-  Aqui ponemos los agradecimientos
+Desde que empecé esta etapa de mi vida me decía, esto nunca va a terminar, esto es un camino sin fin... pero más tarde que temprano he obtenido mi recompensa y he alcanzado mi meta. Por el camino han pasado muchas personas que han ayudado a que el ascenso sea menos duro y más ameno, algunas siguen a mi lado y otras decidieron retirarse... a todas ellas les agradezco el apoyo que me han brindado en todo momento.
+
+Quiero hacer una especial mención a ciertas personas que en mayor o menor medida me han soportado mis neuras y mis quebraderos de cabeza.
+
+En primer lugar, y no podría ser de otra manera, quiero agradecer el trabajo que han realizado mis tutores, en especial Karl, que me ha ayudado siempre que lo he necesitado y ha sido muy paciente conmigo.
+
+A mis padres, por ser cómo son y por estar siempre ahí, apoyándome y haciéndome ver de todo la parte buena. Sin ellos no habría llegado dónde estoy, sin ellos nada sería igual. 
+
+A toda mi familia, que, aún estando lejos han sabido darme fuerzas en todo momento.
+
+A mi novio, que ha hecho todo lo posible para ayudarme en los momentos en los que me volvía loca y no veía la luz.
+
+A Dani, gran ayuda, gran apoyo y gran persona. Sin él, el camino hubiese sido muchísimo más duro.
+
+A Raúl, que gracias a sus locuras esta andadura ha tomado otro color.
+
+A mi Nano, que con su sinceridad y claridad ha conseguido hacerme ver las cosas de otra manera.
+
+A Adaya, que me ha alegrado tantas y tantas noches.
+
+A Charly, un pequeño incomprendido.
+
+A todos ellos, muchísimas gracias por formar parte de esta etapa de mi vida.
 
 % Definimos página posterior 
 \newpage
@@ -92,10 +114,18 @@ Esclarín Monreal, Julio \\
 \newpage
 
 \chapter{Introducción}
-\chapter{Estado actual del tema}
-Este proyecto se basa en la tomografía computarizada, sin la cual ninguno de los algoritmos implementados tendría sentido. Es por ello, que es importante abordar este tema y comprender la importancia que tiene hoy en día.
+Son varios los factores que han motivado el desarrollo de este proyecto. Uno de los principales es que el rápido avance tanto de la tecnología médica como informática proporciona un marco en el que desarrollar métodos que proporcionen aplicaciones de ayuda al diagnóstico. En este sentido, el análisis y visualización de imágenes 3D es tremendamente útil. 
 
-La tomografía computarizada es un método de formación de imágenes médicas utilizando la tomografía. Se utiliza el procesamiento de la geometría digital para generar imágenes en 3D del interior de un objeto partiendo de una gran serie de imágenes en 2D de rayos X tomadas en torno a un único eje de rotación. Combina el uso del ordenador con la rotación del dispositivo de rayos X para crear imágenes detalladas de la sección transversal o capas de los diferentes órganos y partes del cuerpo como los pulmones, hígado, riñones, páncreas, pelvis, extremidades, cerebro, columna vertebral y los vasos sanguíneos.
+Otro de los motivos ha sido el desarrollo de software libre y la utilización del mismo en la comunidad científica. Gracias a las librerías ITK y al software de tratamiento de imágenes AMILab
+hemos conseguido demostrar la fácil interacción entre ambos y posibilitar la difusión tanto de uno
+como del otro.
+
+Por último, pero no menos importante, hemos contribuido al continuo cambio y mejora del software AMILab, permitiendo que su uso sobre otras plataformas sea más estable y accesible.
+
+\section{Estado actual del tema}
+La técnica de tomografía computarizada es el fundamento básico de este proyecto, ya que sin la cual ninguno de los algoritmos implementados tendría sentido. Es por ello, que es importante abordar este tema y comprender la importancia que tiene hoy en día.
+
+La tomografía computarizada es un método de formación de imágenes médicas basado en la captación de múltiples imágenes (denominadas cortes) a lo largo de un eje. Se utiliza el procesamiento de la geometría digital para generar imágenes en 3D del interior de un objeto partiendo de una gran serie de imágenes en 2D de rayos X tomadas en torno a un único eje de rotación. Combina el uso del ordenador con la rotación del dispositivo de rayos X para crear imágenes detalladas de la sección transversal o capas de los diferentes órganos y partes del cuerpo como los pulmones, hígado, riñones, páncreas, pelvis, extremidades, cerebro, columna vertebral y los vasos sanguíneos.
 
 Entre las diversas técnicas de formación de imágenes como la resonancia magnética y los rallos X, la tomografía computarizada es la única que posee la habilidad de combinar tejidos blandos, huesos y vasos sanguíneos. Por ejemplo, la formación de la imagen de la cabeza mediante rayos X sólo puede mostrar la densidad de las estructuras del los huesos del cráneo. La angiografía por rayos X de la cabeza sólo es capaz de representar los vasos sanguíneos de la misma y del cuello, pero no los tejidos blandos del cerebro. La resonancia magnética hace un excelente trabajo mostrando los tejidos blandos y los vasos sanguíneos, pero no es capaz de dar en detalle las estructuras óseas. La tomografía computarizada de la cabeza permite a los médicos ver los tejidos blandos como los ventrículos del cerebro o la materia gris y blanca. Mediante esta técnica los médicos pueden elegir ver los tejidos blandos, las estructuras óseas o los vasos sanguíneos.
 
@@ -118,7 +148,7 @@ Los médicos a menudo utilizan la tomografía computarizada para:
 
 A día de hoy el tratamiento de imágenes de tomografía computarizada está muy extendido, siendo muchos los que se han decidido a abordar este tema. A continuación se citan aquellos que al igual que la librería elegida para el desarrollo de este proyecto se centran en el tratamiento de imágenes promoviendo el uso del software libre.
 
-\section{MITK}
+\subsection{MITK}
 `` Medical Imaging Interaction Toolkit ''  es un software libre para el desarrollo de software para el procesamiento interactivo de imágenes médicas. MITK combina ITK y VTK con las librerías basadas en PIC de DKFZ. MITK ofrece un conjunto de características relevantes para el desarrollo de software interactivo para imágenes médicas que ITK y VTK no poseen, como:
 \begin{itemize}
 \item Múltiples y coherentes vista de la misma información.
@@ -131,7 +161,7 @@ A día de hoy el tratamiento de imágenes de tomografía computarizada está muy ext
 
 MITK reutilizada prácticamente todo de VTK e ITK. Por lo tanto, no es en absoluto un competidor para VTK o ITK, sino una extensión, que trata de facilitar la combinación de ambos y añadir las características antes mencionadas. Aunque es principalmente una guía y no una aplicación, MITK ofrece apoyo en los niveles de aplicación, por ejemplo, para la combinación estructurada de módulos, o para combinar y cambiar entre una funcionalidad para la segmentación y otra para la correspondencia.
 
-\section{ITK (librería elegida)}
+\subsection{ITK (librería elegida)}
 ITK es software libre de herramientas para la realización de correspondencias y segmentación en dos, tres o más dimensiones (análisis de imágenes).
 
 
@@ -140,19 +170,19 @@ La segmentación es un proceso de identificación y clasificación de la informació
 
 Debido a que ITK es un proyecto de código abierto, los desarrolladores de todo el mundo pueden utilizar, comprobar, mantener y extender el software. ITK utiliza un modelo de desarrollo de software llamado programación extrema. La programación extrema cambia la metodología habitual de desarrollo software por un proceso iterativo y simultaneo de diseño-implementación-prueba-versión. La clave de esta programación extrema es la comunicación y la prueba. La comunicación entre los miembros de la comunidad de ITK es la que ayuda a manejar la rápida evolución del software. La prueba es la que mantiene el software estable. En ITK, un extenso proceso de pruebas día a día son los que determinan la calidad.
 
-\section{VTK}
+\subsection{VTK}
 VTK es un software libre para gráficos 3D, modelado, procesamiento de imágenes, renderización de volúmenes, visualización científica y visualización de la información. 
 
 
 VTK es usado en todo el mundo en aplicaciones comerciales, de investigación y de desarrollo y es la base de muchas aplicaciones de visualización avanzada como: ParaView, VisIt, VisTrails, Slicer, MayaVi, and OsiriX.
 
-\section{IGSTK}
+\subsection{IGSTK}
 IGSTK es un componente de alto nivel basado en un framework que proporciona funcionalidades comunes para aplicaciones de cirugía guiada por imágenes. Este framework está basado en un conjunto de componentes de alto nivel integrados con otras librerías de bajo nivel y código abierto y con interfaces de programación de aplicaciones (API) de los vendedores de hardware.
 
 
 Lo más importante de IGSTK es la robustez. IGSTK proporciona las siguientes funcionalidades de alto nivel: habilidad para leer y mostrar imágenes médicas incluyendo CT y MRI en formato DICOM; una interfaz común para el seguimiento de hardware; una interfaz gráfica de usuario y capacidad de visualización incluyendo vistas en los cuatro cuadrantes (axial, sagital, coronal y 3D) así como una vista axial de múltiples capas; correspondencia: el punto de correspondencia y un medio para seleccionar estos puntos; servicios para logging, manejo de excepciones y resolución de problemas.
 
-\section{VTKEdge}
+\subsection{VTKEdge}
 VTKEdge es una librería de visualización avanzada y de técnicas de procesamiento de datos que complementan a VTK, así como módulos propios que permiten el uso de estas técnicas con ParaView. VTKEdge no reemplaza a VTK, sino que se compila con VTK para proporcionar funcionalidades adicionales.
 
 
@@ -164,12 +194,12 @@ A parte de lo comentado anteriormente, es de vital importancia tener un software
 
 Existe un amplio abanico de programas que proporcionan funcionalidades para el tratamiento y procesamiento de imágenes. A continuación citaremos algunos que se utilizan en el ámbito médico.
 
-\section{OsiriX}
+\subsection{OsiriX}
 OsiriX es un software de procesamiento de imágenes dedicado principalmente a imágenes en formato DICOM. Ha sido específicamente diseñado para la navegación y visualización de imágenes en varias dimensiones: visor 2D, 3D, 4D y 5D. El visor 3D ofrece todos los modos actuales de renderizado, como son, la reconstrucción multiplanar, el renderizado de superficies, el renderizado volumétrico y la proyección de la intensidad máxima.
 
 Al mismo tiempo OsiriX es un software de procesamiento de imágenes para investigación médica.\cite{osirix}
 
-\section{Slicer}
+\subsection{Slicer}
 Slicer es un software de código abierto y libre que se utiliza para la visualización y análisis de imágenes. Se diseño pensando en que fuese multiplataforma.\cite{slicer}
 
 Permite el registro de imágenes, el procesamiento DTI, posee una interfaz para los dispositivos externos para el apoyo de guía por imagen, permite el renderizado volumétrico.
@@ -178,7 +208,7 @@ Cuenta con una organización modular que permite la fácil incorporación de nuevas
 Las capacidades de visualización de Slicer permiten mostrar cortes de imágenes, crear superficies a través de las imágenes y un alto rendimiento de renderizado volumétrico.\cite{slicer2}
 
 
-\chapter{Objetivos}
+\section{Objetivos}
 El proyecto que se plantea viene motivado por la necesidad de implementar un algoritmo de segmentación de vasos coronarios para código libre.
 
 
@@ -195,7 +225,7 @@ Por tanto, como objetivos principales de este proyecto se pretende:
 \item Entender el funcionamiento global de los algoritmos actuales, sin necesariamente entrar en los detalles.
 \end{itemize}
 
-\chapter{Metodología}
+\section{Metodología}
 Dado el carácter de este proyecto se ha tomado la decisión de optar por una metodología de desarrollo en espiral combinada con un desarrollo basado en componentes.
 
 El desarrollo en espiral se basa en un conjunto de iteraciones, en las que en cada una de ellas se van incrementando las funcionalidades del sistema partiendo de lo ya implementado. Por tanto, el sistema va creciendo poco a poco y se va probando a medida que una nueva funcionalidad es creada. Al final se consigue un sistema global formado por múltiples funcionalidades individuales.
@@ -212,7 +242,7 @@ Por tanto, combinando estás dos metodologías se ha conseguido dasarrollar un sis
 
 En cada iteración, se ha establecido una fase de análisis, diseño, implementación y prueba.
 
-\chapter{Recursos necesarios}
+\section{Recursos necesarios}
 AMILab es un software que puede ser utilizado en cualquier plataforma, es por esto que se ha decidido usar Windows XP para el desarrollo de este proyecto. Esto ha propiciado que AMILab sea más robusto y estable bajo este S.O., ya que al tener que utilizarlo para el desarrollo del proyecto ha ayudado a su mejora.
 
 Otro detalle a tener en cuenta serán los recursos hardware necesarios para la fluidez del desarrollo del proyecto y la validación del mismo. Debemos recordar que los algoritmos implementados serán aplicados sobre imágenes de tomografía computarizada que ocupan un gran espacio en disco duro. Por lo que será necesaria la presencia de un dispositivo de almacenamiento de gran capacidad y un ordenador que sea capaz de procesar de manera eficiente y potente todo este material. 
@@ -229,7 +259,6 @@ Una vez comentados estos puntos pasaremos a numerar el software y el hardware us
 	\item AMILab
 	\item Subversion	
 \end{itemize}
-\newpage
 	\item Hardware
 \begin{itemize}
 	\item Disco Duro cómo mínimo de 200GB
@@ -237,12 +266,12 @@ Una vez comentados estos puntos pasaremos a numerar el software y el hardware us
 \end{itemize}
 \end{itemize}
 
-\chapter{Plan de trabajo y temporización}
+\section{Plan de trabajo y temporización}
 A continuación se define el plan de trabajo a seguir. Debido a la metodología de desarrollo elegida las etapas aquí descritas se repetirán en cada iteración hasta llegar al sistema completo.
 
 Por tanto, en cada etapa se describirán los pasos seguidos a la hora de desarrollar este proyecto.
 
-\section{Análisis}
+\subsection{Análisis}
 En una primera etapa se hará una fase de análisis sobre las herramientas a utilizar, profundizando de manera exhaustiva en el manual de las librerías a utilizar (Insight Toolkit). Esto permitirá mayor soltura a la hora del diseño e implementación de las nuevas clases requeridas. Para la realización de esta etapa se desarrollarán varias tareas que ayudarán a una mejor asimilación de los conceptos, como son:
 \begin{itemize}
 	\item Análisis de ejemplos simples.
@@ -254,16 +283,15 @@ A continuación, se podrá realizar un estudio del software de tratamiento de imág
 Como segunda etapa de esta fase se realizará un análisis de las necesidades de las clases a implementar. Para ello se deberá hacer un estudio de las relaciones existentes entre clases.
 
 Como tercera etapa de esta fase se debe hacer un estudio de los diferentes métodos que intervienen en el algoritmo completo de segmentación de carótidas.
-\section{Diseño}
+\subsection{Diseño}
 En esta fase se pretende determinar el diseño de las nuevas clases a implementar, teniendo en cuenta la fase de análisis previa y el diseño por defecto de las librerías Insight Toolkit.
 
-\section{Implementación}
+\subsection{Implementación}
 Durante la fase de implementación se desarrollarán las clases propiamente dichas. Esta fase vendrá regida por las fases de análisis y diseño estudiadas anteriormente.
 
-\section{Validación}
+\subsection{Validación}
 La última fase del proyecto es una de las más importantes ya que en ella se realizarán los test que validarán las clases implementadas.
 
-\newpage
 Dentro de los test de validación tendremos varias partes:
 \begin{itemize}
 	\item Definición de los test de validación.
@@ -279,7 +307,6 @@ En esta primera fase del análisis se pretende dar una visión global de las herra
 \subsubsection{Introducción}
 Las librerías Insight Toolkit son de código abierto, multiplataforma, orientadas a objetos y se utilizan para procesar, segmentar y hacer correspondencia de imágenes. Insight Toolkit está diseñado para ser usado con facilidad una vez que se aprende diseño orientado a objetos y su metodología de implementación. A su vez, Insight Toolkit proporciona métodos novedosos y a la orden del día para segmentación y correspondencia de imágenes en cualquier dimensión posible (2D, 3D,.., ND).
 
-\newpage
 Las principales metas de Insight Toolkit son:
 \begin{itemize}
 	\item Soportar el proyecto ``Visible Human'' (NLM).
@@ -2251,6 +2278,36 @@ Por último, el resultado se puede guardar mediante el botón de {\bf Save}.
 \end{landscape}
 
 \section{Script Fast Marching}
+Este script proporciona una interfaz para el cálculo del Fast Marching.
+Para obtener el cálculo de Fast Marching se han de seguir los siguientes pasos:
+\begin{enumerate}
+\item Seleccionar el modo de carga de la imagen de entrada (NormGradient o User Velocity Image).
+	\begin{enumerate}
+	\item Si se selecciona NormGradient se debe seguir la ayuda del filtro SigmoidFilter para saber como utilizarlo.
+	\item Si se selecciona User Velocity Image, basta con cargar la imagen de entrada y fijar la dimensión de la misma (2D o 3D).
+	\end{enumerate}
+\item Seleccionar el punto de partida con el botón {\bf Set Seed Point}.
+\item Seleccionar el valor de la variable ``stopping time''.
+\item Seleccionar el valor máximo y mínimo del umbral para el filtro binario.
+\item Seleccionar el valor del punto que representa el frente inicial.
+\item Ejecutar el filtro.
+\item Mostrar el resultado.
+\end{enumerate}
+Esta interfaz se divide en diferentes páginas:
+\begin{itemize}
+\item Init Page \ref{fig:fast1}, \ref{fig:fast2}: si se selecciona la opción de NormGradient se debe seguir la ayuda del filtro Sigmoid. Sin embargo, si seleccionamos User Velocity Image se tendrá que elegir la imagen de entrada y cargarla con el botón {\bf Load}. Por último, el botón {\bf Dimension} nos permitirá elegir entre 2D o 3D.
+
+\item Param Page \ref{fig:fast3}:
+\begin{itemize}
+\item Seleccionar el punto de partida con el botón {\bf Set Seed Point}. Aparecerá una imagen y con el botón central del ratón se podrá seleccionar dicho punto. Para que se guarde se debe volver a pulsar el botón de {\bf Set Seed Point}.
+\item Seleccionar el valor de la variable ``stopping time''.
+\item Seleccionar el máximo y el mínimo valor de umbral para el filtro binario. Esto se utilizará para hacer un umbralizado de la imagen de salida del filtro Fast Marching.
+\item Por último se ejecutará el filtro mediante el botón {\bf Run}. Para ver el resultado basta con pulsar el botón de {\bf Display}.
+\end{itemize}
+
+\item Help Page \ref{fig:fast4}: se muestra la ayuda del script.
+\end{itemize}
+
 \begin{landscape}
 \begin{figure}
 \centering
@@ -2288,6 +2345,48 @@ Por último, el resultado se puede guardar mediante el botón de {\bf Save}.
 \end{landscape}
 
 \section{Script BackTracking}
+Este script proporciona una interfaz para crear un camino en imágenes 3D.
+
+Los diferentes pasos para obtener el camino son:
+\begin{enumerate}
+\item Seleccionar y cargar la imagen de entrada.
+\item Seleccionar y cargar la imagen de velocidad, si es que se desea utilizar.
+\item Seleccionar el punto de comienzo y de final.
+\item Si se quiere guardar la imagen resultante de aplicar el filtro Fast Marching se debe activar la casilla Save FastMarching Output.
+\item Seleccionar el valor de epsilon.
+\item Seleccionar el valor de coste máximo (maxcost).
+\item Si se utiliza la imagen de velocidad se debe marcar la opción Use Speed, después se debe seleccionar el valor máximo y mínimo de intensidad y el valor de la velocidad.
+\item Seleccionar el valor del tamaño del paso (step size).
+\item Seleccionar el valor de la longitud máxima (maxlength).
+\item Ejecutar el filtro.
+\item Mostrar el resultado.
+\end{enumerate}
+
+La interfaz está dividida en varias páginas:
+\begin{itemize}
+\item Init Page \ref{fig:back1}: lo primero de todo es elegir y cargar la imagen de entrada mediante el botón {\bf Load}. Después, si así lo decide el usuario, se debe elegir y cargar la imagen de velocidad mediante el botón {\bf Load}. 
+
+Para seleccionar el punto inicial se hará mediante el botón {\bf Set Start Point}. Aparecerá una imagen y con el botón central del ratón se seleccionará el punto, a continuación se pulsará de nuevo el botón {\bf Start Point} para guardarlo.
+Para seleccionar el punto final se hará mediante el botón {\bf Set End Point}. Aparecerá una imagen y con el botón central del ratón se seleccionará el punto, a continuación se pulsará de nuevo el botón {\bf Set End Point} para guardarlo.
+
+\item Param Page \ref{fig:back2}: si se desea guardar o mostrar la imagen resultado del filtro Fast Marching, se debe activarla casilla Save FastMarching Output.
+
+Seleccionar el valor de epsilon. Este se utiliza, tanto en el filtro Fast Marching como en la creación del camino.
+Seleccionar el valor de maxcost, el valor de tiempo máximo.
+
+Si se quiere utilizar la imagen de velocidad se debe activar la casilla Use Speed. Después se podrá seleccionar el máximo y el mínimo valor de la intensidad.
+Seleccionar el valor de la velocidad.
+
+Seleccionar el valor del tamaño del paso para la evolución.
+
+Seleccionar el valor máximo de longitud. La distancia máxima euclidiana del camino.
+
+Pulsar el botón {\bf Run} para ejecutar el filtro.
+Para mostrar el resultado pulsar el botón {\bf Display}.
+
+\item Help Page \ref{fig:back3}: se muestra la ayuda del script.
+
+\end{itemize}
 \begin{landscape}
 \begin{figure}
 \centering
@@ -2316,6 +2415,44 @@ Por último, el resultado se puede guardar mediante el botón de {\bf Save}.
 \end{landscape}
 
 \section{Script Level Sets}
+Este script proporciona una interfaz para segmentar estructuras en imágenes basadas en mapas de bordes (edge map).
+
+Los pasos que se han de seguir para obtener la segmentación son:
+\begin{enumerate}
+\item Seleccionar y cargar la imagen inicial.
+\item Seleccionar y cargar el mapa de bordes.
+\item Seleccionar la dimensión de la imagen (2D o 3D).
+\item Seleccionar el valor de la variable errorRMS.
+\item Seleccionar el número de iteraciones que el filtro se ejecutará.
+\item Seleccionar el valor de la variable de advección.
+\item Seleccionar el valor de la variable de curvatura.
+\item Seleccionar el valor de la variable de propagación.
+\item Ejecutar el filtro.
+\item Mostrar el resultado.
+\end{enumerate}
+
+Esta interfaz se divide en un número de páginas:
+\begin{itemize}
+\item Init Page \ref{fig:level1}: lo primero es elegir y cargar la imagen inicial mediante el botón {\bf Load}. Este es el modelo de Level Set inicial.
+
+A continuación, se debe elegir y cargar la imagen de mapa de bordes con el botón {\bf Load}. Esta es la imagen de características que será utilizada para la función de velocidad en la ecuación de Level Sets.
+
+El parámetro {\bf Dimension} permite seleccionar la dimensión de la imagen (2D o 3D).
+
+\item Level Sets Page \ref{fig:level2}: para aplicar el filtro se deben fijar una serie de parámetros:
+\begin{itemize}
+\item Seleccionar el valor de ErrorRMS, el máximo error permitido en la solución.
+\item Seleccionar el número de iteraciones que el filtro se ejecutará.
+\item Seleccionar el valor de la variable advección.
+\item Seleccionar el valor de la variable de curvatura. Este parámetro permite aumentar la influencia de la curvatura en el movimiento de la superficie. Si tenemos valores altos de advección y propagación conseguiremos superficies más suavizadas.
+\item Seleccionar el valor de la variable de propagación.
+\end{itemize}
+Ahora se puede ejecutar el filtro con el botón {\bf Run}.
+Para ver el resultado se deberá pulsar el botón {\bf Display}.
+
+\item Help Page \ref{fig:level3}: se muestra la ayuda del script.
+\end{itemize}
+
 \begin{landscape}
 \begin{figure}
 \centering
