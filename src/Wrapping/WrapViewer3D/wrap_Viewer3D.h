@@ -49,14 +49,14 @@ class WrapClass_Viewer3D: public WrapClass_wxWindow
     ADD_CLASS_METHOD(rotate,            "Applies a rotation to the objects displayed by the surface visualization window.");
     ADD_CLASS_METHOD(AddObject,         "Add a wrapped SurfacePoly object.");
     ADD_CLASS_METHOD(add_assign,        "Operator +=, add a new SurfacePoly object.");
-    ADD_CLASS_METHOD(subtraction_assign,"Operator -=, remove a existing SurfacePoly object.");
+    ADD_CLASS_METHOD(sub_assign,        "Operator -=, remove a existing SurfacePoly object.");
     ADD_CLASS_METHOD(Remove,            "Removes the surface without swapping the 3D buffer.");
     ADD_CLASS_METHOD(SwapBuffers,       "Swaps the 3D buffer");
     ADD_CLASS_METHOD(drawCCOnlyCC,      "Choose to draw only the specified connected component.");
     ADD_CLASS_METHOD(drawCC,            "Choose to draw or not a given connected component.");
     ADD_CLASS_METHOD(SetCurrentObj,     "The object indicated by the index becomes the current object.");
     ADD_CLASS_METHOD(compare,           "Put a comparison image for the imagedraw window specified by the parameters. The comparison image is displayed in a new window.");
-    ADD_CLASS_METHOD(setvector,         "This command allows to set one of the vector fields, specified by the given number. The image parameter can display up to 3 vector fields.");
+    ADD_CLASS_METHOD(setvector,         "This command allows to set one of the vector fields, specified by the given number. The image parameter can display up to 2 vector fields.");
     ADD_CLASS_METHOD(ShowSection,       "Show free section (TODO)");
     ADD_CLASS_METHOD(HideSection,       "Hide free section (TODO)");
     ADD_CLASS_METHOD(PrintMatrices,     "TODO");
@@ -98,6 +98,11 @@ class WrapClass_Viewer3D: public WrapClass_wxWindow
       AddVar_getimage(          this_ptr);
       AddVar_GetImageFromX(     this_ptr);
       AddVar_GetTransform(      this_ptr,"_GetTransform");
+
+      // Operators
+      AddVar_add_assign(        this_ptr);
+      AddVar_sub_assign(        this_ptr);
+      AddVar_reference(         this_ptr);
     };
 };
 

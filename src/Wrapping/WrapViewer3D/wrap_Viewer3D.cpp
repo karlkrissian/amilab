@@ -76,7 +76,7 @@ Variable<AMIObject>::ptr CreateVar_Viewer3D( Viewer3D* si)
 
 void  wrap_Viewer3D::SetParametersComments() 
 {
-  ADDPARAMCOMMENT_TYPE(string,"Title of viewer.");
+  ADDPARAMCOMMENT_TYPE(string,"Title of viewer (by default, Viewer 3D).");
   return_comments = "A wrapped Viewer3D object.";
 }
 
@@ -86,7 +86,7 @@ BasicVariable::ptr wrap_Viewer3D::CallMember( ParamList* p)
   if (!p) ClassHelpAndReturn;
   int n=0;
   //if (!get_var_param<string>(sTitle,p,n)) ClassHelpAndReturn;
-  GET_PARAM(string,sTitle,"");
+  GET_PARAM(string,sTitle,"Viewer 3D");
 
   Viewer3D* oViewer3D = new Viewer3D(GB_main_wxFrame, sTitle);
 
@@ -220,14 +220,14 @@ BasicVariable::ptr WrapClass_Viewer3D::
 //  subtraction_assign
 //---------------------------------------------------
 void WrapClass_Viewer3D::
-      wrap_subtraction_assign::SetParametersComments() 
+      wrap_sub_assign::SetParametersComments() 
 {
   //TODO
   ADDPARAMCOMMENT_TYPE(AMIObject,"A wrapped SurfacePoly object.");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_Viewer3D::
-      wrap_subtraction_assign::CallMember( ParamList* p)
+      wrap_sub_assign::CallMember( ParamList* p)
 {
   Viewer3D::ptr sdraw(this->_objectptr->_obj);
 
@@ -419,7 +419,7 @@ void WrapClass_Viewer3D::
       wrap_setvector::SetParametersComments() 
 {
   //TODO
-  ADDPARAMCOMMENT_TYPE(int,"Number of the vector field (1,2 or 3).");
+  ADDPARAMCOMMENT_TYPE(int,"Number of the vector field (1 or 2).");
   ADDPARAMCOMMENT_TYPE(InrImage,"Vector field image");
 }
 //---------------------------------------------------

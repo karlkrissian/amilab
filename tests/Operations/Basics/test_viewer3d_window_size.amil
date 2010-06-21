@@ -1,0 +1,51 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_viewer3d_window_size.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the following methods:
+#                              - SetWindowSize
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+OK = 1 # The test was successful
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+printn "\t\t Create an object of class Viewer3D (viewer).\n"
+viewer = Viewer3D("Check the following method: SetWindowSize")
+
+width=250
+height=250
+printn "\n\t\t Change the window size:\n"
+printn "\t\t\t\t Width=%1% " % width
+printn "\t\t\t\t Height=%1% " % height
+viewer.SetWindowSize(width,height)
+
+width=-100
+height=100
+printn "\n\t\t Change the window size:\n"
+printn "\t\t\t\t Width=%1% " % width
+printn "\t\t\t\t Height=%1% " % height
+viewer.SetWindowSize(width,height)
+
+width=151000
+height=25000
+printn "\n\t\t Change the window size:\n"
+printn "\t\t\t\t Width=%1% " % width
+printn "\t\t\t\t Height=%1% " % height
+viewer.SetWindowSize(width,height)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ctest.PrintTestResult( OK ) 
+
+#quit
+

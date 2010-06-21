@@ -188,7 +188,7 @@ template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator -(cons
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::operator -=(const BasicVariable::ptr& b)
 { 
   //Modified: Added (17-06-2010)
-  APPLY_MEMBER_PARAM1("subtraction_assign", b, varres)
+  APPLY_MEMBER_PARAM1("sub_assign", b, varres)
   if (varres.get())
     return varres;
   else

@@ -105,3 +105,12 @@ ENDFOREACH(option)
 FOREACH(option ${options})
   ADD_AMILAB_TESTS(${option} "-quit" "${PROJECT_SOURCE_DIR}/../tests/Operations/Basics/${option}")
 ENDFOREACH(option)
+
+SET(options "test_viewer3d_window_size.amil" "test_viewer3d_add_remove_reference.amil"
+            "test_viewer3d_getimage.amil"    "test_viewer3d_set_bg_ls_ld_la.amil"
+            "test_viewer3d_rotate_swapBuffers.amil"
+   )
+
+FOREACH(option ${options})
+  ADD_AMILAB_TESTS(${option} "-quit" "${PROJECT_SOURCE_DIR}/../tests/Operations/Basics/${option}")
+ENDFOREACH(option)
