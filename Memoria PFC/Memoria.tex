@@ -127,13 +127,13 @@ La técnica de tomografía computarizada es el fundamento básico de este proyecto,
 
 La tomografía computarizada es un método de formación de imágenes médicas basado en la captación de múltiples imágenes (denominadas cortes) a lo largo de un eje. Se utiliza el procesamiento de la geometría digital para generar imágenes en 3D del interior de un objeto partiendo de una gran serie de imágenes en 2D de rayos X tomadas en torno a un único eje de rotación. Combina el uso del ordenador con la rotación del dispositivo de rayos X para crear imágenes detalladas de la sección transversal o capas de los diferentes órganos y partes del cuerpo como los pulmones, hígado, riñones, páncreas, pelvis, extremidades, cerebro, columna vertebral y los vasos sanguíneos.
 
-Entre las diversas técnicas de formación de imágenes como la resonancia magnética y los rallos X, la tomografía computarizada es la única que posee la habilidad de combinar tejidos blandos, huesos y vasos sanguíneos. Por ejemplo, la formación de la imagen de la cabeza mediante rayos X sólo puede mostrar la densidad de las estructuras del los huesos del cráneo. La angiografía por rayos X de la cabeza sólo es capaz de representar los vasos sanguíneos de la misma y del cuello, pero no los tejidos blandos del cerebro. La resonancia magnética hace un excelente trabajo mostrando los tejidos blandos y los vasos sanguíneos, pero no es capaz de dar en detalle las estructuras óseas. La tomografía computarizada de la cabeza permite a los médicos ver los tejidos blandos como los ventrículos del cerebro o la materia gris y blanca. Mediante esta técnica los médicos pueden elegir ver los tejidos blandos, las estructuras óseas o los vasos sanguíneos.
+Entre las diversas técnicas de formación de imágenes como la resonancia magnética y los rallos X, la tomografía computarizada es la única que posee la habilidad de combinar tejidos blandos, huesos y vasos sanguíneos. Por ejemplo, la formación de la imagen de la cabeza mediante rayos X sólo puede mostrar la densidad de las estructuras de los huesos del cráneo. La angiografía por rayos X de la cabeza sólo es capaz de representar los vasos sanguíneos de la misma y del cuello, pero no los tejidos blandos del cerebro. La resonancia magnética hace un excelente trabajo mostrando los tejidos blandos y los vasos sanguíneos, pero no es capaz de dar en detalle las estructuras óseas. La tomografía computarizada de la cabeza permite a los médicos ver los tejidos blandos como los ventrículos del cerebro o la materia gris y blanca. Mediante esta técnica los médicos pueden elegir ver los tejidos blandos, las estructuras óseas o los vasos sanguíneos.
 
 Por tanto la tomografía computarizada es:
 \begin{itemize}
 \item Una de las herramientas mejores y más rápidas para el estudio del pecho, abdomen y pelvis porque proporciona vistas detalladas y secciones transversales de todos los tipos de tejidos.
 \item A menudo es el método más adecuado para el diagnóstico de muchos tipos de cánceres, incluidos los de pulmón, hígado y cáncer de páncreas, ya que la imagen obtenida permite al médico confirmar la presencia del tumor, medir su tamaño, ubicación exacta y grado del mismo ayudándose para ello de los tejidos cercanos.
-\item Un examen que desempeña un papel importante en la detección, diagnóstico y tratamiento de enfermedades vasculares que pueden conducir a accidentes cerebro vasculares, insuficiencia renal o incluso la muerte. La tomografía computarizada se utiliza comúnmente para evaluar la embolia pulmonar así como para las aneurismas de la aorta abdominal.
+\item Un examen que desempeña un papel importante en la detección, diagnóstico y tratamiento de enfermedades vasculares que pueden conducir a accidentes cerebro vasculares, insuficiencia renal o incluso la muerte. La tomografía computarizada se utiliza comúnmente para evaluar la embolia pulmonar así como para los aneurismas de la aorta abdominal.
 \item Inestimable en el diagnóstico y tratamiento de problemas de columna vertebral y lesiones en las manos, pies y otras estructuras esqueléticas porque incluso puede mostrar claramente huesos muy pequeños, así como los tejidos circundantes, tales como el músculo y los vasos sanguíneos.
 \end{itemize}
 
@@ -151,18 +151,18 @@ A día de hoy el tratamiento de imágenes de tomografía computarizada está muy ext
 \subsection{MITK}
 `` Medical Imaging Interaction Toolkit ''  es un software libre para el desarrollo de software para el procesamiento interactivo de imágenes médicas. MITK combina ITK y VTK con las librerías basadas en PIC de DKFZ. MITK ofrece un conjunto de características relevantes para el desarrollo de software interactivo para imágenes médicas que ITK y VTK no poseen, como:
 \begin{itemize}
-\item Múltiples y coherentes vista de la misma información.
-\item Un concepto interactivo basado en los estados de las máquinas, que le ayuda a estructurar mecanismos de interacción complejos.
+\item Múltiples y coherentes vistas de la misma información.
+\item Un concepto interactivo basado en máquinas de estado, que le ayuda a estructurar mecanismos de interacción complejos.
 \item Un concepto de deshacer /rehacer para las interacciones.
 \item Organiza toda la información de la aplicación en un repositorio jerárquico y central. La jerarquía permite representar relaciones lógicas (como que un ventrículo es una parte del corazón).
 \item Descripción de los datos por propiedades arbitrarias para la comunicación entre módulos del programa o para el control de renderización.
 \end{itemize}
 
 
-MITK reutilizada prácticamente todo de VTK e ITK. Por lo tanto, no es en absoluto un competidor para VTK o ITK, sino una extensión, que trata de facilitar la combinación de ambos y añadir las características antes mencionadas. Aunque es principalmente una guía y no una aplicación, MITK ofrece apoyo en los niveles de aplicación, por ejemplo, para la combinación estructurada de módulos, o para combinar y cambiar entre una funcionalidad para la segmentación y otra para la correspondencia.
+MITK reutiliza prácticamente todo de VTK e ITK. Por lo tanto, no es en absoluto un competidor para VTK o ITK, sino una extensión, que trata de facilitar la combinación de ambos y añadir las características antes mencionadas. Aunque es principalmente una guía y no una aplicación, MITK ofrece apoyo en los niveles de aplicación, por ejemplo, para la combinación estructurada de módulos, o para combinar y cambiar entre una funcionalidad para la segmentación y otra para la correspondencia.
 
 \subsection{ITK (librería elegida)}
-ITK es software libre de herramientas para la realización de correspondencias y segmentación en dos, tres o más dimensiones (análisis de imágenes).
+ITK son un conjunto de herramientas libres para la realización de correspondencias y segmentación en dos, tres o más dimensiones (análisis de imágenes).
 
 
 La segmentación es un proceso de identificación y clasificación de la información encontrada en una representación digital de una muestra. Normalmente la representación de la muestra es una imagen adquirida mediante instrumentación médica como escáneres de tomografía computarizada (CT) o de resonancia magnética (MRI). La correspondencia es la tarea de alinear o desarrollar las correspondencias entre datos. Por ejemplo, en un entorno médico, un escáner CT puede ser alineado con un escáner MRI a fin de combinar la información contenida en ambos.
@@ -186,11 +186,11 @@ Lo más importante de IGSTK es la robustez. IGSTK proporciona las siguientes func
 VTKEdge es una librería de visualización avanzada y de técnicas de procesamiento de datos que complementan a VTK, así como módulos propios que permiten el uso de estas técnicas con ParaView. VTKEdge no reemplaza a VTK, sino que se compila con VTK para proporcionar funcionalidades adicionales.
 
 
-Las enfermedades de los vasos coronarios es una de las causas de muerte más frecuentes, es por ello que la detección de vasos a partir de imágenes de tomografía computarizada es un método de gran ayuda a nivel médico para la detección de dichas enfermedades. Partiendo de este hecho se ha realizado por parte de un equipo de investigadores un método de detección de vasos coronarios, intentando obtener la línea media de los mismos lo más realista posible. Esto permite la visualización, planificación de operaciones y la segmentación sobre los mismos.
+Las enfermedades de los vasos coronarios son una de las causas de muerte más frecuentes, es por ello que la detección de vasos a partir de imágenes de tomografía computarizada es un método de gran ayuda a nivel médico para la detección de dichas enfermedades. Partiendo de este hecho se ha realizado por parte de un equipo de investigadores un método de detección de vasos coronarios, intentando obtener la línea media de los mismos lo más realista posible. Esto permite la visualización, planificación de operaciones y la segmentación sobre los mismos.
 
 
 A día de hoy el método escogido para la obtención de la línea media de los vasos coronarios compite con otros 13 métodos.
-A parte de lo comentado anteriormente, es de vital importancia tener un software de visualización de imágenes que ayude al diagnóstico de las posibles enfermedades existentes. Es por ello que se ha creado un software para el tratamiento de imágenes, denominado AMILab.
+Aparte de lo comentado anteriormente, es de vital importancia tener un software de visualización de imágenes que ayude al diagnóstico de las posibles enfermedades existentes. Es por ello que se ha creado un software para el tratamiento de imágenes, denominado AMILab.
 
 Existe un amplio abanico de programas que proporcionan funcionalidades para el tratamiento y procesamiento de imágenes. A continuación citaremos algunos que se utilizan en el ámbito médico.
 
@@ -200,7 +200,7 @@ OsiriX es un software de procesamiento de imágenes dedicado principalmente a imá
 Al mismo tiempo OsiriX es un software de procesamiento de imágenes para investigación médica.\cite{osirix}
 
 \subsection{Slicer}
-Slicer es un software de código abierto y libre que se utiliza para la visualización y análisis de imágenes. Se diseño pensando en que fuese multiplataforma.\cite{slicer}
+Slicer es un software de código abierto y libre que se utiliza para la visualización y análisis de imágenes. Se diseñó pensando en que fuese multiplataforma.\cite{slicer}
 
 Permite el registro de imágenes, el procesamiento DTI, posee una interfaz para los dispositivos externos para el apoyo de guía por imagen, permite el renderizado volumétrico.
 Cuenta con una organización modular que permite la fácil incorporación de nuevas funcionalidades y proporciona una serie de características genéricas que no están disponibles en las herramientas de la competencia.
@@ -238,7 +238,7 @@ La ingeniería de sistemas basada en componentes abarca dos actividades de ingeni
 \item Integra componentes para formar subsistemas y la aplicación como un todo.
 \end{itemize}
 
-Por tanto, combinando estás dos metodologías se ha conseguido dasarrollar un sistema poco a poco y con la reutilización de componentes ya existentes, tanto de ITK como de AMILab.
+Por tanto, combinando estas dos metodologías se ha conseguido desarrollar un sistema poco a poco y con la reutilización de componentes ya existentes, tanto de ITK como de AMILab.
 
 En cada iteración, se ha establecido una fase de análisis, diseño, implementación y prueba.
 
@@ -311,7 +311,6 @@ Las principales metas de Insight Toolkit son:
 \begin{itemize}
 	\item Soportar el proyecto ``Visible Human'' (NLM).
 	\item Crear una fundación para la investigación futura.
-	\item Crear una fundación para la investigación futura.
 	\item Crear un repositorio de algoritmos esenciales.
 	\item Desarrollar una plataforma para productos de desarrollo avanzados.
 	\item Apoyo comercial a la aplicación de la tecnología.
@@ -326,7 +325,7 @@ En este apartado se dará una pequeña visión de lo que se necesita para la correc
 Recordemos que Insight Toolkit es multiplataforma por lo que para poder utilizarla en cualquier plataforma deberemos usar CMake (software libre). Este software controla el proceso de compilación usando una plataforma y un compilador de archivos de configuración independiente. CMake genera los ``makefiles'' y los espacios de trabajo que podrán ser usados en el entorno de compilación que se haya elegido. Es bastante sofisticado ya que da soporte a entornos complejos que requieren una configuración del sistema, testeo de características del compilador y generación de código.
 
 
-CMake genera ``makefiles'' bajo Unix y sistemas Cygwin. Bajo Windows generará espacios de trabajo para Visual Studio. La información usada por CMake es proporcionada por los archivos ``CMakeLists.txt'' que están presentes en todos los directorios del código fuente de Insight Toolkit. Estos archivos contienen información que el usuario proporciona a CMake en tiempo de configuración. La información más común es la inclusión de rutas a las utilidades en el sistema y la selección de opciones del software especificadas por el usuario.
+CMake genera ``makefiles'' bajo Unix y sistemas Cygwin. Bajo Windows generará espacios de trabajo para Visual Studio. La información usada por CMake es proporcionada por los archivos ``CMakeLists.txt'' que están presentes en todos los directorios del código fuente de Insight Toolkit. Estos archivos contienen información que el usuario proporciona a CMake en tiempo de con\-fi\-gu\-ra\-ción. La información más común es la inclusión de rutas a las utilidades en el sistema y la selección de opciones del software especificadas por el usuario.
 
 
 Una vez tengamos instalado CMake pasaremos a configurar Insight Toolkit mediante el uso del mismo. 
@@ -340,7 +339,7 @@ Insight Toolkit está formado por varios subsistemas:
 \begin{itemize}
 	\item Conceptos esenciales del sistema $\rightarrow$ como cualquier sistema software, Insight Toolkit está basado en torno a algunos conceptos básicos de diseño. Algunos de los conceptos más importantes son la programación genérica, punteros inteligentes para el manejo de memoria, fábricas de objetos, manejo de eventos usando el paradigma de diseño vista controlador y soporte multihilo.
 	\item Numéricos $\rightarrow$ Insight Toolkit  utiliza la librería numérica VXL´s VNL.
-	\item Representación de datos y acceso $\rightarrow$ existen dos clases principales para representar datos: itk::Image y itk::Mesh. Además, varios tipos de iteradores y contenedores son usados para mantener y recorrer los datos. Otra clase importante es aquella para representar histogramas.
+	\item Representación de datos y acceso $\rightarrow$ existen dos clases principales para representar datos: itk::Image e itk::Mesh. Además, varios tipos de iteradores y contenedores son usados para mantener y recorrer los datos. Otra clase importante es aquella para representar histogramas.
 	\item Procesamiento de datos del pipeline $\rightarrow$ las clases de representación de datos (conocidas como objetos de datos) son operadas por filtros que sucesivamente pueden ser organizadas en flujos de datos del pipeline. Estos pipelines mantienen estados y por lo tanto se ejecutan sólo cuando es necesario. También soportan multihilos y streaming (se puede operar sobre parte de los datos para minimizar el uso de memoria).
 	\item IO Framework $\rightarrow$ asociado con el procesamiento de datos del pipeline tenemos:
 \begin{itemize}
@@ -372,7 +371,7 @@ Las principales ideas de la programación genérica son los contenedores que se ut
 La programación genérica está implementada en C++ con template (template programming) y con el uso de la librería STL (Standard Template Library). 
 
 
-Insight Toolkit usa programación genérica en su implementación. La ventaja de este enfoque es que una variedad casi ilimitada de tipos de datos están soportados simplemente por la definición de los tipos template apropiados. Por ejemplo, en Insight Toolkit es posible crear imágenes en la que sus pixeles sean casi cualquier tipo. Además, la resolución del tipo es realizada en tiempo de compilación, por lo que el compilador puede optimizar el código para obtener el máximo rendimiento.
+Insight Toolkit usa programación genérica en su implementación. La ventaja de este enfoque es que una variedad casi ilimitada de tipos de datos están soportados simplemente por la definición de los tipos template apropiados. Por ejemplo, en Insight Toolkit es posible crear imágenes en las que sus pixeles sean casi cualquier tipo. Además, la resolución del tipo es realizada en tiempo de compilación, por lo que el compilador puede optimizar el código para obtener el máximo rendimiento.
 
 
 La desventaja de la programación genérica es que muchos compiladores aún no soportan este enfoque y no pueden compilar Insight Toolkit. 
@@ -417,7 +416,7 @@ Por ejemplo, en una aplicación particular, un usuario de Insight Toolkit puede q
 En la práctica, las fábricas de objetos serán usadas principalmente por clases de entrada$/$salida de Insight Toolkit. Para la gran mayoría de los usuarios, el mayor impacto es usar el método New() para crear una clase.
 
 \subsubsection{Punteros inteligentes y manejo de memoria}
-Por naturaleza, los sistemas orientados a objetos representan y operan con datos a través de una gran variedad de tipos objetos o clases. Cuando una clase en particular es instanciada para producir una instancia de esa clase, se produce una reserva de memoria, de manera que la instancia pueda guardar los valores de los atributos y los punteros de los métodos. Este objeto puede ser referenciado por otras clases o por estructuras de datos durante operaciones normales del programa. Normalmente, mientras el programa está en ejecución todas las referencias a la instancia pueden desaparecer, es en este punto cuando la instancia debe ser borrada para recuperar recursos. Saber cuándo se debe borrar una instancia no es fácil. Borrar la instancia muy pronto provoca errores en el programa; borrarla muy tarde provoca consumo de memoria innecesario. Este proceso de reservar y liberación de memoria se conoce como manejo de la memoria.
+Por naturaleza, los sistemas orientados a objetos representan y operan con datos a través de una gran variedad de tipos, objetos o clases. Cuando una clase en particular es instanciada para producir una instancia de esa clase, se produce una reserva de memoria, de manera que la instancia pueda guardar los valores de los atributos y los punteros de los métodos. Este objeto puede ser referenciado por otras clases o por estructuras de datos durante operaciones normales del programa. Normalmente, mientras el programa está en ejecución todas las referencias a la instancia pueden desaparecer, es en este punto cuando la instancia debe ser borrada para recuperar recursos. Saber cuándo se debe borrar una instancia no es fácil. Borrar la instancia muy pronto provoca errores en el programa; borrarla muy tarde provoca consumo de memoria innecesario. Este proceso de reservar y liberación de memoria se conoce como manejo de la memoria.
 
 
 En Insight Toolkit, el manejo de memoria es implementando a través de un contador de referencias. Esto se puede comparar con otros enfoques (garbage collection) usados por muchos sistemas en los que se incluye Java. En el contador de referencias, una cuenta del número de referencias a cada instancia es guardada. Cuando una referencia llega a cero, el objeto se libera. En el recolector de basura (garbage collection), un proceso en segundo plano barre el sistema identificando instancias que ya no están siendo referenciadas y las elimina. El problema con el recolector de basura es que el momento en el cual se libera la memoria es variable. Esto no se puede permitir cuando el tamaño de un objeto es muy grande. El contador de referencias, en cambio, libera la memoria inmediatamente, una vez que las referencias al objeto hayan desaparecido.
@@ -429,10 +428,10 @@ El contador de referencias es implementado a través de las funciones miembro ``R
 Este protocolo se simplifica enormemente usando la clase auxiliar itk::SmartPointer. El puntero inteligente actúa como un puntero normal, pero automáticamente ejecuta ``Register()'' cuando hay una referencia a una instancia, y ejecuta ``Unregister()'' cuando no apunte más a la instancia. A diferencia de otras instancias de Insight Toolkit, los punteros inteligentes pueden ser alojados en la pila del programa, y son automáticamente borrados cuando el ámbito para el que se creó es cerrado.
 
 \subsubsection{Tratamientos de errores y excepciones}
-En general, Insight Toolkit usa el tratamiento de excepciones para manejar errores durante la ejecución del programa. El tratamiento de excepciones es un parte básica del lenguaje C++.
+En general, Insight Toolkit usa el tratamiento de excepciones para manejar errores durante la ejecución del programa. El tratamiento de excepciones es una parte básica del lenguaje C++.
 
 
-Se puede elegir capturar un tipo de excepción en concreto, por lo tanto un error específico de Insight Toolkit. Pero también se pueden capturar cualquier excepción de Insight Toolkit mediante ExceptionObject.
+Se puede elegir capturar un tipo de excepción en concreto, por lo tanto un error específico de Insight Toolkit. Pero también se puede capturar cualquier excepción de Insight Toolkit mediante ExceptionObject.
 
 \subsubsection{Manejo de eventos}
 El manejo de eventos en Insight Toolkit es implementado usando el patrón de diseño vista/controlador. En este enfoque, los objetos indican que están esperando por un evento en particular (invocado por una instancia) registrando con la instancia que están esperando. Por ejemplo, los filtros en Insight Toolkit periódicamente invocan a itk::ProgressEvent. Los objetos que han registrado su interés en ese evento serán notificados cuando el evento ocurra. La notificación ocurre a través de la invocación de un comando (por ejemplo, un retorno de función, una llamada a un método, etc.) que es especificado durante el registro del proceso.
@@ -463,7 +462,7 @@ Insight Toolkit también proporciona funcionalidades numéricas adicionales, como 
 Una de las características únicas de Insight Toolkit es el uso de DART (sistemas de pruebas de regresión). En pocas palabras, lo que hace DART es proporcionar información cuantificable a los desarrolladores que comprueban código nuevo y hacen cambios.
 
 
-La información se basa en los resultados de una variedad de tests y los resultados son publicados en una página web, la cual se conoce como "dashboard". Dado que todos los usuarios y desarrolladores de Insight Toolkit pueden ver la página web, DART sirve como de vehículo para la comunicación de desarrolladores, especialmente cuando se hacen aportaciones con fallos. Es aconsejable consultar el "dashboard" antes de realizar cualquier actualización del software en el repositorio.
+La información se basa en los resultados de una variedad de tests y los resultados son publicados en una página web, la cual se conoce como ``dashboard''. Dado que todos los usuarios y desarrolladores de Insight Toolkit pueden ver la página web, DART sirve como de vehículo para la comunicación de desarrolladores, especialmente cuando se hacen aportaciones con fallos. Es aconsejable consultar el ``dashboard'' antes de realizar cualquier actualización del software en el repositorio.
 
 
 Otra característica es que DART es independiente de Insight Toolkit y puede ser utilizado para tener un control de calidad sobre cualquier tipo de proyecto software.
@@ -482,7 +481,7 @@ DART soporta una gran variedad de tipos de test. Entre ellos están los siguiente
 
 Cuando un usuario o un desarrollador decide actualizar el código de Insight Toolkit desde el repositorio es importante verificar primero que el ``dashboard'' está correcto. Esto se puede comprobar rápidamente por la coloración general del ``dashboard''. Cuando está es verde significa que el software está compilado correctamente y que es un buen momento para empezar a utilizar Insight Toolkit o para obtener una actualización. Cuando está en rojo indica inestabilidad en el sistema y, por tanto, los usuarios deben abstenerse de revisar o actualizar el código fuente.
 
-Otra característica de DART es que mantiene un historial de los cambios realizados en el código fuente y resumen los cambios como parte del ``dashboard''. Esto es útil para llevar un seguimiento de los problemas y mantenerse al día de las actualizaciones de Insight Toolkit.
+Otra característica de DART es que mantiene un historial de los cambios realizados en el código fuente. Esto es útil para llevar un seguimiento de los problemas y mantenerse al día de las actualizaciones de Insight Toolkit.
 
 Insight Toolkit procesa funciones a través de tres ciclos (el ciclo continuo, el ciclo diario y el ciclo de versión).
 
@@ -498,7 +497,7 @@ La eficacia de este proceso es bastante buena, al proporcionar información inmed
 \subsection{CMake}
 CMake es un sistema multiplataforma para la automatización de la compilación. Su nombre es una abreviatura de ``cross platform make'', a pesar del uso de ``make'' en su nombre, CMake, es una aplicación separada y de más alto nivel que normalmente se utiliza para el desarrollo en Unix. CMake es una familia de herramientas diseñadas para compilar, probar y empaquetar software. CMake se utiliza para controlar el proceso de compilación del software utilizando una plataforma simple y un compilador de ficheros de configuración independientes. CMake genera ``makefiles'' nativos y espacios de trabajo que pueden ser usados en el entorno de compilación que se elija. Se puede comparar al sistema de compilación de UNIX GNU en que el proceso de compilación está controlado por los archivos de configuración, en el caso de CMake llamados ficheros ``CMakeLists.txt''. Como las herramientas del sistema de compilación de GNU, CMake no genera directamente el software final, en cambio, compila ficheros estándar (por ejemplo, ``makefiles'' en UNIX y proyectos en Windows Visucal C++ o Eclipse) que serán utilizados de manera estándar, permitiendo un enfoque más fácil para los desarrolladores familiarizados con un entorno de desarrollo particular. Sin embargo, a diferencia del sistema de compilación de GNU, el cuál está restringido sólo a plataformas UNIX, CMake soporta la generación de ficheros de compilación para muchos sistemas de compilación en muchos sistemas operativos. CMake, por tanto, soporta desarrollo multiplataforma eliminando la necesidad de mantener sistemas de compilación separados para cada plataforma.
 
-CMake es un sistema extensible, de código abierto, que maneja el proceso de compilación en un sistema operativo y de manera independiente por el compilador. A diferencia de muchos sistemas multiplataformas, CMake está diseñado para ser utilizado en conjunto con entornos nativos de compilación. Los ficheros de configuración (CMakeLists.txt) que están colocados en cada directorio fuente son utilizados para generar archivos de compilación estándares que serán utilizados de forma habitual. CMake es capaz de compilar código fuente, crear librerías, generar contenedores y compilar ejecutables en combinaciones arbitrarias. CMake soporta compilaciones dentro y fuera de sitio (in-place y out-of-place builds)y por lo tanto puede soportar múltiples compilaciones a partir de un único árbol fuente. CMake también soporta la compilación de librerias estáticas y dinámicas. Una característica distintiva de CMake es que genera un fichero cache que está diseñado para ser utilizado con un editor gráfico. Por ejemplo, cuando se ejecuta CMake sitúa ficheros include, librerías y ejecutables pudiendo encontrar directivas opcionales de compilación. Esta información se almacena en la cache, la cuál podrá ser cambiada por el usuario antes de la generación de los ficheros nativos de compilación.
+CMake es un sistema extensible, de código abierto, que maneja el proceso de compilación en un sistema operativo y de manera independiente por el compilador. A diferencia de muchos sistemas multiplataforma, CMake está diseñado para ser utilizado en conjunto con entornos nativos de compilación. Los ficheros de configuración (CMakeLists.txt) que están colocados en cada directorio fuente son utilizados para generar archivos de compilación estándares que serán utilizados de forma habitual. CMake es capaz de compilar código fuente, crear librerías, generar contenedores y compilar ejecutables en combinaciones arbitrarias. CMake soporta compilaciones dentro y fuera de sitio (in-place y out-of-place builds)y por lo tanto puede soportar múltiples compilaciones a partir de un único árbol fuente. CMake también soporta la compilación de librerias estáticas y dinámicas. Una característica distintiva de CMake es que genera un fichero cache que está diseñado para ser utilizado con un editor gráfico. Por ejemplo, cuando se ejecuta CMake sitúa ficheros include, librerías y ejecutables pudiendo encontrar directivas opcionales de compilación. Esta información se almacena en la cache, la cuál podrá ser cambiada por el usuario antes de la generación de los ficheros nativos de compilación.
 
 CMake está diseñado para soportar complejas jerarquías de directorios y aplicaciones que dependen de muchas librerías. Por ejemplo, CMake soporta proyectos basados en múltiples conjuntos de herramientas (por ejemplo, librerías), donde cada conjunto de herramientas puede contener varios directorios, y la aplicación depende de los conjuntos de herramientas más codigo adicional. CMake también puede manejar situaciones en las que los ejecutables deben ser compilados para generar código que después será compilado y enlazado en una aplicación final.
 
@@ -544,7 +543,7 @@ wxWidgets es un conjunto de herramientas para implementar aplicaciones con inter
 
 Las aplicaciones por norma general muestran ventanas que contienen controles básicos, son capaces de trazar imágenes y gráficos especializados y pueden responder a eventos de ratón, teclado u otras fuentes. También se puede comunicar con otros procesos y manejar otros programas. En otras palabras, wxWidgets hace que la implementación de una aplicación sea relativamente sencilla proporcionando todas las funcionalidades propias de las aplicaciones de hoy en día.
 
-Puede que wxWidgets esté considera como un conjunto de herramientas para el desarrollo de GUI, pero de hecho es mucho más que eso ya que posee algunas características que la hacen muy útil en muchos aspectos del desarrollo de aplicaciones. Esto es así debido a que todas las aplicaciones implementadas con wxWidgets debe ser portables a diferentes plataformas, no sólo la parte gráfica.
+Puede que wxWidgets esté considerado como un conjunto de herramientas para el desarrollo de GUI, pero de hecho es mucho más que eso ya que posee algunas características que la hacen muy útil en muchos aspectos del desarrollo de aplicaciones. Esto es así debido a que todas las aplicaciones implementadas con wxWidgets debe ser portables a diferentes plataformas, no sólo la parte gráfica.
 
 wxWidgets proporciona clases para trabajar con ficheros y flujos de datos, ejecución multihilo, configuración de las aplicaciones, comunicación entre procesos, ayuda online, acceso a bases de datos y mucho más.
 
@@ -1332,7 +1331,7 @@ El proceso de ejecución del pipeline realiza varias funciones importantes:
 	\item Determina qué filtro, en un pipeline de filtros necesita ser ejecutado. Esto evita la ejecución redundante y minimiza el tiempo de ejecución global.
 	\item Inicializa la salida de los objetos de datos, preparándose para nueva información. Además determina qué cantidad de memoria debe reservar cada filtro para su salida y la reserva.
 	\item El proceso de ejecución determina qué cantidad de información debe procesar un filtro con el fin de producir una salida lo suficientemente grande para los filtros; también tiene en cuenta los límites de la memoria o las necesidades especiales del filtro. Otro de los factores incluye el tamaño de la información que son capaces de procesar los núcleos, que afecta a la cantidad de datos que se necesita.
-	\item Subdivide la información en subpartes utilizadas para la ejecución multihilos. (Se debe tener en cuenta que la división de la información en subpartes es exactamente el mismo problema de dividir la información en partes para el "streaming"; por tanto, la ejecución multihilos se incluye como parte de la arquitectura del  ``streaming'').
+	\item Subdivide la información en subpartes utilizadas para la ejecución multihilos. (Se debe tener en cuenta que la división de la información en subpartes es exactamente el mismo problema de dividir la información en partes para el ``streaming''; por tanto, la ejecución multihilos se incluye como parte de la arquitectura del  ``streaming'').
 	\item Puede liberar la información de salida si los filtros no la necesitan más para calcular, y el usuario puede solicitar que la información sea liberada. (Se debe tener en cuenta que los objetos de salida de los filtros se consideran como una caché. Si a la caché se le permite permanecer entre la ejecución del pipeline y el filtro, o la entrada del filtro nunca cambia, entonces los objetos de procesos de los filtros sólo utilizarán la caché del filtro para volver a ejecutarse.)
 \end{enumerate}
 Para realizar estas funciones, el proceso de ejecución negocia con los filtros que definen el pipeline. Sólo cada filtro puede saber cuánta información se necesita en la entrada para generar una cierta salida. Por ejemplo, un filtro de reducción con un factor de reducción de dos necesita una imagen dos veces mayor que la entrada para generar una salida en particular. Un filtro de convolución de imágenes necesita una entrada extra dependiendo del tamaño del núcleo de convolución. Algunos filtros necesitan toda la imagen de entrada para producir la salida (por ejemplo, un histograma), y tienen la opción de solicitar toda la imagen de entrada. (En este caso el ``streaming'' no se ejecutará a menos que el desarrollador cree un filtro que sea capaz de solicitar la información en partes, tomando el estado entre cada parte y juntándolo todo al final como salida.)
@@ -1866,7 +1865,9 @@ Por último, en el ``apéndice A'' podemos encontrar una comparativa gráfica entre
 \end{figure}
 
 \section{Conclusiones}
-Tras la realización de las comparaciones 
+En este apartado intentaré dar una visión global del estado final del proyecto, de mis opiniones y de los resultados obtenidos. Comenzaré por comentar el estado de los objetivos planteados, si se han conseguido alcanzar o no. Continuaré con una visión general de mi opinión acerca del proyecto y terminaré haciendo un repaso por los resultados obtenidos haciendo incapié en aquellos más representativos o problemáticos.
+
+Los objetivos planteados para este proyecto han sido alcanzados en mayor o menor medida, y a continuación explicaré porqué. Se planteaba la adaptación de la totalidad o parte del método de segmentación de vasos coronarios.
 
 \appendix
 \chapter{Resultados}
