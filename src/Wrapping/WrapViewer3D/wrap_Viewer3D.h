@@ -22,7 +22,6 @@
 #include "Viewer3D.hpp"
 #include "wrap_wxWindow.h"
 #include "wrap_SurfacePoly.h"
-//#include "wrap_FenetreDessin.h"
 
 TO_STRING(Viewer3D);
 
@@ -80,6 +79,7 @@ class WrapClass_Viewer3D: public WrapClass_wxWindow
       AddVar_Remove(            this_ptr);
       AddVar_SwapBuffers(       this_ptr);
       AddVar_drawCC(            this_ptr);
+      AddVar_drawCCOnlyCC(      this_ptr);
       AddVar_SetCurrentObj(     this_ptr);
       AddVar_compare(           this_ptr);
       AddVar_setvector(         this_ptr);
