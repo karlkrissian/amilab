@@ -54,8 +54,8 @@ class WrapClass_GLTransfMatrix: public WrapClassBase
     void AddMethods(_parentclass_ptr& this_ptr )
     {
       AddVar_print(        this_ptr, "_print");
-      AddVar_save(         this_ptr);
-      AddVar_read(         this_ptr);
+      AddVar_save(         this_ptr, "_save");
+      AddVar_read(         this_ptr, "_read");
       AddVar_Interpolate(  this_ptr);
 
       // Operators
