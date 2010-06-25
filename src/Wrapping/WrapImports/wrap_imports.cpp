@@ -47,6 +47,7 @@
 #include "wrap_SurfacePoly.h"
 #include "wrap_DessinImage.h"
 #include "wrap_Viewer3D.h"
+#include "wrap_GLTransfMatrix.h"
 
 extern VarContexts  Vars;
 extern MainFrame*   GB_main_wxFrame;
@@ -62,6 +63,7 @@ void AddWrapImports()
   AddWrapSurface();
   AddWrapDessinImage();
   AddWrapViewer3D();
+  AddWrapGLTransfMatrix();
   AddWrapBasicTypes();
 
   // Create new instance of the class
@@ -189,6 +191,11 @@ void AddWrapViewer3D()
   AddVar_Viewer3D( Vars.GetBuiltinContext());
 }
 
+//--------------------------------------------
+void AddWrapGLTransfMatrix()
+{
+  AddVar_GLTransfMatrix( Vars.GetBuiltinContext());
+}
 
 //--------------------------------------------
 void AddWrapBasicTypes()

@@ -24,6 +24,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapSurface
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapDessinImage
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapViewer3D
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapGLTransfMatrix
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapmyVTK
   ${AMILAB_SOURCE_DIR}/wxCode/wxTreeListCtrl
   ${AMILAB_SOURCE_DIR}

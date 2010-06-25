@@ -61,7 +61,7 @@ AMIObject::ptr AddWrap_GLTransfMatrix(  WrapClass_GLTransfMatrix::ptr& objectptr
 Variable<AMIObject>::ptr CreateVar_GLTransfMatrix( GLTransfMatrix* si)
 {
   // Create smart pointer with own deleter
-  GLTransfMatrix::ptr si_ptr = GLTransfMatrix::Create_ptr(si);
+  GLTransfMatrix::ptr si_ptr(si);
 
   WrapClass_GLTransfMatrix::ptr sip(new WrapClass_GLTransfMatrix(si_ptr));
   AMIObject::ptr amiobject(AddWrap_GLTransfMatrix(sip));
@@ -120,7 +120,6 @@ BasicVariable::ptr WrapClass_GLTransfMatrix::
 {
   GLTransfMatrix::ptr glmat(this->_objectptr->_obj);
   FILE* transf;
-  string sImageName;
 
   if (!p) ClassHelpAndReturn;
   int n=0;
@@ -152,7 +151,6 @@ BasicVariable::ptr WrapClass_GLTransfMatrix::
 {
   GLTransfMatrix::ptr glmat(this->_objectptr->_obj);
   FILE* transf;
-  string sImageName;
 
   if (!p) ClassHelpAndReturn;
   int n=0;
@@ -339,9 +337,7 @@ BasicVariable::ptr WrapClass_GLTransfMatrix::
   GLTransfMatrix::ptr glmat(this->_objectptr->_obj);
 
   GLTransfMatrix* newglt = new GLTransfMatrix();
-
-  newglt = glmat;
-
+  (*newglt) = (*glmat);
   return CreateVar_GLTransfMatrix( newglt );
 }
 
@@ -364,7 +360,7 @@ BasicVariable::ptr WrapClass_GLTransfMatrix::
   CLASS_GET_OBJECT_PARAM(GLTransfMatrix,varglt2,glt2);
   if (!glt2.get()) ClassHelpAndReturn;
 
-  glmat = glt2;
+  (*glmat) = (*glt2);
 
   return BasicVariable::ptr();
 }

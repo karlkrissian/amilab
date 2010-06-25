@@ -11,6 +11,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapInterface
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapSurface
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapGLTransfMatrix
   ${Boost_INCLUDE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${PTHREADS_INCLUDE_DIR}
@@ -18,7 +19,7 @@ include_directories (
 
 INCLUDE( ${wxWidgets_USE_FILE})
 
-SET(  WrapViewer3D_SRCS
+SET(WrapViewer3D_SRCS
   wrap_Viewer3D.cpp
 )
 

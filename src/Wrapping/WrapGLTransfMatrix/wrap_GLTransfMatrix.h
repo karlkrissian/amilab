@@ -21,11 +21,11 @@
 
 #include "GLparam.hpp"
 //#include "InterpolateTransform.h"
-#include "wrap_wxWindow.h"
+//#include "wrap_wxWindow.h"
 
 TO_STRING(GLTransfMatrix);
 
-class WrapClass_GLTransfMatrix: public WrapClass_wxWindow
+class WrapClass_GLTransfMatrix: public WrapClassBase
 {
   DEFINE_CLASS(WrapClass_GLTransfMatrix);
 
@@ -40,7 +40,7 @@ class WrapClass_GLTransfMatrix: public WrapClass_wxWindow
     const boost::shared_ptr<_obj_type>& GetObj() const { return _obj; }
 
     /// Constructor
-    WrapClass_GLTransfMatrix(boost::shared_ptr<GLTransfMatrix > si): WrapClass_wxWindow(si), _obj(si)
+    WrapClass_GLTransfMatrix(boost::shared_ptr<GLTransfMatrix > si):  _obj(si)
     {}
 
     ADD_CLASS_METHOD(print,       "Prints the contents of the rotation matrices, translation and scaling.");

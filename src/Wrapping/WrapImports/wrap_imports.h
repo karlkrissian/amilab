@@ -56,6 +56,11 @@ void AddWrapDessinImage();
 void AddWrapViewer3D();
 
 /**
+ * Adding wrapped classes and methods for WrapGLTransfMatrix.
+ */
+void AddWrapGLTransfMatrix();
+
+/**
  * Adding wrapped classes and methods for basic types (VarVector, VarList, etc ..).
  */
 void AddWrapBasicTypes();

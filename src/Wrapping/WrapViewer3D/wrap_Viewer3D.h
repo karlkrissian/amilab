@@ -22,6 +22,7 @@
 #include "Viewer3D.hpp"
 #include "wrap_wxWindow.h"
 #include "wrap_SurfacePoly.h"
+#include "wrap_GLTransfMatrix.h"
 
 TO_STRING(Viewer3D);
 
@@ -86,7 +87,7 @@ class WrapClass_Viewer3D: public WrapClass_wxWindow
       AddVar_ShowSection(       this_ptr);
       AddVar_HideSection(       this_ptr);
       AddVar_PrintMatrices(     this_ptr);
-      AddVar_SetTransform(      this_ptr,"_SetTransform");
+      AddVar_SetTransform(      this_ptr);
       AddVar_Paint(             this_ptr);
       AddVar_SetLightAmbient(   this_ptr);
       AddVar_SetLightDiffuse(   this_ptr);
@@ -97,7 +98,7 @@ class WrapClass_Viewer3D: public WrapClass_wxWindow
       AddVar_SetWindowSize(     this_ptr);
       AddVar_getimage(          this_ptr);
       AddVar_GetImageFromX(     this_ptr);
-      AddVar_GetTransform(      this_ptr,"_GetTransform");
+      AddVar_GetTransform(      this_ptr);
 
       // Operators
       AddVar_add_assign(        this_ptr);

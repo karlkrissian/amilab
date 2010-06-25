@@ -21,6 +21,7 @@
 
 #include "DessinImage.hpp"
 #include "wrap_FenetreDessin.h"
+#include "wrap_Viewer3D.h"
 
 TO_STRING(DessinImage);
 

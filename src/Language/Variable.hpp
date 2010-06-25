@@ -129,8 +129,8 @@ class AMIClass;
 TO_STRING(AMIClass);
 class AMIObject;
 TO_STRING(AMIObject);
-class GLTransfMatrix;
-TO_STRING( GLTransfMatrix);
+//class GLTransfMatrix;
+//TO_STRING( GLTransfMatrix);
 class VarArray;
 TO_STRING( VarArray);
 

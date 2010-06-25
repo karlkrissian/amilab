@@ -300,7 +300,7 @@ Image              return(token::T_Image); /*{Image,T_Image}*/
 BrowseImage        return(token::T_BrowseImage); /*{BrowseImage,T_BrowseImage}*/
 
 ReadRawImages      return(token::T_ReadRawImages); /*{ReadRawImages,T_ReadRawImages}*/
-Transform          return(token::T_Transform); /*{Transform,T_Transform}*/
+
 Show               return(token::SHOW); /*{Show,SHOW}*/
 show               return(token::SHOW);
 
@@ -491,11 +491,6 @@ OrientationRatio  return(token::T_OrientationRatio); /*{OrientationRatio,T_Orien
 computeCC         return(token::T_computeCC); /*{computeCC,T_computeCC}*/
 SetLight          return(token::T_SetLight); /*{SetLight,T_SetLight}*/
 SetLightPos       return(token::T_SetLightPos); /*{SetLightPos,T_SetLightPos}*/
-
-GetTransform      return(token::T_GetTransform); /*{GetTransform,T_GetTransform}*/
-SetTransform      return(token::T_SetTransform); /*{SetTransform,T_SetTransform}*/
-
-Interpolate       return(token::T_Interpolate); /*{Interpolate,T_Interpolate}*/
 
 Skeleton          return(token::T_Skeleton); /*{Skeleton,T_Skeleton}*/
 SimplePoints      return(token::T_SimplePoints); /*{SimplePoints,T_SimplePoints}*/
@@ -1076,7 +1071,7 @@ yyip::Parser::token::yytokentype checkvar(
       case type_int:
       case type_uchar:
         return token::PROCESSED_VAR; /*{$PROCESSED_VAR,PROCESSED_VAR}*/
-      case type_surfdraw:         return token::VAR_SURFDRAW;
+//      case type_surfdraw:         return token::VAR_SURFDRAW;
         /*{$variable_surfdraw,VAR_SURFDRAW}*/
       case type_file:             return token::VAR_FILE;
         /*{$variable_file,VAR_FILE}*/
@@ -1100,7 +1095,7 @@ yyip::Parser::token::yytokentype checkvar(
         /*{$variable_string,VAR_STRING}*/
       case type_matrix:           return token::VAR_MATRIX;
         /*{$variable_matrix,VAR_MATRIX}*/
-      case type_gltransform:      return token::VAR_GLTRANSFORM;
+//      case type_gltransform:      return token::VAR_GLTRANSFORM;
         /*{$variable_gltransform,VAR_GLTRANSFORM}*/
       case type_array:       {
         Variable<VarArray>::ptr vararray( 

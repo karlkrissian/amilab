@@ -550,14 +550,20 @@ void WrapClass_Viewer3D::
       wrap_SetTransform::SetParametersComments() 
 {
   //TODO
-  ADDPARAMCOMMENT_TYPE(GLTransfMatrix,"gltransform");
-  ADDPARAMCOMMENT_TYPE(float,"Threshold");
+  ADDPARAMCOMMENT_TYPE(GLTransfMatrix,"GLTransfMatrix (TODO)");
+  ADDPARAMCOMMENT_TYPE(float,"Threshold - float (TODO)");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_Viewer3D::
       wrap_SetTransform::CallMember( ParamList* p)
 {
   Viewer3D::ptr sdraw(this->_objectptr->_obj);
+
+  if (!p) ClassHelpAndReturn;
+  int n=0;
+  CLASS_GET_OBJECT_PARAM(GLTransfMatrix,varglt,tr);
+  if (!tr.get()) ClassHelpAndReturn;
+  float threshold;
 
   /**
    * This method is overloaded:
@@ -566,32 +572,19 @@ BasicVariable::ptr WrapClass_Viewer3D::
    * The Threshold parametre is optional.
    */
 
-  GB_driver.err_print("WrapClass_Viewer3D::wrap_SetTransform Not available at this time!");
+  sdraw->GetCanvas()->SetObjectTransform(*tr);
 
-/*
-        void SetObjectTransform( const GLTransfMatrix& obj_transf);
+  if (get_val_param<float>(threshold, p, n))
+  {
+    if (threshold>0.5)
+      sdraw->Paint();
+  }
+  else
+    sdraw->Paint();
 
-        | VAR_SURFDRAW T_POINT T_SetTransform T_OP_PAR gltransform T_CL_PAR
-        {
-          Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
-          GLTransfMatrix* tr = (GLTransfMatrix*) driver.gltransf_stack.GetLastMatrix();
-          Viewer3D_ptr sdraw (varsurfd->Pointer());
-          sdraw->GetCanvas()->SetObjectTransform(*tr);
-              sdraw->Paint();
-          delete tr;
-        }
+  //delete tr;
 
-        | VAR_SURFDRAW T_POINT T_SetTransform T_OP_PAR gltransform T_COMMA expr T_CL_PAR
-        {
-          Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
-          GLTransfMatrix* tr = (GLTransfMatrix*) driver.gltransf_stack.GetLastMatrix();
-          Viewer3D_ptr sdraw (varsurfd->Pointer());
-          sdraw->GetCanvas()->SetObjectTransform(*tr);
-          if ($7>0.5) sdraw->Paint();
-          delete tr;
-        }
-
-*/
+  //GB_driver.err_print("WrapClass_Viewer3D::wrap_SetTransform Not available at this time!");
 
   return BasicVariable::ptr();
 }
@@ -869,15 +862,21 @@ BasicVariable::ptr WrapClass_Viewer3D::
 //---------------------------------------------------
 void WrapClass_Viewer3D::
       wrap_GetTransform::SetParametersComments() 
-{ }
+{
+  //TODO
+  return_comments = "GLTransfMatrix (TODO)";
+}
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_Viewer3D::
       wrap_GetTransform::CallMember( ParamList* p)
 {
   Viewer3D::ptr vi(this->_objectptr->_obj);
 
-  GB_driver.err_print("WrapClass_Viewer3D::wrap_GetTransform Not available at this time!");
-
+  //GB_driver.err_print("WrapClass_Viewer3D::wrap_GetTransform Not available at this time!");
+  GLTransfMatrix* glt;
+  *glt = vi->GetCanvas()->GetObjectTransform();
+  return CreateVar_GLTransfMatrix(glt);
+  
 /*
         |
         VAR_SURFDRAW T_POINT T_GetTransform
@@ -895,5 +894,5 @@ BasicVariable::ptr WrapClass_Viewer3D::
       }
 */
 
-  return BasicVariable::ptr();
+ // return BasicVariable::ptr();
 }

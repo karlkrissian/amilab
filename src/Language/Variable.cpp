@@ -58,7 +58,7 @@ VARTYPE_PROP( long,                 type_long,            true); /// New (added:
 VARTYPE_PROP( int,                  type_int,             true);
 VARTYPE_PROP( unsigned char,        type_uchar,           true)
 VARTYPE_PROP( std::string,          type_string,          false)
-VARTYPE_PROP( Viewer3D,             type_surfdraw,        false)
+//VARTYPE_PROP( Viewer3D,             type_surfdraw,        false)
 VARTYPE_PROP( FILE,                 type_file,            false)
 VARTYPE_PROP( C_wrap_procedure,     type_c_procedure,     false)
 VARTYPE_PROP( WrapClassMember,      type_class_member,    false)
@@ -69,7 +69,7 @@ VARTYPE_PROP( AMIClass,             type_ami_class,       false)
 VARTYPE_PROP( AMIObject,            type_ami_object,      false)
 //VARTYPE_PROP( ,         type_ami_cpp_object,  false)
 VARTYPE_PROP( FloatMatrix,          type_matrix,          false)
-VARTYPE_PROP( GLTransfMatrix,       type_gltransform,     false)
+//VARTYPE_PROP( GLTransfMatrix,       type_gltransform,     false)
 VARTYPE_PROP( VarArray,             type_array,           false)
 
 #undef VARTYPE_PROP
@@ -99,8 +99,8 @@ template <> std::string Variable<FloatMatrix>::GetValueAsString() const
 template <> double Variable<FloatMatrix>::GetValueAsDouble() const { return 0.0; } 
 
 VARTYPE_DEFAULT( InrImage)
-VARTYPE_DEFAULT( DessinImage)
-VARTYPE_DEFAULT( Viewer3D)
+//VARTYPE_DEFAULT( DessinImage)
+//VARTYPE_DEFAULT( Viewer3D)
 VARTYPE_DEFAULT( FILE)
 VARTYPE_DEFAULT( C_wrap_procedure)
 VARTYPE_DEFAULT( WrapClassMember)
@@ -109,7 +109,7 @@ VARTYPE_DEFAULT( C_wrap_varfunction)
 VARTYPE_DEFAULT( AMIFunction)
 VARTYPE_DEFAULT( AMIClass)
 VARTYPE_DEFAULT( AMIObject)
-VARTYPE_DEFAULT( GLTransfMatrix)
+//VARTYPE_DEFAULT( GLTransfMatrix)
 VARTYPE_DEFAULT( VarArray)
 
 #undef VARTYPE_STRING_DOUBLE
