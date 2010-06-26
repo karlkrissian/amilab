@@ -3,11 +3,11 @@
 
 
 $key = q/cite_CLS/;
-$ref_files{$key} = "$dir".q|node17.html|; 
+$ref_files{$key} = "$dir".q|node16.html|; 
 $noresave{$key} = "$nosave";
 
 $key = q/cite_IJ/;
-$ref_files{$key} = "$dir".q|node17.html|; 
+$ref_files{$key} = "$dir".q|node16.html|; 
 $noresave{$key} = "$nosave";
 
 1;

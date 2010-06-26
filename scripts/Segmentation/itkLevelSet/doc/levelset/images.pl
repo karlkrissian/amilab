@@ -32,18 +32,6 @@ $cached_env_img{$key} = q|<IMG
  SRC="|."$dir".q|img12.png"
  ALT="\begin{displaymath}g(I) = 1 / ( 1 + \vert (\nabla * G)(I)\vert ) \end{displaymath}">|; 
 
-$key = q/{displaymath}g(I)=1slash(1+|(nablaastG)(I)|){displaymath};MSF=1.6;AAT/;
-$cached_env_img{$key} = q|<IMG
- WIDTH="186" HEIGHT="28" BORDER="0"
- SRC="|."$dir".q|img2.png"
- ALT="\begin{displaymath}g(I) = 1/(1+\vert(\nabla\ast G)(I)\vert) \end{displaymath}">|; 
-
-$key = q/Z(mathbf{x});MSF=1.6;AAT/;
-$cached_env_img{$key} = q|<IMG
- WIDTH="39" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
- SRC="|."$dir".q|img7.png"
- ALT="$ Z(\mathbf{x}) $">|; 
-
 $key = q/{displaymath}P(mathbf{x})=g(mathbf{x}){displaymath};MSF=1.6;AAT/;
 $cached_env_img{$key} = q|<IMG
  WIDTH="84" HEIGHT="28" BORDER="0"
@@ -55,6 +43,18 @@ $cached_env_img{$key} = q|<IMG
  WIDTH="33" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
  SRC="|."$dir".q|img1.png"
  ALT="$ g(I) $">|; 
+
+$key = q/{displaymath}g(I)=1slash(1+|(nablaastG)(I)|){displaymath};MSF=1.6;AAT/;
+$cached_env_img{$key} = q|<IMG
+ WIDTH="186" HEIGHT="28" BORDER="0"
+ SRC="|."$dir".q|img2.png"
+ ALT="\begin{displaymath}g(I) = 1/(1+\vert(\nabla\ast G)(I)\vert) \end{displaymath}">|; 
+
+$key = q/Z(mathbf{x});MSF=1.6;AAT/;
+$cached_env_img{$key} = q|<IMG
+ WIDTH="39" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="|."$dir".q|img7.png"
+ ALT="$ Z(\mathbf{x}) $">|; 
 
 $key = q/{displaymath}mathbf{A}(mathbf{x})=-nablag(mathbf{x}){displaymath};MSF=1.6;AAT/;
 $cached_env_img{$key} = q|<IMG

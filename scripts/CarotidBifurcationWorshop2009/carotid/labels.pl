@@ -3,11 +3,11 @@
 
 
 $key = q/cite_CLS/;
-$external_labels{$key} = "$URL/" . q|node17.html|; 
+$external_labels{$key} = "$URL/" . q|node16.html|; 
 $noresave{$key} = "$nosave";
 
 $key = q/cite_IJ/;
-$external_labels{$key} = "$URL/" . q|node17.html|; 
+$external_labels{$key} = "$URL/" . q|node16.html|; 
 $noresave{$key} = "$nosave";
 
 1;
