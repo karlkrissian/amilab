@@ -114,7 +114,7 @@ A todos ellos, muchísimas gracias por formar parte de esta etapa de mi vida.
 \newpage
 
 \chapter{Introducción}
-Son varios los factores que han motivado el desarrollo de este proyecto. Uno de los principales es que el rápido avance tanto de la tecnología médica como informática proporciona un marco en el que desarrollar métodos que proporcionen aplicaciones de ayuda al diagnóstico. En este sentido, el análisis y visualización de imágenes 3D es tremendamente útil. 
+Son varios los factores que han motivado el desarrollo de este proyecto. Uno de los principales es que el rápido avance tanto de la tecnología médica como informática proporciona un marco en el que desarrollar métodos que proporcionen aplicaciones de ayuda al diagnóstico. En este sentido, el análisis y visualización de imágenes 3D es bastante útil. 
 
 Otro de los motivos ha sido el desarrollo de software libre y la utilización del mismo en la comunidad científica. Gracias a las librerías ITK y al software de tratamiento de imágenes AMILab
 hemos conseguido demostrar la fácil interacción entre ambos y posibilitar la difusión tanto de uno
@@ -349,10 +349,10 @@ Insight Toolkit está formado por varios subsistemas:
 
 Los típicos ejemplos de ``sources'' y ``mappers'' son lectores y escritores respectivamente. Los lectores introducen datos (típicamente desde un archivo), y los escritores extraen datos desde el pipeline.
 \end{itemize}
-	\item Objetos espaciales $\rightarrow$ las formas geométricas están representadas en Insight Toolkit usando una jerarquía de objetos espaciales. Estas clases están destinadas a soportar el modelado de las estructuras anatómicas. Utilizando una interface básica común, los objetos espaciales son capaces de representar regiones del espacio en una variedad de formas diferentes. Por ejemplo: estructuras de mallas, máscaras y ecuaciones implícitas pueden ser usadas como esquemas de representación subyacentes. Los objetos espaciales son una estructura de datos para comunicar los resultados de los métodos de segmentación y para introducir priores anatómicos tanto en los métodos de segmentación como en los de correspondencia de imágenes.
+	\item Objetos espaciales $\rightarrow$ las formas geométricas están representadas en Insight Toolkit usando una jerarquía de objetos espaciales. Estas clases están destinadas a soportar el modelado de las estructuras anatómicas. Utilizando una interfaz básica común, los objetos espaciales son capaces de representar regiones del espacio en una variedad de formas diferentes. Por ejemplo: estructuras de mallas, máscaras y ecuaciones implícitas pueden ser usadas como esquemas de representación subyacentes. Los objetos espaciales son una estructura de datos para comunicar los resultados de los métodos de segmentación y para introducir priores anatómicos tanto en los métodos de segmentación como en los de correspondencia de imágenes.
 	\item Framework de correspondencia $\rightarrow$ un framework flexible para la correspondencia soporta cuatro tipos de correspondencia: correspondencia de imágenes, correspondencia con multi-resolución, correspondencia basada en PDE y correspondencia FEM (método de elementos finitos).
 	\item Framework FEM $\rightarrow$ Insight Toolkit incluye un subsistema para resolver problemas FEM, en particular la correspondencia no rígida. El paquete FEM incluye definición de mallas, cargas y condiciones límite.
-	\item Level Set Framework $\rightarrow$ el framework de colección de nivel es una colección de clases para crear filtros para resolver ecuaciones diferenciales parciales sobre imágenes utilizando un plan de actualización de diferencias finito e iterativo. El framework de colección de nivel consiste en resolver diferencias finitas incluyendo un solucionador bayesiano, una colección de nivel genérica de filtros de segmentación y varias subclases específicas incluyendo umbralizado, Canny y métodos basados en la laplaciana.
+	\item Level Set Framework $\rightarrow$ el framework de colección de nivel es una colección de clases para crear filtros para resolver ecuaciones diferenciales parciales sobre imágenes utilizando un plan de actualización de diferencias finito e iterativo. El framework de colección de nivel consiste en resolver diferencias finitas incluyendo una solución bayesiano, una colección de nivel genérica de filtros de segmentación y varias subclases específicas incluyendo umbralizado, Canny y métodos basados en la laplaciana.
 	\item Wrapping (encapsulamiento) $\rightarrow$ Insight Toolkit utiliza un sistema único y potente para producir interfaces (por ejemplo, wrappers) para interpretar lenguajes como Tcl y Python. La herramienta GCC XML es utilizada para producir una descripción XML de código complejo en C++; CSWIG es entonces usado para transformar la descripción XML en wrappers usando el paquete SWIG.
 	\item Utilidades auxiliares $\rightarrow$ varios subsistemas auxiliares están disponibles para complementar otras clases en el sistema. Por ejemplo, las calculadoras son clases que desempeñan operaciones especializadas en apoyo de los filtros (por ejemplo, MeanCalculator calcula la media de una muestra). Otras utilidades incluyen un analizador parcial DICOM, soporte para archivos MetaIO, visualización de imágenes para los formatos png, zlib y FLTK/Qt e interfaces para el sistema VTK.
 \end{itemize}
@@ -362,7 +362,7 @@ A continuación se detallarán algunos de los principales conceptos y característi
 
 
 \subsubsection{Programación genérica}
-La idea de esta forma de programar pretende generalizar las funciones utilizadas para que puedan usarse en más de una ocasión. Es un método de organización de librerías basadas en componentes genéricos o reusables.
+La idea de esta forma de programar pretende generalizar las funciones utilizadas para que puedan usarse en más de una ocasión. Es un método de organización de librerías basadas en componentes genéricos o reutilizables.
 
 
 Las principales ideas de la programación genérica son los contenedores que se utilizan para almacenar datos, los iteradores para acceder a estos datos y los algoritmos genéricos que usan contenedores e iteradores para crear de manera eficiente algoritmos fundamentales tales como la clasificación.
@@ -371,7 +371,7 @@ Las principales ideas de la programación genérica son los contenedores que se ut
 La programación genérica está implementada en C++ con template (template programming) y con el uso de la librería STL (Standard Template Library). 
 
 
-Insight Toolkit usa programación genérica en su implementación. La ventaja de este enfoque es que una variedad casi ilimitada de tipos de datos están soportados simplemente por la definición de los tipos template apropiados. Por ejemplo, en Insight Toolkit es posible crear imágenes en las que sus pixeles sean casi cualquier tipo. Además, la resolución del tipo es realizada en tiempo de compilación, por lo que el compilador puede optimizar el código para obtener el máximo rendimiento.
+Insight Toolkit usa programación genérica en su implementación. La ventaja de este enfoque es que una variedad casi ilimitada de tipos de datos están soportados simplemente por la definición de los tipos template apropiados. Por ejemplo, en Insight Toolkit es posible crear imágenes en las que sus píxeles sean casi cualquier tipo. Además, la resolución del tipo es realizada en tiempo de compilación, por lo que el compilador puede optimizar el código para obtener el máximo rendimiento.
 
 
 La desventaja de la programación genérica es que muchos compiladores aún no soportan este enfoque y no pueden compilar Insight Toolkit. 
@@ -1158,17 +1158,7 @@ Por tanto, en este apartado se describirán aquellos iteradores que están diseñad
 
 En la figura \ref{fig:iteradorV} podemos ver un iterador de vecindades moviéndose a través de una región de iteración. Este iterador define una vecindad de 3x3 alrededor de cada pixel que visita. El centro de la vecindad está siempre posicionado en el índice actual y el resto de los índices de los pixeles serán referenciados mediante el desplazamiento desde el centro.
 
-
-\color{red}Además de un puntero a la imagen y a la región de iteración, el constructor del iterador de vecindades necesita un argumento que especifique la extensión de la vecindad a cubrir. La extensión de la vecindad es simétrica y viene dada por un vector de N distancias que se denomina radius.
-
-
-Neighborhood extent is symmetric across its center in each axis and is given as an array of N
-distances that are collectively called the radius. Each element d of the radius, where 0 $<$ d $<$ N
-and N is the dimensionality of the neighborhood, gives the extent of the neighborhood in pixels
-for dimension N. The length of each face of the resulting ND hypercube is 2d +1 pixels, a
-distance of d on either side of the single pixel at the neighbor center. 
-
-\color{black}
+Además de un puntero a la imagen y a la región de iteración, el constructor del iterador de vecindades necesita un argumento que especifique la extensión de la vecindad a cubrir. La extensión de la vecindad es simétrica y viene dada por un vector de N distancias que se denomina radio. Cada elemento ``d'' del radio, donde 0 $<$ d $<$ N y N es la dimensionalidad de la vecindad, da la extensión de la vecindad en pixeles para la dimensión N. La longitud de cada cara del cubo resultante es de 2d+1 pixeles.
 
 El radio de un iterador de vecindades puede ser consultado. Otros métodos proporcionan información útil acerca del iterador y de su imagen:
 
@@ -1865,12 +1855,39 @@ Por último, en el ``apéndice A'' podemos encontrar una comparativa gráfica entre
 \end{figure}
 
 \section{Conclusiones}
-En este apartado intentaré dar una visión global del estado final del proyecto, de mis opiniones y de los resultados obtenidos. Comenzaré por comentar el estado de los objetivos planteados, si se han conseguido alcanzar o no. Continuaré con una visión general de mi opinión acerca del proyecto y terminaré haciendo un repaso por los resultados obtenidos haciendo incapié en aquellos más representativos o problemáticos.
+En este apartado intentaré dar una visión global del estado final del proyecto, de mis opiniones y de los resultados obtenidos. Comenzaré por comentar el estado de los objetivos planteados, si se han conseguido alcanzar o no. Continuaré con una visión general de mi opinión acerca del proyecto y terminaré haciendo un repaso por los resultados obtenidos haciendo hincapié en aquellos más representativos o problemáticos.
 
-Los objetivos planteados para este proyecto han sido alcanzados en mayor o menor medida, y a continuación explicaré porqué. Se planteaba la adaptación de la totalidad o parte del método de segmentación de vasos coronarios.
+Los objetivos planteados para este proyecto han sido alcanzados en mayor o menor medida, y a continuación explicaré porqué. Se planteaba la adaptación de la totalidad o parte del método de segmentación de vasos coronarios, esto se ha realizado con éxito, aunque teniendo en cuenta unos pequeños detalles. Para la realización del método completo ha sido necesario implementar nuevas clases y utilizar otras existentes en ITK.
+
+Debido a la especialización del método no ha sido posible adaptarlo totalmente, es decir, el método base está realizado específicamente para la segmentación de carótidas, mientras que el método ITK parte de filtros genéricos no diseñados para este fin.
+
+Por otro lado, se buscaba incluir las nuevas funcionalidades en el software de tratamiento de imágenes AMILab. Esto ha sido posible gracias a la gran versatilidad disponible a la hora de añadir nuevos filtros o métodos. Se ha conseguido, por otra parte, reestructurar la organización interna de los filtros, ayudando a su mayor compresión, modificación y localización.
+
+Por último, en cuanto al entendimiento de los métodos a utilizar se ha hecho un estudio de los mismos, logrando una comprensión de su funcionamiento. Permitiendo de esta manera la implementación de las nuevas funcionalidades. Sin este paso, decisivo, no hubiese sido posible la realización del proyecto, ya que es una parte muy importante del mismo.
+
+A continuación, me gustaría comentar una serie de aspectos, algunos han sido de ayuda y otros han complicado más el proceso de aprendizaje. 
+
+En primer lugar, hay que destacar que este proyecto parte de uno ya existente por lo que es evidente que ha sido de gran ayuda el comenzar de una base. Por otro lado, a veces se hace tedioso comprender el código ajeno, pero mi tutor siempre ha estado ahí para aclarar y explicar cualquier duda que pudiese surgir.
+Otro detalle qué destacaría, es que siempre es bueno que un software, de la envergadura de AMILab, tenga varios desarrolladores y no se centre sólo en uno. De esta manera, existen más personas capaces de darse cuenta o ver las cosas de otra forma. Gracias a esto, AMILab, bajo mi punto de vista, ha mejorado bastante en cuanto a estabilidad bajo el S.O. Windows. Al comienzo de este proyecto, AMILab no era del todo operativo sobre Windows y era complicado trabajar con él, pero a día de hoy, salvo por ciertos problemas funciona perfectamente.
+
+En cuanto al trabajo realizado con las librerías ITK me gustaría comentar que al principio resultó complicado adaptarse a ellas porque están basadas en el uso de templates y yo durante la carrera no los había utilizado demasiado. Una vez que uno se adapta es relativamente sencillo usarlas. También quería destacar que debido a la complejidad que existe detrás de las librerías ITK es difícil comprender todo el funcionamiento de las mismas y dominarlas por completo, para ello haría falta un estudio más profundo y más tiempo. Por último, muchas veces el trabajo se ha alargado debido a que se intentaba hacer que una funcionalidad se ejecutase más rápido, esto es complicado ya que, como comentaba antes, existen muchos detalles a tener en cuenta y el desconocimiento de los mismos provoca que no se consigan los resultados esperados o la velocidad deseada.
+
+En resumen, me ha gustado trabajar tanto con ITK como con AMILab, he aprendido múltiples conceptos que desconocía y he profundizado en una rama de la informática interesante y, desde mi punto de vista, con bastante salida en el mercado.
+
+Por último, pero no menos importante, quiero hacer un recorrido por los resultados obtenidos y comparar aquellos más relevantes ayudándome de las gráficas realizadas y de las imágenes capturadas.
+
+En general, los resultados obtenidos han sido mucho mejores de lo esperado, ya que el método ITK es menos especializado que el método base y sinceramente no creía que pudiese conseguir que funcionase correctamente. Cierto es que detrás de ese funcionamiento existe un trabajo de pruebas y búsqueda de los mejores parámetros e imágenes de entrada.
+
+Para todos los datos existe una pérdida de precisión respecto al método base, se puede apreciar en los resultados que las arterias segmentadas con el método ITK tienen menos definición de detalles y son ligeramente más ``delgadas''. Esto es debido a los parámetros del Level Sets, se debería ``jugar'' un poco más con ellos para intentar conseguir resultados mejores. No obstante, como se puede ver, gracias a la medida de evaluación ``Dice'' \ref{fig:graf1}, los porcentajes de superposición con el resultado ideal varían entre un 60 y un 80$\%$ de acierto, salvo casos excepcionales que debido a problemas concretos, como calcificaciones, se han obtenido valores inferiores al 50$\%$.
+
+Se puede destacar que el tiempo de ejecución del método ITK es inferior al método base \ref{fig:graf4}. Esto es debido a que el cálculo de la medida de Vesselness en el método base requiere más tiempo que en el método ITK, debido a la especialización del mismo.
+
+Por tanto, se puede concluir que el método base es mejor que el método ITK, ya que los resultados obtenidos se aproximan más a valores ideales. No obstante, no se debe olvidar que el método base está bastante especializado para la segmentación de carótidas mientras que el método ITK no.
+
 
 \appendix
 \chapter{Resultados}
+A continuación se muestran los resultados obtenidos para los 15 datos de entrada y con los dos métodos de segmentación de carótidas. A la izquierda de la imagen se ve el resultado utilizando el método base, mientras que a la derecha se encuentra el resultado usando el método ITK.
 
 \begin{landscape}
 \newpage
@@ -2486,6 +2503,8 @@ Para ver el resultado se deberá pulsar el botón {\bf Display}.
 \bibitem{ITK05} L. Ibáñez, W. Schroeder, L. Ng, J. Cates.{\em ``The ITK Software Guide''} 2005
 \bibitem{VTK01} W. Schroeder {\em ``The VTK User´s Guide''} Kitware,Inc. 2001
 \bibitem{wx05}	J. Smart, K. Hock, S. Csomor {\em ``Cross-Platform GUI Programming with wxWidgets''} Prentice Hall PTR 2005
+\bibitem{WorkshopRules} R.Hameeteman M.Zuluaga L.Joskowicz M.Freiman T. von Walsum {\em ``Carotid Lumen Segmentation and Stenosis Grading Challenge''} 2009
+\bibitem{P06} R.S.Pressman {\em ``Ingeniería del Software''} Editorial McGraw-Hill, 6ª Edición, 2006
 \bibitem{Boost} Boost C++ Libraries {\em \href {http://en.wikipedia.org/wiki/Boost\_C\%2B\%2B\_Libraries\#Overview}{http://en.wikipedia.org/wiki/Boost\_C\%2B\%2B\_Libraries\#Overview}}
 \bibitem{VTK} The Visualization Toolkit {\em \href{http://www.vtk.org/}{http://www.vtk.org/}}
 \bibitem{PThreads} PThreads - POSIX Threads {\em \href{https://computing.llnl.gov/tutorials/pthreads/}{https://computing.llnl.gov/tutorials/pthreads/}}
@@ -2494,7 +2513,6 @@ Para ver el resultado se deberá pulsar el botón {\bf Display}.
 \bibitem{AMILab} AMILab {\em \href{http://www.ctm.ulpgc.es/amilab\_dokuwiki/dokuwiki/doku.php}{http://www.ctm.ulpgc.es/amilab\_dokuwiki/dokuwiki/doku.php}}
 \bibitem{Lex} Lex {\em \href{http://es.wikipedia.org/wiki/Herramienta\_de\_programaci\%C3\%B3n\_lex}{http://es.wikipedia.org/wiki/Herramienta\_de\_programaci\%C3\%B3n\_lex}}
 \bibitem{Yacc} Yacc {\em \href{http://es.wikipedia.org/wiki/Yacc}{http://es.wikipedia.org/wiki/Yacc}}
-\bibitem{WorkshopRules} R.Hameeteman M.Zuluaga L.Joskowicz M.Freiman T. von Walsum {\em ``Carotid Lumen Segmentation and Stenosis Grading Challenge''} 2009
 \bibitem{Template} Template {\em \href{http://en.wikipedia.org/wiki/Template\_(programming)\#Advantages\_and\_disadvantages}{http://en.wikipedia.org/wiki/Template\_(programming)\#Advantages\_and\_disadvantages}}
 \bibitem{ProgG} Programación genérica {\em \href{http://es.wikipedia.org/wiki/Programaci\%C3\%B3n\_gen\%C3\%A9rica}{http://es.wikipedia.org/wiki/Programaci\%C3\%B3n\_gen\%C3\%A9rica}}
 \bibitem{ITK} ITK {\em \href {http://www.itk.org/}{http://www.itk.org/}}
@@ -2505,7 +2523,6 @@ Para ver el resultado se deberá pulsar el botón {\bf Display}.
 \bibitem{CT} Tomografía computarizada {\em \href{http://en.wikipedia.org/wiki/Computed\_tomography\#Diagnostic\_use}{http://en.wikipedia.org/wiki/Computed\_tomography\#Diagnostic\_use}}
 \bibitem{CT2} Tomografía computarizada {\em \href{http://www.imaginis.com/ct-scan/why-is-ct-performed-2}{http://www.imaginis.com/ct-scan/why-is-ct-performed-2}}
 \bibitem{CT3} Tomografía computarizada {\em \href{http://www.radiologyinfo.org/en/info.cfm?PG=bodyct\#part\_one}{http://www.radiologyinfo.org/en/info.cfm?PG=bodyct\#part\_one}}
-\bibitem{P06} R.S.Pressman {\em ``Ingeniería del Software''} Editorial McGraw-Hill, 6ª Edición, 2006
 \bibitem{Workshop} Artículo Workshop09 {\em \href{http://www.insight-journal.org/browse/publication/672}{http://www.insight-journal.org/browse/publication/672}}
 \bibitem{Vesselness} Vesselness {\em \href{http://www.insight-journal.org/browse/publication/163}{http://www.insight-journal.org/browse/publication/163}}
 \bibitem{osirix} OsiriX {\em \href{http://www.osirix-viewer.com/}{http://www.osirix-viewer.com/}}
@@ -2513,7 +2530,6 @@ Para ver el resultado se deberá pulsar el botón {\bf Display}.
 \bibitem{slicer2} Slicer {\em \href{http://wiki.slicer.org/slicerWiki/index.php/Documentation-3.6\#Main\_GUI}{http://wiki.slicer.org/slicerWiki/index.php/Documentation-3.6\#Main\_GUI}}
 \end{thebibliography}
 \end{document}
-
 
 %\begin{figure}
 %\centering

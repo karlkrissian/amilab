@@ -1,0 +1,1558 @@
+#!/usr/local/bin/amilab
+
+ami_import->ITK()
+
+if (!exists(CE_defined)) {
+  CE_defined=1
+
+  func "ReadPoints.amil"
+  func "CropImage.amil"
+  func "CreateInitialSpheres.amil"
+
+  #------------------------------------------
+  proc CarotidExperiments_init() \
+  {
+    global_new
+  
+      CE_config       = INT(0)
+      CE_data_dir        = "./data/"
+      CE_groundtruth_dir = "./groundtruth/"
+      CE_results_dir     = "./results/"
+    
+      CE_evaluation_bindir    = "./cls2009/build/"
+      CE_evaluation_scriptdir = "./cls2009/scripts/"
+      
+      CE_nointeraction = UCHAR(0)
+  
+      CE_datacenter     = INT(0)
+      CE_datanumber     = INT(0)
+      CE_datatype       = INT(0)
+      CE_cropmarginXY   = INT(30)
+      CE_cropmarginZtop = INT(40)
+      CE_cropmarginZbot = INT(25)
+      CE_crop_created   = UCHAR(0)
+      # using local stats for level set evolution? 0: true 1: false
+      CE_localstats	    = INT(1) 
+      CE_localpar       = INT(1)
+      # Initial Spheres Radii in mm
+      CE_sphereradii    = 1
+    
+      CE_ves_downsample  = UCHAR(0)
+      CE_mlmax_threshold = 20
+  
+      CE_dist_threshold = 1
+      CE_resample_dist  = 0.1
+      #--- evolution range in mm along Z coord for each carotid from the junction
+      CE_maxdistz_ECA = 20
+      CE_maxdistz_ICA = 50
+      CE_mindistz     = 20
+
+      CE_inverted_paths = 0
+
+      CE_minvesselint = INT(1150)
+      CE_maxvesselint = INT(1600)
+  }
+  
+  
+  #--------------------------
+  proc CarotidExperiments_Close() \
+  {
+    CE_win.Hide
+    delvars "CE_*_draw"
+    delvars "CE_*"
+    delvars "CarotidExperiments_*"
+  }
+  
+
+  #--------------------------
+  proc CarotidExperiments_CheckConfigFile() \
+  {
+    config_filename = "carotidchallenge_config.amil"
+    func config_filename
+    CE_win.update
+  }
+
+  #------------------------------------------
+  proc CarotidExperiments_LoadConfig() \
+  {
+    global
+  
+    if (CE_config==0) {
+      CE_data_dir        = "/home/karl/projects/data/CarotidChallengeMiccai09/data/"
+      CE_groundtruth_dir = "/home/karl/projects/data/CarotidChallengeMiccai09/groundtruth/"
+      CE_results_dir     = "/home/karl/projects/data/CarotidChallengeMiccai09/results/"
+      CE_evaluation_scriptdir     = "/home/karl/projects/data/CarotidChallengeMiccai09/cls2009/scripts/"
+    } 
+  
+    if (CE_config==1) {
+      CE_data_dir        = "/home/karl/projects/data/CarotidChallengeMiccai09/data/"
+      CE_groundtruth_dir = "/home/karl/projects/data/CarotidChallengeMiccai09/groundtruth/"
+      CE_results_dir     = "/home/karl/projects/data/CarotidChallengeMiccai09/results/"
+      CE_evaluation_bindir     = "/home/karl/projects/data/CarotidChallengeMiccai09/cls2009/build/"
+      CE_evaluation_scriptdir     = "/home/karl/projects/data/CarotidChallengeMiccai09/cls2009/scripts/"
+    } 
+    
+    if (CE_config==2) {
+      CE_data_dir        = "C:/Documents and Settings/usuario/Escritorio/Workshop/data"
+      CE_groundtruth_dir = "C:/Documents and Settings/usuario/Escritorio/Workshop/lumen"
+      CE_results_dir     = "C:/Documents and Settings/usuario/Escritorio/Workshop/Resultados/"
+    } 
+  
+    if (CE_config==3) {
+      CE_data_dir        = "/home/sara/Workshop/data/"
+      CE_groundtruth_dir = "/home/sara/Workshop/lumen/"
+      CE_results_dir     = "/home/sara/Workshop/Resultados/"
+      CE_evaluation_scriptdir = "/home/sara/Workshop/cls2009/scripts/"
+    } 
+      
+    CE_win.update
+  
+  }
+  
+  #------------------------------------------
+  proc CarotidExperiments_ReadData() \
+  {
+    SetStatusText("Reading data ...")
+    # read input image
+    global::CE_datanumber_str = boost_format("%1%") % CE_datacenter 
+    CE_datanumber_str = CE_datanumber_str + boost_format("%02.0f") % CE_datanumber
+    global::CE_current_datadir    = CE_data_dir       +"/challenge"+ CE_datanumber_str
+    global::CE_current_resultsdir = CE_results_dir    +"/challenge"+ CE_datanumber_str
+    global::CE_current_gtdir      = CE_groundtruth_dir+"/challenge"+ CE_datanumber_str
+ 
+    if (CE_datacenter==0) {
+      CE_cropmarginZtop = 5
+      CE_cropmarginZbot = 20
+    } else {
+      CE_cropmarginZtop = 40
+      CE_cropmarginZbot = 20
+    }
+
+    # read data side
+    f = open(CE_current_datadir+"/side"+CE_datanumber_str+".txt","r")
+    s = ""
+    f.read(s)
+  
+    if (s=="left") {
+      inputname = CE_current_datadir + "/cta"+CE_datanumber_str+"l.mhd"
+    }
+    
+    if (s=="right") {
+      inputname = CE_current_datadir + "/cta"+CE_datanumber_str+"r.mhd"
+    }
+    printn "inputname="+inputname
+    itk = &global::itk
+    global::CE_input <<= itk->Read(inputname)
+  
+    # read input points
+    pointsname = CE_current_datadir + "/points"+CE_datanumber_str+".txt"
+    ReadPoints(pointsname)
+    CE_crop_created = 0
+    CarotidExperiments_CropData()
+    CE_win.update
+    SetStatusText("Reading data ... done")
+
+  }
+  
+  
+  #------------------------------------------
+  proc CarotidExperiments_ReadGT() \
+  {
+    print "CE_datatype="
+    printn CE_datatype
+    // only for training data sets
+    if (CE_datatype==0) {
+      printn "1"
+      # read GT image
+      GTname = CE_current_gtdir + "/pv"+CE_datanumber_str+".mhd"
+      printn "Reading itk image "+GTname
+      if (FileExists(GTname)) {
+        itk = &global::itk
+        global::CE_GT <<= itk->Read(GTname)
+    
+        # read the ROI information
+        ROIname = CE_current_gtdir + "/roi"+CE_datanumber_str+".txt"
+        roi = open(ROIname,"r")
+        minx = 0; roi.read(minx)
+        miny = 0; roi.read(miny)
+        minz = 0; roi.read(minz)
+    
+        # set the ground truth translation ??? maybe not necessary ???
+    
+        # Read the Exterior image
+        extname = CE_current_gtdir + "/ext"+CE_datanumber_str+".mhd"
+        itk = &global::itk
+        global::CE_ext <<= itk->Read(extname)
+    
+        # Read the GT Isosurface
+        isoname = CE_current_gtdir + "/iso"+CE_datanumber_str+".vtp"
+        if (exists(CE_GTiso)) { del CE_GTiso; }
+        global::CE_GTiso = Surface(isoname)
+      } else  {
+        InfoDialog "Ground Truth not available";
+      }
+    }
+  }
+  
+  
+  #------------------------------------------
+  proc CarotidExperiments_CropData() \
+  {
+    SetStatusText("Cropping data ...")
+    if (!exists(CE_input)) { CarotidExperiments_ReadData; }
+    CropImageFromPoints(&CE_input,"CE_input_cropped",\
+                        CE_cropmarginXY,\
+                        CE_cropmarginZtop,\
+                        CE_cropmarginZbot)
+    CE_crop_created = 1
+    SetStatusText("Cropping data ... done")
+    # save input information and free the initial image
+    global::CE_input_tx  = CE_input.tx
+    global::CE_input_ty  = CE_input.ty
+    global::CE_input_tz  = CE_input.tz
+    global::CE_input_trx = CE_input.trx
+    global::CE_input_try = CE_input.try
+    global::CE_input_trz = CE_input.trz
+    # keep a reduced size input
+    global::CE_input_reduced = (USHORT) MeanHalfSize(CE_input)
+    del CE_input
+  }
+  
+  #-----------------------------------------
+  proc CarotidExperiments_ReduceNoise() \
+  {
+    
+    SetStatusText("Denoising ...")
+    global
+      # load the noise reduction script
+      func "Filtering/NLmeans_gui.amil"
+    local
+  
+    global::NLM_input_name = "CE_input_cropped"
+    NLM_f = 2
+    NLM_t = 2
+    NLM_h = 10
+    NLM_win.update
+    NLM_win.Display
+    NLM_win.update
+    SetStatusText("Denoising ... done")
+  }
+  
+  #------------------------------------------
+  proc CarotidExperiments_LocalStats() \
+  {
+  
+    global
+      func "CreateProbability.amil"
+    local
+  
+    # if possible, get result avec denoising
+    if (exists(NLM_res)) {
+      CP_input_name = "NLM_res"
+    } else {
+      CP_input_name = "CE_input_cropped"
+    }
+    CP_lsd_erosion = 0
+    CP_win.update
+  }
+  
+  #-----------------------------------------
+  proc CarotidExperiments_Vesselness() \
+  {
+  
+    global
+      # load the vesselness script
+      func "Centerlines/MultiLines.amil"
+    local
+  
+    if (!CE_ves_downsample) {
+      # trunk max intensities to  CE_maxvesselint
+      global::CE_vesselness_input <<= CE_input_cropped* (CE_input_cropped<CE_maxvesselint)+\
+                        (CE_input_cropped>=CE_maxvesselint)*CE_maxvesselint
+      global::CE_mask <<= (UCHAR) ((CE_input_cropped>CE_minvesselint)*\
+                                   (CE_input_cropped<CE_maxvesselint)*255)
+    } else {
+      # first downsample in X and Y
+      global::CE_vesselness_input <<= Resize(CE_input_cropped, \
+          CE_input_cropped.tx/2,CE_input_cropped.ty/2,\
+          CE_input_cropped.tz,1)
+      global::CE_mask <<= (UCHAR) ( (CE_vesselness_input>CE_minvesselint)*\
+                                    (CE_vesselness_input<CE_maxvesselint)*255)
+  
+      CE_vesselness_input = \
+          CE_vesselness_input*(CE_vesselness_input<CE_maxvesselint)+\
+          (CE_vesselness_input>=CE_maxvesselint)*CE_maxvesselint
+    }
+    global::ML_input_name = "CE_vesselness_input"
+    global::ML_mask_name  = "CE_mask"
+    ML_radmin = 0.5
+    ML_radmax = 7
+    ML_numrad = 7
+    # Keep the 80% highest values along the boundary
+    ML_keephighest = 80
+    # save multiscale local maxima
+    ML_local_maxima = 1
+    ML_win.update
+    ML_win.Display
+  }
+  
+  #-----------------------------------------
+  proc CarotidExperiments_SaveVesselness() \
+  {
+    # 1. Save Level Set resulting image
+    ML_result.save CE_current_resultsdir+"/vesselness_result.ami.gz"
+    ML_maxima.save CE_current_resultsdir+"/vesselness_maxima.ami.gz"
+  }
+  
+  #-----------------------------------------
+  proc CarotidExperiments_ReadVesselness() \
+  {
+    vfilename  = CE_current_resultsdir+"/vesselness_result.ami.gz"
+  
+    if (FileExists(vfilename)) {
+      # 1. Save Level Set resulting image
+      global::ML_result <<= Image vfilename
+      // check dimensions
+      if ((ML_result.tx!=CE_input_cropped.tx)|| \
+          (ML_result.ty!=CE_input_cropped.ty)|| \
+          (ML_result.tz!=CE_input_cropped.tz)) {
+        ML_result_bak = ML_result
+        ML_result <<= Image(FLOAT,CE_input_tx,CE_input_ty,CE_input_tz)
+        ML_result.settranslation(CE_input_trx,CE_input_try,CE_input_trz)
+        ML_result.setvoxelsize(CE_input_cropped)
+        ML_result.putimage(ML_result_bak)
+        del ML_result_bak
+        ML_result <<= ML_result[CE_input_cropped]
+        message = boost_format("CarotidExperiments_ReadVesselness() \n File %1% wrong dimensions, image has been adapted ") % vfilename 
+        if (!CE_nointeraction) {
+          InfoDialog message
+        } else {
+          printn message
+        }
+      }
+    } else {
+      if (!CE_nointeraction) {
+        InfoDialog boost_format("CarotidExperiments_ReadVesselness() \n File %1% does not exists ") % vfilename 
+      }
+    }
+
+    vmfilename  = CE_current_resultsdir+"/vesselness_maxima.ami.gz"
+  
+    if (FileExists(vmfilename)) {
+      # 1. Save Level Set resulting image
+      global::ML_maxima <<= Image vmfilename
+      // check dimensions
+      if ((ML_maxima.tx!=CE_input_cropped.tx)|| \
+          (ML_maxima.ty!=CE_input_cropped.ty)|| \
+          (ML_maxima.tz!=CE_input_cropped.tz)) {
+        ML_maxima_bak = ML_maxima
+        ML_maxima <<= Image(FLOAT,CE_input_tx,CE_input_ty,CE_input_tz)
+        ML_maxima.settranslation(CE_input_trx,CE_input_try,CE_input_trz)
+        ML_maxima.setvoxelsize(CE_input_cropped)
+        ML_maxima.putimage(ML_maxima_bak)
+        del ML_maxima_bak
+        ML_maxima <<= ML_maxima[CE_input_cropped]
+        message = boost_format("CarotidExperiments_ReadVesselness() \n File %1% wrong dimensions, image has been adapted ") % vmfilename 
+        if (!CE_nointeraction) {
+          InfoDialog message
+        } else {
+          printn message
+        }
+      }
+    } else {
+      if (!CE_nointeraction) {
+        InfoDialog boost_format("CarotidExperiments_ReadVesselness() \n File %1% does not exists ") % vmfilename 
+      }
+    }
+
+  }
+  
+  #-----------------------------------------
+  proc CarotidExperiments_CreatePaths() \
+  {
+    SetStatusText("Creating paths ...")
+    global
+      # load the shortest path script
+      func "Centerlines/ShortestPath_gui.amil"
+    local
+  
+    CheckInitialPoints(CE_input_cropped,"CE",CE_sphereradii)
+    if (!CE_nointeraction) {
+      if (!exists(CE_pt1_OK)) { InfoDialog "Discarded point 1"; }
+      if (!exists(CE_pt2_OK)) { InfoDialog "Discarded point 2"; }
+      if (!exists(CE_pt3_OK)) { InfoDialog "Discarded point 3"; }
+    }
+
+    # high vesselness is ok but we limit its strength??
+    #global::CE_SPspeed = -exp(-(ML_result*ML_result)/(25*25))+1
+  
+    if (exists(ML_result)) {
+      if (exists(CP_prob)) {
+        # ensure that CP_prob is maximum around local maxima
+        if (exists(ML_maxima)) {
+          # threshold to get maxima positions
+          maxima_neigh = (ML_maxima>CE_mlmax_threshold)
+          # dilate a little
+          maxima_neigh = EDPdilate(maxima_neigh,1,0.25)
+
+          global::CE_speed <<=  max((maxima_neigh>=0.95)*maxima_neigh * ML_result, \
+                                    CP_prob*ML_result)
+
+        } else {
+          global::CE_speed <<= CP_prob * ML_result
+        }
+      } else {
+        if (!CE_nointeraction) {
+          InfoDialog "CP_prob not found, path based only on the Vesselness!"
+        }
+        global::CE_speed <<= ML_result
+      }
+    } else {
+      InfoDialog "CarotidExperiments_Path1: no Vesselness image found" 
+      global::CE_speed <<= CE_input_cropped
+    }
+  
+    global::SP_input_name = "CE_input_cropped"
+    global::SP_speed_name = "CE_speed"
+    SP_epsilon         = 0.01
+    SP_maxcost         = 10000
+    SP_step_size       = 0.01
+    SP_maxlength       = 300
+    SP_use_input_speed = 1
+    SP_input_Imin      = CE_minvesselint
+    SP_input_Imax      = CE_maxvesselint
+    SP_input_speed     = 1
+    SP_load_input()
+    SP_win.update
+  
+    SP_SetStartPointWorld(p1x,p1y,p1z)
+  
+    if (exists(CE_pt2_OK)) \
+    {
+      SetStatusText(" Path from point 1 to point 2 ...")
+      # path 1
+      SP_SetEndPointWorld(p2x,p2y,p2z)
+      SP_Run
+      # path from Common to Internal Carotid Arteries
+      if (exists(CE_pathCI)) { del CE_pathCI; }
+      global::CE_pathCI = SP_path
+      if (exists(CE_pathCIs)) { del CE_pathCIs; }
+      global::CE_pathCIs = SmoothLines(SP_path)
+    }
+  
+    if (exists(CE_pt3_OK)) \
+    {
+      SetStatusText(" Path from point 1 to point 3 ...")
+      # path 2
+      SP_SetEndPointWorld(p3x,p3y,p3z)
+      SP_Run
+      # path from Common to External Carotid Arteries
+      if (exists(CE_pathCE)) { del CE_pathCE; }
+      global::CE_pathCE = SP_path
+      if (exists(CE_pathCEs)) { del CE_pathCEs; }
+      global::CE_pathCEs = SmoothLines(SP_path)
+    }
+  
+    SetStatusText("Creating paths ... done")
+  }
+  
+  
+  #-----------------------------------------
+  proc CarotidExperiments_SavePaths() \
+  {
+    # save the result to a file here ...
+    if (exists(CE_pathCI)) {
+      CE_pathCI.save CE_current_resultsdir+"/pathCI.vtk"
+      CE_pathCIs.save CE_current_resultsdir+"/pathCIs.vtk"
+    }
+    if (exists(CE_pathCE)) {
+      CE_pathCE.save CE_current_resultsdir+"/pathCE.vtk"
+      CE_pathCEs.save CE_current_resultsdir+"/pathCEs.vtk"
+    }
+  }
+  
+  
+  #-----------------------------------------
+  proc CarotidExperiments_ReadPaths() \
+  {
+    if (FileExists(CE_current_resultsdir+"/pathCIs.vtk")) {
+      if (exists(CE_pathCIs)) { del CE_pathCIs; }
+      global::CE_pathCIs = Surface(CE_current_resultsdir+"/pathCIs.vtk")
+    } else {
+      InfoDialog CE_current_resultsdir+"/pathCIs.vtk not found!"
+    }
+  
+    if (FileExists(CE_current_resultsdir+"/pathCEs.vtk")) {
+      if (exists(CE_pathCEs)) { del CE_pathCEs; }
+      global::CE_pathCEs = Surface(CE_current_resultsdir+"/pathCEs.vtk")
+    } else {
+      InfoDialog CE_current_resultsdir+"/pathCEs.vtk not found!"
+    }
+  }
+  
+  
+  #-----------------------------------------
+  proc CarotidExperiments_JunctionFromPaths() \
+  {
+    SetStatusText("Computing Junction from Paths")
+    if (exists(CE_pathCIs)&&(exists(CE_pathCEs))) {
+      lI = ResampleLines(CE_pathCIs,CE_resample_dist)
+      lE = ResampleLines(CE_pathCEs,CE_resample_dist)
+      lIp = lI.GetLine(0)
+      lEp = lE.GetLine(0)
+      minsize = lIp.tx<lEp.tx?lIp.tx:lEp.tx
+      lIp1 = lIp[0:minsize-1,0:0,0:0]
+      lEp2 = lEp[0:minsize-1,0:0,0:0]
+      d = lIp1-lEp2
+      dn = norm(d)
+      dn = dn>CE_dist_threshold
+      dn1 = autocrop(dn,0)
+      lmean = (lIp1+lEp2)/2
+      global::CE_Jx = lmean(dn1.trx,0,0,0)
+      global::CE_Jy = lmean(dn1.trx,0,0,1)
+      global::CE_Jz = lmean(dn1.trx,0,0,2)
+    
+      # check for branch order
+      yI = lIp(dn1.trx,0,0,1)
+      yE = lEp(dn1.trx,0,0,1)
+      if (yI<yE) {
+        mes = "Path to point 3 is lower than path to point 2, setting External to 2"
+        mes = mes + boost_format(" yE=%1%") % yE
+        mes = mes + boost_format(" yI=%1%") % yI
+        if (!CE_nointeraction) {
+          InfoDialog mes
+        } else {
+          printn mes
+        }
+        CE_inverted_paths = 1
+
+        # swap paths
+        tmp_path = CE_pathCIs
+        global::CE_pathCIs <<= CE_pathCEs
+        global::CE_pathCEs <<= tmp_path
+        del tmp_path
+
+        # swap path line information
+        tmp_lp <<= lIp
+        lIp    <<= lEp
+        lEp    <<= tmp_lp
+
+      } else {
+        CE_inverted_paths = 0
+      }
+ 
+      #--- Estimate remaining distance along Z axis to segment
+      global::CE_covered_distz_C = 0
+      global::CE_covered_distz_I = 0
+      global::CE_covered_distz_E = 0
+    
+      # both lines start at the same point ...
+      minC_z = p1z
+      CE_covered_distz_C = CE_Jz-minC_z;
+
+      maxI_z = max(lIp[2])
+      if (maxI_z>CE_Jz) { CE_covered_distz_I = maxI_z-CE_Jz; }
+    
+      maxE_z = max(lEp[2])
+      if (maxE_z>CE_Jz) { CE_covered_distz_E = maxE_z-CE_Jz; }
+    
+      CarotidExperiments_CheckCCALength()
+      CarotidExperiments_CheckECALength()
+      CarotidExperiments_CheckICALength()
+    # else if exist both paths
+    } else {
+      if (!CE_nointeraction) {
+        InfoDialog "Did not found both paths for computing the junction"
+      }
+    }
+    # end if exist both paths
+    SetStatusText("Junction from Paths: done")
+  }
+  
+  
+  #-----------------------------------------
+  # complement or cut the CCA path
+  #
+  proc CarotidExperiments_CheckCCALength() \
+  {
+    SetStatusText("Checking CCA length")
+    local::lI = ResampleLines(CE_pathCIs,CE_resample_dist)
+    lIp <<= lI.GetLine(0)
+
+    # check for remaining distance of CCA
+    remaining_dist = CE_mindistz-CE_covered_distz_C
+
+    if (remaining_dist>0) {
+      if (!CE_nointeraction) {
+        InfoDialog "Computing remaining path for CCA"
+      }
+      # compute the remaining path
+      # 1. crop the speed image in Z from selected up to 
+      #    the remaining distance
+      maxz = lIp(0,0,0,2)
+      minz = maxz-remaining_dist
+      # convert to voxel coordinates
+      minz = (minz-CE_speed.trz)/CE_speed.vz
+      maxz = (maxz-CE_speed.trz)/CE_speed.vz
+      # add a small margin
+      minz = minz - 5
+      maxz = maxz + 5
+      # check for image limits
+      if (minz<0) { 
+        InfoDialog boost_format("CheckCCALength()\tCropped image too small, setting minz from %1% to 0") % minz
+        minz = 0;
+      }
+      if (maxz>CE_speed.tz-1) { 
+        InfoDialog boost_format("CheckCCALength()\tCropped image too small, limiting maxz (%1%)") % maxz
+        maxz = CE_speed.tz-1; 
+      }
+      global::CE_speed2 <<= CE_speed[:,:,minz:maxz]
+
+      # close and reload ShortestPath
+      if (exists(SP_Close)) { SP_Close; }
+      global
+        # load the shortest path script
+        func "Centerlines/ShortestPath_gui.amil"
+      local
+
+      # set the parameters and run
+      global::CE_input2 <<= CE_input_cropped[CE_speed2]
+      global::SP_input_name = "CE_input2"
+      global::SP_speed_name = "CE_speed2"
+
+      # end mask contains the first voxels in Z axis
+      global::CE_endmask <<= ((FLOAT) Zpos(CE_speed2)<5)
+
+      SP_epsilon         = 0.01
+      SP_maxcost         = remaining_dist+5
+      SP_step_size       = 0.01
+      SP_maxlength       = remaining_dist+20
+      SP_use_input_speed = 1
+      SP_input_Imin      = CE_minvesselint
+      SP_input_Imax      = CE_maxvesselint
+      SP_input_speed     = 1
+      SP_end_mode        = 1
+      SP_endmask_name    = "CE_endmask"
+      SP_load_input()
+      SP_win.update
+  
+      SP_SetStartPointWorld(p1x,p1y,p1z)
+      SP_Run
+
+      if (exists(CE_pathCC_rems)) { del CE_pathCC_rems; }
+      # path from Common to Internal Carotid Arteries
+      global::CE_pathCC_rems = SmoothLines(SP_path)
+
+      # update covered dist
+      lC_rem_p = CE_pathCC_rems.GetLine(0)
+      minC_rem_z = min(lC_rem_p[2])
+      if (minC_rem_z<CE_Jz) { 
+        CE_covered_distz_C = CE_Jz-minC_rem_z; 
+      }
+    } else {
+    # end if remaining_dist>0
+      # here we don´t cut both path at the beginning
+    }
+    SetStatusText("CCA length: done")
+  }
+  # end proc CarotidExperiments_CheckCCALength()
+
+  #-----------------------------------------
+  # possibly cut the ECA path
+  #
+  proc CarotidExperiments_CheckECALength() \
+  {
+    SetStatusText("Checking ECA length")
+    local::lE = ResampleLines(CE_pathCEs,CE_resample_dist)
+    lEp <<= lE.GetLine(0)
+
+    # cut the ECA at junction -+ a given distance
+    zmax = CE_Jz+CE_maxdistz_ECA
+    zmin = CE_Jz-CE_mindistz
+    needcut = ((max(lEp[2])>zmax)||(min(lEp[2])<zmin))
+
+    if (needcut) {
+      if (exists(CE_pathCEs_cut)) { del CE_pathCEs_cut; }
+      global::CE_pathCEs_cut = Surface()
+      CE_pathCEs_cut.NewLine
+      local::i = 0
+      local::_start=0
+      local::_end=0
+      for local::n=0 to lEp.tx-1 {
+        posz = lEp(n,0,0,2)
+        _start = _start||(posz>=zmin);
+        if ((_start)&&(!_end)) {
+          _end = posz>zmax
+          if (!_end) {
+            CE_pathCEs_cut.AddPoint(lEp(n,0,0,0),lEp(n,0,0,1),posz)
+            CE_pathCEs_cut.LineAddPointNumber(i)
+            i=i+1
+          }
+        }
+      }
+      CE_pathCEs_cut.EndLine
+    }
+    SetStatusText("ECA length: done")
+  }
+  # end proc CarotidExperiments_CheckECALength()
+
+
+  #-----------------------------------------
+  # complement or cut the ICA path
+  #
+  proc CarotidExperiments_CheckICALength() \
+  {
+    SetStatusText("Checking ICA length")
+    local::lI = ResampleLines(CE_pathCIs,CE_resample_dist)
+    lIp <<= lI.GetLine(0)
+
+    # check for remaining distance of ICA
+    remaining_dist = CE_maxdistz_ICA-CE_covered_distz_I
+    if (remaining_dist>0) {
+      if (!CE_nointeraction) {
+        InfoDialog "Computing remaining path for ICA"
+      }
+      # compute the remaining path
+      # 1. crop the speed image in Z from selected up to 
+      #    the remaining distance
+      minz = lIp(lIp.tx-1,0,0,2)
+      maxz = minz+remaining_dist
+      # convert to voxel coordinates
+      minz = (minz-CE_speed.trz)/CE_speed.vz
+      maxz = (maxz-CE_speed.trz)/CE_speed.vz
+      # add a small margin
+      minz = minz - 5
+      maxz = maxz + 5
+      # check for image limits
+      if (minz<0) { 
+        InfoDialog boost_format("Cropped image too small, setting minz from %1% to 0") % minz
+        minz = 0;
+      }
+      if (maxz>CE_speed.tz-1) { 
+        InfoDialog boost_format("Cropped image too small, limiting maxz (%1%)") % maxz
+        maxz = CE_speed.tz-1; 
+      }
+      global::CE_speed2 <<= CE_speed[:,:,minz:maxz]
+
+      # avoid going into ECA 
+        # reconstruct a tube around ICA of 3mm
+        radii <<= Image(FLOAT,lI.NbPoints,1,1)
+        radii  = 3
+        ica_tube <<= LineRecons(lI,CE_speed2,radii)
+
+        # reconstruct a tube around ECA of 3mm
+        if (exists(CE_pathCEs_cut)) {
+          radii <<= Image(FLOAT,CE_pathCEs_cut.NbPoints,1,1)
+          radii  = 3
+          eca_tube <<= LineRecons(CE_pathCEs_cut,CE_speed2,radii)
+        } else {
+          radii <<= Image(FLOAT,lE.NbPoints,1,1)
+          radii  = 3
+          eca_tube <<= LineRecons(lE,CE_speed2,radii)
+        }
+
+        # set speed to 0 for point in eca tube but not in ica tube
+        tube_contour=255*exp(-0.5)
+        discard= (eca_tube<tube_contour)*(ica_tube>tube_contour)
+        # keep non-discarded points
+        CE_speed2 = (discard<0.5)*CE_speed2
+
+      # close and reload ShortestPath
+      if (exists(SP_Close)) { SP_Close; }
+      global
+        # load the shortest path script
+        func "Centerlines/ShortestPath_gui.amil"
+      local
+
+      # set the parameters and run
+      global::CE_input2 <<= CE_input_cropped[CE_speed2]
+      global::SP_input_name = "CE_input2"
+      global::SP_speed_name = "CE_speed2"
+
+      # end mask contains the last voxels in Z axis
+      global::CE_endmask <<= ((FLOAT) Zpos(CE_speed2))>\
+                                      (CE_speed2.tz-1-5)
+
+      SP_epsilon         = 0.01
+      SP_maxcost         = remaining_dist+5
+      SP_step_size       = 0.01
+      SP_maxlength       = 200
+      SP_use_input_speed = 1
+      SP_input_Imin      = CE_minvesselint
+      SP_input_Imax      = CE_maxvesselint
+      SP_input_speed     = 1
+      SP_end_mode        = 1
+      SP_endmask_name    = "CE_endmask"
+      SP_load_input()
+      SP_win.update
+  
+      SP_SetStartPointWorld(lIp(lIp.tx-1,0,0,0),\
+                            lIp(lIp.tx-1,0,0,1),\
+                            lIp(lIp.tx-1,0,0,2))  
+      SP_Run
+
+      if (exists(CE_pathCI_rems)) { del CE_pathCI_rems; }
+      # path from Common to Internal Carotid Arteries
+      global::CE_pathCI_rems = SmoothLines(SP_path)
+
+      # update covered dist
+      lI_rem_p = CE_pathCI_rems.GetLine(0)
+      maxI_rem_z = max(lI_rem_p[2])
+      if (maxI_rem_z>CE_Jz) { 
+        CE_covered_distz_I = maxI_rem_z-CE_Jz; 
+      }
+    }
+    # end if remaining_dist>0
+
+    # check for cutting the path
+    zmax = CE_Jz+CE_maxdistz_ICA
+    zmin = CE_Jz-CE_mindistz
+    needcut = ((max(lIp[2])>zmax)||(min(lIp[2]<zmin)))
+
+    if (needcut) {
+      if (exists(CE_pathCIs_cut)) { del CE_pathCIs_cut; }
+      global::CE_pathCIs_cut = Surface()
+      CE_pathCIs_cut.NewLine
+      local::i=0
+      local::_start=0
+      local::_end=0
+      for local::n=0 to lIp.tx-1 {
+        posz = lIp(n,0,0,2)
+        _start = _start||(posz>=zmin);
+        if ((_start)&&(!_end)) {
+          _end = posz>zmax
+          if (!_end) {
+            CE_pathCIs_cut.AddPoint(lIp(n,0,0,0),lIp(n,0,0,1),posz)
+            CE_pathCIs_cut.LineAddPointNumber(i)
+            i=i+1
+          }
+        }
+      }
+      CE_pathCIs_cut.EndLine
+    }
+
+    SetStatusText("ICA length: done")
+  }
+  # end proc CarotidExperiments_CheckICALength()
+
+  #-----------------------------------------
+  proc CarotidExperiments_SaveJunction() \
+  {
+    if (exists(CE_Jx)) {
+      junc_file = open(CE_current_resultsdir + "/junction.txt","w")
+  
+      # problem to put comments in string !!!
+      #junc_file.printn "# Information about the detected junction point:"
+      junc_file.printn ""
+      junc_file.printn boost_format( "global::CE_inverted_paths = %1% ") % CE_inverted_paths
+      junc_file.printn ""
+      junc_file.printn boost_format( "global::CE_Jx = %1% ") % CE_Jx
+      junc_file.printn boost_format( "global::CE_Jy = %1% ") % CE_Jy
+      junc_file.printn boost_format( "global::CE_Jz = %1% ") % CE_Jz
+      junc_file.printn ""
+      junc_file.printn boost_format( "global::CE_covered_distz_C =  %1% ") % CE_covered_distz_C
+      junc_file.printn boost_format( "global::CE_covered_distz_E =  %1% ") % CE_covered_distz_E
+      junc_file.printn boost_format( "global::CE_covered_distz_I =  %1% ") % CE_covered_distz_I
+    }
+    # save the paths here if they have been inverted
+    CarotidExperiments_SavePaths()
+    if (exists(CE_pathCEs_cut)) {
+      CE_pathCEs_cut.save CE_current_resultsdir+"/pathCEs_cut.vtk"
+    }
+    if (exists(CE_pathCIs_cut)) {
+      CE_pathCIs_cut.save CE_current_resultsdir+"/pathCIs_cut.vtk"
+    }
+    if (exists(CE_pathCC_rems)) {
+      CE_pathCC_rems.save CE_current_resultsdir+"/pathCC_remaining_smoothed.vtk"
+    }
+    if (exists(CE_pathCI_rems)) {
+      CE_pathCI_rems.save CE_current_resultsdir+"/pathCI_remaining_smoothed.vtk"
+    }
+  }
+  
+  
+  #-----------------------------------------
+  proc CarotidExperiments_PathsDisplay() \
+  {
+    import_vtk
+    CarotidExperiments_ReadGT
+  
+    if (!exists(CE_Jx)) {
+      InfoDialog "Find the junction first!"
+    } else {
+      global::CE_junction_display_size    = 0.6
+      if (exists(CE_junc_sphere)) { del CE_junc_sphere; }
+      global::CE_junc_sphere = vtkSphere(CE_junction_display_size,8,8,CE_Jx,CE_Jy,CE_Jz)
+    
+      # create empty surface for display
+      if (exists(CE_surf)) { delete CE_surf; }
+      global::CE_surf = Surface()
+      show CE_surf
+
+      if (exists(CE_pathCEs)) { CE_surf_draw += CE_pathCEs; }
+      if (exists(CE_pathCIs)) { CE_surf_draw += CE_pathCIs; }
+      if (exists(CE_pathCC_rems)) {
+        CE_surf_draw += CE_pathCC_rems
+        CE_pathCC_rems.SetColor(5,250,5)
+      }
+      if (exists(CE_pathCI_rems)) {
+        CE_surf_draw += CE_pathCI_rems
+        CE_pathCI_rems.SetColor(5,250,5)
+      }
+
+      CE_surf_draw += CE_junc_sphere
+      if (exists(CE_GTiso)) {
+        CE_surf_draw += CE_GTiso
+        CE_GTiso.SetOpacity(0.5)
+      }
+      CE_junc_sphere.SetDiffuse(5,250,5)
+  
+      if (exists(CE_ext)) {
+        if (!exists(CE_ext_surf)) {
+          global::CE_ext_surf = isosurf(CE_ext,0.5)
+        }
+        CE_surf_draw += CE_ext_surf
+        CE_ext_surf.SetDiffuse(255,0,0)
+        CE_ext_surf.SetOpacity(0.5)
+      }
+      CE_pathCEs.SetColor(255,0,0)
+      CE_pathCIs.SetColor(0,0,255)
+      if (exists(CE_pathCEs_cut)) {
+        CE_surf_draw += CE_pathCEs_cut
+        CE_pathCEs_cut.SetColor(255,0,0)
+        CE_pathCEs_cut.SetLineWidth(3)
+      }
+      if (exists(CE_pathCIs_cut)) {
+        CE_surf_draw += CE_pathCIs_cut
+        CE_pathCIs_cut.SetColor(0,0,255)
+        CE_pathCIs_cut.SetLineWidth(3)
+      }
+    }
+  
+  }
+  
+  #------------------------------------------
+  proc CarotidExperiments_LevelSetsExternal() \
+  {
+    if (!exists(CE_pathCEs)) {
+      if (!CE_nointeraction) {
+        InfoDialog "no ECA path for levelset"
+      }
+    } else {
+  
+      global
+        # load the Level Sets Gui script
+        func "Segmentation/LevelSetsGui1.amil"
+      local
+    
+      #--- Sets the parameters
+      global::CE_tube_size     = 0.5
+      # stop evolution at n*standard deviation
+      global::CE_ls_prob_limit = 2
+    
+      #--- Compute the initial cylindrical tube
+      if (exists(CE_pathCEs_cut)) {
+        radii         = Image(FLOAT,CE_pathCEs_cut.NbPoints,1,1)
+        radii         = CE_tube_size
+        global::CE_pathCE_lsinit <<= LineRecons(CE_pathCEs_cut,CE_input_cropped,radii)
+        CE_pathCE_lsinit = CE_pathCE_lsinit-255*exp(-0.5)
+      } else {
+        pathCEs_res   = ResampleLines(CE_pathCEs,CE_resample_dist)
+        radii         = Image(FLOAT,pathCEs_res.NbPoints,1,1)
+        radii         = CE_tube_size
+        global::CE_pathCE_lsinit <<= LineRecons(pathCEs_res,CE_input_cropped,radii)
+        CE_pathCE_lsinit = CE_pathCE_lsinit-255*exp(-0.5)
+      }
+    
+      #--- Initialize the level set evolution
+      if (exists(NLM_res)) {
+        global::LS_input_name   = "NLM_res"
+      } else {
+        global::LS_input_name   = "CE_input_cropped"
+      }
+      global::LS_initial_name   = "CE_pathCE_lsinit"
+      LS_init_mode              = 1 
+      LS_accept_high_intensity  = 0
+      LS_use_expansion_image    = 1
+      LS_conv_freq              = 20
+      LS_threads                = 4
+      # estimate running time based on the remaining centerline distance to segment
+      if (exists(CE_covered_distz_E)) {
+        remaining_dist = CE_maxdistz_ECA-CE_covered_distz_E
+        remaining_Tmin = remaining_dist/CE_input_cropped.vz
+        LS_T           = max(60,remaining_Tmin*3);
+      } else {
+        LS_T = 60
+      }
+    
+      LS_win.update
+      LS_load_input
+      LS_load_initial
+
+      #--- Computes the intensity statistics
+      LS_ComputeIntensityStats
+    
+      #--- Compute the expansion force
+      #     -- limit its range along Z axis based on the detected junction
+      if (exists(CE_Jz)) {
+        zmax = CE_Jz+CE_maxdistz_ECA
+        zmax = (zmax - LS_input.trz)/LS_input.vz
+        if (zmax>LS_input.tz-1) { zmax=LS_input.tz-1; }
+        zmin = CE_Jz-CE_mindistz
+        zmin = (zmin - LS_input.trz)/LS_input.vz
+        if (zmin<0) { zmin=0;}
+      } else {
+        zmin = 0;
+        zmax = LS_input.tz-1
+      }
+      global::CE_pathCE_expforce = LS_input*0-0.5
+      #     -- compute the force inside the ROI
+      expforce_roi = CE_pathCE_expforce[:,:,zmin:zmax]
+      expforce_roi  = (LS_input[expforce_roi]-LS_Imean)/LS_Isd
+      expforce_roi = expforce_roi*expforce_roi
+      expforce_roi = exp(-expforce_roi/2)-exp(-(CE_ls_prob_limit*CE_ls_prob_limit)/2)
+      CE_pathCE_expforce.putimage(expforce_roi)
+    
+      LS_expansion_image_name = "CE_pathCE_expforce"
+      LS_win.update
+      LS_load_expansion
+    
+      # Run the evolution
+      LS_win.update
+      LS_ReRun
+      global::CE_pathCE_contours <<= LS_inls
+    
+      # 1. Save Level Set resulting image
+      LS_inls.save CE_current_resultsdir+"/levelset_CC_CE.ami.gz"
+      LS_SaveParams( CE_current_resultsdir+"/levelset_CC_CE.amil" )
+    }
+  }
+  
+  
+  #------------------------------------------
+  proc CarotidExperiments_LevelSetsInternal() \
+  {
+    if (!exists(CE_pathCIs)) {
+      if (!CE_nointeraction) {
+        InfoDialog "no ICA path for levelset"
+      }
+    } else {
+      global
+        # load the Level Sets Gui script
+        func "Segmentation/LevelSetsGui1.amil"
+      local
+    
+      #--- Sets the parameters
+      global::CE_tube_size     = 0.5
+      # stop evolution at n*standard deviation
+      global::CE_ls_prob_limit = 2
+    
+      #--- Compute the initial cylindrical tube
+      if (exists(CE_pathCIs_cut)) {
+        radii         = Image(FLOAT,CE_pathCIs_cut.NbPoints,1,1)
+        radii         = CE_tube_size
+        global::CE_pathCI_lsinit <<= LineRecons(CE_pathCIs_cut,CE_input_cropped,radii)
+      } else {
+        pathCIs_res   = ResampleLines(CE_pathCIs,CE_resample_dist)
+        radii         = Image(FLOAT,pathCIs_res.NbPoints,1,1)
+        radii         = CE_tube_size
+        global::CE_pathCI_lsinit <<= LineRecons(pathCIs_res,CE_input_cropped,radii)
+      }
+  
+      #--- check for computed remaining centerline
+      if (exists(CE_pathCC_rems)) {
+        pathCC_rems_res = ResampleLines(CE_pathCC_rems,CE_resample_dist)
+        radii         <<= Image(FLOAT,pathCC_rems_res.NbPoints,1,1)
+        radii           = CE_tube_size
+        # reconstructed remaining centerline
+        rem_recons    <<= LineRecons(pathCC_rems_res,CE_input_cropped,radii)
+        CE_pathCI_lsinit = max(CE_pathCI_lsinit, rem_recons)
+      }
+      if (exists(CE_pathCI_rems)) {
+        pathCI_rems_res = ResampleLines(CE_pathCI_rems,CE_resample_dist)
+        radii         <<= Image(FLOAT,pathCI_rems_res.NbPoints,1,1)
+        radii           = CE_tube_size
+        # reconstructed remaining centerline
+        rem_recons    <<= LineRecons(pathCI_rems_res,CE_input_cropped,radii)
+        CE_pathCI_lsinit = max(CE_pathCI_lsinit, rem_recons)
+      }
+    
+      CE_pathCI_lsinit = CE_pathCI_lsinit-255*exp(-0.5)
+  
+      #--- Initialize the level set evolution
+      if (exists(NLM_res)) {
+        global::LS_input_name   = "NLM_res"
+      } else {
+        global::LS_input_name   = "CE_input_cropped"
+      }
+      global::LS_initial_name   = "CE_pathCI_lsinit"
+      LS_init_mode              = 1 
+      LS_accept_high_intensity  = 0
+      LS_use_expansion_image    = 1
+      LS_conv_freq              = 20
+      LS_threads                = 4
+      # estimate running time based on the remaining centerline distance to segment
+      if (exists(CE_covered_distz_I)) {
+        remaining_dist = CE_maxdistz_ICA-CE_covered_distz_I
+        remaining_Tmin = remaining_dist/CE_input_cropped.vz
+        LS_T           = max(60,remaining_Tmin*3);
+      } else {
+        LS_T = 60
+      }
+
+      LS_win.update
+      LS_load_input
+      LS_load_initial
+      #--- Computes the intensity statistics
+      LS_ComputeIntensityStats
+    
+      #--- Compute the expansion force
+      #     -- limit its range along Z axis based on the detected junction
+      if (exists(CE_Jz)) {
+        zmax = CE_Jz+CE_maxdistz_ICA
+        zmax = (zmax - LS_input.trz)/LS_input.vz
+        if (zmax>LS_input.tz-1) { zmax=LS_input.tz-1; }
+        zmin = CE_Jz-CE_mindistz
+        zmin = (zmin - LS_input.trz)/LS_input.vz
+        if (zmin<0) { zmin=0;}
+      } else {
+        zmin = 0
+        zmax = LS_input.tz-1
+      }
+      global::CE_pathCI_expforce = LS_input*0-0.5
+      #     -- compute the force inside the ROI
+      expforce_roi = CE_pathCI_expforce[:,:,zmin:zmax]
+      expforce_roi  = (LS_input[expforce_roi]-LS_Imean)/LS_Isd
+      expforce_roi = expforce_roi*expforce_roi
+      expforce_roi = exp(-expforce_roi/2)-exp(-(CE_ls_prob_limit*CE_ls_prob_limit)/2)
+      CE_pathCI_expforce.putimage(expforce_roi)
+    
+      LS_expansion_image_name = "CE_pathCI_expforce"
+      LS_win.update
+      LS_load_expansion
+    
+      # Run the evolution
+      LS_win.update
+      LS_ReRun
+      global::CE_pathCI_contours <<= LS_inls
+    
+      # 1. Save Level Set resulting image
+      LS_inls.save CE_current_resultsdir+"/levelset_CC_CI.ami.gz"
+      LS_SaveParams( CE_current_resultsdir+"/levelset_CC_CI.amil" )
+    }
+  }
+  
+  
+  #------------------------------------------
+  proc CarotidExperiments_LevelSetsPathsDisplay() \
+  {
+  }
+  
+  
+  #------------------------------------------
+  proc CarotidExperiments_LevelSetsPathsSave() \
+  {
+    # the LevelSets interface can be closed to free some memory
+    LS_Close
+
+    if (exists(CE_pathCE_contours)&&exists(CE_pathCI_contours)) {
+      # get the maximum between the 2 results and save it
+      global::LS_inls = max(CE_pathCE_contours,CE_pathCI_contours)
+    } else {
+      if exists(CE_pathCE_contours) {
+        printn "****"
+        global::LS_inls = CE_pathCE_contours
+      } else {
+        if exists(CE_pathCI_contours) {
+          global::LS_inls = CE_pathCI_contours
+        } else {
+          InfoDialog "No contour available"
+        }
+      }
+    }
+  
+    CarotidExperiments_SaveResults
+  }
+  
+  
+  #------------------------------------------
+  proc CarotidExperiments_InitialSpheres() \
+  {
+    if (exists(NLM_res)) {
+      LS_input_name   = "NLM_res"
+      #--- add initial spheres
+      CreateInitialSpheres(&NLM_res,"CE_lsinit",CE_sphereradii)
+    } else {
+      LS_input_name   = "CE_input_cropped"
+      #--- add initial spheres
+      CreateInitialSpheres(&CE_input_cropped,"CE_lsinit",CE_sphereradii)
+    }
+  }
+  
+  #------------------------------------------
+  proc CarotidExperiments_InitLevelSets() \
+  {
+    global
+      # load the Level Sets Gui script
+      func "Segmentation/LevelSetsGui1.amil"
+    local
+  
+    # need cropped data
+    if (exists(CE_input_cropped)) { 
+      # Initialize the level set segmentation gui
+      if (CE_localstats == 0) {
+        LS_input_name   = "CE_input_lsd"
+        LS_minimal_intensity     = 0
+      } else {
+        CarotidExperiments_InitialSpheres
+        LS_minimal_intensity     = 1000
+      }
+      LS_initial_name = "CE_lsinit"
+      #--- Presets parameters
+      LS_accept_high_intensity = 0
+      # starts from an image
+      LS_init_mode  = 1 
+      LS_conv_freq  = 20
+      LS_threads    = 4
+      LS_T          = 600
+  
+      LS_win.update
+      LS_load_input
+      LS_load_initial
+      #--- Computes the intensity statistics
+      LS_ComputeIntensityStats
+    }
+  }
+  
+  #------------------------------------------
+  proc CarotidExperiments_SaveResults() \
+  {
+    ami_import->Filters()
+    if (!exists(LS_inls)) {
+      InfoDialog "Need to run the segmentation first: loading level set  ..."
+      global
+        # load the Level Sets Gui script
+        func "Segmentation/LevelSetsGui1.amil"
+      local
+    } else {
+      # if segmentation comes from paths, save with diff names 
+      if (exists(CE_pathCE_contours)) {
+        LS_inls.save CE_current_resultsdir+"/levelset_result_from_paths.ami.gz"
+      } else {
+        # 1. Save Level Set resulting image
+        LS_inls.save CE_current_resultsdir+"/levelset_result.ami.gz"
+        LS_SaveParams( CE_current_resultsdir+"/levelset_params.amil" )
+      }
+  
+      # create the image with partial volume effect
+      pvim = filters->ComputePV_subdiv(&LS_inls,4)
+      if (0) {
+        # put in bigger image
+        pvim_big <<= Image(FLOAT,CE_input_tx,CE_input_ty,CE_input_tz)
+        pvim_big.settranslation(CE_input_trx,CE_input_try,CE_input_trz)
+        pvim_big.setvoxelsize(CE_input_cropped)
+        pvim_big.putimage(pvim)
+      } else {
+        pvim_big = pvim
+      }
+      del pvim
+      itk = &global::itk
+      itk->Write(&pvim_big,CE_current_resultsdir+"/pv"+CE_datanumber_str+".mhd")
+  
+      # 2. Save ROI text file
+      roi_file = open(CE_current_resultsdir+"/roi"+CE_datanumber_str+".txt","w")
+      # compute the voxel position of the first point
+      p1x=floor((pvim_big.trx-CE_input_trx)/CE_input_cropped.vx+0.5)
+      p1y=floor((pvim_big.try-CE_input_try)/CE_input_cropped.vy+0.5)
+      p1z=floor((pvim_big.trz-CE_input_trz)/CE_input_cropped.vz+0.5)
+    
+      p2x=floor(p1x+(pvim_big.tx-1)*pvim_big.vx/CE_input_cropped.vx+0.5)
+      p2y=floor(p1y+(pvim_big.ty-1)*pvim_big.vy/CE_input_cropped.vy+0.5)
+      p2z=floor(p1z+(pvim_big.tz-1)*pvim_big.vz/CE_input_cropped.vz+0.5)
+    
+      roi_file.print boost_format("%0.0f ")   % p1x
+      roi_file.print boost_format("%0.0f ")   % p1y
+      roi_file.print boost_format("%0.0f\n")  % p1z
+      roi_file.print boost_format("%0.0f ")   % p2x
+      roi_file.print boost_format("%0.0f ")   % p2y
+      roi_file.print boost_format("%0.0f\n")  % p2z
+      if (!CE_nointeraction) { InfoDialog "Result is saved!"; }
+    }
+  }
+  
+  
+  #------------------------------------------
+  proc CarotidExperiments_Evaluation() \
+  {
+    cmd = CE_evaluation_scriptdir+"lumen.sh " \
+          + CE_groundtruth_dir + " " \
+          + CE_results_dir + " " \
+          + CE_results_dir + " " \
+          + CE_datanumber_str
+    sh cmd
+  }
+  
+  
+  #------------------------------------------
+  proc CarotidExperiments_DisplayResults() \
+  {
+    # read ground truth if needed
+    if (!exists(CE_GTiso)) {
+      CarotidExperiments_ReadGT
+    }
+    # read the mask image
+    ext_name = CE_current_gtdir + "/ext" + CE_datanumber_str + ".mhd"
+    itk = &global::itk
+    global::CE_ext = itk->Read(ext_name)
+    # read the level set results
+    imname = CE_current_resultsdir+"/levelset_result.ami.gz"
+    printn " reading " + imname
+    global::CE_lsres <<= Image imname
+  
+    imname = CE_current_resultsdir+"/levelset_result_calc.ami.gz"
+    printn " reading " + imname
+    global::CE_lsres_calc <<= Image imname
+  
+    # Show: the LS, LS with calc, GT, initial spheres
+    if (exists(CE_ls_surf)) { del CE_ls_surf; }
+    global::CE_ls_surf = isosurf(CE_lsres,0)
+    if (exists(CE_lscalc_surf)) { del CE_lscalc_surf; }
+    global::CE_lscalc_surf = isosurf(CE_lsres_calc,0)
+  
+    CarotidExperiments_InitialSpheres
+    global::CE_spheres_surf = isosurf(CE_lsinit,0)
+  
+    show CE_ls_surf
+    CE_ls_surf_draw += CE_lscalc_surf
+    CE_ls_surf_draw += CE_GTiso
+    CE_ls_surf_draw += CE_spheres_surf
+    CE_lscalc_surf.SetOpacity(0.4)
+    CE_GTiso.SetDiffuse(250,5,5)
+    CE_ls_surf.SetOpacity(0.6)
+    CE_spheres_surf.SetDiffuse(5,250,5)
+  }
+  
+  #------------------------------------------
+  proc CarotidExperiments_Skeleton() \
+  {
+    global
+      func "Centerlines/CreateSkeletonGui.amil"
+    local
+    
+    # read ground truth if needed
+    if (!exists(CE_GTiso)) {
+      CarotidExperiments_ReadGT
+    }
+    # read the mask image
+    ext_name = CE_current_gtdir + "/ext" + CE_datanumber_str + ".mhd"
+    itk = &global::itk
+    global::CE_ext <<= itk->Read(ext_name)
+    # read the level set results obtained including calcifications
+    imname = CE_current_resultsdir+"/levelset_result_calc.ami.gz"
+    printn " reading " + imname
+    global::CE_lsres <<= Image imname
+  
+    # add an epsilon to the image
+    CE_lsres = CE_lsres + 0.001
+  
+    # set input
+    Skel_input_name = "CE_lsres"
+    Skel_Threshold  = 0
+    # activate fill holes
+    Skel_FillHoles  = 1
+    # use vtkPropDaniel2
+    Skel_Ordering   = 0 
+    Skel_DTmax = -1
+    Skel_DTmax = 15
+    Skel_win.update
+    # run skeletonization
+    Skel_Execute
+    # prune
+    Skel_prunesize = 3
+    Skel_SelectPrune
+    Skel_RemovePrune
+    # connect lines
+    Skel_connect_dist=0.05
+    Skel_connect_dir=1
+    Skel_ConnectLines
+    # smooth the lines
+    Skel_SmoothLines
+    # display result
+    Skel_Display
+  }
+  
+  
+  #------------------------------------------
+  proc CarotidExperiments_FindJunctionFromSkeleton() \
+  {
+    global
+      # load the shortest path script
+      func "Centerlines/ShortestPath_gui.amil"
+    local
+  
+    global::CE_path_input <<= (FLOAT) filter(Skel_output,0.5,0,0,0)
+    global::SP_input_name = "CE_path_input"
+    global::SP_speed_name = "CE_path_input"
+    SP_epsilon = 0.1
+    SP_maxcost = 10000
+    SP_win.update
+    SP_load_input
+    SP_load_speed
+    SP_SetStartPointWorld(p1x,p1y,p1z)
+    SP_SetEndPointWorld(p2x,p2y,p2z)
+    SP_Run
+    if (exists(CE_path1_result)) { del CE_path1_result; }
+    global::CE_path1_result = SP_path
+  
+    SP_SetEndPointWorld(p3x,p3y,p3z)
+    SP_Run
+    if (exists(CE_path2_result)) { del CE_path2_result; }
+    global::CE_path2_result = SP_path
+  
+    if (0) {
+      if (exists(Skel_res)) {
+        global::CE_path1 = ShortestPath(Skel_res,p1x,p1y,p1z,p2x,p2y,p2z)
+        global::CE_path2 = ShortestPath(Skel_res,p1x,p1y,p1z,p3x,p3y,p3z)
+        show CE_path1
+        CE_path1_draw += CE_path2
+        if (exists(Skel_res_draw)) {
+          Skel_res_draw.compare(CE_path1_draw)
+        }
+      }
+    }
+  }
+  
+  #------------------------------------------
+  proc CarotidExperiments_gui() \
+  {
+  printn "1"
+    global::CE_win = ParamWin("Carotid09")
+    CE_win.BeginBook
+  
+      #----- Input Page
+      CE_win.AddPage("Config")
+        CE_win.AddBoolean(CE_nointeraction)
+        CE_win.BeginBox("Paths")
+          config_id = CE_win.AddEnum(CE_config)
+            CE_win.AddEnumChoice(config_id,"Karl linux laptop")
+            CE_win.AddEnumChoice(config_id,"Karl linux desktop")
+            CE_win.AddEnumChoice(config_id,"Sara winXP lab")
+            CE_win.AddEnumChoice(config_id,"Sara linux lab")
+        CE_win.AddButton("Load config",         CarotidExperiments_LoadConfig)
+          CE_win.AddString(CE_data_dir,"Data")
+          CE_win.AddString(CE_groundtruth_dir,"Ground truth")
+          CE_win.AddString(CE_results_dir,"Results")
+  
+          CE_win.BeginBox("Evaluation paths")
+            CE_win.AddString(CE_evaluation_bindir,    "binary path")
+            CE_win.AddString(CE_evaluation_scriptdir, "scripts path")
+          CE_win.EndBox
+        CE_win.EndBox
+  
+      CE_win.AddPage("Input")
+        CE_win.BeginBox("data information")
+          datacenter_id = CE_win.AddEnum(CE_datacenter)
+            CE_win.AddEnumChoice(datacenter_id,"Erasmus MC")
+            CE_win.AddEnumChoice(datacenter_id,"Hadassah")
+            CE_win.AddEnumChoice(datacenter_id,"Louis Pradel")
+          datatype_id = CE_win.AddEnum(CE_datatype)
+            CE_win.AddEnumChoice(datatype_id,"Training")
+            CE_win.AddEnumChoice(datatype_id,"Testing")
+            CE_win.AddEnumChoice(datatype_id,"On-site")
+          CE_win.AddInt(CE_datanumber,0,35)
+        CE_win.EndBox
+        CE_win.AddButton("Read Data",         CarotidExperiments_ReadData)
+        CE_win.AddButton("Read Ground Truth", CarotidExperiments_ReadGT)
+        CE_win.BeginBox("Crop")
+          CE_win.AddInt(CE_cropmarginXY,0,200)
+          CE_win.AddInt(CE_cropmarginZtop,0,200)
+          CE_win.AddInt(CE_cropmarginZbot,0,200)
+          CE_win.AddButton("Crop Data",         CarotidExperiments_CropData)
+          CE_win.AddBoolean(CE_crop_created)
+        CE_win.EndBox
+  
+      #----- Run Page
+      CE_win.AddPage("Den")
+        CE_win.AddButton("Reduce Noise",    CarotidExperiments_ReduceNoise)
+  
+      #----- Run Page
+      CE_win.AddPage("lst")
+        CE_win.BeginBox("local statistics")
+          localstats_id = CE_win.AddEnum(CE_localstats)
+            CE_win.AddEnumChoice(localstats_id,"True")
+            CE_win.AddEnumChoice(localstats_id,"False")
+          CE_win.AddInt(CE_localpar,1,10)
+        CE_win.EndBox
+        CE_win.AddButton("Local Stats",    CarotidExperiments_LocalStats)
+  
+      #----- Run Page
+      CE_win.AddPage("Ves")
+        CE_win.AddBoolean(CE_ves_downsample)
+        CE_win.AddButton("Vesselness",CarotidExperiments_Vesselness)
+        CE_win.AddButton("Save",     CarotidExperiments_SaveVesselness)
+        CE_win.AddButton("Read",     CarotidExperiments_ReadVesselness)
+  
+      #----- Run Page
+      CE_win.AddPage("Run")
+        CE_win.BeginBox("Vessel intensity range")
+          CE_win.AddInt(CE_minvesselint,900,1300)
+          CE_win.AddInt(CE_maxvesselint,900,2000)
+        CE_win.EndBox
+        CE_win.BeginBox("Paths (Vesselness+Prob)")
+          CE_win.BeginBox("Path")
+            CE_win.AddFloat(CE_mlmax_threshold,0,100)
+            CE_win.BeginHorizontal
+              CE_win.AddButton("Create",  CarotidExperiments_CreatePaths)
+              CE_win.AddButton("Save",    CarotidExperiments_SavePaths)
+              CE_win.AddButton("Read",    CarotidExperiments_ReadPaths)
+            CE_win.EndHorizontal
+          CE_win.EndBox
+          CE_win.BeginBox("Junction")
+            CE_win.AddFloat(CE_dist_threshold,0.01,10)
+            CE_win.AddFloat(CE_resample_dist,0.01,10)
+            CE_win.BeginHorizontal
+              CE_win.AddButton("Junction",  CarotidExperiments_JunctionFromPaths)
+             CE_win.AddButton("Display",    CarotidExperiments_PathsDisplay)
+              CE_win.AddButton("Save",      CarotidExperiments_SaveJunction)
+            CE_win.EndHorizontal
+          CE_win.EndBox
+          CE_win.BeginBox("LevelSets from paths")
+            CE_win.BeginHorizontal
+              CE_win.AddButton("External", CarotidExperiments_LevelSetsExternal)
+              CE_win.AddButton("Internal", CarotidExperiments_LevelSetsInternal)
+              CE_win.AddButton("Display",  CarotidExperiments_LevelSetsPathsDisplay)
+              CE_win.AddButton("Save",     CarotidExperiments_LevelSetsPathsSave)
+            CE_win.EndHorizontal
+          CE_win.EndBox
+        CE_win.EndBox
+        CE_win.AddButton("Evaluation",      CarotidExperiments_Evaluation)
+        CE_win.AddButton("Display Results", CarotidExperiments_DisplayResults)
+
+      #----- Other Page
+      CE_win.AddPage("Other")
+        CE_win.BeginBox("LevelSets")
+          CE_win.BeginHorizontal
+            CE_win.AddButton("Init",   CarotidExperiments_InitLevelSets)
+            CE_win.AddButton("Save",   CarotidExperiments_SaveResults)
+          CE_win.EndHorizontal
+        CE_win.EndBox
+        CE_win.BeginBox("Paths (Skeleton)")
+          CE_win.BeginHorizontal
+            CE_win.AddButton("Skeleton",   CarotidExperiments_Skeleton)
+            CE_win.AddButton("Junction",   CarotidExperiments_FindJunctionFromSkeleton)
+          CE_win.EndHorizontal
+        CE_win.EndBox
+
+    CE_win.EndBook
+  
+    CE_win.AddButton("Close",CarotidExperiments_Close)
+    CE_win.update
+    CE_win.Display
+  }
+  
+  #------------------------------------------
+  
+  CarotidExperiments_init
+  CarotidExperiments_gui
+  CarotidExperiments_CheckConfigFile
+}
