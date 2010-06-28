@@ -1,0 +1,68 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_gltransfmatrix.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the following methods:
+#                              - assign.
+#                              - copy.
+#                              - Interpolate.
+#                              - _read.
+#                              - _save.
+#                              - _print.
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+OK = 1 # The test was successful
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+printn "\t\t Create an object of class GLTransfMatrix (gl=GLTransfMatrix()).\n"
+gl=GLTransfMatrix()
+
+printn "\t\t Dump the contents of the gl (gl._print()).\n"
+gl._print()
+
+printn "\t\t Create a copy of the object gl(newgl=gl.copy()).\n"
+newgl=gl.copy()
+
+printn "\t\t Dump the contents of the newgl (newgl._print()).\n"
+newgl._print()
+
+printn "\t\t Create an object of class GLTransfMatrix (othergl=GLTransfMatrix()).\n"
+othergl=GLTransfMatrix()
+
+printn "\t\t Attach the contents of newgl to othergl(othergl.assign(newgl)).\n"
+othergl.assign(newgl)
+
+printn "\t\t Interpolate othergl with newgl(gl=othergl.Interpolate(newgl,1)).\n"
+gl=othergl.Interpolate(newgl,1)
+
+printn "\t\t Save gl (gl._Save(\"gl.txt\")).\n"
+gl._save("gl.txt")
+
+printn "\t\t Read gl (gl._Read(\"gl.txt\")).\n"
+gl._read("gl.txt")
+
+printn "\t\t Dump the contents of the gl (gl._print()).\n"
+gl._print()
+
+printn "\t\t Interpolate othergl with newgl(gl=othergl.Interpolate(newgl,0)).\n"
+gl=othergl.Interpolate(newgl,0)
+
+printn "\t\t Dump the contents of the gl (gl._print()).\n"
+gl._print()
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ctest.PrintTestResult( OK ) 
+
+#quit
+

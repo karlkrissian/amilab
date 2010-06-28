@@ -133,6 +133,8 @@ BasicVariable::ptr WrapClass_GLTransfMatrix::
       glmat->Save(transf);
     fclose(transf);
   }
+  else
+      ClassHelpAndReturn;
 
   return BasicVariable::ptr();
 }
@@ -165,6 +167,8 @@ BasicVariable::ptr WrapClass_GLTransfMatrix::
     else
       fprintf(stderr,"error reading %s \n",sImageName.c_str());
   }
+  else
+      ClassHelpAndReturn;
 
   return BasicVariable::ptr();
 }
