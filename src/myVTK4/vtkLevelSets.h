@@ -240,9 +240,10 @@ public:
   vtkSetObjectMacro(balloon_image,vtkImageData);
   vtkGetObjectMacro(balloon_image,vtkImageData);
 
-  //
-  // Use initial image for the level set
-  //
+  /**
+   * Use initial image for the level set
+   * @param  
+   */
   virtual void SetinitImage(vtkImageData*);
   vtkGetObjectMacro(initImage,vtkImageData);
 
@@ -275,22 +276,30 @@ public:
   void SetNumGaussians( int n);
   void SetGaussian(int num, float mean, float sd);
 
-  // Description
-  // Reset the distance map (the old function reinit)
+  /**
+   * Reset the distance map (the old function reinit)
+   */
   void DistanceMap();
 
-  // initial code of curves
+  /**
+   * initial code of curves
+   */
   void DistanceMapCurves();
 
-  // fast marching distance map
+  /**
+   * fast marching distance map
+   */
   void DistanceMapFMOld();
   void DistanceMapFM();    // use vtkImageIsoContourDist
 
-  // fast signed Chamfer distance map
+  /**
+   * fast signed Chamfer distance map
+   */
   void DistanceMapChamfer();
       
-  // Propagating Danielsson Distance + 
-  // skeleton and distance to the skeleton
+  /**
+   * Propagating Danielsson Distance + skeleton and distance to the skeleton
+   */
   void DistanceMapShape();
       
   void InitParam(  vtkImageData* in, vtkImageData* out);
@@ -301,7 +310,10 @@ public:
   int  Iterate();
   void EndEvolution();
 
-  // Set a curvature weight for the geodesic framework
+  /**
+   * Set a curvature weight for the geodesic framework
+   * @param CW 
+   */
   void SetCurvatureWeights( float* CW)
   //
   {
@@ -349,35 +361,53 @@ public:
     }
   }
 
-  // just copy the values when processing the next iteration
-  // the array provided MUST be allocated
-  // or NULL for cancelling the action
+  /**
+   * just copy the values when processing the next iteration the array provided MUST be allocated or NULL for cancelling the action.
+   * @param data 
+   */
   void GetCurvatureTerm(  float* data) { curvature_data = data; }
   void GetAdvectionTerm(  float* data) { advection_data = data; }
   void GetVelocityTerm(   float* data) { velocity_data  = data; }
   void GetBalloonTerm(    float* data) { balloon_data   = data; }
   void GetDistanceMap(    float* data) { distance_data  = data; }
 
-  // public methods for multithreading ...
+  /**
+   * public methods for multithreading
+   * @param first 
+   * @param last 
+   * @param num 
+   * @param total 
+   * @return 
+   */
   int  SplitBand(int& first, int& last, int num, int total);
   void Evolve3D(int first_band, int last_band);
 
   void PrintParameters();
 
-  // Updates the resulting image so that it contains the current result
+  /**
+   * Updates the resulting image so that it contains the current result
+   * @return 
+   */
   int UpdateResult();
 
-  // Compute mean and standard deviation of the intensity
-  // within the initial spheres or disks
-  //
-  //float *InitPointsStatistics();
+  /**
+   * Compute mean and standard deviation of the intensity
+   *  within the initial spheres or disks
+   * @param stats[] 
+   */
   void InitPointsStatistics(float stats[2]);
 
-  // Precompute the probability Lookup Table is the image
-  // was rescaled to [0,255]
+  /**
+   * Precompute the probability Lookup Table is the image was rescaled to [0,255]
+   */
   void ComputeProbabilityLUT();
 
-  // Probability of the tissue based on the image intensity
+  /**
+   * Probability of the tissue based on the image intensity.
+   * @param I 
+   * @param compute 
+   * @return 
+   */
   float ExpansionMap( float I, unsigned char compute=0);
 
 protected:

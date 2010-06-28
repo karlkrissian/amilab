@@ -35,7 +35,7 @@ InrImage* wrapComputePV(ParamList* p)
     InrImage* result;
 
   if (!get_val_ptr_param<InrImage>(  input,        p, n)) HelpAndReturnNULL;
-  if (!get_int_param(    resolution,   p, n)) HelpAndReturnNULL;
+  get_int_param(    resolution,   p, n,false);
 
   result = ComputePartialVolume(input,resolution);
 
@@ -46,7 +46,7 @@ InrImage* wrapComputePV(ParamList* p)
 //---------------------------------------------------------------
 InrImage* wrapComputePV_subdiv(ParamList* p)
 {
-    char functionname[] = "wrapComputePV";
+    char functionname[] = "wrapComputePV_subdiv";
     char description[]=" \n\
         Compute an estimation of percentage of positive intensity \n\
         for each voxel, by recursive subdivision of the volume.\n\
@@ -64,8 +64,8 @@ InrImage* wrapComputePV_subdiv(ParamList* p)
 
     InrImage* result;
 
-  if (!get_val_ptr_param<InrImage>(  input,         p, n)) HelpAndReturnNULL;
-  if (!get_int_param(    subdiv_levels, p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>(  input,  p, n)) HelpAndReturnNULL;
+  get_int_param(    subdiv_levels, p, n,false); // parameter not required
 
   result = ComputePartialVolumeSubdiv(input,subdiv_levels);
 

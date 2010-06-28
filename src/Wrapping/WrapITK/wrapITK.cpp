@@ -3,7 +3,7 @@
     Software : AMILab
     Authors  : Karl Krissian
                Sara Arencibia
-    Email    : karl@bwh.harvard.edu
+    Emails   : karl@bwh.harvard.edu
                darkmind@gmail.com
 
     AMILab is a language for image processing
@@ -33,7 +33,7 @@
 #include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "wrapITK.h"
-#include "wrapitkRead_3D_US.h"
+//#include "wrapitkRead_3D_US.h"
 #include "wrapitkRead.h"
 #include "wrapitkRecursiveGaussianImageFilter.h"
 #include "wrapitkIsoContourDist.h"
@@ -71,7 +71,7 @@ void AddWrapITK(){
   ADDOBJECTVAR_NAME(C_wrap_imagefunction, "WaterShedImageFilter3D",         wrap_itkWaterShedImageFilter3D);
   ADDOBJECTVAR_NAME(C_wrap_imagefunction, "SigmoidImageFilter2D",           wrap_itkSigmoidImageFilter2D);
   ADDOBJECTVAR_NAME(C_wrap_imagefunction, "SigmoidImageFilter3D",           wrap_itkSigmoidImageFilter3D);
-  ADDOBJECTVAR_NAME(C_wrap_imagefunction, "Read_3D_US",                     wrap_itkRead_3D_US);
+//  ADDOBJECTVAR_NAME(C_wrap_imagefunction, "Read_3D_US",                     wrap_itkRead_3D_US);
   ADDOBJECTVAR_NAME(C_wrap_imagefunction, "Read",                           wrap_itkRead);
   ADDOBJECTVAR_NAME(C_wrap_imagefunction, "RecursiveGaussianImageFilter2D", wrap_itkRecursiveGaussianImageFilter2D);
   ADDOBJECTVAR_NAME(C_wrap_imagefunction, "RecursiveGaussianImageFilter3D", wrap_itkRecursiveGaussianImageFilter3D);

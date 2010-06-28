@@ -37,15 +37,15 @@ printn 3
   for l=0 to 2 {
     temp = dir[k]*dir[l]*ldir
     temp = temp*tube
-    t[n] = temp
+t.SetComponent( n, temp)
     n=n+1
   }
   }
 printn "iso"
   // add isotropic component
-  t[0] = t[0]+tube*liso
-  t[4] = t[4]+tube*liso
-  t[8] = t[8]+tube*liso
+t.SetComponent( 0, t[0]+tube*liso)
+t.SetComponent( 4, t[4]+tube*liso)
+t.SetComponent( 8, t[8]+tube*liso)
 }
 
 
@@ -56,9 +56,9 @@ CreateTubeTensor(&t2, 0,1,0,radius)
 t3 = t1
 CreateTubeTensor(&t3, 0,0,1,radius)
 
-t1.save "tube_tensor1.vtk"
+t1._save( "tube_tensor1.vtk")
 t2 = t2+t1
-t2.save "tube_tensor2.vtk"
+t2._save( "tube_tensor2.vtk")
 t3 = t3+t2
-t3.save "tube_tensor3.vtk"
+t3._save( "tube_tensor3.vtk")
 

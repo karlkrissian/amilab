@@ -16,11 +16,24 @@
 
 #include "ImagePositionsBase.h"
 #include "inrimage.hpp"
-
+#include "DefineClass.hpp"
+#include <exception>
 
 template<class T>
 class ImagePositions : public ImagePositionsBase
 {
+
+  //  DEFINE_CLASS(ImagePositions)
+public:
+  virtual char const* get_name() const { return "ImagePositions<T>"; }  
+  typedef ImagePositions<T> ClassType; 
+  typedef typename boost::shared_ptr<ImagePositions<T> >    ptr; 
+  typedef typename boost::weak_ptr<ImagePositions<T> >      wptr; 
+  typedef typename std::vector<ptr>     ptr_vector; 
+  typedef std::vector<wptr>    wptr_vector; 
+  typedef std::list<ptr>       ptr_list; 
+  typedef std::list<wptr>      wptr_list;
+
 protected:
   // image format
   // pointer to image data
@@ -36,6 +49,9 @@ protected:
 
 public:
 
+
+public:
+
   ImagePositions( InrImage* im);
 
   ~ImagePositions();
@@ -44,11 +60,15 @@ public:
 
   bool FreePositions( );
 
-  double operator()( int x, int y, int z = 0);
+  double operator()( int x, int y, int z = 0) const
+    #ifdef AMI_BUILD_Debug
+      throw (std::range_error)
+    #endif
+    ;
 
-  double operator()( int x, int y, int z, int coord);
+  double operator()( int x, int y, int z, int coord) const;
 
-  double GetValue( int x, int y, int z, int coord);
+  double GetValue( int x, int y, int z, int coord) const;
 
   T* GetPos(int x, int y, int z=0);
 

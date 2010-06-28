@@ -36,11 +36,13 @@ int   Func_count( InrImage* im)
 
   num = 0;
 
-  im->InitBuffer();
-  Repeter
-    Si (double) (*im) > 1E-8 AlorsFait
+  InrImageIteratorBase::ptr im_it (im->CreateConstIterator());
+
+  im_it->InitBuffer();
+  do {
+    if ( im_it->GetDoubleValue() > 1E-8 ) 
       num++;
-  JusquA Non(++(*im))  FinRepeter
+  } while (++(*im_it));
   
   return num;
 }
@@ -53,9 +55,9 @@ double     Func_mean( InrImage* im)
 
   mean = 0;
   im->InitBuffer();
-  Repeter
+  do {
     mean += im->ValeurBuffer();
-  JusquA Non(im->IncBuffer())  FinRepeter
+  } while (im->IncBuffer());
   
   mean /= (im->_tx*im->_ty*im->_tz);
 
@@ -74,13 +76,13 @@ double     Func_mean( InrImage* im, InrImage* mask)
   numpoints = 0;
   im  ->InitBuffer();
   if (mask!=NULL) mask->InitBuffer();
-  Repeter
-    Si (mask!=NULL) Et (mask->ValeurBuffer() > 0.5) Alors
+  do {
+    if ( (mask!=NULL) && (mask->ValeurBuffer() > 0.5) ) {
       mean += im->ValeurBuffer();
       numpoints++;
-    FinSi
+    } // end if
     if (mask!=NULL) mask->IncBuffer();
-  JusquA Non(im->IncBuffer())  FinRepeter
+  } while (im->IncBuffer());
   
   mean /= numpoints;
 
@@ -97,22 +99,22 @@ double     Func_max( InrImage* im, InrImage* mask)
   if (mask==NULL) {
     im->InitBuffer();
     lmax = im->ValeurBuffer();
-    Repeter
+    do {
       val = im->ValeurBuffer();
     if (val>lmax) lmax = val;
-    JusquA Non(im->IncBuffer())  FinRepeter
+    } while (im->IncBuffer());
   } else {
     im->InitBuffer();
     mask->InitBuffer();
-    Si mask->ValeurBuffer() > 0.5 AlorsFait
+    if ( mask->ValeurBuffer() > 0.5 ) 
       lmax = im->ValeurBuffer();
-    Repeter
-      Si mask->ValeurBuffer() > 0.5 Alors
+    do {
+      if ( mask->ValeurBuffer() > 0.5 ) {
         val = im->ValeurBuffer();
         if (val>lmax) lmax = val;
-      FinSi
+      } // end if
       mask->IncBuffer();
-    JusquA Non(im->IncBuffer())  FinRepeter
+    } while (im->IncBuffer());
   }
 
   return lmax;
@@ -130,9 +132,9 @@ int     Func_argmax( InrImage* im, InrImage* mask)
   xm = ym = zm = 0;
   lmax = (*im)(xm,ym,zm);
 
-  Pour(x,0,im->DimX()-1)
-  Pour(y,0,im->DimY()-1)
-  Pour(z,0,im->DimZ()-1)
+  for(x=0;x<=im->DimX()-1;x++) {
+  for(y=0;y<=im->DimY()-1;y++) {
+  for(z=0;z<=im->DimZ()-1;z++) {
 
     if (mask!=NULL) 
       if ((*mask)(x,y,z)<0.5) continue;
@@ -144,9 +146,9 @@ int     Func_argmax( InrImage* im, InrImage* mask)
       zm = z;
       lmax = val;
     }
-  FinPour 
-  FinPour 
-  FinPour 
+  } // endfor 
+  } // endfor 
+  } // endfor 
 
   return xm+im->DimX()*(ym+im->DimY()*zm);
 
@@ -159,26 +161,29 @@ double     Func_min( InrImage* im, InrImage* mask)
   double lmin = 1E10;
   double val;
 
-  Si (mask==NULL) Alors
-    im->InitBuffer();
-    lmin = im->ValeurBuffer();
-    Repeter
-      val = im->ValeurBuffer();
+  InrImageIteratorBase::ptr im_it   (im  ->CreateConstIterator());
+
+  if ( (mask==NULL) ) {
+    im_it->InitBuffer();
+    lmin = im_it->GetDoubleValue();
+    do {
+      val = im_it->GetDoubleValue();
       if (val<lmin) lmin = val;
-    JusquA Non(im->IncBuffer())  FinRepeter
-  Sinon
-    im->InitBuffer();
-    mask->InitBuffer();
-    Si mask->ValeurBuffer() > 0.5 AlorsFait
-      lmin = (double) (*im);
-    Repeter
-      Si (double) (*mask) > 0.5 Alors
-        val = (double) (*im);
+    } while ((*im_it)++);
+  } else {
+    InrImageIteratorBase::ptr mask_it (mask->CreateConstIterator());
+    im_it->InitBuffer();
+    mask_it->InitBuffer();
+    if ( mask_it->GetDoubleValue() > 0.5 ) 
+      lmin = im_it->GetDoubleValue();
+    do {
+      if ( mask_it->GetDoubleValue() > 0.5 ) {
+        val = im_it->GetDoubleValue();
         if (val<lmin) lmin = val;
-      FinSi
-      ++(*mask);
-    JusquA Non(++(*im))  FinRepeter
-  FinSi
+      } // end if
+      ++(*mask_it);
+    } while (++(*im_it));
+  } // end if
   
   return lmin;
 } // Func_min()
@@ -203,29 +208,31 @@ double     Func_med( InrImage* im, float percent, InrImage* mask)
   int num_values;
   double median;
 
+  InrImageIteratorBase::ptr im_it   (im  ->CreateConstIterator());
 
   values = (double*) malloc(im->Size()*sizeof(double));
   num_values = 0;
 
   // use qsort to sort the array and find the median value
 
-  Si (mask==NULL) Alors
-    im->InitBuffer();
-    Repeter
-      values[num_values] = im->ValeurBuffer();
+  if ( (mask==NULL) ) {
+    im_it->InitBuffer();
+    do {
+      values[num_values] = im_it->GetDoubleValue();
       num_values++;
-    JusquA Non(im->IncBuffer())  FinRepeter
-  Sinon
-    im->InitBuffer();
-    mask->InitBuffer();
-    Repeter
-      Si (double) (*mask) > 0.5 Alors
-        values[num_values] = im->ValeurBuffer();
+    } while ((*im_it)++);
+  } else {
+    InrImageIteratorBase::ptr mask_it (mask->CreateConstIterator());
+    im_it->InitBuffer();
+    mask_it->InitBuffer();
+    do {
+      if ( mask_it->GetDoubleValue() > 0.5 ) {
+        values[num_values] = im_it->GetDoubleValue();
         num_values++;
-      FinSi
-      ++(*mask);
-    JusquA Non(++(*im))  FinRepeter
-  FinSi
+      } // end if
+      (*mask_it)++;
+    } while (++(*im_it));
+  } // end if
   
   // now use qsort
   qsort(values,num_values,sizeof(double),qsort_compare);
@@ -253,25 +260,25 @@ InrImage*    Func_Histogram( InrImage* im, float vmin, float vmax, int nint)
       res->SetVoxelSize((vmax-vmin)/(1.0*nint),1,1);
 
       numpts = new int[nint];
-      Pour(n,0,nint-1) 
+      for(n=0;n<=nint-1;n++) { 
         numpts[n]=0;
-      FinPour
+      } // endfor
 
       im->InitBuffer();
-      Repeter
+      do {
         v = im->ValeurBuffer();
-        Si v>=vmin Et v<vmax Alors
+        if ( v>=vmin && v<vmax ) {
           n = (int) ((v-vmin)/(vmax-vmin)*nint);
-          Si n==nint AlorsFait n=nint-1;
+          if ( n==nint )  n=nint-1;
           numpts[n]++;
-        FinSi
-      JusquA Non(im->IncBuffer()) FinRepeter
+        } // end if
+      } while (im->IncBuffer());
 
       res->InitBuffer();
-      Pour(n,0,nint-1) 
+      for(n=0;n<=nint-1;n++) { 
         res->FixeValeur(numpts[n]);
         res->IncBuffer();
-      FinPour
+      } // endfor
 
       delete [] numpts;
     return res;

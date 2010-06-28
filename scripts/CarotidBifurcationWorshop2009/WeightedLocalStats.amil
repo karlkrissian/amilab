@@ -46,14 +46,14 @@ if (!exists(WeightedLSCLass)) {
       ::win.HidePanel
       delvars GetObjectName(::Close)
     }
-    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    Comments(::Close,"Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
     proc ::CloseAll() \
     {
       ::Close
       if (exists(NLmeansClass)) { del NLmeansClass; }
     }
-    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
 
     #--------------------------
     proc ::Apply() \

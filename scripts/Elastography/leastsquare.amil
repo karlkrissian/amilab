@@ -26,8 +26,8 @@ proc RunLeastSquares2D_Yslope(IMAGE _input, IMAGE _output, NUM _size_x, NUM _siz
   printn sizex
   printn sizey
   b = Image(FLOAT,sizex,sizey,1,2)
-  b[0] = ((FLOAT) Ypos(b)-b.ty/2)
-  b[1] = 1
+b.SetComponent( 0, ((FLOAT) Ypos(b)-b.ty/2))
+b.SetComponent( 1, 1)
   printn "1.2"
   weights = b[1]*0+1
   weights.settranslation(-_size_x,-_size_y,0)

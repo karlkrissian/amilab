@@ -20,4 +20,39 @@
  */
 void AddWrapImports();
 
-#endif //  _wrap_mainframe_h_
+/**
+ * Adding wrapped classes from wxwidgets library.
+ */
+void AddWrapWxWidgets();
+
+/**
+ * Adding wrapped classes from amilab.
+ */
+void AddWrapAmilab();
+
+/**
+ * Adding wrapped classes and methods for IO.
+ */
+void AddWrapIO();
+
+/**
+ * Adding wrapped classes and methods for Image.
+ */
+void AddWrapImage();
+
+/**
+ * Adding wrapped classes and methods for Surfaces.
+ */
+void AddWrapSurface();
+
+/**
+ * Adding wrapped classes and methods for DessinImage.
+ */
+void AddWrapDessinImage();
+
+/**
+ * Adding wrapped classes and methods for basic types (VarVector, VarList, etc ..).
+ */
+void AddWrapBasicTypes();
+
+#endif //  _wrap_MainFrame_h_

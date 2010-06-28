@@ -10,7 +10,7 @@ proc AddDisk( IMAGE im, NUM x0, NUM y0, NUM z0, NUM x1, NUM y1, NUM z1, NUM rad,
 //   --------------
   rad2=2*rad
   if (im.tz>1) {
-    im0 = im[x0-rad2:x0+rad2,y0-rad2:y0+rad2,z0-rad2:z0+rad2]
+    im0 = im[(x0-rad2):(x0+rad2),(y0-rad2):(y0+rad2),(z0-rad2):(z0+rad2)]
     px = (FLOAT) Xpos(im0)-rad2
     py = (FLOAT) Ypos(im0)-rad2
     pz = (FLOAT) Zpos(im0)-rad2

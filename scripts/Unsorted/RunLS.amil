@@ -7,20 +7,20 @@ proc RunLSGui(IMAGE im) {
   w1 = ParamWin("RunLSGui")
   
 
-  Imean_id = w1.AddFloat(Imean,imin,imax)
-  Isd_id   = w1.AddFloat(Isd,  0,   imax-imin)
+  Imean_id = w1.AddFloat( &Imean,  "Imean", imin,imax)
+  Isd_id   = w1.AddFloat( &Isd,  "Isd",   0,   imax-imin)
 
 pa_id=w1.AddButton("Play", CB_Play)
 pa_id=w1.AddButton("Stop", CB_Stop)
 
-time_id=w1.AddInt(time,tmin,tmax)
-w1.SetCallback(ChangeVisible)
+time_id=w1.AddInt( &time,  "time", tmin,tmax)
+w1.SetCallback( &ChangeVisible)
 
-wt_id=w1.AddInt(wait_time,5,1000)
-w1.SetCallback(ChangeVisible)
+wt_id=w1.AddInt( &wait_time,  "wait_time", 5,1000)
+w1.SetCallback( &ChangeVisible)
 
-w1.CreateWin
-w1.Display
+w1.Update()
+w1.Display()
 w1.SetDragCallback(time_id)
 
     

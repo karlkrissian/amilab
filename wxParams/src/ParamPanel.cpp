@@ -117,7 +117,8 @@ ParamPanel::ParamPanel( wxWindow* parent,
 // wxString(_T(titre)))
 {
 
-  this->SetSizeHints(200,150,700,800);
+  this->SetSizeHints(200,150);
+//,700,800);
 
   //SetSheetStyle(wxPROPSHEET_TREEBOOK);
   //SetSheetStyle(style);
@@ -741,6 +742,26 @@ unsigned char ParamPanel::AddPixmapButton( int* id,  const char* libelle,
 } // AddPixmapButton()
 
 
+//-----------------------------------------------------------------
+unsigned char ParamPanel::AddBitmapButton( int* id,  const char* libelle,
+//                      ---------------
+                      void* callback,
+                      void* data,
+                      const wxBitmap& bm,
+                      const std::string& tt
+                      )
+{
+  wxBitmapButtonParameter* wxbp = new wxBitmapButtonParameter(CurrentParent(), libelle, bm, callback, data);
+  if (tt!="") wxbp->SetToolTip(GetwxStr(tt.c_str()));
+
+  ParamInfo pi( TYPE_PARAMETER_BOUTTON,
+                wxbp,
+                AddWidget(wxbp));
+  _tab_param.push_back(pi);
+  *id = _tab_param.size()-1;
+  return( true);
+} // AddPixmapButton()
+
 //---------------------------------------------------------------
 unsigned char ParamPanel::AddColor( int* id,
 //                      --------
@@ -764,10 +785,12 @@ unsigned char ParamPanel::AddColor( int* id,
 //----------------------------------------------------------------
 unsigned char ParamPanel::AddLabel( int* id, const char* libelle,
 //                      --------
-                          const char* contenu, type_label type)
+                          const char* contenu, type_label type,
+                                   const std::string& tt)
 {
   wxLabelParameter* wxl = new wxLabelParameter(CurrentParent(), 
                                               libelle, contenu, type);
+  if (tt!="") wxl->SetToolTip(GetwxStr(tt.c_str()));
 
   ParamInfo pi( TYPE_PARAMETER_LABEL,
                 wxl,

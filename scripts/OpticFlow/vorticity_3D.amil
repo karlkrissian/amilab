@@ -9,12 +9,12 @@ proc Vorticity(IMAGE _i, IMAGE _res) {
 	p = _i;
 
 	// X direction:
-	p[0] = Xpos(p)+1;
-	p[1] = Ypos(p);
-	p[2] = Zpos(p);
+p.SetComponent( 0, Xpos(p)+1;)
+p.SetComponent( 1, Ypos(p);)
+p.SetComponent( 2, Zpos(p);)
 	vxp = _v(p);
 	wxp = _w(p);
-	p[0] = Xpos(p)-1;
+p.SetComponent( 0, Xpos(p)-1;)
 	vxm = _v(p);
 	wxm = _w(p);
 	Eyx = (vxp-vxm)/(2*_i.vx)
@@ -22,11 +22,11 @@ proc Vorticity(IMAGE _i, IMAGE _res) {
 	del vxp; del vxm; del wxp; del wxm;	
 	
 	// Y direction:
-	p[0] = Xpos(p);
-	p[1] = Ypos(p)+1;    
+p.SetComponent( 0, Xpos(p);)
+p.SetComponent( 1, Ypos(p)+1;    )
 	uyp = _u(p)
 	wyp = _w(p)
-	p[1] = Ypos(p)-1;
+p.SetComponent( 1, Ypos(p)-1;)
 	uym = _u(p)
 	wym = _w(p)
 	Exy = (uyp-uym)/(2*_i.vy);
@@ -34,11 +34,11 @@ proc Vorticity(IMAGE _i, IMAGE _res) {
 	del uyp; del uym; del wyp; del wym;
 	
 	// Z direction:
-	p[1] = Ypos(p);
-	p[2] = Zpos(p)+1;
+p.SetComponent( 1, Ypos(p);)
+p.SetComponent( 2, Zpos(p)+1;)
 	uzp = _u(p);
 	vzp = _v(p);
-	p[2] = Zpos(p)-1;
+p.SetComponent( 2, Zpos(p)-1;)
 	uzm = _u(p);
 	vzm = _v(p);
 	Exz = (uzp-uzm)/(2*_i.vz);
@@ -46,9 +46,9 @@ proc Vorticity(IMAGE _i, IMAGE _res) {
 	del uzp; del vzp; del uzm; del vzm;	
 
 	// Result:
-	_res[0] = (Ezy-Eyz);
-	_res[1] = (Exz-Ezx);
-	_res[2] = (Eyx-Exy);
+	_res.SetComponent( 0, (Ezy-Eyz);)
+	_res.SetComponent( 1, (Exz-Ezx);)
+	_res.SetComponent( 2, (Eyx-Exy);)
 }
 
 
@@ -71,9 +71,9 @@ proc VorticityGauss(IMAGE _i, IMAGE _res, NUM _sigma) {
     Eyz = filter(_v,_sigma,0,0,1)
 
     // Result:
-    _res[0] = (Ezy-Eyz);
-    _res[1] = (Exz-Ezx);
-    _res[2] = (Eyx-Exy);
+    _res.SetComponent( 0, (Ezy-Eyz);)
+    _res.SetComponent( 1, (Exz-Ezx);)
+    _res.SetComponent( 2, (Eyx-Exy);)
 }
 
 proc CreateRGB( IMAGE _w , IMAGE _color) {
@@ -108,7 +108,7 @@ proc DrawVorticity( IMAGE _w, NUM _th) {
   vortsurf.SetColors(colors,0,255)
   show vortsurf
   vortsurf.SetColorMaterial(1)
-  vortsurf.Recompute
+  vortsurf.Recompute()
 
   local_new
 }

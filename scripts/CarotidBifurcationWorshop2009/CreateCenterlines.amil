@@ -73,8 +73,8 @@ CarotidExperiments_LocalStats
   CC_lm_map = CP_lm_map
   CP_Close
   # save the result to a file here ...
-  datanumber_str = boost_format("%1%") % CE_datacenter 
-  datanumber_str = datanumber_str + boost_format("%02.0f") % CE_datanumber
+  datanumber_str = "%1%" % CE_datacenter 
+  datanumber_str = datanumber_str + "%02.0f" % CE_datanumber
   result_dir = CE_results_dir+"/challenge"+ datanumber_str 
   CC_prob.save result_dir + "/CC_prob.ami.gz"
 
@@ -120,14 +120,14 @@ CarotidExperiments_Path1
   SP_speed_name = "CC_vesselness"
   SP_Run
   line1 = SP_path
-  line1.save result_dir+"/line1.vtk"
+  line1._save(result_dir+"/line1.vtk")
 
 CarotidExperiments_Path2
   SP_input_name = "CE_input_cropped"
   SP_speed_name = "CC_vesselness"
   SP_Run
   line2 = SP_path
-  line2.save result_dir+"/line2.vtk"
+  line2._save(result_dir+"/line2.vtk")
 
 # View the results
   show CE_GTiso

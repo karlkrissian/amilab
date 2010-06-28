@@ -13,9 +13,9 @@ print "*\n"
   _ingr = AnisoGS(_ing,_sigma,_th,0.01,_it)
   _inbr = AnisoGS(_inb,_sigma,_th,0.01,_it)
   
-  out[0] = _inrr
-  out[1] = _ingr
-  out[2] = _inbr
+  out.SetComponent( 0, _inrr)
+  out.SetComponent( 1, _ingr)
+  out.SetComponent( 2, _inbr)
 
 }
 
@@ -41,8 +41,8 @@ proc RGBAddNoise( IMAGE in, IMAGE out, NUM _sd) {
   Float2Uchar(&_inrr)
   Float2Uchar(&_ingr)
   Float2Uchar(&_inbr)
-  out[0] = _inrr
-  out[1] = _ingr
-  out[2] = _inbr
+  out.SetComponent( 0, _inrr)
+  out.SetComponent( 1, _ingr)
+  out.SetComponent( 2, _inbr)
 
 }

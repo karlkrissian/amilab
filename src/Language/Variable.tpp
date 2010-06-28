@@ -50,6 +50,14 @@ void Variable<T>::Delete()
   _type = type_void;
 }
 
+//---------------------------------------------------
+template<class T>
+BasicVariable::ptr Variable<T>::TryCast(const std::string& type_string) const
+{
+  // make default conversion to double??
+  CLASS_ERROR(boost::format("Could not convert variable %1% to type %2%") % _name % type_string);
+  return BasicVariable::ptr();
+}
 
 
 //---------------------------------------------------
@@ -58,9 +66,9 @@ std::ostream& operator<<(std::ostream& o, const Variable<T>& v)
 //       -----------
 {
   if (v.Type()==type_void) { o << "deleted"; return o;}
-  o << format("%s\t") % v.Name();
+  o << format("%1%\t<%2%>") % v.Name() % v.GetTypeName();
 // TODO: take care of this functionality
-  o << v.GetTypeName();
+//  o << ;
 /*  switch(v.Type()) {
     //      case type_void     : printf("void";     break;
     case type_image           : o << "image    "; break;
@@ -68,8 +76,6 @@ std::ostream& operator<<(std::ostream& o, const Variable<T>& v)
     case type_int             : o << "int      "; break;
     case type_uchar           : o << "uchar    "; break;
     case type_string          : o << "string   "; break;
-    case type_imagedraw       : o << "imagedraw"; break;
-    case type_surface         : o << "surface  "; break;
     case type_surfdraw        : o << "surfdraw "; break;
     case type_file            : o << "file     "; break;
   //  case type_c_function      : o << ("C function ";       break;
@@ -99,7 +105,7 @@ std::ostream& operator<<(std::ostream& o, const Variable<T>& v)
 } // operator << Variable
 
 template <class T>
-void Variable<T>::display()
+void Variable<T>::display() const
 {
   std::cout << (*this);
 }

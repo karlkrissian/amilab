@@ -26,7 +26,7 @@ if (!exists(CreateProbabilityClass)) {
       ::localmean_high      = 1600
       ::localmean_smoothing = 5
       ::localsd_high        = 30
-      #::Gui()
+      ::Gui()
     }
 
     #--------------------------
@@ -47,7 +47,7 @@ if (!exists(CreateProbabilityClass)) {
     proc ::Close() \
     {
       if (exists(::win)) {
-      ::win.HidePanel
+      ::win.HidePanel()
       }
       delvars GetObjectName(::Close)
     }
@@ -121,11 +121,11 @@ if (!exists(CreateProbabilityClass)) {
         ::win.AddPage("Init")
       
           ::win.BeginBoxPanel("Input")
-            ::win.BeginHorizontal
+            ::win.BeginHorizontal()
               ::win.AddImageChoice( &::input_name, "")
               ::win.AddButton("Load",::LoadInput)
-            ::win.EndHorizontal
-          ::win.EndBoxPanel
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
       
         ::win.AddPage("Param")
         
@@ -161,5 +161,13 @@ if (!exists(CreateProbabilityClass)) {
     }
     ::Init
   }
+  }
+
+  #----------------------------
+  # Main
+  #----------------------------
+  CP_Init
+
 } 
-# end if (!exists(CreateProbability)) 
+# end if (!exists(CreateProbabilityClass)) 
+

@@ -17,12 +17,14 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/wxParams
   ${AMILAB_SOURCE_DIR}/myVTK4
   ${AMILAB_SOURCE_DIR}/Vaisseaux
+  ${AMILAB_SOURCE_DIR}/Filtering
   ${AMILAB_SOURCE_DIR}/Algorithms/Basic
   ${AMILAB_SOURCE_DIR}/Algorithms/Denoising
   ${AMILAB_SOURCE_DIR}/Algorithms/Others
   ${AMILAB_SOURCE_DIR}/Algorithms/BasicFilter
   ${AMILAB_SOURCE_DIR}/Algorithms/Segmentation
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapCommon
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapSurface
   ${AMILAB_SOURCE_DIR}
   ${Boost_INCLUDE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
@@ -55,6 +57,9 @@ SET(  WrapFilters_SRCS
   wrap_ImageAddScalar.cpp
   wrap_ImageCos.cpp
 	wrapBasicEdgeDetection.cpp
+  wrapSubPixel2D.cpp
+  wrapGenerateRamp.cpp
+  wrap_AnisoGS.cpp
 )
 
 SET(WrapFilters_HDRS
@@ -72,6 +77,9 @@ SET(WrapFilters_HDRS
   wrap_ImageAddScalar.h
   wrap_ImageCos.h
 	wrapBasicEdgeDetection.h
+  wrapSubPixel2D.h
+  wrapGenerateRamp.h
+  wrap_AnisoGS.h
 )
 
 SET(WrapFilters_SRCS

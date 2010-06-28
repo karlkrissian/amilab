@@ -36,7 +36,7 @@ class ImageStack{
 
   ~ImageStack()    { }
 
-  void AddFileImage( const char* name);
+  bool AddFileImage( const char* name);
 
   void AddImagePointer(  InrImage* im)
   {

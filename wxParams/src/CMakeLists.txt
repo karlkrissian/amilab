@@ -30,6 +30,7 @@ SET(  wxParams_SRCS
     wxFilenameParameter.cpp
     wxDirnameParameter.cpp
     CoutwxString.cpp
+    wxPropagateEvent.cpp
 )
 
 
@@ -59,6 +60,7 @@ SET(  wxParams_HDRS
   StructParams.hpp
   ParamInfo.h
   myButton.h
+  wxPropagateEvent.h
 )
 
 

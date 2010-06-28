@@ -29,10 +29,10 @@ alt_factor = 4
 
 imdir   ="WP01/package_02_LMD/images/"
 clouddir="WP01/package_02_LMD/misc/"
-i48 = ReadRawImages(1024,1024,USHORT,0,imdir+"AfGG_c0.81.48",0,0)
+i48 = IO.ReadRawImages2D(1024,1024,USHORT.val,0,imdir+"AfGG_c0.81.48",0)
 # Without filtering
-c48  =  ReadRawImages(1024,1024,UCHAR,0,clouddir+"AfGG_CLA_scene_analysis.48",0,0)
-t48 = ReadRawImages(1024,1024,USHORT,0,imdir+"AfGG_c10.8.49",0,0)
+c48  =  IO.ReadRawImages2D(1024,1024,UCHAR.val,0,clouddir+"AfGG_CLA_scene_analysis.48",0)
+t48 = IO.ReadRawImages2D(1024,1024,USHORT.val,0,imdir+"AfGG_c10.8.49",0)
 
 i48min=min(i48)
 i48max=max(i48)
@@ -54,12 +54,12 @@ clouds[4] = CreateFlatMesh(c48,110-epsilon,200)
 
 
 #------------------------------------------------------------
-proc ProcessMesh(SURFACE _s,IMAGE _j1, NUM _j1min, NUM _j1max, IMAGE _pos) {
+proc ProcessMesh(OBJECT _s,IMAGE _j1, NUM _j1min, NUM _j1max, IMAGE _pos) {
 #    -----------
   _s.SetColors(_j1,_j1min,_j1max)
   _s.ElevateMesh(_pos)
-  _s.Normals
-  _s.Recompute
+  _s.Normals()
+  _s.Recompute()
 }
 #------------------------------------------------------------
 coeff=Image "alt_coeff.ami.gz"
@@ -158,7 +158,7 @@ GenerateViews("view5_1_1.txt","view12.txt",total_view)
 
 
 # without filtering
-t49 =  ReadRawImages(1024,1024,USHORT,0,"WP01/package_02_LMD/images/AfGG_c10.8.49",0,0)
+t49 =  IO.ReadRawImages2D(1024,1024,USHORT.val,0,"WP01/package_02_LMD/images/AfGG_c10.8.49",0)
 alt49 = ComputeAltitudes(t49,coeff)*alt_factor
 # reading the vector fields
 displ   = ReadFlow("test_arrows/01test_AfGG_SF_4_0.3_0.0_0.0_0.3_.uv_v2.txt")
@@ -183,6 +183,6 @@ for n=1 to total_vectors {
 total_final = 20
 for n=1 to total_final {  AnimAddImage(im1);}
 # Only keep the real number of images that have been used
-ssanim = anim[:,:,0:anim_current-1]
+ssanim = anim[:,:,0:(anim_current-1)]
 show ssanim
 

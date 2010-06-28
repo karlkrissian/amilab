@@ -12,7 +12,7 @@
 
 #include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
-#include "wrapfunctions_draw.h"
+//#include "wrapfunctions_draw.h"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ParamPanel.hpp"
@@ -20,7 +20,9 @@
 #include "MainFrame.h"
 #include "ami_function.h"
 #include "wrap_wxWindow.h"
+#include "wrap_wxSizerItem.h"
 
+#include "wrap_wxBitmap.h"
 
 #define RETURN_VARINT(val,name)             \
   std::string varname = (boost::format("%1%_id")%name).str();\
@@ -68,6 +70,7 @@ AMIObject::ptr AddWrapParamPanel(  WrapClass_parampanel::ptr& objectptr)
   objectptr->AddVar_AddString(        objectptr);
   objectptr->AddVar_AddImageChoice(   objectptr);
   objectptr->AddVar_AddButton(        objectptr);
+  objectptr->AddVar_AddBitmapButton(  objectptr);
   objectptr->AddVar_AddBoolean(       objectptr);
   objectptr->AddVar_SetCallback(      objectptr);
   objectptr->AddVar_SetDragCallback(  objectptr);
@@ -748,7 +751,7 @@ BasicVariable::ptr WrapClass_parampanel::wrap_AddImageChoice::CallMember( ParamL
   std::string tooltip = (boost::format("%s  (%s)") % var->GetComments() % var->Name()).str();
 
   imagelist = Vars.SearchVariables(type_image);
-  imagelist->Add(_T("Image"));
+  imagelist->Add(_T("BrowseImage"));
 
   // Get list of image names
   this->_objectptr->_parampanel->AddListChoice( &var_id,
@@ -840,6 +843,45 @@ BasicVariable::ptr WrapClass_parampanel::wrap_AddButton::CallMember( ParamList* 
 
   // create integer variable to return
   RETURN_VARINT(var_id,var->Name());
+}
+
+
+//--------------------------------------------------
+// AddBitmapButton
+//--------------------------------------------------
+void WrapClass_parampanel::wrap_AddBitmapButton::SetParametersComments()
+{
+  ADDPARAMCOMMENT("String: button label.");
+  ADDPARAMCOMMENT("Variable of type ami_function.");
+  ADDPARAMCOMMENT("wxBitmap parameter for bitmap.");
+  return_comments = "Identifier of the new widget (int variable).";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_parampanel::wrap_AddBitmapButton::CallMember( ParamList* p)
+{
+  Variable<AMIFunction>::ptr varfunc;
+  std::string* label = NULL;
+  int  n = 0;
+  int  var_id;
+
+  if (!get_val_ptr_param<string>( label, p, n))   ClassHelpAndReturn;
+  if (!get_var_param<AMIFunction>(varfunc, p, n))     ClassHelpAndReturn;
+  GET_OBJECT_PARAM(wxBitmap,bitmap,_obj);
+  if (!bitmap.get())                              ClassHelpAndReturn;
+
+  std::string tooltip = (boost::format("%s  (%s)")  % varfunc->GetComments() 
+                                                    % varfunc->Name()).str();
+
+  //cout << " button pointer  = "<<  ((AMIFunction::ptr*) var->Pointer())->get() << endl;
+  this->_objectptr->_parampanel->AddBitmapButton( &var_id, 
+                label->c_str(),
+                (void*) CB_ParamWin,
+                (void*) varfunc->Pointer().get(),
+                *bitmap,
+                tooltip);
+
+  // create integer variable to return
+  RETURN_VARINT(var_id,varfunc->Name());
 }
 
 
@@ -951,9 +993,16 @@ BasicVariable::ptr WrapClass_parampanel::wrap_SetPositionProp::CallMember( Param
   if (!get_int_param(border_size,   p, n)) ClassHelpAndReturn;
   if (!get_int_param(flags,         p, n)) ClassHelpAndReturn;
 
+/*
   int nbp = this->_objectptr->_parampanel->NbPanels();
   this->_objectptr->_parampanel->SetPositionProperties(
               nbp-1, 
+              prop_property, 
+              border_size,
+              flags);
+*/
+
+  this->_objectptr->_parampanel->SetLastPositionProperties(
               prop_property, 
               border_size,
               flags);
@@ -1054,11 +1103,13 @@ void WrapClass_parampanel::wrap_AddWidget::SetParametersComments()
 {
   ADDPARAMCOMMENT("AMIObject variable wrapping a wxWindow.");
   ADDPARAMCOMMENT("integer: sizer proportion (default is 0).");
+  return_comments = "Return corresponding wrapped wxSizerItem or empty variable if it fails.";
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_parampanel::wrap_AddWidget::CallMember( ParamList* p)
 {
   Variable<AMIObject>::ptr var;
+  wxSizerItem* res = NULL;
   int proportion=0;
   int n=0;
 
@@ -1071,7 +1122,7 @@ BasicVariable::ptr WrapClass_parampanel::wrap_AddWidget::CallMember( ParamList* 
     WrapClass_wxWindow::ptr obj( boost::dynamic_pointer_cast<WrapClass_wxWindow>(object));
     if (obj.get()) {
 
-      this->_objectptr->_parampanel->AddWidget(obj->_win.get(), proportion);
+      res = this->_objectptr->_parampanel->AddWidget(obj->_obj.get(), proportion);
     } else {
       FILE_ERROR("Could not cast dynamically the variable to wxWindow.")
       ClassHelpAndReturn;
@@ -1080,5 +1131,6 @@ BasicVariable::ptr WrapClass_parampanel::wrap_AddWidget::CallMember( ParamList* 
     FILE_ERROR("Need a wrapped wxWindow object as parameter.")
     ClassHelpAndReturn;
   }
-  return BasicVariable::ptr();
+
+  return CreateVar_wxSizerItem(res);
 }

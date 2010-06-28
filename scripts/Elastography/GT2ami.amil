@@ -17,12 +17,12 @@ i1_uchar = Image "input1.ami.gz"
   D1.setvoxelsize(imsizeX/D1.tx,imsizeX/D1.ty,1)
   D1u_r = Flip(D1u_r,1)
   D1v_r = Flip(D1v_r,1)
-  D1[0] = D1u_r
-  D1[1] = D1v_r
-  D1[2]  = D1u_r*0
+  D1.SetComponent( 0, D1u_r)
+  D1.SetComponent( 1, D1v_r)
+  D1.SetComponent( 2, D1u_r*0)
 
-  D1[0] =  D1[0]/D1.vx
-  D1[1] =  D1[1]/D1.vy
+  D1.SetComponent( 0, D1[0]/D1.vx)
+  D1.SetComponent( 1, D1[1]/D1.vy)
 
 D1.save $2
 quit

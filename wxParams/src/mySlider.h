@@ -37,7 +37,8 @@ class mySlider: public wxSlider
         const wxValidator& validator = wxDefaultValidator,
         const wxString& name = wxSliderNameStr) :
         wxSlider(parent,id,value,minValue,maxValue,pos,size,style,validator,name)
-    {
+  {
+    SetMinSize(wxSize(20,-1));
       // default behaviour callback during dragging
       _drag_callback = true;
     }

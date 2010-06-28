@@ -13,7 +13,7 @@
 
 #include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
-#include "wrapfunctions_draw.h"
+//#include "wrapfunctions_draw.h"
 #include "ami_class.h"
 #include "ami_object.h"
 #include "wrap_varvector.h"
@@ -25,56 +25,58 @@
   Variable<int>::ptr varres( new Variable<int>(varname, varint));\
   return varres;
 
-
-// don't use 'const' here, it causes memory problems ....
-AMIObject::ptr AddWrapVarVector(  WrapClass_vector::ptr& objectptr)
+//-------------------------------------------------------------------------
+AMIObject::ptr AddWrap_VarVector(  WrapClass_VarVector::ptr& objectptr)
 {
   // Create new instance of the class
   AMIObject::ptr amiobject( new AMIObject);
-  amiobject->SetName("varvector");
-
-  //--- nested classes
-  // initialization, pointer to amiobject
-  // keeping a weak pointer to allow variable deletion
+  amiobject->SetName("VarVector");
+  amiobject->SetWrappedObject(objectptr);
   objectptr->SetAMIObject(amiobject);
-
-  // at least keeps the pointer alive: otherwise could be risky ...
-  // mutual smart pointers, never deleted ???
-  // amiobject->SetWrappedObject(objectptr);
-
-  // objectptr would be deleted if not maintained by the function ...
-  objectptr->AddVar_push_back( objectptr);
-  objectptr->AddVar_pop_back(  objectptr);
-  objectptr->AddVar_size(      objectptr);
-  objectptr->AddVar_front(     objectptr);
-  objectptr->AddVar_back(      objectptr);
-  objectptr->AddVar_at(        objectptr);
-  objectptr->AddVar_clear(     objectptr);
-
+  objectptr->AddMethods( objectptr);
   return amiobject;
 }
 
-//---------------------------------------------------
-BasicVariable::ptr wrap_VarVector( ParamList* p)
+//----------------------------------------------------------
+Variable<AMIObject>::ptr CreateVar_VarVector( VarVector* vv)
 {
-    char functionname[] = "VarVector";
-    char description[]=" \n\
-      New VarVector object, store a vector of variables (smart pointers). \n\
-            ";
-    char parameters[] =" \n\
-      - no parameter \n\
-            ";
-
-  WrapClass_vector::ptr pp(new WrapClass_vector());
-
-  AMIObject::ptr amiobject(AddWrapVarVector(pp));
+  // here VarVector can be deleted
+  boost::shared_ptr<VarVector> vv_ptr( vv );
+  WrapClass_VarVector::ptr sip(new WrapClass_VarVector(vv_ptr));
+  AMIObject::ptr amiobject(AddWrap_VarVector(sip));
   Variable<AMIObject>::ptr varres(
-    new Variable<AMIObject>( "tmp_varvector", amiobject));
-
+      new Variable<AMIObject>( amiobject));
   return varres;
-
 }
 
+//---------------------------------------------------
+//  VarVector Constructor
+//---------------------------------------------------
+void  wrap_VarVector::SetParametersComments() 
+{
+  ADDPARAMCOMMENT("integer: initial size (def:0).");
+  ADDPARAMCOMMENT("Variable: optional variable to fill the initial elements.");
+  return_comments = "A wrapped VarVector object.";
+}
+//---------------------------------------------------
+BasicVariable::ptr wrap_VarVector::CallMember( ParamList* p)
+{
+  if (!p) ClassHelpAndReturn;
+  int n=0;
+  int initial_size = 0;
+  get_val_param<int>(initial_size,p,n);
+  
+  BasicVariable::ptr v(p->GetParam(n++));
+
+  VarVector* vv = new VarVector();
+  if ((initial_size>0)&&(v.get()))  {
+    for (int i=0; i<initial_size; i++)
+      vv->push_back(v->NewCopy());
+  } else {
+    CLASS_MESSAGE("Needs a valid variable as second parameter.");
+  }
+  return CreateVar_VarVector(vv);
+}
 
 //===================================================
 // Nested class members
@@ -83,12 +85,12 @@ BasicVariable::ptr wrap_VarVector( ParamList* p)
 //---------------------------------------------------
 //  push_back
 //---------------------------------------------------
-void WrapClass_vector::wrap_push_back::SetParametersComments() 
+void WrapClass_VarVector::wrap_push_back::SetParametersComments() 
 {
   ADDPARAMCOMMENT("variable: input variable to add.");
 }
 //---------------------------------------------------
-BasicVariable::ptr WrapClass_vector::wrap_push_back::CallMember( ParamList* p)
+BasicVariable::ptr WrapClass_VarVector::wrap_push_back::CallMember( ParamList* p)
 {
   
   BasicVariable::ptr var;
@@ -100,7 +102,7 @@ BasicVariable::ptr WrapClass_vector::wrap_push_back::CallMember( ParamList* p)
   // do we want explicit copy or reference of the variable contents ??
   cout << "_objectptr" << _objectptr << endl; 
 
-  this->_objectptr->vector.push_back(var);
+  this->_objectptr->_obj->push_back(var);
 
   return BasicVariable::ptr();
 }
@@ -109,11 +111,11 @@ BasicVariable::ptr WrapClass_vector::wrap_push_back::CallMember( ParamList* p)
 //---------------------------------------------------
 //  pop_back
 //---------------------------------------------------
-void WrapClass_vector::wrap_pop_back::SetParametersComments() {}
+void WrapClass_VarVector::wrap_pop_back::SetParametersComments() {}
 //---------------------------------------------------
-BasicVariable::ptr WrapClass_vector::wrap_pop_back::CallMember( ParamList* p)
+BasicVariable::ptr WrapClass_VarVector::wrap_pop_back::CallMember( ParamList* p)
 {
-  this->_objectptr->vector.pop_back();
+  this->_objectptr->_obj->pop_back();
   return BasicVariable::ptr();
 }
 
@@ -121,14 +123,14 @@ BasicVariable::ptr WrapClass_vector::wrap_pop_back::CallMember( ParamList* p)
 //---------------------------------------------------
 //  size
 //---------------------------------------------------
-void WrapClass_vector::wrap_size::SetParametersComments() 
+void WrapClass_VarVector::wrap_size::SetParametersComments() 
 {
   return_comments = "Vector size (int variable).";
 }
 //---------------------------------------------------
-BasicVariable::ptr WrapClass_vector::wrap_size::CallMember( ParamList* p)
+BasicVariable::ptr WrapClass_VarVector::wrap_size::CallMember( ParamList* p)
 {
-  int size = this->_objectptr->vector.size();
+  int size = this->_objectptr->_obj->size();
   // create integer variable to return
   RETURN_VARINT(size,"Vector_size");
 }
@@ -137,66 +139,136 @@ BasicVariable::ptr WrapClass_vector::wrap_size::CallMember( ParamList* p)
 //---------------------------------------------------
 //  front
 //---------------------------------------------------
-void WrapClass_vector::wrap_front::SetParametersComments() 
+void WrapClass_VarVector::wrap_front::SetParametersComments() 
 {
   return_comments = "Vector first element (variable).";
 }
 //---------------------------------------------------
-BasicVariable::ptr WrapClass_vector::wrap_front::CallMember( ParamList* p)
+BasicVariable::ptr WrapClass_VarVector::wrap_front::CallMember( ParamList* p)
 {
-  if (this->_objectptr->vector.empty()) 
+  if (this->_objectptr->_obj->empty()) 
     return BasicVariable::ptr();
   else
-    return this->_objectptr->vector.front();
+    return this->_objectptr->_obj->front();
 }
 
 //---------------------------------------------------
 //  back
 //---------------------------------------------------
-void WrapClass_vector::wrap_back::SetParametersComments() 
+void WrapClass_VarVector::wrap_back::SetParametersComments() 
 {
   return_comments = "Vector last element (variable).";
 }
 //---------------------------------------------------
-BasicVariable::ptr WrapClass_vector::wrap_back::CallMember( ParamList* p)
+BasicVariable::ptr WrapClass_VarVector::wrap_back::CallMember( ParamList* p)
 {
-  if (this->_objectptr->vector.empty()) 
+  if (this->_objectptr->_obj->empty()) 
     return BasicVariable::ptr();
   else
-    return this->_objectptr->vector.back();
+    return this->_objectptr->_obj->back();
 }
 
 
 //---------------------------------------------------
 //  at
 //---------------------------------------------------
-void WrapClass_vector::wrap_at::SetParametersComments() 
+void WrapClass_VarVector::wrap_at::SetParametersComments() 
 {
   ADDPARAMCOMMENT("int   : vector position");
   return_comments = "Element at the given location if valid (variable).";
 }
 //---------------------------------------------------
-BasicVariable::ptr WrapClass_vector::wrap_at::CallMember( ParamList* p)
+BasicVariable::ptr WrapClass_VarVector::wrap_at::CallMember( ParamList* p)
 {
 
   int pos = 0;
   int n=0;
   if (!get_int_param(pos, p, n)) ClassHelpAndReturn;
 
-  if ((pos<0)||(pos>=this->_objectptr->vector.size())) 
+  if ((pos<0)||(pos>=this->_objectptr->_obj->size())) 
     return BasicVariable::ptr();
   else
-    return this->_objectptr->vector.at(pos);
+    return this->_objectptr->_obj->at(pos);
 }
 
 //---------------------------------------------------
 //  clear
 //---------------------------------------------------
-void WrapClass_vector::wrap_clear::SetParametersComments() {}
+void WrapClass_VarVector::wrap_clear::SetParametersComments() {}
 //---------------------------------------------------
-BasicVariable::ptr WrapClass_vector::wrap_clear::CallMember( ParamList* p)
+BasicVariable::ptr WrapClass_VarVector::wrap_clear::CallMember( ParamList* p)
 {
-  this->_objectptr->vector.clear(); 
+  this->_objectptr->_obj->clear(); 
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  setelement
+//---------------------------------------------------
+void WrapClass_VarVector::
+      wrap_setelement::SetParametersComments() 
+{
+  ADDPARAMCOMMENT("Integer: position");
+  ADDPARAMCOMMENT("Variable");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_VarVector::
+      wrap_setelement::CallMember( ParamList* p)
+{
+  int n = 0;
+  int pos = 0;
+
+  if (!get_int_param(pos, p, n)) ClassHelpAndReturn;
+  BasicVariable::ptr v(p->GetParam(n++));
+
+  if ((pos<0)||(pos>=this->_objectptr->_obj->size())) 
+    return BasicVariable::ptr();
+  else
+    if (v.get()) {
+      (*this->_objectptr->_obj)[pos] = v;
+    }
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  left_assign
+//---------------------------------------------------
+void WrapClass_VarVector::
+      wrap_left_assign::SetParametersComments() 
+{
+  ADDPARAMCOMMENT("Variable of type wrapped VarVector.");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_VarVector::
+      wrap_left_assign::CallMember( ParamList* p)
+{
+  int n = 0;
+  CLASS_GET_OBJECT_PARAM(VarVector,_var,_obj);
+
+  if (_obj.get()) {
+    this->_objectptr->_obj = _obj;
+  }
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  assign
+//---------------------------------------------------
+void WrapClass_VarVector::
+      wrap_assign::SetParametersComments() 
+{
+  ADDPARAMCOMMENT("Variable of type wrapped VarVector.");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_VarVector::
+      wrap_assign::CallMember( ParamList* p)
+{
+  int n = 0;
+  CLASS_GET_OBJECT_PARAM(VarVector,var,_obj);
+
+  if (_obj.get()) {
+    this->_objectptr->_obj = _obj;
+  }
   return BasicVariable::ptr();
 }
 

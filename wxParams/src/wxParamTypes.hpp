@@ -318,6 +318,9 @@ class wxLabelParameter: public wxBoxSizer, public wxGenericWidget
   ///
   void SetValue( const char* value);
 
+  /// sets the tooltip to all its components
+  void SetToolTip( const wxString& tt);
+
 }; // wxLabelParameter
 
 

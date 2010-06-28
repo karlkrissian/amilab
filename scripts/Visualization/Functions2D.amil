@@ -7,7 +7,7 @@
 
 comments="Functions2DClass: this class provides an interface for plotting 2D functions."
 
-ami_import->MainFrame()
+#ami_import->MainFrame()
 
 if (!exists(Functions2DClass)) {
   
@@ -46,35 +46,36 @@ if (!exists(Functions2DClass)) {
           xmax = max(_pos1[0])
         }
       }
-      ::GetXLimits.Comments("Returns limits of the curve in X axis if the input is an image")
+      Comments( ::GetXLimits, "Returns limits of the curve in X axis if the input is an image")
 
       #--------------------------
       proc ::GetYLimits( NUM xmin, NUM xmax, NUM res, NUM ymin, NUM ymax) \
       {
         if (::mode==0) {
           numval = INT((xmax-xmin)/res+0.5)
-          local::X <<= Image(FLOAT,numval,1,1)
+          X <<= Image(FLOAT,numval,1,1)
           X.settranslation(xmin,0,0)
           X.setvoxelsize(res,1,1)
-          local::_pos = SpacePos(X)
+          _pos = SpacePos(X)
           X = _pos[0]
-          eval "local::Y <<= "+::equation+";"
-          ymin = min(local::Y)
-          ymax = max(local::Y)
+          eval "Y <<= "+::equation+";"
+          ymin = min(Y)
+          ymax = max(Y)
         }
         if (::mode==1)&&(exists(::input)) {
           ymin = min(::input)
           ymax = max(::input)
         }
       }
-      ::GetYLimits.Comments("Returns limits of the curve in Y axis ")
+      Comments( ::GetYLimits, "Returns limits of the curve in Y axis ")
 
     }
-    ::CurveParamClass.Comments("Parameters for drawing a curve")
+    Comments( ::CurveParamClass, "Parameters for drawing a curve")
 
     #----------------------------
     proc ::Init() \
     {
+      ::classname = "global::Functions2DClass"
       ::xmin = -10, "minimal value along X axis"
       ::xmax = 10,  "maximal value along X axis"
       ::ymin = -10, "minimal value along Y axis"
@@ -97,18 +98,19 @@ if (!exists(Functions2DClass)) {
     #----------------------------
     proc ::Close() \
     {
-      ::win.HidePanel
+      ::win.HidePanel()
       delvars GetObjectName(::Close)
     }
-    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
     #----------------------------
     proc ::CloseAll() \
     {
+      closeclass_cmd = "if (exists(%1%)) { del %1%; };" %::classname
+      eval closeclass_cmd
       ::Close
-      if (exists(Functions2DClass)) { del Functions2DClass; }
     }
-    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
     
     #----------------------------
     proc ::CheckLimits() \
@@ -145,7 +147,7 @@ if (!exists(Functions2DClass)) {
 #      ::xmin = ::xmin-_xw/10
 #      ::xmax = ::xmax+_xw/10
       ::win.Update(-1)
-      global::mf_DrawSetXLimits(::xmin,::xmax)
+      ::dw.SetXLimits(::xmin,::xmax)
     }
 
     #----------------------------
@@ -153,25 +155,30 @@ if (!exists(Functions2DClass)) {
     {
       ymin1 = ::ymin
       ymax1 = ::ymax
-      ::c1->GetYLimits( ::xmin, ::xmax, ::resolution, &ymin1, &ymax1)
+      ::c1.GetYLimits( ::xmin, ::xmax, ::resolution, \
+                       &ymin1, &ymax1)
+      #::c1.GetYLimits( ::xmin, ::xmax, ::resolution, &ymin1, &ymax1)
+
       ymin2 = ::ymin
+
       ymax2 = ::ymax
-      ::c2->GetYLimits( ::xmin, ::xmax, ::resolution, &ymin2, &ymax2)
+
+      ::c2.GetYLimits( ::xmin, ::xmax, ::resolution, &ymin2, &ymax2)
       ::ymin = -max(-ymin1,-ymin2)
       ::ymax = max(ymax1,ymax2)
       _yw = ::ymax-::ymin
       ::ymin = ::ymin-_yw/10
       ::ymax = ::ymax+_yw/10
       ::win.Update(-1)
-      global::mf_DrawSetYLimits(::ymin,::ymax)
+      ::dw.SetYLimits(::ymin,::ymax)
     }
 
     #----------------------------
     proc ::SetCurve1() \
     {
       ::CheckLimits()
-      global::mf_DrawSetXLimits(::xmin,::xmax)
-      global::mf_DrawSetYLimits(::ymin,::ymax)
+      ::dw.SetXLimits(::xmin,::xmax)
+      ::dw.SetYLimits(::ymin,::ymax)
 
       if (::c1->mode==0) {
         numval = INT((::xmax-::xmin)/::resolution+0.5)
@@ -180,13 +187,13 @@ if (!exists(Functions2DClass)) {
         ::X.setvoxelsize(::resolution,1,1)
         _pos = SpacePos(::X)
         ::X = _pos[0]
-        local::X = ::X
+        X = ::X
         eval "::Y1 <<= "+::c1->equation+";"
-        global::mf_DrawSetCurve(::Y1,0)
+        ::dw.SetCurve(::Y1,0)
       }
       if (::c1->mode==1) {
         # set min and max
-        global::mf_DrawSetCurve(::c1->input,0)
+        ::dw.SetCurve(::c1->input,0)
       }
     }
     # end ::SetCurve1()
@@ -202,17 +209,17 @@ if (!exists(Functions2DClass)) {
         ::X.setvoxelsize(::resolution,1,1)
         _pos = SpacePos(::X)
         ::X = _pos[0]
-        local::X = ::X
+        X = ::X
         eval "::Y2 <<= "+::c2->equation+";"
-        global::mf_DrawSetXLimits(::xmin,::xmax)
-        global::mf_DrawSetYLimits(::ymin,::ymax)
-        global::mf_DrawSetCurve(::Y2,1)
+        ::dw.SetXLimits(::xmin,::xmax)
+        ::dw.SetYLimits(::ymin,::ymax)
+        ::dw.SetCurve(::Y2,1)
       }
       if (::c2->mode==1) {
         # set min and max
-        global::mf_DrawSetXLimits(::xmin,::xmax)
-        global::mf_DrawSetYLimits(::ymin,::ymax)
-        global::mf_DrawSetCurve(::c2->input,1)
+        ::dw.SetXLimits(::xmin,::xmax)
+        ::dw.SetYLimits(::ymin,::ymax)
+        ::dw.SetCurve(::c2->input,1)
       }
     }
     # end ::SetCurve2()
@@ -220,9 +227,9 @@ if (!exists(Functions2DClass)) {
     #----------------------------
     proc ::OnCurves() {
       # InfoDialog ::equation
-      global::mf_DrawSetCurveProperties(0,::c1->color_str,::c1->_style,::c1->_width)
+      ::dw.SetCurveProperties(0,::c1->color_str,::c1->_style,::c1->_width)
       ::SetCurve1()
-      global::mf_DrawSetCurveProperties(1,::c2->color_str,::c2->_style,::c2->_width)
+      ::dw.SetCurveProperties(1,::c2->color_str,::c2->_style,::c2->_width)
       ::SetCurve2()
     }
 
@@ -243,7 +250,13 @@ if (!exists(Functions2DClass)) {
       import = &global::ami_import;
       ::win = import->ParamPanel("2DFunc")
       
-      ::win.BeginBook
+      # add Drawing Window
+      d = ::win.CurrentParent()
+      ::dw = import->wxDrawingWindow(&d)
+      ::dw.SetMinSize(&wx.wxSize(50,80))
+      ::win.AddWidget(&::dw,0)
+      ::dw.SetBackgroundColour(&wx.wxColour(255,255,255))
+      ::win.BeginBook()
     
         ::win.AddPage("Param")
 
@@ -259,7 +272,7 @@ if (!exists(Functions2DClass)) {
             ::win.AddFloat( &::ymax,"ymax",-30,30)
             ::win.SetCallback( &::OnCurves)
             ::win.AddButton("Auto Y", ::AutoY)
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
 
           ::res_id = ::win.AddFloat( &::resolution,"res.",0.01,10)
           ::win.SetCallback( &::OnCurves)
@@ -276,15 +289,15 @@ if (!exists(Functions2DClass)) {
           ::c1_eq_panel = ::win.BeginBoxPanel("Equation")
             ::win.AddString( &::c1->equation,"Y=")
             ::win.SetCallback( &::OnCurves)
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
 
           # set the input image
           ::c1_input_panel = ::win.BeginBoxPanel("Input")
-            ::win.BeginHorizontal
+            ::win.BeginHorizontal()
               ::win.AddImageChoice( &::c1->input_name, "")
               ::win.AddButton("Load",::c1->LoadInput)
-            ::win.EndHorizontal
-          ::win.EndBoxPanel
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
 
           # Line Parameters
           ::win.BeginBoxPanel("Line param.")
@@ -294,7 +307,7 @@ if (!exists(Functions2DClass)) {
             ::win.SetCallback( &::OnCurves)
             ::win.AddInt( &::c1->_width,"width",0,4)
             ::win.SetCallback( &::OnCurves)
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
 
         #---------------- Curve 2 -------------------------------
         ::win.AddPage("Curve 2")
@@ -307,15 +320,15 @@ if (!exists(Functions2DClass)) {
           ::c2_eq_panel = ::win.BeginBoxPanel("Equation")
             ::win.AddString( &::c2->equation,"Y=")
             ::win.SetCallback( &::OnCurves)
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
 
           # set the input image
           ::c2_input_panel = ::win.BeginBoxPanel("Input")
-            ::win.BeginHorizontal
+            ::win.BeginHorizontal()
               ::win.AddImageChoice( &::c2->input_name, "")
               ::win.AddButton("Load",::c2->LoadInput)
-            ::win.EndHorizontal
-          ::win.EndBoxPanel
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
 
           # Line Parameters
           ::win.BeginBoxPanel("Line param.")
@@ -325,19 +338,19 @@ if (!exists(Functions2DClass)) {
             ::win.SetCallback( &::OnCurves)
             ::win.AddInt( &::c2->_width,"width",0,4)
             ::win.SetCallback( &::OnCurves)
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
 
-  
-      ::win.EndBook
+      ::win.EndBook()
       ::win.AddButton("Update",::OnCurves)
-      ::win.BeginHorizontal
+      ::win.BeginHorizontal()
         ::win.AddButton("Close", ::Close)
         ::win.AddButton("Close All", ::CloseAll)
-      ::win.EndHorizontal
+      ::win.EndHorizontal()
       
       ::win.Update(-1)
-      ::win.Display
+      ::win.Display()
       ::EqModeEvent
+      ::OnCurves()
    }
 
     ::Init

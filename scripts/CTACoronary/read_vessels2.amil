@@ -23,7 +23,7 @@ s.SetOpacity(0.5)
 v0_draw += s
 
 
-proc UpdateMinMax( SURFACE _s ) {
+proc UpdateMinMax( OBJECT _s ) {
 
   imx = _s.GetIntensities(ix)
   tmp = min(imx)

@@ -49,19 +49,19 @@ if (!exists(global::RGBscale)) {
     #----------------------------
     proc ::Close() \
     {
-      ::win.HidePanel
+      ::win.HidePanel()
       delvars GetObjectName(::Close)
     }
-    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
     #----------------------------
     proc ::CloseAll() \
     {
-      closeclass_cmd = boost_format("if (exists(%1%)) { del %1%; };")%::classname
+      closeclass_cmd = "if (exists(%1%)) { del %1%; };" %::classname
       eval closeclass_cmd
       ::Close
     }
-    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
     
     #----------------------------
     proc ::TransformComp(NUM numcomp, NUM cmin, NUM cmax) \
@@ -72,7 +72,7 @@ if (!exists(global::RGBscale)) {
       comp = (comp-cmin)/(cmax-cmin)*255
       comp = comp*(comp>0)
       comp = comp*(comp<=255)+(comp>255)*255
-      ::transf_im[numcomp] = comp
+      ::transf_im.SetComponent( numcomp, comp)
     }
 
     #----------------------------
@@ -117,14 +117,14 @@ if (!exists(global::RGBscale)) {
     #----------------------------
     proc ::SetAsCallback() \
     {
-      eval boost_format("ok = exists(%1%_draw);")%::input_name
+      eval "ok = exists(%1%_draw);" %::input_name
       if (ok) {
         # get local reference to input image drawing window
-        eval boost_format("_in_draw = &%1%_draw;") % ::input_name
+        eval "_in_draw = &%1%_draw;" % ::input_name
         _in_draw.PaintCallback(::DrawGrid);
       }
     }
-    ::SetAsCallback.Comments("Set the grid display function as a paint callback of the drawing area")
+    Comments( ::SetAsCallback, "Set the grid display function as a paint callback of the drawing area")
 
     #----------------------------
     proc ::CreateWindow() {
@@ -133,57 +133,57 @@ if (!exists(global::RGBscale)) {
       import = &global::ami_import;
       ::win = import->ParamPanel("ImGrid")
       
-      ::win.BeginBook
+      ::win.BeginBook()
     
         ::win.AddPage("Param")
 
           # set the input image drawing window
           ::win.BeginBoxPanel("Input")
-            ::win.BeginHorizontal
+            ::win.BeginHorizontal()
               ::win.AddImageChoice( &::input_name, "")
               ::win.AddButton( "Reload",::Reload)
-            ::win.EndHorizontal
-          ::win.EndBoxPanel
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
 
           ::win.BeginBoxPanel("All Components")
             ::win.AddInt( &::All_min,"min.",0,255)
             ::win.SetCallback( &::UpdateDisplay_All)
             ::win.AddInt( &::All_max,"max.",0,255)
             ::win.SetCallback( &::UpdateDisplay_All)
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
           ::win.BeginBoxPanel("Red Component")
             ::win.AddInt( &::R_min,"min.",0,255)
             ::win.SetCallback( &::UpdateDisplay_R)
             ::win.AddInt( &::R_max,"max.",0,255)
             ::win.SetCallback( &::UpdateDisplay_R)
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
           ::win.BeginBoxPanel("Green Component")
             ::win.AddInt( &::G_min,"min.",0,255)
             ::win.SetCallback( &::UpdateDisplay_G)
             ::win.AddInt( &::G_max,"max.",0,255)
             ::win.SetCallback( &::UpdateDisplay_G)
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
           ::win.BeginBoxPanel("Blue Component")
             ::win.AddInt( &::B_min,"min.",0,255)
             ::win.SetCallback( &::UpdateDisplay_B)
             ::win.AddInt( &::B_max,"max.",0,255)
             ::win.SetCallback( &::UpdateDisplay_B)
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
   
-      ::win.EndBook
-      ::win.BeginHorizontal
+      ::win.EndBook()
+      ::win.BeginHorizontal()
         ::win.AddButton("Close", ::Close)
         ::win.AddButton("Close All", ::CloseAll)
-      ::win.EndHorizontal
+      ::win.EndHorizontal()
       
       ::win.Update(-1)
-      ::win.Display
+      ::win.Display()
    }
 
     ::Init
   } 
   # Class RGBscaleClass
-  RGBscaleClass.Comments(comments)
+  Comments( RGBscaleClass, comments)
 } 
 # end if (!exists(Functions2DClass))
   

@@ -14,6 +14,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/OpenGL
   ${AMILAB_SOURCE_DIR}/Graphic
   ${AMILAB_SOURCE_DIR}/wxParams
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapSurface
   ${Boost_INCLUDE_DIR}
   )
 
@@ -31,8 +32,10 @@ SET(  WrapITK_SRCS
     wrapITK.cpp
     LeastSquares.cpp
     wrapitkRecursiveGaussianImageFilter.cpp
-    wrapitkRead_3D_US.cpp
+    #wrapitkRead_3D_US.cpp
+    ami_itkRead.cpp
     wrapitkRead.cpp
+    ami_itkWrite.cpp
     wrapitkWrite.cpp
     wrapitkIsoContourDist.cpp
     wrapitkBasicNLMeansFilter.cpp
@@ -55,10 +58,12 @@ SET(WrapITK_HDRS
 	wrapITK.h
 	wrapitkFastMarchingImageFilter.h
 	wrapitkIsoContourDist.h
+  ami_itkRead.h
 	wrapitkRead.h
-	wrapitkRead_3D_US.h
+	#wrapitkRead_3D_US.h
 	wrapitkRecursiveGaussianImageFilter.h
 	wrapitkWaterShedImageFilter.h
+  ami_itkWrite.h
 	wrapitkWrite.h
 	wrapitkBackTrackingMeshFilter.h
 	wrapitkLocalMeanImageFilter.h

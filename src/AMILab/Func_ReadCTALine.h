@@ -14,15 +14,15 @@
 #define _Func_ReadCTALine_h
 
 #include "surface.hpp"
-using namespace amilab;
+//using namespace amilab;
 
 #include <string>
 
-SurfacePoly* Func_ReadCTALine( std::string filename, int mode=0);
+amilab::SurfacePoly* Func_ReadCTALine( std::string filename, int mode=0);
 
-InrImage* Func_ReadCTALineRadii(  SurfacePoly* line,
+InrImage* Func_ReadCTALineRadii(  amilab::SurfacePoly* line,
                                   std::string filename);
 
-void Func_WriteCTALine( SurfacePoly* surf, std::string filename);
+void Func_WriteCTALine( amilab::SurfacePoly* surf, std::string filename);
 
 #endif

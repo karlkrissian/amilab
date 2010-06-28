@@ -34,6 +34,9 @@ private:
   /// A context is an array of variables
   std::vector<Variables::ptr> _context;
 
+  /// built-in context for variable accessible everywhere
+  Variables::ptr _builtin_context;
+
   /// points to the current object context
   Variables::ptr _object_context;
 
@@ -66,6 +69,14 @@ public:
   }
 
   /**
+   * @return The builtin context
+   */
+  Variables::ptr& GetBuiltinContext() 
+  { 
+    return _builtin_context;
+  }
+
+  /**
    * Activate/Desactivate the creation of new variables as global
    * @param gn 
    */
@@ -76,6 +87,15 @@ public:
    */
   int GetCurrentContextNumber() {
     return _current_context;
+  }
+
+  /**
+   * Sets the current context number
+   * @param  
+   */
+  void SetCurrentContextNumber( int context) {
+    if ((context>=0)&&(context<(int)_context.size()))
+      _current_context = context;
   }
   
   /**
@@ -130,7 +150,7 @@ public:
     }
   
     if (context==NEWVAR_CONTEXT) context = GetNewVarContext();
-    return _context[context]->AddVar<T>(name,val);
+    return _context[context]->AddVar<T>(name,val,_context[context]);
   }
 
   ///
@@ -139,7 +159,7 @@ public:
   {
       if (context==OBJECT_CONTEXT_NUMBER) {
         if (_object_context.get()) {
-          CLASS_MESSAGE(boost::format("adding object name %2% into object context ")
+          CLASS_MESSAGE(boost::format("adding object name %1% into object context ")
                           % name);
           boost::shared_ptr<Variable<T> > newvar ( 
             new Variable<T>(name,val));
@@ -152,8 +172,8 @@ public:
     }
   
     if (context==NEWVAR_CONTEXT) context = GetNewVarContext();
-    boost::shared_ptr<Variable<T> > newvar( new Variable<T>(name,val));
-    return _context[context]->AddVar<T>(name,val);
+    //boost::shared_ptr<Variable<T> > newvar( new Variable<T>(name,val));
+    return _context[context]->AddVar<T>(name,val,_context[context]);
   }
 
 
@@ -174,7 +194,7 @@ public:
     }
   
     if (context==NEWVAR_CONTEXT) context = GetNewVarContext();
-    return _context[context]->AddVar(name,val);
+    return _context[context]->AddVar(name,val,_context[context]);
   }
 
   /**

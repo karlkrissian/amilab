@@ -27,6 +27,7 @@
 */
 
 #include "FloatMatrix.hpp"
+#include <iostream>
 
 FloatMatrix&  FloatMatrix::operator =(const float n)
 {
@@ -52,18 +53,27 @@ FloatMatrix* FloatMatrix::Transpose()
 }
 
 
-void FloatMatrix::PrintSelf() {
+std::string FloatMatrix::PrintToString() const{
+  std::string res;
   int i,j;
   for(i=0;i<this->n1;i++) {
     for(j=0;j<this->n2;j++) {
-      if ((j==0)&&(i==0))  printf("[ "); else printf("  "); 
-      printf("%3.3f",this->m[i][j]);
+      if ((j==0)&&(i==0))  
+        res += "[ "; 
+      else 
+        res += "  "; 
+      res += (boost::format("%3.3f") % this->m[i][j]).str();
     }
     if (i<this->n1-1)
-      printf("\n");
+      res += "\n";
     else
-      printf(" ]\n");
+      res += " ]\n";
   }
+  return res;
+}
+
+void FloatMatrix::PrintSelf() const {
+  std::cout << PrintToString() << std::endl;
 }
 
 

@@ -36,6 +36,7 @@
 
 #include "FenetreDessin.hpp"
 #include "StringUtils.hpp"
+#include "amilab_messages.h"
 
 // TODO: get rid of the need of the X11 display
 
@@ -76,7 +77,9 @@ FenetreDessin::FenetreDessin(
             int hauteur, int largeur, int type):
       wxFrame( parent, -1, 
       wxString::FromAscii((char*)RemovePath(titre.c_str())),
-      wxPoint(50,50), wxSize(largeur,hauteur), wxDEFAULT_FRAME_STYLE | wxFRAME_FLOAT_ON_PARENT )
+      wxPoint(50,50), wxSize(largeur,hauteur), wxDEFAULT_FRAME_STYLE 
+//| wxFRAME_FLOAT_ON_PARENT 
+      )
 {
   #ifdef WIN32
       this->SetIcon(wxIcon(amilab_logo_new_32x32_alpha_xpm));
@@ -117,6 +120,7 @@ FenetreDessin::FenetreDessin(
 
   Si GB_debug AlorsFait printf("Fin  FenetreDessin() \n");
 
+//  this->Raise();
 } // Constructor FenetreDessin()
 
 
@@ -423,12 +427,17 @@ void FenetreDessin::SetTextFg(  const wxColour& color)
 
 
 //---------------------------------------------------------------------
-void FenetreDessin ::  FixeParametresLigne( unsigned int largeur, 
+void FenetreDessin ::  SetLineParameters( unsigned int largeur, 
 //                               -------------------
                         int style, 
                         int extremites, 
                         int intersection)
 {
+  if (!_current_pen.get())
+  {
+    CLASS_ERROR("Pen not initialized");
+    return;
+  }
   _current_pen->SetWidth(largeur);
   /// @cond wxCHECK
 
@@ -445,7 +454,7 @@ void FenetreDessin ::  FixeParametresLigne( unsigned int largeur,
   #endif
   /// @endcond
   _memory_dc->SetPen(*_current_pen);
-} // FixeParametresLigne()
+} // SetLineParameters()
 
 
 
@@ -579,12 +588,7 @@ void FenetreDessin::Ligne( int x1, int y1, int x2, int y2)
 void FenetreDessin::Cercle( int x1, int y1, int rayon)
 //                              ------
 {
-#if defined(__WXMOTIF__)
-  XDrawArc( display, _ecran_dessin, contexte, x1-rayon, y1-rayon, 
-      2*rayon, 2*rayon, 0, 360*64);
-#else
   _memory_dc->DrawCircle(x1,y1, rayon);
-#endif
 } // Cercle()
 
 
@@ -593,12 +597,7 @@ void FenetreDessin :: Ellipse( int x1, int y1,
 //                              ------
            int r1, int r2)
 {
-
-#if defined(__WXMOTIF__)
-  XDrawArc( display, _ecran_dessin, contexte, x1-r1, y1-r2, 
-      2*r1, 2*r2, 0, 360*64);
-#endif
-
+  _memory_dc->DrawEllipse((wxCoord)x1, (wxCoord) y1, r1,r2);
 } // Ellipse()
 
 
@@ -713,7 +712,7 @@ void  FenetreDessin::PutSlice(  int pos_x, int pos_y,
   // Draw a rectangle outside?
   SetPenColor( *wxBLACK);
   FixeStyleRemplissage(wxTRANSPARENT);
-  FixeParametresLigne(1,wxSOLID);
+  SetLineParameters(1,wxSOLID);
   Rectangle((wxCoord)pos_x,(wxCoord)pos_y,
             (wxCoord)pos_x+bitmap.GetWidth(),
             (wxCoord)pos_y+bitmap.GetHeight());
@@ -753,16 +752,21 @@ void FenetreDessin::CloseWindow()
 //   -------------
 { 
   if (GB_debug) fprintf(stderr,"FenetreDessin::CloseWindow() \n");
-  Si CloseFunction != NULL Alors
+  if (CloseFunction != NULL)
+  {
     if (GB_debug) cerr << "calling closing function " << endl;
 
     void (*func)( void*) = (void (*)( void*)) CloseFunction;
     func( (void*) CloseData);
-  Sinon
+    // apply close only once !!!
+    //CloseFunction = NULL;
+    // The Close Function must be able to deal with a NULL pointer as parameter !!!
+    CloseData = NULL;
+  } else 
     // Call destructor
     //this->~FenetreDessin();
     Close(true);
-  FinSi
+
 }
 
 
@@ -805,6 +809,7 @@ void FenetreDessin::OnClose(wxCloseEvent& event)
         |wxICON_INFORMATION
         | wxSTAY_ON_TOP 
         );
+       //dialog.RequestUserAttention();
 
         switch ( dialog.ShowModal() )
         {

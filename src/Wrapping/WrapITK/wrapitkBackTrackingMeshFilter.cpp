@@ -24,7 +24,7 @@
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-    ================================================== 
+    ==================================================
    The full GNU Lesser General Public License file is in Devel/Sources/Prog/LesserGPL_license.txt
 */
 
@@ -37,28 +37,27 @@
 #include "itkPointSet.h"
 #endif // _WITHOUT_ITK_
 
-#ifndef _WITHOUT_VTK_
 #include <vtkPointData.h>
-#endif // _WITHOUT_VTK_
 
 //#include "vtk_common.h"
 #include "surface.hpp"
+using namespace amilab;
 
-#include "wrapfunctions.hpp" 
+#include "wrap_SurfacePoly.h"
+
+#include "wrapfunctions.hpp"
 #include "wrapConversion.tpp"
 #include "wrapitkBackTrackingMeshFilter.h"
 
 BasicVariable::ptr wrap_itkBackTrackingMeshFilter2D(ParamList* p)
 {
-  
-#ifndef _WITHOUT_ITK_
 
-  char functionname[] = "itkBackTrackingMeshFilter2D";
-  char description[]=" \n\
+    char functionname[] = "itkBackTrackingMeshFilter2D";
+    char description[]=" \n\
         Filter to compute a backtracking solution in 2D.\n\
       ";
-    
-  char parameters[] =" \n\
+
+    char parameters[] =" \n\
           Parameters:\n\
           input image \n\
           startX \n\
@@ -67,81 +66,75 @@ BasicVariable::ptr wrap_itkBackTrackingMeshFilter2D(ParamList* p)
           maxLength \n\
           delta \n\
       ";
-    
-  InrImage* input = NULL;
-  float     startX = 0.0;
-  float     startY = 0.0;
-  float     stepSize = 0.0;
-  float     maxLength = 0.0;
-  float     delta = 0.0;
-  
-  int n=0;
-  
-  if (!get_val_ptr_param<InrImage>(  input,      p, n)) HelpAndReturnVarPtr;
-  if (!get_val_param<float>       (  startX,     p, n)) HelpAndReturnVarPtr;
-  if (!get_val_param<float>       (  startY,     p, n)) HelpAndReturnVarPtr;
-  if (!get_val_param<float>       (  stepSize,   p, n)) HelpAndReturnVarPtr;
-  if (!get_val_param<float>       (  maxLength,  p, n)) HelpAndReturnVarPtr;
-  if (!get_val_param<float>       (  delta,      p, n)) HelpAndReturnVarPtr; 
 
-  typedef double        InternalPixelType;
-  const unsigned int    Dimension = 2;
-  
-  typedef itk::Image< InternalPixelType, Dimension > InternalImageType;
-  InternalImageType::RegionType region;
-  InternalImageType::Pointer image;
-  
-  typedef itk::Mesh<InternalPixelType,Dimension> MeshType;
+    InrImage* input = NULL;
+    float     startX = 0.0;
+    float     startY = 0.0;
+    float     stepSize = 0.0;
+    float     maxLength = 0.0;
+    float     delta = 0.0;
 
-  MeshType::Pointer output = MeshType::New();
- 
-  // Convert from InrImage to ITK
-  cout << "Converting image to ITK format " << endl;
-    
-  image = InrToITK<InternalPixelType,Dimension>(input,region);
-  
-  cout << "Conversion done" << endl;
+    int n=0;
 
-  typedef itk::BackTrackingMeshFilter<InternalImageType,MeshType,Dimension> BackTrackingFilterType;
-  BackTrackingFilterType::Pointer BackTracking = BackTrackingFilterType::New();
+    if (!get_val_ptr_param<InrImage>(  input,      p, n)) HelpAndReturnVarPtr;
+    if (!get_val_param<float>       (  startX,     p, n)) HelpAndReturnVarPtr;
+    if (!get_val_param<float>       (  startY,     p, n)) HelpAndReturnVarPtr;
+    if (!get_val_param<float>       (  stepSize,   p, n)) HelpAndReturnVarPtr;
+    if (!get_val_param<float>       (  maxLength,  p, n)) HelpAndReturnVarPtr;
+    if (!get_val_param<float>       (  delta,      p, n)) HelpAndReturnVarPtr;
 
-  BackTracking->SetInput(0, image );
-  BackTracking->SetstartX( startX );
-  BackTracking->SetstartY( startY );
-  BackTracking->SetstepSize( stepSize );
-  BackTracking->SetmaxLength( maxLength );
-  BackTracking->Setdelta( delta );
-  BackTracking->Update();
+    typedef double        InternalPixelType;
+    const unsigned int    Dimension = 2;
 
-  typedef itk::PointSet<InternalPixelType,Dimension> PointSetType;
-  PointSetType::PointIdentifier pointID;
-  typedef PointSetType::PointType PointType;
-  PointType pp;
+    typedef itk::Image< InternalPixelType, Dimension > InternalImageType;
+    InternalImageType::RegionType region;
+    InternalImageType::Pointer image;
 
-  SurfacePoly* surf;
-  surf = new SurfacePoly;
-  surf->NewLine();
-  int num_points=0;
+    typedef itk::Mesh<InternalPixelType,Dimension> MeshType;
 
-  // Conversion to amilab type to show it
-  for (int i=0;i<BackTracking->GetOutput()->GetNumberOfPoints();i++)
-  {
-    pointID = i;
-    bool pointExists = BackTracking->GetOutput()->GetPoint(pointID,&pp);
-    surf->AddPoint(pp[0],pp[1],0);
-    surf->LineAddPointNumber(num_points);
-    num_points++;
-  }
-  surf->EndLine();
+    MeshType::Pointer output = MeshType::New();
 
-  Variable<SurfacePoly>::ptr varres(new Variable<SurfacePoly>("backtrack_mesh",SurfacePoly::ptr(surf)));
+    // Convert from InrImage to ITK
+    cout << "Converting image to ITK format " << endl;
 
-  return varres;
+    image = InrToITK<InternalPixelType,Dimension>(input,region);
 
-#else
-  fprintf(stderr," ITK not available, you need to compile with ITK ...\n");
-  return NULL;
-#endif // _WITHOUT_ITK_ 
+    cout << "Conversion done" << endl;
+
+    typedef itk::BackTrackingMeshFilter<InternalImageType,MeshType,Dimension> BackTrackingFilterType;
+    BackTrackingFilterType::Pointer BackTracking = BackTrackingFilterType::New();
+
+    BackTracking->SetInput(0, image );
+    BackTracking->SetstartX( startX );
+    BackTracking->SetstartY( startY );
+    BackTracking->SetstepSize( stepSize );
+    BackTracking->SetmaxLength( maxLength );
+    BackTracking->Setdelta( delta );
+    BackTracking->Update();
+
+    typedef itk::PointSet<InternalPixelType,Dimension> PointSetType;
+    PointSetType::PointIdentifier pointID;
+    typedef PointSetType::PointType PointType;
+    PointType pp;
+
+    SurfacePoly* surf;
+    surf = new SurfacePoly;
+    surf->NewLine();
+    int num_points=0;
+
+    // Conversion to amilab type to show it
+    for (int i=0;i<BackTracking->GetOutput()->GetNumberOfPoints();i++)
+    {
+        pointID = i;
+        bool pointExists = BackTracking->GetOutput()->GetPoint(pointID,&pp);
+        surf->AddPoint(pp[0],pp[1],0);
+        surf->LineAddPointNumber(num_points);
+        num_points++;
+    }
+    surf->EndLine();
+
+    return CreateVar_SurfacePoly(surf);
+
 } // wrap_itkBackTrackingMeshFilter2D
 
 
@@ -149,14 +142,12 @@ BasicVariable::ptr wrap_itkBackTrackingMeshFilter2D(ParamList* p)
 BasicVariable::ptr wrap_itkBackTrackingMeshFilter3D(ParamList* p)
 {
 
-#ifndef _WITHOUT_ITK_
-
-  char functionname[] = "itkBackTrackingMeshFilter3D";
-  char description[]=" \n\
+    char functionname[] = "itkBackTrackingMeshFilter3D";
+    char description[]=" \n\
         Filter to compute a backtracking solution in 3D.\n\
       ";
-    
-  char parameters[] =" \n\
+
+    char parameters[] =" \n\
           Parameters:\n\
           input image \n\
           startX \n\
@@ -166,82 +157,76 @@ BasicVariable::ptr wrap_itkBackTrackingMeshFilter3D(ParamList* p)
           maxLength \n\
           delta \n\
       ";
-    
-  InrImage* input = NULL;
-  float     startX = 0.0;
-  float     startY = 0.0;
-  float     startZ = 0.0;
-  float     stepSize = 0.0;
-  float     maxLength = 0.0;
-  float     delta = 0.0;
-  
-  int n=0;
-  
-  if (!get_val_ptr_param<InrImage>(  input,      p, n)) HelpAndReturnVarPtr;
-  if (!get_val_param<float>       (  startX,     p, n)) HelpAndReturnVarPtr;
-  if (!get_val_param<float>       (  startY,     p, n)) HelpAndReturnVarPtr;
-  if (!get_val_param<float>       (  startZ,     p, n)) HelpAndReturnVarPtr;
-  if (!get_val_param<float>       (  stepSize,   p, n)) HelpAndReturnVarPtr;
-  if (!get_val_param<float>       (  maxLength,  p, n)) HelpAndReturnVarPtr;
-  if (!get_val_param<float>       (  delta,      p, n)) HelpAndReturnVarPtr; 
 
-  typedef double       InternalPixelType;
-  const unsigned int   Dimension = 3;
-  
-  typedef itk::Image< InternalPixelType, Dimension > InternalImageType;
-  InternalImageType::RegionType region;
-  InternalImageType::Pointer image;
-  
-  typedef itk::Mesh<InternalPixelType,Dimension> MeshType;
-  
-  MeshType::Pointer output = MeshType::New();
-   
-  // Convert from InrImage to ITK
-  cout << "Converting image to ITK format " << endl;
-    
-  image = InrToITK<InternalPixelType,Dimension>(input,region);
-  
-  cout << "Conversion done" << endl;
+    InrImage* input = NULL;
+    float     startX = 0.0;
+    float     startY = 0.0;
+    float     startZ = 0.0;
+    float     stepSize = 0.0;
+    float     maxLength = 0.0;
+    float     delta = 0.0;
 
-  typedef itk::BackTrackingMeshFilter<InternalImageType,MeshType,Dimension> BackTrackingFilterType;
-  BackTrackingFilterType::Pointer BackTracking = BackTrackingFilterType::New();
-  
-  BackTracking->SetInput(0, image );
-  BackTracking->SetstartX( startX );
-  BackTracking->SetstartY( startY );
-  BackTracking->SetstartZ( startZ );
-  BackTracking->SetstepSize( stepSize );
-  BackTracking->SetmaxLength( maxLength );
-  BackTracking->Setdelta( delta );
-  BackTracking->Update();
+    int n=0;
 
-  //vtkFloatingPointType triangle[3];
-  typedef itk::PointSet<InternalPixelType,Dimension> PointSetType;
-  PointSetType::PointIdentifier pointID;
-  typedef PointSetType::PointType PointType;
-  PointType pp;
+    if (!get_val_ptr_param<InrImage>(  input,      p, n)) HelpAndReturnVarPtr;
+    if (!get_val_param<float>       (  startX,     p, n)) HelpAndReturnVarPtr;
+    if (!get_val_param<float>       (  startY,     p, n)) HelpAndReturnVarPtr;
+    if (!get_val_param<float>       (  startZ,     p, n)) HelpAndReturnVarPtr;
+    if (!get_val_param<float>       (  stepSize,   p, n)) HelpAndReturnVarPtr;
+    if (!get_val_param<float>       (  maxLength,  p, n)) HelpAndReturnVarPtr;
+    if (!get_val_param<float>       (  delta,      p, n)) HelpAndReturnVarPtr;
 
-  SurfacePoly* surf;
-  surf = new SurfacePoly;
-  surf->NewLine();
-  int num_points=0;
+    typedef double       InternalPixelType;
+    const unsigned int   Dimension = 3;
 
-  for (int i=0;i<BackTracking->GetOutput()->GetNumberOfPoints();i++)
-  {
-    pointID = i;
-    bool pointExists = BackTracking->GetOutput()->GetPoint(pointID,&pp);
-    surf->AddPoint(pp[0],pp[1],pp[2]);
-    surf->LineAddPointNumber(num_points);
-    num_points++;
-  }
-  surf->EndLine();
-  
-  Variable<SurfacePoly>::ptr varres(new Variable<SurfacePoly>("backtrack_mesh",SurfacePoly::ptr(surf)));
+    typedef itk::Image< InternalPixelType, Dimension > InternalImageType;
+    InternalImageType::RegionType region;
+    InternalImageType::Pointer image;
 
-  return varres;
- 
-#else
-  fprintf(stderr," ITK not available, you need to compile with ITK ...\n");
-  return NULL;
-#endif // _WITHOUT_ITK_ 
+    typedef itk::Mesh<InternalPixelType,Dimension> MeshType;
+
+    MeshType::Pointer output = MeshType::New();
+
+    // Convert from InrImage to ITK
+    cout << "Converting image to ITK format " << endl;
+
+    image = InrToITK<InternalPixelType,Dimension>(input,region);
+
+    cout << "Conversion done" << endl;
+
+    typedef itk::BackTrackingMeshFilter<InternalImageType,MeshType,Dimension> BackTrackingFilterType;
+    BackTrackingFilterType::Pointer BackTracking = BackTrackingFilterType::New();
+
+    BackTracking->SetInput(0, image );
+    BackTracking->SetstartX( startX );
+    BackTracking->SetstartY( startY );
+    BackTracking->SetstartZ( startZ );
+    BackTracking->SetstepSize( stepSize );
+    BackTracking->SetmaxLength( maxLength );
+    BackTracking->Setdelta( delta );
+    BackTracking->Update();
+
+    //vtkFloatingPointType triangle[3];
+    typedef itk::PointSet<InternalPixelType,Dimension> PointSetType;
+    PointSetType::PointIdentifier pointID;
+    typedef PointSetType::PointType PointType;
+    PointType pp;
+
+    SurfacePoly* surf;
+    surf = new SurfacePoly;
+    surf->NewLine();
+    int num_points=0;
+
+    for (int i=0;i<BackTracking->GetOutput()->GetNumberOfPoints();i++)
+    {
+        pointID = i;
+        bool pointExists = BackTracking->GetOutput()->GetPoint(pointID,&pp);
+        surf->AddPoint(pp[0],pp[1],pp[2]);
+        surf->LineAddPointNumber(num_points);
+        num_points++;
+    }
+    surf->EndLine();
+
+    return CreateVar_SurfacePoly(surf);
+
 } // wrap_itkBackTrackingMeshFilter3D

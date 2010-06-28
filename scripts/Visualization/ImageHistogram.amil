@@ -1,0 +1,127 @@
+#!/usr/bin/amilab
+
+#
+# Script for drawing 2D functions
+# or lines from an image
+#
+
+comments="ImageHistoClass: this class allows to draw the histogram of an image."
+
+
+if (!exists(global::ImageHistoClass)) {
+
+  Class global::ImageHistoClass {
+
+    ::ami_import = &global::ami_import
+    #----------------------------
+    proc ::Init() \
+    {
+      ::classname  = "global::ImageHistoClass"
+      ::input_name =  "", "name of the input image, the drawing window of this image will be used"
+      ::minval = 0, "minimal value of the histogram"
+      ::maxval = 255, "maximal value of the histogram"
+      ::step = 1, "histogram step"
+      ::CreateWindow()
+    }
+    
+    #----------------------------
+    proc ::LoadInput() \
+    {
+      printn "evaluation of --> ::input <<="+::input_name+";"
+      eval "::input <<="+::input_name+";"
+      if (::input_name=="Image") {
+        ::input_name = "::input"
+        #::win.update
+      }
+      #::win.update
+    }
+
+    #----------------------------
+    proc ::Close() \
+    {
+      ::win.HidePanel()
+      delvars GetObjectName(::Close)
+    }
+    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    
+    #----------------------------
+    proc ::CloseAll() \
+    {
+      closeclass_cmd = "if (exists(%1%)) { del %1%; };" %::classname
+      eval closeclass_cmd
+      ::Close
+    }
+    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
+    
+    proc ::Update() {
+      if (exists(::input)) {
+        ::h <<= histo(::input,::minval,::maxval,(::maxval-::minval)/::step+1)
+        ::dw->SetXLimits(::minval,::maxval)
+        ::dw->SetYLimits(min(::h),max(::h))
+        ::dw->SetCurve(::h)
+      }
+    }
+
+    #----------------------------
+    proc ::CreateWindow() {
+    
+      # parameters window
+      import = &global::ami_import;
+      ::win = import->ParamPanel("ImHist")
+      
+      ::win.BeginBook()
+    
+        ::win.AddPage("Param")
+
+          # set the input image drawing window
+          ::win.BeginBoxPanel("Input")
+            ::win.BeginHorizontal()
+              ::win.AddImageChoice( &::input_name, "")
+              ::win.AddButton("Load",::LoadInput)
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
+
+
+          ::win.AddFloat(&::minval,"min",0,255)
+          ::win.AddFloat(&::maxval,"max",0,255)
+          ::win.AddFloat(&::step,"step",0,100)
+
+          ::win.AddButton("Update",::Update)
+          # add Drawing Window
+          d = ::win.CurrentParent()
+          ::dw = import->wxDrawingWindow(&d)
+          # sets minimal size here
+          ::dw.SetMinSize(wx.wxSize(80,80));
+          ::dw.SetBackgroundColour(wx.wxColour(255,255,255))
+          ::sizer_item = ::win.AddWidget(&::dw,0)
+
+      ::win.EndBook()
+      ::win.BeginHorizontal()
+        ::win.AddButton("Close", ::Close)
+        ::win.AddButton("Close All", ::CloseAll)
+      ::win.EndHorizontal()
+      
+      ::win.Update(-1)
+      ::win.Display()
+   }
+
+    ::Init()
+  } 
+  # Class ImageHistoClass
+  Comments( ImageHistoClass, comments)
+} 
+# end if (!exists(ImageHistoClass))
+  
+  
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(imhist)) {
+
+  ImageHistoClass imhist
+  
+} else {
+  InfoDialog "The script seems to be already loaded."
+}
+

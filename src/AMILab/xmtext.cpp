@@ -286,7 +286,8 @@ void TextControl::ProcessReturn()
 
   // Add now the newline character ...
   in_changed_value = 0;
-  GB_main_wxFrame->UpdateVarsDisplay();
+  if (GB_main_wxFrame)
+    GB_main_wxFrame->UpdateVarsDisplay();
 
   // event.Skip();
 }
@@ -469,16 +470,17 @@ void TextControl::OnChar(wxKeyEvent& event)
                   res=AskFilename(name);
                   if (!res) {
                     GB_driver.yyiperror(" No filename given! \n");
+                  } else {
+  
+                    wxFileName filename(wxString(name.c_str(), wxConvUTF8));
+                    filename.Normalize(wxPATH_NORM_ALL,wxEmptyString,wxPATH_UNIX);
+                    wxString newname(   filename.GetVolume()+filename.GetVolumeSeparator()+
+                                        filename.GetPath(wxPATH_GET_VOLUME,wxPATH_UNIX)+
+                                        filename.GetPathSeparator(wxPATH_UNIX)+
+                                        filename.GetFullName());
+                    inc_cmd = str(format(" \"%1%\" ") % newname.mb_str());
+                    this->IncCommand(wxString::FromAscii(inc_cmd.c_str()));
                   }
-
-                  wxFileName filename(wxString(name.c_str(), wxConvUTF8));
-                  filename.Normalize(wxPATH_NORM_ALL,wxEmptyString,wxPATH_UNIX);
-                  wxString newname(   filename.GetVolume()+filename.GetVolumeSeparator()+
-                                      filename.GetPath(wxPATH_GET_VOLUME,wxPATH_UNIX)+
-                                      filename.GetPathSeparator(wxPATH_UNIX)+
-                                      filename.GetFullName());
-                  inc_cmd = str(format(" \"%1%\" ") % newname.mb_str());
-                  this->IncCommand(wxString::FromAscii(inc_cmd.c_str()));
                 }
               }
               else

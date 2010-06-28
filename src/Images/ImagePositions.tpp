@@ -10,6 +10,8 @@
 //
 //
 
+#include "AMILabConfig.h"
+
 template<class T>
 ImagePositions<T>::ImagePositions( InrImage* im)
 {
@@ -78,33 +80,36 @@ bool ImagePositions<T>::FreePositions( )
 
 
 template<class T>
-double ImagePositions<T>::operator()( int x, int y, int z ) 
-//throw (DepassementLimites)
+double ImagePositions<T>::operator()( int x, int y, int z ) const
+#ifdef AMI_BUILD_Debug
+  throw (std::range_error)
+#endif
 //         --------
 {
-  /*
-  #ifdef _debug_
-    Si x<0 Ou x>=_tx Ou y<0 Ou y>=_ty Ou z<0 Ou z>=_tz Alors
-      char message[100];
-      sprintf(message, " image %s ( %d %d %d )", (char*) _nom, x, y, z);
-      throw DepassementLimites( message);
-    FinSi
+  #ifdef AMI_BUILD_Debug
+    if (!_image->CoordOK(x,y,z))
+    {
+      cout << "*" << endl;
+      std::string message = (boost::format(" image %s ( %d %d %d )") 
+            % (char*) _image->GetName() 
+            % x %  y % z).str();
+      throw std::range_error( message);
+    }
   #endif
-  */
   // how to speed for scalar images and avoid _vdim multiplication?
   return (double)(_positions[z][y][_vdim*x]);
 }
 
 
 template<class T>
-double ImagePositions<T>::GetValue( int x, int y, int z, int coord)
+double ImagePositions<T>::GetValue( int x, int y, int z, int coord) const
 //         --------
 {
   return (double)(_positions[z][y][_vdim*x+coord]);
 }
 
 template<class T>
-double ImagePositions<T>::operator()( int x, int y, int z, int coord)
+double ImagePositions<T>::operator()( int x, int y, int z, int coord) const
 {
   return GetValue(x,y,z,coord);
 }

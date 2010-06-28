@@ -431,6 +431,19 @@ public:
     );
 //@}
 
+/** @name Adds Button with wxBitmap*/
+//@{
+  ///
+  unsigned char AddBitmapButton( 
+  //            ---------------
+    int* id,
+    const char* libelle, 
+    void* callback, void* data,
+    const wxBitmap& bm,
+    const std::string& tooltip=""
+    );
+//@}
+
 /** @name Type Couleur */
 //@{
   ///
@@ -451,7 +464,8 @@ public:
     int* id,
     const char* libelle,
     const char* contenu,
-    type_label type=LabelLabel);
+    type_label type=LabelLabel,
+    const std::string& tt="");
 //@}
   
   void SetLabelValue(int id, char* value);

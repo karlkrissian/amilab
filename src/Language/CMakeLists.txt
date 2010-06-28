@@ -39,8 +39,14 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapAMIFluid
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapWII
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapInterface
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapImage
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapSurface
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapBasicTypes
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapDessinImage
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets
   ${AMILAB_SOURCE_DIR}/wxSamples/penguin
-  ${AMILAB_SOURCE_DIR}/wxSamples/stctest
+  ${AMILAB_SOURCE_DIR}/wxStcFrame
+  ${AMILAB_SOURCE_DIR}/wxCode/wxTreeListCtrl
   ${AMILAB_SOURCE_DIR}/Algorithms/Basic
   ${AMILAB_SOURCE_DIR}/Algorithms/Graph
   ${AMILAB_SOURCE_DIR}/Algorithms/Denoising
@@ -52,10 +58,19 @@ INCLUDE(${wxWidgets_USE_FILE})
 
 SET(Language_SRCS
     driver.cc
+    CallBackAMIFunction.cpp
     VarContexts.cpp
     BasicVariable.cpp
     Variable.cpp
+    Variable_long.cpp
+    Variable_int.cpp
+    Variable_uchar.cpp
     Variable_float.cpp
+    Variable_double.cpp
+    Variable_InrImage.cpp
+    Variable_string.cpp
+    Variable_FloatMatrix.cpp
+    Variable_AMIObject.cpp
     Variables.cpp
     paramlist.cpp
     ImageStack.cpp
@@ -71,17 +86,26 @@ SET(Language_HDRS
     scanner.h
     vartype.h
     ami_function.h
+    CallBackAMIFunction.h
     ami_object.h
-    ami_cpp_object.h
     GLTransformStack.h
     ImageStack.h
     VariableStack.h
     paramlist.h
-    SurfStack.h
+#    SurfStack.h
     VarContexts.hpp
     VarContexts.tpp
     BasicVariable.h
     Variable.hpp
+    Variable_long.h
+    Variable_int.h
+    Variable_uchar.h
+    Variable_float.h
+    Variable_double.h
+    Variable_InrImage.h
+    Variable_string.h
+    Variable_FloatMatrix.h
+    Variable_AMIObject.h
     Variables.hpp
     VarArray.h
 )
@@ -93,7 +117,13 @@ SET(Language_BISONFLEX_SRCS
 
 IF(AMI_USE_FLEXBISON)
 
-  BISON_TARGET_option_extraopts("-t  -dv")
+
+  SET(bison_options "-dv")
+  IF(AMI_BISON_DEBUG)
+    SET(bison_options "-t ${bison_options}")
+  ENDIF(AMI_BISON_DEBUG)
+
+  BISON_TARGET_option_extraopts(${bison_options})
 
   BISON_TARGET(improcessbison
     ${AMILAB_SOURCE_DIR}/Language/improcess_bison.ypp
@@ -113,6 +143,11 @@ IF(AMI_USE_FLEXBISON)
     ${Language_BISONFLEX_SRCS}
     ${Language_HDRS}
   )
+
+  IF(AMI_BISON_DEBUG)
+    SET_SOURCE_FILES_PROPERTIES( ${Language_SRCS}
+    PROPERTIES COMPILE_FLAGS -DYYDEBUG=1)
+  ENDIF(AMI_BISON_DEBUG)
   
 ELSE(AMI_USE_FLEXBISON)
  

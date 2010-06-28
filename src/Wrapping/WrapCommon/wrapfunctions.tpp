@@ -13,7 +13,7 @@
 #include "wrapfunctions.hpp"
 #include "DefineClass.hpp"
 #include "amilab_messages.h"
-#include "DessinImage.hpp"
+//#include "DessinImage.hpp"
 #include "Variable.hpp"
 
 #include <string>
@@ -28,8 +28,14 @@ bool get_var_param( boost::shared_ptr<Variable<T> >& var,
                     ParamList*p, int& num, bool required = false)
 {
   if (!p) return false;
+  if (num>=p->GetNumParam()) {
+    if (required) {
+      FILE_ERROR( boost::format("Wrong parameter number for parameter  %1%") % num);
+    }
+    return false;
+  }
   // Getting the Variable and checking its type
-  var = boost::dynamic_pointer_cast<Variable<T> >(p->GetParam(num++)); // = is like a swap of smart pointers ...
+  var = boost::dynamic_pointer_cast<Variable<T> >(p->GetParam(num++));
   if (var.get()) {
     if (var->Type()!=GetVarType<T>()) {
       FILE_ERROR(boost::format("Parameter %1% is of wrong type (%2% instead of %3%), you may be passing a value instead of a reference.")%num%var->Type()%GetVarType<T>());
@@ -46,7 +52,8 @@ bool get_var_param( boost::shared_ptr<Variable<T> >& var,
   }
   else
   {
-    FILE_ERROR(boost::format("Parameter %d not found ") % num);
+    if (required)
+      FILE_ERROR(boost::format("Parameter %d not found ") % num);
     return false;
   }
 
@@ -68,13 +75,25 @@ bool get_val_param(T& arg, ParamList*p, int& num)
   BasicVariable::ptr temp( p->GetParam(num++));
   if (temp.get()) {
     if (temp->Type()!=GetVarType<T>()) {
-      FILE_ERROR(boost::format("Parameter %1% is of wrong type.")%num);
-      return false;
+      // Try to convert to the requested type:
+      BasicVariable::ptr converted = temp->TryCast(to_string<T>::value());
+      if (!converted.get()) {
+        FILE_ERROR(boost::format("Parameter %1% cannot not be converted to type %2%.") %num % to_string<T>::value());
+        return false;
+      } else
+        temp = converted;
     }
     boost::shared_ptr<Variable<T> > temp1(
       boost::dynamic_pointer_cast<Variable<T> >(temp));
-    arg= * (temp1->Pointer().get());
-    return true;
+    if (temp1.get()) {
+      arg= * (temp1->Pointer().get());
+      return true;
+    } 
+    else
+    {
+      FILE_ERROR(boost::format("Parameter %1% Conversion to %2% problem ") % num % to_string<T>::value());
+      return false;
+    }
   }
   else
   {

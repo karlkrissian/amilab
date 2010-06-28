@@ -273,11 +273,11 @@ proc TC_Run() {
 #printn sprint("margin_max = %f \n",margin_max) 
 #printn sprint("max = %f \n",dimz-1-margin_max) 
 #TC_rmax1.info
-        TC_rmax2 = TC_rmax1[:,:,margin_min:TC_rmax1.tz-1-margin_max]
+        TC_rmax2 = TC_rmax1[:,:,margin_min:(TC_rmax1.tz-1-margin_max)]
         TC_rmax.putimage(TC_rmax2)
         printn "del TC_rmax2"
         del TC_rmax2
-        TC_lextr2 = TC_lextr1[:,:,margin_min:TC_rmax1.tz-1-margin_max]
+        TC_lextr2 = TC_lextr1[:,:,margin_min:(TC_rmax1.tz-1-margin_max)]
         TC_lextr.putimage(TC_lextr2)
         printn "del TC_rmax2"
         del TC_lextr2
@@ -297,10 +297,10 @@ proc TC_Display() {
     show TC_input
   }
 
-  TC_input_draw.compare(TC_rmax)
-  TC_input_draw.compare(TC_lextr)
+  TC_input_draw._compare(TC_rmax)
+  TC_input_draw._compare(TC_lextr)
   if (exists(eig[5])) {
-    TC_input_draw.setvector(1,eig[5])
+    TC_input_draw._setvector(0,eig[5])
   }
   local_new
 }
@@ -355,8 +355,8 @@ proc TC_CreateWindow() {
   global
 
     # parameters window
-    TC_import = &global::ami_import;
-win = import->ParamPanel("Circle integration for centerlines")
+    import = &global::ami_import;
+    TC_win = import->ParamPanel("Circle integration for centerlines")
 
     TC_win.BeginBook()
 
@@ -369,22 +369,22 @@ win = import->ParamPanel("Circle integration for centerlines")
           TC_calc_th_id       = TC_win.AddFloat( &TC_calc_th,  "TC_calc_th",       0,3000)
           TC_calc_th_grad_id  = TC_win.AddBoolean( &TC_calc_th_grad  )
           #TC_maxint_replace_id  = TC_win.AddFloat(TC_maxint_replace,0,3000)
-        TC_win.EndBoxPanel
+        TC_win.EndBoxPanel()
     
         TC_win.BeginBoxPanel("Radii")
           TC_radmin_id  = TC_win.AddFloat( &TC_radmin,  "TC_radmin", 0,5)
           TC_radmax_id  = TC_win.AddFloat( &TC_radmax,  "TC_radmax", 0,10)
           TC_radstep_id = TC_win.AddFloat( &TC_radstep,  "TC_radstep", 0,2)
-        TC_win.EndBoxPanel
+        TC_win.EndBoxPanel()
   
       TC_win.AddPage("Orientation")
         TC_win.BeginBoxPanel("Structure Tensor Param")
           TC_sigma_id  = TC_win.AddFloat( &TC_sigma,  "TC_sigma", 0,5)
           TC_beta_id   = TC_win.AddFloat( &TC_beta,  "TC_beta", 0,2)
-        TC_win.EndBoxPanel
+        TC_win.EndBoxPanel()
         TC_win.BeginBoxPanel("Gradient Param")
           TC_sigma_gradient_id  = TC_win.AddFloat( &TC_sigma_gradient,  "TC_sigma_gradient", 0,5)
-        TC_win.EndBoxPanel
+        TC_win.EndBoxPanel()
     
         TC_win.AddPage("Response")
         TC_win.BeginBoxPanel("Param")
@@ -397,7 +397,7 @@ win = import->ParamPanel("Circle integration for centerlines")
           TC_kh_id       = TC_win.AddInt( &TC_keephighest,  "TC_keephighest",  1,100)
           TC_SD_th_id    = TC_win.AddFloat( &TC_SD_th,  "TC_SD_th",  0,10)
           TC_EXC_th_id   = TC_win.AddFloat( &TC_EXC_th,  "TC_EXC_th", 0,10)
-        TC_win.EndBoxPanel
+        TC_win.EndBoxPanel()
   
       TC_win.AddPage("Save")
         TC_win.BeginBoxPanel("Save result and parameters")
@@ -407,22 +407,22 @@ win = import->ParamPanel("Circle integration for centerlines")
           resfn_id  = TC_win.AddString( &TC_result_filename,        TC_result_filename)
           resext_id = TC_win.AddString( &TC_result_extension,       TC_result_extension)
           display_id = TC_win.AddButton("Save",        TC_Save)
-        TC_win.EndBoxPanel
-    TC_win.EndBook
+        TC_win.EndBoxPanel()
+    TC_win.EndBook()
 
-    TC_win.BeginHorizontal
+    TC_win.BeginHorizontal()
       mask_id    = TC_win.AddButton("Create Mask", TC_CreateMask)
       iterate_id = TC_win.AddButton("Run",         TC_Run)
       display_id = TC_win.AddButton("Display",     TC_Display)
-    TC_win.EndHorizontal
+    TC_win.EndHorizontal()
     
-    TC_win.Update
+    TC_win.Update()
 
     #TC_win.ShowSlider(TC_radmin_id, 0)
     #TC_win.ShowSlider(TC_radmax_id, 0)
     #TC_win.ShowSlider(TC_radstep_id,0)
 
-    TC_win.Display
+    TC_win.Display()
     TC_win.Update(-1)
   local
 }

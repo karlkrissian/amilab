@@ -52,13 +52,13 @@
 
 #include "ParamPanel.hpp"
 
-#include "wxDrawingWindow.h"
 #include "Variables.hpp"
 
 #include <iostream>
 #include <list>
 #include <map>
 
+class wxStcFrame;
 
 #include "DefineClass.hpp"
 
@@ -97,8 +97,11 @@ public:
      m_mgr.UnInit();
   }
 
-  wxDrawingWindow* GetDrawingWindow() { return _drawing_window; }
-
+  wxStcFrame*  GetAmilabEditor();
+  void OnCloseAmilabEditor() {
+    amilab_editor = NULL;
+  }
+  
   wxAuiManager& GetAuiManager() {return m_mgr; };
 
   TextControl::ptr GetConsole() { return TC; }
@@ -177,6 +180,9 @@ public:
 
 protected:
 
+  //
+  wxStcFrame* amilab_editor;
+  
   // menus
   wxMenuBar *menuBar;
   wxMenu *menuFile;
@@ -223,7 +229,13 @@ protected:
   wxHtmlWindow* _htmltext;
 
   myTreeCtrl*  _var_tree;
+  int _vartree_col_main;
+  int _vartree_col_type;
+  int _vartree_col_val;
+  int _vartree_col_desc;
   wxTreeItemId _vartree_root;
+  wxTreeItemId _vartree_global;
+  wxTreeItemId _vartree_builtin;
   wxTreeItemId _vartree_images;
   wxTreeItemId _vartree_surfaces;
   wxTreeItemId _vartree_numbers;
@@ -233,8 +245,6 @@ protected:
   wxTreeItemId _vartree_objects;
   wxTreeItemId _vartree_wrapped_functions;
   wxTreeItemId _vartree_others;
-
-  wxDrawingWindow* _drawing_window;
 
   void CreateMenu();
 

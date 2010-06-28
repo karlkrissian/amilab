@@ -26,17 +26,17 @@ if (!exists(MinSearchClass)) {
     #----------------------------
     proc ::Close() \
     {
-      ::win.Hide
+      ::win.HidePanel()
       delvars GetObjectName(::Close)
     }
-    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
     #----------------------------
     proc ::CloseAll() {
-      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
+      eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
       ::Close
     }
-    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
     
     #
     # Simple procedure to find the minimum of a function
@@ -72,12 +72,12 @@ if (!exists(MinSearchClass)) {
       } 
       # end for _n
     
-      ::result_string = boost_format("%1%")%::xmin
-      ::result_value  = boost_format("%1%")%::valmin
-      ::win.update
+      ::result_string = "%1%" %::xmin
+      ::result_value  = "%1%" %::valmin
+      ::win.Update(-1)
     
     }
-    ::MinGrid.Comments("Simple procedure to find the minimum of a function by scanning a regular grid")
+    Comments( ::MinGrid, "Simple procedure to find the minimum of a function by scanning a regular grid")
 
 
     #
@@ -101,7 +101,7 @@ if (!exists(MinSearchClass)) {
       repeat { 
     
         iterations++;
-        printn boost_format("*********   nb_div = %1%") %nb_div;
+        printn "*********   nb_div = %1%" %nb_div;
         if (nb_div>::P1nbits) { break; }
         # different configurations  
         if (v0<v1) {
@@ -157,53 +157,54 @@ if (!exists(MinSearchClass)) {
       if (v1<resV) { resX = current;       resV = v1; } 
       if (v2<resV) { resX = current+_step; resV = v2; } 
 
-      ::result_string = boost_format("%1% ")%resX
-      ::result_string =  ::result_string + boost_format(" +/- %1%")%_step
-      ::result_value  =  boost_format("%1%")%resV
-      ::win.update
+      ::result_string = "%1% " %resX
+      ::result_string =  ::result_string + " +/- %1%" %_step
+      ::result_value  =  "%1%" %resV
+      ::win.Update(-1)
 
     }
-    ::MinDichotomy.Comments("Simple procedure to find the minimum of a function by dichotomy.")
+    Comments( ::MinDichotomy, "Simple procedure to find the minimum of a function by dichotomy.")
 
     proc ::CreateWindow() \
     {
       # parameters window
-      ::win = ParamWin("MinSearch")
+      import = &global::ami_import;
+      ::win = import->ParamPanel("MinSearch")
       
-      ::win.BeginBook
+      ::win.BeginBook()
         ::win.AddPage("Parameters")
-          ::win.AddString(::eval_string,"E")
+          ::win.AddString( &::eval_string,"E")
 
-          ::win.BeginBook
+          ::win.BeginBook()
             ::win.AddPage("P1")
               ::win.BeginBoxPanel("1st parameter")
-                ::win.AddFloat(::P1min,"min",0,100)
-                ::win.AddFloat(::P1max,"max",0,100)
-                ::win.AddFloat(::P1inc,"inc",0,100)
-                ::win.AddInt(::P1nbits,"iter",1,10)
-              ::win.EndBoxPanel
+                ::win.AddFloat( &::P1min,"min",0,100)
+                ::win.AddFloat( &::P1max,"max",0,100)
+                ::win.AddFloat( &::P1inc,"inc",0,100)
+                ::win.AddInt( &::P1nbits,"iter",1,10)
+              ::win.EndBoxPanel()
   
             ::win.AddPage("P2")
               ::win.BeginBoxPanel("2nd parameter")
-                ::win.AddFloat(::P2min,"min",0,100)
-                ::win.AddFloat(::P2max,"max",0,100)
-                ::win.AddFloat(::P2inc,"inc",0,100)
-                ::win.AddInt(::P2nbits,"iter",1,10)
-              ::win.EndBoxPanel
-          ::win.EndBook
+                ::win.AddFloat( &::P2min,"min",0,100)
+                ::win.AddFloat( &::P2max,"max",0,100)
+                ::win.AddFloat( &::P2inc,"inc",0,100)
+                ::win.AddInt( &::P2nbits,"iter",1,10)
+              ::win.EndBoxPanel()
+          ::win.EndBook()
 
-          ::win.AddString(::result_string,"res")
-          ::win.AddString(::result_value,"val")
+          ::win.AddString( &::result_string,"res")
+          ::win.AddString( &::result_value,"val")
           ::win.AddButton("Dichotomy",::MinDichotomy)
           ::win.AddButton("Grid",     ::MinGrid)
-      ::win.EndBook
-      ::win.BeginHorizontal
+      ::win.EndBook()
+      ::win.BeginHorizontal()
         ::win.AddButton("Close",      ::Close)
         ::win.AddButton("Close All",  ::CloseAll)
-      ::win.EndHorizontal
+      ::win.EndHorizontal()
       
-      ::win.update
-      ::win.Display
+      ::win.Update(-1)
+      ::win.Display()
     }
 
     ::Init
@@ -223,7 +224,7 @@ if (!exists(minsearch)) {
   if (argc>=1) {
     printn "reading image"
     minsearch->eval_string = $1
-    minsearch->win.update
+    minsearch->win.Update(-1)
   }
 
 } else {

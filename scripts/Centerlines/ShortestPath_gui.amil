@@ -91,7 +91,7 @@ if (!exists(SPClass)) {
     {
       eval "::endmask <<="+::endmask_name+";"
       if (::endmask_name=="Image") {
-        ::endmask_name = "endmask"
+        ::endmask_name = "::endmask"
         ::win.Update(-1)
       }
     }
@@ -103,9 +103,9 @@ if (!exists(SPClass)) {
       show ::input
       if (exists(::input_draw)) {
         ::SetStartPoint( \
-                          ::input_draw.GetXPos, \
-                          ::input_draw.GetYPos, \
-                          ::input_draw.GetZPos \
+                          ::input_draw.GetXPos(), \
+                          ::input_draw.GetYPos(), \
+                          ::input_draw.GetZPos() \
                         )
       }
     }
@@ -139,9 +139,9 @@ if (!exists(SPClass)) {
       show ::input
       if (exists(::input_draw)) {
         ::SetEndPoint( \
-                          ::input_draw.GetXPos, \
-                          ::input_draw.GetYPos, \
-                          ::input_draw.GetZPos \
+                          ::input_draw.GetXPos(), \
+                          ::input_draw.GetYPos(), \
+                          ::input_draw.GetZPos() \
                         )
       }
       ::Px2 = ::input.trx + ::endx*::input.vx
@@ -179,24 +179,25 @@ if (!exists(SPClass)) {
       ::load_speed
       show ::input
       show ::speed
-      ::input_draw.compare(::speed)
+      ::input_draw._compare(::speed)
       if (exists(::path)) { show ::path; }
     }  
     #----------------------------
     proc ::Close() \
     {
       if (exists(::win)) {
-        ::win.HidePanel
+        ::win.HidePanel()
       }
       delvars GetObjectName(::Close)
     }
-    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-  
+    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    
+    #----------------------------
     proc ::CloseAll() {
-      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
+      eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
       ::Close
     }
-    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
     
     #------------------------------------
     #-----------------------------------------------
@@ -230,7 +231,7 @@ if (!exists(SPClass)) {
                             3,0.01,0.5)
         if (::endx<2) { ::endx=2; }
         if (::endy<2) { ::endy=2; }
-        if (::endz<2) { ::endz=2; }
+        if ((::endz<2)&&(::input.tz>1)) { ::endz=2; }
         fminit.setpos(::endx,::endy,::endz)
         fminit.set(-::maxcost)
       } else {
@@ -243,11 +244,6 @@ if (!exists(SPClass)) {
       #maxrepim_crop = maxrepim_crop/10
       # running fast marching until the point 1 is reached
       printn "FMT"
-      //::res = ::itk->FastMarchingImageFilter3D(maxrepim_crop,\
-            //::endx,::endy,::endz,\
-            //::maxcost)
-      //::res = ::res+5
-      //::res = (::res>::maxcost)*::maxcost+(::res<=::maxcost)*::res
       res = vtkFastMarchingTarget(maxrepim_crop,fminit,::maxcost,\
                             ::startx+0.5,::starty+0.5,::startz+0.5)
       #::res.info
@@ -304,7 +300,7 @@ if (!exists(SPClass)) {
             # set the end mask
             ::win.AddImageChoice( &::endmask_name,"Stopping mask" )
 
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
     
         ::win.AddPage("Param")
         
@@ -318,30 +314,40 @@ if (!exists(SPClass)) {
             ::win.AddFloat( &::input_Imin,  "::input_Imin", 0,10000)
             ::win.AddFloat( &::input_Imax,  "::input_Imax", 0,10000)
             ::win.AddFloat( &::input_speed,  "::input_speed", 0,100)
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
     
           ::win.AddFloat( &::step_size,  "::step_size", 0.01,1)
           ::win.AddFloat( &::maxlength,  "::maxlength", 0,1000)
     
-          ::win.BeginHorizontal
+          ::win.BeginHorizontal()
             # run
             ::win.AddButton("Run",      ::Run)
             # display
             ::win.AddButton("Display",  ::Display)
-          ::win.EndHorizontal  
-      ::win.EndBook
+          ::win.EndHorizontal()  
+      ::win.EndBook()
 
       # close
-      ::win.BeginHorizontal
+      ::win.BeginHorizontal()
         ::win.AddButton("Close",      ::Close)
         ::win.AddButton("Close All",  ::CloseAll)
-      ::win.EndHorizontal
+      ::win.EndHorizontal()
     
       ::win.Update(-1)
-      ::win.Display
+      ::win.Display()
     }
     
     ::init
     } #End of class
   
 } # End of if
+
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(spobj)) {
+  SPClass spobj
+} else {
+  InfoDialog "The script seems to be already loaded."
+}

@@ -14,40 +14,40 @@ if (!exists(CSPHClass)) {
     
       ::class_name ="global::CSPHClass"
       ::dimx = INT(100)
-      ::dimx.Comments("Image dimension in X axis")
+      Comments( ::dimx, "Image dimension in X axis")
       ::dimy = INT(100)
-      ::dimy.Comments("Image dimension in Y axis")
+      Comments( ::dimy, "Image dimension in Y axis")
       ::dimz = INT(100)
-      ::dimz.Comments("Image dimension in Z axis")
+      Comments( ::dimz, "Image dimension in Z axis")
 
       ::bg = 0
-      ::bg.Comments("Image background intensity")
+      Comments( ::bg, "Image background intensity")
 
       ::fg = 100
-      ::fg.Comments("Image foreground intensity")
+      Comments( ::fg, "Image foreground intensity")
 
       ::R = 20 
-      ::R.Comments("Sphere radius")
+      Comments( ::R, "Sphere radius")
       
       ::image_name = "global::sphere"
-      ::image_name.Comments("Output image variable name")
+      Comments( ::image_name, "Output image variable name")
 
       ::Gui
     }
     
     #----------------------------
     proc ::Close() {
-      ::win.HidePanel
+      ::win.HidePanel()
       delvars GetObjectName(::Close)
     }
-    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
     #----------------------------
     proc ::CloseAll() {
-      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
+      eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
       ::Close
     }
-    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
         
     #------------------------------------
       
@@ -68,19 +68,19 @@ if (!exists(CSPHClass)) {
       
       eval ::image_name+"<<=res;"
     }
-    ::Create.Comments("Create the synthetic image of a sphere")
+    Comments( ::Create, "Create the synthetic image of a sphere")
     
     proc ::Show() {
       
       eval "show "+::image_name+";"
     }
-    ::Show.Comments("Shows the resulting sphere")
+    Comments( ::Show, "Shows the resulting sphere")
     
     proc ::Gui() {
       import = &global::ami_import;
       ::win = import->ParamPanel("CreateSphere")
     
-      ::win.BeginBook
+      ::win.BeginBook()
         ::win.AddPage("Param")
           ::win.AddInt( &::dimx,"X_dim",1,1000)
           ::win.AddInt( &::dimy,"Y_dim",1,1000)
@@ -91,21 +91,21 @@ if (!exists(CSPHClass)) {
             ::win.AddFloat( &::bg,"Background",0.1,500)
             ::win.AddFloat( &::fg,"Foreground",0.1,500)
           ::win.EndPanel
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
         
           ::win.AddFloat( &::R,"Radius",0.1,50)
         
           ::win.AddString( &::image_name,"Result name")
           ::win.AddButton("Create", ::Create)
           ::win.AddButton("Show",   ::Show)
-      ::win.EndBook
-      ::win.BeginHorizontal
+      ::win.EndBook()
+      ::win.BeginHorizontal()
           ::win.AddButton("Close",      ::Close)
           ::win.AddButton("Close All",  ::CloseAll)
-        ::win.EndHorizontal
+        ::win.EndHorizontal()
     
       ::win.Update(-1)
-      ::win.Display
+      ::win.Display()
     }
     
     ::Init

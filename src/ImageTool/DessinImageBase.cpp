@@ -895,9 +895,9 @@ void DessinImageBase :: CreateWxMenu()
     // Image Menu
     menuImage = new wxMenu;
     menuImage->Append( ID_MenuImage_Display,   GetwxStr("&Display")         );
-    menuImage->Append( ID_MenuImage_Reload,    GetwxStr("&Reload")          );
+//    menuImage->Append( ID_MenuImage_Reload,    GetwxStr("&Reload")          );
     menuImage->Append( ID_MenuImage_Compare,   GetwxStr("&Compare")         );
-    menuImage->Append( ID_MenuImage_VoxelSize, GetwxStr("&Voxel Size")      );
+//    menuImage->Append( ID_MenuImage_VoxelSize, GetwxStr("&Voxel Size")      );
 
     menuImage->AppendSeparator();
     wxMenu* save_submenu = new wxMenu;
@@ -905,8 +905,8 @@ void DessinImageBase :: CreateWxMenu()
 //    save_submenu->Append(ID_MenuImage_Save_image, GetwxStr("Save Image"));
     menuImage->Append( ID_MenuImage_Save,      GetwxStr("&Save"),save_submenu  );
 
-    menuImage->AppendSeparator();
-    menuImage->Append( ID_MenuImage_info, GetwxStr("Image &Info" )     );
+//    menuImage->AppendSeparator();
+//    menuImage->Append( ID_MenuImage_info, GetwxStr("Image &Info" )     );
 
     menuImage->AppendSeparator();
     menuImage->Append( ID_MenuImage_close, GetwxStr("&Close" )     );
@@ -926,83 +926,83 @@ void DessinImageBase :: CreateWxMenu()
 
   Si GB_debug AlorsFait printf("DessinImageBase::CreateWxMenu() Option \n");
 
-    _wxm_mode = new wxMenuEnum( menuOptions,
-                                &Param._option_traitement,
-                                "&Option");
-    _wxm_mode->AddChoice( ID_MenuOptions_option_slice,
-                          GetwxStr("&Slice"),
-                          GetwxStr("Slice View"));
-    _wxm_mode->AddChoice( ID_MenuOptions_option_mip,
-                          GetwxStr("&MIP"),
-                          GetwxStr("Maximum Intensity Projection View"));
-    _wxm_mode->AddChoice( ID_MenuOptions_option_anim,
-                          GetwxStr("&Animation"),
-                          GetwxStr("Temporal Animation in the 3rd dimension"));
-    _wxm_mode->SetSelection(ID_MenuOptions_option_slice);
-
-    menuOptions->AppendSeparator();
+//    _wxm_mode = new wxMenuEnum( menuOptions,
+//                                &Param._option_traitement,
+//                                "&Option");
+//    _wxm_mode->AddChoice( ID_MenuOptions_option_slice,
+//                          GetwxStr("&Slice"),
+//                          GetwxStr("Slice View"));
+//    _wxm_mode->AddChoice( ID_MenuOptions_option_mip,
+//                          GetwxStr("&MIP"),
+//                          GetwxStr("Maximum Intensity Projection View"));
+//    _wxm_mode->AddChoice( ID_MenuOptions_option_anim,
+//                          GetwxStr("&Animation"),
+//                          GetwxStr("Temporal Animation in the 3rd dimension"));
+//    _wxm_mode->SetSelection(ID_MenuOptions_option_slice);
+//
+//    menuOptions->AppendSeparator();
 
   Si GB_debug AlorsFait printf("DessinImageBase::CreateWxMenu() Slice \n");
 
-    _wxm_type_coupe = new wxMenuEnum(menuOptions,&Param._type_coupe, "&Slice");
-    _wxm_type_coupe->AddChoice( ID_MenuOptions_sliceXY,
-                                GetwxStr("XY"),
-                                GetwxStr("XY           Slice"));
-    _wxm_type_coupe->AddChoice( ID_MenuOptions_sliceXZ,
-                                GetwxStr("XZ"),
-                                GetwxStr("XZ           Slice"));
-    _wxm_type_coupe->AddChoice( ID_MenuOptions_sliceXY_XZ,
-                                GetwxStr("XY+XZ"),
-                                GetwxStr("XY & XZ      Slice"));
-    _wxm_type_coupe->AddChoice( ID_MenuOptions_sliceZY,
-                                GetwxStr("ZY"),
-                                GetwxStr("ZY           Slice"));
-    _wxm_type_coupe->AddChoice( ID_MenuOptions_sliceXY_ZY,
-                                GetwxStr("XY+ZY"),
-                                GetwxStr("XY & ZY      Slice"));
-    _wxm_type_coupe->AddChoice( ID_MenuOptions_sliceXZ_ZY,
-                                GetwxStr("XZ+ZY"),
-                                GetwxStr("XZ & ZY      Slice"));
-    _wxm_type_coupe->AddChoice( ID_MenuOptions_sliceXY_XZ_ZY,
-                                GetwxStr("XY+XZ+ZY"),
-                                GetwxStr("GetwxStr(XY & XZ & ZY Slice"));
-    _wxm_type_coupe->AddChoice( ID_MenuOptions_XYslices,
-                                GetwxStr("many XY"),
-                                GetwxStr("XY Slices"));
-    _wxm_type_coupe->SetSelection(ID_MenuOptions_sliceXY_XZ_ZY);
-
-    menuOptions->AppendSeparator();
+//    _wxm_type_coupe = new wxMenuEnum(menuOptions,&Param._type_coupe, "&Slice");
+//    _wxm_type_coupe->AddChoice( ID_MenuOptions_sliceXY,
+//                                GetwxStr("XY"),
+//                                GetwxStr("XY           Slice"));
+//    _wxm_type_coupe->AddChoice( ID_MenuOptions_sliceXZ,
+//                                GetwxStr("XZ"),
+//                                GetwxStr("XZ           Slice"));
+//    _wxm_type_coupe->AddChoice( ID_MenuOptions_sliceXY_XZ,
+//                                GetwxStr("XY+XZ"),
+//                                GetwxStr("XY & XZ      Slice"));
+//    _wxm_type_coupe->AddChoice( ID_MenuOptions_sliceZY,
+//                                GetwxStr("ZY"),
+//                                GetwxStr("ZY           Slice"));
+//    _wxm_type_coupe->AddChoice( ID_MenuOptions_sliceXY_ZY,
+//                                GetwxStr("XY+ZY"),
+//                                GetwxStr("XY & ZY      Slice"));
+//    _wxm_type_coupe->AddChoice( ID_MenuOptions_sliceXZ_ZY,
+//                                GetwxStr("XZ+ZY"),
+//                                GetwxStr("XZ & ZY      Slice"));
+//    _wxm_type_coupe->AddChoice( ID_MenuOptions_sliceXY_XZ_ZY,
+//                                GetwxStr("XY+XZ+ZY"),
+//                                GetwxStr("GetwxStr(XY & XZ & ZY Slice"));
+//    _wxm_type_coupe->AddChoice( ID_MenuOptions_XYslices,
+//                                GetwxStr("many XY"),
+//                                GetwxStr("XY Slices"));
+//    _wxm_type_coupe->SetSelection(ID_MenuOptions_sliceXY_XZ_ZY);
+//
+//    menuOptions->AppendSeparator();
 
   Si GB_debug AlorsFait printf("DessinImageBase::CreateWxMenu() Size \n");
 
-    _wxm_type_taille = new wxMenuEnum(  menuOptions,
-                                        &Param._type_taille,
-                                        "&Size");
-    _wxm_type_taille->AddChoice(ID_MenuOptions_window_size,
-                                GetwxStr("Window size"),
-                                GetwxStr("Adapt to window size"));
-    _wxm_type_taille->AddChoice(ID_MenuOptions_fixed_size,
-                                GetwxStr("Selected factor"),
-                                GetwxStr("Selected fixed size"));
-    _wxm_type_taille->SetSelection(ID_MenuOptions_window_size);
-
-    menuOptions->AppendSeparator();
+//    _wxm_type_taille = new wxMenuEnum(  menuOptions,
+//                                        &Param._type_taille,
+//                                        "&Size");
+//    _wxm_type_taille->AddChoice(ID_MenuOptions_window_size,
+//                                GetwxStr("Window size"),
+//                                GetwxStr("Adapt to window size"));
+//    _wxm_type_taille->AddChoice(ID_MenuOptions_fixed_size,
+//                                GetwxStr("Selected factor"),
+//                                GetwxStr("Selected fixed size"));
+//    _wxm_type_taille->SetSelection(ID_MenuOptions_window_size);
+//
+//    menuOptions->AppendSeparator();
 
   Si GB_debug AlorsFait printf("DessinImageBase::CreateWxMenu() Original Size \n");
 
     menuOptions->Append( ID_MenuImage_original_size, GetwxStr("&Original Size"));
 
-    _wxm_zoom = new wxMenuEnum(menuOptions,&Param._fonction_zoom, "&Zoom");
-    _wxm_zoom->AddChoice( ID_MenuImage_zoom_activated,
-                          GetwxStr("Zoom activated"),
-                          GetwxStr("Activate zoom"));
-    _wxm_zoom->AddChoice( ID_MenuImage_zoom_desactivated,
-                          GetwxStr("Zoom desactivated"),
-                          GetwxStr("Desactivate zoom"));
-    _wxm_zoom->AddChoice( ID_MenuImage_unzoom,
-                          GetwxStr("Unzoom"),
-                          GetwxStr("Unzoom"));
-    _wxm_zoom->SetSelection(ID_MenuImage_zoom_desactivated);
+//    _wxm_zoom = new wxMenuEnum(menuOptions,&Param._fonction_zoom, "&Zoom");
+//    _wxm_zoom->AddChoice( ID_MenuImage_zoom_activated,
+//                          GetwxStr("Zoom activated"),
+//                          GetwxStr("Activate zoom"));
+//    _wxm_zoom->AddChoice( ID_MenuImage_zoom_desactivated,
+//                          GetwxStr("Zoom desactivated"),
+//                          GetwxStr("Desactivate zoom"));
+//    _wxm_zoom->AddChoice( ID_MenuImage_unzoom,
+//                          GetwxStr("Unzoom"),
+//                          GetwxStr("Unzoom"));
+//    _wxm_zoom->SetSelection(ID_MenuImage_zoom_desactivated);
 
 
     wxMenu* interp_submenu = new wxMenu;
@@ -1023,16 +1023,16 @@ void DessinImageBase :: CreateWxMenu()
 
   Si GB_debug AlorsFait printf("DessinImageBase::CreateWxMenu() Vector Field \n");
 
-    menuOptions->Append( ID_MenuOptions_circlefield,  GetwxStr("&Circle field"   ));
-    menuOptions->AppendSeparator();
+//    menuOptions->Append( ID_MenuOptions_circlefield,  GetwxStr("&Circle field"   ));
+//    menuOptions->AppendSeparator();
 
   Si GB_debug AlorsFait printf("DessinImageBase::CreateWxMenu() Voxels 3D \n");
 
-    menuOptions->Append( ID_MenuOptions_voxels3D,     GetwxStr("Vo&xels 3D"        ));
-    menuOptions->Append( ID_MenuOptions_OpenGLMIP,    GetwxStr("OpenGL &MIP"       ));
-    menuOptions->Append( ID_MenuOptions_VolRen,       GetwxStr("Volume &Rendering" ));
-    menuOptions->Append( ID_MenuOptions_Sections3D,   GetwxStr("Sections &3D"      ));
-    menuOptions->Append( ID_MenuOptions_Colors,       GetwxStr("C&olors"           ));
+//    menuOptions->Append( ID_MenuOptions_voxels3D,     GetwxStr("Vo&xels 3D"        ));
+//    menuOptions->Append( ID_MenuOptions_OpenGLMIP,    GetwxStr("OpenGL &MIP"       ));
+//    menuOptions->Append( ID_MenuOptions_VolRen,       GetwxStr("Volume &Rendering" ));
+//    menuOptions->Append( ID_MenuOptions_Sections3D,   GetwxStr("Sections &3D"      ));
+//    menuOptions->Append( ID_MenuOptions_Colors,       GetwxStr("C&olors"           ));
 
     _wxm_linewidth = new wxMenuEnum(menuOptions,&_largeur_lignes,"Line &Width");
     _wxm_linewidth->AddChoice(ID_MenuOptions_linewidth1,  GetwxStr("width 1"),
@@ -1050,8 +1050,8 @@ void DessinImageBase :: CreateWxMenu()
     menuOptions->Check(ID_MenuOptions_display_mask,_dessine_masque);
     menuOptions->AppendCheckItem( ID_MenuOptions_display_cursor,   GetwxStr("Display &Cursor"  ));
     menuOptions->Check(ID_MenuOptions_display_cursor,Param._curseur._visible);
-    menuOptions->AppendCheckItem( ID_MenuOptions_paramwin,         GetwxStr("&Parameters"  ));
-    menuOptions->Check(ID_MenuOptions_paramwin,Param._parametres_visible);
+//    menuOptions->AppendCheckItem( ID_MenuOptions_paramwin,         GetwxStr("&Parameters"  ));
+//    menuOptions->Check(ID_MenuOptions_paramwin,Param._parametres_visible);
 
 
     menuBar->Append( menuOptions, GetwxStr("&Options" ));
@@ -1479,7 +1479,7 @@ void DessinImageBase::DessineIsoContour( int n)
   size = _isocontours[n].thickness
   if (size==0)  size = _largeur_lignes;
   style = _isocontours[n].style;
-  FixeParametresLigne( size, style, _cap_style, _join_style);
+  SetLineParameters( size, style, _cap_style, _join_style);
   SetPenColor( isocontours[n].color.RetourneCouleur());
 
   if ((_isocontours[n].image.expired()) ||
@@ -1587,7 +1587,7 @@ void DessinImageBase::DrawAxis( int orientation, // 0: horiz, 1: vert
   }
 
   SetPenColor( *wxBLACK);
-  FixeParametresLigne( 1, wxSOLID);
+  SetLineParameters( 1, wxSOLID);
 
   wxCoord maxCharWidth,maxCharHeight;
   _memory_dc->GetTextExtent(wxString::FromAscii("X"),
@@ -1966,7 +1966,7 @@ void DessinImageBase :: DrawColorBar( )
 
   vpos2 = b;
 
-  FixeParametresLigne(0,wxTRANSPARENT);
+  SetLineParameters(0,wxTRANSPARENT);
 
   val = valmin;
   val_step = (valmax-valmin)/255.0;
@@ -1996,7 +1996,7 @@ void DessinImageBase :: DrawColorBar( )
 
      SetTextFg( *wxBLACK);
      //Texte(r+2,(int)(vpos2+step+char_ymax/2),Istring);
-     FixeParametresLigne(1,wxSHORT_DASH);
+     SetLineParameters(1,wxSHORT_DASH);
      SetPenColor(*wxBLACK);
      //cout << "drawing line for " << Istring
      //     << " at " << (int) (vpos2+step/2) << endl;
@@ -2006,7 +2006,7 @@ void DessinImageBase :: DrawColorBar( )
             r,
             (int) (vpos2+step/2)
           );
-     FixeParametresLigne(0,wxTRANSPARENT);
+     SetLineParameters(0,wxTRANSPARENT);
      Texte(r+2,(int)(vpos2-char_ymax/2),Istring);
    FinSi
 
@@ -2016,7 +2016,7 @@ void DessinImageBase :: DrawColorBar( )
   SetPenColor( *wxBLACK);
   FixeStyleRemplissage(wxTRANSPARENT);
 //wxBRUSHSTYLE_TRANSPARENT);
-  FixeParametresLigne(1,wxSOLID);
+  SetLineParameters(1,wxSOLID);
   Rectangle(l,(int)t,r,(int) b+1);
   FixeStyleRemplissage(wxSOLID);
 //wxBRUSHSTYLE_SOLID);
@@ -3534,7 +3534,7 @@ void DessinImageBase :: DrawLineZ( float x1, float y1,
      register float          pos_x1, pos_y1;
      register float          pos_x2, pos_y2;
 
-     //  FixeParametresLigne( size, style, _cap_style, _join_style);
+     //  SetLineParameters( size, style, _cap_style, _join_style);
      //SetPenColor( _couleur_masque);
      //     printf(" DrawLineZ(%3.1f,%3.1f,%3.1f,%3.1f)\n",x1,y1,x2,y2);
     // TODO: check why we need +/- 0.5 and create coordinate conversion functions

@@ -10,6 +10,7 @@ Class Lines2D \
     ::sigma_min = 0.6, "minimal scale"
     ::sigma_max = 4, "maximal scale"
     ::sigma_nb  = INT(10), "number of scales"
+    ::black = UCHAR(1), "detect 1:black or 0:white lines?"
   }
   
   #-----------------------------------------------
@@ -24,10 +25,14 @@ Class Lines2D \
     ::win.Update(-1)
     show ::input
   }
-  ::load_input.Comments("Load input image")
+  Comments( ::load_input, "Load input image")
 
   proc ::Run() \
   {
+
+    if (!::black) {
+      ::input = -::input
+    }
     # force gradient to be weak?
     
     for n=0 to ::sigma_nb-1 {
@@ -60,6 +65,10 @@ Class Lines2D \
       }
     }
     # end for
+
+    if (!::black) {
+      ::input = -::input
+    }
   }
 
   #----------------------------
@@ -67,7 +76,7 @@ Class Lines2D \
     show ::input
     if (exists(::lambda_max)) {
       show ::lambda_max
-      ::input_draw.compare(::lambda_max_draw)
+      ::input_draw._compare(::lambda_max_draw)
     } else {
       InfoDialog "The algorithm has not been run yet ..."
     }
@@ -76,48 +85,49 @@ Class Lines2D \
 
   #----------------------------
   proc ::Close() {
-    ::win.HidePanel
+    ::win.HidePanel()
     delvars GetObjectName(::Close)
   }
-  ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+  Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
   #----------------------------
   proc ::CloseAll() {
-    eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
+    eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
     ::Close
   }
-  ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+  Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
       
 
 
   proc ::Gui() \
   {
     import = &global::ami_import;
-    ::win = import->ParamPanel("LevelSets")
+    ::win = import->ParamPanel("Lines2D")
     ::win.BeginBook()
       ::win.AddPage("IO")
         ::win.BeginBoxPanel("Input Image")
           # set the input image
-          ::win.BeginHorizontal
+          ::win.BeginHorizontal()
             ::win.AddImageChoice( &::input_name, "")
             ::win.AddButton("Load",::load_input)
             #::win.AddButton("Ref",::ref_input)
-          ::win.EndHorizontal
-        ::win.EndBoxPanel
+          ::win.EndHorizontal()
+        ::win.EndBoxPanel()
 
       ::win.AddPage("Params")
         ::win.BeginBoxPanel("Scales")
           ::win.AddFloat(&::sigma_min,"min",0.1,3)
           ::win.AddFloat(&::sigma_max,"max",0.1,10)
           ::win.AddInt(  &::sigma_nb ,"nb",1,20)
+          ::win.AddBoolean(&::black,"Black lines")
         ::win.EndBoxPanel()
         ::win.AddButton("Run",::Run)
         ::win.AddButton("Display",::Display)
-    ::win.EndBook
-      ::win.BeginHorizontal
+    ::win.EndBook()
+      ::win.BeginHorizontal()
       ::win.AddButton("Close",          ::Close)
       ::win.AddButton("Close All",          ::CloseAll)
-    ::win.EndHorizontal  
+    ::win.EndHorizontal()  
 
     ::win.Update(-1)
     ::win.Display()

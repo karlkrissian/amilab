@@ -1,17 +1,19 @@
 #
 # Creates a torus within a volume data
 #
+
+func "Common/ScriptGui"
+
 if (!exists(CTClass)) {
 
   ami_import->Filters()
   
-  Class CTClass {
+  Class CTClass : public ScriptGui {
 
     ::filters=&global::filters
 
     #----------------------------
     proc ::Init() {
-      ::class_name ="global::CTClass"
       ::autoresize = UCHAR(0) , "Allow automatic calculation of the image dimensions"
       ::margin = INT(10), "Image margin in all directions for automatic calculation"
       ::dimx = INT(100), "Image dimension in X (in voxels)"
@@ -30,20 +32,7 @@ if (!exists(CTClass)) {
       ::image_name = "global::torus", "Name of the resulting image variable"
       ::Gui
     }
-    
-    #----------------------------
-    proc ::Close() {
-      ::win.HidePanel
-      delvars GetObjectName(::Close)
-    }
-    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-    
-    #----------------------------
-    proc ::CloseAll() {
-      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
-      ::Close
-    }
-    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+
         
     #------------------------------------
     
@@ -73,8 +62,12 @@ printn "deleting windows"
     tmp_y = tmp_y-::dimy/2
     tmp_z = tmp_z-::dimz/2
     dxy=sqrt(tmp_x*tmp_x+tmp_y*tmp_y)-::R
+    #dxy.info
+    #tmp_z.info
     res = -(dxy*dxy+tmp_z*tmp_z)+(::r*::r)
   
+    #printn "res.info"
+    #res.info
     # estimate partial volume effect based on linear interpolation
     res = ::filters->ComputePV_subdiv(res)
     res = res*(::fg-::bg)+::bg
@@ -92,27 +85,30 @@ printn "deleting windows"
     ::win.Update(-1)
   }
 
+  proc ::GetOutput() {
+    eval "return = "+::image_name+";"
+  }
+
   proc ::Show() {
     
     eval "show "+::image_name+";"
   }
   
   proc ::Gui() {
-    import = &global::ami_import;
-    ::win = import->ParamPanel("CreateTorus")
+    ::win = global::ami_import.ParamPanel("CreateTorus")
   
-    ::win.BeginBook
+    ::win.BeginBook()
       ::win.AddPage("Param")
 
         ::win.BeginBoxPanel("Radii")
           ::win.AddFloat( &::R,"R",0.1,50)
           ::win.AddFloat( &::r,"r",0.1,50)
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
 
         ::win.BeginBoxPanel("Colors")
           ::win.AddFloat( &::bg,"Bg",0.1,500)
           ::win.AddFloat( &::fg,"Fg",0.1,500)
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
       
         ::win.AddString( &::image_name,"Result name")
         ::win.AddButton("Create", ::Create)
@@ -123,21 +119,18 @@ printn "deleting windows"
           ::win.AddInt( &::dimx,  "::dimx", 1,1000)
           ::win.AddInt( &::dimy,  "::dimy", 1,1000)
           ::win.AddInt( &::dimz,  "::dimz", 1,1000)
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
         ::win.BeginBoxPanel("Automatic size")
           ::win.AddInt( &::margin,"margin",1,50)
           ::win.AddButton("Compute Size",::ComputeSize)
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
 
-    ::win.EndBook
+    ::win.EndBook()
 
-    ::win.BeginHorizontal
-      ::win.AddButton("Close",      ::Close)
-      ::win.AddButton("Close All",  ::CloseAll)
-    ::win.EndHorizontal
+    ::AddStandardButtons(&::win)
   
     ::win.Update(-1)
-    ::win.Display
+    ::win.Display()
   }
   
   ::Init()

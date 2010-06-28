@@ -19,7 +19,7 @@
 #include "CoutwxString.h"
 #include "MainFrame.h"
 #include "ImageStack.h"
-#include "stctest.h"
+#include "wxStcFrame.h"
 
 #include <wx/filename.h>
 
@@ -42,7 +42,7 @@ Driver::Driver()
 
   procedure_declaration = false;
 
-  init_debug_stream();
+//  init_debug_stream();
   init_err_output();
   init_res_output();
   init_cmdhistory();
@@ -51,7 +51,7 @@ Driver::Driver()
 
 //------------------------------------------------------
 Driver::~Driver() {
-  close_debug_stream();
+//  close_debug_stream();
 }
 
 //------------------------------------------------------
@@ -73,9 +73,13 @@ bool Driver::parse_stream(std::istream& in,
 
   // Parse ...
   Parser parser(*this);
-  parser.set_debug_level(trace_parsing);
-  if (language_debug_stream.good()) 
-    parser.set_debug_stream(language_debug_stream);
+  #if YYDEBUG
+    parser.set_debug_level(trace_parsing);
+    if (language_debug_stream.good()) 
+      parser.set_debug_stream(language_debug_stream);
+    else
+      parser.set_debug_stream(std::cout);
+  #endif
 
   int res = 0;
   try {
@@ -134,7 +138,7 @@ bool Driver::parse_commandline(const std::string &input, const std::string& snam
 
 //-----------------------------------------------------------
 int Driver::error(const class location& l,
-		   const std::string& m)
+       const std::string& m)
 {
     stringstream tmpstr;
     tmpstr  << l 
@@ -167,19 +171,32 @@ bool Driver::parse_block( const AmiInstructionBlock::ptr& b )
 
 }
 
+//-----------------------------------------------------------
+void Driver::ParseClassBody(const AMIClass::ptr& oclass)
+{
+  if (oclass.get()) {
+    // recursive call to possible parent
+    this->ParseClassBody(oclass->GetParentClass());
+    // call to its body after setting the current filename
+    this->current_file = oclass->GetFileName();
+    parse_block(oclass->GetBody());
+  }
+}
 
 //-----------------------------------------------------------
 void Driver::yyip_instanciate_object( const AMIClass::ptr& oclass,
-      AMIObject* object)
+      AMIObject::ptr& object)
 {
 
   int    previous_lineno   = yyiplineno;
   string previous_filename = this->current_file;
-  int    i;
-  char*  name;
+ // int    i;
+ // char*  name;
 
   // Set the new local context
   std::string contextname = (boost::format("local_%1%")%object->GetName()).str();
+
+  int previous_context = Vars.GetCurrentContextNumber();
   Vars.NewContext(contextname.c_str());
   Vars.SetLastContext();
 
@@ -187,14 +204,24 @@ void Driver::yyip_instanciate_object( const AMIClass::ptr& oclass,
   Variables::ptr previous_ocontext = Vars.GetObjectContext();
   Vars.SetObjectContext(object->GetContext());
 
-  // TODO: Could execute inherited classes in the future ...
+  // Add some default variables as information
+  // this
+  // classname
+  string_ptr classname(new string(oclass->GetName()));
+  object->GetContext()->AddVar<string>("classname",classname,object->GetContext());
+  // classfilename
+  string_ptr classfname(new string(oclass->GetFileName()));
+  object->GetContext()->AddVar<string>("classfilename",classfname,object->GetContext());
 
+  // Inheritence need to be recursive
   // Call the class body
-  this->current_file = oclass->GetFileName();
-  parse_block(oclass->GetBody());
+  ParseClassBody(oclass);
+//this->current_file = oclass->GetFileName();
+//  parse_block(oclass->GetBody());
 
   // Remove the previous context from the list
   Vars.DeleteLastContext();
+  Vars.SetCurrentContextNumber(previous_context);
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);
@@ -228,6 +255,7 @@ BasicVariable::ptr Driver::yyip_call_function( AMIFunction* f, const ParamList::
   Variables::ptr previous_ocontext = Vars.GetObjectContext();
   Vars.SetObjectContext(f->GetContext());
 
+  int previous_context = Vars.GetCurrentContextNumber();
   // Set the new context
   Vars.NewContext(f->GetName().c_str());
   Vars.SetLastContext();
@@ -255,7 +283,7 @@ BasicVariable::ptr Driver::yyip_call_function( AMIFunction* f, const ParamList::
         }
       } // end for
     } else {
-      CLASS_ERROR(" Error checking for parameters.");
+      err_print("Error checking for parameters: check parameters types in function call (NUM is float, IMAGE is image variable, etc ...).");
     }
   }
 
@@ -271,6 +299,7 @@ BasicVariable::ptr Driver::yyip_call_function( AMIFunction* f, const ParamList::
   // removing each parameter is not necessary
   // cause it will be done by DeleteLastContext()
   Vars.DeleteLastContext();
+  Vars.SetCurrentContextNumber(previous_context);
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);
@@ -348,9 +377,7 @@ bool Driver::parse_script(  const char* filename)
 
   if (!newname.IsFileReadable()) {
     string mess =  (format("Error in reading %s \n") % inputname.GetFullPath().mb_str()).str();
-    wxMessageDialog* err_msg = new wxMessageDialog(GB_main_wxFrame,GetwxStr(mess),GetwxStr("Error"),wxOK | wxICON_ERROR | wxSTAY_ON_TOP );
-    err_msg->ShowModal();
-    err_msg->Destroy();
+    err_print(mess.c_str());
     return 0;
   }
 
@@ -382,13 +409,16 @@ void Driver::yyiperror(const char *s)
 //           ---------
 {
   string tmpstr;
-  if (yyiplineno) {
-    tmpstr = str(format("%s:%d\t %s \n\t ==> at '%s'  \n")
-      %this->current_file.c_str()
-      %this->yyiplineno
-      %s
-      %this->lexer->YYText()
-    );
+  if ((yyiplineno)&&(this->lexer)) {
+    const char* text = this->lexer->YYText();
+    if (text) {
+      tmpstr = str(format("%s:%d\t %s \n\t ==> at '%s'  \n")
+        %this->current_file.c_str()
+        %this->yyiplineno
+        %s
+        %text
+      );
+    } else tmpstr = str(format("%s \n")%s);
     err_print(tmpstr.c_str());
   } else {
     tmpstr = str(format("%s \n")%s);
@@ -442,34 +472,39 @@ void Driver::init_err_output()
 int Driver::err_print(const char* st) 
 //   -----------------
 {
-  *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString::FromAscii(st);
+  if (GB_main_wxFrame)
+    *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString::FromAscii(st);
+  std::cout << "Error: " << st << std::endl;
   string mess =  (format("Error %s \n") % st).str();
   if (InConsole()) 
     mess = mess + " Abort current parsing ?";
   else 
     mess = mess + " Abort current parsing and open file?";
 
-  wxMessageDialog* err_msg = new wxMessageDialog(GB_main_wxFrame,GetwxStr(mess),GetwxStr("Error"),wxYES_NO |  wxYES_DEFAULT  | wxICON_ERROR | wxSTAY_ON_TOP );
-  int res = err_msg->ShowModal();
-  err_msg->Destroy();
+  if ((!nomessagedialog)&&(GB_main_wxFrame)) {
+    wxMessageDialog* err_msg = new wxMessageDialog(GB_main_wxFrame,GetwxStr(mess),GetwxStr("Error"),wxYES_NO |  wxYES_DEFAULT  | wxICON_ERROR | wxSTAY_ON_TOP );
+    int res = err_msg->ShowModal();
+    err_msg->Destroy();
 
-  if ((!InConsole())&&(res==wxID_YES)) {
-    // create application frame
-    StcTestFrame*  m_frame = new StcTestFrame ( wxT("AMILab editor"));
-    // open application frame
-    m_frame->Layout ();
-    m_frame->Show (true);
-    m_frame->FileOpen (wxString(this->current_file.c_str(),wxConvUTF8));
-    Edit* editor = m_frame->GetEditor();
-    // TODO: 
-    // - set show line numbers
-    // - set highlight C++
-    // - go to specific line
-    editor->ShowLineNumbers(true);
-    editor->GotoLine(this->yyiplineno-1);
+    if ((!InConsole())&&(res==wxID_YES)) {
+      // create application frame
+      wxStcFrame*  m_frame =  GB_main_wxFrame->GetAmilabEditor();
+      // open application frame
+      m_frame->Layout ();
+      m_frame->Show (true);
+      m_frame->FileOpen (wxString(this->current_file.c_str(),wxConvUTF8));
+      wxEditor* editor = m_frame->GetActiveEditor();
+      // TODO: 
+      // - set show line numbers
+      // - set highlight C++
+      // - go to specific line
+      editor->ShowLineNumbers(true);
+      editor->GotoLine(this->yyiplineno-1);
+    }
+    return res;
   }
 
-  return res;
+  return wxID_YES;
 } // Driver::err_print()
 
 
@@ -477,11 +512,14 @@ int Driver::err_print(const char* st)
 void Driver::info_print(const char* st) 
 //   -----------------
 {
-  *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString::FromAscii(st);
+  if (GB_main_wxFrame)
+    *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString::FromAscii(st);
   string mess =  (format("Information: %s \n") % st).str();
-  wxMessageDialog* err_msg = new wxMessageDialog(NULL,GetwxStr(mess),GetwxStr("Info"),wxOK | wxICON_INFORMATION | wxSTAY_ON_TOP );
-  err_msg->ShowModal();
-  err_msg->Destroy();
+  if (!nomessagedialog) {
+    wxMessageDialog* err_msg = new wxMessageDialog(GB_main_wxFrame,GetwxStr(mess),GetwxStr("Info"),wxOK | wxICON_INFORMATION | wxSTAY_ON_TOP );
+    err_msg->ShowModal();
+    err_msg->Destroy();
+  }
 } // Driver::err_print()
 
 
@@ -516,8 +554,9 @@ void Driver::init_res_output()
 void Driver::res_print(const char* st) 
 //   -----------------
 {
-  *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString::FromAscii(st);
-  printf("%s",st);
+  if (GB_main_wxFrame)
+    *(GB_main_wxFrame->GetConsole()->GetLog()) << wxString::FromAscii(st);
+  std::cout << st << endl;
 } // Driver::res_print()
 
 
@@ -581,7 +620,7 @@ void Driver::init_cmdhistory()
 
   if (!cmdhistory) {
     cerr << format("Error in opening %s\n") % filename;
-    FILE_ptr stdout_ptr = FILE_ptr(stdout);
+    FILE_ptr stdout_ptr = CreateSmartPointer<FILE>()(stdout);
     cmdhistory.swap(stdout_ptr);
   } else
     cmdhistory_filename = filename;

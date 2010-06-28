@@ -75,19 +75,19 @@ if (!exists(NLmeansClass)) {
     proc ::Close() \
     {
       if (exists(::win)) {
-        ::win.HidePanel
+        ::win.HidePanel()
       }
       delvars GetObjectName(::Close)
     }
-    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
     #----------------------------
     proc ::CloseAll() \
     {
-      eval boost_format("if (exists(%1%)) { del %1%; };") % ::class_name
+      eval "if (exists(%1%)) { del %1%; };" % ::class_name
       ::Close
     }
-    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
     
     #----------------------------
     proc ::LoadInput() \
@@ -111,11 +111,11 @@ if (!exists(NLmeansClass)) {
     }
     
     #----------------------------
-    proc ::ComputeMSE( IMAGE ::res) \
+    proc ::ComputeMSE( IMAGE res) \
     {
       if exists(::groundtruth) {
         if (::noisetype==1) {
-          res1=::res*::res-2*::noisesigma*::noisesigma
+          res1=res*res-2*::noisesigma*::noisesigma
           res1 = sqrt(res1*(res1>0))
           mask = res1*0
           if (exists(::roi)) {
@@ -127,14 +127,14 @@ if (!exists(NLmeansClass)) {
           ::mse = mean[mask]((res1-::groundtruth)*(res1-::groundtruth))
           printn sprint("MSE %3.5f \n",::mse)
         } else {
-          mask = ::res*0
+          mask = res*0
           if (exists(::roi)) {
             smask = ::roi*0+1
             mask.putimage(smask)
           } else {
             mask = 1
           }
-          ::mse = mean[mask]((::res-::groundtruth)*(::res-::groundtruth))
+          ::mse = mean[mask]((res-::groundtruth)*(res-::groundtruth))
           printn sprint("MSE %3.5f \n",::mse)
         }
       }
@@ -167,7 +167,7 @@ printn "*** Filter() ****"
       if (exists(::roi)) {
         ::res0 = ::res[::roi]
   
-        if (::res0.GetFormat != RGB) {
+        if (::res0.GetFormat.val != RGB.val) {
           InitTime
           ::res_roi = ::filters->NLmeans((FLOAT)::res0,\
                                 ::t,::f,::h,\
@@ -181,25 +181,25 @@ printn "*** Filter() ****"
         } else {
           ::res_roi = ::res0
           ::res_roi.info
-          ::res_roi[0] = ::filters->NLmeans( (FLOAT)::res0[0],\
+          ::res_roi.SetComponent( 0, ::filters->NLmeans( (FLOAT)::res0[0],\
                                     ::t,::f,::h,\
                                     ::noisetype,\
                                     ::threads,\
                                     ::filter_type,\
                                     ::presmooth_SD,\
-                                    ::pattern_weight_param)
-          ::res_roi[1] = ::filters->NLmeans( (FLOAT)::res0[1],\
+                                    ::pattern_weight_param))
+          ::res_roi.SetComponent( 1, ::filters->NLmeans( (FLOAT)::res0[1],\
                                     ::t,::f,::h,\
                                     ::noisetype,::threads,\
                                     ::filter_type,\
                                 ::presmooth_SD,\
-                                ::pattern_weight_param)
-          ::res_roi[2] = ::filters->NLmeans( (FLOAT)::res0[2],\
+                                ::pattern_weight_param))
+          ::res_roi.SetComponent( 2, ::filters->NLmeans( (FLOAT)::res0[2],\
                                     ::t,::f,::h,\
                                     ::noisetype,::threads,\
                                     ::filter_type,\
                                 ::presmooth_SD,\
-                                ::pattern_weight_param)
+                                ::pattern_weight_param))
         }
   
         ::res0.info
@@ -211,7 +211,7 @@ printn "*** Filter() ****"
       } else {
         ::res0 = ::res
   
-        if (::res0.GetFormat != RGB) {
+        if (::res0.GetFormat.val != RGB.val) {
 
 printn "running ::filters->NLmeans() with"
 printn "t = %1%" % ::t
@@ -230,18 +230,18 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
                           ::presmooth_SD,\
                           ::pattern_weight_param)
         } else {
-          ::res[0] = ::filters->NLmeans((FLOAT)::res0[0],::t,::f,::h,::noisetype,::threads,\
+          ::res.SetComponent( 0, ::filters->NLmeans((FLOAT)::res0[0],::t,::f,::h,::noisetype,::threads,\
                                 ::filter_type,\
                                 ::presmooth_SD,\
-                                ::pattern_weight_param)
-          ::res[1] = ::filters->NLmeans((FLOAT)::res0[1],::t,::f,::h,::noisetype,::threads,\
+                                ::pattern_weight_param))
+          ::res.SetComponent( 1, ::filters->NLmeans((FLOAT)::res0[1],::t,::f,::h,::noisetype,::threads,\
                                 ::filter_type,\
                                 ::presmooth_SD,\
-                                ::pattern_weight_param)
-          ::res[2] = ::filters->NLmeans((FLOAT)::res0[2],::t,::f,::h,::noisetype,::threads,\
+                                ::pattern_weight_param))
+          ::res.SetComponent( 2, ::filters->NLmeans((FLOAT)::res0[2],::t,::f,::h,::noisetype,::threads,\
                                 ::filter_type,\
                                 ::presmooth_SD,\
-                                ::pattern_weight_param)
+                                ::pattern_weight_param))
         }
   
         diff = sqrt(mean((::res0-::res)*(::res0-::res)))
@@ -264,31 +264,31 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
       printn "ComputeMatchField()"
     
       # Precomputes matching field
-      if (::res.GetFormat != RGB) {
+      if (::res.GetFormat.val != RGB.val) {
         num_features = 1
         if (::usegrad) { num_features++; }
         ::matchfield <<= Image( FLOAT,\
                                   num_features,\
                                   ::res);
         current_feature = 0
-        ::matchfield[current_feature] = filter((FLOAT)::res,::sigma,0,0,0)
+        ::matchfield.SetComponent( current_feature, filter((FLOAT)::res,::sigma,0,0,0))
         if (::usegrad) {
           current_feature++
-          ::matchfield[current_feature] = normgrad((FLOAT)::res,::sigma)*::sigma
+          ::matchfield.SetComponent( current_feature, normgrad((FLOAT)::res,::sigma)*::sigma)
         }
         #::matchfield[1] = secdergrad((FLOAT)::res,::sigma) 
         #normgrad((FLOAT)::res,::sigma)
       } else {
         ::matchfield <<=  Image(FLOAT,6,::res)
         tmp <<= (FLOAT)::res[0]
-        ::matchfield[0] = filter(  tmp,::sigma,0,0,0)
-        ::matchfield[1] = normgrad(tmp,::sigma)
+        ::matchfield.SetComponent( 0, filter(  tmp,::sigma,0,0,0))
+        ::matchfield.SetComponent( 1, normgrad(tmp,::sigma))
         tmp <<= (FLOAT)::res[1]
-        ::matchfield[2] = filter(  tmp,::sigma,0,0,0)
-        ::matchfield[3] = normgrad(tmp,::sigma)
+        ::matchfield.SetComponent( 2, filter(  tmp,::sigma,0,0,0))
+        ::matchfield.SetComponent( 3, normgrad(tmp,::sigma))
         tmp <<= (FLOAT)::res[2]
-        ::matchfield[4] = filter(  tmp,::sigma,0,0,0)
-        ::matchfield[5] = normgrad(tmp,::sigma)
+        ::matchfield.SetComponent( 4, filter(  tmp,::sigma,0,0,0))
+        ::matchfield.SetComponent( 5, normgrad(tmp,::sigma))
       }
     
     }
@@ -312,9 +312,9 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
             printn "processing time: "+TimeSpent
           } else {
             ::res_roi = ::res0
-            ::res_roi[0] = ::filters->NLmeans_fast((FLOAT) ::res0[0],::mf0,::t,::h,::noisetype,::threads)
-            ::res_roi[1] = ::filters->NLmeans_fast((FLOAT) ::res0[1],::mf0,::t,::h,::noisetype,::threads)
-            ::res_roi[2] = ::filters->NLmeans_fast((FLOAT) ::res0[2],::mf0,::t,::h,::noisetype,::threads)
+            ::res_roi.SetComponent( 0, ::filters->NLmeans_fast((FLOAT) ::res0[0],::mf0,::t,::h,::noisetype,::threads))
+            ::res_roi.SetComponent( 1, ::filters->NLmeans_fast((FLOAT) ::res0[1],::mf0,::t,::h,::noisetype,::threads))
+            ::res_roi.SetComponent( 2, ::filters->NLmeans_fast((FLOAT) ::res0[2],::mf0,::t,::h,::noisetype,::threads))
           }
           ::res0.info
           ::res_roi.info
@@ -345,9 +345,9 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
                                     ::threads)
           } else {
             ::res = ::res0
-            ::res[0] = ::filters->NLmeans_fast((FLOAT)::res0[0],::matchfield,::t,::h,::noisetype,::threads)
-            ::res[1] = ::filters->NLmeans_fast((FLOAT)::res0[1],::matchfield,::t,::h,::noisetype,::threads)
-            ::res[2] = ::filters->NLmeans_fast((FLOAT)::res0[2],::matchfield,::t,::h,::noisetype,::threads)
+            ::res.SetComponent( 0, ::filters->NLmeans_fast((FLOAT)::res0[0],::matchfield,::t,::h,::noisetype,::threads))
+            ::res.SetComponent( 1, ::filters->NLmeans_fast((FLOAT)::res0[1],::matchfield,::t,::h,::noisetype,::threads))
+            ::res.SetComponent( 2, ::filters->NLmeans_fast((FLOAT)::res0[2],::matchfield,::t,::h,::noisetype,::threads))
           }
     
           _diff = sqrt(mean((::res0-::res)*(::res0-::res)))
@@ -379,12 +379,12 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
       } else {
         for local::k = 0 to ::res.vdim-1 {
           local::c = ::res[k]
-          ::res[k] = ::filters->NewNLmeans(&c,::t,::f,::h,::threads,::minweight)
+          ::res.SetComponent( k, ::filters->NewNLmeans(&c,::t,::f,::h,::threads,::minweight))
         }
       }
       EndTime
     }
-    ::FastFilter.Comments("This procedure will call the fast C code, and will run it idependently on each channel (scalar images have only 1 channel) of the image")
+    Comments( ::FastFilter, "This procedure will call the fast C code, and will run it idependently on each channel (scalar images have only 1 channel) of the image")
     # ::FastFilter()
     
     #----------------------------
@@ -433,9 +433,9 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
       } 
       # end for k
 
-      eval ::result_image_name+"<<="+"::res;"
+      eval "global::"+::result_image_name+"<<="+"::res;"
     }
-    ::Run.Comments("Run starting from previous result.")
+    Comments( ::Run, "Run starting from previous result.")
     # end ::Run()
 
     #----------------------------
@@ -444,7 +444,7 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
       ::Restart()
       ::Run()
     }
-    ::ReRun.Comments("Run starting from initial image.")
+    Comments( ::ReRun, "Run starting from initial image.")
 
     #----------------------------
     proc ::Display() \
@@ -479,7 +479,7 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
           ::res_draw.SetIsoContour(0,::imbox,0.5)
           ::res_draw.DrawIsoContour(0,1)
         }
-        ::input_draw.compare(::res_draw)
+        ::input_draw._compare(&::res_draw)
         # draw limits of ROI
       }
     }
@@ -487,7 +487,7 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
     #----------------------------
     proc ::DisplaySurfaces() \
     {
-      if (::input.tz==1)&&(::input.GetFormat != RGB) {
+      if (::input.tz==1)&&(::input.GetFormat.val != RGB.val) {
         if (exists(::input_surf_draw)) { del ::input_surf_draw; }
         if (exists(::res_surf_draw))   { del ::res_surf_draw; }
         if (exists(::input_surf)) { del ::input_surf; }
@@ -497,8 +497,8 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
         ::res_surf   = CreateFlatMesh(::res,0)
         ::input_surf.ElevateMesh(::input*::surf_scaling)
         ::res_surf.ElevateMesh(::res*::surf_scaling)
-        ::input_surf.Normals
-        ::res_surf.Normals
+        ::input_surf.Normals()
+        ::res_surf.Normals()
         show ::input_surf
         show ::res_surf
         ::input_surf_draw.compare(::res_surf_draw)
@@ -513,21 +513,21 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
       ::res <<= ::input
       show ::res
     }
-    ::Restart.Comments("Reloads the input, sets the result equal to it and displays it.")
+    Comments( ::Restart, "Reloads the input, sets the result equal to it and displays it.")
     
     #----------------------------
     proc ::Save() \
     {
       ::res.save ::result_filename
     }
-    ::Save.Comments("Save image to disk as NLM_result.ami.gz")
+    Comments( ::Save, "Save image to disk as NLM_result.ami.gz")
     
     #----------------------------
     proc ::Stop() \
     {
       ::stop = 1
     }
-    ::Stop.Comments("Stop the current process")
+    Comments( ::Stop, "Stop the current process")
     
     #--------------------------------
     proc ::FilterModeEvent() \
@@ -543,6 +543,7 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
     #----------------------------
     proc ::CreateWindow() {
     
+      # parameters window
       import = &global::ami_import;
       if (exists(::parent_panel)) {
         ::win = import->ParamPanel("NLM",&::parent_panel)
@@ -556,11 +557,11 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
 
           # set the input image
           ::win.BeginBoxPanel("Input")
-            ::win.BeginHorizontal
+            ::win.BeginHorizontal()
               ::win.AddImageChoice( &::input_name, "")
               ::win.AddButton("Load",::LoadInput)
-            ::win.EndHorizontal
-          ::win.EndBoxPanel
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
 
           ::win.AddString( &::result_image_name,"Result image")
 
@@ -576,7 +577,7 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
             ::win.AddFloat( &::h,      "h",      0.01,200)
             ::win.AddInt( &::threads,"Threads",1,   10 )
             ::win.AddInt( &::t,      "t",      1,   30 )
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
     
           ::param_book = ::win.BeginBook()
             ::standard_param_panel = ::win.AddPage("Stand")
@@ -606,47 +607,47 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
             ::fast_param_panel = ::win.AddPage("Fast")
               ::win.AddInt( &::f,"f", 1,10)
               ::win.AddFloat( &::minweight,"Min. weight",1,100)
-          ::win.EndBook
+          ::win.EndBook()
 
     
         ::win.AddPage("Contr")
           ::win.BeginBoxPanel("Execution")
               ROI_id     = ::win.AddButton("Select ROI", ::GetROI)
-              ::win.BeginHorizontal
+              ::win.BeginHorizontal()
                 ::win.AddButton("Restart", ::Restart)
                 ::win.AddButton("Stop",    ::Stop)
                 ::win.AddButton("Run",     ::Run)
                 ::win.AddButton("ReRun",   ::ReRun)
-              ::win.EndHorizontal
+              ::win.EndHorizontal()
               ::win.AddInt( &::iterations,"Iter",1,50)
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
   
           ::win.BeginBoxPanel("Result")
               ::win.AddString( &::result_filename,"file")
-              ::win.BeginHorizontal
+              ::win.BeginHorizontal()
                   ::win.AddButton("Save",       ::Save)
                   ::win.AddButton("Display",    ::Display)
-              ::win.EndHorizontal
-          ::win.EndBoxPanel
+              ::win.EndHorizontal()
+          ::win.EndBoxPanel()
 
           ::win.BeginBoxPanel("Surface display")
               ::win.AddFloat( &::surf_scaling,"surf scale",0.01,10)
               display_surf_id = ::win.AddButton("Surfaces",    ::DisplaySurfaces)
-          ::win.EndBoxPanel
-      ::win.EndBook
-      ::win.BeginHorizontal
+          ::win.EndBoxPanel()
+      ::win.EndBook()
+      ::win.BeginHorizontal()
         ::win.AddButton("Close",      ::Close)
         ::win.AddButton("Close All",  ::CloseAll)
-      ::win.EndHorizontal
+      ::win.EndHorizontal()
       
       if (exists(::parent_panel)) {
         ::win.ShowPanel()
       } else {
         ::win.Display()
       }
-      #::win.Update(-1)
+      ::win.Update(-1)
       #::win.Display
-      #::FilterModeEvent
+      ::FilterModeEvent
     }
 
     ::Init
@@ -654,3 +655,24 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
   # Class NLmeansClass
 } 
 # end if (!exists(NLmeansClass))
+  
+  
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(nlm)) {
+
+  NLmeansClass nlm
+  
+  if (argc>=1) {
+    printn "reading image"
+    input = Image($1)
+    nlm->image_name = "input"
+    nlm->win.Update(-1)
+  }
+
+} else {
+  InfoDialog "The script seems to be already loaded."
+}
+

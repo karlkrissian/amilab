@@ -9,7 +9,7 @@
 #endif //  _WITHOUT_VTK_
 
 #include <stdlib.h>
-
+using namespace amilab;
 
 namespace AMIFluid {
 

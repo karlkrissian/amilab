@@ -60,15 +60,15 @@ if (!exists(Corr3DTest)) {
       ::win->_Hide
       delvars GetObjectName(::Close)
     }
-    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
     #----------------------------
     proc ::CloseAll() \
     {
-      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
+      eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
       ::Close
     }
-    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
     
     #--------------------------------------------------
     proc ::amicorr3D(IMAGE _im1, IMAGE _im2, IMAGE _res) \
@@ -132,15 +132,15 @@ if (!exists(Corr3DTest)) {
     {
       show ::input1
       show ::input2
-      ::input1_draw.compare(::input2_draw);
+      ::input1_draw._compare(::input2_draw);
 
-      ::input1_draw.setvector(1,::d);
-      ::input1_draw.setvector(2,::v);
+      ::input1_draw._setvector(0,::d);
+      ::input1_draw._setvector(1,::v);
       
+      ::input1_draw.DrawVector(0,1);
       ::input1_draw.DrawVector(1,1);
-      ::input1_draw.DrawVector(2,1);
       
-      ::input1_draw.DisplayVectors;
+      ::input1_draw.DisplayVectors();
     }
 
     #--------------------------------------------------

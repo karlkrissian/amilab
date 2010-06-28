@@ -26,8 +26,8 @@ show line1; line1_draw += line2
 line1_draw += CE_GTiso
 show RML_result
 RML_result_draw.setGLwin(line1_draw)
-line1.save "data004_line1.vtk"
-line2.save "data004_line2.vtk"
+line1._save("data004_line1.vtk")
+line2._save("data004_line2.vtk")
 recons = NLM_input*0
 radii_im = recons*0+2
 radii_pts = line1.GetIntensities(radii_im)

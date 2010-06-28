@@ -2,7 +2,7 @@
 #
 # Select the lines to prune
 #
-proc SelectPrune(SURFACE _s, NUM threshold) {
+proc SelectPrune( OBJECT _s, NUM threshold) {
 #    -----------
   _s.info
   _i = _s.GetLinesLength()
@@ -12,9 +12,9 @@ proc SelectPrune(SURFACE _s, NUM threshold) {
   printn _con.info
   _ext = _s.GetLinesExtremities()
   printn _ext.info
-  _ext1=_ext[0:_ext.tx-1,0:0,0:0]
-  _ext2=_ext[0:_ext.tx-1,1:1,0:0]
-  printn boost_format("_ext.tx = %1%") %_ext.tx
+  _ext1=_ext[0:(_ext.tx-1),0:0,0:0]
+  _ext2=_ext[0:(_ext.tx-1),1:1,0:0]
+  printn "_ext.tx = %1%" %_ext.tx
   printn _ext1.info
   _ext1c=_con(_ext1)
   _ext2c=_con(_ext2)

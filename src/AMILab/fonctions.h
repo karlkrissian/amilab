@@ -157,7 +157,7 @@ float         Func_eccentricity( InrImage* im);
 InrImage*    Func_rot2D( InrImage* im, float cx, float cy, float alpha,
              float tx, float ty );
 
-SurfacePoly* Func_isosurf( InrImage::ptr im, float Threshold, InrImage* mask=NULL,
+amilab::SurfacePoly* Func_isosurf( InrImage::ptr im, float Threshold, InrImage* mask=NULL,
                int coord_system=0);
 
 
@@ -241,15 +241,15 @@ void         Func_OrientPositive( InrImage* im, InrImage* mask);
 
 InrImage*    Func_DirConnectivity( InrImage* im, InrImage* mask = NULL);
 
-SurfacePoly* Func_Skeleton2lines( InrImage* im);
+amilab::SurfacePoly* Func_Skeleton2lines( InrImage* im);
 
-SurfacePoly* Func_SmoothLines( SurfacePoly* s, float alpha, float beta, int n );
+amilab::SurfacePoly* Func_SmoothLines( amilab::SurfacePoly* s, float alpha, float beta, int n );
 
-SurfacePoly* Func_SmoothLinesToSplines(SurfacePoly* s, float samplingStep );
+amilab::SurfacePoly* Func_SmoothLinesToSplines(amilab::SurfacePoly* s, float samplingStep );
 
-SurfacePoly* Func_ResampleLines( SurfacePoly* s, float dist );
+amilab::SurfacePoly* Func_ResampleLines( amilab::SurfacePoly* s, float dist );
 
-SurfacePoly* Func_ConnectLines( SurfacePoly* s, float maxdist, float maxangle );
+amilab::SurfacePoly* Func_ConnectLines( amilab::SurfacePoly* s, float maxdist, float maxangle );
 
 InrImage*    Func_ThresholdCrossing( InrImage* im, float th);
 
@@ -290,7 +290,7 @@ InrImage*    Func_ReSlice( InrImage* im1, InrImage* im2, FloatMatrix& m);
 
 InrImage*    Func_Flip( InrImage::ptr& im, int axis);
 
-SurfacePoly* Func_CreateEllipsoids(InrImage* v1, InrImage* v2, InrImage* v3,
+amilab::SurfacePoly* Func_CreateEllipsoids(InrImage* v1, InrImage* v2, InrImage* v3,
                    int stepx, int stepy, int stepz, int res,
                    InrImage* colors = NULL,
                    InrImage* mask = NULL);

@@ -15,17 +15,24 @@
 #include "paramlist.h"
 #include "wrapfunction_class.h"
 
+//icons
+#include "wx/artprov.h"
+
 #include "MainFrame.h"
 extern MainFrame*    GB_main_wxFrame;
 #include <iostream>
 
-enum {
-  wxID_ToConsole = 100
+
+//Used for &About menu item
+enum
+{
+  wxID_myABOUT = 1000,
+  wxID_ToConsole
 };
 
-
-BEGIN_EVENT_TABLE(myTreeCtrl, wxTreeCtrl)
-  EVT_MENU(wxID_ABOUT,     myTreeCtrl::OnAbout)
+//BEGIN_EVENT_TABLE(myTreeCtrl, wxTreeCtrl)
+BEGIN_EVENT_TABLE(myTreeCtrl, wxTreeListCtrl)
+  EVT_MENU(wxID_myABOUT,   myTreeCtrl::OnAbout)
   EVT_MENU(wxID_ToConsole, myTreeCtrl::ToConsole)
 /*
   EVT_ERASE_BACKGROUND(    myTreeCtrl::OnEraseBackground)
@@ -35,13 +42,15 @@ BEGIN_EVENT_TABLE(myTreeCtrl, wxTreeCtrl)
 //  EVT_TIMER(ID_TIMER_TIPWINDOW myTreeCtrl::OnTimerTip)
 END_EVENT_TABLE()
 
-myTreeCtrl::myTreeCtrl(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size , long style , const wxValidator& validator , const wxString& name ) : wxTreeCtrl(parent,id,pos,size,style,validator,name)
+myTreeCtrl::myTreeCtrl(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size , long style , const wxValidator& validator , const wxString& name ) : //wxTreeCtrl(parent,id,pos,size,style,validator,name)
+wxTreeListCtrl(parent,id,pos,size,style,validator,name)
 {
     Connect(wxEVT_COMMAND_TREE_ITEM_MENU,wxTreeEventHandler(myTreeCtrl::OnItemMenu));
 }
 
 void myTreeCtrl::ShowMenu(wxTreeItemId id, const wxPoint& pt)
 {
+  
   wxString title;
   if ( id.IsOk() )
   {
@@ -59,7 +68,9 @@ void myTreeCtrl::ShowMenu(wxTreeItemId id, const wxPoint& pt)
         }
       }
      menu.Append(wxID_ToConsole,wxT("Write in console"));
-     menu.Append(wxID_ABOUT, wxT("&About..."));
+      wxMenuItem* item = menu.Append(wxID_myABOUT, wxT("&About..."));
+      //Put a book icon in the &About item
+      item->SetBitmap(wxArtProvider::GetIcon(wxART_HELP_BOOK, wxT("menu"), wxDefaultSize));
       PopupMenu(&menu, pt);
     }
   }
@@ -130,7 +141,7 @@ void myTreeCtrl::OnAbout(wxCommandEvent& event)
   } else {
     mess = "No variable for this item";
   }
-  wxMessageDialog msg(GB_main_wxFrame,wxString::FromAscii(mess.c_str()),
+  wxMessageDialog msg(NULL,wxString::FromAscii(mess.c_str()),
       wxString::FromAscii("Help"),wxOK | wxICON_INFORMATION );
   msg.ShowModal();
 }

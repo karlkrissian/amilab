@@ -28,17 +28,17 @@ if (!exists(LeastSquaresClass)) \
     #----------------------------
     proc ::Close() \
     {
-      ::win.Hide
+      ::win.HidePanel()
       delvars GetObjectName(::Close)
     }
-    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
     #----------------------------
     proc ::CloseAll() {
-      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
+      eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
       ::Close
     }
-    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
         
     #------------------------------------
     proc ::LoadInput() \
@@ -47,9 +47,9 @@ if (!exists(LeastSquaresClass)) \
       eval "::input <<="+::input_name+";"
       if (::input_name=="Image") {
         ::input_name = "::input"
-        ::win.update
+        ::win.Update(-1)
       }
-      ::win.update
+      ::win.Update(-1)
       if (exists(::input_draw)) { del ::input_draw; }
       show ::input
     }
@@ -62,9 +62,9 @@ if (!exists(LeastSquaresClass)) \
       sizey = 2*::size_y+1
       numcoeff = 3
       b = Image(FLOAT,sizex,sizey,1,numcoeff)
-      b[0] = ((FLOAT) Ypos(b)-b.ty/2)
-      b[1] = ((FLOAT) Xpos(b)-b.tx/2)
-      b[2] = 1
+b.SetComponent( 0, ((FLOAT) Ypos(b)-b.ty/2))
+b.SetComponent( 1, ((FLOAT) Xpos(b)-b.tx/2))
+b.SetComponent( 2, 1)
       weights = Image(FLOAT,sizex,sizey,1)
       weights.settranslation(-::size_x,-::size_y,0)
       weights = 1
@@ -82,53 +82,54 @@ if (!exists(LeastSquaresClass)) \
     proc ::Display() {
       show ::input
       show ::res
-      ::input_draw.compare(::res_draw)
+      ::input_draw._compare(::res_draw)
     }
 
     #-------------------
     proc ::CreateWindow() {
 
       # parameters window
-      ::win = ParamWin("LeastSqu")
+      import = &global::ami_import;
+      ::win = import->ParamPanel("LeastSqu")
       
-      ::win.BeginBook
+      ::win.BeginBook()
     
         ::win.AddPage("Input/Output")
 
           # set the input image
           ::win.BeginBoxPanel("Input")
-            ::win.BeginHorizontal
-              ::win.AddImageChoice(::input_name, "")
+            ::win.BeginHorizontal()
+              ::win.AddImageChoice( &::input_name, "")
               ::win.AddButton("Load",::LoadInput)
-            ::win.EndHorizontal
-          ::win.EndBoxPanel
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
 
 
         ::win.AddPage("Param")
-          ::win.AddInt(::size_x,"size X",1,10)
-          ::win.AddInt(::size_y,"size Y",1,10)
+          ::win.AddInt( &::size_x,"size X",1,10)
+          ::win.AddInt( &::size_y,"size Y",1,10)
 
           ::win.BeginBoxPanel("Coefficients to fit")
-            ::win.AddBoolean(::use_constant,"constant")
-            ::win.AddBoolean(::use_X,"X")
-            ::win.AddBoolean(::use_Y,"Y")
-          ::win.EndBoxPanel
+            ::win.AddBoolean( &::use_constant,"constant")
+            ::win.AddBoolean( &::use_X,"X")
+            ::win.AddBoolean( &::use_Y,"Y")
+          ::win.EndBoxPanel()
     
         ::win.AddPage("Controls")
           ::win.AddButton("Run",     ::Run)
   
           ::win.BeginBoxPanel("Result")
             ::win.AddButton("Display",    ::Display)
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
 
-      ::win.EndBook
-      ::win.BeginHorizontal
+      ::win.EndBook()
+      ::win.BeginHorizontal()
         ::win.AddButton("Close",      ::Close)
         ::win.AddButton("Close All",  ::CloseAll)
-      ::win.EndHorizontal
+      ::win.EndHorizontal()
       
-      ::win.update
-      ::win.Display
+      ::win.Update(-1)
+      ::win.Display()
     }
   
     ::Init()
@@ -151,7 +152,7 @@ if (!exists(lsf)) {
     printn "reading image"
     input = Image($1)
     lsf->image_name = "input"
-    lsf->win.update
+    lsf->win.Update(-1)
   }
 
 } else {

@@ -8,14 +8,15 @@
 # type:
 #  0: superquadric
 #
+func "Common/ScriptGui"
+
 if (!exists(ParametricSurfaceClass)) {
-  Class ParametricSurfaceClass {
+  Class ParametricSurfaceClass  : public ScriptGui{
 
   #---------------------------------------------
   proc ::Init() \
   {
     
-    ::class_name = "global::ParametricSurfaceClass"
     # resolution
     ::theta_dim = INT(100)
     ::phi_dim   = INT(100)
@@ -31,6 +32,7 @@ if (!exists(ParametricSurfaceClass)) {
 
     # 0: superquadric
     # 1: torus
+    # 2: user
     ::type = INT(0)
 
     # torus param
@@ -59,28 +61,12 @@ if (!exists(ParametricSurfaceClass)) {
     
   }
 
-    #----------------------------------------------------------
-   
-  proc ::Close() \
-  {
-    ::win.HidePanel
-    delvars GetObjectName(::Close)
-  }
-  ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-    
-    #----------------------------
-    
-  proc ::CloseAll() \
-  {
-    eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
-    ::Close
-  }
-  ::CloseAll.Comments("Call ::Close() method and delete the class variable")
     
   #------------------------------------
 
   proc ::UpdateResolution() \
   {
+    printn "UpdateResolution()"
     # 3D position image
     ::pos <<= Image(DOUBLE,::theta_dim,::phi_dim,1,3)
 
@@ -89,11 +75,13 @@ if (!exists(ParametricSurfaceClass)) {
     ::phi   <<= (DOUBLE)Ypos(::pos)
 
     if (::type==0)||(::type==2) {
+      printn "type in {0,2}"
       # limits of the parameters
       ::theta = ::theta/(::theta.tx-1)*2*Pi
       ::phi   = (::phi/(::phi.ty-1)-0.5)*Pi
     }
     if (::type==1) {
+      printn "type is 1"
       # limits of the parameters
       ::theta = ::theta/(::theta.tx-1)*2*Pi
       ::phi   = ::phi/(::phi.ty-1)*2*Pi
@@ -103,19 +91,42 @@ if (!exists(ParametricSurfaceClass)) {
 
 #----------------------------------------------------------
   proc ::NewType() {
+    if (exists(::page_vec)) { del ::page_vec; }
+    ::page_vec = VarVector();
+    ::page_vec.push_back(::page_superquad)
+    ::page_vec.push_back(::page_torus)
+    ::page_vec.push_back(::page_expr)
+
+    for n=0 to 2 {
+      ::win.EnablePanel(::page_vec[n], ::type==n)
+    }
+    ::win.SelectPage(::book,::type+1)
+
     ::UpdateResolution()
     ::Update()
+  }
+
+
+  proc ::SetMeshColors( IMAGE mc) {
+    ::mesh_colors <<= mc
   }
 
 #------------------------------------------------------------
 
   proc ::Update() \
   {
+  
     if (::updating==0) {
       ::updating = 1
       if (!exists(::pos)) {
         ::UpdateResolution()
       }else {
+        printn "::theta_dim = %1%"%::theta_dim
+        printn "::pos.tx=%1%"%::pos.tx
+        printn "::phi_dim = %1%"%::phi_dim
+        printn "::pos.ty=%1%"%::pos.ty
+        printn "::theta_dim!=::pos.tx --> %1%" % (::theta_dim!=::pos.tx)
+        printn "::phi_dim!=::pos.ty --> %1%" % (::phi_dim!=::pos.ty)
         if ((::theta_dim!=::pos.tx)||(::phi_dim!=::pos.ty)) {
           ::UpdateResolution()
         }
@@ -123,37 +134,43 @@ if (!exists(ParametricSurfaceClass)) {
       # 0: superquadric
       if (::type==0) {
       
-        ::pos[0] = cos(::theta)*cos(::phi)
-        ::pos[1] = sin(::theta)*cos(::phi)
-        ::pos[2] = sin(::phi)
+        ::pos.SetComponent(0, cos(::theta)*cos(::phi))
+        ::pos.SetComponent(1, sin(::theta)*cos(::phi))
+        ::pos.SetComponent(2, sin(::phi))
 
         # compute the signs
         spos0 = (::pos[0]>0) - (::pos[0]<0)
         spos1 = (::pos[1]>0) - (::pos[1]<0)
         spos2 = (::pos[2]>0) - (::pos[2]<0)
 
-        ::pos[0] = (exp(ln(abs(::pos[0]))/::e_x))*spos0*::cx
-        ::pos[1] = (exp(ln(abs(::pos[1]))/::e_y))*spos1*::cy
-        ::pos[2] = (exp(ln(abs(::pos[2]))/::e_z))*spos2*::cz
+        ::pos.SetComponent(0,exp(ln(abs(::pos[0]))/::e_x)*spos0*::cx)
+        ::pos.SetComponent(1,exp(ln(abs(::pos[1]))/::e_y)*spos1*::cy)
+        ::pos.SetComponent(2,exp(ln(abs(::pos[2]))/::e_z)*spos2*::cz)
       }
+#printn "4"
 
       # 1: torus
       if (::type==1) {
-        ::pos[0] = (cos(::phi)*::r+::R)*cos(::theta)
-        ::pos[1] = (cos(::phi)*::r+::R)*sin(::theta)
-        ::pos[2] = sin(::phi)*::r
+        ::pos.SetComponent(0, (cos(::phi)*::r+::R)*cos(::theta))
+        ::pos.SetComponent(1, (cos(::phi)*::r+::R)*sin(::theta))
+        ::pos.SetComponent(2, sin(::phi)*::r)
       }
 
       # 2: User´s equation
       if (::type==2) {
+        printn "max(::theta) = %1%" % max(::theta)
+        printn "exists U = %1%" % exists(U) 
+        TraceParsing 1
         U = ::theta
+        TraceParsing 0
+        printn "max(::theta) = %1%" % max(::theta)
         V = ::phi
         k = ::k
-        eval "::pos[0] = "+::X+";"
+        eval "::pos.SetComponent(0, "+::X+");"
         X = ::pos[0]
-        eval "::pos[1] = "+::Y+";"
+        eval "::pos.SetComponent(1, "+::Y+");"
         Y = ::pos[1]
-        eval "::pos[2] = "+::Z+";"
+        eval "::pos.SetComponent(2, "+::Z+");"
       }
 
       if (exists(::s_draw)) {
@@ -161,8 +178,20 @@ if (!exists(ParametricSurfaceClass)) {
         del ::s
       }
 
+#printn "5"
       # parameter 0 invert normals
-      ::s = CreateFlatMesh(::theta>-1,0)
+        printn max(::theta)
+      ::s = \
+        CreateFlatMesh\
+        (\
+          ::theta>-1,\
+          0\
+          )
+      if (exists(::mesh_colors)) {
+        printn "Set Mesh Colors"
+        ::s.SetColors(::mesh_colors)
+        ::s.SetColorMaterial(1)
+      }
       ::s.ElevateMesh(::pos)
       # need to show the surface before computing any opengl operation!!!
 
@@ -171,11 +200,14 @@ if (!exists(ParametricSurfaceClass)) {
       } else {
         show ::s
       }
-      ::s.Normals
-      ::s.Recompute
+#printn "6"
+      ::s.Normals()
+      ::s.Recompute()
       ::s_draw.Paint
       ::updating = 0
+#printn "7"
     }
+#printn "8"
   }
 
   #--------------------------------------------------------------
@@ -248,8 +280,8 @@ if (!exists(ParametricSurfaceClass)) {
 
     eq_file.print "//---- Main Parameters\n"
 
-    eq_file.print boost_format("::theta_dim = %1%\n") % ::theta_dim
-    eq_file.print boost_format("::phi_dim = %1%\n") % ::phi_dim
+    eq_file.print "::theta_dim = %1%\n" % ::theta_dim
+    eq_file.print "::phi_dim = %1%\n" % ::phi_dim
 
     eq_file.print "//---- Parametric equation expression \n"
 
@@ -286,49 +318,49 @@ if (!exists(ParametricSurfaceClass)) {
       ::win.AddEnumChoice(::type_id,"Expression")
     ::win.SetCallback( &::NewType)
 
-    ::win.BeginBook
+    ::book = ::win.BeginBook()
       # Main Page
-      ::win.AddPage("Main")
+      ::page_main = ::win.AddPage("Main")
         ::win.BeginBoxPanel("Resolution")
-            ::thetadim_id = ::win.AddInt( &::theta_dim,  "::theta_dim", 4,500)
+            ::thetadim_id = ::win.AddInt( &::theta_dim,  "theta", 4,500)
             ::win.SetCallback( &::Update)
-            ::phidim_id   = ::win.AddInt( &::phi_dim,  "::phi_dim",   4,500)
+            ::phidim_id   = ::win.AddInt( &::phi_dim,  "phi",   4,500)
             ::win.SetCallback( &::Update)
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
         ::win.BeginBoxPanel("Scaling Coeff.")
-            ::cx_id = ::win.AddFloat( &::cx,  "::cx", 0.1,5)
+            ::cx_id = ::win.AddFloat( &::cx,  "x", 0.1,5)
             ::win.SetCallback( &::Update)
-            ::cy_id = ::win.AddFloat( &::cy,  "::cy", 0.1,5)
+            ::cy_id = ::win.AddFloat( &::cy,  "y", 0.1,5)
             ::win.SetCallback( &::Update)
-            ::cz_id = ::win.AddFloat( &::cz,  "::cz", 0.1,5)
+            ::cz_id = ::win.AddFloat( &::cz,  "z", 0.1,5)
             ::win.SetCallback( &::Update)
             ::win.AddButton("Reset",   ::ResetScale)
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
 
 
       # SuperQuadric Page
-      ::win.AddPage("SuperQu.")
+      ::page_superquad = ::win.AddPage("SuperQu.")
         ::win.BeginBoxPanel("Exponential Coeff.")
-            ::ex_id = ::win.AddFloat( &::e_x,  "::e_x", 0.1,5)
+            ::ex_id = ::win.AddFloat( &::e_x,  "e_x", 0.1,5)
             ::win.SetCallback( &::Update)
-            ::ey_id = ::win.AddFloat( &::e_y,  "::e_y", 0.1,5)
+            ::ey_id = ::win.AddFloat( &::e_y,  "e_y", 0.1,5)
             ::win.SetCallback( &::Update)
-            ::ez_id = ::win.AddFloat( &::e_z,  "::e_z", 0.1,5)
+            ::ez_id = ::win.AddFloat( &::e_z,  "e_z", 0.1,5)
             ::win.SetCallback( &::Update)
             ::win.AddButton("Set Ellipsoid",   ::SetEllipsoid)
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
 
       # SuperQuadric Torus
-      ::win.AddPage("Torus")
+      ::page_torus = ::win.AddPage("Torus")
         ::win.BeginBoxPanel("Radii")
-            ::R_id = ::win.AddFloat( &::R,  "::R", 0.1,5)
+            ::R_id = ::win.AddFloat( &::R,  "R", 0.1,5)
             ::win.SetCallback( &::Update)
-            ::r_id = ::win.AddFloat( &::r,  "::r", 0.1,5)
+            ::r_id = ::win.AddFloat( &::r,  "r", 0.1,5)
             ::win.SetCallback( &::Update)
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
 
       # User Equation Page
-      ::win.AddPage("Expr")
+      ::page_expr = ::win.AddPage("Expr")
         ::win.BeginBoxPanel("Equation (U,V):")
           ::X_id = ::win.AddString( &::X,"X=")
           ::win.SetCallback( &::Update)
@@ -336,30 +368,41 @@ if (!exists(ParametricSurfaceClass)) {
           ::win.SetCallback( &::Update)
           ::Z_id = ::win.AddString( &::Z,"Z=")
           ::win.SetCallback( &::Update)
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
         ::win.BeginBoxPanel("Time evolution:")
-          ::win.AddInt( &::kmax,  "::kmax", 0,100)
-          ::win.AddInt( &::timestep,  "::timestep", 0,1000)
-          ::win.BeginHorizontal
+          ::win.AddInt( &::kmax,  "kmax", 0,100)
+          ::win.AddInt( &::timestep,  "timestep", 0,1000)
+          ::win.BeginHorizontal()
             ::win.AddButton("Start", ::Start)
             ::win.AddButton("Stop",  ::Stop)
-          ::win.EndHorizontal
-        ::win.EndBoxPanel
+          ::win.EndHorizontal()
+        ::win.EndBoxPanel()
         
         ::win.AddString( &::eq_filename,"Eq. filename")
-        ::win.BeginHorizontal
+        ::win.BeginHorizontal()
           ::win.AddButton("Save", ::SaveEquation)
           ::win.AddButton("Read", ::ReadEquation)
-        ::win.EndHorizontal
+        ::win.EndHorizontal()
 
-    ::win.EndBook
-        ::win.BeginHorizontal
-          ::win.AddButton("Update",         ::Update)
-          ::win.AddButton("Close",          ::Close)
-          ::win.AddButton("Close All",          ::CloseAll)
-        ::win.EndHorizontal
+    ::win.EndBook()
+
+    ::AddStandardButtons(&::win)
+
+#        ::win.BeginHorizontal
+#          scripts_dir = GetScriptsDir
+
+#          upim = wx.wxImage(scripts_dir+"/Bitmaps/update_icon_32.png")
+#          upbmp = wx.wxBitmap(upim)
+#          ::win.AddBitmapButton("Update", ::Update, upbmp)
+
+#          closeim = wx.wxImage(scripts_dir+"/Bitmaps/close_icon_32.png")
+#          closebmp = wx.wxBitmap(closeim)
+#          ::win.AddBitmapButton("Close", ::Close, closebmp )
+
+#          ::win.AddButton("Close All",          ::CloseAll)
+#        ::win.EndHorizontal
     ::win.Update(-1)
-    ::win.Display
+    ::win.Display()
   }
   
   ::Init

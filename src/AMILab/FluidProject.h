@@ -4,7 +4,7 @@
 #define _FLUIDPROJECT_H_
 
 #include "surface.hpp"
-using namespace amilab;
+//using namespace amilab;
 
 #include "inrimage.hpp"
 
@@ -28,12 +28,12 @@ namespace AMIFluid {
   InrImage* Func_ComputeAltitudes(InrImage* input, InrImage* coeff);
   InrImage* Func_Temp2Altitudes(InrImage* input);
 
-  SurfacePoly* Func_CreateFlatMesh(InrImage* im, int orient=1);
-  SurfacePoly* Func_CreateFlatMesh(InrImage* im, float minth, float maxth, int orient = 1);
+  amilab::SurfacePoly* Func_CreateFlatMesh(InrImage* im, int orient=1);
+  amilab::SurfacePoly* Func_CreateFlatMesh(InrImage* im, float minth, float maxth, int orient = 1);
   
-  SurfacePoly* Func_vtkCreateFlatMesh(InrImage* im, float minth, float maxth);
+  amilab::SurfacePoly* Func_vtkCreateFlatMesh(InrImage* im, float minth, float maxth);
   
-  SurfacePoly* Func_CreateVolume(InrImage* im, float minth, float maxth,
+  amilab::SurfacePoly* Func_CreateVolume(InrImage* im, float minth, float maxth,
   InrImage* lowpos, InrImage* highpos, InrImage* colors=NULL, float alpha=1.0);
   
   InrImage*    Func_Altitude2Position(InrImage* im, int type=2);
@@ -42,16 +42,16 @@ namespace AMIFluid {
   
   //InrImage*    Func_EarthPosition(InrImage* im, int type);
   
-  void         Func_ElevateMesh(SurfacePoly*, InrImage* im);
+  void         Func_ElevateMesh(amilab::SurfacePoly*, InrImage* im);
   
   void         Func_SetArrowParameters( float basesize, float headsize, float headpos);
   
-  SurfacePoly* Func_CreateVectors(InrImage* alt1, InrImage* displ, InrImage* alt2,
+  amilab::SurfacePoly* Func_CreateVectors(InrImage* alt1, InrImage* displ, InrImage* alt2,
                   int stepx, int stepy, float scale, int type=2, 
                   int vector_style=1 );
 
   /** Creates vectors in 3D from 3D displacement field **/
-  SurfacePoly* Func_CreateVectors(
+  amilab::SurfacePoly* Func_CreateVectors(
                   InrImage* displ,
                   int stepx, int stepy, int stepz, 
                   float scale,

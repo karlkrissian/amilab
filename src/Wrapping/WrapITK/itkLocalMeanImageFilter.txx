@@ -78,7 +78,7 @@ void LocalMeanImageFilter< TInputImage, TOutputImage >
     }
 
   // Compute the local mean for each axis
-  for (j=0;j<input->GetImageDimension();j++)
+  for (j=0;j<(int)input->GetImageDimension();j++)
   {
     index=0;
     ax.SetDirection(j);

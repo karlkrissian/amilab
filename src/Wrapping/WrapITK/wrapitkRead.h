@@ -3,7 +3,6 @@
 
 #include "paramlist.h"
 
-InrImage* itkRead(const std::string& fname);
 InrImage* wrap_itkRead(ParamList*);
 
 #endif // _wrapitkRead_h_

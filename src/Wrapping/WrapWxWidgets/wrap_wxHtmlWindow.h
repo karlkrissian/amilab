@@ -27,14 +27,15 @@ class WrapClass_wxHtmlWindow : public WrapClass_wxWindow
 
   // for nested classes
   typedef WrapClass_wxHtmlWindow::ptr _parentclass_ptr;
+  typedef wxHtmlWindow _obj_type;
 
   public:
-    boost::shared_ptr<wxHtmlWindow> _htmlwin;
+    boost::shared_ptr<_obj_type> _obj;
+    const boost::shared_ptr<_obj_type>& GetObj() const { return _obj; }
 
     /// Constructor
-    WrapClass_wxHtmlWindow(boost::shared_ptr<wxHtmlWindow> w): WrapClass_wxWindow(w), _htmlwin(w)
+    WrapClass_wxHtmlWindow(boost::shared_ptr<wxHtmlWindow> w): WrapClass_wxWindow(w), _obj(w)
     {}
-
 
     ADD_CLASS_METHOD(LoadFile,        "Loads HTML page from file and displays it.");
     ADD_CLASS_METHOD(HistoryBack,     "Moves back to the previous page.");

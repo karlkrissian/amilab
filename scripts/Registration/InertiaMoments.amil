@@ -3,15 +3,17 @@
 # Computes the center of mass and inertia tensor for an image
 #
 
+func "Common/ScriptGui"
+
+
 if (!exists(InertiaMoments)) {
 
   #--------------------------------
-  Class InertiaMoments {
+  Class InertiaMoments : public ScriptGui {
 
     #--------------------
     proc ::Init() \
     {
-      ::class_name ="global::InertiaMoments"
       ::input_name =  ""
       ::center_info = ""
       ::vec1_info = ""
@@ -21,31 +23,15 @@ if (!exists(InertiaMoments)) {
     }
 
     #----------------------------
-    proc ::Close() \
-    {
-      ::win->_Hide()
-      delvars GetObjectName(::Close)
-    }
-    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-    
-    #----------------------------
-    proc ::CloseAll() \
-    {
-      eval boost_format("if (exists(%1%)) { del %1%; };") % ::class_name
-      ::Close
-    }
-    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
-    
-    #----------------------------
     proc ::LoadInput() \
     {
       printn "evaluation of --> ::input <<="+::input_name+";"
       eval "::input <<="+::input_name+";"
       if (::input_name=="Image") {
         ::input_name = "::input"
-        ::win.update
+        ::win.update()
       }
-      ::win->_Update(-1)
+      ::win.Update(-1)
       if (exists(::input_draw)) { del ::input_draw; }
       show ::input
     }
@@ -83,12 +69,12 @@ if (!exists(InertiaMoments)) {
       # stupid for now, but create an image with 1 value ...
       SetStatusText("Computing eigenvalue decomposition")
       inertia = Image(FLOAT,1,1,1,6)
-      inertia[0] = I11
-      inertia[1] = I12
-      inertia[2] = I13
-      inertia[3] = I22
-      inertia[4] = I23
-      inertia[5] = I33
+      inertia.SetComponent( 0, I11)
+      inertia.SetComponent( 1, I12)
+      inertia.SetComponent( 2, I13)
+      inertia.SetComponent( 3, I22)
+      inertia.SetComponent( 4, I23)
+      inertia.SetComponent( 5, I33)
 
       import = &global::ami_import
       import->Filters()
@@ -123,15 +109,15 @@ if (!exists(InertiaMoments)) {
 
       v1im.initvalue(::evec1x,::evec1y,::evec1z)
       if (exists(::vec3D_1)) { del ::vec3D_1; }
-      ::vec3D_1 = CreateVectors(v1im,1,1,1,10,1)
+      ::vec3D_1 = CreateVectorsFromField(v1im,1,1,1,10,1)
 
       v1im.initvalue(::evec2x,::evec2y,::evec2z)
       if (exists(::vec3D_2)) { del ::vec3D_2; }
-      ::vec3D_2 = CreateVectors(v1im,1,1,1,10,1)
+      ::vec3D_2 = CreateVectorsFromField(v1im,1,1,1,10,1)
 
       v1im.initvalue(::evec3x,::evec3y,::evec3z)
       if (exists(::vec3D_3)) { del ::vec3D_3; }
-      ::vec3D_3 = CreateVectors(v1im,1,1,1,10,1)
+      ::vec3D_3 = CreateVectorsFromField(v1im,1,1,1,10,1)
     }
     
     # --------------------
@@ -156,7 +142,7 @@ if (!exists(InertiaMoments)) {
       ::vec3_info = ::vec3_info + "%1% " % ::evec3z
       ::vec3_info = ::vec3_info + " --> %1%  " % ::eval3
 
-      ::win->_Update(-1)
+      ::win.Update(-1)
     }
 
     # --------------------
@@ -166,33 +152,30 @@ if (!exists(InertiaMoments)) {
       
       ::win = import->ParamPanel("Inertia")
   
-      ::win->_BeginBook()
-      ::win->_AddPage("IO")
+      ::win.BeginBook()
+      ::win.AddPage("IO")
           # set the input1 image
-          ::win->_BeginHorizontal
-            ::win->_AddImageChoice(&::input_name, "")
-            ::win->_AddButton("Load",::LoadInput)
-          ::win->_EndHorizontal
+          ::win.BeginHorizontal()
+            ::win.AddImageChoice(&::input_name, "")
+            ::win.AddButton("Load",::LoadInput)
+          ::win.EndHorizontal()
   
-      ::win->_AddPage("Ctrl")
-        ::win->_BeginHorizontal
-          ::win->_AddButton("Compute",     &::Compute)
-          ::win->_AddButton("Print",       &::Print)
-          ::win->_AddButton("Vectors",     &::Create3DVectors)
-        ::win->_EndHorizontal
-        ::win->_AddString(&::center_info,"center")
-        ::win->_AddString(&::vec1_info,"v1")
-        ::win->_AddString(&::vec2_info,"v2")
-        ::win->_AddString(&::vec3_info,"v3")
-      ::win->_EndBook
+      ::win.AddPage("Ctrl")
+        ::win.BeginHorizontal()
+          ::win.AddButton("Compute",     &::Compute)
+          ::win.AddButton("Print",       &::Print)
+          ::win.AddButton("Vectors",     &::Create3DVectors)
+        ::win.EndHorizontal()
+        ::win.AddString(&::center_info,"center")
+        ::win.AddString(&::vec1_info,"v1")
+        ::win.AddString(&::vec2_info,"v2")
+        ::win.AddString(&::vec3_info,"v3")
+      ::win.EndBook()
   
-      ::win->_BeginHorizontal
-        ::win->_AddButton("Close",      &::Close)
-        ::win->_AddButton("Close All",  &::CloseAll)
-      ::win->_EndHorizontal
+      ::AddStandardButtons(&::win)
     
-      ::win->_Update(-1)
-      ::win->_Display
+      ::win.Update(-1)
+      ::win.Display()
 
     }
 

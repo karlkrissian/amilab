@@ -22,6 +22,6 @@ void AddWrapWXSamples();
 void wrap_wxsamples( ParamList* p);
 
 void wrap_penguin(              ParamList* p);
-void wrap_stctest(              ParamList* p);
+void wrap_wxStcFrame(              ParamList* p);
 
 #endif //  _wrap_wxsamples_h_

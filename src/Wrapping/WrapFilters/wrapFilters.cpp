@@ -34,11 +34,16 @@
 #include "wrap_MaxSubImage.h"
 #include "wrap_ImageAddScalar.h"
 #include "wrap_ImageCos.h"
+#include "wrap_AnisoGS.h"
 #include "ami_object.h"
 #include "VarArray.h"
 
 //Basic Edge Detection Filters added
 #include "wrapBasicEdgeDetection.h"
+
+#include "wrapSubPixel2D.h"
+#include "wrapGenerateRamp.h"
+#include "wrap_SurfacePoly.h"
 
 extern VarContexts  Vars;
 
@@ -86,11 +91,18 @@ void AddWrapFilters(){
   ADDOBJECTVAR_NAME(C_wrap_procedure,"ImageCos",wrap_ImageCos);
 
 	//Basic Edge Detection
-	ADDOBJECTVAR_NAME(C_wrap_imagefunction, "Roberts", wrapRoberts);
-	ADDOBJECTVAR_NAME(C_wrap_imagefunction, "PSF", wrapPSF);
+	ADDOBJECTVAR_NAME(C_wrap_imagefunction, "Roberts",	wrapRoberts);
+	ADDOBJECTVAR_NAME(C_wrap_imagefunction, "PSF",			wrapPSF);
 	ADDOBJECTVAR_NAME(C_wrap_imagefunction, "Gradient", wrapGradient);
-	ADDOBJECTVAR_NAME(C_wrap_imagefunction, "Laplace", wrapLaplace);
-	
+	ADDOBJECTVAR_NAME(C_wrap_imagefunction, "Laplace",	wrapLaplace);
+  
+  //2D SUBPIXEL METHOD
+  ADDOBJECTVAR_NAME(C_wrap_imagefunction, "SintheticRamp", wrapSintheticRamp);
+  ADDOBJECTVAR_NAME(C_wrap_varfunction, "Subpixel2D", wrapSubpixel2D);
+
+  // Add AnisoGS
+  AddVar_AnisoGS( amiobject->GetContext());
+
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);
 
@@ -777,7 +789,7 @@ InrImage* NLmeans_MRI(ParamList* p)
 
     InrImage* input;
     InrImage* noise_reduction;
-    InrImage* input_roi;
+    InrImage::ptr input_roi;
     InrImage* input_float = NULL;
     InrImage* result = NULL;
     int   t=7;
@@ -790,7 +802,7 @@ InrImage* NLmeans_MRI(ParamList* p)
     int n=0;
 
   if (!get_val_ptr_param<InrImage>(      input,       p, n)) HelpAndReturnNULL;
-  if (!get_val_ptr_param<InrImage>(      input_roi,   p, n)) HelpAndReturnNULL;
+  if (!get_val_smtptr_param<InrImage>(   input_roi,   p, n)) HelpAndReturnNULL;
   if (!get_int_param(        t,           p, n)) HelpAndReturnNULL;
   if (!get_val_param<float>(      h,           p, n)) HelpAndReturnNULL;
   if (!get_val_param<float>(      sigma,       p, n)) HelpAndReturnNULL;
@@ -1026,16 +1038,20 @@ BasicVariable::ptr Wrap_SmoothLinesToSplines(ParamList* p)
     float samplingstep = 0.1f;
     int n=0;
 
-  if (!get_val_ptr_param<SurfacePoly>(  input,        p, n)) HelpAndReturnVarPtr;
+  //using namespace amilab;
+  FUNC_GET_OBJECT_PARAM(SurfacePoly,varsurf,objsurf);
+  if (!objsurf.get()) HelpAndReturnVarPtr;
   if (!get_val_param<float>(    samplingstep, p, n)) HelpAndReturnVarPtr;
 
 
-  SurfacePoly::ptr surf_result (Func_SmoothLinesToSplines( input, samplingstep ));
+//  SurfacePoly::ptr surf_result (Func_SmoothLinesToSplines( input, samplingstep ));
 
-  Variable<SurfacePoly>::ptr varres(
-    new Variable<SurfacePoly>("interpolatedsplines_result",surf_result));
+  return CreateVar_SurfacePoly(Func_SmoothLinesToSplines( objsurf.get(),
+                                  samplingstep ));
+//Variable<SurfacePoly>::ptr varres(
+//    new Variable<SurfacePoly>("interpolatedsplines_result",surf_result));
 
-  return varres;
+//  return varres;
 
 
 } // Wrap_SmoothLinesToSplines()

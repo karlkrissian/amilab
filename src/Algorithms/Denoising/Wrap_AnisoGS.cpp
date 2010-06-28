@@ -65,16 +65,14 @@ static AnisoGS* static_AnisoGS = NULL;
 
 //----------------------------------------------------------------------
 void Func_InitAnisoGS(InrImage* in, 
-			   float p_sigma, 
-			   float p_k,
-			   float p_beta
-			   )
+         float p_sigma, 
+         float p_k,
+         float p_beta
+         )
 {
 
   if (static_AnisoGS!=NULL) delete static_AnisoGS;
-
   static_AnisoGS=new AnisoGS();
-
   static_AnisoGS->Init(in,p_sigma,p_k,p_beta);
 
 } // Func_InitAnisoGS()
@@ -110,16 +108,14 @@ void      Func_AnisoGS_SetNoiseType( int nt)
 void      Func_AnisoGS_SetDistanceMap( unsigned char dm)
 //
 {
-
   static_AnisoGS->SetDistanceMap(dm);
 }
 
 //----------------------------------------------------------------------
-void Func_AnisoGS_SetMask( InrImage* m  )
+void Func_AnisoGS_SetMask( InrImage::ptr m  )
 {
   static_AnisoGS->Setmask(m);
 }
-
 
 //----------------------------------------------------------------------
 void      Func_AnisoGS_SetDataCoeff( float datacoeff  )
@@ -136,7 +132,6 @@ void      Func_AnisoGS_SetNoiseSD( float noiseSD  )
   static_AnisoGS->Setnoise_standard_deviation( noiseSD);
 }
 
-
 //----------------------------------------------------------------------
 float      Func_AnisoGS_GetNoiseSD(  )
 //
@@ -144,14 +139,12 @@ float      Func_AnisoGS_GetNoiseSD(  )
   return static_AnisoGS->Getnoise_standard_deviation();
 }
 
-
 //----------------------------------------------------------------------
 float      Func_AnisoGS_GetDAcoeff(  )
 //
 {
   return static_AnisoGS->Getestimated_DA_coeff();
 }
-
 
 //----------------------------------------------------------------------
 void Func_SetSmoothedParam( unsigned char sp  )
@@ -162,7 +155,7 @@ void Func_SetSmoothedParam( unsigned char sp  )
 
 
 //----------------------------------------------------------------------
-void Func_AnisoGS_SetSRAD_ROI( InrImage* SRAD_roi)
+void Func_AnisoGS_SetSRAD_ROI( InrImage::ptr SRAD_roi)
 {
   printf("Func_AnisoGS_SetSRAD_ROI()\n");
   static_AnisoGS->SetSRAD_ROI(      SRAD_roi);
@@ -170,7 +163,7 @@ void Func_AnisoGS_SetSRAD_ROI( InrImage* SRAD_roi)
 }
 
 //----------------------------------------------------------------------
-void Func_AnisoGS_SetRNRAD_ROI( InrImage* RNRAD_roi)
+void Func_AnisoGS_SetRNRAD_ROI( InrImage::ptr RNRAD_roi)
 {
   printf("Func_AnisoGS_SetRNRAD_ROI()\n");
   static_AnisoGS->SetSRAD_ROI(      RNRAD_roi);
@@ -178,7 +171,7 @@ void Func_AnisoGS_SetRNRAD_ROI( InrImage* RNRAD_roi)
 }
 
 //----------------------------------------------------------------------
-void Func_AnisoGS_SetRNRAD_ROI_NEW( InrImage* RNRAD_roi)
+void Func_AnisoGS_SetRNRAD_ROI_NEW( InrImage::ptr RNRAD_roi)
 {
   printf("Func_AnisoGS_SetRNRAD_NEW_ROI()\n");
   static_AnisoGS->SetSRAD_ROI(      RNRAD_roi);
@@ -226,34 +219,32 @@ float Func_ItereAnisoGS()
 float AnisoGS::IterateFlux( InrImage* vect, float coeff)
 //   --------------------
 {
+  float       erreur;
 
-  
-    float       erreur;
-
-  Si vect== NULL Alors
+  if ( vect== NULL ) {
     fprintf(stderr,"Func_ItereFlux() \t NULL vector \n");
     return 0.0;
-  FinSi
+  } // end if
 
-  Si Non(vect->VectorialFormat()) Alors
+  if ( !(vect->VectorialFormat()) ) {
     fprintf(stderr,"Func_ItereFlux() \t input image not in  vectorial format \n");
     return 0.0;
-  FinSi
+  } // end if
 
-  Si this->image_resultat==NULL Alors
+  if ( this->image_resultat==NULL ) {
     fprintf(stderr,"Func_ItereFlux() AnisoGS not initialized \n");
     return 0.0;
-  FinSi
+  } // end if
 
   iteration++;
 
-  Si mode == MODE_2D Alors
+  if ( mode == MODE_2D ) {
     fprintf(stderr,"Func_ItereFlux() 2D mode not supported yet \n");
     return 0.0;
   //    erreur = Itere2D(    this->image_resultat);
-  Sinon
+  } else {
     erreur = Itere3D_Flux( this->image_resultat, vect, coeff);
-  FinSi
+  } // end if
     
   printf(" iteration %d : %f \n", iteration,erreur);
   
@@ -275,7 +266,6 @@ float Func_ItereFlux( InrImage* vect, float coeff)
 } // Func_ItereAnisoGS()
 
 
-
 //----------------------------------------------------------------------
 int Func_EndAnisoGS()
 {
@@ -286,7 +276,6 @@ int Func_EndAnisoGS()
   return 1;
 
 } // Func_EndAnisoGS()
-
 
 //----------------------------------------------------------------------
 InrImage* Func_AnisoGS_GetOutput()
@@ -312,7 +301,6 @@ InrImage* Func_AnisoGS_GetOutput()
 
 } // Func_GetOutput()
 
-
 //----------------------------------------------------------------------
 InrImage* Func_AnisoGS_GetDiffusionCoeff()
 {
@@ -333,7 +321,6 @@ InrImage* Func_AnisoGS_GetDiffusionCoeff()
     return NULL;
 
 } // Func_GetDiffusionCoeff()
-
 
 
 

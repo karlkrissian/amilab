@@ -46,6 +46,7 @@
 
 #include "slick/16x16/actions/reload.xpm"
 #include "gtk-clear.xpm"
+#include "LoadImage_Icon3.xpm"
 
 #include "amilab_messages.h"
 
@@ -53,6 +54,7 @@
 using namespace amilab;
 
 #include "ami_object.h"
+#include "wxStcFrame.h"
 
 //#include "Bluecurve/32x32/actions/reload.xpm"
 
@@ -60,6 +62,7 @@ extern wxString        GB_help_dir;
 extern wxString        GB_scripts_dir;
 extern VarContexts  Vars;
 
+extern MainFrame*    GB_main_wxFrame;
 
 
 // in function.cpp
@@ -97,6 +100,7 @@ enum {
   wxID_ConsoleReset = 2000,
   wxID_ConsoleClear,
   wxID_UpdateVars,
+  wxID_ToolLoadImage,
   wxID_ToolHelp,
   wxID_ToolQuit,
   wxID_VarList,
@@ -114,6 +118,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_CLOSE(MainFrame::OnClose)
 
 //    EVT_BUTTON(wxID_ConsoleReset, MainFrame::ConsoleReset)
+    EVT_TOOL(         wxID_ToolLoadImage, MainFrame::OnFileOpenImage)
     EVT_TOOL(         wxID_ConsoleClear, MainFrame::ConsoleClear)
 #if (wxCHECK_VERSION(2,9,0))
     EVT_TOOL_RCLICKED(wxID_ConsoleClear, MainFrame::ConsoleReset)
@@ -280,13 +285,28 @@ MainFrame::MainFrame( const wxString& title,
                   wxID_ANY,
                   title,
                   pos,
-                  size)
+                  size),
+                  amilab_editor(NULL)
 {
 
-  CreateMenu();
 //  CreateToolbar();
 
   m_mgr.SetManagedWindow(this);
+
+  CreateMenu();
+
+  m_mgr.SetFlags( 
+                  wxAUI_MGR_ALLOW_FLOATING |
+                  // Avoid problem with KDE desktop composing effect
+                  #ifdef __WXGTK__ 
+                    wxAUI_MGR_RECTANGLE_HINT |
+                  #else
+                   wxAUI_MGR_TRANSPARENT_HINT |
+                  #endif
+                  wxAUI_MGR_HINT_FADE |
+                  wxAUI_MGR_NO_VENETIAN_BLINDS_FADE |
+                  wxAUI_MGR_ALLOW_ACTIVE_PANE
+                );
 
      // tell the manager to "commit" all the changes just made
 
@@ -350,6 +370,11 @@ MainFrame::MainFrame( const wxString& title,
     tb1->SetToolBitmapSize(wxSize(48,48));
 //    tb1->AddTool(wxID_ANY, wxT("Test"), wxArtProvider::GetBitmap(wxART_ERROR));
 //    tb1->AddSeparator();
+    ::wxInitAllImageHandlers();
+    //wxImage loadim(wxT("MRA_32_39.png"));
+    tb1->AddTool(wxID_ToolLoadImage, wxT("Load Image"), wxBitmap(LoadImage_Icon3_xpm),
+        wxT("Load Image"));
+
     tb1->AddTool(wxID_UpdateVars, wxT("Update variables"), wxBitmap(reload),
         wxT("Update variables"));
     tb1->AddSeparator();
@@ -396,6 +421,16 @@ MainFrame::MainFrame( const wxString& title,
 
 
 //------------------------------------------------------------------------
+wxStcFrame* MainFrame::GetAmilabEditor()
+{
+  if (!GetChildren().Find(amilab_editor)) {
+    amilab_editor = new wxStcFrame ( this, wxT("AMILab Editor"));    
+  }
+  return amilab_editor;  
+}
+
+
+//------------------------------------------------------------------------
 void MainFrame::CreateMainBook(wxWindow* parent)
 {
    // create the notebook off-window to avoid flicker
@@ -424,8 +459,8 @@ void MainFrame::CreateMainBook(wxWindow* parent)
   CreateKeywordsPanel(this);
   _main_book->AddPage( _keywords_panel , wxT("Keywords") );
 
-  CreateDrawingPanel(this);
-  _main_book->AddPage( _drawing_panel , wxT("Drawing") );
+//  CreateDrawingPanel(this);
+//  _main_book->AddPage( _drawing_panel , wxT("Drawing") );
 
   _main_book->Fit();
 
@@ -598,13 +633,32 @@ void MainFrame::CreateVarTreePanel ( wxWindow* parent)
                               ) 
                               //^ (wxTR_NO_LINES )
                             );
-  _var_tree->SetWindowStyle(_var_tree->GetWindowStyle() ^ wxTR_NO_LINES);
+
+  _vartree_col_main = _var_tree->GetColumnCount();
+  _var_tree->AddColumn (_T("Name"), 140, wxALIGN_LEFT);
+  _var_tree->SetColumnEditable (_vartree_col_main, false);
+
+  _vartree_col_type = _var_tree->GetColumnCount();
+  _var_tree->AddColumn (_T("Type"), 30, wxALIGN_CENTER);
+  _var_tree->SetColumnEditable (_vartree_col_type, false);
+
+  _vartree_col_val = _var_tree->GetColumnCount();
+  _var_tree->AddColumn (_T("Val"), 30, wxALIGN_CENTER);
+  _var_tree->SetColumnEditable (_vartree_col_val, false);
+
+  _vartree_col_desc = _var_tree->GetColumnCount();
+  _var_tree->AddColumn (_T("Details"), 120, wxALIGN_CENTER);
+  _var_tree->SetColumnEditable (_vartree_col_desc, false);
+
+  _var_tree->SetWindowStyle(_var_tree->GetWindowStyle() ^ wxTR_NO_LINES ^ wxTR_COLUMN_LINES);
   //_var_tree->SetToolTip(_T("Tree Control for current variables"));
 
   _var_tree->SetFont( wxFont(10,wxMODERN,wxNORMAL,wxNORMAL)); // try a fixed pitch font
-  _var_tree->SetIndent(5);
+  _var_tree->SetIndent(2);
 
-  _vartree_root      = _var_tree->AddRoot(_T("Variables"));
+  _vartree_root        = _var_tree->AddRoot(_T("Root"));
+  _vartree_global      = _var_tree->AppendItem(_vartree_root,_T("Global"));
+  _vartree_builtin     = _var_tree->AppendItem(_vartree_root,_T("Builtin"));
 
   vartreepanel_sizer->Add(_var_tree, 1, wxEXPAND , 5);
   vartreepanel_sizer->Fit(_vartree_panel);
@@ -642,7 +696,7 @@ void MainFrame::CreateConsoleText( wxWindow* parent)
                         wxID_ANY,
                         GetwxStr("Console"),
                           wxTE_MULTILINE
-                        | wxHSCROLL
+                        //| wxHSCROLL
                         | wxFULL_REPAINT_ON_RESIZE
                         //|wxTE_RICH|wxTE_RICH2
                         , (*_textcontrol_validator)
@@ -934,6 +988,7 @@ void MainFrame::CreateSettingsPanel(wxWindow* parent)
 } // CreateSettingsPanel()
 
 
+/*
 //-------------------------------------------------------
 void MainFrame::CreateDrawingPanel(wxWindow* parent)
 //            --------------------
@@ -952,6 +1007,7 @@ void MainFrame::CreateDrawingPanel(wxWindow* parent)
           _drawing_panel,
           wxID_ANY,
           GetwxStr("Drawing") );
+
   wxStaticBoxSizer* drawingpanel_sizer  = new wxStaticBoxSizer(
             drawing_box
           , wxVERTICAL
@@ -959,6 +1015,7 @@ void MainFrame::CreateDrawingPanel(wxWindow* parent)
           );
 
   _drawing_panel->SetSizer(drawingpanel_sizer);
+
   _drawing_window = new wxDrawingWindow(
       _drawing_panel,
       wxID_ANY,
@@ -971,7 +1028,7 @@ void MainFrame::CreateDrawingPanel(wxWindow* parent)
 
 
 } // CreateDrawingPanel()
-
+*/
 
 
 void MainFrame::OnClose(wxCloseEvent& event)
@@ -981,6 +1038,7 @@ void MainFrame::OnClose(wxCloseEvent& event)
   // important: clear variables now before the childrens are deleted
   Vars.EmptyVariables();
   Destroy();
+  GB_main_wxFrame = NULL;
 /*  cout << "OnClose " << endl;
 
     if ( event.CanVeto()  )
@@ -1126,7 +1184,7 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
   _var_tree->SetItemFont(vartree_others,root_font);
   _var_tree->SetItemTextColour(vartree_others,vartype_colour);
 
-  root_font.SetStyle(wxFONTFAMILY_MODERN);
+  root_font.SetFamily(wxFONTFAMILY_MODERN);
 //wxFONTSTYLE_NORMAL);
   root_font.SetWeight(wxNORMAL);
   wxTreeItemId itemid;
@@ -1142,27 +1200,27 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
     wxString type_str;
     BasicVariable::ptr var = context->GetVar((*variables)[i].mb_str());
 
+    wxTreeItemId append_id;
+    std::string text;
+    std::string valtext;
+
     if (var.get()) {
       if (var->Type() == type_image) {
         // create text with image information
         DYNAMIC_CAST_VARIABLE(InrImage,var,varim);
         InrImage::ptr im (varim->Pointer());
-        std::string text = (boost::format("%1% %20t %2% %35t %3%x%4%x%5%  %55t %|6$+5| Mb")
-                            % var->Name()
+        text = (boost::format("%1% (%2%x%3%x%4%)x%5% %|6$+5| Mb")
                             % im->FormatName()
                             % im->DimX()
                             % im->DimY()
                             % im->DimZ()
+                            % im->GetVDim()
                             % (im->GetDataSize()/1000000)).str();
         //cout << text << endl;
-        itemid = _var_tree->AppendItem(
-              vartree_images,
-              wxString(text.c_str(), wxConvUTF8),
-              -1,-1,
-              new MyTreeItemData(var));
-        _var_tree->SetItemFont(itemid,root_font);
+        append_id = vartree_images;
         total_image_size += im->GetDataSize();
       } else
+/* TODO: arrange tree display for type_ami_object
       if (var->Type() == type_surface) {
         DYNAMIC_CAST_VARIABLE(SurfacePoly,var,varsurf);
         SurfacePoly::ptr surf (varsurf->Pointer());
@@ -1178,124 +1236,82 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
               new MyTreeItemData(var));
         _var_tree->SetItemFont(itemid,root_font);
       } else
-      if ((var->Type() == type_float)||
-          (var->Type() == type_int)  ||
-          (var->Type() == type_uchar))
+*/
+      if (var->IsNumeric())
       {
-        std::string text;
-        switch(var->Type()) {
-          case type_float:
-            {
-            DYNAMIC_CAST_VARIABLE(float,var,varf);
-            text = (boost::format("%1% %20t FLOAT %30t %2%")
-                            % var->Name()
-                            % (*varf->Pointer())).str();
-            break;
-            }
-          case type_int:
-            {
-            DYNAMIC_CAST_VARIABLE(int,var,varint);
-            text = (boost::format("%1% %20t INT %30t %2%")
-                            % var->Name()
-                            % (*varint->Pointer())).str();
-            break;
-            }
-          case type_uchar:
-            {
-            DYNAMIC_CAST_VARIABLE(unsigned char,var,varuchar);
-            text = (boost::format("%1% %20t UCHAR %30t %2%")
-                            % var->Name()
-                            % (int) (*varuchar->Pointer())).str();
-            break;
-            }
-          default:;
-        }
-        itemid = _var_tree->AppendItem(
-              vartree_numbers,
-              wxString(text.c_str(), wxConvUTF8),
-              -1,-1,
-              new MyTreeItemData(var));
-        _var_tree->SetItemFont(itemid,root_font);
+        text = var->TreeCtrlInfo();
+        valtext = var->GetValueAsString();
+        append_id = vartree_numbers;
       } else
       if (var->Type() == type_string)
       {
-        DYNAMIC_CAST_VARIABLE(std::string,var,varstr);
-        std::string text = (boost::format("%1% %20t \"%2%\"")
-                        % varstr->Name()
-                        % (*varstr->Pointer())).str();
-        itemid = _var_tree->AppendItem(
-              vartree_strings,
-              wxString(text.c_str(), wxConvUTF8),
-              -1,-1,
-              new MyTreeItemData(var));
-        _var_tree->SetItemFont(itemid,root_font);
+        text = var->TreeCtrlInfo();
+        valtext = (boost::format("'%1%'") %var->GetValueAsString()).str();
+        append_id = vartree_strings;
       } else
       if (var->Type() == type_ami_function)
       {
-        itemid = _var_tree->AppendItem(
-              vartree_functions,
-              (*variables)[i],
-              -1,-1,
-              new MyTreeItemData(var));
-        _var_tree->SetItemFont(itemid,root_font);
+        text = var->TreeCtrlInfo();
+        append_id = vartree_functions;
       } else
       if (var->Type() == type_ami_class)
       {
-        itemid = _var_tree->AppendItem(
-              vartree_classes,
-              (*variables)[i],
-              -1,-1,
-              new MyTreeItemData(var));
-        _var_tree->SetItemFont(itemid,root_font);
+        text = var->TreeCtrlInfo();
+        append_id = vartree_classes;
       } else
-      if ((var->Type() == type_ami_object)||(var->Type() == type_ami_cpp_object))
+      if ((var->Type() == type_ami_object))
       {
-        wxTreeItemId obj_itemid = _var_tree->AppendItem(
-              vartree_objects,
-              (*variables)[i],
-              -1,-1,
-              new MyTreeItemData(var));
-        _var_tree->SetItemFont(obj_itemid,root_font);
+        text = var->TreeCtrlInfo();
+        append_id = vartree_objects;
+      } else
+      if (var->Type() == type_c_image_function)
+      {
+        text = var->TreeCtrlInfo();
+        append_id = vartree_wrapped_functions;
+      } else
+      if ((var->Type() == type_c_procedure))
+      {
+        text = var->TreeCtrlInfo();
+        append_id = vartree_wrapped_procedures;
+      } else
+      if ((var->Type() == type_c_function)||(var->Type() == type_class_member))
+      {
+        text = var->TreeCtrlInfo();
+        append_id = vartree_wrapped_var_functions;
+      } else {
+        text = var->TreeCtrlInfo();
+        append_id = vartree_others;
+      }
+
+      itemid = _var_tree->AppendItem(
+            append_id,
+            wxString(var->Name().c_str(), wxConvUTF8),
+            -1,-1,
+            new MyTreeItemData(var));
+
+      _var_tree->SetItemText(itemid,_vartree_col_type,
+          wxString(var->GetTypeName().c_str(), wxConvUTF8));
+
+      //_var_tree->SetItemToolTip(itemid,
+      //    wxString(var->GetTypeName().c_str(), wxConvUTF8));
+
+      _var_tree->SetItemText(itemid,_vartree_col_val,
+          wxString(valtext.c_str(), wxConvUTF8));
+
+      _var_tree->SetItemText(itemid,_vartree_col_desc,
+          wxString(text.c_str(), wxConvUTF8));
+
+      _var_tree->SetItemFont(itemid,root_font);
+
+      if ((var->Type() == type_ami_object)) {
         // get the pointer to the objet
         DYNAMIC_CAST_VARIABLE(AMIObject,var,varobj);
         AMIObject::ptr obj( varobj->Pointer());
         // create the tree by recursive call
-        this->UpdateVarTree(obj_itemid, obj->GetContext());
-      } else
-      if (var->Type() == type_c_image_function)
-      {
-        itemid = _var_tree->AppendItem(
-              vartree_wrapped_functions,
-              (*variables)[i],
-              -1,-1,
-              new MyTreeItemData(var));
-        _var_tree->SetItemFont(itemid,root_font);
-      } else
-      if ((var->Type() == type_c_procedure)||(var->Type() == type_class_member))
-      {
-        itemid = _var_tree->AppendItem(
-              vartree_wrapped_procedures,
-              (*variables)[i],
-              -1,-1,
-              new MyTreeItemData(var));
-        _var_tree->SetItemFont(itemid,root_font);
-      } else
-      if (var->Type() == type_c_function)
-      {
-        itemid = _var_tree->AppendItem(
-              vartree_wrapped_var_functions,
-              (*variables)[i],
-              -1,-1,
-              new MyTreeItemData(var));
-        _var_tree->SetItemFont(itemid,root_font);
-      } else
-        itemid = _var_tree->AppendItem(
-              vartree_others,
-              (*variables)[i],
-              -1,-1,
-              new MyTreeItemData(var));
-        _var_tree->SetItemFont(itemid,root_font);
-    }
+        this->UpdateVarTree(itemid, obj->GetContext());
+      }
+    } // end if var.get()
+
   } // end for
 
   // Display the total size of images in Mb
@@ -1306,6 +1322,7 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
   }
 
   // delete empty branches
+/*
   if (!_var_tree->ItemHasChildren(vartree_images)) 
     _var_tree->Delete(vartree_images);
   if (!_var_tree->ItemHasChildren(vartree_surfaces)) 
@@ -1328,7 +1345,29 @@ void MainFrame::UpdateVarTree(  const wxTreeItemId& rootbranch,
     _var_tree->Delete(vartree_wrapped_var_functions);
   if (!_var_tree->ItemHasChildren(vartree_others)) 
     _var_tree->Delete(vartree_others);
-
+*/
+  if (_var_tree->GetChildrenCount(vartree_images)==0) 
+    _var_tree->Delete(vartree_images);
+  if (_var_tree->GetChildrenCount(vartree_surfaces)==0) 
+    _var_tree->Delete(vartree_surfaces);
+  if (_var_tree->GetChildrenCount(vartree_numbers)==0) 
+    _var_tree->Delete(vartree_numbers);
+  if (_var_tree->GetChildrenCount(vartree_strings)==0) 
+    _var_tree->Delete(vartree_strings);
+  if (_var_tree->GetChildrenCount(vartree_functions)==0) 
+    _var_tree->Delete(vartree_functions);
+  if (_var_tree->GetChildrenCount(vartree_classes)==0) 
+    _var_tree->Delete(vartree_classes);
+  if (_var_tree->GetChildrenCount(vartree_objects)==0) 
+    _var_tree->Delete(vartree_objects);
+  if (_var_tree->GetChildrenCount(vartree_wrapped_functions)==0) 
+    _var_tree->Delete(vartree_wrapped_functions);
+  if (_var_tree->GetChildrenCount(vartree_wrapped_procedures)==0) 
+    _var_tree->Delete(vartree_wrapped_procedures);
+  if (_var_tree->GetChildrenCount(vartree_wrapped_var_functions)==0) 
+    _var_tree->Delete(vartree_wrapped_var_functions);
+  if (_var_tree->GetChildrenCount(vartree_others)==0) 
+    _var_tree->Delete(vartree_others);
   //_var_list->Show();
 }
 
@@ -1560,10 +1599,16 @@ void MainFrame::UpdateVarsDisplay()
   root_font.SetWeight(wxFONTWEIGHT_BOLD);
   root_font.SetPointSize(10);
   _var_tree->SetItemFont(_vartree_root,root_font);
+  _var_tree->SetItemFont(_vartree_global, root_font);
+  _var_tree->SetItemFont(_vartree_builtin,root_font);
 
-  UpdateVarTree(_vartree_root, Vars.GetCurrentContext());
   _var_tree->Expand(  _vartree_root);
 
+  UpdateVarTree(_vartree_global, Vars.GetCurrentContext());
+  _var_tree->Expand(  _vartree_global);
+
+  UpdateVarTree(_vartree_builtin, Vars.GetBuiltinContext());
+  _var_tree->Expand(  _vartree_builtin);
 
 }
 

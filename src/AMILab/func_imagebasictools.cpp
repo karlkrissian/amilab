@@ -41,21 +41,21 @@ extern unsigned char GB_debug;
 InrImage* Func_AutoCrop( InrImage* im, int margin) 
 {
 
-  
-    int xmin,xmax,ymin,ymax,zmin,zmax;
-    int x,y,z;
+  int xmin,xmax,ymin,ymax,zmin,zmax;
+  int x,y,z;
 
   xmin = im->DimX()-1;
   ymin = im->DimY()-1;
   zmin = im->DimZ()-1;
   xmax = ymax = zmax = 0;
 
+  InrImageIteratorBase::ptr im_it( im->CreateConstIterator());
 
-  im->InitBuffer();
+  im_it->InitBuffer();
   Pour(z,0,im->DimZ()-1)
   Pour(y,0,im->DimY()-1)
   Pour(x,0,im->DimX()-1)
-    if ((double)(*im)>0) {
+    if (im_it->GetDoubleValue()>0) {
       xmin = macro_min(xmin,x);
       ymin = macro_min(ymin,y);
       zmin = macro_min(zmin,z);
@@ -63,7 +63,7 @@ InrImage* Func_AutoCrop( InrImage* im, int margin)
       ymax = macro_max(ymax,y);
       zmax = macro_max(zmax,z);
     }
-    ++(*im);
+    ++(*im_it);
   FinPour
   FinPour
   FinPour

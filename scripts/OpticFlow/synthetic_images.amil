@@ -106,8 +106,8 @@ print "CreateLine() 1\n"
   posy = i0posy
   // save displacement vector field
   TransformInvCoordinates(&posx,&posy)
-  displ[0] = posx-i0posx
-  displ[1] = posy-i0posy
+  displ.SetComponent( 0, posx-i0posx)
+  displ.SetComponent( 1, posy-i0posy)
 
 print "CreateLine() 2\n"
   posx = i0posx
@@ -144,8 +144,8 @@ print "CreateLine() 3\n"
 print "CreateLine() 4\n"
   global
   show i0
-  i0_draw.compare(i1)
-  i0_draw.setvector(1,displ)
+  i0_draw._compare(i1)
+  i0_draw._setvector(0,displ)
 
 #  global
 #    i1 = MeanHalfSize(i0)
@@ -168,26 +168,26 @@ proc CB_InitOF() {
 
 
 w1 = ParamWin("Synthetic Images for registration")
-image_type_id=w1.AddEnum(image_type)
+image_type_id=w1.AddEnum( &image_type)
 w1.AddEnumChoice(image_type_id,"Line")
 w1.AddEnumChoice(image_type_id,"Rectangle")
-w1.AddInt(rangle,-180,180)
-w1.AddFloat(transx,-200,200)
-w1.AddFloat(transy,-200,200)
+w1.AddInt( &rangle,  "rangle", -180,180)
+w1.AddFloat( &transx,  "transx", -200,200)
+w1.AddFloat( &transy,  "transy", -200,200)
 
-w1.BeginBox("line parameters")
-w1.AddFloat(linethickness,0.01,10)
-w1.AddFloat(linelength,0,100)
-w1.EndBox
+w1.BeginBoxPanel("line parameters")
+w1.AddFloat( &linethickness,  "linethickness", 0.01,10)
+w1.AddFloat( &linelength,  "linelength", 0,100)
+w1.EndBoxPanel()
 
-w1.BeginBox("rectangle parameters")
-w1.AddFloat(rectanglewidth,0,100)
-w1.AddFloat(rectangleheight,0,100)
-w1.EndBox
+w1.BeginBoxPanel("rectangle parameters")
+w1.AddFloat( &rectanglewidth,  "rectanglewidth", 0,100)
+w1.AddFloat( &rectangleheight,  "rectangleheight", 0,100)
+w1.EndBoxPanel()
 
 w1.AddButton("Create Image",CB_CreateImage)
 w1.AddButton("Init OF",CB_InitOF)
-w1.CreateWin
-w1.Display
+w1.Update()
+w1.Display()
 
 

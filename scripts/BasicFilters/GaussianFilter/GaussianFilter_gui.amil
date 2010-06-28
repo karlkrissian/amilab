@@ -3,13 +3,15 @@
 # Example of using the Gaussian Filtering
 # with the command filter
 #
+
+func "Common/ScriptGui"
+
 if (!exists(GaussianFilterClass)) {
 
-  Class GaussianFilterClass {
+  Class GaussianFilterClass : public ScriptGui {
 
   #----------------------------
   proc ::Init() {
-    ::class_name ="global::GaussianFilterClass"
     ::input_name = ""
     ::sigma      = 1, "Gaussian kernel standard devation"
     ::derx = INT(0), "Derivation order in X (0: no derivation)"
@@ -26,24 +28,9 @@ if (!exists(GaussianFilterClass)) {
   }
     
   #----------------------------
-  proc ::Close() {
-    ::win.HidePanel
-    delvars GetObjectName(::Close)
-  }
-  ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-    
-  #----------------------------
-  proc ::CloseAll() {
-    eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
-    ::Close
-  }
-  ::CloseAll.Comments("Call ::Close() method and delete the class variable")
-    
-  #----------------------------
-  
   proc ::load_input() {
     eval "::input <<="+::input_name+";"
-    if (::input_name=="Image") {
+    if (::input_name=="BrowseImage") {
       ::input_name = "::input"
       ::win.Update(-1)
     }
@@ -58,20 +45,20 @@ if (!exists(GaussianFilterClass)) {
                       ::derx,::dery,::derz)
     }else {
       for n=0 to ::input.vdim-1 {
-        ::res[n] = filter( ::input[n],::sigma,\
-                            ::derx,::dery,::derz)
+        ::res.SetComponent( n, filter( ::input[n],::sigma,\
+                            ::derx,::dery,::derz))
       }
      }
    ::Display()
   }
-  ::Filter.Comments("Apply Gaussian convolution on each channel of the image.")
+  Comments( ::Filter, "Apply Gaussian convolution on each channel of the image.")
   
   proc ::Display() {
     global
     show ::input
     if (exists(::res)) {
       show ::res
-      ::input_draw.compare(::res_draw)
+      ::input_draw._compare(&::res_draw)
     }
   }
   
@@ -79,47 +66,19 @@ if (!exists(GaussianFilterClass)) {
   proc ::AutoFilter() {
     if (::auto) { ::Filter; }
   }
-  ::AutoFilter.Comments("Apply the filter automatically if this option is enabled")
+  Comments( ::AutoFilter, "Apply the filter automatically if this option is enabled")
 
   #-----------------------------------------
   proc ::AutoDrag() {
     ::win.SetDragCallback(::sigma_id,::autodrag)
   }
-  ::AutoDrag.Comments("Enable/Disable real-time filtering while moving the scale")
+  Comments( ::AutoDrag, "Enable/Disable real-time filtering while moving the scale")
   
   #-----------------------------------------
   proc ::Save() {
     ::res.save resultname
   }
-  ::Save.Comments("Save the resulting image")
-
-
-  //---------------------------------------------------
-  proc ::LaunchWiki() {
-    import = &global::ami_import;
-    wx = import->WxFunctions();
-    res = wx->LaunchDefaultBrowser(::wiki_help);
-  }
-  ::LaunchWiki.Comments("Launch the corresponding wiki tutorial page on the default browser.")
-
-  //---------------------------------------------------
-  proc ::HtmlHome() {
-    ::html.LoadFile( ::html_filename)
-  }
-  ::HtmlHome.Comments("Back to the initial page.")
-
-  //---------------------------------------------------
-  proc ::HtmlBack() {
-    res = ::html.HistoryBack()
-  }
-  ::HtmlBack.Comments("Back to the previous page.")
-
-  //---------------------------------------------------
-  proc ::HtmlForward() {
-    res = ::html.HistoryForward()
-  }
-  ::HtmlForward.Comments("Go to the forward page.")
-
+  Comments( ::Save, "Save the resulting image")
 
   #-----------------------------------------
   proc ::CreateGui() {
@@ -142,28 +101,15 @@ if (!exists(GaussianFilterClass)) {
         ::win.AddBoolean( &::autodrag,"Auto drag")
         ::win.SetCallback( &::AutoDrag)
         ::win.AddButton("Apply",::Filter)
-      ::win.AddPage("Help")
-        ::win.BeginHorizontal
-          ::win.AddButton("Wiki",   ::LaunchWiki)
-          ::win.AddButton("Home",   ::HtmlHome)
-          ::win.AddButton("<--",    ::HtmlBack)
-          ::win.AddButton("-->",    ::HtmlForward)
-        ::win.EndHorizontal
-        # add html widget
-        d = ::win.CurrentParent()
-        ::html = import->wxHtmlWindow(&d)
-        ::html.LoadFile( ::html_filename)
-        ::win.AddWidget(&::html,1)
 
-    ::win.EndBook
-
-    ::win.BeginHorizontal
-      ::win.AddButton("Close",          ::Close)
-      ::win.AddButton("Close All",          ::CloseAll)
-    ::win.EndHorizontal  
+      ::AddHelpPage(&::win)
+  
+    ::win.EndBook()
+  
+    ::AddStandardButtons(&::win)
   
     ::win.Update(-1)
-    ::win.Display
+    ::win.Display()
   }
   
   ::Init

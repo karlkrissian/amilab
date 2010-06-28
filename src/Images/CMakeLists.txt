@@ -33,6 +33,8 @@ SET(Images_HDRS
   InrImageIteratorBase.h
   InrImageIterator.h
   InrImageIterator.tpp
+  InrImageConstIterator.h
+  InrImageConstIterator.tpp
 )
 
 SET(Images_SRCS

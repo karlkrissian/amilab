@@ -38,6 +38,8 @@
 
 #include <wx/textdlg.h>
 
+using namespace amilab;
+
 #define EPSILON_fonctions_cpp 1E-5
 
 extern unsigned char GB_debug;
@@ -2101,10 +2103,11 @@ InrImage*    Func_IsocontourPoints( InrImage* im, float th)
              "isosurf_pos.ami.gz"
              );
 
-  res->InitBuffer();
+  InrImageIteratorBase::ptr res_it(res->CreateIterator());
+  res_it->InitBuffer();
   Pour(x,0,res->DimX()-1)
-    res->VectFixeValeurs(points[x].x,points[x].y,points[x].z);
-    ++(*res);
+    res_it->SetDoubleVectorValues(points[x].x,points[x].y,points[x].z);
+    ++(*res_it);
   FinPour
 
   return res;

@@ -33,6 +33,7 @@
 #endif
 
 #include "token_list.h"
+#include "amilab_messages.h"
 
 #ifdef __APPLE__
   #include <ApplicationServices/ApplicationServices.h>
@@ -106,7 +107,58 @@ DessinImage* CreateIDraw( const std::string& title, InrImage::ptr image)
 }
 
 
+//-------------------------------------------
+void CB_ParamWin(void* cd)
+{
+  AMIFunction* func_ptr = (AMIFunction*) (cd);
+  //cout << "CB_ParamWin pointer is " << func_ptr << endl;
+  GB_driver.yyip_call_function(func_ptr);
+} // CB_ParamWin( void* cd )
 
+//-----------------------------------------
+void CB_delete_variable( void* var)
+{
+  BasicVariable* vartodelete = (BasicVariable*) var;
+
+  FILE_MESSAGE(boost::format("deleting %1%") % vartodelete->Name());
+  if (!Vars.deleteVar(vartodelete))
+    FILE_ERROR("Could not delete variable "); 
+
+}
+
+//-----------------------------------------
+void CB_delete_varlist( void* var)
+{
+  if (!var) return;
+
+  std::list<BasicVariable::wptr>* varlist = (std::list<BasicVariable::wptr>*) var;
+
+  if (varlist) {
+    // iterate over the list
+    std::list<BasicVariable::wptr>::iterator it;
+    for(it=varlist->begin(); it!=varlist->end(); it++) {
+      BasicVariable::wptr vartodelete = *it;
+      if (BasicVariable::ptr lockedvar = vartodelete.lock()) 
+      {
+        bool deleted=false;
+        std::string name = lockedvar->Name();
+        FILE_MESSAGE(boost::format("deleting %1%") % name);
+        Variables::ptr context = lockedvar->GetContext();
+
+        // free lock first
+        lockedvar.reset();
+        if (context.get()) {
+          deleted = context->deleteVar(name.c_str());
+        }
+        if (!deleted)
+          FILE_ERROR(boost::format("Could not delete variable %1%") % name); 
+      }
+    }
+
+    // should be safe to delete varlist if the window is now closed!!!
+    delete varlist;
+  }
+}
 
 //----------------------------------------------------------------------
 // wxWidget specific ...
@@ -249,11 +301,12 @@ bool MyApp::OnInit()
 #endif
 
 /*    if ( !wxApp::OnInit() )
-        return false;
+    return false;
 */
 
  // this was  main()
   int  n;
+  bool no_interaction = false;
   std::string cmd_line;
 
   GB_debug = false;
@@ -299,6 +352,14 @@ bool MyApp::OnInit()
     GB_num_arg_parsed++;
   FinSi
 
+  Si  argc>GB_num_arg_parsed Et
+      strcmp(wxString(argv[GB_num_arg_parsed]).mb_str(wxConvUTF8),"-quit")==0
+  Alors
+    cout << "Quit without console interation" << endl;
+    no_interaction = true;
+    GB_num_arg_parsed++;
+  FinSi
+
   // Get environment variables
   CheckEnvDir( _T("AMI_HELP"),    GB_help_dir,    _T("tokens.html"));
   CheckEnvDir( _T("AMI_SCRIPTS"), GB_scripts_dir, _T("scripts.amil"));
@@ -310,8 +371,6 @@ bool MyApp::OnInit()
   GB_driver.ws_print(cmd_line.c_str());
 
 
-  // Add imports language
-  AddWrapImports();
 
 //  printf("MyApp::OnInit()\n");
 //  wxFont::SetDefaultEncoding(wxFONTENCODING_ISO8859_15);
@@ -334,6 +393,10 @@ bool MyApp::OnInit()
 //  printf("application name = \"%s\" \n",wxGetApp().GetClassName().c_str());
   // TODO: avoid using get() here ...
   GB_main_wxFrame = mainframe;
+
+
+  // Add imports language, needs to do it after initialization of MainFrame
+  AddWrapImports();
 
   ::wxInitAllImageHandlers();
 
@@ -393,8 +456,13 @@ bool MyApp::OnInit()
         GB_driver.yyip_popup_buffer();
         */
         GB_driver.parse_file(string(input_file.mb_str(wxConvUTF8)));
-        GB_main_wxFrame->GetConsole()->ProcessReturn();
-
+        if (GB_main_wxFrame)
+        {
+          if (no_interaction)
+            GB_main_wxFrame->Close(true);
+          else
+            GB_main_wxFrame->GetConsole()->ProcessReturn();
+        }
       } catch (char * str ) {
         cerr << "Error catched ! " << str << endl;
       }

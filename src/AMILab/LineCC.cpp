@@ -15,6 +15,7 @@
 #include <vector>
 #include <stack>
 using namespace std;
+using namespace amilab;
 
 SurfacePoly* GetConnectedComponent( SurfacePoly* input, int line_id)
 {

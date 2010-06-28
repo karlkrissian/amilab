@@ -17,11 +17,14 @@
 #include "DefineClass.hpp"
 #include "inrimage.hpp"
 #include "math1.hpp"
-#include "DeriveesLissees.hpp"
-#include "filtrage_rec.hpp"
+//#include "DeriveesLissees.hpp"
+//#include "filtrage_rec.hpp"
 #include "DirPrincipales.hpp"
 #include "FloatMatrix.hpp"
 
+class DeriveesLissees;
+class FiltrageRec;
+#include "GeneralGaussianFilter.h"
 
 #define DER_DISCR 1
 #define DER_GAUSS 2
@@ -32,11 +35,20 @@
 #define GAUSSIAN_NOISE 0
 #define SPECKLE_NOISE  1
 
+
+/*! \def CONTOURS_GRAD
+    \brief Standard gradient contour, value 0
+*/
 #define CONTOURS_GRAD      0
-#define CONTOURS_SRAD      1  // use Yu and Acton term for contours
-#define CONTOURS_RNRAD     2  // Rician Noise Reducing Anisotropic Diffusion
-#define CONTOURS_RNRAD_NEW 3  // Rician Noise Reducing Anisotropic Diffusion, new version using
-                             // directional local statistics for the diffusion matrix
+
+/// use Yu and Acton term for contours
+#define CONTOURS_SRAD      1  
+
+/// Rician Noise Reducing Anisotropic Diffusion
+#define CONTOURS_RNRAD     2  
+
+/// Rician Noise Reducing Anisotropic Diffusion, new version using directional local statistics for the diffusion matrix
+#define CONTOURS_RNRAD_NEW 3  
 
 #define IMPLICIT 1
 
@@ -61,76 +73,19 @@
     return this->name; \
   };
 
+
+/**
+  This class contains several denoising filters based on Partial Differential Equations, and usually implemented using a Gauss-Seidel scheme.
+**/
 class AnisoGS {
 
   DEFINE_CLASS(AnisoGS);
 
- public:
-
-  //-------  Images
-  InrImage* input_image; // original input image
-  InrImage* image_entree  ; // copy for processing
-  InrImage* image_resultat;
-  InrImage* image_lissee  ;
-  InrImage* im_tmp        ;
-  InrImage* image_c; // coefficients for SRAD type filtering
-
-  InrImage* tensor_xx;
-  InrImage* tensor_xy;
-  InrImage* tensor_xz;
-  InrImage* tensor_yy;
-  InrImage* tensor_yz;
-  InrImage* tensor_zz;
-
-  InrImage* eigenvect_xp;
-  InrImage* eigenvect_yp;
-  InrImage* eigenvect_zp;
-
-  AddSetGetVar(dt,float);
-  AddSetGetVar(neighborhood,int);
-
-
-  AddSetGetVar( mask, InrImage*)
- 
-  InrImage* divFim        ;
-
-  double   planstats_sigma;
-  double   dirstats_sigma;
-
-  unsigned char   image_entree_allouee;
-  int       boundary_extension_size;
-  
-  float      alpha_x, gamma_x;
-  float*     alpha_y;
-  float*     gamma_y;
-  float**    alpha_z;
-  float**    gamma_z;
-  
-  
-  GeneralGaussianFilter*  filtre;
-  FiltrageRec*     filtre_rec;
-  DeriveesLissees* DerLiss;
-  
-  
-  //-------- Parameters
-  int             mode; // MODE_2D or MODE_3D
-  unsigned char   use_filtre_rec;
-  unsigned char   opt_mem;
-  float           sigma;
-
-  AddSetGetVar( beta, float)
-
-  int     iteration;
-  int     loop, max_loop;
-  float       k;
-  float       epsilon;
-  int     tx,ty,tz,txy;
-
-  int ROI_xmin,ROI_xmax;
-  int ROI_ymin,ROI_ymax;
-  int ROI_zmin,ROI_zmax;
-
-  //-------- Precomputed pointers to neighborhood
+  private:
+  /**
+   * @name Precomputed pointers to neighborhood
+   **/
+  //@{ 
   float* I0;
   float* Ixp;
   float* Ixm;
@@ -162,46 +117,150 @@ class AnisoGS {
   float* Ixmypzm;
   float* Ixmymzp;
   float* Ixmymzm; 
+  //@}
+
+ public:
+
+  //-------  Images
+  /// original input image
+  InrImage* input_image; 
+  /// copy for processing
+  InrImage* image_entree  ;
+
+  /// resulting image
+  InrImage* image_resultat;
+
+  /// smoothed version
+  InrImage* image_lissee  ;
+  InrImage* im_tmp        ;
+
+  /// image of the coefficients for SRAD type filtering
+  InrImage* image_c; 
+
+  /**
+   * @name StructTensor 
+   * Structure Tensor
+   **/
+  //@{ 
+  /// 6 Components of the 3D structure tensor.
+  InrImage* tensor_xx;
+  InrImage* tensor_xy;
+  InrImage* tensor_xz;
+  InrImage* tensor_yy;
+  InrImage* tensor_yz;
+  InrImage* tensor_zz;
+  //@}
+
+  /**
+   * @name Eigenvectors
+   **/
+  //@{ 
+  InrImage* eigenvect_xp;
+  InrImage* eigenvect_yp;
+  InrImage* eigenvect_zp;
+  //@}
+
+  /// PDE time-step
+  AddSetGetVar(dt,float);
+
+  /// Size of the neighborhood
+  AddSetGetVar(neighborhood,int);
+
+  /// mask image
+  AddSetGetVar( mask, InrImage::ptr)
+ 
+  InrImage* divFim        ;
+
+  double   planstats_sigma;
+  double   dirstats_sigma;
+
+  unsigned char   image_entree_allouee;
+  int       boundary_extension_size;
+  
+  float      alpha_x, gamma_x;
+  float*     alpha_y;
+  float*     gamma_y;
+  float**    alpha_z;
+  float**    gamma_z;
+  
+  
+  /// Gaussian smoothing filter
+  GeneralGaussianFilter*  filtre;
+  FiltrageRec*            filtre_rec;
+  DeriveesLissees*        DerLiss;
+  
+  //-------- Parameters
+  int             mode; // MODE_2D or MODE_3D
+  unsigned char   use_filtre_rec;
+  unsigned char   opt_mem;
+  float           sigma;
+
+  AddSetGetVar( beta, float)
+
+  int     iteration;
+  int     loop, max_loop;
+  float       k;
+  float       epsilon;
+  int     tx,ty,tz,txy;
+
+  int ROI_xmin,ROI_xmax;
+  int ROI_ymin,ROI_ymax;
+  int ROI_zmin,ROI_zmax;
+
  
   // for structure tensor eigenvectors
   FloatMatrix*     matrice;
   float            vap[3];
   FloatMatrix*     vec_propre;
 
+  /// Coefficient in the tangent direction (direction orthogonal to the gradient, only for 2D images).
   AddSetGetVar(tang_coeff, float)
 
+  /// Coefficient in the maximal curvature direction
   AddSetGetVar(maxcurv_coeff, float)
+  /// Coefficient in the minimal curvature direction
   AddSetGetVar(mincurv_coeff, float)
 
-  // noise Gaussian or Speckle, by default Gaussian
+  /// noise Gaussian or Speckle, by default Gaussian
   AddSetGetVar(noise_type, int)
   AddSetGetVar(noise_standard_deviation, float)
   unsigned char noise_SD_preset;
   double variance;
 
-  // estimated data attachment coeff
+  /// estimated data attachment coeff
   AddSetGetVar(estimated_DA_coeff,float);
   
-  // If true, uses the norm of the smoothed gradient
-  // as parameter of the first diffusion function
-  // otherwise uses the first order derivative of intensity
-  // in the direction of the smoothed gradient.
+  /** If true, uses the norm of the smoothed gradient
+   as parameter of the first diffusion function
+   otherwise uses the first order derivative of intensity
+   in the direction of the smoothed gradient.
+  **/
   AddSetGetVar(SmoothedParam,unsigned char);
 
-  // Computes Euclidian distance maps
+  /// Computes Euclidian distance maps
   AddSetGetVar(DistanceMap,unsigned char);
   
-  // Get the minimal and maximal intensity of the initial image
-  // to limit unstabilities
+  /** Get the minimal and maximal intensity of the initial image
+     to limit unstabilities
+  **/
   float min_intensity;
   float max_intensity;
 
   //  int       contours_mode;
   //  InrImage* SRAD_ROI;
 
+  /** Contours mode: 
+      - CONTOURS_GRAD 0
+      - CONTOURS_SRAD 1
+      - CONTOURS_RNRAD 2
+      - CONTOURS_RNRAD_NEW 3
+  **/
   AddSetGetVar( contours_mode,int);
-  AddSetGetVar( SRAD_ROI,     InrImage*);
+
+  AddSetGetVar( SRAD_ROI,     InrImage::ptr);
+
   AddSetGetVar( local_structure_mode,  int);
+
   AddSetGetVar( diffusion_eigenvalues_mode,  int);
 
   AnisoGS()
@@ -209,64 +268,13 @@ class AnisoGS {
       InitParam();
     }
 
-  ~AnisoGS()
-    {
+  ~AnisoGS();
 
-      DeleteCoefficients();
-      
-      Si filtre     != NULL Alors
-  delete filtre;
-        filtre = NULL;
-      FinSi
-  
-      Si filtre_rec != NULL Alors
-  delete filtre_rec;
-        filtre_rec = NULL;
-      FinSi
-  
-      Si this->image_lissee != NULL Alors
-  delete this->image_lissee;
-        this->image_lissee=NULL;
-      FinSi
-  
-      Si this->im_tmp != NULL Alors
-  delete this->im_tmp;
-        this->im_tmp = NULL;
-      FinSi
-  
-      Si this->image_c != NULL Alors
-  delete this->image_c;
-        this->image_c = NULL;
-      FinSi
-  
-      Si divFim != NULL Alors
-  delete divFim;
-        divFim = NULL;
-      FinSi
-  
-      Si Non(opt_mem) Et (image_entree_allouee) Alors
-  delete image_entree;
-        image_entree=NULL;
-      FinSi
-      mask = NULL;
-      
-    if (tensor_xx!=NULL) { delete tensor_xx; tensor_xx=NULL; }
-    if (tensor_xy!=NULL) { delete tensor_xy; tensor_xy=NULL; }
-    if (tensor_xz!=NULL) { delete tensor_xz; tensor_xz=NULL; }
-    if (tensor_yy!=NULL) { delete tensor_yy; tensor_yy=NULL; }
-    if (tensor_yz!=NULL) { delete tensor_yz; tensor_yz=NULL; }
-    if (tensor_zz!=NULL) { delete tensor_zz; tensor_zz=NULL; }
-
-    if (eigenvect_xp!=NULL) { delete eigenvect_xp; eigenvect_xp=NULL; }
-    if (eigenvect_yp!=NULL) { delete eigenvect_yp; eigenvect_yp=NULL; }
-    if (eigenvect_zp!=NULL) { delete eigenvect_zp; eigenvect_zp=NULL; }
-
-    delete matrice;
-    delete vec_propre;
-
-    }
-
-  void InitParam() {
+  /**
+   * Initializes the parameters to default values.
+   */
+  void InitParam() 
+  {
     image_entree  = NULL;
     this->image_resultat= NULL;
     this->image_lissee  = NULL;
@@ -281,7 +289,7 @@ class AnisoGS {
     this->eigenvect_xp  = NULL;
     this->eigenvect_yp  = NULL;
     this->eigenvect_zp  = NULL;
-    mask          = NULL;
+//    mask          = NULL;
 
     mode          = MODE_2D;
 
@@ -321,12 +329,13 @@ class AnisoGS {
     DistanceMap = 0;
 
     contours_mode  = CONTOURS_GRAD;
-    this->SRAD_ROI = NULL;
+//    this->SRAD_ROI = NULL;
 
 
     neighborhood = 1;
     dt = 0.05;
   }
+
 
   void ExtendBoundariesVonNeumann( InrImage* input);
   void CreateBoundariesVonNeumann( InrImage* input);
@@ -352,7 +361,18 @@ class AnisoGS {
 
   void ComputeImage_c(InrImage*);
 
+  /**
+   * Iteration for 2D images.
+   * @param im 
+   * @return 
+   */
   float Itere2D(   InrImage* im );
+
+  /**
+   * Iteration for 3D Images.
+   * @param im 
+   * @return 
+   */
   float Itere3D(   InrImage* im );
   float Itere3D_2( InrImage* im );
 
@@ -366,6 +386,10 @@ class AnisoGS {
 
   void Init(InrImage* in, float p_sigma, float p_k, float p_beta);
 
+  /**
+   * Main iteration method, directs to the appropriate specific method
+   * @return 
+   */
   float Iterate();
 
   float IterateFlux( InrImage* vect, float coeff);
@@ -401,14 +425,35 @@ class AnisoGS {
   short         convert_short(double val);
   void GetVectors(int coord, int x, int y, int z, t_3Point& e0, t_3Point& e1, t_3Point& e2);
 
-  // Compute the local  mean and standard deviation within a plan,
-  // using a Gaussian of standard deviation sd
+  /**
+   * Compute the local  mean and standard deviation within a plan,
+   *  using a Gaussian of standard deviation sd
+   * @param im 
+   * @param x 
+   * @param y 
+   * @param z 
+   * @param d1 
+   * @param d2 
+   * @param sd 
+   * @param mean 
+   * @param var 
+   */
   void ComputeLocalPlanStats(InrImage* im, float x, float y, float z, 
     t_3Point d1,t_3Point d2,
     float sd, double& mean, double& var);
 
-  // Compute the local directional mean and standard deviation,
-  // using a Gaussian of standard deviation sd
+  /**
+   * Computes the local directional mean and standard deviation,
+   * using a Gaussian of standard deviation sd
+   * @param im input image
+   * @param x 3D position
+   * @param y  ..
+   * @param z  ..
+   * @param e 
+   * @param sd 
+   * @param mean returning mean value
+   * @param var  returning variance value
+   */
   void ComputeLocalDirStats(InrImage* im, float x, float y, float z, t_3Point e,
     float sd, double& mean, double& var);
 

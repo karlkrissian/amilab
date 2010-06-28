@@ -11,6 +11,7 @@
 
 #include "wrapfunctions.hpp"
 #include "wrapitkRead_3D_US.h"
+#include "inrimage.hpp"
 
 
 /** Read a 3D Flow from an ASCII file **/

@@ -3,6 +3,9 @@
 # to the root binary directory of the project as ${HELLO_BINARY_DIR}.
 project (AMILab)
 
+
+MESSAGE( "CMAKE_PROJECT_NAME = ${CMAKE_PROJECT_NAME} ")
+
 cmake_minimum_required(VERSION 2.6)
 
 if(COMMAND cmake_policy)
@@ -142,6 +145,7 @@ INCLUDE(CPack)
 
 OPTION(AMI_USE_STATIC_LIBS "Look for static libraries" ON)
 
+#MESSAGE( "CMAKE_SYSTEM = ${CMAKE_SYSTEM} ")
 
 IF( AMI_USE_STATIC_LIBS )
    SET( _ami_ORIG_CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES})
@@ -151,6 +155,54 @@ IF( AMI_USE_STATIC_LIBS )
      SET(CMAKE_FIND_LIBRARY_SUFFIXES .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
    ENDIF(WIN32)
 ENDIF( AMI_USE_STATIC_LIBS )
+
+
+OPTION(AMI_CHECK_BRANCH "Look for the name of the SVN branch" ON)
+
+IF(AMI_CHECK_BRANCH)
+  FIND_PACKAGE(Subversion)
+
+  IF(Subversion_FOUND)
+    Subversion_WC_INFO(${CMAKE_SOURCE_DIR} SRCDIR)
+    MESSAGE( " *** SUBVERSION INFO ***")
+    MESSAGE( "SRCDIR_WC_URL = ${SRCDIR_WC_URL}")
+    #MESSAGE( "SRCDIR_WC_ROOT = ${SRCDIR_WC_ROOT}")
+    #MESSAGE( "SRCDIR_WC_REVISION = ${SRCDIR_WC_REVISION}")
+  ENDIF(Subversion_FOUND)
+
+  # Get the root dir through info XML
+  EXECUTE_PROCESS(COMMAND ${Subversion_SVN_EXECUTABLE} info --xml ${CMAKE_SOURCE_DIR}
+    OUTPUT_VARIABLE SRCDIR_WC_XML_INFO
+    ERROR_VARIABLE Subversion_svn_info_error
+    RESULT_VARIABLE Subversion_svn_info_result
+    OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+  IF(NOT ${Subversion_svn_info_result} EQUAL 0)
+    MESSAGE(SEND_ERROR "Command \"${Subversion_SVN_EXECUTABLE} info --xml ${CMAKE_SOURCE_DIR}\" failed with output:\n${Subversion_svn_info_error}")
+  ELSE(NOT ${Subversion_svn_info_result} EQUAL 0)
+
+    STRING(REGEX REPLACE ".*<root>(.*)</root>.*"
+      "\\1" SRCDIR_WC_XML_ROOT "${SRCDIR_WC_XML_INFO}")
+    MESSAGE( "SRCDIR_WC_XML_ROOT = ${SRCDIR_WC_XML_ROOT}")
+  ENDIF(NOT ${Subversion_svn_info_result} EQUAL 0)
+
+  
+  STRING(REGEX MATCH "^(.*\n)?${SRCDIR_WC_XML_ROOT}/trunk/src.*"
+    SRCDIR_WC_TRUNK  "${SRCDIR_WC_URL}")
+  MESSAGE( "SRCDIR_WC_TRUNK = ${SRCDIR_WC_TRUNK}")
+
+  IF(NOT SRCDIR_WC_TRUNK)
+    IF(SRCDIR_WC_XML_ROOT AND SRCDIR_WC_URL)
+      SET(PATTERN "^(.*\n)?${SRCDIR_WC_XML_ROOT}([^\n]+).*")
+      MESSAGE("PATTERN = ${PATTERN}")
+      STRING(REGEX REPLACE "^(.*\n)?${SRCDIR_WC_XML_ROOT}/branches/(.+)/src.*"
+        "\\2" SRCDIR_WC_BRANCH "${SRCDIR_WC_URL}")
+      MESSAGE( "SRCDIR_WC_BRANCH = ${SRCDIR_WC_BRANCH} ")
+    ENDIF(SRCDIR_WC_XML_ROOT AND SRCDIR_WC_URL)
+  ENDIF(NOT SRCDIR_WC_TRUNK)
+  
+ENDIF(AMI_CHECK_BRANCH)
+
 
 
 OPTION(AMI_USE_VTK "Use VTK: recommended" ON)
@@ -169,13 +221,13 @@ FIND_PACKAGE ( AMIFluid )
 #FIND_PACKAGE ( wxParams )
 FIND_PACKAGE ( OpticFlow )
 #FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc net xml qa xrc richtext media)
-FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc)
+FIND_PACKAGE(wxWidgets COMPONENTS adv html aui  gl core base stc )
 
 # put OpenGL before VTK to find the correct library of the system
 FIND_PACKAGE ( OpenGL )
 FIND_PATH(GLEXT_INCLUDE_DIR GL/glext.h )
 
-OPTION(Boost_USE_STATIC_LIBS "Use Boost static libraries" ON)
+OPTION(Boost_USE_STATIC_LIBS "Use Boost static libraries" OFF)
 
 SET(Boost_USE_MULTITHREAD OFF)
 #MESSAGE(  CMAKE_HOST_SYSTEM_NAME=${CMAKE_HOST_SYSTEM_NAME} )
@@ -207,6 +259,15 @@ ENDIF(AMI_USE_OPENMP)
 FIND_PACKAGE( Pthreads)
 
 OPTION(AMI_USE_FLEXBISON "Compile language using Flex and Bison" ON)
+IF(AMI_USE_FLEXBISON)
+  OPTION(AMI_BISON_DEBUG "Outputs debugging information of the parser" OFF)
+ENDIF(AMI_USE_FLEXBISON)
+
+IF(AMI_USE_OPENMP)
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+ENDIF(AMI_USE_OPENMP)
+
 
 IF(AMI_USE_FLEXBISON)
   FIND_PACKAGE(BISON)
@@ -300,7 +361,8 @@ add_subdirectory (Graphic)
 add_subdirectory (../wxParams/src binary_dir )
 add_subdirectory (OpenGL)
 add_subdirectory (wxSamples/penguin)
-add_subdirectory (wxSamples/stctest)
+add_subdirectory (wxStcFrame)
+add_subdirectory (wxCode/wxTreeListCtrl)
 add_subdirectory (Voxels)
 add_subdirectory (AMILab)
 
@@ -348,6 +410,8 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapCommon
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapITK
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapImports
+  ${AMILAB_SOURCE_DIR}/wxStcFrame
+  ${AMILAB_SOURCE_DIR}/wxCode/wxTreeListCtrl
   ${AMILAB_SOURCE_DIR}
   ${AMILAB_SOURCE_DIR}/../Pixmaps
   ${AMILAB_BINARY_DIR}
@@ -412,19 +476,25 @@ add_executable (${AMILAB_BIN} WIN32
 
 
 SET(amilab_ownlibs
-  Language
   WrapImports
-  WrapVTK
+  WrapmyVTK
   WrapFilters
   WrapSystem
-  WrapITK
   WrapAMIFluid
-  WrapWII
+  WrapSurface
+  WrapDessinImage
   WrapInterface
+  WrapWxWidgets
   WrapBasicTypes
   WrapCommon
-  WrapWxWidgets
+  WrapIO
+  WrapImage
+  Language
+  WrapVTK
+  WrapWII
+  WrapITK
   AMILab
+  Language
   AMImage
   Contours
   Coordinates
@@ -446,7 +516,8 @@ SET(amilab_ownlibs
   Voxels
 # wrapped wxwidgets samples
   penguin
-  stctest
+  wxStcFrame
+  wxTreeListCtrl
 )
 
 
@@ -516,8 +587,7 @@ IF(MSVC)
   set_target_properties( ${AMILAB_BIN} 
     PROPERTIES LINK_FLAGS_RELEASE "/NODEFAULTLIB:LIBCMT /NODEFAULTLIB:LIBCMTD")
 
-set_target_properties( ${AMILAB_BIN} 
-
+  set_target_properties( ${AMILAB_BIN} 
     PROPERTIES LINK_FLAGS_DEBUG "/NODEFAULTLIB:LIBCMT /NODEFAULTLIB:LIBCMTD")
 ENDIF(MSVC)
 
@@ -559,6 +629,10 @@ install(DIRECTORY ${AMILAB_SOURCE_DIR}/../scripts
 #        COMPONENT scripts
         FILES_MATCHING PATTERN "*.amil"
          PATTERN "*.sh"
+         PATTERN "*.py"
+         PATTERN "*.png"         
+         PATTERN "*.txt"
+         PATTERN "*.sh"
          PATTERN "*.html"
         PATTERN ".svn" EXCLUDE
         PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
@@ -592,5 +666,13 @@ if (UNIX)
           PERMISSIONS OWNER_READ GROUP_READ
           )
 endif(UNIX)
+
+
+#Test for amilab.
+INCLUDE(${PROJECT_SOURCE_DIR}/../CTEST/amilab_tests.cmake)
+
+
+#Test for amilab.
+#INCLUDE(${PROJECT_SOURCE_DIR}/../CTEST/amilab_tests.cmake)
 
 PrintSources(${AMILAB_BIN})

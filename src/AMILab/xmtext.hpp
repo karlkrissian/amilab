@@ -65,7 +65,7 @@ protected:
                       flags
                       | wxTE_PROCESS_ENTER
                       | wxTE_PROCESS_TAB
-                      | wxHSCROLL
+//                      | wxHSCROLL
                       ,
                       validator
                     )

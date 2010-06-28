@@ -4,16 +4,24 @@
 #SetVerboseOn
 #import_itk
 
-ami_import->System
+ami_import->System()
 #InfoDialog l_script_dir
 
-image_name ="amilab_logo_rgb8bits"
-image_name2="amilab_logo_rgb8bits2"
+func "ctest/ctest_config.amil"
+epsilon = 0.000001
 
-printn "Reading/writing 8 bits RGB test image:"
+if (argc<1) {
+  printn "\nFailing to get the parameter."
+} else {
+  extension = $1 
 
-for extension in ".png", ".jpg", ".tiff" , ".bmp" {
-
+  image_name ="amilab_logo_rgb8bits"
+  image_name2="amilab_logo_rgb8bits2"
+  
+  printn "Reading/writing 8 bits RGB test image:"
+  
+  #for extension in ".png", ".jpg", ".tiff" , ".bmp" {
+  
   if exists(l_script_dir) { del l_script_dir; }
   l_script_dir = op_system->GetCurrentScriptDir()
   printn "script dir = "+l_script_dir
@@ -21,30 +29,31 @@ for extension in ".png", ".jpg", ".tiff" , ".bmp" {
 
   # read test
   l_i0 = Image(image_name+extension)
-  l_i = Image image_name+".ami.gz"
-  if (l_i0.GetFormat==RGB) {
+  l_i = Image(image_name+".ami.gz")
+
+  if (l_i0.GetFormat.val == RGB.val)  {
     l_i <<= (RGB) l_i
   }
   
   l_imd = (FLOAT) l_i - (FLOAT) l_i0
   if (l_exact) {
     l_d = sqrt(mean(l_imd*l_imd/l_imd.vdim))
-    printn boost_format(" l_d = %1% ") % l_d
-    l_result = (l_d<0.00000001)
+    printn " l_d = %1% " % l_d
+    l_result = (l_d<epsilon)
   } else {
     l_maxdiff = max(l_i)-min(l_i)
     l_d = sqrt(mean(l_imd*l_imd/l_imd.vdim))/l_maxdiff
     l_dm = max(sqrt(l_imd*l_imd/l_imd.vdim))/l_maxdiff
     l_dm1 = median(sqrt(l_imd*l_imd/l_imd.vdim))/l_maxdiff
-    printn boost_format(" l_d = %1% ") % l_d
-    printn boost_format(" max = %1% ") % l_dm
-    printn boost_format(" median = %1% ") % l_dm1
+    printn " l_d = %1% " % l_d
+    printn " max = %1% " % l_dm
+    printn " median = %1% " % l_dm1
     l_result =  (l_d   < 0.05)&&\
                 (l_dm  < 0.1 )&&\
                 (l_dm1 < 0.05)
   }
-  printn boost_format("\t ******* "+extension+" Read Test Result:  %1%") % l_result
-  
+  printn "\t ******* "+extension+" Read Test Result:  %1%" % l_result
+  resultRead = l_result
   
   # write test
   l_i.save l_script_dir+"/"+image_name2+extension
@@ -52,24 +61,29 @@ for extension in ".png", ".jpg", ".tiff" , ".bmp" {
   l_imd = (FLOAT) l_i - (FLOAT) l_j
   if (l_exact) {
     l_d = sqrt(mean(l_imd*l_imd/l_imd.vdim))
-    printn boost_format(" l_d = %1% ") % l_d
-    l_result = (l_d<0.00000001)
+    printn " l_d = %1% " % l_d
+    l_result = (l_d<epsilon)
   } else {
     l_maxdiff = max(l_i)-min(l_i)
     l_d = sqrt(mean(l_imd*l_imd/l_imd.vdim))/l_maxdiff
     l_dm = max(sqrt(l_imd*l_imd/l_imd.vdim))/l_maxdiff
     l_dm1 = median(sqrt(l_imd*l_imd/l_imd.vdim))/l_maxdiff
-    printn boost_format(" l_d = %1% ") % l_d
-    printn boost_format(" max = %1% ") % l_dm
-    printn boost_format(" median = %1% ") % l_dm1
+    printn " l_d = %1% " % l_d
+    printn " max = %1% " % l_dm
+    printn " median = %1% " % l_dm1
     l_result =  (l_d   < 0.05)&&\
                 (l_dm  < 0.1 )&&\
                 (l_dm1 < 0.05)
   }
-  printn boost_format("\t ******* "+extension+" Write Test Result:  %1%") % l_result
+  printn "\t ******* "+extension+" Write Test Result:  %1%" % l_result
+  resultWrite = (l_result)
+
+
+  ctest.PrintTestResult( resultRead && resultWrite ) 
 
   # clear created variables
-  delvars "l_*"
+  #delvars "l_*"
+  #}
 }
 
-#quit
+quit

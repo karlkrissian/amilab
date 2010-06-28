@@ -61,6 +61,14 @@ inline bool InrImageIterator<T>::operator++()
 }
 
 template<class T>
+inline bool InrImageIterator<T>::operator++(int)
+{
+  if  (++_pos_buf >= _imsize) return false;
+  _datapos += _vdim;
+  return true;
+}
+
+template<class T>
 inline bool InrImageIterator<T>::Inc( const int& inc)
 {
   _pos_buf +=inc;

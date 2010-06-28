@@ -1,0 +1,17 @@
+
+Class CTest \
+{
+  ::ctest_success  = "Test Succeeded !!!"
+  ::ctest_failure = "Test Failed !!!"
+  
+  proc ::PrintTestResult( NUM _val ) {
+    print "\n  Test Result: "
+    if (_val) {
+      printn ::ctest_success
+    } else {
+      printn ::ctest_failure
+    }
+  }
+}
+
+CTest ctest

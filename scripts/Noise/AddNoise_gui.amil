@@ -3,15 +3,16 @@
 # with the command filter
 #
 
+func "Noise/AddRiceNoise.amil"
+
 if (!exists(AddNoiseClass)){
   Class AddNoiseClass {
   #------------------------------------
-  func "Noise/AddRiceNoise.amil"
   
   proc ::Init() {
     ::class_name ="global::AddNoiseClass"
     ::input_name  = "",  "name of input image"
-    ::output_name = "AddNoise_output", "name of output image variable"
+    ::output_name = "global::AddNoise_output", "name of output image variable"
   
     # 0: Additive Gaussian Noise
     # 1: Multiplicative Gaussian Noise
@@ -25,17 +26,17 @@ if (!exists(AddNoiseClass)){
   
   #----------------------------
   proc ::Close() {
-    ::win.HidePanel
+    ::win.HidePanel()
     delvars GetObjectName(::Close)
   }
-  ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+  Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
   #----------------------------
   proc ::CloseAll() {
-    eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
+    eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
     ::Close
   }
-  ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+  Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
       
   #------------------------------------
     
@@ -72,7 +73,7 @@ proc ::Display() {
     
     if (exists(::res)) {
       show ::res
-      ::input_draw.compare(::res_draw)
+      ::input_draw._compare(::res_draw)
     }
   }
   
@@ -85,7 +86,7 @@ proc ::Display() {
     import = &global::ami_import;
     ::win = import->ParamPanel("Noise")
   
-    ::win.BeginBook
+    ::win.BeginBook()
       ::win.AddPage("Param")
         ::win.AddImageChoice( &::input_name, "Input")
       
@@ -103,15 +104,15 @@ proc ::Display() {
       
         ::win.AddButton("Run",        ::Run)
         ::win.AddButton("Display",    ::Display)
-    ::win.EndBook
+    ::win.EndBook()
   
-    ::win.BeginHorizontal
+    ::win.BeginHorizontal()
       ::win.AddButton("Close",          ::Close)
       ::win.AddButton("Close All",          ::CloseAll)
-    ::win.EndHorizontal  
+    ::win.EndHorizontal()  
   
     ::win.Update(-1)
-    ::win.Display
+    ::win.Display()
   }
   
   ::Init
