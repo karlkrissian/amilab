@@ -23,8 +23,11 @@ extern yyip::Driver GB_driver;
 #include <wx/utils.h>
 
 extern VarContexts  Vars;
+extern wxString  GB_scripts_dir;
 
 using namespace std;
+
+
 
 //---------------------------------------------------------
 void AddWrapSystem(){
@@ -45,6 +48,9 @@ void AddWrapSystem(){
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"GetUserName",     wrap_GetUserName);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"GetCurrentScriptDir", wrap_GetCurrentScriptDir);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"GetCurrentFilename",  wrap_GetCurrentFilename);
+
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"GetGlobalScriptDir",  wrap_GetGlobalScriptDir);
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"SetGlobalScriptDir",  wrap_SetGlobalScriptDir);
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);
@@ -289,4 +295,46 @@ BasicVariable::ptr wrap_GetCurrentFilename(ParamList* p)
     new Variable<string>("CurrentFilename",value));
 
   return varres;
+}
+
+
+//--------------------------------------------------------------------
+BasicVariable::ptr wrap_GetGlobalScriptDir(ParamList* p)
+{
+    char functionname[] = "GetGlobalScriptDir";
+    char description[]=" \n\
+        Returns the global amilab scripts directory\n\
+            ";
+    char parameters[] =" \n\
+          Return:\n\
+              the directory of the amilab scripts\n\
+            ";
+  if (get_num_param(p)!=0)  HelpAndReturnVarPtr;
+  RETURN_VAR(string,GB_scripts_dir.mb_str());
+}
+
+//--------------------------------------------------------------------
+BasicVariable::ptr wrap_SetGlobalScriptDir(ParamList* p)
+{
+    char functionname[] = "SetGlobalScriptDir";
+    char description[]=" \n\
+        Sets the global amilab scripts directory\n\
+            ";
+    char parameters[] =" \n\
+          Parameters:\n\
+              - string: the new directory of the amilab scripts\n\
+            ";
+  if (get_num_param(p)==0)  HelpAndReturnVarPtr;
+  int n=0;
+  std::string scripts_dir;
+  if (!get_val_param<string>( scripts_dir, p, n)) HelpAndReturnVarPtr
+
+  wxString newdir(scripts_dir.c_str(), wxConvUTF8);
+
+  if (wxFileName::DirExists(newdir))
+    GB_scripts_dir = newdir;
+  else
+    GB_driver.err_print("Directory does not exists.");
+    
+  return BasicVariable::ptr();
 }
