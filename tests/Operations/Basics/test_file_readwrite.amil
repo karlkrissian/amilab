@@ -1,0 +1,77 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_file_readwrite.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the following methods:
+#                              - open
+#                              - close
+#                              - print
+#                              - printn
+#                              - printvar
+#                              - printnvar
+#                              - read_string
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+OK = 1 # The test was successful
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+printn "\t\t ******************************************"
+printn "\t\t *                 WARNING                *"
+printn "\t\t ******************************************"
+printn "\t\t *                                        *"
+printn "\t\t * This test does not perform useful work *"
+printn "\t\t * ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ *"
+printn "\t\t *                                        *"
+printn "\t\t * Just check:                            *"
+printn "\t\t * - The parser does not generate errors. *"
+printn "\t\t * - Segmentation fault does not occur.   *"
+printn "\t\t *                                        *"
+printn "\t\t ******************************************\n"
+
+printn "\t\t Create an object of class File (file = File(\"w\", \"test_read_write.txt\")).\n"
+file=File("w", "test_read_write.txt")
+
+printn "\t\t Write Hello(file._print(\"Hello \")).\n"
+file._print("Hello ")
+
+printn "\t\t Write World !!!(file._printn(\"World !!!\")).\n"
+file._printn("World !!!")
+
+name="PEPE"
+
+printn "\t\t Write name variable(file.printvar(name)).\n"
+file.printvar(name)
+
+printn "\t\t Write name variable(file.printnvar(name)).\n"
+file.printnvar(name)
+
+printn "\t\t Close the file(Deprecated)).\n"
+file.close()
+
+printn "\t\t Open the file: test_read_write.txt (newFile=file._open(\"r\", \"test_read_write.txt\")).\n"
+newFile=file._open("r", "test_read_write.txt")
+
+printn "\t\t Read the file: test_read_write.txt (value=newFile.read_string()).\n"
+value=newFile.read_string()
+
+printn "\t\t value=%1%\n" % value
+
+printn "\t\t Close the file(Deprecated)).\n"
+newfile.close()
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ctest.PrintTestResult( OK ) 
+
+#quit
+

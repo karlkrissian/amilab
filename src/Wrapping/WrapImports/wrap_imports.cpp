@@ -29,6 +29,7 @@
 #include "wrap_parampanel.h"
 #include "wrap_varlist.h"
 #include "wrap_varvector.h"
+#include "wrap_File.h"
 
 #include "wrap_wxWindow.h"
 #include "wrap_wxSize.h"
@@ -203,6 +204,7 @@ void AddWrapBasicTypes()
 //  ADDOBJECTVAR_NAME(C_wrap_varfunction,"VarList",   wrap_VarList);
 //  ADDOBJECTVAR_NAME(C_wrap_varfunction,"VarVector", wrap_VarVector);
   AddVar_VarVector( Vars.GetBuiltinContext());
+  AddVar_File( Vars.GetBuiltinContext());
 //  AddVar_VarList( Vars.GetBuiltinContext());
 }
 
