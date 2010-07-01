@@ -37,6 +37,7 @@
 #include "wrap_wxImage.h"
 #include "wrap_wxBitmap.h"
 #include "wrap_wxHtmlWindow.h"
+//#include "wrap_wxFileName.h"
 #include "wrap_vtkLevelSets.h"
 
 #include "wrap_wxEditor.h"
@@ -110,6 +111,9 @@ void AddWrapWxWidgets()
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxWindow",    wrap_wxWindow);
 
   AddVar_wxSize( amiobject->GetContext(), "wxSize");
+
+  //AddVar_wxFileName( amiobject->GetContext());
+
 //  AddVar_wxSize(    Vars.GetBuiltinContext());
 
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxColour",    wrap_wxColour);

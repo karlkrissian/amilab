@@ -352,6 +352,7 @@ void WrapClass_GLTransfMatrix::
       wrap_assign::SetParametersComments() 
 {
   ADDPARAMCOMMENT_TYPE(GLTransfMatrix,"A wrapped GLTransfMatrix object.");
+  return_comments="A copy of the GLTransfMatrix object within a new variable.";
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_GLTransfMatrix::
