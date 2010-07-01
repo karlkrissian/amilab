@@ -932,7 +932,7 @@ if (!exists(RunExperimentsClass)){
         }
         
         nt_ce = normgrad(::CIFP->input_cropped,1)
-        em_ce = exp(-nt_ce*nt_ce/(45*45*2))
+        em_ce = exp(-nt_ce*nt_ce/(25*25*2))
  
         ::itkLS->set_initial(-::pathCE_lsinit)
         ::itkLS->set_edge(em_ce)
