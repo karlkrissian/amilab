@@ -54,6 +54,7 @@ if (!exists(RunExperimentsClass)){
       
       ::dist_threshold = 1, "Distance Threshold"
       ::resample_dist  = 0.1, "Resample Distance"
+      ::mlmax_threshold = 20, "Multilines Max Threshold"
       #--- evolution range in mm along Z coord for each carotid from the junction
       ::maxdistz_ECA = 20
       ::maxdistz_ICA = 50
@@ -294,9 +295,37 @@ if (!exists(RunExperimentsClass)){
         if (!exists(::CIS->pt3_OK)) { InfoDialog "Discarded point 3"; }
       }
 
+      // if (exists(::itkVS->result)) {
+        // if (exists(::itkCP->prob)) {
+          // ::speed <<= ::itkCP->prob * ::itkVS->result
+        // } else {
+          // if (!::nointeraction) {
+            // InfoDialog "prob not found, path based only on the Vesselness!"
+          // }
+          // ::speed <<= ::itkVS->result
+        // }
+      // } else {
+        // if (!::nointeraction) {
+          // InfoDialog "CarotidExperiments_Path1: no Vesselness image found" 
+        // }
+        // ::speed <<= ::CIFP->input_cropped
+      // }
+      
       if (exists(::itkVS->result)) {
         if (exists(::itkCP->prob)) {
-          ::speed <<= ::itkCP->prob * ::itkVS->result
+          # ensure that CP_prob is maximum around local maxima
+          if (exists(::itkVS->maxima)) {
+            # threshold to get maxima positions
+            maxima_neigh = (::itkVS->maxima>::mlmax_threshold)
+            # dilate a little
+            maxima_neigh = EDPdilate(maxima_neigh,1,0.25)
+
+            ::speed <<=  max((maxima_neigh>=0.95)*maxima_neigh * ::itkVS->result, \
+                                      ::itkCP->prob*::itkVS->result)
+
+          } else {
+            ::speed <<= ::itkCP->prob * ::itkVS->result
+          }
         } else {
           if (!::nointeraction) {
             InfoDialog "prob not found, path based only on the Vesselness!"

@@ -60,11 +60,13 @@ if (!exists(itkVesselnessClass)) {
     
     proc ::Run() {
       if (::dim==0) {
-        ::result <<= ::itk->MultiScaleVesselnessFilter2D(::input,::sigmaMin,::sigmaMax,::scalesNumber)
+        ::result <<= ::itk->MultiScaleVesselnessFilter2D(::input,::sigmaMin,::sigmaMax,::scalesNumber,0)
+        ::maxima <<= ::itk->MultiScaleVesselnessFilter2D(::input,::sigmaMin,::sigmaMax,::scalesNumber,1)
         ::v = 1
         
       } else {
-        ::result <<= ::itk->MultiScaleVesselnessFilter3D(::input,::sigmaMin,::sigmaMax,::scalesNumber)
+        ::result <<= ::itk->MultiScaleVesselnessFilter3D(::input,::sigmaMin,::sigmaMax,::scalesNumber,0)
+        ::maxima <<= ::itk->MultiScaleVesselnessFilter3D(::input,::sigmaMin,::sigmaMax,::scalesNumber,1)
         ::v = 1
       }
       #::input_draw.compare(vesselness_draw)

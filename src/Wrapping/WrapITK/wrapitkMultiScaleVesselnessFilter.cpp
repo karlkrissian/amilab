@@ -58,6 +58,7 @@ InrImage* wrap_itkMultiScaleVesselnessFilter2D(ParamList* p)
           sigmaMin \n\
           sigmaMax \n\
           numberOfScales \n\
+          option \n\
       ";
 
   InrImage* input = NULL;
@@ -65,12 +66,14 @@ InrImage* wrap_itkMultiScaleVesselnessFilter2D(ParamList* p)
   float sigmaMin = 0.0;
   float sigmaMax = 0.0;
   int numberOfScales = 0;
+  int option = 0;
   int n=0;
 
   if (!get_val_ptr_param<InrImage>( input,          p, n)) HelpAndReturnNULL;
   if (!get_val_param<float>       ( sigmaMin,       p, n)) HelpAndReturnNULL;
   if (!get_val_param<float>       ( sigmaMax,       p, n)) HelpAndReturnNULL;
   if (!get_int_param              ( numberOfScales, p, n)) HelpAndReturnNULL;
+  if (!get_int_param              ( option        , p, n)) HelpAndReturnNULL;
   
   const unsigned char Dimension = 2;
 
@@ -112,7 +115,10 @@ InrImage* wrap_itkMultiScaleVesselnessFilter2D(ParamList* p)
 
   multiScaleEnhancementFilter->Update();
 
-  outimage = multiScaleEnhancementFilter->GetOutput();
+  if (option == 0)
+    outimage = multiScaleEnhancementFilter->GetOutput();
+  else 
+    outimage = multiScaleEnhancementFilter->GetScalesOutput();  
   
   cout << "Converting back to InrImage " << endl;
 
@@ -141,6 +147,7 @@ char functionname[] = "itkMultiScaleVesselnessFilter3D";
           sigmaMin \n\
           sigmaMax \n\
           numberOfScales \n\
+          option \n\
       ";
 
   InrImage* input = NULL;
@@ -148,12 +155,14 @@ char functionname[] = "itkMultiScaleVesselnessFilter3D";
   float sigmaMin = 0.0;
   float sigmaMax = 0.0;
   int numberOfScales = 0;
+  int option = 0;
   int n=0;
 
   if (!get_val_ptr_param<InrImage>( input,          p, n)) HelpAndReturnNULL;
   if (!get_val_param<float>       ( sigmaMin,       p, n)) HelpAndReturnNULL;
   if (!get_val_param<float>       ( sigmaMax,       p, n)) HelpAndReturnNULL;
   if (!get_int_param              ( numberOfScales, p, n)) HelpAndReturnNULL;
+  if (!get_int_param              ( option        , p, n)) HelpAndReturnNULL;
 
 
   const unsigned char Dimension = 3;
@@ -194,12 +203,14 @@ char functionname[] = "itkMultiScaleVesselnessFilter3D";
 
   multiScaleEnhancementFilter->Update();
 
-  outimage = multiScaleEnhancementFilter->GetOutput();
+  if (option == 0)
+    outimage = multiScaleEnhancementFilter->GetOutput();
+  else 
+    outimage = multiScaleEnhancementFilter->GetScalesOutput();
 
   cout << "Converting back to InrImage " << endl;
 
   res = ITKToInr<PixelType,Dimension>(outimage, region);
-
   return res;
 
 #else
