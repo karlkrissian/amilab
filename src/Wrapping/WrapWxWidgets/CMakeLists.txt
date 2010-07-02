@@ -30,7 +30,8 @@ SET(  WrapWxWidgets_SRCS
   wrap_wxColour.cpp
   wrap_wxImage.cpp
   wrap_wxBitmap.cpp
-  wrap_wxFileName.cpp
+  wrap_wxString.cpp
+#  wrap_wxFileName.cpp
 )
 
 SET(WrapWxWidgets_HDRS
@@ -43,7 +44,8 @@ SET(WrapWxWidgets_HDRS
   wrap_wxColour.h
   wrap_wxImage.h
   wrap_wxBitmap.h
-  wrap_wxFileName.h
+  wrap_wxString.h
+#  wrap_wxFileName.h
 )
 
 SET(WrapWxWidgets_SRCS
