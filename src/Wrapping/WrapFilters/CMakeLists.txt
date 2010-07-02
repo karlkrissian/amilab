@@ -60,6 +60,7 @@ SET(  WrapFilters_SRCS
   wrapSubPixel2D.cpp
   wrapGenerateRamp.cpp
   wrap_AnisoGS.cpp
+  wrap_ComputePartialVolume.cpp
 )
 
 SET(WrapFilters_HDRS
@@ -80,6 +81,7 @@ SET(WrapFilters_HDRS
   wrapSubPixel2D.h
   wrapGenerateRamp.h
   wrap_AnisoGS.h
+  wrap_ComputePartialVolume.h
 )
 
 SET(WrapFilters_SRCS

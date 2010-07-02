@@ -17,13 +17,13 @@
 #include "paramlist.h"
 
 // Wrapping functions:
-InrImage* wrapComputePV(ParamList*);
+BasicVariable::ptr wrapComputePV(ParamList*);
 
 // Wrapping functions:
-InrImage* wrapComputePV_subdiv(ParamList*);
+BasicVariable::ptr wrapComputePV_subdiv(ParamList*);
 
-InrImage* wrapComputeAnalyticPV(ParamList* p);
-
-InrImage* wrapComputeAnalyticPS(ParamList* p);
+//InrImage* wrapComputeAnalyticPV(ParamList* p);
+//
+//InrImage* wrapComputeAnalyticPS(ParamList* p);
 
 #endif // _wrapComputePV_h_

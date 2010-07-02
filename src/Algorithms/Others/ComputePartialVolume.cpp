@@ -15,7 +15,9 @@
 
 //Analytic function classes
 //---------------------------------------------------------------------
+//---------------------------------------------------
 //Circle
+//---------------------------------------------------
 AnalyticCircle::AnalyticCircle(float x, float y, float r)
 {
   center[0] = x; center[1] = y;
@@ -50,7 +52,9 @@ float AnalyticCircle::getRadius()
   return radius;
 }
 
+//---------------------------------------------------
 //Line
+//---------------------------------------------------
 AnalyticLine::AnalyticLine(float mx, float my, float n)
 {
   m[0] = mx;
@@ -62,7 +66,8 @@ AnalyticLine::~AnalyticLine(){}
 
 double AnalyticLine::operator () (const double& x, const double& y, const double& z) const
 {
-  return m[0]*x + m[1]*(y - _n);
+  double xaux = x-50;
+  return m[0]*xaux + m[1]*(y - _n);
 }
 
 void AnalyticLine::setM(float m1, float m2)
@@ -84,7 +89,9 @@ float AnalyticLine::get_n()
   return _n;
 }
 
+//---------------------------------------------------
 //Sphere
+//---------------------------------------------------
 AnalyticSphere::AnalyticSphere(float x, float y, float z, float r)
 {
   center[0] = x; center[1] = y; center[2] = z;
@@ -120,8 +127,9 @@ float AnalyticSphere::getRadius()
 {
   return radius;
 }
-
+//---------------------------------------------------
 //Torus
+//---------------------------------------------------
 AnalyticTorus::AnalyticTorus(float x, float y, float z,
                 float r, float R)
 {
@@ -190,38 +198,42 @@ double ComputePV::AnalyticRecursivePositiveSurface( double val[4], double subvol
     return 0;
   }
   // else decide if subdivide or not
-  if (subdiv_level>0) {
-    // create 8 more cubes to compute
-    double corners[3][3];
-    size = size/2.0;
-    // fill values
-    n=0;
-    // fill the corners of the big cube
-    for(j=0;j<3;j++)
-    for(i=0;i<3;i++) {
-      corners[j][i] = (*f)(x+size*(double)i,y+size*(double)j,0);
-    }
-
-    // call the computation for each new smaller cube
-    double total = 0;
-    double newval[4];
-    double local_subvols[4];
-    n=0;
-    for(j=0;j<2;j++)
-    for(i=0;i<2;i++,n++) {
-      // fill the values
-      int n1=0;
-      for(j1=0;j1<2;j1++)
-      for(i1=0;i1<2;i1++,n1++) {
-        newval[n1] = corners[j+j1][i+i1];
+  AnalyticFunctionBase::ptr fun(analyticfunc.lock());
+  if (fun.get())
+  {
+    if (subdiv_level>0) {
+      // create 8 more cubes to compute
+      double corners[3][3];
+      size = size/2.0;
+      // fill values
+      n=0;
+      // fill the corners of the big cube
+      for(j=0;j<3;j++)
+      for(i=0;i<3;i++) {
+        corners[j][i] = (*fun)(x+size*(double)i,y+size*(double)j,0);
       }
-      subvols[n] = AnalyticRecursivePositiveSurface(newval,local_subvols,size,subdiv_level-1,
-                                                    x+size*(double)i,y+size*(double)j);
-      total += subvols[n];
-    } // end for i,j
-    return total;
-  } else
-    return num_pos*volume/4.0;
+
+      // call the computation for each new smaller cube
+      double total = 0;
+      double newval[4];
+      double local_subvols[4];
+      n=0;
+      for(j=0;j<2;j++)
+      for(i=0;i<2;i++,n++) {
+        // fill the values
+        int n1=0;
+        for(j1=0;j1<2;j1++)
+        for(i1=0;i1<2;i1++,n1++) {
+          newval[n1] = corners[j+j1][i+i1];
+        }
+        subvols[n] = AnalyticRecursivePositiveSurface(newval,local_subvols,size,subdiv_level-1,
+                                                      x+size*(double)i,y+size*(double)j);
+        total += subvols[n];
+      } // end for i,j
+      return total;
+    } else
+      return num_pos*volume/4.0;
+  }
 }
 
 
@@ -230,7 +242,7 @@ double ComputePV::AnalyticRecursivePositiveSurface( double val[4], double subvol
 //
 // subdiv is the number of subdivisions
 //
-InrImage* ComputePV::ComputeAnalyticPartialSurfaceSubdiv()
+InrImage::ptr ComputePV::ComputeAnalyticPartialSurfaceSubdiv()
 {
   int x,y,n;
   int z = 0;
@@ -240,50 +252,61 @@ InrImage* ComputePV::ComputeAnalyticPartialSurfaceSubdiv()
   float* inbuf;
   float* resbuf;
 
-
-  if (input->GetFormat()!=WT_FLOAT) {
-    cerr << "ComputeAnalyticPartialSurface only for float images for now !" << endl;
-    return NULL;
-  }
-
-  InrImage* res = new InrImage(WT_FLOAT,"PV.ami.gz",input);
-  res->InitImage(0);
-
-  long size = input->Size();
-  long count=0;
-  int previous_percentage = 0;
-  int percentage_step = 5;
-
-  for (y=0;y<input->DimY()-1;y++)
+  InrImage::ptr iml(input.lock());
+  if (iml.get())
   {
-    if (count/(1.0*size)*100.0>previous_percentage+percentage_step) {
-      previous_percentage += percentage_step;
-      cout << boost::format(" %1%%% ") % previous_percentage;
-      cout.flush();
+    if (iml->GetFormat()!=WT_FLOAT) {
+      cerr << "ComputeAnalyticPartialSurface only for float images for now !" << endl;
+      return InrImage::ptr();
     }
-    for (x=0;x<input->DimX()-1;x++,count++)
+  
+    InrImage::ptr res = InrImage::ptr(new InrImage(iml->DimX(), iml->DimY(), iml->DimZ(), WT_FLOAT,"PV.ami.gz"));
+    res->InitImage(0);
+
+    long size = iml->Size();
+    long count=0;
+    int previous_percentage = 0;
+    int percentage_step = 5;
+    AnalyticFunctionBase::ptr fun(analyticfunc.lock());
+    if (fun.get())
     {
-      inbuf = (float*)input->BufferPtr(x,y,z);
-      // Process cube between (x,y,z) and (x+1,y+1,z+1)
-      n=0; 
-      for(j=0;j<2;j++)
-      for(i=0;i<2;i++)
-        val[n++] = (*f)(x+(double)i,y+(double)j,0);
+      for (y=0;y<iml->DimY()-1;y++)
+      {
+        if (count/(1.0*size)*100.0>previous_percentage+percentage_step) {
+          previous_percentage += percentage_step;
+          cout << boost::format(" %1%%% ") % previous_percentage;
+          cout.flush();
+        }
+        for (x=0;x<iml->DimX()-1;x++,count++)
+        {
+          inbuf = (float*)iml->BufferPtr(x,y,z);
+          // Process cube between (x,y,z) and (x+1,y+1,z+1)
+          n=0; 
+          for(j=0;j<2;j++)
+          for(i=0;i<2;i++)
+            val[n++] = (*fun)(x+(double)i,y+(double)j,0);
 
-      AnalyticRecursivePositiveSurface(val,vol,1,subdiv,x,y);
+          AnalyticRecursivePositiveSurface(val,vol,1,subdiv,x,y);
 
-      n=0; 
-      for(j=0;j<2;j++)
-      for(i=0;i<2;i++) {
-        resbuf = (float*)res->BufferPtr(x+i,y+j,z);
-        (*resbuf) += vol[n++];
-      }
-    } // end for x
-  } // end for y
+          n=0; 
+          for(j=0;j<2;j++)
+          for(i=0;i<2;i++) {
+            resbuf = (float*)res->BufferPtr(x+i,y+j,z);
+            (*resbuf) += vol[n++];
+          }
+        } // end for x
+      } // end for y
 
-  cout << endl;
+    cout << endl;
 
-  return res;
+    return res;
+    }
+  }
+  else
+  {
+    cerr << "It isn't posible to get the image smart pointer." << endl;
+    return InrImage::ptr();
+  }
 } // ComputePartialVolumeSubdiv()
 
 
@@ -309,41 +332,45 @@ double ComputePV::AnalyticRecursivePositiveVolume( double val[8], double subvols
     return 0;
   }
   // else decide if subdivide or not
-  if (subdiv_level>0) {
-    // create 8 more cubes to compute
-    double corners[3][3][3];
-    size = size/2.0;
-    // fill values
-    n=0;
-    // fill the corners of the big cube
-    for(k=0;k<3;k++)
-    for(j=0;j<3;j++)
-    for(i=0;i<3;i++) {
-      corners[k][j][i] = (*f)(x+size*(double)i,y+size*(double)j,z+size*(double)k);
-    }
-
-    // call the computation for each new smaller cube
-    double total = 0;
-    double newval[8];
-    double local_subvols[8];
-    n=0;
-    for(k=0;k<2;k++)
-    for(j=0;j<2;j++)
-    for(i=0;i<2;i++,n++) {
-      // fill the values
-      int n1=0;
-      for(k1=0;k1<2;k1++)
-      for(j1=0;j1<2;j1++)
-      for(i1=0;i1<2;i1++,n1++) {
-        newval[n1] = corners[k+k1][j+j1][i+i1];
+  AnalyticFunctionBase::ptr fun(analyticfunc.lock());
+  if (fun.get())
+  {
+    if (subdiv_level>0) {
+      // create 8 more cubes to compute
+      double corners[3][3][3];
+      size = size/2.0;
+      // fill values
+      n=0;
+      // fill the corners of the big cube
+      for(k=0;k<3;k++)
+      for(j=0;j<3;j++)
+      for(i=0;i<3;i++) {
+        corners[k][j][i] = (*fun)(x+size*(double)i,y+size*(double)j,z+size*(double)k);
       }
-      subvols[n] = AnalyticRecursivePositiveVolume(newval,local_subvols,size,subdiv_level-1,
-                                                   x+size*(double)i,y+size*(double)j,z+size*(double)k);
-      total += subvols[n];
-    } // end for i,j,k
-    return total;
-  } else
-    return num_pos*volume/8.0;
+
+      // call the computation for each new smaller cube
+      double total = 0;
+      double newval[8];
+      double local_subvols[8];
+      n=0;
+      for(k=0;k<2;k++)
+      for(j=0;j<2;j++)
+      for(i=0;i<2;i++,n++) {
+        // fill the values
+        int n1=0;
+        for(k1=0;k1<2;k1++)
+        for(j1=0;j1<2;j1++)
+        for(i1=0;i1<2;i1++,n1++) {
+          newval[n1] = corners[k+k1][j+j1][i+i1];
+        }
+        subvols[n] = AnalyticRecursivePositiveVolume(newval,local_subvols,size,subdiv_level-1,
+                                                     x+size*(double)i,y+size*(double)j,z+size*(double)k);
+        total += subvols[n];
+      } // end for i,j,k
+      return total;
+    } else
+      return num_pos*volume/8.0;
+  }
 }
 
 
@@ -352,7 +379,7 @@ double ComputePV::AnalyticRecursivePositiveVolume( double val[8], double subvols
 //
 // subdiv is the number of subdivisions
 //
-InrImage* ComputePV::ComputeAnalyticPartialVolumeSubdiv()
+InrImage::ptr ComputePV::ComputeAnalyticPartialVolumeSubdiv()
 {
   int x,y,z,n;
   int i,j,k;
@@ -361,57 +388,69 @@ InrImage* ComputePV::ComputeAnalyticPartialVolumeSubdiv()
   float* inbuf;
   float* resbuf;
 
-
-  if (input->GetFormat()!=WT_FLOAT) {
-    cerr << "ComputeAnalyticPartialVolume only for float images for now !" << endl;
-    return NULL;
-  }
-
-  InrImage* res = new InrImage(WT_FLOAT,"PV.ami.gz",input);
-  res->InitImage(0);
-
-  long size = input->Size();
-  long count=0;
-  int previous_percentage = 0;
-  int percentage_step = 5;
-
-  for (z=0;z<input->DimZ()-1;z++)
+  InrImage::ptr iml(input.lock());
+  if (iml.get())
   {
-    for (y=0;y<input->DimY()-1;y++)
+    if (iml->GetFormat()!=WT_FLOAT) {
+      cerr << "ComputeAnalyticPartialVolume only for float images for now !" << endl;
+      return InrImage::ptr();
+    }
+ 
+    InrImage::ptr res = InrImage::ptr(new InrImage(iml->DimX(), iml->DimY(), iml->DimZ(), WT_FLOAT,"PV.ami.gz"));
+    res->InitImage(0);
+
+    long size = iml->Size();
+    long count=0;
+    int previous_percentage = 0;
+    int percentage_step = 5;
+    AnalyticFunctionBase::ptr fun(analyticfunc.lock());
+
+    if (fun.get())
     {
-      if (count/(1.0*size)*100.0>previous_percentage+percentage_step) {
-        previous_percentage += percentage_step;
-        cout << boost::format(" %1%%% ") % previous_percentage;
-        cout.flush();
-      }
-      for (x=0;x<input->DimX()-1;x++,count++)
+      for (z=0;z<iml->DimZ()-1;z++)
       {
-//        if ((x==29)&&(y==48)&&(z==51)) {
-//          n=0;
-//        }
-        inbuf = (float*)input->BufferPtr(x,y,z);
-        // Process cube between (x,y,z) and (x+1,y+1,z+1)
-        n=0;
-        for(k=0;k<2;k++) 
-        for(j=0;j<2;j++)
-        for(i=0;i<2;i++)
-          val[n++] = (*f)(x+(double)i,y+(double)j,z+(double)k);
+        for (y=0;y<iml->DimY()-1;y++)
+        {
+          if (count/(1.0*size)*100.0>previous_percentage+percentage_step) {
+            previous_percentage += percentage_step;
+            cout << boost::format(" %1%%% ") % previous_percentage;
+            cout.flush();
+          }
+          for (x=0;x<iml->DimX()-1;x++,count++)
+          {
+    //        if ((x==29)&&(y==48)&&(z==51)) {
+    //          n=0;
+    //        }
+            inbuf = (float*)iml->BufferPtr(x,y,z);
+            // Process cube between (x,y,z) and (x+1,y+1,z+1)
+            n=0;
+            for(k=0;k<2;k++) 
+            for(j=0;j<2;j++)
+            for(i=0;i<2;i++)
+              val[n++] = (*fun)(x+(double)i,y+(double)j,z+(double)k);
 
-        AnalyticRecursivePositiveVolume(val,vol,1,subdiv,x,y,z);
+            AnalyticRecursivePositiveVolume(val,vol,1,subdiv,x,y,z);
 
-        n=0;
-        for(k=0;k<2;k++) 
-        for(j=0;j<2;j++)
-        for(i=0;i<2;i++) {
-          resbuf = (float*)res->BufferPtr(x+i,y+j,z+k);
-          (*resbuf) += vol[n++];
-        }
-      } // end for x
-    } // end fory
-  } // end for z
-  cout << endl;
+            n=0;
+            for(k=0;k<2;k++) 
+            for(j=0;j<2;j++)
+            for(i=0;i<2;i++) {
+              resbuf = (float*)res->BufferPtr(x+i,y+j,z+k);
+              (*resbuf) += vol[n++];
+            }
+          } // end for x
+        } // end fory
+      } // end for z
+    cout << endl;
 
-  return res;
+    return res;
+    }
+  }
+  else
+  {
+    cerr << "It isn't posible to get the image smart pointer." << endl;
+    return InrImage::ptr();
+  }
 } // ComputePartialVolumeSubdiv()
 
 
@@ -490,7 +529,7 @@ double ComputePV::RecursivePositiveVolume( double val[8], double subvols[8], dou
 //
 // subdiv is the number of subdivisions
 //
-InrImage* ComputePV::ComputePartialVolumeSubdiv()
+InrImage::ptr ComputePV::ComputePartialVolumeSubdiv()
 {
   int x,y,z,n;
   int i,j,k;
@@ -499,54 +538,62 @@ InrImage* ComputePV::ComputePartialVolumeSubdiv()
   float* inbuf;
   float* resbuf;
 
-
-  if (input->GetFormat()!=WT_FLOAT) {
-    cerr << "ComputePartialVolume only for float images for now !" << endl;
-    return NULL;
-  }
-
-  InrImage* res = new InrImage(WT_FLOAT,"PV.ami.gz",input);
-  res->InitImage(0);
-
-  long size = input->Size();
-  long count=0;
-  int previous_percentage = 0;
-  int percentage_step = 5;
-
-  for (z=0;z<input->DimZ()-1;z++)
+  InrImage::ptr iml(input.lock());
+  if (iml.get()) 
   {
-    for (y=0;y<input->DimY()-1;y++)
+    if (iml->GetFormat()!=WT_FLOAT) {
+      cerr << "ComputePartialVolume only for float images for now !" << endl;
+      return InrImage::ptr();
+    }
+
+    InrImage::ptr res = InrImage::ptr(new InrImage(iml->DimX(), iml->DimY(), iml->DimZ(), WT_FLOAT,"PV.ami.gz"));
+    res->InitImage(0);
+
+    long size = iml->Size();
+    long count=0;
+    int previous_percentage = 0;
+    int percentage_step = 5;
+
+    for (z=0;z<iml->DimZ()-1;z++)
     {
-      if (count/(1.0*size)*100.0>previous_percentage+percentage_step) {
-        previous_percentage += percentage_step;
-        cout << boost::format(" %1%%% ") % previous_percentage;
-        cout.flush();
-      }
-      for (x=0;x<input->DimX()-1;x++,count++)
+      for (y=0;y<iml->DimY()-1;y++)
       {
-        inbuf = (float*)input->BufferPtr(x,y,z);
-        // Process cube between (x,y,z) and (x+1,y+1,z+1)
-        n=0;
-        for(k=0;k<2;k++) 
-        for(j=0;j<2;j++)
-        for(i=0;i<2;i++)
-          val[n++] = (*input)(x+i,y+j,z+k);
-
-        RecursivePositiveVolume(val,vol,1,subdiv);
-
-        n=0;
-        for(k=0;k<2;k++) 
-        for(j=0;j<2;j++)
-        for(i=0;i<2;i++) {
-          resbuf = (float*)res->BufferPtr(x+i,y+j,z+k);
-          (*resbuf) += vol[n++];
+        if (count/(1.0*size)*100.0>previous_percentage+percentage_step) {
+          previous_percentage += percentage_step;
+          cout << boost::format(" %1%%% ") % previous_percentage;
+          cout.flush();
         }
-      } // end for x
-    } // end fory
-  } // end for z
-  cout << endl;
+        for (x=0;x<iml->DimX()-1;x++,count++)
+        {
+          inbuf = (float*)iml->BufferPtr(x,y,z);
+          // Process cube between (x,y,z) and (x+1,y+1,z+1)
+          n=0;
+          for(k=0;k<2;k++) 
+          for(j=0;j<2;j++)
+          for(i=0;i<2;i++)
+            val[n++] = (*iml)(x+i,y+j,z+k);
 
-  return res;
+          RecursivePositiveVolume(val,vol,1,subdiv);
+
+          n=0;
+          for(k=0;k<2;k++) 
+          for(j=0;j<2;j++)
+          for(i=0;i<2;i++) {
+            resbuf = (float*)res->BufferPtr(x+i,y+j,z+k);
+            (*resbuf) += vol[n++];
+          }
+        } // end for x
+      } // end fory
+    } // end for z
+    cout << endl;
+
+    return res;
+  }
+  else
+  {
+    cerr << "It isn't posible to get the image smart pointer." << endl;
+    return InrImage::ptr();
+  }
 } // ComputePartialVolumeSubdiv()
 
 
@@ -554,7 +601,7 @@ InrImage* ComputePV::ComputePartialVolumeSubdiv()
 //
 // resolution is the number of subdivision along each axis
 //
-InrImage* ComputePV::ComputePartialVolume()
+InrImage::ptr ComputePV::ComputePartialVolume()
 {
   int x,y,z;
   int n=resolution,n3;
@@ -584,76 +631,83 @@ InrImage* ComputePV::ComputePartialVolume()
     posz = round(k*1.0/n);
     possum[(int)posx][(int)posy][(int)posz]+=sum_elt;
   }
-
-
-  if (input->GetFormat()!=WT_FLOAT) {
-    cerr << "ComputePartialVolume only for float images for now !" << endl;
-    return NULL;
-  }
-
-  InrImage* res = new InrImage(WT_FLOAT,"PV.ami.gz",input);
-  res->InitImage(0);
-
-  long size = input->Size();
-  long count=0;
-  int previous_percentage = 0;
-  int percentage_step = 5;
-
-  for (z=0;z<input->DimZ()-1;z++)
+  InrImage::ptr iml(input.lock());
+  if (iml.get())
   {
-    for (y=0;y<input->DimY()-1;y++)
+    if (iml->GetFormat()!=WT_FLOAT) {
+      cerr << "ComputePartialVolume only for float images for now !" << endl;
+      return InrImage::ptr();
+    }
+    
+    InrImage::ptr res = InrImage::ptr(new InrImage(iml->DimX(), iml->DimY(), iml->DimZ(), WT_FLOAT,"PV.ami.gz"));
+    res->InitImage(0);
+
+    long size = iml->Size();
+    long count=0;
+    int previous_percentage = 0;
+    int percentage_step = 5;
+
+    for (z=0;z<iml->DimZ()-1;z++)
     {
-      if (count/(1.0*size)*100.0>previous_percentage+percentage_step) {
-        previous_percentage += percentage_step;
-        cout << boost::format(" %1%%% ") % previous_percentage;
-        cout.flush();
-      }
-      for (x=0;x<input->DimX()-1;x++,count++)
+      for (y=0;y<iml->DimY()-1;y++)
       {
-        inbuf = (float*)input->BufferPtr(x,y,z);
-        // Process cube between (x,y,z) and (x+1,y+1,z+1)
-        sum_pos = 0;
-        sum_neg = 0;
-        for(k=0;k<2;k++) 
-        for(j=0;j<2;j++)
-        for(i=0;i<2;i++)
-        {
-          val = (*input)(x+i,y+j,z+k);
-          if (val>=0) sum_pos++;
-          if (val<0) sum_neg++;
+        if (count/(1.0*size)*100.0>previous_percentage+percentage_step) {
+          previous_percentage += percentage_step;
+          cout << boost::format(" %1%%% ") % previous_percentage;
+          cout.flush();
         }
-        if (sum_pos==8) {
-          for(i=0;i<2;i++)
-          for(j=0;j<2;j++)
-          for(k=0;k<2;k++) {
-            resbuf = (float*)res->BufferPtr(x+i,y+j,z+k);
-            (*resbuf)+=possum[i][j][k];
-          }
-        } else
-        if (sum_neg>0) {
-          // positive and negative values, need to downsample
+        for (x=0;x<iml->DimX()-1;x++,count++)
+        {
+          inbuf = (float*)iml->BufferPtr(x,y,z);
+          // Process cube between (x,y,z) and (x+1,y+1,z+1)
           sum_pos = 0;
           sum_neg = 0;
-          for(k=0;k<n;k++) 
-          for(j=0;j<n;j++)
-          for(i=0;i<n;i++)
+          for(k=0;k<2;k++) 
+          for(j=0;j<2;j++)
+          for(i=0;i<2;i++)
           {
-            posx = x+i*1.0/n;
-            posy = y+j*1.0/n;
-            posz = z+k*1.0/n;
-            val = input->InterpLinIntensite(posx,posy,posz);
-            resbuf = (float*)res->BufferPtr(round(posx),
-                                            round(posy),
-                                            round(posz));
-            if (val>=0) (*resbuf) += sum_elt;
+            val = (*iml)(x+i,y+j,z+k);
+            if (val>=0) sum_pos++;
+            if (val<0) sum_neg++;
           }
-        }
-      } // end for x
-    } // end fory
-  } // end for z
-  cout << endl;
+          if (sum_pos==8) {
+            for(i=0;i<2;i++)
+            for(j=0;j<2;j++)
+            for(k=0;k<2;k++) {
+              resbuf = (float*)res->BufferPtr(x+i,y+j,z+k);
+              (*resbuf)+=possum[i][j][k];
+            }
+          } else
+          if (sum_neg>0) {
+            // positive and negative values, need to downsample
+            sum_pos = 0;
+            sum_neg = 0;
+            for(k=0;k<n;k++) 
+            for(j=0;j<n;j++)
+            for(i=0;i<n;i++)
+            {
+              posx = x+i*1.0/n;
+              posy = y+j*1.0/n;
+              posz = z+k*1.0/n;
+              val = iml->InterpLinIntensite(posx,posy,posz);
+              resbuf = (float*)res->BufferPtr(round(posx),
+                                              round(posy),
+                                              round(posz));
+              if (val>=0) (*resbuf) += sum_elt;
+            }
+          }
+        } // end for x
+      } // end fory
+    } // end for z
+    cout << endl;
 
-  return res;
+    return res;
+  } 
+  else
+  {
+    cerr << "It isn't possible to get the image smart pointer." << endl;
+    return InrImage::ptr();
+  }
 } // ComputePartialVolume
 
 void ComputePV::setSubdiv(int s)
@@ -666,29 +720,29 @@ int  ComputePV::getSubdiv()
   return subdiv;
 }
 
-void ComputePV::setAnalyticFunction(AnalyticFunctionBase* fun)
+void ComputePV::setAnalyticFunction(AnalyticFunctionBase::ptr fun)
 {
-  f = fun;
+  analyticfunc = AnalyticFunctionBase::wptr(fun);
 }
 
-AnalyticFunctionBase* ComputePV::getAnalyticFunction()
+AnalyticFunctionBase::wptr ComputePV::getAnalyticFunction()
 {
-  return f;
+  return analyticfunc;
 }
 
-void ComputePV::setInputImage(InrImage* i)
+void ComputePV::setInputImage(InrImage::ptr input_image)
 {
-  input = i;
+  input = InrImage::wptr(input_image);
 }
 
-InrImage* ComputePV::getInputImage()
+InrImage::wptr ComputePV::getInputImage()
 {
   return input;
 }
 
-void ComputePV::setResolution(int r)
+void ComputePV::setResolution(int resol)
 {
-  resolution = r;
+  resolution = resol;
 }
 
 int ComputePV::getResolution()

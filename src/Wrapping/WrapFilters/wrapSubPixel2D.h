@@ -5,6 +5,17 @@
 #ifndef SUBPIXEL2D
 #define SUBPIXEL2D
 
+class borderPixel {
+public:
+  borderPixel();
+  ~borderPixel();
+  setPixelValues(float gx, float gy, float displacement, float curvature, unsigned char border);
+  getPixelValues();
+  
+private:
+  
+}
+
 /*class subpixel2D {
 public:
   subpixel2D(long size) {

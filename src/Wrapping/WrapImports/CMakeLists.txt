@@ -25,6 +25,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapDessinImage
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapmyVTK
   ${AMILAB_SOURCE_DIR}/wxCode/wxTreeListCtrl
+  ${AMILAB_SOURCE_DIR}/Algorithms/Others
   ${AMILAB_SOURCE_DIR}
   ${Boost_INCLUDE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}

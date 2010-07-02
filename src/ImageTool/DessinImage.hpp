@@ -180,34 +180,7 @@ using namespace std;
 
 #include <list>
 
-<<<<<<< .working
 #include "wx/aui/aui.h"
-
-
-#include "ParamPanel.hpp"
-// AMILab includes
-#include "ImageDraw_PositionParam.h"
-#include "ImageDraw_IntensityParam.h"
-#include "ImageDraw_VectorsParam.h"
-#include "ImageDraw_IsoContourParam.h"
-#include "ImageDraw_ImageSurfaceParam.h"
-#include "ImageDraw_ColorsParam.h"
-#include "ImageDraw_Sections3DParam.h"
-#include "ImageDraw_VolRenParam.h"
-#include "ImageDraw_GLMIPParam.h"
-#include "ImageDraw_Voxels3DParam.h"
-#include "ImageDraw_CirclesParam.h"
-#include "ImageDraw_ZoomFactorParam.h"
-#include "ImageDraw_MIPParam.h"
-#include "ImageDraw_AnimationParam.h"
-#include "ImageDraw_VoxelSizeParam.h"
-#include "ImageDraw_InfoParam.h"
-#include "ImageDraw_CoupesXYParam.h"
-
-class CompareImage;
-=======
-#include "wx/aui/aui.h"
->>>>>>> .merge-right.r747
 
 
 #include "ParamPanel.hpp"

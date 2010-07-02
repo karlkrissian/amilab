@@ -13,6 +13,7 @@
 #ifndef _ComputePartialVolume_h_
 #define _ComputePartialVolume_h_
 
+#include "DefineClass.hpp"
 #include "inrimage.hpp"
 
 
@@ -23,6 +24,9 @@
  */
 //---------------------------------------------------------------------
 class AnalyticFunctionBase {
+  
+  DEFINE_CLASS(AnalyticFunctionBase);
+  
 public:
   /**
    *  Defines a virtual double operator (). It evaluates a point with  the function
@@ -42,6 +46,9 @@ public:
  *  @author Daniel Elías Santana Cedrés (daniel.santana104@estudiantes.ulpgc.es)
  */
 class AnalyticCircle : public AnalyticFunctionBase {
+  
+  DEFINE_CLASS(AnalyticCircle);
+  
 private:
   /** Circle's center */
   float center[2];
@@ -101,6 +108,9 @@ public:
  *  @author Daniel Elías Santana Cedrés (daniel.santana104@estudiantes.ulpgc.es)
  */
 class AnalyticLine : public AnalyticFunctionBase {
+  
+  DEFINE_CLASS(AnalyticLine);
+  
 private:
   /** Line's normal and cut point on y axis */
   float m[2], _n;
@@ -158,6 +168,9 @@ public:
  *  @author Daniel Elías Santana Cedrés (daniel.santana104@estudiantes.ulpgc.es)
  */
 class AnalyticSphere : public AnalyticFunctionBase {
+  
+  DEFINE_CLASS(AnalyticSphere);
+  
 private:
   /** Sphere center */
   float center[3];
@@ -219,6 +232,9 @@ public:
  *  @author Daniel Elías Santana Cedrés (daniel.santana104@estudiantes.ulpgc.es)
  */
 class AnalyticTorus : public AnalyticFunctionBase {
+  
+  DEFINE_CLASS(AnalyticTorus);
+  
 private:
   /** Torus' center */
   float center[3];
@@ -295,13 +311,16 @@ public:
  */
 //---------------------------------------------------------------------
 class ComputePV {
+  
+  DEFINE_CLASS(ComputePV);
+  
 private:
   //Subdivision level
   int subdiv;
   //Analytic function
-  AnalyticFunctionBase* f;
+  AnalyticFunctionBase::wptr analyticfunc;
   //Input image
-  InrImage* input;
+  InrImage::wptr input;
   //Iterative method
   int resolution;
   
@@ -353,39 +372,39 @@ public:
    */
   ComputePV()
   {
-    subdiv     = 2;
-    f          = NULL;
-    input      = NULL;
-    resolution = 3;
+    subdiv       = 2;
+//    analyticfunc = NULL;
+//    input        = NULL;
+    resolution   = 3;
   }
   
-  ~ComputePV();
+  ~ComputePV(){}
   
   //Analytic functions
   /**
    *  Computes the analytic partial surface subdivision.
    *  @return InrImage* A pointer to an InrImage object.
    */
-  InrImage* ComputeAnalyticPartialSurfaceSubdiv();
+  InrImage::ptr ComputeAnalyticPartialSurfaceSubdiv();
   
   /**
    *  Computes the analytic partial volume subdivision.
    *  @return InrImage* A pointer to an InrImage object.
    */
-  InrImage* ComputeAnalyticPartialVolumeSubdiv();
+  InrImage::ptr ComputeAnalyticPartialVolumeSubdiv();
 
   //Linear interpolation functions
   /**
    *  Compute partial volume iteratively.
    *  @return InrImage* A pointer to an InrImage object.
    */
-  InrImage* ComputePartialVolume();
+  InrImage::ptr ComputePartialVolume();
   
   /**
    *  Compute partial volume (linear interpolation).
    *  @return InrImage* A pointer to an InrImage object.
    */
-  InrImage* ComputePartialVolumeSubdiv();
+  InrImage::ptr ComputePartialVolumeSubdiv();
   
   //Get and set methods
   /**
@@ -404,31 +423,31 @@ public:
    *  Set the analytic function.
    *  @param fun A pointer to an AnalyticFunctionBase object.
    */
-  void setAnalyticFunction(AnalyticFunctionBase* fun);
+  void setAnalyticFunction(AnalyticFunctionBase::ptr fun);
   
   /**
    *  Gets the analytic function.
    *  @return AnalyticFunctionBase* A pointer to an AnalyticFunctionBase object.
    */
-  AnalyticFunctionBase* getAnalyticFunction();
+  AnalyticFunctionBase::wptr getAnalyticFunction();
   
   /**
    *  Set input image.
    *  @param i A pointer to an InrImage object.
    */
-  void setInputImage(InrImage* i);
+  void setInputImage(InrImage::ptr input_image);
   
   /**
    *  Get the input image.
    *  @return InrImage* A pointer to the InrImage input image.
    */
-  InrImage* getInputImage();
+  InrImage::wptr getInputImage();
   
   /**
    *  Set the resolution.
    *  @param r The resolution value.
    */
-  void setResolution(int r);
+  void setResolution(int resol);
   
   /**
    *  Get the resoltion.

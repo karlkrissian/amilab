@@ -46,6 +46,7 @@
 #include "wrap_ImageExtent.h"
 #include "wrap_SurfacePoly.h"
 #include "wrap_DessinImage.h"
+#include "wrap_ComputePartialVolume.h"
 
 extern VarContexts  Vars;
 extern MainFrame*   GB_main_wxFrame;
@@ -76,6 +77,12 @@ void AddWrapImports()
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"ParamPanel",wrap_ParamPanel);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"vtkLevelSets",wrap_vtkLevelSets);
 
+  AddVar_AnalyticFunctionBase(     amiobject->GetContext());
+  AddVar_AnalyticCircle(           amiobject->GetContext());
+  AddVar_AnalyticLine(             amiobject->GetContext());
+  AddVar_AnalyticSphere(           amiobject->GetContext());
+  AddVar_AnalyticTorus(            amiobject->GetContext());
+  AddVar_ComputePV(                amiobject->GetContext());
 
   ADDOBJECTVAR_NAME(C_wrap_procedure,  "System",    wrap_System);
   ADDOBJECTVAR_NAME(C_wrap_procedure,  "ITK",       wrap_ITK);

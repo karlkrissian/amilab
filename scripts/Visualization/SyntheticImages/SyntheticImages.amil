@@ -1,0 +1,478 @@
+# Generating synthetic images (with linear interpolation or analytic function)
+#
+func "Common/ScriptGui"
+
+if (!exists(SyntheticImagesClass)) {
+  Class SyntheticImagesClass  : public ScriptGui{
+
+  #---------------------------------------------
+  proc ::Init() \
+  {
+    ::type       = INT(0), "Analytic function type"
+    ::pv_type    = INT(0), "Compute partial effect function"
+    ::subdiv     = INT(2), "Subdivision level for recursive functions"
+    ::output_name= "synthetic_res", "Output image name"
+    
+    ::reloadLine   = UCHAR(0), "Reload the image created with an analytic line"
+    ::reloadCircle = UCHAR(0), "Reload the image created with an analytic circle"
+    ::reloadSphere = UCHAR(0), "Reload the image created with an analytic sphere"
+    ::reloadTorus  = UCHAR(0), "Reload the image created with an analytic torus"
+    
+    #Input image parameters
+    ::dimx = INT(100), "Input image X size"
+    ::dimy = INT(100), "Input image Y size"
+    ::dimz = INT(100), "Input image Z size"
+    
+    #Circle parameters
+    ::cx = 50.0, "X component of circle's center"
+    ::cy = 50.0, "Y component of circle's center"
+    ::cr = 20.0, "Circle's radius"
+    
+    #Line parameters
+    ::mx = 1.0,  "X component of line's normal"
+    ::my = 1.0,  "Y component of line's normal"
+    ::n  = 50.0, "Y axis cut point"
+    
+    #Sphere parameters
+    ::sx = 50.0, "X component of sphere's center"
+    ::sy = 50.0, "Y component of sphere's center"
+    ::sz = 50.0, "Z component of sphere's center"
+    ::sr = 20.0, "Sphere's radius"
+    
+    #Torus parameters
+    ::tx = 50.0, "X component of torus' center"
+    ::ty = 50.0, "Y component of torus' center"
+    ::tz = 50.0, "Z component of torus' center"
+    ::tr = 2.0,  "Torus' minimum radius"
+    ::tR = 10.0, "Torus' maximum radius"
+    
+    ::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"
+    ::html_filename = GetScriptsDir+"/Visualization/SyntheticImages/Doc/SyntheticImages/index.html"
+    
+    ::Gui()
+    ::NewType()
+    
+  }
+
+
+  #----------------------------------------------------------
+  proc ::NewType() {
+    if (exists(::page_vec)) { del ::page_vec; }
+    ::page_vec = VarVector();
+    ::page_vec.push_back(::page_line)
+    ::page_vec.push_back(::page_circle)
+    ::page_vec.push_back(::page_sphere)
+    ::page_vec.push_back(::page_torus)
+
+    for n=0 to 3 {
+      ::win.EnablePanel(::page_vec[n], ::type==n)
+    }
+    ::win.SelectPage(::book,::type)
+  }
+  
+  #----------------------------------------------------------
+  proc ::CreateInputImage() {
+    #Create the image with the parameters and enable the compute method panel
+    ::input <<= Image(FLOAT,::dimx,::dimy,::dimz)
+    ::input = 0
+    ::win.EnablePanel(::cm_id, 1)
+  }
+  Comments(::CreateInputImage, "Create the input image for compute partial volume")
+  
+  #----------------------------------------------------------
+  proc ::ResetInputImage() {
+    ::dimx = 100
+    ::dimy = 100
+    ::dimz = 100
+    ::win.Update(-1)
+  }
+  Comments(::ResetInputImage, "Reset the input image values (dimx, dimy, dimz)")
+  
+  #----------------------------------------------------------
+  proc ::Compute() {
+  
+    if(exists(::input)){
+      #Create a compute partial volume object
+      import = &global::ami_import;
+      ::pv = import->ComputePV()
+      
+      #Analytic function recursive for a surface
+      if(::pv_type == 0) {
+        if(::dimz == 1) {
+          if(!exists(::line) && !exists(::circle)) {
+            InfoDialog "You must create a 2D analytic object (line or circle)"
+          } else {
+            ::pv->setInputImage(&::input)
+            ::pv->setSubdiv(::subdiv)
+            if(::type == 0){
+              ::pv->setAnalyticFunction(&::line)
+              ::res <<= ::pv->ComputeAnalyticPartialSurfaceSubdiv()
+            }
+            if(::type == 1) {
+              ::pv->setAnalyticFunction(&::circle)
+              ::res <<= ::pv->ComputeAnalyticPartialSurfaceSubdiv()
+            }
+          }
+        } else {
+          InfoDialog "Compute analytic surface only in 2D images."
+        }
+      }
+      
+      #Analytic  function recursive for a volume
+      if(::pv_type == 1) {
+        if(!exists(::sphere) && !exists(::torus)) {
+          InfoDialog "You must create a 3D analytic object (sphere or torus)"
+        } else {
+          ::pv->setInputImage(&::input)
+          ::pv->setSubdiv(::subdiv)
+          if(::dimz > 1) {
+            if(::type == 2) {
+              ::pv->setAnalyticFunction(&::sphere)
+              ::res <<= ::pv->ComputeAnalyticPartialVolumeSubdiv()
+            }
+            if(::type == 3) {
+              ::pv->setAnalyticFunction(&::torus)
+              ::res <<= ::pv->ComputeAnalyticPartialVolumeSubdiv()
+            }
+          } else {
+            InfoDialog "Compute analytic volume only in 3D images."
+          }
+        }
+      }
+    } else {
+      InfoDialog "You must create an input image."
+    }
+  }
+  Comments(::Compute, "Compute the partial volume effect")
+  
+  #----------------------------------------------------------
+  proc ::Display() {
+    if(exists(::res)){
+      show ::res
+    } else {
+      InfoDialog "The result image not exists."
+    }
+  }
+  Comments(::Display, "Display the result of apply the partial effect")
+  
+  #LINE
+  #--------------------------------------------------------------
+  proc ::GenerateLine() {
+    import = &global::ami_import;
+    ::line = import->AnalyticLine()
+    ::line->setM(::mx,::my)
+    ::line->set_n(::n)
+  }
+  Comments(::GenerateLine, "Generate analytic line")
+  #--------------------------------------------------------------
+  proc ::ResetLine() {
+    ::mx = 1.0
+    ::my = 1.0
+    ::n  = 50.0
+    ::win.Update(-1)
+  }
+  Comments(::ResetLine, "Reset analytic line parameters")
+  
+  #CIRCLE
+  #--------------------------------------------------------------
+  proc ::GenerateCircle() {
+    import = &global::ami_import;
+    ::circle = import->AnalyticCircle()
+    ::circle->setCenter(::cx,::cy)
+    ::circle->setRadius(::cr)
+  }
+  Comments(::GenerateCircle, "Generate analytic circle")
+  #--------------------------------------------------------------
+  proc ::ResetCircle() {
+    ::cx = 50.0
+    ::cy = 50.0
+    ::cr = 20.0
+    ::win.Update(-1)
+  }
+  Comments(::ResetCircle, "Reset analytic circle parameters")
+  
+  #SPHERE
+  #--------------------------------------------------------------
+  proc ::GenerateSphere() {
+    import = &global::ami_import;
+    ::sphere = import->AnalyticSphere()
+    ::sphere->setCenter(::sx,::sy,::sz)
+    ::sphere->setRadius(::sr)
+  }
+  Comments(::GenerateSphere, "Generate analytic sphere")
+  #--------------------------------------------------------------
+  proc ::ResetSphere() {
+    ::sx = 50.0
+    ::sy = 50.0
+    ::sz = 50.0
+    ::sr = 20.0
+    ::win.Update(-1)
+  }
+  Comments(::ResetSphere, "Reset analytic sphere parameters")
+  
+  #TORUS
+  #--------------------------------------------------------------
+  proc ::GenerateTorus() {
+    import = &global::ami_import;
+    ::torus = import->AnalyticTorus()
+    ::torus->setCenter(::tx,::ty,::tz)
+    ::torus->set_rmin(::tr)
+    ::torus->set_rmax(::tR)
+  }
+  Comments(::GenerateTorus, "Generate analytic torus")
+  #--------------------------------------------------------------
+  proc ::ResetTorus() {
+    ::tx = 50.0
+    ::ty = 50.0
+    ::tz = 50.0
+    ::tr = 2.0
+    ::tR = 10.0
+    ::win.Update(-1)
+  }
+  Comments(::ResetTorus, "Reset analytic torus parameters")
+
+  #--------------------------------------------------------------
+  proc ::RecomputeLine() {
+    if(::reloadLine == 1) {
+      if(exists(::line)) {
+        ::line->setM(::mx,::my)
+        ::line->set_n(::n)
+        if(exists(::pv)) {
+          ::pv->setAnalyticFunction(&::line)
+          ::Compute()
+          ::Display()
+        }
+      }
+    }
+    ::angle = ::mx / ::my
+    ::angle = atan ::angle
+    ::angle = abs(::angle*360)/(2*Pi)
+    if(::mx<0 && ::my>0) {
+      ::angle = ::angle+90
+    }
+    if(::mx<0 && ::my<0) {
+      ::angle = ::angle+180
+    }
+    if(::mx>0 && ::my<0) {
+      ::angle = ::angle+270
+    }
+    ::s_angle = sprint("%f",::angle)
+    ::win.Update(-1)
+  }
+  #--------------------------------------------------------------
+  proc ::RecomputeCircle() {
+    if(::reloadCircle == 1) {
+      if(exists(::circle)) {
+          ::circle->setCenter(::cx,::cy)
+          ::circle->setRadius(::cr)
+          if(exists(::pv)) {
+            ::pv->setAnalyticFunction(&::circle)
+            ::Compute()
+            ::Display()
+          }
+        }
+    }
+  }
+  #--------------------------------------------------------------
+  proc ::RecomputeSphere() {
+    if(::reloadSphere == 1) {
+      if(exists(::sphere)) {
+        ::sphere->setCenter(::sx,::sy,::sz)
+        ::sphere->setRadius(::sr)
+        if(exists(::pv)) {
+          ::pv->setAnalyticFunction(&::sphere)
+          ::Compute()
+          ::Display()
+        }
+      }
+    }
+  }
+  #--------------------------------------------------------------
+  proc ::RecomputeTorus() {
+    if(::reloadTorus == 1) {
+      if(exists(::torus)) {
+        ::torus->setCenter(::tx,::ty,::tz)
+        ::torus->set_rmin(::tr)
+        ::torus->set_rmax(::tR)
+        if(exists(::pv)) {
+          ::pv->setAnalyticFunction(&::torus)
+          ::Compute()
+          ::Display()
+        }
+      }
+    }
+  }
+
+  proc ::Save() {
+    if(exists(::res)) {
+      eval "global::" + ::output_name + "<<=::res;"
+    } else {
+      InfoDialog "Result image doesn't exist. You must apply the method"
+    }
+  }
+  Comments(::Save, "Save the result image")
+  
+  #--------------------------------------------------------------
+  proc ::Gui(){
+  
+    import = &global::ami_import;
+    ::win = import->ParamPanel("Synth.Im.")
+
+    ::win.BeginBook()
+      #Main tab
+      ::win.AddPage("Main")
+        #Configure input image
+        ::win.BeginBoxPanel("Input image")
+          ::win.BeginBoxPanel("Size")
+            ::win.AddInt(&::dimx, "x", 1, 800)
+            ::win.AddInt(&::dimy, "y", 1, 800)
+            ::win.AddInt(&::dimz, "z", 1, 800)
+          ::win.EndBoxPanel()
+          ::win.BeginHorizontal()
+            ::AddBitmapButton(&::win, &::icons._New_image, 16, "CreateInputImage")
+            ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetInputImage")
+          ::win.EndHorizontal()
+        ::win.EndBoxPanel()
+        
+        ::cm_id = ::win.BeginBoxPanel("Partial volume parameters")
+          ::win.AddInt(&::subdiv,   "Subdivision" , 1, 10)
+          #Method for compute partial volume
+          ::pv_id = ::win.AddEnum(&::pv_type, "Method")
+            ::win.AddEnumChoice(::pv_id, "Analytic PS")
+            ::win.AddEnumChoice(::pv_id, "Analytic PV")
+          ::win.BeginHorizontal()
+            ::icons.LoadIconPNG("Play")
+            ::AddBitmapButton(&::win, &::icons._Play, 16, "Compute")
+            ::AddBitmapButton(&::win, &::icons._Show, 16, "Display")
+          ::win.EndHorizontal()
+        ::win.EndBoxPanel()
+        ::win.EnablePanel(::cm_id, 0)
+        
+        ::win.BeginBoxPanel("Save output")
+          ::win.BeginHorizontal()
+            ::win.AddString(&::output_name, "Name")
+            ::AddBitmapButton(&::win, &::icons._Save, 16, "Save")
+          ::win.EndHorizontal()
+        ::win.EndBoxPanel()
+      
+      #Function tab
+      ::win.AddPage("Func")
+        ::type_id = ::win.AddEnum(&::type, "Function type")
+          ::win.AddEnumChoice(::type_id, "Line")
+          ::win.AddEnumChoice(::type_id, "Circle")
+          ::win.AddEnumChoice(::type_id, "Sphere")
+          ::win.AddEnumChoice(::type_id, "Torus")
+        ::win.SetCallback(&::NewType)
+        
+        #Functions notebook
+        ::book = ::win.BeginBook()
+        
+          ::page_line   = ::win.AddPage("Line")
+            ::win.BeginBoxPanel("Line parameters")
+              ::win.BeginBoxPanel("Normal")
+                ::win.AddFloat(&::mx, "x", -1, 1)
+                ::win.SetCallback(&::RecomputeLine)
+                ::win.AddFloat(&::my, "y", -1, 1)
+                ::win.SetCallback(&::RecomputeLine)
+                ::angle = ::mx / ::my
+                ::angle = atan ::angle
+                ::angle = (::angle*360)/(2*Pi)
+                ::s_angle = sprint("%f",::angle)
+                ::win.AddString(&::s_angle, "Angle")
+              ::win.EndBoxPanel()
+              ::win.AddFloat(&::n, "Cut point", 1,100)
+              ::win.SetCallback(&::RecomputeLine)
+            ::win.EndBoxPanel()
+            ::win.BeginHorizontal()
+              ::AddBitmapButton(&::win, &::icons._Apply, 16, "GenerateLine")
+              ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetLine")
+              ::win.AddBoolean(&::reloadLine, "Reload")
+            ::win.EndHorizontal()
+            
+          ::page_circle = ::win.AddPage("Circle")
+            ::win.BeginBoxPanel("Circle parameters")
+              ::win.BeginBoxPanel("Center")
+                ::win.AddFloat(&::cx, "x", 0, 100)
+                ::win.SetCallback(&::RecomputeCircle)
+                ::win.AddFloat(&::cy, "y", 0, 100)
+                ::win.SetCallback(&::RecomputeCircle)
+              ::win.EndBoxPanel()
+              ::win.AddFloat(&::cr, "Radius", 1, 100)
+              ::win.SetCallback(&::RecomputeCircle)
+            ::win.EndBoxPanel()
+            ::win.BeginHorizontal()
+              ::AddBitmapButton(&::win, &::icons._Apply, 16, "GenerateCircle")
+              ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetCircle")
+              ::win.AddBoolean(&::reloadCircle, "Reload")
+            ::win.EndHorizontal()
+            
+          ::page_sphere = ::win.AddPage("Sphere")
+            ::win.BeginBoxPanel("Sphere parameters")
+              ::win.BeginBoxPanel("Center")
+                ::win.AddFloat(&::sx, "x", 0, 100)
+                ::win.SetCallback(&::RecomputeSphere)
+                ::win.AddFloat(&::sy, "y", 0, 100)
+                ::win.SetCallback(&::RecomputeSphere)
+                ::win.AddFloat(&::sz, "z", 0, 100)
+                ::win.SetCallback(&::RecomputeSphere)
+              ::win.EndBoxPanel()
+              ::win.AddFloat(&::sr, "Radius", 1, 100)
+              ::win.SetCallback(&::RecomputeSphere)
+            ::win.EndBoxPanel()
+            ::win.BeginHorizontal()
+              ::AddBitmapButton(&::win, &::icons._Apply, 16, "GenerateSphere")
+              ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetSphere")
+              ::win.AddBoolean(&::reloadSphere, "Reload")
+            ::win.EndHorizontal()
+          
+          ::page_torus  = ::win.AddPage("Torus")
+            ::win.BeginBoxPanel("Torus parameters")
+              ::win.BeginBoxPanel("Center")
+                ::win.AddFloat(&::tx, "x", 0, 100)
+                ::win.SetCallback(&::RecomputeTorus)
+                ::win.AddFloat(&::ty, "y", 0, 100)
+                ::win.SetCallback(&::RecomputeTorus)
+                ::win.AddFloat(&::tz, "z", 0, 100)
+                ::win.SetCallback(&::RecomputeTorus)
+              ::win.EndBoxPanel()
+              ::win.BeginBoxPanel("Radius")
+                ::win.AddFloat(&::tr, "Rmin", 1, 100)
+                ::win.SetCallback(&::RecomputeTorus)
+                ::win.AddFloat(&::tR, "Rmax", 1, 100)
+                ::win.SetCallback(&::RecomputeTorus)
+              ::win.EndBoxPanel()
+            ::win.EndBoxPanel()
+            ::win.BeginHorizontal()
+              ::AddBitmapButton(&::win, &::icons._Apply, 16, "GenerateTorus")
+              ::AddBitmapButton(&::win, &::icons._Refresh, 16, "ResetTorus")
+              ::win.AddBoolean(&::reloadTorus, "Reload")
+            ::win.EndHorizontal()
+        
+        ::win.EndBook()
+    
+      #Help tab
+      ::AddHelpPage(&::win)
+      
+    ::win.EndBook()
+
+    ::AddStandardButtons(&::win)
+    ::win.Update(-1)
+    ::win.Display()
+  }
+  
+  ::Init
+  }
+
+}
+  # end if (!exists(SyntheticImagesClass))
+
+
+  #----------------------------
+  # Main
+  #----------------------------
+
+  if (!exists(si)) {
+    SyntheticImagesClass si
+  } else {
+    InfoDialog "The script for generate synthetic images seems to be already loaded."
+  }

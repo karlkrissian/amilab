@@ -79,10 +79,10 @@ void AddWrapFilters(){
     ADDOBJECTVAR_NAME(C_wrap_imagefunction,"NewNLmeans",    Wrap_NewNLmeans);
   #endif // AMI_USE_FASTNLMEANS
 
-  ADDOBJECTVAR_NAME(C_wrap_imagefunction,"ComputePV",       wrapComputePV);
-  ADDOBJECTVAR_NAME(C_wrap_imagefunction,"ComputePV_subdiv",wrapComputePV_subdiv);
-  ADDOBJECTVAR_NAME(C_wrap_imagefunction,"ComputeAnalyticPV",wrapComputeAnalyticPV);
-  ADDOBJECTVAR_NAME(C_wrap_imagefunction,"ComputeAnalyticPS",wrapComputeAnalyticPS);
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"ComputePV",       wrapComputePV);
+  ADDOBJECTVAR_NAME(C_wrap_varfunction,"ComputePV_subdiv",wrapComputePV_subdiv);
+//  ADDOBJECTVAR_NAME(C_wrap_imagefunction,"ComputeAnalyticPV",wrapComputeAnalyticPV);
+//  ADDOBJECTVAR_NAME(C_wrap_imagefunction,"ComputeAnalyticPS",wrapComputeAnalyticPS);
 
   ADDOBJECTVAR_NAME(C_wrap_imagefunction,"DirSum",          wrap_DirSum);
   ADDOBJECTVAR_NAME(C_wrap_imagefunction,"ImTranslate",     wrap_ImTranslate);

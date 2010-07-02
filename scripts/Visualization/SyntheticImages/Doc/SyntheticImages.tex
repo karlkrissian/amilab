@@ -1,0 +1,66 @@
+\documentclass{article}
+\usepackage{/Applications/Tex/html}
+\usepackage[latin1]{inputenc}
+
+
+\begin{document}
+
+% Title Page
+\title{Synthetic Images Gui}
+\author{Karl Krissian \& Daniel El\'ias Santana Cedr\'es}
+\thanks{
+Grupo de Imagen, Tecnolog\'ia M\'edica y Televisi\'on (GIMET)\\
+Universidad de Las Palmas de Gran Canaria\\
+email: krissian@dis.ulpgc.es
+email: daniel.santana104@estudiantes.ulpgc.es
+}
+
+
+\maketitle
+
+\begin{abstract}
+This script provides a user interface to create synthetic images in 2D and 3D based on an analytic function (line, circle, sphere or torus).
+\end{abstract}
+
+
+\section{Quick Start}
+
+For create a synthetic image follow this steps:
+\begin{enumerate}
+  \item Create a new input image (2D or 3D) on \emph{Main} tab.
+  \item Create a new analytic function from \emph{Func} tab.
+  \item Apply the method on \emph{Main} tab.
+  \item You can show or save the result.
+\end{enumerate}
+
+\section{Interface tabs}
+
+The interface is divided into several tabs.
+
+\subsection{\emph{Main} tab}
+In the \emph{Main} tab you can create a new input image indicating the x, y and z dimensions.
+
+After to create an analytic function you can apply the method. You can choose the recursive subdivision level and two diferent methods:
+\begin{itemize}
+	\item Analytic Partial Surface: Compute partial effect on a 2D image using the line or circle analytic function.
+	\item Analytic Partial Volume: Compute partial effect on a 3D image using the sphere or torus analytic function.
+\end{itemize}
+
+Also, you can save the image as a global variable.
+
+\subsection{\emph{Func} tab}
+In the \emph{Func} tab you can create an analytic function object. There are four functions with some parameters:
+\begin{itemize}
+	\item Line: The normal parameters and y axis cut point.
+	\item Circle: The center and the radius.
+	\item Sphere: The center and the radius.
+	\item Torus: The center, the minimum radius and the maximum radius
+\end{itemize}
+
+All analytic functions have a reload option. If you check it, you can see the changes on the image when modify a parameter.
+
+\subsection{\emph{Help} tab}
+This help.
+
+
+\end{document}          

@@ -175,7 +175,7 @@ inline void OptimizarParabola (double &a, double &b, double &c, double umbral, d
 }
 
 //Función original del código de Agustín (con los parámetros adaptados al wrapping)
-void SuperGradienteCurvo(InrImage* input, InrImage::ptr output, float* gx, float* gy, float* des, float* cu, unsigned char* borde, float umbral, int caso_lineal) {
+void SuperGradienteCurvo(InrImage* input, InrImage::ptr output, float* gx, float* gy, float* des, float* cu, unsigned char* borde, float umbral, int linear_case) {
   
   /* Calculamos el modulo del gradiente, argumento, desplazamiento y curvatura.
   El calculo de A y B hay que mejorarlo. Ahora mismo usamos un promedio de tres 
@@ -268,7 +268,7 @@ void SuperGradienteCurvo(InrImage* input, InrImage::ptr output, float* gx, float
       
       // calculamos los coeficientes de la parabola
       b = (sr-sl) / 2 / mod;
-      c = (caso_lineal) ? 0 : (sl+sr-2*sm) / 2 / mod;
+      c = (linear_case) ? 0 : (sl+sr-2*sm) / 2 / mod;
       //c = (s1-2*s2) / 2 / mod;
       a = (2*sm-5*mod) / 2 / mod - c / 12;
       //a = (26*s2-60*A-60*B-s1) / 24 / mod;
@@ -325,7 +325,7 @@ BasicVariable::ptr wrapSubpixel2D (ParamList* p) {
 	Parameters:\n\
 	input: The input image\n\
 	umbral: Threshold\n\
-	caso_lineal: Says if it's linear or second order\n\
+	linear_case: Says if it's first or second order\n\
 	";
   
   InrImage* input;
@@ -343,14 +343,14 @@ BasicVariable::ptr wrapSubpixel2D (ParamList* p) {
   unsigned char* borde = new unsigned char[input->DimX()*input->DimY()];
   //------
   float umbral;
-  int caso_lineal;
+  int linear_case;
   
   //Get params
   if (!get_val_param<float>(umbral, p, num)) HelpAndReturnVarPtr;
-  if (!get_int_param(caso_lineal, p, num)) HelpAndReturnVarPtr;
+  if (!get_int_param(linear_case, p, num)) HelpAndReturnVarPtr;
   
   //Calls to SuperGradienteCurvo
-  SuperGradienteCurvo(input, output, gx, gy, des, cu, borde, umbral, caso_lineal);
+  SuperGradienteCurvo(input, output, gx, gy, des, cu, borde, umbral, linear_case);
 
   //Borramos la solución temporal y por ahora se devuelve input tal cual
   delete[] borde;
