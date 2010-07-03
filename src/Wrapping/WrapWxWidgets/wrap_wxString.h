@@ -110,6 +110,7 @@ class WrapClass_wxString : public WrapClassBase
       AddVar_ToLong(       this_ptr);
       AddVar_ToUTF8(       this_ptr);
       AddVar_copy(         this_ptr);
+      AddVar_c_str(        this_ptr);
 
       // Operators
       AddVar_assign(       this_ptr);

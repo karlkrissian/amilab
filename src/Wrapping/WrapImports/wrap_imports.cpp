@@ -37,7 +37,8 @@
 #include "wrap_wxImage.h"
 #include "wrap_wxBitmap.h"
 #include "wrap_wxHtmlWindow.h"
-//#include "wrap_wxFileName.h"
+#include "wrap_wxString.h"
+#include "wrap_wxFileName.h"
 #include "wrap_vtkLevelSets.h"
 
 #include "wrap_wxEditor.h"
@@ -112,7 +113,9 @@ void AddWrapWxWidgets()
 
   AddVar_wxSize( amiobject->GetContext(), "wxSize");
 
-  //AddVar_wxFileName( amiobject->GetContext());
+  AddVar_wxFileName( amiobject->GetContext(), "wxFileName");
+
+  AddVar_wxString( amiobject->GetContext(), "wxString");
 
 //  AddVar_wxSize(    Vars.GetBuiltinContext());
 

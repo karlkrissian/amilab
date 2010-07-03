@@ -124,7 +124,7 @@ BasicVariable::ptr WrapClass_wxString::
   if (!p) ClassHelpAndReturn;
   int n=0;
   GET_PARAM(int,iPos,0);
-  GET_PARAM(char,cChar,'\0');
+  GET_PARAM(unsigned char,cChar,'\0');
 
   owxString->SetChar(iPos,wxT(cChar));
 
