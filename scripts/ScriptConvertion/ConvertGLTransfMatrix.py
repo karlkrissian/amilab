@@ -37,32 +37,15 @@ if __name__ == "__main__":
   # 2. Propose also an alphabetical list
   # the third parameter: a boolean, is True if we need to ask confirmation from the user ...
   commands_force_par=[
-            ("AddObject",           "AddObject",        False ),
-            ("Center",              "Center",           False ),
-            ("compare",             "compare",          True ),
-            ("drawCC",              "drawCC",           False ),
-            ("drawCCOnlyCC",        "drawCCOnlyCC",     False ),
-            ("getimage",            "getimage",         True ),
-            ("GetImageFromX",       "GetImageFromX",    True ),
-            ("GetTransform",        "GetTransform",     False ),
-            ("HideSection",         "HideSection",      False ),
-            ("Normalize",           "Normalize",        False ),
-            ("Paint",               "Paint",            False ),
-            ("PrintMatrices",       "PrintMatrices",    False ),
-            ("Remove",              "Remove",           False ),
-            ("rotate",              "rotate",           False ),
-            ("SetBackground",       "SetBackground",    False ),
-            ("SetCurrentObj",       "SetCurrentObj",    False ),
-            ("SetLightAmbient",     "SetLightAmbient",  False ),
-            ("SetLightDiffuse",     "SetLightDiffuse",  False ),
-            ("SetLightSpecular",    "SetLightSpecular", False ),
-            ("SetLightSpecular",    "SetLightSpecular", False ),
-            ("SetTransform",        "SetTransform",     False ),
-            ("setvector",           "setvector",        True ),
-            ("SetWindowSize",       "SetWindowSize",    True ),
-            ("ShowSection",         "ShowSection",      False ),
-            ("SwapBuffers",         "SwapBuffers",      False ),
+            ("Interpolate", "Interpolate",  True ),
+            ("print",       "print",        True ),
+            ("read",        "read",         True ),
+            ("save",        "save",         True ),
             ]
+
+  # Interpolate pattern: Interpolate(*
+  # read pattern: *.read(*
+  # save pattern: *.save*
 
   scripts=[]
   amilfile=re.compile('\S*amil$')
@@ -99,7 +82,7 @@ if __name__ == "__main__":
         res = re.subn(r"_draw\s*\.(\s*)"+cmd1+r"(\s*[^\(]|\s*$)",r"_draw."+cmd2+r"()\2",line)
         if (res[1]>0):
           if ask:
-            message = " Conversion of Viewer3D methods from: \n"
+            message = " Conversion of GLTransfMatrix methods from: \n"
             message = message + "'"+line[:-1]  +"' to:"
             message = message + "'"+res[0][:-1]+"' accept? (Y/N)"
             applychanges=raw_input(message)
@@ -114,7 +97,7 @@ if __name__ == "__main__":
         res = re.subn(r"_draw\s*\.(\s*)"+cmd1+r"(\s*[\(]|\s*$)",r"_draw."+cmd2+r"\2",line)
         if (res[1]>0):
           if ask:
-            message = " Conversion of Viewer3D methods from: \n"
+            message = " Conversion of GLTransfMatrix methods from: \n"
             message = message + "'"+line[:-1]  +"' to: "
             message = message + "'"+res[0][:-1]+"' accept? (Y/N)"
             applychanges=raw_input(message)
@@ -127,8 +110,8 @@ if __name__ == "__main__":
               num_subs = num_subs+1
           #sys.stdout.write("("+cmd1+","+cmd2+") -> "+line)
 
-        # convert SURFDRAW to OBJECT in parameter declaration
-        res = re.subn(r"(,|\()\s*SURFDRAW(\s+|,|\))",r"\1 OBJECT\2",line)
+        # convert GLTRANSFORM to OBJECT in parameter declaration
+        res = re.subn(r"(,|\()\s*GLTRANSFORM(\s+|,|\))",r"\1 OBJECT\2",line)
         if (res[1]>0):
           if (res[0]!=line):
             line = res[0]
