@@ -75,7 +75,8 @@ if (!exists(SyntheticImagesClass)) {
     #Create the image with the parameters and enable the compute method panel
     ::input <<= Image(FLOAT,::dimx,::dimy,::dimz)
     ::input = 0
-    ::win.EnablePanel(::cm_id, 1)
+    #Enable functions page
+    ::win.EnablePanel(::functions_page, 1)
   }
   Comments(::CreateInputImage, "Create the input image for compute partial volume")
   
@@ -139,6 +140,9 @@ if (!exists(SyntheticImagesClass)) {
           }
         }
       }
+      #Enable the save box
+      ::win.EnablePanel(::save_box, 1)
+      
     } else {
       InfoDialog "You must create an input image."
     }
@@ -162,6 +166,7 @@ if (!exists(SyntheticImagesClass)) {
     ::line = import->AnalyticLine()
     ::line->setM(::mx,::my)
     ::line->set_n(::n)
+    ::win.EnablePanel(::cm_id, 1)
   }
   Comments(::GenerateLine, "Generate analytic line")
   #--------------------------------------------------------------
@@ -180,6 +185,7 @@ if (!exists(SyntheticImagesClass)) {
     ::circle = import->AnalyticCircle()
     ::circle->setCenter(::cx,::cy)
     ::circle->setRadius(::cr)
+    ::win.EnablePanel(::cm_id, 1)
   }
   Comments(::GenerateCircle, "Generate analytic circle")
   #--------------------------------------------------------------
@@ -198,6 +204,7 @@ if (!exists(SyntheticImagesClass)) {
     ::sphere = import->AnalyticSphere()
     ::sphere->setCenter(::sx,::sy,::sz)
     ::sphere->setRadius(::sr)
+    ::win.EnablePanel(::cm_id, 1)
   }
   Comments(::GenerateSphere, "Generate analytic sphere")
   #--------------------------------------------------------------
@@ -218,6 +225,7 @@ if (!exists(SyntheticImagesClass)) {
     ::torus->setCenter(::tx,::ty,::tz)
     ::torus->set_rmin(::tr)
     ::torus->set_rmax(::tR)
+    ::win.EnablePanel(::cm_id, 1)
   }
   Comments(::GenerateTorus, "Generate analytic torus")
   #--------------------------------------------------------------
@@ -348,15 +356,16 @@ if (!exists(SyntheticImagesClass)) {
         ::win.EndBoxPanel()
         ::win.EnablePanel(::cm_id, 0)
         
-        ::win.BeginBoxPanel("Save output")
+        ::save_box = ::win.BeginBoxPanel("Save output")
           ::win.BeginHorizontal()
             ::win.AddString(&::output_name, "Name")
             ::AddBitmapButton(&::win, &::icons._Save, 16, "Save")
           ::win.EndHorizontal()
+          ::win.EnablePanel(::save_box, 0)
         ::win.EndBoxPanel()
       
       #Function tab
-      ::win.AddPage("Func")
+      ::functions_page = ::win.AddPage("Func")
         ::type_id = ::win.AddEnum(&::type, "Function type")
           ::win.AddEnumChoice(::type_id, "Line")
           ::win.AddEnumChoice(::type_id, "Circle")
@@ -448,6 +457,7 @@ if (!exists(SyntheticImagesClass)) {
               ::win.AddBoolean(&::reloadTorus, "Reload")
             ::win.EndHorizontal()
         
+        ::win.EnablePanel(::functions_page, 0)
         ::win.EndBook()
     
       #Help tab

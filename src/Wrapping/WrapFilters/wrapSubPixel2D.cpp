@@ -11,6 +11,7 @@
 #include "inrimage.hpp"
 #include "paramlist.h"
 #include "wrapfunctions.hpp"
+#include <vector>
 #include <iostream>
 using namespace std;
 
@@ -44,6 +45,44 @@ double imval(InrImage* input, int x,int y, int z){
 #define ffxr(x,y,z)	(FF(x+1,y,z) - FF(x,y,z))
 
 
+//borderPixel class methods
+void borderPixel::setBorderPixelValues(float gradx, float grady, float disp,
+                            float curv, unsigned char bord, int x, int y)
+{
+  gx           = gradx;
+  gy           = grady;
+  displacement = disp;
+  curvature    = curv;
+  border       = bord;
+  px           = x;
+  py           = y;
+}
+  
+float borderPixel::getGradX()          { return gx; }
+
+float borderPixel::getGradY()          { return gy; }
+
+float borderPixel::getDisplacement()   { return displacement; }
+
+float borderPixel::getCurvature()      { return curvature; }
+
+unsigned char borderPixel::getBorder() { return border; }
+
+int borderPixel::getXPosition()        { return px; }
+
+int borderPixel::getYPosition()        { return py; }
+
+void borderPixel::printBorderPixel()
+{
+  cout << "----------------------------------" << endl;
+  cout << "Pixel (" << px << ", " << py << ")" << endl;
+  cout << "Border       = " << border << endl;
+  cout << "X gradient   = " << gx << endl;
+  cout << "Y gradient   = " << gy << endl;
+  cout << "Curvature    = " << curvature << endl;
+  cout << "Displacement = " << displacement << endl;
+  cout << "----------------------------------" << endl;
+}
 
 
 inline void OptimizarParabola (double &a, double &b, double &c, double umbral, double rmin, double rmax) {
@@ -175,7 +214,9 @@ inline void OptimizarParabola (double &a, double &b, double &c, double umbral, d
 }
 
 //Función original del código de Agustín (con los parámetros adaptados al wrapping)
-void SuperGradienteCurvo(InrImage* input, InrImage::ptr output, float* gx, float* gy, float* des, float* cu, unsigned char* borde, float umbral, int linear_case) {
+//void SuperGradienteCurvo(InrImage* input, InrImage::ptr output, float* gx, float* gy, float* des, float* cu, unsigned char* borde, float umbral, int linear_case) {
+//Nuevo cambio para usar la clase borderPixel. Se pasa un vector de la stl que contiene elementos de esta clase
+void SuperGradienteCurvo(InrImage* input, vector<borderPixel> &borderPixelVector, float umbral, int linear_case) {
   
   /* Calculamos el modulo del gradiente, argumento, desplazamiento y curvatura.
   El calculo de A y B hay que mejorarlo. Ahora mismo usamos un promedio de tres 
@@ -205,6 +246,8 @@ void SuperGradienteCurvo(InrImage* input, InrImage::ptr output, float* gx, float
   };
   int z = 0;
   
+  borderPixel pixel;
+  
   // inicializamos los desplazamientos negativos
   for (int t = 0; t < 33; t++) {
     uneg[t] = -upos[t];
@@ -212,10 +255,11 @@ void SuperGradienteCurvo(InrImage* input, InrImage::ptr output, float* gx, float
   }
   
   // inicializamos todo a cero 	      
-  for (long n = 0; n < size; n++) {
-    gx[n]    = gy[n] = des[n] = cu[n] = 0.0;
-    borde[n] = 0;
-  }
+//  for (long n = 0; n < size; n++) {
+//    gx[n]    = gy[n] = des[n] = cu[n] = 0.0;
+//    borde[n] = 0;
+//  }
+  pixel.setBorderPixelValues(0.0, 0.0, 0.0, 0.0, 0, 0, 0);
   
   // barremos la imagen
   for (int y = margen; y < ny-margen; y++) {
@@ -299,15 +343,25 @@ void SuperGradienteCurvo(InrImage* input, InrImage::ptr output, float* gx, float
       den  = sqrt (1 + b*b);
       cu_n = 2*c / den / den / den;
       //printf ("pixel (%d,%d) a=%f b=%f c=%f R=%f\n", x, y, a, b, c, 1/cu_n);
-      //cout << "pixel (" << x << ", " << y << ") a = " << a << " b = " << b << " c = " << c << " R = " << 1/cu_n << endl;
-      
+      cout << "pixel (" << x << ", " << y << ") a = " << a << " b = " << b << " c = " << c << " R = " << 1/cu_n << endl;
+      cout << "g(x) = " << gx_n << " g(y) = " << gy_n << endl;
+      cout << "A    = " << A << endl;
+      cout << "B    = " << B << endl;
+      if (c==0){ 
+        double rad = atan(b);
+        cout << "Angle= " << (rad*360)/(2*3.141592741) << endl;
+      }
+     
       
       // volcamos los double al vector float
-      borde[n] = caso;
-      gx[n]    = (float) gx_n;
-      gy[n]    = (float) gy_n;
-      des[n]   = (float) des_n;
-      if(c!=0) cu[n]    = (float) cu_n;
+//      borde[n] = caso;
+//      gx[n]    = (float) gx_n;
+//      gy[n]    = (float) gy_n;
+//      des[n]   = (float) des_n;
+//      cu[n]    = (float) cu_n;
+      pixel.setBorderPixelValues(gx_n, gy_n, des_n, cu_n, caso, x, y);
+//      pixel.printBorderPixel();
+      borderPixelVector.push_back(pixel);
     }
   }
 }
@@ -336,28 +390,31 @@ BasicVariable::ptr wrapSubpixel2D (ParamList* p) {
   output->InitZero(); //Ahora mismo la imagen de salida está vacía!!!!!!!!!!!!! (negra como el sobaco un grillo)
   
   //Solución temporal para que compile (declarar los parámetros que se van a devolver de forma local)
-  float* gx = new float[input->DimX()*input->DimY()];
-  float* gy = new float[input->DimX()*input->DimY()];
-  float* des = new float[input->DimX()*input->DimY()];
-  float* cu = new float[input->DimX()*input->DimY()];
-  unsigned char* borde = new unsigned char[input->DimX()*input->DimY()];
+//  float* gx = new float[input->DimX()*input->DimY()];
+//  float* gy = new float[input->DimX()*input->DimY()];
+//  float* des = new float[input->DimX()*input->DimY()];
+//  float* cu = new float[input->DimX()*input->DimY()];
+//  unsigned char* borde = new unsigned char[input->DimX()*input->DimY()];
   //------
   float umbral;
   int linear_case;
+  vector<borderPixel> borderPixelVector;
   
   //Get params
   if (!get_val_param<float>(umbral, p, num)) HelpAndReturnVarPtr;
   if (!get_int_param(linear_case, p, num)) HelpAndReturnVarPtr;
   
   //Calls to SuperGradienteCurvo
-  SuperGradienteCurvo(input, output, gx, gy, des, cu, borde, umbral, linear_case);
+  //SuperGradienteCurvo(input, output, gx, gy, des, cu, borde, umbral, linear_case);
+  SuperGradienteCurvo(input, borderPixelVector, umbral, linear_case);
+  cout << "+++++++ size = " << borderPixelVector.size() << endl;
 
   //Borramos la solución temporal y por ahora se devuelve input tal cual
-  delete[] borde;
-  delete[] gx;
-  delete[] gy;
-  delete[] des;
-  delete[] cu;
+//  delete[] borde;
+//  delete[] gx;
+//  delete[] gy;
+//  delete[] des;
+//  delete[] cu;
   
   Variable<InrImage>::ptr result(
     new Variable<InrImage>( "subpixel_result",

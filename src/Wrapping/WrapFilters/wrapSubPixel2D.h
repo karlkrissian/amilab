@@ -5,37 +5,31 @@
 #ifndef SUBPIXEL2D
 #define SUBPIXEL2D
 
+//New class for a pixel that is a border member
 class borderPixel {
 public:
-  borderPixel();
-  ~borderPixel();
-  setPixelValues(float gx, float gy, float displacement, float curvature, unsigned char border);
-  getPixelValues();
+  borderPixel() {}
+  ~borderPixel() {}
+  void setBorderPixelValues(float gradx, float grady, float disp,
+                            float curv, unsigned char bord, int x, int y);
+  float         getGradX();
+  float         getGradY();
+  float         getDisplacement();
+  float         getCurvature();
+  unsigned char getBorder();
+  int           getXPosition();
+  int           getYPosition();
+  void          printBorderPixel();
   
 private:
-  
-}
-
-/*class subpixel2D {
-public:
-  subpixel2D(long size) {
-    gx = new float[size];
-    gy = new float[size];
-    displacement = new float[size];
-    edge = new unsigned char[size];
-  }
-  ~subpixel2D() {
-    delete gx;
-    delete gy;
-    delete displacement;
-    delete edge;
-  }
-private:
-  float* gx;
-  float* gy;
-  float* displacement;
-  unsigned char* edge;
-};*/
+  float         gx;
+  float         gy;
+  float         displacement;
+  float         curvature;
+  unsigned char border;
+  int           px;
+  int           py;
+};
 
 #include "BasicVariable.h"
 class ParamList;
