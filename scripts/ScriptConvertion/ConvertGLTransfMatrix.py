@@ -45,7 +45,8 @@ if __name__ == "__main__":
 
   # Interpolate pattern: Interpolate(*
   # read pattern: *.read(*
-  # save pattern: *.save*
+  # save pattern: *.save*, *._save*
+  # print pattern: No check
 
   scripts=[]
   amilfile=re.compile('\S*amil$')

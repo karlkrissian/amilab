@@ -64,6 +64,9 @@ if __name__ == "__main__":
             ("SwapBuffers",         "SwapBuffers",      False ),
             ]
 
+  # pattern: *_draw.[function]*
+  # SetBackgroundColour pattern : *.SetBackgroundColour(
+
   scripts=[]
   amilfile=re.compile('\S*amil$')
 
@@ -127,8 +130,8 @@ if __name__ == "__main__":
               num_subs = num_subs+1
           #sys.stdout.write("("+cmd1+","+cmd2+") -> "+line)
 
-        # convert SURFDRAW to OBJECT in parameter declaration
-        res = re.subn(r"(,|\()\s*SURFDRAW(\s+|,|\))",r"\1 OBJECT\2",line)
+        # convert IMAGEDRAW to OBJECT in parameter declaration
+        res = re.subn(r"(,|\()\s*IMAGEDRAW(\s+|,|\))",r"\1 OBJECT\2",line)
         if (res[1]>0):
           if (res[0]!=line):
             line = res[0]

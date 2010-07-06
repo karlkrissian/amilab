@@ -49,8 +49,16 @@ if __name__ == "__main__":
             ("scan_float",  "scan_float",   True ),
             ]
 
+  # close pattern: *file.close,  *file*.close, *.close 
+  # open pattern:  *= open(*
   # print pattern: *_File*.print* , file.print*
-  
+  # printvar pattern: No check
+  # printnvar pattern: No check
+  # read_float pattern: No check
+  # read_string pattern: No check
+  # rewind pattern: No check
+  # scan_float pattern: No check
+
   scripts=[]
   amilfile=re.compile('\S*amil$')
 
