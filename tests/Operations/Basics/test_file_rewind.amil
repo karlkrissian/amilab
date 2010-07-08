@@ -19,51 +19,53 @@ OK = 1 # The test was successful
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-printn "\t\t ******************************************"
-printn "\t\t *                 WARNING                *"
-printn "\t\t ******************************************"
-printn "\t\t *                                        *"
-printn "\t\t * This test does not perform useful work *"
-printn "\t\t * ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ *"
-printn "\t\t *                                        *"
-printn "\t\t * Just check:                            *"
-printn "\t\t * - The parser does not generate errors. *"
-printn "\t\t * - Segmentation fault does not occur.   *"
-printn "\t\t *                                        *"
-printn "\t\t ******************************************\n"
-
 printn "\t\t Create an object of class File (file = File(\"w\", \"test_rewind.txt\")).\n"
 file=File("w", "test_rewind.txt")
 
-printn "\t\t Write the values: 1, 2.\n"
-file._print("1")
-file._print("2")
+printn "\t\t Write the values: 1, 2, 2, 1.\n"
+file._printn("1")
+file._printn("2")
+file._printn("2")
+file._printn("1")
 
-printn "\t\t Execute: file._rewind().\n"
+printn "\t\t Execute: file.rewind().\n"
 file.rewind();
 
 printn "\t\t Write the values: 3, 4.\n"
-file._print("3")
-file._print("4")
+file._printn("3")
+file._printn("4")
 
 printn "\t\t Close the file(Deprecated)).\n"
 file.close()
 
-printn "\t\t Open the file: test_read_write.txt (newfile=File(\"r\", \"test_rewind.txt\")).\n"
-newfile=File("r", "test_rewind.txt")
+printn "\t\t Open the file: test_read_write.txt (newFile=File(\"r\", \"test_rewind.txt\")).\n"
+newFile=File("r", "test_rewind.txt")
 
-printn "\t\t Read the file: test_read_write.txt (value=newfile.read_string()).\n"
-value=newfile.read_string()
+printn "\t\t Read the file: test_read_write.txt (firstValue=newFile.read_string()).\n"
+firstValue=newFile.read_string()
 
-printn "\t\t value=%1%\n" % value
+printn "\t\t Read the file: test_read_write.txt (secondValue=newFile.read_string()).\n"
+secondValue=newFile.read_string()
 
-printn "\t\t Read the file: test_read_write.txt (value=newfile.read_string()).\n"
-value=nefile.read_string()
+printn "\t\t Read the file: test_read_write.txt (thirdValue=newFile.read_string()).\n"
+thirdValue=newFile.read_string()
 
-printn "\t\t value=%1%\n" % value
+printn "\t\t Read the file: test_read_write.txt (fourthValue=newFile.read_string()).\n"
+fourthValue=newFile.read_string()
 
 printn "\t\t Close the file(Deprecated)).\n"
-newfile.close()
+newFile.close()
+
+printn "\t\t First value read=%1%\n" % firstValue
+printn "\t\t Second value read=%1%\n" % secondValue
+printn "\t\t Third value read=%1%\n" % thirdValue
+printn "\t\t Fourth value read=%1%\n" % fourthValue
+
+if((firstValue != "3") && (secondValue != "4") && \
+   (thirdValue != "2") && (fourthValue != "1")) {
+  OK = 0
+  printn  "\nERROR: The reading does not match the value written."
+}
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

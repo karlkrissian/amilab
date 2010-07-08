@@ -91,7 +91,8 @@ SET(options "test_dessinimage_compare.amil"    "test_dessinimage_isocontour.amil
 FOREACH(option ${options})
   ADD_AMILAB_TESTS(${option} "-quit" "${PROJECT_SOURCE_DIR}/../tests/Operations/Basics/${option}")
 ENDFOREACH(option)
-SET(options "test_image_creation_scalar.amil"     "test_image_creation_vectorial.amil"
+
+SET(options "test_image_creation_scalar.amil"     "test_image_creation_vectorial.amil"
             "test_image_translation_scalar.amil"  "test_image_translation_vectorial.amil"
             "test_image_txtytz_vectorial.amil"    "test_image_txtytz_scalar.amil"
             "test_image_setvoxelsize_scalar.amil" "test_image_setvoxelsize_vectorial.amil"
@@ -110,6 +111,15 @@ SET(options "test_viewer3d_window_size.amil"        "test_viewer3d_add_remove_re
             "test_viewer3d_getimage.amil"           "test_viewer3d_set_bg_ls_ld_la.amil"
             "test_viewer3d_rotate_swapBuffers.amil" "test_viewer3d_printmatrices.amil"
             "test_viewer3d_compare.amil"            "test_gltransfmatrix.amil"
+   )
+
+FOREACH(option ${options})
+  ADD_AMILAB_TESTS(${option} "-quit" "${PROJECT_SOURCE_DIR}/../tests/Operations/Basics/${option}")
+ENDFOREACH(option)
+
+
+SET(options "test_file_readwrite.amil" "test_file_readwrite_float.amil"
+            "test_file_rewind.amil"
    )
 
 FOREACH(option ${options})

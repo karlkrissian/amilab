@@ -132,26 +132,28 @@ BasicVariable::ptr WrapClass_File::
 void WrapClass_File::
       wrap_print::SetParametersComments() 
 {
-  ADDPARAMCOMMENT_TYPE(string,"Text written to the file.");
+  ADDPARAMCOMMENT_TYPE(BasicVariable,"Variable to write to the file.");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_File::
       wrap_print::CallMember( ParamList* p)
 {
-  FILE_ptr file(this->_objectptr->_obj);
+  FILE_ptr file(this->_objectptr->GetObj());
+
+  BasicVariable::ptr var;
 
   if (!p) ClassHelpAndReturn;
   int n=0;
-  GET_PARAM(string,sText,"");
-
-  /**
-    Warning: The rule appears as deprecated in improcess_bison.ypp
-  **/
+  if (!get_generic_var_param(var, p, n)) ClassHelpAndReturn;
 
   if (file.get())
   {
-    fprintf(file.get(),"%s",sText.c_str());
-    fflush(file.get());
+    if (var.get()) {
+      fprintf(file.get(),"%s",var->GetValueAsString().c_str());
+      fflush(file.get());
+    }
+    else
+      GB_driver.err_print("empty variable");
   }
 
   return BasicVariable::ptr();
@@ -163,44 +165,13 @@ BasicVariable::ptr WrapClass_File::
 void WrapClass_File::
       wrap_printn::SetParametersComments() 
 {
-  ADDPARAMCOMMENT_TYPE(string,"Text written to the file.");
+  ADDPARAMCOMMENT_TYPE(BasicVariable,"Variable to write to the file.");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_File::
       wrap_printn::CallMember( ParamList* p)
 {
-  FILE_ptr file(this->_objectptr->_obj);
-
-  if (!p) ClassHelpAndReturn;
-  int n=0;
-  GET_PARAM(string,sText,"");
-
-  /**
-    Warning: The rule appears as deprecated in improcess_bison.ypp
-  **/
-
-  if (file.get())
-  {
-    fprintf(file.get(),"%s\n",sText.c_str());
-    fflush(file.get());
-  }
-
-  return BasicVariable::ptr();
-}
-
-//---------------------------------------------------
-//  printvar
-//---------------------------------------------------
-void WrapClass_File::
-      wrap_printvar::SetParametersComments() 
-{
-  ADDPARAMCOMMENT_TYPE(BasicVariable,"Variable to write to the file.");
-}
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_File::
-      wrap_printvar::CallMember( ParamList* p)
-{
-  FILE_ptr file(this->_objectptr->_obj);
+  FILE_ptr file(this->_objectptr->GetObj());
 
   BasicVariable::ptr var;
 
@@ -211,40 +182,7 @@ BasicVariable::ptr WrapClass_File::
   if (file.get())
   {
     if (var.get()) {
-      fprintf(file.get(),var->GetValueAsString().c_str());
-      fflush(file.get());
-    }
-    else
-      GB_driver.err_print("empty variable");
-  }
-
-  return BasicVariable::ptr();
-}
-
-//---------------------------------------------------
-//  printnvar
-//---------------------------------------------------
-void WrapClass_File::
-      wrap_printnvar::SetParametersComments() 
-{
-  ADDPARAMCOMMENT_TYPE(BasicVariable,"Variable to write to the file.");
-}
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_File::
-      wrap_printnvar::CallMember( ParamList* p)
-{
-  FILE_ptr file(this->_objectptr->_obj);
-
-  BasicVariable::ptr var;
-
-  if (!p) ClassHelpAndReturn;
-  int n=0;
-  if (!get_generic_var_param(var, p, n)) ClassHelpAndReturn;
-
-  if (file.get())
-  {
-    if (var.get()) {
-      fprintf(file.get(),var->GetValueAsString().c_str());
+      fprintf(file.get(),"%s",var->GetValueAsString().c_str());
       fprintf(file.get(),"\n");
       fflush(file.get());
     }
@@ -276,20 +214,20 @@ BasicVariable::ptr WrapClass_File::
 void WrapClass_File::
       wrap_scan_float::SetParametersComments() 
 {
-  ADDPARAMCOMMENT_TYPE(string,"The name of the file to be read.");
+  ADDPARAMCOMMENT_TYPE(string,"Indicates a format specifier.");
   return_comments = "The float number that has been read from the file.";
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_File::
       wrap_scan_float::CallMember( ParamList* p)
 {
-  FILE_ptr file(this->_objectptr->_obj);
+  FILE_ptr file(this->_objectptr->GetObj());
 
   float val = 0;
 
   if (!p) ClassHelpAndReturn;
   int n=0;
-  GET_PARAM(string,sNameFile,"");
+  GET_PARAM(string,sFormatSpecifier,"");
 
   /**
     Description:
@@ -297,7 +235,7 @@ BasicVariable::ptr WrapClass_File::
       given formatting expression.
   **/
 
-  if (sNameFile == "")
+  if (sFormatSpecifier == "")
     ClassHelpAndReturn
   else
   {
@@ -305,8 +243,12 @@ BasicVariable::ptr WrapClass_File::
     {
       float res;
       setlocale(LC_NUMERIC, "C");
-      fscanf(file.get(),sNameFile.c_str(),&res);
-      val =  res;
+      if(fscanf(file.get(),sFormatSpecifier.c_str(),&res) == 0) {
+        GB_driver.err_print("Unable to read value from file");
+        val = 0;
+      }
+      else
+        val = res;
     }
   }
 
@@ -325,7 +267,7 @@ void WrapClass_File::
 BasicVariable::ptr WrapClass_File::
       wrap_read_float::CallMember( ParamList* p)
 {
-  FILE_ptr file(this->_objectptr->_obj);
+  FILE_ptr file(this->_objectptr->GetObj());
 
   float val = 0;
 
@@ -333,30 +275,12 @@ BasicVariable::ptr WrapClass_File::
   {
     float res;
     setlocale(LC_NUMERIC, "C");
-    fscanf(file.get(),"%f",&res);
-    val =  res;
-
-/*
-    | VAR_FILE T_POINT T_read T_OP_PAR PROCESSED_VAR T_CL_PAR
-    {
-      GET_VARSTACK_VALUE(float,val_ptr);
-      if (!val_ptr.get()) {
-        driver.err_print("needs float variable");
-        YYABORT;
-      }
-      GET_VARSTACK_VALUE(FILE,file);
-
-      float*  var = val_ptr.get();
-      setlocale(LC_NUMERIC, "C");
-      float val = 0;
-      if (var!=NULL) {
-        val = fscanf(file.get(),"%f",var);
-      } else {
-        // TODO: error message here ...
-      }
-      ADD_VARSTACK_FLOAT(val);
+    if (fscanf(file.get(),"%f",&res) == 0) {
+      GB_driver.err_print("Unable to read value from file (needs float variable)");
+      val = 0;
     }
-*/
+    else
+      val =  res;
   }
 
   RETURN_VAR(float,val);
@@ -368,13 +292,13 @@ BasicVariable::ptr WrapClass_File::
 void WrapClass_File::
       wrap_read_string::SetParametersComments() 
 {
-  return_comments = "The float number that has been read from the file.";
+  return_comments = "The string that has been read from the file.";
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_File::
       wrap_read_string::CallMember( ParamList* p)
 {
-  FILE_ptr file(this->_objectptr->_obj);
+  FILE_ptr file(this->_objectptr->GetObj());
 
   string val = "";
 
@@ -382,23 +306,11 @@ BasicVariable::ptr WrapClass_File::
   {
     char res[100];
     setlocale(LC_NUMERIC, "C");
-    fscanf(file.get(),"%s",&res);
-    val = res;
+    if (fscanf(file.get(),"%s",&res) == 0)
+      GB_driver.err_print("Unable to read value from file (needs string variable)");
+    else
+      val = res;
 
-/*
-    | VAR_FILE T_POINT T_read T_OP_PAR VAR_STRING T_CL_PAR
-    {
-      GET_VARSTACK_VALUE(std::string,st);
-      GET_VARSTACK_VALUE(FILE,file);
-      setlocale(LC_NUMERIC, "C");
-      // not safe, TODO: use iostream or boost for files here ...
-      char res[100];
-      float val = fscanf(file.get(),"%s",res);
-      //string_ptr var( new std::string(res));
-      (*st) = res;
-      ADD_VARSTACK_FLOAT(val);
-    }
-*/
  }
 
   RETURN_VAR(string,val);

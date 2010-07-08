@@ -41,10 +41,8 @@ class WrapClass_File: public WrapClassBase
     {}
 
     ADD_CLASS_METHOD(rewind,      "Sets the position indicator to the beginning of the file.");
-    ADD_CLASS_METHOD(print,       "Write a text file that has been opened previously.");
-    ADD_CLASS_METHOD(printn,      "Write a text file that has been opened previously (generates a line break).");
-    ADD_CLASS_METHOD(printvar,    "Write the contents of a variable in a file.");
-    ADD_CLASS_METHOD(printnvar,   "Write the contents of a variable in a file (generates a line break).");
+    ADD_CLASS_METHOD(print,       "Write the contents of a variable in a file.");
+    ADD_CLASS_METHOD(printn,      "Write the contents of a variable in a file (generates a line break).");
     ADD_CLASS_METHOD(close,       "Closes the open file.");
     ADD_CLASS_METHOD(scan_float,  "Scans a float number in the given file and based on the given formatting expression.");
     ADD_CLASS_METHOD(read_float,  "Read a float number of a file.");
@@ -55,8 +53,6 @@ class WrapClass_File: public WrapClassBase
       AddVar_rewind(      this_ptr);
       AddVar_print(       this_ptr, "_print");
       AddVar_printn(      this_ptr, "_printn");
-      AddVar_printvar(    this_ptr);
-      AddVar_printnvar(   this_ptr);
       AddVar_close(       this_ptr);
       AddVar_scan_float(  this_ptr);
       AddVar_read_float(  this_ptr);

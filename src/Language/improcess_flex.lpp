@@ -245,11 +245,6 @@ norm   return(token::NORM); /*{norm,NORM}*/
 round  return(token::ROUND); /*{round,ROUND}*/
 floor  return(token::FLOOR); /*{floor,FLOOR}*/
 
-
-scan_float return(token::T_scan_float); /*{scan_float,T_scan_float}*/
-read       return(token::T_read); /*{read,T_read}*/
-rewind     return(token::T_rewind); /*{rewind,T_rewind}*/
-
 proc       return(token::T_PROC);   /*{proc,T_PROC}*/
 Class      return(token::T_Class);  /*{Class,T_Class}*/
 public     return(token::T_public);  /*{public,T_public}*/

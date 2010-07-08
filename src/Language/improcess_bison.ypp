@@ -678,9 +678,9 @@ void CB_update_imagelist( void* imagelist_gui);
 
 //%token T_OPEN
 //%token T_CLOSE
-%token T_scan_float
-%token T_read
-%token T_rewind
+//%token T_scan_float
+//%token T_read
+//%token T_rewind
 
 %token T_LineNumber
 %token CONST_PI
