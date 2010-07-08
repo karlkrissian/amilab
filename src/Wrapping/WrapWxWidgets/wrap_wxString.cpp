@@ -52,8 +52,8 @@ Variable<AMIObject>::ptr CreateVar_wxString( wxString* si)
 {
   // Create smart pointer with own deleter
   boost::shared_ptr<wxString> si_ptr( 
-    si,
-    wxwindow_nodeleter<wxString>() // deletion will be done by wxwidgets
+    si//,
+    //wxwindow_nodeleter<wxString>() // deletion will be done by wxwidgets
   );
 
   WrapClass_wxString::ptr sip(new WrapClass_wxString(si_ptr));

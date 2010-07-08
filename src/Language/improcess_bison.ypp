@@ -438,7 +438,7 @@ void CB_update_imagelist( void* imagelist_gui);
 %token VAR_IMAGE  VAR_STRING
 //%token VAR_SURFDRAW VAR_MATRIX
 %token VAR_MATRIX
-%token VAR_FILE
+//%token VAR_FILE
 %token VAR_C_FUNCTION
 %token VAR_C_PROCEDURE
 %token VAR_CLASS_MEMBER
@@ -676,8 +676,8 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_cumhisto
 %token T_DisplayHisto
 
-%token T_OPEN
-%token T_CLOSE
+//%token T_OPEN
+//%token T_CLOSE
 %token T_scan_float
 %token T_read
 %token T_rewind
@@ -1834,7 +1834,6 @@ command:
         BasicVariable::ptr var = Vars.AddVar<string>(ident,varstring);
         var->SetComments(comments.get());
       }
-*/
       |
       identifier ASSIGN_OP T_OPEN T_OP_PAR  expr_string T_COMMA ASTRING T_CL_PAR
       {
@@ -1866,10 +1865,10 @@ command:
           case ENOSPC: fprintf(stderr,"ENOSPC \n"); break;
                   default: fprintf("unknown error \n");
           }
-          */
+          * /
           }
         }
-        |
+/*        |
         VAR_FILE ASSIGN_OP T_OPEN T_OP_PAR  expr_string T_COMMA ASTRING T_CL_PAR
         {
           Variable<FILE>::ptr varfile(driver.var_stack.GetLastVar<FILE>());
@@ -1892,6 +1891,7 @@ command:
           FILE_ptr file(varfile->Pointer());
           rewind(file.get());
         }
+*/
         |  T_SetDebugOn
         {
       GB_debug = 1;
@@ -2666,7 +2666,6 @@ command:
           fprintf(file.get(),"%s",text.get());
           fflush(file.get());
         }
-*/
       | VAR_FILE T_POINT PRINT expr_var
       {
           BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
@@ -2696,7 +2695,7 @@ command:
             driver.err_print("empty variable");
 
       }
-/* deprecated
+
       | VAR_FILE T_POINT PRINT expr
       {
           Variable<FILE>::ptr varfile(driver.var_stack.GetLastVar<FILE>());
@@ -2786,13 +2785,13 @@ command:
         mat->PrintSelf();
         delete mat;
       }
-*/
+
         | VAR_FILE T_POINT T_CLOSE
         {
           driver.var_stack.GetLastBasicVar();
           printf("Deprecated: No need to close files explicitly, since we use smart pointers, they will be closed when the variable is deleted. \n");
         }
-/*
+
         | PRINT expr
         {
         /**
@@ -6111,13 +6110,14 @@ float_variable:
       float val = (int) $1;
       ADD_VARSTACK_FLOAT(val);
     }
+/*
     | VAR_FILE T_POINT T_scan_float T_OP_PAR expr_string T_CL_PAR
     {
     /**
       Description:
         Scans a float number in the given file and based on the
         given formatting expression.
-    **/
+    ** /
       float res;
       GET_VARSTACK_VALUE(FILE,file);
       boost::shared_array<char> format( $5);
@@ -6158,6 +6158,7 @@ float_variable:
       (*st) = res;
       ADD_VARSTACK_FLOAT(val);
     }
+*/
     ;
 
 
@@ -10793,8 +10794,9 @@ variable_without_assign:
 //        |
 //         VAR_SURFDRAW
 //        |
-         VAR_FILE
-        | VAR_AMI_CLASS
+//         VAR_FILE
+//        | 
+          VAR_AMI_CLASS
         | VAR_ARRAY_IMAGE
         ;
 

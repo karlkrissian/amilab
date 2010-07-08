@@ -245,8 +245,7 @@ norm   return(token::NORM); /*{norm,NORM}*/
 round  return(token::ROUND); /*{round,ROUND}*/
 floor  return(token::FLOOR); /*{floor,FLOOR}*/
 
-open       return(token::T_OPEN); /*{open,T_OPEN}*/
-close      return(token::T_CLOSE); /*{close,T_CLOSE}*/
+
 scan_float return(token::T_scan_float); /*{scan_float,T_scan_float}*/
 read       return(token::T_read); /*{read,T_read}*/
 rewind     return(token::T_rewind); /*{rewind,T_rewind}*/
@@ -1073,7 +1072,7 @@ yyip::Parser::token::yytokentype checkvar(
         return token::PROCESSED_VAR; /*{$PROCESSED_VAR,PROCESSED_VAR}*/
 //      case type_surfdraw:         return token::VAR_SURFDRAW;
         /*{$variable_surfdraw,VAR_SURFDRAW}*/
-      case type_file:             return token::VAR_FILE;
+//      case type_file:             return token::VAR_FILE;
         /*{$variable_file,VAR_FILE}*/
       case type_c_procedure:      return token::VAR_C_PROCEDURE;
         /*{$variable_c_procedure,VAR_C_PROCEDURE}*/

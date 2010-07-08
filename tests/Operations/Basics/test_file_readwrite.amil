@@ -58,8 +58,8 @@ file.printnvar(name)
 printn "\t\t Close the file(Deprecated)).\n"
 file.close()
 
-printn "\t\t Open the file: test_read_write.txt (newFile=file._open(\"r\", \"test_read_write.txt\")).\n"
-newFile=file._open("r", "test_read_write.txt")
+printn "\t\t Open the file: test_read_write.txt (newFile=File(\"r\", \"test_read_write.txt\")).\n"
+newFile=File("r", "test_read_write.txt")
 
 printn "\t\t Read the file: test_read_write.txt (value=newFile.read_string()).\n"
 value=newFile.read_string()

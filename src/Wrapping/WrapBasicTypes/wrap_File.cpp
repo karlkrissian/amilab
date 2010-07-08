@@ -93,49 +93,11 @@ BasicVariable::ptr wrap_File::CallMember( ParamList* p)
     ClassHelpAndReturn
   else
   {
-    FILE_ptr file(fopen(sFileName.c_str(),sMode.c_str()),file_deleter());
+    FILE* file = fopen(sFileName.c_str(),sMode.c_str());
 
-    if (file.get())
+    if (file)
     {
-      return CreateVar_File(file.get());
-    }
-    else
-    {
-        fprintf(stderr,"error opening file '%s' in mode '%s'\n",
-                    sFileName.c_str(),sMode.c_str());
-        return BasicVariable::ptr();
-    }
-  }
-}
-
-//---------------------------------------------------
-//  open
-//---------------------------------------------------
-void WrapClass_File::
-      wrap_open::SetParametersComments() 
-{
-  ADDPARAMCOMMENT_TYPE(string,"The file access modes.");
-  ADDPARAMCOMMENT_TYPE(string,"The name of the file to be opened.");
-  return_comments = "A wrapped File object.";
-}
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_File::
-      wrap_open::CallMember( ParamList* p)
-{
-  if (!p) ClassHelpAndReturn;
-  int n=0;
-  GET_PARAM(string,sMode,"");
-  GET_PARAM(string,sFileName,"");
-
-  if ((sMode == "") || (sFileName == ""))
-    ClassHelpAndReturn
-  else
-  {
-    FILE_ptr file(fopen(sFileName.c_str(),sMode.c_str()),file_deleter());
-
-    if (file.get())
-    {
-      return CreateVar_File(file.get());
+      return CreateVar_File(file);
     }
     else
     {
@@ -156,7 +118,7 @@ void WrapClass_File::
 BasicVariable::ptr WrapClass_File::
       wrap_rewind::CallMember( ParamList* p)
 {
-  FILE_ptr file(this->_objectptr->_obj);
+  FILE_ptr file(this->_objectptr->GetObj());
 
   if (file.get())
     rewind(file.get());
