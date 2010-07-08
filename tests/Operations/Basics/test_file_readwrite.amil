@@ -67,7 +67,7 @@ value=newFile.read_string()
 printn "\t\t value=%1%\n" % value
 
 printn "\t\t Close the file(Deprecated)).\n"
-newfile.close()
+newFile.close()
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

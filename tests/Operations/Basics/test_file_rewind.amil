@@ -40,7 +40,7 @@ file._print("1")
 file._print("2")
 
 printn "\t\t Execute: file._rewind().\n"
-file._rewind();
+file.rewind();
 
 printn "\t\t Write the values: 3, 4.\n"
 file._print("3")
@@ -49,16 +49,16 @@ file._print("4")
 printn "\t\t Close the file(Deprecated)).\n"
 file.close()
 
-printn "\t\t Open the file: test_read_write.txt (newFile=file._open(\"r\", \"test_rewind.txt\")).\n"
-newFile=file._open("r", "test_rewind.txt")
+printn "\t\t Open the file: test_read_write.txt (newfile=File(\"r\", \"test_rewind.txt\")).\n"
+newfile=File("r", "test_rewind.txt")
 
-printn "\t\t Read the file: test_read_write.txt (value=newFile.read_string()).\n"
-value=newFile.read_string()
+printn "\t\t Read the file: test_read_write.txt (value=newfile.read_string()).\n"
+value=newfile.read_string()
 
 printn "\t\t value=%1%\n" % value
 
-printn "\t\t Read the file: test_read_write.txt (value=newFile.read_string()).\n"
-value=newFile.read_string()
+printn "\t\t Read the file: test_read_write.txt (value=newfile.read_string()).\n"
+value=nefile.read_string()
 
 printn "\t\t value=%1%\n" % value
 
