@@ -38,15 +38,18 @@ class WrapClass_MainFrame : public WrapClass_wxWindow
     WrapClass_MainFrame(boost::shared_ptr<MainFrame> si):  WrapClass_wxWindow(si), _obj(si)
     {}
 
-    ADD_CLASS_METHOD(GetAmilabEditor,          "Opens or get the amilab editor frame.");
+    ADD_CLASS_METHOD(GetAmilabEditor,  "Opens or get the amilab editor frame.");
+    ADD_CLASS_METHOD(AddMenuScript,    "Adds a new link to a script from the menus.");
 
     void AddMethods(_parentclass_ptr& this_ptr )
     {
       // Add members from wxWindow
       WrapClass_wxWindow::ptr parent_obj(boost::dynamic_pointer_cast<WrapClass_wxWindow>(this_ptr));
+
       parent_obj->AddMethods(parent_obj);
 
-      AddVar_GetAmilabEditor(         this_ptr);
+      AddVar_GetAmilabEditor(  this_ptr);
+      AddVar_AddMenuScript(    this_ptr);
     }
 
 };

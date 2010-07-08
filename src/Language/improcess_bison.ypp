@@ -407,7 +407,6 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_SetVerboseOn
 %token T_SetVerboseOff
 
-%token T_AddMenuScript
 %token T_SetProgress
 %token T_SetStatusText
 %token T_GetScriptsDir
@@ -1926,21 +1925,6 @@ command:
           bool: 1:activate 0: desactivate
        **/
       driver.SetNoMessageDialog($2>0.5);
-    }
-    |  T_AddMenuScript T_OP_PAR expr_string T_COMMA expr_string T_COMMA expr_string T_CL_PAR
-    {
-    /**
-      Description:
-        Adds a new link to a script from the menus
-      Parameters:
-        - string expression: category of the script
-        - string expression: menu label
-        - string expression: script name
-   **/
-          boost::shared_array<char> category( $3);
-          boost::shared_array<char> label(    $5);
-          boost::shared_array<char> script(   $7);
-          GB_main_wxFrame->AddMenuScript(category.get(),label.get(),script.get());
     }
     |  T_SetProgress T_OP_PAR expr T_CL_PAR
     {

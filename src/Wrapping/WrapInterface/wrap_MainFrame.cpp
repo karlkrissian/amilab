@@ -79,3 +79,28 @@ BasicVariable::ptr WrapClass_MainFrame::
   return CreateVar_wxStcFrame(editor);
 }
 
+//---------------------------------------------------
+//  AddMenuScript
+//---------------------------------------------------
+void WrapClass_MainFrame::
+      wrap_AddMenuScript::SetParametersComments() 
+{
+  ADDPARAMCOMMENT_TYPE(string,"Category of the script.");
+  ADDPARAMCOMMENT_TYPE(string,"Menu label.");
+  ADDPARAMCOMMENT_TYPE(string,"Script name.");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_MainFrame::
+      wrap_AddMenuScript::CallMember( ParamList* p)
+{
+  if (!p) ClassHelpAndReturn;
+  int n=0;
+  GET_PARAM(string,category,"");
+  GET_PARAM(string,label,"");
+  GET_PARAM(string,script,"");
+
+  if ((category=="")||(label=="")||(script=="")) ClassHelpAndReturn;
+  this->_objectptr->_obj->AddMenuScript(category,label,script);
+  return BasicVariable::ptr();
+}
+

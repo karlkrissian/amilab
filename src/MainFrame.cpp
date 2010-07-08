@@ -635,19 +635,19 @@ void MainFrame::CreateVarTreePanel ( wxWindow* parent)
                             );
 
   _vartree_col_main = _var_tree->GetColumnCount();
-  _var_tree->AddColumn (_T("Name"), 140, wxALIGN_LEFT);
+  _var_tree->AddColumn (_T("Name"), 250, wxALIGN_LEFT);
   _var_tree->SetColumnEditable (_vartree_col_main, false);
 
   _vartree_col_type = _var_tree->GetColumnCount();
-  _var_tree->AddColumn (_T("Type"), 30, wxALIGN_CENTER);
+  _var_tree->AddColumn (_T("Type"), 100, wxALIGN_CENTER);
   _var_tree->SetColumnEditable (_vartree_col_type, false);
 
   _vartree_col_val = _var_tree->GetColumnCount();
-  _var_tree->AddColumn (_T("Val"), 30, wxALIGN_CENTER);
+  _var_tree->AddColumn (_T("Val"), 60, wxALIGN_CENTER);
   _var_tree->SetColumnEditable (_vartree_col_val, false);
 
   _vartree_col_desc = _var_tree->GetColumnCount();
-  _var_tree->AddColumn (_T("Details"), 120, wxALIGN_CENTER);
+  _var_tree->AddColumn (_T("Details"), 250, wxALIGN_CENTER);
   _var_tree->SetColumnEditable (_vartree_col_desc, false);
 
   _var_tree->SetWindowStyle(_var_tree->GetWindowStyle() ^ wxTR_NO_LINES ^ wxTR_COLUMN_LINES);
@@ -1672,7 +1672,8 @@ void MainFrame::AddMenuScript(  const std::string& script_category,
       // add new category
       menuScripts->AppendSubMenu( newsubmenu,   GetwxStr(script_category.c_str()));
       parent = newsubmenu;
-    }
+    } else
+      return;
   }
   // adding script
   parent->Append(usermenu_id, GetwxStr(script_label.c_str()));

@@ -298,7 +298,6 @@ SetVerboseOff      return(token::T_SetVerboseOff); /*{SetVerboseOff,T_SetVerbose
 NoMessageDialog    return(token::T_NoMessageDialog); /*{NoMessageDialog,T_NoMessageDialog}*/
 
 GetScriptsDir      return(token::T_GetScriptsDir); /*{GetScriptDir,T_GetScriptDir}*/
-AddMenuScript      return(token::T_AddMenuScript); /*{AddMenuScript,T_AddMenuScript}*/
 SetProgress        return(token::T_SetProgress); /*{SetProgress,T_SetProgress}*/
 SetStatusText      return(token::T_SetStatusText); /*{SetStatusText,T_SetStatusText}*/
 Quit               return(token::QUIT); /*{Quit,QUIT}*/
