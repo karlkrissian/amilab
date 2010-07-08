@@ -4,7 +4,7 @@
 # Adding main Gui scripts to the menu
 #
 
-AddMenuScript("&Segmentation","&Level Set","Segmentation/LevelSets/LevelSetsGui1.amil")
-AddMenuScript("&Segmentation","&itk Level Set","Segmentation/itkLevelSet/itkLevelSet.amil")
-AddMenuScript("&Segmentation","&itk Watershed","Segmentation/itkWaterShed/itkWaterShed.amil")
-AddMenuScript("&Segmentation","&itk FastMarching","Segmentation/itkFastMarching/itkFastMarching.amil")
+ami.MainFrame.AddMenuScript("&Segmentation","&Level Set","Segmentation/LevelSets/LevelSetsGui1.amil")
+ami.MainFrame.AddMenuScript("&Segmentation","&itk Level Set","Segmentation/itkLevelSet/itkLevelSet.amil")
+ami.MainFrame.AddMenuScript("&Segmentation","&itk Watershed","Segmentation/itkWaterShed/itkWaterShed.amil")
+ami.MainFrame.AddMenuScript("&Segmentation","&itk FastMarching","Segmentation/itkFastMarching/itkFastMarching.amil")

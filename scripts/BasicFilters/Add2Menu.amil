@@ -7,13 +7,13 @@
 filt_category = "&Basic Filters"
 filt_dir = "BasicFilters/"
 
-AddMenuScript(filt_category,"&Gaussian Filter",      filt_dir+"GaussianFilter/GaussianFilter_gui")
-AddMenuScript(filt_category,"&Soft Focus", filt_dir+"SoftFocus_gui")
-AddMenuScript(filt_category,"Grey &Morpho", filt_dir+"GreyMorpho")
-AddMenuScript(filt_category,"&itk Recursive Gaussian", filt_dir+"/itkRecursiveGaussian/itkRecursiveGaussian")
-AddMenuScript(filt_category,"Weighted Local Stats",filt_dir+"WeightedLocalStats")
-AddMenuScript(filt_category,"itk Weighted Local Stats",filt_dir+"/itkWeightedLocalStats/itkWeightedLocalStats")
-AddMenuScript(filt_category,"itk Sigmoid Filter",filt_dir+"/itkSigmoid/itkSigmoidFilter")
+ami.MainFrame.AddMenuScript(filt_category,"&Gaussian Filter",      filt_dir+"GaussianFilter/GaussianFilter_gui")
+ami.MainFrame.AddMenuScript(filt_category,"&Soft Focus", filt_dir+"SoftFocus_gui")
+ami.MainFrame.AddMenuScript(filt_category,"Grey &Morpho", filt_dir+"GreyMorpho")
+ami.MainFrame.AddMenuScript(filt_category,"&itk Recursive Gaussian", filt_dir+"/itkRecursiveGaussian/itkRecursiveGaussian")
+ami.MainFrame.AddMenuScript(filt_category,"Weighted Local Stats",filt_dir+"WeightedLocalStats")
+ami.MainFrame.AddMenuScript(filt_category,"itk Weighted Local Stats",filt_dir+"/itkWeightedLocalStats/itkWeightedLocalStats")
+ami.MainFrame.AddMenuScript(filt_category,"itk Sigmoid Filter",filt_dir+"/itkSigmoid/itkSigmoidFilter")
 
 del filt_category
 del filt_dir

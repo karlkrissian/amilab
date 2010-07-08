@@ -7,7 +7,7 @@
 filt_category = "&Optimization"
 filt_dir = "Optimization/"
 
-AddMenuScript(filt_category,"Find &Min",        filt_dir+"find_minimum")
+ami.MainFrame.AddMenuScript(filt_category,"Find &Min",        filt_dir+"find_minimum")
 
 del filt_category
 del filt_dir

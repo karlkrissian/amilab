@@ -54,13 +54,13 @@ if (!exists(itkWeightedLSCLass)) {
       ::win.HidePanel
       delvars GetObjectName(::Close)
     }
-    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
   
     proc ::CloseAll() {
       eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
       ::Close
     }
-    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
 
     #--------------------------
     proc ::Apply() \
@@ -150,19 +150,19 @@ if (!exists(itkWeightedLSCLass)) {
     proc ::HtmlHome() {
       ::html.LoadFile( ::html_filename)
     }
-    ::HtmlHome.Comments("Back to the initial page.")
+    Comments( ::HtmlHome, "Back to the initial page.")
 
     //---------------------------------------------------
     proc ::HtmlBack() {
       res = ::html.HistoryBack()
     }
-    ::HtmlBack.Comments("Back to the previous page.")
+    Comments( ::HtmlBack, "Back to the previous page.")
 
     //---------------------------------------------------
     proc ::HtmlForward() {
       res = ::html.HistoryForward()
     }
-    ::HtmlForward.Comments("Go to the forward page.")  
+    Comments( ::HtmlForward, "Go to the forward page.")  
     
     #--------------------------
     proc ::Gui() \

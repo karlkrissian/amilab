@@ -7,8 +7,8 @@
 category = "&Visualization"
 dir      = "Visualization/"
 
-AddMenuScript(category,"&Parametric Surfaces",  dir+"ParametricSurfaces")
-AddMenuScript(category,"2D &Function plot",  dir+"Functions2D")
-AddMenuScript(category,"Image &Grid",  dir+"ImageGrid")
-AddMenuScript(category,"Image &Histogram",  dir+"ImageHistogram")
+ami.MainFrame.AddMenuScript(category,"&Parametric Surfaces",  dir+"ParametricSurfaces")
+ami.MainFrame.AddMenuScript(category,"2D &Function plot",  dir+"Functions2D")
+ami.MainFrame.AddMenuScript(category,"Image &Grid",  dir+"ImageGrid")
+ami.MainFrame.AddMenuScript(category,"Image &Histogram",  dir+"ImageHistogram")
 

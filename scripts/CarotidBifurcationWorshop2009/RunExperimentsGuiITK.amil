@@ -78,7 +78,7 @@ if (!exists(RunExperimentsClass)){
       }
       delvars GetObjectName(::CarotidExperiments_Close)
     }
-    ::CarotidExperiments_Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::CarotidExperiments_Close)+"'.")
+    Comments( ::CarotidExperiments_Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::CarotidExperiments_Close)+"'.")
     
     proc ::CarotidExperiments_CloseAll() {
       eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
@@ -94,7 +94,7 @@ if (!exists(RunExperimentsClass)){
       eval "del global::itkLevelSetClass;"      
       ::CarotidExperiments_Close
     }
-    ::CarotidExperiments_CloseAll.Comments("Call ::CarotidExperiments_Close() method and delete the class variable")
+    Comments( ::CarotidExperiments_CloseAll, "Call ::CarotidExperiments_Close() method and delete the class variable")
         
     #------------------------------------------
     proc ::CarotidExperiments_ReadData() \
@@ -1109,24 +1109,24 @@ if (!exists(RunExperimentsClass)){
       wx2 = import->WxFunctions()
       res2 = wx2->LaunchDefaultBrowser(::help2)
     }
-    ::LaunchHelp.Comments("Launch the corresponding help tutorial page on the default browser.")
+    Comments( ::LaunchHelp, "Launch the corresponding help tutorial page on the default browser.")
     
     proc ::HtmlHome() {
       ::html.LoadFile( ::html_filename)
     }
-    ::HtmlHome.Comments("Back to the initial page.")
+    Comments( ::HtmlHome, "Back to the initial page.")
 
     //---------------------------------------------------
     proc ::HtmlBack() {
       res = ::html.HistoryBack()
     }
-    ::HtmlBack.Comments("Back to the previous page.")
+    Comments( ::HtmlBack, "Back to the previous page.")
 
     //---------------------------------------------------
     proc ::HtmlForward() {
       res = ::html.HistoryForward()
     }
-    ::HtmlForward.Comments("Go to the forward page.")
+    Comments( ::HtmlForward, "Go to the forward page.")
     
     #------------------------------------------
     proc ::CarotidExperiments_gui() \

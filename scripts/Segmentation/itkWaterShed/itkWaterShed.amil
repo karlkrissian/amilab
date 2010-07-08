@@ -43,13 +43,13 @@ if (!exists(WaterShedClass)){
         ::win.HidePanel
         delvars GetObjectName(::Close)
       }
-      ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+      Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
       proc ::CloseAll() {
         eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
         ::Close
       }
-      ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+      Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
         
     #------------------------------------
     #------------------------
@@ -100,7 +100,7 @@ if (!exists(WaterShedClass)){
       print "saving file "+filename+"\n"
       ::grad.save filename
     }
-    ::SaveG.Comments("Saves the gradient image as ${::gradient_filename}_StandDevXX.ami.gz")
+    Comments( ::SaveG, "Saves the gradient image as ${::gradient_filename}_StandDevXX.ami.gz")
 
     #------------------------
     proc ::SaveR() {
@@ -115,7 +115,7 @@ if (!exists(WaterShedClass)){
       print "saving file "+filename+"\n"
       ::water.save filename
     }
-    ::SaveR.Comments("Saves the gradient image as ${::water_filename}_thresXX_lvlXX.ami.gz")
+    Comments( ::SaveR, "Saves the gradient image as ${::water_filename}_thresXX_lvlXX.ami.gz")
 
     #------------------------
 
@@ -124,24 +124,24 @@ if (!exists(WaterShedClass)){
       wx1 = import->WxFunctions()
       res = wx1->LaunchDefaultBrowser(::help)
     }
-    ::LaunchHelp.Comments("Launch the corresponding help tutorial page on the default browser.")
+    Comments( ::LaunchHelp, "Launch the corresponding help tutorial page on the default browser.")
       
     proc ::HtmlHome() {
       ::html.LoadFile( ::html_filename)
     }
-    ::HtmlHome.Comments("Back to the initial page.")
+    Comments( ::HtmlHome, "Back to the initial page.")
 
     //---------------------------------------------------
     proc ::HtmlBack() {
       res = ::html.HistoryBack()
     }
-    ::HtmlBack.Comments("Back to the previous page.")
+    Comments( ::HtmlBack, "Back to the previous page.")
 
     //---------------------------------------------------
     proc ::HtmlForward() {
       res = ::html.HistoryForward()
     }
-    ::HtmlForward.Comments("Go to the forward page.")  
+    Comments( ::HtmlForward, "Go to the forward page.")  
 
     proc ::Gui() {
       import = &global::ami_import;

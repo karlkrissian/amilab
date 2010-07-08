@@ -4,6 +4,6 @@
 # Adding main Gui scripts to the menu
 #
 
-AddMenuScript("&QualityMeasures","Image &Differences","QualityMeasures/MSE.amil")
+ami.MainFrame.AddMenuScript("&QualityMeasures","Image &Differences","QualityMeasures/MSE.amil")
 
 

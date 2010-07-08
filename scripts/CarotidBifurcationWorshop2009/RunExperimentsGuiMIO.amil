@@ -80,7 +80,7 @@ if (!exists(RunExperimentsClass)){
       }
       delvars GetObjectName(::CarotidExperiments_Close)
     }
-    ::CarotidExperiments_Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::CarotidExperiments_Close)+"'.")
+    Comments( ::CarotidExperiments_Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::CarotidExperiments_Close)+"'.")
     
     proc ::CarotidExperiments_CloseAll() {
       eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
@@ -95,7 +95,7 @@ if (!exists(RunExperimentsClass)){
       eval "del global::LevelSetsClass;"  
       ::CarotidExperiments_Close
     }
-    ::CarotidExperiments_CloseAll.Comments("Call ::CarotidExperiments_Close() method and delete the class variable")
+    Comments( ::CarotidExperiments_CloseAll, "Call ::CarotidExperiments_Close() method and delete the class variable")
     
     #------------------------------------------
     proc ::CarotidExperiments_ReadData() \

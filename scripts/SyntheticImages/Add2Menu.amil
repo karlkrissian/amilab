@@ -7,6 +7,6 @@
 category = "&3D Synthetic Images"
 dir      = "SyntheticImages/"
 
-AddMenuScript(category,"&Sphere",         dir+"create_sphere_gui")
-AddMenuScript(category,"&Torus",          dir+"create_torus_gui")
-AddMenuScript(category,"&Superquadric",   dir+"superquadric_gui")
+ami.MainFrame.AddMenuScript(category,"&Sphere",         dir+"create_sphere_gui")
+ami.MainFrame.AddMenuScript(category,"&Torus",          dir+"create_torus_gui")
+ami.MainFrame.AddMenuScript(category,"&Superquadric",   dir+"superquadric_gui")
