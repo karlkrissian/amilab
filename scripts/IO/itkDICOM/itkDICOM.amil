@@ -1,82 +1,61 @@
+#
+#
+#
+
+func "Common/ScriptGui"
+
 if (!exists(DICOMClass)) {
   
   ami_import->ITK()
   
-  Class DICOMClass {
+  Class DICOMClass : public ScriptGui {
   
     ::itk=&global::itk
   
     proc ::Init() {
       
-      ::class_name ="global::DICOMClass"
       ::dicom_folder = "", "Dicom Path Folder"
       ::image_name = "", "Name of the resulting image variable"
       ::dicom_save = "", "Dicom Save Path Folder"
       ::image_save = "", "Name of the save image"
       
-      ::help1 = "http://www.itk.org/Doxygen316/html/classitk_1_1DICOMImageIO2.html" 
-      ::help2 = "http://www.itk.org/Doxygen316/html/classitk_1_1DICOMSeriesFileNames.html"
+     # ::help1 = "http://www.itk.org/Doxygen316/html/classitk_1_1DICOMImageIO2.html" 
+     # ::help2 = "http://www.itk.org/Doxygen316/html/classitk_1_1DICOMSeriesFileNames.html"
       ::html_filename = GetScriptsDir+"/IO/itkDICOM/doc/dicom/index.html"
 
-      #::Gui()
+      ::Gui()
     }
     
-    proc ::Close() \
-    {
-      if (exists(::win)) {
-      ::win.HidePanel
-      }
-      delvars GetObjectName(::Close)
-    }
-    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-  
-    proc ::CloseAll() {
-      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
-      ::Close
-    }
-    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
-    
+    #---------------------------
     proc ::Run() \
     {   
       ::out = ::itk->DICOMRead(::dicom_folder)
       eval "global::"+::image_name+"<<= ::out;"
     }
     
+    #---------------------------
     proc ::Save() \
     {   
       ::itk->Write(::out, ::dicom_save+"\\"+::image_save)
     }
 
+    #---------------------------
     proc ::Display() {
       eval "show "+"global::"+::image_name+";"
     }
     
-    proc ::LaunchHelp() {
-      import = &global::ami_import
-      wx1 = import->WxFunctions()
-      res = wx1->LaunchDefaultBrowser(::help1)
-      wx2 = import->WxFunctions()
-      res2 = wx2->LaunchDefaultBrowser(::help2)
-    }
-    Comments( ::LaunchHelp, "Launch the corresponding help tutorial page on the default browser.")
+    #---------------------------
+#    proc ::LaunchHelp() {
+#      import = &global::ami_import
+#      wx1 = import->WxFunctions()
+#      res = wx1->LaunchDefaultBrowser(::help1)
+#      wx2 = import->WxFunctions()
+#      res2 = wx2->LaunchDefaultBrowser(::help2)
+#    }
+#    Comments( ::LaunchHelp, "Launch the corresponding help tutorial page on the default browser.")
     
-    proc ::HtmlHome() {
-      ::html.LoadFile( ::html_filename)
-    }
-    Comments( ::HtmlHome, "Back to the initial page.")
-
-    //---------------------------------------------------
-    proc ::HtmlBack() {
-      res = ::html.HistoryBack()
-    }
-    Comments( ::HtmlBack, "Back to the previous page.")
-
-    //---------------------------------------------------
-    proc ::HtmlForward() {
-      res = ::html.HistoryForward()
-    }
-    Comments( ::HtmlForward, "Go to the forward page.")
     
+    #---------------------------
     proc ::Gui() {
       import = &global::ami_import;
       ::win = import->ParamPanel("DICOM")
@@ -110,25 +89,12 @@ if (!exists(DICOMClass)) {
         // ::win.BeginHorizontal
           // ::win.AddButton("Save",::Save)
         // ::win.EndHorizontal
-        ::win.AddPage("Help")
-          ::win.BeginHorizontal
-            ::win.AddButton("Help",   ::LaunchHelp)
-            ::win.AddButton("Home",   ::HtmlHome)
-            ::win.AddButton("<--",    ::HtmlBack)
-            ::win.AddButton("-->",    ::HtmlForward)
-          ::win.EndHorizontal
-          # add html widget
-          d = ::win.CurrentParent()
-          ::html = import->wxHtmlWindow(&d)
-          ::html.LoadFile( ::html_filename)
-          ::win.AddWidget(&::html,1)
+
+        ::AddHelpPage(&::win)
         
       ::win.EndBook
       
-      ::win.BeginHorizontal
-        ::win.AddButton("Close", ::Close)
-        ::win.AddButton("Close All", ::CloseAll)
-      ::win.EndHorizontal
+      ::AddStandardButtons(&::win)
       
       ::win.Update(-1)
       ::win.Display
@@ -139,3 +105,5 @@ if (!exists(DICOMClass)) {
   # Class DICOMClass
 }
 # end if (!exists(DICOMClass))
+
+
