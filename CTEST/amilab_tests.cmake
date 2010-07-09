@@ -70,71 +70,52 @@ ENDFOREACH(option)
 #
 # Test: Operations --> Basics
 #
+
 SET(options "FirstParam" "SecondParam" "ThirdParam" "FourthParam" "FifthParam")
 
 ADD_AMILAB_TESTS(test_parameter "-quit" "${PROJECT_SOURCE_DIR}/../tests/Operations/Basics/test_parameter.amil" ${options})
 
-SET(options "test_fibonacci.amil"    "test_prime_number.amil"   "test_factorial.amil"      "test_greatest_common_divisor.amil"
-            "test_float_type.amil"   "test_double_type.amil"    "test_int_type.amil"       "test_inc_and_dec_operator.amil" 
-            "test_abs_function.amil" "test_round_function.amil" "test_area_of_circle.amil" "test_trigonometric_functions.amil")
-
-FOREACH(option ${options})
-  ADD_AMILAB_TESTS(${option} "-quit" "${PROJECT_SOURCE_DIR}/../tests/Operations/Basics/${option}")
-ENDFOREACH(option)
-
-SET(options "test_dessinimage_compare.amil"    "test_dessinimage_isocontour.amil"  "test_dessinimage_update.amil"
-            "test_dessinimage_drawcircle.amil" "test_dessinimage_window_size.amil" "test_dessinimage_position.amil"
-            "test_dessinimage_zoom.amil"       "test_dessinimage_getimage.amil"    "test_dessinimage_setCompTransf.amil"
-            "test_dessinimage_vect.amil"
-   )
-
-FOREACH(option ${options})
-  ADD_AMILAB_TESTS(${option} "-quit" "${PROJECT_SOURCE_DIR}/../tests/Operations/Basics/${option}")
-ENDFOREACH(option)
-
-SET(options "test_image_creation_scalar.amil"     "test_image_creation_vectorial.amil"
-            "test_image_translation_scalar.amil"  "test_image_translation_vectorial.amil"
-            "test_image_txtytz_vectorial.amil"    "test_image_txtytz_scalar.amil"
-            "test_image_setvoxelsize_scalar.amil" "test_image_setvoxelsize_vectorial.amil"
-            "test_image_conversion_double.amil"   "test_image_conversion_float.amil"
-            "test_image_conversion_uint.amil"     "test_image_conversion_int.amil"
-            "test_image_conversion_ushort.amil"   "test_image_conversion_short.amil"
-            "test_image_conversion_uchar.amil"    "test_image_conversion_char.amil"
-            "test_image_vdim.amil"                "test_image_type.amil"
-   )
-
-FOREACH(option ${options})
-  ADD_AMILAB_TESTS(${option} "-quit" "${PROJECT_SOURCE_DIR}/../tests/Operations/Basics/${option}")
-ENDFOREACH(option)
-
-SET(options "test_viewer3d_window_size.amil"        "test_viewer3d_add_remove_reference.amil"
-            "test_viewer3d_getimage.amil"           "test_viewer3d_set_bg_ls_ld_la.amil"
-            "test_viewer3d_rotate_swapBuffers.amil" "test_viewer3d_printmatrices.amil"
-            "test_viewer3d_compare.amil"            "test_gltransfmatrix.amil"
-   )
-
-FOREACH(option ${options})
-  ADD_AMILAB_TESTS(${option} "-quit" "${PROJECT_SOURCE_DIR}/../tests/Operations/Basics/${option}")
-ENDFOREACH(option)
-
-
-SET(options "test_file_readwrite.amil" "test_file_readwrite_float.amil"
+SET(options "test_fibonacci.amil"                  "test_factorial.amil"       
+            "test_prime_number.amil"               "test_greatest_common_divisor.amil"
+            "test_abs_function.amil"               "test_round_function.amil"
+            "test_area_of_circle.amil"             "test_inc_and_dec_operator.amil" 
+            "test_trigonometric_functions.amil"    "test_int_type.amil" 
+            "test_float_type.amil"                 "test_double_type.amil" 
+    # DESSINIMAGE
+            "test_dessinimage_compare.amil"        "test_dessinimage_isocontour.amil"    
+            "test_dessinimage_update.amil"         "test_dessinimage_drawcircle.amil"
+            "test_dessinimage_window_size.amil"    "test_dessinimage_position.amil"
+            "test_dessinimage_zoom.amil"           "test_dessinimage_getimage.amil"
+            "test_dessinimage_setCompTransf.amil"  "test_dessinimage_vect.amil"
+    # VIEWER3D
+            "test_viewer3d_window_size.amil"       "test_viewer3d_add_remove_reference.amil"
+            "test_viewer3d_set_bg_ls_ld_la.amil"   "test_viewer3d_rotate_swapBuffers.amil" 
+            "test_viewer3d_printmatrices.amil"     "test_viewer3d_compare.amil"
+            "test_gltransfmatrix.amil"             "test_viewer3d_getimage.amil"           
+    # IMAGE
+            "test_image_creation_scalar.amil"      "test_image_creation_vectorial.amil"
+            "test_image_translation_scalar.amil"   "test_image_translation_vectorial.amil"
+            "test_image_txtytz_vectorial.amil"     "test_image_txtytz_scalar.amil"
+            "test_image_setvoxelsize_scalar.amil"  "test_image_setvoxelsize_vectorial.amil"
+            "test_image_conversion_double.amil"    "test_image_conversion_float.amil"
+            "test_image_conversion_uint.amil"      "test_image_conversion_int.amil"
+            "test_image_conversion_ushort.amil"    "test_image_conversion_short.amil"
+            "test_image_conversion_uchar.amil"     "test_image_conversion_char.amil"
+            "test_image_vdim.amil"                 "test_image_type.amil"
+    # FILE
+            "test_file_readwrite.amil"             "test_file_readwrite_float.amil"
             "test_file_rewind.amil"
-   )
-
-FOREACH(option ${options})
-  ADD_AMILAB_TESTS(${option} "-quit" "${PROJECT_SOURCE_DIR}/../tests/Operations/Basics/${option}")
-ENDFOREACH(option)
-
-SET(options "test_wxString_append.amil"       "test_wxString_remove.amil"
-            "test_wxString_clear.amil"        "test_wxString_replaceall.amil"
-            "test_wxString_cmp.amil"          "test_wxString_replacefirst.amil"
-            "test_wxString_constructor.amil"  "test_wxString_setchar.amil"
-            "test_wxString_isempty.amil"      "test_wxString_substring.amil"
-            "test_wxString_issameas.amil"     "test_wxString_trim.amil"
-            "test_wxString_length.amil"       "test_wxString_truncate.amil"
-            "test_wxString_empty.amil"        "test_wxString_find.amil"
-   )
+    # WXSTRING
+            "test_wxString_append.amil"            "test_wxString_remove.amil"
+            "test_wxString_clear.amil"             "test_wxString_replaceall.amil"
+            "test_wxString_cmp.amil"               "test_wxString_replacefirst.amil"
+            "test_wxString_constructor.amil"       "test_wxString_setchar.amil"
+            "test_wxString_isempty.amil"           "test_wxString_substring.amil"
+            "test_wxString_issameas.amil"          "test_wxString_trim.amil"
+            "test_wxString_length.amil"            "test_wxString_truncate.amil"
+            "test_wxString_empty.amil"             "test_wxString_find.amil"
+            "test_wxString_matches.amil"           "test_wxString_make_lower.amil"
+            "test_wxString_make_upper.amil"        "test_wxString_fromascii_fromutf8.amil")
 
 FOREACH(option ${options})
   ADD_AMILAB_TESTS(${option} "-quit" "${PROJECT_SOURCE_DIR}/../tests/Operations/Basics/${option}")
