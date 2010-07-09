@@ -49,13 +49,22 @@ firstValue=newFile.read_string()
 printn "\t\t Read the file: test_read_write.txt (secondValue=newFile.read_string()).\n"
 secondValue=newFile.read_string()
 
+printn "\t\t Read the file: test_read_write.txt (thirdValue=newFile.read_string()).\n"
+thirdValue=newFile.read_string()
+
+printn "\t\t Read the file: test_read_write.txt (fourthValue=newFile.read_string()).\n"
+fourthValue=newFile.read_string()
+
 printn "\t\t Close the file(Deprecated)).\n"
 newFile.close()
 
 printn "\t\t First value read=%1%\n" % firstValue
 printn "\t\t Second value read=%1%\n" % secondValue
+printn "\t\t Third value read=%1%\n" % thirdValue
+printn "\t\t Fourth value read=%1%\n" % fourthValue
 
-if((firstValue != "Hello World !!!") && (secondValue != "Nice.")) {
+if((firstValue != "Hello") && (secondValue != "World") && \
+   (thirdValue != "!!!") && (fourthValue != "Nice")) {
   OK = 0
   printn  "\nERROR: The reading does not match the value written."
 }

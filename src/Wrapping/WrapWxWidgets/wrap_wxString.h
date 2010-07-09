@@ -93,6 +93,7 @@ class WrapClass_wxString : public WrapClassBase
       AddVar_Truncate(     this_ptr);
       AddVar_Trim(         this_ptr);
       AddVar_Length(       this_ptr);
+      AddVar_IsEmpty(      this_ptr);
       AddVar_IsSameAs(     this_ptr);
       AddVar_Cmp(          this_ptr);
       AddVar_CmpNoCase(    this_ptr);

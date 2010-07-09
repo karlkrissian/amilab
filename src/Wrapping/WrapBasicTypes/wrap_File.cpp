@@ -305,7 +305,7 @@ BasicVariable::ptr WrapClass_File::
   if (file.get())
   {
     char res[100];
-    setlocale(LC_NUMERIC, "C");
+    //setlocale(LC_NUMERIC, "C");
     if (fscanf(file.get(),"%s",&res) == 0)
       GB_driver.err_print("Unable to read value from file (needs string variable)");
     else

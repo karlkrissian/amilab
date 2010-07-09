@@ -125,3 +125,17 @@ SET(options "test_file_readwrite.amil" "test_file_readwrite_float.amil"
 FOREACH(option ${options})
   ADD_AMILAB_TESTS(${option} "-quit" "${PROJECT_SOURCE_DIR}/../tests/Operations/Basics/${option}")
 ENDFOREACH(option)
+
+SET(options "test_wxString_append.amil"       "test_wxString_remove.amil"
+            "test_wxString_clear.amil"        "test_wxString_replaceall.amil"
+            "test_wxString_cmp.amil"          "test_wxString_replacefirst.amil"
+            "test_wxString_constructor.amil"  "test_wxString_setchar.amil"
+            "test_wxString_isempty.amil"      "test_wxString_substring.amil"
+            "test_wxString_issameas.amil"     "test_wxString_trim.amil"
+            "test_wxString_length.amil"       "test_wxString_truncate.amil"
+            "test_wxString_empty.amil"        "test_wxString_find.amil"
+   )
+
+FOREACH(option ${options})
+  ADD_AMILAB_TESTS(${option} "-quit" "${PROJECT_SOURCE_DIR}/../tests/Operations/Basics/${option}")
+ENDFOREACH(option)

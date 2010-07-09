@@ -51,10 +51,7 @@ AMIObject::ptr AddWrap_wxString(  WrapClass_wxString::ptr& objectptr)
 Variable<AMIObject>::ptr CreateVar_wxString( wxString* si)
 {
   // Create smart pointer with own deleter
-  boost::shared_ptr<wxString> si_ptr( 
-    si//,
-    //wxwindow_nodeleter<wxString>() // deletion will be done by wxwidgets
-  );
+  boost::shared_ptr<wxString> si_ptr( si );
 
   WrapClass_wxString::ptr sip(new WrapClass_wxString(si_ptr));
   AMIObject::ptr amiobject(AddWrap_wxString(sip));
@@ -99,7 +96,7 @@ void WrapClass_wxString::
 BasicVariable::ptr WrapClass_wxString::
       wrap_Clear::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxString> owxString(this->_objectptr->_obj);
+  boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
   owxString->Clear();
 
@@ -112,21 +109,28 @@ BasicVariable::ptr WrapClass_wxString::
 void WrapClass_wxString::
       wrap_SetChar::SetParametersComments() 
 {
-  ADDPARAMCOMMENT_TYPE(int,"The string position (By default, 0).");
-  ADDPARAMCOMMENT_TYPE(char,"The character to be added.");
+  ADDPARAMCOMMENT_TYPE(int,"The string position (For example, 0).");
+  ADDPARAMCOMMENT_TYPE(string,"The character to be added.");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxString::
       wrap_SetChar::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxString> owxString(this->_objectptr->_obj);
+  boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
   if (!p) ClassHelpAndReturn;
   int n=0;
   GET_PARAM(int,iPos,0);
-  GET_PARAM(unsigned char,cChar,'\0');
+  GET_PARAM(string,sChar,"");
 
-  owxString->SetChar(iPos,wxT(cChar));
+  if(sChar.length() == 1) {
+    if (owxString->Len() > 0)
+      owxString->SetChar(iPos,wxT(sChar[0]));
+    else
+      GB_driver.err_print("SetChar can not use (empty string, use Append()).");
+  }
+  else
+    GB_driver.err_print("More than one character has passed (you can add only one.)");
 
   return BasicVariable::ptr();
 }
@@ -143,7 +147,7 @@ void WrapClass_wxString::
 BasicVariable::ptr WrapClass_wxString::
       wrap_Append::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxString> owxString(this->_objectptr->_obj);
+  boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
   if (!p) ClassHelpAndReturn;
   int n=0;
@@ -166,16 +170,13 @@ void WrapClass_wxString::
 BasicVariable::ptr WrapClass_wxString::
       wrap_Remove::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxString> owxString(this->_objectptr->_obj);
+  boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
   if (!p) ClassHelpAndReturn;
   int n=0;
   GET_PARAM(int,iPos, 0);
 
-  if (iPos == 0)
-    ClassHelpAndReturn
-  else
-    owxString->Remove(iPos);
+  owxString->Remove(iPos);
 
   return BasicVariable::ptr();
 }
@@ -194,23 +195,16 @@ void WrapClass_wxString::
 BasicVariable::ptr WrapClass_wxString::
       wrap_SubString::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxString> owxString(this->_objectptr->_obj);
+  boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
   if (!p) ClassHelpAndReturn;
   int n=0;
   GET_PARAM(int,iPosBegin, 0);
   GET_PARAM(int,iPosEnd, 0);
 
-  if ((iPosBegin == 0) && (iPosEnd == 0))
-  {
-    ClassHelpAndReturn;
-    return BasicVariable::ptr();
-  }
-  else
-  {
-    wxString oString = owxString->SubString(iPosBegin, iPosEnd);
-    return CreateVar_wxString(&oString);
-  }
+  wxString *oString = new wxString(owxString->SubString(iPosBegin, iPosEnd));
+
+  return CreateVar_wxString(oString);
 }
 
 //---------------------------------------------------
@@ -226,17 +220,14 @@ void WrapClass_wxString::
 BasicVariable::ptr WrapClass_wxString::
       wrap_ReplaceFirst::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxString> owxString(this->_objectptr->_obj);
+  boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
   if (!p) ClassHelpAndReturn;
   int n=0;
   GET_PARAM(string,sPattern, "");
   GET_PARAM(string,sToReplace, "");
 
-  if ((sPattern == "") && (sToReplace == ""))
-    ClassHelpAndReturn
-  else
-    owxString->Replace(wxT(sPattern.c_str()), wxT(sToReplace.c_str()), false);
+  owxString->Replace(wxT(sPattern.c_str()), wxT(sToReplace.c_str()), false);
 
   return BasicVariable::ptr();
 }
@@ -254,17 +245,14 @@ void WrapClass_wxString::
 BasicVariable::ptr WrapClass_wxString::
       wrap_ReplaceAll::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxString> owxString(this->_objectptr->_obj);
+  boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
   if (!p) ClassHelpAndReturn;
   int n=0;
   GET_PARAM(string,sPattern, "");
   GET_PARAM(string,sToReplace, "");
 
-  if ((sPattern == "") && (sToReplace == ""))
-    ClassHelpAndReturn
-  else
-    owxString->Replace(wxT(sPattern.c_str()), wxT(sToReplace.c_str()), true);
+  owxString->Replace(wxT(sPattern.c_str()), wxT(sToReplace.c_str()), true);
 
   return BasicVariable::ptr();
 }
@@ -281,16 +269,13 @@ void WrapClass_wxString::
 BasicVariable::ptr WrapClass_wxString::
       wrap_Truncate::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxString> owxString(this->_objectptr->_obj);
+  boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
   if (!p) ClassHelpAndReturn;
   int n=0;
-  GET_PARAM(int,iLen, 0);
+  GET_PARAM(int,iLen, owxString->Len());
 
-  if (iLen == 0)
-    ClassHelpAndReturn
-  else
-    owxString->Truncate(iLen);
+  owxString->Truncate(iLen);
 
   return BasicVariable::ptr();
 }
@@ -307,17 +292,22 @@ void WrapClass_wxString::
 BasicVariable::ptr WrapClass_wxString::
       wrap_Trim::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxString> owxString(this->_objectptr->_obj);
+  boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
   if (!p) ClassHelpAndReturn;
   int n=0;
   GET_PARAM(unsigned char,ucFlag, 1);
+
+  /**
+    Don't work in wxWidgets.
+   **/
 
   if (ucFlag == 1)
     owxString->Trim(true);
   else
     owxString->Trim(false);
 
+  printf("\n%s\n", owxString->c_str());
   return BasicVariable::ptr();
 }
 
@@ -333,7 +323,7 @@ void WrapClass_wxString::
 BasicVariable::ptr WrapClass_wxString::
       wrap_Length::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxString> owxString(this->_objectptr->_obj);
+  boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
   int val = owxString->Len();
 
@@ -352,7 +342,7 @@ void WrapClass_wxString::
 BasicVariable::ptr WrapClass_wxString::
       wrap_IsEmpty::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxString> owxString(this->_objectptr->_obj);
+  boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
   unsigned char res = (unsigned char) owxString->IsEmpty();
 
@@ -373,7 +363,7 @@ void WrapClass_wxString::
 BasicVariable::ptr WrapClass_wxString::
       wrap_IsSameAs::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxString> owxString(this->_objectptr->_obj);
+  boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
   if (!p) ClassHelpAndReturn;
   int n=0;
@@ -381,19 +371,12 @@ BasicVariable::ptr WrapClass_wxString::
   GET_PARAM(string,sString,"");
   GET_PARAM(unsigned char,ucSensitive,0);
 
-  if (sString != "")
-  {
-    if (ucSensitive)
-      res = (unsigned char) owxString->IsSameAs(wxT(sString.c_str()),false);
-    else
-      res = (unsigned char) owxString->IsSameAs(wxT(sString.c_str()),true);
-
-    RETURN_VAR(unsigned char,res);
-  }
+  if (ucSensitive)
+    res = (unsigned char) owxString->IsSameAs(wxT(sString.c_str()),false);
   else
-    ClassHelpAndReturn;
+    res = (unsigned char) owxString->IsSameAs(wxT(sString.c_str()),true);
 
-  return BasicVariable::ptr();
+  RETURN_VAR(unsigned char,res);
 }
 
 //---------------------------------------------------
@@ -409,7 +392,7 @@ void WrapClass_wxString::
 BasicVariable::ptr WrapClass_wxString::
       wrap_Cmp::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxString> owxString(this->_objectptr->_obj);
+  boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
   if (!p) ClassHelpAndReturn;
   int n=0;
@@ -440,7 +423,7 @@ void WrapClass_wxString::
 BasicVariable::ptr WrapClass_wxString::
       wrap_CmpNoCase::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxString> owxString(this->_objectptr->_obj);
+  boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
   if (!p) ClassHelpAndReturn;
   int n=0;
@@ -468,7 +451,7 @@ void WrapClass_wxString::
 BasicVariable::ptr WrapClass_wxString::
       wrap_Empty::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxString> owxString(this->_objectptr->_obj);
+  boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
   owxString->Empty();
 
@@ -488,23 +471,15 @@ void WrapClass_wxString::
 BasicVariable::ptr WrapClass_wxString::
       wrap_Find::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxString> owxString(this->_objectptr->_obj);
+  boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
   if (!p) ClassHelpAndReturn;
   int n=0;
   GET_PARAM(string,sString,"");
 
-  if (sString != "")
-  {
-    int res = owxString->Find(wxT(sString.c_str()));
+  int res = owxString->Find(wxT(sString.c_str()));
 
-    RETURN_VAR(int,res);
-  }
-  else
-  {
-    ClassHelpAndReturn;
-    return BasicVariable::ptr();
-  }
+  RETURN_VAR(int,res);
 }
 
 //---------------------------------------------------
@@ -520,7 +495,7 @@ void WrapClass_wxString::
 BasicVariable::ptr WrapClass_wxString::
       wrap_Matches::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxString> owxString(this->_objectptr->_obj);
+  boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
   if (!p) ClassHelpAndReturn;
   int n=0;
@@ -551,7 +526,7 @@ void WrapClass_wxString::
 BasicVariable::ptr WrapClass_wxString::
       wrap_Lower::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxString> owxString(this->_objectptr->_obj);
+  boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
   wxString oString = owxString->Lower();
 
@@ -568,7 +543,7 @@ void WrapClass_wxString::
 BasicVariable::ptr WrapClass_wxString::
       wrap_MakeLower::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxString> owxString(this->_objectptr->_obj);
+  boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
   owxString->MakeLower();
 
@@ -585,7 +560,7 @@ void WrapClass_wxString::
 BasicVariable::ptr WrapClass_wxString::
       wrap_MakeUpper::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxString> owxString(this->_objectptr->_obj);
+  boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
   owxString->MakeUpper();
 
@@ -604,7 +579,7 @@ void WrapClass_wxString::
 BasicVariable::ptr WrapClass_wxString::
       wrap_Upper::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxString> owxString(this->_objectptr->_obj);
+  boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
   wxString oString = owxString->Upper();
 
@@ -624,7 +599,7 @@ void WrapClass_wxString::
 BasicVariable::ptr WrapClass_wxString::
       wrap_FromAscii::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxString> owxString(this->_objectptr->_obj);
+  boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
   if (!p) ClassHelpAndReturn;
   int n=0;
@@ -655,7 +630,7 @@ void WrapClass_wxString::
 BasicVariable::ptr WrapClass_wxString::
       wrap_FromUTF8::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxString> owxString(this->_objectptr->_obj);
+  boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
   if (!p) ClassHelpAndReturn;
   int n=0;
@@ -685,7 +660,7 @@ void WrapClass_wxString::
 BasicVariable::ptr WrapClass_wxString::
       wrap_ToAscii::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxString> owxString(this->_objectptr->_obj);
+  boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
   string val = owxString->ToAscii();
 
@@ -704,7 +679,7 @@ void WrapClass_wxString::
 BasicVariable::ptr WrapClass_wxString::
       wrap_ToDouble::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxString> owxString(this->_objectptr->_obj);
+  boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
   double val;
 
@@ -726,7 +701,7 @@ void WrapClass_wxString::
 BasicVariable::ptr WrapClass_wxString::
       wrap_ToLong::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxString> owxString(this->_objectptr->_obj);
+  boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
   long val;
 
@@ -746,7 +721,7 @@ void WrapClass_wxString::
 BasicVariable::ptr WrapClass_wxString::
       wrap_ToUTF8::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxString> owxString(this->_objectptr->_obj);
+  boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
   owxString->ToUTF8();
 
@@ -765,7 +740,7 @@ void WrapClass_wxString::
 BasicVariable::ptr WrapClass_wxString::
       wrap_c_str::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxString> owxString(this->_objectptr->_obj);
+  boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
   string val = owxString->c_str();
 
@@ -784,7 +759,7 @@ void WrapClass_wxString::
 BasicVariable::ptr WrapClass_wxString::
       wrap_copy::CallMember( ParamList* p)
 {
-  return CreateVar_wxString( new wxString(*(this->_objectptr->_obj)));
+  return CreateVar_wxString( new wxString(*(this->_objectptr->GetObj())));
 }
 
 //---------------------------------------------------
@@ -799,7 +774,7 @@ void WrapClass_wxString::
 BasicVariable::ptr WrapClass_wxString::
       wrap_assign::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxString> owxString(this->_objectptr->_obj);
+  boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
   if (!p) ClassHelpAndReturn;
   int n=0;
@@ -824,7 +799,7 @@ void WrapClass_wxString::
 BasicVariable::ptr WrapClass_wxString::
       wrap_add_assign::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxString> owxString(this->_objectptr->_obj);
+  boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
   if (!p) ClassHelpAndReturn;
   int n=0;
@@ -853,7 +828,7 @@ void WrapClass_wxString::
 BasicVariable::ptr WrapClass_wxString::
       wrap_add::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxString> owxString(this->_objectptr->_obj);
+  boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
   if (!p) ClassHelpAndReturn;
   string sVal;
@@ -883,7 +858,7 @@ void WrapClass_wxString::
 BasicVariable::ptr WrapClass_wxString::
       wrap_equal::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxString> owxString(this->_objectptr->_obj);
+  boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
   if (!p) ClassHelpAndReturn;
   string sVal;
@@ -917,7 +892,7 @@ void WrapClass_wxString::
 BasicVariable::ptr WrapClass_wxString::
       wrap_not_equal::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxString> owxString(this->_objectptr->_obj);
+  boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
   if (!p) ClassHelpAndReturn;
   string sVal;

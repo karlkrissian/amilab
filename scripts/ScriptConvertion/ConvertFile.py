@@ -38,11 +38,8 @@ if __name__ == "__main__":
   # the third parameter: a boolean, is True if we need to ask confirmation from the user ...
   commands_force_par=[
             ("close",       "close",        True ),
-            ("open",        "open",         True ),
             ("print",       "print",        True ),
             ("printn",      "printn",       True ),
-            ("printvar",    "printvar",     True ),
-            ("printnvar",   "printnvar",    True ),
             ("read_float",  "read_float",   True ),
             ("read_string", "read_string",  True ),
             ("rewind",      "rewind",       True ),
@@ -50,10 +47,8 @@ if __name__ == "__main__":
             ]
 
   # close pattern: *file.close,  *file*.close, *.close 
-  # open pattern:  *= open(*
+  # open pattern(Deprecated):  *= open(*
   # print pattern: *_File*.print* , file.print*
-  # printvar pattern: No check
-  # printnvar pattern: No check
   # read_float pattern: No check
   # read_string pattern: No check
   # rewind pattern: No check
