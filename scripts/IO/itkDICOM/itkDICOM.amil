@@ -29,7 +29,7 @@ if (!exists(DICOMClass)) {
     #---------------------------
     proc ::Run() \
     {   
-      ::out = ::itk->DICOMRead(::dicom_folder)
+      ::out = ::itk->DICOMRead(::dicom_folder+"/")
       eval "global::"+::image_name+"<<= ::out;"
     }
     
@@ -69,41 +69,43 @@ if (!exists(DICOMClass)) {
             #::win.AddString( &::dicom_folder,"DICOM Folder")
             ::win.AddString( &::image_name,"Output Image Name")
           #::win.EndHorizontal
-        ::win.EndBoxPanel
+        ::win.EndBoxPanel()
         
-        ::win.BeginHorizontal
+        ::win.BeginHorizontal()
           ::win.AddButton("Run",::Run)
           ::win.AddButton("Display",::Display)
-        ::win.EndHorizontal
+        ::win.EndHorizontal()
         
-        // ::win.AddPage("Save As")
+        ::win.AddPage("Save As")
         
-        // ::win.BeginHorizontal
-          // ::win.AddDirname(&::dicom_save, "Save Folder")
-        // ::win.EndHorizontal
+         ::win.BeginHorizontal()
+           ::win.AddDirname(&::dicom_save, "Save Folder")
+         ::win.EndHorizontal()
         
-        // ::win.BeginHorizontal
-          // ::win.AddString( &::image_save,"Output Image Name")
-        // ::win.EndHorizontal
+         ::win.BeginHorizontal()
+           ::win.AddString( &::image_save,"Output Image Name")
+         ::win.EndHorizontal()
        
-        // ::win.BeginHorizontal
-          // ::win.AddButton("Save",::Save)
-        // ::win.EndHorizontal
+         ::win.BeginHorizontal()
+           ::win.AddButton("Save",::Save)
+         ::win.EndHorizontal()
 
         ::AddHelpPage(&::win)
         
-      ::win.EndBook
+      ::win.EndBook()
       
       ::AddStandardButtons(&::win)
       
       ::win.Update(-1)
-      ::win.Display
+      ::win.Display()
     }
     
-    ::Init
+    ::Init()
   }
   # Class DICOMClass
 }
 # end if (!exists(DICOMClass))
 
-
+if (!exists(dicomclass_obj)) {
+  DICOMClass dicomclass_obj
+}

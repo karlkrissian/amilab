@@ -122,10 +122,10 @@ class itkReadDICOMClass {
 
 
 //-------------------------------------------------------------------------------------
-InrImage* itkDICOMRead(const std::string& DicomFolder)
+InrImage* itkDICOMRead(const std::string DicomFolder)
 {
 
-#ifdef AMI_USE_ITK
+//#ifdef AMI_USE_ITK
 
   InrImage* res = NULL;
 
@@ -139,6 +139,7 @@ InrImage* itkDICOMRead(const std::string& DicomFolder)
   ptype image_pixel_type = itk::ImageIOBase::UNKNOWNPIXELTYPE;
   typedef itk::DICOMImageIO2 ImageIOType;
   ImageIOType::Pointer dicomIO = ImageIOType::New();
+
   typedef itk::DICOMSeriesFileNames NamesGeneratorType;
   NamesGeneratorType::Pointer nameGenerator = NamesGeneratorType::New();
   typedef std::vector< std::string > SeriesIdContainer;
@@ -146,33 +147,39 @@ InrImage* itkDICOMRead(const std::string& DicomFolder)
   FileNamesContainer fileNames;
   
   try {
-    reader->SetImageIO( dicomIO );
     nameGenerator->SetDirectory( DicomFolder );
     const SeriesIdContainer & seriesUID = nameGenerator->GetSeriesUIDs();
     
-    SeriesIdContainer::const_iterator seriesItr = seriesUID.begin();
-    SeriesIdContainer::const_iterator seriesEnd = seriesUID.end();
-    while( seriesItr != seriesEnd )
+    if (seriesUID.size()>0) {
+      SeriesIdContainer::const_iterator seriesItr = seriesUID.begin();
+      SeriesIdContainer::const_iterator seriesEnd = seriesUID.end();
+      while( seriesItr != seriesEnd )
+      {
+        std::cout << seriesItr->c_str() << std::endl;
+        seriesItr++;
+      }
+      std::string seriesIdentifier;
+      seriesIdentifier = seriesUID.begin()->c_str();
+                    
+      fileNames = nameGenerator->GetFileNames( seriesIdentifier );
+  
+      reader->SetImageIO( dicomIO );
+      reader->SetFileNames( fileNames );
+      reader->Update();
+      reader->GenerateOutputInformation();
+      image_io= reader->GetImageIO();
+      image_component_type = image_io->GetComponentType();
+      image_pixel_type = image_io->GetPixelType();
+      cout << "  Component Type = " << image_io->GetComponentTypeAsString(image_component_type) << endl;
+      cout << "  Pixel Type = "     << image_io->GetPixelTypeAsString(image_pixel_type) << endl;
+      cout << "  Number of Dimensions = "<< image_io->GetNumberOfDimensions() << endl;
+      int vdim = image_io->GetNumberOfComponents();
+      cout << "  Number of Components = "<< vdim << endl;
+    } else
     {
-      std::cout << seriesItr->c_str() << std::endl;
-      seriesItr++;
+      FILE_ERROR("Dicom series not found ...");
+      return NULL;
     }
-    std::string seriesIdentifier;
-    seriesIdentifier = seriesUID.begin()->c_str();
-                  
-    fileNames = nameGenerator->GetFileNames( seriesIdentifier );
-
-    reader->SetFileNames( fileNames );
-    reader->Update();
-    reader->GenerateOutputInformation();
-    image_io= reader->GetImageIO();
-    image_component_type = image_io->GetComponentType();
-    image_pixel_type = image_io->GetPixelType();
-    cout << "  Component Type = " << image_io->GetComponentTypeAsString(image_component_type) << endl;
-    cout << "  Pixel Type = "     << image_io->GetPixelTypeAsString(image_pixel_type) << endl;
-    cout << "  Number of Dimensions = "<< image_io->GetNumberOfDimensions() << endl;
-    int vdim = image_io->GetNumberOfComponents();
-    cout << "  Number of Components = "<< vdim << endl;
 
   } catch( itk::ExceptionObject & err ) {
     std::cerr << "ExceptionObject caught !" << std::endl;
@@ -216,10 +223,10 @@ InrImage* itkDICOMRead(const std::string& DicomFolder)
 
   return res;
 
-#else
-  fprintf(stderr," ITK not available, you need to compile with ITK ...\n");
-  return NULL;
-#endif // AMI_USE_ITK
+//#else
+//  fprintf(stderr," ITK not available, you need to compile with ITK ...\n");
+//  return NULL;
+//#endif // AMI_USE_ITK
 
 } // itkDICOMRead()
 
@@ -228,7 +235,7 @@ InrImage* itkDICOMRead(const std::string& DicomFolder)
 InrImage* wrap_itkDICOMRead(ParamList* p)
 {
 
-#ifdef AMI_USE_ITK
+//#ifdef AMI_USE_ITK
 
   char functionname[] = "itkDICOMRead";
   char description[]=" \n\
@@ -246,9 +253,9 @@ InrImage* wrap_itkDICOMRead(ParamList* p)
 
   return itkDICOMRead(*DicomFolder);
 
-#else
-  fprintf(stderr," ITK not available, you need to compile with ITK ...\n");
-  return NULL;
-#endif // AMI_USE_ITK
+//#else
+//  fprintf(stderr," ITK not available, you need to compile with ITK ...\n");
+//  return NULL;
+//#endif // AMI_USE_ITK
 
 } // wrap_itkDICOMRead()
