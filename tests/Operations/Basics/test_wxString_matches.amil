@@ -1,0 +1,64 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_wxString_matches.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the following methods:
+#                              - constructor
+#                              - c_str
+#                              - Matches
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+OK = 1 # The test was successful
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+printn "Create an object of class wxString(sString = wx.wxString(\"h* world?\")).\n"
+sString = wx.wxString("h* world?")
+
+VAL=sString.c_str()
+
+printn "\t Returns the sString value: - %1% -\n" % VAL
+
+printn "Matches a mask containing * and ? (VAL1=sString.Matches(VAL)).\n"
+
+VAL1=sString.Matches(VAL)
+
+printn "\t VAL1: %1% (0: false, 1:true)\n" % VAL1
+
+if(VAL1 == 0) {
+  OK = 0
+  printn  "\nERROR: sString no matches."
+}
+
+printn "Create an object of class wxString(sString1 = wx.wxString(\"hello world !!!\")).\n"
+sString1 = wx.wxString("hello world !!!")
+
+VAL2=sString1.c_str()
+
+printn "\t Returns the sString1 value: - %1% -\n" % VAL2
+
+printn "Matches a mask containing * and ? (VAL3=sString.Matches(VAL2)).\n"
+VAL3=sString.Matches(VAL2)
+
+printn "\t VAL3: %1% (0: false, 1:true)\n" % VAL3
+
+if(VAL3 == 1) {
+  OK = 0
+  printn  "\nERROR: sString no matches."
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ctest.PrintTestResult( OK ) 
+
+#quit
+

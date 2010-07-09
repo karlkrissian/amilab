@@ -298,6 +298,10 @@ BasicVariable::ptr WrapClass_wxString::
   int n=0;
   GET_PARAM(unsigned char,ucFlag, 1);
 
+  /**
+    Removes spaces at the beginning to the end of the string.
+   **/
+
   if (ucFlag == 1)
     owxString->Trim(true);
   else
@@ -496,17 +500,9 @@ BasicVariable::ptr WrapClass_wxString::
   int n=0;
   GET_PARAM(string,sString,"");
 
-  if (sString != "")
-  {
-    unsigned char res = (unsigned char) owxString->Matches(wxT(sString.c_str()));
+  unsigned char res = (unsigned char) owxString->Matches(wxT(sString.c_str()));
 
-    RETURN_VAR(unsigned char,res);
-  }
-  else
-  {
-    ClassHelpAndReturn;
-    return BasicVariable::ptr();
-  }
+  RETURN_VAR(unsigned char,res);
 }
 
 //---------------------------------------------------
@@ -523,9 +519,9 @@ BasicVariable::ptr WrapClass_wxString::
 {
   boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
-  wxString oString = owxString->Lower();
+  wxString *oString = new wxString(owxString->Lower());
 
-  return CreateVar_wxString(&oString);
+  return CreateVar_wxString(oString);
 }
 
 //---------------------------------------------------
@@ -576,9 +572,9 @@ BasicVariable::ptr WrapClass_wxString::
 {
   boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
-  wxString oString = owxString->Upper();
+  wxString *oString = new wxString(owxString->Upper());
 
-  return CreateVar_wxString(&oString);
+  return CreateVar_wxString(oString);
 }
 
 //---------------------------------------------------
@@ -588,7 +584,7 @@ void WrapClass_wxString::
       wrap_FromAscii::SetParametersComments() 
 {
   ADDPARAMCOMMENT_TYPE(string,"The string to Convert.");
-  return_comments = "The string value converted to the native wxString representation.";
+  return_comments = "The string converted to ascii.";
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxString::
@@ -600,16 +596,9 @@ BasicVariable::ptr WrapClass_wxString::
   int n=0;
   GET_PARAM(string,sString,"");
 
-  if (sString != "")
-  {
-    wxString oString = owxString->FromAscii(sString.c_str());
-    return CreateVar_wxString(&oString);
-  }
-  else
-  {
-    ClassHelpAndReturn;
-    return BasicVariable::ptr();
-  }
+  wxString *oString = new wxString(owxString->FromAscii(sString.c_str()));
+
+  return CreateVar_wxString(oString);
 }
 
 //---------------------------------------------------
@@ -619,7 +608,7 @@ void WrapClass_wxString::
       wrap_FromUTF8::SetParametersComments() 
 {
   ADDPARAMCOMMENT_TYPE(string,"The string to convert.");
-  return_comments = "The string value converted to the native wxString representation.";
+  return_comments = "The string converted to UTF8.";
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxString::
@@ -631,16 +620,9 @@ BasicVariable::ptr WrapClass_wxString::
   int n=0;
   GET_PARAM(string,sString,"");
 
-  if (sString != "")
-  {
-    wxString oString = owxString->FromUTF8(sString.c_str());
-    return CreateVar_wxString(&oString);
-  }
-  else
-  {
-    ClassHelpAndReturn;
-    return BasicVariable::ptr();
-  }
+  wxString *oString = new wxString(owxString->FromAscii(sString.c_str()));
+
+  return CreateVar_wxString(oString);
 }
 
 //---------------------------------------------------
