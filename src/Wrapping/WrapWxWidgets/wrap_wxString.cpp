@@ -298,16 +298,11 @@ BasicVariable::ptr WrapClass_wxString::
   int n=0;
   GET_PARAM(unsigned char,ucFlag, 1);
 
-  /**
-    Don't work in wxWidgets.
-   **/
-
   if (ucFlag == 1)
     owxString->Trim(true);
   else
     owxString->Trim(false);
 
-  printf("\n%s\n", owxString->c_str());
   return BasicVariable::ptr();
 }
 
