@@ -6,7 +6,7 @@
 NoMessageDialog(1)
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# test_wxString_constructor.amil
+# test_wxString_trycast.amil
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Check the following methods:
 #                              - constructor

@@ -53,17 +53,43 @@ if (VAL2 != "karl")  {
   printn  "\nERROR: The constructor failed (MODE 1)."
 }
 
-VAL3 = file2.GetVolume()
+VAL3 = file2.GetPath()
 VAL4 = file2._GetName()
 
-printn "\t The string containing the volume for this file name(file2): - %1% -\n" % VAL3
+printn "\t The path part of the filename (without the name or extension)(file2): - %1% -\n" % VAL3
 printn "\t The name part of the filename (without extension)(file2): - %1% -\n" % VAL4
 
-file2=wx.wxFileName("/tmp/","karl")
-
-if ((VAL4 != "/tmp/") && (VAL4 != "karl"))  {
+if ((VAL3 != "/tmp/") && (VAL4 != "karl"))  {
   OK=0;
   printn  "\nERROR: The constructor failed (MODE 2)."
+}
+
+VAL5 = file3.GetPath()
+VAL6 = file3._GetName()
+VAL7 = file3.GetExt()
+
+printn "\t The path part of the filename (without the name or extension)(file3): - %1% -\n" % VAL5
+printn "\t The name part of the filename (without extension)(file3): - %1% -\n" % VAL6
+printn "\t The file name extension(file3): - %1% -\n" % VAL7
+
+if ((VAL5 != "/tmp/") && (VAL6 != "karl") && (VAL7 != "txt"))  {
+  OK=0;
+  printn  "\nERROR: The constructor failed (MODE 3)."
+}
+
+VAL8 = file4.GetPath()
+VAL9 = file4._GetName()
+VAL10 = file4.GetExt()
+VAL11 = file4.GetVolume()
+
+printn "\t The path part of the filename (without the name or extension)(file4): - %1% -\n" % VAL8
+printn "\t The name part of the filename (without extension)(file4): - %1% -\n" % VAL9
+printn "\t The file name extension(file4): - %1% -\n" % VAL10
+printn "\t The string containing the volume for this file name(file4): - %1% -\n" % VAL11
+
+if ((VAL8 != "/tmp/") && (VAL9 != "karl") && (VAL10 != "txt") && (VAL11 != "/"))  {
+  OK=0;
+  printn  "\nERROR: The constructor failed (MODE 4)."
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -119,9 +119,9 @@ SET(options "test_fibonacci.amil"                  "test_factorial.amil"
             "test_wxString_toascii.amil"           "test_wxString_todouble.amil"
             "test_wxString_tolong.amil"            "test_wxString_toutf8.amil"
             "test_wxString.copy_constructor.amil"  "test_wxString_operators.amil"
-            "test_wxString_constructor.amil"
+            "test_wxString_constructor.amil"       "test_wxString_trycast.amil"
     # WXFILENAME
-  )
+            "test_wxfilename_constructor.amil")
 
 FOREACH(option ${options})
   ADD_AMILAB_TESTS(${option} "-quit" "${PROJECT_SOURCE_DIR}/../tests/Operations/Basics/${option}")
