@@ -894,3 +894,43 @@ BasicVariable::ptr WrapClass_wxString::
 
   return BasicVariable::ptr();
 }
+
+//---------------------------------------------------
+//  try_cast
+//---------------------------------------------------
+void WrapClass_wxString::
+      wrap_try_cast::SetParametersComments() 
+{
+  ADDPARAMCOMMENT_TYPE(string,"Type as a string.");
+  return_comments = "A string with the wrapped wxString object content.";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxString::
+      wrap_try_cast::CallMember( ParamList* p)
+{
+  boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
+
+  if (!p) ClassHelpAndReturn;
+  int n=0;
+  string type_string;
+
+  if (get_val_param<string>( type_string, p, n))
+  {
+    if (type_string == "std::string")
+    {
+      string val = owxString->c_str();
+
+      RETURN_VAR(string,val);
+    }
+    else
+    {
+      string sAux = "No convertion available for variable from wxString to " +
+                    type_string + ".";
+      GB_driver.err_print(sAux.c_str());
+    }
+  }
+  else
+    ClassHelpAndReturn;
+
+  return BasicVariable::ptr();
+}

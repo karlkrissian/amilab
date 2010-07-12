@@ -57,6 +57,20 @@ extern yyip::Driver GB_driver;
 //------- Variable<AMIObject>
 //------------------------------------------------------
 
+/// Cast to a type based on its name as a string
+template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::TryCast(const std::string& type_string) const
+{
+  //Modified: Added (12-07-2010)
+  string_ptr value( new string(type_string));
+  Variable<string>::ptr b( new Variable<string>( type_string, value));
+
+  APPLY_MEMBER_PARAM1("try_cast", b, varres)
+  if (varres.get())
+    return varres;
+  else
+    return BasicVariable::ptr();
+}
+
 /// Copy contents to new variable
 template<> AMI_DLLEXPORT BasicVariable::ptr Variable<AMIObject>::NewCopy() const
 {

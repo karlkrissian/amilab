@@ -22,7 +22,7 @@
 
 #include <wx/filename.h>
 
-
+TO_STRING(wxFileName);
 class WrapClass_wxFileName : public WrapClassBase
 {
   DEFINE_CLASS(WrapClass_wxFileName);
@@ -115,7 +115,7 @@ class WrapClass_wxFileName : public WrapClassBase
       AddVar_GetFullName(        this_ptr);
       AddVar_GetFullPath(        this_ptr);
       AddVar_GetCwd(             this_ptr);
-      AddVar_GetName(            this_ptr);
+      AddVar_GetName(            this_ptr, "_GetName");
       AddVar_GetPath(            this_ptr);
 
       AddVar_GetVolume(          this_ptr);

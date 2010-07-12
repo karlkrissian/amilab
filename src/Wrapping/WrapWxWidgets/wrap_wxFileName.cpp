@@ -51,10 +51,7 @@ AMIObject::ptr AddWrap_wxFileName(  WrapClass_wxFileName::ptr& objectptr)
 Variable<AMIObject>::ptr CreateVar_wxFileName( wxFileName* si)
 {
   // Create smart pointer with own deleter
-  boost::shared_ptr<wxFileName> si_ptr( 
-    si,
-    wxwindow_nodeleter<wxFileName>() // deletion will be done by wxwidgets
-  );
+  boost::shared_ptr<wxFileName> si_ptr( si );
 
   WrapClass_wxFileName::ptr sip(new WrapClass_wxFileName(si_ptr));
   AMIObject::ptr amiobject(AddWrap_wxFileName(sip));
@@ -99,21 +96,15 @@ BasicVariable::ptr wrap_wxFileName::CallMember( ParamList* p)
     case 1: { //Mode 1
       GET_PARAM(string,sFullpath,"");
 
-      if (sFullpath != "")
-        owxFileName = new wxFileName(wxString(sFullpath.c_str()));
-      else
-        ClassHelpAndReturn;
+      owxFileName = new wxFileName(wxString(sFullpath.c_str()));
       break;
     }
     case 2: { //Mode 2
       GET_PARAM(string,sPath,"");
       GET_PARAM(string,sName,"");
 
-      if ((sPath != "") && (sName != ""))
-        owxFileName = new wxFileName(wxString(sPath.c_str()),
-                                     wxString(sName.c_str()));
-      else
-        ClassHelpAndReturn;
+      owxFileName = new wxFileName(wxString(sPath.c_str()),
+                                  wxString(sName.c_str()));
       break;
     }
     case 3: { //Mode 3
@@ -121,12 +112,9 @@ BasicVariable::ptr wrap_wxFileName::CallMember( ParamList* p)
       GET_PARAM(string,sName,"");
       GET_PARAM(string,sExt,"");
 
-      if ((sPath != "") && (sName != "") && (sExt != ""))
-        owxFileName = new wxFileName(wxString(sPath.c_str()),
-                                     wxString(sName.c_str()),
-                                     wxString(sExt.c_str()));
-      else
-        ClassHelpAndReturn;
+      owxFileName = new wxFileName(wxString(sPath.c_str()),
+                                   wxString(sName.c_str()),
+                                   wxString(sExt.c_str()));
       break;
     }
     case 4: { //Mode 4
@@ -135,13 +123,10 @@ BasicVariable::ptr wrap_wxFileName::CallMember( ParamList* p)
       GET_PARAM(string,sName,"");
       GET_PARAM(string,sExt,"");
 
-      if ((sVolume != "") && (sPath != "") && (sName != "") && (sExt != ""))
-        owxFileName = new wxFileName(wxString(sVolume.c_str()),
-                                     wxString(sPath.c_str()),
-                                     wxString(sName.c_str()),
-                                     wxString(sExt.c_str()));
-      else
-        ClassHelpAndReturn;
+      owxFileName = new wxFileName(wxString(sVolume.c_str()),
+                                   wxString(sPath.c_str()),
+                                   wxString(sName.c_str()),
+                                   wxString(sExt.c_str()));
       break;
     }
   }
@@ -173,7 +158,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_Assign::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   int n=0;
 
@@ -184,21 +169,15 @@ BasicVariable::ptr WrapClass_wxFileName::
     case 1: { //Mode 1
       GET_PARAM(string,sFullpath,"");
 
-      if (sFullpath != "")
-        owxFileName->Assign(wxString(sFullpath.c_str()));
-      else
-        ClassHelpAndReturn;
+      owxFileName->Assign(wxString(sFullpath.c_str()));
       break;
     }
     case 2: { //Mode 2
       GET_PARAM(string,sPath,"");
       GET_PARAM(string,sName,"");
 
-      if ((sPath != "") && (sName != ""))
-        owxFileName->Assign(wxString(sPath.c_str()),
-                            wxString(sName.c_str()));
-      else
-        ClassHelpAndReturn;
+      owxFileName->Assign(wxString(sPath.c_str()),
+                          wxString(sName.c_str()));
       break;
     }
     case 3: { //Mode 3
@@ -206,12 +185,9 @@ BasicVariable::ptr WrapClass_wxFileName::
       GET_PARAM(string,sName,"");
       GET_PARAM(string,sExt,"");
 
-      if ((sPath != "") && (sName != "") && (sExt != ""))
-        owxFileName->Assign(wxString(sPath.c_str()),
-                            wxString(sName.c_str()),
-                            wxString(sExt.c_str()));
-      else
-        ClassHelpAndReturn;
+      owxFileName->Assign(wxString(sPath.c_str()),
+                          wxString(sName.c_str()),
+                          wxString(sExt.c_str()));
       break;
     }
     case 4: { //Mode 4
@@ -220,13 +196,10 @@ BasicVariable::ptr WrapClass_wxFileName::
       GET_PARAM(string,sName,"");
       GET_PARAM(string,sExt,"");
 
-      if ((sVolume != "") && (sPath != "") && (sName != "") && (sExt != ""))
-        owxFileName->Assign(wxString(sVolume.c_str()),
-                            wxString(sPath.c_str()),
-                            wxString(sName.c_str()),
-                            wxString(sExt.c_str()));
-      else
-        ClassHelpAndReturn;
+      owxFileName->Assign(wxString(sVolume.c_str()),
+                          wxString(sPath.c_str()),
+                          wxString(sName.c_str()),
+                          wxString(sExt.c_str()));
       break;
     }
   }
@@ -246,12 +219,12 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_AssignCwd::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   int n=0;
 
   if (!p) ClassHelpAndReturn;
-  GET_PARAM(string,sVolume,wxEmptyString);
+  GET_PARAM(string,sVolume,"");
 
   owxFileName->AssignCwd(wxString(sVolume.c_str()));
 
@@ -270,7 +243,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_AssignDir::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   int n=0;
 
@@ -295,7 +268,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_AssignHomeDir::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   owxFileName->AssignHomeDir();
 
@@ -314,7 +287,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_GetHomeDir::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   string sVal = owxFileName->GetHomeDir().c_str();
 
@@ -333,7 +306,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_AppendDir::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   if (!p) ClassHelpAndReturn;
   int n=0;
@@ -359,7 +332,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_SetVolume::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   if (!p) ClassHelpAndReturn;
   int n=0;
@@ -385,7 +358,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_SetName::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   if (!p) ClassHelpAndReturn;
   int n=0;
@@ -411,7 +384,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_SetExt::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   if (!p) ClassHelpAndReturn;
   int n=0;
@@ -435,7 +408,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_SetEmptyExt::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   owxFileName->SetEmptyExt();
 
@@ -454,7 +427,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_SetFullName::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   if (!p) ClassHelpAndReturn;
   int n=0;
@@ -480,7 +453,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_SetCwd::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   if (!p) ClassHelpAndReturn;
   int n=0;
@@ -506,7 +479,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_GetVolume::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   string sVal = owxFileName->GetVolume().c_str();
 
@@ -525,7 +498,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_GetName::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   string sVal = owxFileName->GetName().c_str();
 
@@ -544,7 +517,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_GetExt::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   string sVal = owxFileName->GetExt().c_str();
 
@@ -563,7 +536,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_GetPath::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   string sVal = owxFileName->GetPath().c_str();
 
@@ -582,7 +555,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_GetFullName::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   string sVal = owxFileName->GetFullName().c_str();
 
@@ -601,7 +574,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_GetFullPath::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   string sVal = owxFileName->GetFullPath().c_str();
 
@@ -620,7 +593,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_GetCwd::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   string sVal = owxFileName->GetCwd().c_str();
 
@@ -637,7 +610,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_Clear::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   owxFileName->Clear();
 
@@ -654,7 +627,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_ClearExt::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   owxFileName->ClearExt();
 
@@ -671,7 +644,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_Touch::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   owxFileName->Touch();
 
@@ -690,7 +663,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_Mkdir::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   if (!p) ClassHelpAndReturn;
   int n=0;
@@ -713,7 +686,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_Rmdir::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   if (!p) ClassHelpAndReturn;
   int n=0;
@@ -737,7 +710,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_MakeAbsolute::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   owxFileName->MakeAbsolute();
 
@@ -754,7 +727,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_MakeRelativeTo::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   owxFileName->MakeRelativeTo();
 
@@ -773,7 +746,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_IsAbsolute::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   unsigned char res = (unsigned char) owxFileName->IsAbsolute();
 
@@ -792,7 +765,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_IsRelative::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   unsigned char res = (unsigned char) owxFileName->IsRelative();
 
@@ -811,7 +784,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_IsCaseSensitive::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   unsigned char res = (unsigned char) owxFileName->IsCaseSensitive();
 
@@ -830,7 +803,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_HasExt::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   unsigned char res = (unsigned char) owxFileName->HasExt();
 
@@ -849,7 +822,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_HasName::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   unsigned char res = (unsigned char) owxFileName->HasName();
 
@@ -868,7 +841,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_HasVolume::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   unsigned char res = (unsigned char) owxFileName->HasVolume();
 
@@ -887,7 +860,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_DirExists::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   unsigned char res = (unsigned char) owxFileName->DirExists();
 
@@ -906,7 +879,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_FileExists::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   unsigned char res = (unsigned char) owxFileName->FileExists();
 
@@ -925,7 +898,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_IsDir::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   unsigned char res = (unsigned char) owxFileName->IsDir();
 
@@ -944,7 +917,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_IsDirReadable::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   unsigned char res = (unsigned char) owxFileName->IsDirReadable();
 
@@ -963,7 +936,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_IsDirWritable::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   unsigned char res = (unsigned char) owxFileName->IsDirWritable();
 
@@ -982,7 +955,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_IsFileExecutable::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   unsigned char res = (unsigned char) owxFileName->IsFileExecutable();
 
@@ -1001,7 +974,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_IsFileReadable::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   unsigned char res = (unsigned char) owxFileName->IsFileReadable();
 
@@ -1020,7 +993,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_IsFileWritable::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   unsigned char res = (unsigned char) owxFileName->IsFileWritable();
 
@@ -1039,7 +1012,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_IsOk::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   unsigned char res = (unsigned char) owxFileName->IsOk();
 
@@ -1059,7 +1032,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_SameAs::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   if (!p) ClassHelpAndReturn;
   int n=0;
@@ -1089,7 +1062,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_copy::CallMember( ParamList* p)
 {
-  return CreateVar_wxFileName( new wxFileName(*(this->_objectptr->_obj)));
+  return CreateVar_wxFileName( new wxFileName(*(this->_objectptr->GetObj())));
 }
 
 //---------------------------------------------------
@@ -1105,7 +1078,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_assign_operator::CallMember( ParamList* p)
 {
-  return CreateVar_wxFileName( new wxFileName(*(this->_objectptr->_obj)));
+  return CreateVar_wxFileName( new wxFileName(*(this->_objectptr->GetObj())));
 }
 
 //---------------------------------------------------
@@ -1121,7 +1094,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_equal::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   if (!p) ClassHelpAndReturn;
   int n=0;
@@ -1152,7 +1125,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_not_equal::CallMember( ParamList* p)
 {
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->_obj);
+  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
   if (!p) ClassHelpAndReturn;
   string sVal;

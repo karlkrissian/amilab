@@ -77,6 +77,9 @@ class WrapClass_wxString : public WrapClassBase
     ADD_CLASS_METHOD(equal,        "Operator ==, compare a wxString objects with the current.");
     ADD_CLASS_METHOD(not_equal,    "Operator !=, compare a wxString objects with the current.");
 
+    //Try cast.
+    ADD_CLASS_METHOD(try_cast,     "Try cast the current wxString object to string.");
+
 //    ADD_CLASS_METHOD(GetChar,   "");
 //    ADD_CLASS_METHOD(Printf,       "");
 //    ADD_CLASS_METHOD(PrintfV,      "");
@@ -119,6 +122,9 @@ class WrapClass_wxString : public WrapClassBase
       AddVar_add(          this_ptr);
       AddVar_equal(        this_ptr);
       AddVar_not_equal(    this_ptr);
+
+      //Try cast.
+      AddVar_try_cast(     this_ptr);
     }
 
 };
