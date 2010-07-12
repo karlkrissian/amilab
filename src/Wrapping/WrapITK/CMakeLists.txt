@@ -14,6 +14,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/OpenGL
   ${AMILAB_SOURCE_DIR}/Graphic
   ${AMILAB_SOURCE_DIR}/wxParams
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapSurface
   ${Boost_INCLUDE_DIR}
   )
 
