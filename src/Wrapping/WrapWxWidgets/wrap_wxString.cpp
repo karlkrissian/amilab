@@ -672,7 +672,7 @@ BasicVariable::ptr WrapClass_wxString::
 void WrapClass_wxString::
       wrap_ToLong::SetParametersComments() 
 {
-  return_comments = "This string value converted to double (return -1 in error case).";
+  return_comments = "This string value converted to a signed integer in base 10 (return -1 in error case).";
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxString::
@@ -790,7 +790,7 @@ BasicVariable::ptr WrapClass_wxString::
     owxString->Append(sVal.c_str());
   }
 
-  return BasicVariable::ptr();
+  return CreateVar_wxString( new wxString(*(this->_objectptr->GetObj())));
 }
 
 //---------------------------------------------------
@@ -819,7 +819,7 @@ BasicVariable::ptr WrapClass_wxString::
     owxString->Append(sVal.c_str());
   }
 
-  return BasicVariable::ptr();
+  return CreateVar_wxString( new wxString(*(this->_objectptr->GetObj())));
 }
 
 //---------------------------------------------------
