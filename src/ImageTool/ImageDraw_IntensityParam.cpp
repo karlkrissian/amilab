@@ -11,7 +11,7 @@
 
 
 //----------------------------------------------------
-ImageDraw_IntensityParam::ImageDraw_IntensityParam (DessinImage* parent): ParamPanel(parent, "Intensity")
+ImageDraw_IntensityParam::ImageDraw_IntensityParam (DessinImage* parent): ParamPanel(parent, "Int.")
 {
   parent_class = parent;
   CreateParameters();
@@ -33,7 +33,7 @@ void ImageDraw_IntensityParam::CreateParameters ()
   float* _val_min = parent_class->Get_val_min();
   float* _val_max = parent_class->Get_val_max();
 
-  BeginHorizontal();
+//  BeginHorizontal();
     //-------------- Show colorbar
     AddBoolean( &_id_show_colorbar,
                   &Param->_show_colorbar,
@@ -63,9 +63,9 @@ void ImageDraw_IntensityParam::CreateParameters ()
     ChangedValueCallback( _id_colorspace,
                          (void*) ImageDraw_IntensityParam::CB_colorspace,
                          (void*) this);
-  EndHorizontal();
+//  EndHorizontal();
   //--------------
-  BeginHorizontal();
+ // BeginHorizontal();
     //--------------
     AddEnumeration( &_id_type_courbe, 4,
                       &Param->_I._type_courbe ,
@@ -78,43 +78,48 @@ void ImageDraw_IntensityParam::CreateParameters ()
     AddEnumChoice( _id_type_courbe, &_id_courbe_pente2,
                     "Slope2   __/ __");
     AddEnumChoice( _id_type_courbe, &_id_courbe_interpole,
-                         "Linear interpolation");
+                         "Linear interp.");
 
     EnumerationDefaut( _id_type_courbe, _id_courbe_pente);
     ChangedValueCallback( _id_type_courbe,
                             (void*) ImageDraw_IntensityParam::CB_type_courbe, (void*) this);
 
     //--------------
-  EndHorizontal();
+ // EndHorizontal();
 
   //--------------
-  if ((_image->_format == WT_FLOAT ) ||
-     (_image->_format == WT_DOUBLE))
-  {
-    AddFloat( &_id_min, _intensite_float_min,
-                   "Min.",
-                   2,
-                   "Minimum intensity");
-    FloatConstraints( _id_min,  *_val_min,  *_val_max, *_val_min);
-
-    AddFloat( &_id_max, _intensite_float_max,
-                   "Max.",
-                   2,
-                   "Maximum intensity");
-    FloatConstraints( _id_max,  *_val_min,  *_val_max, *_val_max);
-  }
-  else 
-  {
-    AddInteger( &_id_min, _intensite_entier_min,
-                 "Min.", "Minimum int");
-    IntegerConstraints( _id_min,  (int) *_val_min,  (int) *_val_max,
-                                      *_intensite_entier_min);
-
-    AddInteger( &_id_max, _intensite_entier_max,
-                 "Max.", "Maximum int");
-    IntegerConstraints( _id_max,   (int) *_val_min,  (int) *_val_max,
-                                      *_intensite_entier_max);
-  }
+  BeginBox("Range");
+    BeginPanel("Range");
+      if ((_image->_format == WT_FLOAT ) ||
+        (_image->_format == WT_DOUBLE))
+      {
+        AddFloat( &_id_min, _intensite_float_min,
+                      "Min.",
+                      2,
+                      "Minimum intensity");
+        FloatConstraints( _id_min,  *_val_min,  *_val_max, *_val_min);
+    
+        AddFloat( &_id_max, _intensite_float_max,
+                      "Max.",
+                      2,
+                      "Maximum intensity");
+        FloatConstraints( _id_max,  *_val_min,  *_val_max, *_val_max);
+      }
+      else 
+      {
+        AddInteger( &_id_min, _intensite_entier_min,
+                    "Min.", "Minimum int");
+        IntegerConstraints( _id_min,  (int) *_val_min,  (int) *_val_max,
+                                          *_intensite_entier_min);
+    
+        AddInteger( &_id_max, _intensite_entier_max,
+                    "Max.", "Maximum int");
+        IntegerConstraints( _id_max,   (int) *_val_min,  (int) *_val_max,
+                                          *_intensite_entier_max);
+      }
+    EndPanel();
+  EndBox();
+  
 
   ChangedValueCallback( _id_min,
                        (void*) ImageDraw_IntensityParam::CB_barre_min,
