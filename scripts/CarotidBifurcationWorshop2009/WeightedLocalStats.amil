@@ -4,10 +4,11 @@
 # of the image intensity (local mean and local standard deviation)
 #
 
+func "Common/ScriptGui"
 
 if (!exists(WeightedLSCLass)) {
   
-  Class WeightedLSCLass {
+  Class WeightedLSCLass: public ScriptGui {
 
     #--------------------------
     proc ::Init() \
@@ -40,26 +41,12 @@ if (!exists(WeightedLSCLass)) {
       }
     }
 
-    #--------------------------
-    proc ::Close() \
-    {
-      ::win.HidePanel
-      delvars GetObjectName(::Close)
-    }
-    Comments(::Close,"Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-    
-    proc ::CloseAll() \
-    {
-      ::Close
-      if (exists(NLmeansClass)) { del NLmeansClass; }
-    }
-    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
 
     #--------------------------
     proc ::Apply() \
     {
-      ::LoadInput
-      ::LoadWeights
+      ::LoadInput()
+      ::LoadWeights()
 
       # compute weighted local mean intensity
       ::lm = localmean2(::input*::weights,::localstats_winsize)
@@ -121,11 +108,7 @@ if (!exists(WeightedLSCLass)) {
         ::win.AddButton("Display",::_Display)
       ::win.EndPanel
       
-      
-      ::win.BeginHorizontal
-        ::win.AddButton("Close", ::Close)
-        ::win.AddButton("Close All", ::CloseAll)
-      ::win.EndHorizontal
+      ::AddStandardButtons(&::win)
 
       ::win.Update(-1)
       ::win.Display

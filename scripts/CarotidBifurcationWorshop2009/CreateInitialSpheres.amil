@@ -86,21 +86,4 @@ if (!exists(CreateInitialSpheresClass)) {
       eval "global"+resname+" <<= res;"
     }
     
-    proc ::Close() \
-    {
-      delvars GetObjectName(::Close)
-    }
-    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-  
-    proc ::CloseAll() {
-      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
-      #::AS->CloseAll
-      ::Close
-    }
-    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
-
-    #          LS_Imean= mean[LS_inls>0](LS_input)
-    #          LS_Isd  = mean[LS_inls>0] ( (LS_input-LS_Imean)*(LS_input-LS_Imean))
-    #          LS_Isd  = sqrt(LS_Isd)
-  }
 }

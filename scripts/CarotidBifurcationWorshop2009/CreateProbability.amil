@@ -3,15 +3,15 @@
 # based on an intensity mapping of the local statistics
 # of the image intensity (local mean and local standard deviation)
 #
+func "Common/ScriptGui"
 
 
 if (!exists(CreateProbabilityClass)) {
 
   ami_import->Filters()
   
-  Class CreateProbabilityClass \
+  Class CreateProbabilityClass  : public ScriptGui\
   {
-    ::class_name="global::CreateProbabilityClass"
     ::filters=&global::filters
     
     #--------------------------
@@ -42,22 +42,6 @@ if (!exists(CreateProbabilityClass)) {
       if (exists(::input_draw)) { del ::input_draw; }
       show ::input
     }
-
-    #--------------------------
-    proc ::Close() \
-    {
-      if (exists(::win)) {
-      ::win.HidePanel()
-      }
-      delvars GetObjectName(::Close)
-    }
-    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-  
-    proc ::CloseAll() {
-      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
-      ::Close
-    }
-    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
 
     #--------------------------
     proc ::Apply() \
@@ -148,10 +132,7 @@ if (!exists(CreateProbabilityClass)) {
           ::win.AddButton("Apply",::Apply)
       ::win.EndBook
 
-      ::win.BeginHorizontal
-        ::win.AddButton("Close", ::Close)
-        ::win.AddButton("Close All", ::CloseAll)
-      ::win.EndHorizontal
+      ::AddStandardButtons(&::win)
 
       if (exists(::parent_panel)) {
         ::win.ShowPanel()

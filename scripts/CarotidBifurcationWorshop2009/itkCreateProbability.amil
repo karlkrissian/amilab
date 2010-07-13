@@ -4,6 +4,7 @@
 # of the image intensity (local mean and local standard deviation)
 #
 
+func "Common/ScriptGui"
 
 if (!exists(itkCreateProbabilityClass)) {
 
@@ -12,7 +13,6 @@ if (!exists(itkCreateProbabilityClass)) {
   
   Class itkCreateProbabilityClass \
   {
-    ::class_name="global::itkCreateProbabilityClass"
     ::filters=&global::filters
     ::itk=&global::itk
     
@@ -44,22 +44,6 @@ if (!exists(itkCreateProbabilityClass)) {
       if (exists(::input_draw)) { del ::input_draw; }
       show ::input
     }
-
-    #--------------------------
-    proc ::Close() \
-    {
-      if (exists(::win)) {
-      ::win.HidePanel
-      }
-      delvars GetObjectName(::Close)
-    }
-    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-  
-    proc ::CloseAll() {
-      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
-      ::Close
-    }
-    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
 
     #--------------------------
     proc ::Apply() \
@@ -150,10 +134,7 @@ if (!exists(itkCreateProbabilityClass)) {
           ::win.AddButton("Apply",::Apply)
       ::win.EndBook
 
-      ::win.BeginHorizontal
-        ::win.AddButton("Close", ::Close)
-        ::win.AddButton("Close All", ::CloseAll)
-      ::win.EndHorizontal
+      ::AddStandardButtons(&::win)
 
       if (exists(::parent_panel)) {
         ::win.ShowPanel()
@@ -161,7 +142,7 @@ if (!exists(itkCreateProbabilityClass)) {
         ::win.Display()
       }
     }
-    ::Init
+    ::Init()
   } 
 } 
 # end if (!exists(CreateProbability)) 

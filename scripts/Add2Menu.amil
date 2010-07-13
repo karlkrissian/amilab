@@ -16,5 +16,6 @@ for dir in  "BasicFilters","Filtering","Denoising",\
     InfoDialog GetScriptsDir+"/"+dir+"/Add2Menu.amil does not exists"
   }
 }
+
 #quit
 
