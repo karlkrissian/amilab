@@ -39,6 +39,17 @@ if((VAL1 != "hello world !!!") && (VAL2 != "hello world !!!")) {
   printn  "\nERROR: The try cast failed."
 }
 
+printn "Add \" Karl said\" to sString(sString += \"Karl said\").\n"
+sString += " Karl said" 
+
+VAL3=sString.c_str()
+printn "\t Return sString: - %1% -\n" % VAL3
+
+if(VAL3 != "hello world !!! Karl said") {
+  OK = 0
+  printn  "\nERROR: The try cast failed."
+}
+
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ctest.PrintTestResult( OK ) 

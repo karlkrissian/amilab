@@ -220,6 +220,7 @@ inline void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
 /*! \def CLASS_GET_OBJECT_PARAM
     \brief try to convert the next parameter to the wrapped given type and gets a smart pointer to this type in the variable 'name', macro working within a class member
 */
+/*
 #define CLASS_GET_OBJECT_PARAM(type,varname,objname) \
   Variable<AMIObject>::ptr varname; \
   boost::shared_ptr<type> objname; \
@@ -235,7 +236,7 @@ inline void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
   }  else {\
     CLASS_ERROR("Need a wrapped object as parameter.")\
   }
-/*
+*/
 #define CLASS_GET_OBJECT_PARAM(type,varname,objname) \
   Variable<AMIObject>::ptr varname; \
   boost::shared_ptr<type> objname; \
@@ -247,9 +248,9 @@ inline void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
     if (get_generic_var_param(genericvar,p,n)) { \
       ParamList::ptr param(new ParamList()); \
       param->AddParam(genericvar); \
-      /* Call the constructor * / \
+      /* Call the constructor */ \
       wrap_##type obj_constr; \
-      BasicVariable::ptr constr_res = obj_constr->CallMember(param.get());\
+      BasicVariable::ptr constr_res = obj_constr.CallMember(param.get());\
       varname = boost::dynamic_pointer_cast<Variable<AMIObject> >(constr_res);\
       ok = varname.get(); \
     } \
@@ -265,7 +266,7 @@ inline void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
   }  else {\
     CLASS_ERROR("Need a wrapped object or compatible variable as parameter.")\
   }
-*/
+
 /*! \def FUNC_GET_OBJECT_PARAM
     \brief try to convert the next parameter to the wrapped given type and gets a smart pointer to this type in the variable 'name', macro working within a class member
 */

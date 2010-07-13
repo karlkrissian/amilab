@@ -109,7 +109,9 @@ void AddWrapWxWidgets()
   Variables::ptr previous_ocontext = Vars.GetObjectContext();
   Vars.SetObjectContext(amiobject->GetContext());
 
-  ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxWindow",    wrap_wxWindow);
+//  ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxWindow",    wrap_wxWindow); DEPRECATED
+
+  AddVar_wxWindow( amiobject->GetContext(), "wxWindow");
 
   AddVar_wxSize( amiobject->GetContext(), "wxSize");
 
@@ -119,7 +121,8 @@ void AddWrapWxWidgets()
 
 //  AddVar_wxSize(    Vars.GetBuiltinContext());
 
-  ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxColour",    wrap_wxColour);
+//  ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxColour",    wrap_wxColour); DEPRECATED
+  AddVar_wxColour( amiobject->GetContext(), "wxColour");
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxImage",     wrap_wxImage);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxBitmap",    wrap_wxBitmap);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxHtmlWindow",wrap_wxHtmlWindow);

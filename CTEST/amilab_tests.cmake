@@ -121,7 +121,11 @@ SET(options "test_fibonacci.amil"                  "test_factorial.amil"
             "test_wxString.copy_constructor.amil"  "test_wxString_operators.amil"
             "test_wxString_constructor.amil"       "test_wxString_trycast.amil"
     # WXFILENAME
-            "test_wxfilename_constructor.amil")
+            "test_wxfilename_constructor.amil"     "test_wxfilename_assign.amil"
+            "test_wxfilename_assigncwd.amil"       "test_wxfilename_assigndir.amil"
+            "test_wxfilename_assignhomedir.amil"   "test_wxfilename_appenddir.amil"
+            "test_wxfilename_setandget.amil"       "test_wxfilename_clear.amil"
+            "test_wxfilename_touch.amil"           )
 
 FOREACH(option ${options})
   ADD_AMILAB_TESTS(${option} "-quit" "${PROJECT_SOURCE_DIR}/../tests/Operations/Basics/${option}")

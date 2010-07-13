@@ -14,19 +14,23 @@
 #define _wrap_wxWindow_h_
 
 #include "wrapfunction_class.h"
+#include "wrapfunctions.hpp"
 #include "Variable.hpp"
 #include "paramlist.h"
 #include "ami_object.h"
+
 #include <wx/html/htmlwin.h>
 
+TO_STRING(wxWindow); //New: Added 13-07-2010
 
 class WrapClass_wxWindow : public WrapClassBase
 {
   DEFINE_CLASS(WrapClass_wxWindow);
 
-  // for nested classes
-  typedef WrapClass_wxWindow::ptr _parentclass_ptr;
-  typedef wxWindow _obj_type;
+  protected: //New: Added 13-07-2010
+    // for nested classes
+    typedef WrapClass_wxWindow::ptr _parentclass_ptr;
+    typedef wxWindow _obj_type;
 
   public:
     boost::shared_ptr<_obj_type> _obj;
@@ -43,7 +47,6 @@ class WrapClass_wxWindow : public WrapClassBase
     http://docs.wxwidgets.org/stable/wx_wxwindow.html#wxwindowsetsize");
 
     ADD_CLASS_METHOD(SetBackgroundColour,   "Sets the background colour of the window.");
-
 
     void AddMethods( _parentclass_ptr& this_ptr ) {
       AddVar_GetMinSize(          this_ptr);
@@ -62,10 +65,17 @@ class WrapClass_wxWindow : public WrapClassBase
  */
 AMIObject::ptr AddWrap_wxWindow(  WrapClass_wxWindow::ptr& objectptr);
 
+/**
+ * Create a Wrapped object around wxWindow
+ * @param si_ptr input smart pointer to a wxWindow
+ * @return smart pointer to an AMIObject class
+ */
+Variable<AMIObject>::ptr CreateVar_wxWindow( wxWindow* si); //New: Added 13-07-2010
+
 
 /** function that add wrapping of the Image Drawing window
  */
-BasicVariable::ptr wrap_wxWindow( ParamList* p);
-
+//BasicVariable::ptr wrap_wxWindow( ParamList* p); DEPRECATED
+ADD_CLASS_FUNCTION( wxWindow, "Wrapping of wxWindow (see http://docs.wxwidgets.org/)." );
 
 #endif // _wrap_wxWindow_h_

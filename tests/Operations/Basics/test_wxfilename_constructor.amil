@@ -10,7 +10,12 @@ NoMessageDialog(1)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Check the following methods:
 #                              - constructor
-#                              - try_cast
+#                              - GetVolume
+#                              - GetName
+#                              - GetExt
+#                              - GetPath
+#                              - GetFullName
+#                              - GetFullPath
 #
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -81,11 +86,15 @@ VAL8 = file4.GetPath()
 VAL9 = file4._GetName()
 VAL10 = file4.GetExt()
 VAL11 = file4.GetVolume()
+VAL12 = file4.GetFullPath()
+VAL13 = file4.GetFullName()
 
 printn "\t The path part of the filename (without the name or extension)(file4): - %1% -\n" % VAL8
 printn "\t The name part of the filename (without extension)(file4): - %1% -\n" % VAL9
 printn "\t The file name extension(file4): - %1% -\n" % VAL10
 printn "\t The string containing the volume for this file name(file4): - %1% -\n" % VAL11
+printn "\t The full path with name and extension(file4): - %1% -\n" % VAL12
+printn "\t The full name (including extension but excluding directories)(file4): - %1% -\n" % VAL13
 
 if ((VAL8 != "/tmp/") && (VAL9 != "karl") && (VAL10 != "txt") && (VAL11 != "/"))  {
   OK=0;
