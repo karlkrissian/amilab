@@ -14,5 +14,9 @@ ami.MainFrame.AddMenuScript(cl_category,"itk Shortest &Path", cl_dir+"/itkShorte
 ami.MainFrame.AddMenuScript(cl_category,"&itk Vesselness",       cl_dir+"/itkVesselness/itkVesselness")
 ami.MainFrame.AddMenuScript(cl_category,"2D &Lines",         cl_dir+"Lines2D")
 
+# ITK menu
+ami.MainFrame.AddToMenu("&ITK",cl_category,"Shortest &Path", cl_dir+"/itkShortestPath/itkShortestPath_gui")
+ami.MainFrame.AddToMenu("&ITK",cl_category,"Vesselness",       cl_dir+"/itkVesselness/itkVesselness")
+
 del cl_category
 del cl_dir

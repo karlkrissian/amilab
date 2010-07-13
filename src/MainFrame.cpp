@@ -1684,6 +1684,64 @@ void MainFrame::AddMenuScript(  const std::string& script_category,
 
 }
 
+
+//--------------------------------------------------
+void MainFrame::AddToMenu(  const std::string& menu_name,
+                            const std::string& script_category, 
+                            const std::string& script_label, 
+                            const std::string& script_name)
+{
+  // 1. Find the menu in the menu bar
+  int menuid = menuBar->FindMenu(wxString(menu_name.c_str(),wxConvUTF8));
+  if (menuid == wxNOT_FOUND) {
+    wxMenu* newmenu = new wxMenu;
+    menuBar->Append(newmenu,wxString(menu_name.c_str(),wxConvUTF8));
+    menuid = menuBar->FindMenu(wxString(menu_name.c_str(),wxConvUTF8));
+  }
+  if (menuid ==wxNOT_FOUND) {
+    CLASS_ERROR("Problem in adding the menu.")
+    return;
+  }
+  
+  wxMenu* current_menu = menuBar->GetMenu(menuid); // current main menu
+  wxMenu* cat_menu; // category menu
+
+  usermenu_id++;
+  usermenu_scripts[usermenu_id] = script_name;
+  // first try to find the menu corresponding to the given category
+  menuid = current_menu->FindItem(wxString(script_category.c_str(), wxConvUTF8));
+  if (menuid != wxNOT_FOUND) {
+    // category found, adding as submenu
+    CLASS_MESSAGE("category found");
+    wxMenuItem* menuitem = current_menu->FindItem(menuid);
+    if (menuitem!=NULL) {
+      if (menuitem->GetSubMenu())
+        cat_menu = menuitem->GetSubMenu();
+      else
+        cat_menu = menuitem->GetMenu();
+    }
+  } else {
+    if (script_category.length()>1) {
+      wxMenu* newsubmenu = new wxMenu;
+      // add new category
+      current_menu->AppendSubMenu( newsubmenu,   GetwxStr(script_category.c_str()));
+      cat_menu = newsubmenu;
+    } else
+      return;
+  }
+ 
+  // adding or replacing script
+  menuid = cat_menu->FindItem(GetwxStr(script_label.c_str()));
+  if (menuid!=wxNOT_FOUND) 
+    cat_menu->Remove(menuid);
+  cat_menu->Append(usermenu_id, GetwxStr(script_label.c_str()));
+
+  // connecting
+  Connect(usermenu_id,wxEVT_COMMAND_MENU_SELECTED,
+     wxCommandEventHandler(MainFrame::OnUserMenuScript));
+
+}
+
 //--------------------------------------------------
 void MainFrame::OnUserMenuScript(  wxCommandEvent& event)
 {

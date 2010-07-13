@@ -39,7 +39,8 @@ class WrapClass_MainFrame : public WrapClass_wxWindow
     {}
 
     ADD_CLASS_METHOD(GetAmilabEditor,  "Opens or get the amilab editor frame.");
-    ADD_CLASS_METHOD(AddMenuScript,    "Adds a new link to a script from the menus.");
+    ADD_CLASS_METHOD(AddMenuScript,    "Adds a new link to a script from the 'Scripts' menu.");
+    ADD_CLASS_METHOD(AddToMenu,        "Adds a new link to a script from any menu.");
 
     void AddMethods(_parentclass_ptr& this_ptr )
     {
@@ -50,6 +51,7 @@ class WrapClass_MainFrame : public WrapClass_wxWindow
 
       AddVar_GetAmilabEditor(  this_ptr);
       AddVar_AddMenuScript(    this_ptr);
+      AddVar_AddToMenu(        this_ptr);
     }
 
 };

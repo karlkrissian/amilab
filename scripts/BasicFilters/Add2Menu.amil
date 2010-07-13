@@ -15,5 +15,9 @@ ami.MainFrame.AddMenuScript(filt_category,"Weighted Local Stats",filt_dir+"Weigh
 ami.MainFrame.AddMenuScript(filt_category,"itk Weighted Local Stats",filt_dir+"/itkWeightedLocalStats/itkWeightedLocalStats")
 ami.MainFrame.AddMenuScript(filt_category,"itk Sigmoid Filter",filt_dir+"/itkSigmoid/itkSigmoidFilter")
 
+ami.MainFrame.AddToMenu("&ITK",filt_category,"Recursive Gaussian", filt_dir+"/itkRecursiveGaussian/itkRecursiveGaussian")
+ami.MainFrame.AddToMenu("&ITK",filt_category,"Weighted Local Stats",filt_dir+"/itkWeightedLocalStats/itkWeightedLocalStats")
+ami.MainFrame.AddToMenu("&ITK",filt_category,"Sigmoid Filter",filt_dir+"/itkSigmoid/itkSigmoidFilter")
+
 del filt_category
 del filt_dir
