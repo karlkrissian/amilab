@@ -110,7 +110,8 @@ if (!exists(GreyMorphoClass)) {
       }
       if exists(::res) {
         show ::res
-        ::input_draw._compare(::res_draw)
+        ::res_draw.update()
+        ::input_draw._compare(&::res_draw)
         # draw limits of ROI
       }
     }

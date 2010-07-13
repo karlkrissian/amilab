@@ -263,7 +263,8 @@ if (!exists(AnisoNRADClass)) {
       }
       if exists(::res) {
         show ::res
-        ::input_draw._compare(::res_draw)
+        ::res_draw.update()
+        ::input_draw._compare(&::res_draw)
       }
     }
     Comments( ::Display, "Display results")
