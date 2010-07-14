@@ -635,10 +635,21 @@ emptyargs         return(token::T_emptyargs);    /*{emptyargs,T_emptyargs}*/
 //
 //  setlocale(LC_NUMERIC,"C");
   setlocale(LC_NUMERIC, "C");
-  yylval->adouble=atof(YYText());
+  char* endstr;
+  yylval->adouble=strtol(YYText(),&endstr,0);
   return(token::NUMBER);
 }
 
+0x[0-9a-fA-F]+   {
+//
+//============================ Parse interger ====================
+//
+//  setlocale(LC_NUMERIC,"C");
+  setlocale(LC_NUMERIC, "C");
+  char* endstr;
+  yylval->adouble=strtol(YYText(),&endstr,0);
+  return(token::NUMBER);
+}
 
 
 

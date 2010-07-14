@@ -657,7 +657,8 @@ BasicVariable::ptr WrapClass_wxFileName::
 void WrapClass_wxFileName::
       wrap_Mkdir::SetParametersComments() 
 {
-  ADDPARAMCOMMENT_TYPE(int,"The permissions for the newly created directory.");
+  ADDPARAMCOMMENT_TYPE(string,"The directory name (optional).");
+  ADDPARAMCOMMENT_TYPE(int,"The permissions for the newly created directory (optional, by default 0777).");
   return_comments="Returns true if the directory was successfully created, false otherwise (unsigned char).";
 }
 //---------------------------------------------------
@@ -669,48 +670,31 @@ BasicVariable::ptr WrapClass_wxFileName::
   if (!p) ClassHelpAndReturn;
   unsigned char res;
 
-  if (p->GetNumParam() == 0)
-    res = (unsigned char) owxFileName->Mkdir();
-  else
+  switch (p->GetNumParam())
   {
-    int n=0;
-    GET_PARAM(int,iPerm,0777);
+    case 0: {
+      res = (unsigned char) owxFileName->Mkdir();
+      break;
+    }
+    case 1: {
+      int n=0;
+      GET_PARAM(int,iPerm,0777);
 
-    res = (unsigned char) owxFileName->Mkdir(iPerm);
+      res = (unsigned char) owxFileName->Mkdir(iPerm);
+      break;
+    }
+    case 2: {
+      int n=0;
+      GET_PARAM(string,sName,"");
+      GET_PARAM(int,iPerm,0777);
+      if (sName != "")
+        res = (unsigned char) owxFileName->Mkdir(wxString(sName.c_str()), iPerm);
+      else
+        ClassHelpAndReturn;
+    }
   }
 
   RETURN_VAR(unsigned char,res);
-}
-
-//---------------------------------------------------
-//  Mkdirectory
-//---------------------------------------------------
-void WrapClass_wxFileName::
-      wrap_Mkdirectory::SetParametersComments() 
-{
-  ADDPARAMCOMMENT_TYPE(string,"The directory name.");
-  ADDPARAMCOMMENT_TYPE(int,"The permissions for the newly created directory.");
-  return_comments="Returns true if the directory was successfully created, false otherwise (unsigned char).";
-}
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxFileName::
-      wrap_Mkdirectory::CallMember( ParamList* p)
-{
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
-
-  if (!p) ClassHelpAndReturn;
-  int n=0;
-  GET_PARAM(string,sName,"");
-  GET_PARAM(int,iPerm,0777);
-
-  if (sName != "")
-  {
-    unsigned char res = (unsigned char) owxFileName->Mkdir(wxString(sName.c_str()),
-                                                           iPerm);
-    RETURN_VAR(unsigned char,res);
-  }
-  else
-    ClassHelpAndReturn;
 }
 
 //---------------------------------------------------
@@ -719,6 +703,7 @@ BasicVariable::ptr WrapClass_wxFileName::
 void WrapClass_wxFileName::
       wrap_Rmdir::SetParametersComments() 
 {
+  ADDPARAMCOMMENT_TYPE(string,"The directory from the file system (optional).");
   return_comments="Returns true if the directory was successfully deleted, false otherwise (unsigned char).";
 }
 //---------------------------------------------------
@@ -727,40 +712,24 @@ BasicVariable::ptr WrapClass_wxFileName::
 {
   boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
-  unsigned char res = (unsigned char) owxFileName->Rmdir();
+  if (!p) ClassHelpAndReturn;
+  unsigned char res;
+
+  if (p->GetNumParam() == 0)
+    res = (unsigned char) owxFileName->Rmdir();
+  else
+  {
+    int n=0;
+    GET_PARAM(string,sDir,"");
+
+    if(sDir != "")
+      res = (unsigned char) owxFileName->Rmdir(wxString(sDir.c_str()));
+    else
+      ClassHelpAndReturn;
+  }
 
   RETURN_VAR(unsigned char,res);
 }
-
-//---------------------------------------------------
-//  Rmdirectory
-//---------------------------------------------------
-void WrapClass_wxFileName::
-      wrap_Rmdirectory::SetParametersComments() 
-{
-  ADDPARAMCOMMENT_TYPE(string,"The directory from the file system.");
-  return_comments="Returns true if the directory was successfully deleted, false otherwise (unsigned char).";
-}
-//---------------------------------------------------
-BasicVariable::ptr WrapClass_wxFileName::
-      wrap_Rmdirectory::CallMember( ParamList* p)
-{
-  boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
-
-  if (!p) ClassHelpAndReturn;
-  int n=0;
-  GET_PARAM(string,sDir,"");
-
-  if(sDir != "")
-  {
-    unsigned char res = (unsigned char) owxFileName->Rmdir(wxString(sDir.c_str()));
-
-    RETURN_VAR(unsigned char,res);
-  }
-  else
-    ClassHelpAndReturn;
-}
-
 
 //---------------------------------------------------
 //  MakeAbsolute
@@ -916,6 +885,7 @@ BasicVariable::ptr WrapClass_wxFileName::
 void WrapClass_wxFileName::
       wrap_DirExists::SetParametersComments() 
 {
+  ADDPARAMCOMMENT_TYPE(string,"The directory from the file system (optional).");
   return_comments="True if the directory with this name exists (unsigned char).";
 }
 //---------------------------------------------------
@@ -924,7 +894,21 @@ BasicVariable::ptr WrapClass_wxFileName::
 {
   boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
-  unsigned char res = (unsigned char) owxFileName->DirExists();
+  if (!p) ClassHelpAndReturn;
+  unsigned char res;
+
+  if (p->GetNumParam() == 0)
+    res = (unsigned char) owxFileName->DirExists();
+  else
+  {
+    int n=0;
+    GET_PARAM(string,sDir,"");
+
+    if(sDir != "")
+      res = (unsigned char) owxFileName->DirExists(wxString(sDir.c_str()));
+    else
+      ClassHelpAndReturn;
+  }
 
   RETURN_VAR(unsigned char,res);
 }
@@ -973,6 +957,7 @@ BasicVariable::ptr WrapClass_wxFileName::
 void WrapClass_wxFileName::
       wrap_IsDirReadable::SetParametersComments() 
 {
+  ADDPARAMCOMMENT_TYPE(string,"The directory from the file system (optional).");
   return_comments="True if the directory of this instance is an existing directory and this process has read permissions on it (unsigned char).";
 }
 //---------------------------------------------------
@@ -981,7 +966,21 @@ BasicVariable::ptr WrapClass_wxFileName::
 {
   boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
-  unsigned char res = (unsigned char) owxFileName->IsDirReadable();
+  if (!p) ClassHelpAndReturn;
+  unsigned char res;
+
+  if (p->GetNumParam() == 0)
+    res = (unsigned char) owxFileName->IsDirReadable();
+  else
+  {
+    int n=0;
+    GET_PARAM(string,sDir,"");
+
+    if(sDir != "")
+      res = (unsigned char) owxFileName->IsDirReadable(wxString(sDir.c_str()));
+    else
+      ClassHelpAndReturn;
+  }
 
   RETURN_VAR(unsigned char,res);
 }
@@ -992,6 +991,7 @@ BasicVariable::ptr WrapClass_wxFileName::
 void WrapClass_wxFileName::
       wrap_IsDirWritable::SetParametersComments() 
 {
+  ADDPARAMCOMMENT_TYPE(string,"The directory from the file system (optional).");
   return_comments="True if the directory of this instance is an existing directory and this process has read permissions on it (unsigned char).";
 }
 //---------------------------------------------------
@@ -1000,7 +1000,21 @@ BasicVariable::ptr WrapClass_wxFileName::
 {
   boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
-  unsigned char res = (unsigned char) owxFileName->IsDirWritable();
+  if (!p) ClassHelpAndReturn;
+  unsigned char res;
+
+  if (p->GetNumParam() == 0)
+    res = (unsigned char) owxFileName->IsDirWritable();
+  else
+  {
+    int n=0;
+    GET_PARAM(string,sDir,"");
+
+    if(sDir != "")
+      res = (unsigned char) owxFileName->IsDirWritable(wxString(sDir.c_str()));
+    else
+      ClassHelpAndReturn;
+  }
 
   RETURN_VAR(unsigned char,res);
 }

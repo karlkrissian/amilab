@@ -1,0 +1,62 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_wxfilename_hasextandname.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the following methods:
+#                              - constructor
+#                              - HasExt
+#                              - HasName
+#                              - HasVolume
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+OK = 1 # The test was successful
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+printn "Constructor: MODE 4 - a volume name, a directory name, a file name, a file extension - (file=wx.wxFileName(\"/\",\"tmp/\",\"karl\",\"txt\")).\n"
+file=wx.wxFileName("/","tmp/","karl","txt")
+
+print "Get the full path (file.GetFullPath()):\n"
+VAL = file.GetFullPath()
+
+print "\t The full path: - %1% -\n" % VAL
+
+printn "Check if a volume specifier is present (file.HasVolume()).\n"
+if (file.HasVolume()) {
+  printn  "\t The volume is defined."
+} else  {
+  OK=0;
+  printn  "\nERROR: The volume is not defined."
+}
+
+printn "Check if a name is present (file.HasName()).\n"
+if (file.HasName()) {
+  printn  "\t The name is defined."
+} else  {
+  OK=0;
+  printn  "\nERROR: The name is not defined."
+}
+
+printn "Check if an extension is present (file.HasExt()).\n"
+if (file.HasExt()) {
+  printn  "\t The extension is defined."
+} else  {
+  OK=0;
+  printn  "\nERROR: The extension is not defined."
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ctest.PrintTestResult( OK ) 
+
+#quit
+

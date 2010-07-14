@@ -66,9 +66,7 @@ class WrapClass_wxFileName : public WrapClassBase
     ADD_CLASS_METHOD(ClearExt,           "Removes the extension from the file name resulting in a file name with no trailing dot.");
     ADD_CLASS_METHOD(Touch,              "Sets the access and modification times to the current moment.");
     ADD_CLASS_METHOD(Mkdir,              "Creates a directory.");
-    ADD_CLASS_METHOD(Mkdirectory,        "Creates a specific directory.");
     ADD_CLASS_METHOD(Rmdir,              "Deletes a directory from the file system.");
-    ADD_CLASS_METHOD(Rmdirectory,        "Deletes the specified directory from the file system.");
     ADD_CLASS_METHOD(MakeAbsolute,       "Make the file name absolute.");
     ADD_CLASS_METHOD(MakeRelativeTo,     "This function tries to put this file name in a form relative to pathBase.");
 
@@ -127,7 +125,7 @@ class WrapClass_wxFileName : public WrapClassBase
       AddVar_HasName(            this_ptr);
       AddVar_HasVolume(          this_ptr);
       AddVar_DirExists(          this_ptr);
-      AddVar_FileExists(         this_ptr);
+      AddVar_FileExists(         this_ptr, "_FileExists");
       AddVar_IsAbsolute(         this_ptr);
       AddVar_IsDir(              this_ptr);
       AddVar_IsDirReadable(      this_ptr);
@@ -142,9 +140,8 @@ class WrapClass_wxFileName : public WrapClassBase
       AddVar_MakeAbsolute(       this_ptr);
       AddVar_MakeRelativeTo(     this_ptr);
       AddVar_Mkdir(              this_ptr);
-      AddVar_Mkdirectory(        this_ptr);
       AddVar_Rmdir(              this_ptr);
-      AddVar_Rmdirectory(        this_ptr);
+      AddVar_SameAs(             this_ptr);
 
       // Operators
       AddVar_copy(               this_ptr);
