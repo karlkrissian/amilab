@@ -10,25 +10,43 @@ class borderPixel {
 public:
   borderPixel() {}
   ~borderPixel() {}
-  void setBorderPixelValues(float gradx, float grady, float disp,
-                            float curv, unsigned char bord, int x, int y);
-  float         getGradX();
-  float         getGradY();
-  float         getDisplacement();
-  float         getCurvature();
+  void setBorderPixelValues(double intA, double intB, unsigned char bord,
+                            double coef_a, double coef_b, double coef_c,
+                            double cu, int posx, int posy);
+  double        getAIntensity();
+  double        getBIntensity();
   unsigned char getBorder();
-  int           getXPosition();
-  int           getYPosition();
+  double        getCoefficient_a();
+  double        getCoefficient_b();
+  double        getCoefficient_c();
+  double        getCurvature();
+  int           getPosX();
+  int           getPosY();
   void          printBorderPixel();
   
 private:
-  float         gx;
-  float         gy;
-  float         displacement;
-  float         curvature;
+  //Intensity values
+  double A;
+  double B;
+  //Border type
   unsigned char border;
-  int           px;
-  int           py;
+  //Curve coefficients (y = a + bx + cx^2)
+  double a;
+  double b;
+  double c;
+  //Curvature
+  double curvature;
+  //Position
+  int px;
+  int py;
+  
+//  float         gx;
+//  float         gy;
+//  float         displacement;
+//  float         curvature;
+//  unsigned char border;
+//  int           px;
+//  int           py;
 };
 
 #include "BasicVariable.h"

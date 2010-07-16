@@ -27,7 +27,7 @@ if (!exists(BasicEdgeDetectionClass)) {
       ::win.HidePanel
       delvars GetObjectName(::Close)
     }
-    ::Close.Comments("Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
+    Comments(::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
     
     #-----------------------
     
@@ -35,7 +35,7 @@ if (!exists(BasicEdgeDetectionClass)) {
       eval "if (exists(%1%)) { del %1%; };" % ::class_name 
       ::Close
     }
-    ::CloseAll.Comments("Call ::Close() method and delete the class variable")
+    Comments(::CloseAll, "Call ::Close() method and delete the class variable")
 
     #-----------------------
     
@@ -96,7 +96,7 @@ if (!exists(BasicEdgeDetectionClass)) {
         ::Run
       }
     }
-    ::AutoRun.Comments("Apply basic edge detection if reload is enabled")
+    Comments(::AutoRun, "Apply basic edge detection if reload is enabled")
     
     #-----------------------
     

@@ -10,6 +10,7 @@
 #include <cmath>
 #include "inrimage.hpp"
 #include "paramlist.h"
+#include "ami_object.h"
 #include "wrapfunctions.hpp"
 #include <vector>
 #include <iostream>
@@ -46,41 +47,56 @@ double imval(InrImage* input, int x,int y, int z){
 
 
 //borderPixel class methods
-void borderPixel::setBorderPixelValues(float gradx, float grady, float disp,
-                            float curv, unsigned char bord, int x, int y)
+void borderPixel::setBorderPixelValues(double intA, double intB, unsigned char bord,
+                                       double coef_a, double coef_b, double coef_c,
+                                       double cu, int posx, int posy)
 {
-  gx           = gradx;
-  gy           = grady;
-  displacement = disp;
-  curvature    = curv;
-  border       = bord;
-  px           = x;
-  py           = y;
+  A         = intA;
+  B         = intB;
+  border    = bord;
+  a         = coef_a;
+  b         = coef_b;
+  c         = coef_c;
+  curvature = cu;
+  px        = posx;
+  py        = posy;
 }
-  
-float borderPixel::getGradX()          { return gx; }
 
-float borderPixel::getGradY()          { return gy; }
+double borderPixel::getAIntensity()    { return A; }
 
-float borderPixel::getDisplacement()   { return displacement; }
-
-float borderPixel::getCurvature()      { return curvature; }
+double borderPixel::getBIntensity()    { return B; }
 
 unsigned char borderPixel::getBorder() { return border; }
 
-int borderPixel::getXPosition()        { return px; }
+double borderPixel::getCoefficient_a() { return a; }
 
-int borderPixel::getYPosition()        { return py; }
+double borderPixel::getCoefficient_b() { return b; }
+
+double borderPixel::getCoefficient_c() { return c; }
+
+double borderPixel::getCurvature()     { return curvature; }
+
+int borderPixel::getPosX()             { return px; }
+
+int borderPixel::getPosY()             { return py; }
 
 void borderPixel::printBorderPixel()
 {
   cout << "----------------------------------" << endl;
   cout << "Pixel (" << px << ", " << py << ")" << endl;
-  cout << "Border       = " << border << endl;
-  cout << "X gradient   = " << gx << endl;
-  cout << "Y gradient   = " << gy << endl;
-  cout << "Curvature    = " << curvature << endl;
-  cout << "Displacement = " << displacement << endl;
+  cout << "Border       = " << (int)border << endl;
+  cout << "A intensity  = " << A << endl;
+  cout << "B intensity  = " << B << endl;
+  cout << "Curve coefficients: a = " << a << ", b = " << b << ", c = " << c << endl;
+  if (c==0)
+  { 
+    double rad = atan(b);
+    cout << "Angle        = " << (rad*360)/(2*3.141592741) << endl;
+  }
+  else
+  {
+    cout << "Radius       = " << 1/curvature << endl;
+  }
   cout << "----------------------------------" << endl;
 }
 
@@ -225,7 +241,7 @@ void SuperGradienteCurvo(InrImage* input, vector<borderPixel> &borderPixelVector
   int nx = input->DimX();
   int ny = input->DimY();
   long n;
-  long size = (long)nx*ny;
+//  long size = (long)nx*ny;
   double sr, sm, sl, s1, s2;
   short margen = 4;		// cerca del margen no puedo calcular el gradiente
   double a, b, c;
@@ -259,7 +275,6 @@ void SuperGradienteCurvo(InrImage* input, vector<borderPixel> &borderPixelVector
 //    gx[n]    = gy[n] = des[n] = cu[n] = 0.0;
 //    borde[n] = 0;
 //  }
-  pixel.setBorderPixelValues(0.0, 0.0, 0.0, 0.0, 0, 0, 0);
   
   // barremos la imagen
   for (int y = margen; y < ny-margen; y++) {
@@ -268,6 +283,7 @@ void SuperGradienteCurvo(InrImage* input, vector<borderPixel> &borderPixelVector
       sr = sm = sl = 0.0;	
       
       // según la parcial que sea máxima decidimos el caso
+      //if (fabs(ffy(x,y,z))>fabs(ffx(x,y,z))) { puse >= caso de 135º
       if (fabs(ffy(x,y,z))>fabs(ffx(x,y,z))) {
         caso = YMAX;
         u    = (ffx(x,y,z)>0)? upos : uneg;
@@ -302,20 +318,38 @@ void SuperGradienteCurvo(InrImage* input, vector<borderPixel> &borderPixelVector
       s1 = sr + sl;
       s2 = sm;
       
+      /* version vieja de Agustin con un error al parecer
       // calculamos A y B 
       A   = ((double) FF(x+u[27],y+v[27],z) + FF(x+u[28],y+v[28],z) + FF(x+u[29],y+v[29],z)) / 3.0;
       B   = ((double) FF(x+u[30],y+v[30],z) + FF(x+u[31],y+v[31],z) + FF(x+u[32],y+v[32],z)) / 3.0;
       mod = A - B;
+       */
       
-      // si está por debajo del umbral no nos sirve
-      if (mod < umbral) continue;
+      // nueva version de calculo de A y B gracias a Daniel
+      int m = (ffx(x,y,z)*ffy(x,y,z)>0) ? 1 : -1;
+      if (caso==XMAX) {
+        A  = ((double) FF(x+2,y,z) + FF(x+2,y+m,z) + FF(x+1,y+m,z)) / 3.0;
+        B  = ((double) FF(x-1,y-m,z) + FF(x-2,y-m,z) + FF(x-2,y,z)) / 3.0;
+      } else {
+        A  = ((double) FF(x,y+2,z) + FF(x+m,y+2,z) + FF(x+m,y+1,z)) / 3.0;
+        B  = ((double) FF(x-m,y-1,z) + FF(x-m,y-2,z) + FF(x,y-2,z)) / 3.0;
+      }
+      mod = A - B;
+      
+      cout << "mod = " << mod << " m = "<< m << endl;
+      cout << "sl = " << sl << " sr = " << sr << endl;
+      
+      
+      // si está por debajo del umbral no nos sirve (ahora fabs tras la modificiación anterior)
+      if (fabs(mod)< umbral) continue;
       
       // calculamos los coeficientes de la parabola
       b = (sr-sl) / 2 / mod;
+//      cout << "sr="<<sr<<" sl="<<sl<<" mod="<<mod<<endl;
       c = (linear_case) ? 0 : (sl+sr-2*sm) / 2 / mod;
       //c = (s1-2*s2) / 2 / mod;
-      a = (2*sm-5*mod) / 2 / mod - c / 12;
-      //a = (26*s2-60*A-60*B-s1) / 24 / mod;
+      //a = (2*sm-5*mod) / 2 / mod - c / 12; he vuelto a poner la forma antigua de calcular a (15/7/2010)
+      a = (26*s2-60*A-60*B-s1) / 24 / mod;
       
       // calculamos el gradiente y el desplazamiento
       den = sqrt (1 + b*b);
@@ -343,14 +377,14 @@ void SuperGradienteCurvo(InrImage* input, vector<borderPixel> &borderPixelVector
       den  = sqrt (1 + b*b);
       cu_n = 2*c / den / den / den;
       //printf ("pixel (%d,%d) a=%f b=%f c=%f R=%f\n", x, y, a, b, c, 1/cu_n);
-      cout << "pixel (" << x << ", " << y << ") a = " << a << " b = " << b << " c = " << c << " R = " << 1/cu_n << endl;
-      cout << "g(x) = " << gx_n << " g(y) = " << gy_n << endl;
-      cout << "A    = " << A << endl;
-      cout << "B    = " << B << endl;
-      if (c==0){ 
-        double rad = atan(b);
-        cout << "Angle= " << (rad*360)/(2*3.141592741) << endl;
-      }
+//      cout << "pixel (" << x << ", " << y << ") a = " << a << " b = " << b << " c = " << c << " R = " << 1/cu_n << endl;
+//      cout << "g(x) = " << gx_n << " g(y) = " << gy_n << endl;
+//      cout << "A    = " << A << endl;
+//      cout << "B    = " << B << endl;
+//      if (c==0){ 
+//        double rad = atan(b);
+//        cout << "Angle= " << (rad*360)/(2*3.141592741) << endl;
+//      }
      
       
       // volcamos los double al vector float
@@ -359,13 +393,57 @@ void SuperGradienteCurvo(InrImage* input, vector<borderPixel> &borderPixelVector
 //      gy[n]    = (float) gy_n;
 //      des[n]   = (float) des_n;
 //      cu[n]    = (float) cu_n;
-      pixel.setBorderPixelValues(gx_n, gy_n, des_n, cu_n, caso, x, y);
-//      pixel.printBorderPixel();
+
+      pixel.setBorderPixelValues(A, B, caso, a, b, c, cu_n, x, y);
+//      cout << "desp = " << des_n << endl;
+      pixel.printBorderPixel();
+      //Add edge pixel to the vector
       borderPixelVector.push_back(pixel);
     }
   }
 }
 
+void fillImages(vector<borderPixel> &borderPixelVector, InrImage::ptr AIntensity,
+                InrImage::ptr BIntensity, InrImage::ptr border, InrImage::ptr a,
+                InrImage::ptr b, InrImage::ptr c, InrImage::ptr curvature, 
+                InrImage::ptr posx, InrImage::ptr posy)
+{
+  int x    = 0;
+  int y    = 0;
+  int z    = 0;
+  
+  for(vector<borderPixel>::iterator i=borderPixelVector.begin(); 
+      i!= borderPixelVector.end(); i++, x++)
+  {
+    //A intensity
+    AIntensity->BufferPos(x,y,z);
+    AIntensity->FixeValeur(i->getAIntensity());
+    //B intensity
+    BIntensity->BufferPos(x,y,z);
+    BIntensity->FixeValeur(i->getBIntensity());
+    //Border type
+    border->BufferPos(x,y,z);
+    border->FixeValeur(i->getBorder());
+    //Coefficient a
+    a->BufferPos(x,y,z);
+    a->FixeValeur(i->getCoefficient_a());
+    //Coefficient b
+    b->BufferPos(x,y,z);
+    b->FixeValeur(i->getCoefficient_b());
+    //Coefficient c
+    c->BufferPos(x,y,z);
+    c->FixeValeur(i->getCoefficient_c());
+    //Curvature
+    curvature->BufferPos(x,y,z);
+    curvature->FixeValeur(i->getCurvature());
+    //X position
+    posx->BufferPos(x,y,z);
+    posx->FixeValeur(i->getPosX());
+    //Y position
+    posy->BufferPos(x,y,z);
+    posy->FixeValeur(i->getPosY());
+  }
+}
 
 //float *data, int nx, int ny, float *gx, float *gy, float *des, float *cu, unsigned char *borde, float umbral)
 BasicVariable::ptr wrapSubpixel2D (ParamList* p) {
@@ -386,10 +464,9 @@ BasicVariable::ptr wrapSubpixel2D (ParamList* p) {
   int num = 0;
   //Get input image
   if (!get_val_ptr_param<InrImage>(input, p, num)) HelpAndReturnVarPtr;
-  InrImage::ptr output (new InrImage(WT_FLOAT, "rowResult.ami.gz", input)); 
-  output->InitZero(); //Ahora mismo la imagen de salida está vacía!!!!!!!!!!!!! (negra como el sobaco un grillo)
+  InrImage::ptr output (new InrImage(WT_FLOAT, "sub2DResult.ami.gz", input)); 
+  output->InitZero(); //Ahora mismo la imagen de salida está vacía!!!!!!!!!!!!!
   
-  //Solución temporal para que compile (declarar los parámetros que se van a devolver de forma local)
 //  float* gx = new float[input->DimX()*input->DimY()];
 //  float* gy = new float[input->DimX()*input->DimY()];
 //  float* des = new float[input->DimX()*input->DimY()];
@@ -407,7 +484,53 @@ BasicVariable::ptr wrapSubpixel2D (ParamList* p) {
   //Calls to SuperGradienteCurvo
   //SuperGradienteCurvo(input, output, gx, gy, des, cu, borde, umbral, linear_case);
   SuperGradienteCurvo(input, borderPixelVector, umbral, linear_case);
-  cout << "+++++++ size = " << borderPixelVector.size() << endl;
+  
+  //Se crea el AMIObject y se encapsulan dentro las imágenes que representan cada parámetro
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("Sub-pixel2D");
+  int size = borderPixelVector.size();
+  //InrImages for params
+  InrImage::ptr AIntensity = InrImage::ptr(new InrImage(size, 1, 1, WT_DOUBLE,
+                                                        "aintensity.inr.gz"));
+  InrImage::ptr BIntensity = InrImage::ptr(new InrImage(size, 1, 1, WT_DOUBLE,
+                                                        "bintensity.inr.gz"));
+  InrImage::ptr border     = InrImage::ptr(new InrImage(size, 1, 1, WT_UNSIGNED_CHAR,
+                                                        "border.inr.gz"));
+  InrImage::ptr a          = InrImage::ptr(new InrImage(size, 1, 1, WT_DOUBLE,
+                                                        "acoef.inr.gz"));
+  InrImage::ptr b          = InrImage::ptr(new InrImage(size, 1, 1, WT_DOUBLE,
+                                                        "bcoef.inr.gz"));
+  InrImage::ptr c          = InrImage::ptr(new InrImage(size, 1, 1, WT_DOUBLE,
+                                                        "ccoef.inr.gz"));
+  InrImage::ptr curvature  = InrImage::ptr(new InrImage(size, 1, 1, WT_DOUBLE,
+                                                        "curvature.inr.gz"));
+  InrImage::ptr posx       = InrImage::ptr(new InrImage(size, 1, 1, WT_UNSIGNED_SHORT,
+                                                        "xpos.inr.gz"));
+  InrImage::ptr posy       = InrImage::ptr(new InrImage(size, 1, 1, WT_UNSIGNED_SHORT,
+                                                        "ypos.inr.gz"));
+  
+  //Fill InrImages
+  fillImages(borderPixelVector, AIntensity, BIntensity, border, a, b, c, 
+             curvature, posx, posy);
+  //Add to amiobject
+  amiobject->GetContext()->AddVar<InrImage>("aintensity", AIntensity, 
+                                            amiobject->GetContext());
+  amiobject->GetContext()->AddVar<InrImage>("bintensity", BIntensity,
+                                            amiobject->GetContext());
+  amiobject->GetContext()->AddVar<InrImage>("border", border,
+                                            amiobject->GetContext());
+  amiobject->GetContext()->AddVar<InrImage>("acoef", a,
+                                            amiobject->GetContext());
+  amiobject->GetContext()->AddVar<InrImage>("bcoef", b,
+                                            amiobject->GetContext());
+  amiobject->GetContext()->AddVar<InrImage>("ccoef", c,
+                                            amiobject->GetContext());
+  amiobject->GetContext()->AddVar<InrImage>("curvature", curvature,
+                                            amiobject->GetContext());
+  amiobject->GetContext()->AddVar<InrImage>("xpos", posx,
+                                            amiobject->GetContext());
+  amiobject->GetContext()->AddVar<InrImage>("ypos", posy,
+                                            amiobject->GetContext());
 
   //Borramos la solución temporal y por ahora se devuelve input tal cual
 //  delete[] borde;
@@ -416,10 +539,11 @@ BasicVariable::ptr wrapSubpixel2D (ParamList* p) {
 //  delete[] des;
 //  delete[] cu;
   
-  Variable<InrImage>::ptr result(
-    new Variable<InrImage>( "subpixel_result",
-                            output));
-
+//  Variable<InrImage>::ptr result(
+//    new Variable<InrImage>( "subpixel_result",
+//                            output));
+  Variable<AMIObject>::ptr result(
+      new Variable<AMIObject>(amiobject));
   return result;
 
 }

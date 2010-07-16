@@ -36,11 +36,84 @@ if (!exists(Subpixel2DClass)){
     
     #-----------------------
     
+    proc ::drawBorder() {
+      ::norm_input_draw.SetPenColor(wx.wxColour(255,0,0))
+      delta = 0.4
+      xmin = ::norm_input_draw.GetXmin()
+      xmax = ::norm_input_draw.GetXmax()
+      ymin = ::norm_input_draw.GetYmin()
+      ymax = ::norm_input_draw.GetYmax()
+      for i=0 to ::res->xpos.tx-1 {
+        x = ::res->xpos(i,0)
+        y = ::res->ypos(i,0)
+        #Only paint on visualization region
+        if(x>=xmin && x<=xmax) {
+          if(y>=ymin && y<=ymax) {
+            a = ::res->acoef(i,0)
+            b = ::res->bcoef(i,0)
+            c = ::res->ccoef(i,0)
+            #print "a = "
+            #print a
+            #print " b = "
+            #print b
+            #print " c = "
+            #print c
+            #hay que usar a como desplazamiento dentro del pixel
+            #YMAX
+            if(::res->border(i,0) == 2) {
+              #printn "tipo de borde 2"
+              #printn b
+              ::norm_input_draw.SetPenColor(wx.wxColour(255,0,0))
+              dx1 = -delta
+              dy1 = a+b*dx1
+              dx2 = delta
+              dy2 = a+b*dx2
+              #::norm_input_draw.DrawLineZ(x,y-a,x+dx2,y-dy2)
+              #::norm_input_draw.DrawLineZ(x-dx1, y+dy1, x+dx2, y-dy2)
+              if(b<0){
+                ::norm_input_draw.DrawLineZ(x+delta, y-(a+b*delta), x-delta, y-(a+b*delta))
+              } else {
+                ::norm_input_draw.DrawLineZ(x-delta, y-(a-b*delta), x+delta, y-(a+b*delta))
+              }
+            } else {
+              #XMAX
+              #printn "tipo de borde 1"
+              #printn b
+              ::norm_input_draw.SetPenColor(wx.wxColour(0,255,0))
+              #::norm_input_draw.DrawLineZ(x-delta,y-(a-b*delta),x+delta,y-(a+b*delta))
+              dy1 = delta
+              dx1 = a+b*dy1
+              dy2 = -delta
+              dx2 = a+b*dy2
+              #::norm_input_draw.DrawLineZ(x+a, y, x+dx2, y-dy2)
+              #::norm_input_draw.DrawLineZ(x-dx1, y+dy1, x+dx2, y+dy2)
+              if(b<0 || b==1){
+                ::norm_input_draw.DrawLineZ(x-(a-b*delta), y-delta, x-(a+b*delta), y+delta)
+              } else {
+                ::norm_input_draw.DrawLineZ(x-(a-b*delta), y+delta, x-(a+b*delta), y-delta)
+              }
+              #::norm_input_draw.DrawLineZ(delta-(a-b*x), y-delta, delta-(a+b*x), y+delta)
+              #::norm_input_draw.DrawLineZ((y-delta)-a-b*x, y-delta, (y+delta)-a-b*x, y+delta)
+            }
+          }
+        }
+      }
+      ::norm_input_draw.DrawingAreaDisplay()
+    }
+    Comments(::drawBorder, "Draw the sub-pixel border")
+    
+    #-----------------------
+    
     proc ::Run() {
     	::load_input()
-    	::temp = norm(::input)
-			::res <<= ::filters->Subpixel2D(&::temp, ::threshold, ::lineal)
-			::Display
+    	::norm_input <<= norm(::input)
+      if (exists(::res)) { del ::res; }
+			::res = ::filters->Subpixel2D(&::norm_input, ::threshold, ::lineal)
+      
+      ::Display
+      ::drawBorder
+      
+      ::norm_input_draw.PaintCallback(&::drawBorder)
     }
     Comments(::Run, "Detects edges with Subpixel2D method")
     
@@ -48,8 +121,8 @@ if (!exists(Subpixel2DClass)){
     
     proc ::Display() {
       global
-      if (exists(::res)) {
-        show ::res
+      if (exists(::norm_input)) {
+        show ::norm_input
       }
     }
     Comments(::Display, "Show the result image")
@@ -85,7 +158,7 @@ if (!exists(Subpixel2DClass)){
             ::win.EndHorizontal()
             ::win.AddString(&::output_name, "Output")
             #Edge detection parameters
-            ::win.AddFloat(&::threshold, "Thres.", 1, 25)
+            ::win.AddFloat(&::threshold, "Thres.", 0, 25)
             ::win.SetCallback(&::AutoRun)
             ::win.AddBoolean(&::lineal, "Lineal Case")
             ::win.SetCallback(&::AutoRun)
