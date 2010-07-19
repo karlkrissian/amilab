@@ -1,21 +1,23 @@
+
+func "Common/ScriptGui"
+
 if (!exists(itkFastMarchingClass)) {
  
   ami_import->ITK()
-  func "BasicFilters/itkSigmoid/itkSigmoidFilter.amil"
+  func "BasicFilters/itkSigmoid/itkSigmoidFilterClass.amil"
   
 #*******************************************************************************************#
 #****************************FASTMARCHING***************************************************#
 #*******************************************************************************************#
   
-  Class itkFastMarchingClass {
+  Class itkFastMarchingClass : public ScriptGui {
     
-    global::itkSigmoidClass ::SIG
+    global::itkSigmoidFilterClass ::SIG
     ::itk=&global::itk
   
     proc ::Init() {
     
       #global::itkSigmoidClass ::sig
-      ::class_name="global::itkFastMarchingClass"
       ::input_name   = "","Name of the input image variable"
       ::input_velocity_name   = "","Name of the input velocity image variable"
       ::gradient_mode = INT(0), "Gradient mode: Computes the norm of the gradient of the image."
@@ -37,20 +39,7 @@ if (!exists(itkFastMarchingClass)) {
       ::html_filename = GetScriptsDir+"/Segmentation/itkFastMarching/doc/fastmarching/index.html"
     }
 
-    proc ::Close() \
-    {
-      ::win.HidePanel
-      delvars GetObjectName(::Close)
-    }
-    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-  
-    proc ::CloseAll() {
-      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
-      ::SIG->CloseAll()
-      ::Close
-    }
-    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
-    
+    #----------------------------------------------------------------------
     proc ::Load_input() {
 
       eval "::input <<= (FLOAT)"+::input_name+";"
@@ -65,6 +54,7 @@ if (!exists(itkFastMarchingClass)) {
       show ::input
     }
     
+    #----------------------------------------------------------------------
     proc ::Load_input_velocity() {
 
       eval "::input_velocity <<= (FLOAT)"+::input_velocity_name+";"
@@ -79,21 +69,25 @@ if (!exists(itkFastMarchingClass)) {
       show ::input_velocity
     }
     
+    #----------------------------------------------------------------------
     proc ::set_input(IMAGE im) \
     {
       ::input <<= im
     }
   
+    #----------------------------------------------------------------------
     proc ::set_fast(IMAGE im) \
     {
       ::fast <<= im
     }
     
+    #----------------------------------------------------------------------
     proc ::set_sigmoid(IMAGE im) \
     {
       ::SIG->set_sigmoid(im)
     }
     
+    #----------------------------------------------------------------------
     proc ::Run() {
 
       ::SIG->set_input(::input)
@@ -123,6 +117,7 @@ if (!exists(itkFastMarchingClass)) {
       }
     }
     
+    #----------------------------------------------------------------------
     proc ::SeedPoint() \
     {
       #show ::input
@@ -149,6 +144,7 @@ if (!exists(itkFastMarchingClass)) {
       }
     }
     
+    #----------------------------------------------------------------------
     proc ::SetSeedPoint2( NUM x, NUM y) \
     {
       printn x
@@ -157,6 +153,7 @@ if (!exists(itkFastMarchingClass)) {
       ::seed_Y = y
     }
     
+    #----------------------------------------------------------------------
     proc ::SetSeedPoint3( NUM x, NUM y, NUM z) \
     {
       printn x
@@ -167,6 +164,7 @@ if (!exists(itkFastMarchingClass)) {
       ::seed_Z = z
     }
     
+    #----------------------------------------------------------------------
     proc ::Display() {
     
       show ::input
@@ -175,41 +173,20 @@ if (!exists(itkFastMarchingClass)) {
     
     }
     
+    #----------------------------------------------------------------------
     proc ::SetParentPanel(OBJECT pp) \
     {
       ::parent_panel = &pp
     }
     
+    #----------------------------------------------------------------------
     proc ::ConfigEventL() {
       ::win.EnablePanel(::config_manual, ::gradient_mode==1)
       ::win.EnablePanel(::config_gradient, ::gradient_mode==0)
       ::win.SelectPage(::init_book,::gradient_mode)
     }
     
-    proc ::LaunchHelp() {
-      import = &global::ami_import
-      wx1 = import->WxFunctions()
-      res = wx1->LaunchDefaultBrowser(::help)
-    }
-    Comments( ::LaunchHelp, "Launch the corresponding help tutorial page on the default browser.")
-    
-    proc ::HtmlHome() {
-      ::html.LoadFile( ::html_filename)
-    }
-    Comments( ::HtmlHome, "Back to the initial page.")
-
-    //---------------------------------------------------
-    proc ::HtmlBack() {
-      res = ::html.HistoryBack()
-    }
-    Comments( ::HtmlBack, "Back to the previous page.")
-
-    //---------------------------------------------------
-    proc ::HtmlForward() {
-      res = ::html.HistoryForward()
-    }
-    Comments( ::HtmlForward, "Go to the forward page.")
-    
+    #----------------------------------------------------------------------
     proc ::Gui() {
       import = &global::ami_import;
       #::win = import->ParamPanel("itkFM")
@@ -235,16 +212,16 @@ if (!exists(itkFastMarchingClass)) {
             
             ::config_manual = ::win.AddPage("Manual input")
             ::win.BeginBoxPanel("Input Velocity Image")
-              ::win.BeginHorizontal
+              ::win.BeginHorizontal()
                 ::win.AddImageChoice( &::input_velocity_name, "")
                 ::win.AddButton("Load",::Load_input_velocity)
-              ::win.EndHorizontal
-              ::win.BeginHorizontal
+              ::win.EndHorizontal()
+              ::win.BeginHorizontal()
                 dim_id = ::win.AddEnum( &::dim,"Dimension")
                 ::win.AddEnumChoice(dim_id, "2D")
                 ::win.AddEnumChoice(dim_id, "3D")
-              ::win.EndHorizontal
-            ::win.EndBoxPanel
+              ::win.EndHorizontal()
+            ::win.EndBoxPanel()
           ::win.EndBook()
 
         ::win.AddPage("Param")
@@ -255,30 +232,16 @@ if (!exists(itkFastMarchingClass)) {
           ::win.AddFloat( &::upper,"Upper Threshold",0,::inputmax)
           ::win.AddFloat( &::seed,"Seed",0,::inputmax)  
                     
-          ::win.BeginHorizontal
+          ::win.BeginHorizontal()
             ::win.AddButton("Run", ::Run)
             ::win.AddButton("Display", ::Display)
-          ::win.EndHorizontal
+          ::win.EndHorizontal()
           
-        ::win.AddPage("Help")
-          ::win.BeginHorizontal
-            ::win.AddButton("Help",   ::LaunchHelp)
-            ::win.AddButton("Home",   ::HtmlHome)
-            ::win.AddButton("<--",    ::HtmlBack)
-            ::win.AddButton("-->",    ::HtmlForward)
-          ::win.EndHorizontal
-          # add html widget
-          d = ::win.CurrentParent()
-          ::html = import->wxHtmlWindow(&d)
-          ::html.LoadFile( ::html_filename)
-          ::win.AddWidget(&::html,1)
+       ::AddHelpPage(&::win)
         
-      ::win.EndBook
+      ::win.EndBook()
       
-      ::win.BeginHorizontal
-        ::win.AddButton("Close",      ::Close)
-        ::win.AddButton("Close All",  ::CloseAll)
-      ::win.EndHorizontal
+      ::AddStandardButtons(&::win)
            
       if (exists(::parent_panel)) {
         ::win.ShowPanel()

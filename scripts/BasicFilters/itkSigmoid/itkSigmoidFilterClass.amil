@@ -1,14 +1,17 @@
-if (!exists(itkSigmoidClass)) {
+func "Common/ScriptGui"
+
+
+if (!exists(itkSigmoidFilterClass)) {
   
   ami_import->ITK()
   
-  Class itkSigmoidClass {
+  Class itkSigmoidFilterClass : public ScriptGui {
     
     ::itk=&global::itk
   
+    #------------------------------------
     proc ::Init() {
       
-      ::class_name="global::itkSigmoidClass"
       ::input_name   = "","Name of the input image variable"
       ::stand = 0.5, "Standard deviation of the Gaussian kernel."
       
@@ -27,19 +30,7 @@ if (!exists(itkSigmoidClass)) {
       
     }
 
-    proc ::Close() \
-    {
-      ::win.HidePanel
-      delvars GetObjectName(::Close)
-    }
-    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-  
-    proc ::CloseAll() {
-      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
-      ::Close
-    }
-    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
-    
+    #------------------------------------
     proc ::Load_input() {
 
       eval "::input <<= (FLOAT)"+::input_name+";"
@@ -54,6 +45,7 @@ if (!exists(itkSigmoidClass)) {
       show ::input
     }
     
+    #------------------------------------
     proc ::Run() {
       ::grad = normgrad(::input,::stand)
       ::g = 1
@@ -64,11 +56,13 @@ if (!exists(itkSigmoidClass)) {
       }      
     }
     
+    #------------------------------------
     proc ::set_input(IMAGE im) \
     {
       ::input <<= im
     }
     
+    #------------------------------------
     proc ::Display() {
     
       show ::input
@@ -77,40 +71,19 @@ if (!exists(itkSigmoidClass)) {
     
     }
     
+    #------------------------------------
     proc ::set_sigmoid(IMAGE im) \
     {
       ::sigmoid <<= im
     }
     
+    #------------------------------------
     proc ::SetParentPanel(OBJECT pp) \
     {
       ::parent_panel = &pp
     }
     
-    proc ::LaunchHelp() {
-      import = &global::ami_import
-      wx1 = import->WxFunctions()
-      res = wx1->LaunchDefaultBrowser(::help)
-    }
-    Comments( ::LaunchHelp, "Launch the corresponding help tutorial page on the default browser.")
-    
-    proc ::HtmlHome() {
-      ::html.LoadFile( ::html_filename)
-    }
-    Comments( ::HtmlHome, "Back to the initial page.")
-
-    //---------------------------------------------------
-    proc ::HtmlBack() {
-      res = ::html.HistoryBack()
-    }
-    Comments( ::HtmlBack, "Back to the previous page.")
-
-    //---------------------------------------------------
-    proc ::HtmlForward() {
-      res = ::html.HistoryForward()
-    }
-    Comments( ::HtmlForward, "Go to the forward page.")
-    
+    #---------------------------------------------------
     proc ::Gui() {
       import = &global::ami_import;
       
@@ -125,16 +98,16 @@ if (!exists(itkSigmoidClass)) {
         
         ::win.BeginBoxPanel("Input Image")
             # set the input image
-            ::win.BeginHorizontal
+            ::win.BeginHorizontal()
               ::win.AddImageChoice( &::input_name, "")
               ::win.AddButton("Load",::Load_input)
-            ::win.EndHorizontal
-            ::win.BeginHorizontal
+            ::win.EndHorizontal()
+            ::win.BeginHorizontal()
               dim_id = ::win.AddEnum( &::dim,"Dimension")
               ::win.AddEnumChoice(dim_id, "2D")
               ::win.AddEnumChoice(dim_id, "3D")
-            ::win.EndHorizontal
-        ::win.EndBoxPanel
+            ::win.EndHorizontal()
+        ::win.EndBoxPanel()
                 
         ::win.AddPage("Param")
         
@@ -147,35 +120,22 @@ if (!exists(itkSigmoidClass)) {
           ::win.AddButton("Run", ::Run)
           ::win.AddButton("Display", ::Display)
           
-        ::win.AddPage("Help")
-          ::win.BeginHorizontal
-            ::win.AddButton("Help",   ::LaunchHelp)
-            ::win.AddButton("Home",   ::HtmlHome)
-            ::win.AddButton("<--",    ::HtmlBack)
-            ::win.AddButton("-->",    ::HtmlForward)
-          ::win.EndHorizontal
-          # add html widget
-          d = ::win.CurrentParent()
-          ::html = import->wxHtmlWindow(&d)
-          ::html.LoadFile( ::html_filename)
-          ::win.AddWidget(&::html,1)
+       ::AddHelpPage(&::win)
         
-      ::win.EndBook
+      ::win.EndBook()
       
-      ::win.BeginHorizontal
-        ::win.AddButton("Close", ::Close)
-        ::win.AddButton("Close All", ::CloseAll)
-      ::win.EndHorizontal
+      ::AddStandardButtons(&::win)
       
       if (exists(::parent_panel)) {
         ::win.ShowPanel()
       } else {
         ::win.Display()
       }
+      ::win.Update(-1)
     }
     
-    ::Init
+    ::Init()
   }
-# Class itkSigmoidClass
+# Class itkSigmoidFilterClass
 }
-# end if (!exists(itkSigmoidClass))
+# end if (!exists(itkSigmoidFilterClass))

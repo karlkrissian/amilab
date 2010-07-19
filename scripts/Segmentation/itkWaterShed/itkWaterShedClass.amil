@@ -1,11 +1,15 @@
 #
 # Interface for itk WaterShed Image Segmentation Filter
 #
-if (!exists(WaterShedClass)){
+
+func "Common/ScriptGui"
+
+
+if (!exists(itkWaterShedClass)){
 
   ami_import->ITK()
   
-  Class WaterShedClass {
+  Class itkWaterShedClass : public ScriptGui {
   ::itk = &global::itk
   #------------------------------------
   
@@ -14,7 +18,6 @@ if (!exists(WaterShedClass)){
   
     proc ::init() {
 
-      ::class_name ="global::WaterShedClass"
       ::input_name   = "","Name of the input image variable"
       ::gradient_mode = INT(0), "Gradient mode: Computes the norm of the gradient of the image."
       ::stand = 1, "Standard deviation of the Gaussian kernel."
@@ -37,21 +40,6 @@ if (!exists(WaterShedClass)){
       #::Gui()
     }
     
-    #----------------------------
-    proc ::Close() \
-      {
-        ::win.HidePanel
-        delvars GetObjectName(::Close)
-      }
-      Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-    
-      proc ::CloseAll() {
-        eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
-        ::Close
-      }
-      Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
-        
-    #------------------------------------
     #------------------------
     proc ::load_input() {
 
@@ -84,7 +72,8 @@ if (!exists(WaterShedClass)){
     
       show ::grad
       show ::water
-      ::grad_draw.compare(::water_draw)
+      ::water_draw.update()
+      ::grad_draw._compare(&::water_draw)
     
     }
     
@@ -117,32 +106,7 @@ if (!exists(WaterShedClass)){
     }
     Comments( ::SaveR, "Saves the gradient image as ${::water_filename}_thresXX_lvlXX.ami.gz")
 
-    #------------------------
-
-    proc ::LaunchHelp() {
-      import = &global::ami_import
-      wx1 = import->WxFunctions()
-      res = wx1->LaunchDefaultBrowser(::help)
-    }
-    Comments( ::LaunchHelp, "Launch the corresponding help tutorial page on the default browser.")
-      
-    proc ::HtmlHome() {
-      ::html.LoadFile( ::html_filename)
-    }
-    Comments( ::HtmlHome, "Back to the initial page.")
-
-    //---------------------------------------------------
-    proc ::HtmlBack() {
-      res = ::html.HistoryBack()
-    }
-    Comments( ::HtmlBack, "Back to the previous page.")
-
-    //---------------------------------------------------
-    proc ::HtmlForward() {
-      res = ::html.HistoryForward()
-    }
-    Comments( ::HtmlForward, "Go to the forward page.")  
-
+    #------------------------------------------------------------
     proc ::Gui() {
       import = &global::ami_import;
       ::win = import->ParamPanel("WaterShed")
@@ -152,66 +116,52 @@ if (!exists(WaterShedClass)){
 
           ::win.BeginBoxPanel("Input Image")
             # set the input image
-            ::win.BeginHorizontal
+            ::win.BeginHorizontal()
               ::win.AddImageChoice( &::input_name, "")
               ::win.AddButton("Load",::load_input)
-            ::win.EndHorizontal
-            ::win.BeginHorizontal
+            ::win.EndHorizontal()
+            ::win.BeginHorizontal()
               dim_id = ::win.AddEnum( &::dim,"Dimension")
               ::win.AddEnumChoice(dim_id, "2D")
               ::win.AddEnumChoice(dim_id, "3D")
-            ::win.EndHorizontal
-          ::win.EndBoxPanel
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
           ::win.BeginBoxPanel("Gradient Mode")
-            ::win.BeginHorizontal
+            ::win.BeginHorizontal()
               gradmode_id = ::win.AddEnum( &::gradient_mode,"Mode")
               ::win.AddEnumChoice(gradmode_id, "NormGradient")
-            ::win.EndHorizontal
-          ::win.EndBoxPanel
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
 
 
         ::win.AddPage("Param")
 
           ::win.BeginBoxPanel("Gradient Param")
             ::win.AddFloat( &::stand,"StandDev",0,(::inputmax-::inputmin)/2)
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
           ::win.BeginBoxPanel("WaterShed Param")
             ::win.AddFloat( &::lThreshold,"Threshold",0,::inputmax)
             ::win.AddFloat( &::FloodLevel,"Flood Level",0,1)
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
           
-          ::win.BeginHorizontal
+          ::win.BeginHorizontal()
             ::win.AddButton("Run",::Run)
             ::win.AddButton("Display",::Display)
-          ::win.EndHorizontal
+          ::win.EndHorizontal()
           
-          ::win.BeginHorizontal
+          ::win.BeginHorizontal()
             ::win.AddButton("Save Result",::SaveR)
             ::win.AddButton("Save Gradient",::SaveG)
-          ::win.EndHorizontal
+          ::win.EndHorizontal()
         
-        ::win.AddPage("Help")
-          ::win.BeginHorizontal
-            ::win.AddButton("Help",   ::LaunchHelp)
-            ::win.AddButton("Home",   ::HtmlHome)
-            ::win.AddButton("<--",    ::HtmlBack)
-            ::win.AddButton("-->",    ::HtmlForward)
-          ::win.EndHorizontal
-          # add html widget
-          d = ::win.CurrentParent()
-          ::html = import->wxHtmlWindow(&d)
-          ::html.LoadFile( ::html_filename)
-          ::win.AddWidget(&::html,1)
+       ::AddHelpPage(&::win)
         
-      ::win.EndBook
-
-      ::win.BeginHorizontal
-          ::win.AddButton("Close",      ::Close)
-          ::win.AddButton("Close All",  ::CloseAll)
-        ::win.EndHorizontal
+      ::win.EndBook()
+      
+      ::AddStandardButtons(&::win)
 
       ::win.Update(-1)
-      ::win.Display
+      ::win.Display()
     }
     
     ::init
@@ -220,13 +170,3 @@ if (!exists(WaterShedClass)){
   
 } #End of if
 
-#----------------------------
-# Main
-#----------------------------
-
-if (!exists(wsobjetct)) {
-  WaterShedClass wsobjetct
-  
-} else {
-InfoDialog "The script seems to be already loaded." 
-}

@@ -8,7 +8,7 @@ proc AddOpticFlowMenu() {
   filt_category = "Optic &Flow"
   filt_dir = "OpticFlow/"
   
-  ami.MainFrame.AddMenuScript(filt_category,"3D &Correlation",        filt_dir+"test_corr3D")
+  ami.MainFrame.AddToMenu("&Scripts",filt_category,"3D &Correlation",        filt_dir+"test_corr3D")
 }
 
 AddOpticFlowMenu()

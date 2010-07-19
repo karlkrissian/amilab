@@ -52,7 +52,7 @@ if (!exists(ScriptGui)) \
     # Reloads the script
     #
     proc ::Reload() {
-      cmd = "global; func \"%1%\";" % ::classfilename
+      cmd = "global; func \"%1%\";" % ::objectfilename
       ::CloseAll()
       eval cmd
     }

@@ -4,19 +4,19 @@
 # of the image intensity (local mean and local standard deviation)
 #
 
+func "Common/ScriptGui"
 
-if (!exists(itkWeightedLSCLass)) {
+if (!exists(itkWeightedLocalStatsCLass)) {
 
   ami_import->ITK()
 
-  Class itkWeightedLSCLass {
+  Class itkWeightedLocalStatsCLass : public ScriptGui {
   
     ::itk=&global::itk
 
     #--------------------------
     proc ::Init() \
     {
-      ::class_name="global::itkWeightedLSCLass"
       ::input_name = "","Name of the input image variable"
       ::weights_name = "","Name of the weights image variable"
       ::output_prefix = ""
@@ -47,20 +47,6 @@ if (!exists(itkWeightedLSCLass)) {
         ::win.Update(-1)
       }
     }
-
-    #--------------------------
-    proc ::Close() \
-    {
-      ::win.HidePanel
-      delvars GetObjectName(::Close)
-    }
-    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-  
-    proc ::CloseAll() {
-      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
-      ::Close
-    }
-    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
 
     #--------------------------
     proc ::Apply() \
@@ -147,23 +133,6 @@ if (!exists(itkWeightedLSCLass)) {
       eval "::input_draw.compare(global::"+::output_prefix+"prob_draw);"
     }
     
-    proc ::HtmlHome() {
-      ::html.LoadFile( ::html_filename)
-    }
-    Comments( ::HtmlHome, "Back to the initial page.")
-
-    //---------------------------------------------------
-    proc ::HtmlBack() {
-      res = ::html.HistoryBack()
-    }
-    Comments( ::HtmlBack, "Back to the previous page.")
-
-    //---------------------------------------------------
-    proc ::HtmlForward() {
-      res = ::html.HistoryForward()
-    }
-    Comments( ::HtmlForward, "Go to the forward page.")  
-    
     #--------------------------
     proc ::Gui() \
     {
@@ -172,21 +141,21 @@ if (!exists(itkWeightedLSCLass)) {
 
       ::win.BeginBook()
         ::win.AddPage("Init")
-          ::win.BeginHorizontal
+          ::win.BeginHorizontal()
             ::win.AddImageChoice( &::input_name,"Input")
             ::win.AddButton("Load",::Load_Input)
-          ::win.EndHorizontal
+          ::win.EndHorizontal()
 
-          ::win.BeginHorizontal
+          ::win.BeginHorizontal()
             ::win.AddImageChoice( &::weights_name,"Weights")
             ::win.AddButton("Load",::Load_Weights)
-          ::win.EndHorizontal        
+          ::win.EndHorizontal()        
           
-          ::win.BeginHorizontal
+          ::win.BeginHorizontal()
             dim_id = ::win.AddEnum( &::dim,"Dimension")
             ::win.AddEnumChoice(dim_id, "2D")
             ::win.AddEnumChoice(dim_id, "3D")
-          ::win.EndHorizontal
+          ::win.EndHorizontal()
           
           ::win.AddString( &::output_prefix,"Output Prefix")
     
@@ -194,36 +163,22 @@ if (!exists(itkWeightedLSCLass)) {
           ::win.AddInt( &::localstats_winsize,  "::localstats_winsize", 1,10)
           ::win.AddFloat( &::min_weight,  "::min_weight", 0.01,1)
       
-          ::win.BeginHorizontal
+          ::win.BeginHorizontal()
             ::win.AddButton("Apply",  ::Apply)
             ::win.AddButton("Display",::Display)
-          ::win.EndHorizontal
+          ::win.EndHorizontal()
         
-        ::win.AddPage("Help")
-          ::win.BeginHorizontal
-            ::win.AddButton("Home",   ::HtmlHome)
-            ::win.AddButton("<--",    ::HtmlBack)
-            ::win.AddButton("-->",    ::HtmlForward)
-          ::win.EndHorizontal
-          # add html widget
-          d = ::win.CurrentParent()
-          ::html = import->wxHtmlWindow(&d)
-          ::html.LoadFile( ::html_filename)
-          ::win.AddWidget(&::html,1)
+        ::AddHelpPage(&::win)
         
-      ::win.EndBook
+      ::win.EndBook()
       
-      
-      ::win.BeginHorizontal
-        ::win.AddButton("Close", ::Close)
-        ::win.AddButton("Close All", ::CloseAll)
-      ::win.EndHorizontal
+      ::AddStandardButtons(&::win)
 
       ::win.Update(-1)
-      ::win.Display
+      ::win.Display()
     }
-    ::Init
+    ::Init()
   }
-# Class itkWeightedLSCLass
+# Class itkWeightedLocalStatsCLass
 }
-# end if (!exists(itkWeightedLSCLass))
+# end if (!exists(itkWeightedLocalStatsCLass))

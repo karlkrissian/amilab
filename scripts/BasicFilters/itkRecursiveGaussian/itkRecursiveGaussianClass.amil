@@ -25,7 +25,7 @@ if (!exists(itkRecursiveGaussianClass)) {
       ::help = "http://www.itk.org/Doxygen316/html/classitk_1_1RecursiveGaussianImageFilter.html"
       ::html_filename = GetScriptsDir+"/BasicFilters/itkRecursiveGaussian/doc/recursivegaussian_gui/index.html"
       
-      ::Gui()
+      //::Gui()
     }
     
     proc ::Load_input() {
@@ -84,16 +84,16 @@ if (!exists(itkRecursiveGaussianClass)) {
         
           ::win.BeginBoxPanel("Input Image")
             # set the input image
-            ::win.BeginHorizontal
+            ::win.BeginHorizontal()
               ::win.AddImageChoice( &::input_name, "")
               ::win.AddButton("Load",::Load_input)
-            ::win.EndHorizontal
-            ::win.BeginHorizontal
+            ::win.EndHorizontal()
+            ::win.BeginHorizontal()
               dim_id = ::win.AddEnum( &::dim,"Dimension")
               ::win.AddEnumChoice(dim_id, "2D")
               ::win.AddEnumChoice(dim_id, "3D")
-            ::win.EndHorizontal
-          ::win.EndBoxPanel
+            ::win.EndHorizontal()
+          ::win.EndBoxPanel()
         
         ::win.AddPage("Param")
         
@@ -114,25 +114,25 @@ if (!exists(itkRecursiveGaussianClass)) {
               ::win.AddEnumChoice(order_z_id,"Zero Order")
               ::win.AddEnumChoice(order_z_id,"First Order")
               ::win.AddEnumChoice(order_z_id,"Second Order")
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
         
-          ::win.BeginHorizontal
+          ::win.BeginHorizontal()
             ::win.AddButton("Run",::Run)
             ::win.AddButton("Display",::Display)
             ::win.AddButton("Save",::Save)
-          ::win.EndHorizontal
+          ::win.EndHorizontal()
         
        ::AddHelpPage(&::win)
         
-      ::win.EndBook
+      ::win.EndBook()
       
       ::AddStandardButtons(&::win)
       
       ::win.Update(-1)
-      ::win.Display
+      ::win.Display()
     }
     
-    ::Init
+    ::Init()
   }
 	# Class itkRecursiveGaussianClass
 }
@@ -140,4 +140,4 @@ if (!exists(itkRecursiveGaussianClass)) {
 
 # Instanciate the class
 
-itkRecursiveGaussianClass itk_recgauss
+#itkRecursiveGaussianClass itk_recgauss

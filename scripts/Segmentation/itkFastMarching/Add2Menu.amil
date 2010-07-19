@@ -1,0 +1,12 @@
+#!/usr/bin/amilab
+
+#
+# Adding main Gui scripts to the menu
+#
+
+# Scripts Menu
+ami.MainFrame.AddToMenu("&Scripts","&Segmentation","&itk FastMarching","Segmentation/itkFastMarching/itkFastMarching.amil")
+
+# ITK menu
+ami.MainFrame.AddToMenu("&ITK","&Segmentation","&FastMarching","Segmentation/itkFastMarching/itkFastMarching.amil")
+

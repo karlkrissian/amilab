@@ -7,12 +7,12 @@
 cl_category = "&Centerlines"
 cl_dir = "Centerlines/"
 
-ami.MainFrame.AddMenuScript(cl_category,"&Skeleton",         cl_dir+"CreateSkeletonGui")
-ami.MainFrame.AddMenuScript(cl_category,"&Multi-Line",       cl_dir+"MultiLines")
-ami.MainFrame.AddMenuScript(cl_category,"Shortest &Path",    cl_dir+"ShortestPath_gui")
-ami.MainFrame.AddMenuScript(cl_category,"itk Shortest &Path", cl_dir+"/itkShortestPath/itkShortestPath_gui")
-ami.MainFrame.AddMenuScript(cl_category,"&itk Vesselness",       cl_dir+"/itkVesselness/itkVesselness")
-ami.MainFrame.AddMenuScript(cl_category,"2D &Lines",         cl_dir+"Lines2D")
+ami.MainFrame.AddToMenu("&Scripts",cl_category,"&Skeleton",         cl_dir+"CreateSkeletonGui")
+ami.MainFrame.AddToMenu("&Scripts",cl_category,"&Multi-Line",       cl_dir+"MultiLines")
+ami.MainFrame.AddToMenu("&Scripts",cl_category,"Shortest &Path",    cl_dir+"ShortestPath_gui")
+ami.MainFrame.AddToMenu("&Scripts",cl_category,"itk Shortest &Path", cl_dir+"/itkShortestPath/itkShortestPath_gui")
+ami.MainFrame.AddToMenu("&Scripts",cl_category,"&itk Vesselness",       cl_dir+"/itkVesselness/itkVesselness")
+ami.MainFrame.AddToMenu("&Scripts",cl_category,"2D &Lines",         cl_dir+"Lines2D")
 
 # ITK menu
 ami.MainFrame.AddToMenu("&ITK",cl_category,"Shortest &Path", cl_dir+"/itkShortestPath/itkShortestPath_gui")

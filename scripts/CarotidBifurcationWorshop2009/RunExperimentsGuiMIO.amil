@@ -13,7 +13,7 @@ if (!exists(RunExperimentsClass)){
   # load the shortest path script
   func "Centerlines/ShortestPath_gui.amil"
   # load the Level Sets Gui script
-  func "Segmentation/LevelSets/LevelSetsGui1.amil"
+  func "Segmentation/LevelSets/LevelSetsClass.amil"
   func "SyntheticImages/AddSphere.amil"
   func "carotidchallenge_config_old.amil"
   

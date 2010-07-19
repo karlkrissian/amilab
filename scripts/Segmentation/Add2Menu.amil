@@ -4,12 +4,17 @@
 # Adding main Gui scripts to the menu
 #
 
-ami.MainFrame.AddMenuScript("&Segmentation","&Level Set","Segmentation/LevelSets/LevelSetsGui1.amil")
-ami.MainFrame.AddMenuScript("&Segmentation","&itk Level Set","Segmentation/itkLevelSet/itkLevelSet.amil")
-ami.MainFrame.AddMenuScript("&Segmentation","&itk Watershed","Segmentation/itkWaterShed/itkWaterShed.amil")
-ami.MainFrame.AddMenuScript("&Segmentation","&itk FastMarching","Segmentation/itkFastMarching/itkFastMarching.amil")
+ami.MainFrame.AddToMenu("&Scripts","&Segmentation","&Level Set","Segmentation/LevelSets/LevelSetsGui.amil")
 
-# ITK menu
-ami.MainFrame.AddToMenu("&ITK","&Segmentation","&Level Set","Segmentation/itkLevelSet/itkLevelSet.amil")
-ami.MainFrame.AddToMenu("&ITK","&Segmentation","&Watershed","Segmentation/itkWaterShed/itkWaterShed.amil")
-ami.MainFrame.AddToMenu("&ITK","&Segmentation","&FastMarching","Segmentation/itkFastMarching/itkFastMarching.amil")
+proc AddSegMenu() {
+  for dir in  "itkWaterShed", "itkLevelSet", "itkFastMarching" \
+  {
+    if FileExists(GetScriptsDir+"/Segmentation/"+dir+"/Add2Menu.amil") {
+      func "/Segmentation/"+dir+"/Add2Menu.amil"
+    } else {
+      InfoDialog GetScriptsDir+"/Segmentation/"+dir+"/Add2Menu.amil does not exists"
+    }
+  }
+}
+
+AddSegMenu()

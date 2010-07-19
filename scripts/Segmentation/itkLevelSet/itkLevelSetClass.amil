@@ -1,3 +1,7 @@
+
+func "Common/ScriptGui"
+
+
 if (!exists(itkLevelSetClass)) {
 
   ami_import->ITK()
@@ -8,7 +12,7 @@ if (!exists(itkLevelSetClass)) {
 #****************************LEVELSET*******************************************************#
 #*******************************************************************************************#
     
-  Class itkLevelSetClass \
+  Class itkLevelSetClass : public ScriptGui \
   {
     
     global::itkFastMarchingClass ::FAST
@@ -17,6 +21,7 @@ if (!exists(itkLevelSetClass)) {
     ::itk=&global::itk
     ::class_name="global::itkLevelSetClass"
   
+    #------------------------------------------------------
     proc ::Init() {
       
       #global::itkSigmoidClass ::sig
@@ -44,41 +49,31 @@ if (!exists(itkLevelSetClass)) {
       ::html_filename = GetScriptsDir+"/Segmentation/itkLevelSet/doc/levelset/index.html"
     }
 
-    proc ::Close() \
-    {
-      ::win.HidePanel
-      delvars GetObjectName(::Close)
-    }
-    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-  
-    proc ::CloseAll() {
-      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
-      #::sig->CloseAll()
-      #::FAST->CloseAll()
-      ::Close
-    }
-    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
-    
+    #------------------------------------------------------
     proc ::set_fast(IMAGE im) \
     {
       ::FAST->set_fast(im)
     }
     
+    #------------------------------------------------------
     proc ::set_sigmoid(IMAGE im) \
     {
       ::FAST->set_sigmoid(im)
     }
     
+    #------------------------------------------------------
     proc ::set_initial(IMAGE im) \
     {
       ::initial <<= im
     }
     
+    #------------------------------------------------------
     proc ::set_edge(IMAGE im) \
     {
       ::em <<= im
     }
     
+    #------------------------------------------------------
     proc ::Run() {
       if(exists (level)) {del level;}
       if (::dim == 0) {
@@ -99,11 +94,13 @@ if (!exists(itkLevelSetClass)) {
       // }
     // }
     
+    #------------------------------------------------------
     proc ::Display() {
     
       show ::level    
     }
     
+    #------------------------------------------------------
     proc ::load_initial() \
     {
       printn "evaluation of --> ::initial <<="+::initial_name+";"
@@ -117,6 +114,7 @@ if (!exists(itkLevelSetClass)) {
       show ::initial
     }
     
+    #------------------------------------------------------
     proc ::load_em() \
     {
       printn "evaluation of --> ::em <<="+::em_name+";"
@@ -130,6 +128,7 @@ if (!exists(itkLevelSetClass)) {
       show ::em
     }
     
+    #------------------------------------------------------
     proc ::SetParentPanel(OBJECT pp) \
     {
       ::parent_panel = &pp
@@ -141,30 +140,7 @@ if (!exists(itkLevelSetClass)) {
       // ::win.SelectPage(::init_book,::mode)
     // }
     
-    proc ::LaunchHelp() {
-      import = &global::ami_import
-      wx1 = import->WxFunctions()
-      res = wx1->LaunchDefaultBrowser(::help)
-    }
-    Comments( ::LaunchHelp, "Launch the corresponding help tutorial page on the default browser.")
-    
-    proc ::HtmlHome() {
-      ::html.LoadFile( ::html_filename)
-    }
-    Comments( ::HtmlHome, "Back to the initial page.")
-
-    //---------------------------------------------------
-    proc ::HtmlBack() {
-      res = ::html.HistoryBack()
-    }
-    Comments( ::HtmlBack, "Back to the previous page.")
-
-    //---------------------------------------------------
-    proc ::HtmlForward() {
-      res = ::html.HistoryForward()
-    }
-    Comments( ::HtmlForward, "Go to the forward page.")
-    
+    #------------------------------------------------------
     proc ::Gui() {
       import = &global::ami_import;
       if (exists(::parent_panel)) {
@@ -190,23 +166,23 @@ if (!exists(itkLevelSetClass)) {
             //::config_manual_input = ::win.AddPage("Input")
               ::win.BeginBoxPanel("Initial Image")
                 # set the input image
-                ::win.BeginHorizontal
+                ::win.BeginHorizontal()
                   ::win.AddImageChoice( &::initial_name, "")
                   ::win.AddButton("Load",::load_initial)
-                ::win.EndHorizontal
-              ::win.EndBoxPanel
+                ::win.EndHorizontal()
+              ::win.EndBoxPanel()
               ::win.BeginBoxPanel("Edge Map Image")
                 # set the input image
-                ::win.BeginHorizontal
+                ::win.BeginHorizontal()
                   ::win.AddImageChoice( &::initial_name, "")
                   ::win.AddButton("Load",::load_initial)
-                ::win.EndHorizontal
-              ::win.EndBoxPanel
-              ::win.BeginHorizontal
+                ::win.EndHorizontal()
+              ::win.EndBoxPanel()
+              ::win.BeginHorizontal()
                 dim_id = ::win.AddEnum( &::dim,"Dimension")
                 ::win.AddEnumChoice(dim_id, "2D")
                 ::win.AddEnumChoice(dim_id, "3D")
-              ::win.EndHorizontal
+              ::win.EndHorizontal()
           //::win.EndBook()
           
           ::win.AddPage("LevelSet")
@@ -215,32 +191,17 @@ if (!exists(itkLevelSetClass)) {
             ::win.AddFloat( &::advScaling,"Advection Scaling",0,1)
             ::win.AddFloat( &::curScaling,"Curvature Scaling",0,1)
             ::win.AddFloat( &::proScaling,"Propagation Scaling",0,1)
-            ::win.BeginHorizontal
+            ::win.BeginHorizontal()
               ::win.AddButton("Run", ::Run)
               //::win.AddButton("RunNew", ::RunNew)
               ::win.AddButton("Display", ::Display)
-            ::win.EndHorizontal       
+            ::win.EndHorizontal()       
             
-          ::win.AddPage("Help")
-            ::win.BeginHorizontal
-              ::win.AddButton("Help",   ::LaunchHelp)
-              ::win.AddButton("Home",   ::HtmlHome)
-              ::win.AddButton("<--",    ::HtmlBack)
-              ::win.AddButton("-->",    ::HtmlForward)
-            ::win.EndHorizontal
-            # add html widget
-            d = ::win.CurrentParent()
-            ::html = import->wxHtmlWindow(&d)
-            ::html.LoadFile( ::html_filename)
-            ::win.AddWidget(&::html,1)
-            
-      ::win.EndBook
+       ::AddHelpPage(&::win)
+        
+      ::win.EndBook()
       
-      # close
-      ::win.BeginHorizontal
-        ::win.AddButton("Close",      ::Close)
-        ::win.AddButton("Close All",  ::CloseAll)
-      ::win.EndHorizontal
+      ::AddStandardButtons(&::win)
       
       if (exists(::parent_panel)) {
         ::win.ShowPanel()
@@ -251,6 +212,6 @@ if (!exists(itkLevelSetClass)) {
       ::win.Update(-1)
     }
     
-    ::Init
+    ::Init()
   }
 } 

@@ -89,7 +89,7 @@ if (!exists(LevelSetsClass)){
       ::html_filename = GetScriptsDir+"/Segmentation/LevelSets/Doc/levelset_gui/index.html"
 #      ::html_filename = GetScriptsDir+"/Segmentation/LevelSets/Doc/levelset_gui.html"
 
-      ::Gui()
+      #::Gui()
   }
 
     #-----------------------------------------------
@@ -218,7 +218,7 @@ if (!exists(LevelSetsClass)){
           }
           ::ComputeIntensityStats
         } else {
-          ::inls = ::input*0-1
+          ::inls <<= ::input*0-1
         }
     
         ::inls0 <<= ::inls

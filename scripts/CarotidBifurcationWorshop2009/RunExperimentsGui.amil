@@ -944,7 +944,7 @@ if (!exists(CE_defined)) {
   
       global
         # load the Level Sets Gui script
-        func "Segmentation/LevelSetsGui1.amil"
+        func "Segmentation/LevelSets/LevelSetsGui.amil"
       local
     
       #--- Sets the parameters
@@ -1041,7 +1041,7 @@ if (!exists(CE_defined)) {
     } else {
       global
         # load the Level Sets Gui script
-        func "Segmentation/LevelSetsGui1.amil"
+        func "Segmentation/LevelSets/LevelSetsGui.amil"
       local
     
       #--- Sets the parameters
@@ -1196,7 +1196,7 @@ if (!exists(CE_defined)) {
   {
     global
       # load the Level Sets Gui script
-      func "Segmentation/LevelSetsGui1.amil"
+      func "Segmentation/LevelSets/LevelSetsGui.amil"
     local
   
     # need cropped data
@@ -1234,7 +1234,7 @@ if (!exists(CE_defined)) {
       InfoDialog "Need to run the segmentation first: loading level set  ..."
       global
         # load the Level Sets Gui script
-        func "Segmentation/LevelSetsGui1.amil"
+        func "Segmentation/LevelSets/LevelSetsGui.amil"
       local
     } else {
       # if segmentation comes from paths, save with diff names 

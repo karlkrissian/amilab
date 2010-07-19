@@ -7,7 +7,7 @@
 filt_category = "&Fitting"
 filt_dir = "Fitting/"
 
-ami.MainFrame.AddMenuScript(filt_category,"&Least Squares",        filt_dir+"LeastSquares")
+ami.MainFrame.AddToMenu("&Scripts",filt_category,"&Least Squares",        filt_dir+"LeastSquares")
 
 del filt_category
 del filt_dir

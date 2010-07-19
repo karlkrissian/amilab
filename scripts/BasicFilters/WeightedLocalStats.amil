@@ -44,7 +44,7 @@ if (!exists(WeightedLSCLass)) {
     #--------------------------
     proc ::Close() \
     {
-      ::win.HidePanel
+      ::win.HidePanel()
       delvars GetObjectName(::Close)
     }
     Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -112,15 +112,15 @@ if (!exists(WeightedLSCLass)) {
 
       ::win.BeginBook()
         ::win.AddPage("Init")
-        ::win.BeginHorizontal
+        ::win.BeginHorizontal()
           ::win.AddImageChoice( &::input_name,"Input")
           ::win.AddButton("Load",::Load_Input)
-        ::win.EndHorizontal
+        ::win.EndHorizontal()
         
-        ::win.BeginHorizontal
+        ::win.BeginHorizontal()
           ::win.AddImageChoice( &::weights_name,"Weights")
           ::win.AddButton("Load",::Load_Weights)
-        ::win.EndHorizontal        
+        ::win.EndHorizontal()        
         
         ::win.AddString( &::output_prefix,"Output Prefix")
     
@@ -128,20 +128,20 @@ if (!exists(WeightedLSCLass)) {
         ::win.AddInt( &::localstats_winsize,  "::localstats_winsize", 1,10)
         ::win.AddFloat( &::min_weight,  "::min_weight", 0.01,1)
     
-        ::win.BeginHorizontal
+        ::win.BeginHorizontal()
           ::win.AddButton("Apply",  ::Apply)
           ::win.AddButton("Display",::Display)
-        ::win.EndHorizontal
-      ::win.EndBook
+        ::win.EndHorizontal()
+      ::win.EndBook()
       
       
-      ::win.BeginHorizontal
+      ::win.BeginHorizontal()
         ::win.AddButton("Close", ::Close)
         ::win.AddButton("Close All", ::CloseAll)
-      ::win.EndHorizontal
+      ::win.EndHorizontal()
 
       ::win.Update(-1)
-      ::win.Display
+      ::win.Display()
     }
     ::Init
   }
