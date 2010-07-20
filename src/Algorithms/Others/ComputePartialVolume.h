@@ -385,13 +385,13 @@ public:
    *  Computes the analytic partial surface subdivision.
    *  @return InrImage* A pointer to an InrImage object.
    */
-  InrImage::ptr ComputeAnalyticPartialSurfaceSubdiv();
+  InrImage::ptr ComputeAnalyticPartialSurfaceSubdiv(float A, float B);
   
   /**
    *  Computes the analytic partial volume subdivision.
    *  @return InrImage* A pointer to an InrImage object.
    */
-  InrImage::ptr ComputeAnalyticPartialVolumeSubdiv();
+  InrImage::ptr ComputeAnalyticPartialVolumeSubdiv(float A, float B);
 
   //Linear interpolation functions
   /**

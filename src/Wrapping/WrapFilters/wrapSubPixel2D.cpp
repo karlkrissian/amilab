@@ -231,7 +231,7 @@ inline void OptimizarParabola (double &a, double &b, double &c, double umbral, d
 
 //Función original del código de Agustín (con los parámetros adaptados al wrapping)
 //void SuperGradienteCurvo(InrImage* input, InrImage::ptr output, float* gx, float* gy, float* des, float* cu, unsigned char* borde, float umbral, int linear_case) {
-//Nuevo cambio para usar la clase borderPixel. Se pasa un vector de la stl que contiene elementos de esta clase
+//Nuevo cambio para usar la clase borderPixel. Se pasa un vector de la stl que contiene elementos de esta clase, el cual se irá rellenando
 void SuperGradienteCurvo(InrImage* input, vector<borderPixel> &borderPixelVector, float umbral, int linear_case) {
   
   /* Calculamos el modulo del gradiente, argumento, desplazamiento y curvatura.
@@ -253,13 +253,13 @@ void SuperGradienteCurvo(InrImage* input, vector<borderPixel> &borderPixelVector
   unsigned char caso;
   int uneg[33], vneg[33];
   int upos[] = {	 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 		// parciales
-    1, 1, 1, 1, 1, 0, 0, 0, 0, 0,-1,-1,-1,-1,-1,          // sumas
-    1, 1, 0,-1,-1, 0,                                     // A,B
-  };
+		 1, 1, 1, 1, 1, 0, 0, 0, 0, 0,-1,-1,-1,-1,-1,	// sumas
+		 1, 1, 0,-1,-1, 0,				// A,B
+ };
   int vpos[] = {	 1,-1,-1,-3, 0,-2, 2, 0, 3, 1, 0,-2, 		// parciales
-		-2,-1, 0, 1, 2,-2,-1, 0, 1, 2,-2,-1, 0, 1, 2,         // sumas
-    1, 2, 2,-1,-2,-2,                                     // A,B
-  };
+      -2,-1, 0, 1, 2,-2,-1, 0, 1, 2,-2,-1, 0, 1, 2,	// sumas
+       1, 2, 2,-1,-2,-2,				// A,B
+   };
   int z = 0;
   
   borderPixel pixel;
@@ -283,7 +283,6 @@ void SuperGradienteCurvo(InrImage* input, vector<borderPixel> &borderPixelVector
       sr = sm = sl = 0.0;	
       
       // según la parcial que sea máxima decidimos el caso
-      //if (fabs(ffy(x,y,z))>fabs(ffx(x,y,z))) { puse >= caso de 135º
       if (fabs(ffy(x,y,z))>fabs(ffx(x,y,z))) {
         caso = YMAX;
         u    = (ffx(x,y,z)>0)? upos : uneg;

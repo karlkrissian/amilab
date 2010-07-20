@@ -49,6 +49,10 @@ if (!exists(SyntheticImagesClass)) {
     ::wiki_help = "http://www.ctm.ulpgc.es/amilab_dokuwiki/dokuwiki"
     ::html_filename = GetScriptsDir+"/Visualization/SyntheticImages/Doc/SyntheticImages/index.html"
     
+    #Image intensities
+    ::A = 200.0
+    ::B = 100.0
+    
     ::Gui()
     ::NewType()
     
@@ -107,11 +111,11 @@ if (!exists(SyntheticImagesClass)) {
             ::pv->setSubdiv(::subdiv)
             if(::type == 0){
               ::pv->setAnalyticFunction(&::line)
-              ::res <<= ::pv->ComputeAnalyticPartialSurfaceSubdiv()
+              ::res <<= ::pv->ComputeAnalyticPartialSurfaceSubdiv(::A,::B)
             }
             if(::type == 1) {
               ::pv->setAnalyticFunction(&::circle)
-              ::res <<= ::pv->ComputeAnalyticPartialSurfaceSubdiv()
+              ::res <<= ::pv->ComputeAnalyticPartialSurfaceSubdiv(::A,::B)
             }
           }
         } else {
@@ -129,11 +133,11 @@ if (!exists(SyntheticImagesClass)) {
           if(::dimz > 1) {
             if(::type == 2) {
               ::pv->setAnalyticFunction(&::sphere)
-              ::res <<= ::pv->ComputeAnalyticPartialVolumeSubdiv()
+              ::res <<= ::pv->ComputeAnalyticPartialVolumeSubdiv(::A,::B)
             }
             if(::type == 3) {
               ::pv->setAnalyticFunction(&::torus)
-              ::res <<= ::pv->ComputeAnalyticPartialVolumeSubdiv()
+              ::res <<= ::pv->ComputeAnalyticPartialVolumeSubdiv(::A,::B)
             }
           } else {
             InfoDialog "Compute analytic volume only in 3D images."
@@ -477,7 +481,10 @@ if (!exists(SyntheticImagesClass)) {
         
         ::win.EnablePanel(::functions_page, 0)
         ::win.EndBook()
-    
+        ::win.BeginBoxPanel("Intensity")
+          ::win.AddFloat(&::A, "A", 0, 255)
+          ::win.AddFloat(&::B, "B", 0, 255)
+        ::win.EndBoxPanel()
       #Help tab
       ::AddHelpPage(&::win)
       

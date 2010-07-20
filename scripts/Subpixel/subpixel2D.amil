@@ -71,7 +71,7 @@ if (!exists(Subpixel2DClass)){
               #::norm_input_draw.DrawLineZ(x,y-a,x+dx2,y-dy2)
               #::norm_input_draw.DrawLineZ(x-dx1, y+dy1, x+dx2, y-dy2)
               if(b<0){
-                ::norm_input_draw.DrawLineZ(x+delta, y-(a+b*delta), x-delta, y-(a+b*delta))
+                ::norm_input_draw.DrawLineZ(x+delta, y-(a+b*delta), x-delta, y-(a-b*delta))
               } else {
                 ::norm_input_draw.DrawLineZ(x-delta, y-(a-b*delta), x+delta, y-(a+b*delta))
               }

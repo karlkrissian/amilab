@@ -653,7 +653,13 @@ void WrapClass_ComputePV::wrap_ComputeAnalyticPartialSurfaceSubdiv
 BasicVariable::ptr WrapClass_ComputePV::wrap_ComputeAnalyticPartialSurfaceSubdiv
                                       ::CallMember (ParamList* p)
 {
-  InrImage::ptr res (_objectptr->_obj->ComputeAnalyticPartialSurfaceSubdiv());
+  float A;
+  float B;
+  int   n = 0;
+  
+  if (!get_val_param<float>(A, p, n)) ClassHelpAndReturn;
+  if (!get_val_param<float>(B, p, n)) ClassHelpAndReturn;
+  InrImage::ptr res (_objectptr->_obj->ComputeAnalyticPartialSurfaceSubdiv(A,B));
   return Variable<InrImage>::ptr( new Variable<InrImage>(res));
 }
 
@@ -668,7 +674,13 @@ void WrapClass_ComputePV::wrap_ComputeAnalyticPartialVolumeSubdiv
 BasicVariable::ptr WrapClass_ComputePV::wrap_ComputeAnalyticPartialVolumeSubdiv
                                       ::CallMember (ParamList* p)
 {
-  InrImage::ptr res (_objectptr->_obj->ComputeAnalyticPartialVolumeSubdiv());
+  float A;
+  float B;
+  int   n = 0;
+  
+  if (!get_val_param<float>(A, p, n)) ClassHelpAndReturn;
+  if (!get_val_param<float>(B, p, n)) ClassHelpAndReturn;
+  InrImage::ptr res (_objectptr->_obj->ComputeAnalyticPartialVolumeSubdiv(A,B));
   return Variable<InrImage>::ptr( new Variable<InrImage>(res));
 }
 
