@@ -4,9 +4,16 @@
 # Adding main Gui scripts to the menu
 #
 
-# Scripts Menu
-ami.MainFrame.AddToMenu("&Scripts","&Segmentation","&itk FastMarching","Segmentation/itkFastMarching/itkFastMarching.amil")
+proc AddMenuFastMarching() \
+{
+  category = "&Segmentation"
+  script = "Segmentation/itkFastMarching/itkFastMarchingGui.amil"
 
-# ITK menu
-ami.MainFrame.AddToMenu("&ITK","&Segmentation","&FastMarching","Segmentation/itkFastMarching/itkFastMarching.amil")
+  # Scripts Menu
+  ami.MainFrame.AddToMenu("&Scripts",category,"itk &FastMarching",script)
+  # ITK menu
+  ami.MainFrame.AddToMenu("&ITK",category,"&FastMarching",script)
+}
 
+AddMenuFastMarching()
+del AddMenuFastMarching

@@ -2,17 +2,19 @@
 # Find Shortest path between 2 points
 # using a speed image
 #
-if (!exists(itkSPClass)) {
+
+func "Common/ScriptGui"
+
+if (!exists(itkShortestPathClass)) {
   func "SyntheticImages/AddSphere.amil"
-  ami_import->ITK()
+  global::ami_import.ITK()
   
-  Class itkSPClass {
+  Class itkShortestPathClass : public ScriptGui {
     global::AddSphereClass ::AS
-    ::class_name = "global::itkSPClass"
     ::itk=&global::itk
       
     #----------------------------
-    proc ::init() {
+    proc ::Init() {
       # input image name
       ::input_name = ""
       # speed image name
@@ -22,7 +24,7 @@ if (!exists(itkSPClass)) {
       ::save_FM = UCHAR(0)
 
       ::epsilon = 0.02
-      ::maxcost = 1000
+      ::maxcost = 1000, "Maximal time"
     
       ::use_input_speed = UCHAR(0)
       ::input_Imin  = 0
@@ -43,9 +45,13 @@ if (!exists(itkSPClass)) {
       ::endy = 0
       ::endz = 0
     
-      ::step_size = 0.1
-      ::maxlength = 500
-      ::delta = 0.05
+      ::step_size = 0.1, "Time step for the evolution"
+      ::maxlength = 500, "Maximal Euclidean distance of the path"
+      ::delta = 0.05, "Small increment to estimate the derivatives"
+      
+      ::dim = INT(1), "The dimension of the image."
+      
+      ::html_filename = GetScriptsDir+"/Centerlines/itkShortestPath/doc/shortestpath/index.html"
     
       #::Gui
     }
@@ -169,21 +175,7 @@ if (!exists(itkSPClass)) {
       ::input_draw.compare(::speed)
       if (exists(global::path)) { show global::path; }
     }  
-    #----------------------------
-    proc ::Close() \
-    {
-      if (exists(::win)) {
-        ::win.HidePanel
-      }
-      delvars GetObjectName(::Close)
-    }
-    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-  
-    proc ::CloseAll() {
-      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
-      ::Close
-    }
-    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
+
     
     #-----------------------------------------------
     proc ::Run() \
@@ -287,25 +279,25 @@ if (!exists(itkSPClass)) {
 
             # set the second point
             ::win.AddButton("Set End Point",  ::EndPoint)
-            
+
           ::win.EndBoxPanel
-    
+
         ::win.AddPage("Param")
         
-          ::win.AddBoolean( &::save_FM)
+          ::win.AddBoolean( &::save_FM, "Save FastMarching Output")
     
-          ::win.AddFloat( &::epsilon,  "::epsilon", 0.01,10)
-          ::win.AddFloat( &::maxcost,  "::maxcost", 1,100000)
+          ::win.AddFloat( &::epsilon,  "Epsilon", 0.01,10)
+          ::win.AddFloat( &::maxcost,  "MaxCost", 1,100000)
       
           ::win.BeginBoxPanel("Input intensity-based speed")
-            ::win.AddBoolean( &::use_input_speed)
-            ::win.AddFloat( &::input_Imin,  "::input_Imin", 0,10000)
-            ::win.AddFloat( &::input_Imax,  "::input_Imax", 0,10000)
-            ::win.AddFloat( &::input_speed,  "::input_speed", 0,100)
+            ::win.AddBoolean( &::use_input_speed, "Use speed")
+            ::win.AddFloat( &::input_Imin,  "Imin", 0,10000)
+            ::win.AddFloat( &::input_Imax,  "Imax", 0,10000)
+            ::win.AddFloat( &::input_speed,  "Input Speed", 0,100)
           ::win.EndBoxPanel
     
-          ::win.AddFloat( &::step_size,  "::step_size", 0.01,1)
-          ::win.AddFloat( &::maxlength,  "::maxlength", 0,1000)
+          ::win.AddFloat( &::step_size,  "Step Size", 0.01,1)
+          ::win.AddFloat( &::maxlength,  "Maxlength", 0,1000)
     
           ::win.BeginHorizontal
             # run
@@ -313,14 +305,12 @@ if (!exists(itkSPClass)) {
             # display
             ::win.AddButton("Display",  ::Display)
           ::win.EndHorizontal  
-      ::win.EndBook
+       ::AddHelpPage(&::win)
 
-      # close
-      ::win.BeginHorizontal
-        ::win.AddButton("Close",      ::Close)
-        ::win.AddButton("Close All",  ::CloseAll)
-      ::win.EndHorizontal
-    
+      ::win.EndBook()
+
+      ::AddStandardButtons(&::win)
+
       if (exists(::parent_panel)) {
         ::win.ShowPanel()
       } else {
@@ -328,8 +318,8 @@ if (!exists(itkSPClass)) {
       }
       ::win.Update(-1)
     }
-    
-    ::init
+
+    ::Init()
     } #End of class
   
 } # End of if

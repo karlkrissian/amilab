@@ -10,13 +10,26 @@ cl_dir = "Centerlines/"
 ami.MainFrame.AddToMenu("&Scripts",cl_category,"&Skeleton",         cl_dir+"CreateSkeletonGui")
 ami.MainFrame.AddToMenu("&Scripts",cl_category,"&Multi-Line",       cl_dir+"MultiLines")
 ami.MainFrame.AddToMenu("&Scripts",cl_category,"Shortest &Path",    cl_dir+"ShortestPath_gui")
-ami.MainFrame.AddToMenu("&Scripts",cl_category,"itk Shortest &Path", cl_dir+"/itkShortestPath/itkShortestPath_gui")
 ami.MainFrame.AddToMenu("&Scripts",cl_category,"&itk Vesselness",       cl_dir+"/itkVesselness/itkVesselness")
 ami.MainFrame.AddToMenu("&Scripts",cl_category,"2D &Lines",         cl_dir+"Lines2D")
 
 # ITK menu
-ami.MainFrame.AddToMenu("&ITK",cl_category,"Shortest &Path", cl_dir+"/itkShortestPath/itkShortestPath_gui")
 ami.MainFrame.AddToMenu("&ITK",cl_category,"Vesselness",       cl_dir+"/itkVesselness/itkVesselness")
 
 del cl_category
 del cl_dir
+
+
+proc AddCenterlinesMenu() {
+  for dir in  "itkShortestPath" \
+  {
+    if FileExists(GetScriptsDir+"/Centerlines/"+dir+"/Add2Menu.amil") {
+      func "/Centerlines/"+dir+"/Add2Menu.amil"
+    } else {
+      InfoDialog GetScriptsDir+"/Centerlines/"+dir+"/Add2Menu.amil does not exists"
+    }
+  }
+}
+
+AddCenterlinesMenu()
+del AddCenterlinesMenu

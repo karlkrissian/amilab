@@ -6,7 +6,7 @@ if (!exists(itkLevelSetClass)) {
 
   ami_import->ITK()
   #func "BasicFilters/itkSigmoid/itkSigmoidFilter.amil"
-  func "Segmentation/itkFastMarching/itkFastMarching.amil"
+  func "Segmentation/itkFastMarching/itkFastMarchingClass.amil"
 
 #*******************************************************************************************#
 #****************************LEVELSET*******************************************************#
@@ -185,12 +185,12 @@ if (!exists(itkLevelSetClass)) {
               ::win.EndHorizontal()
           //::win.EndBook()
           
-          ::win.AddPage("LevelSet")
+          ::win.AddPage("Param")
             ::win.AddFloat( &::error,"ErrorRMS",0,1)
             ::win.AddInt( &::iterations,"Iterations",0,800)
-            ::win.AddFloat( &::advScaling,"Advection Scaling",0,1)
-            ::win.AddFloat( &::curScaling,"Curvature Scaling",0,1)
-            ::win.AddFloat( &::proScaling,"Propagation Scaling",0,1)
+            ::win.AddFloat( &::advScaling,"Advection",0,1)
+            ::win.AddFloat( &::curScaling,"Curvature",0,1)
+            ::win.AddFloat( &::proScaling,"Propagation",0,1)
             ::win.BeginHorizontal()
               ::win.AddButton("Run", ::Run)
               //::win.AddButton("RunNew", ::RunNew)

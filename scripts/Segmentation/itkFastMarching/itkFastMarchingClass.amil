@@ -4,7 +4,6 @@ func "Common/ScriptGui"
 if (!exists(itkFastMarchingClass)) {
  
   ami_import->ITK()
-  func "BasicFilters/itkSigmoid/itkSigmoidFilterClass.amil"
   
 #*******************************************************************************************#
 #****************************FASTMARCHING***************************************************#
@@ -12,7 +11,8 @@ if (!exists(itkFastMarchingClass)) {
   
   Class itkFastMarchingClass : public ScriptGui {
     
-    global::itkSigmoidFilterClass ::SIG
+    func "BasicFilters/itkSigmoid/itkSigmoidFilterClass.amil"
+    itkSigmoidFilterClass ::SIG
     ::itk=&global::itk
   
     proc ::Init() {
@@ -227,9 +227,11 @@ if (!exists(itkFastMarchingClass)) {
         ::win.AddPage("Param")
           
           ::win.AddButton("Set Seed Point",::SeedPoint)             
-          ::win.AddFloat( &::stopping_time,"Stopping Time Value",0,::inputmax)
-          ::win.AddFloat( &::lower,"Lower Threshold",0,::inputmax)
-          ::win.AddFloat( &::upper,"Upper Threshold",0,::inputmax)
+          ::win.AddFloat( &::stopping_time,"Stopping Time",0,::inputmax)
+          ::win.BeginBoxPanel("Intensity Range")
+            ::win.AddFloat( &::lower,"Lower Threshold",0,::inputmax)
+            ::win.AddFloat( &::upper,"Upper Threshold",0,::inputmax)
+          ::win.EndBoxPanel()
           ::win.AddFloat( &::seed,"Seed",0,::inputmax)  
                     
           ::win.BeginHorizontal()

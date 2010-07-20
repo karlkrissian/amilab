@@ -11,7 +11,7 @@ if (!exists(RunExperimentsClass)){
   # load the vesselness script
   func "Centerlines/itkVesselness/itkVesselness.amil"
   # load the shortest path script
-  func "Centerlines/itkShortestPath/itkShortestPath_gui.amil"
+  func "Centerlines/itkShortestPath/itkShortestPathClass.amil"
   # load the Level Sets Gui script
   func "SyntheticImages/AddSphere.amil"
   func "Segmentation/itkFastMarching/itkFastMarching.amil"
@@ -24,7 +24,7 @@ if (!exists(RunExperimentsClass)){
     global::CropImageFromPointsClass ::CIFP
     global::itkCreateProbabilityClass ::itkCP
     global::itkVesselnessClass ::itkVS
-    global::itkSPClass ::itkSP
+    global::itkShortestPathClass ::itkSP
     global::CreateInitialSpheresClass ::CIS
     global::itkLevelSetClass ::itkLS
     global::AddSphereClass ::AS
@@ -86,7 +86,7 @@ if (!exists(RunExperimentsClass)){
       eval "del global::CropImageFromPointsClass;"
       eval "del global::itkCreateProbabilityClass;"
       eval "del global::itkVesselnessClass;"
-      eval "del global::itkSPClass;"
+      eval "del global::itkShortestPathClass;"
       eval "del global::CreateInitialSpheresClass;"
       eval "del global::itkFastMarchingClass;"
       eval "del global::config;"

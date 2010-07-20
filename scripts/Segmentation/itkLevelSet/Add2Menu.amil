@@ -5,8 +5,8 @@
 #
 
 # Scripts menu
-ami.MainFrame.AddToMenu("&Scripts","&Segmentation","&itk Level Set","Segmentation/itkLevelSet/itkLevelSet.amil")
+ami.MainFrame.AddToMenu("&Scripts","&Segmentation","&itk Level Set","Segmentation/itkLevelSet/itkLevelSetGui.amil")
 
 # ITK menu
-ami.MainFrame.AddToMenu("&ITK","&Segmentation","&Level Set","Segmentation/itkLevelSet/itkLevelSet.amil")
+ami.MainFrame.AddToMenu("&ITK","&Segmentation","&Level Set","Segmentation/itkLevelSet/itkLevelSetGui.amil")
 

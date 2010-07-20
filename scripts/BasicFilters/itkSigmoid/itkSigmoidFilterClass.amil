@@ -3,7 +3,7 @@ func "Common/ScriptGui"
 
 if (!exists(itkSigmoidFilterClass)) {
   
-  ami_import->ITK()
+  global::ami_import.ITK()
   
   Class itkSigmoidFilterClass : public ScriptGui {
     
@@ -124,7 +124,9 @@ if (!exists(itkSigmoidFilterClass)) {
         
       ::win.EndBook()
       
-      ::AddStandardButtons(&::win)
+      if (!exists(::parent_panel)) {
+        ::AddStandardButtons(&::win)
+      }
       
       if (exists(::parent_panel)) {
         ::win.ShowPanel()
