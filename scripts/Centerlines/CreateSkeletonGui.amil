@@ -302,14 +302,16 @@ if (!exists(CreateSkeletonClass)) {
     proc ::Display() {
         show ::input
         if (exists(::output)) {
-          ::input_draw._compare(::output)
+          show ::output
+          ::output_draw.update()
+          ::input_draw._compare(&::output_draw)
         }
         #::res.save "skeleton_result.vtk"
         if exists(::res) {
           if (!exists(::res_draw)) {
             show ::res
           }
-          ::input_draw.setGLwin(::res_draw)
+          ::input_draw.setGLwin(&::res_draw)
         }
     }
     #---------------------------------------------------

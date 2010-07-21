@@ -91,7 +91,7 @@ if (!exists(global::ImageHistoClass)) {
           d = ::win.CurrentParent()
           ::dw = import->wxDrawingWindow(&d)
           # sets minimal size here
-          ::dw.SetMinSize(wx.wxSize(80,80));
+          ::dw.SetMinSize(&wx.wxSize(80,80));
           ::dw.SetBackgroundColour(wx.wxColour(255,255,255))
           ::sizer_item = ::win.AddWidget(&::dw,0)
 

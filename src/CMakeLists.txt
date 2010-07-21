@@ -238,6 +238,8 @@ SET(BOOST_RELEASE "1.33" CACHE STRING "specify boost version")
 
 FIND_PACKAGE( Boost ${BOOST_RELEASE} COMPONENTS date_time filesystem  system iostreams  regex)
 #SET(Boost_USE_STATIC_LIBS ON)
+MESSAGE( "BOOST_LIBRARIES = $(BOOST_LIBRARIES)")
+
 
 OPTION(AMI_USE_ZLIB "Use zlib" ON)
 
