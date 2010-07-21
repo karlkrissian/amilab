@@ -86,4 +86,8 @@ if (!exists(CreateInitialSpheresClass)) {
       eval "global"+resname+" <<= res;"
     }
     
+  }
+  # end of Class
 }
+# end if
+

@@ -9,7 +9,6 @@ if (!exists(CropImageFromPointsClass)) {
 
   Class CropImageFromPointsClass \
   {
-    ::class_name = "global::CropImageFromPointsClass"
     proc ::CropImageFromPoints(OBJECT rep, IMAGE input, NUM marginxy, NUM marginztop, NUM marginzbot ) \
     {
       // 1. compute min-max for each coordinates
@@ -74,5 +73,8 @@ if (!exists(CropImageFromPointsClass)) {
       ::input_cropped <<= Resize(::input_cropped,::input_cropped.tx/2,::input_cropped.ty/2,::input_cropped.tz,1)
 
     }
-    
+    # end of proc
+  }    
+  # end of Class
 }
+# end if

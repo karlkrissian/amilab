@@ -11,10 +11,10 @@ ami.MainFrame.AddToMenu("&Scripts",filt_category,"Aniso &GS",        filt_dir+"A
 ami.MainFrame.AddToMenu("&Scripts",filt_category,"Aniso &SRAD",      filt_dir+"AnisoSRAD_gui")
 ami.MainFrame.AddToMenu("&Scripts",filt_category,"Aniso &NRAD",      filt_dir+"AnisoNRAD/AnisoNRAD_gui")
 ami.MainFrame.AddToMenu("&Scripts",filt_category,"Non-Local &Means", filt_dir+"NLmeans_gui")
-ami.MainFrame.AddToMenu("&Scripts",filt_category,"itk Non-Local &Means", filt_dir+"itkNLMeans")
+#ami.MainFrame.AddToMenu("&Scripts",filt_category,"itk Non-Local &Means", filt_dir+"itkNLMeans")
 
 # add also to ITK menu
-ami.MainFrame.AddToMenu("&ITK",filt_category,"Non-Local &Means", filt_dir+"itkNLMeans")
+#ami.MainFrame.AddToMenu("&ITK",filt_category,"Non-Local &Means", filt_dir+"itkNLMeans")
 #ami.MainFrame.AddToMenu("&Scripts",filt_category,"itk Fast Non-Local &Means", filt_dir+"itkFastNLmeans")
 
 del filt_category

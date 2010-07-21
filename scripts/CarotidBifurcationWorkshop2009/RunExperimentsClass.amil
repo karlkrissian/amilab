@@ -1,37 +1,41 @@
+
+func "Common/ScriptGui"
+
 #!/usr/local/bin/amilab
 if (!exists(RunExperimentsClass)){
 
   ami_import->ITK()
   ami_import->Filters()
-  func "ReadPoints.amil"
-  func "CropImage.amil"
-  func "CreateInitialSpheres.amil"
-  # load the noise reduction script
-  func "CreateProbability.amil"
-  # load the vesselness script
-  func "Centerlines/MultiLines.amil"
-  # load the shortest path script
-  func "Centerlines/ShortestPath_gui.amil"
-  # load the Level Sets Gui script
-  func "Segmentation/LevelSets/LevelSetsClass.amil"
-  func "SyntheticImages/AddSphere.amil"
-  func "carotidchallenge_config_old.amil"
   
 
-  Class RunExperimentsClass{
+  Class RunExperimentsClass : public ScriptGui{
   
-    global::ReadPointsClass ::RP
-    global::CropImageFromPointsClass ::CIFP
-    global::CreateProbabilityClass ::CP
-    global::MultilinesClass ::ML
-    global::SPClass ::SP
-    global::CreateInitialSpheresClass ::CIS
-    global::LevelSetsClass ::LS
-    global::AddSphereClass ::AS
-    global::config ::CONFIG
+    func "ReadPoints.amil"
+    func "CropImage.amil"
+    func "CreateInitialSpheres.amil"
+    # load the noise reduction script
+    func "CreateProbability.amil"
+    # load the vesselness script
+    func "Centerlines/MultiLines.amil"
+    # load the shortest path script
+    func "Centerlines/ShortestPath_gui.amil"
+    # load the Level Sets Gui script
+    func "Segmentation/LevelSets/LevelSetsClass.amil"
+    func "SyntheticImages/AddSphere.amil"
+    func "carotidchallenge_config_old.amil"
+
+
+    ::ReadPointsClass ::RP
+    ::CropImageFromPointsClass ::CIFP
+    ::CreateProbabilityClass ::CP
+    ::MultilinesClass ::ML
+    ::SPClass ::SP
+    ::CreateInitialSpheresClass ::CIS
+    ::LevelSetsClass ::LS
+    ::AddSphereClass ::AS
+    ::config ::CONFIG
     ::itk=&global::itk
     ::filters=&global::filters
-    ::class_name = "global::RunExperimentsClass"
     
     
     #------------------------------------------
@@ -71,32 +75,7 @@ if (!exists(RunExperimentsClass)){
       ::maxvesselint = INT(1600), "Vessel max intensity range"
     }
     
-    
-    #--------------------------
-    proc ::CarotidExperiments_Close() \
-    {
-      if (exists(::win)) {
-        ::win.HidePanel
-      }
-      delvars GetObjectName(::CarotidExperiments_Close)
-    }
-    Comments( ::CarotidExperiments_Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::CarotidExperiments_Close)+"'.")
-    
-    proc ::CarotidExperiments_CloseAll() {
-      eval boost_format( "if (exists(%1%)) { del %1%; };" ) % ::class_name 
-      eval "del global::ReadPointsClass;"
-      eval "del global::CropImageFromPointsClass;"
-      eval "del global::CreateProbabilityClass;"
-      eval "del global::MultilinesClass;"
-      eval "del global::SPClass;"
-      eval "del global::CreateInitialSpheresClass;"
-      eval "del global::config;"
-      eval "del global::AddSphereClass;"
-      eval "del global::LevelSetsClass;"  
-      ::CarotidExperiments_Close
-    }
-    Comments( ::CarotidExperiments_CloseAll, "Call ::CarotidExperiments_Close() method and delete the class variable")
-    
+        
     #------------------------------------------
     proc ::CarotidExperiments_ReadData() \
     {
@@ -1375,16 +1354,14 @@ if (!exists(RunExperimentsClass)){
             
           ::win.EndBook()
           
-        ::win.AddPage("Help")
-          
-      ::win.EndBook
-    
-      ::win.BeginHorizontal
-        ::win.AddButton("Close",::CarotidExperiments_Close)
-        ::win.AddButton("CloseAll",::CarotidExperiments_CloseAll)
-      ::win.EndHorizontal
+        ::AddHelpPage(&::win)
+        
+      ::win.EndBook()
+      
+      ::AddStandardButtons(&::win)
+
       ::win.Update(-1)
-      ::win.Display
+      ::win.Display()
       
       ::ConfigEvent
     }

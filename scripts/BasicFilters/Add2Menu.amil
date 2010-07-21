@@ -13,11 +13,11 @@ ami.MainFrame.AddToMenu("&Scripts",filt_category,"Grey &Morpho", filt_dir+"GreyM
 ami.MainFrame.AddToMenu("&Scripts",filt_category,"&itk Recursive Gaussian", filt_dir+"/itkRecursiveGaussian/itkRecursiveGaussianGui")
 ami.MainFrame.AddToMenu("&Scripts",filt_category,"Weighted Local Stats",filt_dir+"WeightedLocalStats")
 ami.MainFrame.AddToMenu("&Scripts",filt_category,"itk Weighted Local Stats",filt_dir+"/itkWeightedLocalStats/itkWeightedLocalStatsGui")
-ami.MainFrame.AddToMenu("&Scripts",filt_category,"itk Sigmoid Filter",filt_dir+"/itkSigmoid/itkSigmoidFilterGui")
+#ami.MainFrame.AddToMenu("&Scripts",filt_category,"itk Sigmoid Filter",filt_dir+"/itkSigmoid/itkSigmoidFilterGui")
 
 ami.MainFrame.AddToMenu("&ITK",filt_category,"Recursive Gaussian", filt_dir+"/itkRecursiveGaussian/itkRecursiveGaussianGui")
 ami.MainFrame.AddToMenu("&ITK",filt_category,"Weighted Local Stats",filt_dir+"/itkWeightedLocalStats/itkWeightedLocalStatsGui")
-ami.MainFrame.AddToMenu("&ITK",filt_category,"Sigmoid Filter",filt_dir+"/itkSigmoid/itkSigmoidFilterGui")
+#ami.MainFrame.AddToMenu("&ITK",filt_category,"Sigmoid Filter",filt_dir+"/itkSigmoid/itkSigmoidFilterGui")
 
 del filt_category
 del filt_dir

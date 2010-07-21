@@ -6282,7 +6282,7 @@ void DessinImage::Create_Toolbar()
   //View parameters
   ViewParameters = new wxAuiToolBar(this, wxID_ANY,
                         wxDefaultPosition, wxDefaultSize,
-                        wxAUI_TB_DEFAULT_STYLE );
+                        wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_OVERFLOW );
   
   ViewParameters->SetToolBitmapSize(wxSize(16,16));
   
@@ -6359,7 +6359,7 @@ void DessinImage::Create_Toolbar()
   //View style toolbar
   ViewStyle = new wxAuiToolBar(this, wxID_ANY,
                         wxDefaultPosition, wxDefaultSize,
-                        wxAUI_TB_DEFAULT_STYLE);
+                        wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_OVERFLOW);
   
   ViewStyle->SetToolBitmapSize(wxSize(16,16));
   
@@ -6378,14 +6378,14 @@ void DessinImage::Create_Toolbar()
                                          wxDefaultPosition,wxSize(wmax+40,-1) , strings, wxCB_READONLY); 
   comboView->SetToolTip(wxT("Type of view: Slice, maximun intensity projection or animation"));
 
-  ViewStyle->AddControl(comboView, wxT("Option"));
+  ViewStyle->AddControl(comboView); //, wxT("Option"));
   ViewStyle->AddSeparator();
   
   xyCheck = new wxCheckBox(ViewStyle, wxID_XY, wxT("XY"),
                                          wxDefaultPosition, wxDefaultSize, wxCHK_2STATE);
   xyCheck->SetValue(true);
   xyCheck->SetToolTip(wxT("Show/Hide XY plane"));
-  ViewStyle->AddControl(xyCheck, wxT("XY"));
+  ViewStyle->AddControl(xyCheck); //, wxT("XY"));
   
   xzCheck = new wxCheckBox(ViewStyle, wxID_XZ, wxT("XZ"),
                                          wxDefaultPosition, wxDefaultSize, wxCHK_2STATE);
@@ -6396,7 +6396,7 @@ void DessinImage::Create_Toolbar()
     xzCheck->Disable();
   }
   xzCheck->SetToolTip(wxT("Show/Hide XZ plane"));
-  ViewStyle->AddControl(xzCheck, wxT("XZ"));
+  ViewStyle->AddControl(xzCheck); //, wxT("XZ"));
   
   zyCheck = new wxCheckBox(ViewStyle, wxID_ZY, wxT("ZY"),
                                          wxDefaultPosition, wxDefaultSize, wxCHK_2STATE);
@@ -6407,7 +6407,7 @@ void DessinImage::Create_Toolbar()
     zyCheck->Disable();
   }
   zyCheck->SetToolTip(wxT("Show/Hide ZY plane"));
-  ViewStyle->AddControl(zyCheck, wxT("ZY"));
+  ViewStyle->AddControl(zyCheck); //, wxT("ZY"));
   ViewStyle->AddSeparator();
   
 //  wxButton* many = new wxButton(ViewStyle, wxID_MANYXY, wxT("many XY"));
@@ -6433,7 +6433,7 @@ void DessinImage::Create_Toolbar()
   comboSize = new wxComboBox(ViewStyle, wxID_SIZE_TYPE, wxT("Win Size"),
                                         wxDefaultPosition, wxSize(wmax+40,-1), strings, wxCB_READONLY);
   comboSize->SetToolTip(wxT("Select image sizing mode: window size or user size."));
-  ViewStyle->AddControl(comboSize, wxT("Size"));
+  ViewStyle->AddControl(comboSize); //, wxT("Size"));
   ViewStyle->AddSeparator();
 
 

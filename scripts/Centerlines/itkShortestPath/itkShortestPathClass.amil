@@ -263,15 +263,15 @@ if (!exists(itkShortestPathClass)) {
 
         ::win.AddPage("Init")
           # set the input image
-          ::win.BeginHorizontal
+          ::win.BeginHorizontal()
             ::win.AddImageChoice( &::input_name, "Input")
             ::win.AddButton("Load",::load_input)
-          ::win.EndHorizontal
+          ::win.EndHorizontal()
           # set the speed image
-          ::win.BeginHorizontal
+          ::win.BeginHorizontal()
             ::win.AddImageChoice( &::speed_name, "Speed")
             ::win.AddButton("Load",::load_speed)
-          ::win.EndHorizontal
+          ::win.EndHorizontal()
         
           ::win.BeginBoxPanel("Extremities")
             # set the first point
@@ -280,7 +280,7 @@ if (!exists(itkShortestPathClass)) {
             # set the second point
             ::win.AddButton("Set End Point",  ::EndPoint)
 
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
 
         ::win.AddPage("Param")
         
@@ -294,17 +294,17 @@ if (!exists(itkShortestPathClass)) {
             ::win.AddFloat( &::input_Imin,  "Imin", 0,10000)
             ::win.AddFloat( &::input_Imax,  "Imax", 0,10000)
             ::win.AddFloat( &::input_speed,  "Input Speed", 0,100)
-          ::win.EndBoxPanel
+          ::win.EndBoxPanel()
     
           ::win.AddFloat( &::step_size,  "Step Size", 0.01,1)
           ::win.AddFloat( &::maxlength,  "Maxlength", 0,1000)
     
-          ::win.BeginHorizontal
+          ::win.BeginHorizontal()
             # run
             ::win.AddButton("Run",      ::Run)
             # display
             ::win.AddButton("Display",  ::Display)
-          ::win.EndHorizontal  
+          ::win.EndHorizontal()  
        ::AddHelpPage(&::win)
 
       ::win.EndBook()
