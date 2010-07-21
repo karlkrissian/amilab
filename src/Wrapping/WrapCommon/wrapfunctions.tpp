@@ -61,6 +61,41 @@ bool get_var_param( boost::shared_ptr<Variable<T> >& var,
 
 
 /**
+ * Function used to parse a variable of generic type and to give back its value.
+ */
+template<class T>
+bool get_val(T& arg, BasicVariable::ptr var)
+{
+  if (var.get()) {
+    if (var->Type()!=GetVarType<T>()) {
+      // Try to convert to the requested type:
+      BasicVariable::ptr converted = var->TryCast(to_string<T>::value());
+      if (!converted.get()) {
+        FILE_ERROR(boost::format("Cannot not be converted to type %2%.") % to_string<T>::value());
+        return false;
+      } else
+        var = converted;
+    }
+    boost::shared_ptr<Variable<T> > temp1(
+      boost::dynamic_pointer_cast<Variable<T> >(var));
+    if (temp1.get()) {
+      arg= * (temp1->Pointer().get());
+      return true;
+    } 
+    else
+    {
+      FILE_ERROR(boost::format("Conversion to %1% problem ") % to_string<T>::value());
+      return false;
+    }
+  }
+  else
+  {
+    FILE_ERROR(boost::format("Variable not found "));
+    return false;
+  }
+}
+
+/**
  * Function used to parse a variable of generic type in a list of parameters, and to give back its value.
  */
 template<class T>
@@ -72,34 +107,14 @@ bool get_val_param(T& arg, ParamList*p, int& num)
     FILE_MESSAGE( boost::format("Using default value for parameter %1%") % num);
     return true;
   }
+
   BasicVariable::ptr temp( p->GetParam(num++));
-  if (temp.get()) {
-    if (temp->Type()!=GetVarType<T>()) {
-      // Try to convert to the requested type:
-      BasicVariable::ptr converted = temp->TryCast(to_string<T>::value());
-      if (!converted.get()) {
-        FILE_ERROR(boost::format("Parameter %1% cannot not be converted to type %2%.") %num % to_string<T>::value());
-        return false;
-      } else
-        temp = converted;
-    }
-    boost::shared_ptr<Variable<T> > temp1(
-      boost::dynamic_pointer_cast<Variable<T> >(temp));
-    if (temp1.get()) {
-      arg= * (temp1->Pointer().get());
-      return true;
-    } 
-    else
-    {
-      FILE_ERROR(boost::format("Parameter %1% Conversion to %2% problem ") % num % to_string<T>::value());
-      return false;
-    }
-  }
-  else
-  {
-    FILE_ERROR(boost::format("Parameter %d not found ") % num);
+  if (!get_val(arg, temp)) {
+    FILE_ERROR(boost::format("Problem with %1% parameter.") % num);
     return false;
   }
+
+  return true;
 }
 
 /**
