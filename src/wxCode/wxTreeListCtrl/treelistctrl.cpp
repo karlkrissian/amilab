@@ -45,7 +45,7 @@
 #include <wx/apptrait.h>
 
 #ifdef __WXMAC__
-#include "wx/mac/private.h"
+//#include "wx/mac/private.h"
 #endif
 
 #include "treelistctrl.h"
@@ -1875,7 +1875,7 @@ bool wxTreeListMainWindow::Create (wxTreeListCtrl *parent,
                                    const wxString& name) {
 
 #ifdef __WXMAC__
-    if (style & wxTR_HAS_BUTTONS) style |= wxTR_MAC_BUTTONS;
+//    if (style & wxTR_HAS_BUTTONS) style |= wxTR_MAC_BUTTONS;
     if (style & wxTR_HAS_BUTTONS) style &= ~wxTR_HAS_BUTTONS;
     style &= ~wxTR_LINES_AT_ROOT;
     style |= wxTR_NO_LINES;

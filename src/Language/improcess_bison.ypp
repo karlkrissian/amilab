@@ -4227,10 +4227,12 @@ command:
           sdraw->Update();
           //sdraw->Raise();
           // process all pending events ...
+		  /*
           while (GB_wxApp->Pending()) {
             if (GB_verbose) printf("Dispatching event on GB_wxApp \n");
             GB_wxApp->Dispatch();
           }
+		  */
         }
         | VAR_SURFDRAW T_POINT T_SetLightAmbient T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
