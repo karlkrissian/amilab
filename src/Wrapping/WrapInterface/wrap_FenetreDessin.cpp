@@ -19,6 +19,8 @@
 #include "ami_function.h"
 #include "FenetreDessin.hpp"
 #include "wrap_wxColour.h"
+#include <boost/shared_ptr.hpp>
+
 
 //-------------------------------------------------------------------------
 AMIObject::ptr AddWrap_FenetreDessin(  WrapClass_FenetreDessin::ptr& objectptr)
@@ -36,8 +38,8 @@ AMIObject::ptr AddWrap_FenetreDessin(  WrapClass_FenetreDessin::ptr& objectptr)
 Variable<AMIObject>::ptr CreateVar_FenetreDessin( FenetreDessin* si)
 {
   // here FenetreDessin can be deleted
-  boost::shared_ptr<FenetreDessin> si_ptr( si );
-  WrapClass_FenetreDessin::ptr sip(new WrapClass_FenetreDessin(si_ptr));
+  boost::shared_ptr<FenetreDessin> _si_ptr( si );
+  WrapClass_FenetreDessin::ptr sip(new WrapClass_FenetreDessin(_si_ptr));
   AMIObject::ptr amiobject(AddWrap_FenetreDessin(sip));
   Variable<AMIObject>::ptr varres(
       new Variable<AMIObject>( amiobject));

@@ -3342,6 +3342,27 @@ command:
           GET_VARSTACK_VALUE(InrImage, im);
           im->VectFixeValeurs($5,$7,$9);
         }
+        | var_image T_POINT SET T_OP_PAR expr T_COMMA expr  T_CL_PAR
+        {
+
+        /**
+        Parameters:
+          #1 expr:  field component
+          #2 expr:  image value
+
+        Description:
+        Set the current voxel (or pixel) 
+        to the specified value for the given component.
+        The position of the current voxel can be set
+        using 'setpos'.
+
+
+        See also:
+                setpos
+        **/
+          GET_VARSTACK_VALUE(InrImage, im);
+          im->VectFixeValeur($5,$7);
+        }
         | var_image T_POINT SETPOS T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
         /**

@@ -40,66 +40,394 @@
 		</list>
 
 		<list name="builtinfuncs">
-			<item> abs </item>
-			<item> apply </item>
-			<item> buffer </item>
-			<item> callable </item>
-			<item> chr </item>
-			<item> cmp </item>
-			<item> coerce </item>
-			<item> compile </item>
-			<item> complex </item>
-			<item> copyright </item>
-			<item> credits </item>
-			<item> delattr </item>
-			<item> dir </item>
-			<item> divmod </item>
-			<item> eval </item>
-			<item> execfile </item>
-			<item> exit </item>
-			<item> filter </item>
-			<item> float </item>
-			<item> getattr </item>
-			<item> globals </item>
-			<item> hasattr </item>
-			<item> hash </item>
-			<item> hex </item>
-			<item> id </item>
-			<item> input </item>
-			<item> int </item>
-			<item> intern </item>
-			<item> isinstance </item>
-			<item> issubclass </item>
-			<item> iter </item>
-			<item> len </item>
-			<item> license </item>
-			<item> list </item>
-			<item> locals </item>
-			<item> long </item>
-			<item> map </item>
-			<item> max </item>
-			<item> min </item>
-			<item> oct </item>
-			<item> open </item>
-			<item> ord </item>
-			<item> pow </item>
-			<item> quit </item>
-			<item> range </item>
-			<item> raw_input </item>
-			<item> reduce </item>
-			<item> reload </item>
-			<item> repr </item>
-			<item> round </item>
-			<item> setattr </item>
-			<item> slice </item>
-			<item> str </item>
-			<item> tuple </item>
-			<item> type </item>
-			<item> unichr </item>
-			<item> unicode </item>
-			<item> vars </item>
-			<item> xrange </item>
-			<item> zip </item>
+      <item>PathFromDispl</item>
+      <item>InvertNormals</item>
+      <item>sin</item>
+      <item>GetObjectName</item>
+      <item>end</item>
+      <item>BorgeforsSDT</item>
+      <item>tan</item>
+      <item>HessianMatrix</item>
+      <item>Image</item>
+      <item>DrawAllContours</item>
+      <item>BrowseImage</item>
+      <item>CircleInt</item>
+      <item>AnisoWeickert</item>
+      <item>AddPoint</item>
+      <item>vtkSignedFMDist</item>
+      <item>SetIsoContourColor</item>
+      <item>ConvexHull</item>
+      <item>vtkPropDanielsson</item>
+      <item>SetWindowSize</item>
+      <item>Transform</item>
+      <item>SetVectParam</item>
+      <item>subimage</item>
+      <item>LineAddPointNumber</item>
+      <item>rewind</item>
+      <item>secdergrad</item>
+      <item>SelectLines</item>
+      <item>SetLightSpecular</item>
+      <item>CC</item>
+      <item>global</item>
+      <item>CircleIntSdExc</item>
+      <item>func</item>
+      <item>EndLine</item>
+      <item>PropagationDist2</item>
+      <item>StructTensorH</item>
+      <item>exists</item>
+      <item>EDPdilate</item>
+      <item>Convolve</item>
+      <item>del</item>
+      <item>PropagationDist</item>
+      <item>GetXmax</item>
+      <item>else</item>
+      <item>OrientField</item>
+      <item>Normalize</item>
+      <item>PaintCallback</item>
+      <item>proc</item>
+      <item>sh</item>
+      <item>filter</item>
+      <item>itk</item>
+      <item>isosurf_inv</item>
+      <item>AnisoSRAD</item>
+      <item>SetCompTransf</item>
+      <item>Displace</item>
+      <item>cosh</item>
+      <item>vtkSmooth</item>
+      <item>DisplayHisto</item>
+      <item>TraceScanning</item>
+      <item>putimage</item>
+      <item>TRANSFORM</item>
+      <item>sum</item>
+      <item>repeat</item>
+      <item>PropDanielsson</item>
+      <item>SetVerboseOff</item>
+      <item>import_filters</item>
+      <item>read</item>
+      <item>Quit</item>
+      <item>step</item>
+      <item>Comments</item>
+      <item>TraceParsing</item>
+      <item>HessianEVal</item>
+      <item>ResampleLines</item>
+      <item>Paint</item>
+      <item>amiOFCorr2D</item>
+      <item>setvector</item>
+      <item>vtkFastMarching</item>
+      <item>asin</item>
+      <item>DOUBLE</item>
+      <item>ln</item>
+      <item>end-of-line</item>
+      <item>discsecdergrad</item>
+      <item>while</item>
+      <item>ls</item>
+      <item>MeanHalfSize</item>
+      <item>GetName</item>
+      <item>DrawVector</item>
+      <item>vtkIsoContourDist</item>
+      <item>GetLinesLength</item>
+      <item>ShortestPath</item>
+      <item>ElevateMesh</item>
+      <item>abs</item>
+      <item>LineNumber</item>
+      <item>compare</item>
+      <item>in</item>
+      <item>WriteCTALine</item>
+      <item>SetColorMaterial</item>
+      <item>Eigen3D</item>
+      <item>GetNumberOfLines</item>
+      <item>GetYmax</item>
+      <item>TimeSpent</item>
+      <item>vtkMINCRead</item>
+      <item>autocrop</item>
+      <item>median</item>
+      <item>STRING</item>
+      <item>setGLwin</item>
+      <item>eval</item>
+      <item>AndreDist</item>
+      <item>vtkDist</item>
+      <item>NbPolys</item>
+      <item>CannyEdgeDetector</item>
+      <item>atan</item>
+      <item>localmean</item>
+      <item>SRAD_qcoeff</item>
+      <item>UINT</item>
+      <item>IsosurfDist</item>
+      <item>normgrad</item>
+      <item>Set3DArrowParam</item>
+      <item>Xpos</item>
+      <item>CreateVolume</item>
+      <item>GenRead</item>
+      <item>Pi</item>
+      <item>Remove</item>
+      <item>discnormgrad</item>
+      <item>rotate</item>
+      <item>break</item>
+      <item>SetPointsColors</item>
+      <item>InitTime</item>
+      <item>tz</item>
+      <item>ty</item>
+      <item>tx</item>
+      <item>vtkAnisoGS</item>
+      <item>ReadCTALine</item>
+      <item>OBJECT</item>
+      <item>Center</item>
+      <item>open</item>
+      <item>vtkSignedBorgefors</item>
+      <item>Laplacian</item>
+      <item>Matrix</item>
+      <item>Surface</item>
+      <item>Chamfer2DT</item>
+      <item>SetStatusText</item>
+      <item>ConnectLines</item>
+      <item>PrintMatrices</item>
+      <item>Ypos</item>
+      <item>SetLightDiffuse</item>
+      <item>OutFlux</item>
+      <item>set</item>
+      <item>NUM</item>
+      <item>SetColor</item>
+      <item>global_new</item>
+      <item>CreateVectorsFromField</item>
+      <item>AnisoSmoothGS</item>
+      <item>SetIsoContourParam</item>
+      <item>vtkDecimate</item>
+      <item>SetGetExtent</item>
+      <item>AnisoDPAD</item>
+      <item>trz</item>
+      <item>save</item>
+      <item>SetLight</item>
+      <item>cumhisto</item>
+      <item>SetSpecular</item>
+      <item>SetShininess</item>
+      <item>EDPclose</item>
+      <item>inc</item>
+      <item>SetOpacity</item>
+      <item>CreateVectors</item>
+      <item>until</item>
+      <item>CreateFlatMesh</item>
+      <item>sprint</item>
+      <item>sqrt</item>
+      <item>sinh</item>
+      <item>min</item>
+      <item>ProcessXEvents</item>
+      <item>AnisoNRAD</item>
+      <item>AddGaussNoise</item>
+      <item>Eigen2D</item>
+      <item>vtkPropDaniel2</item>
+      <item>SetColorOpacity</item>
+      <item>ConvolveMask</item>
+      <item>UCHAR</item>
+      <item>drawcircle</item>
+      <item>OpImage</item>
+      <item>AnisoRudinMult</item>
+      <item>setminCC</item>
+      <item>trx</item>
+      <item>try</item>
+      <item>SURFACE</item>
+      <item>drawCC</item>
+      <item>GetLine</item>
+      <item>import_wii</item>
+      <item>FluxDiffusion</item>
+      <item>exp</item>
+      <item>ReSlice</item>
+      <item>DisplayVectors</item>
+      <item>OwnMaterial</item>
+      <item>AnisoCW</item>
+      <item>Translate</item>
+      <item>SNR</item>
+      <item>CircleMinIntSdExc</item>
+      <item>InfoDialog</item>
+      <item>IMAGE</item>
+      <item>ShowSection</item>
+      <item>ShortestPathImage</item>
+      <item>floor</item>
+      <item>Triangulate</item>
+      <item>local</item>
+      <item>SetColors</item>
+      <item>OrientationRatio</item>
+      <item>isosurf_ras</item>
+      <item>mean</item>
+      <item>IsocontourPoints</item>
+      <item>NbPoints</item>
+      <item>showcursor</item>
+      <item>LineRecons</item>
+      <item>norm</item>
+      <item>SetLineWidth</item>
+      <item>Help</item>
+      <item>count</item>
+      <item>round</item>
+      <item>SaveStructuredGrid</item>
+      <item>SetFluidNavFile</item>
+      <item>SetCurrentObj</item>
+      <item>SetZoom</item>
+      <item>RemoveLine</item>
+      <item>scan_float</item>
+      <item>SetLightPos</item>
+      <item>SpacePos</item>
+      <item>for</item>
+      <item>Zpos</item>
+      <item>NULL</item>
+      <item>initvalue</item>
+      <item>lininterp</item>
+      <item>SetLineThickness</item>
+      <item>GetZmin</item>
+      <item>AddMenuScript</item>
+      <item>Curvatures</item>
+      <item>emptyargs</item>
+      <item>GetYmin</item>
+      <item>update</item>
+      <item>gradient</item>
+      <item>SetProgress</item>
+      <item>cos</item>
+      <item>setpos</item>
+      <item>SetDiffuse</item>
+      <item>isosurf</item>
+      <item>EDPerode</item>
+      <item>vars</item>
+      <item>GetLinesExtremities</item>
+      <item>val</item>
+      <item>SetVerboseOn</item>
+      <item>endfor</item>
+      <item>setvoxelsize</item>
+      <item>init</item>
+      <item>Skeleton</item>
+      <item>Pad</item>
+      <item>SetComponent</item>
+      <item>import_vtk</item>
+      <item>rot2D</item>
+      <item>Normals</item>
+      <item>posarea</item>
+      <item>AllContoursParam</item>
+      <item>vtkCreateFlatMesh</item>
+      <item>getimage</item>
+      <item>SetName</item>
+      <item>printn</item>
+      <item>boost_format</item>
+      <item>EndTime</item>
+      <item>vdim</item>
+      <item>NewLine</item>
+      <item>Skeleton2lines</item>
+      <item>log</item>
+      <item>EDPopen</item>
+      <item>SetLightAmbient</item>
+      <item>Interpolate</item>
+      <item>Statistics</item>
+      <item>ReadFlow</item>
+      <item>DirConnectivity</item>
+      <item>SetColormap</item>
+      <item>AnisoLeeAdd2</item>
+      <item>GetImageFromX</item>
+      <item>SetBackground</item>
+      <item>ChamferDT</item>
+      <item>SetAmbient</item>
+      <item>DrawEarthCoord</item>
+      <item>if</item>
+      <item>eccentricity</item>
+      <item>MergePoints</item>
+      <item>ReadRawImages</item>
+      <item>OrientPositive</item>
+      <item>SetDebugOff</item>
+      <item>SHORT</item>
+      <item>SetVisible</item>
+      <item>DiscMeanCurvature</item>
+      <item>schedule</item>
+      <item>GetZPos</item>
+      <item>Resize</item>
+      <item>vtkMarchingCubes</item>
+      <item>Scale</item>
+      <item>GetTransform</item>
+      <item>SetVectStyle</item>
+      <item>RGB</item>
+      <item>delvars</item>
+      <item>FileExists</item>
+      <item>local_new</item>
+      <item>slice</item>
+      <item>setendianness</item>
+      <item>DrawIsoContour</item>
+      <item>ProcessEvents</item>
+      <item>OutFluxScalar</item>
+      <item>argmax</item>
+      <item>close</item>
+      <item>ComputeAltitudes</item>
+      <item>computeCC</item>
+      <item>amiOFVar2D</item>
+      <item>max</item>
+      <item>SetCompareDisplacement</item>
+      <item>GetScriptDir</item>
+      <item>threscross</item>
+      <item>Recompute</item>
+      <item>Hide</item>
+      <item>wait</item>
+      <item>SimplePoints</item>
+      <item>localSD</item>
+      <item>vtkFastMarchingTarget</item>
+      <item>GeoCoordinates</item>
+      <item>FLOAT_VECTOR</item>
+      <item>print</item>
+      <item>GetZmax</item>
+      <item>INT</item>
+      <item>LocalExtrema</item>
+      <item>StructTensor</item>
+      <item>localmean2</item>
+      <item>PathFromVectField</item>
+      <item>acos</item>
+      <item>normalize</item>
+      <item>vtkDicomRead</item>
+      <item>settranslation</item>
+      <item>SetVectColor</item>
+      <item>Invert</item>
+      <item>GetConnections</item>
+      <item>BorgeforsDT</item>
+      <item>SmoothLines</item>
+      <item>GetXmin</item>
+      <item>CHAR</item>
+      <item>GetYPos</item>
+      <item>info</item>
+      <item>vy</item>
+      <item>vx</item>
+      <item>vz</item>
+      <item>gnuplot</item>
+      <item>secdergrad2</item>
+      <item>CreateEllipsoids</item>
+      <item>GetIntensities</item>
+      <item>AddObject</item>
+      <item>isoarea2D</item>
+      <item>NormalField</item>
+      <item>AnisoSRAD2</item>
+      <item>GetXPos</item>
+      <item>Flip</item>
+      <item>SetIsoContour</item>
+      <item>vtkWindowedSinc</item>
+      <item>AnisoDPAD2</item>
+      <item>SetOpacityImage</item>
+      <item>argc</item>
+      <item>SetDebugOn</item>
+      <item>USHORT</item>
+      <item>Derivatives</item>
+      <item>vtkMedian3D</item>
+      <item>Temp2Altitudes</item>
+      <item>HideSection</item>
+      <item>IMAGEDRAW</item>
+      <item>SetTransform</item>
+      <item>Class</item>
+      <item>GetFormat</item>
+      <item>CircleIntExc</item>
+      <item>SwapBuffers</item>
+      <item>ReadCTALineRadii</item>
+      <item>iterate</item>
+      <item>to</item>
+      <item>Altitude2Position</item>
+      <item>Show</item>
+      <item>RemoveSelection</item>
+      <item>RestartTime</item>
+      <item>histo</item>
+      <item>isoline</item>
+      <item>atof</item>
+      <item>localSD2</item>
+      <item>isosurf_ijk</item>
+      <item>ParamWin</item>
+      <item>FLOAT</item>
 		</list>
 
 		<list name="specialvars">

@@ -54,8 +54,8 @@ AMIObject::ptr AddWrap_SurfacePoly(  WrapClass_SurfacePoly::ptr& objectptr)
 Variable<AMIObject>::ptr CreateVar_SurfacePoly( SurfacePoly* si)
 {
   // here SurfacePoly can be deleted
-  boost::shared_ptr<SurfacePoly> si_ptr( si );
-  WrapClass_SurfacePoly::ptr sip(new WrapClass_SurfacePoly(si_ptr));
+  boost::shared_ptr<SurfacePoly> _si_ptr( si );
+  WrapClass_SurfacePoly::ptr sip(new WrapClass_SurfacePoly(_si_ptr));
   AMIObject::ptr amiobject(AddWrap_SurfacePoly(sip));
   Variable<AMIObject>::ptr varres(
       new Variable<AMIObject>( amiobject));

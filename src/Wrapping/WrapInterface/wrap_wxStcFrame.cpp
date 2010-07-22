@@ -38,12 +38,12 @@ AMIObject::ptr AddWrap_wxStcFrame(  WrapClass_wxStcFrame::ptr& objectptr)
 Variable<AMIObject>::ptr CreateVar_wxStcFrame( wxStcFrame* si)
 {
   // here wxStcFrame can be deleted
-  boost::shared_ptr<wxStcFrame> si_ptr( 
+  boost::shared_ptr<wxStcFrame> _si_ptr( 
         si,
         wxwindow_nodeleter<wxStcFrame>() // deletion will be done by wxwidgets
       );
 
-  WrapClass_wxStcFrame::ptr sip( new WrapClass_wxStcFrame(si_ptr) );
+  WrapClass_wxStcFrame::ptr sip( new WrapClass_wxStcFrame(_si_ptr) );
   AMIObject::ptr amiobject(AddWrap_wxStcFrame(sip));
 
   Variable<AMIObject>::ptr varres(

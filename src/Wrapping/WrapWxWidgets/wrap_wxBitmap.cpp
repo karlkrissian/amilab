@@ -37,12 +37,12 @@ AMIObject::ptr AddWrap_wxBitmap(  WrapClass_wxBitmap::ptr& objectptr)
 Variable<AMIObject>::ptr CreateVar_wxBitmap( wxBitmap* si)
 {
   // here wxBitmap can be deleted
-  boost::shared_ptr<wxBitmap> si_ptr( 
+  boost::shared_ptr<wxBitmap> _si_ptr( 
     si,
     wxwindow_nodeleter<wxBitmap>() // deletion will be done by wxwidgets
   );
 
-  WrapClass_wxBitmap::ptr sip(new WrapClass_wxBitmap(si_ptr));
+  WrapClass_wxBitmap::ptr sip(new WrapClass_wxBitmap(_si_ptr));
   AMIObject::ptr amiobject(AddWrap_wxBitmap(sip));
 
   Variable<AMIObject>::ptr varres(

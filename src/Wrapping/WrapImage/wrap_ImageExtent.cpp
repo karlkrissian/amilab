@@ -32,8 +32,8 @@ AMIObject::ptr AddWrap_ImageExtent(  WrapClass_ImageExtent::ptr& objectptr)
 Variable<AMIObject>::ptr CreateVar_ImageExtent( ImageExtent<float>* si)
 {
   // here ImageExtent can be deleted
-  boost::shared_ptr<ImageExtent<float> > si_ptr( si );
-  WrapClass_ImageExtent::ptr sip(new WrapClass_ImageExtent(si_ptr));
+  boost::shared_ptr<ImageExtent<float> > _si_ptr( si );
+  WrapClass_ImageExtent::ptr sip(new WrapClass_ImageExtent(_si_ptr));
   AMIObject::ptr amiobject(AddWrap_ImageExtent(sip));
   Variable<AMIObject>::ptr varres(
       new Variable<AMIObject>( amiobject));

@@ -39,9 +39,9 @@ AMIObject::ptr AddWrap_AnisoGS(  WrapClass_AnisoGS::ptr& objectptr)
 Variable<AMIObject>::ptr CreateVar_AnisoGS( AnisoGS* si)
 {
   // here AnisoGS can be deleted
-  boost::shared_ptr<AnisoGS> si_ptr( si );
+  boost::shared_ptr<AnisoGS> _si_ptr( si );
 
-  WrapClass_AnisoGS::ptr sip(new WrapClass_AnisoGS(si_ptr));
+  WrapClass_AnisoGS::ptr sip(new WrapClass_AnisoGS(_si_ptr));
   AMIObject::ptr amiobject(AddWrap_AnisoGS(sip));
   Variable<AMIObject>::ptr varres(
       new Variable<AMIObject>( amiobject));

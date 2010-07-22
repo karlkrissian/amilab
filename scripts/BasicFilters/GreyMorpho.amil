@@ -4,17 +4,17 @@
 # Interface for Greyscale Morphology
 #
 #
+func "Common/ScriptGui"
 
 if (!exists(GreyMorphoClass)) {
 
-  Class GreyMorphoClass {
+  Class GreyMorphoClass  : public ScriptGui{
 
     #----------------------------
     proc ::Init() \
     {
-        ::class_name ="global::GreyMorphoClass"
         ::input_name =  ""
-        ::result_image_name =  "greymorpho_res", "name of the resulting image global variable"
+        ::result_image_name =  "global::greymorpho_res", "name of the resulting image global variable"
 
         ::result_filename = "greymorpho_res.ami.gz", "filename for saving the resulting image to disk"
 
@@ -34,22 +34,6 @@ if (!exists(GreyMorphoClass)) {
     }
     
     #----------------------------
-    proc ::Close() \
-    {
-      ::win.HidePanel()
-      delvars GetObjectName(::Close)
-    }
-    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-    
-    #----------------------------
-    proc ::CloseAll() \
-    {
-      eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
-      ::Close
-    }
-    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
-    
-    #----------------------------
     proc ::LoadInput() \
     {
       printn "evaluation of --> ::input <<="+::input_name+";"
@@ -58,6 +42,10 @@ if (!exists(GreyMorphoClass)) {
         ::input_name = "::input"
         ::win.Update(-1)
       }
+      ::win.Update(-1)
+      # set min and max
+      ::Imin = min(::input)
+      ::Imax = max(::input)
       ::win.Update(-1)
     }
     
@@ -97,6 +85,7 @@ if (!exists(GreyMorphoClass)) {
       EndTime
       SetStatusText("Time Spent (hh:mm:ss) = "+TimeSpent)
       EndTime
+      eval ::result_image_name+" <<= ::res;"
     }
     
 
@@ -125,8 +114,9 @@ if (!exists(GreyMorphoClass)) {
         }
         ::diff = ::input - ::res
         show ::diff
-        ::input_draw._compare(::diff_draw)
+        ::input_draw._compare(&::diff_draw)
       }
+      eval ::result_image_name+"_diff <<= ::diff;"
     }
     
     #----------------------------
@@ -224,10 +214,7 @@ if (!exists(GreyMorphoClass)) {
               ::win.AddButton("Surfaces",    ::DisplaySurfaces)
           ::win.EndBoxPanel()
       ::win.EndBook()
-      ::win.BeginHorizontal()
-        ::win.AddButton("Close",      ::Close)
-        ::win.AddButton("Close All",  ::CloseAll)
-      ::win.EndHorizontal()
+      ::AddStandardButtons(&::win)
       
       ::win.Update(-1)
       ::win.Display()

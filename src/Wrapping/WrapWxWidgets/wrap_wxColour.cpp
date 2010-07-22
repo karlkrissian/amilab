@@ -35,9 +35,9 @@ AMIObject::ptr AddWrap_wxColour(  WrapClass_wxColour::ptr& objectptr)
 Variable<AMIObject>::ptr CreateVar_wxColour( wxColour* si)
 {
   // here wxColour can be deleted
-  boost::shared_ptr<wxColour> si_ptr( si );
+  boost::shared_ptr<wxColour> _si_ptr( si );
 
-  WrapClass_wxColour::ptr sip(new WrapClass_wxColour(si_ptr));
+  WrapClass_wxColour::ptr sip(new WrapClass_wxColour(_si_ptr));
   AMIObject::ptr amiobject(AddWrap_wxColour(sip));
 
   Variable<AMIObject>::ptr varres(
