@@ -483,7 +483,7 @@ void CB_update_imagelist( void* imagelist_gui);
 %token SecDerGrad SecDerGrad2 SubImage PutImage
 %token T_AutoCrop
 %token T_DiscSecDerGrad
-%token T_EDPdilate T_EDPerode T_EDPopen T_EDPclose
+//%token T_EDPdilate T_EDPerode T_EDPopen T_EDPclose
 %token AnisoSmoothGS T_vtkAnisoGS
 %token T_DiscMeanCurvature
 %token T_vtkMedian3D
@@ -7290,6 +7290,7 @@ image:
     FinSi
     ADD_VARSTACK_PTR(InrImage,res);
       }
+/*
       |
       T_EDPdilate T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
       {
@@ -7359,7 +7360,7 @@ image:
       using Brockett and Maragos scheme with a given
       size and time step in voxel units
       minimal and maximal intensities allow to speed up the process
-    **/
+    ** /
       GET_VARSTACK_VALUE(InrImage, im);
     float Imin = $9;
     float Imax = $11;
@@ -7383,7 +7384,7 @@ image:
       Grayscale morphological opening
       using Brockett and Maragos scheme with a given
       size and time step in voxel units
-    **/
+    ** /
       GET_VARSTACK_VALUE(InrImage, im);
     InrImage::ptr res ( Func_EDP_open( im.get(),
                     $5,  $7));
@@ -7409,7 +7410,7 @@ image:
       using Brockett and Maragos scheme with a given
       size and time step in voxel units
       minimal and maximal intensities allow to speed up the process
-    **/
+    ** /
       GET_VARSTACK_VALUE(InrImage, im);
     float Imin = $9;
     float Imax = $11;
@@ -7450,6 +7451,7 @@ image:
     FinSi
     ADD_VARSTACK_PTR(InrImage,res);
       }
+*/
 /*
       |
       AnisoGS T_POINT T_GetOutput

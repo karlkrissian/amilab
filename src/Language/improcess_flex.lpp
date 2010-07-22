@@ -417,12 +417,6 @@ SpacePos          return(token::T_SpacePos); /*{SpacePos,T_SpacePos}*/
 del               return(token::T_del); /*{del,T_del}*/
 delvars           return(token::T_delvars); /*{delvars,T_delvars}*/
 
-EDPdilate         return(token::T_EDPdilate); /*{EDPdilate,T_EDPdilate}*/
-EDPerode          return(token::T_EDPerode); /*{EDPerode,T_EDPerode}*/
-EDPopen           return(token::T_EDPopen); /*{EDPopen,T_EDPopen}*/
-EDPclose          return(token::T_EDPclose); /*{EDPclose,T_EDPclose}*/
-
-
 vtkFastMarching   return(token::T_vtkFastMarching); /*{vtkFastMarching,T_vtkFastMarching}*/
 vtkFastMarchingTarget   return(token::T_vtkFastMarchingTarget); /*{vtkFastMarchingTarget,T_vtkFastMarchingTarget}*/
 

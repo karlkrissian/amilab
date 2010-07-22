@@ -43,6 +43,24 @@ if __name__ == "__main__":
             ("save",        "save",         True ),
             ]
 
+  #########################################
+  #               ATTENTION               #
+  #########################################
+  #                                       #
+  #  Now invokes the methods by wrapping  #
+  #  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  #
+  #                                       #
+  #    Before                 Now         #
+  #  ##########        #################  #
+  #                                       #
+  #    METHOD           OBJECT.METHOD()   #
+  #                                       #
+  # Example:                              #
+  #                                       #
+  # Interpolate -> AMIOBJECT.Interpolate()#
+  #                                       #
+  #########################################
+
   # Interpolate pattern: Interpolate(*
   # read pattern: *.read(*
   # save pattern: *.save*, *._save*
