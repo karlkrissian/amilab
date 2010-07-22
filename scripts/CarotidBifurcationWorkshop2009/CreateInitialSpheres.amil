@@ -6,12 +6,11 @@
 
 if (!exists(CreateInitialSpheresClass)) {
 
-  func "SyntheticImages/AddSphere.amil"
   
   Class CreateInitialSpheresClass \
   {
-    global::AddSphereClass ::ASCIS
-    ::class_name ="global::CreateInitialSpheresClass"
+    func "SyntheticImages/AddSphere.amil"
+    AddSphereClass ::ASCIS
 
     proc ::CheckInitialPoints( OBJECT rep, IMAGE input, NUM size ) \
     {

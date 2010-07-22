@@ -21,7 +21,7 @@ func "RunExperimentsGuiMIO.amil"
 
 RunExperimentsClass autorun
 
-autorun->CarotidExperiments_init
+autorun->Init()
 # ------- Initialization
 # don't stop for information dialogs
 autorun->nointeraction = 1
@@ -34,7 +34,7 @@ autorun->datanumber = AR_datanumber
 #printn CE_datacenter
 #CE_win.Update(-1)
 #Read data
-autorun->CarotidExperiments_ReadData
+autorun->ReadData()
 #Read gt
 #autorun->CarotidExperiments_ReadGT
 

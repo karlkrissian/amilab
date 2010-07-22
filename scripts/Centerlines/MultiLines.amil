@@ -26,7 +26,7 @@
 # no interface here
 if (!exists(MultilinesClass)) {
 
-  ami_import->Filters()
+  global::ami_import.Filters()
   if (argc==1) {
     inputname=$1
     emptyargs
@@ -168,14 +168,14 @@ if (!exists(MultilinesClass)) {
       // 2. the eigenvalues are arranged into descending order of absolute values
       //
     
-      // Old way: HessianMatrix(_input,sigma,_gamma)
-      //
-      // 2,2,0,1 means:
-      // 3: 1st eigenvector & eigenvalue
-      // 3: 2st eigenvector & eigenvalue
-      // 0: don't need the third eigen(vector/value)
-      // 1: gradient vector
-      //
+      # Old way: HessianMatrix(_input,sigma,_gamma)
+      #
+      # 2,2,0,1 means:
+      # 3: 1st eigenvector & eigenvalue
+      # 3: 2st eigenvector & eigenvalue
+      # 0: don't need the third eigen(vector/value)
+      # 1: gradient vector
+      #
     
     
       if (::mode==0) {
@@ -430,10 +430,10 @@ if (!exists(MultilinesClass)) {
       response=Image(FLOAT,1,::input)
       response.initvalue(0)
     
-      for local::i=0 to ::numrad-1 {
+      for i=0 to ::numrad-1 {
         iteration_mess = " Iteration %1%" % i
         SetStatusText( current_proc+iteration_mess )
-        ::current_progress = i/::numrad*100
+        ::current_progress = (FLOAT)i/::numrad*100
         ::current_step     = 1/::numrad*100
         SetProgress(::current_progress)
     
@@ -614,7 +614,7 @@ if (!exists(MultilinesClass)) {
       ::win.Update(-1)
     }
     
-    ::Init
+    ::Init()
     
     #if (inputname != "") {
      # in = Image(inputname)

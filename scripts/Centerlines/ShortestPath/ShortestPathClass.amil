@@ -1,14 +1,18 @@
+
 #
 # Find Shortest path between 2 points
 # using a speed image
 #
-if (!exists(SPClass)) {
-  func "SyntheticImages/AddSphere.amil"
-  ami_import->ITK()
+if (!exists(ShortestPathClass)) {
+  global::ami_import.ITK()
+
+  func "Common/ScriptGui"
     
-  Class SPClass {
-    global::AddSphereClass ::AS
-    ::class_name = "global::SPClass"
+  Class ShortestPathClass : public ScriptGui {
+
+    func "SyntheticImages/AddSphere.amil"
+
+    AddSphereClass ::AS
     ::itk=&global::itk
     
     #----------------------------
@@ -182,24 +186,7 @@ if (!exists(SPClass)) {
       ::input_draw._compare(::speed)
       if (exists(::path)) { show ::path; }
     }  
-    #----------------------------
-    proc ::Close() \
-    {
-      if (exists(::win)) {
-        ::win.HidePanel()
-      }
-      delvars GetObjectName(::Close)
-    }
-    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-    
-    #----------------------------
-    proc ::CloseAll() {
-      eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
-      ::Close
-    }
-    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
-    
-    #------------------------------------
+
     #-----------------------------------------------
     proc ::Run() \
     {
@@ -327,12 +314,8 @@ if (!exists(SPClass)) {
           ::win.EndHorizontal()  
       ::win.EndBook()
 
-      # close
-      ::win.BeginHorizontal()
-        ::win.AddButton("Close",      ::Close)
-        ::win.AddButton("Close All",  ::CloseAll)
-      ::win.EndHorizontal()
-    
+      ::AddStandardButtons(&::win)
+
       ::win.Update(-1)
       ::win.Display()
     }
@@ -346,8 +329,8 @@ if (!exists(SPClass)) {
 # Main
 #----------------------------
 
-if (!exists(spobj)) {
-  SPClass spobj
-} else {
-  InfoDialog "The script seems to be already loaded."
-}
+#if (!exists(spobj)) {
+#  ShortestPathClass spobj
+#} else {
+#  InfoDialog "The script seems to be already loaded."
+#}

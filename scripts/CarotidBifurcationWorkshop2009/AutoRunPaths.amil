@@ -38,7 +38,7 @@ CE_datacenter = AR_center
 CE_datanumber = AR_dataid
 printn CE_datacenter
 CE_win.Update(-1)
-CarotidExperiments_ReadData
+CarotidExperiments_ReadData()
 
 if (AR_denoising) {
   CarotidExperiments_ReduceNoise()

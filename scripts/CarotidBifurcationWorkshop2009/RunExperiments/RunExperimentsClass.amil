@@ -10,36 +10,40 @@ if (!exists(RunExperimentsClass)){
 
   Class RunExperimentsClass : public ScriptGui{
   
-    func "ReadPoints.amil"
-    func "CropImage.amil"
-    func "CreateInitialSpheres.amil"
+    maindir = "CarotidBifurcationWorkshop2009/"
+    func maindir+"ReadPoints.amil"
+    func maindir+"CropImage.amil"
+    func maindir+"CreateInitialSpheres.amil"
     # load the noise reduction script
-    func "CreateProbability.amil"
+    func maindir+"CreateProbabilityClass.amil"
     # load the vesselness script
     func "Centerlines/MultiLines.amil"
     # load the shortest path script
-    func "Centerlines/ShortestPath_gui.amil"
+    func "Centerlines/ShortestPath/ShortestPathClass.amil"
     # load the Level Sets Gui script
     func "Segmentation/LevelSets/LevelSetsClass.amil"
     func "SyntheticImages/AddSphere.amil"
-    func "carotidchallenge_config_old.amil"
+
+    # load the current configuration
+    func "carotidchallenge_config.amil"
 
 
-    ::ReadPointsClass ::RP
-    ::CropImageFromPointsClass ::CIFP
-    ::CreateProbabilityClass ::CP
-    ::MultilinesClass ::ML
-    ::SPClass ::SP
-    ::CreateInitialSpheresClass ::CIS
-    ::LevelSetsClass ::LS
-    ::AddSphereClass ::AS
-    ::config ::CONFIG
+    ReadPointsClass           ::RP
+    CropImageFromPointsClass  ::CIFP
+    CreateProbabilityClass    ::CP
+    MultilinesClass           ::ML
+    ShortestPathClass         ::SP
+    CreateInitialSpheresClass ::CIS
+    LevelSetsClass            ::LS
+    AddSphereClass            ::AS
+    config                    ::CONFIG
+
     ::itk=&global::itk
     ::filters=&global::filters
     
     
     #------------------------------------------
-    proc ::CarotidExperiments_init() \
+    proc ::Init() \
     {
       ::config       = INT(0)
      
@@ -73,17 +77,22 @@ if (!exists(RunExperimentsClass)){
 
       ::minvesselint = INT(1150), "Vessel min intensity range"
       ::maxvesselint = INT(1600), "Vessel max intensity range"
+
+      global::ami_import.System()
+      curdir = op_system.GetCurrentScriptDir()
+
+      ::html_filename = curdir+"/Doc/carotidseg_challenge/index.html"
     }
     
         
     #------------------------------------------
-    proc ::CarotidExperiments_ReadData() \
+    proc ::ReadData() \
     {
     
       SetStatusText("Reading data ...")
       # read input image
-      ::datanumber_str = boost_format("%1%") % ::datacenter 
-      ::datanumber_str = ::datanumber_str + boost_format("%02.0f") % ::datanumber
+      ::datanumber_str = "%1%" % ::datacenter 
+      ::datanumber_str = ::datanumber_str + "%02.0f" % ::datanumber
       ::current_datadir    = ::CONFIG->data_dir       +"/challenge"+ ::datanumber_str
       ::current_resultsdir = ::CONFIG->results_dir    +"/challenge"+ ::datanumber_str
       ::current_gtdir      = ::CONFIG->groundtruth_dir+"/challenge"+ ::datanumber_str
@@ -115,7 +124,7 @@ if (!exists(RunExperimentsClass)){
       pointsname = ::current_datadir + "/points"+::datanumber_str+".txt"
       ::RP->ReadPoints(pointsname)
       ::crop_created = 0
-      ::CarotidExperiments_CropData()
+      ::CropData()
       //::win.Update(-1)
       SetStatusText("Reading data ... done")
 
@@ -123,7 +132,7 @@ if (!exists(RunExperimentsClass)){
     
     
     #------------------------------------------
-    proc ::CarotidExperiments_ReadGT() \
+    proc ::ReadGT() \
     {
       print "::datatype="
       printn ::datatype
@@ -163,10 +172,10 @@ if (!exists(RunExperimentsClass)){
     
     
     #------------------------------------------
-    proc ::CarotidExperiments_CropData() \
+    proc ::CropData() \
     {
       SetStatusText("Cropping data ...")
-      if (!exists(::input)) { ::CarotidExperiments_ReadData(); }
+      if (!exists(::input)) { ::ReadData(); }
       ::CIFP->CropImageFromPoints(&::RP,\
                                   &::input,\
                                   ::cropmarginXY,\
@@ -187,7 +196,7 @@ if (!exists(RunExperimentsClass)){
     }
     
     #------------------------------------------
-    proc ::CarotidExperiments_LocalStats() \
+    proc ::LocalStats() \
     {
     
       ::CP->set_input(::CIFP->input_cropped)
@@ -196,7 +205,7 @@ if (!exists(RunExperimentsClass)){
     }
     
     #-----------------------------------------
-    proc ::CarotidExperiments_Vesselness() \
+    proc ::Vesselness() \
     {
     
       if (!::ves_downsample) {
@@ -232,7 +241,7 @@ if (!exists(RunExperimentsClass)){
     }
     
     #-----------------------------------------
-    proc ::CarotidExperiments_SaveVesselness() \
+    proc ::SaveVesselness() \
     {
       # 1. Save Level Set resulting image
       ::ML->result.save ::current_resultsdir+"/vesselness_result.ami.gz"
@@ -240,7 +249,7 @@ if (!exists(RunExperimentsClass)){
     }
     
     #-----------------------------------------
-    proc ::CarotidExperiments_ReadVesselness() \
+    proc ::ReadVesselness() \
     {
       vfilename  = ::current_resultsdir+"/vesselness_result.ami.gz"
     
@@ -258,7 +267,7 @@ if (!exists(RunExperimentsClass)){
           ::ML->result.putimage(result_bak)
           del result_bak
           ::ML->result <<= ::ML->result[::CIFP->input_cropped]
-          message = boost_format("CarotidExperiments_ReadVesselness() \n File %1% wrong dimensions, image has been adapted ") % vfilename 
+          message = "CarotidExperiments_ReadVesselness() \n File %1% wrong dimensions, image has been adapted " % vfilename 
           if (!::nointeraction) {
             InfoDialog message
           } else {
@@ -267,7 +276,7 @@ if (!exists(RunExperimentsClass)){
         }
       } else {
         if (!::nointeraction) {
-          InfoDialog boost_format("CarotidExperiments_ReadVesselness() \n File %1% does not exists ") % vfilename 
+          InfoDialog "CarotidExperiments_ReadVesselness() \n File %1% does not exists " % vfilename 
         }
       }
 
@@ -287,7 +296,7 @@ if (!exists(RunExperimentsClass)){
           ::maxima.putimage(maxima_bak)
           del maxima_bak
           ::maxima <<= ::maxima[::CIFP->input_cropped]
-          message = boost_format("CarotidExperiments_ReadVesselness() \n File %1% wrong dimensions, image has been adapted ") % vmfilename 
+          message = "CarotidExperiments_ReadVesselness() \n File %1% wrong dimensions, image has been adapted " % vmfilename 
           if (!::nointeraction) {
             InfoDialog message
           } else {
@@ -296,14 +305,14 @@ if (!exists(RunExperimentsClass)){
         }
       } else {
         if (!::nointeraction) {
-          InfoDialog boost_format("CarotidExperiments_ReadVesselness() \n File %1% does not exists ") % vmfilename 
+          InfoDialog "CarotidExperiments_ReadVesselness() \n File %1% does not exists " % vmfilename 
         }
       }
 
     }
     
     #-----------------------------------------
-    proc ::CarotidExperiments_CreatePaths() \
+    proc ::CreatePaths() \
     {
       SetStatusText("Creating paths ...")
       # load the shortest path script
@@ -394,7 +403,7 @@ if (!exists(RunExperimentsClass)){
     
     
     #-----------------------------------------
-    proc ::CarotidExperiments_SavePaths() \
+    proc ::SavePaths() \
     {
       # save the result to a file here ...
       if (exists(::pathCI)) {
@@ -412,7 +421,7 @@ if (!exists(RunExperimentsClass)){
     
     
     #-----------------------------------------
-    proc ::CarotidExperiments_ReadPaths() \
+    proc ::ReadPaths() \
     {
       if (FileExists(::current_resultsdir+"/pathCIs.vtk")) {
         if (exists(::pathCIs)) { del ::pathCIs; }
@@ -445,7 +454,7 @@ if (!exists(RunExperimentsClass)){
     
     
     #-----------------------------------------
-    proc ::CarotidExperiments_JunctionFromPaths() \
+    proc ::JunctionFromPaths() \
     {
       SetStatusText("Computing Junction from Paths")
       if (exists(::pathCIs)&&(exists(::pathCEs))) {
@@ -454,8 +463,8 @@ if (!exists(RunExperimentsClass)){
         lIp = lI.GetLine(0)
         lEp = lE.GetLine(0)
         minsize = lIp.tx<lEp.tx?lIp.tx:lEp.tx
-        lIp1 = lIp[0:minsize-1,0:0,0:0]
-        lEp2 = lEp[0:minsize-1,0:0,0:0]
+        lIp1 = lIp[0:(minsize-1),0:0,0:0]
+        lEp2 = lEp[0:(minsize-1),0:0,0:0]
         d = lIp1-lEp2
         dn = norm(d)
         dn = dn>::dist_threshold
@@ -470,8 +479,8 @@ if (!exists(RunExperimentsClass)){
         yE = lEp(dn1.trx,0,0,1)
         if (yI<yE) {
           mes = "Path to point 3 is lower than path to point 2, setting External to 2"
-          mes = mes + boost_format(" yE=%1%") % yE
-          mes = mes + boost_format(" yI=%1%") % yI
+          mes = mes + " yE=%1%" % yE
+          mes = mes + " yI=%1%" % yI
           if (!::nointeraction) {
             InfoDialog mes
           } else {
@@ -509,9 +518,9 @@ if (!exists(RunExperimentsClass)){
         maxE_z = max(lEp[2])
         if (maxE_z>::Jz) { ::covered_distz_E = maxE_z-::Jz; }
       
-        ::CarotidExperiments_CheckCCALength()
-        ::CarotidExperiments_CheckECALength()
-        ::CarotidExperiments_CheckICALength()
+        ::CheckCCALength()
+        ::CheckECALength()
+        ::CheckICALength()
       # else if exist both paths
       } else {
         if (!::nointeraction) {
@@ -526,7 +535,7 @@ if (!exists(RunExperimentsClass)){
     #-----------------------------------------
     # complement or cut the CCA path
     #
-    proc ::CarotidExperiments_CheckCCALength() \
+    proc ::CheckCCALength() \
     {
       SetStatusText("Checking CCA length")
       lI = ResampleLines(::pathCIs,::resample_dist)
@@ -554,13 +563,13 @@ if (!exists(RunExperimentsClass)){
         # check for image limits
         if (minz<0) {
           if (!::nointeraction) {
-            InfoDialog boost_format("CheckCCALength()\tCropped image too small, setting minz from %1% to 0") % minz
+            InfoDialog "CheckCCALength()\tCropped image too small, setting minz from %1% to 0" % minz
           }
           minz = 0;
         }
         if (maxz>::speed.tz-1) { 
           if (!::nointeraction) {
-            InfoDialog boost_format("CheckCCALength()\tCropped image too small, limiting maxz (%1%)") % maxz
+            InfoDialog "CheckCCALength()\tCropped image too small, limiting maxz (%1%)" % maxz
           }
           maxz = ::speed.tz-1; 
         }
@@ -613,7 +622,7 @@ if (!exists(RunExperimentsClass)){
     #-----------------------------------------
     # possibly cut the ECA path
     #
-    proc ::CarotidExperiments_CheckECALength() \
+    proc ::CheckECALength() \
     {
       SetStatusText("Checking ECA length")
       lE = ResampleLines(::pathCEs,::resample_dist)
@@ -627,7 +636,7 @@ if (!exists(RunExperimentsClass)){
       if (needcut) {
         if (exists(::pathCEs_cut)) { del ::pathCEs_cut; }
         ::pathCEs_cut = Surface()
-        ::pathCEs_cut.NewLine
+        ::pathCEs_cut.NewLine()
         i = 0
         _start=0
         _end=0
@@ -643,7 +652,7 @@ if (!exists(RunExperimentsClass)){
             }
           }
         }
-        ::pathCEs_cut.EndLine
+        ::pathCEs_cut.EndLine()
       }
       SetStatusText("ECA length: done")
     }
@@ -653,7 +662,7 @@ if (!exists(RunExperimentsClass)){
     #-----------------------------------------
     # complement or cut the ICA path
     #
-    proc ::CarotidExperiments_CheckICALength() \
+    proc ::CheckICALength() \
     {
       SetStatusText("Checking ICA length")
       lI = ResampleLines(::pathCIs,::resample_dist)
@@ -679,13 +688,13 @@ if (!exists(RunExperimentsClass)){
         # check for image limits
         if (minz<0) { 
           if (!::nointeraction) {
-            InfoDialog boost_format("Cropped image too small, setting minz from %1% to 0") % minz
+            InfoDialog "Cropped image too small, setting minz from %1% to 0" % minz
           }
           minz = 0;
         }
         if (maxz>::speed.tz-1) { 
           if (!::nointeraction) {
-            InfoDialog boost_format("Cropped image too small, limiting maxz (%1%)") % maxz
+            InfoDialog "Cropped image too small, limiting maxz (%1%)" % maxz
           }
           maxz = ::speed.tz-1; 
         }
@@ -693,17 +702,17 @@ if (!exists(RunExperimentsClass)){
 
         # avoid going into ECA 
           # reconstruct a tube around ICA of 3mm
-          radii <<= Image(FLOAT,lI.NbPoints,1,1)
+          radii <<= Image(FLOAT,lI.NbPoints(),1,1)
           radii  = 3
           ica_tube <<= LineRecons(lI,::speed2,radii)
 
           # reconstruct a tube around ECA of 3mm
           if (exists(::pathCEs_cut)) {
-            radii <<= Image(FLOAT,::pathCEs_cut.NbPoints,1,1)
+            radii <<= Image(FLOAT,::pathCEs_cut.NbPoints(),1,1)
             radii  = 3
             eca_tube <<= LineRecons(::pathCEs_cut,::speed2,radii)
           } else {
-            radii <<= Image(FLOAT,lE.NbPoints,1,1)
+            radii <<= Image(FLOAT,lE.NbPoints(),1,1)
             radii  = 3
             eca_tube <<= LineRecons(lE,::speed2,radii)
           }
@@ -764,7 +773,7 @@ if (!exists(RunExperimentsClass)){
       if (needcut) {
         if (exists(::pathCIs_cut)) { del ::pathCIs_cut; }
         ::pathCIs_cut = Surface()
-        ::pathCIs_cut.NewLine
+        ::pathCIs_cut.NewLine()
         i=0
         _start=0
         _end=0
@@ -780,7 +789,7 @@ if (!exists(RunExperimentsClass)){
             }
           }
         }
-        ::pathCIs_cut.EndLine
+        ::pathCIs_cut.EndLine()
       }
 
       SetStatusText("ICA length: done")
@@ -788,7 +797,7 @@ if (!exists(RunExperimentsClass)){
     # end proc CarotidExperiments_CheckICALength()
 
     #-----------------------------------------
-    proc ::CarotidExperiments_SaveJunction() \
+    proc ::SaveJunction() \
     {
       if (exists(::Jx)) {
         junc_file = open(::current_resultsdir + "/junction.txt","w")
@@ -796,18 +805,18 @@ if (!exists(RunExperimentsClass)){
         # problem to put comments in string !!!
         #junc_file.printn "# Information about the detected junction point:"
         junc_file.printn ""
-        junc_file.printn boost_format( "::inverted_paths = %1% ") % ::inverted_paths
+        junc_file.printn  "::inverted_paths = %1% " % ::inverted_paths
         junc_file.printn ""
-        junc_file.printn boost_format( "::Jx = %1% ") % ::Jx
-        junc_file.printn boost_format( "::Jy = %1% ") % ::Jy
-        junc_file.printn boost_format( "::Jz = %1% ") % ::Jz
+        junc_file.printn  "::Jx = %1% " % ::Jx
+        junc_file.printn  "::Jy = %1% " % ::Jy
+        junc_file.printn  "::Jz = %1% " % ::Jz
         junc_file.printn ""
-        junc_file.printn boost_format( "::covered_distz_C =  %1% ") % ::covered_distz_C
-        junc_file.printn boost_format( "::covered_distz_E =  %1% ") % ::covered_distz_E
-        junc_file.printn boost_format( "::covered_distz_I =  %1% ") % ::covered_distz_I
+        junc_file.printn  "::covered_distz_C =  %1% " % ::covered_distz_C
+        junc_file.printn  "::covered_distz_E =  %1% " % ::covered_distz_E
+        junc_file.printn  "::covered_distz_I =  %1% " % ::covered_distz_I
       }
       # save the paths here if they have been inverted
-      ::CarotidExperiments_SavePaths()
+      ::SavePaths()
       if (exists(::pathCEs_cut)) {
         ::pathCEs_cut.save ::current_resultsdir+"/pathCEs_cut.vtk"
       }
@@ -824,10 +833,10 @@ if (!exists(RunExperimentsClass)){
     
     
     #-----------------------------------------
-    proc ::CarotidExperiments_PathsDisplay() \
+    proc ::PathsDisplay() \
     {
       import_vtk
-      ::CarotidExperiments_ReadGT()
+      ::ReadGT()
     
       if (!exists(::Jx)) {
         if (!::nointeraction) {
@@ -888,7 +897,7 @@ if (!exists(RunExperimentsClass)){
     }
     
     #------------------------------------------
-    proc ::CarotidExperiments_LevelSetsExternal() \
+    proc ::LevelSetsExternal() \
     {
       if (!exists(::pathCEs)) {
         if (!::nointeraction) {
@@ -903,13 +912,13 @@ if (!exists(RunExperimentsClass)){
       
         #--- Compute the initial cylindrical tube
         if (exists(::pathCEs_cut)) {
-          radii         = Image(FLOAT,::pathCEs_cut.NbPoints,1,1)
+          radii         = Image(FLOAT,::pathCEs_cut.NbPoints(),1,1)
           radii         = ::tube_size
           ::pathCE_lsinit <<= LineRecons(::pathCEs_cut,::CIFP->input_cropped,radii)
           ::pathCE_lsinit = ::pathCE_lsinit-255*exp(-0.5)
         } else {
           ::pathCEs_res   = ResampleLines(::pathCEs,::resample_dist)
-          radii         = Image(FLOAT,::pathCEs_res.NbPoints,1,1)
+          radii         = Image(FLOAT,::pathCEs_res.NbPoints(),1,1)
           radii         = ::tube_size
           ::pathCE_lsinit <<= LineRecons(::pathCEs_res,::CIFP->input_cropped,radii)
           ::pathCE_lsinit = ::pathCE_lsinit-255*exp(-0.5)
@@ -976,7 +985,7 @@ if (!exists(RunExperimentsClass)){
     
     
     #------------------------------------------
-    proc ::CarotidExperiments_LevelSetsInternal() \
+    proc ::LevelSetsInternal() \
     {
       if (!exists(::pathCIs)) {
         if (!::nointeraction) {
@@ -991,12 +1000,12 @@ if (!exists(RunExperimentsClass)){
       
         #--- Compute the initial cylindrical tube
         if (exists(::pathCIs_cut)) {
-          radii         = Image(FLOAT,::pathCIs_cut.NbPoints,1,1)
+          radii         = Image(FLOAT,::pathCIs_cut.NbPoints(),1,1)
           radii         = ::tube_size
           ::pathCI_lsinit <<= LineRecons(::pathCIs_cut,::CIFP->input_cropped,radii)
         } else {
           ::pathCIs_res   = ResampleLines(::pathCIs,::resample_dist)
-          radii         = Image(FLOAT,::pathCIs_res.NbPoints,1,1)
+          radii         = Image(FLOAT,::pathCIs_res.NbPoints(),1,1)
           radii         = ::tube_size
           ::pathCI_lsinit <<= LineRecons(::pathCIs_res,::CIFP->input_cropped,radii)
         }
@@ -1004,7 +1013,7 @@ if (!exists(RunExperimentsClass)){
         #--- check for computed remaining centerline
         if (exists(::pathCC_rems)) {
           ::pathCC_rems_res = ResampleLines(::pathCC_rems,::resample_dist)
-          radii         <<= Image(FLOAT,::pathCC_rems_res.NbPoints,1,1)
+          radii         <<= Image(FLOAT,::pathCC_rems_res.NbPoints(),1,1)
           radii           = ::tube_size
           # reconstructed remaining centerline
           rem_recons    <<= LineRecons(::pathCC_rems_res,::CIFP->input_cropped,radii)
@@ -1012,7 +1021,7 @@ if (!exists(RunExperimentsClass)){
         }
         if (exists(::pathCI_rems)) {
           ::pathCI_rems_res = ResampleLines(::pathCI_rems,::resample_dist)
-          radii         <<= Image(FLOAT,::pathCI_rems_res.NbPoints,1,1)
+          radii         <<= Image(FLOAT,::pathCI_rems_res.NbPoints(),1,1)
           radii           = ::tube_size
           # reconstructed remaining centerline
           rem_recons    <<= LineRecons(::pathCI_rems_res,::CIFP->input_cropped,radii)
@@ -1083,7 +1092,7 @@ if (!exists(RunExperimentsClass)){
     
     
     #------------------------------------------
-    proc ::CarotidExperiments_LevelSetsPathsSave() \
+    proc ::LevelSetsPathsSave() \
     {
       # the LevelSets interface can be closed to free some memory
       ::LS->Close()
@@ -1106,12 +1115,12 @@ if (!exists(RunExperimentsClass)){
         }
       }
     
-      ::CarotidExperiments_SaveResults()
+      ::SaveResults()
     }
     
     
     #------------------------------------------
-    proc ::CarotidExperiments_InitialSpheres() \
+    proc ::InitialSpheres() \
     {
       ::LS->input_name   = "::CIFP->input_cropped"
       #--- add initial spheres
@@ -1119,7 +1128,7 @@ if (!exists(RunExperimentsClass)){
     }
     
     #------------------------------------------
-    proc ::CarotidExperiments_SaveResults() \
+    proc ::SaveResults() \
     {
       if (!exists(::inls)) {
         if (!::nointeraction) {
@@ -1160,19 +1169,19 @@ if (!exists(RunExperimentsClass)){
         ::RP->p2y=floor(::RP->p1y+(pvim_big.ty-1)*pvim_big.vy/::CIFP->input_cropped.vy+0.5)
         ::RP->p2z=floor(::RP->p1z+(pvim_big.tz-1)*pvim_big.vz/::CIFP->input_cropped.vz+0.5)
       
-        roi_file.print boost_format("%0.0f ")   % ::RP->p1x
-        roi_file.print boost_format("%0.0f ")   % ::RP->p1y
-        roi_file.print boost_format("%0.0f\n")  % ::RP->p1z
-        roi_file.print boost_format("%0.0f ")   % ::RP->p2x
-        roi_file.print boost_format("%0.0f ")   % ::RP->p2y
-        roi_file.print boost_format("%0.0f\n")  % ::RP->p2z
+        roi_file.print "%0.0f " % ::RP->p1x
+        roi_file.print "%0.0f " % ::RP->p1y
+        roi_file.print "%0.0f\n" % ::RP->p1z
+        roi_file.print "%0.0f " % ::RP->p2x
+        roi_file.print "%0.0f " % ::RP->p2y
+        roi_file.print "%0.0f\n" % ::RP->p2z
         if (!::nointeraction) { InfoDialog "Result is saved!"; }
       }
     }
     
     
     #------------------------------------------
-    proc ::CarotidExperiments_Evaluation() \
+    proc ::Evaluation() \
     {
       ::cmd = ::CONFIG->evaluation_scriptdir+"/lumen.sh " \
             + ::CONFIG->groundtruth_dir + " " \
@@ -1184,11 +1193,11 @@ if (!exists(RunExperimentsClass)){
     
     
     #------------------------------------------
-    proc ::CarotidExperiments_DisplayResults() \
+    proc ::DisplayResults() \
     {
       # read ground truth if needed
       if (!exists(::GTiso)) {
-        ::CarotidExperiments_ReadGT()
+        ::ReadGT()
       }
       # read the mask image
       ext_name = ::current_gtdir + "/ext" + ::datanumber_str + ".mhd"
@@ -1208,7 +1217,7 @@ if (!exists(RunExperimentsClass)){
       if (exists(::lscalc_surf)) { del ::lscalc_surf; }
       ::lscalc_surf = isosurf(::lsres_calc,0)
     
-      ::CarotidExperiments_InitialSpheres()
+      ::InitialSpheres()
       ::spheres_surf = isosurf(::lsinit,0)
     
       show ::ls_surf
@@ -1221,7 +1230,7 @@ if (!exists(RunExperimentsClass)){
       ::spheres_surf.SetDiffuse(5,250,5)
     }
     
-    proc ::CarotidExperiments_DisplayLevel() \
+    proc ::DisplayLevel() \
     {
       resultl_name = ::current_resultsdir+"/levelset_result_from_paths.ami.gz"
       resultl = Image resultl_name
@@ -1237,15 +1246,14 @@ if (!exists(RunExperimentsClass)){
     }
     
     #------------------------------------------
-    proc ::CarotidExperiments_gui() \
+    proc ::Gui() \
     {
-      printn "1"
       import = &global::ami_import;
       ::win = import->ParamPanel("Carotid09")
       ::win.BeginBook()
     
         #----- Input Page
-        ::win.AddPage("Input")
+        ::win.AddPage("IO")
           ::win.BeginBoxPanel("data information")
           ::win.AddBoolean( &::advanced,"Advanced Mode")
           ::win.SetCallback(&::ConfigEvent)
@@ -1260,8 +1268,8 @@ if (!exists(RunExperimentsClass)){
             ::win.AddInt( &::datanumber,  "Data Number", 0,35)
           ::win.EndBoxPanel
           ::win.BeginHorizontal
-            ::win.AddButton("Read Data",         ::CarotidExperiments_ReadData)
-            ::win.AddButton("Read Ground Truth", ::CarotidExperiments_ReadGT)
+            ::win.AddButton("Read Data",         ::ReadData)
+            ::win.AddButton("Read Ground Truth", ::ReadGT)
           ::win.EndHorizontal
           
           ::config_book = ::win.BeginBook()
@@ -1269,33 +1277,33 @@ if (!exists(RunExperimentsClass)){
               ::win.AddInt( &::cropmarginXY,  "cropXY", 0,200)
               ::win.AddInt( &::cropmarginZtop,  "cropZtop", 0,200)
               ::win.AddInt( &::cropmarginZbot,  "cropZbot", 0,200)
-              ::win.AddButton("Crop Data",         ::CarotidExperiments_CropData)
+              ::win.AddButton("Crop Data",         ::CropData)
               ::win.AddBoolean( &::crop_created)
               
             ::config_dir_page = ::win.AddPage("Dir")  
               ::win.AddBoolean( &::nointeraction)
               ::win.BeginBoxPanel("Data paths")
-                ::win.AddDirname( &::CONFIG->data_dir,"Data ")
-                ::win.AddDirname( &::CONFIG->groundtruth_dir,"GT ")
-                ::win.AddDirname( &::CONFIG->results_dir,"Results ")
+                ::win.AddDirname( &::CONFIG.data_dir,"Data ")
+                ::win.AddDirname( &::CONFIG.groundtruth_dir,"GT ")
+                ::win.AddDirname( &::CONFIG.results_dir,"Results ")
               ::win.EndBoxPanel
     
               ::win.BeginBoxPanel("Evaluation paths")
-                ::win.AddDirname( &::CONFIG->evaluation_bindir,    "Binary ")
-                ::win.AddDirname( &::CONFIG->evaluation_scriptdir, "Scripts ")
+                ::win.AddDirname( &::CONFIG.evaluation_bindir,    "Binary ")
+                ::win.AddDirname( &::CONFIG.evaluation_scriptdir, "Scripts ")
               ::win.EndBoxPanel              
           ::win.EndBook()
     
-        ::win.AddPage("Prob+Speed")
+        ::win.AddPage("Speed")
           ::win.BeginBoxPanel("LocalStats")
-            ::win.AddButton("Apply",::CarotidExperiments_LocalStats)
+            ::win.AddButton("Apply",::LocalStats)
           ::win.EndBoxPanel
                       
           ::win.BeginBoxPanel("Vesselness")
             ::win.AddBoolean( &::ves_downsample)
-            ::win.AddButton("Vesselness",     ::CarotidExperiments_Vesselness)
-            ::win.AddButton("Save",     ::CarotidExperiments_SaveVesselness)
-            ::win.AddButton("Read",     ::CarotidExperiments_ReadVesselness)
+            ::win.AddButton("Vesselness",     ::Vesselness)
+            ::win.AddButton("Save",     ::SaveVesselness)
+            ::win.AddButton("Read",     ::ReadVesselness)
           ::win.EndBoxPanel
                  
     
@@ -1309,32 +1317,32 @@ if (!exists(RunExperimentsClass)){
             ::win.BeginBoxPanel("Path")
               ::win.AddFloat( &::mlmax_threshold,  "Threshold", 0,100)
               ::win.BeginHorizontal
-                ::win.AddButton("Create",  ::CarotidExperiments_CreatePaths)
-                ::win.AddButton("Save",    ::CarotidExperiments_SavePaths)
-                ::win.AddButton("Read",    ::CarotidExperiments_ReadPaths)
+                ::win.AddButton("Create",  ::CreatePaths)
+                ::win.AddButton("Save",    ::SavePaths)
+                ::win.AddButton("Read",    ::ReadPaths)
               ::win.EndHorizontal
             ::win.EndBoxPanel
             ::win.BeginBoxPanel("Junction")
               ::win.AddFloat( &::dist_threshold,  "Threshold", 0.01,10)
               ::win.AddFloat( &::resample_dist,  "Resample", 0.01,10)
               ::win.BeginHorizontal
-                ::win.AddButton("Junction",  ::CarotidExperiments_JunctionFromPaths)
-               ::win.AddButton("Display",    ::CarotidExperiments_PathsDisplay)
-                ::win.AddButton("Save",      ::CarotidExperiments_SaveJunction)
+                ::win.AddButton("Junction",  ::JunctionFromPaths)
+               ::win.AddButton("Display",    ::PathsDisplay)
+                ::win.AddButton("Save",      ::SaveJunction)
               ::win.EndHorizontal
             ::win.EndBoxPanel
             ::win.BeginBoxPanel("LevelSets from paths")
               ::win.BeginHorizontal
-                ::win.AddButton("External", ::CarotidExperiments_LevelSetsExternal)
-                ::win.AddButton("Internal", ::CarotidExperiments_LevelSetsInternal)
-                ::win.AddButton("Save",     ::CarotidExperiments_LevelSetsPathsSave)
-                ::win.AddButton("Display",  ::CarotidExperiments_DisplayLevel)
+                ::win.AddButton("External", ::LevelSetsExternal)
+                ::win.AddButton("Internal", ::LevelSetsInternal)
+                ::win.AddButton("Save",     ::LevelSetsPathsSave)
+                ::win.AddButton("Display",  ::DisplayLevel)
               ::win.EndHorizontal
             ::win.EndBoxPanel
           ::win.EndBoxPanel
           ::win.BeginHorizontal
-            ::win.AddButton("Evaluation",      ::CarotidExperiments_Evaluation)
-            ::win.AddButton("Display Results", ::CarotidExperiments_DisplayResults)
+            ::win.AddButton("Evaluation",      ::Evaluation)
+            ::win.AddButton("Display Results", ::DisplayResults)
           ::win.EndHorizontal
 
         ::config_advanced_page = ::win.AddPage("Adv")
@@ -1363,14 +1371,15 @@ if (!exists(RunExperimentsClass)){
       ::win.Update(-1)
       ::win.Display()
       
-      ::ConfigEvent
+      ::ConfigEvent()
     }
   }
   #------------------------------------------
-if (!exists(experiments)) \
-{
-  RunExperimentsClass experiments
-  experiments->CarotidExperiments_init()
-  experiments->CarotidExperiments_gui()
-}
+
+  if (!exists(experiments)) \
+  {
+    RunExperimentsClass experiments
+    experiments->Init()
+    experiments->Gui()
+  }
 }

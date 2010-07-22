@@ -41,7 +41,7 @@ CE_datanumber = number
 CarotidExperiments_LoadConfig
 
 # Read input data
-CarotidExperiments_ReadData
+CarotidExperiments_ReadData()
 printn "** ReadData done"
 
 # Read Ground Truth (not compulsory)

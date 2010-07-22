@@ -183,11 +183,17 @@ class ParamListDecl {
     {
       //  pl->GetParam( i, p, t);
       //  printf("%d: %d %d \n",i,t,type[i]);
-      if ( pl->GetType ( i ) !=GetType ( i ) )
+      // treat numeric (float) type separately ...
+      if (GetType(i) == type_float)
       {
-        fprintf ( stderr,"Parameter %d has incorrect type \n",i );
-        return false;
-      }
+        // only check that the parameter is of numeric type
+        if (!pl->GetParam(i)->IsNumeric()) return false;
+      } else
+        if ( pl->GetType ( i ) !=GetType ( i ) )
+        {
+          fprintf ( stderr,"Parameter %d has incorrect type \n",i );
+          return false;
+        }
     }
 
   
