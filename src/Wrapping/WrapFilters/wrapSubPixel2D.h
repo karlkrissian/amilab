@@ -39,14 +39,7 @@ private:
   //Position
   int px;
   int py;
-  
-//  float         gx;
-//  float         gy;
-//  float         displacement;
-//  float         curvature;
-//  unsigned char border;
-//  int           px;
-//  int           py;
+
 };
 
 #include "BasicVariable.h"

@@ -73,7 +73,7 @@ proc ::Display() {
     
     if (exists(::res)) {
       show ::res
-      ::input_draw._compare(::res_draw)
+      ::input_draw._compare(&::res_draw)
     }
   }
   

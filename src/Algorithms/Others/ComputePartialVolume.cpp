@@ -242,7 +242,7 @@ double ComputePV::AnalyticRecursivePositiveSurface( double val[4], double subvol
 //
 // subdiv is the number of subdivisions
 //
-InrImage::ptr ComputePV::ComputeAnalyticPartialSurfaceSubdiv(float A, float B)
+InrImage::ptr ComputePV::ComputeAnalyticPartialSurfaceSubdiv(float ipos, float ineg)
 {
   int x,y,n;
   int z = 0;
@@ -297,13 +297,13 @@ InrImage::ptr ComputePV::ComputeAnalyticPartialSurfaceSubdiv(float A, float B)
         } // end for x
       } // end for y
 
-      for(int y=0; y<iml->DimY()-1; y++)
+      for(int y=0; y<iml->DimY(); y++)
       {
-        for(int x=0; x<iml->DimX()-1; x++)
+        for(int x=0; x<iml->DimX(); x++)
         {
           resbuf = (float*)res->BufferPtr(x,y,z);
           res->BufferPos(x,y,z);
-          res->FixeValeur(B+(A-B)*(*resbuf));
+          res->FixeValeur(ineg+(ipos-ineg)*(*resbuf));
         }
       }
       
@@ -389,7 +389,7 @@ double ComputePV::AnalyticRecursivePositiveVolume( double val[8], double subvols
 //
 // subdiv is the number of subdivisions
 //
-InrImage::ptr ComputePV::ComputeAnalyticPartialVolumeSubdiv(float A, float B)
+InrImage::ptr ComputePV::ComputeAnalyticPartialVolumeSubdiv(float ipos, float ineg)
 {
   int x,y,z,n;
   int i,j,k;
@@ -452,15 +452,15 @@ InrImage::ptr ComputePV::ComputeAnalyticPartialVolumeSubdiv(float A, float B)
         } // end fory
       } // end for z
       
-      for(int z=0; z<iml->DimZ()-1; z++)
+      for(int z=0; z<iml->DimZ(); z++)
       {
-        for(int y=0; y<iml->DimY()-1; y++)
+        for(int y=0; y<iml->DimY(); y++)
         {
-          for(int x=0; x<iml->DimX()-1; x++)
+          for(int x=0; x<iml->DimX(); x++)
           {
             resbuf = (float*)res->BufferPtr(x,y,z);
             res->BufferPos(x,y,z);
-            res->FixeValeur(B+(A-B)*(*resbuf));
+            res->FixeValeur(ineg+(ipos-ineg)*(*resbuf));
           }
         }
       }

@@ -52,49 +52,109 @@ if (!exists(Subpixel2DClass)){
             a = ::res->acoef(i,0)
             b = ::res->bcoef(i,0)
             c = ::res->ccoef(i,0)
-            #print "a = "
-            #print a
-            #print " b = "
-            #print b
-            #print " c = "
-            #print c
-            #hay que usar a como desplazamiento dentro del pixel
             #YMAX
+            #Equation --> y = a + b*x + c*x^2
+            #Partiendo del código de Agustín:
+            #dx = 0.0
+            #dy = 0.0
+            #if (::res->border(i,0) == 2) {
+            #  dx = 0
+            #  dy = ::res->des(i,0)
+            #} else {
+            #  dx = ::res->des(i,0)
+            #  dy = 0
+            #}
+            
+            #cx = 1.0
+            #cy = 1.0
+            
+            #if (abs(::res->gy(i,0)) > abs(::res->gx(i,0))) {
+            #  cy = (-1 * ::res->gx(i,0)) / ::res->gy(i,0)
+            #} else {
+            #  cx = (-1 * ::res->gy(i,0)) / ::res->gx(i,0)
+            #}
+            
+            #px = dx - delta * cx
+            #py = dy - delta * cy
+            #qx = dx + delta * cx
+            #qy = dy + delta * cy
+            
+            #x1 = x + px
+            #y1 = y + py
+            #x2 = x + qx
+            #y2 = y + qy
+            
+            #::norm_input_draw.DrawLineZ(x1,y1,x2,y2)
+            
             if(::res->border(i,0) == 2) {
+              ::norm_input_draw.SetPenColor(wx.wxColour(255,0,0))
+              x1 = -0.4
+              y1 = a + b*x1 + c*x1*x1
+              y1 = -y1
+              x2 = 0.4
+              y2 = a + b*x2 + c*x1*x2
+              y2 = -y2
+              ::norm_input_draw.DrawLineZ(x+x1,y+y1,x+x2,y+y2)
+            } else {
+              ::norm_input_draw.SetPenColor(wx.wxColour(0,255,0))
+              dx1 = -0.4
+              dy1 = a + b*dx1 + c*dx1*dx1
+              di1 = -dy1
+              dj1 = dx1
+              dx2 = 0.4
+              dy2 = a + b*dx2 + c*dx2*dx2
+              di2 = -dy2
+              dj2 = dx2
+              #::norm_input_draw.DrawLineZ(x+x1,y-y1,x+x2,y-y2)
+              ::norm_input_draw.DrawLineZ(x+di1,y+dj1,x+di2,y+dj2)
+            }
+            
+            #if(::res->border(i,0) == 2) {
               #printn "tipo de borde 2"
               #printn b
-              ::norm_input_draw.SetPenColor(wx.wxColour(255,0,0))
-              dx1 = -delta
-              dy1 = a+b*dx1
-              dx2 = delta
-              dy2 = a+b*dx2
+              #::norm_input_draw.SetPenColor(wx.wxColour(255,0,0))
+              #dx1 = -delta
+              #dy1 = a+b*dx1
+              #dx2 = delta
+              #dy2 = a+b*dx2
               #::norm_input_draw.DrawLineZ(x,y-a,x+dx2,y-dy2)
               #::norm_input_draw.DrawLineZ(x-dx1, y+dy1, x+dx2, y-dy2)
-              if(b<0){
-                ::norm_input_draw.DrawLineZ(x+delta, y-(a+b*delta), x-delta, y-(a-b*delta))
-              } else {
-                ::norm_input_draw.DrawLineZ(x-delta, y-(a-b*delta), x+delta, y-(a+b*delta))
-              }
-            } else {
+              #if(b<0){
+              #  ::norm_input_draw.DrawLineZ(x+delta, y-(a+b*delta), x-delta, y-(a-b*delta))
+              #} else {
+              #  ::norm_input_draw.DrawLineZ(x-delta, y-(a-b*delta), x+delta, y-(a+b*delta))
+              #}
+              #x1 = x-delta
+              #x2 = x+delta
+              #y1 = a + b*x1 + c*x1*x1
+              #y2 = a + b*x2 + c*x2*x2
+              #::norm_input_draw.DrawLineZ(x1,y1,x2,y2)
+            #} else {
               #XMAX
+              #Equation --> x = a + b*y + c*y^2
               #printn "tipo de borde 1"
               #printn b
-              ::norm_input_draw.SetPenColor(wx.wxColour(0,255,0))
+              #::norm_input_draw.SetPenColor(wx.wxColour(0,255,0))
               #::norm_input_draw.DrawLineZ(x-delta,y-(a-b*delta),x+delta,y-(a+b*delta))
-              dy1 = delta
-              dx1 = a+b*dy1
-              dy2 = -delta
-              dx2 = a+b*dy2
+              #dy1 = delta
+              #dx1 = a+b*dy1
+              #dy2 = -delta
+              #dx2 = a+b*dy2
               #::norm_input_draw.DrawLineZ(x+a, y, x+dx2, y-dy2)
               #::norm_input_draw.DrawLineZ(x-dx1, y+dy1, x+dx2, y+dy2)
-              if(b<0 || b==1){
-                ::norm_input_draw.DrawLineZ(x-(a-b*delta), y-delta, x-(a+b*delta), y+delta)
-              } else {
-                ::norm_input_draw.DrawLineZ(x-(a-b*delta), y+delta, x-(a+b*delta), y-delta)
-              }
+              #if(b<0 || b==1){
+              #  ::norm_input_draw.DrawLineZ(x-(a-b*delta), y-delta, x-(a+b*delta), y+delta)
+              #} else {
+              #  ::norm_input_draw.DrawLineZ(x-(a-b*delta), y+delta, x-(a+b*delta), y-delta)
+              #}
               #::norm_input_draw.DrawLineZ(delta-(a-b*x), y-delta, delta-(a+b*x), y+delta)
               #::norm_input_draw.DrawLineZ((y-delta)-a-b*x, y-delta, (y+delta)-a-b*x, y+delta)
-            }
+              #y1 = y-delta
+              #y2 = y+delta
+              #x1 = a + b*y1 + c*y1*y1
+              #x2 = a + b*y2 + c*y2*y2
+              #::norm_input_draw.DrawLineZ(x1,y1,x2,y2)
+            #}
           }
         }
       }

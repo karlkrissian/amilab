@@ -82,6 +82,7 @@ int borderPixel::getPosY()             { return py; }
 
 void borderPixel::printBorderPixel()
 {
+//  if(py == 40 || py == 60){    
   cout << "----------------------------------" << endl;
   cout << "Pixel (" << px << ", " << py << ")" << endl;
   cout << "Border       = " << (int)border << endl;
@@ -98,6 +99,7 @@ void borderPixel::printBorderPixel()
     cout << "Radius       = " << 1/curvature << endl;
   }
   cout << "----------------------------------" << endl;
+//  }
 }
 
 
@@ -251,24 +253,24 @@ void SuperGradienteCurvo(InrImage* input, vector<borderPixel> &borderPixelVector
   double parcial;
   int *u, *v;
   unsigned char caso;
-  int uneg[33], vneg[33];
+  //int uneg[33], vneg[33];
   int upos[] = {	 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 		// parciales
 		 1, 1, 1, 1, 1, 0, 0, 0, 0, 0,-1,-1,-1,-1,-1,	// sumas
-		 1, 1, 0,-1,-1, 0,				// A,B
+                                                  //1, 1, 0,-1,-1, 0,				// A,B
  };
   int vpos[] = {	 1,-1,-1,-3, 0,-2, 2, 0, 3, 1, 0,-2, 		// parciales
       -2,-1, 0, 1, 2,-2,-1, 0, 1, 2,-2,-1, 0, 1, 2,	// sumas
-       1, 2, 2,-1,-2,-2,				// A,B
+                                                    //1, 2, 2,-1,-2,-2,				// A,B
    };
   int z = 0;
   
-  borderPixel pixel;
+  borderPixel pixel; 
   
   // inicializamos los desplazamientos negativos
-  for (int t = 0; t < 33; t++) {
-    uneg[t] = -upos[t];
-    vneg[t] = -vpos[t];
-  }
+//  for (int t = 0; t < 33; t++) {
+//    uneg[t] = -upos[t];
+//    vneg[t] = -vpos[t];
+//  }
   
   // inicializamos todo a cero 	      
 //  for (long n = 0; n < size; n++) {
@@ -285,13 +287,22 @@ void SuperGradienteCurvo(InrImage* input, vector<borderPixel> &borderPixelVector
       // según la parcial que sea máxima decidimos el caso
       if (fabs(ffy(x,y,z))>fabs(ffx(x,y,z))) {
         caso = YMAX;
-        u    = (ffx(x,y,z)>0)? upos : uneg;
-        v    = (ffy(x,y,z)>0)? vpos : vneg;
+        u    = upos;
+        v    = vpos;
       }
       else {
         caso = XMAX;
-        u    = (ffx(x,y,z)>0)? vpos : vneg;
-        v    = (ffy(x,y,z)>0)? upos : uneg;
+        u    = vpos;
+        v    = upos;
+      }
+      
+      int m = (ffx(x,y,z)*ffy(x,y,z)>0) ? 1 : -1;
+      if (caso==XMAX) {
+        A  = ((double) FF(x+2,y,z) + FF(x+2,y+m,z) + FF(x+1,y+m,z)) / 3.0;
+        B  = ((double) FF(x-1,y-m,z) + FF(x-2,y-m,z) + FF(x-2,y,z)) / 3.0;
+      } else {
+        A  = ((double) FF(x,y+2,z) + FF(x+m,y+2,z) + FF(x+m,y+1,z)) / 3.0;
+        B  = ((double) FF(x-m,y-1,z) + FF(x-m,y-2,z) + FF(x,y-2,z)) / 3.0;
       }
       
       // la parcial en y debe ser máxima en su columna
@@ -325,18 +336,11 @@ void SuperGradienteCurvo(InrImage* input, vector<borderPixel> &borderPixelVector
        */
       
       // nueva version de calculo de A y B gracias a Daniel
-      int m = (ffx(x,y,z)*ffy(x,y,z)>0) ? 1 : -1;
-      if (caso==XMAX) {
-        A  = ((double) FF(x+2,y,z) + FF(x+2,y+m,z) + FF(x+1,y+m,z)) / 3.0;
-        B  = ((double) FF(x-1,y-m,z) + FF(x-2,y-m,z) + FF(x-2,y,z)) / 3.0;
-      } else {
-        A  = ((double) FF(x,y+2,z) + FF(x+m,y+2,z) + FF(x+m,y+1,z)) / 3.0;
-        B  = ((double) FF(x-m,y-1,z) + FF(x-m,y-2,z) + FF(x,y-2,z)) / 3.0;
-      }
+      
       mod = A - B;
       
-      cout << "mod = " << mod << " m = "<< m << endl;
-      cout << "sl = " << sl << " sr = " << sr << endl;
+//      cout << "mod = " << mod << " m = "<< m << endl;
+//      cout << "sl = " << sl << " sr = " << sr << endl;
       
       
       // si está por debajo del umbral no nos sirve (ahora fabs tras la modificiación anterior)
@@ -371,19 +375,16 @@ void SuperGradienteCurvo(InrImage* input, vector<borderPixel> &borderPixelVector
       cu_n = 2*c / den / den / den;
       
       
-      
-      if(c!=0) OptimizarParabola (a, b, c, 0.001, RMIN, RMAX);
+      OptimizarParabola (a, b, c, 0.001, RMIN, RMAX);
       den  = sqrt (1 + b*b);
       cu_n = 2*c / den / den / den;
+      
+      //El signo de la curvatura cambia en función del valor de la parcial
+      if (caso == YMAX && ffy(x,y,z)<0) cu_n= -cu_n;
+      if (caso == XMAX && ffx(x,y,z)<0) cu_n= -cu_n;
+
       //printf ("pixel (%d,%d) a=%f b=%f c=%f R=%f\n", x, y, a, b, c, 1/cu_n);
 //      cout << "pixel (" << x << ", " << y << ") a = " << a << " b = " << b << " c = " << c << " R = " << 1/cu_n << endl;
-//      cout << "g(x) = " << gx_n << " g(y) = " << gy_n << endl;
-//      cout << "A    = " << A << endl;
-//      cout << "B    = " << B << endl;
-//      if (c==0){ 
-//        double rad = atan(b);
-//        cout << "Angle= " << (rad*360)/(2*3.141592741) << endl;
-//      }
      
       
       // volcamos los double al vector float
@@ -464,13 +465,8 @@ BasicVariable::ptr wrapSubpixel2D (ParamList* p) {
   //Get input image
   if (!get_val_ptr_param<InrImage>(input, p, num)) HelpAndReturnVarPtr;
   InrImage::ptr output (new InrImage(WT_FLOAT, "sub2DResult.ami.gz", input)); 
-  output->InitZero(); //Ahora mismo la imagen de salida está vacía!!!!!!!!!!!!!
+  output->InitZero(); 
   
-//  float* gx = new float[input->DimX()*input->DimY()];
-//  float* gy = new float[input->DimX()*input->DimY()];
-//  float* des = new float[input->DimX()*input->DimY()];
-//  float* cu = new float[input->DimX()*input->DimY()];
-//  unsigned char* borde = new unsigned char[input->DimX()*input->DimY()];
   //------
   float umbral;
   int linear_case;
@@ -531,16 +527,6 @@ BasicVariable::ptr wrapSubpixel2D (ParamList* p) {
   amiobject->GetContext()->AddVar<InrImage>("ypos", posy,
                                             amiobject->GetContext());
 
-  //Borramos la solución temporal y por ahora se devuelve input tal cual
-//  delete[] borde;
-//  delete[] gx;
-//  delete[] gy;
-//  delete[] des;
-//  delete[] cu;
-  
-//  Variable<InrImage>::ptr result(
-//    new Variable<InrImage>( "subpixel_result",
-//                            output));
   Variable<AMIObject>::ptr result(
       new Variable<AMIObject>(amiobject));
   return result;
