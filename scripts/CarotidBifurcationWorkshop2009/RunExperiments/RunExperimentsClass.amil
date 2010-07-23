@@ -17,7 +17,7 @@ if (!exists(RunExperimentsClass)){
     # load the noise reduction script
     func maindir+"CreateProbabilityClass.amil"
     # load the vesselness script
-    func "Centerlines/MultiLines.amil"
+    func "Centerlines/MultiLines/MultiLinesClass.amil"
     # load the shortest path script
     func "Centerlines/ShortestPath/ShortestPathClass.amil"
     # load the Level Sets Gui script
@@ -28,10 +28,10 @@ if (!exists(RunExperimentsClass)){
     func "carotidchallenge_config.amil"
 
 
-    ReadPointsClass           ::RP
-    CropImageFromPointsClass  ::CIFP
+    ReadPointsClass           ::ReadPoints
+    CropImageFromPointsClass  ::CroppedInput
     CreateProbabilityClass    ::CP
-    MultilinesClass           ::ML
+    MultiLinesClass           ::ML
     ShortestPathClass         ::SP
     CreateInitialSpheresClass ::CIS
     LevelSetsClass            ::LS
@@ -122,7 +122,7 @@ if (!exists(RunExperimentsClass)){
     
       # read input points
       pointsname = ::current_datadir + "/points"+::datanumber_str+".txt"
-      ::RP->ReadPoints(pointsname)
+      ::ReadPoints->ReadPoints(pointsname)
       ::crop_created = 0
       ::CropData()
       //::win.Update(-1)
@@ -176,7 +176,7 @@ if (!exists(RunExperimentsClass)){
     {
       SetStatusText("Cropping data ...")
       if (!exists(::input)) { ::ReadData(); }
-      ::CIFP->CropImageFromPoints(&::RP,\
+      ::CroppedInput->CropImageFromPoints(&::ReadPoints,\
                                   &::input,\
                                   ::cropmarginXY,\
                                   ::cropmarginZtop,\
@@ -199,7 +199,7 @@ if (!exists(RunExperimentsClass)){
     proc ::LocalStats() \
     {
     
-      ::CP->set_input(::CIFP->input_cropped)
+      ::CP->set_input(::CroppedInput->input_cropped)
       ::CP->lsd_erosion = 0
       ::CP->Apply
     }
@@ -210,15 +210,15 @@ if (!exists(RunExperimentsClass)){
     
       if (!::ves_downsample) {
         # trunk max intensities to  ::maxvesselint
-        vesselness_input = ::CIFP->input_cropped* (::CIFP->input_cropped<::maxvesselint)+\
-                          (::CIFP->input_cropped>=::maxvesselint)*::maxvesselint
-        mask = (UCHAR) ((::CIFP->input_cropped>::minvesselint)*\
-                                     (::CIFP->input_cropped<::maxvesselint)*255)
+        vesselness_input = ::CroppedInput->input_cropped* (::CroppedInput->input_cropped<::maxvesselint)+\
+                          (::CroppedInput->input_cropped>=::maxvesselint)*::maxvesselint
+        mask = (UCHAR) ((::CroppedInput->input_cropped>::minvesselint)*\
+                                     (::CroppedInput->input_cropped<::maxvesselint)*255)
       } else {
         # first downsample in X and Y
-        vesselness_input = Resize(::CIFP->input_cropped, \
-            ::CIFP->input_cropped.tx/2,::CIFP->input_cropped.ty/2,\
-            ::CIFP->input_cropped.tz,1)
+        vesselness_input = Resize(::CroppedInput->input_cropped, \
+            ::CroppedInput->input_cropped.tx/2,::CroppedInput->input_cropped.ty/2,\
+            ::CroppedInput->input_cropped.tz,1)
         mask = (UCHAR) ( (vesselness_input>::minvesselint)*\
                                       (vesselness_input<::maxvesselint)*255)
     
@@ -257,16 +257,16 @@ if (!exists(RunExperimentsClass)){
         # 1. Save Level Set resulting image
         ::ML->set_result(Image vfilename)
         // check dimensions
-        if ((::ML->result.tx!=::CIFP->input_cropped.tx)|| \
-            (::ML->result.ty!=::CIFP->input_cropped.ty)|| \
-            (::ML->result.tz!=::CIFP->input_cropped.tz)) {
+        if ((::ML->result.tx!=::CroppedInput->input_cropped.tx)|| \
+            (::ML->result.ty!=::CroppedInput->input_cropped.ty)|| \
+            (::ML->result.tz!=::CroppedInput->input_cropped.tz)) {
           result_bak = ::ML->result
           ::ML->result <<= Image(FLOAT,::input_tx,::input_ty,::input_tz)
           ::ML->result.settranslation(::input_trx,::input_try,::input_trz)
-          ::ML->result.setvoxelsize(::CIFP->input_cropped)
+          ::ML->result.setvoxelsize(::CroppedInput->input_cropped)
           ::ML->result.putimage(result_bak)
           del result_bak
-          ::ML->result <<= ::ML->result[::CIFP->input_cropped]
+          ::ML->result <<= ::ML->result[::CroppedInput->input_cropped.GetExtent]
           message = "CarotidExperiments_ReadVesselness() \n File %1% wrong dimensions, image has been adapted " % vfilename 
           if (!::nointeraction) {
             InfoDialog message
@@ -286,16 +286,16 @@ if (!exists(RunExperimentsClass)){
         # 1. Save Level Set resulting image
         ::maxima <<= Image vmfilename
         // check dimensions
-        if ((::maxima.tx!=::CIFP->input_cropped.tx)|| \
-            (::maxima.ty!=::CIFP->input_cropped.ty)|| \
-            (::maxima.tz!=::CIFP->input_cropped.tz)) {
+        if ((::maxima.tx!=::CroppedInput->input_cropped.tx)|| \
+            (::maxima.ty!=::CroppedInput->input_cropped.ty)|| \
+            (::maxima.tz!=::CroppedInput->input_cropped.tz)) {
           maxima_bak = ::maxima
           ::maxima <<= Image(FLOAT,::input_tx,::input_ty,::input_tz)
           ::maxima.settranslation(::input_trx,::input_try,::input_trz)
-          ::maxima.setvoxelsize(::CIFP->input_cropped)
+          ::maxima.setvoxelsize(::CroppedInput->input_cropped)
           ::maxima.putimage(maxima_bak)
           del maxima_bak
-          ::maxima <<= ::maxima[::CIFP->input_cropped]
+          ::maxima <<= ::maxima[::CroppedInput->input_cropped.GetExtent]
           message = "CarotidExperiments_ReadVesselness() \n File %1% wrong dimensions, image has been adapted " % vmfilename 
           if (!::nointeraction) {
             InfoDialog message
@@ -317,7 +317,7 @@ if (!exists(RunExperimentsClass)){
       SetStatusText("Creating paths ...")
       # load the shortest path script
       
-      ::CIS->CheckInitialPoints(&::RP,::CIFP->input_cropped,::sphereradii)
+      ::CIS->CheckInitialPoints(&::ReadPoints,::CroppedInput->input_cropped,::sphereradii)
       if (!::nointeraction) {
         if (!exists(::CIS->pt1_OK)) { InfoDialog "Discarded point 1"; }
         if (!exists(::CIS->pt2_OK)) { InfoDialog "Discarded point 2"; }
@@ -349,7 +349,7 @@ if (!exists(RunExperimentsClass)){
         if (!::nointeraction) {
           InfoDialog "CarotidExperiments_Path1: no Vesselness image found" 
         }
-        ::speed <<= ::CIFP->input_cropped
+        ::speed <<= ::CroppedInput->input_cropped
       }
     
       //::SP->init
@@ -365,18 +365,18 @@ if (!exists(RunExperimentsClass)){
       ::SP->input_speed     = 1
       
       #::SP->load_input()
-      ::SP->set_input(::CIFP->input_cropped)
+      ::SP->set_input(::CroppedInput->input_cropped)
       ::SP->set_speed(::speed)
       #::SP->load_speed()
       //::win.Update(-1)
     
-      ::SP->SetStartPointWorld(::RP->p1x,::RP->p1y,::RP->p1z)
+      ::SP->SetStartPointWorld(::ReadPoints->p1x,::ReadPoints->p1y,::ReadPoints->p1z)
     
       if (exists(::CIS->pt2_OK)) \
       {
         SetStatusText(" Path from point 1 to point 2 ...")
         # path 1
-        ::SP->SetEndPointWorld(::RP->p2x,::RP->p2y,::RP->p2z)
+        ::SP->SetEndPointWorld(::ReadPoints->p2x,::ReadPoints->p2y,::ReadPoints->p2z)
         ::SP->Run
         # path from Common to Internal Carotid Arteries
         if (exists(::pathCI)) { del ::pathCI; }
@@ -389,7 +389,7 @@ if (!exists(RunExperimentsClass)){
       {
         SetStatusText(" Path from point 1 to point 3 ...")
         # path 2
-        ::SP->SetEndPointWorld(::RP->p3x,::RP->p3y,::RP->p3z)
+        ::SP->SetEndPointWorld(::ReadPoints->p3x,::ReadPoints->p3y,::ReadPoints->p3z)
         ::SP->Run
         # path from Common to External Carotid Arteries
         if (exists(::pathCE)) { del ::pathCE; }
@@ -509,7 +509,7 @@ if (!exists(RunExperimentsClass)){
         ::covered_distz_E = 0
       
         # both lines start at the same point ...
-        minC_z = ::RP->p1z
+        minC_z = ::ReadPoints->p1z
         ::covered_distz_C = ::Jz-minC_z;
 
         maxI_z = max(lIp[2])
@@ -579,7 +579,7 @@ if (!exists(RunExperimentsClass)){
         if (exists(::SP->Close())) { ::SP->Close(); }
 
         # set the parameters and run
-        ::input2 <<= ::CIFP->input_cropped[::speed2]
+        ::input2 <<= ::CroppedInput->input_cropped[::speed2.GetExtent]
 
         # end mask contains the first voxels in Z axis
         ::endmask <<= ((FLOAT) Zpos(::speed2)<5)
@@ -598,7 +598,7 @@ if (!exists(RunExperimentsClass)){
         ::SP->set_endmask(::endmask)
         //::win.Update(-1)
     
-        ::SP->SetStartPointWorld(::RP->p1x,::RP->p1y,::RP->p1z)
+        ::SP->SetStartPointWorld(::ReadPoints->p1x,::ReadPoints->p1y,::ReadPoints->p1z)
         ::SP->Run()
 
         if (exists(::pathCC_rems)) { del ::pathCC_rems; }
@@ -727,7 +727,7 @@ if (!exists(RunExperimentsClass)){
         if (exists(::SP->Close())) { ::SP->Close(); }
         
         # set the parameters and run
-        ::input2 <<= ::CIFP->input_cropped[::speed2]
+        ::input2 <<= ::CroppedInput->input_cropped[::speed2.GetExtent]
 
         # end mask contains the last voxels in Z axis
         ::endmask <<= ((FLOAT) Zpos(::speed2))>\
@@ -914,18 +914,18 @@ if (!exists(RunExperimentsClass)){
         if (exists(::pathCEs_cut)) {
           radii         = Image(FLOAT,::pathCEs_cut.NbPoints(),1,1)
           radii         = ::tube_size
-          ::pathCE_lsinit <<= LineRecons(::pathCEs_cut,::CIFP->input_cropped,radii)
+          ::pathCE_lsinit <<= LineRecons(::pathCEs_cut,::CroppedInput->input_cropped,radii)
           ::pathCE_lsinit = ::pathCE_lsinit-255*exp(-0.5)
         } else {
           ::pathCEs_res   = ResampleLines(::pathCEs,::resample_dist)
           radii         = Image(FLOAT,::pathCEs_res.NbPoints(),1,1)
           radii         = ::tube_size
-          ::pathCE_lsinit <<= LineRecons(::pathCEs_res,::CIFP->input_cropped,radii)
+          ::pathCE_lsinit <<= LineRecons(::pathCEs_res,::CroppedInput->input_cropped,radii)
           ::pathCE_lsinit = ::pathCE_lsinit-255*exp(-0.5)
         }
       
         #--- Initialize the level set evolution
-        ::LS->Setinput(::CIFP->input_cropped)
+        ::LS->set_input(&::CroppedInput->input_cropped)
         ::LS->init_mode              = 1 
         ::LS->accept_high_intensity  = 0
         ::LS->use_expansion_image    = 1
@@ -934,14 +934,14 @@ if (!exists(RunExperimentsClass)){
         # estimate running time based on the remaining centerline distance to segment
         if (exists(::covered_distz_E)) {
           remaining_dist = ::maxdistz_ECA-::covered_distz_E
-          remaining_Tmin = remaining_dist/::CIFP->input_cropped.vz
+          remaining_Tmin = remaining_dist/::CroppedInput->input_cropped.vz
           ::LS->T           = max(60,remaining_Tmin*3);
         } else {
           ::LS->T = 60
         }
       
         //::win.Update(-1)
-        ::LS->Setinitial(::pathCE_lsinit)
+        ::LS->set_initial(&::pathCE_lsinit)
         //::win.Update(-1)
 
         #--- Computes the intensity statistics
@@ -964,12 +964,12 @@ if (!exists(RunExperimentsClass)){
         ::pathCE_expforce = ::LS->input*0-0.5
         #     -- compute the force inside the ROI
         ::expforce_roi = ::pathCE_expforce[:,:,zmin:zmax]
-        ::expforce_roi  = (::LS->input[::expforce_roi]-::LS->Imean)/::LS->Isd
+        ::expforce_roi  = (::LS->input[::expforce_roi.GetExtent]-::LS->Imean)/::LS->Isd
         ::expforce_roi = ::expforce_roi*::expforce_roi
         ::expforce_roi = exp(-::expforce_roi/2)-exp(-(::ls_prob_limit*::ls_prob_limit)/2)
         ::pathCE_expforce.putimage(::expforce_roi)
       
-        ::LS->Setexpansion(::pathCE_expforce)
+        ::LS->set_expansion(&::pathCE_expforce)
       
         # Run the evolution
         //::win.Update(-1)
@@ -1002,12 +1002,12 @@ if (!exists(RunExperimentsClass)){
         if (exists(::pathCIs_cut)) {
           radii         = Image(FLOAT,::pathCIs_cut.NbPoints(),1,1)
           radii         = ::tube_size
-          ::pathCI_lsinit <<= LineRecons(::pathCIs_cut,::CIFP->input_cropped,radii)
+          ::pathCI_lsinit <<= LineRecons(::pathCIs_cut,::CroppedInput->input_cropped,radii)
         } else {
           ::pathCIs_res   = ResampleLines(::pathCIs,::resample_dist)
           radii         = Image(FLOAT,::pathCIs_res.NbPoints(),1,1)
           radii         = ::tube_size
-          ::pathCI_lsinit <<= LineRecons(::pathCIs_res,::CIFP->input_cropped,radii)
+          ::pathCI_lsinit <<= LineRecons(::pathCIs_res,::CroppedInput->input_cropped,radii)
         }
     
         #--- check for computed remaining centerline
@@ -1016,7 +1016,7 @@ if (!exists(RunExperimentsClass)){
           radii         <<= Image(FLOAT,::pathCC_rems_res.NbPoints(),1,1)
           radii           = ::tube_size
           # reconstructed remaining centerline
-          rem_recons    <<= LineRecons(::pathCC_rems_res,::CIFP->input_cropped,radii)
+          rem_recons    <<= LineRecons(::pathCC_rems_res,::CroppedInput->input_cropped,radii)
           ::pathCI_lsinit = max(::pathCI_lsinit, rem_recons)
         }
         if (exists(::pathCI_rems)) {
@@ -1024,14 +1024,14 @@ if (!exists(RunExperimentsClass)){
           radii         <<= Image(FLOAT,::pathCI_rems_res.NbPoints(),1,1)
           radii           = ::tube_size
           # reconstructed remaining centerline
-          rem_recons    <<= LineRecons(::pathCI_rems_res,::CIFP->input_cropped,radii)
+          rem_recons    <<= LineRecons(::pathCI_rems_res,::CroppedInput->input_cropped,radii)
           ::pathCI_lsinit = max(::pathCI_lsinit, rem_recons)
         }
       
         ::pathCI_lsinit = ::pathCI_lsinit-255*exp(-0.5)
     
         #--- Initialize the level set evolution
-        ::LS->Setinput(::CIFP->input_cropped)
+        ::LS->set_input(&::CroppedInput->input_cropped)
         ::LS->init_mode              = 1 
         ::LS->accept_high_intensity  = 0
         ::LS->use_expansion_image    = 1
@@ -1040,7 +1040,7 @@ if (!exists(RunExperimentsClass)){
         # estimate running time based on the remaining centerline distance to segment
         if (exists(::covered_distz_I)) {
           remaining_dist = ::maxdistz_ICA-::covered_distz_I
-          remaining_Tmin = remaining_dist/::CIFP->input_cropped.vz
+          remaining_Tmin = remaining_dist/::CroppedInput->input_cropped.vz
           ::LS->T           = max(60,remaining_Tmin*3);
           #eval "printn "+::LS->T+";"
         } else {
@@ -1048,7 +1048,7 @@ if (!exists(RunExperimentsClass)){
         }
 
         //::win.Update(-1)
-        ::LS->Setinitial(::pathCI_lsinit)
+        ::LS->set_initial(&::pathCI_lsinit)
         //::win.Update(-1)
         #--- Computes the intensity statistics
         ::LS->ComputeIntensityStats()
@@ -1070,13 +1070,13 @@ if (!exists(RunExperimentsClass)){
         ::pathCI_expforce = ::LS->input*0-0.5
         #     -- compute the force inside the ROI
         expforce_roi = ::pathCI_expforce[:,:,zmin:zmax]
-        expforce_roi  = (::LS->input[expforce_roi]-::LS->Imean)/::LS->Isd
+        expforce_roi  = (::LS->input[expforce_roi.GetExtent]-::LS->Imean)/::LS->Isd
         expforce_roi = expforce_roi*expforce_roi
         expforce_roi = exp(-expforce_roi/2)-exp(-(::ls_prob_limit*::ls_prob_limit)/2)
         ::pathCI_expforce.putimage(expforce_roi)
       
         //::win.Update(-1)
-        ::LS->Setexpansion(::pathCI_expforce)
+        ::LS->set_expansion(&::pathCI_expforce)
       
         # Run the evolution
         //::win.Update(-1)
@@ -1122,9 +1122,9 @@ if (!exists(RunExperimentsClass)){
     #------------------------------------------
     proc ::InitialSpheres() \
     {
-      ::LS->input_name   = "::CIFP->input_cropped"
+      ::LS->input_name   = "::CroppedInput->input_cropped"
       #--- add initial spheres
-      ::CIS->CreateInitialSpheres(&::CIFP->input_cropped,"::lsinit",::sphereradii)
+      ::CIS->CreateInitialSpheres(&::CroppedInput->input_cropped,"::lsinit",::sphereradii)
     }
     
     #------------------------------------------
@@ -1145,12 +1145,17 @@ if (!exists(RunExperimentsClass)){
         }
     
         # create the image with partial volume effect
+        # check if we need to resize ::inls
+        if (::inls.trx!=::input_trx)||(::inls.try!=::input_try)||(::inls_trz!=::input_trz) {
+          InfoDialog "The result should be rescaled to the original image scale ! (TODO)"
+          #inls_rescaled = Resize(::inls,
+        }
         pvim = ::filters->ComputePV_subdiv(::inls,4)
         if (0) {
           # put in bigger image
           pvim_big <<= Image(FLOAT,::input_tx,::input_ty,::input_tz)
           pvim_big.settranslation(::input_trx,::input_try,::input_trz)
-          pvim_big.setvoxelsize(::CIFP->input_cropped)
+          pvim_big.setvoxelsize(::CroppedInput->input_cropped)
           pvim_big.putimage(pvim)
         } else {
           pvim_big = pvim
@@ -1161,20 +1166,20 @@ if (!exists(RunExperimentsClass)){
         # 2. Save ROI text file
         roi_file = open(::current_resultsdir+"/roi"+::datanumber_str+".txt","w")
         # compute the voxel position of the first point
-        ::RP->p1x=floor((pvim_big.trx-::input_trx)/::CIFP->input_cropped.vx+0.5)
-        ::RP->p1y=floor((pvim_big.try-::input_try)/::CIFP->input_cropped.vy+0.5)
-        ::RP->p1z=floor((pvim_big.trz-::input_trz)/::CIFP->input_cropped.vz+0.5)
+        ::ReadPoints->p1x=floor((pvim_big.trx-::inls.trx)/::CroppedInput->input_cropped.vx+0.5)
+        ::ReadPoints->p1y=floor((pvim_big.try-::inls.try)/::CroppedInput->input_cropped.vy+0.5)
+        ::ReadPoints->p1z=floor((pvim_big.trz-::inls.trz)/::CroppedInput->input_cropped.vz+0.5)
       
-        ::RP->p2x=floor(::RP->p1x+(pvim_big.tx-1)*pvim_big.vx/::CIFP->input_cropped.vx+0.5)
-        ::RP->p2y=floor(::RP->p1y+(pvim_big.ty-1)*pvim_big.vy/::CIFP->input_cropped.vy+0.5)
-        ::RP->p2z=floor(::RP->p1z+(pvim_big.tz-1)*pvim_big.vz/::CIFP->input_cropped.vz+0.5)
+        ::ReadPoints->p2x=floor(::ReadPoints->p1x+(pvim_big.tx-1)*pvim_big.vx/::CroppedInput->input_cropped.vx+0.5)
+        ::ReadPoints->p2y=floor(::ReadPoints->p1y+(pvim_big.ty-1)*pvim_big.vy/::CroppedInput->input_cropped.vy+0.5)
+        ::ReadPoints->p2z=floor(::ReadPoints->p1z+(pvim_big.tz-1)*pvim_big.vz/::CroppedInput->input_cropped.vz+0.5)
       
-        roi_file.print "%0.0f " % ::RP->p1x
-        roi_file.print "%0.0f " % ::RP->p1y
-        roi_file.print "%0.0f\n" % ::RP->p1z
-        roi_file.print "%0.0f " % ::RP->p2x
-        roi_file.print "%0.0f " % ::RP->p2y
-        roi_file.print "%0.0f\n" % ::RP->p2z
+        roi_file.print "%0.0f "  % ::ReadPoints->p1x
+        roi_file.print "%0.0f "  % ::ReadPoints->p1y
+        roi_file.print "%0.0f\n" % ::ReadPoints->p1z
+        roi_file.print "%0.0f "  % ::ReadPoints->p2x
+        roi_file.print "%0.0f "  % ::ReadPoints->p2y
+        roi_file.print "%0.0f\n" % ::ReadPoints->p2z
         if (!::nointeraction) { InfoDialog "Result is saved!"; }
       }
     }
@@ -1188,6 +1193,7 @@ if (!exists(RunExperimentsClass)){
             + ::CONFIG->results_dir + " " \
             + ::CONFIG->results_dir + " " \
             + ::datanumber_str
+      printn ::cmd
       sh ::cmd
     }
     
@@ -1230,6 +1236,7 @@ if (!exists(RunExperimentsClass)){
       ::spheres_surf.SetDiffuse(5,250,5)
     }
     
+    #------------------------------------------
     proc ::DisplayLevel() \
     {
       resultl_name = ::current_resultsdir+"/levelset_result_from_paths.ami.gz"
@@ -1238,6 +1245,7 @@ if (!exists(RunExperimentsClass)){
       show ::resultl_iso
     }
     
+    #------------------------------------------
     proc ::ConfigEvent() {
       ::win.EnablePanel(::config_crop_page, ::advanced==1)
       ::win.EnablePanel(::config_dir_page, ::advanced==1)

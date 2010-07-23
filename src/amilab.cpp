@@ -493,6 +493,7 @@ bool MyApp::OnInit()
 
 int MyApp::OnExit()
 {
+  Vars.EmptyVariables();
   cout << "MyApp::OnExit()" << endl;
   return 0;
 }

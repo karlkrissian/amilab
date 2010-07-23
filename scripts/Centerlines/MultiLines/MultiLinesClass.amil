@@ -22,23 +22,22 @@
 #        radius image ...
 #
 
+func "Common/ScriptGui"
+
 #SetDebugOn
 # no interface here
-if (!exists(MultilinesClass)) {
+if (!exists(MultiLinesClass)) {
 
   global::ami_import.Filters()
-  if (argc==1) {
-    inputname=$1
-    emptyargs
-  } else {
-    inputname = ""
-  }
+#  if (argc==1) {
+#    inputname=$1
+#    emptyargs
+#  } else {
+#    inputname = ""
+#  }
   
-  Class MultilinesClass {
+  Class MultiLinesClass : public ScriptGui {
   
-    
-    ::class_name = "global::MultilinesClass"
-
     ::filters=&global::filters
 
     #----------------------------
@@ -85,22 +84,7 @@ if (!exists(MultilinesClass)) {
 
       #::Gui()
     }
-  #----------------------------
-    proc ::Close() \
-    {
-      if (exists(::win)) {
-      ::win.HidePanel()
-      }
-      delvars GetObjectName(::Close)
-    }
-    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-    
-    #----------------------------
-    proc ::CloseAll() {
-      eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
-      ::Close
-    }
-    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
+
         
     #------------------------------------
     proc ::load_input() {  
@@ -600,11 +584,8 @@ if (!exists(MultilinesClass)) {
 
       ::win.EndBook()
     
-      ::win.BeginHorizontal()
-        ::win.AddButton("Close",      ::Close)
-        ::win.AddButton("Close All",  ::CloseAll)
-      ::win.EndHorizontal()
-    
+      ::AddStandardButtons(&::win)
+
     
       if (exists(::parent_panel)) {
         ::win.ShowPanel()
@@ -616,24 +597,9 @@ if (!exists(MultilinesClass)) {
     
     ::Init()
     
-    #if (inputname != "") {
-     # in = Image(inputname)
-     # ::input_name = "in"
-     # ::win.update
-    #}
   
   } #End of class
   
 } # End of if
 
-#----------------------------
-# Main
-#----------------------------
-
-if (!exists(multilines)) {
-
-  MultilinesClass multilines
-} else {
-  InfoDialog "The script seems to be already loaded."
-}
       

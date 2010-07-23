@@ -84,10 +84,11 @@ if (!exists(WeightedLSCLass)) {
     proc ::_Display() \
     {
       show ::input
-      ::input_draw.compare(::weights)
-      eval "::input_draw.compare("+::output_prefix+"lm);"
-      eval "::input_draw.compare("+::output_prefix+"sd);"
-      eval "::input_draw.compare("+::output_prefix+"prob);"
+      show ::weights
+      ::input_draw._compare(&::weights_draw)
+      #eval "::input_draw._compare(&"+::output_prefix+"lm);"
+      #eval "::input_draw._compare(&"+::output_prefix+"sd);"
+      #eval "::input_draw._compare(&"+::output_prefix+"prob);"
     }
     
     #--------------------------

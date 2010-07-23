@@ -8,7 +8,6 @@ cl_category = "&Centerlines"
 cl_dir = "Centerlines/"
 
 ami.MainFrame.AddToMenu("&Scripts",cl_category,"&Skeleton",         cl_dir+"CreateSkeletonGui")
-ami.MainFrame.AddToMenu("&Scripts",cl_category,"&Multi-Line",       cl_dir+"MultiLines")
 ami.MainFrame.AddToMenu("&Scripts",cl_category,"2D &Lines",         cl_dir+"Lines2D")
 
 
@@ -17,7 +16,7 @@ del cl_dir
 
 
 proc AddCenterlinesMenu() {
-  for dir in  "ShortestPath", "itkShortestPath", "itkVesselness" \
+  for dir in  "ShortestPath", "MultiLines", "itkShortestPath", "itkVesselness" \
   {
     if FileExists(GetScriptsDir+"/Centerlines/"+dir+"/Add2Menu.amil") {
       func "/Centerlines/"+dir+"/Add2Menu.amil"

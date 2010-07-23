@@ -169,7 +169,7 @@ if (!exists(itkFastMarchingClass)) {
     
       show ::input
       show ::thres
-      ::input_draw.compare(::thres_draw)
+      ::input_draw._compare(&::thres_draw)
     
     }
     

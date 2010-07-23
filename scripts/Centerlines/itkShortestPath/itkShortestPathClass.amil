@@ -172,7 +172,7 @@ if (!exists(itkShortestPathClass)) {
       ::load_speed
       show ::input
       show ::speed
-      ::input_draw.compare(::speed)
+      ::input_draw._compare(&::speed_draw)
       if (exists(global::path)) { show global::path; }
     }  
 

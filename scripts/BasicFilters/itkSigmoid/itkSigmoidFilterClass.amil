@@ -67,7 +67,7 @@ if (!exists(itkSigmoidFilterClass)) {
     
       show ::input
       show ::sigmoid
-      ::input_draw.compare(::sigmoid_draw)
+      ::input_draw._compare(&::sigmoid_draw)
     
     }
     

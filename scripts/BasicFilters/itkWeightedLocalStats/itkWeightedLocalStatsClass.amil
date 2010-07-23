@@ -123,14 +123,14 @@ if (!exists(itkWeightedLocalStatsCLass)) {
     {
       show ::input
       show ::weights
-      ::input_draw.compare(::weights_draw)
+      ::input_draw._compare(&::weights_draw)
       
       eval "show global::"+::output_prefix+"lm;"
-      eval "::input_draw.compare(global::"+::output_prefix+"lm_draw);"
+      eval "::input_draw._compare(&global::"+::output_prefix+"lm_draw);"
       eval "show global::"+::output_prefix+"sd;"
-      eval "::input_draw.compare(global::"+::output_prefix+"sd_draw);"
+      eval "::input_draw._compare(&global::"+::output_prefix+"sd_draw);"
       eval "show global::"+::output_prefix+"prob;"
-      eval "::input_draw.compare(global::"+::output_prefix+"prob_draw);"
+      eval "::input_draw._compare(&global::"+::output_prefix+"prob_draw);"
     }
     
     #--------------------------

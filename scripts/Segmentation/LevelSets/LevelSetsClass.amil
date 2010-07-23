@@ -150,9 +150,9 @@ if (!exists(LevelSetsClass)){
           ::win.Update(-1)
         }
     
-        ::min          = min(::input)
-        ::max          = max(::input)
-        ::minimal_intensity = ::min
+        ::inputmin          = min(::input)
+        ::inputmax          = max(::input)
+        ::minimal_intensity = ::inputmin
         if (exists(::win)) {
           ::win.Update(-1)
         }
@@ -163,22 +163,40 @@ if (!exists(LevelSetsClass)){
       }
       Comments( ::load_input, "Copies the input image in a local image member named 'input', and updates the min-max intensities")
 
-      #-----------------------------------------------
-      proc ::set_input(IMAGE im) \
-      {
-        ::input <<= im
-        ::min          = min(::input)
-        ::max          = max(::input)
-        ::minimal_intensity = ::min
-        ::UpdateHistogram()
-      }
 
+      //--------------------------------------------------
+      proc ::set_input(IMAGE _input) \
+      {
+        
+        if (exists(::input_draw))  { del ::input_draw; }
+        if (exists(::inls_backup)) { del ::inls_backup; }
+      
+        ::input <<= (FLOAT)_input
+            
+        ::inputmin = min(::input)
+        ::inputmax = max(::input)
+        ::minimal_intensity = ::inputmin
+        ::UpdateHistogram()
+      
+        ::inls <<= (FLOAT)::input*0-10
+        ::inls0 <<= ::inls
+      
+        show ::input
+        ::input_draw.SetIsoContour(1,&::inls,0)
+        ::input_draw.DrawIsoContour(1,1)
+      
+      }
+    
       #-----------------------------------------------
       proc ::set_initial( IMAGE im) \
       {
         ::inls <<= im
         ::inls0 <<= ::inls
         show ::inls
+        if (exists(::input_draw)) {
+          ::input_draw.SetIsoContour(1,::inls,0)
+          ::input_draw.DrawIsoContour(1,1)
+        }
       }
     
       #-----------------------------------------------
@@ -193,8 +211,8 @@ if (!exists(LevelSetsClass)){
       {
         printn "*** UpdateHistogram ***"
         # display histogram
-        ::h <<= histo(::input,::min,::max,::max-::min+1)
-        ::dw->SetXLimits(::min,::max)
+        ::h <<= histo(::input,::inputmin,::inputmax,::inputmax-::inputmin+1)
+        ::dw->SetXLimits(::inputmin,::inputmax)
         ::dw->SetYLimits(min(::h),max(::h))
         ::dw->SetCurve(::h)
         ::dw->SetCurveProperties(0,"#F05050")
@@ -205,8 +223,8 @@ if (!exists(LevelSetsClass)){
       proc ::UpdateExpansionCurve() \
       {
         if (exists(::input)) {
-          ::exp_curve = Image(FLOAT,::max-::min+1,1,1)
-          ::exp_curve.settranslation(::min,0,0)
+          ::exp_curve = Image(FLOAT,::inputmax-::inputmin+1,1,1)
+          ::exp_curve.settranslation(::inputmin,0,0)
           
           ::exp_curve = ((FLOAT) Xpos(::exp_curve))-\
             ::Imean
@@ -294,51 +312,6 @@ if (!exists(LevelSetsClass)){
     }
     
 
-    //--------------------------------------------------
-    proc ::Setinput(IMAGE _input) {
-      
-    
-      if (exists(::input_draw)) { del ::input_draw; }
-      if (exists(::inls))    { del ::inls; }
-      if (exists(::inls0))   { del ::inls0; }
-      if (exists(::input))      { del ::input; }
-      if (exists(::inls_backup))      { del ::inls_backup; }
-    
-      ::input = (FLOAT)_input
-      show ::input
-    
-    
-      ::inputmin = min(::input)
-      ::inputmax = max(::input)
-      ::minimal_intensity = ::inputmin
-    
-      ::inls = (FLOAT)::input*0-10
-      ::inls0 = ::inls
-    
-      ::input_draw.SetIsoContour(1,&::inls,0)
-      ::input_draw.DrawIsoContour(1,1)
-    
-    }
-    
-    proc ::Setinitial(IMAGE input) {
-    
-      if (exists(::inls))    { del ::inls; }
-      if (exists(::inls0))   { del ::inls0; }
-      if (exists(::inls_backup))      { del ::inls_backup; }
-    
-      ::inls = (FLOAT)input  
-    
-      ::inls0 <<= ::inls
-    
-      ::input_draw.SetIsoContour(1,::inls,0)
-      ::input_draw.DrawIsoContour(1,1)
-    
-    }
-    
-    proc ::Setexpansion(IMAGE input) {
-      ::expansion_image = (FLOAT)input  
-    }
-    
     #--------------------------
     proc ::SaveParams( STRING filename) \
     {
