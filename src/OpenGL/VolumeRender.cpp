@@ -52,7 +52,7 @@ extern void glTexImage3DEXT(GLenum, GLint, GLenum, GLsizei, GLsizei, GLsizei, GL
 
 #include "VolumeRender.hpp"
 
-
+#include "amilab_messages.h"
 
 
 #define TEXIMAGE_INTFORMAT GL_LUMINANCE_ALPHA
@@ -278,6 +278,10 @@ void VolumeRender::InitRender()
   #else
     PFNGLTEXIMAGE3DPROC glTexImage3D;
     glTexImage3D = (PFNGLTEXIMAGE3DPROC) wglGetProcAddress("glTexImage3D");
+	if (!glTexImage3D) { 
+      CLASS_ERROR("glTexImage3D not found ...")
+	  return;
+	}
     glTexImage3D(GL_TEXTURE_3D,
   #endif
       _level_of_detail, 
@@ -355,6 +359,10 @@ void VolumeRender::MapTexture()
   #else
     PFNGLTEXIMAGE3DPROC glTexImage3D;
     glTexImage3D = (PFNGLTEXIMAGE3DPROC) wglGetProcAddress("glTexImage3D");
+	if (!glTexImage3D) { 
+      CLASS_ERROR("glTexImage3D not found ...")
+	  return;
+	}
     glTexImage3D(GL_TEXTURE_3D,
   #endif
             _level_of_detail, 

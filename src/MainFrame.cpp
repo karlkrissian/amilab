@@ -341,7 +341,8 @@ MainFrame::MainFrame( const wxString& title,
                   .Name(wxT("Log"))
                   .Caption(wxT("Output"))
                   .Bottom()
-                  .MaximizeButton(true));
+                  .MaximizeButton(true)
+				  .MinSize(wxSize(100,50)));
 
   CreateParamBook(this);
   m_mgr.AddPane(_param_book,
