@@ -108,6 +108,22 @@ void AddVar_##methodname(  _parentclass_ptr& pc, const std::string& newname = #m
    this->parameters_comments.push_back(c); \
    this->paramtypes.push_back(to_string<type>::value());
 
+/*! \def GET_PARAM
+    \brief Extracts the value of the next parameter from the list.
+*/
+#define GET_PARAM(type,varname,defaultval) \
+  type varname = defaultval; \
+  if (!get_val_param<type>( varname, p, n)) \
+    ClassHelpAndReturn;
+
+/*! \def GET_PARAM
+    \brief Extracts a smart pointer of the next parameter from the list.
+*/
+#define GET_SMTPTR_PARAM(type,varname) \
+  boost::shared_ptr<type> varname; \
+  if (!get_val_smtptr_param<type>( varname, p, n)) \
+    ClassHelpAndReturn;
+
 
 class AMIObject;
 

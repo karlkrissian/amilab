@@ -26,6 +26,8 @@
    The full GNU Lesser General Public License file is in Devel/Sources/Prog/LesserGPL_license.txt
 */
 
+#include "AMILabConfig.h"
+
 #include "itkCannyEdgeDetector.h"
 
 #ifdef USE_ITK
@@ -36,7 +38,7 @@
 #endif
 
 template <unsigned int Dimension>
-InrImage* Func_itkCannyEdgeDetector(InrImage* input, float var, float lowthreshold)
+InrImage* Func_wrap_itkCannyEdgeDetector(InrImage* input, float var, float lowthreshold)
 {
 
 #ifdef USE_ITK

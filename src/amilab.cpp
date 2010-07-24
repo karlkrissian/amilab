@@ -49,7 +49,7 @@
 #include "driver.h"
 
 #include <wx/apptrait.h>
-
+#include <wx/stdpaths.h>
 #include "wrap_imports.h"
 
 Pile<NomMethode*> GB_pile_nom_methode((NomMethode*)NULL);
@@ -76,8 +76,6 @@ unsigned char DELETE_IDRAW;
 
 extern VarContexts  Vars;
 
-#include "xmtext.hpp"
-extern TextControl* TC;
 
 int        GB_argc;
 wxChar**   GB_argv;
@@ -417,20 +415,33 @@ bool MyApp::OnInit()
     GB_driver.current_file="Command line prompt";
 
     // check for existence of config file
+    // 1. in current directory
     wxString homedir = ::wxGetUserHome();
     wxFileName amilab_config;
-    amilab_config.AssignHomeDir();
-    amilab_config.AppendDir(wxT(".amilab"));
+    amilab_config.AssignCwd();
     amilab_config.SetFullName(wxT("config.amil"));
 
+    if (!amilab_config.FileExists()) {
+      // 2. in binary directory
+      amilab_config = wxStandardPaths::Get().GetExecutablePath();
+      amilab_config.SetFullName(wxT("config.amil"));
+    }
+    
+    // 3. in user home directory ~/.amilab/config.amil
+    if (!amilab_config.FileExists()) {
+      amilab_config.AssignHomeDir();
+      amilab_config.AppendDir(wxT(".amilab"));
+      amilab_config.SetFullName(wxT("config.amil"));
+    }
+
     if (amilab_config.FileExists())
-    try {
-        GB_driver.parse_file(string(amilab_config.GetFullPath().mb_str(wxConvUTF8)));
-        GB_main_wxFrame->GetConsole()->ProcessReturn();
-    }
-    catch (char * str ) {
-        cerr << "Error catched ! " << str << endl;
-    }
+      try {
+          GB_driver.parse_file(string(amilab_config.GetFullPath().mb_str(wxConvUTF8)));
+          GB_main_wxFrame->GetConsole()->ProcessReturn();
+      }
+      catch (char * str ) {
+          cerr << "Error catched ! " << str << endl;
+      }
 
     // check for existence of Menus for scripts
     wxFileName amilab_menuscripts;
@@ -482,6 +493,7 @@ bool MyApp::OnInit()
 
 int MyApp::OnExit()
 {
+  Vars.EmptyVariables();
   cout << "MyApp::OnExit()" << endl;
   return 0;
 }

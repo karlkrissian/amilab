@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<!--Converted with LaTeX2HTML 2002-2-1 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Some notes on filter parameters</TITLE>
+<META NAME="description" CONTENT="Some notes on filter parameters">
+<META NAME="keywords" CONTENT="watershed">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2002-2-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="watershed.css">
+
+<LINK REL="previous" HREF="node6.html">
+<LINK REL="up" HREF="node2.html">
+<LINK REL="next" HREF="node8.html">
+</HEAD>
+
+<BODY >
+<!--Navigation Panel-->
+<A NAME="tex2html91"
+  HREF="node8.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html89"
+  HREF="node2.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html85"
+  HREF="node6.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html92"
+  HREF="node8.html">Interface tabs</A>
+<B> Up:</B> <A NAME="tex2html90"
+  HREF="node2.html">Detailed Description</A>
+<B> Previous:</B> <A NAME="tex2html86"
+  HREF="node6.html">Description of the output</A>
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION00025000000000000000">
+Some notes on filter parameters</A>
+</H2>
+Two parameters control the output of this filter, Threshold and Level. The units of both parameters are percentage points of the maximum height value in the input.
+
+<P>
+Threshold is used to set the absolute minimum height value used during processing. Raising this threshold percentage effectively decreases the number of local minima in the input, resulting in an initial segmentation with fewer regions. The assumption is that the shallow regions that thresholding removes are of of less interest.
+
+<P>
+The Level parameter controls the depth of metaphorical flooding of the image. That is, it sets the maximum saliency value of interest in the result. Raising and lowering the Level influences the number of segments in the basic segmentation that are merged to produce the final output. A level of 1.0 is analogous to flooding the image up to a depth that is 100 percent of the maximum value in the image. A level of 0.0 produces the basic segmentation, which will typically be very oversegmented. Level values of interest are typically low (i.e. less than about 0.40 or 40% ), since higher values quickly start to undersegment the image.
+
+<P>
+The Level parameter can be used to create a hierarchy of output images in constant time once an initial segmentation is done. A typical scenario might go like this: For the initial execution of the filter, set the Level to the maximum saliency value that you anticipate might be of interest. Once the initial Update() of this process object has finished, the Level can be manipulated anywhere below the initial setting without triggering a full update of the segmentation mini-pipeline. All that is now be required to produce the new output is a simple relabeling of the output image.
+
+<P>
+Threshold and Level parameters are controlled through the class' Get/SetThreshold() and Get/SetLevel() methods.
+
+<P>
+<HR>
+<!--Navigation Panel-->
+<A NAME="tex2html91"
+  HREF="node8.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html89"
+  HREF="node2.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html85"
+  HREF="node6.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html92"
+  HREF="node8.html">Interface tabs</A>
+<B> Up:</B> <A NAME="tex2html90"
+  HREF="node2.html">Detailed Description</A>
+<B> Previous:</B> <A NAME="tex2html86"
+  HREF="node6.html">Description of the output</A>
+<!--End of Navigation Panel-->
+<ADDRESS>
+sara
+2010-05-31
+</ADDRESS>
+</BODY>
+</HTML>

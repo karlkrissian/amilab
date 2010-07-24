@@ -1,0 +1,185 @@
+#!/usr/local/bin/amilab
+
+# Draw the initial points
+# set different colors
+# set opacity
+# draw the junction
+# save the displayed images
+# set boolean for visual inspection and evaluation
+# save results
+
+func "carotidchallenge_config.amil"
+func "ReadPoints.amil"
+import_vtk
+
+DR_datanum_str = $1
+emptyargs
+
+DR_result_dir = CE_results_dir     + "/challenge"+ DR_datanum_str 
+DR_gt_dir     = CE_groundtruth_dir + "/challenge"+ DR_datanum_str 
+DR_data_dir   = CE_data_dir        + "/challenge"+ DR_datanum_str 
+
+# create empty surface to start
+DR_surf = Surface()
+show DR_surf
+
+# read data side
+f = open(DR_data_dir+"/side"+DR_datanum_str+".txt","r")
+DR_side = ""
+f.read(DR_side)
+
+# Draw the initial points
+pointsname = DR_data_dir + "/points"+DR_datanum_str+".txt"
+ReadPoints(pointsname)
+
+DR_ptsize = 1
+DR_pt1_sphere = vtkSphere(DR_ptsize,8,8,p1x,p1y,p1z)
+DR_pt2_sphere = vtkSphere(DR_ptsize,8,8,p2x,p2y,p2z)
+DR_pt3_sphere = vtkSphere(DR_ptsize,8,8,p3x,p3y,p3z)
+
+
+DR_pt1_sphere.SetDiffuse(250,5,5)
+DR_pt2_sphere.SetDiffuse(5,250,5)
+DR_pt3_sphere.SetDiffuse(5,5,250)
+
+DR_surf_draw += DR_pt1_sphere
+DR_surf_draw += DR_pt2_sphere
+DR_surf_draw += DR_pt3_sphere
+
+# draw the junction
+if (FileExists(DR_result_dir+"/junction.txt")) {
+  func DR_result_dir+"/junction.txt"
+  DR_junc_sphere = vtkSphere(DR_ptsize,8,8,CE_Jx,CE_Jy,CE_Jz)
+  DR_surf_draw += DR_junc_sphere
+  DR_junc_sphere.SetOpacity(0.5)
+  DR_junc_sphere.SetDiffuse(250,250,5)
+} else {
+  InfoDialog "Junction file "+DR_result_dir+"/junction.txt does not exist ..."
+}
+
+
+# Draw the lines
+DR_pathCEs = Surface(DR_result_dir+"/pathCEs.vtk")
+DR_pathCIs = Surface(DR_result_dir+"/pathCIs.vtk")
+
+if (FileExists(DR_result_dir+"/pathCIs_cut.vtk")) {
+  DR_pathCIs_cut = Surface(DR_result_dir+"/pathCIs_cut.vtk")
+}
+if (FileExists(DR_result_dir+"/pathCEs_cut.vtk")) {
+  DR_pathCEs_cut = Surface(DR_result_dir+"/pathCEs_cut.vtk")
+}
+
+if (FileExists(DR_result_dir+"/pathCI_remaining_smoothed.vtk")) {
+  DR_pathCI_rems = Surface(DR_result_dir+"/pathCI_remaining_smoothed.vtk")
+}
+
+if (FileExists(DR_result_dir+"/pathCC_remaining_smoothed.vtk")) {
+  DR_pathCC_rems = Surface(DR_result_dir+"/pathCC_remaining_smoothed.vtk")
+}
+
+
+DR_surf_draw += DR_pathCEs
+DR_surf_draw += DR_pathCIs
+
+DR_pathCEs.SetColor(250,5,5)
+if (exists(DR_pathCEs_cut)) {
+  DR_surf_draw += DR_pathCEs_cut
+  DR_pathCEs_cut.SetColor(250,5,5)
+  DR_pathCEs_cut.SetLineWidth(3)
+}
+
+DR_pathCIs.SetColor(5,5,250)
+if (exists(DR_pathCIs_cut)) {
+  DR_surf_draw += DR_pathCIs_cut
+  DR_pathCIs_cut.SetColor(5,5,250)
+  DR_pathCIs_cut.SetLineWidth(3)
+}
+
+
+if (exists(DR_pathCI_rems)) {
+  DR_surf_draw += DR_pathCI_rems
+  DR_pathCI_rems.SetColor(5,250,5)
+}
+if (exists(DR_pathCC_rems)) {
+  DR_surf_draw += DR_pathCC_rems
+  DR_pathCC_rems.SetColor(5,250,5)
+}
+
+# Add the obtained result
+DR_lsres = Image DR_result_dir+"/levelset_result_from_paths.ami.gz"
+DR_lsres_surf = isosurf(DR_lsres,0)
+DR_surf_draw += DR_lsres_surf
+DR_lsres_surf.SetAmbient(50,50,250)
+DR_lsres_surf.SetOpacity(0.6)
+
+
+# check for ground truth
+if (FileExists(DR_gt_dir+"/iso"+DR_datanum_str+".vtp")) {
+  DR_gt = Surface(DR_gt_dir+"/iso"+DR_datanum_str+".vtp")
+  DR_surf_draw += DR_gt
+  DR_gt.SetOpacity(0.4)
+  DR_gt.SetAmbient(255,5,5)
+}
+
+
+DR_surf_draw.Normalize
+DR_surf_draw.Center
+
+DR_surf_draw.SetWindowSize(300,600)
+
+DR_surf_draw.rotate(-90,0,0)
+DR_surf_draw.Paint
+DR_view1 = DR_surf_draw.GetTransform
+
+DR_surf_draw.rotate(0,45,0)
+DR_surf_draw.Paint
+DR_view2 = DR_surf_draw.GetTransform
+
+DR_surf_draw.rotate(0,45,0)
+DR_surf_draw.Paint
+DR_view3 = DR_surf_draw.GetTransform
+
+DR_paths_OK    = UCHAR(0)
+DR_junction_OK = UCHAR(0)
+DR_contours_OK = UCHAR(0)
+
+proc DR_SetView1() \
+{
+  DR_surf_draw.SetTransform(DR_view1)
+}
+
+proc DR_SetView2() \
+{
+  DR_surf_draw.SetTransform(DR_view2)
+}
+
+proc DR_SetView3() \
+{
+  DR_surf_draw.SetTransform(DR_view3)
+}
+
+proc DR_Save() \
+{
+}
+
+  import = &global::ami_import;
+  DR_win = import->ParamPanel("Visual Inspection")
+  DR_win.AddLabel("Data = ",DR_datanum_str)
+  DR_win.AddLabel("Side = ",DR_side)
+
+  if (CE_inverted_paths) {
+    DR_win.AddLabel("Inverted paths = ","YES")
+  } else {
+    DR_win.AddLabel("Inverted paths = ","NO")
+  }
+
+  DR_win.AddBoolean( &DR_paths_OK)
+  DR_win.AddBoolean( &DR_junction_OK)
+  DR_win.AddBoolean( &DR_contours_OK)
+  DR_win.BeginHorizontal()
+    DR_win.AddButton("View1",DR_SetView1)
+    DR_win.AddButton("View2",DR_SetView2)
+    DR_win.AddButton("View3",DR_SetView3)
+  DR_win.EndHorizontal()
+  DR_win.AddButton("Save Evaluation",DR_Save)
+DR_win.Display()

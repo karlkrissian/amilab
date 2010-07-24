@@ -24,9 +24,13 @@ MESSAGE( "USE_ITK_FILE = ${USE_ITK_FILE}")
 INCLUDE( ${wxWidgets_USE_FILE})
 MESSAGE( "wxWidgets_USE_FILE = ${wxWidgets_USE_FILE}")
 
+INCLUDE( ${USE_VTK_FILE})
+MESSAGE( "USE_VTK_FILE = ${USE_VTK_FILE}")
+
 SET(  WrapITK_SRCS
     itkCannyEdgeDetector.cpp
     wrapITK.cpp
+    LeastSquares.cpp
     wrapitkRecursiveGaussianImageFilter.cpp
     #wrapitkRead_3D_US.cpp
     ami_itkRead.cpp
@@ -34,10 +38,18 @@ SET(  WrapITK_SRCS
     ami_itkWrite.cpp
     wrapitkWrite.cpp
     wrapitkIsoContourDist.cpp
-    #wrapitkBasicNLMeansFilter.cpp
-    #itkBasicNLMeansFilter.txx
+    wrapitkBasicNLMeansFilter.cpp
+    itkBasicNLMeansFilter.txx
     wrapitkFastMarchingImageFilter.cpp
-	wrapitkWaterShedImageFilter.cpp
+    wrapitkWaterShedImageFilter.cpp
+    wrapitkMultiScaleVesselnessFilter.cpp
+    wrapitkDICOMRead.cpp
+    wrapitkSigmoidImageFilter.cpp
+    wrapitkLevelSet.cpp
+    wrapitkBinaryThresholdImageFilter.cpp
+    wrapitkBackTrackingMeshFilter.cpp
+    wrapitkLocalMeanImageFilter.cpp
+    wrapitkTranslateImageFilter.cpp
 )
 
 SET(WrapITK_HDRS
@@ -53,6 +65,9 @@ SET(WrapITK_HDRS
 	wrapitkWaterShedImageFilter.h
   ami_itkWrite.h
 	wrapitkWrite.h
+	wrapitkBackTrackingMeshFilter.h
+	wrapitkLocalMeanImageFilter.h
+	wrapitkTranslateImageFilter.h
 )
 
 SET(WrapITK_SRCS

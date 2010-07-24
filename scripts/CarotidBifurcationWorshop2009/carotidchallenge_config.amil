@@ -1,9 +1,0 @@
-
-basedir    = "/home/karl/projects/data/CarotidChallengeMiccai09"
-
-global::CE_data_dir              = basedir+"/data/"
-global::CE_groundtruth_dir       = basedir+"/groundtruth/"
-global::CE_results_dir           = basedir+"/results/"
-global::CE_evaluation_bindir     = basedir+"/cls2009/build/"
-global::CE_evaluation_scriptdir  = basedir+"/cls2009/scripts/"
-

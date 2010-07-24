@@ -172,6 +172,11 @@ public:
                       const std::string& script_label, 
                       const std::string& script_name);
 
+  void AddToMenu(     const std::string& menu_name,
+                      const std::string& script_category, 
+                      const std::string& script_label, 
+                      const std::string& script_name);
+
   void OnParametricSurfaces(  wxCommandEvent& event);
   void OnCreateTorus(         wxCommandEvent& event);
   void OnCreateSphere(        wxCommandEvent& event);

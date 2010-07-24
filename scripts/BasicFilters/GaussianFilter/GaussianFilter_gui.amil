@@ -45,8 +45,8 @@ if (!exists(GaussianFilterClass)) {
                       ::derx,::dery,::derz)
     }else {
       for n=0 to ::input.vdim-1 {
-        ::res.SetComponent( n, filter( ::input[n],::sigma,\)
-                            ::derx,::dery,::derz)
+        ::res.SetComponent( n, filter( ::input[n],::sigma,\
+                            ::derx,::dery,::derz))
       }
      }
    ::Display()

@@ -1,0 +1,61 @@
+\documentclass{article}
+\usepackage{html}
+\usepackage[latin1]{inputenc}
+%Párrafos
+\setlength{\parskip}{1pc}
+
+\begin{document}
+
+% Title Page
+\title{ITK DICOM Gui}
+\author{Karl Krissian \& Sara Arencibia}
+\thanks{
+Grupo de Imagen, Tecnolog\'ia M\'edica y Televisi\'on (GIMET)\\
+Universidad de Las Palmas de Gran Canaria\\
+email: krissian@dis.ulpgc.es darkmind@gmail.com
+}
+
+
+\maketitle
+
+\begin{abstract}
+This script provides a user interface to read DICOMImage file format.
+\end{abstract}
+
+
+\section{Quick Start}
+
+The different steps for read DICOMImage file format are:
+\begin{enumerate}
+  \item Select the directory.
+  \item Select the output image name.
+  \item Run the filter.
+  \item Display the result.
+\end{enumerate}
+
+
+\section{Detailed Description}
+Read DICOMImage file format.
+
+To read generate an ordered sequence of filenames.
+
+This class generates an ordered sequence of filenames based on the DICOM tags in the files. Files can be sorted based on image number, slice location, or patient position. The files in the specified directory are grouped by SeriesUID. The list of SeriesUIDs can be queried and the filenames for a specific series extracted.  
+
+\section{Interface tabs}
+
+The interface is divided into several pages.
+
+\subsection{\emph{Init} page}
+
+\subsubsection{DICOM folder}
+You can choose the initialization parameters.
+First of all, you need to choose the directory path where the DICOM files are. Press the {\bf Browse} button to do this.
+Select the output name image.
+
+Then, press the {\bf Run} button to read the DICOMImage files.
+Press the {\bf Display} button to see the result image.
+
+\subsection{\emph{Help} page}
+This help.
+
+\end{document}          

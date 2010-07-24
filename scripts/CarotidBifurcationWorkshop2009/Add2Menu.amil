@@ -1,0 +1,24 @@
+#!/usr/bin/amilab
+
+#
+# Adding main Gui scripts to the menu
+#
+
+proc AddCarotidMenu() {
+  global::ami_import.System()
+  curdir = op_system.GetCurrentScriptDir()
+  for dir in  "RunExperiments" \
+  {
+    if FileExists(curdir+"/"+dir+"/Add2Menu.amil") {
+      func curdir+"/"+dir+"/Add2Menu.amil"
+    } else {
+      InfoDialog curdir+"/"+dir+"/Add2Menu.amil does not exists"
+    }
+  }
+}
+
+AddCarotidMenu()
+del AddCarotidMenu
+
+
+

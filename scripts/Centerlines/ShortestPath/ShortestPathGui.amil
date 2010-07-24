@@ -1,0 +1,15 @@
+
+func "Centerlines/ShortestPath/ShortestPathClass"
+
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(shortpath)) {
+  ShortestPathClass shortpath
+  shortpath.Gui()
+  
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+

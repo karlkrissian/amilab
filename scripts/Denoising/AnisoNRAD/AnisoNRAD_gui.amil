@@ -281,7 +281,7 @@ if (!exists(AnisoNRADClass)) {
         ::res_surf.Normals()
         show ::input_surf
         show ::res_surf
-        ::input_surf_draw.compare(::res_surf_draw)
+        ::input_surf_draw._compare(&::res_surf_draw)
     }
   
     proc ::DisplaySurfaces() {

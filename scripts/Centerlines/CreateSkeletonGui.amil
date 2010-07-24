@@ -49,7 +49,6 @@ if (!exists(CreateSkeletonClass)) {
 
     #----------------------------
     proc ::Init() {
-      ::class_name = "global::CreateSkeletonClass"
       ::input_name   = ""
       ::datasetdir   = "./"
       ::UseZoom      = UCHAR(1)
@@ -122,8 +121,11 @@ if (!exists(CreateSkeletonClass)) {
     }
     
     #--------------------------
-    proc ::Close() {
+    proc ::Close() \
+    {
+      if (exists(::win)) {
       ::win.HidePanel()
+      }
       delvars GetObjectName(::Close)
     }
     Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -200,7 +202,7 @@ if (!exists(CreateSkeletonClass)) {
       ::bin <<= (UCHAR) (_i>0)*255
     
       if (::InputIntensity) {
-        global::::idist <<= _i
+        ::idist <<= _i
       } else {
         if (::Ordering==0) {
           if (_i.tz==1) {
@@ -346,14 +348,13 @@ if (!exists(CreateSkeletonClass)) {
     
     #---------------------------------------------------
     proc ::ViewCTA() {
-      global_new
-        cta <<= Image(::datasetdir+"Images/initial_crop.vtk")
-        show cta
+        ::cta <<= Image(::datasetdir+"Images/initial_crop.vtk")
+        show ::cta
         if (exists(::res_draw)) {
-          cta_draw.setGLwin(::res_draw)
+          ::cta_draw.setGLwin(::res_draw)
         }
         if (exists(::input_draw)) {
-          ::input_draw._compare(cta)
+          ::input_draw._compare(&::cta_draw)
         }
     }
     #---------------------------------------------------
@@ -796,9 +797,9 @@ if (!exists(CreateSkeletonClass)) {
       ::win.EndBook()
     
       ::win.BeginHorizontal()
-        flux_id = ::win.AddButton("Run",         ::Execute)
+        ::win.AddButton("Run",         ::Execute)
         #flux_id = ::win.AddButton("CreateLines", ::Lines)
-        flux_id = ::win.AddButton("Display",     ::Display)
+        ::win.AddButton("Display",     ::Display)
       ::win.EndHorizontal()
       ::win.BeginHorizontal()
         ::win.AddButton("Close",      ::Close)

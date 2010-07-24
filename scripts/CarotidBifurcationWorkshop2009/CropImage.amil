@@ -1,0 +1,80 @@
+
+#
+# based on 3 points, stored in global variables p{1,2,3}{x,y,z}
+# and in real coordinates,
+# crop the image to contain these points + a given margins in mm (real coord unit)
+#
+
+if (!exists(CropImageFromPointsClass)) {
+
+  Class CropImageFromPointsClass \
+  {
+    proc ::CropImageFromPoints(OBJECT rep, IMAGE input, NUM marginxy, NUM marginztop, NUM marginzbot ) \
+    {
+      // 1. compute min-max for each coordinates
+      xmin = input.trx+(input.tx-1)*input.vx
+      ymin = input.try+(input.ty-1)*input.vy
+      zmin = input.trz+(input.tz-1)*input.vz
+      xmax = 0
+      ymax = 0
+      zmax = 0
+      if (rep->p1x<xmin) { xmin = rep->p1x; }
+      if (rep->p1x>xmax) { xmax = rep->p1x; }
+      if (rep->p2x<xmin) { xmin = rep->p2x; }
+      if (rep->p2x>xmax) { xmax = rep->p2x; }
+      if (rep->p3x<xmin) { xmin = rep->p3x; }
+      if (rep->p3x>xmax) { xmax = rep->p3x; }
+
+      if (rep->p1y<ymin) { ymin = rep->p1y; }
+      if (rep->p1y>ymax) { ymax = rep->p1y; }
+      if (rep->p2y<ymin) { ymin = rep->p2y; }
+      if (rep->p2y>ymax) { ymax = rep->p2y; }
+      if (rep->p3y<ymin) { ymin = rep->p3y; }
+      if (rep->p3y>ymax) { ymax = rep->p3y; }
+
+      if (rep->p1z<zmin) { zmin = rep->p1z; }
+      if (rep->p1z>zmax) { zmax = rep->p1z; }
+      if (rep->p2z<zmin) { zmin = rep->p2z; }
+      if (rep->p2z>zmax) { zmax = rep->p2z; }
+      if (rep->p3z<zmin) { zmin = rep->p3z; }
+      if (rep->p3z>zmax) { zmax = rep->p3z; }
+      
+      # - add margins
+      xmin = xmin-marginxy
+      xmax = xmax+marginxy
+      ymin = ymin-marginxy
+      ymax = ymax+marginxy
+      zmin = zmin-marginzbot
+      zmax = zmax+marginztop
+
+      # -- convert limits to voxel coordinates
+      xmin_vox = (xmin-input.trx)/input.vx
+      xmax_vox = (xmax-input.trx)/input.vx
+
+      ymin_vox = (ymin-input.try)/input.vy
+      ymax_vox = (ymax-input.try)/input.vy
+
+      zmin_vox = (zmin-input.trz)/input.vz
+      zmax_vox = (zmax-input.trz)/input.vz
+
+      # -- check that it fits in the image
+      if (xmin_vox<0) { xmin_vox = 0; }
+      if (xmax_vox>=input.tx) { xmax_vox = input.tx-1; }
+
+      if (ymin_vox<0) { ymin_vox = 0; }
+      if (ymax_vox>=input.ty) { ymax_vox = input.ty-1; }
+
+      if (zmin_vox<0) { zmin_vox = 0; }
+      if (zmax_vox>=input.tz) { zmax_vox = input.tz-1; }
+      
+      # -- create the cropped image as a global variable with the given name 
+      ::input_cropped <<= input[xmin_vox:xmax_vox,ymin_vox:ymax_vox,zmin_vox:zmax_vox]
+      # Para poder utilizar el script del workshop en windows porque sino da problemas de memoria.
+      #::input_cropped <<= Resize(::input_cropped,::input_cropped.tx/2,::input_cropped.ty/2,::input_cropped.tz,1)
+
+    }
+    # end of proc
+  }    
+  # end of Class
+}
+# end if

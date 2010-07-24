@@ -54,6 +54,7 @@ extern MainFrame*   GB_main_wxFrame;
 #include "VarContexts.hpp"
 extern    VarContexts  Vars;
 
+
 using namespace std;
 
 static unsigned char in_changed_value = 0;

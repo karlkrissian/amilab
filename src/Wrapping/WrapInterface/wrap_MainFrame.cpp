@@ -79,3 +79,54 @@ BasicVariable::ptr WrapClass_MainFrame::
   return CreateVar_wxStcFrame(editor);
 }
 
+//---------------------------------------------------
+//  AddMenuScript
+//---------------------------------------------------
+void WrapClass_MainFrame::
+      wrap_AddMenuScript::SetParametersComments() 
+{
+  ADDPARAMCOMMENT_TYPE(string,"Category of the script.");
+  ADDPARAMCOMMENT_TYPE(string,"Menu label.");
+  ADDPARAMCOMMENT_TYPE(string,"Script name.");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_MainFrame::
+      wrap_AddMenuScript::CallMember( ParamList* p)
+{
+  if (!p) ClassHelpAndReturn;
+  int n=0;
+  GET_PARAM(string,category,"");
+  GET_PARAM(string,label,"");
+  GET_PARAM(string,script,"");
+
+  if ((category=="")||(label=="")||(script=="")) ClassHelpAndReturn;
+  this->_objectptr->_obj->AddMenuScript(category,label,script);
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  AddToMenu
+//---------------------------------------------------
+void WrapClass_MainFrame::
+      wrap_AddToMenu::SetParametersComments() 
+{
+  ADDPARAMCOMMENT_TYPE(string,"Name of the menu.");
+  ADDPARAMCOMMENT_TYPE(string,"Category of the script.");
+  ADDPARAMCOMMENT_TYPE(string,"Menu label.");
+  ADDPARAMCOMMENT_TYPE(string,"Script name.");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_MainFrame::
+      wrap_AddToMenu::CallMember( ParamList* p)
+{
+  if (!p) ClassHelpAndReturn;
+  int n=0;
+  GET_PARAM(string,menuname,"");
+  GET_PARAM(string,category,"");
+  GET_PARAM(string,label,"");
+  GET_PARAM(string,script,"");
+
+  if ((menuname=="")||(category=="")||(label=="")||(script=="")) ClassHelpAndReturn;
+  this->_objectptr->_obj->AddToMenu(menuname,category,label,script);
+  return BasicVariable::ptr();
+}

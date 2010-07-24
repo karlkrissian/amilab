@@ -1,0 +1,130 @@
+\documentclass{article}
+\usepackage{html}
+\usepackage[latin1]{inputenc}
+%Párrafos
+\setlength{\parskip}{1pc}
+
+\begin{document}
+
+% Title Page
+\title{ITK Level Set Gui}
+\author{Karl Krissian \& Sara Arencibia}
+\thanks{
+Grupo de Imagen, Tecnolog\'ia M\'edica y Televisi\'on (GIMET)\\
+Universidad de Las Palmas de Gran Canaria\\
+email: krissian@dis.ulpgc.es darkmind@gmail.com
+}
+
+
+\maketitle
+
+\begin{abstract}
+This script provides a user interface to segment structures in an image based on a user supplied edge potential map.
+\end{abstract}
+
+
+\section{Quick Start}
+
+The different steps for obtaining the Level Set are:
+\begin{enumerate}
+  \item Select and load the initial image.
+  \item Select and load the edge map image.
+  \item Select the dimension of the image (2D or 3D).
+  \item Select the errorRMS value.
+  \item Select the number of iterations that the filter will run
+  \item Select the advection scaling value.
+  \item Select the curvature scaling value.
+  \item Select the propagation scaling value.
+  \item Run the filter.
+  \item Display the result.
+\end{enumerate}
+
+
+\section{Detailed Description}
+This function is used to segment structures in an image based on a user supplied edge potential map.
+
+
+GeodesicActiveContourLevelSetFunction is a subclass of the generic LevelSetFunction. It is used to segment structures in an image based on a user supplied edge potential map $ g(I) $, which has values close to zero in regions near edges (or high image gradient) and values close to one in regions with relatively constant intensity. Typically, the edge potential map is a function of the gradient, for example:
+\[ g(I) = 1/(1+|(\nabla\ast G)(I)|) \]
+\[ g(I) = \exp^{-|(\nabla\ast G)(I)|} \]
+
+where $I$ is image intensity and $ (\nabla * G) $ is the derivative of Gaussian operator.
+
+
+In this function both the propagation term $ P(\mathbf{x}) $ and the curvature spatial modifier term $ Z(\mathbf{x}) $ are taken directly from the edge potential image such that:
+
+\[ P(\mathbf{x}) = g(\mathbf{x}) \]
+\[ Z(\mathbf{x}) = g(\mathbf{x}) \]
+
+
+An advection term $ \mathbf{A}(\mathbf{x}) $ is constructed from the negative gradient of the edge potential image.
+
+\[ \mathbf{A}(\mathbf{x}) = -\nabla g(\mathbf{x}) \]
+
+This term behaves like a doublet attracting the contour to the edges.
+
+
+This implementation is based on: \cite{GEO}
+
+
+Segments structures in images based on a user supplied edge potential map.
+
+
+This class is a level set method segmentation filter. An initial contour is propagated outwards (or inwards) until it ''sticks'' to the shape boundaries. This is done by using a level set speed function based on a user supplied edge potential map.
+
+\subsection{Inputs}
+This filter requires two inputs. The first input is a initial level set. The initial level set is a real image which contains the initial contour/surface as the zero level set. For example, a signed distance function from the initial contour/surface is typically used. Unlike the simpler ShapeDetectionLevelSetImageFilter the initial contour does not have to lie wholly within the shape to be segmented. The intiial contour is allow to overlap the shape boundary. The extra advection term in the update equation behaves like a doublet and attracts the contour to the boundary. This approach for segmentation follows that of Caselles et al (1997).
+
+
+The second input is the feature image. For this filter, this is the edge potential map. General characteristics of an edge potential map is that it has values close to zero in regions near the edges and values close to one inside the shape itself. Typically, the edge potential map is compute from the image gradient, for example:
+
+\[ g(I) = 1 / ( 1 + | (\nabla * G)(I)| ) \]
+\[ g(I) = \exp^{-|(\nabla * G)(I)|} \]
+
+where $ I $ is image intensity and $ (\nabla * G) $ is the derivative of Gaussian operator.
+
+\subsection{Parameters}
+The PropagationScaling parameter can be used to switch from propagation outwards (POSITIVE scaling parameter) versus propagating inwards (NEGATIVE scaling parameter).
+
+
+This implementation allows the user to set the weights between the propagation, advection and curvature term using methods SetPropagationScaling(), SetAdvectionScaling(), SetCurvatureScaling(). In general, the larger the CurvatureScaling, the smoother the resulting contour. To follow the implementation in Caselles et al paper, set the PropagationScaling to $ c $ (the inflation or ballon force) and AdvectionScaling and CurvatureScaling both to 1.0.
+
+\subsection{Outputs}
+The filter outputs a single, scalar, real-valued image. Negative values in the output image represent the inside of the segmented region and positive values in the image represent the outside of the segmented region. The zero crossings of the image correspond to the position of the propagating front.
+
+\section{Interface tabs}
+
+The interface is divided into several pages.
+
+\subsection{\emph{Init} page}
+
+\subsubsection{Initial Image}
+You can choose the initialization parameters.
+First of all, you need to choose an initial image and load it with the {\bf Load} button. This is the initial level set model.
+
+\subsubsection{Edge Map Image}
+Then, you need to choose an edge map image and load it with the {\bf Load} button. This is the feature image to be used for speed function of the level set equation.
+
+
+The {\bf Dimension} parameter allows to set the dimension of the image (2D or 3D).
+
+\subsection{\emph{LevelSet} page}
+To apply the filter you must to set some parameters:
+\begin{enumerate}
+  \item Select ErrorRMS, the maximum error allowed in the solution.
+  \item Select the number of iterations that the filter will run. 
+  \item Select the scaling of the advection field. Setting the FeatureScaling parameter will override any existing value for AdvectionScaling.
+  \item Select the scaling of the curvature. Use this parameter to increase the influence of curvature on the movement of the surface. Higher values relative to Advection and Propagation values will give smoother surfaces.
+  \item Select the scaling of the propagation speed. Setting the FeatureScaling parameter overrides any previous values set for PropagationScaling.
+\end{enumerate}
+Now run the filter with the {\bf Run} button.
+You can see the result with the {\bf Display} button.
+
+\subsection{\emph{Help} page}
+This help.
+
+\begin{thebibliography}{1}
+\bibitem{GEO} {\em "Geodesic Active Contours"}, V. Caselles, R. Kimmel and G. Sapiro. International Journal on Computer Vision, Vol 22, No. 1, pp 61-97, 1997 
+\end{thebibliography}
+
+\end{document}          
