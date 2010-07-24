@@ -374,8 +374,8 @@ protected:
   
   wxAuiManager manager;
   wxAuiNotebook* _param_book;
-  wxAuiToolBar* ViewStyle;
-  wxAuiToolBar* ViewParameters;
+  wxToolBar* ViewStyle;
+  wxToolBar* ViewParameters;
   wxCheckBox* xyCheck;
   wxCheckBox* xzCheck;
   wxCheckBox* zyCheck;

@@ -6293,8 +6293,7 @@ void DessinImage::Create_Toolbar()
   */
   ViewParameters = new wxToolBar(this, wxID_ANY,
                         wxDefaultPosition, wxDefaultSize);
-                        //,
-                        //wxAUI_TB_DEFAULT_STYLE ); // | wxAUI_TB_OVERFLOW );
+                     //   wxAUI_TB_DEFAULT_STYLE  | wxAUI_TB_OVERFLOW );
   
   ViewParameters->SetToolBitmapSize(wxSize(16,16));
   
@@ -6370,9 +6369,9 @@ void DessinImage::Create_Toolbar()
   
   
   //View style toolbar
-  ViewStyle = new wxAuiToolBar(this, wxID_ANY,
-                        wxDefaultPosition, wxDefaultSize,
-                        wxAUI_TB_DEFAULT_STYLE ); // | wxAUI_TB_OVERFLOW);
+  ViewStyle = new wxToolBar(this, wxID_ANY,
+                        wxDefaultPosition, wxDefaultSize );
+              //          wxAUI_TB_DEFAULT_STYLE  | wxAUI_TB_OVERFLOW);
   
   ViewStyle->SetToolBitmapSize(wxSize(16,16));
   
@@ -6461,12 +6460,12 @@ void DessinImage::Create_Toolbar()
                          wxT("Unzoom"));
   
   //Confirm all changes in toolbars  
-  ViewParameters->Realize();
+  //ViewParameters->Realize();
   ViewStyle->Realize();
-  ViewParameters->SetSize(ViewParameters->GetEffectiveMinSize());
-  ViewStyle->SetSize(ViewStyle->GetEffectiveMinSize());
 
-  ViewParameters->Realize();
+  //ViewParameters->SetSize(ViewParameters->GetEffectiveMinSize());
+  //ViewStyle->SetSize(ViewStyle->GetEffectiveMinSize());
+
 } // Create_Toolbar()
   
 
