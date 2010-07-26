@@ -45,6 +45,10 @@ double imval(InrImage* input, int x,int y, int z){
 #define ffxl(x,y,z) (FF(x,y,z) - FF(x-1,y,z))
 #define ffxr(x,y,z)	(FF(x+1,y,z) - FF(x,y,z))
 
+// coeficientes de la máscara de suavizado 2D (por ahora, para probar con promedio 3x3)
+double A00 = (double) 1 / 9;
+double A01 = (double) 1 / 9;
+double A11 = (double) 1 / 9;
 
 //borderPixel class methods
 void borderPixel::setBorderPixelValues(double intA, double intB, unsigned char bord,
@@ -464,8 +468,8 @@ BasicVariable::ptr wrapSubpixel2D (ParamList* p) {
   int num = 0;
   //Get input image
   if (!get_val_ptr_param<InrImage>(input, p, num)) HelpAndReturnVarPtr;
-  InrImage::ptr output (new InrImage(WT_FLOAT, "sub2DResult.ami.gz", input)); 
-  output->InitZero(); 
+//  InrImage::ptr output (new InrImage(WT_FLOAT, "sub2DResult.ami.gz", input)); 
+//  output->InitZero(); 
   
   //------
   float umbral;
@@ -479,7 +483,7 @@ BasicVariable::ptr wrapSubpixel2D (ParamList* p) {
   //Calls to SuperGradienteCurvo
   //SuperGradienteCurvo(input, output, gx, gy, des, cu, borde, umbral, linear_case);
   SuperGradienteCurvo(input, borderPixelVector, umbral, linear_case);
-  
+  cout << "size = " << borderPixelVector.size() << endl;
   //Se crea el AMIObject y se encapsulan dentro las imágenes que representan cada parámetro
   AMIObject::ptr amiobject(new AMIObject);
   amiobject->SetName("Sub-pixel2D");
@@ -532,4 +536,410 @@ BasicVariable::ptr wrapSubpixel2D (ParamList* p) {
   return result;
 
 }
+
+//---------------------------------------------
+//Sub-pixel 2D denoising method
+//---------------------------------------------
+
+//Función de suavizado (por ahora 23/07/2010)
+void Promedio3x3 (InrImage* input, InrImage* result, 
+                  double a00, double a01, double a11)
+/* suavizamos la imagen rim0 con un promedio y devolvemos en rim1*/
+{
+  double suma;
+//  long size= (long) input->DimX() * input->DimY();
+  float s = (float) a00 + 4*a01 + 4*a11;
+  int x, y;
+  int z = 0;
+  
+  
+  // suavizamos el interior
+  for (y=1; y<input->DimY()-1; y++)
+  {
+    for (x=1; x<input->DimX()-1; x++) 
+    {
+//      n = y*nx + x;
+//      suma = a00/s * rim0[n];
+      suma = a00/s * FF(x,y,z);
+//      suma += a01/s * (rim0[n-nx]+rim0[n+nx]+rim0[n-1]+rim0[n+1]);
+      suma += a01/s * (FF(x-1,y,z)+FF(x+1,y,z)+FF(x,y-1,z)+FF(x,y+1,z));
+//      suma += a11/s * (rim0[n-1-nx]+rim0[n-1+nx]+rim0[n+1-nx]+rim0[n+1+nx]);
+      suma += a11/s * (FF(x-1,y-1,z)+FF(x+1,y-1,z)+FF(x-1,y+1,z)+FF(x+1,y+1,z));
+//      rim1[n] = suma;	
+      result->BufferPos(x,y,z);
+      result->FixeValeur(suma);
+    }
+  }
+  
+  
+  // promediamos los márgenes
+//  for (long n=1; n<nx-1; n++)
+//    rim1[n] = (rim0[n-1]+rim0[n]+rim0[n+1]) / 3;
+  //TOP
+  y = 0;
+  for(x=1; x<input->DimX()-1; x++)
+  {
+    suma = ((*input)(x-1,y,z)+(*input)(x,y,z)+(*input)(x+1,y,z)) / 3;
+    result->BufferPos(x,y,z);
+    result->FixeValeur(suma);
+  }
+  
+//  for (long n=size-nx+1; n<size-1; n++) 
+//    rim1[n] = (rim0[n-1]+rim0[n]+rim0[n+1]) / 3;
+  //BOTTOM
+  y = input->DimY()-1;
+  for(x=1; x<input->DimX()-1; x++)
+  {
+    suma = ((*input)(x-1,y,z)+(*input)(x,y,z)+(*input)(x+1,y,z)) / 3;
+    result->BufferPos(x,y,z);
+    result->FixeValeur(suma);
+  }
+
+//  for (long n=nx; n<size-nx; n+=nx) 
+//    rim1[n] = (rim0[n-nx]+rim0[n]+rim0[n+nx]) / 3;
+  //LEFT
+  x = 0;
+  for(y=1; y<input->DimY()-1; y++)
+  {
+    suma = ((*input)(x,y-1,z)+(*input)(x,y,z)+(*input)(x,y+1,z)) / 3;
+    result->BufferPos(x,y,z);
+    result->FixeValeur(suma);
+  }
+
+//  for (long n=2*nx-1; n<size-nx; n+=nx) 
+//    rim1[n] = (rim0[n-nx]+rim0[n]+rim0[n+nx]) / 3;
+  //RIGHT
+  x = input->DimX()-1;
+  for (y=1; y<input->DimY()-1; y++)
+  {
+    suma = ((*input)(x,y-1,z)+(*input)(x,y,z)+(*input)(x,y+1,z)) /3;
+    result->BufferPos(x,y,z);
+    result->FixeValeur(suma);
+  }
+  
+  // promediamos las esquinas
+//  rim1[0] = (2*rim0[0]+rim0[1]+rim0[nx]) / 4;
+  //0,0,0 left-up corner
+  suma = (2*(*input)(0,0,0)+(*input)(1,0,0)+(*input)(0,1,0)) / 4;
+  result->BufferPos(0,0,0);
+  result->FixeValeur(suma);
+//  rim1[nx-1] = (2*rim0[nx-1]+rim0[nx-2]+rim0[2*nx-1]) / 4;
+  //DimX-1,0,0 right-up corner
+  suma = (2*(*input)(input->DimX()-1,0,0)+(*input)(input->DimX()-2,0,0)+
+          (*input)(input->DimX()-1,1,0)) / 4;
+  result->BufferPos(input->DimX()-1,0,0);
+  result->FixeValeur(suma);
+  //0,DimY-1,0 left-down corner
+//  rim1[size-nx] = (2*rim0[size-nx]+rim0[size-2*nx]+rim0[size-nx+1]) / 4;
+  suma = (2*(*input)(0,input->DimY()-1,0)+(*input)(0,input->DimY()-2,0)+
+          (*input)(1,input->DimY()-1,0)) / 4;
+  result->BufferPos(0,input->DimY()-1,0);
+  result->FixeValeur(suma);
+  //DimX-1,DimY-1,0 right-down corner
+//  rim1[size-1] = (2*rim0[size-1]+rim0[size-1-nx]+rim0[size-2]) / 4;
+  suma = (2*(*input)(input->DimX()-1,input->DimY()-1,0)+
+            (*input)(input->DimX()-1, input->DimY()-2,0)+
+            (*input)(input->DimX()-2,input->DimY()-1,0)) / 4;
+  result->BufferPos(input->DimX()-1,input->DimY()-1,0);
+  result->FixeValeur(suma);
+}
+
+//---------------------------------------------
+//SuperGradienteGaussianoCurvo (modificado con referencia a lo anterior)
+//---------------------------------------------
+
+//void SuperGradienteGaussianoCurvo (float *data, short nx, short ny, 
+//				float *gx, float *gy, float *des, float *cu, 
+//				unsigned char *borde,
+//				float *vecA, float *vecB, double uop, float umbral)
+void SuperGradienteGaussianoCurvo(InrImage* input, 
+                                  vector<borderPixel> &borderPixelVector, 
+                                  float umbral, int linear_case)//,
+                                  //int A00, int A01, int A11)
+/* En vecA y vecB, en caso de no ser nulos, guardo los valores de A y B
+	para cada pixel borde */
+{
+//  long size=(long)nx*ny;
+//  long size = (long) input->DimX()*input->DimY();
+  int margen = 4;		// cerca del margen no puedo calcular el gradiente 
+//  int x, y;
+//  long n;
+  double A, B;
+  double S1, S2, S3;
+  double a, b, c, d;// temp;
+  double f = (1+24*A01+48*A11) / 12;
+//  double a1, b1, c1, a2, b2, c2, a0, b0, c0;
+//  double p1, p3, p5, pm1, pm3, pm5;
+  double parcial;
+//  double dx, dy;
+  double gx_n, gy_n, des_n, cu_n, abscu;
+//  double xc, yc;
+//  double r, d1, d2;
+  int *u, *v;
+  unsigned char caso;
+//  int uneg[37], vneg[37];
+  int upos[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	// parciales
+    0, 1, 1, 0,-1,-1,			// A y B (no usado)
+    -1,-1,-1,-1,-1,-1,-1,		// sumas de columnas 
+    0, 0, 0, 0, 0, 0, 0, 
+    1, 1, 1, 1, 1, 1, 1,
+  };
+  int vpos[] = { 1,-1,-1,-3, 0,-2, 2, 0, 3, 1,	// parciales
+    4, 3, 4,-4,-3,-4,			// A y B (no usado)
+    -2,-1, 0, 1, 2, 3, 4,		// sumas de columnas
+    -3,-2,-1, 0, 1, 2, 3,	
+    -4,-3,-2,-1, 0, 1, 2,	 
+  };
+  int z = 0;
+  borderPixel pixel;
+  
+  // inicializamos todo a cero 	 (no usado, se usa el vector de la stl)     
+//  for (long n=0; n<size; n++) {
+//    gx[n] = gy[n] = des[n] = cu[n] = 0.0;
+//    borde[n] = 0;
+//  }
+  
+  // inicializamos los desplazamientos negativos
+//  for (int t=0; t<37; t++) {
+//    uneg[t] = -upos[t];
+//    vneg[t] = -vpos[t];
+//  }
+  
+  // barremos todos los pixels
+  for (int y = margen; y < input->DimY()-margen; y++) 
+  {
+    for (int x = margen; x < input->DimX()-margen; x++) 
+    {
+      // según la parcial decidimos el caso
+      if (fabs(ffy(x,y,z))>=fabs(ffx(x,y,z))) {
+        caso = YMAX;
+        //      u = (ffx(x,y)>0)? upos : uneg;
+        //      v = (ffy(x,y)>0)? vpos : vneg;
+        u = upos;
+        v = vpos;
+      } else {
+        caso = XMAX;
+        //      u = (ffx(x,y)>0)? vpos : vneg;
+        //      v = (ffy(x,y)>0)? upos : uneg;
+        u = vpos;
+        v = upos;
+      }
+      
+      //Se calcula A y B de la misma forma que en el código anterior, salvo que ahora la ventana es más grande
+      int m = (ffx(x,y,z)*ffy(x,y,z)>0) ? 1 : -1;
+      if (caso==XMAX) {
+        B  = ((double) FF(x-3,y-m,z) + FF(x-4,y-m,z) + FF(x-4,y,z)) / 3.0;
+        A  = ((double) FF(x+4,y,z) + FF(x+4,y+m,z) + FF(x+3,y+m,z)) / 3.0;
+      } else {
+        B  = ((double) FF(x-m,y-3,z) + FF(x-m,y-4,z) + FF(x,y-4,z)) / 3.0;
+        A  = ((double) FF(x,y+4,z) + FF(x+m,y+4,z) + FF(x+m,y+3,z)) / 3.0;
+      }
+      // si está por debajo del umbral no nos sirve
+      if (fabs(A-B)<umbral) continue;
+      
+      // la parcial en y debe ser máxima en su columna
+      parcial = fabs(FF(x+u[0],y+v[0],z) - FF(x+u[1],y+v[1],z));
+      if (parcial < umbral) continue;
+      if (fabs(FF(x+u[2],y+v[2],z) - FF(x+u[3],y+v[3],z)) > parcial) continue;
+      if (fabs(FF(x+u[4],y+v[4],z) - FF(x+u[5],y+v[5],z)) > parcial) continue;
+      if (fabs(FF(x+u[6],y+v[6],z) - FF(x+u[7],y+v[7],z)) > parcial) continue;
+      if (fabs(FF(x+u[8],y+v[8],z) - FF(x+u[9],y+v[9],z)) > parcial) continue;
+      
+      // estimamos el color de ambos lados del borde
+      //    A = FF(x+u[10],y+v[10]) + FF(x+u[11],y+v[11]) + FF(x+u[12],y+v[12]);
+      //    A /= 3.0;
+      //    B = FF(x+u[13],y+v[13]) + FF(x+u[14],y+v[14]) + FF(x+u[15],y+v[15]);
+      //    B /= 3.0;
+      
+      
+      // guardamos A y B si es el caso
+//      n = (long)y*nx + x;
+//      if (vecA) {
+//        vecA[n] = A;
+//        vecB[n] = B;
+//      }
+      
+      // calculamos las sumas de las columnas
+      S1 = S2 = S3 = 0.0;
+      for (int t=-3; t<=3; t++) {
+        S1 += FF(x+u[19+t],y+v[19+t],z);
+        S2 += FF(x+u[26+t],y+v[26+t],z);
+        S3 += FF(x+u[33+t],y+v[33+t],z);
+      }
+      
+      // calculamos los coeficientes de la parábola
+      a = (2*S2 - 7*(A+B)) / (2*(A-B));
+      b = 1.0 + (S3-S1) / (2*(A-B));
+      c = (linear_case) ? 0 : (S3+S1-2*S2) / (2*(A-B)); //En caso lineal no hay curvatura
+      a -= f * c;
+      
+      /*// si el radio es muy chico hacemos trampa
+       { double raiz, r, rmin=5, cu;
+       raiz = sqrt (1+b*b);
+       cu = raiz * raiz * raiz;
+       cu = -2*c / cu;
+       r = fabs(1/cu);
+       if (r < rmin) {			
+       
+       // generando arco con R pequeño
+       cu = (cu>0)? 1/rmin : -1/rmin;
+       a += f * c;
+       temp = sqrt(1+b*b);
+       c = cu * temp * temp * temp / (-2);
+       a -= f * c;
+       }
+       }
+       */			
+      // se quiere optimizar la curvatura?? TODO: Ver que es uop para ver si hay que optimizar la curvatura
+//      if (uop>1e-5) OptimizarParabola (a, b, c, uop, RMIN, RMAX);	
+      
+      // calculamos la curvatura
+      cu_n  = sqrt (1+b*b);
+      cu_n *= cu_n * cu_n;
+      cu_n  = 2*c / cu_n;
+      abscu = fabs(cu_n); //TODO: Ver si es necesario cambiar el signo para la normal
+      
+      //if (x==16 && y==16) printf ("coño: a=%f b=%f c=%f R=%f\n", a, b, c, 1/cu_n);
+      
+      // calculamos el gradiente y el desplazamiento
+      d = (A-B) / sqrt(1+b*b);
+      if (caso==YMAX) {
+        gx_n  = (ffx(x,y,z)>0) ? b*d : -b*d;
+        gy_n  = (ffy(x,y,z)>0) ? d   : -d;
+        des_n = (ffy(x,y,z)>0) ? -a  : a;
+      } else {
+        gx_n  = (ffx(x,y,z)>0) ? d   : -d;
+        gy_n  = (ffy(x,y,z)>0) ? b*d : -b*d; 
+        des_n = (ffx(x,y,z)>0) ? -a  : a;
+      }  
+
+      //El signo de la curvatura cambia en función del valor de la parcial
+      if (caso == YMAX && ffy(x,y,z)<0) cu_n = -cu_n;
+      if (caso == XMAX && ffx(x,y,z)<0) cu_n = -cu_n;
+      
+      
+      //if (SelectedGW[0]->IMGdata[n] == 150) { 
+      /*
+       if (x==13 && y==13) {
+       //printf ("-----SuperGradienteGaussianoCurvo\n");
+       printf ("pixel(%d,%d) caso=%d\n", x, y, caso);
+       //if (factor) printf ("       valores viejos a=%f b=%f c=%f\n", a0, b0, c0);
+       printf ("	valores nuevos a=%f b=%f c=%f\n", a, b, c);
+       printf ("	G=(%f, %f). parc=(%f, %f)\n", gx_n, gy_n,ffx(x,y),ffy(x,y));
+       printf ("	des=%f, cu=%f, R=%f\n", des_n, cu_n, 1/cu_n);
+       printf ("	S1=%f, S2=%f, S3=%f\n", S1, S2, S3);
+       }
+       */
+      
+      // volcamos los double al vector float
+//      borde[n] = caso;
+//      gx[n] = (float) gx_n;
+//      gy[n] = (float) gy_n;
+//      des[n] = (float) des_n;
+//      cu[n] = (float) cu_n;
+      pixel.setBorderPixelValues(A, B, caso, a, b, c, cu_n, x, y);
+      pixel.printBorderPixel();
+      //Add edge pixel to the vector
+      borderPixelVector.push_back(pixel);
+    } //End x for
+  } //End y for
+}
+
+
+//Wrapping para el método 2D Gaussiano
+
+BasicVariable::ptr wrapGaussianSubpixel2D (ParamList* p) {
+  //Information
+	char functionname[] = "wrapGaussianSubpixel2D";
+  char description[]=" \n\
+	Aplicates edge subpixel detection method for 2D images with noise \n\
+	\n\
+	";
+  char parameters[] =" \n\
+	Parameters:\n\
+	input: The input image\n\
+	umbral: Threshold\n\
+	linear_case: Says if it's first or second order\n\
+	";
+  
+  InrImage* input;
+  int num = 0;
+  //Get input image
+  if (!get_val_ptr_param<InrImage>(input, p, num)) HelpAndReturnVarPtr;
+  InrImage::ptr output = InrImage::ptr(new InrImage(WT_DOUBLE, "promedio.ami.gz",input));
+  output->InitZero();
+//  InrImage::ptr output (new InrImage(WT_FLOAT, "sub2DResult.ami.gz", input)); 
+//  output->InitZero(); 
+  
+  //------
+  float umbral;
+  int linear_case;
+  vector<borderPixel> borderPixelVector;
+  
+  //Get params
+  if (!get_val_param<float>(umbral, p, num)) HelpAndReturnVarPtr;
+  if (!get_int_param(linear_case, p, num)) HelpAndReturnVarPtr;
+  
+  Promedio3x3 (input, output.get(), A00, A01, A11);
+  
+  //Calls to SuperGradienteGaussianoCurvo
+  //SuperGradienteCurvo(input, output, gx, gy, des, cu, borde, umbral, linear_case);
+  SuperGradienteGaussianoCurvo(output.get(), borderPixelVector, umbral, linear_case);
+  cout << "size = " << borderPixelVector.size() << endl;
+  
+  //Se crea el AMIObject y se encapsulan dentro las imágenes que representan cada parámetro
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("GaussianSub-pixel2D");
+  int size = borderPixelVector.size();
+  //InrImages for params
+  InrImage::ptr AIntensity = InrImage::ptr(new InrImage(size, 1, 1, WT_DOUBLE,
+                                                        "aintensity.inr.gz"));
+  InrImage::ptr BIntensity = InrImage::ptr(new InrImage(size, 1, 1, WT_DOUBLE,
+                                                        "bintensity.inr.gz"));
+  InrImage::ptr border     = InrImage::ptr(new InrImage(size, 1, 1, WT_UNSIGNED_CHAR,
+                                                        "border.inr.gz"));
+  InrImage::ptr a          = InrImage::ptr(new InrImage(size, 1, 1, WT_DOUBLE,
+                                                        "acoef.inr.gz"));
+  InrImage::ptr b          = InrImage::ptr(new InrImage(size, 1, 1, WT_DOUBLE,
+                                                        "bcoef.inr.gz"));
+  InrImage::ptr c          = InrImage::ptr(new InrImage(size, 1, 1, WT_DOUBLE,
+                                                        "ccoef.inr.gz"));
+  InrImage::ptr curvature  = InrImage::ptr(new InrImage(size, 1, 1, WT_DOUBLE,
+                                                        "curvature.inr.gz"));
+  InrImage::ptr posx       = InrImage::ptr(new InrImage(size, 1, 1, WT_UNSIGNED_SHORT,
+                                                        "xpos.inr.gz"));
+  InrImage::ptr posy       = InrImage::ptr(new InrImage(size, 1, 1, WT_UNSIGNED_SHORT,
+                                                        "ypos.inr.gz"));
+  
+  //Fill InrImages
+  fillImages(borderPixelVector, AIntensity, BIntensity, border, a, b, c, 
+             curvature, posx, posy);
+  //Add to amiobject
+  amiobject->GetContext()->AddVar<InrImage>("denoised", output,
+                                            amiobject->GetContext());
+  amiobject->GetContext()->AddVar<InrImage>("aintensity", AIntensity, 
+                                            amiobject->GetContext());
+  amiobject->GetContext()->AddVar<InrImage>("bintensity", BIntensity,
+                                            amiobject->GetContext());
+  amiobject->GetContext()->AddVar<InrImage>("border", border,
+                                            amiobject->GetContext());
+  amiobject->GetContext()->AddVar<InrImage>("acoef", a,
+                                            amiobject->GetContext());
+  amiobject->GetContext()->AddVar<InrImage>("bcoef", b,
+                                            amiobject->GetContext());
+  amiobject->GetContext()->AddVar<InrImage>("ccoef", c,
+                                            amiobject->GetContext());
+  amiobject->GetContext()->AddVar<InrImage>("curvature", curvature,
+                                            amiobject->GetContext());
+  amiobject->GetContext()->AddVar<InrImage>("xpos", posx,
+                                            amiobject->GetContext());
+  amiobject->GetContext()->AddVar<InrImage>("ypos", posy,
+                                            amiobject->GetContext());
+
+  Variable<AMIObject>::ptr result(
+      new Variable<AMIObject>(amiobject));
+  return result;
+
+}
+
 

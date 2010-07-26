@@ -19,6 +19,7 @@ if (!exists(Subpixel2DClass)){
       ::threshold = 25, "Gradient threshold"
       ::lineal = UCHAR(0), "First or second order"
       ::reload = UCHAR(0), "Reload automatically"
+      ::alg_type = INT(0), "Sub-pixel 2D algorithm type"
       ::CreateGui()
     }
     
@@ -37,128 +38,87 @@ if (!exists(Subpixel2DClass)){
     #-----------------------
     
     proc ::drawBorder() {
-      ::norm_input_draw.SetPenColor(wx.wxColour(255,0,0))
+      #::norm_input_draw.SetPenColor(wx.wxColour(255,0,0))
       delta = 0.4
       xmin = ::norm_input_draw.GetXmin()
       xmax = ::norm_input_draw.GetXmax()
       ymin = ::norm_input_draw.GetYmin()
       ymax = ::norm_input_draw.GetYmax()
-      for i=0 to ::res->xpos.tx-1 {
-        x = ::res->xpos(i,0)
-        y = ::res->ypos(i,0)
+      #Create four new images for displacements inside pixel
+      dx1 = Image(DOUBLE,::res->xpos.tx,1,1)
+      dy1 = Image(DOUBLE,::res->xpos.tx,1,1)
+      dx2 = Image(DOUBLE,::res->xpos.tx,1,1)
+      dy2 = Image(DOUBLE,::res->xpos.tx,1,1)
+      dx1 = -0.4
+      dy1 = ::res->acoef + ::res->bcoef*dx1 + ::res->ccoef*dx1*dx1
+      dy1 = -dy1
+      dx2 = 0.4
+      dy2 = ::res->acoef + ::res->bcoef*dx2 + ::res->ccoef*dx2*dx2
+      dy2 = -dy2
+      #Create images for draw points
+      x1pos = (::res->xpos+dx1)*(::res->border==2)+(::res->xpos+dy1)*(::res->border!=2)
+      y1pos = (::res->ypos+dy1)*(::res->border==2)+(::res->ypos+dx1)*(::res->border!=2)
+      x2pos = (::res->xpos+dx2)*(::res->border==2)+(::res->xpos+dy2)*(::res->border!=2)
+      y2pos = (::res->ypos+dy2)*(::res->border==2)+(::res->ypos+dx2)*(::res->border!=2)
+      #inside delimits the draw area
+      inside = (::res->xpos>=xmin)*(::res->xpos<=xmax)*(::res->ypos>=ymin)*(::res->ypos<=ymax)
+      #crop zero zones
+      inside_crop = autocrop(inside,0)
+      x1pos_crop = x1pos[inside_crop.GetExtent]
+      y1pos_crop = y1pos[inside_crop.GetExtent]
+      x2pos_crop = x2pos[inside_crop.GetExtent]
+      y2pos_crop = y2pos[inside_crop.GetExtent]
+      
+      #InitTime
+      for i=0 to inside_crop.tx-1 {
+        #x = ::res->xpos(i,0)
+        #y = ::res->ypos(i,0)
         #Only paint on visualization region
-        if(x>=xmin && x<=xmax) {
-          if(y>=ymin && y<=ymax) {
-            a = ::res->acoef(i,0)
-            b = ::res->bcoef(i,0)
-            c = ::res->ccoef(i,0)
+        if inside_crop(i,0) {
+          #if(y>=ymin && y<=ymax) {
+            #a = ::res->acoef(i,0)
+            #b = ::res->bcoef(i,0)
+            #c = ::res->ccoef(i,0)
             #YMAX
             #Equation --> y = a + b*x + c*x^2
-            #Partiendo del código de Agustín:
-            #dx = 0.0
-            #dy = 0.0
-            #if (::res->border(i,0) == 2) {
-            #  dx = 0
-            #  dy = ::res->des(i,0)
-            #} else {
-            #  dx = ::res->des(i,0)
-            #  dy = 0
-            #}
-            
-            #cx = 1.0
-            #cy = 1.0
-            
-            #if (abs(::res->gy(i,0)) > abs(::res->gx(i,0))) {
-            #  cy = (-1 * ::res->gx(i,0)) / ::res->gy(i,0)
-            #} else {
-            #  cx = (-1 * ::res->gy(i,0)) / ::res->gx(i,0)
-            #}
-            
-            #px = dx - delta * cx
-            #py = dy - delta * cy
-            #qx = dx + delta * cx
-            #qy = dy + delta * cy
-            
-            #x1 = x + px
-            #y1 = y + py
-            #x2 = x + qx
-            #y2 = y + qy
-            
-            #::norm_input_draw.DrawLineZ(x1,y1,x2,y2)
-            
-            if(::res->border(i,0) == 2) {
-              ::norm_input_draw.SetPenColor(wx.wxColour(255,0,0))
-              x1 = -0.4
-              y1 = a + b*x1 + c*x1*x1
-              y1 = -y1
-              x2 = 0.4
-              y2 = a + b*x2 + c*x1*x2
-              y2 = -y2
-              ::norm_input_draw.DrawLineZ(x+x1,y+y1,x+x2,y+y2)
-            } else {
-              ::norm_input_draw.SetPenColor(wx.wxColour(0,255,0))
-              dx1 = -0.4
-              dy1 = a + b*dx1 + c*dx1*dx1
-              di1 = -dy1
-              dj1 = dx1
-              dx2 = 0.4
-              dy2 = a + b*dx2 + c*dx2*dx2
-              di2 = -dy2
-              dj2 = dx2
-              #::norm_input_draw.DrawLineZ(x+x1,y-y1,x+x2,y-y2)
-              ::norm_input_draw.DrawLineZ(x+di1,y+dj1,x+di2,y+dj2)
-            }
-            
             #if(::res->border(i,0) == 2) {
-              #printn "tipo de borde 2"
-              #printn b
               #::norm_input_draw.SetPenColor(wx.wxColour(255,0,0))
-              #dx1 = -delta
-              #dy1 = a+b*dx1
-              #dx2 = delta
-              #dy2 = a+b*dx2
-              #::norm_input_draw.DrawLineZ(x,y-a,x+dx2,y-dy2)
-              #::norm_input_draw.DrawLineZ(x-dx1, y+dy1, x+dx2, y-dy2)
-              #if(b<0){
-              #  ::norm_input_draw.DrawLineZ(x+delta, y-(a+b*delta), x-delta, y-(a-b*delta))
-              #} else {
-              #  ::norm_input_draw.DrawLineZ(x-delta, y-(a-b*delta), x+delta, y-(a+b*delta))
-              #}
-              #x1 = x-delta
-              #x2 = x+delta
+              #x1 = -0.4
               #y1 = a + b*x1 + c*x1*x1
-              #y2 = a + b*x2 + c*x2*x2
-              #::norm_input_draw.DrawLineZ(x1,y1,x2,y2)
+              #y1 = -y1
+              #x2 = 0.4
+              #y2 = a + b*x2 + c*x1*x2
+              #y2 = -y2
+              #::norm_input_draw.DrawLineZ(x+x1,y+y1,x+x2,y+y2)
+              #::norm_input_draw.DrawLineZ(x+dx1(i,0),y+dy1(i,0),x+dx2(i,0),y+dy2(i,0))
             #} else {
               #XMAX
               #Equation --> x = a + b*y + c*y^2
-              #printn "tipo de borde 1"
-              #printn b
               #::norm_input_draw.SetPenColor(wx.wxColour(0,255,0))
-              #::norm_input_draw.DrawLineZ(x-delta,y-(a-b*delta),x+delta,y-(a+b*delta))
-              #dy1 = delta
-              #dx1 = a+b*dy1
-              #dy2 = -delta
-              #dx2 = a+b*dy2
-              #::norm_input_draw.DrawLineZ(x+a, y, x+dx2, y-dy2)
-              #::norm_input_draw.DrawLineZ(x-dx1, y+dy1, x+dx2, y+dy2)
-              #if(b<0 || b==1){
-              #  ::norm_input_draw.DrawLineZ(x-(a-b*delta), y-delta, x-(a+b*delta), y+delta)
-              #} else {
-              #  ::norm_input_draw.DrawLineZ(x-(a-b*delta), y+delta, x-(a+b*delta), y-delta)
-              #}
-              #::norm_input_draw.DrawLineZ(delta-(a-b*x), y-delta, delta-(a+b*x), y+delta)
-              #::norm_input_draw.DrawLineZ((y-delta)-a-b*x, y-delta, (y+delta)-a-b*x, y+delta)
-              #y1 = y-delta
-              #y2 = y+delta
-              #x1 = a + b*y1 + c*y1*y1
-              #x2 = a + b*y2 + c*y2*y2
-              #::norm_input_draw.DrawLineZ(x1,y1,x2,y2)
+              #dx1 = -0.4
+              #dy1 = a + b*dx1 + c*dx1*dx1
+              #di1 = -dy1
+              #dj1 = dx1
+              #dx2 = 0.4
+              #dy2 = a + b*dx2 + c*dx2*dx2
+              #di2 = -dy2
+              #dj2 = dx2
+              #::norm_input_draw.DrawLineZ(x+di1,y+dj1,x+di2,y+dj2)
+              #::norm_input_draw.DrawLineZ(x+dy1(i,0),y+dx1(i,0),x+dy2(i,0),y+dx2(i,0))
             #}
-          }
+            if(::res->border(i,0) == 2) {
+              ::norm_input_draw.SetPenColor(&wx.wxColour(255,0,0))
+            } else {
+              ::norm_input_draw.SetPenColor(&wx.wxColour(0,255,0))
+            }
+            ::norm_input_draw.DrawLineZ(x1pos_crop(i,0),y1pos_crop(i,0),x2pos_crop(i,0),y2pos_crop(i,0))
+          #}
         }
       }
       ::norm_input_draw.DrawingAreaDisplay()
+      
+      #EndTime
+      
     }
     Comments(::drawBorder, "Draw the sub-pixel border")
     
@@ -168,7 +128,12 @@ if (!exists(Subpixel2DClass)){
     	::load_input()
     	::norm_input <<= norm(::input)
       if (exists(::res)) { del ::res; }
-			::res = ::filters->Subpixel2D(&::norm_input, ::threshold, ::lineal)
+      if(::alg_type==0) {
+        ::res = ::filters->Subpixel2D(&::norm_input, ::threshold, ::lineal)
+      } else {
+        ::res = ::filters->GaussianSubpixel2D(&::norm_input, ::threshold, ::lineal)
+      }
+			
       
       ::Display
       ::drawBorder
@@ -181,8 +146,13 @@ if (!exists(Subpixel2DClass)){
     
     proc ::Display() {
       global
-      if (exists(::norm_input)) {
+      if (exists(::norm_input) && ::alg_type == 0) {
         show ::norm_input
+      } else {
+        if(exists(::res)) {
+          ::norm_input <<= ::res->denoised
+          show ::norm_input
+        }
       }
     }
     Comments(::Display, "Show the result image")
@@ -224,8 +194,11 @@ if (!exists(Subpixel2DClass)){
             ::win.SetCallback(&::AutoRun)
           ::win.EndBoxPanel()
           ::win.BeginHorizontal
-          	::win.AddBoolean(&::reload, "Reload")
+          	#::win.AddBoolean(&::reload, "Reload")
             #::win.AddButton("Detect edge",     ::Run)
+            ::filter_type = ::win.AddEnum(&::alg_type, "Method")
+              ::win.AddEnumChoice(::filter_type, "SubPixel")
+              ::win.AddEnumChoice(::filter_type, "Gaussian SubPixel")
             ::icons.LoadIconPNG("Play")
             ::AddBitmapButton(&::win, &::icons._Play, 16, "Run")
           ::win.EndHorizontal
