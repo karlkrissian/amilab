@@ -5,4 +5,8 @@
 #
 
 #InfoDialog "Including scripts/OI/..."
-AddMenuScript("&IO","Read &Raw data","IO/Raw2Ami_gui.amil")
+ami.MainFrame.AddToMenu("&Scripts","&IO","Read &Raw data","IO/Raw2Ami_gui.amil")
+ami.MainFrame.AddToMenu("&Scripts","&IO","&itk DICOM","IO/itkDICOM/itkDICOM.amil")
+
+# ITK
+ami.MainFrame.AddToMenu("&ITK","&IO","&DICOM","IO/itkDICOM/itkDICOM.amil")

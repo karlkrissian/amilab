@@ -111,9 +111,9 @@ public:
   /**
    * Creates a new context
    * @param name of the new context
-   * @return true/false for success/failure
+   * @return smart pointer to the new context
    */
-  bool NewContext(const char* name);
+  Variables::ptr NewContext(const char* name);
 
   bool DeleteLastContext();
 

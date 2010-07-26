@@ -214,7 +214,7 @@ if (!exists(LevelSetsClass)){
           }
           ::ComputeIntensityStats
         } else {
-          ::inls = ::input*0-1
+          ::inls <<= ::input*0-1
         }
     
         ::inls0 <<= ::inls
@@ -393,151 +393,158 @@ if (!exists(LevelSetsClass)){
   proc ::Run(  NUM graphics) {
   //   -----
   
-    // every how many iterations call the graphic events
-    ::displ_freq = 8
-    it = floor(::T/::dt)+1
-  
-  
-    v_x = ::input.vx
-    v_y = ::input.vy
-    v_z = ::input.vz
-  
-    setvoxelsize(::input,  1,1,1)
-    setvoxelsize(::inls,1,1,1)
-  
-    // Parameters:
-    //   1. grad threshold
-    //   2. iterations
-    //   3. attach coeff
-    //   4. curvcoeff
-    //   5. dt
-    //   6. reinitfreq
-  
-  
-    adv_coeff = 0;
-    if (::use_advection) {
-      adv_coeff = ::advcoeff;
-    }
-    smo_coeff = 0;
-    if (::use_smoothing) {
-      smo_coeff = ::curvcoeff;
-    }
+    if (!exists(::running)) {
+      ::running = 1;
 
-    # new level set object
-    import = &global::ami_import;
-    if (exists(::levelset)) { del ::levelset; }
-    ::levelset = import->vtkLevelSets();
-    ::levelset.SetParam(0.7,it,adv_coeff,smo_coeff,::dt,::NBD_freq)
-    ::levelset.SetDistMethod(::NBD_method)
-    ::levelset.SetThreads(::threads)
-    ::levelset.SetMeanCurv(::smoothingtype)
-    ::levelset.SetAffineCurv(::affinecurv)
-  
-    if (exists(::velfield)) {
-      ::levelset.SetVelocity(::velfield,::velcoeff)
-    }
-  
-    print "Compute Expansion Image \n"
-  
-    print "Mean = "; print ::Imean;
-    print " SD = ";  print ::Isd;
-    print "\n"
-  
-    ::levelset.SetILowTh(::minimal_intensity)
-
-    if (::use_expansion) {
-      if (::use_expansion_image) {
-        if (!exists(::expansion_image)) {
-          ::load_expansion
-        }
-        ::levelset.SetExpansionImage(::expansion_image)
-      } else {
-        ::levelset.SetNumGaussians(1)
-        ::levelset.SetGaussian(0,::Imean,::Isd)
-        ::levelset.SetProbThreshold(::prob_threshold)
-        if (::accept_high_intensity) {
-          ::levelset.SetProbHighTh(::Imean+::Isd)
-        }
-      } 
-      # end else / if (::use_expansion_image)
-  
-      ::levelset.SetExpansion(::expansioncoeff)
-    } else {
-      ::levelset.SetExpansion(0)
-    }
-  
-    print "Compute Expansion Image OK \n"
-  
-    ::levelset.SetBandTube(3,2)
-  
-    lres = ::levelset.InitWithImage(&::input,&::inls)
-  #  lres = ::levelset.init(::input,900)
-  
-    if (graphics) {
-      show ::input
-      // sets the isocontour number 0 to the image 'initial' with threshold 0
-      ::input_draw.SetIsoContour(1,&::inls,0)
-      // sets the isocontour number 0 to be active
-      ::input_draw.DrawIsoContour(1,1)
-      ::input_draw.SetIsoContour(2,&lres,0)
-      ::input_draw.DrawIsoContour(2,1)
-    }
-  
-    printn "1"
-    ::levelset.Iterate();
-    ::levelset.UpdateResult()
-    previous_ls = ::levelset.GetOutputImage()
-    printn "2"
-  
-    k = 0
-    SetProgress(0)
-    ::stop = 0;
+      // every how many iterations call the graphic events
+      ::displ_freq = 8
+      it = floor(::T/::dt)+1
     
-    for n=1 to it {
-      #print n; print "/"; printn it
-      if (!::stop) {
-        #print sprint("::T= %0.2f \n",n*::dt)
-        ::levelset.Iterate();
-        k = k+1
-        if (graphics)&&(k==::displ_freq) {
-          ::levelset.UpdateResult()
-          lres = ::levelset.GetOutputImage()
-          k = 0
-          show ::input
-          ProcessXEvents(100)
-        }
-        SetProgress(n/it*100)
-        if (::check_convergence) {
-          if ((n % ::conv_freq) == 0) {
-            # check for convergence
+    
+      v_x = ::input.vx
+      v_y = ::input.vy
+      v_z = ::input.vz
+    
+      setvoxelsize(::input,  1,1,1)
+      setvoxelsize(::inls,1,1,1)
+    
+      // Parameters:
+      //   1. grad threshold
+      //   2. iterations
+      //   3. attach coeff
+      //   4. curvcoeff
+      //   5. dt
+      //   6. reinitfreq
+    
+    
+      adv_coeff = 0;
+      if (::use_advection) {
+        adv_coeff = ::advcoeff;
+      }
+      smo_coeff = 0;
+      if (::use_smoothing) {
+        smo_coeff = ::curvcoeff;
+      }
+
+      # new level set object
+      import = &global::ami_import;
+      if (exists(::levelset)) { del ::levelset; }
+      ::levelset = import->vtkLevelSets();
+      ::levelset.SetParam(0.7,it,adv_coeff,smo_coeff,::dt,::NBD_freq)
+      ::levelset.SetDistMethod(::NBD_method)
+      ::levelset.SetThreads(::threads)
+      ::levelset.SetMeanCurv(::smoothingtype)
+      ::levelset.SetAffineCurv(::affinecurv)
+    
+      if (exists(::velfield)) {
+        ::levelset.SetVelocity(::velfield,::velcoeff)
+      }
+    
+      print "Compute Expansion Image \n"
+    
+      print "Mean = "; print ::Imean;
+      print " SD = ";  print ::Isd;
+      print "\n"
+    
+      ::levelset.SetILowTh(::minimal_intensity)
+
+      if (::use_expansion) {
+        if (::use_expansion_image) {
+          if (!exists(::expansion_image)) {
+            ::load_expansion
+          }
+          ::levelset.SetExpansionImage(::expansion_image)
+        } else {
+          ::levelset.SetNumGaussians(1)
+          ::levelset.SetGaussian(0,::Imean,::Isd)
+          ::levelset.SetProbThreshold(::prob_threshold)
+          if (::accept_high_intensity) {
+            ::levelset.SetProbHighTh(::Imean+::Isd)
+          }
+        } 
+        # end else / if (::use_expansion_image)
+    
+        ::levelset.SetExpansion(::expansioncoeff)
+      } else {
+        ::levelset.SetExpansion(0)
+      }
+    
+      print "Compute Expansion Image OK \n"
+    
+      ::levelset.SetBandTube(3,2)
+    
+      lres = ::levelset.InitWithImage(&::input,&::inls)
+    #  lres = ::levelset.init(::input,900)
+    
+      if (graphics) {
+        show ::input
+        // sets the isocontour number 0 to the image 'initial' with threshold 0
+        ::input_draw.SetIsoContour(1,&::inls,0)
+        // sets the isocontour number 0 to be active
+        ::input_draw.DrawIsoContour(1,1)
+        ::input_draw.SetIsoContour(2,&lres,0)
+        ::input_draw.DrawIsoContour(2,1)
+      }
+    
+      printn "1"
+      ::levelset.Iterate();
+      ::levelset.UpdateResult()
+      previous_ls = ::levelset.GetOutputImage()
+      printn "2"
+    
+      k = 0
+      SetProgress(0)
+      ::stop = 0;
+      
+      for n=1 to it {
+        #print n; print "/"; printn it
+        if (!::stop) {
+          #print sprint("::T= %0.2f \n",n*::dt)
+          ::levelset.Iterate();
+          k = k+1
+          if (graphics)&&(k==::displ_freq) {
             ::levelset.UpdateResult()
             lres = ::levelset.GetOutputImage()
-            stillmoving = count((previous_ls*lres)<0)
-            print "*** Convergence test = "; printn stillmoving
-            if (stillmoving==0) { ::stop=1; }
-            previous_ls = lres
+            k = 0
+            show ::input
+            ProcessXEvents(100)
           }
+          SetProgress(n/it*100)
+          if (::check_convergence) {
+            if ((n % ::conv_freq) == 0) {
+              # check for convergence
+              ::levelset.UpdateResult()
+              lres = ::levelset.GetOutputImage()
+              stillmoving = count((previous_ls*lres)<0)
+              print "*** Convergence test = "; printn stillmoving
+              if (stillmoving==0) { ::stop=1; }
+              previous_ls = lres
+            }
+          }
+        } else {
+          printn "stopped!"
+          n=it+1;
         }
-      } else {
-        printn "stopped!"
-        n=it+1;
       }
+    
+      printn "continue commands"
+      setvoxelsize( ::input,   v_x, v_y, v_z)
+      setvoxelsize( ::inls, v_x, v_y, v_z)
+      setvoxelsize( lres,    v_x, v_y, v_z)
+    
+      // invert before ending to be compatible with input convention
+      ::levelset.UpdateResult()
+      lres = ::levelset.GetOutputImage()
+      ::inls = -lres;
+    
+      #::levelset.End()
+      SetProgress(0)
+    
+      ::input_draw.DrawIsoContour(2,0)
+      del ::running
+    } else {
+      InfoDialog "The evolution is already running, patience ..."
     }
-  
-    printn "continue commands"
-    setvoxelsize( ::input,   v_x, v_y, v_z)
-    setvoxelsize( ::inls, v_x, v_y, v_z)
-    setvoxelsize( lres,    v_x, v_y, v_z)
-  
-    // invert before ending to be compatible with input convention
-    ::levelset.UpdateResult()
-    lres = ::levelset.GetOutputImage()
-    ::inls = -lres;
-  
-    ::levelset.End()
-    SetProgress(0)
-  
-    ::input_draw.DrawIsoContour(2,0)
   }
   # ::Run()
   

@@ -17,59 +17,66 @@
 if (!exists(NLmeansClass)) {
 
   ami_import->Filters()
-  
+    
   Class NLmeansClass {
-
+  
+    ::class_name ="global::NLmeansClass"
     ::filters=&global::filters
-
+            
     #----------------------------
     proc ::Init() \
     {
-        ::class_name ="global::NLmeansClass"
-        ::input_name =  ""
-        ::result_image_name =  "NLM_res", "name of the resulting image global variable"
+      ::input_name =  ""
+      ::result_image_name =  "NLM_res", "name of the resulting image global variable"
 
-        ::result_filename = "NLM_result.ami.gz", "filename for saving the resulting image to disk"
+      ::result_filename = "NLM_result.ami.gz", "filename for saving the resulting image to disk"
 
-        #
-        # Filter type
-        #
-        ::filter_mode = INT(0), "Filter mode: 0 for standard, 1 for MRI, 2 for feature-based, 3 for fast"
+      #
+      # Filter type
+      #
+      ::filter_mode = INT(0), "Filter mode: 0 for standard, 1 for MRI, 2 for feature-based, 3 for fast"
 
-        ::noisetype = INT(1), "noise type: 0 additive Gaussian, 1: Rician"
-        ::threads   = INT(2)
+      ::noisetype = INT(1), "noise type: 0 additive Gaussian, 1: Rician"
+      ::threads   = INT(2)
+
+      ::f =INT (2),     "Patch window size"
+      ::t = INT(4),     "Match window area"
+
+      #  
+      ::h = 10, "Threshold for distance"
+      # 
+      ::sigma = 1, "Sigma: standard deviation of the Gaussian smoothing for fast version"
+      # 
+      ::usegrad = UCHAR(0), "use the norm of the gradient as a feature"
   
-        ::f = INT(2),     "Patch window size"
-        ::t = INT(4),     "Match window area"
+      # 
+      ::filter_type = INT(0), "0: standard 1: probability variant"
+      #  
+      ::presmooth_SD = 0, "standard deviation of Gaussian pre-smoothing"
   
-        #  
-        ::h = 10, "Threshold for distance"
-        # 
-        ::sigma = 1, "Sigma: standard deviation of the Gaussian smoothing for fast version"
-        # 
-        ::usegrad = UCHAR(0), "use the norm of the gradient as a feature"
-    
-        # 
-        ::filter_type = INT(0), "0: standard 1: probability variant"
-        #  
-        ::presmooth_SD = 0, "standard deviation of Gaussian pre-smoothing"
-    
-        ::pattern_weight_param = 0.5, "Size of the Gaussian weighting function for the pattern similarity, the standard deviation of the Gaussian is pattern_weight_param*f"
+      ::pattern_weight_param = 0.5, "Size of the Gaussian weighting function for the pattern similarity, the standard deviation of the Gaussian is pattern_weight_param*f"
 
-        ::minweight = 15, "sets the minimal weight threshold is exp(-minweight)"
-        # 
-        ::iterations = INT(1), "Number of iterations"
-        ::stop =0
-        ::show_images = UCHAR(1)
-        ::mse = 0
-        ::surf_scaling = 0.1
-        ::CreateWindow()
+      ::minweight = 15, "sets the minimal weight threshold is exp(-minweight)"
+      # 
+      ::iterations = INT(1), "Number of iterations"
+      ::stop =0
+      ::show_images = UCHAR(1)
+      ::mse = 0
+      ::surf_scaling = 0.1
+      #::CreateWindow()
+    }
+    
+    proc ::SetParentPanel(OBJECT pp) \
+    {
+      ::parent_panel = &pp
     }
     
     #----------------------------
     proc ::Close() \
     {
-      ::win.HidePanel()
+      if (exists(::win)) {
+        ::win.HidePanel()
+      }
       delvars GetObjectName(::Close)
     }
     Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
@@ -472,7 +479,7 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
           ::res_draw.SetIsoContour(0,::imbox,0.5)
           ::res_draw.DrawIsoContour(0,1)
         }
-        ::input_draw._compare(::res_draw)
+        ::input_draw._compare(&::res_draw)
         # draw limits of ROI
       }
     }
@@ -538,8 +545,13 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
     
       # parameters window
       import = &global::ami_import;
-      ::win = import->ParamPanel("NL-means")
+      if (exists(::parent_panel)) {
+        ::win = import->ParamPanel("NLM",&::parent_panel)
+      } else {
+        ::win = import->ParamPanel("NLM")
+      }
       
+      # parameters window
       ::win.BeginBook()    
         ::win.AddPage("I/O")
 
@@ -628,8 +640,13 @@ printn "pattern_weight_param = %1%" % ::pattern_weight_param
         ::win.AddButton("Close All",  ::CloseAll)
       ::win.EndHorizontal()
       
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
       ::win.Update(-1)
-      ::win.Display()
+      #::win.Display
       ::FilterModeEvent
     }
 

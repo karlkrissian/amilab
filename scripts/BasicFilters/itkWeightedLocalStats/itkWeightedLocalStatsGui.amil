@@ -1,0 +1,6 @@
+
+func "BasicFilters/itkWeightedLocalStats/itkWeightedLocalStatsClass"
+
+itkWeightedLocalStatsCLass itk_wls
+
+itk_wls.Gui()

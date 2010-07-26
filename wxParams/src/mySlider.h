@@ -45,10 +45,11 @@ class mySlider: public wxSlider
     
   void SetCallback(void* cb, void* cd) { _callback=cb; _calldata=cd;}
 
-  virtual void OnSliderChanged( wxScrollEvent &WXUNUSED(event) )
+  virtual void OnSliderChanged( wxScrollEvent& event )
   {
     void (*cbf)( void*) = (void (*)(void*)) this->_callback;
     cbf(this->_calldata);
+	event.Skip();
   }
 
   void SetDragCallback(bool dcb)
@@ -56,12 +57,13 @@ class mySlider: public wxSlider
     _drag_callback = dcb;
   }
 
-  virtual void OnThumbTrack( wxScrollEvent &WXUNUSED(event) )
+  virtual void OnThumbTrack( wxScrollEvent& event )
   {
     if (_drag_callback) {
       void (*cbf)( void*) = (void (*)(void*)) this->_callback;
       cbf(this->_calldata);
     }
+	event.Skip();
   }
   
 

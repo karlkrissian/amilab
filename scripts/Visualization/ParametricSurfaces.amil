@@ -56,7 +56,9 @@ if (!exists(ParametricSurfaceClass)) {
     ::timestep = INT(100) 
     
     ::updating = 0
+#	printn "Call Update"
     ::Update()
+#	printn "Return from Update and call to Gui"
     ::Gui()
     
   }
@@ -120,6 +122,7 @@ if (!exists(ParametricSurfaceClass)) {
       ::updating = 1
       if (!exists(::pos)) {
         ::UpdateResolution()
+#		printn "Return from update resolution"
       }else {
         printn "::theta_dim = %1%"%::theta_dim
         printn "::pos.tx=%1%"%::pos.tx
@@ -133,19 +136,23 @@ if (!exists(ParametricSurfaceClass)) {
       }
       # 0: superquadric
       if (::type==0) {
+#	  printn "update 1"
       
         ::pos.SetComponent(0, cos(::theta)*cos(::phi))
         ::pos.SetComponent(1, sin(::theta)*cos(::phi))
         ::pos.SetComponent(2, sin(::phi))
 
+#	  printn "update 2"
         # compute the signs
         spos0 = (::pos[0]>0) - (::pos[0]<0)
         spos1 = (::pos[1]>0) - (::pos[1]<0)
         spos2 = (::pos[2]>0) - (::pos[2]<0)
 
+#	  printn "update 3"
         ::pos.SetComponent(0,exp(ln(abs(::pos[0]))/::e_x)*spos0*::cx)
         ::pos.SetComponent(1,exp(ln(abs(::pos[1]))/::e_y)*spos1*::cy)
         ::pos.SetComponent(2,exp(ln(abs(::pos[2]))/::e_z)*spos2*::cz)
+#	  printn "update 4"
       }
 #printn "4"
 
@@ -200,10 +207,13 @@ if (!exists(ParametricSurfaceClass)) {
       } else {
         show ::s
       }
-#printn "6"
+#printn "6.1"
       ::s.Normals()
+#printn "6.2"
       ::s.Recompute()
+#printn "6.3"
       ::s_draw.Paint
+#printn "6.4"
       ::updating = 0
 #printn "7"
     }
@@ -405,7 +415,7 @@ if (!exists(ParametricSurfaceClass)) {
     ::win.Display()
   }
   
-  ::Init
+  ::Init()
   }
 
 }

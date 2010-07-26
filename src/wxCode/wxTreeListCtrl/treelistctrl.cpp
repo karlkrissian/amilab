@@ -45,7 +45,7 @@
 #include <wx/apptrait.h>
 
 #ifdef __WXMAC__
-#include "wx/mac/private.h"
+//#include "wx/mac/private.h"
 #endif
 
 #include "treelistctrl.h"
@@ -1015,7 +1015,8 @@ void wxEditTextCtrl::EndEdit(bool isCancelled) {
 
 bool wxEditTextCtrl::Destroy() {
     Hide();
-    wxTheApp->GetTraits()->ScheduleForDestroy(this);
+    Destroy();
+    //wxTheApp->GetTraits()->ScheduleForDestroy(this);
     return true;
 }
 
@@ -1851,11 +1852,11 @@ void wxTreeListMainWindow::Init() {
 
     m_findTimer = new wxTimer (this, -1);
 
-#if defined( __WXMAC__ ) && defined(__WXMAC_CARBON__)
-    m_normalFont.MacCreateThemeFont (kThemeViewsFont);
-#else
+//#if defined( __WXMAC__ ) && defined(__WXMAC_CARBON__)
+//    m_normalFont.MacCreateThemeFont (kThemeViewsFont);
+//#else
     m_normalFont = wxSystemSettings::GetFont (wxSYS_DEFAULT_GUI_FONT);
-#endif
+//#endif
     m_boldFont = wxFont( m_normalFont.GetPointSize(),
                          m_normalFont.GetFamily(),
                          m_normalFont.GetStyle(),
@@ -1874,7 +1875,7 @@ bool wxTreeListMainWindow::Create (wxTreeListCtrl *parent,
                                    const wxString& name) {
 
 #ifdef __WXMAC__
-    if (style & wxTR_HAS_BUTTONS) style |= wxTR_MAC_BUTTONS;
+//    if (style & wxTR_HAS_BUTTONS) style |= wxTR_MAC_BUTTONS;
     if (style & wxTR_HAS_BUTTONS) style &= ~wxTR_HAS_BUTTONS;
     style &= ~wxTR_LINES_AT_ROOT;
     style |= wxTR_NO_LINES;
@@ -3640,7 +3641,11 @@ void wxTreeListMainWindow::OnChar (wxKeyEvent &event) {
         default:
             if (event.GetKeyCode() >= (int)' ') {
                 if (!m_findTimer->IsRunning()) m_findStr.Clear();
-                m_findStr.Append (event.GetKeyCode());
+                #if  defined(wxUSE_UNICODE) && !defined(__WXMAC__)
+                  m_findStr.Append (event.GetUnicodeKey());
+                #else
+                  m_findStr.Append (event.GetKeyCode());
+                #endif
                 m_findTimer->Start (FIND_TIMER_TICKS, wxTIMER_ONE_SHOT);
                 wxTreeItemId prev = m_curItem? (wxTreeItemId*)m_curItem: (wxTreeItemId*)NULL;
                 while (true) {

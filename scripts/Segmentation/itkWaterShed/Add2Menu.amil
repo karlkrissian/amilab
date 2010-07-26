@@ -1,0 +1,11 @@
+#!/usr/bin/amilab
+
+#
+# Adding main Gui scripts to the menu
+#
+
+# Scripts menu
+ami.MainFrame.AddToMenu("&Scripts","&Segmentation","&itk Watershed","Segmentation/itkWaterShed/itkWaterShedGui.amil")
+
+# ITK menu
+ami.MainFrame.AddToMenu("&ITK","&Segmentation","&Watershed","Segmentation/itkWaterShed/itkWaterShedGui.amil")

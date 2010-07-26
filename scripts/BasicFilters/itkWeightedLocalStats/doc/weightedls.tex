@@ -1,0 +1,63 @@
+\documentclass{article}
+\usepackage{html}
+\usepackage[latin1]{inputenc}
+%Párrafos
+\setlength{\parskip}{1pc}
+
+\begin{document}
+
+% Title Page
+\title{ITK Weighted Local Stats Gui}
+\author{Karl Krissian \& Sara Arencibia}
+\thanks{
+Grupo de Imagen, Tecnolog\'ia M\'edica y Televisi\'on (GIMET)\\
+Universidad de Las Palmas de Gran Canaria\\
+email: krissian@dis.ulpgc.es darkmind@gmail.com
+}
+
+
+\maketitle
+
+\begin{abstract}
+Script to compute probability of belonging to a structure based on an intensity mapping of the local statistics of the image intensity (local mean and local standard deviation)
+\end{abstract}
+
+
+\section{Quick Start}
+
+The different steps for obtaining the Weighted Local Stats are:
+\begin{enumerate}
+  \item Select and load the input image.
+  \item Select and load the wights input image.
+  \item Select the dimension of the image (2D or 3D).
+  \item Select the prefix for the output image name.
+  \item Select the size of the window.
+  \item Select the minimal weight.
+  \item Run the filter.
+  \item Display the result.
+\end{enumerate}
+
+\section{Interface tabs}
+
+The interface is divided into several pages.
+
+\subsection{\emph{Init} page}
+
+Select and load the input image.
+Select and load the weights image.
+The {\bf Dimension} parameter allows to set the dimension of the image (2D or 3D).
+
+\subsection{\emph{Param} page}
+
+\begin{enumerate}
+  \item Select the size of the window to compute local mean.
+  \item Select the minimal weight to compute weighted local standard deviation of intensity.
+  \item Run the filter.
+  \item Display the result.
+\end{enumerate}
+
+
+\subsection{\emph{Help} page}
+This help.
+
+\end{document}          

@@ -36,12 +36,12 @@ AMIObject::ptr AddWrap_wxEditor(  WrapClass_wxEditor::ptr& objectptr)
 Variable<AMIObject>::ptr CreateVar_wxEditor( wxEditor* si)
 {
   // here wxEditor can be deleted
-  boost::shared_ptr<wxEditor> si_ptr( 
+  boost::shared_ptr<wxEditor> _si_ptr( 
         si,
         wxwindow_nodeleter<wxEditor>() // deletion will be done by wxwidgets
       );
 
-  WrapClass_wxEditor::ptr sip( new WrapClass_wxEditor(si_ptr) );
+  WrapClass_wxEditor::ptr sip( new WrapClass_wxEditor(_si_ptr) );
   AMIObject::ptr amiobject(AddWrap_wxEditor(sip));
 
   Variable<AMIObject>::ptr varres(

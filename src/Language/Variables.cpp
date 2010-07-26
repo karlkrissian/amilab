@@ -68,7 +68,7 @@ unsigned char Variables::deleteVar(int i)
 //--------------------------------------------------
 Variables::~Variables()
 {
-  CLASS_MESSAGE("");
+  CLASS_MESSAGE(boost::format("Deleting context %1% ") % _context_name.c_str());
   EmptyVariables();
 }
 

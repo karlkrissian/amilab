@@ -39,10 +39,22 @@ class dw_Curve {
 
     //! Thickness of the curve
     int width;
+    
+    //! draw lines
+    bool drawlines;
+    
+    //! draw points
+    bool drawpoints;
 
   public:
     //! simple Constructor
-    dw_Curve() : color(*wxRED), style(wxSOLID), width(1) {}
+    dw_Curve() : color(*wxRED), style(wxSOLID), width(1), drawlines(true), drawpoints(false) {}
+
+    void SetDrawLines(bool val) { drawlines = val; }
+    bool GetDrawLines() { return drawlines; }
+    
+    void SetDrawPoints(bool val) { drawpoints=val; }
+    bool GetDrawPoints() { return drawpoints; }
 
     /**
      * 

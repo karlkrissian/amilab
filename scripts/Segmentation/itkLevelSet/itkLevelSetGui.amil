@@ -1,0 +1,15 @@
+
+func "Segmentation/itkLevelSet/itkLevelSetClass"
+
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(itk_ls)) {
+  itkLevelSetClass itk_ls
+  itk_ls.Gui()
+  
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+

@@ -203,3 +203,54 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
 
 }
 
+//---------------------------------------------------
+//  SetCurveDrawLines
+//---------------------------------------------------
+void WrapClass_wxDrawingWindow::
+      wrap_SetCurveDrawLines::SetParametersComments() 
+{
+  ADDPARAMCOMMENT( "curve number (def:0).");
+  ADDPARAMCOMMENT( "bool: Enable/Disable.");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxDrawingWindow::
+      wrap_SetCurveDrawLines::CallMember( ParamList* p)
+{
+  int curve_number       = 0;
+  unsigned char enable   = 1;
+  int n                  = 0;
+
+  if (!get_val_param<int>(           curve_number, p, n)) ClassHelpAndReturn;
+  if (!get_val_param<unsigned char>( enable,       p, n)) ClassHelpAndReturn;
+
+  this->_objectptr->_drawingwin->SetCurveDrawLines(curve_number,enable);
+
+  return BasicVariable::ptr();
+
+}
+
+//---------------------------------------------------
+//  SetCurveDrawPoints
+//---------------------------------------------------
+void WrapClass_wxDrawingWindow::
+      wrap_SetCurveDrawPoints::SetParametersComments() 
+{
+  ADDPARAMCOMMENT( "curve number (def:0).");
+  ADDPARAMCOMMENT( "bool: Enable/Disable.");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxDrawingWindow::
+      wrap_SetCurveDrawPoints::CallMember( ParamList* p)
+{
+  int curve_number       = 0;
+  unsigned char enable   = 1;
+  int n                  = 0;
+
+  if (!get_val_param<int>(           curve_number, p, n)) ClassHelpAndReturn;
+  if (!get_val_param<unsigned char>( enable,       p, n)) ClassHelpAndReturn;
+
+  this->_objectptr->_drawingwin->SetCurveDrawPoints(curve_number,enable);
+
+  return BasicVariable::ptr();
+
+}

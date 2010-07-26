@@ -53,11 +53,12 @@ if (!exists(GaussianFilterClass)) {
   }
   Comments( ::Filter, "Apply Gaussian convolution on each channel of the image.")
   
-  proc ::Display() {
-    global
+  proc ::Display() \
+  {
     show ::input
     if (exists(::res)) {
       show ::res
+      ::res_draw.update()
       ::input_draw._compare(&::res_draw)
     }
   }
