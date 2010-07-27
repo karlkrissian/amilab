@@ -3641,7 +3641,7 @@ void wxTreeListMainWindow::OnChar (wxKeyEvent &event) {
         default:
             if (event.GetKeyCode() >= (int)' ') {
                 if (!m_findTimer->IsRunning()) m_findStr.Clear();
-                #ifdef wxUSE_UNICODE
+                #if  defined( wxUSE_UNICODE) && wxCHECK_VERSION(2, 9, 0)
                   m_findStr.Append (event.GetUnicodeKey());
                 #else
                   m_findStr.Append (event.GetKeyCode());

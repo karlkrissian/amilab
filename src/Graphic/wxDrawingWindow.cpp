@@ -55,6 +55,8 @@ wxDrawingWindow::wxDrawingWindow(wxWindow *parent, wxWindowID id,
   _xaxis = _yaxis = 0;
   _xmin = _ymin = -10;
   _xmax = _ymax = 10;
+
+  _draw_grid = true;
 }
 
 //------------------------------------------------
@@ -244,13 +246,6 @@ void wxDrawingWindow::DrawAxes( wxDC& dc )
   int smallticsize = 1;
   double epsilon = 1E-5;
 
-  wxCoord x1,y1,x2,y2;
-  // from xmin,yaxis to xmax,yaxis
-  World2Window(_xmin,_yaxis,x1,y1);
-  World2Window(_xmax,_yaxis,x2,y2);
-  DrawLine(dc,x1,y1,x2,y2);
-
-  // draw tics
   // automatic step computation
   int xsizelog = floor(log10(_xmax-_xmin));
   double xbigstep = pow(10.0,xsizelog);
@@ -258,7 +253,86 @@ void wxDrawingWindow::DrawAxes( wxDC& dc )
   //cout << "xstep = " << xstep << endl;
   double xmintic = floor(_xmin/xstep)*xstep;
   //cout << "xmintic = " << xmintic << endl;
-  double xpos = xmintic;
+
+  // automatic step computation
+  int ysizelog = floor(log10(_ymax-_ymin));
+  double ybigstep = pow(10.0,ysizelog);
+  double ystep    = ybigstep/10.0;
+  double ymintic = floor(_ymin/ystep)*ystep;
+
+  wxCoord x1,y1,x2,y2;
+  double xpos,ypos;
+
+  scoped_ptr<wxPen> current_pen2( new wxPen( *wxLIGHT_GREY, 1, wxSOLID));
+  dc.SetPen(*current_pen2);
+
+  if (_draw_grid)
+  {
+    xpos = xmintic;
+    while (xpos<=_xmax) {
+      World2Window(xpos,_yaxis,x1,y1);
+      double tmp = xpos/xbigstep;
+      //cout << " tmp " << tmp << endl;
+      //cout << " tmp -round(tmp)" << tmp - round(tmp) << endl;
+      if (tmp!=0) {
+        if (fabs(tmp - round(tmp))<epsilon) {
+          World2Window(xpos,_ymin,x1,y1);
+          World2Window(xpos,_ymax,x2,y2);
+          DrawLine(dc,x1,y1,x2,y2);
+        } else
+        if ( fabs(tmp-0.5 - (round(tmp-0.5)))<epsilon ) {
+          World2Window(xpos,_ymin,x1,y1);
+          World2Window(xpos,_ymax,x2,y2);
+          DrawLine(dc,x1,y1,x2,y2);
+        }
+      }
+   /*
+      else {
+        DrawLine(dc,x1,y1-smallticsize,x1,y1+smallticsize);
+      }
+  */
+      xpos += xstep;
+    }
+  
+  
+    ypos = ymintic;
+    while (ypos<=_ymax) {
+      World2Window(_xaxis,ypos,x1,y1);
+      double tmp = ypos/ybigstep;
+      if (tmp!=0) {
+        if ( fabs(tmp - round(tmp))<epsilon ) {
+          if (_draw_grid) {
+            World2Window(_xmin,ypos,x1,y1);
+            World2Window(_xmax,ypos,x2,y2);
+            DrawLine(dc,x1,y1,x2,y2);
+          }
+        }
+        else 
+        if ( fabs(tmp-0.5 - (round(tmp-0.5)))<epsilon ) {
+          World2Window(_xmin,ypos,x1,y1);
+          World2Window(_xmax,ypos,x2,y2);
+          DrawLine(dc,x1,y1,x2,y2);
+        }
+      }
+/*
+      else 
+        DrawLine(dc,x1-smallticsize,y1,x1+smallticsize,y1);
+  */
+      ypos += ystep;
+    }
+  }
+
+
+  scoped_ptr<wxPen> current_pen( new wxPen( *wxBLACK, 1, wxSOLID));
+  dc.SetPen(*current_pen);
+
+  // from xmin,yaxis to xmax,yaxis
+  World2Window(_xmin,_yaxis,x1,y1);
+  World2Window(_xmax,_yaxis,x2,y2);
+  DrawLine(dc,x1,y1,x2,y2);
+
+  // draw tics
+  xpos = xmintic;
   while (xpos<=_xmax) {
     World2Window(xpos,_yaxis,x1,y1);
     double tmp = xpos/xbigstep;
@@ -282,12 +356,7 @@ void wxDrawingWindow::DrawAxes( wxDC& dc )
   DrawLine(dc,x1,y1,x2,y2);
 
   // draw tics
-  // automatic step computation
-  int ysizelog = floor(log10(_ymax-_ymin));
-  double ybigstep = pow(10.0,ysizelog);
-  double ystep    = ybigstep/10.0;
-  double ymintic = floor(_ymin/ystep)*ystep;
-  double ypos = ymintic;
+  ypos = ymintic;
   while (ypos<=_ymax) {
     World2Window(_xaxis,ypos,x1,y1);
     double tmp = ypos/ybigstep;
@@ -302,6 +371,8 @@ void wxDrawingWindow::DrawAxes( wxDC& dc )
       DrawLine(dc,x1-smallticsize,y1,x1+smallticsize,y1);
     ypos += ystep;
   }
+
+
 
 }
 

@@ -63,6 +63,8 @@ extern wxString        GB_scripts_dir;
 extern VarContexts  Vars;
 
 extern MainFrame*    GB_main_wxFrame;
+extern wxApp*        GB_wxApp;
+extern wxConfig*     GB_Config;
 
 
 // in function.cpp
@@ -79,6 +81,8 @@ enum
     ID_File_OpenImage,
     ID_File_OpenPolydata,
     ID_File_LoadScript,
+//    ID_File_ImagesHistory,
+//    ID_File_ScriptsHistory,
 
     ID_View_Reset,
 
@@ -97,6 +101,11 @@ enum {
 };
 
 enum {
+    wxID_Images_History  = 1100,
+    wxID_Scripts_History = 1200
+};
+
+enum {
   wxID_ConsoleReset = 2000,
   wxID_ConsoleClear,
   wxID_UpdateVars,
@@ -109,6 +118,8 @@ enum {
 
 BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(ID_File_OpenImage,    MainFrame::OnFileOpenImage)
+    EVT_MENU_RANGE(wxID_Images_History, wxID_Images_History+8, MainFrame::OnFileOpenImageHistory)
+
     EVT_MENU(ID_File_OpenPolydata, MainFrame::OnFileOpenPolydata)
     EVT_MENU(ID_File_LoadScript,   MainFrame::OnFileLoadScript)
     EVT_MENU(ID_Quit,              MainFrame::OnQuit)
@@ -208,12 +219,34 @@ void CustomStatusBar::Reposition()
 void MainFrame::CreateMenu()
 //            ----------
 {
+  // Images and Scripts history
+  images_history = boost::shared_ptr<wxFileHistory>(
+    new wxFileHistory(9,wxID_Images_History));
+
+  scripts_history = boost::shared_ptr<wxFileHistory>(
+    new wxFileHistory(9,wxID_Scripts_History));
+
+  GB_Config->SetPath(wxT("/ImagesHistory"));
+  images_history->Load(*GB_Config);
+  GB_Config->SetPath(wxT("/ScriptsHistory"));
+  scripts_history->Load(*GB_Config);
+
+  images_history_menu  = new wxMenu;
+  scripts_history_menu = new wxMenu;
+  images_history->UseMenu( images_history_menu);
+  images_history->AddFilesToMenu();
+  scripts_history->UseMenu(scripts_history_menu);
+  scripts_history->AddFilesToMenu();
+
   usermenu_id = 1000;
 
   menuFile = new wxMenu;
   menuFile->Append( ID_File_OpenImage,    GetwxStr("Open &image") );
+  menuFile->AppendSubMenu( images_history_menu, GetwxStr("Recent images"));
   menuFile->Append( ID_File_OpenPolydata, GetwxStr("Open &polydata") );
   menuFile->Append( ID_File_LoadScript, GetwxStr("Load &script") );
+  menuFile->AppendSubMenu( scripts_history_menu, GetwxStr("Recent scripts"));
+
   menuFile->Append( ID_Quit, GetwxStr("E&xit") );
 
   menuView = new wxMenu;
@@ -1035,6 +1068,11 @@ void MainFrame::CreateDrawingPanel(wxWindow* parent)
 void MainFrame::OnClose(wxCloseEvent& event)
 {
   CLASS_MESSAGE("closing main frame ...");
+  // save filehistories
+  GB_Config->SetPath(wxT("/ImagesHistory"));
+  images_history ->Save(*GB_Config);
+  GB_Config->SetPath(wxT("/ScriptsHistory"));
+  scripts_history->Save(*GB_Config);
 
   // important: clear variables now before the childrens are deleted
   Vars.EmptyVariables();
@@ -1431,8 +1469,39 @@ void MainFrame::OnFileOpenImage    ( wxCommandEvent& event )
                       filename.GetPathSeparator(wxPATH_UNIX)+
                       filename.GetFullName());
 
+  images_history->AddFileToHistory(newname);
+
   cmd = varname + string(" = Image \"");
   cmd += newname.mb_str();
+  cmd += string("\" // from menu");
+  this->TC->IncCommand(cmd);
+  this->TC->ProcessReturn();
+}
+
+//-----------------------------------------------------
+void MainFrame::OnFileOpenImageHistory ( wxCommandEvent& event )
+{
+  string cmd; // increment the command line string
+  string varname;
+  size_t pos = event.GetId() - wxID_Images_History;
+  wxString filename(images_history->GetHistoryFile(pos));
+
+  int res=AskVarName( this,
+                  string("Image variable name"),
+                  string("Enter name:"),
+                  string("i"),
+                  varname);
+  if (!res) {
+    cerr << " Var name error " << endl;
+    return;
+  }
+
+
+  images_history->RemoveFileFromHistory(pos);
+  images_history->AddFileToHistory(filename);
+
+  cmd = varname + string(" = Image \"");
+  cmd += filename.mb_str();
   cmd += string("\" // from menu");
   this->TC->IncCommand(cmd);
   this->TC->ProcessReturn();
@@ -1496,6 +1565,8 @@ void MainFrame::OnFileLoadScript   ( wxCommandEvent& event )
                       filename.GetPath(wxPATH_GET_VOLUME,wxPATH_UNIX)+
                       filename.GetPathSeparator(wxPATH_UNIX)+
                       filename.GetFullName());
+
+  scripts_history->AddFileToHistory(newname);
 
   cmd = string("func \"");
   cmd += newname.mb_str();

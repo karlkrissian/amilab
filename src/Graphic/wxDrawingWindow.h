@@ -98,6 +98,8 @@ class wxDrawingWindow : public wxScrolledWindow
   //! position in X of Y axis
   double _yaxis;
 
+  bool _draw_grid;
+
   //! std::vector of the curves to draw
   std::vector<dw_Curve> _curves;
 
@@ -126,6 +128,9 @@ public:
   void Window2World( wxCoord wx, wxCoord wy, double& x, double& y);
 
   void DrawAxes( wxDC& dc );
+
+  void SetDrawGrid(bool b) { _draw_grid = b; }
+  bool GetDrawGrid() { return _draw_grid; }
 
   void SetXLimits(double xmin, double xmax)
   {

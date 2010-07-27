@@ -67,7 +67,7 @@ if (!exists(AddSphereClass)) {
         px = px*_vx
         py = py*_vy
         r2 = px*px+py*py;
-        sph = _r2/(2*rad*rad)
+        sph = r2/(2*rad*rad)
         sph =  exp(-sph)*(_I2-_I1) + _I1
         sim = im[sph.GetExtent]
         sim = max(sim,sph)
