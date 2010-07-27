@@ -84,16 +84,17 @@ int borderPixel::getPosX()             { return px; }
 
 int borderPixel::getPosY()             { return py; }
 
-void borderPixel::printBorderPixel()
+void borderPixel::printBorderPixel(int linear_case)
 {
 //  if(py == 40 || py == 60){    
   cout << "----------------------------------" << endl;
   cout << "Pixel (" << px << ", " << py << ")" << endl;
-  cout << "Border       = " << (int)border << endl;
+  const char* tb = (border==2) ? "YMAX" : "XMAX";
+  cout << "Border       = " << tb << endl;
   cout << "A intensity  = " << A << endl;
   cout << "B intensity  = " << B << endl;
   cout << "Curve coefficients: a = " << a << ", b = " << b << ", c = " << c << endl;
-  if (c==0)
+  if (linear_case==1)
   { 
     double rad = atan(b);
     cout << "Angle        = " << (rad*360)/(2*3.141592741) << endl;
@@ -400,7 +401,7 @@ void SuperGradienteCurvo(InrImage* input, vector<borderPixel> &borderPixelVector
 
       pixel.setBorderPixelValues(A, B, caso, a, b, c, cu_n, x, y);
 //      cout << "desp = " << des_n << endl;
-      pixel.printBorderPixel();
+      pixel.printBorderPixel(linear_case);
       //Add edge pixel to the vector
       borderPixelVector.push_back(pixel);
     }
@@ -483,7 +484,7 @@ BasicVariable::ptr wrapSubpixel2D (ParamList* p) {
   //Calls to SuperGradienteCurvo
   //SuperGradienteCurvo(input, output, gx, gy, des, cu, borde, umbral, linear_case);
   SuperGradienteCurvo(input, borderPixelVector, umbral, linear_case);
-  cout << "size = " << borderPixelVector.size() << endl;
+//  cout << "size = " << borderPixelVector.size() << endl;
   //Se crea el AMIObject y se encapsulan dentro las imágenes que representan cada parámetro
   AMIObject::ptr amiobject(new AMIObject);
   amiobject->SetName("Sub-pixel2D");
@@ -734,7 +735,7 @@ void SuperGradienteGaussianoCurvo(InrImage* input,
         B  = ((double) FF(x-m,y-3,z) + FF(x-m,y-4,z) + FF(x,y-4,z)) / 3.0;
         A  = ((double) FF(x,y+4,z) + FF(x+m,y+4,z) + FF(x+m,y+3,z)) / 3.0;
       }
-      // si está por debajo del umbral no nos sirve
+      // si está por debajo del umbral no nos sirve (en valor absoluto)
       if (fabs(A-B)<umbral) continue;
       
       // la parcial en y debe ser máxima en su columna
@@ -838,7 +839,7 @@ void SuperGradienteGaussianoCurvo(InrImage* input,
 //      des[n] = (float) des_n;
 //      cu[n] = (float) cu_n;
       pixel.setBorderPixelValues(A, B, caso, a, b, c, cu_n, x, y);
-      pixel.printBorderPixel();
+      pixel.printBorderPixel(linear_case);
       //Add edge pixel to the vector
       borderPixelVector.push_back(pixel);
     } //End x for
@@ -885,7 +886,7 @@ BasicVariable::ptr wrapGaussianSubpixel2D (ParamList* p) {
   //Calls to SuperGradienteGaussianoCurvo
   //SuperGradienteCurvo(input, output, gx, gy, des, cu, borde, umbral, linear_case);
   SuperGradienteGaussianoCurvo(output.get(), borderPixelVector, umbral, linear_case);
-  cout << "size = " << borderPixelVector.size() << endl;
+//  cout << "size = " << borderPixelVector.size() << endl;
   
   //Se crea el AMIObject y se encapsulan dentro las imágenes que representan cada parámetro
   AMIObject::ptr amiobject(new AMIObject);

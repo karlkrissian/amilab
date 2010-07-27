@@ -22,7 +22,7 @@ public:
   double        getCurvature();
   int           getPosX();
   int           getPosY();
-  void          printBorderPixel();
+  void          printBorderPixel(int linear_case);
   
 private:
   //Intensity values

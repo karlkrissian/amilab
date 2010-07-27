@@ -10,7 +10,7 @@ if (!exists(SyntheticImagesClass)) {
   {
     ::type       = INT(0), "Analytic function type"
     ::pv_type    = INT(0), "Compute partial effect function"
-    ::subdiv     = INT(2), "Subdivision level for recursive functions"
+    ::subdiv     = INT(6), "Subdivision level for recursive functions"
     ::output_name= "synthetic_res", "Output image name"
     
     ::reloadLine   = UCHAR(0), "Reload the image created with an analytic line"
