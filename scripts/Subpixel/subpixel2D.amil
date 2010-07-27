@@ -95,7 +95,7 @@ if (!exists(Subpixel2DClass)){
         sign = (div>=0)*1 + (div<0)*-1
         nx = ::res->bcoef * sign
         ny = Image(DOUBLE,nx.tx,1,1)
-        ny = sign * 0.4
+        ny = sign * 1
         
         normx = (px+nx)*(::res->border==2)+(px+ny)*(::res->border!=2)
         normy = (py+ny)*(::res->border==2)+(py+nx)*(::res->border!=2)
