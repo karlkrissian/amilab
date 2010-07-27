@@ -26,6 +26,8 @@
   if (!get_val_smtptr_param<type>( varname, p, n)) \
     ClassHelpAndReturn;
 
+#define SIZE_BUFFER 2040
+
 #include <wx/string.h>
 #include "driver.h"
 #include "MainFrame.h"
@@ -79,7 +81,7 @@ BasicVariable::ptr wrap_wxString::CallMember( ParamList* p)
   string sString;
 
   if (get_val_param<string>( sString, p, n))
-    owxString = new wxString(wxT(sString.c_str()), wxConvUTF8);
+    owxString = new wxString(sString.c_str(), wxConvUTF8);
   else
     owxString = new wxString();
 
@@ -125,7 +127,7 @@ BasicVariable::ptr WrapClass_wxString::
 
   if(sChar.length() == 1) {
     if (owxString->Len() > 0)
-      owxString->SetChar(iPos,wxT(sChar[0]));
+      owxString->SetChar(iPos,sChar[0]);
     else
       GB_driver.err_print("SetChar can not use (empty string, use Append()).");
   }
@@ -153,7 +155,8 @@ BasicVariable::ptr WrapClass_wxString::
   int n=0;
   GET_PARAM(string,sString,"");
 
-  owxString->Append(wxT(sString.c_str()));
+  wxString oString(sString.c_str(), wxConvUTF8);
+  owxString->Append(oString);
 
   return BasicVariable::ptr();
 }
@@ -202,7 +205,7 @@ BasicVariable::ptr WrapClass_wxString::
   GET_PARAM(int,iPosBegin, 0);
   GET_PARAM(int,iPosEnd, 0);
 
-  wxString *oString = new wxString(owxString->SubString(iPosBegin, iPosEnd));
+  wxString *oString = new wxString(owxString->SubString(iPosBegin, iPosEnd), wxConvUTF8);
 
   return CreateVar_wxString(oString);
 }
@@ -227,7 +230,8 @@ BasicVariable::ptr WrapClass_wxString::
   GET_PARAM(string,sPattern, "");
   GET_PARAM(string,sToReplace, "");
 
-  owxString->Replace(wxT(sPattern.c_str()), wxT(sToReplace.c_str()), false);
+  owxString->Replace(wxString(sPattern.c_str(), wxConvUTF8),
+    wxString(sToReplace.c_str(), wxConvUTF8), false);
 
   return BasicVariable::ptr();
 }
@@ -252,7 +256,8 @@ BasicVariable::ptr WrapClass_wxString::
   GET_PARAM(string,sPattern, "");
   GET_PARAM(string,sToReplace, "");
 
-  owxString->Replace(wxT(sPattern.c_str()), wxT(sToReplace.c_str()), true);
+  owxString->Replace(wxString(sPattern.c_str(), wxConvUTF8),
+    wxString(sToReplace.c_str(), wxConvUTF8), true);
 
   return BasicVariable::ptr();
 }
@@ -371,9 +376,9 @@ BasicVariable::ptr WrapClass_wxString::
   GET_PARAM(unsigned char,ucSensitive,0);
 
   if (ucSensitive)
-    res = (unsigned char) owxString->IsSameAs(wxT(sString.c_str()),false);
+    res = (unsigned char) owxString->IsSameAs(wxString(sString.c_str(), wxConvUTF8),false);
   else
-    res = (unsigned char) owxString->IsSameAs(wxT(sString.c_str()),true);
+    res = (unsigned char) owxString->IsSameAs(wxString(sString.c_str(), wxConvUTF8),true);
 
   RETURN_VAR(unsigned char,res);
 }
@@ -399,7 +404,7 @@ BasicVariable::ptr WrapClass_wxString::
 
   if (sString != "")
   {
-    unsigned char res = (unsigned char) owxString->Cmp(wxT(sString.c_str()));
+    unsigned char res = (unsigned char) owxString->Cmp(wxString(sString.c_str(), wxConvUTF8));
 
     RETURN_VAR(unsigned char,res);
   }
@@ -430,7 +435,7 @@ BasicVariable::ptr WrapClass_wxString::
 
   if (sString != "")
   {
-    unsigned char res = (unsigned char) owxString->CmpNoCase(wxT(sString.c_str()));
+    unsigned char res = (unsigned char) owxString->CmpNoCase(wxString(sString.c_str(), wxConvUTF8));
 
     RETURN_VAR(unsigned char,res);
   }
@@ -476,7 +481,7 @@ BasicVariable::ptr WrapClass_wxString::
   int n=0;
   GET_PARAM(string,sString,"");
 
-  int res = owxString->Find(wxT(sString.c_str()));
+  int res = owxString->Find(wxString(sString.c_str(), wxConvUTF8));
 
   RETURN_VAR(int,res);
 }
@@ -500,7 +505,7 @@ BasicVariable::ptr WrapClass_wxString::
   int n=0;
   GET_PARAM(string,sString,"");
 
-  unsigned char res = (unsigned char) owxString->Matches(wxT(sString.c_str()));
+  unsigned char res = (unsigned char) owxString->Matches(wxString(sString.c_str(), wxConvUTF8));
 
   RETURN_VAR(unsigned char,res);
 }
@@ -572,7 +577,7 @@ BasicVariable::ptr WrapClass_wxString::
 {
   boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
-  wxString *oString = new wxString(owxString->Upper());
+  wxString *oString = new wxString(owxString->Upper(), wxConvUTF8);
 
   return CreateVar_wxString(oString);
 }
@@ -596,7 +601,7 @@ BasicVariable::ptr WrapClass_wxString::
   int n=0;
   GET_PARAM(string,sString,"");
 
-  wxString *oString = new wxString(owxString->FromAscii(sString.c_str()));
+  wxString *oString = new wxString(owxString->FromAscii(sString.c_str()), wxConvUTF8);
 
   return CreateVar_wxString(oString);
 }
@@ -620,7 +625,7 @@ BasicVariable::ptr WrapClass_wxString::
   int n=0;
   GET_PARAM(string,sString,"");
 
-  wxString *oString = new wxString(owxString->FromAscii(sString.c_str()));
+  wxString *oString = new wxString(owxString->FromAscii(sString.c_str()), wxConvUTF8);
 
   return CreateVar_wxString(oString);
 }
@@ -639,7 +644,10 @@ BasicVariable::ptr WrapClass_wxString::
 {
   boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
-  string val = owxString->ToAscii();
+  char buffer[SIZE_BUFFER];
+  strcpy( buffer, (const char*)owxString->ToAscii() );
+
+  string val = buffer;
 
   RETURN_VAR(string,val);
 }
@@ -719,7 +727,9 @@ BasicVariable::ptr WrapClass_wxString::
 {
   boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
-  string val = owxString->c_str();
+  char buffer[SIZE_BUFFER];
+  strcpy( buffer, (const char*)owxString->mb_str(wxConvUTF8) );
+  string val = buffer;
 
   RETURN_VAR(string,val);
 }
@@ -786,8 +796,10 @@ BasicVariable::ptr WrapClass_wxString::
 
   if (owxStringParameter.get())
   {
-    sVal = owxStringParameter.get()->c_str();
-    owxString->Append(sVal.c_str());
+    char buffer[SIZE_BUFFER];
+    strcpy( buffer, (const char*)owxStringParameter.get()->mb_str(wxConvUTF8) );
+    sVal = buffer;
+    owxString->Append(wxString(sVal.c_str(), wxConvUTF8));
   }
 
   return CreateVar_wxString( new wxString(*(this->_objectptr->GetObj())));
@@ -815,8 +827,10 @@ BasicVariable::ptr WrapClass_wxString::
 
   if (owxStringParameter.get())
   {
-    sVal = owxStringParameter.get()->c_str();
-    owxString->Append(sVal.c_str());
+    char buffer[SIZE_BUFFER];
+    strcpy( buffer, (const char*)owxStringParameter.get()->mb_str(wxConvUTF8) );
+    sVal = buffer;
+    owxString->Append(wxString(sVal.c_str(), wxConvUTF8));
   }
 
   return CreateVar_wxString( new wxString(*(this->_objectptr->GetObj())));
@@ -847,8 +861,10 @@ BasicVariable::ptr WrapClass_wxString::
 
   if (owxStringParameter.get())
   {
-    sVal = owxStringParameter.get()->c_str();
-    res = (unsigned char)owxString->IsSameAs(wxT(sVal.c_str()),true);
+    char buffer[SIZE_BUFFER];
+    strcpy( buffer, (const char*)owxStringParameter.get()->mb_str(wxConvUTF8) );
+    sVal = buffer;
+    res = (unsigned char)owxString->IsSameAs(wxString(sVal.c_str(), wxConvUTF8),true);
 
     RETURN_VAR(unsigned char,res);
   }
@@ -881,8 +897,10 @@ BasicVariable::ptr WrapClass_wxString::
 
   if (owxStringParameter.get())
   {
-    sVal = owxStringParameter.get()->c_str();
-    res = (unsigned char)owxString->IsSameAs(wxT(sVal.c_str()),true);
+    char buffer[SIZE_BUFFER];
+    strcpy( buffer, (const char*)owxStringParameter.get()->mb_str(wxConvUTF8) );
+    sVal = buffer;
+    res = (unsigned char)owxString->IsSameAs(wxString(sVal.c_str(), wxConvUTF8),true);
 
     if (res==1)
       res=0;
@@ -918,7 +936,9 @@ BasicVariable::ptr WrapClass_wxString::
   {
     if (type_string == "std::string")
     {
-      string val = owxString->c_str();
+      char buffer[SIZE_BUFFER];
+      strcpy( buffer, (const char*)owxString->mb_str(wxConvUTF8) );
+      string val = buffer;
 
       RETURN_VAR(string,val);
     }

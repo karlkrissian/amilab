@@ -52,7 +52,7 @@ if (!exists(ScriptGui)) \
     # Reloads the script
     #
     proc ::Reload() {
-      cmd = "global; func \"%1%\";" % ::classfilename
+      cmd = "global; func \"%1%\";" % ::objectfilename
       ::CloseAll()
       eval cmd
     }
@@ -107,7 +107,11 @@ if (!exists(ScriptGui)) \
     proc ::LaunchWiki() {
       import = &global::ami_import
       wx1 = import->WxFunctions()
-      res = wx1->LaunchDefaultBrowser(::wiki_help)
+      if (exists(::wiki_help)) {
+        res = wx1->LaunchDefaultBrowser(::wiki_help)
+      } else {
+        InfoDialog "Sorry, there is no wiki page for this script :("
+      }
     }
     Comments( ::LaunchWiki, "Launch the corresponding wiki tutorial page on the default browser.")
   

@@ -35,7 +35,7 @@
 
 #include "DessinImageBase.hpp"
 #include "GLparam.hpp"
-
+#include "DefineClass.hpp"
 
 // 1st basic Volume Rendering:
 // Set the clipping planes []
@@ -95,6 +95,7 @@ class ModelLimits {
 class VolumeRender {
 //    ============
 
+  DEFINE_CLASS(VolumeRender)
 
   InrImage* _im;
   float     _minI,_maxI;

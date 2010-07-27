@@ -24,6 +24,12 @@ OK = 1 # The test was successful
 printn "Constructor: MODE 2 - a directory name, a file name - (file=wx.wxFileName(\"/tmp/\",\"karl\")).\n"
 file=wx.wxFileName("/tmp/","karl")
 
+file1=wx.wxFileName("/tmp/")
+
+VAL = file.GetFullName()
+
+printn "\t The full path of the filename: - %1% -\n" % VAL
+
 printn "AppendDir: Appends the build directory (file.AppendDir(\"build\")).\n"
 file.AppendDir("build")
 

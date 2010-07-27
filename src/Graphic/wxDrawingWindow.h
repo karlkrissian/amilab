@@ -155,6 +155,21 @@ public:
   }
 
   /**
+   * Draws the point if the coordinates are correct
+   * @param dc drawing context 
+   * @param x1 first point
+   * @param y1 
+   */
+  void DrawPoint(wxDC& dc, int x1, int y1)
+  {
+    wxCoord w,h;
+    dc.GetSize(&w,&h);
+    wxRect rect(0,0,w,h);
+    if (rect.Contains(x1,y1))
+      dc.DrawCircle(x1,y1,2);
+  }
+
+  /**
    * 
    * @return the current number of curves
    */
@@ -162,6 +177,15 @@ public:
   {
     return _curves.size();
   }
+
+  /**
+   * Adds the image points to the given curve,
+   * if the image is scalar, use X world coordinates in abscissa
+   * if the image is vectorial with 2 components, the first components are abscissa and the second are ordinates
+   * @param im 
+   */
+  void AddImageToCurve( InrImage* im, dw_Curve& c);
+
 
   /**
    * Adds a new curve
@@ -188,6 +212,16 @@ public:
    * @param control point
    */
   void SetControl( int i, const dw_Point2D& pt);
+
+  /**
+   * 
+   **/
+  void SetCurveDrawPoints( int i, bool dp);
+
+  /**
+   * 
+   **/
+  void SetCurveDrawLines( int i, bool dp);
 
   /**
    * Set the curve number i color from the string, see wxColour for documentation

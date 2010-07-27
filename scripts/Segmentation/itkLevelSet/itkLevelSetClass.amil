@@ -1,0 +1,217 @@
+
+func "Common/ScriptGui"
+
+
+if (!exists(itkLevelSetClass)) {
+
+  ami_import->ITK()
+  #func "BasicFilters/itkSigmoid/itkSigmoidFilter.amil"
+  func "Segmentation/itkFastMarching/itkFastMarchingClass.amil"
+
+#*******************************************************************************************#
+#****************************LEVELSET*******************************************************#
+#*******************************************************************************************#
+    
+  Class itkLevelSetClass : public ScriptGui \
+  {
+    
+    global::itkFastMarchingClass ::FAST
+    #global::itkSigmoidClass ::SIG
+    
+    ::itk=&global::itk
+    ::class_name="global::itkLevelSetClass"
+  
+    #------------------------------------------------------
+    proc ::Init() {
+      
+      #global::itkSigmoidClass ::sig
+      #global::itkFastMarchingClass ::fast
+            
+      ::min = 0.0
+      ::max = 1.0
+      
+      ::dim = INT(1), "The dimension of the image."
+      ::error = 0.02, "Set the maximum error allowed in the solution"
+      ::iterations = INT(200) , "Set the number of iterations that the filter will run"
+      ::advScaling = 0.5, "Set the scaling of the advection field"
+      ::curScaling = 0.5, "Use this parameter to increase the influence of curvature on the movement of the surface."
+      ::proScaling = 1, "Set the scaling of the propagation speed."
+ 
+      ::inputmin = 0, "Minimal Intensity of the image."
+      ::inputmax = 32000, "Maximal Intensity of the image."
+      
+      ::mode = INT(0), "False: ITK input, True: manual input"
+      
+      ::initial_name = ""
+      ::em_name = ""
+      
+      ::help = "http://www.itk.org/Doxygen316/html/classitk_1_1GeodesicActiveContourLevelSetImageFilter.html"
+      ::html_filename = GetScriptsDir+"/Segmentation/itkLevelSet/doc/levelset/index.html"
+    }
+
+    #------------------------------------------------------
+    proc ::set_fast(IMAGE im) \
+    {
+      ::FAST->set_fast(im)
+    }
+    
+    #------------------------------------------------------
+    proc ::set_sigmoid(IMAGE im) \
+    {
+      ::FAST->set_sigmoid(im)
+    }
+    
+    #------------------------------------------------------
+    proc ::set_initial(IMAGE im) \
+    {
+      ::initial <<= im
+    }
+    
+    #------------------------------------------------------
+    proc ::set_edge(IMAGE im) \
+    {
+      ::em <<= im
+    }
+    
+    #------------------------------------------------------
+    proc ::Run() {
+      if(exists (level)) {del level;}
+      if (::dim == 0) {
+        ::level <<= ::itk->LevelSetFilter2D(::initial,::em,::curScaling,::proScaling,::advScaling,::error,::iterations)
+      } else {
+        ::level <<= ::itk->LevelSetFilter3D(::initial,::em,::curScaling,::proScaling,::advScaling,::error,::iterations)
+      }
+    }
+    
+    // proc ::Run() {
+      // if (exists (::sigm)) {del sigm;}
+      // ::sigm = ::FAST->SIG.sigmoid
+      // if (exists (::level)) {del level;}
+      // if (::FAST->dim==0) {
+        // ::level <<= ::itk->LevelSetFilter2D(::FAST->fast,::sigm,::curScaling,::proScaling,::advScaling,::error,::iterations)
+      // } else {
+        // ::level <<= ::itk->LevelSetFilter3D(::FAST->fast,::sigm,::curScaling,::proScaling,::advScaling,::error,::iterations)
+      // }
+    // }
+    
+    #------------------------------------------------------
+    proc ::Display() {
+    
+      show ::level    
+    }
+    
+    #------------------------------------------------------
+    proc ::load_initial() \
+    {
+      printn "evaluation of --> ::initial <<="+::initial_name+";"
+      eval "::initial <<="+::initial_name+";"
+      if (::initial_name=="Image") {
+        ::initial_name = "::initial"
+        ::win.Update(-1)
+      }
+      ::win.Update(-1)
+      if (exists(::initial_draw)) { del ::initial_draw; }
+      show ::initial
+    }
+    
+    #------------------------------------------------------
+    proc ::load_em() \
+    {
+      printn "evaluation of --> ::em <<="+::em_name+";"
+      eval "::em <<="+::em_name+";"
+      if (::em_name=="Image") {
+        ::v_name = "::em"
+        ::win.Update(-1)
+      }
+      ::win.Update(-1)
+      if (exists(::em_draw)) { del ::em_draw; }
+      show ::em
+    }
+    
+    #------------------------------------------------------
+    proc ::SetParentPanel(OBJECT pp) \
+    {
+      ::parent_panel = &pp
+    }
+    
+    // proc ::ConfigEventL() {
+      // ::win.EnablePanel(::config_manual_input, ::mode==1)
+      // ::win.EnablePanel(::config_itk_input, ::mode==0)
+      // ::win.SelectPage(::init_book,::mode)
+    // }
+    
+    #------------------------------------------------------
+    proc ::Gui() {
+      import = &global::ami_import;
+      if (exists(::parent_panel)) {
+        ::win = import->ParamPanel("itkLS",&::parent_panel)
+      } else {
+        ::win = import->ParamPanel("itkLS")
+      }
+      ::win.BeginBook()
+      
+        ::win.AddPage("Init")
+          // initmode_id = ::win.AddEnum(&::mode,"Mode")
+            // ::win.AddEnumChoice(initmode_id,"ITK input")
+            // ::win.AddEnumChoice(initmode_id,"Manual input")
+          // ::win.SetCallback(&::ConfigEventL)
+          
+          // ::init_book = ::win.BeginBook()
+            // ::config_itk_input = ::win.AddPage("ITK input")
+              // ::win.BeginBook()
+                // ::FAST->SetParentPanel(&::win)
+                // ::FAST->Gui()
+                // ::win.AddPage("itkFM",&::FAST->win)
+              // ::win.EndBook()
+            //::config_manual_input = ::win.AddPage("Input")
+              ::win.BeginBoxPanel("Initial Image")
+                # set the input image
+                ::win.BeginHorizontal()
+                  ::win.AddImageChoice( &::initial_name, "")
+                  ::win.AddButton("Load",::load_initial)
+                ::win.EndHorizontal()
+              ::win.EndBoxPanel()
+              ::win.BeginBoxPanel("Edge Map Image")
+                # set the input image
+                ::win.BeginHorizontal()
+                  ::win.AddImageChoice( &::initial_name, "")
+                  ::win.AddButton("Load",::load_initial)
+                ::win.EndHorizontal()
+              ::win.EndBoxPanel()
+              ::win.BeginHorizontal()
+                dim_id = ::win.AddEnum( &::dim,"Dimension")
+                ::win.AddEnumChoice(dim_id, "2D")
+                ::win.AddEnumChoice(dim_id, "3D")
+              ::win.EndHorizontal()
+          //::win.EndBook()
+          
+          ::win.AddPage("Param")
+            ::win.AddFloat( &::error,"ErrorRMS",0,1)
+            ::win.AddInt( &::iterations,"Iterations",0,800)
+            ::win.AddFloat( &::advScaling,"Advection",0,1)
+            ::win.AddFloat( &::curScaling,"Curvature",0,1)
+            ::win.AddFloat( &::proScaling,"Propagation",0,1)
+            ::win.BeginHorizontal()
+              ::win.AddButton("Run", ::Run)
+              //::win.AddButton("RunNew", ::RunNew)
+              ::win.AddButton("Display", ::Display)
+            ::win.EndHorizontal()       
+            
+       ::AddHelpPage(&::win)
+        
+      ::win.EndBook()
+      
+      ::AddStandardButtons(&::win)
+      
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+      //::ConfigEventL
+      ::win.Update(-1)
+    }
+    
+    ::Init()
+  }
+} 

@@ -253,17 +253,18 @@ if (!exists(AnisoNRADClass)) {
       }
       // draw limits of ROI
       if exists(::roi) {
-        local::roibox = ::roi*0+1
+        roibox = ::roi*0+1
         ::imbox  <<= ::input*0
         ::imbox.putimage(roibox)
         del roibox
-        ::input_draw.SetIsoContour(0,::imbox,0.5)
+        ::input_draw.SetIsoContour(0,&::imbox,0.5)
         ::input_draw.DrawIsoContour(0,1)
         show ::input
       }
       if exists(::res) {
         show ::res
-        ::input_draw._compare(::res_draw)
+        ::res_draw.update()
+        ::input_draw._compare(&::res_draw)
       }
     }
     Comments( ::Display, "Display results")
@@ -280,7 +281,7 @@ if (!exists(AnisoNRADClass)) {
         ::res_surf.Normals()
         show ::input_surf
         show ::res_surf
-        ::input_surf_draw.compare(::res_surf_draw)
+        ::input_surf_draw._compare(&::res_surf_draw)
     }
   
     proc ::DisplaySurfaces() {

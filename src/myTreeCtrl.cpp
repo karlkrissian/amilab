@@ -15,23 +15,25 @@
 #include "paramlist.h"
 #include "wrapfunction_class.h"
 
-#include <iostream>
-
 //icons
 #include "wx/artprov.h"
 
 #include "MainFrame.h"
-extern MainFrame*     GB_main_wxFrame;
+extern MainFrame*    GB_main_wxFrame;
+#include <iostream>
+
 
 //Used for &About menu item
 enum
 {
-  wxID_myABOUT = 1000
+  wxID_myABOUT = 1000,
+  wxID_ToConsole
 };
 
 //BEGIN_EVENT_TABLE(myTreeCtrl, wxTreeCtrl)
 BEGIN_EVENT_TABLE(myTreeCtrl, wxTreeListCtrl)
-  EVT_MENU(wxID_myABOUT, myTreeCtrl::OnAbout)
+  EVT_MENU(wxID_myABOUT,   myTreeCtrl::OnAbout)
+  EVT_MENU(wxID_ToConsole, myTreeCtrl::ToConsole)
 /*
   EVT_ERASE_BACKGROUND(    myTreeCtrl::OnEraseBackground)
   EVT_PAINT(               myTreeCtrl::OnPaint)
@@ -65,7 +67,7 @@ void myTreeCtrl::ShowMenu(wxTreeItemId id, const wxPoint& pt)
           menu.Append(wxID_ANY, comments);
         }
       }
-      //menu.Append(wxID_ABOUT, wxT("&About...")); //In MacOS wxID_ABOUT is special and not show about in menu when rightclick
+     menu.Append(wxID_ToConsole,wxT("Write in console"));
       wxMenuItem* item = menu.Append(wxID_myABOUT, wxT("&About..."));
       //Put a book icon in the &About item
       item->SetBitmap(wxArtProvider::GetIcon(wxART_HELP_BOOK, wxT("menu"), wxDefaultSize));
@@ -144,6 +146,11 @@ void myTreeCtrl::OnAbout(wxCommandEvent& event)
   msg.ShowModal();
 }
 
+void myTreeCtrl::ToConsole(wxCommandEvent& event)
+{
+  BasicVariable::ptr var(_currentmenu_var.lock());
+  GB_main_wxFrame->GetConsole()->IncCommand(var->Name());
+}
 
 
 /*

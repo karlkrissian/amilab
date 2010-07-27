@@ -1,0 +1,148 @@
+#
+# Script to compute probability of belonging to a structure
+# based on an intensity mapping of the local statistics
+# of the image intensity (local mean and local standard deviation)
+#
+
+func "Common/ScriptGui"
+
+if (!exists(itkCreateProbabilityClass)) {
+
+  ami_import->Filters()
+  ami_import->ITK()
+  
+  Class itkCreateProbabilityClass \
+  {
+    ::filters=&global::filters
+    ::itk=&global::itk
+    
+    #--------------------------
+    proc ::Init() \
+    {
+      ::input_name  = ""
+      ::localstats_winsize  = INT(1), "Win size to compute the mean"
+      
+      ::lsd_erosion         = 0, "Dilatation size to morphological greyscale erosion"
+
+      ::localmean_low       = 1050, "Local mean low"
+      ::localmean_high      = 1600, "Local mean max"
+      ::localmean_smoothing = 5, "Standard deviation to smooth the mapping"
+      ::localsd_high        = 30, "Standard deviation of the Gaussian kernel"
+      #::Gui()
+    }
+
+    #--------------------------
+    proc ::LoadInput() \
+    {
+      printn "evaluation of --> ::input <<="+::input_name+";"
+      eval "::input <<="+::input_name+";"
+      if (::input_name=="Image") {
+        ::input_name = "::input"
+        ::win.Update(-1)
+      }
+      ::win.Update(-1)
+      if (exists(::input_draw)) { del ::input_draw; }
+      show ::input
+    }
+
+    #--------------------------
+    proc ::Apply() \
+    {
+      #if (exists(::win)){
+        #::LoadInput()
+      #}
+
+      # compute local mean intensity
+      ::lm = ::itk->LocalMeanImageFilter3D(::input,::localstats_winsize)
+
+      # Create local mean intensity map
+      # will map intensity from 0 to 10000
+      imap = Image(FLOAT,10000,1,1)
+      imap = Xpos(imap)
+      imap = (imap>=::localmean_low)*(imap<=::localmean_high)
+      # smooth the mapping
+      imap = filter(imap,::localmean_smoothing,0,-1,-1)
+      # apply
+      ::lm_map = imap(::lm)
+
+      # Compute local standard deviations
+      ::lsd = localSD2(::input,::lm,::localstats_winsize)
+
+      if (::lsd_erosion>0.01) {
+        ::lsd = EDPerode(::lsd,::lsd_erosion,0.25)
+      }
+
+      # map with a "Gaussian"
+      ::lsd_map = exp(-(::lsd*::lsd)/ \
+                                (::localsd_high*::localsd_high))
+
+      # now combine both
+      ::prob = ::lm_map*::lsd_map
+      #eval "global::"+::prob+" = ::lm_map*::lsd_map;"
+
+    }
+    
+    proc ::set_input(IMAGE im) {
+      ::input <<= im
+    }
+
+    #--------------------------
+    
+    proc ::SetParentPanel(OBJECT pp) \
+    {
+      ::parent_panel = &pp
+    }
+    
+    proc ::Gui() \
+    {
+      import = &global::ami_import;
+      if (exists(::parent_panel)) {
+        ::win = import->ParamPanel("Local Stats",&::parent_panel)
+      } else {
+        ::win = import->ParamPanel("Local Stats")
+      }
+          
+      ::win.BeginBook()
+      
+        ::win.AddPage("Init")
+      
+          ::win.BeginBoxPanel("Input")
+            ::win.BeginHorizontal
+              ::win.AddImageChoice( &::input_name, "")
+              ::win.AddButton("Load",::LoadInput)
+            ::win.EndHorizontal
+          ::win.EndBoxPanel
+      
+        ::win.AddPage("Param")
+        
+          #::win.AddString( &::output_name,"Output")
+    
+          ::win.AddInt( &::localstats_winsize,  "Size", 1,10)
+
+          ::win.AddFloat( &::lsd_erosion,  "Erosion", 0,5)
+    
+          ::win.BeginBoxPanel("LM range")
+            ::win.AddFloat( &::localmean_low,  "MeanL", 0,3000)
+            ::win.AddFloat( &::localmean_high,  "MeanH", 0,3000)
+            ::win.AddFloat( &::localmean_smoothing,  "Smoothing", 0,100)
+          ::win.EndBoxPanel
+    
+          ::win.BeginBoxPanel("Standard Dev. Param.")
+            ::win.AddFloat( &::localsd_high,  "SD", 0,3000)
+          ::win.EndBoxPanel
+    
+          ::win.AddButton("Apply",::Apply)
+      ::win.EndBook
+
+      ::AddStandardButtons(&::win)
+
+      if (exists(::parent_panel)) {
+        ::win.ShowPanel()
+      } else {
+        ::win.Display()
+      }
+    }
+    ::Init()
+  } 
+} 
+# end if (!exists(CreateProbability)) 

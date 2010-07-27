@@ -4,5 +4,18 @@
 # Adding main Gui scripts to the menu
 #
 
-AddMenuScript("&Segmentation","&Level Set","Segmentation/LevelSets/LevelSetsGui1.amil")
-AddMenuScript("&Segmentation","&Watershed","Segmentation/WaterShed.amil")
+ami.MainFrame.AddToMenu("&Scripts","&Segmentation","&Level Set","Segmentation/LevelSets/LevelSetsGui.amil")
+
+proc AddSegMenu() {
+  for dir in  "itkWaterShed", "itkLevelSet", "itkFastMarching" \
+  {
+    if FileExists(GetScriptsDir+"/Segmentation/"+dir+"/Add2Menu.amil") {
+      func "/Segmentation/"+dir+"/Add2Menu.amil"
+    } else {
+      InfoDialog GetScriptsDir+"/Segmentation/"+dir+"/Add2Menu.amil does not exists"
+    }
+  }
+}
+
+AddSegMenu()
+del AddSegMenu

@@ -36,4 +36,8 @@ BasicVariable::ptr wrap_GetUserName(     ParamList* p);
 BasicVariable::ptr wrap_GetCurrentScriptDir( ParamList* p);
 BasicVariable::ptr wrap_GetCurrentFilename( ParamList* p);
 
+BasicVariable::ptr wrap_GetGlobalScriptDir( ParamList* p);
+BasicVariable::ptr wrap_SetGlobalScriptDir( ParamList* p);
+
+
 #endif // _wrapSystem_h_

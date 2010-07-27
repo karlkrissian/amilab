@@ -1,3 +1,32 @@
+/*
+    ==================================================
+    Software : AMILab
+    Authors  : Karl Krissian
+               Sara Arencibia
+    Email    : karl@bwh.harvard.edu
+               darkmind@gmail.com
+
+    AMILab is a language for image processing
+    ==================================================
+    Copyright (C) 1996-2005  Karl Krissian
+
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2.1 of the License, or (at your option) any later version.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+    ================================================== 
+   The full GNU Lesser General Public License file is in Devel/Sources/Prog/LesserGPL_license.txt
+*/
 
 #include "AMILabConfig.h"
 
@@ -11,13 +40,12 @@
 
 #include "wrapfunctions.hpp" 
 #include "wrapConversion.h"
+#include "wrapitkRecursiveGaussianImageFilter.h"
 
 
-InrImage* itkRecursiveGaussianImageFilter2D(ParamList* p)
+//---------------------------------------------------------------------------------
+InrImage* wrap_itkRecursiveGaussianImageFilter2D(ParamList* p)
 {
-  clock_t ITime = clock();
-
-#ifdef AMI_USE_ITK
 
   char functionname[] = "itkRecursiGaussianImageFilter2d";
   char description[]=" \n\
@@ -26,27 +54,30 @@ InrImage* itkRecursiveGaussianImageFilter2D(ParamList* p)
     
   char parameters[] =" \n\
           Parameters:\n\
-          input image \n\
-          sigma \n\
-          NormAcrossScale \n\
-          order \n\
+           - input image \n\
+           - sigma (def:1): Gaussian standard deviation.\n\
+           - NormAcrossScale: scale normalization.\n\
+           - order in X (def:0) order of the Gaussian derivative in X.\n\
+           - order in Y (def:0) order of the Gaussian derivative in Y.\n\
       ";
     
   InrImage* input = NULL;
-  float sigma = 0.01;
+  float sigma = 1;
   int N_A_S = 1;
-  int order = 0;
+  int order_x = 0;
+  int order_y = 0;
   InrImage* res = NULL;
   int n=0;
   
-  if (!get_val_ptr_param<InrImage>(  input,      p, n)) HelpAndReturnNULL;
-  if (!get_val_param<float>(  sigma,    p, n)) HelpAndReturnNULL;
-  if (!get_int_param(  N_A_S,      p, n)) HelpAndReturnNULL;
-  if (!get_int_param( order,   p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>( input, p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>       ( sigma, p, n)) HelpAndReturnNULL;
+  if (!get_val_param<int>         ( N_A_S, p, n)) HelpAndReturnNULL;
+  if (!get_val_param<int>         ( order_x, p, n)) HelpAndReturnNULL;
+  if (!get_val_param<int>         ( order_y, p, n)) HelpAndReturnNULL;
  
   typedef float               PixelType;
   const   unsigned int        Dimension = 2;
-  typedef itk::Image< PixelType, Dimension >    ImageType;
+  typedef itk::Image< PixelType, Dimension > ImageType;
   ImageType::RegionType region;
   ImageType::Pointer image;
   
@@ -67,32 +98,11 @@ InrImage* itkRecursiveGaussianImageFilter2D(ParamList* p)
     gaussianX->SetDirection(0);
     gaussianY->SetDirection(1);
     
-    switch(order){
-      case 0:
-        gaussianX->SetOrder(FilterType::ZeroOrder);
-        gaussianY->SetOrder(FilterType::ZeroOrder);
-        break;
-      case 1:
-        gaussianX->SetOrder(FilterType::FirstOrder);
-        gaussianY->SetOrder(FilterType::FirstOrder);
-        break;
-      case 2:
-        gaussianX->SetOrder(FilterType::SecondOrder);
-        gaussianY->SetOrder(FilterType::SecondOrder);
-        break;
-    }
+    gaussianX->SetOrder(FilterType::OrderEnumType(order_x));
+    gaussianY->SetOrder(FilterType::OrderEnumType(order_y));
     
-    if (N_A_S == 1)
-    {
-      gaussianX->SetNormalizeAcrossScale(true);
-      gaussianY->SetNormalizeAcrossScale(true);
-    }
-    
-    if (N_A_S == 0)
-    {
-      gaussianX->SetNormalizeAcrossScale(false);
-      gaussianY->SetNormalizeAcrossScale(false);
-    }
+    gaussianX->SetNormalizeAcrossScale(N_A_S);
+    gaussianY->SetNormalizeAcrossScale(N_A_S);
     
     gaussianX->SetInput( image );
     gaussianY->SetInput( gaussianX->GetOutput() );
@@ -115,54 +125,50 @@ InrImage* itkRecursiveGaussianImageFilter2D(ParamList* p)
   cout << "Converting back to InrImage " << endl;
 
   res = ITKToInr<PixelType,Dimension>(image, region);
-  clock_t FTime = clock();
-  float seg = (FTime - ITime) / CLOCKS_PER_SEC;
-//CLK_TCK;
-  
-  std::cout << "Time: " << seg << "seg" << std::endl;
+
   return res;
 
-#else
-  fprintf(stderr," ITK not available, you need to compile with ITK ...\n");
-  return NULL;
-#endif // AMI_USE_ITK
-} //itkRecursiveGaussianImageFilter2D
+} // wrap_itkRecursiveGaussianImageFilter2D
 
 
-InrImage* itkRecursiveGaussianImageFilter3D(ParamList* p)
+//---------------------------------------------------------------------------------
+InrImage* wrap_itkRecursiveGaussianImageFilter3D(ParamList* p)
 {
-  clock_t ITime = clock();
 
-#ifdef AMI_USE_ITK
-
-  char functionname[] = "itkRecursiGaussianImageFilter2d";
+  char functionname[] = "itkRecursiGaussianImageFilter3D";
   char description[]=" \n\
         Filter to compute IIR convolution with an approximation of a Gaussian kernel.\n\
       ";
     
   char parameters[] =" \n\
           Parameters:\n\
-          input image \n\
-          sigma \n\
-          NormAcrossScale \n\
-          order \n\
+           - input image \n\
+           - sigma (def:1): Gaussian standard deviation.\n\
+           - NormAcrossScale: scale normalization.\n\
+           - order in X (def:0) order of the Gaussian derivative in X.\n\
+           - order in Y (def:0) order of the Gaussian derivative in Y.\n\
+           - order in Z (def:0) order of the Gaussian derivative in Z.\n\
       ";
     
   InrImage* input = NULL;
   float sigma = 0.01;
   int N_A_S = 1;
-  int order = 0;
+  int order_x = 0;
+  int order_y = 0;
+  int order_z = 0;
   InrImage* res = NULL;
   int n=0;
   
-  if (!get_val_ptr_param<InrImage>(  input,      p, n)) HelpAndReturnNULL;
-  if (!get_val_param<float>(  sigma,    p, n)) HelpAndReturnNULL;
-  if (!get_int_param(  N_A_S,      p, n)) HelpAndReturnNULL;
-  if (!get_int_param( order,   p, n)) HelpAndReturnNULL;
+  if (!get_val_ptr_param<InrImage>( input, p, n)) HelpAndReturnNULL;
+  if (!get_val_param<float>       ( sigma, p, n)) HelpAndReturnNULL;
+  if (!get_val_param<int>         ( N_A_S, p, n)) HelpAndReturnNULL;
+  if (!get_val_param<int>         ( order_x, p, n)) HelpAndReturnNULL;
+  if (!get_val_param<int>         ( order_y, p, n)) HelpAndReturnNULL;
+  if (!get_val_param<int>         ( order_z, p, n)) HelpAndReturnNULL;
  
   typedef float               PixelType;
   const   unsigned int        Dimension = 3;
-  typedef itk::Image< PixelType, Dimension >    ImageType;
+  typedef itk::Image< PixelType, Dimension > ImageType;
   ImageType::RegionType region;
   ImageType::Pointer image;
   
@@ -185,46 +191,22 @@ InrImage* itkRecursiveGaussianImageFilter3D(ParamList* p)
     gaussianY->SetDirection(1);
     gaussianZ->SetDirection(2);
     
-    switch(order){
-      case 0:
-        gaussianX->SetOrder(FilterType::ZeroOrder);
-        gaussianY->SetOrder(FilterType::ZeroOrder);
-        gaussianZ->SetOrder(FilterType::ZeroOrder);
-        break;
-      case 1:
-        gaussianX->SetOrder(FilterType::FirstOrder);
-        gaussianY->SetOrder(FilterType::FirstOrder);
-        gaussianZ->SetOrder(FilterType::FirstOrder);
-        break;
-      case 2:
-        gaussianX->SetOrder(FilterType::SecondOrder);
-        gaussianY->SetOrder(FilterType::SecondOrder);
-        gaussianZ->SetOrder(FilterType::SecondOrder);
-        break;
-    }
-    
-    if (N_A_S == 1)
-    {
-      gaussianX->SetNormalizeAcrossScale(true);
-      gaussianY->SetNormalizeAcrossScale(true);
-      gaussianZ->SetNormalizeAcrossScale(true);
-    }
-    
-    if (N_A_S == 0)
-    {
-      gaussianX->SetNormalizeAcrossScale(false);
-      gaussianY->SetNormalizeAcrossScale(false);
-      gaussianZ->SetNormalizeAcrossScale(false);
-    }
-    
-    gaussianX->SetInput( image );
-    gaussianY->SetInput( gaussianX->GetOutput() );
-    gaussianZ->SetInput( gaussianY->GetOutput() );
+    gaussianX->SetOrder(FilterType::OrderEnumType(order_x));
+    gaussianY->SetOrder(FilterType::OrderEnumType(order_y));
+    gaussianZ->SetOrder(FilterType::OrderEnumType(order_z));
     
     gaussianX->SetSigma(sigma);
     gaussianY->SetSigma(sigma);
     gaussianZ->SetSigma(sigma);
+
+    gaussianX->SetNormalizeAcrossScale(N_A_S);
+    gaussianY->SetNormalizeAcrossScale(N_A_S);
+    gaussianZ->SetNormalizeAcrossScale(N_A_S);
     
+    gaussianX->SetInput( image );
+    gaussianY->SetInput( gaussianX->GetOutput() );
+    gaussianZ->SetInput( gaussianY->GetOutput() );
+        
     gaussianZ->Update();
     
     image = gaussianZ->GetOutput();
@@ -240,15 +222,7 @@ InrImage* itkRecursiveGaussianImageFilter3D(ParamList* p)
   cout << "Converting back to InrImage " << endl;
 
   res = ITKToInr<PixelType,Dimension>(image, region);
-  clock_t FTime = clock();
-  float seg = (FTime - ITime) / CLOCKS_PER_SEC;
-  //CLK_TCK;
-  
-  std::cout << "Time: " << seg << "seg" << std::endl;
+
   return res;
 
-#else
-  fprintf(stderr," ITK not available, you need to compile with ITK ...\n");
-  return NULL;
-#endif // AMI_USE_ITK
-} //itkRecursiveGaussianImageFilter3D
+} // wrap_itkRecursiveGaussianImageFilter3D

@@ -41,6 +41,8 @@ class WrapClass_wxDrawingWindow : public WrapClass_wxWindow
     ADD_CLASS_METHOD(SetYLimits,         "Sets the limits along Y axis.");
     ADD_CLASS_METHOD(SetCurve,           "Sets the curve to draw in the Main Frame based on the first line of the given image.");
     ADD_CLASS_METHOD(SetCurveProperties, "Sets the properties of the displayed curve: color, style, width.");
+    ADD_CLASS_METHOD(SetCurveDrawLines,  "Enable/Disable drawing of a curve lines.");
+    ADD_CLASS_METHOD(SetCurveDrawPoints,  "Enable/Disable drawing of a curve points.");
 
 
     void AddMethods(_parentclass_ptr& this_ptr )
@@ -53,6 +55,8 @@ class WrapClass_wxDrawingWindow : public WrapClass_wxWindow
       AddVar_SetYLimits(         this_ptr);
       AddVar_SetCurve(           this_ptr);
       AddVar_SetCurveProperties( this_ptr);
+      AddVar_SetCurveDrawLines(  this_ptr);
+      AddVar_SetCurveDrawPoints( this_ptr);
     }
 
 };

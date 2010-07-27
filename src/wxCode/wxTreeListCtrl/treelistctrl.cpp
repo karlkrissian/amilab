@@ -45,7 +45,7 @@
 #include <wx/apptrait.h>
 
 #ifdef __WXMAC__
-#include "wx/mac/private.h"
+//#include "wx/mac/private.h"
 #endif
 
 #include "treelistctrl.h"
@@ -1015,7 +1015,8 @@ void wxEditTextCtrl::EndEdit(bool isCancelled) {
 
 bool wxEditTextCtrl::Destroy() {
     Hide();
-    wxTheApp->GetTraits()->ScheduleForDestroy(this);
+    Destroy();
+    //wxTheApp->GetTraits()->ScheduleForDestroy(this);
     return true;
 }
 
@@ -1874,7 +1875,7 @@ bool wxTreeListMainWindow::Create (wxTreeListCtrl *parent,
                                    const wxString& name) {
 
 #ifdef __WXMAC__
-    if (style & wxTR_HAS_BUTTONS) style |= wxTR_MAC_BUTTONS;
+//    if (style & wxTR_HAS_BUTTONS) style |= wxTR_MAC_BUTTONS;
     if (style & wxTR_HAS_BUTTONS) style &= ~wxTR_HAS_BUTTONS;
     style &= ~wxTR_LINES_AT_ROOT;
     style |= wxTR_NO_LINES;
@@ -3640,7 +3641,8 @@ void wxTreeListMainWindow::OnChar (wxKeyEvent &event) {
         default:
             if (event.GetKeyCode() >= (int)' ') {
                 if (!m_findTimer->IsRunning()) m_findStr.Clear();
-                m_findStr.Append (event.GetKeyCode());
+                //m_findStr.Append (event.GetKeyCode());
+                m_findStr.Append (event.GetUnicodeKey());
                 m_findTimer->Start (FIND_TIMER_TICKS, wxTIMER_ONE_SHOT);
                 wxTreeItemId prev = m_curItem? (wxTreeItemId*)m_curItem: (wxTreeItemId*)NULL;
                 while (true) {

@@ -1,11 +1,11 @@
+func "Common/ScriptGui"
 
 if (!exists(Lines2D)) {
 
-Class Lines2D \
+Class Lines2D  : public ScriptGui \
 {
   proc ::Init() \
   {
-    ::class_name = "global::Lines2D"
     ::input_name   = "", "input image name"
     ::sigma_min = 0.6, "minimal scale"
     ::sigma_max = 4, "maximal scale"
@@ -76,27 +76,14 @@ Class Lines2D \
     show ::input
     if (exists(::lambda_max)) {
       show ::lambda_max
-      ::input_draw._compare(::lambda_max_draw)
+      ::lambda_max_draw.update()
+      ::input_draw._compare(&::lambda_max_draw)
     } else {
       InfoDialog "The algorithm has not been run yet ..."
     }
   }
 
 
-  #----------------------------
-  proc ::Close() {
-    ::win.HidePanel()
-    delvars GetObjectName(::Close)
-  }
-  Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-    
-  #----------------------------
-  proc ::CloseAll() {
-    eval  "if (exists(%1%)) { del %1%; };"  % ::class_name 
-    ::Close
-  }
-  Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
-      
 
 
   proc ::Gui() \
@@ -124,10 +111,7 @@ Class Lines2D \
         ::win.AddButton("Run",::Run)
         ::win.AddButton("Display",::Display)
     ::win.EndBook()
-      ::win.BeginHorizontal()
-      ::win.AddButton("Close",          ::Close)
-      ::win.AddButton("Close All",          ::CloseAll)
-    ::win.EndHorizontal()  
+    ::AddStandardButtons(&::win)
 
     ::win.Update(-1)
     ::win.Display()

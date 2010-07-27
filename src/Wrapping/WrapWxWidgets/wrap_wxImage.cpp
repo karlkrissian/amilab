@@ -37,9 +37,9 @@ AMIObject::ptr AddWrap_wxImage(  WrapClass_wxImage::ptr& objectptr)
 Variable<AMIObject>::ptr CreateVar_wxImage( wxImage* si)
 {
   // here wxImage can be deleted
-  boost::shared_ptr<wxImage> si_ptr( si );
+  boost::shared_ptr<wxImage> _si_ptr( si );
 
-  WrapClass_wxImage::ptr sip(new WrapClass_wxImage(si_ptr));
+  WrapClass_wxImage::ptr sip(new WrapClass_wxImage(_si_ptr));
   AMIObject::ptr amiobject(AddWrap_wxImage(sip));
 
   Variable<AMIObject>::ptr varres(

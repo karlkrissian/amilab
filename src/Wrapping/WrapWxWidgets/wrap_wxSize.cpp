@@ -41,9 +41,9 @@ AMIObject::ptr AddWrap_wxSize(  WrapClass_wxSize::ptr& objectptr)
 Variable<AMIObject>::ptr CreateVar_wxSize( wxSize* si)
 {
   // here wxSize can be deleted
-  boost::shared_ptr<wxSize> si_ptr( si );
+  boost::shared_ptr<wxSize> _si_ptr( si );
 
-  WrapClass_wxSize::ptr sip(new WrapClass_wxSize(si_ptr));
+  WrapClass_wxSize::ptr sip(new WrapClass_wxSize(_si_ptr));
   AMIObject::ptr amiobject(AddWrap_wxSize(sip));
 
   Variable<AMIObject>::ptr varres(

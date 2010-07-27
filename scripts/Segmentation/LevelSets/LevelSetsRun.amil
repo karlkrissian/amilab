@@ -1,0 +1,30 @@
+
+func "Segmentation/LevelSets/LevelSetsClass"
+
+LevelSetsClass lsobject
+if (argc==1) {
+  # start with one image
+  im     = Image $1
+  lsobject->input_name = "global::im"
+  lsobject->win.Update(-1)
+}
+
+if (argc==2) {
+  # start with an image and an initialization
+  im     = Image $1
+  initim = Image $2
+  lsobject->input_name   = "global::im"
+  lsobject->initial_name = "global::initim"
+  lsobject->win.Update(-1)
+}
+
+if (argc==3) {
+  # start with an image and an initialization and a threshold
+  im     = Image $1
+  initim = Image $2
+  th = atof($3)
+  initim = initim-th
+  lsobject->input_name   = "global::im"
+  lsobject->initial_name = "global::initim"
+  lsobject->win.Update(-1)
+} 

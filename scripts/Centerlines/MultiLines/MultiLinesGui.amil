@@ -1,0 +1,15 @@
+
+func "Centerlines/MultiLines/MultiLinesClass"
+
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(multilines)) {
+  MultiLinesClass multilines
+  multilines.Gui()
+  
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}
+

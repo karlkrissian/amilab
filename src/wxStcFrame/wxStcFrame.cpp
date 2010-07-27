@@ -605,7 +605,7 @@ void wxStcFrame::OnPrint (wxCommandEvent &WXUNUSED(event)) {
 // edit events with AuiNotebook
 void wxStcFrame::OnEdit (wxCommandEvent &event) {
   wxEditor* e = GetActiveEditor();
-  if (e) e->ProcessEvent (event);
+  if (e) e->GetEventHandler()->ProcessEvent (event);
 }
 
 //----------------------------------------------------------------------------

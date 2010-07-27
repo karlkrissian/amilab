@@ -408,7 +408,6 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_SetVerboseOn
 %token T_SetVerboseOff
 
-%token T_AddMenuScript
 %token T_SetProgress
 %token T_SetStatusText
 %token T_GetScriptsDir
@@ -1933,21 +1932,6 @@ command:
        **/
       driver.SetNoMessageDialog($2>0.5);
     }
-    |  T_AddMenuScript T_OP_PAR expr_string T_COMMA expr_string T_COMMA expr_string T_CL_PAR
-    {
-    /**
-      Description:
-        Adds a new link to a script from the menus
-      Parameters:
-        - string expression: category of the script
-        - string expression: menu label
-        - string expression: script name
-   **/
-          boost::shared_array<char> category( $3);
-          boost::shared_array<char> label(    $5);
-          boost::shared_array<char> script(   $7);
-          GB_main_wxFrame->AddMenuScript(category.get(),label.get(),script.get());
-    }
     |  T_SetProgress T_OP_PAR expr T_CL_PAR
     {
     /**
@@ -3384,6 +3368,27 @@ command:
           GET_VARSTACK_VALUE(InrImage, im);
           im->VectFixeValeurs($5,$7,$9);
         }
+        | var_image T_POINT SET T_OP_PAR expr T_COMMA expr  T_CL_PAR
+        {
+
+        /**
+        Parameters:
+          #1 expr:  field component
+          #2 expr:  image value
+
+        Description:
+        Set the current voxel (or pixel) 
+        to the specified value for the given component.
+        The position of the current voxel can be set
+        using 'setpos'.
+
+
+        See also:
+                setpos
+        **/
+          GET_VARSTACK_VALUE(InrImage, im);
+          im->VectFixeValeur($5,$7);
+        }
         | var_image T_POINT SETPOS T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
         /**
@@ -4254,10 +4259,12 @@ command:
           sdraw->Update();
           //sdraw->Raise();
           // process all pending events ...
+		  /*
           while (GB_wxApp->Pending()) {
             if (GB_verbose) printf("Dispatching event on GB_wxApp \n");
             GB_wxApp->Dispatch();
           }
+		  * /
         }
         | VAR_SURFDRAW T_POINT T_SetLightAmbient T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
@@ -10872,7 +10879,7 @@ image_extent:
       driver.var_stack.AddVar(res);
     }
     |
-    T_COLON  T_COMMA T_COLON  T_COMMA expr T_COLON expr
+    T_COLON  T_COMMA T_COLON  T_COMMA primary_var T_COLON primary_var
     {
       #ifdef min
         #undef min
@@ -10880,11 +10887,14 @@ image_extent:
       #ifdef max
         #undef max
       #endif
+      GET_VARSTACK_VALUE(float,zmax)
+      GET_VARSTACK_VALUE(float,zmin)
+
       float float_max = std::numeric_limits<float>::max();
       ImageExtent<float>* extent=new ImageExtent<float>(
           -float_max,float_max,
           -float_max,float_max,
-          (float)$5,(float)$7);
+          *zmin,*zmax);
       extent->SetMode(1); // relative
       BasicVariable::ptr res(CreateVar_ImageExtent(extent));
       driver.var_stack.AddVar(res);

@@ -40,12 +40,12 @@ AMIObject::ptr AddWrap_wxSizerItem(  WrapClass_wxSizerItem::ptr& objectptr)
 Variable<AMIObject>::ptr CreateVar_wxSizerItem( wxSizerItem* si)
 {
 
-  boost::shared_ptr<wxSizerItem> si_ptr( si,
+  boost::shared_ptr<wxSizerItem> _si_ptr( si,
       // deletion will be done by wxwidgets
       wxwindow_nodeleter<wxSizerItem>() 
     );
 
-  WrapClass_wxSizerItem::ptr sip(new WrapClass_wxSizerItem(si_ptr));
+  WrapClass_wxSizerItem::ptr sip(new WrapClass_wxSizerItem(_si_ptr));
   AMIObject::ptr amiobject(AddWrap_wxSizerItem(sip));
 
   Variable<AMIObject>::ptr varres(

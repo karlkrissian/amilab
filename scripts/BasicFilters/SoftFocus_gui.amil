@@ -45,8 +45,8 @@ if (!exists(SoftFocus)) {
                         0,0,0)
       } else {
         for n=0 to ::input.vdim-1 {
-          ::res.SetComponent( n, filter( ::input[n],::sigma,\)
-                              0,0,0)
+          ::res.SetComponent( n, filter( ::input[n],::sigma, \
+                              0,0,0))
         }
       }
       # now ::res is the smoothed image, combine the images
@@ -65,7 +65,7 @@ if (!exists(SoftFocus)) {
       show ::input
       if (exists(::res)) {
         show ::res
-        ::input_draw._compare(::res)
+        ::input_draw._compare(&::res_draw)
       }
     }
     

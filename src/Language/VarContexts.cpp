@@ -62,7 +62,7 @@ void VarContexts::EmptyVariables() {
 }
 
 //--------------------------------------------------
-bool VarContexts::NewContext(const char* name) {
+Variables::ptr VarContexts::NewContext(const char* name) {
 
   Variables::ptr newcontext = Variables::ptr(new Variables());
   newcontext->SetName(name);
@@ -71,7 +71,7 @@ bool VarContexts::NewContext(const char* name) {
   if (GB_debug) 
     cerr << "New context " << name << endl;
 
-  return true;
+  return newcontext;
 }
 
 //--------------------------------------------------
@@ -83,6 +83,8 @@ bool VarContexts::DeleteLastContext() {
     //Variables::ptr last_context = _context.back();
     //last_context->EmptyVariables();
     // delete last_context;
+    // need to empty the variables first !!! because they contain a smart pointer to their own context ...
+    _context[_context.size()-1]->EmptyVariables();
     _context.pop_back();
     SetLastContext();
     return true;

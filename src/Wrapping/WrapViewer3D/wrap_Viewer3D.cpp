@@ -37,6 +37,8 @@
 #include "MainFrame.h"
 #include "CallBackAMIFunction.h"
 
+#include <wx/string.h>
+
 extern yyip::Driver GB_driver;
 extern MainFrame* GB_main_wxFrame;
 extern wxApp* GB_wxApp;
@@ -88,7 +90,7 @@ BasicVariable::ptr wrap_Viewer3D::CallMember( ParamList* p)
   //if (!get_var_param<string>(sTitle,p,n)) ClassHelpAndReturn;
   GET_PARAM(string,sTitle,"Viewer 3D");
 
-  Viewer3D* oViewer3D = new Viewer3D(GB_main_wxFrame, sTitle);
+  Viewer3D* oViewer3D = new Viewer3D(GB_main_wxFrame, wxString(sTitle.c_str(), wxConvUTF8));
 
   BasicVariable::ptr res = CreateVar_Viewer3D(oViewer3D);
 
@@ -605,11 +607,13 @@ BasicVariable::ptr WrapClass_Viewer3D::
   sdraw->Update();
   //sdraw->Raise();
   // process all pending events ...
+#ifdef WIN32
+  // TODO: fix this problem, not working on windows ...
   while (GB_wxApp->Pending()) {
     if (GB_verbose) printf("Dispatching event on GB_wxApp \n");
     GB_wxApp->Dispatch();
   }
-
+#endif
   return BasicVariable::ptr();
 }
 

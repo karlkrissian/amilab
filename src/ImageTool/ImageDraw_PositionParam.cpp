@@ -11,7 +11,7 @@
 
 
 //----------------------------------------------------
-ImageDraw_PositionParam::ImageDraw_PositionParam (DessinImage* parent): ParamPanel(parent, "Position")
+ImageDraw_PositionParam::ImageDraw_PositionParam (DessinImage* parent): ParamPanel(parent, "Pos.")
 {
   parent_class = parent;
   CreateParameters();

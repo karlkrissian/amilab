@@ -1,0 +1,180 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<!--Converted with LaTeX2HTML 2002-2-1 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Detailed Description</TITLE>
+<META NAME="description" CONTENT="Detailed Description">
+<META NAME="keywords" CONTENT="itkVesselness">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2002-2-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="itkVesselness.css">
+
+<LINK REL="next" HREF="node3.html">
+<LINK REL="previous" HREF="node1.html">
+<LINK REL="up" HREF="itkVesselness.html">
+<LINK REL="next" HREF="node3.html">
+</HEAD>
+
+<BODY >
+<!--Navigation Panel-->
+<A NAME="tex2html32"
+  HREF="node3.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html30"
+  HREF="itkVesselness.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html24"
+  HREF="node1.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html33"
+  HREF="node3.html">Interface tabs</A>
+<B> Up:</B> <A NAME="tex2html31"
+  HREF="itkVesselness.html">ITK Vesselness Gui</A>
+<B> Previous:</B> <A NAME="tex2html25"
+  HREF="node1.html">Quick Start</A>
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<H1><A NAME="SECTION00020000000000000000">
+Detailed Description</A>
+</H1>
+Line filter to provide a vesselness measure for tubular objects from the hessian matrix. The filter takes as input an image of hessian pixels (SymmetricSecondRankTensor pixels) and preserves pixels that have eigen values <IMG
+ WIDTH="21" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img1.png"
+ ALT="$ \lambda_3 $"> close to 0 and <IMG
+ WIDTH="21" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img2.png"
+ ALT="$\lambda_2$"> and <IMG
+ WIDTH="21" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img3.png"
+ ALT="$\lambda_1$"> as large negative values. (for bright tubular structures).
+
+<P>
+<BR><P></P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ \begin{displaymath}
+\lambda_1 < \lambda_2 < \lambda_3
+\end{displaymath}
+ -->
+
+<IMG
+ WIDTH="90" HEIGHT="26" BORDER="0"
+ SRC="img4.png"
+ ALT="\begin{displaymath}\lambda_1 &lt; \lambda_2 &lt; \lambda_3 \end{displaymath}">
+</DIV>
+<BR CLEAR="ALL">
+<P></P>
+
+<P>
+The filter takes into account that the eigen values play a crucial role in discrimintaitng shape and orientation of structures.
+
+<P>
+* Bright tubular structures will have low <IMG
+ WIDTH="21" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img3.png"
+ ALT="$\lambda_1$"> and large negative values of <IMG
+ WIDTH="21" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img2.png"
+ ALT="$\lambda_2$"> and <IMG
+ WIDTH="21" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img1.png"
+ ALT="$ \lambda_3 $">.
+    * Conversely dark tubular structures will have a low value of <IMG
+ WIDTH="21" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img3.png"
+ ALT="$\lambda_1$"> and large positive values of <IMG
+ WIDTH="21" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img2.png"
+ ALT="$\lambda_2$"> and <IMG
+ WIDTH="21" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img1.png"
+ ALT="$ \lambda_3 $">.
+    * Bright plate like structures have low values of <IMG
+ WIDTH="21" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img3.png"
+ ALT="$\lambda_1$"> and <IMG
+ WIDTH="21" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img2.png"
+ ALT="$\lambda_2$"> and large negative values of <IMG
+ WIDTH="21" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img1.png"
+ ALT="$ \lambda_3 $">
+    * Dark plate like structures have low values of <IMG
+ WIDTH="21" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img3.png"
+ ALT="$\lambda_1$"> and <IMG
+ WIDTH="21" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img2.png"
+ ALT="$\lambda_2$"> and large positive values of <IMG
+ WIDTH="21" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img1.png"
+ ALT="$ \lambda_3 $">
+    * Bright spherical (blob) like structures have all three eigen values as large negative numbers
+    * Dark spherical (blob) like structures have all three eigen values as large positive numbers
+
+<P>
+This filter is used to discriminate the Bright tubular structures.
+
+<P>
+A filter to enhance structures using Hessian eigensystem-based measures in a multiscale framework.
+
+<P>
+The filter evaluates a Hessian-based enhancement measure, such as vesselness or objectness, at different scale levels. The Hessian-based measure is computed from the Hessian image at each scale level and the best response is selected.
+
+<P>
+Minimum and maximum sigma value can be set using SetMinSigma and SetMaxSigma methods respectively. The number of scale levels is set using SetNumberOfSigmaSteps method. Exponentially distributed scale levels are computed within the bound set by the minimum and maximum sigma values
+
+<P>
+The filter computes a second output image (accessed by the GetScalesOutput method) containing the scales at which each pixel gave the best reponse.
+
+<P>
+A filter to enhance M-dimensional objects in N-dimensional images.
+
+<P>
+The objectness measure is a generalization of Frangi's vesselness measure, which is based on the analysis of the the Hessian eigen system. The filter can enhance blob-like structures (M=0), vessel-like structures (M=1), 2D plate-like structures (M=2), hyper-plate-like structures (M=3) in N-dimensional images, with M&lt;N. The filter takes an image of a Hessian pixels ( SymmetricSecondRankTensor pixels pixels ) and produces an enhanced image. The Hessian input image can be produced using itkHessianSmoothedRecursiveGaussianImageFilter.
+
+<P>
+<HR>
+<!--Navigation Panel-->
+<A NAME="tex2html32"
+  HREF="node3.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html30"
+  HREF="itkVesselness.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html24"
+  HREF="node1.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html33"
+  HREF="node3.html">Interface tabs</A>
+<B> Up:</B> <A NAME="tex2html31"
+  HREF="itkVesselness.html">ITK Vesselness Gui</A>
+<B> Previous:</B> <A NAME="tex2html25"
+  HREF="node1.html">Quick Start</A>
+<!--End of Navigation Panel-->
+<ADDRESS>
+sara
+2010-06-02
+</ADDRESS>
+</BODY>
+</HTML>

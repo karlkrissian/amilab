@@ -435,7 +435,7 @@ void CreateMIP(InrImage::ptr im,
   #else
     PFNGLBLENDEQUATIONPROC glBlendEquation;
     glBlendEquation = (PFNGLBLENDEQUATIONPROC) wglGetProcAddress("glBlendEquation");
-    glBlendEquation ( GL_MAX );
+    if (glBlendEquation) glBlendEquation ( GL_MAX );
   #endif
 
   glDisable ( GL_LIGHTING );

@@ -43,7 +43,7 @@ bool get_var_param( boost::shared_ptr<Variable<T> >& var,
     }
     // check that the variable is not just local
     int var_count = var->Pointer().use_count();
-    if (var_count==1) {
+    if (var_count<=1) {
       FILE_ERROR(boost::format("Parameter %1% is not passed as a reference ... (%2%)")%num%var->Name());
       return false;
     }

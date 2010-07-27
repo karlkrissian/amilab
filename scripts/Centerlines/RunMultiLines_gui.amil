@@ -114,7 +114,7 @@ proc RML_CB_Display() {
   global_new
   show RML_input
   if (exists(RML_result)) {
-    RML_input_draw._compare(RML_result)
+    RML_input_draw._compare(&RML_result)
   }
   if (exists(RML_ROI_contour)) {
     RML_input_draw.SetIsoContour(0,RML_ROI_contour,0.5)
@@ -132,7 +132,7 @@ proc RML_gui() {
   global_new
 
   RML_import = &global::ami_import;
-win = import->ParamPanel("Vesselness")
+  win = import->ParamPanel("Vesselness")
 
   RML_win.BeginPanel("Parameters")
     # set the input image

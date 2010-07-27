@@ -82,18 +82,36 @@ void wxDrawingWindow::Window2World(  wxCoord wx, wxCoord wy, double& x, double& 
 }
 
 //------------------------------------------------
+void wxDrawingWindow::AddImageToCurve( InrImage* im, dw_Curve& c)
+{
+  double x1,y1;
+  if (im->GetVDim()==1) {
+    // Go through the points and add them to the curve
+    for(int x=0;x<im->DimX();x++) {
+      x1 = im->SpacePosX(x);
+      y1 = (*im)(x,0,0);
+      c.AddPoint(dw_Point2D(x1,y1));
+    }
+  }
+
+  if (im->GetVDim()==2) {
+    // Go through the points and add them to the curve
+    for(int x=0;x<im->DimX();x++) {
+      x1 = (*im)(x,0,0.0);
+      y1 = (*im)(x,0,0,1);
+      c.AddPoint(dw_Point2D(x1,y1));
+    }
+  }
+
+}
+
+//------------------------------------------------
 void wxDrawingWindow::AddCurve( InrImage* im)
 {
   // new curve
   dw_Curve c;
 
-  double x1,y1;
-  // Go through the points and add them to the curve
-  for(int x=0;x<im->DimX();x++) {
-    x1 = im->SpacePosX(x);
-    y1 = (*im)(x,0,0);
-    c.AddPoint(dw_Point2D(x1,y1));
-  }
+  AddImageToCurve(im,c);
 
   // Add the curve
   _curves.push_back(c);
@@ -107,13 +125,7 @@ bool wxDrawingWindow::SetCurve( int i, InrImage* im)
     // new curve
     dw_Curve c;
   
-    double x1,y1;
-    // Go through the points and add them to the curve
-    for(int x=0;x<im->DimX();x++) {
-      x1 = im->SpacePosX(x);
-      y1 = (*im)(x,0,0);
-      c.AddPoint(dw_Point2D(x1,y1));
-    }
+    AddImageToCurve(im,c);
     _curves[i].GetPoints() = c.GetPoints();
   } else {
     CLASS_ERROR("Wrong curve number");
@@ -142,6 +154,22 @@ void wxDrawingWindow::SetControl( int i, const dw_Point2D& pt)
   }
 }
 
+
+//------------------------------------------------
+void wxDrawingWindow::SetCurveDrawPoints( int i, bool dp)
+{
+  if ((i>=0)&&(i<_curves.size())) {
+    _curves[i].SetDrawPoints(dp);
+  }
+}
+
+//------------------------------------------------
+void wxDrawingWindow::SetCurveDrawLines( int i, bool dp)
+{
+  if ((i>=0)&&(i<_curves.size())) {
+    _curves[i].SetDrawLines(dp);
+  }
+}
 
 //------------------------------------------------
 void wxDrawingWindow::SetCurveColor( int i, std::string color_string)
@@ -175,14 +203,16 @@ void wxDrawingWindow::DrawCurve(int i, wxDC& dc )
   std::vector<dw_Point2D>::iterator it;
   wxCoord x1,y1,x2,y2;
 
-  
   for(it=_points.begin();it!=_points.end();it++)
   {
     // draw line from previous to current point
     World2Window(it->GetX(),it->GetY(),x2,y2);
-    if (it!=_points.begin()) {
-      DrawLine(dc,x1,y1,x2,y2);
-    }
+    if (_curves[i].GetDrawLines())
+      if (it!=_points.begin()) {
+        DrawLine(dc,x1,y1,x2,y2);
+      }
+    if (_curves[i].GetDrawPoints())
+      DrawPoint(dc,x1,y1);
     x1 = x2;
     y1 = y2;
   }

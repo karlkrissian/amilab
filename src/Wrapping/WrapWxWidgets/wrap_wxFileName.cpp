@@ -26,6 +26,8 @@
   if (!get_val_smtptr_param<type>( varname, p, n)) \
     ClassHelpAndReturn;
 
+#define SIZE_BUFFER 2040
+
 #include <wx/string.h>
 #include "driver.h"
 #include "MainFrame.h"
@@ -96,15 +98,15 @@ BasicVariable::ptr wrap_wxFileName::CallMember( ParamList* p)
     case 1: { //Mode 1
       GET_PARAM(string,sFullpath,"");
 
-      owxFileName = new wxFileName(wxString(sFullpath.c_str()));
+      owxFileName = new wxFileName(wxString(sFullpath.c_str(), wxConvUTF8));
       break;
     }
     case 2: { //Mode 2
       GET_PARAM(string,sPath,"");
       GET_PARAM(string,sName,"");
 
-      owxFileName = new wxFileName(wxString(sPath.c_str()),
-                                  wxString(sName.c_str()));
+      owxFileName = new wxFileName(wxString(sPath.c_str(), wxConvUTF8),
+                                   wxString(sName.c_str(), wxConvUTF8));
       break;
     }
     case 3: { //Mode 3
@@ -112,9 +114,9 @@ BasicVariable::ptr wrap_wxFileName::CallMember( ParamList* p)
       GET_PARAM(string,sName,"");
       GET_PARAM(string,sExt,"");
 
-      owxFileName = new wxFileName(wxString(sPath.c_str()),
-                                   wxString(sName.c_str()),
-                                   wxString(sExt.c_str()));
+      owxFileName = new wxFileName(wxString(sPath.c_str(), wxConvUTF8),
+                                   wxString(sName.c_str(), wxConvUTF8),
+                                   wxString(sExt.c_str(),  wxConvUTF8));
       break;
     }
     case 4: { //Mode 4
@@ -123,10 +125,10 @@ BasicVariable::ptr wrap_wxFileName::CallMember( ParamList* p)
       GET_PARAM(string,sName,"");
       GET_PARAM(string,sExt,"");
 
-      owxFileName = new wxFileName(wxString(sVolume.c_str()),
-                                   wxString(sPath.c_str()),
-                                   wxString(sName.c_str()),
-                                   wxString(sExt.c_str()));
+      owxFileName = new wxFileName(wxString(sVolume.c_str(), wxConvUTF8),
+                                   wxString(sPath.c_str(), wxConvUTF8),
+                                   wxString(sName.c_str(), wxConvUTF8),
+                                   wxString(sExt.c_str(), wxConvUTF8));
       break;
     }
   }
@@ -169,15 +171,15 @@ BasicVariable::ptr WrapClass_wxFileName::
     case 1: { //Mode 1
       GET_PARAM(string,sFullpath,"");
 
-      owxFileName->Assign(wxString(sFullpath.c_str()));
+      owxFileName->Assign(wxString(sFullpath.c_str(), wxConvUTF8));
       break;
     }
     case 2: { //Mode 2
       GET_PARAM(string,sPath,"");
       GET_PARAM(string,sName,"");
 
-      owxFileName->Assign(wxString(sPath.c_str()),
-                          wxString(sName.c_str()));
+      owxFileName->Assign(wxString(sPath.c_str(), wxConvUTF8),
+                          wxString(sName.c_str(), wxConvUTF8));
       break;
     }
     case 3: { //Mode 3
@@ -185,9 +187,9 @@ BasicVariable::ptr WrapClass_wxFileName::
       GET_PARAM(string,sName,"");
       GET_PARAM(string,sExt,"");
 
-      owxFileName->Assign(wxString(sPath.c_str()),
-                          wxString(sName.c_str()),
-                          wxString(sExt.c_str()));
+      owxFileName->Assign(wxString(sPath.c_str(), wxConvUTF8),
+                          wxString(sName.c_str(), wxConvUTF8),
+                          wxString(sExt.c_str(),  wxConvUTF8));
       break;
     }
     case 4: { //Mode 4
@@ -196,10 +198,10 @@ BasicVariable::ptr WrapClass_wxFileName::
       GET_PARAM(string,sName,"");
       GET_PARAM(string,sExt,"");
 
-      owxFileName->Assign(wxString(sVolume.c_str()),
-                          wxString(sPath.c_str()),
-                          wxString(sName.c_str()),
-                          wxString(sExt.c_str()));
+      owxFileName->Assign(wxString(sVolume.c_str(), wxConvUTF8),
+                          wxString(sPath.c_str(), wxConvUTF8),
+                          wxString(sName.c_str(), wxConvUTF8),
+                          wxString(sExt.c_str(),  wxConvUTF8));
       break;
     }
   }
@@ -226,7 +228,7 @@ BasicVariable::ptr WrapClass_wxFileName::
   if (!p) ClassHelpAndReturn;
   GET_PARAM(string,sVolume,"");
 
-  owxFileName->AssignCwd(wxString(sVolume.c_str()));
+  owxFileName->AssignCwd(wxString(sVolume.c_str(), wxConvUTF8));
 
   return BasicVariable::ptr();
 }
@@ -251,7 +253,7 @@ BasicVariable::ptr WrapClass_wxFileName::
   GET_PARAM(string,sDir,"");
 
   if (sDir != "")
-    owxFileName->AssignDir(wxString(sDir.c_str()));
+    owxFileName->AssignDir(wxString(sDir.c_str(), wxConvUTF8));
   else
     ClassHelpAndReturn;
 
@@ -289,7 +291,11 @@ BasicVariable::ptr WrapClass_wxFileName::
 {
   boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
-  string sVal = owxFileName->GetHomeDir().c_str();
+  char buffer[SIZE_BUFFER];
+  strcpy( buffer, (const char*)owxFileName->GetHomeDir().mb_str(wxConvUTF8) );
+  string sVal = buffer;
+
+//  string sVal = owxFileName->GetHomeDir().mb_str(wxConvUTF8);
 
   RETURN_VAR(string,sVal);
 }
@@ -313,7 +319,7 @@ BasicVariable::ptr WrapClass_wxFileName::
   GET_PARAM(string,sDir,"");
 
   if(sDir != "")
-    owxFileName->AppendDir(wxString(sDir.c_str()));
+    owxFileName->AppendDir(wxString(sDir.c_str(), wxConvUTF8));
   else
     ClassHelpAndReturn;
 
@@ -339,7 +345,7 @@ BasicVariable::ptr WrapClass_wxFileName::
   GET_PARAM(string,sVolume,"");
 
   if(sVolume != "")
-    owxFileName->SetVolume(wxString(sVolume.c_str()));
+    owxFileName->SetVolume(wxString(sVolume.c_str(), wxConvUTF8));
   else
     ClassHelpAndReturn;
 
@@ -365,7 +371,7 @@ BasicVariable::ptr WrapClass_wxFileName::
   GET_PARAM(string,sName,"");
 
   if(sName != "")
-    owxFileName->SetName(wxString(sName.c_str()));
+    owxFileName->SetName(wxString(sName.c_str(), wxConvUTF8));
   else
     ClassHelpAndReturn;
 
@@ -391,7 +397,7 @@ BasicVariable::ptr WrapClass_wxFileName::
   GET_PARAM(string,sExtension,"");
 
   if(sExtension != "")
-    owxFileName->SetExt(wxString(sExtension.c_str()));
+    owxFileName->SetExt(wxString(sExtension.c_str(), wxConvUTF8));
   else
     ClassHelpAndReturn;
 
@@ -434,7 +440,7 @@ BasicVariable::ptr WrapClass_wxFileName::
   GET_PARAM(string,sFullName,"");
 
   if(sFullName != "")
-    owxFileName->SetFullName(wxString(sFullName.c_str()));
+    owxFileName->SetFullName(wxString(sFullName.c_str(), wxConvUTF8));
   else
     ClassHelpAndReturn;
 
@@ -460,7 +466,7 @@ BasicVariable::ptr WrapClass_wxFileName::
   GET_PARAM(string,sDir,"");
 
   if(sDir != "")
-    owxFileName->SetCwd(wxString(sDir.c_str()));
+    owxFileName->SetCwd(wxString(sDir.c_str(), wxConvUTF8));
   else
     ClassHelpAndReturn;
 
@@ -481,7 +487,11 @@ BasicVariable::ptr WrapClass_wxFileName::
 {
   boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
-  string sVal = owxFileName->GetVolume().c_str();
+  char buffer[SIZE_BUFFER];
+  strcpy( buffer, (const char*)owxFileName->GetVolume().mb_str(wxConvUTF8) );
+  string sVal = buffer;
+
+  //string sVal = owxFileName->GetVolume().c_str();
 
   RETURN_VAR(string,sVal);
 }
@@ -500,7 +510,11 @@ BasicVariable::ptr WrapClass_wxFileName::
 {
   boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
-  string sVal = owxFileName->GetName().c_str();
+  char buffer[SIZE_BUFFER];
+  strcpy( buffer, (const char*)owxFileName->GetName().mb_str(wxConvUTF8) );
+  string sVal = buffer;
+
+//  string sVal = owxFileName->GetName().c_str();
 
   RETURN_VAR(string,sVal);
 }
@@ -519,7 +533,11 @@ BasicVariable::ptr WrapClass_wxFileName::
 {
   boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
-  string sVal = owxFileName->GetExt().c_str();
+  char buffer[SIZE_BUFFER];
+  strcpy( buffer, (const char*)owxFileName->GetExt().mb_str(wxConvUTF8) );
+  string sVal = buffer;
+
+//  string sVal = owxFileName->GetExt().c_str();
 
   RETURN_VAR(string,sVal);
 }
@@ -538,7 +556,10 @@ BasicVariable::ptr WrapClass_wxFileName::
 {
   boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
-  string sVal = owxFileName->GetPath().c_str();
+  char buffer[SIZE_BUFFER];
+  strcpy( buffer, (const char*)owxFileName->GetPath().mb_str(wxConvUTF8) );
+  string sVal = buffer;
+//  string sVal = owxFileName->GetPath().c_str();
 
   RETURN_VAR(string,sVal);
 }
@@ -557,7 +578,10 @@ BasicVariable::ptr WrapClass_wxFileName::
 {
   boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
-  string sVal = owxFileName->GetFullName().c_str();
+  char buffer[SIZE_BUFFER];
+  strcpy( buffer, (const char*)owxFileName->GetFullName().mb_str(wxConvUTF8) );
+  string sVal = buffer;
+//  string sVal = owxFileName->GetFullName().c_str();
 
   RETURN_VAR(string,sVal);
 }
@@ -576,7 +600,10 @@ BasicVariable::ptr WrapClass_wxFileName::
 {
   boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
-  string sVal = owxFileName->GetFullPath().c_str();
+  char buffer[SIZE_BUFFER];
+  strcpy( buffer, (const char*)owxFileName->GetFullPath().mb_str(wxConvUTF8) );
+  string sVal = buffer;
+//  string sVal = owxFileName->GetFullPath().c_str();
 
   RETURN_VAR(string,sVal);
 }
@@ -595,7 +622,10 @@ BasicVariable::ptr WrapClass_wxFileName::
 {
   boost::shared_ptr<wxFileName> owxFileName(this->_objectptr->GetObj());
 
-  string sVal = owxFileName->GetCwd().c_str();
+  char buffer[SIZE_BUFFER];
+  strcpy( buffer, (const char*)owxFileName->GetCwd().mb_str(wxConvUTF8) );
+  string sVal = buffer;
+//  string sVal = owxFileName->GetCwd().c_str();
 
   RETURN_VAR(string,sVal);
 }
@@ -688,7 +718,7 @@ BasicVariable::ptr WrapClass_wxFileName::
       GET_PARAM(string,sName,"");
       GET_PARAM(int,iPerm,0777);
       if (sName != "")
-        res = (unsigned char) owxFileName->Mkdir(wxString(sName.c_str()), iPerm);
+        res = (unsigned char) owxFileName->Mkdir(wxString(sName.c_str(), wxConvUTF8), iPerm);
       else
         ClassHelpAndReturn;
     }
@@ -723,7 +753,7 @@ BasicVariable::ptr WrapClass_wxFileName::
     GET_PARAM(string,sDir,"");
 
     if(sDir != "")
-      res = (unsigned char) owxFileName->Rmdir(wxString(sDir.c_str()));
+      res = (unsigned char) owxFileName->Rmdir(wxString(sDir.c_str(), wxConvUTF8));
     else
       ClassHelpAndReturn;
   }
@@ -905,7 +935,7 @@ BasicVariable::ptr WrapClass_wxFileName::
     GET_PARAM(string,sDir,"");
 
     if(sDir != "")
-      res = (unsigned char) owxFileName->DirExists(wxString(sDir.c_str()));
+      res = (unsigned char) owxFileName->DirExists(wxString(sDir.c_str(), wxConvUTF8));
     else
       ClassHelpAndReturn;
   }
@@ -977,7 +1007,7 @@ BasicVariable::ptr WrapClass_wxFileName::
     GET_PARAM(string,sDir,"");
 
     if(sDir != "")
-      res = (unsigned char) owxFileName->IsDirReadable(wxString(sDir.c_str()));
+      res = (unsigned char) owxFileName->IsDirReadable(wxString(sDir.c_str(), wxConvUTF8));
     else
       ClassHelpAndReturn;
   }
@@ -1011,7 +1041,7 @@ BasicVariable::ptr WrapClass_wxFileName::
     GET_PARAM(string,sDir,"");
 
     if(sDir != "")
-      res = (unsigned char) owxFileName->IsDirWritable(wxString(sDir.c_str()));
+      res = (unsigned char) owxFileName->IsDirWritable(wxString(sDir.c_str(), wxConvUTF8));
     else
       ClassHelpAndReturn;
   }

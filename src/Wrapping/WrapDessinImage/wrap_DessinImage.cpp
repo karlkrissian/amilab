@@ -23,16 +23,6 @@
 #include "Func_ReadCTALine.h"
 #include "fonctions.h"
 
-#define GET_PARAM(type,varname,defaultval) \
-  type varname = defaultval; \
-  if (!get_val_param<type>( varname, p, n)) \
-    ClassHelpAndReturn;
-
-#define GET_SMTPTR_PARAM(type,varname) \
-  boost::shared_ptr<type> varname; \
-  if (!get_val_smtptr_param<type>( varname, p, n)) \
-    ClassHelpAndReturn;
-
 #include "driver.h"
 #include "MainFrame.h"
 #include "CallBackAMIFunction.h"
@@ -57,12 +47,12 @@ AMIObject::ptr AddWrap_DessinImage(  WrapClass_DessinImage::ptr& objectptr)
 }
 
 //----------------------------------------------------------
-Variable<AMIObject>::ptr CreateVar_DessinImage( DessinImage* si)
+Variable<AMIObject>::ptr CreateVar_DessinImage( DessinImage* _si)
 {
   // Create smart pointer with own deleter
-  DessinImage::ptr si_ptr = DessinImage::Create_ptr(si);
+  DessinImage::ptr _si_ptr = DessinImage::Create_ptr(_si);
 
-  WrapClass_DessinImage::ptr sip(new WrapClass_DessinImage(si_ptr));
+  WrapClass_DessinImage::ptr sip(new WrapClass_DessinImage(_si_ptr));
   AMIObject::ptr amiobject(AddWrap_DessinImage(sip));
   Variable<AMIObject>::ptr varres(
       new Variable<AMIObject>( amiobject));

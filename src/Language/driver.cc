@@ -213,6 +213,9 @@ void Driver::yyip_instanciate_object( const AMIClass::ptr& oclass,
   string_ptr classfname(new string(oclass->GetFileName()));
   object->GetContext()->AddVar<string>("classfilename",classfname,object->GetContext());
 
+  string_ptr objfname(new string(this->current_file));
+  object->GetContext()->AddVar<string>("objectfilename",objfname,object->GetContext());
+
   // Inheritence need to be recursive
   // Call the class body
   ParseClassBody(oclass);
@@ -257,7 +260,7 @@ BasicVariable::ptr Driver::yyip_call_function( AMIFunction* f, const ParamList::
 
   int previous_context = Vars.GetCurrentContextNumber();
   // Set the new context
-  Vars.NewContext(f->GetName().c_str());
+  Variables::ptr local_context = Vars.NewContext(f->GetName().c_str());
   Vars.SetLastContext();
 
   // Creates the variables if needed
@@ -279,7 +282,7 @@ BasicVariable::ptr Driver::yyip_call_function( AMIFunction* f, const ParamList::
           //        % param->GetType(i) % name % param->GetParam(i)
           //      << endl;
           BasicVariable::ptr paramvar( param->GetParam(i));
-          Vars.AddVar(name, paramvar);
+          local_context->AddVar(name, paramvar,local_context);
         }
       } // end for
     } else {

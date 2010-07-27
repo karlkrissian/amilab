@@ -1,0 +1,110 @@
+\documentclass{article}
+\usepackage{html}
+\usepackage[latin1]{inputenc}
+%Párrafos
+\setlength{\parskip}{1pc}
+
+\begin{document}
+
+% Title Page
+\title{ITK FastMarching Gui}
+\author{Karl Krissian \& Sara Arencibia}
+\thanks{
+Grupo de Imagen, Tecnolog\'ia M\'edica y Televisi\'on (GIMET)\\
+Universidad de Las Palmas de Gran Canaria\\
+email: krissian@dis.ulpgc.es darkmind@gmail.com
+}
+
+
+\maketitle
+
+\begin{abstract}
+This script provides a user interface to solve an Eikonal equation using Fast Marching. 
+\end{abstract}
+
+
+\section{Quick Start}
+
+The different steps for obtaining the Fast Marching are:
+\begin{enumerate}
+  \item Select the mode of the load input image (NormGradient or User Velocity Image).
+    \begin{enumerate}
+      \item If you select NormGradient follow the SigmoidFilter help to know how to use the SigmoidFilter gui.
+      \item If you select User Velocity Image select the image to load and set the dimension of the image (2D or 3D).
+    \end{enumerate}
+  \item Set the seed point with the {\bf Set Seed Point} button.
+  \item Select the stopping time value. 
+  \item Select the lower and the upper threshold for Binary Image Filter.
+  \item Select the seed to set the container of Trial Points representing the initial front.
+  \item Run the filter.
+  \item Display the result.
+\end{enumerate}
+
+
+\section{Detailed Description}
+Solve an Eikonal equation using Fast Marching.
+
+
+Fast marching solves an Eikonal equation where the speed is always non-negative and depends on the position only. Starting from an initial position on the front, fast marching systematically moves the front forward one grid point at a time.
+
+
+Updates are preformed using an entropy satisfy scheme where only ``upwind'' neighborhoods are used. This implementation of Fast Marching uses a std::priority\_queue to locate the next proper grid position to update.
+
+
+Fast Marching sweeps through N grid points in (N log N) steps to obtain the arrival time value as the front propagates through the grid.
+
+
+Implementation of this class is based on Chapter 8 of ``Level Set Methods and Fast Marching Methods'', J.A. Sethian, Cambridge Press, Second edition, 1999.
+
+
+This class is templated over the level set image type and the speed image type. The initial front is specified by two containers: one containing the known points and one containing the trial points. Alive points are those that are already part of the object, and trial points are considered for inclusion. In order for the filter to evolve, at least some trial points must be specified. These can for instance be specified as the layer of pixels around the alive points.
+
+
+The speed function can be specified as a speed image or a speed constant. The speed image is set using the method SetInput(). If the speed image is NULL, a constant speed function is used and is specified using method the SetSpeedConstant().
+
+
+If the speed function is constant and of value one, fast marching results in an approximate distance function from the initial alive points. FastMarchingImageFilter is used in the ReinitializeLevelSetImageFilter object to create a signed distance function from the zero level set.
+
+
+The algorithm can be terminated early by setting an appropriate stopping value. The algorithm terminates when the current arrival time being processed is greater than the stopping value.
+
+
+There are two ways to specify the output image information ( LargestPossibleRegion, Spacing, Origin): (a) it is copied directly from the input speed image or (b) it is specified by the user. Default values are used if the user does not specify all the information.
+
+
+The output information is computed as follows. If the speed image is NULL or if the OverrideOutputInformation is set to true, the output information is set from user specified parameters. These parameters can be specified using methods SetOutputRegion(), SetOutputSpacing(), SetOutputDirection(), and SetOutputOrigin(). Else if the speed image is not NULL, the output information is copied from the input speed image.
+
+
+Possible Improvements: In the current implemenation, std::priority\_queue only allows taking nodes out from the front and putting nodes in from the back. To update a value already on the heap, a new node is added to the heap. The defunct old node is left on the heap. When it is removed from the top, it will be recognized as invalid and not used. Future implementations can implement the heap in a different way allowing the values to be updated. This will generally require some sift-up and sift-down functions and an image of back-pointers going from the image to heap in order to locate the node which is to be updated.
+
+\section{Interface tabs}
+
+The interface is divided into several pages.
+
+\subsection{\emph{Init} page}
+
+\subsubsection{NormGradient}
+
+Follow the SigmoidFilter help to know how to use the SigmoidFilter gui.
+
+\subsubsection{User Velocity Image}
+
+First of all, you need to choose an input image and load it with the {\bf Load} button.
+The {\bf Dimension} parameter allows to set the dimension of the image (2D or 3D).
+
+\subsection{\emph{Param} page}
+
+\begin{enumerate}
+  \item Set the seed point with the {\bf Set Seed Point} button. An image appear, select with the central mouse button the seed point and then press the same button once more.
+  \item Select the stopping time value. Fast Marching algorithm is terminated when the value of the smallest trial point is greater than the stopping value.
+  \item Select the lower and the upper threshold for Binary Image Filter. It's used to binarize the output image of the FastMarching by thresholding
+  \item Select the seed to set the container of Trial Points representing the initial front.
+  \item Run the filter with {\bf Run} button.
+  \item Display the result with {\bf Display} button.
+\end{enumerate}
+
+
+\subsection{\emph{Help} page}
+This help.
+
+\end{document}          
