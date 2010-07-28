@@ -38,28 +38,32 @@ if __name__ == "__main__":
   # the third parameter: a boolean, is True if we need to ask confirmation from the user ...
   commands_force_par=[
             ("Interpolate", "Interpolate",  True ),
-            ("print",       "print",        True ),
-            ("read",        "read",         True ),
-            ("save",        "save",         True ),
+#            ("print",       "_print",        True ),
+#            ("read",        "_read",         True ),
+#            ("save",        "_save",         True ),
             ]
 
-  #########################################
-  #               ATTENTION               #
-  #########################################
-  #                                       #
-  #  Now invokes the methods by wrapping  #
-  #  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  #
-  #                                       #
-  #    Before                 Now         #
-  #  ##########        #################  #
-  #                                       #
-  #    METHOD           OBJECT.METHOD()   #
-  #                                       #
-  # Example:                              #
-  #                                       #
-  # Interpolate -> AMIOBJECT.Interpolate()#
-  #                                       #
-  #########################################
+  ##########################################
+  #               ATTENTION                #
+  ##########################################
+  #                                        #
+  #  Now invokes the methods by wrapping   #
+  #  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^   #
+  #                                        #
+  #    Before                 Now          #
+  #  ##########        #################   #
+  #                                        #
+  #    METHOD           OBJECT.METHOD()    #
+  #                                        #
+  # Example:                               #
+  #                                        #
+  # Interpolate -> AMIOBJECT.Interpolate() #
+  #                                        #
+  # Uncontrolled case.                     #
+  #                                        #
+  # TODO.                                  #
+  #                                        #
+  ##########################################
 
   # Interpolate pattern: Interpolate(*
   # read pattern: *.read(*
@@ -98,7 +102,7 @@ if __name__ == "__main__":
       for cmd1,cmd2,ask in commands_force_par:
         # $ matches the end of the string and avoids adding () where there are already present
         # if no parenthesis, add it
-        res = re.subn(r"_draw\s*\.(\s*)"+cmd1+r"(\s*[^\(]|\s*$)",r"_draw."+cmd2+r"()\2",line)
+        res = re.subn(r"\s*\.(\s*)"+cmd1+r"(\s*[^\(])",r"."+cmd2+r"()\2",line)
         if (res[1]>0):
           if ask:
             message = " Conversion of GLTransfMatrix methods from: \n"
@@ -113,7 +117,7 @@ if __name__ == "__main__":
               line = res[0]
               num_subs = num_subs+1
         # if parenthesis, just replace name
-        res = re.subn(r"_draw\s*\.(\s*)"+cmd1+r"(\s*[\(]|\s*$)",r"_draw."+cmd2+r"\2",line)
+        res = re.subn(r"\.(\s*)"+cmd1+r"(\s*[\(]|\s*$)",r"."+cmd2+r"\2",line)
         if (res[1]>0):
           if ask:
             message = " Conversion of GLTransfMatrix methods from: \n"
@@ -130,11 +134,11 @@ if __name__ == "__main__":
           #sys.stdout.write("("+cmd1+","+cmd2+") -> "+line)
 
         # convert GLTRANSFORM to OBJECT in parameter declaration
-        res = re.subn(r"(,|\()\s*GLTRANSFORM(\s+|,|\))",r"\1 OBJECT\2",line)
-        if (res[1]>0):
-          if (res[0]!=line):
-            line = res[0]
-            num_subs = num_subs+1
+#        res = re.subn(r"(,|\()\s*GLTRANSFORM(\s+|,|\))",r"\1 OBJECT\2",line)
+#        if (res[1]>0):
+#          if (res[0]!=line):
+#            line = res[0]
+#            num_subs = num_subs+1
 
       f.write(line)
       if comments!="":

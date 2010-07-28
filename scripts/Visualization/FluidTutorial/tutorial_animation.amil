@@ -84,7 +84,9 @@ for k=0 to 4 {clouds[k].SetColorMaterial(1);}
 earth_draw.rotate(0,-90,0)
 earth_draw.rotate(0,0,-90)
 # Set the view
-view1 = Transform("view1.txt")
+
+view1 = GLTransfMatrix()
+view1._read("view1.txt")
 earth_draw.SetTransform(view1)
 earth_draw.Paint()
 earth_draw.SetBackground(5,5,40)
@@ -127,10 +129,17 @@ proc GenerateViews(STRING _st1, STRING _st2, NUM _total) {
 # using '_total' images.
 # All the images are added to the global animation 'anim'
 # and the global variable anim_current is updated.
-  _viewinit = Transform(_st1)
-  _viewend  = Transform(_st2)
+//  _viewinit = Transform(_st1)
+//  _viewend  = Transform(_st2)
+
+  _viewinit = GLTransfMatrix()
+  _viewend = GLTransfMatrix()
+
+  _viewinit._read(_st1)
+  _viewend._read(_st2)
+
   for _n=0 to _total-1 {
-    _vtmp = Interpolate(_viewinit,_viewend,_n/(_total-1))
+    _vtmp = _viewinit.Interpolate(_viewend,_n/(_total-1))
     earth_draw.SetTransform(_vtmp)
     del _vtmp
     _im1 =  earth_draw.GetImageFromX()

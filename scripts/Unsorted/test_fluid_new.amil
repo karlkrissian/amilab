@@ -136,18 +136,16 @@ earth_draw.rotate(0,-90,0)
 earth_draw.rotate(0,0,-90)
 
 // Set the view
-view1 = TRANSFORM("view1.txt")
-earth_draw.SetTransform(view1)
+tmpView1 = GLTransfMatrix()
+tmpView1._read("view1.txt")
+earth_draw.SetTransform(tmpView1)
+del tmpView1
 
 earth_draw.Paint()
 earth_draw.SetBackground(5,5,40)
 earth_draw.SetWindowSize(600,670)
 
 im1 = earth_draw.getimage()
-
-
-
-
 
 // Set Colors
 cloudg.SetAmbient( 195, 195, 195 )
@@ -185,11 +183,18 @@ del tmp
 //-------------------------------------------------------------------------------
 proc GenerateViews(STRING _st1, STRING _st2, IMAGE _anim, NUM _total) {
 //   -------------
-  _viewinit = TRANSFORM(_st1)
-  _viewend  = TRANSFORM(_st2)
+
+//  _viewinit = TRANSFORM(_st1)
+//  _viewend  = TRANSFORM(_st2)
+
+  _viewinit = GLTransfMatrix()
+  _viewend = GLTransfMatrix()
+
+  _viewinit._read(_st1)
+  _viewend._read(_st2)
 
   for _n=0 to _total-1 {
-    _vtmp = Interpolate(_viewinit,_viewend,_n/(_total-1))
+    _vtmp = _viewinit.Interpolate(_viewend,_n/(_total-1))
     earth_draw.SetTransform(_vtmp)
     del _vtmp
     _im1 =  earth_draw.getimage()
@@ -301,11 +306,18 @@ show ssanim
 
 
 #
-# view5   = TRANSFORM("view5.txt")
-# view5_1 = TRANSFORM("view5_1.txt")
-# view5_2 = TRANSFORM("view5_2.txt")
+# view5   = GLTransfMatrix()
+# view5_1 = GLTransfMatrix()
+# view5_2 = GLTransfMatrix()
+#
+# view5._read("view5.txt")
+# view5_1._read("view5_1.txt")
+# view5_2._read("view5_2.txt")
 #
 # earth_draw.SetTransform(view5)
 # earth_draw.SetTransform(view5_1)
 # earth_draw.SetTransform(view5_2)
 #
+# del view5
+# del view5_1
+# del view5_1
