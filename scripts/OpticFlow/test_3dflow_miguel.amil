@@ -140,7 +140,7 @@ proc DisplayData() {
   global
   show i1;
   #i1_draw.compare(i2);
-  i1_draw._setvector(0,u);
+  i1_draw.setvector(0,u);
   #i1_draw.setvector(2,u_o);
   i1_draw.DrawVector(0,1);
   i1_draw.DrawVector(1,1);
@@ -320,7 +320,7 @@ proc CB_LoadJohanData() {
   } else { u = Image(FLOAT_VECTOR,i1.tx,i1.ty,i1.tz); }
   u.settranslation(i1.trx,i1.try,i1.trz)
   u.initvalue(0,0,0);
-  i1_draw._setvector(0,u);
+  i1_draw.setvector(0,u);
   #last_u = u;
   u.save "last_u.ami.gz"
   last_error = 999999999999;  
@@ -425,7 +425,7 @@ proc CB_RunSequenceConv() {
 		setvoxelsize(u,step_x,step_y,step_z)		
 	    u.settranslation(i1.trx,i1.try,i1.trz)
   	 	u.initvalue(0,0,0);
-  		i1_draw._setvector(0,u);	
+  		i1_draw.setvector(0,u);	
 	}
 	_error = 0;
 	ComputeError(&_error);
@@ -673,7 +673,7 @@ proc CB_AlphaFindMin() {
 
 #-------------- CORRELATION INTERFACE ----------------
 
-w1 = ParamWin("3D Correlation parameters")
+w1 = global::ami_import.ParamPanel("3D Correlation parameters")
 
 step_x_id = w1.AddInt( &step_x,  "step_x", 1,20)
 step_y_id = w1.AddInt( &step_y,  "step_y", 1,20)
@@ -702,7 +702,7 @@ proc CB_CorrInterf() {
 
 #------------------ PDE INTERFACE ---------------------
 
-w2 = ParamWin("PDE Optical Flow")
+w2 = global::ami_import.ParamPanel("PDE Optical Flow")
 
 beta_id         = w2.AddFloat( &beta,  "beta", 0.01,5)
 alfa_id         = w2.AddFloat( &alfa,  "alfa", 0.01,40)
@@ -875,8 +875,7 @@ proc CB_JohanCorrVarTest() {
 
 #-------------- MAIN INTERFACE -----------------------
 
-import = &global::ami_import;
-w_main = import->ParamPanel(" Flow Motion Estimation ")
+w_main = global::ami_import.ParamPanel(" Flow Motion Estimation ")
 
 load_sphere_id     = w_main.AddButton("Load New Sphere 128",    CB_LoadNewSphereData)
 load_sphere64_id   = w_main.AddButton("Load New Sphere 64",     CB_LoadSphere64)
@@ -912,8 +911,8 @@ w_main.Display()
 #-------------------------------------------------
 # Creating parameter window for test on alpha
 #-------------------------------------------------
-import = &global::ami_import;
-alphatests_win = import->ParamPanel("test sequence on alpha")
+
+alphatests_win = global::ami_import.ParamPanel("test sequence on alpha")
 alfa_min_id        = alphatests_win.AddFloat( &alfa_min,  "alfa_min", 0.01,20)
 alfa_max_id        = alphatests_win.AddFloat( &alfa_max,  "alfa_max", 0.01,40)
 alfa_step_id       = alphatests_win.AddFloat( &alfa_step,  "alfa_step", 0.01,2)

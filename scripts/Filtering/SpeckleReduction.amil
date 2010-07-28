@@ -38,7 +38,7 @@ if (update_noise) {
 }
 
 ir=AnisoGS.GetOutput;show ir;
-ir_draw._compare(i);
+ir_draw.compare(i);
 
 # for 2D
 AnisoGS.setcoeff(0.5)

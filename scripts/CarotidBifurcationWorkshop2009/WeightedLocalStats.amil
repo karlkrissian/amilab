@@ -85,7 +85,7 @@ if (!exists(WeightedLSCLass)) {
     {
       show ::input
       show ::weights
-      ::input_draw._compare(&::weights_draw)
+      ::input_draw.compare(&::weights_draw)
       #eval "::input_draw._compare(&"+::output_prefix+"lm);"
       #eval "::input_draw._compare(&"+::output_prefix+"sd);"
       #eval "::input_draw._compare(&"+::output_prefix+"prob);"

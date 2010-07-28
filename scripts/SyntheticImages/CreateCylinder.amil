@@ -173,7 +173,7 @@ proc CreateVerticalCylinder( IMAGE i, NUM x1, NUM y1, NUM z1, NUM x2, NUM y2, NU
       if (_d11<r*r) { _np=_np+1; }
 
       if (_np==4) {
-        i.setpos(x,y,z)
+        i._setpos(x,y,z)
         i.set(100)
       }
 
@@ -187,7 +187,7 @@ proc CreateVerticalCylinder( IMAGE i, NUM x1, NUM y1, NUM z1, NUM x2, NUM y2, NU
             if (d<r*r) {  n=n+1; }
           } // end for yn
         } // end for xn
-        i.setpos(x,y,z)
+        i._setpos(x,y,z)
         i.set(100*n/nsub/nsub)
       } // end if _np
     } // end for z

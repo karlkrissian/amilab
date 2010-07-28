@@ -37,7 +37,7 @@ if __name__ == "__main__":
   # 2. Propose also an alphabetical list
   # the third parameter: a boolean, is True if we need to ask confirmation from the user ...
   commands_force_par=[
-            ("getimage",       "_getimage",  True ),
+            ("_getimage",      "getimage",  True ),
             ("GetZPos",        "GetZPos",    False ),
             ("GetYPos",        "GetYPos",    False ),
             ("GetXPos",        "GetXPos",    False ),
@@ -47,9 +47,9 @@ if __name__ == "__main__":
             ("GetYmax",        "GetYmax",    False ),
             ("GetZmin",        "GetZmin",    False ),
             ("GetZmax",        "GetZmax",    False ),
-            ("SetWindowSize",  "_SetWindowSize", True ),
-            ("setvector",      "_setvector",     True ),
-            ("compare",        "_compare",       True ),
+            ("_SetWindowSize", "SetWindowSize", True ),
+            ("_setvector",     "setvector",     True ),
+            ("_compare",        "compare",       True ),
             ("setpos",         "_setpos",        True ),
             ("DisplayVectors", "DisplayVectors", False ),
             ("update",         "update",         False ),
@@ -87,7 +87,7 @@ if __name__ == "__main__":
       for cmd1,cmd2,ask in commands_force_par:
         # $ matches the end of the string and avoids adding () where there are already present
         # if no parenthesis, add it
-        res = re.subn(r"_draw\s*\.(\s*)"+cmd1+r"(\s*[^\(]|\s*$)",r"_draw."+cmd2+r"()\2",line)
+        res = re.subn(r"\.(\s*)"+cmd1+r"(\s*[^\(]|\s*$)",r"."+cmd2+r"()\2",line)
         if (res[1]>0):
           if ask:
             message = " Conversion of DessinImage methods from: \n"
@@ -102,7 +102,7 @@ if __name__ == "__main__":
               line = res[0]
               num_subs = num_subs+1
         # if parenthesis, just replace name
-        res = re.subn(r"_draw\s*\.(\s*)"+cmd1+r"(\s*[\(]|\s*$)",r"_draw."+cmd2+r"\2",line)
+        res = re.subn(r"\.(\s*)"+cmd1+r"(\s*[\(]|\s*$)",r"."+cmd2+r"\2",line)
         if (res[1]>0):
           if ask:
             message = " Conversion of DessinImage methods from: \n"

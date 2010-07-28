@@ -129,11 +129,11 @@ earth.SetColorMaterial(1)
 
 proc SetClassInfo(NUM classnum, NUM minval, NUM maxval, NUM r, NUM g, NUM b) {
   # color of the class 0
-  colors.setpos(classnum,0,0)
+  colors._setpos(classnum,0,0)
   colors.set(r,g,b) 
-  minclass.setpos(classnum,0,0)
+  minclass._setpos(classnum,0,0)
   minclass.set(minval)
-  maxclass.setpos(classnum,0,0)
+  maxclass._setpos(classnum,0,0)
   maxclass.set(maxval)
 }
 
@@ -608,9 +608,9 @@ CB_DrawVectors()
 #---------------------------------------------
 proc CB_update_visible() {
   visclass=Image(UCHAR,numclasses,1,1)
-  visclass.setpos(0,0,0); visclass.set(class0_visible)
-  visclass.setpos(1,0,0); visclass.set(class1_visible)
-  visclass.setpos(2,0,0); visclass.set(class2_visible)
+  visclass._setpos(0,0,0); visclass.set(class0_visible)
+  visclass._setpos(1,0,0); visclass.set(class1_visible)
+  visclass._setpos(2,0,0); visclass.set(class2_visible)
 
   for n=0 to numclasses-1 {
     clouds[n].SetVisible(   cloud_visible *visclass(n))

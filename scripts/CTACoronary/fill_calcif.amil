@@ -6,6 +6,9 @@ if (argc>=3) {
   result = input
   threshold  = atof($2)
   input_filtered   = Image $3
+} else {
+  InfoDialog "Need at least 3 arguments"
+  quit
 }
 KeepGui=0
 if (argc==4) {
@@ -76,7 +79,7 @@ result.save $1-".gz"-".ami"-".vtk"+"_CalcOut.ami.gz"
 
 if (KeepGui) {
   show input
-  input_draw._compare(result)
+  input_draw.compare(result)
 } else {
   quit
 }

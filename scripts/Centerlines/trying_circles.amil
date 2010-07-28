@@ -297,10 +297,10 @@ proc TC_Display() {
     show TC_input
   }
 
-  TC_input_draw._compare(TC_rmax)
-  TC_input_draw._compare(TC_lextr)
+  TC_input_draw.compare(TC_rmax)
+  TC_input_draw.compare(TC_lextr)
   if (exists(eig[5])) {
-    TC_input_draw._setvector(0,eig[5])
+    TC_input_draw.setvector(0,eig[5])
   }
   local_new
 }

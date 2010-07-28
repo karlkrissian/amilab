@@ -18,7 +18,7 @@ m0 = (i<1)
 AnisoGS.init(i,0.8,th,data_coeff)
 
 ir=AnisoGS.GetOutput;show ir;
-ir_draw._compare(i);
+ir_draw.compare(i);
 
 AnisoGS.setcoeff(0.1,0.5)
 

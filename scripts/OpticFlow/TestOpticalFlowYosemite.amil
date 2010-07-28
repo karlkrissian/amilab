@@ -5,6 +5,7 @@ ami_import->AMIFluid()
 
 yos_mask ="Yosemite/Mask/mask%02.0f.bmp"
 
+
 seqmin=INT(0)
 seqmax=INT(14)
 
@@ -762,8 +763,8 @@ proc CB_Iterate() {
 proc CB_Display() {
   global
   show im1;
-  im1_draw._setvector(0,displ_res);
-  im1_draw._setvector(1,displ);
+  im1_draw.setvector(0,displ_res);
+  im1_draw.setvector(1,displ);
   local
 }
 
@@ -1019,8 +1020,8 @@ winput.Update()
 #--------------------------------------------------
 # Parameters for libami's code
 #
-import = &global::ami_import;
-wamiOF = import->ParamPanel("PDE Param")
+
+wamiOF = global::ami_import.ParamPanel("PDE Param")
 
 presmoothing_id    = wamiOF.AddFloat( &presmoothing,  "presmoothing", 0,3)
 beta_id            = wamiOF.AddFloat( &beta,  "beta", 0.01,5)
@@ -1058,8 +1059,8 @@ wamiOF.Update()
 #--------------------------------------------------
 # Parameters for Javier's code
 #
-import = &global::ami_import;
-wJavOF = import->ParamPanel("Javier PDE Param")
+
+wJavOF = global::ami_import.ParamPanel("Javier PDE Param")
 zoom_id            = wJavOF.AddInt( &zoom,  "zoom",        0,5)
 alphaJ_id          = wJavOF.AddFloat( &alfa_Javier,  "alfa_Javier", 0.01,20)
 T_id               = wJavOF.AddFloat( &T,  "T",           0.01,2000)
@@ -1070,8 +1071,8 @@ wJavOF.Update()
 #--------------------------------------------------
 # Parameters for Javier and Agustin's code
 #
-import = &global::ami_import;
-wJAOF = import->ParamPanel("Javier and Agustin PDE Param")
+
+wJAOF = global::ami_import.ParamPanel("Javier and Agustin PDE Param")
 JA_zoom_id         = wJAOF.AddInt( &JA_zoom,  "JA_zoom",     0,   5)
 JA_alpha_id        = wJAOF.AddFloat( &JA_alfa,  "JA_alfa",     0.01,5)
 JA_beta_id         = wJAOF.AddFloat( &JA_beta,  "JA_beta",     0.01,5)
@@ -1085,8 +1086,8 @@ wJAOF.Update()
 #--------------------------------------------------
 # Parameters for Vorticity code
 #
-import = &global::ami_import;
-wVort = import->ParamPanel("Vorticity OF param")
+
+wVort = global::ami_import.ParamPanel("Vorticity OF param")
 vort_grid_id       = wVort.AddInt( &vort_grid,  "vort_grid",    1,10)
 vort_winsize_id    = wVort.AddInt( &vort_winsize,  "vort_winsize", 3,10)
 vort_sigma_id      = wVort.AddFloat( &vort_sigma,  "vort_sigma", 0.1,5)
@@ -1097,8 +1098,8 @@ wVort.Update()
 #--------------------------------------------------
 # Parameters for optic_flow_zoom code
 #
-import = &global::ami_import;
-wOFzoom = import->ParamPanel("Optic Flow PDE 2D parameters")
+
+wOFzoom = global::ami_import.ParamPanel("Optic Flow PDE 2D parameters")
 
 OFzoom_sigma_id    = wOFzoom.AddFloat( &OFzoom_sigma,  "OFzoom_sigma", 0.5,5)
 OFzoom_T_id        = wOFzoom.AddFloat( &OFzoom_T,  "OFzoom_T", 1,1000)
@@ -1114,8 +1115,8 @@ wOFzoom.Update()
 #--------------------------------------------------
 # Parameters for continous Gaussian multiscale
 #
-import = &global::ami_import;
-wGaussSc = import->ParamPanel("Continous Gaussian Scales")
+
+wGaussSc = global::ami_import.ParamPanel("Continous Gaussian Scales")
 sigma_min_id      = wGaussSc.AddFloat( &sigma_min,  "sigma_min", 0.01,5)
 sigma_max_id      = wGaussSc.AddFloat( &sigma_max,  "sigma_max", 0.01,15)
 sigma_N_id        = wGaussSc.AddInt( &sigma_N,  "sigma_N",   2,20)
@@ -1124,7 +1125,7 @@ wGaussSc.Update()
 #--------------------------------------------------
 # Main Parameters
 #
-w1 = ParamWin("Main")
+w1 = global::ami_import.ParamPanel("Main")
 
 input_id = w1.AddButton("Input Images", CB_InputImages)
 
@@ -1167,7 +1168,7 @@ w1.Display()
 #-------------------------------------------------
 # Creating parameter window for test on alpha
 #-------------------------------------------------
-w2 = ParamWin("test sequence on alpha")
+w2 = global::ami_import.ParamPanel("test sequence on alpha")
 alfa_min_id     = w2.AddFloat( &alfa_min,  "alfa_min", 0.01,10)
 alfa_max_id     = w2.AddFloat( &alfa_max,  "alfa_max", 0.01,20)
 alfa_step_id    = w2.AddFloat( &alfa_step,  "alfa_step", 0.01,1)

@@ -37,35 +37,34 @@ if __name__ == "__main__":
   # 2. Propose also an alphabetical list
   # the third parameter: a boolean, is True if we need to ask confirmation from the user ...
   commands_force_par=[
-            ("AddObject",           "AddObject",        False ),
-            ("Center",              "Center",           False ),
+            ("AddObject",           "AddObject",        True ),
+            ("Center",              "Center",           True ),
             ("compare",             "compare",          True ),
-            ("drawCC",              "drawCC",           False ),
-            ("drawCCOnlyCC",        "drawCCOnlyCC",     False ),
+            ("drawCC",              "drawCC",           True ),
+            ("drawCCOnlyCC",        "drawCCOnlyCC",     True ),
             ("getimage",            "getimage",         True ),
             ("GetImageFromX",       "GetImageFromX",    True ),
-            ("GetTransform",        "GetTransform",     False ),
-            ("HideSection",         "HideSection",      False ),
-            ("Normalize",           "Normalize",        False ),
-            ("Paint",               "Paint",            False ),
-            ("PrintMatrices",       "PrintMatrices",    False ),
-            ("Remove",              "Remove",           False ),
-            ("rotate",              "rotate",           False ),
-            ("SetBackground",       "SetBackground",    False ),
-            ("SetCurrentObj",       "SetCurrentObj",    False ),
-            ("SetLightAmbient",     "SetLightAmbient",  False ),
-            ("SetLightDiffuse",     "SetLightDiffuse",  False ),
-            ("SetLightSpecular",    "SetLightSpecular", False ),
-            ("SetLightSpecular",    "SetLightSpecular", False ),
-            ("SetTransform",        "SetTransform",     False ),
+            ("GetTransform",        "GetTransform",     True ),
+            ("HideSection",         "HideSection",      True ),
+            ("Normalize",           "Normalize",        True ),
+            ("Paint",               "Paint",            True ),
+            ("PrintMatrices",       "PrintMatrices",    True ),
+            ("Remove",              "Remove",           True ),
+            ("rotate",              "rotate",           True ),
+            ("SetBackground",       "SetBackground",    True ),
+            ("SetCurrentObj",       "SetCurrentObj",    True ),
+            ("SetLightAmbient",     "SetLightAmbient",  True ),
+            ("SetLightDiffuse",     "SetLightDiffuse",  True ),
+            ("SetLightSpecular",    "SetLightSpecular", True ),
+            ("SetLightSpecular",    "SetLightSpecular", True ),
+            ("SetTransform",        "SetTransform",     True ),
             ("setvector",           "setvector",        True ),
             ("SetWindowSize",       "SetWindowSize",    True ),
-            ("ShowSection",         "ShowSection",      False ),
-            ("SwapBuffers",         "SwapBuffers",      False ),
+            ("ShowSection",         "ShowSection",      True ),
+            ("SwapBuffers",         "SwapBuffers",      True ),
             ]
 
   # pattern: *_draw.[function]*
-  # SetBackgroundColour pattern : *.SetBackgroundColour(
 
   scripts=[]
   amilfile=re.compile('\S*amil$')
@@ -99,7 +98,7 @@ if __name__ == "__main__":
       for cmd1,cmd2,ask in commands_force_par:
         # $ matches the end of the string and avoids adding () where there are already present
         # if no parenthesis, add it
-        res = re.subn(r"_draw\s*\.(\s*)"+cmd1+r"(\s*[^\(]|\s*$)",r"_draw."+cmd2+r"()\2",line)
+        res = re.subn(r"\s*\.(\s*)"+cmd1+r"(\s*[^\(])",r"."+cmd2+r"()\2",line)
         if (res[1]>0):
           if ask:
             message = " Conversion of Viewer3D methods from: \n"
@@ -114,7 +113,7 @@ if __name__ == "__main__":
               line = res[0]
               num_subs = num_subs+1
         # if parenthesis, just replace name
-        res = re.subn(r"_draw\s*\.(\s*)"+cmd1+r"(\s*[\(]|\s*$)",r"_draw."+cmd2+r"\2",line)
+        res = re.subn(r"([a-zA-Z0-9_]*)\s*\.(\s*)"+cmd1+r"(\s*[\(])",r"\1."+cmd2+r"\3",line)
         if (res[1]>0):
           if ask:
             message = " Conversion of Viewer3D methods from: \n"
@@ -131,11 +130,11 @@ if __name__ == "__main__":
           #sys.stdout.write("("+cmd1+","+cmd2+") -> "+line)
 
         # convert IMAGEDRAW to OBJECT in parameter declaration
-        res = re.subn(r"(,|\()\s*IMAGEDRAW(\s+|,|\))",r"\1 OBJECT\2",line)
-        if (res[1]>0):
-          if (res[0]!=line):
-            line = res[0]
-            num_subs = num_subs+1
+#        res = re.subn(r"(,|\()\s*IMAGEDRAW(\s+|,|\))",r"\1 OBJECT\2",line)
+#        if (res[1]>0):
+#          if (res[0]!=line):
+#            line = res[0]
+#            num_subs = num_subs+1
 
       f.write(line)
       if comments!="":

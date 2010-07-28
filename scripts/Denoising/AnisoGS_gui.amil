@@ -109,7 +109,7 @@ if (!exists(AnisoGSClass)) {
     show ::input
     if exists(::res) {
         show ::res
-        ::input_draw._compare(&::res_draw)
+        ::input_draw.compare(&::res_draw)
     }
   }
   
@@ -126,7 +126,8 @@ if (!exists(AnisoGSClass)) {
     import = &global::ami_import;
     ::win = import->ParamPanel("AnisoGS")
 
-    ::win.BeginBook()      ::win.AddPage("Param")
+    ::win.BeginBook() 
+    ::win.AddPage("Param")
         ::win.AddImageChoice( &::input_name, "Input")
     
         ::win.AddFloat( &::sigma,  "::sigma", 0.01,10)

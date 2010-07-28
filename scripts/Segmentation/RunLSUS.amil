@@ -104,16 +104,16 @@ func "AddSphere"
 
 proc FollowContour( IMAGE im, IMAGE res, OBJECT imdraw) {
   print "1\n"
-  posz=imdraw.GetZPos
+  posz=imdraw.GetZPos()
   print "2\n"
   # extract the corresponding slice
-  minx= imdraw.GetXPos-50
+  minx= imdraw.GetXPos()-50
   minx=(minx>0?minx:0)
-  maxx= imdraw.GetXPos+50
+  maxx= imdraw.GetXPos()+50
   maxx=(maxx<im.tx?maxx:im.tx-1)
-  miny= imdraw.GetYPos-50
+  miny= imdraw.GetYPos()-50
   miny=(miny>0?miny:0)
-  maxy= imdraw.GetYPos+50
+  maxy= imdraw.GetYPos()+50
   maxy=(maxy<im.ty?maxy:im.ty-1)
   iz = im[minx:maxx,miny:maxy,posz:posz]
   print "3\n"
@@ -121,7 +121,7 @@ proc FollowContour( IMAGE im, IMAGE res, OBJECT imdraw) {
   ls_iz = (FLOAT) iz*0-4
   ls_iz0=ls_iz
   print "4\n"
-  AddBrightSphere(&ls_iz,imdraw.GetXPos-minx,imdraw.GetYPos-miny,0,6.1)
+  AddBrightSphere(&ls_iz,imdraw.GetXPos()-minx,imdraw.GetYPos()-miny,0,6.1)
   print "5\n"
   # First Evolution
   RunLSUS(iz,&ls_iz,6,8,300,0)

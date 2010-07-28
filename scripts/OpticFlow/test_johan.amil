@@ -365,8 +365,8 @@ u_o = u_o_0[i1]
 show i1;
 #i1_draw.compare(i2);
 
-i1_draw._setvector(0,u);
-i1_draw._setvector(1,u_o);
+i1_draw.setvector(0,u);
+i1_draw.setvector(1,u_o);
 
 i1_draw.DrawVector(0,1);
 i1_draw.DrawVector(1,1);

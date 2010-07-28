@@ -61,7 +61,7 @@ if (!exists(itkNLMeansClass)) {
     
       show ::input
       show ::nlm
-      ::input_draw._compare(&::nlm_draw)
+      ::input_draw.compare(&::nlm_draw)
     
     }
     

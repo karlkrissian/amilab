@@ -100,7 +100,7 @@ if (!exists(GreyMorphoClass)) {
       if exists(::res) {
         show ::res
         ::res_draw.update()
-        ::input_draw._compare(&::res_draw)
+        ::input_draw.compare(&::res_draw)
         # draw limits of ROI
       }
     }
@@ -114,7 +114,7 @@ if (!exists(GreyMorphoClass)) {
         }
         ::diff = ::input - ::res
         show ::diff
-        ::input_draw._compare(&::diff_draw)
+        ::input_draw.compare(&::diff_draw)
       }
       eval ::result_image_name+"_diff <<= ::diff;"
     }

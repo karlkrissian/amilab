@@ -57,7 +57,7 @@ if (!exists(itkRecursiveGaussianClass)) {
       show ::input
       show ::gaussian
       ::gaussian_draw.update()
-      ::input_draw._compare(&::gaussian_draw)
+      ::input_draw.compare(&::gaussian_draw)
     
     }
     
