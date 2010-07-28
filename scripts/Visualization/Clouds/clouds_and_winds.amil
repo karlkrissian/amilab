@@ -620,7 +620,7 @@ proc CB_update_visible() {
   for n=0 to numclasses-2 {
     vv[n].SetVisible(Vvect_visible)
   }
-  earth_draw.Paint
+  earth_draw.Paint()
 }
 
 #---------------------------------------------
@@ -628,7 +628,7 @@ proc CB_cloud_opacity() {
     for n=0 to numclasses-1 {
       clouds[n].SetOpacity(cloud_opacity)
     }
-    earth_draw.Paint
+    earth_draw.Paint()
 }
 
 #---------------------------------------------
@@ -636,7 +636,7 @@ proc CB_cloud2_opacity() {
     for n=0 to numclasses-1 {
       clouds2[n].SetOpacity(cloud2_opacity)
     }
-    earth_draw.Paint
+    earth_draw.Paint()
 }
 
 #---------------------------------------------
@@ -644,7 +644,7 @@ proc CB_HORvect_opacity() {
     for n=0 to numclasses-1 {
       displvect[n].SetOpacity(HORvect_opacity)
     }
-    earth_draw.Paint
+    earth_draw.Paint()
 }
 
 #---------------------------------------------
@@ -652,7 +652,7 @@ proc CB_VERvect_opacity() {
     for n=0 to numclasses-2 {
       vv[n].SetOpacity(VERvect_opacity)
     }
-    earth_draw.Paint
+    earth_draw.Paint()
 }
 
 #---------------------------------------------
@@ -665,7 +665,7 @@ proc CB_display_visual() {
       earth.SetColorMaterial(0)
       earth.SetOpacity(0)
     }
-    earth_draw.Paint
+    earth_draw.Paint()
 }
 
 #---------------------------------------------
@@ -678,7 +678,7 @@ proc CB_display_earth() {
       e1.SetColorMaterial(0)
       e1.SetOpacity(0)
     }
-    earth_draw.Paint
+    earth_draw.Paint()
 }
 
 

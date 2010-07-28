@@ -281,7 +281,7 @@ if (!exists(CreateSkeletonClass)) {
       if (exists(::res)) {
         SelectPrune(&::res,::prunesize)
         if (exists(::res_draw)) {
-          ::res_draw.Paint
+          ::res_draw.Paint()
         }
       }
     }
@@ -290,7 +290,7 @@ if (!exists(CreateSkeletonClass)) {
       if (exists(::res)) {
         ::res.RemoveSelection()
         if (exists(::res_draw)) {
-          ::res_draw.Paint
+          ::res_draw.Paint()
         }
       }
     }

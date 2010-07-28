@@ -212,7 +212,7 @@ if (!exists(ParametricSurfaceClass)) {
 #printn "6.2"
       ::s.Recompute()
 #printn "6.3"
-      ::s_draw.Paint
+      ::s_draw.Paint()
 #printn "6.4"
       ::updating = 0
 #printn "7"

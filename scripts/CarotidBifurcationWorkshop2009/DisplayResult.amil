@@ -122,22 +122,22 @@ if (FileExists(DR_gt_dir+"/iso"+DR_datanum_str+".vtp")) {
 }
 
 
-DR_surf_draw.Normalize
-DR_surf_draw.Center
+DR_surf_draw.Normalize()
+DR_surf_draw.Center()
 
 DR_surf_draw.SetWindowSize(300,600)
 
 DR_surf_draw.rotate(-90,0,0)
-DR_surf_draw.Paint
-DR_view1 = DR_surf_draw.GetTransform
+DR_surf_draw.Paint()
+DR_view1 = DR_surf_draw.GetTransform()
 
 DR_surf_draw.rotate(0,45,0)
-DR_surf_draw.Paint
-DR_view2 = DR_surf_draw.GetTransform
+DR_surf_draw.Paint()
+DR_view2 = DR_surf_draw.GetTransform()
 
 DR_surf_draw.rotate(0,45,0)
-DR_surf_draw.Paint
-DR_view3 = DR_surf_draw.GetTransform
+DR_surf_draw.Paint()
+DR_view3 = DR_surf_draw.GetTransform()
 
 DR_paths_OK    = UCHAR(0)
 DR_junction_OK = UCHAR(0)

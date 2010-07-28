@@ -890,8 +890,8 @@ if (!exists(RunExperimentsClass)){
           ::pathCIs_cut.SetColor(0,0,255)
           ::pathCIs_cut.SetLineWidth(3)
         }
-        ::surf_draw.Normalize
-        ::surf_draw.Center
+        ::surf_draw.Normalize()
+        ::surf_draw.Center()
       }
     
     }

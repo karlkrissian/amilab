@@ -66,6 +66,25 @@ if __name__ == "__main__":
 
   # pattern: *_draw.[function]*
 
+  ############################################
+  #               ATTENTION                  #
+  ############################################
+  #                                          #
+  #        There are special cases           #
+  #        ^^^^^^^^^^^^^^^^^^^^^^^           #
+  #                                          #
+  #    Pattern             Result            #
+  #  ###########       #################     #
+  #                                          #
+  #  Paint             Paint()Callback       #
+  #  SetBackground     SetBackground()Colour #
+  #                                          #
+  # Uncontrolled cases.                      #
+  #                                          #
+  # TODO.                                    #
+  #                                          #
+  ############################################
+
   scripts=[]
   amilfile=re.compile('\S*amil$')
 

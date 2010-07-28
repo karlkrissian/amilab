@@ -195,7 +195,7 @@ proc SetConfig(NUM conf) {
   if (conf==2) { SetOpacities(0.6,0,0.6,1);  }
   if (conf==3) { SetOpacities(0.6,1,0,0.6);  }
   if (conf==4) { SetOpacities(0,1,0,1);    }
-  s1d_draw.Paint
+  s1d_draw.Paint()
 }
 
 proc FlipSave(IMAGE im, STRING name) {
@@ -207,7 +207,7 @@ proc SaveConfig1() {
   global_new
   SetConfig(1)
   if (exists(snap1)) { del snap1;} 
-  snap1 = s1d_draw.getimage
+  snap1 = s1d_draw.getimage()
   FlipSave(snap1,snap1_name)
 }
 
@@ -216,7 +216,7 @@ proc SaveConfig2() {
   global_new
   SetConfig(2)
   if (exists(snap2)) { del snap2;}
-  snap2 = s1d_draw.getimage
+  snap2 = s1d_draw.getimage()
   FlipSave(snap2,snap2_name)
 }
 
@@ -224,7 +224,7 @@ proc SaveConfig3() {
   global_new
   SetConfig(3)
   if (exists(snap3)) { del snap3;} 
-  snap3 = s1d_draw.getimage
+  snap3 = s1d_draw.getimage()
   FlipSave(snap3,snap3_name)
 }
 
@@ -275,14 +275,14 @@ proc CR_CreateWin() {
 
 proc SaveCombine() {
   global_new
-  s1d_draw.Paint
+  s1d_draw.Paint()
 
   // nconfigs: number of configurations
   nconfigs = 3;
   // check size in X and Y
   if (exists(snap1)) { del snap1;} 
   s1d_draw.SetWindowSize(400,400)
-  snap1 = s1d_draw.getimage
+  snap1 = s1d_draw.getimage()
   dx = snap1.tx
   dy = snap1.ty
   if (exists(snap)) { del snap;} 
@@ -292,7 +292,7 @@ proc SaveCombine() {
     for c=1 to nconfigs {
       SetConfig(c)
       if (exists(snap1)) { del snap1;} 
-      snap1 = s1d_draw.getimage
+      snap1 = s1d_draw.getimage()
       # combine in a unique file
       snap.putimage(snap1,v*dx,(c-1)*dy,0)
     }
