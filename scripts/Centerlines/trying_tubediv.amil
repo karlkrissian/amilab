@@ -1,3 +1,7 @@
+
+printn "Import filters (ami_import->Filters()).\n"
+ami_import.Filters()
+
 # command line: amilab 
 i = Image "image_filteredmaskcrop.ami.gz"
 i = (i<1000)*1000+(i>=1000)*i
@@ -9,7 +13,7 @@ sv = v[si]
 morph = filters.ContinuousMorphology()
 
 sv = sv*-100
-svd = morph.Dilate(sv,1,0.5)
+svd = global::filters.Dilate(sv,1,0.5)
 
 smask = (UCHAR) ((si>1150)*(svd<0)*255)
 

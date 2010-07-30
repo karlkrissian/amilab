@@ -1,6 +1,8 @@
 # command line: ./amilab 
 
 ami_import->AMIFluid()
+printn "Import filters (ami_import->Filters()).\n"
+ami_import->Filters()
 
 symmetric         = UCHAR(0)
 inverse_upsample  = INT(1)

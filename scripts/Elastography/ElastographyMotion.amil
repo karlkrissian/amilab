@@ -1,6 +1,7 @@
 #!/usr/bin/amilab
 
 ami_import->AMIFluid()
+ami_import->Filters()
 
 if (($1=="-help")||($1=="--help")) {
     printn

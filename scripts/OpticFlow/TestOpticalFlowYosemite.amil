@@ -1,7 +1,8 @@
 # command line: ./amilab 
 
 ami_import->AMIFluid()
-
+printn "Import filters (ami_import->Filters()).\n"
+ami_import->Filters()
 
 yos_mask ="Yosemite/Mask/mask%02.0f.bmp"
 

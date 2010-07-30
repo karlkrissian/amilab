@@ -8,6 +8,7 @@ func "Common/ScriptGui"
 
 if (!exists(GreyMorphoClass)) {
 
+  printn "Import filters (ami_import->Filters()).\n"
   ami_import.Filters()
 
   Class GreyMorphoClass  : public ScriptGui{

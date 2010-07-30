@@ -18,7 +18,7 @@ if (argc==4) {
 }
 
 printn "Import filters (ami_import->Filters()).\n"
-ami_import->Filters()
+ami_import.Filters()
 
 //----------------------------------------------
 proc InPlaceFillMask( IMAGE _input, IMAGE _mask, NUM _it ) {
@@ -27,7 +27,7 @@ proc InPlaceFillMask( IMAGE _input, IMAGE _mask, NUM _it ) {
   local::m1 = (FLOAT) (_mask>0)
 
 #  m1 = EDPdilate( m1,2,0.5)
-  morph = filters.ContinuousMorphology()
+  morph = global::filters.ContinuousMorphology()
   m1 = morph.Dilate(m1,2,0.5)
 
   local::test1 = _input
