@@ -6,9 +6,10 @@ si = i[188:367, 168:327, 146:259]
 v = Image "image_filteredm_opening9_0.4_ls.ami.gz"
 sv = v[si]
 
+morph = filters.ContinuousMorphology()
 
 sv = sv*-100
-svd  = EDPdilate(sv,1,0.5)
+svd = morph.Dilate(sv,1,0.5)
 
 smask = (UCHAR) ((si>1150)*(svd<0)*255)
 

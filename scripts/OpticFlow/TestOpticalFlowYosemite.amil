@@ -644,9 +644,12 @@ proc CB_Stats() {
     mask1=mask
   }
 
+  morph = filters.ContinuousMorphology()
+
   // Erode mask
   mask1f = (FLOAT) mask1
-  mask1fe = EDPerode(mask1f,1,0.25)
+#  mask1fe = EDPerode(mask1f,1,0.25)
+  mask1fe = morph.Erode(mask1f,1,0.25)
   mask1 =  (UCHAR) ((mask1fe>127)*255)
   
   print sprint("Angular error : %f\n",mean(ang_error));
@@ -981,9 +984,13 @@ proc CB_RunAlphaTests() {
       // remove sky
       mask1=mask
     }
+
+    morph = filters.ContinuousMorphology()
+
     // Erode mask
     mask1f = (FLOAT) mask1
-    mask1fe = EDPerode(mask1f,1,0.25)
+#    mask1fe = EDPerode(mask1f,1,0.25)
+    mask1fe = morph.Erode(mask1f,1,0.25)
     mask1 =  (UCHAR) ((mask1fe>127)*255)
     test_file4._print(alfa)
     test_file4._print("\t")

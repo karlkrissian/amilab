@@ -122,10 +122,13 @@ proc TC_SetMask2(IMAGE mask2, NUM mask2_th) {
 proc TC_CreateMask() {
 //   -------------
   InitTime
+
+  morph = filters.ContinuousMorphology()
+
   local::res=TC_input
   TubeDiv(TC_input,&res,TC_mask,0.6,0)
   local::m1 = (UCHAR) ((res>8)*255)
-  local::m2 = (UCHAR) EDPdilate(m1,2,0.5)
+  local::m2 = (UCHAR) morph.Dilate(m1,2,0.5)
   del res
   TC_mask = m2
   EndTime
@@ -141,6 +144,8 @@ proc TC_execute(IMAGE input, IMAGE mask, IMAGE repmax, IMAGE extr) {
   InitTime
   // Compute Structure Tensor
   printn "Structure Tensor"
+
+  morph = filters.ContinuousMorphology()
 
   if (exists(eig)) { del eig; }
 
@@ -174,7 +179,8 @@ proc TC_execute(IMAGE input, IMAGE mask, IMAGE repmax, IMAGE extr) {
   grad    <<= gradient(input,TC_sigma_gradient)
   if (TC_calc_th_grad) {
     local::calc = TC_input0>TC_calc_th
-    calc = EDPdilate(calc,2,0.5)
+#    calc = EDPdilate(calc,2,0.5)
+    calc = morph.Dilate(calc,2,0.5)
     grad = grad * (calc<0.5)
   }
 

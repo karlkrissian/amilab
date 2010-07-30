@@ -316,6 +316,7 @@ if (!exists(RunExperimentsClass)){
     {
       SetStatusText("Creating paths ...")
       # load the shortest path script
+      morph = filters.ContinuousMorphology()
       
       ::CIS->CheckInitialPoints(&::ReadPoints,::CroppedInput->input_cropped,::sphereradii)
       if (!::nointeraction) {
@@ -331,7 +332,8 @@ if (!exists(RunExperimentsClass)){
             # threshold to get maxima positions
             maxima_neigh = (::maxima>::mlmax_threshold)
             # dilate a little
-            maxima_neigh = EDPdilate(maxima_neigh,1,0.25)
+            #maxima_neigh = EDPdilate(maxima_neigh,1,0.25)
+            maxima_neigh = morph.Dilate(maxima_neigh,1,0.25)
 
             ::speed <<=  max((maxima_neigh>=0.95)*maxima_neigh * ::ML->result, \
                                       ::CP->prob*::ML->result)

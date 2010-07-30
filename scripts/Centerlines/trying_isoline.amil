@@ -8,9 +8,11 @@ sv = v[si]
 
 vl_s = Surface "selected_vessels.vtk"
 
+morph = filters.ContinuousMorphology()
 
 sv = sv*-100
-svd  = EDPdilate(sv,1,0.5)
+#svd  = EDPdilate(sv,1,0.5)
+svd  = morph.Dilate(sv,1,0.5)
 
 smask = (UCHAR) ((si>1150)*(svd<0)*255)
 
