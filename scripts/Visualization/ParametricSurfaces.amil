@@ -205,7 +205,8 @@ if (!exists(ParametricSurfaceClass)) {
       if (exists(::s_draw)) {
         ::s_draw += ::s
       } else {
-        show ::s
+        ::s_draw = Viewer3D("3D Surface Viewer")
+        ::s_draw += ::s
       }
 #printn "6.1"
       ::s.Normals()
@@ -295,14 +296,14 @@ if (!exists(ParametricSurfaceClass)) {
 
     eq_file._print("//---- Parametric equation expression \n")
 
-    eq_file._print("::X = \"" +::X +"\"\n")
-    eq_file._print("::Y = \"" +::Y +"\"\n")
-    eq_file._print("::Z = \"" +::Z +"\"\n")
+    eq_file._printn("::X = \" %1% \" "  % ::X )
+    eq_file._printn("::Y = \"" +::Y +"\"")
+    eq_file._printn("::Z = \"" +::Z +"\"")
 
 #boost_format("::kmax = %1%\n") % ::kmax
-    eq_file._print("::kmax = \""+ ::kmax +"\"\n")  
+    eq_file._printn("::kmax = %1% " %   ::kmax )  
 #boost_format("::timestep = %1%\n") % ::timestep
-    eq_file._print("::timestep = \""+ ::timestep +"\"\n")
+    eq_file._printn("::timestep = %1% " % ::timestep )
 
     eq_file._print("// Update interface\n")
     eq_file._print("::win.Update(-1)\n")
@@ -313,7 +314,7 @@ if (!exists(ParametricSurfaceClass)) {
   #--------------------------------------------------------------
   proc ::ReadEquation() {
     # call func to read a script ...
-    func
+    func ::eq_filename
   }
 
   #--------------------------------------------------------------
@@ -396,14 +397,14 @@ if (!exists(ParametricSurfaceClass)) {
 
     ::win.EndBook()
 
+    ::win.AddButton("Update Surface", &::Update)
     ::AddStandardButtons(&::win)
 
 #        ::win.BeginHorizontal
 #          scripts_dir = GetScriptsDir
-
+#
 #          upim = wx.wxImage(scripts_dir+"/Bitmaps/update_icon_32.png")
 #          upbmp = wx.wxBitmap(upim)
-#          ::win.AddBitmapButton("Update", ::Update, upbmp)
 
 #          closeim = wx.wxImage(scripts_dir+"/Bitmaps/close_icon_32.png")
 #          closebmp = wx.wxBitmap(closeim)

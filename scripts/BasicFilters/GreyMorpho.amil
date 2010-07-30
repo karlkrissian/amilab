@@ -8,6 +8,8 @@ func "Common/ScriptGui"
 
 if (!exists(GreyMorphoClass)) {
 
+  ami_import.Filters()
+
   Class GreyMorphoClass  : public ScriptGui{
 
     #----------------------------
@@ -52,7 +54,7 @@ if (!exists(GreyMorphoClass)) {
     #----------------------------
     proc ::ProcessImage( IMAGE input) \
     {
-      morph = filters.ContinuousMorphology()
+      morph = global::filters.ContinuousMorphology()
 
       if (::operation==0) {
 #        input = EDPdilate(input,::size,::step)
