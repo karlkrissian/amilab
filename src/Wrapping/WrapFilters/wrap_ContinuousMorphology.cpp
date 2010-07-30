@@ -50,13 +50,13 @@ AMIObject::ptr AddWrap_ContinuousMorphology(  WrapClass_ContinuousMorphology::pt
 }
 
 //----------------------------------------------------------
-Variable<AMIObject>::ptr CreateVar_ContinuousMorphology( ContinuousMorphology* si)
+Variable<AMIObject>::ptr CreateVar_ContinuousMorphology( ContinuousMorphology* _obj)
 {
   // Create smart pointer with own deleter
-  boost::shared_ptr<ContinuousMorphology> si_ptr( si );
+  boost::shared_ptr<ContinuousMorphology> _obj_ptr( _obj );
 
-  WrapClass_ContinuousMorphology::ptr sip(new WrapClass_ContinuousMorphology(si_ptr));
-  AMIObject::ptr amiobject(AddWrap_ContinuousMorphology(sip));
+  WrapClass_ContinuousMorphology::ptr _objp(new WrapClass_ContinuousMorphology(_obj_ptr));
+  AMIObject::ptr amiobject(AddWrap_ContinuousMorphology(_objp));
   Variable<AMIObject>::ptr varres(
       new Variable<AMIObject>( amiobject));
   return varres;

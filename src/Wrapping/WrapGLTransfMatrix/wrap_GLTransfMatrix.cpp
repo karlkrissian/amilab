@@ -58,13 +58,13 @@ AMIObject::ptr AddWrap_GLTransfMatrix(  WrapClass_GLTransfMatrix::ptr& objectptr
 }
 
 //----------------------------------------------------------
-Variable<AMIObject>::ptr CreateVar_GLTransfMatrix( GLTransfMatrix* si)
+Variable<AMIObject>::ptr CreateVar_GLTransfMatrix( GLTransfMatrix* _obj)
 {
   // Create smart pointer with own deleter
-  GLTransfMatrix::ptr si_ptr(si);
+  GLTransfMatrix::ptr _obj_ptr(_obj);
 
-  WrapClass_GLTransfMatrix::ptr sip(new WrapClass_GLTransfMatrix(si_ptr));
-  AMIObject::ptr amiobject(AddWrap_GLTransfMatrix(sip));
+  WrapClass_GLTransfMatrix::ptr _objp(new WrapClass_GLTransfMatrix(_obj_ptr));
+  AMIObject::ptr amiobject(AddWrap_GLTransfMatrix(_objp));
   Variable<AMIObject>::ptr varres(
       new Variable<AMIObject>( amiobject));
   return varres;

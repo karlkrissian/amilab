@@ -50,13 +50,13 @@ AMIObject::ptr AddWrap_wxString(  WrapClass_wxString::ptr& objectptr)
 }
 
 //----------------------------------------------------------
-Variable<AMIObject>::ptr CreateVar_wxString( wxString* si)
+Variable<AMIObject>::ptr CreateVar_wxString( wxString* _obj)
 {
   // Create smart pointer with own deleter
-  boost::shared_ptr<wxString> si_ptr( si );
+  boost::shared_ptr<wxString> _obj_ptr( _obj );
 
-  WrapClass_wxString::ptr sip(new WrapClass_wxString(si_ptr));
-  AMIObject::ptr amiobject(AddWrap_wxString(sip));
+  WrapClass_wxString::ptr _objp(new WrapClass_wxString(_obj_ptr));
+  AMIObject::ptr amiobject(AddWrap_wxString(_objp));
   Variable<AMIObject>::ptr varres(
       new Variable<AMIObject>( amiobject));
   return varres;
@@ -205,7 +205,7 @@ BasicVariable::ptr WrapClass_wxString::
   GET_PARAM(int,iPosBegin, 0);
   GET_PARAM(int,iPosEnd, 0);
 
-  wxString *oString = new wxString(owxString->SubString(iPosBegin, iPosEnd), wxConvUTF8);
+  wxString *oString = new wxString(owxString->SubString(iPosBegin, iPosEnd));
 
   return CreateVar_wxString(oString);
 }
@@ -577,7 +577,7 @@ BasicVariable::ptr WrapClass_wxString::
 {
   boost::shared_ptr<wxString> owxString(this->_objectptr->GetObj());
 
-  wxString *oString = new wxString(owxString->Upper(), wxConvUTF8);
+  wxString *oString = new wxString(owxString->Upper());
 
   return CreateVar_wxString(oString);
 }
@@ -601,7 +601,7 @@ BasicVariable::ptr WrapClass_wxString::
   int n=0;
   GET_PARAM(string,sString,"");
 
-  wxString *oString = new wxString(owxString->FromAscii(sString.c_str()), wxConvUTF8);
+  wxString *oString = new wxString(owxString->FromAscii(sString.c_str()));
 
   return CreateVar_wxString(oString);
 }
@@ -625,7 +625,7 @@ BasicVariable::ptr WrapClass_wxString::
   int n=0;
   GET_PARAM(string,sString,"");
 
-  wxString *oString = new wxString(owxString->FromAscii(sString.c_str()), wxConvUTF8);
+  wxString *oString = new wxString(owxString->FromAscii(sString.c_str()));
 
   return CreateVar_wxString(oString);
 }

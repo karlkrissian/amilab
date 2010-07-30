@@ -50,13 +50,13 @@ AMIObject::ptr AddWrap_wxFileName(  WrapClass_wxFileName::ptr& objectptr)
 }
 
 //----------------------------------------------------------
-Variable<AMIObject>::ptr CreateVar_wxFileName( wxFileName* si)
+Variable<AMIObject>::ptr CreateVar_wxFileName( wxFileName* _obj)
 {
   // Create smart pointer with own deleter
-  boost::shared_ptr<wxFileName> si_ptr( si );
+  boost::shared_ptr<wxFileName> _obj_ptr( _obj );
 
-  WrapClass_wxFileName::ptr sip(new WrapClass_wxFileName(si_ptr));
-  AMIObject::ptr amiobject(AddWrap_wxFileName(sip));
+  WrapClass_wxFileName::ptr _objp(new WrapClass_wxFileName(_obj_ptr));
+  AMIObject::ptr amiobject(AddWrap_wxFileName(_objp));
   Variable<AMIObject>::ptr varres(
       new Variable<AMIObject>( amiobject));
   return varres;
@@ -68,15 +68,9 @@ Variable<AMIObject>::ptr CreateVar_wxFileName( wxFileName* si)
 
 void  wrap_wxFileName::SetParametersComments() 
 {
-  ADDPARAMCOMMENT_TYPE(string,"A full file name (MODE 1).");
-  ADDPARAMCOMMENT_TYPE(string,"A directory name (MODE 2).");
-  ADDPARAMCOMMENT_TYPE(string,"A file name (MODE 2).");
-  ADDPARAMCOMMENT_TYPE(string,"A directory name (MODE 3).");
-  ADDPARAMCOMMENT_TYPE(string,"A file name (MODE 3).");
-  ADDPARAMCOMMENT_TYPE(string,"A file extension (MODE 3).");
-  ADDPARAMCOMMENT_TYPE(string,"A volume name (MODE 4).");
-  ADDPARAMCOMMENT_TYPE(string,"A directory name (MODE 4).");
-  ADDPARAMCOMMENT_TYPE(string,"A file name (MODE 4).");
+  ADDPARAMCOMMENT_TYPE(string,"A full file name (MODE 1) or A directory name (MODE 2) or A directory name (MODE 3) or A volume name (MODE 4).");
+  ADDPARAMCOMMENT_TYPE(string,"A file name (MODE 2) or A file name (MODE 3) or A directory name (MODE 4).");
+  ADDPARAMCOMMENT_TYPE(string,"A file extension (MODE 3) or A file name (MODE 4).");
   ADDPARAMCOMMENT_TYPE(string,"A file extension (MODE 4).");
   return_comments = "A wrapped wxFileName object.";
 }
@@ -144,17 +138,10 @@ BasicVariable::ptr wrap_wxFileName::CallMember( ParamList* p)
 void WrapClass_wxFileName::
       wrap_Assign::SetParametersComments() 
 {
-  ADDPARAMCOMMENT_TYPE(string,"A full file name (MODE 1).");
-  ADDPARAMCOMMENT_TYPE(string,"A directory name (MODE 2).");
-  ADDPARAMCOMMENT_TYPE(string,"A file name (MODE 2).");
-  ADDPARAMCOMMENT_TYPE(string,"A directory name (MODE 3).");
-  ADDPARAMCOMMENT_TYPE(string,"A file name (MODE 3).");
-  ADDPARAMCOMMENT_TYPE(string,"A file extension (MODE 3).");
-  ADDPARAMCOMMENT_TYPE(string,"A volume name (MODE 4).");
-  ADDPARAMCOMMENT_TYPE(string,"A directory name (MODE 4).");
-  ADDPARAMCOMMENT_TYPE(string,"A file name (MODE 4).");
+  ADDPARAMCOMMENT_TYPE(string,"A full file name (MODE 1) or A directory name (MODE 2) or A directory name (MODE 3) or A volume name (MODE 4).");
+  ADDPARAMCOMMENT_TYPE(string,"A file name (MODE 2) or A file name (MODE 3) or A directory name (MODE 4).");
+  ADDPARAMCOMMENT_TYPE(string,"A file extension (MODE 3) or A file name (MODE 4).");
   ADDPARAMCOMMENT_TYPE(string,"A file extension (MODE 4).");
-
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxFileName::

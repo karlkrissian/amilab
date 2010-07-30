@@ -58,13 +58,13 @@ AMIObject::ptr AddWrap_File(  WrapClass_File::ptr& objectptr)
 }
 
 //----------------------------------------------------------
-Variable<AMIObject>::ptr CreateVar_File( FILE* si)
+Variable<AMIObject>::ptr CreateVar_File( FILE* _obj)
 {
   // Create smart pointer with own deleter
-  FILE_ptr si_ptr(si,file_deleter());
+  FILE_ptr _obj_ptr(_obj,file_deleter());
 
-  WrapClass_File::ptr sip(new WrapClass_File(si_ptr));
-  AMIObject::ptr amiobject(AddWrap_File(sip));
+  WrapClass_File::ptr _objp(new WrapClass_File(_obj_ptr));
+  AMIObject::ptr amiobject(AddWrap_File(_objp));
   Variable<AMIObject>::ptr varres(
       new Variable<AMIObject>( amiobject));
   return varres;

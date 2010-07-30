@@ -60,13 +60,13 @@ AMIObject::ptr AddWrap_Viewer3D(  WrapClass_Viewer3D::ptr& objectptr)
 }
 
 //----------------------------------------------------------
-Variable<AMIObject>::ptr CreateVar_Viewer3D( Viewer3D* si)
+Variable<AMIObject>::ptr CreateVar_Viewer3D( Viewer3D* _obj)
 {
   // Create smart pointer with own deleter
-  Viewer3D::ptr si_ptr = Viewer3D::Create_ptr(si);
+  Viewer3D::ptr _obj_ptr = Viewer3D::Create_ptr(_obj);
 
-  WrapClass_Viewer3D::ptr sip(new WrapClass_Viewer3D(si_ptr));
-  AMIObject::ptr amiobject(AddWrap_Viewer3D(sip));
+  WrapClass_Viewer3D::ptr _objp(new WrapClass_Viewer3D(_obj_ptr));
+  AMIObject::ptr amiobject(AddWrap_Viewer3D(_objp));
   Variable<AMIObject>::ptr varres(
       new Variable<AMIObject>( amiobject));
   return varres;
