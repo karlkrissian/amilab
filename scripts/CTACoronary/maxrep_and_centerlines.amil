@@ -67,7 +67,9 @@ sh "mkdir "+datasetdir+"CenterlineResponse"
 filename =  datasetdir+\
             "CenterlineResponse/trying_circles_result.0.ami.gz"
 // check if file exists
-f = open(filename,"r")
+#f = open(filename,"r")
+f = File(filename,"r")
+
 if (!exists(f)) {
 
   func "Centerlines/trying_circles"
@@ -117,7 +119,7 @@ if (!exists(f)) {
   show vars
 } else {
 
-  f.close
+  f.close()
   TC_rmax = Image(filename)
 
   # pb with remaining variables 

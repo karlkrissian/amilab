@@ -33,27 +33,24 @@ if __name__ == "__main__":
 
   amihfile=re.compile('\S*amil$')
 
+  commands_with_par=[
+      (r"\.\s*read\s*\(\s*([^&])",         r".read(&\1", True),
+      (r"\.\s*print\s*([^;]*)\s*($|;)",    r"._print(\1)\2",  True ),
+      (r"\.\s*printn\s*([^;]*)\s*($|;)",   r"._printn(\1)\2", True ),
+      ]
+
   # 1. Create the table of contents from the main directories
   # 2. Propose also an alphabetical list
   # the third parameter: a boolean, is True if we need to ask confirmation from the user ...
   commands_force_par=[
+            ("open",        "File",         True ),
             ("close",       "close",        True ),
-            ("print",       "print",        True ),
-            ("printn",      "printn",       True ),
             ("read_float",  "read_float",   True ),
             ("read_string", "read_string",  True ),
             ("rewind",      "rewind",       True ),
             ("scan_float",  "scan_float",   True ),
             ]
-
-  # close pattern: *file.close,  *file*.close, *.close 
-  # open pattern(Deprecated):  *= open(*
-  # print pattern: *_File*.print* , file.print*
-  # read_float pattern: No check
-  # read_string pattern: No check
-  # rewind pattern: No check
-  # scan_float pattern: No check
-
+#open no funciona por el .
   scripts=[]
   amilfile=re.compile('\S*amil$')
 
@@ -83,10 +80,28 @@ if __name__ == "__main__":
         line    = splitcomments.group(1)
         comments = splitcomments.group(2)+comments
 
+      for cmd1,cmd2,ask in commands_with_par:
+        res = re.subn(cmd1,cmd2,line)
+        if (res[1]>0):
+          if ask:
+            message = " Conversion of File methods from: \n"
+            message = message + "'"+line[:-1]  +"' to:"
+            message = message + "'"+res[0][:-1]+"' accept? (Y/N)"
+            applychanges=raw_input(message)
+            if applychanges=="Y":
+              line = res[0]
+              num_subs = num_subs+1
+          else:
+            if (res[0]!=line):
+              line = res[0]
+              num_subs = num_subs+1
+
       for cmd1,cmd2,ask in commands_force_par:
+        # - convert f.read(x) to f.read(&x)
+
         # $ matches the end of the string and avoids adding () where there are already present
         # if no parenthesis, add it
-        res = re.subn(r"_draw\s*\.(\s*)"+cmd1+r"(\s*[^\(]|\s*$)",r"_draw."+cmd2+r"()\2",line)
+        res = re.subn(r"\.(\s*)"+cmd1+r"(\s*[^\(]|\s*$)",r"."+cmd2+r"()\2",line)
         if (res[1]>0):
           if ask:
             message = " Conversion of File methods from: \n"
@@ -101,7 +116,7 @@ if __name__ == "__main__":
               line = res[0]
               num_subs = num_subs+1
         # if parenthesis, just replace name
-        res = re.subn(r"_draw\s*\.(\s*)"+cmd1+r"(\s*[\(]|\s*$)",r"_draw."+cmd2+r"\2",line)
+        res = re.subn(r"\.(\s*)"+cmd1+r"(\s*[\(]|\s*$)",r"."+cmd2+r"\2",line)
         if (res[1]>0):
           if ask:
             message = " Conversion of File methods from: \n"
@@ -118,11 +133,11 @@ if __name__ == "__main__":
           #sys.stdout.write("("+cmd1+","+cmd2+") -> "+line)
 
         # convert FILE to OBJECT in parameter declaration
-        res = re.subn(r"(,|\()\s*FILE(\s+|,|\))",r"\1 OBJECT\2",line)
-        if (res[1]>0):
-          if (res[0]!=line):
-            line = res[0]
-            num_subs = num_subs+1
+        #res = re.subn(r"(,|\()\s*FILE(\s+|,|\))",r"\1 OBJECT\2",line)
+        #if (res[1]>0):
+          #if (res[0]!=line):
+            #line = res[0]
+            #num_subs = num_subs+1
 
       f.write(line)
       if comments!="":

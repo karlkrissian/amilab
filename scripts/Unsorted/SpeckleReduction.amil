@@ -49,9 +49,9 @@ AnisoGS.setcoeff(0.5,0.2)
 AnisoGS.SetNoiseType(noisetype)
 
 if (compute_snr) {
-  snr_file = open(imagename2+"_snr_"+$2+"_"+$4+".dat","w")
+  snr_file = File(imagename2+"_snr_"+$2+"_"+$4+".dat","w")
 }
-lambda_file = open(imagename2+"_lambda_"+$2+"_"+$4+".dat","w")
+lambda_file = File(imagename2+"_lambda_"+$2+"_"+$4+".dat","w")
 
 for n=1 to numit {
   AnisoGS.iterate
@@ -74,18 +74,18 @@ for n=1 to numit {
     i0_1 = i0[(minx+2):(maxx-3),(miny+2):(maxy-3),(minz+2):(maxz-3)] 
     ir_1 = ir[(minx+2):(maxx-3),(miny+2):(maxy-3),(minz+2):(maxz-3)]
     snr = SNR(ir_1,i0_1)
-    snr_file.print sprint("%02.0f \t ",n)
-    snr_file.print sprint("%3.3f\n ",snr)
+    snr_file._print(sprint("%02.0f \t ",n))
+    snr_file._print(sprint("%3.3f\n ",snr))
   }
-  #  snr_file.print sprint("Noise SD=%3.3f; ",NoiseSD)
-  lambda_file.print sprint("%02.0f \t ",n)
-  lambda_file.print sprint("%3.5f \n",DAcoeff)
+  #  snr_file._print(sprint("Noise SD=%3.3f; ",NoiseSD))
+  lambda_file._print(sprint("%02.0f \t ",n))
+  lambda_file._print(sprint("%3.5f \n",DAcoeff))
 }
 
 if (compute_snr) {
-  snr_file.close
+  snr_file.close()
 }
-lambda_file.close
+lambda_file.close()
 
 ir.save imagename2+"_aniso2.ami.gz"
 

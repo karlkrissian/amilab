@@ -20,8 +20,8 @@ OK = 1 # The test was successful
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-printn "\t\t Create an object of class File (file = File(\"w\", \"test_readwrite_float.txt\")).\n"
-file=File("w", "test_readwrite_float.txt")
+printn "\t\t Create an object of class File (file = File(\"test_readwrite_float.txt\", \"w\")).\n"
+file=File("test_readwrite_float.txt", "w")
 
 printn "\t\t Write the values: 1, 2, 3, 4.\n"
 value1=1
@@ -38,7 +38,7 @@ printn "\t\t Close the file(Deprecated)).\n"
 file.close()
 
 printn "\t\t Open the file: test_readwrite_float.txt (newFile=File(\"r\", \"test_readwrite_float.txt\")).\n"
-newFile=File("r", "test_readwrite_float.txt")
+newFile=File("test_readwrite_float.txt", "r")
 
 printn "\t\t Read the file: test_read_write.txt (firstValue=newFile.scan_float(\"%f\")).\n"
 firstValue=newFile.scan_float("%f")

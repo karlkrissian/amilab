@@ -122,25 +122,25 @@ proc Stats( IMAGE _u, IMAGE _gt, IMAGE _mask, IMAGE eucl_error, IMAGE norm_error
 #
 
 
-    statsfile.print sprint("Average displacement %3.4f \n\n",mean(norm(_gt)))
+    statsfile._print(sprint("Average displacement %3.4f \n\n",mean(norm(_gt))))
 
     eucl_error = norm(_u-_gt);
     _mean = mean(eucl_error,_mask)
-    statsfile.print sprint("Euclidean Error %3.4f ",_mean)
+    statsfile._print(sprint("Euclidean Error %3.4f ",_mean))
     _mean2 = (eucl_error-_mean)*(eucl_error-_mean)
-    statsfile.print sprint(" +/- %3.4f \n\n",sqrt(mean(_mean2,_mask)))
+    statsfile._print(sprint(" +/- %3.4f \n\n",sqrt(mean(_mean2,_mask))))
 
     norm_error = abs(norm(_u)-norm(_gt));
     _mean = mean(norm_error,_mask)
-    statsfile.print sprint("Norm Error %3.4f ",_mean)
+    statsfile._print(sprint("Norm Error %3.4f ",_mean))
     _mean2 = (norm_error-_mean)*(norm_error-_mean)
-    statsfile.print sprint(" +/- %3.4f \n\n",sqrt(mean(_mean2,_mask)))
+    statsfile._print(sprint(" +/- %3.4f \n\n",sqrt(mean(_mean2,_mask))))
 
     angular_error(_u,_gt,&ang_error)
     _mean_ang = mean(ang_error,_mask)
-    statsfile.print sprint("Angular Error %3.4f ",_mean_ang)
+    statsfile._print(sprint("Angular Error %3.4f ",_mean_ang))
     _mean2_ang = (ang_error-_mean_ang)*(ang_error-_mean_ang)
-    statsfile.print sprint(" +/- %3.4f \n\n",sqrt(mean(_mean2_ang,_mask)))
+    statsfile._print(sprint(" +/- %3.4f \n\n",sqrt(mean(_mean2_ang,_mask))))
 
 }
 
@@ -166,15 +166,15 @@ MSD_sigmaE  = 35
 MSD_RunLSE = UCHAR(0)
 
 i1 = Image "0.bmp"
-statsfile = open("statsfile.txt","w")
-SNRfile = open("SNRfile.txt","w") 
+statsfile = File("statsfile.txt","w")
+SNRfile = File("SNRfile.txt","w") 
 
 for i=1 to 40 {
-  statsfile.print "\n"
-  statsfile.print "--- Results for image number "
-  statsfile.print i
-  statsfile.print " ------\n"
-  statsfile.print "\n"
+  statsfile._print("\n")
+  statsfile._print("--- Results for image number ")
+  statsfile._print(i)
+  statsfile._print(" ------\n")
+  statsfile._print("\n")
   i2 = Image (sprint("%0.0f.bmp",i))
   resname = sprint("demon_result_%0.0f",i)
   MSD_Init(&i1,&i2,resname)
@@ -197,14 +197,14 @@ for i=1 to 40 {
     sigmadiff=res_lse_1-mean(res_lse_1)
     sigma_SNR=sqrt(mean(sigmadiff*sigmadiff))
     _SNR=mean(res_lse_1)/sigma_SNR
-    SNRfile.print _SNR
-    SNRfile.print "\n"
+    SNRfile._print(_SNR)
+    SNRfile._print("\n")
   }
 
 }
 
-statsfile.close
-SNRfile.close
+statsfile.close()
+SNRfile.close()
 
 #MSD_Init()
 #MSD_gui()

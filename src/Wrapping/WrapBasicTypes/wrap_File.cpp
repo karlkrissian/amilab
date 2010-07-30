@@ -76,8 +76,8 @@ Variable<AMIObject>::ptr CreateVar_File( FILE* si)
 
 void  wrap_File::SetParametersComments() 
 {
-  ADDPARAMCOMMENT_TYPE(string,"The file access modes.");
   ADDPARAMCOMMENT_TYPE(string,"The name of the file to be opened.");
+  ADDPARAMCOMMENT_TYPE(string,"The file access modes (def: w).");
   return_comments = "A wrapped File object.";
 }
 
@@ -86,8 +86,8 @@ BasicVariable::ptr wrap_File::CallMember( ParamList* p)
 {
   if (!p) ClassHelpAndReturn;
   int n=0;
-  GET_PARAM(string,sMode,"");
   GET_PARAM(string,sFileName,"");
+  GET_PARAM(string,sMode,"w");
 
   if ((sMode == "") || (sFileName == ""))
     ClassHelpAndReturn
@@ -253,6 +253,64 @@ BasicVariable::ptr WrapClass_File::
   }
 
   RETURN_VAR(float,val);
+}
+
+//---------------------------------------------------
+//  read
+//---------------------------------------------------
+void WrapClass_File::
+      wrap_read::SetParametersComments() 
+{
+  ADDPARAMCOMMENT("Reference to a variable of type int, float or string (of maximum 512 characters)");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_File::
+      wrap_read::CallMember( ParamList* p)
+{
+  FILE_ptr file(this->_objectptr->GetObj());
+
+  int n = 0;
+  BasicVariable::ptr param;
+  if (!get_generic_var_param(param,p,n,true)) ClassHelpAndReturn;
+
+  if (param->GetTypeName()==to_string<int>::value()) {
+    DYNAMIC_CAST_VARIABLE(int,param,intparam);
+    if (file.get())
+    {
+      int res;
+      setlocale(LC_NUMERIC, "C");
+      if (fscanf(file.get(),"%d",&res) == 0) {
+        GB_driver.err_print("Unable to read integer value from file");
+      }
+      else
+        *intparam->Pointer() =  res;
+    }
+  } else 
+  if (param->GetTypeName()==to_string<float>::value()) {
+    DYNAMIC_CAST_VARIABLE(float,param,floatparam);
+    if (file.get())
+    {
+      float res;
+      setlocale(LC_NUMERIC, "C");
+      if (fscanf(file.get(),"%f",&res) == 0) {
+        GB_driver.err_print("Unable to read float value from file");
+      }
+      else
+        *floatparam->Pointer() =  res;
+    }
+  } else 
+  if (param->GetTypeName()==to_string<std::string>::value()) {
+    DYNAMIC_CAST_VARIABLE(std::string,param,stringparam);
+    char res[512];
+    //setlocale(LC_NUMERIC, "C");
+    if (fscanf(file.get(),"%s",&res) == 0)
+      GB_driver.err_print("Unable to read string value from file");
+    else
+        *stringparam->Pointer() =  res;
+  } else 
+    ClassHelpAndReturn;
+
+  return BasicVariable::ptr();
 }
 
 //---------------------------------------------------

@@ -317,32 +317,32 @@ proc TC_Save() {
       filename = sprint(TC_result_filename+".%0.0f."+\
                         TC_result_extension,n)
       // check if file exists
-      f = open(filename,"r")
+      f = File(filename,"r")
       if (!exists(f)) { n=100; }
     }
   }
   TC_rmax.save  filename
   TC_lextr.save filename+"_localextrema.ami.gz"
 
-  file = open(filename+".param","w")
-  file.print "----- filter_circles.amil script -------\n"
-  file.print "\n Ran with the following parameters: \n\n"
+  file = File(filename+".param","w")
+  file._print("----- filter_circles.amil script -------\n")
+  file._print("\n Ran with the following parameters: \n\n")
   if (exists(input_filename)) {
-    file.print "input filename      "+input_filename+"\n"
+    file._print("input filename      "+input_filename+"\n")
   } else {
-    file.print "input filename      "+TC_input0.GetName+"\n"
+    file._print("input filename      "+TC_input0.GetName+"\n")
   }
-  file.print sprint("th                  %3.3f \n",th)
-  file.print sprint("UseZoom             %3.3f \n",TC_usezoom)
-  file.print sprint("SplitNumber         %3.3f \n",TC_split_number)
-  file.print sprint("rad min             %3.3f \n",TC_radmin)
-  file.print sprint("rad max             %3.3f \n",TC_radmax)
-  file.print sprint("rad step            %3.3f \n",TC_radstep)
-  file.print sprint("sigma               %3.3f \n",TC_sigma)
-  file.print sprint("Gradient sigma      %3.3f \n",TC_sigma_gradient)
-  file.print sprint("Beta                %3.3f \n",TC_beta)
-  file.print sprint("Pairs mode          %3.0f \n",TC_pairs_mode)
-  file.print sprint("Keep Highest values %3.0f \n",TC_keephighest)
+  file._print(sprint("th                  %3.3f \n",th))
+  file._print(sprint("UseZoom             %3.3f \n",TC_usezoom))
+  file._print(sprint("SplitNumber         %3.3f \n",TC_split_number))
+  file._print(sprint("rad min             %3.3f \n",TC_radmin))
+  file._print(sprint("rad max             %3.3f \n",TC_radmax))
+  file._print(sprint("rad step            %3.3f \n",TC_radstep))
+  file._print(sprint("sigma               %3.3f \n",TC_sigma))
+  file._print(sprint("Gradient sigma      %3.3f \n",TC_sigma_gradient))
+  file._print(sprint("Beta                %3.3f \n",TC_beta))
+  file._print(sprint("Pairs mode          %3.0f \n",TC_pairs_mode))
+  file._print(sprint("Keep Highest values %3.0f \n",TC_keephighest))
 
   del file
 }

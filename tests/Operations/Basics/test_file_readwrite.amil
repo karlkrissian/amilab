@@ -25,8 +25,8 @@ OK = 1 # The test was successful
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-printn "\t\t Create an object of class File(file = File(\"w\", \"test_read_write.txt\")).\n"
-file=File("w", "test_read_write.txt")
+printn "\t\t Create an object of class File(file = File(\"test_read_write.txt\", \"w\")).\n"
+file=File("test_read_write.txt", "w")
 
 printn "\t\t Write Hello(file._print(\"Hello \")).\n"
 file._print("Hello ")
@@ -40,8 +40,8 @@ file._printn("Nice.")
 printn "\t\t Close the file(Deprecated)).\n"
 file.close()
 
-printn "\t\t Create an object of class File(newFile = File(\"r\", \"test_read_write.txt\")).\n"
-newFile=File("r", "test_read_write.txt")
+printn "\t\t Create an object of class File(newFile = File(\"test_read_write.txt\", \"r\")).\n"
+newFile=File("test_read_write.txt", "r")
 
 printn "\t\t Read the file: test_read_write.txt (firstValue=newFile.read_string()).\n"
 firstValue=newFile.read_string()

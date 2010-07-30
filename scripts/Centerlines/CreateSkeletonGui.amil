@@ -37,10 +37,10 @@ if (!exists(CreateSkeletonClass)) {
     #-----------------------------------------------------------
     proc ReadPoint( STRING st, NUM x, NUM y, NUM z) {
       printn "opening "+st
-      f = open(st,"r")
-      f.read(x)
-      f.read(y)
-      f.read(z)
+      f = File(st,"r")
+      f.read(&x)
+      f.read(&y)
+      f.read(&z)
       printn "Point read:"+sprint("%3.2f",x)+\
             sprint(", %3.2f",y)+sprint(", %3.2f",z);
     }

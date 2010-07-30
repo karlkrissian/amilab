@@ -45,8 +45,9 @@ class WrapClass_File: public WrapClassBase
     ADD_CLASS_METHOD(printn,      "Write the contents of a variable in a file (generates a line break).");
     ADD_CLASS_METHOD(close,       "Closes the open file.");
     ADD_CLASS_METHOD(scan_float,  "Scans a float number in the given file and based on the given formatting expression.");
-    ADD_CLASS_METHOD(read_float,  "Read a float number of a file.");
-    ADD_CLASS_METHOD(read_string, "Read a string of a file.");
+    ADD_CLASS_METHOD(read,        "Reads a float of a string from a file.");
+    ADD_CLASS_METHOD(read_float,  "Read a float number from a file.");
+    ADD_CLASS_METHOD(read_string, "Read a string from a file.");
 
     void AddMethods(_parentclass_ptr& this_ptr )
     {
@@ -55,6 +56,7 @@ class WrapClass_File: public WrapClassBase
       AddVar_printn(      this_ptr, "_printn");
       AddVar_close(       this_ptr);
       AddVar_scan_float(  this_ptr);
+      AddVar_read(        this_ptr);
       AddVar_read_float(  this_ptr);
       AddVar_read_string( this_ptr);
     };

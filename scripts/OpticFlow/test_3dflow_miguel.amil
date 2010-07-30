@@ -537,8 +537,10 @@ proc CB_RunAlphaTests() {
 
   filename1=filedir+param_str+"_Mean.dat"
   filename2=filedir+param_str+"_StDv.dat"
-  test_file1 = open(filename1,"w")
-  test_file2 = open(filename2,"w")
+#  test_file1 = open(filename1,"w")
+#  test_file2 = open(filename2,"w")
+  test_file1 = File(filename1,"w")
+  test_file2 = File(filename2,"w")
 
   CreateParamString()
   param_str = param_str + sprint("(alpha,%f,",alfa_min)
@@ -547,18 +549,20 @@ proc CB_RunAlphaTests() {
   param_str = param_str + sprint("%f) ",alfa_step)
 
   # print parameter information at the beginning of the files
-  test_file1.print "# Optical Flow technique\n"
-  test_file1.print "# Mean error \n"
-  test_file1.print "# amilab script: test_3dflow.amil\n"
-  test_file1.print "# Parameters\n"
-  test_file1.print "# "+param_str+"\n"
+  test_file1._print("# Optical Flow technique\n")
+  test_file1._print("# Mean error \n")
+  test_file1._print("# amilab script: test_3dflow.amil\n")
+  test_file1._print("# Parameters\n")
+  _st_ = "# "+param_str+"\n"
+  test_file1._print(_st_)
 
 
-  test_file2.print "# Optical Flow technique\n"
-  test_file2.print "# Standard deviation \n"
-  test_file2.print "# amilab script: test_3dflow.amil\n"
-  test_file2.print "# Parameters\n"
-  test_file2.print "# "+param_str+"\n"
+  test_file2._print("# Optical Flow technique\n")
+  test_file2._print("# Standard deviation \n")
+  test_file2._print("# amilab script: test_3dflow.amil\n")
+  test_file2._print("# Parameters\n")
+  _st_ = "# "+param_str+"\n"
+  test_file2._print(_st_)
 
   #----- save initial value of the vector flow
   if (!alfa_init_zero) {
@@ -579,23 +583,23 @@ proc CB_RunAlphaTests() {
 
     n = norm(u-u_o);
     _mean = mean(n,mask)
-    test_file1.print alfa
-    test_file1.print "\t"
-    test_file1.print _mean
-    test_file1.print "\n"
+    test_file1._print(alfa)
+    test_file1._print("\t")
+    test_file1._print(_mean)
+    test_file1._print("\n")
 
     _mean2 = (n-_mean)*(n-_mean)
     // error after removing 15 pixels at the border
-    test_file2.print alfa
-    test_file2.print "\t"
-    test_file2.print sqrt(mean(_mean2,mask))
-    test_file2.print "\n"
+    test_file2._print(alfa)
+    test_file2._print("\t")
+    test_file2._print(sqrt(mean(_mean2,mask)))
+    test_file2._print("\n")
 
   }
 
   print "closing files \n"
-  test_file1.close
-  test_file2.close
+  test_file1.close()
+  test_file2.close()
   print "files closed\n"
 }
 
@@ -615,10 +619,10 @@ proc EvalFunction( NUM input, NUM res ) {
   n = norm(u-u_o);
   _mean = mean(n,mask)
 
-  findmin_file1.print input
-  findmin_file1.print "\t"
-  findmin_file1.print _mean
-  findmin_file1.print "\n"
+  findmin_file1._print(input)
+  findmin_file1._print("\t")
+  findmin_file1._print(_mean)
+  findmin_file1._print("\n")
 
   res = _mean
 
@@ -638,7 +642,8 @@ proc CB_AlphaFindMin() {
   filedir="Results/"+data_info+"/"
 
   filename1=filedir+param_str+"__Mean.dat"
-  findmin_file1 = open(filename1,"w")
+#  findmin_file1 = open(filename1,"w")
+  findmin_file1 = File(filename1,"w")
 
   CreateParamString()
   param_str = param_str + sprint("(alpha,%f,",alfa_min)
@@ -646,11 +651,12 @@ proc CB_AlphaFindMin() {
   param_str = param_str + sprint("(iterations,%0.0f) ",alfa_findmin_it)
 
   # print parameter information at the beginning of the files
-  findmin_file1.print "# Optical Flow technique\n"
-  findmin_file1.print "# Mean error \n"
-  findmin_file1.print "# amilab script: test_3dflow.amil\n"
-  findmin_file1.print "# Parameters\n"
-  findmin_file1.print "# "+param_str+"\n"
+  findmin_file1._print("# Optical Flow technique\n")
+  findmin_file1._print("# Mean error \n")
+  findmin_file1._print("# amilab script: test_3dflow.amil\n")
+  findmin_file1._print("# Parameters\n")
+  _st_ = "# "+param_str+"\n"
+  findmin_file1._print(_st_)
 
   #----- save initial value of the vector flow
   if (!alfa_init_zero) {
@@ -664,7 +670,7 @@ proc CB_AlphaFindMin() {
   del findmin_u_init
 
   print "closing files \n"
-  findmin_file1.close
+  findmin_file1.close()
   print "files closed\n"
 
   local

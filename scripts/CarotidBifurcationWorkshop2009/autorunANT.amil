@@ -60,8 +60,8 @@ autorun->CarotidExperiments_LevelSetsInternal
 autorun->CarotidExperiments_LevelSetsPathsSave
 
 file = autorun->current_resultsdir+"/time.txt"
-f = open(file,"w")
-f.printn "Time= "+TimeSpent
+f = File(file,"w")
+f._printn("Time= "+TimeSpent)
 del f
 
 quit

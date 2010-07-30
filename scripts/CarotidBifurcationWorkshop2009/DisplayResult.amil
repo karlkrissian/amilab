@@ -24,9 +24,9 @@ DR_surf = Surface()
 show DR_surf
 
 # read data side
-f = open(DR_data_dir+"/side"+DR_datanum_str+".txt","r")
+f = File(DR_data_dir+"/side"+DR_datanum_str+".txt","r")
 DR_side = ""
-f.read(DR_side)
+f.read(&DR_side)
 
 # Draw the initial points
 pointsname = DR_data_dir + "/points"+DR_datanum_str+".txt"

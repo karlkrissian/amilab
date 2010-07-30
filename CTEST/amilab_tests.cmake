@@ -104,7 +104,7 @@ SET(options "test_fibonacci.amil"                  "test_factorial.amil"
             "test_image_vdim.amil"                 "test_image_type.amil"
     # FILE
             "test_file_readwrite.amil"             "test_file_readwrite_float.amil"
-            "test_file_rewind.amil"
+            "test_file_rewind.amil"                "test_file_read.amil"
     # WXSTRING
             "test_wxString_append.amil"            "test_wxString_remove.amil"
             "test_wxString_clear.amil"             "test_wxString_replaceall.amil"

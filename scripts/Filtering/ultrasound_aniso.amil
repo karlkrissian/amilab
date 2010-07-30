@@ -26,7 +26,8 @@ AnisoGS.setcoeff(0.1,0.5)
 AnisoGS.SetNoiseType(noisetype)
 AnisoGS.SetMask(m0)
 
-noise_file = open("noise_"+$2+"_"+$4+".dat","w")
+#noise_file = open("noise_"+$2+"_"+$4+".dat","w")
+noise_file = File("noise_"+$2+"_"+$4+".dat","w")
 
 for n=1 to numit {
   AnisoGS.iterate
@@ -37,13 +38,13 @@ for n=1 to numit {
   DAcoeff=AnisoGS.GetDAcoeff;
 
 
-  noise_file.print sprint("it=%02.0f; ",n)
-  noise_file.print sprint("Noise SD=%3.3f; ",NoiseSD)
-  noise_file.print sprint("DA coeff=%3.5f \n",DAcoeff)
+  noise_file._print(sprint("it=%02.0f; ",n))
+  noise_file._print(sprint("Noise SD=%3.3f; ",NoiseSD))
+  noise_file._print(sprint("DA coeff=%3.5f \n",DAcoeff))
 
 }
 
-noise_file.close
+noise_file.close()
 
 ir_name = imagename-".gz"-".ami"+sprint("_%2.2f",data_coeff)
 ir.save ir_name+"_"+$4+"_"+$5+".ami.gz"

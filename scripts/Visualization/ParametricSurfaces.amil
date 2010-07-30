@@ -284,28 +284,28 @@ if (!exists(ParametricSurfaceClass)) {
 
   #--------------------------------------------------------------
   proc ::SaveEquation() {
-    eq_file = open(::eq_filename,"w")
+    eq_file = File(::eq_filename,"w")
 
-    eq_file.print "//-- Saving equation \n"
+    eq_file._print("//-- Saving equation \n")
 
-    eq_file.print "//---- Main Parameters\n"
+    eq_file._print("//---- Main Parameters\n")
 
-    eq_file.print "::theta_dim = %1%\n" % ::theta_dim
-    eq_file.print "::phi_dim = %1%\n" % ::phi_dim
+    eq_file._print("::theta_dim = %1%\n" % ::theta_dim)
+    eq_file._print("::phi_dim = %1%\n" % ::phi_dim)
 
-    eq_file.print "//---- Parametric equation expression \n"
+    eq_file._print("//---- Parametric equation expression \n")
 
-    eq_file.print "::X = \"" +::X +"\"\n"
-    eq_file.print "::Y = \"" +::Y +"\"\n"
-    eq_file.print "::Z = \"" +::Z +"\"\n"
+    eq_file._print("::X = \"" +::X +"\"\n")
+    eq_file._print("::Y = \"" +::Y +"\"\n")
+    eq_file._print("::Z = \"" +::Z +"\"\n")
 
-    eq_file.print boost_format("::kmax = %1%\n") \
-                                % ::kmax
-    eq_file.print boost_format("::timestep = %1%\n") \
-                                % ::timestep
+#boost_format("::kmax = %1%\n") % ::kmax
+    eq_file._print("::kmax = \""+ ::kmax +"\"\n")  
+#boost_format("::timestep = %1%\n") % ::timestep
+    eq_file._print("::timestep = \""+ ::timestep +"\"\n")
 
-    eq_file.print "// Update interface\n"
-    eq_file.print "::win.Update(-1)\n"
+    eq_file._print("// Update interface\n")
+    eq_file._print("::win.Update(-1)\n")
 
   }
 

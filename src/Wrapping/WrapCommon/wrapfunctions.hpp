@@ -295,8 +295,13 @@ int get_num_param(ParamList* p);
 
 /**
  * Function used to parse a variable of generic type in a list of parameters, and to give back a smart pointer to the variable.
+ * @param var 
+ * @param p 
+ * @param num 
+ * @param force_ref if true forces that the variable be a reference.
+ * @return true/false if success/failure
  */
-bool get_generic_var_param( BasicVariable::ptr& var, ParamList*p, int& num);
+bool get_generic_var_param( BasicVariable::ptr& var, ParamList*p, int& num, bool force_ref = false);
 
 /**
  * Function used to parse a variable of specified type in a list of parameters, and to give back a smart pointer to the variable.

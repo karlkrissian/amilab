@@ -53,7 +53,8 @@ d0 = Image "tmp_u_cor_esfera.ami"
 mask = Image "/home/mgarcia/flow_3d/esfera/mask.ami.gz"
 
 # Compute results for different alfa ...
-error_file  = open(sprint("alfa_esfera_cor_%0.0f.dat",gradtype),"w")
+#error_file  = open(sprint("alfa_esfera_cor_%0.0f.dat",gradtype),"w")
+error_file = File(sprint("alfa_esfera_cor_%0.0f.dat",gradtype),"w")
 
 n=(alfa_max-alfa_min)/alfa_step
 
@@ -69,12 +70,12 @@ for k=0 to n {
 
   ndiff = norm(d-d1)
 
-  error_file.print alfa
-  error_file.print "\t"
-  error_file.print mean(ndiff,mask)
-  error_file.print "\n"
+  error_file._print(alfa)
+  error_file._print("\t")
+  error_file._print(mean(ndiff,mask))
+  error_file._print("\n")
 
 
 }
 
-error_file .close
+error_file .close()

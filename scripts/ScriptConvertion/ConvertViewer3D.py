@@ -36,54 +36,34 @@ if __name__ == "__main__":
   # 1. Create the table of contents from the main directories
   # 2. Propose also an alphabetical list
   # the third parameter: a boolean, is True if we need to ask confirmation from the user ...
+  mostcases = False
   commands_force_par=[
-            ("AddObject",           "AddObject",        True ),
-            ("Center",              "Center",           True ),
-            ("compare",             "compare",          True ),
-            ("drawCC",              "drawCC",           True ),
-            ("drawCCOnlyCC",        "drawCCOnlyCC",     True ),
-            ("getimage",            "getimage",         True ),
-            ("GetImageFromX",       "GetImageFromX",    True ),
-            ("GetTransform",        "GetTransform",     True ),
-            ("HideSection",         "HideSection",      True ),
-            ("Normalize",           "Normalize",        True ),
+            ("AddObject",           "AddObject",        mostcases ),
+            ("Center",              "Center",           mostcases ),
+            ("compare",             "compare",          mostcases ),
+            ("drawCC",              "drawCC",           mostcases ),
+            ("drawCCOnlyCC",        "drawCCOnlyCC",     mostcases ),
+            ("getimage",            "getimage",         mostcases ),
+            ("GetImageFromX",       "GetImageFromX",    mostcases ),
+            ("GetTransform",        "GetTransform",     mostcases ),
+            ("HideSection",         "HideSection",      mostcases ),
+            ("Normalize",           "Normalize",        mostcases ),
             ("Paint",               "Paint",            True ),
-            ("PrintMatrices",       "PrintMatrices",    True ),
-            ("Remove",              "Remove",           True ),
-            ("rotate",              "rotate",           True ),
+            ("PrintMatrices",       "PrintMatrices",    mostcases ),
+            ("Remove",              "Remove",           mostcases ),
+            ("rotate",              "rotate",           mostcases ),
             ("SetBackground",       "SetBackground",    True ),
-            ("SetCurrentObj",       "SetCurrentObj",    True ),
-            ("SetLightAmbient",     "SetLightAmbient",  True ),
-            ("SetLightDiffuse",     "SetLightDiffuse",  True ),
-            ("SetLightSpecular",    "SetLightSpecular", True ),
-            ("SetLightSpecular",    "SetLightSpecular", True ),
-            ("SetTransform",        "SetTransform",     True ),
-            ("setvector",           "setvector",        True ),
-            ("SetWindowSize",       "SetWindowSize",    True ),
-            ("ShowSection",         "ShowSection",      True ),
-            ("SwapBuffers",         "SwapBuffers",      True ),
+            ("SetCurrentObj",       "SetCurrentObj",    mostcases ),
+            ("SetLightAmbient",     "SetLightAmbient",  mostcases ),
+            ("SetLightDiffuse",     "SetLightDiffuse",  mostcases ),
+            ("SetLightSpecular",    "SetLightSpecular", mostcases ),
+            ("SetLightSpecular",    "SetLightSpecular", mostcases ),
+            ("SetTransform",        "SetTransform",     mostcases ),
+            ("setvector",           "setvector",        mostcases ),
+            ("SetWindowSize",       "SetWindowSize",    mostcases ),
+            ("ShowSection",         "ShowSection",      mostcases ),
+            ("SwapBuffers",         "SwapBuffers",      mostcases ),
             ]
-
-  # pattern: *_draw.[function]*
-
-  ############################################
-  #               ATTENTION                  #
-  ############################################
-  #                                          #
-  #        There are special cases           #
-  #        ^^^^^^^^^^^^^^^^^^^^^^^           #
-  #                                          #
-  #    Pattern             Result            #
-  #  ###########       #################     #
-  #                                          #
-  #  Paint             Paint()Callback       #
-  #  SetBackground     SetBackground()Colour #
-  #                                          #
-  # Uncontrolled cases.                      #
-  #                                          #
-  # TODO.                                    #
-  #                                          #
-  ############################################
 
   scripts=[]
   amilfile=re.compile('\S*amil$')
@@ -117,7 +97,7 @@ if __name__ == "__main__":
       for cmd1,cmd2,ask in commands_force_par:
         # $ matches the end of the string and avoids adding () where there are already present
         # if no parenthesis, add it
-        res = re.subn(r"\s*\.(\s*)"+cmd1+r"(\s*[^\(])",r"."+cmd2+r"()\2",line)
+        res = re.subn(r"\s*\.(\s*)"+cmd1+r"(\s*[^\(A-Za-z_0-1]|\s*$)",r"."+cmd2+r"()\2",line)
         if (res[1]>0):
           if ask:
             message = " Conversion of Viewer3D methods from: \n"

@@ -861,10 +861,14 @@ proc CB_RunAlphaTests() {
   filename2=filedir+"MeanAngErrorMarg"+param_str+".dat"
   filename3=filedir+"SDAngError______"+param_str+".dat"
   filename4=filedir+"MeanAngErrorSky_"+param_str+".dat"
-  test_file1 = open(filename1,"w")
-  test_file2 = open(filename2,"w")
-  test_file3 = open(filename3,"w")
-  test_file4 = open(filename4,"w")
+#  test_file1 = open(filename1,"w")
+#  test_file2 = open(filename2,"w")
+#  test_file3 = open(filename3,"w")
+#  test_file4 = open(filename4,"w")
+  test_file1 = File(filename1,"w")
+  test_file2 = File(filename2,"w")
+  test_file3 = File(filename3,"w")
+  test_file4 = File(filename4,"w")
 
   param_str = ""
   if (symmetric) {
@@ -898,31 +902,39 @@ proc CB_RunAlphaTests() {
   param_str = param_str + sprint("%f) ",alfa_step)
 
   # print parameter information at the beginning of the files
-  test_file1.print "# Optical Flow technique\n"
-  test_file1.print "# Angular error obtained for the Yosemite sequence\n"
-  test_file1.print "# amilab script: "+$0+" \n"
-  test_file1.print "# Parameters\n"
-  test_file1.print "# "+param_str+"\n"
+  test_file1._print("# Optical Flow technique\n")
+  test_file1._print("# Angular error obtained for the Yosemite sequence\n")
+  _st_ = "# amilab script: "+$0+" \n"
+  test_file1._print(_st_)
+  test_file1._print("# Parameters\n")
+  _st_ = "# "+param_str+"\n"
+  test_file1._print(_st_)
 
 
-  test_file2.print "# Optical Flow technique\n"
-  test_file2.print "# Angular error obtained for the Yosemite sequence\n"
-  test_file2.print "# amilab script: "+$0+" \n"
-  test_file2.print "# Parameters\n"
-  test_file2.print "# "+param_str+"\n"
-  test_file2.print "# margin of 15 pixels at the border\n"
+  test_file2._print("# Optical Flow technique\n")
+  test_file2._print("# Angular error obtained for the Yosemite sequence\n")
+  _st_ = "# amilab script: "+$0+" \n"
+  test_file2._print(_st_)
+  test_file2._print("# Parameters\n")
+  _st_ = "# "+param_str+"\n"
+  test_file2._print(_st_)
+  test_file2._print("# margin of 15 pixels at the border\n")
 
-  test_file3.print "# Optical Flow technique\n"
-  test_file3.print "# Standard deviation of the angular error obtained for the Yosemite sequence\n"
-  test_file3.print "# amilab script: "+$0+" \n"
-  test_file3.print "# Parameters\n"
-  test_file3.print "# "+param_str+"\n"
+  test_file3._print("# Optical Flow technique\n")
+  test_file3._print("# Standard deviation of the angular error obtained for the Yosemite sequence\n")
+  _st_ = "# amilab script: "+$0+" \n"
+  test_file3._print(_st_)
+  test_file3._print("# Parameters\n")
+  _st_ = "# "+param_str+"\n"
+  test_file3._print(_st_)
 
-  test_file4.print "# Optical Flow technique\n"
-  test_file4.print "# Angular error obtained for the Yosemite sequence, getting rid of the pb close to the sky\n"
-  test_file4.print "# amilab script: "+$0+" \n"
-  test_file4.print "# Parameters\n"
-  test_file4.print "# "+param_str+"\n"
+  test_file4._print("# Optical Flow technique\n")
+  test_file4._print("# Angular error obtained for the Yosemite sequence, getting rid of the pb close to the sky\n")
+  _st_ = "# amilab script: "+$0+" \n"
+  test_file4._print(_st_)
+  test_file4._print("# Parameters\n")
+  _st_ = "# "+param_str+"\n"
+  test_file4._print(_st_)
 
   n=(alfa_max-alfa_min)/alfa_step
   for k=0 to n {
@@ -940,27 +952,27 @@ proc CB_RunAlphaTests() {
       mask1=mask
     }
 
-    test_file1.print alfa
-    test_file1.print "\t"
-    test_file1.print mean(ang_error,mask1)
-    test_file1.print "\n"
+    test_file1._print(alfa)
+    test_file1._print("\t")
+    test_file1._print(mean(ang_error,mask1))
+    test_file1._print("\n")
 
     // standard deviation of the error
     ae1 = ang_error-mean(ang_error,mask1)
     ae1_sd = ae1*ae1
     ang_sd = sqrt(mean(ae1_sd,mask1))
 
-    test_file3.print alfa
-    test_file3.print "\t"
-    test_file3.print ang_sd
-    test_file3.print "\n"
+    test_file3._print(alfa)
+    test_file3._print("\t")
+    test_file3._print(ang_sd)
+    test_file3._print("\n")
 
     // error after removing 15 pixels at the border
     RemoveBorder(&mask1,15)
-    test_file2.print alfa
-    test_file2.print "\t"
-    test_file2.print mean(ang_error,mask1)
-    test_file2.print "\n"
+    test_file2._print(alfa)
+    test_file2._print("\t")
+    test_file2._print(mean(ang_error,mask1))
+    test_file2._print("\n")
 
     if (use_clouds) {
       // full image
@@ -973,20 +985,20 @@ proc CB_RunAlphaTests() {
     mask1f = (FLOAT) mask1
     mask1fe = EDPerode(mask1f,1,0.25)
     mask1 =  (UCHAR) ((mask1fe>127)*255)
-    test_file4.print alfa
-    test_file4.print "\t"
-    test_file4.print mean(ang_error,mask1)
-    test_file4.print "\n"
+    test_file4._print(alfa)
+    test_file4._print("\t")
+    test_file4._print(mean(ang_error,mask1))
+    test_file4._print("\n")
 
     ProcessXEvents(200);
 
   }
 
   print "closing files \n"
-  test_file1.close
-  test_file2.close
-  test_file3.close
-  test_file4.close
+  test_file1.close()
+  test_file2.close()
+  test_file3.close()
+  test_file4.close()
   print "files closed\n"
 }
 

@@ -2,8 +2,11 @@
 
 proc CrossSectionsArea( IMAGE _sec, STRING st, NUM center_cc ) {
 
-  file_area   = open(st+"_area.dat","w")
-  file_radius = open(st+"_radius.dat","w")
+#  file_area   = open(st+"_area.dat","w")
+#  file_radius = open(st+"_radius.dat","w")
+  file_area   = File(st+"_area.dat","w")
+  file_radius = File(st+"_radius.dat","w")
+
   voxarea = _sec.vx*_sec.vy
 
   for _n = 0 to sec.tz-1 {
@@ -25,12 +28,12 @@ proc CrossSectionsArea( IMAGE _sec, STRING st, NUM center_cc ) {
     } else {
       area = posarea(sec1)*voxarea
     }
-    file_area.print   sprint("%0.0f\t",_n)
-    file_area.print   sprint("%0.2f\n",area)
-    file_radius.print sprint("%0.0f\t",_n)
-    file_radius.print sprint("%0.2f\n",sqrt(area/Pi))
+    file_area._print(sprint("%0.0f\t",_n))
+    file_area._print(sprint("%0.2f\n",area))
+    file_radius._print(sprint("%0.0f\t",_n))
+    file_radius._print(sprint("%0.2f\n",sqrt(area/Pi)))
   }
 
-  file_area.  close  
-  file_radius.close  
+  file_area.close() 
+  file_radius.close()  
 }
