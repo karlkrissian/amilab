@@ -34,6 +34,7 @@ void MyTextCtrl::OnText(wxCommandEvent& event)
 {
     void (*cbf)( void*) = (void (*)(void*)) this->_callback;
     cbf(this->_calldata);
+    event.Skip();
 }
  
 void MyTextCtrl::OnKillFocus(wxFocusEvent& event)
@@ -41,5 +42,6 @@ void MyTextCtrl::OnKillFocus(wxFocusEvent& event)
   //printf("Kill Focus \n");
     void (*cbf)( void*) = (void (*)(void*)) this->_callback;
     cbf(this->_calldata);
+    event.Skip();
 }
  

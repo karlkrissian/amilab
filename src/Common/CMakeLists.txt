@@ -4,12 +4,15 @@
 # Make sure the compiler can find include files from our Hello library.
 include_directories (${AMILAB_SOURCE_DIR}/Common)
 
+INCLUDE( ${wxWidgets_USE_FILE})
+
 SET(Common_SRCS
   chaine.cpp 
   Timing.cpp 
   Erreurs.cpp 
   ficparam.cpp  
   StringUtils.cpp
+  message_dialog.cpp
 )
 
 SET(Common_HDRS

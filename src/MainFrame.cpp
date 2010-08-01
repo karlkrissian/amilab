@@ -121,7 +121,10 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU_RANGE(wxID_Images_History, wxID_Images_History+8, MainFrame::OnFileOpenImageHistory)
 
     EVT_MENU(ID_File_OpenPolydata, MainFrame::OnFileOpenPolydata)
+
     EVT_MENU(ID_File_LoadScript,   MainFrame::OnFileLoadScript)
+    EVT_MENU_RANGE(wxID_Scripts_History, wxID_Scripts_History+8, MainFrame::OnFileOpenScriptHistory)
+
     EVT_MENU(ID_Quit,              MainFrame::OnQuit)
 
     EVT_MENU(ID_View_Reset,        MainFrame::OnViewReset)
@@ -391,7 +394,7 @@ MainFrame::MainFrame( const wxString& title,
   /// @cond wxCHECK
 
     // create some toolbars
-  #if (wxCHECK_VERSION(2,9,0))
+  #if (wxCHECK_VERSION(2,9,0)) && !WIN32
     wxToolBar* tb1 = new wxToolBar(this, wxID_ANY,
                         wxDefaultPosition, wxDefaultSize);
   #else
@@ -687,7 +690,11 @@ void MainFrame::CreateVarTreePanel ( wxWindow* parent)
   _var_tree->SetWindowStyle(_var_tree->GetWindowStyle() ^ wxTR_NO_LINES ^ wxTR_COLUMN_LINES);
   //_var_tree->SetToolTip(_T("Tree Control for current variables"));
 
-  _var_tree->SetFont( wxFont(10,wxMODERN,wxNORMAL,wxNORMAL)); // try a fixed pitch font
+  wxFont font(10,wxMODERN,wxNORMAL,wxNORMAL);
+  if (font.IsOk())
+    _var_tree->SetFont(font ); // try a fixed pitch font
+  else 
+    _var_tree->SetFont(*wxSMALL_FONT);
   _var_tree->SetIndent(2);
 
   _vartree_root        = _var_tree->AddRoot(_T("Root"));
@@ -1508,6 +1515,26 @@ void MainFrame::OnFileOpenImageHistory ( wxCommandEvent& event )
 }
 
 //-----------------------------------------------------
+void MainFrame::OnFileOpenScriptHistory ( wxCommandEvent& event )
+{
+  string cmd; // increment the command line string
+  string varname;
+  size_t pos = event.GetId() - wxID_Scripts_History;
+  wxString filename(scripts_history->GetHistoryFile(pos));
+
+
+  scripts_history->RemoveFileFromHistory(pos);
+  scripts_history->AddFileToHistory(filename);
+
+  cmd = string("func \"");
+  cmd += filename.mb_str();
+  cmd += string("\" // from menu");
+  this->TC->IncCommand(cmd);
+  this->TC->ProcessReturn();
+
+}
+
+//-----------------------------------------------------
 void MainFrame::OnFileOpenPolydata ( wxCommandEvent& event )
 {
   int res;
@@ -1821,6 +1848,11 @@ void MainFrame::OnUserMenuScript(  wxCommandEvent& event)
   //cout << "GetId() = "<< event.GetId() << endl;
   //cout << "script = " << usermenu_scripts[event.GetId()] << endl;
   string cmd; // increment the command line string
+
+  
+  //wxString filename(usermenu_scripts[event.GetId()].c_str(),wxConvUTF8);
+  //scripts_history->AddFileToHistory(filename);
+
   cmd = (boost::format("func \"%1%\" // from menu") % usermenu_scripts[event.GetId()]).str();
   TC->ConsoleClear();
   this->TC->IncCommand(cmd);

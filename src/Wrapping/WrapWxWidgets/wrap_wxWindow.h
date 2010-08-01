@@ -42,6 +42,9 @@ class WrapClass_wxWindow : public WrapClassBase
     ADD_CLASS_METHOD(SetSize,        "Sets the size and position of the window in pixels.\n\
     http://docs.wxwidgets.org/stable/wx_wxwindow.html#wxwindowsetsize");
 
+    ADD_CLASS_METHOD(Update,         "repaints the invalidated area of the window and all of its children recursively");
+    ADD_CLASS_METHOD(Refresh,        "Causes this window, and all of its children recursively (except under wxGTK1 where this is not implemented), to be repainted")
+
     ADD_CLASS_METHOD(SetBackgroundColour,   "Sets the background colour of the window.");
 
 
@@ -51,6 +54,8 @@ class WrapClass_wxWindow : public WrapClassBase
       AddVar_ShowWin(             this_ptr);
       AddVar_SetSize(             this_ptr);
       AddVar_SetBackgroundColour( this_ptr);
+      AddVar_Update(              this_ptr);
+      AddVar_Refresh(             this_ptr);
     }
 
 };

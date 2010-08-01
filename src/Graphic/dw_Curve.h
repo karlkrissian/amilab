@@ -16,6 +16,13 @@
 #include "dw_Point2D.h"
 #include <vector>
 
+
+#if ((wxMAJOR_VERSION==2)&&(wxMINOR_VERSION>=9))||(wxMAJOR_VERSION>=3)
+  #define PENSTYLE_SOLID wxPENSTYLE_SOLID 
+#else
+  #define PENSTYLE_SOLID wxSOLID 
+#endif
+
 /**
  * 2D Curve for wxDrawingWindow class.
  */
@@ -48,7 +55,13 @@ class dw_Curve {
 
   public:
     //! simple Constructor
-    dw_Curve() : color(*wxRED), style(wxSOLID), width(1), drawlines(true), drawpoints(false) {}
+
+    dw_Curve() : 
+        color(*wxRED), 
+          style(PENSTYLE_SOLID), 
+          width(1), 
+          drawlines(true), 
+          drawpoints(false) {}
 
     void SetDrawLines(bool val) { drawlines = val; }
     bool GetDrawLines() { return drawlines; }

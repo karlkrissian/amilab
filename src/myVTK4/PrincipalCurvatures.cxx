@@ -53,18 +53,18 @@ int autovector0(double a,double b,double c, float paso[3])
   double p;
   paso[0]=0;
   if(ABS(a)>ABS(c)){
-      paso[1]=b;
-      paso[2]=-a; 
+      paso[1]=(float)b;
+      paso[2]=(float)-a; 
   }
   else{ /* ABS(a)<ABS(c) */
-      paso[1]=c;
-      paso[2]=-b; 
+      paso[1]=(float)c;
+      paso[2]=(float)-b; 
   }
   p=paso[1]*paso[1]+paso[2]*paso[2];
   if(p<=0) return(-1);
   p=sqrt(p);
-  paso[1]/=p;
-  paso[2]/=p;
+  paso[1]/=(float)p;
+  paso[2]/=(float)p;
   return(0);
 
 }
@@ -117,7 +117,7 @@ int CurvaturasPrincipales(float H[3][3],
 
   for(i=0;i<3;i++)
     for(j=i;j<3;j++)
-      A[i][j]=H[i][j]-paso[i]*p1[j]+(a*p1[j]-paso[j])*p1[i]; 
+      A[i][j]=(float) (H[i][j]-paso[i]*p1[j]+(a*p1[j]-paso[j])*p1[i]); 
 
   for(i=0;i<3;i++)
     for(j=0;j<i;j++)
@@ -136,8 +136,8 @@ int CurvaturasPrincipales(float H[3][3],
   p2[k2]=0;
   p2norm=p2[k]*p2[k]+p2[k1]*p2[k1];
   p2norm=sqrt(p2norm);
-  p2[k]/=p2norm; 
-  p2[k1]/=p2norm;  
+  p2[k]/=(float)p2norm; 
+  p2[k1]/=(float)p2norm;  
 
   p3[k]=-p1[k2]*p2[k1];
   p3[k1]=p1[k2]*p2[k];

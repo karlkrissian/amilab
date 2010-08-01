@@ -166,6 +166,7 @@
 #include "ficparam.hpp"
 #include "VolumeRender.hpp"
 //#include "math1.hpp"
+#include "Viewer3D.hpp"
 
 #ifndef macro_min
   #define macro_min(a,b) ( (a)<(b) ? (a) : (b))
@@ -1742,7 +1743,7 @@ void DessinImage::DrawVectors(  int x, int y, int z,
 //  Dessine la valeur du vecteur pour le champ de vecteurs donn�// au point (x,y,z)  sur toutes les coupes
 {
   int i;
-  SetLineParameters( _largeur_lignes+1, wxSOLID, wxCAP_ROUND, wxJOIN_MITER);
+  SetLineParameters( _largeur_lignes+1, PENSTYLE_SOLID, wxCAP_ROUND, wxJOIN_MITER);
 
   i=0;
   std::vector<vectorfield_info>::iterator Iter;
@@ -1778,7 +1779,7 @@ void DessinImage::DessineChampVecteurs( )
   Si pas_y == 0 AlorsFait pas_y = 1;
   Si pas_z == 0 AlorsFait pas_z = 1;
 
-  SetLineParameters( _largeur_lignes+1, wxSOLID, wxCAP_ROUND, wxJOIN_MITER);
+  SetLineParameters( _largeur_lignes+1, PENSTYLE_SOLID, wxCAP_ROUND, wxJOIN_MITER);
 
   // Tests selon le type de Coupe
   int i=0;
@@ -1827,7 +1828,7 @@ void DessinImage::DessineCercle(  int x, int y, int z, ClasseCouleur& c)
     ClasseCouleur coul;
 
 
-  SetLineParameters( _largeur_lignes+1, wxSOLID, wxCAP_ROUND, wxJOIN_MITER);
+  SetLineParameters( _largeur_lignes+1, PENSTYLE_SOLID, wxCAP_ROUND, wxJOIN_MITER);
 
   Si Param._option_traitement == OPTION_MIP Alors
     _MIP->PosPoint( x, y, x0, y0, z0);
@@ -1987,7 +1988,7 @@ void DessinImage::DessineLigneDansMIP(
   Ligne( pos_x0, pos_y0, pos_x, pos_y);
 
   Si pointilles AlorsFait
-    SetLineParameters( 1,  wxSOLID, wxCAP_ROUND, wxJOIN_MITER);
+    SetLineParameters( 1,  PENSTYLE_SOLID, wxCAP_ROUND, wxJOIN_MITER);
 
 } // DessineLigneDansMIP()
 
@@ -2010,7 +2011,7 @@ void DessinImage::DessineBoundingBox( )
   ymax = _image_initiale->_ty -1;
   zmax = _image_initiale->_tz -1;
 
-  SetLineParameters( 1,  wxSOLID, wxCAP_ROUND, wxJOIN_MITER);
+  SetLineParameters( 1,  PENSTYLE_SOLID, wxCAP_ROUND, wxJOIN_MITER);
   SetPenColor( _couleur_curseur);
 
   // Initialisation des 8 sommets du cube
@@ -2854,8 +2855,8 @@ void DessinImage::InitParametres()
   // Circle Field parameters
   _circles_ON   = false;
   _circles_fill = false;
-  _circles_min_radius = -0.99;
-  _circles_max_radius = 0.99;
+  _circles_min_radius = -0.99f;
+  _circles_max_radius = 0.99f;
 
 
   // IsoContours parameters
@@ -3099,7 +3100,7 @@ unsigned char DessinImage::LitFichierParametres(  char* nom_fichier)
     float       IntMin, IntMax;
     int     Xmin, Xmax, Ymin, Ymax, Zmin, Zmax;
     Parametres Par;
-    int     n,i,NbreComparaisons;
+    int     NbreComparaisons;
     char       CompareNomImage[100];
     int     ComparePos_x;
     int     ComparePos_y;
@@ -3277,7 +3278,8 @@ unsigned char DessinImage::LitFichierParametres(  char* nom_fichier)
   Par.Parcours("Nombre de comparaisons = ");
   Par.LitEntier( &NbreComparaisons);
   Par.Parcours("\n");
-
+ 
+  int i=0;
   Pour( i, 0, NbreComparaisons - 1 )
 
     Par.Parcours("Nom Image:");
@@ -3793,6 +3795,7 @@ void DessinImage::OnWheel(wxMouseEvent& event)
 void DessinImage::Boutton_Presse()
 //                --------------
 {
+  this->SetFocus();
     if (GB_debug)
       printf("DessinImage::Boutton_Presse() \n");
         Point_3D<int> im;  // position dans l'image visualisee
@@ -4074,6 +4077,7 @@ void DessinImage::Boutton2_Presse()
 {
   ImageDraw_PositionParam::ptr p ( _param_position);
  
+  this->SetFocus();
     if (GB_debug)
       printf("DessinImage::Boutton2_Presse() \n");
 
@@ -4303,6 +4307,7 @@ void DessinImage::Boutton3_Presse()
         Point_3D<int> im;  // position dans l'image visualisee
         int     trouve;
 
+  this->SetFocus();
 
   CursorToImage(_souris_x, _souris_y, im.x,im.y, im.z, trouve);
   UpdateStatusInfo( im,  trouve);
@@ -4447,7 +4452,7 @@ void DessinImage::DrawContour( int i, int size, int style)
 
   // Previous motif version
   //SetLineParameters( size, style, LineSolid, _cap_style, _join_style);
-  SetLineParameters( size, style, wxSOLID);
+  SetLineParameters( size, style, PENSTYLE_SOLID);
 
   SetPenColor( _isocontours[i].color);
 
@@ -4497,7 +4502,7 @@ void DessinImage::DrawAllContours()
       fprintf(stderr,"threshold of isocontour 0 = %f \n",_isocontours[0].threshold );
 
     line_size  = _isocontours[0].thickness; //_largeur_lignes;
-    line_style = wxSOLID;
+    line_style = PENSTYLE_SOLID;
     threshold_backup = _isocontours[0].threshold;
 
     float& threshold = _isocontours[0].threshold;
@@ -4507,7 +4512,7 @@ void DessinImage::DrawAllContours()
     threshold += _step_contours;
     TantQue (threshold <= _val_max)Et
             (threshold-threshold_backup < _contours_winsize) Faire
-      line_style = ((line_style==wxSOLID)?wxDOT:wxSOLID);
+      line_style = ((line_style==PENSTYLE_SOLID)?wxDOT:PENSTYLE_SOLID);
       DrawContour(0,line_size,line_style);
       threshold += _step_contours;
     FinTantQue
@@ -4516,11 +4521,11 @@ void DessinImage::DrawAllContours()
     Si GB_debug AlorsFait
       fprintf(stderr,"threshold of isocontour 0 = %f \n",_isocontours[0].threshold );
 
-    line_style = wxSOLID;
+    line_style = PENSTYLE_SOLID;
     threshold -= _step_contours;
     TantQue (threshold >= _val_min) Et
             (threshold_backup-threshold < _contours_winsize) Faire
-      line_style = ((line_style==wxSOLID)?wxDOT:wxSOLID);
+      line_style = ((line_style==PENSTYLE_SOLID)?wxDOT:PENSTYLE_SOLID);
       DrawContour(0,line_size,line_style);
       threshold -= _step_contours;
     FinTantQue
@@ -4967,7 +4972,6 @@ void DessinImage::EffaceTousLesEcrans( unsigned char expose)
 void DessinImage::InitDrawingAreaAll(  )
 //                -------------------
 {
-    int i;
 
   DrawingAreaInit();
   _comparison_lock=true;
@@ -6269,7 +6273,7 @@ void DessinImage::CB_largeur_lignes( wxCommandEvent& event)
   nouvelle_valeur =  di->_wxm_linewidth->ValueChanged(event);
   Si Non(nouvelle_valeur) AlorsRetourne;
 
-  di->SetLineParameters( di->_largeur_lignes+1,  wxSOLID, wxCAP_ROUND, wxJOIN_MITER);
+  di->SetLineParameters( di->_largeur_lignes+1,  PENSTYLE_SOLID, wxCAP_ROUND, wxJOIN_MITER);
   di->EffaceTousLesEcrans( false);
   di->Paint();
 
@@ -6291,9 +6295,15 @@ void DessinImage::Create_Toolbar()
                         wxAUI_TB_OVERFLOW);
   #endif
   */
-  ViewParameters = new wxToolBar(this, wxID_ANY,
-                        wxDefaultPosition, wxDefaultSize);
-                     //   wxAUI_TB_DEFAULT_STYLE  | wxAUI_TB_OVERFLOW );
+  #if !WIN32
+    ViewParameters = new wxToolBar(this, wxID_ANY,
+                          wxDefaultPosition, wxDefaultSize);
+                       //   wxAUI_TB_DEFAULT_STYLE  | wxAUI_TB_OVERFLOW );
+  #else
+    ViewParameters = new wxAuiToolBar(this, wxID_ANY,
+                          wxDefaultPosition, wxDefaultSize,
+                          wxAUI_TB_DEFAULT_STYLE  | wxAUI_TB_OVERFLOW );
+  #endif
   
   ViewParameters->SetToolBitmapSize(wxSize(16,16));
   
@@ -6369,9 +6379,15 @@ void DessinImage::Create_Toolbar()
   
   
   //View style toolbar
-  ViewStyle = new wxToolBar(this, wxID_ANY,
-                        wxDefaultPosition, wxDefaultSize );
-              //          wxAUI_TB_DEFAULT_STYLE  | wxAUI_TB_OVERFLOW);
+  #if !WIN32
+    ViewStyle = new wxToolBar(this, wxID_ANY,
+                          wxDefaultPosition, wxDefaultSize );
+                //          wxAUI_TB_DEFAULT_STYLE  | wxAUI_TB_OVERFLOW);
+  #else
+    ViewStyle = new wxAuiToolBar(this, wxID_ANY,
+                          wxDefaultPosition, wxDefaultSize,
+                          wxAUI_TB_DEFAULT_STYLE  | wxAUI_TB_OVERFLOW);
+  #endif
   
   ViewStyle->SetToolBitmapSize(wxSize(16,16));
   
@@ -6381,7 +6397,7 @@ void DessinImage::Create_Toolbar()
   strings.Add(wxT("Anim."));
   wxClientDC dc(this);
   wxCoord w = 0,wmax=0,h;
-  for (int i=0; i<strings.Count(); i++ ) {
+  for (size_t i=0; i<strings.Count(); i++ ) {
     dc.GetTextExtent(strings[i],&w,&h);
     wmax = ((w>wmax)?w:wmax);
   }
@@ -6437,7 +6453,7 @@ void DessinImage::Create_Toolbar()
   strings.Add(wxT("Win Size"));
   strings.Add(wxT("Usr Size"));
   wmax=0;
-  for (int i=0; i<strings.Count(); i++ ) {
+  for (size_t i=0; i<strings.Count(); i++ ) {
     dc.GetTextExtent(strings[i],&w,&h);
     wmax = ((w>wmax)?w:wmax);
   }

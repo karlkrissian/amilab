@@ -126,6 +126,7 @@ public:
   void OnFileOpenImageHistory  ( wxCommandEvent& event );
   void OnFileOpenPolydata ( wxCommandEvent& event );
   void OnFileLoadScript   ( wxCommandEvent& event );
+  void OnFileOpenScriptHistory  ( wxCommandEvent& event );
 
   void OnViewReset        ( wxCommandEvent& event );
 
@@ -185,6 +186,9 @@ public:
   void OnCreateSphere(        wxCommandEvent& event);
   void OnAddNoise(            wxCommandEvent& event);
   void OnUserMenuScript(      wxCommandEvent& event);
+
+  boost::shared_ptr<wxFileHistory> GetImagesHistory()  { return images_history;  }
+  boost::shared_ptr<wxFileHistory> GetScriptsHistory() { return scripts_history; }
 
 protected:
 

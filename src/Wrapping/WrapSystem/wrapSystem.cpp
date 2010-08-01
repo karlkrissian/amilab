@@ -146,7 +146,7 @@ BasicVariable::ptr wrap_GetHomeDir(ParamList* p) {
 
   if (get_num_param(p)!=0)  HelpAndReturnVarPtr;
   wxString HomeDir = ::wxGetHomeDir();
-
+  HomeDir.Replace(wxT("\\"),wxT("/"),true);
   string_ptr value( new string(HomeDir.mb_str()));
   Variable<string>::ptr varres(
     new Variable<string>("HomeDir",value));
@@ -169,6 +169,7 @@ BasicVariable::ptr wrap_GetUserHome(ParamList* p)
 
   if (get_num_param(p)!=0)  HelpAndReturnVarPtr;
   wxString UserHome = ::wxGetUserHome();
+  UserHome.Replace(wxT("\\"),wxT("/"),true);
 
   string_ptr value( new string(UserHome.mb_str()));
   Variable<string>::ptr varres(
@@ -265,6 +266,8 @@ BasicVariable::ptr wrap_GetCurrentScriptDir(ParamList* p)
   wxFileName filename(wxString(GB_driver.GetCurrentFilename().c_str(), wxConvUTF8));
   filename.MakeAbsolute();
   wxString wxvalue = filename.GetPath();
+  // unix-like separation of directories to avoid escape characters and their problems
+  wxvalue.Replace(wxT("\\"),wxT("/"),true);
   string_ptr value ( new string(wxvalue.mb_str()));
 
   Variable<string>::ptr varres(
@@ -288,7 +291,9 @@ BasicVariable::ptr wrap_GetCurrentFilename(ParamList* p)
   if (get_num_param(p)!=0)  HelpAndReturnVarPtr;
   wxFileName filename(wxString(GB_driver.GetCurrentFilename().c_str(), wxConvUTF8));
   filename.MakeAbsolute();
+  // unix-like separation of directories to avoid escape characters and their problems
   wxString wxvalue = filename.GetFullPath();
+  wxvalue.Replace(wxT("\\"),wxT("/"),true);
   string_ptr value ( new string(wxvalue.mb_str()));
 
   Variable<string>::ptr varres(
@@ -310,7 +315,9 @@ BasicVariable::ptr wrap_GetGlobalScriptDir(ParamList* p)
               the directory of the amilab scripts\n\
             ";
   if (get_num_param(p)!=0)  HelpAndReturnVarPtr;
-  RETURN_VAR(string,GB_scripts_dir.mb_str());
+  wxString wxvalue(GB_scripts_dir);
+  wxvalue.Replace(wxT("\\"),wxT("/"),true);
+  RETURN_VAR(string,wxvalue.mb_str());
 }
 
 //--------------------------------------------------------------------

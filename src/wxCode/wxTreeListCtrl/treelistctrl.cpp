@@ -1857,6 +1857,9 @@ void wxTreeListMainWindow::Init() {
 #else
     m_normalFont = wxSystemSettings::GetFont (wxSYS_DEFAULT_GUI_FONT);
 #endif
+    m_boldFont = m_normalFont;
+    m_boldFont.SetWeight(wxFONTWEIGHT_BOLD);
+    /*
     m_boldFont = wxFont( m_normalFont.GetPointSize(),
                          m_normalFont.GetFamily(),
                          m_normalFont.GetStyle(),
@@ -1864,6 +1867,7 @@ void wxTreeListMainWindow::Init() {
                          m_normalFont.GetUnderlined(),
                          m_normalFont.GetFaceName(),
                          m_normalFont.GetEncoding());
+                         */
 }
 
 bool wxTreeListMainWindow::Create (wxTreeListCtrl *parent,

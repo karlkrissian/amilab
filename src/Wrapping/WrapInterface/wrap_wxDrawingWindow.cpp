@@ -254,3 +254,18 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
   return BasicVariable::ptr();
 
 }
+
+//---------------------------------------------------
+//  Paint
+//---------------------------------------------------
+void WrapClass_wxDrawingWindow::
+      wrap_Paint::SetParametersComments() 
+{
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxDrawingWindow::
+      wrap_Paint::CallMember( ParamList* p)
+{
+  this->_objectptr->_drawingwin->Paint();
+  return BasicVariable::ptr();
+}

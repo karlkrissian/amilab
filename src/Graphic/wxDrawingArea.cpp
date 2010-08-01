@@ -24,6 +24,7 @@ BEGIN_EVENT_TABLE(wxDrawingArea, wxWindow)
 END_EVENT_TABLE()
 
 
+
 wxDrawingArea::wxDrawingArea(wxWindow *parent, wxWindowID id,
     const wxPoint& pos, const wxSize& size, long style,
     const wxString& name)
@@ -97,6 +98,7 @@ void wxDrawingArea::OnMouseEvent(wxMouseEvent& event)
 
     _parent_window->SetMousePosition(_mouse_x,_mouse_y);
 
+    //  cout << "wheel rotation " << wr << endl;
     if (wr != 0) {
       //cout << "wheel rotation " << wr << endl;
       //cout << " mouse "<< _mouse_x << " " << _mouse_y << endl;
@@ -130,4 +132,5 @@ void wxDrawingArea::OnMouseEvent(wxMouseEvent& event)
         if (rid)  _parent_window->DeplaceSourisBout3();
       }
     }
+    event.Skip();
 } // OnMouseEvent()

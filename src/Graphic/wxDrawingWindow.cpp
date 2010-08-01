@@ -18,6 +18,12 @@
 
 #define macro_max(a,b) ((a)>(b)?(a):(b))
 
+#if ((wxMAJOR_VERSION==2)&&(wxMINOR_VERSION>=9))||(wxMAJOR_VERSION>=3)
+  #define PENSTYLE_SOLID wxPENSTYLE_SOLID 
+#else
+  #define PENSTYLE_SOLID wxSOLID 
+#endif
+
 
 enum {
   wxID_AddControl = 1000,
@@ -25,6 +31,7 @@ enum {
 
 BEGIN_EVENT_TABLE(wxDrawingWindow, wxWindow)
   EVT_PAINT(        wxDrawingWindow::OnPaint)
+  EVT_SIZE        ( wxDrawingWindow::OnSize      )
   EVT_RIGHT_DOWN(   wxDrawingWindow::OnRightDown )
   EVT_LEFT_DOWN(    wxDrawingWindow::OnLeftDown )
   EVT_LEFT_UP(      wxDrawingWindow::OnLeftUp )
@@ -58,6 +65,28 @@ wxDrawingWindow::wxDrawingWindow(wxWindow *parent, wxWindowID id,
 
   _draw_grid = true;
 }
+
+
+//---------------------------------------------------------------------
+void wxDrawingWindow::DrawingAreaInit( )
+//                  --------------
+{
+  if (!this->IsShown())   return;
+
+  int w = this->GetClientSize().GetWidth();
+  int h = this->GetClientSize().GetHeight();
+
+  // wx way
+  scoped_ptr<wxBitmap> bitmap(new wxBitmap( w,h,-1));
+  swap(_bitmap,bitmap);
+  scoped_ptr<wxMemoryDC> memory_dc(new wxMemoryDC);
+
+  swap(_memory_dc, memory_dc);
+  _memory_dc->SelectObject(*_bitmap);
+  _memory_dc->SetBackgroundMode(wxTRANSPARENT);
+} // DrawingAreaInit( )
+
+
 
 //------------------------------------------------
 void wxDrawingWindow::World2Window(  double x, double y, wxCoord& wx, wxCoord& wy)
@@ -123,7 +152,7 @@ void wxDrawingWindow::AddCurve( InrImage* im)
 bool wxDrawingWindow::SetCurve( int i, InrImage* im)
 {
 
-  if ((i>=0)&&(i<_curves.size())) {
+  if ((i>=0)&&(i<(int)_curves.size())) {
     // new curve
     dw_Curve c;
   
@@ -151,7 +180,7 @@ void wxDrawingWindow::AddControl( const dw_Point2D& pt)
   */
 void wxDrawingWindow::SetControl( int i, const dw_Point2D& pt)
 {
-  if ((i>=0)&&(i<_controlpoints.size())) {
+  if ((i>=0)&&(i<(int)_controlpoints.size())) {
     _controlpoints[i] = pt;
   }
 }
@@ -160,7 +189,7 @@ void wxDrawingWindow::SetControl( int i, const dw_Point2D& pt)
 //------------------------------------------------
 void wxDrawingWindow::SetCurveDrawPoints( int i, bool dp)
 {
-  if ((i>=0)&&(i<_curves.size())) {
+  if ((i>=0)&&(i<(int)_curves.size())) {
     _curves[i].SetDrawPoints(dp);
   }
 }
@@ -168,7 +197,7 @@ void wxDrawingWindow::SetCurveDrawPoints( int i, bool dp)
 //------------------------------------------------
 void wxDrawingWindow::SetCurveDrawLines( int i, bool dp)
 {
-  if ((i>=0)&&(i<_curves.size())) {
+  if ((i>=0)&&(i<(int)_curves.size())) {
     _curves[i].SetDrawLines(dp);
   }
 }
@@ -176,7 +205,7 @@ void wxDrawingWindow::SetCurveDrawLines( int i, bool dp)
 //------------------------------------------------
 void wxDrawingWindow::SetCurveColor( int i, std::string color_string)
 {
-  if ((i>=0)&&(i<_curves.size())) {
+  if ((i>=0)&&(i<(int)_curves.size())) {
     _curves[i].SetColor(wxColour(wxString(color_string.c_str(), wxConvUTF8)));
   }
 }
@@ -184,7 +213,7 @@ void wxDrawingWindow::SetCurveColor( int i, std::string color_string)
 //------------------------------------------------
 void wxDrawingWindow::SetCurveStyle( int i, int style)
 {
-  if ((i>=0)&&(i<_curves.size())) {
+  if ((i>=0)&&(i<(int)_curves.size())) {
     _curves[i].SetStyle(style);
   }
 }
@@ -192,13 +221,13 @@ void wxDrawingWindow::SetCurveStyle( int i, int style)
 //------------------------------------------------
 void wxDrawingWindow::SetCurveWidth( int i, int width)
 {
-  if ((i>=0)&&(i<_curves.size())) {
+  if ((i>=0)&&(i<(int)_curves.size())) {
     _curves[i].SetWidth(width);
   }
 }
 
 //------------------------------------------------
-void wxDrawingWindow::DrawCurve(int i, wxDC& dc )
+void wxDrawingWindow::DrawCurve(int i )
 {
   std::vector<dw_Point2D>& _points = _curves[i].GetPoints();
   // iterate through the curves
@@ -211,10 +240,10 @@ void wxDrawingWindow::DrawCurve(int i, wxDC& dc )
     World2Window(it->GetX(),it->GetY(),x2,y2);
     if (_curves[i].GetDrawLines())
       if (it!=_points.begin()) {
-        DrawLine(dc,x1,y1,x2,y2);
+        DrawLine(x1,y1,x2,y2);
       }
     if (_curves[i].GetDrawPoints())
-      DrawPoint(dc,x1,y1);
+      DrawPoint(x1,y1);
     x1 = x2;
     y1 = y2;
   }
@@ -222,9 +251,8 @@ void wxDrawingWindow::DrawCurve(int i, wxDC& dc )
 }
 
 //------------------------------------------------
-void wxDrawingWindow::WriteCurrentPosition()
+void wxDrawingWindow::WriteCurrentPosition( wxDC& dc)
 {
-  wxClientDC dc(this);
   
   double x,y;
   Window2World(_mouse_x,_mouse_y,x,y);
@@ -233,13 +261,13 @@ void wxDrawingWindow::WriteCurrentPosition()
   wxSize txtsize = dc.GetTextExtent(text);
   wxSize dcsize = dc.GetSize();
   wxSize pos = dcsize-txtsize;
-  dc.SetBackgroundMode(wxSOLID);
+  dc.SetBackgroundMode(PENSTYLE_SOLID);
   // fill previous text with background ???
   dc.DrawText(text,pos.GetWidth()-3,pos.GetHeight()-3);
 }
 
 //------------------------------------------------
-void wxDrawingWindow::DrawAxes( wxDC& dc )
+void wxDrawingWindow::DrawAxes(  )
 {
   int bigticsize   = 4;
   int mediumticsize = 2;
@@ -263,8 +291,8 @@ void wxDrawingWindow::DrawAxes( wxDC& dc )
   wxCoord x1,y1,x2,y2;
   double xpos,ypos;
 
-  scoped_ptr<wxPen> current_pen2( new wxPen( *wxLIGHT_GREY, 1, wxSOLID));
-  dc.SetPen(*current_pen2);
+  scoped_ptr<wxPen> current_pen2( new wxPen( *wxLIGHT_GREY, 1, PENSTYLE_SOLID));
+  _memory_dc->SetPen(*current_pen2);
 
   if (_draw_grid)
   {
@@ -278,12 +306,12 @@ void wxDrawingWindow::DrawAxes( wxDC& dc )
         if (fabs(tmp - round(tmp))<epsilon) {
           World2Window(xpos,_ymin,x1,y1);
           World2Window(xpos,_ymax,x2,y2);
-          DrawLine(dc,x1,y1,x2,y2);
+          DrawLine(x1,y1,x2,y2);
         } else
         if ( fabs(tmp-0.5 - (round(tmp-0.5)))<epsilon ) {
           World2Window(xpos,_ymin,x1,y1);
           World2Window(xpos,_ymax,x2,y2);
-          DrawLine(dc,x1,y1,x2,y2);
+          DrawLine(x1,y1,x2,y2);
         }
       }
    /*
@@ -304,32 +332,32 @@ void wxDrawingWindow::DrawAxes( wxDC& dc )
           if (_draw_grid) {
             World2Window(_xmin,ypos,x1,y1);
             World2Window(_xmax,ypos,x2,y2);
-            DrawLine(dc,x1,y1,x2,y2);
+            DrawLine(x1,y1,x2,y2);
           }
         }
         else 
         if ( fabs(tmp-0.5 - (round(tmp-0.5)))<epsilon ) {
           World2Window(_xmin,ypos,x1,y1);
           World2Window(_xmax,ypos,x2,y2);
-          DrawLine(dc,x1,y1,x2,y2);
+          DrawLine(x1,y1,x2,y2);
         }
       }
 /*
       else 
-        DrawLine(dc,x1-smallticsize,y1,x1+smallticsize,y1);
+        DrawLine(x1-smallticsize,y1,x1+smallticsize,y1);
   */
       ypos += ystep;
     }
   }
 
 
-  scoped_ptr<wxPen> current_pen( new wxPen( *wxBLACK, 1, wxSOLID));
-  dc.SetPen(*current_pen);
+  scoped_ptr<wxPen> current_pen( new wxPen( *wxBLACK, 1, PENSTYLE_SOLID));
+  _memory_dc->SetPen(*current_pen);
 
   // from xmin,yaxis to xmax,yaxis
   World2Window(_xmin,_yaxis,x1,y1);
   World2Window(_xmax,_yaxis,x2,y2);
-  DrawLine(dc,x1,y1,x2,y2);
+  DrawLine(x1,y1,x2,y2);
 
   // draw tics
   xpos = xmintic;
@@ -339,13 +367,13 @@ void wxDrawingWindow::DrawAxes( wxDC& dc )
     //cout << " tmp " << tmp << endl;
     //cout << " tmp -round(tmp)" << tmp - round(tmp) << endl;
     if ( fabs(tmp - round(tmp))<epsilon ) {
-      DrawLine(dc,x1,y1-bigticsize,x1,y1+bigticsize);
+      DrawLine(x1,y1-bigticsize,x1,y1+bigticsize);
     }
     if ( fabs(tmp-0.5 - (round(tmp-0.5)))<epsilon ) {
-      DrawLine(dc,x1,y1-mediumticsize,x1,y1+mediumticsize);
+      DrawLine(x1,y1-mediumticsize,x1,y1+mediumticsize);
     }
     else {
-      DrawLine(dc,x1,y1-smallticsize,x1,y1+smallticsize);
+      DrawLine(x1,y1-smallticsize,x1,y1+smallticsize);
     }
     xpos += xstep;
   }
@@ -353,7 +381,7 @@ void wxDrawingWindow::DrawAxes( wxDC& dc )
   // from xaxis,ymin to xaxis,ymax
   World2Window(_xaxis,_ymin,x1,y1);
   World2Window(_xaxis,_ymax,x2,y2);
-  DrawLine(dc,x1,y1,x2,y2);
+  DrawLine(x1,y1,x2,y2);
 
   // draw tics
   ypos = ymintic;
@@ -361,14 +389,14 @@ void wxDrawingWindow::DrawAxes( wxDC& dc )
     World2Window(_xaxis,ypos,x1,y1);
     double tmp = ypos/ybigstep;
     if ( fabs(tmp - round(tmp))<epsilon ) {
-      DrawLine(dc,x1-bigticsize,y1,x1+bigticsize,y1);
+      DrawLine(x1-bigticsize,y1,x1+bigticsize,y1);
     }
     else 
     if ( fabs(tmp-0.5 - (round(tmp-0.5)))<epsilon ) {
-      DrawLine(dc,x1-mediumticsize,y1,x1+mediumticsize,y1);
+      DrawLine(x1-mediumticsize,y1,x1+mediumticsize,y1);
     }
     else 
-      DrawLine(dc,x1-smallticsize,y1,x1+smallticsize,y1);
+      DrawLine(x1-smallticsize,y1,x1+smallticsize,y1);
     ypos += ystep;
   }
 
@@ -378,97 +406,119 @@ void wxDrawingWindow::DrawAxes( wxDC& dc )
 
 
 //------------------------------------------------
-void wxDrawingWindow::DrawControls(wxDC& dc)
+void wxDrawingWindow::DrawControls()
 {
-  scoped_ptr<wxPen> current_pen( new wxPen( *wxBLACK, 1, wxSOLID));
-  dc.SetPen(*current_pen);
+  scoped_ptr<wxPen> current_pen( new wxPen( *wxBLACK, 1, PENSTYLE_SOLID));
+  _memory_dc->SetPen(*current_pen);
   
-  for(int i = 0; i<_controlpoints.size(); i++) 
+  for(int i = 0; i<(int)_controlpoints.size(); i++) 
   {
     if (_controlpoints[i].HasFocus())
-      dc.SetBrush(*wxGREEN_BRUSH);
+      _memory_dc->SetBrush(*wxGREEN_BRUSH);
     else
-      dc.SetBrush(*wxTRANSPARENT_BRUSH);
+      _memory_dc->SetBrush(*wxTRANSPARENT_BRUSH);
     wxCoord px,py;
     World2Window(_controlpoints[i].GetX(),_controlpoints[i].GetY(),px,py);
     _controlpoints[i].SetwxPoint(wxPoint(px,py));
-    dc.DrawCircle(px,py,_controlpoints[i].GetRadius());
+    _memory_dc->DrawCircle(px,py,_controlpoints[i].GetRadius());
   }
 }
 
+
+//---------------------------------------------------------------------
+void wxDrawingWindow::DrawingAreaDisplay( )
+//                  ------------------
+{
+  if (_memory_dc.get()) {
+    wxClientDC dc(this);
+    if (dc.IsOk()) {
+
+      dc.Blit(0,0,
+        _memory_dc->GetSize().GetWidth(),
+        _memory_dc->GetSize().GetHeight(),
+        _memory_dc.get(),
+        0,0);
+
+    } else 
+      CLASS_ERROR( "DC not OK");
+
+  } else {
+    CLASS_ERROR("context not allocated" );
+  }
+
+} // DrawingAreaDisplay( )
+
 //------------------------------------------------
+void wxDrawingWindow::Paint()
+{
+
+  if (!_memory_dc.get()) DrawingAreaInit( );
+  // Clip the drawing
+  wxRect rect(_memory_dc->GetSize());
+  wxDCClipper clip(*_memory_dc,rect);
+  scoped_ptr<wxPen> current_pen(
+    new wxPen( *wxBLACK, 1, PENSTYLE_SOLID));
+
+  _memory_dc->SetPen(*current_pen);
+  _memory_dc->SetAxisOrientation(true,false);
+  _memory_dc->SetBrush(*wxRED_BRUSH);
+
+  // Get window dimensions
+  wxSize _sz = GetClientSize();
+
+  //_memory_dc->SelectObject(*_bitmap);
+  _memory_dc->SetBackground(this->GetBackgroundColour());
+  _memory_dc->Clear();
+
+  //dc.DrawRectangle(rectToDraw);
+  _memory_dc->SetPen(*wxBLACK_PEN);
+  DrawAxes();
+  for (int i=0; i<GetNumberOfCurves(); i++)
+  {
+    current_pen->SetColour(_curves[i].GetColor());
+    /*
+    0: wxSOLID   Solid style.
+    1: wxDOT   Dotted style.
+    2: wxLONG_DASH   Long dashed style.
+    3: wxSHORT_DASH  Short dashed style.
+    4: wxDOT_DASH  Dot and dash style. 
+    */
+    int wxstyle=wxSOLID;
+    switch (_curves[i].GetStyle()) {
+      case 0: wxstyle=PENSTYLE_SOLID;       break;
+      case 1: wxstyle=wxDOT;         break;
+      case 2: wxstyle=wxLONG_DASH;   break;
+      case 3: wxstyle=wxSHORT_DASH;  break;
+      case 4: wxstyle=wxDOT_DASH;    break;
+      default: wxstyle=wxSOLID;
+    }
+    current_pen->SetStyle( wxstyle);
+    current_pen->SetWidth( _curves[i].GetWidth());
+    _memory_dc->SetPen(*current_pen);
+    DrawCurve(i);
+  }
+  DrawControls();
+  DrawingAreaDisplay();
+}
+
+
+//-------------------------------------------------
 void wxDrawingWindow::OnPaint(wxPaintEvent& event)
 {
-    wxPaintDC dc(this);
+  wxPaintDC pdc(this);
+  PrepareDC(pdc);
 
-    // Clip the drawing
-    wxRect rect(dc.GetSize());
-    wxDCClipper clip(dc,rect);
+  //DrawingAreaInit( );
+  Paint();
+  event.Skip();
+}
 
-    scoped_ptr<wxPen> current_pen(
-      new wxPen( *wxBLACK, 1, wxSOLID));
-
-    dc.SetPen(*current_pen);
-
-    dc.SetAxisOrientation(true,false);
-    dc.SetBrush(*wxRED_BRUSH);
-
-    // Get window dimensions
-    wxSize _sz = GetClientSize();
-
-    // Our rectangle dimensions
-    wxCoord w = 100, h = 50;
-
-    // Center the rectangle on the window, but never
-    // draw at a negative position.
-
-/*
-    int x = (((_sz.x—w)/2>0)?((_sz.x-w)/2):0);
-    int y = (((_sz.y—h)/2>0)?((_sz.y—h)/2):0);
-*/
-   int x;
-   if (((_sz.x-w)/2)>0)
-    x = (_sz.x-w)/2;
-   else x=0;
-   int y;
-   if (((_sz.y-h)/2)>0)
-    y = (_sz.y-h)/2;
-   else y=0;
-
-    wxRect rectToDraw(x, y, w, h);
-
-    // For efficiency, do not draw if not exposed
-    if (IsExposed(rectToDraw)) {
-      //dc.DrawRectangle(rectToDraw);
-      dc.SetPen(*wxBLACK_PEN);
-      DrawAxes(dc);
-      for (int i=0; i<GetNumberOfCurves(); i++)
-      {
-        current_pen->SetColour(_curves[i].GetColor());
-/*
-0: wxSOLID   Solid style.
-1: wxDOT   Dotted style.
-2: wxLONG_DASH   Long dashed style.
-3: wxSHORT_DASH  Short dashed style.
-4: wxDOT_DASH  Dot and dash style. 
-*/
-        int wxstyle=wxSOLID;
-        switch (_curves[i].GetStyle()) {
-          case 0: wxstyle=wxSOLID;       break;
-          case 1: wxstyle=wxDOT;         break;
-          case 2: wxstyle=wxLONG_DASH;   break;
-          case 3: wxstyle=wxSHORT_DASH;  break;
-          case 4: wxstyle=wxDOT_DASH;    break;
-          default: wxstyle=wxSOLID;
-        }
-        current_pen->SetStyle( wxstyle);
-        current_pen->SetWidth( _curves[i].GetWidth());
-        dc.SetPen(*current_pen);
-        DrawCurve(i,dc);
-      }
-    }
-
-    DrawControls(dc);
+//-------------------------------------------------
+void wxDrawingWindow::OnSize(wxSizeEvent& event)
+{
+  DrawingAreaInit( );
+  Paint();
+  event.Skip();
 }
 
 //-------------------------------------------------
@@ -488,6 +538,7 @@ void wxDrawingWindow::OnRightDown(wxMouseEvent& event)
   wxMenu menu(_T("Menu"));
   wxMenuItem* item = menu.Append(wxID_AddControl, wxT("&Add control point"));
   PopupMenu(&menu, _mouse_x,_mouse_y);
+  event.Skip();
 
 }
 
@@ -510,7 +561,7 @@ void wxDrawingWindow::OnMotion(wxMouseEvent& event)
       Window2World(_mouse_x,_mouse_y,x,y);
       _controlpoints[focus_pointid].SetPos(x,y);
       _controlpoints[focus_pointid].SetwxPoint(wxPoint(_mouse_x,_mouse_y));
-      Refresh();
+      Refresh(false);
     }
     else 
     {
@@ -524,8 +575,9 @@ void wxDrawingWindow::OnMotion(wxMouseEvent& event)
       dc.CrossHair( _mouse_x, _mouse_y );
       _previous_crosshair = true;
       dc.SetLogicalFunction( wxCOPY );
-      WriteCurrentPosition();
+      WriteCurrentPosition(dc);
     }
+    event.Skip();
     return;
   }
 
@@ -533,7 +585,7 @@ void wxDrawingWindow::OnMotion(wxMouseEvent& event)
   int closest = -1;
 
   // search for closest controlpoints
-  for(int i=0;i<_controlpoints.size();i++) {
+  for(int i=0;i<(int)_controlpoints.size();i++) {
     wxPoint p;
     p = _controlpoints[i].GetwxPoint();
     _controlpoints[i].SetFocus(false);
@@ -556,8 +608,9 @@ void wxDrawingWindow::OnMotion(wxMouseEvent& event)
     _controlpoints[closest].SetFocus(true);
   }
   focus_pointid = closest;
-  Refresh();
+  Refresh(false);
   
+  event.Skip();
 /*
   CLASS_MESSAGE(boost::format("At position %1% %2%")%_mouse_x%_mouse_y);
   double x,y;
@@ -572,6 +625,6 @@ void wxDrawingWindow::OnAddControl(wxCommandEvent& event)
   double x,y;
   Window2World(_mouse_x,_mouse_y,x,y);
   AddControl(dw_Point2D(x,y));
-  Refresh();
+  Refresh(false);
 }
 
