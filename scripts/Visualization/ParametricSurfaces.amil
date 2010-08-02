@@ -205,8 +205,9 @@ if (!exists(ParametricSurfaceClass)) {
       if (exists(::s_draw)) {
         ::s_draw += ::s
       } else {
-        ::s_draw = Viewer3D("3D Surface Viewer")
-        ::s_draw += ::s
+        show ::s
+//        ::s_draw = Viewer3D("3D Surface Viewer")
+//        ::s_draw += ::s
       }
 #printn "6.1"
       ::s.Normals()

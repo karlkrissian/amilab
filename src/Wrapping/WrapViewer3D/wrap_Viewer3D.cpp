@@ -183,6 +183,7 @@ BasicVariable::ptr WrapClass_Viewer3D::
 
   if (surf.get())
   {
+    sdraw->Show(true);
     sdraw->GetCanvas()->AddSurface(surf);
     sdraw->Paint();
   }
@@ -210,8 +211,10 @@ BasicVariable::ptr WrapClass_Viewer3D::
   CLASS_GET_OBJECT_PARAM(SurfacePoly,varsurf,surf);
   if (!surf.get()) ClassHelpAndReturn;
 
-  if (surf.get())
+  if (surf.get()) {
+    sdraw->Show(true);
     sdraw->GetCanvas()->AddSurface(surf);
+  }
 
   //sdraw->Paint();
 

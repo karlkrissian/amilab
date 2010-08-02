@@ -2080,6 +2080,7 @@ command:
 
               GET_WRAPPED_OBJECT(Viewer3D, newvar, surfdraw);
               if (surfdraw.get()) {
+                surfdraw->Show(true);
                 // Add the surface to the OpenGL Object
                 surfdraw->GetCanvas()->AddSurface( surf);
                 surfdraw->Paint();
