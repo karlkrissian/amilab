@@ -187,3 +187,40 @@ BasicVariable::ptr WrapClass_wxWindow::
 }
 
 
+//---------------------------------------------------
+//  Update
+//---------------------------------------------------
+void WrapClass_wxWindow::
+      wrap_Update::SetParametersComments() 
+{
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxWindow::
+      wrap_Update::CallMember( ParamList* p)
+{
+  this->_objectptr->_obj->Update();
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  Refresh
+//---------------------------------------------------
+void WrapClass_wxWindow::
+      wrap_Refresh::SetParametersComments() 
+{
+  ADDPARAMCOMMENT("bool: if true the background will be cleared (def:0).");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxWindow::
+      wrap_Refresh::CallMember( ParamList* p)
+{
+  int n = 0;
+
+  GET_PARAM(unsigned char,clearbg,0);
+
+  this->_objectptr->_obj->Refresh(clearbg);
+  return BasicVariable::ptr();
+}
+
+
+

@@ -142,6 +142,14 @@
 //#include "couleur.hpp"
 #include "FloatMatrix.hpp"
 
+#include "wx/version.h"
+#if ((wxMAJOR_VERSION==2)&&(wxMINOR_VERSION>=9))||(wxMAJOR_VERSION>=3)
+  #define PENSTYLE_SOLID wxPENSTYLE_SOLID 
+#else
+  #define PENSTYLE_SOLID wxSOLID 
+#endif
+
+
 #define ANIM_PLAY              0
 #define ANIM_STOP              1
 
@@ -271,7 +279,7 @@ public:
         visible(0),
         threshold(0),
         thickness(1),
-        style(wxSOLID) // LineSolid
+        style(PENSTYLE_SOLID) // LineSolid
         {}
 
 };

@@ -2,6 +2,8 @@
 
 #ifdef AMI_USE_ITK
 
+//#include "inrimage.hpp"
+
 #include "itkImage.h"
 #include "itkImageIOBase.h"
 #include "itkImageLinearConstIteratorWithIndex.h"

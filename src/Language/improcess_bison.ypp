@@ -6319,8 +6319,13 @@ image:
         if (!res) YYABORT;
 /* deprecated
 */
-        else
+        else {
+          // add to image history
+          if (driver.InConsole())
+            GB_main_wxFrame->GetImagesHistory()
+                           ->AddFileToHistory(wxString::FromAscii(st.get()));
           ADD_VARSTACK(InrImage,res);
+        }
       }
        | T_vtkDicomRead T_OP_PAR expr_string T_CL_PAR
        {
@@ -6403,9 +6408,12 @@ image:
           driver.res_print("\n");
           inc_cmd = str(format(" \"%1%\" // from browser ") % newname.mb_str());
 
-          if (driver.InConsole())
+          if (driver.InConsole()) {
             GB_main_wxFrame->GetConsole()
                             ->IncCommand(wxString::FromAscii(inc_cmd.c_str()));
+            GB_main_wxFrame->GetImagesHistory()
+                           ->AddFileToHistory(newname);
+          }
       }
       |
       T_Image T_OP_PAR basic_type T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
@@ -8372,7 +8380,7 @@ image:
 
       GET_VARSTACK_VALUE(InrImage, im);
         InrImage::ptr  res ( Func_Chamfer2(im.get(),
-                  0.92644, 1.34065, 1.65849,
+                  0.92644f, 1.34065f, 1.65849f,
                   dmax));
         ADD_VARSTACK_PTR(InrImage,res);
 
@@ -8384,7 +8392,7 @@ image:
 
       GET_VARSTACK_VALUE(InrImage, im);
         InrImage::ptr res ( Func_Chamfer2Signed(im.get(),
-                    0.92644, 1.34065, 1.65849,
+                    0.92644f, 1.34065f, 1.65849f,
                     dmax));
         ADD_VARSTACK_PTR(InrImage,res);
 
@@ -10165,8 +10173,8 @@ surface:
       SurfacePoly* surf;
 
       surf = Func_SmoothLines( insurf.get(),
-                      0.1,
-                      0.01,
+                      0.1f,
+                      0.01f,
                       10);
 
       if (surf==NULL) {

@@ -43,6 +43,7 @@ class WrapClass_wxDrawingWindow : public WrapClass_wxWindow
     ADD_CLASS_METHOD(SetCurveProperties, "Sets the properties of the displayed curve: color, style, width.");
     ADD_CLASS_METHOD(SetCurveDrawLines,  "Enable/Disable drawing of a curve lines.");
     ADD_CLASS_METHOD(SetCurveDrawPoints,  "Enable/Disable drawing of a curve points.");
+    ADD_CLASS_METHOD(Paint,               "Redraws the contents of the window.");
 
 
     void AddMethods(_parentclass_ptr& this_ptr )
@@ -57,6 +58,7 @@ class WrapClass_wxDrawingWindow : public WrapClass_wxWindow
       AddVar_SetCurveProperties( this_ptr);
       AddVar_SetCurveDrawLines(  this_ptr);
       AddVar_SetCurveDrawPoints( this_ptr);
+      AddVar_Paint(              this_ptr, "_Paint");
     }
 
 };

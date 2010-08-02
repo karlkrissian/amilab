@@ -16,6 +16,9 @@
 
 #include "wrap_wxfunctions.h"
 
+#include <wx/utils.h>
+
+
 AMIObject::ptr AddWrap_wxfunctions()
 {
   // Create new instance of the class

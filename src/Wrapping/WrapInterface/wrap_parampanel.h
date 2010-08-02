@@ -18,16 +18,23 @@
 #include "paramlist.h"
 #include "ParamPanel.hpp"
 
+#include "wrap_wxWindow.h"
 
-class WrapClass_parampanel : public WrapClassBase
+class WrapClass_parampanel : public WrapClass_wxWindow
 {
   DEFINE_CLASS(WrapClass_parampanel);
 
   // for nested classes
   typedef WrapClass_parampanel::ptr _parentclass_ptr;
+  typedef ParamPanel _obj_type;
 
   public:
-    ParamPanel::ptr _parampanel;
+    boost::shared_ptr<_obj_type> _parampanel;
+    const boost::shared_ptr<_obj_type>& GetObj() const { return _parampanel; }
+
+    /// Constructor
+    WrapClass_parampanel(boost::shared_ptr<ParamPanel> pp):  WrapClass_wxWindow(pp), _parampanel(pp)
+    {}
 
   ADD_CLASS_METHOD(BeginBook,        "Starts a notebook.");
   ADD_CLASS_METHOD(EndBook,          "Ends a notebook.");
@@ -74,6 +81,56 @@ class WrapClass_parampanel : public WrapClassBase
 
   ADD_CLASS_METHOD(CurrentParent,    "Get the wxWindow that contains the current parameters.");
   ADD_CLASS_METHOD(AddWidget,         "Adds a wxWindow to the current sizer");
+
+
+    void AddMethods(_parentclass_ptr& this_ptr )
+    {
+      // Add members from wxWindow
+      WrapClass_wxWindow::ptr parent_obj(boost::dynamic_pointer_cast<WrapClass_wxWindow>(this_ptr));
+
+      parent_obj->AddMethods(parent_obj);
+
+      AddVar_BeginBook(        this_ptr);
+      AddVar_EndBook(          this_ptr);
+      AddVar_BeginHorizontal(  this_ptr);
+      AddVar_EndHorizontal(    this_ptr);
+      AddVar_BeginBoxPanel(    this_ptr);
+      AddVar_EndBoxPanel(      this_ptr);
+
+      AddVar_BeginPanel(       this_ptr);
+      AddVar_EndPanel(         this_ptr);
+
+      AddVar_AddPage(          this_ptr);
+      AddVar_SelectPage(       this_ptr);
+
+      AddVar_AddFloat(         this_ptr);
+      AddVar_AddInt(           this_ptr);
+      AddVar_AddEnum(          this_ptr);
+      AddVar_AddEnumChoice(    this_ptr);
+      AddVar_AddLabel(         this_ptr);
+      AddVar_AddFilename(      this_ptr);
+      AddVar_AddDirname(       this_ptr);
+      AddVar_AddString(        this_ptr);
+      AddVar_AddImageChoice(   this_ptr);
+      AddVar_AddButton(        this_ptr);
+      AddVar_AddBitmapButton(  this_ptr);
+      AddVar_AddBoolean(       this_ptr);
+      AddVar_SetCallback(      this_ptr);
+      AddVar_SetDragCallback(  this_ptr);
+      AddVar_EnablePanel(      this_ptr);
+
+      AddVar_Display(          this_ptr);
+      AddVar_HidePanel(        this_ptr);
+      AddVar_Update(           this_ptr);
+      AddVar_ShowPanel(        this_ptr);
+
+      AddVar_SetPositionProp(  this_ptr);
+      AddVar_ShowSlider(       this_ptr);
+      AddVar_Enable(           this_ptr);
+
+      AddVar_CurrentParent(    this_ptr);
+      AddVar_AddWidget(        this_ptr);
+    }
 
 };
 

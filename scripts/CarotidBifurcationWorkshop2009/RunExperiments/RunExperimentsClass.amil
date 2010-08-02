@@ -1383,13 +1383,14 @@ if (!exists(RunExperimentsClass)){
       
       ::ConfigEvent()
     }
+    ::Init()
   }
   #------------------------------------------
 
-  if (!exists(experiments)) \
-  {
-    RunExperimentsClass experiments
-    experiments->Init()
-    experiments->Gui()
-  }
+#  if (!exists(experiments)) \
+#  {
+#    RunExperimentsClass experiments
+#    experiments->Init()
+#    experiments->Gui()
+#  }
 }

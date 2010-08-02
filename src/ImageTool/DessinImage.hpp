@@ -167,9 +167,10 @@
 #include <iostream>
 using namespace std;
 
-#ifndef _NO_GL_
-#include "Viewer3D.hpp"
-#endif
+//#include "Viewer3D.hpp"
+class Viewer3D;
+typedef boost::shared_ptr<Viewer3D> Viewer3D_ptr;
+typedef boost::weak_ptr  <Viewer3D> Viewer3D_wptr;
 
 #define VECTEUR_FLECHE      0
 #define VECTEUR_DIRECTION   1
@@ -374,8 +375,13 @@ protected:
   
   wxAuiManager manager;
   wxAuiNotebook* _param_book;
-  wxToolBar* ViewStyle;
-  wxToolBar* ViewParameters;
+  #if !WIN32
+    wxToolBar* ViewStyle;
+    wxToolBar* ViewParameters;
+  #else
+    wxAuiToolBar* ViewStyle;
+    wxAuiToolBar* ViewParameters;
+  #endif
   wxCheckBox* xyCheck;
   wxCheckBox* xzCheck;
   wxCheckBox* zyCheck;

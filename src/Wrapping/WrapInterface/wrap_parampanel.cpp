@@ -46,47 +46,7 @@ AMIObject::ptr AddWrapParamPanel(  WrapClass_parampanel::ptr& objectptr)
 
   amiobject->SetWrappedObject(objectptr);
   objectptr->SetAMIObject(amiobject);
-
-  objectptr->AddVar_BeginBook(        objectptr);
-  objectptr->AddVar_EndBook(          objectptr);
-  objectptr->AddVar_BeginHorizontal(  objectptr);
-  objectptr->AddVar_EndHorizontal(    objectptr);
-  objectptr->AddVar_BeginBoxPanel(    objectptr);
-  objectptr->AddVar_EndBoxPanel(      objectptr);
-
-  objectptr->AddVar_BeginPanel(       objectptr);
-  objectptr->AddVar_EndPanel(         objectptr);
-
-  objectptr->AddVar_AddPage(          objectptr);
-  objectptr->AddVar_SelectPage(       objectptr);
-
-  objectptr->AddVar_AddFloat(         objectptr);
-  objectptr->AddVar_AddInt(           objectptr);
-  objectptr->AddVar_AddEnum(          objectptr);
-  objectptr->AddVar_AddEnumChoice(    objectptr);
-  objectptr->AddVar_AddLabel(         objectptr);
-  objectptr->AddVar_AddFilename(      objectptr);
-  objectptr->AddVar_AddDirname(       objectptr);
-  objectptr->AddVar_AddString(        objectptr);
-  objectptr->AddVar_AddImageChoice(   objectptr);
-  objectptr->AddVar_AddButton(        objectptr);
-  objectptr->AddVar_AddBitmapButton(  objectptr);
-  objectptr->AddVar_AddBoolean(       objectptr);
-  objectptr->AddVar_SetCallback(      objectptr);
-  objectptr->AddVar_SetDragCallback(  objectptr);
-  objectptr->AddVar_EnablePanel(      objectptr);
-
-  objectptr->AddVar_Display(          objectptr);
-  objectptr->AddVar_HidePanel(        objectptr);
-  objectptr->AddVar_Update(           objectptr);
-  objectptr->AddVar_ShowPanel(        objectptr);
-
-  objectptr->AddVar_SetPositionProp(  objectptr);
-  objectptr->AddVar_ShowSlider(       objectptr);
-  objectptr->AddVar_Enable(           objectptr);
-
-  objectptr->AddVar_CurrentParent(    objectptr);
-  objectptr->AddVar_AddWidget(        objectptr);
+  objectptr->AddMethods( objectptr);
 
   return amiobject;
 }
@@ -129,9 +89,7 @@ BasicVariable::ptr wrap_ParamPanel( ParamList* p)
       wxwindow_nodeleter<ParamPanel>() // deletion will be done by wxwidgets
     );
 
-  WrapClass_parampanel::ptr wpp(new WrapClass_parampanel());
-  wpp->_parampanel = pp;
-
+  WrapClass_parampanel::ptr wpp(new WrapClass_parampanel(pp));
 
   AMIObject::ptr amiobject (AddWrapParamPanel(wpp));
 

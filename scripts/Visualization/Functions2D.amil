@@ -5,6 +5,8 @@
 # or lines from an image
 #
 
+func "Common/ScriptGui.amil"
+
 comments="Functions2DClass: this class provides an interface for plotting 2D functions."
 
 #ami_import->MainFrame()
@@ -13,7 +15,7 @@ if (!exists(Functions2DClass)) {
   
   
   
-  Class Functions2DClass {
+  Class Functions2DClass : public ScriptGui {
     
     #--------------------------------------------
     Class ::CurveParamClass  {
@@ -53,6 +55,7 @@ if (!exists(Functions2DClass)) {
       {
         if (::mode==0) {
           numval = INT((xmax-xmin)/res+0.5)
+          if (numval==0) { numval=1; }
           X <<= Image(FLOAT,numval,1,1)
           X.settranslation(xmin,0,0)
           X.setvoxelsize(res,1,1)
@@ -75,7 +78,6 @@ if (!exists(Functions2DClass)) {
     #----------------------------
     proc ::Init() \
     {
-      ::classname = "global::Functions2DClass"
       ::xmin = -10, "minimal value along X axis"
       ::xmax = 10,  "maximal value along X axis"
       ::ymin = -10, "minimal value along Y axis"
@@ -94,23 +96,6 @@ if (!exists(Functions2DClass)) {
       #::equation1_drag = UCHAR(1)
       ::CreateWindow()
     }
-    
-    #----------------------------
-    proc ::Close() \
-    {
-      ::win.HidePanel()
-      delvars GetObjectName(::Close)
-    }
-    Comments( ::Close, "Will close the interface and delete the corresponding object named '"+GetObjectName(::Close)+"'.")
-    
-    #----------------------------
-    proc ::CloseAll() \
-    {
-      closeclass_cmd = "if (exists(%1%)) { del %1%; };" %::classname
-      eval closeclass_cmd
-      ::Close
-    }
-    Comments( ::CloseAll, "Call ::Close() method and delete the class variable")
     
     #----------------------------
     proc ::CheckLimits() \
@@ -182,6 +167,7 @@ if (!exists(Functions2DClass)) {
 
       if (::c1->mode==0) {
         numval = INT((::xmax-::xmin)/::resolution+0.5)
+        if (numval==0) { numval=1; }
         ::X <<= Image(FLOAT,numval,1,1)
         ::X.settranslation(::xmin,0,0)
         ::X.setvoxelsize(::resolution,1,1)
@@ -204,6 +190,7 @@ if (!exists(Functions2DClass)) {
       ::CheckLimits()
       if (::c2->mode==0) {
         numval = INT((::xmax-::xmin)/::resolution+0.5)
+        if (numval==0) { numval=1; }
         ::X <<= Image(FLOAT,numval,1,1)
         ::X.settranslation(::xmin,0,0)
         ::X.setvoxelsize(::resolution,1,1)
@@ -231,6 +218,12 @@ if (!exists(Functions2DClass)) {
       ::SetCurve1()
       ::dw.SetCurveProperties(1,::c2->color_str,::c2->_style,::c2->_width)
       ::SetCurve2()
+
+      #::dw._Paint()
+
+      #::dw.Refresh(1)
+
+      #::dw.Update()
     }
 
     #--------------------------------
@@ -250,12 +243,21 @@ if (!exists(Functions2DClass)) {
       import = &global::ami_import;
       ::win = import->ParamPanel("2DFunc")
       
+
       # add Drawing Window
+
       d = ::win.CurrentParent()
+
       ::dw = import->wxDrawingWindow(&d)
-      ::dw.SetMinSize(&wx.wxSize(50,80))
+
+      ::dw.SetMinSize(&wx.wxSize(50,100))
+
       ::win.AddWidget(&::dw,0)
+
       ::dw.SetBackgroundColour(&wx.wxColour(255,255,255))
+
+
+
       ::win.BeginBook()
     
         ::win.AddPage("Param")
@@ -341,11 +343,9 @@ if (!exists(Functions2DClass)) {
           ::win.EndBoxPanel()
 
       ::win.EndBook()
-      ::win.AddButton("Update",::OnCurves)
-      ::win.BeginHorizontal()
-        ::win.AddButton("Close", ::Close)
-        ::win.AddButton("Close All", ::CloseAll)
-      ::win.EndHorizontal()
+
+      ::win.AddButton("Update",::OnCurves)    
+      ::AddStandardButtons(&::win)
       
       ::win.Update(-1)
       ::win.Display()
@@ -353,8 +353,8 @@ if (!exists(Functions2DClass)) {
       ::OnCurves()
    }
 
-    ::Init
-    ::OnCurves
+    ::Init()
+    ::OnCurves()
   } 
   # Class Functions2DClass
 } 

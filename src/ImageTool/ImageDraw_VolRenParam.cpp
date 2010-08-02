@@ -8,6 +8,7 @@
 #include "DessinImage.hpp"
 
 #include "amilab_messages.h"
+#include "Viewer3D.hpp"
 
 #include "VolumeRender.hpp"
 

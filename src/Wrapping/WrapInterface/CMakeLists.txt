@@ -34,8 +34,9 @@ SET(  WrapInterface_SRCS
 )
 
 SET(WrapInterface_HDRS
-#  wrap_imagedraw.h
   wrap_MainFrame.h
+#  wrap_imagedraw.h
+  wrap_parampanel.h 
   wrap_wxDrawingWindow.h
   wrap_wxEditor.h
   wrap_wxStcFrame.h 
