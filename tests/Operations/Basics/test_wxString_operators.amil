@@ -1,0 +1,109 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_wxString_operators.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the following methods:
+#                              - constructor
+#                              - c_str
+#                              - assign operator
+#                              - add assign operator.
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+OK = 1 # The test was successful
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+printn "Create an object of class wxString(sString = wx.wxString(\"hello world !!!\")).\n"
+sString = wx.wxString("hello world !!!")
+
+VAL=sString.c_str()
+
+printn "\t Returns the sString value: - %1% -\n" % VAL
+
+printn "Assign operator (sString1 = sString).\n"
+sString1=sString
+
+VAL1=sString1.c_str()
+
+printn "\t VAL1: %1%\n" % VAL1
+
+if (VAL != VAL1) {
+  OK=0;
+  printn  "\nERROR: The string is not assigned."
+}
+
+printn "Converted to the upper (sString.MakeUpper()).\n"
+sString.MakeUpper()
+
+VAL2=sString.c_str()
+
+printn "\t Returns the sString value: - %1% -\n" % VAL2
+
+VAL3=sString1.c_str()
+
+printn "\t Returns the sString1 value: - %1% -\n" % VAL3
+
+if (VAL2 == VAL1) {
+  OK=0;
+  printn  "\nERROR: The string is not assigned."
+}
+
+printn "Concatenated the string \" \" (sString1.Append(\" \")).\n"
+sString1.Append(" ")
+
+printn "Add assign operator (sString1 += sString).\n"
+sString1 += sString
+
+VAL4=sString1.c_str()
+
+printn "\t VAL4: %1%\n" % VAL4
+
+if (VAL4 != "hello world !!! HELLO WORLD !!!") {
+  OK=0;
+  printn  "\nERROR: The add assignment operator failure."
+}
+
+if(sString == sString1) {
+  OK=0;
+  printn  "\nERROR: The equal assignment operator failure."
+} else {
+  printn  "\nThe equal assignment operator is OK."
+}
+
+if(sString != sString1) {
+  printn  "\nThe not equal assignment operator is OK."
+} else {
+  OK=0;
+  printn  "\nERROR: The not equal assignment operator failure."  
+}
+
+printn "Create an object of class wxString(sString2 = wx.wxString(\" Nice Day !!!\")).\n"
+sString2 = wx.wxString(" Nice Day !!!")
+
+printn "Add operator (sString = sString + sString2).\n"
+sString = sString + sString2
+
+VAL5=sString.c_str()
+
+printn "\t VAL5: (%1%)\n" % VAL5
+
+if (VAL5 != "HELLO WORLD !!! Nice Day !!!") {
+  OK=0;
+  printn  "\nERROR: The add operator failure."
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ctest.PrintTestResult( OK ) 
+
+#quit
+

@@ -16,7 +16,7 @@ proc CorrectBiaisZ( IMAGE i, IMAGE res, NUM minthreshold, NUM maxthreshold ) {
      sub  = i[0:(i.tx-1),0:(i.ty-1),z:z]
      mask = (sub>minthreshold)*(sub<maxthreshold)
      m = mean(sub,mask)
-     i_means.setpos(0,0,z)
+     i_means._setpos(0,0,z)
      i_means.set(m)
 
   }

@@ -27,11 +27,13 @@ INCLUDE( ${wxWidgets_USE_FILE})
 SET(  WrapBasicTypes_SRCS
   wrap_varlist.cpp
   wrap_varvector.cpp
+  wrap_File.cpp
 )
 
 SET(WrapBasicTypes_HDRS
   wrap_varlist.h
   wrap_varvector.h
+  wrap_File.h
 )
 
 SET(WrapBasicTypes_SRCS

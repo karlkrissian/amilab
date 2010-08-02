@@ -79,7 +79,7 @@ proc UpdateEllipsoids() {
     el2 = CreateEllipsoids(v1*scale,v2*scale,v3*scale,xspacing,yspacing,zspacing,resolution,colors,mask); 
     el2.SetColorMaterial(1)
     s2_draw += el2
-    cl_draw.setpos(currentxpos,currentypos,currentzpos)
+    cl_draw._setpos(currentxpos,currentypos,currentzpos)
   local
 }
 

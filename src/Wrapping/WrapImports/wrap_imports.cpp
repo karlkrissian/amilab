@@ -29,6 +29,7 @@
 #include "wrap_parampanel.h"
 #include "wrap_varlist.h"
 #include "wrap_varvector.h"
+#include "wrap_File.h"
 
 #include "wrap_wxWindow.h"
 #include "wrap_wxSize.h"
@@ -36,6 +37,8 @@
 #include "wrap_wxImage.h"
 #include "wrap_wxBitmap.h"
 #include "wrap_wxHtmlWindow.h"
+#include "wrap_wxString.h"
+#include "wrap_wxFileName.h"
 #include "wrap_vtkLevelSets.h"
 
 #include "wrap_wxEditor.h"
@@ -46,6 +49,8 @@
 #include "wrap_ImageExtent.h"
 #include "wrap_SurfacePoly.h"
 #include "wrap_DessinImage.h"
+#include "wrap_Viewer3D.h"
+#include "wrap_GLTransfMatrix.h"
 
 extern VarContexts  Vars;
 extern MainFrame*   GB_main_wxFrame;
@@ -60,6 +65,8 @@ void AddWrapImports()
   AddWrapImage();
   AddWrapSurface();
   AddWrapDessinImage();
+  AddWrapViewer3D();
+  AddWrapGLTransfMatrix();
   AddWrapBasicTypes();
 
   // Create new instance of the class
@@ -102,12 +109,20 @@ void AddWrapWxWidgets()
   Variables::ptr previous_ocontext = Vars.GetObjectContext();
   Vars.SetObjectContext(amiobject->GetContext());
 
-  ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxWindow",    wrap_wxWindow);
+//  ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxWindow",    wrap_wxWindow); DEPRECATED
+
+  AddVar_wxWindow( amiobject->GetContext(), "wxWindow");
 
   AddVar_wxSize( amiobject->GetContext(), "wxSize");
+
+  AddVar_wxFileName( amiobject->GetContext(), "wxFileName");
+
+  AddVar_wxString( amiobject->GetContext(), "wxString");
+
 //  AddVar_wxSize(    Vars.GetBuiltinContext());
 
-  ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxColour",    wrap_wxColour);
+//  ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxColour",    wrap_wxColour); DEPRECATED
+  AddVar_wxColour( amiobject->GetContext(), "wxColour");
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxImage",     wrap_wxImage);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxBitmap",    wrap_wxBitmap);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxHtmlWindow",wrap_wxHtmlWindow);
@@ -182,11 +197,24 @@ void AddWrapDessinImage()
 }
 
 //--------------------------------------------
+void AddWrapViewer3D()
+{
+  AddVar_Viewer3D( Vars.GetBuiltinContext());
+}
+
+//--------------------------------------------
+void AddWrapGLTransfMatrix()
+{
+  AddVar_GLTransfMatrix( Vars.GetBuiltinContext());
+}
+
+//--------------------------------------------
 void AddWrapBasicTypes()
 {
 //  ADDOBJECTVAR_NAME(C_wrap_varfunction,"VarList",   wrap_VarList);
 //  ADDOBJECTVAR_NAME(C_wrap_varfunction,"VarVector", wrap_VarVector);
   AddVar_VarVector( Vars.GetBuiltinContext());
+  AddVar_File( Vars.GetBuiltinContext());
 //  AddVar_VarList( Vars.GetBuiltinContext());
 }
 

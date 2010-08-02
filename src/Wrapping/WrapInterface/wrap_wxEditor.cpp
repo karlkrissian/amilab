@@ -67,7 +67,6 @@ BasicVariable::ptr wrap_wxEditor::CallMember( ParamList* p)
     return CreateVar_wxEditor(new wxEditor(parent.get()));
   else
     ClassHelpAndReturn;
-    
 }
 
 //---------------------------------------------------

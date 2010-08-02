@@ -103,8 +103,8 @@ proc USML_DisplayResponse() {
   show USML_input
   show USML_rep
   show USML_rep1
-  USML_input_draw._compare(USML_rep_draw)
-  USML_input_draw._compare(USML_rep1_draw)
+  USML_input_draw.compare(USML_rep_draw)
+  USML_input_draw.compare(USML_rep1_draw)
 }
 
 proc USML_DisplayExtrema() {

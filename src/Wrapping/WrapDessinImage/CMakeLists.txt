@@ -10,6 +10,9 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/wxCode/wxTreeListCtrl
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapInterface
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapViewer3D
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapGLTransfMatrix
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapSurface
   ${Boost_INCLUDE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${PTHREADS_INCLUDE_DIR}

@@ -73,7 +73,7 @@ if (!exists(itkWaterShedClass)){
       show ::grad
       show ::water
       ::water_draw.update()
-      ::grad_draw._compare(&::water_draw)
+      ::grad_draw.compare(&::water_draw)
     
     }
     

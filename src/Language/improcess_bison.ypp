@@ -74,6 +74,7 @@
 #include "wrap_ImageExtent.h"
 #include "wrap_SurfacePoly.h"
 #include "wrap_DessinImage.h"
+#include "wrap_Viewer3D.h"
 
 #ifndef __FLEX_LEXER_H
 #define yyFlexLexer yyipFlexLexer
@@ -82,7 +83,7 @@
 #endif
 
 
-#include "Viewer3D.hpp"
+//#include "Viewer3D.hpp"
 
 //#include "Erreurs.Main.hpp"
  // #include "Graphique.hpp"
@@ -418,7 +419,7 @@ void CB_update_imagelist( void* imagelist_gui);
 
 %token T_Image T_BrowseImage
 %token T_ReadRawImages
-%token T_Transform
+//%token T_Transform
 %token SHOW HELP QUIT T_HIDE
 %token PRINT PRINTN
 %token T_InfoDialog
@@ -434,8 +435,9 @@ void CB_update_imagelist( void* imagelist_gui);
 %token IDENTIFIER
 %token PROCESSED_VAR
 %token VAR_IMAGE  VAR_STRING
-%token VAR_SURFDRAW VAR_MATRIX
-%token VAR_FILE
+//%token VAR_SURFDRAW VAR_MATRIX
+%token VAR_MATRIX
+//%token VAR_FILE
 %token VAR_C_FUNCTION
 %token VAR_C_PROCEDURE
 %token VAR_CLASS_MEMBER
@@ -443,7 +445,7 @@ void CB_update_imagelist( void* imagelist_gui);
 %token VAR_AMI_FUNCTION
 %token VAR_AMI_CLASS
 %token VAR_AMI_OBJECT
-%token VAR_GLTRANSFORM
+//%token VAR_GLTRANSFORM
 %token VAR_ARRAY_IMAGE
 %token T_del
 %token T_delvars
@@ -480,7 +482,7 @@ void CB_update_imagelist( void* imagelist_gui);
 %token SecDerGrad SecDerGrad2 SubImage PutImage
 %token T_AutoCrop
 %token T_DiscSecDerGrad
-%token T_EDPdilate T_EDPerode T_EDPopen T_EDPclose
+//%token T_EDPdilate T_EDPerode T_EDPopen T_EDPclose
 %token AnisoSmoothGS T_vtkAnisoGS
 %token T_DiscMeanCurvature
 %token T_vtkMedian3D
@@ -610,33 +612,35 @@ void CB_update_imagelist( void* imagelist_gui);
 
 %token T_vtkDist T_AndreDist
 %token T_Surface
-%token T_getimage
-%token T_GetImageFromX
-%token T_rotate
-%token T_computeCC T_drawCC
-%token T_addobj T_setcurrentobj
+//%token T_getimage
+//%token T_GetImageFromX
+//%token T_rotate
+//%token T_computeCC T_drawCC
+%token T_computeCC
+//%token T_addobj T_setcurrentobj
 %token T_writeVRML T_writeVTK
-%token T_Paint
+//%token T_Paint
 %token T_SetLight T_SetLightPos
-%token T_SetLightAmbient T_SetLightDiffuse T_SetLightSpecular
-%token T_SetBackground
-%token T_Normalize T_Center
+//%token T_SetLightAmbient T_SetLightDiffuse T_SetLightSpecular
+//%token T_SetBackground
+//%token T_Normalize T_Center
 
-%token T_Remove
-%token T_SwapBuffers
+//%token T_Remove
+//%token T_SwapBuffers
 
 //%token T_SetOpacityImage
 
-%token T_GetTransform T_SetTransform
-%token T_Interpolate
+//%token T_GetTransform T_SetTransform
+//%token T_Interpolate
 
 %token T_Matrix
 %token T_Invert
 
-%token T_PrintMatrices
+//%token T_PrintMatrices
 
 //%token SET SETPOS SHOWCURSOR T_update COMPARE SETVECTOR
-%token SET SETPOS COMPARE SETVECTOR
+//%token SET SETPOS COMPARE SETVECTOR
+%token SET SETPOS
 
 %token T_lininterp
 //%token T_SetCompareDisplacement
@@ -647,13 +651,13 @@ void CB_update_imagelist( void* imagelist_gui);
 //%token T_SetVectStyle
 //%token T_SetLineThickness
 //%token T_SetZoom
-%token T_SetWindowSize
+//%token T_SetWindowSize
 //%token T_SetColormap
 //%token T_drawcircle
 //%token T_setGLwin
 %token T_initvalue
-%token T_ShowSection
-%token T_HideSection
+//%token T_ShowSection
+//%token T_HideSection
 
 
 %token T_Xpos T_Ypos T_Zpos T_SpacePos
@@ -671,11 +675,11 @@ void CB_update_imagelist( void* imagelist_gui);
 %token T_cumhisto
 %token T_DisplayHisto
 
-%token T_OPEN
-%token T_CLOSE
-%token T_scan_float
-%token T_read
-%token T_rewind
+//%token T_OPEN
+//%token T_CLOSE
+//%token T_scan_float
+//%token T_read
+//%token T_rewind
 
 %token T_LineNumber
 %token CONST_PI
@@ -1604,6 +1608,7 @@ command:
           driver.err_print("assignment of NULL matrix\n");
       }
 */
+/* deprecated
       |
       identifier ASSIGN_OP gltransform
       {
@@ -1616,6 +1621,7 @@ command:
           else
             driver.err_print("assignment of NULL matrix\n");
         }
+*/
 /* Deprecated
        | VAR_MATRIX ASSIGN_OP expr
        {
@@ -1827,7 +1833,6 @@ command:
         BasicVariable::ptr var = Vars.AddVar<string>(ident,varstring);
         var->SetComments(comments.get());
       }
-*/
       |
       identifier ASSIGN_OP T_OPEN T_OP_PAR  expr_string T_COMMA ASTRING T_CL_PAR
       {
@@ -1859,10 +1864,10 @@ command:
           case ENOSPC: fprintf(stderr,"ENOSPC \n"); break;
                   default: fprintf("unknown error \n");
           }
-          */
+          * /
           }
         }
-        |
+/*        |
         VAR_FILE ASSIGN_OP T_OPEN T_OP_PAR  expr_string T_COMMA ASTRING T_CL_PAR
         {
           Variable<FILE>::ptr varfile(driver.var_stack.GetLastVar<FILE>());
@@ -1885,6 +1890,7 @@ command:
           FILE_ptr file(varfile->Pointer());
           rewind(file.get());
         }
+*/
         |  T_SetDebugOn
         {
       GB_debug = 1;
@@ -1965,7 +1971,7 @@ command:
             Vars.SetObjectContext(imagevar->GetContext());
           }
 */
-      
+
       titre = (boost::format("%s_draw") % imagevar->Name().c_str()).str();
       FILE_MESSAGE(boost::format("SHOW var_image  title %s") % titre);
       //if (Vars.GetCurrentContext()->GetVar(titre,&var)) {
@@ -2038,7 +2044,7 @@ command:
           **/
           GET_VARSTACK_VAR_OBJECT(SurfacePoly,surfvar,surf)
           string    titre;
-          Viewer3D::ptr surfdraw;
+          //Viewer3D::ptr surfdraw;
           BasicVariable::ptr var;
           int var_context = Vars.GetContext(surfvar);
 
@@ -2052,6 +2058,44 @@ command:
               (var_context==OBJECT_CONTEXT_NUMBER)) {
             titre = str(format("%s_draw") % surfvar->Name());
             var = Vars.GetVar(titre.c_str(),var_context);
+
+            if (!var.get()) {
+
+              Variables::ptr context = surfvar->GetContext();
+
+              // Call constructor from Viewer3D constructor function
+              Variable<string>::ptr Title(new Variable<string>(string_ptr(new string(titre))));
+              ParamList* p = new ParamList();
+              p->AddParam(Title);
+              BasicVariable::ptr newvar = wrap_Viewer3D().CallMember(p);
+              FILE_MESSAGE(boost::format("SHOW var_ami_object creating title %s ") % titre);
+
+              if (newvar.get()) {
+                newvar->Rename(titre.c_str());
+                context->AddVar(newvar, context);
+              } else {
+                driver.err_print("Failed to create the viewer.");
+                YYABORT;
+              }
+
+              GET_WRAPPED_OBJECT(Viewer3D, newvar, surfdraw);
+              if (surfdraw.get()) {
+                surfdraw->Show(true);
+                // Add the surface to the OpenGL Object
+                surfdraw->GetCanvas()->AddSurface( surf);
+                surfdraw->Paint();
+                surfdraw->GetCanvas()->Normalize();
+                surfdraw->GetCanvas()->Center();
+              } else {
+                driver.err_print(
+                  (boost::format
+                    ("Unable to convert variable %1% to a wrapped Viewer3D") % titre).str().c_str());
+                YYABORT;
+              }
+            } else
+              cerr << " variable " << titre << " already exists " << endl;
+          }
+/*
             if (!var.get()) {
               surfdraw = Viewer3D::Create_ptr(
                             new Viewer3D( GB_main_wxFrame,
@@ -2074,7 +2118,7 @@ command:
             } else
               cerr << " variable " << titre << " already exists " << endl;
           } // var_context >=0
-
+*/
           // Restore the object context
           if (var_context==OBJECT_CONTEXT_NUMBER) {
             Vars.SetObjectContext(previous_ocontext);
@@ -2607,7 +2651,6 @@ command:
           fprintf(file.get(),"%s",text.get());
           fflush(file.get());
         }
-*/
       | VAR_FILE T_POINT PRINT expr_var
       {
           BasicVariable::ptr var(driver.var_stack.GetLastBasicVar());
@@ -2637,7 +2680,7 @@ command:
             driver.err_print("empty variable");
 
       }
-/* deprecated
+
       | VAR_FILE T_POINT PRINT expr
       {
           Variable<FILE>::ptr varfile(driver.var_stack.GetLastVar<FILE>());
@@ -2727,13 +2770,13 @@ command:
         mat->PrintSelf();
         delete mat;
       }
-*/
+
         | VAR_FILE T_POINT T_CLOSE
         {
           driver.var_stack.GetLastBasicVar();
           printf("Deprecated: No need to close files explicitly, since we use smart pointers, they will be closed when the variable is deleted. \n");
         }
-/*
+
         | PRINT expr
         {
         /**
@@ -4057,6 +4100,7 @@ command:
       }
 
       }
+/*
         | VAR_SURFDRAW T_POINT T_rotate T_OP_PAR expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
           GET_VARSTACK_VALUE(Viewer3D,sdraw);
@@ -4064,6 +4108,7 @@ command:
           sdraw->GetCanvas()->UserRotate($5,$7,$9);
           sdraw->Paint();
         }
+
         | VAR_SURFDRAW T_POINT T_addobj T_OP_PAR expr_var T_CL_PAR
         {
           GET_VARSTACK_OBJECT(SurfacePoly,surf)
@@ -4092,7 +4137,7 @@ command:
         {
           /**
             Description: Removes the surface without swapping the 3D buffer
-          **/
+          ** /
           GET_VARSTACK_OBJECT(SurfacePoly,surf)
           GET_VARSTACK_VALUE(Viewer3D,   sdraw);
 
@@ -4103,7 +4148,7 @@ command:
         {
           /**
             Description:  Swaps the 3D buffer
-          **/
+          ** /
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           Viewer3D_ptr sdraw(varsurfd->Pointer());
 
@@ -4185,6 +4230,8 @@ command:
           GET_VARSTACK_VALUE(Viewer3D,v);
           v->GetCanvas()->PrintMatrices();
         }
+*/
+/* deprecated 
         | VAR_SURFDRAW T_POINT T_SetTransform T_OP_PAR gltransform T_CL_PAR
         {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
@@ -4203,6 +4250,8 @@ command:
           if ($7>0.5) sdraw->Paint();
           delete tr;
         }
+*/
+/*
         | VAR_SURFDRAW T_POINT T_Paint
         {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
@@ -4216,7 +4265,7 @@ command:
             if (GB_verbose) printf("Dispatching event on GB_wxApp \n");
             GB_wxApp->Dispatch();
           }
-		  */
+		  * /
         }
         | VAR_SURFDRAW T_POINT T_SetLightAmbient T_OP_PAR expr T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
         {
@@ -4269,7 +4318,7 @@ command:
         /**
           Description:
             Normalizes the 3D view based on the limits in space of the current objects
-        **/
+        ** /
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           Viewer3D_ptr sdraw (varsurfd->Pointer());
           sdraw->GetCanvas()->Normalize();
@@ -4279,7 +4328,7 @@ command:
         /**
           Description:
             Centers the 3D view based on the limits in space of the current objects
-        **/
+        ** /
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           Viewer3D_ptr sdraw (varsurfd->Pointer());
           sdraw->GetCanvas()->Center();
@@ -4297,6 +4346,7 @@ command:
             GB_wxApp->Dispatch();
           }
         }
+*/
         |
         T_struct_tensor T_OP_PAR var_image T_COMMA expr T_COMMA expr T_CL_PAR
         {
@@ -4859,6 +4909,7 @@ command:
           GET_VARSTACK_VALUE(InrImage, i);
           Func_VectorImage2StructuredGrid(i.get(),filename.get());
         }
+/*
         |
         VAR_GLTRANSFORM T_POINT PRINT
         {
@@ -4872,6 +4923,7 @@ command:
           GET_VARSTACK_VALUE(GLTransfMatrix, glmat);
           Func_SaveTransform(glmat.get(),filename.get());
         }
+*/
         |
         T_import_vtk
         {
@@ -5023,7 +5075,7 @@ exprstringlist:
             $$ = sl;
         }
 
-
+//Esta regla esta huerfana, nadie la llama.
 stringlist:
       T_OP_BR exprstringlist T_CL_BR
       {
@@ -6066,13 +6118,14 @@ float_variable:
       float val = (int) $1;
       ADD_VARSTACK_FLOAT(val);
     }
+/*
     | VAR_FILE T_POINT T_scan_float T_OP_PAR expr_string T_CL_PAR
     {
     /**
       Description:
         Scans a float number in the given file and based on the
         given formatting expression.
-    **/
+    ** /
       float res;
       GET_VARSTACK_VALUE(FILE,file);
       boost::shared_array<char> format( $5);
@@ -6113,6 +6166,7 @@ float_variable:
       (*st) = res;
       ADD_VARSTACK_FLOAT(val);
     }
+*/
     ;
 
 
@@ -7252,6 +7306,7 @@ image:
     FinSi
     ADD_VARSTACK_PTR(InrImage,res);
       }
+/*
       |
       T_EDPdilate T_OP_PAR var_image  T_COMMA expr T_COMMA expr T_COMMA expr T_CL_PAR
       {
@@ -7321,7 +7376,7 @@ image:
       using Brockett and Maragos scheme with a given
       size and time step in voxel units
       minimal and maximal intensities allow to speed up the process
-    **/
+    ** /
       GET_VARSTACK_VALUE(InrImage, im);
     float Imin = $9;
     float Imax = $11;
@@ -7345,7 +7400,7 @@ image:
       Grayscale morphological opening
       using Brockett and Maragos scheme with a given
       size and time step in voxel units
-    **/
+    ** /
       GET_VARSTACK_VALUE(InrImage, im);
     InrImage::ptr res ( Func_EDP_open( im.get(),
                     $5,  $7));
@@ -7371,7 +7426,7 @@ image:
       using Brockett and Maragos scheme with a given
       size and time step in voxel units
       minimal and maximal intensities allow to speed up the process
-    **/
+    ** /
       GET_VARSTACK_VALUE(InrImage, im);
     float Imin = $9;
     float Imax = $11;
@@ -7412,6 +7467,7 @@ image:
     FinSi
     ADD_VARSTACK_PTR(InrImage,res);
       }
+*/
 /*
       |
       AnisoGS T_POINT T_GetOutput
@@ -8080,6 +8136,7 @@ image:
         FinPour
         ADD_VARSTACK_PTR(InrImage,res);
         }
+/*
         |
         VAR_SURFDRAW T_POINT T_getimage
         {
@@ -8094,7 +8151,7 @@ image:
           YYABORT;
 /*
           ADD_VARSTACK(InrImage,(*(Viewer3D_ptr*) $1->Pointer())->GetInrImage());
-*/
+* /
     }
     |
 /*    VAR_IMAGEDRAW T_POINT T_getimage
@@ -8102,8 +8159,8 @@ image:
       //GET_VARSTACK_OBJECT(DessinImage, imdraw)
       GET_VARSTACK_VALUE(DessinImage, imdraw)
       ADD_VARSTACK(InrImage, imdraw->GetInrImage());
-    }
-    |*/
+    }*/
+    |
     T_threscross T_OP_PAR var_image T_COMMA expr T_CL_PAR
     {
       GET_VARSTACK_VALUE(InrImage, im);
@@ -9676,7 +9733,7 @@ expr_var:
   assignment_var
   ;
 
-
+/*
 gltransform: VAR_GLTRANSFORM {
             GET_VARSTACK_VALUE(GLTransfMatrix,glt);
             GLTransfMatrix* newglt;
@@ -9728,6 +9785,7 @@ gltransform: VAR_GLTRANSFORM {
          }
       }
 ;
+*/
 
 matrix_variable: 
       T_Matrix T_OP_PAR expr T_COMMA expr T_CL_PAR
@@ -10735,8 +10793,10 @@ identifier
   Variable not included in variable expression
 */
 
+/*
 variable_with_assign:
          VAR_GLTRANSFORM;
+*/
 
 function_variable:
          VAR_C_FUNCTION
@@ -10750,16 +10810,19 @@ variable_without_assign:
 //        function_variable
 //        | VAR_IMAGEDRAW
 //        |
-         VAR_SURFDRAW
-        | VAR_FILE
-        | VAR_AMI_CLASS
+//         VAR_SURFDRAW
+//        |
+//         VAR_FILE
+//        | 
+          VAR_AMI_CLASS
         | VAR_ARRAY_IMAGE
         ;
 
 
 unprocessed_variable:
-    variable_with_assign
-    | variable_without_assign
+    //variable_with_assign
+    //| 
+    variable_without_assign
 
 /*
   Variable included in variable expression

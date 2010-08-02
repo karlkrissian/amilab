@@ -8,6 +8,9 @@ func "Common/ScriptGui"
 
 if (!exists(GreyMorphoClass)) {
 
+  printn "Import filters (ami_import->Filters()).\n"
+  ami_import.Filters()
+
   Class GreyMorphoClass  : public ScriptGui{
 
     #----------------------------
@@ -52,17 +55,23 @@ if (!exists(GreyMorphoClass)) {
     #----------------------------
     proc ::ProcessImage( IMAGE input) \
     {
+      morph = global::filters.ContinuousMorphology()
+
       if (::operation==0) {
-        input = EDPdilate(input,::size,::step)
+#        input = EDPdilate(input,::size,::step)
+        input = morph.Dilate(input,::size,::step)
       }
       if (::operation==1) {
-        input = EDPerode(input,::size,::step)
+#        input = EDPerode(input,::size,::step)
+        input = morph.Erode(input,::size,::step)
       }
       if (::operation==2) {
-        input = EDPclose(input,::size,::step)
+#        input = EDPclose(input,::size,::step)
+        input = morph.Close(input,::size,::step)
       }
       if (::operation==3) {
-        input = EDPopen(input,::size,::step)
+#        input = EDPopen(input,::size,::step)
+        input = morph.Open(input,::size,::step)
       }
     }
 
@@ -100,7 +109,7 @@ if (!exists(GreyMorphoClass)) {
       if exists(::res) {
         show ::res
         ::res_draw.update()
-        ::input_draw._compare(&::res_draw)
+        ::input_draw.compare(&::res_draw)
         # draw limits of ROI
       }
     }
@@ -114,7 +123,7 @@ if (!exists(GreyMorphoClass)) {
         }
         ::diff = ::input - ::res
         show ::diff
-        ::input_draw._compare(&::diff_draw)
+        ::input_draw.compare(&::diff_draw)
       }
       eval ::result_image_name+"_diff <<= ::diff;"
     }

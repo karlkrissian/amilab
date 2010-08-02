@@ -10,6 +10,10 @@ class AMIObject;
 //------- Variable<AMIObject>
 //------------------------------------------------------
 
+
+/// Cast to a type based on its name as a string
+template<> BasicVariable::ptr Variable<AMIObject>::TryCast(const std::string& type_string) const; ///New Added:12-07-2010
+
 // Copy contents to new variable
 template<> BasicVariable::ptr Variable<AMIObject>::NewCopy() const;
 
@@ -39,16 +43,16 @@ template<> BasicVariable::ptr Variable<AMIObject>::operator --(int);
 
 /// a+b
 template<> BasicVariable::ptr Variable<AMIObject>::operator +(const BasicVariable::ptr& b);
-
+*/
 /// a+=b
 template<> BasicVariable::ptr Variable<AMIObject>::operator +=(const BasicVariable::ptr& b);
-
+/*
 /// a-b
 template<> BasicVariable::ptr Variable<AMIObject>::operator -(const BasicVariable::ptr& b);
-
+*/
 /// a-=b
 template<> BasicVariable::ptr Variable<AMIObject>::operator -=(const BasicVariable::ptr& b);
-
+/*
 /// a*b
 template<> BasicVariable::ptr Variable<AMIObject>::operator *(const BasicVariable::ptr& b);
 
@@ -151,5 +155,5 @@ template<> BasicVariable::ptr Variable<AMIObject>::operator =(const BasicVariabl
  */
 template<> BasicVariable::ptr Variable<AMIObject>::left_assign(const BasicVariable::ptr& b);
 
-#endif 
+#endif
 // _Variable_AMIObject_h_

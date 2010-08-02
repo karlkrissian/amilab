@@ -132,10 +132,10 @@ if (!exists(Corr3DTest)) {
     {
       show ::input1
       show ::input2
-      ::input1_draw._compare(::input2_draw);
+      ::input1_draw.compare(::input2_draw);
 
-      ::input1_draw._setvector(0,::d);
-      ::input1_draw._setvector(1,::v);
+      ::input1_draw.setvector(0,::d);
+      ::input1_draw.setvector(1,::v);
       
       ::input1_draw.DrawVector(0,1);
       ::input1_draw.DrawVector(1,1);
@@ -166,8 +166,7 @@ if (!exists(Corr3DTest)) {
     #--------------------------------------------------
     proc ::Gui() \
     {
-      import = &global::ami_import;
-      ::win = import->ParamPanel("3D Corr")
+      ::win = global::ami_import.ParamPanel("3D Corr")
 
       ::win->_BeginBook()
 

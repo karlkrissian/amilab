@@ -264,7 +264,7 @@ if (!exists(AnisoNRADClass)) {
       if exists(::res) {
         show ::res
         ::res_draw.update()
-        ::input_draw._compare(&::res_draw)
+        ::input_draw.compare(&::res_draw)
       }
     }
     Comments( ::Display, "Display results")
@@ -281,7 +281,7 @@ if (!exists(AnisoNRADClass)) {
         ::res_surf.Normals()
         show ::input_surf
         show ::res_surf
-        ::input_surf_draw._compare(&::res_surf_draw)
+        ::input_surf_draw.compare(&::res_surf_draw)
     }
   
     proc ::DisplaySurfaces() {

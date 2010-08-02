@@ -1,0 +1,49 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_wxfilename_copy_constructor.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the following methods:
+#                              - constructor
+#                              - copy constructor
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+OK = 1 # The test was successful
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+printn "Constructor: MODE 3 - a directory name, a file name, a file extension - (file=wx.wxFileName(\"./\",\"test_wxfilename_sameas\",\"amil\")).\n"
+file=wx.wxFileName("./","test_wxfilename_sameas","amil")
+
+print "Get the full path (file.GetFullPath()):\n"
+VAL = file.GetFullPath()
+
+print "\t The full path: - %1% -\n" % VAL
+
+printn "Copy constructor (file1 = file.copy()).\n"
+file1=file.copy()
+
+print "Get the full path (file1.GetFullPath()):\n"
+VAL1 = file1.GetFullPath()
+
+print "\t The full path: - %1% -\n" % VAL1
+
+if (VAL != VAL1) {
+  OK=0;
+  printn  "\nERROR: The file is not copied."
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ctest.PrintTestResult( OK ) 
+
+#quit
+

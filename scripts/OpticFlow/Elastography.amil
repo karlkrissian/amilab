@@ -1,6 +1,8 @@
 # command line: ./amilab 
 
 ami_import->AMIFluid()
+printn "Import filters (ami_import->Filters()).\n"
+ami_import->Filters()
 
 symmetric         = UCHAR(0)
 inverse_upsample  = INT(1)
@@ -394,9 +396,12 @@ proc CB_Stats() {
   print "Only pixel with big enough displacement ...\n"
   mask1=mask*0+255
 
+  morph = filters.ContinuousMorphology()
+
   // Erode mask
   mask1f = (FLOAT) mask1
-  mask1fe = EDPerode(mask1f,1,0.25)
+#  mask1fe = EDPerode(mask1f,1,0.25)
+  mask1fe = morph.Erode(mask1f,1,0.25)
   mask1 =  (UCHAR) ((mask1fe>127)*255)
   
   print sprint("Angular error : %f\n",mean(ang_error));
@@ -515,8 +520,8 @@ proc CB_Iterate() {
 proc CB_Display() {
   global
   show im1;
-  im1_draw._setvector(0,displ_res);
-  im1_draw._setvector(1,displ);
+  im1_draw.setvector(0,displ_res);
+  im1_draw.setvector(1,displ);
   local
 }
 
@@ -614,10 +619,14 @@ proc CB_RunAlphaTests() {
   filename2=filedir+"MeanAngErrorMarg"+param_str+".dat"
   filename3=filedir+"SDAngError______"+param_str+".dat"
   filename4=filedir+"MeanAngErrorSky_"+param_str+".dat"
-  test_file1 = open(filename1,"w")
-  test_file2 = open(filename2,"w")
-  test_file3 = open(filename3,"w")
-  test_file4 = open(filename4,"w")
+#  test_file1 = open(filename1,"w")
+#  test_file2 = open(filename2,"w")
+#  test_file3 = open(filename3,"w")
+#  test_file4 = open(filename4,"w")
+  test_file1 = File(filename1,"w")
+  test_file2 = File(filename2,"w")
+  test_file3 = File(filename3,"w")
+  test_file4 = File(filename4,"w")
 
   param_str = ""
   if (symmetric) {
@@ -649,31 +658,38 @@ proc CB_RunAlphaTests() {
   param_str = param_str + sprint("%f) ",alfa_step)
 
   # print parameter information at the beginning of the files
-  test_file1.print "# Optical Flow technique\n"
-  test_file1.print "# Angular error obtained for the Yosemite sequence\n"
-  test_file1.print "# amilab script: "+$0+" \n"
-  test_file1.print "# Parameters\n"
-  test_file1.print "# "+param_str+"\n"
+  test_file1._print("# Optical Flow technique\n")
+  test_file1._print("# Angular error obtained for the Yosemite sequence\n")
+  _st_ = "# amilab script: "+$0+" \n"
+  test_file1._print(_st_)
+  test_file1._print("# Parameters\n")
+  _st_ = "# "+param_str+"\n"
+  test_file1._print(_st_)
 
+  test_file2._print("# Optical Flow technique\n")
+  test_file2._print("# Angular error obtained for the Yosemite sequence\n")
+  _st_ = "# amilab script: "+$0+" \n"
+  test_file2._print(_st_)
+  test_file2._print("# Parameters\n")
+  _st_ = "# "+param_str+"\n"
+  test_file2._print(_st_)
+  test_file2._print("# margin of 15 pixels at the border\n")
 
-  test_file2.print "# Optical Flow technique\n"
-  test_file2.print "# Angular error obtained for the Yosemite sequence\n"
-  test_file2.print "# amilab script: "+$0+" \n"
-  test_file2.print "# Parameters\n"
-  test_file2.print "# "+param_str+"\n"
-  test_file2.print "# margin of 15 pixels at the border\n"
+  test_file3._print("# Optical Flow technique\n")
+  test_file3._print("# Standard deviation of the angular error obtained for the Yosemite sequence\n")
+  _st_ = "# amilab script: "+$0+" \n"
+  test_file3._print(_st_)
+  test_file3._print("# Parameters\n")
+  _st_ = "# "+param_str+"\n"
+  test_file3._print(_st_)
 
-  test_file3.print "# Optical Flow technique\n"
-  test_file3.print "# Standard deviation of the angular error obtained for the Yosemite sequence\n"
-  test_file3.print "# amilab script: "+$0+" \n"
-  test_file3.print "# Parameters\n"
-  test_file3.print "# "+param_str+"\n"
-
-  test_file4.print "# Optical Flow technique\n"
-  test_file4.print "# Angular error obtained for the Yosemite sequence, getting rid of the pb close to the sky\n"
-  test_file4.print "# amilab script: "+$0+" \n"
-  test_file4.print "# Parameters\n"
-  test_file4.print "# "+param_str+"\n"
+  test_file4._print("# Optical Flow technique\n")
+  test_file4._print("# Angular error obtained for the Yosemite sequence, getting rid of the pb close to the sky\n")
+  _st_ = "# amilab script: "+$0+" \n"
+  test_file4._print(_st_)
+  test_file4._print("# Parameters\n")
+  _st_ = "# "+param_str+"\n"
+  test_file4._print(_st_)
 
   n=(alfa_max-alfa_min)/alfa_step
   for k=0 to n {
@@ -686,49 +702,52 @@ proc CB_RunAlphaTests() {
       // full image
       mask1=mask*0+255
 
-    test_file1.print alfa
-    test_file1.print "\t"
-    test_file1.print mean(ang_error,mask1)
-    test_file1.print "\n"
+    test_file1._print(alfa)
+    test_file1._print("\t")
+    test_file1._print(mean(ang_error,mask1))
+    test_file1._print("\n")
 
     // standard deviation of the error
     ae1 = ang_error-mean(ang_error,mask1)
     ae1_sd = ae1*ae1
     ang_sd = sqrt(mean(ae1_sd,mask1))
 
-    test_file3.print alfa
-    test_file3.print "\t"
-    test_file3.print ang_sd
-    test_file3.print "\n"
+    test_file3._print(alfa)
+    test_file3._print("\t")
+    test_file3._print(ang_sd)
+    test_file3._print("\n")
 
     // error after removing 15 pixels at the border
     RemoveBorder(&mask1,15)
-    test_file2.print alfa
-    test_file2.print "\t"
-    test_file2.print mean(ang_error,mask1)
-    test_file2.print "\n"
+    test_file2._print(alfa)
+    test_file2._print("\t")
+    test_file2._print(mean(ang_error,mask1))
+    test_file2._print("\n")
 
-      // full image
-      mask1=mask*0+255
+    // full image
+    mask1=mask*0+255
+
+    morph = filters.ContinuousMorphology()
 
     // Erode mask
     mask1f = (FLOAT) mask1
-    mask1fe = EDPerode(mask1f,1,0.25)
+#    mask1fe = EDPerode(mask1f,1,0.25)
+    mask1fe = morph.Erode(mask1f,1,0.25)
     mask1 =  (UCHAR) ((mask1fe>127)*255)
-    test_file4.print alfa
-    test_file4.print "\t"
-    test_file4.print mean(ang_error,mask1)
-    test_file4.print "\n"
+    test_file4._print(alfa)
+    test_file4._print("\t")
+    test_file4._print(mean(ang_error,mask1))
+    test_file4._print("\n")
 
     ProcessXEvents(200);
 
   }
 
   print "closing files \n"
-  test_file1.close
-  test_file2.close
-  test_file3.close
-  test_file4.close
+  test_file1.close()
+  test_file2.close()
+  test_file3.close()
+  test_file4.close()
   print "files closed\n"
 }
 
@@ -736,8 +755,7 @@ proc CB_RunAlphaTests() {
 #--------------------------------------------------
 # Input Images
 #
-import = &global::ami_import;
-winput = import->ParamPanel("Input images for Optical Flow")
+winput = global::ami_import.ParamPanel("Input images for Optical Flow")
 winput.BeginBoxPanel("Elastography B mode")
 restart_id         = winput.AddButton("ReLoad", CB_ReLoad)
 winput.EndBoxPanel()
@@ -752,8 +770,7 @@ winput.Update()
 #--------------------------------------------------
 # Window of Parameters for 2D cross-correlation code
 #
-import = &global::ami_import;
-wcorr = import->ParamPanel("Cross-Correlation 2D")
+wcorr = global::ami_import.ParamPanel("Cross-Correlation 2D")
 
 corr_step_x_id = wcorr.AddInt( &corr_step_x,  "corr_step_x", 1,20)
 corr_step_y_id = wcorr.AddInt( &corr_step_y,  "corr_step_y", 1,20)
@@ -770,8 +787,7 @@ wcorr.Update()
 #--------------------------------------------------
 # Parameters for libami's code
 #
-import = &global::ami_import;
-wamiOF = import->ParamPanel("libamiFluid: PDE Optical Flow Parameters")
+wamiOF = global::ami_import.ParamPanel("libamiFluid: PDE Optical Flow Parameters")
 
 presmoothing_id    = wamiOF.AddFloat( &presmoothing,  "presmoothing", 0,3)
 beta_id            = wamiOF.AddFloat( &beta,  "beta", 0.01,5)
@@ -810,8 +826,7 @@ wamiOF.Update()
 #--------------------------------------------------
 # Parameters for Vorticity code
 #
-import = &global::ami_import;
-wVort = import->ParamPanel("Vorticity Optical Flow parameters")
+wVort = global::ami_import.ParamPanel("Vorticity Optical Flow parameters")
 vort_grid_id       = wVort.AddInt( &vort_grid,  "vort_grid",    1,10)
 vort_winsize_id    = wVort.AddInt( &vort_winsize,  "vort_winsize", 3,10)
 vort_sigma_id      = wVort.AddFloat( &vort_sigma,  "vort_sigma", 0.1,5)
@@ -822,8 +837,7 @@ wVort.Update()
 #--------------------------------------------------
 # Parameters for optic_flow_zoom code
 #
-import = &global::ami_import;
-wOFzoom = import->ParamPanel("Optic Flow PDE 2D parameters")
+wOFzoom = global::ami_import.ParamPanel("Optic Flow PDE 2D parameters")
 
 OFzoom_sigma_id    = wOFzoom.AddFloat( &OFzoom_sigma,  "OFzoom_sigma", 0.5,5)
 OFzoom_T_id        = wOFzoom.AddFloat( &OFzoom_T,  "OFzoom_T", 1,1000)
@@ -839,8 +853,7 @@ wOFzoom.Update()
 #--------------------------------------------------
 # Parameters for continous Gaussian multiscale
 #
-import = &global::ami_import;
-wGaussSc = import->ParamPanel("Continous Gaussian Scales")
+wGaussSc = global::ami_import.ParamPanel("Continous Gaussian Scales")
 sigma_min_id      = wGaussSc.AddFloat( &sigma_min,  "sigma_min", 0.01,5)
 sigma_max_id      = wGaussSc.AddFloat( &sigma_max,  "sigma_max", 0.01,15)
 sigma_N_id        = wGaussSc.AddInt( &sigma_N,  "sigma_N",   2,20)
@@ -849,7 +862,7 @@ wGaussSc.Update()
 #--------------------------------------------------
 # Main Parameters
 #
-w1 = ParamWin("Optic Flow Experiments: main parameters ")
+w1 = global::ami_import.ParamPanel("Optic Flow Experiments: main parameters ")
 
 input_id = w1.AddButton("Input Images", CB_InputImages)
 amiCorr_id = w1.AddButton("2D correlation",CB_corr_param)
@@ -893,7 +906,7 @@ w1.Display()
 #-------------------------------------------------
 # Creating parameter window for test on alpha
 #-------------------------------------------------
-w2 = ParamWin("test sequence on alpha")
+w2 = global::ami_import.ParamPanel("test sequence on alpha")
 alfa_min_id     = w2.AddFloat( &alfa_min,  "alfa_min", 0.01,10)
 alfa_max_id     = w2.AddFloat( &alfa_max,  "alfa_max", 0.01,20)
 alfa_step_id    = w2.AddFloat( &alfa_step,  "alfa_step", 0.01,1)

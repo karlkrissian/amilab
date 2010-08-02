@@ -178,14 +178,6 @@ setpos           return(token::SETPOS);            /*{setpos,SETPOS}*/
 lininterp        return(token::T_lininterp);      /*{lininterp,T_lininterp}*/
 initvalue        return(token::T_initvalue);       /*{initvalue,T_initvalue}*/
 
-compare          return(token::COMPARE);           /*{compare,COMPARE}*/
-
-setvector        return(token::SETVECTOR);         /*{setvector,SETVECTOR}*/
-normalize        return(token::T_normalize); /*{normalize,T_normalize}*/
-ShowSection      return(token::T_ShowSection); /*{ShowSection,T_ShowSection}*/
-HideSection      return(token::T_HideSection); /*{HideSection,T_HideSection}*/
-
-
 itk               return(token::T_itk); /*{itk,T_itk}*/
 CannyEdgeDetector return(token::T_CannyEdgeDetector); /*{CannyEdgeDetector,T_CannyEdgeDetector}*/
 
@@ -253,12 +245,6 @@ norm   return(token::NORM); /*{norm,NORM}*/
 round  return(token::ROUND); /*{round,ROUND}*/
 floor  return(token::FLOOR); /*{floor,FLOOR}*/
 
-open       return(token::T_OPEN); /*{open,T_OPEN}*/
-close      return(token::T_CLOSE); /*{close,T_CLOSE}*/
-scan_float return(token::T_scan_float); /*{scan_float,T_scan_float}*/
-read       return(token::T_read); /*{read,T_read}*/
-rewind     return(token::T_rewind); /*{rewind,T_rewind}*/
-
 proc       return(token::T_PROC);   /*{proc,T_PROC}*/
 Class      return(token::T_Class);  /*{Class,T_Class}*/
 public     return(token::T_public);  /*{public,T_public}*/
@@ -307,11 +293,10 @@ Image              return(token::T_Image); /*{Image,T_Image}*/
 BrowseImage        return(token::T_BrowseImage); /*{BrowseImage,T_BrowseImage}*/
 
 ReadRawImages      return(token::T_ReadRawImages); /*{ReadRawImages,T_ReadRawImages}*/
-Transform          return(token::T_Transform); /*{Transform,T_Transform}*/
+
 Show               return(token::SHOW); /*{Show,SHOW}*/
 show               return(token::SHOW);
-Remove             return(token::T_Remove); /*{Remove,T_Remove}*/
-SwapBuffers        return(token::T_SwapBuffers); /*{SwapBuffers, T_SwapBuffers}*/
+
 Hide               return(token::T_HIDE); /*{Hide,T_HIDE}*/
 hide               return(token::T_HIDE);
 Help               return(token::HELP); /*{Help,HELP}*/
@@ -351,7 +336,7 @@ subimage           return(token::SubImage); /*{subimage,SubImage}*/
 autocrop           return(token::T_AutoCrop); /*{autocrop,T_AutoCrop}*/
 putimage           return(token::PutImage); /*{putimage,PutImage}*/
 rot2D              return(token::T_rot2D); /*{rot2D,T_rot2D}*/
-rotate             return(token::T_rotate); /*{rotate,T_rotate}*/
+
 mean               return(token::T_mean); /*{mean,T_mean}*/
 localmean          return(token::T_localmean); /*{localmean,T_localmean}*/
 localmean2         return(token::T_localmean2); /*{localmean2,T_localmean2}*/
@@ -374,7 +359,7 @@ IsocontourPoints   return(token::T_IsocontourPoints); /*{IsocontourPoints,T_Isoc
 IsosurfDist        return(token::T_IsosurfDist); /*{IsosurfDist,T_IsosurfDist}*/
 vtkIsoContourDist  return(token::T_vtkIsoContourDist); /*{vtkIsoContourDist,T_vtkIsoContourDist}*/
 
-SetWindowSize      return(token::T_SetWindowSize); /*{SetWindowSize,T_SetWindowSize}*/
+
 
 Convolve           return(token::T_Convolve); /*{Convolve,T_Convolve}*/
 ConvolveMask       return(token::T_ConvolveMask); /*{ConvolveMask,T_ConvolveMask}*/
@@ -431,12 +416,6 @@ SpacePos          return(token::T_SpacePos); /*{SpacePos,T_SpacePos}*/
 del               return(token::T_del); /*{del,T_del}*/
 delvars           return(token::T_delvars); /*{delvars,T_delvars}*/
 
-EDPdilate         return(token::T_EDPdilate); /*{EDPdilate,T_EDPdilate}*/
-EDPerode          return(token::T_EDPerode); /*{EDPerode,T_EDPerode}*/
-EDPopen           return(token::T_EDPopen); /*{EDPopen,T_EDPopen}*/
-EDPclose          return(token::T_EDPclose); /*{EDPclose,T_EDPclose}*/
-
-
 vtkFastMarching   return(token::T_vtkFastMarching); /*{vtkFastMarching,T_vtkFastMarching}*/
 vtkFastMarchingTarget   return(token::T_vtkFastMarchingTarget); /*{vtkFastMarchingTarget,T_vtkFastMarchingTarget}*/
 
@@ -469,8 +448,6 @@ save              return(token::T_save); /*{save,T_save}*/
 
 eccentricity      return(token::T_eccentricity); /*{eccentricity,T_eccentricity}*/
 
-getimage          return(token::T_getimage); /*{getimage,T_getimage}*/
-GetImageFromX     return(token::T_GetImageFromX); /*{GetImageFromX,T_GetImageFromX}*/
 
 isoarea2D         return(token::T_isoarea2D); /*{isoarea2D,T_isoarea2D}*/
 posarea           return(token::T_posarea); /*{posarea,T_posarea}*/
@@ -499,30 +476,8 @@ OutFluxScalar     return(token::T_OutFluxScalar); /*{OutFluxScalar,T_OutFluxScal
 OrientationRatio  return(token::T_OrientationRatio); /*{OrientationRatio,T_OrientationRatio}*/
 
 computeCC         return(token::T_computeCC); /*{computeCC,T_computeCC}*/
-drawCC            return(token::T_drawCC); /*{drawCC,T_drawCC}*/
-Paint             return(token::T_Paint); /*{Paint,T_Paint}*/
 SetLight          return(token::T_SetLight); /*{SetLight,T_SetLight}*/
 SetLightPos       return(token::T_SetLightPos); /*{SetLightPos,T_SetLightPos}*/
-SetLightAmbient   return(token::T_SetLightAmbient); /*{SetLightAmbient,T_SetLightAmbient}*/
-SetLightDiffuse   return(token::T_SetLightDiffuse); /*{SetLightDiffuse,T_SetLightDiffuse}*/
-SetLightSpecular  return(token::T_SetLightSpecular); /*{SetLightSpecular,T_SetLightSpecular}*/
-SetBackground     return(token::T_SetBackground); /*{SetBackground,T_SetBackground}*/
-
-Normalize         return(token::T_Normalize); /*{Normalize,T_Normalize}*/
-Center            return(token::T_Center);    /*{Center,T_Center}*/
-
-
-
-PrintMatrices     return(token::T_PrintMatrices); /*{PrintMatrices,T_PrintMatrices}*/ // print the matrices of Viewer3D class
-
-AddObject         return(token::T_addobj); /*{AddObject,T_addobj}*/
-SetCurrentObj     return(token::T_setcurrentobj); /*{SetCurrentObj,T_setcurrentobj}*/
-
-
-GetTransform      return(token::T_GetTransform); /*{GetTransform,T_GetTransform}*/
-SetTransform      return(token::T_SetTransform); /*{SetTransform,T_SetTransform}*/
-
-Interpolate       return(token::T_Interpolate); /*{Interpolate,T_Interpolate}*/
 
 Skeleton          return(token::T_Skeleton); /*{Skeleton,T_Skeleton}*/
 SimplePoints      return(token::T_SimplePoints); /*{SimplePoints,T_SimplePoints}*/
@@ -673,10 +628,21 @@ emptyargs         return(token::T_emptyargs);    /*{emptyargs,T_emptyargs}*/
 //
 //  setlocale(LC_NUMERIC,"C");
   setlocale(LC_NUMERIC, "C");
-  yylval->adouble=atof(YYText());
+  char* endstr;
+  yylval->adouble=strtol(YYText(),&endstr,0);
   return(token::NUMBER);
 }
 
+0x[0-9a-fA-F]+   {
+//
+//============================ Parse interger ====================
+//
+//  setlocale(LC_NUMERIC,"C");
+  setlocale(LC_NUMERIC, "C");
+  char* endstr;
+  yylval->adouble=strtol(YYText(),&endstr,0);
+  return(token::NUMBER);
+}
 
 
 
@@ -1103,9 +1069,9 @@ yyip::Parser::token::yytokentype checkvar(
       case type_int:
       case type_uchar:
         return token::PROCESSED_VAR; /*{$PROCESSED_VAR,PROCESSED_VAR}*/
-      case type_surfdraw:         return token::VAR_SURFDRAW;
+//      case type_surfdraw:         return token::VAR_SURFDRAW;
         /*{$variable_surfdraw,VAR_SURFDRAW}*/
-      case type_file:             return token::VAR_FILE;
+//      case type_file:             return token::VAR_FILE;
         /*{$variable_file,VAR_FILE}*/
       case type_c_procedure:      return token::VAR_C_PROCEDURE;
         /*{$variable_c_procedure,VAR_C_PROCEDURE}*/
@@ -1127,7 +1093,7 @@ yyip::Parser::token::yytokentype checkvar(
         /*{$variable_string,VAR_STRING}*/
       case type_matrix:           return token::VAR_MATRIX;
         /*{$variable_matrix,VAR_MATRIX}*/
-      case type_gltransform:      return token::VAR_GLTRANSFORM;
+//      case type_gltransform:      return token::VAR_GLTRANSFORM;
         /*{$variable_gltransform,VAR_GLTRANSFORM}*/
       case type_array:       {
         Variable<VarArray>::ptr vararray( 

@@ -96,9 +96,9 @@ if (!exists(itkShortestPathClass)) {
       show ::input
       if (exists(::input_draw)) {
         ::SetStartPoint( \
-                          ::input_draw.GetXPos, \
-                          ::input_draw.GetYPos, \
-                          ::input_draw.GetZPos \
+                          ::input_draw.GetXPos(), \
+                          ::input_draw.GetYPos(), \
+                          ::input_draw.GetZPos() \
                         )
       }
     }
@@ -132,9 +132,9 @@ if (!exists(itkShortestPathClass)) {
       if (!exists(::input_draw)) { show ::input; }
       if (exists(::input_draw)) {
         ::SetEndPoint( \
-                          ::input_draw.GetXPos, \
-                          ::input_draw.GetYPos, \
-                          ::input_draw.GetZPos \
+                          ::input_draw.GetXPos(), \
+                          ::input_draw.GetYPos(), \
+                          ::input_draw.GetZPos() \
                         )
       }
       ::Px2 = ::input.trx + ::endx*::input.vx
@@ -172,7 +172,7 @@ if (!exists(itkShortestPathClass)) {
       ::load_speed
       show ::input
       show ::speed
-      ::input_draw._compare(&::speed_draw)
+      ::input_draw.compare(&::speed_draw)
       if (exists(global::path)) { show global::path; }
     }  
 
@@ -208,7 +208,7 @@ if (!exists(itkShortestPathClass)) {
         if (::endx<2) { ::endx=2; }
         if (::endy<2) { ::endy=2; }
         if (::endz<2) { ::endz=2; }
-        fminit.setpos(::endx,::endy,::endz)
+        fminit._setpos(::endx,::endy,::endz)
         fminit.set(-::maxcost)
       } else {
         fminit = fminit*(::endmask<=0.5)+(::endmask>=0.5)*-::maxcost

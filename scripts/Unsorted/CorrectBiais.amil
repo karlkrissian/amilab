@@ -15,7 +15,7 @@ for y=0 to i.ty-1 {
 
      m = mean(sub,mask)
 
-     i_means.setpos(y,z,0)
+     i_means._setpos(y,z,0)
      i_means.set(m)
 
   }

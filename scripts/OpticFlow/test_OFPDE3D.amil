@@ -88,7 +88,7 @@ proc CB_Iterate() {
 }
 
 #--------------------------------------------------
-w1 = ParamWin("Opt.Flow")
+w1 = global::ami_import.ParamPanel("Opt.Flow")
 
 beta_id    = w1.AddFloat( &beta,  "beta", 0.01,5)
 alfa_id    = w1.AddFloat( &alfa,  "alfa", 0.01,20)
@@ -107,9 +107,9 @@ w1.Display()
 
 show i;
 #i_draw.compare(i2);
-i_draw._setvector(0,d);
+i_draw.setvector(0,d);
 i_draw.DrawVector(0,1);
-i_draw._setvector(1,d1);
+i_draw.setvector(1,d1);
 i_draw.DrawVector(1,1);
 i_draw.DisplayVectors();
 

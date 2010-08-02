@@ -21,6 +21,19 @@ NoMessageDialog(1)
 
 func "ctest/ctest_config.amil"
 
+printn "\t\t ******************************************"
+printn "\t\t *                 WARNING                *"
+printn "\t\t ******************************************"
+printn "\t\t *                                        *"
+printn "\t\t * This test does not perform useful work *"
+printn "\t\t * ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ *"
+printn "\t\t *                                        *"
+printn "\t\t * Just check:                            *"
+printn "\t\t * - The parser does not generate errors. *"
+printn "\t\t * - Segmentation fault does not occur.   *"
+printn "\t\t *                                        *"
+printn "\t\t ******************************************\n"
+
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # First case: 
 #             OPERATOR DOUBLE
@@ -218,7 +231,9 @@ printn  "\t\t C=B!=A --> C=%1% (NE_OP)" % C
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-printn  "\n\t\t Pending operations to implement (AMILAB-2.1.0): "
+#printn  "\n\t\t Pending operations to implement (AMILAB-2.1.0): "
+printn  "\t\t C=sinh A --> Not implemented" 
+printn  "\t\t C=cosh A --> Not implemented"
 printn  "\t\t C=sinh A --> Not implemented" 
 printn  "\t\t C=cosh A --> Not implemented"
 

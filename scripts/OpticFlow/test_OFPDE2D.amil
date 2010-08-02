@@ -158,9 +158,9 @@ proc CB_Iterate() {
 proc CB_Display() {
   global
   show zi;
-  zi_draw._setvector(0,zd);
+  zi_draw.setvector(0,zd);
   zi_draw.DrawVector(0,1);
-  zi_draw._setvector(1,zd1);
+  zi_draw.setvector(1,zd1);
   zi_draw.DrawVector(1,1);
   local
 }
@@ -174,7 +174,7 @@ proc CB_Stats() {
 print "main code \n"
 
 #--------------------------------------------------
-w1 = ParamWin("libamiFluid: PDE Optical Flow")
+w1 = global::ami_import.ParamPanel("libamiFluid: PDE Optical Flow")
 
 beta_id            = w1.AddFloat( &beta,  "beta", 0.01,5)
 alfa_id            = w1.AddFloat( &alfa,  "alfa", 0.01,20)

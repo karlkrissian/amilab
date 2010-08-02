@@ -211,6 +211,7 @@ inline void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
 /*! \def CLASS_GET_OBJECT_PARAM
     \brief try to convert the next parameter to the wrapped given type and gets a smart pointer to this type in the variable 'name', macro working within a class member
 */
+/*
 #define CLASS_GET_OBJECT_PARAM(type,varname,objname) \
   Variable<AMIObject>::ptr varname; \
   boost::shared_ptr<type> objname; \
@@ -225,6 +226,36 @@ inline void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
     }\
   }  else {\
     CLASS_ERROR("Need a wrapped object as parameter.")\
+  }
+*/
+#define CLASS_GET_OBJECT_PARAM(type,varname,objname) \
+  Variable<AMIObject>::ptr varname; \
+  boost::shared_ptr<type> objname; \
+  bool ok = false; \
+  ok = get_var_param<AMIObject>(varname, p, n);  \
+  if (!ok) { \
+    n--;\
+    BasicVariable::ptr genericvar;\
+    if (get_generic_var_param(genericvar,p,n)) { \
+      ParamList::ptr param(new ParamList()); \
+      param->AddParam(genericvar); \
+      /* Call the constructor */ \
+      wrap_##type obj_constr; \
+      BasicVariable::ptr constr_res = obj_constr.CallMember(param.get());\
+      varname = boost::dynamic_pointer_cast<Variable<AMIObject> >(constr_res);\
+      ok = varname.get(); \
+    } \
+  } \
+  if (ok) { \
+    WrapClassBase::ptr object( varname->Pointer()->GetWrappedObject());\
+    WrapClass_##type::ptr obj( boost::dynamic_pointer_cast<WrapClass_##type>(object));\
+    if (obj.get()) {\
+      objname = obj->GetObj();\
+    } else {\
+      CLASS_ERROR("Could not cast dynamically the variable.")\
+    }\
+  }  else {\
+    CLASS_ERROR("Need a wrapped object or compatible variable as parameter.")\
   }
 
 /*! \def FUNC_GET_OBJECT_PARAM
@@ -255,8 +286,13 @@ int get_num_param(ParamList* p);
 
 /**
  * Function used to parse a variable of generic type in a list of parameters, and to give back a smart pointer to the variable.
+ * @param var 
+ * @param p 
+ * @param num 
+ * @param force_ref if true forces that the variable be a reference.
+ * @return true/false if success/failure
  */
-bool get_generic_var_param( BasicVariable::ptr& var, ParamList*p, int& num);
+bool get_generic_var_param( BasicVariable::ptr& var, ParamList*p, int& num, bool force_ref = false);
 
 /**
  * Function used to parse a variable of specified type in a list of parameters, and to give back a smart pointer to the variable.
@@ -264,6 +300,12 @@ bool get_generic_var_param( BasicVariable::ptr& var, ParamList*p, int& num);
 template<class T>
 bool get_var_param( BasicVariable::ptr& var, 
                     ParamList*p, int& num, bool required = true);
+
+/**
+ * Function used to parse a variable of generic type and to give back its value.
+ */
+template<class T>
+bool get_val(T& arg, BasicVariable::ptr var);
 
 /**
  * Function used to parse a variable of generic type in a list of parameters, and to give back its value.

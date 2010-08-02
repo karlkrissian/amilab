@@ -50,7 +50,7 @@ proc Draw2DLine(IMAGE _i, NUM _x1, NUM _y1, NUM _x2, NUM _y2, NUM _intensity) {
   for n=0 to npoints {
     xpos = _x1 + (_x2-_x1)/npoints*n
     ypos = _y1 + (_y2-_y1)/npoints*n    
-    _i.setpos(xpos,ypos,0)
+    _i._setpos(xpos,ypos,0)
     _i.set(_intensity)
   }
 }
@@ -144,8 +144,8 @@ print "CreateLine() 3\n"
 print "CreateLine() 4\n"
   global
   show i0
-  i0_draw._compare(i1)
-  i0_draw._setvector(0,displ)
+  i0_draw.compare(i1)
+  i0_draw.setvector(0,displ)
 
 #  global
 #    i1 = MeanHalfSize(i0)
@@ -167,7 +167,7 @@ proc CB_InitOF() {
 }
 
 
-w1 = ParamWin("Synthetic Images for registration")
+w1 = global::ami_import.ParamPanel("Synthetic Images for registration")
 image_type_id=w1.AddEnum( &image_type)
 w1.AddEnumChoice(image_type_id,"Line")
 w1.AddEnumChoice(image_type_id,"Rectangle")

@@ -54,7 +54,7 @@ if __name__ == "__main__":
             ("DisplayVectors", "DisplayVectors", False ),
             ("update",         "update",         False ),
             ]
-  
+
   scripts=[]
   amilfile=re.compile('\S*amil$')
 
@@ -65,7 +65,7 @@ if __name__ == "__main__":
         scripts.append(root+"/"+f)
 
   for inputscript in scripts:
-    
+
     #print "*** Processing file ",inputscript
     f = open(inputscript+".converted", 'w')
     num_subs = 0
@@ -83,7 +83,7 @@ if __name__ == "__main__":
       if (splitcomments!=None):
         line    = splitcomments.group(1)
         comments = splitcomments.group(2)+comments
-      
+
       for cmd1,cmd2,ask in commands_force_par:
         # $ matches the end of the string and avoids adding () where there are already present
         # if no parenthesis, add it
@@ -117,14 +117,14 @@ if __name__ == "__main__":
               line = res[0]
               num_subs = num_subs+1
           #sys.stdout.write("("+cmd1+","+cmd2+") -> "+line)
-      
+
         # convert IMAGEDRAW to OBJECT in parameter declaration
         res = re.subn(r"(,|\()\s*IMAGEDRAW(\s+|,|\))",r"\1 OBJECT\2",line)
         if (res[1]>0):
           if (res[0]!=line):
             line = res[0]
             num_subs = num_subs+1
-            
+
       f.write(line)
       if comments!="":
         f.write(comments+"\n")

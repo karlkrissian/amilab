@@ -125,7 +125,7 @@ BasicVariable::ptr WrapClass_DessinImage::
     BasicVariable::ptr var = p->GetParam(0);
     if (var.get() && di.get()) {
       std::list<BasicVariable::wptr>* varlist =
-        (std::list<BasicVariable::wptr>*) di->GetCloseData();
+        static_cast<std::list<BasicVariable::wptr>*>(di->GetCloseData());
       if (varlist)
         varlist->push_back(BasicVariable::wptr(var));
     }
@@ -661,21 +661,12 @@ BasicVariable::ptr WrapClass_DessinImage::
 {
   DessinImage::ptr di(this->_objectptr->_obj);
 
-  Variable<Viewer3D>::ptr varsurfd;
-
   if (!p) ClassHelpAndReturn;
   int n=0;
-  if (!get_var_param<Viewer3D>(varsurfd,p,n)) ClassHelpAndReturn;
-
-  Viewer3D::ptr surfd(varsurfd->Pointer());
-
-  if (!surfd.get()) {
-    GB_driver.err_print("WrapClass_DessinImage::setGLwin empty image.");
-    return BasicVariable::ptr();
-  }
+  CLASS_GET_OBJECT_PARAM(Viewer3D, varsurfd, surfd);
+  if (!surfd.get()) ClassHelpAndReturn;
 
   di->SetGLWindow(surfd);
-
   return BasicVariable::ptr();
 }
 

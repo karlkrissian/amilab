@@ -122,10 +122,13 @@ proc TC_SetMask2(IMAGE mask2, NUM mask2_th) {
 proc TC_CreateMask() {
 //   -------------
   InitTime
+
+  morph = filters.ContinuousMorphology()
+
   local::res=TC_input
   TubeDiv(TC_input,&res,TC_mask,0.6,0)
   local::m1 = (UCHAR) ((res>8)*255)
-  local::m2 = (UCHAR) EDPdilate(m1,2,0.5)
+  local::m2 = (UCHAR) morph.Dilate(m1,2,0.5)
   del res
   TC_mask = m2
   EndTime
@@ -141,6 +144,8 @@ proc TC_execute(IMAGE input, IMAGE mask, IMAGE repmax, IMAGE extr) {
   InitTime
   // Compute Structure Tensor
   printn "Structure Tensor"
+
+  morph = filters.ContinuousMorphology()
 
   if (exists(eig)) { del eig; }
 
@@ -174,7 +179,8 @@ proc TC_execute(IMAGE input, IMAGE mask, IMAGE repmax, IMAGE extr) {
   grad    <<= gradient(input,TC_sigma_gradient)
   if (TC_calc_th_grad) {
     local::calc = TC_input0>TC_calc_th
-    calc = EDPdilate(calc,2,0.5)
+#    calc = EDPdilate(calc,2,0.5)
+    calc = morph.Dilate(calc,2,0.5)
     grad = grad * (calc<0.5)
   }
 
@@ -297,10 +303,10 @@ proc TC_Display() {
     show TC_input
   }
 
-  TC_input_draw._compare(TC_rmax)
-  TC_input_draw._compare(TC_lextr)
+  TC_input_draw.compare(TC_rmax)
+  TC_input_draw.compare(TC_lextr)
   if (exists(eig[5])) {
-    TC_input_draw._setvector(0,eig[5])
+    TC_input_draw.setvector(0,eig[5])
   }
   local_new
 }
@@ -317,32 +323,32 @@ proc TC_Save() {
       filename = sprint(TC_result_filename+".%0.0f."+\
                         TC_result_extension,n)
       // check if file exists
-      f = open(filename,"r")
+      f = File(filename,"r")
       if (!exists(f)) { n=100; }
     }
   }
   TC_rmax.save  filename
   TC_lextr.save filename+"_localextrema.ami.gz"
 
-  file = open(filename+".param","w")
-  file.print "----- filter_circles.amil script -------\n"
-  file.print "\n Ran with the following parameters: \n\n"
+  file = File(filename+".param","w")
+  file._print("----- filter_circles.amil script -------\n")
+  file._print("\n Ran with the following parameters: \n\n")
   if (exists(input_filename)) {
-    file.print "input filename      "+input_filename+"\n"
+    file._print("input filename      "+input_filename+"\n")
   } else {
-    file.print "input filename      "+TC_input0.GetName+"\n"
+    file._print("input filename      "+TC_input0.GetName+"\n")
   }
-  file.print sprint("th                  %3.3f \n",th)
-  file.print sprint("UseZoom             %3.3f \n",TC_usezoom)
-  file.print sprint("SplitNumber         %3.3f \n",TC_split_number)
-  file.print sprint("rad min             %3.3f \n",TC_radmin)
-  file.print sprint("rad max             %3.3f \n",TC_radmax)
-  file.print sprint("rad step            %3.3f \n",TC_radstep)
-  file.print sprint("sigma               %3.3f \n",TC_sigma)
-  file.print sprint("Gradient sigma      %3.3f \n",TC_sigma_gradient)
-  file.print sprint("Beta                %3.3f \n",TC_beta)
-  file.print sprint("Pairs mode          %3.0f \n",TC_pairs_mode)
-  file.print sprint("Keep Highest values %3.0f \n",TC_keephighest)
+  file._print(sprint("th                  %3.3f \n",th))
+  file._print(sprint("UseZoom             %3.3f \n",TC_usezoom))
+  file._print(sprint("SplitNumber         %3.3f \n",TC_split_number))
+  file._print(sprint("rad min             %3.3f \n",TC_radmin))
+  file._print(sprint("rad max             %3.3f \n",TC_radmax))
+  file._print(sprint("rad step            %3.3f \n",TC_radstep))
+  file._print(sprint("sigma               %3.3f \n",TC_sigma))
+  file._print(sprint("Gradient sigma      %3.3f \n",TC_sigma_gradient))
+  file._print(sprint("Beta                %3.3f \n",TC_beta))
+  file._print(sprint("Pairs mode          %3.0f \n",TC_pairs_mode))
+  file._print(sprint("Keep Highest values %3.0f \n",TC_keephighest))
 
   del file
 }

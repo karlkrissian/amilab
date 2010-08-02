@@ -131,14 +131,14 @@ if (!exists(itkFastMarchingClass)) {
       if (exists(::input_draw)) {
         if (::dim==0) {
           ::SetSeedPoint2( \
-                            ::input_draw.GetXPos, \
-                            ::input_draw.GetYPos \
+                            ::input_draw.GetXPos(), \
+                            ::input_draw.GetYPos() \
                           )
         } else {
           ::SetSeedPoint3( \
-                            ::input_draw.GetXPos, \
-                            ::input_draw.GetYPos, \
-                            ::input_draw.GetZPos \
+                            ::input_draw.GetXPos(), \
+                            ::input_draw.GetYPos(), \
+                            ::input_draw.GetZPos() \
                           )
         }
       }
@@ -169,7 +169,7 @@ if (!exists(itkFastMarchingClass)) {
     
       show ::input
       show ::thres
-      ::input_draw._compare(&::thres_draw)
+      ::input_draw.compare(&::thres_draw)
     
     }
     

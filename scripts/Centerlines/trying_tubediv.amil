@@ -1,3 +1,7 @@
+
+printn "Import filters (ami_import->Filters()).\n"
+ami_import.Filters()
+
 # command line: amilab 
 i = Image "image_filteredmaskcrop.ami.gz"
 i = (i<1000)*1000+(i>=1000)*i
@@ -6,9 +10,10 @@ si = i[188:367, 168:327, 146:259]
 v = Image "image_filteredm_opening9_0.4_ls.ami.gz"
 sv = v[si]
 
+morph = filters.ContinuousMorphology()
 
 sv = sv*-100
-svd  = EDPdilate(sv,1,0.5)
+svd = global::filters.Dilate(sv,1,0.5)
 
 smask = (UCHAR) ((si>1150)*(svd<0)*255)
 
@@ -31,4 +36,4 @@ for sig=0.2 to 1.4 step 0.2 {
 }
 
 show tdmin
-tdmin_draw._compare(tdmax)
+tdmin_draw.compare(tdmax)

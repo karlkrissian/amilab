@@ -26,6 +26,15 @@
    The full GNU Lesser General Public License file is in Devel/Sources/Prog/LesserGPL_license.txt
 */
 
+/*
+
+                       WARNING: This file is deprecated
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  Use ContinuousMorphology class.
+
+ */
+
 #ifndef  _EDPMORPHO_H_
 #define _EDPMORPHO_H_
 

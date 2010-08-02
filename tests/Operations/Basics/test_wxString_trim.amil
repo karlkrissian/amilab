@@ -1,0 +1,68 @@
+#!/usr/bin/amilab
+
+#SetDebugOn
+#SetVerboseOn
+
+NoMessageDialog(1)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# test_wxString_trim.amil
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Check the following methods:
+#                              - constructor
+#                              - c_str
+#                              - Trim
+#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+func "ctest/ctest_config.amil"
+
+OK = 1 # The test was successful
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+printn "Create an object of class wxString(sString1 = wx.wxString()).\n"
+sString1 = wx.wxString()
+
+printn "Removes white-space from the left end of the string (sString1.Trim(0)).\n"
+sString1.Trim(0)
+
+VAL1=sString1.c_str()
+
+printn "\t Returns the sString1 value: - %1% -\n" % VAL1
+
+printn "Removes white-space from the right end of the string (sString1.Trim(1)).\n"
+sString1.Trim(1)
+
+VAL2=sString1.c_str()
+
+printn "\t Returns the sString1 value: - %1% -\n" % VAL2
+
+printn "Create an object of class wxString(sString2 = wx.wxString(\"    hello world !!!    \")).\n"
+sString2 = wx.wxString("    hello world !!!    ")
+
+printn "Removes white-space from the left end of the string (sString2.Trim(0)).\n"
+sString2.Trim(0)
+
+VAL3=sString2.c_str()
+
+printn "\t Returns the sString2 value: - %1% -\n" % VAL3
+
+printn "Removes white-space from the right end of the string (sString2.Trim(1)).\n"
+sString2.Trim(1)
+
+VAL4=sString2.c_str()
+
+printn "\t Returns the sString2 value: - %1% -\n" % VAL4
+
+if(VAL4 != "hello world !!!") {
+  OK = 0
+  printn  "\nERROR: The white-spaces has not been replaced."
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ctest.PrintTestResult( OK ) 
+
+#quit
+

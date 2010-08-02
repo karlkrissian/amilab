@@ -507,7 +507,7 @@ if (!exists(MultiLinesClass)) {
       show ::input
       if (exists(::result)) {
         show ::result
-        ::input_draw._compare(&::result_draw)
+        ::input_draw.compare(&::result_draw)
       }
       if (exists(::roi_contour)) {
         ::input_draw.SetIsoContour(0,::roi_contour,0.5)

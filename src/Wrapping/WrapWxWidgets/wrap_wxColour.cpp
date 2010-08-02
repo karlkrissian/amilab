@@ -16,18 +16,20 @@
 #include "wrapfunctions.hpp"
 #include "ami_object.h"
 
+#define GET_PARAM(type,varname,defaultval) \
+  type varname = defaultval; \
+  if (!get_val_param<type>( varname, p, n)) \
+    ClassHelpAndReturn;
+
 //-------------------------------------------------------------------------
 AMIObject::ptr AddWrap_wxColour(  WrapClass_wxColour::ptr& objectptr)
 {
   // Create new instance of the class
   AMIObject::ptr amiobject( new AMIObject);
   amiobject->SetName("wxColour");
-
   amiobject->SetWrappedObject(objectptr);
   objectptr->SetAMIObject(amiobject);
-
   objectptr->AddMethods(objectptr);
-
   return amiobject;
 }
 
@@ -39,49 +41,49 @@ Variable<AMIObject>::ptr CreateVar_wxColour( wxColour* si)
 
   WrapClass_wxColour::ptr sip(new WrapClass_wxColour(_si_ptr));
   AMIObject::ptr amiobject(AddWrap_wxColour(sip));
-
   Variable<AMIObject>::ptr varres(
       new Variable<AMIObject>( amiobject));
   return varres;
 }
 
 //---------------------------------------------------
-BasicVariable::ptr wrap_wxColour( ParamList* p)
+// Method that adds wrapping of wxColour
+//---------------------------------------------------
+
+void  wrap_wxColour::SetParametersComments() 
 {
-    char functionname[] = "wxColour";
-    char description[]=" \n\
-      Wrapped wxWindow class. \n\
-See http://docs.wxwidgets.org/stable/wx_wxcolour.html for details \n\
-            ";
-    char parameters[] =" wrapped constructors: \n\
-        - wxColour(): default constructor\n\
-        - wxColour(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha=wxALPHA_OPAQUE) \n";
+  ADDPARAMCOMMENT_TYPE(unsigned char,"Red Component (0-255) (MODE 1)");
+  ADDPARAMCOMMENT_TYPE(unsigned char,"Green Component (0-255) (MODE 1)");
+  ADDPARAMCOMMENT_TYPE(unsigned char,"Blue Component (0-255) (MODE 1)");
+  ADDPARAMCOMMENT_TYPE(unsigned char,"Alpha Component (By default, wxALPHA_OPAQUE) (MODE 1)");
+  return_comments = "A wrapped wxColour object.";
+}
+//---------------------------------------------------
+BasicVariable::ptr wrap_wxColour::CallMember( ParamList* p)
+{
+  int n=0;
 
-
-  if (!p) HelpAndReturnVarPtr;
+  if (!p) ClassHelpAndReturn;
   if (p->GetNumParam()==0) 
     return CreateVar_wxColour(new wxColour());
 
   if (p->GetNumParam()>=3) 
   {
-    int n = 0;
-    int red   = 0;
-    int green = 0;
-    int blue  = 0;
-    int alpha = wxALPHA_OPAQUE;
-  
-    if (!get_int_param(red, p, n))   HelpAndReturnVarPtr;
-    if (!get_int_param(green, p, n)) HelpAndReturnVarPtr;
-    if (!get_int_param(blue, p, n))  HelpAndReturnVarPtr;
-    get_int_param(alpha, p, n,false);
+    n = 0;
 
-    return CreateVar_wxColour(new wxColour( 
+    GET_PARAM(unsigned char,red,0);
+    GET_PARAM(unsigned char,green,0);
+    GET_PARAM(unsigned char,blue,0);
+    GET_PARAM(unsigned char,alpha,wxALPHA_OPAQUE);
+
+    return CreateVar_wxColour(new wxColour(
       (unsigned char)red,
       (unsigned char)green,
       (unsigned char)blue,
       (unsigned char)alpha));
-  } else
-    HelpAndReturnVarPtr;
+  }
+  else
+    ClassHelpAndReturn;
 }
 
 //---------------------------------------------------

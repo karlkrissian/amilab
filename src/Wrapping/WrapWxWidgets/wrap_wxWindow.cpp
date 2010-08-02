@@ -20,6 +20,10 @@
 #include "ami_function.h"
 #include "wrap_wxSize.h"
 
+#define GET_PARAM(type,varname,defaultval) \
+  type varname = defaultval; \
+  if (!get_val_param<type>( varname, p, n)) \
+    ClassHelpAndReturn;
 
 //-------------------------------------------------------------------------
 AMIObject::ptr AddWrap_wxWindow(  WrapClass_wxWindow::ptr& objectptr)
@@ -29,44 +33,49 @@ AMIObject::ptr AddWrap_wxWindow(  WrapClass_wxWindow::ptr& objectptr)
   amiobject->SetName("HtmlWindow");
   amiobject->SetWrappedObject(objectptr);
   objectptr->SetAMIObject(amiobject);
-
   objectptr->AddMethods(objectptr);
 
   return amiobject;
 }
 
-//---------------------------------------------------
-BasicVariable::ptr wrap_wxWindow( ParamList* p)
+//----------------------------------------------------------
+Variable<AMIObject>::ptr CreateVar_wxWindow( wxWindow* si)
 {
-    char functionname[] = "wxWindow";
-    char description[]=" \n\
-      Wrapped wxWindow class. \n\
-            ";
-    char parameters[] =" \n\
-      - Parent window ... \n\
-            ";
+  // here wxColour can be deleted
+  boost::shared_ptr<wxWindow> si_ptr(
+    si,
+    wxwindow_nodeleter<wxWindow>() // deletion will be done by wxwidgets
+  );
 
-  int n = 0;
-  std::string* title = NULL;
-
-  GET_OBJECT_PARAM(wxWindow,parent,_obj);
-  if (!parent.get()) 
-      HelpAndReturnVarPtr;
-
-  boost::shared_ptr<wxWindow> wxw_ptr(
-    new wxWindow( parent.get(), wxID_ANY),
-      wxwindow_nodeleter<wxWindow>() // deletion will be done by wxwidgets
-    );
-
-  WrapClass_wxWindow::ptr wp(new WrapClass_wxWindow(wxw_ptr));
-  AMIObject::ptr amiobject (AddWrap_wxWindow(wp));
-
+  WrapClass_wxWindow::ptr sip(new WrapClass_wxWindow(si_ptr));
+  AMIObject::ptr amiobject(AddWrap_wxWindow(sip));
   Variable<AMIObject>::ptr varres(
       new Variable<AMIObject>( amiobject));
-
   return varres;
 }
 
+//---------------------------------------------------
+// Method that adds wrapping of wxWindow
+//---------------------------------------------------
+
+void  wrap_wxWindow::SetParametersComments() 
+{
+  ADDPARAMCOMMENT_TYPE(wxWindow,"Parent window");
+  return_comments = "A wrapped wxWindow object.";
+}
+//---------------------------------------------------
+BasicVariable::ptr wrap_wxWindow::CallMember( ParamList* p)
+{
+  int n = 0;
+  std::string* title = NULL;
+
+  if (!p) ClassHelpAndReturn;
+  CLASS_GET_OBJECT_PARAM(wxWindow,var,parent);
+  if (parent.get())
+    return CreateVar_wxWindow(new wxWindow(parent.get(), wxID_ANY));
+  else
+    ClassHelpAndReturn;
+}
 
 //---------------------------------------------------
 //  GetMinSize

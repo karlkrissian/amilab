@@ -37,10 +37,10 @@ if (!exists(CreateSkeletonClass)) {
     #-----------------------------------------------------------
     proc ReadPoint( STRING st, NUM x, NUM y, NUM z) {
       printn "opening "+st
-      f = open(st,"r")
-      f.read(x)
-      f.read(y)
-      f.read(z)
+      f = File(st,"r")
+      f.read(&x)
+      f.read(&y)
+      f.read(&z)
       printn "Point read:"+sprint("%3.2f",x)+\
             sprint(", %3.2f",y)+sprint(", %3.2f",z);
     }
@@ -281,7 +281,7 @@ if (!exists(CreateSkeletonClass)) {
       if (exists(::res)) {
         SelectPrune(&::res,::prunesize)
         if (exists(::res_draw)) {
-          ::res_draw.Paint
+          ::res_draw.Paint()
         }
       }
     }
@@ -290,7 +290,7 @@ if (!exists(CreateSkeletonClass)) {
       if (exists(::res)) {
         ::res.RemoveSelection()
         if (exists(::res_draw)) {
-          ::res_draw.Paint
+          ::res_draw.Paint()
         }
       }
     }
@@ -306,7 +306,7 @@ if (!exists(CreateSkeletonClass)) {
         if (exists(::output)) {
           show ::output
           ::output_draw.update()
-          ::input_draw._compare(&::output_draw)
+          ::input_draw.compare(&::output_draw)
         }
         #::res.save "skeleton_result.vtk"
         if exists(::res) {
@@ -354,7 +354,7 @@ if (!exists(CreateSkeletonClass)) {
           ::cta_draw.setGLwin(::res_draw)
         }
         if (exists(::input_draw)) {
-          ::input_draw._compare(&::cta_draw)
+          ::input_draw.compare(&::cta_draw)
         }
     }
     #---------------------------------------------------
@@ -543,7 +543,7 @@ if (!exists(CreateSkeletonClass)) {
               if (px2<2) { px2=2; }
               if (py2<2) { py2=2; }
               if (pz2<2) { pz2=2; }
-              fminit.setpos(px2,py2,pz2)
+              fminit._setpos(px2,py2,pz2)
               fminit.set(-fm_max)
               #maxrepim_crop = maxrepim_crop/10
               # running fast marching until the point 1 is reached

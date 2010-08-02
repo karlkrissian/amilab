@@ -22,13 +22,16 @@
 
 #include "wxEditor.h"
 
+TO_STRING(wxEditor); //New: Added 13-07-2010
+
 class WrapClass_wxEditor : public WrapClass_wxWindow
 {
   DEFINE_CLASS(WrapClass_wxEditor);
 
-  // for nested classes
-  typedef WrapClass_wxEditor::ptr _parentclass_ptr;
-  typedef wxEditor _obj_type;
+  protected: //New: Added 13-07-2010
+    // for nested classes
+    typedef WrapClass_wxEditor::ptr _parentclass_ptr;
+    typedef wxEditor _obj_type;
 
   public:
     boost::shared_ptr<_obj_type> _obj;

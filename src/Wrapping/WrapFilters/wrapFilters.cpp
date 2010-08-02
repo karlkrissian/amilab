@@ -45,6 +45,8 @@
 #include "wrapGenerateRamp.h"
 #include "wrap_SurfacePoly.h"
 
+#include "wrap_ContinuousMorphology.h"
+
 extern VarContexts  Vars;
 
 //---------------------------------------------------------
@@ -102,6 +104,9 @@ void AddWrapFilters(){
 
   // Add AnisoGS
   AddVar_AnisoGS( amiobject->GetContext());
+
+  // Add ContinuousMorphology
+  AddVar_ContinuousMorphology( amiobject->GetContext());
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);

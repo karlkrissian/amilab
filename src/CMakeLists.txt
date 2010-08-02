@@ -485,6 +485,8 @@ SET(amilab_ownlibs
   WrapAMIFluid
   WrapSurface
   WrapDessinImage
+  WrapViewer3D
+  WrapGLTransfMatrix
   WrapInterface
   WrapWxWidgets
   WrapBasicTypes
@@ -558,6 +560,7 @@ TARGET_LINK_LIBRARIES( ${AMILAB_BIN}
   ${OPENGL_LIBRARIES}
   ${OPENGL_glu_LIBRARY}
   ${PTHREADS_LIBRARY}
+#  /usr/lib/libpthread.so
   ${wxWidgets_LIBRARIES}
 # should be included in wxWdigets_LIBRARIES already ...
 #  ${WX_gl}

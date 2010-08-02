@@ -23,6 +23,19 @@ OK = 1 # The test was successful
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+printn "\t\t ******************************************"
+printn "\t\t *                 WARNING                *"
+printn "\t\t ******************************************"
+printn "\t\t *                                        *"
+printn "\t\t * This test does not perform useful work *"
+printn "\t\t * ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ *"
+printn "\t\t *                                        *"
+printn "\t\t * Just check:                            *"
+printn "\t\t * - The parser does not generate errors. *"
+printn "\t\t * - Segmentation fault does not occur.   *"
+printn "\t\t *                                        *"
+printn "\t\t ******************************************\n"
+
 # Create initial image
 func "SyntheticImages/create_torus_gui.amil"
 CTClass CT
@@ -65,10 +78,10 @@ img= Image(FLOAT,ImageDimX,ImageDimY,ImageDimZ,ImageDimV)
 img.initvalue(10,10,10)
 
 VectorIndex=1
-printn "\n\t\t Set one of the vector fields (_setvector):\n"
+printn "\n\t\t Set one of the vector fields (setvector):\n"
 printn "\t\t\t Index of the vector field to be drawned (1,2 or 3)=%1% " % VectorIndex
 printn "\t\t\t Vector field image= img "
-torus_draw._setvector(VectorIndex,img)
+torus_draw.setvector(VectorIndex,img)
 
 VectorSize=1
 VectorSpacing=2

@@ -2,8 +2,8 @@ proc CumulHisto( IMAGE im , IMAGE ch) {
   ch = im
   prev=0
   for x=0 to im.tx-1 {
-    ch.setpos(x,0,0)
-    im.setpos(x,0,0)
+    ch._setpos(x,0,0)
+    im._setpos(x,0,0)
     ch.set(prev+im.val)
     prev = ch.val
   }

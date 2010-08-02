@@ -58,7 +58,7 @@ if (!exists(MinSearchClass)) {
       for _n=0 to _nval { 
         _x = ::P1min+::P1inc*_n
         ::EvalFunction(_x,&_val)
-        ::values.setpos(_n,0,0)
+        ::values._setpos(_n,0,0)
         ::values.set(_val)
         if (_n==0) {
           ::xmin = _x
