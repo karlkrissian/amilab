@@ -874,29 +874,10 @@ void WrapClass_Viewer3D::
 BasicVariable::ptr WrapClass_Viewer3D::
       wrap_GetTransform::CallMember( ParamList* p)
 {
-  Viewer3D::ptr vi(this->_objectptr->_obj);
+  Viewer3D::ptr vi(this->_objectptr->GetObj());
 
   //GB_driver.err_print("WrapClass_Viewer3D::wrap_GetTransform Not available at this time!");
   GLTransfMatrix* glt = new GLTransfMatrix();
   *glt = vi->GetCanvas()->GetObjectTransform();
   return CreateVar_GLTransfMatrix(glt);
-  
-/*
-        |
-        VAR_SURFDRAW T_POINT T_GetTransform
-        {
-          Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
-          GLTransfMatrix glt;
-          GLTransfMatrix* newglt;
-  
-          printf("GetTransform begin \n");
-          newglt = new GLTransfMatrix();
-              glt = (varsurfd->Pointer())->GetCanvas()->GetObjectTransform();
-          (*newglt) = (glt);
-          driver.gltransf_stack.AddMatrix(newglt);
-          printf("GetTransform \n");
-      }
-*/
-
- // return BasicVariable::ptr();
 }
