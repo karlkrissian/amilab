@@ -49,4 +49,6 @@ BasicVariable::ptr wrapSubpixel2D (ParamList* p);
 
 BasicVariable::ptr wrapGaussianSubpixel2D (ParamList* p);
 
+void wrapDrawBorder (ParamList* p);
+
 #endif

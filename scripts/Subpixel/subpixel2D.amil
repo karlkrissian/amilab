@@ -30,12 +30,37 @@ if (!exists(Subpixel2DClass)){
       ::Ethickness  = INT(1),            "Contour thickness"
       ::Estyle      = INT(0),            "Contour line style"
       #Normal parameters
-      ::Nred        = INT(0),          "Red normal value"
-      ::Ngreen      = INT(0),          "Green normal value"
-      ::Nblue       = INT(255),            "Blue normal value"
+      ::Nred        = INT(0),            "Red normal value"
+      ::Ngreen      = INT(0),            "Green normal value"
+      ::Nblue       = INT(255),          "Blue normal value"
       ::Nalpha      = INT(255),          "Alpha normal component"
       ::Nthickness  = INT(1),            "Normal thickness"
       ::Nstyle      = INT(0),            "Normal line style"
+      #Statistics parameters
+      ::s_modmin    = "",                "Minimum intensity difference"
+      ::s_cumin     = "",                "Minimum radius"
+      ::s_bmin      = "",                "Minimum slope"
+      ::s_modmax    = "",                "Maximum intensity difference"
+      ::s_cumax     = "",                "Maximum radius"
+      ::s_bmax      = "",                "Maximum slope"
+      ::s_modmed    = "",                "Intensity difference mean"
+      ::s_cumed     = "",                "Radius mean"
+      ::s_bmed      = "",                "Slope mean"
+      ::s_modvar    = "",                "Intensity difference variance"
+      ::s_cuvar     = "",                "Radius variance"
+      ::s_bvar      = "",                "Slope variance"
+      ::s_modsd     = "",                "Intensiti difference standard deviation"
+      ::s_cusd      = "",                "Radius standard deviation"
+      ::s_bsd       = "",                "Slope standard deviation"
+      #Method
+      ::s_method    = "",                "Sub-pixel 2D method applicated"
+      #Border pixel information
+      ::s_pos        = "",               "Pixel (x,y) position (if it's a border pixel)"
+      ::s_mod       = "",                "Intensity difference"
+      ::s_rad       = "",                "Radius"
+      ::s_slope     = "",                "Slope"
+      ::s_disp      = "",                "Displacement (equation\'s a coefficient)"
+      
       ::CreateGui()
     }
     
@@ -50,6 +75,163 @@ if (!exists(Subpixel2DClass)){
       }
     }
     Comments(::load_input, "Load the input image")
+    
+    #-----------------------
+    
+    proc ::Statistics() {
+      if (exists(::res)) {
+        #A-B difference
+        modmax    = 0.0
+        modmin    = 0.0
+        modmed    = 0.0
+        modsumvar = 0.0
+        modvar    = 0.0
+        modsum    = 0.0
+        #Curvature radius
+        cumax    = 0.0
+        cumin    = 0.0
+        cumed    = 0.0
+        cusumvar = 0.0
+        cuvar    = 0.0
+        cusum    = 0.0
+        #Slope
+        bmax    = 0.0
+        bmin    = 0.0
+        bmed    = 0.0
+        bsumvar = 0.0
+        bvar    = 0.0
+        bsum    = 0.0
+        #Number of border pixels
+        size = ::res->xpos.tx
+        
+        diff = 0.0
+        r    = 0.0
+        
+        #Main loop (mins, maxs and sums for means)
+        for i=0 to size-1 {
+          diff = ::res->aintensity(i,0) - ::res->bintensity(i,0)
+          r    = 1/::res->curvature(i,0)
+          #Minimums
+          if (diff < modmin) {
+            modmin = diff
+          }
+          if (r < cumin) {
+            cumin = r
+          }
+          if (::res->bcoef(i,0) < bmin) {
+            bmin = ::res->bcoef(i,0)
+          }
+          #Maximums
+          if (diff > modmax) {
+            modmax = diff
+          }
+          if (r > cumax) {
+            cumax = r
+          }
+          if (::res->bcoef(i,0) > bmax) {
+            bmax = ::res->bcoef(i,0)
+          }
+          #Sums for means
+          modsum += diff
+          cusum  += r
+          bsum   += ::res->bcoef(i,0)
+        }
+        
+        #Calculate means
+        modmed = modsum/size
+        cumed  = cusum/size
+        bmed   = bsum/size
+        
+        #Variances loop (because we need the means)
+        for i=0 to size-1 {
+          diff = ::res->aintensity(i,0) - ::res->bintensity(i,0)
+          r    = 1/::res->curvature(i,0)
+          #Sums for variances
+          modsumvar += (diff - modmed)            * (diff - modmed)
+          cusumvar  += (r - cumed)                * (r - cumed)
+          bsumvar   += (::res->bcoef(i,0) - bmed) * (::res->bcoef(i,0) - bmed)
+        }
+        
+        #Calculate variances
+        modvar = modsumvar/size
+        cuvar  = cusumvar/size
+        bvar   = bsumvar/size
+        
+        #OUTPUT
+        #Minimums
+        ::s_modmin = sprint("%f", modmin)
+        ::s_cumin  = sprint("%f", cumin)
+        ::s_bmin   = sprint("%f", bmin)
+        #Maximums
+        ::s_modmax = sprint("%f", modmax)
+        ::s_cumax  = sprint("%f", cumax)
+        ::s_bmax   = sprint("%f", bmax)
+        #Means
+        ::s_modmed = sprint("%f", modmed)
+        ::s_cumed  = sprint("%f", cumed)
+        ::s_bmed   = sprint("%f", bmed)
+        #Variances
+        ::s_modvar = sprint("%f", modvar)
+        ::s_cuvar  = sprint("%f", cuvar)
+        ::s_bvar   = sprint("%f", bvar)
+        #Standard deviantions
+        ::s_modsd  = sprint("%f", sqrt(modvar))
+        ::s_cusd   = sprint("%f", sqrt(cuvar))
+        ::s_bsd    = sprint("%f", sqrt(bvar))
+       
+        ::win.Update(-1)
+        
+      } else {
+        InfoDialog "You must apply the sub-pixel 2D method first"
+      }
+    }
+    Comments(::Statistics, "Calculate edge pixels statistics")
+    
+    #-----------------------
+    
+    proc ::getBorderPixelInfo() {
+      if (exists(::norm_input_draw) && exists(::res)) {
+        imx = ::norm_input_draw.GetXPos()
+        imy = ::norm_input_draw.GetYPos()
+        #Initialize pos to a value higher than the maximum position
+        pos = ::res->border.tx + 1
+        #First, find the position of the pixel inside the border pixel position
+        for i=0 to ::res->border.tx-1 {
+          if ((::res->xpos(i,0) == imx) && (::res->ypos(i,0) == imy)) {
+            pos = i
+            break
+          }
+        }
+        #Successfull??
+        if (pos != ::res->border.tx+1) {
+          #Show pixel information
+          if (::res->border(pos,0) == 2) {
+            ::s_pos = sprint("(%g,", ::res->xpos(pos,0))+\
+                      sprint("%g): HORIZONTAL", ::res->ypos(pos,0))
+          } else {
+            ::s_pos = sprint("(%g,", ::res->xpos(pos,0))+\
+                      sprint("%g): VERTICAL", ::res->ypos(pos,0))
+          }
+          
+          ::s_mod   = sprint("%f", ::res->aintensity(pos,0)-::res->bintensity(pos,0))
+          ::s_rad   = sprint("%f", 1/::res->curvature(pos,0))
+          ::s_slope = sprint("%f", ::res->bcoef(pos,0))
+          ::s_disp  = sprint("%f", ::res->acoef(pos,0))
+        } else {
+          #Is not a border pixel
+          ::s_pos = sprint("(%g,", imx)+\
+                    sprint("%g): NO EDGE", imy)
+          ::s_mod   = ""
+          ::s_rad   = ""
+          ::s_slope = ""
+          ::s_disp  = ""
+        }
+        ::win.Update(-1)
+      } else {
+        InfoDialog "You must apply the sub-pixel 2D method first"
+      }
+    }
+    Comments(::getBorderPixelInfo, "Border pixel information")
     
     #-----------------------
     
@@ -85,6 +267,18 @@ if (!exists(Subpixel2DClass)){
       x2pos_crop = x2pos[inside_crop.GetExtent]
       y2pos_crop = y2pos[inside_crop.GetExtent]
       
+      dots = Image(DOUBLE,x1pos_crop.tx*4,1,1)
+      
+      j = 0
+      
+      for i=0 to x1pos_crop.tx-1 {
+        dots(j,0,0)   = x1pos_crop(i,0,0)
+        dots(j+1,0,0) = y1pos_crop(i,0,0)
+        dots(j+2,0,0) = x2pos_crop(i,0,0)
+        dots(j+3,0,0) = y2pos_crop(i,0,0)
+        j += 4
+      }
+      
       #If draw normals is active, calculate normals
       if (::normals==1) {
         #Edge central point
@@ -104,6 +298,18 @@ if (!exists(Subpixel2DClass)){
         py_crop = py[inside_crop.GetExtent]
         normx_crop = normx[inside_crop.GetExtent]
         normy_crop = normy[inside_crop.GetExtent]
+        
+        norm_pts = Image(DOUBLE,px_crop.tx,1,1)
+        
+        j = 0
+        
+        for i=0 to px_crop.tx-1 {
+          norm_pts(j,0,0)   = px_crop(i,0,0)
+          norm_pts(j+1,0,0) = py_crop(i,0,0)
+          norm_pts(j+2,0,0) = normx_crop(i,0,0)
+          norm_pts(j+3,0,0) = normy_crop(i,0,0)
+          j += 4
+        }
       }
       
       #InitTime
@@ -121,14 +327,17 @@ if (!exists(Subpixel2DClass)){
               ::norm_input_draw.SetLineParameters(::Ethickness,::Estyle)
             }
             #Draw edge
-            ::norm_input_draw.DrawLineZ(x1pos_crop(i,0),y1pos_crop(i,0),x2pos_crop(i,0),y2pos_crop(i,0))
+            #::norm_input_draw.DrawLineZ(x1pos_crop(i,0),y1pos_crop(i,0),x2pos_crop(i,0),y2pos_crop(i,0))
             #Draw normals
             if(::normals==1) {
               if(::change == 1) {
                 ::norm_input_draw.SetPenColor(&wx.wxColour(::Nred,::Ngreen,::Nblue,::Nalpha))
                 ::norm_input_draw.SetLineParameters(::Nthickness,::Nstyle)
               }
-              ::norm_input_draw.DrawLineZ(px_crop(i,0), py_crop(i,0), normx_crop(i,0), normy_crop(i,0))
+              #::norm_input_draw.DrawLineZ(px_crop(i,0), py_crop(i,0), normx_crop(i,0), normy_crop(i,0))
+              ::filters->DrawSubPixelBorder(&::norm_input_draw, &dots, ::normals, &norm_pts)
+            } else {
+              ::filters->DrawSubPixelBorder(&::norm_input_draw, &dots, ::normals, 0)
             }
         } #end if inside_crop
       } #end for
@@ -147,10 +356,15 @@ if (!exists(Subpixel2DClass)){
       if (exists(::res)) { del ::res; }
       if(::alg_type==0) {
         ::res = ::filters->Subpixel2D(&::norm_input, ::threshold, ::linear)
+        ::s_method = "SubPixel2D"
       } else {
         ::res = ::filters->GaussianSubpixel2D(&::norm_input, ::threshold, ::linear)
+        ::s_method = "Gaussian SupPixel2D"
       }
 			
+      ::win.Update(-1)
+      ::win.EnablePanel(::pxinf_panel, 1)
+      ::win.EnablePanel(::stat_panel, 1)
       
       ::Display
       ::drawBorder
@@ -213,15 +427,15 @@ if (!exists(Subpixel2DClass)){
       ::win = import->ParamPanel("Subpixel 2D")
       
       ::win.BeginBook()
-        ::win.AddPage("Parameters")
+        ::win.AddPage("Param.")
           ::win.BeginBoxPanel("Sub-pixel2D parameters")
             ::win.BeginHorizontal()
-              ::win.AddImageChoice(&::input_name, "Input")
+              ::win.AddImageChoice(&::input_name, "In.")
               ::AddBitmapButton(&::win, &::icons._New_image, 16, "load_input")
             ::win.EndHorizontal()
-            ::win.AddString(&::output_name, "Output")
+            ::win.AddString(&::output_name, "Out.")
             #Edge detection parameters
-            ::win.AddFloat(&::threshold, "Thres.", 0, 25)
+            ::win.AddFloat(&::threshold, "Thr.", 0, 25)
             ::win.SetCallback(&::AutoRun)
             ::win.AddBoolean(&::linear, "1st order")
             ::win.SetCallback(&::AutoRun)
@@ -231,52 +445,100 @@ if (!exists(Subpixel2DClass)){
             ::win.AddBoolean(&::normals, "Draw normals")
           ::win.EndHorizontal()
           ::win.BeginHorizontal()
-            ::filter_type = ::win.AddEnum(&::alg_type, "Method")
+            ::filter_type = ::win.AddEnum(&::alg_type, "Met.")
               ::win.AddEnumChoice(::filter_type, "SubPixel")
               ::win.AddEnumChoice(::filter_type, "Gaussian SubPixel")
             ::icons.LoadIconPNG("Play")
             ::AddBitmapButton(&::win, &::icons._Play, 16, "Run")
           ::win.EndHorizontal()
-          #New page for change contour and normals parameters
-          ::win.AddPage("Contour")
-            ::win.AddBoolean(&::change, "Change defaul")
-            ::win.SetCallback(&::Enable)
-            #New book for edge and normals parameters
-            ::win.BeginBook()
-              #Edge parameters
-              ::win.AddPage("Edge")
-                ::color_edge_panel = ::win.BeginBoxPanel("Color")
-                  ::win.AddInt(&::Ered, "R", 0, 255)
-                  ::win.AddInt(&::Egreen, "G", 0, 255)
-                  ::win.AddInt(&::Eblue, "B", 0, 255)
-                  ::win.AddInt(&::Ealpha, "A", 0, 255)
+          
+        #New page for border pixel info.
+        ::win.AddPage("Px.Info.")
+          ::pxinf_panel = ::win.BeginBoxPanel("Pixel Information")
+            ::icons.LoadIconPNG("Info")
+            ::AddBitmapButton(&::win, &::icons._Info, 16, "getBorderPixelInfo")
+            ::win.AddString(&::s_pos,   "Pixel")
+            ::win.AddString(&::s_mod,   "Mod.")
+            ::win.AddString(&::s_rad,   "Rad.")
+            ::win.AddString(&::s_slope, "Slo.")
+            ::win.AddString(&::s_disp,  "Dis.")
+          ::win.EndBoxPanel()
+          ::win.EnablePanel(::pxinf_panel, 0)
+        
+        #New page for calculate statistics
+        ::win.AddPage("Stat.")
+          ::win.AddString(&::s_method, "Method")
+          ::stat_panel = ::win.BeginBoxPanel("Statistics")
+            ::icons.LoadIconPNG2("Pie chart", "Pie_chart")
+            ::AddBitmapButton(&::win, &::icons._Pie_chart, 32, "Statistics")
+            ::win.BeginBoxPanel("Minimum")
+              ::win.AddString(&::s_modmin, "dif.")
+              ::win.AddString(&::s_cumin,  "rad.")
+              ::win.AddString(&::s_bmin,   "slo.")
+            ::win.EndBoxPanel()
+            ::win.BeginBoxPanel("Maximum")
+              ::win.AddString(&::s_modmax, "dif.")
+              ::win.AddString(&::s_cumax,  "rad.")
+              ::win.AddString(&::s_bmax,   "slo.")
+            ::win.EndBoxPanel()
+            ::win.BeginBoxPanel("Mean")
+              ::win.AddString(&::s_modmed, "dif.")
+              ::win.AddString(&::s_cumed,  "rad.")
+              ::win.AddString(&::s_bmed,   "slo.")
+            ::win.EndBoxPanel()
+            ::win.BeginBoxPanel("Variance")
+              ::win.AddString(&::s_modvar, "dif.")
+              ::win.AddString(&::s_cuvar,  "rad.")
+              ::win.AddString(&::s_bvar,   "slo.")
+            ::win.EndBoxPanel()
+            ::win.BeginBoxPanel("Standard Deviation")
+              ::win.AddString(&::s_modsd, "dif.")
+              ::win.AddString(&::s_cusd,  "rad.")
+              ::win.AddString(&::s_bsd,   "slo.")
+            ::win.EndBoxPanel()
+          ::win.EndBoxPanel()
+          ::win.EnablePanel(::stat_panel, 0)
+          
+        #New page for change contour and normals parameters
+        ::win.AddPage("Set.")
+          ::win.AddBoolean(&::change, "Change defaul settings")
+          ::win.SetCallback(&::Enable)
+          #New book for edge and normals parameters
+          ::win.BeginBook()
+            #Edge parameters
+            ::win.AddPage("Edge")
+              ::color_edge_panel = ::win.BeginBoxPanel("Color")
+                ::win.AddInt(&::Ered, "R", 0, 255)
+                ::win.AddInt(&::Egreen, "G", 0, 255)
+                ::win.AddInt(&::Eblue, "B", 0, 255)
+                ::win.AddInt(&::Ealpha, "A", 0, 255)
+              ::win.EndBoxPanel()
+              ::win.EnablePanel(::color_edge_panel, 0)
+              ::prop_edge_panel = ::win.BeginBoxPanel("Properties")
+                ::win.AddInt(&::Ethickness, "Thick.",1, 5)
+                ::style_type = ::win.AddEnum(&::Estyle, "Style")
+                ::win.AddEnumChoice(::style_type, "______")
+                ::win.AddEnumChoice(::style_type, "..........")
+              ::win.EndBoxPanel()
+              ::win.EnablePanel(::prop_edge_panel, 0)
+            #Normals parameters
+            ::win.AddPage("Normals")
+              ::color_normal_panel = ::win.BeginBoxPanel("Color")
+                  ::win.AddInt(&::Nred, "R", 0, 255)
+                  ::win.AddInt(&::Ngreen, "G", 0, 255)
+                  ::win.AddInt(&::Nblue, "B", 0, 255)
+                  ::win.AddInt(&::Nalpha, "A", 0, 255)
                 ::win.EndBoxPanel()
-                ::win.EnablePanel(::color_edge_panel, 0)
-                ::prop_edge_panel = ::win.BeginBoxPanel("Properties")
-                  ::win.AddInt(&::Ethickness, "Thick.",1, 5)
-                  ::style_type = ::win.AddEnum(&::Estyle, "Style")
+                ::win.EnablePanel(::color_normal_panel, 0)
+                ::prop_normal_panel = ::win.BeginBoxPanel("Properties")
+                  ::win.AddInt(&::Nthickness, "Thick.",1, 5)
+                  ::style_type = ::win.AddEnum(&::Nstyle, "Style")
                   ::win.AddEnumChoice(::style_type, "______")
                   ::win.AddEnumChoice(::style_type, "..........")
                 ::win.EndBoxPanel()
-                ::win.EnablePanel(::prop_edge_panel, 0)
-              #Normals parameters
-              ::win.AddPage("Normals")
-                ::color_normal_panel = ::win.BeginBoxPanel("Color")
-                    ::win.AddInt(&::Nred, "R", 0, 255)
-                    ::win.AddInt(&::Ngreen, "G", 0, 255)
-                    ::win.AddInt(&::Nblue, "B", 0, 255)
-                    ::win.AddInt(&::Nalpha, "A", 0, 255)
-                  ::win.EndBoxPanel()
-                  ::win.EnablePanel(::color_normal_panel, 0)
-                  ::prop_normal_panel = ::win.BeginBoxPanel("Properties")
-                    ::win.AddInt(&::Nthickness, "Thick.",1, 5)
-                    ::style_type = ::win.AddEnum(&::Nstyle, "Style")
-                    ::win.AddEnumChoice(::style_type, "______")
-                    ::win.AddEnumChoice(::style_type, "..........")
-                  ::win.EndBoxPanel()
-                  ::win.EnablePanel(::prop_normal_panel, 0)
-            ::win.EndBook()
-           
+                ::win.EnablePanel(::prop_normal_panel, 0)
+          ::win.EndBook()
+          
       ::win.EndBook()
 
       ::AddStandardButtons(&::win)

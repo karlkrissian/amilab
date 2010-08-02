@@ -103,6 +103,7 @@ void AddWrapFilters(){
   ADDOBJECTVAR_NAME(C_wrap_imagefunction, "SintheticRamp", wrapSintheticRamp);
   ADDOBJECTVAR_NAME(C_wrap_varfunction, "Subpixel2D", wrapSubpixel2D);
   ADDOBJECTVAR_NAME(C_wrap_varfunction, "GaussianSubpixel2D", wrapGaussianSubpixel2D);
+  ADDOBJECTVAR_NAME(C_wrap_procedure, "DrawSubPixelBorder", wrapDrawBorder);
 
   // Add AnisoGS
   AddVar_AnisoGS( amiobject->GetContext());

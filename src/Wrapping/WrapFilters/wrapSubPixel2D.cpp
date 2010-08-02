@@ -16,6 +16,8 @@
 #include <iostream>
 using namespace std;
 
+#include "DessinImage.hpp"
+
 #define XMAX	1
 #define YMAX	2
 
@@ -236,6 +238,78 @@ inline void OptimizarParabola (double &a, double &b, double &c, double umbral, d
   if (inv_signo) { a = -a; c = -c; }
 }
 
+
+
+//Función para dibujar los contornos
+void drawBorder(AMIObject* viewer, InrImage* dots, int draw_normals, InrImage* normals)
+{
+  DessinImage* di = (DessinImage*) viewer;
+  if (draw_normals) {
+    for(int i = 0; i < dots->DimX(); i+=4)
+    {
+      di->DrawLineZ((*dots)(i,0,0), (*dots)(i+1,0,0), (*dots)(i+2,0,0), (*dots)(i+3,0,0));
+      di->DrawLineZ((*normals)(i,0,0), (*normals)(i+1,0,0), (*normals)(i+2,0,0), (*normals)(i+3,0,0));
+    }
+  }
+  else {
+    for(int i = 0; i < dots->DimX(); i+=4)
+    {
+      di->DrawLineZ((*dots)(i,0,0), (*dots)(i+1,0,0), (*dots)(i+2,0,0), (*dots)(i+3,0,0));
+    }
+  }
+
+}
+
+//Wrapping para dibujar los contornos
+void wrapDrawBorder (ParamList* p) {
+  //Information
+	char functionname[] = "wrapDrawBorder";
+  char description[]=" \n\
+	Draw sub-pixel borders on a 2D image \n\
+	\n\
+	";
+  char parameters[] =" \n\
+	Parameters:\n\
+	input: The input image\n\
+	dots: Points for draw borders\n\
+	draw_normals: Says if draw or not the normals\n\
+  normals: Points for draw normals\n\
+	";
+  
+  AMIObject* viewer;
+  InrImage* dots;
+  InrImage* normals;
+  int draw_normals;
+  int num = 0;
+  //Get input image
+  //if (!get_val_ptr_param<InrImage>(input, p, num)) HelpAndReturnVarPtr;
+  //Get AMIObject
+  if (!get_val_ptr_param<AMIObject>(viewer, p, num)) HelpAndReturn;
+//  InrImage::ptr output (new InrImage(WT_FLOAT, "sub2DResult.ami.gz", input)); 
+//  output->InitZero(); 
+  
+  //Get params
+  if (!get_val_ptr_param<InrImage>(dots, p, num)) HelpAndReturn;
+  if (!get_int_param(draw_normals, p, num)) HelpAndReturn;
+  
+  if (draw_normals) {
+    if (!get_val_ptr_param<InrImage>(normals, p, num)) HelpAndReturn;
+    drawBorder(viewer, dots, draw_normals, normals);
+  }
+  else {
+    drawBorder(viewer, dots, draw_normals, NULL);
+  }
+//  AMIObject::ptr amiobject(new AMIObject);
+//  amiobject->SetName("res");
+// 
+//  
+//
+//
+//  Variable<AMIObject>::ptr result(
+//      new Variable<AMIObject>(amiobject));
+//  return result;
+}
+
 //Función original del código de Agustín (con los parámetros adaptados al wrapping)
 //void SuperGradienteCurvo(InrImage* input, InrImage::ptr output, float* gx, float* gy, float* des, float* cu, unsigned char* borde, float umbral, int linear_case) {
 //Nuevo cambio para usar la clase borderPixel. Se pasa un vector de la stl que contiene elementos de esta clase, el cual se irá rellenando
@@ -401,7 +475,7 @@ void SuperGradienteCurvo(InrImage* input, vector<borderPixel> &borderPixelVector
 
       pixel.setBorderPixelValues(A, B, caso, a, b, c, cu_n, x, y);
 //      cout << "desp = " << des_n << endl;
-      pixel.printBorderPixel(linear_case);
+//      pixel.printBorderPixel(linear_case);
       //Add edge pixel to the vector
       borderPixelVector.push_back(pixel);
     }
@@ -484,6 +558,7 @@ BasicVariable::ptr wrapSubpixel2D (ParamList* p) {
   //Calls to SuperGradienteCurvo
   //SuperGradienteCurvo(input, output, gx, gy, des, cu, borde, umbral, linear_case);
   SuperGradienteCurvo(input, borderPixelVector, umbral, linear_case);
+//  Statistics("SubPixel2D", borderPixelVector);
 //  cout << "size = " << borderPixelVector.size() << endl;
   //Se crea el AMIObject y se encapsulan dentro las imágenes que representan cada parámetro
   AMIObject::ptr amiobject(new AMIObject);
@@ -839,7 +914,7 @@ void SuperGradienteGaussianoCurvo(InrImage* input,
 //      des[n] = (float) des_n;
 //      cu[n] = (float) cu_n;
       pixel.setBorderPixelValues(A, B, caso, a, b, c, cu_n, x, y);
-      pixel.printBorderPixel(linear_case);
+//      pixel.printBorderPixel(linear_case);
       //Add edge pixel to the vector
       borderPixelVector.push_back(pixel);
     } //End x for
@@ -886,6 +961,7 @@ BasicVariable::ptr wrapGaussianSubpixel2D (ParamList* p) {
   //Calls to SuperGradienteGaussianoCurvo
   //SuperGradienteCurvo(input, output, gx, gy, des, cu, borde, umbral, linear_case);
   SuperGradienteGaussianoCurvo(output.get(), borderPixelVector, umbral, linear_case);
+//  Statistics("GaussianSubPixel2D", borderPixelVector);
 //  cout << "size = " << borderPixelVector.size() << endl;
   
   //Se crea el AMIObject y se encapsulan dentro las imágenes que representan cada parámetro
