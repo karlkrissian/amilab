@@ -39,7 +39,7 @@
 
 extern yyip::Driver GB_driver;
 //extern MainFrame* GB_main_wxFrame;
-extern wxApp* GB_wxApp;
+//extern wxApp* GB_wxApp;
 
 //extern void CB_delete_variable( void* var);
 //extern void CB_delete_varlist( void* var);
