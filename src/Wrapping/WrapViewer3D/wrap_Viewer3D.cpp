@@ -877,7 +877,7 @@ BasicVariable::ptr WrapClass_Viewer3D::
   Viewer3D::ptr vi(this->_objectptr->_obj);
 
   //GB_driver.err_print("WrapClass_Viewer3D::wrap_GetTransform Not available at this time!");
-  GLTransfMatrix* glt;
+  GLTransfMatrix* glt = new GLTransfMatrix();
   *glt = vi->GetCanvas()->GetObjectTransform();
   return CreateVar_GLTransfMatrix(glt);
   
