@@ -37,16 +37,11 @@ printn "\t\t ******************************************\n"
 printn "Constructor: MODE 0 (file=wx.wxFileName()).\n"
 file=wx.wxFileName()
 
-VAL = file.GetHomeDir()
+printn "Set the new path (file.AssignDir(\"./\"))\n"
+file.AssignDir("./")
 
-printn "Set the new path (file.AssignDir(VAL))\n"
-file.AssignDir(VAL)
-
-printn "Set the name (file._SetName(\"rsnapshot\"))\n"
-file._SetName("rsnapshot")
-
-printn "Set the extension (file.SetExt(\"conf\"))\n"
-file.SetExt("conf")
+printn "Set the name (file._SetName(\"TOUCH_FILE\"))\n"
+file._SetName("TOUCH_FILE")
 
 VAL = file.GetFullPath();
 
