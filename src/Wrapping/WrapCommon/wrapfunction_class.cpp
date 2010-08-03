@@ -10,6 +10,7 @@
 //
 //
 
+#include "paramlist.h"
 #include "wrapfunction_class.h"
 
 #include <wx/msgdlg.h>

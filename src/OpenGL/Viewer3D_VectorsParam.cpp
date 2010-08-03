@@ -1,7 +1,8 @@
 
 
 #include "Viewer3D.hpp"
-
+#include "ParamPanel.hpp"
+#include "Viewer3D_VectorsParam.h"
 
 Viewer3D_VectorsParam::Viewer3D_VectorsParam(Viewer3D* parent): ParamPanel(parent->GetParamBook(), "Vect")
 {

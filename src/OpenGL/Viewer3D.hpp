@@ -41,29 +41,42 @@
     #error "OpenGL required: set wxUSE_GLCANVAS to 1 and rebuild the library"
 #endif
 
-#include "wx/timer.h"
+//#include "wx/timer.h"
 #include "wx/math.h"
 #include "wx/toolbar.h"
 #include "wx/aui/aui.h"
 
 // wxParams includes
 #include "wxParamTypes.hpp"
-#include "MyToolBar.h"
+
+//#include "MyToolBar.h"
+class MyAuiToolBar;
 
 #include "ami_wxGLCanvas.hpp"
 //#include "ParamBox.hpp"
-#include "ParamPanel.hpp"
+//#include "ParamPanel.hpp"
+class ParamPanel;
 
 // AMILab includes
-#include "Viewer3D_ViewParam.h"
-#include "Viewer3D_ProjParam.h"
-#include "Viewer3D_BackgroundParam.h"
-#include "Viewer3D_MaterialParam.h"
-#include "Viewer3D_LightingParam.h"
-#include "Viewer3D_FogParam.h"
-#include "Viewer3D_VectorsParam.h"
-#include "Viewer3D_LineParam.h"
-#include "Viewer3D_PointParam.h"
+//#include "Viewer3D_ViewParam.h"
+//#include "Viewer3D_ProjParam.h"
+//#include "Viewer3D_BackgroundParam.h"
+//#include "Viewer3D_MaterialParam.h"
+//#include "Viewer3D_LightingParam.h"
+//#include "Viewer3D_FogParam.h"
+//#include "Viewer3D_VectorsParam.h"
+//#include "Viewer3D_LineParam.h"
+//#include "Viewer3D_PointParam.h"
+class Viewer3D_ViewParam;
+class Viewer3D_ProjParam;
+class Viewer3D_BackgroundParam;
+class Viewer3D_MaterialParam;
+class Viewer3D_LightingParam;
+class Viewer3D_FogParam;
+class Viewer3D_VectorsParam;
+class Viewer3D_LineParam;
+class Viewer3D_PointParam;
+
 
 class Viewer3D;
 typedef boost::shared_ptr<Viewer3D> Viewer3D_ptr;
@@ -174,39 +187,41 @@ protected :
 public:
 
     // 3D View parameters (object transformation)
-    Viewer3D_ViewParam::ptr _param_view;
+    boost::shared_ptr<Viewer3D_ViewParam> _param_view;
 
     // Gestion des parametres de la projection 3D
-    Viewer3D_ProjParam::ptr _param_proj;
+    boost::shared_ptr<Viewer3D_ProjParam> _param_proj;
 
     //  Background Color
-    Viewer3D_BackgroundParam::ptr _param_backgroundcolor;
+    boost::shared_ptr<Viewer3D_BackgroundParam> _param_backgroundcolor;
 
     //  Gestion des parametres des objets
-    Viewer3D_MaterialParam::ptr _param_material;
+    boost::shared_ptr<Viewer3D_MaterialParam> _param_material;
 
     //  Lighting Parameters
-    Viewer3D_LightingParam::ptr _param_light;
+    boost::shared_ptr<Viewer3D_LightingParam> _param_light;
 
     //  Fog effect Parameters
-    Viewer3D_FogParam::ptr      _param_fog;
+    boost::shared_ptr<Viewer3D_FogParam>      _param_fog;
 
     //  Vector Field Parameters
-    Viewer3D_VectorsParam::ptr _param_vectors;
+    boost::shared_ptr<Viewer3D_VectorsParam> _param_vectors;
 
     //  Vector Field Parameters
-    Viewer3D_LineParam::ptr    _param_lines;
+    boost::shared_ptr<Viewer3D_LineParam>    _param_lines;
 
     //  Vector Field Parameters
-    Viewer3D_PointParam::ptr    _param_points;
+    boost::shared_ptr<Viewer3D_PointParam>    _param_points;
 
 
     void UpdateMenu();
 
-    void UpdateObjectListGui()
+    void UpdateObjectListGui();
+/*
     {
       _param_material->UpdateGui();
     }
+*/
 
     void Paint( bool display=true) { m_canvas->Paint( display); }
     void CompSurfPaint();

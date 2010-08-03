@@ -10,6 +10,7 @@
 //
 //
 
+#include "paramlist.h"
 #include "wrapfunctions.hpp"
 #include "VarContexts.hpp"
 //#include "wrapfunctions_draw.h"

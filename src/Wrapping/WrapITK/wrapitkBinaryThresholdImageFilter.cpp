@@ -34,6 +34,7 @@
 #include "itkBinaryThresholdImageFilter.h"
 #endif // _WITHOUT_ITK_
 
+#include "paramlist.h"
 #include "wrapfunctions.hpp" 
 #include "wrapConversion.tpp"
 #include "wrapitkBinaryThresholdImageFilter.h"

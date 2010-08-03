@@ -1,5 +1,6 @@
 
 #include "vtkwrap.h"
+#include "paramlist.h"
 
 #ifdef AMI_USE_VTK
 

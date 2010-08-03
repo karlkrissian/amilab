@@ -10,6 +10,8 @@
 //
 //
 
+#include "paramlist.h"
+
 
 #include "ami_itkWrite.h"
 

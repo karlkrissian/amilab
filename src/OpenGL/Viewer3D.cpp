@@ -11,8 +11,10 @@
 
 extern unsigned char GB_debug;
 
-#include "Viewer3D.hpp"
+#include "paramlist.h"
+#include "ParamPanel.hpp"
 
+#include "Viewer3D.hpp"
 
 #include "MyToolBar.h"
 
@@ -36,6 +38,17 @@ extern unsigned char GB_debug;
 #ifdef WIN32
   #include "amilab_logo_new_32x32_alpha.xpm"
 #endif
+
+
+#include "Viewer3D_ViewParam.h"
+#include "Viewer3D_ProjParam.h"
+#include "Viewer3D_BackgroundParam.h"
+#include "Viewer3D_MaterialParam.h"
+#include "Viewer3D_LightingParam.h"
+#include "Viewer3D_FogParam.h"
+#include "Viewer3D_VectorsParam.h"
+#include "Viewer3D_LineParam.h"
+#include "Viewer3D_PointParam.h"
 
 
 /*
@@ -667,6 +680,13 @@ void Viewer3D::UpdateMenu()
 // tgl->_Moptions_light_visible->MAJ();
 
 } // UpdateMenu()
+
+
+//------------------------------------------------
+void Viewer3D::UpdateObjectListGui()
+{
+  _param_material->UpdateGui();
+}
 
 //------------------------------------------------
 void Viewer3D::Create_Toolbar()

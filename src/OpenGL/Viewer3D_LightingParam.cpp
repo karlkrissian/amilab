@@ -1,6 +1,8 @@
 
 
 #include "Viewer3D.hpp"
+#include "ParamPanel.hpp"
+#include "Viewer3D_LightingParam.h"
 
 
 Viewer3D_LightingParam::Viewer3D_LightingParam(Viewer3D* parent): 

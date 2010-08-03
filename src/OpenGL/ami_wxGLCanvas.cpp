@@ -13,6 +13,8 @@
 #include "VolumeRender.hpp"
 #include "Viewer3D.hpp"
 
+#include "Viewer3D_PointParam.h"
+
 #include "driver.h"
 #include "amilab_messages.h"
 

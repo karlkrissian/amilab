@@ -1,6 +1,8 @@
 
 
 #include "Viewer3D.hpp"
+#include "ParamPanel.hpp"
+#include "Viewer3D_BackgroundParam.h"
 
 
 Viewer3D_BackgroundParam::Viewer3D_BackgroundParam(Viewer3D* parent): ParamPanel(parent->GetParamBook(), "Bg")

@@ -8,11 +8,11 @@
  *
  */
 
+#include "paramlist.h"
 #include "wrapBasicEdgeDetection.h"
 #include "wrapfunctions.hpp"
 #include <cmath>
 #include "inrimage.hpp"
-#include "paramlist.h"
 
 //Auxiliar procedure for convolve an InrImage (2D)
 void convolve2DImage(InrImage *input, InrImage::ptr& output, float m[3][3])

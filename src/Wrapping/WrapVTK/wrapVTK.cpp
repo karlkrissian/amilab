@@ -10,6 +10,7 @@
 //
 //
 
+#include "paramlist.h"
 #include "surface.hpp"
 using namespace amilab;
 
