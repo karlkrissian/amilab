@@ -288,6 +288,31 @@ BasicVariable::ptr WrapClass_parampanel::wrap_AddFloat::CallMember( ParamList* p
   RETURN_VARINT(var_id,var->Name());
 }
 
+//---------------------------------------------------
+//  FloatConstraints
+//---------------------------------------------------
+void WrapClass_parampanel::
+      wrap_FloatConstraints::SetParametersComments() 
+{
+  ADDPARAMCOMMENT_TYPE(int,"identifier of the parameter.");
+  ADDPARAMCOMMENT_TYPE(float,"minimal value.");
+  ADDPARAMCOMMENT_TYPE(float,"maximal value.");
+  ADDPARAMCOMMENT_TYPE(float,"default value (def: (min+max)/2 ).");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_parampanel::
+      wrap_FloatConstraints::CallMember( ParamList* p)
+{
+  int n=0;
+  GET_PARAM(int,id,0)
+  GET_PARAM(float,minval,0)
+  GET_PARAM(float,maxval,10)
+  GET_PARAM(float,defval,(minval+maxval)/2.0)
+  this->_objectptr->_parampanel->FloatConstraints(id,minval,maxval,defval);
+  return BasicVariable::ptr();
+}
+
+
 //--------------------------------------------------
 // AddInt
 //--------------------------------------------------
@@ -320,6 +345,31 @@ BasicVariable::ptr WrapClass_parampanel::wrap_AddInt::CallMember( ParamList* p)
 
   // create integer variable to return
   RETURN_VARINT(var_id,var->Name());
+}
+
+
+//---------------------------------------------------
+//  IntegerConstraints
+//---------------------------------------------------
+void WrapClass_parampanel::
+      wrap_IntegerConstraints::SetParametersComments() 
+{
+  ADDPARAMCOMMENT_TYPE(int,"identifier of the parameter.");
+  ADDPARAMCOMMENT_TYPE(int,"minimal value.");
+  ADDPARAMCOMMENT_TYPE(int,"maximal value.");
+  ADDPARAMCOMMENT_TYPE(int,"default value (def: (min+max)/2 ).");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_parampanel::
+      wrap_IntegerConstraints::CallMember( ParamList* p)
+{
+  int n=0;
+  GET_PARAM(int,id,0)
+  GET_PARAM(int,minval,0)
+  GET_PARAM(int,maxval,10)
+  GET_PARAM(int,defval,(int)(minval+maxval)/2.0)
+  this->_objectptr->_parampanel->IntegerConstraints(id,minval,maxval,defval);
+  return BasicVariable::ptr();
 }
 
 
@@ -403,7 +453,7 @@ void WrapClass_parampanel::wrap_Display::SetParametersComments() {
 //--------------------------------------------------
 BasicVariable::ptr WrapClass_parampanel::wrap_Display::CallMember( ParamList* p)
 {
-  int  n = 0;
+  //int  n = 0;
 
 /*
   Variable<AMIObject>::ptr var;

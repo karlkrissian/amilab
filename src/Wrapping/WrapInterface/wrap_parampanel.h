@@ -51,8 +51,10 @@ class WrapClass_parampanel : public WrapClass_wxWindow
   ADD_CLASS_METHOD(SelectPage,       "Select the given page in the notebook.");
   
   
-  ADD_CLASS_METHOD(AddFloat,         "Adds a Float parameter.");
-  ADD_CLASS_METHOD(AddInt,           "Adds an Integer parameter.");
+  ADD_CLASS_METHOD(AddFloat,          "Adds a Float parameter.");
+  ADD_CLASS_METHOD(FloatConstraints,  "Sets the limits of the parameter.");
+  ADD_CLASS_METHOD(AddInt,            "Adds an Integer parameter.");
+  ADD_CLASS_METHOD(IntegerConstraints,"Sets the limits of the parameter.");
   ADD_CLASS_METHOD(AddEnum,          "Adds an integer variable as an enumeration to the parameter window.");
   ADD_CLASS_METHOD(AddEnumChoice,    "Adds a choice for an enumeration created in the parameter window.");
   ADD_CLASS_METHOD(AddLabel,         "Adds a label display.");
@@ -90,34 +92,36 @@ class WrapClass_parampanel : public WrapClass_wxWindow
 
       parent_obj->AddMethods(parent_obj);
 
-      AddVar_BeginBook(        this_ptr);
-      AddVar_EndBook(          this_ptr);
-      AddVar_BeginHorizontal(  this_ptr);
-      AddVar_EndHorizontal(    this_ptr);
-      AddVar_BeginBoxPanel(    this_ptr);
-      AddVar_EndBoxPanel(      this_ptr);
+      AddVar_BeginBook(         this_ptr);
+      AddVar_EndBook(           this_ptr);
+      AddVar_BeginHorizontal(   this_ptr);
+      AddVar_EndHorizontal(     this_ptr);
+      AddVar_BeginBoxPanel(     this_ptr);
+      AddVar_EndBoxPanel(       this_ptr);
 
-      AddVar_BeginPanel(       this_ptr);
-      AddVar_EndPanel(         this_ptr);
+      AddVar_BeginPanel(        this_ptr);
+      AddVar_EndPanel(          this_ptr);
 
-      AddVar_AddPage(          this_ptr);
-      AddVar_SelectPage(       this_ptr);
+      AddVar_AddPage(           this_ptr);
+      AddVar_SelectPage(        this_ptr);
 
-      AddVar_AddFloat(         this_ptr);
-      AddVar_AddInt(           this_ptr);
-      AddVar_AddEnum(          this_ptr);
-      AddVar_AddEnumChoice(    this_ptr);
-      AddVar_AddLabel(         this_ptr);
-      AddVar_AddFilename(      this_ptr);
-      AddVar_AddDirname(       this_ptr);
-      AddVar_AddString(        this_ptr);
-      AddVar_AddImageChoice(   this_ptr);
-      AddVar_AddButton(        this_ptr);
-      AddVar_AddBitmapButton(  this_ptr);
-      AddVar_AddBoolean(       this_ptr);
-      AddVar_SetCallback(      this_ptr);
-      AddVar_SetDragCallback(  this_ptr);
-      AddVar_EnablePanel(      this_ptr);
+      AddVar_AddFloat(          this_ptr);
+      AddVar_FloatConstraints(  this_ptr);
+      AddVar_AddInt(            this_ptr);
+      AddVar_IntegerConstraints(this_ptr);
+      AddVar_AddEnum(           this_ptr);
+      AddVar_AddEnumChoice(     this_ptr);
+      AddVar_AddLabel(          this_ptr);
+      AddVar_AddFilename(       this_ptr);
+      AddVar_AddDirname(        this_ptr);
+      AddVar_AddString(         this_ptr);
+      AddVar_AddImageChoice(    this_ptr);
+      AddVar_AddButton(         this_ptr);
+      AddVar_AddBitmapButton(   this_ptr);
+      AddVar_AddBoolean(        this_ptr);
+      AddVar_SetCallback(       this_ptr);
+      AddVar_SetDragCallback(   this_ptr);
+      AddVar_EnablePanel(       this_ptr);
 
       AddVar_Display(          this_ptr);
       AddVar_HidePanel(        this_ptr);
