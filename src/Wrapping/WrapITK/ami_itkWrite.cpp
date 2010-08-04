@@ -176,3 +176,9 @@ bool itkWrite(InrImage* input, const std::string& fname)
   return true;
 }
 
+/*
+std::vector<std::string> itkWriteGetExtensions( InrImage* input)
+{
+
+}
+*/

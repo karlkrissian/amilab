@@ -29,7 +29,7 @@ phantom=Image "phantom.ami.gz"
 // Connective=9
 
 # function to compute the statistics
-func "Filtering/AnisoNRAD_gui.amil"
+func "Denoising/AnisoNRAD/AnisoNRADClass.amil"
 
 
 proc InitBessel2( NUM _steps) {

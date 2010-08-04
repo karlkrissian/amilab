@@ -1,0 +1,22 @@
+
+func "AnisoNRADClass.amil"
+
+#----------------------------
+# Main
+#----------------------------
+
+if (!exists(aniNRAD)) {
+
+  AnisoNRADClass aniNRAD  
+   
+  if (argc>=1) {
+    printn "reading image"
+    input_arg = Image($1)
+    ::input_image = "input_arg"
+    ::win.Update(-1)
+    #NRAD_CreateParams( input)
+    #NRAD_CreateWindow()
+  }
+} else {
+  InfoDialog "The script seems to be already loaded." 
+}

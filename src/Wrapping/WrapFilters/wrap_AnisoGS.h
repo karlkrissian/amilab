@@ -57,6 +57,7 @@ class WrapClass_AnisoGS : public WrapClassBase
     ADD_CLASS_METHOD(GetDAcoeff,        "Returns estimated Data Attachment coefficient, only for constrained anisotropic diffusion method.");
     ADD_CLASS_METHOD(GetOutput,         "Returns the output image after remove the boundary extension.");
     ADD_CLASS_METHOD(GetDiffCoeff,      "Returns the image of the diffusion coefficients.");
+    ADD_CLASS_METHOD(Compute_sigma2_MRI_mode, "Returns the estimated variance of the Rician noise within the selected region of interest");
 
     void AddMethods(_parentclass_ptr& this_ptr )
     {
@@ -84,6 +85,8 @@ class WrapClass_AnisoGS : public WrapClassBase
       AddVar_GetDAcoeff(      this_ptr);
       AddVar_GetOutput(       this_ptr);
       AddVar_GetDiffCoeff(    this_ptr);
+
+      AddVar_Compute_sigma2_MRI_mode( this_ptr);
     }
 
 };

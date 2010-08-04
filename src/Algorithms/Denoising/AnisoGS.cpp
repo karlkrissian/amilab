@@ -2546,6 +2546,7 @@ float AnisoGS::Itere3D_2_new( InrImage* im )
     register float    *Iconv; 
     float gradient[3];
     float hessien[3][3];
+    unsigned long outoflimits = 0;
 
     t_3Point e0;
     t_3Point e1;
@@ -3096,12 +3097,14 @@ if (z==ROI_zmax) alpha1_z       = gamma1_z       = 0;
     this->im_tmp->BufferPos(x,y,z);
 
     if (val1<min_intensity) {
-      //      fprintf(stderr,"I=%3.2f<min, (%3d,%3d,%3d) \n",val1,x,y,z);
+      if (verbose)  fprintf(stderr,"I=%3.2f<min, (%3d,%3d,%3d) \n",val1,x,y,z);
       val1=min_intensity;
+      outoflimits++;
     }
     if (val1>max_intensity) {
-      //      fprintf(stderr,"I=%3.2f<max, (%3d,%3d,%3d) \n",val1,x,y,z);
+      if (verbose)  fprintf(stderr,"I=%3.2f<max, (%3d,%3d,%3d) \n",val1,x,y,z);
       val1=max_intensity;
+      outoflimits++;
     }
 
     this->im_tmp->FixeValeur(val1);
@@ -3112,6 +3115,10 @@ if (z==ROI_zmax) alpha1_z       = gamma1_z       = 0;
   } // endfor
   } // endfor
   } // endfor
+
+  if (outoflimits>0) {
+    cout << " Number of pixels out of the intensity range :" << outoflimits << endl;
+  }
 
   ExtendBoundariesVonNeumann(im_tmp);
   (*im) = (*this->im_tmp);
@@ -3195,6 +3202,7 @@ float AnisoGS::Itere3D_ST_RNRAD( InrImage* im )
     register float    *Iconv=NULL; 
 //    float gradient[3];
 //    float hessien[3][3];
+    unsigned long outoflimits=0;
 
     t_3Point e0;
     t_3Point e1;
@@ -3777,12 +3785,14 @@ if (sqrt(val1)>300) {
     this->im_tmp->BufferPos(x,y,z);
 
     if (val1<min_intensity) {
-      fprintf(stderr,"I=%3.2f<min, (%3d,%3d,%3d) \n",val1,x,y,z);
+      if (verbose) fprintf(stderr,"I=%3.2f<min, (%3d,%3d,%3d) \n",val1,x,y,z);
       val1=min_intensity;
+      outoflimits++;
     }
     if (val1>max_intensity) {
-      fprintf(stderr,"I=%3.2f>max, (%3d,%3d,%3d) \n",val1,x,y,z);
+      if (verbose) fprintf(stderr,"I=%3.2f>max, (%3d,%3d,%3d) \n",val1,x,y,z);
       val1=max_intensity;
+      outoflimits++;
     }
 
     this->im_tmp->FixeValeur(val1);
@@ -3793,6 +3803,11 @@ if (sqrt(val1)>300) {
   } // endfor
   } // endfor
   } // endfor
+
+
+  if (outoflimits>0) {
+    cout << " Number of pixels out of the intensity range :" << outoflimits << endl;
+  }
 
   // backup previous image in image_c
   ExtendBoundariesVonNeumann(im_tmp);
@@ -3813,6 +3828,9 @@ if (sqrt(val1)>300) {
 
   cout << "\t diff =" << sqrt(diff) << "\t";
 
+  
+  // This code is somehow messy since it combines different types of filters
+  // TODO: some cleanup here
   if (noise_standard_deviation <0) {
 /*    fprintf(stderr,"noise SD <0 ?\n");
     estimated_DA_coeff = sum_divF/(1.0*nb_calculated_points);

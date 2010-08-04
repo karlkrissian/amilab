@@ -958,18 +958,33 @@ unsigned char InrImage :: Alloue( ) throw (ErreurAllocation)
   } else
 */
 
+  if (CheckEndString( name, ".ami"))   {
+    return _amimage->write((char*) _nom.c_str());
+  } else
+  if ( (CheckEndString( name, ".raw"))  ) {
+    // write only raw data
+    return _amimage->write((char*) _nom.c_str(),0);
+  } else
 #ifdef AMI_USE_ITK
-  if (  CheckEndString( name, ".mhd")  || 
+  // here need to check using MetaDataDictionary
+/*
+if (  CheckEndString( name, ".mhd")  || 
         CheckEndString( name, ".jpg")  ||  
         CheckEndString( name, ".jpeg") ||
         CheckEndString( name, ".tif")  ||  
         CheckEndString( name, ".tiff") ||
         CheckEndString( name, ".png")  ||  
-        CheckEndString( name, ".bmp") 
+        CheckEndString( name, ".bmp")  ||
+        CheckEndString( name, ".hdr")  
      ) 
   {
     return itkWrite(this,_nom);
   } else
+    */
+  // better support itk types by not limiting the possible extensions here
+  if (itkWrite(this,_nom))
+    return true;
+  else
 #else
 #endif // AMI_USE_ITK
 
@@ -1035,13 +1050,8 @@ unsigned char InrImage :: Alloue( ) throw (ErreurAllocation)
 //    flipY->Delete();
   } else
 #endif // AMI_USE_VTK
-
-      
-  if ( (CheckEndString( name, ".raw"))  ) {
-    // write only raw data
-    return _amimage->write((char*) _nom.c_str(),0);
-  } else
-  if ( (CheckEndString( name, ".ami")) || ( _format != WT_RGB) ) {
+  {
+//  if ( (CheckEndString( name, ".ami")) || ( _format != WT_RGB) ) {
 
     return _amimage->write((char*) _nom.c_str());
 

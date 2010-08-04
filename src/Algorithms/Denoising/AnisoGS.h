@@ -119,6 +119,7 @@ class AnisoGS {
   float* Ixmymzm; 
   //@}
 
+
  public:
 
   //-------  Images
@@ -165,6 +166,9 @@ class AnisoGS {
 
   /// Size of the neighborhood
   AddSetGetVar(neighborhood,int);
+
+  /// verbose output
+  AddSetGetVar(verbose,bool);
 
   /// mask image
   AddSetGetVar( mask, InrImage::ptr)
@@ -275,6 +279,7 @@ class AnisoGS {
    */
   void InitParam() 
   {
+    verbose = false;
     image_entree  = NULL;
     this->image_resultat= NULL;
     this->image_lissee  = NULL;

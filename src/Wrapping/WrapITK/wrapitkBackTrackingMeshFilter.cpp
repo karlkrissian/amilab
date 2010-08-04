@@ -123,7 +123,7 @@ BasicVariable::ptr wrap_itkBackTrackingMeshFilter2D(ParamList* p)
     int num_points=0;
 
     // Conversion to amilab type to show it
-    for (int i=0;i<BackTracking->GetOutput()->GetNumberOfPoints();i++)
+    for (int i=0;i<(int) BackTracking->GetOutput()->GetNumberOfPoints();i++)
     {
         pointID = i;
         bool pointExists = BackTracking->GetOutput()->GetPoint(pointID,&pp);
@@ -217,7 +217,7 @@ BasicVariable::ptr wrap_itkBackTrackingMeshFilter3D(ParamList* p)
     surf->NewLine();
     int num_points=0;
 
-    for (int i=0;i<BackTracking->GetOutput()->GetNumberOfPoints();i++)
+    for (int i=0;i<(int)BackTracking->GetOutput()->GetNumberOfPoints();i++)
     {
         pointID = i;
         bool pointExists = BackTracking->GetOutput()->GetPoint(pointID,&pp);
