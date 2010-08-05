@@ -37,8 +37,8 @@ printn "\t\t ******************************************\n"
 printn "Constructor: MODE 0 (file=wx.wxFileName()).\n"
 file=wx.wxFileName()
 
-printn "Set the new path (file.AssignDir(\"./\"))\n"
-file.AssignDir("./")
+printn "Set the new path (file.AssignDir(\"/home/Francisco/proyectos/amilab/amilab-trunk/tests/Operations/Basics\"))\n"
+file.AssignDir("/home/Francisco/proyectos/amilab/amilab-trunk/tests/Operations/Basics")
 
 printn "Set the name (file._SetName(\"TOUCH_FILE\"))\n"
 file._SetName("TOUCH_FILE")
