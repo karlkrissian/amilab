@@ -1,0 +1,323 @@
+
+func "Common/ScriptGui"
+
+if (!exists(CalculatorClass)) {
+
+  Class CalculatorClass : public ScriptGui \
+  {
+    proc ::Init() { \
+      ::current_text = "0", "current value of the calculator"
+      ::current_value = 0, "current value"
+      ::current_value_string = "0", "string of the current value"
+      ::current_op = "", "current operation"
+      ::last_op = "", "last operation"
+    }
+
+    proc ::Todo() { }
+
+    #------------------------------------
+    proc ::UpdateCurrentText() {
+      value = atof(::current_text)
+      ::current_text = "%1%" % value
+      ::win.Update(-1) 
+    }
+
+    #------------------------------------
+    proc ::ApplyCurrentOp() {
+      if (::current_op == "")&&(::last_op == "") {
+        ::current_value = atof(::current_text)
+      }
+      if (::current_op == "+") {
+        ::current_value += atof(::current_text)
+      }
+      if (::current_op == "-") {
+        ::current_value -= atof(::current_text)
+      }
+      if (::current_op == "*") {
+        ::current_value *= atof(::current_text)
+      }
+      if (::current_op == "/") {
+        ::current_value /= atof(::current_text)
+      }
+      ::last_op = ::current_op
+      ::current_op = ""
+      ::current_text = ""
+      ::current_value_string = "%1%" % ::current_value
+      ::win.Update(-1) 
+
+    }
+
+    #------------------------------------
+    proc ::AC() { 
+      ::current_text = ""
+      ::win.Update(-1) 
+    }
+    Comments(::AC,"Clear current text")
+
+    #------------------------------------
+    proc ::AddOne() { 
+      ::current_text += "1"
+      ::UpdateCurrentText()
+    }
+    Comments(::AddOne,"add '1' digit")
+
+    #------------------------------------
+    proc ::AddTwo() { 
+      ::current_text += "2"
+      ::UpdateCurrentText()
+    }
+    Comments(::AddTwo,"add '2' digit")
+
+    #------------------------------------
+    proc ::AddThree() { 
+      ::current_text += "3"
+      ::UpdateCurrentText()
+    }
+    Comments(::AddThree,"add '3' digit")
+
+    #------------------------------------
+    proc ::OpSquareRoot() { 
+      if (::current_text!="") {
+        ::current_value = atof(::current_text)
+      }
+      ::current_text = "%1%" % sqrt(::current_value)
+      ::win.Update(-1) 
+    }
+    Comments(::OpSquareRoot,"Square root")
+
+    #------------------------------------
+    proc ::PlusMenus() { 
+      if (::current_text!="") {
+        ::current_value = atof(::current_text)
+      }
+      ::current_text = "%1%" % -::current_value
+      ::win.Update(-1) 
+    }
+    Comments(::PlusMenus,"Change sign")
+
+    #------------------------------------
+    proc ::AddFour() { 
+      ::current_text += "4"
+      ::UpdateCurrentText()
+    }
+    Comments(::AddFour,"add '4' digit")
+
+    #------------------------------------
+    proc ::AddFive() { 
+      ::current_text += "5"
+      ::UpdateCurrentText()
+    }
+    Comments(::AddFive,"add '5' digit")
+
+    #------------------------------------
+    proc ::AddSix() { 
+      ::current_text += "6"
+      ::UpdateCurrentText()
+    }
+    Comments(::AddSix,"add '6' digit")
+
+    #------------------------------------
+    proc ::Mult() { 
+      ::ApplyCurrentOp()
+      ::current_op = "*"
+      ::win.Update(-1) 
+    }
+    Comments(::AddOne,"Multiply")
+
+    #------------------------------------
+    proc ::Div() { 
+      ::ApplyCurrentOp()
+      ::current_op = "/"
+      ::win.Update(-1) 
+    }
+    Comments(::Div,"Divide")
+
+    #------------------------------------
+    proc ::MoveRight() { 
+      # need to use wxString here
+      st = wx.wxString(::current_text)
+      printn st.ToAscii()
+      st1 = st.SubString(0,st.Length()-2)
+      printn st1.ToAscii()
+      ::current_text = st1.ToAscii()
+      ::win.Update(-1) 
+    }
+    Comments(::MoveRight,"Remove last digit (move to the right)")
+
+    #------------------------------------
+    proc ::AddSeven() { 
+      ::current_text += "7"
+      ::UpdateCurrentText()
+    }
+
+    #------------------------------------
+    proc ::AddEight() { 
+      ::current_text += "8"
+      ::UpdateCurrentText()
+    }
+
+    #------------------------------------
+    proc ::AddNine() { 
+      ::current_text += "9"
+      ::UpdateCurrentText()
+    }
+
+    #------------------------------------
+    proc ::Plus() { 
+      ::ApplyCurrentOp()
+      ::current_op = "+"
+      ::win.Update(-1) 
+    }
+
+    #------------------------------------
+    proc ::Menus() { 
+      ::ApplyCurrentOp()
+      ::current_op = "-"
+      ::win.Update(-1) 
+    }
+
+    #------------------------------------
+    proc ::ClearAll() { 
+      ::current_text = "0"
+      ::current_value = 0
+      ::current_value_string = ""
+      ::current_op =""
+      ::last_op =""
+      ::UpdateCurrentText()
+    }
+    Comments(::ClearAll,"Clear all")
+
+    #------------------------------------
+    proc ::AddZero() { 
+      ::current_text += "0"
+      ::UpdateCurrentText()
+    }
+
+    #------------------------------------
+    proc ::AddDoubleZero() { 
+      ::current_text += "00"
+      ::win.Update(-1) 
+    }
+
+    #------------------------------------
+    proc ::AddDot() { 
+      ::current_text += "."
+      ::win.Update(-1) 
+    }
+
+    #------------------------------------
+    proc ::Equal() { 
+      ::ApplyCurrentOp()
+      ::last_op = "="
+      ::win.Update(-1) 
+    }
+
+    #------------------------------------
+    proc ::CopyValue() { 
+      ::current_text = ::current_value_string
+      ::win.Update(-1) 
+    }
+
+    #------------------------------------
+    proc ::Gui() {
+      
+      ::win = global::ami_import.ParamPanel("Calc")
+      
+      ::win.BeginBook()
+    
+        ::win.AddPage("Main")
+
+        ::win.BeginHorizontal()
+          ::win.AddButton("AC",&::AC)
+          ::win.SetPositionProp(1,1)
+          ::win.AddButton("C", &::ClearAll)
+          ::win.SetPositionProp(1,1)
+          ::win.AddButton("->",&::MoveRight)
+          ::win.SetPositionProp(1,1)
+        ::win.EndHorizontal()
+        ::win.BeginHorizontal()
+          #::win.AddButton("HMS",&::Todo)
+          #::win.SetPositionProp(1,1)
+          ::win.AddButton("M+",&::Todo)
+          ::win.SetPositionProp(1,1)
+          ::win.AddButton("M-",&::Todo)
+          ::win.SetPositionProp(1,1)
+          ::win.AddButton("MR",&::Todo)
+          ::win.SetPositionProp(1,1)
+          ::win.AddButton("MC",&::Todo)
+          ::win.SetPositionProp(1,1)
+          ::win.AddButton("GT",&::Todo)
+          ::win.SetPositionProp(1,1)
+        ::win.EndHorizontal()
+        ::win.BeginHorizontal()
+          ::win.AddButton("1",&::AddOne)
+          ::win.SetPositionProp(1,1)
+          ::win.AddButton("2",&::AddTwo)
+          ::win.SetPositionProp(1,1)
+          ::win.AddButton("3",&::AddThree)
+          ::win.SetPositionProp(1,1)
+          ::win.AddButton("%",&::Todo)
+          ::win.SetPositionProp(1,1)
+          ::win.AddButton("sqrt",&::OpSquareRoot)
+          ::win.SetPositionProp(1,1)
+        ::win.EndHorizontal()
+        ::win.BeginHorizontal()
+          ::win.AddButton("4",&::AddFour)
+          ::win.SetPositionProp(1,1)
+          ::win.AddButton("5",&::AddFive)
+          ::win.SetPositionProp(1,1)
+          ::win.AddButton("6",&::AddSix)
+          ::win.SetPositionProp(1,1)
+          ::win.AddButton("*",&::Mult)
+          ::win.SetPositionProp(1,1)
+          ::win.AddButton("/",&::Div)
+          ::win.SetPositionProp(1,1)
+        ::win.EndHorizontal()
+        ::win.BeginHorizontal()
+          ::win.AddButton("7",&::AddSeven)
+          ::win.SetPositionProp(1,1)
+          ::win.AddButton("8",&::AddEight)
+          ::win.SetPositionProp(1,1)
+          ::win.AddButton("9",&::AddNine)
+          ::win.SetPositionProp(1,1)
+          ::win.AddButton("+",&::Plus)
+          ::win.SetPositionProp(1,1)
+          ::win.AddButton("-",&::Menus)
+          ::win.SetPositionProp(1,1)
+        ::win.EndHorizontal()
+        ::win.BeginHorizontal()
+          ::win.AddButton("0", &::AddZero)
+          ::win.SetPositionProp(1,1)
+          ::win.AddButton("00",&::AddDoubleZero)
+          ::win.SetPositionProp(1,1)
+          ::win.AddButton(".", &::AddDot)
+          ::win.SetPositionProp(1,1)
+          ::win.AddButton("+/-",&::PlusMenus)
+          ::win.SetPositionProp(1,1)
+          ::win.AddButton("=",&::Equal)
+          ::win.SetPositionProp(1,1)
+        ::win.EndHorizontal()
+
+        ::win.AddString(&::current_text,"text")
+
+        ::win.BeginBoxPanel("Info")
+          ::win.BeginHorizontal()
+            ::win.AddString(&::current_value_string,"val")
+            ::win.SetPositionProp(2,1)
+            ::win.AddString(&::current_op,"op")
+          ::win.EndHorizontal()
+          ::win.AddButton("Copy",::CopyValue)
+        ::win.EndBoxPanel()
+
+      ::win.EndBook()
+      ::AddStandardButtons(&::win)
+      
+      ::win.Update(-1)
+      ::win.Display()
+    }
+
+    ::Init()
+  }
+}
+
+
