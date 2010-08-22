@@ -31,7 +31,7 @@
 
 #include "dw_Curve.h"
 #include "wx/dcclient.h"
-
+#include "CallBackBase.h"
 
 class dw_ControlPoint
 {
@@ -119,6 +119,10 @@ class wxDrawingWindow : public wxScrolledWindow
   /// device context in memory
   scoped_ptr<wxBitmap>   _bitmap; 
 
+
+  // Callback for the control point motion
+  CallBackBase::ptr _ctrlpt_callback;
+
   void DrawingAreaInit( );
 
 public:
@@ -128,6 +132,23 @@ public:
         const wxString& name = _T("wxDrawingWindow"));
 
   virtual ~wxDrawingWindow(){};
+
+  void SetCtrlPointCallback( CallBackBase::ptr callback) {
+    this->_ctrlpt_callback = callback;
+  }
+
+  int GetNumberOfCtrlPoints() 
+  {
+    return _controlpoints.size();
+  }
+
+  dw_ControlPoint GetControlPoint(int n)
+  {
+    if ((n>=0)&&(n<(int)_controlpoints.size()))
+      return _controlpoints[n];
+    else 
+      return dw_ControlPoint();
+  }
 
   void DrawingAreaDisplay( );
 

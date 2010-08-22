@@ -33,9 +33,6 @@
   if (!get_val_smtptr_param<type>( varname, p, n)) \
     ClassHelpAndReturn;
 
-#include "driver.h"
-//#include "MainFrame.h"
-#include "CallBackAMIFunction.h"
 
 //-------------------------------------------------------------------------
 AMIObject::ptr AddWrap_ContinuousMorphology(  WrapClass_ContinuousMorphology::ptr& objectptr)

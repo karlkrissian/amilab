@@ -561,6 +561,14 @@ void wxDrawingWindow::OnMotion(wxMouseEvent& event)
       Window2World(_mouse_x,_mouse_y,x,y);
       _controlpoints[focus_pointid].SetPos(x,y);
       _controlpoints[focus_pointid].SetwxPoint(wxPoint(_mouse_x,_mouse_y));
+
+      // Check if a Control point callback was set,
+      // if so, call the function with its parameters
+      if (_ctrlpt_callback.get()) {
+        bool ok = (*_ctrlpt_callback)();
+        if (!ok) _ctrlpt_callback.reset();
+      }
+
       Refresh(false);
     }
     else 

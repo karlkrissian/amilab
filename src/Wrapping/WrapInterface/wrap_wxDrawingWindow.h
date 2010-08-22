@@ -44,7 +44,10 @@ class WrapClass_wxDrawingWindow : public WrapClass_wxWindow
     ADD_CLASS_METHOD(SetCurveDrawLines,  "Enable/Disable drawing of a curve lines.");
     ADD_CLASS_METHOD(SetCurveDrawPoints,  "Enable/Disable drawing of a curve points.");
     ADD_CLASS_METHOD(Paint,               "Redraws the contents of the window.");
-
+    ADD_CLASS_METHOD(GetNumberOfCtrlPoints,"Returns the number of control points used.");
+    ADD_CLASS_METHOD(GetCtrlPointX,        "Returns the X position a given control point.");
+    ADD_CLASS_METHOD(GetCtrlPointY,        "Returns the Y position a given control point.");
+    ADD_CLASS_METHOD(SetCtrlPointCallback, "Callback for motion of a control point.")
 
     void AddMethods(_parentclass_ptr& this_ptr )
     {
@@ -52,13 +55,17 @@ class WrapClass_wxDrawingWindow : public WrapClass_wxWindow
       WrapClass_wxWindow::ptr parent_obj(boost::dynamic_pointer_cast<WrapClass_wxWindow>(this_ptr));
       parent_obj->AddMethods(parent_obj);
 
-      AddVar_SetXLimits(         this_ptr);
-      AddVar_SetYLimits(         this_ptr);
-      AddVar_SetCurve(           this_ptr);
-      AddVar_SetCurveProperties( this_ptr);
-      AddVar_SetCurveDrawLines(  this_ptr);
-      AddVar_SetCurveDrawPoints( this_ptr);
-      AddVar_Paint(              this_ptr, "_Paint");
+      AddVar_SetXLimits(            this_ptr);
+      AddVar_SetYLimits(            this_ptr);
+      AddVar_SetCurve(              this_ptr);
+      AddVar_SetCurveProperties(    this_ptr);
+      AddVar_SetCurveDrawLines(     this_ptr);
+      AddVar_SetCurveDrawPoints(    this_ptr);
+      AddVar_Paint(                 this_ptr, "_Paint");
+      AddVar_GetNumberOfCtrlPoints( this_ptr);
+      AddVar_GetCtrlPointX(         this_ptr);
+      AddVar_GetCtrlPointY(         this_ptr);
+      AddVar_SetCtrlPointCallback(  this_ptr);
     }
 
 };

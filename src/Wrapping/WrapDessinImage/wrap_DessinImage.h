@@ -48,7 +48,8 @@ class WrapClass_DessinImage  : public WrapClass_FenetreDessin
 
     ADD_CLASS_METHOD(setpos,                 "Set the cursor position on a imagedraw window");
     ADD_CLASS_METHOD(showcursor,             "Displays or hides the cursor of a imagedraw window");
-    ADD_CLASS_METHOD(update,                 "Updates the image that is drawn in the specified window");
+    ADD_CLASS_METHOD(update,                 "Redraw all the slices");
+    ADD_CLASS_METHOD(Paint,                  "Calls the Paint method");
     ADD_CLASS_METHOD(compare,                "Put a comparison image for the imagedraw window");
     ADD_CLASS_METHOD(SetCompareDisplacement, "Defines a displacement to apply to the cursor of the window in parameter, when comparing 2 image drawing windows");
     ADD_CLASS_METHOD(SetCompTransf,          "SetCompTransf is not available at the moment.");
@@ -96,6 +97,7 @@ class WrapClass_DessinImage  : public WrapClass_FenetreDessin
       AddVar_setpos(                this_ptr, "_setpos");
       AddVar_showcursor(            this_ptr);
       AddVar_update(                this_ptr);
+      AddVar_Paint(                 this_ptr);
       AddVar_compare(               this_ptr);
       AddVar_SetCompareDisplacement(this_ptr);
       AddVar_SetCompTransf(         this_ptr);

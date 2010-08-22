@@ -27,6 +27,36 @@ if (!exists(ImageHistoClass)) {
     }
 
     #---------------------------
+    proc ::DrawThreshold() \
+    {
+      nc = ::dw.GetNumberOfCtrlPoints()
+      if (exists(::input)) {
+        VertLine = Image(FLOAT,2,1,1,2)
+        hmax = max(::h[0])
+        for k=0 to -max(-(nc-1),-2) {
+          xpos = ::dw.GetCtrlPointX(k)
+          VertLine.setpos(0,0,0)
+          VertLine.set(0,xpos)
+          VertLine.set(1,0)
+          VertLine.setpos(1,0,0)
+          VertLine.set(0,xpos)
+          VertLine.set(1,hmax)
+          ::dw->SetCurve(VertLine,::input.vdim+k)
+          ::dw->SetCurveProperties(::input.vdim,"#009900")
+          if (exists(::input_draw)) {
+            ::input_draw.SetIsoContour(k,&::input,xpos)
+            ::input_draw.DrawIsoContour(k,1)
+          }
+        }
+        ::dw._Paint()
+        ::dw.Refresh()
+        if (exists(::input_draw)) {
+          ::input_draw.Paint()
+        }
+      }
+    }
+
+    #---------------------------
     proc ::InitColours() \
     {
       # set colors for the curves
@@ -43,6 +73,7 @@ if (!exists(ImageHistoClass)) {
     #----------------------------
     proc ::LoadInput() \
     {
+      SetStatusText("LoadInput")
       printn "evaluation of --> ::input <<="+::input_name+";"
       eval "::input <<="+::input_name+";"
       if (::input_name=="Image") {
@@ -52,14 +83,17 @@ if (!exists(ImageHistoClass)) {
       #::win.update
       ::UpdateImage()
       ::Update()
+      SetStatusText("LoadInput Finished")
     }
+    Comments(::LoadInput,"Load and initialize input image.")
 
     #-------------------------------------------------------------------
     proc ::UpdateImage() {
+      SetStatusText("UpdateImage")
       Imin = min(::input[0])
       Imax = max(::input[0])
       for n=1 to ::input.vdim-1 {
-        Imin = -max(-Imin,-min(::input[0]))
+        Imin = -max(-Imin,-min(::input[n]))
         Imax = max(Imax,max(::input[n]))          
       }
       ::step = 1
@@ -70,7 +104,7 @@ if (!exists(ImageHistoClass)) {
 
     #-------------------------------------------------------------------
     proc ::Update() {
-
+      SetStatusText("Update")
       if (exists(::input)) {
         if (::maxval<::minval+0.00001) { ::maxval = ::minval+0.00001; ::win.Update(-1); }
         if (::step<0.01) { ::step=0.01; ::win.Update(-1); }
@@ -84,6 +118,15 @@ if (!exists(ImageHistoClass)) {
           ::dw->SetCurve(::h[n],n)
           ::dw->SetCurveProperties(n,::ColoursVector[n%6])
         }
+      }
+    }
+
+    #----------------------------
+    proc ::ShowImage() {
+      if (!exists(::input)) {
+        InfoDialog "You must load the input image first!"
+      } else {
+        show ::input
       }
     }
 
@@ -102,7 +145,8 @@ if (!exists(ImageHistoClass)) {
           ::win.BeginBoxPanel("Input")
             ::win.BeginHorizontal()
               ::win.AddImageChoice( &::input_name, "")
-              ::win.AddButton("Load",::LoadInput)
+              ::AddBitmapButton(&::win, &::icons._Copy,   32, "LoadInput")
+              ::win.SetPositionProp(-1,0)
             ::win.EndHorizontal()
           ::win.EndBoxPanel()
 
@@ -114,7 +158,12 @@ if (!exists(ImageHistoClass)) {
           ::step_id   = ::win.AddFloat(&::step,"step",0,10)
           ::win.SetCallback(&::Update)
 
-          ::win.AddButton("Update",::Update)
+          ::win.BeginHorizontal()
+            ::AddBitmapButton(&::win, &::icons._Refresh,   32, "Update")
+            ::win.SetPositionProp(-1,0)
+            ::AddBitmapButton(&::win, &::icons._Show,   32, "ShowImage")
+            ::win.SetPositionProp(-1,0)
+          ::win.EndHorizontal()
           # add Drawing Window
           d = ::win.CurrentParent()
           ::dw = import->wxDrawingWindow(&d)
@@ -129,6 +178,8 @@ if (!exists(ImageHistoClass)) {
       
       ::win.Update(-1)
       ::win.Display()
+
+      ::dw.SetCtrlPointCallback(&::DrawThreshold)
    }
 
     ::Init()

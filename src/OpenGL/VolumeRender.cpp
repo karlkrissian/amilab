@@ -419,11 +419,11 @@ void VolumeRender::Load3DTexture()
     /* load 3D texture data */
     switch (_tex_format) {
     case GL_RGBA:
-      size=_size_x*_size_y*_size_z*4;
-      break;
+        size=_size_x*_size_y*_size_z*4;
+        break;
     case GL_LUMINANCE:
-      size = _size_x*_size_y*_size_z;
-      break;
+        size = _size_x*_size_y*_size_z;
+        break;
     }
 
     if (_tex3ddata!=NULL)  free(_tex3ddata);
@@ -440,62 +440,60 @@ void VolumeRender::Load3DTexture()
     _im->InitBuffer();
     if (_opacity_image!=NULL) _opacity_image->InitBuffer();
     do {
-      val = _im->ValeurBuffer();
-      if (_di!=NULL) {
-        if (_opacity_image==NULL)
-          intensity=_di->IntensiteBuffer(val);
-        else
-	  intensity = (unsigned char)_opacity_image->ValeurBuffer();
+        val = _im->ValeurBuffer();
+        if (_di!=NULL) {
+            if (_opacity_image==NULL)
+                intensity=_di->IntensiteBuffer(val);
+            else
+                intensity = (unsigned char)_opacity_image->ValeurBuffer();
 
-	/*
-	switch (_map_mode) {
-	case MAP_RGBA_RGBA:
-	*/
+            /*
+            switch (_map_mode) {
+            case MAP_RGBA_RGBA:
+            */
 
-	  _di->ColorBuffer(val,red,green,blue);
-	  _tex3ddata[i  ]= red;
-	  _tex3ddata[i+1]= green;
-	  _tex3ddata[i+2]= blue;
-	  _tex3ddata[i+3]= intensity;
-	  i+=4;
-	  /*
-	  break;
-	case MAP_I_RGBA:
-	  _tex3ddata[i]= intensity;
-	  i++;
-	  break;
-	}
-	  */
-      }
-      else {
-	if (val<_minI) _tex3ddata[i]=0;
-	else
-	  if (val>_maxI) _tex3ddata[i]=255;
-	  else
-	    _tex3ddata[i] = (unsigned char) ((val-_minI)/(_maxI-_minI)*255.0);
-	/*
-	switch (_map_mode) {
-	case MAP_RGBA_RGBA:
-	*/
-	  _tex3ddata[i+1]=_tex3ddata[i];
-	  _tex3ddata[i+2]=_tex3ddata[i];
-	  _tex3ddata[i+3]=_tex3ddata[i];
-	  i+=4;
-	  /*
-	  break;
-	case MAP_I_RGBA:
-	  i++;
-	  break;
-	}
-	  */
+            _di->ColorBuffer(val,red,green,blue);
+            _tex3ddata[i  ]= red;
+            _tex3ddata[i+1]= green;
+            _tex3ddata[i+2]= blue;
+            _tex3ddata[i+3]= intensity;
+            i+=4;
+            /*
+            break;
+            case MAP_I_RGBA:
+            _tex3ddata[i]= intensity;
+            i++;
+            break;
+            }
+            */
+        } else {
+            if (val<_minI) _tex3ddata[i]=0;
+            else
+                if (val>_maxI) _tex3ddata[i]=255;
+                else
+                    _tex3ddata[i] = (unsigned char) ((val-_minI)/(_maxI-_minI)*255.0);
+            /*
+            switch (_map_mode) {
+            case MAP_RGBA_RGBA:
+            */
+            _tex3ddata[i+1]=_tex3ddata[i];
+            _tex3ddata[i+2]=_tex3ddata[i];
+            _tex3ddata[i+3]=_tex3ddata[i];
+            i+=4;
+            /*
+            break;
+            case MAP_I_RGBA:
+            i++;
+            break;
+            }
+            */
 
-      }
+        }
 
 
-      if (_opacity_image!=NULL) 
-        _opacity_image->IncBuffer();
-    }
-    while (_im->IncBuffer());
+        if (_opacity_image!=NULL)
+            _opacity_image->IncBuffer();
+    } while (_im->IncBuffer());
 
 
     glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max3dtexdims);
@@ -504,46 +502,43 @@ void VolumeRender::Load3DTexture()
 
     if (_power2dim) {
 
-      /* adjust width */
-      newval = _size_x;
-      if(_size_x > max3dtexdims)
-	newval = max3dtexdims;
-      if(NOTPOW2(_size_x))
-        newval = makepow2(_size_x);
-      if(newval != _size_x)
-	{
-	  printf("newval!=_size_x\n");
-	  glPixelStorei(GL_UNPACK_ROW_LENGTH, _size_x);
-	  glPixelStorei(GL_UNPACK_SKIP_PIXELS, (_size_x - newval)/2);
-	  _size_x = newval;
-	}
-      
-      /* adjust height */
-      newval = _size_y;
-      if (_size_y > max3dtexdims)
-	newval = max3dtexdims;
-      if(NOTPOW2(_size_y))
-        newval = makepow2(_size_y);
-      if(_size_y > newval)
-	{
-	  printf("_size_y>newval\n");
-	  glPixelStorei(GL_UNPACK_IMAGE_HEIGHT, _size_y);
-	  glPixelStorei(GL_UNPACK_SKIP_ROWS, (_size_y - newval)/2);
-	  _size_y = newval;
-	}
-      
-      /* adjust depth */
-      newval = _size_z;
-      if(_size_z > max3dtexdims)
-	newval = max3dtexdims;
-      if(NOTPOW2(_size_z))
-        newval = makepow2(_size_z);
-      if(_size_z > newval)
-	{
-	  printf("_size_z>newval skipping images\n");
-	  _size_z = newval;
-	  //glPixelStorei(GL_UNPACK_SKIP_IMAGES, (_size_z - newval)/2);
-	}
+        /* adjust width */
+        newval = _size_x;
+        if (_size_x > max3dtexdims)
+            newval = max3dtexdims;
+        if (NOTPOW2(_size_x))
+            newval = makepow2(_size_x);
+        if (newval != _size_x) {
+            printf("newval!=_size_x\n");
+            glPixelStorei(GL_UNPACK_ROW_LENGTH, _size_x);
+            glPixelStorei(GL_UNPACK_SKIP_PIXELS, (_size_x - newval)/2);
+            _size_x = newval;
+        }
+
+        /* adjust height */
+        newval = _size_y;
+        if (_size_y > max3dtexdims)
+            newval = max3dtexdims;
+        if (NOTPOW2(_size_y))
+            newval = makepow2(_size_y);
+        if (_size_y > newval) {
+            printf("_size_y>newval\n");
+            glPixelStorei(GL_UNPACK_IMAGE_HEIGHT, _size_y);
+            glPixelStorei(GL_UNPACK_SKIP_ROWS, (_size_y - newval)/2);
+            _size_y = newval;
+        }
+
+        /* adjust depth */
+        newval = _size_z;
+        if (_size_z > max3dtexdims)
+            newval = max3dtexdims;
+        if (NOTPOW2(_size_z))
+            newval = makepow2(_size_z);
+        if (_size_z > newval) {
+            printf("_size_z>newval skipping images\n");
+            _size_z = newval;
+            //glPixelStorei(GL_UNPACK_SKIP_IMAGES, (_size_z - newval)/2);
+        }
     }
 
     printf("size=(%d,%d,%d)\n",_size_x,_size_y,_size_z);

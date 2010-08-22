@@ -17,6 +17,7 @@
 #include "ami_object.h"
 #include "ami_function.h"
 #include "wrap_wxWindow.h"
+#include "CallBackAMIFunction.h"
 
 //-------------------------------------------------------------------------
 AMIObject::ptr AddWrap_wxDrawingWindow(  WrapClass_wxDrawingWindow::ptr& objectptr)
@@ -269,3 +270,88 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
   this->_objectptr->_drawingwin->Paint();
   return BasicVariable::ptr();
 }
+
+//---------------------------------------------------
+//  GetNumberOfCtrlPoints
+//---------------------------------------------------
+void WrapClass_wxDrawingWindow::
+      wrap_GetNumberOfCtrlPoints::SetParametersComments() 
+{
+  return_comments = "Current number of control points";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxDrawingWindow::
+      wrap_GetNumberOfCtrlPoints::CallMember( ParamList* p)
+{
+  int n =   this->_objectptr->_drawingwin->GetNumberOfCtrlPoints();
+  RETURN_VAR(int,n);
+}
+
+//---------------------------------------------------
+//  GetCtrlPointX
+//---------------------------------------------------
+void WrapClass_wxDrawingWindow::
+      wrap_GetCtrlPointX::SetParametersComments() 
+{
+  ADDPARAMCOMMENT_TYPE(int,"index of the control point");
+  return_comments = "X position of the given control point";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxDrawingWindow::
+      wrap_GetCtrlPointX::CallMember( ParamList* p)
+{
+  int index = 0;
+  int n     = 0;
+
+  if (!get_val_param<int>( index, p, n)) ClassHelpAndReturn;
+
+  dw_ControlPoint cp = this->_objectptr->_drawingwin->GetControlPoint(index);
+  RETURN_VAR(float,cp.GetX());
+}
+
+//---------------------------------------------------
+//  GetCtrlPointY
+//---------------------------------------------------
+void WrapClass_wxDrawingWindow::
+      wrap_GetCtrlPointY::SetParametersComments() 
+{
+  ADDPARAMCOMMENT_TYPE(int,"index of the control point");
+  return_comments = "Y position of the given control point";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxDrawingWindow::
+      wrap_GetCtrlPointY::CallMember( ParamList* p)
+{
+  int index = 0;
+  int n     = 0;
+
+  if (!get_val_param<int>( index, p, n)) ClassHelpAndReturn;
+
+  dw_ControlPoint cp = this->_objectptr->_drawingwin->GetControlPoint(index);
+  RETURN_VAR(float,cp.GetY());
+}
+
+//---------------------------------------------------
+//  SetCtrlPointCallback
+//---------------------------------------------------
+void WrapClass_wxDrawingWindow::
+      wrap_SetCtrlPointCallback::SetParametersComments() 
+{
+  ADDPARAMCOMMENT_TYPE(AMIFunction,"Callback function (AMIFunction)");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxDrawingWindow::
+      wrap_SetCtrlPointCallback::CallMember( ParamList* p)
+{
+  if (!p) ClassHelpAndReturn;
+  Variable<AMIFunction>::ptr varfunc;
+  int n=0;
+  if (!get_var_param<AMIFunction>(varfunc,p,n))  ClassHelpAndReturn;
+
+  AMIFunction::ptr func(varfunc->Pointer());
+  CallBackAMIFunction::ptr cb(new CallBackAMIFunction(func));
+  this->_objectptr->_drawingwin->SetCtrlPointCallback( cb );
+
+  return BasicVariable::ptr();
+}
+

@@ -5459,7 +5459,7 @@ void DessinImage::CB_VOLREN( wxCommandEvent&)
                  min,
                  max,
                  di,
-                             this->_volren_opacity);
+                 this->_volren_opacity);
 
   if (init)
   {

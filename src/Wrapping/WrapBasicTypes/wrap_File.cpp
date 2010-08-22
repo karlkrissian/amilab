@@ -34,8 +34,6 @@
     ClassHelpAndReturn;
 
 #include "driver.h"
-//#include "MainFrame.h"
-#include "CallBackAMIFunction.h"
 
 extern yyip::Driver GB_driver;
 //extern MainFrame* GB_main_wxFrame;

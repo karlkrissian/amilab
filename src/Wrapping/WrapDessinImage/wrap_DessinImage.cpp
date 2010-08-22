@@ -224,6 +224,21 @@ BasicVariable::ptr WrapClass_DessinImage::
 }
 
 //---------------------------------------------------
+//  Paint
+//---------------------------------------------------
+void WrapClass_DessinImage::
+      wrap_Paint::SetParametersComments() 
+{ }
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_DessinImage::
+      wrap_Paint::CallMember( ParamList* p)
+{
+  DessinImage::ptr draw(this->_objectptr->_obj);
+  draw->Paint();
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
 //  compare
 //---------------------------------------------------
 void WrapClass_DessinImage::
