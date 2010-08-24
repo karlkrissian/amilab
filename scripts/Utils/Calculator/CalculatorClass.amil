@@ -16,8 +16,6 @@ if (!exists(CalculatorClass)) {
       ::loan_years = INT(30), "loan duration in years"
       ::loan_rate  = 2, "loan interest rate in percentage"
       ::loan_monthly = "","monthly payments"
-      ::loan_mode = INT(0), "mode Year or Month"
-      ::loan_payfirstmonth = UCHAR(0), "first month paiement?"
     }
 
     proc ::Todo() { }
@@ -197,7 +195,8 @@ if (!exists(CalculatorClass)) {
     #------------------------------------
     proc ::AddZero() { 
       ::current_text += "0"
-      ::UpdateCurrentText()
+      ::win.Update(-1) 
+      #::UpdateCurrentText()
     }
 
     #------------------------------------
@@ -227,11 +226,15 @@ if (!exists(CalculatorClass)) {
 
     #------------------------------------
     proc ::LoanApply() {
-      if (::loan_mode==0) { split=1.0; } else { split=12.0; }
-      num_estimations = (FLOAT) ::loan_years*split
+      num_estimations = (FLOAT) ::loan_years*12.0
       total = (FLOAT) ::loan_total
-      monthly = total*(1.0+::loan_rate/100.0/split*(num_estimations+(::loan_payfirstmonth==0))/2.0)/num_estimations
-      ::loan_monthly = "%1%" % (monthly*1000.0*split/12.0)
+
+      monthly_rate = ::loan_rate/100.0/12.0
+
+      tmp = exp(ln(1.0+monthly_rate)*num_estimations)
+
+      monthly = total*monthly_rate*tmp/(tmp-1)
+      ::loan_monthly = "%1%" % (monthly*1000.0)
       ::win.Update(-1)
     }
 
@@ -330,8 +333,6 @@ if (!exists(CalculatorClass)) {
           ::win.AddInt(  &::loan_total,"total",0,1000)
           ::win.AddInt(  &::loan_years,"duration",0,50)
           ::win.AddFloat(&::loan_rate,"interests", 0,10)
-          ::win.AddInt  (&::loan_mode,"mode",0,1)
-          ::win.AddBoolean  (&::loan_payfirstmonth,"first month")
           ::win.AddButton("Apply", ::LoanApply)
           ::win.AddString(&::loan_monthly,"monthly")
 

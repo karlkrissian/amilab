@@ -104,7 +104,6 @@ void ImageDraw_VolRenParam::CB_ResetVOLREN (void* cd)
   int* _volren_planes = di->Get_volren_planes();
   unsigned char* _volren_texture = di->Get_volren_texture();
   unsigned char* _volren_power2dim = di->Get_volren_power2dim();
-  InrImage* _volren_opacity = di->Get_volren_opacity();
   
   if (!(di->Call_CheckGLWindow()))
     return;
@@ -114,7 +113,7 @@ void ImageDraw_VolRenParam::CB_ResetVOLREN (void* cd)
                  di->GetMinIntensity(),
                  di->GetMaxIntensity(),
                  di,
-                 _volren_opacity);
+                 di->Get_volren_opacity());
   
   glwin->GetCanvas()->GetVolRen()->SetPower2Dim(*_volren_power2dim);
   glwin->GetCanvas()->GetVolRen()->SetTexture(*_volren_texture);
@@ -148,9 +147,10 @@ void ImageDraw_VolRenParam::CB_DessineVOLREN (void* cd)
 
   Viewer3D_ptr glwin = di->Lock_GLWindow();
   glwin->GetCanvas()->InitVolRen( _image.get(),
-                 di->GetMinIntensity(),
-                 di->GetMaxIntensity(),
-                 di);
+                                  di->GetMinIntensity(),
+                                  di->GetMaxIntensity(),
+                                  di,
+                                  di->Get_volren_opacity());
 
 
   glwin->GetCanvas()->GetVolRen()->SetPower2Dim(*_volren_power2dim);

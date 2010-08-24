@@ -368,7 +368,7 @@ public:
 
   void InitVolRen( InrImage* image,
            float Imin, float Imax, DessinImageBase* di,
-           InrImage* opacity=NULL);
+           InrImage::ptr opacity);
 
   VolumeRender* GetVolRen() { return _volren; }
 

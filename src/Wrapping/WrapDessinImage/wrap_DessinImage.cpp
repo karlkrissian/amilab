@@ -965,7 +965,7 @@ BasicVariable::ptr WrapClass_DessinImage::
     return BasicVariable::ptr();
   }
 
-  di->SetVolRenOpacity(image.get());
+  di->SetVolRenOpacity(image);
 
   return BasicVariable::ptr();
 }

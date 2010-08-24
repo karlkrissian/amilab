@@ -154,7 +154,6 @@ VolumeRender::VolumeRender(InrImage* im)
     _Tobject = NULL;
     _Ttexture = NULL;
     _di = NULL;
-    _opacity_image = NULL;
     _texture_interpolation = GL_NEAREST;
 
     // Check if using palette ...
@@ -438,11 +437,11 @@ void VolumeRender::Load3DTexture()
     // Convert data
     i=0;
     _im->InitBuffer();
-    if (_opacity_image!=NULL) _opacity_image->InitBuffer();
+    if (_opacity_image.get()) _opacity_image->InitBuffer();
     do {
         val = _im->ValeurBuffer();
         if (_di!=NULL) {
-            if (_opacity_image==NULL)
+            if (!_opacity_image.get())
                 intensity=_di->IntensiteBuffer(val);
             else
                 intensity = (unsigned char)_opacity_image->ValeurBuffer();
@@ -491,7 +490,7 @@ void VolumeRender::Load3DTexture()
         }
 
 
-        if (_opacity_image!=NULL)
+        if (_opacity_image.get())
             _opacity_image->IncBuffer();
     } while (_im->IncBuffer());
 

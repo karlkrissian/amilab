@@ -328,7 +328,7 @@ public:
   int* Get_volren_planes()                                { return &_volren_planes; }
   unsigned char* Get_volren_texture()                     { return &_volren_texture; }
   unsigned char* Get_volren_power2dim()                   { return &_volren_power2dim; }
-  InrImage* Get_volren_opacity()                          { return _volren_opacity; }
+  InrImage::ptr Get_volren_opacity()                      { return _volren_opacity; }
   
   //ImageDraw__GLMIPParam
   float* Get_GLMIP_seuilbas()                             { return &_GLMIP_seuilbas; }
@@ -731,7 +731,7 @@ protected:
   unsigned char _volren_texture;
   unsigned char _volren_power2dim;
 
-  InrImage* _volren_opacity;
+  InrImage::ptr _volren_opacity;
 
 /** @name     Param�res Sections3D
  */
@@ -1118,7 +1118,7 @@ public:
   ~DessinImage();
 
   //
-  void     SetVolRenOpacity(InrImage* volren_opacity)
+  void SetVolRenOpacity(InrImage::ptr volren_opacity)
   {
     _volren_opacity = volren_opacity;
   }

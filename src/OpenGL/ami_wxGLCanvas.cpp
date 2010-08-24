@@ -1049,21 +1049,20 @@ void ami_wxGLCanvas::CreeGLMIP( InrImage::ptr image,
 void ami_wxGLCanvas::InitVolRen(  InrImage* image,
           float Imin, float Imax,
           DessinImageBase* di,
-          InrImage* opacity)
+          InrImage::ptr opacity)
 //
 {
   if (_volren!=NULL)
     delete _volren;
 
   _volren = new VolumeRender(image);
-  if (di!=NULL)
-    _volren->SetDessinImage(di);
-    _volren->SetOpacityImage(opacity);
-    _volren->SetMinMax(Imin,Imax);
-    Si GB_debug AlorsFait PrintMatrices();
-    _volren->SetTextureTransform(&_Ttexture);
-//  _volren->SetTextureTransform(&_Tobject);
-    _volren->InitRender();
+  if (di!=NULL)  _volren->SetDessinImage(di);
+  _volren->SetOpacityImage(opacity);
+  _volren->SetMinMax(Imin,Imax);
+  Si GB_debug AlorsFait PrintMatrices();
+  _volren->SetTextureTransform(&_Ttexture);
+  //  _volren->SetTextureTransform(&_Tobject);
+  _volren->InitRender();
 
   // Limites de l'image
   _xmin = image->SpacePosX(0);

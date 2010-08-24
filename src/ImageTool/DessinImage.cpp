@@ -2786,7 +2786,6 @@ void DessinImage::InitParametres()
 {
   // not executing Paint()
   _in_paint          = 0;
-  _volren_opacity    = NULL;
   _imsurf_zscale     = 1.0;
   _sectionXY_visible =
   _sectionXZ_visible =
@@ -5459,7 +5458,7 @@ void DessinImage::CB_VOLREN( wxCommandEvent&)
                  min,
                  max,
                  di,
-                 this->_volren_opacity);
+                 this->Get_volren_opacity());
 
   if (init)
   {

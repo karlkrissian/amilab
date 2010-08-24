@@ -3221,18 +3221,6 @@ command:
           DessinImage::ptr draw;
           draw = DessinImage::ptr(varimd->Pointer());
           draw->AllContoursParam(  $5 , $7 );
-        }
-        | VAR_IMAGEDRAW T_POINT T_SetOpacityImage T_OP_PAR var_image T_CL_PAR
-        {
-        /**
-         Description:
-            Setting the opacity image for the volume rendering.
-            This image should have unsigned char values.
-         ** /
-          GET_VARSTACK_VALUE(InrImage,    im);
-          GET_VARSTACK_VALUE(DessinImage, imdraw);
-
-          imdraw->SetVolRenOpacity( im.get());
         }*/
         | var_image T_POINT TInit
         {

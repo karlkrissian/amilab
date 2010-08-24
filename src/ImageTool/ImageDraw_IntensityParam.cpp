@@ -1,4 +1,4 @@
-/*
+º/*
  *  ImageDraw_IntensityParam.cpp
  *  AMILab
  */
