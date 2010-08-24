@@ -315,6 +315,7 @@ public:
 
   void OnRightDown(     wxMouseEvent& event);
   void OnMotion(        wxMouseEvent& event);
+  void OnWheel(         wxMouseEvent& event);
 
   void OnAddControl(wxCommandEvent& event);
 

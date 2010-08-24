@@ -36,6 +36,7 @@ BEGIN_EVENT_TABLE(wxDrawingWindow, wxWindow)
   EVT_LEFT_DOWN(    wxDrawingWindow::OnLeftDown )
   EVT_LEFT_UP(      wxDrawingWindow::OnLeftUp )
   EVT_MOTION(       wxDrawingWindow::OnMotion )
+  EVT_MOUSEWHEEL(   wxDrawingWindow::OnWheel )
   EVT_MENU(         wxID_AddControl, wxDrawingWindow::OnAddControl)
 END_EVENT_TABLE();
 
@@ -625,6 +626,34 @@ void wxDrawingWindow::OnMotion(wxMouseEvent& event)
   Window2World(_mouse_x,_mouse_y,x,y);
   CLASS_MESSAGE(boost::format("world coord %1% %2%")%x%y);
 */
+}
+
+//-------------------------------------------------
+void wxDrawingWindow::OnWheel(wxMouseEvent& event)
+{
+  wxClientDC dc(this);
+  int wr = event.GetWheelRotation();
+
+  _mouse_x = (int)event.GetX();
+  _mouse_y = (int)event.GetY();
+  double x,y;
+  Window2World(_mouse_x,_mouse_y,x,y);
+
+  // now apply a zoom centered on the current position in X direction
+  double xmin = _xmin;
+  double xmax = _xmax;
+
+  double step  = ((double)wr)/(5.0*(double)event.GetWheelDelta());
+  if (step > 7 ) step = 7;
+  if (step < -7) step = -7;
+  double zoom_factor  = exp( step*log2f(2));
+
+  _xmin = x - (x-_xmin)/zoom_factor;
+  _xmax = x + (_xmax - x)/zoom_factor;
+
+  Refresh(false);
+  event.Skip();
+
 }
 
 //-------------------------------------------------

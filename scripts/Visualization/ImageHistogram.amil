@@ -22,6 +22,7 @@ if (!exists(ImageHistoClass)) {
       ::minval = 0, "minimal value of the histogram"
       ::maxval = 255, "maximal value of the histogram"
       ::step = 1, "histogram step"
+      ::mode = INT(0), "0: isocontours, 1: transfer function, 2: min-max from black to white"
       ::InitColours()
       ::Gui()
     }
@@ -53,6 +54,65 @@ if (!exists(ImageHistoClass)) {
         if (exists(::input_draw)) {
           ::input_draw.Paint()
         }
+      }
+    }
+
+    #---------------------------
+    proc ::DrawTransferFunction() \
+    {
+      nc = ::dw.GetNumberOfCtrlPoints()
+
+      if (exists(::input)) {
+        FuncCurve = Image(FLOAT,nc,1,1,2)
+        hmax = max(::h[0])
+        for k=0 to nc-1 {
+          xpos = ::dw.GetCtrlPointX(k)
+          ypos = ::dw.GetCtrlPointY(k)
+          FuncCurve.setpos(k,0,0)
+          FuncCurve.set(0,xpos)
+          FuncCurve.set(1,ypos)
+        }
+        ::dw->SetCurve(FuncCurve,::input.vdim)
+        ::dw->SetCurveProperties(::input.vdim,"#009900")
+  
+        ::dw._Paint()
+        ::dw.Refresh()
+      }
+    }
+
+    #---------------------------
+    proc ::DrawMinMax() \
+    {
+      nc = ::dw.GetNumberOfCtrlPoints()
+
+      if (exists(::input))&&(nc>=2) {
+        FuncCurve = Image(FLOAT,2,1,1,2)
+        hmax = max(::h[0])
+        for k=0 to 1 {
+          xpos = ::dw.GetCtrlPointX(k)
+          FuncCurve.setpos(k,0,0)
+          FuncCurve.set(0,xpos)
+          FuncCurve.set(1,hmax/2)
+        }
+        ::dw->SetCurve(FuncCurve,::input.vdim)
+        ::dw->SetCurveProperties(::input.vdim,"#009900")
+  
+        ::dw._Paint()
+        ::dw.Refresh()
+      }
+    }
+
+    #---------------------------
+    proc ::OnCtrlPoint() \
+    {
+      if (::mode==0) {
+        ::DrawThreshold();
+      }
+      if (::mode==1) {
+        ::DrawTransferFunction();
+      }
+      if (::mode==2) {
+        ::DrawMinMax();
       }
     }
 
@@ -164,6 +224,13 @@ if (!exists(ImageHistoClass)) {
             ::AddBitmapButton(&::win, &::icons._Show,   32, "ShowImage")
             ::win.SetPositionProp(-1,0)
           ::win.EndHorizontal()
+
+          ::mode_id = ::win.AddEnum( &::mode,"mode")
+            ::win.AddEnumChoice(::mode_id,"IsoContours")
+            ::win.AddEnumChoice(::mode_id,"Transfer Function")
+            ::win.AddEnumChoice(::mode_id,"Min-Max")
+          #::win.SetCallback( &::EqModeEvent)
+
           # add Drawing Window
           d = ::win.CurrentParent()
           ::dw = import->wxDrawingWindow(&d)
@@ -179,7 +246,7 @@ if (!exists(ImageHistoClass)) {
       ::win.Update(-1)
       ::win.Display()
 
-      ::dw.SetCtrlPointCallback(&::DrawThreshold)
+      ::dw.SetCtrlPointCallback(&::OnCtrlPoint)
    }
 
     ::Init()
