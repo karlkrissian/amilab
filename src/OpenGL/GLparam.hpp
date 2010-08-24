@@ -102,7 +102,7 @@
 #include "couleur.hpp"
 #include "DefineClass.hpp"
 #include "inrimage.hpp"
-class ClasseCouleur;
+//class ClasseCouleur;
 
 #define GL_MODE_POINT       0
 #define GL_MODE_LINE        1

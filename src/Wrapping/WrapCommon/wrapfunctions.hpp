@@ -14,7 +14,7 @@
 #define _WRAPFUNCTIONS_HPP_
 
 
-#include <wx/msgdlg.h>
+#include "message_dialog.h"
 
 class InrImage;
 //#include "inrimage.hpp"
@@ -149,10 +149,7 @@ inline void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
   mess = (boost::format("\n %s ( listofparameters )\n\n ")% functionname).str();\
   mess = mess + (boost::format("Description:\n %s \n") % description).str(); \
   mess = mess + (boost::format("Parameters:\n  %s \n") % parameters).str(); \
-  wxMessageDialog* msg = new wxMessageDialog(NULL,wxString::FromAscii(mess.c_str()),\
-      wxString::FromAscii("Info"),wxOK | wxICON_INFORMATION );\
-  msg->ShowModal();\
-  msg->Destroy();\
+  MessageDialog(mess);\
   return BasicVariable::ptr(); }
 
 /*! \def HelpAndReturn
@@ -163,10 +160,7 @@ inline void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
   mess = (boost::format("\n %s ( listofparameters )\n\n ")% functionname).str();\
   mess = mess + (boost::format("Description:\n %s \n") % description).str(); \
   mess = mess + (boost::format("Parameters:\n  %s \n") % parameters).str(); \
-  wxMessageDialog* msg = new wxMessageDialog(NULL,wxString::FromAscii(mess.c_str()),\
-      wxString::FromAscii("Info"),wxOK | wxICON_INFORMATION  );\
-  msg->ShowModal();\
-  msg->Destroy();\
+  MessageDialog(mess);\
   return; } \
 
 
@@ -180,10 +174,7 @@ inline void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
   mess = (boost::format("\n %s ( listofparameters )\n\n ")% functionname).str();\
   mess = mess + (boost::format("Description:\n %s \n") % description).str(); \
   mess = mess + (boost::format("Parameters:\n  %s \n") % parameters).str(); \
-  wxMessageDialog* msg = new wxMessageDialog(NULL,wxString::FromAscii(mess.c_str()),\
-      wxString::FromAscii("Info"),wxOK | wxICON_INFORMATION  );\
-  msg->ShowModal();\
-  msg->Destroy();\
+  MessageDialog(mess); \
   return NULL; } \
 
 

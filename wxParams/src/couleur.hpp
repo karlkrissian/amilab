@@ -34,6 +34,7 @@
 #ifndef _COULEUR_HPP
 #define _COULEUR_HPP
 
+/*
 //--------------------------------------------------
 // includes for wxWidgets
 #include "wx/wxprec.h"
@@ -43,6 +44,9 @@
 #ifndef WX_PRECOMP
 #include "wx/wx.h"
 #endif
+*/
+
+#include "wx/colour.h"
 
 //#include "style.hpp"
 //#include "palette.hpp"

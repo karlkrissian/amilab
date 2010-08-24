@@ -71,15 +71,16 @@ public:
     rc_help = h;
   }
 
-  void OnRightDown(wxMouseEvent& )
+  void OnRightDown(wxMouseEvent& event)
   {
     if (rc_callback!=NULL) {
       void (*pf)( void*) = (void (*)(void*)) this->rc_callback;
       pf( this->rc_calldata);
     }
+    event.Skip();
   }
 
-  void OnMiddleDown(wxMouseEvent& )
+  void OnMiddleDown(wxMouseEvent& mouseevent)
   {
     this->Select((this->GetSelection()+1) % this->GetCount() );
     // through selection event
@@ -88,6 +89,7 @@ public:
     event.SetEventObject( this );
     // Send it
     GetEventHandler()->ProcessEvent( event );
+    mouseevent.Skip();
 
   }
 

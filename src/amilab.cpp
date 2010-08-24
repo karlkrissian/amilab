@@ -52,6 +52,8 @@
 #include <wx/stdpaths.h>
 #include "wrap_imports.h"
 
+#include <wx/config.h>
+
 Pile<NomMethode*> GB_pile_nom_methode((NomMethode*)NULL);
 unsigned char GB_AfficheWarning = false;
 unsigned char GB_AfficheErreur  = false;
@@ -68,6 +70,7 @@ VarContexts   Vars;
 
 MainFrame*    GB_main_wxFrame;
 wxApp*        GB_wxApp;
+wxConfig*     GB_Config;
 
 wxString        GB_help_dir;
 wxString        GB_scripts_dir;
@@ -196,9 +199,15 @@ class MyApp: public wxApp
     }
   }
 
+
+  wxConfig* GetConfig() { return config; }
+
 private:
   //MainFrame::ptr mainframe;
   MainFrame* mainframe;
+
+  // Global configuration file
+  wxConfig * config;
 
 private:
   DECLARE_EVENT_TABLE();
@@ -289,6 +298,14 @@ bool CheckEnvDir(const wxString& envname, wxString& res, const wxString& lookfor
 //-----------------------------------------
 bool MyApp::OnInit()
 {
+
+  config = new wxConfig(wxT("AMILab"));
+/*
+                        wxEmptyString,
+                        wxEmptyString,
+                        wxCONFIG_USE_SUBDIR);
+*/
+  GB_Config = config;
 
 #ifdef __APPLE__
   ProcessSerialNumber PSN;
@@ -493,6 +510,8 @@ bool MyApp::OnInit()
 
 int MyApp::OnExit()
 {
+ // mainframe->Close();
+  delete config;
   Vars.EmptyVariables();
   cout << "MyApp::OnExit()" << endl;
   return 0;

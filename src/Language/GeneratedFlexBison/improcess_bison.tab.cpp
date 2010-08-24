@@ -5061,13 +5061,18 @@ namespace yyip
         if (!res) YYABORT;
 /* deprecated
 */
-        else
+        else {
+          // add to image history
+          if (driver.InConsole())
+            GB_main_wxFrame->GetImagesHistory()
+                           ->AddFileToHistory(wxString::FromAscii(st.get()));
           ADD_VARSTACK(InrImage,res);
+        }
       ;}
     break;
 
   case 284:
-#line 6272 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 6277 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
        /**
        Parameters:
@@ -5090,7 +5095,7 @@ namespace yyip
     break;
 
   case 285:
-#line 6292 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 6297 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       /**
       Parameters:
@@ -5112,7 +5117,7 @@ namespace yyip
     break;
 
   case 286:
-#line 6327 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 6332 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
           int res;
           string name;
@@ -5138,14 +5143,17 @@ namespace yyip
           driver.res_print("\n");
           inc_cmd = str(format(" \"%1%\" // from browser ") % newname.mb_str());
 
-          if (driver.InConsole())
+          if (driver.InConsole()) {
             GB_main_wxFrame->GetConsole()
                             ->IncCommand(wxString::FromAscii(inc_cmd.c_str()));
+            GB_main_wxFrame->GetImagesHistory()
+                           ->AddFileToHistory(newname);
+          }
       ;}
     break;
 
   case 287:
-#line 6358 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 6366 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         //printf(" ********** %d %f %f %f\n", $3, $5, $7, $9);
         InrImage::ptr im (new InrImage( (int) (yysemantic_stack_[(10) - (5)].adouble), (int) (yysemantic_stack_[(10) - (7)].adouble), (int) (yysemantic_stack_[(10) - (9)].adouble), (WORDTYPE) (yysemantic_stack_[(10) - (3)].aint)));
@@ -5154,7 +5162,7 @@ namespace yyip
     break;
 
   case 288:
-#line 6365 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 6373 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       /**
     Parameters:
@@ -5174,7 +5182,7 @@ namespace yyip
     break;
 
   case 289:
-#line 6383 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 6391 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -5201,7 +5209,7 @@ namespace yyip
     break;
 
   case 290:
-#line 6474 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 6482 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         /**
              Description:
@@ -5269,7 +5277,7 @@ namespace yyip
     break;
 
   case 291:
-#line 6540 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 6548 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage,im);
       InrImage* res =Func_localmean( im.get(), (int) (yysemantic_stack_[(6) - (5)].adouble));
@@ -5278,7 +5286,7 @@ namespace yyip
     break;
 
   case 292:
-#line 6547 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 6555 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage,im);
       InrImage* res =Func_localmean2( im.get(), (int) (yysemantic_stack_[(6) - (5)].adouble));
@@ -5287,7 +5295,7 @@ namespace yyip
     break;
 
   case 293:
-#line 6554 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 6562 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, mean);
       GET_VARSTACK_VALUE(InrImage, im);
@@ -5297,7 +5305,7 @@ namespace yyip
     break;
 
   case 294:
-#line 6562 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 6570 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, mean);
       GET_VARSTACK_VALUE(InrImage, im);
@@ -5307,7 +5315,7 @@ namespace yyip
     break;
 
   case 295:
-#line 6570 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 6578 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
 
       GET_VARSTACK_VALUE(InrImage, im);
@@ -5325,7 +5333,7 @@ namespace yyip
     break;
 
   case 296:
-#line 6586 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 6594 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
 
       GET_VARSTACK_VALUE(InrImage, im);
@@ -5345,7 +5353,7 @@ namespace yyip
     break;
 
   case 297:
-#line 6604 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 6612 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
 
       Variable<InrImage>::ptr  varim2(driver.var_stack.GetLastVar<InrImage>());
@@ -5365,7 +5373,7 @@ namespace yyip
     break;
 
   case 298:
-#line 6622 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 6630 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
 
       GET_VARSTACK_VALUE(InrImage, im);
@@ -5384,7 +5392,7 @@ namespace yyip
     break;
 
   case 299:
-#line 6639 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 6647 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       Variable<InrImage>::ptr  varim3(driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim2(driver.var_stack.GetLastVar<InrImage>());
@@ -5403,7 +5411,7 @@ namespace yyip
     break;
 
   case 300:
-#line 6657 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 6665 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       Variable<InrImage>::ptr  varim3(driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim2(driver.var_stack.GetLastVar<InrImage>());
@@ -5422,7 +5430,7 @@ namespace yyip
     break;
 
   case 301:
-#line 6677 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 6685 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       /**
         Parameters
@@ -5458,7 +5466,7 @@ namespace yyip
     break;
 
   case 302:
-#line 6710 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 6718 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         float var           = (yysemantic_stack_[(10) - (7)].adouble);
         float lowthreshold  = (yysemantic_stack_[(10) - (9)].adouble);
@@ -5473,7 +5481,7 @@ namespace yyip
     break;
 
   case 303:
-#line 6723 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 6731 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         GET_VARSTACK_VALUE(InrImage, im);
         InrImage::ptr res ( Func_vtkDist( im.get()));
@@ -5486,7 +5494,7 @@ namespace yyip
     break;
 
   case 304:
-#line 6734 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 6742 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         GET_VARSTACK_VALUE(InrImage, im);
         InrImage::ptr res (Func_vtkMedianFilter3D(
@@ -5501,7 +5509,7 @@ namespace yyip
     break;
 
   case 305:
-#line 6747 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 6755 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         GET_VARSTACK_VALUE(InrImage, im);
         driver.err_print("The function AndreDist() has been removed for licence issues! \n");
@@ -5527,7 +5535,7 @@ namespace yyip
     break;
 
   case 306:
-#line 6771 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 6779 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, input);
         InrImage::ptr res (Func_2DFlux(input.get(),(yysemantic_stack_[(6) - (5)].adouble)));
@@ -5540,7 +5548,7 @@ namespace yyip
     break;
 
   case 307:
-#line 6782 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 6790 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       InrImage::ptr res ( Func_OutFlux( im.get()));
@@ -5553,7 +5561,7 @@ namespace yyip
     break;
 
   case 308:
-#line 6793 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 6801 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
     InrImage::ptr res ( Func_OutFluxScalar( im.get()));
@@ -5565,7 +5573,7 @@ namespace yyip
     break;
 
   case 309:
-#line 6803 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 6811 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
     InrImage::ptr res ( Func_OrientationRatio2D( im.get()));
@@ -5577,7 +5585,7 @@ namespace yyip
     break;
 
   case 310:
-#line 6813 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 6821 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       /**
         Parameters:
@@ -5612,7 +5620,7 @@ namespace yyip
     break;
 
   case 311:
-#line 6846 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 6854 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
     InrImage::ptr res (Func_SimplePoints( im.get() ));
@@ -5625,7 +5633,7 @@ namespace yyip
     break;
 
   case 312:
-#line 6858 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 6866 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       Variable<InrImage>::ptr  varim4(driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim3(driver.var_stack.GetLastVar<InrImage>());
@@ -5647,7 +5655,7 @@ namespace yyip
     break;
 
   case 313:
-#line 6879 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 6887 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       Variable<InrImage>::ptr  varim4(driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim3(driver.var_stack.GetLastVar<InrImage>());
@@ -5668,7 +5676,7 @@ namespace yyip
     break;
 
   case 314:
-#line 6899 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 6907 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -5710,7 +5718,7 @@ namespace yyip
     break;
 
   case 315:
-#line 6940 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 6948 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       /**
       Parameters:
@@ -5758,7 +5766,7 @@ namespace yyip
     break;
 
   case 316:
-#line 6986 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 6994 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
 
       Variable<InrImage>::ptr  varim4(driver.var_stack.GetLastVar<InrImage>());
@@ -5780,7 +5788,7 @@ namespace yyip
     break;
 
   case 317:
-#line 7006 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7014 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       Variable<InrImage>::ptr  varim4(driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim3(driver.var_stack.GetLastVar<InrImage>());
@@ -5803,7 +5811,7 @@ namespace yyip
     break;
 
   case 318:
-#line 7027 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7035 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
     InrImage::ptr res( Func_NormalSmoothField( im.get() ));
@@ -5816,7 +5824,7 @@ namespace yyip
     break;
 
   case 319:
-#line 7038 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7046 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       Variable<InrImage>::ptr  varim2(driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim1(driver.var_stack.GetLastVar<InrImage>());
@@ -5832,7 +5840,7 @@ namespace yyip
     break;
 
   case 320:
-#line 7052 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7060 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       Variable<InrImage>::ptr  varim2(driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim1(driver.var_stack.GetLastVar<InrImage>());
@@ -5848,7 +5856,7 @@ namespace yyip
     break;
 
   case 321:
-#line 7068 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7076 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, input);
   
@@ -5861,7 +5869,7 @@ namespace yyip
     break;
 
   case 322:
-#line 7080 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7088 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
     InrImage::ptr res (Func_DiscNormGrad( im.get()));
@@ -5873,7 +5881,7 @@ namespace yyip
     break;
 
   case 323:
-#line 7091 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7099 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
     InrImage::ptr res (Func_DiscMeanCurvature( im.get()));
@@ -5885,7 +5893,7 @@ namespace yyip
     break;
 
   case 324:
-#line 7103 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7111 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
     InrImage::ptr res (Func_Gradient( im.get(),
@@ -5898,7 +5906,7 @@ namespace yyip
     break;
 
   case 325:
-#line 7114 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7122 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
         Parameters:
@@ -5918,7 +5926,7 @@ namespace yyip
     break;
 
   case 326:
-#line 7134 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7142 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         GET_VARSTACK_VALUE(InrImage,im);
         InrImage::ptr res (Func_SecDerGrad( im.get(), (yysemantic_stack_[(6) - (5)].adouble)));
@@ -5930,7 +5938,7 @@ namespace yyip
     break;
 
   case 327:
-#line 7146 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7154 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         GET_VARSTACK_VALUE(InrImage,im);
         InrImage::ptr res ( Func_SecDerGrad2( im.get(),
@@ -5943,7 +5951,7 @@ namespace yyip
     break;
 
   case 328:
-#line 7156 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7164 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         GET_VARSTACK_VALUE(InrImage,im);
         InrImage::ptr res ( Func_AutoCrop(im.get(),(int)(yysemantic_stack_[(6) - (5)].adouble)));
@@ -5952,7 +5960,7 @@ namespace yyip
     break;
 
   case 329:
-#line 7211 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7219 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       /**
       Parameters
@@ -5992,7 +6000,7 @@ namespace yyip
     break;
 
   case 330:
-#line 7249 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7257 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
     InrImage::ptr res ( Func_EDP_dilate( im.get(),
@@ -6005,7 +6013,7 @@ namespace yyip
     break;
 
   case 331:
-#line 7260 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7268 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
     InrImage::ptr res ( Func_EDP_dilate( im.get(), (yysemantic_stack_[(8) - (5)].adouble),  (yysemantic_stack_[(8) - (7)].adouble)));
@@ -6017,7 +6025,7 @@ namespace yyip
     break;
 
   case 332:
-#line 7270 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7278 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
     float Imin = (yysemantic_stack_[(12) - (9)].adouble);
@@ -6031,7 +6039,7 @@ namespace yyip
     break;
 
   case 333:
-#line 7282 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7290 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
     InrImage::ptr res ( Func_EDP_erode( im.get(),
@@ -6044,7 +6052,7 @@ namespace yyip
     break;
 
   case 334:
-#line 7293 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7301 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
     InrImage::ptr res ( Func_EDP_erode( im.get(), (yysemantic_stack_[(8) - (5)].adouble),  (yysemantic_stack_[(8) - (7)].adouble)));
@@ -6056,7 +6064,7 @@ namespace yyip
     break;
 
   case 335:
-#line 7303 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7311 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -6083,7 +6091,7 @@ namespace yyip
     break;
 
   case 336:
-#line 7330 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7338 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -6106,7 +6114,7 @@ namespace yyip
     break;
 
   case 337:
-#line 7353 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7361 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -6134,7 +6142,7 @@ namespace yyip
     break;
 
   case 338:
-#line 7381 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7389 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         GET_VARSTACK_VALUE(InrImage,im);
     InrImage::ptr res ( Func_EDP_close( im.get(),
@@ -6148,7 +6156,7 @@ namespace yyip
     break;
 
   case 339:
-#line 7394 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7402 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     float Imin = (yysemantic_stack_[(12) - (9)].adouble);
     float Imax = (yysemantic_stack_[(12) - (11)].adouble);
@@ -6165,7 +6173,7 @@ namespace yyip
     break;
 
   case 340:
-#line 7528 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7536 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       //
       // param 1: input image
@@ -6200,7 +6208,7 @@ namespace yyip
     break;
 
   case 341:
-#line 7563 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7571 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       /**
         Parameters:
@@ -6233,7 +6241,7 @@ namespace yyip
     break;
 
   case 342:
-#line 7596 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7604 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       int        nb_iter,i;
       float       error;
@@ -6261,7 +6269,7 @@ namespace yyip
     break;
 
   case 343:
-#line 7624 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7632 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       InrImage::ptr res ( Func_InitWeickert( im.get(),
@@ -6275,7 +6283,7 @@ namespace yyip
     break;
 
   case 344:
-#line 7638 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7646 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       InrImage::ptr res ( Func_InitWeickertCoherence( im.get(),
@@ -6289,7 +6297,7 @@ namespace yyip
     break;
 
   case 345:
-#line 7650 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7658 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       InrImage::ptr res ( Func_SRAD_qcoeff( im.get()));
@@ -6301,7 +6309,7 @@ namespace yyip
     break;
 
   case 346:
-#line 7662 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7670 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       float dt = (float) (yysemantic_stack_[(8) - (5)].adouble);
@@ -6320,7 +6328,7 @@ namespace yyip
     break;
 
   case 347:
-#line 7680 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7688 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
@@ -6340,7 +6348,7 @@ namespace yyip
     break;
 
   case 348:
-#line 7699 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7707 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
@@ -6361,7 +6369,7 @@ namespace yyip
     break;
 
   case 349:
-#line 7719 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7727 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
@@ -6383,7 +6391,7 @@ namespace yyip
     break;
 
   case 350:
-#line 7741 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7749 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
@@ -6405,7 +6413,7 @@ namespace yyip
     break;
 
   case 351:
-#line 7761 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7769 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
@@ -6426,7 +6434,7 @@ namespace yyip
     break;
 
   case 352:
-#line 7780 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7788 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
@@ -6447,7 +6455,7 @@ namespace yyip
     break;
 
   case 353:
-#line 7800 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7808 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_OBJECT2(ImageExtent, ImageExtent<float>, extent)
       GET_VARSTACK_VALUE(InrImage, im);
@@ -6468,7 +6476,7 @@ namespace yyip
     break;
 
   case 354:
-#line 7820 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7828 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
       Parameters:
@@ -6509,7 +6517,7 @@ namespace yyip
     break;
 
   case 355:
-#line 7861 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7869 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, initim);
       float dt = (float) (yysemantic_stack_[(12) - (5)].adouble);
@@ -6531,7 +6539,7 @@ namespace yyip
     break;
 
   case 356:
-#line 7883 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7891 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       /**
         Description:
@@ -6560,7 +6568,7 @@ namespace yyip
     break;
 
   case 357:
-#line 7911 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7919 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
       Parameters:
@@ -6584,7 +6592,7 @@ namespace yyip
     break;
 
   case 358:
-#line 7932 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7940 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -6624,7 +6632,7 @@ namespace yyip
     break;
 
   case 359:
-#line 7969 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 7977 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -6664,7 +6672,7 @@ namespace yyip
     break;
 
   case 360:
-#line 8006 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8014 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -6704,7 +6712,7 @@ namespace yyip
     break;
 
   case 361:
-#line 8043 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8051 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -6740,7 +6748,7 @@ namespace yyip
     break;
 
   case 362:
-#line 8077 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8085 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           ADD_VARSTACK(InrImage,InrImage::ptr(( varsurfd->Pointer())->GetCanvas()->GetGLImage()));
@@ -6748,7 +6756,7 @@ namespace yyip
     break;
 
   case 363:
-#line 8083 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8091 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           driver.yyiperror("Not available in new wxwidgets version of the 3D viewer ! ");
@@ -6760,7 +6768,7 @@ namespace yyip
     break;
 
   case 364:
-#line 8100 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8108 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       InrImage::ptr res ( Func_ThresholdCrossing( im.get(), (yysemantic_stack_[(6) - (5)].adouble)));
@@ -6769,7 +6777,7 @@ namespace yyip
     break;
 
   case 365:
-#line 8107 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8115 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       InrImage::ptr res ( Func_IsocontourPoints( im.get(), (yysemantic_stack_[(6) - (5)].adouble)));
@@ -6778,7 +6786,7 @@ namespace yyip
     break;
 
   case 366:
-#line 8114 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8122 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       InrImage::ptr res ( Func_IsosurfDist( im.get(), (yysemantic_stack_[(6) - (5)].adouble)));
@@ -6788,7 +6796,7 @@ namespace yyip
     break;
 
   case 367:
-#line 8122 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8130 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       InrImage::ptr res ( Func_vtkIsoContourDist( im.get(), (yysemantic_stack_[(6) - (5)].adouble)));
@@ -6797,7 +6805,7 @@ namespace yyip
     break;
 
   case 368:
-#line 8129 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8137 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -6821,7 +6829,7 @@ namespace yyip
     break;
 
   case 369:
-#line 8153 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8161 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -6849,7 +6857,7 @@ namespace yyip
     break;
 
   case 370:
-#line 8180 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8188 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -6874,7 +6882,7 @@ namespace yyip
     break;
 
   case 371:
-#line 8204 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8212 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -6902,7 +6910,7 @@ namespace yyip
     break;
 
   case 372:
-#line 8233 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8241 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -6933,7 +6941,7 @@ namespace yyip
     break;
 
   case 373:
-#line 8262 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8270 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im2);
       GET_VARSTACK_VALUE(InrImage, im1);
@@ -6944,7 +6952,7 @@ namespace yyip
     break;
 
   case 374:
-#line 8271 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8279 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         GET_VARSTACK_VALUE(InrImage,mask);
         Variable<InrImage>::ptr  varim2(driver.var_stack.GetLastVar<InrImage>());
@@ -6959,7 +6967,7 @@ namespace yyip
     break;
 
   case 375:
-#line 8284 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8292 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
         InrImage::ptr res ( Func_Chamfer(im.get(), (yysemantic_stack_[(10) - (5)].adouble), (yysemantic_stack_[(10) - (7)].adouble), (yysemantic_stack_[(10) - (9)].adouble)));
@@ -6968,7 +6976,7 @@ namespace yyip
     break;
 
   case 376:
-#line 8291 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8299 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
           InrImage::ptr res ( Func_Chamfer2(im.get(), (yysemantic_stack_[(10) - (5)].adouble), (yysemantic_stack_[(10) - (7)].adouble), (yysemantic_stack_[(10) - (9)].adouble)));
@@ -6978,7 +6986,7 @@ namespace yyip
     break;
 
   case 377:
-#line 8299 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8307 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
 
         float a = (yysemantic_stack_[(12) - (5)].adouble);
@@ -6994,13 +7002,13 @@ namespace yyip
     break;
 
   case 378:
-#line 8313 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8321 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         float dmax = (yysemantic_stack_[(6) - (5)].adouble);
 
       GET_VARSTACK_VALUE(InrImage, im);
         InrImage::ptr  res ( Func_Chamfer2(im.get(),
-                  0.92644, 1.34065, 1.65849,
+                  0.92644f, 1.34065f, 1.65849f,
                   dmax));
         ADD_VARSTACK_PTR(InrImage,res);
 
@@ -7008,13 +7016,13 @@ namespace yyip
     break;
 
   case 379:
-#line 8325 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8333 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         float dmax = (yysemantic_stack_[(6) - (5)].adouble);
 
       GET_VARSTACK_VALUE(InrImage, im);
         InrImage::ptr res ( Func_Chamfer2Signed(im.get(),
-                    0.92644, 1.34065, 1.65849,
+                    0.92644f, 1.34065f, 1.65849f,
                     dmax));
         ADD_VARSTACK_PTR(InrImage,res);
 
@@ -7022,7 +7030,7 @@ namespace yyip
     break;
 
   case 380:
-#line 8337 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8345 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         float dmax = (yysemantic_stack_[(6) - (5)].adouble);
 
@@ -7034,7 +7042,7 @@ namespace yyip
     break;
 
   case 381:
-#line 8347 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8355 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         float dmax = (yysemantic_stack_[(6) - (5)].adouble);
 
@@ -7047,7 +7055,7 @@ namespace yyip
     break;
 
   case 382:
-#line 8358 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8366 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         float dmax = (yysemantic_stack_[(6) - (5)].adouble);
 
@@ -7059,7 +7067,7 @@ namespace yyip
     break;
 
   case 383:
-#line 8368 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8376 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         float dmax = (yysemantic_stack_[(6) - (5)].adouble);
 
@@ -7071,7 +7079,7 @@ namespace yyip
     break;
 
   case 384:
-#line 8378 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8386 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         float dmax = (yysemantic_stack_[(6) - (5)].adouble);
 
@@ -7084,7 +7092,7 @@ namespace yyip
     break;
 
   case 385:
-#line 8389 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8397 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         float dmax = (yysemantic_stack_[(6) - (5)].adouble);
 
@@ -7096,7 +7104,7 @@ namespace yyip
     break;
 
   case 386:
-#line 8399 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8407 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         float dmin = (yysemantic_stack_[(8) - (5)].adouble);
         float dmax = (yysemantic_stack_[(8) - (7)].adouble);
@@ -7109,7 +7117,7 @@ namespace yyip
     break;
 
   case 387:
-#line 8410 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8418 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -7138,7 +7146,7 @@ namespace yyip
     break;
 
   case 388:
-#line 8437 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8445 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -7169,7 +7177,7 @@ namespace yyip
     break;
 
   case 389:
-#line 8485 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8493 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
      /**
        Parameters:
@@ -7306,7 +7314,7 @@ namespace yyip
     break;
 
   case 390:
-#line 8619 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8627 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
        Parameters:
@@ -7330,7 +7338,7 @@ namespace yyip
     break;
 
   case 391:
-#line 8640 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8648 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage,im);
       float vmin  = (yysemantic_stack_[(10) - (5)].adouble);
@@ -7373,7 +7381,7 @@ namespace yyip
     break;
 
   case 392:
-#line 8680 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8688 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage,im);
       InrImage::ptr res;
@@ -7387,7 +7395,7 @@ namespace yyip
     break;
 
   case 393:
-#line 8691 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8699 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       int dim = (int) (yysemantic_stack_[(6) - (5)].adouble);
 
@@ -7398,7 +7406,7 @@ namespace yyip
     break;
 
   case 394:
-#line 8699 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8707 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         int axis=(int) (yysemantic_stack_[(6) - (5)].adouble);
 
@@ -7409,7 +7417,7 @@ namespace yyip
     break;
 
   case 395:
-#line 8707 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8715 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -7433,7 +7441,7 @@ namespace yyip
     break;
 
   case 396:
-#line 8728 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8736 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       Variable<InrImage>::ptr  varim2(driver.var_stack.GetLastVar<InrImage>());
       Variable<InrImage>::ptr  varim1(driver.var_stack.GetLastVar<InrImage>());
@@ -7462,7 +7470,7 @@ namespace yyip
     break;
 
   case 397:
-#line 8754 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8762 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       int   order = (int) (yysemantic_stack_[(8) - (5)].adouble);
       float resolution = (yysemantic_stack_[(8) - (7)].adouble);
@@ -7476,7 +7484,7 @@ namespace yyip
     break;
 
   case 398:
-#line 8765 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8773 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage,im);
 
@@ -7486,7 +7494,7 @@ namespace yyip
     break;
 
   case 399:
-#line 8772 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8780 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage,im);
       InrImage::ptr res ( AMIFluid::Func_Altitude2Position(im.get()));
@@ -7495,7 +7503,7 @@ namespace yyip
     break;
 
   case 400:
-#line 8778 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8786 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage,im);
       InrImage::ptr res ( AMIFluid::Func_GeoCoordinates(im.get(),(int)(yysemantic_stack_[(6) - (5)].adouble)));
@@ -7504,7 +7512,7 @@ namespace yyip
     break;
 
   case 401:
-#line 8784 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8792 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage,im);
       InrImage* res;
@@ -7514,7 +7522,7 @@ namespace yyip
     break;
 
   case 402:
-#line 8791 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8799 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
 
@@ -7542,7 +7550,7 @@ namespace yyip
     break;
 
   case 403:
-#line 8816 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8824 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
 
@@ -7563,7 +7571,7 @@ namespace yyip
     break;
 
   case 404:
-#line 8834 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8842 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       boost::shared_array<char> filename( (yysemantic_stack_[(4) - (3)].astring));
       InrImage::ptr res( AMIFluid::Func_ReadFlow(filename.get()));
@@ -7572,7 +7580,7 @@ namespace yyip
     break;
 
   case 405:
-#line 8841 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8849 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
 
@@ -7607,7 +7615,7 @@ namespace yyip
     break;
 
   case 406:
-#line 8874 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8882 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -7628,7 +7636,7 @@ namespace yyip
     break;
 
   case 407:
-#line 8893 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8901 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -7647,7 +7655,7 @@ namespace yyip
     break;
 
   case 409:
-#line 8942 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8950 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
     Description: adds a reference to the variable in the stack
@@ -7658,7 +7666,7 @@ namespace yyip
     break;
 
   case 410:
-#line 8951 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8959 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
       Description: 
@@ -7672,7 +7680,7 @@ namespace yyip
     break;
 
   case 419:
-#line 8981 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 8989 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       /**
         Description:
@@ -7695,7 +7703,7 @@ namespace yyip
     break;
 
   case 420:
-#line 9002 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9010 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       /** 
       Description:
@@ -7759,7 +7767,7 @@ namespace yyip
     break;
 
   case 424:
-#line 9151 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9159 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
           // todo ... 
           // 1. check if identifier belongs to the object
@@ -7790,7 +7798,7 @@ namespace yyip
     break;
 
   case 425:
-#line 9180 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9188 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         /**
           Description: 
@@ -7870,7 +7878,7 @@ namespace yyip
     break;
 
   case 426:
-#line 9257 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9265 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
       Description: Logical negation (NOT) operator.
@@ -7881,7 +7889,7 @@ namespace yyip
     break;
 
   case 427:
-#line 9265 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9273 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
       Description: Postfix increment operator.
@@ -7892,7 +7900,7 @@ namespace yyip
     break;
 
   case 428:
-#line 9273 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9281 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
       Description: Postfix decrement operator.
@@ -7903,7 +7911,7 @@ namespace yyip
     break;
 
   case 429:
-#line 9281 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9289 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
       Description: Transpose operator, usefull for matrices
@@ -7914,7 +7922,7 @@ namespace yyip
     break;
 
   case 430:
-#line 9333 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9341 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
       Description: Array subscript operator.
@@ -7926,7 +7934,7 @@ namespace yyip
     break;
 
   case 432:
-#line 9347 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9355 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
       Description: Cast operator.
@@ -7938,7 +7946,7 @@ namespace yyip
     break;
 
   case 433:
-#line 9356 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9364 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     //cout << "T_SUB  cast_var  " << endl;
     GET_CHECK_VARSTACK(var)
@@ -7947,7 +7955,7 @@ namespace yyip
     break;
 
   case 434:
-#line 9362 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9370 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(+(*var));
@@ -7955,7 +7963,7 @@ namespace yyip
     break;
 
   case 435:
-#line 9367 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9375 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(++(*var));
@@ -7963,7 +7971,7 @@ namespace yyip
     break;
 
   case 436:
-#line 9372 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9380 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(--(*var));
@@ -7971,7 +7979,7 @@ namespace yyip
     break;
 
   case 437:
-#line 9377 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9385 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_sin());
@@ -7979,7 +7987,7 @@ namespace yyip
     break;
 
   case 438:
-#line 9382 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9390 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_cos());
@@ -7987,7 +7995,7 @@ namespace yyip
     break;
 
   case 439:
-#line 9387 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9395 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_sqrt());
@@ -7995,7 +8003,7 @@ namespace yyip
     break;
 
   case 440:
-#line 9392 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9400 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_fabs());
@@ -8003,7 +8011,7 @@ namespace yyip
     break;
 
   case 441:
-#line 9397 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9405 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_round());
@@ -8011,7 +8019,7 @@ namespace yyip
     break;
 
   case 442:
-#line 9402 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9410 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_floor());
@@ -8019,7 +8027,7 @@ namespace yyip
     break;
 
   case 443:
-#line 9407 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9415 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_tan());
@@ -8027,7 +8035,7 @@ namespace yyip
     break;
 
   case 444:
-#line 9412 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9420 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_asin());
@@ -8035,7 +8043,7 @@ namespace yyip
     break;
 
   case 445:
-#line 9417 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9425 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_acos());
@@ -8043,7 +8051,7 @@ namespace yyip
     break;
 
   case 446:
-#line 9422 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9430 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_atan());
@@ -8051,7 +8059,7 @@ namespace yyip
     break;
 
   case 447:
-#line 9427 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9435 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_exp());
@@ -8059,7 +8067,7 @@ namespace yyip
     break;
 
   case 448:
-#line 9432 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9440 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_log());
@@ -8067,7 +8075,7 @@ namespace yyip
     break;
 
   case 449:
-#line 9437 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9445 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_ln());
@@ -8075,7 +8083,7 @@ namespace yyip
     break;
 
   case 450:
-#line 9442 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9450 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var)
     driver.var_stack.AddVar(var->m_norm());
@@ -8083,7 +8091,7 @@ namespace yyip
     break;
 
   case 452:
-#line 9452 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9460 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
@@ -8092,7 +8100,7 @@ namespace yyip
     break;
 
   case 453:
-#line 9458 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9466 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
@@ -8101,7 +8109,7 @@ namespace yyip
     break;
 
   case 454:
-#line 9464 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9472 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
@@ -8110,7 +8118,7 @@ namespace yyip
     break;
 
   case 456:
-#line 9475 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9483 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
@@ -8120,7 +8128,7 @@ namespace yyip
     break;
 
   case 457:
-#line 9482 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9490 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
@@ -8130,7 +8138,7 @@ namespace yyip
     break;
 
   case 460:
-#line 9497 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9505 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
@@ -8139,7 +8147,7 @@ namespace yyip
     break;
 
   case 461:
-#line 9503 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9511 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
@@ -8148,7 +8156,7 @@ namespace yyip
     break;
 
   case 462:
-#line 9509 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9517 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
@@ -8157,7 +8165,7 @@ namespace yyip
     break;
 
   case 463:
-#line 9515 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9523 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
@@ -8166,7 +8174,7 @@ namespace yyip
     break;
 
   case 465:
-#line 9525 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9533 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
@@ -8175,7 +8183,7 @@ namespace yyip
     break;
 
   case 466:
-#line 9531 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9539 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
@@ -8184,7 +8192,7 @@ namespace yyip
     break;
 
   case 473:
-#line 9572 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9580 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
       Descriptiopn: Logical AND operator
@@ -8196,7 +8204,7 @@ namespace yyip
     break;
 
   case 475:
-#line 9585 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9593 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
       Descriptiopn: Logical XOR operator, for vectorial images it defines the pointwise vectorial product.
@@ -8208,7 +8216,7 @@ namespace yyip
     break;
 
   case 477:
-#line 9598 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9606 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
       Descriptiopn: Logical OR operator
@@ -8220,7 +8228,7 @@ namespace yyip
     break;
 
   case 479:
-#line 9611 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9619 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
       Descriptiopn: Operation (cond?a:b) like in C/C++.
@@ -8233,7 +8241,7 @@ namespace yyip
     break;
 
   case 481:
-#line 9625 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9633 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     //cout << "assignment_var" << endl;
     GET_CHECK_VARSTACK(var2)
@@ -8246,7 +8254,7 @@ namespace yyip
     break;
 
   case 482:
-#line 9635 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9643 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     //cout << "assignment_var" << endl;
     GET_CHECK_VARSTACK(var2)
@@ -8256,7 +8264,7 @@ namespace yyip
     break;
 
   case 483:
-#line 9642 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9650 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
@@ -8265,7 +8273,7 @@ namespace yyip
     break;
 
   case 484:
-#line 9648 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9656 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
@@ -8274,7 +8282,7 @@ namespace yyip
     break;
 
   case 485:
-#line 9654 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9662 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
@@ -8283,7 +8291,7 @@ namespace yyip
     break;
 
   case 486:
-#line 9660 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9668 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     GET_CHECK_VARSTACK(var2)
     GET_CHECK_VARSTACK(var1)
@@ -8292,7 +8300,7 @@ namespace yyip
     break;
 
   case 488:
-#line 9672 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9680 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
             GET_VARSTACK_VALUE(GLTransfMatrix,glt);
             GLTransfMatrix* newglt;
@@ -8305,7 +8313,7 @@ namespace yyip
     break;
 
   case 489:
-#line 9683 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9691 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
           Variable<Viewer3D>::ptr  varsurfd(driver.var_stack.GetLastVar<Viewer3D>());
           GLTransfMatrix glt;
@@ -8321,7 +8329,7 @@ namespace yyip
     break;
 
   case 490:
-#line 9697 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9705 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         GET_VARSTACK_VALUE(GLTransfMatrix,glt2);
         GET_VARSTACK_VALUE(GLTransfMatrix,glt1);
@@ -8334,7 +8342,7 @@ namespace yyip
     break;
 
   case 491:
-#line 9708 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9716 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         boost::shared_array<char> filename( (yysemantic_stack_[(4) - (3)].astring));
          GLTransfMatrix* newglt;
@@ -8352,7 +8360,7 @@ namespace yyip
     break;
 
   case 492:
-#line 9726 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9734 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
          FloatMatrix::ptr m( new FloatMatrix((int)(yysemantic_stack_[(6) - (3)].adouble),(int)(yysemantic_stack_[(6) - (5)].adouble)));
          ADD_VARSTACK_PTR(FloatMatrix,m);
@@ -8360,7 +8368,7 @@ namespace yyip
     break;
 
   case 493:
-#line 9732 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9740 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         /**
         Description: adds a reference to the variable in the stack
@@ -8371,7 +8379,7 @@ namespace yyip
     break;
 
   case 494:
-#line 9741 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9749 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -8393,7 +8401,7 @@ namespace yyip
     break;
 
   case 495:
-#line 9886 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9894 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       SurfacePoly* surf;
       GET_VARSTACK_VALUE(InrImage,im);
@@ -8410,7 +8418,7 @@ namespace yyip
     break;
 
   case 496:
-#line 9901 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9909 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
       SurfacePoly* surf;
@@ -8424,7 +8432,7 @@ namespace yyip
     break;
 
   case 497:
-#line 9913 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9921 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
       Parameters:
@@ -8448,7 +8456,7 @@ namespace yyip
     break;
 
   case 498:
-#line 9935 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9943 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
      Parameters:
@@ -8486,7 +8494,7 @@ namespace yyip
     break;
 
   case 499:
-#line 9971 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9979 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_OBJECT(SurfacePoly,varsurf)
       SurfacePoly* surf;
@@ -8497,7 +8505,7 @@ namespace yyip
     break;
 
   case 500:
-#line 9980 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9988 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       SurfacePoly* newsurf;
       GET_VARSTACK_OBJECT(SurfacePoly,varsurf)
@@ -8509,7 +8517,7 @@ namespace yyip
     break;
 
   case 501:
-#line 9990 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 9998 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       SurfacePoly* surf;
       GET_VARSTACK_VALUE(InrImage, im);
@@ -8520,7 +8528,7 @@ namespace yyip
     break;
 
   case 502:
-#line 9999 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 10007 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       SurfacePoly* newsurf;
       GET_VARSTACK_OBJECT(SurfacePoly,surf)
@@ -8532,7 +8540,7 @@ namespace yyip
     break;
 
   case 503:
-#line 10009 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 10017 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_OBJECT(SurfacePoly,surf)
       SurfacePoly* newsurf;
@@ -8548,7 +8556,7 @@ namespace yyip
     break;
 
   case 504:
-#line 10023 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 10031 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       SurfacePoly* surf = new SurfacePoly();
       BasicVariable::ptr res(CreateVar_SurfacePoly(surf));
@@ -8557,7 +8565,7 @@ namespace yyip
     break;
 
   case 505:
-#line 10030 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 10038 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       boost::shared_array<char> filename( (yysemantic_stack_[(2) - (2)].astring));
       SurfacePoly* surf = new SurfacePoly();
@@ -8568,7 +8576,7 @@ namespace yyip
     break;
 
   case 506:
-#line 10039 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 10047 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -8586,7 +8594,7 @@ namespace yyip
     break;
 
   case 507:
-#line 10055 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 10063 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -8607,7 +8615,7 @@ namespace yyip
     break;
 
   case 508:
-#line 10074 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 10082 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -8629,7 +8637,7 @@ namespace yyip
     break;
 
   case 509:
-#line 10094 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 10102 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -8646,8 +8654,8 @@ namespace yyip
       SurfacePoly* surf;
 
       surf = Func_SmoothLines( insurf.get(),
-                      0.1,
-                      0.01,
+                      0.1f,
+                      0.01f,
                       10);
 
       if (surf==NULL) {
@@ -8661,7 +8669,7 @@ namespace yyip
     break;
 
   case 510:
-#line 10124 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 10132 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -8692,7 +8700,7 @@ namespace yyip
     break;
 
   case 511:
-#line 10153 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 10161 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_OBJECT(SurfacePoly,insurf)
       SurfacePoly* surf;
@@ -8711,7 +8719,7 @@ namespace yyip
     break;
 
   case 512:
-#line 10171 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 10179 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
       Parameters:
@@ -8738,7 +8746,7 @@ namespace yyip
     break;
 
   case 513:
-#line 10197 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 10205 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -8773,7 +8781,7 @@ namespace yyip
     break;
 
   case 514:
-#line 10230 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 10238 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -8807,7 +8815,7 @@ namespace yyip
     break;
 
   case 515:
-#line 10266 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 10274 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -8852,7 +8860,7 @@ namespace yyip
     break;
 
   case 516:
-#line 10312 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 10320 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -8893,7 +8901,7 @@ namespace yyip
     break;
 
   case 517:
-#line 10350 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 10358 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     GET_VARSTACK_VALUE(InrImage,im);
       SurfacePoly* surf;
@@ -8905,7 +8913,7 @@ namespace yyip
     break;
 
   case 518:
-#line 10359 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 10367 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
           /**
 
@@ -8930,7 +8938,7 @@ namespace yyip
     break;
 
   case 519:
-#line 10381 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 10389 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage,im);
       float minth = (yysemantic_stack_[(8) - (5)].adouble);
@@ -8944,7 +8952,7 @@ namespace yyip
     break;
 
   case 520:
-#line 10392 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 10400 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage,im);
       SurfacePoly* surf;
@@ -8958,7 +8966,7 @@ namespace yyip
     break;
 
   case 521:
-#line 10403 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 10411 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -8997,7 +9005,7 @@ namespace yyip
     break;
 
   case 522:
-#line 10439 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 10447 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         /**
         Description:
@@ -9042,7 +9050,7 @@ namespace yyip
     break;
 
   case 523:
-#line 10481 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 10489 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -9091,7 +9099,7 @@ namespace yyip
     break;
 
   case 524:
-#line 10527 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 10535 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -9144,7 +9152,7 @@ namespace yyip
     break;
 
   case 525:
-#line 10577 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 10585 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -9189,7 +9197,7 @@ namespace yyip
     break;
 
   case 526:
-#line 10619 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 10627 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
         /**
         Parameters:
@@ -9223,7 +9231,7 @@ namespace yyip
     break;
 
   case 527:
-#line 10650 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 10658 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -9258,7 +9266,7 @@ namespace yyip
     break;
 
   case 528:
-#line 10682 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 10690 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
     /**
     Parameters:
@@ -9299,7 +9307,7 @@ namespace yyip
     break;
 
   case 550:
-#line 10784 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 10792 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       /**
         Description: creates an image extent based on the limits in voxel coordinates in X,Y and Z
@@ -9321,7 +9329,7 @@ namespace yyip
     break;
 
   case 551:
-#line 10804 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 10812 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       /**
         Description: creates an image extent based on the limits in pixel coordinates in X,Y 
@@ -9340,7 +9348,7 @@ namespace yyip
     break;
 
   case 552:
-#line 10821 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 10829 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       #ifdef min
         #undef min
@@ -9363,7 +9371,7 @@ namespace yyip
     break;
 
   case 553:
-#line 10842 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 10850 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
     {
       GET_VARSTACK_VALUE(InrImage, im);
 
@@ -9383,7 +9391,7 @@ namespace yyip
 
 
     /* Line 675 of lalr1.cc.  */
-#line 9387 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
+#line 9395 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/GeneratedFlexBison/improcess_bison.tab.cpp"
 	default: break;
       }
     YY_SYMBOL_PRINT ("-> $$ =", yyr1_[yyn], &yyval, &yyloc);
@@ -13053,34 +13061,34 @@ namespace yyip
     5873,  5897,  5921,  5929,  5953,  5976,  6007,  6017,  6029,  6039,
     6049,  6061,  6069,  6085,  6104,  6134,  6152,  6164,  6185,  6190,
     6194,  6198,  6202,  6206,  6210,  6214,  6218,  6222,  6226,  6230,
-    6238,  6240,  6259,  6261,  6271,  6291,  6326,  6357,  6364,  6382,
-    6473,  6539,  6546,  6553,  6561,  6569,  6585,  6603,  6621,  6638,
-    6655,  6673,  6709,  6722,  6733,  6746,  6770,  6781,  6792,  6802,
-    6812,  6845,  6856,  6877,  6897,  6938,  6985,  7005,  7026,  7037,
-    7051,  7065,  7078,  7089,  7100,  7113,  7131,  7143,  7155,  7207,
-    7248,  7259,  7269,  7281,  7292,  7302,  7327,  7350,  7378,  7392,
-    7526,  7560,  7593,  7621,  7635,  7649,  7659,  7678,  7697,  7717,
-    7738,  7760,  7779,  7798,  7818,  7858,  7880,  7909,  7931,  7968,
-    8005,  8042,  8076,  8082,  8099,  8106,  8113,  8121,  8128,  8150,
-    8178,  8202,  8229,  8261,  8270,  8283,  8290,  8298,  8312,  8324,
-    8336,  8346,  8357,  8367,  8377,  8388,  8398,  8409,  8436,  8484,
-    8618,  8639,  8679,  8690,  8698,  8706,  8727,  8753,  8764,  8771,
-    8777,  8783,  8790,  8815,  8833,  8840,  8873,  8892,  8913,  8941,
-    8950,  8964,  8966,  8968,  8970,  8972,  8974,  8976,  8978,  8980,
-    9001,  9143,  9146,  9148,  9150,  9179,  9256,  9264,  9272,  9280,
-    9332,  9344,  9346,  9355,  9361,  9366,  9371,  9376,  9381,  9386,
-    9391,  9396,  9401,  9406,  9411,  9416,  9421,  9426,  9431,  9436,
-    9441,  9450,  9451,  9457,  9463,  9473,  9474,  9481,  9491,  9495,
-    9496,  9502,  9508,  9514,  9523,  9524,  9530,  9556,  9557,  9561,
-    9565,  9566,  9570,  9571,  9583,  9584,  9596,  9597,  9609,  9610,
-    9623,  9624,  9634,  9641,  9647,  9653,  9659,  9668,  9672,  9682,
-    9696,  9707,  9725,  9731,  9740,  9885,  9900,  9912,  9934,  9970,
-    9979,  9989,  9998, 10008, 10022, 10029, 10038, 10054, 10073, 10093,
-   10123, 10152, 10169, 10195, 10229, 10261, 10308, 10349, 10358, 10380,
-   10391, 10402, 10438, 10480, 10526, 10576, 10618, 10649, 10681, 10723,
-   10731, 10734, 10735, 10736, 10737, 10738, 10745, 10746, 10747, 10748,
-   10753, 10754, 10760, 10762, 10764, 10767, 10769, 10773, 10775, 10777,
-   10781, 10803, 10820, 10841
+    6238,  6240,  6259,  6261,  6276,  6296,  6331,  6365,  6372,  6390,
+    6481,  6547,  6554,  6561,  6569,  6577,  6593,  6611,  6629,  6646,
+    6663,  6681,  6717,  6730,  6741,  6754,  6778,  6789,  6800,  6810,
+    6820,  6853,  6864,  6885,  6905,  6946,  6993,  7013,  7034,  7045,
+    7059,  7073,  7086,  7097,  7108,  7121,  7139,  7151,  7163,  7215,
+    7256,  7267,  7277,  7289,  7300,  7310,  7335,  7358,  7386,  7400,
+    7534,  7568,  7601,  7629,  7643,  7657,  7667,  7686,  7705,  7725,
+    7746,  7768,  7787,  7806,  7826,  7866,  7888,  7917,  7939,  7976,
+    8013,  8050,  8084,  8090,  8107,  8114,  8121,  8129,  8136,  8158,
+    8186,  8210,  8237,  8269,  8278,  8291,  8298,  8306,  8320,  8332,
+    8344,  8354,  8365,  8375,  8385,  8396,  8406,  8417,  8444,  8492,
+    8626,  8647,  8687,  8698,  8706,  8714,  8735,  8761,  8772,  8779,
+    8785,  8791,  8798,  8823,  8841,  8848,  8881,  8900,  8921,  8949,
+    8958,  8972,  8974,  8976,  8978,  8980,  8982,  8984,  8986,  8988,
+    9009,  9151,  9154,  9156,  9158,  9187,  9264,  9272,  9280,  9288,
+    9340,  9352,  9354,  9363,  9369,  9374,  9379,  9384,  9389,  9394,
+    9399,  9404,  9409,  9414,  9419,  9424,  9429,  9434,  9439,  9444,
+    9449,  9458,  9459,  9465,  9471,  9481,  9482,  9489,  9499,  9503,
+    9504,  9510,  9516,  9522,  9531,  9532,  9538,  9564,  9565,  9569,
+    9573,  9574,  9578,  9579,  9591,  9592,  9604,  9605,  9617,  9618,
+    9631,  9632,  9642,  9649,  9655,  9661,  9667,  9676,  9680,  9690,
+    9704,  9715,  9733,  9739,  9748,  9893,  9908,  9920,  9942,  9978,
+    9987,  9997, 10006, 10016, 10030, 10037, 10046, 10062, 10081, 10101,
+   10131, 10160, 10177, 10203, 10237, 10269, 10316, 10357, 10366, 10388,
+   10399, 10410, 10446, 10488, 10534, 10584, 10626, 10657, 10689, 10731,
+   10739, 10742, 10743, 10744, 10745, 10746, 10753, 10754, 10755, 10756,
+   10761, 10762, 10768, 10770, 10772, 10775, 10777, 10781, 10783, 10785,
+   10789, 10811, 10828, 10849
   };
 
   // Print the state stack on the debug stream.
@@ -13206,7 +13214,7 @@ namespace yyip
 
 } // namespace yyip
 
-#line 10882 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
+#line 10890 "/Users/administrador/Desktop/mi_rama_AMILab/Daniel/src/Language/improcess_bison.ypp"
 
 #include <stdio.h>
 

@@ -396,7 +396,16 @@ bool Driver::parse_script(  const char* filename)
 
 */
 
-  bool res = parse_file(string(newname.GetFullPath().mb_str()));
+  // replace / by \ in directories to avoid problems
+  newname.Normalize();
+  wxString newfilename = newname.GetFullPath();
+  newfilename.Replace(wxT("\\"),wxT("/"),true);
+
+  // add to history if written from the console
+  if (InConsole())
+    GB_main_wxFrame->GetScriptsHistory()->AddFileToHistory(newfilename);
+
+  bool res = parse_file(string(newfilename.mb_str()));
   //cout << "current wd = "  <<  wxGetCwd() << endl; 
   return res;
 

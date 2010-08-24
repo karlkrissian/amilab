@@ -613,7 +613,7 @@ if (!exists(RunExperimentsClass)){
         }
       } else {
       # end if ::remaining_dist>0
-        # here we donÂ´t cut both path at the beginning
+        # here we don´t cut both path at the beginning
       }
       SetStatusText("CCA length: done")
     }
@@ -1381,13 +1381,14 @@ if (!exists(RunExperimentsClass)){
       
       ::ConfigEvent()
     }
+    ::Init()
   }
   #------------------------------------------
 
-  if (!exists(experiments)) \
-  {
-    RunExperimentsClass experiments
-    experiments->Init()
-    experiments->Gui()
-  }
+#  if (!exists(experiments)) \
+#  {
+#    RunExperimentsClass experiments
+#    experiments->Init()
+#    experiments->Gui()
+#  }
 }

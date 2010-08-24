@@ -44,7 +44,12 @@
   #include "amilab_logo_new_32x32_alpha.xpm"
 #endif
 
-
+#include "wx/version.h"
+#if ((wxMAJOR_VERSION==2)&&(wxMINOR_VERSION>=9))||(wxMAJOR_VERSION>=3)
+  #define PENSTYLE_SOLID wxPENSTYLE_SOLID 
+#else
+  #define PENSTYLE_SOLID wxSOLID 
+#endif
 
 extern unsigned char      GB_debug;
 #define aff_err(a) Si GB_debug AlorsFait fprintf(stderr,a);
@@ -441,16 +446,21 @@ void FenetreDessin ::  SetLineParameters( unsigned int largeur,
   _current_pen->SetWidth(largeur);
   /// @cond wxCHECK
 
-  #if (wxCHECK_VERSION(2,9,0)) 
+  #if ((wxMAJOR_VERSION==2)&&(wxMINOR_VERSION>=9))||(wxMAJOR_VERSION>=3)
     if (style!=-1)
       _current_pen->SetStyle((wxPenStyle)style);
-    if (extremites!=-1) 
-      _current_pen->SetJoin((wxPenJoin)extremites);
+    // TODO: check why this command fails in windows
+//    if (extremites!=-1) 
+//      _current_pen->SetCap((wxPenCap)extremites);
+    if (intersection!=-1) 
+      _current_pen->SetJoin((wxPenJoin)intersection);
   #else 
     if (style!=-1)
       _current_pen->SetStyle(style);
     if (extremites!=-1) 
-      _current_pen->SetJoin(extremites);
+      _current_pen->SetCap(extremites);
+    if (intersection!=-1) 
+      _current_pen->SetJoin(intersection);
   #endif
   /// @endcond
   _memory_dc->SetPen(*_current_pen);
@@ -494,11 +504,13 @@ void FenetreDessin::DrawingAreaInit( )
   _memory_dc->SelectObject(*_bitmap);
   _memory_dc->SetBackgroundMode(wxTRANSPARENT);
   scoped_ptr<wxBrush> current_brush(new wxBrush(
-                             *wxBLACK, wxSOLID));
+                             *wxBLACK, 
+                             PENSTYLE_SOLID
+                             ));
   swap(_current_brush,current_brush);
   scoped_ptr<wxPen> current_pen(new wxPen( *wxBLACK,
                                  1,
-                                 wxSOLID));
+                                 PENSTYLE_SOLID));
   swap(_current_pen,current_pen);
 
   _memory_dc->SetBrush(*_current_brush);
@@ -712,11 +724,11 @@ void  FenetreDessin::PutSlice(  int pos_x, int pos_y,
   // Draw a rectangle outside?
   SetPenColor( *wxBLACK);
   FixeStyleRemplissage(wxTRANSPARENT);
-  SetLineParameters(1,wxSOLID);
+  SetLineParameters(1,PENSTYLE_SOLID);
   Rectangle((wxCoord)pos_x,(wxCoord)pos_y,
             (wxCoord)pos_x+bitmap.GetWidth(),
             (wxCoord)pos_y+bitmap.GetHeight());
-  FixeStyleRemplissage(wxSOLID);
+  FixeStyleRemplissage(PENSTYLE_SOLID);
   
 
 } // PutSlice()

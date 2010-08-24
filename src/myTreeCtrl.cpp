@@ -67,10 +67,21 @@ void myTreeCtrl::ShowMenu(wxTreeItemId id, const wxPoint& pt)
           menu.Append(wxID_ANY, comments);
         }
       }
-     menu.Append(wxID_ToConsole,wxT("Write in console"));
-      wxMenuItem* item = menu.Append(wxID_myABOUT, wxT("&About..."));
+
+      // Write in console menu
+      wxMenuItem* item1 = new wxMenuItem(&menu,wxID_ToConsole,wxT("Write in console"),
+        wxT("write name in the console"));
+      wxBitmap bitmap1 = wxArtProvider::GetBitmap(wxART_PASTE, wxART_OTHER, wxDefaultSize);
+      if (bitmap1.Ok()) item1->SetBitmap(bitmap1);
+      menu.Append(item1 );
+
       //Put a book icon in the &About item
-      item->SetBitmap(wxArtProvider::GetIcon(wxART_HELP_BOOK, wxT("menu"), wxDefaultSize));
+      wxMenuItem* item2 = new wxMenuItem(&menu,wxID_myABOUT,wxT("&About..."),
+        wxT("more information about this variable"));
+      wxBitmap bitmap2 = wxArtProvider::GetBitmap(wxART_HELP_BOOK, wxART_OTHER, wxDefaultSize);
+      if (bitmap2.Ok()) 
+        item2->SetBitmap(bitmap2);
+      menu.Append(item2 );
       PopupMenu(&menu, pt);
     }
   }

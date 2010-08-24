@@ -98,6 +98,8 @@ class wxDrawingWindow : public wxScrolledWindow
   //! position in X of Y axis
   double _yaxis;
 
+  bool _draw_grid;
+
   //! std::vector of the curves to draw
   std::vector<dw_Curve> _curves;
 
@@ -112,6 +114,13 @@ class wxDrawingWindow : public wxScrolledWindow
   bool _left_down;
   bool _previous_crosshair;
 
+  /// device context in memory
+  scoped_ptr<wxMemoryDC> _memory_dc;
+  /// device context in memory
+  scoped_ptr<wxBitmap>   _bitmap; 
+
+  void DrawingAreaInit( );
+
 public:
    wxDrawingWindow(wxWindow *parent, wxWindowID id = wxID_ANY,
         const wxPoint& pos = wxDefaultPosition,
@@ -120,21 +129,28 @@ public:
 
   virtual ~wxDrawingWindow(){};
 
+  void DrawingAreaDisplay( );
+
   void World2Window( double x, double y, 
                       wxCoord& wx, wxCoord& wy);
 
   void Window2World( wxCoord wx, wxCoord wy, double& x, double& y);
 
-  void DrawAxes( wxDC& dc );
+  void DrawAxes( );
+
+  void SetDrawGrid(bool b) { _draw_grid = b; }
+  bool GetDrawGrid() { return _draw_grid; }
 
   void SetXLimits(double xmin, double xmax)
   {
     _xmin = xmin; _xmax = xmax;
+    if (xmax<xmin+1E-5) _xmax = xmin+1E-5;
   }
 
   void SetYLimits(double ymin, double ymax)
   {
     _ymin = ymin; _ymax = ymax;
+    if (ymax<ymin+1E-5) _ymax = ymin+1E-5;
   }
 
   /**
@@ -145,13 +161,14 @@ public:
    * @param x2 second point
    * @param y2
    */
-  void DrawLine(wxDC& dc, int x1, int y1, int x2, int y2)
+  void DrawLine( int x1, int y1, int x2, int y2)
   {
-    wxCoord w,h;
-    dc.GetSize(&w,&h);
-    wxRect rect(0,0,w,h);
-    if (rect.Contains(x1,y1)&&rect.Contains(x2,y2))
-      dc.DrawLine(x1,y1,x2,y2);
+    // not needed because of clipping ??
+    //    wxCoord w,h;
+    //    _memory_dc->GetSize(&w,&h);
+    //    wxRect rect(0,0,w,h);
+    //    if (rect.Contains(x1,y1)&&rect.Contains(x2,y2))
+    _memory_dc->DrawLine(x1,y1,x2,y2);
   }
 
   /**
@@ -160,13 +177,13 @@ public:
    * @param x1 first point
    * @param y1 
    */
-  void DrawPoint(wxDC& dc, int x1, int y1)
+  void DrawPoint( int x1, int y1)
   {
-    wxCoord w,h;
-    dc.GetSize(&w,&h);
-    wxRect rect(0,0,w,h);
-    if (rect.Contains(x1,y1))
-      dc.DrawCircle(x1,y1,2);
+//    wxCoord w,h;
+//    _memory_dc->GetSize(&w,&h);
+//    wxRect rect(0,0,w,h);
+//    if (rect.Contains(x1,y1))
+      _memory_dc->DrawCircle(x1,y1,2);
   }
 
   /**
@@ -249,15 +266,17 @@ public:
    * @param i  curve number
    * @param dc  context
    */
-  void DrawCurve( int i, wxDC& dc );
+  void DrawCurve( int i );
 
-  void WriteCurrentPosition();
+  void WriteCurrentPosition( wxDC& dc);
 
-  void DrawControls(wxDC& dc);
+  void DrawControls();
 
-  void OnPaint(          wxPaintEvent& event);
-  //void OnSize(           wxSizeEvent& event);
+  void Paint( );
+  void OnSize( wxSizeEvent& event);
   //void OnChar(           wxKeyEvent&  event);
+
+  void OnPaint(wxPaintEvent& event);
 
   void OnLeftDown(      wxMouseEvent& event) 
   {
@@ -266,8 +285,10 @@ public:
 
   void OnLeftUp(        wxMouseEvent& event) 
   {
+    cout << "OnLeftUp" << endl;
     _left_down = false; 
     _previous_crosshair = false;
+    DrawingAreaDisplay();
     event.Skip(); 
   }
 

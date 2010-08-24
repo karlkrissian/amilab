@@ -202,7 +202,7 @@ ENDIF( CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux" )
 #=====================================================================
 IF(wxWidgets_FIND_STYLE STREQUAL "win32")
   # Useful common wx libs needed by almost all components.
-  SET(wxWidgets_COMMON_LIBRARIES png tiff jpeg zlib regex expat)
+  SET(wxWidgets_COMMON_LIBRARIES png tiff jpeg zlib regex expat scintilla)
 
   # DEPRECATED: Use FIND_PACKAGE(wxWidgets COMPONENTS mono) instead.
   IF(NOT wxWidgets_FIND_COMPONENTS)
@@ -278,6 +278,7 @@ IF(wxWidgets_FIND_STYLE STREQUAL "win32")
         PATHS ${WX_LIB_DIR}
         NO_DEFAULT_PATH
         )
+      MESSAGE("searching for wxbase29${_UCD}${_DBG}_${LIB} in ${WX_LIB_DIR} found ${WX_${LIB}${_DBG}}")
       MARK_AS_ADVANCED(WX_${LIB}${_DBG})
     ENDFOREACH(LIB)
 
@@ -311,6 +312,7 @@ IF(wxWidgets_FIND_STYLE STREQUAL "win32")
       MARK_AS_ADVANCED(WX_${LIB}${_DBG})
     ENDFOREACH(LIB)
   ENDMACRO(WX_FIND_LIBS)
+
 
   #
   # Clear all library paths, so that FIND_LIBRARY refinds them.

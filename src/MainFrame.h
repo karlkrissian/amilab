@@ -48,6 +48,8 @@
 #include <wx/filepicker.h>
 #include <wx/combobox.h>
 
+#include <wx/docview.h>
+
 #include "xmtext.hpp"
 
 #include "ParamPanel.hpp"
@@ -120,9 +122,11 @@ public:
                     bool select = false, const wxBitmap& bitmap = wxNullBitmap);
   bool RemoveParamPanelPage(ParamPanel::ptr& panel);
 
-  void OnFileOpenImage    ( wxCommandEvent& event );
+  void OnFileOpenImage         ( wxCommandEvent& event );
+  void OnFileOpenImageHistory  ( wxCommandEvent& event );
   void OnFileOpenPolydata ( wxCommandEvent& event );
   void OnFileLoadScript   ( wxCommandEvent& event );
+  void OnFileOpenScriptHistory  ( wxCommandEvent& event );
 
   void OnViewReset        ( wxCommandEvent& event );
 
@@ -183,11 +187,22 @@ public:
   void OnAddNoise(            wxCommandEvent& event);
   void OnUserMenuScript(      wxCommandEvent& event);
 
+  boost::shared_ptr<wxFileHistory> GetImagesHistory()  { return images_history;  }
+  boost::shared_ptr<wxFileHistory> GetScriptsHistory() { return scripts_history; }
+
 protected:
 
   //
   wxStcFrame* amilab_editor;
   
+  // history of opened images
+  boost::shared_ptr<wxFileHistory> images_history;
+  wxMenu *images_history_menu;
+
+  // history of opened scripts
+  boost::shared_ptr<wxFileHistory> scripts_history;
+  wxMenu *scripts_history_menu;
+
   // menus
   wxMenuBar *menuBar;
   wxMenu *menuFile;

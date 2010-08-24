@@ -17,6 +17,9 @@
 using namespace std;
 
 #include "DessinImage.hpp"
+#include "wrap_DessinImage.h"
+#include "wrap_wxColour.h"
+#include <wx/colour.h>
 
 #define XMAX	1
 #define YMAX	2
@@ -241,23 +244,46 @@ inline void OptimizarParabola (double &a, double &b, double &c, double umbral, d
 
 
 //Función para dibujar los contornos
-void drawBorder(AMIObject* viewer, InrImage* dots, int draw_normals, InrImage* normals)
+void drawBorder(DessinImage* viewer, InrImage* inside, InrImage* border_pts, 
+                wxColour* bcolor, int bthickness, int bstyle, int draw_normals, 
+                InrImage* norm_pts, wxColour* ncolor, int nthickness, int nstyle)
 {
-  DessinImage* di = (DessinImage*) viewer;
-  if (draw_normals) {
-    for(int i = 0; i < dots->DimX(); i+=4)
+  //Set line parameters
+  viewer->SetPenColor(*bcolor);
+  if(bstyle==0)
+    viewer->SetLineParameters(bthickness, wxSOLID);
+  else
+    viewer->SetLineParameters(bthickness, wxDOT);
+  //Draw the border
+  for(int i=0; i<border_pts->DimX(); i++)
+  {
+    if ((*inside)(i,0,0))
     {
-      di->DrawLineZ((*dots)(i,0,0), (*dots)(i+1,0,0), (*dots)(i+2,0,0), (*dots)(i+3,0,0));
-      di->DrawLineZ((*normals)(i,0,0), (*normals)(i+1,0,0), (*normals)(i+2,0,0), (*normals)(i+3,0,0));
-    }
-  }
-  else {
-    for(int i = 0; i < dots->DimX(); i+=4)
-    {
-      di->DrawLineZ((*dots)(i,0,0), (*dots)(i+1,0,0), (*dots)(i+2,0,0), (*dots)(i+3,0,0));
+      viewer->DrawLineZ((*border_pts)(i,0,0,0), (*border_pts)(i,0,0,1), 
+                        (*border_pts)(i,0,0,2), (*border_pts)(i,0,0,3));
     }
   }
 
+ 
+  if (draw_normals)
+  {
+    //Set line parameters
+    viewer->SetPenColor(*ncolor);
+    if(nstyle==0)
+      viewer->SetLineParameters(nthickness, wxSOLID);
+    else
+      viewer->SetLineParameters(nthickness, wxDOT);
+    //Draw normals
+    for(int i=0; i<norm_pts->DimX(); i++)
+    {
+      if ((*inside)(i,0,0))
+      {
+        viewer->DrawLineZ((*norm_pts)(i,0,0,0), (*norm_pts)(i,0,0,1), 
+                          (*norm_pts)(i,0,0,2), (*norm_pts)(i,0,0,3));
+      }
+    }
+  }
+  viewer->DrawingAreaDisplay();
 }
 
 //Wrapping para dibujar los contornos
@@ -270,44 +296,69 @@ void wrapDrawBorder (ParamList* p) {
 	";
   char parameters[] =" \n\
 	Parameters:\n\
-	input: The input image\n\
-	dots: Points for draw borders\n\
-	draw_normals: Says if draw or not the normals\n\
-  normals: Points for draw normals\n\
+	viewer: The image viewer reference\n\
+	inside: Image that marks the view zone\n\
+	border_pts: Points for draw the border\n\
+  bcolor: Border color\n\
+  bthickness: Border thickness\n\
+  bstyle: Border style\n\
+  draw_normals: Says if draw the border normals\n\
+  norm_pts: Points for draw normals\n\
+  ncolor: Normals color\n\
+  nthickness: Normals thickness\n\
+  nstyle: Normals style\n\
 	";
   
-  AMIObject* viewer;
-  InrImage* dots;
-  InrImage* normals;
+  DessinImage* viewer = NULL;
+  InrImage* inside;
+  InrImage* border_pts;
+  InrImage* norm_pts;
   int draw_normals;
-  int num = 0;
-  //Get input image
-  //if (!get_val_ptr_param<InrImage>(input, p, num)) HelpAndReturnVarPtr;
-  //Get AMIObject
-  if (!get_val_ptr_param<AMIObject>(viewer, p, num)) HelpAndReturn;
-//  InrImage::ptr output (new InrImage(WT_FLOAT, "sub2DResult.ami.gz", input)); 
-//  output->InitZero(); 
+  int bthickness;
+  int bstyle;
+  int nthickness;
+  int nstyle;
+  int n = 0;
+  //Get the viewer object
+  FUNC_GET_OBJECT_PARAM(DessinImage, viewervar, viewerobj);
+  if(viewerobj.get())
+    viewer = viewerobj.get();
+  else
+    HelpAndReturn;
   
-  //Get params
-  if (!get_val_ptr_param<InrImage>(dots, p, num)) HelpAndReturn;
-  if (!get_int_param(draw_normals, p, num)) HelpAndReturn;
+  //Get params (inside, border points, color, thickness, style and normals control)
+  if (!get_val_ptr_param<InrImage>(inside, p, n)) HelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(border_pts, p, n)) HelpAndReturn;
+  FUNC_GET_OBJECT_PARAM(wxColour, bcolorvar, bcolorobj);
+  if (bcolorobj.get()) {
+    if (!get_int_param(bthickness, p, n)) HelpAndReturn;
+    if (!get_int_param(bstyle, p, n)) HelpAndReturn;
+    if (!get_int_param(draw_normals, p, n)) HelpAndReturn;
+  }
+  else HelpAndReturn;
   
-  if (draw_normals) {
-    if (!get_val_ptr_param<InrImage>(normals, p, num)) HelpAndReturn;
-    drawBorder(viewer, dots, draw_normals, normals);
+  //If the user sets draw_normals, get the normal points image, and call to
+  //drawBorder
+  if (draw_normals) 
+  {
+    if (!get_val_ptr_param<InrImage>(norm_pts, p, n)) HelpAndReturn;
+    FUNC_GET_OBJECT_PARAM(wxColour, ncolorvar, ncolorobj);
+    if (ncolorobj.get()) 
+    {
+      if (!get_int_param(nthickness, p, n)) HelpAndReturn;
+      if (!get_int_param(nstyle, p, n)) HelpAndReturn;
+      drawBorder(viewer, inside, border_pts, bcolorobj.get(), bthickness, bstyle,
+                 draw_normals, norm_pts, ncolorobj.get(), nthickness, nstyle);
+    }
+    else HelpAndReturn;
   }
-  else {
-    drawBorder(viewer, dots, draw_normals, NULL);
+  else 
+  {
+    //If it isn't set draw_normals, calls to drawBorder with a NULL value on
+    //last parameters
+    drawBorder(viewer, inside, border_pts, bcolorobj.get(), bthickness, bstyle,
+                 draw_normals, NULL, NULL, 0, 0);
   }
-//  AMIObject::ptr amiobject(new AMIObject);
-//  amiobject->SetName("res");
-// 
-//  
-//
-//
-//  Variable<AMIObject>::ptr result(
-//      new Variable<AMIObject>(amiobject));
-//  return result;
 }
 
 //Función original del código de Agustín (con los parámetros adaptados al wrapping)

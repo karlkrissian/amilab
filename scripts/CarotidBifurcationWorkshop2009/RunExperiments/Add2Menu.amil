@@ -12,7 +12,7 @@ proc AddMenuCarotidChallenge() \
   menu = "&Apps"
   category = "&Carotid Bifurcation"
   name = "&Miccai Challenge 2009"
-  script = curdir+"/RunExperimentsClass.amil"
+  script = curdir+"/RunExperimentsGui.amil"
 
   # Scripts Menu
   ami.MainFrame.AddToMenu(menu,category,name,script)

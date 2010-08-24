@@ -6,6 +6,7 @@
 #include "ImageDraw_Voxels3DParam.h"
 
 #include "DessinImage.hpp"
+#include "Viewer3D.hpp"
 
 #include "amilab_messages.h"
 
