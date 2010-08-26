@@ -90,15 +90,24 @@ if (!exists(ImageHistoClass)) {
         hmax = max(::h[0])
         for k=0 to 1 {
           xpos = ::dw.GetCtrlPointX(k)
+          ::dw.SetCtrlPointY(k,hmax/2.0)
           FuncCurve.setpos(k,0,0)
           FuncCurve.set(0,xpos)
-          FuncCurve.set(1,hmax/2)
+          FuncCurve.set(1,hmax/2.0)
         }
         ::dw->SetCurve(FuncCurve,::input.vdim)
-        ::dw->SetCurveProperties(::input.vdim,"#009900")
+        ::dw->SetCurveProperties(::input.vdim,"#000000")
+        if (exists(::input_draw)) {
+          val0 = ::dw.GetCtrlPointX(0)
+          val1 = ::dw.GetCtrlPointX(1)
+          ::input_draw.SetIntensityRange( -max(-val0,-val1), max(val0,val1))
+        }
   
         ::dw._Paint()
         ::dw.Refresh()
+        if (exists(::input_draw)) {
+          ::input_draw.Paint()
+        }
       }
     }
 

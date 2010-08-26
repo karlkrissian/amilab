@@ -1117,6 +1117,9 @@ public:
 
   ~DessinImage();
 
+  /// Sets the intensity range
+  void SetIntensityRange(float imin, float imax);
+
   //
   void SetVolRenOpacity(InrImage::ptr volren_opacity)
   {

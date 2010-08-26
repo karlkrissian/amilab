@@ -283,6 +283,39 @@ void DessinImage::InitMinMax( InrImage::ptr& image)
 
 
 //----------------------------------------------------------------
+void DessinImage::SetIntensityRange( float imin, float imax)
+//                ----------
+{
+  int     int_max,int_min;
+  float   float_max,float_min;
+
+  int_min =   *(Get_intensite_entier_min());
+  float_min = *(Get_intensite_float_min());
+  int_max =   *(Get_intensite_entier_max());
+  float_max = *(Get_intensite_float_max());
+
+  Set_intensite_entier_min(imin);
+  Set_intensite_entier_max(imax);
+  Set_intensite_float_min( imin);
+  Set_intensite_float_max( imax);
+
+  if (!(VerifyMinMax()))
+  {
+    Set_intensite_entier_min(int_min);
+    Set_intensite_float_min(float_min);
+    Set_intensite_entier_max(int_max);
+    Set_intensite_float_max(float_max);
+  }
+
+  MinMaxChecker();
+  Param._MAJ._intensite = true;
+  Param._MAJ.MAJCoupes();
+  Paint();
+  _param_intensity->MAJ();
+}
+
+
+//----------------------------------------------------------------
 void DessinImage::UpDateMinMax( )
 //                ------------
 {

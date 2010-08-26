@@ -37,10 +37,13 @@ class dw_ControlPoint
 {
 private:
   dw_Point2D pos;
-  wxPoint winpos;
-  bool selected;
-  bool has_focus;
-  int  radius;
+  wxPoint    winpos;
+  bool       selected;
+  bool       has_focus;
+  /// Point radius
+  int        radius;
+  /// Point colour
+  wxColour   colour;
 
 public:
   dw_ControlPoint()
@@ -48,6 +51,7 @@ public:
     selected = false;
     has_focus = false;
     radius = 3;
+    colour = *wxGREEN;
   }
 
   dw_ControlPoint(const dw_Point2D& p)
@@ -56,6 +60,7 @@ public:
     selected = false;
     has_focus = false;
     radius = 3;
+    colour = *wxGREEN;
   }
 
   void operator = (const dw_Point2D& p )
@@ -68,6 +73,9 @@ public:
 
   int GetRadius() const { return radius; }
   void SetRadius(const int& r) { radius = r; }
+
+  wxColour GetColour() const { return colour; }
+  void SetColour(const wxColour& c) { colour = c; }
 
   void SetPos(double x, double y) { pos.SetX(x); pos.SetY(y); }
 
@@ -159,6 +167,12 @@ public:
 
   void DrawAxes( );
 
+  /**
+   * Seach for the closest control point
+   * and return its id or -1 if no control point is found
+   */
+  int CheckCtrlPoint();
+
   void SetDrawGrid(bool b) { _draw_grid = b; }
   bool GetDrawGrid() { return _draw_grid; }
 
@@ -246,6 +260,12 @@ public:
   void AddControl( const dw_Point2D& pt);
 
   /**
+   * Removes a control point
+   * @param control point id
+   */
+  void RemoveControl( const int& pt_id);
+
+  /**
    * Set the new position of a new control point
    * @param control point
    */
@@ -317,7 +337,9 @@ public:
   void OnMotion(        wxMouseEvent& event);
   void OnWheel(         wxMouseEvent& event);
 
-  void OnAddControl(wxCommandEvent& event);
+  void OnAddControl(   wxCommandEvent& event);
+  void OnRemoveControl(wxCommandEvent& event);
+  void OnControlColour(wxCommandEvent& event);
 
   DECLARE_EVENT_TABLE();
 };

@@ -16,6 +16,10 @@
 #include "wx/dcclient.h"
 #include <wx/menu.h>
 
+#include <wx/cmndata.h>
+#include <wx/colordlg.h>
+
+
 #define macro_max(a,b) ((a)>(b)?(a):(b))
 
 #if ((wxMAJOR_VERSION==2)&&(wxMINOR_VERSION>=9))||(wxMAJOR_VERSION>=3)
@@ -26,7 +30,9 @@
 
 
 enum {
-  wxID_AddControl = 1000,
+  wxID_AddControl = 2000,
+  wxID_RemoveControl,
+  wxID_SetControlColour,
 };
 
 BEGIN_EVENT_TABLE(wxDrawingWindow, wxWindow)
@@ -37,7 +43,9 @@ BEGIN_EVENT_TABLE(wxDrawingWindow, wxWindow)
   EVT_LEFT_UP(      wxDrawingWindow::OnLeftUp )
   EVT_MOTION(       wxDrawingWindow::OnMotion )
   EVT_MOUSEWHEEL(   wxDrawingWindow::OnWheel )
-  EVT_MENU(         wxID_AddControl, wxDrawingWindow::OnAddControl)
+  EVT_MENU(         wxID_AddControl,       wxDrawingWindow::OnAddControl)
+  EVT_MENU(         wxID_RemoveControl,    wxDrawingWindow::OnRemoveControl)
+  EVT_MENU(         wxID_SetControlColour, wxDrawingWindow::OnControlColour)
 END_EVENT_TABLE();
 
 //------------------------------------------------
@@ -173,6 +181,15 @@ bool wxDrawingWindow::SetCurve( int i, InrImage* im)
 void wxDrawingWindow::AddControl( const dw_Point2D& pt)
 {
   _controlpoints.push_back(dw_ControlPoint(pt));
+}
+
+/**
+  * Removes a new control point
+  * @param control point id
+  */
+void wxDrawingWindow::RemoveControl( const int& pt_id)
+{
+  _controlpoints.erase(_controlpoints.begin()+pt_id);  
 }
 
 /**
@@ -414,14 +431,22 @@ void wxDrawingWindow::DrawControls()
   
   for(int i = 0; i<(int)_controlpoints.size(); i++) 
   {
-    if (_controlpoints[i].HasFocus())
-      _memory_dc->SetBrush(*wxGREEN_BRUSH);
-    else
+    if (_controlpoints[i].HasFocus()) {
       _memory_dc->SetBrush(*wxTRANSPARENT_BRUSH);
+      _memory_dc->SetPen(wxPen(_controlpoints[i].GetColour()));
+    }
+    else {
+      _memory_dc->SetBrush(wxBrush(_controlpoints[i].GetColour()));
+//      _memory_dc->SetLogicalFunction(wxOR_REVERSE);
+//      _memory_dc->SetBrush(*wxTRANSPARENT_BRUSH);
+//      _memory_dc->SetPen(wxPen(_controlpoints[i].GetColour()));
+      _memory_dc->SetPen(wxPen(*wxBLACK));
+    }
     wxCoord px,py;
     World2Window(_controlpoints[i].GetX(),_controlpoints[i].GetY(),px,py);
     _controlpoints[i].SetwxPoint(wxPoint(px,py));
     _memory_dc->DrawCircle(px,py,_controlpoints[i].GetRadius());
+//    _memory_dc->SetLogicalFunction(wxCOPY);
   }
 }
 
@@ -535,12 +560,49 @@ void wxDrawingWindow::OnRightDown(wxMouseEvent& event)
   Window2World(_mouse_x,_mouse_y,x,y);
   CLASS_MESSAGE(boost::format("world coord %1% %2%")%x%y);
 
+  // check if we are at a control point
+  //int closest = CheckCtrlPoint();
+
   // create the popup menu here
   wxMenu menu(_T("Menu"));
-  wxMenuItem* item = menu.Append(wxID_AddControl, wxT("&Add control point"));
+  if (focus_pointid==-1) {
+    wxMenuItem* item = menu.Append(wxID_AddControl, wxT("&Add control point"));
+  } else {
+    menu.Append(wxID_RemoveControl, wxT("&Remove control point"));
+    menu.Append(wxID_SetControlColour, wxT("&Colour"));
+   }
   PopupMenu(&menu, _mouse_x,_mouse_y);
   event.Skip();
 
+}
+
+//-------------------------------------------------
+int wxDrawingWindow::CheckCtrlPoint()
+{
+  double mindist = 1000;
+  int closest = -1;
+
+  // search for closest controlpoints
+  for(int i=0;i<(int)_controlpoints.size();i++) {
+    wxPoint p;
+    p = _controlpoints[i].GetwxPoint();
+    _controlpoints[i].SetFocus(false);
+    double tmp = (p.x-_mouse_x)*(p.x-_mouse_x)+(p.y-_mouse_y)*(p.y-_mouse_y);
+    if (tmp<_controlpoints[i].GetRadius()*_controlpoints[i].GetRadius()) {
+      if (closest==-1) {
+        mindist = tmp;
+        closest = i;
+      }
+      else {
+        if (tmp<mindist) {
+          mindist = tmp;
+          closest = i;
+        }
+      }
+    }
+  }
+
+  return closest;
 }
 
 //-------------------------------------------------
@@ -590,6 +652,8 @@ void wxDrawingWindow::OnMotion(wxMouseEvent& event)
     return;
   }
 
+  int closest = CheckCtrlPoint();
+/*
   double mindist = 1000;
   int closest = -1;
 
@@ -612,7 +676,7 @@ void wxDrawingWindow::OnMotion(wxMouseEvent& event)
       }
     }
   }
-
+*/
   if (closest!=-1) {
     _controlpoints[closest].SetFocus(true);
   }
@@ -665,3 +729,24 @@ void wxDrawingWindow::OnAddControl(wxCommandEvent& event)
   Refresh(false);
 }
 
+//-------------------------------------------------
+void wxDrawingWindow::OnRemoveControl(wxCommandEvent& event)
+{
+  RemoveControl(focus_pointid);
+  Refresh(false);
+}
+
+//-------------------------------------------------
+void wxDrawingWindow::OnControlColour(wxCommandEvent& event)
+{
+  // Select the new colour
+  wxColourData data;
+  data.SetColour( _controlpoints[focus_pointid].GetColour());
+  wxColourDialog dialog(this, &data);
+
+  if ( dialog.ShowModal() == wxID_OK )
+  {
+    _controlpoints[focus_pointid].SetColour( dialog.GetColourData().GetColour());
+  }
+  Refresh(false);
+}

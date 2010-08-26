@@ -332,6 +332,54 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
 }
 
 //---------------------------------------------------
+//  SetCtrlPointX
+//---------------------------------------------------
+void WrapClass_wxDrawingWindow::
+      wrap_SetCtrlPointX::SetParametersComments() 
+{
+  ADDPARAMCOMMENT_TYPE(int,"index of the control point");
+  ADDPARAMCOMMENT_TYPE(float,"X position in world coordinates.");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxDrawingWindow::
+      wrap_SetCtrlPointX::CallMember( ParamList* p)
+{
+  int n     = 0;
+
+  GET_PARAM(int,  index,0)
+  GET_PARAM(float,xpos,0)
+
+  _objectptr->_drawingwin->_controlpoints[index].SetPos(
+      xpos,
+      _objectptr->_drawingwin->_controlpoints[index].GetY());
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  SetCtrlPointY
+//---------------------------------------------------
+void WrapClass_wxDrawingWindow::
+      wrap_SetCtrlPointY::SetParametersComments() 
+{
+  ADDPARAMCOMMENT_TYPE(int,"index of the control point");
+  ADDPARAMCOMMENT_TYPE(float,"Y position in world coordinates.");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxDrawingWindow::
+      wrap_SetCtrlPointY::CallMember( ParamList* p)
+{
+  int n     = 0;
+
+  GET_PARAM(int,  index,0)
+  GET_PARAM(float,ypos,0)
+
+  _objectptr->_drawingwin->_controlpoints[index].SetPos(
+      _objectptr->_drawingwin->_controlpoints[index].GetX(),
+      ypos);
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
 //  SetCtrlPointCallback
 //---------------------------------------------------
 void WrapClass_wxDrawingWindow::

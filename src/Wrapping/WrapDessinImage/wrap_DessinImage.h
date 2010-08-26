@@ -87,6 +87,8 @@ class WrapClass_DessinImage  : public WrapClass_FenetreDessin
 
     ADD_CLASS_METHOD(DrawLineZ,  "Draws a line on XY plane.");
 
+    ADD_CLASS_METHOD(SetIntensityRange, "Sets the lower and upper limits of the intensity look-up table.");
+
     void AddMethods(_parentclass_ptr& this_ptr )
     {
       // Add members from wxWindow
@@ -132,6 +134,7 @@ class WrapClass_DessinImage  : public WrapClass_FenetreDessin
       AddVar_GetZPos(               this_ptr);
       AddVar_getimage(              this_ptr);
       AddVar_DrawLineZ(             this_ptr);
+      AddVar_SetIntensityRange(     this_ptr);
     };
 };
 

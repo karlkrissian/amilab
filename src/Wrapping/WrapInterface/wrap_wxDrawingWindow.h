@@ -47,6 +47,8 @@ class WrapClass_wxDrawingWindow : public WrapClass_wxWindow
     ADD_CLASS_METHOD(GetNumberOfCtrlPoints,"Returns the number of control points used.");
     ADD_CLASS_METHOD(GetCtrlPointX,        "Returns the X position a given control point.");
     ADD_CLASS_METHOD(GetCtrlPointY,        "Returns the Y position a given control point.");
+    ADD_CLASS_METHOD(SetCtrlPointX,        "Sets the X position a given control point.");
+    ADD_CLASS_METHOD(SetCtrlPointY,        "Sets the Y position a given control point.");
     ADD_CLASS_METHOD(SetCtrlPointCallback, "Callback for motion of a control point.")
 
     void AddMethods(_parentclass_ptr& this_ptr )
@@ -65,6 +67,8 @@ class WrapClass_wxDrawingWindow : public WrapClass_wxWindow
       AddVar_GetNumberOfCtrlPoints( this_ptr);
       AddVar_GetCtrlPointX(         this_ptr);
       AddVar_GetCtrlPointY(         this_ptr);
+      AddVar_SetCtrlPointX(         this_ptr);
+      AddVar_SetCtrlPointY(         this_ptr);
       AddVar_SetCtrlPointCallback(  this_ptr);
     }
 

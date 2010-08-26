@@ -1233,3 +1233,26 @@ BasicVariable::ptr WrapClass_DessinImage::
 }
 
 
+//---------------------------------------------------
+//  SetIntensityRange
+//---------------------------------------------------
+void WrapClass_DessinImage::
+      wrap_SetIntensityRange::SetParametersComments() 
+{
+  ADDPARAMCOMMENT_TYPE(float, "minimal intensity for LUT.");
+  ADDPARAMCOMMENT_TYPE(float, "maximal intensity for LUT.");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_DessinImage::
+      wrap_SetIntensityRange::CallMember( ParamList* p)
+{
+  DessinImage::ptr di(this->_objectptr->GetObj());
+  int n=0;
+  GET_PARAM(float,Imin,0)
+  GET_PARAM(float,Imax,255)
+
+  di->SetIntensityRange(Imin,Imax);
+  return BasicVariable::ptr();
+}
+
+
