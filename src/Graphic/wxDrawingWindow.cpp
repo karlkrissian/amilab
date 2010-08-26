@@ -33,6 +33,7 @@ enum {
   wxID_AddControl = 2000,
   wxID_RemoveControl,
   wxID_SetControlColour,
+  wxID_ShowGrid,
 };
 
 BEGIN_EVENT_TABLE(wxDrawingWindow, wxWindow)
@@ -46,6 +47,7 @@ BEGIN_EVENT_TABLE(wxDrawingWindow, wxWindow)
   EVT_MENU(         wxID_AddControl,       wxDrawingWindow::OnAddControl)
   EVT_MENU(         wxID_RemoveControl,    wxDrawingWindow::OnRemoveControl)
   EVT_MENU(         wxID_SetControlColour, wxDrawingWindow::OnControlColour)
+  EVT_MENU(         wxID_ShowGrid,         wxDrawingWindow::OnShowGrid)
 END_EVENT_TABLE();
 
 //------------------------------------------------
@@ -566,7 +568,9 @@ void wxDrawingWindow::OnRightDown(wxMouseEvent& event)
   // create the popup menu here
   wxMenu menu(_T("Menu"));
   if (focus_pointid==-1) {
-    wxMenuItem* item = menu.Append(wxID_AddControl, wxT("&Add control point"));
+    menu.Append(wxID_AddControl, wxT("&Add control point"));
+    wxMenuItem* menu_showgrid = menu.AppendCheckItem(wxID_ShowGrid,wxT("Enable &Grid"));
+    menu_showgrid->Check(this->_draw_grid);
   } else {
     menu.Append(wxID_RemoveControl, wxT("&Remove control point"));
     menu.Append(wxID_SetControlColour, wxT("&Colour"));
@@ -748,5 +752,12 @@ void wxDrawingWindow::OnControlColour(wxCommandEvent& event)
   {
     _controlpoints[focus_pointid].SetColour( dialog.GetColourData().GetColour());
   }
+  Refresh(false);
+}
+
+//-------------------------------------------------
+void wxDrawingWindow::OnShowGrid(wxCommandEvent& event)
+{
+  this->_draw_grid = event.IsChecked();
   Refresh(false);
 }

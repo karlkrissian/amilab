@@ -337,9 +337,10 @@ public:
   void OnMotion(        wxMouseEvent& event);
   void OnWheel(         wxMouseEvent& event);
 
-  void OnAddControl(   wxCommandEvent& event);
-  void OnRemoveControl(wxCommandEvent& event);
-  void OnControlColour(wxCommandEvent& event);
+  void OnAddControl(    wxCommandEvent& event);
+  void OnRemoveControl( wxCommandEvent& event);
+  void OnControlColour( wxCommandEvent& event);
+  void OnShowGrid(      wxCommandEvent& event);
 
   DECLARE_EVENT_TABLE();
 };

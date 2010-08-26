@@ -165,6 +165,8 @@ if (!exists(ImageHistoClass)) {
         Imin = -max(-Imin,-min(::input[n]))
         Imax = max(Imax,max(::input[n]))          
       }
+      ::minval = Imin
+      ::maxval = Imax
       ::step = 1
       ::win.FloatConstraints(::minval_id,Imin,Imax,::minval)
       ::win.FloatConstraints(::maxval_id,Imin,Imax,::maxval)
