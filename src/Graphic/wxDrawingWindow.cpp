@@ -30,8 +30,10 @@
 
 
 enum {
-  wxID_AddControl = 2000,
+  wxID_AddControlPoint = 2000,
   wxID_RemoveControl,
+  wxID_ColormapPoint,
+  wxID_VerticalLine,
   wxID_SetControlColour,
   wxID_ShowGrid,
 };
@@ -44,8 +46,10 @@ BEGIN_EVENT_TABLE(wxDrawingWindow, wxWindow)
   EVT_LEFT_UP(      wxDrawingWindow::OnLeftUp )
   EVT_MOTION(       wxDrawingWindow::OnMotion )
   EVT_MOUSEWHEEL(   wxDrawingWindow::OnWheel )
-  EVT_MENU(         wxID_AddControl,       wxDrawingWindow::OnAddControl)
+  EVT_MENU(         wxID_AddControlPoint,  wxDrawingWindow::OnAddControlPoint)
   EVT_MENU(         wxID_RemoveControl,    wxDrawingWindow::OnRemoveControl)
+  EVT_MENU(         wxID_ColormapPoint,    wxDrawingWindow::OnColormapPoint)
+  EVT_MENU(         wxID_VerticalLine,     wxDrawingWindow::OnVerticalLine)
   EVT_MENU(         wxID_SetControlColour, wxDrawingWindow::OnControlColour)
   EVT_MENU(         wxID_ShowGrid,         wxDrawingWindow::OnShowGrid)
 END_EVENT_TABLE();
@@ -102,7 +106,7 @@ void wxDrawingWindow::DrawingAreaInit( )
 
 
 //------------------------------------------------
-void wxDrawingWindow::World2Window(  double x, double y, wxCoord& wx, wxCoord& wy)
+void wxDrawingWindow::World2Window(  double x, double y, wxCoord& wx, wxCoord& wy) const
 {
   wxSize _sz = GetClientSize();
   if (_draw_linearCM) _sz = _sz-_linearCM_margin_size;
@@ -121,9 +125,23 @@ void wxDrawingWindow::World2Window(  double x, double y, wxCoord& wx, wxCoord& w
 */
 }
 
+//------------------------------------------------
+wxCoord wxDrawingWindow::World2WindowX( double x) const
+{
+  wxSize _sz = GetClientSize();
+  return (wxCoord) ((float)(_sz.x-1)/(_xmax-_xmin)*(x-_xmin)+0.5);
+}
+
 
 //------------------------------------------------
-void wxDrawingWindow::Window2World(  wxCoord wx, wxCoord wy, double& x, double& y)
+double wxDrawingWindow::Window2WorldX( const  wxCoord& wx ) const
+{
+  wxSize _sz = GetClientSize();
+  return _xmin + ((float) wx)/(_sz.x-1)*(_xmax-_xmin);
+}
+
+//------------------------------------------------
+void wxDrawingWindow::Window2World(  wxCoord wx, wxCoord wy, double& x, double& y) const
 {
   wxSize _sz = GetClientSize();
   if (_draw_linearCM) _sz = _sz-_linearCM_margin_size;
@@ -189,9 +207,9 @@ bool wxDrawingWindow::SetCurve( int i, InrImage* im)
   * Adds a new control point
   * @param control point
   */
-void wxDrawingWindow::AddControl( const dw_Point2D& pt)
+void wxDrawingWindow::AddControlPoint( const dw_ControlPoint& pt)
 {
-  _controlpoints.push_back(dw_ControlPoint(pt));
+  _controlpoints.push_back(pt);
 }
 
 /**
@@ -446,27 +464,50 @@ void wxDrawingWindow::DrawLinearCM(  )
   // 2: draw each rectangle between 2 successive points
 
   // Add 2 points to the linearcolormap
-  _linearCM.AddPoint(LinearColorMapPoint(_xmin,*wxBLACK));
-  _linearCM.AddPoint(LinearColorMapPoint(_xmax,*wxWHITE));
+  _linearCM.clear();
+  // use current control points ...
+  for(int i = 0; i<(int)_controlpoints.size(); i++) 
+  {  
+    if (_controlpoints[i].GetType() == colormap_point)
+      _linearCM.AddPoint(LinearColorMapPoint(_controlpoints[i].GetX(),
+                                            _controlpoints[i].GetColour()));
+  }
   
-  // should sort the points
+  // the points are already sorted
+  //_linearCM.sort();
 
   // 
   if (_linearCM.size()>=2) {
     // just need x1 and x2 here
-    wxCoord x1,y,x2;
+    wxCoord x1,x2;
+    wxColour current_colour,previous_colour;
+    
     for (int i=0;i<_linearCM.size(); i++)
     {
-      World2Window(_linearCM.GetPoint(i).GetPosition(),0,x2,y);
+      x2 = World2WindowX(_linearCM.GetPoint(i).GetPosition());
+
+/*
+    if (x2<0) {
+        x2=0;
+        current_colour = _linearCM.InterpolateColour(Window2WorldX(x2));
+      } else 
+      if (x2>=_sz.x) {
+        x2=_sz.x-1;
+        current_colour = _linearCM.InterpolateColour(Window2WorldX(x2));
+      } else {
+        current_colour = _linearCM.GetPoint(i).GetColour();
+      }
+*/
+      current_colour = _linearCM.GetPoint(i).GetColour();
       if (i>0) {
-        
         _memory_dc->GradientFillLinear(
-          wxRect( wxPoint(x1,_sz.y-_linearCM_margin_size.GetHeight()+1),
+          wxRect( wxPoint(x1,_sz.y-_linearCM_margin_size.GetHeight()),
                   wxPoint(x2,_sz.y-1)),
-          _linearCM.GetPoint(i-1).GetColour(),
-          _linearCM.GetPoint(i).GetColour());
+          previous_colour,
+          current_colour);
       }
       x1 = x2;
+      previous_colour = current_colour;
     }
   }
 
@@ -474,33 +515,62 @@ void wxDrawingWindow::DrawLinearCM(  )
 
 
 //------------------------------------------------
-void wxDrawingWindow::DrawControls()
+void wxDrawingWindow::DrawControlPoints()
 {
   scoped_ptr<wxPen> current_pen( new wxPen( *wxBLACK, 1, PENSTYLE_SOLID));
   _memory_dc->SetPen(*current_pen);
+  wxSize _sz = GetClientSize();
+
+  wxColour c = GetBackgroundColour();
+  wxColour visible_colour((128+c.Red()  )% 255,
+                          (128+c.Green())% 255,
+                          (128+c.Blue() )% 255);
+  
   
   for(int i = 0; i<(int)_controlpoints.size(); i++) 
   {
+    wxCoord px,py;
+    World2Window(_controlpoints[i].GetX(),_controlpoints[i].GetY(),px,py);
+    if (_controlpoints[i].GetType()==colormap_point) {
+      wxPen pen(visible_colour);
+      pen.SetStyle(wxSHORT_DASH);
+      _memory_dc->SetPen(pen);
+      _memory_dc->DrawLine(px,py,px,_sz.y-_linearCM_margin_size.GetHeight());
+    } else {
+      if (_controlpoints[i].GetVerticalLine()) {
+        _memory_dc->SetPen(wxPen(visible_colour));
+        _memory_dc->DrawLine(px,0,px,_sz.y-_linearCM_margin_size.GetHeight());
+      }      
+    }
+    
     if (_controlpoints[i].HasFocus()) {
       _memory_dc->SetBrush(*wxTRANSPARENT_BRUSH);
-      _memory_dc->SetPen(wxPen(_controlpoints[i].GetColour()));
+      if (_controlpoints[i].GetColour()!=GetBackgroundColour()) {
+        _memory_dc->SetPen(wxPen(_controlpoints[i].GetColour()));
+      } else {
+        _memory_dc->SetPen(wxPen(visible_colour));
+      }
     }
     else {
       _memory_dc->SetBrush(wxBrush(_controlpoints[i].GetColour()));
 //      _memory_dc->SetLogicalFunction(wxOR_REVERSE);
 //      _memory_dc->SetBrush(*wxTRANSPARENT_BRUSH);
 //      _memory_dc->SetPen(wxPen(_controlpoints[i].GetColour()));
-      _memory_dc->SetPen(wxPen(*wxBLACK));
+      _memory_dc->SetPen(wxPen(visible_colour));
+//      _memory_dc->SetPen(wxPen(*wxBLACK));
     }
-    wxCoord px,py;
-    World2Window(_controlpoints[i].GetX(),_controlpoints[i].GetY(),px,py);
     _controlpoints[i].SetwxPoint(wxPoint(px,py));
     _memory_dc->DrawCircle(px,py,_controlpoints[i].GetRadius());
 //    _memory_dc->SetLogicalFunction(wxCOPY);
   }
 }
 
-
+//------------------------------------------------
+//------------------------------------------------
+void wxDrawingWindow::DrawControls()
+{
+  DrawControlPoints();
+}
 //---------------------------------------------------------------------
 void wxDrawingWindow::DrawingAreaDisplay( )
 //                  ------------------
@@ -617,11 +687,20 @@ void wxDrawingWindow::OnRightDown(wxMouseEvent& event)
   // create the popup menu here
   wxMenu menu(_T("Menu"));
   if (focus_pointid==-1) {
-    menu.Append(wxID_AddControl, wxT("&Add control point"));
+    menu.Append(wxID_AddControlPoint, wxT("&Add control point"));
     wxMenuItem* menu_showgrid = menu.AppendCheckItem(wxID_ShowGrid,wxT("Enable &Grid"));
     menu_showgrid->Check(this->_draw_grid);
   } else {
     menu.Append(wxID_RemoveControl, wxT("&Remove control point"));
+
+    wxMenuItem* menu_cm = menu.AppendCheckItem(wxID_ColormapPoint, wxT("&Colormap"));
+    menu_cm->Check(_controlpoints[focus_pointid].GetType()==colormap_point);
+
+    if (_controlpoints[focus_pointid].GetType()==normal_point) {
+      wxMenuItem* menu_vl = menu.AppendCheckItem(wxID_VerticalLine, wxT("&Vertical Line"));
+      menu_vl->Check(_controlpoints[focus_pointid].GetVerticalLine());
+    }
+
     menu.Append(wxID_SetControlColour, wxT("&Colour"));
    }
   PopupMenu(&menu, _mouse_x,_mouse_y);
@@ -774,11 +853,11 @@ void wxDrawingWindow::OnWheel(wxMouseEvent& event)
 }
 
 //-------------------------------------------------
-void wxDrawingWindow::OnAddControl(wxCommandEvent& event)
+void wxDrawingWindow::OnAddControlPoint(wxCommandEvent& event)
 {
   double x,y;
   Window2World(_mouse_x,_mouse_y,x,y);
-  AddControl(dw_Point2D(x,y));
+  AddControlPoint(dw_ControlPoint(dw_Point2D(x,y)));
   Refresh(false);
 }
 
@@ -786,6 +865,24 @@ void wxDrawingWindow::OnAddControl(wxCommandEvent& event)
 void wxDrawingWindow::OnRemoveControl(wxCommandEvent& event)
 {
   RemoveControl(focus_pointid);
+  Refresh(false);
+}
+
+//-------------------------------------------------
+void wxDrawingWindow::OnColormapPoint(wxCommandEvent& event)
+{
+  
+  if (event.IsChecked())
+    _controlpoints[focus_pointid].SetType(colormap_point);
+  else
+    _controlpoints[focus_pointid].SetType(normal_point);
+  Refresh(false);
+}
+
+//-------------------------------------------------
+void wxDrawingWindow::OnVerticalLine(wxCommandEvent& event)
+{
+  _controlpoints[focus_pointid].SetVerticalLine(event.IsChecked());
   Refresh(false);
 }
 

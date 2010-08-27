@@ -34,34 +34,59 @@
 #include "CallBackBase.h"
 #include "LinearColorMap.h"
 
+
+typedef enum {
+ normal_point,
+ colormap_point,
+} ControlPointType;
+
+/**
+  * Control point
+  **/
 class dw_ControlPoint
 {
 private:
-  dw_Point2D pos;
-  wxPoint    winpos;
-  bool       selected;
-  bool       has_focus;
+  dw_Point2D       pos;
+  wxPoint          winpos;
+  bool             selected;
+  bool             has_focus;
   /// Point radius
-  int        radius;
+  int              radius;
   /// Point colour
-  wxColour   colour;
+  wxColour         colour;
+  ControlPointType type;
+  /// other properties
+  bool             horizontal_line;
+  bool             vertical_line;
 
 public:
   dw_ControlPoint()
   {
-    selected = false;
-    has_focus = false;
-    radius = 3;
-    colour = *wxGREEN;
+    DefaultInit();
   }
 
   dw_ControlPoint(const dw_Point2D& p)
   {
+    DefaultInit();
     pos = p;
+  }
+
+  dw_ControlPoint(const dw_Point2D& p, ControlPointType t)
+  {
+    DefaultInit();
+    pos = p;
+    type = t;
+  }
+
+  void DefaultInit()
+  {
     selected = false;
     has_focus = false;
     radius = 3;
     colour = *wxGREEN;
+    type = normal_point;
+    horizontal_line = false;
+    vertical_line = false;
   }
 
   void operator = (const dw_Point2D& p )
@@ -85,8 +110,16 @@ public:
 
   void SetFocus(bool act) { has_focus = act; }
   bool HasFocus()         { return has_focus; }
+  
+  ControlPointType GetType() const { return type; }
+  void SetType( const ControlPointType& t) { type = t; }
+  
+  void SetHorizontalLine(bool hl)  { horizontal_line = hl; }
+  bool GetHorizontalLine() const { return horizontal_line; }
+  
+  void SetVerticalLine(bool vl) { vertical_line = vl; }
+  bool GetVerticalLine() const { return vertical_line; }
 };
-
 
 /**
   * A wxWindow that draws 2D curves.
@@ -151,12 +184,12 @@ public:
     this->_ctrlpt_callback = callback;
   }
 
-  int GetNumberOfCtrlPoints() 
+  int GetNumberOfCtrlPoints() const
   {
     return _controlpoints.size();
   }
 
-  dw_ControlPoint GetControlPoint(int n)
+  dw_ControlPoint GetControlPoint(int n) const
   {
     if ((n>=0)&&(n<(int)_controlpoints.size()))
       return _controlpoints[n];
@@ -164,12 +197,22 @@ public:
       return dw_ControlPoint();
   }
 
+/*
+  void SetCtrlPointCallback( CallBackBase::ptr callback) {
+    this->_ctrlpt_callback = callback;
+  }
+*/
+
   void DrawingAreaDisplay( );
 
   void World2Window( double x, double y, 
-                      wxCoord& wx, wxCoord& wy);
+                      wxCoord& wx, wxCoord& wy) const;
 
-  void Window2World( wxCoord wx, wxCoord wy, double& x, double& y);
+  wxCoord World2WindowX( double x) const;
+
+  void Window2World( wxCoord wx, wxCoord wy, double& x, double& y) const;
+
+  double Window2WorldX(const wxCoord& wx ) const;
 
   void DrawAxes( );
 
@@ -265,7 +308,7 @@ public:
    * Adds a new control point
    * @param control point
    */
-  void AddControl( const dw_Point2D& pt);
+  void AddControlPoint( const dw_ControlPoint& pt);
 
   /**
    * Removes a control point
@@ -319,6 +362,7 @@ public:
 
   void WriteCurrentPosition( wxDC& dc);
 
+  void DrawControlPoints();
   void DrawControls();
 
   void Paint( );
@@ -345,10 +389,12 @@ public:
   void OnMotion(        wxMouseEvent& event);
   void OnWheel(         wxMouseEvent& event);
 
-  void OnAddControl(    wxCommandEvent& event);
-  void OnRemoveControl( wxCommandEvent& event);
-  void OnControlColour( wxCommandEvent& event);
-  void OnShowGrid(      wxCommandEvent& event);
+  void OnAddControlPoint( wxCommandEvent& event);
+  void OnRemoveControl(   wxCommandEvent& event);
+  void OnColormapPoint(   wxCommandEvent& event);
+  void OnVerticalLine(    wxCommandEvent& event);
+  void OnControlColour(   wxCommandEvent& event);
+  void OnShowGrid(        wxCommandEvent& event);
 
   DECLARE_EVENT_TABLE();
 };
