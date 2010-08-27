@@ -75,6 +75,8 @@ wxDrawingWindow::wxDrawingWindow(wxWindow *parent, wxWindowID id,
   _xmax = _ymax = 10;
 
   _draw_grid = true;
+  _draw_linearCM=true;
+  _linearCM_margin_size = wxSize(0,7);
 }
 
 
@@ -103,14 +105,20 @@ void wxDrawingWindow::DrawingAreaInit( )
 void wxDrawingWindow::World2Window(  double x, double y, wxCoord& wx, wxCoord& wy)
 {
   wxSize _sz = GetClientSize();
+  if (_draw_linearCM) _sz = _sz-_linearCM_margin_size;
+
   int px = 0,py = 0;
   px = (int) ((float)(_sz.x-1)/(_xmax-_xmin)*(x-_xmin)+0.5);
   py = (int) ((float)(_sz.y-1)-(float)(_sz.y-1)/(_ymax-_ymin)*(y-_ymin)+0.5);
 
+  wx = px;
+  wy = py;
+/*
   wx = macro_max(-1,px);
   wy = macro_max(-1,py);
   if (wx>_sz.x) wx = _sz.x;
   if (wy>_sz.y) wy = _sz.y;
+*/
 }
 
 
@@ -118,6 +126,7 @@ void wxDrawingWindow::World2Window(  double x, double y, wxCoord& wx, wxCoord& w
 void wxDrawingWindow::Window2World(  wxCoord wx, wxCoord wy, double& x, double& y)
 {
   wxSize _sz = GetClientSize();
+  if (_draw_linearCM) _sz = _sz-_linearCM_margin_size;
 
   x = _xmin + ((float) wx)/(_sz.x-1)*(_xmax-_xmin);
   y = _ymin + ((float) (_sz.y-1-wy) )/(_sz.y-1)*(_ymax-_ymin);
@@ -426,6 +435,45 @@ void wxDrawingWindow::DrawAxes(  )
 
 
 //------------------------------------------------
+void wxDrawingWindow::DrawLinearCM(  )
+{
+  if (!_draw_linearCM) return;
+
+  wxSize _sz = GetClientSize();
+
+  // need to 
+  // 1: sort the points
+  // 2: draw each rectangle between 2 successive points
+
+  // Add 2 points to the linearcolormap
+  _linearCM.AddPoint(LinearColorMapPoint(_xmin,*wxBLACK));
+  _linearCM.AddPoint(LinearColorMapPoint(_xmax,*wxWHITE));
+  
+  // should sort the points
+
+  // 
+  if (_linearCM.size()>=2) {
+    // just need x1 and x2 here
+    wxCoord x1,y,x2;
+    for (int i=0;i<_linearCM.size(); i++)
+    {
+      World2Window(_linearCM.GetPoint(i).GetPosition(),0,x2,y);
+      if (i>0) {
+        
+        _memory_dc->GradientFillLinear(
+          wxRect( wxPoint(x1,_sz.y-_linearCM_margin_size.GetHeight()+1),
+                  wxPoint(x2,_sz.y-1)),
+          _linearCM.GetPoint(i-1).GetColour(),
+          _linearCM.GetPoint(i).GetColour());
+      }
+      x1 = x2;
+    }
+  }
+
+}
+
+
+//------------------------------------------------
 void wxDrawingWindow::DrawControls()
 {
   scoped_ptr<wxPen> current_pen( new wxPen( *wxBLACK, 1, PENSTYLE_SOLID));
@@ -526,6 +574,7 @@ void wxDrawingWindow::Paint()
     DrawCurve(i);
   }
   DrawControls();
+  DrawLinearCM();
   DrawingAreaDisplay();
 }
 

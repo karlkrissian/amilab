@@ -32,6 +32,7 @@
 #include "dw_Curve.h"
 #include "wx/dcclient.h"
 #include "CallBackBase.h"
+#include "LinearColorMap.h"
 
 class dw_ControlPoint
 {
@@ -114,6 +115,11 @@ class wxDrawingWindow : public wxScrolledWindow
   //! std:vector of dw_Point2D: list of control points
   std::vector<dw_ControlPoint> _controlpoints;
 
+  //! LinearColorMap functionality
+  LinearColorMap _linearCM;
+  bool   _draw_linearCM;
+  wxSize _linearCM_margin_size;
+
   //! index of the control point having the focus if any, -1 otherwise
   int focus_pointid;
 
@@ -166,6 +172,8 @@ public:
   void Window2World( wxCoord wx, wxCoord wy, double& x, double& y);
 
   void DrawAxes( );
+
+  void DrawLinearCM( );
 
   /**
    * Seach for the closest control point
