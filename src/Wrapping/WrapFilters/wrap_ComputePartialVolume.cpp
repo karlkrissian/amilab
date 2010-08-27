@@ -62,12 +62,6 @@ BasicVariable::ptr wrap_AnalyticFunctionBase::CallMember(ParamList* p)
   
 } 
 
-
-// TODO: Constructor y operador ()
-//No sé como hacer lo del constructor aquí porque no tiene. Tampoco sé hacer el
-//operador (), que además tampoco está añadido en el .h
-
-
 //---------------------------------------------------
 //AnalyticCircle Wrapping
 //---------------------------------------------------
@@ -105,10 +99,6 @@ BasicVariable::ptr wrap_AnalyticCircle::CallMember(ParamList* p)
   if (!p) ClassHelpAndReturn;
   return CreateVar_AnalyticCircle((new AnalyticCircle()));
 }
-// TODO: operador ()
-//---------------------------------------------------
-//operator () ????
-
 //---------------------------------------------------
 //setCenter
 void WrapClass_AnalyticCircle::wrap_setCenter::SetParametersComments()
@@ -226,10 +216,6 @@ BasicVariable::ptr wrap_AnalyticLine::CallMember(ParamList* p)
   if (!p) ClassHelpAndReturn;
   return CreateVar_AnalyticLine((new AnalyticLine()));
 }
-// TODO: operador ()
-//---------------------------------------------------
-//operator () ????
-
 //---------------------------------------------------
 //setM
 void WrapClass_AnalyticLine::wrap_setM::SetParametersComments()
@@ -349,10 +335,6 @@ BasicVariable::ptr wrap_AnalyticSphere::CallMember(ParamList* p)
   if (!p) ClassHelpAndReturn;
   return CreateVar_AnalyticSphere((new AnalyticSphere()));
 }
-// TODO: operador ()
-//---------------------------------------------------
-//operator () ????
-
 //---------------------------------------------------
 //setCenter
 void WrapClass_AnalyticSphere::wrap_setCenter::SetParametersComments()
@@ -480,10 +462,6 @@ BasicVariable::ptr wrap_AnalyticTorus::CallMember(ParamList* p)
   if (!p) ClassHelpAndReturn;
   return CreateVar_AnalyticTorus((new AnalyticTorus()));
 }
-// TODO: operador ()
-//---------------------------------------------------
-//operator () ????
-
 //---------------------------------------------------
 //setCenter
 void WrapClass_AnalyticTorus::wrap_setCenter::SetParametersComments()

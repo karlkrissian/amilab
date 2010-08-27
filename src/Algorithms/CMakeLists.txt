@@ -22,6 +22,9 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Algorithms/Basic
   ${AMILAB_SOURCE_DIR}/Algorithms/Denoising
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapCommon
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapDessinImage
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapInterface
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets
   ${AMILAB_SOURCE_DIR}
   ${AMIFLUID_INCLUDE_DIR}
   ${PTHREADS_INCLUDE_DIR}
@@ -50,6 +53,7 @@ SET(Algorithms_SRCS
   Denoising/NLmeans.cpp
 
   Segmentation/RegionGrowingTest.cpp
+  Segmentation/SubPixel2D.cpp
 
   Others/ComputePartialVolume.cpp
 )
@@ -67,6 +71,7 @@ SET(Algorithms_HDRS
   Denoising/NLmeans.h
 
   Segmentation/RegionGrowingTest.h
+  Segmentation/SubPixel2D.h
 
   Others/ComputePartialVolume.h
 )
