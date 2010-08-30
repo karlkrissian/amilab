@@ -4460,6 +4460,94 @@ void DessinImage::DeplaceSourisBout3()
 
 // ---------------------------------------------------------
 //
+void  DessinImage::SetUserColormap(const InrImage::ptr& image, float center, float extent)
+//    ---------------
+{
+  if ((image->_format==WT_RGB)&&
+  (image->DimX()==256)&&(image->DimY()==1)&&(image->DimZ()==1)) {
+    _user_colormap = image;
+    _colormap_center = center;
+    _colormap_extent = extent;
+    Param._I._colorspace = COLORSPACE_USER;
+  }
+}
+
+
+//-------------------------------------------------
+void DessinImage::UpdateColormap()
+{
+  DessinImageParametres* Param = GetParam();
+  InrImage::ptr _image = Get_image();
+
+  switch ( Param->_I._colorspace ){
+
+    case COLORSPACE_GREY:
+      SetPaletteGrey(PALETTE_RGB);
+    break;
+
+
+    case COLORSPACE_RAINBOW:
+      unsigned char rainbow[256*3];
+      unsigned char pattern[192];
+
+      for (int i = 0; i <= 63; i++)
+      {
+        pattern[i]= (unsigned char) (i/63.0*255.0);
+      }
+
+      for (int i = 64; i <= 127; i++)
+      {
+        pattern[i]= (unsigned char) 255;
+      }
+
+      for (int i = 128; i <= 191; i++)
+      {
+        pattern[i]= (unsigned char) (255.0-(i-128.0)/64.0*255.0);
+      }
+
+      for (int i = 0; i <= 256*3-1; i++)
+      {
+        rainbow[i]     = 0;
+      }
+
+      for (int i = 0; i <= 255; i++)
+      {
+        if (i<192-32)
+          rainbow[i+512] = pattern[32+i];
+
+        if (i<192)
+          rainbow[i+256+32] = pattern[i];
+
+        if ((i<192)&&((i+96)<256))
+          rainbow[i+96] = pattern[i];
+      }
+
+      SetPaletteRU(rainbow);
+    break;
+
+    case COLORSPACE_USER:
+      InrImage::ptr _user_colormap = Get_user_colormap();
+      if (_user_colormap.get()) {
+        unsigned char colmap[256*3];
+        for(int i=0;i<256;i++) {
+          colmap[i]    =(unsigned char)(*_user_colormap)(i,0,0,0);
+          colmap[i+256]=(unsigned char)(*_user_colormap)(i,0,0,1);
+          colmap[i+512]=(unsigned char)(*_user_colormap)(i,0,0,2);
+        }
+        SetPaletteRU(colmap);
+      }
+      else
+        fprintf(stderr,"DessinImage::CB_colorspace() \t no user defined colormap ! \n");
+    break;
+
+  } // end switch
+
+  Param->_MAJ._intensite = true;
+  Param->_MAJ.MAJCoupes();
+}
+
+// ---------------------------------------------------------
+//
 void DessinImage::DrawContour( int i, int size, int style)
 //                -----------
 {

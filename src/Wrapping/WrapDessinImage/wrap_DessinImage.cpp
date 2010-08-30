@@ -623,10 +623,10 @@ BasicVariable::ptr WrapClass_DessinImage::
 }
 
 //---------------------------------------------------
-//  SetColormap
+//  SetUserColormap
 //---------------------------------------------------
 void WrapClass_DessinImage::
-      wrap_SetColormap::SetParametersComments() 
+      wrap_SetUserColormap::SetParametersComments() 
 {
   //TODO
   ADDPARAMCOMMENT_TYPE(InrImage,"image to use");
@@ -636,7 +636,7 @@ void WrapClass_DessinImage::
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_DessinImage::
-      wrap_SetColormap::CallMember( ParamList* p)
+      wrap_SetUserColormap::CallMember( ParamList* p)
 {
   DessinImage::ptr di(this->_objectptr->_obj);
 
@@ -658,6 +658,21 @@ BasicVariable::ptr WrapClass_DessinImage::
   //di->SetUserColormap(image.get(),center,extent);
   di->SetUserColormap(image,center,extent);
 
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  UpdateColormap
+//---------------------------------------------------
+void WrapClass_DessinImage::
+      wrap_UpdateColormap::SetParametersComments() 
+{}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_DessinImage::
+      wrap_UpdateColormap::CallMember( ParamList* p)
+{
+  DessinImage::ptr di(this->_objectptr->_obj);
+  di->UpdateColormap();
   return BasicVariable::ptr();
 }
 

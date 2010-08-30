@@ -53,6 +53,8 @@
 #include "wrap_Viewer3D.h"
 #include "wrap_GLTransfMatrix.h"
 
+#include "wrap_dwControlPoint.h"
+
 extern VarContexts  Vars;
 extern MainFrame*   GB_main_wxFrame;
 
@@ -123,7 +125,7 @@ void AddWrapWxWidgets()
 //  AddVar_wxSize(    Vars.GetBuiltinContext());
 
 //  ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxColour",    wrap_wxColour); DEPRECATED
-  AddVar_wxColour( amiobject->GetContext(), "wxColour");
+  WrapClass_wxColour::AddVar_wxColour( amiobject->GetContext(), "wxColour");
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxImage",     wrap_wxImage);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxBitmap",    wrap_wxBitmap);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxHtmlWindow",wrap_wxHtmlWindow);
@@ -148,9 +150,13 @@ void AddWrapAmilab()
   AMIObject::ptr obj(AddWrap_MainFrame(GB_main_wxFrame));
   amiobject->GetContext()->AddVar<AMIObject>("MainFrame", obj, amiobject->GetContext());
 
+  WrapClass_dwControlPoint::AddVar_dwControlPoint( amiobject->GetContext());
+
   // 3. add the variables to this instance
   Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), 
       amiobject,Vars.GetBuiltinContext());
+
+
 }
 
 void AddWrapIO()
@@ -188,7 +194,7 @@ void AddWrapImage()
 //--------------------------------------------
 void AddWrapSurface()
 {
-  AddVar_SurfacePoly( Vars.GetBuiltinContext());
+  WrapClass_SurfacePoly::AddVar_SurfacePoly( Vars.GetBuiltinContext());
 }
 
 //--------------------------------------------
@@ -215,7 +221,8 @@ void AddWrapBasicTypes()
 //  ADDOBJECTVAR_NAME(C_wrap_varfunction,"VarList",   wrap_VarList);
 //  ADDOBJECTVAR_NAME(C_wrap_varfunction,"VarVector", wrap_VarVector);
   AddVar_VarVector( Vars.GetBuiltinContext());
-  AddVar_File( Vars.GetBuiltinContext());
+
+  WrapClass_File::AddVar_File( Vars.GetBuiltinContext());
 //  AddVar_VarList( Vars.GetBuiltinContext());
 }
 

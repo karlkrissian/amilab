@@ -45,11 +45,18 @@ class WrapClass_wxDrawingWindow : public WrapClass_wxWindow
     ADD_CLASS_METHOD(SetCurveDrawPoints,  "Enable/Disable drawing of a curve points.");
     ADD_CLASS_METHOD(Paint,               "Redraws the contents of the window.");
     ADD_CLASS_METHOD(GetNumberOfCtrlPoints,"Returns the number of control points used.");
+    ADD_CLASS_METHOD(GetCtrlPoint,        "Returns the control point at the given index.");
+    ADD_CLASS_METHOD(SetCtrlPoint,        "Sets the control point at the given index.");
     ADD_CLASS_METHOD(GetCtrlPointX,        "Returns the X position a given control point.");
     ADD_CLASS_METHOD(GetCtrlPointY,        "Returns the Y position a given control point.");
     ADD_CLASS_METHOD(SetCtrlPointX,        "Sets the X position a given control point.");
     ADD_CLASS_METHOD(SetCtrlPointY,        "Sets the Y position a given control point.");
-    ADD_CLASS_METHOD(SetCtrlPointCallback, "Callback for motion of a control point.")
+    ADD_CLASS_METHOD(SetCtrlPointCallback, "Callback for motion of a control point.");
+
+    ADD_CLASS_METHOD(AddControlPoint,      "Adds a control point.");
+    ADD_CLASS_METHOD(RemoveControl,        "Removes a control point.");
+
+    ADD_CLASS_METHOD(GetColormapImage,     "Returns the image representing the colormap.");
 
     void AddMethods(_parentclass_ptr& this_ptr )
     {
@@ -65,11 +72,18 @@ class WrapClass_wxDrawingWindow : public WrapClass_wxWindow
       AddVar_SetCurveDrawPoints(    this_ptr);
       AddVar_Paint(                 this_ptr, "_Paint");
       AddVar_GetNumberOfCtrlPoints( this_ptr);
+      AddVar_GetCtrlPoint(          this_ptr);
+      AddVar_SetCtrlPoint(          this_ptr);
       AddVar_GetCtrlPointX(         this_ptr);
       AddVar_GetCtrlPointY(         this_ptr);
       AddVar_SetCtrlPointX(         this_ptr);
       AddVar_SetCtrlPointY(         this_ptr);
       AddVar_SetCtrlPointCallback(  this_ptr);
+
+      AddVar_AddControlPoint(       this_ptr);
+      AddVar_RemoveControl(         this_ptr);
+
+      AddVar_GetColormapImage(      this_ptr);
     }
 
 };

@@ -186,7 +186,7 @@ BasicVariable::ptr WrapClass_VarVector::wrap_at::CallMember( ParamList* p)
   int n=0;
   if (!get_int_param(pos, p, n)) ClassHelpAndReturn;
 
-  if ((pos<0)||(pos>=this->_objectptr->_obj->size())) 
+  if ((pos<0)||(pos>=(int)this->_objectptr->_obj->size())) 
     return BasicVariable::ptr();
   else
     return this->_objectptr->_obj->at(pos);
@@ -222,7 +222,7 @@ BasicVariable::ptr WrapClass_VarVector::
   if (!get_int_param(pos, p, n)) ClassHelpAndReturn;
   BasicVariable::ptr v(p->GetParam(n++));
 
-  if ((pos<0)||(pos>=this->_objectptr->_obj->size())) 
+  if ((pos<0)||(pos>=(int)this->_objectptr->_obj->size())) 
     return BasicVariable::ptr();
   else
     if (v.get()) {

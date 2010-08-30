@@ -16,7 +16,9 @@
 #include "paramlist.h"
 #include "DefineClass.hpp"
 
-
+// new includes needed for WrapClass<T>
+#include "ami_object.h"
+#include "Variable.hpp"
 
 /** Macro for adding a class that wraps a method.
   */
@@ -73,6 +75,28 @@ void AddVar_##methodname(  _parentclass_ptr& pc, const std::string& newname = #m
   tmpobj->GetContext()->AddVar<WrapClassMember>(newname, tmp,tmpobj->GetContext()); \
 }
 
+/** Macro for adding the class constructor with a static function
+  to create the variable
+  */
+#define ADD_CLASS_CONSTRUCTOR(methodname,description_str) \
+/**\
+ * description_str\
+ **/\
+class wrap_##methodname : public WrapClassMember { \
+  public: \
+    wrap_##methodname() { \
+      functionname = #methodname; \
+      description=description_str; \
+      SetParametersComments(); \
+    } \
+    void SetParametersComments(); \
+    BasicVariable::ptr CallMember(ParamList*); \
+}; \
+\
+static void AddVar_##methodname(  Variables::ptr& _context, const std::string& newname = #methodname) {\
+  boost::shared_ptr<WrapClassMember> tmp( new wrap_##methodname());\
+  _context->AddVar<WrapClassMember>(newname, tmp, _context); \
+}
 
 /**
     Macro for adding the members to a class.
@@ -127,6 +151,9 @@ void AddVar_##methodname(  _parentclass_ptr& pc, const std::string& newname = #m
 
 class AMIObject;
 
+/**
+ Base class for class wrapping
+ **/
 class  WrapClassBase
 {
   DEFINE_CLASS(WrapClassBase);
@@ -139,6 +166,67 @@ class  WrapClassBase
     {
       amiobject = boost::weak_ptr<AMIObject>(obj);
     }
+};
+
+// is it useful to add this intermediate class?
+/**
+ Base Template class for class wrapping.
+ Allows including some static member for the construction and the management of the wrapped class.
+ **/
+template<class T>
+class WrapClass: public WrapClassBase
+{
+
+  protected:  
+    // for nested classes
+    typedef boost::shared_ptr<WrapClass<T> > _parentclass_ptr;
+
+  public:
+    typedef boost::shared_ptr<WrapClass<T> > ptr;
+
+
+    /// Stores a pointer to an object of type File.
+    boost::shared_ptr<T> _obj;
+    const boost::shared_ptr<T>& GetObj() const { return _obj; }
+
+    /// Constructor
+    WrapClass<T>(boost::shared_ptr<T> si):  _obj(si)
+    {}
+
+    // need a virtual constructor here
+    // TODO
+    virtual void AddMethods(WrapClass<T>::ptr this_ptr ) = 0;
+  
+    /**
+    * Create a Wrapped object
+    * @param objectptr input smart pointer to a WrapClass<T>
+    * @return smart pointer to an AMIObject class
+    */
+    static AMIObject::ptr AddWrap( WrapClass<T>::ptr& objectptr)
+    {
+      // Create new instance of the class
+      AMIObject::ptr amiobject( new AMIObject);
+      amiobject->SetName(to_string<T>::value());
+      amiobject->SetWrappedObject(objectptr);
+      objectptr->SetAMIObject(amiobject);
+      objectptr->AddMethods( objectptr);
+      return amiobject;
+    }
+  
+    /**
+    * Create a Wrapped object
+    * @param si_ptr input smart pointer to the template class T
+    * @return smart pointer to an AMIObject class
+    */
+    static Variable<AMIObject>::ptr CreateVar( WrapClass<T>* _objp)
+    {
+      WrapClass<T>::ptr obj_smtptr(_objp);
+      AMIObject::ptr amiobject(AddWrap(obj_smtptr));
+      boost::shared_ptr<Variable<AMIObject> > varres(
+          new Variable<AMIObject>( amiobject));
+      return varres;
+    }
+
 };
 
 /**

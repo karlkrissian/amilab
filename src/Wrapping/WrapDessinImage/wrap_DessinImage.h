@@ -63,7 +63,8 @@ class WrapClass_DessinImage  : public WrapClass_FenetreDessin
     ADD_CLASS_METHOD(SetZoom,                "Zooms in on an area of the image.");
     ADD_CLASS_METHOD(SetWindowSize,          "Sets the dimension of the drawing window, for either images or surfaces");
     ADD_CLASS_METHOD(drawcircle,             "Draws a circle at coordinates: X, Y and Z with a specific color.");
-    ADD_CLASS_METHOD(SetColormap,           "Sets color map of an image.");
+    ADD_CLASS_METHOD(SetUserColormap,       "Sets color map of an image.");
+    ADD_CLASS_METHOD(UpdateColormap,        "Updates the colormap value.");
     ADD_CLASS_METHOD(setGLwin,              "Associates a 3D surface viewer to this image viewer.");
     ADD_CLASS_METHOD(SetIsoContour,         "Sets the image and intensity value of an isocontour in an 'image_draw' window");
     ADD_CLASS_METHOD(SetIsoContourParam,    "Sets the parameters (line style and thickeness) of an isocontour in an 'image_draw' window");
@@ -113,7 +114,8 @@ class WrapClass_DessinImage  : public WrapClass_FenetreDessin
       AddVar_SetZoom(               this_ptr);
       AddVar_SetWindowSize(         this_ptr);
       AddVar_drawcircle(            this_ptr);
-      AddVar_SetColormap(           this_ptr);
+      AddVar_SetUserColormap(       this_ptr);
+      AddVar_UpdateColormap(        this_ptr);
       AddVar_setGLwin(              this_ptr);
       AddVar_SetIsoContour(         this_ptr);
       AddVar_SetIsoContourParam(    this_ptr);

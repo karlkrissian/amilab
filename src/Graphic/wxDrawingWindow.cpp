@@ -207,7 +207,7 @@ bool wxDrawingWindow::SetCurve( int i, InrImage* im)
   * Adds a new control point
   * @param control point
   */
-void wxDrawingWindow::AddControlPoint( const dw_ControlPoint& pt)
+void wxDrawingWindow::AddControlPoint( const dwControlPoint& pt)
 {
   _controlpoints.push_back(pt);
 }
@@ -857,7 +857,7 @@ void wxDrawingWindow::OnAddControlPoint(wxCommandEvent& event)
 {
   double x,y;
   Window2World(_mouse_x,_mouse_y,x,y);
-  AddControlPoint(dw_ControlPoint(dw_Point2D(x,y)));
+  AddControlPoint(dwControlPoint(dw_Point2D(x,y)));
   Refresh(false);
 }
 

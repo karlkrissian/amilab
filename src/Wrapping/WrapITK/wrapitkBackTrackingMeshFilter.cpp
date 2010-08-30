@@ -133,7 +133,7 @@ BasicVariable::ptr wrap_itkBackTrackingMeshFilter2D(ParamList* p)
     }
     surf->EndLine();
 
-    return CreateVar_SurfacePoly(surf);
+    return WrapClass_SurfacePoly::CreateVar(surf);
 
 } // wrap_itkBackTrackingMeshFilter2D
 
@@ -227,6 +227,6 @@ BasicVariable::ptr wrap_itkBackTrackingMeshFilter3D(ParamList* p)
     }
     surf->EndLine();
 
-    return CreateVar_SurfacePoly(surf);
+    return WrapClass_SurfacePoly::CreateVar(surf);
 
 } // wrap_itkBackTrackingMeshFilter3D

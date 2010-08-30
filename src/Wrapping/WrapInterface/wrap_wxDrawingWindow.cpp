@@ -18,6 +18,7 @@
 #include "ami_function.h"
 #include "wrap_wxWindow.h"
 #include "CallBackAMIFunction.h"
+#include "wrap_dwControlPoint.h"
 
 //-------------------------------------------------------------------------
 AMIObject::ptr AddWrap_wxDrawingWindow(  WrapClass_wxDrawingWindow::ptr& objectptr)
@@ -45,7 +46,6 @@ BasicVariable::ptr wrap_wxDrawingWindow( ParamList* p)
             ";
 
   int n = 0;
-  std::string* title = NULL;
 
   Variable<AMIObject>::ptr var;
   wxWindow* parent = NULL;
@@ -288,6 +288,57 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
 }
 
 //---------------------------------------------------
+//  GetCtrlPoint
+//---------------------------------------------------
+void WrapClass_wxDrawingWindow::
+      wrap_GetCtrlPoint::SetParametersComments() 
+{
+  ADDPARAMCOMMENT_TYPE(int,"index of the control point");
+  return_comments = "the given control point";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxDrawingWindow::
+      wrap_GetCtrlPoint::CallMember( ParamList* p)
+{
+  int index = 0;
+  int n     = 0;
+  if (!get_val_param<int>( index, p, n)) ClassHelpAndReturn;
+
+  dwControlPoint cp = this->_objectptr->_drawingwin->GetControlPoint(index);
+
+  // now
+  return WrapClass_dwControlPoint::CreateVar(new dwControlPoint(cp));
+}
+
+
+//---------------------------------------------------
+//  SetCtrlPoint
+//---------------------------------------------------
+void WrapClass_wxDrawingWindow::
+      wrap_SetCtrlPoint::SetParametersComments() 
+{
+  ADDPARAMCOMMENT_TYPE(int,"index of the control point");
+  ADDPARAMCOMMENT_TYPE(dwControlPoint,"Control point");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxDrawingWindow::
+      wrap_SetCtrlPoint::CallMember( ParamList* p)
+{
+  int index = 0;
+  int n     = 0;
+  if (!get_val_param<int>( index, p, n)) ClassHelpAndReturn;
+  CLASS_GET_OBJECT_PARAM2(dwControlPoint,var,varobj);
+  
+  if ((index>=0)&&
+      (index<(int)_objectptr->_drawingwin->_controlpoints.size()))
+  {
+    _objectptr->_drawingwin->_controlpoints[index] = (*varobj);
+  }
+  return BasicVariable::ptr();
+}
+
+
+//---------------------------------------------------
 //  GetCtrlPointX
 //---------------------------------------------------
 void WrapClass_wxDrawingWindow::
@@ -305,7 +356,7 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
 
   if (!get_val_param<int>( index, p, n)) ClassHelpAndReturn;
 
-  dw_ControlPoint cp = this->_objectptr->_drawingwin->GetControlPoint(index);
+  dwControlPoint cp = this->_objectptr->_drawingwin->GetControlPoint(index);
   RETURN_VAR(float,cp.GetX());
 }
 
@@ -327,7 +378,7 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
 
   if (!get_val_param<int>( index, p, n)) ClassHelpAndReturn;
 
-  dw_ControlPoint cp = this->_objectptr->_drawingwin->GetControlPoint(index);
+  dwControlPoint cp = this->_objectptr->_drawingwin->GetControlPoint(index);
   RETURN_VAR(float,cp.GetY());
 }
 
@@ -369,7 +420,6 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
       wrap_SetCtrlPointY::CallMember( ParamList* p)
 {
   int n     = 0;
-
   GET_PARAM(int,  index,0)
   GET_PARAM(float,ypos,0)
 
@@ -401,5 +451,57 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
   this->_objectptr->_drawingwin->SetCtrlPointCallback( cb );
 
   return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  AddControlPoint
+//---------------------------------------------------
+void WrapClass_wxDrawingWindow::
+      wrap_AddControlPoint::SetParametersComments() 
+{
+  ADDPARAMCOMMENT_TYPE(dwControlPoint,"Control Point to add.");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxDrawingWindow::
+      wrap_AddControlPoint::CallMember( ParamList* p)
+{
+  int n=0;
+  CLASS_GET_OBJECT_PARAM2(dwControlPoint,var,varobj);
+  this->_objectptr->_drawingwin->AddControlPoint(*varobj);
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  RemoveControl
+//---------------------------------------------------
+void WrapClass_wxDrawingWindow::
+      wrap_RemoveControl::SetParametersComments() 
+{
+  ADDPARAMCOMMENT_TYPE(int,"Index of the control point to be removed.");
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxDrawingWindow::
+      wrap_RemoveControl::CallMember( ParamList* p)
+{
+  int n     = 0;
+  GET_PARAM(int,  index,0)
+  this->_objectptr->_drawingwin->RemoveControl(index);
+  return BasicVariable::ptr();
+}
+
+//---------------------------------------------------
+//  GetColormapImage
+//---------------------------------------------------
+void WrapClass_wxDrawingWindow::
+      wrap_GetColormapImage::SetParametersComments() 
+{
+  return_comments = "Image of the colormap, of type RGB, 3 components, and dimensions 256x1x1.";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxDrawingWindow::
+      wrap_GetColormapImage::CallMember( ParamList* p)
+{
+  InrImage::ptr res = this->_objectptr->_drawingwin->GetColormapImage();
+  return Variable<InrImage>::ptr(new Variable<InrImage>(res));
 }
 

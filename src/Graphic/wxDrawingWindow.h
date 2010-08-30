@@ -34,92 +34,7 @@
 #include "CallBackBase.h"
 #include "LinearColorMap.h"
 
-
-typedef enum {
- normal_point,
- colormap_point,
-} ControlPointType;
-
-/**
-  * Control point
-  **/
-class dw_ControlPoint
-{
-private:
-  dw_Point2D       pos;
-  wxPoint          winpos;
-  bool             selected;
-  bool             has_focus;
-  /// Point radius
-  int              radius;
-  /// Point colour
-  wxColour         colour;
-  ControlPointType type;
-  /// other properties
-  bool             horizontal_line;
-  bool             vertical_line;
-
-public:
-  dw_ControlPoint()
-  {
-    DefaultInit();
-  }
-
-  dw_ControlPoint(const dw_Point2D& p)
-  {
-    DefaultInit();
-    pos = p;
-  }
-
-  dw_ControlPoint(const dw_Point2D& p, ControlPointType t)
-  {
-    DefaultInit();
-    pos = p;
-    type = t;
-  }
-
-  void DefaultInit()
-  {
-    selected = false;
-    has_focus = false;
-    radius = 3;
-    colour = *wxGREEN;
-    type = normal_point;
-    horizontal_line = false;
-    vertical_line = false;
-  }
-
-  void operator = (const dw_Point2D& p )
-  {
-    pos = p;
-  }
-
-  double GetX() const { return pos.GetX(); }
-  double GetY() const { return pos.GetY(); }
-
-  int GetRadius() const { return radius; }
-  void SetRadius(const int& r) { radius = r; }
-
-  wxColour GetColour() const { return colour; }
-  void SetColour(const wxColour& c) { colour = c; }
-
-  void SetPos(double x, double y) { pos.SetX(x); pos.SetY(y); }
-
-  wxPoint GetwxPoint() const { return winpos; }
-  void SetwxPoint(const wxPoint& p) { winpos = p; }
-
-  void SetFocus(bool act) { has_focus = act; }
-  bool HasFocus()         { return has_focus; }
-  
-  ControlPointType GetType() const { return type; }
-  void SetType( const ControlPointType& t) { type = t; }
-  
-  void SetHorizontalLine(bool hl)  { horizontal_line = hl; }
-  bool GetHorizontalLine() const { return horizontal_line; }
-  
-  void SetVerticalLine(bool vl) { vertical_line = vl; }
-  bool GetVerticalLine() const { return vertical_line; }
-};
+#include "dwControlPoint.h"
 
 /**
   * A wxWindow that draws 2D curves.
@@ -146,7 +61,7 @@ class wxDrawingWindow : public wxScrolledWindow
   std::vector<dw_Curve> _curves;
 
   //! std:vector of dw_Point2D: list of control points
-  std::vector<dw_ControlPoint> _controlpoints;
+  std::vector<dwControlPoint> _controlpoints;
 
   //! LinearColorMap functionality
   LinearColorMap _linearCM;
@@ -189,12 +104,12 @@ public:
     return _controlpoints.size();
   }
 
-  dw_ControlPoint GetControlPoint(int n) const
+  dwControlPoint GetControlPoint(int n) const
   {
     if ((n>=0)&&(n<(int)_controlpoints.size()))
       return _controlpoints[n];
     else 
-      return dw_ControlPoint();
+      return dwControlPoint();
   }
 
 /*
@@ -308,7 +223,7 @@ public:
    * Adds a new control point
    * @param control point
    */
-  void AddControlPoint( const dw_ControlPoint& pt);
+  void AddControlPoint( const dwControlPoint& pt);
 
   /**
    * Removes a control point
@@ -352,6 +267,15 @@ public:
    * @param width 
    */
   void SetCurveWidth( int i, int width);
+
+  /**
+   * Returns the image of the colormap, image of type UNSIGNED CHAR with 3 components and 256 values in X.
+   * @return 
+   */
+  InrImage::ptr GetColormapImage() 
+  {
+    return _linearCM.CreateColormapImage();
+  }
 
   /**
    * Draw a given curve in a given graphical context.

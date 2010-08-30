@@ -31,6 +31,7 @@ SET(  WrapInterface_SRCS
   wrap_wxEditor.cpp 
   wrap_wxStcFrame.cpp 
   wrap_FenetreDessin.cpp 
+  wrap_dwControlPoint.cpp
 )
 
 SET(WrapInterface_HDRS
@@ -41,6 +42,7 @@ SET(WrapInterface_HDRS
   wrap_wxEditor.h
   wrap_wxStcFrame.h 
   wrap_FenetreDessin.h
+  wrap_dwControlPoint.h
 )
 
 SET(WrapInterface_SRCS

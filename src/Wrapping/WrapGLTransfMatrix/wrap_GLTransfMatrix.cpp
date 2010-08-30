@@ -22,16 +22,8 @@
 #include "FluidProject.h"
 #include "Func_ReadCTALine.h"
 #include "fonctions.h"
+#include "wrapfunction_class.h"
 
-#define GET_PARAM(type,varname,defaultval) \
-  type varname = defaultval; \
-  if (!get_val_param<type>( varname, p, n)) \
-    ClassHelpAndReturn;
-
-#define GET_SMTPTR_PARAM(type,varname) \
-  boost::shared_ptr<type> varname; \
-  if (!get_val_smtptr_param<type>( varname, p, n)) \
-    ClassHelpAndReturn;
 
 #include "driver.h"
 

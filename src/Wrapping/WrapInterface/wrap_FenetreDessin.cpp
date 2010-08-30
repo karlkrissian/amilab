@@ -94,7 +94,7 @@ BasicVariable::ptr WrapClass_FenetreDessin::
 {
   FenetreDessin::ptr fd(this->_objectptr->GetObj());
   int n=0;
-  CLASS_GET_OBJECT_PARAM(wxColour,var,varobj);
+  CLASS_GET_OBJECT_PARAM2(wxColour,var,varobj);
   if (varobj.get()) {
     fd->SetPenColor( *varobj);
   }

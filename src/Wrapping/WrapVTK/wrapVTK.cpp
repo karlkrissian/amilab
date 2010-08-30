@@ -169,7 +169,7 @@ BasicVariable::ptr Wrap_vtkSkeleton2Lines(ParamList* p)
   vtk_skel2lines->GetOutput();
 
 
-  return CreateVar_SurfacePoly(new SurfacePoly(vtk_skel2lines->GetOutput()));
+  return WrapClass_SurfacePoly::CreateVar(new SurfacePoly(vtk_skel2lines->GetOutput()));
 
 /*
   SurfacePoly::ptr surf_result( new SurfacePoly(vtk_skel2lines->GetOutput()));
@@ -225,7 +225,7 @@ BasicVariable::ptr Wrap_vtkSphere( ParamList* p)
 
   vtk_sphere->Update();
 
-  return CreateVar_SurfacePoly(new SurfacePoly(vtk_sphere->GetOutput()));
+  return WrapClass_SurfacePoly::CreateVar(new SurfacePoly(vtk_sphere->GetOutput()));
 
 
 } // Wrap_vtkSphere()

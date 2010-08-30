@@ -1340,8 +1340,14 @@ public:
 
 
   //
-  void  SetUserColormap(const InrImage::ptr& image, float center, float extent)
+  void  SetUserColormap(const InrImage::ptr& image, float center, float extent);
   //    ---------------
+
+  /// Recomputes the colormap
+  void UpdateColormap();
+  //   --------------
+
+/*
   {
     if ((image->_format==WT_RGB)&&
     (image->DimX()==256)&&(image->DimY()==1)&&(image->DimZ()==1)) {
@@ -1351,7 +1357,7 @@ public:
       Param._I._colorspace = COLORSPACE_USER;
     }
   }
-
+*/
 
   //
   void DrawContour( int i, int size=-1, int style=-1);

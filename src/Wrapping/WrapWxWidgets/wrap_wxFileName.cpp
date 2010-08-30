@@ -15,16 +15,8 @@
 #include "VarContexts.hpp"
 #include "wrapfunctions.hpp"
 #include "ami_object.h"
+#include "wrapfunction_class.h"
 
-#define GET_PARAM(type,varname,defaultval) \
-  type varname = defaultval; \
-  if (!get_val_param<type>( varname, p, n)) \
-    ClassHelpAndReturn;
-
-#define GET_SMTPTR_PARAM(type,varname) \
-  boost::shared_ptr<type> varname; \
-  if (!get_val_smtptr_param<type>( varname, p, n)) \
-    ClassHelpAndReturn;
 
 #define SIZE_BUFFER 2040
 
@@ -1129,7 +1121,6 @@ BasicVariable::ptr WrapClass_wxFileName::
 
   if (!p) ClassHelpAndReturn;
   int n=0;
-  unsigned char res;
 
   CLASS_GET_OBJECT_PARAM(wxFileName,varFileName,oFileName);
   if (!oFileName.get()) ClassHelpAndReturn;
@@ -1191,7 +1182,6 @@ BasicVariable::ptr WrapClass_wxFileName::
 
   if (!p) ClassHelpAndReturn;
   int n=0;
-  unsigned char res;
 
   CLASS_GET_OBJECT_PARAM(wxFileName,varFileName,oFileName);
   if (!oFileName.get()) ClassHelpAndReturn;
@@ -1223,7 +1213,6 @@ BasicVariable::ptr WrapClass_wxFileName::
   if (!p) ClassHelpAndReturn;
   string sVal;
   int n=0;
-  unsigned char res;
 
   CLASS_GET_OBJECT_PARAM(wxFileName,varFileName,oFileName);
   if (!oFileName.get()) ClassHelpAndReturn;

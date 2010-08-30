@@ -22,31 +22,33 @@ if (!exists(ImageHistoClass)) {
       ::minval = 0, "minimal value of the histogram"
       ::maxval = 255, "maximal value of the histogram"
       ::step = 1, "histogram step"
-      ::mode = INT(0), "0: isocontours, 1: transfer function, 2: min-max from black to white"
+      ::mode = INT(1), "0: transfer function, 1: min-max from black to white"
       ::InitColours()
       ::Gui()
     }
 
     #---------------------------
-    proc ::DrawThreshold() \
+    proc ::DrawIsoContours() \
     {
       nc = ::dw.GetNumberOfCtrlPoints()
+      nb_iso = 0
       if (exists(::input)) {
-        VertLine = Image(FLOAT,2,1,1,2)
-        hmax = max(::h[0])
-        for k=0 to -max(-(nc-1),-2) {
-          xpos = ::dw.GetCtrlPointX(k)
-          VertLine.setpos(0,0,0)
-          VertLine.set(0,xpos)
-          VertLine.set(1,0)
-          VertLine.setpos(1,0,0)
-          VertLine.set(0,xpos)
-          VertLine.set(1,hmax)
-          ::dw->SetCurve(VertLine,::input.vdim+k)
-          ::dw->SetCurveProperties(::input.vdim,"#009900")
+        for k=0 to nc-1 {
+          cp = ::dw.GetCtrlPoint(k)
           if (exists(::input_draw)) {
-            ::input_draw.SetIsoContour(k,&::input,xpos)
-            ::input_draw.DrawIsoContour(k,1)
+            if (nb_iso<3)&&(cp.GetVerticalLine()) {
+              ::input_draw.SetIsoContour(nb_iso,&::input,cp.GetX())
+              col = cp.GetColour()
+              ::input_draw.SetIsoContourColor(nb_iso,col.Red(),col.Green(),col.Blue())
+              ::input_draw.DrawIsoContour(nb_iso,1)
+              nb_iso++
+            }
+          }
+        }
+        # don't draw other isocontours
+        for k=nb_iso-1 to 2 {
+          if (exists(::input_draw)) {
+            ::input_draw.DrawIsoContour(nb_iso,0)
           }
         }
         ::dw._Paint()
@@ -83,28 +85,35 @@ if (!exists(ImageHistoClass)) {
     #---------------------------
     proc ::DrawMinMax() \
     {
+      ::ColormapMinMax()
       nc = ::dw.GetNumberOfCtrlPoints()
-
       if (exists(::input))&&(nc>=2) {
-        FuncCurve = Image(FLOAT,2,1,1,2)
+        # force Y position in the middle
         hmax = max(::h[0])
-        for k=0 to 1 {
-          xpos = ::dw.GetCtrlPointX(k)
-          ::dw.SetCtrlPointY(k,hmax/2.0)
-          FuncCurve.setpos(k,0,0)
-          FuncCurve.set(0,xpos)
-          FuncCurve.set(1,hmax/2.0)
+        for k=0 to ::dw.GetNumberOfCtrlPoints()-1 {
+          cp = ::dw.GetCtrlPoint(k)
+          if (cp.GetType()==1) {
+            cp.SetY(hmax/2.0)
+            ::dw.SetCtrlPoint(k,&cp)
+          }
         }
+        FuncCurve = Image(FLOAT,2,1,1,2)
+        FuncCurve.setpos(0,0,0)
+        FuncCurve.set(0,::cm_min)
+        FuncCurve.set(1,hmax/2.0)
+        FuncCurve.setpos(1,0,0)
+        FuncCurve.set(0,::cm_max)
+        FuncCurve.set(1,hmax/2.0)
+
         ::dw->SetCurve(FuncCurve,::input.vdim)
         ::dw->SetCurveProperties(::input.vdim,"#000000")
         if (exists(::input_draw)) {
-          val0 = ::dw.GetCtrlPointX(0)
-          val1 = ::dw.GetCtrlPointX(1)
-          ::input_draw.SetIntensityRange( -max(-val0,-val1), max(val0,val1))
+          ::input_draw.SetIntensityRange( ::cm_min, ::cm_max)
         }
   
         ::dw._Paint()
         ::dw.Refresh()
+        ::UpdateCM()
         if (exists(::input_draw)) {
           ::input_draw.Paint()
         }
@@ -114,13 +123,11 @@ if (!exists(ImageHistoClass)) {
     #---------------------------
     proc ::OnCtrlPoint() \
     {
+      ::DrawIsoContours();
       if (::mode==0) {
-        ::DrawThreshold();
-      }
-      if (::mode==1) {
         ::DrawTransferFunction();
       }
-      if (::mode==2) {
+      if (::mode==1) {
         ::DrawMinMax();
       }
     }
@@ -189,7 +196,101 @@ if (!exists(ImageHistoClass)) {
           ::dw->SetCurve(::h[n],n)
           ::dw->SetCurveProperties(n,::ColoursVector[n%6])
         }
+
+        # clear control points and add standard colormap
+        hmax = max(::h[0])
+        cp0 = ami.dwControlPoint(::minval,hmax/2)
+        cp0.SetColour(wx.wxColour(0,0,0))
+        cp0.SetType(1)
+        cp1 = ami.dwControlPoint(::maxval,hmax/2)
+        cp1.SetColour(wx.wxColour(255,255,255))
+        cp1.SetType(1)
+        # remove all control points
+        for k=0 to ::dw.GetNumberOfCtrlPoints()-1 {
+          ::dw.RemoveControl(0)
+        }
+        ::dw.AddControlPoint(&cp0)
+        ::dw.AddControlPoint(&cp1)
+
       }
+    }
+
+    #--------------------------------------------------
+    proc ::ColormapMinMax() \
+    {
+      for k=0 to ::dw.GetNumberOfCtrlPoints()-1 {
+        cp = ::dw.GetCtrlPoint(k)
+        if (cp.GetType()==1) {
+          if (!exists(xmin)) {
+            xmin = cp.GetX();
+          } else {
+            xmin = -max(-xmin,-cp.GetX())
+          }
+          if (!exists(xmax)) {
+            xmax = cp.GetX();
+          } else {
+            xmax = max(xmax,cp.GetX())
+          }
+        }
+      }
+      ::cm_min = xmin
+      ::cm_max = xmax
+    }
+
+    #--------------------------------------------------
+    proc ::UpdateCM() \
+    {
+      ::cm.SetXLimits(-1,256)
+      ::cm.SetYLimits(-1,256)
+      # remove all control points
+      for k=0 to ::cm.GetNumberOfCtrlPoints()-1 {
+        ::cm.RemoveControl(0)
+      }
+      cm_range = ::cm_max-::cm_min
+      hmax = max(::h[0])
+
+      for k=0 to ::dw.GetNumberOfCtrlPoints()-1 {
+        cp = ::dw.GetCtrlPoint(k)
+        newpos = (cp.GetX()-::cm_min)/cm_range*255
+        cp.SetX(newpos)
+        if (cp.GetType()==1) {
+          cp.SetY(127)
+        } else {
+          cp.SetY(cp.GetY()/hmax*255)
+        }
+        ::cm.AddControlPoint(&cp)
+      }
+
+      # add the corresponding histogram
+
+      #  rescale histogram
+      if (exists(::cm_min)&&exists(::cm_max)&&exists(::h)) {
+        #printn "xmax = %1% " % xmax
+        #printn "xmin = %1% " % xmin
+        ::h1 <<= (FLOAT)::h[0]
+
+        # rescale to the maximum in the current range
+        minpos = (::cm_min-::h1.trx)/::h1.vx
+        maxpos = (::cm_max-::h1.trx)/::h1.vx
+        subhist = ::h1[minpos:maxpos,0:0]
+        ::dw->SetCurve(subhist,2)
+        ::dw->SetCurveProperties(2,"#0000FF")
+
+        newpixelsize = ::h1.vx*255.0/cm_range
+        ::h1.settranslation(-(::cm_min-::h1.trx)*255.0/cm_range,0,0)
+        setvoxelsize(::h1,newpixelsize,1,1)
+        ::h1 = ::h1/max(subhist)*255
+
+        ::cm->SetCurve(::h1,0)
+        ::cm->SetCurveProperties(0,"#0000FF")
+        # update image colormap in image viewer
+        if (exists(::input_draw)) {
+          cm = ::dw.GetColormapImage()
+          ::input_draw.SetUserColormap(cm)
+          ::input_draw.UpdateColormap()
+        }
+      }
+      ::cm.Refresh()
     }
 
     #----------------------------
@@ -221,14 +322,6 @@ if (!exists(ImageHistoClass)) {
             ::win.EndHorizontal()
           ::win.EndBoxPanel()
 
-
-          ::minval_id = ::win.AddFloat(&::minval,"min",0,255)
-          ::win.SetCallback(&::Update)
-          ::maxval_id = ::win.AddFloat(&::maxval,"max",0,255)
-          ::win.SetCallback(&::Update)
-          ::step_id   = ::win.AddFloat(&::step,"step",0,10)
-          ::win.SetCallback(&::Update)
-
           ::win.BeginHorizontal()
             ::AddBitmapButton(&::win, &::icons._Refresh,   32, "Update")
             ::win.SetPositionProp(-1,0)
@@ -237,7 +330,6 @@ if (!exists(ImageHistoClass)) {
           ::win.EndHorizontal()
 
           ::mode_id = ::win.AddEnum( &::mode,"mode")
-            ::win.AddEnumChoice(::mode_id,"IsoContours")
             ::win.AddEnumChoice(::mode_id,"Transfer Function")
             ::win.AddEnumChoice(::mode_id,"Min-Max")
           #::win.SetCallback( &::EqModeEvent)
@@ -249,6 +341,23 @@ if (!exists(ImageHistoClass)) {
           ::dw.SetMinSize(&wx.wxSize(80,80));
           ::dw.SetBackgroundColour(wx.wxColour(255,255,255))
           ::sizer_item = ::win.AddWidget(&::dw,0)
+
+          # add User Colormap Drawing Window
+          d = ::win.CurrentParent()
+          ::cm = import->wxDrawingWindow(&d)
+          # sets minimal size here
+          ::cm.SetMinSize(&wx.wxSize(80,70));
+          ::cm.SetBackgroundColour(wx.wxColour(255,255,255))
+          ::sizer_item = ::win.AddWidget(&::cm,0)
+
+          ::win.BeginBoxPanel("Parameters")
+            ::minval_id = ::win.AddFloat(&::minval,"min",0,255)
+            ::win.SetCallback(&::Update)
+            ::maxval_id = ::win.AddFloat(&::maxval,"max",0,255)
+            ::win.SetCallback(&::Update)
+            ::step_id   = ::win.AddFloat(&::step,"step",0,10)
+            ::win.SetCallback(&::Update)
+          ::win.EndBoxPanel()
 
       ::win.EndBook()
 

@@ -29,53 +29,43 @@
 
 extern yyip::Driver GB_driver;
 
-//-------------------------------------------------------------------------
-AMIObject::ptr AddWrap_SurfacePoly(  WrapClass_SurfacePoly::ptr& objectptr)
+//
+// static member for creating a variable from a pointer to SurfacePoly
+//
+Variable<AMIObject>::ptr WrapClass_SurfacePoly::CreateVar( SurfacePoly* sp)
 {
-  // Create new instance of the class
-  AMIObject::ptr amiobject( new AMIObject);
-  amiobject->SetName("SurfacePoly");
-  amiobject->SetWrappedObject(objectptr);
-  objectptr->SetAMIObject(amiobject);
-  objectptr->AddMethods( objectptr);
-  return amiobject;
+  SurfacePoly::ptr _obj_ptr(sp);
+  return 
+    WrapClass<SurfacePoly>::CreateVar(
+      new WrapClass_SurfacePoly(_obj_ptr));
 }
 
-//----------------------------------------------------------
-Variable<AMIObject>::ptr CreateVar_SurfacePoly( SurfacePoly* si)
-{
-  // here SurfacePoly can be deleted
-  boost::shared_ptr<SurfacePoly> _si_ptr( si );
-  WrapClass_SurfacePoly::ptr sip(new WrapClass_SurfacePoly(_si_ptr));
-  AMIObject::ptr amiobject(AddWrap_SurfacePoly(sip));
-  Variable<AMIObject>::ptr varres(
-      new Variable<AMIObject>( amiobject));
-  return varres;
-}
 
 //---------------------------------------------------
 //  SurfacePoly Constructor
 //---------------------------------------------------
-void  wrap_SurfacePoly::SetParametersComments() 
+void  WrapClass_SurfacePoly::
+        wrap_SurfacePoly::SetParametersComments() 
 {
   ADDPARAMCOMMENT("filename: input filename (optional).");
   return_comments = "A wrapped SurfacePoly object.";
 }
 //---------------------------------------------------
-BasicVariable::ptr wrap_SurfacePoly::CallMember( ParamList* p)
+BasicVariable::ptr WrapClass_SurfacePoly::
+                    wrap_SurfacePoly::CallMember( ParamList* p)
 {
   if (!p) ClassHelpAndReturn;
   int n=0;
   GET_PARAM(std::string,filename,  "");
 
-  SurfacePoly* surf = new SurfacePoly();
+  SurfacePoly::ptr surf_ptr(new SurfacePoly());
   if (filename!="") {
-    int res = surf->Read(filename.c_str());
+    int res = surf_ptr->Read(filename.c_str());
     if (!res) {
       CLASS_ERROR("Failed to read polydata.");
     }
   }
-  return CreateVar_SurfacePoly(surf);
+  return WrapClass<SurfacePoly>::CreateVar(new WrapClass_SurfacePoly(surf_ptr));
 }
 
 //---------------------------------------------------
@@ -785,7 +775,7 @@ BasicVariable::ptr WrapClass_SurfacePoly::
 {
   SurfacePoly::ptr s(this->_objectptr->GetObj());
   SurfacePoly* surf = Func_decimate(s.get());
-  return CreateVar_SurfacePoly(surf);
+  return WrapClass_SurfacePoly::CreateVar(surf);
 }
 
 //---------------------------------------------------
@@ -1124,7 +1114,7 @@ BasicVariable::ptr WrapClass_SurfacePoly::
   GET_PARAM( float, maxangle, 0.1);
   SurfacePoly* surf = 
     Func_ConnectLines( s.get(), maxdist, maxangle);
-  return CreateVar_SurfacePoly(surf);
+  return WrapClass_SurfacePoly::CreateVar(surf);
 }
 
 //---------------------------------------------------
@@ -1202,5 +1192,5 @@ void WrapClass_SurfacePoly::
 BasicVariable::ptr WrapClass_SurfacePoly::wrap_copy::CallMember( ParamList* p)
 {
   SurfacePoly::ptr s(this->_objectptr->GetObj());
-  return CreateVar_SurfacePoly( new SurfacePoly(*s));
+  return WrapClass_SurfacePoly::CreateVar( new SurfacePoly(*s));
 }

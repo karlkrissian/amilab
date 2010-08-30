@@ -17,21 +17,12 @@
 #include "ami_class.h"
 #include "ami_object.h"
 #include "ami_function.h"
+#include "wrapfunction_class.h"
 
 //#include "vtkwrap.h"
 //#include "FluidProject.h"
 //#include "Func_ReadCTALine.h"
 //#include "fonctions.h"
-
-#define GET_PARAM(type,varname,defaultval) \
-  type varname = defaultval; \
-  if (!get_val_param<type>( varname, p, n)) \
-    ClassHelpAndReturn;
-
-#define GET_SMTPTR_PARAM(type,varname) \
-  boost::shared_ptr<type> varname; \
-  if (!get_val_smtptr_param<type>( varname, p, n)) \
-    ClassHelpAndReturn;
 
 
 //-------------------------------------------------------------------------
