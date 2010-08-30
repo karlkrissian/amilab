@@ -192,6 +192,40 @@ bool get_val_smtptr_param(boost::shared_ptr<T>& arg, ParamList*p, int& num, bool
 }
 
 
+/**
+ * Returning the wrapped object of the given type and its corresponding variable
+ */
+template<class T> bool get_obj_param( Variable<AMIObject>::ptr& var, boost::shared_ptr<T>& arg, 
+                       ParamList*p, int& num)
+{
+  bool ok = false; 
+  ok = get_var_param<AMIObject>(var, p, num);  
+  if (!ok) { 
+    num--;
+    BasicVariable::ptr genericvar;
+    if (get_generic_var_param(genericvar,p,num)) { 
+      ParamList::ptr param(new ParamList()); 
+      param->AddParam(genericvar); 
+      /* Call the constructor */ 
+      BasicVariable::ptr constr_res = WrapClass<T>::CreateVar(param.get());
+      var = boost::dynamic_pointer_cast<Variable<AMIObject> >(constr_res);
+      ok = var.get(); 
+    } 
+  } 
+  if (ok) { 
+    WrapClassBase::ptr object( var->Pointer()->GetWrappedObject());
+    boost::shared_ptr<WrapClass<T> > wc( boost::dynamic_pointer_cast<WrapClass<T> >(object));
+    if (wc.get()) {
+      arg = wc->GetObj();
+    } else {
+      FILE_ERROR("Could not cast dynamically the variable.")
+    }
+  }  else {
+    FILE_ERROR("Need a wrapped object or compatible variable as parameter.")
+  }
+  return ok;
+}
+
 
 /**
  * Function used to parse a several variables of the same generic type in a list of parameters, and to give back the values in the arg parameter which should be of type T[nb].

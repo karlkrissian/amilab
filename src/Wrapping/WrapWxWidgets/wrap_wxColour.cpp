@@ -19,6 +19,16 @@
 
 
 //
+// static member for creating a variable from a ParamList
+//
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<wxColour>::CreateVar( ParamList* p)
+{
+  WrapClass_wxColour::wrap_wxColour construct;
+  return construct.CallMember(p);
+}
+
+//
 // static member for creating a variable from a pointer to wxColour
 //
 Variable<AMIObject>::ptr WrapClass_wxColour::CreateVar( wxColour* sp)

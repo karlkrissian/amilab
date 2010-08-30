@@ -30,6 +30,16 @@
 extern yyip::Driver GB_driver;
 
 //
+// static member for creating a variable from a ParamList
+//
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<SurfacePoly>::CreateVar( ParamList* p)
+{
+  WrapClass_SurfacePoly::wrap_SurfacePoly construct;
+  return construct.CallMember(p);
+}
+
+//
 // static member for creating a variable from a pointer to SurfacePoly
 //
 Variable<AMIObject>::ptr WrapClass_SurfacePoly::CreateVar( SurfacePoly* sp)

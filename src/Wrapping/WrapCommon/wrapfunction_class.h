@@ -90,7 +90,7 @@ class wrap_##methodname : public WrapClassMember { \
       SetParametersComments(); \
     } \
     void SetParametersComments(); \
-    BasicVariable::ptr CallMember(ParamList*); \
+    BasicVariable::ptr CallMember(ParamList* p); \
 }; \
 \
 static void AddVar_##methodname(  Variables::ptr& _context, const std::string& newname = #methodname) {\
@@ -193,10 +193,12 @@ class WrapClass: public WrapClassBase
     WrapClass<T>(boost::shared_ptr<T> si):  _obj(si)
     {}
 
-    // need a virtual constructor here
-    // TODO
+    // Will call the constructor based on a ParamList
+    static BasicVariable::ptr CreateVar(ParamList*);
+    
+    //
     virtual void AddMethods(WrapClass<T>::ptr this_ptr ) = 0;
-  
+    
     /**
     * Create a Wrapped object
     * @param objectptr input smart pointer to a WrapClass<T>

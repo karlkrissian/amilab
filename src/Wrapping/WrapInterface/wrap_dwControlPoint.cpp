@@ -19,6 +19,18 @@
 #include "ami_function.h"
 #include "wrap_wxColour.h"
 
+
+//
+// static member for creating a variable from a ParamList
+//
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<dwControlPoint>::CreateVar( ParamList* p)
+{
+  WrapClass_dwControlPoint::wrap_dwControlPoint construct;
+  return construct.CallMember(p);
+}
+
+
 //
 // static member for creating a variable from a pointer to dwControlPoint
 //
