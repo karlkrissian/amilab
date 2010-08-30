@@ -309,6 +309,16 @@ void SubPixel2D::setInput(InrImage* inp_image)
   input = inp_image;
 }
 
+//Get the input image
+InrImage* SubPixel2D::getInput()
+{
+  return input;
+}
+vector<borderPixel> SubPixel2D::getBorderPixelVector()
+{
+  return borderPixelVector;
+}
+
 //Función original del código de Agustín (con los parámetros adaptados al wrapping)
 //void SuperGradienteCurvo(InrImage* input, InrImage::ptr output, float* gx, float* gy, float* des, float* cu, unsigned char* borde, float umbral, int linear_case) {
 //Nuevo cambio para usar la clase borderPixel. Se pasa un vector de la stl que contiene elementos de esta clase, el cual se irá rellenando
@@ -386,7 +396,7 @@ void SubPixel2D::SuperGradienteCurvo()
       
       // la parcial en y debe ser máxima en su columna
       parcial = fabs(FF(x+u[0],y+v[0],z) - FF(x+u[1],y+v[1],z));
-      if (parcial < umbral) continue;
+      if (parcial < threshold) continue;
       if (fabs(FF(x+u[2],y+v[2],z) - FF(x+u[3],y+v[3],z)) > parcial) continue;
       if (fabs(FF(x+u[4],y+v[4],z) - FF(x+u[5],y+v[5],z)) > parcial) continue;
       if (fabs(FF(x+u[6],y+v[6],z) - FF(x+u[7],y+v[7],z)) > parcial) continue;
@@ -423,7 +433,7 @@ void SubPixel2D::SuperGradienteCurvo()
       
       
       // si está por debajo del umbral no nos sirve (ahora fabs tras la modificiación anterior)
-      if (fabs(mod)< umbral) continue;
+      if (fabs(mod)< threshold) continue;
       
       // calculamos los coeficientes de la parabola
       b = (sr-sl) / 2 / mod;
@@ -722,11 +732,11 @@ void SubPixel2D::SuperGradienteGaussianoCurvo()//,
         A  = ((double) FF(x,y+4,z) + FF(x+m,y+4,z) + FF(x+m,y+3,z)) / 3.0;
       }
       // si está por debajo del umbral no nos sirve (en valor absoluto)
-      if (fabs(A-B)<umbral) continue;
+      if (fabs(A-B)<threshold) continue;
       
       // la parcial en y debe ser máxima en su columna
       parcial = fabs(FF(x+u[0],y+v[0],z) - FF(x+u[1],y+v[1],z));
-      if (parcial < umbral) continue;
+      if (parcial < threshold) continue;
       if (fabs(FF(x+u[2],y+v[2],z) - FF(x+u[3],y+v[3],z)) > parcial) continue;
       if (fabs(FF(x+u[4],y+v[4],z) - FF(x+u[5],y+v[5],z)) > parcial) continue;
       if (fabs(FF(x+u[6],y+v[6],z) - FF(x+u[7],y+v[7],z)) > parcial) continue;

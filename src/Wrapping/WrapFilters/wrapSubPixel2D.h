@@ -16,6 +16,7 @@
 //---------------------------------------------------
 //AnalyticFunctionBase Wrapping
 class WrapClass_SubPixel2D : public WrapClassBase {
+  
   DEFINE_CLASS(WrapClass_SubPixel2D);
   
   //for nested classes

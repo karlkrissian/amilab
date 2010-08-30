@@ -47,6 +47,7 @@
 #include "wrap_SurfacePoly.h"
 #include "wrap_DessinImage.h"
 #include "wrap_ComputePartialVolume.h"
+#include "wrapSubPixel2D.h"
 
 extern VarContexts  Vars;
 extern MainFrame*   GB_main_wxFrame;
@@ -83,6 +84,8 @@ void AddWrapImports()
   AddVar_AnalyticSphere(           amiobject->GetContext());
   AddVar_AnalyticTorus(            amiobject->GetContext());
   AddVar_ComputePV(                amiobject->GetContext());
+  
+  AddVar_SubPixel2D(amiobject->GetContext());
 
   ADDOBJECTVAR_NAME(C_wrap_procedure,  "System",    wrap_System);
   ADDOBJECTVAR_NAME(C_wrap_procedure,  "ITK",       wrap_ITK);

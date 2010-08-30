@@ -6,6 +6,12 @@
 #ifndef SUBPIXEL2D
 #define SUBPIXEL2D
 
+#include "DessinImage.hpp"
+#include "inrimage.hpp"
+#include "DefineClass.hpp"
+#include <vector>
+using namespace std;
+
 //New class for a pixel that is a border member
 class borderPixel {
 public:
@@ -46,6 +52,9 @@ private:
 
 //SubPixel2D Class
 class SubPixel2D {
+  
+  DEFINE_CLASS(SubPixel2D);
+  
 public:
   //Constructor
   SubPixel2D(InrImage* inp_image, float thres, int lc);
@@ -58,6 +67,23 @@ public:
   void SuperGradienteCurvo();
   //Subpixel2D method on noisy images
   void SuperGradienteGaussianoCurvo();
+  //Optimize second order edges
+  void OptimizarParabola(double &a, double &b, double &c, double umbral, 
+                         double rmin, double rmax);
+  //Fill the results images
+  void fillImages(vector<borderPixel> &borderPixelVector, InrImage::ptr AIntensity,
+                  InrImage::ptr BIntensity, InrImage::ptr border, InrImage::ptr a,
+                  InrImage::ptr b, InrImage::ptr c, InrImage::ptr curvature, 
+                  InrImage::ptr posx, InrImage::ptr posy);
+  //Denoise images in SuperGradienteGaussianoCurvo method
+  void Promedio3x3(/*InrImage* input,*/ InrImage* result, 
+                   double a00, double a01, double a11);
+  //Set input image
+  void setInput(InrImage* inp_image);
+  
+  //Get atributes
+  InrImage* getInput();
+  vector<borderPixel> getBorderPixelVector();
   
 private:
   //Atributes
@@ -69,21 +95,7 @@ private:
   float threshold;
   //Linear case
   int linear_case;
-  
-  //Private methods
-  //Optimize second order edges
-  void OptimizarParabola(double &a, double &b, double &c, double umbral, 
-                         double rmin, double rmax);
-  //Fill the results images
-  void fillImages(vector<borderPixel> &borderPixelVector, InrImage::ptr AIntensity,
-                  InrImage::ptr BIntensity, InrImage::ptr border, InrImage::ptr a,
-                  InrImage::ptr b, InrImage::ptr c, InrImage::ptr curvature, 
-                  InrImage::ptr posx, InrImage::ptr posy);
-  //Denoise images in SuperGradienteGaussianoCurvo method
-  void Promedio3x3(InrImage* input, InrImage* result, 
-                   double a00, double a01, double a11);
-  //Set input image
-  void setInput(InrImage* inp_image);
+   
 };
 
 #endif

@@ -14,6 +14,8 @@
 #include "ami_object.h"
 #include "ami_function.h"
 #include "SubPixel2D.h"
+#include "wrap_DessinImage.h"
+#include "wrap_wxColour.h"
 
 #define GET_PARAM(type,varname,defaultval) \
   type varname = defaultval; \
@@ -29,6 +31,9 @@
   boost::shared_ptr<type> newval(new type(value)); \
   return Variable<type>::ptr( new Variable<type>(newval));
 
+//double A00 = (double) 1 / 9;
+//double A01 = (double) 1 / 9;
+//double A11 = (double) 1 / 9;
 
 //---------------------------------------------------
 //SubPixel2D Wrapping
@@ -48,7 +53,7 @@ AMIObject::ptr AddWrap_SubPixel2D(WrapClass_SubPixel2D::ptr& objectptr)
 Variable<AMIObject>::ptr CreateVar_SubPixel2D(SubPixel2D* si)
 {
   boost::shared_ptr<SubPixel2D> si_ptr(si);
-  WrapClass_ComputePV::ptr sip(new WrapClass_SubPixel2D(si_ptr));
+  WrapClass_SubPixel2D::ptr sip(new WrapClass_SubPixel2D(si_ptr));
   AMIObject::ptr amiobject(AddWrap_SubPixel2D(sip));
   Variable<AMIObject>::ptr varres(
     new Variable<AMIObject>(amiobject));
@@ -96,7 +101,7 @@ BasicVariable::ptr WrapClass_SubPixel2D::wrap_SuperGradienteCurvo
   //Create the AMIObject with the result
   AMIObject::ptr amiobject(new AMIObject);
   amiobject->SetName("Sub-pixel2D");
-  int size = sp->borderPixelVector.size();
+  int size = sp->getBorderPixelVector().size();
   //InrImages for params
   InrImage::ptr AIntensity = InrImage::ptr(new InrImage(size, 1, 1, WT_DOUBLE,
                                                         "aintensity.inr.gz"));
@@ -118,8 +123,9 @@ BasicVariable::ptr WrapClass_SubPixel2D::wrap_SuperGradienteCurvo
                                                         "ypos.inr.gz"));
   
   //Fill InrImages
-  sp->fillImages(sp->borderPixelVector, AIntensity, BIntensity, border, a, b, c, 
-                 curvature, posx, posy);
+  vector<borderPixel> vaux = sp->getBorderPixelVector();
+  sp->fillImages(vaux, AIntensity, BIntensity, border, a, b, c, curvature, 
+                 posx, posy);
   //Add to amiobject
   amiobject->GetContext()->AddVar<InrImage>("aintensity", AIntensity, 
                                             amiobject->GetContext());
@@ -160,9 +166,9 @@ BasicVariable::ptr WrapClass_SubPixel2D::wrap_SuperGradienteGaussianoCurvo
   
   InrImage::ptr output = InrImage::ptr(new InrImage(WT_DOUBLE, 
                                                     "promedio.ami.gz",
-                                                    _objectptr->_obj->input));
+                                                    sp->getInput()));
 
-  sp->Promedio3x3(_objectptr->_obj->input, output.get(), A00, A01, A11);
+  sp->Promedio3x3(/*sp->getInput(),*/ output.get(), 1 / 9, 1 / 9, 1 / 9);
   
   sp->setInput(output.get());
   
@@ -171,7 +177,7 @@ BasicVariable::ptr WrapClass_SubPixel2D::wrap_SuperGradienteGaussianoCurvo
   //Create the AMIObject with the result
   AMIObject::ptr amiobject(new AMIObject);
   amiobject->SetName("GaussianSub-pixel2D");
-  int size = sp->borderPixelVector.size();
+  int size = sp->getBorderPixelVector().size();
   //InrImages for params
   InrImage::ptr AIntensity = InrImage::ptr(new InrImage(size, 1, 1, WT_DOUBLE,
                                                         "aintensity.inr.gz"));
@@ -193,8 +199,9 @@ BasicVariable::ptr WrapClass_SubPixel2D::wrap_SuperGradienteGaussianoCurvo
                                                         "ypos.inr.gz"));
   
   //Fill InrImages
-  sp->fillImages(sp->borderPixelVector, AIntensity, BIntensity, border, a, b, c, 
-                 curvature, posx, posy);
+  vector<borderPixel> vaux = sp->getBorderPixelVector();
+  sp->fillImages(vaux, AIntensity, BIntensity, border, a, b, c, curvature, 
+                 posx, posy);
   //Add to amiobject
   amiobject->GetContext()->AddVar<InrImage>("aintensity", AIntensity, 
                                             amiobject->GetContext());
@@ -256,34 +263,34 @@ BasicVariable::ptr WrapClass_SubPixel2D::wrap_drawBorder::CallMember(ParamList* 
   if(viewerobj.get())
     viewer = viewerobj.get();
   else
-    HelpAndReturn;
+    ClassHelpAndReturn;
   
   //Get params (inside, border points, color, thickness, style and normals control)
-  if (!get_val_ptr_param<InrImage>(inside, p, n)) HelpAndReturn;
-  if (!get_val_ptr_param<InrImage>(border_pts, p, n)) HelpAndReturn;
-  FUNC_GET_OBJECT_PARAM(wxColour, bcolorvar, bcolorobj);
+  if (!get_val_ptr_param<InrImage>(inside, p, n)) ClassHelpAndReturn;
+  if (!get_val_ptr_param<InrImage>(border_pts, p, n)) ClassHelpAndReturn;
+  CLASS_GET_OBJECT_PARAM(wxColour, bcolorvar, bcolorobj);
   if (bcolorobj.get()) {
-    if (!get_int_param(bthickness, p, n)) HelpAndReturn;
-    if (!get_int_param(bstyle, p, n)) HelpAndReturn;
-    if (!get_int_param(draw_normals, p, n)) HelpAndReturn;
+    if (!get_int_param(bthickness, p, n)) ClassHelpAndReturn;
+    if (!get_int_param(bstyle, p, n)) ClassHelpAndReturn;
+    if (!get_int_param(draw_normals, p, n)) ClassHelpAndReturn;
   }
-  else HelpAndReturn;
+  else ClassHelpAndReturn;
   
   //If the user sets draw_normals, get the normal points image, and call to
   //drawBorder
   if (draw_normals) 
   {
-    if (!get_val_ptr_param<InrImage>(norm_pts, p, n)) HelpAndReturn;
-    FUNC_GET_OBJECT_PARAM(wxColour, ncolorvar, ncolorobj);
+    if (!get_val_ptr_param<InrImage>(norm_pts, p, n)) ClassHelpAndReturn;
+    CLASS_GET_OBJECT_PARAM(wxColour, ncolorvar, ncolorobj);
     if (ncolorobj.get()) 
     {
-      if (!get_int_param(nthickness, p, n)) HelpAndReturn;
-      if (!get_int_param(nstyle, p, n)) HelpAndReturn;
+      if (!get_int_param(nthickness, p, n)) ClassHelpAndReturn;
+      if (!get_int_param(nstyle, p, n)) ClassHelpAndReturn;
       sp->drawBorder(viewer, inside, border_pts, bcolorobj.get(), bthickness, 
                      bstyle, draw_normals, norm_pts, ncolorobj.get(), nthickness, 
                      nstyle);
     }
-    else HelpAndReturn;
+    else ClassHelpAndReturn;
   }
   else 
   {
