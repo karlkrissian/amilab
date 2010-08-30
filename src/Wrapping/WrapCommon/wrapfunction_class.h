@@ -174,7 +174,7 @@ class  WrapClassBase
  Allows including some static member for the construction and the management of the wrapped class.
  **/
 template<class T>
-class WrapClass: public WrapClassBase
+class WrapClass: public virtual WrapClassBase
 {
 
   protected:  
@@ -182,6 +182,8 @@ class WrapClass: public WrapClassBase
     typedef boost::shared_ptr<WrapClass<T> > _parentclass_ptr;
 
   public:
+    //typedef T objtype;
+    //typedef boost::shared_ptr<T> objtype_ptr;
     typedef boost::shared_ptr<WrapClass<T> > ptr;
 
 

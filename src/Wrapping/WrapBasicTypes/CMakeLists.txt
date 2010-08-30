@@ -34,6 +34,8 @@ SET(WrapBasicTypes_HDRS
   wrap_varlist.h
   wrap_varvector.h
   wrap_File.h
+  wrap_stdvector.h
+  wrap_stdvector.tpp
 )
 
 SET(WrapBasicTypes_SRCS

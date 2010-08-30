@@ -55,6 +55,8 @@
 
 #include "wrap_dwControlPoint.h"
 
+#include "wrap_stdvector.h"
+
 extern VarContexts  Vars;
 extern MainFrame*   GB_main_wxFrame;
 
@@ -221,6 +223,9 @@ void AddWrapBasicTypes()
 //  ADDOBJECTVAR_NAME(C_wrap_varfunction,"VarList",   wrap_VarList);
 //  ADDOBJECTVAR_NAME(C_wrap_varfunction,"VarVector", wrap_VarVector);
   AddVar_VarVector( Vars.GetBuiltinContext());
+
+  WrapClass_StdVector<int>::AddVar_StdVector( Vars.GetBuiltinContext(), "vector_int");
+  WrapClass_StdVector<float>::AddVar_StdVector( Vars.GetBuiltinContext(), "vector_float");
 
   WrapClass_File::AddVar_File( Vars.GetBuiltinContext());
 //  AddVar_VarList( Vars.GetBuiltinContext());
