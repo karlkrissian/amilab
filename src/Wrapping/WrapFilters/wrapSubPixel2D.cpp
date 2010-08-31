@@ -167,8 +167,8 @@ BasicVariable::ptr WrapClass_SubPixel2D::wrap_SuperGradienteGaussianoCurvo
   InrImage::ptr output = InrImage::ptr(new InrImage(WT_DOUBLE, 
                                                     "promedio.ami.gz",
                                                     sp->getInput()));
-
-  sp->Promedio3x3(/*sp->getInput(),*/ output.get(), 1 / 9, 1 / 9, 1 / 9);
+  
+  sp->Promedio3x3(/*sp->getInput(),*/ output.get(), (double)1/9, (double)1/9, (double)1/9);
   
   sp->setInput(output.get());
   
@@ -203,6 +203,8 @@ BasicVariable::ptr WrapClass_SubPixel2D::wrap_SuperGradienteGaussianoCurvo
   sp->fillImages(vaux, AIntensity, BIntensity, border, a, b, c, curvature, 
                  posx, posy);
   //Add to amiobject
+  amiobject->GetContext()->AddVar<InrImage>("denoised", output,
+                                            amiobject->GetContext());
   amiobject->GetContext()->AddVar<InrImage>("aintensity", AIntensity, 
                                             amiobject->GetContext());
   amiobject->GetContext()->AddVar<InrImage>("bintensity", BIntensity,
@@ -247,7 +249,7 @@ void WrapClass_SubPixel2D::wrap_drawBorder::SetParametersComments()
 BasicVariable::ptr WrapClass_SubPixel2D::wrap_drawBorder::CallMember(ParamList* p)
 {
   SubPixel2D::ptr sp(this->_objectptr->GetObj());
-  
+    
   DessinImage* viewer = NULL;
   InrImage* inside;
   InrImage* border_pts;
@@ -299,6 +301,7 @@ BasicVariable::ptr WrapClass_SubPixel2D::wrap_drawBorder::CallMember(ParamList* 
     sp->drawBorder(viewer, inside, border_pts, bcolorobj.get(), bthickness, bstyle,
                    draw_normals, NULL, NULL, 0, 0);
   }
+  return BasicVariable::ptr();
 }
 
 //Wrapping para dibujar los contornos
