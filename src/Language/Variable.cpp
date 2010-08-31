@@ -149,3 +149,126 @@ template<> AMI_DLLEXPORT
 BasicVariable::ptr operator +(const boost::shared_ptr<Variable<float> >& a, 
                               const boost::shared_ptr<Variable<float> >& b);
 */
+
+/*
+  template<> AMI_DLLEXPORT class AMILabType<float> { 
+    
+    static char const* name_as_string() { return "float"; } 
+    
+    static boost::shared_ptr<float> GetValue(BasicVariable::ptr var)  
+    { 
+      boost::shared_ptr<Variable<float> > tmp(      boost::dynamic_pointer_cast<Variable<float> >(var)); 
+      if (tmp.get()) return tmp->Pointer(); 
+      else return boost::shared_ptr<float>();
+    } 
+    
+    static BasicVariable::ptr CreateVar(float& val)  
+    { 
+      boost::shared_ptr<float> valptr(new float(val));
+      Variable<float>::ptr varres( new Variable<float>(valptr));
+      return varres; 
+    } 
+    
+  }; 
+*/
+#include "inrimage.hpp"
+#include "wrapfunction_class.h"
+#include "ami_function.h"
+
+AMI_DEFINE_BASICTYPE(float);
+AMI_DEFINE_BASICTYPE(double);
+AMI_DEFINE_BASICTYPE(long);
+AMI_DEFINE_BASICTYPE(int);
+AMI_DEFINE_BASICTYPE(unsigned char);
+AMI_DEFINE_BASICTYPE(InrImage);
+AMI_DEFINE_BASICTYPE(std::string);
+AMI_DEFINE_BASICTYPE(FloatMatrix);
+
+//AMI_DEFINE_BASICTYPE(C_wrap_procedure);
+
+//AMI_DEFINE_BASICTYPE(WrapClassMember);
+//AMI_DEFINE_BASICTYPE(C_wrap_imagefunction);
+//AMI_DEFINE_BASICTYPE(C_wrap_varfunction);
+AMI_DEFINE_BASICTYPE(AMIFunction);
+AMI_DEFINE_BASICTYPE(AMIClass);
+AMI_DEFINE_BASICTYPE(AMIObject);
+//AMI_DEFINE_BASICTYPE(VarArray);
+
+//----------------------------------------------------
+// Specific specialization for C_wrap_procedure
+//----------------------------------------------------
+
+AMI_DLLEXPORT  char const* AMILabType<C_wrap_procedure>::name_as_string() 
+{ return "C_wrap_procedure"; } 
+
+AMI_DLLEXPORT 
+boost::shared_ptr<C_wrap_procedure> AMILabType<C_wrap_procedure>::GetValue(BasicVariable::ptr var)  
+{ 
+  boost::shared_ptr<Variable<C_wrap_procedure> > tmp(      boost::dynamic_pointer_cast<Variable<C_wrap_procedure> >(var)); 
+  if (tmp.get()) return tmp->Pointer(); 
+  else return boost::shared_ptr<C_wrap_procedure>();
+} 
+
+AMI_DLLEXPORT 
+BasicVariable::ptr AMILabType<C_wrap_procedure>::CreateVar(C_wrap_procedure& val)  
+{ 
+/* TODO: not sure how to implement it
+  boost::shared_ptr<C_wrap_procedure> valptr(CreateSmartPointer<C_wrap_procedure>()(&val));
+  Variable<C_wrap_procedure>::ptr varres( new Variable<C_wrap_procedure>(valptr));
+  return varres; 
+*/
+  return BasicVariable::ptr();
+}
+
+//----------------------------------------------------
+// Specific specialization for C_wrap_imagefunction
+//----------------------------------------------------
+
+AMI_DLLEXPORT  char const* AMILabType<C_wrap_imagefunction>::name_as_string() 
+{ return "C_wrap_imagefunction"; } 
+
+AMI_DLLEXPORT 
+boost::shared_ptr<C_wrap_imagefunction> AMILabType<C_wrap_imagefunction>::GetValue(BasicVariable::ptr var)  
+{ 
+  boost::shared_ptr<Variable<C_wrap_imagefunction> > tmp(      boost::dynamic_pointer_cast<Variable<C_wrap_imagefunction> >(var)); 
+  if (tmp.get()) return tmp->Pointer(); 
+  else return boost::shared_ptr<C_wrap_imagefunction>();
+} 
+
+AMI_DLLEXPORT 
+BasicVariable::ptr AMILabType<C_wrap_imagefunction>::CreateVar(C_wrap_imagefunction& val)  
+{ 
+/* TODO: not sure how to implement it
+  boost::shared_ptr<C_wrap_imagefunction> valptr(CreateSmartPointer<C_wrap_imagefunction>()(&val));
+  Variable<C_wrap_imagefunction>::ptr varres( new Variable<C_wrap_imagefunction>(valptr));
+  return varres; 
+*/
+  return BasicVariable::ptr();
+}
+
+//----------------------------------------------------
+// Specific specialization for C_wrap_varfunction
+//----------------------------------------------------
+
+AMI_DLLEXPORT  char const* AMILabType<C_wrap_varfunction>::name_as_string() 
+{ return "C_wrap_varfunction"; } 
+
+AMI_DLLEXPORT 
+boost::shared_ptr<C_wrap_varfunction> AMILabType<C_wrap_varfunction>::GetValue(BasicVariable::ptr var)  
+{ 
+  boost::shared_ptr<Variable<C_wrap_varfunction> > tmp(      boost::dynamic_pointer_cast<Variable<C_wrap_varfunction> >(var)); 
+  if (tmp.get()) return tmp->Pointer(); 
+  else return boost::shared_ptr<C_wrap_varfunction>();
+} 
+
+AMI_DLLEXPORT 
+BasicVariable::ptr AMILabType<C_wrap_varfunction>::CreateVar(C_wrap_varfunction& val)  
+{ 
+/* TODO: not sure how to implement it
+  boost::shared_ptr<C_wrap_varfunction> valptr(CreateSmartPointer<C_wrap_varfunction>()(&val));
+  Variable<C_wrap_varfunction>::ptr varres( new Variable<C_wrap_varfunction>(valptr));
+  return varres; 
+*/
+  return BasicVariable::ptr();
+}
+

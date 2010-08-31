@@ -64,6 +64,53 @@
         objname = wrapped_obj->GetObj(); \
     }
 
+/**
+ * This class will be specialized for each variable type used by amilab, either builtin type or wrapped type, allowing more flexible wrapping code.
+ */
+template<typename T> 
+class AMILabType {
+    public:
+    static char const* name_as_string() { return "unknown"; }
+    static boost::shared_ptr<T> GetValue(BasicVariable::ptr var)
+    { return boost::shared_ptr<T>(); }
+
+    static BasicVariable::ptr CreateVar(T& val)
+    { return BasicVariable::ptr(); }
+};
+
+// forward declaration of the specialization
+#define AMI_DECLARE_TYPE(type) \
+  template<> class AMILabType<type> \
+  { \
+    public: \
+    static char const* name_as_string();\
+    static boost::shared_ptr<type> GetValue(BasicVariable::ptr var);\
+    static BasicVariable::ptr CreateVar(type& val);\
+  };
+
+#define AMI_DEFINE_BASICTYPE(type) \
+    AMI_DLLEXPORT \
+    char const* AMILabType<type>::name_as_string() { return #type; } \
+    \
+    AMI_DLLEXPORT \
+    boost::shared_ptr<type> AMILabType<type>::GetValue(BasicVariable::ptr var)  \
+    { \
+      boost::shared_ptr<Variable<type> > tmp(      boost::dynamic_pointer_cast<Variable<type> >(var)); \
+      if (tmp.get()) return tmp->Pointer(); \
+      else return boost::shared_ptr<type>();\
+    } \
+    \
+    AMI_DLLEXPORT \
+    BasicVariable::ptr AMILabType<type>::CreateVar(type& val)  \
+    { \
+      boost::shared_ptr<type> valptr(new type(val));\
+      Variable<type>::ptr varres( new Variable<type>(valptr));\
+      return varres; \
+    } 
+
+//#define AMI_DECLARE_WRAPPEDTYPE(type) 
+
+
 template<typename> 
 struct to_string {
     // optionally, add other information, like the size
@@ -117,7 +164,7 @@ TO_STRING(InrImage);
 TO_STRING(std::string);
 class FloatMatrix;
 TO_STRING(FloatMatrix);
-TO_STRING(FILE);
+//TO_STRING(FILE);
 TO_STRING(C_wrap_procedure);
 class WrapClassMember;
 TO_STRING(WrapClassMember);
@@ -133,6 +180,23 @@ TO_STRING(AMIObject);
 //TO_STRING( GLTransfMatrix);
 class VarArray;
 TO_STRING( VarArray);
+
+AMI_DECLARE_TYPE(float);
+AMI_DECLARE_TYPE(double);
+AMI_DECLARE_TYPE(long);
+AMI_DECLARE_TYPE(int);
+AMI_DECLARE_TYPE(unsigned char);
+AMI_DECLARE_TYPE(InrImage);
+AMI_DECLARE_TYPE(std::string);
+AMI_DECLARE_TYPE(FloatMatrix);
+AMI_DECLARE_TYPE(C_wrap_procedure);
+//AMI_DECLARE_TYPE(WrapClassMember);
+AMI_DECLARE_TYPE(C_wrap_imagefunction);
+AMI_DECLARE_TYPE(C_wrap_varfunction);
+AMI_DECLARE_TYPE(AMIFunction);
+AMI_DECLARE_TYPE(AMIClass);
+AMI_DECLARE_TYPE(AMIObject);
+//AMI_DECLARE_TYPE( VarArray);
 
 
 //----------------------------------------------------------------------
@@ -236,7 +300,7 @@ public:
 
   virtual const std::string GetTypeName() const
   {
-    return to_string<T>::value();
+    return AMILabType<T>::name_as_string();
   };
 
 

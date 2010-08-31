@@ -65,21 +65,36 @@ if (!exists(ImageHistoClass)) {
       nc = ::dw.GetNumberOfCtrlPoints()
 
       if (exists(::input)) {
-        FuncCurve = Image(FLOAT,nc,1,1,2)
-        hmax = max(::h[0])
-        for k=0 to nc-1 {
-          xpos = ::dw.GetCtrlPointX(k)
-          ypos = ::dw.GetCtrlPointY(k)
-          FuncCurve.setpos(k,0,0)
+        curve_id = ::input.vdim;
+      } else {
+        curve_id = 0
+      }
+
+      nbpoints=0;
+      for k=0 to nc-1 {
+        cp = ::dw.GetCtrlPoint(k)
+        if (cp.GetType()==0)&&(cp.GetVerticalLine()==0) {
+          nbpoints++;
+        }
+      }
+      FuncCurve = Image(FLOAT,nbpoints,1,1,2)
+      n = 0
+      for k=0 to nc-1 {
+        cp = ::dw.GetCtrlPoint(k)
+        if (cp.GetType()==0)&&(cp.GetVerticalLine()==0) {
+          xpos = cp.GetX()
+          ypos = cp.GetY()
+          FuncCurve.setpos(n,0,0)
           FuncCurve.set(0,xpos)
           FuncCurve.set(1,ypos)
+          n++
         }
-        ::dw->SetCurve(FuncCurve,::input.vdim)
-        ::dw->SetCurveProperties(::input.vdim,"#009900")
-  
-        ::dw._Paint()
-        ::dw.Refresh()
       }
+      ::dw->SetCurve(FuncCurve,curve_id)
+      ::dw->SetCurveProperties(curve_id,"#009900")
+
+      ::dw._Paint()
+      ::dw.Refresh()
     }
 
     #---------------------------
@@ -233,8 +248,8 @@ if (!exists(ImageHistoClass)) {
           }
         }
       }
-      ::cm_min = xmin
-      ::cm_max = xmax
+      if (exists(xmin)) { ::cm_min = xmin; }
+      if (exists(xmin)) { ::cm_max = xmax; }
     }
 
     #--------------------------------------------------
