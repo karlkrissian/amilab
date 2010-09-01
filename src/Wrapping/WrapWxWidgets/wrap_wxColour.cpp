@@ -28,6 +28,8 @@ BasicVariable::ptr WrapClass<wxColour>::CreateVar( ParamList* p)
   return construct.CallMember(p);
 }
 
+AMI_DEFINE_WRAPPEDTYPE(wxColour)
+
 //
 // static member for creating a variable from a pointer to wxColour
 //
@@ -38,6 +40,7 @@ Variable<AMIObject>::ptr WrapClass_wxColour::CreateVar( wxColour* sp)
     WrapClass<wxColour>::CreateVar(
       new WrapClass_wxColour(_obj_ptr));
 }
+
 
 //---------------------------------------------------
 // Method that adds wrapping of wxColour

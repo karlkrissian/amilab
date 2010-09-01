@@ -21,6 +21,7 @@
 #include "wrap_wxWindow.h"
 #include "wxDrawingWindow.h"
 
+AMI_DECLARE_TYPE(wxDrawingWindow)
 
 class WrapClass_wxDrawingWindow : public WrapClass_wxWindow
 {

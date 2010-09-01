@@ -21,24 +21,23 @@
 
 #include <wx/string.h>
 
-TO_STRING(wxString);
+AMI_DECLARE_TYPE(wxString);
 
-class WrapClass_wxString : public WrapClassBase
+class WrapClass_wxString : public WrapClass<wxString>
 {
   DEFINE_CLASS(WrapClass_wxString);
 
-  protected:
-    // for nested classes
-    typedef WrapClass_wxString::ptr _parentclass_ptr;
-    typedef wxString _obj_type;
-
   public:
-    boost::shared_ptr<_obj_type> _obj;
-    const boost::shared_ptr<_obj_type>& GetObj() const { return _obj; }
 
     /// Constructor
-    WrapClass_wxString(boost::shared_ptr<wxString> si): _obj(si)
+    WrapClass_wxString(boost::shared_ptr<wxString> si): WrapClass<wxString>(si) 
     {}
+
+    /// Wrapping of the constructor
+    ADD_CLASS_CONSTRUCTOR(wxString, "Wrapping of wxString (see http://docs.wxwidgets.org/)." )
+
+    /// Create a variable from a standard pointer
+    static Variable<AMIObject>::ptr CreateVar( wxString* sp);
 
     ADD_CLASS_METHOD(Clear,        "Empties the string and frees memory occupied by it.");
     ADD_CLASS_METHOD(SetChar,      "Sets the character at position n");
@@ -84,7 +83,7 @@ class WrapClass_wxString : public WrapClassBase
 //    ADD_CLASS_METHOD(Printf,       "");
 //    ADD_CLASS_METHOD(PrintfV,      "");
 
-    void AddMethods(_parentclass_ptr& this_ptr )
+    void AddMethods(WrapClass<wxString>::ptr this_ptr )
     {
       AddVar_Append(       this_ptr);
       AddVar_SetChar(      this_ptr);
@@ -129,22 +128,5 @@ class WrapClass_wxString : public WrapClassBase
 
 };
 
-/**
- * Create a Wrapped object around wxString
- * @param objectptr input smart pointer to a WrapClass_wxString
- * @return smart pointer to an AMIObject class
- */
-AMIObject::ptr AddWrap_wxString(  WrapClass_wxString::ptr& objectptr);
-
-/**
- * Create a Wrapped object around wxString
- * @param si_ptr input smart pointer to a wxString
- * @return smart pointer to an AMIObject class
- */
-Variable<AMIObject>::ptr CreateVar_wxString( wxString* si);
-
-/** Method that adds wrapping of wxString
- */
-ADD_CLASS_FUNCTION( wxString, "Wrapping of wxString (see http://docs.wxwidgets.org/)." );
 
 #endif // _wrap_wxString_h_

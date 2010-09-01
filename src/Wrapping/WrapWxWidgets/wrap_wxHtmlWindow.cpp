@@ -19,6 +19,8 @@
 #include "ami_function.h"
 #include "wrap_wxWindow.h"
 
+AMI_DEFINE_WRAPPEDTYPE(wxHtmlWindow)
+
 //-------------------------------------------------------------------------
 AMIObject::ptr AddWrap_wxHtmlWindow(  WrapClass_wxHtmlWindow::ptr& objectptr)
 {

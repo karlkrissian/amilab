@@ -27,6 +27,8 @@
 
 #include "driver.h"
 
+AMI_DEFINE_WRAPPEDTYPE(GLTransfMatrix);
+
 extern void CB_delete_variable( void* var);
 extern void CB_delete_varlist( void* var);
 

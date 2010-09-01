@@ -33,6 +33,7 @@ extern MainFrame* GB_main_wxFrame;
 extern void CB_delete_variable( void* var);
 extern void CB_delete_varlist( void* var);
 
+AMI_DEFINE_WRAPPEDTYPE(DessinImage)
 
 //-------------------------------------------------------------------------
 AMIObject::ptr AddWrap_DessinImage(  WrapClass_DessinImage::ptr& objectptr)

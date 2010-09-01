@@ -19,6 +19,9 @@
 #include "ami_function.h"
 #include "wrap_wxSize.h"
 
+AMI_DEFINE_WRAPPEDTYPE(wxSizerItem)
+
+
 //-------------------------------------------------------------------------
 AMIObject::ptr AddWrap_wxSizerItem(  WrapClass_wxSizerItem::ptr& objectptr)
 {

@@ -29,6 +29,8 @@
 
 extern yyip::Driver GB_driver;
 
+AMI_DEFINE_WRAPPEDTYPE(SurfacePoly)
+
 //
 // static member for creating a variable from a ParamList
 //

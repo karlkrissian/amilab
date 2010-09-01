@@ -24,7 +24,7 @@
 #include "wrap_SurfacePoly.h"
 #include "wrap_GLTransfMatrix.h"
 
-TO_STRING(Viewer3D);
+AMI_DECLARE_TYPE(Viewer3D);
 
 class WrapClass_Viewer3D: public WrapClass_wxWindow
 {

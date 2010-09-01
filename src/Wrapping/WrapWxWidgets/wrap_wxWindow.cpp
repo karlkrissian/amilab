@@ -20,59 +20,45 @@
 #include "ami_function.h"
 #include "wrap_wxSize.h"
 
-#define GET_PARAM(type,varname,defaultval) \
-  type varname = defaultval; \
-  if (!get_val_param<type>( varname, p, n)) \
-    ClassHelpAndReturn;
-
-//-------------------------------------------------------------------------
-AMIObject::ptr AddWrap_wxWindow(  WrapClass_wxWindow::ptr& objectptr)
+//
+// static member for creating a variable from a ParamList
+//
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<wxWindow>::CreateVar( ParamList* p)
 {
-  // Create new instance of the class
-  AMIObject::ptr amiobject( new AMIObject);
-  amiobject->SetName("HtmlWindow");
-  amiobject->SetWrappedObject(objectptr);
-  objectptr->SetAMIObject(amiobject);
-  objectptr->AddMethods(objectptr);
-
-  return amiobject;
+  WrapClass_wxWindow::wrap_wxWindow construct;
+  return construct.CallMember(p);
 }
 
-//----------------------------------------------------------
-Variable<AMIObject>::ptr CreateVar_wxWindow( wxWindow* si)
-{
-  // here wxColour can be deleted
-  boost::shared_ptr<wxWindow> si_ptr(
-    si,
-    wxwindow_nodeleter<wxWindow>() // deletion will be done by wxwidgets
-  );
+  AMI_DEFINE_WRAPPEDTYPE(wxWindow);
 
-  WrapClass_wxWindow::ptr sip(new WrapClass_wxWindow(si_ptr));
-  AMIObject::ptr amiobject(AddWrap_wxWindow(sip));
-  Variable<AMIObject>::ptr varres(
-      new Variable<AMIObject>( amiobject));
-  return varres;
-}
+
 
 //---------------------------------------------------
 // Method that adds wrapping of wxWindow
 //---------------------------------------------------
 
-void  wrap_wxWindow::SetParametersComments() 
+void WrapClass_wxWindow::wrap_wxWindow::SetParametersComments() 
 {
   ADDPARAMCOMMENT_TYPE(wxWindow,"Parent window");
   return_comments = "A wrapped wxWindow object.";
 }
 //---------------------------------------------------
-BasicVariable::ptr wrap_wxWindow::CallMember( ParamList* p)
+BasicVariable::ptr WrapClass_wxWindow::wrap_wxWindow::CallMember( ParamList* p)
 {
   int n = 0;
   std::string* title = NULL;
 
   if (!p) ClassHelpAndReturn;
-  CLASS_GET_OBJECT_PARAM(wxWindow,var,parent);
-  if (parent.get())
-    return CreateVar_wxWindow(new wxWindow(parent.get(), wxID_ANY));
+  CLASS_GET_OBJECT_PARAM2(wxWindow,var,parent);
+  if (parent.get()){
+    
+    boost::shared_ptr<wxWindow> w_ptr(
+      new wxWindow(parent.get(), wxID_ANY),
+      wxwindow_nodeleter<wxWindow>() // deletion will be done by wxwidgets
+    );
+    return WrapClass<wxWindow>::CreateVar(new WrapClass_wxWindow(w_ptr));
+  }
   else
     ClassHelpAndReturn;
 }

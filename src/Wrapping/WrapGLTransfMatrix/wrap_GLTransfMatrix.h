@@ -23,7 +23,7 @@
 //#include "InterpolateTransform.h"
 //#include "wrap_wxWindow.h"
 
-TO_STRING(GLTransfMatrix);
+AMI_DECLARE_TYPE(GLTransfMatrix);
 
 class WrapClass_GLTransfMatrix: public WrapClassBase
 {

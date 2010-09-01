@@ -20,6 +20,8 @@
 #include "ami_function.h"
 #include <wx/string.h>
 
+AMI_DEFINE_WRAPPEDTYPE(wxStcFrame)
+
 //-------------------------------------------------------------------------
 AMIObject::ptr AddWrap_wxStcFrame(  WrapClass_wxStcFrame::ptr& objectptr)
 {
@@ -67,7 +69,7 @@ BasicVariable::ptr wrap_wxStcFrame::CallMember( ParamList* p)
 
   std::string* title = NULL;
   int n=0;
-  CLASS_GET_OBJECT_PARAM(wxWindow,var,parent);
+  CLASS_GET_OBJECT_PARAM2(wxWindow,var,parent);
   if (!get_val_ptr_param<string>( title, p, n))   ClassHelpAndReturn;
 
   if (parent.get() && title!=NULL)

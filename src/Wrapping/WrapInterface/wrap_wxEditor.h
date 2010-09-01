@@ -22,7 +22,7 @@
 
 #include "wxEditor.h"
 
-TO_STRING(wxEditor); //New: Added 13-07-2010
+AMI_DECLARE_TYPE(wxEditor)
 
 class WrapClass_wxEditor : public WrapClass_wxWindow
 {

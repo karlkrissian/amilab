@@ -20,55 +20,39 @@
 
 #include <wx/bitmap.h>
 
+AMI_DECLARE_TYPE(wxBitmap)
 
-class WrapClass_wxBitmap : public WrapClassBase
+
+class WrapClass_wxBitmap : public WrapClass<wxBitmap>
 {
   DEFINE_CLASS(WrapClass_wxBitmap);
 
-  // for nested classes
-  typedef WrapClass_wxBitmap::ptr _parentclass_ptr;
-  typedef wxBitmap _obj_type;
 
   public:
-    boost::shared_ptr<_obj_type> _obj;
-    const boost::shared_ptr<_obj_type>& GetObj() const { return _obj; }
 
     /// Constructor
-    WrapClass_wxBitmap(boost::shared_ptr<wxBitmap> val): _obj(val)
+    WrapClass_wxBitmap(boost::shared_ptr<wxBitmap> val): WrapClass<wxBitmap>(val)
     {}
+
+    /// Create a variable from a standard pointer
+    static Variable<AMIObject>::ptr CreateVar( wxBitmap*);
+
+    ADD_CLASS_CONSTRUCTOR( wxBitmap, "Wrapping of wxBitmap (see http://docs.wxwidgets.org/)." );
 
     ADD_CLASS_METHOD(GetWidth,     "Gets the width of the bitmap in pixels.");
     ADD_CLASS_METHOD(GetHeight,    "Gets the height of the bitmap in pixels.");
     ADD_CLASS_METHOD(IsOk,         "Returns true if bitmap data is present.");
-
     ADD_CLASS_METHOD(copy,         "Bitmap copy constructor.");
 
-    void AddMethods( _parentclass_ptr& this_ptr ) {
-      AddVar_GetWidth(       this_ptr);
-      AddVar_GetHeight(      this_ptr);
+    void AddMethods( WrapClass<wxBitmap>::ptr this_ptr ) {
+      AddVar_GetWidth(    this_ptr);
+      AddVar_GetHeight(   this_ptr);
       AddVar_IsOk(        this_ptr);
       AddVar_copy(        this_ptr);
     }
 
 };
 
-/**
- * Create a Wrapped object around _wxBitmap
- * @param objectptr input smart pointer to a WrapClass_wxBitmap
- * @return smart pointer to an AMIObject class
- */
-AMIObject::ptr AddWrap_wxBitmap(  WrapClass_wxBitmap::ptr& objectptr);
-
-/**
- * Create a Wrapped object around _wxBitmap
- * @param si_ptr input smart pointer to a _wxBitmap
- * @return smart pointer to an AMIObject class
- */
-Variable<AMIObject>::ptr CreateVar_wxBitmap( wxBitmap* si);
-
-/** function that add wrapping of the Image Drawing window
- */
-BasicVariable::ptr wrap_wxBitmap( ParamList* p);
 
 
 #endif // _wrap_wxBitmap_h_

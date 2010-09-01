@@ -21,7 +21,7 @@
 
 #include "amilab_boost.h"
 
-TO_STRING(FILE);
+AMI_DECLARE_TYPE(FILE);
 
 class WrapClass_File: public WrapClass<FILE>
 {

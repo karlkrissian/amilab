@@ -22,7 +22,11 @@
 
 #include "dwControlPoint.h"
 
-TO_STRING(dwControlPoint);
+AMI_DECLARE_TYPE(dwControlPoint);
+
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<dwControlPoint>::CreateVar( ParamList* p);
+
 
 class WrapClass_dwControlPoint: public WrapClass<dwControlPoint>
 {

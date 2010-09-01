@@ -21,6 +21,8 @@
 #include "wrap_wxColour.h"
 #include <boost/shared_ptr.hpp>
 
+AMI_DEFINE_WRAPPEDTYPE(FenetreDessin)
+
 
 //-------------------------------------------------------------------------
 AMIObject::ptr AddWrap_FenetreDessin(  WrapClass_FenetreDessin::ptr& objectptr)

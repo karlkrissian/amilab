@@ -18,6 +18,8 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+AMI_DEFINE_WRAPPEDTYPE(wxEditor)
+
 //-------------------------------------------------------------------------
 AMIObject::ptr AddWrap_wxEditor(  WrapClass_wxEditor::ptr& objectptr)
 {
@@ -62,7 +64,7 @@ BasicVariable::ptr wrap_wxEditor::CallMember( ParamList* p)
 {
   if (!p) ClassHelpAndReturn;
   int n=0;
-  CLASS_GET_OBJECT_PARAM(wxWindow,var,parent);
+  CLASS_GET_OBJECT_PARAM2(wxWindow,var,parent);
   if (parent.get())
     return CreateVar_wxEditor(new wxEditor(parent.get()));
   else

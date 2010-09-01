@@ -22,6 +22,8 @@
 
 #include "wxStcFrame.h"
 
+AMI_DECLARE_TYPE(wxStcFrame)
+
 class WrapClass_wxStcFrame : public WrapClass_wxWindow
 {
   DEFINE_CLASS(WrapClass_wxStcFrame);

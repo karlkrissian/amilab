@@ -20,6 +20,7 @@
 #include "wrap_wxColour.h"
 
 
+
 //
 // static member for creating a variable from a ParamList
 //
@@ -30,6 +31,7 @@ BasicVariable::ptr WrapClass<dwControlPoint>::CreateVar( ParamList* p)
   return construct.CallMember(p);
 }
 
+AMI_DEFINE_WRAPPEDTYPE(dwControlPoint)
 
 //
 // static member for creating a variable from a pointer to dwControlPoint
@@ -40,8 +42,6 @@ Variable<AMIObject>::ptr WrapClass_dwControlPoint::CreateVar( dwControlPoint* sp
     WrapClass<dwControlPoint>::CreateVar(
       new WrapClass_dwControlPoint(dwControlPoint::ptr(sp)));
 }
-
-
 
 //---------------------------------------------------
 // Method that adds wrapping of dwControlPoint
@@ -64,7 +64,6 @@ BasicVariable::ptr WrapClass_dwControlPoint::wrap_dwControlPoint::CallMember( Pa
 
   // Create smart pointer with own deleter
   dwControlPoint::ptr pt_ptr(new dwControlPoint(dw_Point2D(xpos,ypos)));
-
   return WrapClass<dwControlPoint>::CreateVar(new WrapClass_dwControlPoint(pt_ptr));
 }
 

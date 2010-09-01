@@ -21,6 +21,8 @@
 #include "wrap_wxWindow.h"
 
 
+AMI_DECLARE_TYPE(wxHtmlWindow)
+
 class WrapClass_wxHtmlWindow : public WrapClass_wxWindow
 {
   DEFINE_CLASS(WrapClass_wxHtmlWindow);

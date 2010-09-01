@@ -21,7 +21,10 @@
 
 #include <wx/colour.h>
 
-TO_STRING(wxColour); //New: Added 13-07-2010
+AMI_DECLARE_TYPE(wxColour)
+
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<wxColour>::CreateVar( ParamList* p);
 
 
 class WrapClass_wxColour : public WrapClass<wxColour>
@@ -37,9 +40,8 @@ class WrapClass_wxColour : public WrapClass<wxColour>
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( wxColour* sp);
 
-   /// Wrapping of the constructor
+    /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR( wxColour,  "Wrapping of wxColour (see http://docs.wxwidgets.org/).");
-
 
     ADD_CLASS_METHOD(Alpha,       "Returns the alpha value, on platforms where alpha is not yet supported, this always returns wxALPHA_OPAQUE.");
     ADD_CLASS_METHOD(Blue,        "Returns the blue intensity.");

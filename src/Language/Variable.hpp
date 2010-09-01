@@ -95,9 +95,27 @@ class AMILabType {
     AMI_DLLEXPORT \
     boost::shared_ptr<type> AMILabType<type>::GetValue(BasicVariable::ptr var)  \
     { \
-      boost::shared_ptr<Variable<type> > tmp(      boost::dynamic_pointer_cast<Variable<type> >(var)); \
-      if (tmp.get()) return tmp->Pointer(); \
-      else return boost::shared_ptr<type>();\
+      if (!var.get()) \
+      {\
+        FILE_ERROR("Variable not found");\
+        return boost::shared_ptr<type>();\
+      }\
+      boost::shared_ptr<Variable<type> > tmp( boost::dynamic_pointer_cast<Variable<type> >(var)); \
+      if (tmp.get()) \
+        return tmp->Pointer(); \
+      else {\
+        BasicVariable::ptr converted = var->TryCast(AMILabType<type>::name_as_string());\
+        if (!converted.get()) {\
+          FILE_ERROR(boost::format("Cannot not be converted to type %2%.") % AMILabType<type>::name_as_string());\
+          return boost::shared_ptr<type>(); \
+        } else { \
+          boost::shared_ptr<Variable<type> > tmp( boost::dynamic_pointer_cast<Variable<type> >(converted)); \
+          if (tmp.get()) \
+            return tmp->Pointer(); \
+          else \
+            return boost::shared_ptr<type>(); \
+        }\
+      }\
     } \
     \
     AMI_DLLEXPORT \
@@ -108,7 +126,49 @@ class AMILabType {
       return varres; \
     } 
 
-//#define AMI_DECLARE_WRAPPEDTYPE(type) 
+
+#define AMI_DEFINE_WRAPPEDTYPE(type) \
+    AMI_DLLEXPORT \
+    char const* AMILabType<type>::name_as_string() { \
+       std::string name = std::string("wrap_")+#type; \
+       return name.c_str(); \
+    } \
+    \
+    AMI_DLLEXPORT \
+    boost::shared_ptr<type> AMILabType<type>::GetValue(BasicVariable::ptr var)  \
+    { \
+      if (!var.get()) \
+      {\
+        FILE_ERROR("Variable not found");\
+        return boost::shared_ptr<type>();\
+      }\
+      boost::shared_ptr<Variable<AMIObject> > tmp( boost::dynamic_pointer_cast<Variable<AMIObject> >(var)); \
+      if (!tmp.get()) {\
+        /* Try with the constructor */ \
+        ParamList::ptr param(new ParamList()); \
+        param->AddParam(var); \
+        BasicVariable::ptr constr_res = WrapClass<type>::CreateVar(param.get());\
+        tmp = boost::dynamic_pointer_cast<Variable<AMIObject> >(constr_res);\
+      } \
+      if (tmp.get()) { \
+        WrapClassBase::ptr object( tmp->Pointer()->GetWrappedObject()); \
+        boost::shared_ptr<WrapClass<type> > wc( boost::dynamic_pointer_cast<WrapClass<type> >(object));\
+        if (wc.get()) { \
+          return wc->GetObj(); \
+        } else { \
+          FILE_ERROR("Could not cast dynamically the variable.")\
+        } \
+      }  else { \
+        FILE_ERROR("Need a wrapped object or compatible variable as parameter.") \
+      } \
+      return boost::shared_ptr<type>();\
+    } \
+    \
+    AMI_DLLEXPORT \
+    BasicVariable::ptr AMILabType<type>::CreateVar(type& val)  \
+    { \
+      return BasicVariable::ptr(); \
+    } 
 
 
 template<typename> 
@@ -149,37 +209,13 @@ typedef BasicVariable::ptr (C_wrap_varfunction)(ParamList*);
 
 
 
-#define TO_STRING(type) \
-  template<> struct to_string<type> { \
-      static char const* value() { return #type; } \
-  }; \
-
-TO_STRING(float);
-TO_STRING(double);
-TO_STRING(long);
-TO_STRING(int);
-TO_STRING(unsigned char);
-class InrImage;
-TO_STRING(InrImage);
-TO_STRING(std::string);
 class FloatMatrix;
-TO_STRING(FloatMatrix);
-//TO_STRING(FILE);
-TO_STRING(C_wrap_procedure);
+class InrImage;
 class WrapClassMember;
-TO_STRING(WrapClassMember);
-TO_STRING(C_wrap_imagefunction);
-TO_STRING(C_wrap_varfunction);
 class AMIFunction;
-TO_STRING(AMIFunction);
 class AMIClass;
-TO_STRING(AMIClass);
 class AMIObject;
-TO_STRING(AMIObject);
-//class GLTransfMatrix;
-//TO_STRING( GLTransfMatrix);
 class VarArray;
-TO_STRING( VarArray);
 
 AMI_DECLARE_TYPE(float);
 AMI_DECLARE_TYPE(double);
@@ -190,14 +226,15 @@ AMI_DECLARE_TYPE(InrImage);
 AMI_DECLARE_TYPE(std::string);
 AMI_DECLARE_TYPE(FloatMatrix);
 AMI_DECLARE_TYPE(C_wrap_procedure);
-//AMI_DECLARE_TYPE(WrapClassMember);
 AMI_DECLARE_TYPE(C_wrap_imagefunction);
 AMI_DECLARE_TYPE(C_wrap_varfunction);
 AMI_DECLARE_TYPE(AMIFunction);
 AMI_DECLARE_TYPE(AMIClass);
 AMI_DECLARE_TYPE(AMIObject);
-//AMI_DECLARE_TYPE( VarArray);
+AMI_DECLARE_TYPE( VarArray);
 
+// abstract classes
+AMI_DECLARE_TYPE(WrapClassMember)
 
 //----------------------------------------------------------------------
 /**

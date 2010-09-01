@@ -26,6 +26,12 @@ class SurfacePoly;
 
 using namespace amilab;
 
+AMI_DECLARE_TYPE(SurfacePoly)
+
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<SurfacePoly>::CreateVar( ParamList* p);
+
+
 class WrapClass_SurfacePoly : public WrapClass<SurfacePoly>
 {
   DEFINE_CLASS(WrapClass_SurfacePoly);

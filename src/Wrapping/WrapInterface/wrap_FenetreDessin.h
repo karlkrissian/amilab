@@ -22,6 +22,9 @@
 
 #include "FenetreDessin.hpp"
 
+AMI_DECLARE_TYPE(FenetreDessin)
+
+
 class WrapClass_FenetreDessin : public WrapClass_wxWindow
 {
   DEFINE_CLASS(WrapClass_FenetreDessin);

@@ -20,6 +20,8 @@
 #include "CallBackAMIFunction.h"
 #include "wrap_dwControlPoint.h"
 
+AMI_DEFINE_WRAPPEDTYPE(wxDrawingWindow)
+
 //-------------------------------------------------------------------------
 AMIObject::ptr AddWrap_wxDrawingWindow(  WrapClass_wxDrawingWindow::ptr& objectptr)
 {

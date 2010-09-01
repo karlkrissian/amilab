@@ -19,6 +19,8 @@
 #include "DefineClass.hpp"
 #include <list>
 
+
+
 // varlist type
 class VarList
 {

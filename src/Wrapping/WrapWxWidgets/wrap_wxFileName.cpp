@@ -29,36 +29,34 @@ extern MainFrame* GB_main_wxFrame;
 extern wxApp* GB_wxApp;
 
 
-//-------------------------------------------------------------------------
-AMIObject::ptr AddWrap_wxFileName(  WrapClass_wxFileName::ptr& objectptr)
+//
+// static member for creating a variable from a ParamList
+//
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<wxFileName>::CreateVar( ParamList* p)
 {
-  // Create new instance of the class
-  AMIObject::ptr amiobject( new AMIObject);
-  amiobject->SetName("wxFileName");
-  amiobject->SetWrappedObject(objectptr);
-  objectptr->SetAMIObject(amiobject);
-  objectptr->AddMethods( objectptr);
-  return amiobject;
+  WrapClass_wxFileName::wrap_wxFileName construct;
+  return construct.CallMember(p);
 }
 
-//----------------------------------------------------------
-Variable<AMIObject>::ptr CreateVar_wxFileName( wxFileName* _obj)
-{
-  // Create smart pointer with own deleter
-  boost::shared_ptr<wxFileName> _obj_ptr( _obj );
+AMI_DEFINE_WRAPPEDTYPE(wxFileName)
 
-  WrapClass_wxFileName::ptr _objp(new WrapClass_wxFileName(_obj_ptr));
-  AMIObject::ptr amiobject(AddWrap_wxFileName(_objp));
-  Variable<AMIObject>::ptr varres(
-      new Variable<AMIObject>( amiobject));
-  return varres;
+//
+// static member for creating a variable from a pointer to wxColour
+//
+Variable<AMIObject>::ptr WrapClass_wxFileName::CreateVar( wxFileName* sp)
+{
+  boost::shared_ptr<wxFileName> _obj_ptr(sp);
+  return WrapClass<wxFileName>::CreateVar( new WrapClass_wxFileName(_obj_ptr));
 }
+
 
 //---------------------------------------------------
 // Method that adds wrapping of wxFileName
 //---------------------------------------------------
 
-void  wrap_wxFileName::SetParametersComments() 
+void WrapClass_wxFileName::
+      wrap_wxFileName::SetParametersComments() 
 {
   ADDPARAMCOMMENT_TYPE(string,"A full file name (MODE 1) or A directory name (MODE 2) or A directory name (MODE 3) or A volume name (MODE 4).");
   ADDPARAMCOMMENT_TYPE(string,"A file name (MODE 2) or A file name (MODE 3) or A directory name (MODE 4).");
@@ -68,9 +66,10 @@ void  wrap_wxFileName::SetParametersComments()
 }
 
 //---------------------------------------------------
-BasicVariable::ptr wrap_wxFileName::CallMember( ParamList* p)
+BasicVariable::ptr WrapClass_wxFileName::
+      wrap_wxFileName::CallMember( ParamList* p)
 {
-  wxFileName* owxFileName;
+  wxFileName* owxFileName = NULL;
   int n=0;
 
   if (!p) ClassHelpAndReturn;
@@ -119,9 +118,14 @@ BasicVariable::ptr wrap_wxFileName::CallMember( ParamList* p)
     }
   }
 
-  BasicVariable::ptr res = CreateVar_wxFileName(owxFileName);
+  // Create smart pointer with own deleter
+  if (owxFileName) {
+    boost::shared_ptr<wxFileName> pt_ptr(owxFileName);
+    return WrapClass<wxFileName>::CreateVar(new WrapClass_wxFileName(pt_ptr));
+  } 
+  else
+    return BasicVariable::ptr();
 
-  return res;
 }
 
 //---------------------------------------------------
@@ -1146,7 +1150,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_copy::CallMember( ParamList* p)
 {
-  return CreateVar_wxFileName( new wxFileName(*(this->_objectptr->GetObj())));
+  return WrapClass_wxFileName::CreateVar( new wxFileName(*(this->_objectptr->GetObj())));
 }
 
 //---------------------------------------------------
@@ -1162,7 +1166,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_assign_operator::CallMember( ParamList* p)
 {
-  return CreateVar_wxFileName( new wxFileName(*(this->_objectptr->GetObj())));
+  return WrapClass_wxFileName::CreateVar( new wxFileName(*(this->_objectptr->GetObj())));
 }
 
 //---------------------------------------------------

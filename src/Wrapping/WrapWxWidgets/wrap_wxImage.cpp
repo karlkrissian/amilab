@@ -18,71 +18,68 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
-//-------------------------------------------------------------------------
-AMIObject::ptr AddWrap_wxImage(  WrapClass_wxImage::ptr& objectptr)
+
+//
+// static member for creating a variable from a ParamList
+//
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<wxImage>::CreateVar( ParamList* p)
 {
-  // Create new instance of the class
-  AMIObject::ptr amiobject( new AMIObject);
-  amiobject->SetName("wxImage");
-
-  amiobject->SetWrappedObject(objectptr);
-  objectptr->SetAMIObject(amiobject);
-
-  objectptr->AddMethods(objectptr);
-
-  return amiobject;
+  WrapClass_wxImage::wrap_wxImage construct;
+  return construct.CallMember(p);
 }
 
-//----------------------------------------------------------
-Variable<AMIObject>::ptr CreateVar_wxImage( wxImage* si)
+
+AMI_DEFINE_WRAPPEDTYPE(wxImage)
+
+
+//
+// static member for creating a variable from a pointer to wxImage
+//
+Variable<AMIObject>::ptr WrapClass_wxImage::CreateVar( wxImage* p)
 {
-  // here wxImage can be deleted
-  boost::shared_ptr<wxImage> _si_ptr( si );
+  boost::shared_ptr<wxImage> _obj_ptr( p);
+  return WrapClass<wxImage>::CreateVar( new WrapClass_wxImage(_obj_ptr));
+}
 
-  WrapClass_wxImage::ptr sip(new WrapClass_wxImage(_si_ptr));
-  AMIObject::ptr amiobject(AddWrap_wxImage(sip));
 
-  Variable<AMIObject>::ptr varres(
-      new Variable<AMIObject>( amiobject));
-  return varres;
+//---------------------------------------------------
+// Method that adds wrapping of wxBitmap
+//---------------------------------------------------
+
+void WrapClass_wxImage::
+      wrap_wxImage::SetParametersComments() 
+{
+  ADDPARAMCOMMENT("no parameter (MODE 1) or a string (MODE 2).");
+  ADDPARAMCOMMENT_TYPE(int,"The image type (def:wxBITMAP_TYPE_ANY) (MODE 2).");
+  ADDPARAMCOMMENT_TYPE(int,"The image index for multiple images (def:-1) (MODE 2).");
+  return_comments = "A wrapped wxImage object.";
 }
 
 //---------------------------------------------------
-BasicVariable::ptr wrap_wxImage( ParamList* p)
+BasicVariable::ptr WrapClass_wxImage::
+      wrap_wxImage::CallMember( ParamList* p)
 {
-    char functionname[] = "wxImage";
-    char description[]=" \n\
-      Wrapped wxImage class. \n\
-      See http://docs.wxwidgets.org/stable/wx_wximage.html for details \n\
-            ";
-    char parameters[] =" wrapped constructors: \n\
-        - wxImage(): default constructor\n\
-        - wxImage(const wxString& name, long type = wxBITMAP_TYPE_ANY, int index = -1)\n\
-          name is given as a standard amilab string\n\
-          index: Index of the image to load in the case that the image file contains multiple images. This is only used by GIF, ICO and TIFF handlers. The default value (-1) means 'choose the default image' and is interpreted as the first image (index=0) by the GIF and TIFF handler and as the largest and most colourful one by the ICO handler.";
-
-  if (!p) HelpAndReturnVarPtr;
-
+  if (!p) ClassHelpAndReturn;
   if (p->GetNumParam()==0) 
-    return CreateVar_wxImage(new wxImage());
+    return WrapClass_wxImage::CreateVar(new wxImage());
 
   if (p->GetNumParam()>=1) 
   {
     int n = 0;
     std::string* name=NULL;
-    int type   = wxBITMAP_TYPE_ANY;
-    int index  = -1;
   
-    if (!get_val_ptr_param<string>(name,p,n)) HelpAndReturnVarPtr;
-    get_int_param(type,  p, n,false);
-    get_int_param(index, p, n,false);
+    if (!get_val_ptr_param<string>(name,p,n)) ClassHelpAndReturn;
+    GET_PARAM(int,type, wxBITMAP_TYPE_ANY);
+    GET_PARAM(int,index,-1);
 
     wxImage* im = new wxImage();
     bool res = im->LoadFile( wxString(name->c_str(), wxConvUTF8),type,index);
-    return CreateVar_wxImage(im);
+    return WrapClass_wxImage::CreateVar(im);
   }
   return BasicVariable::ptr();
 }
+
 
 //---------------------------------------------------
 //  GetWidth
@@ -152,7 +149,7 @@ BasicVariable::ptr WrapClass_wxImage::
   if (!get_int_param(width, p, n)) ClassHelpAndReturn;
   if (!get_int_param(height, p, n)) ClassHelpAndReturn;
 
-  return CreateVar_wxImage(
+  return WrapClass_wxImage::CreateVar(
     new wxImage(this->_objectptr->_obj->Scale(width,height)));
 }
 

@@ -38,6 +38,19 @@
 
 extern yyip::Driver GB_driver;
 
+//
+// static member for creating a variable from a ParamList
+//
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<FILE>::CreateVar( ParamList* p)
+{
+  WrapClass_File::wrap_File construct;
+  return construct.CallMember(p);
+}
+
+AMI_DEFINE_WRAPPEDTYPE(FILE)
+
+
 //---------------------------------------------------
 // Method that adds wrapping of File
 //---------------------------------------------------
@@ -244,7 +257,7 @@ BasicVariable::ptr WrapClass_File::
   BasicVariable::ptr param;
   if (!get_generic_var_param(param,p,n,true)) ClassHelpAndReturn;
 
-  if (param->GetTypeName()==to_string<int>::value()) {
+  if (param->GetTypeName()==AMILabType<int>::name_as_string()) {
     DYNAMIC_CAST_VARIABLE(int,param,intparam);
     if (file.get())
     {
@@ -257,7 +270,7 @@ BasicVariable::ptr WrapClass_File::
         *intparam->Pointer() =  res;
     }
   } else 
-  if (param->GetTypeName()==to_string<float>::value()) {
+  if (param->GetTypeName()==AMILabType<float>::name_as_string()) {
     DYNAMIC_CAST_VARIABLE(float,param,floatparam);
     if (file.get())
     {
@@ -270,7 +283,7 @@ BasicVariable::ptr WrapClass_File::
         *floatparam->Pointer() =  res;
     }
   } else 
-  if (param->GetTypeName()==to_string<std::string>::value()) {
+  if (param->GetTypeName()==AMILabType<std::string>::name_as_string()) {
     DYNAMIC_CAST_VARIABLE(std::string,param,stringparam);
     char res[512];
     //setlocale(LC_NUMERIC, "C");

@@ -38,6 +38,8 @@ extern VarContexts Vars;
 void CB_ParamWin( void* cd );
 void CB_update_imagelist( void* imagelist_gui);
 
+AMI_DEFINE_WRAPPEDTYPE(ParamPanel)
+
 //-------------------------------------------------------------------------
 AMIObject::ptr AddWrapParamPanel(  WrapClass_parampanel::ptr& objectptr)
 {
@@ -1086,22 +1088,14 @@ BasicVariable::ptr WrapClass_parampanel::wrap_CurrentParent::CallMember( ParamLi
   wxWindow* parent = this->_objectptr->_parampanel->CurrentParent();
 
   // create the variable
-  // 1. smart pointer to the wxWindow
+  // Smart pointer to the wxWindow
   boost::shared_ptr<wxWindow> wxw_ptr(
       parent,
       wxwindow_nodeleter<wxWindow>()    );
 
-  // 2. smart pointer to the Wrapped class
-  WrapClass_wxWindow::ptr wp(new WrapClass_wxWindow(wxw_ptr));
+  // Create the AMIObject with its methods
+  return WrapClass<wxWindow>::CreateVar(new WrapClass_wxWindow(wxw_ptr));
 
-  // 3. create the AMIObject with its methods
-  AMIObject::ptr amiobject(AddWrap_wxWindow(wp));
-
-  // 4. create the corresponding variable
-  Variable<AMIObject>::ptr varres(
-      new Variable<AMIObject>( amiobject));
-
-  return varres;
 }
 
 

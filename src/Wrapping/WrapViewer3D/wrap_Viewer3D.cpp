@@ -38,6 +38,7 @@ extern wxApp* GB_wxApp;
 extern void CB_delete_variable( void* var);
 extern void CB_delete_varlist( void* var);
 
+AMI_DEFINE_WRAPPEDTYPE(Viewer3D)
 
 //-------------------------------------------------------------------------
 AMIObject::ptr AddWrap_Viewer3D(  WrapClass_Viewer3D::ptr& objectptr)

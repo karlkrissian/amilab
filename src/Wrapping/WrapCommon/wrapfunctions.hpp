@@ -326,8 +326,8 @@ bool get_var_param( BasicVariable::ptr& var,
 /**
  * Function used to parse a variable of generic type and to give back its value.
  */
-template<class T>
-bool get_val(T& arg, BasicVariable::ptr var);
+//template<class T>
+//bool get_val(T& arg, BasicVariable::ptr var);
 
 /**
  * Function used to parse a variable of generic type in a list of parameters, and to give back its value.

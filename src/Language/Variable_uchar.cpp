@@ -335,24 +335,24 @@ template<> AMI_DLLEXPORT
 BasicVariable::ptr Variable<unsigned char>::TryCast(
     const std::string& type_string) const
 {
-  if (type_string==to_string<unsigned char>::value()) 
+  if (type_string==AMILabType<unsigned char>::name_as_string()) 
     return NewCopy();
   try
   {
     // cast to double
-    if (type_string==to_string<double>::value()) {
+    if (type_string==AMILabType<double>::name_as_string()) {
       RETURN_VARPTR(double, boost::numeric_cast<double>(Value()));
     } else 
     // cast to float
-    if (type_string==to_string<float>::value()) {
+    if (type_string==AMILabType<float>::name_as_string()) {
       RETURN_VARPTR(float, boost::numeric_cast<float>(Value()));
     } else 
     // cast to long
-    if (type_string==to_string<long>::value()) {
+    if (type_string==AMILabType<long>::name_as_string()) {
       RETURN_VARPTR(long, boost::numeric_cast<long>(Value()));
     } else 
     // cast to int
-    if (type_string==to_string<int>::value()) {
+    if (type_string==AMILabType<int>::name_as_string()) {
       RETURN_VARPTR(int, boost::numeric_cast<int>(Value()));
     } else 
     {

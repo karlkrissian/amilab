@@ -20,6 +20,9 @@
 
 #include "wrap_wxWindow.h"
 
+AMI_DECLARE_TYPE(ParamPanel)
+
+
 class WrapClass_parampanel : public WrapClass_wxWindow
 {
   DEFINE_CLASS(WrapClass_parampanel);

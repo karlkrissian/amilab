@@ -19,6 +19,8 @@
 #include "ami_object.h"
 #include "ami_function.h"
 
+AMI_DEFINE_WRAPPEDTYPE(MainFrame)
+
 //-------------------------------------------------------------------------
 AMIObject::ptr AddWrap_MainFrame(  MainFrame* mf)
 {

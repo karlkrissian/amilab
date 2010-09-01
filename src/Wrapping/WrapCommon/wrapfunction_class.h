@@ -130,7 +130,7 @@ static void AddVar_##methodname(  Variables::ptr& _context, const std::string& n
  **/
 #define ADDPARAMCOMMENT_TYPE(type,c) \
    this->parameters_comments.push_back(c); \
-   this->paramtypes.push_back(to_string<type>::value());
+   this->paramtypes.push_back(AMILabType<type>::name_as_string());
 
 /*! \def GET_PARAM
     \brief Extracts the value of the next parameter from the list.
@@ -210,7 +210,7 @@ class WrapClass: public virtual WrapClassBase
     {
       // Create new instance of the class
       AMIObject::ptr amiobject( new AMIObject);
-      amiobject->SetName(to_string<T>::value());
+      amiobject->SetName(AMILabType<T>::name_as_string());
       amiobject->SetWrappedObject(objectptr);
       objectptr->SetAMIObject(amiobject);
       objectptr->AddMethods( objectptr);

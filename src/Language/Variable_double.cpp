@@ -337,15 +337,15 @@ BasicVariable::ptr Variable<double>::TryCast(
   try
   {
     // cast to float
-    if (type_string==to_string<float>::value()) {
+    if (type_string==AMILabType<float>::name_as_string()) {
       RETURN_VARPTR(float, boost::numeric_cast<float>(Value()));
     } else 
     // cast to int
-    if (type_string==to_string<int>::value()) {
+    if (type_string==AMILabType<int>::name_as_string()) {
       RETURN_VARPTR(int, boost::numeric_cast<int>(Value()));
     } else 
     // cast to unsigned char
-    if (type_string==to_string<unsigned char>::value()) {
+    if (type_string==AMILabType<unsigned char>::name_as_string()) {
       RETURN_VARPTR(unsigned char, boost::numeric_cast<unsigned char>(Value()));
     } else 
     {

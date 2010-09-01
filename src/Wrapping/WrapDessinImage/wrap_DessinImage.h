@@ -23,7 +23,7 @@
 #include "wrap_FenetreDessin.h"
 #include "wrap_Viewer3D.h"
 
-TO_STRING(DessinImage);
+AMI_DECLARE_TYPE(DessinImage)
 
 class WrapClass_DessinImage  : public WrapClass_FenetreDessin
 //: public WrapClass_wxWindow

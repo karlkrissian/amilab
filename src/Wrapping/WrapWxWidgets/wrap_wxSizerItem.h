@@ -21,6 +21,8 @@
 
 #include <wx/sizer.h>
 
+AMI_DECLARE_TYPE(wxSizerItem)
+
 class WrapClass_wxSizerItem : public WrapClassBase
 {
   DEFINE_CLASS(WrapClass_wxSizerItem);
