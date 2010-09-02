@@ -24,27 +24,29 @@
 
 AMI_DECLARE_TYPE(wxEditor)
 
-class WrapClass_wxEditor : public WrapClass_wxWindow
+class WrapClass_wxEditor : public WrapClass<wxEditor>, public WrapClass_wxWindow
 {
   DEFINE_CLASS(WrapClass_wxEditor);
 
-  protected: //New: Added 13-07-2010
+  protected: 
     // for nested classes
-    typedef WrapClass_wxEditor::ptr _parentclass_ptr;
-    typedef wxEditor _obj_type;
+    typedef WrapClass<wxEditor>::ptr _parentclass_ptr;
 
   public:
-    boost::shared_ptr<_obj_type> _obj;
-    const boost::shared_ptr<_obj_type>& GetObj() const { return _obj; }
-
     /// Constructor
-    WrapClass_wxEditor(boost::shared_ptr<wxEditor> si):  WrapClass_wxWindow(si), _obj(si)
+    WrapClass_wxEditor(boost::shared_ptr<wxEditor> si):  WrapClass<wxEditor>(si), WrapClass_wxWindow(si)
     {}
+
+    /// Wrapping of the constructor
+    ADD_CLASS_CONSTRUCTOR(wxEditor, "Wrapping of wxEditor." )
+
+    /// Create a variable from a standard pointer
+    static Variable<AMIObject>::ptr CreateVar( wxEditor*);
 
     ADD_CLASS_METHOD(LoadFile,          "Loads a file in the editor.");
     ADD_CLASS_METHOD(ShowLineNumbers,   "Shows/Hides line numbers.");
 
-    void AddMethods(_parentclass_ptr& this_ptr )
+    void AddMethods(WrapClass<wxEditor>::ptr this_ptr )
     {
       // Add members from wxWindow
       WrapClass_wxWindow::ptr parent_obj(boost::dynamic_pointer_cast<WrapClass_wxWindow>(this_ptr));
@@ -56,23 +58,6 @@ class WrapClass_wxEditor : public WrapClass_wxWindow
 
 };
 
-/**
- * Create a Wrapped object around _wxEditor
- * @param objectptr input smart pointer to a WrapClass_wxEditor
- * @return smart pointer to an AMIObject class
- */
-AMIObject::ptr AddWrap_wxEditor(  WrapClass_wxEditor::ptr& objectptr);
-
-/**
- * Create a Wrapped object around _wxEditor
- * @param si input smart pointer to a _wxEditor
- * @return smart pointer to an AMIObject class
- */
-Variable<AMIObject>::ptr CreateVar_wxEditor( wxEditor* si);
-
-/** Method that adds wrapping of wxEditor 
- */
-ADD_CLASS_FUNCTION( wxEditor, "Wrapping of wxEditor." );
 
 
 #endif // _wrap_wxEditor_h_

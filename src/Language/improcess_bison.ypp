@@ -1961,7 +1961,7 @@ command:
       std::string titre;
       GET_VARSTACK_VAR_VAL(InrImage, imagevar, im);
       BasicVariable::ptr var;
-      int var_context = Vars.GetContext(imagevar);
+//      int var_context = Vars.GetContext(imagevar);
       Variables::ptr context = imagevar->GetContext();
 
 /*

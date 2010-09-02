@@ -22,30 +22,33 @@
 
 #include "FenetreDessin.hpp"
 
-AMI_DECLARE_TYPE(FenetreDessin)
+AMI_DECLARE_TYPE(FenetreDessin);
 
-
-class WrapClass_FenetreDessin : public WrapClass_wxWindow
+class WrapClass_FenetreDessin : public WrapClass<FenetreDessin>, public WrapClass_wxWindow
 {
   DEFINE_CLASS(WrapClass_FenetreDessin);
 
-  // for nested classes
-  typedef WrapClass_FenetreDessin::ptr _parentclass_ptr;
-  typedef FenetreDessin _obj_type;
+  protected:  
+    // for nested classes
+    typedef WrapClass<FenetreDessin>::ptr _parentclass_ptr;
 
   public:
-    boost::shared_ptr<_obj_type> _obj;
-    const boost::shared_ptr<_obj_type>& GetObj() const { return _obj; }
 
     /// Constructor
-    WrapClass_FenetreDessin(boost::shared_ptr<FenetreDessin> si):  WrapClass_wxWindow(si), _obj(si)
+    WrapClass_FenetreDessin(boost::shared_ptr<FenetreDessin> si):  WrapClass<FenetreDessin>(si), WrapClass_wxWindow(si)
     {}
+
+    /// Wrapping of the constructor
+    ADD_CLASS_CONSTRUCTOR(FenetreDessin, "Wrapping of FenetreDessin." )
+
+    /// Create a variable from a standard pointer
+    static Variable<AMIObject>::ptr CreateVar( FenetreDessin*);
 
     ADD_CLASS_METHOD(DrawingAreaDisplay, "Updates the display of the Drawing Area.");
     ADD_CLASS_METHOD(SetPenColor,        "Sets the color of the drawing pen.");
     ADD_CLASS_METHOD(SetLineParameters,  "Sets the parameters of the line.");
 
-    void AddMethods(_parentclass_ptr& this_ptr )
+    void AddMethods(WrapClass<FenetreDessin>::ptr this_ptr )
     {
       // Add members from wxWindow
       WrapClass_wxWindow::ptr parent_obj(boost::dynamic_pointer_cast<WrapClass_wxWindow>(this_ptr));
@@ -59,22 +62,5 @@ class WrapClass_FenetreDessin : public WrapClass_wxWindow
 };
 
 
-/**
- * Create a Wrapped object around FenetreDessin
- * @param objectptr input smart pointer to a WrapClass_FenetreDessin
- * @return smart pointer to an AMIObject class
- */
-AMIObject::ptr AddWrap_FenetreDessin(  WrapClass_FenetreDessin::ptr& objectptr);
-
-/**
- * Create a Wrapped object around FenetreDessin
- * @param si_ptr input smart pointer to a FenetreDessin
- * @return smart pointer to an AMIObject class
- */
-Variable<AMIObject>::ptr CreateVar_FenetreDessin( FenetreDessin* si);
-
-/** Method that adds wrapping of FenetreDessin 
- */
-ADD_CLASS_FUNCTION( FenetreDessin, "Wrapping of FenetreDessin." );
 
 #endif // _wrap_FenetreDessin_h_

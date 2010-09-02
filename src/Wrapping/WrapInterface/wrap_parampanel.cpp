@@ -1135,5 +1135,5 @@ BasicVariable::ptr WrapClass_parampanel::wrap_AddWidget::CallMember( ParamList* 
     ClassHelpAndReturn;
   }
 
-  return CreateVar_wxSizerItem(res);
+  return WrapClass_wxSizerItem::CreateVar(res);
 }

@@ -787,7 +787,7 @@ void DessinImage::IncreaseZoomArea( )
     int h_margin[3]; // horizontal margin for each slice view
     int v_margin[3]; // vertical margin for each slice view
     int largeur,hauteur;
-    int inc_x, inc_y, inc_z; // possible increases in each dimension
+    int inc_x, inc_y; // possible increases in each dimension
 
   largeur = _largeur - _colorbar_width;
   hauteur = _hauteur;
@@ -3398,7 +3398,7 @@ void DessinImage::SauveFichierParametres(  char* nom_fichier)
     FILE*      pfic;
         int     Pos_x, Pos_y;
         int     Hauteur, Largeur;
-        int     i;
+//        int     i;
 
   Recupere_fenetre_position(   &Pos_x,   &Pos_y  );
   Recupere_fenetre_dimensions( &Largeur, &Hauteur);
@@ -5292,7 +5292,7 @@ void DessinImage::CB_relire(  wxCommandEvent& event)
 void DessinImage::CB_comparer( wxCommandEvent& event)
 //                            -----------
 {
-    DessinImage*    di = this;
+//    DessinImage*    di = this;
 /* Deprecated
   di->_param_nom_image->AfficheDialogue();
 */
@@ -5327,7 +5327,7 @@ void DessinImage::(  wxCommandEvent&)
 void DessinImage::CB_sauver_image( wxCommandEvent&)
 //                ---------------
 {
-    DessinImage*    di = (DessinImage*) this;
+//    DessinImage*    di = (DessinImage*) this;
 
   //di->_param_sauve_image->AfficheDialogue();
 

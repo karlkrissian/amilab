@@ -21,33 +21,48 @@
 #include "wrap_wxWindow.h"
 
 
-AMI_DECLARE_TYPE(wxHtmlWindow)
+AMI_DECLARE_TYPE(wxHtmlWindow);
 
-class WrapClass_wxHtmlWindow : public WrapClass_wxWindow
+class WrapClass_wxHtmlWindow : public WrapClass<wxHtmlWindow>, public WrapClass_wxWindow
 {
+
   DEFINE_CLASS(WrapClass_wxHtmlWindow);
 
-  // for nested classes
-  typedef WrapClass_wxHtmlWindow::ptr _parentclass_ptr;
-  typedef wxHtmlWindow _obj_type;
+  protected:  
+
+    // needed to resolve ambiguity from multiple inheritance
+    typedef boost::shared_ptr<WrapClass<wxHtmlWindow> > _parentclass_ptr;
 
   public:
-    boost::shared_ptr<_obj_type> _obj;
-    const boost::shared_ptr<_obj_type>& GetObj() const { return _obj; }
 
     /// Constructor
-    WrapClass_wxHtmlWindow(boost::shared_ptr<wxHtmlWindow> w): WrapClass_wxWindow(w), _obj(w)
+    WrapClass_wxHtmlWindow(boost::shared_ptr<wxHtmlWindow> w):WrapClass<wxHtmlWindow>(w), WrapClass_wxWindow(w)
     {}
+
+    /// Wrapping of the constructor
+    ADD_CLASS_CONSTRUCTOR(wxHtmlWindow, "Wrapping of wxHtmlWindow (see http://docs.wxwidgets.org/)." )
+
+    /// Create a variable from a standard pointer
+    static Variable<AMIObject>::ptr CreateVar( wxHtmlWindow*);
 
     ADD_CLASS_METHOD(LoadFile,        "Loads HTML page from file and displays it.");
     ADD_CLASS_METHOD(HistoryBack,     "Moves back to the previous page.");
     ADD_CLASS_METHOD(HistoryForward,  "Moves to next page in history.");
 
+
+    void AddMethods(WrapClass<wxHtmlWindow>::ptr this_ptr )
+    {
+      // Add members from wxWindow
+      WrapClass_wxWindow::ptr parent_obj(boost::dynamic_pointer_cast<WrapClass_wxWindow>(this_ptr));
+      parent_obj->AddMethods(parent_obj);
+
+      AddVar_LoadFile(       this_ptr);
+      AddVar_HistoryBack(    this_ptr);
+      AddVar_HistoryForward( this_ptr);
+    }
+
 };
 
-/** function that add wrapping of the Image Drawing window
- */
-BasicVariable::ptr wrap_wxHtmlWindow( ParamList* p);
 
 
 #endif // _wrap_wxHtmlWindow_h_

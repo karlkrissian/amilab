@@ -19,79 +19,53 @@
 #include "ami_function.h"
 #include "wrap_wxSize.h"
 
-AMI_DEFINE_WRAPPEDTYPE(wxSizerItem)
-
-
-//-------------------------------------------------------------------------
-AMIObject::ptr AddWrap_wxSizerItem(  WrapClass_wxSizerItem::ptr& objectptr)
+//
+// static member for creating a variable from a ParamList
+//
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<wxSizerItem>::CreateVar( ParamList* p)
 {
-  // Create new instance of the class
-  AMIObject::ptr amiobject( new AMIObject);
-  amiobject->SetName("SizerItem");
-
-  amiobject->SetWrappedObject(objectptr);
-  objectptr->SetAMIObject(amiobject);
-
-  objectptr->AddVar_GetMinSize(          objectptr);
-  objectptr->AddVar_SetProportion(       objectptr);
-  objectptr->AddVar_SetDimension(        objectptr);
-
-  return amiobject;
+  WrapClass_wxSizerItem::wrap_wxSizerItem construct;
+  return construct.CallMember(p);
 }
 
-//----------------------------------------------------------
-Variable<AMIObject>::ptr CreateVar_wxSizerItem( wxSizerItem* si)
+AMI_DEFINE_WRAPPEDTYPE(wxSizerItem);
+
+//
+// static member for creating a variable from a pointer to dwControlPoint
+//
+Variable<AMIObject>::ptr WrapClass_wxSizerItem::CreateVar( wxSizerItem* sp)
 {
-
-  boost::shared_ptr<wxSizerItem> _si_ptr( si,
-      // deletion will be done by wxwidgets
-      wxwindow_nodeleter<wxSizerItem>() 
-    );
-
-  WrapClass_wxSizerItem::ptr sip(new WrapClass_wxSizerItem(_si_ptr));
-  AMIObject::ptr amiobject(AddWrap_wxSizerItem(sip));
-
-  Variable<AMIObject>::ptr varres(
-      new Variable<AMIObject>( amiobject));
-  return varres;
+  return 
+    WrapClass<wxSizerItem>::CreateVar(
+      new WrapClass_wxSizerItem(
+        boost::shared_ptr<wxSizerItem>(sp,
+          // deletion will be done by wxwidgets
+          wxwindow_nodeleter<wxSizerItem>() 
+)));
 }
 
-/*
+
+
 //---------------------------------------------------
-BasicVariable::ptr wrap_wxSizerItem( ParamList* p)
+// Method that adds wrapping of wxSizerItem
+//---------------------------------------------------
+
+void  WrapClass_wxSizerItem::
+      wrap_wxSizerItem::SetParametersComments() 
 {
-    char functionname[] = "wxSizerItem";
-    char description[]=" \n\
-      Wrapped wxWindow class. \n\
-            ";
-    char parameters[] =" \n\
-      - different constructors \n\
-            ";
-
-  int n = 0;
-  std::string* title = NULL;
-
-  Variable<AMIObject>::ptr var;
-  wxWindow* parent = NULL;
-
-  if (get_var_param<AMIObject>(var, p, n)) 
-  {
-    WrapClassBase::ptr object( var->Pointer()->GetWrappedObject());
-    WrapClass_wxSizerItem::ptr obj( boost::dynamic_pointer_cast<WrapClass_wxSizerItem>(object));
-    if (obj.get()) {
-      parent = obj->_win.get();
-    } else {
-      FILE_ERROR("Could not cast dynamically the variable to wxWindow.")
-      HelpAndReturnVarPtr;
-    }
-  }  else {
-    FILE_ERROR("Need a wrapped wxWindow object as parameter.")
-    HelpAndReturnVarPtr;
-  }
-
-  return CreateVar_wxSizerItem(new wxSizerItem( parent, wxID_ANY));
+  return_comments = "not implemented.";
 }
-*/
+
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxSizerItem::
+      wrap_wxSizerItem::CallMember( ParamList* p)
+{
+  // Not implemented ... TODO
+  return BasicVariable::ptr();
+}
+
+
 
 //---------------------------------------------------
 //  GetMinSize
@@ -105,7 +79,7 @@ void WrapClass_wxSizerItem::
 BasicVariable::ptr WrapClass_wxSizerItem::
       wrap_GetMinSize::CallMember( ParamList* p)
 {
-  wxSize minsize = this->_objectptr->_sizeritem->GetMinSize();
+  wxSize minsize = this->_objectptr->GetObj()->GetMinSize();
   return CreateVar_wxSize(new wxSize(minsize));
 }
 
@@ -125,7 +99,7 @@ BasicVariable::ptr WrapClass_wxSizerItem::
   int n = 0;
 
   if (!get_int_param(prop, p, n)) ClassHelpAndReturn;
-  this->_objectptr->_sizeritem->SetProportion(prop);
+  this->_objectptr->GetObj()->SetProportion(prop);
 
   return BasicVariable::ptr();
 }
@@ -156,7 +130,7 @@ BasicVariable::ptr WrapClass_wxSizerItem::
   if (!get_int_param(width, p, n)) ClassHelpAndReturn;
   if (!get_int_param(height, p, n)) ClassHelpAndReturn;
   this->_objectptr->
-    _sizeritem->SetDimension(wxPoint(x,y),wxSize(width,height));
+    GetObj()->SetDimension(wxPoint(x,y),wxSize(width,height));
 
   return BasicVariable::ptr();
 }

@@ -24,26 +24,30 @@
 
 AMI_DECLARE_TYPE(wxStcFrame)
 
-class WrapClass_wxStcFrame : public WrapClass_wxWindow
+class WrapClass_wxStcFrame : public WrapClass<wxStcFrame>, public WrapClass_wxWindow
 {
   DEFINE_CLASS(WrapClass_wxStcFrame);
 
-  // for nested classes
-  typedef WrapClass_wxStcFrame::ptr _parentclass_ptr;
-  typedef wxStcFrame _obj_type;
+  protected:
+    // for nested classes
+    typedef WrapClass<wxStcFrame>::ptr _parentclass_ptr;
 
   public:
-    boost::shared_ptr<_obj_type> _obj;
-    const boost::shared_ptr<_obj_type>& GetObj() const { return _obj; }
 
     /// Constructor
-    WrapClass_wxStcFrame(boost::shared_ptr<wxStcFrame> si):  WrapClass_wxWindow(si), _obj(si)
+    WrapClass_wxStcFrame(boost::shared_ptr<wxStcFrame> si):  WrapClass<wxStcFrame>(si), WrapClass_wxWindow(si)
     {}
+
+    /// Wrapping of the constructor
+    ADD_CLASS_CONSTRUCTOR(wxStcFrame, "Wrapping of wxStcFrame." )
+
+    /// Create a variable from a standard pointer
+    static Variable<AMIObject>::ptr CreateVar( wxStcFrame*);
 
     ADD_CLASS_METHOD(GetActiveEditor,   "Gets the active editor window as a wxEditor object.");
     ADD_CLASS_METHOD(FileOpen,          "Opens the given file.");
 
-    void AddMethods(_parentclass_ptr& this_ptr )
+    void AddMethods(WrapClass<wxStcFrame>::ptr this_ptr )
     {
       // Add members from wxWindow
       WrapClass_wxWindow::ptr parent_obj(boost::dynamic_pointer_cast<WrapClass_wxWindow>(this_ptr));
@@ -54,24 +58,6 @@ class WrapClass_wxStcFrame : public WrapClass_wxWindow
     }
 
 };
-
-/**
- * Create a Wrapped object around _wxStcFrame
- * @param objectptr input smart pointer to a WrapClass_wxStcFrame
- * @return smart pointer to an AMIObject class
- */
-AMIObject::ptr AddWrap_wxStcFrame(  WrapClass_wxStcFrame::ptr& objectptr);
-
-/**
- * Create a Wrapped object around _wxStcFrame
- * @param si input smart pointer to a _wxStcFrame
- * @return smart pointer to an AMIObject class
- */
-Variable<AMIObject>::ptr CreateVar_wxStcFrame( wxStcFrame* si);
-
-/** Method that adds wrapping of wxStcFrame 
- */
-ADD_CLASS_FUNCTION( wxStcFrame, "Wrapping of wxStcFrame." );
 
 
 #endif // _wrap_wxStcFrame_h_

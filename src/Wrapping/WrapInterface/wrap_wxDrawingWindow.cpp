@@ -20,67 +20,55 @@
 #include "CallBackAMIFunction.h"
 #include "wrap_dwControlPoint.h"
 
-AMI_DEFINE_WRAPPEDTYPE(wxDrawingWindow)
-
-//-------------------------------------------------------------------------
-AMIObject::ptr AddWrap_wxDrawingWindow(  WrapClass_wxDrawingWindow::ptr& objectptr)
+//
+// static member for creating a variable from a ParamList
+//
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<wxDrawingWindow>::CreateVar( ParamList* p)
 {
-  // Create new instance of the class
-  AMIObject::ptr amiobject( new AMIObject);
-  amiobject->SetName("wxDrawingWindow");
-
-  amiobject->SetWrappedObject(objectptr);
-  objectptr->SetAMIObject(amiobject);
-  objectptr->AddMethods( objectptr);
-
-  return amiobject;
+  WrapClass_wxDrawingWindow::wrap_wxDrawingWindow construct;
+  return construct.CallMember(p);
 }
 
-//---------------------------------------------------
-BasicVariable::ptr wrap_wxDrawingWindow( ParamList* p)
+AMI_DEFINE_WRAPPEDTYPE(wxDrawingWindow);
+
+//
+// static member for creating a variable from a pointer to wxDrawingWindow
+//
+Variable<AMIObject>::ptr WrapClass_wxDrawingWindow::CreateVar( wxDrawingWindow* sp)
 {
-    char functionname[] = "HtmlWindow";
-    char description[]=" \n\
-      Wrapped wxDrawingWindow class. \n\
-            ";
-    char parameters[] =" \n\
-      - Parent window ... \n\
-            ";
-
-  int n = 0;
-
-  Variable<AMIObject>::ptr var;
-  wxWindow* parent = NULL;
-
-  if (get_var_param<AMIObject>(var, p, n)) 
-  {
-    WrapClassBase::ptr object( var->Pointer()->GetWrappedObject());
-    WrapClass_wxWindow::ptr obj( boost::dynamic_pointer_cast<WrapClass_wxWindow>(object));
-    if (obj.get()) {
-      parent = obj->_obj.get();
-    } else {
-      FILE_ERROR("Could not cast dynamically the variable to wxWindow.")
-      HelpAndReturnVarPtr;
-    }
-  }  else {
-    FILE_ERROR("Need a wrapped wxWindow object as parameter.")
-    HelpAndReturnVarPtr;
-  }
-
-  boost::shared_ptr<wxDrawingWindow> wxw_ptr(
-    new wxDrawingWindow( parent),
-      wxwindow_nodeleter<wxDrawingWindow>() // deletion will be done by wxwidgets
+  return 
+    WrapClass<wxDrawingWindow>::CreateVar(
+      new WrapClass_wxDrawingWindow(
+        boost::shared_ptr<wxDrawingWindow>(sp,
+        wxwindow_nodeleter<wxDrawingWindow>() 
+        // deletion will be done by wxwidgets
+        ))
     );
+}
 
-  WrapClass_wxDrawingWindow::ptr wp(new WrapClass_wxDrawingWindow(wxw_ptr));
 
 
-  AMIObject::ptr amiobject (AddWrap_wxDrawingWindow(wp));
-
-  Variable<AMIObject>::ptr varres(
-      new Variable<AMIObject>( amiobject));
-
-  return varres;
+//---------------------------------------------------
+//  wxDrawingWindow Constructor
+//---------------------------------------------------
+void  WrapClass_wxDrawingWindow::
+      wrap_wxDrawingWindow::SetParametersComments() 
+{
+  ADDPARAMCOMMENT("wxWindow: parent");
+  return_comments = "A wrapped xDrawingWindow object.";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxDrawingWindow::
+      wrap_wxDrawingWindow::CallMember( ParamList* p)
+{
+  if (!p) ClassHelpAndReturn;
+  int n=0;
+  CLASS_GET_OBJECT_PARAM2(wxWindow,var,parent);
+  if (parent.get())
+    return WrapClass_wxDrawingWindow::CreateVar(new wxDrawingWindow(parent.get()));
+  else
+    ClassHelpAndReturn;
 }
 
 
@@ -104,8 +92,8 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
   if (!get_val_param<float>( xmin, p, n)) ClassHelpAndReturn;
   if (!get_val_param<float>( xmax, p, n)) ClassHelpAndReturn;
 
-  this->_objectptr->_drawingwin->SetXLimits(xmin,xmax);
-  this->_objectptr->_drawingwin->Refresh();
+  this->_objectptr->GetObj()->SetXLimits(xmin,xmax);
+  this->_objectptr->GetObj()->Refresh();
   return BasicVariable::ptr();
 }
 
@@ -130,8 +118,8 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
   if (!get_val_param<float>( ymin, p, n)) ClassHelpAndReturn;
   if (!get_val_param<float>( ymax, p, n)) ClassHelpAndReturn;
 
-  this->_objectptr->_drawingwin->SetYLimits(ymin,ymax);
-  this->_objectptr->_drawingwin->Refresh();
+  this->_objectptr->GetObj()->SetYLimits(ymin,ymax);
+  this->_objectptr->GetObj()->Refresh();
   return BasicVariable::ptr();
 }
 
@@ -156,7 +144,7 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
   if (!get_val_ptr_param<InrImage>( input,    p, n)) ClassHelpAndReturn;
   if (!get_int_param(   pos,      p, n)) ClassHelpAndReturn;
 
-  wxDrawingWindow::ptr dw = this->_objectptr->_drawingwin;
+  wxDrawingWindow::ptr dw = this->_objectptr->GetObj();
   if ((pos>=0)&&(pos<dw->GetNumberOfCurves()))
     dw->SetCurve(pos,input);
   else
@@ -198,9 +186,9 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
   if (!get_int_param(    style,        p, n)) ClassHelpAndReturn;
   if (!get_int_param(    width,        p, n)) ClassHelpAndReturn;
 
-  this->_objectptr->_drawingwin->SetCurveColor(curve_number,*color_str);
-  this->_objectptr->_drawingwin->SetCurveStyle(curve_number,style);
-  this->_objectptr->_drawingwin->SetCurveWidth(curve_number,width);
+  this->_objectptr->GetObj()->SetCurveColor(curve_number,*color_str);
+  this->_objectptr->GetObj()->SetCurveStyle(curve_number,style);
+  this->_objectptr->GetObj()->SetCurveWidth(curve_number,width);
 
   return BasicVariable::ptr();
 
@@ -226,7 +214,7 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
   if (!get_val_param<int>(           curve_number, p, n)) ClassHelpAndReturn;
   if (!get_val_param<unsigned char>( enable,       p, n)) ClassHelpAndReturn;
 
-  this->_objectptr->_drawingwin->SetCurveDrawLines(curve_number,enable);
+  this->_objectptr->GetObj()->SetCurveDrawLines(curve_number,enable);
 
   return BasicVariable::ptr();
 
@@ -252,7 +240,7 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
   if (!get_val_param<int>(           curve_number, p, n)) ClassHelpAndReturn;
   if (!get_val_param<unsigned char>( enable,       p, n)) ClassHelpAndReturn;
 
-  this->_objectptr->_drawingwin->SetCurveDrawPoints(curve_number,enable);
+  this->_objectptr->GetObj()->SetCurveDrawPoints(curve_number,enable);
 
   return BasicVariable::ptr();
 
@@ -269,7 +257,7 @@ void WrapClass_wxDrawingWindow::
 BasicVariable::ptr WrapClass_wxDrawingWindow::
       wrap_Paint::CallMember( ParamList* p)
 {
-  this->_objectptr->_drawingwin->Paint();
+  this->_objectptr->GetObj()->Paint();
   return BasicVariable::ptr();
 }
 
@@ -285,7 +273,7 @@ void WrapClass_wxDrawingWindow::
 BasicVariable::ptr WrapClass_wxDrawingWindow::
       wrap_GetNumberOfCtrlPoints::CallMember( ParamList* p)
 {
-  int n =   this->_objectptr->_drawingwin->GetNumberOfCtrlPoints();
+  int n =   this->_objectptr->GetObj()->GetNumberOfCtrlPoints();
   RETURN_VAR(int,n);
 }
 
@@ -306,7 +294,7 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
   int n     = 0;
   if (!get_val_param<int>( index, p, n)) ClassHelpAndReturn;
 
-  dwControlPoint cp = this->_objectptr->_drawingwin->GetControlPoint(index);
+  dwControlPoint cp = this->_objectptr->GetObj()->GetControlPoint(index);
 
   // now
   return WrapClass_dwControlPoint::CreateVar(new dwControlPoint(cp));
@@ -332,9 +320,9 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
   CLASS_GET_OBJECT_PARAM2(dwControlPoint,var,varobj);
   
   if ((index>=0)&&
-      (index<(int)_objectptr->_drawingwin->_controlpoints.size()))
+      (index<(int)_objectptr->GetObj()->_controlpoints.size()))
   {
-    _objectptr->_drawingwin->_controlpoints[index] = (*varobj);
+    _objectptr->GetObj()->_controlpoints[index] = (*varobj);
   }
   return BasicVariable::ptr();
 }
@@ -358,7 +346,7 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
 
   if (!get_val_param<int>( index, p, n)) ClassHelpAndReturn;
 
-  dwControlPoint cp = this->_objectptr->_drawingwin->GetControlPoint(index);
+  dwControlPoint cp = this->_objectptr->GetObj()->GetControlPoint(index);
   RETURN_VAR(float,cp.GetX());
 }
 
@@ -380,7 +368,7 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
 
   if (!get_val_param<int>( index, p, n)) ClassHelpAndReturn;
 
-  dwControlPoint cp = this->_objectptr->_drawingwin->GetControlPoint(index);
+  dwControlPoint cp = this->_objectptr->GetObj()->GetControlPoint(index);
   RETURN_VAR(float,cp.GetY());
 }
 
@@ -402,9 +390,9 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
   GET_PARAM(int,  index,0)
   GET_PARAM(float,xpos,0)
 
-  _objectptr->_drawingwin->_controlpoints[index].SetPos(
+  _objectptr->GetObj()->_controlpoints[index].SetPos(
       xpos,
-      _objectptr->_drawingwin->_controlpoints[index].GetY());
+      _objectptr->GetObj()->_controlpoints[index].GetY());
   return BasicVariable::ptr();
 }
 
@@ -425,8 +413,8 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
   GET_PARAM(int,  index,0)
   GET_PARAM(float,ypos,0)
 
-  _objectptr->_drawingwin->_controlpoints[index].SetPos(
-      _objectptr->_drawingwin->_controlpoints[index].GetX(),
+  _objectptr->GetObj()->_controlpoints[index].SetPos(
+      _objectptr->GetObj()->_controlpoints[index].GetX(),
       ypos);
   return BasicVariable::ptr();
 }
@@ -450,7 +438,7 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
 
   AMIFunction::ptr func(varfunc->Pointer());
   CallBackAMIFunction::ptr cb(new CallBackAMIFunction(func));
-  this->_objectptr->_drawingwin->SetCtrlPointCallback( cb );
+  this->_objectptr->GetObj()->SetCtrlPointCallback( cb );
 
   return BasicVariable::ptr();
 }
@@ -469,7 +457,7 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
 {
   int n=0;
   CLASS_GET_OBJECT_PARAM2(dwControlPoint,var,varobj);
-  this->_objectptr->_drawingwin->AddControlPoint(*varobj);
+  this->_objectptr->GetObj()->AddControlPoint(*varobj);
   return BasicVariable::ptr();
 }
 
@@ -487,7 +475,7 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
 {
   int n     = 0;
   GET_PARAM(int,  index,0)
-  this->_objectptr->_drawingwin->RemoveControl(index);
+  this->_objectptr->GetObj()->RemoveControl(index);
   return BasicVariable::ptr();
 }
 
@@ -503,7 +491,7 @@ void WrapClass_wxDrawingWindow::
 BasicVariable::ptr WrapClass_wxDrawingWindow::
       wrap_GetColormapImage::CallMember( ParamList* p)
 {
-  InrImage::ptr res = this->_objectptr->_drawingwin->GetColormapImage();
+  InrImage::ptr res = this->_objectptr->GetObj()->GetColormapImage();
   return Variable<InrImage>::ptr(new Variable<InrImage>(res));
 }
 

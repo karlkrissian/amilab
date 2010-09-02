@@ -23,20 +23,25 @@
 
 AMI_DECLARE_TYPE(wxDrawingWindow)
 
-class WrapClass_wxDrawingWindow : public WrapClass_wxWindow
+class WrapClass_wxDrawingWindow : public WrapClass<wxDrawingWindow>, public WrapClass_wxWindow
 {
   DEFINE_CLASS(WrapClass_wxDrawingWindow);
 
-  // for nested classes
-  typedef WrapClass_wxDrawingWindow::ptr _parentclass_ptr;
+  protected:
+    // for nested classes
+    typedef WrapClass<wxDrawingWindow>::ptr _parentclass_ptr;
 
   public:
-    boost::shared_ptr<wxDrawingWindow> _drawingwin;
 
     /// Constructor
-    WrapClass_wxDrawingWindow(boost::shared_ptr<wxDrawingWindow> w): WrapClass_wxWindow(w), _drawingwin(w)
+    WrapClass_wxDrawingWindow(boost::shared_ptr<wxDrawingWindow> w): WrapClass<wxDrawingWindow>(w), WrapClass_wxWindow(w)
     {}
 
+    /// Wrapping of the constructor
+    ADD_CLASS_CONSTRUCTOR(wxDrawingWindow, "Wrapping of wxDrawingWindow." )
+
+    /// Create a variable from a standard pointer
+    static Variable<AMIObject>::ptr CreateVar( wxDrawingWindow*);
 
     ADD_CLASS_METHOD(SetXLimits,         "Sets the limits along X axis.");
     ADD_CLASS_METHOD(SetYLimits,         "Sets the limits along Y axis.");
@@ -59,7 +64,7 @@ class WrapClass_wxDrawingWindow : public WrapClass_wxWindow
 
     ADD_CLASS_METHOD(GetColormapImage,     "Returns the image representing the colormap.");
 
-    void AddMethods(_parentclass_ptr& this_ptr )
+    void AddMethods(WrapClass<wxDrawingWindow>::ptr this_ptr )
     {
       // Add members from wxWindow
       WrapClass_wxWindow::ptr parent_obj(boost::dynamic_pointer_cast<WrapClass_wxWindow>(this_ptr));
@@ -88,10 +93,6 @@ class WrapClass_wxDrawingWindow : public WrapClass_wxWindow
     }
 
 };
-
-/** function that add wrapping of the Image Drawing window
- */
-BasicVariable::ptr wrap_wxDrawingWindow( ParamList* p);
 
 
 #endif // _wrap_wxDrawingWindow_h_

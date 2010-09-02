@@ -78,7 +78,7 @@ BasicVariable::ptr WrapClass_MainFrame::
       wrap_GetAmilabEditor::CallMember( ParamList* p)
 {
   wxStcFrame* editor = this->_objectptr->_obj->GetAmilabEditor();
-  return CreateVar_wxStcFrame(editor);
+  return WrapClass_wxStcFrame::CreateVar(editor);
 }
 
 //---------------------------------------------------

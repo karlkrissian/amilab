@@ -83,7 +83,7 @@ void AddWrapImports()
   Vars.SetObjectContext(amiobject->GetContext());
 
 //  ADDOBJECTVAR_NAME(C_wrap_procedure,"ImageDraw",  wrap_ImageDraw);
-  ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxDrawingWindow",  wrap_wxDrawingWindow);
+  WrapClass_wxDrawingWindow::AddVar_wxDrawingWindow(amiobject->GetContext());
 
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"ParamPanel",wrap_ParamPanel);
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"vtkLevelSets",wrap_vtkLevelSets);
@@ -120,13 +120,12 @@ void AddWrapWxWidgets()
 
   AddVar_wxSize( amiobject->GetContext(), "wxSize");
 
-  WrapClass_wxFileName::AddVar_wxFileName(  amiobject->GetContext());
-  WrapClass_wxString  ::AddVar_wxString(    amiobject->GetContext());
-  WrapClass_wxColour  ::AddVar_wxColour(    amiobject->GetContext());
-  WrapClass_wxBitmap  ::AddVar_wxBitmap(    amiobject->GetContext());
-  WrapClass_wxImage   ::AddVar_wxImage(     amiobject->GetContext());
-
-  ADDOBJECTVAR_NAME(C_wrap_varfunction,"wxHtmlWindow",wrap_wxHtmlWindow);
+  WrapClass_wxFileName  ::AddVar_wxFileName  ( amiobject->GetContext());
+  WrapClass_wxString    ::AddVar_wxString    ( amiobject->GetContext());
+  WrapClass_wxColour    ::AddVar_wxColour    ( amiobject->GetContext());
+  WrapClass_wxBitmap    ::AddVar_wxBitmap    ( amiobject->GetContext());
+  WrapClass_wxImage     ::AddVar_wxImage     ( amiobject->GetContext());
+  WrapClass_wxHtmlWindow::AddVar_wxHtmlWindow( amiobject->GetContext());
 
   // Restore the object context
   Vars.SetObjectContext(previous_ocontext);
@@ -142,7 +141,7 @@ void AddWrapAmilab()
   AMIObject::ptr amiobject(new AMIObject);
   amiobject->SetName("ami");
 
-  AddVar_wxEditor( amiobject->GetContext());
+  WrapClass_wxEditor::AddVar_wxEditor( amiobject->GetContext());
 
   // Add the MainFrame as an object
   AMIObject::ptr obj(AddWrap_MainFrame(GB_main_wxFrame));
