@@ -29,7 +29,6 @@ class WrapClass_wxHtmlWindow : public WrapClass<wxHtmlWindow>, public WrapClass_
   DEFINE_CLASS(WrapClass_wxHtmlWindow);
 
   protected:  
-
     // needed to resolve ambiguity from multiple inheritance
     typedef boost::shared_ptr<WrapClass<wxHtmlWindow> > _parentclass_ptr;
 

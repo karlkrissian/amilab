@@ -83,9 +83,10 @@ void AddWrapImports()
   Vars.SetObjectContext(amiobject->GetContext());
 
 //  ADDOBJECTVAR_NAME(C_wrap_procedure,"ImageDraw",  wrap_ImageDraw);
-  WrapClass_wxDrawingWindow::AddVar_wxDrawingWindow(amiobject->GetContext());
 
-  ADDOBJECTVAR_NAME(C_wrap_varfunction,"ParamPanel",wrap_ParamPanel);
+  WrapClass_wxDrawingWindow::AddVar_wxDrawingWindow(amiobject->GetContext());
+  WrapClass_ParamPanel     ::AddVar_ParamPanel     (amiobject->GetContext());
+
   ADDOBJECTVAR_NAME(C_wrap_varfunction,"vtkLevelSets",wrap_vtkLevelSets);
 
 
@@ -144,8 +145,8 @@ void AddWrapAmilab()
   WrapClass_wxEditor::AddVar_wxEditor( amiobject->GetContext());
 
   // Add the MainFrame as an object
-  AMIObject::ptr obj(AddWrap_MainFrame(GB_main_wxFrame));
-  amiobject->GetContext()->AddVar<AMIObject>("MainFrame", obj, amiobject->GetContext());
+  BasicVariable::ptr mainframe_var = WrapClass_MainFrame::CreateVar(GB_main_wxFrame);
+  amiobject->GetContext()->AddVar("MainFrame", mainframe_var, amiobject->GetContext());
 
   WrapClass_dwControlPoint::AddVar_dwControlPoint( amiobject->GetContext());
 

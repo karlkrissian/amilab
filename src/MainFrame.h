@@ -118,9 +118,9 @@ public:
   bool RemoveParamPage(wxWindow* page);
 
   // Deal with ParamPanel::ptr pages
-  bool AddParamPanelPage(ParamPanel::ptr& panel, const wxString& caption,
+  bool AddParamPanelPage(const ParamPanel::ptr& panel, const wxString& caption,
                     bool select = false, const wxBitmap& bitmap = wxNullBitmap);
-  bool RemoveParamPanelPage(ParamPanel::ptr& panel);
+  bool RemoveParamPanelPage(const ParamPanel::ptr& panel);
 
   void OnFileOpenImage         ( wxCommandEvent& event );
   void OnFileOpenImageHistory  ( wxCommandEvent& event );
