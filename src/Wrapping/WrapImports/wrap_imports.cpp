@@ -74,6 +74,8 @@ void AddWrapImports()
   AddWrapGLTransfMatrix();
   AddWrapBasicTypes();
 
+
+
   // Create new instance of the class
   AMIObject::ptr amiobject(new AMIObject);
   amiobject->SetName("ami_import");
@@ -198,19 +200,19 @@ void AddWrapSurface()
 //--------------------------------------------
 void AddWrapDessinImage()
 {
-  AddVar_DessinImage( Vars.GetBuiltinContext());
+  WrapClass_DessinImage::AddVar_DessinImage( Vars.GetBuiltinContext());
 }
 
 //--------------------------------------------
 void AddWrapViewer3D()
 {
-  AddVar_Viewer3D( Vars.GetBuiltinContext());
+  WrapClass_Viewer3D::AddVar_Viewer3D( Vars.GetBuiltinContext());
 }
 
 //--------------------------------------------
 void AddWrapGLTransfMatrix()
 {
-  AddVar_GLTransfMatrix( Vars.GetBuiltinContext());
+  WrapClass_GLTransfMatrix::AddVar_GLTransfMatrix( Vars.GetBuiltinContext());
 }
 
 //--------------------------------------------

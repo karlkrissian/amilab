@@ -27,52 +27,52 @@
 
 #include "driver.h"
 
-AMI_DEFINE_WRAPPEDTYPE(GLTransfMatrix);
 
 extern void CB_delete_variable( void* var);
 extern void CB_delete_varlist( void* var);
 
-
-//-------------------------------------------------------------------------
-AMIObject::ptr AddWrap_GLTransfMatrix(  WrapClass_GLTransfMatrix::ptr& objectptr)
+//
+// static member for creating a variable from a ParamList
+//
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<GLTransfMatrix>::CreateVar( ParamList* p)
 {
-  // Create new instance of the class
-  AMIObject::ptr amiobject( new AMIObject);
-  amiobject->SetName("GLTransfMatrix");
-  amiobject->SetWrappedObject(objectptr);
-  objectptr->SetAMIObject(amiobject);
-  objectptr->AddMethods( objectptr);
-  return amiobject;
+  WrapClass_GLTransfMatrix::wrap_GLTransfMatrix construct;
+  return construct.CallMember(p);
 }
 
-//----------------------------------------------------------
-Variable<AMIObject>::ptr CreateVar_GLTransfMatrix( GLTransfMatrix* _obj)
-{
-  // Create smart pointer with own deleter
-  GLTransfMatrix::ptr _obj_ptr(_obj);
+AMI_DEFINE_WRAPPEDTYPE(GLTransfMatrix);
 
-  WrapClass_GLTransfMatrix::ptr _objp(new WrapClass_GLTransfMatrix(_obj_ptr));
-  AMIObject::ptr amiobject(AddWrap_GLTransfMatrix(_objp));
-  Variable<AMIObject>::ptr varres(
-      new Variable<AMIObject>( amiobject));
-  return varres;
+//
+// static member for creating a variable from a pointer to SurfacePoly
+//
+Variable<AMIObject>::ptr WrapClass_GLTransfMatrix::CreateVar( GLTransfMatrix* sp)
+{
+  GLTransfMatrix::ptr _obj_ptr(sp);
+  return 
+    WrapClass<GLTransfMatrix>::CreateVar(
+      new WrapClass_GLTransfMatrix(_obj_ptr));
 }
+
+
 
 //---------------------------------------------------
 // Method that adds wrapping of GLTransfMatrix
 //---------------------------------------------------
 
-void  wrap_GLTransfMatrix::SetParametersComments() 
+void WrapClass_GLTransfMatrix::
+       wrap_GLTransfMatrix::SetParametersComments() 
 {
   return_comments = "A wrapped GLTransfMatrix object.";
 }
 
 //---------------------------------------------------
-BasicVariable::ptr wrap_GLTransfMatrix::CallMember( ParamList* p)
+BasicVariable::ptr WrapClass_GLTransfMatrix::
+      wrap_GLTransfMatrix::CallMember( ParamList* p)
 {
   GLTransfMatrix* newglt = new GLTransfMatrix();
 
-  BasicVariable::ptr res = CreateVar_GLTransfMatrix(newglt);
+  BasicVariable::ptr res = WrapClass_GLTransfMatrix::CreateVar(newglt);
 
   return res;
 }
@@ -310,7 +310,7 @@ BasicVariable::ptr WrapClass_GLTransfMatrix::
 
   newglt->SetRotation(rot1);
 
-  BasicVariable::ptr res = CreateVar_GLTransfMatrix(newglt);
+  BasicVariable::ptr res = WrapClass_GLTransfMatrix::CreateVar(newglt);
   return res;
 }
 
@@ -330,7 +330,7 @@ BasicVariable::ptr WrapClass_GLTransfMatrix::
 
   GLTransfMatrix* newglt = new GLTransfMatrix();
   (*newglt) = (*glmat);
-  return CreateVar_GLTransfMatrix( newglt );
+  return WrapClass_GLTransfMatrix::CreateVar( newglt );
 }
 
 //---------------------------------------------------

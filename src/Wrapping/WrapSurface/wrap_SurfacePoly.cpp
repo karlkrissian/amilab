@@ -29,8 +29,6 @@
 
 extern yyip::Driver GB_driver;
 
-AMI_DEFINE_WRAPPEDTYPE(SurfacePoly)
-
 //
 // static member for creating a variable from a ParamList
 //
@@ -40,6 +38,8 @@ BasicVariable::ptr WrapClass<SurfacePoly>::CreateVar( ParamList* p)
   WrapClass_SurfacePoly::wrap_SurfacePoly construct;
   return construct.CallMember(p);
 }
+
+AMI_DEFINE_WRAPPEDTYPE(SurfacePoly);
 
 //
 // static member for creating a variable from a pointer to SurfacePoly

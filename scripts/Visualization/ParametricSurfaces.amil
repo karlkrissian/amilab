@@ -390,7 +390,7 @@ if (!exists(ParametricSurfaceClass)) {
           ::win.EndHorizontal()
         ::win.EndBoxPanel()
         
-        ::win.AddString( &::eq_filename,"Eq. filename")
+        ::win.AddFilename( &::eq_filename,"Eq. filename", ".", "*.amil" )
         ::win.BeginHorizontal()
           ::win.AddButton("Save", ::SaveEquation)
           ::win.AddButton("Read", ::ReadEquation)

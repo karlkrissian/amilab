@@ -23,26 +23,34 @@
 #include "wrap_FenetreDessin.h"
 #include "wrap_Viewer3D.h"
 
-AMI_DECLARE_TYPE(DessinImage)
+AMI_DECLARE_TYPE(DessinImage);
 
-class WrapClass_DessinImage  : public WrapClass_FenetreDessin
-//: public WrapClass_wxWindow
+class WrapClass_DessinImage  : public WrapClass<DessinImage>, public virtual WrapClass_FenetreDessin
 {
   DEFINE_CLASS(WrapClass_DessinImage);
 
   protected:
-    // for nested classes
-    typedef WrapClass_DessinImage::ptr _parentclass_ptr;
-    typedef DessinImage _obj_type;
+    typedef WrapClass<DessinImage>::ptr _parentclass_ptr;
 
   public:
-    /// Stores a pointer to an object of type DessinImage.
-    boost::shared_ptr<_obj_type> _obj;
-    const boost::shared_ptr<_obj_type>& GetObj() const { return _obj; }
+    // resolve ambiguity
+    const boost::shared_ptr<DessinImage>& GetObj() const { return WrapClass<DessinImage>::GetObj(); }
 
     /// Constructor
-    WrapClass_DessinImage(boost::shared_ptr<DessinImage > si): WrapClass_FenetreDessin(si),  _obj(si)
+    WrapClass_DessinImage(boost::shared_ptr<DessinImage > si): WrapClass<DessinImage>(si), WrapClass_FenetreDessin(si)
     {}
+
+    /// Destructor
+    ~WrapClass_DessinImage()
+    {
+      CLASS_MESSAGE("destroying");
+    }
+
+    /// Wrapping of the constructor
+    ADD_CLASS_CONSTRUCTOR(DessinImage, "Wrapping of DessinImage." );
+
+    /// Create a variable from a standard pointer
+    static Variable<AMIObject>::ptr CreateVar( DessinImage*);
 
     ADD_CLASS_METHOD(reference,       "Called each time a new reference of the variable is created: increases the list of variable to delete from their contexts when closing the window.");
 
@@ -90,11 +98,12 @@ class WrapClass_DessinImage  : public WrapClass_FenetreDessin
 
     ADD_CLASS_METHOD(SetIntensityRange, "Sets the lower and upper limits of the intensity look-up table.");
 
-    void AddMethods(_parentclass_ptr& this_ptr )
+    void AddMethods(WrapClass<DessinImage>::ptr this_ptr )
     {
       // Add members from wxWindow
-      WrapClass_FenetreDessin::ptr parent_obj(boost::dynamic_pointer_cast<WrapClass_FenetreDessin>(this_ptr));
-      parent_obj->AddMethods(parent_obj);
+//       WrapClass_FenetreDessin::ptr parent_obj(
+//         boost::dynamic_pointer_cast<WrapClass_FenetreDessin>(this_ptr));
+//       parent_obj->AddMethods(parent_obj);
 
       AddVar_reference(             this_ptr);
       AddVar_setpos(                this_ptr, "_setpos");
@@ -140,22 +149,5 @@ class WrapClass_DessinImage  : public WrapClass_FenetreDessin
     };
 };
 
-/**
- * Create a Wrapped object around DessinImage
- * @param objectptr input smart pointer to a WrapClass_DessinImage
- * @return smart pointer to an AMIObject class
- */
-AMIObject::ptr AddWrap_DessinImage(  WrapClass_DessinImage::ptr& objectptr);
-
-/**
- * Create a Wrapped object around DessinImage
- * @param si_ptr input smart pointer to a DessinImage
- * @return smart pointer to an AMIObject class
- */
-Variable<AMIObject>::ptr CreateVar_DessinImage( DessinImage* si);
-
-/** Method that adds wrapping of DessinImage
- */
-ADD_CLASS_FUNCTION( DessinImage, "Wrapping of DessinImage." );
 
 #endif // _wrap_DessinImage_h

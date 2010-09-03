@@ -1996,7 +1996,7 @@ command:
         // Call constructor from DessinImage constructor function
         ParamList* p = new ParamList();
         p->AddParam(imagevar);
-        BasicVariable::ptr newvar = wrap_DessinImage().CallMember(p);
+        BasicVariable::ptr newvar = WrapClass<DessinImage>::CreateVar(p);
         FILE_MESSAGE(boost::format("SHOW var_image creating title %s ") % titre);
         if (newvar.get()) {
           newvar->Rename(titre.c_str());
@@ -2067,7 +2067,7 @@ command:
               Variable<string>::ptr Title(new Variable<string>(string_ptr(new string(titre))));
               ParamList* p = new ParamList();
               p->AddParam(Title);
-              BasicVariable::ptr newvar = wrap_Viewer3D().CallMember(p);
+              BasicVariable::ptr newvar = WrapClass<Viewer3D>::CreateVar(p);
               FILE_MESSAGE(boost::format("SHOW var_ami_object creating title %s ") % titre);
 
               if (newvar.get()) {

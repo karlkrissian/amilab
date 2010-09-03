@@ -144,6 +144,7 @@ void CB_delete_varlist( void* var)
       if (BasicVariable::ptr lockedvar = vartodelete.lock()) 
       {
         bool deleted=false;
+        FILE_MESSAGE(boost::format("Pointer counter = %1%") % lockedvar->GetPtrCounter());
         std::string name = lockedvar->Name();
         FILE_MESSAGE(boost::format("deleting %1%") % name);
         Variables::ptr context = lockedvar->GetContext();

@@ -39,7 +39,7 @@ class WrapClass_FenetreDessin : public WrapClass<FenetreDessin>, public WrapClas
     {}
 
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(FenetreDessin, "Wrapping of FenetreDessin." )
+    ADD_CLASS_CONSTRUCTOR(FenetreDessin, "Wrapping of FenetreDessin." );
 
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( FenetreDessin*);

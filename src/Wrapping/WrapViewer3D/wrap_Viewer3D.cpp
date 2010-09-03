@@ -38,45 +38,45 @@ extern wxApp* GB_wxApp;
 extern void CB_delete_variable( void* var);
 extern void CB_delete_varlist( void* var);
 
-AMI_DEFINE_WRAPPEDTYPE(Viewer3D)
-
-//-------------------------------------------------------------------------
-AMIObject::ptr AddWrap_Viewer3D(  WrapClass_Viewer3D::ptr& objectptr)
+//
+// static member for creating a variable from a ParamList
+//
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<Viewer3D>::CreateVar( ParamList* p)
 {
-  // Create new instance of the class
-  AMIObject::ptr amiobject( new AMIObject);
-  amiobject->SetName("Viewer3D");
-  amiobject->SetWrappedObject(objectptr);
-  objectptr->SetAMIObject(amiobject);
-  objectptr->AddMethods( objectptr);
-  return amiobject;
+  WrapClass_Viewer3D::wrap_Viewer3D construct;
+  return construct.CallMember(p);
 }
 
-//----------------------------------------------------------
-Variable<AMIObject>::ptr CreateVar_Viewer3D( Viewer3D* _obj)
+AMI_DEFINE_WRAPPEDTYPE(Viewer3D);
+
+//
+// static member for creating a variable from a pointer to Viewer3D
+//
+Variable<AMIObject>::ptr WrapClass_Viewer3D::CreateVar( Viewer3D* sp)
 {
   // Create smart pointer with own deleter
-  Viewer3D::ptr _obj_ptr = Viewer3D::Create_ptr(_obj);
+  // need to be on a separate line
+  Viewer3D::ptr _obj_ptr = Viewer3D::Create_ptr(sp);
 
-  WrapClass_Viewer3D::ptr _objp(new WrapClass_Viewer3D(_obj_ptr));
-  AMIObject::ptr amiobject(AddWrap_Viewer3D(_objp));
-  Variable<AMIObject>::ptr varres(
-      new Variable<AMIObject>( amiobject));
-  return varres;
+  return 
+    WrapClass<Viewer3D>::CreateVar(
+      new WrapClass_Viewer3D( _obj_ptr));
 }
 
 //---------------------------------------------------
 // Method that adds wrapping of Viewer3D
 //---------------------------------------------------
-
-void  wrap_Viewer3D::SetParametersComments() 
+void   WrapClass_Viewer3D::
+      wrap_Viewer3D::SetParametersComments() 
 {
   ADDPARAMCOMMENT_TYPE(string,"Title of viewer (by default, Viewer 3D).");
   return_comments = "A wrapped Viewer3D object.";
 }
 
 //---------------------------------------------------
-BasicVariable::ptr wrap_Viewer3D::CallMember( ParamList* p)
+BasicVariable::ptr  WrapClass_Viewer3D::
+      wrap_Viewer3D::CallMember( ParamList* p)
 {
   if (!p) ClassHelpAndReturn;
   int n=0;
@@ -85,7 +85,7 @@ BasicVariable::ptr wrap_Viewer3D::CallMember( ParamList* p)
 
   Viewer3D* oViewer3D = new Viewer3D(GB_main_wxFrame, wxString(sTitle.c_str(), wxConvUTF8));
 
-  BasicVariable::ptr res = CreateVar_Viewer3D(oViewer3D);
+  BasicVariable::ptr res = WrapClass_Viewer3D::CreateVar(oViewer3D);
 
   // Create a list of weak pointers to the variables that are refering to the drawing window
   std::list<BasicVariable::wptr>* refvarlist = new std::list<BasicVariable::wptr>;
@@ -559,7 +559,7 @@ BasicVariable::ptr WrapClass_Viewer3D::
 
   if (!p) ClassHelpAndReturn;
   int n=0;
-  CLASS_GET_OBJECT_PARAM(GLTransfMatrix,varglt,tr);
+  CLASS_GET_OBJECT_PARAM2(GLTransfMatrix,varglt,tr);
   if (!tr.get()) ClassHelpAndReturn;
   float threshold;
 
@@ -875,5 +875,5 @@ BasicVariable::ptr WrapClass_Viewer3D::
   //GB_driver.err_print("WrapClass_Viewer3D::wrap_GetTransform Not available at this time!");
   GLTransfMatrix* glt = new GLTransfMatrix();
   *glt = vi->GetCanvas()->GetObjectTransform();
-  return CreateVar_GLTransfMatrix(glt);
+  return WrapClass_GLTransfMatrix::CreateVar(glt);
 }

@@ -33,45 +33,47 @@ extern MainFrame* GB_main_wxFrame;
 extern void CB_delete_variable( void* var);
 extern void CB_delete_varlist( void* var);
 
-AMI_DEFINE_WRAPPEDTYPE(DessinImage)
-
-//-------------------------------------------------------------------------
-AMIObject::ptr AddWrap_DessinImage(  WrapClass_DessinImage::ptr& objectptr)
+//
+// static member for creating a variable from a ParamList
+//
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<DessinImage>::CreateVar( ParamList* p)
 {
-  // Create new instance of the class
-  AMIObject::ptr amiobject( new AMIObject);
-  amiobject->SetName("DessinImage");
-  amiobject->SetWrappedObject(objectptr);
-  objectptr->SetAMIObject(amiobject);
-  objectptr->AddMethods( objectptr);
-  return amiobject;
+  WrapClass_DessinImage::wrap_DessinImage construct;
+  return construct.CallMember(p);
 }
 
-//----------------------------------------------------------
-Variable<AMIObject>::ptr CreateVar_DessinImage( DessinImage* _si)
-{
-  // Create smart pointer with own deleter
-  DessinImage::ptr _si_ptr = DessinImage::Create_ptr(_si);
+AMI_DEFINE_WRAPPEDTYPE(DessinImage);
 
-  WrapClass_DessinImage::ptr sip(new WrapClass_DessinImage(_si_ptr));
-  AMIObject::ptr amiobject(AddWrap_DessinImage(sip));
-  Variable<AMIObject>::ptr varres(
-      new Variable<AMIObject>( amiobject));
-  return varres;
+//
+// static member for creating a variable from a pointer to DessinImage
+//
+Variable<AMIObject>::ptr WrapClass_DessinImage::CreateVar( DessinImage* sp)
+{
+  DessinImage::ptr di_ptr = DessinImage::Create_ptr(sp);
+  Variable<AMIObject>::ptr res = 
+    WrapClass<DessinImage>::CreateVar(
+      // Create smart pointer with own deleter
+      new WrapClass_DessinImage(di_ptr)
+    );
+  return res;
 }
+
 
 //---------------------------------------------------
 // Method that adds wrapping of DessinImage
 //---------------------------------------------------
 
-void  wrap_DessinImage::SetParametersComments() 
+void WrapClass_DessinImage::
+      wrap_DessinImage::SetParametersComments() 
 {
   ADDPARAMCOMMENT_TYPE(InrImage,"Input image.");
   return_comments = "A wrapped DessinImage object.";
 }
 
 //---------------------------------------------------
-BasicVariable::ptr wrap_DessinImage::CallMember( ParamList* p)
+BasicVariable::ptr WrapClass_DessinImage::
+      wrap_DessinImage::CallMember( ParamList* p)
 {
   if (!p) ClassHelpAndReturn;
   Variable<InrImage>::ptr varim;
@@ -95,7 +97,7 @@ BasicVariable::ptr wrap_DessinImage::CallMember( ParamList* p)
                                               400,
                                               CREATE_TOPLEVEL_SHELL);
 
-  BasicVariable::ptr res = CreateVar_DessinImage(oDessinImage);
+  BasicVariable::ptr res = WrapClass_DessinImage::CreateVar(oDessinImage);
 
   // Create a list of weak pointers to the variables that are refering to the drawing window
   std::list<BasicVariable::wptr>* refvarlist = new std::list<BasicVariable::wptr>;
@@ -694,7 +696,7 @@ BasicVariable::ptr WrapClass_DessinImage::
 
   if (!p) ClassHelpAndReturn;
   int n=0;
-  CLASS_GET_OBJECT_PARAM(Viewer3D, varsurfd, surfd);
+  CLASS_GET_OBJECT_PARAM2(Viewer3D, varsurfd, surfd);
   if (!surfd.get()) ClassHelpAndReturn;
 
   di->SetGLWindow(surfd);

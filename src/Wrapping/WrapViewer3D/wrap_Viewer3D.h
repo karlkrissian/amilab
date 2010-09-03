@@ -26,23 +26,27 @@
 
 AMI_DECLARE_TYPE(Viewer3D);
 
-class WrapClass_Viewer3D: public WrapClass_wxWindow
+class WrapClass_Viewer3D:  public WrapClass<Viewer3D>,  public  WrapClass_wxWindow
 {
   DEFINE_CLASS(WrapClass_Viewer3D);
 
-  protected:
-    // for nested classes
-    typedef WrapClass_Viewer3D::ptr _parentclass_ptr;
-    typedef Viewer3D _obj_type;
+  protected:  
+    // needed to resolve ambiguity from multiple inheritance
+    typedef boost::shared_ptr<WrapClass<Viewer3D> > _parentclass_ptr;
 
   public:
-    /// Stores a pointer to an object of type Viewer3D.
-    boost::shared_ptr<_obj_type> _obj;
-    const boost::shared_ptr<_obj_type>& GetObj() const { return _obj; }
+    // resolve ambiguity
+    const boost::shared_ptr<Viewer3D>& GetObj() const { return WrapClass<Viewer3D>::GetObj(); }
 
     /// Constructor
-    WrapClass_Viewer3D(boost::shared_ptr<Viewer3D > si): WrapClass_wxWindow(si), _obj(si)
-    {}
+    WrapClass_Viewer3D(boost::shared_ptr<Viewer3D > si): WrapClass<Viewer3D>(si), WrapClass_wxWindow(si)
+    { }
+
+    /// Wrapping of the constructor
+    ADD_CLASS_CONSTRUCTOR(Viewer3D, "Wrapping of Viewer3D." )
+
+    /// Create a variable from a standard pointer
+    static Variable<AMIObject>::ptr CreateVar( Viewer3D*);
 
     ADD_CLASS_METHOD(reference,         "Called each time a new reference of the variable is created: increases the list of variable to delete from their contexts when closing the window.");
 
@@ -73,8 +77,12 @@ class WrapClass_Viewer3D: public WrapClass_wxWindow
     ADD_CLASS_METHOD(GetImageFromX,     "Save the snapshot as a 2D image of format RGB. In the case of an image, the snapshot is taken from X11 as opposed to getimage, which takes the image using OpenGL.");
     ADD_CLASS_METHOD(GetTransform,      "TODO");
 
-    void AddMethods(_parentclass_ptr& this_ptr )
+    void AddMethods(WrapClass<Viewer3D>::ptr this_ptr )
     {
+      // Add members from wxWindow
+      WrapClass_wxWindow::ptr parent_obj(boost::dynamic_pointer_cast<WrapClass_wxWindow>(this_ptr));
+      parent_obj->AddMethods(parent_obj);
+
       AddVar_rotate(            this_ptr);
       AddVar_AddObject(         this_ptr);
       AddVar_Remove(            this_ptr);
@@ -107,22 +115,5 @@ class WrapClass_Viewer3D: public WrapClass_wxWindow
     };
 };
 
-/**
- * Create a Wrapped object around Viewer3D
- * @param objectptr input smart pointer to a WrapClass_Viewer3D
- * @return smart pointer to an AMIObject class
- */
-AMIObject::ptr AddWrap_Viewer3D(  WrapClass_Viewer3D::ptr& objectptr);
-
-/**
- * Create a Wrapped object around Viewer3D
- * @param si_ptr input smart pointer to a Viewer3D
- * @return smart pointer to an AMIObject class
- */
-Variable<AMIObject>::ptr CreateVar_Viewer3D( Viewer3D* si);
-
-/** Method that adds wrapping of Viewer3D
- */
-ADD_CLASS_FUNCTION( Viewer3D, "Wrapping of Viewer3D." );
 
 #endif // _wrap_Viewer3D_h
