@@ -61,6 +61,7 @@ INCLUDE(${wxWidgets_USE_FILE})
 SET(Language_SRCS
     driver.cc
     CallBackAMIFunction.cpp
+    ami_object.cpp
     VarContexts.cpp
     BasicVariable.cpp
     Variable.cpp

@@ -21,11 +21,12 @@
 
 #include "DessinImage.hpp"
 #include "wrap_FenetreDessin.h"
+#include "wrap_wxWindow.h"
 #include "wrap_Viewer3D.h"
 
 AMI_DECLARE_TYPE(DessinImage);
 
-class WrapClass_DessinImage  : public WrapClass<DessinImage>, public virtual WrapClass_FenetreDessin
+class WrapClass_DessinImage : public WrapClass<DessinImage>, public virtual WrapClass_FenetreDessin
 {
   DEFINE_CLASS(WrapClass_DessinImage);
 
@@ -43,7 +44,8 @@ class WrapClass_DessinImage  : public WrapClass<DessinImage>, public virtual Wra
     /// Destructor
     ~WrapClass_DessinImage()
     {
-      CLASS_MESSAGE("destroying");
+      std::cout << "~WrapClass_DessinImage()" << std::endl;
+      CLASS_MESSAGE("*** Destroying ***");
     }
 
     /// Wrapping of the constructor
@@ -101,9 +103,9 @@ class WrapClass_DessinImage  : public WrapClass<DessinImage>, public virtual Wra
     void AddMethods(WrapClass<DessinImage>::ptr this_ptr )
     {
       // Add members from wxWindow
-//       WrapClass_FenetreDessin::ptr parent_obj(
-//         boost::dynamic_pointer_cast<WrapClass_FenetreDessin>(this_ptr));
-//       parent_obj->AddMethods(parent_obj);
+      WrapClass_FenetreDessin::ptr parent_obj(
+        boost::dynamic_pointer_cast<WrapClass_FenetreDessin>(this_ptr));
+      parent_obj->AddMethods(parent_obj);
 
       AddVar_reference(             this_ptr);
       AddVar_setpos(                this_ptr, "_setpos");

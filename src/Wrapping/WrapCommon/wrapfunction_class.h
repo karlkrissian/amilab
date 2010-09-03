@@ -159,6 +159,10 @@ class  WrapClassBase
   DEFINE_CLASS(WrapClassBase);
 
   public:
+
+    // import to declare virtual destructor here !!!
+    virtual ~WrapClassBase() {}
+
     /// use weak pointer here to prevent blocking the object from being deleted
     boost::weak_ptr<AMIObject> amiobject;
 
@@ -166,6 +170,9 @@ class  WrapClassBase
     {
       amiobject = boost::weak_ptr<AMIObject>(obj);
     }
+
+    virtual int GetObjCounter() { return 0; }
+
 };
 
 // is it useful to add this intermediate class?
@@ -191,9 +198,24 @@ class WrapClass: public virtual WrapClassBase
     boost::shared_ptr<T> _obj;
     const boost::shared_ptr<T>& GetObj() const { return _obj; }
 
+    virtual int GetObjCounter() const
+    {
+      return _obj.use_count();
+    }
+
     /// Constructor
     WrapClass<T>(boost::shared_ptr<T> si):  _obj(si)
     {}
+
+    // import to declare virtual destructor here !!!
+    virtual ~WrapClass<T>()
+    {
+      std::cout << "~WrapClass<" << AMILabType<T>::name_as_string() << ">" << std::endl;
+      std::cout << "_obj.use_count() = " << _obj.use_count() << std::endl;
+    }
+
+    /// Constructor without parameters to deal with inheritance
+    /// and avoid multiple smart pointers inside
 
     // Will call the constructor based on a ParamList
     static BasicVariable::ptr CreateVar(ParamList*);

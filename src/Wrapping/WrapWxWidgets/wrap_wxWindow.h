@@ -37,6 +37,11 @@ class WrapClass_wxWindow : public WrapClass<wxWindow>
     WrapClass_wxWindow(boost::shared_ptr<wxWindow> w): WrapClass<wxWindow>(w)
     {}
 
+    ~WrapClass_wxWindow()
+    {
+      std::cout << "~WrapClass_wxWindow()" << std::endl;
+    }
+
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR( wxWindow, "Wrapping of wxWindow (see http://docs.wxwidgets.org/)." );
 
