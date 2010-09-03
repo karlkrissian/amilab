@@ -415,6 +415,7 @@ if (!exists(Subpixel2DClass)){
     
     proc ::Run() {
     	::load_input()
+      if (exists(::norm_input_draw)) { del ::norm_input_draw; }
     	::norm_input <<= norm(::input)
       if (exists(::res))  { del ::res; }
       if (exists(::sp2D)) { del ::sp2D; }
