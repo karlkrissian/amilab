@@ -29,7 +29,7 @@ BasicVariable::ptr WrapClass<wxSizerItem>::CreateVar( ParamList* p)
   return construct.CallMember(p);
 }
 
-AMI_DEFINE_WRAPPEDTYPE(wxSizerItem);
+AMI_DEFINE_WRAPPEDTYPE_NOCOPY(wxSizerItem);
 
 //
 // static member for creating a variable from a pointer to dwControlPoint

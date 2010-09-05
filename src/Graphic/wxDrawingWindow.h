@@ -29,12 +29,14 @@
 #include "wx/window.h"
 #include <wx/scrolwin.h>
 
-#include "dw_Curve.h"
+#include "dwCurve.h"
 #include "wx/dcclient.h"
 #include "CallBackBase.h"
 #include "LinearColorMap.h"
 
 #include "dwControlPoint.h"
+#include "dwControlledCurve.h"
+
 
 /**
   * A wxWindow that draws 2D curves.
@@ -58,18 +60,27 @@ class wxDrawingWindow : public wxScrolledWindow
   bool _draw_grid;
 
   //! std::vector of the curves to draw
-  std::vector<dw_Curve> _curves;
+  boost::shared_ptr<vector_dwCurve> _curves;
 
-  //! std:vector of dw_Point2D: list of control points
-  std::vector<dwControlPoint> _controlpoints;
+  /** std:vector of dwPoint2D: list of control points
+     within a shared pointer to facilitate the wrapping
+    */
+  boost::shared_ptr<vector_dwControlPoint>    _controlpoints;
+
+  boost::shared_ptr<vector_dwControlledCurve> _controlled_curves;
 
   //! LinearColorMap functionality
   LinearColorMap _linearCM;
   bool   _draw_linearCM;
   wxSize _linearCM_margin_size;
 
-  //! index of the control point having the focus if any, -1 otherwise
-  int focus_pointid;
+//  //! index of the control point having the focus if any, -1 otherwise
+//  int focus_pointid;
+  //! Risky trick for the moment, we use a shared_ptr with no deleter that references to the control point found (if the control point is deleted, the program will crash)
+  dwControlPoint::ptr _focus_point;
+  /// smart pointer to the vector of points to which the current focus point belongs
+  boost::shared_ptr<vector_dwControlPoint> _focus_pointset;
+  int _focus_controlledcurve;
 
   int _mouse_x;
   int _mouse_y;
@@ -95,19 +106,32 @@ public:
 
   virtual ~wxDrawingWindow(){};
 
+
+  boost::shared_ptr<vector_dwControlPoint>& GetControlPoints() {
+    return _controlpoints;
+  }
+
+  boost::shared_ptr<vector_dwCurve>& GetCurves() {
+    return _curves;
+  }
+
+  boost::shared_ptr<vector_dwControlledCurve>& GetControlledCurves() {
+    return _controlled_curves;
+  }
+
   void SetCtrlPointCallback( CallBackBase::ptr callback) {
     this->_ctrlpt_callback = callback;
   }
 
   int GetNumberOfCtrlPoints() const
   {
-    return _controlpoints.size();
+    return _controlpoints->size();
   }
 
   dwControlPoint GetControlPoint(int n) const
   {
-    if ((n>=0)&&(n<(int)_controlpoints.size()))
-      return _controlpoints[n];
+    if ((n>=0)&&(n<(int)_controlpoints->size()))
+      return (*_controlpoints)[n];
     else 
       return dwControlPoint();
   }
@@ -134,10 +158,17 @@ public:
   void DrawLinearCM( );
 
   /**
-   * Seach for the closest control point
+   * Seach for the closest control point within a list
    * and return its id or -1 if no control point is found
+   * and updates the shared_ptr _focus_point
    */
-  int CheckCtrlPoint();
+  int CheckCtrlPoint( boost::shared_ptr<vector_dwControlPoint>& list);
+
+  /**
+   * Seach for the closest control point in all the lists
+   * and updates the shared_ptr _focus_point
+   */
+  void CheckCtrlPoint();
 
   void SetDrawGrid(bool b) { _draw_grid = b; }
   bool GetDrawGrid() { return _draw_grid; }
@@ -193,7 +224,7 @@ public:
    */
   int GetNumberOfCurves() 
   {
-    return _curves.size();
+    return _curves->size();
   }
 
   /**
@@ -202,7 +233,7 @@ public:
    * if the image is vectorial with 2 components, the first components are abscissa and the second are ordinates
    * @param im 
    */
-  void AddImageToCurve( InrImage* im, dw_Curve& c);
+  void AddImageToCurve( InrImage* im, dwCurve& c);
 
 
   /**
@@ -226,16 +257,20 @@ public:
   void AddControlPoint( const dwControlPoint& pt);
 
   /**
-   * Removes a control point
-   * @param control point id
+   * Removes the current control point with focus
    */
-  void RemoveControl( const int& pt_id);
+  void RemoveControl();
+
+  /**
+   * Duplicates the current control point with focus
+   */
+  void DuplicateControl();
 
   /**
    * Set the new position of a new control point
    * @param control point
    */
-  void SetControl( int i, const dw_Point2D& pt);
+  void SetControl( int i, const dwPoint2D& pt);
 
   /**
    * 
@@ -278,14 +313,20 @@ public:
   }
 
   /**
-   * Draw a given curve in a given graphical context.
-   * @param i  curve number
-   * @param dc  context
+   * Draw a given curve in the graphical context.
    */
-  void DrawCurve( int i );
+  void DrawCurve( dwCurve& curve );
+
+  /**
+   * Draw all the curves
+   */
+  void DrawCurves();
 
   void WriteCurrentPosition( wxDC& dc);
 
+  void DrawControlPoint(  dwControlPoint& pt, 
+                          const wxColour& visible_colour,
+                          const wxSize& _sz);
   void DrawControlPoints();
   void DrawControls();
 
@@ -313,12 +354,15 @@ public:
   void OnMotion(        wxMouseEvent& event);
   void OnWheel(         wxMouseEvent& event);
 
-  void OnAddControlPoint( wxCommandEvent& event);
-  void OnRemoveControl(   wxCommandEvent& event);
-  void OnColormapPoint(   wxCommandEvent& event);
-  void OnVerticalLine(    wxCommandEvent& event);
-  void OnControlColour(   wxCommandEvent& event);
-  void OnShowGrid(        wxCommandEvent& event);
+  void OnAddControlledCurve( wxCommandEvent& event);
+  void OnRemoveControlledCurve( wxCommandEvent& event);
+  void OnAddControlPoint(    wxCommandEvent& event);
+  void OnRemoveControl(      wxCommandEvent& event);
+  void OnDuplicateControl(   wxCommandEvent& event);
+  void OnColormapPoint(      wxCommandEvent& event);
+  void OnVerticalLine(       wxCommandEvent& event);
+  void OnControlColour(      wxCommandEvent& event);
+  void OnShowGrid(           wxCommandEvent& event);
 
   DECLARE_EVENT_TABLE();
 };

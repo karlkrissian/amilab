@@ -19,6 +19,8 @@
 #include "wrap_wxWindow.h"
 #include "CallBackAMIFunction.h"
 #include "wrap_dwControlPoint.h"
+#include "wrap_dwCurve.h"
+#include "wrap_stdvector.h"
 
 //
 // static member for creating a variable from a ParamList
@@ -30,7 +32,7 @@ BasicVariable::ptr WrapClass<wxDrawingWindow>::CreateVar( ParamList* p)
   return construct.CallMember(p);
 }
 
-AMI_DEFINE_WRAPPEDTYPE(wxDrawingWindow);
+AMI_DEFINE_WRAPPEDTYPE_NOCOPY(wxDrawingWindow);
 
 //
 // static member for creating a variable from a pointer to wxDrawingWindow
@@ -64,7 +66,7 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
 {
   if (!p) ClassHelpAndReturn;
   int n=0;
-  CLASS_GET_OBJECT_PARAM2(wxWindow,var,parent);
+  CLASS_GET_OBJECT_PARAM(wxWindow,var,parent);
   if (parent.get())
     return WrapClass_wxDrawingWindow::CreateVar(new wxDrawingWindow(parent.get()));
   else
@@ -92,8 +94,8 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
   if (!get_val_param<float>( xmin, p, n)) ClassHelpAndReturn;
   if (!get_val_param<float>( xmax, p, n)) ClassHelpAndReturn;
 
-  this->_objectptr->GetObj()->SetXLimits(xmin,xmax);
-  this->_objectptr->GetObj()->Refresh();
+  _objectptr->GetObj()->SetXLimits(xmin,xmax);
+  _objectptr->GetObj()->Refresh();
   return BasicVariable::ptr();
 }
 
@@ -118,8 +120,8 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
   if (!get_val_param<float>( ymin, p, n)) ClassHelpAndReturn;
   if (!get_val_param<float>( ymax, p, n)) ClassHelpAndReturn;
 
-  this->_objectptr->GetObj()->SetYLimits(ymin,ymax);
-  this->_objectptr->GetObj()->Refresh();
+  _objectptr->GetObj()->SetYLimits(ymin,ymax);
+  _objectptr->GetObj()->Refresh();
   return BasicVariable::ptr();
 }
 
@@ -144,7 +146,7 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
   if (!get_val_ptr_param<InrImage>( input,    p, n)) ClassHelpAndReturn;
   if (!get_int_param(   pos,      p, n)) ClassHelpAndReturn;
 
-  wxDrawingWindow::ptr dw = this->_objectptr->GetObj();
+  wxDrawingWindow::ptr dw = _objectptr->GetObj();
   if ((pos>=0)&&(pos<dw->GetNumberOfCurves()))
     dw->SetCurve(pos,input);
   else
@@ -186,9 +188,9 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
   if (!get_int_param(    style,        p, n)) ClassHelpAndReturn;
   if (!get_int_param(    width,        p, n)) ClassHelpAndReturn;
 
-  this->_objectptr->GetObj()->SetCurveColor(curve_number,*color_str);
-  this->_objectptr->GetObj()->SetCurveStyle(curve_number,style);
-  this->_objectptr->GetObj()->SetCurveWidth(curve_number,width);
+  _objectptr->GetObj()->SetCurveColor(curve_number,*color_str);
+  _objectptr->GetObj()->SetCurveStyle(curve_number,style);
+  _objectptr->GetObj()->SetCurveWidth(curve_number,width);
 
   return BasicVariable::ptr();
 
@@ -214,7 +216,7 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
   if (!get_val_param<int>(           curve_number, p, n)) ClassHelpAndReturn;
   if (!get_val_param<unsigned char>( enable,       p, n)) ClassHelpAndReturn;
 
-  this->_objectptr->GetObj()->SetCurveDrawLines(curve_number,enable);
+  _objectptr->GetObj()->SetCurveDrawLines(curve_number,enable);
 
   return BasicVariable::ptr();
 
@@ -240,7 +242,7 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
   if (!get_val_param<int>(           curve_number, p, n)) ClassHelpAndReturn;
   if (!get_val_param<unsigned char>( enable,       p, n)) ClassHelpAndReturn;
 
-  this->_objectptr->GetObj()->SetCurveDrawPoints(curve_number,enable);
+  _objectptr->GetObj()->SetCurveDrawPoints(curve_number,enable);
 
   return BasicVariable::ptr();
 
@@ -257,7 +259,7 @@ void WrapClass_wxDrawingWindow::
 BasicVariable::ptr WrapClass_wxDrawingWindow::
       wrap_Paint::CallMember( ParamList* p)
 {
-  this->_objectptr->GetObj()->Paint();
+  _objectptr->GetObj()->Paint();
   return BasicVariable::ptr();
 }
 
@@ -273,7 +275,7 @@ void WrapClass_wxDrawingWindow::
 BasicVariable::ptr WrapClass_wxDrawingWindow::
       wrap_GetNumberOfCtrlPoints::CallMember( ParamList* p)
 {
-  int n =   this->_objectptr->GetObj()->GetNumberOfCtrlPoints();
+  int n =   _objectptr->GetObj()->GetNumberOfCtrlPoints();
   RETURN_VAR(int,n);
 }
 
@@ -294,10 +296,10 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
   int n     = 0;
   if (!get_val_param<int>( index, p, n)) ClassHelpAndReturn;
 
-  dwControlPoint cp = this->_objectptr->GetObj()->GetControlPoint(index);
+  dwControlPoint cp = _objectptr->GetObj()->GetControlPoint(index);
 
   // now
-  return WrapClass_dwControlPoint::CreateVar(new dwControlPoint(cp));
+  return AMILabType<dwControlPoint>::CreateVar(new dwControlPoint(cp));
 }
 
 
@@ -317,12 +319,12 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
   int index = 0;
   int n     = 0;
   if (!get_val_param<int>( index, p, n)) ClassHelpAndReturn;
-  CLASS_GET_OBJECT_PARAM2(dwControlPoint,var,varobj);
+  CLASS_GET_OBJECT_PARAM(dwControlPoint,var,varobj);
   
   if ((index>=0)&&
-      (index<(int)_objectptr->GetObj()->_controlpoints.size()))
+      (index<(int)_objectptr->GetObj()->_controlpoints->size()))
   {
-    _objectptr->GetObj()->_controlpoints[index] = (*varobj);
+    (*_objectptr->GetObj()->_controlpoints)[index] = (*varobj);
   }
   return BasicVariable::ptr();
 }
@@ -346,8 +348,8 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
 
   if (!get_val_param<int>( index, p, n)) ClassHelpAndReturn;
 
-  dwControlPoint cp = this->_objectptr->GetObj()->GetControlPoint(index);
-  RETURN_VAR(float,cp.GetX());
+  dwControlPoint cp = _objectptr->GetObj()->GetControlPoint(index);
+  RETURN_VAR(double,cp.GetX());
 }
 
 //---------------------------------------------------
@@ -368,8 +370,8 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
 
   if (!get_val_param<int>( index, p, n)) ClassHelpAndReturn;
 
-  dwControlPoint cp = this->_objectptr->GetObj()->GetControlPoint(index);
-  RETURN_VAR(float,cp.GetY());
+  dwControlPoint cp = _objectptr->GetObj()->GetControlPoint(index);
+  RETURN_VAR(double,cp.GetY());
 }
 
 //---------------------------------------------------
@@ -390,9 +392,9 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
   GET_PARAM(int,  index,0)
   GET_PARAM(float,xpos,0)
 
-  _objectptr->GetObj()->_controlpoints[index].SetPos(
+  (*_objectptr->GetObj()->_controlpoints)[index].SetPos(
       xpos,
-      _objectptr->GetObj()->_controlpoints[index].GetY());
+      (*_objectptr->GetObj()->_controlpoints)[index].GetY());
   return BasicVariable::ptr();
 }
 
@@ -413,8 +415,8 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
   GET_PARAM(int,  index,0)
   GET_PARAM(float,ypos,0)
 
-  _objectptr->GetObj()->_controlpoints[index].SetPos(
-      _objectptr->GetObj()->_controlpoints[index].GetX(),
+  (*_objectptr->GetObj()->_controlpoints)[index].SetPos(
+      (*_objectptr->GetObj()->_controlpoints)[index].GetX(),
       ypos);
   return BasicVariable::ptr();
 }
@@ -438,7 +440,7 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
 
   AMIFunction::ptr func(varfunc->Pointer());
   CallBackAMIFunction::ptr cb(new CallBackAMIFunction(func));
-  this->_objectptr->GetObj()->SetCtrlPointCallback( cb );
+  _objectptr->GetObj()->SetCtrlPointCallback( cb );
 
   return BasicVariable::ptr();
 }
@@ -456,11 +458,12 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
       wrap_AddControlPoint::CallMember( ParamList* p)
 {
   int n=0;
-  CLASS_GET_OBJECT_PARAM2(dwControlPoint,var,varobj);
-  this->_objectptr->GetObj()->AddControlPoint(*varobj);
+  CLASS_GET_OBJECT_PARAM(dwControlPoint,var,varobj);
+  _objectptr->GetObj()->AddControlPoint(*varobj);
   return BasicVariable::ptr();
 }
 
+/*
 //---------------------------------------------------
 //  RemoveControl
 //---------------------------------------------------
@@ -475,9 +478,10 @@ BasicVariable::ptr WrapClass_wxDrawingWindow::
 {
   int n     = 0;
   GET_PARAM(int,  index,0)
-  this->_objectptr->GetObj()->RemoveControl(index);
+  _objectptr->GetObj()->RemoveControl(index);
   return BasicVariable::ptr();
 }
+*/
 
 //---------------------------------------------------
 //  GetColormapImage
@@ -491,7 +495,55 @@ void WrapClass_wxDrawingWindow::
 BasicVariable::ptr WrapClass_wxDrawingWindow::
       wrap_GetColormapImage::CallMember( ParamList* p)
 {
-  InrImage::ptr res = this->_objectptr->GetObj()->GetColormapImage();
+  InrImage::ptr res = _objectptr->GetObj()->GetColormapImage();
   return Variable<InrImage>::ptr(new Variable<InrImage>(res));
+}
+
+//---------------------------------------------------
+//  GetControlPoints
+//---------------------------------------------------
+void WrapClass_wxDrawingWindow::
+      wrap_GetControlPoints::SetParametersComments() 
+{
+  return_comments = "The std::vector of dwControlPoints.";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxDrawingWindow::
+      wrap_GetControlPoints::CallMember( ParamList* p)
+{
+  boost::shared_ptr<std::vector<dwControlPoint> > obj_ptr = _objectptr->GetObj()->GetControlPoints();
+  return AMILabType<std::vector<dwControlPoint> >::CreateVarFromSmtPtr(obj_ptr);
+}
+
+//---------------------------------------------------
+//  GetCurves
+//---------------------------------------------------
+void WrapClass_wxDrawingWindow::
+      wrap_GetCurves::SetParametersComments() 
+{
+  return_comments = "The std::vector of dwCurve.";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxDrawingWindow::
+      wrap_GetCurves::CallMember( ParamList* p)
+{
+  boost::shared_ptr<std::vector<dwCurve> > obj_ptr = _objectptr->GetObj()->GetCurves();
+  return AMILabType<std::vector<dwCurve> >::CreateVarFromSmtPtr(obj_ptr);
+}
+
+//---------------------------------------------------
+//  GetControlledCurves
+//---------------------------------------------------
+void WrapClass_wxDrawingWindow::
+      wrap_GetControlledCurves::SetParametersComments() 
+{
+  return_comments = "The std::vector of dwControlledCurve.";
+}
+//---------------------------------------------------
+BasicVariable::ptr WrapClass_wxDrawingWindow::
+      wrap_GetControlledCurves::CallMember( ParamList* p)
+{
+  boost::shared_ptr<std::vector<dwControlledCurve> > obj_ptr = _objectptr->GetObj()->GetControlledCurves();
+  return AMILabType<std::vector<dwControlledCurve> >::CreateVarFromSmtPtr(obj_ptr);
 }
 

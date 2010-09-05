@@ -34,8 +34,10 @@ class WrapClass_wxImage : public WrapClass<wxImage>
     WrapClass_wxImage(boost::shared_ptr<wxImage> val): WrapClass<wxImage>(val)
     {}
 
+/*
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( wxImage*);
+*/
 
     ADD_CLASS_CONSTRUCTOR( wxImage, "Wrapping of wxImage (see http://docs.wxwidgets.org/)." );
 

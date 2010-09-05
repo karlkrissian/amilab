@@ -48,7 +48,7 @@ BasicVariable::ptr WrapClass<FILE>::CreateVar( ParamList* p)
   return construct.CallMember(p);
 }
 
-AMI_DEFINE_WRAPPEDTYPE(FILE)
+AMI_DEFINE_WRAPPEDTYPE_NOCOPY(FILE);
 
 
 //---------------------------------------------------

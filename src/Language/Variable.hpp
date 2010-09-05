@@ -74,7 +74,13 @@ class AMILabType {
     static boost::shared_ptr<T> GetValue(BasicVariable::ptr var)
     { return boost::shared_ptr<T>(); }
 
-    static BasicVariable::ptr CreateVar(T& val)
+    static BasicVariable::ptr CreateVarFromSmtPtr(boost::shared_ptr<T>& val)
+    { return BasicVariable::ptr(); }
+
+    static BasicVariable::ptr CreateVar(const T& val)
+    { return BasicVariable::ptr(); }
+
+    static BasicVariable::ptr CreateVar(T* val)
     { return BasicVariable::ptr(); }
 };
 
@@ -85,7 +91,9 @@ class AMILabType {
     public: \
     static char const* name_as_string();\
     static boost::shared_ptr<type> GetValue(BasicVariable::ptr var);\
-    static BasicVariable::ptr CreateVar(type& val);\
+    static BasicVariable::ptr CreateVarFromSmtPtr( boost::shared_ptr<type>& val);\
+    static BasicVariable::ptr CreateVar(type* val);\
+    static BasicVariable::ptr CreateVar(const type& val);\
   };
 
 #define AMI_DEFINE_BASICTYPE(type) \
@@ -119,15 +127,26 @@ class AMILabType {
     } \
     \
     AMI_DLLEXPORT \
-    BasicVariable::ptr AMILabType<type>::CreateVar(type& val)  \
+    BasicVariable::ptr AMILabType<type>::CreateVarFromSmtPtr( boost::shared_ptr<type>& valptr)\
+    {\
+      return Variable<type>::ptr( new Variable<type>(valptr));\
+    }\
+    \
+    AMI_DLLEXPORT \
+    BasicVariable::ptr AMILabType<type>::CreateVar(type* val)  \
     { \
-      boost::shared_ptr<type> valptr(new type(val));\
-      Variable<type>::ptr varres( new Variable<type>(valptr));\
-      return varres; \
+      boost::shared_ptr<type> valptr(val);\
+      return CreateVarFromSmtPtr(valptr); \
+    } \
+    \
+    AMI_DLLEXPORT \
+    BasicVariable::ptr AMILabType<type>::CreateVar(const type& val)  \
+    { \
+      return AMILabType<type>::CreateVar(new type(val));\
     } 
 
 
-#define AMI_DEFINE_WRAPPEDTYPE(type) \
+#define AMI_DEFINE_WRAPPEDTYPE_COMMON(type) \
     AMI_DLLEXPORT \
     char const* AMILabType<type>::name_as_string() { \
        std::string name = std::string("wrap_")+#type; \
@@ -162,13 +181,51 @@ class AMILabType {
         FILE_ERROR("Need a wrapped object or compatible variable as parameter.") \
       } \
       return boost::shared_ptr<type>();\
-    } \
+    } 
+
+
+#define AMI_DEFINE_WRAPPEDTYPE_NOCOPY(type) \
+    AMI_DEFINE_WRAPPEDTYPE_COMMON(type)\
     \
     AMI_DLLEXPORT \
-    BasicVariable::ptr AMILabType<type>::CreateVar(type& val)  \
+    BasicVariable::ptr AMILabType<type>::CreateVar(const type& val)  \
     { \
       return BasicVariable::ptr(); \
     } 
+
+#define AMI_DEFINE_WRAPPEDTYPE_HASCOPY(type) \
+    AMI_DEFINE_WRAPPEDTYPE_COMMON(type)\
+    \
+    AMI_DLLEXPORT \
+    BasicVariable::ptr AMILabType<type>::CreateVar( type* val)  \
+    { \
+      boost::shared_ptr<type> obj_ptr(val);\
+      return AMILabType<type>::CreateVarFromSmtPtr(obj_ptr);\
+    } \
+    \
+    AMI_DLLEXPORT \
+    BasicVariable::ptr AMILabType<type>::CreateVar(const type& val)  \
+    { \
+      return AMILabType<type>::CreateVar(new type(val));\
+    } 
+
+#define AMI_DEFINE_VARFROMSMTPTR(type) \
+  AMI_DLLEXPORT \
+  BasicVariable::ptr AMILabType<type>::CreateVarFromSmtPtr(boost::shared_ptr<type>& obj_ptr) \
+  { \
+    return \
+      WrapClass<type>::CreateVar( \
+        new WrapClass_##type(obj_ptr));\
+  } 
+
+#define AMI_DEFINE_VARFROMSMTPTR_TEMPLATE(type1,name1,type2) \
+  AMI_DLLEXPORT \
+  BasicVariable::ptr AMILabType<type1<type2> >::CreateVarFromSmtPtr(boost::shared_ptr<type1<type2> >& obj_ptr) \
+  { \
+    return \
+      WrapClass<type1<type2> >::CreateVar( \
+        new WrapClass_##name1<type2>(obj_ptr));\
+  } 
 
 
 template<typename> 

@@ -30,7 +30,7 @@ BasicVariable::ptr WrapClass<wxWindow>::CreateVar( ParamList* p)
   return construct.CallMember(p);
 }
 
-  AMI_DEFINE_WRAPPEDTYPE(wxWindow);
+AMI_DEFINE_WRAPPEDTYPE_NOCOPY(wxWindow);
 
 
 
@@ -50,7 +50,7 @@ BasicVariable::ptr WrapClass_wxWindow::wrap_wxWindow::CallMember( ParamList* p)
   std::string* title = NULL;
 
   if (!p) ClassHelpAndReturn;
-  CLASS_GET_OBJECT_PARAM2(wxWindow,var,parent);
+  CLASS_GET_OBJECT_PARAM(wxWindow,var,parent);
   if (parent.get()){
     
     boost::shared_ptr<wxWindow> w_ptr(
@@ -126,10 +126,10 @@ BasicVariable::ptr WrapClass_wxWindow::
 void WrapClass_wxWindow::
       wrap_SetSize::SetParametersComments() 
 {
-  ADDPARAMCOMMENT("integer: x");
-  ADDPARAMCOMMENT("integer: y");
-  ADDPARAMCOMMENT("integer: width");
-  ADDPARAMCOMMENT("integer: height");
+  ADDPARAMCOMMENT_TYPE(int,"x");
+  ADDPARAMCOMMENT_TYPE(int,"y");
+  ADDPARAMCOMMENT_TYPE(int,"width");
+  ADDPARAMCOMMENT_TYPE(int,"height");
 }
 //---------------------------------------------------
 BasicVariable::ptr WrapClass_wxWindow::
@@ -201,7 +201,6 @@ BasicVariable::ptr WrapClass_wxWindow::
       wrap_Refresh::CallMember( ParamList* p)
 {
   int n = 0;
-
   GET_PARAM(unsigned char,clearbg,0);
 
   this->_objectptr->_obj->Refresh(clearbg);

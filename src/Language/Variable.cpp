@@ -220,7 +220,7 @@ AMI_DEFINE_BASICTYPE(VarArray);
     } \
     \
     AMI_DLLEXPORT \
-    BasicVariable::ptr AMILabType<type>::CreateVar(type& val)  \
+    BasicVariable::ptr AMILabType<type>::CreateVar(const type& val)  \
     { \
       return BasicVariable::ptr(); \
     } 

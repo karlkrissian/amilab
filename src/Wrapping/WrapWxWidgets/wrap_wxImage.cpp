@@ -30,9 +30,11 @@ BasicVariable::ptr WrapClass<wxImage>::CreateVar( ParamList* p)
 }
 
 
-AMI_DEFINE_WRAPPEDTYPE(wxImage)
+AMI_DEFINE_WRAPPEDTYPE_HASCOPY(wxImage);
+AMI_DEFINE_VARFROMSMTPTR(wxImage);
 
 
+/*
 //
 // static member for creating a variable from a pointer to wxImage
 //
@@ -41,7 +43,7 @@ Variable<AMIObject>::ptr WrapClass_wxImage::CreateVar( wxImage* p)
   boost::shared_ptr<wxImage> _obj_ptr( p);
   return WrapClass<wxImage>::CreateVar( new WrapClass_wxImage(_obj_ptr));
 }
-
+*/
 
 //---------------------------------------------------
 // Method that adds wrapping of wxBitmap
@@ -62,7 +64,7 @@ BasicVariable::ptr WrapClass_wxImage::
 {
   if (!p) ClassHelpAndReturn;
   if (p->GetNumParam()==0) 
-    return WrapClass_wxImage::CreateVar(new wxImage());
+    return AMILabType<wxImage>::CreateVar(new wxImage());
 
   if (p->GetNumParam()>=1) 
   {
@@ -75,7 +77,7 @@ BasicVariable::ptr WrapClass_wxImage::
 
     wxImage* im = new wxImage();
     bool res = im->LoadFile( wxString(name->c_str(), wxConvUTF8),type,index);
-    return WrapClass_wxImage::CreateVar(im);
+    return AMILabType<wxImage>::CreateVar(im);
   }
   return BasicVariable::ptr();
 }
@@ -149,7 +151,7 @@ BasicVariable::ptr WrapClass_wxImage::
   if (!get_int_param(width, p, n)) ClassHelpAndReturn;
   if (!get_int_param(height, p, n)) ClassHelpAndReturn;
 
-  return WrapClass_wxImage::CreateVar(
+  return AMILabType<wxImage>::CreateVar(
     new wxImage(this->_objectptr->_obj->Scale(width,height)));
 }
 

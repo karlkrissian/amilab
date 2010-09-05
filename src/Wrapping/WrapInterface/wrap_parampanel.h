@@ -30,6 +30,7 @@ class WrapClass_ParamPanel : public WrapClass<ParamPanel>, public WrapClass_wxWi
   protected:  
     // needed to resolve ambiguity from multiple inheritance
     typedef boost::shared_ptr<WrapClass<ParamPanel> > _parentclass_ptr;
+    typedef ParamPanel ObjectType;
 
   public:
     /// Constructor

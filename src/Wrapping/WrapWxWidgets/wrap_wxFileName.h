@@ -34,8 +34,10 @@ class WrapClass_wxFileName : public WrapClass<wxFileName>
     WrapClass_wxFileName(boost::shared_ptr<wxFileName> si): WrapClass<wxFileName>(si)
     {}
 
+/*
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( wxFileName* sp);
+*/
 
     ADD_CLASS_CONSTRUCTOR( wxFileName, "Wrapping of wxFileName (see http://docs.wxwidgets.org/)." );
 

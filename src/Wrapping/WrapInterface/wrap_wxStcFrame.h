@@ -31,6 +31,7 @@ class WrapClass_wxStcFrame : public WrapClass<wxStcFrame>, public WrapClass_wxWi
   protected:
     // for nested classes
     typedef WrapClass<wxStcFrame>::ptr _parentclass_ptr;
+    typedef wxStcFrame ObjectType;
 
   public:
 

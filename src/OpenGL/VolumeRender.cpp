@@ -453,8 +453,11 @@ void VolumeRender::Load3DTexture()
 
             _di->ColorBuffer(val,red,green,blue);
             _tex3ddata[i  ]= red;
-            _tex3ddata[i+1]= green;
-            _tex3ddata[i+2]= blue;
+//            _tex3ddata[i+1]= green;
+//            _tex3ddata[i+2]= blue;
+// why are green and blue inverted??
+            _tex3ddata[i+1]= blue;
+            _tex3ddata[i+2]= green;
             _tex3ddata[i+3]= intensity;
             i+=4;
             /*

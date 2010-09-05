@@ -20,47 +20,43 @@
 #include "wrap_varvector.h"
 
 
-#define RETURN_VARINT(val,name)             \
-  std::string varname = (boost::format("%1%_id")%name).str();\
-  int_ptr varint(new int(val));\
-  Variable<int>::ptr varres( new Variable<int>(varname, varint));\
-  return varres;
-
-//-------------------------------------------------------------------------
-AMIObject::ptr AddWrap_VarVector(  WrapClass_VarVector::ptr& objectptr)
+//
+// static member for creating a variable from a ParamList
+//
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<VarVector>::CreateVar( ParamList* p)
 {
-  // Create new instance of the class
-  AMIObject::ptr amiobject( new AMIObject);
-  amiobject->SetName("VarVector");
-  amiobject->SetWrappedObject(objectptr);
-  objectptr->SetAMIObject(amiobject);
-  objectptr->AddMethods( objectptr);
-  return amiobject;
+  WrapClass_VarVector::wrap_VarVector construct;
+  return construct.CallMember(p);
 }
 
-//----------------------------------------------------------
-Variable<AMIObject>::ptr CreateVar_VarVector( VarVector* vv)
+AMI_DEFINE_WRAPPEDTYPE_HASCOPY(VarVector);
+AMI_DEFINE_VARFROMSMTPTR(VarVector);
+
+/*
+//
+// static member for creating a variable from a pointer to VarVector
+//
+Variable<AMIObject>::ptr WrapClass_VarVector::CreateVar( VarVector* vv)
 {
-  // here VarVector can be deleted
-  boost::shared_ptr<VarVector> vv_ptr( vv );
-  WrapClass_VarVector::ptr sip(new WrapClass_VarVector(vv_ptr));
-  AMIObject::ptr amiobject(AddWrap_VarVector(sip));
-  Variable<AMIObject>::ptr varres(
-      new Variable<AMIObject>( amiobject));
-  return varres;
+  boost::shared_ptr<VarVector> vv_ptr(vv);
+  return 
+    WrapClass<VarVector>::CreateVar(
+      new WrapClass_VarVector( vv_ptr));
 }
+*/
 
 //---------------------------------------------------
 //  VarVector Constructor
 //---------------------------------------------------
-void  wrap_VarVector::SetParametersComments() 
+void  WrapClass_VarVector::wrap_VarVector::SetParametersComments() 
 {
   ADDPARAMCOMMENT("integer: initial size (def:0).");
   ADDPARAMCOMMENT("Variable: optional variable to fill the initial elements.");
   return_comments = "A wrapped VarVector object.";
 }
 //---------------------------------------------------
-BasicVariable::ptr wrap_VarVector::CallMember( ParamList* p)
+BasicVariable::ptr WrapClass_VarVector::wrap_VarVector::CallMember( ParamList* p)
 {
   if (!p) ClassHelpAndReturn;
   int n=0;
@@ -76,7 +72,10 @@ BasicVariable::ptr wrap_VarVector::CallMember( ParamList* p)
   } else {
     CLASS_MESSAGE("Needs a valid variable as second parameter.");
   }
-  return CreateVar_VarVector(vv);
+
+  boost::shared_ptr<VarVector> vv_ptr(vv);
+
+  return WrapClass<VarVector>::CreateVar(new WrapClass_VarVector(vv_ptr));
 }
 
 //===================================================
@@ -133,7 +132,7 @@ BasicVariable::ptr WrapClass_VarVector::wrap_size::CallMember( ParamList* p)
 {
   int size = this->_objectptr->_obj->size();
   // create integer variable to return
-  RETURN_VARINT(size,"Vector_size");
+  RETURN_VAR(int,size);
 }
 
 

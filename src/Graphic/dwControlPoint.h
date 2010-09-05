@@ -23,7 +23,7 @@
 #include "wx/wx.h"
 #endif
 
-#include "dw_Point2D.h"
+#include "dwPoint2D.h"
 
 typedef enum {
  normal_point,
@@ -38,7 +38,7 @@ class dwControlPoint
   DEFINE_CLASS(dwControlPoint);
 
 private:
-  dw_Point2D       pos;
+  dwPoint2D       pos;
   wxPoint          winpos;
   bool             selected;
   bool             has_focus;
@@ -57,13 +57,13 @@ public:
     DefaultInit();
   }
 
-  dwControlPoint(const dw_Point2D& p)
+  dwControlPoint(const dwPoint2D& p)
   {
     DefaultInit();
     pos = p;
   }
 
-  dwControlPoint(const dw_Point2D& p, ControlPointType t)
+  dwControlPoint(const dwPoint2D& p, ControlPointType t)
   {
     DefaultInit();
     pos = p;
@@ -81,7 +81,7 @@ public:
     vertical_line = false;
   }
 
-  void operator = (const dw_Point2D& p )
+  void operator = (const dwPoint2D& p )
   {
     pos = p;
   }
@@ -107,7 +107,7 @@ public:
   bool HasFocus()         { return has_focus; }
   
   ControlPointType GetType() const { return type; }
-  void SetType( const ControlPointType& t) { type = t; }
+  void SetType( const int t) { type = (ControlPointType)t; }
   
   void SetHorizontalLine(bool hl)  { horizontal_line = hl; }
   bool GetHorizontalLine() const { return horizontal_line; }
@@ -116,6 +116,7 @@ public:
   bool GetVerticalLine() const { return vertical_line; }
 };
 
+typedef std::vector<dwControlPoint>    vector_dwControlPoint;
 
 
 #endif

@@ -39,8 +39,10 @@ BasicVariable::ptr WrapClass<wxString>::CreateVar( ParamList* p)
   return construct.CallMember(p);
 }
 
-AMI_DEFINE_WRAPPEDTYPE(wxString)
+AMI_DEFINE_WRAPPEDTYPE_HASCOPY(wxString);
+AMI_DEFINE_VARFROMSMTPTR(wxString);
 
+/*
 //
 // static member for creating a variable from a pointer to dwControlPoint
 //
@@ -50,7 +52,7 @@ Variable<AMIObject>::ptr WrapClass_wxString::CreateVar( wxString* sp)
     WrapClass<wxString>::CreateVar(
       new WrapClass_wxString(boost::shared_ptr<wxString>(sp)));
 }
-
+*/
 
 //---------------------------------------------------
 // Method that adds wrapping of wxString
@@ -77,7 +79,7 @@ BasicVariable::ptr WrapClass_wxString::
   else
     owxString = new wxString();
 
-  return WrapClass_wxString::CreateVar(owxString);
+  return AMILabType<wxString>::CreateVar(owxString);
 }
 
 //---------------------------------------------------
@@ -199,7 +201,7 @@ BasicVariable::ptr WrapClass_wxString::
 
   wxString *oString = new wxString(owxString->SubString(iPosBegin, iPosEnd));
 
-  return WrapClass_wxString::CreateVar(oString);
+  return AMILabType<wxString>::CreateVar(oString);
 }
 
 //---------------------------------------------------
@@ -518,7 +520,7 @@ BasicVariable::ptr WrapClass_wxString::
 
   wxString *oString = new wxString(owxString->Lower());
 
-  return WrapClass_wxString::CreateVar(oString);
+  return AMILabType<wxString>::CreateVar(oString);
 }
 
 //---------------------------------------------------
@@ -571,7 +573,7 @@ BasicVariable::ptr WrapClass_wxString::
 
   wxString *oString = new wxString(owxString->Upper());
 
-  return WrapClass_wxString::CreateVar(oString);
+  return AMILabType<wxString>::CreateVar(oString);
 }
 
 //---------------------------------------------------
@@ -595,7 +597,7 @@ BasicVariable::ptr WrapClass_wxString::
 
   wxString *oString = new wxString(owxString->FromAscii(sString.c_str()));
 
-  return WrapClass_wxString::CreateVar(oString);
+  return AMILabType<wxString>::CreateVar(oString);
 }
 
 //---------------------------------------------------
@@ -619,7 +621,7 @@ BasicVariable::ptr WrapClass_wxString::
 
   wxString *oString = new wxString(owxString->FromAscii(sString.c_str()));
 
-  return WrapClass_wxString::CreateVar(oString);
+  return AMILabType<wxString>::CreateVar(oString);
 }
 
 //---------------------------------------------------
@@ -738,7 +740,7 @@ void WrapClass_wxString::
 BasicVariable::ptr WrapClass_wxString::
       wrap_copy::CallMember( ParamList* p)
 {
-  return WrapClass_wxString::CreateVar( new wxString(*(this->_objectptr->GetObj())));
+  return AMILabType<wxString>::CreateVar( new wxString(*(this->_objectptr->GetObj())));
 }
 
 //---------------------------------------------------
@@ -794,7 +796,7 @@ BasicVariable::ptr WrapClass_wxString::
     owxString->Append(wxString(sVal.c_str(), wxConvUTF8));
   }
 
-  return WrapClass_wxString::CreateVar( new wxString(*(this->_objectptr->GetObj())));
+  return AMILabType<wxString>::CreateVar( new wxString(*(this->_objectptr->GetObj())));
 }
 
 //---------------------------------------------------
@@ -825,7 +827,7 @@ BasicVariable::ptr WrapClass_wxString::
     owxString->Append(wxString(sVal.c_str(), wxConvUTF8));
   }
 
-  return WrapClass_wxString::CreateVar( new wxString(*(this->_objectptr->GetObj())));
+  return AMILabType<wxString>::CreateVar( new wxString(*(this->_objectptr->GetObj())));
 }
 
 //---------------------------------------------------

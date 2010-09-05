@@ -39,7 +39,7 @@ BasicVariable::ptr WrapClass<SurfacePoly>::CreateVar( ParamList* p)
   return construct.CallMember(p);
 }
 
-AMI_DEFINE_WRAPPEDTYPE(SurfacePoly);
+AMI_DEFINE_WRAPPEDTYPE_NOCOPY(SurfacePoly);
 
 //
 // static member for creating a variable from a pointer to SurfacePoly

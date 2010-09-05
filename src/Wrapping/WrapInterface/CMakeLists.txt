@@ -12,6 +12,7 @@ include_directories (
   ${AMILAB_SOURCE_DIR}/Vaisseaux
   ${AMILAB_SOURCE_DIR}/Coordonnees
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapCommon
+  ${AMILAB_SOURCE_DIR}/Wrapping/WrapBasicTypes
   ${AMILAB_SOURCE_DIR}/wxStcFrame
   ${AMILAB_SOURCE_DIR}/wxCode/wxTreeListCtrl
   ${AMILAB_SOURCE_DIR}/Wrapping/WrapWxWidgets
@@ -32,6 +33,9 @@ SET(  WrapInterface_SRCS
   wrap_wxStcFrame.cpp 
   wrap_FenetreDessin.cpp 
   wrap_dwControlPoint.cpp
+  wrap_dwPoint2D.cpp
+  wrap_dwCurve.cpp
+  wrap_dwControlledCurve.cpp
 )
 
 SET(WrapInterface_HDRS
@@ -43,6 +47,9 @@ SET(WrapInterface_HDRS
   wrap_wxStcFrame.h 
   wrap_FenetreDessin.h
   wrap_dwControlPoint.h
+  wrap_dwPoint2D.h
+  wrap_dwCurve.h
+  wrap_dwControlledCurve.h
 )
 
 SET(WrapInterface_SRCS

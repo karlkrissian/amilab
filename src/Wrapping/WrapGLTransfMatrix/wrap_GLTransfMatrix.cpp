@@ -41,8 +41,10 @@ BasicVariable::ptr WrapClass<GLTransfMatrix>::CreateVar( ParamList* p)
   return construct.CallMember(p);
 }
 
-AMI_DEFINE_WRAPPEDTYPE(GLTransfMatrix);
+AMI_DEFINE_WRAPPEDTYPE_HASCOPY(GLTransfMatrix);
+AMI_DEFINE_VARFROMSMTPTR(GLTransfMatrix);
 
+/*
 //
 // static member for creating a variable from a pointer to SurfacePoly
 //
@@ -53,7 +55,7 @@ Variable<AMIObject>::ptr WrapClass_GLTransfMatrix::CreateVar( GLTransfMatrix* sp
     WrapClass<GLTransfMatrix>::CreateVar(
       new WrapClass_GLTransfMatrix(_obj_ptr));
 }
-
+*/
 
 
 //---------------------------------------------------
@@ -72,7 +74,7 @@ BasicVariable::ptr WrapClass_GLTransfMatrix::
 {
   GLTransfMatrix* newglt = new GLTransfMatrix();
 
-  BasicVariable::ptr res = WrapClass_GLTransfMatrix::CreateVar(newglt);
+  BasicVariable::ptr res = AMILabType<GLTransfMatrix>::CreateVar(newglt);
 
   return res;
 }
@@ -310,7 +312,7 @@ BasicVariable::ptr WrapClass_GLTransfMatrix::
 
   newglt->SetRotation(rot1);
 
-  BasicVariable::ptr res = WrapClass_GLTransfMatrix::CreateVar(newglt);
+  BasicVariable::ptr res = AMILabType<GLTransfMatrix>::CreateVar(newglt);
   return res;
 }
 
@@ -330,7 +332,7 @@ BasicVariable::ptr WrapClass_GLTransfMatrix::
 
   GLTransfMatrix* newglt = new GLTransfMatrix();
   (*newglt) = (*glmat);
-  return WrapClass_GLTransfMatrix::CreateVar( newglt );
+  return AMILabType<GLTransfMatrix>::CreateVar( newglt );
 }
 
 //---------------------------------------------------

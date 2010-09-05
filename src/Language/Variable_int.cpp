@@ -364,6 +364,7 @@ BasicVariable::ptr Variable<int>::TryCast(
     CLASS_ERROR(boost::format("%1%, for variable %2% from int to %3%") % e.what() % _name % type_string);
     return BasicVariable::ptr();
   }
+  return BasicVariable::ptr();
 }
 
 

@@ -31,6 +31,7 @@ class WrapClass_FenetreDessin : public WrapClass<FenetreDessin>, public WrapClas
   protected:  
     // for nested classes
     typedef WrapClass<FenetreDessin>::ptr _parentclass_ptr;
+    typedef FenetreDessin ObjectType;
 
   public:
 

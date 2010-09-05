@@ -33,6 +33,7 @@ class WrapClass_Viewer3D:  public WrapClass<Viewer3D>,  public  WrapClass_wxWind
   protected:  
     // needed to resolve ambiguity from multiple inheritance
     typedef boost::shared_ptr<WrapClass<Viewer3D> > _parentclass_ptr;
+    typedef Viewer3D ObjectType;
 
   public:
     // resolve ambiguity

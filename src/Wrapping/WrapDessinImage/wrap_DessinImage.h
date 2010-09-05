@@ -32,6 +32,7 @@ class WrapClass_DessinImage : public WrapClass<DessinImage>, public virtual Wrap
 
   protected:
     typedef WrapClass<DessinImage>::ptr _parentclass_ptr;
+    typedef DessinImage ObjectType;
 
   public:
     // resolve ambiguity

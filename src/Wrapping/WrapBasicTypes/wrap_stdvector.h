@@ -27,7 +27,8 @@
 template<class T>
 class WrapClass_StdVector : public WrapClass<std::vector<T> >, public virtual WrapClassBase
 {
-  typedef boost::shared_ptr<WrapClass<std::vector<T> > > _parentclass_ptr;
+    typedef boost::shared_ptr<WrapClass<std::vector<T> > > _parentclass_ptr;
+    typedef std::vector<T> ObjectType;
 
   public:
 

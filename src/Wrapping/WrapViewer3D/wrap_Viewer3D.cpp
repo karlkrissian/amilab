@@ -48,7 +48,7 @@ BasicVariable::ptr WrapClass<Viewer3D>::CreateVar( ParamList* p)
   return construct.CallMember(p);
 }
 
-AMI_DEFINE_WRAPPEDTYPE(Viewer3D);
+AMI_DEFINE_WRAPPEDTYPE_NOCOPY(Viewer3D);
 
 //
 // static member for creating a variable from a pointer to Viewer3D
@@ -171,7 +171,7 @@ BasicVariable::ptr WrapClass_Viewer3D::
 
   if (!p) ClassHelpAndReturn;
   int n=0;
-  CLASS_GET_OBJECT_PARAM2(SurfacePoly,varsurf,surf);
+  CLASS_GET_OBJECT_PARAM(SurfacePoly,varsurf,surf);
   if (!surf.get()) ClassHelpAndReturn;
 
   if (surf.get())
@@ -201,7 +201,7 @@ BasicVariable::ptr WrapClass_Viewer3D::
 
   if (!p) ClassHelpAndReturn;
   int n=0;
-  CLASS_GET_OBJECT_PARAM2(SurfacePoly,varsurf,surf);
+  CLASS_GET_OBJECT_PARAM(SurfacePoly,varsurf,surf);
   if (!surf.get()) ClassHelpAndReturn;
 
   if (surf.get()) {
@@ -231,7 +231,7 @@ BasicVariable::ptr WrapClass_Viewer3D::
 
   if (!p) ClassHelpAndReturn;
   int n=0;
-  CLASS_GET_OBJECT_PARAM2(SurfacePoly,varsurf,surf);
+  CLASS_GET_OBJECT_PARAM(SurfacePoly,varsurf,surf);
   if (!surf.get()) ClassHelpAndReturn;
 
   if (surf.get())
@@ -260,7 +260,7 @@ BasicVariable::ptr WrapClass_Viewer3D::
 
   if (!p) ClassHelpAndReturn;
   int n=0;
-  CLASS_GET_OBJECT_PARAM2(SurfacePoly,varsurf,surf);
+  CLASS_GET_OBJECT_PARAM(SurfacePoly,varsurf,surf);
   if (!surf.get()) ClassHelpAndReturn;
 
   /**
@@ -559,7 +559,7 @@ BasicVariable::ptr WrapClass_Viewer3D::
 
   if (!p) ClassHelpAndReturn;
   int n=0;
-  CLASS_GET_OBJECT_PARAM2(GLTransfMatrix,varglt,tr);
+  CLASS_GET_OBJECT_PARAM(GLTransfMatrix,varglt,tr);
   if (!tr.get()) ClassHelpAndReturn;
   float threshold;
 
@@ -875,5 +875,5 @@ BasicVariable::ptr WrapClass_Viewer3D::
   //GB_driver.err_print("WrapClass_Viewer3D::wrap_GetTransform Not available at this time!");
   GLTransfMatrix* glt = new GLTransfMatrix();
   *glt = vi->GetCanvas()->GetObjectTransform();
-  return WrapClass_GLTransfMatrix::CreateVar(glt);
+  return AMILabType<GLTransfMatrix>::CreateVar(glt);
 }

@@ -31,6 +31,7 @@ class WrapClass_wxEditor : public WrapClass<wxEditor>, public WrapClass_wxWindow
   protected: 
     // for nested classes
     typedef WrapClass<wxEditor>::ptr _parentclass_ptr;
+    typedef wxEditor ObjectType;
 
   public:
     /// Constructor

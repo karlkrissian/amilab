@@ -37,8 +37,10 @@ class WrapClass_wxColour : public WrapClass<wxColour>
     WrapClass_wxColour(boost::shared_ptr<wxColour> sp): 
       WrapClass<wxColour>(sp) { }
 
+/*
     /// Create a variable from a standard pointer
-    static Variable<AMIObject>::ptr CreateVar( wxColour* sp);
+     static Variable<AMIObject>::ptr CreateVar( wxColour* sp);
+*/
 
     /// Wrapping of the constructor
     ADD_CLASS_CONSTRUCTOR( wxColour,  "Wrapping of wxColour (see http://docs.wxwidgets.org/).");

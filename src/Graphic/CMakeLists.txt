@@ -25,8 +25,10 @@ SET(Graphic_HDRS
     gnuplot.hpp
     wxDrawingArea.h
     wxDrawingWindow.h
-    dw_Curve.h
-    dw_Point2D.h
+    dwControlPoint.h
+    dwCurve.h
+    dwControlledCurve.h
+    dwPoint2D.h
     LinearColorMap.h
 )
 
@@ -37,6 +39,7 @@ SET(Graphic_SRCS
     wxDrawingArea.cpp
     wxDrawingWindow.cpp
     LinearColorMap.cpp
+    dwControlledCurve.cpp
 )
 
 SET(Graphic_SRCS

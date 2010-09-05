@@ -32,6 +32,9 @@
 enum {
   wxID_AddControlPoint = 2000,
   wxID_RemoveControl,
+  wxID_DuplicateControl,
+  wxID_AddControlledCurve,
+  wxID_RemoveControlledCurve,
   wxID_ColormapPoint,
   wxID_VerticalLine,
   wxID_SetControlColour,
@@ -46,12 +49,15 @@ BEGIN_EVENT_TABLE(wxDrawingWindow, wxWindow)
   EVT_LEFT_UP(      wxDrawingWindow::OnLeftUp )
   EVT_MOTION(       wxDrawingWindow::OnMotion )
   EVT_MOUSEWHEEL(   wxDrawingWindow::OnWheel )
-  EVT_MENU(         wxID_AddControlPoint,  wxDrawingWindow::OnAddControlPoint)
-  EVT_MENU(         wxID_RemoveControl,    wxDrawingWindow::OnRemoveControl)
-  EVT_MENU(         wxID_ColormapPoint,    wxDrawingWindow::OnColormapPoint)
-  EVT_MENU(         wxID_VerticalLine,     wxDrawingWindow::OnVerticalLine)
-  EVT_MENU(         wxID_SetControlColour, wxDrawingWindow::OnControlColour)
-  EVT_MENU(         wxID_ShowGrid,         wxDrawingWindow::OnShowGrid)
+  EVT_MENU(         wxID_AddControlPoint,    wxDrawingWindow::OnAddControlPoint)
+  EVT_MENU(         wxID_AddControlledCurve, wxDrawingWindow::OnAddControlledCurve)
+  EVT_MENU(         wxID_RemoveControlledCurve, wxDrawingWindow::OnRemoveControlledCurve)
+  EVT_MENU(         wxID_RemoveControl,      wxDrawingWindow::OnRemoveControl)
+  EVT_MENU(         wxID_DuplicateControl,      wxDrawingWindow::OnDuplicateControl)
+  EVT_MENU(         wxID_ColormapPoint,      wxDrawingWindow::OnColormapPoint)
+  EVT_MENU(         wxID_VerticalLine,       wxDrawingWindow::OnVerticalLine)
+  EVT_MENU(         wxID_SetControlColour,   wxDrawingWindow::OnControlColour)
+  EVT_MENU(         wxID_ShowGrid,           wxDrawingWindow::OnShowGrid)
 END_EVENT_TABLE();
 
 //------------------------------------------------
@@ -64,12 +70,15 @@ wxDrawingWindow::wxDrawingWindow(wxWindow *parent, wxWindowID id,
     |wxBORDER_RAISED
     | wxHSCROLL | wxVSCROLL
     , 
-    name)
+    name) 
 {
   this->SetScrollbars(3,3,10,10);
   this->EnableScrolling(true,true);
 
-  focus_pointid = -1;
+  _focus_point.reset();
+  _focus_pointset.reset();
+  _focus_controlledcurve = -1;
+
   _left_down = false;
   _previous_crosshair = false;
 
@@ -81,6 +90,11 @@ wxDrawingWindow::wxDrawingWindow(wxWindow *parent, wxWindowID id,
   _draw_grid = true;
   _draw_linearCM=true;
   _linearCM_margin_size = wxSize(0,7);
+
+  // Create the list of control points within a smart pointer
+  _controlpoints = boost::shared_ptr<vector_dwControlPoint>(new vector_dwControlPoint());
+  _curves = boost::shared_ptr<vector_dwCurve>(new vector_dwCurve());
+  _controlled_curves = boost::shared_ptr<vector_dwControlledCurve>(new vector_dwControlledCurve());
 }
 
 
@@ -151,7 +165,7 @@ void wxDrawingWindow::Window2World(  wxCoord wx, wxCoord wy, double& x, double& 
 }
 
 //------------------------------------------------
-void wxDrawingWindow::AddImageToCurve( InrImage* im, dw_Curve& c)
+void wxDrawingWindow::AddImageToCurve( InrImage* im, dwCurve& c)
 {
   double x1,y1;
   if (im->GetVDim()==1) {
@@ -159,7 +173,7 @@ void wxDrawingWindow::AddImageToCurve( InrImage* im, dw_Curve& c)
     for(int x=0;x<im->DimX();x++) {
       x1 = im->SpacePosX(x);
       y1 = (*im)(x,0,0);
-      c.AddPoint(dw_Point2D(x1,y1));
+      c.AddPoint(dwPoint2D(x1,y1));
     }
   }
 
@@ -168,7 +182,7 @@ void wxDrawingWindow::AddImageToCurve( InrImage* im, dw_Curve& c)
     for(int x=0;x<im->DimX();x++) {
       x1 = (*im)(x,0,0.0);
       y1 = (*im)(x,0,0,1);
-      c.AddPoint(dw_Point2D(x1,y1));
+      c.AddPoint(dwPoint2D(x1,y1));
     }
   }
 
@@ -178,24 +192,24 @@ void wxDrawingWindow::AddImageToCurve( InrImage* im, dw_Curve& c)
 void wxDrawingWindow::AddCurve( InrImage* im)
 {
   // new curve
-  dw_Curve c;
+  dwCurve c;
 
   AddImageToCurve(im,c);
 
   // Add the curve
-  _curves.push_back(c);
+  _curves->push_back(c);
 }
 
 //------------------------------------------------
 bool wxDrawingWindow::SetCurve( int i, InrImage* im)
 {
 
-  if ((i>=0)&&(i<(int)_curves.size())) {
+  if ((i>=0)&&(i<(int)_curves->size())) {
     // new curve
-    dw_Curve c;
+    dwCurve c;
   
     AddImageToCurve(im,c);
-    _curves[i].GetPoints() = c.GetPoints();
+    (*_curves)[i].GetPoints() = c.GetPoints();
   } else {
     CLASS_ERROR("Wrong curve number");
     return false;
@@ -209,26 +223,76 @@ bool wxDrawingWindow::SetCurve( int i, InrImage* im)
   */
 void wxDrawingWindow::AddControlPoint( const dwControlPoint& pt)
 {
-  _controlpoints.push_back(pt);
+  _controlpoints->push_back(pt);
 }
 
 /**
   * Removes a new control point
   * @param control point id
   */
-void wxDrawingWindow::RemoveControl( const int& pt_id)
+void wxDrawingWindow::RemoveControl()
 {
-  _controlpoints.erase(_controlpoints.begin()+pt_id);  
+  vector_dwControlPoint::iterator it;
+  for ( it  = _focus_pointset->begin(); 
+        it != _focus_pointset->end(); 
+        it++) {
+    if (_focus_point.get() == &(*it)) {
+      it = _focus_pointset->erase(it);
+      return;
+    }
+  }
+  //  _controlpoints->erase(_controlpoints->begin()+pt_id);
+}
+
+/**
+  * Duplicates a new control point
+  */
+void wxDrawingWindow::DuplicateControl()
+{
+  int n1 = 0;
+  vector_dwControlPoint::iterator it;
+  n1 = (int) _focus_pointset->size();
+  _focus_pointset->push_back(_focus_pointset->back());
+  n1 = (int) _focus_pointset->size();
+  it  = _focus_pointset->end(); // past to end
+  it-=2; 
+
+  while (
+          (&(*it) != _focus_point.get()) &&
+          (    it != _focus_pointset->begin())
+        )
+  { 
+    (*it) = (*(it-1));
+    it--;
+  }
+  if (&(*it) == _focus_point.get())
+  {
+    // displace a little bit the new point
+    double x2 = it->GetX();
+    double y2 = it->GetY();
+    it++;
+    if ((it+1) != _focus_pointset->end()) {
+      it++;
+      double x1 = it->GetX();
+      double y1 = it->GetY();
+      it--;
+      it->SetX(x2+(x1-x2)/5.0);
+      it->SetY(y2+(y1-y2)/5.0);
+    } else {
+      it->SetX( Window2WorldX( World2WindowX(x2)+it->GetRadius()));
+      it->SetY(y2);
+    }
+  }
 }
 
 /**
   * Set the new position of a new control point
   * @param control point
   */
-void wxDrawingWindow::SetControl( int i, const dw_Point2D& pt)
+void wxDrawingWindow::SetControl( int i, const dwPoint2D& pt)
 {
-  if ((i>=0)&&(i<(int)_controlpoints.size())) {
-    _controlpoints[i] = pt;
+  if ((i>=0)&&(i<(int)_controlpoints->size())) {
+    (*_controlpoints)[i] = pt;
   }
 }
 
@@ -236,65 +300,103 @@ void wxDrawingWindow::SetControl( int i, const dw_Point2D& pt)
 //------------------------------------------------
 void wxDrawingWindow::SetCurveDrawPoints( int i, bool dp)
 {
-  if ((i>=0)&&(i<(int)_curves.size())) {
-    _curves[i].SetDrawPoints(dp);
+  if ((i>=0)&&(i<(int)_curves->size())) {
+    (*_curves)[i].SetDrawPoints(dp);
   }
 }
 
 //------------------------------------------------
 void wxDrawingWindow::SetCurveDrawLines( int i, bool dp)
 {
-  if ((i>=0)&&(i<(int)_curves.size())) {
-    _curves[i].SetDrawLines(dp);
+  if ((i>=0)&&(i<(int)_curves->size())) {
+    (*_curves)[i].SetDrawLines(dp);
   }
 }
 
 //------------------------------------------------
 void wxDrawingWindow::SetCurveColor( int i, std::string color_string)
 {
-  if ((i>=0)&&(i<(int)_curves.size())) {
-    _curves[i].SetColor(wxColour(wxString(color_string.c_str(), wxConvUTF8)));
+  if ((i>=0)&&(i<(int)_curves->size())) {
+    (*_curves)[i].SetColour(wxColour(wxString(color_string.c_str(), wxConvUTF8)));
   }
 }
 
 //------------------------------------------------
 void wxDrawingWindow::SetCurveStyle( int i, int style)
 {
-  if ((i>=0)&&(i<(int)_curves.size())) {
-    _curves[i].SetStyle(style);
+  if ((i>=0)&&(i<(int)_curves->size())) {
+    (*_curves)[i].SetStyle(style);
   }
 }
 
 //------------------------------------------------
 void wxDrawingWindow::SetCurveWidth( int i, int width)
 {
-  if ((i>=0)&&(i<(int)_curves.size())) {
-    _curves[i].SetWidth(width);
+  if ((i>=0)&&(i<(int)_curves->size())) {
+    (*_curves)[i].SetWidth(width);
   }
 }
 
 //------------------------------------------------
-void wxDrawingWindow::DrawCurve(int i )
+void wxDrawingWindow::DrawCurve( dwCurve& curve )
 {
-  std::vector<dw_Point2D>& _points = _curves[i].GetPoints();
+  scoped_ptr<wxPen> current_pen(
+    new wxPen( *wxBLACK, 1, PENSTYLE_SOLID));
+  current_pen->SetColour(curve.GetColour());
+  /*
+  0: wxSOLID   Solid style.
+  1: wxDOT   Dotted style.
+  2: wxLONG_DASH   Long dashed style.
+  3: wxSHORT_DASH  Short dashed style.
+  4: wxDOT_DASH  Dot and dash style. 
+  */
+  int wxstyle=wxSOLID;
+  switch (curve.GetStyle()) {
+    case 0: wxstyle=PENSTYLE_SOLID;       break;
+    case 1: wxstyle=wxDOT;         break;
+    case 2: wxstyle=wxLONG_DASH;   break;
+    case 3: wxstyle=wxSHORT_DASH;  break;
+    case 4: wxstyle=wxDOT_DASH;    break;
+    default: wxstyle=wxSOLID;
+  }
+  current_pen->SetStyle( wxstyle);
+  current_pen->SetWidth( curve.GetWidth());
+  _memory_dc->SetPen(*current_pen);
+
+  std::vector<dwPoint2D>& _points = curve.GetPoints();
   // iterate through the curves
-  std::vector<dw_Point2D>::iterator it;
+  std::vector<dwPoint2D>::iterator it;
   wxCoord x1,y1,x2,y2;
 
   for(it=_points.begin();it!=_points.end();it++)
   {
     // draw line from previous to current point
     World2Window(it->GetX(),it->GetY(),x2,y2);
-    if (_curves[i].GetDrawLines())
+    if (curve.GetDrawLines())
       if (it!=_points.begin()) {
         DrawLine(x1,y1,x2,y2);
       }
-    if (_curves[i].GetDrawPoints())
+    if (curve.GetDrawPoints())
       DrawPoint(x1,y1);
     x1 = x2;
     y1 = y2;
   }
 
+}
+
+
+//------------------------------------------------
+void wxDrawingWindow::DrawCurves(  )
+{
+  for (int i=0; i<GetNumberOfCurves(); i++)
+    DrawCurve((*_curves)[i]);
+
+  for (int i=0; i<(int)_controlled_curves->size(); i++) {
+    // TODO: only recompute curve in case of motion of a point ...
+    (*_controlled_curves)[i].ComputeCurve();
+    dwCurve::ptr curve((*_controlled_curves)[i].GetCurve());
+    if (curve.get()) DrawCurve(*curve);
+  }
 }
 
 //------------------------------------------------
@@ -466,11 +568,11 @@ void wxDrawingWindow::DrawLinearCM(  )
   // Add 2 points to the linearcolormap
   _linearCM.clear();
   // use current control points ...
-  for(int i = 0; i<(int)_controlpoints.size(); i++) 
+  for(int i = 0; i<(int)_controlpoints->size(); i++) 
   {  
-    if (_controlpoints[i].GetType() == colormap_point)
-      _linearCM.AddPoint(LinearColorMapPoint(_controlpoints[i].GetX(),
-                                            _controlpoints[i].GetColour()));
+    if ((*_controlpoints)[i].GetType() == colormap_point)
+      _linearCM.AddPoint(LinearColorMapPoint((*_controlpoints)[i].GetX(),
+                                            (*_controlpoints)[i].GetColour()));
   }
   
   // the points are already sorted
@@ -515,6 +617,41 @@ void wxDrawingWindow::DrawLinearCM(  )
 
 
 //------------------------------------------------
+void wxDrawingWindow::DrawControlPoint( dwControlPoint& pt, 
+                const wxColour& visible_colour, 
+                const wxSize& _sz)
+{
+  wxCoord px,py;
+  World2Window(pt.GetX(),pt.GetY(),px,py);
+  if (pt.GetType()==colormap_point) {
+    wxPen pen(visible_colour);
+    pen.SetStyle(wxSHORT_DASH);
+    _memory_dc->SetPen(pen);
+    _memory_dc->DrawLine(px,py,px,_sz.y-_linearCM_margin_size.GetHeight());
+  } else {
+    if (pt.GetVerticalLine()) {
+      _memory_dc->SetPen(wxPen(visible_colour));
+      _memory_dc->DrawLine(px,0,px,_sz.y-_linearCM_margin_size.GetHeight());
+    }
+  }
+
+  if (pt.HasFocus()) {
+    _memory_dc->SetBrush(*wxTRANSPARENT_BRUSH);
+    if (pt.GetColour()!=GetBackgroundColour()) {
+      _memory_dc->SetPen(wxPen(pt.GetColour()));
+    } else {
+      _memory_dc->SetPen(wxPen(visible_colour));
+    }
+  }
+  else {
+    _memory_dc->SetBrush(wxBrush(pt.GetColour()));
+    _memory_dc->SetPen(wxPen(visible_colour));
+  }
+  pt.SetwxPoint(wxPoint(px,py));
+  _memory_dc->DrawCircle(px,py,pt.GetRadius());
+}
+
+//------------------------------------------------
 void wxDrawingWindow::DrawControlPoints()
 {
   scoped_ptr<wxPen> current_pen( new wxPen( *wxBLACK, 1, PENSTYLE_SOLID));
@@ -527,41 +664,17 @@ void wxDrawingWindow::DrawControlPoints()
                           (128+c.Blue() )% 255);
   
   
-  for(int i = 0; i<(int)_controlpoints.size(); i++) 
+  for(int i = 0; i<(int)_controlpoints->size(); i++) 
   {
-    wxCoord px,py;
-    World2Window(_controlpoints[i].GetX(),_controlpoints[i].GetY(),px,py);
-    if (_controlpoints[i].GetType()==colormap_point) {
-      wxPen pen(visible_colour);
-      pen.SetStyle(wxSHORT_DASH);
-      _memory_dc->SetPen(pen);
-      _memory_dc->DrawLine(px,py,px,_sz.y-_linearCM_margin_size.GetHeight());
-    } else {
-      if (_controlpoints[i].GetVerticalLine()) {
-        _memory_dc->SetPen(wxPen(visible_colour));
-        _memory_dc->DrawLine(px,0,px,_sz.y-_linearCM_margin_size.GetHeight());
-      }      
-    }
-    
-    if (_controlpoints[i].HasFocus()) {
-      _memory_dc->SetBrush(*wxTRANSPARENT_BRUSH);
-      if (_controlpoints[i].GetColour()!=GetBackgroundColour()) {
-        _memory_dc->SetPen(wxPen(_controlpoints[i].GetColour()));
-      } else {
-        _memory_dc->SetPen(wxPen(visible_colour));
-      }
-    }
-    else {
-      _memory_dc->SetBrush(wxBrush(_controlpoints[i].GetColour()));
-//      _memory_dc->SetLogicalFunction(wxOR_REVERSE);
-//      _memory_dc->SetBrush(*wxTRANSPARENT_BRUSH);
-//      _memory_dc->SetPen(wxPen(_controlpoints[i].GetColour()));
-      _memory_dc->SetPen(wxPen(visible_colour));
-//      _memory_dc->SetPen(wxPen(*wxBLACK));
-    }
-    _controlpoints[i].SetwxPoint(wxPoint(px,py));
-    _memory_dc->DrawCircle(px,py,_controlpoints[i].GetRadius());
-//    _memory_dc->SetLogicalFunction(wxCOPY);
+    DrawControlPoint((*_controlpoints)[i],visible_colour, _sz);
+  }
+
+  // now draw control points that belong to a ControlledCurve
+  for(int i = 0; i<(int)_controlled_curves->size(); i++) 
+  {
+    boost::shared_ptr<vector_dwControlPoint> points( (*_controlled_curves)[i].GetControlPoints());
+    for(int j = 0; j<(int)points->size(); j++) 
+    DrawControlPoint((*points)[j],visible_colour, _sz);
   }
 }
 
@@ -619,30 +732,7 @@ void wxDrawingWindow::Paint()
   //dc.DrawRectangle(rectToDraw);
   _memory_dc->SetPen(*wxBLACK_PEN);
   DrawAxes();
-  for (int i=0; i<GetNumberOfCurves(); i++)
-  {
-    current_pen->SetColour(_curves[i].GetColor());
-    /*
-    0: wxSOLID   Solid style.
-    1: wxDOT   Dotted style.
-    2: wxLONG_DASH   Long dashed style.
-    3: wxSHORT_DASH  Short dashed style.
-    4: wxDOT_DASH  Dot and dash style. 
-    */
-    int wxstyle=wxSOLID;
-    switch (_curves[i].GetStyle()) {
-      case 0: wxstyle=PENSTYLE_SOLID;       break;
-      case 1: wxstyle=wxDOT;         break;
-      case 2: wxstyle=wxLONG_DASH;   break;
-      case 3: wxstyle=wxSHORT_DASH;  break;
-      case 4: wxstyle=wxDOT_DASH;    break;
-      default: wxstyle=wxSOLID;
-    }
-    current_pen->SetStyle( wxstyle);
-    current_pen->SetWidth( _curves[i].GetWidth());
-    _memory_dc->SetPen(*current_pen);
-    DrawCurve(i);
-  }
+  DrawCurves();
   DrawControls();
   DrawLinearCM();
   DrawingAreaDisplay();
@@ -686,19 +776,24 @@ void wxDrawingWindow::OnRightDown(wxMouseEvent& event)
 
   // create the popup menu here
   wxMenu menu(_T("Menu"));
-  if (focus_pointid==-1) {
+  if (!_focus_point.get()) {
     menu.Append(wxID_AddControlPoint, wxT("&Add control point"));
+    menu.Append(wxID_AddControlledCurve, wxT("&Add controlled curve"));
     wxMenuItem* menu_showgrid = menu.AppendCheckItem(wxID_ShowGrid,wxT("Enable &Grid"));
     menu_showgrid->Check(this->_draw_grid);
   } else {
     menu.Append(wxID_RemoveControl, wxT("&Remove control point"));
+    menu.Append(wxID_DuplicateControl, wxT("&Duplicate control point"));
+    if (_focus_controlledcurve!=-1)
+      menu.Append(wxID_RemoveControlledCurve, wxT("&Remove controlled curve"));
 
     wxMenuItem* menu_cm = menu.AppendCheckItem(wxID_ColormapPoint, wxT("&Colormap"));
-    menu_cm->Check(_controlpoints[focus_pointid].GetType()==colormap_point);
 
-    if (_controlpoints[focus_pointid].GetType()==normal_point) {
+    menu_cm->Check(_focus_point->GetType()==colormap_point);
+
+    if (_focus_point->GetType()==normal_point) {
       wxMenuItem* menu_vl = menu.AppendCheckItem(wxID_VerticalLine, wxT("&Vertical Line"));
-      menu_vl->Check(_controlpoints[focus_pointid].GetVerticalLine());
+      menu_vl->Check(_focus_point->GetVerticalLine());
     }
 
     menu.Append(wxID_SetControlColour, wxT("&Colour"));
@@ -709,32 +804,50 @@ void wxDrawingWindow::OnRightDown(wxMouseEvent& event)
 }
 
 //-------------------------------------------------
-int wxDrawingWindow::CheckCtrlPoint()
+int wxDrawingWindow::CheckCtrlPoint( boost::shared_ptr<vector_dwControlPoint>& list)
 {
   double mindist = 1000;
   int closest = -1;
+  _focus_pointset = list;
 
-  // search for closest controlpoints
-  for(int i=0;i<(int)_controlpoints.size();i++) {
+  // search for closest controlpoint
+  for(int i=0;i<(int)list->size();i++) {
     wxPoint p;
-    p = _controlpoints[i].GetwxPoint();
-    _controlpoints[i].SetFocus(false);
+    p = (*list)[i].GetwxPoint();
+    (*list)[i].SetFocus(false);
     double tmp = (p.x-_mouse_x)*(p.x-_mouse_x)+(p.y-_mouse_y)*(p.y-_mouse_y);
-    if (tmp<_controlpoints[i].GetRadius()*_controlpoints[i].GetRadius()) {
+    if (tmp<(*list)[i].GetRadius()*(*list)[i].GetRadius()) {
       if (closest==-1) {
         mindist = tmp;
         closest = i;
+        _focus_point = dwControlPoint::ptr( &(*list)[i], smartpointer_nodeleter<dwControlPoint>());
       }
       else {
         if (tmp<mindist) {
           mindist = tmp;
           closest = i;
+          _focus_point = dwControlPoint::ptr( &(*list)[i], smartpointer_nodeleter<dwControlPoint>());
         }
       }
     }
   }
-
   return closest;
+}
+
+//-------------------------------------------------
+void wxDrawingWindow::CheckCtrlPoint()
+{
+  _focus_point.reset();
+  _focus_controlledcurve = -1;
+  int res;
+  res = CheckCtrlPoint(_controlpoints);
+  int i=0;
+  while ((res==-1)&&(i<(int)_controlled_curves->size())) {
+    res = CheckCtrlPoint((*_controlled_curves)[i].GetControlPoints());
+    if (res!=-1)
+      _focus_controlledcurve = i;
+    i++;
+  }
 }
 
 //-------------------------------------------------
@@ -749,13 +862,26 @@ void wxDrawingWindow::OnMotion(wxMouseEvent& event)
 
   //cout << "leftdown " << _left_down << endl;
   if (_left_down) {
-    if ((focus_pointid!=-1)&&(_left_down)) {
+    if ((_focus_point.get())&&(_left_down)) {
       // displace the current point
       //cout << "Displace ??" << endl;
-      double x,y;
-      Window2World(_mouse_x,_mouse_y,x,y);
-      _controlpoints[focus_pointid].SetPos(x,y);
-      _controlpoints[focus_pointid].SetwxPoint(wxPoint(_mouse_x,_mouse_y));
+      double new_x,new_y;
+      Window2World(_mouse_x,_mouse_y,new_x,new_y);
+
+      if (event.ShiftDown() && (_focus_controlledcurve!=-1))
+      {
+        double x = _focus_point->GetX();
+        double y = _focus_point->GetY();
+        shared_ptr<std::vector<dwControlPoint> > points = 
+          (*_controlled_curves)[_focus_controlledcurve].GetControlPoints();
+        for(int i=0;i<(int)points->size();i++) {
+          (*points)[i].SetX((*points)[i].GetX()+new_x-x);
+          (*points)[i].SetY((*points)[i].GetY()+new_y-y);
+        }
+      } else {
+        _focus_point->SetPos(new_x,new_y);
+        _focus_point->SetwxPoint(wxPoint(_mouse_x,_mouse_y));
+      }
 
       // Check if a Control point callback was set,
       // if so, call the function with its parameters
@@ -784,18 +910,19 @@ void wxDrawingWindow::OnMotion(wxMouseEvent& event)
     return;
   }
 
-  int closest = CheckCtrlPoint();
+//  int closest = 
+  CheckCtrlPoint();
 /*
   double mindist = 1000;
   int closest = -1;
 
   // search for closest controlpoints
-  for(int i=0;i<(int)_controlpoints.size();i++) {
+  for(int i=0;i<(int)_controlpoints->size();i++) {
     wxPoint p;
-    p = _controlpoints[i].GetwxPoint();
-    _controlpoints[i].SetFocus(false);
+    p = (*_controlpoints)[i].GetwxPoint();
+    (*_controlpoints)[i].SetFocus(false);
     double tmp = (p.x-_mouse_x)*(p.x-_mouse_x)+(p.y-_mouse_y)*(p.y-_mouse_y);
-    if (tmp<_controlpoints[i].GetRadius()*_controlpoints[i].GetRadius()) {
+    if (tmp<(*_controlpoints)[i].GetRadius()*(*_controlpoints)[i].GetRadius()) {
       if (closest==-1) {
         mindist = tmp;
         closest = i;
@@ -809,12 +936,11 @@ void wxDrawingWindow::OnMotion(wxMouseEvent& event)
     }
   }
 */
-  if (closest!=-1) {
-    _controlpoints[closest].SetFocus(true);
+  if (_focus_point.get()) {
+    _focus_point->SetFocus(true);
   }
-  focus_pointid = closest;
+//  focus_pointid = closest;
   Refresh(false);
-  
   event.Skip();
 /*
   CLASS_MESSAGE(boost::format("At position %1% %2%")%_mouse_x%_mouse_y);
@@ -827,25 +953,59 @@ void wxDrawingWindow::OnMotion(wxMouseEvent& event)
 //-------------------------------------------------
 void wxDrawingWindow::OnWheel(wxMouseEvent& event)
 {
-  wxClientDC dc(this);
   int wr = event.GetWheelRotation();
-
-  _mouse_x = (int)event.GetX();
-  _mouse_y = (int)event.GetY();
-  double x,y;
-  Window2World(_mouse_x,_mouse_y,x,y);
-
-  // now apply a zoom centered on the current position in X direction
-  double xmin = _xmin;
-  double xmax = _xmax;
-
-  double step  = ((double)wr)/(5.0*(double)event.GetWheelDelta());
-  if (step > 7 ) step = 7;
-  if (step < -7) step = -7;
-  double zoom_factor  = exp( step*log2f(2));
-
-  _xmin = x - (x-_xmin)/zoom_factor;
-  _xmax = x + (_xmax - x)/zoom_factor;
+  if (_focus_controlledcurve!=-1) {
+    // rescale the curve
+    // find min/max of curve
+    shared_ptr<std::vector<dwControlPoint> > points = 
+    (*_controlled_curves)[_focus_controlledcurve].GetControlPoints();
+    if (points->size()==0) return;
+/*
+    double xmin = (*points)[0].GetX();
+    double ymin = (*points)[0].GetY();
+    double xmax = (*points)[0].GetX();
+    double ymax = (*points)[0].GetY();
+    for(int i=1; i<points->size(); i++) {
+      xmin = macro_min(xmin,(*points)[i].GetX());
+      xmax = macro_max(xmax,(*points)[i].GetX());
+      ymin = macro_min(ymin,(*points)[i].GetY());
+      ymax = macro_max(ymax,(*points)[i].GetY());
+    }
+*/
+    // now rescale the points
+    double step  = ((double)wr)/(5.0*(double)event.GetWheelDelta());
+    if (step > 7 ) step = 7;
+    if (step < -7) step = -7;
+    double zoom_factor  = exp( step*log2f(2));
+    double xref = _focus_point->GetX();
+    double yref = _focus_point->GetY();
+  
+    for(int i=0; i<(int)points->size(); i++) {
+      double x = (*points)[i].GetX();
+      double y = (*points)[i].GetY();
+      (*points)[i].SetX(xref+(x-xref)*zoom_factor);
+      (*points)[i].SetY(yref+(y-yref)*zoom_factor);
+    }
+  } else {
+    wxClientDC dc(this);
+  
+    _mouse_x = (int)event.GetX();
+    _mouse_y = (int)event.GetY();
+    double x,y;
+    Window2World(_mouse_x,_mouse_y,x,y);
+  
+    // now apply a zoom centered on the current position in X direction
+//    double xmin = _xmin;
+//    double xmax = _xmax;
+  
+    double step  = ((double)wr)/(5.0*(double)event.GetWheelDelta());
+    if (step > 7 ) step = 7;
+    if (step < -7) step = -7;
+    double zoom_factor  = exp( step*log2f(2));
+  
+    _xmin = x - (x-_xmin)/zoom_factor;
+    _xmax = x + (_xmax - x)/zoom_factor;
+  }
 
   Refresh(false);
   event.Skip();
@@ -857,14 +1017,44 @@ void wxDrawingWindow::OnAddControlPoint(wxCommandEvent& event)
 {
   double x,y;
   Window2World(_mouse_x,_mouse_y,x,y);
-  AddControlPoint(dwControlPoint(dw_Point2D(x,y)));
+  AddControlPoint(dwControlPoint(dwPoint2D(x,y)));
+  Refresh(false);
+}
+
+//-------------------------------------------------
+void wxDrawingWindow::OnAddControlledCurve(wxCommandEvent& event)
+{
+  double x,y;
+  Window2World(_mouse_x,_mouse_y,x,y);
+  double x1 = x+(_xmax-x)/2.0;
+  double x2 = x+(_xmin-x)/2.0;
+  dwControlledCurve c;
+  c.GetControlPoints()->push_back(dwControlPoint(dwPoint2D(x1,y)));
+  c.GetControlPoints()->push_back(dwControlPoint(dwPoint2D(x2,y)));
+  _controlled_curves->push_back(c);
+  Refresh(false);
+}
+
+//-------------------------------------------------
+void wxDrawingWindow::OnRemoveControlledCurve(wxCommandEvent& event)
+{
+  if (_focus_controlledcurve!=-1)
+    _controlled_curves->erase(_controlled_curves->begin()+_focus_controlledcurve);
   Refresh(false);
 }
 
 //-------------------------------------------------
 void wxDrawingWindow::OnRemoveControl(wxCommandEvent& event)
 {
-  RemoveControl(focus_pointid);
+  RemoveControl();
+  _focus_point.reset();
+  Refresh(false);
+}
+
+//-------------------------------------------------
+void wxDrawingWindow::OnDuplicateControl(wxCommandEvent& event)
+{
+  DuplicateControl();
   Refresh(false);
 }
 
@@ -873,16 +1063,16 @@ void wxDrawingWindow::OnColormapPoint(wxCommandEvent& event)
 {
   
   if (event.IsChecked())
-    _controlpoints[focus_pointid].SetType(colormap_point);
+    _focus_point->SetType(colormap_point);
   else
-    _controlpoints[focus_pointid].SetType(normal_point);
+    _focus_point->SetType(normal_point);
   Refresh(false);
 }
 
 //-------------------------------------------------
 void wxDrawingWindow::OnVerticalLine(wxCommandEvent& event)
 {
-  _controlpoints[focus_pointid].SetVerticalLine(event.IsChecked());
+  _focus_point->SetVerticalLine(event.IsChecked());
   Refresh(false);
 }
 
@@ -891,12 +1081,12 @@ void wxDrawingWindow::OnControlColour(wxCommandEvent& event)
 {
   // Select the new colour
   wxColourData data;
-  data.SetColour( _controlpoints[focus_pointid].GetColour());
+  data.SetColour( _focus_point->GetColour());
   wxColourDialog dialog(this, &data);
 
   if ( dialog.ShowModal() == wxID_OK )
   {
-    _controlpoints[focus_pointid].SetColour( dialog.GetColourData().GetColour());
+    _focus_point->SetColour( dialog.GetColourData().GetColour());
   }
   Refresh(false);
 }

@@ -54,6 +54,8 @@
 #include "wrap_GLTransfMatrix.h"
 
 #include "wrap_dwControlPoint.h"
+#include "wrap_dwCurve.h"
+#include "wrap_dwControlledCurve.h"
 
 #include "wrap_stdvector.h"
 
@@ -89,7 +91,7 @@ void AddWrapImports()
   WrapClass_wxDrawingWindow::AddVar_wxDrawingWindow(amiobject->GetContext());
   WrapClass_ParamPanel     ::AddVar_ParamPanel     (amiobject->GetContext());
 
-  ADDOBJECTVAR_NAME(C_wrap_varfunction,"vtkLevelSets",wrap_vtkLevelSets);
+  WrapClass_vtkLevelSets  ::AddVar_vtkLevelSets(amiobject->GetContext());
 
 
   ADDOBJECTVAR_NAME(C_wrap_procedure,  "System",    wrap_System);
@@ -150,7 +152,9 @@ void AddWrapAmilab()
   BasicVariable::ptr mainframe_var = WrapClass_MainFrame::CreateVar(GB_main_wxFrame);
   amiobject->GetContext()->AddVar("MainFrame", mainframe_var, amiobject->GetContext());
 
-  WrapClass_dwControlPoint::AddVar_dwControlPoint( amiobject->GetContext());
+  WrapClass_dwControlPoint   ::AddVar_dwControlPoint(    amiobject->GetContext());
+  WrapClass_dwCurve          ::AddVar_dwCurve(           amiobject->GetContext());
+  WrapClass_dwControlledCurve::AddVar_dwControlledCurve( amiobject->GetContext());
 
   // 3. add the variables to this instance
   Vars.GetBuiltinContext()->AddVar<AMIObject>( amiobject->GetName().c_str(), 
@@ -220,7 +224,7 @@ void AddWrapBasicTypes()
 {
 //  ADDOBJECTVAR_NAME(C_wrap_varfunction,"VarList",   wrap_VarList);
 //  ADDOBJECTVAR_NAME(C_wrap_varfunction,"VarVector", wrap_VarVector);
-  AddVar_VarVector( Vars.GetBuiltinContext());
+  WrapClass_VarVector::AddVar_VarVector( Vars.GetBuiltinContext());
 
   WrapClass_StdVector<int>::AddVar_StdVector( Vars.GetBuiltinContext(), "vector_int");
   WrapClass_StdVector<float>::AddVar_StdVector( Vars.GetBuiltinContext(), "vector_float");

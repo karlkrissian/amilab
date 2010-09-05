@@ -21,7 +21,7 @@
 #include "wrap_wxWindow.h"
 #include "wxDrawingWindow.h"
 
-AMI_DECLARE_TYPE(wxDrawingWindow)
+AMI_DECLARE_TYPE(wxDrawingWindow);
 
 class WrapClass_wxDrawingWindow : public WrapClass<wxDrawingWindow>, public WrapClass_wxWindow
 {
@@ -30,6 +30,7 @@ class WrapClass_wxDrawingWindow : public WrapClass<wxDrawingWindow>, public Wrap
   protected:
     // for nested classes
     typedef WrapClass<wxDrawingWindow>::ptr _parentclass_ptr;
+    typedef wxDrawingWindow ObjectType;
 
   public:
 
@@ -60,9 +61,15 @@ class WrapClass_wxDrawingWindow : public WrapClass<wxDrawingWindow>, public Wrap
     ADD_CLASS_METHOD(SetCtrlPointCallback, "Callback for motion of a control point.");
 
     ADD_CLASS_METHOD(AddControlPoint,      "Adds a control point.");
-    ADD_CLASS_METHOD(RemoveControl,        "Removes a control point.");
+//    ADD_CLASS_METHOD(RemoveControl,        "Removes a control point.");
 
     ADD_CLASS_METHOD(GetColormapImage,     "Returns the image representing the colormap.");
+
+    ADD_CLASS_METHOD(GetControlPoints,     "Returns a reference to the std::vector of control points.");
+
+    ADD_CLASS_METHOD(GetCurves,            "Returns a reference to the std::vector of the curves.");
+
+    ADD_CLASS_METHOD(GetControlledCurves,  "Returns a reference to the std::vector of the controlled curves.");
 
     void AddMethods(WrapClass<wxDrawingWindow>::ptr this_ptr )
     {
@@ -87,9 +94,13 @@ class WrapClass_wxDrawingWindow : public WrapClass<wxDrawingWindow>, public Wrap
       AddVar_SetCtrlPointCallback(  this_ptr);
 
       AddVar_AddControlPoint(       this_ptr);
-      AddVar_RemoveControl(         this_ptr);
+//      AddVar_RemoveControl(         this_ptr);
 
       AddVar_GetColormapImage(      this_ptr);
+
+      AddVar_GetControlPoints(      this_ptr);
+      AddVar_GetCurves(             this_ptr);
+      AddVar_GetControlledCurves(   this_ptr);
     }
 
 };

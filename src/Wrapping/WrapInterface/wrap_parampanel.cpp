@@ -50,7 +50,7 @@ BasicVariable::ptr WrapClass<ParamPanel>::CreateVar( ParamList* p)
   return construct.CallMember(p);
 }
 
-AMI_DEFINE_WRAPPEDTYPE(ParamPanel);
+AMI_DEFINE_WRAPPEDTYPE_NOCOPY(ParamPanel);
 
 //
 // static member for creating a variable from a pointer to wxHtmlWindow

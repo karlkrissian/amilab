@@ -30,21 +30,21 @@ BasicVariable::ptr WrapClass<wxHtmlWindow>::CreateVar( ParamList* p)
   return construct.CallMember(p);
 }
 
-AMI_DEFINE_WRAPPEDTYPE(wxHtmlWindow);
+AMI_DEFINE_WRAPPEDTYPE_NOCOPY(wxHtmlWindow);
 
 //
 // static member for creating a variable from a pointer to wxHtmlWindow
 //
 Variable<AMIObject>::ptr WrapClass_wxHtmlWindow::CreateVar( wxHtmlWindow* sp)
 {
+  
+  boost::shared_ptr<wxHtmlWindow> obj_ptr(sp,
+        // deletion will be done by wxwidgets
+        wxwindow_nodeleter<wxHtmlWindow>());
+
   return 
     WrapClass<wxHtmlWindow>::CreateVar(
-      new WrapClass_wxHtmlWindow(
-        boost::shared_ptr<wxHtmlWindow>(sp,
-        wxwindow_nodeleter<wxHtmlWindow>() 
-        // deletion will be done by wxwidgets
-        ))
-    );
+      new WrapClass_wxHtmlWindow( obj_ptr));
 }
 
 
@@ -67,7 +67,7 @@ BasicVariable::ptr WrapClass_wxHtmlWindow::
   int n = 0;
   std::string* title = NULL;
 
-  CLASS_GET_OBJECT_PARAM2(wxWindow,var,parent);
+  CLASS_GET_OBJECT_PARAM(wxWindow,var,parent);
 
   if (parent.get()){
     return WrapClass_wxHtmlWindow::CreateVar(

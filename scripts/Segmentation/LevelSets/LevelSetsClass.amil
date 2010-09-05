@@ -651,7 +651,7 @@ if (!exists(LevelSetsClass)) {
       ::s1 = isosurf(::inls,0.01)
       ::s0_draw += ::s1
       if (exists(::input_draw)) {
-        ::input_draw.setGLwin(::s0_draw)
+        ::input_draw.setGLwin(&::s0_draw)
       }
     
     }

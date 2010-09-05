@@ -43,7 +43,7 @@ BasicVariable::ptr WrapClass<DessinImage>::CreateVar( ParamList* p)
   return construct.CallMember(p);
 }
 
-AMI_DEFINE_WRAPPEDTYPE(DessinImage);
+AMI_DEFINE_WRAPPEDTYPE_NOCOPY(DessinImage);
 
 //
 // static member for creating a variable from a pointer to DessinImage
@@ -696,7 +696,7 @@ BasicVariable::ptr WrapClass_DessinImage::
 
   if (!p) ClassHelpAndReturn;
   int n=0;
-  CLASS_GET_OBJECT_PARAM2(Viewer3D, varsurfd, surfd);
+  CLASS_GET_OBJECT_PARAM(Viewer3D, varsurfd, surfd);
   if (!surfd.get()) ClassHelpAndReturn;
 
   di->SetGLWindow(surfd);

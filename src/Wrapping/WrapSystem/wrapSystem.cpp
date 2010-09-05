@@ -317,7 +317,8 @@ BasicVariable::ptr wrap_GetGlobalScriptDir(ParamList* p)
   if (get_num_param(p)!=0)  HelpAndReturnVarPtr;
   wxString wxvalue(GB_scripts_dir);
   wxvalue.Replace(wxT("\\"),wxT("/"),true);
-  RETURN_VAR(string,wxvalue.mb_str());
+  std::string val(wxvalue.mb_str());
+  RETURN_VAR(string,val);
 }
 
 //--------------------------------------------------------------------

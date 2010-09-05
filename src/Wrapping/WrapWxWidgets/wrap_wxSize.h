@@ -28,11 +28,12 @@ class WrapClass_wxSize : public WrapClassBase
 
   // for nested classes
   typedef WrapClass_wxSize::ptr _parentclass_ptr;
-  typedef wxSize _obj_type;
+  typedef wxSize ObjectType;
+//  typedef wxSize _obj_type;
 
   public:
-    boost::shared_ptr<_obj_type> _obj;
-    const boost::shared_ptr<_obj_type>& GetObj() const { return _obj; }
+    boost::shared_ptr<ObjectType> _obj;
+    const boost::shared_ptr<ObjectType>& GetObj() const { return _obj; }
 
     /// Constructor
     WrapClass_wxSize(boost::shared_ptr<wxSize> si): _obj(si)

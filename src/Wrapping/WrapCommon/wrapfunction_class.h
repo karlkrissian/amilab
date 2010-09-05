@@ -20,6 +20,10 @@
 #include "ami_object.h"
 #include "Variable.hpp"
 
+#define STATIC_HELP \
+    const std::string GetDescription()  { return StaticDescription();  }\
+    const std::string GetFunctionName() { return StaticFunctionName(); }\
+
 /** Macro for adding a class that wraps a method.
   */
 #define ADD_METHOD(classname,methodname,description_str) \
@@ -32,14 +36,14 @@ class wrap_##classname##methodname : public WrapClassMember { \
   public: \
     wrap_##classname##methodname(const classname::ptr& pp) : \
      _objectptr(pp) { \
-      functionname = #classname;\
-      functionname += "::";\
-      functionname += #methodname; \
-      description=description_str; \
       SetParametersComments(); \
     } \
     void SetParametersComments(); \
     BasicVariable::ptr CallMember(ParamList*); \
+    static const std::string StaticDescription()  { return description_str; }\
+    static const std::string StaticFunctionName() \
+    { return std::string(#classname)+"::"+#methodname; }\
+    STATIC_HELP\
 };
 
 /** Macro for adding a nested class that wraps a method.
@@ -59,14 +63,15 @@ class wrap_##methodname : public WrapClassMember { \
   public: \
     wrap_##methodname(_parentclass_ptr& pp) : \
      _objectptr(pp) { \
-      functionname = _objectptr->get_name();\
-      functionname += "::";\
-      functionname += #methodname; \
-      description=description_str; \
       SetParametersComments(); \
     } \
     void SetParametersComments(); \
     BasicVariable::ptr CallMember(ParamList*); \
+    static const std::string StaticDescription()  { return description_str; }\
+    static const std::string StaticFunctionName() \
+    { std::string classname(AMILabType<ObjectType>::name_as_string());\
+      return classname+"::"+#methodname; }\
+    STATIC_HELP\
 }; \
 \
 void AddVar_##methodname(  _parentclass_ptr& pc, const std::string& newname = #methodname) {\
@@ -74,6 +79,73 @@ void AddVar_##methodname(  _parentclass_ptr& pc, const std::string& newname = #m
   AMIObject::ptr tmpobj(amiobject.lock()); \
   tmpobj->GetContext()->AddVar<WrapClassMember>(newname, tmp,tmpobj->GetContext()); \
 }
+
+//    const boost::shared_ptr<ObjectType>& GetObj() const { return _objectptr->GetObj(); }  
+
+
+/**
+  Macro to wrap Set/Get methods
+  */
+#define ADD_CLASS_SETGET(type,varname,description_str) \
+/**\
+ * Sets the variable varname, description_str\
+ **/\
+class wrap_Set##varname : public WrapClassMember { \
+  protected:\
+    _parentclass_ptr _objectptr; \
+  public: \
+    wrap_Set##varname(_parentclass_ptr& pp) : \
+     _objectptr(pp) { \
+      ADDPARAMCOMMENT_TYPE(type,description_str); \
+    } \
+    BasicVariable::ptr CallMember(ParamList* p) { \
+      int n=0;\
+      type val; \
+      if (!get_val_param<type>( val, p, n)) ClassHelpAndReturn; \
+      _objectptr->GetObj()->Set##varname(val); \
+      return BasicVariable::ptr(); \
+    } \
+    static const std::string StaticDescription()  \
+    { return std::string("Sets ")+description_str; }\
+    static const std::string StaticFunctionName() \
+    { std::string classname(AMILabType<ObjectType>::name_as_string());\
+      return classname+"::Set"+#varname; }\
+    STATIC_HELP\
+}; \
+\
+/**\
+ * Gets the variable varname, description_str\
+ **/\
+class wrap_Get##varname : public WrapClassMember { \
+  protected:\
+    _parentclass_ptr _objectptr; \
+  public: \
+    wrap_Get##varname(_parentclass_ptr& pp) : \
+     _objectptr(pp) { \
+      return_comments = (boost::format("Returns a variable of type %1%.") % AMILabType<type>::name_as_string()).str(); \
+    } \
+    BasicVariable::ptr CallMember(ParamList*) { \
+      type val = this->_objectptr->GetObj()->Get##varname(); \
+      RETURN_VAR(type,val); \
+    } \
+    static const std::string StaticDescription()  \
+    { return std::string("Gets ")+description_str; }\
+    static const std::string StaticFunctionName() \
+    { std::string classname(AMILabType<ObjectType>::name_as_string());\
+      return classname+"::Get"+#varname; }\
+    STATIC_HELP\
+}; \
+\
+void AddVar_SetGet##varname(  _parentclass_ptr& pc) {\
+  boost::shared_ptr<WrapClassMember> tmp; \
+  AMIObject::ptr tmpobj(amiobject.lock()); \
+  tmp = boost::shared_ptr<WrapClassMember>( new wrap_Set##varname(pc));\
+  tmpobj->GetContext()->AddVar<WrapClassMember>(\
+    std::string("Set")+#varname, tmp,tmpobj->GetContext()); \
+  tmp = boost::shared_ptr<WrapClassMember>( new wrap_Get##varname(pc));\
+  tmpobj->GetContext()->AddVar<WrapClassMember>(\
+    std::string("Get")+#varname, tmp,tmpobj->GetContext()); \
+} \
 
 /** Macro for adding the class constructor with a static function
   to create the variable
@@ -85,12 +157,15 @@ void AddVar_##methodname(  _parentclass_ptr& pc, const std::string& newname = #m
 class wrap_##methodname : public WrapClassMember { \
   public: \
     wrap_##methodname() { \
-      functionname = #methodname; \
-      description=description_str; \
       SetParametersComments(); \
     } \
     void SetParametersComments(); \
     BasicVariable::ptr CallMember(ParamList* p); \
+    static const std::string StaticDescription()  { return description_str; }\
+    static const std::string StaticFunctionName() \
+    { std::string classname(AMILabType<ObjectType>::name_as_string());\
+      return classname+"::"+#methodname; }\
+    STATIC_HELP\
 }; \
 \
 static void AddVar_##methodname(  Variables::ptr& _context, const std::string& newname = #methodname) {\
@@ -187,6 +262,7 @@ class WrapClass: public virtual WrapClassBase
   protected:  
     // for nested classes
     typedef boost::shared_ptr<WrapClass<T> > _parentclass_ptr;
+    typedef T ObjectType;
 
   public:
     //typedef T objtype;
@@ -210,8 +286,8 @@ class WrapClass: public virtual WrapClassBase
     // import to declare virtual destructor here !!!
     virtual ~WrapClass<T>()
     {
-      std::cout << "~WrapClass<" << AMILabType<T>::name_as_string() << ">" << std::endl;
-      std::cout << "_obj.use_count() = " << _obj.use_count() << std::endl;
+//      std::cout << "~WrapClass<" << AMILabType<T>::name_as_string() << ">" << std::endl;
+//      std::cout << "_obj.use_count() = " << _obj.use_count() << std::endl;
     }
 
     /// Constructor without parameters to deal with inheritance
@@ -263,14 +339,14 @@ class WrapClassMember {
   DEFINE_CLASS(WrapClassMember);
 
   protected:
-    std::string functionname;
-    std::string description;
+//    std::string functionname; 
+//    std::string description; 
     std::vector<std::string> parameters_comments;
     std::vector<std::string> paramtypes;
     std::string return_comments;
+    std::string return_type;
 
   public:
-    std::string GetDescription() { return description; }
     virtual ~WrapClassMember() = 0;
     virtual void SetParametersComments()          {};
     virtual BasicVariable::ptr CallMember(ParamList*)  
@@ -280,7 +356,8 @@ class WrapClassMember {
      * Display the function help in an information dialog.
      */
     void ShowHelp();
-
+    virtual const std::string GetDescription() = 0;
+    virtual const std::string GetFunctionName() = 0;
 };
  
 inline WrapClassMember::~WrapClassMember() { }  // defined even though it's pure virtual; it's faster this way; 

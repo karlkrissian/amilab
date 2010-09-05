@@ -510,7 +510,7 @@ if (!exists(LevelSetsClass)){
             show ::input
             ProcessXEvents(100)
           }
-          SetProgress(n/it*100)
+          SetProgress((FLOAT)n/it*100)
           if (::check_convergence) {
             if ((n % ::conv_freq) == 0) {
               # check for convergence

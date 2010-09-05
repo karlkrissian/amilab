@@ -20,35 +20,16 @@
 #include "wrap_stdvector.h"
 
 
-
-//
-// static member for creating a variable from a ParamList
-// need to instanciate for each type ...
-//
-template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<std::vector<int> >::CreateVar( ParamList* p)
-{
-  WrapClass_StdVector<int>::wrap_StdVector construct;
-  return construct.CallMember(p);
-}
-
-template <> AMI_DLLEXPORT
-BasicVariable::ptr WrapClass<std::vector<float> >::CreateVar( ParamList* p)
-{
-  WrapClass_StdVector<float>::wrap_StdVector construct;
-  return construct.CallMember(p);
-}
-
-
 //
 // static member for creating a variable from a pointer to dwControlPoint
 //
 template <class T>
 Variable<AMIObject>::ptr WrapClass_StdVector<T>::CreateVar( std::vector<T>* sp)
 {
+  boost::shared_ptr<std::vector<T> > obj_ptr(sp);
   return 
     WrapClass<std::vector<T> >::CreateVar(
-      new WrapClass_StdVector<T>( boost::shared_ptr<std::vector<T> >(sp)));
+      new WrapClass_StdVector<T>( obj_ptr));
 }
 
 
@@ -167,9 +148,7 @@ BasicVariable::ptr WrapClass_StdVector<T>::wrap_front::CallMember( ParamList* p)
   else
   {
     T val = this->_objectptr->_obj->front();
-    boost::shared_ptr<T> return_var(new T(val));
-    boost::shared_ptr<Variable<T> > varres( new Variable<T>(return_var));
-    return varres; 
+    return AMILabType<T>::CreateVar(new T(val));
   }
 }
 
@@ -190,9 +169,7 @@ BasicVariable::ptr WrapClass_StdVector<T>::wrap_back::CallMember( ParamList* p)
   else
   {
     T val = this->_objectptr->_obj->back();
-    boost::shared_ptr<T> return_var(new T(val));
-    boost::shared_ptr<Variable<T> > varres( new Variable<T>(return_var));
-    return varres; 
+    return AMILabType<T>::CreateVar(new T(val));
   }
 }
 
@@ -220,9 +197,7 @@ BasicVariable::ptr WrapClass_StdVector<T>::wrap_at::CallMember( ParamList* p)
   else
   {
     T val = this->_objectptr->_obj->at(pos);
-    boost::shared_ptr<T> return_var(new T(val));
-    boost::shared_ptr<Variable<T> > varres( new Variable<T>(return_var));
-    return varres; 
+    return AMILabType<T>::CreateVar(new T(val));
   }
 }
 

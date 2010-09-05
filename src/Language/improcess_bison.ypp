@@ -9047,7 +9047,7 @@ primary_var:
         for (int i=0; i<initial_size; i++)
           vv->push_back(v->NewCopy());
       }
-      BasicVariable::ptr new_var = CreateVar_VarVector(vv);
+      BasicVariable::ptr new_var = AMILabType<VarVector>::CreateVar(vv);
       driver.var_stack.AddVar(new_var);
     }
     |

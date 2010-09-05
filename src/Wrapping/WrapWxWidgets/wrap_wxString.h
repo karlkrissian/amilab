@@ -34,10 +34,12 @@ class WrapClass_wxString : public WrapClass<wxString>
     {}
 
     /// Wrapping of the constructor
-    ADD_CLASS_CONSTRUCTOR(wxString, "Wrapping of wxString (see http://docs.wxwidgets.org/)." )
+    ADD_CLASS_CONSTRUCTOR(wxString, "Wrapping of wxString (see http://docs.wxwidgets.org/)." );
 
+/*
     /// Create a variable from a standard pointer
     static Variable<AMIObject>::ptr CreateVar( wxString* sp);
+*/
 
     ADD_CLASS_METHOD(Clear,        "Empties the string and frees memory occupied by it.");
     ADD_CLASS_METHOD(SetChar,      "Sets the character at position n");

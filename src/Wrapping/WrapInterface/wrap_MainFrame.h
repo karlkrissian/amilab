@@ -31,6 +31,7 @@ class WrapClass_MainFrame : public WrapClass<MainFrame>, public WrapClass_wxWind
   protected:  
     // needed to resolve ambiguity from multiple inheritance
     typedef boost::shared_ptr<WrapClass<MainFrame> > _parentclass_ptr;
+    typedef MainFrame ObjectType;
 
   public:
 

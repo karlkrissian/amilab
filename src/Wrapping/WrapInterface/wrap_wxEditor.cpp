@@ -29,7 +29,7 @@ BasicVariable::ptr WrapClass<wxEditor>::CreateVar( ParamList* p)
   return construct.CallMember(p);
 }
 
-AMI_DEFINE_WRAPPEDTYPE(wxEditor);
+AMI_DEFINE_WRAPPEDTYPE_NOCOPY(wxEditor);
 
 //
 // static member for creating a variable from a pointer to wxEditor
@@ -63,7 +63,7 @@ BasicVariable::ptr WrapClass_wxEditor::
 {
   if (!p) ClassHelpAndReturn;
   int n=0;
-  CLASS_GET_OBJECT_PARAM2(wxWindow,var,parent);
+  CLASS_GET_OBJECT_PARAM(wxWindow,var,parent);
   if (parent.get())
     return WrapClass_wxEditor::CreateVar(new wxEditor(parent.get()));
   else

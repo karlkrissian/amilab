@@ -221,9 +221,7 @@ if (!exists(ImageHistoClass)) {
         cp1.SetColour(wx.wxColour(255,255,255))
         cp1.SetType(1)
         # remove all control points
-        for k=0 to ::dw.GetNumberOfCtrlPoints()-1 {
-          ::dw.RemoveControl(0)
-        }
+        ::dw.GetControlPoints().clear()
         ::dw.AddControlPoint(&cp0)
         ::dw.AddControlPoint(&cp1)
 
@@ -258,9 +256,7 @@ if (!exists(ImageHistoClass)) {
       ::cm.SetXLimits(-1,256)
       ::cm.SetYLimits(-1,256)
       # remove all control points
-      for k=0 to ::cm.GetNumberOfCtrlPoints()-1 {
-        ::cm.RemoveControl(0)
-      }
+      ::cm.GetControlPoints().clear()
       cm_range = ::cm_max-::cm_min
       hmax = max(::h[0])
 
@@ -305,6 +301,7 @@ if (!exists(ImageHistoClass)) {
           ::input_draw.UpdateColormap()
         }
       }
+      ::cm._Paint()
       ::cm.Refresh()
     }
 
@@ -326,7 +323,7 @@ if (!exists(ImageHistoClass)) {
       
       ::win.BeginBook()
     
-        ::win.AddPage("Param")
+        ::win.AddPage("Main")
 
           # set the input image drawing window
           ::win.BeginBoxPanel("Input")
@@ -365,7 +362,8 @@ if (!exists(ImageHistoClass)) {
           ::cm.SetBackgroundColour(wx.wxColour(255,255,255))
           ::sizer_item = ::win.AddWidget(&::cm,0)
 
-          ::win.BeginBoxPanel("Parameters")
+        ::win.AddPage("Param")
+          ::win.BeginBoxPanel("Histogram calculation")
             ::minval_id = ::win.AddFloat(&::minval,"min",0,255)
             ::win.SetCallback(&::Update)
             ::maxval_id = ::win.AddFloat(&::maxval,"max",0,255)

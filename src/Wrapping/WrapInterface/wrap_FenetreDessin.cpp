@@ -31,7 +31,7 @@ BasicVariable::ptr WrapClass<FenetreDessin>::CreateVar( ParamList* p)
   return construct.CallMember(p);
 }
 
-AMI_DEFINE_WRAPPEDTYPE(FenetreDessin);
+AMI_DEFINE_WRAPPEDTYPE_NOCOPY(FenetreDessin);
 
 //
 // static member for creating a variable from a pointer to wxHtmlWindow
@@ -65,7 +65,7 @@ BasicVariable::ptr WrapClass_FenetreDessin::
 {
   if (!p) ClassHelpAndReturn;
   int n=0;
-  CLASS_GET_OBJECT_PARAM2(FenetreDessin,var,varobj);
+  CLASS_GET_OBJECT_PARAM(FenetreDessin,var,varobj);
   return var;
 }
 
@@ -100,7 +100,7 @@ BasicVariable::ptr WrapClass_FenetreDessin::
 {
   FenetreDessin::ptr fd(this->_objectptr->GetObj());
   int n=0;
-  CLASS_GET_OBJECT_PARAM2(wxColour,var,varobj);
+  CLASS_GET_OBJECT_PARAM(wxColour,var,varobj);
   if (varobj.get()) {
     fd->SetPenColor( *varobj);
   }

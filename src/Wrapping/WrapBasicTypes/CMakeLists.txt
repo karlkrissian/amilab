@@ -28,6 +28,7 @@ SET(  WrapBasicTypes_SRCS
   wrap_varlist.cpp
   wrap_varvector.cpp
   wrap_File.cpp
+  wrap_stdvector.cpp
 )
 
 SET(WrapBasicTypes_HDRS

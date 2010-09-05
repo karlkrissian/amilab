@@ -29,7 +29,7 @@ BasicVariable::ptr WrapClass<wxBitmap>::CreateVar( ParamList* p)
 }
 
 
-AMI_DEFINE_WRAPPEDTYPE(wxBitmap)
+AMI_DEFINE_WRAPPEDTYPE_NOCOPY(wxBitmap)
 
 //
 // static member for creating a variable from a pointer to wxColour

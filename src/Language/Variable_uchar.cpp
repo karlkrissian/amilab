@@ -364,6 +364,7 @@ BasicVariable::ptr Variable<unsigned char>::TryCast(
     CLASS_ERROR(boost::format("%1%, for variable %2% from 'unsigned char' to %3%") % e.what() % _name % type_string);
     return BasicVariable::ptr();
   }
+  return BasicVariable::ptr();
 }
 
 

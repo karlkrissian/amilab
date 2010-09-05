@@ -29,7 +29,7 @@ BasicVariable::ptr WrapClass<MainFrame>::CreateVar( ParamList* p)
   return construct.CallMember(p);
 }
 
-AMI_DEFINE_WRAPPEDTYPE(MainFrame);
+AMI_DEFINE_WRAPPEDTYPE_NOCOPY(MainFrame);
 
 //
 // static member for creating a variable from a pointer to MainFrame

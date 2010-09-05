@@ -39,9 +39,10 @@ BasicVariable::ptr WrapClass<wxFileName>::CreateVar( ParamList* p)
   return construct.CallMember(p);
 }
 
-AMI_DEFINE_WRAPPEDTYPE(wxFileName)
+AMI_DEFINE_WRAPPEDTYPE_HASCOPY(wxFileName);
+AMI_DEFINE_VARFROMSMTPTR(wxFileName);
 
-//
+/*//
 // static member for creating a variable from a pointer to wxColour
 //
 Variable<AMIObject>::ptr WrapClass_wxFileName::CreateVar( wxFileName* sp)
@@ -49,7 +50,7 @@ Variable<AMIObject>::ptr WrapClass_wxFileName::CreateVar( wxFileName* sp)
   boost::shared_ptr<wxFileName> _obj_ptr(sp);
   return WrapClass<wxFileName>::CreateVar( new WrapClass_wxFileName(_obj_ptr));
 }
-
+*/
 
 //---------------------------------------------------
 // Method that adds wrapping of wxFileName
@@ -1150,7 +1151,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_copy::CallMember( ParamList* p)
 {
-  return WrapClass_wxFileName::CreateVar( new wxFileName(*(this->_objectptr->GetObj())));
+  return AMILabType<wxFileName>::CreateVar( new wxFileName(*(this->_objectptr->GetObj())));
 }
 
 //---------------------------------------------------
@@ -1166,7 +1167,7 @@ void WrapClass_wxFileName::
 BasicVariable::ptr WrapClass_wxFileName::
       wrap_assign_operator::CallMember( ParamList* p)
 {
-  return WrapClass_wxFileName::CreateVar( new wxFileName(*(this->_objectptr->GetObj())));
+  return AMILabType<wxFileName>::CreateVar( new wxFileName(*(this->_objectptr->GetObj())));
 }
 
 //---------------------------------------------------
