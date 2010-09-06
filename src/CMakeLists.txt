@@ -6,7 +6,7 @@ project (AMILab)
 
 MESSAGE( "CMAKE_PROJECT_NAME = ${CMAKE_PROJECT_NAME} ")
 
-cmake_minimum_required(VERSION 2.8.1)
+cmake_minimum_required(VERSION 2.6.4)
 
 if(COMMAND cmake_policy)
   cmake_policy(SET CMP0003 NEW)

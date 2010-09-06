@@ -231,8 +231,9 @@ if (!exists(ImageHistoClass)) {
     #--------------------------------------------------
     proc ::ColormapMinMax() \
     {
-      for k=0 to ::dw.GetNumberOfCtrlPoints()-1 {
-        cp = ::dw.GetCtrlPoint(k)
+      ctrlpts = ::dw.GetControlPoints()
+      for k=0 to ctrlpts.size()-1 {
+        cp = ctrlpts[k]
         if (cp.GetType()==1) {
           if (!exists(xmin)) {
             xmin = cp.GetX();
@@ -247,7 +248,7 @@ if (!exists(ImageHistoClass)) {
         }
       }
       if (exists(xmin)) { ::cm_min = xmin; }
-      if (exists(xmin)) { ::cm_max = xmax; }
+      if (exists(xmax)) { ::cm_max = xmax; }
     }
 
     #--------------------------------------------------
@@ -256,20 +257,30 @@ if (!exists(ImageHistoClass)) {
       ::cm.SetXLimits(-1,256)
       ::cm.SetYLimits(-1,256)
       # remove all control points
-      ::cm.GetControlPoints().clear()
+      ::cm.GetControlledCurves().clear()
       cm_range = ::cm_max-::cm_min
       hmax = max(::h[0])
 
-      for k=0 to ::dw.GetNumberOfCtrlPoints()-1 {
-        cp = ::dw.GetCtrlPoint(k)
-        newpos = (cp.GetX()-::cm_min)/cm_range*255
-        cp.SetX(newpos)
-        if (cp.GetType()==1) {
-          cp.SetY(127)
-        } else {
-          cp.SetY(cp.GetY()/hmax*255)
+      for i=0 to ::dw.GetControlledCurves().size()-1 {
+        if (exists(curve)) { del curve; }
+        if (exists(points)) { del points; }
+        curve = ::dw.GetControlledCurves()[i]
+        points = curve.GetControlPoints();
+        printn "nb points %1% " % points.size()
+        for k=0 to points.size()-1 {
+          cp = points[k]
+          print " point %1% " % k; printn " x = %1% " % cp.GetX()
+          newpos = (cp.GetX()-::cm_min)/cm_range*255
+          cp.SetX(newpos)
+          print " point %1% " % k; printn " new x = %1% " % cp.GetX()
+          if (cp.GetType()==1) {
+            cp.SetY(127)
+          } else {
+            cp.SetY(cp.GetY()/hmax*255)
+          }
+          points.setelement(k,&cp)
         }
-        ::cm.AddControlPoint(&cp)
+        ::cm.GetControlledCurves().push_back(&curve)
       }
 
       # add the corresponding histogram

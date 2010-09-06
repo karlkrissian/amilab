@@ -20,6 +20,7 @@
 #include "CallBackAMIFunction.h"
 #include "wrap_dwControlPoint.h"
 #include "wrap_dwCurve.h"
+#include "wrap_dwControlledCurve.h"
 #include "wrap_stdvector.h"
 
 //
