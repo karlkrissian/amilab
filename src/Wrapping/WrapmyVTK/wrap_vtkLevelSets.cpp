@@ -57,7 +57,6 @@ BasicVariable::ptr WrapClass<vtkLevelSets>::CreateVar( ParamList* p)
   return construct.CallMember(p);
 }
 
-AMI_DLLEXPORT 
 BasicVariable::ptr AMILabType<vtkLevelSets>::CreateVar(vtkLevelSets* val)  
 { 
   boost::shared_ptr<vtkLevelSets> obj_ptr(

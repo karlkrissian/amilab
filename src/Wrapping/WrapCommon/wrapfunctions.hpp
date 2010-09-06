@@ -26,14 +26,15 @@ class ParamList;
 #include "BasicVariable.h"
 //#include "Variable.hpp"
 
-#include "wrapfunction_class.h"
-
 /// type: pointer to a C wrapping procedure
 typedef void      (C_wrap_procedure)(ParamList*);
 /// type: pointer to a C wrapping image function
-typedef InrImage* (C_wrap_imagefunction)(ParamList*);
+//typedef InrImage* (C_wrap_imagefunction)(ParamList*);
 /// type: pointer to a C wrapping variable function
 typedef BasicVariable::ptr (C_wrap_varfunction)(ParamList*);
+
+#include "wrapfunction_class.h"
+
 
 
 

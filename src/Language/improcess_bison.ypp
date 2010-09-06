@@ -13,6 +13,8 @@
   //#include <stdlib.h>
   //#include <stdio.h>
 
+#include "MainFrame.h"
+
 // use NOMINMAX to avoid conflicts between windows.h min,max and std::min std::max ...
 #define NOMINMAX
 
@@ -42,7 +44,6 @@
 #include "driver.h"
 
 #include "CoutwxString.h"
-#include "MainFrame.h"
 #include "fonctions.h"
 #include "func_isoline.hpp"
 

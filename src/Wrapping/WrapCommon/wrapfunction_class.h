@@ -297,14 +297,14 @@ class WrapClass: public virtual WrapClassBase
     static BasicVariable::ptr CreateVar(ParamList*);
     
     //
-    virtual void AddMethods(WrapClass<T>::ptr this_ptr ) = 0;
+    virtual void AddMethods(boost::shared_ptr<WrapClass<T> > this_ptr ) = 0;
     
     /**
     * Create a Wrapped object
     * @param objectptr input smart pointer to a WrapClass<T>
     * @return smart pointer to an AMIObject class
     */
-    static AMIObject::ptr AddWrap( WrapClass<T>::ptr& objectptr)
+    static AMIObject::ptr AddWrap( boost::shared_ptr<WrapClass<T> >& objectptr)
     {
       // Create new instance of the class
       AMIObject::ptr amiobject( new AMIObject);

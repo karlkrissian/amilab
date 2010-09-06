@@ -48,7 +48,7 @@ SET(AMILab_SRCS
     CircleIntegration.cpp
     ConnectLines.cpp
     Curvatures.cpp
-    EDPmorpho.cpp #To remove.
+//    EDPmorpho.cpp #To remove.
     ContinuousMorphology.cpp
     Eigen3D.cpp
     EigenDecomp.cpp
@@ -93,8 +93,8 @@ SET(AMILab_SRCS
 
 SET (AMILab_HDRS
 	Chamfer.h
-	EDPmorpho.h #to remove.
-  ContinuousMorphology.h
+//	EDPmorpho.h #to remove.
+    ContinuousMorphology.h
 	EigenDecomp.h
 	FluidProject.h
 	fonctions.h

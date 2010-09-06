@@ -160,7 +160,13 @@
 //
 // Sophia Antipolis le 08-12-96
 //
+#include "wx/wxprec.h"
+#include <wx/version.h>
+#ifdef __BORLANDC__
+#pragma hdrstop
+#endif
 
+#include "MainFrame.h"
 #include "DessinImage.hpp"
 #include "CompareImage.hpp"
 #include "ficparam.hpp"
@@ -179,7 +185,6 @@
 
 typedef  unsigned long Dimension;
 
-#include "MainFrame.h"
 extern MainFrame*   GB_main_wxFrame;
 
 //extern XtAppContext GB_contexte;

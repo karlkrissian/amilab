@@ -976,6 +976,11 @@ void wxDrawingWindow::OnWheel(wxMouseEvent& event)
     double step  = ((double)wr)/(5.0*(double)event.GetWheelDelta());
     if (step > 7 ) step = 7;
     if (step < -7) step = -7;
+
+#if (!defined(log2f)) 
+ #define log2f(x)    (logf(x)/logf(2))
+#endif
+
     double zoom_factor  = exp( step*log2f(2));
     double xref = _focus_point->GetX();
     double yref = _focus_point->GetY();
@@ -1001,6 +1006,11 @@ void wxDrawingWindow::OnWheel(wxMouseEvent& event)
     double step  = ((double)wr)/(5.0*(double)event.GetWheelDelta());
     if (step > 7 ) step = 7;
     if (step < -7) step = -7;
+
+#if (!defined(log2f)) 
+ #define log2f(x)    (logf(x)/logf(2))
+#endif
+
     double zoom_factor  = exp( step*log2f(2));
   
     _xmin = x - (x-_xmin)/zoom_factor;

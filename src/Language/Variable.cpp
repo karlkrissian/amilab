@@ -190,10 +190,8 @@ AMI_DEFINE_BASICTYPE(AMIObject);
 AMI_DEFINE_BASICTYPE(VarArray);
 
 #define AMI_DEFINE_BASICTYPE_NOCONSTRUCT(type) \
-    AMI_DLLEXPORT \
     char const* AMILabType<type>::name_as_string() { return #type; } \
     \
-    AMI_DLLEXPORT \
     boost::shared_ptr<type> AMILabType<type>::GetValue(BasicVariable::ptr var)  \
     { \
       if (!var.get()) \
@@ -219,7 +217,6 @@ AMI_DEFINE_BASICTYPE(VarArray);
       }\
     } \
     \
-    AMI_DLLEXPORT \
     BasicVariable::ptr AMILabType<type>::CreateVar(const type& val)  \
     { \
       return BasicVariable::ptr(); \
